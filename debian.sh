@@ -179,32 +179,7 @@ EndOfFile
 
 
 
-    
-echo "正在赋予proot启动脚本执行权限"
-#termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
-cd /data/data/com.termux/files/usr/bin
-chmod +x debian startvnc stopvnc 
-##echo "removing image for some space"
-echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
-ls -lh ~/${DebianTarXz}
-##rm $DebianTarXz
-##echo "You can now launch Debian with the ./${bin} script"
 
-
- cd ~/${DebianFolder}
- #配置卸载脚本
-cat > remove-debian.sh <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash
-cd ~
-chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
-
-echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
-echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
-echo ''
-
-EOF
-chmod +x remove-debian.sh
 
 
 cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EOF
@@ -265,7 +240,36 @@ function main()
 }
 
 EOF
-chmod +x /data/data/com.termux/files/usr/bin/debian.sh
+
+
+    
+echo "正在赋予proot启动脚本执行权限"
+#termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
+cd /data/data/com.termux/files/usr/bin
+
+chmod +x debian startvnc stopvnc debian.sh
+##echo "removing image for some space"
+echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
+ls -lh ~/${DebianTarXz}
+##rm $DebianTarXz
+##echo "You can now launch Debian with the ./${bin} script"
+
+
+ cd ~/${DebianFolder}
+ #配置卸载脚本
+cat > remove-debian.sh <<- EOF
+#!/data/data/com.termux/files/usr/bin/bash
+cd ~
+chmod 777 -R debian_$archtype
+rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+
+echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
+echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
+echo ''
+
+EOF
+chmod +x remove-debian.sh
+
 
 
 
