@@ -1184,7 +1184,8 @@ cat >gnome.sh<<-'Matryoshka'
 #!/bin/bash
 apt-mark hold udisks2
 apt update
-apt install -y task-gnome-desktop  tightvncserver
+apt install -y aptitude
+aptitude install -y task-gnome-desktop  tightvncserver
 apt clean
 
 mkdir -p ~/.vnc
@@ -1233,7 +1234,8 @@ cat >kde.sh<<-'Matryoshka'
 #!/bin/bash
 apt-mark hold udisks2
 apt update
-apt install -y  task-kde-desktop tightvncserver
+apt install -y aptitude
+aptitude install -y  task-kde-desktop tightvncserver
 
 apt clean
 
