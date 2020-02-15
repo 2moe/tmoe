@@ -1267,7 +1267,9 @@ cat >kde.sh<<-'Matryoshka'
 apt-mark hold udisks2
 apt update
 apt install -y aptitude tightvncserver
+apt install -y kde-plasma-desktop
 aptitude install -y  task-kde-desktop 
+
 
 apt clean
 
