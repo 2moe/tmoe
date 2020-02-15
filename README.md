@@ -6,36 +6,161 @@
 #### 软件架构
 软件架构说明
 
+##### 支持arm64(aarch64)、armhf、armel、amd64(x86_64) 和 i386(x86)。
+
 
 #### 安装教程
 
-1.  #### This script should be run via curl:
-#   sh -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
-#### or wget:
-#   sh -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+1.  ##### This script should be run via curl:
+##   apt install wget ; bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+##### or wget:
+##   apt install curl ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 #
 2.  xxxx
 3.  xxxx
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+##简易版说明（萌新专用）
 
-#### 参与贡献
+1.安装debian命令
+pkg i -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+2.启动命令debian
 
 
-#### 码云特技
+3.卸载命令 debian.sh rm
+(仅支持在termux原系统内输)
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5.  码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+4.安装xfce桌面的命令 ./xfce.sh
+（仅支持在debian系统内输）
+
+5.启动vnc命令 startvnc
+（同时支持）
+
+6.停止vnc命令 stopvnc
+（同时支持）
+
+===========================================
+完整版说明（Full description)
+##
+
+#Step1.
+1-1 You can use the following command to install debian.
+安装debian系统的命令是 
+
+apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+
+
+#(旧版)视频教程链接: https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA 提取码: debb
+
+#可选步骤（Optional step）：
+
+输./kali.sh更换为kali源，输./kali.sh rm 移除kali源。
+ 
+ 
+ 1-2安装后的步骤。
+ 
+#If you want to start debian next time, you can just type "debian".
+#下次启动debian的命令是
+debian
+
+#关于debian的重新安装与移除
+
+输debian.sh 重装debian  (完整路径为$PREFIX/bin/debian.sh)
+输debian.sh rm 移除debian
+输debian.sh del 删除镜像文件
+
+
+
+Step2.安装图形化桌面环境。
+2-1安装前（关于桌面环境的安装与卸载）
+进入debian系统后，请从xfce、lxde、mate和lxqt中选择一种。
+
+xfce的安装方法：
+(至少有16种方法可以安装，下面列举8种)
+                 ./xfce.sh
+                 ./xfce.sh i
+                 ./xfce.sh in
+                 ./xfce.sh install
+                 ~/xfce.sh				 
+                 bash xfce.sh
+                 bash xfce.sh i
+				 bash ~/xfce.sh
+xfce的卸载方法： 
+                 ./xfce.sh rm
+                 ./xfce.sh remove
+                 ./xfce.sh un
+                 ./xfce.sh uninstall
+                 ./xfce.sh purge				 
+                 bash xfce.sh rm 
+				 bash ~/xfce.sh rm               
+（下面相似，故省略）                 				
+								
+输./mate.sh或bash mate.sh安装mate; 输./mate.sh rm卸载
+输./lxde.sh安装lxde; 输 ./lxde.sh rm卸载
+输./lxqt.sh安装lxqt; 输 ./lxqt.sh rm卸载
+
+
+gnome和kde是用来卖萌用的，不要安装。如需安装，请自行解决依赖关系和其它问题。
+四选一！千万不要一下子装两个桌面！
+
+2-2安装中
+安装过程会提示选择键盘布局，请直接按回车。
+初次启动vnc服务，会提示输6至8位（不可见）的密码，输两遍。
+当提示Would you like to enter a view-only password ？时
+输n
+
+2-3安装后
+输startvnc启动vnc服务，
+输stopvnc停止vnc服务。
+完成后，打开vnc viewer客户端，输localhost:5901
+
+在termux原系统输startvnc将自动启动vnc客户端+debian系统+vnc服务端，若无启动提示，请在进入debian后，再输一遍startvnc
+
+其它说明：
+1.若无法退出debian系统，请在termux原系统内输stopvnc
+2.若zsh配置失败，请输入./zsh.sh进行重新配置。
+3.主目录下的sh文件可以删除，但sd、tf和termux三个目录不要删。因为这三个目录挂载了设备存储空间，分别和内置存储、tf卡(termux专有目录)以及termux主目录联动。
+
+
+
+#可选步骤
+#修改分辨率的方法
+apt install -y nano && nano /usr/bin/startvnc
+#将1440x720（竖屏）改成你需要的分辨率，例如1920x10780（横屏）
+修改完成后，按Ctrl+O保存，Ctrl+X退出。
+
+#你可以装个浏览器来玩玩
+输./firefox.sh安装firefox浏览器,输./firefox.sh rm卸载
+输./chromium.sh安装chromium浏览器,输./chromium.sh rm卸载
+
+#chromium浏览器的启动命令是 chromium --no-sandbox
+
+#安装Linux qq
+wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb ; apt install -y ./linuxqq.deb
+#若链接失效，请前往https://im.qq.com/linuxqq/download.html
+
+本文首发于酷安网@萌系生物研究员
+2019-11、12月：旧版脚本部分命令借鉴了atilo-cn和AnLinux，除此之外，大部分都是本人手打的。
+可能会有出错的地方，欢迎指正。
+
+2020-02-15
+完全重写脚本！
+本来是不想维护的，但是我发现了一个很严重的bug,所以干脆重写一遍。
+本次更新的内容真的有点多，而且真的很强哦ο(=•ω＜=)ρ⌒☆，我自己都觉得太强了！
+脚本文件已经达到了30多KB了。
+优化内容：
+         ①获取镜像途径依旧是清华镜像站，但把下载工具从wget换成了aria2，从原本的单线程变成现在的16线程，加快了下载速度。
+		 ②自动配置中文环境，默认就是中文，无需手动配置。
+		 ③修复旧版脚本中非xfce桌面的xstartup文件问题。
+		 ④新增自动配置zsh的功能，初次启动会出现提示，若在指定时间内无操作会自动开始安装并配置zsh。
+		 包含主题和语法高亮、语法历史记录插件。
+		 ⑤简化安装流程，且不再需要某种很神奇的internet工具。
+		 ⑥将debian 10 buster (stable)换成 sid bullseye(unstable)，滚动升级，一直都是新版。
+		 ⑦修复chromium浏览器的启动问题，使用sh chromium.sh安装的版本，可以直接点击图标启动，在root环境下无需加--no-sandbox参数。
+		 ⑧加入对armhf和x86_64(amd64)的支持。
+		 ⑨支持一键更换为kali源。
+		 
+		 
+
