@@ -188,7 +188,7 @@ cat > remove-debian.sh <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" debian.sh $PREFIX/bin/debian
+rm -rf "debian_$archtype" $PREFIX/bin/debian
 
 echo "删除完成，按任意键卸载依赖 curl openssl-tool proot aria2"
 read 
