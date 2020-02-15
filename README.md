@@ -9,9 +9,9 @@
 
 #### 安装教程
 
-1.  # This script should be run via curl:
+1.  #### This script should be run via curl:
 #   sh -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
-# or wget:
+#### or wget:
 #   sh -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 #
 2.  xxxx
