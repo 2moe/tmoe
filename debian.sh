@@ -1320,9 +1320,8 @@ echo "             iBBBP                      "
 echo "                 r7:..                  "
 
 echo "Automatically configure zsh after 3 seconds,you can press Ctrl + C to cancel."
-echo "2s后将自动开始配置zsh"
-echo "建议在克隆完.oh-my-zsh后输y"
-sleep 2
+echo "3s后将自动开始配置zsh"
+sleep 3
 bash zsh.sh 
 mv -f .bashrc.bak .bashrc
 EDIT-BASHRC
