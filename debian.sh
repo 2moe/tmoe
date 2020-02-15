@@ -9,6 +9,8 @@ arm64)
 	archtype="arm64" ;;			
 arm)
 	archtype="armhf" ;;
+armhf)
+	archtype="armhf" ;;
 armel)
 	archtype="armel" ;;				
 amd64)
