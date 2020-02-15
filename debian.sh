@@ -65,7 +65,7 @@ echo "       :7j1.                 :  :       "
 echo "Detected that your current architecture is ${archtype}"
 echo "检测到您当前的架构为${archtype} ，debian系统将安装至~/${DebianFolder}"
 
-
+cd ~
 
 if [ -d "${DebianFolder}" ]; then
 	downloaded=1
@@ -75,7 +75,7 @@ fi
 
 
 
-cd ~
+
 DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
