@@ -180,7 +180,8 @@ EndOfFile
     
 echo "正在赋予proot启动脚本执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
-chmod +x /data/data/com.termux/files/usr/bin/debian
+cd /data/data/com.termux/files/usr/bin
+chmod +x debian startvnc stopvnc 
 ##echo "removing image for some space"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
 ls -lh ~/${DebianTarXz}
@@ -1028,9 +1029,8 @@ cd /usr/bin
 cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
-export USER=root
-export HOME=/root
-vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+export DISPLAY=127.0.0.1:2
+export PULSE_SERVER=tcp:127.0.0.1:4713
 EndOfFile
 
 cat >stopvnc<<-'EndOfFile'
@@ -1042,7 +1042,7 @@ rm -rf /tmp/.X1-lock
 rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
-chmod +x startvnc stopvnc
+chmod +x startvnc stopvnc startxsdl
 
 
 startvnc
@@ -1136,7 +1136,8 @@ chmod +x startvnc stopvnc
 startvnc
 
 Matryoshka
-chmod +x xfce.sh
+chmod +x mate.sh
+
 cat >lxqt.sh<<-'Matryoshka'
 #!/bin/bash
 apt-mark hold udisks2
@@ -1184,8 +1185,9 @@ cat >gnome.sh<<-'Matryoshka'
 #!/bin/bash
 apt-mark hold udisks2
 apt update
-apt install -y aptitude
-aptitude install -y task-gnome-desktop  tightvncserver
+echo "Gnome测试失败，请自行解决。"
+apt install -y aptitude tightvncserver
+aptitude install -y task-gnome-desktop 
 apt clean
 
 mkdir -p ~/.vnc
@@ -1234,8 +1236,8 @@ cat >kde.sh<<-'Matryoshka'
 #!/bin/bash
 apt-mark hold udisks2
 apt update
-apt install -y aptitude
-aptitude install -y  task-kde-desktop tightvncserver
+apt install -y aptitude tightvncserver
+aptitude install -y  task-kde-desktop 
 
 apt clean
 
