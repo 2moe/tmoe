@@ -1270,8 +1270,10 @@ chmod +x kde.sh
 cat > chromium.sh <<-'EOF'
 #!/bin/bash
 apt install -y chromium chromium-l10n
-string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"' 
-sed -i 's:${string}:${string} --user-data-dir --no-sandbox:' `which chromium`
+#string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"' 
+#sed -i 's:${string}:${string} --user-data-dir --no-sandbox:' /bin/bash/chromium
+sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' /usr/share/applications/chromium-browser.desktop
+grep 'chromium-browser' /etc/profile || echo 'alias chromium="chromium-browser --no-sandbox" >> /etc/profile'
 EOF
 chmod +x chromium.sh
 
