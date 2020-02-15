@@ -199,10 +199,75 @@ cd ~
 chmod 777 -R debian_$archtype
 rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
 
-echo "删除完成，如需卸载aria2,请手动输apt remove aria2"
+echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
+echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
+echo ''
 
 EOF
 chmod +x remove-debian.sh
+
+
+cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EOF
+#!/data/data/com.termux/files/usr/bin/bash
+function install()
+{
+	requirements=""
+
+	if [ ! -e $PREFIX/bin/wget ]; then
+		requirements="${requirements} wget"
+	fi
+	if [ ! -z "$requirements" ]; then
+		tips "[ 正在安装依赖项 ]"
+		pkg install ${requirements} 
+	fi
+bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
+
+}
+
+function remove()
+{
+cd ~
+chmod 777 -R debian_$archtype
+rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+
+echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
+echo '如需删除镜像文件，请输debian.sh del'
+echo ''
+}
+
+function clean()
+{
+cd ~
+rm -f ~/debian-sid-rootfs.tar.xz
+echo "Debian container image has been removed."
+echo "已为您删除debian容器镜像"
+}
+
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+			    delete|del|clean|cl|d)
+                         clean
+                        ;;			
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+
+EOF
+chmod +x /data/data/com.termux/files/usr/bin/debian.sh
+
+
 
 
 
@@ -906,6 +971,7 @@ grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 	rm -f /root/.vnc/startvnc
 fi
 EndOfFile
@@ -917,6 +983,7 @@ grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 	rm -f /root/.vnc/startvnc
 fi 
 EndOfFile
@@ -1003,9 +1070,10 @@ apt clean
 
 #kali源
 
-
 cat >kali.sh<<-'EndOfFile'
 #!/bin/bash
+function install()
+{
 apt install gpg -y
 #添加公钥
 apt-key adv --keyserver keyserver.ubuntu.com --recv ED444FF07D8D0BF6
@@ -1013,17 +1081,45 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv ED444FF07D8D0BF6
 cd /etc/apt/
 cp -f sources.list sources.list.bak
 
-sed  's/^/#&/g' /etc/apt/sources.list
+#sed  's/^/#&/g' /etc/apt/sources.list
 
-echo -e "\ndeb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib" >> /etc/apt/sources.list
+echo 'deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib' > /etc/apt/sources.list
 apt update
 apt list --upgradable
 apt dist-upgrade -y
 echo 'You have successfully replaced your debian source with a kali source.'
-echo '您已更换为kali源，如需换回debian源，请手动执行mv -f sources.list.bak sources.list'
+echo '您已更换为kali源，如需换回debian源，请手动执行bash ~/kali.sh rm'
 apt install -y neofetch 
 apt clean
 neofetch
+}
+function remove()
+{
+echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free' > /etc/apt/sources.list
+apt update 
+apt list --upgradable
+echo '您已换回debian源'
+apt dist-upgrade -y
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+
+
 EndOfFile
 chmod +x kali.sh
 
@@ -1031,6 +1127,8 @@ chmod +x kali.sh
 #桌面环境安装脚本
 cat >xfce.sh<<-'Matryoshka'
 #!/bin/bash
+function install()
+{
 apt-mark hold udisks2
 apt update
 apt install -y xfce4 xfce4-terminal tightvncserver
@@ -1053,6 +1151,8 @@ stopvnc >/dev/null 2>&1
 export USER=root
 export HOME=/root
 vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
 cd /usr/bin
@@ -1073,9 +1173,42 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc startxsdl
-
-
 startvnc
+}
+function remove()
+{
+apt purge -y xfce4 xfce4-terminal tightvncserver
+apt autopurgre
+} 
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                    help|man)
+                        man xfce4 2>&1 >/dev/nul 
+						xfce4 --help
+                        ;;
+
+                  "")
+               
+                    echo "[输./xfce.sh i安装，输./xfce.sh rm卸载 ]"
+                    ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+
+
+
+
 
 Matryoshka
 chmod +x xfce.sh
@@ -1083,6 +1216,8 @@ chmod +x xfce.sh
 
 cat >lxde.sh<<-'Matryoshka'
 #!/bin/bash
+function install()
+{
 apt-mark hold udisks2
 apt update
 apt install -y lxde-core lxterminal tightvncserver
@@ -1105,6 +1240,8 @@ stopvnc >/dev/null 2>&1
 export USER=root
 export HOME=/root
 vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
 cat >stopvnc<<-'EndOfFile'
@@ -1120,12 +1257,51 @@ chmod +x startvnc stopvnc
 
 startvnc
 
+}
+
+function remove()
+{
+   apt purge -y lxde-core lxterminal tightvncserver
+   apt autopurge  
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                    help|man)
+                        man lxde 2>&1 >/dev/nul 
+						lxde-core --help
+                        ;;
+
+                  "")
+               
+                    echo "[输./lxde.sh i安装，输./lxde.sh rm卸载 ]"
+                    ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+
+
+
+
 Matryoshka
 chmod +x lxde.sh
 
 
 cat >mate.sh<<-'Matryoshka'
 #!/bin/bash
+function install()
+{
 apt-mark hold udisks2
 apt update
 apt install -y mate-desktop-environment-core mate-terminal tightvncserver
@@ -1148,6 +1324,8 @@ stopvnc >/dev/null 2>&1
 export USER=root
 export HOME=/root
 vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 chmod +x mate.sh
 
@@ -1164,12 +1342,49 @@ chmod +x startvnc stopvnc
 
 
 startvnc
+}
+
+
+function remove()
+{
+  apt purge -y mate-desktop-environment-core mate-terminal tightvncserver
+  apt autopurge
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                    help|man)
+                        man mate 2>&1 >/dev/nul 
+						mate --help
+                        ;;
+
+                  "")
+               
+                    echo "[输./mate.sh i安装，输./mate.sh rm卸载 ]"
+                    ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+
 
 Matryoshka
 chmod +x mate.sh
 
 cat >lxqt.sh<<-'Matryoshka'
 #!/bin/bash
+function install()
+{
 apt-mark hold udisks2
 apt update
 apt install -y lxqt-core lxqt-config qterminal tightvncserver
@@ -1192,6 +1407,8 @@ stopvnc >/dev/null 2>&1
 export USER=root
 export HOME=/root
 vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
 cat >stopvnc<<-'EndOfFile'
@@ -1207,12 +1424,35 @@ chmod +x startvnc stopvnc
 
 
 startvnc
+}
 
+function remove()
+{
+apt install -y lxqt-core lxqt-config qterminal tightvncserver
+}
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
 Matryoshka
 chmod +x lxqt.sh
 
 cat >gnome.sh<<-'Matryoshka'
 #!/bin/bash
+function install()
+{
 apt-mark hold udisks2
 apt update
 echo "Gnome测试失败，请自行解决。"
@@ -1243,6 +1483,8 @@ stopvnc >/dev/null 2>&1
 export USER=root
 export HOME=/root
 vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
 cat >stopvnc<<-'EndOfFile'
@@ -1258,12 +1500,39 @@ chmod +x startvnc stopvnc
 
 
 startvnc
+}
+function remove()
+{
+apt purge -y aptitude tightvncserver
+apt autopurge
+aptitude purge -y task-gnome-desktop 
+apt autopurge
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
 
 Matryoshka
 chmod +x gnome.sh
 
 cat >kde.sh<<-'Matryoshka'
 #!/bin/bash
+function install()
+{
 apt-mark hold udisks2
 apt update
 apt install -y aptitude tightvncserver
@@ -1297,6 +1566,8 @@ stopvnc >/dev/null 2>&1
 export USER=root
 export HOME=/root
 vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
 cat >stopvnc<<-'EndOfFile'
@@ -1312,24 +1583,103 @@ chmod +x startvnc stopvnc
 
 
 startvnc
+}
+function remove()
+{
+apt purge -y aptitude tightvncserver kde-plasma-desktop
+aptitude purge -y  task-kde-desktop 
+apt autopurge
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
 
 Matryoshka
 chmod +x kde.sh
 
 cat > chromium.sh <<-'EOF'
 #!/bin/bash
+function install()
+{
 apt install -y chromium chromium-l10n
 #string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"' 
 #sed -i 's:${string}:${string} --user-data-dir --no-sandbox:' /bin/bash/chromium
 sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
 grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox" >> /etc/profile'
+}
+function remove()
+{
+apt purge -y chromium chromium-l10n
+apt autopurge
+}
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
 EOF
 chmod +x chromium.sh
 
 
 cat > firefox.sh <<-'EOF'
 #!/bin/bash
-apt install -y firefox-esr firefox-esr-l10n-zh-cn 
+function install()
+{
+    echo "即将安装firefox浏览器长期支持版"
+    apt install -y firefox-esr firefox-esr-l10n-zh-cn 
+}
+
+function remove()
+{
+        echo "即将卸载firefox浏览器长期支持版"
+        apt purge -y firefox-esr firefox-esr-l10n-zh-cn
+        apt autopurge
+
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+
+
 EOF
 chmod +x firefox.sh
 
@@ -1378,3 +1728,6 @@ mv -f .bashrc.bak .bashrc
 EDIT-BASHRC
 
 /data/data/com.termux/files/usr/bin/debian
+
+
+
