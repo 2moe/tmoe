@@ -26,7 +26,7 @@ esac
 
 #安装必要依赖
 apt update
-apt install -y curl wget openssl-tool proot aria2
+apt install -y curl wget openssl-tool proot aria2 procps
 
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
@@ -170,6 +170,12 @@ touch ~/${DebianFolder}/root/.vnc/startvnc
 EndOfFile
 
 
+cat > /data/data/com.termux/files/usr/bin/stopvnc <<- 'EndOfFile'
+#!/data/data/com.termux/files/usr/bin/bash
+pkill -u $(whoami)
+EndOfFile
+
+
 
     
 echo "正在赋予proot启动脚本执行权限"
@@ -190,9 +196,7 @@ cd ~
 chmod 777 -R debian_$archtype
 rm -rf "debian_$archtype" $PREFIX/bin/debian
 
-echo "删除完成，按任意键卸载依赖 curl openssl-tool proot aria2"
-read 
-apt remove curl openssl-tool proot aria2
+echo "删除完成，如需卸载aria2,请手动输apt remove aria2"
 
 EOF
 chmod +x remove-debian.sh
@@ -1013,6 +1017,15 @@ chmod +x ./xstartup
 
 cd /usr/bin
 cat >startvnc<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export USER=root
+export HOME=/root
+vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+EndOfFile
+
+cd /usr/bin
+cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export USER=root
