@@ -25,8 +25,7 @@ esac
 
 
 #安装必要依赖
-#待会儿取消注释
-#apt update
+apt update
 apt install -y curl wget openssl-tool proot aria2
 
 #创建必要文件夹，防止挂载失败
@@ -864,18 +863,18 @@ themeEOF
 cd ~
 sed -i '1 r vnc-autostartup-zsh' ~/.zshrc 
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
-
 apt install fonts-powerline -y
 rm -f vnc-autostartup-zsh
 
 
 
 echo "正在安装zsh-syntax-highlighting语法高亮插件"
-
+rm -rf ~/.zsh-syntax-highlighting 
 git clone git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
 echo "source /root/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
 
 echo "正在安装zsh-autosuggestions语法历史记录插件"
+rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 mkdir -p /root/.oh-my-zsh/custom
 git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 echo 'source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /root/.zshrc
