@@ -197,7 +197,7 @@ cat > remove-debian.sh <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" $PREFIX/bin/debian
+rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
 
 echo "删除完成，如需卸载aria2,请手动输apt remove aria2"
 
@@ -901,6 +901,7 @@ chmod +x zsh.sh
 #vnc自动启动
 cat >vnc-autostartup<<-'EndOfFile'
 cat /etc/issue
+ps -e
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -911,6 +912,7 @@ EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
+ps -e
 grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -998,6 +1000,32 @@ apt dist-upgrade -y
 apt install -y procps fonts-wqy-zenhei grep manpages manpages-zh 
 apt clean
 
+
+#kali源
+
+
+cat >kali.sh<<-'EndOfFile'
+#!/bin/bash
+apt install gpg -y
+#添加公钥
+apt-key adv --keyserver keyserver.ubuntu.com --recv ED444FF07D8D0BF6
+
+cd /etc/apt/
+cp -f sources.list sources.list.bak
+
+sed  's/^/#&/g' /etc/apt/sources.list
+
+echo -e "\ndeb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib" >> /etc/apt/sources.list
+apt update
+apt list --upgradable
+apt dist-upgrade -y
+echo 'You have successfully replaced your debian source with a kali source.'
+echo '您已更换为kali源，如需换回debian源，请手动执行mv -f sources.list.bak sources.list'
+apt install -y neofetch 
+apt clean
+neofetch
+EndOfFile
+chmod +x kali.sh
 
 
 #桌面环境安装脚本
