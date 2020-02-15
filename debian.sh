@@ -173,7 +173,7 @@ EndOfFile
 
     
 echo "正在赋予proot启动脚本执行权限"
-termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
+#termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 chmod +x /data/data/com.termux/files/usr/bin/debian
 ##echo "removing image for some space"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
