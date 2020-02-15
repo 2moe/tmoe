@@ -75,7 +75,7 @@ fi
 
 
 
-
+cd ~
 DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
@@ -182,8 +182,9 @@ EndOfFile
 
 
 
-cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EOF
+cat >/data/data/com.termux/files/usr/bin/debian.bash <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash
+rm -f /data/data/com.termux/files/usr/bin/debian.sh
 function install()
 {
 	requirements=""
@@ -247,7 +248,7 @@ echo "正在赋予proot启动脚本执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
-chmod +x debian startvnc stopvnc debian.sh
+chmod +x debian startvnc stopvnc debian.bash
 ##echo "removing image for some space"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
 ls -lh ~/${DebianTarXz}
