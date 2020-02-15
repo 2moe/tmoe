@@ -13,11 +13,9 @@
 
 1.  ##### This script should be run via curl:
 ##   apt install wget ; bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
-##### or wget:
+2. ##### or wget:
 ##   apt install curl ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 #
-2.  xxxx
-3.  xxxx
 
 #### 使用说明
 
@@ -42,11 +40,12 @@ pkg i -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/m
 （同时支持）
 
 ===========================================
-完整版说明（Full description)
-##
+
+##完整版说明（Full description)
+
 
 #Step1.
-1-1 You can use the following command to install debian.
+1-1. You can use the following command to install debian.
 安装debian系统的命令是 
 
 apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
@@ -59,7 +58,7 @@ apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian
 输./kali.sh更换为kali源，输./kali.sh rm 移除kali源。
  
  
- 1-2安装后的步骤。
+ 1-2.安装后的步骤。
  
 #If you want to start debian next time, you can just type "debian".
 #下次启动debian的命令是
@@ -74,7 +73,7 @@ debian
 
 
 Step2.安装图形化桌面环境。
-2-1安装前（关于桌面环境的安装与卸载）
+2-1.安装前（关于桌面环境的安装与卸载）
 进入debian系统后，请从xfce、lxde、mate和lxqt中选择一种。
 
 xfce的安装方法：
@@ -105,13 +104,13 @@ xfce的卸载方法：
 gnome和kde是用来卖萌用的，不要安装。如需安装，请自行解决依赖关系和其它问题。
 四选一！千万不要一下子装两个桌面！
 
-2-2安装中
+2-2.安装中
 安装过程会提示选择键盘布局，请直接按回车。
 初次启动vnc服务，会提示输6至8位（不可见）的密码，输两遍。
 当提示Would you like to enter a view-only password ？时
 输n
 
-2-3安装后
+2-3.安装后
 输startvnc启动vnc服务，
 输stopvnc停止vnc服务。
 完成后，打开vnc viewer客户端，输localhost:5901
@@ -163,4 +162,5 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 		 ⑨支持一键更换为kali源。
 		 
 		 
-
+		 
+		 
