@@ -219,13 +219,13 @@ function main()
                 case "$1" in
                 install|in|i)
                         install
-                     ;;
+                            ;;
                 remove|rm|uninstall|un|purge)
                          remove
-                     ;;
-			    delete|del|clean|cl|d)
-                         clean
-                     ;;				
+                        ;;
+				delete|del|d)
+                        clean
+                        ;;						
                    *)
 			        install
 			         ;;
