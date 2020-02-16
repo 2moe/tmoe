@@ -185,7 +185,7 @@ EndOfFile
 cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 function install()
-
+{
 if [ ! -f $PREFIX/bin/wget ]; then
 		apt update && apt install -y wget
 	fi
