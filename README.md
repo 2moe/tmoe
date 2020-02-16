@@ -2,11 +2,18 @@
 
 #### 介绍
 在termux上一键安装debian proot容器，并自动配置中文环境。 
+![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
+
+支持一键安装图形界面。
 
 #### 软件架构
 软件架构说明
 
 ##### 支持arm64(aarch64)、armhf、armel、amd64(x86_64) 和 i386(x86)。
+
+
+
+![截图_2020-02-01_08-53-21.jpg](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/yMgxSkGh0Tx4IJz0.jpg)
 
 
 #### 安装教程
@@ -252,6 +259,6 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 ​		12.修复启动vnc后，debian无法正常关闭的bug  ,(请在termux原系统内输stopvnc)
 
 ​		13.简化启动流程，你可以在termux原系统里输startvnc来启动debian+vnc客户端
-           
+​           
 ​		14.vnc支持自动获取本机局域网ip，地址格式类似于192.168.123.3:5901
-		 
+​		 
