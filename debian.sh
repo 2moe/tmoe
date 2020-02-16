@@ -185,8 +185,8 @@ if [ ! -f profile ]; then
 		fi
 cp -pf profile profile.bak
 
-grep 'alias debian=' profile >/dev/null 2>&1 || sed -i  '$a\alias debian="tsudo debian"' profile
-grep 'alias debian-rm=' profile >/dev/null 2>&1 ||sed -i '$a\alias debian-rm="tsudo debian-rm"' profile
+grep 'alias debian=' profile >/dev/null 2>&1 || sed -i  '$ a\alias debian="tsudo debian"' profile
+grep 'alias debian-rm=' profile >/dev/null 2>&1 || sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
 source profile > /dev/null 2>&1
 echo -e "You have modified debian to run with root privileges, this action will destabilize debian.\n If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
