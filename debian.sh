@@ -160,6 +160,35 @@ fi
 EndOfFile
 
 
+cat > /data/data/com.termux/files/usr/bin/debian-root <<- EndOfFile
+
+if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
+        apt update
+		apt install -y tsu
+		fi
+		
+cd ~/storage || mkdir -p ~/storage && cd ~/storage
+
+rm -rf tfs
+
+tsu -c 'ls /mnt/media_rw/*' 2>/dev/null || mkdir tfs
+
+TFcardFolder=$(tsu -c 'ls /mnt/media_rw/| head -n 1')
+
+tsudo ln -s /mnt/media_rw/${TFcardFolder}  ./tfs
+
+sed -i 's:/storage/external-1:/storage/tfs:g' /data/data/com.termux/files/usr/bin/debian
+
+cd $PREFIX/etc/
+cp -pf profile profile.bak
+
+grep 'alias debian=' profile >/dev/null 2>&1 || echo -e '\nalias debian="tsudo debian"' >> profile
+source profile
+echo -e "You have modified debian to run with root privileges, this action will destabilize debian.\n If you want to restore, please reinstall debian."
+echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
+rm -f /data/data/com.termux/files/usr/bin/debian-root
+tsudo debian
+EndOfFile
 
 
 
@@ -187,7 +216,8 @@ cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 	if [ ! -e $PREFIX/bin/wget ]; then
 		apt update ; apt install wget 
 	fi
-     bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
+    sed -i '/alias debian=/d' $PREFIX/etc/profile
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
 
 EndOfFile
 
@@ -195,9 +225,11 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
     chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root
     YELLOW=\$(printf '\033[33m')
 	RESET=\$(printf '\033[m')
+    sed -i '/alias debian=/d' $PREFIX/etc/profile
+	
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
     echo 'debian系统已经移除，是否需要删除镜像文件？'
 		printf "\${YELLOW}Do you want to delete the debian-sid-rootfs.tar.xz? [Y/n]\${RESET} "
@@ -214,7 +246,7 @@ echo "正在赋予proot启动脚本执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
-chmod +x debian startvnc stopvnc debian-rm debian-i
+chmod +x debian startvnc stopvnc debian-rm debian-i debian-root 
 ##echo "removing image for some space"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
 ls -lh ~/${DebianTarXz}
@@ -229,7 +261,7 @@ cat > remove-debian.sh <<- EOF
 cd ~
 chmod 777 -R debian_$archtype
 rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
-
+    sed -i '/alias debian=/d' $PREFIX/etc/profile
 echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
 echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
 echo ''
