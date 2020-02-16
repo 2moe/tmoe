@@ -186,17 +186,8 @@ cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 rm -f /data/data/com.termux/files/usr/bin/debian.sh
 function install()
-{
-	requirements=""
-
-	if [ ! -e $PREFIX/bin/wget ]; then
-		requirements="${requirements} wget"
-	fi
-	if [ ! -z "$requirements" ]; then
-		tips "[ 正在安装依赖项 ]"
-		pkg install ${requirements} 
-	fi
-bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
+wget --help >/dev/null 2>&1 || apt update && apt install -y wget
+bash -c "\$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
 
 }
 
@@ -231,7 +222,10 @@ function main()
                         ;;
 			    delete|del|clean|cl|d)
                          clean
-                        ;;			
+                        ;;
+                "")
+                echo "[输debian.sh i安装debian,输debian.sh rm卸载，输debian.sh del删除镜像，]"	
+                      ;;				
                    *)
 			        install
 			         ;;
@@ -1195,14 +1189,10 @@ function main()
                          remove
                         ;;
                     help|man)
-                        man xfce4 2>&1 >/dev/nul 
+                        man xfce4 2>&1 >/dev/null
 						xfce4 --help
                         ;;
 
-                  "")
-               
-                    echo "[输./xfce.sh i安装，输./xfce.sh rm卸载 ]"
-                    ;;
                    *)
 			        install
 			         ;;
@@ -1277,14 +1267,10 @@ function main()
                          remove
                         ;;
                     help|man)
-                        man lxde 2>&1 >/dev/nul 
+                        man lxde 2>&1 >/dev/null
 						lxde-core --help
                         ;;
 
-                  "")
-               
-                    echo "[输./lxde.sh i安装，输./lxde.sh rm卸载 ]"
-                    ;;
                    *)
 			        install
 			         ;;
@@ -1363,14 +1349,10 @@ function main()
                          remove
                         ;;
                     help|man)
-                        man mate 2>&1 >/dev/nul 
+                        man mate 2>&1 >/dev/null
 						mate --help
                         ;;
 
-                  "")
-               
-                    echo "[输./mate.sh i安装，输./mate.sh rm卸载 ]"
-                    ;;
                    *)
 			        install
 			         ;;
