@@ -186,7 +186,7 @@ cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 function install()
 
-if [ ! -e $PREFIX/bin/wget ]; then
+if [ ! -f $PREFIX/bin/wget ]; then
 		apt update && apt install -y wget
 	fi
 
@@ -219,16 +219,16 @@ function main()
                 case "$1" in
                 install|in|i)
                         install
-                            ;;
+                     ;;
                 remove|rm|uninstall|un|purge)
                          remove
-                        ;;
+                     ;;
 			    delete|del|clean|cl|d)
                          clean
-                        ;;
-                "")
-                echo "[输debian.sh i安装debian,输debian.sh rm卸载，输debian.sh del删除镜像，]"	
-                      ;;				
+                     ;;
+                        "")
+                echo "[输debian.sh i安装debian,输debian.sh rm卸载，输debian.sh del删除镜像]"	
+                     ;;				
                    *)
 			        install
 			         ;;
