@@ -186,31 +186,28 @@ cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 function install()
 {
-if [ ! -f $PREFIX/bin/wget ]; then
-		apt update && apt install -y wget
-	fi
 
-bash -c "\$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
+     bash -c "\$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
 
 }
 
 function remove()
 {
-cd ~
-chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+    cd ~
+    chmod 777 -R debian_$archtype
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
 
-echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
-echo '如需删除镜像文件，请输debian.sh del'
-echo ''
+    echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
+    echo '如需删除镜像文件，请输debian.sh del'
+
 }
 
 function clean()
 {
-cd ~
-rm -f ~/debian-sid-rootfs.tar.xz
-echo "Debian container image has been removed."
-echo "已为您删除debian容器镜像"
+    cd ~
+    rm -f ~/debian-sid-rootfs.tar.xz
+    echo "Debian container image has been removed."
+    echo "已为您删除debian容器镜像"
 }
 
 
