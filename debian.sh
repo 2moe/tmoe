@@ -180,12 +180,18 @@ tsudo ln -s /mnt/media_rw/${TFcardFolder}  ./tfs
 sed -i 's:/storage/external-1:/storage/tfs:g' /data/data/com.termux/files/usr/bin/debian
 
 cd $PREFIX/etc/
+if [ ! -f profile ]; then
+        touch profile
+		fi
 cp -pf profile profile.bak
 
 grep 'alias debian=' profile >/dev/null 2>&1 || echo -e '\nalias debian="tsudo debian"' >> profile
 grep 'alias debian-rm=' profile >/dev/null 2>&1 || echo -e '\nalias debian-rm="tsudo debian-rm"' >> profile
+source profile
 echo -e "You have modified debian to run with root privileges, this action will destabilize debian.\n If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
+echo "The next time you start debian, it will automatically run as root."
+echo "下次启动debian，将自动以root权限运行。"
 rm -f /data/data/com.termux/files/usr/bin/debian-root
 tsudo debian
 EndOfFile
