@@ -165,7 +165,6 @@ command="proot"
 command+=" --link2symlink"
 command+=" -0"
 command+=" -r ${DebianFolder}"
-
 command+=" -b /dev"
 command+=" -b /proc"
 command+=" -b ${DebianFolder}/root:/dev/shm"
@@ -182,9 +181,9 @@ command+=" LANG=zh_CN.UTF-8"
 command+=" /bin/bash --login"
 com="\$@"
 if [ -f ~/debian_${archtype}/bin/zsh ];then 
-   sed -i '/--login/c command+=" /bin/zsh --login"' $PREFIX/bin/debian
+   sed -i '21 c command+=" /bin/zsh --login"' $PREFIX/bin/debian
    else 
-  sed -i '/--login/c command+=" /bin/bash --login"' $PREFIX/bin/debian
+  sed -i '21 c command+=" /bin/bash --login"' $PREFIX/bin/debian
 fi
 if [ -z "\$1" ];then
     exec \$command
@@ -223,7 +222,7 @@ cp -pf profile profile.bak
 grep 'alias debian=' profile >/dev/null 2>&1 || sed -i  '$ a\alias debian="tsudo debian"' profile
 grep 'alias debian-rm=' profile >/dev/null 2>&1 || sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
 source profile >/dev/null 2>&1
-echo "You have modified debian to run with root privileges, this action will destabilize debian.
+echo "You have modified debian to run with root privileges, this action will destabilize debian."
 echo "If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
 echo "The next time you start debian, it will automatically run as root."
@@ -316,16 +315,17 @@ EndOfFile
  
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
-    sed -i '/external-1/d' /data/data/com.termux/files/usr/bin/debian
+    sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian
 
 fi
- 
-echo "正在赋予proot启动脚本执行权限"
+echo 'Giving proot startup script execution permission' 
+echo "正在赋予proot启动脚本($PREFIX/bin/debian)执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
 chmod +x debian startvnc stopvnc debian-rm debian-i debian-root 
 ##echo "removing image for some space"
+echo "You can type rm ~/${DebianTarXz} to delete the cache file"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
 ls -lh ~/${DebianTarXz}
 ##rm $DebianTarXz
@@ -636,7 +636,31 @@ main() {
 		echo "${YELLOW}Run zsh to try it out.${RESET}"
 		exit
 	fi
-    echo "正在配置zsh主题(agnosterzak)"
+echo "                                        "
+echo "                 .::::..                "
+echo "      ::::rrr7QQJi::i:iirijQBBBQB.      "
+echo "      BBQBBBQBP. ......:::..1BBBB       "
+echo "      .BuPBBBX  .........r.  vBQL  :Y.  "
+echo "       rd:iQQ  ..........7L   MB    rr  "
+echo "        7biLX .::.:....:.:q.  ri    .   "
+echo "         JX1: .r:.r....i.r::...:.  gi5  "
+echo "         ..vr .7: 7:. :ii:  v.:iv :BQg  "
+echo "         : r:  7r:i7i::ri:DBr..2S       "
+echo "      i.:r:. .i:XBBK...  :BP ::jr   .7. "
+echo "      r  i....ir r7.         r.J:   u.  "
+echo "     :..X: .. .v:           .:.Ji       "
+echo "    i. ..i .. .u:.     .   77: si   1Q  "
+echo "   ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  "
+echo "  7  iK::r  . ii7r LJLrL1r7DPi iJ     r "
+echo "    .  ::.:   .  ri 5DZDBg7JR7.:r:   i. "
+echo "   .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  "
+echo "   QB rJ.:rvDE: .. ri uv . iir.7j r7.   "
+echo "  iBg ::.7251QZ. . :.      irr:Iu: r.   "
+echo "   QB  .:5.71Si..........  .sr7ivi:U    "
+echo "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
+echo "    jBBdD. :. ........:r... YB  Bi      "
+echo "       :7j1.                 :  :       "
+    echo "Configuring zsh theme 正在配置zsh主题(agnosterzak)"
 cd ~/.oh-my-zsh/themes || mkdir -p ~/.oh-my-zsh/themes && cd ~/.oh-my-zsh/themes 
 
 cat >agnosterzak.zsh-theme<<-'themeEOF'
@@ -1034,6 +1058,7 @@ git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom
 echo 'source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /root/.zshrc
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
+echo 'All optimization steps have been completed, enjoy it!'
 	exec zsh -l
 	source ~/.zshrc
 	zsh
