@@ -182,64 +182,39 @@ EndOfFile
 
 
 
-cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
+cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
-function install()
-{
+	if [ ! -e $PREFIX/bin/wget ]; then
+		apt update ; apt install wget 
+	fi
+     bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
 
-     bash -c "\$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
-
-}
-
-function remove()
-{
-    cd ~
-    chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
-
-    echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
-    echo '如需删除镜像文件，请输debian.sh del'
-
-}
-
-function clean()
-{
-    cd ~
-    rm -f ~/debian-sid-rootfs.tar.xz
-    echo "Debian container image has been removed."
-    echo "已为您删除debian容器镜像"
-}
-
-
-function main()
-{
-                case "$1" in
-                install|in|i)
-                        install
-                            ;;
-                remove|rm|uninstall|un|purge)
-                         remove
-                        ;;
-				delete|del|d)
-                        clean
-                        ;;						
-                   *)
-			        install
-			         ;;
-		
-
-        esac
-}
-main "\$@"
 EndOfFile
 
-
+cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
+    #!/data/data/com.termux/files/usr/bin/bash
+	cd ~
+    chmod 777 -R debian_$archtype
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+    YELLOW=\$(printf '\033[33m')
+	RESET=\$(printf '\033[m')
+    echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+    echo 'debian系统已经移除，是否需要删除镜像文件？'
+		printf "\${YELLOW}Do you want to delete the debian-sid-rootfs.tar.xz? [Y/n]\${RESET} "
+	read opt
+	case \$opt in
+		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
+		n*|N*) echo "skipped."; return ;;
+		*) echo "Invalid choice. skipped."; return ;;
+	esac
+	
+EndOfFile
     
 echo "正在赋予proot启动脚本执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
-chmod +x debian startvnc stopvnc debian.sh
+chmod +x debian startvnc stopvnc debian-rm debian-i
 ##echo "removing image for some space"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
 ls -lh ~/${DebianTarXz}
