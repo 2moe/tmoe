@@ -293,9 +293,10 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
 	RESET=\$(printf '\033[m')
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
+	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
-    echo 'debian系统已经移除，是否需要删除镜像文件？'
-		printf "\${YELLOW}Do you want to delete the debian-sid-rootfs.tar.xz? [Y/n]\${RESET} "
+	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
+	printf "\${YELLOW}'是否需要删除镜像文件？[Y/n]'\${RESET} "
 	read opt
 	case \$opt in
 		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
