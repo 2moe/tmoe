@@ -182,7 +182,7 @@ EndOfFile
 
 
 
-cat >/data/data/com.termux/files/usr/bin/debian.bash <<- EOF
+cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 rm -f /data/data/com.termux/files/usr/bin/debian.sh
 function install()
@@ -239,8 +239,8 @@ function main()
 
         esac
 }
-
-EOF
+main "\$@"
+EndOfFile
 
 
     
@@ -248,7 +248,7 @@ echo "正在赋予proot启动脚本执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
-chmod +x debian startvnc stopvnc debian.bash
+chmod +x debian startvnc stopvnc debian.sh
 ##echo "removing image for some space"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
 ls -lh ~/${DebianTarXz}
@@ -1123,7 +1123,7 @@ function main()
 
         esac
 }
-
+main "$@"
 
 EndOfFile
 chmod +x kali.sh
@@ -1211,10 +1211,7 @@ function main()
         esac
 }
 
-
-
-
-
+main "$@"
 Matryoshka
 chmod +x xfce.sh
 
@@ -1297,7 +1294,7 @@ function main()
 }
 
 
-
+main "$@"
 
 Matryoshka
 chmod +x lxde.sh
@@ -1382,7 +1379,7 @@ function main()
         esac
 }
 
-
+main "$@"
 Matryoshka
 chmod +x mate.sh
 
@@ -1451,6 +1448,7 @@ function main()
 
         esac
 }
+main "$@"
 Matryoshka
 chmod +x lxqt.sh
 
@@ -1530,7 +1528,7 @@ function main()
 
         esac
 }
-
+main "$@"
 Matryoshka
 chmod +x gnome.sh
 
@@ -1612,7 +1610,7 @@ function main()
 
         esac
 }
-
+main "$@"
 Matryoshka
 chmod +x kde.sh
 
@@ -1647,6 +1645,7 @@ function main()
 
         esac
 }
+main "$@"
 EOF
 chmod +x chromium.sh
 
@@ -1684,7 +1683,7 @@ function main()
         esac
 }
 
-
+main "$@"
 EOF
 chmod +x firefox.sh
 
