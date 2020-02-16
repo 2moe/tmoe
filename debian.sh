@@ -1,5 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 termux-setup-storage 
+
 #检测架构
 
 case `uname -m` in
@@ -22,13 +23,46 @@ i*86)
 x86)
 	archtype="i386" ;;
 *)
-	echo "未知的架构 ${uname -m} unknown architecture"; exit 1 ;;
+	echo "未知的架构 $(uname -m) unknown architecture"; exit 1 ;;
 esac
 
 
 #安装必要依赖
-apt update
-apt install -y curl wget openssl-tool proot aria2 procps
+#apt update
+#apt install -y curl openssl proot aria2 procps
+
+#requirements and dependencies.
+	
+	dependencies=""
+
+	if [ ! -e $PREFIX/bin/proot ]; then
+		dependencies="${dependencies} proot"
+	fi
+
+	if [ ! -e $PREFIX/bin/openssl ]; then
+		dependencies="${dependencies} openssl"
+	fi
+
+	if [ ! -e $PREFIX/bin/pkill ]; then
+		dependencies="${dependencies} procps"
+	fi
+
+	if [ ! -e $PREFIX/bin/curl ]; then
+		dependencies="${dependencies} curl"
+	fi
+
+	if [ ! -e $PREFIX/bin/aria2c ]; then
+		dependencies="${dependencies} aria2"
+	fi
+
+
+	if [ ! -z "$dependencies" ]; then
+	echo "正在安装相关依赖..."
+	apt update ; apt install ${dependencies} 
+	fi
+	
+
+
 
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
@@ -120,9 +154,9 @@ echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
 echo "         :   r. ..      .. .:i  ...     " 
 
 
-
+echo "Creating proot startup script"
 echo "正在创建proot启动脚本/data/data/com.termux/files/usr/bin/debian "
-#此处EndOfFile不能加单引号
+#此处EndOfFile不要加单引号
 cat > /data/data/com.termux/files/usr/bin/debian <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
@@ -148,9 +182,9 @@ command+=" LANG=zh_CN.UTF-8"
 command+=" /bin/bash --login"
 com="\$@"
 if [ -f ~/debian_${archtype}/bin/zsh ];then 
-    sed -i '22 c command+=" /bin/zsh --login"' $PREFIX/bin/debian
-  else 
- sed -i '22 c command+=" /bin/bash --login"' $PREFIX/bin/debian   
+   sed -i '/--login/c command+=" /bin/zsh --login"' $PREFIX/bin/debian
+   else 
+  sed -i '/--login/c command+=" /bin/bash --login"' $PREFIX/bin/debian
 fi
 if [ -z "\$1" ];then
     exec \$command
@@ -160,7 +194,7 @@ fi
 EndOfFile
 
 
-cat > /data/data/com.termux/files/usr/bin/debian-root <<- EndOfFile
+cat > /data/data/com.termux/files/usr/bin/debian-root <<-'EndOfFile'
 
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
@@ -179,6 +213,7 @@ tsudo ln -s /mnt/media_rw/${TFcardFolder}  ./tfs
 
 sed -i 's:/storage/external-1:/storage/tfs:g' /data/data/com.termux/files/usr/bin/debian
 
+
 cd $PREFIX/etc/
 if [ ! -f profile ]; then
         touch profile
@@ -187,11 +222,18 @@ cp -pf profile profile.bak
 
 grep 'alias debian=' profile >/dev/null 2>&1 || sed -i  '$ a\alias debian="tsudo debian"' profile
 grep 'alias debian-rm=' profile >/dev/null 2>&1 || sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
-source profile > /dev/null 2>&1
-echo -e "You have modified debian to run with root privileges, this action will destabilize debian.\n If you want to restore, please reinstall debian."
+source profile >/dev/null 2>&1
+echo "You have modified debian to run with root privileges, this action will destabilize debian.
+echo "If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
 echo "The next time you start debian, it will automatically run as root."
 echo "下次启动debian，将自动以root权限运行。"
+
+echo 'Debian will start automatically after 2 seconds.'
+echp '2s后将为您自动启动debian'
+echo 'If you do not need to display the task progress in the login interface, please manually add "#" (comment symbol) before the "ps -e" line in "~/.zshrc" or "~/.bashrc"'
+echo '如果您不需要在登录界面显示任务进程，请手动注释掉"~/.zshrc"里的"ps -e"'
+sleep 2
 rm -f /data/data/com.termux/files/usr/bin/debian-root
 tsudo debian
 EndOfFile
@@ -232,9 +274,9 @@ cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 	echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
 	read opt
 	case $opt in
-		y*|Y*|"") $PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	 ;;
+		y*|Y*|"") $PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile ; sed -i '/alias debian-rm=/d' $PREFIX/etc/profile ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	 ;;
 		n*|N*) echo "skipped." ;;
-		*) echo "Invalid choice. skipped."; return ;;
+		*) echo "Invalid choice. skipped." ;;
 	esac
 	
 	else
@@ -262,7 +304,21 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
 	esac
 	
 EndOfFile
-    
+
+#tfcard=$(ls -l /data/data/com.termux/files/home/storage/external-1 |cut -c 1)
+
+#if [ "$tfcard" == 'l' ]; then
+
+ #   sed -i '/external-1/d' /data/data/com.termux/files/usr/bin/debian
+
+#fi
+ 
+if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
+
+    sed -i '/external-1/d' /data/data/com.termux/files/usr/bin/debian
+
+fi
+ 
 echo "正在赋予proot启动脚本执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
