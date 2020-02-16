@@ -79,21 +79,36 @@ Step2.安装图形化桌面环境。
 xfce的安装方法：
 (至少有16种方法可以安装，下面列举8种)
                  ./xfce.sh
+				 
                  ./xfce.sh i
+				 
                  ./xfce.sh in
+				 
                  ./xfce.sh install
+				 
                  ~/xfce.sh				 
+				 
                  bash xfce.sh
+				 
                  bash xfce.sh i
+				 
 				 bash ~/xfce.sh
+				 
 xfce的卸载方法： 
                  ./xfce.sh rm
+				 
                  ./xfce.sh remove
+				 
                  ./xfce.sh un
+				 
                  ./xfce.sh uninstall
+				 
                  ./xfce.sh purge				 
+				 
                  bash xfce.sh rm 
+				 
 				 bash ~/xfce.sh rm               
+				 
 （下面相似，故省略）                 				
 								
 输./mate.sh或bash mate.sh安装mate; 输./mate.sh rm卸载
