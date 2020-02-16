@@ -1033,7 +1033,7 @@ sed -i 's/http/https/' /etc/apt/sources.list
 
 apt update 
 apt dist-upgrade -y
-apt install -y procps fonts-wqy-zenhei grep manpages manpages-zh 
+apt install -y procps fonts-wqy-zenhei grep manpages manpages-zh man-db aptitude
 apt clean
 
 
@@ -1262,7 +1262,7 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-apt install -y mate-desktop-environment-core mate-terminal tightvncserver
+aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 
 apt clean
 
 mkdir -p ~/.vnc
