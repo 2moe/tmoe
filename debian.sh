@@ -227,6 +227,8 @@ cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
+	#分行
+	echo ''
 	echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
 	read opt
 	case $opt in
