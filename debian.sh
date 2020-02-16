@@ -213,7 +213,7 @@ EndOfFile
 
 cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
-	if [ ! -e $PREFIX/bin/wget ]; then
+	if [ ! -f $PREFIX/bin/wget ]; then
 		apt update ; apt install wget 
 	fi
     sed -i '/alias debian=/d' $PREFIX/etc/profile
@@ -260,11 +260,11 @@ cat > remove-debian.sh <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
-    sed -i '/alias debian=/d' $PREFIX/etc/profile
-echo '删除完成，如需卸载aria2,请手动输apt remove aria2'
+rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root
+grep 'alias debian' $PREFIX/etc/profile && sed -i '/alias debian=/d' $PREFIX/etc/profile
+echo '删除完成，如需卸载aria2,请输apt remove aria2'
 echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
-echo ''
+
 
 EOF
 chmod +x remove-debian.sh
