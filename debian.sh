@@ -340,12 +340,9 @@ chmod +x debian startvnc stopvnc debian-rm debian-i debian-root
 alias debian="/data/data/com.termux/files/usr/bin/debian"
 alias debian-rm="/data/data/com.termux/files/usr/bin/debian-rm"
 
-##echo "removing image for some space"
-echo "You can type rm ~/${DebianTarXz} to delete the cache file"
-echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
+echo "You can type rm ~/${DebianTarXz} to delete the image file"
+echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
-##rm $DebianTarXz
-##echo "You can now launch Debian with the ./${bin} script"
 
 
  cd ~/${DebianFolder}
