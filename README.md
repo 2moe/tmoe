@@ -259,6 +259,7 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 ​		12.修复启动vnc后，debian无法正常关闭的bug  ,(请在termux原系统内输stopvnc)
 
 ​		13.简化启动流程，你可以在termux原系统里输startvnc来启动debian+vnc客户端
-​           
-​		14.vnc支持自动获取本机局域网ip，地址格式类似于192.168.123.3:5901
+​         
+
+​        14.vnc支持自动获取本机局域网ip，地址格式类似于192.168.123.3:5901
 ​		 
