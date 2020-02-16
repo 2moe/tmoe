@@ -222,7 +222,11 @@ cp -pf profile profile.bak
 
 grep 'alias debian=' profile >/dev/null 2>&1 || sed -i  '$ a\alias debian="tsudo debian"' profile
 grep 'alias debian-rm=' profile >/dev/null 2>&1 || sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
+
 source profile >/dev/null 2>&1
+alias debian="tsudo debian"
+alias debian-rm="tsudo debian-rm"
+
 echo "You have modified debian to run with root privileges, this action will destabilize debian."
 echo "If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
@@ -331,6 +335,11 @@ echo "正在赋予proot启动脚本($PREFIX/bin/debian)执行权限"
 cd /data/data/com.termux/files/usr/bin
 
 chmod +x debian startvnc stopvnc debian-rm debian-i debian-root 
+
+#设定alias,防止debian-root的alias依旧在生效。
+alias debian="/data/data/com.termux/files/usr/bin/debian"
+alias debian-rm="/data/data/com.termux/files/usr/bin/debian-rm"
+
 ##echo "removing image for some space"
 echo "You can type rm ~/${DebianTarXz} to delete the cache file"
 echo "您可以输rm ~/${DebianTarXz}来删除缓存文件"
@@ -1081,7 +1090,7 @@ chmod +x zsh.sh
 #vnc自动启动
 cat >vnc-autostartup<<-'EndOfFile'
 cat /etc/issue
-ps -e | head -n 30
+ps -e | tail -n 30
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -1092,7 +1101,7 @@ EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
-ps -e | head -n 30
+ps -e | tail -n 30
 grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
