@@ -33,36 +33,67 @@ apt install curl ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw
 pkg i -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
 
-2.启动命令==debian==
+2.启动命令
 
-3.卸载命令 debian.sh rm
+```shell
+debian
+```
+
+3.卸载命令 
+
+```shell
+debian.sh rm
+```
+
 (仅支持在termux原系统内输)
 
-4.安装xfce桌面的命令 ./xfce.sh
+4.安装xfce桌面的命令 
+
+```shell
+./xfce.sh
+```
+
 （仅支持在debian系统内输）
 
-5.启动vnc命令 startvnc
+5.启动vnc命令 
+
+```shell
+startvnc
+```
+
 （同时支持）
 
-6.停止vnc命令 stopvnc
+6.停止vnc命令
+
+```shell
+ stopvnc
+```
+
 （同时支持）
 
 -------------------------------------------------
 
 ##### ##完整版说明（Full description)
 
-#Step1.
-1-1. You can use the following command to install debian.
+#### Step1.
+
+##### 1-1. You can use the following command to install debian.
+
 安装debian系统的命令是 
 
+```shell
 apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
 
+#(旧版)视频教程
 
-#(旧版)视频教程链接: https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA 提取码: debb
+[链接]: https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA	"百度网盘"
+
+: 提取码: debb
 
 ###### #可选步骤（Optional step）：
 
-输./kali.sh更换为kali源，输./kali.sh rm 移除kali源。
+输`./kali.sh`更换为kali源，输./kali.sh rm 移除kali源。
 
 #####  1-2.安装后的步骤。
 
@@ -78,9 +109,10 @@ debian
 
 
 
-##### Step2.安装图形化桌面环境。
+#### Step2.安装图形化桌面环境。
 
-2-1.安装前（关于桌面环境的安装与卸载）
+##### 2-1.安装前（关于桌面环境的安装与卸载）
+
 进入debian系统后，请从xfce、lxde、mate和lxqt中选择一种。
 
 xfce的安装方法：
@@ -161,18 +193,31 @@ gnome和kde是用来卖萌用的，不要安装。如需安装，请自行解决
 #### #可选步骤
 
 #修改分辨率的方法
+
+```shell
 apt install -y nano && nano /usr/bin/startvnc
+```
+
+#将1440x720（竖屏）改成你需要的分辨率，例如1920x10780（横屏）
+修改完成后，按Ctrl+O保存，Ctrl+X退出。
+
 #将1440x720（竖屏）改成你需要的分辨率，例如1920x10780（横屏）
 修改完成后，按Ctrl+O保存，Ctrl+X退出。
 
 #你可以装个浏览器来玩玩
-输./firefox.sh安装firefox浏览器,输./firefox.sh rm卸载
-输./chromium.sh安装chromium浏览器,输./chromium.sh rm卸载
+输`./firefox.sh`安装firefox浏览器,输./firefox.sh rm卸载
+输`./chromium.sh`安装chromium浏览器,输./chromium.sh rm卸载
 
-#chromium浏览器的启动命令是 chromium --no-sandbox
+#chromium浏览器的启动命令是 `chromium --no-sandbox`
 
 #安装Linux qq
+
+```shell
 wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb ; apt install -y ./linuxqq.deb
+```
+
+#若链接失效，请前往https://im.qq.com/linuxqq/download.html
+
 #若链接失效，请前往https://im.qq.com/linuxqq/download.html
 
 本文首发于酷安网@萌系生物研究员
