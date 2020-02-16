@@ -114,7 +114,8 @@ DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
 	if [ ! -f ${DebianTarXz} ]; then
-		echo "正在从清华大学开源镜像站下载debian容器镜像 Downloading rootfs.tar.xz(debian sid) from Tsinghua University Open Source Mirror Station."
+		echo "正在从清华大学开源镜像站下载debian容器镜像"
+        echo "Downloading rootfs.tar.xz(debian sid) from Tsinghua University Open Source Mirror Station."
         curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html  >/dev/null 2>&1 
         ttime=`cat get-date-tmp.html |tail -n2|head -n1 |cut -d\" -f4` 
         rm -f get-date-tmp.html 
