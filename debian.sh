@@ -185,9 +185,9 @@ if [ ! -f profile ]; then
 		fi
 cp -pf profile profile.bak
 
-grep 'alias debian=' profile >/dev/null 2>&1 || echo -e '\nalias debian="tsudo debian"' >> profile
-grep 'alias debian-rm=' profile >/dev/null 2>&1 || echo -e '\nalias debian-rm="tsudo debian-rm"' >> profile
-source profile
+grep 'alias debian=' profile >/dev/null 2>&1 || sed -i  '$a\alias debian="tsudo debian"' profile
+grep 'alias debian-rm=' profile >/dev/null 2>&1 ||sed -i '$a\alias debian-rm="tsudo debian-rm"' profile
+source profile > /dev/null 2>&1
 echo -e "You have modified debian to run with root privileges, this action will destabilize debian.\n If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
 echo "The next time you start debian, it will automatically run as root."
@@ -217,14 +217,27 @@ EndOfFile
 
 
 
-cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
+#cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
-	if [ ! -f /data/data/com.termux/files/usr/bin/wget ]; then
+    if [ ! -f /data/data/com.termux/files/usr/bin/wget ]; then
 		apt update ; apt install wget 
-	fi
-    sed -i '/alias debian=/d' $PREFIX/etc/profile
-    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
-
+    fi
+	
+	if [ -d ~/debian_* ]; then
+	YELLOW=$(printf '\033[33m')
+	RESET=$(printf '\033[m')
+	printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
+	echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
+	read opt
+	case $opt in
+		y*|Y*|"") $PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	 ;;
+		n*|N*) echo "skipped." ;;
+		*) echo "Invalid choice. skipped."; return ;;
+	esac
+	
+	else
+	    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
+    fi
 EndOfFile
 
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
@@ -242,8 +255,8 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
 	read opt
 	case \$opt in
 		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
-		n*|N*) echo "skipped."; return ;;
-		*) echo "Invalid choice. skipped."; return ;;
+		n*|N*) echo "skipped." ;;
+		*) echo "Invalid choice. skipped." ;;
 	esac
 	
 EndOfFile
