@@ -975,7 +975,6 @@ git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom
 echo 'source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /root/.zshrc
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
-echo '您可以输"man 软件或命令名称"来获取帮助信息，例如man bash或man zsh'
 	exec zsh -l
 	source ~/.zshrc
 	zsh
@@ -1086,8 +1085,45 @@ sed -i 's/http/https/' /etc/apt/sources.list
 
 apt update 
 apt dist-upgrade -y
-apt install -y procps fonts-wqy-zenhei grep manpages manpages-zh man-db aptitude
+apt install -y procps fonts-wqy-zenhei grep aptitude
 apt clean
+
+
+
+cat >man.sh<<-'EndOfFile'
+#!/bin/bash
+function install()
+{
+echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
+echo "man a help manual software, which can help you understand the detailed usage of the command."
+echo '您可以输"man 软件或命令名称"来获取帮助信息，例如man bash或man zsh'
+apt install -y manpages manpages-zh man-db
+}
+function remove()
+{
+apt purge -y manpages manpages-zh man-db
+apt autopurge
+}
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+		
+
+        esac
+}
+main "$@"
+
+EndOfFile
+chmod +x man.sh
 
 
 #kali源
