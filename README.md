@@ -42,7 +42,7 @@ debian
 3.卸载命令 
 
 ```shell
-debian.sh rm
+debian-rm
 ```
 
 (仅支持在termux原系统内输)
@@ -101,9 +101,8 @@ apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian
 
 #关于debian的重新安装与移除
 
-输debian.sh i 重装debian  (完整路径为$PREFIX/bin/debian.sh)
-输debian.sh rm 移除debian
-输debian.sh del 删除镜像文件
+输`debian-i` 重装debian
+输`debian-rm` 移除debian
 
 
 
@@ -246,7 +245,8 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 ​		 ⑧加入对armhf和x86_64(amd64)的支持。
 
 ​		 ⑨支持一键更换为kali源。
-​		 
+
+​         ⑩简化卸载流程，安装脚本也可以执行卸载操作。		 
 ​		 
 ​		 
 ​		 
