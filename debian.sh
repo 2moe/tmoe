@@ -1180,7 +1180,7 @@ startvnc
 function remove()
 {
 apt purge -y xfce4 xfce4-terminal tightvncserver
-apt autopurgre
+apt autopurge
 } 
 function main()
 {
