@@ -213,7 +213,7 @@ EndOfFile
 
 cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
-	if [ ! -f $PREFIX/bin/wget ]; then
+	if [ ! -f /data/data/com.termux/files/usr/bin/wget ]; then
 		apt update ; apt install wget 
 	fi
     sed -i '/alias debian=/d' $PREFIX/etc/profile
