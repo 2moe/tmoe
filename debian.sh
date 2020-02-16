@@ -923,7 +923,7 @@ git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom
 echo 'source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /root/.zshrc
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
-echo "您可以输"man 软件名称"来获取帮助信息，例如man bash或man zsh"
+echo '您可以输"man 软件或命令名称"来获取帮助信息，例如man bash或man zsh'
 	exec zsh -l
 	source ~/.zshrc
 	zsh
