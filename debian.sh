@@ -184,9 +184,12 @@ EndOfFile
 
 cat >/data/data/com.termux/files/usr/bin/debian.sh <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
-rm -f /data/data/com.termux/files/usr/bin/debian.sh
 function install()
-wget --help >/dev/null 2>&1 || apt update && apt install -y wget
+
+if [ ! -e $PREFIX/bin/wget ]; then
+		apt update && apt install -y wget
+	fi
+
 bash -c "\$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
 
 }
