@@ -183,7 +183,7 @@ cd $PREFIX/etc/
 cp -pf profile profile.bak
 
 grep 'alias debian=' profile >/dev/null 2>&1 || echo -e '\nalias debian="tsudo debian"' >> profile
-source profile
+grep 'alias debian-rm=' profile >/dev/null 2>&1 || echo -e '\nalias debian-rm="tsudo debian-rm"' >> profile
 echo -e "You have modified debian to run with root privileges, this action will destabilize debian.\n If you want to restore, please reinstall debian."
 echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
 rm -f /data/data/com.termux/files/usr/bin/debian-root
@@ -229,7 +229,7 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
     YELLOW=\$(printf '\033[33m')
 	RESET=\$(printf '\033[m')
     sed -i '/alias debian=/d' $PREFIX/etc/profile
-	
+	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
     echo 'debian系统已经移除，是否需要删除镜像文件？'
 		printf "\${YELLOW}Do you want to delete the debian-sid-rootfs.tar.xz? [Y/n]\${RESET} "
@@ -262,6 +262,7 @@ cd ~
 chmod 777 -R debian_$archtype
 rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root
 grep 'alias debian' $PREFIX/etc/profile && sed -i '/alias debian=/d' $PREFIX/etc/profile
+sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 echo '删除完成，如需卸载aria2,请输apt remove aria2'
 echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
 
