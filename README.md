@@ -13,14 +13,14 @@
 
 1.  ##### This script should be run via curl:
 ```shell
-apt install wget ; bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+apt install -y curl ; bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
 
 
 
 2. ##### or wget:
 ```shell
-apt install curl ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+apt install -y wget ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
 
 #### 使用说明
@@ -156,10 +156,9 @@ xfce的卸载方法：
 
 （下面相似，故省略）                 				
 								
-输./mate.sh或bash mate.sh安装mate; 输./mate.sh rm卸载
-输./lxde.sh安装lxde; 输 ./lxde.sh rm卸载
-输./lxqt.sh安装lxqt; 输 ./lxqt.sh rm卸载
-
+输`./mate.sh`或bash mate.sh安装mate; 输./mate.sh rm卸载
+输.`/lxde.sh`安装lxde; 输 ./lxde.sh rm卸载
+输.`/lxqt.sh`安装lxqt; 输 ./lxqt.sh rm卸载
 
 gnome和kde是用来卖萌用的，不要安装。如需安装，请自行解决依赖关系和其它问题。
 四选一！千万不要一下子装两个桌面！
@@ -173,16 +172,16 @@ gnome和kde是用来卖萌用的，不要安装。如需安装，请自行解决
 
 ##### 2-3.安装后
 
-输startvnc启动vnc服务，
-输stopvnc停止vnc服务。
+输`startvnc`启动vnc服务，
+输`stopvnc`停止vnc服务。
 完成后，打开vnc viewer客户端，输localhost:5901
 
 在termux原系统输startvnc将自动启动vnc客户端+debian系统+vnc服务端，若无启动提示，请在进入debian后，再输一遍startvnc
 
 #### 其它说明：
 
-1.若无法退出debian系统，请在termux原系统内输stopvnc
-2.若zsh配置失败，请输入./zsh.sh进行重新配置。
+1.若无法退出debian系统，请在termux原系统内输`stopvnc`
+2.若zsh配置失败，请输入`./zsh.sh`进行重新配置。
 3.主目录下的sh文件可以删除，但sd、tf和termux三个目录不要删。因为这三个目录挂载了设备存储空间，分别和内置存储、tf卡(termux专有目录)以及termux主目录联动。
 
 
@@ -227,26 +226,32 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 
 #### 优化内容：
 
-​         ①获取镜像途径依旧是清华镜像站，但把下载工具从wget换成了aria2，从原本的单线程变成现在的16线程，加快了下载速度。
+​                 1.获取镜像途径依旧是清华镜像站，但把下载工具从wget换成了aria2，从原本的单线程变成现在的16线程，加快了下载速度。
 
-​		 ②自动配置中文环境，默认就是中文，无需手动配置。
+​		 2.自动配置中文环境，默认就是中文，无需手动配置。
 
-​		 ③修复旧版脚本中非xfce桌面的xstartup文件问题。
+​		 3.修复旧版脚本中非xfce桌面的xstartup文件问题。
 
-​		 ④新增自动配置zsh的功能，初次启动会出现提示，若在指定时间内无操作会自动开始安装并配置zsh。
+​		 4.新增自动配置zsh的功能，初次启动会出现提示，若在指定时间内无操作会自动开始安装并配置zsh。
 ​		 包含主题和语法高亮、语法历史记录插件。
 
-​		 ⑤简化安装流程，且不再需要某种很神奇的internet工具。
+​		 5.简化安装流程，且不再需要某种很神奇的internet工具。
 
-​		 ⑥将debian 10 buster (stable)换成 sid bullseye(unstable)，滚动升级，一直都是新版。
+​		 6.将debian 10 buster (stable)换成 sid bullseye(unstable)，滚动升级，一直都是新版。
 
-​		 ⑦修复chromium浏览器的启动问题，使用sh chromium.sh安装的版本，可以直接点击图标启动，在root环境下无需加--no-sandbox参数。
+​		 7.修复chromium浏览器的启动问题，使用sh chromium.sh安装的版本，可以直接点击图标启动，在root环境下无需加--no-sandbox参数。
 
-​		 ⑧加入对armhf和x86_64(amd64)的支持。
+​		 8.加入对armhf和x86_64(amd64)的支持。
 
-​		 ⑨支持一键更换为kali源。
+​		 9.支持一键更换为kali源，debian变身kali就是这么简单！
 
-​         ⑩简化卸载流程，安装脚本也可以执行卸载操作。		 
-​		 
-​		 
-​		 
+​		10.简化卸载流程，安装脚本也可以执行卸载操作。		 
+
+​		11.根据当前linux shell环境自动修改proot启动脚本。
+
+​		12.修复启动vnc后，debian无法正常关闭的bug  ,(请在termux原系统内输stopvnc)
+
+​		13.简化启动流程，你可以在termux原系统里输startvnc来启动debian+vnc客户端
+           
+​		14.vnc支持自动获取本机局域网ip，地址格式类似于192.168.123.3:5901
+		 
