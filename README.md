@@ -85,9 +85,7 @@ startvnc
 apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
 
-#(旧版)视频教程
-
-[链接]: https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA	
+#(旧版)视频教程[链接](https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA)
 
 : 提取码: debb
 
