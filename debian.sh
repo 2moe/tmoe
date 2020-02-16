@@ -193,8 +193,8 @@ else
 fi
 EndOfFile
 
-
-cat > /data/data/com.termux/files/usr/bin/debian-root <<-'EndOfFile'
+#下面的EndOfFile不要加单引号
+cat > /data/data/com.termux/files/usr/bin/debian-root <<- EndOfFile
 
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
@@ -1081,7 +1081,7 @@ chmod +x zsh.sh
 #vnc自动启动
 cat >vnc-autostartup<<-'EndOfFile'
 cat /etc/issue
-ps -e
+ps -e | head -n 30
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -1092,7 +1092,7 @@ EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
-ps -e
+ps -e | head -n 30
 grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
