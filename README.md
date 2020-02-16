@@ -66,7 +66,7 @@ debian
 
 #关于debian的重新安装与移除
 
-输debian.sh 重装debian  (完整路径为$PREFIX/bin/debian.sh)
+输debian.sh i 重装debian  (完整路径为$PREFIX/bin/debian.sh)
 输debian.sh rm 移除debian
 输debian.sh del 删除镜像文件
 
