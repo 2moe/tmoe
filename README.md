@@ -87,19 +87,19 @@ apt install -y wget && bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian
 
 #(旧版)视频教程
 
-[链接]: https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA	"百度网盘"
+[链接]: https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA	
 
 : 提取码: debb
 
 ###### #可选步骤（Optional step）：
 
-输`./kali.sh`更换为kali源，输./kali.sh rm 移除kali源。
+输`./kali.sh`更换为kali源，输`./kali.sh rm` 移除kali源。
 
 #####  1-2.安装后的步骤。
 
 #If you want to start debian next time, you can just type "debian".
 #下次启动debian的命令是
-debian
+`debian`
 
 #关于debian的重新安装与移除
 
@@ -205,8 +205,8 @@ apt install -y nano && nano /usr/bin/startvnc
 修改完成后，按Ctrl+O保存，Ctrl+X退出。
 
 #你可以装个浏览器来玩玩
-输`./firefox.sh`安装firefox浏览器,输./firefox.sh rm卸载
-输`./chromium.sh`安装chromium浏览器,输./chromium.sh rm卸载
+输`./firefox.sh`安装firefox浏览器,输`./firefox.sh rm`卸载
+输`./chromium.sh`安装chromium浏览器,输`./chromium.sh rm`卸载
 
 #chromium浏览器的启动命令是 `chromium --no-sandbox`
 
@@ -215,8 +215,6 @@ apt install -y nano && nano /usr/bin/startvnc
 ```shell
 wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb ; apt install -y ./linuxqq.deb
 ```
-
-#若链接失效，请前往https://im.qq.com/linuxqq/download.html
 
 #若链接失效，请前往https://im.qq.com/linuxqq/download.html
 
@@ -233,14 +231,22 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 #### 优化内容：
 
 ​         ①获取镜像途径依旧是清华镜像站，但把下载工具从wget换成了aria2，从原本的单线程变成现在的16线程，加快了下载速度。
+
 ​		 ②自动配置中文环境，默认就是中文，无需手动配置。
+
 ​		 ③修复旧版脚本中非xfce桌面的xstartup文件问题。
+
 ​		 ④新增自动配置zsh的功能，初次启动会出现提示，若在指定时间内无操作会自动开始安装并配置zsh。
 ​		 包含主题和语法高亮、语法历史记录插件。
+
 ​		 ⑤简化安装流程，且不再需要某种很神奇的internet工具。
+
 ​		 ⑥将debian 10 buster (stable)换成 sid bullseye(unstable)，滚动升级，一直都是新版。
+
 ​		 ⑦修复chromium浏览器的启动问题，使用sh chromium.sh安装的版本，可以直接点击图标启动，在root环境下无需加--no-sandbox参数。
+
 ​		 ⑧加入对armhf和x86_64(amd64)的支持。
+
 ​		 ⑨支持一键更换为kali源。
 ​		 
 ​		 
