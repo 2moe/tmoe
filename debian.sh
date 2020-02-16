@@ -225,9 +225,6 @@ function main()
                      ;;
 			    delete|del|clean|cl|d)
                          clean
-                     ;;
-                        "")
-                echo "[输debian.sh i安装debian,输debian.sh rm卸载，输debian.sh del删除镜像]"	
                      ;;				
                    *)
 			        install
