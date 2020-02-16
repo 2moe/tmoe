@@ -941,8 +941,7 @@ ps -e
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
-	echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
 	rm -f /root/.vnc/startvnc
 fi
 EndOfFile
@@ -953,8 +952,7 @@ ps -e
 grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
-	echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
 	rm -f /root/.vnc/startvnc
 fi 
 EndOfFile
