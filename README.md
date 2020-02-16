@@ -6,14 +6,14 @@
 
 支持一键安装图形界面。
 
+![截图_2020-02-01_08-53-21.jpg](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/yMgxSkGh0Tx4IJz0.jpg)
+
 #### 软件架构
 软件架构说明
 
 ##### 支持arm64(aarch64)、armhf、armel、amd64(x86_64) 和 i386(x86)。
 
 
-
-![截图_2020-02-01_08-53-21.jpg](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/yMgxSkGh0Tx4IJz0.jpg)
 
 
 #### 安装教程
