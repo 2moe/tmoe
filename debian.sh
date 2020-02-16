@@ -295,13 +295,14 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
-	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
-	printf "\${YELLOW}'是否需要删除镜像文件？[Y/n]'\${RESET} "
+	echo 'If you want to reinstall, it is not recommended to remove the image file.'
+	echo '若需要重装，则不建议移除镜像文件。'
+	printf "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
 	#printf之后分行
 	echo ''
-    echo 'If you want to reinstall, it is not recommended to remove the image file.'
-	echo '若需要重装，则不建议移除镜像文件。'
-	read opt
+	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
+
+    read opt
 	case \$opt in
 		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
 		n*|N*) echo "skipped." ;;
