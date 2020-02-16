@@ -923,6 +923,7 @@ git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom
 echo 'source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /root/.zshrc
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
+echo "您可以输"man 软件名称"来获取帮助信息，例如man bash或man zsh"
 	exec zsh -l
 	source ~/.zshrc
 	zsh
@@ -1159,8 +1160,8 @@ function main()
                          remove
                         ;;
                     help|man)
-                        man xfce4 2>&1 >/dev/null
-						xfce4 --help
+                        man xfce-session 2>&1 >/dev/null
+						xfce-session --help
                         ;;
 
                    *)
@@ -1237,8 +1238,8 @@ function main()
                          remove
                         ;;
                     help|man)
-                        man lxde 2>&1 >/dev/null
-						lxde-core --help
+                        man lxde-session 2>&1 >/dev/null
+						lxde-session --help
                         ;;
 
                    *)
@@ -1319,8 +1320,8 @@ function main()
                          remove
                         ;;
                     help|man)
-                        man mate 2>&1 >/dev/null
-						mate --help
+                        man mate-session 2>&1 >/dev/null
+						mate-session --help
                         ;;
 
                    *)
