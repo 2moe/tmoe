@@ -217,7 +217,7 @@ EndOfFile
 
 
 
-#cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
+cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
     if [ ! -f /data/data/com.termux/files/usr/bin/wget ]; then
 		apt update ; apt install wget 
