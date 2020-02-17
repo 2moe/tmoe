@@ -251,9 +251,9 @@ REMOVESYSTEM(){
 ########################################################################
 #
 BackupSystem(){
-
-mkdir -p ~/backup
-cd ~/backup
+termux-setup-storage 
+mkdir -p /sdcard/backup
+cd /sdcard/backup
 
     if [ -f *.tar.* ]; then
   echo '您当前已备份的系统如下：'  
@@ -265,7 +265,9 @@ cd ~/backup
 	
 if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。\n tar.gz压缩率低，但速度快。\n 压缩过程中，进度条倒着跑是正常现象。" 10 60) then
 
-	echo "您选择了tar.xz,即将为您备份至~/backup/${TMPtime}.tar.xz"
+	echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+	echo '按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.'
+	read
 
 	tar -PJpcf - ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 	
@@ -279,9 +281,9 @@ if (whiptail --title "Select compression type 选择压缩类型 " --yes-button 
    
 else
 
-    echo "您选择了tar.gz,即将为您备份至~/backup/${TMPtime}.tar.gz"
-	echo "1s后将为您备份"
-	sleep 1
+    echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+	echo '按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.'
+	read
 	    
 	tar -Ppczf - ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 	
@@ -309,7 +311,8 @@ OPTION=$(whiptail --title "RESTORESYSTEM" --menu "Choose your option" 15 60 4 \
 3>&1 1>&2 2>&3)
 ###########################################################################
 if [ "$OPTION" == '1' ]; then
-    if [ ! -f ~/backup/*tar* ]; then
+termux-setup-storage 
+    if [ ! -f /sdcard/backup/*tar* ]; then
 	   echo '未检测到备份文件,按回车键返回。'
 	   read
    MainMenu
@@ -317,9 +320,9 @@ if [ "$OPTION" == '1' ]; then
     else
     echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
 	
-	echo 'cd ~/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
+	echo 'cd /sdcard/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
     echo '请注意大小写，并把文件名改成具体名称'
-    cd ~/backup
+    cd /sdcard/backup
     RESTORE=$(ls -lth ./*tar* | grep ^- | head -n 1 |cut -d '/' -f 2)
     echo " " 
 	
@@ -357,7 +360,7 @@ if [ "$OPTION" == '1' ]; then
 		
 	esac
 	
-	
+	echo "按回车键返回。Press enter to return."
     read
    MainMenu
 	
