@@ -1100,7 +1100,7 @@ chmod +x zsh.sh
 #vnc自动启动
 cat >vnc-autostartup<<-'EndOfFile'
 cat /etc/issue
-ps -e | tail -n 30
+ps -e | tail -n 25
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -1111,7 +1111,7 @@ EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
-ps -e | tail -n 30
+ps -e | tail -n 25
 grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -1846,6 +1846,7 @@ echo "Welcome to Debian GNU/Linux."
 cat /etc/issue
 uname -a 
 rm -f vnc-autostartup .bashrc
+mv -f .bashrc.bak .bashrc
 echo "                                        "
 echo "                .iri                    "
 echo "            .1BQBBBBBBBBBBBMrrr         "
@@ -1880,7 +1881,6 @@ echo "Automatically configure zsh after 3 seconds,you can press Ctrl + C to canc
 echo "3s后将自动开始配置zsh"
 sleep 3
 bash zsh.sh 
-mv -f .bashrc.bak .bashrc
 EDIT-BASHRC
 
 /data/data/com.termux/files/usr/bin/debian
