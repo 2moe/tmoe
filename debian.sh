@@ -166,7 +166,7 @@ installDebian(){
 #
 
  RootMode(){
- if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本工具。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统奔溃！！！请在本管理器内正常移除debian。" 10 60) then 
+ if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除debian。" 10 60) then 
  
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
@@ -287,20 +287,26 @@ else
 	    
 	tar -Ppczf - ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 	
-	#tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
-	
-	#tar -cf - ~/${DebianFolder} | pv -s $(du -sb ~/${DebianFolder} | awk '{print $1}') | gzip > ${TMPtime}.tar.gz
-	
-	#tar Pzcvf ${TMPtime}.tar.gz ~/${DebianFolder}
+
 	echo "部分挂载的目录无权限备份是正常现象。"
 	rm -f backuptime.tmp 
 	#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0 
 	ls -lth ./*tar* | grep ^- | head -n 1
+	echo 'gzip压缩至60%完成是正常现象。'
 	echo '备份完成,按任意键返回。'
     read
   MainMenu
    fi
 }
+####################################
+#tar压缩进度条1、2
+
+: '	#tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+	
+	#tar -cf - ~/${DebianFolder} | pv -s $(du -sb ~/${DebianFolder} | awk '{print $1}') | gzip > ${TMPtime}.tar.gz
+	
+	#tar Pzcvf ${TMPtime}.tar.gz ~/${DebianFolder}'
+	
 ########################################################################
 #
 RESTORESYSTEM(){
@@ -325,7 +331,7 @@ termux-setup-storage
     cd /sdcard/backup
     RESTORE=$(ls -lth ./*tar* | grep ^- | head -n 1 |cut -d '/' -f 2)
     echo " " 
-	
+	ls -lh ${RESTORE}
 	printf "${YELLOW}即将为您还原${RESTORE}，请问是否确认？[Y/n]${RESET} "
 	#printf之后分行
 	echo ''
@@ -363,7 +369,7 @@ termux-setup-storage
 	echo "按回车键返回。Press enter to return."
     read
    MainMenu
-	
+	#'下面那个fi对应! -f /sdcard/backup/*tar*'
 	fi
 fi
 
