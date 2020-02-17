@@ -19,10 +19,18 @@ autoCheck(){
 	if [ ! -e $PREFIX/bin/pv ]; then
 		dependencies="${dependencies} pv"
 	fi	
+	
+	if [ ! -e $PREFIX/bin/grep ]; then
+		dependencies="${dependencies} grep"
+	fi	
 		
 	if [ ! -e $PREFIX/bin/xz ]; then
 		dependencies="${dependencies} xz-utils"
 	fi	
+	
+	if [ ! -e $PREFIX/bin/tar ]; then
+		dependencies="${dependencies} tar"
+	fi
 	
 	if [ ! -e $PREFIX/bin/whiptail ]; then
 		dependencies="${dependencies} dialog"
@@ -47,7 +55,7 @@ autoCheck(){
 
 	if [ ! -z "$dependencies" ]; then
 	echo "正在安装相关依赖..."
-	apt update ; apt install ${dependencies} 
+	apt update ; apt install -y ${dependencies} 
 	fi
 	
     CheckArch
@@ -91,13 +99,19 @@ MainMenu
 #-- 主菜单 main menu
 
 MainMenu(){
-OPTION=$(whiptail --title "Debian manager running on Termux" --backtitle "输debian-i启动本程序,2020-02,萌系生物研究员,Please use the arrow keys and enter key to operate. 请使用方向键和回车键进行操作。" --menu "请使用方向键和回车键进行操作，Choose your option" 15 60 4 \
-"1" "安装install debian" \
+OPTION=$(whiptail --title "Debian manager running on Termux" --backtitle "$(base64 -d <<-'DoYouWantToSeeWhatIsInside'
+6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sMjAyMC0wMizokIzns7vnlJ/niannoJTnqbblkZgs
+UGxlYXNlIHVzZSB0aGUgYXJyb3cga2V5cyBhbmQgZW50ZXIga2V5IHRvIG9wZXJhdGUuIOivt+S9
+v+eUqOaWueWQkemUruWSjOWbnui9pumUrui/m+ihjOaTjeS9nOOA
+DoYouWantToSeeWhatIsInside
+)" --menu "请使用方向键和回车键进行操作，Choose your option" 15 60 4 \
+"1" "安装 install debian" \
 "2" "root模式" \
-"3" "移除remove system" \
-"4" "备份系统backup system" \
-"5" "还原restore" \
-"6" "退出exit" \
+"3" "移除 remove system" \
+"4" "备份系统 backup system" \
+"5" "还原 restore" \
+"6" "查询空间占用 query space occupation" \
+"7" "退出 exit" \
 3>&1 1>&2 2>&3)
 
 if [ "$OPTION" == '1' ]; then
@@ -133,6 +147,12 @@ fi
 
 if [ "$OPTION" == '6' ]; then
 
+	SpaceOccupation
+
+fi
+
+if [ "$OPTION" == '7' ]; then
+
 	exit
 
 fi
@@ -143,7 +163,7 @@ fi
 
 installDebian(){
 	
-	if [ -d ~/debian_* ]; then
+	if [ -d ~/${DebianFolder} ]; then
 	printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
 	#分行
     echo ''
@@ -224,13 +244,22 @@ fi
 REMOVESYSTEM(){
     
 	cd ~
+	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
+	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
+	if [ ! -d ~/${DebianFolder} ]; then
+	printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian{RESET} "
+	fi
+	echo '按回车键确认移除,按Ctrl+C取消 Press enter to confirm.'
+	read 
+	
     chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root 
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash 2>/dev/null
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+	echo '其它相关依赖，如pv、dialog、openssl、procps、proot、wget、curl等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若您需要重装debian，则不建议删除镜像文件。'
 	ls -lh ~/debian-sid-rootfs.tar.xz
@@ -255,10 +284,10 @@ termux-setup-storage
 mkdir -p /sdcard/backup
 cd /sdcard/backup
 
-    if [ -f *.tar.* ]; then
-  echo '您当前已备份的系统如下：'  
-	ls -lth ./*.tar.* |head -n 10 
-    fi
+	ls -lth ./debian*.tar.* |head -n 10 && echo '您之前所备份的系统如上所示'
+	
+	echo '按回车键选择压缩类型 Press enter to select compression type'
+	read
 	
 	echo $(date +%Y-%m-%d_%H-%M) > backuptime.tmp
 	TMPtime=debian_$(cat backuptime.tmp)
@@ -269,11 +298,13 @@ if (whiptail --title "Select compression type 选择压缩类型 " --yes-button 
 	echo '按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.'
 	read
 
-	tar -PJpcf - ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
+	tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 	
 	#xz -z -T0 -e -9 -f -v ${TMPtime}.tar
-		echo "部分挂载的目录无权限备份是正常现象。"
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分挂载的目录无权限备份是正常现象。"
 	rm -f backuptime.tmp
+	pwd
 	ls -lth ./*tar* | grep ^- | head -n 1
 	echo '备份完成,按任意键返回。'
     read
@@ -285,12 +316,14 @@ else
 	echo '按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.'
 	read
 	    
-	tar -Ppczf - ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
+	tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux   ~/${DebianFolder}  | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 	
 
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
 	echo "部分挂载的目录无权限备份是正常现象。"
 	rm -f backuptime.tmp 
 	#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0 
+	pwd
 	ls -lth ./*tar* | grep ^- | head -n 1
 	echo 'gzip压缩至60%完成是正常现象。'
 	echo '备份完成,按任意键返回。'
@@ -311,20 +344,17 @@ else
 #
 RESTORESYSTEM(){
 
-OPTION=$(whiptail --title "RESTORESYSTEM" --menu "Choose your option" 15 60 4 \
-"1" "还原最新备份" \
-"2" "Return返回主菜单" \
+OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
+"0" "Back to the main menu 返回主菜单" \
+"1" "Restore the latest debian backup 还原Debian" \
 3>&1 1>&2 2>&3)
 ###########################################################################
 if [ "$OPTION" == '1' ]; then
 termux-setup-storage 
-    if [ ! -f /sdcard/backup/*tar* ]; then
-	   echo '未检测到备份文件,按回车键返回。'
-	   read
-   MainMenu
-	
-    else
-    echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
+
+	ls -lth debian*tar* |head -n 10 2>/dev/null  || echo '未检测到备份文件'
+   
+    echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令' 
 	
 	echo 'cd /sdcard/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
     echo '请注意大小写，并把文件名改成具体名称'
@@ -370,15 +400,108 @@ termux-setup-storage
     read
    MainMenu
 	#'下面那个fi对应! -f /sdcard/backup/*tar*'
-	fi
+	#fi
 fi
 
-   
-   if [ "$OPTION" == '2' ]; then
+#####################################   
+   if [ "$OPTION" == '0' ]; then
 
 	MainMenu
     fi
+	MainMenu
 }
+
+########################################################################
+SpaceOccupation(){
+cd ~/..
+OPTION=$(whiptail --title "Query space occupation ranking" --menu "查询空间占用排行" 15 60 4 \
+"0" "Back to the main menu 返回主菜单" \
+"1" "termux各目录" \
+"2" "termux文件" \
+"3" "sdcard" \
+"4" "总存储空间用量Disk usage" \
+3>&1 1>&2 2>&3)
+###########################################################################
+#echo "${YELLOW}2333333333${RESET}"
+if [ "$OPTION" == '1' ]; then
+echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
+echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
+echo "${YELLOW}主目录 TOP15${RESET}"
+
+du -hsx ./home/* ./home/.*  2>/dev/null  | sort -rh| head -n 15
+
+echo ''
+
+echo "${YELLOW}usr 目录 TOP6${RESET}"
+
+du -hsx ./usr/* 2>/dev/null  | sort -rh| head -n 6
+
+echo ''
+
+echo "${YELLOW}usr/lib 目录 TOP8${RESET}"
+
+du -hsx ./usr/lib/* 2>/dev/null  | sort -rh| head -n 8
+
+echo '' 
+
+echo "${YELLOW}usr/share 目录 TOP8${RESET}"
+
+du -hsx ./usr/share/* 2>/dev/null  | sort -rh| head -n 8
+
+echo '' 
+	echo "按回车键返回。Press enter to return."
+    read
+   SpaceOccupation
+
+fi
+###############################
+if [ "$OPTION" == '2' ]; then
+echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
+echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
+echo "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
+
+find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
+	echo "按回车键返回。Press enter to return."
+    read
+   SpaceOccupation
+
+fi
+
+if [ "$OPTION" == '3' ]; then
+cd /sdcard
+echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
+echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
+echo "${YELLOW}sdcard 目录 TOP15${RESET}"
+du -hsx ./* ./.* 2>/dev/null  | sort -rh| head -n 15
+
+echo "${YELLOW}sdcard文件大小排行榜(30名)${RESET}"
+
+find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
+
+	echo "按回车键返回。Press enter to return."
+    read
+   SpaceOccupation
+fi
+
+if [ "$OPTION" == '4' ]; then
+echo "${YELLOW}Disk usage${RESET}"
+df -h |grep G |grep -v tmpfs
+	echo "按回车键返回。Press enter to return."
+    read
+   SpaceOccupation
+fi
+
+#####################################   
+   if [ "$OPTION" == '0' ]; then
+
+	MainMenu
+    fi
+	
+	
+   MainMenu
+
+}
+
 
 ########################################################################
 #

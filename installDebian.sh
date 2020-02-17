@@ -39,10 +39,6 @@ esac
 		dependencies="${dependencies} proot"
 	fi
 	
-	
-	if [ ! -e $PREFIX/bin/whiptail ]; then
-		dependencies="${dependencies} dialog"
-	fi
 
 	if [ ! -e $PREFIX/bin/openssl ]; then
 		dependencies="${dependencies} openssl"
@@ -63,7 +59,7 @@ esac
 
 	if [ ! -z "$dependencies" ]; then
 	echo "正在安装相关依赖..."
-	apt update ; apt install ${dependencies} 
+	apt update ; apt install -y ${dependencies} 
 	fi
 	
 
@@ -276,7 +272,7 @@ EndOfFile
 		apt update ; apt install wget 
     fi
 	
-	if [ -d ~/debian_* ]; then
+	if [ -d ~/${DebianFolder}  ]; then
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
@@ -296,8 +292,22 @@ EndOfFile
 EndOfFile'
 
 
+mkdir -p /data/data/com.termux/files/usr/etc/storage/
+wget -O /data/data/com.termux/files/usr/etc/storage/DebianManager.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1
+chmod +x /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
 
-wget -O /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1
+cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
+#!/data/data/com.termux/files/usr/bin/bash
+	if [ ! -e $PREFIX/bin/wget ]; then
+		apt update;apt install -y wget ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+	else
+	bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+	fi	
+
+EndOfFile
+	
+
+
 
 
 
@@ -305,7 +315,7 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
     chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root 
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash
     YELLOW=\$(printf '\033[33m')
 	RESET=\$(printf '\033[m')
     sed -i '/alias debian=/d' $PREFIX/etc/profile
@@ -364,7 +374,7 @@ cat > remove-debian.sh <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root 
+rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash
 grep 'alias debian' $PREFIX/etc/profile && sed -i '/alias debian=/d' $PREFIX/etc/profile
 sed -i '/alias debian-rm=/d' $PREFIX/etc/profile 
 source profile >/dev/null 2>&1
