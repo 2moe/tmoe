@@ -91,7 +91,7 @@ MainMenu
 #-- 主菜单 main menu
 
 MainMenu(){
-OPTION=$(whiptail --title "Debian manager running on Termux" --backtitle "输debian-i启动本程序，2020-02，Please use the arrow keys and enter key to operate. 请使用方向键和回车键进行操作。" --menu "请使用方向键和回车键进行操作，Choose your option" 15 60 4 \
+OPTION=$(whiptail --title "Debian manager running on Termux" --backtitle "输debian-i启动本程序,2020-02,萌系生物研究员,Please use the arrow keys and enter key to operate. 请使用方向键和回车键进行操作。" --menu "请使用方向键和回车键进行操作，Choose your option" 15 60 4 \
 "1" "安装install debian" \
 "2" "root模式" \
 "3" "移除remove system" \
@@ -166,7 +166,7 @@ MainMenu
 #
 
  RootMode(){
- if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。\n 若您的手机存在外置tf卡，则开启root模式后，将会挂载整张卡。\n 开启root模式后，若无法备份和还原，请在启动本工具前加上tsudo" 10 60) then 
+ if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。\n 若您的手机存在外置tf卡，则开启root模式后，将会挂载整张卡。\n 开启root模式后，若无法备份和还原，请使用tsudo debian-i启动本工具" 10 60) then 
  
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
