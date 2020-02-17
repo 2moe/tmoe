@@ -299,9 +299,9 @@ chmod +x /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
 cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
 	if [ ! -e $PREFIX/bin/wget ]; then
-		apt update;apt install -y wget ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+		apt update;apt install -y wget ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
 	else
-	bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+	bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
 	fi	
 
 EndOfFile
