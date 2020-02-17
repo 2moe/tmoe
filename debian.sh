@@ -151,14 +151,14 @@ installDebian(){
 	read opt
 	case $opt in
 		y*|Y*|"") $PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile ; sed -i '/alias debian-rm=/d' $PREFIX/etc/profile ;source profile >/dev/null 2>&1 ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"	 ;;
-		n*|N*) echo "skipped." ;;
-		*) echo "Invalid choice. skipped." ;;
+		n*|N*) echo "skipped." ; read ;MainMenu ;;
+		*) echo "Invalid choice. skipped.";read ;MainMenu ;;
 	esac
 	
 	else
 	    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"	
     fi
-MainMenu
+
  
 }
 
@@ -166,7 +166,7 @@ MainMenu
 #
 
  RootMode(){
- if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。\n 若您的手机存在外置tf卡，则开启root模式后，将会挂载整张卡。\n 开启root模式后，若无法备份和还原，请使用tsudo debian-i启动本工具" 10 60) then 
+ if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。\n 若您的手机存在外置tf卡，则开启root模式后，将会挂载整张卡。\n 开启root模式后，若无法备份和还原，请启动本工具" 10 60) then 
  
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
