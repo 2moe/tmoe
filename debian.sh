@@ -166,7 +166,7 @@ installDebian(){
 #
 
  RootMode(){
- if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。\n 若您的手机存在外置tf卡，则开启root模式后，将会挂载整张卡。\n 开启root模式后，若无法备份和还原，请启动本工具" 10 60) then 
+ if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。\n 若您的手机存在外置tf卡，则开启root模式后，将会挂载整张卡。\n 开启root模式后，若无法备份和还原，请输tsudo debian-i启动本工具。\n 开启root模式后，若在debian系统输rm -rf /删除根目录（格式化）命令，将有可能导致安卓原系统奔溃！！！请在本管理器内正常移除debian，绝对不要输破坏系统的危险命令。" 10 60) then 
  
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
