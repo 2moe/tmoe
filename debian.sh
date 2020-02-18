@@ -252,7 +252,7 @@ REMOVESYSTEM(){
 	echo '按回车键确认移除,按Ctrl+C取消 Press enter to confirm.'
 	read 
 	
-    chmod 777 -R debian_$archtype
+    chmod 777 -R ${DebianFolder}
     rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash $PREFIX/etc/storage/DebianManagerLatest.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash $PREFIX/etc/storage/DebianManagerLatest.bash 2>/dev/null
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
