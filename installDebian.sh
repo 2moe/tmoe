@@ -1184,6 +1184,11 @@ LANGUAGE="zh_CN:zh"
 EOF
 locale-gen
 source /etc/default/locale
+
+#配置国内时区
+echo 'Asia/Shanghai' > /etc/timezone
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
 echo "                                         "
 echo "         DL.                             "
 echo "         QBBBBBKv:rr77ri:.               "
