@@ -253,7 +253,7 @@ REMOVESYSTEM(){
 	read 
 	
     chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash 2>/dev/null
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash $PREFIX/etc/storage/DebianManagerLatest.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash $PREFIX/etc/storage/DebianManagerLatest.bash 2>/dev/null
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
@@ -261,6 +261,7 @@ REMOVESYSTEM(){
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo '其它相关依赖，如pv、dialog、openssl、procps、proot、wget、curl等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
+	echo '若需删除debian管理器，则请输rm -f $PREFIX/bin/debian-i'
 	echo '若您需要重装debian，则不建议删除镜像文件。'
 	ls -lh ~/debian-sid-rootfs.tar.xz
 	printf "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "

@@ -298,10 +298,14 @@ chmod +x /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
 
 cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
+    if [ ! -d /data/data/com.termux/files/usr/etc/storage/ ]; then
+   mkdir -p /data/data/com.termux/files/usr/etc/storage/
+    fi
+
 	if [ ! -e $PREFIX/bin/wget ]; then
-		apt update;apt install -y wget ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+		apt update;apt install -y wget ; wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManager.sh >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash  || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash
 	else
-	bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')" || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+	wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManager.sh >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash|| bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash
 	fi	
 
 EndOfFile
