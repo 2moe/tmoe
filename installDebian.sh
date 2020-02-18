@@ -447,12 +447,22 @@ chsh -s /usr/bin/zsh
 #   sh install.sh --unattended
 #
 set -e
-
+#change the default repo 
+#https://github.com/ohmyzsh/ohmyzsh
+#https://gitee.com/mirrors/oh-my-zsh
 # Default settings
 ZSH=${ZSH:-~/.oh-my-zsh}
-REPO=${REPO:-ohmyzsh/ohmyzsh}
-REMOTE=${REMOTE:-https://github.com/${REPO}.git}
+
+REPO=${REPO:-mirrors/oh-my-zsh}
+REMOTE=${REMOTE:-https://gitee.com/${REPO}.git}
+
+#REPO=${REPO:-ohmyzsh/ohmyzsh}
+#REMOTE=${REMOTE:-https://github.com/${REPO}.git}
 BRANCH=${BRANCH:-master}
+
+
+
+
 
 # Other options
 CHSH=${CHSH:-yes}
@@ -1097,15 +1107,22 @@ rm -f vnc-autostartup-zsh
 
 
 echo "正在安装zsh-syntax-highlighting语法高亮插件"
-rm -rf ~/.zsh-syntax-highlighting 
-git clone git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
-echo "source /root/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
+rm -rf ~/.zsh-syntax-highlighting
+ 
+#git clone git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
+git clone https://gitee.com/mo2/zsh-syntax-highlighting.git ~/.zsh-syntax-highlighting
+
+
+grep '.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || echo -e "\nsource /root/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
 
 echo "正在安装zsh-autosuggestions语法历史记录插件"
 rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 mkdir -p /root/.oh-my-zsh/custom
-git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-echo 'source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /root/.zshrc
+#git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 
+
+
+grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 ||echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
 echo 'All optimization steps have been completed, enjoy it!'
