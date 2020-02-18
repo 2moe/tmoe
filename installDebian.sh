@@ -295,6 +295,7 @@ EndOfFile'
 mkdir -p /data/data/com.termux/files/usr/etc/storage/
 wget -O /data/data/com.termux/files/usr/etc/storage/DebianManager.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1
 chmod +x /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+cp -pf /data/data/com.termux/files/usr/etc/storage/DebianManager.bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash >/dev/null 
 
 cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
@@ -305,8 +306,16 @@ cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
 	if [ ! -e $PREFIX/bin/wget ]; then
 		apt update;apt install -y wget ; wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash  || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 
 	else
-	wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash  || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 
-	fi	
+	     LAST_MODIFY_TIMESTAMP=$(stat -c %Y /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash)
+
+         DEBIANMANAGERDATE=$(date '+%d' -d @${LAST_MODIFY_TIMESTAMP})
+         if [ "${DEBIANMANAGERDATE}" ==  "$(date '+%d')" ]; then
+             bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+               else
+			   	wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash  || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 
+             	fi	
+	fi
+			    
 
 EndOfFile
 	
