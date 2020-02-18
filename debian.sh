@@ -8,10 +8,7 @@ autoCheck(){
 
 	dependencies=""
 
-	if [ ! -e $PREFIX/bin/proot ]; then
-		dependencies="${dependencies} proot"
-	fi
-	
+
 	if [ ! -e $PREFIX/bin/wget ]; then
 		dependencies="${dependencies} wget"
 	fi	
@@ -48,9 +45,7 @@ autoCheck(){
 		dependencies="${dependencies} curl"
 	fi
 
-	if [ ! -e $PREFIX/bin/aria2c ]; then
-		dependencies="${dependencies} aria2"
-	fi
+
 
 
 	if [ ! -z "$dependencies" ]; then
@@ -166,6 +161,15 @@ fi
 ########################################################################
 
 installDebian(){
+		
+		
+	if [ ! -e $PREFIX/bin/aria2c ]; then
+		apt update ;apt install -y aria2
+	 fi
+	
+	if [ ! -e $PREFIX/bin/proot ]; then
+		apt update ;apt install -y proot
+	fi
 	
 	if [ -d ~/${DebianFolder} ]; then
 	printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
