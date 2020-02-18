@@ -154,7 +154,11 @@ fi
 if [ "$OPTION" == '7' ]; then
 
 	exit
+fi
 
+if [ "$OPTION" == '8' ]; then
+BACKUPTERMUX
+   
 fi
 
 }
@@ -249,7 +253,7 @@ REMOVESYSTEM(){
 	if [ ! -d ~/${DebianFolder} ]; then
 	printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian{RESET} "
 	fi
-	echo '按回车键确认移除,按Ctrl+C取消 Press enter to confirm.'
+	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
 	read 
 	
     chmod 777 -R ${DebianFolder}
@@ -281,29 +285,42 @@ REMOVESYSTEM(){
 ########################################################################
 #
 BackupSystem(){
-termux-setup-storage 
-mkdir -p /sdcard/backup
-cd /sdcard/backup
-
-	ls -lth ./debian*.tar.* |head -n 10 && echo '您之前所备份的系统如上所示'
+termux-setup-storage
+OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
+"0" "Back to the main menu 返回主菜单" \
+"1" "备份Debian" \
+"2" "备份Termux" \
+3>&1 1>&2 2>&3)
+###########################################################################
+if [ "$OPTION" == '1' ]; then 
+	if [ ! -d /sdcard/backup ]; then
+	    mkdir -p /sdcard/backup && cd /sdcard/backup
+	else
+        cd /sdcard/backup
+    fi		
 	
-	echo '按回车键选择压缩类型 Press enter to select compression type'
+	
+	
+
+	ls -lth ./debian*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
+	
+	echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
 	read
 	
 	echo $(date +%Y-%m-%d_%H-%M) > backuptime.tmp
 	TMPtime=debian_$(cat backuptime.tmp)
 	
-if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。\n tar.gz压缩率低，但速度快。\n 压缩过程中，进度条倒着跑是正常现象。" 10 60) then
+    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression rate, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60) then
 
 	echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
-	echo '按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.'
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 	read
 
 	tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 	
 	#xz -z -T0 -e -9 -f -v ${TMPtime}.tar
 	echo "Don't worry too much, it is normal for some directories to backup without permission."
-	echo "部分挂载的目录无权限备份是正常现象。"
+	echo "部分目录无权限备份是正常现象。"
 	rm -f backuptime.tmp
 	pwd
 	ls -lth ./*tar* | grep ^- | head -n 1
@@ -311,17 +328,17 @@ if (whiptail --title "Select compression type 选择压缩类型 " --yes-button 
     read
    MainMenu
    
-else
+    else
 
     echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
-	echo '按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.'
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 	read
 	    
 	tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux   ~/${DebianFolder}  | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 	
 
 	echo "Don't worry too much, it is normal for some directories to backup without permission."
-	echo "部分挂载的目录无权限备份是正常现象。"
+	echo "部分目录无权限备份是正常现象。"
 	rm -f backuptime.tmp 
 	#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0 
 	pwd
@@ -329,9 +346,255 @@ else
 	echo 'gzip压缩至60%完成是正常现象。'
 	echo '备份完成,按任意键返回。'
     read
-  MainMenu
-   fi
+    MainMenu
+    fi
+fi   
+###################
+if [ "$OPTION" == '2' ]; then 
+     BACKUPTERMUX
+	 
+fi
+   
+##########################################
+   if [ "$OPTION" == '0' ]; then
+
+	MainMenu
+    fi
+	MainMenu
 }
+
+
+BACKUPTERMUX(){	 
+TERMUXBACKUP=$(whiptail --title "多项选择题" --checklist \
+"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认 \n Which directory do you want to backup? Please press the space to select and press Enter to confirm?" 15 60 4 \
+"home" "Termux主目录,主要用来保存用户文件" ON \
+"usr" "保存软件、命令和其它东西" OFF \
+3>&1 1>&2 2>&3)
+
+#####################################
+#$TERMUXBACKUP=$(whiptail --title "选择您需要备份的目录" --menu "Choose your $TERMUXBACKUP" 15 60 4 \
+#"0" "Back to previous menu 返回上层菜单" \
+#"1" "备份home目录" \
+#"2" "备份usr目录 " \
+#"3" "我全都要" \
+#3>&1 1>&2 2>&3)'
+##########################
+if [ "$TERMUXBACKUP" == 'home' ]; then
+        
+  	if [ ! -d /sdcard/backup ]; then
+	    mkdir -p /sdcard/backup && cd /sdcard/backup
+	else
+        cd /sdcard/backup
+    fi		
+	
+	##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+
+	ls -lth ./termux-home*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
+	
+	#echo 'This operation will only backup the home directory of termux, not the debian system. If you need to backup debian, please select both options or backup debian separately.'
+	#echo '本次操作将只备份termux的主目录，不包含主目录下的debian系统。如您需备份debian,请同时选择home和usr，或单独备份debian。'
+	
+	echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
+	read
+	
+	echo $(date +%Y-%m-%d_%H-%M) > backuptime.tmp
+	TMPtime=termux-home_$(cat backuptime.tmp)
+	
+    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz"  --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression rate, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60) then
+
+	echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
+	read
+	
+	tar -PJpvcf ${TMPtime}.tar.xz --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/sd --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/termux --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/tf /data/data/com.termux/files/home
+	
+	#xz -z -T0 -e -9 -v ${TMPtime}.tar
+	
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分目录无权限备份是正常现象。"
+	rm -f backuptime.tmp
+	pwd
+	ls -lth ./termux-home*tar* | grep ^- | head -n 1
+	echo '备份完成,按任意键返回。'
+    read
+   MainMenu
+   
+    else
+
+    echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
+	read
+	    
+	tar -Ppvczf ${TMPtime}.tar.gz --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/sd --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/termux --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/tf /data/data/com.termux/files/home
+	
+
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分目录无权限备份是正常现象。"
+	rm -f backuptime.tmp 
+	#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0 
+	pwd
+	ls -lth ./termux-home*tar* | grep ^- | head -n 1
+	echo '备份完成,按任意键返回。'
+    read
+    MainMenu
+    fi
+  
+        
+		
+		
+		
+		
+		fi
+##########################
+    	if [ "$TERMUXBACKUP" == 'usr' ]; then
+         
+  	if [ ! -d /sdcard/backup ]; then
+	    mkdir -p /sdcard/backup && cd /sdcard/backup
+	else
+        cd /sdcard/backup
+    fi		
+	
+
+
+	ls -lth ./termux-usr*.tar.* 2>/dev/null  && echo '您之前所备份的(部分)文件如上所示'
+	
+	echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
+	read
+	
+	echo $(date +%Y-%m-%d_%H-%M) > backuptime.tmp
+	TMPtime=termux-usr_$(cat backuptime.tmp)
+	
+    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz"  --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression rate, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60) then
+
+	echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
+	read
+	
+	#tar -PJpcf ${TMPtime}.tar /data/data/com.termux/files/usr
+	echo '正在压缩成tar.xz'
+	tar -PJpcf - /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes > ${TMPtime}.tar.xz)
+	#echo '正在压缩成xz'
+	#xz -z -T0 -e -9 -v ${TMPtime}.tar
+	
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分目录无权限备份是正常现象。"
+	rm -f backuptime.tmp
+	pwd
+	ls -lth ./termux-usr*tar* | grep ^- | head -n 1
+	echo '备份完成,按任意键返回。'
+    read
+   MainMenu
+   
+    else
+
+    echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
+	read
+	    
+	#tar -Ppczf ${TMPtime}.tar.gz   /data/data/com.termux/files/usr
+	tar -Ppczf - /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+		##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分目录无权限备份是正常现象。"
+	rm -f backuptime.tmp 
+	#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0 
+	pwd
+	ls -lth ./*tar* | grep ^- | head -n 1
+	echo '备份完成,按任意键返回。'
+    read
+    MainMenu
+    fi
+  
+        
+		
+		
+		
+		
+		
+		
+		fi		
+##########################
+    	if [ "$TERMUXBACKUP" == 'home usr' ]; then
+        
+        
+  	if [ ! -d /sdcard/backup ]; then
+	    mkdir -p /sdcard/backup && cd /sdcard/backup
+	else
+        cd /sdcard/backup
+    fi		
+	
+
+
+	ls -lth ./termux-home+usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
+	
+	echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
+	read
+	
+	echo $(date +%Y-%m-%d_%H-%M) > backuptime.tmp
+	TMPtime=termux-home+usr_$(cat backuptime.tmp)
+	
+    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz"  --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ratio, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60) then
+	echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
+	read
+	
+	#tar -PJpcf ${TMPtime}.tar /data/data/com.termux/files/usr
+	echo '正在压缩成tar.xz'
+	tar -PJpcf - /data/data/com.termux/files/home /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes > ${TMPtime}.tar.xz)
+	#echo '正在压缩成xz'
+	#xz -z -T0 -e -9 -v ${TMPtime}.tar
+	
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分目录无权限备份是正常现象。"
+	rm -f backuptime.tmp
+	pwd
+	ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
+	echo '备份完成,按任意键返回。'
+    read
+   MainMenu
+   
+    else
+
+    echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
+	read
+	    
+	#tar -Ppczf ${TMPtime}.tar.gz   /data/data/com.termux/files/usr
+	tar -Ppczf - /data/data/com.termux/files/home /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+		##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+
+	echo "Don't worry too much, it is normal for some directories to backup without permission."
+	echo "部分目录无权限备份是正常现象。"
+	rm -f backuptime.tmp 
+	#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0 
+	pwd
+	ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
+	echo '备份完成,按任意键返回。'
+    read
+    MainMenu
+    fi
+  
+		
+			
+		
+		fi	
+	
+	
+	
+	
+################################	
+if [ $exitstatus = 1 ]; then
+	BackupSystem
+
+fi
+
+
+	
+}
+ 
+########################################################################
+
 ####################################
 #tar压缩进度条1、2
 
@@ -348,19 +611,20 @@ RESTORESYSTEM(){
 OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 "0" "Back to the main menu 返回主菜单" \
 "1" "Restore the latest debian backup 还原Debian" \
+"2" "Restore the latest termux backup 还原Termux" \
 3>&1 1>&2 2>&3)
 ###########################################################################
 if [ "$OPTION" == '1' ]; then
 termux-setup-storage 
-
+    cd /sdcard/backup
 	ls -lth debian*tar* |head -n 10 2>/dev/null  || echo '未检测到备份文件'
    
     echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令' 
 	
 	echo 'cd /sdcard/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
     echo '请注意大小写，并把文件名改成具体名称'
-    cd /sdcard/backup
-    RESTORE=$(ls -lth ./*tar* | grep ^- | head -n 1 |cut -d '/' -f 2)
+
+    RESTORE=$(ls -lth ./debian*tar* | grep ^- | head -n 1 |cut -d '/' -f 2)
     echo " " 
 	ls -lh ${RESTORE}
 	printf "${YELLOW}即将为您还原${RESTORE}，请问是否确认？[Y/n]${RESET} "
@@ -397,12 +661,70 @@ termux-setup-storage
 		
 	esac
 	
-	echo "按回车键返回。Press enter to return."
+	echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
     read
    MainMenu
-	#'下面那个fi对应! -f /sdcard/backup/*tar*'
-	#fi
+
 fi
+
+
+###################
+if [ "$OPTION" == '2' ]; then 
+
+
+
+termux-setup-storage 
+    cd /sdcard/backup
+	ls -lth termux*tar* |head -n 10 2>/dev/null  || echo '未检测到备份文件'
+   
+    echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令' 
+	
+	echo 'cd /sdcard/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
+    echo '请注意大小写，并把文件名改成具体名称'
+
+    RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 |cut -d '/' -f 2)
+    echo " " 
+	ls -lh ${RESTORE}
+	printf "${YELLOW}即将为您还原${RESTORE}，请问是否确认？[Y/n]${RESET} "
+	#printf之后分行
+	echo ''
+	echo 'Do you want to restore it?[Y/n]'
+
+    read opt
+	case $opt in
+		y*|Y*|"")   
+		
+
+     if [ "${RESTORE:0-6:6}" == 'tar.xz' ]; then
+	 echo 'tar.xz'
+          pv  ${RESTORE} | tar -PJx    		  
+		fi
+		
+	if [ "${RESTORE:0-6:6}" == 'tar.gz' ]; then
+	echo 'tar.gz'
+          pv  ${RESTORE} | tar -Pzx 
+		fi
+		  	
+		
+		;;
+
+
+		n*|N*) echo "skipped." ;;
+		*) echo "Invalid choice. skipped." ;;
+		
+		
+		#tar xfv $pathTar -C $path
+		#(pv -n $pathTar | tar xfv $pathTar -C $path ) 2>&1 | dialog --gauge "Extracting file..." 6 50
+		
+		
+	esac
+	
+	echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
+    read
+   MainMenu
+
+fi
+
 
 #####################################   
    if [ "$OPTION" == '0' ]; then
@@ -450,7 +772,7 @@ echo "${YELLOW}usr/share 目录 TOP8${RESET}"
 du -hsx ./usr/share/* 2>/dev/null  | sort -rh| head -n 8
 
 echo '' 
-	echo "按回车键返回。Press enter to return."
+	echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
     read
    SpaceOccupation
 
@@ -462,7 +784,7 @@ echo 'Loading may take several seconds, depending on the number of files and the
 echo "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
 
 find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
-	echo "按回车键返回。Press enter to return."
+	echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
     read
    SpaceOccupation
 
@@ -479,7 +801,7 @@ echo "${YELLOW}sdcard文件大小排行榜(30名)${RESET}"
 
 find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
 
-	echo "按回车键返回。Press enter to return."
+	echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
     read
    SpaceOccupation
 fi
@@ -487,7 +809,7 @@ fi
 if [ "$OPTION" == '4' ]; then
 echo "${YELLOW}Disk usage${RESET}"
 df -h |grep G |grep -v tmpfs
-	echo "按回车键返回。Press enter to return."
+	echo "${YELLOW}按回车键返回。Press enter to return.${RESET} "
     read
    SpaceOccupation
 fi
