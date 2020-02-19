@@ -62,7 +62,7 @@ fi
 if [ "$OPTION" == '5' ]; then
 
 wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
-echo '更新完成，按回车键返回。'
+echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 echo 'Press enter to return.'
 chmod +x /usr/local/bin/debian-i
 read

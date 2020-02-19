@@ -106,7 +106,8 @@ DoYouWantToSeeWhatIsInside
 "4" "备份系统 backup system" \
 "5" "还原 restore" \
 "6" "查询空间占用 query space occupation" \
-"7" "退出 exit" \
+"7" "更新本管理器" \
+"8" "退出 exit" \
 3>&1 1>&2 2>&3)
 
 if [ "$OPTION" == '1' ]; then
@@ -148,11 +149,11 @@ fi
 
 if [ "$OPTION" == '7' ]; then
 
-	exit
+	UPDATEMANAGER
 fi
 
 if [ "$OPTION" == '8' ]; then
-BACKUPTERMUX
+    exit
    
 fi
 
@@ -261,7 +262,7 @@ REMOVESYSTEM(){
 	read 
 	
     chmod 777 -R ${DebianFolder}
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash $PREFIX/etc/storage/DebianManagerLatest.bash 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/debian-root $PREFIX/etc/storage/DebianManager.bash $PREFIX/etc/storage/DebianManagerLatest.bash 2>/dev/null
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
@@ -270,7 +271,7 @@ REMOVESYSTEM(){
 	echo '其它相关依赖，如pv、dialog、openssl、procps、proot、wget、curl等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若需删除debian管理器，则请输rm -f $PREFIX/bin/debian-i'
-	echo '若您需要重装debian，则不建议删除镜像文件。'
+	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
 	ls -lh ~/debian-sid-rootfs.tar.xz
 	printf "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
 	#printf之后分行
@@ -831,6 +832,16 @@ fi
 
 
 ########################################################################
+UPDATEMANAGER(){
+
+wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+echo "${YELLOW}更新完成，按回车键返回。${RESET}"
+echo 'Press enter to return.'
+chmod +x /usr/local/bin/debian-i
+read
+bash /usr/local/bin/debian-i 
+
+}
 #
 autoCheck
 ##取消注释，测试用。
