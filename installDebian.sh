@@ -70,7 +70,7 @@ mkdir -p ~/storage/external-1
 DebianFolder=debian_${archtype}
 #DebianFolder=debian_arm64
 
-mkdir -p ~/${DebianFolder}
+
 
 echo "                                        "
 echo "                 .::::..                "
@@ -109,7 +109,7 @@ fi
 
 
 
-
+mkdir -p ~/${DebianFolder}
 
 DebianTarXz="debian-sid-rootfs.tar.xz"
 
@@ -261,35 +261,6 @@ cat > /data/data/com.termux/files/usr/bin/stopvnc <<- 'EndOfFile'
 pkill -u $(whoami)
 EndOfFile
 
-
-
-
-
-
-: 'cat >/data/data/com.termux/files/usr/bin/debian-i <<-'EndOfFile'
-#!/data/data/com.termux/files/usr/bin/bash
-    if [ ! -f /data/data/com.termux/files/usr/bin/wget ]; then
-		apt update ; apt install wget 
-    fi
-	
-	if [ -d ~/${DebianFolder}  ]; then
-	YELLOW=$(printf '\033[33m')
-	RESET=$(printf '\033[m')
-	printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
-	#分行
-    echo ''
-	echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
-	read opt
-	case $opt in
-		y*|Y*|"") $PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile ; sed -i '/alias debian-rm=/d' $PREFIX/etc/profile ;source profile >/dev/null 2>&1 ; bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	 ;;
-		n*|N*) echo "skipped." ;;
-		*) echo "Invalid choice. skipped." ;;
-	esac
-	
-	else
-	    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"	
-    fi
-EndOfFile'
 
 
 mkdir -p /data/data/com.termux/files/usr/etc/storage/
