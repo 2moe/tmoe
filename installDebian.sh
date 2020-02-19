@@ -59,7 +59,7 @@ esac
 
 	if [ ! -z "$dependencies" ]; then
 	echo "正在安装相关依赖..."
-	apt update ; apt install -y ${dependencies} 
+	apt install -y ${dependencies} 
 	fi
 	
 
@@ -1138,7 +1138,7 @@ chmod +x zsh.sh
 #vnc自动启动
 cat >vnc-autostartup<<-'EndOfFile'
 cat /etc/issue
-ps -e | tail -n 25
+ps -e 2>/dev/null | tail -n 25 
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
 if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -1149,7 +1149,7 @@ EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
-ps -e | tail -n 25
+ps -e 2>/dev/null | tail -n 25
 grep  'cat /etc/issue' .zshrc >/dev/null || sed -i '1 a cat /etc/issue' .zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
@@ -1238,6 +1238,7 @@ sed -i 's/http/https/' /etc/apt/sources.list
 
 
 apt update 
+apt list --upgradable
 apt dist-upgrade -y
 echo '即将为您安装思源黑体(中文字体)，aptitude(包管理工具) 等必要软件'
 apt install -y procps fonts-noto-cjk aptitude
@@ -1667,7 +1668,7 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-echo "Gnome测试失败，请自行解决。"
+echo "Gnome测试失败，请自行解决软件依赖和其它相关问题。"
 apt install -y aptitude tightvncserver
 aptitude install -y task-gnome-desktop 
 apt clean
@@ -1750,6 +1751,7 @@ function install()
 {
 apt-mark hold udisks2
 apt update
+echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
 apt install -y aptitude tightvncserver
 apt install -y kde-plasma-desktop
 aptitude install -y  task-kde-desktop 
