@@ -411,9 +411,30 @@ chmod +x remove-debian.sh
  
  #配置zsh
  cat >zsh.sh <<'ADD-ZSH-SH'
-#!/bin/sh
+#!/bin/bash
 apt update
-apt install -y zsh git
+dependencies=""
+
+    if [ ! -e /bin/zsh ]; then
+		dependencies="${dependencies} zsh"
+	fi
+    
+	if [ ! -e /usr/bin/git ]; then
+		dependencies="${dependencies} git"
+	fi		
+	
+	if [ ! -e /usr/bin/wget ]; then
+		dependencies="${dependencies} wget"
+	fi	
+	
+	if [ ! -z "$dependencies" ]; then
+	echo "正在安装相关依赖..."
+	apt install -y ${dependencies} 
+	fi
+	
+wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+chmod +x /usr/local/bin/debian-i
+
 rm -rf /root/.oh-my-zsh
 chsh -s /usr/bin/zsh
 #
@@ -1126,6 +1147,12 @@ grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc 
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
 echo 'All optimization steps have been completed, enjoy it!'
+echo 'zsh配置完成，2s后将为您启动debian-gui安装管理器'
+echo '您也可以手动输debian-i进入'
+echo 'After 2 seconds, debian-gui installation manager will be launched.'
+echo 'You can also enter debian-i manually to start it.'
+sleep 2
+/usr/local/bin/debian-i
 	exec zsh -l
 	source ~/.zshrc
 	zsh
@@ -1387,6 +1414,10 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc startxsdl
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 startvnc
 }
 function remove()
@@ -1461,7 +1492,10 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc
-
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 startvnc
 
 }
@@ -1542,7 +1576,10 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc
-
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 
 startvnc
 }
@@ -1620,7 +1657,10 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc
-
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 
 startvnc
 }
@@ -1697,7 +1737,10 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc
-
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 
 startvnc
 }
@@ -1780,7 +1823,10 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc
-
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 
 startvnc
 }
@@ -1886,7 +1932,9 @@ chmod +x firefox.sh
 
 chmod +x ~/*
 grep 'export DISPLAY' /etc/profile ||echo "export DISPLAY=":1"" >> /etc/profile
-
+cd ~
+mkdir -p /usr/local/bin
+cp -pf ./*.sh /usr/local/bin
 echo "Welcome to Debian GNU/Linux."
 cat /etc/issue
 uname -a 
@@ -1923,8 +1971,8 @@ echo "             iBBBP                      "
 echo "                 r7:..                  "
 
 echo "Automatically configure zsh after 3 seconds,you can press Ctrl + C to cancel."
-echo "3s后将自动开始配置zsh"
-sleep 3
+echo "2s后将自动开始配置zsh"
+sleep 2
 bash zsh.sh 
 EDIT-BASHRC
 

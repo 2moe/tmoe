@@ -370,7 +370,7 @@ fi
 
 BACKUPTERMUX(){	 
 TERMUXBACKUP=$(whiptail --title "多项选择题" --checklist \
-"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认 \n Which directory do you want to backup? Please press the space to select and press Enter to confirm?" 15 60 4 \
+"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认 \n Which directory do you want to backup? Please press the space to select and press Enter to confirm." 15 60 4 \
 "home" "Termux主目录,主要用来保存用户文件" ON \
 "usr" "保存软件、命令和其它东西" OFF \
 3>&1 1>&2 2>&3)
