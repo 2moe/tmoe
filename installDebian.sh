@@ -1136,9 +1136,9 @@ git clone https://gitee.com/mo2/zsh-syntax-highlighting.git ~/.zsh-syntax-highli
 
 grep '.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || echo -e "\nsource /root/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
 
-echo "正在安装zsh-autosuggestions语法历史记录插件"
+echo "正在安装zsh-autosuggestions自动补全插件"
 rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-mkdir -p /root/.oh-my-zsh/custom
+mkdir -p /root/.oh-my-zsh/custom/plugins
 #git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 
 
