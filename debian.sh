@@ -834,12 +834,12 @@ fi
 ########################################################################
 UPDATEMANAGER(){
 
-wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
 echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 echo 'Press enter to return.'
-chmod +x /usr/local/bin/debian-i
+chmod +x $PREFIX/bin/debian-i
 read
-bash /usr/local/bin/debian-i 
+bash $PREFIX/bin/debian-i
 
 }
 #
