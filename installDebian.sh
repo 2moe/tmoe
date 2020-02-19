@@ -390,13 +390,18 @@ dependencies=""
 		dependencies="${dependencies} zsh"
 	fi
     
+	if [ ! -d /usr/share/doc/fonts-powerline ]; then
+	  dependencies="${dependencies} fonts-powerline"
+	
+	fi
+	
 	if [ ! -e /usr/bin/git ]; then
 		dependencies="${dependencies} git"
 	fi		
 	
 	if [ ! -e /usr/bin/wget ]; then
 		dependencies="${dependencies} wget"
-	fi	
+	fi		
 	
 	if [ ! -z "$dependencies" ]; then
 	echo "正在安装相关依赖..."
@@ -1093,7 +1098,7 @@ themeEOF
 cd ~
 sed -i '1 r vnc-autostartup-zsh' ~/.zshrc 
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
-apt install fonts-powerline -y
+
 rm -f vnc-autostartup-zsh
 
 
@@ -1240,8 +1245,7 @@ sed -i 's/http/https/' /etc/apt/sources.list
 apt update 
 apt list --upgradable
 apt dist-upgrade -y
-echo '即将为您安装思源黑体(中文字体)，aptitude(包管理工具) 等必要软件'
-apt install -y procps fonts-noto-cjk aptitude
+apt install -y procps
 apt clean
 
 
@@ -1345,7 +1349,8 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-apt install -y xfce4 xfce4-terminal tightvncserver
+echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal和tightvncserver。'
+apt install -y fonts-noto-cjk xfce4 xfce4-terminal tightvncserver
 apt clean
 
 mkdir -p ~/.vnc
@@ -1431,7 +1436,8 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-apt install -y lxde-core lxterminal tightvncserver
+echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
+apt install -y fonts-noto-cjk lxde-core lxterminal tightvncserver
 apt clean
 
 mkdir -p ~/.vnc
@@ -1514,7 +1520,9 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 
+echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
+apt install -y fonts-noto-cjk aptitude 
+aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 2>/dev/null
 apt clean
 
 mkdir -p ~/.vnc
@@ -1596,7 +1604,8 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-apt install -y lxqt-core lxqt-config qterminal tightvncserver
+echo '即将为您安装思源黑体(中文字体)、tightvncserver、lxqt-core、lxqt-config和qterminal  ' 
+apt install -y fonts-noto-cjk tightvncserver lxqt-core lxqt-config qterminal 
 apt clean
 
 mkdir -p ~/.vnc
@@ -1669,7 +1678,8 @@ function install()
 apt-mark hold udisks2
 apt update
 echo "Gnome测试失败，请自行解决软件依赖和其它相关问题。"
-apt install -y aptitude tightvncserver
+echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver和task-gnome-desktop' 
+apt install -y fonts-noto-cjk aptitude tightvncserver
 aptitude install -y task-gnome-desktop 
 apt clean
 
@@ -1719,9 +1729,10 @@ startvnc
 }
 function remove()
 {
-apt purge -y aptitude tightvncserver
+apt purge -y tightvncserver
 apt autopurge
 aptitude purge -y task-gnome-desktop 
+apt purge -y task-gnome-desktop 
 apt autopurge
 }
 
@@ -1752,7 +1763,8 @@ function install()
 apt-mark hold udisks2
 apt update
 echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
-apt install -y aptitude tightvncserver
+echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop和task-kde-desktop ' 
+apt install -y fonts-noto-cjk aptitude tightvncserver
 apt install -y kde-plasma-desktop
 aptitude install -y  task-kde-desktop 
 
@@ -1806,8 +1818,9 @@ startvnc
 }
 function remove()
 {
-apt purge -y aptitude tightvncserver kde-plasma-desktop
+apt purge -y tightvncserver kde-plasma-desktop
 aptitude purge -y  task-kde-desktop 
+apt purge -y  task-kde-desktop 
 apt autopurge
 }
 

@@ -115,7 +115,8 @@ INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 if [ "$INSTALLDESKTOP" == '1' ]; then	
 apt-mark hold udisks2
 apt update
-apt install -y xfce4 xfce4-terminal tightvncserver
+echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal和tightvncserver。'
+apt install -y fonts-noto-cjk xfce4 xfce4-terminal tightvncserver
 apt clean
 
 mkdir -p ~/.vnc
@@ -193,7 +194,7 @@ echo '"mate" "喔...喔呜...我不舍得你走/(ㄒoㄒ)/~~"  '
 read	
 apt purge -y xfce4 xfce4-terminal tightvncserver
    apt purge -y lxde-core lxterminal 
-  apt purge -y mate-desktop-environment-core mate-terminal
+  apt purge -y mate-desktop-environment-core mate-terminal || aptitude purge -y mate-desktop-environment-core 2>/dev/null
   apt autopurge
 	DEBIANMENU
 }	
