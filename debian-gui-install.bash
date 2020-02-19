@@ -25,12 +25,13 @@ RESET=$(printf '\033[m')
 }
 ####################################################
 DEBIANMENU(){
-OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
+OPTION=$(whiptail --title "输debian-i启动本工具，版本号2020-02" --menu "请使用方向键和回车键进行操作。" 15 60 4 \
 "1" "安装图形界面gui" \
 "2" "安装浏览器browser" \
 "3" "卸载图形界面" \
 "4" "卸载浏览器" \
-"5" "退出 exit" \
+"5" "更新本工具" \
+"6" "退出 exit" \
 3>&1 1>&2 2>&3)
 
 ##############################
@@ -59,6 +60,16 @@ if [ "$OPTION" == '4' ]; then
 fi
 
 if [ "$OPTION" == '5' ]; then
+
+wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+echo '更新完成，按回车键返回。'
+echo 'Press enter to return.'
+chmod +x /usr/local/bin/debian-i
+read
+bash /usr/local/bin/debian-i 
+fi
+
+if [ "$OPTION" == '6' ]; then
 
 	exit
 
