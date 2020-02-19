@@ -106,7 +106,7 @@ DoYouWantToSeeWhatIsInside
 "4" "备份系统 backup system" \
 "5" "还原 restore" \
 "6" "查询空间占用 query space occupation" \
-"7" "更新本管理器" \
+"7" "更新本管理器 update debian manager" \
 "8" "退出 exit" \
 3>&1 1>&2 2>&3)
 

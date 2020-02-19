@@ -26,11 +26,11 @@ RESET=$(printf '\033[m')
 ####################################################
 DEBIANMENU(){
 OPTION=$(whiptail --title "输debian-i启动本工具，版本号2020-02" --menu "请使用方向键和回车键进行操作。" 15 60 4 \
-"1" "安装图形界面gui" \
-"2" "安装浏览器browser" \
-"3" "卸载图形界面" \
-"4" "卸载浏览器" \
-"5" "更新本工具" \
+"1" "安装图形界面 install gui" \
+"2" "安装浏览器 install browser" \
+"3" "卸载图形界面 remove gui" \
+"4" "卸载浏览器 remove browser" \
+"5" "更新本工具 update debian tool" \
 "6" "退出 exit" \
 3>&1 1>&2 2>&3)
 
