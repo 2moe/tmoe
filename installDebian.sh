@@ -128,7 +128,7 @@ DebianTarXz="debian-sid-rootfs.tar.xz"
 	cur=`pwd`
 	cd ~/${DebianFolder}
     echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
-	 pv  ${cur}/${DebianTarXz} | tar -pJx
+	 pv  ${cur}/${DebianTarXz} |proot --link2symlink  tar -pJx
 	#proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
 	cd "$cur"
 echo "                                        " 
