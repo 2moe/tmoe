@@ -1268,7 +1268,8 @@ sed -i 's/http/https/' /etc/apt/sources.list
 
 apt update 
 apt dist-upgrade -y
-apt install -y procps fonts-wqy-zenhei grep aptitude
+echo '即将为您安装思源黑体(中文字体)，aptitude(包管理工具) 等必要软件'
+apt install -y procps fonts-noto-cjk aptitude
 apt clean
 
 
