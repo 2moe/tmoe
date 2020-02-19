@@ -412,7 +412,7 @@ chmod +x remove-debian.sh
  #配置zsh
  cat >zsh.sh <<'ADD-ZSH-SH'
 #!/bin/bash
-apt update
+
 dependencies=""
 
     if [ ! -e /bin/zsh ]; then
@@ -429,7 +429,7 @@ dependencies=""
 	
 	if [ ! -z "$dependencies" ]; then
 	echo "正在安装相关依赖..."
-	apt install -y ${dependencies} 
+	 apt install -y ${dependencies} 
 	fi
 	
 wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
@@ -1970,7 +1970,7 @@ echo "           1BBP                         "
 echo "             iBBBP                      "
 echo "                 r7:..                  "
 
-echo "Automatically configure zsh after 3 seconds,you can press Ctrl + C to cancel."
+echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 echo "2s后将自动开始配置zsh"
 sleep 2
 bash zsh.sh 
