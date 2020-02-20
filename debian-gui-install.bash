@@ -26,16 +26,16 @@ RESET=$(printf '\033[m')
 ####################################################
 DEBIANMENU(){
 OPTION=$(whiptail --title "输debian-i启动本工具，版本号2020-02" --menu "请使用方向键和回车键进行操作。" 15 60 4 \
-"1" "安装图形界面 install gui" \
-"2" "安装浏览器 install browser" \
-"3" "卸载图形界面 remove gui" \
-"4" "卸载浏览器 remove browser" \
-"5" "更新本工具 update debian tool" \
-"6" "配置kali源 Modify to Kali software source list"  \
-"7" "还原debian源 Restore to debian source list" \
-"8" "安装中文手册 install chinese manual" \
-"9" "重新配置zsh Reconfigure zsh" \
-"10" "退出 exit" \
+"1" "install gui 安装图形界面" \
+"2" "install browser 安装浏览器" \
+"3" "remove gui 卸载图形界面" \
+"4" "remove browser 卸载浏览器" \
+"5" "update debian tool 更新本工具" \
+"6" "Modify to Kali source list 配置kali源"  \
+"7" "Restore to debian source list 还原debian源" \
+"8" "install chinese manual 安装中文手册" \
+"9" "Reconfigure zsh 重新配置zsh" \
+"10" "exit 退出" \
 3>&1 1>&2 2>&3)
 
 ##############################
