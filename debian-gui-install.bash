@@ -75,25 +75,25 @@ fi
 ################
 if [ "$OPTION" == '6' ]; then
 
-	/usr/local/bin/kali.sh
+	bash /usr/local/bin/kali.sh
 
 fi
 
 if [ "$OPTION" == '7' ]; then
 
-	/usr/local/bin/kali.sh rm
+	bash /usr/local/bin/kali.sh rm
 
 fi
 ############
 if [ "$OPTION" == '8' ]; then
 
-	/usr/local/bin/man.sh
+	bash /usr/local/bin/man.sh
 
 fi
 ##################
 if [ "$OPTION" == '9' ]; then
 
-	/usr/local/bin/zsh.sh
+	bash /usr/local/bin/zsh.sh
 
 fi
 #################################
