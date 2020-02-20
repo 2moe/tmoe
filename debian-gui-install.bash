@@ -124,7 +124,7 @@ installBROWSER(){
 	     sleep 2
 		 apt install -y chromium chromium-l10n
         sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
-        grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox" >> /etc/profile'
+        grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox"' >> /etc/profile
 	fi  
 		DEBIANMENU
 		

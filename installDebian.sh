@@ -1802,7 +1802,7 @@ apt install -y chromium chromium-l10n
 #string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"' 
 #sed -i 's:${string}:${string} --user-data-dir --no-sandbox:' /bin/bash/chromium
 sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
-grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox" >> /etc/profile'
+grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox"' >> /etc/profile
 }
 function remove()
 {
