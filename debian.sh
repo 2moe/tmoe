@@ -834,7 +834,7 @@ fi
 ########################################################################
 UPDATEMANAGER(){
 
-wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 echo 'Press enter to return.'
 chmod +x $PREFIX/bin/debian-i
