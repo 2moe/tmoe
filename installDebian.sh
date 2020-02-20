@@ -1282,6 +1282,8 @@ apt clean
 echo 'You can type "neofetch" to get the current system information'
 echo '您可以输neofetch来获取当前系统信息'
 neofetch
+echo '若您使用的是xfce桌面，则您可以输apt install -y kali-undercover来伪装成win10模式'
+echo '直接运行卧底模式可能会报错，请直接在“设置管理器---外观”处，修改样式和图标。'
 }
 function remove()
 {
@@ -1376,7 +1378,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 
 }
 function remove()
@@ -1474,7 +1476,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 
 }
 
@@ -1577,7 +1579,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 
 
@@ -1677,7 +1679,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 
 function remove()
@@ -1775,7 +1777,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 function remove()
 {
@@ -1880,7 +1882,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 function remove()
 {
