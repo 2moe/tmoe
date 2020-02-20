@@ -1375,7 +1375,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，输Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 
 }
 function remove()
@@ -1473,7 +1473,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，输Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 
 }
 
@@ -1576,7 +1576,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，输Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 
 
@@ -1676,7 +1676,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，输Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 
 function remove()
@@ -1774,7 +1774,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，输Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 function remove()
 {
@@ -1879,7 +1879,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
-echo '您还可以输startxsdl来启动xsdl，输Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '您还可以输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 }
 function remove()
 {
