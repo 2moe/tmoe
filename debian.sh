@@ -107,7 +107,7 @@ DoYouWantToSeeWhatIsInside
 "5" "还原 restore" \
 "6" "查询空间占用 query space occupation" \
 "7" "更新本管理器 update debian manager" \
-"8" "配置termux-zsh(优化termux) Configure zsh" \
+"8" "配置zsh(优化termux) Configure zsh" \
 "9" "退出 exit" \
 3>&1 1>&2 2>&3)
 
