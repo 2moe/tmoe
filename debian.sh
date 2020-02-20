@@ -860,7 +860,7 @@ bash $PREFIX/bin/debian-i
 #################################
 DOWNLOADVNCAPK(){
          cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
-    if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更加,但不支持声音。xsdl支持声音，但操作体验没有vnc好" 10 60) then 
+    if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,但默认情况下不支持声音。xsdl支持声音，但操作体验没有vnc好" 10 60) then 
 		echo 'Downloading vnc viewer...'
 		rm -f vnc36142089.tar* 2>/dev/null || rm -f "vnc36142089.tar*" 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
