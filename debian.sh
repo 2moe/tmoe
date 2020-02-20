@@ -888,7 +888,7 @@ DOWNLOADVNCAPK(){
 		echo 'Download size 30.1MB'
         wget -q 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz'
 		echo '正在解压...'
-	    tar -Jxvf xsdl12041.tar.xz
+	    tar -Jxvf 'XServerXSDL_x,org,server_1,20,41.tar.xz'
         echo '正在删除压缩包...'
         echo 'Deleting XServerXSDL_x,org,server_1,20,41.tar.xz...'	
        # rm -f xsdl12041.tar* ||  rm -f "xsdl12041.tar*"		
