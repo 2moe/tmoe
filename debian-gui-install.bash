@@ -32,9 +32,9 @@ OPTION=$(whiptail --title "输debian-i启动本工具，版本号2020-02" --menu
 "4" "卸载浏览器 remove browser" \
 "5" "更新本工具 update debian tool" \
 "6" "配置kali源 Modify to Kali software source list"  \
-"7" "还原debian源 Restore to debian source list"
-"8" "安装中文手册 install chinese manual"
-"9" "重新配置zsh Reconfigure zsh"
+"7" "还原debian源 Restore to debian source list" \
+"8" "安装中文手册 install chinese manual" \
+"9" "重新配置zsh Reconfigure zsh" \
 "10" "退出 exit" \
 3>&1 1>&2 2>&3)
 
