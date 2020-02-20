@@ -211,7 +211,8 @@ cat > /data/data/com.termux/files/usr/bin/stopvnc <<- 'EndOfFile'
 pkill -u $(whoami)
 EndOfFile
 
-cat > /data/data/com.termux/files/usr/bin/startxsdl <<- 'EndOfFile'
+#不要单引号
+cat > /data/data/com.termux/files/usr/bin/startxsdl <<- EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n x.org.server/x.org.server.MainActivity
 touch ~/${DebianFolder}/root/.vnc/startxsdl
