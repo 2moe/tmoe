@@ -1196,12 +1196,6 @@ echo "    5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y     "
 echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
 apt install -y apt-utils 
-echo "正在卸载systemd..."
-apt purge -y systemd 
-apt autopurge -y
-
-echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > /etc/apt/preferences.d/systemd
-echo -e 'Package: *systemd*\nPin: origin ""\nPin-Priority: -1' > /etc/apt/preferences.d/systemd
 
 
 apt install -y ca-certificates 
