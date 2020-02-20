@@ -860,7 +860,10 @@ bash $PREFIX/bin/debian-i
 #################################
 DOWNLOADVNCAPK(){
          cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
-    if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,但默认情况下不支持声音。xsdl支持声音，但操作体验没有vnc好" 10 60) then 
+    if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,但默认情况下不支持声音。\n xsdl支持声音，但操作体验没有vnc好。" 10 60) then 
+        echo 'Press the Enter key to start the download, and press Ctrl + C to cancel.'
+	    echo '按回车键开始下载，按Ctrl+C取消。'
+		read 
 		echo 'Downloading vnc viewer...'
 		rm -f vnc36142089.tar* 2>/dev/null || rm -f "vnc36142089.tar*" 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
@@ -889,7 +892,9 @@ DOWNLOADVNCAPK(){
 		echo '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
 		cd ${cur}
 	else
-        
+        echo 'Press the Enter key to start the download, and press Ctrl + C to cancel.'
+	    echo '按回车键开始下载，按Ctrl+C取消。'
+		read 
         echo 'Downloading xsdl...'
 		rm -f xsdl12041.tar* 2>/dev/null ||  rm -f "xsdl12041.tar*" 2>/dev/null
         echo '正在为您下载至/sdcard/Download目录...'
