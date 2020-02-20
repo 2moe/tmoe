@@ -641,7 +641,7 @@ termux-setup-storage
 	case $opt in
 		y*|Y*|"")   
 		
-
+     #0-6是截取字符
      if [ "${RESTORE:0-6:6}" == 'tar.xz' ]; then
 	 echo 'tar.xz'
           pv  ${RESTORE} | tar -PJx    		  
@@ -680,7 +680,7 @@ if [ "$OPTION" == '2' ]; then
 
 termux-setup-storage 
     cd /sdcard/backup
-	ls -lth termux*tar* |head -n 10 2>/dev/null  || echo '未检测到备份文件'
+	ls -lth termux*tar* 2>/dev/null  || echo '未检测到备份文件'  |head -n 10  
    
     echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令' 
 	

@@ -90,7 +90,7 @@ installBROWSER(){
 	    fi
 	else
 	    
-	     echo '${YELLOW}妾身就知道你没有看走眼！${RESET} '
+	     echo "${YELLOW}妾身就知道你没有看走眼！${RESET}"
 		 echo '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
 		 echo "2s后将自动开始安装"
 	     sleep 2
