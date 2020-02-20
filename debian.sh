@@ -107,7 +107,8 @@ DoYouWantToSeeWhatIsInside
 "5" "还原 restore" \
 "6" "查询空间占用 query space occupation" \
 "7" "更新本管理器 update debian manager" \
-"8" "退出 exit" \
+"8" "配置termux-zsh(优化termux) Configure zsh" \
+"9" "退出 exit" \
 3>&1 1>&2 2>&3)
 
 if [ "$OPTION" == '1' ]; then
@@ -153,6 +154,12 @@ if [ "$OPTION" == '7' ]; then
 fi
 
 if [ "$OPTION" == '8' ]; then
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+   
+fi
+
+
+if [ "$OPTION" == '9' ]; then
     exit
    
 fi
