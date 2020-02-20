@@ -883,16 +883,16 @@ DOWNLOADVNCAPK(){
 	    echo '按回车键开始下载，按Ctrl+C取消。'
 		read 
         echo 'Downloading xsdl...'
-		rm -f 'XServerXSDL_x,org,server_1,20,41.tar.xz' 2>/dev/null
+		rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
         echo '正在为您下载至/sdcard/Download目录...'
-		echo 'Download size 30.1MB'
-        wget -qO 'XServerXSDL_x,org,server_1,20,41.tar.xz' 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz'
+		echo 'Download size 28.3MB'
+        wget -qO 'XServerXSDL-X-org-server_1-20-41.tar.xz' 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
-	    tar -Jxvf 'XServerXSDL_x,org,server_1,20,41.tar.xz'
+	    tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
         echo '正在删除压缩包...'
-        echo 'Deleting XServerXSDL_x,org,server_1,20,41.tar.xz...'	
+        echo 'Deleting XServerXSDL-X-org-server_1-20-41.tar.xz...'	
        # rm -f xsdl12041.tar* ||  rm -f "xsdl12041.tar*"		
-       rm -f 'XServerXSDL_x,org,server_1,20,41.tar.xz'
+       rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '解压成功，请进入下载目录，手动安装。'
 		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
