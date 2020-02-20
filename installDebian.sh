@@ -1075,46 +1075,46 @@ chmod +x zsh.sh
 #vnc自动启动
 cat >vnc-autostartup<<-'EndOfFile'
 cat /etc/issue
-ps -e 2>/dev/null | tail -n 25 
+
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
-if [ -f "~/.vnc/startvnc" ]; then
+if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
 	rm -f /root/.vnc/startvnc
 fi
 
-if [ -f "~/.vnc/startxsdl" ]; then
+if [ -f "/root/.vnc/startxsdl" ]; then
     echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
 	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android  application has been opened.'
-	rm -f ~/.vnc/startxsdl
+	rm -f /root/.vnc/startxsdl
 	echo '9s后将为您启动xsdl'
   echo 'xsdl will start in 9 seconds'
   sleep 9
   /usr/bin/startxsdl
 fi
-
+ ps -e 2>/dev/null | tail -n 25
 EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
-ps -e 2>/dev/null | tail -n 25
+
 grep  'cat /etc/issue' ~/.zshrc >/dev/null || sed -i '1 a cat /etc/issue' ~/.zshrc
-if [ -f "~/.vnc/startvnc" ]; then
+if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
-	rm -f ~/.vnc/startvnc
+	rm -f /root/.vnc/startvnc
 fi 
 
-if [ -f "~/.vnc/startxsdl" ]; then
+if [ -f "/root/.vnc/startxsdl" ]; then
     echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
 	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
-	rm -f ~/.vnc/startxsdl
+	rm -f /root/.vnc/startxsdl
   echo '9s后将为您启动xsdl'
   echo 'xsdl will start in 9 seconds'
   sleep 9
 	/usr/bin/startxsdl
 fi 
-
+ps -e 2>/dev/null | tail -n 25
 
 EndOfFile
 
