@@ -31,7 +31,11 @@ OPTION=$(whiptail --title "输debian-i启动本工具，版本号2020-02" --menu
 "3" "卸载图形界面 remove gui" \
 "4" "卸载浏览器 remove browser" \
 "5" "更新本工具 update debian tool" \
-"6" "退出 exit" \
+"6" "配置kali源 Modify to Kali software source list"  \
+"7" "还原debian源 Restore to debian source list"
+"9" "安装中文手册 install chinese manual"
+"10" "重新配置zsh Reconfigure zsh"
+"11" "退出 exit" \
 3>&1 1>&2 2>&3)
 
 ##############################
@@ -68,8 +72,32 @@ chmod +x /usr/local/bin/debian-i
 read
 bash /usr/local/bin/debian-i 
 fi
+################
+if [ "$OPTION" == '7' ]; then
 
-if [ "$OPTION" == '6' ]; then
+	/usr/local/bin/kali.sh
+
+fi
+
+if [ "$OPTION" == '8' ]; then
+
+	/usr/local/bin/kali.sh rm
+
+fi
+############
+if [ "$OPTION" == '9' ]; then
+
+	/usr/local/bin/man.sh
+
+fi
+##################
+if [ "$OPTION" == '10' ]; then
+
+	/usr/local/bin/zsh.sh
+
+fi
+#################################
+if [ "$OPTION" == '11' ]; then
 
 	exit
 
