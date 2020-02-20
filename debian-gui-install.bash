@@ -190,7 +190,9 @@ echo 'The vnc service is about to start for you. The password you entered is hid
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
 echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+echo '请输入6至8位密码'
 startvnc
+echo '您之后可以通过startvnc来启动vnc服务，stopvnc停止'
 
 fi		
 
