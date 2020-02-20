@@ -1195,7 +1195,7 @@ echo '即将为您安装 manpages、manpages-zh和man-db'
 apt install -y manpages manpages-zh man-db
 echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
 echo "man a help manual software, which can help you understand the detailed usage of the command."
-echo "您可以输${YELLOW}man 软件或命令名称{RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh{RESET}"
+echo "您可以输man 软件或命令名称来获取帮助信息，例如${YELLOW}man bash${RESET}或man zsh"
 
 }
 function remove()
