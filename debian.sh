@@ -868,7 +868,7 @@ DOWNLOADVNCAPK(){
 		rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'  2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 11.1MB'
-        wget -q 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'        	
+        wget -qO 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'        	
 		echo '正在解压...'
 	    tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
         echo '正在删除压缩包...'
@@ -886,7 +886,7 @@ DOWNLOADVNCAPK(){
 		rm -f 'XServerXSDL_x,org,server_1,20,41.tar.xz' 2>/dev/null
         echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 30.1MB'
-        wget -q 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz'
+        wget -qO 'XServerXSDL_x,org,server_1,20,41.tar.xz' 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz'
 		echo '正在解压...'
 	    tar -Jxvf 'XServerXSDL_x,org,server_1,20,41.tar.xz'
         echo '正在删除压缩包...'
