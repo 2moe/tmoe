@@ -272,7 +272,7 @@ echo "正在赋予proot启动脚本($PREFIX/bin/debian)执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
-chmod +x debian startvnc stopvnc debian-rm debian-i 
+chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl
 
 #设定alias,防止debian-root的alias依旧在生效。
 alias debian="/data/data/com.termux/files/usr/bin/debian"
