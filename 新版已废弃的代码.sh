@@ -79,3 +79,23 @@ tsudo debian
 EndOfFile
 
 "
+
+
+termux-zsh废弃code
+
+ 	if [ ! -d "$HOME/.termux/fonts/sarasa" ]; then
+	    rm -rf "$HOME/.termux/fonts"
+		cd "$HOME/.termux"
+		rm -f ZSHPOWERLINEFONTS.tar.xz 2>/dev/null
+		echo "Downloading font archive..."
+		echo "正在下载字体压缩包..."
+        wget -qO  'https://cdn.tmoe.me/git/TermuxZsh/ZSHPOWERLINEFONTS.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/Termux-zsh/ZSHPOWERLINEFONTS.tar.xz'
+
+		echo "正在解压字体文件..."
+		tar -Jxvf ZSHPOWERLINEFONTS.tar.xz
+		echo 'Deleting font archive...'
+		echo '正在删除字体压缩包...'
+		rm -f ZSHPOWERLINEFONTS.tar.xz
+		
+		
+	fi	

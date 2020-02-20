@@ -13,6 +13,10 @@ autoCheck(){
 		dependencies="${dependencies} wget"
 	fi	
 	
+	if [ ! -e $PREFIX/bin/aria2c ]; then
+		dependencies="${dependencies} aria2c"
+	fi	
+	
 	if [ ! -e $PREFIX/bin/pv ]; then
 		dependencies="${dependencies} pv"
 	fi	
@@ -849,7 +853,8 @@ fi
 ########################################################################
 UPDATEMANAGER(){
 
-wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+aria2c -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+#wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 echo 'Press enter to return.'
 chmod +x $PREFIX/bin/debian-i
@@ -868,7 +873,7 @@ DOWNLOADVNCAPK(){
 		rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'  2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 11.1MB'
-        wget -qO 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'        	
+         aria2c -x 16 -k 1M --split 16 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || aria2c -x 16 -k 1M --split 16 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'        	
 		echo '正在解压...'
 	    tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
         echo '正在删除压缩包...'
@@ -886,7 +891,7 @@ DOWNLOADVNCAPK(){
 		rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
         echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 28.3MB'
-        wget -qO 'XServerXSDL-X-org-server_1-20-41.tar.xz' 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
+         aria2c -x 16 -k 1M --split 16 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split 16 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
 	    tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
         echo '正在删除压缩包...'
