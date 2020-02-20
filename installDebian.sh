@@ -1235,9 +1235,9 @@ apt list --upgradable
 apt dist-upgrade -y
 echo 'You have successfully replaced your debian source with a kali source.'
 echo '您已更换为kali源，如需换回debian源，请手动执行bash ~/kali.sh rm'
-apt install -y neofetch 
+apt install -y screenfetch 
 apt clean
-neofetch
+screenfetch
 }
 function remove()
 {
