@@ -865,28 +865,15 @@ DOWNLOADVNCAPK(){
 	    echo '按回车键开始下载，按Ctrl+C取消。'
 		read 
 		echo 'Downloading vnc viewer...'
-		rm -f vnc36142089.tar* 2>/dev/null || rm -f "vnc36142089.tar*" 2>/dev/null
+		rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'  2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 11.1MB'
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar00
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar01
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar02
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar03
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar04
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar05
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar06
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar07
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar08
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar09
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar10
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar11
-        cat vnc36142089.tar* >vnc36142089.tar.xz		
+        wget -q 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'        	
 		echo '正在解压...'
-	    tar -Jxvf vnc36142089.tar.xz
+	    tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
         echo '正在删除压缩包...'
-        echo 'Deleting vnc36142089.tar.xz...'
-        rm -f vnc36142089.tar* || rm -f "vnc36142089.tar*"	
-        rm -f vnc36142089.tar.xz  
+        echo 'Deleting VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz...'
+        rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 		echo '解压成功，请进入下载目录，手动安装。'
 		echo '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
@@ -896,46 +883,16 @@ DOWNLOADVNCAPK(){
 	    echo '按回车键开始下载，按Ctrl+C取消。'
 		read 
         echo 'Downloading xsdl...'
-		rm -f xsdl12041.tar* 2>/dev/null ||  rm -f "xsdl12041.tar*" 2>/dev/null
+		rm -f 'XServerXSDL_x,org,server_1,20,41.tar.xz' 2>/dev/null
         echo '正在为您下载至/sdcard/Download目录...'
-		echo 'Download size 28.3MB'
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar00 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar01 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar02 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar03 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar04 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar05 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar06 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar07 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar08 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar09 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar10 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar11 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar12 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar13 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar14 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar15 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar16 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar17 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar18 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar19 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar20 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar21 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar22 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar23 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar24 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar25 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar26 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar27 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar28 
-        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar29 
-		cat xsdl12041.tar* >xsdl12041.tar.xz
+		echo 'Download size 30.1MB'
+        wget -q 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz' ||wget -q 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL_x%2Corg%2Cserver_1%2C20%2C41.tar.xz'
 		echo '正在解压...'
 	    tar -Jxvf xsdl12041.tar.xz
         echo '正在删除压缩包...'
-        echo 'Deleting xsdl12041.tar.xz...'	
+        echo 'Deleting XServerXSDL_x,org,server_1,20,41.tar.xz...'	
        # rm -f xsdl12041.tar* ||  rm -f "xsdl12041.tar*"		
-        rm -f xsdl12041.tar.xz 
+       rm -f 'XServerXSDL_x,org,server_1,20,41.tar.xz'
 		echo '解压成功，请进入下载目录，手动安装。'
 		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
