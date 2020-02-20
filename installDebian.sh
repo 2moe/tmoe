@@ -1086,7 +1086,10 @@ if [ -f "~/.vnc/startxsdl" ]; then
     echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
 	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android  application has been opened.'
 	rm -f ~/.vnc/startxsdl
-	/usr/bin/startxsdl
+	echo '9s后将为您启动xsdl'
+  echo 'xsdl will start in 9 seconds'
+  sleep 9
+  /usr/bin/startxsdl
 fi
 
 EndOfFile
@@ -1105,6 +1108,9 @@ if [ -f "~/.vnc/startxsdl" ]; then
     echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
 	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
 	rm -f ~/.vnc/startxsdl
+  echo '9s后将为您启动xsdl'
+  echo 'xsdl will start in 9 seconds'
+  sleep 9
 	/usr/bin/startxsdl
 fi 
 
