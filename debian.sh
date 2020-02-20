@@ -868,18 +868,18 @@ DOWNLOADVNCAPK(){
 		rm -f vnc36142089.tar* 2>/dev/null || rm -f "vnc36142089.tar*" 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 11.1MB'
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar00
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar01
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar02
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar03
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar04
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar05
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar06
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar07
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar08
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar09
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar10
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar11
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar00
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar01
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar02
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar03
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar04
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar05
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar06
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar07
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar08
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar09
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar10
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar11
         cat vnc36142089.tar* >vnc36142089.tar.xz		
 		echo '正在解压...'
 	    tar -Jxvf vnc36142089.tar.xz
@@ -899,36 +899,36 @@ DOWNLOADVNCAPK(){
 		rm -f xsdl12041.tar* 2>/dev/null ||  rm -f "xsdl12041.tar*" 2>/dev/null
         echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 28.3MB'
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar00 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar01 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar02 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar03 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar04 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar05 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar06 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar07 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar08 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar09 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar10 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar11 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar12 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar13 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar14 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar15 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar16 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar17 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar18 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar19 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar20 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar21 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar22 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar23 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar24 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar25 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar26 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar27 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar28 
-        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar29 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar00 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar01 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar02 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar03 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar04 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar05 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar06 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar07 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar08 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar09 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar10 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar11 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar12 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar13 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar14 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar15 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar16 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar17 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar18 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar19 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar20 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar21 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar22 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar23 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar24 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar25 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar26 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar27 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar28 
+        wget -q https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar29 
 		cat xsdl12041.tar* >xsdl12041.tar.xz
 		echo '正在解压...'
 	    tar -Jxvf xsdl12041.tar.xz
