@@ -1101,6 +1101,8 @@ sed -i '1 r vnc-autostartup' ./.bashrc.bak
 
 
 cat > .bashrc <<- 'EDIT-BASHRC'
+YELLOW=$(printf '\033[33m')
+RESET=$(printf '\033[m')
 #配置清华源
 cat  > /etc/apt/sources.list <<-'EndOfFile'
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ testing main contrib non-free
@@ -1121,8 +1123,13 @@ EndOfFile
 apt update 
 apt install -y locales 
 
+echo "您已成功安装Debian GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
+echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
+echo '正在执行优化步骤，请勿退出!'
+echo 'Optimization steps are in progress. Do not exit!'
 #配置中文环境
-echo "正在配置中文环境 Configuring Chinese environment"
+echo "正在配置中文环境..."
+echo "Configuring Chinese environment..."
 sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 cat > /etc/default/locale <<-'EOF' 
 LANG="zh_CN.UTF-8"
@@ -1165,13 +1172,13 @@ apt install -y ca-certificates
 
 #修改http源为https
 echo "Replacing http software source list with https."
-echo  "正在将http源替换为https"
+echo  "正在将http源替换为https..."
 sed -i 's/http/https/' /etc/apt/sources.list 
 
 
 apt update 
 apt list --upgradable
-echo  "正在更新所有软件..."
+echo  "正在升级所有软件包..."
 apt dist-upgrade -y
 apt install -y procps
 apt clean
@@ -1182,10 +1189,14 @@ cat >man.sh<<-'EndOfFile'
 #!/bin/bash
 function install()
 {
+YELLOW=$(printf '\033[33m')
+RESET=$(printf '\033[m')
+echo '即将为您安装 manpages、manpages-zh和man-db'
+apt install -y manpages manpages-zh man-db
 echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
 echo "man a help manual software, which can help you understand the detailed usage of the command."
-echo '您可以输"man 软件或命令名称"来获取帮助信息，例如man bash或man zsh'
-apt install -y manpages manpages-zh man-db
+echo "您可以输${YELLOW}man 软件或命令名称{RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh{RESET}"
+
 }
 function remove()
 {
