@@ -875,7 +875,7 @@ DOWNLOADVNCAPK(){
         echo 'Deleting VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz...'
         rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
-		echo '解压成功，请进入下载目录，手动安装。'
+		echo '解压成功，请进入下载目录手动安装。'
 		echo '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
 		cd ${cur}
 	else
@@ -892,7 +892,7 @@ DOWNLOADVNCAPK(){
         echo '正在删除压缩包...'
         echo 'Deleting XServerXSDL-X-org-server_1-20-41.tar.xz...'			
        rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
-		echo '解压成功，请进入下载目录，手动安装。'
+		echo '解压成功，请进入下载目录手动安装。'
 		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
         cd ${cur}
