@@ -211,7 +211,12 @@ cat > /data/data/com.termux/files/usr/bin/stopvnc <<- 'EndOfFile'
 pkill -u $(whoami)
 EndOfFile
 
-
+cat > /data/data/com.termux/files/usr/bin/startxsdl <<- 'EndOfFile'
+#!/data/data/com.termux/files/usr/bin/bash
+am start -n x.org.server/x.org.server.MainActivity
+touch ~/${DebianFolder}/root/.vnc/startxsdl
+/data/data/com.termux/files/usr/bin/debian
+EndOfFile
 
 
 wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
@@ -1076,17 +1081,34 @@ if [ -f "~/.vnc/startvnc" ]; then
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
 	rm -f /root/.vnc/startvnc
 fi
+
+if [ -f "~/.vnc/startxsdl" ]; then
+    echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
+	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android  application has been opened.'
+	rm -f ~/.vnc/startxsdl
+	/usr/bin/startxsdl
+fi
+
 EndOfFile
 
 cat >vnc-autostartup-zsh<<-'EndOfFile'
 cat /etc/issue
 ps -e 2>/dev/null | tail -n 25
 grep  'cat /etc/issue' ~/.zshrc >/dev/null || sed -i '1 a cat /etc/issue' ~/.zshrc
-if [ -f "/root/.vnc/startvnc" ]; then
+if [ -f "~/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
-	rm -f /root/.vnc/startvnc
+	rm -f ~/.vnc/startvnc
 fi 
+
+if [ -f "~/.vnc/startxsdl" ]; then
+    echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
+	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
+	rm -f ~/.vnc/startxsdl
+	/usr/bin/startxsdl
+fi 
+
+
 EndOfFile
 
 
@@ -1315,12 +1337,17 @@ echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
-cd /usr/bin
+
 cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
-export DISPLAY=127.0.0.1:2
+export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display name改为0'
+echo 'Starting xsdl, please change display name to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+startxfce4
 EndOfFile
 
 cat >stopvnc<<-'EndOfFile'
@@ -1404,6 +1431,21 @@ echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display name改为0'
+echo 'Starting xsdl, please change display name to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+startlxde
+EndOfFile
+
+
+##############
 cat >stopvnc<<-'EndOfFile'
 #!/bin/bash
 export USER=root
@@ -1413,7 +1455,7 @@ rm -rf /tmp/.X1-lock
 rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
-chmod +x startvnc stopvnc
+chmod +x startvnc stopvnc startxsdl
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -1491,7 +1533,21 @@ echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
 chmod +x mate.sh
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display name改为0'
+echo 'Starting xsdl, please change display name to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+mate-session
+EndOfFile
 
+
+##############
 cat >stopvnc<<-'EndOfFile'
 #!/bin/bash
 export USER=root
@@ -1501,7 +1557,7 @@ rm -rf /tmp/.X1-lock
 rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
-chmod +x startvnc stopvnc
+chmod +x startvnc stopvnc startxsdl
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -1574,6 +1630,21 @@ vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display name改为0'
+echo 'Starting xsdl, please change display name to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+startlxqt
+EndOfFile
+
+
+##############
 
 cat >stopvnc<<-'EndOfFile'
 #!/bin/bash
@@ -1584,7 +1655,7 @@ rm -rf /tmp/.X1-lock
 rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
-chmod +x startvnc stopvnc
+chmod +x startvnc stopvnc startxsdl
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -1657,6 +1728,21 @@ vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display name改为0'
+echo 'Starting xsdl, please change display name to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+gnome-session
+EndOfFile
+
+
+##############
 
 cat >stopvnc<<-'EndOfFile'
 #!/bin/bash
@@ -1667,7 +1753,7 @@ rm -rf /tmp/.X1-lock
 rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
-chmod +x startvnc stopvnc
+chmod +x startvnc stopvnc startxsdl
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -1747,7 +1833,21 @@ vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display name改为0'
+echo 'Starting xsdl, please change display name to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+startkde
+EndOfFile
 
+
+##############
 cat >stopvnc<<-'EndOfFile'
 #!/bin/bash
 export USER=root
@@ -1757,7 +1857,7 @@ rm -rf /tmp/.X1-lock
 rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
-chmod +x startvnc stopvnc
+chmod +x startvnc stopvnc startxsdl
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"

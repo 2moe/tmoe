@@ -86,6 +86,7 @@ esac
 DebianFolder=debian_${archtype}
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
+cur=$(pwd)
 MainMenu
 
 }
@@ -108,7 +109,8 @@ DoYouWantToSeeWhatIsInside
 "6" "查询空间占用 query space occupation" \
 "7" "更新本管理器 update debian manager" \
 "8" "配置zsh(优化termux) Configure zsh" \
-"9" "退出 exit" \
+"9" "Download VNC apk" \
+"10" "退出 exit" \
 3>&1 1>&2 2>&3)
 
 if [ "$OPTION" == '1' ]; then
@@ -160,6 +162,12 @@ fi
 
 
 if [ "$OPTION" == '9' ]; then
+     
+	 DOWNLOADVNCAPK
+   
+fi
+
+if [ "$OPTION" == '10' ]; then
     exit
    
 fi
@@ -849,7 +857,88 @@ read
 bash $PREFIX/bin/debian-i
 
 }
-#
+#################################
+DOWNLOADVNCAPK(){
+         cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
+    if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更加,但不支持声音。xsdl支持声音，但操作体验没有vnc好" 10 60) then 
+		echo 'Downloading vnc viewer...'
+		rm -f vnc36142089.tar* 2>/dev/null || rm -f "vnc36142089.tar*" 2>/dev/null
+		echo '正在为您下载至/sdcard/Download目录...'
+		echo 'Download size 11.1MB'
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar00
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar01
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar02
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar03
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar04
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar05
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar06
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar07
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar08
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar09
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar10
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/vnc/vnc36142089.tar11
+        cat vnc36142089.tar* >vnc36142089.tar.xz		
+		echo '正在解压...'
+	    tar -Jxvf vnc36142089.tar.xz
+        echo '正在删除压缩包...'
+        echo 'Deleting vnc36142089.tar.xz...'
+        rm -f vnc36142089.tar* || rm -f "vnc36142089.tar*"	
+        rm -f vnc36142089.tar.xz  
+		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
+		echo '解压成功，请进入下载目录，手动安装。'
+		echo '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
+		cd ${cur}
+	else
+        
+        echo 'Downloading xsdl...'
+		rm -f xsdl12041.tar* 2>/dev/null ||  rm -f "xsdl12041.tar*" 2>/dev/null
+        echo '正在为您下载至/sdcard/Download目录...'
+		echo 'Download size 28.3MB'
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar00 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar01 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar02 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar03 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar04 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar05 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar06 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar07 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar08 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar09 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar10 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar11 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar12 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar13 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar14 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar15 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar16 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar17 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar18 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar19 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar20 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar21 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar22 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar23 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar24 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar25 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar26 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar27 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar28 
+        wget -qO https://gitee.com/mo2/VncClient/raw/master/Android/xsdl/xsdl12041.tar29 
+		cat xsdl12041.tar* >xsdl12041.tar.xz
+		echo '正在解压...'
+	    tar -Jxvf xsdl12041.tar.xz
+        echo '正在删除压缩包...'
+        echo 'Deleting xsdl12041.tar.xz...'	
+        rm -f xsdl12041.tar* ||  rm -f "xsdl12041.tar*"		
+        rm -f xsdl12041.tar.xz 
+		echo '解压成功，请进入下载目录，手动安装。'
+		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
+		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
+        cd ${cur}
+	fi     
+
+}
+#########################################
 autoCheck
 ##取消注释，测试用。
 ##MainMenu
