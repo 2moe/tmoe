@@ -934,7 +934,7 @@ DOWNLOADVNCAPK(){
 	    tar -Jxvf xsdl12041.tar.xz
         echo '正在删除压缩包...'
         echo 'Deleting xsdl12041.tar.xz...'	
-        rm -f xsdl12041.tar* ||  rm -f "xsdl12041.tar*"		
+       # rm -f xsdl12041.tar* ||  rm -f "xsdl12041.tar*"		
         rm -f xsdl12041.tar.xz 
 		echo '解压成功，请进入下载目录，手动安装。'
 		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
