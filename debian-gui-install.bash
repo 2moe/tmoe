@@ -35,7 +35,9 @@ OPTION=$(whiptail --title "输debian-i启动本工具，版本号2020-02" --menu
 "7" "Restore to debian source list 还原debian源" \
 "8" "install chinese manual 安装中文手册" \
 "9" "Reconfigure zsh 重新配置zsh" \
-"10" "exit 退出" \
+"10" "修改vnc配置文件(包含分辨率等信息)" \
+"11" "修改xsdl配置文件(包含端口号)" \
+"12" "exit 退出" \
 3>&1 1>&2 2>&3)
 
 ##############################
@@ -96,8 +98,47 @@ if [ "$OPTION" == '9' ]; then
 	bash /usr/local/bin/zsh.sh
 
 fi
-#################################
+
 if [ "$OPTION" == '10' ]; then
+	if [ ! -e /bin/nano ]; then
+		apt install -y nano
+	fi
+	if [ ! -f /usr/bin/startvnc ]; then
+	 未检测startvnc,您可能尚未安装图形桌面，是否继续编辑。
+	 按回车键确认。
+	 read
+	nano $(which startvnc) || nano /usr/bin/startvnc
+	else
+	   echo '您可以手动修改vnc的配置信息'
+	   echo '若您想要修改分辨率，请将默认的1440x720（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
+	   echo '改完后按Ctrl+O保存，Ctrl+X退出。'
+	   echo '按回车键确认编辑。'
+	   read
+	    nano $(which startvnc) || nano /usr/bin/startvnc 
+    fi
+fi	
+####################################	
+if [ "$OPTION" == '11' ]; then	
+	if [ ! -e /bin/nano ]; then
+		apt install -y nano
+	fi
+	
+	if [ ! -f /usr/bin/startvnc ]; then
+	 未检测startxsdl,您可能尚未安装图形桌面，是否继续编辑。
+	 按回车键确认。
+	 read
+	nano $(which startxsdl) || nano /usr/bin/startxsdl
+	else
+	
+	echo '您可以手动修改xsdl的端口号和其它配置信息。'
+	    echo '改完后按Ctrl+O保存，Ctrl+X退出。'
+	   echo '按回车键确认编辑。'
+	   read
+	    nano $(which startxsdl) || nano /usr/bin/startxsdl    
+	fi
+fi	
+#################################
+if [ "$OPTION" == '12' ]; then
 
 	exit
 
