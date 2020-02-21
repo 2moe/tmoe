@@ -126,58 +126,58 @@ MainMenu() {
 		"10" "退出 exit" \
 		3>&1 1>&2 2>&3)
 
-	if [ "$OPTION" == '1' ]; then
+	if [ "${OPTION}" == '1' ]; then
 
 		installDebian
 
 	fi
 
-	if [ "$OPTION" == '2' ]; then
+	if [ "${OPTION}" == '2' ]; then
 
 		RootMode
 	fi
 
-	if [ "$OPTION" == '3' ]; then
+	if [ "${OPTION}" == '3' ]; then
 
 		REMOVESYSTEM
 
 	fi
 
-	if [ "$OPTION" == '4' ]; then
+	if [ "${OPTION}" == '4' ]; then
 
 		BackupSystem
 
 	fi
 
-	if [ "$OPTION" == '5' ]; then
+	if [ "${OPTION}" == '5' ]; then
 
 		RESTORESYSTEM
 
 	fi
 
-	if [ "$OPTION" == '6' ]; then
+	if [ "${OPTION}" == '6' ]; then
 
 		SpaceOccupation
 
 	fi
 
-	if [ "$OPTION" == '7' ]; then
+	if [ "${OPTION}" == '7' ]; then
 
 		UPDATEMANAGER
 	fi
 
-	if [ "$OPTION" == '8' ]; then
+	if [ "${OPTION}" == '8' ]; then
 		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
 
-	if [ "$OPTION" == '9' ]; then
+	if [ "${OPTION}" == '9' ]; then
 
 		DOWNLOADVNCAPK
 
 	fi
 
-	if [ "$OPTION" == '10' ]; then
+	if [ "${OPTION}" == '10' ]; then
 		exit
 
 	fi
@@ -335,7 +335,7 @@ BackupSystem() {
 		"2" "备份Termux" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
-	if [ "$OPTION" == '1' ]; then
+	if [ "${OPTION}" == '1' ]; then
 		if [ ! -d /sdcard/backup ]; then
 			mkdir -p /sdcard/backup && cd /sdcard/backup
 		else
@@ -389,13 +389,13 @@ BackupSystem() {
 		fi
 	fi
 	###################
-	if [ "$OPTION" == '2' ]; then
+	if [ "${OPTION}" == '2' ]; then
 		BACKUPTERMUX
 
 	fi
 
 	##########################################
-	if [ "$OPTION" == '0' ]; then
+	if [ "${OPTION}" == '0' ]; then
 
 		MainMenu
 	fi
@@ -628,7 +628,7 @@ RESTORESYSTEM() {
 		"2" "Restore the latest termux backup 还原Termux" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
-	if [ "$OPTION" == '1' ]; then
+	if [ "${OPTION}" == '1' ]; then
 		cd /sdcard/backup
 		ls -lth debian*tar* | head -n 10 2>/dev/null || echo '未检测到备份文件'
 
@@ -679,7 +679,7 @@ RESTORESYSTEM() {
 	fi
 
 	###################
-	if [ "$OPTION" == '2' ]; then
+	if [ "${OPTION}" == '2' ]; then
 
 		cd /sdcard/backup
 		ls -lth termux*tar* 2>/dev/null || echo '未检测到备份文件' | head -n 10
@@ -730,7 +730,7 @@ RESTORESYSTEM() {
 	fi
 
 	#####################################
-	if [ "$OPTION" == '0' ]; then
+	if [ "${OPTION}" == '0' ]; then
 
 		MainMenu
 	fi
@@ -749,7 +749,7 @@ SpaceOccupation() {
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	#echo "${YELLOW}2333333333${RESET}"
-	if [ "$OPTION" == '1' ]; then
+	if [ "${OPTION}" == '1' ]; then
 		echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
 		echo "${YELLOW}主目录 TOP15${RESET}"
@@ -781,7 +781,7 @@ SpaceOccupation() {
 
 	fi
 	###############################
-	if [ "$OPTION" == '2' ]; then
+	if [ "${OPTION}" == '2' ]; then
 		echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
 		echo "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
@@ -793,7 +793,7 @@ SpaceOccupation() {
 
 	fi
 
-	if [ "$OPTION" == '3' ]; then
+	if [ "${OPTION}" == '3' ]; then
 		cd /sdcard
 		echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
@@ -809,7 +809,7 @@ SpaceOccupation() {
 		SpaceOccupation
 	fi
 
-	if [ "$OPTION" == '4' ]; then
+	if [ "${OPTION}" == '4' ]; then
 		echo "${YELLOW}Disk usage${RESET}"
 		df -h | grep G | grep -v tmpfs
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET} "
@@ -818,7 +818,7 @@ SpaceOccupation() {
 	fi
 
 	#####################################
-	if [ "$OPTION" == '0' ]; then
+	if [ "${OPTION}" == '0' ]; then
 
 		MainMenu
 	fi

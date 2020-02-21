@@ -39,28 +39,28 @@ DEBIANMENU() {
 		3>&1 1>&2 2>&3)
 
 	##############################
-	if [ "$OPTION" == '1' ]; then
+	if [ "${OPTION}" == '1' ]; then
 
 		INSTALLGUI
 	fi
 
-	if [ "$OPTION" == '2' ]; then
+	if [ "${OPTION}" == '2' ]; then
 
 		installBROWSER
 
 	fi
 
-	if [ "$OPTION" == '3' ]; then
+	if [ "${OPTION}" == '3' ]; then
 
 		REMOVEGUI
 	fi
 
-	if [ "$OPTION" == '4' ]; then
+	if [ "${OPTION}" == '4' ]; then
 
 		REMOVEBROWSER
 	fi
 
-	if [ "$OPTION" == '5' ]; then
+	if [ "${OPTION}" == '5' ]; then
 
 		wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
 		echo 'Update completed, press Enter to return.'
@@ -70,43 +70,43 @@ DEBIANMENU() {
 		bash /usr/local/bin/debian-i
 	fi
 	################
-	if [ "$OPTION" == '6' ]; then
+	if [ "${OPTION}" == '6' ]; then
 
 		bash /usr/local/bin/kali.sh
 
 	fi
 
-	if [ "$OPTION" == '7' ]; then
+	if [ "${OPTION}" == '7' ]; then
 
 		bash /usr/local/bin/kali.sh rm
 
 	fi
 	############
-	if [ "$OPTION" == '8' ]; then
+	if [ "${OPTION}" == '8' ]; then
 
 		bash /usr/local/bin/man.sh
 
 	fi
 	##################
-	if [ "$OPTION" == '9' ]; then
+	if [ "${OPTION}" == '9' ]; then
 
 		bash /usr/local/bin/zsh.sh
 
 	fi
 	####################
-	if [ "$OPTION" == '10' ]; then
+	if [ "${OPTION}" == '10' ]; then
 		MODIFYVNCCONF
 
 	fi
 	####################################
-	if [ "$OPTION" == '11' ]; then
+	if [ "${OPTION}" == '11' ]; then
 
 		MODIFYXSDLCONF
 
 	fi
 
 	#################################
-	if [ "$OPTION" == '12' ]; then
+	if [ "${OPTION}" == '12' ]; then
 
 		exit
 
