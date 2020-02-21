@@ -202,6 +202,7 @@ installDebian() {
 		printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
 		#分行
 		echo ''
+		echo '您可以无需输"y"，直接按回车键确认。'
 		echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
 		read opt
 		case $opt in
