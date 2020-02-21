@@ -1314,8 +1314,22 @@ main "$@"
 
 EndOfFile
 chmod +x kali.sh
+##############
+mkdir -p /usr/local/bin
+cat >/usr/local/bin/lxde-4712<<- 'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+sed -i 's/4713/4712/g' /usr/bin/startxsdl
+EndOfFile
 
+cat >/usr/local/bin/lxde-4713<<- 'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+sed -i 's/4712/4713/g' /usr/bin/startxsdl
+EndOfFile
 
+chmod +x /usr/local/bin/lxde-4712 /usr/local/bin/lxde-4713
+#############################
 #桌面环境安装脚本
 cat >xfce.sh<<-'Matryoshka'
 #!/bin/bash
@@ -1379,7 +1393,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-
+echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 }
 function remove()
 {
@@ -1477,7 +1491,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-
+echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 }
 
 function remove()
@@ -1580,6 +1594,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 }
 
 
@@ -1680,6 +1695,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 }
 
 function remove()
@@ -1735,6 +1751,7 @@ chmod +x ./xstartup
 
 
 cd /usr/bin
+
 cat >startvnc<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
@@ -1778,6 +1795,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 }
 function remove()
 {
@@ -1883,6 +1901,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 }
 function remove()
 {
