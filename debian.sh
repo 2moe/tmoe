@@ -276,8 +276,9 @@ REMOVESYSTEM(){
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
 	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
-	printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian{RESET} "
+	printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian{RESET}"
 	fi
+	echo ''
 	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
 	read 
 	
@@ -324,8 +325,6 @@ if [ "$OPTION" == '1' ]; then
         cd /sdcard/backup
     fi		
 	
-	
-	
 
 	ls -lth ./debian*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 	
@@ -341,7 +340,7 @@ if [ "$OPTION" == '1' ]; then
 	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 	read
 
-	tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} | (pv -n > ${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
+	tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -n > ${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 	
 	#xz -z -T0 -e -9 -f -v ${TMPtime}.tar
 	echo "Don't worry too much, it is normal for some directories to backup without permission."
@@ -359,7 +358,7 @@ if [ "$OPTION" == '1' ]; then
 	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 	read
 	    
-	tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux   ~/${DebianFolder}  | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
+	tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux   ~/${DebianFolder} $PREFIX/bin/debian | (pv -n > ${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 	
 
 	echo "Don't worry too much, it is normal for some directories to backup without permission."
@@ -431,7 +430,7 @@ if [ "$TERMUXBACKUP" == 'home' ]; then
 	echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 	read
 	
-	tar -PJpvcf ${TMPtime}.tar.xz --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/sd --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/termux --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/tf /data/data/com.termux/files/home
+	tar -PJpvcf ${TMPtime}.tar.xz --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/sd --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/termux --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/tf /data/data/com.termux/files/home 
 	
 	#xz -z -T0 -e -9 -v ${TMPtime}.tar
 	
@@ -640,7 +639,6 @@ OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 3>&1 1>&2 2>&3)
 ###########################################################################
 if [ "$OPTION" == '1' ]; then
-termux-setup-storage 
     cd /sdcard/backup
 	ls -lth debian*tar* |head -n 10 2>/dev/null  || echo '未检测到备份文件'
    
