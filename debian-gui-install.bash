@@ -139,9 +139,8 @@ MODIFYVNCCONF() {
 			stopvnc
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
-
 			read
-			MODIFYVNCCONF
+			DEBIANMENU
 
 		else
 			echo '您当前的分辨率为'
@@ -164,13 +163,22 @@ MODIFYVNCCONF() {
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
-		MODIFYVNCCONF
+		DEBIANMENU
 	fi
 
 }
 
 ############################
 MODIFYXSDLCONF() {
+
+	if [ ! -f /usr/bin/startxsdl ]; then
+		echo "/usr/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
+		echo "${YELLOW}按回车键确认编辑。${RESET}"
+		read
+
+	fi
+
 	XSDLXSERVER=$(whiptail --title "请选择您要修改的项目" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "音频端口" \
@@ -195,27 +203,14 @@ MODIFYXSDLCONF() {
 		CHANGEIPADDRESS
 	fi
 	if [ "XSDLXSERVER" == '4' ]; then
-		MANUALLYMODIFY
+		NANOMANUALLYMODIFY
 	fi
 }
 #################
-MANUALLYMODIFY() {
+NANOMANUALLYMODIFY() {
 	if [ ! -e /bin/nano ]; then
 		apt install -y nano
 	fi
-
-	if [ ! -f /usr/bin/startxsdl ]; then
-		echo "/usr/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑？'
-		echo "${YELLOW}按回车键确认编辑，按Ctrl+C取消。${RESET}"
-		read
-		NANOMANUALLYMODIFY
-	else
-		NANOMANUALLYMODIFY
-	fi
-}
-
-NANOMANUALLYMODIFY() {
 	nano /usr/bin/startxsdl || nano $(which startxsdl)
 	echo 'See your current xsdl configuration information below.'
 	echo '您当前的ip地址为'
@@ -234,12 +229,6 @@ NANOMANUALLYMODIFY() {
 
 ######################
 CHANGEPULSESERVERPORT() {
-	if [ ! -f /usr/bin/startxsdl ]; then
-		echo "/usr/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
-		echo "${YELLOW}按回车键确认编辑。${RESET}"
-		read
-	fi
 
 	TARGET=$(whiptail --inputbox "若xsdl app显示的端口非4712，则您可在此处修改。默认为4712，当前为$(sed -n 4p $(which startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2) \n请以xsdl app显示的pulse server地址的最后几位数字为准，输入完成后按回车键确认。" 20 50 --title "MODIFY PULSE SERVER PORT " 3>&1 1>&2 2>&3)
 	exitstatus=$?
