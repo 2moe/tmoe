@@ -113,7 +113,7 @@ MainMenu() {
 			UGxlYXNlIHVzZSB0aGUgYXJyb3cga2V5cyBhbmQgZW50ZXIga2V5IHRvIG9wZXJhdGUuIOivt+S9
 			v+eUqOaWueWQkemUruWSjOWbnui9pumUrui/m+ihjOaTjeS9nOOA
 		DoYouWantToSeeWhatIsInside
-	)" --menu "请使用方向键和回车键进行操作，Choose your option" 15 60 4 \
+	)" --menu "请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消，Choose your option" 15 60 4 \
 		"1" "安装 install debian" \
 		"2" "root模式" \
 		"3" "移除 remove system" \
