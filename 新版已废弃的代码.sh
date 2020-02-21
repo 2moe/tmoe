@@ -1,41 +1,41 @@
 ####################################################################
 
-: "已废弃选项
+已废弃选项
 mkdir -p /data/data/com.termux/files/usr/etc/storage/
 wget -O /data/data/com.termux/files/usr/etc/storage/DebianManager.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1
 chmod +x /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
-cp -pf /data/data/com.termux/files/usr/etc/storage/DebianManager.bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash >/dev/null 
+cp -pf /data/data/com.termux/files/usr/etc/storage/DebianManager.bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash >/dev/null
 
+#!/data/data/com.termux/files/usr/bin/bash
+if [ ! -d /data/data/com.termux/files/usr/etc/storage/ ]; then
+    mkdir -p /data/data/com.termux/files/usr/etc/storage/
+fi
 
-echo '#!/data/data/com.termux/files/usr/bin/bash         '
-echo '    if [ ! -d /data/data/com.termux/files/usr/etc/storage/ ]; then'
-echo '   mkdir -p /data/data/com.termux/files/usr/etc/storage/'
-echo '    fi'
-echo ' '
-echo '	if [ ! -e $PREFIX/bin/wget ]; then'
-echo '		apt update;apt install -y wget ; wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash  || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash '
-echo '	else'
-echo '	     LAST_MODIFY_TIMESTAMP=$(stat -c %Y /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash)'
-echo ''
-echo '         DEBIANMANAGERDATE=$(date '+%d' -d @${LAST_MODIFY_TIMESTAMP})'
-echo '         if [ "${DEBIANMANAGERDATE}" ==  "$(date '+%d')" ]; then'
-echo '             bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash'
-echo '               else'
-echo '			   	wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash  || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash '
-echo '             	fi	
-echo '	fi
-echo '			    
-echo '
-echo 'EndOfFile
-echo '	
+if [ ! -e $PREFIX/bin/wget ]; then
+    apt update
+    apt install -y wget
+    wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash
+else
+    LAST_MODIFY_TIMESTAMP=$(stat -c %Y /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash)
+
+    DEBIANMANAGERDATE=$(date '+%d' -d @${LAST_MODIFY_TIMESTAMP})
+    if [ "${DEBIANMANAGERDATE}" == "$(date '+%d')" ]; then
+        bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash
+    else
+        wget -qO /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh' >/dev/null 2>&1 && bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManager.bash || bash /data/data/com.termux/files/usr/etc/storage/DebianManagerLatest.bash
+    fi
+fi
+
+EndOfFile
+
 #下面的EndOfFile不要加单引号
-cat > /data/data/com.termux/files/usr/bin/debian-root <<- EndOfFile
+cat >/data/data/com.termux/files/usr/bin/debian-root <<-EndOfFile
 
 if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
         apt update
 		apt install -y tsu
 		fi
-		
+
 mkdir -p /data/data/com.termux/files/usr/etc/storage/
 cd /data/data/com.termux/files/usr/etc/storage/
 
@@ -78,24 +78,20 @@ rm -f /data/data/com.termux/files/usr/bin/debian-root
 tsudo debian
 EndOfFile
 
-"
+#termux-zsh废弃code
 
+if [ ! -d "$HOME/.termux/fonts/sarasa" ]; then
+    rm -rf "$HOME/.termux/fonts"
+    cd "$HOME/.termux"
+    rm -f ZSHPOWERLINEFONTS.tar.xz 2>/dev/null
+    echo "Downloading font archive..."
+    echo "正在下载字体压缩包..."
+    wget -qO 'https://cdn.tmoe.me/git/TermuxZsh/ZSHPOWERLINEFONTS.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/Termux-zsh/ZSHPOWERLINEFONTS.tar.xz'
 
-termux-zsh废弃code
+    echo "正在解压字体文件..."
+    tar -Jxvf ZSHPOWERLINEFONTS.tar.xz
+    echo 'Deleting font archive...'
+    echo '正在删除字体压缩包...'
+    rm -f ZSHPOWERLINEFONTS.tar.xz
 
- 	if [ ! -d "$HOME/.termux/fonts/sarasa" ]; then
-	    rm -rf "$HOME/.termux/fonts"
-		cd "$HOME/.termux"
-		rm -f ZSHPOWERLINEFONTS.tar.xz 2>/dev/null
-		echo "Downloading font archive..."
-		echo "正在下载字体压缩包..."
-        wget -qO  'https://cdn.tmoe.me/git/TermuxZsh/ZSHPOWERLINEFONTS.tar.xz' || wget -q 'https://m.tmoe.me/down/share/Android/Termux-zsh/ZSHPOWERLINEFONTS.tar.xz'
-
-		echo "正在解压字体文件..."
-		tar -Jxvf ZSHPOWERLINEFONTS.tar.xz
-		echo 'Deleting font archive...'
-		echo '正在删除字体压缩包...'
-		rm -f ZSHPOWERLINEFONTS.tar.xz
-		
-		
-	fi	
+fi

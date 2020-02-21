@@ -1,76 +1,79 @@
 #!/data/data/com.termux/files//data/data/com.termux/files/usr/bin/bash
-termux-setup-storage 
+termux-setup-storage
 
 #检测架构
 
-case `uname -m` in
+case $(uname -m) in
 aarch64)
-	archtype="arm64" ;;
+  archtype="arm64"
+  ;;
 arm64)
-	archtype="arm64" ;;			
+  archtype="arm64"
+  ;;
 arm)
-	archtype="armhf" ;;
+  archtype="armhf"
+  ;;
 armhf)
-	archtype="armhf" ;;
+  archtype="armhf"
+  ;;
 armel)
-	archtype="armel" ;;				
+  archtype="armel"
+  ;;
 amd64)
-	archtype="amd64" ;;
+  archtype="amd64"
+  ;;
 x86_64)
-	archtype="amd64" ;;	
+  archtype="amd64"
+  ;;
 i*86)
-	archtype="i386" ;;
+  archtype="i386"
+  ;;
 x86)
-	archtype="i386" ;;
+  archtype="i386"
+  ;;
 *)
-	echo "未知的架构 $(uname -m) unknown architecture"; exit 1 ;;
+  echo "未知的架构 $(uname -m) unknown architecture"
+  exit 1
+  ;;
 esac
-
 
 #安装必要依赖
 #apt update
 #apt install -y curl openssl proot aria2 procps
 
 #requirements and dependencies.
-	
-	dependencies=""
 
-	if [ ! -e $PREFIX/bin/proot ]; then
-		dependencies="${dependencies} proot"
-	fi
-	
+dependencies=""
 
-	if [ ! -e $PREFIX/bin/openssl ]; then
-		dependencies="${dependencies} openssl"
-	fi
+if [ ! -e $PREFIX/bin/proot ]; then
+  dependencies="${dependencies} proot"
+fi
 
-	if [ ! -e $PREFIX/bin/pkill ]; then
-		dependencies="${dependencies} procps"
-	fi
+if [ ! -e $PREFIX/bin/openssl ]; then
+  dependencies="${dependencies} openssl"
+fi
 
-	if [ ! -e $PREFIX/bin/curl ]; then
-		dependencies="${dependencies} curl"
-	fi
+if [ ! -e $PREFIX/bin/pkill ]; then
+  dependencies="${dependencies} procps"
+fi
 
-	if [ ! -e $PREFIX/bin/aria2c ]; then
-		dependencies="${dependencies} aria2"
-	fi
+if [ ! -e $PREFIX/bin/curl ]; then
+  dependencies="${dependencies} curl"
+fi
 
+if [ ! -e $PREFIX/bin/aria2c ]; then
+  dependencies="${dependencies} aria2"
+fi
 
-	if [ ! -z "$dependencies" ]; then
-	echo "正在安装相关依赖..."
-	apt install -y ${dependencies} 
-	fi
-	
-
-
+if [ ! -z "$dependencies" ]; then
+  echo "正在安装相关依赖..."
+  apt install -y ${dependencies}
+fi
 
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
 DebianFolder=debian_${archtype}
 #DebianFolder=debian_arm64
-
-
 
 echo "                                        "
 echo "                 .::::..                "
@@ -103,64 +106,60 @@ echo "检测到您当前的架构为${archtype} ，debian系统将安装至~/${D
 cd ~
 
 if [ -d "${DebianFolder}" ]; then
-	downloaded=1
-	echo "Detected that you have debian installed 检测到您已安装debian"
+  downloaded=1
+  echo "Detected that you have debian installed 检测到您已安装debian"
 fi
-
-
 
 mkdir -p ~/${DebianFolder}
 
 DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
-	if [ ! -f ${DebianTarXz} ]; then
-		echo "正在从清华大学开源镜像站下载debian容器镜像"
-        echo "Downloading rootfs.tar.xz(debian sid) from Tsinghua University Open Source Mirror Station."
-        curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html  >/dev/null 2>&1 
-        ttime=`cat get-date-tmp.html |tail -n2|head -n1 |cut -d\" -f4` 
-        rm -f get-date-tmp.html 
-	
+if [ ! -f ${DebianTarXz} ]; then
+  echo "正在从清华大学开源镜像站下载debian容器镜像"
+  echo "Downloading rootfs.tar.xz(debian sid) from Tsinghua University Open Source Mirror Station."
+  curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html >/dev/null 2>&1
+  ttime=$(cat get-date-tmp.html | tail -n2 | head -n1 | cut -d\" -f4)
+  rm -f get-date-tmp.html
 
-        aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
-	
-	fi
-	cur=`pwd`
-	cd ~/${DebianFolder}
-    echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
-	 pv  ${cur}/${DebianTarXz} |proot --link2symlink  tar -pJx
-	#proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
-	cd "$cur"
-echo "                                        " 
-echo "                            .:7E        " 
-echo "            .iv7vrrrrr7uQBBBBBBB:       " 
-echo "           v17::.........:SBBBUg        " 
-echo "        vKLi.........:. .  vBQrQ        " 
-echo "   sqMBBBr.......... :i. .  SQIX        " 
-echo "   BBQBBr.:...:....:. 1:.....v. ..      " 
-echo "    UBBB..:..:i.....i YK:: ..:   i:     " 
-echo "     7Bg.... iv.....r.ijL7...i. .Lu     " 
-echo "  IB: rb...i iui....rir :Si..:::ibr     " 
-echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     " 
-echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     " 
-echo "    :   r:.i5KEv:.:.  :.  ::..X..::     " 
-echo "   7is. :v .sr::.         :: :2. ::     " 
-echo "   2:.  .u: r.     ::::   r: ij: .r  :  " 
-echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  " 
-echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    " 
-echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   " 
-echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  " 
-echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. " 
-echo "      i7LUJv.   . .     .:   YI7bIr :ur " 
-echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 " 
-echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v " 
-echo "         :   r. ..      .. .:i  ...     " 
+  aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
 
+fi
+cur=$(pwd)
+cd ~/${DebianFolder}
+echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
+pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
+#proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
+cd "$cur"
+echo "                                        "
+echo "                            .:7E        "
+echo "            .iv7vrrrrr7uQBBBBBBB:       "
+echo "           v17::.........:SBBBUg        "
+echo "        vKLi.........:. .  vBQrQ        "
+echo "   sqMBBBr.......... :i. .  SQIX        "
+echo "   BBQBBr.:...:....:. 1:.....v. ..      "
+echo "    UBBB..:..:i.....i YK:: ..:   i:     "
+echo "     7Bg.... iv.....r.ijL7...i. .Lu     "
+echo "  IB: rb...i iui....rir :Si..:::ibr     "
+echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     "
+echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     "
+echo "    :   r:.i5KEv:.:.  :.  ::..X..::     "
+echo "   7is. :v .sr::.         :: :2. ::     "
+echo "   2:.  .u: r.     ::::   r: ij: .r  :  "
+echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  "
+echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    "
+echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   "
+echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  "
+echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. "
+echo "      i7LUJv.   . .     .:   YI7bIr :ur "
+echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
+echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
+echo "         :   r. ..      .. .:i  ...     "
 
 echo "Creating proot startup script"
 echo "正在创建proot启动脚本/data/data/com.termux/files/usr/bin/debian "
 #此处EndOfFile不要加单引号
-cat > /data/data/com.termux/files/usr/bin/debian <<- EndOfFile
+cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 unset LD_PRELOAD
@@ -183,9 +182,9 @@ command+=" TERM=\$TERM"
 command+=" LANG=zh_CN.UTF-8"
 command+=" /bin/bash --login"
 com="\$@"
-if [ -f ~/debian_${archtype}/bin/zsh ];then 
+if [ -f ~/debian_${archtype}/bin/zsh ];then
    sed -i '21 c command+=" /bin/zsh --login"' $PREFIX/bin/debian
-   else 
+else
   sed -i '21 c command+=" /bin/bash --login"' $PREFIX/bin/debian
 fi
 if [ -z "\$1" ];then
@@ -195,43 +194,35 @@ else
 fi
 EndOfFile
 
-
 #######################################################
 
-cat > /data/data/com.termux/files/usr/bin/startvnc <<- EndOfFile
+cat >/data/data/com.termux/files/usr/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 touch ~/${DebianFolder}/root/.vnc/startvnc
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
-
-cat > /data/data/com.termux/files/usr/bin/stopvnc <<- 'EndOfFile'
+cat >/data/data/com.termux/files/usr/bin/stopvnc <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
 pkill -u $(whoami)
 EndOfFile
 
 #不要单引号
-cat > /data/data/com.termux/files/usr/bin/startxsdl <<- EndOfFile
+cat >/data/data/com.termux/files/usr/bin/startxsdl <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n x.org.server/x.org.server.MainActivity
 touch ~/${DebianFolder}/root/.vnc/startxsdl
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
-
 wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 
-
-
-
-
-
-cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
+cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
     chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 
+    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
     YELLOW=\$(printf '\033[33m')
 	RESET=\$(printf '\033[m')
     sed -i '/alias debian=/d' $PREFIX/etc/profile
@@ -252,23 +243,23 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<- EndOfFile
 		n*|N*) echo "skipped." ;;
 		*) echo "Invalid choice. skipped." ;;
 	esac
-	
+
 EndOfFile
 
 #tfcard=$(ls -l /data/data/com.termux/files/home/storage/external-1 |cut -c 1)
 
 #if [ "$tfcard" == 'l' ]; then
 
- #   sed -i '/external-1/d' /data/data/com.termux/files/usr/bin/debian
+#   sed -i '/external-1/d' /data/data/com.termux/files/usr/bin/debian
 
 #fi
- 
+
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
-    sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian
+  sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian
 
 fi
-echo 'Giving proot startup script execution permission' 
+echo 'Giving proot startup script execution permission'
 echo "正在赋予proot启动脚本($PREFIX/bin/debian)执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
@@ -283,16 +274,15 @@ echo "You can type rm ~/${DebianTarXz} to delete the image file"
 echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
 
-
- cd ~/${DebianFolder}
- #配置卸载脚本
-cat > remove-debian.sh <<- EOF
+cd ~/${DebianFolder}
+#配置卸载脚本
+cat >remove-debian.sh <<-EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R debian_$archtype
 rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
 grep 'alias debian' $PREFIX/etc/profile && sed -i '/alias debian=/d' $PREFIX/etc/profile
-sed -i '/alias debian-rm=/d' $PREFIX/etc/profile 
+sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 source profile >/dev/null 2>&1
 echo '删除完成，如需卸载aria2,请输apt remove aria2'
 echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
@@ -301,19 +291,10 @@ echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
 EOF
 chmod +x remove-debian.sh
 
+cd ~/${DebianFolder}/root
 
-
-
-
-
- cd ~/${DebianFolder}/root
- 
- 
-
- 
- 
- #配置zsh
- cat >zsh.sh <<'ADD-ZSH-SH'
+#配置zsh
+cat >zsh.sh <<-'ADDZSHSHELL'
 #!/bin/bash
 
 dependencies=""
@@ -321,25 +302,25 @@ dependencies=""
     if [ ! -e /bin/zsh ]; then
 		dependencies="${dependencies} zsh"
 	fi
-    
+
 	if [ ! -d /usr/share/doc/fonts-powerline ]; then
 	  dependencies="${dependencies} fonts-powerline"
-	
+
 	fi
-	
+
 	if [ ! -e /usr/bin/git ]; then
 		dependencies="${dependencies} git"
-	fi		
-	
+	fi
+
 	if [ ! -e /usr/bin/wget ]; then
 		dependencies="${dependencies} wget"
-	fi		
-	
+	fi
+
 	if [ ! -z "$dependencies" ]; then
 	echo "正在安装相关依赖..."
-	 apt install -y ${dependencies} 
+	 apt install -y ${dependencies}
 	fi
-	
+
 wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
 chmod +x /usr/local/bin/debian-i
 
@@ -376,7 +357,7 @@ chsh -s /usr/bin/zsh
 #   sh install.sh --unattended
 #
 set -e
-#change the default repo 
+#change the default repo
 #https://github.com/ohmyzsh/ohmyzsh
 #https://gitee.com/mirrors/oh-my-zsh
 # Default settings
@@ -650,7 +631,7 @@ echo "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
 echo "    jBBdD. :. ........:r... YB  Bi      "
 echo "       :7j1.                 :  :       "
     echo "Configuring zsh theme 正在配置zsh主题(agnosterzak)"
-cd ~/.oh-my-zsh/themes || mkdir -p ~/.oh-my-zsh/themes && cd ~/.oh-my-zsh/themes 
+cd ~/.oh-my-zsh/themes || mkdir -p ~/.oh-my-zsh/themes && cd ~/.oh-my-zsh/themes
 
 cat >agnosterzak.zsh-theme<<-'themeEOF'
 # vim:ft=zsh ts=2 sw=2 sts=2
@@ -1024,11 +1005,11 @@ build_prompt() {
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
 themeEOF
- 
- 
+
+
 
 cd ~
-sed -i '1 r vnc-autostartup-zsh' ~/.zshrc 
+sed -i '1 r vnc-autostartup-zsh' ~/.zshrc
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
 
 rm -f vnc-autostartup-zsh
@@ -1037,7 +1018,7 @@ rm -f vnc-autostartup-zsh
 
 echo "正在安装zsh-syntax-highlighting语法高亮插件"
 rm -rf ~/.zsh-syntax-highlighting
- 
+
 #git clone git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
 git clone https://gitee.com/mo2/zsh-syntax-highlighting.git ~/.zsh-syntax-highlighting
 
@@ -1048,7 +1029,7 @@ echo "正在安装zsh-autosuggestions自动补全插件"
 rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 mkdir -p /root/.oh-my-zsh/custom/plugins
 #git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 
+git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
 
 grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 ||echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
@@ -1067,13 +1048,11 @@ sleep 2
 }
 
 main "$@"
-ADD-ZSH-SH
+ADDZSHSHELL
 chmod +x zsh.sh
- 
- 
- 
+
 #vnc自动启动
-cat >vnc-autostartup<<-'EndOfFile'
+cat >vnc-autostartup <<-'EndOfFile'
 cat /etc/issue
 
 grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
@@ -1095,7 +1074,7 @@ fi
  ps -e 2>/dev/null | tail -n 25
 EndOfFile
 
-cat >vnc-autostartup-zsh<<-'EndOfFile'
+cat >vnc-autostartup-zsh <<-'EndOfFile'
 cat /etc/issue
 
 grep  'cat /etc/issue' ~/.zshrc >/dev/null || sed -i '1 a cat /etc/issue' ~/.zshrc
@@ -1103,7 +1082,7 @@ if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
 	rm -f /root/.vnc/startvnc
-fi 
+fi
 
 if [ -f "/root/.vnc/startxsdl" ]; then
     echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
@@ -1113,23 +1092,17 @@ if [ -f "/root/.vnc/startxsdl" ]; then
   echo 'xsdl will start in 9 seconds'
   sleep 9
 	/usr/bin/startxsdl
-fi 
+fi
 ps -e 2>/dev/null | tail -n 25
 
 EndOfFile
 
-
-
-cp -f .bashrc .bashrc.bak 
-sed -i '1 r vnc-autostartup' ./.bashrc.bak  
-
-
-
+cp -f .bashrc .bashrc.bak
+sed -i '1 r vnc-autostartup' ./.bashrc.bak
 
 #将初次启动执行的命令写入.bashrc
 
-
-cat > .bashrc <<- 'EDIT-BASHRC'
+cat >.bashrc <<-'EDITBASHRC'
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
 #配置清华源
@@ -1149,8 +1122,8 @@ nameserver 240c::6666
 EndOfFile
 
 
-apt update 
-apt install -y locales 
+apt update
+apt install -y locales
 
 echo "您已成功安装Debian GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
 echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
@@ -1160,7 +1133,7 @@ echo 'Optimization steps are in progress. Do not exit!'
 echo "正在配置中文环境..."
 echo "Configuring Chinese environment..."
 sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-cat > /etc/default/locale <<-'EOF' 
+cat > /etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
 EOF
@@ -1196,18 +1169,18 @@ echo "    .u:Y:JQMSsJUv...   .rDE1P71:.7X7     "
 echo "    5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y     "
 echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
-apt install -y apt-utils 
+apt install -y apt-utils
 
 
-apt install -y ca-certificates 
+apt install -y ca-certificates
 
 #修改http源为https
 echo "Replacing http software source list with https."
 echo  "正在将http源替换为https..."
-sed -i 's/http/https/' /etc/apt/sources.list 
+sed -i 's/http/https/' /etc/apt/sources.list
 
 
-apt update 
+apt update
 apt list --upgradable
 echo  "正在升级所有软件包..."
 apt dist-upgrade -y
@@ -1246,7 +1219,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1277,7 +1250,7 @@ apt list --upgradable
 apt dist-upgrade -y
 echo 'You have successfully replaced your debian source with a kali source.'
 echo '您已更换为kali源，如需换回debian源，请手动执行bash ~/kali.sh rm'
-apt install -y neofetch 
+apt install -y neofetch
 apt clean
 echo 'You can type "neofetch" to get the current system information'
 echo '您可以输neofetch来获取当前系统信息'
@@ -1288,7 +1261,7 @@ echo '直接运行kali-undercover可能会报错，请直接在“设置管理�
 function remove()
 {
 echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free' > /etc/apt/sources.list
-apt update 
+apt update
 apt list --upgradable
 echo '您已换回debian源'
 apt dist-upgrade -y
@@ -1306,7 +1279,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1368,8 +1341,8 @@ cat >startxsdl<<-'EndOfFile'
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4712
-echo '正在为您启动xsdl,请将display name改为0'
-echo 'Starting xsdl, please change display name to 0'
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 startxfce4
@@ -1391,7 +1364,7 @@ echo "When prompted for a view-only password, it is recommended that you enter '
 echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 echo '请输入6至8位密码'
 startvnc
-echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
@@ -1399,7 +1372,7 @@ function remove()
 {
 apt purge -y xfce4 xfce4-terminal tightvncserver
 apt autopurge
-} 
+}
 function main()
 {
                 case "$1" in
@@ -1417,7 +1390,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1464,8 +1437,8 @@ cat >startxsdl<<-'EndOfFile'
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4712
-echo '正在为您启动xsdl,请将display name改为0'
-echo 'Starting xsdl, please change display name to 0'
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 startlxde
@@ -1489,7 +1462,7 @@ echo "When prompted for a view-only password, it is recommended that you enter '
 echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 echo '请输入6至8位密码'
 startvnc
-echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
@@ -1497,7 +1470,7 @@ echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修�
 function remove()
 {
    apt purge -y lxde-core lxterminal tightvncserver
-   apt autopurge  
+   apt autopurge
 }
 
 function main()
@@ -1517,7 +1490,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1536,7 +1509,7 @@ function install()
 apt-mark hold udisks2
 apt update
 echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
-apt install -y fonts-noto-cjk aptitude 
+apt install -y fonts-noto-cjk aptitude
 aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 2>/dev/null
 apt clean
 
@@ -1567,8 +1540,8 @@ cat >startxsdl<<-'EndOfFile'
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4712
-echo '正在为您启动xsdl,请将display name改为0'
-echo 'Starting xsdl, please change display name to 0'
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 mate-session
@@ -1592,7 +1565,7 @@ echo "When prompted for a view-only password, it is recommended that you enter '
 echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 echo '请输入6至8位密码'
 startvnc
-echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
@@ -1621,7 +1594,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1636,8 +1609,8 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-echo '即将为您安装思源黑体(中文字体)、tightvncserver、lxqt-core、lxqt-config和qterminal  ' 
-apt install -y fonts-noto-cjk tightvncserver lxqt-core lxqt-config qterminal 
+echo '即将为您安装思源黑体(中文字体)、tightvncserver、lxqt-core、lxqt-config和qterminal  '
+apt install -y fonts-noto-cjk tightvncserver lxqt-core lxqt-config qterminal
 apt clean
 
 mkdir -p ~/.vnc
@@ -1666,8 +1639,8 @@ cat >startxsdl<<-'EndOfFile'
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4712
-echo '正在为您启动xsdl,请将display name改为0'
-echo 'Starting xsdl, please change display name to 0'
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 startlxqt
@@ -1693,7 +1666,7 @@ echo '如果提示view-only,那么建议您输n,选择权在您自己的手上�
 
 echo '请输入6至8位密码'
 startvnc
-echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
@@ -1714,7 +1687,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1729,9 +1702,9 @@ function install()
 apt-mark hold udisks2
 apt update
 echo "Gnome测试失败，请自行解决软件依赖和其它相关问题。"
-echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver和task-gnome-desktop' 
+echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver和task-gnome-desktop'
 apt install -y fonts-noto-cjk aptitude tightvncserver
-aptitude install -y task-gnome-desktop 
+aptitude install -y task-gnome-desktop
 apt clean
 
 mkdir -p ~/.vnc
@@ -1767,8 +1740,8 @@ cat >startxsdl<<-'EndOfFile'
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4712
-echo '正在为您启动xsdl,请将display name改为0'
-echo 'Starting xsdl, please change display name to 0'
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 gnome-session
@@ -1793,7 +1766,7 @@ echo "When prompted for a view-only password, it is recommended that you enter '
 echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 echo '请输入6至8位密码'
 startvnc
-echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
@@ -1801,8 +1774,8 @@ function remove()
 {
 apt purge -y tightvncserver
 apt autopurge
-aptitude purge -y task-gnome-desktop 
-apt purge -y task-gnome-desktop 
+aptitude purge -y task-gnome-desktop
+apt purge -y task-gnome-desktop
 apt autopurge
 }
 
@@ -1818,7 +1791,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1833,10 +1806,10 @@ function install()
 apt-mark hold udisks2
 apt update
 echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
-echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop和task-kde-desktop ' 
+echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop和task-kde-desktop '
 apt install -y fonts-noto-cjk aptitude tightvncserver
 apt install -y kde-plasma-desktop
-aptitude install -y  task-kde-desktop 
+aptitude install -y  task-kde-desktop
 
 
 apt clean
@@ -1852,7 +1825,7 @@ exec /etc/X11/xinit/xinitrc
 xsetroot -solid grey
 vncconfig -iconic &
 #xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&
-startkde & 
+startkde &
 #kde desktop
 EndOfFile
 chmod +x ./xstartup
@@ -1874,8 +1847,8 @@ cat >startxsdl<<-'EndOfFile'
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4712
-echo '正在为您启动xsdl,请将display name改为0'
-echo 'Starting xsdl, please change display name to 0'
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 startkde
@@ -1899,15 +1872,15 @@ echo "When prompted for a view-only password, it is recommended that you enter '
 echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 echo '请输入6至8位密码'
 startvnc
-echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 function remove()
 {
 apt purge -y tightvncserver kde-plasma-desktop
-aptitude purge -y  task-kde-desktop 
-apt purge -y  task-kde-desktop 
+aptitude purge -y  task-kde-desktop
+apt purge -y  task-kde-desktop
 apt autopurge
 }
 
@@ -1923,7 +1896,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1936,7 +1909,7 @@ cat > chromium.sh <<-'EOF'
 function install()
 {
 apt install -y chromium chromium-l10n
-#string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"' 
+#string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"'
 #sed -i 's:${string}:${string} --user-data-dir --no-sandbox:' /bin/bash/chromium
 sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
 grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox"' >> /etc/profile
@@ -1958,7 +1931,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -1972,7 +1945,7 @@ cat > firefox.sh <<-'EOF'
 function install()
 {
     echo "即将安装firefox浏览器长期支持版"
-    apt install -y firefox-esr firefox-esr-l10n-zh-cn 
+    apt install -y firefox-esr firefox-esr-l10n-zh-cn
 }
 
 function remove()
@@ -1995,7 +1968,7 @@ function main()
                    *)
 			        install
 			         ;;
-		
+
 
         esac
 }
@@ -2011,7 +1984,7 @@ mkdir -p /usr/local/bin
 cp -pf ./*.sh /usr/local/bin
 echo "Welcome to Debian GNU/Linux."
 cat /etc/issue
-uname -a 
+uname -a
 rm -f vnc-autostartup .bashrc
 mv -f .bashrc.bak .bashrc
 echo "                                        "
@@ -2047,14 +2020,7 @@ echo "                 r7:..                  "
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 echo "2s后将自动开始配置zsh"
 sleep 2
-bash zsh.sh 
-EDIT-BASHRC
+bash zsh.sh
+EDITBASHRC
 
 /data/data/com.termux/files/usr/bin/debian
-
-
-
-
-
-
-
