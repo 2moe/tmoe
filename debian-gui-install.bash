@@ -95,13 +95,13 @@ DEBIANMENU() {
 	fi
 	####################
 	if [ "$OPTION" == '10' ]; then
-		MODIFYXSDLCONF
+		MODIFYVNCCONF 
 
 	fi
 	####################################
 	if [ "$OPTION" == '11' ]; then
 
-		MODIFYVNCCONF
+		MODIFYXSDLCONF
 
 	fi
 
