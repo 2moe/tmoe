@@ -95,7 +95,7 @@ DEBIANMENU() {
 	fi
 	####################
 	if [ "$OPTION" == '10' ]; then
-		MODIFYVNCCONF 
+		MODIFYVNCCONF
 
 	fi
 	####################################
@@ -129,13 +129,19 @@ MODIFYVNCCONF() {
 		read
 	fi
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 10 50); then
-		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率，例如2880x1440,2400x1200,1920x1080,1920x960,1280x1024，1280x960等等，默认为720x1440，当前为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) \n 分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认。Please press Enter after the input is completed." 20 50 --title "请在方框内输入 水平像素x垂直像素 （数字x数字） " 3>&1 1>&2 2>&3)
+		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1280x1024,1280x960等等,默认为720x1440,当前为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) \n 分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认。Please press Enter after the input is completed." 20 50 --title "请在方框内输入 水平像素x垂直像素 （数字x数字） " 3>&1 1>&2 2>&3)
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then
 			sed -i "5 c vncserver -geometry $TARGET  -depth 24 -name remote-desktop :1" "$(which startvnc)"
 			echo 'Your current resolution has been modified.'
 			echo '您当前的分辨率已经修改为'
 			echo $(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			stopvnc
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+
+			read
+			MODIFYVNCCONF
 
 		else
 			echo '您当前的分辨率为'
@@ -153,7 +159,12 @@ MODIFYVNCCONF() {
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 		nano /usr/bin/startvnc || nano $(which startvnc)
-		echo "您当前分辨率已修改为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		stopvnc
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		MODIFYVNCCONF
 	fi
 
 }
@@ -179,8 +190,7 @@ MODIFYXSDLCONF() {
 		CHANGEDISPLAYPORT
 	fi
 	if
-		[ "XSDLXSERVER"
-		== '3' ]
+		[ "XSDLXSERVER" == '3' ]
 	then
 		CHANGEIPADDRESS
 	fi
@@ -216,6 +226,7 @@ NANOMANUALLYMODIFY() {
 
 	echo '您当前的音频端口为'
 	echo $(sed -n 4p $(which startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
+	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	MODIFYXSDLCONF
