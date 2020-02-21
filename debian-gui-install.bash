@@ -23,7 +23,7 @@ CHECKdependencies() {
 }
 ####################################################
 DEBIANMENU() {
-	OPTION=$(whiptail --title "输debian-i启动本工具,Development date 2020-02-22" --menu "请使用方向键和回车键进行操作。Please use the arrow and enter key to operate.当前主菜单下共有12个选项，请使用方向键或触屏滑动，按回车键确认。" 20 40 4 \
+	OPTION=$(whiptail --title "输debian-i启动本工具,Development date 2020-02-22" --menu "请使用方向键和回车键进行操作。Please use the arrow and enter key to operate.当前主菜单下共有12个选项，请使用方向键或触屏滑动，按回车键确认。" 20 55 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
 		"3" "Remove GUI 卸载图形界面" \
