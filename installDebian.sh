@@ -1282,8 +1282,8 @@ apt clean
 echo 'You can type "neofetch" to get the current system information'
 echo '您可以输neofetch来获取当前系统信息'
 neofetch
-echo '若您使用的是xfce桌面，则您可以输apt install -y kali-undercover来伪装成win10模式'
-echo '直接运行卧底模式可能会报错，请直接在“设置管理器---外观”处，修改样式和图标。'
+echo '若您使用的是xfce桌面，则您可以输apt install -y kali-undercover 来安装伪装成win10的主题'
+echo '直接运行kali-undercover可能会报错，请直接在“设置管理器---外观”处，修改样式和图标。'
 }
 function remove()
 {
