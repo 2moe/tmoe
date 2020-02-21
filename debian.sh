@@ -14,7 +14,7 @@ autoCheck(){
 	fi	
 	
 	if [ ! -e $PREFIX/bin/aria2c ]; then
-		dependencies="${dependencies} aria2c"
+		dependencies="${dependencies} aria2"
 	fi	
 	
 	if [ ! -e $PREFIX/bin/pv ]; then
