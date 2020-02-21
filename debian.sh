@@ -91,6 +91,7 @@ DebianFolder=debian_${archtype}
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
 cur=$(pwd)
+termux-setup-storage 
 MainMenu
 
 }
@@ -697,7 +698,7 @@ if [ "$OPTION" == '2' ]; then
 
 
 
-termux-setup-storage 
+
     cd /sdcard/backup
 	ls -lth termux*tar* 2>/dev/null  || echo '未检测到备份文件'  |head -n 10  
    
