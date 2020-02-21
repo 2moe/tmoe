@@ -1316,19 +1316,19 @@ EndOfFile
 chmod +x kali.sh
 ##############
 mkdir -p /usr/local/bin
-cat >/usr/local/bin/lxde-4712<<- 'EndOfFile'
+cat >/usr/local/bin/xsdl-4712<<- 'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 sed -i 's/4713/4712/g' /usr/bin/startxsdl
 EndOfFile
 
-cat >/usr/local/bin/lxde-4713<<- 'EndOfFile'
+cat >/usr/local/bin/xsdl-4713<<- 'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 sed -i 's/4712/4713/g' /usr/bin/startxsdl
 EndOfFile
 
-chmod +x /usr/local/bin/lxde-4712 /usr/local/bin/lxde-4713
+chmod +x /usr/local/bin/xsdl-4712 /usr/local/bin/xsdl-4712
 #############################
 #桌面环境安装脚本
 cat >xfce.sh<<-'Matryoshka'
