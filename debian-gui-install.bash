@@ -23,7 +23,7 @@ CHECKdependencies() {
 }
 ####################################################
 DEBIANMENU() {
-	OPTION=$(whiptail --title "输debian-i启动本工具,Development date 2020-02-22" --menu "请使用方向键和回车键进行操作。Please use the arrow and enter key to operate.当前主菜单下共有12个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 55 4 \
+	OPTION=$(whiptail --title "输debian-i启动本工具,Development date 2020-02-22" --menu "请使用方向键和回车键进行操作。Please use the arrow and enter key to operate.当前主菜单下共有12个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
 		"3" "Remove GUI 卸载图形界面" \
@@ -285,7 +285,7 @@ CHANGEIPADDRESS() {
 installBROWSER() {
 	if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓我是火狐娘，选我啦！♪(^∇^*) \n我是chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
 
-		if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox-ESR" --no-button "Firefox" --yesno " 我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr? “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。✨请做出您的选择！ " 10 60); then
+		if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox-ESR" --no-button "Firefox" --yesno " 我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 15 50); then
 			#echo 'esr可怜巴巴地说道:“我也想要得到更多的爱。”  '
 			#什么乱七八糟的，2333333戏份真多。
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
