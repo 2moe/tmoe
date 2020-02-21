@@ -104,8 +104,8 @@ if [ "$OPTION" == '10' ]; then
 		apt install -y nano
 	fi
 	if [ ! -f /usr/bin/startvnc ]; then
-	 未检测startvnc,您可能尚未安装图形桌面，是否继续编辑。
-	 按回车键确认。
+	 echo '未检测startvnc,您可能尚未安装图形桌面，是否继续编辑。'
+	 echo '按回车键确认。'
 	 read
 	nano $(which startvnc) || nano /usr/bin/startvnc
 	else
@@ -124,8 +124,8 @@ if [ "$OPTION" == '11' ]; then
 	fi
 	
 	if [ ! -f /usr/bin/startvnc ]; then
-	 未检测startxsdl,您可能尚未安装图形桌面，是否继续编辑。
-	 按回车键确认。
+	 echo '未检测startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
+	 echo '按回车键确认。'
 	 read
 	nano $(which startxsdl) || nano /usr/bin/startxsdl
 	else
