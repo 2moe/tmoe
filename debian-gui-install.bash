@@ -105,14 +105,14 @@ if [ "$OPTION" == '10' ]; then
 	fi
 	if [ ! -f /usr/bin/startvnc ]; then
 	 echo '未检测startvnc,您可能尚未安装图形桌面，是否继续编辑。'
-	 echo '按回车键确认。'
+	   echo "${YELLOW}按回车键确认编辑。${RESET}"
 	 read
 	nano $(which startvnc) || nano /usr/bin/startvnc
 	else
 	   echo '您可以手动修改vnc的配置信息'
 	   echo '若您想要修改分辨率，请将默认的1440x720（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
 	   echo '改完后按Ctrl+O保存，Ctrl+X退出。'
-	   echo '按回车键确认编辑。'
+	   echo "${YELLOW}按回车键确认编辑。${RESET}"
 	   read
 	    nano $(which startvnc) || nano /usr/bin/startvnc 
     fi
@@ -125,14 +125,14 @@ if [ "$OPTION" == '11' ]; then
 	
 	if [ ! -f /usr/bin/startvnc ]; then
 	 echo '未检测startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
-	 echo '按回车键确认。'
+	   echo "${YELLOW}按回车键确认编辑。${RESET}"
 	 read
 	nano $(which startxsdl) || nano /usr/bin/startxsdl
 	else
 	
 	echo '您可以手动修改xsdl的端口号和其它配置信息。'
 	    echo '改完后按Ctrl+O保存，Ctrl+X退出。'
-	   echo '按回车键确认编辑。'
+	   echo "${YELLOW}按回车键确认编辑。${RESET}"
 	   read
 	    nano $(which startxsdl) || nano /usr/bin/startxsdl    
 	fi
