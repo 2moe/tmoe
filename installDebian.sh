@@ -1367,7 +1367,7 @@ cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=tcp:127.0.0.1:4712
 echo '正在为您启动xsdl,请将display name改为0'
 echo 'Starting xsdl, please change display name to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1393,7 +1393,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 function remove()
 {
@@ -1463,7 +1463,7 @@ cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=tcp:127.0.0.1:4712
 echo '正在为您启动xsdl,请将display name改为0'
 echo 'Starting xsdl, please change display name to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1491,7 +1491,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 
 function remove()
@@ -1566,7 +1566,7 @@ cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=tcp:127.0.0.1:4712
 echo '正在为您启动xsdl,请将display name改为0'
 echo 'Starting xsdl, please change display name to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1594,7 +1594,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 
 
@@ -1665,7 +1665,7 @@ cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=tcp:127.0.0.1:4712
 echo '正在为您启动xsdl,请将display name改为0'
 echo 'Starting xsdl, please change display name to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1695,7 +1695,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 
 function remove()
@@ -1766,7 +1766,7 @@ cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=tcp:127.0.0.1:4712
 echo '正在为您启动xsdl,请将display name改为0'
 echo 'Starting xsdl, please change display name to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1795,7 +1795,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 function remove()
 {
@@ -1873,7 +1873,7 @@ cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
 stopvnc >/dev/null 2>&1
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=tcp:127.0.0.1:4712
 echo '正在为您启动xsdl,请将display name改为0'
 echo 'Starting xsdl, please change display name to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1901,7 +1901,7 @@ echo '请输入6至8位密码'
 startvnc
 echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止' 
 echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
 }
 function remove()
 {
