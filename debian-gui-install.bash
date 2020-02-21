@@ -136,7 +136,7 @@ MODIFYVNCCONF() {
 			echo 'Your current resolution has been modified.'
 			echo '您当前的分辨率已经修改为'
 			echo $(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
-			stopvnc
+			stopvnc 2>/dev/null 
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
 			read
@@ -159,7 +159,7 @@ MODIFYVNCCONF() {
 		read
 		nano /usr/bin/startvnc || nano $(which startvnc)
 		echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-		stopvnc
+		stopvnc 2>/dev/null 
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
@@ -188,21 +188,21 @@ MODIFYXSDLCONF() {
 		3>&1 1>&2 2>&3)
 
 	###########
-	if [ "XSDLXSERVER" == '0' ]; then
+	if [ "${XSDLXSERVER}" == '0' ]; then
 		DEBIANMENU
 	fi
-	if [ "XSDLXSERVER" == '1' ]; then
+	if [ "${XSDLXSERVER}" == '1' ]; then
 		CHANGEPULSESERVERPORT
 	fi
-	if [ "XSDLXSERVER" == '2' ]; then
+	if [ "${XSDLXSERVER}" == '2' ]; then
 		CHANGEDISPLAYPORT
 	fi
 	if
-		[ "XSDLXSERVER" == '3' ]
+		[ "${XSDLXSERVER}" == '3' ]
 	then
 		CHANGEIPADDRESS
 	fi
-	if [ "XSDLXSERVER" == '4' ]; then
+	if [ "${XSDLXSERVER}" == '4' ]; then
 		NANOMANUALLYMODIFY
 	fi
 }
@@ -247,12 +247,7 @@ CHANGEPULSESERVERPORT() {
 
 ########################################################
 CHANGEDISPLAYPORT() {
-	if [ ! -f /usr/bin/startxsdl ]; then
-		echo "/usr/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
-		echo "${YELLOW}按回车键确认编辑。${RESET}"
-		read
-	fi
+
 
 	TARGET=$(whiptail --inputbox "若xsdl app显示的Display number(输出显示的端口数字) 非0，则您可在此处修改。默认为0，当前为$(sed -n 3p $(which startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2) \n请以xsdl app显示的DISPLAY=:的数字为准，输入完成后按回车键确认。" 20 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
 	exitstatus=$?
@@ -271,12 +266,7 @@ CHANGEDISPLAYPORT() {
 
 ###############################################
 CHANGEIPADDRESS() {
-	if [ ! -f /usr/bin/startxsdl ]; then
-		echo "/usr/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
-		echo "${YELLOW}按回车键确认编辑。${RESET}"
-		read
-	fi
+
 
 	XSDLIP=$(sed -n 3p $(which startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
 	TARGET=$(whiptail --inputbox "若您需要用局域网其它设备来连接，则您可在下方输入该设备的IP地址。本机连接请勿修改，默认为127.0.0.1 ,当前为${XSDLIP} \n 请在修改完其它信息后，再来修改此项，否则将被重置为127.0.0.1。windows设备输 ipconfig，linux设备输ip -4 -br -c addr获取ip address，获取到的地址格式类似于192.168.123.234，输入获取到的地址后按回车键确认。" 20 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
