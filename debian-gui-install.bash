@@ -290,10 +290,15 @@ installBROWSER() {
 			#什么乱七八糟的，2333333戏份真多。
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 			echo '“谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。'
+			echo "2s后将自动开始安装"
+			sleep 2
+			echo 
 			apt install -y firefox-esr firefox-esr-l10n-zh-cn
 		else
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 			echo '“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。'
+            echo "2s后将自动开始安装"
+			sleep 2
 			apt install -y firefox firefox-l10n-zh-cn
 		fi
 	else
