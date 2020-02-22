@@ -95,3 +95,15 @@ if [ ! -d "$HOME/.termux/fonts/sarasa" ]; then
     rm -f ZSHPOWERLINEFONTS.tar.xz
 
 fi
+
+#zsh主题选择
+
+if (whiptail --title "Choose zsh theme " --yes-button "agnosterzak" --no-button "agnoster" --yesno "Which do yo like better? \n 请选择您需要配置的zsh主题" 10 60); then
+	if [ ! -f "$HOME/.oh-my-zsh/themes/agnosterzak.zsh-theme" ]; then
+
+		mkdir -p ~/.oh-my-zsh/themes
+		wget -qO ~/.oh-my-zsh/themes/agnosterzak.zsh-theme https://gitee.com/mo2/agnosterzak-ohmyzsh-theme/raw/master/agnosterzak.zsh-theme
+	fi
+	sed -i 's/ZSH_THEME="agnoster"/ZSH_THEME="agnosterzak"/g' "$HOME/.zshrc"
+
+fi
