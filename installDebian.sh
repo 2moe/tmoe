@@ -49,10 +49,6 @@ if [ ! -e $PREFIX/bin/proot ]; then
   dependencies="${dependencies} proot"
 fi
 
-if [ ! -e $PREFIX/bin/openssl ]; then
-  dependencies="${dependencies} openssl"
-fi
-
 if [ ! -e $PREFIX/bin/pkill ]; then
   dependencies="${dependencies} procps"
 fi
