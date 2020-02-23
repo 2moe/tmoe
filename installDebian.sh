@@ -53,6 +53,14 @@ if [ ! -e $PREFIX/bin/pkill ]; then
   dependencies="${dependencies} procps"
 fi
 
+if [ ! -e $PREFIX/bin/pv ]; then
+  dependencies="${dependencies} pv"
+fi
+
+if [ ! -e $PREFIX/bin/wget ]; then
+  dependencies="${dependencies} wget"
+fi
+
 if [ ! -e $PREFIX/bin/curl ]; then
   dependencies="${dependencies} curl"
 fi
