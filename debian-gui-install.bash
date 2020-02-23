@@ -39,7 +39,7 @@ DEBIANMENU() {
 		"9" "Reconfigure zsh 重新配置zsh" \
 		"10" "Modify VNC config 修改vnc配置" \
 		"11" "Modify XSDL config 修改xsdl配置" \
-		"12" "Install zsh tool 安装zsh管理工具" \
+		"12" "Enable zsh tool 启用zsh管理工具" \
 		"13" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
