@@ -11,6 +11,10 @@ CHECKdependencies() {
 		dependencies="${dependencies} whiptail"
 	fi
 
+	if [ ! -e /usr/bin/wget ]; then
+		dependencies="${dependencies} wget"
+	fi
+
 	if [ ! -z "$dependencies" ]; then
 		echo "正在安装相关依赖..."
 		apt update
@@ -35,7 +39,8 @@ DEBIANMENU() {
 		"9" "Reconfigure zsh 重新配置zsh" \
 		"10" "Modify VNC config 修改vnc配置" \
 		"11" "Modify XSDL config 修改xsdl配置" \
-		"12" "Exit 退出" \
+		"12" "Install zsh tool 安装zsh管理工具" \
+		"13" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
 	##############################
@@ -107,6 +112,13 @@ DEBIANMENU() {
 
 	#################################
 	if [ "${OPTION}" == '12' ]; then
+
+		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+
+	fi
+
+	###################################
+	if [ "${OPTION}" == '13' ]; then
 
 		exit
 
