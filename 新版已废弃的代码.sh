@@ -107,3 +107,20 @@ if (whiptail --title "Choose zsh theme " --yes-button "agnosterzak" --no-button 
 	sed -i 's/ZSH_THEME="agnoster"/ZSH_THEME="agnosterzak"/g' "$HOME/.zshrc"
 
 fi
+
+#zsh下载字体文件
+if [ ! -d "$HOME/.termux/fonts/Go" ]; then
+	rm -rf "$HOME/.termux/fonts"
+	cd "$HOME/.termux"
+	rm -f ZSHPOWERLINEFONTS.tar.xz 2>/dev/null
+	echo "Downloading font archive..."
+	echo "正在下载字体压缩包..."
+	#aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/TermuxZsh/ZSHPOWERLINEFONTS.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/Termux-zsh/ZSHPOWERLINEFONTS.tar.xz'
+
+	#echo "正在解压字体文件..."
+	tar -Jxvf ZSHPOWERLINEFONTS.tar.xz
+	echo 'Deleting font archive...'
+	echo '正在删除字体压缩包...'
+	rm -f ZSHPOWERLINEFONTS.tar.xz
+
+fi
