@@ -63,7 +63,13 @@ CheckArch() {
 	arm64)
 		archtype="arm64"
 		;;
+	armv8a)
+		archtype="arm64"
+		;;
 	arm)
+		archtype="armhf"
+		;;
+	armv7l)
 		archtype="armhf"
 		;;
 	armhf)
@@ -83,6 +89,20 @@ CheckArch() {
 		;;
 	x86)
 		archtype="i386"
+		;;
+	s390x)
+		archtype="s390x"
+		;;
+	ppc64el)
+		archtype="ppc64el"
+		;;
+	mipsel)
+		echo '暂不支持路由器等嵌入式设备'
+		exit 1
+		;;
+	risc*)
+		echo '暂不支持risc-v'
+		exit 1
 		;;
 	*)
 		echo "未知的架构 $(uname -m) unknown architecture"
