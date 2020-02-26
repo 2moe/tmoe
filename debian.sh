@@ -7,10 +7,6 @@ autoCheck() {
 
 	dependencies=""
 
-	if [ ! -e $PREFIX/bin/wget ]; then
-		dependencies="${dependencies} wget"
-	fi
-
 	if [ ! -e $PREFIX/bin/pv ]; then
 		dependencies="${dependencies} pv"
 	fi
@@ -179,7 +175,8 @@ MainMenu() {
 	fi
 
 	if [ "${OPTION}" == '8' ]; then
-		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+		bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
 
@@ -222,7 +219,8 @@ installDebian() {
 			$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile
 			sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 			source profile >/dev/null 2>&1
-			bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+			bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+			$bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 			;;
 		n* | N*)
 			echo "skipped."
@@ -237,7 +235,8 @@ installDebian() {
 		esac
 
 	else
-		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+		bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 	fi
 
 }
