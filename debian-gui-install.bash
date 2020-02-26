@@ -408,7 +408,7 @@ VSCODESERVER() {
 		apt install -y git
 	fi
 
-	if [ -e "/etc/tmp/sed-vscode.tmp" ]; then
+	if [ ! -e "/etc/tmp/sed-vscode.tmp" ]; then
 		mkdir -p /etc/tmp
 
 		cat >"/etc/tmp/sed-vscode.tmp" <<-'EOF'
