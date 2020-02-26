@@ -4,9 +4,12 @@ function install()
 apt-mark hold udisks2
 apt update
 echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
-apt install -y fonts-noto-cjk lxde-core lxterminal tightvncserver
+apt install -y fonts-noto-cjk 
+apt install -y lxde-core lxterminal 
+apt install -y tightvncserver 
 apt clean
 
+grep 'export DISPLAY' /etc/profile ||echo "export DISPLAY=":1"" >> /etc/profile
 mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
