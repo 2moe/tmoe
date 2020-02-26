@@ -973,7 +973,7 @@ STARTVSCODE() {
 			fi
 		EOF
 	fi
-	grep '/tmp/vscode.tmp' ${HOME}/${DebianFolder}/etc/profile || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/etc/profile
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/etc/profile || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/etc/profile
 
 	if [ -e "${HOME}/${DebianFolder}/usr/bin/code" ]; then
 		code
