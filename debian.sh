@@ -858,21 +858,35 @@ UPDATEMANAGER() {
 }
 #################################
 DOWNLOADVNCAPK() {
+	if [ ! -e $PREFIX/bin/git ]; then
+		apt update
+		apt install -y git
+	fi
+
 	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
 	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,但默认情况下不支持声音。xsdl支持声音，但操作体验没有vnc好。" 10 60); then
 		echo 'Press the Enter key to start the download, and press Ctrl + C to cancel.'
 		echo '按回车键开始下载，按Ctrl+C取消。'
 		read
 		echo 'Downloading vnc viewer...'
-		rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 2>/dev/null
+		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 11.1MB'
-		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
+		if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
+			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+		fi
+
+		git clone -b vnc --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
+		mv -f VncClient/vnc/vnc36142089.tar.xz ./
+		#aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		echo '正在解压...'
-		tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
+		tar -Jxvf vnc36142089.tar.xz
+		#tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
+		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+		rm -f /sdcard/Download/vnc36142089.tar.xz
 		echo '正在删除压缩包...'
-		echo 'Deleting VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz...'
-		rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
+		echo 'Deleting ...'
+		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 		echo '解压成功，请进入下载目录手动安装。'
 		echo '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
@@ -882,15 +896,24 @@ DOWNLOADVNCAPK() {
 		echo '按回车键开始下载，按Ctrl+C取消。'
 		read
 		echo 'Downloading xsdl...'
-		rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
+		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
 		echo 'Download size 28.3MB'
-		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
+		if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
+			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+		fi
+
+		git clone -b xsdl --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
+		mv -f VncClient/xsdl/xsdl12041.tar.xz ./
+		#		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
 		tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
+		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+		rm -f /sdcard/Download/xsdl12041.tar.xz
 		echo '正在删除压缩包...'
-		echo 'Deleting XServerXSDL-X-org-server_1-20-41.tar.xz...'
-		rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
+		echo 'Deleting ...'
+		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
+
 		echo '解压成功，请进入下载目录手动安装。'
 		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
