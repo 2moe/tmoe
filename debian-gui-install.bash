@@ -426,7 +426,7 @@ VSCODESERVER() {
 	fi
 	grep '/tmp/vscode.tmp' /etc/profile || sed -i "$ r /etc/tmp/sed-vscode.tmp" /etc/profile
 	if [ ! -x "/usr/bin/code" ]; then
-		chmod +x /usr/bin/code 2>/dev/nyll || echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
+		chmod +x /usr/bin/code 2>/dev/null || echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
 	fi
 	if [ ! -f "/usr/bin/code" ]; then
 
