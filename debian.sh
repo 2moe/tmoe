@@ -988,8 +988,8 @@ STARTVSCODE() {
 		echo "" >>${HOME}/${DebianFolder}/.bashrc
 	fi
 
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.zshrc || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.zshrc
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.zshrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.zshrc
 
 	if [ -e "${HOME}/${DebianFolder}/usr/bin/code" ]; then
 		code
