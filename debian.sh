@@ -282,7 +282,7 @@ RootMode() {
 
 		cd $PREFIX/etc/
 		if [ ! -f profile ]; then
-			touch profile
+			echo "" >> profile
 		fi
 		cp -pf profile profile.bak
 
@@ -975,7 +975,7 @@ STARTVSCODE() {
 	fi
 
 	if [ ! -f "${HOME}/${DebianFolder}/etc/profile" ]; then
-		touch ${HOME}/${DebianFolder}/etc/profile
+		echo "" >> ${HOME}/${DebianFolder}/etc/profile
 	fi
 
 	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/etc/profile || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/etc/profile
