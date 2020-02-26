@@ -115,24 +115,27 @@ CheckArch() {
 #-- 主菜单 main menu
 
 MainMenu() {
-	OPTION=$(whiptail --title "Debian manager running on Termux" --backtitle "$(
-		base64 -d <<-'DoYouWantToSeeWhatIsInside'
-			6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sMjAyMC0wMizokIzns7vnlJ/niannoJTnqbblkZgs
-			UGxlYXNlIHVzZSB0aGUgYXJyb3cga2V5cyBhbmQgZW50ZXIga2V5IHRvIG9wZXJhdGUuIOivt+S9
-			v+eUqOaWueWQkemUruWSjOWbnui9pumUrui/m+ihjOaTjeS9nOOA
-		DoYouWantToSeeWhatIsInside
-	)" --menu "请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有10个选项,Choose your option" 15 60 4 \
-		"1" "安装 install debian" \
-		"2" "root模式" \
-		"3" "移除 remove system" \
-		"4" "备份系统 backup system" \
-		"5" "还原 restore" \
-		"6" "查询空间占用 query space occupation" \
-		"7" "更新本管理器 update debian manager" \
-		"8" "配置zsh(优化termux) Configure zsh" \
-		"9" "Download VNC apk" \
+	OPTION=$(
+		whiptail --title "Debian manager running on Termux" --backtitle "$(
+			base64 -d <<-'DoYouWantToSeeWhatIsInside'
+				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sMjAyMC0wMizokIzns7vnlJ/niannoJTnqbblkZgs
+				UGxlYXNlIHVzZSB0aGUgYXJyb3cga2V5cyBhbmQgZW50ZXIga2V5IHRvIG9wZXJhdGUuIOivt+S9
+				v+eUqOaWueWQkemUruWSjOWbnui9pumUrui/m+ihjOaTjeS9nOOA
+			DoYouWantToSeeWhatIsInside
+		)" --menu "请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有10个选项,Choose your option" 15 60 4 \
+			"1" "安装 install debian" \
+			"2" "root模式" \
+			"3" "移除 remove system" \
+			"4" "备份系统 backup system" \
+			"5" "还原 restore" \
+			"6" "查询空间占用 query space occupation" \
+			"7" "更新本管理器 update debian manager" \
+			"8" "配置zsh(优化termux) Configure zsh" \
+			"9" "Download VNC apk" \
+			"10" "VSCode Server arm64"
 		"10" "退出 exit" \
-		3>&1 1>&2 2>&3)
+			3>&1 1>&2 2>&3
+	)
 
 	if [ "${OPTION}" == '1' ]; then
 
@@ -175,7 +178,7 @@ MainMenu() {
 	fi
 
 	if [ "${OPTION}" == '8' ]; then
-		bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
@@ -219,7 +222,7 @@ installDebian() {
 			$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile
 			sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 			source profile >/dev/null 2>&1
-			bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+			bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 			$bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 			;;
 		n* | N*)
@@ -235,7 +238,7 @@ installDebian() {
 		esac
 
 	else
-		bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 	fi
 
@@ -312,13 +315,13 @@ REMOVESYSTEM() {
 	read
 
 	chmod 777 -R ${DebianFolder}
-	rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null
+	rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/code 2>/dev/null
 	sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
 	echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
-	echo '其它相关依赖，如pv、dialog、openssl、procps、proot、wget、curl等，均需手动卸载。'
+	echo '其它相关依赖，如pv、dialog、procps、proot、wget等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若需删除debian管理器，则请输rm -f $PREFIX/bin/debian-i'
 	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
@@ -918,6 +921,69 @@ DOWNLOADVNCAPK() {
 
 }
 #########################################
+STARTVSCODE() {
+	if [ ! -e $PREFIX/bin/git ]; then
+		apt update
+		apt install -y git
+	fi
+
+	if [ ! -d "${HOME}/${DebianFolder}" ]; then
+		echo "未检测到${DebianFolder},请先安装debian_arm64"
+		echo "Detected that you did not install ${DebianFolder}, please install debian first."
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo 'Press enter to return.'
+		read
+		MainMenu
+	fi
+	if [ ! -e "$PREFIX/bin/code" ]; then
+		cat >$PREFIX/bin/code <<-'EndOfFile'
+			#!/data/data/com.termux/files/usr/bin/bash
+				touch "${HOME}/${DebianFolder}/tmp/startcode.tmp"
+						am start -a android.intent.action.VIEW -d "http://localhost:8080"
+						echo "即将为您启动VSCode服务,请复制密码，并在浏览器中粘贴。"
+						echo "The VSCode service is starting, please copy the password and paste it in your browser."
+						echo "您之后可以输code来启动VSCode Server."
+						echo 'You can enter "code" to start VScodeServer.'
+						debian
+		EndOfFile
+		chmod +x $PREFIX/bin/code
+	fi
+
+	if [ ! -e "${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ]; then
+		mkdir -p ${HOME}/${DebianFolder}/etc/tmp/
+
+		cat >${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp <<-'EOF'
+			if [ -e "/tmp/vscode.tmp" ]; then
+				rm -f /tmp/vscode.tmp
+				code &
+				echo "已为您启动VSCode服务!"
+				echo "VScodeServer has been started,enjoy it !"
+			fi
+		EOF
+	fi
+	grep '/tmp/vscode.tmp' ${HOME}/${DebianFolder}/etc/profile || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/etc/profile
+
+	if [ -e "${HOME}/${DebianFolder}/usr/bin/code" ]; then
+		code
+	else
+
+		cd ${HOME}
+		if [ -d ".VSCODESERVERTMPFILE" ]; then
+			rm -rf .VSCODESERVERTMPFILE
+		fi
+
+		git clone -b build --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
+		cd .VSCODESERVERTMPFILE
+		tar -Jxvf code-server-arm64.tar.xz
+		chmod +x code
+		mv -f code "${HOME}/${DebianFolder}/usr/bin/"
+		cd ${cur}
+		rm -rf ${HOME}/.VSCODESERVERTMPFILE
+		code
+	fi
+
+}
+#####################################
 autoCheck
 ##取消注释，测试用。
 ##MainMenu

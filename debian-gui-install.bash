@@ -22,12 +22,12 @@ CHECKdependencies() {
 	fi
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
-
+	cur=$(pwd)
 	DEBIANMENU
 }
 ####################################################
 DEBIANMENU() {
-	OPTION=$(whiptail --title "输debian-i启动本工具,Development date 2020-02-22" --menu "Please use the arrow and enter key to operate.当前主菜单下共有13个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+	OPTION=$(whiptail --title "输debian-i启动本工具,version 20200227" --menu "Please use the arrow and enter key to operate.当前主菜单下共有13个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
 		"3" "Remove GUI 卸载图形界面" \
@@ -40,7 +40,8 @@ DEBIANMENU() {
 		"10" "Modify VNC config 修改vnc配置" \
 		"11" "Modify XSDL config 修改xsdl配置" \
 		"12" "Enable zsh tool 启用zsh管理工具" \
-		"13" "Exit 退出" \
+		"13" "VScode-server" \
+		"14" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
 	##############################
@@ -119,6 +120,12 @@ DEBIANMENU() {
 
 	###################################
 	if [ "${OPTION}" == '13' ]; then
+
+		VSCODESERVER
+
+	fi
+	################################
+	if [ "${OPTION}" == '14' ]; then
 
 		exit
 
@@ -394,6 +401,49 @@ REMOVEBROWSER() {
 	fi
 	DEBIANMENU
 }
+#############################################
+VSCODESERVER() {
+	if [ ! -f "/usr/bin/git" ]; then
+		apt update
+		apt install -y git
+	fi
+
+	if [ -e "/etc/tmp/sed-vscode.tmp" ]; then
+		mkdir -p /etc/tmp
+
+		cat >"/etc/tmp/sed-vscode.tmp" <<-'EOF'
+			if [ -e "/tmp/startcode.tmp" ]; then
+				rm -f /tmp/startcode.tmp
+				code &
+				echo "已为您启动VSCode服务!"
+				echo "VScodeServer has been started,enjoy it !"
+			fi
+		EOF
+	fi
+	grep '/tmp/vscode.tmp' /etc/profile || sed -i "$ r /etc/tmp/sed-vscode.tmp" /etc/profile
+	if [ ! -x "/usr/bin/code" ]; then
+		chmod +x /usr/bin/code
+	fi
+	if [ ! -f "$/usr/bin/code" ]; then
+
+		cd ${HOME}
+		if [ -d ".VSCODESERVERTMPFILE" ]; then
+			rm -rf .VSCODESERVERTMPFILE
+		fi
+
+		git clone -b build --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
+		cd .VSCODESERVERTMPFILE
+		tar -Jxvf code-server-arm64.tar.xz
+		chmod +x code
+		mv -f code "/usr/bin/"
+		cd ${cur}
+		rm -rf ${HOME}/.VSCODESERVERTMPFILE
+		code
+
+	fi
+
+}
+
 ########################################################################
 CHECKdependencies
 ########################################################################

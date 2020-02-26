@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files//data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 termux-setup-storage
 
 #检测架构
