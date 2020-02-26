@@ -958,9 +958,9 @@ STARTVSCODE() {
 			echo "请将地址粘贴到浏览器的地址栏中"
 
 
-			    echo "您之后可以输code来启动VSCode Server."
-			    echo 'You can type "code" to start VScodeServer.'
-			    debian
+			echo "您之后可以输code来启动VSCode Server."
+			echo 'You can type "code" to start VScodeServer.'
+			debian
 		EndOfFile
 		chmod +x $PREFIX/bin/code
 	fi
@@ -977,6 +977,8 @@ STARTVSCODE() {
 				code &
 				echo "已为您启动VSCode服务!"
 				echo "VScodeServer has been started,enjoy it !"
+				echo "您可以输pkill code来停止服务。"
+				echo 'You can type "pkill code" to stop vscode service.'
 			fi
 		EOF
 	fi
