@@ -341,7 +341,7 @@ REMOVESYSTEM() {
 ########################################################################
 #
 BackupSystem() {
-	termux-setup-storage
+
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "备份Debian" \
@@ -842,7 +842,7 @@ SpaceOccupation() {
 
 ########################################################################
 UPDATEMANAGER() {
-    curl -L -o $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+	curl -L -o $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	#aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	#wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
