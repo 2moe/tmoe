@@ -31,7 +31,7 @@ CHECKdependencies() {
 }
 ####################################################
 DEBIANMENU() {
-	OPTION=$(whiptail --title "输debian-i启动本工具,version 20200227" --menu "Please use the arrow and enter key to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+	OPTION=$(whiptail --title "输debian-i启动本工具,version 20200227" --menu "Type 'debian-i' to start this tool.Please use the arrow and enter key to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
 		"3" "Remove GUI 卸载图形界面" \
@@ -44,8 +44,9 @@ DEBIANMENU() {
 		"10" "Modify VNC config 修改vnc配置" \
 		"11" "Modify XSDL config 修改xsdl配置" \
 		"12" "Enable zsh tool 启用zsh管理工具" \
-		"13" "VScode-server" \
-		"14" "Exit 退出" \
+		"13" "Start VScode server" \
+		"14" "Remove VScode server" \
+		"15" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
 	##############################
@@ -130,6 +131,16 @@ DEBIANMENU() {
 	fi
 	################################
 	if [ "${OPTION}" == '14' ]; then
+
+		rm -f /usr/bin/code
+		echo "${YELLOW}移除成功，按回车键返回。${RESET}"
+		echo "Remove successfully.Press enter to return."
+		read
+		DEBIANMENU
+
+	fi
+	###############################
+	if [ "${OPTION}" == '15' ]; then
 
 		exit
 
@@ -417,10 +428,8 @@ VSCODESERVER() {
 
 		cat >"/etc/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
-			echo "本机默认vscode服务地址localhost:8080"
-			echo "The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):8080"
-			echo "Please paste the address into your browser!"
-			echo "请把地址粘贴到浏览器的地址栏中"
+				echo "正在为您启动VSCode服务,请复制密码，并在浏览器的密码框中粘贴。"
+				echo "The VSCode service is starting, please copy the password and paste it in your browser."
 
 				rm -f /tmp/startcode.tmp
 				code &

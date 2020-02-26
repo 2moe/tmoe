@@ -952,8 +952,12 @@ STARTVSCODE() {
 			#!/data/data/com.termux/files/usr/bin/bash
 				touch "${HOME}/${DebianFolder}/tmp/startcode.tmp"
 						am start -a android.intent.action.VIEW -d "http://localhost:8080"
-						echo "即将为您启动VSCode服务,请复制密码，并在浏览器的密码框中粘贴。"
-						echo "The VSCode service is starting, please copy the password and paste it in your browser."
+									echo "本机默认vscode服务地址localhost:8080"
+			echo "The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080"
+			echo "Please paste the address into your browser!"
+			echo "请将地址粘贴到浏览器的地址栏中"
+
+
 						echo "您之后可以输code来启动VSCode Server."
 						echo 'You can type "code" to start VScodeServer.'
 						debian
@@ -965,16 +969,15 @@ STARTVSCODE() {
 		mkdir -p ${HOME}/${DebianFolder}/etc/tmp/
 
 		cat >${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp <<-'EOF'
-			if [ -e "/tmp/vscode.tmp" ]; then
-			echo "本机默认vscode服务地址localhost:8080"
-			echo "The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):8080"
-			echo "Please paste the address into your browser!"
-			echo "请把地址粘贴到浏览器的地址栏中"
-				rm -f /tmp/vscode.tmp
-				code &
-				echo "已为您启动VSCode服务!"
-				echo "VScodeServer has been started,enjoy it !"
-			fi
+		if [ -e "/tmp/vscode.tmp" ]; then
+			echo "正在为您启动VSCode服务,请复制密码，并在浏览器的密码框中粘贴。"
+			echo "The VSCode service is starting, please copy the password and paste it in your browser."
+
+			rm -f /tmp/vscode.tmp
+			code &
+			echo "已为您启动VSCode服务!"
+			echo "VScodeServer has been started,enjoy it !"
+		fi
 		EOF
 	fi
 
@@ -1004,6 +1007,8 @@ STARTVSCODE() {
 		mv -f code "${HOME}/${DebianFolder}/usr/bin/"
 		cd ${cur}
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
+		echo "Congratulations, you have successfully installed vscode server!"
+		echo "您已成功安装VSCode服务，如需卸载请输rm -f $PREFIX/bin/code  ${HOME}/${DebianFolder}/usr/bin/code"
 		code
 	fi
 
