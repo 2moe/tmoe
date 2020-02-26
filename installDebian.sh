@@ -1557,7 +1557,7 @@ vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
 EndOfFile
-chmod +x mate.sh
+
 #############
 cat >startxsdl<<-'EndOfFile'
 #!/bin/bash
@@ -1583,6 +1583,9 @@ rm -rf /tmp/.X11-unix/X1
 pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc startxsdl
+dpkg --configure -a 
+umount .gvfs
+apt purge "gvfs*" "udisks2*"
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
