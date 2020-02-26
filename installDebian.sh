@@ -1584,8 +1584,9 @@ pkill Xtightvnc
 EndOfFile
 chmod +x startvnc stopvnc startxsdl
 dpkg --configure -a 
-umount .gvfs
-apt purge "gvfs*" "udisks2*"
+#暂不卸载。若卸载则将破坏其依赖关系。
+#umount .gvfs
+#apt purge "gvfs*" "udisks2*"
 echo 'The vnc service is about to start for you. The password you entered is hidden.'
 echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 echo "When prompted for a view-only password, it is recommended that you enter 'n'"
