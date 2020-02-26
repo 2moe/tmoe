@@ -877,7 +877,7 @@ DOWNLOADVNCAPK() {
 		fi
 
 		git clone -b vnc --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
-		mv -f VncClient/vnc/vnc36142089.tar.xz ./
+		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/VncClient/vnc/vnc36142089.tar.xz ./
 		#aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		echo '正在解压...'
 		tar -Jxvf vnc36142089.tar.xz
@@ -904,7 +904,7 @@ DOWNLOADVNCAPK() {
 		fi
 
 		git clone -b xsdl --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
-		mv -f VncClient/xsdl/xsdl12041.tar.xz ./
+		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/VncClient/xsdl/xsdl12041.tar.xz ./
 		#		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
 		tar -Jxvf xsdl12041.tar.xz
