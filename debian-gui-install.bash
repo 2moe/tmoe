@@ -11,6 +11,10 @@ CHECKdependencies() {
 		dependencies="${dependencies} whiptail"
 	fi
 
+	if [ ! -e /usr/bin/xz ]; then
+		dependencies="${dependencies} xz-utils"
+	fi
+
 	if [ ! -e /usr/bin/wget ]; then
 		dependencies="${dependencies} wget"
 	fi
