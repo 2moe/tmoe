@@ -907,7 +907,8 @@ DOWNLOADVNCAPK() {
 		mv -f VncClient/xsdl/xsdl12041.tar.xz ./
 		#		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
-		tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
+		tar -Jxvf xsdl12041.tar.xz
+		#tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
 		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
 		rm -f /sdcard/Download/xsdl12041.tar.xz
 		echo '正在删除压缩包...'
