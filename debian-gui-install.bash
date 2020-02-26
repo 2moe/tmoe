@@ -424,7 +424,7 @@ VSCODESERVER() {
 	if [ ! -x "/usr/bin/code" ]; then
 		chmod +x /usr/bin/code
 	fi
-	if [ ! -f "$/usr/bin/code" ]; then
+	if [ ! -f "/usr/bin/code" ]; then
 
 		cd ${HOME}
 		if [ -d ".VSCODESERVERTMPFILE" ]; then
