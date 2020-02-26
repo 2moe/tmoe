@@ -41,6 +41,10 @@ autoCheck() {
 		apt install -y ${dependencies}
 	fi
 
+	if [ "$(uname -o)" = "GNU/Linux" ]; then
+		apt install whiptail
+	fi
+
 	CheckArch
 }
 
@@ -106,7 +110,10 @@ CheckArch() {
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
-	termux-setup-storage
+	if [ "$(uname -o)" != "GNU/Linux" ]; then
+		termux-setup-storage
+	fi
+
 	MainMenu
 
 }
@@ -122,7 +129,7 @@ MainMenu() {
 				UGxlYXNlIHVzZSB0aGUgYXJyb3cga2V5cyBhbmQgZW50ZXIga2V5IHRvIG9wZXJhdGUuIOivt+S9
 				v+eUqOaWueWQkemUruWSjOWbnui9pumUrui/m+ihjOaTjeS9nOOA
 			DoYouWantToSeeWhatIsInside
-		)" --menu "请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有10个选项,Choose your option" 15 60 4 \
+		)" --menu "请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有11个选项,Choose your option" 15 60 4 \
 			"1" "安装 install debian" \
 			"2" "root模式" \
 			"3" "移除 remove system" \
@@ -132,8 +139,8 @@ MainMenu() {
 			"7" "更新本管理器 update debian manager" \
 			"8" "配置zsh(优化termux) Configure zsh" \
 			"9" "Download VNC apk" \
-			"10" "VSCode Server arm64"
-		"10" "退出 exit" \
+			"10" "VSCode Server arm64" \
+			"11" "退出 exit" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -190,6 +197,11 @@ MainMenu() {
 	fi
 
 	if [ "${OPTION}" == '10' ]; then
+		STARTVSCODE
+
+	fi
+
+	if [ "${OPTION}" == '11' ]; then
 		exit
 
 	fi
