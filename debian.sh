@@ -971,14 +971,14 @@ STARTVSCODE() {
 		cat >${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp <<-'EOF'
 			if [ -e "/tmp/vscode.tmp" ]; then
 				echo "正在为您启动VSCode服务,请复制密码，并在浏览器的密码框中粘贴。"
-				echo "The VSCode service is starting, please copy the password and paste it in your browser."
+				echo "The VSCode server is starting, please copy the password and paste it in your browser."
 
 				rm -f /tmp/vscode.tmp
 				code &
 				echo "已为您启动VSCode服务!"
 				echo "VScodeServer has been started,enjoy it !"
 				echo "您可以输pkill code来停止服务。"
-				echo 'You can type "pkill code" to stop vscode service.'
+				echo 'You can type "pkill code" to stop vscode server.'
 			fi
 		EOF
 	fi

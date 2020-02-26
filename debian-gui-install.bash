@@ -460,9 +460,9 @@ VSCODESERVER() {
 		cd ${cur}
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
 		echo "即将为您启动VSCode服务,请复制密码，并在浏览器中粘贴。"
-		echo "The VSCode service is starting, please copy the password and paste it in your browser."
+		echo "The VSCode server is starting, please copy the password and paste it in your browser."
 		echo "您之后可以输code来启动VSCode Server."
-		echo 'You can type "code" to start VScodeServer.'
+		echo 'You can type "code" to start VSCodeServer.'
 		code
 
 	fi
