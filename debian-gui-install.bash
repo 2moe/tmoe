@@ -417,6 +417,11 @@ VSCODESERVER() {
 
 		cat >"/etc/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
+			echo "本机默认vscode服务地址localhost:8080"
+			echo "The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):8080"
+			echo "Please paste the address into your browser!"
+			echo "请把地址粘贴到浏览器的地址栏中"
+
 				rm -f /tmp/startcode.tmp
 				code &
 				echo "已为您启动VSCode服务!"
@@ -424,7 +429,8 @@ VSCODESERVER() {
 			fi
 		EOF
 	fi
-	grep '/tmp/vscode.tmp' /etc/profile || sed -i "$ r /etc/tmp/sed-vscode.tmp" /etc/profile
+	grep '/tmp/vscode.tmp' /root/.bashrc || sed -i "$ r /etc/tmp/sed-vscode.tmp" /root/.bashrc
+	grep '/tmp/vscode.tmp' /root/.zshrc || sed -i "$ r /etc/tmp/sed-vscode.tmp" /root/.zshrc
 	if [ ! -x "/usr/bin/code" ]; then
 		chmod +x /usr/bin/code 2>/dev/null || echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
 	fi
@@ -442,6 +448,10 @@ VSCODESERVER() {
 		mv -f code "/usr/bin/"
 		cd ${cur}
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
+		echo "即将为您启动VSCode服务,请复制密码，并在浏览器中粘贴。"
+		echo "The VSCode service is starting, please copy the password and paste it in your browser."
+		echo "您之后可以输code来启动VSCode Server."
+		echo 'You can type "code" to start VScodeServer.'
 		code
 
 	fi

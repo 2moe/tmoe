@@ -282,7 +282,7 @@ RootMode() {
 
 		cd $PREFIX/etc/
 		if [ ! -f profile ]; then
-			echo "" >> profile
+			echo "" >>profile
 		fi
 		cp -pf profile profile.bak
 
@@ -952,10 +952,10 @@ STARTVSCODE() {
 			#!/data/data/com.termux/files/usr/bin/bash
 				touch "${HOME}/${DebianFolder}/tmp/startcode.tmp"
 						am start -a android.intent.action.VIEW -d "http://localhost:8080"
-						echo "即将为您启动VSCode服务,请复制密码，并在浏览器中粘贴。"
+						echo "即将为您启动VSCode服务,请复制密码，并在浏览器的密码框中粘贴。"
 						echo "The VSCode service is starting, please copy the password and paste it in your browser."
 						echo "您之后可以输code来启动VSCode Server."
-						echo 'You can enter "code" to start VScodeServer.'
+						echo 'You can type "code" to start VScodeServer.'
 						debian
 		EndOfFile
 		chmod +x $PREFIX/bin/code
@@ -966,6 +966,10 @@ STARTVSCODE() {
 
 		cat >${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp <<-'EOF'
 			if [ -e "/tmp/vscode.tmp" ]; then
+			echo "本机默认vscode服务地址localhost:8080"
+			echo "The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):8080"
+			echo "Please paste the address into your browser!"
+			echo "请把地址粘贴到浏览器的地址栏中"
 				rm -f /tmp/vscode.tmp
 				code &
 				echo "已为您启动VSCode服务!"
@@ -974,11 +978,15 @@ STARTVSCODE() {
 		EOF
 	fi
 
-	if [ ! -f "${HOME}/${DebianFolder}/etc/profile" ]; then
-		echo "" >> ${HOME}/${DebianFolder}/etc/profile
+	if [ ! -f "${HOME}/${DebianFolder}/root/.zshrc" ]; then
+		echo "" >>${HOME}/${DebianFolder}/.zshrc
+	fi
+	if [ ! -f "${HOME}/${DebianFolder}/root/.bashrc" ]; then
+		echo "" >>${HOME}/${DebianFolder}/.bashrc
 	fi
 
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/etc/profile || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/etc/profile
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.zshrc || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.zshrc
 
 	if [ -e "${HOME}/${DebianFolder}/usr/bin/code" ]; then
 		code
