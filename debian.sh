@@ -11,10 +11,6 @@ autoCheck() {
 		dependencies="${dependencies} wget"
 	fi
 
-	if [ ! -e $PREFIX/bin/aria2c ]; then
-		dependencies="${dependencies} aria2"
-	fi
-
 	if [ ! -e $PREFIX/bin/pv ]; then
 		dependencies="${dependencies} pv"
 	fi
@@ -846,8 +842,8 @@ SpaceOccupation() {
 
 ########################################################################
 UPDATEMANAGER() {
-
-	aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+    curl -L -o $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+	#aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	#wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo 'Press enter to return.'
