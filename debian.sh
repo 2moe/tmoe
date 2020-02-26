@@ -974,7 +974,7 @@ STARTVSCODE() {
 		EOF
 	fi
 
-	if [ -f "${HOME}/${DebianFolder}/etc/profile" ]; then
+	if [ ! -f "${HOME}/${DebianFolder}/etc/profile" ]; then
 		touch ${HOME}/${DebianFolder}/etc/profile
 	fi
 
