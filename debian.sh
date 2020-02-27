@@ -235,7 +235,7 @@ installDebian() {
 			sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 			source profile >/dev/null 2>&1
 			bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
-			$bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+			#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 			;;
 		n* | N*)
 			echo "skipped."
