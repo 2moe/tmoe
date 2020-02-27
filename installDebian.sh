@@ -1325,7 +1325,7 @@ stopvnc >/dev/null 2>&1
 sed -i 's/4712/4713/g' /usr/bin/startxsdl
 EndOfFile
 
-chmod +x /usr/local/bin/xsdl-4712 /usr/local/bin/xsdl-4712
+chmod +x /usr/local/bin/xsdl-4712 /usr/local/bin/xsdl-4713
 #############################
 #桌面环境安装脚本
 cat >xfce.sh<<-'Matryoshka'
