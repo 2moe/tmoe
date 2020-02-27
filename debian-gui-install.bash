@@ -31,7 +31,7 @@ CHECKdependencies() {
 }
 ####################################################
 DEBIANMENU() {
-	OPTION=$(whiptail --title "输debian-i启动本工具,version 20200227" --menu "Type 'debian-i' to start this tool.Please use the arrow and enter key to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+	OPTION=$(whiptail --title "输debian-i启动本工具,version 20200228" --menu "Type 'debian-i' to start this tool.Please use the arrow and enter key to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
 		"3" "Remove GUI 卸载图形界面" \
@@ -46,7 +46,8 @@ DEBIANMENU() {
 		"12" "Enable zsh tool 启用zsh管理工具" \
 		"13" "Start VScode server" \
 		"14" "Remove VScode server" \
-		"15" "Exit 退出" \
+		"15" "Synaptic(新立得软件包管理器/软件商店)" \
+		"16" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
 	##############################
@@ -141,6 +142,12 @@ DEBIANMENU() {
 	fi
 	###############################
 	if [ "${OPTION}" == '15' ]; then
+
+		INSTALLsynaptic
+
+	fi
+	###############################
+	if [ "${OPTION}" == '16' ]; then
 
 		exit
 
@@ -428,15 +435,15 @@ VSCODESERVER() {
 
 		cat >"/etc/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
-				echo "正在为您启动VSCode服务,请复制密码，并在浏览器的密码框中粘贴。"
-				echo "The VSCode service is starting, please copy the password and paste it in your browser."
+				echo "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
+				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
 
 				rm -f /tmp/startcode.tmp
 				code &
 				echo "已为您启动VSCode服务!"
 				echo "VScodeServer has been started,enjoy it !"
-				echo "您可以输pkill code来停止服务。"
-				echo 'You can type "pkill code" to stop vscode service.'
+				echo "您可以输pkill code来停止服务(器)。"
+				echo 'You can type "pkill code" to stop vscode service(server).'
 			fi
 		EOF
 	fi
@@ -466,6 +473,25 @@ VSCODESERVER() {
 		code
 
 	fi
+
+}
+##############################################################
+INSTALLsynaptic() {
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Install安装" --no-button "Remove移除" --yesno "新立德是一款用于apt的图形化软件包管理器，您也可以把它理解为软件商店。Synaptic is a graphical package management program for apt. It provides the same features as the apt-get command line utility with a GUI front-end based on Gtk+.它提供与apt-get命令行相同的功能，并带有基于Gtk+的GUI前端。功能：1.安装、删除、升级和降级单个和多个软件包。 2.升级整个系统。 3.管理软件源列表。  4.自定义过滤器选择(搜索)软件包。 5.按名称、状态、大小或版本对软件包进行排序。 6.浏览与所选软件包相关的所有可用在线文档。♪(^∇^*) " 19 50); then
+
+		apt install -y synaptic
+		sed -i 's/synaptic-pkexec/synaptic/g' /usr/share/applications/synaptic.desktop
+
+	else
+
+		echo "${YELLOW}您真的要离开我么？哦呜。。。${RESET}"
+		echo "Do you really want to remove synaptic?"
+		echo "按任意键继续，按Ctrl+C取消。"
+		echo "${YELLOW}Press any key to continue! ${RESET}"
+		read
+		apt purge -y synaptic
+	fi
+	DEBIANMENU
 
 }
 
