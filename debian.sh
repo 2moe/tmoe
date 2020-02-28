@@ -241,15 +241,15 @@ installDebian() {
 				;;
 			n* | N*)
 				echo "skipped."
-				echo "Press any key to return。"
-				echo "${YELLOW}按任意键返回。${RESET} "
+				echo "Press enter to return。"
+				echo "${YELLOW}按回车键返回。${RESET} "
 				read
 				MainMenu
 				;;
 			*)
 				echo "Invalid choice. skipped."
-				echo "Press any key to return。"
-				echo "${YELLOW}按任意键返回。${RESET} "
+				echo "Press enter to return。"
+				echo "${YELLOW}按回车键返回。${RESET} "
 				read
 				MainMenu
 				;;
@@ -353,8 +353,8 @@ REMOVESYSTEM() {
 	read opt
 	case $opt in
 	y* | Y* | "") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
-	n* | N*) echo "${YELLOW}Skipped,已跳过，按任意键返回。${RESET} " ;;
-	*) echo "${YELLOW}Invalid choice，skipped.已跳过，按任意键返回。${RESET} " ;;
+	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
+	*) echo "${YELLOW}Invalid choice，skipped.已跳过，按回车键返回。${RESET} " ;;
 	esac
 	MainMenu
 
@@ -398,7 +398,7 @@ BackupSystem() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 
@@ -417,7 +417,7 @@ BackupSystem() {
 			pwd
 			ls -lth ./*tar* | grep ^- | head -n 1
 			echo 'gzip压缩至60%完成是正常现象。'
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 		fi
@@ -487,7 +487,7 @@ BACKUPTERMUX() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./termux-home*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 
@@ -505,7 +505,7 @@ BACKUPTERMUX() {
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
 			ls -lth ./termux-home*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 		fi
@@ -546,7 +546,7 @@ BACKUPTERMUX() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./termux-usr*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 
@@ -566,7 +566,7 @@ BACKUPTERMUX() {
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
 			ls -lth ./*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 		fi
@@ -606,7 +606,7 @@ BACKUPTERMUX() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 
@@ -626,7 +626,7 @@ BACKUPTERMUX() {
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
 			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
-			echo '备份完成,按任意键返回。'
+			echo '备份完成,按回车键返回。'
 			read
 			MainMenu
 		fi
