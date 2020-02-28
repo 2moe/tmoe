@@ -132,7 +132,9 @@ DEBIANMENU() {
 	fi
 	################################
 	if [ "${OPTION}" == '14' ]; then
-
+		echo "按任意键确认移除，按Ctrl+C取消。"
+		echo "${YELLOW}Press any key to remove VSCode Server. ${RESET}"
+		read
 		rm -f /usr/bin/code
 		echo "${YELLOW}移除成功，按回车键返回。${RESET}"
 		echo "Remove successfully.Press enter to return."
