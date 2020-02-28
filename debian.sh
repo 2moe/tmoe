@@ -92,12 +92,13 @@ CheckArch() {
 	ppc64el)
 		archtype="ppc64el"
 		;;
-	mipsel)
-		echo '暂不支持路由器等嵌入式设备'
+	mips*)
+		echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
 		exit 1
 		;;
 	risc*)
 		echo '暂不支持risc-v'
+		echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
 		exit 1
 		;;
 	*)
@@ -123,13 +124,12 @@ CheckArch() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Debian manager running on Termux" --backtitle "$(
+		whiptail --title "Debian manager running on Termux 20200228" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
-				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sMjAyMC0wMizokIzns7vnlJ/niannoJTnqbblkZgs
-				UGxlYXNlIHVzZSB0aGUgYXJyb3cga2V5cyBhbmQgZW50ZXIga2V5IHRvIG9wZXJhdGUuIOivt+S9
-				v+eUqOaWueWQkemUruWSjOWbnui9pumUrui/m+ihjOaTjeS9nOOA
+				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sdmVyc2lvbiAyMDIwMDIyOCzokIzns7vnlJ/niann
+				oJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有11个选项,Choose your option" 15 60 4 \
+		)" --menu "Please use the arrow keys and enter key to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有11个选项,Choose your option" 15 60 4 \
 			"1" "安装 install debian" \
 			"2" "root模式" \
 			"3" "移除 remove system" \
