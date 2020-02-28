@@ -46,7 +46,7 @@ DEBIANMENU() {
 		"12" "Enable zsh tool 启用zsh管理工具" \
 		"13" "Start VScode server" \
 		"14" "Remove VScode server" \
-		"15" "Synaptic(新立得软件包管理工具/软件商店)" \
+		"15" "Synaptic(新立得软件包管理器/软件商店)" \
 		"16" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
