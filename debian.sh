@@ -126,8 +126,8 @@ MainMenu() {
 	OPTION=$(
 		whiptail --title "Debian manager running on Termux 20200228" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
-				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo9UeXBlIGRlYmlhbi1pIHRvIHN0YXJ0IHRoZSB0b29s
-				LOiQjOezu+eUn+eJqeeglOeptuWRmAo=
+				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
+				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the arrow keys and enter key to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有11个选项,Choose your option" 15 60 4 \
 			"1" "安装 install debian" \
@@ -223,7 +223,7 @@ installDebian() {
 	fi
 
 	if [ -d ~/${DebianFolder} ]; then
-		if (whiptail --title "检测到您已安装debian,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 10 60); then
+		if (whiptail --title "检测到您已安装debian,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 5 50); then
 			debian
 		else
 
