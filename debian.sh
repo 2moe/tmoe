@@ -911,7 +911,7 @@ DOWNLOADVNCAPK() {
 	else
 		echo 'Press enter to start the download, and press Ctrl + C to cancel.'
 		echo '按回车键开始下载，按Ctrl+C取消。'
-		read
+		read 
 		echo 'Downloading xsdl...'
 		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
