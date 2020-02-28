@@ -223,37 +223,44 @@ installDebian() {
 	fi
 
 	if [ -d ~/${DebianFolder} ]; then
-		printf "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
-		#分行
-		echo ''
-		echo '您可以无需输"y"，直接按回车键确认。'
-		echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
-		read opt
-		case $opt in
-		y* | Y* | "")
-			$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile
-			sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
-			source profile >/dev/null 2>&1
-			bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
-			#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
-			;;
-		n* | N*)
-			echo "skipped."
-			read
-			MainMenu
-			;;
-		*)
-			echo "Invalid choice. skipped."
-			read
-			MainMenu
-			;;
-		esac
+		if (whiptail --title "检测到您已安装debian,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重新安装(っ °Д °；)っ' --yesno "Debian has been installed, please choose what you need to do!" 10 60); then
+			debian
+		else
+
+			echo "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
+			echo "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
+			echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
+			read opt
+			case $opt in
+			y* | Y* | "")
+				$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile
+				sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
+				source profile >/dev/null 2>&1
+				bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+				#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+				;;
+			n* | N*)
+				echo "skipped."
+				echo "Press any key to return。"
+				echo "${YELLOW}按任意键返回。${RESET} "
+				read
+				MainMenu
+				;;
+			*)
+				echo "Invalid choice. skipped."
+				echo "Press any key to return。"
+				echo "${YELLOW}按任意键返回。${RESET} "
+				read
+				MainMenu
+				;;
+			esac
+		fi
 
 	else
 		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
-	fi
 
+	fi
 }
 
 ########################################################################
@@ -346,8 +353,8 @@ REMOVESYSTEM() {
 	read opt
 	case $opt in
 	y* | Y* | "") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
-	n* | N*) echo "skipped." ;;
-	*) echo "Invalid choice. skipped." ;;
+	n* | N*) echo "${YELLOW}Skipped,已跳过，按任意键返回。${RESET} " ;;
+	*) echo "${YELLOW}Invalid choice，skipped.已跳过，按任意键返回。${RESET} " ;;
 	esac
 	MainMenu
 
