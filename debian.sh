@@ -883,7 +883,7 @@ DOWNLOADVNCAPK() {
 	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
 	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,但默认情况下不支持声音。xsdl支持声音，但操作体验没有vnc好。VNC has a better operating experience and is also smoother, but it does not support sound by default. XSDL supports sound, but the experience is not as good as VNC in every way." 10 60); then
 		echo 'Press the Enter key to start the download, and press Ctrl + C to cancel.'
-		echo '按回车键开始下载，按Ctrl+C取消。'
+		echo "${YELLOW}按回车键开始下载，按Ctrl+C取消。${RESET}"
 		read
 		echo 'Downloading vnc viewer...'
 		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 2>/dev/null
@@ -905,7 +905,7 @@ DOWNLOADVNCAPK() {
 		echo 'Deleting ...'
 		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
-		echo '解压成功，请进入下载目录手动安装。'
+		echo "${YELLOW}解压成功，请进入下载目录手动安装。${RESET}"
 		echo '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
 		cd ${cur}
 	else
