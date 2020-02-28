@@ -327,7 +327,7 @@ REMOVESYSTEM() {
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
 	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
-		printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian{RESET}"
+		printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
 	fi
 	echo ''
 	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
