@@ -126,8 +126,8 @@ MainMenu() {
 	OPTION=$(
 		whiptail --title "Debian manager running on Termux 20200228" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
-				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sdmVyc2lvbiAyMDIwMDIyOCzokIzns7vnlJ/niann
-				oJTnqbblkZgK
+				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo9UeXBlIGRlYmlhbi1pIHRvIHN0YXJ0IHRoZSB0b29s
+				LOiQjOezu+eUn+eJqeeglOeptuWRmAo=
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the arrow keys and enter key to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有11个选项,Choose your option" 15 60 4 \
 			"1" "安装 install debian" \
