@@ -473,6 +473,8 @@ VSCODESERVER() {
 		echo "您之后可以输code来启动VSCode Server."
 		echo 'You can type "code" to start VSCodeServer.'
 		code
+	else
+		code
 
 	fi
 
