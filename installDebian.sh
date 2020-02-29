@@ -1041,17 +1041,19 @@ rm -f vnc-autostartup-zsh
 
 
 echo "正在安装zsh-syntax-highlighting语法高亮插件"
-rm -rf ~/.zsh-syntax-highlighting
+
+rm -rf /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
+mkdir -p /root/.oh-my-zsh/custom/plugins
 
 #git clone git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
-git clone https://gitee.com/mo2/zsh-syntax-highlighting.git ~/.zsh-syntax-highlighting
+git clone https://gitee.com/mo2/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 
-grep '.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || echo -e "\nsource /root/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
+grep 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
 
 echo "正在安装zsh-autosuggestions自动补全插件"
-rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-mkdir -p /root/.oh-my-zsh/custom/plugins
+rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
+
 #git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
