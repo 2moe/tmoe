@@ -1062,9 +1062,9 @@ grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc 
 
 sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
 echo 'All optimization steps have been completed, enjoy it!'
-echo 'zsh配置完成，2s后将为您启动debian-gui安装管理器'
+echo 'zsh配置完成，2s后将为您启动Tmoe-debian工具'
 echo '您也可以手动输debian-i进入'
-echo 'After 2 seconds, debian-gui installation manager will be launched.'
+echo 'After 2 seconds, Tmoe-debian gui installation manager will be launched.'
 echo 'You can also enter debian-i manually to start it.'
 sleep 2
 /usr/local/bin/debian-i
@@ -2049,7 +2049,7 @@ echo "             iBBBP                      "
 echo "                 r7:..                  "
 
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
-echo "2s后将自动开始配置zsh"
+echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"
 sleep 2
 bash zsh.sh
 EDITBASHRC
