@@ -991,10 +991,10 @@ STARTVSCODE() {
 	fi
 
 	if [ ! -f "${HOME}/${DebianFolder}/root/.zshrc" ]; then
-		echo "" >>${HOME}/${DebianFolder}/.zshrc
+		echo "" >>${HOME}/${DebianFolder}/root/.zshrc
 	fi
 	if [ ! -f "${HOME}/${DebianFolder}/root/.bashrc" ]; then
-		echo "" >>${HOME}/${DebianFolder}/.bashrc
+		echo "" >>${HOME}/${DebianFolder}/root/.bashrc
 	fi
 
 	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
