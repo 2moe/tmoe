@@ -955,7 +955,7 @@ STARTVSCODE() {
 		MainMenu
 	fi
 	if [ ! -e "$PREFIX/bin/code" ]; then
-		cat >$PREFIX/bin/code <<-"EndOfFile"
+		cat >$PREFIX/bin/code <<- EndOfFile
 			#!/data/data/com.termux/files/usr/bin/bash
 			touch "${HOME}/debian_arm64/tmp/startcode.tmp"
 			am start -a android.intent.action.VIEW -d "http://localhost:8080"
