@@ -124,7 +124,7 @@ CheckArch() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Debian manager running on Termux 20200228" --backtitle "$(
+		whiptail --title "Tmoe-Debian manager running on Termux(20200229)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
