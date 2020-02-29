@@ -976,11 +976,11 @@ STARTVSCODE() {
 		mkdir -p ${HOME}/${DebianFolder}/etc/tmp/
 
 		cat >${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp <<-'EOF'
-			if [ -e "/tmp/vscode.tmp" ]; then
+			if [ -e "/tmp/startcode.tmp" ]; then
 				echo "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
 				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
 
-				rm -f /tmp/vscode.tmp
+				rm -f /tmp/startcode.tmp
 				code &
 				echo "已为您启动VSCode服务!"
 				echo "VScodeServer has been started,enjoy it !"
