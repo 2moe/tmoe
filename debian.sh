@@ -42,7 +42,7 @@ autoCheck() {
 	fi
 
 	if [ "$(uname -o)" = "GNU/Linux" ]; then
-		apt install whiptail
+		apt install -y whiptail
 	fi
 
 	CheckArch
@@ -307,7 +307,7 @@ RootMode() {
 		echo "下次启动debian，将自动以root权限运行。"
 
 		echo 'Debian will start automatically after 2 seconds.'
-		echp '2s后将为您自动启动debian'
+		echo '2s后将为您自动启动debian'
 		echo 'If you do not need to display the task progress in the login interface, please manually add "#" (comment symbol) before the "ps -e" line in "~/.zshrc" or "~/.bashrc"'
 		echo '如果您不需要在登录界面显示任务进程，请手动注释掉"~/.zshrc"里的"ps -e"'
 		sleep 2
