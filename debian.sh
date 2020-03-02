@@ -921,19 +921,19 @@ DOWNLOADVNCAPK() {
 		fi
 
 		git clone -b xsdl --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
-		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/xsdl12041.tar.xz ./
+		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/XSERVERXSDLANDROID.tar.xz ./
 		#		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/Termux-Debian/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
-		tar -Jxvf xsdl12041.tar.xz
+		tar -Jxvf XSERVERXSDLANDROID.tar.xz
 		#tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
 		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
-		rm -f /sdcard/Download/xsdl12041.tar.xz
+		rm -f /sdcard/Download/XSERVERXSDLANDROID.tar.xz
 		echo '正在删除压缩包...'
 		echo 'Deleting ...'
 		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
 
 		echo '解压成功，请进入下载目录手动安装。'
-		echo '文件名称 XServer XSDL_x,org,server_1,20,41.apk'
+		echo '文件名称 XServer XSDL*.apk'
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 		cd ${cur}
 	fi
