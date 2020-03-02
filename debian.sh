@@ -888,7 +888,7 @@ DOWNLOADVNCAPK() {
 		echo 'Downloading vnc viewer...'
 		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
-		echo 'Download size 11.1MB'
+		echo 'Download size ≈11MB'
 		if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
 			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
 		fi
@@ -915,7 +915,7 @@ DOWNLOADVNCAPK() {
 		echo 'Downloading xsdl...'
 		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
 		echo '正在为您下载至/sdcard/Download目录...'
-		echo 'Download size 28.3MB'
+		echo 'Download size ≈29MB'
 		if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
 			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
 		fi
