@@ -224,10 +224,10 @@ MODIFYXSDLCONF() {
 
 	XSDLXSERVER=$(whiptail --title "请选择您要修改的项目" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
-		"1" "音频端口" \
-		"2" "显示端口" \
-		"3" "ip地址" \
-		"4" "手动编辑" \
+		"1" "音频端口 Pulse server port " \
+		"2" "显示端口 Display number" \
+		"3" "ip address" \
+		"4" "手动编辑 Edit manually" \
 		3>&1 1>&2 2>&3)
 
 	###########
