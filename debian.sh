@@ -131,7 +131,7 @@ MainMenu() {
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下有十几个选项,Choose your option" 15 60 4 \
 			"1" "安装 install debian" \
-			"2" "Download video tutorial" \
+			"2" "Video tutorial" \
 			"3" "移除 remove system" \
 			"4" "备份系统 backup system" \
 			"5" "还原 restore" \
