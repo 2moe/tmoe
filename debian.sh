@@ -1030,6 +1030,10 @@ STARTVSCODE() {
 }
 #####################################
 DownloadVideoTutorial() {
+	if [ ! -e $PREFIX/bin/aria2c ]; then
+		apt update
+		apt install -y aria2
+	fi
 
 	cd /sdcard/Download
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
