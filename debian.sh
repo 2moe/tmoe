@@ -1061,6 +1061,9 @@ PLAYVideoTutorial() {
 	echo "If the video does not play automatically, please enter the download directory to play it manually."
 	echo "转载视频须经原作者同意，请勿擅自将视频上传至B站等平台。"
 	echo "Do not upload video to platforms such as YouTube without authorization."
+	echo "按回车键继续,按Ctrl+C取消。"
+	echo "${YELLOW}Press enter to open the download directory.${RESET}"
+	read
 	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 	cd ${cur}
 }
