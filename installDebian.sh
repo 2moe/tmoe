@@ -198,7 +198,7 @@ command+=" -r ${DebianFolder}"
 command+=" -b /dev"
 command+=" -b /proc"
 command+=" -b ${DebianFolder}/root:/dev/shm"
-#你可以在此处修改挂载目录
+#您可以在此处修改挂载目录
 command+=" -b /sdcard:/root/sd"
 command+=" -b /data/data/com.termux/files/home/storage/external-1:/root/tf"
 command+=" -b /data/data/com.termux/files/home:/root/termux"
@@ -1093,7 +1093,7 @@ if [ -f "/root/.vnc/startvnc" ]; then
 fi
 
 if [ -f "/root/.vnc/startxsdl" ]; then
-    echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
+    echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
 	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android  application has been opened.'
 	rm -f /root/.vnc/startxsdl
 	echo '9s后将为您启动xsdl'
@@ -1115,7 +1115,7 @@ if [ -f "/root/.vnc/startvnc" ]; then
 fi
 
 if [ -f "/root/.vnc/startxsdl" ]; then
-    echo '检测到你从termux原系统输入了startxsdl，已为您打开xsdl安卓app'
+    echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
 	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
 	rm -f /root/.vnc/startxsdl
   echo '9s后将为您启动xsdl'
