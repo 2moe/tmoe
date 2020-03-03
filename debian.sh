@@ -379,10 +379,10 @@ BackupSystem() {
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '1' ]; then
-		if [ ! -d /sdcard/backup ]; then
-			mkdir -p /sdcard/backup && cd /sdcard/backup
+		if [ ! -d /sdcard/Download/backup ]; then
+			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
 		else
-			cd /sdcard/backup
+			cd /sdcard/Download/backup
 		fi
 
 		ls -lth ./debian*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
@@ -395,7 +395,7 @@ BackupSystem() {
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
-			echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -413,7 +413,7 @@ BackupSystem() {
 
 		else
 
-			echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -462,10 +462,10 @@ BACKUPTERMUX() {
 	##########################
 	if [ "$TERMUXBACKUP" == 'home' ]; then
 
-		if [ ! -d /sdcard/backup ]; then
-			mkdir -p /sdcard/backup && cd /sdcard/backup
+		if [ ! -d /sdcard/Download/backup ]; then
+			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
 		else
-			cd /sdcard/backup
+			cd /sdcard/Download/backup
 		fi
 
 		##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
@@ -483,7 +483,7 @@ BACKUPTERMUX() {
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
-			echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -502,7 +502,7 @@ BACKUPTERMUX() {
 
 		else
 
-			echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -524,10 +524,10 @@ BACKUPTERMUX() {
 	##########################
 	if [ "$TERMUXBACKUP" == 'usr' ]; then
 
-		if [ ! -d /sdcard/backup ]; then
-			mkdir -p /sdcard/backup && cd /sdcard/backup
+		if [ ! -d /sdcard/Download/backup ]; then
+			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
 		else
-			cd /sdcard/backup
+			cd /sdcard/Download/backup
 		fi
 
 		ls -lth ./termux-usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
@@ -540,7 +540,7 @@ BACKUPTERMUX() {
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
-			echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -561,7 +561,7 @@ BACKUPTERMUX() {
 
 		else
 
-			echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -585,10 +585,10 @@ BACKUPTERMUX() {
 	##########################
 	if [ "$TERMUXBACKUP" == 'home usr' ]; then
 
-		if [ ! -d /sdcard/backup ]; then
-			mkdir -p /sdcard/backup && cd /sdcard/backup
+		if [ ! -d /sdcard/Download/backup ]; then
+			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
 		else
-			cd /sdcard/backup
+			cd /sdcard/Download/backup
 		fi
 
 		ls -lth ./termux-home+usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
@@ -600,7 +600,7 @@ BACKUPTERMUX() {
 		TMPtime=termux-home+usr_$(cat backuptime.tmp)
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ratio, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
-			echo "您选择了tar.xz,即将为您备份至/sdcard/backup/${TMPtime}.tar.xz"
+			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -621,7 +621,7 @@ BACKUPTERMUX() {
 
 		else
 
-			echo "您选择了tar.gz,即将为您备份至/sdcard/backup/${TMPtime}.tar.gz"
+			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
@@ -672,12 +672,12 @@ RESTORESYSTEM() {
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '1' ]; then
-		cd /sdcard/backup
+		cd /sdcard/Download/backup
 		ls -lth debian*tar* | head -n 10 2>/dev/null || echo '未检测到备份文件'
 
 		echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
 
-		echo 'cd /sdcard/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
+		echo 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
 		echo '请注意大小写，并把文件名改成具体名称'
 
 		RESTORE=$(ls -lth ./debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
@@ -724,12 +724,12 @@ RESTORESYSTEM() {
 	###################
 	if [ "${OPTION}" == '2' ]; then
 
-		cd /sdcard/backup
+		cd /sdcard/Download/backup
 		ls -lth termux*tar* 2>/dev/null || echo '未检测到备份文件' | head -n 10
 
 		echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
 
-		echo 'cd /sdcard/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
+		echo 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
 		echo '请注意大小写，并把文件名改成具体名称'
 
 		RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
