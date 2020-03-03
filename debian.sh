@@ -71,6 +71,9 @@ CheckArch() {
 	armhf)
 		archtype="armhf"
 		;;
+	armv6l)
+		archtype="armel"
+		;;
 	armel)
 		archtype="armel"
 		;;
