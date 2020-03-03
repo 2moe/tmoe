@@ -1038,6 +1038,9 @@ DownloadVideoTutorial() {
 	cd /sdcard/Download
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
 	termux-open "20200229vnc教程06.mp4"
+	echo "${YELLOW}Download completed，若无法自动播放，则请进入下载目录手动播放。${RESET}"
+	echo "If the video does not play automatically, please enter the download directory to play it manually."
+	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 	cd ${cur}
 }
 
