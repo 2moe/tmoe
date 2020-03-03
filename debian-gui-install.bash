@@ -37,8 +37,8 @@ DEBIANMENU() {
 		"3" "Remove GUI 卸载图形界面" \
 		"4" "Remove browser 卸载浏览器" \
 		"5" "Update Debian tool 更新本工具" \
-		"6" "Modify to Kali source list 配置kali源" \
-		"7" "Restore to Debian source list 还原debian源" \
+		"6" "Modify to Kali sources list 配置kali源" \
+		"7" "Restore to Debian sources list 还原debian源" \
 		"8" "Install Chinese manual 安装中文手册" \
 		"9" "Reconfigure zsh 重新配置zsh" \
 		"10" "Modify VNC config 修改vnc配置" \

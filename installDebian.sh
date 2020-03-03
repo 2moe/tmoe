@@ -1841,10 +1841,9 @@ function install()
 apt-mark hold udisks2
 apt update
 echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
-echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop和task-kde-desktop '
-apt install -y fonts-noto-cjk aptitude tightvncserver
-apt install -y kde-plasma-desktop
-aptitude install -y  task-kde-desktop
+echo '即将为您安装思源黑体(中文字体)、tightvncserver、kde-plasma-desktop '
+apt install -y fonts-noto-cjk tightvncserver kde-plasma-desktop
+#aptitude install -y  task-kde-desktop
 
 
 apt clean
@@ -1860,7 +1859,8 @@ exec /etc/X11/xinit/xinitrc
 xsetroot -solid grey
 vncconfig -iconic &
 #xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&
-startkde &
+#startkde &
+plasma_session &
 #kde desktop
 EndOfFile
 chmod +x ./xstartup
@@ -1886,7 +1886,8 @@ echo '正在为您启动xsdl,请将display number改为0'
 echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-startkde
+plasma_session &
+#startplasma-x11
 EndOfFile
 
 
