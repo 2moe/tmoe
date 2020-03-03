@@ -124,14 +124,14 @@ CheckArch() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian manager running on Termux(20200229)" --backtitle "$(
+		whiptail --title "Tmoe-Debian manager running on Termux(20200303)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下共有11个选项,Choose your option" 15 60 4 \
+		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下有十几个选项,Choose your option" 15 60 4 \
 			"1" "安装 install debian" \
-			"2" "root模式" \
+			"2" "Download video tutorial" \
 			"3" "移除 remove system" \
 			"4" "备份系统 backup system" \
 			"5" "还原 restore" \
@@ -140,7 +140,8 @@ MainMenu() {
 			"8" "配置zsh(优化termux) Configure zsh" \
 			"9" "Download VNC apk" \
 			"10" "VSCode Server arm64" \
-			"11" "退出 exit" \
+			"11" "root模式" \
+			"12" "退出 exit" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -152,7 +153,7 @@ MainMenu() {
 
 	if [ "${OPTION}" == '2' ]; then
 
-		RootMode
+		DownloadVideoTutorial
 	fi
 
 	if [ "${OPTION}" == '3' ]; then
@@ -202,6 +203,11 @@ MainMenu() {
 	fi
 
 	if [ "${OPTION}" == '11' ]; then
+
+		RootMode
+	fi
+
+	if [ "${OPTION}" == '12' ]; then
 		exit
 
 	fi
@@ -1022,6 +1028,16 @@ STARTVSCODE() {
 	fi
 
 }
+#####################################
+DownloadVideoTutorial(){
+
+    cd /sdcard/Download
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
+    termux-open "20200229vnc教程06.mp4"
+	cd ${cur}
+}
+
+
 #####################################
 autoCheck
 ##取消注释，测试用。
