@@ -1057,7 +1057,7 @@ DOWNLOADVideoTutorialAGAIN() {
 }
 PLAYVideoTutorial() {
 	termux-open "20200229vnc教程06.mp4"
-	echo "${YELLOW}Download completed，若无法自动播放，则请进入下载目录手动播放。${RESET}"
+	echo "${YELLOW}若视频无法自动播放，则请进入下载目录手动播放。${RESET}"
 	echo "If the video does not play automatically, please enter the download directory to play it manually."
 	echo "转载视频须经原作者同意，请勿擅自将视频上传至B站等平台。"
 	echo "Do not upload video to platforms such as YouTube without authorization."
