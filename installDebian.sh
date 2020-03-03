@@ -1064,7 +1064,7 @@ git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/
 
 grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 ||echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
 
-sed -i 's/plugins=(git)/plugins=(git extract zsh-autosuggestions)/g' ~/.zshrc
+sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
 echo 'All optimization steps have been completed, enjoy it!'
 echo 'zsh配置完成，2s后将为您启动Tmoe-debian工具'
 echo '您也可以手动输debian-i进入'
@@ -1085,7 +1085,7 @@ chmod +x zsh.sh
 cat >vnc-autostartup <<-'EndOfFile'
 cat /etc/issue
 
-grep  'cat /etc/issue' .bashrc >/dev/null || sed -i '1 a cat /etc/issue' .bashrc
+grep  'cat /etc/issue' ~/.bashrc >/dev/null || sed -i '1 a cat /etc/issue' ~/.bashrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
