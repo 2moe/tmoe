@@ -193,6 +193,7 @@ MODIFYVNCCONF() {
 	else
 
 		echo '您可以手动修改vnc的配置信息'
+		echo '若需修改vnc密码，请在新窗口下输vncpasswd'
 		echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
 		echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
 		echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
