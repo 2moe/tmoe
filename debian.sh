@@ -1031,8 +1031,8 @@ STARTVSCODE() {
 
 		grep "keyCode" ${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${HOME}/${DebianFolder}/root/.local/share/code-server/User && cat >${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
 			{
-		    "keyboard.dispatch": "keyCode"
-		    }
+			"keyboard.dispatch": "keyCode"
+			}
 		EndOfFile
 
 		code
