@@ -1018,6 +1018,7 @@ STARTVSCODE() {
 			rm -rf .VSCODESERVERTMPFILE
 		fi
 
+		echo "server版商店中不包含所有插件，如需下载额外插件，请前往微软vscode官方在线商店下载vsix后缀的离线插件，并手动安装。 https://marketplace.visualstudio.com/vscode"
 		git clone -b build --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
 		cd .VSCODESERVERTMPFILE
 		tar -Jxvf code-server-arm64.tar.xz
@@ -1027,6 +1028,13 @@ STARTVSCODE() {
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
 		echo "Congratulations, you have successfully installed vscode server!"
 		echo "您已成功安装VSCode服务，如需卸载请输rm -f $PREFIX/bin/code  ${HOME}/${DebianFolder}/usr/bin/code"
+
+		grep "keyCode" ${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${HOME}/${DebianFolder}/root/.local/share/code-server/User && cat >${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
+			{
+		    "keyboard.dispatch": "keyCode"
+		    }
+		EndOfFile
+
 		code
 	fi
 
