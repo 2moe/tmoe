@@ -1053,7 +1053,8 @@ mkdir -p /root/.oh-my-zsh/custom/plugins
 git clone https://gitee.com/mo2/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 
-grep 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
+grep 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" /root/.zshrc
+ #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
 
 echo "正在安装zsh-autosuggestions自动补全插件"
 rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
@@ -1062,7 +1063,8 @@ rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
 git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
 
-grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 ||echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
+grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 ||sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" /root/.zshrc
+#echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
 
 sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
 echo 'All optimization steps have been completed, enjoy it!'
