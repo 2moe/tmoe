@@ -32,48 +32,48 @@ CHECKdependencies() {
 ####################################################
 DEBIANMENU() {
 	cd ${cur}
-	OPTION=$(whiptail --title "Tmoe-Debian Tool输debian-i启动(20200307)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
-		"1" "Install GUI 安装图形界面" \
-		"2" "Install browser 安装浏览器" \
-		"3" "Remove GUI 卸载图形界面" \
-		"4" "Remove browser 卸载浏览器" \
-		"5" "Update Debian tool 更新本工具" \
-		"6" "Modify to Kali sources list 配置kali源" \
-		"7" "Restore to Debian sources list 还原debian源" \
-		"8" "Install Chinese manual 安装中文手册" \
-		"9" "Modify VNC config 修改vnc配置" \
-		"10" "Modify XSDL config 修改xsdl配置" \
-		"11" "Enable zsh tool 启用zsh管理工具" \
-		"12" "Start VScode server" \
-		"13" "Remove VScode server" \
-		"14" "Synaptic(新立得软件包管理器/软件商店)" \
-		"15" "Download theme 下载主题" \
-		"16" "Exit 退出" \
-		3>&1 1>&2 2>&3)
+	OPTION=$(
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200307)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+			"1" "Install GUI 安装图形界面" \
+			"2" "Install browser 安装浏览器" \
+			"3" "Download theme 下载主题" \
+			"4" "Update Debian tool 更新本工具" \
+			"5" "Remove GUI 卸载图形界面" \
+			"6" "Modify to Kali sources list 配置kali源" \
+			"7" "Restore to Debian sources list 还原debian源" \
+			"8" "Install Chinese manual 安装中文手册" \
+			"9" "Modify VNC config 修改vnc配置" \
+			"10" "Modify XSDL config 修改xsdl配置" \
+			"11" "Enable zsh tool 启用zsh管理工具" \
+			"12" "Start VScode server" \
+			"13" "Remove VScode server" \
+			"14" "Synaptic(新立得软件包管理器/软件商店)" \
+			"15" "Remove browser 卸载浏览器" \
+			"16" "Exit 退出" \
+			3>&1 1>&2 2>&3
+	)
 
 	##############################
 	if [ "${OPTION}" == '1' ]; then
 
 		INSTALLGUI
 	fi
-
+	###################################
 	if [ "${OPTION}" == '2' ]; then
 
 		installBROWSER
 
 	fi
 
+	###################################
 	if [ "${OPTION}" == '3' ]; then
 
-		REMOVEGUI
+		CONFIGTHEMES
+
 	fi
+	###################################
 
 	if [ "${OPTION}" == '4' ]; then
-
-		REMOVEBROWSER
-	fi
-
-	if [ "${OPTION}" == '5' ]; then
 
 		wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
 		echo 'Update completed, press Enter to return.'
@@ -83,12 +83,19 @@ DEBIANMENU() {
 		bash /usr/local/bin/debian-i
 	fi
 	################
+	if [ "${OPTION}" == '5' ]; then
+
+		REMOVEGUI
+	fi
+
+	###################################
+
 	if [ "${OPTION}" == '6' ]; then
 
 		bash /usr/local/bin/kali.sh
 
 	fi
-
+	###################################
 	if [ "${OPTION}" == '7' ]; then
 
 		bash /usr/local/bin/kali.sh rm
@@ -146,11 +153,12 @@ DEBIANMENU() {
 
 	fi
 	###############################
+
 	if [ "${OPTION}" == '15' ]; then
 
-		CONFIGTHEMES
-
+		REMOVEBROWSER
 	fi
+
 	###############################
 	if [ "${OPTION}" == '16' ]; then
 
@@ -524,11 +532,11 @@ CHINESEMANPAGES() {
 CONFIGTHEMES() {
 	INSTALLTHEME=$(whiptail --title "桌面环境主题" --menu \
 		"您想要下载哪个主题？按方向键选择,当前可下载4个主题/图标包。 下载完成后，需手动修改窗口管理器样式和外观设置中的样式和图标。\n Which theme do you want to download? " 15 60 4 \
-		"0" "我一个都不要 =￣ω￣=" \
 		"1" "ukui：国产优麒麟ukui桌面默认主题" \
 		"2" "win10：kali卧底模式主题(仅支持xfce)" \
 		"3" "MacOS：Mojave" \
 		"4" "UOS：国产统一操作系统图标包" \
+		"0" "我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 
 	if [ "$INSTALLTHEME" == '0' ]; then
