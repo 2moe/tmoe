@@ -31,6 +31,7 @@ CHECKdependencies() {
 }
 ####################################################
 DEBIANMENU() {
+	cd ${cur}
 	OPTION=$(whiptail --title "Tmoe-Debian Tool输debian-i启动(20200307)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
@@ -526,6 +527,7 @@ CONFIGTHEMES() {
 		"0" "我一个都不要 =￣ω￣=" \
 		"1" "ukui：国产优麒麟ukui桌面默认主题" \
 		"2" "win10：kali卧底模式主题(仅支持xfce)" \
+		"3" "MacOS：Mojave" \
 		3>&1 1>&2 2>&3)
 
 	if [ "$INSTALLTHEME" == '0' ]; then
@@ -540,6 +542,26 @@ CONFIGTHEMES() {
 
 	if [ "$INSTALLTHEME" == '2' ]; then
 		Installkaliundercover
+	fi
+
+	if [ "$INSTALLTHEME" == '3' ]; then
+		if [ -d "/usr/share/themes/Mojave-dark" ]; then
+			echo "检测到主题已下载，是否继续。"
+			echo 'Press Enter to continue.'
+			echo "${YELLOW}按回车键继续。${RESET}"
+			read
+		fi
+
+		if [ -d "/tmp/McMojave" ]; then
+			rm -rf /tmp/McMojave
+		fi
+
+		git clone -b McMojave --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/McMojave
+		cd /tmp/McMojave
+		cat url.txt
+		tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes
+		tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons
+		rm -rf /tmp/McMojave
 	fi
 
 	echo 'Press Enter to return.'
@@ -564,7 +586,7 @@ Installkaliundercover() {
 			rm -f ./kali-undercover.deb
 		fi
 	fi
-	
+
 	echo "安装完成，如需卸载，请手动输apt purge -y kali-undercover"
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
