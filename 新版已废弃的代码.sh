@@ -99,28 +99,68 @@ fi
 #zsh主题选择
 
 if (whiptail --title "Choose zsh theme " --yes-button "agnosterzak" --no-button "agnoster" --yesno "Which do yo like better? \n 请选择您需要配置的zsh主题" 10 60); then
-	if [ ! -f "$HOME/.oh-my-zsh/themes/agnosterzak.zsh-theme" ]; then
+    if [ ! -f "$HOME/.oh-my-zsh/themes/agnosterzak.zsh-theme" ]; then
 
-		mkdir -p ~/.oh-my-zsh/themes
-		wget -qO ~/.oh-my-zsh/themes/agnosterzak.zsh-theme https://gitee.com/mo2/agnosterzak-ohmyzsh-theme/raw/master/agnosterzak.zsh-theme
-	fi
-	sed -i 's/ZSH_THEME="agnoster"/ZSH_THEME="agnosterzak"/g' "$HOME/.zshrc"
+        mkdir -p ~/.oh-my-zsh/themes
+        wget -qO ~/.oh-my-zsh/themes/agnosterzak.zsh-theme https://gitee.com/mo2/agnosterzak-ohmyzsh-theme/raw/master/agnosterzak.zsh-theme
+    fi
+    sed -i 's/ZSH_THEME="agnoster"/ZSH_THEME="agnosterzak"/g' "$HOME/.zshrc"
 
 fi
 
 #zsh下载字体文件
 if [ ! -d "$HOME/.termux/fonts/Go" ]; then
-	rm -rf "$HOME/.termux/fonts"
-	cd "$HOME/.termux"
-	rm -f ZSHPOWERLINEFONTS.tar.xz 2>/dev/null
-	echo "Downloading font archive..."
-	echo "正在下载字体压缩包..."
-	#aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/TermuxZsh/ZSHPOWERLINEFONTS.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/Termux-zsh/ZSHPOWERLINEFONTS.tar.xz'
+    rm -rf "$HOME/.termux/fonts"
+    cd "$HOME/.termux"
+    rm -f ZSHPOWERLINEFONTS.tar.xz 2>/dev/null
+    echo "Downloading font archive..."
+    echo "正在下载字体压缩包..."
+    #aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/TermuxZsh/ZSHPOWERLINEFONTS.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/Termux-zsh/ZSHPOWERLINEFONTS.tar.xz'
 
-	#echo "正在解压字体文件..."
-	tar -Jxvf ZSHPOWERLINEFONTS.tar.xz
-	echo 'Deleting font archive...'
-	echo '正在删除字体压缩包...'
-	rm -f ZSHPOWERLINEFONTS.tar.xz
+    #echo "正在解压字体文件..."
+    tar -Jxvf ZSHPOWERLINEFONTS.tar.xz
+    echo 'Deleting font archive...'
+    echo '正在删除字体压缩包...'
+    rm -f ZSHPOWERLINEFONTS.tar.xz
 
 fi
+
+#中文手册
+cat >man.sh <<-'EndOfFile'
+#!/bin/bash
+function install()
+{
+YELLOW=$(printf '\033[33m')
+RESET=$(printf '\033[m')
+echo '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
+apt install -y debian-reference-zh-cn manpages manpages-zh man-db 
+echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
+echo "man a help manual software, which can help you understand the detailed usage of the command."
+echo "您可以输man 软件或命令名称来获取帮助信息，例如${YELLOW}man bash${RESET}或man zsh"
+
+}
+function remove()
+{
+apt purge -y manpages manpages-zh man-db
+apt autopurge
+}
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+main "$@"
+
+EndOfFile
+chmod +x man.sh

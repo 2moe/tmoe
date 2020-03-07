@@ -96,7 +96,8 @@ DEBIANMENU() {
 	############
 	if [ "${OPTION}" == '8' ]; then
 
-		bash /usr/local/bin/man.sh
+		CHINESEMANPAGES
+		#bash /usr/local/bin/man.sh
 
 	fi
 	##################
@@ -502,7 +503,21 @@ INSTALLsynaptic() {
 	DEBIANMENU
 
 }
+##########################################
+CHINESEMANPAGES() {
 
+	echo '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
+	apt install -y debian-reference-zh-cn manpages manpages-zh man-db
+	echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
+	echo "man a help manual software, which can help you understand the detailed usage of the command."
+	echo "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
+	echo "如需卸载，请手动输apt purge -y debian-reference-zh-cn manpages manpages-zh man-db "
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+
+	DEBIANMENU
+}
 ########################################################################
 CHECKdependencies
 ########################################################################

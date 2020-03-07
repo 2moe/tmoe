@@ -1219,48 +1219,6 @@ apt dist-upgrade -y
 apt install -y procps
 apt clean
 
-
-
-cat >man.sh<<-'EndOfFile'
-#!/bin/bash
-function install()
-{
-YELLOW=$(printf '\033[33m')
-RESET=$(printf '\033[m')
-echo '即将为您安装 manpages、manpages-zh和man-db'
-apt install -y manpages manpages-zh man-db
-echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
-echo "man a help manual software, which can help you understand the detailed usage of the command."
-echo "您可以输man 软件或命令名称来获取帮助信息，例如${YELLOW}man bash${RESET}或man zsh"
-
-}
-function remove()
-{
-apt purge -y manpages manpages-zh man-db
-apt autopurge
-}
-function main()
-{
-                case "$1" in
-                install|in|i)
-                        install
-                            ;;
-                remove|rm|uninstall|un|purge)
-                         remove
-                        ;;
-                   *)
-			        install
-			         ;;
-
-
-        esac
-}
-main "$@"
-
-EndOfFile
-chmod +x man.sh
-
-
 #kali源
 
 cat >kali.sh<<-'EndOfFile'
@@ -1342,8 +1300,9 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal和tightvncserver。'
-apt install -y fonts-noto-cjk xfce4 xfce4-terminal tightvncserver
+echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
+apt install -y xfwm4-theme-breeze  xcursor-themes
 apt clean
 
 mkdir -p ~/.vnc
