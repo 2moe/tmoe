@@ -133,7 +133,8 @@ MainMenu() {
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下有十几个选项,Choose your option" 15 60 4 \
-			"1" "安装 install debian" \
+			"0" "proot安装 install debian" \
+			"1" "chroot安装(需要真实root权限)" \
 			"2" "Video tutorial" \
 			"3" "移除 remove system" \
 			"4" "备份系统 backup system" \
@@ -143,14 +144,20 @@ MainMenu() {
 			"8" "配置zsh(优化termux) Configure zsh" \
 			"9" "Download VNC apk" \
 			"10" "VSCode Server arm64" \
-			"11" "root模式" \
+			"11" "赋予proot容器真实root权限" \
 			"12" "退出 exit" \
 			3>&1 1>&2 2>&3
 	)
 
-	if [ "${OPTION}" == '1' ]; then
+	if [ "${OPTION}" == '0' ]; then
 
 		installDebian
+
+	fi
+
+	if [ "${OPTION}" == '1' ]; then
+
+		CHROOTINSTALLDebian
 
 	fi
 
@@ -1078,6 +1085,24 @@ PLAYVideoTutorial() {
 	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 	cd ${cur}
 }
+#####################################
+CHROOTINSTALLDebian() {
+	OPTION=$(whiptail --title "chroot安装debian" --menu "本功能正在开发中，预计将于2020-03-08开发完成。" 15 60 4 \
+		"0" "Back to the main menu 返回主菜单" \
+		"1" "arm64" \
+		"2" "armhf" \
+		"3" "x86" \
+		"4" "x64" \
+		3>&1 1>&2 2>&3)
+	##########################################
+	if [ "${OPTION}" == '0' ]; then
+
+		MainMenu
+	fi
+	MainMenu
+
+}
+
 #####################################
 autoCheck
 ##取消注释，测试用。
