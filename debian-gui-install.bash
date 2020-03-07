@@ -522,7 +522,7 @@ CHINESEMANPAGES() {
 ########################################################################
 CONFIGTHEMES() {
 	INSTALLTHEME=$(whiptail --title "桌面环境主题" --menu \
-		"您想要安装哪个主题？按方向键选择，回车键确认，可安装多主题！ 安装完成后，需手动修改外观设置。\n Which theme do you want to install? " 15 60 4 \
+		"您想要安装哪个主题？按方向键选择，回车键确认，可安装多主题！ 安装完成后，需手动修改外观设置中的样式和图标。\n Which theme do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
 		"1" "ukui：国产优麒麟ukui桌面默认主题" \
 		"2" "win10：kali卧底模式主题(仅支持xfce)" \
@@ -534,7 +534,8 @@ CONFIGTHEMES() {
 
 	if [ "$INSTALLTHEME" == '1' ]; then
 		apt install ukui-themes
-		echo "安装完成，如需卸载，请手动输apt purge ukui-themes"
+		gtk-update-icon-cache /usr/share/icons/ukui-icon-theme/ 2>/dev/null
+		echo "安装完成，如需卸载，请手动输apt purge -y ukui-themes"
 	fi
 
 	if [ "$INSTALLTHEME" == '2' ]; then
