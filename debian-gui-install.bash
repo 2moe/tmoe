@@ -31,7 +31,7 @@ CHECKdependencies() {
 }
 ####################################################
 DEBIANMENU() {
-	OPTION=$(whiptail --title "Tmoe-Debian Tool输debian-i启动(20200301)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+	OPTION=$(whiptail --title "Tmoe-Debian Tool输debian-i启动(20200307)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 		"1" "Install GUI 安装图形界面" \
 		"2" "Install browser 安装浏览器" \
 		"3" "Remove GUI 卸载图形界面" \
