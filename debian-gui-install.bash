@@ -47,7 +47,7 @@ DEBIANMENU() {
 		"12" "Start VScode server" \
 		"13" "Remove VScode server" \
 		"14" "Synaptic(新立得软件包管理器/软件商店)" \
-		"15" "Install theme 安装主题" \
+		"15" "Download theme 下载主题" \
 		"16" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
@@ -523,7 +523,7 @@ CHINESEMANPAGES() {
 ########################################################################
 CONFIGTHEMES() {
 	INSTALLTHEME=$(whiptail --title "桌面环境主题" --menu \
-		"您想要安装哪个主题？按方向键选择，回车键确认，可安装多主题！ 安装完成后，需手动修改窗口管理器样式和外观设置中的样式和图标。\n Which theme do you want to install? " 15 60 4 \
+		"您想要下载哪个主题？按方向键选择，回车键确认，可下载多主题！ 下载完成后，需手动修改窗口管理器样式和外观设置中的样式和图标。\n Which theme do you want to download? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
 		"1" "ukui：国产优麒麟ukui桌面默认主题" \
 		"2" "win10：kali卧底模式主题(仅支持xfce)" \
