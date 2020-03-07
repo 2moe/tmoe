@@ -40,13 +40,13 @@ DEBIANMENU() {
 		"6" "Modify to Kali sources list 配置kali源" \
 		"7" "Restore to Debian sources list 还原debian源" \
 		"8" "Install Chinese manual 安装中文手册" \
-		"9" "Reconfigure zsh 重新配置zsh" \
-		"10" "Modify VNC config 修改vnc配置" \
-		"11" "Modify XSDL config 修改xsdl配置" \
-		"12" "Enable zsh tool 启用zsh管理工具" \
-		"13" "Start VScode server" \
-		"14" "Remove VScode server" \
-		"15" "Synaptic(新立得软件包管理器/软件商店)" \
+		"9" "Modify VNC config 修改vnc配置" \
+		"10" "Modify XSDL config 修改xsdl配置" \
+		"11" "Enable zsh tool 启用zsh管理工具" \
+		"12" "Start VScode server" \
+		"13" "Remove VScode server" \
+		"14" "Synaptic(新立得软件包管理器/软件商店)" \
+		"15" "Install theme 安装主题" \
 		"16" "Exit 退出" \
 		3>&1 1>&2 2>&3)
 
@@ -100,39 +100,34 @@ DEBIANMENU() {
 		#bash /usr/local/bin/man.sh
 
 	fi
-	##################
-	if [ "${OPTION}" == '9' ]; then
 
-		bash /usr/local/bin/zsh.sh
-
-	fi
 	####################
-	if [ "${OPTION}" == '10' ]; then
+	if [ "${OPTION}" == '9' ]; then
 		MODIFYVNCCONF
 
 	fi
 	####################################
-	if [ "${OPTION}" == '11' ]; then
+	if [ "${OPTION}" == '10' ]; then
 
 		MODIFYXSDLCONF
 
 	fi
 
 	#################################
-	if [ "${OPTION}" == '12' ]; then
+	if [ "${OPTION}" == '11' ]; then
 
 		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
 
 	###################################
-	if [ "${OPTION}" == '13' ]; then
+	if [ "${OPTION}" == '12' ]; then
 
 		VSCODESERVER
 
 	fi
 	################################
-	if [ "${OPTION}" == '14' ]; then
+	if [ "${OPTION}" == '13' ]; then
 		echo "按任意键确认移除，按Ctrl+C取消。"
 		echo "${YELLOW}Press any key to remove VSCode Server. ${RESET}"
 		read
@@ -144,9 +139,15 @@ DEBIANMENU() {
 
 	fi
 	###############################
-	if [ "${OPTION}" == '15' ]; then
+	if [ "${OPTION}" == '14' ]; then
 
 		INSTALLsynaptic
+
+	fi
+	###############################
+	if [ "${OPTION}" == '15' ]; then
+
+		CONFIGTHEMES
 
 	fi
 	###############################
@@ -519,5 +520,59 @@ CHINESEMANPAGES() {
 	DEBIANMENU
 }
 ########################################################################
+CONFIGTHEMES() {
+	INSTALLTHEME=$(whiptail --title "桌面环境主题" --menu \
+		"您想要安装哪个主题？按方向键选择，回车键确认，可安装多主题！ 安装完成后，需手动修改外观设置。\n Which theme do you want to install? " 15 60 4 \
+		"0" "我一个都不要 =￣ω￣=" \
+		"1" "ukui：国产优麒麟ukui桌面默认主题" \
+		"2" "win10：kali卧底模式主题(仅支持xfce)" \
+		3>&1 1>&2 2>&3)
+
+	if [ "$INSTALLTHEME" == '0' ]; then
+		DEBIANMENU
+	fi
+
+	if [ "$INSTALLTHEME" == '1' ]; then
+		apt install ukui-themes
+		echo "安装完成，如需卸载，请手动输apt purge ukui-themes"
+	fi
+
+	if [ "$INSTALLTHEME" == '2' ]; then
+		Installkaliundercover
+	fi
+
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+
+	DEBIANMENU
+
+}
+################################
+Installkaliundercover() {
+
+	if [ -f "/usr/bin/kali-undercover" ]; then
+		echo "检测到您已安装win10主题"
+	else
+		if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
+			apt install -y kali-undercover
+		else
+
+			wget -O kali-undercover.deb https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/kali-undercover_2020.2.0_all.deb
+			apt install -y ./kali-undercover.deb
+			rm -f ./kali-undercover.deb
+		fi
+	fi
+	
+	echo "安装完成，如需卸载，请手动输apt purge -y kali-undercover"
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+
+	DEBIANMENU
+
+}
+
+#################################################
 CHECKdependencies
 ########################################################################
