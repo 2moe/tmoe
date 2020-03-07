@@ -366,7 +366,7 @@ installBROWSER() {
 ######################################################
 INSTALLGUI() {
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
-		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！ \n Which desktop environment do you want to install? " 15 60 4 \
+		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
 		"1" "xfce：兼容性高" \
 		"2" "lxde：轻量化桌面" \
@@ -523,11 +523,12 @@ CHINESEMANPAGES() {
 ########################################################################
 CONFIGTHEMES() {
 	INSTALLTHEME=$(whiptail --title "桌面环境主题" --menu \
-		"您想要安装哪个主题？按方向键选择，回车键确认，可安装多主题！ 安装完成后，需手动修改外观设置中的样式和图标。\n Which theme do you want to install? " 15 60 4 \
+		"您想要安装哪个主题？按方向键选择，回车键确认，可安装多主题！ 安装完成后，需手动修改窗口管理器样式和外观设置中的样式和图标。\n Which theme do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
 		"1" "ukui：国产优麒麟ukui桌面默认主题" \
 		"2" "win10：kali卧底模式主题(仅支持xfce)" \
 		"3" "MacOS：Mojave" \
+		"4" "UOS：国产统一操作系统图标包" \
 		3>&1 1>&2 2>&3)
 
 	if [ "$INSTALLTHEME" == '0' ]; then
@@ -559,9 +560,30 @@ CONFIGTHEMES() {
 		git clone -b McMojave --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/McMojave
 		cd /tmp/McMojave
 		cat url.txt
-		tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes
-		tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons
+		tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes 2>/dev/null
+		tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons 2>/dev/null
 		rm -rf /tmp/McMojave
+		echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
+	fi
+
+	if [ "$INSTALLTHEME" == '4' ]; then
+		if [ -d "/usr/share/icons/Uos" ]; then
+			echo "检测到Uos图标包已下载，是否继续。"
+			echo 'Press Enter to continue.'
+			echo "${YELLOW}按回车键继续。${RESET}"
+			read
+		fi
+
+		if [ -d "/tmp/UosICONS" ]; then
+			rm -rf /tmp/UosICONS
+		fi
+
+		git clone -b Uos --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/UosICONS
+		cd /tmp/UosICONS
+		cat url.txt
+		tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
+		rm -rf /tmp/UosICONS
+		echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos"
 	fi
 
 	echo 'Press Enter to return.'
