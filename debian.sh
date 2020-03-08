@@ -256,6 +256,8 @@ MainMenu() {
 		if [ "$(uname -o)" != "Android" ]; then
 			echo "非常抱歉，本功能仅适配安卓系统。"
 			echo "Linux系统请换用chroot容器。"
+			echo "Press enter to return。"
+			echo "${YELLOW}按回车键返回。${RESET} "
 			read
 			MainMenu
 		fi
@@ -268,6 +270,8 @@ MainMenu() {
 		if [ "$(uname -o)" = "Android" ]; then
 			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
 			echo "Android系统请换用proot容器。"
+			echo "Press enter to return。"
+			echo "${YELLOW}按回车键返回。${RESET} "
 			read
 			MainMenu
 		else
