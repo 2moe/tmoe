@@ -237,7 +237,7 @@ MainMenu() {
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下有十几个选项,Choose your option" 15 60 4 \
 			"0" "proot安装 install debian" \
-			"1" "chroot安装(测试版功能，不推荐)" \
+			"1" "chroot安装(开发中的功能，请勿安装)" \
 			"2" "Video tutorial" \
 			"3" "移除 remove system" \
 			"4" "备份系统 backup system" \
