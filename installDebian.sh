@@ -257,16 +257,16 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   mount -t proc proc ${DebianCHROOT}/proc >/dev/null 2>&1
   mount -t proc proc /proc >/dev/null 2>&1
 
-  mount -t sysfs sysfs ${DebianCHROOT}/sys >/dev/null 2>&1
-  #mount -t sysfs sys ${DebianCHROOT}/sys >/dev/null 2>&1
-
-  mount -t tmpfs tmpfs ${DebianCHROOT}/tmp  >/dev/null 2>&1
+  #mount -t sysfs sysfs ${DebianCHROOT}/sys >/dev/null 2>&1
+  mount -t sysfs sys ${DebianCHROOT}/sys >/dev/null 2>&1
 
   mount -t devpts devpts ${DebianCHROOT}/dev/pts >/dev/null 2>&1
   mount -t devpts devpts /dev/pts >/dev/null 2>&1
 
   #mount --bind /dev/shm ${DebianCHROOT}/dev/shm >/dev/null 2>&1
-  #mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
+  mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
+   
+  #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp  >/dev/null 2>&1
 
   if [ -d "/sdcard" ]; then
     mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1

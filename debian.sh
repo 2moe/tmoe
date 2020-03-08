@@ -257,6 +257,7 @@ MainMenu() {
 			echo "非常抱歉，本功能仅适配安卓系统。"
 			echo "Linux系统请换用chroot容器。"
 			read
+			MainMenu
 		fi
 
 		installDebian
@@ -264,8 +265,14 @@ MainMenu() {
 	fi
 
 	if [ "${OPTION}" == '1' ]; then
-
-		CHROOTINSTALLDebian
+		if [ "$(uname -o)" = "Android" ]; then
+			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
+			echo "Android系统请换用proot容器。"
+			read
+			MainMenu
+		else
+			CHROOTINSTALLDebian
+		fi
 
 	fi
 
