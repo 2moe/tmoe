@@ -202,6 +202,7 @@ echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
 echo "         :   r. ..      .. .:i  ...     "
 
 if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
+  rm -f ${HOME}/.ChrootInstallationDetectionFile
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
   TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
