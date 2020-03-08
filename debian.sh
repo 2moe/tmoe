@@ -219,39 +219,21 @@ ANDROIDTERMUX() {
 		apt update
 		apt install -y ${dependencies}
 	fi
-	##来自andronix的vnc声音修复脚本
+	##来自andronix的vnc声音修复脚本,稍微修改了一下。
 
-	if grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa; then
-		echo "module already present"
-	else
-		echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
-	fi
+	grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa || echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
 
-	if grep -q "exit-idle" ${HOME}/../usr/etc/pulse/daemon.conf; then
+	if ! grep -q "exit-idle-time = 180" ${HOME}/../usr/etc/pulse/daemon.conf; then
 		sed -i '/exit-idle/d' ${HOME}/../usr/etc/pulse/daemon.conf
 		echo "exit-idle-time = 180" >>${HOME}/../usr/etc/pulse/daemon.conf
-		echo "modiefied timeout to 180 seconds"
-	else
-		echo "exit-idle-time = 180" >>${HOME}/../usr/etc/pulse/daemon.conf
-		echo "modiefied timeout to 180 seconds"
 	fi
 
 	if [ -e ${DebianCHROOT}/root/.vnc/xstartup ]; then
-		if grep -q "PULSE_SERVER" ${DebianCHROOT}/root/.vnc/xstartup; then
-			sed -i '/PULSE/d' ${DebianCHROOT}/root/.vnc/xstartup
-			sed -i '2 a export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
-		else
-			sed -i '2 a export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
-		fi
+		grep -q "PULSE_SERVER" ${DebianCHROOT}/root/.vnc/xstartup || sed -i '2 a\export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
 	fi
 
 	if [ -e /data/data/com.termux/files/usr/bin/debian ]; then
-		if grep -q "pulseaudio" /data/data/com.termux/files/usr/bin/debian; then
-			sed -i '/pulseaudio/d' /data/data/com.termux/files/usr/bin/debian
-			sed -i '2 a pulseaudio --start' /data/data/com.termux/files/usr/bin/debian
-		else
-			sed -i '2 a pulseaudio --start' /data/data/com.termux/files/usr/bin/debian
-		fi
+		grep -q "pulseaudio" /data/data/com.termux/files/usr/bin/debian || sed -i '2 a\pulseaudio --start' /data/data/com.termux/files/usr/bin/debian
 	fi
 
 	MainMenu
@@ -1086,7 +1068,7 @@ DOWNLOADVNCAPK() {
 	fi
 
 	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
-	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,但默认情况下不支持声音。xsdl支持声音，但操作体验没有vnc好。VNC has a better operating experience and is also smoother, but it does not support sound by default. XSDL supports sound, but the experience is not as good as VNC in every way." 10 60); then
+	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,当前版本已经可以通过pulse server来传输音频。xsdl对某些软件的兼容性更高，但操作体验没有vnc好。VNC has a better operating experience and is also smoother.XSDL is more compatible with some software， but the experience is not as good as VNC in every way." 10 60); then
 		echo 'Press enter to start the download, and press Ctrl + C to cancel.'
 		echo "${YELLOW}按回车键开始下载，按Ctrl+C取消。${RESET}"
 		read

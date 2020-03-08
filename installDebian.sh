@@ -294,6 +294,7 @@ else
   cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
+pulseaudio --start
 unset LD_PRELOAD
 command="proot"
 command+=" --link2symlink"
@@ -1457,6 +1458,7 @@ cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
 startxfce4 &
 EndOfFile
 chmod +x ./xstartup
@@ -1554,6 +1556,7 @@ cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
 startlxde &
 EndOfFile
 chmod +x ./xstartup
@@ -1657,6 +1660,7 @@ cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
 mate-session &
 EndOfFile
 chmod +x ./xstartup
@@ -1761,6 +1765,7 @@ cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
 startlxqt &
 EndOfFile
 chmod +x ./xstartup
@@ -1855,6 +1860,7 @@ cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
 xsetroot -solid grey
 x-terminal-emulator -geometry  80×24+10+10 -ls -title "$VNCDESKTOP Desktop" &
 #x-window-manager &
@@ -1961,6 +1967,7 @@ cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 unset SESSION_MANAGER
+export PULSE_SERVER=127.0.0.1
 exec /etc/X11/xinit/xinitrc
 [ -x /etc/vnc/xstartup ] && exec/etc/vnc/xstartup
 [ -r ${HOME}/.Xresources ] && xrdb${HOME}/.Xresources
