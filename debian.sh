@@ -178,6 +178,10 @@ ANDROIDTERMUX() {
 		dependencies="${dependencies} pv"
 	fi
 
+	if [ ! -e $PREFIX/bin/pulseaudio ]; then
+		dependencies="${dependencies} pulseaudio"
+	fi
+
 	if [ ! -e $PREFIX/bin/grep ]; then
 		dependencies="${dependencies} grep"
 	fi
@@ -214,6 +218,40 @@ ANDROIDTERMUX() {
 		echo "正在安装相关依赖..."
 		apt update
 		apt install -y ${dependencies}
+	fi
+	##来自andronix的vnc声音修复脚本
+
+	if grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa; then
+		echo "module already present"
+	else
+		echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
+	fi
+
+	if grep -q "exit-idle" ${HOME}/../usr/etc/pulse/daemon.conf; then
+		sed -i '/exit-idle/d' ${HOME}/../usr/etc/pulse/daemon.conf
+		echo "exit-idle-time = 180" >>${HOME}/../usr/etc/pulse/daemon.conf
+		echo "modiefied timeout to 180 seconds"
+	else
+		echo "exit-idle-time = 180" >>${HOME}/../usr/etc/pulse/daemon.conf
+		echo "modiefied timeout to 180 seconds"
+	fi
+
+	if [ -e ${DebianCHROOT}/root/.vnc/xstartup ]; then
+		if grep -q "PULSE_SERVER" ${DebianCHROOT}/root/.vnc/xstartup; then
+			sed -i '/PULSE/d' ${DebianCHROOT}/root/.vnc/xstartup
+			sed -i '2 a export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
+		else
+			sed -i '2 a export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
+		fi
+	fi
+
+	if [ -e /data/data/com.termux/files/usr/bin/debian ]; then
+		if grep -q "pulseaudio" /data/data/com.termux/files/usr/bin/debian; then
+			sed -i '/pulseaudio/d' /data/data/com.termux/files/usr/bin/debian
+			sed -i '2 a pulseaudio --start' /data/data/com.termux/files/usr/bin/debian
+		else
+			sed -i '2 a pulseaudio --start' /data/data/com.termux/files/usr/bin/debian
+		fi
 	fi
 
 	MainMenu
