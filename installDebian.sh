@@ -227,7 +227,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   grep 'PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
 
   #此处EndOfFile不要加单引号
-  cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
+  cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
   #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
@@ -266,7 +266,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   fi
   chroot \${DebianCHROOT} /bin/bash --login
 
-  EndOfFile
+EndOfChrootFile
 else
 
   echo "Creating proot startup script"
