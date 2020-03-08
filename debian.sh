@@ -1,5 +1,81 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ########################################################################
+#检测架构
+CheckArch() {
+
+	case $(uname -m) in
+	aarch64)
+		archtype="arm64"
+		;;
+	arm64)
+		archtype="arm64"
+		;;
+	armv8a)
+		archtype="arm64"
+		;;
+	arm)
+		archtype="armhf"
+		;;
+	armv7l)
+		archtype="armhf"
+		;;
+	armhf)
+		archtype="armhf"
+		;;
+	armv6l)
+		archtype="armel"
+		;;
+	armel)
+		archtype="armel"
+		;;
+	amd64)
+		archtype="amd64"
+		;;
+	x86_64)
+		archtype="amd64"
+		;;
+	i*86)
+		archtype="i386"
+		;;
+	x86)
+		archtype="i386"
+		;;
+	s390x)
+		archtype="s390x"
+		;;
+	ppc64el)
+		archtype="ppc64el"
+		;;
+	mips*)
+		echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
+		exit 1
+		;;
+	risc*)
+		echo '暂不支持risc-v'
+		echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
+		exit 1
+		;;
+	*)
+		echo "未知的架构 $(uname -m) unknown architecture"
+		exit 1
+		;;
+	esac
+
+	DebianFolder=debian_${archtype}
+	DebianCHROOT=${HOME}/${DebianFolder}
+	YELLOW=$(printf '\033[33m')
+	RESET=$(printf '\033[m')
+	cur=$(pwd)
+	if [ "$(uname -o)" != "GNU/Linux" ]; then
+		termux-setup-storage
+	fi
+
+	autoCheck
+
+}
+#未来可能不会增加的功能:加入路由器(mipsel架构)支持，需要从软件源开始构建。
+#路由器要把whiptail改成dialog，还要改一下opkg安装的依赖项目。
+#########################################################
 autoCheck() {
 
 	if [ "$(uname -o)" = "Android" ]; then
@@ -8,9 +84,6 @@ autoCheck() {
 		GNULINUX
 	fi
 }
-#未来可能不会增加的功能:加入路由器(mipsel架构)支持，需要从软件源开始构建。
-#路由器要把whiptail改成dialog，还要改一下opkg安装的依赖项目。
-#检测架构放在检测依赖之前。
 ########################################
 GNULINUX() {
 	dependencies=""
@@ -95,7 +168,7 @@ GNULINUX() {
 	alias debian='bash /data/data/com.termux/files/usr/debian'
 	alias debian-i='bash /data/data/com.termux/files/usr/debian-i'
 	alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
-	CheckArch
+	MainMenu
 }
 ########################################
 ANDROIDTERMUX() {
@@ -143,86 +216,7 @@ ANDROIDTERMUX() {
 		apt install -y ${dependencies}
 	fi
 
-	if [ "$(uname -o)" = "GNU/Linux" ]; then
-		apt install -y whiptail
-	fi
-
-	CheckArch
-}
-
-########################################################################
-#检测架构
-CheckArch() {
-
-	case $(uname -m) in
-	aarch64)
-		archtype="arm64"
-		;;
-	arm64)
-		archtype="arm64"
-		;;
-	armv8a)
-		archtype="arm64"
-		;;
-	arm)
-		archtype="armhf"
-		;;
-	armv7l)
-		archtype="armhf"
-		;;
-	armhf)
-		archtype="armhf"
-		;;
-	armv6l)
-		archtype="armel"
-		;;
-	armel)
-		archtype="armel"
-		;;
-	amd64)
-		archtype="amd64"
-		;;
-	x86_64)
-		archtype="amd64"
-		;;
-	i*86)
-		archtype="i386"
-		;;
-	x86)
-		archtype="i386"
-		;;
-	s390x)
-		archtype="s390x"
-		;;
-	ppc64el)
-		archtype="ppc64el"
-		;;
-	mips*)
-		echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
-		exit 1
-		;;
-	risc*)
-		echo '暂不支持risc-v'
-		echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
-		exit 1
-		;;
-	*)
-		echo "未知的架构 $(uname -m) unknown architecture"
-		exit 1
-		;;
-	esac
-
-	DebianFolder=debian_${archtype}
-	DebianCHROOT=${HOME}/${DebianFolder}
-	YELLOW=$(printf '\033[33m')
-	RESET=$(printf '\033[m')
-	cur=$(pwd)
-	if [ "$(uname -o)" != "GNU/Linux" ]; then
-		termux-setup-storage
-	fi
-
 	MainMenu
-
 }
 
 ########################################################################
@@ -1244,6 +1238,6 @@ CHROOTINSTALLDebian() {
 }
 
 #####################################
-autoCheck
+CheckArch
 ##取消注释，测试用。
 ##MainMenu
