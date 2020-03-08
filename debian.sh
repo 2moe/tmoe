@@ -149,7 +149,7 @@ GNULINUX() {
 	fi
 	PREFIX=/data/data/com.termux/files/usr
 	mkdir -p ${PREFIX}/bin
-	mkdir -p /data/data/com.termux/files/home
+	#mkdir -p /data/data/com.termux/files/home
 	#if [ ! -f "${PREFIX}/bin/bash" ]; then
 	#	cp -f $(which bash) ${PREFIX}/bin
 	#fi
@@ -463,6 +463,9 @@ REMOVESYSTEM() {
 		ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
 		df -h | grep debian
 		echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+		echo '建议您在移除前进行备份，若因操作不当导致数据丢失，开发者概不负责！！！'
+		echo "Before removing the system, make sure you have unmounted the chroot mount directory.
+It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
 	fi
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
 	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux

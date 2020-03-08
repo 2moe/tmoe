@@ -207,7 +207,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
   if [ -d "/sdcard" ]; then
-  mkdir -p ${DebianCHROOT}/root/sd
+    mkdir -p ${DebianCHROOT}/root/sd
   fi
   if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
     mkdir -p ${DebianCHROOT}/root/tf
@@ -380,6 +380,9 @@ ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
 ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
   df -h |grep debian
   echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+  echo '建议您在移除前进行备份，若因操作不当导致数据丢失，开发者概不负责！！！'
+  echo "Before removing the system, make sure you have unmounted the chroot mount directory.
+It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
   fi
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
@@ -397,7 +400,7 @@ ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
 	  sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
-    echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+  echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若需要重装，则不建议移除镜像文件。'
 	printf "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
