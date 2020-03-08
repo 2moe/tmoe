@@ -171,3 +171,18 @@ if [ "${OPTION}" == '9' ]; then
 
 fi
 ################################################################
+注销时自动卸载挂载目录
+  cat >.CHROOTtmplogout <<-'EndOfFile'
+	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+EndOfFile
+  cat .CHROOTtmplogout >>${DebianCHROOT}/root/.bash_logout
+  cat .CHROOTtmplogout >>${DebianCHROOT}/root/.zlogout
+  rm -f .CHROOTtmplogout

@@ -98,15 +98,15 @@ if [ "$(uname -o)" = "Android" ]; then
 fi
 ####################
 #卸载chroot挂载目录
-umount -lf ${DebianCHROOT}/dev 2>/dev/null
-umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
-umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
-umount -lf ${DebianCHROOT}/proc 2>/dev/null
-umount -lf ${DebianCHROOT}/sys 2>/dev/null
-umount -lf ${DebianCHROOT}/tmp 2>/dev/null
-umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
-umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
-umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 ##############################
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
@@ -210,25 +210,32 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   fi
   mkdir -p ${DebianCHROOT}/root/termux
 
-  cat >.CHROOTtmplogout <<-'EndOfFile'
-	umount -lf ${DebianCHROOT}/dev 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
-	umount -lf ${DebianCHROOT}/proc 2>/dev/null
-	umount -lf ${DebianCHROOT}/sys 2>/dev/null
-	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
-EndOfFile
-  cat .CHROOTtmplogout >>${DebianCHROOT}/root/.bash_logout
-  cat .CHROOTtmplogout >>${DebianCHROOT}/root/.zlogout
-  rm -f .CHROOTtmplogout
+  grep 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+
+  grep 'zh_CN.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+
+  grep 'HOME=/root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+
+  grep 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+
+  grep 'PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+
+  grep 'PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
 
   #此处EndOfFile不要加单引号
   #取消注释
   cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
   #!/data/data/com.termux/files/usr/bin/bash
+  #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
+  DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
+  DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
+
+  if [ -f ${DebianCHROOT}/bin/zsh ]; then
+
+    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+  else
+    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+  fi
   if [ "\$(whoami)" != "root" ]; then
     su -c "/bin/sh /data/data/com.termux/files/usr/bin/debian"
   fi
@@ -243,38 +250,18 @@ EndOfFile
 
   #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp 2>/dev/null
   if [ -d "/sdcard" ]; then
-    mount --bind /sdcard ${DebianCHROOT}/root/sd 2>/dev/null 
+    mount --bind /sdcard ${DebianCHROOT}/root/sd 2>/dev/null
   fi
-    if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
-      mount --bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf 2>/dev/null 
+  if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
+    mount --bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf 2>/dev/null
   fi
   mount --bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux 2>/dev/null
   if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
     echo "" >>${DebianCHROOT}/etc/profile
   fi
-  grep 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-  grep 'unset LD_PRELOAD' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
-  grep 'zh_CN.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-  grep 'zh_CN.UTF-8' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
-  grep 'HOME=/root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-  grep 'HOME=/root' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
-  grep 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-  grep 'cd /root' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
-  grep 'PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-  grep 'PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv 
   chroot \${DebianCHROOT} /bin/bash --login
-#sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
-DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
-DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
 
-  if [ -f ${DebianCHROOT}/bin/zsh ]; then
-
-    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
-  else
-    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
-  fi
-
-EndOfFile
+  EndOfFile
 else
 
   echo "Creating proot startup script"
@@ -347,15 +334,15 @@ aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
-	umount -lf ${DebianCHROOT}/dev 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
-	umount -lf ${DebianCHROOT}/proc 2>/dev/null
-	umount -lf ${DebianCHROOT}/sys 2>/dev/null
-	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 ls -lah ${DebianCHROOT}/dev 2>/dev/null
 ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
 ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
@@ -1160,7 +1147,11 @@ build_prompt() {
 PROMPT='%{%f%b%k%}$(build_prompt) '
 themeEOF
 
-
+    grep 'unset LD_PRELOAD' /root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" /root/.zshrc >/dev/null 2>&1
+    grep 'zh_CN.UTF-8' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" /root/.zshrc >/dev/null 2>&1
+    grep 'HOME=/root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" /root/.zshrc >/dev/null 2>&1
+    grep 'cd /root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" /root/.zshrc >/dev/null 2>&1
+    
 
 cd ~
 sed -i '1 r vnc-autostartup-zsh' ~/.zshrc

@@ -432,15 +432,15 @@ RootMode() {
 REMOVESYSTEM() {
 
 	cd ~
-	umount -lf ${DebianCHROOT}/dev 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
-	umount -lf ${DebianCHROOT}/proc 2>/dev/null
-	umount -lf ${DebianCHROOT}/sys 2>/dev/null
-	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 	ls -lah ${DebianCHROOT}/dev 2>/dev/null
 	ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
 	ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
@@ -490,15 +490,15 @@ REMOVESYSTEM() {
 ########################################################################
 #
 BackupSystem() {
-	umount -lf ${DebianCHROOT}/dev 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
-	umount -lf ${DebianCHROOT}/proc 2>/dev/null
-	umount -lf ${DebianCHROOT}/sys 2>/dev/null
-	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
@@ -793,15 +793,15 @@ BACKUPTERMUX() {
 #
 RESTORESYSTEM() {
 
-	umount -lf ${DebianCHROOT}/dev 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
-	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
-	umount -lf ${DebianCHROOT}/proc 2>/dev/null
-	umount -lf ${DebianCHROOT}/sys 2>/dev/null
-	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
-	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
