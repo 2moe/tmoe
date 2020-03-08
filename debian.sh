@@ -148,26 +148,7 @@ GNULINUX() {
 
 	fi
 	PREFIX=/data/data/com.termux/files/usr
-	mkdir -p ${PREFIX}/bin
-	#mkdir -p /data/data/com.termux/files/home
-	#if [ ! -f "${PREFIX}/bin/bash" ]; then
-	#	cp -f $(which bash) ${PREFIX}/bin
-	#fi
-	#grep "export PATH=\'" /etc/profile >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /etc/profile 2>/dev/null
-	#grep "export PATH=\'" /root/.zshrc >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /root/.zshrc 2>/dev/null
-	#export "PATH=${PREFIX}/bin:$PATH"
 
-	grep 'alias debian=' /etc/profile >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /etc/profile 2>/dev/null
-	grep 'alias debian=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /root/.zshrc 2>/dev/null
-	grep 'alias debian-i=' /etc/profile >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /etc/profile 2>/dev/null
-	grep 'alias debian-i=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /root/.zshrc 2>/dev/null
-	grep 'alias startvnc=' /etc/profile >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /etc/profile 2>/dev/null
-	grep 'alias startvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /root/.zshrc 2>/dev/null
-	grep 'alias stopvnc=' /etc/profile >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /etc/profile 2>/dev/null
-	grep 'alias stopvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /root/.zshrc 2>/dev/null
-	alias debian='bash /data/data/com.termux/files/usr/debian'
-	alias debian-i='bash /data/data/com.termux/files/usr/debian-i'
-	alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
 	MainMenu
 }
 ########################################
@@ -1260,6 +1241,26 @@ CHROOTINSTALLDebian() {
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
+	mkdir -p ${PREFIX}/bin
+	#mkdir -p /data/data/com.termux/files/home
+	#if [ ! -f "${PREFIX}/bin/bash" ]; then
+	#	cp -f $(which bash) ${PREFIX}/bin
+	#fi
+	#grep "export PATH=\'" /etc/profile >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /etc/profile 2>/dev/null
+	#grep "export PATH=\'" /root/.zshrc >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /root/.zshrc 2>/dev/null
+	#export "PATH=${PREFIX}/bin:$PATH"
+
+	grep 'alias debian=' /etc/profile >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /etc/profile 2>/dev/null
+	grep 'alias debian=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /root/.zshrc 2>/dev/null
+	grep 'alias debian-i=' /etc/profile >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /etc/profile 2>/dev/null
+	grep 'alias debian-i=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /root/.zshrc 2>/dev/null
+	grep 'alias startvnc=' /etc/profile >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /etc/profile 2>/dev/null
+	grep 'alias startvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /root/.zshrc 2>/dev/null
+	grep 'alias stopvnc=' /etc/profile >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /etc/profile 2>/dev/null
+	grep 'alias stopvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /root/.zshrc 2>/dev/null
+	alias debian='bash /data/data/com.termux/files/usr/debian'
+	alias debian-i='bash /data/data/com.termux/files/usr/debian-i'
+	alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
 	touch ~/.ChrootInstallationDetectionFile
 	installDebian
 }
