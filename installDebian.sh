@@ -98,16 +98,17 @@ if [ "$(uname -o)" = "Android" ]; then
 fi
 ####################
 #卸载chroot挂载目录
-if [ "$(uname -o)" != "Android" ]; then
-  umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-  umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-  umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+  su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+  su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+  su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+
 fi
 ##############################
 #创建必要文件夹，防止挂载失败
@@ -202,8 +203,8 @@ echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
 echo "         :   r. ..      .. .:i  ...     "
 
 if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
-
   rm -f ${HOME}/.ChrootInstallationDetectionFile
+  mkdir -p ${DebianCHROOT}/etc/tmp
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
   TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
@@ -233,6 +234,9 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
+  if [ ! -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile
+  fi
   #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
   DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
   DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
@@ -248,28 +252,29 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
     su -c "/bin/sh /data/data/com.termux/files/usr/bin/debian"
   fi
 
+  mount -o bind /dev ${DebianCHROOT}/dev >/dev/null 2>&1
+  #mount --bind /dev/shm ${DebianCHROOT}/dev/shm >/dev/null 2>&1
+  mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
+  mount -t devpts devpts ${DebianCHROOT}/dev/pts >/dev/null 2>&1
+  mount -t devpts devpts /dev/pts >/dev/null 2>&1
+  mount -t proc proc ${DebianCHROOT}/proc >/dev/null 2>&1
+  mount -t proc proc /proc >/dev/null 2>&1
+  mount -t sysfs sys ${DebianCHROOT}/sys >/dev/null 2>&1
+  #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp  >/dev/null 2>&1
+  if [ -d "/sdcard" ]; then
+    mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
+  fi
   if [ "$(uname -o)" != "Android" ]; then
-    mount -o bind /dev ${DebianCHROOT}/dev 2>/dev/null
-    #mount --bind /dev/shm ${DebianCHROOT}/dev/shm 2>/dev/null
-    mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm
-    mount -t devpts devpts ${DebianCHROOT}/dev/pts 2>/dev/null
-    mount -t proc proc ${DebianCHROOT}/proc 2>/dev/null
-    mount -t proc proc /proc
-    mount -t sysfs sys ${DebianCHROOT}/sys 2>/dev/null
-
-    #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp 2>/dev/null
-    if [ -d "/sdcard" ]; then
-      mount --bind /sdcard ${DebianCHROOT}/root/sd 2>/dev/null
-    fi
     if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
-      mount --bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf 2>/dev/null
+      mount -o bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf >/dev/null 2>&1
     fi
-    mount --bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux 2>/dev/null
+    mount -o bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux >/dev/null 2>&1
 
   fi
   chroot \${DebianCHROOT} /bin/bash --login
 
 EndOfChrootFile
+#上面那行不要有空格
 else
 
   echo "Creating proot startup script"
@@ -342,16 +347,17 @@ aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
-  if [ "$(uname -o)" != "Android" ]; then
-	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+  if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+		su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	  su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+
 ls -lah ${DebianCHROOT}/dev 2>/dev/null
 ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
 ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
