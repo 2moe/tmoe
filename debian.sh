@@ -1220,7 +1220,7 @@ CHROOTINSTALLDebian() {
 	echo "本功能目前仅对Linux系统测试开放。"
 	echo "本功能目前仍处于测试阶段，如需继续使用，您必须承担未知的风险。"
 	echo "按回车键继续,按Ctrl+C取消。"
-	echo "${YELLOW}Press enter to open the download directory.${RESET}"
+	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
 	touch ~/.ChrootInstallationDetectionFile
 	installDebian
