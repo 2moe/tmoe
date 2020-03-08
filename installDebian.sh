@@ -207,7 +207,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   mkdir -p ${DebianCHROOT}/etc/tmp
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
-  TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
+
   mkdir -p ${DebianCHROOT}/root/sd
   if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
     mkdir -p ${DebianCHROOT}/root/tf
@@ -266,6 +266,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   fi
   if [ "$(uname -o)" != "Android" ]; then
     if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
+      TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
       mount -o bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf >/dev/null 2>&1
     fi
     mount -o bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux >/dev/null 2>&1
