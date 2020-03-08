@@ -202,6 +202,7 @@ echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
 echo "         :   r. ..      .. .:i  ...     "
 
 if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
+
   rm -f ${HOME}/.ChrootInstallationDetectionFile
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
@@ -215,6 +216,11 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
     echo "" >>${DebianCHROOT}/etc/profile
   fi
+
+  grep 'export PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\export PATH='/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games'" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+
+  grep 'export PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
+
   grep 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   grep 'zh_CN.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
@@ -222,10 +228,6 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   grep 'HOME=/root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   grep 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-
-  grep 'PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
-
-  grep 'PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
 
   #此处EndOfFile不要加单引号
   cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfChrootFile

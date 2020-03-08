@@ -253,6 +253,11 @@ MainMenu() {
 	)
 
 	if [ "${OPTION}" == '0' ]; then
+	   	if [ "$(uname -o)" != "Android" ]; then
+		echo "非常抱歉，本功能仅适配安卓系统。"
+		echo "Linux系统请换用chroot容器。"
+		read
+        fi
 
 		installDebian
 
@@ -330,7 +335,6 @@ MainMenu() {
 ########################################################################
 
 installDebian() {
-
 	if [ -d ~/${DebianFolder} ]; then
 		if (whiptail --title "检测到您已安装debian,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 7 60); then
 			debian
