@@ -99,16 +99,15 @@ fi
 ####################
 #卸载chroot挂载目录
 if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-  su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-  su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-  su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
-
+  su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+  su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+  su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+  su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+  su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+  su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+  su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+  su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+  su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 fi
 ##############################
 #创建必要文件夹，防止挂载失败
@@ -349,15 +348,15 @@ cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
   if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-		su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-	  su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+	  su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 
 ls -lah ${DebianCHROOT}/dev 2>/dev/null
 ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null

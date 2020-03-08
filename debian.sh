@@ -237,7 +237,7 @@ MainMenu() {
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下有十几个选项,Choose your option" 15 60 4 \
 			"0" "proot安装 install debian" \
-			"1" "chroot安装(开发中的功能，请勿安装)" \
+			"1" "chroot安装" \
 			"2" "Video tutorial" \
 			"3" "移除 remove system" \
 			"4" "备份系统 backup system" \
@@ -437,15 +437,15 @@ REMOVESYSTEM() {
 
 	cd ~
 	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-		su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 		ls -lah ${DebianCHROOT}/dev 2>/dev/null
 		ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
 		ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
@@ -497,15 +497,15 @@ REMOVESYSTEM() {
 #
 BackupSystem() {
 	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-		su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 	fi
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
@@ -800,15 +800,15 @@ BACKUPTERMUX() {
 #
 RESTORESYSTEM() {
 	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-		su -c "fuser -k -m ${DebianCHROOT}/dev >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/shm >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/dev/pts >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/proc >/dev/null 2>&1" || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/sys >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/tmp >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/sd >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "fuser -k -m ${DebianCHROOT}/root/tf >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "fuser -k -m ${DebianCHROOT}/root/termux >/dev/null 2>&1" || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 	fi
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
