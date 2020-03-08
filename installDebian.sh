@@ -206,13 +206,15 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   mkdir -p ${DebianCHROOT}/etc/tmp
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
-
+  if [ -d "/sdcard" ]; then
   mkdir -p ${DebianCHROOT}/root/sd
+  fi
   if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
     mkdir -p ${DebianCHROOT}/root/tf
   fi
-  mkdir -p ${DebianCHROOT}/root/termux
-
+  if [ -d "/data/data/com.termux/files/home" ]; then
+    mkdir -p ${DebianCHROOT}/root/termux
+  fi
   if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
     echo "" >>${DebianCHROOT}/etc/profile
   fi
@@ -229,7 +231,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
 
   grep 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
-  #此处EndOfFile不要加单引号
+  #此处EndOfChrootFile不要加单引号
   cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
@@ -265,19 +267,20 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
 
   #mount --bind /dev/shm ${DebianCHROOT}/dev/shm >/dev/null 2>&1
   mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
-   
+
   #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp  >/dev/null 2>&1
 
   if [ -d "/sdcard" ]; then
     mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
   fi
-  if [ "$(uname -o)" != "Android" ]; then
+  if [ "$(uname -o)" = "Android" ]; then
     if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
       TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
       mount -o bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf >/dev/null 2>&1
     fi
-    mount -o bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux >/dev/null 2>&1
-
+    if [ -d "/data/data/com.termux/files/home" ]; then
+      mount -o bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux >/dev/null 2>&1
+    fi
   fi
   chroot \${DebianCHROOT} /bin/bash --login
 
