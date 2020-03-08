@@ -264,6 +264,7 @@ MainMenu() {
 		if [ "$(uname -o)" = "Android" ]; then
 			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
 			echo "Android系统请换用proot容器。"
+			echo "由于在测试过程中出现部分已挂载的目录无法卸载的情况，故建议您换用proot容器。"
 			echo "Press enter to return。"
 			echo "${YELLOW}按回车键返回。${RESET} "
 			read
@@ -1225,7 +1226,6 @@ PLAYVideoTutorial() {
 }
 #####################################
 CHROOTINSTALLDebian() {
-	echo "由于在测试过程中出现部分已挂载的目录无法卸载的情况，故建议您换用Proot容器。"
 	echo "This feature currently only supports Linux systems and is still in beta."
 	echo "本功能目前仅对Linux系统测试开放。"
 	echo "This feature is currently in the beta stage. If you find that some directories cannot be unloaded forcibly before removing the debian system, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
