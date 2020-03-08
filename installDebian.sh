@@ -1,5 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-termux-setup-storage
 
 #检测架构
 
@@ -69,38 +68,50 @@ esac
 
 dependencies=""
 
-if [ ! -e $PREFIX/bin/proot ]; then
-  dependencies="${dependencies} proot"
-fi
+if [ "$(uname -o)" = "Android" ]; then
+  termux-setup-storage
+  if [ ! -e $PREFIX/bin/proot ]; then
+    dependencies="${dependencies} proot"
+  fi
 
-if [ ! -e $PREFIX/bin/pkill ]; then
-  dependencies="${dependencies} procps"
-fi
+  if [ ! -e $PREFIX/bin/pkill ]; then
+    dependencies="${dependencies} procps"
+  fi
 
-if [ ! -e $PREFIX/bin/pv ]; then
-  dependencies="${dependencies} pv"
-fi
+  if [ ! -e $PREFIX/bin/pv ]; then
+    dependencies="${dependencies} pv"
+  fi
 
-if [ ! -e $PREFIX/bin/wget ]; then
-  dependencies="${dependencies} wget"
-fi
+  if [ ! -e $PREFIX/bin/curl ]; then
+    dependencies="${dependencies} curl"
+  fi
 
-if [ ! -e $PREFIX/bin/curl ]; then
-  dependencies="${dependencies} curl"
-fi
+  if [ ! -e $PREFIX/bin/aria2c ]; then
+    dependencies="${dependencies} aria2"
+  fi
 
-if [ ! -e $PREFIX/bin/aria2c ]; then
-  dependencies="${dependencies} aria2"
-fi
+  if [ ! -z "$dependencies" ]; then
+    echo "正在安装相关依赖..."
+    apt install -y ${dependencies}
+  fi
 
-if [ ! -z "$dependencies" ]; then
-  echo "正在安装相关依赖..."
-  apt install -y ${dependencies}
 fi
-
+####################
+#卸载chroot挂载目录
+umount -lf ${DebianCHROOT}/dev 2>/dev/null
+umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
+umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
+umount -lf ${DebianCHROOT}/proc 2>/dev/null
+umount -lf ${DebianCHROOT}/sys 2>/dev/null
+umount -lf ${DebianCHROOT}/tmp 2>/dev/null
+umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
+umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
+umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+##############################
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
 DebianFolder=debian_${archtype}
+DebianCHROOT=${HOME}/${DebianFolder}
 #DebianFolder=debian_arm64
 
 echo "                                        "
@@ -156,7 +167,11 @@ fi
 cur=$(pwd)
 cd ~/${DebianFolder}
 echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
-pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
+if [ "$(uname -o)" = "Android" ]; then
+  pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
+else
+  pv ${cur}/${DebianTarXz} | tar -pJx
+fi
 #proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
 cd "$cur"
 echo "                                        "
@@ -184,10 +199,88 @@ echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
 echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
 echo "         :   r. ..      .. .:i  ...     "
 
-echo "Creating proot startup script"
-echo "正在创建proot启动脚本/data/data/com.termux/files/usr/bin/debian "
-#此处EndOfFile不要加单引号
-cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
+if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
+  echo "Creating chroot startup script"
+  echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
+  #chroot需要真实root权限。
+  TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
+  mkdir -p ${DebianCHROOT}/root/sd
+  if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
+    mkdir -p ${DebianCHROOT}/root/tf
+  fi
+  mkdir -p ${DebianCHROOT}/root/termux
+
+  cat >.CHROOTtmplogout <<-'EndOfFile'
+	umount -lf ${DebianCHROOT}/dev 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
+	umount -lf ${DebianCHROOT}/proc 2>/dev/null
+	umount -lf ${DebianCHROOT}/sys 2>/dev/null
+	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+EndOfFile
+  cat .CHROOTtmplogout >>${DebianCHROOT}/root/.bash_logout
+  cat .CHROOTtmplogout >>${DebianCHROOT}/root/.zlogout
+  rm -f .CHROOTtmplogout
+
+  #此处EndOfFile不要加单引号
+  #取消注释
+  cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
+  #!/data/data/com.termux/files/usr/bin/bash
+  if [ "\$(whoami)" != "root" ]; then
+    su -c "/bin/sh /data/data/com.termux/files/usr/bin/debian"
+  fi
+  DebianCHROOT=${HOME}/${DebianFolder}
+  mount -o bind /dev ${DebianCHROOT}/dev 2>/dev/null
+  #mount --bind /dev/shm ${DebianCHROOT}/dev/shm 2>/dev/null
+  mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm
+  mount -t devpts devpts ${DebianCHROOT}/dev/pts 2>/dev/null
+  mount -t proc proc ${DebianCHROOT}/proc 2>/dev/null
+  mount -t proc proc /proc
+  mount -t sysfs sys ${DebianCHROOT}/sys 2>/dev/null
+
+  #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp 2>/dev/null
+  if [ -d "/sdcard" ]; then
+    mount --bind /sdcard ${DebianCHROOT}/root/sd 2>/dev/null 
+  fi
+    if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
+      mount --bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf 2>/dev/null 
+  fi
+  mount --bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux 2>/dev/null
+  if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
+    echo "" >>${DebianCHROOT}/etc/profile
+  fi
+  grep 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep 'unset LD_PRELOAD' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
+  grep 'zh_CN.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep 'zh_CN.UTF-8' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
+  grep 'HOME=/root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep 'HOME=/root' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
+  grep 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep 'cd /root' ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/root/.zshrc >/dev/null 2>&1
+  grep 'PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep 'PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv 
+  chroot \${DebianCHROOT} /bin/bash --login
+#sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
+DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
+DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
+
+  if [ -f ${DebianCHROOT}/bin/zsh ]; then
+
+    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+  else
+    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+  fi
+
+EndOfFile
+else
+
+  echo "Creating proot startup script"
+  echo "正在创建proot启动脚本/data/data/com.termux/files/usr/bin/debian "
+  #此处EndOfFile不要加单引号
+  cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 unset LD_PRELOAD
@@ -210,18 +303,23 @@ command+=" TERM=\$TERM"
 command+=" LANG=zh_CN.UTF-8"
 command+=" /bin/bash --login"
 com="\$@"
-if [ -f ~/debian_${archtype}/bin/zsh ];then
-   sed -i '21 c command+=" /bin/zsh --login"' $PREFIX/bin/debian
+#为防止匹配行被替换，故采用base64加密。
+DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
+DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
+
+if [ -f ~/${DebianFolder}/bin/zsh ];then
+    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
 else
-  sed -i '21 c command+=" /bin/bash --login"' $PREFIX/bin/debian
+    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
 fi
+
 if [ -z "\$1" ];then
     exec \$command
 else
     \$command -c "\$com"
 fi
 EndOfFile
-
+fi
 #######################################################
 
 cat >/data/data/com.termux/files/usr/bin/startvnc <<-EndOfFile
@@ -244,17 +342,45 @@ touch ~/${DebianFolder}/root/.vnc/startxsdl
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
-wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
-
+#wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
-    chmod 777 -R debian_$archtype
-    rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+	umount -lf ${DebianCHROOT}/dev 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
+	umount -lf ${DebianCHROOT}/proc 2>/dev/null
+	umount -lf ${DebianCHROOT}/sys 2>/dev/null
+	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+ls -lah ${DebianCHROOT}/dev 2>/dev/null
+ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
+ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
+ls -lah ${DebianCHROOT}/proc 2>/dev/null
+ls -lah ${DebianCHROOT}/sys 2>/dev/null
+ls -lah ${DebianCHROOT}/tmp 2>/dev/null
+ls -lah ${DebianCHROOT}/root/sd 2>/dev/null
+ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
+ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
+  df -h |grep debian
+  echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
+  	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
+	if [ ! -d ~/${DebianFolder} ]; then
+		printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
+	fi
+	echo ''
+	echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
+	read
+    chmod 777 -R ${DebianFolder}
+	rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
     YELLOW=\$(printf '\033[33m')
-	RESET=\$(printf '\033[m')
+	  RESET=\$(printf '\033[m')
     sed -i '/alias debian=/d' $PREFIX/etc/profile
-	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
+	  sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
     echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
@@ -284,11 +410,11 @@ EndOfFile
 
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
-  sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian
-
+  sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
+  sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
 fi
-echo 'Giving proot startup script execution permission'
-echo "正在赋予proot启动脚本($PREFIX/bin/debian)执行权限"
+echo 'Giving startup script execution permission'
+echo "正在赋予启动脚本($PREFIX/bin/debian)执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
 cd /data/data/com.termux/files/usr/bin
 
@@ -369,7 +495,7 @@ chsh -s /usr/bin/zsh
 #   ZSH=~/.zsh sh install.sh
 #
 # Respects the following environment variables:
-#   ZSH     - path to the Oh My Zsh repository folder (default: $HOME/.oh-my-zsh)
+#   ZSH     - path to the Oh My Zsh repository folder (default: ${HOME}/.oh-my-zsh)
 #   REPO    - name of the GitHub repo to install from (default: ohmyzsh/ohmyzsh)
 #   REMOTE  - full remote URL of the git repo to install (default: GitHub via HTTPS)
 #   BRANCH  - branch to check out immediately after install (default: master)
@@ -1087,7 +1213,7 @@ chmod +x zsh.sh
 cat >vnc-autostartup <<-'EndOfFile'
 cat /etc/issue
 
-grep  'cat /etc/issue' ~/.bashrc >/dev/null || sed -i '1 a cat /etc/issue' ~/.bashrc
+grep  'cat /etc/issue' ~/.bashrc >/dev/null 2>&1 || sed -i '1 a cat /etc/issue' ~/.bashrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
@@ -1109,7 +1235,7 @@ EndOfFile
 cat >vnc-autostartup-zsh <<-'EndOfFile'
 cat /etc/issue
 
-grep  'cat /etc/issue' ~/.zshrc >/dev/null || sed -i '1 a cat /etc/issue' ~/.zshrc
+grep  'cat /etc/issue' ~/.zshrc >/dev/null 2>&1 || sed -i '1 a cat /etc/issue' ~/.zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
@@ -1309,7 +1435,7 @@ mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
-xrdb $HOME/.Xresources
+xrdb ${HOME}/.Xresources
 startxfce4 &
 EndOfFile
 chmod +x ./xstartup
@@ -1406,7 +1532,7 @@ mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
-xrdb $HOME/.Xresources
+xrdb ${HOME}/.Xresources
 startlxde &
 EndOfFile
 chmod +x ./xstartup
@@ -1509,7 +1635,7 @@ mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
-xrdb $HOME/.Xresources
+xrdb ${HOME}/.Xresources
 mate-session &
 EndOfFile
 chmod +x ./xstartup
@@ -1613,7 +1739,7 @@ mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
-xrdb $HOME/.Xresources
+xrdb ${HOME}/.Xresources
 startlxqt &
 EndOfFile
 chmod +x ./xstartup
@@ -1707,7 +1833,7 @@ mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
-xrdb $HOME/.Xresources
+xrdb ${HOME}/.Xresources
 xsetroot -solid grey
 x-terminal-emulator -geometry  80×24+10+10 -ls -title "$VNCDESKTOP Desktop" &
 #x-window-manager &
@@ -1816,7 +1942,7 @@ cat >xstartup<<-'EndOfFile'
 unset SESSION_MANAGER
 exec /etc/X11/xinit/xinitrc
 [ -x /etc/vnc/xstartup ] && exec/etc/vnc/xstartup
-[ -r $HOME/.Xresources ] && xrdb$HOME/.Xresources
+[ -r ${HOME}/.Xresources ] && xrdb${HOME}/.Xresources
 xsetroot -solid grey
 vncconfig -iconic &
 #xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&

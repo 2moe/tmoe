@@ -164,9 +164,10 @@ main "$@"
 
 EndOfFile
 chmod +x man.sh
-	##################
-	if [ "${OPTION}" == '9' ]; then
+##################
+if [ "${OPTION}" == '9' ]; then
 
-		bash /usr/local/bin/zsh.sh
+    bash /usr/local/bin/zsh.sh
 
-	fi
+fi
+################################################################

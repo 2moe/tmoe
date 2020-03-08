@@ -1,10 +1,104 @@
 #!/data/data/com.termux/files/usr/bin/bash
-
 ########################################################################
-#-- 自动检测相关依赖
-
 autoCheck() {
 
+	if [ "$(uname -o)" = "Android" ]; then
+		ANDROIDTERMUX
+	else
+		GNULINUX
+	fi
+}
+#未来可能不会增加的功能:加入路由器(mipsel架构)支持
+#路由器要把whiptail改成dialog，还要改一下opkg安装的依赖项目。
+#检测架构放在检测依赖之前。
+########################################
+GNULINUX() {
+	dependencies=""
+
+	if [ ! -e /bin/tar ]; then
+		dependencies="${dependencies} tar"
+	fi
+
+	if [ ! -e /bin/grep ]; then
+		dependencies="${dependencies} grep"
+	fi
+
+	if [ ! -e /usr/bin/pv ]; then
+		dependencies="${dependencies} pv"
+	fi
+
+	if [ ! -e /usr/bin/proot ]; then
+		dependencies="${dependencies} proot"
+	fi
+
+	if [ ! -e /usr/bin/git ]; then
+		dependencies="${dependencies} git"
+	fi
+
+	if [ ! -e /usr/bin/xz ]; then
+		dependencies="${dependencies} xz-utils"
+	fi
+
+	if [ ! -e /usr/bin/whiptail ]; then
+		dependencies="${dependencies} whiptail"
+	fi
+
+	if [ ! -e /usr/bin/pkill ]; then
+		dependencies="${dependencies} procps"
+	fi
+
+	if [ ! -e /usr/bin/curl ]; then
+		dependencies="${dependencies} curl"
+	fi
+
+	if [ ! -e /usr/bin/aria2c ]; then
+		dependencies="${dependencies} aria2"
+	fi
+
+	if [ ! -z "$dependencies" ]; then
+		echo "正在安装相关依赖..."
+		if grep -Eqii "Alpine" /etc/issue || grep -Eq "Alpine" /etc/*-release; then
+
+			apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils
+		elif grep -Eqi "Arch" /etc/issue || grep -Eqi "Manjaro" /etc/issue; then
+
+			pacman -Sy --noconfirm ${dependencies}
+
+		elif grep -Eqi "Fedora" /etc/issue || grep -Eqii "CentOS" /etc/issue || grep -Eqi "Red Hat Enterprise Linux Server" /etc/issue; then
+
+			dnf install -y ${dependencies} || yum install -y ${dependencies}
+		else
+			apt update
+			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || emerge ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies} || opkg install -y ${dependencies}
+
+		fi
+
+	fi
+	PREFIX=/data/data/com.termux/files/usr
+	mkdir -p ${PREFIX}/bin
+	mkdir -p /data/data/com.termux/files/home
+	#if [ ! -f "${PREFIX}/bin/bash" ]; then
+	#	cp -f $(which bash) ${PREFIX}/bin
+	#fi
+	#grep "export PATH=\'" /etc/profile >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /etc/profile 2>/dev/null
+	#grep "export PATH=\'" /root/.zshrc >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /root/.zshrc 2>/dev/null
+	#export "PATH=${PREFIX}/bin:$PATH"
+
+	grep 'alias debian=' /etc/profile >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /etc/profile 2>/dev/null
+	grep 'alias debian=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /root/.zshrc 2>/dev/null
+	grep 'alias debian-i=' /etc/profile >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /etc/profile 2>/dev/null
+	grep 'alias debian-i=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /root/.zshrc 2>/dev/null
+	grep 'alias startvnc=' /etc/profile >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /etc/profile 2>/dev/null
+	grep 'alias startvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /root/.zshrc 2>/dev/null
+	grep 'alias stopvnc=' /etc/profile >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /etc/profile 2>/dev/null
+	grep 'alias stopvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /root/.zshrc 2>/dev/null
+	alias debian='bash /data/data/com.termux/files/usr/debian'
+	alias debian-i='bash /data/data/com.termux/files/usr/debian-i'
+	alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
+	CheckArch
+}
+########################################
+ANDROIDTERMUX() {
 	dependencies=""
 
 	if [ ! -e $PREFIX/bin/pv ]; then
@@ -13,6 +107,14 @@ autoCheck() {
 
 	if [ ! -e $PREFIX/bin/grep ]; then
 		dependencies="${dependencies} grep"
+	fi
+
+	if [ ! -e $PREFIX/bin/aria2c ]; then
+		dependencies="${dependencies} aria2"
+	fi
+
+	if [ ! -e $PREFIX/bin/proot ]; then
+		dependencies="${dependencies} proot"
 	fi
 
 	if [ ! -e $PREFIX/bin/xz ]; then
@@ -111,6 +213,7 @@ CheckArch() {
 	esac
 
 	DebianFolder=debian_${archtype}
+	DebianCHROOT=${HOME}/${DebianFolder}
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
@@ -127,7 +230,7 @@ CheckArch() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian manager running on Termux(20200303)" --backtitle "$(
+		whiptail --title "Tmoe-Debian manager running on Termux(20200308)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -228,16 +331,6 @@ MainMenu() {
 
 installDebian() {
 
-	if [ ! -e $PREFIX/bin/aria2c ]; then
-		apt update
-		apt install -y aria2
-	fi
-
-	if [ ! -e $PREFIX/bin/proot ]; then
-		apt update
-		apt install -y proot
-	fi
-
 	if [ -d ~/${DebianFolder} ]; then
 		if (whiptail --title "检测到您已安装debian,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 7 60); then
 			debian
@@ -249,9 +342,9 @@ installDebian() {
 			read opt
 			case $opt in
 			y* | Y* | "")
-				$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile
-				sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
-				source profile >/dev/null 2>&1
+				$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile 2>/dev/null
+				sed -i '/alias debian-rm=/d' $PREFIX/etc/profile 2>/dev/null
+				source $PREFIX/etc/profile >/dev/null 2>&1
 				bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 				#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 				;;
@@ -274,7 +367,6 @@ installDebian() {
 
 	else
 		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
-		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 
 	fi
 }
@@ -340,6 +432,26 @@ RootMode() {
 REMOVESYSTEM() {
 
 	cd ~
+	umount -lf ${DebianCHROOT}/dev 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
+	umount -lf ${DebianCHROOT}/proc 2>/dev/null
+	umount -lf ${DebianCHROOT}/sys 2>/dev/null
+	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+	ls -lah ${DebianCHROOT}/dev 2>/dev/null
+	ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
+	ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
+	ls -lah ${DebianCHROOT}/proc 2>/dev/null
+	ls -lah ${DebianCHROOT}/sys 2>/dev/null
+	ls -lah ${DebianCHROOT}/tmp 2>/dev/null
+	ls -lah ${DebianCHROOT}/root/sd 2>/dev/null
+	ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
+	ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
+	df -h | grep debian
+	echo '移除系统前，请先确保您已卸载chroot挂载目录。'
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
 	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
@@ -350,7 +462,7 @@ REMOVESYSTEM() {
 	read
 
 	chmod 777 -R ${DebianFolder}
-	rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
+	rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
 	sed -i '/alias debian=/d' $PREFIX/etc/profile
 	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
@@ -378,6 +490,15 @@ REMOVESYSTEM() {
 ########################################################################
 #
 BackupSystem() {
+	umount -lf ${DebianCHROOT}/dev 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
+	umount -lf ${DebianCHROOT}/proc 2>/dev/null
+	umount -lf ${DebianCHROOT}/sys 2>/dev/null
+	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
 
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
@@ -672,6 +793,16 @@ BACKUPTERMUX() {
 #
 RESTORESYSTEM() {
 
+	umount -lf ${DebianCHROOT}/dev 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/shm 2>/dev/null
+	umount -lf ${DebianCHROOT}/dev/pts 2>/dev/null
+	umount -lf ${DebianCHROOT}/proc 2>/dev/null
+	umount -lf ${DebianCHROOT}/sys 2>/dev/null
+	umount -lf ${DebianCHROOT}/tmp 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/sd 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/tf 2>/dev/null
+	umount -lf ${DebianCHROOT}/root/termux 2>/dev/null
+
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "Restore the latest debian backup 还原Debian" \
@@ -879,8 +1010,8 @@ SpaceOccupation() {
 
 ########################################################################
 UPDATEMANAGER() {
-	curl -L -o $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
-	#aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+	#curl -L -o $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+	aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	#wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo 'Press enter to return.'
@@ -1048,11 +1179,6 @@ STARTVSCODE() {
 }
 #####################################
 DownloadVideoTutorial() {
-	if [ ! -e $PREFIX/bin/aria2c ]; then
-		apt update
-		apt install -y aria2
-	fi
-
 	cd /sdcard/Download
 	if [ -f "20200229vnc教程06.mp4" ]; then
 
@@ -1087,20 +1213,9 @@ PLAYVideoTutorial() {
 }
 #####################################
 CHROOTINSTALLDebian() {
-	OPTION=$(whiptail --title "chroot安装debian" --menu "本功能正在开发中，预计将于2020-03-08开发完成。" 15 60 4 \
-		"0" "Back to the main menu 返回主菜单" \
-		"1" "arm64" \
-		"2" "armhf" \
-		"3" "x86" \
-		"4" "x64" \
-		3>&1 1>&2 2>&3)
-	##########################################
-	if [ "${OPTION}" == '0' ]; then
 
-		MainMenu
-	fi
-	MainMenu
-
+	touch ~/.ChrootInstallationDetectionFile
+	installDebian
 }
 
 #####################################
