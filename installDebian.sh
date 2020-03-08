@@ -98,15 +98,17 @@ if [ "$(uname -o)" = "Android" ]; then
 fi
 ####################
 #卸载chroot挂载目录
-umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+if [ "$(uname -o)" != "Android" ]; then
+  umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+  umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+  umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+fi
 ##############################
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
@@ -202,7 +204,6 @@ echo "         :   r. ..      .. .:i  ...     "
 if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
-  #chroot需要真实root权限。
   TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
   mkdir -p ${DebianCHROOT}/root/sd
   if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
@@ -210,6 +211,9 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   fi
   mkdir -p ${DebianCHROOT}/root/termux
 
+  if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
+    echo "" >>${DebianCHROOT}/etc/profile
+  fi
   grep 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   grep 'zh_CN.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
@@ -223,9 +227,9 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   grep 'PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
 
   #此处EndOfFile不要加单引号
-  #取消注释
   cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
   #!/data/data/com.termux/files/usr/bin/bash
+  DebianCHROOT=${HOME}/${DebianFolder}
   #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
   DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
   DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
@@ -236,28 +240,29 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   else
     sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
   fi
+
   if [ "\$(whoami)" != "root" ]; then
     su -c "/bin/sh /data/data/com.termux/files/usr/bin/debian"
   fi
-  DebianCHROOT=${HOME}/${DebianFolder}
-  mount -o bind /dev ${DebianCHROOT}/dev 2>/dev/null
-  #mount --bind /dev/shm ${DebianCHROOT}/dev/shm 2>/dev/null
-  mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm
-  mount -t devpts devpts ${DebianCHROOT}/dev/pts 2>/dev/null
-  mount -t proc proc ${DebianCHROOT}/proc 2>/dev/null
-  mount -t proc proc /proc
-  mount -t sysfs sys ${DebianCHROOT}/sys 2>/dev/null
 
-  #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp 2>/dev/null
-  if [ -d "/sdcard" ]; then
-    mount --bind /sdcard ${DebianCHROOT}/root/sd 2>/dev/null
-  fi
-  if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
-    mount --bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf 2>/dev/null
-  fi
-  mount --bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux 2>/dev/null
-  if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
-    echo "" >>${DebianCHROOT}/etc/profile
+  if [ "$(uname -o)" != "Android" ]; then
+    mount -o bind /dev ${DebianCHROOT}/dev 2>/dev/null
+    #mount --bind /dev/shm ${DebianCHROOT}/dev/shm 2>/dev/null
+    mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm
+    mount -t devpts devpts ${DebianCHROOT}/dev/pts 2>/dev/null
+    mount -t proc proc ${DebianCHROOT}/proc 2>/dev/null
+    mount -t proc proc /proc
+    mount -t sysfs sys ${DebianCHROOT}/sys 2>/dev/null
+
+    #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp 2>/dev/null
+    if [ -d "/sdcard" ]; then
+      mount --bind /sdcard ${DebianCHROOT}/root/sd 2>/dev/null
+    fi
+    if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
+      mount --bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf 2>/dev/null
+    fi
+    mount --bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux 2>/dev/null
+
   fi
   chroot \${DebianCHROOT} /bin/bash --login
 
@@ -334,6 +339,7 @@ aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	cd ~
+  if [ "$(uname -o)" != "Android" ]; then
 	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
 	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
@@ -354,6 +360,7 @@ ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
 ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
   df -h |grep debian
   echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+  fi
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
@@ -1151,7 +1158,7 @@ themeEOF
     grep 'zh_CN.UTF-8' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" /root/.zshrc >/dev/null 2>&1
     grep 'HOME=/root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" /root/.zshrc >/dev/null 2>&1
     grep 'cd /root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" /root/.zshrc >/dev/null 2>&1
-    
+
 
 cd ~
 sed -i '1 r vnc-autostartup-zsh' ~/.zshrc

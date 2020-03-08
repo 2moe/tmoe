@@ -8,7 +8,7 @@ autoCheck() {
 		GNULINUX
 	fi
 }
-#未来可能不会增加的功能:加入路由器(mipsel架构)支持
+#未来可能不会增加的功能:加入路由器(mipsel架构)支持，需要从软件源开始构建。
 #路由器要把whiptail改成dialog，还要改一下opkg安装的依赖项目。
 #检测架构放在检测依赖之前。
 ########################################
@@ -237,7 +237,7 @@ MainMenu() {
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate，请使用方向键和回车键进行操作,触屏点击OK确认,cancel取消,当前主菜单下有十几个选项,Choose your option" 15 60 4 \
 			"0" "proot安装 install debian" \
-			"1" "chroot安装(本功能正在开发中，请勿安装，需要真实root权限)" \
+			"1" "chroot安装(测试版功能，需要真实root权限)" \
 			"2" "Video tutorial" \
 			"3" "移除 remove system" \
 			"4" "备份系统 backup system" \
@@ -432,26 +432,28 @@ RootMode() {
 REMOVESYSTEM() {
 
 	cd ~
-	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
-	ls -lah ${DebianCHROOT}/dev 2>/dev/null
-	ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
-	ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
-	ls -lah ${DebianCHROOT}/proc 2>/dev/null
-	ls -lah ${DebianCHROOT}/sys 2>/dev/null
-	ls -lah ${DebianCHROOT}/tmp 2>/dev/null
-	ls -lah ${DebianCHROOT}/root/sd 2>/dev/null
-	ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
-	ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
-	df -h | grep debian
-	echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+	if [ "$(uname -o)" != "Android" ]; then
+		umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+		ls -lah ${DebianCHROOT}/dev 2>/dev/null
+		ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
+		ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
+		ls -lah ${DebianCHROOT}/proc 2>/dev/null
+		ls -lah ${DebianCHROOT}/sys 2>/dev/null
+		ls -lah ${DebianCHROOT}/tmp 2>/dev/null
+		ls -lah ${DebianCHROOT}/root/sd 2>/dev/null
+		ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
+		ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
+		df -h | grep debian
+		echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+	fi
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
 	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
@@ -490,16 +492,17 @@ REMOVESYSTEM() {
 ########################################################################
 #
 BackupSystem() {
-	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
-
+	if [ "$(uname -o)" != "Android" ]; then
+		umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+	fi
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "备份Debian" \
@@ -792,17 +795,17 @@ BACKUPTERMUX() {
 ########################################################################
 #
 RESTORESYSTEM() {
-
-	umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 ||su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-	umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-	umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
-
+	if [ "$(uname -o)" != "Android" ]; then
+		umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/dev/shm >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/dev/pts >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/proc >/dev/null 2>&1 || su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/sys >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/tmp >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/root/sd >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
+		umount -lf ${DebianCHROOT}/root/tf >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
+		umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1 || su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+	fi
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "Restore the latest debian backup 还原Debian" \
@@ -1213,7 +1216,12 @@ PLAYVideoTutorial() {
 }
 #####################################
 CHROOTINSTALLDebian() {
-
+	echo "由于在测试过程中出现部分已挂载的目录无法卸载的情况，故安卓系统使用本工具安装的chroot容器将不会挂载任何目录，建议您换用Proot容器。"
+	echo "本功能目前仅对Linux系统测试开放。"
+	echo "本功能目前仍处于测试阶段，如需继续使用，您必须承担未知的风险。"
+	echo "按回车键继续,按Ctrl+C取消。"
+	echo "${YELLOW}Press enter to open the download directory.${RESET}"
+	read
 	touch ~/.ChrootInstallationDetectionFile
 	installDebian
 }
