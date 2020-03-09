@@ -692,7 +692,6 @@ OTHERSOFTWARE() {
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
-
 		DEBIANMENU
 	fi
 	##############################
@@ -707,6 +706,7 @@ OTHERSOFTWARE() {
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
+		DEBIANMENU
 	fi
 	##############################
 
