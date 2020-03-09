@@ -358,7 +358,9 @@ EndOfFile
 aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
-	cd ~
+	  YELLOW=\$(printf '\033[33m')
+	  RESET=\$(printf '\033[m')
+    cd ~
   if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
@@ -388,15 +390,14 @@ It is recommended that you back up the entire system before removal. If the data
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
-		printf "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
+		echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
 	fi
-	echo ''
+  echo "移除系统前，请先确保您已停止debian容器。"
 	echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
 	read
     chmod 777 -R ${DebianFolder}
 	rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
-    YELLOW=\$(printf '\033[33m')
-	  RESET=\$(printf '\033[m')
+
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	  sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
 	source profile >/dev/null 2>&1
@@ -404,9 +405,7 @@ It is recommended that you back up the entire system before removal. If the data
   echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若需要重装，则不建议移除镜像文件。'
-	printf "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
-	#printf之后分行
-	echo ''
+	echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
 	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
 
     read opt
