@@ -693,8 +693,9 @@ OTHERSOFTWARE() {
 
 		wget -O /tmp/WPSARM64.deb https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9126/wps-office_11.1.0.9126_arm64.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
+		apt install -y /tmp/WPSARM64.deb
 		echo "url: https://linux.wps.cn"
-		rm -f /tmp/WPSARM64.deb
+		#rm -f /tmp/WPSARM64.deb
 	fi
 	##############################
 
