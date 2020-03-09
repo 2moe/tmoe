@@ -338,7 +338,7 @@ cat >/data/data/com.termux/files/usr/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 touch ~/${DebianFolder}/root/.vnc/startvnc
-/data/data/com.termux/files/usr/bin/debian
+bash /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
 cat >/data/data/com.termux/files/usr/bin/stopvnc <<-'EndOfFile'
@@ -2174,4 +2174,4 @@ sleep 2
 bash zsh.sh
 EDITBASHRC
 
-/data/data/com.termux/files/usr/bin/debian
+bash /data/data/com.termux/files/usr/bin/debian
