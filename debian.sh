@@ -478,6 +478,8 @@ It is recommended that you back up the entire system before removal. If the data
 		echo "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
 	fi
 	echo "移除系统前，请先确保您已停止debian容器。"
+	pkill proot 2>/dev/null
+	echo "建议你先手动在termux原系统内执行stopvnc，再进行移除操作。"
 	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
 	read
 

@@ -394,6 +394,7 @@ It is recommended that you back up the entire system before removal. If the data
 	fi
   echo "移除系统前，请先确保您已停止debian容器。"
 	echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
+  pkill proot 2>/dev/null
 	read
     chmod 777 -R ${DebianFolder}
 	rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
