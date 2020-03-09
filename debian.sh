@@ -204,7 +204,7 @@ ANDROIDTERMUX() {
 		apt update
 		apt install -y ${dependencies}
 	fi
-	##来自andronix的vnc声音修复脚本,稍微修改了一下。
+	##The vnc sound repair script from andronix has been slightly modified and optimized.
 
 	grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa || echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
 
