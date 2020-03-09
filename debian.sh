@@ -357,7 +357,7 @@ installDebian() {
 			read opt
 			case $opt in
 			y* | Y* | "")
-				$PREFIX/bin/debian-rm && sed -i '/alias debian=/d' $PREFIX/etc/profile 2>/dev/null
+				bash $PREFIX/bin/debian-rm 2>/dev/null && sed -i '/alias debian=/d' $PREFIX/etc/profile 2>/dev/null
 				sed -i '/alias debian-rm=/d' $PREFIX/etc/profile 2>/dev/null
 				source $PREFIX/etc/profile >/dev/null 2>&1
 				bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
