@@ -664,7 +664,7 @@ OTHERSOFTWARE() {
 		whiptail --title "其它软件" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
 			"0" "Back to the main menu 返回主菜单" \
-			"1" "MPV：开源的、跨平台的音视频播放器" \
+			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "WPS(arm64):办公文档处理软件" \
 			3>&1 1>&2 2>&3
@@ -682,20 +682,20 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '2' ]; then
-		wget -O /tmp/LINUXQQARM64.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
-		apt install -y /tmp/LINUXQQ.deb
+		wget -O LINUXQQARM64.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
+		apt install -y ./LINUXQQ.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
 		echo "url: https://im.qq.com/linuxqq/download.html"
-		rm -f /tmp/LINUXQQARM64.deb
+		rm -f ./LINUXQQARM64.deb
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
 
-		wget -O /tmp/WPSARM64.deb https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9126/wps-office_11.1.0.9126_arm64.deb
+		wget -O WPSARM64.deb https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9126/wps-office_11.1.0.9126_arm64.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
-		apt install -y /tmp/WPSARM64.deb
+		apt install -y ./WPSARM64.deb
 		echo "url: https://linux.wps.cn"
-		#rm -f /tmp/WPSARM64.deb
+		rm -f ./WPSARM64.deb
 	fi
 	##############################
 
