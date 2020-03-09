@@ -387,17 +387,16 @@ ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
   echo "Before removing the system, make sure you have unmounted the chroot mount directory.
 It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
   fi
+  ps -e | grep proot
+  ps -e | grep startvnc
+  echo "移除系统前，请先确保您已停止debian容器。"
+  pkill proot 2>/dev/null
+  echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
 		echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
 	fi
-  ps -e | grep proot
-  ps -e | grep debian
-  ps -e | grep startvnc
-  echo "移除系统前，请先确保您已停止debian容器。"
-  pkill proot 2>/dev/null
-  echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
   pkill proot 2>/dev/null
 	read
