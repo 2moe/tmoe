@@ -682,20 +682,31 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '2' ]; then
+		cd /tmp
 		wget -O LINUXQQARM64.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
-		apt install -y ./LINUXQQ.deb
+		apt install -y ./LINUXQQARM64.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
 		echo "url: https://im.qq.com/linuxqq/download.html"
 		rm -f ./LINUXQQARM64.deb
+		echo "安装完成，如需卸载，请手动输apt purge -y linuxqq"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+
+		DEBIANMENU
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
-
+		cd /tmp
 		wget -O WPSARM64.deb https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9126/wps-office_11.1.0.9126_arm64.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
 		apt install -y ./WPSARM64.deb
 		echo "url: https://linux.wps.cn"
 		rm -f ./WPSARM64.deb
+		echo "安装完成，如需卸载，请手动输apt purge -y wps"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
 	fi
 	##############################
 
