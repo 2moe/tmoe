@@ -1176,11 +1176,12 @@ build_prompt() {
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
 themeEOF
-
+if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
     grep 'unset LD_PRELOAD' /root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" /root/.zshrc >/dev/null 2>&1
     grep 'zh_CN.UTF-8' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" /root/.zshrc >/dev/null 2>&1
     grep 'HOME=/root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" /root/.zshrc >/dev/null 2>&1
     grep 'cd /root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" /root/.zshrc >/dev/null 2>&1
+fi
 
 
 cd ~
