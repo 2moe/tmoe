@@ -679,6 +679,11 @@ OTHERSOFTWARE() {
 	if [ "${SOFTWARE}" == '1' ]; then
 
 		apt install -y mpv
+		echo "安装完成，如需卸载，请手动输apt purge -y mpv"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '2' ]; then
