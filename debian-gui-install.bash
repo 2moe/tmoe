@@ -75,7 +75,7 @@ DEBIANMENU() {
 
 	if [ "${OPTION}" == '4' ]; then
 
-		wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+		wget -O /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
 		echo 'Update completed, press Enter to return.'
 		echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 		chmod +x /usr/local/bin/debian-i
