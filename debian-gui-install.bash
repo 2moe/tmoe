@@ -27,29 +27,34 @@ CHECKdependencies() {
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
+	##过渡期间移动文件，之后会取消掉。
+	if [ ! -e "/etc/tmp/xfce.sh" ]; then
+		cd /usr/local/bin
+		mv -f xfce.sh mate.sh lxde.sh kali.sh /etc/tmp/ >/dev/null 2>&1
+	fi
+
 	DEBIANMENU
 }
 ####################################################
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200307)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(2020030922)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
 			"4" "Update Debian tool 更新本工具" \
 			"5" "Remove GUI 卸载图形界面" \
 			"6" "Modify to Kali sources list 配置kali源" \
-			"7" "Restore to Debian sources list 还原debian源" \
+			"7" "Other software 其它软件" \
 			"8" "Install Chinese manual 安装中文手册" \
-			"9" "Modify VNC config 修改vnc配置" \
-			"10" "Modify XSDL config 修改xsdl配置" \
+			"9" "Modify VNC/XSDL config 修改vnc配置" \
+			"10" "Modify  config 修改xsdl配置" \
 			"11" "Enable zsh tool 启用zsh管理工具" \
-			"12" "Start VScode server" \
-			"13" "Remove VScode server" \
-			"14" "Synaptic(新立得软件包管理器/软件商店)" \
-			"15" "Remove browser 卸载浏览器" \
-			"16" "Exit 退出" \
+			"12" "VSCode server arm64" \
+			"13" "Synaptic(新立得软件包管理器/软件商店)" \
+			"14" "Remove browser 卸载浏览器" \
+			"15" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -92,20 +97,19 @@ DEBIANMENU() {
 
 	if [ "${OPTION}" == '6' ]; then
 
-		bash /usr/local/bin/kali.sh
+		KALISourcesList
 
 	fi
 	###################################
 	if [ "${OPTION}" == '7' ]; then
 
-		bash /usr/local/bin/kali.sh rm
+		OTHERSOFTWARE
 
 	fi
 	############
 	if [ "${OPTION}" == '8' ]; then
 
 		CHINESEMANPAGES
-		#bash /usr/local/bin/man.sh
 
 	fi
 
@@ -130,37 +134,24 @@ DEBIANMENU() {
 
 	###################################
 	if [ "${OPTION}" == '12' ]; then
-
-		VSCODESERVER
-
-	fi
-	################################
-	if [ "${OPTION}" == '13' ]; then
-		echo "按任意键确认移除，按Ctrl+C取消。"
-		echo "${YELLOW}Press any key to remove VSCode Server. ${RESET}"
-		read
-		rm -f /usr/bin/code /etc/tmp/sed-vscode.tmp
-		echo "${YELLOW}移除成功，按回车键返回。${RESET}"
-		echo "Remove successfully.Press enter to return."
-		read
-		DEBIANMENU
+		INSTALLORREMOVEVSCODE
 
 	fi
 	###############################
-	if [ "${OPTION}" == '14' ]; then
+	if [ "${OPTION}" == '13' ]; then
 
 		INSTALLsynaptic
 
 	fi
 	###############################
 
-	if [ "${OPTION}" == '15' ]; then
+	if [ "${OPTION}" == '14' ]; then
 
 		REMOVEBROWSER
 	fi
 
 	###############################
-	if [ "${OPTION}" == '16' ]; then
+	if [ "${OPTION}" == '15' ]; then
 
 		exit
 
@@ -383,15 +374,15 @@ INSTALLGUI() {
 
 	##########################
 	if [ "$INSTALLDESKTOP" == '1' ]; then
-		bash /usr/local/bin/xfce.sh
+		bash /etc/tmp/xfce.sh
 	fi
 
 	if [ "$INSTALLDESKTOP" == '2' ]; then
-		bash /usr/local/bin/lxde.sh
+		bash /etc/tmp/lxde.sh
 	fi
 
 	if [ "$INSTALLDESKTOP" == '3' ]; then
-		bash /usr/local/bin/mate.sh
+		bash /etc/tmp/mate.sh
 	fi
 
 	if [ "$INSTALLDESKTOP" == '0' ]; then
@@ -623,6 +614,87 @@ Installkaliundercover() {
 	read
 
 	DEBIANMENU
+
+}
+#####################################################
+INSTALLORREMOVEVSCODE() {
+	if [ -e "/usr/bin/code" ]; then
+		VSCODEINSTALLSTATUS="检测到您已安装vscode."
+		VSCODESTART='Start启动'
+	else
+		VSCODEINSTALLSTATUS="检测到您未安装vscode."
+		VSCODESTART='Install安装'
+	fi
+
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "${VSCODESTART}" --no-button "Remove移除" --yesno "${VSCODEINSTALLSTATUS} \nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 19 50); then
+		VSCODESERVER
+	else
+		echo "按任意键确认移除，按Ctrl+C取消。"
+		echo "${YELLOW}Press any key to remove VSCode Server. ${RESET}"
+		read
+		rm -f /usr/bin/code /etc/tmp/sed-vscode.tmp
+		echo "${YELLOW}移除成功，按回车键返回。${RESET}"
+		echo "Remove successfully.Press enter to return."
+		read
+		DEBIANMENU
+	fi
+}
+############################################
+KALISourcesList() {
+	if ! grep -q "kali" /etc/apt/sources.list; then
+		echo "检测到您当前为debian源，是否修改为kali源？"
+		echo "Detected that your current software sources list is debian, do you need to modify it to kali source?"
+		echo 'Press Enter to confirm.'
+		echo "${YELLOW}按回车键确认。${RESET}"
+		read
+		bash /etc/tmp/kali.sh
+	else
+		echo "检测到您当前为kali源，是否修改为debian源？"
+		echo "Detected that your current software sources list is kali, do you need to modify it to debian source?"
+		echo 'Press Enter to confirm.'
+		echo "${YELLOW}按回车键确认。${RESET}"
+		read
+		bash /etc/tmp/kali.sh rm
+	fi
+}
+############################################
+OTHERSOFTWARE() {
+	SOFTWARE=$(
+		whiptail --title "其它软件" --menu \
+			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
+			"0" "Back to the main menu 返回主菜单" \
+			"1" "MPV：开源的、跨平台的音视频播放器" \
+			"2" "LinuxQQ(arm64)：在线聊天软件" \
+			"3" "WPS(arm64):办公文档处理软件" \
+			3>&1 1>&2 2>&3)
+
+	##############################
+	if [ "${SOFTWARE}" == '0' ]; then
+
+		DEBIANMENU
+	fi
+	##############################
+	if [ "${SOFTWARE}" == '1' ]; then
+
+		apt install -y mpv
+	fi
+	##############################
+	if [ "${SOFTWARE}" == '2' ]; then
+		wget -O /tmp/LINUXQQARM64.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
+		apt install -y /tmp/LINUXQQ.deb
+		echo "若安装失败，则请前往官网手动下载安装。"
+		echo "url: https://im.qq.com/linuxqq/download.html"
+		rm -f /tmp/LINUXQQARM64.deb
+	fi
+	##############################
+	if [ "${SOFTWARE}" == '3' ]; then
+
+		wget -O /tmp/WPSARM64.deb https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9126/wps-office_11.1.0.9126_arm64.deb
+		echo "若安装失败，则请前往官网手动下载安装。"
+		echo "url: https://linux.wps.cn"
+		rm -f /tmp/WPSARM64.deb
+	fi
+	##############################
 
 }
 

@@ -1226,7 +1226,7 @@ echo '您也可以手动输debian-i进入'
 echo 'After 2 seconds, Tmoe-debian gui installation manager will be launched.'
 echo 'You can also enter debian-i manually to start it.'
 sleep 2
-/usr/local/bin/debian-i
+bash /usr/local/bin/debian-i
 	exec zsh -l
 	source ~/.zshrc
 	zsh
@@ -2136,8 +2136,9 @@ chmod +x firefox.sh
 chmod +x ~/*
 grep 'export DISPLAY' /etc/profile ||echo "export DISPLAY=":1"" >> /etc/profile
 cd ~
-mkdir -p /usr/local/bin
-cp -pf ./*.sh /usr/local/bin
+
+mkdir -p /etc/tmp
+cp -pf ./*.sh /etc/tmp
 echo "Welcome to Debian GNU/Linux."
 cat /etc/issue
 uname -a
