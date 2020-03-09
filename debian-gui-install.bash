@@ -29,6 +29,7 @@ CHECKdependencies() {
 	cur=$(pwd)
 	##过渡期间移动文件，之后会取消掉。
 	if [ ! -e "/etc/tmp/xfce.sh" ]; then
+		mkdir -p /etc/tmp
 		cd /usr/local/bin
 		mv -f xfce.sh mate.sh lxde.sh kali.sh /etc/tmp/ >/dev/null 2>&1
 	fi
@@ -666,7 +667,8 @@ OTHERSOFTWARE() {
 			"1" "MPV：开源的、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "WPS(arm64):办公文档处理软件" \
-			3>&1 1>&2 2>&3)
+			3>&1 1>&2 2>&3
+	)
 
 	##############################
 	if [ "${SOFTWARE}" == '0' ]; then
