@@ -703,7 +703,7 @@ OTHERSOFTWARE() {
 		apt install -y ./WPSARM64.deb
 		echo "url: https://linux.wps.cn"
 		rm -f ./WPSARM64.deb
-		echo "安装完成，如需卸载，请手动输apt purge -y wps"
+		echo "安装完成，如需卸载，请手动输apt purge -y wps-office"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
