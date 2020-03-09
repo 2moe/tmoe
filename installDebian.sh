@@ -1234,7 +1234,7 @@ chmod +x zsh.sh
 cat >vnc-autostartup <<-'EndOfFile'
 cat /etc/issue
 
-grep  'cat /etc/issue' ~/.bashrc >/dev/null 2>&1 || sed -i '1 a cat /etc/issue' ~/.bashrc
+grep  'cat /etc/issue' ~/.bashrc >/dev/null 2>&1 || sed -i '1 a\cat /etc/issue' ~/.bashrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
@@ -1256,7 +1256,7 @@ EndOfFile
 cat >vnc-autostartup-zsh <<-'EndOfFile'
 cat /etc/issue
 
-grep  'cat /etc/issue' ~/.zshrc >/dev/null 2>&1 || sed -i '1 a cat /etc/issue' ~/.zshrc
+grep  'cat /etc/issue' ~/.zshrc >/dev/null 2>&1 || sed -i '1 a\cat /etc/issue' ~/.zshrc
 if [ -f "/root/.vnc/startvnc" ]; then
 	/usr/bin/startvnc
 	echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
