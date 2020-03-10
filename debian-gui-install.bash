@@ -44,17 +44,16 @@ DEBIANMENU() {
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
-			"4" "Update Debian tool 更新本工具" \
+			"4" "Other software 其它软件" \
 			"5" "Remove GUI 卸载图形界面" \
 			"6" "Modify to Kali sources list 配置kali源" \
-			"7" "Other software 其它软件" \
+			"7" "Update Debian tool 更新本工具" \
 			"8" "Install Chinese manual 安装中文手册" \
 			"9" "Modify VNC/XSDL config 修改vnc/xsdl配置" \
 			"10" "Enable zsh tool 启用zsh管理工具" \
 			"11" "VSCode server arm64" \
-			"12" "Synaptic(新立得软件包管理器/软件商店)" \
-			"13" "Remove browser 卸载浏览器" \
-			"14" "Exit 退出" \
+			"12" "Remove browser 卸载浏览器" \
+			"13" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -77,18 +76,13 @@ DEBIANMENU() {
 
 	fi
 	###################################
-
 	if [ "${OPTION}" == '4' ]; then
 
-		wget -O /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
-		echo 'Update completed, press Enter to return.'
-		echo "${YELLOW}更新完成，按回车键返回。${RESET}"
-		chmod +x /usr/local/bin/debian-i
-		read
-		#bash /usr/local/bin/debian-i
-		source /usr/local/bin/debian-i
+		OTHERSOFTWARE
+
 	fi
-	################
+	############
+
 	if [ "${OPTION}" == '5' ]; then
 
 		REMOVEGUI
@@ -104,10 +98,16 @@ DEBIANMENU() {
 	###################################
 	if [ "${OPTION}" == '7' ]; then
 
-		OTHERSOFTWARE
-
+		wget -O /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+		echo 'Update completed, press Enter to return.'
+		echo "${YELLOW}更新完成，按回车键返回。${RESET}"
+		chmod +x /usr/local/bin/debian-i
+		read
+		#bash /usr/local/bin/debian-i
+		source /usr/local/bin/debian-i
 	fi
-	############
+	################
+
 	if [ "${OPTION}" == '8' ]; then
 
 		CHINESEMANPAGES
@@ -132,20 +132,14 @@ DEBIANMENU() {
 
 	fi
 	###############################
+
 	if [ "${OPTION}" == '12' ]; then
-
-		INSTALLsynaptic
-
-	fi
-	###############################
-
-	if [ "${OPTION}" == '13' ]; then
 
 		REMOVEBROWSER
 	fi
 
 	###############################
-	if [ "${OPTION}" == '14' ]; then
+	if [ "${OPTION}" == '13' ]; then
 
 		exit
 
@@ -658,11 +652,12 @@ KALISourcesList() {
 OTHERSOFTWARE() {
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
-			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
-			"0" "Back to the main menu 返回主菜单" \
+			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 5 \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "LibreOffice:开源、自由的办公文档软件" \
+			"4" "Synaptic：新立得软件包管理器/软件商店" \
+			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -708,6 +703,12 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
+	##############################
+	if [ "${SOFTWARE}" == '4' ]; then
+		INSTALLsynaptic
+	fi
+	##########################
+	DEBIANMENU
 
 }
 ####################################
