@@ -390,13 +390,16 @@ installDebian() {
 #
 
 RootMode() {
-	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除debian。开启root模式后，将不会调用termux的pulseaudio,这将导致vnc无声音，请自行修改pulseaudio启动参数。" 10 60); then
+	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除debian。" 10 60); then
 
 		if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
 			apt update
 			apt install -y tsu
 		fi
-
+		if ! grep -q 'pulseaudio --system' /data/data/com.termux/files/usr/bin/debian; then
+			sed -i '/pulseaudio/d' /data/data/com.termux/files/usr/bin/debian
+			sed -i '2 a\pulseaudio --system --start' /data/data/com.termux/files/usr/bin/debian
+		fi
 		mkdir -p /data/data/com.termux/files/usr/etc/storage/
 		cd /data/data/com.termux/files/usr/etc/storage/
 
