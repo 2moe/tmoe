@@ -662,7 +662,7 @@ KALISourcesList() {
 OTHERSOFTWARE() {
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
-			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
+			"若在终端输入ps后，提示/proc分区未挂载，则请勿安装第3个软件，赋予proot容器真实root权限可解决相关问题，但强烈不推荐！您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
 			"0" "Back to the main menu 返回主菜单" \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
