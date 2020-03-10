@@ -5,6 +5,10 @@
 
 CHECKdependencies() {
 
+	if [ "$(id -u)" != "0" ]; then
+		sudo bash -c "$(wget -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash)"
+	fi
+
 	dependencies=""
 
 	if [ ! -e /usr/bin/whiptail ]; then
@@ -40,7 +44,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200310-20)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200310-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -49,7 +53,7 @@ DEBIANMENU() {
 			"6" "Modify to Kali sources list 配置kali源" \
 			"7" "Update Debian tool 更新本工具" \
 			"8" "Install Chinese manual 安装中文手册" \
-			"9" "Modify VNC/XSDL config 修改vnc/xsdl配置" \
+			"9" "Modify VNC/XSDL/XRDP conf" \
 			"10" "Enable zsh tool 启用zsh管理工具" \
 			"11" "VSCode server arm64" \
 			"12" "Remove browser 卸载浏览器" \
@@ -116,7 +120,8 @@ DEBIANMENU() {
 
 	####################
 	if [ "${OPTION}" == '9' ]; then
-		MODIFYVNCORXSDLCONF
+		MODIFYREMOTEDESKTOP
+		#MODIFYVNCORXSDLCONF
 
 	fi
 	#################################
@@ -364,7 +369,8 @@ INSTALLGUI() {
 
 	##########################
 	if [ "$INSTALLDESKTOP" == '1' ]; then
-		bash /etc/tmp/xfce.sh
+		#bash /etc/tmp/xfce.sh
+		INSTALLXFCE4DESKTOP
 	fi
 
 	if [ "$INSTALLDESKTOP" == '2' ]; then
@@ -712,13 +718,132 @@ OTHERSOFTWARE() {
 
 }
 ####################################
-MODIFYVNCORXSDLCONF() {
-	if (whiptail --title "您想要对哪个小可爱下手呢 " --yes-button "VNC" --no-button "XSDL" --yesno "Which remote desktop configuration file do you want to modify？  ♪(^∇^*) " 8 50); then
+INSTALLXFCE4DESKTOP() {
+	apt-mark hold udisks2
+	apt update
+	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
+	apt install -y xfwm4-theme-breeze xcursor-themes
+	apt clean
 
+	mkdir -p ~/.vnc
+	cd ~/.vnc
+	cat >xstartup <<-'EndOfFile'
+		#!/bin/bash
+		xrdb ${HOME}/.Xresources
+		export PULSE_SERVER=127.0.0.1
+		startxfce4 &
+	EndOfFile
+	chmod +x ./xstartup
+
+	cd /usr/bin
+	cat >startvnc <<-'EndOfFile'
+		#!/bin/bash
+		stopvnc >/dev/null 2>&1
+		export USER=root
+		export HOME=/root
+		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+	EndOfFile
+	#上面那条显示LAN IP的命令不要加双引号
+
+	cat >startxsdl <<-'EndOfFile'
+		#!/bin/bash
+		stopvnc >/dev/null 2>&1
+		export DISPLAY=127.0.0.1:0
+		export PULSE_SERVER=tcp:127.0.0.1:4712
+		echo '正在为您启动xsdl,请将display number改为0'
+		echo 'Starting xsdl, please change display number to 0'
+		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+		startxfce4
+	EndOfFile
+
+	cat >stopvnc <<-'EndOfFile'
+		#!/bin/bash
+		export USER=root
+		export HOME=/root
+		vncserver -kill :1
+		rm -rf /tmp/.X1-lock
+		rm -rf /tmp/.X11-unix/X1
+		pkill Xtightvnc
+	EndOfFile
+	chmod +x startvnc stopvnc startxsdl
+	echo 'The vnc service is about to start for you. The password you entered is hidden.'
+	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+	echo '请输入6至8位密码'
+	startvnc
+	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+	echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+
+}
+#############################
+MODIFYREMOTEDESKTOP() {
+	REMOTEDESKTOP=$(whiptail --title "远程桌面" --menu \
+		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 4 \
+		"1" "VNC" \
+		"2" "XSDL" \
+		"3" "RDP" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	if [ "${REMOTEDESKTOP}" == '0' ]; then
+		DEBIANMENU
+	fi
+	##########################
+	if [ "${REMOTEDESKTOP}" == '1' ]; then
 		MODIFYVNCCONF
-	else
+	fi
+	##########################
+	if [ "${REMOTEDESKTOP}" == '2' ]; then
 		MODIFYXSDLCONF
 	fi
+	##########################
+	if [ "${REMOTEDESKTOP}" == '3' ]; then
+		MODIFYXRDPCONF
+	fi
+
+}
+#################################################
+MODIFYXRDPCONF() {
+	if [ ! -e /usr/bin/xrdp ]; then
+		apt install -y xrdp
+	fi
+	if [ ! -e "/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf" ]; then
+		mkdir -p /etc/polkit-1/localauthority.conf.d
+		cat >/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf <<-'EndOfFile'
+			polkit.addRule(function(action, subject) {
+			if ((action.id == “org.freedesktop.color-manager.create-device” || action.id == “org.freedesktop.color-manager.create-profile” || action.id == “org.freedesktop.color-manager.delete-device” || action.id == “org.freedesktop.color-manager.delete-profile” || action.id == “org.freedesktop.color-manager.modify-device” || action.id == “org.freedesktop.color-manager.modify-profile”) && subject.isInGroup(“{group}”))
+			{
+			return polkit.Result.YES;
+			}
+			});
+		EndOfFile
+
+	fi
+
+	service xrdp restart || systemctl restart xrdp
+	if [ -e /usr/bin/ufw ]; then
+		ufw allow 3389
+	fi
+	if [ ! -e " ~/.xsession" ]; then
+		echo 'xfce4-session' >~/.xsession
+		touch ~/.session
+		sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session /etc/X11/Xsession:g' /etc/xrdp/startwm.sh
+	fi
+	service xrdp status || systemctl status xrdp
+	echo "如需修改启动脚本，请输nano /etc/xrdp/startwm.sh"
+	echo "已经为您启动xrdp服务，默认端口为3389"
+	echo "您当前的IP地址为"
+	ip -4 -br -c a
+	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	DEBIANMENU
 
 }
 

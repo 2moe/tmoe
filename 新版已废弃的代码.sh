@@ -194,3 +194,14 @@ if [ "${OPTION}" == '10' ]; then
     MODIFYXSDLCONF
 
 fi
+###################################################
+MODIFYVNCORXSDLCONF() {
+    if (whiptail --title "您想要对哪个小可爱下手呢 " --yes-button "VNC" --no-button "XSDL" --yesno "Which remote desktop configuration file do you want to modify？  ♪(^∇^*) " 8 50); then
+
+        MODIFYVNCCONF
+    else
+        MODIFYXSDLCONF
+    fi
+
+}
+#############################################
