@@ -617,7 +617,7 @@ INSTALLORREMOVEVSCODE() {
 		VSCODESTART='Install安装'
 	fi
 
-	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "${VSCODESTART}" --no-button "Remove移除" --yesno "${VSCODEINSTALLSTATUS} \nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 19 50); then
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "${VSCODESTART}" --no-button "Remove移除" --yesno "${VSCODEINSTALLSTATUS} \nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 16 50); then
 		VSCODESERVER
 	else
 		echo "按任意键确认移除，按Ctrl+C取消。"
