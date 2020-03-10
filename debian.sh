@@ -412,8 +412,8 @@ RootMode() {
 		if ! grep -q 'tsudo touch' /data/data/com.termux/files/usr/bin/startvnc; then
 			sed -i 's/^touch ~/tsudo &/' /data/data/com.termux/files/usr/bin/startvnc
 			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' /data/data/com.termux/files/usr/bin/startvnc
-		fi	
-        
+		fi
+
 		mkdir -p /data/data/com.termux/files/usr/etc/storage/
 		cd /data/data/com.termux/files/usr/etc/storage/
 
