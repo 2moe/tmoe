@@ -86,7 +86,8 @@ DEBIANMENU() {
 		echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 		chmod +x /usr/local/bin/debian-i
 		read
-		bash /usr/local/bin/debian-i
+		#bash /usr/local/bin/debian-i
+		source /usr/local/bin/debian-i
 	fi
 	################
 	if [ "${OPTION}" == '5' ]; then
@@ -602,7 +603,7 @@ Installkaliundercover() {
 		if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 			apt install -y kali-undercover
 		else
-
+			cd /tmp
 			wget -O kali-undercover.deb https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/kali-undercover_2020.2.0_all.deb
 			apt install -y ./kali-undercover.deb
 			rm -f ./kali-undercover.deb
@@ -662,7 +663,7 @@ KALISourcesList() {
 OTHERSOFTWARE() {
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
-			"若在终端输入ps后，提示/proc分区未挂载，则请勿安装第3个软件，赋予proot容器真实root权限可解决相关问题，但强烈不推荐！您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
+			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 4 \
 			"0" "Back to the main menu 返回主菜单" \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
@@ -701,6 +702,10 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
+		echo "若在终端输入ps后，提示/proc分区未挂载，则请勿安装libreoffice!赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
+		echo 'Press Enter to confirm.'
+		echo "${YELLOW}按回车键确认安装。${RESET}"
+		read
 		apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
 		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
 		echo 'Press Enter to return.'

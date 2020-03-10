@@ -423,9 +423,8 @@ RootMode() {
 		alias debian="tsudo debian"
 		alias debian-rm="tsudo debian-rm"
 		if [ -d "${DebianCHROOT}/.vnc" ]; then
-			tsudo chown root:root -R "${DebianCHROOT}/.vnc"
+			tsudo chown root:root -R "${DebianCHROOT}/.vnc" 2>/dev/null || su -c "chown root:root -R ${DebianCHROOT}/.vnc"
 		fi
-		
 
 		echo "You have modified debian to run with root privileges, this action will destabilize debian."
 		echo "If you want to restore, please reinstall debian."
@@ -1050,7 +1049,8 @@ UPDATEMANAGER() {
 	echo 'Press enter to return.'
 	chmod +x $PREFIX/bin/debian-i
 	read
-	bash $PREFIX/bin/debian-i
+	#bash $PREFIX/bin/debian-i
+	source $PREFIX/bin/debian-i
 
 }
 #################################
