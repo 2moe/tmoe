@@ -338,8 +338,9 @@ cat >/data/data/com.termux/files/usr/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 touch ~/${DebianFolder}/root/.vnc/startvnc
-bash /data/data/com.termux/files/usr/bin/debian
+debian
 EndOfFile
+#debian前若加上bash，或绝对路径，将导致tsudo的alias失效。
 
 cat >/data/data/com.termux/files/usr/bin/stopvnc <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
