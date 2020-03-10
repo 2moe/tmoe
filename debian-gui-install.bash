@@ -480,9 +480,9 @@ VSCODESERVER() {
 		echo "The VSCode server is starting, please copy the password and paste it in your browser."
 		echo "您之后可以输code来启动VSCode Server."
 		echo 'You can type "code" to start VSCodeServer.'
-		code
+		/usr/bin/code
 	else
-		code
+		/usr/bin/code
 
 	fi
 
@@ -702,7 +702,7 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
-		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！" 
+		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
 		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
 		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
 		read
