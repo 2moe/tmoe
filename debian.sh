@@ -135,7 +135,7 @@ GNULINUX() {
 			apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils
 		elif grep -Eqi "Arch" /etc/issue || grep -Eqi "Manjaro" /etc/issue; then
 
-			pacman -Sy --noconfirm ${dependencies}
+			pacman -Syu --noconfirm ${dependencies}
 
 		elif grep -Eqi "Fedora" /etc/issue || grep -Eqii "CentOS" /etc/issue || grep -Eqi "Red Hat Enterprise Linux Server" /etc/issue; then
 
