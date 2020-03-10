@@ -840,6 +840,7 @@ MODIFYXRDPCONF() {
 	echo "您当前的IP地址为"
 	ip -4 -br -c a
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
+	echo "如需修改当前用户密码，请输passwd"
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
