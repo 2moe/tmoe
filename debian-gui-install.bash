@@ -194,12 +194,12 @@ MODIFYVNCCONF() {
 			read
 			nano /usr/bin/startvnc || nano $(which startvnc)
 			echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-			stopvnc 2>/dev/null
-			echo 'Press Enter to return.'
-			echo "${YELLOW}按回车键返回。${RESET}"
-			read
-			DEBIANMENU
 		fi
+		stopvnc 2>/dev/null
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
 	fi
 
 }
