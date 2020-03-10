@@ -666,7 +666,7 @@ OTHERSOFTWARE() {
 			"0" "Back to the main menu 返回主菜单" \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
-			"3" "LibreOffice:自由、开源办公文档处理软件" \
+			"3" "LibreOffice:开源、自由的办公文档软件" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -701,7 +701,7 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
-		apt install -y libreoffice-l10n-zh-cn libreoffice
+		apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
 		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
