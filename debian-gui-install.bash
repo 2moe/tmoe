@@ -809,7 +809,7 @@ MODIFYREMOTEDESKTOP() {
 }
 #################################################
 MODIFYXRDPCONF() {
-	if [ ! -e /usr/bin/xrdp ]; then
+	if [ ! -e "/usr/sbin/xrdp" ]; then
 		apt install -y xrdp
 	fi
 	if [ ! -e "/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf" ]; then
