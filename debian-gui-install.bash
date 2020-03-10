@@ -702,7 +702,7 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
-		echo "若在终端输入ps后，提示/proc分区未挂载，则请勿安装libreoffice!赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
+		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！" 
 		echo 'Press Enter to confirm.'
 		echo "${YELLOW}按回车键确认安装。${RESET}"
 		read
