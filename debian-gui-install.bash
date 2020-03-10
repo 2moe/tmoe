@@ -27,7 +27,7 @@ CHECKdependencies() {
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
-	##过渡期间移动文件，之后会取消掉。
+	##过渡期间移动文件，之后可能会集成进脚本里。
 	if [ ! -e "/etc/tmp/xfce.sh" ]; then
 		mkdir -p /etc/tmp
 		cd /usr/local/bin
@@ -40,7 +40,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(2020031011)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200310-19)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -49,13 +49,12 @@ DEBIANMENU() {
 			"6" "Modify to Kali sources list 配置kali源" \
 			"7" "Other software 其它软件" \
 			"8" "Install Chinese manual 安装中文手册" \
-			"9" "Modify VNC/XSDL config 修改vnc配置" \
-			"10" "Modify  config 修改xsdl配置" \
-			"11" "Enable zsh tool 启用zsh管理工具" \
-			"12" "VSCode server arm64" \
-			"13" "Synaptic(新立得软件包管理器/软件商店)" \
-			"14" "Remove browser 卸载浏览器" \
-			"15" "Exit 退出" \
+			"9" "Modify VNC/XSDL config 修改vnc/xsdl配置" \
+			"10" "Enable zsh tool 启用zsh管理工具" \
+			"11" "VSCode server arm64" \
+			"12" "Synaptic(新立得软件包管理器/软件商店)" \
+			"13" "Remove browser 卸载浏览器" \
+			"14" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -117,48 +116,40 @@ DEBIANMENU() {
 
 	####################
 	if [ "${OPTION}" == '9' ]; then
-		MODIFYVNCCONF
+		MODIFYVNCORXSDLCONF
 
 	fi
-	####################################
-	if [ "${OPTION}" == '10' ]; then
-
-		MODIFYXSDLCONF
-
-	fi
-
 	#################################
-	if [ "${OPTION}" == '11' ]; then
+	if [ "${OPTION}" == '10' ]; then
 
 		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
 
 	###################################
-	if [ "${OPTION}" == '12' ]; then
+	if [ "${OPTION}" == '11' ]; then
 		INSTALLORREMOVEVSCODE
 
 	fi
 	###############################
-	if [ "${OPTION}" == '13' ]; then
+	if [ "${OPTION}" == '12' ]; then
 
 		INSTALLsynaptic
 
 	fi
 	###############################
 
-	if [ "${OPTION}" == '14' ]; then
+	if [ "${OPTION}" == '13' ]; then
 
 		REMOVEBROWSER
 	fi
 
 	###############################
-	if [ "${OPTION}" == '15' ]; then
+	if [ "${OPTION}" == '14' ]; then
 
 		exit
 
 	fi
-
 }
 
 ############################
@@ -175,7 +166,7 @@ MODIFYVNCCONF() {
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 	fi
-	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 15 50); then
+	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
 		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) 。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 20 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then
@@ -195,23 +186,26 @@ MODIFYVNCCONF() {
 		fi
 
 	else
+		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "change password" --no-button "Edit manually" --yesno "Would you like to change the password or edit it manually?  ♪(^∇^*) " 9 50); then
 
-		echo '您可以手动修改vnc的配置信息'
-		echo '若需修改vnc密码，请在新窗口下输vncpasswd'
-		echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
-		echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
-		echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-		echo '改完后按Ctrl+O保存，Ctrl+X退出。'
-		echo "Press Enter to confirm."
-		echo "${YELLOW}按回车键确认编辑。${RESET}"
-		read
-		nano /usr/bin/startvnc || nano $(which startvnc)
-		echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-		stopvnc 2>/dev/null
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
+			/usr/bin/vncpasswd
+		else
+			echo '您可以手动修改vnc的配置信息'
+			echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
+			echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
+			echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+			echo '改完后按Ctrl+O保存，Ctrl+X退出。'
+			echo "Press Enter to confirm."
+			echo "${YELLOW}按回车键确认编辑。${RESET}"
+			read
+			nano /usr/bin/startvnc || nano $(which startvnc)
+			echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+			stopvnc 2>/dev/null
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			DEBIANMENU
+		fi
 	fi
 
 }
@@ -407,7 +401,8 @@ REMOVEGUI() {
 	echo "${YELLOW}按回车键确认卸载,按Ctfl+C取消${RESET} "
 	echo 'Press enter to confirm ,press Ctfl + C to cancel'
 	read
-	apt purge -y xfce4 xfce4-terminal tightvncserver
+	apt purge -y xfce4 xfce4-terminal tightvncserver xfce4-goodies
+	apt purge -y xfwm4-theme-breeze xcursor-themes
 	apt purge -y lxde-core lxterminal
 	apt purge -y mate-desktop-environment-core mate-terminal || aptitude purge -y mate-desktop-environment-core 2>/dev/null
 	apt autopurge
@@ -713,7 +708,16 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
-	##############################
+
+}
+####################################
+MODIFYVNCORXSDLCONF() {
+	if (whiptail --title "您想要对哪个小可爱下手呢 " --yes-button "VNC" --no-button "XSDL" --yesno "Which remote desktop configuration file do you want to modify？  ♪(^∇^*) " 8 50); then
+
+		MODIFYVNCCONF
+	else
+		MODIFYXSDLCONF
+	fi
 
 }
 

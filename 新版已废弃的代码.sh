@@ -187,13 +187,10 @@ cat .CHROOTtmplogout >>${DebianCHROOT}/root/.bash_logout
 cat .CHROOTtmplogout >>${DebianCHROOT}/root/.zlogout
 rm -f .CHROOTtmplogout
 ####################################################
-##############################
-#"3" "LibreOffice:开源、自由的办公文档软件" \
-if [ "${SOFTWARE}" == '3' ]; then
-    apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
-    echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
-    echo 'Press Enter to return.'
-    echo "${YELLOW}按回车键返回。${RESET}"
-    read
-    DEBIANMENU
+
+####################################
+if [ "${OPTION}" == '10' ]; then
+
+    MODIFYXSDLCONF
+
 fi
