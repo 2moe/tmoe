@@ -703,8 +703,8 @@ OTHERSOFTWARE() {
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
 		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！" 
-		echo 'Press Enter to confirm.'
-		echo "${YELLOW}按回车键确认安装。${RESET}"
+		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
+		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
 		read
 		apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
 		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
