@@ -390,6 +390,15 @@ installDebian() {
 #
 
 RootMode() {
+	if [ "$(uname -o)" != "Android" ]; then
+		echo "非常抱歉，本功能仅适配安卓系统。"
+		echo "chroot容器默认即为真实root权限。"
+		echo "Press enter to return。"
+		echo "${YELLOW}按回车键返回。${RESET} "
+		read
+		MainMenu
+	fi
+
 	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除debian。" 10 60); then
 
 		if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
@@ -400,6 +409,11 @@ RootMode() {
 			sed -i '/pulseaudio/d' /data/data/com.termux/files/usr/bin/debian
 			sed -i '2 a\pulseaudio --system --start' /data/data/com.termux/files/usr/bin/debian
 		fi
+		if ! grep -q 'tsudo touch' /data/data/com.termux/files/usr/bin/startvnc; then
+			sed -i 's/^touch ~/tsudo &/' /data/data/com.termux/files/usr/bin/startvnc
+			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' /data/data/com.termux/files/usr/bin/startvnc
+		fi	
+        
 		mkdir -p /data/data/com.termux/files/usr/etc/storage/
 		cd /data/data/com.termux/files/usr/etc/storage/
 
