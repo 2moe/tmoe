@@ -1657,7 +1657,7 @@ function install()
 apt-mark hold udisks2
 apt update
 echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
-apt install -y fonts-noto-cjk aptitude
+apt install -y fonts-noto-cjk aptitude 
 aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 2>/dev/null
 apt clean
 
@@ -1860,6 +1860,7 @@ echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver�
 apt install -y fonts-noto-cjk aptitude tightvncserver
 mkdir -p /run/lock
 aptitude install -y task-gnome-desktop
+apt install -y xinit dbus-x11
 apt clean
 
 mkdir -p ~/.vnc
@@ -1984,9 +1985,8 @@ exec /etc/X11/xinit/xinitrc
 xsetroot -solid grey
 vncconfig -iconic &
 #xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&
-#startkde &
-plasma_session &
-#kde desktop
+#plasma_session &
+startplasma-x11 &
 EndOfFile
 chmod +x ./xstartup
 
@@ -2011,8 +2011,8 @@ echo '正在为您启动xsdl,请将display number改为0'
 echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-plasma_session &
-#startplasma-x11
+#plasma_session &
+startplasma-x11 || startx
 EndOfFile
 
 
