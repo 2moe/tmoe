@@ -151,7 +151,7 @@ GNULINUX() {
 	if [ "$(cat /etc/os-release | grep 'ID=' | cut -d '=' -f 2)" = "debian" ]; then
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "安装工具" --no-button "管理工具" --yesno "检测到您使用的是debian系统，您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 9 50); then
 			bash -c "$(wget -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash)"
-			exit
+			exit 0
 		fi
 	fi
 
