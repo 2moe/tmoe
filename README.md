@@ -1,7 +1,8 @@
 # Termux-Debian
 
 #### 介绍
-在termux上一键安装debian proot容器，并自动配置中文环境。 
+在Android Termux上一键安装debian proot容器，并自动配置中文环境。 
+在GNU/Linux 上一键安装debian chroot容器。
 ![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
 
 支持一键安装图形界面。
@@ -11,7 +12,11 @@
 #### 软件架构
 软件架构说明
 
-##### 支持arm64(aarch64)、armhf、armel、amd64(x86_64) 和 i386(x86)。
+##### 支持arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s390x和ppc64el。
+
+#####  不支持RISC-V 
+
+##### 可以支持，但不想支持的是 mipsel
 
 
 
