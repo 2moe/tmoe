@@ -829,10 +829,12 @@ MODIFYXRDPCONF() {
 	if [ -e /usr/bin/ufw ]; then
 		ufw allow 3389
 	fi
-	if [ ! -e " ~/.xsession" ]; then
-		echo 'xfce4-session' >~/.xsession
-		touch ~/.session
-		sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session /etc/X11/Xsession:g' /etc/xrdp/startwm.sh
+	if [ -e "/usr/bin/xfce4-session" ]; then
+		if [ ! -e " ~/.xsession" ]; then
+			echo 'xfce4-session' >~/.xsession
+			touch ~/.session
+			sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session /etc/X11/Xsession:g' /etc/xrdp/startwm.sh
+		fi
 	fi
 	service xrdp status || systemctl status xrdp
 	echo "如需修改启动脚本，请输nano /etc/xrdp/startwm.sh"
