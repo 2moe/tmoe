@@ -44,18 +44,18 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200310-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 15 50 4 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200310-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 18 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
 			"4" "Other software 其它软件" \
-			"5" "Remove GUI 卸载图形界面" \
+			"5" "Modify VNC/XSDL/XRDP conf" \
 			"6" "Modify to Kali sources list 配置kali源" \
 			"7" "Update Debian tool 更新本工具" \
 			"8" "Install Chinese manual 安装中文手册" \
-			"9" "Modify VNC/XSDL/XRDP conf" \
-			"10" "Enable zsh tool 启用zsh管理工具" \
-			"11" "VSCode server arm64" \
+			"9" "Enable zsh tool 启用zsh管理工具" \
+			"10" "VSCode server arm64" \
+			"11" "Remove GUI 卸载图形界面" \
 			"12" "Remove browser 卸载浏览器" \
 			"13" "Exit 退出" \
 			3>&1 1>&2 2>&3
@@ -85,14 +85,13 @@ DEBIANMENU() {
 		OTHERSOFTWARE
 
 	fi
-	############
-
+	####################
 	if [ "${OPTION}" == '5' ]; then
+		MODIFYREMOTEDESKTOP
+		#MODIFYVNCORXSDLCONF
 
-		REMOVEGUI
 	fi
-
-	###################################
+	############
 
 	if [ "${OPTION}" == '6' ]; then
 
@@ -118,24 +117,23 @@ DEBIANMENU() {
 
 	fi
 
-	####################
-	if [ "${OPTION}" == '9' ]; then
-		MODIFYREMOTEDESKTOP
-		#MODIFYVNCORXSDLCONF
-
-	fi
 	#################################
-	if [ "${OPTION}" == '10' ]; then
+	if [ "${OPTION}" == '9' ]; then
 
 		bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
-
 	###################################
-	if [ "${OPTION}" == '11' ]; then
+	if [ "${OPTION}" == '10' ]; then
 		INSTALLORREMOVEVSCODE
 
 	fi
+	###################################
+	if [ "${OPTION}" == '11' ]; then
+
+		REMOVEGUI
+	fi
+
 	###############################
 
 	if [ "${OPTION}" == '12' ]; then
