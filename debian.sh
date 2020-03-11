@@ -229,7 +229,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200310-11)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200311-12)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -571,8 +571,8 @@ BackupSystem() {
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
-           tar -Ppcvf ${TMPtime}.tar --exclude=${DebianCHROOT}/root/sd --exclude=${DebianCHROOT}/root/tf --exclude=${DebianCHROOT}/root/termux ${DebianCHROOT} $PREFIX/bin/debian
-		   xz -z -T0 -e -9 -v -f ${TMPtime}.tar
+			tar -Ppcvf ${TMPtime}.tar --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian
+			xz -z -T0 -e -9 -v -f ${TMPtime}.tar
 			#tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
 			#whiptail进度条已弃用
 			#tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
