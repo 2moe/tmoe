@@ -836,6 +836,7 @@ MODIFYXRDPCONF() {
 	fi
 	service xrdp status || systemctl status xrdp
 	echo "如需修改启动脚本，请输nano /etc/xrdp/startwm.sh"
+	echo "如需修改配置文件，请输nano /etc/xrdp/xrdp.ini"
 	echo "已经为您启动xrdp服务，默认端口为3389"
 	echo "您当前的IP地址为"
 	ip -4 -br -c a
