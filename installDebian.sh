@@ -1961,7 +1961,8 @@ function install()
 apt-mark hold udisks2
 apt update
 echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
-echo '即将为您安装思源黑体(中文字体)、tightvncserver、kde-plasma-desktop '
+echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop等软件包'
+apt install -y aptitude
 apt install -y fonts-noto-cjk tightvncserver kde-plasma-desktop
 #aptitude install -y  task-kde-desktop
 
