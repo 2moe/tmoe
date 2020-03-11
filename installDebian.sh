@@ -295,6 +295,16 @@ else
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 pulseaudio --start
+
+#为防止匹配行被替换，故采用base64加密。
+DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
+DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
+
+if [ -f ~/${DebianFolder}/bin/zsh ];then
+    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+else
+    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+fi
 unset LD_PRELOAD
 command="proot"
 command+=" --link2symlink"
@@ -315,15 +325,6 @@ command+=" TERM=\$TERM"
 command+=" LANG=zh_CN.UTF-8"
 command+=" /bin/bash --login"
 com="\$@"
-#为防止匹配行被替换，故采用base64加密。
-DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
-DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
-
-if [ -f ~/${DebianFolder}/bin/zsh ];then
-    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
-else
-    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
-fi
 
 if [ -z "\$1" ];then
     exec \$command
