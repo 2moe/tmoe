@@ -110,6 +110,9 @@ if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
   su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
 fi
 ##############################
+if [ "$(uname -o)" != "Android" ]; then
+  PREFIX=/data/data/com.termux/files/usr
+fi
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
 DebianFolder=debian_${archtype}
