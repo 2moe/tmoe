@@ -205,3 +205,6 @@ MODIFYVNCORXSDLCONF() {
 
 }
 #############################################
+#下面那种压缩方式会有问题！
+#xz -z -T0 -e -9 -v -f ${TMPtime}.tar
+#tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
