@@ -1858,6 +1858,7 @@ apt update
 echo "Gnome测试失败，请自行解决软件依赖和其它相关问题。"
 echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver和task-gnome-desktop'
 apt install -y fonts-noto-cjk aptitude tightvncserver
+mkdir -p /run/lock
 aptitude install -y task-gnome-desktop
 apt clean
 
@@ -1963,8 +1964,10 @@ apt update
 echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
 echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop等软件包'
 apt install -y aptitude
-apt install -y fonts-noto-cjk tightvncserver kde-plasma-desktop
-#aptitude install -y  task-kde-desktop
+mkdir -p /run/lock
+aptitude install -y kde-plasma-desktop
+apt install -y fonts-noto-cjk tightvncserver 
+#task-kde-desktop
 
 
 apt clean
@@ -2037,8 +2040,8 @@ echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修�
 function remove()
 {
 apt purge -y tightvncserver kde-plasma-desktop
-aptitude purge -y  task-kde-desktop
-apt purge -y  task-kde-desktop
+aptitude purge -y  kde-plasma-desktop
+apt purge -y  plasma-desktop
 apt autopurge
 }
 
