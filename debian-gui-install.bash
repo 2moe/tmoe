@@ -11,7 +11,7 @@ CHECKdependencies() {
 
 	dependencies=""
 
-	if [ ! -e /usr/bin/whiptail ]; then
+	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
 		dependencies="${dependencies} whiptail"
 	fi
 
