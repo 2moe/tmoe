@@ -235,7 +235,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200313-01)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200313-02)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1462,7 +1462,7 @@ TERMUXINSTALLXFCE() {
 		if [ -e "$PREFIX/bin/xfwm4" ]; then
 		echo "检测到您已安装，是否继续？"
 		echo 'Press enter to continue'
-		echo "${YELLOW}按回车键确认继续${RESET}"
+		echo "${YELLOW}按回车键确认继续,按Ctrl+C取消。${RESET}"
 		read
 		fi
 			apt update
