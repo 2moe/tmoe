@@ -235,7 +235,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200311-12)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200312-10)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -265,6 +265,7 @@ MainMenu() {
 			echo "${YELLOW}按回车键返回。${RESET} "
 			read
 			MainMenu
+
 		fi
 
 		installDebian
@@ -366,7 +367,8 @@ installDebian() {
 				bash $PREFIX/bin/debian-rm 2>/dev/null && sed -i '/alias debian=/d' $PREFIX/etc/profile 2>/dev/null
 				sed -i '/alias debian-rm=/d' $PREFIX/etc/profile 2>/dev/null
 				source $PREFIX/etc/profile >/dev/null 2>&1
-				bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+				INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
+				#bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 				#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 				;;
 			n* | N*)
@@ -387,7 +389,8 @@ installDebian() {
 		fi
 
 	else
-		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+		INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
+		#bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 
 	fi
 }
@@ -1298,6 +1301,120 @@ CHROOTINSTALLDebian() {
 	alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
 	touch ~/.ChrootInstallationDetectionFile
 	installDebian
+}
+#################################
+INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
+	more <<-'EndOfFile'
+		   Tmoe-Debian-Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
+		本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
+		由于恢复包未存储于git仓库，而存储于天萌网盘，故您必须承担并知悉其中的风险。
+		强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
+		本工具的开发者郑重承诺：恢复包内的系统不会使用和披露您的个人信息，也不存在任何侵害您个人隐私的行为。
+		本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
+
+
+		1.禁止条例
+		(a)禁止将本工具安装的Debian GNU/Linux用于违法行为，例如：网络渗透、内网穿透、私自设立web服务等。
+
+		2. 适用范围
+		(a)在您使用本工具时，通过天萌网盘下载的恢复包系统；
+		(b)在您使用本工具时，通过清华镜像站安装的基础系统。
+		您了解并同意，以下信息不适用本隐私权协议：
+		(a)您在本工具的相关网站发布的有关信息数据，包括但不限于参与活动、点赞信息及评价详情；
+		(b)违反法律规定或违反本工具规则行为及本工具已对您采取的措施。
+
+		3. 信息使用
+		(a)本工具不会收集或向任何无关第三方提供、出售、出租、分享或交易您的个人信息。
+		(b)本工具亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息。
+
+		4.免责声明
+		(a)天萌网盘内的文件有可能由于网站被黑、文件失效、文件被替换、网站服务器出错等原因而导致下载出错或下载内容被劫持。
+		(b)开发者不对以上情况负责，本工具在解压前会自动校验文件的sha256值。
+		尽管存在以上保障，但是同时希望您能注意系统内是否存在恶意内容。
+		(c)强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
+
+		5. 恢复包的使用
+		(a)在您未拒绝接受恢复包的情况下，本工具会将恢复包下载至内置存储设备，并将其解压出来，以便您能快速安装并使用Debian GNU/Linux的图形桌面环境。本工具下载的恢复包不会为您提供个性化服务，您需要自行安装、配置第三方软件和主题美化。
+		(b)您有权选择接受或拒绝使用恢复包或本工具。
+
+		6. 信息安全
+		(a)本工具安装的是原生Debian GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
+		同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
+
+		7.最终用户许可协议的更改
+		(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
+		(b)本工具开发者保留随时修改本协议的权利，因此请经常查看。
+	EndOfFile
+	echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
+	echo "${YELLOW}按回车键同意，否则请按Ctrl+C或直接关闭终端。${RESET} "
+	read
+
+	if (whiptail --title "Install Debian" --yes-button 'Software source' --no-button 'Download Rec kit' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,armel,x86,x64,ppc64el,s390x架构。恢复包仅支持aarch(arm64)架构,且非最新版。" 14 50); then
+		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+	else
+		mkdir -p /sdcard/Download/backup
+		cd /sdcard/Download/backup
+		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
+			echo "${YELLOW}检测到恢复包已经下载,按回车键继续,按Ctrl+C取消${RESET}"
+			echo "${YELLOW}Press enter to continue.${RESET}"
+			read
+		fi
+
+		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
+		if [ "$(sha256sum 'debian_2020-03-11_17-31.tar.xz')" != '931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721' ]; then
+			echo 'sha256校验值不一致，请重新下载！'
+			echo 'sha256sum value is inconsistent, please download again.'
+			echo "按回车键无视错误并继续安装,按Ctrl+C取消。"
+			echo "${YELLOW}Press enter to continue.${RESET}"
+		else
+			echo 'Congratulations,检测到sha256sum一致'
+			echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
+
+		fi
+
+		echo "                                        "
+		echo "                            .:7E        "
+		echo "            .iv7vrrrrr7uQBBBBBBB:       "
+		echo "           v17::.........:SBBBUg        "
+		echo "        vKLi.........:. .  vBQrQ        "
+		echo "   sqMBBBr.......... :i. .  SQIX        "
+		echo "   BBQBBr.:...:....:. 1:.....v. ..      "
+		echo "    UBBB..:..:i.....i YK:: ..:   i:     "
+		echo "     7Bg.... iv.....r.ijL7...i. .Lu     "
+		echo "  IB: rb...i iui....rir :Si..:::ibr     "
+		echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     "
+		echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     "
+		echo "    :   r:.i5KEv:.:.  :.  ::..X..::     "
+		echo "   7is. :v .sr::.         :: :2. ::     "
+		echo "   2:.  .u: r.     ::::   r: ij: .r  :  "
+		echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  "
+		echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    "
+		echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   "
+		echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  "
+		echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. "
+		echo "      i7LUJv.   . .     .:   YI7bIr :ur "
+		echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
+		echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
+		echo "         :   r. ..      .. .:i  ...     "
+		echo "正在解压debian_2020-03-11_17-31.tar.xz，Decompressing debian-xfce recovery package, please be patient."
+		pv "debian_2020-03-11_17-31.tar.xz" | proot --link2symlink tar -PpJx
+		cd "$cur"
+		if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
+
+			sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
+			rm -f ${HOME}/debian_arm64/root/tf 2>/dev/null
+		fi
+		echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+		echo 'The vnc service is about to start for you. The password you entered is hidden.'
+		echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+		echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+		echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+		echo 'VNC密码为6至8位'
+
+		source /data/data/com.termux/files/usr/bin/startvnc
+
+	fi
+
 }
 
 #####################################
