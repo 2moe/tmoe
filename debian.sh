@@ -1516,22 +1516,37 @@ INSTALLWEBNOVNC() {
 	cp -prf ./usr/share/novnc/* ./
 	cp -rf ./usr/share/doc ./
 	rm -rf ./usr
+	STARTWEBNOVNC
 }
 #######################
 STARTWEBNOVNC() {
+	pkill websockify 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./
 	fi
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
-	am start -a android.intent.action.VIEW -d "http://localhost:6080"
-	echo "本机默认novnc地址localhost:6080"
-	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080
+	am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
+	echo "本机默认novnc地址localhost:6080/vnc.html"
+	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
 	bash lauch.sh --vnc localhost:5901 --listen 6080 &
-	bash $PREFIX/bin/startvnc
+	if [ -d "${DebianCHROOT}" ]; then
+		touch ~/${DebianFolder}/root/.vnc/startvnc
+		/data/data/com.termux/files/usr/bin/debian
+	else
+		export DISPLAY=:1
+		Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
+		sleep 1s
+		thunar &
+		echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
+		echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
+		startxfce4
+
+	fi
 
 }
+
 #################
 MODIFYANDROIDTERMUXVNCCONF() {
 	if [ ! -e $PREFIX/bin/startvnc ]; then
@@ -1586,7 +1601,7 @@ REMOVEANDROIDTERMUXXFCE() {
 	read
 	apt purge -y xfce xfce4-terminal tigervnc
 	apt purge -y ^xfce
-	apt purgr -y x11-repo
+	apt purge -y x11-repo
 	apt autoremove
 
 }
