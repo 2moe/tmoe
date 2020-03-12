@@ -242,9 +242,9 @@ MainMenu() {
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
 			"1" "proot安装 install debian" \
-			"2" "chroot安装" \
+			"2" "chroot安装 debian" \
 			"3" "Termux原系统gui" \
-			"4" "Video tutorial" \
+			"4" "novnc(web端控制)" \
 			"5" "移除 remove system" \
 			"6" "备份系统 backup system" \
 			"7" "还原 restore" \
@@ -254,6 +254,7 @@ MainMenu() {
 			"11" "Download VNC apk" \
 			"12" "VSCode Server arm64" \
 			"13" "赋予proot容器真实root权限" \
+			"14" "Video tutorial" \
 			"0" "退出 exit" \
 			3>&1 1>&2 2>&3
 	)
@@ -292,10 +293,9 @@ MainMenu() {
 
 		TERMUXINSTALLXFCE
 	fi
-
 	if [ "${OPTION}" == '4' ]; then
 
-		DownloadVideoTutorial
+		INSTALLWEBNOVNC
 	fi
 
 	if [ "${OPTION}" == '5' ]; then
@@ -347,6 +347,11 @@ MainMenu() {
 	if [ "${OPTION}" == '13' ]; then
 
 		RootMode
+	fi
+
+	if [ "${OPTION}" == '14' ]; then
+
+		DownloadVideoTutorial
 	fi
 
 	if [ "${OPTION}" == '0' ]; then
@@ -1525,6 +1530,10 @@ STARTWEBNOVNC() {
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
 	fi
+	echo 'Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.'
+	echo "在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。"
+	echo "如需启动vnc app，而非web端，您可以之后输startvnc"
+	echo "若无声音，则请输stopvnc并重启终端。"
 	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
@@ -1532,6 +1541,8 @@ STARTWEBNOVNC() {
 	echo "本机默认novnc地址localhost:6080/vnc.html"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
 	echo "注意：novnc地址和vnc地址是不同的，请在浏览器中输入novnc地址。"
+	echo 'Other devices in the LAN need to enter the novnc address of the LAN. Do not forget /vnc.html after the port number'
+	echo "非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html"
 	if [ -d "${DebianCHROOT}" ]; then
 		touch ~/${DebianFolder}/root/.vnc/startvnc
 		/data/data/com.termux/files/usr/bin/debian
