@@ -1521,7 +1521,6 @@ INSTALLWEBNOVNC() {
 #######################
 STARTWEBNOVNC() {
 	pkill pulseaudio 2>/dev/null
-	pkill python 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
