@@ -1473,7 +1473,8 @@ TERMUXINSTALLXFCE() {
 		apt install -y xfce xfce4-terminal tigervnc
 		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
-			pkill Xvnc 2>/dev/null
+			pkill Xvnc 2>/dev/null 
+			pulseaudio --start 
 			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 			export DISPLAY=:1
@@ -1567,7 +1568,7 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 	fi
-	CURRENTTERMUXVNCRES=$(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+	CURRENTTERMUXVNCRES=$(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
 		if grep -q 'debian_' "$(which startvnc)"; then
 			echo "您当前使用的startvnc配置为debian系统专用版，请进入debian系统内修改"
@@ -1582,10 +1583,10 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		TRUETARGET="$(echo ${TARGET} | cut -d 'E' -f 1)"
 		#下面那条变量TRUETARGETTARGET前加空格
 		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(which startvnc)"
-		sed -i "6 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(which startvnc)"
+		sed -i "7 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(which startvnc)"
 		echo 'Your current resolution has been modified.'
 		echo '您当前的分辨率已经修改为'
-		echo $(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+		echo $(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 	else
 		echo '您可以手动修改vnc的配置信息'
 		echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
@@ -1596,7 +1597,7 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 		nano $PREFIX/bin/startvnc || nano $(which startvnc)
-		echo "您当前分辨率为$(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		echo "您当前分辨率为$(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 	fi
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
