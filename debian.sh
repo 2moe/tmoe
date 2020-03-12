@@ -1447,11 +1447,10 @@ UNXZDEBIANRECOVERYKIT() {
 }
 ###############################
 TERMUXINSTALLXFCE() {
-	OPTION=$(whiptail --title "Termux GUI" --menu "仅novnc是debian和termux通用的,termux原系统GUI仅支持Android7.0+。" 15 60 4 \
+	OPTION=$(whiptail --title "Termux GUI" --menu "Termux原系统GUI可玩性较低，建议您安装debian系统，以下选项仅适用于termux。" 15 60 4 \
 		"1" "install xfce4" \
-		"2" "novnc" \
-		"3" "modify vnc conf" \
-		"4" "remove xfce4" \
+		"2" "modify vnc conf" \
+		"3" "remove xfce4" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1486,16 +1485,12 @@ TERMUXINSTALLXFCE() {
 		chmod +x $PREFIX/bin/startvnc
 		source $PREFIX/bin/startvnc
 	fi
-	###############################
-	if [ "${OPTION}" == '2' ]; then
-		INSTALLWEBNOVNC
-	fi
 	#######################
-	if [ "${OPTION}" == '3' ]; then
+	if [ "${OPTION}" == '2' ]; then
 		MODIFYANDROIDTERMUXVNCCONF
 	fi
 	##################
-	if [ "${OPTION}" == '4' ]; then
+	if [ "${OPTION}" == '3' ]; then
 		REMOVEANDROIDTERMUXXFCE
 	fi
 
@@ -1538,7 +1533,7 @@ STARTWEBNOVNC() {
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
 	am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
-	echo "本机默认novnc地址localhost:6080/vnc.html"
+	echo "本机默认novnc地址http://localhost:6080/vnc.html"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
 	echo "注意：novnc地址和vnc地址是不同的，请在浏览器中输入novnc地址。"
 	echo 'Other devices in the LAN need to enter the novnc address of the LAN. Do not forget /vnc.html after the port number'
