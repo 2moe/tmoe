@@ -1533,7 +1533,7 @@ STARTWEBNOVNC() {
 	fi
 	echo 'Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.'
 	echo "在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。"
-	echo "如需启动vnc app，而非web端，您可以之后输startvnc"
+	echo "如需启动vnc app，而非web端，那么您下次可以输startvnc"
 	echo "若无声音，则请输stopvnc并重启终端。"
 	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	echo '正在为您启动novnc'
