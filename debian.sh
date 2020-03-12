@@ -1525,13 +1525,13 @@ STARTWEBNOVNC() {
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
 	fi
-	ls
-	bash lauch.sh --vnc localhost:5901 --listen 6080 &
+	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
 	am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	echo "本机默认novnc地址localhost:6080/vnc.html"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
+	echo "注意：novnc地址和vnc地址是不同的，请在浏览器中输入novnc地址。"
 	if [ -d "${DebianCHROOT}" ]; then
 		touch ~/${DebianFolder}/root/.vnc/startvnc
 		/data/data/com.termux/files/usr/bin/debian
