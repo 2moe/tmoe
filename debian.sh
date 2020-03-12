@@ -1586,6 +1586,7 @@ REMOVEANDROIDTERMUXXFCE() {
 	read
 	apt purge -y xfce xfce4-terminal tigervnc
 	apt purge -y ^xfce
+	apt purgr -y x11-repo
 	apt autoremove
 
 }
