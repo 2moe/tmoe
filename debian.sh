@@ -1523,7 +1523,7 @@ STARTWEBNOVNC() {
 	pkill websockify 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
-		git clone git://github.com/novnc/websockify.git --depth=1 ./
+		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
 	fi
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
