@@ -235,7 +235,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200313-02)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200313-04)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1384,7 +1384,7 @@ DOWNLOADDEBIANXFCETARXZ() {
 	echo 'Verifying sha256sum ...'
 	echo '正在校验sha256sum...'
 	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz' | cut -c 1-64)"
-	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'
+	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'  #DevSkim: ignore DS173237 
 	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
 		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
 		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
