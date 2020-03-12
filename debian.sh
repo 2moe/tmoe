@@ -1547,14 +1547,7 @@ STARTWEBNOVNC() {
 		touch ~/${DebianFolder}/root/.vnc/startvnc
 		/data/data/com.termux/files/usr/bin/debian
 	else
-		export DISPLAY=:1
-		Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
-		sleep 1s
-		thunar &
-		echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
-		echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
-		startxfce4
-
+		/data/data/com.termux/files/usr/bin/startvnc
 	fi
 
 }
