@@ -1350,73 +1350,88 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 	echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
 	read
 
-	if (whiptail --title "Install Debian" --yes-button 'Software source' --no-button 'Download Rec kit' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,armel,x86,x64,ppc64el,s390x架构。恢复包仅支持aarch(arm64)架构,且非最新版。" 14 50); then
+	if (whiptail --title "Install Debian" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,armel,x86,x64,ppc64el,s390x架构。恢复包仅支持aarch(arm64)架构,且非最新版。" 14 50); then
 		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 	else
 		mkdir -p /sdcard/Download/backup
 		cd /sdcard/Download/backup
 		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
-			echo "${YELLOW}检测到恢复包已经下载,按回车键继续,按Ctrl+C取消${RESET}"
-			echo "${YELLOW}Press enter to continue.${RESET}"
-			read
-		fi
+			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要重新直接解压还是重新下载？" 14 50); then
+				UNXZDEBIANRECOVERYKIT
+			else
+				DOWNLOADDEBIANXFCETARXZ
 
-		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
-		if [ "$(sha256sum 'debian_2020-03-11_17-31.tar.xz')" != '931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721' ]; then
-			echo 'sha256校验值不一致，请重新下载！'
-			echo 'sha256sum value is inconsistent, please download again.'
-			echo "按回车键无视错误并继续安装,按Ctrl+C取消。"
-			echo "${YELLOW}Press enter to continue.${RESET}"
-		else
-			echo 'Congratulations,检测到sha256sum一致'
-			echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
+			fi
 
 		fi
-
-		echo "                                        "
-		echo "                            .:7E        "
-		echo "            .iv7vrrrrr7uQBBBBBBB:       "
-		echo "           v17::.........:SBBBUg        "
-		echo "        vKLi.........:. .  vBQrQ        "
-		echo "   sqMBBBr.......... :i. .  SQIX        "
-		echo "   BBQBBr.:...:....:. 1:.....v. ..      "
-		echo "    UBBB..:..:i.....i YK:: ..:   i:     "
-		echo "     7Bg.... iv.....r.ijL7...i. .Lu     "
-		echo "  IB: rb...i iui....rir :Si..:::ibr     "
-		echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     "
-		echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     "
-		echo "    :   r:.i5KEv:.:.  :.  ::..X..::     "
-		echo "   7is. :v .sr::.         :: :2. ::     "
-		echo "   2:.  .u: r.     ::::   r: ij: .r  :  "
-		echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  "
-		echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    "
-		echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   "
-		echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  "
-		echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. "
-		echo "      i7LUJv.   . .     .:   YI7bIr :ur "
-		echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
-		echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
-		echo "         :   r. ..      .. .:i  ...     "
-		echo "正在解压debian_2020-03-11_17-31.tar.xz，Decompressing debian-xfce recovery package, please be patient."
-		pv "debian_2020-03-11_17-31.tar.xz" | proot --link2symlink tar -PpJx
-		cd "$cur"
-		if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-
-			sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
-			rm -f ${HOME}/debian_arm64/root/tf 2>/dev/null
-		fi
-		echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-		echo 'The vnc service is about to start for you. The password you entered is hidden.'
-		echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
-		echo "When prompted for a view-only password, it is recommended that you enter 'n'"
-		echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
-		echo 'VNC密码为6至8位'
-		source /data/data/com.termux/files/usr/bin/startvnc
-
 	fi
-
 }
 
+###################################################
+DOWNLOADDEBIANXFCETARXZ() {
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
+	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz')"
+	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'
+	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
+		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
+		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
+		echo 'sha256校验值不一致，请重新下载！'
+		echo 'sha256sum value is inconsistent, please download again.'
+		echo "按回车键无视错误并继续安装,按Ctrl+C取消。"
+		echo "${YELLOW}Press enter to continue.${RESET}"
+		read
+
+	else
+		echo 'Congratulations,检测到sha256sum一致'
+		echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
+	fi
+	UNXZDEBIANRECOVERYKIT
+
+}
+#####################################
+UNXZDEBIANRECOVERYKIT() {
+	echo "                                        "
+	echo "                            .:7E        "
+	echo "            .iv7vrrrrr7uQBBBBBBB:       "
+	echo "           v17::.........:SBBBUg        "
+	echo "        vKLi.........:. .  vBQrQ        "
+	echo "   sqMBBBr.......... :i. .  SQIX        "
+	echo "   BBQBBr.:...:....:. 1:.....v. ..      "
+	echo "    UBBB..:..:i.....i YK:: ..:   i:     "
+	echo "     7Bg.... iv.....r.ijL7...i. .Lu     "
+	echo "  IB: rb...i iui....rir :Si..:::ibr     "
+	echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     "
+	echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     "
+	echo "    :   r:.i5KEv:.:.  :.  ::..X..::     "
+	echo "   7is. :v .sr::.         :: :2. ::     "
+	echo "   2:.  .u: r.     ::::   r: ij: .r  :  "
+	echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  "
+	echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    "
+	echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   "
+	echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  "
+	echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. "
+	echo "      i7LUJv.   . .     .:   YI7bIr :ur "
+	echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
+	echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
+	echo "         :   r. ..      .. .:i  ...     "
+	echo "正在解压debian_2020-03-11_17-31.tar.xz，Decompressing debian-xfce recovery package, please be patient."
+	pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
+	cd "$cur"
+	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
+
+		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
+		rm -f ${HOME}/debian_arm64/root/tf 2>/dev/null
+	fi
+	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+	echo '在debian系统内输debian-i启动debian应用安装及远程桌面配置修改工具。'
+	echo 'The vnc service is about to start for you. The password you entered is hidden.'
+	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+	echo 'VNC密码为6至8位'
+	source /data/data/com.termux/files/usr/bin/startvnc
+
+}
 #####################################
 CheckArch
 ##取消注释，测试用。
