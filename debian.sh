@@ -1573,7 +1573,7 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then
 			#sed -i "s:${CURRENTTERMUXVNCRES}:${TARGET}:g" "$(which startvnc)"
-			sed -i "6 c\vncserver -geometry $TARGET --SecurityTypes=None \$DISPLAY &" "$(which startvnc)"
+			sed -i "6 c vncserver -geometry $TARGET --SecurityTypes=None \$DISPLAY &" "$(which startvnc)"
 			echo 'Your current resolution has been modified.'
 			echo '您当前的分辨率已经修改为'
 			echo $(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
