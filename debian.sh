@@ -1470,7 +1470,7 @@ TERMUXINSTALLXFCE() {
 		apt update
 		apt dist-upgrade -y
 
-		apt install -y xfce xfce4-terminal tigervnc
+		apt install -y xfce xfce4-terminal tigervnc aterm
 		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
 			pkill Xvnc 2>/dev/null 
@@ -1604,7 +1604,7 @@ REMOVEANDROIDTERMUXXFCE() {
 	echo "${YELLOW}按回车键确认卸载,按Ctfl+C取消${RESET} "
 	echo 'Press enter to confirm ,press Ctfl + C to cancel'
 	read
-	apt purge -y xfce xfce4-terminal tigervnc
+	apt purge -y xfce xfce4-terminal tigervnc aterm
 	apt purge -y ^xfce
 	apt purge -y x11-repo
 	apt autoremove
