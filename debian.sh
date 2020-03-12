@@ -235,7 +235,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200312-10)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200313-01)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1442,7 +1442,7 @@ UNXZDEBIANRECOVERYKIT() {
 }
 ###############################
 TERMUXINSTALLXFCE() {
-	OPTION=$(whiptail --title "Termux GUI" --menu "本功能仅支持Android7.0+,本功能正在开发中！" 15 60 4 \
+	OPTION=$(whiptail --title "Termux GUI" --menu "仅novnc是debian和termux通用的,termux原系统GUI仅支持Android7.0+。" 15 60 4 \
 		"1" "install xfce4" \
 		"2" "novnc" \
 		"3" "modify vnc conf" \
@@ -1465,11 +1465,12 @@ TERMUXINSTALLXFCE() {
 		apt install -y xfce xfce4-terminal tigervnc
 		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
+			pkill Xvnc 2>/dev/null
 			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 			export DISPLAY=:1
-			Xvnc -geometry 720x1440 --SecurityTypes=None $DISPLAY &
+			Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
+			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 			sleep 1s
 			thunar &
 			echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
@@ -1478,12 +1479,117 @@ TERMUXINSTALLXFCE() {
 
 		EndOfFile
 		chmod +x $PREFIX/bin/startvnc
-		source startvnc
+		source $PREFIX/bin/startvnc
+	fi
+	###############################
+	if [ "${OPTION}" == '2' ]; then
+		INSTALLWEBNOVNC
+	fi
+	#######################
+	if [ "${OPTION}" == '3' ]; then
+		MODIFYANDROIDTERMUXVNCCONF
+	fi
+	##################
+	if [ "${OPTION}" == '4' ]; then
+		REMOVEANDROIDTERMUXXFCE
 	fi
 
 }
 
 #####################################
+INSTALLWEBNOVNC() {
+	if [ ! -e "$PREFIX/bin/python" ]; then
+		apt update
+		apt install -y python
+	fi
+
+	if [ -e "${HOME}/.vnc/utils/launch.sh" ]; then
+		STARTWEBNOVNC
+	fi
+	if [ ! -d "${HOME}/.vnc" ]; then
+		mkdir -p ${HOME}/.vnc
+	fi
+
+	cd ${HOME}/.vnc
+	aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/n/novnc/novnc_1.0.0-3_all.deb'
+	dpkg-deb -X novnc.deb ./
+	cp -prf ./usr/share/novnc/* ./
+	cp -rf ./usr/share/doc ./
+	rm -rf ./usr
+}
+#######################
+STARTWEBNOVNC() {
+	cd ${HOME}/.vnc/utils/
+	if [ ! -d "websockify" ]; then
+		git clone git://github.com/novnc/websockify.git --depth=1 ./
+	fi
+	echo '正在为您启动novnc'
+	echo 'Starting novnc service,please be patient.'
+	am start -a android.intent.action.VIEW -d "http://localhost:6080"
+	echo "本机默认novnc地址localhost:6080"
+	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080
+	bash lauch.sh --vnc localhost:5901 --listen 6080 &
+	bash $PREFIX/bin/startvnc
+
+}
+#################
+MODIFYANDROIDTERMUXVNCCONF() {
+	if [ ! -e $PREFIX/bin/startvnc ]; then
+		echo "$PREFIX/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+		echo '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
+		echo "Press Enter to confirm."
+		echo "${YELLOW}按回车键确认编辑。${RESET}"
+		read
+	fi
+	CURRENTTERMUXVNCRES=$(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
+		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+		exitstatus=$?
+		if [ $exitstatus = 0 ]; then
+			sed -i "s:${CURRENTTERMUXVNCRES}:${TARGET}:g" "$(which startvnc)"
+			#sed -i "6 c\vncserver -geometry $TARGET --SecurityTypes=None \$DISPLAY\&" "$(which startvnc)"
+			echo 'Your current resolution has been modified.'
+			echo '您当前的分辨率已经修改为'
+			echo $(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			MainMenu
+
+		else
+			echo '您当前的分辨率为'
+			echo $(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+		fi
+
+	else
+		echo '您可以手动修改vnc的配置信息'
+		echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
+		echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
+		echo "您当前分辨率为${CURRENTTERMUXVNCRES}"
+		echo '改完后按Ctrl+S保存，Ctrl+X退出。'
+		echo "Press Enter to confirm."
+		echo "${YELLOW}按回车键确认编辑。${RESET}"
+		read
+		nano $PREFIX/bin/startvnc || nano $(which startvnc)
+		echo "您当前分辨率为$(sed -n 6p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+	fi
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MainMenu
+
+}
+###############
+REMOVEANDROIDTERMUXXFCE() {
+	echo "${YELLOW}按回车键确认卸载,按Ctfl+C取消${RESET} "
+	echo 'Press enter to confirm ,press Ctfl + C to cancel'
+	read
+	apt purge -y xfce xfce4-terminal tigervnc
+	apt purge -y ^xfce
+	apt autoremove
+
+}
+################
 CheckArch
 ##取消注释，测试用。
 ##MainMenu
