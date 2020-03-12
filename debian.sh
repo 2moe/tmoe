@@ -1370,7 +1370,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 ###################################################
 DOWNLOADDEBIANXFCETARXZ() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
-	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz')"
+	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz'| cut -c 1-64)"
 	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'
 	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
 		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
