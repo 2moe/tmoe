@@ -1384,7 +1384,7 @@ DOWNLOADDEBIANXFCETARXZ() {
 	echo 'Verifying sha256sum ...'
 	echo '正在校验sha256sum...'
 	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz' | cut -c 1-64)"
-	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'  #DevSkim: ignore DS173237 
+	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721' #DevSkim: ignore DS173237
 	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
 		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
 		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
@@ -1470,7 +1470,7 @@ TERMUXINSTALLXFCE() {
 		apt update
 		apt dist-upgrade -y
 
-		apt install -y xfce xfce4-terminal tigervnc aterm
+		apt install -y xfce tigervnc aterm
 		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
 			pkill Xvnc 2>/dev/null 
@@ -1604,8 +1604,7 @@ REMOVEANDROIDTERMUXXFCE() {
 	echo "${YELLOW}按回车键确认卸载,按Ctfl+C取消${RESET} "
 	echo 'Press enter to confirm ,press Ctfl + C to cancel'
 	read
-	apt purge -y xfce xfce4-terminal tigervnc aterm
-	apt purge -y ^xfce
+	apt purge -y ^xfce tigervnc aterm
 	apt purge -y x11-repo
 	apt autoremove
 
