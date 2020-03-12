@@ -1370,6 +1370,8 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 ###################################################
 DOWNLOADDEBIANXFCETARXZ() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
+	echo 'Verifying sha256sum ...'
+	echo '正在校验sha256sum...'
 	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz'| cut -c 1-64)"
 	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'
 	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
@@ -1428,7 +1430,7 @@ UNXZDEBIANRECOVERYKIT() {
 	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
 	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
-	echo 'VNC密码为6至8位'
+	echo '请输入6至8位的VNC密码'
 	source /data/data/com.termux/files/usr/bin/startvnc
 
 }
