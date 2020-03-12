@@ -1304,7 +1304,7 @@ CHROOTINSTALLDebian() {
 }
 #################################
 INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
-	more <<-'EndOfFile'
+	less -meQ <<-'EndOfFile'
 		   Tmoe-Debian-Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
 		本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
 		由于恢复包未存储于git仓库，而存储于天萌网盘，故您必须承担并知悉其中的风险。
@@ -1410,7 +1410,6 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		echo "When prompted for a view-only password, it is recommended that you enter 'n'"
 		echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 		echo 'VNC密码为6至8位'
-
 		source /data/data/com.termux/files/usr/bin/startvnc
 
 	fi
