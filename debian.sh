@@ -1460,11 +1460,15 @@ TERMUXINSTALLXFCE() {
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
 		if [ -e "$PREFIX/bin/xfwm4" ]; then
+		echo "检测到您已安装，是否继续？"
+		echo 'Press enter to continue'
+		echo "${YELLOW}按回车键确认继续${RESET}"
+		read
+		fi
 			apt update
 			apt install -y x11-repo
 			apt update
 			apt dist-upgrade -y
-		fi
 
 		apt install -y xfce xfce4-terminal tigervnc
 		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
@@ -1533,9 +1537,9 @@ STARTWEBNOVNC() {
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
 	am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
-	echo "本机默认novnc地址http://localhost:6080/vnc.html"
+	echo "本机默认novnc地址${YELLOW}http://localhost:6080/vnc.html${RESET}"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
-	echo "注意：novnc地址和vnc地址是不同的，请在浏览器中输入novnc地址。"
+	echo "注意：novnc地址和vnc地址是${YELLOW}不同${RESET}的，请在${YELLOW}浏览器${RESET}中输入novnc地址。"
 	echo 'Other devices in the LAN need to enter the novnc address of the LAN. Do not forget /vnc.html after the port number'
 	echo "非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html"
 	if [ -d "${DebianCHROOT}" ]; then
