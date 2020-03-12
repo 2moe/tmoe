@@ -1479,6 +1479,7 @@ TERMUXINSTALLXFCE() {
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 			export DISPLAY=:1
 			Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
+			export PULSE_SERVER=127.0.0.1
 			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 			sleep 1s
 			thunar &
