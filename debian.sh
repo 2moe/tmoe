@@ -1443,16 +1443,43 @@ UNXZDEBIANRECOVERYKIT() {
 ###############################
 TERMUXINSTALLXFCE() {
 	OPTION=$(whiptail --title "Termux GUI" --menu "本功能仅支持Android7.0+,本功能正在开发中！" 15 60 4 \
-		"0" "Back to the main menu 返回主菜单" \
 		"1" "install xfce4" \
 		"2" "novnc" \
 		"3" "modify vnc conf" \
+		"4" "remove xfce4" \
+		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '0' ]; then
 		MainMenu
 	fi
 	#####################################
+	if [ "${OPTION}" == '1' ]; then
+		if [ -e "$PREFIX/bin/xfwm4" ]; then
+			apt update
+			apt install -y x11-repo
+			apt update
+			apt dist-upgrade -y
+		fi
+
+		apt install -y xfce xfce4-terminal tigervnc
+		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
+			#!/data/data/com.termux/files/usr/bin/bash
+			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+			export DISPLAY=:1
+			Xvnc -geometry 720x1440 --SecurityTypes=None $DISPLAY &
+			sleep 1s
+			thunar &
+			echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
+			echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
+			startxfce4
+
+		EndOfFile
+		chmod +x $PREFIX/bin/startvnc
+		source startvnc
+	fi
 
 }
 
