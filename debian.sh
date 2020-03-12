@@ -1345,8 +1345,9 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
 		(b)本工具开发者保留随时修改本协议的权利，因此请经常查看。
 	EndOfFile
+	echo 'You must agree to EULA to use this tool.'
 	echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
-	echo "${YELLOW}按回车键同意，否则请按Ctrl+C或直接关闭终端。${RESET} "
+	echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
 	read
 
 	if (whiptail --title "Install Debian" --yes-button 'Software source' --no-button 'Download Rec kit' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,armel,x86,x64,ppc64el,s390x架构。恢复包仅支持aarch(arm64)架构,且非最新版。" 14 50); then
