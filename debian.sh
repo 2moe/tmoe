@@ -241,23 +241,24 @@ MainMenu() {
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
-			"0" "proot安装 install debian" \
-			"1" "chroot安装" \
-			"2" "Video tutorial" \
-			"3" "移除 remove system" \
-			"4" "备份系统 backup system" \
-			"5" "还原 restore" \
-			"6" "查询空间占用 query space occupation" \
-			"7" "更新本管理器 update debian manager" \
-			"8" "配置zsh(优化termux) Configure zsh" \
-			"9" "Download VNC apk" \
-			"10" "VSCode Server arm64" \
-			"11" "赋予proot容器真实root权限" \
-			"12" "退出 exit" \
+			"1" "proot安装 install debian" \
+			"2" "chroot安装" \
+			"3" "Termux原系统gui" \
+			"4" "Video tutorial" \
+			"5" "移除 remove system" \
+			"6" "备份系统 backup system" \
+			"7" "还原 restore" \
+			"8" "查询空间占用 query space occupation" \
+			"9" "更新本管理器 update debian manager" \
+			"10" "配置zsh(优化termux) Configure zsh" \
+			"11" "Download VNC apk" \
+			"12" "VSCode Server arm64" \
+			"13" "赋予proot容器真实root权限" \
+			"0" "退出 exit" \
 			3>&1 1>&2 2>&3
 	)
 
-	if [ "${OPTION}" == '0' ]; then
+	if [ "${OPTION}" == '1' ]; then
 		if [ "$(uname -o)" != "Android" ]; then
 			echo "非常抱歉，本功能仅适配安卓系统。"
 			echo "Linux系统请换用chroot容器。"
@@ -272,7 +273,7 @@ MainMenu() {
 
 	fi
 
-	if [ "${OPTION}" == '1' ]; then
+	if [ "${OPTION}" == '2' ]; then
 		if [ "$(uname -o)" = "Android" ]; then
 			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
 			echo "Android系统请换用proot容器。"
@@ -287,63 +288,68 @@ MainMenu() {
 
 	fi
 
-	if [ "${OPTION}" == '2' ]; then
+	if [ "${OPTION}" == '3' ]; then
+
+		TERMUXINSTALLXFCE
+	fi
+
+	if [ "${OPTION}" == '4' ]; then
 
 		DownloadVideoTutorial
 	fi
 
-	if [ "${OPTION}" == '3' ]; then
+	if [ "${OPTION}" == '5' ]; then
 
 		REMOVESYSTEM
 
 	fi
 
-	if [ "${OPTION}" == '4' ]; then
+	if [ "${OPTION}" == '6' ]; then
 
 		BackupSystem
 
 	fi
 
-	if [ "${OPTION}" == '5' ]; then
+	if [ "${OPTION}" == '7' ]; then
 
 		RESTORESYSTEM
 
 	fi
 
-	if [ "${OPTION}" == '6' ]; then
+	if [ "${OPTION}" == '8' ]; then
 
 		SpaceOccupation
 
 	fi
 
-	if [ "${OPTION}" == '7' ]; then
+	if [ "${OPTION}" == '9' ]; then
 
 		UPDATEMANAGER
 	fi
 
-	if [ "${OPTION}" == '8' ]; then
+	if [ "${OPTION}" == '10' ]; then
 		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
 
 	fi
 
-	if [ "${OPTION}" == '9' ]; then
+	if [ "${OPTION}" == '11' ]; then
 
 		DOWNLOADVNCAPK
 
 	fi
 
-	if [ "${OPTION}" == '10' ]; then
+	if [ "${OPTION}" == '12' ]; then
 		STARTVSCODE
 
 	fi
 
-	if [ "${OPTION}" == '11' ]; then
+	if [ "${OPTION}" == '13' ]; then
 
 		RootMode
 	fi
 
-	if [ "${OPTION}" == '12' ]; then
+	if [ "${OPTION}" == '0' ]; then
 		exit
 
 	fi
@@ -1372,7 +1378,7 @@ DOWNLOADDEBIANXFCETARXZ() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
 	echo 'Verifying sha256sum ...'
 	echo '正在校验sha256sum...'
-	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz'| cut -c 1-64)"
+	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz' | cut -c 1-64)"
 	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721'
 	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
 		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
@@ -1434,6 +1440,22 @@ UNXZDEBIANRECOVERYKIT() {
 	source /data/data/com.termux/files/usr/bin/startvnc
 
 }
+###############################
+TERMUXINSTALLXFCE() {
+	OPTION=$(whiptail --title "Termux GUI" --menu "本功能仅支持Android7.0+,本功能正在开发中！" 15 60 4 \
+		"0" "Back to the main menu 返回主菜单" \
+		"1" "install xfce4" \
+		"2" "novnc" \
+		"3" "modify vnc conf" \
+		3>&1 1>&2 2>&3)
+	###########################################################################
+	if [ "${OPTION}" == '0' ]; then
+		MainMenu
+	fi
+	#####################################
+
+}
+
 #####################################
 CheckArch
 ##取消注释，测试用。
