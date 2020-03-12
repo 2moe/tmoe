@@ -1314,7 +1314,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 
 
 		1.禁止条例
-		(a)禁止将本工具安装的Debian GNU/Linux用于违法行为，例如：网络渗透、内网穿透、私自设立web服务等。
+		(a)禁止将本工具安装的Debian GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
 
 		2. 适用范围
 		(a)在您使用本工具时，通过天萌网盘下载的恢复包系统；
