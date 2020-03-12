@@ -1525,6 +1525,7 @@ STARTWEBNOVNC() {
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
 	fi
+	ls
 	bash lauch.sh --vnc localhost:5901 --listen 6080 &
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
