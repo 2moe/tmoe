@@ -1565,7 +1565,7 @@ MODIFYANDROIDTERMUXVNCCONF() {
 	CURRENTTERMUXVNCRES=$(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
 		if grep -q 'debian_' "$(which startvnc)"; then
-			echo "您当前使用的startvnc配置为debian系统专用版，请进入debian系统内修改"
+			echo "您当前使用的startvnc配置为debian系统专用版，请进入debian系统后输debian-i修改"
 			echo "本选项仅适用于termux原系统。"
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
