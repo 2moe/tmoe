@@ -671,11 +671,12 @@ OTHERSOFTWARE() {
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
-			"4" "Parole：xfce默认媒体播放器，风格简洁" \
+			"4" "斯隆与马克贝尔的谜之物语：nds解谜游戏" \
 			"5" "大灾变-劫后余生：末日幻想背景的探索生存游戏" \
 			"6" "Synaptic：新立得软件包管理器/软件商店" \
 			"7" "GIMP：GNU 图像处理程序" \
 			"8" "LibreOffice:开源、自由的办公文档软件" \
+			"9" "Parole：xfce默认媒体播放器，风格简洁" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -722,9 +723,28 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '4' ]; then
-		apt update
-		apt install -y parole
-		echo "安装完成，如需卸载，请手动输apt purge -y parole"
+		if [ ! -e "/usr/games/desmume" ]; then
+			apt update
+			apt install -y desmume
+		fi
+
+		if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
+			echo "检测到您已安装，如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
+
+		else
+			cd ~
+			mkdir -p '斯隆与马克贝尔的谜之物语'
+			cd '斯隆与马克贝尔的谜之物语'
+			wget http://k73dx1.zxclqw.com/slymkbr1.zip
+			wget http://k73dx1.zxclqw.com/mayomonogatari2.zip
+			unzip slymkbr1.zip
+			unzip mayomonogatari2.zip
+			mv -f 斯隆与马克贝尔的谜之物语k73/* ./
+			mv -f 谜之物语/* ./
+			rm -rf *url *txt 谜之物语 斯隆与马克贝尔的谜之物语k73
+			echo "安装完成，如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
+		fi
+		desmume ./3782.nds 2>/dev/null &
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
@@ -777,6 +797,16 @@ OTHERSOFTWARE() {
 	fi
 
 	##############################
+	if [ "${SOFTWARE}" == '9' ]; then
+		apt update
+		apt install -y parole
+		echo "安装完成，如需卸载，请手动输apt purge -y parole"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
+	##########################
 
 	DEBIANMENU
 
