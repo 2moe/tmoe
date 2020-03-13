@@ -357,9 +357,6 @@ installBROWSER() {
 }
 ######################################################
 INSTALLGUI() {
-	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-	echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
-	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
@@ -667,6 +664,7 @@ OTHERSOFTWARE() {
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "LibreOffice:开源、自由的办公文档软件" \
 			"4" "Synaptic：新立得软件包管理器/软件商店" \
+			"5" "Synaptic：新立得软件包管理器/软件商店" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
