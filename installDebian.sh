@@ -1299,7 +1299,7 @@ cat  > /etc/apt/sources.list <<-'EndOfFile'
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable-updates main contrib non-free
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free
-#deb http://mirrors.tuna.tsinghua.edu.cn/debian-security stable-security main contrib non-free
+#deb http://mirrors.tuna.tsinghua.edu.cn/debian-security stable/updates main contrib non-free
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 EndOfFile
 
