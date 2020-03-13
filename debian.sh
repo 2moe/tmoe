@@ -537,15 +537,18 @@ It is recommended that you back up the entire system before removal. If the data
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若需删除debian管理器，则请输rm -f $PREFIX/bin/debian-i'
 	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
-	ls -lh ~/debian-sid-rootfs.tar.xz
-	printf "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
-	#printf之后分行
-	echo ''
+	ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
+	ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
+	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
 	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
 
 	read opt
 	case $opt in
-	y* | Y* | "") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
+	y* | Y* | "")
+		rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm
+		rm -f ~/debian-buster-rootfs.tar.xz
+		echo "Deleted已删除"
+		;;
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
 	*) echo "${YELLOW}Invalid choice，skipped.已跳过，按回车键返回。${RESET} " ;;
 	esac
