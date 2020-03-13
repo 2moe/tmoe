@@ -363,7 +363,7 @@ installBROWSER() {
 ######################################################
 INSTALLGUI() {
 	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-	echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
+	echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
 	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 4 \
@@ -732,18 +732,20 @@ OTHERSOFTWARE() {
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '5' ]; then
-		apt update
-		apt install -y cataclysm-dda-curses cataclysm-dda-sdl
+
+		if [ ! -e "/usr/games/cataclysm-tiles" ]; then
+			apt update
+			apt install -y cataclysm-dda-curses cataclysm-dda-sdl
+		fi
+
 		echo "安装完成，如需卸载，请手动输apt purge -y ^cataclysm-dda"
 		echo "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
 		echo "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键启动。${RESET}"
-		cataclysm
 		read
-		DEBIANMENU
+		cataclysm
 	fi
-
 	##############################
 	if [ "${SOFTWARE}" == '6' ]; then
 		INSTALLsynaptic
