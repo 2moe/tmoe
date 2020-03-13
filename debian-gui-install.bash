@@ -44,7 +44,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200312-00)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。" 18 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200313-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 18 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -672,9 +672,10 @@ OTHERSOFTWARE() {
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
 			"4" "Parole：xfce默认媒体播放器，风格简洁" \
-			"5" "LibreOffice:开源、自由的办公文档软件" \
+			"5" "大灾变-余后劫生：末日幻想背景的探索生存游戏" \
 			"6" "Synaptic：新立得软件包管理器/软件商店" \
 			"7" "GIMP：GNU 图像处理程序" \
+			"8" "LibreOffice:开源、自由的办公文档软件" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -729,22 +730,21 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
-	##############################
+	##########################
 	if [ "${SOFTWARE}" == '5' ]; then
-		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
-		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
-		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
-		read
 		apt update
-		apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
-		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
+		apt install -y cataclysm-dda-curses cataclysm-dda-sdl
+		echo "安装完成，如需卸载，请手动输apt purge -y ^cataclysm-dda"
+		echo "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
+		echo "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
 		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "${YELLOW}按回车键启动。${RESET}"
+		cataclysm
 		read
 		DEBIANMENU
 	fi
-	##########################
 
+	##############################
 	if [ "${SOFTWARE}" == '6' ]; then
 		INSTALLsynaptic
 	fi
@@ -759,7 +759,23 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
+	##########################
+	if [ "${SOFTWARE}" == '8' ]; then
+		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
+		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
+		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
+		read
+		apt update
+		apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
+		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
+
 	##############################
+
 	DEBIANMENU
 
 }
