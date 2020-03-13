@@ -664,7 +664,7 @@ OTHERSOFTWARE() {
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
 			"3" "LibreOffice:开源、自由的办公文档软件" \
 			"4" "Synaptic：新立得软件包管理器/软件商店" \
-			"5" "Synaptic：新立得软件包管理器/软件商店" \
+			"5" "Parole：xfce默认媒体播放器，风格简洁" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -716,6 +716,17 @@ OTHERSOFTWARE() {
 		INSTALLsynaptic
 	fi
 	##########################
+
+	if [ "${SOFTWARE}" == '5' ]; then
+
+		apt install -y parole
+		echo "安装完成，如需卸载，请手动输apt purge -y parole"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
+	##############################
 	DEBIANMENU
 
 }
