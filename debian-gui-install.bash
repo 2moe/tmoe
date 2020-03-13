@@ -357,6 +357,9 @@ installBROWSER() {
 }
 ######################################################
 INSTALLGUI() {
+	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+	echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
+	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
@@ -722,9 +725,6 @@ OTHERSOFTWARE() {
 INSTALLXFCE4DESKTOP() {
 	apt-mark hold udisks2
 	apt update
-	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-    echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
-    echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
 	apt install -y xfwm4-theme-breeze xcursor-themes
