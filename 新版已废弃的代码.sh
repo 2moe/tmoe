@@ -209,7 +209,7 @@ MODIFYVNCORXSDLCONF() {
 #xz -z -T0 -e -9 -v -f ${TMPtime}.tar
 #tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
 #################################
-#自动选择键盘布局也会出问题
+#自动选择键盘布局可能会出问题(可能废弃)
 echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
 echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections

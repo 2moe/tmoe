@@ -153,6 +153,7 @@ DEBIANMENU() {
 
 MODIFYVNCCONF() {
 	if [ ! -e /bin/nano ]; then
+		apt update
 		apt install -y nano
 	fi
 
@@ -248,6 +249,7 @@ MODIFYXSDLCONF() {
 #################
 NANOMANUALLYMODIFY() {
 	if [ ! -e /bin/nano ]; then
+		apt update
 		apt install -y nano
 	fi
 	nano /usr/bin/startxsdl || nano $(which startxsdl)
@@ -332,12 +334,14 @@ installBROWSER() {
 			echo "2s后将自动开始安装"
 			sleep 2
 			echo
+			apt update
 			apt install -y firefox-esr firefox-esr-l10n-zh-cn
 		else
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 			echo " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET} "
 			echo "2s后将自动开始安装"
 			sleep 2
+			apt update
 			apt install -y firefox firefox-l10n-zh-cn
 		fi
 	else
@@ -346,6 +350,7 @@ installBROWSER() {
 		echo '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
 		echo "2s后将自动开始安装"
 		sleep 2
+		apt update
 		apt install -y chromium chromium-l10n
 		sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
 		grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
@@ -357,6 +362,9 @@ installBROWSER() {
 }
 ######################################################
 INSTALLGUI() {
+	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+	echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
+	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
@@ -676,7 +684,7 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '1' ]; then
-
+		apt update
 		apt install -y mpv
 		echo "安装完成，如需卸载，请手动输apt purge -y mpv"
 		echo 'Press Enter to return.'
@@ -704,6 +712,7 @@ OTHERSOFTWARE() {
 		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
 		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
 		read
+		apt update
 		apt install -y libreoffice-l10n-zh-cn libreoffice libreoffice-gtk3
 		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
 		echo 'Press Enter to return.'
@@ -718,7 +727,7 @@ OTHERSOFTWARE() {
 	##########################
 
 	if [ "${SOFTWARE}" == '5' ]; then
-
+		apt update
 		apt install -y parole
 		echo "安装完成，如需卸载，请手动输apt purge -y parole"
 		echo 'Press Enter to return.'
@@ -823,6 +832,7 @@ MODIFYREMOTEDESKTOP() {
 #################################################
 MODIFYXRDPCONF() {
 	if [ ! -e "/usr/sbin/xrdp" ]; then
+		apt update
 		apt install -y xrdp
 	fi
 	if [ ! -e "/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf" ]; then
