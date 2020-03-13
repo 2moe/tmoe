@@ -400,9 +400,12 @@ REMOVEGUI() {
 	echo 'Press enter to confirm ,press Ctfl + C to cancel'
 	read
 	apt purge -y xfce4 xfce4-terminal tightvncserver xfce4-goodies
+	apt purge -y ^xfce
 	apt purge -y xfwm4-theme-breeze xcursor-themes
 	apt purge -y lxde-core lxterminal
+	apt purge -y ^lxde
 	apt purge -y mate-desktop-environment-core mate-terminal || aptitude purge -y mate-desktop-environment-core 2>/dev/null
+	apt purge ^mate
 	apt autopurge
 	DEBIANMENU
 }

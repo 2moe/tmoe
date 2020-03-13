@@ -1521,6 +1521,7 @@ echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修�
 function remove()
 {
 apt purge -y xfce4 xfce4-terminal tightvncserver
+apt purge -y ^xfce
 apt autopurge
 }
 function main()
@@ -1621,6 +1622,7 @@ echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修�
 function remove()
 {
    apt purge -y lxde-core lxterminal tightvncserver
+   apt purge -y ^lxde
    apt autopurge
 }
 
@@ -1731,6 +1733,7 @@ echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修�
 function remove()
 {
   apt purge -y mate-desktop-environment-core mate-terminal tightvncserver
+  apt purge -y ^mate
   apt autopurge
 }
 
@@ -1937,6 +1940,7 @@ apt purge -y tightvncserver
 apt autopurge
 aptitude purge -y task-gnome-desktop
 apt purge -y task-gnome-desktop
+apt purge -y ^gnome
 apt autopurge
 }
 
@@ -2046,6 +2050,7 @@ function remove()
 apt purge -y tightvncserver kde-plasma-desktop
 aptitude purge -y  kde-plasma-desktop
 apt purge -y  plasma-desktop
+apt purge -y ^plasma
 apt autopurge
 }
 
