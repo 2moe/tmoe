@@ -419,7 +419,9 @@ It is recommended that you back up the entire system before removal. If the data
 
     read opt
 	case \$opt in
-		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm && echo "Deleted已删除" ;;
+		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm  
+    rm -f ~/debian-buster-rootfs.tar.xz 
+    echo "Deleted已删除" ;;
 		n*|N*) echo "skipped." ;;
 		*) echo "Invalid choice. skipped." ;;
 	esac
@@ -1299,7 +1301,7 @@ cat  > /etc/apt/sources.list <<-'EndOfFile'
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable-updates main contrib non-free
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free
-#deb http://mirrors.tuna.tsinghua.edu.cn/debian-security stable/updates main contrib non-free
+#deb http://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 EndOfFile
 
