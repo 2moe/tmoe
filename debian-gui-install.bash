@@ -725,7 +725,7 @@ OTHERSOFTWARE() {
 	if [ "${SOFTWARE}" == '4' ]; then
 		if [ ! -e "/usr/games/desmume" ]; then
 			apt update
-			apt install -y desmume
+			apt install -y desmume unzip
 		fi
 
 		if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
@@ -740,8 +740,8 @@ OTHERSOFTWARE() {
 			unzip slymkbr1.zip
 			unzip mayomonogatari2.zip
 			mv -f 斯隆与马克贝尔的谜之物语k73/* ./
-			mv -f 谜之物语/* ./
-			rm -rf *url *txt 谜之物语 斯隆与马克贝尔的谜之物语k73
+			mv -f 迷之物语/* ./
+			rm -rf *url *txt 迷之物语 斯隆与马克贝尔的谜之物语k73
 			echo "安装完成，如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 		fi
 		desmume ./3782.nds 2>/dev/null &
