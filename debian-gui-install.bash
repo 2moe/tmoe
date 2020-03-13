@@ -667,12 +667,14 @@ KALISourcesList() {
 OTHERSOFTWARE() {
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
-			"您想要安装哪个软件？\n Which software do you want to install? " 15 60 5 \
+			"您想要安装哪个软件？\n Which software do you want to install? " 17 60 6 \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ(arm64)：在线聊天软件" \
-			"3" "LibreOffice:开源、自由的办公文档软件" \
-			"4" "Synaptic：新立得软件包管理器/软件商店" \
-			"5" "Parole：xfce默认媒体播放器，风格简洁" \
+			"3" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
+			"4" "Parole：xfce默认媒体播放器，风格简洁" \
+			"5" "LibreOffice:开源、自由的办公文档软件" \
+			"6" "Synaptic：新立得软件包管理器/软件商店" \
+			"7" "GIMP：GNU 图像处理程序" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -707,7 +709,28 @@ OTHERSOFTWARE() {
 		DEBIANMENU
 	fi
 	##############################
+
 	if [ "${SOFTWARE}" == '3' ]; then
+		apt update
+		apt install -y wesnoth
+		echo "安装完成，如需卸载，请手动输apt purge -y wesnoth"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
+	##############################
+	if [ "${SOFTWARE}" == '4' ]; then
+		apt update
+		apt install -y parole
+		echo "安装完成，如需卸载，请手动输apt purge -y parole"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
+	##############################
+	if [ "${SOFTWARE}" == '5' ]; then
 		ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
 		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
 		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
@@ -720,16 +743,17 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
-	##############################
-	if [ "${SOFTWARE}" == '4' ]; then
-		INSTALLsynaptic
-	fi
 	##########################
 
-	if [ "${SOFTWARE}" == '5' ]; then
+	if [ "${SOFTWARE}" == '6' ]; then
+		INSTALLsynaptic
+	fi
+	###############################
+	if [ "${SOFTWARE}" == '7' ]; then
 		apt update
-		apt install -y parole
-		echo "安装完成，如需卸载，请手动输apt purge -y parole"
+		apt install -y gimp
+		gimp &
+		echo "安装完成，如需卸载，请手动输apt purge -y gimp"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
