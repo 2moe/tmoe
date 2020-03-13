@@ -1661,6 +1661,7 @@ apt-mark hold udisks2
 apt update
 echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
 apt install -y fonts-noto-cjk aptitude 
+mkdir -p /run/lock
 aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 2>/dev/null
 apt clean
 
