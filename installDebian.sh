@@ -1296,10 +1296,10 @@ YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
 #配置清华源
 cat  > /etc/apt/sources.list <<-'EndOfFile'
-#deb http://mirrors.tuna.tsinghua.edu.cn/debian/ testing main contrib non-free
-#deb http://mirrors.tuna.tsinghua.edu.cn/debian/ testing-updates main contrib non-free
-#deb http://mirrors.tuna.tsinghua.edu.cn/debian/ testing-backports main contrib non-free
-#deb http://mirrors.tuna.tsinghua.edu.cn/debian-security testing-security main contrib non-free
+#deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
+#deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable-updates main contrib non-free
+#deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free
+#deb http://mirrors.tuna.tsinghua.edu.cn/debian-security stable-security main contrib non-free
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 EndOfFile
 
