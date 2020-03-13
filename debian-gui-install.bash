@@ -722,6 +722,9 @@ OTHERSOFTWARE() {
 INSTALLXFCE4DESKTOP() {
 	apt-mark hold udisks2
 	apt update
+	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+    echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
+    echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
 	apt install -y xfwm4-theme-breeze xcursor-themes
