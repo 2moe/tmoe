@@ -132,7 +132,7 @@ GNULINUX() {
 		echo "正在安装相关依赖..."
 		if grep -Eqii "Alpine" /etc/issue || grep -Eq "Alpine" /etc/*-release; then
 
-			apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils
+			apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils less
 		elif grep -Eqi "Arch" /etc/issue || grep -Eqi "Manjaro" /etc/issue; then
 
 			pacman -Syu --noconfirm ${dependencies}
