@@ -1299,9 +1299,10 @@ if [ ! -f ".profile" ]; then
 else
   mv -f .profile .profile.bak
 fi
-cat >.profile <<-'EDITBASHRC'
+cat >.profile <<-'EDITBASHPROFILE'
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
+cd ~
 #配置清华源
 #stable-backports会出错，需改为buster-backports
 cat >/etc/apt/sources.list <<-'EndOfFile'
@@ -1369,7 +1370,6 @@ apt install -y apt-utils
 
 apt install -y ca-certificates
 
-#修改http源为https
 echo "Replacing http software source list with https."
 echo "正在将http源替换为https..."
 sed -i 's/http/https/' /etc/apt/sources.list
@@ -1707,9 +1707,8 @@ function main()
 main "$@"
 Matryoshka
 chmod +x kde.sh
-chmod +x ~/*
 grep 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
-cd ~
+
 echo "Welcome to Debian GNU/Linux."
 cat /etc/issue
 uname -a
@@ -1756,6 +1755,6 @@ echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to canc
 echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"
 sleep 2
 bash zsh.sh
-EDITBASHRC
+EDITBASHPROFILE
 
 bash /data/data/com.termux/files/usr/bin/debian
