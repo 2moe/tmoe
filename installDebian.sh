@@ -221,7 +221,9 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
     echo "" >>${DebianCHROOT}/etc/profile
   fi
+  #此处若不创建，将有可能导致chromium无法启动。
   mkdir -p ${DebianCHROOT}/run/shm
+  chmod 1777 ${DebianCHROOT}/dev/shm 2>/dev/null
   grep 'export PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\export PATH='/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games'" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   grep 'export PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
