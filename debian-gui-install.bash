@@ -833,18 +833,7 @@ INSTALLXFCE4DESKTOP() {
 	EndOfFile
 	chmod +x ./xstartup
 
-	cd /usr/bin
-	cat >startvnc <<-'EndOfFile'
-		#!/bin/bash
-		stopvnc >/dev/null 2>&1
-		export USER=root
-		export HOME=/root
-		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
-		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
-	EndOfFile
-	#上面那条显示LAN IP的命令不要加双引号
-
+	cd /usr/local/bin
 	cat >startxsdl <<-'EndOfFile'
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
@@ -856,27 +845,10 @@ INSTALLXFCE4DESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		startxfce4
 	EndOfFile
-
-	cat >stopvnc <<-'EndOfFile'
-		#!/bin/bash
-		export USER=root
-		export HOME=/root
-		vncserver -kill :1
-		rm -rf /tmp/.X1-lock
-		rm -rf /tmp/.X11-unix/X1
-		pkill Xtightvnc
-	EndOfFile
-	chmod +x startvnc stopvnc startxsdl
-	echo 'The vnc service is about to start for you. The password you entered is hidden.'
-	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
-	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
-	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
-	echo '请输入6至8位密码'
-	startvnc
-	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-	echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+	STARTVNCANDSTOPVNC
 
 }
+
 #############################
 MODIFYREMOTEDESKTOP() {
 	REMOTEDESKTOP=$(whiptail --title "远程桌面" --menu \
@@ -951,11 +923,11 @@ MODIFYXRDPCONF() {
 ############################
 INSTALLMATEDESKTOP() {
 	apt-mark hold udisks2
+	apt-mark hold gvfs
 	apt update
 	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
 	apt install -y fonts-noto-cjk aptitude tightvncserver
 	mkdir -p /run/lock
-	mkdir -p touch /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
 	aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal 2>/dev/null
 	apt clean
@@ -970,18 +942,7 @@ INSTALLMATEDESKTOP() {
 	EndOfFile
 	chmod +x ./xstartup
 
-	cd /usr/bin
-	cat >startvnc <<-'EndOfFile'
-		#!/bin/bash
-		stopvnc >/dev/null 2>&1
-		export USER=root
-		export HOME=/root
-		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
-		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
-	EndOfFile
-
-	#############
+	cd /usr/local/bin
 	cat >startxsdl <<-'EndOfFile'
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
@@ -993,7 +954,21 @@ INSTALLMATEDESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		mate-session
 	EndOfFile
+	STARTVNCANDSTOPVNC
 
+}
+#################################################
+STARTVNCANDSTOPVNC() {
+	cd /usr/local/bin
+	cat >startvnc <<-'EndOfFile'
+		#!/bin/bash
+		stopvnc >/dev/null 2>&1
+		export USER=root
+		export HOME=/root
+		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+	EndOfFile
 	##############
 	cat >stopvnc <<-'EndOfFile'
 		#!/bin/bash
@@ -1004,6 +979,7 @@ INSTALLMATEDESKTOP() {
 		rm -rf /tmp/.X11-unix/X1
 		pkill Xtightvnc
 	EndOfFile
+	###############################
 	chmod +x startvnc stopvnc startxsdl
 	dpkg --configure -a
 	#暂不卸载。若卸载则将破坏其依赖关系。
@@ -1018,8 +994,12 @@ INSTALLMATEDESKTOP() {
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
 	echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
-
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	DEBIANMENU
 }
-#################################################
+
+###########################################
 CHECKdependencies
 ########################################################################
