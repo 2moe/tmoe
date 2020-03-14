@@ -725,7 +725,7 @@ OTHERSOFTWARE() {
 	if [ "${SOFTWARE}" == '4' ]; then
 		if [ ! -e "/usr/games/desmume" ]; then
 			apt update
-			apt install -y desmume unzip
+			apt install -y desmume unzip p7zip-full
 		fi
 
 		if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
@@ -735,13 +735,15 @@ OTHERSOFTWARE() {
 			cd ~
 			mkdir -p '斯隆与马克贝尔的谜之物语'
 			cd '斯隆与马克贝尔的谜之物语'
-			wget http://k73dx1.zxclqw.com/slymkbr1.zip
-			wget http://k73dx1.zxclqw.com/mayomonogatari2.zip
-			unzip slymkbr1.zip
-			unzip mayomonogatari2.zip
+			wget -O slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
+			wget -O mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
+			7za x slymkbr1.zip
+			7za x mayomonogatari2.zip
 			mv -f 斯隆与马克贝尔的谜之物语k73/* ./
 			mv -f 迷之物语/* ./
-			rm -rf *url *txt 迷之物语 斯隆与马克贝尔的谜之物语k73
+			rm -f *url *txt 
+			rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
+			rm -f slymkbr1.zip* mayomonogatari2.zip*
 			echo "安装完成，如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 		fi
 		desmume ./3782.nds 2>/dev/null &
