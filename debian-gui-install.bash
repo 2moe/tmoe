@@ -986,6 +986,9 @@ INSTALLMATEDESKTOP() {
 INSTALLLXDEDESKTOP() {
 	apt-mark hold udisks2
 	apt update
+	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+	echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
+	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
 	apt install -y fonts-noto-cjk lxde-core lxterminal tightvncserver
 	apt clean
