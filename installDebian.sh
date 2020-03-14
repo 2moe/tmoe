@@ -1499,7 +1499,7 @@ echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver�
 apt install -y fonts-noto-cjk aptitude tightvncserver
 mkdir -p /run/lock
 touch /var/lib/aptitude/pkgstates
-aptitude install -y task-gnome-desktop
+aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
 apt install -y xinit dbus-x11
 apt clean
 
@@ -1608,7 +1608,7 @@ echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver�
 apt install -y aptitude
 mkdir -p /run/lock
 touch /var/lib/aptitude/pkgstates
-aptitude install -y kde-plasma-desktop
+aptitude install -y kde-plasma-desktop || apt install -y kde-plasma-desktop
 apt install -y fonts-noto-cjk tightvncserver 
 #task-kde-desktop
 
