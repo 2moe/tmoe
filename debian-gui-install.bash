@@ -977,6 +977,8 @@ INSTALLMATEDESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		mate-session
 	EndOfFile
+	echo "mate桌面可能存在gvfs和udisks2配置出错的问题，请直接无视"
+	echo "您可以输umount .gvfs ; apt purge -y ^gvfs ^udisks来卸载出错的软件包，但这将破坏mate桌面的依赖关系。若在卸载后不慎输入apt autopurge -y将有可能导致mate桌面崩溃。"
 	STARTVNCANDSTOPVNC
 
 }

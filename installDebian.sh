@@ -1493,6 +1493,7 @@ cat >gnome.sh <<-'Matryoshka'
 function install()
 {
 apt-mark hold udisks2
+apt-mark hold gvfs
 apt update
 echo "Gnome测试失败，请自行解决软件依赖和其它相关问题。"
 echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver和task-gnome-desktop'
