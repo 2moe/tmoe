@@ -728,13 +728,13 @@ OTHERSOFTWARE() {
 			apt install -y desmume unzip p7zip-full
 		fi
 
-		if [ -e "3782.nds" ]; then
-			echo "检测到您已安装，如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
+		if [ -e "~/斯隆与马克贝尔的谜之物语/3782.nds" ]; then
+			echo "检测到您已安装。"
 
 		else
-			cd ~
-			mkdir -p '斯隆与马克贝尔的谜之物语'
-			cd '斯隆与马克贝尔的谜之物语'
+
+			mkdir -p '~/斯隆与马克贝尔的谜之物语'
+			cd '~/斯隆与马克贝尔的谜之物语'
 			wget -O slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
 			wget -O mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
 			7za x slymkbr1.zip
