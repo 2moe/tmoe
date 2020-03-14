@@ -728,7 +728,7 @@ OTHERSOFTWARE() {
 			apt install -y desmume unzip p7zip-full
 		fi
 
-		if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
+		if [ -e "3782.nds" ]; then
 			echo "检测到您已安装，如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 
 		else
