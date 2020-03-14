@@ -419,7 +419,8 @@ It is recommended that you back up the entire system before removal. If the data
 
     read opt
 	case \$opt in
-		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm  
+		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz 
+    rm -f $PREFIX/bin/debian-rm  
     rm -f ~/debian-buster-rootfs.tar.xz 
     echo "Deleted已删除" ;;
 		n*|N*) echo "skipped." ;;
@@ -1285,7 +1286,6 @@ if [ -f "/root/.vnc/startxsdl" ]; then
 	/usr/local/bin/startxsdl
 fi
 ps -e 2>/dev/null | tail -n 25
-alias z="z 2>/dev/null"
 EndOfFile
 
 sed -i '1 r vnc-autostartup' ./.bashrc

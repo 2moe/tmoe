@@ -1370,7 +1370,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
 			bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
 		else
-			bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
+			bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
 		fi
 	else
 		mkdir -p /sdcard/Download/backup
