@@ -1663,12 +1663,12 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
-apt install -y fonts-noto-cjk aptitude tightvncserver 
-mkdir -p /run/lock
-mkdir -p /var/lib/aptitude
+echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal等软件包'
+apt install -y aptitude
+mkdir -p /run/lock /var/lib/aptitude
 touch /var/lib/aptitude/pkgstates
 aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal 2>/dev/null
+apt install -y fonts-noto-cjk tightvncserver
 apt clean
 
 mkdir -p ~/.vnc
@@ -1870,6 +1870,7 @@ echo "Gnome测试失败，请自行解决软件依赖和其它相关问题。"
 echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver和task-gnome-desktop'
 apt install -y fonts-noto-cjk aptitude tightvncserver
 mkdir -p /run/lock
+touch /var/lib/aptitude/pkgstates
 aptitude install -y task-gnome-desktop
 apt install -y xinit dbus-x11
 apt clean
@@ -1978,6 +1979,7 @@ echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
 echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop等软件包'
 apt install -y aptitude
 mkdir -p /run/lock
+touch /var/lib/aptitude/pkgstates
 aptitude install -y kde-plasma-desktop
 apt install -y fonts-noto-cjk tightvncserver 
 #task-kde-desktop
