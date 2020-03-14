@@ -44,7 +44,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200313-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 19 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200314-12)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -741,7 +741,7 @@ OTHERSOFTWARE() {
 			7za x mayomonogatari2.zip
 			mv -f 斯隆与马克贝尔的谜之物语k73/* ./
 			mv -f 迷之物语/* ./
-			rm -f *url *txt 
+			rm -f *url *txt
 			rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
 			rm -f slymkbr1.zip* mayomonogatari2.zip*
 			echo "安装完成，您需要手动进入'/root/斯隆与马克贝尔的谜之物语'目录加载游戏"
