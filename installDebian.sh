@@ -1285,7 +1285,7 @@ if [ -f "/root/.vnc/startxsdl" ]; then
 	/usr/local/bin/startxsdl
 fi
 ps -e 2>/dev/null | tail -n 25
-
+alias z="z 2>/dev/null"
 EndOfFile
 
 sed -i '1 r vnc-autostartup' ./.bashrc
