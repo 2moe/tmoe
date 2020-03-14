@@ -31,13 +31,6 @@ CHECKdependencies() {
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
-	##过渡期间移动文件，之后可能会集成进脚本里。
-	if [ ! -e "/etc/tmp/xfce.sh" ]; then
-		mkdir -p /etc/tmp
-		cd /usr/local/bin
-		mv -f xfce.sh mate.sh lxde.sh kali.sh /etc/tmp/ >/dev/null 2>&1
-	fi
-
 	DEBIANMENU
 }
 ####################################################
@@ -157,8 +150,8 @@ MODIFYVNCCONF() {
 		apt install -y nano
 	fi
 
-	if [ ! -e /usr/bin/startvnc ]; then
-		echo "/usr/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+	if [ ! -e /usr/local/bin/startvnc ]; then
+		echo "/usr/local/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
 		echo '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
 		echo "Press Enter to confirm."
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
@@ -196,7 +189,7 @@ MODIFYVNCCONF() {
 			echo "Press Enter to confirm."
 			echo "${YELLOW}按回车键确认编辑。${RESET}"
 			read
-			nano /usr/bin/startvnc || nano $(which startvnc)
+			nano /usr/local/bin/startvnc || nano $(which startvnc)
 			echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 		fi
 		stopvnc 2>/dev/null
@@ -211,8 +204,8 @@ MODIFYVNCCONF() {
 ############################
 MODIFYXSDLCONF() {
 
-	if [ ! -f /usr/bin/startxsdl ]; then
-		echo "/usr/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+	if [ ! -f /usr/local/bin/startxsdl ]; then
+		echo "/usr/local/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
 		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
@@ -252,7 +245,7 @@ NANOMANUALLYMODIFY() {
 		apt update
 		apt install -y nano
 	fi
-	nano /usr/bin/startxsdl || nano $(which startxsdl)
+	nano /usr/local/bin/startxsdl || nano $(which startxsdl)
 	echo 'See your current xsdl configuration information below.'
 	echo '您当前的ip地址为'
 	echo $(sed -n 3p $(which startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
@@ -377,7 +370,8 @@ INSTALLGUI() {
 	fi
 
 	if [ "$INSTALLDESKTOP" == '2' ]; then
-		bash /etc/tmp/lxde.sh
+		#bash /etc/tmp/lxde.sh
+		INSTALLLXDEDESKTOP
 	fi
 
 	if [ "$INSTALLDESKTOP" == '3' ]; then
@@ -650,15 +644,43 @@ KALISourcesList() {
 		echo 'Press Enter to confirm.'
 		echo "${YELLOW}按回车键确认。${RESET}"
 		read
-		bash /etc/tmp/kali.sh
+		KALISOURCESLIST
 	else
 		echo "检测到您当前为kali源，是否修改为debian源？"
 		echo "Detected that your current software sources list is kali, do you need to modify it to debian source?"
 		echo 'Press Enter to confirm.'
 		echo "${YELLOW}按回车键确认。${RESET}"
 		read
-		bash /etc/tmp/kali.sh rm
+		DEBIANSOURCESLIST
 	fi
+}
+################################
+KALISOURCESLIST() {
+	if [ ! -e "/usr/bin/gpg" ]; then
+		apt update
+		apt install gpg -y
+	fi
+	#添加公钥
+	apt-key adv --keyserver keyserver.ubuntu.com --recv ED444FF07D8D0BF6
+	cd /etc/apt/
+	cp -f sources.list sources.list.bak
+
+	#sed  's/^/#&/g' /etc/apt/sources.list
+
+	echo 'deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib' >/etc/apt/sources.list
+	apt update
+	apt list --upgradable
+	apt dist-upgrade -y
+	apt search kali-linux
+	echo 'You have successfully replaced your debian source with a kali source.'
+}
+#######################
+DEBIANSOURCESLIST() {
+	echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free' >/etc/apt/sources.list
+	apt update
+	apt list --upgradable
+	echo '您已换回debian源'
+	apt dist-upgrade -y
 }
 ############################################
 OTHERSOFTWARE() {
@@ -927,9 +949,9 @@ INSTALLMATEDESKTOP() {
 	apt update
 	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
 	apt install -y aptitude
-	mkdir -p /run/lock /var/lib/aptitude/
+	mkdir -p /run/lock /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
-	aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal 2>/dev/null
+	aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal
 	apt install -y fonts-noto-cjk tightvncserver
 	apt clean
 
@@ -958,6 +980,40 @@ INSTALLMATEDESKTOP() {
 	STARTVNCANDSTOPVNC
 
 }
+#################################
+INSTALLLXDEDESKTOP() {
+	apt-mark hold udisks2
+	apt update
+	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
+	apt install -y fonts-noto-cjk lxde-core lxterminal tightvncserver
+	apt clean
+
+	mkdir -p ~/.vnc
+	cd ~/.vnc
+	cat >xstartup <<-'EndOfFile'
+		#!/bin/bash
+		xrdb ${HOME}/.Xresources
+		export PULSE_SERVER=127.0.0.1
+		startlxde &
+	EndOfFile
+	chmod +x ./xstartup
+
+	cd /usr/local/bin
+	cat >startxsdl <<-'EndOfFile'
+		#!/bin/bash
+		stopvnc >/dev/null 2>&1
+		export DISPLAY=127.0.0.1:0
+		export PULSE_SERVER=tcp:127.0.0.1:4712
+		echo '正在为您启动xsdl,请将display number改为0'
+		echo 'Starting xsdl, please change display number to 0'
+		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+		startlxde
+	EndOfFile
+	STARTVNCANDSTOPVNC
+
+}
+
 #################################################
 STARTVNCANDSTOPVNC() {
 	cd /usr/local/bin

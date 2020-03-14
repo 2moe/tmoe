@@ -213,4 +213,450 @@ MODIFYVNCORXSDLCONF() {
 echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections
 echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
+###过渡期间移动文件，之后已经集成进脚本里。
+if [ ! -e "/etc/tmp/xfce.sh" ]; then
+    mkdir -p /etc/tmp
+    cd /usr/local/bin
+    mv -f xfce.sh mate.sh lxde.sh kali.sh /etc/tmp/ >/dev/null 2>&1
+fi
+########################
+cat >xfce.sh <<-'Matryoshka'
+#!/bin/bash
+function install()
+{
+apt-mark hold udisks2
+apt update
+echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
+apt install -y xfwm4-theme-breeze  xcursor-themes
+apt clean
 
+mkdir -p ~/.vnc
+cd ~/.vnc
+cat >xstartup<<-'EndOfFile'
+#!/bin/bash
+xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
+startxfce4 &
+EndOfFile
+chmod +x ./xstartup
+
+
+cd /usr/bin
+cat >startvnc<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export USER=root
+export HOME=/root
+vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+EndOfFile
+#上面那条显示LAN IP的命令不要加双引号
+
+
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4712
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+startxfce4
+EndOfFile
+
+cat >stopvnc<<-'EndOfFile'
+#!/bin/bash
+export USER=root
+export HOME=/root
+vncserver -kill :1
+rm -rf /tmp/.X1-lock
+rm -rf /tmp/.X11-unix/X1
+pkill Xtightvnc
+EndOfFile
+chmod +x startvnc stopvnc startxsdl
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+echo '请输入6至8位密码'
+startvnc
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
+}
+function remove()
+{
+apt purge -y xfce4 xfce4-terminal tightvncserver
+apt purge -y ^xfce
+apt autopurge
+}
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                    help|man)
+                        man xfce-session 2>&1 >/dev/null
+						xfce-session --help
+                        ;;
+
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+
+main "$@"
+Matryoshka
+chmod +x xfce.sh
+
+cat >lxde.sh <<-'Matryoshka'
+#!/bin/bash
+function install()
+{
+apt-mark hold udisks2
+apt update
+echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
+apt install -y fonts-noto-cjk lxde-core lxterminal tightvncserver
+apt clean
+
+mkdir -p ~/.vnc
+cd ~/.vnc
+cat >xstartup<<-'EndOfFile'
+#!/bin/bash
+xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
+startlxde &
+EndOfFile
+chmod +x ./xstartup
+
+
+cd /usr/bin
+cat >startvnc<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export USER=root
+export HOME=/root
+vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+EndOfFile
+
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4712
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+startlxde
+EndOfFile
+
+
+##############
+cat >stopvnc<<-'EndOfFile'
+#!/bin/bash
+export USER=root
+export HOME=/root
+vncserver -kill :1
+rm -rf /tmp/.X1-lock
+rm -rf /tmp/.X11-unix/X1
+pkill Xtightvnc
+EndOfFile
+chmod +x startvnc stopvnc startxsdl
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+echo '请输入6至8位密码'
+startvnc
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
+}
+
+function remove()
+{
+   apt purge -y lxde-core lxterminal tightvncserver
+   apt purge -y ^lxde
+   apt autopurge
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                    help|man)
+                        man lxde-session 2>&1 >/dev/null
+						lxde-session --help
+                        ;;
+
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+
+
+main "$@"
+
+Matryoshka
+chmod +x lxde.sh
+
+cat >mate.sh <<-'Matryoshka'
+#!/bin/bash
+function install()
+{
+apt-mark hold udisks2
+apt update
+echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal等软件包'
+apt install -y aptitude
+mkdir -p /run/lock /var/lib/aptitude
+touch /var/lib/aptitude/pkgstates
+aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal 2>/dev/null
+apt install -y fonts-noto-cjk tightvncserver
+apt clean
+
+mkdir -p ~/.vnc
+cd ~/.vnc
+cat >xstartup<<-'EndOfFile'
+#!/bin/bash
+xrdb ${HOME}/.Xresources
+export PULSE_SERVER=127.0.0.1
+mate-session &
+EndOfFile
+chmod +x ./xstartup
+
+
+cd /usr/bin
+cat >startvnc<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export USER=root
+export HOME=/root
+vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+EndOfFile
+
+#############
+cat >startxsdl<<-'EndOfFile'
+#!/bin/bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4712
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+mate-session
+EndOfFile
+
+
+##############
+cat >stopvnc<<-'EndOfFile'
+#!/bin/bash
+export USER=root
+export HOME=/root
+vncserver -kill :1
+rm -rf /tmp/.X1-lock
+rm -rf /tmp/.X11-unix/X1
+pkill Xtightvnc
+EndOfFile
+chmod +x startvnc stopvnc startxsdl
+dpkg --configure -a 
+#暂不卸载。若卸载则将破坏其依赖关系。
+#umount .gvfs
+#apt purge "gvfs*" "udisks2*"
+echo 'The vnc service is about to start for you. The password you entered is hidden.'
+echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+echo '请输入6至8位密码'
+startvnc
+echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
+}
+
+
+function remove()
+{
+  apt purge -y mate-desktop-environment-core mate-terminal tightvncserver
+  apt purge -y ^mate
+  apt autopurge
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                    help|man)
+                        man mate-session 2>&1 >/dev/null
+						mate-session --help
+                        ;;
+
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+main "$@"
+Matryoshka
+chmod +x mate.sh
+
+#kali源
+cat >kali.sh <<-'EndOfFile'
+#!/bin/bash
+function install()
+{
+apt install gpg -y
+#添加公钥
+apt-key adv --keyserver keyserver.ubuntu.com --recv ED444FF07D8D0BF6
+
+cd /etc/apt/
+cp -f sources.list sources.list.bak
+
+#sed  's/^/#&/g' /etc/apt/sources.list
+
+echo 'deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib' > /etc/apt/sources.list
+apt update
+apt list --upgradable
+apt dist-upgrade -y
+echo 'You have successfully replaced your debian source with a kali source.'
+echo '您已更换为kali源，如需换回debian源，请手动执行bash ~/kali.sh rm'
+apt install -y neofetch
+apt clean
+echo 'You can type "neofetch" to get the current system information'
+echo '您可以输neofetch来获取当前系统信息'
+neofetch
+echo '若您使用的是xfce桌面，则您可以输apt install -y kali-undercover 来安装伪装成win10的主题'
+echo '直接运行kali-undercover可能会报错，请直接在“设置管理器---外观”处，修改样式和图标。'
+}
+function remove()
+{
+echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free' > /etc/apt/sources.list
+apt update
+apt list --upgradable
+echo '您已换回debian源'
+apt dist-upgrade -y
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+main "$@"
+
+EndOfFile
+chmod +x kali.sh
+
+cat >chromium.sh <<-'EOF'
+#!/bin/bash
+function install()
+{
+apt install -y chromium chromium-l10n
+#string='exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"'
+#sed -i 's:${string}:${string} --user-data-dir --no-sandbox:' /bin/bash/chromium
+sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
+grep 'chromium' /etc/profile || echo 'alias chromium="chromium --no-sandbox"' >> /etc/profile
+}
+function remove()
+{
+apt purge -y chromium chromium-l10n
+apt autopurge
+}
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+main "$@"
+EOF
+chmod +x chromium.sh
+
+cat >firefox.sh <<-'EOF'
+#!/bin/bash
+function install()
+{
+    echo "即将安装firefox浏览器长期支持版"
+    apt install -y firefox-esr firefox-esr-l10n-zh-cn
+}
+
+function remove()
+{
+        echo "即将卸载firefox浏览器长期支持版"
+        apt purge -y firefox-esr firefox-esr-l10n-zh-cn
+        apt autopurge
+
+}
+
+function main()
+{
+                case "$1" in
+                install|in|i)
+                        install
+                            ;;
+                remove|rm|uninstall|un|purge)
+                         remove
+                        ;;
+                   *)
+			        install
+			         ;;
+
+
+        esac
+}
+
+main "$@"
+EOF
+chmod +x firefox.sh
