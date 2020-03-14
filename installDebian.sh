@@ -1664,11 +1664,11 @@ function install()
 apt-mark hold udisks2
 apt update
 echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
-apt install -y fonts-noto-cjk aptitude 
+apt install -y fonts-noto-cjk aptitude tightvncserver 
 mkdir -p /run/lock
 mkdir -p touch /var/lib/aptitude
 touch /var/lib/aptitude/pkgstates
-aptitude install -y tightvncserver mate-desktop-environment-core mate-terminal 2>/dev/null
+aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal 2>/dev/null
 apt clean
 
 mkdir -p ~/.vnc
