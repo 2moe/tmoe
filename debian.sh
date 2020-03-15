@@ -231,7 +231,7 @@ ANDROIDTERMUX() {
 	sed -i '/auth-ip-acl/d' ${HOME}/../usr/etc/pulse/default.pa
 	grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa || echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
 	fi
-
+   #auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
 	if ! grep -q "exit-idle-time = -1" ${HOME}/../usr/etc/pulse/daemon.conf; then
 		sed -i '/exit-idle/d' ${HOME}/../usr/etc/pulse/daemon.conf
 		echo "exit-idle-time = -1" >>${HOME}/../usr/etc/pulse/daemon.conf
