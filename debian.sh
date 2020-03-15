@@ -65,7 +65,7 @@ CheckArch() {
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
-	ANDROIDVERSION=$(getprop ro.build.version.release) || ANDROIDVERSION=6
+	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
 	if [ "$(uname -o)" != "GNU/Linux" ]; then
 		termux-setup-storage
 	fi
