@@ -60,12 +60,12 @@ CheckArch() {
 		exit 1
 		;;
 	esac
-
 	DebianFolder=debian_${archtype}
 	DebianCHROOT=${HOME}/${DebianFolder}
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
+	ANDROIDVERSION=$(getprop ro.build.version.release) || ANDROIDVERSION=6
 	if [ "$(uname -o)" != "GNU/Linux" ]; then
 		termux-setup-storage
 	fi
@@ -207,6 +207,21 @@ ANDROIDTERMUX() {
 	fi
 
 	if [ ! -z "$dependencies" ]; then
+		if (("${ANDROIDVERSION}" >= '7')); then
+			if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
+				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+				echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+				read opt
+				case $opt in
+				y* | Y* | "")
+					TERMUXTUNASOURCESLIST
+					;;
+				n* | N*) echo "skipped." ;;
+				*) echo "Invalid choice. skipped." ;;
+				esac
+			fi
+		fi
 		echo "正在安装相关依赖..."
 		apt update
 		apt install -y ${dependencies}
@@ -1454,6 +1469,13 @@ UNXZDEBIANRECOVERYKIT() {
 }
 ###############################
 TERMUXINSTALLXFCE() {
+	if (("${ANDROIDVERSION}" < '7')); then
+		echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
+		echo "Since termux has officially stopped maintaining the old system below android 7, it is not recommended that you continue to operate."
+		echo 'Press Enter to continue.'
+		echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
+		read
+	fi
 	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. The following options only apply to termux.Termux原系统GUI可玩性较低，建议您安装debian系统，以下选项仅适用于termux。" 16 60 4 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
@@ -1664,7 +1686,8 @@ TERMUXTUNASOURCESLIST() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	MainMenu
+	ANDROIDTERMUX
+	#此处要返回依赖检测处！
 
 }
 
