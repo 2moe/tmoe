@@ -362,7 +362,7 @@ INSTALLGUI() {
 	echo 'mate预览截图'
 	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
 	echo 'xfce预览截图'
-	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
+	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
 	echo "请缩小屏幕字体，以获取更优的显示效果。"
 	echo "按回车键选择您需要安装的图形桌面环境"
 	echo "${YELLOW}Press enter to continue.${RESET}"
