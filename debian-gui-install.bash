@@ -19,6 +19,10 @@ CHECKdependencies() {
 		dependencies="${dependencies} xz-utils"
 	fi
 
+	if [ ! -e /usr/bin/catimg ]; then
+		dependencies="${dependencies} catimg"
+	fi
+
 	if [ ! -e /usr/bin/wget ]; then
 		dependencies="${dependencies} wget"
 	fi
@@ -37,7 +41,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200315-11)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 19 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200315-15)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -355,6 +359,14 @@ installBROWSER() {
 }
 ######################################################
 INSTALLGUI() {
+	echo 'mate预览截图'
+	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
+	echo 'xfce预览截图'
+	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
+	echo "请缩小屏幕字体，以获取更优的显示效果。"
+	echo "按回车键选择您需要安装的图形桌面环境"
+	echo "${YELLOW}Press enter to continue.${RESET}"
+	read
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认，一次只可以装一个桌面哦！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 4 \
 		"0" "我一个都不要 =￣ω￣=" \
