@@ -227,11 +227,11 @@ ANDROIDTERMUX() {
 		apt install -y ${dependencies}
 	fi
 	##The vnc sound repair script from andronix has been slightly modified and optimized.
-    if ! grep -q '192.168.0.0' ${HOME}/../usr/etc/pulse/default.pa; then
-	sed -i '/auth-ip-acl/d' ${HOME}/../usr/etc/pulse/default.pa
-	grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa || echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
+	if ! grep -q '192.168.0.0' ${HOME}/../usr/etc/pulse/default.pa; then
+		sed -i '/auth-ip-acl/d' ${HOME}/../usr/etc/pulse/default.pa
+		grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa || echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
 	fi
-   #auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
+	#auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
 	if ! grep -q "exit-idle-time = -1" ${HOME}/../usr/etc/pulse/daemon.conf; then
 		sed -i '/exit-idle/d' ${HOME}/../usr/etc/pulse/daemon.conf
 		echo "exit-idle-time = -1" >>${HOME}/../usr/etc/pulse/daemon.conf
@@ -1388,7 +1388,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 			bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
 		fi
 	else
-	    if [ ! -d "/sdcard/Download/backup" ]; then
+		if [ ! -d "/sdcard/Download/backup" ]; then
 			mkdir -p /sdcard/Download/backup
 		fi
 		cd /sdcard/Download/backup
@@ -1399,6 +1399,8 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 				DOWNLOADDEBIANXFCETARXZ
 
 			fi
+		else
+			DOWNLOADDEBIANXFCETARXZ
 
 		fi
 	fi
