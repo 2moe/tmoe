@@ -626,7 +626,8 @@ Installkaliundercover() {
 	if [ -f "/usr/bin/kali-undercover" ]; then
 		echo "检测到您已安装win10主题"
 	else
-		if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
+		#if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
+		if grep 'kali' '/etc/apt/sources.list'; then
 			apt update
 			apt install -y kali-undercover
 		else
