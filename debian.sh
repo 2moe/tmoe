@@ -1651,10 +1651,15 @@ REMOVEANDROIDTERMUXXFCE() {
 TERMUXTUNASOURCESLIST() {
 	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
+		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+			echo -e '\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
+		fi
 	fi
+
 	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
 		sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/game-packages-24 games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
 	fi
+
 	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
 		sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/science-packages-24 science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
 	fi
