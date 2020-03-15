@@ -245,7 +245,7 @@ MainMenu() {
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
 			"1" "proot安装 install debian" \
 			"2" "chroot安装 debian" \
-			"3" "Termux原系统gui" \
+			"3" "Termux原系统gui及软件源" \
 			"4" "novnc(web端控制)" \
 			"5" "移除 remove system" \
 			"6" "备份系统 backup system" \
@@ -1458,6 +1458,7 @@ TERMUXINSTALLXFCE() {
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
 		"3" "remove xfce4" \
+		"4" "更换为清华源" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1505,6 +1506,10 @@ TERMUXINSTALLXFCE() {
 	##################
 	if [ "${OPTION}" == '3' ]; then
 		REMOVEANDROIDTERMUXXFCE
+	fi
+	##################
+	if [ "${OPTION}" == '4' ]; then
+		TERMUXTUNASOURCESLIST
 	fi
 
 }
@@ -1614,8 +1619,55 @@ REMOVEANDROIDTERMUXXFCE() {
 	apt purge -y ^xfce tigervnc aterm
 	apt purge -y x11-repo
 	apt autoremove
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MainMenu
 
 }
+#################
+TERMUXTUNASOURCESLIST() {
+	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
+	fi
+	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
+		sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/game-packages-24 games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
+	fi
+	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
+		sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/science-packages-24 science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
+	fi
+
+	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list" ]; then
+		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list'; then
+			sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/x11-packages x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
+		fi
+	fi
+
+	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list" ]; then
+		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list'; then
+			sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/unstable-packages unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
+		fi
+	fi
+
+	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list" ]; then
+		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list'; then
+			sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-root-packages-24 root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
+		fi
+	fi
+	apt update
+	apt dist-upgrade -y
+	echo '修改完成，您当前的软件源列表如下所示。'
+	cat /data/data/com.termux/files/usr/etc/apt/sources.list
+	cat /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
+	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
+	echo "您也可以输${YELLOW}cd $PREFIX/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MainMenu
+
+}
+
 ################
 CheckArch
 ##取消注释，测试用。
