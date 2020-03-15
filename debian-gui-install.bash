@@ -359,6 +359,8 @@ installBROWSER() {
 }
 ######################################################
 INSTALLGUI() {
+	echo 'lxde预览截图'
+	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
 	echo 'mate预览截图'
 	wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
 	echo 'xfce预览截图'
