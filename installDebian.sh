@@ -1329,6 +1329,7 @@ if [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
     # proposed为预发布软件源，不建议启用
     # deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
 EndOfFile
+    touch ~/.hushlogin
 fi
 
 #配置dns解析
