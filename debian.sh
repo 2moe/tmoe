@@ -1683,10 +1683,10 @@ TERMUXTUNASOURCESLIST() {
 ##################
 CHOOSEWHICHGNULINUX() {
 	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?优化步骤仅针对Debian sid" 15 50 4 \
-		"1" "Debian" \
-		"2" "Ubuntu 20.04" \
-		"3" "Kali Rolling" \
-		"4" "Devuan" \
+		"1" "Debian:最早的Linux发行版之一" \
+		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
+		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
+		"4" "Funtoo:专注于改进Gentoo" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 
@@ -1709,15 +1709,15 @@ CHOOSEWHICHGNULINUX() {
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '4' ]; then
-		MainMenu
+		INSTALLFuntooDISTRO
 	fi
 	######################################
 
 }
 
 ##############################
-INSTALLDEBIANGNULINUXDISTRO(){
-if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
+INSTALLDEBIANGNULINUXDISTRO() {
+	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
 		BUSTERORSID
 	else
 		if [ ! -d "/sdcard/Download/backup" ]; then
@@ -1797,7 +1797,10 @@ INSTALLKALIROLLING() {
 		sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
 }
 ################
+INSTALLFuntooDISTRO() {
+	echo '正在开发中'
 
+}
 
 ####################
 CheckArch
