@@ -695,3 +695,5 @@ else
         sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 
 fi
+#############
+#	"5" "Void:基于xbps包管理器的独立发行版" \
