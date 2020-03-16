@@ -145,7 +145,7 @@ echo "    jBBdD. :. ........:r... YB  Bi      "
 echo "       :7j1.                 :  :       "
 
 echo "Detected that your current architecture is ${archtype}"
-echo "检测到您当前的架构为${archtype} ，debian系统将安装至~/${DebianFolder}"
+echo "检测到您当前的架构为${archtype} ，GNU/Linux系统将安装至~/${DebianFolder}"
 
 cd ~
 

@@ -1781,9 +1781,21 @@ INSTALLUBUNTUDISTRO2004() {
 }
 ##########
 INSTALLKALIROLLING() {
-	echo '正在开发中...'
+	bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+		sed 's/sid main/kali-rolling main/' |
+		sed 's/stable/kali-last-snapshot/g' |
+		sed '/buster-backports/d' |
+		sed 's:cn/debian:cn/kali:g' |
+		sed 's:debian-sid:kali-rolling:g' |
+		sed 's:debian/sid:kali/current:g' |
+		sed 's/debian系统/kali系统/g' |
+		sed 's/debian容器/kali容器/g' |
+		sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
 }
 ################
+
+
+####################
 CheckArch
 ##取消注释，测试用。
 ##MainMenu
