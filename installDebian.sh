@@ -1340,7 +1340,7 @@ nameserver 240c::6666
 EndOfFile
 
 apt update
-apt install -y locales wget
+apt install -y locales 
 
 echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
 echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
@@ -1354,39 +1354,6 @@ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo "正在配置中文环境..."
 echo "Configuring Chinese environment..."
 sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-
-if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
-    GNULINUXOSRELEASE=FUNTOO
-    grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
-    locale-gen
-    #下面生成的文件不要留空格
-    cat >/etc/portage/make.conf <<-'Endofmakeconf'
-L10N="zh-CN en-US"
-LINGUAS="zh_CN en_US"
-#GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
-GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
-EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
-#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
-ACCEPT_LICENSE="*"
-Endofmakeconf
-    source /etc/portage/make.conf
-    mkdir -p /etc/portage/repos.conf/
-    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
-[gentoo]
-location = /usr/portage
-sync-type = rsync
-#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
-sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
-auto-sync = yes
-EndofgentooConf
-    source /etc/portage/repos.conf/gentoo.conf
-    #同步过于耗时，故注释掉
-    #emerge --sync
-    echo "Asia/Shanghai" >/etc/timezone
-    emerge --config sys-libs/timezone-data
-    #etc-update
-    emerge eix
-fi
 
 cat >/etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
@@ -1420,14 +1387,46 @@ echo "    .u:Y:JQMSsJUv...   .rDE1P71:.7X7     "
 echo "    5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y     "
 echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
+apt install -y apt-utils
+apt install -y ca-certificates wget
 
-    wget -qO /tmp/screenfetch.tar.gz 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/s/screenfetch/screenfetch_3.9.1.orig.tar.gz'
-    tar -zxf /tmp/screenfetch.tar.gz -C /tmp
-    mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
-    chmod +x /usr/local/bin/screenfetch
-    rm -rf /tmp/screenfetch*
+wget -qO /tmp/screenfetch.tar.gz 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/s/screenfetch/screenfetch_3.9.1.orig.tar.gz'
+tar -zxf /tmp/screenfetch.tar.gz -C /tmp
+mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
+chmod +x /usr/local/bin/screenfetch
+rm -rf /tmp/screenfetch*
 
-if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
+if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
+    GNULINUXOSRELEASE=FUNTOO
+    grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
+    locale-gen
+    #下面生成的文件不要留空格
+    cat >/etc/portage/make.conf <<-'Endofmakeconf'
+L10N="zh-CN en-US"
+LINGUAS="zh_CN en_US"
+#GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
+GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
+EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
+#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
+ACCEPT_LICENSE="*"
+Endofmakeconf
+    source /etc/portage/make.conf
+    mkdir -p /etc/portage/repos.conf/
+    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
+[gentoo]
+location = /usr/portage
+sync-type = rsync
+#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
+sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
+auto-sync = yes
+EndofgentooConf
+    source /etc/portage/repos.conf/gentoo.conf
+    #同步过于耗时，故注释掉
+    #emerge --sync
+    echo "Asia/Shanghai" >/etc/timezone
+    emerge --config sys-libs/timezone-data
+    #etc-update
+    emerge eix
     echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
     rm -f vnc* zsh* .profile
     mv -f .profile.bak .profile 2>/dev/null
@@ -1436,9 +1435,6 @@ if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
     exit 0
 fi
 
-apt install -y apt-utils
-
-apt install -y ca-certificates
 
 echo "Replacing http software source list with https."
 echo "正在将http源替换为https..."
