@@ -1331,11 +1331,6 @@ if [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
 EndOfFile
 fi
 
-
-
-
-
-
 #配置dns解析
 rm -f /etc/resolv.conf
 cat > /etc/resolv.conf <<-'EndOfFile'
@@ -1399,7 +1394,10 @@ echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
 if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
     echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
-    exit 0
+    rm -f vnc* zsh* .profile
+    mv -f .profile.bak .profile
+    bash
+    exit 1
 fi
 
 apt install -y apt-utils
