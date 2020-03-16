@@ -1316,6 +1316,7 @@ deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 EndOfFile
 
 #配置dns解析
+rm -f /etc/resolv.conf
 cat > /etc/resolv.conf <<-'EndOfFile'
 nameserver 114.114.114.114
 nameserver 240c::6666

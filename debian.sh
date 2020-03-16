@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ########################################################################
-#检测架构
+#检测架构 CHECK architecture
 CheckArch() {
 
 	case $(uname -m) in
@@ -254,7 +254,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200315-13)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200316-22)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1337,56 +1337,54 @@ CHROOTINSTALLDebian() {
 }
 #################################
 INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
-	less -meQ <<-'EndOfFile'
-		   Tmoe-Debian-Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
-		本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
-		由于恢复包未存储于git仓库，而存储于天萌网盘，故您必须承担并知悉其中的风险。
-		强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
-		本工具的开发者郑重承诺：恢复包内的系统不会使用和披露您的个人信息，也不存在任何侵害您个人隐私的行为。
-		本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
+	if [ ! -d "${DebianCHROOT}" ]; then
+		less -meQ <<-'EndOfFile'
+			   Tmoe-Debian-Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
+			本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
+			由于恢复包未存储于git仓库，而存储于天萌网盘，故您必须承担并知悉其中的风险。
+			强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
+			本工具的开发者郑重承诺：恢复包内的系统不会使用和披露您的个人信息，也不存在任何侵害您个人隐私的行为。
+			本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
 
 
-		1.禁止条例
-		(a)禁止将本工具安装的Debian GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
+			1.禁止条例
+			(a)禁止将本工具安装的Debian GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
 
-		2. 适用范围
-		(a)在您使用本工具时，通过天萌网盘下载的恢复包系统；
-		(b)在您使用本工具时，通过清华镜像站安装的基础系统。
-		您了解并同意，以下信息不适用本许可协议：
-		(a)您在本工具的相关网站发布的有关信息数据，包括但不限于参与活动、点赞信息及评价详情；
-		(b)违反法律规定或违反本工具规则行为及本工具已对您采取的措施。
+			2. 适用范围
+			(a)在您使用本工具时，通过天萌网盘下载的恢复包系统；
+			(b)在您使用本工具时，通过清华镜像站安装的基础系统。
+			您了解并同意，以下信息不适用本许可协议：
+			(a)您在本工具的相关网站发布的有关信息数据，包括但不限于参与活动、点赞信息及评价详情；
+			(b)违反法律规定或违反本工具规则行为及本工具已对您采取的措施。
 
-		3. 信息使用
-		(a)本工具不会收集或向任何无关第三方提供、出售、出租、分享或交易您的个人信息。
-		(b)本工具亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息。
+			3. 信息使用
+			(a)本工具不会收集或向任何无关第三方提供、出售、出租、分享或交易您的个人信息。
+			(b)本工具亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息。
 
-		4.下载说明
-		(a)天萌网盘内的文件有可能由于网站被黑、文件失效、文件被替换、网站服务器出错等原因而导致下载出错或下载内容被劫持,故本工具在解压前会自动校验文件的sha256哈希值。
-		(b)强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
+			4.下载说明
+			(a)天萌网盘内的文件有可能由于网站被黑、文件失效、文件被替换、网站服务器出错等原因而导致下载出错或下载内容被劫持,故本工具在解压前会自动校验文件的sha256哈希值。
+			(b)强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
 
-		5. 恢复包的使用
-		(a)在您未拒绝接受恢复包的情况下，本工具会将恢复包下载至内置存储设备，并将其解压出来，以便您能快速安装并使用Debian GNU/Linux的图形桌面环境。本工具下载的恢复包不会为您提供个性化服务，您需要自行安装、配置第三方软件和主题美化。
-		(b)您有权选择接受或拒绝使用恢复包或本工具。
+			5. 恢复包的使用
+			(a)在您未拒绝接受恢复包的情况下，本工具会将恢复包下载至内置存储设备，并将其解压出来，以便您能快速安装并使用Debian GNU/Linux的图形桌面环境。本工具下载的恢复包不会为您提供个性化服务，您需要自行安装、配置第三方软件和主题美化。
+			(b)您有权选择接受或拒绝使用恢复包或本工具。
 
-		6. 信息安全
-		(a)本工具安装的是原生Debian GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
-		同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
+			6. 信息安全
+			(a)本工具安装的是原生Debian GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
+			同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
 
-		7.最终用户许可协议的更改
-		(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
-		(b)本工具开发者保留随时修改本协议的权利，因此请经常查看。
-	EndOfFile
-	echo 'You must agree to EULA to use this tool.'
-	echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
-	echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
-	read
+			7.最终用户许可协议的更改
+			(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
+			(b)本工具开发者保留随时修改本协议的权利，因此请经常查看。
+		EndOfFile
+		echo 'You must agree to EULA to use this tool.'
+		echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
+		echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
+		read
+	fi
 
-	if (whiptail --title "Install Debian" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
-		if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
-			bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
-		else
-			bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
-		fi
+	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
+		CHOOSEWHICHGNULINUX
 	else
 		if [ ! -d "/sdcard/Download/backup" ]; then
 			mkdir -p /sdcard/Download/backup
@@ -1701,7 +1699,92 @@ TERMUXTUNASOURCESLIST() {
 	#此处要返回依赖检测处！
 
 }
+##################
+CHOOSEWHICHGNULINUX() {
+	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版? 优化步骤仅针对Debian sid，不保证所有发行版都能正确配置。选项3和4正在开发中！" 12 50 4 \
+		"1" "Debian" \
+		"2" "Ubuntu 20.04" \
+		"3" "Kali Rolling" \
+		"4" "Devuan" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
 
+	##############################
+	if [ "${SELECTGNULINUX}" == '0' ]; then
+		MainMenu
+	fi
+	#########################
+	if [ "${SELECTGNULINUX}" == '1' ]; then
+
+		BUSTERORSID
+	fi
+	##############################
+	if [ "${SELECTGNULINUX}" == '2' ]; then
+		INSTALLUBUNTUDISTRO2004
+	fi
+	##############################
+	if [ "${SELECTGNULINUX}" == '3' ]; then
+		INSTALLKALIROLLING
+	fi
+	##############################
+	if [ "${SELECTGNULINUX}" == '4' ]; then
+		MainMenu
+	fi
+	######################################
+
+}
+
+########################
+BUSTERORSID() {
+	if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
+		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh')"
+	else
+		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
+	fi
+}
+#############
+INSTALLUBUNTUDISTRO2004() {
+	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
+		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+			sed 's@#deb http@deb http@g' |
+			sed 's/.*sid main/#&/' |
+			sed 's/main contrib non-free/main restricted universe multiverse/g' |
+			sed 's:stable/updates:focal-security:g' |
+			sed 's/stable/focal/g' |
+			sed 's/buster-backports/focal-backports/' |
+			sed 's:/ sid:/ focal-proposed:' |
+			sed 's:debian-security:ubuntu/:' |
+			sed 's:cn/debian:cn/ubuntu:g' |
+			sed 's:debian-sid:ubuntu-focal:g' |
+			sed 's:debian/sid:ubuntu/focal:g' |
+			sed 's/debian系统/ubuntu系统/g' |
+			sed 's/debian容器/ubuntu容器/g' |
+			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+	else
+		#ubuntu-ports
+		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+			sed 's@#deb http@deb http@g' |
+			sed 's/.*sid main/#&/' |
+			sed 's/main contrib non-free/main restricted universe multiverse/g' |
+			sed 's:stable/updates:focal-security:g' |
+			sed 's/stable/focal/g' |
+			sed 's/buster-backports/focal-backports/' |
+			sed 's:/ sid:/ focal-proposed:' |
+			sed 's:debian-security:ubuntu-ports/:' |
+			sed 's:cn/debian:cn/ubuntu-ports:g' |
+			sed 's:debian-sid:ubuntu-focal:g' |
+			sed 's:debian/sid:ubuntu/focal:g' |
+			sed 's/debian系统/ubuntu系统/g' |
+			sed 's/debian容器/ubuntu容器/g' |
+			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+
+	fi
+
+}
+##########
+INSTALLKALIROLLING() {
+	echo '正在开发中...'
+}
 ################
 CheckArch
 ##取消注释，测试用。

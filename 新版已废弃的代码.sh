@@ -660,3 +660,4 @@ function main()
 main "$@"
 EOF
 chmod +x firefox.sh
+####################
