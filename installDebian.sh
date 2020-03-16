@@ -1382,7 +1382,7 @@ EndofgentooConf
     echo "Asia/Shanghai" >/etc/timezone
     emerge --config sys-libs/timezone-data
     etc-update
-    emerge -a eix
+    emerge eix
 fi
 cat >/etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
