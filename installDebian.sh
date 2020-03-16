@@ -1340,7 +1340,7 @@ nameserver 240c::6666
 EndOfFile
 
 apt update
-apt install -y locales
+apt install -y locales wget
 
 echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
 echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
