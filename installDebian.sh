@@ -1395,7 +1395,10 @@ echo "           .            i   7            "
 if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
     echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
     rm -f vnc* zsh* .profile
-    mv -f .profile.bak .profile
+    mv -f .profile.bak .profile 2>/dev/null
+    wget -qO /usr/local/bin/screenfetch 'https://gitee.com/cracklee/screenFetch/raw/master/screenfetch-dev'
+    chmod +x /usr/local/bin/screenfetch
+    /usr/local/bin/screenfetch
     bash
     exit 1
 fi
