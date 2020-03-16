@@ -92,7 +92,7 @@ DEBIANMENU() {
 
 	if [ "${OPTION}" == '6' ]; then
 
-		KALISourcesList
+		MODIFYTOKALISourcesList
 
 	fi
 	###################################
@@ -670,7 +670,14 @@ INSTALLORREMOVEVSCODE() {
 	fi
 }
 ############################################
-KALISourcesList() {
+MODIFYTOKALISourcesList() {
+	if grep -q 'ubuntu' /etc/os-release; then
+		echo "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		DEBIANMENU
+	fi
+
 	if ! grep -q "kali" /etc/apt/sources.list; then
 		echo "检测到您当前为debian源，是否修改为kali源？"
 		echo "Detected that your current software sources list is debian, do you need to modify it to kali source?"
