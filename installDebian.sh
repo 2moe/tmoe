@@ -1396,11 +1396,13 @@ if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
     echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
     rm -f vnc* zsh* .profile
     mv -f .profile.bak .profile 2>/dev/null
-    wget -qO /usr/local/bin/screenfetch 'https://gitee.com/cracklee/screenFetch/raw/master/screenfetch-dev'
+    wget -qO /tmp/screenfetch.tar.gz 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/s/screenfetch/screenfetch_3.9.1.orig.tar.gz'
+    tar -zxf /tmp/screenfetch.tar.gz -C /tmp
+    mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
     chmod +x /usr/local/bin/screenfetch
-    /usr/local/bin/screenfetch
+    screenfetch
     bash
-    exit 1
+    exit 0
 fi
 
 apt install -y apt-utils
