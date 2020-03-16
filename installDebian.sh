@@ -1359,23 +1359,23 @@ if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
     locale-gen
     cat >/etc/portage/make.conf <<-'Endofmakeconf'
-    L10N="zh-CN en-US"
-    LINGUAS="zh_CN en_US"
-    #GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
-    GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
-    EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
-    #FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
-    ACCEPT_LICENSE="*"
+L10N="zh-CN en-US"
+LINGUAS="zh_CN en_US"
+#GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
+GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
+EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
+#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
+ACCEPT_LICENSE="*"
 Endofmakeconf
     source /etc/portage/make.conf
     mkdir -p /etc/portage/repos.conf/
     cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
-    [gentoo]
-    location = /usr/portage
-    sync-type = rsync
-    #sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
-    sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
-    auto-sync = yes
+[gentoo]
+location = /usr/portage
+sync-type = rsync
+#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
+sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
+auto-sync = yes
 EndofgentooConf
     source /etc/portage/repos.conf/gentoo.conf
     emerge --sync
@@ -1384,6 +1384,7 @@ EndofgentooConf
     etc-update
     emerge eix
 fi
+
 cat >/etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
