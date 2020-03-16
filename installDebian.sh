@@ -1363,7 +1363,7 @@ if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     LINGUAS="zh_CN en_US"
     #GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
     GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
-    EMERGE_DEFAULT_OPTS: 设置为EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
+    EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
     #FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
     ACCEPT_LICENSE="*"
 Endofmakeconf
