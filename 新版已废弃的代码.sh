@@ -698,33 +698,13 @@ fi
 #############
 #	"5" "Void:基于xbps包管理器的独立发行版" \
 
-if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
-    GNULINUXOSRELEASE=FUNTOO
-    grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
-    locale-gen
-    cat >/etc/portage/make.conf <<-'Endofmakeconf'
-L10N="zh-CN en-US"
-LINGUAS="zh_CN en_US"
-#GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
-GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
-EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
-#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
-ACCEPT_LICENSE="*"
-Endofmakeconf
-    source /etc/portage/make.conf
-    mkdir -p /etc/portage/repos.conf/
-    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
-[gentoo]
-location = /usr/portage
-sync-type = rsync
-#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
-sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
-auto-sync = yes
-EndofgentooConf
-    source /etc/portage/repos.conf/gentoo.conf
-    emerge --sync
-    echo "Asia/Shanghai" >/etc/timezone
-    emerge --config sys-libs/timezone-data
-    etc-update
-    emerge eix
-fi
+###############
+INSTALLVOIDLINUXDISTRO() {
+	bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+		sed 's:debian-sid:voidlinux-default:g' |
+		sed 's:debian/sid:voidlinux/current:g' |
+		sed 's/debian系统/void系统/g' |
+		sed 's/debian system/void system/g' |
+		sed 's/debian容器/void容器/g' |
+		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
+}

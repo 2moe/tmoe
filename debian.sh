@@ -1713,6 +1713,10 @@ CHOOSEWHICHGNULINUX() {
 		INSTALLFuntooDISTRO
 	fi
 	##############################
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MainMenu
 }
 
 ##############################
@@ -1789,16 +1793,6 @@ INSTALLFuntooDISTRO() {
 		sed 's/debian system/funtoo system/g' |
 		sed 's/debian容器/funtoo容器/g' |
 		sed 's:Debian GNU/Linux:Funtoo GNU/Linux:g')"
-}
-###############
-INSTALLVOIDLINUXDISTRO() {
-	bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
-		sed 's:debian-sid:voidlinux-default:g' |
-		sed 's:debian/sid:voidlinux/current:g' |
-		sed 's/debian系统/void系统/g' |
-		sed 's/debian system/void system/g' |
-		sed 's/debian容器/void容器/g' |
-		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
 }
 
 ####################

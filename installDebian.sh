@@ -1358,6 +1358,7 @@ if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     GNULINUXOSRELEASE=FUNTOO
     grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
     locale-gen
+    #下面生成的文件不要留空格
     cat >/etc/portage/make.conf <<-'Endofmakeconf'
 L10N="zh-CN en-US"
 LINGUAS="zh_CN en_US"
@@ -1378,10 +1379,11 @@ sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
 auto-sync = yes
 EndofgentooConf
     source /etc/portage/repos.conf/gentoo.conf
-    emerge --sync
+    #同步过于耗时，故注释掉
+    #emerge --sync
     echo "Asia/Shanghai" >/etc/timezone
     emerge --config sys-libs/timezone-data
-    etc-update
+    #etc-update
     emerge eix
 fi
 
