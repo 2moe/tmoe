@@ -1427,6 +1427,7 @@ if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
     tar -zxf /tmp/screenfetch.tar.gz -C /tmp
     mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
     chmod +x /usr/local/bin/screenfetch
+    rm -rf /tmp/screenfetch*
     screenfetch
     bash
     exit 0
