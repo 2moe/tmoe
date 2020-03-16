@@ -254,7 +254,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200316-22)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200317-07)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -557,6 +557,9 @@ It is recommended that you back up the entire system before removal. If the data
 	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
 	ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
 	ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
+	ls -lh ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+	ls -lh ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+	ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
 	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
 
@@ -565,6 +568,9 @@ It is recommended that you back up the entire system before removal. If the data
 	y* | Y* | "")
 		rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm
 		rm -f ~/debian-buster-rootfs.tar.xz
+		rm -f ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+		rm -f ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+		rm -f ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 		echo "Deleted已删除"
 		;;
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
