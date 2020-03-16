@@ -1420,15 +1420,17 @@ echo "    .u:Y:JQMSsJUv...   .rDE1P71:.7X7     "
 echo "    5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y     "
 echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
-if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
-    echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
-    rm -f vnc* zsh* .profile
-    mv -f .profile.bak .profile 2>/dev/null
+
     wget -qO /tmp/screenfetch.tar.gz 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/s/screenfetch/screenfetch_3.9.1.orig.tar.gz'
     tar -zxf /tmp/screenfetch.tar.gz -C /tmp
     mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
     chmod +x /usr/local/bin/screenfetch
     rm -rf /tmp/screenfetch*
+
+if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
+    echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+    rm -f vnc* zsh* .profile
+    mv -f .profile.bak .profile 2>/dev/null
     screenfetch
     bash
     exit 0
@@ -1790,35 +1792,8 @@ if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
   mv -f .bash_profile.bak .bash_profile.bak 2>/dev/null
   mv -f .bash_login.bak .basfh_login.bak 2>/dev/null
 fi
-echo "                                        "
-echo "                .iri                    "
-echo "            .1BQBBBBBBBBBBBMrrr         "
-echo "          LBBBBBBBBBQBBBBBBBBBBBZ:      "
-echo "        KBBBBBBBL          :PBBQBQB:    "
-echo "      :BBBBBd.                vBBBBBK   "
-echo "     rBBBBj.                    QBBBBB  "
-echo "  . .BBBv                        EBBQBK "
-echo "   vBBQ              :77i.        BBQ . "
-echo "   BBB             QQgu7r77:      .BBZ  "
-echo "  BBB:           rB7               BBg  "
-echo "  BB2           iB                 BBB  "
-echo "  BB:           B.           ..    BBB  "
-echo "  BB           .B                  BB.  "
-echo "  BB            BU          :     YBg   "
-echo "  BB            SB      .:       qBg    "
-echo "  BBi            qBr           .BB5     "
-echo "  BBb           . rBBv      .PBBQ       "
-echo "  sBB              :gBBBBBBBBBL         "
-echo "   BBBU                :ir.             "
-echo "   :BBB7                                "
-echo "    YBBB                                "
-echo "     uBBK                               "
-echo "      rBBX                              "
-echo "        BBB                             "
-echo "         LBBE                           "
-echo "           1BBP                         "
-echo "             iBBBP                      "
-echo "                 r7:..                  "
+
+screenfetch
 
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"

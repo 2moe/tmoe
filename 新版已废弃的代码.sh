@@ -708,3 +708,36 @@ INSTALLVOIDLINUXDISTRO() {
 		sed 's/debian容器/void容器/g' |
 		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
 }
+
+
+
+echo "                                        "
+echo "                .iri                    "
+echo "            .1BQBBBBBBBBBBBMrrr         "
+echo "          LBBBBBBBBBQBBBBBBBBBBBZ:      "
+echo "        KBBBBBBBL          :PBBQBQB:    "
+echo "      :BBBBBd.                vBBBBBK   "
+echo "     rBBBBj.                    QBBBBB  "
+echo "  . .BBBv                        EBBQBK "
+echo "   vBBQ              :77i.        BBQ . "
+echo "   BBB             QQgu7r77:      .BBZ  "
+echo "  BBB:           rB7               BBg  "
+echo "  BB2           iB                 BBB  "
+echo "  BB:           B.           ..    BBB  "
+echo "  BB           .B                  BB.  "
+echo "  BB            BU          :     YBg   "
+echo "  BB            SB      .:       qBg    "
+echo "  BBi            qBr           .BB5     "
+echo "  BBb           . rBBv      .PBBQ       "
+echo "  sBB              :gBBBBBBBBBL         "
+echo "   BBBU                :ir.             "
+echo "   :BBB7                                "
+echo "    YBBB                                "
+echo "     uBBK                               "
+echo "      rBBX                              "
+echo "        BBB                             "
+echo "         LBBE                           "
+echo "           1BBP                         "
+echo "             iBBBP                      "
+echo "                 r7:..                  "
+
