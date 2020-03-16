@@ -1382,26 +1382,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
 		read
 	fi
-
-	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
-		CHOOSEWHICHGNULINUX
-	else
-		if [ ! -d "/sdcard/Download/backup" ]; then
-			mkdir -p /sdcard/Download/backup
-		fi
-		cd /sdcard/Download/backup
-		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
-			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要重新直接解压还是重新下载？" 14 50); then
-				UNXZDEBIANRECOVERYKIT
-			else
-				DOWNLOADDEBIANXFCETARXZ
-
-			fi
-		else
-			DOWNLOADDEBIANXFCETARXZ
-
-		fi
-	fi
+	CHOOSEWHICHGNULINUX
 }
 
 ###################################################
@@ -1716,7 +1697,7 @@ CHOOSEWHICHGNULINUX() {
 	#########################
 	if [ "${SELECTGNULINUX}" == '1' ]; then
 
-		BUSTERORSID
+		INSTALLDEBIANGNULINUXDISTRO
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '2' ]; then
@@ -1732,6 +1713,29 @@ CHOOSEWHICHGNULINUX() {
 	fi
 	######################################
 
+}
+
+##############################
+INSTALLDEBIANGNULINUXDISTRO(){
+if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
+		BUSTERORSID
+	else
+		if [ ! -d "/sdcard/Download/backup" ]; then
+			mkdir -p /sdcard/Download/backup
+		fi
+		cd /sdcard/Download/backup
+		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
+			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要重新直接解压还是重新下载？" 14 50); then
+				UNXZDEBIANRECOVERYKIT
+			else
+				DOWNLOADDEBIANXFCETARXZ
+
+			fi
+		else
+			DOWNLOADDEBIANXFCETARXZ
+
+		fi
+	fi
 }
 
 ########################
