@@ -160,7 +160,7 @@ DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
 if [ ! -f ${DebianTarXz} ]; then
-  echo "正在从清华大学开源镜像站下载debian容器镜像"
+  echo "正在从清华大学开源镜像站下载容器镜像"
   echo "Downloading rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
   curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html >/dev/null 2>&1
   ttime=$(cat get-date-tmp.html | tail -n2 | head -n1 | cut -d\" -f4)
@@ -395,7 +395,7 @@ It is recommended that you back up the entire system before removal. If the data
   fi
   ps -e | grep proot
   ps -e | grep startvnc
-  echo "移除系统前，请先确保您已停止debian容器。"
+  echo "移除系统前，请先确保您已停止容器的进程。"
   pkill proot 2>/dev/null
   echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'

@@ -1747,6 +1747,7 @@ INSTALLUBUNTUDISTRO2004() {
 	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
 		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
 			sed 's@#deb http@deb http@g' |
+			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/.*sid main/#&/' |
 			sed 's/main contrib non-free/main restricted universe multiverse/g' |
 			sed 's:stable/updates:focal-security:g' |
@@ -1757,13 +1758,12 @@ INSTALLUBUNTUDISTRO2004() {
 			sed 's:cn/debian:cn/ubuntu:g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
 			sed 's:debian/sid:ubuntu/focal:g' |
-			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/debian容器/ubuntu容器/g' |
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 	else
 		#ubuntu-ports
 		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
 			sed 's@#deb http@deb http@g' |
+			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/.*sid main/#&/' |
 			sed 's/main contrib non-free/main restricted universe multiverse/g' |
 			sed 's:stable/updates:focal-security:g' |
@@ -1774,8 +1774,6 @@ INSTALLUBUNTUDISTRO2004() {
 			sed 's:cn/debian:cn/ubuntu-ports:g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
 			sed 's:debian/sid:ubuntu/focal:g' |
-			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/debian容器/ubuntu容器/g' |
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 
 	fi
