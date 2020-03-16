@@ -1348,7 +1348,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 
 
 			1.禁止条例
-			(a)禁止将本工具安装的Debian GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
+			(a)禁止将本工具安装的GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
 
 			2. 适用范围
 			(a)在您使用本工具时，通过天萌网盘下载的恢复包系统；
@@ -1370,7 +1370,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 			(b)您有权选择接受或拒绝使用恢复包或本工具。
 
 			6. 信息安全
-			(a)本工具安装的是原生Debian GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
+			(a)本工具安装的是原生GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
 			同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
 
 			7.最终用户许可协议的更改
@@ -1683,7 +1683,7 @@ TERMUXTUNASOURCESLIST() {
 ##################
 CHOOSEWHICHGNULINUX() {
 	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?优化步骤仅针对Debian sid" 15 50 4 \
-		"1" "Debian:最早的Linux发行版之一" \
+		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
 		"4" "Funtoo:专注于改进Gentoo" \
@@ -1750,38 +1750,21 @@ BUSTERORSID() {
 INSTALLUBUNTUDISTRO2004() {
 	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
 		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
-			sed 's@#deb http@deb http@g' |
 			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/.*sid main/#&/' |
-			sed 's/main contrib non-free/main restricted universe multiverse/g' |
-			sed 's:stable/updates:focal-security:g' |
-			sed 's/stable/focal/g' |
-			sed 's/buster-backports/focal-backports/' |
-			sed 's:/ sid:/ focal-proposed:' |
-			sed 's:debian-security:ubuntu/:' |
-			sed 's:cn/debian:cn/ubuntu:g' |
+			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
 			sed 's:debian/sid:ubuntu/focal:g' |
+			sed 's:/ubuntu-ports:/ubuntu:g' |
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 	else
 		#ubuntu-ports
 		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
-			sed 's@#deb http@deb http@g' |
 			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/.*sid main/#&/' |
-			sed 's/main contrib non-free/main restricted universe multiverse/g' |
-			sed 's:stable/updates:focal-security:g' |
-			sed 's/stable/focal/g' |
-			sed 's/buster-backports/focal-backports/' |
-			sed 's:/ sid:/ focal-proposed:' |
-			sed 's:debian-security:ubuntu-ports/:' |
-			sed 's:cn/debian:cn/ubuntu-ports:g' |
+			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
 			sed 's:debian/sid:ubuntu/focal:g' |
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
-
 	fi
-
 }
 ##########
 INSTALLKALIROLLING() {
@@ -1793,13 +1776,19 @@ INSTALLKALIROLLING() {
 		sed 's:debian-sid:kali-rolling:g' |
 		sed 's:debian/sid:kali/current:g' |
 		sed 's/debian系统/kali系统/g' |
+		sed 's/debian system/kali system/g' |
 		sed 's/debian容器/kali容器/g' |
 		sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
 }
 ################
 INSTALLFuntooDISTRO() {
-	echo '正在开发中'
-
+	bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+		sed 's:debian-sid:funtoo-1.3:g' |
+		sed 's:debian/sid:funtoo/1.3:g' |
+		sed 's/debian系统/funtoo系统/g' |
+		sed 's/debian system/funtoo system/g' |
+		sed 's/debian容器/funtoo容器/g' |
+		sed 's:Debian GNU/Linux:Funtoo GNU/Linux:g')"
 }
 
 ####################

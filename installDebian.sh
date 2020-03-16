@@ -398,7 +398,7 @@ It is recommended that you back up the entire system before removal. If the data
   echo "移除系统前，请先确保您已停止容器的进程。"
   pkill proot 2>/dev/null
   echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
+	echo 'Detecting debian system footprint... 正在检测debian系统占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
 		echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
@@ -1320,6 +1320,22 @@ cat >/etc/apt/sources.list <<-'EndOfFile'
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 EndOfFile
 
+if [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
+    cat >/etc/apt/sources.list <<-'EndOfFile'
+    deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
+    deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+    deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+    deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
+    # proposed为预发布软件源，不建议启用
+    # deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
+EndOfFile
+fi
+
+
+
+
+
+
 #配置dns解析
 rm -f /etc/resolv.conf
 cat > /etc/resolv.conf <<-'EndOfFile'
@@ -1330,7 +1346,7 @@ EndOfFile
 apt update
 apt install -y locales
 
-echo "您已成功安装Debian GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
+echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
 echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
 echo '正在执行优化步骤，请勿退出!'
 echo 'Optimization steps are in progress. Do not exit!'
@@ -1338,6 +1354,13 @@ echo 'Optimization steps are in progress. Do not exit!'
 echo "正在配置中文环境..."
 echo "Configuring Chinese environment..."
 sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
+    GNULINUXOSRELEASE=FUNTOO
+    grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >> /etc/locale.gen
+    grep -q 'tuna' /etc/portage/make.conf || echo -e '\nGENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"' >> /etc/portage/make.conf
+    emerge --sync
+    emerge eix
+fi
 cat >/etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
@@ -1374,6 +1397,11 @@ echo "    .u:Y:JQMSsJUv...   .rDE1P71:.7X7     "
 echo "    5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y     "
 echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
+if [ "${GNULINUXOSRELEASE}" = "FUNTOO" ]; then
+    echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+    exit 0
+fi
+
 apt install -y apt-utils
 
 apt install -y ca-certificates

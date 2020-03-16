@@ -661,3 +661,37 @@ main "$@"
 EOF
 chmod +x firefox.sh
 ####################
+#debian替换为ubuntu的脚本
+	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
+		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+			sed 's@#deb http@deb http@g' |
+			sed 's/debian系统/ubuntu系统/g' |
+			sed 's/.*sid main/#&/' |
+			sed 's/main contrib non-free/main restricted universe multiverse/g' |
+			sed 's:stable/updates:focal-security:g' |
+			sed 's/stable/focal/g' |
+			sed 's/buster-backports/focal-backports/' |
+			sed 's:/ sid:/ focal-proposed:' |
+			sed 's:debian-security:ubuntu/:' |
+			sed 's:cn/debian:cn/ubuntu:g' |
+			sed 's:debian-sid:ubuntu-focal:g' |
+			sed 's:debian/sid:ubuntu/focal:g' |
+			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+	else
+		#ubuntu-ports
+		bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+			sed 's@#deb http@deb http@g' |
+			sed 's/debian系统/ubuntu系统/g' |
+			sed 's/.*sid main/#&/' |
+			sed 's/main contrib non-free/main restricted universe multiverse/g' |
+			sed 's:stable/updates:focal-security:g' |
+			sed 's/stable/focal/g' |
+			sed 's/buster-backports/focal-backports/' |
+			sed 's:/ sid:/ focal-proposed:' |
+			sed 's:debian-security:ubuntu-ports/:' |
+			sed 's:cn/debian:cn/ubuntu-ports:g' |
+			sed 's:debian-sid:ubuntu-focal:g' |
+			sed 's:debian/sid:ubuntu/focal:g' |
+			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+
+	fi
