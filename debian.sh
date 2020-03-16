@@ -1701,7 +1701,7 @@ TERMUXTUNASOURCESLIST() {
 }
 ##################
 CHOOSEWHICHGNULINUX() {
-	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版? 优化步骤仅针对Debian sid，不保证所有发行版都能正确配置。选项3和4正在开发中！" 12 50 4 \
+	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?优化步骤仅针对Debian sid" 15 50 4 \
 		"1" "Debian" \
 		"2" "Ubuntu 20.04" \
 		"3" "Kali Rolling" \
