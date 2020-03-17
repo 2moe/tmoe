@@ -1034,6 +1034,8 @@ INSTALLMATEDESKTOP() {
 	mkdir -p /run/lock /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
 	aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal
+	echo "" >/var/lib/dpkg/info/udisks2.postinst
+	apt autopurge -y ^libfprint
 	apt install -y fonts-noto-cjk tightvncserver
 	apt clean
 
