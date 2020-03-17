@@ -740,4 +740,9 @@ echo "         LBBE                           "
 echo "           1BBP                         "
 echo "             iBBBP                      "
 echo "                 r7:..                  "
-
+screenfetch
+wget -qO /tmp/screenfetch.tar.gz 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/s/screenfetch/screenfetch_3.9.1.orig.tar.gz'
+tar -zxf /tmp/screenfetch.tar.gz -C /tmp
+mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
+chmod +x /usr/local/bin/screenfetch
+rm -rf /tmp/screenfetch*

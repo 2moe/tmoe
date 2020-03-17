@@ -1390,12 +1390,6 @@ echo "           .            i   7            "
 apt install -y apt-utils
 apt install -y ca-certificates wget
 
-wget -qO /tmp/screenfetch.tar.gz 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/s/screenfetch/screenfetch_3.9.1.orig.tar.gz'
-tar -zxf /tmp/screenfetch.tar.gz -C /tmp
-mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
-chmod +x /usr/local/bin/screenfetch
-rm -rf /tmp/screenfetch*
-
 if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     GNULINUXOSRELEASE=FUNTOO
     grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
@@ -1430,7 +1424,7 @@ EndofgentooConf
     echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
     rm -f vnc* zsh* .profile
     mv -f .profile.bak .profile 2>/dev/null
-    screenfetch
+    wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
     bash
     exit 0
 fi
@@ -1789,7 +1783,7 @@ if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
   mv -f .bash_login.bak .basfh_login.bak 2>/dev/null
 fi
 
-screenfetch
+wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
 
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"
