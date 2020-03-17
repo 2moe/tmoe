@@ -915,6 +915,11 @@ INSTALLXFCE4DESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		startxfce4
 	EndOfFile
+	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+		sed -i 's:startxfce4:dbus-launch /usr/bin/startxfce4:' ~/.vnc/xstartup
+		sed -i 's:startxfce4:dbus-launch /usr/bin/startxfce4:' /usr/local/bin/startxsdl
+	fi
+
 	STARTVNCANDSTOPVNC
 
 }
