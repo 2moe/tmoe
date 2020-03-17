@@ -399,7 +399,7 @@ It is recommended that you back up the entire system before removal. If the data
   echo "移除系统前，请先确保您已停止容器的进程。"
   pkill proot 2>/dev/null
   echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-	echo 'Detecting debian system footprint... 正在检测debian系统占用空间大小'
+	echo 'Detecting debian system footprint... 正在检测debian system占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
 		echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
@@ -1343,7 +1343,7 @@ EndOfFile
 apt update
 apt install -y locales 
 
-echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian系统。"
+echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
 echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
 echo '正在执行优化步骤，请勿退出!'
 echo 'Optimization steps are in progress. Do not exit!'
