@@ -909,6 +909,7 @@ INSTALLXFCE4DESKTOP() {
 	apt install -y xfwm4-theme-breeze xcursor-themes
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 		apt install -y kali-linux-nethunter
+		apt install -y kali-menu
 	fi
 	apt clean
 
