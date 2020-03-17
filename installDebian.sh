@@ -1231,12 +1231,6 @@ grep '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc 
 
 sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
 
-if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
-    apt install -y kali-linux
-    apt install -y kali-menu
-    apt install -y kali-root-login
-fi
-
 echo 'All optimization steps have been completed, enjoy it!'
 echo 'zsh配置完成，2s后将为您启动Tmoe-debian工具'
 echo '您也可以手动输debian-i进入'
