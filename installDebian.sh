@@ -1234,6 +1234,7 @@ sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
 if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
     apt install -y kali-linux
     apt install -y kali-menu
+    apt install -y kali-root-login
 fi
 
 echo 'All optimization steps have been completed, enjoy it!'
