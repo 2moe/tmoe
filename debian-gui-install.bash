@@ -912,7 +912,9 @@ INSTALLXFCE4DESKTOP() {
 		apt install -y kali-menu
 		apt install -y kali-undercover
 		apt install -y kali-linux-top10
-		apt install -y kali-linux-arm
+		if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
+			apt install -y kali-linux-arm
+		fi
 		apt install -y chromium-l10n
 		sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
 		grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
