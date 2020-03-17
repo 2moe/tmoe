@@ -333,8 +333,8 @@ installBROWSER() {
 			#什么乱七八糟的，2333333戏份真多。
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 			echo "${YELLOW} “谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。 ${RESET} "
-			echo "2s后将自动开始安装"
-			sleep 2
+			echo "1s后将自动开始安装"
+			sleep 1
 			echo
 			apt update
 			#分项安装，防止ubuntu安装失败
@@ -344,10 +344,10 @@ installBROWSER() {
 		else
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 			echo " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET} "
-			echo "2s后将自动开始安装"
-			sleep 2
+			echo "1s后将自动开始安装"
+			sleep 1
 			apt update
-			apt install -y firefox-l10n-zh-cn
+			apt install -y firefox-l10n-zh-cn 2>/dev/null
 			apt install -y firefox
 			apt install -y firefox-locale-zh-hans 2>/dev/null
 		fi
@@ -355,8 +355,8 @@ installBROWSER() {
 
 		echo "${YELLOW}妾身就知道你没有看走眼！${RESET}"
 		echo '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
-		echo "2s后将自动开始安装"
-		sleep 2
+		echo "1s后将自动开始安装"
+		sleep 1
 		apt update
 		if [ "${LINUXDISTRO}" = 'ubuntu' ]; then
 			apt install -y chromium-browser-l10n chromium-browser
