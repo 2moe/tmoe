@@ -1784,11 +1784,9 @@ if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
   mv -f .bash_login.bak .basfh_login.bak 2>/dev/null
 fi
 
-wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
-
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"
-sleep 2
+wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
 bash zsh.sh
 EDITBASHPROFILE
 
