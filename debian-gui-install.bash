@@ -35,6 +35,9 @@ CHECKdependencies() {
 
 	if grep -q 'ubuntu' /etc/os-release; then
 		LINUXDISTRO='ubuntu'
+		if [ ! -e "/bin/add-apt-repository" ]; then
+			apt install -y software-properties-common
+		fi
 	fi
 
 	YELLOW=$(printf '\033[33m')
