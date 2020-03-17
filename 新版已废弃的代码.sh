@@ -700,16 +700,14 @@ fi
 
 ###############
 INSTALLVOIDLINUXDISTRO() {
-	bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
-		sed 's:debian-sid:voidlinux-default:g' |
-		sed 's:debian/sid:voidlinux/current:g' |
-		sed 's/debian系统/void系统/g' |
-		sed 's/debian system/void system/g' |
-		sed 's/debian容器/void容器/g' |
-		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
+    bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+        sed 's:debian-sid:voidlinux-default:g' |
+        sed 's:debian/sid:voidlinux/current:g' |
+        sed 's/debian系统/void系统/g' |
+        sed 's/debian system/void system/g' |
+        sed 's/debian容器/void容器/g' |
+        sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
 }
-
-
 
 echo "                                        "
 echo "                .iri                    "
