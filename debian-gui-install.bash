@@ -936,8 +936,8 @@ INSTALLXFCE4DESKTOP() {
 		startxfce4
 	EndOfFile
 	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-		sed -i 's:startxfce4:dbus-launch /usr/bin/startxfce4:' ~/.vnc/xstartup
-		sed -i 's:startxfce4:dbus-launch /usr/bin/startxfce4:' /usr/local/bin/startxsdl
+		grep -q 'dbus-launch' ~/.vnc/xstartup || sed -i 's:startxfce4:dbus-launch /usr/bin/startxfce4:' ~/.vnc/xstartup
+		grep -q 'dbus-launch' /usr/local/bin/startxsdl || sed -i 's:startxfce4:dbus-launch /usr/bin/startxfce4:' /usr/local/bin/startxsdl
 	fi
 
 	STARTVNCANDSTOPVNC
@@ -1050,6 +1050,11 @@ INSTALLMATEDESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		mate-session
 	EndOfFile
+	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+		grep -q 'dbus-launch' ~/.vnc/xstartup || sed -i 's:mate-session:dbus-launch /usr/bin/mate-session:' ~/.vnc/xstartup
+		grep -q 'dbus-launch' /usr/local/bin/startxsdl || sed -i 's:mate-session:dbus-launch /usr/bin/mate-session:' /usr/local/bin/startxsdl
+	fi
+
 	echo "mate桌面可能存在gvfs和udisks2配置出错的问题，请直接无视"
 	echo "您可以输umount .gvfs ; apt purge -y ^gvfs ^udisks来卸载出错的软件包，但这将破坏mate桌面的依赖关系。若在卸载后不慎输入apt autopurge -y将有可能导致mate桌面崩溃。"
 	STARTVNCANDSTOPVNC
