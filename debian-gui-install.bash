@@ -32,6 +32,11 @@ CHECKdependencies() {
 		apt update
 		apt install -y ${dependencies}
 	fi
+
+	if grep -q 'ubuntu' /etc/os-release; then
+		LINUXDISTRO='ubuntu'
+	fi
+
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
@@ -353,10 +358,16 @@ installBROWSER() {
 		echo "2s后将自动开始安装"
 		sleep 2
 		apt update
-		apt install -y chromium chromium-l10n
-		sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
-		grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
+		if [ "${LINUXDISTRO}" = 'ubuntu' ]; then
+			apt install -y chromium-browser-l10n chromium-browser
+			sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' /usr/share/applications/chromium-browser.desktop
+			grep 'chromium-browser' /etc/profile || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /etc/profile
+		else
+			apt install -y chromium chromium-l10n
+			sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
+			grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
 		#echo 'alias chromium="chromium --no-sandbox"' >>/etc/profile
+		fi
 
 	fi
 	DEBIANMENU
