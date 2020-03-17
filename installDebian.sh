@@ -341,6 +341,7 @@ fi
 
 cat >/data/data/com.termux/files/usr/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
+pkill pulseaudio 2>/dev/null
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 touch ~/${DebianFolder}/root/.vnc/startvnc
 /data/data/com.termux/files/usr/bin/debian
