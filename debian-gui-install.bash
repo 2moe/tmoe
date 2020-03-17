@@ -450,7 +450,7 @@ REMOVEGUI() {
 	apt purge -y lxde-core lxterminal
 	apt purge -y ^lxde
 	apt purge -y mate-desktop-environment-core mate-terminal || aptitude purge -y mate-desktop-environment-core 2>/dev/null
-	apt purge ^mate
+	apt purge -y ^mate
 	apt autopurge
 	DEBIANMENU
 }
@@ -1033,7 +1033,7 @@ INSTALLMATEDESKTOP() {
 	apt install -y aptitude
 	mkdir -p /run/lock /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
-	aptitude install -y mate-desktop-environment-core mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal
+	aptitude install -y mate-desktop-environment mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal
 	echo "" >/var/lib/dpkg/info/udisks2.postinst
 	apt autopurge -y ^libfprint
 	apt install -y fonts-noto-cjk tightvncserver
