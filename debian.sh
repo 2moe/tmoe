@@ -208,7 +208,7 @@ ANDROIDTERMUX() {
 
 	if [ ! -z "$dependencies" ]; then
 		if (("${ANDROIDVERSION}" >= '7')); then
-			if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+			if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
 				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
 				echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
@@ -1681,7 +1681,7 @@ REMOVEANDROIDTERMUXXFCE() {
 }
 #################
 TERMUXTUNASOURCESLIST() {
-	if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
 		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 			echo -e '\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
