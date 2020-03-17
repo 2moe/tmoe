@@ -336,6 +336,9 @@ installBROWSER() {
 			echo "1s后将自动开始安装"
 			sleep 1
 			echo
+			if [ "${LINUXDISTRO}" = 'ubuntu' ]; then
+				add-apt-repository ppa:mozillateam/ppa
+			fi
 			apt update
 			#分项安装，防止ubuntu安装失败
 			apt install -y firefox-esr-l10n-zh-cn
