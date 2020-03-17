@@ -910,6 +910,7 @@ INSTALLXFCE4DESKTOP() {
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 		apt install -y kali-linux
 		apt install -y kali-menu
+		apt install -y kali-undercover
 	fi
 	apt clean
 
