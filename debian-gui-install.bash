@@ -1026,15 +1026,16 @@ MODIFYXRDPCONF() {
 }
 ############################
 INSTALLMATEDESKTOP() {
-	apt-mark hold udisks2
 	apt-mark hold gvfs
 	apt update
+	apt install udisks2 -y
+	echo "" >/var/lib/dpkg/info/udisks2.postinst
+	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
 	apt install -y aptitude
 	mkdir -p /run/lock /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
 	aptitude install -y mate-desktop-environment mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal
-	echo "" >/var/lib/dpkg/info/udisks2.postinst
 	apt autopurge -y ^libfprint
 	apt install -y fonts-noto-cjk tightvncserver
 	apt clean
