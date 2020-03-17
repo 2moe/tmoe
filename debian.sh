@@ -1681,7 +1681,7 @@ REMOVEANDROIDTERMUXXFCE() {
 }
 #################
 TERMUXTUNASOURCESLIST() {
-	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+	if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
 		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 			echo -e '\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
