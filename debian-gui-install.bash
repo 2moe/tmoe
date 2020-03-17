@@ -332,14 +332,19 @@ installBROWSER() {
 			sleep 2
 			echo
 			apt update
-			apt install -y firefox-esr firefox-esr-l10n-zh-cn
+			#分项安装，防止ubuntu安装失败
+			apt install -y firefox-esr-l10n-zh-cn
+			apt install -y firefox-esr
+			apt install -y firefox-esr-locale-zh-hans 2>/dev/null
 		else
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 			echo " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET} "
 			echo "2s后将自动开始安装"
 			sleep 2
 			apt update
-			apt install -y firefox firefox-l10n-zh-cn
+			apt install -y firefox-l10n-zh-cn
+			apt install -y firefox
+			apt install -y firefox-locale-zh-hans 2>/dev/null
 		fi
 	else
 
