@@ -1472,6 +1472,7 @@ TERMUXINSTALLXFCE() {
 		"2" "modify vnc conf" \
 		"3" "remove xfce4" \
 		"4" "更换为清华源" \
+		"5" "下载termux_0.92_Fdroid.apk" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1524,10 +1525,50 @@ TERMUXINSTALLXFCE() {
 	if [ "${OPTION}" == '4' ]; then
 		TERMUXTUNASOURCESLIST
 	fi
+	##################
+	if [ "${OPTION}" == '5' ]; then
+		ARIA2CDOWNLOADTERMUXAPK
+	fi
 
 }
 
 #####################################
+ARIA2CDOWNLOADTERMUXAPK() {
+	cd /sdcard/Download
+	if [ -f "com.termux_Fdroid.apk" ]; then
+
+		if (whiptail --title "检测到文件已下载,请选择您需要执行的操作！" --yes-button 'install(*￣▽￣*)o' --no-button 'Download again(っ °Д °)' --yesno "Detected that the file has been downloaded, do you want to install it, or download it again?" 7 60); then
+			INSTALLTERMUXAPK
+		else
+			DOWNLOADTERMUXAPKAGAIN
+		fi
+	else
+		DOWNLOADTERMUXAPKAGAIN
+
+	fi
+	echo 'press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MainMenu
+}
+#######################################
+DOWNLOADTERMUXAPKAGAIN() {
+	echo 'Press enter to start the download, and press Ctrl + C to cancel.'
+	echo "${YELLOW}按回车键开始下载，按Ctrl+C取消。${RESET}"
+	read
+	echo 'Downloading termux apk...'
+	echo '正在为您下载至/sdcard/Download目录...'
+	echo '下载完成后，需要您手动安装。'
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux_92.apk'
+	INSTALLTERMUXAPK
+}
+INSTALLTERMUXAPK() {
+	echo "${YELLOW}下载完成，请进入下载目录手动安装。${RESET}"
+	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
+	cd ${cur}
+}
+
+##################################
 INSTALLWEBNOVNC() {
 	if [ ! -e "$PREFIX/bin/python" ]; then
 		apt update
