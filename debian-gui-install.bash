@@ -351,6 +351,7 @@ installBROWSER() {
 			apt install -y firefox
 			apt install -y firefox-locale-zh-hans 2>/dev/null
 		fi
+		echo '若无法正常加载HTML5视频，则您可能需要安装火狐扩展User-Agent Switcher and Manager，并将浏览器UA修改为windows版chrome'
 	else
 
 		echo "${YELLOW}妾身就知道你没有看走眼！${RESET}"
