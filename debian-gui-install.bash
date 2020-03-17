@@ -224,7 +224,7 @@ MODIFYXSDLCONF() {
 	XSDLXSERVER=$(whiptail --title "请选择您要修改的项目" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "音频端口 Pulse server port " \
-		"2" "显示端口 Display number" \
+		"2" "显示编号 Display number" \
 		"3" "ip address" \
 		"4" "手动编辑 Edit manually" \
 		3>&1 1>&2 2>&3)
@@ -906,6 +906,11 @@ INSTALLXFCE4DESKTOP() {
 	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
+	cd /tmp
+	rm -f ./kali-themes-common.deb 2>/dev/null
+	wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
+	apt install ./kali-themes-common.deb
+	rm -f ./kali-themes-common.deb
 	apt install -y xfwm4-theme-breeze xcursor-themes
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 		apt install -y kali-linux
