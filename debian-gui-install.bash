@@ -1034,9 +1034,11 @@ INSTALLMATEDESKTOP() {
 	apt-mark hold gvfs
 	apt update
 	apt install udisks2 -y
-	echo "" >/var/lib/dpkg/info/udisks2.postinst
+	if [ "$(uname -m)" = "aarch64" ]; then
+		echo "" >/var/lib/dpkg/info/udisks2.postinst
+	fi
 	apt-mark hold udisks2
-	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment-core和mate-terminal '
+	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
 	apt install -y aptitude
 	mkdir -p /run/lock /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
