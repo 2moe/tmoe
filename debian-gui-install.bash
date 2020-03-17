@@ -371,6 +371,9 @@ installBROWSER() {
 		fi
 
 	fi
+	echo 'Press enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
 	DEBIANMENU
 
 }
