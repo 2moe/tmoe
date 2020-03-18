@@ -86,17 +86,27 @@ autoCheck() {
 GNULINUX() {
 	if grep -q 'debian' '/etc/os-release'; then
 		LINUXDISTRO='debian'
-	fi
 
-	if grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
+	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null; then
+		LINUXDISTRO='openwrt'
+		cd /tmp
+		wget --no-check-certificate -qO "router-debian.bash" https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh
+		chmod +x 'router-debian.bash'
+		#bash -c "$(cat 'router-zsh.bash' |sed 's@/usr/bin@/opt/bin@g' |sed 's@-e /bin@-e /opt/bin@g' |sed 's@whiptail@dialog@g')"
+		sed -i 's@/usr/bin@/opt/bin@g' 'router-debian.bash'
+		sed -i 's@-e /bin@-e /opt/bin@g' 'router-debian.bash'
+		sed -i 's@whiptail@dialog@g' 'router-debian.bash'
+		sed -i 's@wget --no-check-certificate -qO "router-debian.bash"@#&@' 'router-zsh.bash'
+		sed -i 's@bash router-zsh.bash@#&@' 'router-debian.bash'
+		bash router-zsh.bash
+
+	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUXDISTRO='redhat'
-	fi
 
-	if grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
+	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUXDISTRO='alpine'
-	fi
 
-	if grep -Eq "Arch|Manjaro" '/etc/os-release'; then
+	elif grep -Eq "Arch|Manjaro" '/etc/os-release'; then
 		LINUXDISTRO='arch'
 	fi
 
@@ -121,7 +131,11 @@ GNULINUX() {
 	fi
 
 	if [ ! -e /usr/bin/git ]; then
-		dependencies="${dependencies} git"
+		if [ "${LINUXDISTRO}" = "openwrt" ]; then
+			dependencies="${dependencies} git git-http"
+		else
+			dependencies="${dependencies} git"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/xz ]; then
@@ -137,6 +151,8 @@ GNULINUX() {
 			dependencies="${dependencies} whiptail"
 		elif [ "${LINUXDISTRO}" = "arch" ]; then
 			dependencies="${dependencies} libnewt"
+		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+			dependencies="${dependencies} dialog"
 		else
 			dependencies="${dependencies} newt"
 		fi
@@ -159,7 +175,7 @@ GNULINUX() {
 	fi
 
 	if [ ! -e /bin/bash ]; then
-		if [ "${LINUXDISTRO}" = "alpine" ]; then
+		if [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "openwrt" ]; then
 			dependencies="${dependencies} bash"
 		fi
 	fi
@@ -185,9 +201,13 @@ GNULINUX() {
 		elif [ "${LINUXDISTRO}" = "redhat" ]; then
 			dnf install -y ${dependencies} || yum install -y ${dependencies}
 
+		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+			#opkg update
+			opkg install ${dependencies}
+
 		else
 			apt update
-			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || emerge ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies} || opkg install -y ${dependencies}
+			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || emerge ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies} || opkg install ${dependencies}
 
 		fi
 
