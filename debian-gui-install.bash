@@ -460,6 +460,8 @@ REMOVEGUI() {
 	apt purge -y lxde-core lxterminal
 	apt purge -y ^lxde
 	apt purge -y mate-desktop-environment-core mate-terminal || aptitude purge -y mate-desktop-environment-core 2>/dev/null
+	umount .gvfs
+	apt purge -y ^gvfs ^udisks
 	apt purge -y ^mate
 	apt autopurge
 	DEBIANMENU
