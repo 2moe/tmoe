@@ -1431,8 +1431,9 @@ EndofgentooConf
     wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
     chmod +x /usr/local/bin/neofetch
     neofetch
-    grep -q 'neofetch' ~/.bashrc || echo -e '\nneofetch' >> ~/.bashrc
+    grep -q 'neofetch' ~/.bashrc 2>/dev/null || echo -e '\nneofetch' >> ~/.bashrc
     exit 0
+    bash
 fi
 
 
