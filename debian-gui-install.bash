@@ -340,7 +340,7 @@ installBROWSER() {
 			sleep 1
 			echo
 			if [ "${LINUXDISTRO}" = 'ubuntu' ]; then
-				add-apt-repository ppa:mozillateam/ppa
+				add-apt-repository -y ppa:mozillateam/ppa
 			fi
 			apt update
 			#分项安装，防止ubuntu安装失败

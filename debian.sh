@@ -1318,11 +1318,12 @@ CHROOTINSTALLDebian() {
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
-	mkdir -p ${PREFIX}/bin
 	#mkdir -p /data/data/com.termux/files/home
-	#if [ ! -f "${PREFIX}/bin/bash" ]; then
-	#	cp -f $(which bash) ${PREFIX}/bin
-	#fi
+	#以下判定用于解决linux和termux的bash路径不同的问题。
+	if [ ! -f "${PREFIX}/bin/bash" ]; then
+		mkdir -p ${PREFIX}/bin
+		cp -f $(which bash) ${PREFIX}/bin
+	fi
 	#grep "export PATH=\'" /etc/profile >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /etc/profile 2>/dev/null
 	#grep "export PATH=\'" /root/.zshrc >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /root/.zshrc 2>/dev/null
 	#export "PATH=${PREFIX}/bin:$PATH"
