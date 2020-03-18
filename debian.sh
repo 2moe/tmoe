@@ -86,8 +86,23 @@ autoCheck() {
 }
 ########################################
 GNULINUX() {
+	if grep -q 'debian' '/etc/os-release'; then
+		LINUXDISTRO='debian'
+	fi
+
+	if grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
+		LINUXDISTRO='redhat'
+	fi
+
+	if grep -q "Alpine" /etc/issue || grep -q "Alpine" '/etc/os-release'; then
+		LINUXDISTRO='alpine'
+	fi
+
+	if grep -Eq "Arch|Manjaro" /etc/os-release; then
+		LINUXDISTRO='arch'
+	fi
+
 	dependencies=""
-	REDHATdependencies=""
 
 	if [ ! -e /bin/tar ]; then
 		dependencies="${dependencies} tar"
@@ -102,7 +117,9 @@ GNULINUX() {
 	fi
 
 	if [ ! -e /usr/bin/proot ]; then
-		dependencies="${dependencies} proot"
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} proot"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/git ]; then
@@ -110,11 +127,19 @@ GNULINUX() {
 	fi
 
 	if [ ! -e /usr/bin/xz ]; then
-		dependencies="${dependencies} xz-utils"
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} xz-utils"
+		else
+			dependencies="${dependencies} xz"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
-		dependencies="${dependencies} whiptail"
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} whiptail"
+		else
+			dependencies="${dependencies} newt"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/pkill ]; then
@@ -129,39 +154,33 @@ GNULINUX() {
 		dependencies="${dependencies} aria2"
 	fi
 
+	if [ "${LINUXDISTRO}" = "alpine" ]; then
+		dependencies="${dependencies} bash less"
+	fi
+
 	if [ ! -z "$dependencies" ]; then
 		echo "正在安装相关依赖..."
-		if grep -q "Alpine" /etc/issue || grep -q "Alpine" /etc/os-release; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			apt update
+			apt install -y ${dependencies}
 
-			apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils less
+		elif [ "${LINUXDISTRO}" = "alpine" ]; then
+			apk add -q ${dependencies}
 
-		elif grep -q "Arch" /etc/os-release || grep -q "Manjaro" /etc/os-release; then
-
+		elif [ "${LINUXDISTRO}" = "arch" ]; then
 			pacman -Syu --noconfirm ${dependencies}
 
-		elif grep -q "Fedora" /etc/os-release || grep -qi "CentOS" /etc/os-release || grep -qi "Red Hat" /etc/os-release; then
-			dnf install -y git || yum install -y git
-			dnf install -y pv || yum install -y pv
-			dnf install -y wget || yum install -y wget
-			dnf install -y xz || yum install -y xz
-			dnf install -y tar || yum install -y tar
-			dnf install -y newt || yum install -y newt
-			dnf install -y tar || yum install -y tar
-			dnf install -y procps || yum install -y procps
-			dnf install -y aria2 || yum install -y aria2
-			dnf install -y curl || yum install -y curl
-			dnf install -y coreutils || yum install -y coreutils
-			dnf install -y less || yum install -y less
+		elif [ "${LINUXDISTRO}" = "redhat" ]; then
+			dnf install -y ${dependencies} || yum install -y ${dependencies}
+
 		else
-			apt update
 			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || emerge ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies} || opkg install -y ${dependencies}
 
 		fi
 
 	fi
 	PREFIX=/data/data/com.termux/files/usr
-	if grep -q "debian" '/etc/os-release'; then
-		#if [ "$(cat /etc/os-release | grep 'ID=' | cut -d '=' -f 2)" = "debian" ]; then
+	if [ "${LINUXDISTRO}" = "debian" ]; then
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "安装工具" --no-button "管理工具" --yesno "检测到您使用的是debian系统，您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 9 50); then
 			bash -c "$(wget -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash)"
 			exit 0

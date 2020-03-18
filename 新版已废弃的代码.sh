@@ -748,7 +748,7 @@ rm -rf /tmp/screenfetch*
 #下载主题的注释
 #其中,mojave主题还需要修改窗口管理器(标题栏)样式。
 
-cat >xstartup<<-'EndOfFile'
+cat >xstartup <<-'EndOfFile'
 #!/bin/bash
 unset SESSION_MANAGER
 export PULSE_SERVER=127.0.0.1
@@ -763,39 +763,22 @@ dbus-launch startkde & || dbus-launch startplasma-x11 &
 EndOfFile
 chmod +x ./xstartup
 ######################
-#将绝对路径改为which
-	if [ ! -e /bin/tar ]; then
-		dependencies="${dependencies} tar"
-	fi
+#alpine安装debian chroot依赖
+apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils less
 
-	if [ ! -e /bin/grep ]; then
-		dependencies="${dependencies} grep"
-	fi
+if grep -q "Fedora" /etc/os-release || grep -qi "CentOS" /etc/os-release || grep -qi "Red Hat" /etc/os-release; then
+    LINUXDISTRO='redhat'
+fi
 
-	if [ ! -e /usr/bin/pv ]; then
-		dependencies="${dependencies} pv"
-	fi
-
-	if [ ! -e /usr/bin/git ]; then
-		dependencies="${dependencies} git"
-	fi
-
-	if [ ! -e /usr/bin/xz ]; then
-		dependencies="${dependencies} xz-utils"
-	fi
-
-	if [ ! -e /usr/bin/whiptail ]; then
-		dependencies="${dependencies} whiptail"
-	fi
-
-	if [ ! -e /usr/bin/pkill ]; then
-		dependencies="${dependencies} procps"
-	fi
-
-	if [ ! -e /usr/bin/curl ]; then
-		dependencies="${dependencies} curl"
-	fi
-
-	if [ ! -e /usr/bin/aria2c ]; then
-		dependencies="${dependencies} aria2"
-	fi
+dnf install -y git || yum install -y git
+dnf install -y pv || yum install -y pv
+dnf install -y wget || yum install -y wget
+dnf install -y xz || yum install -y xz
+dnf install -y tar || yum install -y tar
+dnf install -y newt || yum install -y newt
+dnf install -y tar || yum install -y tar
+dnf install -y procps || yum install -y procps
+dnf install -y aria2 || yum install -y aria2
+dnf install -y curl || yum install -y curl
+dnf install -y coreutils || yum install -y coreutils
+dnf install -y less || yum install -y less
