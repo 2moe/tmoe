@@ -6,7 +6,8 @@
 CHECKdependencies() {
 
 	if [ "$(id -u)" != "0" ]; then
-		sudo bash -c "$(wget -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash)"
+		sudo bash -c "$(wget -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash)" ||
+			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash)"
 	fi
 
 	dependencies=""
