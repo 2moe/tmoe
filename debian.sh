@@ -100,10 +100,6 @@ GNULINUX() {
 		dependencies="${dependencies} pv"
 	fi
 
-	if [ ! -e /usr/bin/proot ]; then
-		dependencies="${dependencies} proot"
-	fi
-
 	if [ ! -e /usr/bin/git ]; then
 		dependencies="${dependencies} git"
 	fi
