@@ -1421,9 +1421,9 @@ EndofgentooConf
     source /etc/portage/repos.conf/gentoo.conf
     #同步过于耗时，故注释掉
     #emerge --sync
-    emerge --config sys-libs/timezone-data
+    emerge --config sys-libs/timezone-data 2>/dev/null
     #etc-update
-    emerge eix
+    emerge eix 2>/dev/null
     echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
     rm -f vnc* zsh* .profile
     mv -f .profile.bak .profile 2>/dev/null
@@ -1431,9 +1431,8 @@ EndofgentooConf
     wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
     chmod +x /usr/local/bin/neofetch
     neofetch
-    grep -q 'neofetch' ~/.bashrc 2>/dev/null || echo -e '\nneofetch' >> ~/.bashrc
-    exit 0
     bash
+    exit 0
 fi
 
 
