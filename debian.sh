@@ -154,8 +154,20 @@ GNULINUX() {
 		dependencies="${dependencies} aria2"
 	fi
 
-	if [ "${LINUXDISTRO}" = "alpine" ]; then
-		dependencies="${dependencies} bash less"
+	if [ ! -e /bin/bash ]; then
+		if [ "${LINUXDISTRO}" = "alpine" ]; then
+			dependencies="${dependencies} bash"
+		fi
+	fi
+
+	if [ -L "/usr/bin/less" ]; then
+		dependencies="${dependencies} less"
+	fi
+
+	if [ ! -e /bin/bash ]; then
+		if [ "${LINUXDISTRO}" = "alpine" ]; then
+			dependencies="${dependencies} bash"
+		fi
 	fi
 
 	if [ ! -z "$dependencies" ]; then
