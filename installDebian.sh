@@ -241,7 +241,8 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
   if [ ! -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile
+    mkdir -p "${DebianCHROOT}/etc/tmp"
+    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile 2>/dev/null
   fi
   #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
   DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
@@ -408,7 +409,7 @@ It is recommended that you back up the entire system before removal. If the data
   pkill proot 2>/dev/null
 	read
     chmod 777 -R ${DebianFolder}
-	rm -rfv "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
+	rm -rfv "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rfv "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
 
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	  sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
