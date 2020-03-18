@@ -744,3 +744,6 @@ tar -zxf /tmp/screenfetch.tar.gz -C /tmp
 mv -f /tmp/screenfetch-3.9.1/screenfetch-dev /usr/local/bin/screenfetch
 chmod +x /usr/local/bin/screenfetch
 rm -rf /tmp/screenfetch*
+
+#下载主题的注释
+#其中,mojave主题还需要修改窗口管理器(标题栏)样式。
