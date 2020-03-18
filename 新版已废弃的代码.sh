@@ -747,3 +747,18 @@ rm -rf /tmp/screenfetch*
 
 #下载主题的注释
 #其中,mojave主题还需要修改窗口管理器(标题栏)样式。
+
+cat >xstartup<<-'EndOfFile'
+#!/bin/bash
+unset SESSION_MANAGER
+export PULSE_SERVER=127.0.0.1
+#exec /etc/X11/xinit/xinitrc
+#[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+#[ -r ${HOME}/.Xresources ] && xrdb ${HOME}/.Xresources
+#xsetroot -solid grey
+#vncconfig -iconic &
+#xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&
+#plasma_session &
+dbus-launch startkde & || dbus-launch startplasma-x11 &
+EndOfFile
+chmod +x ./xstartup

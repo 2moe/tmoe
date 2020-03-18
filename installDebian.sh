@@ -1557,7 +1557,8 @@ echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver�
 apt install -y fonts-noto-cjk aptitude tightvncserver
 mkdir -p /run/lock
 touch /var/lib/aptitude/pkgstates
-aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
+#aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
+apt-get install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
 apt install -y xinit dbus-x11
 apt clean
 
