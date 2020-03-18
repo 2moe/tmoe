@@ -98,7 +98,7 @@ GNULINUX() {
 		sed -i 's@-e /bin@-e /opt/bin@g' 'router-debian.bash'
 		sed -i 's@whiptail@dialog@g' 'router-debian.bash'
 		sed -i 's@wget --no-check-certificate -qO "router-debian.bash"@#&@' 'router-debian.bash'
-		sed -i 's@bash router-zsh.bash@#&@' 'router-debian.bash'
+		sed -i 's@bash router-debian.bash@#&@' 'router-debian.bash'
 		bash router-debian.bash
 
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
