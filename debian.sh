@@ -66,9 +66,6 @@ CheckArch() {
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
 	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
-	if [ "$(uname -o)" != "GNU/Linux" ]; then
-		termux-setup-storage
-	fi
 
 	autoCheck
 
@@ -79,6 +76,7 @@ CheckArch() {
 autoCheck() {
 
 	if [ "$(uname -o)" = "Android" ]; then
+		termux-setup-storage
 		ANDROIDTERMUX
 	else
 		GNULINUX
@@ -94,11 +92,11 @@ GNULINUX() {
 		LINUXDISTRO='redhat'
 	fi
 
-	if grep -q "Alpine" /etc/issue || grep -q "Alpine" '/etc/os-release'; then
+	if grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUXDISTRO='alpine'
 	fi
 
-	if grep -Eq "Arch|Manjaro" /etc/os-release; then
+	if grep -Eq "Arch|Manjaro" '/etc/os-release'; then
 		LINUXDISTRO='arch'
 	fi
 
@@ -137,6 +135,8 @@ GNULINUX() {
 	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			dependencies="${dependencies} whiptail"
+		elif [ "${LINUXDISTRO}" = "arch" ]; then
+			dependencies="${dependencies} libnewt"
 		else
 			dependencies="${dependencies} newt"
 		fi
@@ -152,12 +152,6 @@ GNULINUX() {
 
 	if [ ! -e /usr/bin/aria2c ]; then
 		dependencies="${dependencies} aria2"
-	fi
-
-	if [ ! -e /bin/bash ]; then
-		if [ "${LINUXDISTRO}" = "alpine" ]; then
-			dependencies="${dependencies} bash"
-		fi
 	fi
 
 	if [ -L "/usr/bin/less" ]; then
@@ -192,6 +186,7 @@ GNULINUX() {
 			dnf install -y ${dependencies} || yum install -y ${dependencies}
 
 		else
+			apt update
 			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || emerge ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies} || opkg install -y ${dependencies}
 
 		fi

@@ -1398,6 +1398,7 @@ if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     GNULINUXOSRELEASE=FUNTOO
     grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
     locale-gen
+    mkdir -p '/usr/portage'
     #下面生成的文件不要留空格
 cat >/etc/portage/make.conf <<-'Endofmakeconf'
 L10N="zh-CN en-US"
