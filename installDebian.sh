@@ -1661,7 +1661,8 @@ function install()
 {
 apt-mark hold udisks2
 apt update
-echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
+#echo "KDE测试失败，请自行解决软件依赖和其它相关问题。"
+#后期注：测试成功，但存在bug。
 echo '即将为您安装思源黑体(中文字体)、aptitude、tightvncserver、kde-plasma-desktop等软件包'
 apt install -y aptitude
 mkdir -p /run/lock
@@ -1677,14 +1678,8 @@ mkdir -p ~/.vnc
 cd ~/.vnc
 cat >xstartup<<-'EndOfFile'
 #!/bin/bash
-unset SESSION_MANAGER
+xrdb ${HOME}/.Xresources
 export PULSE_SERVER=127.0.0.1
-exec /etc/X11/xinit/xinitrc
-[ -x /etc/vnc/xstartup ] && exec/etc/vnc/xstartup
-[ -r ${HOME}/.Xresources ] && xrdb${HOME}/.Xresources
-xsetroot -solid grey
-vncconfig -iconic &
-#xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&
 #plasma_session &
 dbus-launch startkde & || dbus-launch startplasma-x11 &
 EndOfFile
