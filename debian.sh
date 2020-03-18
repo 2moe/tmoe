@@ -130,14 +130,15 @@ GNULINUX() {
 
 	if [ ! -z "$dependencies" ]; then
 		echo "正在安装相关依赖..."
-		if grep -Eqii "Alpine" /etc/issue || grep -Eq "Alpine" /etc/*-release; then
+		if grep -q "Alpine" /etc/issue || grep -q "Alpine" /etc/os-release; then
 
 			apk add -q xz newt tar procps git grep wget bash aria2 curl pv coreutils less
-		elif grep -Eqi "Arch" /etc/issue || grep -Eqi "Manjaro" /etc/issue; then
+
+		elif grep -q "Arch" /etc/issue || grep -q "Manjaro" /etc/issue; then
 
 			pacman -Syu --noconfirm ${dependencies}
 
-		elif grep -Eqi "Fedora" /etc/issue || grep -Eqii "CentOS" /etc/issue || grep -Eqi "Red Hat Enterprise Linux Server" /etc/issue; then
+		elif grep -q "Fedora" /etc/os-release || grep -qi "CentOS" /etc/os-release || grep -qi "Red Hat" /etc/os-release; then
 
 			dnf install -y ${dependencies} || yum install -y ${dependencies}
 		else
