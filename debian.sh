@@ -160,7 +160,9 @@ GNULINUX() {
 	fi
 
 	if [ ! -e /usr/bin/pkill ]; then
-		dependencies="${dependencies} procps"
+		if [ "${LINUXDISTRO}" != "openwrt" ]; then
+			dependencies="${dependencies} procps"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/curl ]; then
