@@ -1399,7 +1399,7 @@ if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
     locale-gen
     #下面生成的文件不要留空格
-    cat >/etc/portage/make.conf <<-'Endofmakeconf'
+cat >/etc/portage/make.conf <<-'Endofmakeconf'
 L10N="zh-CN en-US"
 LINGUAS="zh_CN en_US"
 #GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
@@ -1408,9 +1408,9 @@ EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
 #FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
 ACCEPT_LICENSE="*"
 Endofmakeconf
-    source /etc/portage/make.conf
+    source /etc/portage/make.conf 2>/dev/null
     mkdir -p /etc/portage/repos.conf/
-    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
+cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
 [gentoo]
 location = /usr/portage
 sync-type = rsync
