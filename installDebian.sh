@@ -1686,7 +1686,7 @@ xsetroot -solid grey
 vncconfig -iconic &
 #xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop"&
 #plasma_session &
-startplasma-x11 &
+dbus-launch startkde & || dbus-launch startplasma-x11 &
 EndOfFile
 chmod +x ./xstartup
 
@@ -1712,7 +1712,7 @@ echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 #plasma_session &
-startplasma-x11 || startx
+dbus-launch startkde  || dbus-launch startplasma-x11 
 EndOfFile
 
 
