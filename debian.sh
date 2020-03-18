@@ -1126,7 +1126,7 @@ DOWNLOADVNCAPK() {
 	fi
 
 	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
-	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,当前版本已经可以通过pulse server来传输音频。xsdl对某些软件的兼容性更高，但操作体验没有vnc好。VNC has a better operating experience and is also smoother.XSDL is more compatible with some software， but the experience is not as good as VNC in every way.\n若Android VNC启动后仍无声音，则请安装termux:api.apk" 10 60); then
+	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,当前版本已经可以通过pulse server来传输音频。xsdl对某些软件的兼容性更高，但操作体验没有vnc好。VNC has a better operating experience and is also smoother.XSDL is more compatible with some software， but the experience is not as good as VNC in every way.\n若VNC启动后仍无声音，则请前往Play商店或Fdroid更新termux至最新版本,再安装termux:api.apk" 10 60); then
 		echo 'Press enter to start the download, and press Ctrl + C to cancel.'
 		echo "${YELLOW}按回车键开始下载，按Ctrl+C取消。${RESET}"
 		read
