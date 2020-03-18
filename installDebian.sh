@@ -1787,7 +1787,10 @@ fi
 
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"
-wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
+#wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
+wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
+chmod +x /usr/local/bin/neofetch
+neofetch
 bash zsh.sh
 EDITBASHPROFILE
 
