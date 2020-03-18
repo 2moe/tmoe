@@ -47,8 +47,9 @@ CheckArch() {
 		archtype="ppc64el"
 		;;
 	mips*)
-		echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
-		exit 1
+		archtype="mipsel"
+		#echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
+		#exit 1
 		;;
 	risc*)
 		echo '暂不支持risc-v'
