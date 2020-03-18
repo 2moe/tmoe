@@ -566,11 +566,11 @@ It is recommended that you back up the entire system before removal. If the data
 	read opt
 	case $opt in
 	y* | Y* | "")
-		rm -f ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm
-		rm -f ~/debian-buster-rootfs.tar.xz
-		rm -f ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-		rm -f ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-		rm -f ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm 2>/dev/null
+		rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 		echo "Deleted已删除"
 		;;
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;

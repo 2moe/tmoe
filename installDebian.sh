@@ -408,7 +408,7 @@ It is recommended that you back up the entire system before removal. If the data
   pkill proot 2>/dev/null
 	read
     chmod 777 -R ${DebianFolder}
-	rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
+	rm -rfv "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
 
     sed -i '/alias debian=/d' $PREFIX/etc/profile
 	  sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
@@ -422,9 +422,12 @@ It is recommended that you back up the entire system before removal. If the data
 
     read opt
 	case \$opt in
-		y*|Y*|"") rm -f ~/debian-sid-rootfs.tar.xz 
-    rm -f $PREFIX/bin/debian-rm  
-    rm -f ~/debian-buster-rootfs.tar.xz 
+		y*|Y*|"") rm -vf ~/debian-sid-rootfs.tar.xz 2>/dev/null
+    rm -f $PREFIX/bin/debian-rm
+		rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+		rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
     echo "Deleted已删除" ;;
 		n*|N*) echo "skipped." ;;
 		*) echo "Invalid choice. skipped." ;;
