@@ -184,8 +184,8 @@ GNULINUX() {
 		echo "正在安装相关依赖..."
 		if [ "$(id -u)" != "0" ]; then
 			sudo bash -c "$(wget -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh)" ||
-				sudo sh -c "$(busybox wget --no-check-certificate -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh)" ||
-				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh)"
+				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh)" ||
+				sudo sh -c "$(wget --no-check-certificate -qO- https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh)"
 		fi
 
 		if [ "${LINUXDISTRO}" = "debian" ]; then
