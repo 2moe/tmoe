@@ -1568,13 +1568,13 @@ cat >xstartup<<-'EndOfFile'
 #!/bin/bash
 xrdb ${HOME}/.Xresources
 export PULSE_SERVER=127.0.0.1
-xsetroot -solid grey
-x-terminal-emulator -geometry  80×24+10+10 -ls -title "$VNCDESKTOP Desktop" &
+#xsetroot -solid grey
+#x-terminal-emulator -geometry  80×24+10+10 -ls -title "$VNCDESKTOP Desktop" &
 #x-window-manager &
 # Fix to make GNOME work
 #export XKL_XMODMAP_DISABLE=1
 #/etc/X11/Xsession
-gnome-session &
+dbus-launch gnome-session &
 EndOfFile
 chmod +x ./xstartup
 
@@ -1600,7 +1600,7 @@ echo '正在为您启动xsdl,请将display number改为0'
 echo 'Starting xsdl, please change display number to 0'
 echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-gnome-session
+dbus-launch gnome-session
 EndOfFile
 
 
