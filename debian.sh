@@ -87,6 +87,7 @@ autoCheck() {
 ########################################
 GNULINUX() {
 	dependencies=""
+	REDHATdependencies=""
 
 	if [ ! -e /bin/tar ]; then
 		dependencies="${dependencies} tar"
@@ -100,6 +101,10 @@ GNULINUX() {
 		dependencies="${dependencies} pv"
 	fi
 
+	if [ ! -e /usr/bin/proot ]; then
+		dependencies="${dependencies} proot"
+	fi
+
 	if [ ! -e /usr/bin/git ]; then
 		dependencies="${dependencies} git"
 	fi
@@ -108,7 +113,7 @@ GNULINUX() {
 		dependencies="${dependencies} xz-utils"
 	fi
 
-	if [ ! -e /usr/bin/whiptail ]; then
+	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
 		dependencies="${dependencies} whiptail"
 	fi
 

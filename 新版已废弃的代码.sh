@@ -762,3 +762,40 @@ export PULSE_SERVER=127.0.0.1
 dbus-launch startkde & || dbus-launch startplasma-x11 &
 EndOfFile
 chmod +x ./xstartup
+######################
+#将绝对路径改为which
+	if [ ! -e /bin/tar ]; then
+		dependencies="${dependencies} tar"
+	fi
+
+	if [ ! -e /bin/grep ]; then
+		dependencies="${dependencies} grep"
+	fi
+
+	if [ ! -e /usr/bin/pv ]; then
+		dependencies="${dependencies} pv"
+	fi
+
+	if [ ! -e /usr/bin/git ]; then
+		dependencies="${dependencies} git"
+	fi
+
+	if [ ! -e /usr/bin/xz ]; then
+		dependencies="${dependencies} xz-utils"
+	fi
+
+	if [ ! -e /usr/bin/whiptail ]; then
+		dependencies="${dependencies} whiptail"
+	fi
+
+	if [ ! -e /usr/bin/pkill ]; then
+		dependencies="${dependencies} procps"
+	fi
+
+	if [ ! -e /usr/bin/curl ]; then
+		dependencies="${dependencies} curl"
+	fi
+
+	if [ ! -e /usr/bin/aria2c ]; then
+		dependencies="${dependencies} aria2"
+	fi
