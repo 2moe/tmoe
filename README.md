@@ -12,10 +12,9 @@
 - [x] **Ubuntu 20.02**
 - [x] **Kali rolling**
 - [x] **Funtoo**
-- [x] **Void**
-
-       ✨ 支持自动配置中文环境，并执行其它优化步骤。🍹
-       所有的配置和优化仅适用于deb系！
+- [x] **Void**  
+       ✨ 支持自动配置中文环境，并执行其它优化步骤。🍹  
+       所有的配置和优化步骤仅适用于 deb 系！
 
 ![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
 
