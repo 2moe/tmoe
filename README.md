@@ -11,8 +11,9 @@
 - [x] **Debian buster/sid**
 - [x] **Ubuntu 20.02**
 - [x] **Kali rolling**
-- [x] **Funtoo**  
-       ✨ 支持自动配置中文环境，并执行其它优化步骤。🍹
+- [x] **Funtoo**
+- [x] **Void**
+      ✨ 支持自动配置中文环境，并执行其它优化步骤。🍹
 
 ![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
 
