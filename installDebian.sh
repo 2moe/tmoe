@@ -1447,13 +1447,12 @@ EOF
     sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.tuna.tsinghua.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
     xbps-install -S
     xbps-install -y wget
-    wget -qO ~/zsh.sh 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh'
-    chmod +x ~/zsh.sh
-    echo '检测到您当前的系统为Void GNU/Linux,将不会为您继续配置任何优化步骤！'
+    wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
     rm -f vnc* zsh* .profile
     mv -f .profile.bak .profile 2>/dev/null
-    wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
-    bash
+    bash -c "$(wget -qO zsh.sh 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+    echo '检测到您当前的系统为Void GNU/Linux,将不会为您继续配置任何优化步骤！'
+    zsh 2>/dev/null || bash
     exit 0
 fi
 

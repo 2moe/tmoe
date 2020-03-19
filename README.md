@@ -109,8 +109,8 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')
 
 ##### 1-2.安装后的步骤
 
-If you want to start GNU/Linux next time, you can just type `debian`.
-下次启动 GNU/Linux 的命令是
+If you want to start GNU/Linux next time, you can just type `debian`.  
+下次启动 GNU/Linux 的命令是  
 `debian`
 
 ##### 关于 GNU/Linux 的重新安装与移除
