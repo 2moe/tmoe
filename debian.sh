@@ -943,17 +943,6 @@ BACKUPTERMUX() {
 }
 
 ########################################################################
-
-####################################
-#tar压缩进度条1、2
-
-: '	#tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
-
-	#tar -cf - ~/${DebianFolder} | pv -s $(du -sb ~/${DebianFolder} | awk '{print $1}') | gzip > ${TMPtime}.tar.gz
-
-	#tar Pzcvf ${TMPtime}.tar.gz ~/${DebianFolder}'
-
-########################################################################
 #
 RESTORESYSTEM() {
 	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -1797,11 +1786,12 @@ TERMUXTUNASOURCESLIST() {
 }
 ##################
 CHOOSEWHICHGNULINUX() {
-	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 4 \
+	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
 		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
 		"4" "Funtoo:专注于改进Gentoo" \
+		"5" "Void:基于xbps包管理器的独立发行版" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 
@@ -1825,6 +1815,10 @@ CHOOSEWHICHGNULINUX() {
 	##############################
 	if [ "${SELECTGNULINUX}" == '4' ]; then
 		INSTALLFuntooDISTRO
+	fi
+	#############################
+	if [ "${SELECTGNULINUX}" == '5' ]; then
+		INSTALLVOIDLINUXDISTRO
 	fi
 	##############################
 	echo 'Press Enter to return.'
@@ -1907,6 +1901,16 @@ INSTALLFuntooDISTRO() {
 		sed 's/debian system/funtoo system/g' |
 		sed 's/debian容器/funtoo容器/g' |
 		sed 's:Debian GNU/Linux:Funtoo GNU/Linux:g')"
+}
+#######################
+INSTALLVOIDLINUXDISTRO() {
+	bash -c "$(curl -LfsS gitee.com/mo2/Termux-Debian/raw/master/installDebian.sh |
+		sed 's:debian-sid:voidlinux-default:g' |
+		sed 's:debian/sid:voidlinux/current:g' |
+		sed 's/debian系统/void系统/g' |
+		sed 's/debian system/void system/g' |
+		sed 's/debian容器/void容器/g' |
+		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
 }
 
 ####################
