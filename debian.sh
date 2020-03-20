@@ -296,6 +296,7 @@ ANDROIDTERMUX() {
 	##The vnc sound repair script from andronix has been slightly modified and optimized.
 	if ! grep -q 'anonymous=1' ${HOME}/../usr/etc/pulse/default.pa; then
 		sed -i '/auth-ip-acl/d' ${HOME}/../usr/etc/pulse/default.pa
+		sed -i '/module-native-protocol-tcp/d' ${HOME}/../usr/etc/pulse/default.pa
 		#grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa
 		echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
 	fi
