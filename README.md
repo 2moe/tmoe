@@ -9,7 +9,7 @@
 🍸 目前支持：
 
 - [x] **Debian buster/sid**
-- [x] **Ubuntu 20.02**
+- [x] **Ubuntu 20.04**
 - [x] **Kali rolling**
 - [x] **Funtoo**
 - [x] **Void**  
