@@ -294,9 +294,10 @@ ANDROIDTERMUX() {
 		apt install -y ${dependencies}
 	fi
 	##The vnc sound repair script from andronix has been slightly modified and optimized.
-	if ! grep -q '127.0.0.1' ${HOME}/../usr/etc/pulse/default.pa; then
+	if ! grep -q 'anonymous=1' ${HOME}/../usr/etc/pulse/default.pa; then
 		sed -i '/auth-ip-acl/d' ${HOME}/../usr/etc/pulse/default.pa
-		grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa || echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
+		#grep -q "anonymous" ${HOME}/../usr/etc/pulse/default.pa
+		echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${HOME}/../usr/etc/pulse/default.pa
 	fi
 	#auth-ip-acl=127.0.0.1;192.168.0.0/16时允许局域网内其它设备连接。
 	#auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
