@@ -277,7 +277,7 @@ NANOMANUALLYMODIFY() {
 ######################
 CHANGEPULSESERVERPORT() {
 
-	TARGET=$(whiptail --inputbox "若xsdl app显示的端口非4712，则您可在此处修改。默认为4712，当前为$(sed -n 4p $(which startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2) \n请以xsdl app显示的pulse server地址的最后几位数字为准，输入完成后按回车键确认。" 20 50 --title "MODIFY PULSE SERVER PORT " 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "若xsdl app显示的端口非4713，则您可在此处修改。默认为4713，当前为$(sed -n 4p $(which startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2) \n请以xsdl app显示的pulse server地址的最后几位数字为准，输入完成后按回车键确认。" 20 50 --title "MODIFY PULSE SERVER PORT " 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:$TARGET" "$(which startxsdl)"
@@ -955,7 +955,7 @@ INSTALLXFCE4DESKTOP() {
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
 		export DISPLAY=127.0.0.1:0
-		export PULSE_SERVER=tcp:127.0.0.1:4712
+		export PULSE_SERVER=tcp:127.0.0.1:4713
 		echo '正在为您启动xsdl,请将display number改为0'
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1075,7 +1075,7 @@ INSTALLMATEDESKTOP() {
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
 		export DISPLAY=127.0.0.1:0
-		export PULSE_SERVER=tcp:127.0.0.1:4712
+		export PULSE_SERVER=tcp:127.0.0.1:4713
 		echo '正在为您启动xsdl,请将display number改为0'
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1118,7 +1118,7 @@ INSTALLLXDEDESKTOP() {
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
 		export DISPLAY=127.0.0.1:0
-		export PULSE_SERVER=tcp:127.0.0.1:4712
+		export PULSE_SERVER=tcp:127.0.0.1:4713
 		echo '正在为您启动xsdl,请将display number改为0'
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
@@ -1165,7 +1165,7 @@ STARTVNCANDSTOPVNC() {
 	startvnc
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '您还可以在termux原系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
-	echo '若xsdl音频端口不是4712，而是4713，则请输xsdl-4713进行修复。'
+	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
