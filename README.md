@@ -4,7 +4,7 @@
 
 ## 介绍
 
-在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。
+在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
 在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。  
 🍸 目前支持：
 
