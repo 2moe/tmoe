@@ -1,0 +1,3 @@
+DPkg::Pre-Install-Pkgs { "/usr/bin/apt-listchanges --apt || test $? -lt 10"; };
+DPkg::Tools::Options::/usr/bin/apt-listchanges::Version "2";
+DPkg::Tools::Options::/usr/bin/apt-listchanges::InfoFD "20";
