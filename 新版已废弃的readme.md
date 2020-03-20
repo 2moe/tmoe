@@ -59,3 +59,18 @@ gnome 和 kde 是用来卖萌用的，不要安装。如需安装，请自行解
 ### 可选步骤（Optional step）
 
 输`./kali.sh`更换为 kali 源，输`./kali.sh rm` 移除 kali 源。
+
+#### 1.This script should be run via curl
+
+```shell
+apt install -y curl
+bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
+
+#### 2. or wget
+
+```shell
+apt update
+apt install -y wget
+bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```

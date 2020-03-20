@@ -30,22 +30,68 @@
 
 可以支持，但不想支持的是 **mipsel**
 
-### 安装教程
+### 不同平台的安装教程
 
-#### 1.This script should be run via curl
+**您不仅可以在 Android 手机上运行本工具，亦可在 GNU/Linux 上运行。**
+
+1.Android-Termux
 
 ```shell
-apt install -y curl
-bash -c "$(curl -fsSL 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    apt install -y curl
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
 
-#### 2. or wget
+2.Debian/Ubuntu/Mint/Kali/Deepin/Devuan/MX 等 deb 系发行版
 
 ```shell
-apt update
-apt install -y wget
+if [ ! -f /usr/bin/wget ]; then
+    apt update
+    apt install -y wget || sudo apt install -y wget || su -c "apt install -y wget"
+fi
 bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
+
+3.RedHat/Fedora/CentOS
+
+```shell
+    dnf install -y curl || yum install -y curl
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
+
+4.Arch/Manjaro
+
+```shell
+    pacman -Syu --noconfirm curl
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
+
+5.OpenWRT/Entware
+
+```shell
+    opkg update
+    opkg install wget bash
+    bash -c "$(wget --no-check-certificate -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
+
+6.Alpine
+
+```shell
+    apk add -q wget
+    busybox ash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
+
+7.Void
+
+```shell
+    xbps-install -S
+    xbps-install -y wget
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+```
+
+8.其它 system 未测试,以下系统请自行解决依赖关系。  
+例如:**Funtoo、Gentoo、OpenSuse**和**GuixSD**等发行版。  
+还有 Unix 系统，例如：**MacOS、FreeBSD、OpenBSD、NetBSD**和**SunOS**等。  
+相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
 
 ---
 
@@ -53,11 +99,15 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')
 
 #### 简易版说明（萌新专用）
 
-- 1.安装 GNU/Linux 的命令(仅支持在原系统内输)
+- 1.安装 Tmoe GNU/Linux 管理工具的命令(仅支持在原系统内输)
 
 ```shell
 bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
+
+> 进入工具后，按方向键和回车键进行操作，基本上所有操作都有提示。
+
+[![Snipaste_2020-03-20_17-10-48.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/20/0W0hSgimlmeXIBjO.png)](https://gitee.com/mo2/pic_api/raw/test/2020/03/20/0W0hSgimlmeXIBjO.png)
 
 - 2.启动命令(仅支持在原系统内输)
 
@@ -95,9 +145,9 @@ startvnc
 
 #### Step1. Install GNU/Linux container
 
-##### 1-1. You can use the following command to install GNU/Linux
+##### 1-1. You can use the following command to install Tmoe GNU/Linux tool
 
-安装 GNU/Linux 系统的命令是
+安装 Tmoe GNU/Linux 管理工具的命令是
 
 ```shell
 apt update
