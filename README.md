@@ -47,7 +47,7 @@ Debian 支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s3
 
 ```shell
 if [ ! -f /usr/bin/wget ]; then
-    apt update
+    apt update || sudo apt update || su -c "apt update"
     apt install -y wget || sudo apt install -y wget || su -c "apt install -y wget"
 fi
 bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
