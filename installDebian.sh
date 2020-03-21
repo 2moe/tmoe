@@ -1211,7 +1211,7 @@ themeEOF
 
   rm -f vnc-autostartup-zsh
 
-  if [ -d "/usr/lib/command-not-found" ]; then
+  if [ -e "/usr/lib/command-not-found" ]; then
     apt-file update 2>/dev/null
     update-command-not-found 2>/dev/null
     grep -q 'command-not-found/command-not-found.plugin.zsh' /root/.zshrc 2>/dev/null || sed -i "$ a\source /root/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" /root/.zshrc
