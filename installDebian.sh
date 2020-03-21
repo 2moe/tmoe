@@ -1212,9 +1212,11 @@ themeEOF
   rm -f vnc-autostartup-zsh
 
   if [ -e "/usr/lib/command-not-found" ]; then
-    apt-file update 2>/dev/null
-    update-command-not-found 2>/dev/null
     grep -q 'command-not-found/command-not-found.plugin.zsh' /root/.zshrc 2>/dev/null || sed -i "$ a\source /root/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" /root/.zshrc
+    if ! grep -qi 'Ubuntu' '/etc/os-release'; then
+      apt-file update 2>/dev/null
+      update-command-not-found 2>/dev/null
+    fi
   fi
 
   echo "正在安装zsh-syntax-highlighting语法高亮插件"
