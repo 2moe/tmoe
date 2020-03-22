@@ -99,6 +99,11 @@ if [ "$(uname -o)" = "Android" ]; then
     apt install -y ${dependencies}
   fi
   cd ~/.termux
+  if [ ! -e "colors.properties" ]; then
+    echo '检测到termux配色文件不存在，正在为您下载...'
+    aria2c --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/colors.properties'
+  fi
+
   REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
   LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
   if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
