@@ -943,18 +943,15 @@ INSTALLXFCE4DESKTOP() {
 	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies tightvncserver
-	cd /tmp
-	rm -f ./kali-themes-common.deb 2>/dev/null
-	wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
-	apt install -y ./kali-themes-common.deb
-	rm -f ./kali-themes-common.deb
-	apt purge -y ^libfprint
-	apt install -y xfwm4-theme-breeze xcursor-themes
+
+	apt autopurge -y ^libfprint
+	#apt install -y xfwm4-theme-breeze xcursor-themes
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 		apt install -y kali-linux
 		apt install -y kali-menu
 		apt install -y kali-undercover
 		apt install -y kali-linux-top10
+		apt install -y kali-themes-common
 		if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 			apt install -y kali-linux-arm
 		fi
@@ -962,6 +959,12 @@ INSTALLXFCE4DESKTOP() {
 		sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop
 		grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
 		apt search kali-linux
+	else
+		cd /tmp
+		rm -f ./kali-themes-common.deb 2>/dev/null
+		wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
+		apt install -y ./kali-themes-common.deb
+		rm -f ./kali-themes-common.deb
 	fi
 	apt clean
 
