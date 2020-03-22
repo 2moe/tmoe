@@ -104,6 +104,7 @@ if [ "$(uname -o)" = "Android" ]; then
   if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
     echo '正在配置字体...'
     curl -fsSLo Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
+    rm -f font.ttf
     tar -Jxf Iosevka.tar.xz
     rm -f Iosevka.tar.xz
     termux-reload-settings
