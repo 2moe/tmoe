@@ -423,6 +423,7 @@ INSTALLGUI() {
 		else
 			wget -qO 'Iosevka.tar.xz' 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
 			tar -xvf 'Iosevka.tar.xz'
+			rm -f 'Iosevka.tar.xz'
 			mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
 		fi
 		cd /usr/share/fonts/
