@@ -417,8 +417,7 @@ MainMenu() {
 	fi
 
 	if [ "${OPTION}" == '10' ]; then
-		bash -c "$(curl -fLsS 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
-		#bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh')"
+		bash -c "$(curl -fLsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
 
 	fi
 
