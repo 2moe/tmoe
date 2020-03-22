@@ -193,6 +193,7 @@ if [ "$(uname -o)" = "Android" ]; then
 else
   pv ${cur}/${DebianTarXz} | tar -pJx
 fi
+cp -f ~/.termux/font.ttf ~/${DebianFolder}/tmp/ 2>/dev/null
 #proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
 cd "$cur"
 echo "                                        "

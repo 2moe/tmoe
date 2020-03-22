@@ -20,6 +20,14 @@ CHECKdependencies() {
 		dependencies="${dependencies} xz-utils"
 	fi
 
+	if [ ! -e /usr/bin/mkfontscale ]; then
+		dependencies="${dependencies} xfonts-utils"
+	fi
+
+	if [ ! -e /usr/bin/fc-cache ]; then
+		dependencies="${dependencies} fontconfig"
+	fi
+
 	if [ ! -e /usr/bin/catimg ]; then
 		dependencies="${dependencies} catimg"
 	fi
@@ -407,6 +415,21 @@ INSTALLGUI() {
 	fi
 	catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
 
+	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
+		echo '正在刷新字体缓存...'
+		mkdir -p /usr/share/fonts/
+		if [ -e "font.ttf" ]; then
+			mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
+		else
+			wget -qO 'Iosevka.tar.xz' 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
+			tar -xvf 'Iosevka.tar.xz'
+			mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
+		fi
+		cd /usr/share/fonts/
+		mkfontscale
+		mkfontdir
+		fc-cache
+	fi
 	#wget -qO- 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
 	echo "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
 	echo "按回车键选择您需要安装的图形桌面环境"
