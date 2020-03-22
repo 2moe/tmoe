@@ -118,7 +118,7 @@ if [ "$(uname -o)" = "Android" ]; then
   if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
     echo '正在配置字体...'
     aria2c --allow-overwrite=true -o Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
-    rm -f font.ttf
+    mv -f font.ttf font.ttf.bak
     tar -Jxf Iosevka.tar.xz
     rm -f Iosevka.tar.xz
     termux-reload-settings
