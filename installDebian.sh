@@ -1223,7 +1223,7 @@ themeEOF
     fi
   fi
 
-  echo "正在安装zsh-syntax-highlighting语法高亮插件"
+  echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
 
   rm -rf /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
   mkdir -p /root/.oh-my-zsh/custom/plugins
@@ -1234,7 +1234,7 @@ themeEOF
   grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" /root/.zshrc
   #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
 
-  echo "正在安装zsh-autosuggestions自动补全插件"
+  echo "正在克隆zsh-autosuggestions自动补全插件..."
   rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
 
   #git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -1243,7 +1243,7 @@ themeEOF
   grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" /root/.zshrc
   #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
 
-  echo "正在安装fzf-tab插件"
+  echo "正在克隆fzf-tab插件..."
   git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab
   
   grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' '/root/.zshrc' >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" /root/.zshrc

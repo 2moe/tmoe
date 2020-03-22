@@ -792,13 +792,4 @@ dnf install -y less || yum install -y less
 
 #########
 
-if ! grep -q 'extract=' "/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
-cat >>
-    local extract="
-# 提取当前选择的内容
-in=\${\${\"\$(<{f})\"%\$'\0'*}#*\$'\0'}
-# 获取当前补全状态的上下文
-local -A ctxt=(\"\${(@ps:\2:)CTXT}\")
-"
-    zstyle ':fzf-tab:complete:*:*' extra-opts --preview=$extract'ls -A1 --color=always ${~ctxt[hpre]}$in 2>/dev/null'
-fi
+
