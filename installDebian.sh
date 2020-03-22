@@ -850,10 +850,11 @@ main() {
  # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
   echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
 if ! grep -q '.p10k.zsh' '/root/.zshrc'; then
- wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-  cat >>'/root/.zshrc'<<-'EndOfp10K'
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+   wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+   cat >>'/root/.zshrc'<<-'EndOfp10K'
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 EndOfp10K
+fi 
   if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
     grep -q 'unset LD_PRELOAD' /root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" /root/.zshrc >/dev/null 2>&1
     grep -q 'zh_CN.UTF-8' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" /root/.zshrc >/dev/null 2>&1
