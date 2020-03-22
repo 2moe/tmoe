@@ -98,8 +98,18 @@ if [ "$(uname -o)" = "Android" ]; then
     echo "正在安装相关依赖..."
     apt install -y ${dependencies}
   fi
+  cd ~/.termux
+  REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
+  LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
+  if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
+    wget -qO Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
+    tar -Jxf Iosevka.tar.xz
+    rm -f Iosevka.tar.xz
+    termux-reload-settings
+  fi
 
 fi
+
 ####################
 #卸载chroot挂载目录
 if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -839,7 +849,11 @@ main() {
   sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "/root/.zshrc"
  # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
   echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
-
+if ! grep -q '.p10k.zsh' '/root/.zshrc'; then
+ wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+  cat >>'/root/.zshrc'<<-'EndOfp10K'
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+EndOfp10K
   if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
     grep -q 'unset LD_PRELOAD' /root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" /root/.zshrc >/dev/null 2>&1
     grep -q 'zh_CN.UTF-8' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" /root/.zshrc >/dev/null 2>&1
