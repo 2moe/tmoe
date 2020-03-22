@@ -831,7 +831,7 @@ main() {
   echo "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
   echo "    jBBdD. :. ........:r... YB  Bi      "
   echo "       :7j1.                 :  :       "
-  echo "Configuring zsh theme 正在配置zsh主题(agnosterzak)"
+  echo "Configuring zsh theme 正在配置zsh主题(agnosterzak)..."
   cd ~/.oh-my-zsh/themes || mkdir -p ~/.oh-my-zsh/themes && cd ~/.oh-my-zsh/themes
 
   cat >agnosterzak.zsh-theme <<-'themeEOF'
@@ -1222,6 +1222,7 @@ themeEOF
   if [ -e "/usr/lib/command-not-found" ]; then
     grep -q 'command-not-found/command-not-found.plugin.zsh' /root/.zshrc 2>/dev/null || sed -i "$ a\source /root/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" /root/.zshrc
     if ! grep -qi 'Ubuntu' '/etc/os-release'; then
+      echo "正在配置command-not-found插件..."
       apt-file update 2>/dev/null
       update-command-not-found 2>/dev/null
     fi
@@ -1249,7 +1250,7 @@ themeEOF
 
   echo "正在克隆fzf-tab插件..."
   rm -rf /root/.oh-my-zsh/custom/plugins/fzf-tab 2>/dev/null
-  git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab
+  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab || git clone --depth=1 https://gitee.com/mo2/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab 
   
   grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' '/root/.zshrc' >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" /root/.zshrc
 if ! grep -q 'extract=' "/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
