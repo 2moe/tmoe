@@ -967,6 +967,10 @@ INSTALLXFCE4DESKTOP() {
 		rm -f ./kali-themes-common.deb
 	fi
 	apt clean
+	cd /usr/share/xfce4/terminal
+	echo "正在配置xfce4终端配色..."
+	wget -qO "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
+	tar -Jxvf "colorschemes.tar.xz"
 
 	mkdir -p ~/.vnc
 	cd ~/.vnc
