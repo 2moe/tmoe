@@ -509,6 +509,10 @@ if [ ! -e /usr/bin/git ]; then
   dependencies="${dependencies} git"
 fi
 
+if [ ! -e /usr/bin/fzf ]; then
+  dependencies="${dependencies} fzf"
+fi
+
 if [ ! -e /usr/bin/wget ]; then
   dependencies="${dependencies} wget"
 fi
@@ -1248,7 +1252,7 @@ themeEOF
   git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab
   
   grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' '/root/.zshrc' >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" /root/.zshrc
-  if ! grep -q 'extract=' "/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
+if ! grep -q 'extract=' "/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
     cat >>"/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" <<-'EndOFfzfTab'
     local extract="
 # 提取当前选择的内容
