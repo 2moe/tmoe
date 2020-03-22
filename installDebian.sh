@@ -102,7 +102,8 @@ if [ "$(uname -o)" = "Android" ]; then
   REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
   LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
   if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
-    wget -qO Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
+    echo '正在配置字体...'
+    curl -fsSLo Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
     tar -Jxf Iosevka.tar.xz
     rm -f Iosevka.tar.xz
     termux-reload-settings
