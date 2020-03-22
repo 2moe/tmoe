@@ -353,8 +353,8 @@ installBROWSER() {
 			fi
 			apt update
 			#分项安装，防止ubuntu安装失败
-			apt install -y firefox-esr-l10n-zh-cn
 			apt install -y firefox-esr
+			apt install -y firefox-esr-l10n-zh-cn
 			apt install -y firefox-esr-locale-zh-hans 2>/dev/null
 		else
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
@@ -362,8 +362,8 @@ installBROWSER() {
 			echo "1s后将自动开始安装"
 			sleep 1
 			apt update
-			apt install -y firefox-l10n-zh-cn 2>/dev/null
 			apt install -y firefox
+			apt install -y firefox-l10n-zh-cn 2>/dev/null
 			apt install -y firefox-locale-zh-hans 2>/dev/null
 		fi
 		echo "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
@@ -375,7 +375,7 @@ installBROWSER() {
 		sleep 1
 		apt update
 		if [ "${LINUXDISTRO}" = 'ubuntu' ]; then
-			apt install -y chromium-browser-l10n chromium-browser
+			apt install -y chromium-browser chromium-browser-l10n
 			sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' /usr/share/applications/chromium-browser.desktop
 			grep 'chromium-browser' /etc/profile || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /etc/profile
 		else

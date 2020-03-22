@@ -101,17 +101,17 @@ if [ "$(uname -o)" = "Android" ]; then
   fi
 
   if [ ! -e "termux.properties" ]; then
-    echo "检测到termux属性文件不存在，正在为您下载..."	  
+    echo "检测到termux属性文件不存在，正在为您下载..."
     aria2c --allow-overwrite=true -o "termux.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/termux.properties'
   fi
 
   if [ -e $PREFIX/bin/tsu ]; then
     DEVICENAME="$(getprop ro.product.model)"
     if [ "$(hostname)" = "localhost" ]; then
-        echo "检测到您当前的hostname为localhost,正在修改hostname为product model"
-        tsudo hostname ${DEVICENAME}  
-     fi    	    
-  fi	  
+      echo "检测到您当前的hostname为localhost,正在修改hostname为product model"
+      tsudo hostname ${DEVICENAME}
+    fi
+  fi
 
   REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
   LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
