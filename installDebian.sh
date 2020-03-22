@@ -1244,6 +1244,7 @@ themeEOF
   #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
 
   echo "正在克隆fzf-tab插件..."
+  rm -rf /root/.oh-my-zsh/custom/plugins/fzf-tab 2>/dev/null
   git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab
   
   grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' '/root/.zshrc' >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" /root/.zshrc
