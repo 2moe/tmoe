@@ -90,6 +90,10 @@ if [ "$(uname -o)" = "Android" ]; then
     dependencies="${dependencies} aria2"
   fi
 
+  if [ ! -e $PREFIX/bin/fzf ]; then
+    dependencies="${dependencies} fzf"
+  fi
+
   if [ ! -z "$dependencies" ]; then
     echo "正在安装相关依赖..."
     apt install -y ${dependencies}
@@ -1224,8 +1228,8 @@ themeEOF
   rm -rf /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
   mkdir -p /root/.oh-my-zsh/custom/plugins
 
-  #git clone git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
-  git clone https://gitee.com/mo2/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+  # git clone --depth=1 git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
+  git clone --depth=1 https://gitee.com/mo2/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
   grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" /root/.zshrc
   #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
@@ -1233,11 +1237,27 @@ themeEOF
   echo "正在安装zsh-autosuggestions自动补全插件"
   rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
 
-  #git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-  git clone https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  #git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  git clone --depth=1 https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
   grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" /root/.zshrc
   #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
+
+  echo "正在安装fzf-tab插件"
+  git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab
+  
+  grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' '/root/.zshrc' >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" /root/.zshrc
+  if ! grep -q 'extract=' "/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
+    cat >>"/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" <<-'EndOFfzfTab'
+    local extract="
+# 提取当前选择的内容
+in=\${\${\"\$(<{f})\"%\$'\0'*}#*\$'\0'}
+# 获取当前补全状态的上下文
+local -A ctxt=(\"\${(@ps:\2:)CTXT}\")
+"
+    zstyle ':fzf-tab:complete:*:*' extra-opts --preview=$extract'ls -A1 --color=always ${~ctxt[hpre]}$in 2>/dev/null'
+EndOFfzfTab
+fi
 
   sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
 
