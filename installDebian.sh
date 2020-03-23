@@ -149,7 +149,11 @@ if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
 fi
 ##############################
 if [ "$(uname -o)" != "Android" ]; then
-  PREFIX=/data/data/com.termux/files/usr
+  if grep -Eq "opkg|entware" '/opt/etc/opkg.conf'; then
+    PREFIX=${HOME}
+  else
+    PREFIX=/data/data/com.termux/files/usr
+  fi
 fi
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
@@ -207,7 +211,6 @@ if [ ! -f ${DebianTarXz} ]; then
     aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
   else
     aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/debian_mipsel.tar.xz' || aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://m.tmoe.me/show/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
-    PREFIX="${HOME}"
     mkdir -p ~/bin
   fi
 fi
@@ -254,7 +257,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   rm -f ${HOME}/.ChrootInstallationDetectionFile
   mkdir -p ${DebianCHROOT}/etc/tmp
   echo "Creating chroot startup script"
-  echo "正在创建chroot启动脚本/data/data/com.termux/files/usr/bin/debian "
+  echo "正在创建chroot启动脚本${PREFIX}/bin/debian "
   if [ -d "/sdcard" ]; then
     mkdir -p ${DebianCHROOT}/root/sd
   fi
@@ -296,13 +299,13 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
 
   if [ -f ${DebianCHROOT}/bin/zsh ]; then
 
-    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
   else
-    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
   fi
 
   if [ "\$(whoami)" != "root" ]; then
-    su -c "/bin/sh /data/data/com.termux/files/usr/bin/debian"
+    su -c "/bin/sh ${PREFIX}/bin/debian"
     exit
   fi
   mount -o bind /dev ${DebianCHROOT}/dev >/dev/null 2>&1
@@ -341,7 +344,7 @@ EndOfChrootFile
 else
 
   echo "Creating proot startup script"
-  echo "正在创建proot启动脚本/data/data/com.termux/files/usr/bin/debian "
+  echo "正在创建proot启动脚本${PREFIX}/bin/debian "
   #此处EndOfFile不要加单引号
   cat >${PREFIX}/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
@@ -372,9 +375,9 @@ DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)
 DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
 
 if [ -f ~/${DebianFolder}/bin/zsh ];then
-    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
 else
-    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" /data/data/com.termux/files/usr/bin/debian
+    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
 fi
 
 if [ -z "\$1" ];then
@@ -391,7 +394,7 @@ cat >${PREFIX}/bin/startvnc <<-EndOfFile
 pkill pulseaudio 2>/dev/null
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 touch ~/${DebianFolder}/root/.vnc/startvnc
-/data/data/com.termux/files/usr/bin/debian
+${PREFIX}/bin/debian
 EndOfFile
 #debian前不需要加上bash
 
@@ -408,7 +411,7 @@ touch ~/${DebianFolder}/root/.vnc/startxsdl
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
-#wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+#wget -qO ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 cat >${PREFIX}/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
@@ -486,25 +489,25 @@ EndOfFile
 
 #if [ "$tfcard" == 'l' ]; then
 
-#   sed -i '/external-1/d' /data/data/com.termux/files/usr/bin/debian
+#   sed -i '/external-1/d' ${PREFIX}/bin/debian
 
 #fi
 
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
-  sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
-  sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
+  sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+  sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'
 echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
-#termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
+#termux-fix-shebang ${PREFIX}/bin/debian
 cd ${PREFIX}/bin
 
 chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl
 
 #设定alias,防止debian-root的alias依旧在生效。
-alias debian="/data/data/com.termux/files/usr/bin/debian"
-alias debian-rm="/data/data/com.termux/files/usr/bin/debian-rm"
+alias debian="${PREFIX}/bin/debian"
+alias debian-rm="${PREFIX}/bin/debian-rm"
 
 echo "You can type rm ~/${DebianTarXz} to delete the image file"
 echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
@@ -1020,11 +1023,17 @@ if [ ! -f ".profile" ]; then
 else
   mv -f .profile .profile.bak
 fi
+
 cat >.profile <<-'EDITBASHPROFILE'
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
 cd ~
+
 #配置清华源
+if [ "$(uname -m)" = "mips" ]; then
+  chattr +i /etc/apt/sources.list
+  sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
+fi
 #stable-backports会出错，需改为buster-backports
 cat >/etc/apt/sources.list <<-'EndOfFile'
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
@@ -1045,6 +1054,7 @@ deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-security main restri
 EndOfFile
     touch ~/.hushlogin
 fi
+
 
 #配置dns解析
 rm -f /etc/resolv.conf
@@ -1170,6 +1180,8 @@ EOF
     echo '检测到您当前的系统为Void GNU/Linux,将不会为您继续配置任何优化步骤！'
     zsh 2>/dev/null || bash
     exit 0
+elif [ "$(uname -m)" = "mips" ]; then
+  chattr -i /etc/apt/sources.list    
 fi
 
 
@@ -1531,4 +1543,4 @@ neofetch
 bash zsh.sh
 EDITBASHPROFILE
 
-bash /data/data/com.termux/files/usr/bin/debian
+bash ${PREFIX}/bin/debian
