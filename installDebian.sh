@@ -1123,7 +1123,7 @@ sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 cat >/etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
-LC_ALL=zh_CN.UTF-8
+LC_ALL="zh_CN.UTF-8"
 EOF
 locale-gen
 source /etc/default/locale 2>/dev/null
