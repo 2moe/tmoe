@@ -1,36 +1,29 @@
-# Termux-Debian
+# 🍭Tmoe-linux
 
-#### Description
-在termux上一键安装debian proot容器，并自动配置中文环境。 
+## Description
 
-#### Software Architecture
-Software architecture description
+🍸 Support for installing GNU/Linux containers on termux and GNU/Linux.  
+The following containers are now **supported**:
 
-#### Installation
+- [x] **Debian buster/sid**
+- [x] **Ubuntu 20.04**
+- [x] **Kali rolling**
+- [x] **Funtoo**
+- [x] **Void**
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## Installation
 
-#### Instructions
+### **You can use curl to download this script**
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```shell
+    apt install -y curl
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+```
 
-#### Contribution
+### **or wget**
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+```shell
+    apt update
+    apt install -y wget
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+```

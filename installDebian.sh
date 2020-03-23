@@ -117,6 +117,7 @@ if [ "$(uname -o)" = "Android" ]; then
   LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
   if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
     echo '正在配置字体...'
+    #仓库为Termux-zsh/raw/p10k，批量重命名的时候要小心一点。
     aria2c --allow-overwrite=true -o Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
     mv -f font.ttf font.ttf.bak
     tar -Jxf Iosevka.tar.xz
@@ -393,8 +394,8 @@ touch ~/${DebianFolder}/root/.vnc/startxsdl
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
-#wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
-aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh'
+#wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	  YELLOW=\$(printf '\033[33m')
@@ -549,7 +550,7 @@ if [ ! -z "$dependencies" ]; then
   apt install -y ${dependencies}
 fi
 
-wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/Termux-Debian/raw/master/debian-gui-install.bash'
+wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash'
 chmod +x /usr/local/bin/debian-i
 
 rm -rf /root/.oh-my-zsh
@@ -1149,7 +1150,7 @@ EOF
     wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
     rm -f vnc* zsh* .profile
     mv -f .profile.bak .profile 2>/dev/null
-    wget -qO zsh.sh 'https://gitee.com/mo2/Termux-zsh/raw/master/termux-zsh.sh'
+    wget -qO zsh.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
     sed -i '1 c\#!/bin/bash' zsh.sh
     chmod +x zsh.sh
     echo '检测到您当前的系统为Void GNU/Linux,将不会为您继续配置任何优化步骤！'

@@ -1,6 +1,6 @@
 # 🍭Tmoe-linux
 
-> 原名（Termux-Debian)
+> 原名（linux)
 
 ## 介绍
 
@@ -40,7 +40,7 @@ Debian 支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s3
 
 ```shell
     apt install -y curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 2.Debian/Ubuntu/Mint/Kali/Deepin/Devuan/MX 等 deb 系发行版
@@ -50,21 +50,21 @@ if [ ! -f /usr/bin/wget ]; then
     apt update || sudo apt update || su -c "apt update"
     apt install -y wget || sudo apt install -y wget || su -c "apt install -y wget"
 fi
-bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 3.RedHat/Fedora/CentOS
 
 ```shell
     dnf install -y curl || yum install -y curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 4.Arch/Manjaro
 
 ```shell
     pacman -Syu --noconfirm curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 5.OpenWRT/Entware
@@ -72,14 +72,14 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')
 ```shell
     opkg update
     opkg install wget bash
-    bash -c "$(wget --no-check-certificate -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    bash -c "$(wget --no-check-certificate -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 6.Alpine
 
 ```shell
     apk add -q wget
-    busybox ash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    busybox ash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 7.Void
@@ -87,7 +87,7 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')
 ```shell
     xbps-install -S
     xbps-install -y wget
-    bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 8.其它 system 未测试,以下系统请自行解决依赖关系。  
@@ -104,7 +104,7 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')
 - 1.安装 Tmoe GNU/Linux 管理工具的命令(仅支持在原系统内输)
 
 ```shell
-bash -c "$(curl -LfsS 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 > 进入工具后，按方向键和回车键进行操作，基本上所有操作都有提示。
@@ -154,7 +154,7 @@ startvnc
 ```shell
 apt update
 apt install -y wget
-bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
+bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 **(旧版)视频教程**[链接](https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA) 提取码: **debb**
