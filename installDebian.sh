@@ -379,7 +379,7 @@ am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.Connection
 touch ~/${DebianFolder}/root/.vnc/startvnc
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
-#debian前若加上bash
+#debian前不需要加上bash
 
 cat >/data/data/com.termux/files/usr/bin/stopvnc <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash

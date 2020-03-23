@@ -13,14 +13,16 @@ The following containers are now **supported**:
 
 ## Installation
 
-### **You can use curl to download this script**
+> Tmoe-linux is installed by running one of the following commands in your terminal. You can install this via the command-line with either curl or wget.
+
+### **via curl**
 
 ```shell
     apt install -y curl
     bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-### **or wget**
+### **via wget**
 
 ```shell
     apt update

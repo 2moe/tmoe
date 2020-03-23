@@ -780,7 +780,6 @@ dnf install -y aria2 || yum install -y aria2
 dnf install -y curl || yum install -y curl
 dnf install -y coreutils || yum install -y coreutils
 dnf install -y less || yum install -y less
-#################
 ####################################
 #tar压缩进度条1、2
 
