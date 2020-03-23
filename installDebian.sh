@@ -131,9 +131,22 @@ if [ "$(uname -o)" = "Android" ]; then
     rm -f Iosevka.tar.xz
     termux-reload-settings
   fi
+else
+  if grep 'alias debian=' "/etc/profile"; then
+    sed -i '/alias debian-i=/d' "/etc/profile"
+    sed -i '/alias startvnc=/d' "/etc/profile"
+    sed -i '/alias stopvnc=/d' "/etc/profile"
+    sed -i '/alias debian-i=/d' "/etc/profile"
+  fi
 
+  if grep 'alias debian=' "${HOME}/.zshrc"; then
+    sed -i '/alias debian-i=/d' "${HOME}/.zshrc"
+    sed -i '/alias startvnc=/d' "${HOME}/.zshrc"
+    sed -i '/alias stopvnc=/d' "${HOME}/.zshrc"
+    sed -i '/alias debian-i=/d' "${HOME}/.zshrc"
+  fi
 fi
-
+#旧版将相关设立了alias，新版需要删掉。
 ####################
 #卸载chroot挂载目录
 if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
