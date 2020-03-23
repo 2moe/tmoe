@@ -163,6 +163,7 @@ fi
 ##############################
 if [ "$(uname -o)" != "Android" ]; then
   if grep -Eq "opkg|entware" '/opt/etc/opkg.conf'; then
+    LINUXDISTRO='openwrt'
     if [ -d "/opt/bin" ]; then
       PREFIX="/opt"
     else
@@ -245,6 +246,9 @@ else
   pv ${cur}/${DebianTarXz} | tar -pJx
 fi
 cp -f ~/.termux/font.ttf ~/${DebianFolder}/tmp/ 2>/dev/null
+if [ "${LINUXDISTRO}" = 'openwrt' ]; then
+  touch ~/${DebianFolder}/tmp/.openwrtcheckfile
+fi
 #proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
 cd "$cur"
 echo "                                        "
@@ -565,8 +569,10 @@ if [ ! -d /usr/share/doc/fonts-powerline ]; then
   dependencies="${dependencies} fonts-powerline"
 fi
 
-if [ ! -d /usr/share/command-not-found ]; then
-  dependencies="${dependencies} command-not-found"
+if [ ! -f "/tmp/.openwrtcheckfile" ]; then
+  if [ ! -d /usr/share/command-not-found ]; then
+    dependencies="${dependencies} command-not-found"
+  fi
 fi
 
 if [ ! -e /usr/bin/git ]; then
@@ -901,14 +907,14 @@ main() {
   git clone https://gitee.com/mo2/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
   sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
   sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
- # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
+  # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
   echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
-if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
-   wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-   cat >>"${HOME}/.zshrc"<<-'EndOfp10K'
+  if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
+    wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+    cat >>"${HOME}/.zshrc" <<-'EndOfp10K'
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 EndOfp10K
-fi 
+  fi
   if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
     grep -q 'unset LD_PRELOAD' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${HOME}/.zshrc >/dev/null 2>&1
     grep -q 'zh_CN.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
@@ -918,7 +924,6 @@ fi
 
   cd ~
   sed -i '1 r vnc-autostartup-zsh' ~/.zshrc
-
 
   rm -f vnc-autostartup-zsh
 
@@ -953,10 +958,10 @@ fi
 
   echo "正在克隆fzf-tab插件..."
   rm -rf ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab 2>/dev/null
-  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab || git clone --depth=1 https://gitee.com/mo2/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab 
-  
+  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab || git clone --depth=1 https://gitee.com/mo2/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab
+
   grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" ${HOME}/.zshrc
-if ! grep -q 'extract=' "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
+  if ! grep -q 'extract=' "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
     cat >>"${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" <<-'EndOFfzfTab'
     local extract="
 # 提取当前选择的内容
@@ -966,9 +971,13 @@ local -A ctxt=(\"\${(@ps:\2:)CTXT}\")
 "
     zstyle ':fzf-tab:complete:*:*' extra-opts --preview=$extract'ls -A1 --color=always ${~ctxt[hpre]}$in 2>/dev/null'
 EndOFfzfTab
-fi
+  fi
 
   sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
+if [ -f "/tmp/.openwrtcheckfile" ]; then
+  ADMINACCOUNT="$(ls -l /home |grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
+  cp -rf /root/.* /home/${ADMINACCOUNT}
+fi
 
   echo 'All optimization steps have been completed, enjoy it!'
   echo 'zsh配置完成，2s后将为您启动Tmoe-debian工具'
@@ -1046,7 +1055,6 @@ fi
 cat >.profile <<-'EDITBASHPROFILE'
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
-export HOME="/root"
 cd ~
 
 #配置清华源
