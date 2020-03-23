@@ -976,7 +976,7 @@ EndOFfzfTab
   sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
 if [ -f "/tmp/.openwrtcheckfile" ]; then
   ADMINACCOUNT="$(ls -l /home |grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
-  cp -rf /root/.z* /root/.p10k.zsh /home/${ADMINACCOUNT}
+  cp -rf /root/.z* /root/.oh-my-zsh /root/*sh /root/.p10k.zsh /home/${ADMINACCOUNT}
   rm -f /tmp/.openwrtcheckfile
 fi
 
