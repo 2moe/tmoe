@@ -132,14 +132,14 @@ if [ "$(uname -o)" = "Android" ]; then
     termux-reload-settings
   fi
 else
-  if grep 'alias debian=' "/etc/profile"; then
+  if grep -q 'alias debian=' "/etc/profile"; then
     sed -i '/alias debian-i=/d' "/etc/profile"
     sed -i '/alias startvnc=/d' "/etc/profile"
     sed -i '/alias stopvnc=/d' "/etc/profile"
     sed -i '/alias debian-i=/d' "/etc/profile"
   fi
 
-  if grep 'alias debian=' "${HOME}/.zshrc"; then
+  if grep -q 'alias debian=' "${HOME}/.zshrc"; then
     sed -i '/alias debian-i=/d' "${HOME}/.zshrc"
     sed -i '/alias startvnc=/d' "${HOME}/.zshrc"
     sed -i '/alias stopvnc=/d' "${HOME}/.zshrc"
