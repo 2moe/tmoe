@@ -330,8 +330,8 @@ ANDROIDTERMUX() {
 		grep -q "PULSE_SERVER" ${DebianCHROOT}/root/.vnc/xstartup || sed -i '2 a\export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
 	fi
 
-	if [ -e /data/data/com.termux/files/usr/bin/debian ]; then
-		grep -q "pulseaudio" /data/data/com.termux/files/usr/bin/debian || sed -i '2 a\pulseaudio --start' /data/data/com.termux/files/usr/bin/debian
+	if [ -e ${PREFIX}/bin/debian ]; then
+		grep -q "pulseaudio" ${PREFIX}/bin/debian || sed -i '2 a\pulseaudio --start' ${PREFIX}/bin/debian
 	fi
 
 	MainMenu
@@ -528,18 +528,19 @@ RootMode() {
 
 	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除debian。" 10 60); then
 
-		if [ ! -f /data/data/com.termux/files/usr/bin/tsu ]; then
+		if [ ! -f ${PREFIX}/bin/tsu ]; then
 			apt update
 			apt install -y tsu
 		fi
-		if ! grep -q 'pulseaudio --system' /data/data/com.termux/files/usr/bin/debian; then
-			sed -i '/pulseaudio/d' /data/data/com.termux/files/usr/bin/debian
-			sed -i '2 a\pulseaudio --system --start' /data/data/com.termux/files/usr/bin/debian
+		if ! grep -q 'pulseaudio --system' ${PREFIX}/bin/debian; then
+			sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
+			sed -i '2 a\pulseaudio --system --start' ${PREFIX}/bin/debian
 		fi
-		if ! grep -q 'tsudo touch' /data/data/com.termux/files/usr/bin/startvnc; then
-			sed -i 's/^touch ~/tsudo &/' /data/data/com.termux/files/usr/bin/startvnc
-			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' /data/data/com.termux/files/usr/bin/startvnc
+		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startvnc; then
+			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startvnc
+			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' ${PREFIX}/bin/startvnc
 		fi
+		#上面那个是Termux专用的，勿改。
 
 		mkdir -p /data/data/com.termux/files/usr/etc/storage/
 		cd /data/data/com.termux/files/usr/etc/storage/
@@ -552,7 +553,7 @@ RootMode() {
 
 		tsudo ln -s /mnt/media_rw/${TFcardFolder} ./external-tf
 
-		sed -i 's:/home/storage/external-1:/usr/etc/storage/external-tf:g' /data/data/com.termux/files/usr/bin/debian
+		sed -i 's:/home/storage/external-1:/usr/etc/storage/external-tf:g' ${PREFIX}/bin/debian
 
 		cd ${PREFIX}/etc/
 		if [ ! -f profile ]; then
@@ -1502,7 +1503,7 @@ UNXZDEBIANRECOVERYKIT() {
 	cd "$cur"
 	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
-		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
+		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 		rm -f ${HOME}/debian_arm64/root/tf 2>/dev/null
 	fi
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
@@ -1512,7 +1513,7 @@ UNXZDEBIANRECOVERYKIT() {
 	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
 	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 	echo '请输入6至8位的VNC密码'
-	source /data/data/com.termux/files/usr/bin/startvnc
+	source ${PREFIX}/bin/startvnc
 
 }
 ###############################
@@ -1669,9 +1670,9 @@ STARTWEBNOVNC() {
 	echo "非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html"
 	if [ -d "${DebianCHROOT}" ]; then
 		touch ~/${DebianFolder}/root/.vnc/startvnc
-		/data/data/com.termux/files/usr/bin/debian
+		${PREFIX}/bin/debian
 	else
-		/data/data/com.termux/files/usr/bin/startvnc
+		${PREFIX}/bin/startvnc
 	fi
 
 }

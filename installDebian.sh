@@ -1033,6 +1033,7 @@ fi
 cat >.profile <<-'EDITBASHPROFILE'
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
+export HOME="/root"
 cd ~
 
 #配置清华源
