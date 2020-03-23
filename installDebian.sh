@@ -977,6 +977,7 @@ EndOFfzfTab
 if [ -f "/tmp/.openwrtcheckfile" ]; then
   ADMINACCOUNT="$(ls -l /home |grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
   cp -rf /root/.* /home/${ADMINACCOUNT}
+  rm -f /tmp/.openwrtcheckfile
 fi
 
   echo 'All optimization steps have been completed, enjoy it!'
