@@ -46,13 +46,19 @@ ppc64el)
   archtype="ppc64el"
   ;;
 mips*)
-  echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
-  exit 1
+  archtype="mipsel"
+  #echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
+  #exit 1
   ;;
 risc*)
-  echo '暂不支持risc-v'
-  echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
-  exit 1
+  #archtype="riscv"
+  echo "检测到您当前的架构为risc-v，将为您安装arm64版的容器。"
+  archtype="arm64"
+  #此处改为arm64，
+  #2020-03-23加入riscv+qemu跨架构运行的测试版功能
+  #echo '暂不支持risc-v'
+  #echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
+  #exit 1
   ;;
 *)
   echo "未知的架构 $(uname -m) unknown architecture"
@@ -191,20 +197,25 @@ DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
 if [ ! -f ${DebianTarXz} ]; then
-  echo "正在从清华大学开源镜像站下载容器镜像"
-  echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
-  curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html >/dev/null 2>&1
-  ttime=$(cat get-date-tmp.html | tail -n2 | head -n1 | cut -d\" -f4)
-  rm -f get-date-tmp.html
-
-  aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
-
+  if [ "${archtype}" != 'mipsel' ]; then
+    echo "正在从清华大学开源镜像站下载容器镜像"
+    echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
+    curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html >/dev/null 2>&1
+    ttime=$(cat get-date-tmp.html | tail -n2 | head -n1 | cut -d\" -f4)
+    rm -f get-date-tmp.html
+    aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
+  else
+    aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/debian_mipsel.tar.xz' || aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://m.tmoe.me/show/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+  fi
 fi
 cur=$(pwd)
 cd ~/${DebianFolder}
 echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
 if [ "$(uname -o)" = "Android" ]; then
   pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
+elif [ "${archtype}" = "mipsel" ]; then
+  cd ~
+  pv ${DebianTarXz} | tar -pJx
 else
   pv ${cur}/${DebianTarXz} | tar -pJx
 fi

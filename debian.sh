@@ -52,9 +52,11 @@ CheckArch() {
 		#exit 1
 		;;
 	risc*)
-		echo '暂不支持risc-v'
-		echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
-		exit 1
+		archtype="riscv"
+		#20200323注：riscv靠qemu实现跨cpu架构运行chroot容器
+		#echo '暂不支持risc-v'
+		#echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
+		#exit 1
 		;;
 	*)
 		echo "未知的架构 $(uname -m) unknown architecture"
@@ -181,6 +183,10 @@ GNULINUX() {
 		if [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "openwrt" ]; then
 			dependencies="${dependencies} bash"
 		fi
+	fi
+
+	if [ "${archtype}" = "riscv" ]; then
+		dependencies="${dependencies} qemu qemu-user-static debootstrap"
 	fi
 
 	if [ ! -z "$dependencies" ]; then
