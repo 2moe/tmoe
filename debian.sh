@@ -213,7 +213,7 @@ GNULINUX() {
 
 		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
 			#opkg update
-			opkg install ${dependencies}
+			opkg install ${dependencies} || opkg install whiptail
 
 		else
 			apt update
