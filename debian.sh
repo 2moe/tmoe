@@ -79,6 +79,7 @@ CheckArch() {
 autoCheck() {
 
 	if [ "$(uname -o)" = "Android" ]; then
+		LINUXDISTRO='Android'
 		termux-setup-storage
 		ANDROIDTERMUX
 	else
@@ -235,47 +236,47 @@ GNULINUX() {
 ANDROIDTERMUX() {
 	dependencies=""
 
-	if [ ! -e $PREFIX/bin/pv ]; then
+	if [ ! -e ${PREFIX}/bin/pv ]; then
 		dependencies="${dependencies} pv"
 	fi
 
-	if [ ! -e $PREFIX/bin/termux-audio-info ]; then
+	if [ ! -e ${PREFIX}/bin/termux-audio-info ]; then
 		dependencies="${dependencies} termux-api"
 	fi
 
-	if [ ! -e $PREFIX/bin/pulseaudio ]; then
+	if [ ! -e ${PREFIX}/bin/pulseaudio ]; then
 		dependencies="${dependencies} pulseaudio"
 	fi
 
-	if [ ! -e $PREFIX/bin/grep ]; then
+	if [ ! -e ${PREFIX}/bin/grep ]; then
 		dependencies="${dependencies} grep"
 	fi
 
-	if [ ! -e $PREFIX/bin/aria2c ]; then
+	if [ ! -e ${PREFIX}/bin/aria2c ]; then
 		dependencies="${dependencies} aria2"
 	fi
 
-	if [ ! -e $PREFIX/bin/proot ]; then
+	if [ ! -e ${PREFIX}/bin/proot ]; then
 		dependencies="${dependencies} proot"
 	fi
 
-	if [ ! -e $PREFIX/bin/xz ]; then
+	if [ ! -e ${PREFIX}/bin/xz ]; then
 		dependencies="${dependencies} xz-utils"
 	fi
 
-	if [ ! -e $PREFIX/bin/tar ]; then
+	if [ ! -e ${PREFIX}/bin/tar ]; then
 		dependencies="${dependencies} tar"
 	fi
 
-	if [ ! -e $PREFIX/bin/whiptail ]; then
+	if [ ! -e ${PREFIX}/bin/whiptail ]; then
 		dependencies="${dependencies} dialog"
 	fi
 
-	if [ ! -e $PREFIX/bin/pkill ]; then
+	if [ ! -e ${PREFIX}/bin/pkill ]; then
 		dependencies="${dependencies} procps"
 	fi
 
-	if [ ! -e $PREFIX/bin/curl ]; then
+	if [ ! -e ${PREFIX}/bin/curl ]; then
 		dependencies="${dependencies} curl"
 	fi
 
@@ -469,9 +470,9 @@ installDebian() {
 			read opt
 			case $opt in
 			y* | Y* | "")
-				bash $PREFIX/bin/debian-rm 2>/dev/null && sed -i '/alias debian=/d' $PREFIX/etc/profile 2>/dev/null
-				sed -i '/alias debian-rm=/d' $PREFIX/etc/profile 2>/dev/null
-				source $PREFIX/etc/profile >/dev/null 2>&1
+				bash ${PREFIX}/bin/debian-rm 2>/dev/null && sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
+				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
+				source ${PREFIX}/etc/profile >/dev/null 2>&1
 				INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
 				#bash -c "$(curl -fLsS 'https://gitee.com/mo2/linux/raw/master/installDebian.sh')"
 				#bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/installDebian.sh')"
@@ -541,7 +542,7 @@ RootMode() {
 
 		sed -i 's:/home/storage/external-1:/usr/etc/storage/external-tf:g' /data/data/com.termux/files/usr/bin/debian
 
-		cd $PREFIX/etc/
+		cd ${PREFIX}/etc/
 		if [ ! -f profile ]; then
 			echo "" >>profile
 		fi
@@ -620,15 +621,15 @@ It is recommended that you back up the entire system before removal. If the data
 	read
 
 	chmod 777 -R ${DebianFolder}
-	rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
-	sed -i '/alias debian=/d' $PREFIX/etc/profile
-	sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
+	rm -rf "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+	sed -i '/alias debian=/d' ${PREFIX}/etc/profile
+	sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
 	echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo '其它相关依赖，如pv、dialog、procps、proot、wget等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
-	echo '若需删除debian管理器，则请输rm -f $PREFIX/bin/debian-i'
+	echo '若需删除debian管理器，则请输rm -f ${PREFIX}/bin/debian-i'
 	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
 	ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
 	ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
@@ -641,7 +642,7 @@ It is recommended that you back up the entire system before removal. If the data
 	read opt
 	case $opt in
 	y* | Y* | "")
-		rm -vf ~/debian-sid-rootfs.tar.xz $PREFIX/bin/debian-rm 2>/dev/null
+		rm -vf ~/debian-sid-rootfs.tar.xz ${PREFIX}/bin/debian-rm 2>/dev/null
 		rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
 		rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
 		rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
@@ -694,9 +695,9 @@ BackupSystem() {
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
-			tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
+			tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 			#whiptail进度条已弃用
-			#tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
+			#tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 
 			#xz -z -T0 -e -9 -f -v ${TMPtime}.tar
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
@@ -714,10 +715,10 @@ BackupSystem() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
-			tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+			tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 
 			#最新版弃用了whiptail的进度条！！！
-			#tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} $PREFIX/bin/debian | (pv -n >${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
+			#tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
 			echo "部分目录无权限备份是正常现象。"
@@ -1171,20 +1172,20 @@ SpaceOccupation() {
 
 ########################################################################
 UPDATEMANAGER() {
-	#curl -L -o $PREFIX/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	#wget -qO $PREFIX/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	#curl -L -o ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	#wget -qO ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo 'Press enter to return.'
-	chmod +x $PREFIX/bin/debian-i
+	chmod +x ${PREFIX}/bin/debian-i
 	read
-	#bash $PREFIX/bin/debian-i
-	source $PREFIX/bin/debian-i
+	#bash ${PREFIX}/bin/debian-i
+	source ${PREFIX}/bin/debian-i
 
 }
 #################################
 DOWNLOADVNCAPK() {
-	if [ ! -e $PREFIX/bin/git ]; then
+	if [ ! -e ${PREFIX}/bin/git ]; then
 		apt update
 		apt install -y git
 	fi
@@ -1250,7 +1251,7 @@ DOWNLOADVNCAPK() {
 }
 #########################################
 STARTVSCODE() {
-	if [ ! -e $PREFIX/bin/git ]; then
+	if [ ! -e ${PREFIX}/bin/git ]; then
 		apt update
 		apt install -y git
 	fi
@@ -1263,8 +1264,8 @@ STARTVSCODE() {
 		read
 		MainMenu
 	fi
-	if [ ! -e "$PREFIX/bin/code" ]; then
-		cat >$PREFIX/bin/code <<-EndOfFile
+	if [ ! -e "${PREFIX}/bin/code" ]; then
+		cat >${PREFIX}/bin/code <<-EndOfFile
 			#!/data/data/com.termux/files/usr/bin/bash
 			touch "${HOME}/debian_arm64/tmp/startcode.tmp"
 			am start -a android.intent.action.VIEW -d "http://localhost:8080"
@@ -1278,7 +1279,7 @@ STARTVSCODE() {
 			echo 'You can type "code" to start VScodeServer.'
 			debian
 		EndOfFile
-		chmod +x $PREFIX/bin/code
+		chmod +x ${PREFIX}/bin/code
 	fi
 
 	if [ ! -e "${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ]; then
@@ -1327,7 +1328,7 @@ STARTVSCODE() {
 		cd ${cur}
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
 		echo "Congratulations, you have successfully installed vscode server!"
-		echo "您已成功安装VSCode服务，如需卸载请输rm -f $PREFIX/bin/code  ${HOME}/${DebianFolder}/usr/bin/code"
+		echo "您已成功安装VSCode服务，如需卸载请输rm -f ${PREFIX}/bin/code  ${HOME}/${DebianFolder}/usr/bin/code"
 
 		grep "keyCode" ${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${HOME}/${DebianFolder}/root/.local/share/code-server/User && cat >${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
 			{
@@ -1546,7 +1547,7 @@ TERMUXINSTALLXFCE() {
 	fi
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
-		if [ -e "$PREFIX/bin/xfwm4" ]; then
+		if [ -e "${PREFIX}/bin/xfwm4" ]; then
 			echo "检测到您已安装，是否继续？"
 			echo 'Press enter to continue'
 			echo "${YELLOW}按回车键确认继续,按Ctrl+C取消。${RESET}"
@@ -1558,7 +1559,7 @@ TERMUXINSTALLXFCE() {
 		apt dist-upgrade -y
 
 		apt install -y xfce tigervnc aterm
-		cat >$PREFIX/bin/startvnc <<-'EndOfFile'
+		cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
 			pkill Xvnc 2>/dev/null 
 			pulseaudio --start 
@@ -1575,8 +1576,8 @@ TERMUXINSTALLXFCE() {
 			startxfce4
 
 		EndOfFile
-		chmod +x $PREFIX/bin/startvnc
-		source $PREFIX/bin/startvnc
+		chmod +x ${PREFIX}/bin/startvnc
+		source ${PREFIX}/bin/startvnc
 	fi
 	#######################
 	if [ "${OPTION}" == '2' ]; then
@@ -1635,7 +1636,7 @@ INSTALLTERMUXAPK() {
 
 ##################################
 INSTALLWEBNOVNC() {
-	if [ ! -e "$PREFIX/bin/python" ]; then
+	if [ ! -e "${PREFIX}/bin/python" ]; then
 		apt update
 		apt install -y python
 	fi
@@ -1686,8 +1687,8 @@ STARTWEBNOVNC() {
 
 #################
 MODIFYANDROIDTERMUXVNCCONF() {
-	if [ ! -e $PREFIX/bin/startvnc ]; then
-		echo "$PREFIX/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+	if [ ! -e ${PREFIX}/bin/startvnc ]; then
+		echo "${PREFIX}/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
 		echo '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
 		echo "Press Enter to confirm."
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
@@ -1721,7 +1722,7 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		echo "Press Enter to confirm."
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
-		nano $PREFIX/bin/startvnc || nano $(which startvnc)
+		nano ${PREFIX}/bin/startvnc || nano $(which startvnc)
 		echo "您当前分辨率为$(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 	fi
 	echo 'Press Enter to return.'
@@ -1784,7 +1785,7 @@ TERMUXTUNASOURCESLIST() {
 	cat /data/data/com.termux/files/usr/etc/apt/sources.list
 	cat /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
 	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
-	echo "您也可以输${YELLOW}cd $PREFIX/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
+	echo "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read

@@ -75,28 +75,29 @@ esac
 dependencies=""
 
 if [ "$(uname -o)" = "Android" ]; then
+  LINUXDISTRO='Android'
   termux-setup-storage
-  if [ ! -e $PREFIX/bin/proot ]; then
+  if [ ! -e ${PREFIX}/bin/proot ]; then
     dependencies="${dependencies} proot"
   fi
 
-  if [ ! -e $PREFIX/bin/pkill ]; then
+  if [ ! -e ${PREFIX}/bin/pkill ]; then
     dependencies="${dependencies} procps"
   fi
 
-  if [ ! -e $PREFIX/bin/pv ]; then
+  if [ ! -e ${PREFIX}/bin/pv ]; then
     dependencies="${dependencies} pv"
   fi
 
-  if [ ! -e $PREFIX/bin/curl ]; then
+  if [ ! -e ${PREFIX}/bin/curl ]; then
     dependencies="${dependencies} curl"
   fi
 
-  if [ ! -e $PREFIX/bin/aria2c ]; then
+  if [ ! -e ${PREFIX}/bin/aria2c ]; then
     dependencies="${dependencies} aria2"
   fi
 
-  if [ ! -z "$dependencies" ]; then
+  if [ ! -z "${dependencies}" ]; then
     echo "正在安装相关依赖..."
     apt install -y ${dependencies}
   fi
@@ -111,7 +112,7 @@ if [ "$(uname -o)" = "Android" ]; then
     aria2c --allow-overwrite=true -o "termux.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/termux.properties'
   fi
 
-  if [ -e $PREFIX/bin/tsu ]; then
+  if [ -e ${PREFIX}/bin/tsu ]; then
     DEVICENAME="$(getprop ro.product.model)"
     if [ "$(hostname)" = "localhost" ]; then
       echo "检测到您当前的hostname为localhost,正在修改hostname为product model"
@@ -206,6 +207,8 @@ if [ ! -f ${DebianTarXz} ]; then
     aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
   else
     aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/debian_mipsel.tar.xz' || aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://m.tmoe.me/show/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+    PREFIX="${HOME}"
+    mkdir -p ~/bin
   fi
 fi
 cur=$(pwd)
@@ -280,7 +283,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   grep -q 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   #此处EndOfChrootFile不要加单引号
-  cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfChrootFile
+  cat >${PREFIX}/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
   if [ ! -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -340,7 +343,7 @@ else
   echo "Creating proot startup script"
   echo "正在创建proot启动脚本/data/data/com.termux/files/usr/bin/debian "
   #此处EndOfFile不要加单引号
-  cat >/data/data/com.termux/files/usr/bin/debian <<-EndOfFile
+  cat >${PREFIX}/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 pulseaudio --start
@@ -383,7 +386,7 @@ EndOfFile
 fi
 #######################################################
 
-cat >/data/data/com.termux/files/usr/bin/startvnc <<-EndOfFile
+cat >${PREFIX}/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 pkill pulseaudio 2>/dev/null
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
@@ -392,13 +395,13 @@ touch ~/${DebianFolder}/root/.vnc/startvnc
 EndOfFile
 #debian前不需要加上bash
 
-cat >/data/data/com.termux/files/usr/bin/stopvnc <<-'EndOfFile'
+cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
 #!/data/data/com.termux/files/usr/bin/bash
 pkill -u $(whoami)
 EndOfFile
 
 #不要单引号
-cat >/data/data/com.termux/files/usr/bin/startxsdl <<-EndOfFile
+cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n x.org.server/x.org.server.MainActivity
 touch ~/${DebianFolder}/root/.vnc/startxsdl
@@ -406,8 +409,8 @@ touch ~/${DebianFolder}/root/.vnc/startxsdl
 EndOfFile
 
 #wget -qO /data/data/com.termux/files/usr/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-aria2c --allow-overwrite=true -d $PREFIX/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-cat >/data/data/com.termux/files/usr/bin/debian-rm <<-EndOfFile
+aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+cat >${PREFIX}/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	  YELLOW=\$(printf '\033[33m')
 	  RESET=\$(printf '\033[m')
@@ -452,10 +455,10 @@ It is recommended that you back up the entire system before removal. If the data
   pkill proot 2>/dev/null
 	read
     chmod 777 -R ${DebianFolder}
-	rm -rfv "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null || tsudo rm -rfv "${DebianFolder}" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc $PREFIX/bin/startxsdl $PREFIX/bin/debian-rm $PREFIX/bin/code 2>/dev/null
+	rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
 
-    sed -i '/alias debian=/d' $PREFIX/etc/profile
-	  sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
+    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
+	  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 	source profile >/dev/null 2>&1
 	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
   echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
@@ -467,7 +470,7 @@ It is recommended that you back up the entire system before removal. If the data
     read opt
 	case \$opt in
 		y*|Y*|"") rm -vf ~/debian-sid-rootfs.tar.xz 2>/dev/null
-    rm -f $PREFIX/bin/debian-rm
+    rm -f ${PREFIX}/bin/debian-rm
 		rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
 		rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
 		rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
@@ -493,9 +496,9 @@ if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
   sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' /data/data/com.termux/files/usr/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'
-echo "正在赋予启动脚本($PREFIX/bin/debian)执行权限"
+echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
 #termux-fix-shebang /data/data/com.termux/files/usr/bin/debian
-cd /data/data/com.termux/files/usr/bin
+cd ${PREFIX}/bin
 
 chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl
 
@@ -513,9 +516,9 @@ cat >remove-debian.sh <<-EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" $PREFIX/bin/debian $PREFIX/bin/startvnc $PREFIX/bin/stopvnc
-grep -q 'alias debian' $PREFIX/etc/profile && sed -i '/alias debian=/d' $PREFIX/etc/profile
-sed -i '/alias debian-rm=/d' $PREFIX/etc/profile
+rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+grep -q 'alias debian' ${PREFIX}/etc/profile && sed -i '/alias debian=/d' ${PREFIX}/etc/profile
+sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 source profile >/dev/null 2>&1
 echo '删除完成，如需卸载aria2,请输apt remove aria2'
 echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
@@ -736,7 +739,7 @@ setup_shell() {
   printf "${YELLOW}Changing the default shell to zsh for you.${RESET} "
 
   # Check if we're running on Termux
-  case "$PREFIX" in
+  case "${PREFIX}" in
   *com.termux*)
     termux=true
     zsh=zsh
