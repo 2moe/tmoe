@@ -91,7 +91,7 @@ GNULINUX() {
 	if grep -q 'debian' '/etc/os-release'; then
 		LINUXDISTRO='debian'
 
-	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null; then
+	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUXDISTRO='openwrt'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://gitee.com/mo2/linux/raw/master/debian.sh

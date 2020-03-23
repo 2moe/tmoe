@@ -162,7 +162,7 @@ if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
 fi
 ##############################
 if [ "$(uname -o)" != "Android" ]; then
-  if grep -Eq "opkg|entware" '/opt/etc/opkg.conf'; then
+  if grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
     LINUXDISTRO='openwrt'
     if [ -d "/opt/bin" ]; then
       PREFIX="/opt"
