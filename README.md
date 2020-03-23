@@ -1,6 +1,6 @@
 # 🍭Tmoe-linux
 
-> 原名（linux)
+> 原名（Termux-linux)
 
 ## 介绍
 
