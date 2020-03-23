@@ -305,7 +305,7 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
     sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
   fi
 
-  if [ "\$(whoami)" != "root" ]; then
+  if [ "\$(id -u)" != "0" ]; then
     su -c "/bin/sh ${PREFIX}/bin/debian"
     exit
   fi
