@@ -152,7 +152,8 @@ if [ "$(uname -o)" != "Android" ]; then
   if grep -Eq "opkg|entware" '/opt/etc/opkg.conf'; then
     PREFIX=${HOME}
   else
-    PREFIX=/data/data/com.termux/files/usr
+    #PREFIX=/data/data/com.termux/files/usr
+    PREFIX='/usr/local'
   fi
   mkdir -p ${PREFIX}/bin
 fi
@@ -1118,6 +1119,9 @@ echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
 apt install -y apt-utils
 apt install -y ca-certificates wget
+echo "Replacing http software source list with https."
+echo "正在将http源替换为https..."
+sed -i 's/http/https/' /etc/apt/sources.list
 
 if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     GNULINUXOSRELEASE=FUNTOO
@@ -1184,11 +1188,6 @@ EOF
 elif [ "$(uname -m)" = "mips" ]; then
   chattr -i /etc/apt/sources.list    
 fi
-
-
-echo "Replacing http software source list with https."
-echo "正在将http源替换为https..."
-sed -i 's/http/https/' /etc/apt/sources.list
 
 apt update
 apt list --upgradable
