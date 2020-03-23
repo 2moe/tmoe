@@ -901,20 +901,28 @@ main() {
   echo "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
   echo "    jBBdD. :. ........:r... YB  Bi      "
   echo "       :7j1.                 :  :       "
-  echo "Configuring zsh theme 正在配置zsh主题(powerlevel 10k)..."
-  cd ${HOME}/.oh-my-zsh/custom/themes || mkdir -p ${HOME}/.oh-my-zsh/custom/themes && cd ${HOME}/.oh-my-zsh/custom/themes
-  rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
-  git clone https://gitee.com/mo2/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
-  sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
-  sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
-  # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
-  echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
-  if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
-    wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-    cat >>"${HOME}/.zshrc" <<-'EndOfp10K'
+
+if [ "$(uname -m)" = "mips" ]; then
+    echo "Configuring zsh theme 正在配置zsh主题(agnoster)..."
+    sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
+    sed -i "1 i\ZSH_THEME='agnoster'" "${HOME}/.zshrc"
+else
+    echo "Configuring zsh theme 正在配置zsh主题(powerlevel 10k)..."
+    cd ${HOME}/.oh-my-zsh/custom/themes || mkdir -p ${HOME}/.oh-my-zsh/custom/themes && cd ${HOME}/.oh-my-zsh/custom/themes
+    rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
+    git clone https://gitee.com/mo2/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
+    sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
+    sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
+    # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
+    echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
+    if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
+        wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+        cat >>${HOME}/.zshrc <<-"ENDOFPOWERLEVEL"
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
-EndOfp10K
-  fi
+ENDOFPOWERLEVEL
+    fi
+fi
+
   if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
     grep -q 'unset LD_PRELOAD' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${HOME}/.zshrc >/dev/null 2>&1
     grep -q 'zh_CN.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
@@ -974,9 +982,10 @@ EndOFfzfTab
   fi
 
   sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
+
 if [ -f "/tmp/.openwrtcheckfile" ]; then
   ADMINACCOUNT="$(ls -l /home |grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
-  cp -rf /root/.z* /root/.oh-my-zsh /root/*sh /root/.p10k.zsh /home/${ADMINACCOUNT}
+  cp -rf /root/.z* /root/.oh-my-zsh /root/*sh /home/${ADMINACCOUNT}
   rm -f /tmp/.openwrtcheckfile
 fi
 
