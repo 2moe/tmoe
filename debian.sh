@@ -120,7 +120,7 @@ GNULINUX() {
 		dependencies="${dependencies} tar"
 	fi
 
-	if [ ! -e /bin/grep ]; then
+	if [ ! -e /bin/grep ] && [ ! -e /usr/bin/grep ]; then
 		dependencies="${dependencies} grep"
 	fi
 
