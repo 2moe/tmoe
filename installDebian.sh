@@ -154,6 +154,7 @@ if [ "$(uname -o)" != "Android" ]; then
   else
     PREFIX=/data/data/com.termux/files/usr
   fi
+  mkdir -p ${PREFIX}/bin
 fi
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
