@@ -150,7 +150,11 @@ fi
 ##############################
 if [ "$(uname -o)" != "Android" ]; then
   if grep -Eq "opkg|entware" '/opt/etc/opkg.conf'; then
-    PREFIX=${HOME}
+    if [ -d "/opt/bin" ]; then
+      PREFIX="/opt"
+    else
+      PREFIX=${HOME}
+    fi
   else
     #PREFIX=/data/data/com.termux/files/usr
     PREFIX='/usr/local'
@@ -520,15 +524,15 @@ cd ~/${DebianFolder}
 cat >remove-debian.sh <<-EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
-chmod 777 -R debian_$archtype
-rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
-grep -q 'alias debian' ${PREFIX}/etc/profile && sed -i '/alias debian=/d' ${PREFIX}/etc/profile
-sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
-source profile >/dev/null 2>&1
+chmod 777 -R ${DebianFolder}
+rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+if grep -q 'alias debian' "${PREFIX}/etc/profile"; then
+  sed -i '/alias debian=/d' ${PREFIX}/etc/profile
+  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
+  source profile >/dev/null 2>&1
+fi
 echo '删除完成，如需卸载aria2,请输apt remove aria2'
 echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
-
-
 EOF
 chmod +x remove-debian.sh
 
@@ -572,7 +576,7 @@ fi
 wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash'
 chmod +x /usr/local/bin/debian-i
 
-rm -rf /root/.oh-my-zsh
+rm -rf ${HOME}/.oh-my-zsh
 chsh -s /usr/bin/zsh
 #
 # This script should be run via curl:
@@ -879,24 +883,24 @@ main() {
   echo "    jBBdD. :. ........:r... YB  Bi      "
   echo "       :7j1.                 :  :       "
   echo "Configuring zsh theme 正在配置zsh主题(powerlevel 10k)..."
-  cd /root/.oh-my-zsh/custom/themes || mkdir -p /root/.oh-my-zsh/custom/themes && cd /root/.oh-my-zsh/custom/themes
-  rm -rf "/root/.oh-my-zsh/custom/themes/powerlevel10k"
-  git clone https://gitee.com/mo2/powerlevel10k.git "/root/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
-  sed -i '/^ZSH_THEME/d' "/root/.zshrc"
-  sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "/root/.zshrc"
+  cd ${HOME}/.oh-my-zsh/custom/themes || mkdir -p ${HOME}/.oh-my-zsh/custom/themes && cd ${HOME}/.oh-my-zsh/custom/themes
+  rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
+  git clone https://gitee.com/mo2/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
+  sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
+  sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
  # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
   echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
-if ! grep -q '.p10k.zsh' '/root/.zshrc'; then
+if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
    wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-   cat >>'/root/.zshrc'<<-'EndOfp10K'
+   cat >>"${HOME}/.zshrc"<<-'EndOfp10K'
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 EndOfp10K
 fi 
   if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
-    grep -q 'unset LD_PRELOAD' /root/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" /root/.zshrc >/dev/null 2>&1
-    grep -q 'zh_CN.UTF-8' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" /root/.zshrc >/dev/null 2>&1
-    grep -q 'HOME=/root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" /root/.zshrc >/dev/null 2>&1
-    grep -q 'cd /root' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" /root/.zshrc >/dev/null 2>&1
+    grep -q 'unset LD_PRELOAD' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${HOME}/.zshrc >/dev/null 2>&1
+    grep -q 'zh_CN.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
+    grep -q 'HOME=/root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${HOME}/.zshrc >/dev/null 2>&1
+    grep -q 'cd /root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" ${HOME}/.zshrc >/dev/null 2>&1
   fi
 
   cd ~
@@ -906,7 +910,7 @@ fi
   rm -f vnc-autostartup-zsh
 
   if [ -e "/usr/lib/command-not-found" ]; then
-    grep -q 'command-not-found/command-not-found.plugin.zsh' /root/.zshrc 2>/dev/null || sed -i "$ a\source /root/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" /root/.zshrc
+    grep -q 'command-not-found/command-not-found.plugin.zsh' ${HOME}/.zshrc 2>/dev/null || sed -i "$ a\source ${HOME}/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" ${HOME}/.zshrc
     if ! grep -qi 'Ubuntu' '/etc/os-release'; then
       echo "正在配置command-not-found插件..."
       apt-file update 2>/dev/null
@@ -916,31 +920,31 @@ fi
 
   echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
 
-  rm -rf /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
-  mkdir -p /root/.oh-my-zsh/custom/plugins
+  rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
+  mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
 
   # git clone --depth=1 git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
-  git clone --depth=1 https://gitee.com/mo2/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+  git clone --depth=1 https://gitee.com/mo2/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
-  grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" /root/.zshrc
-  #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /root/.zshrc
+  grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ${HOME}/.zshrc
+  #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${HOME}/.zshrc
 
   echo "正在克隆zsh-autosuggestions自动补全插件..."
-  rm -rf /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
+  rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
 
-  #git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-  git clone --depth=1 https://gitee.com/mo2/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  #git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  git clone --depth=1 https://gitee.com/mo2/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-  grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' /root/.zshrc >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" /root/.zshrc
-  #echo -e "\nsource /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /root/.zshrc
+  grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
+  #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
 
   echo "正在克隆fzf-tab插件..."
-  rm -rf /root/.oh-my-zsh/custom/plugins/fzf-tab 2>/dev/null
-  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab || git clone --depth=1 https://gitee.com/mo2/fzf-tab.git /root/.oh-my-zsh/custom/plugins/fzf-tab 
+  rm -rf ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab 2>/dev/null
+  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab || git clone --depth=1 https://gitee.com/mo2/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab 
   
-  grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' '/root/.zshrc' >/dev/null 2>&1 || sed -i "$ a\source /root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" /root/.zshrc
-if ! grep -q 'extract=' "/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
-    cat >>"/root/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" <<-'EndOFfzfTab'
+  grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" ${HOME}/.zshrc
+if ! grep -q 'extract=' "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; then
+    cat >>"${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" <<-'EndOFfzfTab'
     local extract="
 # 提取当前选择的内容
 in=\${\${\"\$(<{f})\"%\$'\0'*}#*\$'\0'}

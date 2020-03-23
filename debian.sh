@@ -222,7 +222,18 @@ GNULINUX() {
 		fi
 
 	fi
-	PREFIX=/data/data/com.termux/files/usr
+
+	if [ "${LINUXDISTRO}" = "openwrt" ]; then
+		if [ -d "/opt/bin" ]; then
+			PREFIX="/opt"
+		else
+			PREFIX=${HOME}
+		fi
+	else
+		#PREFIX=/data/data/com.termux/files/usr
+		PREFIX='/usr/local'
+	fi
+
 	if [ "${LINUXDISTRO}" = "debian" ]; then
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "安装工具" --no-button "管理工具" --yesno "检测到您使用的是debian系统，您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 9 50); then
 			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
@@ -470,7 +481,8 @@ installDebian() {
 			read opt
 			case $opt in
 			y* | Y* | "")
-				bash ${PREFIX}/bin/debian-rm 2>/dev/null && sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
+				bash ${PREFIX}/bin/debian-rm 2>/dev/null
+				sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
 				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 				source ${PREFIX}/etc/profile >/dev/null 2>&1
 				INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
@@ -662,7 +674,7 @@ BackupSystem() {
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
@@ -1383,27 +1395,6 @@ CHROOTINSTALLDebian() {
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
-	#mkdir -p /data/data/com.termux/files/home
-	#以下判定用于解决linux和termux的bash路径不同的问题。
-	if [ ! -f "${PREFIX}/bin/bash" ]; then
-		mkdir -p ${PREFIX}/bin
-		cp -pf $(which bash) ${PREFIX}/bin
-	fi
-	#grep "export PATH=\'" /etc/profile >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /etc/profile 2>/dev/null
-	#grep "export PATH=\'" /root/.zshrc >/dev/null || sed -i "$ a\export PATH='${PREFIX}/bin:$PATH'" /root/.zshrc 2>/dev/null
-	#export "PATH=${PREFIX}/bin:$PATH"
-
-	grep 'alias debian=' /etc/profile >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /etc/profile 2>/dev/null
-	grep 'alias debian=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian='bash /data/data/com.termux/files/usr/bin/debian'" /root/.zshrc 2>/dev/null
-	grep 'alias debian-i=' /etc/profile >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /etc/profile 2>/dev/null
-	grep 'alias debian-i=' /root/.zshrc >/dev/null || sed -i "$ a\alias debian-i='bash /data/data/com.termux/files/usr/bin/debian-i'" /root/.zshrc 2>/dev/null
-	grep 'alias startvnc=' /etc/profile >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /etc/profile 2>/dev/null
-	grep 'alias startvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias startvnc='bash /data/data/com.termux/files/usr/bin/startvnc'" /root/.zshrc 2>/dev/null
-	grep 'alias stopvnc=' /etc/profile >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /etc/profile 2>/dev/null
-	grep 'alias stopvnc=' /root/.zshrc >/dev/null || sed -i "$ a\alias stopvnc='bash /data/data/com.termux/files/usr/bin/stopvnc'" /root/.zshrc 2>/dev/null
-	alias debian='bash /data/data/com.termux/files/usr/debian'
-	alias debian-i='bash /data/data/com.termux/files/usr/debian-i'
-	alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
 	touch ~/.ChrootInstallationDetectionFile
 	installDebian
 }
