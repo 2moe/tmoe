@@ -24,13 +24,17 @@
 
 ### 软件架构
 
-Debian 支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s390x 和 ppc64el**
+Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s390x 和 ppc64el**
 
-不支持 **RISC-V**
+~~可以支持，但不想支持的是 **mipsel**~~
 
-可以支持，但不想支持的是 **mipsel**
+2020-03-24 已经支持 **mipsel** 架构了！(已经在路由器上测试过了 🍥)
 
-其它系统可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
+可能支持 **RISC-V** (靠理论知识写出来的，未实际测试。由于现在暂时无法构建 risc-v 的基础容器镜像，故只能靠 qemu 在 risc-v 的设备上模拟其它架构的系统。）
+
+这可能是你见过的为数不多的，全架构 ~~、全平台~~ 项目。 ~~（win10 仅支持 wsl，不是全平台)~~
+
+其它系统容器可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
 
 ### 不同平台的安装教程
 
@@ -92,7 +96,8 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 
 8.其它 system 未测试,以下系统请自行解决依赖关系。  
 例如:**Funtoo、Gentoo、OpenSuse**和**GuixSD**等发行版。  
-还有 Unix 系统，例如：**MacOS、FreeBSD、OpenBSD、NetBSD**和**SunOS**等。  
+~~还有 Unix 系统，例如：**MacOS、FreeBSD、OpenBSD、NetBSD**和**SunOS**等。~~  
+Unix 系统可能无法运行，chroot 不是虚拟机，调用的是 Linux 内核。
 相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
 
 ---
@@ -292,3 +297,33 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 
 ​
 **之后的更新内容真的是太多了，有空的话会从酷安原帖搬过来的。其中最突出的更新内容是将安装 gui 和其它软件、管理远程桌面配置等内容整合在 GNU/Linux 容器内的 debian-i 里，以及修复了 VNC 音频传输中可能存在的一些问题。**
+
+---
+
+> 2020-02-16 至 2020-03-22 的更新日志待补
+
+---
+
+##### 2020-03-23 更新日志
+
+本次更新专注于用户体验方面的优化。
+
+- 1.zsh 加入新插件：[aloxaf](https://www.v2ex.com/member/aloxaf)开发的[fzf-tab](https://www.v2ex.com/t/653576#reply15)  
+  这是一款非常出色的补全插件！
+  ![Snipaste_2020-03-24_07-48-22.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/yWAS2yAu19bhsyJs.png)
+
+- 2.将默认主题更换为 powerlevel 10k，并同时修复 termux 和 xfce4 终端的字体显示问题。
+
+- 3.加入 Command-not-found 插件，示例：当您未安装相关软件时，输入的是错误的命令。例如输 sshd 时，会出现`apt install openssh-server`的提示，而不是单纯的显示：`Command not found`.
+
+> 后期注：宿主机为 OpenWRT 的路由器，不会加载上述**部分**插件，且默认主题非 p10k。
+
+##### 2020-03-24 更新日志
+
+- 1.支持 mipsel 架构，已在路由器上测试过了。
+
+![Snipaste_2020-03-24_05-36-44.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/1dc0XmN262GBr9QG.png)
+
+- 2.尝试让 RISC-V 架构的设备能运行 debian 容器，需要宿主机原系统为 deb 系。
+  当检测到设备为 riscv 架构时，将下载 arm64 架构版的容器镜像。
+  调用 qemu+chroot 来实现跨 CPU 架构运行容器，这是一个理论性操作，未实际测试。
