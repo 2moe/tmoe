@@ -74,3 +74,7 @@ apt update
 apt install -y wget
 bash -c "$(wget -qO- 'https://gitee.com/mo2/Termux-Debian/raw/master/debian.sh')"
 ```
+
+<video id="video" controls="" preload="none" poster="https://gitee.com/mo2/pic_api/raw/test/2020/03/24/YsZou4mIXZUFUYdZ.png">
+      <source id="mp4" src="https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4" type="video/mp4">
+      </video>
