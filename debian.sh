@@ -84,7 +84,9 @@ autoCheck() {
 		ANDROIDTERMUX
 	elif [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
 		LINUXDISTRO='iSH'
-		sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+		if grep -q 'cdn.alpinelinux.org' "/etc/apk/repositories"; then
+			sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g'
+		fi
 	else
 		GNULINUX
 	fi
