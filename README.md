@@ -170,6 +170,10 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 
 **(旧版)视频教程**[链接](https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA) 提取码: **debb**
 
+<video id="video" controls="" preload="none" poster="https://gitee.com/mo2/pic_api/raw/test/2020/03/24/YsZou4mIXZUFUYdZ.png">
+      <source id="mp4" src="https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4" type="video/mp4">
+      </video>
+
 ##### 1-2.安装后的步骤
 
 If you want to start GNU/Linux next time, you can just type `debian`.  
