@@ -83,8 +83,7 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 
 ```shell
     apk add -q wget
-    wget -qO debian.sh 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-    ash debian.sh
+    wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh' | ash
 ```
 
 7.Void
