@@ -39,10 +39,10 @@ i*86)
 x86)
   archtype="i386"
   ;;
-s390*)
+s390x)
   archtype="s390x"
   ;;
-ppc*)
+ppc64el)
   archtype="ppc64el"
   ;;
 mips*)
