@@ -283,12 +283,6 @@ GNULINUX() {
 			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
 			exit 0
 		fi
-
-	elif [ "${LINUXDISTRO}" ='iSH' ]; then
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Alpine" --no-button "deb" --yesno "检测到您使用的是iOS系统，您是想要安装Alpine的GUI，还是其它系统(Debian、Ubuntu、Kali)？ ♪(^∇^*) " 9 50); then
-			echo "该功能暂未开发"
-			exit 0
-		fi
 	fi
 
 	MainMenu
