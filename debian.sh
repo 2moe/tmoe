@@ -40,10 +40,10 @@ CheckArch() {
 	x86)
 		archtype="i386"
 		;;
-	s390x)
+	s390*)
 		archtype="s390x"
 		;;
-	ppc64el)
+	ppc*)
 		archtype="ppc64el"
 		;;
 	mips*)
