@@ -178,6 +178,7 @@ fi
 
 if [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
   LINUXDISTRO='iSH'
+  echo "检测到您使用的是iOS系统"
 fi
 
 #创建必要文件夹，防止挂载失败
