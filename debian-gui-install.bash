@@ -418,6 +418,7 @@ INSTALLGUI() {
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
 		echo '正在刷新字体缓存...'
 		mkdir -p /usr/share/fonts/
+		cd /tmp
 		if [ -e "font.ttf" ]; then
 			mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
 		else

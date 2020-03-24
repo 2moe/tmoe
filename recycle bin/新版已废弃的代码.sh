@@ -820,3 +820,6 @@ alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
 			echo "该功能暂未开发"
 			exit 0
 		fi
+
+    #ALPine xfce4
+    #ca-certificates curl xvfb x11vnc xfce4 xfce4-terminal dbus-x11 bash   
