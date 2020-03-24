@@ -175,6 +175,11 @@ if [ "$(uname -o)" != "Android" ]; then
   fi
   mkdir -p ${PREFIX}/bin
 fi
+
+if [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
+  LINUXDISTRO='iSH'
+fi
+
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
 DebianFolder=debian_${archtype}
@@ -228,17 +233,22 @@ if [ ! -f ${DebianTarXz} ]; then
     curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" -o get-date-tmp.html >/dev/null 2>&1
     ttime=$(cat get-date-tmp.html | tail -n2 | head -n1 | cut -d\" -f4)
     rm -f get-date-tmp.html
-    aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
+    if [ "${LINUXDISTRO}" != 'iSH' ]; then
+      aria2c -x 16 -k 1M --split 16 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
+    else
+      wget -O $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
+    fi
   else
     aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/debian_mipsel.tar.xz' || aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://m.tmoe.me/show/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
-    mkdir -p ~/bin
   fi
 fi
 cur=$(pwd)
 cd ~/${DebianFolder}
 echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
-if [ "$(uname -o)" = "Android" ]; then
+if [ "${LINUXDISTRO}" = "Android" ]; then
   pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
+elif [ "${LINUXDISTRO}" = "iSH" ]; then
+  tar -pJxvf ${cur}/${DebianTarXz}
 elif [ "${archtype}" = "mipsel" ]; then
   cd ~
   pv ${DebianTarXz} | tar -pJx
