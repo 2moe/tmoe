@@ -86,8 +86,8 @@ autoCheck() {
 		LINUXDISTRO='iSH'
 		if grep -q 'cdn.alpinelinux.org' "/etc/apk/repositories"; then
 			sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g'
-			GNULINUX
 		fi
+		GNULINUX
 	else
 		GNULINUX
 	fi
