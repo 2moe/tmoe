@@ -82,6 +82,9 @@ autoCheck() {
 		LINUXDISTRO='Android'
 		termux-setup-storage
 		ANDROIDTERMUX
+	elif [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
+		LINUXDISTRO='iSH'
+		sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 	else
 		GNULINUX
 	fi
@@ -239,6 +242,7 @@ GNULINUX() {
 			apt install -y ${dependencies}
 
 		elif [ "${LINUXDISTRO}" = "alpine" ]; then
+			apk update
 			apk add -q ${dependencies}
 
 		elif [ "${LINUXDISTRO}" = "arch" ]; then
@@ -275,6 +279,12 @@ GNULINUX() {
 	if [ "${LINUXDISTRO}" = "debian" ]; then
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "安装工具" --no-button "管理工具" --yesno "检测到您使用的是debian系统，您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 9 50); then
 			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			exit 0
+		fi
+
+	elif [ "${LINUXDISTRO}" ='iSH' ]; then
+		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Alpine" --no-button "deb" --yesno "检测到您使用的是iOS系统，您是想要安装Alpine的GUI，还是其它系统(Debian、Ubuntu、Kali)？ ♪(^∇^*) " 9 50); then
+			echo "该功能暂未开发"
 			exit 0
 		fi
 	fi
@@ -1224,8 +1234,7 @@ SpaceOccupation() {
 ########################################################################
 UPDATEMANAGER() {
 	#curl -L -o ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	#wget -qO ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || wget -O ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo 'Press enter to return.'
 	chmod +x ${PREFIX}/bin/debian-i
@@ -1410,7 +1419,7 @@ DownloadVideoTutorial() {
 
 ##########################
 DOWNLOADVideoTutorialAGAIN() {
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || wget -O "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
 	PLAYVideoTutorial
 }
 PLAYVideoTutorial() {
