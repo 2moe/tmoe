@@ -49,12 +49,12 @@ CheckArch() {
 	mips*)
 		archtype="mipsel"
 		#echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
+		#20200323注：手动构建了mipsel架构的debian容器镜像，现在已经支持了。
 		#exit 1
 		;;
 	risc*)
 		archtype="riscv"
 		#20200323注：riscv靠qemu实现跨cpu架构运行chroot容器
-		#echo '暂不支持risc-v'
 		#echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
 		#exit 1
 		;;
@@ -120,15 +120,27 @@ GNULINUX() {
 	dependencies=""
 
 	if [ ! -e /bin/tar ]; then
-		dependencies="${dependencies} tar"
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} app-arch/tar"
+		else
+			dependencies="${dependencies} tar"
+		fi
 	fi
 
 	if [ ! -e /bin/grep ] && [ ! -e /usr/bin/grep ]; then
-		dependencies="${dependencies} grep"
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-apps/grep"
+		else
+			dependencies="${dependencies} grep"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/pv ]; then
-		dependencies="${dependencies} pv"
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-apps/pv"
+		else
+			dependencies="${dependencies} pv"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/proot ]; then
@@ -140,6 +152,8 @@ GNULINUX() {
 	if [ ! -e /usr/bin/git ]; then
 		if [ "${LINUXDISTRO}" = "openwrt" ]; then
 			dependencies="${dependencies} git git-http"
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} dev-vcs/git"
 		else
 			dependencies="${dependencies} git"
 		fi
@@ -148,6 +162,8 @@ GNULINUX() {
 	if [ ! -e /usr/bin/xz ]; then
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			dependencies="${dependencies} xz-utils"
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} app-arch/xz-utils"
 		else
 			dependencies="${dependencies} xz"
 		fi
@@ -160,27 +176,44 @@ GNULINUX() {
 			dependencies="${dependencies} libnewt"
 		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
 			dependencies="${dependencies} dialog"
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} dev-libs/newt"
 		else
 			dependencies="${dependencies} newt"
 		fi
 	fi
 
 	if [ ! -e /usr/bin/pkill ]; then
-		if [ "${LINUXDISTRO}" != "openwrt" ]; then
+
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-process/procps"
+		elif [ "${LINUXDISTRO}" != "openwrt" ]; then
 			dependencies="${dependencies} procps"
 		fi
 	fi
 
 	if [ ! -e /usr/bin/curl ]; then
-		dependencies="${dependencies} curl"
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} net-misc/curl"
+		else
+			dependencies="${dependencies} curl"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/aria2c ]; then
-		dependencies="${dependencies} aria2"
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} net-misc/aria2"
+		else
+			dependencies="${dependencies} aria2"
+		fi
 	fi
 
 	if [ -L "/usr/bin/less" ]; then
-		dependencies="${dependencies} less"
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-apps/less"
+		else
+			dependencies="${dependencies} less"
+		fi
 	fi
 
 	if [ ! -e /bin/bash ]; then
@@ -219,11 +252,10 @@ GNULINUX() {
 			opkg install ${dependencies} || opkg install whiptail
 
 		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			emerge -av dev-vcs/git sys-apps/pv net-misc/wget app-arch/tar app-arch/xz-utils dev-libs/newt net-misc/aria2 net-misc/curl sys-process/procps sys-apps/less sys-apps/grep
-
+			emerge -av ${dependencies}
 		else
 			apt update
-			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || emerge ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies} || opkg install ${dependencies}
+			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies}
 
 		fi
 
