@@ -95,9 +95,8 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
 8.其它 system 未测试,以下系统请自行解决依赖关系。  
-例如:**Funtoo、Gentoo、OpenSuse**和**GuixSD**等发行版。  
-~~还有 Unix 系统，例如：**MacOS、FreeBSD、OpenBSD、NetBSD**和**SunOS**等。~~  
-Unix 系统可能无法运行，chroot 不是虚拟机，调用的是 Linux 内核。
+例如:**Funtoo、Gentoo、OpenSuse**和**GuixSD**等发行版。
+
 相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
 
 ---
