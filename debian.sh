@@ -112,6 +112,9 @@ GNULINUX() {
 
 	elif grep -Eq "Arch|Manjaro" '/etc/os-release'; then
 		LINUXDISTRO='arch'
+
+	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
+		LINUXDISTRO='gentoo'
 	fi
 
 	dependencies=""
@@ -214,6 +217,9 @@ GNULINUX() {
 		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
 			#opkg update
 			opkg install ${dependencies} || opkg install whiptail
+
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			emerge -av dev-vcs/git sys-apps/pv net-misc/wget app-arch/tar app-arch/xz-utils dev-libs/newt net-misc/aria2 net-misc/curl sys-process/procps sys-apps/less sys-apps/grep
 
 		else
 			apt update

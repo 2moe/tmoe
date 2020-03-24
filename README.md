@@ -94,8 +94,15 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
     bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-8.其它 system 未测试,以下系统请自行解决依赖关系。  
-例如:**Funtoo、Gentoo、OpenSuse**和**GuixSD**等发行版。
+8.Gentoo/Funtoo
+
+```shell
+    emerge -av net-misc/wget
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+```
+
+9.其它 system 未测试,以下系统请自行解决依赖关系。  
+例如:**OpenSuse**和**GuixSD**等发行版。
 
 相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
 
@@ -313,7 +320,8 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 
 - 2.将默认主题更换为 powerlevel 10k，并同时修复 termux 和 xfce4 终端的字体显示问题。
 
-- 3.加入 Command-not-found 插件，示例：当您未安装相关软件时，输入的是错误的命令。例如输 sshd 时，会出现`apt install openssh-server`的提示，而不是单纯的显示：`Command not found`.
+- 3.加入 Command-not-found 插件。  
+  当您未安装相关软件时，输入的是错误的命令。例如输 sshd 时，会出现`apt install openssh-server`的提示，而不是单纯的显示：`Command not found`.
 
 > 后期注：宿主机为 OpenWRT 的路由器，不会加载上述**部分**插件，且默认主题非 p10k。
 
