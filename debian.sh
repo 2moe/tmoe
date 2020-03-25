@@ -215,10 +215,16 @@ GNULINUX() {
 		fi
 	fi
 
-	if [ -L "/usr/bin/less" ]; then
+	if [ ! -e "/usr/bin/less" ]; then
 		if [ "${LINUXDISTRO}" = "gentoo" ]; then
 			dependencies="${dependencies} sys-apps/less"
 		else
+			dependencies="${dependencies} less"
+		fi
+	fi
+
+	if [ -L "/usr/bin/less" ]; then
+		if [ "${LINUXDISTRO}" = "openwrt" ]; then
 			dependencies="${dependencies} less"
 		fi
 	fi
