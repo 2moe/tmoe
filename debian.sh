@@ -292,15 +292,15 @@ GNULINUX() {
 		#/usr/local/bin/wsl-open
 		if [ ! -e /usr/local/bin/wsl-open ] && [ ! -e usr/bin/wsl-open ]; then
 			echo '检测到您使用的是WSL'
-			if [ ! -e usr/bin/npm ]; then
+			if [ ! -e /usr/bin/npm ]; then
 				echo '正在为您安装nodejs、npm和npm模块（wsl-open）...'
 				apt install -y nodejs
 				wget -O- https://npmjs.org/install.sh | bash
 			fi
 			npm install -g wsl-open
-		else
-			WSL=""
 		fi
+	else
+		WSL=""
 	fi
 
 	if [ "${LINUXDISTRO}" = "debian" ]; then
