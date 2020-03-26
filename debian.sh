@@ -1638,7 +1638,7 @@ TERMUXINSTALLXFCE() {
 			read
 		fi
 	else
-		echo "检测到您当前非Android系统，仅可使用换源功能"
+		echo "检测到您当前使用的系统非Android，仅可使用换源功能"
 		echo "如需安装xfce,请使用software安装工具。"
 		echo 'Press Enter to continue.'
 		echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
