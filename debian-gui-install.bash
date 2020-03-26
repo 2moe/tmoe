@@ -432,7 +432,7 @@ INSTALLGUI() {
 			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads"
 		fi
 		cd "/mnt/c/Users/Public/Downloads/"
-		wsl-open 'XFCE_a7IQ9NnfgPckuqRt.jpg' || powershell.exe "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+		wsl-open './XFCE_a7IQ9NnfgPckuqRt.jpg' || cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
 	fi
 
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
@@ -1400,9 +1400,13 @@ STARTVNCANDSTOPVNC() {
 			*) echo "Invalid choice. skipped." ;;
 			esac
 		fi
-		wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
-		wsl-open 'XserverHightDPI.png' || powershell.exe "start .\XserverHightDPI.png"
-		echo "若画面过于模糊，则您可能需要右击vcxsrv-64.exe，手动修改兼容性设定中的高Dpi选项。"
+		cd ./VcXsrv
+		if [ ! -e 'XserverHightDPI.png' ]; then
+			wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
+		fi
+		#wsl-open 'XserverHightDPI.png'
+		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
+		echo "若画面过于模糊，则您可能需要右击vcxsrv-64.exe，并手动修改兼容性设定中的高Dpi选项。"
 		wget 'https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png'
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
