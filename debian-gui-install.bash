@@ -1013,7 +1013,7 @@ INSTALLXFCE4DESKTOP() {
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies
 	apt install -y tightvncserver
-	apt autopurge -y ^libfprint
+	apt autopurge -y ^libfprint || apt purge -y ^libfprint
 	#apt install -y xfwm4-theme-breeze xcursor-themes
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 		apt install -y kali-linux
@@ -1033,7 +1033,7 @@ INSTALLXFCE4DESKTOP() {
 			cd /tmp
 			rm -f ./kali-themes-common.deb 2>/dev/null
 			wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
-			apt install -y ./kali-themes-common.deb
+			apt install - y ./kali-themes-common.deb
 			rm -f ./kali-themes-common.deb
 		fi
 	fi
