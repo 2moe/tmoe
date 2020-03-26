@@ -1145,7 +1145,7 @@ MODIFYXRDPCONF() {
 	echo "如需修改配置文件，请输nano /etc/xrdp/xrdp.ini"
 	echo "已经为您启动xrdp服务，默认端口为3389"
 	echo "您当前的IP地址为"
-	ip -4 -br -c a
+	ip -4 -br -c a | cut -d '/' -f 1
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
 	echo "如需修改当前用户密码，请输passwd"
 	echo 'Press Enter to return.'
