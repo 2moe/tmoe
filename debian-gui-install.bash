@@ -1389,6 +1389,7 @@ STARTVNCANDSTOPVNC() {
 			*) echo "Invalid choice. skipped." ;;
 			esac
 		fi
+		echo "若画面过于模糊，则您可能需要右击.\vcxsrv-64.exe，手动修改兼容性设定中的高Dpi选项。"
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
