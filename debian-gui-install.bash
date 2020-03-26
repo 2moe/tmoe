@@ -44,7 +44,7 @@ CHECKdependencies() {
 
 	if grep -q 'ubuntu' /etc/os-release; then
 		LINUXDISTRO='ubuntu'
-		if [ ! -e "/bin/add-apt-repository" ]; then
+		if [ ! -e "/bin/add-apt-repository" ] && [ ! -e "/usr/bin/add-apt-repository" ]; then
 			apt install -y software-properties-common
 		fi
 	fi
