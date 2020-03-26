@@ -1029,11 +1029,13 @@ INSTALLXFCE4DESKTOP() {
 		grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
 		apt search kali-linux
 	else
-		cd /tmp
-		rm -f ./kali-themes-common.deb 2>/dev/null
-		wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
-		apt install -y ./kali-themes-common.deb
-		rm -f ./kali-themes-common.deb
+		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
+			cd /tmp
+			rm -f ./kali-themes-common.deb 2>/dev/null
+			wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
+			apt install -y ./kali-themes-common.deb
+			rm -f ./kali-themes-common.deb
+		fi
 	fi
 	apt clean
 	cd /usr/share/xfce4/terminal
@@ -1063,7 +1065,7 @@ INSTALLXFCE4DESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			export PULSE_SERVER=tcp:127.0.0.1			
+			export PULSE_SERVER=tcp:127.0.0.1   
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 		fi
 		startxfce4
@@ -1190,7 +1192,7 @@ INSTALLMATEDESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-		fi		
+		fi  
 		mate-session
 	EndOfFile
 	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -1238,7 +1240,7 @@ INSTALLLXDEDESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-		fi		
+		fi  
 		startlxde
 	EndOfFile
 	STARTVNCANDSTOPVNC
