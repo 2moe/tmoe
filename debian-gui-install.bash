@@ -1115,6 +1115,9 @@ MODIFYXRDPCONF() {
 	if [ ! -e "/usr/sbin/xrdp" ]; then
 		apt update
 		apt install -y xrdp
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL,为防止与windows自带的远程桌面的端口冲突，建议您将默认的3389端口修改为其它'
+		fi
 	fi
 	if [ ! -e "/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf" ]; then
 		mkdir -p /etc/polkit-1/localauthority.conf.d
@@ -1148,6 +1151,12 @@ MODIFYXRDPCONF() {
 	ip -4 -br -c a | cut -d '/' -f 1
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
 	echo "如需修改当前用户密码，请输passwd"
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		echo '检测到您使用的是WSL，正在为您打开音频服务'
+		export PULSE_SERVER=tcp:127.0.0.1
+		wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+	fi
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
