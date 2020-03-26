@@ -1644,7 +1644,7 @@ TERMUXINSTALLXFCE() {
 		echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
 		read
 	fi
-	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. The following options only apply to termux.Termux原系统GUI可玩性较低，建议您安装debian系统，以下选项仅适用于termux。" 16 60 4 \
+	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 16 60 4 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
 		"3" "remove xfce4" \
