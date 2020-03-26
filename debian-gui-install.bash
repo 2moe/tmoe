@@ -982,6 +982,11 @@ OTHERSOFTWARE() {
 			read
 			OTHERSOFTWARE
 		fi
+		if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
+			echo "检测到您已安装netease-cloud-music,按回车键继续,按Ctrl+C取消"
+			echo "Press enter to continue."
+			read
+		fi
 		cd /tmp
 		wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
 		apt install -y ./netease-cloud-music.deb
@@ -992,8 +997,6 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
-	DEBIANMENU
-
 }
 ####################################
 INSTALLXFCE4DESKTOP() {
