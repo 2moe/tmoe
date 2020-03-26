@@ -334,3 +334,10 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 - 2.尝试让 RISC-V 架构的设备能运行 debian 容器，需要宿主机原系统为 deb 系。
   当检测到设备为 riscv 架构时，将下载 arm64 架构版的容器镜像。
   调用 qemu+chroot 来实现跨 CPU 架构运行容器，这是一个理论性操作，未实际测试。
+
+##### 2020-03-26 更新日志
+
+- 1.全面适配 windows 的 linux 子系统
+- 1-1.输`startxsdl`能同时启动 windows 的 X 服务
+- 1-2.支持 WSL 的音频传输
+- 2.修复 novnc 在非 Android 系统重复安装的问题
