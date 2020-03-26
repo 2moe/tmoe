@@ -1378,6 +1378,9 @@ STARTVNCANDSTOPVNC() {
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
+		cd "/mnt/c/Users/Public/Downloads"
+		wsl-open ./ 2>/dev/null
+		powershell.exe "start ."
 		startxsdl &
 	fi
 	echo 'Press Enter to return.'
