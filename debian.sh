@@ -286,7 +286,7 @@ GNULINUX() {
 		PREFIX='/usr/local'
 	fi
 
-	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ]; then
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WSL="[WSL(win10的linux子系统)]"
 		WINDOWSDISTRO='WSL'
 		#/usr/local/bin/wsl-open
