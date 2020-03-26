@@ -815,11 +815,18 @@ alias debian-i='bash /data/data/com.termux/files/usr/debian-i'
 alias startvnc='bash /data/data/com.termux/files/usr/startvnc'
 ##################################################
 
-	elif [ "${LINUXDISTRO}" ='iSH' ]; then
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Alpine" --no-button "deb" --yesno "检测到您使用的是iOS系统，您是想要安装Alpine的GUI，还是其它系统(Debian、Ubuntu、Kali)？ ♪(^∇^*) " 9 50); then
-			echo "该功能暂未开发"
-			exit 0
-		fi
+if [ "${LINUXDISTRO}" ='iSH' ]; then
+    if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Alpine" --no-button "deb" --yesno "检测到您使用的是iOS系统，您是想要安装Alpine的GUI，还是其它系统(Debian、Ubuntu、Kali)？ ♪(^∇^*) " 9 50); then
+        echo "该功能暂未开发"
+        exit 0
+    fi
+fi
 
-    #ALPine xfce4
-    #ca-certificates curl xvfb x11vnc xfce4 xfce4-terminal dbus-x11 bash   
+#ALPine xfce4
+#ca-certificates curl xvfb x11vnc xfce4 xfce4-terminal dbus-x11 bash
+#############################################
+if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
+    echo "检测到您已安装netease-cloud-music,按回车键继续,按Ctrl+C取消"
+    echo "Press enter to continue."
+    read
+fi
