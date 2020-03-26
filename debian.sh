@@ -316,11 +316,11 @@ GNULINUX() {
 			echo "正在为您下载windows版VcXsrv"
 			echo "目录C:\Users\Public\Downloads\VcXsrv"
 			cd /mnt/c/Users/Public/Downloads
-			rm -rf ./WSLXSERVERTEMPFILE 2>/dev/null
-			git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./WSLXSERVERTEMPFILE
-			mv ./WSLXSERVERTEMPFILE/VcXsrv.tar.xz ./
+			rm -rf ./.WSLXSERVERTEMPFILE 2>/dev/null
+			git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./.WSLXSERVERTEMPFILE
+			mv ./.WSLXSERVERTEMPFILE/VcXsrv.tar.xz ./
 			tar -Jxvf VcXsrv.tar.xz
-			rm -rf ./WSLXSERVERTEMPFILE VcXsrv.tar.xz
+			rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
 		fi
 
 	else
