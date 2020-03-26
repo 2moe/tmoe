@@ -1399,6 +1399,9 @@ STARTVNCANDSTOPVNC() {
 			n* | N*) echo "skipped." ;;
 			*) echo "Invalid choice. skipped." ;;
 			esac
+		else
+			echo "检测到您使用的是WSL1(第一代win10的Linux子系统)，请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务"
+			echo "您也可以手动输startvnc来启动vnc服务"
 		fi
 		cd ./VcXsrv
 		if [ ! -e 'XserverHightDPI.png' ]; then
