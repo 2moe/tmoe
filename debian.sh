@@ -289,9 +289,9 @@ GNULINUX() {
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WSL="[WSL(win10的linux子系统)]"
 		WINDOWSDISTRO='WSL'
+		echo '检测到您使用的是WSL'
 		#/usr/local/bin/wsl-open
 		if [ ! -e /usr/local/bin/wsl-open ] && [ ! -e /usr/bin/wsl-open ]; then
-			echo '检测到您使用的是WSL'
 			if [ ! -e /usr/bin/npm ]; then
 				echo '正在为您安装nodejs、npm和npm模块（wsl-open）...'
 				apt install -y nodejs
@@ -302,6 +302,7 @@ GNULINUX() {
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
 			echo "正在为您下载windows版pulseaudio"
+			echo "目录C:\Users\Public\Downloads\pulseaudio"
 			mkdir -p /mnt/c/Users/Public/Downloads
 			cd /mnt/c/Users/Public/Downloads
 			rm -rf ./WSLPULSEAUDIOTEMPFILE 2>/dev/null
@@ -313,6 +314,7 @@ GNULINUX() {
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
 			echo "正在为您下载windows版VcXsrv"
+			echo "目录C:\Users\Public\Downloads\VcXsrv"
 			cd /mnt/c/Users/Public/Downloads
 			rm -rf ./WSLXSERVERTEMPFILE 2>/dev/null
 			git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./WSLXSERVERTEMPFILE
