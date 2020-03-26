@@ -1303,6 +1303,13 @@ STARTVNCANDSTOPVNC() {
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		echo '检测到您使用的是WSL,正在为您打开音频服务'
+		export PULSE_SERVER=tcp:127.0.0.1
+		wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe'"
+	fi
 	echo "${YELLOW}按回车键启动X${RESET}"
 	echo "${YELLOW}Press enter to startx${RESET}"
 	read
