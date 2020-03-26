@@ -1803,6 +1803,7 @@ STARTWEBNOVNC() {
 		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
 		wsl-open 'http://localhost:6080/vnc.html'
+		powershell.exe "start http://localhost:6080/vnc.html"
 	else
 		firefox 'http://localhost:6080/vnc.html'
 	fi

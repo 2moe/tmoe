@@ -1076,9 +1076,20 @@ INSTALLXFCE4DESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
+			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
+			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
+			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+			if grep -q '172..*1' "/etc/resolv.conf"; then
+		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				export PULSE_SERVER=${WSL2IP}
+				export DISPLAY=${WSL2IP}:0
+				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
+			fi
 			sleep 2
 		fi
 		export LANG="zh_CN.UTF-8"
@@ -1215,9 +1226,20 @@ INSTALLMATEDESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
+			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
+			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
+			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+			if grep -q '172..*1' "/etc/resolv.conf"; then
+		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				export PULSE_SERVER=${WSL2IP}
+				export DISPLAY=${WSL2IP}:0
+				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
+			fi
 			sleep 2
 		fi
 		export LANG="zh_CN.UTF-8"
@@ -1268,9 +1290,20 @@ INSTALLLXDEDESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
+			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
+			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
+			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+			if grep -q '172..*1' "/etc/resolv.conf"; then
+		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				export PULSE_SERVER=${WSL2IP}
+				export DISPLAY=${WSL2IP}:0
+				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
+			fi
 			sleep 2
 		fi
 		export LANG="zh_CN.UTF-8"
@@ -1293,7 +1326,15 @@ STARTVNCANDSTOPVNC() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
+			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+			if grep -q '172..*1' "/etc/resolv.conf"; then
+		        echo "检测到您当前使用的可能是WSL2"
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				export PULSE_SERVER=${WSL2IP}
+				echo "已将您的音频服务ip修改为${WSL2IP}"
+			fi
 			sleep 2
 		fi
 		export LANG="zh_CN.UTF-8"
@@ -1327,11 +1368,18 @@ STARTVNCANDSTOPVNC() {
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+		if grep -q '172..*1' "/etc/resolv.conf"; then
+			echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
+			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+			export PULSE_SERVER=${WSL2IP}
+			export DISPLAY=${WSL2IP}:0
+			echo "已将您的X和音频服务ip修改为${WSL2IP}"
+		fi
+		echo "${YELLOW}按回车键启动X${RESET}"
+		echo "${YELLOW}Press enter to startx${RESET}"
+		read
+		startxsdl &
 	fi
-	echo "${YELLOW}按回车键启动X${RESET}"
-	echo "${YELLOW}Press enter to startx${RESET}"
-	read
-	startxsdl &
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
