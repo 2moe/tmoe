@@ -822,6 +822,12 @@ OTHERSOFTWARE() {
 	##############################
 	if [ "${SOFTWARE}" == '2' ]; then
 		cd /tmp
+		if [ -e "/usr/share/tencent-qq" ]; then
+			echo "检测到您已安装linuxQQ,按回车键继续,按Ctrl+C取消"
+			echo "Press enter to continue."
+			read
+		fi
+
 		if [ "$(uname -m)" = "aarch64" ]; then
 			wget -O LINUXQQ.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
 		elif [ "$(uname -m)" = "x86_64" ]; then
@@ -951,6 +957,11 @@ OTHERSOFTWARE() {
 			read
 			OTHERSOFTWARE
 		fi
+		if [ -e "/usr/share/applications/baidunetdisk.desktop" ]; then
+			echo "检测到您已安装baidunetdisk,按回车键继续,按Ctrl+C取消"
+			echo "Press enter to continue."
+			read
+		fi
 		cd /tmp
 		wget -O baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
 		apt install -y ./baidunetdisk.deb
@@ -970,6 +981,11 @@ OTHERSOFTWARE() {
 			echo "${YELLOW}按回车键返回。${RESET}"
 			read
 			OTHERSOFTWARE
+		fi
+		if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
+			echo "检测到您已安装netease-cloud-music,按回车键继续,按Ctrl+C取消"
+			echo "Press enter to continue."
+			read
 		fi
 		cd /tmp
 		wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
