@@ -299,6 +299,16 @@ GNULINUX() {
 			fi
 			npm install -g wsl-open
 		fi
+
+		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
+			echo "正在为您下载windows版pulseaudio"
+			cd /mnt/c/Users/Public/Downloads
+			rm -rf ./WSLPULSEAUDIOTEMPFILE 2>/dev/null
+			git clone --depth=1 https://gitee.com/mo2/wsl.git ./WSLPULSEAUDIOTEMPFILE
+			mv ./WSLPULSEAUDIOTEMPFILE/pulseaudio-win.tar.xz ./
+			tar -Jxvf pulseaudio-win.tar.xz
+			rm -rf ./WSLPULSEAUDIOTEMPFILE pulseaudio-win.tar.xz
+		fi
 	else
 		WSL=""
 	fi

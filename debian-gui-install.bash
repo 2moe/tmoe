@@ -1061,6 +1061,11 @@ INSTALLXFCE4DESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL,正在为您打开音频服务'
+			export PULSE_SERVER=tcp:127.0.0.1			
+			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+		fi
 		startxfce4
 	EndOfFile
 	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -1181,6 +1186,11 @@ INSTALLMATEDESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL,正在为您打开音频服务'
+			export PULSE_SERVER=tcp:127.0.0.1
+			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+		fi		
 		mate-session
 	EndOfFile
 	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -1224,6 +1234,11 @@ INSTALLLXDEDESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL,正在为您打开音频服务'
+			export PULSE_SERVER=tcp:127.0.0.1
+			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+		fi		
 		startlxde
 	EndOfFile
 	STARTVNCANDSTOPVNC
@@ -1239,8 +1254,12 @@ STARTVNCANDSTOPVNC() {
 		export USER=root
 		export HOME=/root
 		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL'
+			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat' || echo "您当前使用的是WSL2，无法自动打开音频服务，请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+		fi
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a |tail -n 1 |cut -d '/' -f 1 |cut -d 'P' -f 2):5901
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 	EndOfFile
 	##############
 	cat >stopvnc <<-'EndOfFile'
