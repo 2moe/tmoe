@@ -49,6 +49,14 @@ CHECKdependencies() {
 		fi
 	fi
 
+	if ! grep -q "^zh_CN" "/etc/locale.gen"; then
+		if [ ! -e "/usr/sbin/locale-gen" ]; then
+			apt install -y locales
+		fi
+		sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+		locale-gen
+	fi
+
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
@@ -58,7 +66,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200326-16)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。" 19 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200326-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1072,6 +1080,7 @@ INSTALLXFCE4DESKTOP() {
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			sleep 2
 		fi
+		export LANG="zh_CN.UTF-8"
 		startxfce4
 	EndOfFile
 	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -1209,7 +1218,8 @@ INSTALLMATEDESKTOP() {
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			sleep 2
-		fi 
+		fi
+		export LANG="zh_CN.UTF-8"
 		mate-session
 	EndOfFile
 	if [ -e "/etc/tmp/.ChrootInstallationDetectionFile" ]; then
@@ -1261,7 +1271,8 @@ INSTALLLXDEDESKTOP() {
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			sleep 2
-		fi 
+		fi
+		export LANG="zh_CN.UTF-8"
 		startlxde
 	EndOfFile
 	STARTVNCANDSTOPVNC
@@ -1284,6 +1295,7 @@ STARTVNCANDSTOPVNC() {
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			sleep 2
 		fi
+		export LANG="zh_CN.UTF-8"
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 	EndOfFile
