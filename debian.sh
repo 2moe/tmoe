@@ -288,6 +288,14 @@ GNULINUX() {
 
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ]; then
 		WSL="[WSL(win10的linux子系统)]"
+		WINDOWSDISTRO='WSL'
+		#/usr/local/bin/wsl-open
+		if [ ! -e /usr/local/bin/wsl-open ]; then
+			echo '检测到您使用的是WSL,正在为您安装nodejs、npm和npm模块（wsl-open）'
+			apt install -y nodejs
+			wget -O- https://npmjs.org/install.sh | bash
+			npm install -g wsl-open
+		fi
 	else
 		WSL=""
 	fi
@@ -1725,7 +1733,13 @@ STARTWEBNOVNC() {
 	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
-	am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
+	if [ "${LINUXDISTRO}" = 'Android' ]; then
+		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
+	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
+		wsl-open 'http://localhost:6080/vnc.html'
+	else
+		firefox 'http://localhost:6080/vnc.html'
+	fi
 	echo "本机默认novnc地址${YELLOW}http://localhost:6080/vnc.html${RESET}"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
 	echo "注意：novnc地址和vnc地址是${YELLOW}不同${RESET}的，请在${YELLOW}浏览器${RESET}中输入novnc地址。"
