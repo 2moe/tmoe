@@ -432,7 +432,7 @@ INSTALLGUI() {
 			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads"
 		fi
 		cd "/mnt/c/Users/Public/Downloads/"
-		wsl-open './XFCE_a7IQ9NnfgPckuqRt.jpg' || cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+		wsl-open './XFCE_a7IQ9NnfgPckuqRt.jpg' 2>/dev/null || cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
 	fi
 
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
