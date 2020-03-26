@@ -58,6 +58,10 @@ CHECKdependencies() {
 		apt install -y language-pack-zh-hans 2>/dev/null
 	fi
 
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		WINDOWSDISTRO='WSL'
+	fi
+
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
@@ -423,6 +427,13 @@ INSTALLGUI() {
 		wget -qO 'XFCE_a7IQ9NnfgPckuqRt.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
 	fi
 	catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
+	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if [ ! -e "/mnt/c/Users/Public/Downloads/XFCE_a7IQ9NnfgPckuqRt.jpg" ]; then
+			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads"
+		fi
+		cd "/mnt/c/Users/Public/Downloads/"
+		wsl-open 'XFCE_a7IQ9NnfgPckuqRt.jpg' || powershell.exe "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+	fi
 
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
 		echo '正在刷新字体缓存...'
@@ -1368,6 +1379,7 @@ STARTVNCANDSTOPVNC() {
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+		cd "/mnt/c/Users/Public/Downloads"
 		if grep -q '172..*1' "/etc/resolv.conf"; then
 			echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
@@ -1381,7 +1393,6 @@ STARTVNCANDSTOPVNC() {
 			read opt
 			case $opt in
 			y* | Y* | "")
-				cd "/mnt/c/Users/Public/Downloads"
 				aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "vcxsrv-64.exe" 'https://cdn.tmoe.me/windows/Xserver/vcxsrv-64.exe' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "vcxsrv-64.exe" 'https://m.tmoe.me/show/share/windows/Xserver/vcxsrv-64.exe'
 				powershell.exe "start .\vcxsrv-64.exe"
 				;;
@@ -1389,7 +1400,10 @@ STARTVNCANDSTOPVNC() {
 			*) echo "Invalid choice. skipped." ;;
 			esac
 		fi
-		echo "若画面过于模糊，则您可能需要右击.\vcxsrv-64.exe，手动修改兼容性设定中的高Dpi选项。"
+		wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
+		wsl-open 'XserverHightDPI.png' || powershell.exe "start .\XserverHightDPI.png"
+		echo "若画面过于模糊，则您可能需要右击vcxsrv-64.exe，手动修改兼容性设定中的高Dpi选项。"
+		wget 'https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png'
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
