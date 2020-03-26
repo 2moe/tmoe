@@ -58,7 +58,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200323-17)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 19 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200326-15)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0313本次更新加入了游戏的安装支持。" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -790,7 +790,7 @@ OTHERSOFTWARE() {
 		whiptail --title "其它软件" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install?您需要使用方向键或pgdown来翻页。 " 17 60 6 \
 			"1" "MPV：开源、跨平台的音视频播放器" \
-			"2" "LinuxQQ(arm64)：在线聊天软件" \
+			"2" "LinuxQQ：在线聊天软件" \
 			"3" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
 			"4" "斯隆与马克贝尔的谜之物语：nds解谜游戏" \
 			"5" "大灾变-劫后余生：末日幻想背景的探索生存游戏" \
@@ -798,6 +798,8 @@ OTHERSOFTWARE() {
 			"7" "GIMP：GNU 图像处理程序" \
 			"8" "LibreOffice:开源、自由的办公文档软件" \
 			"9" "Parole：xfce默认媒体播放器，风格简洁" \
+			"10" "百度网盘(x86_64)：提供文件的网络备份、同步和分享服务" \
+			"11" "网易云音乐(x86_64)：一款专注于发现与分享的音乐产品" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -820,11 +822,21 @@ OTHERSOFTWARE() {
 	##############################
 	if [ "${SOFTWARE}" == '2' ]; then
 		cd /tmp
-		wget -O LINUXQQARM64.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
-		apt install -y ./LINUXQQARM64.deb
+		if [ "$(uname -m)" = "aarch64" ]; then
+			wget -O LINUXQQ.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
+		elif [ "$(uname -m)" = "x86_64" ]; then
+			wget -O LINUXQQ.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_amd64.deb'
+		else
+			echo "暂不支持您的架构"
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			OTHERSOFTWARE
+		fi
+		apt install -y ./LINUXQQ.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
 		echo "url: https://im.qq.com/linuxqq/download.html"
-		rm -f ./LINUXQQARM64.deb
+		rm -fv ./LINUXQQ.deb
 		echo "安装完成，如需卸载，请手动输apt purge -y linuxqq"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
@@ -931,7 +943,44 @@ OTHERSOFTWARE() {
 		DEBIANMENU
 	fi
 	##########################
-
+	if [ "${SOFTWARE}" == '10' ]; then
+		if [ "$(uname -m)" != "x86_64" ]; then
+			echo "暂不支持您的架构"
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			OTHERSOFTWARE
+		fi
+		cd /tmp
+		wget -O baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+		apt install -y ./baidunetdisk.deb
+		echo "安装完成，如需卸载，请手动输apt purge -y baidunetdisk"
+		rm -fv ./baidunetdisk.deb
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
+	DEBIANMENU
+	###########################
+	if [ "${SOFTWARE}" == '11' ]; then
+		if [ "$(uname -m)" != "x86_64" ]; then
+			echo "暂不支持您的架构"
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			OTHERSOFTWARE
+		fi
+		cd /tmp
+		wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+		apt install -y ./netease-cloud-music.deb
+		echo "安装完成，如需卸载，请手动输apt purge -y netease-cloud-music"
+		rm -fv ./netease-cloud-music.deb
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
+	fi
 	DEBIANMENU
 
 }
