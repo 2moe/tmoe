@@ -1689,24 +1689,22 @@ INSTALLTERMUXAPK() {
 
 ##################################
 INSTALLWEBNOVNC() {
-	if [ ! -e "${PREFIX}/bin/python" ]; then
-		apt update
-		apt install -y python
+	if [ "${LINUXDISTRO}" = 'Android' ]; then
+		if [ ! -e "${PREFIX}/bin/python" ]; then
+			apt update
+			apt install -y python
+		fi
 	fi
 
-	if [ -e "${HOME}/.vnc/utils/launch.sh" ]; then
-		STARTWEBNOVNC
-	fi
-	if [ ! -d "${HOME}/.vnc" ]; then
+	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
 		mkdir -p ${HOME}/.vnc
+		cd ${HOME}/.vnc
+		aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/n/novnc/novnc_1.0.0-3_all.deb'
+		dpkg-deb -X novnc.deb ./
+		cp -prf ./usr/share/novnc/* ./
+		cp -rf ./usr/share/doc ./
+		rm -rf ./usr
 	fi
-
-	cd ${HOME}/.vnc
-	aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/n/novnc/novnc_1.0.0-3_all.deb'
-	dpkg-deb -X novnc.deb ./
-	cp -prf ./usr/share/novnc/* ./
-	cp -rf ./usr/share/doc ./
-	rm -rf ./usr
 	STARTWEBNOVNC
 }
 #######################
