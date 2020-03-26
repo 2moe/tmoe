@@ -1069,7 +1069,7 @@ INSTALLXFCE4DESKTOP() {
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
-			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe'"
+			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			sleep 2
 		fi
 		startxfce4
@@ -1198,7 +1198,7 @@ INSTALLMATEDESKTOP() {
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
-			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe'"
+			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			sleep 2
 		fi 
 		mate-session
@@ -1250,7 +1250,7 @@ INSTALLLXDEDESKTOP() {
 			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
-			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe'"
+			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			sleep 2
 		fi 
 		startlxde
@@ -1308,7 +1308,7 @@ STARTVNCANDSTOPVNC() {
 		export PULSE_SERVER=tcp:127.0.0.1
 		wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe'"
+		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 	fi
 	echo "${YELLOW}按回车键启动X${RESET}"
 	echo "${YELLOW}Press enter to startx${RESET}"
