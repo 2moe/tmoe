@@ -302,6 +302,7 @@ GNULINUX() {
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
 			echo "正在为您下载windows版pulseaudio"
+			mkdir -p /mnt/c/Users/Public/Downloads
 			cd /mnt/c/Users/Public/Downloads
 			rm -rf ./WSLPULSEAUDIOTEMPFILE 2>/dev/null
 			git clone --depth=1 https://gitee.com/mo2/wsl.git ./WSLPULSEAUDIOTEMPFILE
