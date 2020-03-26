@@ -309,7 +309,8 @@ GNULINUX() {
 			if [ ! -e /usr/bin/npm ]; then
 				echo '正在为您安装nodejs、npm和npm模块（wsl-open）...'
 				apt install -y nodejs
-				wget -O- https://npmjs.org/install.sh | bash
+				bash -c "$(wget -O- https://npmjs.org/install.sh |
+					sed 's:registry.npmjs.org:registry.npm.taobao.org:g')"
 			fi
 			npm install -g wsl-open
 		fi
