@@ -1301,8 +1301,10 @@ STARTVNCANDSTOPVNC() {
 	echo '请输入6至8位密码'
 	startvnc
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc停止进程'
+	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
+	echo "${YELLOW}按回车键启动X${RESET}"
+	startxsdl &
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
