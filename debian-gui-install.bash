@@ -798,8 +798,8 @@ OTHERSOFTWARE() {
 			"7" "GIMP：GNU 图像处理程序" \
 			"8" "LibreOffice:开源、自由的办公文档软件" \
 			"9" "Parole：xfce默认媒体播放器，风格简洁" \
-			"10" "百度网盘(x86_64)：提供文件的网络备份、同步和分享服务" \
-			"11" "网易云音乐(x86_64)：一款专注于发现与分享的音乐产品" \
+			"10" "百度网盘(x86_64):提供文件的网络备份、同步和分享服务" \
+			"11" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -972,32 +972,37 @@ OTHERSOFTWARE() {
 		read
 		DEBIANMENU
 	fi
-	DEBIANMENU
 	###########################
 	if [ "${SOFTWARE}" == '11' ]; then
-		if [ "$(uname -m)" != "x86_64" ]; then
-			echo "暂不支持您的架构"
-			echo 'Press Enter to return.'
-			echo "${YELLOW}按回车键返回。${RESET}"
-			read
-			OTHERSOFTWARE
-		fi
-		if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
-			echo "检测到您已安装netease-cloud-music,按回车键继续,按Ctrl+C取消"
-			echo "Press enter to continue."
-			read
-		fi
-		cd /tmp
-		wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
-		apt install -y ./netease-cloud-music.deb
-		echo "安装完成，如需卸载，请手动输apt purge -y netease-cloud-music"
-		rm -fv ./netease-cloud-music.deb
+		163NETEASEMUSIC
+	fi
+}
+######################
+163NETEASEMUSIC() {
+	if [ "$(uname -m)" != "x86_64" ]; then
+		echo "暂不支持您的架构"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
-		DEBIANMENU
+		OTHERSOFTWARE
 	fi
+	if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
+		echo "检测到您已安装netease-cloud-music,按回车键继续,按Ctrl+C取消"
+		echo "Press enter to continue."
+		read
+	fi
+	cd /tmp
+	wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+	apt install -y ./netease-cloud-music.deb
+	echo "安装完成，如需卸载，请手动输apt purge -y netease-cloud-music"
+	rm -fv ./netease-cloud-music.deb
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	DEBIANMENU
+
 }
+
 ####################################
 INSTALLXFCE4DESKTOP() {
 	apt-mark hold udisks2
