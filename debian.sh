@@ -1694,6 +1694,10 @@ INSTALLWEBNOVNC() {
 			apt update
 			apt install -y python
 		fi
+	elif [ "${LINUXDISTRO}" = 'debian' ]; then
+		if [ ! -e "/usr/bin/python3" ]; then
+			apt install -y python3
+		fi
 	fi
 
 	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
