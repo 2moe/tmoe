@@ -69,9 +69,7 @@ CheckArch() {
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
 	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
-
 	autoCheck
-
 }
 #未来可能不会增加的功能:加入路由器(mipsel架构)支持，需要从软件源开始构建。
 #路由器要把whiptail改成dialog，还要改一下opkg安装的依赖项目。
@@ -91,7 +89,7 @@ autoCheck() {
 	else
 		GNULINUX
 	fi
-	##当检测到ish后一定要加上GNULINUX
+	##当检测到ish后一定要加上GNULINUX，且不能在最后一个fi后添加。
 }
 ########################################
 GNULINUX() {
@@ -240,12 +238,28 @@ GNULINUX() {
 	fi
 
 	if [ ! -z "$dependencies" ]; then
-		echo "正在安装相关依赖..."
 		if [ "$(id -u)" != "0" ]; then
 			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
 				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
 				sudo sh -c "$(wget --no-check-certificate -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
 		fi
+
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			if ! grep -q '^deb.*edu.cn' "/etc/apt/sources.list"; then
+				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
+				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+				echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+				read opt
+				case $opt in
+				y* | Y* | "")
+					GNULINUXTUNASOURCESLIST
+					;;
+				n* | N*) echo "skipped." ;;
+				*) echo "Invalid choice. skipped." ;;
+				esac
+			fi
+		fi
+		echo "正在安装相关依赖..."
 
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			apt update
@@ -1614,9 +1628,17 @@ UNXZDEBIANRECOVERYKIT() {
 }
 ###############################
 TERMUXINSTALLXFCE() {
-	if (("${ANDROIDVERSION}" < '7')); then
-		echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
-		echo "Since termux has officially stopped maintaining the old system below android 7, it is not recommended that you continue to operate."
+	if [ "${LINUXDISTRO}" = 'Android' ]; then
+		if (("${ANDROIDVERSION}" < '7')); then
+			echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
+			echo "Since termux has officially stopped maintaining the old system below android 7, it is not recommended that you continue to operate."
+			echo 'Press Enter to continue.'
+			echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
+			read
+		fi
+	else
+		echo "检测到您当前非Android系统，仅可使用换源功能"
+		echo "如需安装xfce,请使用software安装工具。"
 		echo 'Press Enter to continue.'
 		echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
 		read
@@ -1625,7 +1647,7 @@ TERMUXINSTALLXFCE() {
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
 		"3" "remove xfce4" \
-		"4" "更换为清华源" \
+		"4" "更换为清华源(支持termux、debian、ubuntu)" \
 		"5" "下载termux_0.92_Fdroid.apk" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
@@ -1635,6 +1657,11 @@ TERMUXINSTALLXFCE() {
 	fi
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
+		if [ "${LINUXDISTRO}" != 'Android' ]; then
+			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			exit 0
+		fi
+
 		if [ -e "${PREFIX}/bin/xfwm4" ]; then
 			echo "检测到您已安装，是否继续？"
 			echo 'Press enter to continue'
@@ -1669,15 +1696,27 @@ TERMUXINSTALLXFCE() {
 	fi
 	#######################
 	if [ "${OPTION}" == '2' ]; then
+		if [ "${LINUXDISTRO}" != 'Android' ]; then
+			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			exit 0
+		fi
 		MODIFYANDROIDTERMUXVNCCONF
 	fi
 	##################
 	if [ "${OPTION}" == '3' ]; then
+		if [ "${LINUXDISTRO}" != 'Android' ]; then
+			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			exit 0
+		fi
 		REMOVEANDROIDTERMUXXFCE
 	fi
 	##################
 	if [ "${OPTION}" == '4' ]; then
-		TERMUXTUNASOURCESLIST
+		if [ "${LINUXDISTRO}" = 'Android' ]; then
+			TERMUXTUNASOURCESLIST
+		else
+			GNULINUXTUNASOURCESLIST
+		fi
 	fi
 	##################
 	if [ "${OPTION}" == '5' ]; then
@@ -2021,7 +2060,121 @@ INSTALLVOIDLINUXDISTRO() {
 		sed 's/debian容器/void容器/g' |
 		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
 }
+######################
+GNULINUXTUNASOURCESLIST() {
+	cp -pf /etc/apt/sources.list /etc/apt/sources.list.bak
+	if grep -q 'Debian' "/etc/issue"; then
+		if grep -q 'bullseye' "/etc/issue"; then
+			SOURCELISTCODE='sid'
+			BACKPORTCODE='bullseye'
 
+		elif grep -q 'buster' "/etc/issue"; then
+			SOURCELISTCODE='stable'
+			BACKPORTCODE='bullseye'
+
+		elif grep -q 'stretch' "/etc/issue"; then
+			SOURCELISTCODE='stretch'
+			BACKPORTCODE='stretch'
+
+		elif grep -q 'jessie' "/etc/issue"; then
+			SOURCELISTCODE='jessie'
+			BACKPORTCODE='jessie'
+
+		else
+			echo '暂不支持您当前的系统版本'
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			GNULINUX
+		fi
+		echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
+
+		if [ "${SOURCELISTCODE}" = "sid" ]; then
+			#下面那行EndOfSourcesList不能加单引号
+			cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
+			EndOfSourcesList
+		else
+			cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
+				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
+				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
+				deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}/updates main contrib non-free
+			EndOfSourcesList
+
+		fi
+	fi
+	###################
+	if grep -q 'Kali' "/etc/issue"; then
+		echo "检测到您使用的是Kali系统"
+		cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+			deb http://mirrors.tuna.tsinghua.edu.cn/kali kali-rolling main contrib non-free
+		EndOfSourcesList
+	fi
+	#########################
+	if grep -q 'Ubuntu' "/etc/issue"; then
+		if grep -q 'Bionic Beaver' "/etc/os-release"; then
+			SOURCELISTCODE='bionic'
+			echo '18.04 LTS'
+		elif grep -q 'Focal Fossa' "/etc/os-release"; then
+			SOURCELISTCODE='focal'
+			echo '20.04 LTS'
+		elif grep -q 'Xenial' "/etc/os-release"; then
+			SOURCELISTCODE='xenial'
+			echo '16.04 LTS'
+		elif grep -q 'Xenial' "/etc/os-release"; then
+			SOURCELISTCODE='xenial'
+		elif grep -q 'Cosmic' "/etc/os-release"; then
+			SOURCELISTCODE='cosmic'
+			echo '18.10'
+		elif grep -q 'Disco' "/etc/os-release"; then
+			SOURCELISTCODE='disco'
+			echo '19.04'
+		elif grep -q 'Eoan' "/etc/os-release"; then
+			SOURCELISTCODE='eoan'
+			echo '19.10'
+		else
+			echo '暂不支持您当前的系统版本'
+			echo 'Press Enter to return.'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			read
+			GNULINUX
+		fi
+		echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
+		#下面那行EndOfSourcesList不能有单引号
+		cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE} main restricted universe multiverse
+			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-updates main restricted universe multiverse
+			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-backports main restricted universe multiverse
+			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-security main restricted universe multiverse
+			# 预发布软件源，不建议启用
+			# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-proposed main restricted universe multiverse
+		EndOfSourcesList
+		if [ "${archtype}" != 'amd64' ] && [ "${archtype}" != 'i386' ]; then
+			sed -i 's:/ubuntu:/ubuntu-ports:g' /etc/apt/sources.list
+		fi
+	fi
+	#结束版本检测
+	###################
+	if [ -e "/usr/sbin/update-ca-certificates" ]; then
+		echo "检测到您已安装ca-certificates"
+		echo "Replacing http software source list with https."
+		echo "正在将http源替换为https..."
+		update-ca-certificates
+		sed -i 's:http:https:g' /etc/apt/sources.list
+	fi
+	apt update
+	apt dist-upgrade -y
+	echo '修改完成，您当前的软件源列表如下所示。'
+	cat /etc/apt/sources.list
+	cat /etc/apt/sources.list.d/* 2>/dev/null
+	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑软件源列表"
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	GNULINUX
+	#此处要返回依赖检测处！
+}
 ####################
 CheckArch
 ##取消注释，测试用。

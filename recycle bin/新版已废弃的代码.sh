@@ -825,10 +825,3 @@ fi
 #ALPine xfce4
 #ca-certificates curl xvfb x11vnc xfce4 xfce4-terminal dbus-x11 bash
 #############################################
-if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
-    echo "检测到您已安装netease-cloud-music,按回车键继续,按Ctrl+C取消"
-    echo "Press enter to continue."
-    read
-fi
-#######################
-        
