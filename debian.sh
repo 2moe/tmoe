@@ -305,11 +305,22 @@ GNULINUX() {
 			mkdir -p /mnt/c/Users/Public/Downloads
 			cd /mnt/c/Users/Public/Downloads
 			rm -rf ./WSLPULSEAUDIOTEMPFILE 2>/dev/null
-			git clone --depth=1 https://gitee.com/mo2/wsl.git ./WSLPULSEAUDIOTEMPFILE
+			git clone -b audio --depth=1 https://gitee.com/mo2/wsl.git ./WSLPULSEAUDIOTEMPFILE
 			mv ./WSLPULSEAUDIOTEMPFILE/pulseaudio-win.tar.xz ./
 			tar -Jxvf pulseaudio-win.tar.xz
 			rm -rf ./WSLPULSEAUDIOTEMPFILE pulseaudio-win.tar.xz
 		fi
+
+		if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
+			echo "正在为您下载windows版VcXsrv"
+			cd /mnt/c/Users/Public/Downloads
+			rm -rf ./WSLXSERVERTEMPFILE 2>/dev/null
+			git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./WSLXSERVERTEMPFILE
+			mv ./WSLPULSEAUDIOTEMPFILE/VcXsrv.tar.xz ./
+			tar -Jxvf VcXsrv.tar.xz
+			rm -rf ./WSLXSERVERTEMPFILE VcXsrv.tar.xz
+		fi
+
 	else
 		WSL=""
 	fi
