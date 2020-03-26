@@ -458,7 +458,7 @@ MainMenu() {
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
 			"1" "proot安装 install debian" \
 			"2" "chroot安装 debian" \
-			"3" "Termux原系统gui及软件源" \
+			"3" "原系统gui及软件源" \
 			"4" "novnc(web端控制)" \
 			"5" "移除 remove system" \
 			"6" "备份系统 backup system" \
@@ -1638,10 +1638,9 @@ TERMUXINSTALLXFCE() {
 			read
 		fi
 	else
-		echo "检测到您当前使用的系统非Android，仅可使用换源功能"
-		echo "如需安装xfce,请使用software安装工具。"
+		echo "检测到您当前使用的系统非Android"
 		echo 'Press Enter to continue.'
-		echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
+		echo "${YELLOW}按回车键继续${RESET}"
 		read
 	fi
 	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 16 60 4 \
