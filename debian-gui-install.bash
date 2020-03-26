@@ -55,6 +55,7 @@ CHECKdependencies() {
 		fi
 		sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 		locale-gen
+		apt install -y language-pack-zh-hans 2>/dev/null
 	fi
 
 	YELLOW=$(printf '\033[33m')

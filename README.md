@@ -340,4 +340,4 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 - 1.全面适配 windows 的 linux 子系统
 - 1-1.输`startxsdl`能同时启动 windows 的 X 服务
 - 1-2.支持 WSL 的音频传输
-- 2.修复 novnc 在非 Android 系统重复安装的问题
+- 2.修复 novnc 在非 Android 系统上重复安装的问题
