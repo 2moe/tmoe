@@ -1407,7 +1407,6 @@ STARTVNCANDSTOPVNC() {
 		if [ ! -e 'XserverHightDPI.png' ]; then
 			wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
-		catimg 'XserverHightDPI.png'
 		#wsl-open 'XserverHightDPI.png'
 		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
