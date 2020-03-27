@@ -315,7 +315,7 @@ GNULINUX() {
 			npm install -g wsl-open
 			#有可能会安装失败，所以需要再检测一遍
 			if [ ! -e /usr/bin/npm ]; then
-				apt install -y npm
+				sudo apt install -y npm || su -c "apt install -y npm"
 				npm install -g wsl-open
 			fi
 		fi
