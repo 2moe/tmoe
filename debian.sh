@@ -313,6 +313,11 @@ GNULINUX() {
 					sed 's:registry.npmjs.org:registry.npm.taobao.org:g')"
 			fi
 			npm install -g wsl-open
+			#有可能会安装失败，所以需要再检测一遍
+			if [ ! -e /usr/bin/npm ]; then
+				apt install -y npm
+				npm install -g wsl-open
+			fi
 		fi
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
@@ -1771,6 +1776,7 @@ INSTALLWEBNOVNC() {
 	elif [ "${LINUXDISTRO}" = 'debian' ]; then
 		if [ ! -e "/usr/bin/python3" ]; then
 			sudo apt install -y python3 || su -c 'apt install -y python3'
+			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
 		fi
 
 		if [ ! -e "/usr/bin/python" ]; then
