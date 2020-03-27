@@ -1092,7 +1092,7 @@ INSTALLXFCE4DESKTOP() {
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
+			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
@@ -1242,7 +1242,7 @@ INSTALLMATEDESKTOP() {
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
+			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
@@ -1304,7 +1304,7 @@ INSTALLLXDEDESKTOP() {
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
+			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
@@ -1335,7 +1335,7 @@ STARTVNCANDSTOPVNC() {
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
+			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
@@ -1375,7 +1375,7 @@ STARTVNCANDSTOPVNC() {
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		cd "/mnt/c/Users/Public/Downloads"
-		if grep -q '172..*1' "/etc/resolv.conf"; then
+		if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 			echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 			export PULSE_SERVER=${WSL2IP}
