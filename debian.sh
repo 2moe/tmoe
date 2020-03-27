@@ -1283,7 +1283,7 @@ SpaceOccupation() {
 ########################################################################
 UPDATEMANAGER() {
 	#curl -L -o ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || wget -O ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || wget -O ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 	if [ "${LINUXDISTRO}" != "Android" ]; then
 		sed -i '1 c\#!/bin/bash' ${PREFIX}/bin/debian-i
 	fi
