@@ -1784,7 +1784,8 @@ STARTWEBNOVNC() {
 	pkill pulseaudio 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
-		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify || echo "克隆失败，请在退出脚本后，输sudo debian-i以root身份重新运行本脚本"
+		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify || sudo git clone git://github.com/novnc/websockify.git --depth=1 ./websockify 
+		#echo "克隆失败，请在退出脚本后，输sudo debian-i以root身份重新运行本脚本"
 	fi
 	echo 'Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.'
 	echo "在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。"
