@@ -1770,7 +1770,11 @@ INSTALLWEBNOVNC() {
 		fi
 	elif [ "${LINUXDISTRO}" = 'debian' ]; then
 		if [ ! -e "/usr/bin/python3" ]; then
-			apt install -y python3
+			sudo apt install -y python3 || su -c 'apt install -y python3'
+		fi
+
+		if [ ! -e "/usr/bin/python" ]; then
+			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
 		fi
 	fi
 
