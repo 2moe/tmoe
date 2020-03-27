@@ -1101,6 +1101,7 @@ INSTALLXFCE4DESKTOP() {
 			fi
 			sleep 2
 		fi
+		#不要将上面uname -r的检测修改为WINDOWSDISTRO
 		export LANG="zh_CN.UTF-8"
 		startxfce4
 	EndOfFile
