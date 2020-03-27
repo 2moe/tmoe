@@ -304,23 +304,6 @@ GNULINUX() {
 		WSL="[WSL(win10的linux子系统)]"
 		WINDOWSDISTRO='WSL'
 		echo '检测到您使用的是WSL'
-		#/usr/local/bin/wsl-open
-		if [ ! -e /usr/local/bin/wsl-open ] && [ ! -e /usr/bin/wsl-open ]; then
-			if [ ! -e /usr/bin/npm ]; then
-				echo '正在为您安装nodejs、npm和npm模块（wsl-open）...'
-				apt install -y nodejs
-				bash -c "$(wget -O- https://npmjs.org/install.sh |
-					sed 's:registry.npmjs.org:registry.npm.taobao.org:g')"
-			fi
-			npm install -g wsl-open
-			#有可能会安装失败，所以需要再检测一遍
-			if [ ! -e /usr/bin/npm ]; then
-				sudo apt install -y npm || su -c "apt install -y npm"
-				sudo npm install -g npm
-				sudo npm install -g wsl-open || su -c "npm install -g wsl-open"
-			fi
-		fi
-
 		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
 			echo "正在为您下载windows版pulseaudio"
 			echo "目录C:\Users\Public\Downloads\pulseaudio"
@@ -456,7 +439,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200323-17)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200327-15)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1788,7 +1771,7 @@ INSTALLWEBNOVNC() {
 	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
 		mkdir -p ${HOME}/.vnc
 		cd ${HOME}/.vnc
-		aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/n/novnc/novnc_1.0.0-3_all.deb'
+		aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/n/novnc/novnc_1.0.0-3_all.deb' || sudo aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/n/novnc/novnc_1.0.0-3_all.deb'
 		dpkg-deb -X novnc.deb ./
 		cp -prf ./usr/share/novnc/* ./
 		cp -rf ./usr/share/doc ./
@@ -1813,7 +1796,6 @@ STARTWEBNOVNC() {
 	if [ "${LINUXDISTRO}" = 'Android' ]; then
 		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
-		wsl-open 'http://localhost:6080/vnc.html'
 		powershell.exe "start http://localhost:6080/vnc.html"
 	else
 		firefox 'http://localhost:6080/vnc.html'

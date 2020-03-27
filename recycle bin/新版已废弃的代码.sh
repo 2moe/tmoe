@@ -825,3 +825,19 @@ fi
 #ALPine xfce4
 #ca-certificates curl xvfb x11vnc xfce4 xfce4-terminal dbus-x11 bash
 #############################################
+#/usr/local/bin/wsl-open
+if [ ! -e /usr/local/bin/wsl-open ] && [ ! -e /usr/bin/wsl-open ]; then
+    if [ ! -e /usr/bin/npm ]; then
+        echo '正在为您安装nodejs、npm和npm模块（wsl-open）...'
+        apt install -y nodejs
+        bash -c "$(wget -O- https://npmjs.org/install.sh |
+            sed 's:registry.npmjs.org:registry.npm.taobao.org:g')"
+    fi
+    npm install -g wsl-open
+    #有可能会安装失败，所以需要再检测一遍
+    if [ ! -e /usr/bin/npm ]; then
+        sudo apt install -y npm || su -c "apt install -y npm"
+        sudo npm install -g npm
+        sudo npm install -g wsl-open || su -c "npm install -g wsl-open"
+    fi
+fi

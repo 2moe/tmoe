@@ -432,7 +432,7 @@ INSTALLGUI() {
 			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads"
 		fi
 		cd "/mnt/c/Users/Public/Downloads/"
-		wsl-open './XFCE_a7IQ9NnfgPckuqRt.jpg' 2>/dev/null || cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+		cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null 
 	fi
 
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
@@ -1083,14 +1083,12 @@ INSTALLXFCE4DESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
@@ -1147,7 +1145,7 @@ MODIFYXRDPCONF() {
 	if [ ! -e "/usr/sbin/xrdp" ]; then
 		apt update
 		apt install -y xrdp
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 			echo '检测到您使用的是WSL,为防止与windows自带的远程桌面的端口冲突，建议您将默认的3389端口修改为其它'
 		fi
 	fi
@@ -1183,10 +1181,11 @@ MODIFYXRDPCONF() {
 	ip -4 -br -c a | cut -d '/' -f 1
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
 	echo "如需修改当前用户密码，请输passwd"
-	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo '检测到您使用的是WSL，正在为您打开音频服务'
 		export PULSE_SERVER=tcp:127.0.0.1
-		wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
+		cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
+		cmd.exe /c "start .\pulseaudio.exe" 2>/dev/null
 		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 	fi
 	echo 'Press Enter to return.'
@@ -1233,14 +1232,12 @@ INSTALLMATEDESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
@@ -1297,14 +1294,12 @@ INSTALLLXDEDESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			wsl-open '/mnt/c/Users/Public/Downloads/VcXsrv/vcxsrv.exe'
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
@@ -1333,10 +1328,9 @@ STARTVNCANDSTOPVNC() {
 		export USER=root
 		export HOME=/root
 		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			wsl-open '/mnt/c/Users/Public/Downloads/pulseaudio/bin/pulseaudio.exe'
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
@@ -1377,7 +1371,7 @@ STARTVNCANDSTOPVNC() {
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
-	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		cd "/mnt/c/Users/Public/Downloads"
 		if grep -q '172..*1' "/etc/resolv.conf"; then
@@ -1408,7 +1402,6 @@ STARTVNCANDSTOPVNC() {
 		if [ ! -e 'XserverHightDPI.png' ]; then
 			wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
-		#wsl-open 'XserverHightDPI.png'
 		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
 		echo "文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
@@ -1416,7 +1409,6 @@ STARTVNCANDSTOPVNC() {
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
 		cd "/mnt/c/Users/Public/Downloads"
-		wsl-open ./ 2>/dev/null
 		powershell.exe "start ."
 		startxsdl &
 	fi
