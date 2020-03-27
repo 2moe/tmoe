@@ -42,14 +42,17 @@ CheckArch() {
 		;;
 	s390*)
 		archtype="s390x"
+		#经测试uname -m输出的结果为s390x
 		;;
 	ppc*)
 		archtype="ppc64el"
+		#经测试uname -m输出的结果为ppc64le
 		;;
 	mips*)
 		archtype="mipsel"
 		#echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
 		#20200323注：手动构建了mipsel架构的debian容器镜像，现在已经支持了。
+		#经测试uname -m输出的结果为mips，而不是mipsel
 		#exit 1
 		;;
 	risc*)
