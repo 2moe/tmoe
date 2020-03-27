@@ -432,7 +432,7 @@ INSTALLGUI() {
 			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads"
 		fi
 		cd "/mnt/c/Users/Public/Downloads/"
-		cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null 
+		cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
 	fi
 
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
@@ -1083,7 +1083,7 @@ INSTALLXFCE4DESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
@@ -1232,7 +1232,7 @@ INSTALLMATEDESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
@@ -1294,7 +1294,7 @@ INSTALLLXDEDESKTOP() {
 		echo 'Starting xsdl, please change display number to 0'
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
@@ -1328,7 +1328,7 @@ STARTVNCANDSTOPVNC() {
 		export USER=root
 		export HOME=/root
 		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
-		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
