@@ -1384,7 +1384,7 @@ STARTVNCANDSTOPVNC() {
 			echo "${YELLOW}请问您是否需要安装windows的X服务呢？此服务用于转发linux的显示画面到windows宿主机上[Y/n]${RESET} "
 			echo "${YELLOW}按回车键确认，输n拒绝。${RESET}"
 			echo "若您已经安装过本程序（vcxsrv-win64），请输n"
-			echo "If you have X server installed, please enter, then please type ${YELLOW}n${RESET} .[Y/n]"
+			echo "If you have X server installed, then please type ${YELLOW}n${RESET} .[Y/n]"
 			read opt
 			case $opt in
 			y* | Y* | "")

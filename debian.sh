@@ -46,7 +46,7 @@ CheckArch() {
 		;;
 	ppc*)
 		archtype="ppc64el"
-		#经测试uname -m输出的结果为ppc64le
+		#经测试uname -m输出的结果为ppc64le，而不是ppc64el
 		;;
 	mips*)
 		archtype="mipsel"
