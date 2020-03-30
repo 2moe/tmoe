@@ -85,6 +85,7 @@ DEBIANMENU() {
 			"11" "Remove GUI 卸载图形界面" \
 			"12" "Remove browser 卸载浏览器" \
 			"13" "FAQ 常见问题" \
+			"14" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -175,7 +176,13 @@ DEBIANMENU() {
 		FrequentlyAskedQuestions
 
 	fi
-		###############################
+	###############################
+	if [ "${OPTION}" == '14' ]; then
+
+		BetaFeatures
+
+	fi
+	###############################
 	if [ "${OPTION}" == '0' ]; then
 
 		exit
@@ -1431,8 +1438,8 @@ STARTVNCANDSTOPVNC() {
 	DEBIANMENU
 }
 ########################
-FrequentlyAskedQuestions(){
-	TMOEFAQ=$(whiptail --title "FAQ" --menu \
+FrequentlyAskedQuestions() {
+	TMOEFAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 15 60 4 \
 		"1" "Cannot open Baidu Netdisk" \
 		"0" "Back to the main menu 返回主菜单" \
@@ -1444,7 +1451,7 @@ FrequentlyAskedQuestions(){
 	############################
 	if [ "${TMOEFAQ}" == '1' ]; then
 		echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
-	    echo "${YELLOW}按回车键自动执行，按Ctrl+C取消${RESET}"
+		echo "${YELLOW}按回车键自动执行，按Ctrl+C取消${RESET}"
 		read
 		rm -f ~/baidunet/diskbaidunetdiskdata.db
 	fi
@@ -1452,6 +1459,38 @@ FrequentlyAskedQuestions(){
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	DEBIANMENU
+
+}
+#################
+BetaFeatures() {
+	TMOEBETA=$(whiptail --title "Beta features" --menu \
+		"测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 4 \
+		"1" "Install pinyin(拼音) input method" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	if [ "${TMOEBETA}" == '0' ]; then
+		DEBIANMENU
+	fi
+	####################
+	if [ "${TMOEBETA}" == '1' ]; then
+		apt update
+		apt install -y fcitx
+		apt install -y fcitx-sunpinyin
+		apt install -y fcitx-googlepinyin
+		if [ "$(uname -m)" = "x86_64" ]; then
+			cd /tmp
+			wget -O 'sogou_pinyin.deb' 'http://cdn2.ime.sogou.com/dl/index/1571302197/sogoupinyin_2.3.1.0112_amd64.deb?st=LibLXDSBIhQIpXS1y64TXg&e=1585607434&fn=sogoupinyin_2.3.1.0112_amd64.deb'
+			apt install -y ./sogou_pinyin.deb
+			rm -f sogou_pinyin.deb
+		elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
+			echo "架构不支持，跳过安装搜狗输入法。"
+		else
+			wget -O 'sogou_pinyin.deb' 'http://cdn2.ime.sogou.com/dl/index/1524572032/sogoupinyin_2.2.0.0108_i386.deb?st=Y2AOqkQafg4B0WBAkItOyA&e=1585607434&fn=sogoupinyin_2.2.0.0108_i386.deb'
+			apt install -y ./sogou_pinyin.deb
+			rm -f sogou_pinyin.deb
+		fi
+	fi
 
 }
 ###########################################
