@@ -71,7 +71,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200331-05)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。" 19 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200331-05)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。0331优化WSL2" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1473,6 +1473,7 @@ BetaFeatures() {
 		"3" "fbreader(epub阅读器)" \
 		"4" "krita(数字绘画)" \
 		"5" "openshot(视频剪辑)" \
+		"6" "telegram(注重保护隐私的社交app)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1525,6 +1526,13 @@ BetaFeatures() {
 		echo "安装完成，如需卸载，请手动输apt purge -y openshot"
 	fi
 	# Blender在WSL2（Xserver）下测试失败，Kdenlive在VNC远程下测试成功。
+
+	############################
+	if [ "${TMOEBETA}" == '6' ]; then
+		apt update
+		apt install -y telegram-desktop
+		echo "安装完成，如需卸载，请手动输apt purge -y telegram-desktop"
+	fi
 
 	############################
 	echo 'Press Enter to return.'
