@@ -428,10 +428,10 @@ INSTALLGUI() {
 	fi
 	catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-		if [ ! -e "/mnt/c/Users/Public/Downloads/XFCE_a7IQ9NnfgPckuqRt.jpg" ]; then
-			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads"
+		if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv/XFCE_a7IQ9NnfgPckuqRt.jpg" ]; then
+			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads/VcXsrv"
 		fi
-		cd "/mnt/c/Users/Public/Downloads/"
+		cd "/mnt/c/Users/Public/Downloads/VcXsrv"
 		cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
 	fi
 
