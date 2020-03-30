@@ -1406,7 +1406,8 @@ STARTVNCANDSTOPVNC() {
 		fi
 		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
-		echo "文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+		echo "WSL1 vcxsrv文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+		echo "WSL2 vcxsrv文件位置可自选，可能为C:\Program Files\VcXsrv\vcxsrv.exe"
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
