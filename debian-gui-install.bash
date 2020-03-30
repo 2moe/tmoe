@@ -1432,8 +1432,8 @@ STARTVNCANDSTOPVNC() {
 }
 ########################
 FrequentlyAskedQuestions(){
-	TMOEFAQ=$(whiptail --title "远程桌面" --menu \
-		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 4 \
+	TMOEFAQ=$(whiptail --title "FAQ" --menu \
+		"您有哪些疑问？\nWhat questions do you have?" 15 60 4 \
 		"1" "Cannot open Baidu Netdisk" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
