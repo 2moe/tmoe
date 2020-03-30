@@ -1490,6 +1490,7 @@ BetaFeatures() {
 			apt install -y ./sogou_pinyin.deb
 			rm -f sogou_pinyin.deb
 		fi
+		echo "如需卸载，请手动输apt purge -y sogoupinyin fcitx-sunpinyin fcitx-googlepinyin fcitx"
 	fi
 
 }
