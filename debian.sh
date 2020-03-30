@@ -2031,10 +2031,6 @@ INSTALLUBUNTUDISTRO2004() {
 ##########
 INSTALLKALIROLLING() {
 	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
-		sed 's/sid main/kali-rolling main/' |
-		sed 's/stable/kali-last-snapshot/g' |
-		sed '/buster-backports/d' |
-		sed 's:cn/debian:cn/kali:g' |
 		sed 's:debian-sid:kali-rolling:g' |
 		sed 's:debian/sid:kali/current:g' |
 		sed 's/debian系统/kali系统/g' |
@@ -2111,9 +2107,10 @@ GNULINUXTUNASOURCESLIST() {
 		echo "检测到您使用的是Kali系统"
 		cat >/etc/apt/sources.list <<-"EndOfSourcesList"
 			deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
-			deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
+			deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
+			# deb https://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
 		EndOfSourcesList
-		#注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系（升级kali仓库没有的软件包），可以添加stable源（暂未发现严重影响）
+		#注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
 	fi
 	#########################
 	if grep -q 'Ubuntu' "/etc/issue"; then
