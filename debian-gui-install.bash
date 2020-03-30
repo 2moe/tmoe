@@ -1397,7 +1397,7 @@ STARTVNCANDSTOPVNC() {
 			esac
 		else
 			echo "${YELLOW}检测到您使用的是WSL1(第一代win10的Linux子系统)${RESET}"
-			echo "${YELLOW}请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
+			echo "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
 			echo "您也可以手动输startvnc来启动vnc服务"
 		fi
 		cd ./VcXsrv
@@ -1406,8 +1406,11 @@ STARTVNCANDSTOPVNC() {
 		fi
 		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
-		echo "WSL1 vcxsrv文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-		echo "WSL2 vcxsrv文件位置可自选，可能为C:\Program Files\VcXsrv\vcxsrv.exe"
+		if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+			echo "WSL2 vcxsrv文件位置可自选，可能为C:\Program Files\VcXsrv\vcxsrv.exe"
+		else
+			echo "WSL1 vcxsrv文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+		fi
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
