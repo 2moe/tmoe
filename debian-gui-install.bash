@@ -1467,8 +1467,12 @@ FrequentlyAskedQuestions() {
 #################
 BetaFeatures() {
 	TMOEBETA=$(whiptail --title "Beta features" --menu \
-		"测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 4 \
-		"1" "Install pinyin(拼音) input method" \
+		"测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 5 \
+		"1" "pinyin(拼音) input method" \
+		"2" "calibre:电子书转换器和库管理" \
+		"3" "fbreader(epub阅读器)" \
+		"4" "krita(数字绘画)" \
+		"5" "openshot(视频剪辑)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1495,6 +1499,33 @@ BetaFeatures() {
 		fi
 		echo "如需卸载，请手动输apt purge -y sogoupinyin fcitx-sunpinyin fcitx-googlepinyin fcitx"
 	fi
+	##############################
+	if [ "${TMOEBETA}" == '2' ]; then
+		apt update
+		apt install -y calibre
+		echo "安装完成，如需卸载，请手动输apt purge -y calibre"
+	fi
+	##############################
+	if [ "${TMOEBETA}" == '3' ]; then
+		apt update
+		apt install -y fbreader
+		echo "安装完成，如需卸载，请手动输apt purge -y fbreader"
+	fi
+	##############################
+	if [ "${TMOEBETA}" == '4' ]; then
+		apt update
+		apt install -y krita
+		apt install -y krita-l10n
+		echo "安装完成，如需卸载，请手动输apt purge -y ^krita"
+	fi
+	##############################
+	if [ "${TMOEBETA}" == '5' ]; then
+		apt update
+		apt install -y openshot
+		echo "安装完成，如需卸载，请手动输apt purge -y openshot"
+	fi
+	# Blender在WSL2（Xserver）下测试失败，Kdenlive在VNC远程下测试成功。
+
 	############################
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
