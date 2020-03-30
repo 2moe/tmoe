@@ -843,15 +843,15 @@ if [ ! -e /usr/local/bin/wsl-open ] && [ ! -e /usr/bin/wsl-open ]; then
 fi
 
 INSTALLKALIROLLING() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
-		sed 's/sid main/kali-rolling main/' |
-		sed 's/stable/kali-last-snapshot/g' |
-		sed '/buster-backports/d' |
-		sed 's:cn/debian:cn/kali:g' |
-		sed 's:debian-sid:kali-rolling:g' |
-		sed 's:debian/sid:kali/current:g' |
-		sed 's/debian系统/kali系统/g' |
-		sed 's/debian system/kali system/g' |
-		sed 's/debian容器/kali容器/g' |
-		sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
+    bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
+        sed 's/sid main/kali-rolling main/' |
+        sed 's/stable/kali-last-snapshot/g' |
+        sed '/buster-backports/d' |
+        sed 's:cn/debian:cn/kali:g' |
+        sed 's:debian-sid:kali-rolling:g' |
+        sed 's:debian/sid:kali/current:g' |
+        sed 's/debian系统/kali系统/g' |
+        sed 's/debian system/kali system/g' |
+        sed 's/debian容器/kali容器/g' |
+        sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
 }

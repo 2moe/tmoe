@@ -1453,7 +1453,7 @@ FrequentlyAskedQuestions() {
 		echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
 		echo "${YELLOW}按回车键自动执行，按Ctrl+C取消${RESET}"
 		read
-		rm -vf ~/baidunet/diskbaidunetdiskdata.db
+		rm -vf ~/baidunetdisk/baidunetdiskdata.db
 	fi
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
