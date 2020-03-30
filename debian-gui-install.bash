@@ -1093,6 +1093,7 @@ INSTALLXFCE4DESKTOP() {
 			powershell.exe "start .\config.xlaunch"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+				echo "注：vcsrvc需改为安装路径，默认为C:\Program Files\VcXsrv"
 		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}

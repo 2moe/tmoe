@@ -320,14 +320,22 @@ GNULINUX() {
 		fi
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
-			echo "正在为您下载windows版VcXsrv"
-			echo "目录C:\Users\Public\Downloads\VcXsrv"
-			cd /mnt/c/Users/Public/Downloads
-			rm -rf ./.WSLXSERVERTEMPFILE 2>/dev/null
-			git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./.WSLXSERVERTEMPFILE
-			mv ./.WSLXSERVERTEMPFILE/VcXsrv.tar.xz ./
-			tar -Jxvf VcXsrv.tar.xz
-			rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
+			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+				echo "检测到您当前使用的可能是WSL2，正在为您下载windows版VcXsrv配置文件"
+				echo "目录C:\Users\Public\Downloads\VcXsrv"
+				mkdir -p /mnt/c/Users/Public/Downloads/VcXsrv
+				cd /mnt/c/Users/Public/Downloads/VcXsrv
+				wegt -O config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch' || curl -Lo config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch'
+			else
+				echo "检测到您当前使用的可能是初代WSL，正在为您下载windows版VcXsrv"
+				echo "目录C:\Users\Public\Downloads\VcXsrv"
+				cd /mnt/c/Users/Public/Downloads
+				rm -rf ./.WSLXSERVERTEMPFILE 2>/dev/null
+				git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./.WSLXSERVERTEMPFILE
+				mv ./.WSLXSERVERTEMPFILE/VcXsrv.tar.xz ./
+				tar -Jxvf VcXsrv.tar.xz
+				rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
+			fi
 		fi
 
 	else
