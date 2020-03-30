@@ -325,7 +325,7 @@ GNULINUX() {
 				echo "目录C:\Users\Public\Downloads\VcXsrv"
 				mkdir -p /mnt/c/Users/Public/Downloads/VcXsrv
 				cd /mnt/c/Users/Public/Downloads/VcXsrv
-				wegt -O config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch' || curl -Lo config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch'
+				aria2c --allow-overwrite=true -o config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch' || wegt -O config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch' || curl -Lo config.xlaunch 'https://gitee.com/mo2/wsl/raw/VcXsrv/config.xlaunch'
 			else
 				echo "检测到您当前使用的可能是初代WSL，正在为您下载windows版VcXsrv"
 				echo "目录C:\Users\Public\Downloads\VcXsrv"
