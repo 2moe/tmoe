@@ -71,7 +71,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200326-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。" 19 50 7 \
+		whiptail --title "Tmoe-Debian Tool输debian-i启动(20200331-05)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -84,7 +84,8 @@ DEBIANMENU() {
 			"10" "VSCode server arm64" \
 			"11" "Remove GUI 卸载图形界面" \
 			"12" "Remove browser 卸载浏览器" \
-			"13" "Exit 退出" \
+			"13" "FAQ 常见问题" \
+			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -170,6 +171,12 @@ DEBIANMENU() {
 
 	###############################
 	if [ "${OPTION}" == '13' ]; then
+
+		FrequentlyAskedQuestions
+
+	fi
+		###############################
+	if [ "${OPTION}" == '0' ]; then
 
 		exit
 
@@ -1423,7 +1430,30 @@ STARTVNCANDSTOPVNC() {
 	read
 	DEBIANMENU
 }
+########################
+FrequentlyAskedQuestions(){
+	TMOEFAQ=$(whiptail --title "远程桌面" --menu \
+		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 4 \
+		"1" "Cannot open Baidu Netdisk" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	if [ "${TMOEFAQ}" == '0' ]; then
+		DEBIANMENU
+	fi
+	############################
+	if [ "${TMOEFAQ}" == '1' ]; then
+		echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
+	    echo "${YELLOW}按回车键自动执行，按Ctrl+C取消${RESET}"
+		read
+		rm -f ~/baidunet/diskbaidunetdiskdata.db
+	fi
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	DEBIANMENU
 
+}
 ###########################################
 CHECKdependencies
 ########################################################################
