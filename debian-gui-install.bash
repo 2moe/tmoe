@@ -920,6 +920,9 @@ OTHERSOFTWARE() {
 		fi
 		echo "安装完成，您需要手动进入'/root/斯隆与马克贝尔的谜之物语'目录加载游戏"
 		echo "如需卸载，请手动输apt purge -y desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
+		echo 'Press enter to start the nds emulator.'
+		echo "${YELLOW}按回车键启动游戏。${RESET}"
+		read
 		desmume "${HOME}/斯隆与马克贝尔的谜之物语/3782.nds" 2>/dev/null &
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
