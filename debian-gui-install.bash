@@ -375,7 +375,7 @@ installBROWSER() {
 			echo "1s后将自动开始安装"
 			sleep 1
 			apt update
-			apt install -y firefox || echo "对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫妹妹ESR来代替了。" && apt install -y firefox-esr
+			apt install -y firefox || echo "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫妹妹ESR来代替了。${RESET}" && apt install -y firefox-esr
 			apt install -y firefox-l10n-zh-cn 2>/dev/null
 			apt install -y firefox-locale-zh-hans 2>/dev/null
 		fi
