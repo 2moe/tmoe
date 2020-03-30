@@ -2108,7 +2108,7 @@ GNULINUXTUNASOURCESLIST() {
 		cat >/etc/apt/sources.list <<-"EndOfSourcesList"
 			deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
 			deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
-			# deb https://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
+			# deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
 		EndOfSourcesList
 		#注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
 	fi
