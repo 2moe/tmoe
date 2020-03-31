@@ -335,6 +335,77 @@ GNULINUX() {
 			tar -Jxvf VcXsrv.tar.xz
 			rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
 		fi
+		#######此处download iso
+		if ! grep -q '172..*1' "/etc/resolv.conf" && ! grep -q '192..*1' "/etc/resolv.conf"; then
+			if [ ! -e "/mnt/c/Users/Public/Downloads/wsl_update_x64.msi" ]; then
+				cd /mnt/c/Users/Public/Downloads/
+				echo "正在下载WSL2内核..."
+				echo "目录C:\Users\Public\Downloads"
+				aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/show/share/windows/20H1/wsl_update_x64.msi'
+				#cmd.exe /c "start .\wsl_update_x64.msi"
+			fi
+			echo "您当前使用的可能不是WSL2,部分功能无法正常运行。"
+			CURRENTwinVersion=$(cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)
+			echo "您当前的系统版本为${CURRENTwinVersion}"
+			if (("${CURRENTwinVersion}" >= '19041')); then
+				echo "您需要以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
+				echo "重启PC，然后输入以下命令"
+				echo "wsl --set-default-version 2"
+				echo "wsl --set-version ${WSL_DISTRO_NAME} 2"
+				echo "wsl -l -v"
+				echo "最后安装wsl_update_x64.msi升级WSL2内核"
+				echo 'Press Enter to continue.'
+				echo "${YELLOW}按回车键继续。${RESET}"
+				read
+			else
+				echo "您的系统版本低于10.0.19041.1，需要更新系统。"
+				echo "${YELLOW}是否需要下载10.0.19041.172 iso镜像文件，并更新系统？[Y/n]${RESET} "
+				echo "该镜像只合成了专业和企业版,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+				echo "若您使用的不是这两个版本，则请使用windows update 或更换产品密钥，亦或者输 ${YELLOW}n${RESET}拒绝下载 .[Y/n]"
+				echo "请在更新完系统后，以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart"
+				echo "dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
+				echo "wsl --set-default-version 2"
+				echo ""
+				read opt
+				case $opt in
+				y* | Y* | "")
+					cd /mnt/c/Users/Public/Downloads/
+					if [ ! -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" ]; then
+						echo "即将为您下载10.0.19041.172 iso镜像文件..."
+						echo "目录C:\Users\Public\Downloads"
+						aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" 'https://cdn.tmoe.me/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" 'https://m.tmoe.me/down/share/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
+					fi
+					cmd.exe /c "start ."
+					#下面那处需要再次if,而不是else
+					if [ -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" ]; then
+						echo "正在校验sha256sum..."
+						echo 'Verifying sha256sum ...'
+						SHA256SUMDEBIAN="$(sha256sum '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' | cut -c 1-64)"
+						CORRENTSHA256SUM='f8972cf8e3d6e7ff1abff5f7f4e3e7deeef05422c33299d911253b21e6ee2b49'
+						if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
+							echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
+							echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
+							echo 'sha256校验值不一致，请重新下载！'
+							echo 'sha256sum value is inconsistent, please download again.'
+							echo "按回车键无视错误并继续打开镜像文件,按Ctrl+C取消。"
+							echo "${YELLOW}Press enter to continue.${RESET}"
+							read
+						else
+							echo 'Congratulations,检测到sha256sum一致'
+							echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
+						fi
+						echo "请手动运行setup.exe"
+						explorer.exe '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
+					fi
+
+					;;
+
+				\
+					n* | N*) echo "skipped." ;;
+				*) echo "Invalid choice. skipped." ;;
+				esac
+			fi
+		fi
 
 	else
 		WSL=""
