@@ -1475,6 +1475,7 @@ BetaFeatures() {
 		"5" "openshot(视频剪辑)" \
 		"6" "telegram(注重保护隐私的社交app)" \
 		"7" "typora(markdown编辑器)" \
+		"8" "electronic-wechat(第三方微信客户端)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1542,6 +1543,18 @@ BetaFeatures() {
 			apt install -y ./typora.deb
 			rm -vf ./typora.deb
 			echo "安装完成，如需卸载，请手动输apt purge -y typora"
+		else
+			echo "非常抱歉，暂不支持您的架构"
+		fi
+	fi
+	############################
+	if [ "${TMOEBETA}" == '8' ]; then
+		cd /tmp
+		if [ "$(uname -m)" = "x86_64" ]; then
+			wget -O 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
+			apt install -y ./electronic-wechat.deb
+			rm -vf ./electronic-wechat.deb
+			echo "安装完成，如需卸载，请手动输apt purge -y electronic-wechat"
 		else
 			echo "非常抱歉，暂不支持您的架构"
 		fi
