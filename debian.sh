@@ -139,7 +139,7 @@ GNULINUX() {
 		else
 			dependencies="${dependencies} grep"
 		fi
-	fi
+	fi 
 
 	if [ ! -e /usr/bin/pv ]; then
 		if [ "${LINUXDISTRO}" = "gentoo" ]; then
