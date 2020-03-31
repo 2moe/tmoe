@@ -1112,7 +1112,7 @@ INSTALLXFCE4DESKTOP() {
 			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
-		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选勾选Disable access control"
+		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
@@ -1264,7 +1264,7 @@ INSTALLMATEDESKTOP() {
 			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
-		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选勾选Disable access control"
+		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
@@ -1329,7 +1329,7 @@ INSTALLLXDEDESKTOP() {
 			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
-		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选勾选Disable access control"
+		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
@@ -1401,7 +1401,7 @@ STARTVNCANDSTOPVNC() {
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		cd "/mnt/c/Users/Public/Downloads"
 		if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
-			echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选勾选Disable access control"
+			echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 			export PULSE_SERVER=${WSL2IP}
 			export DISPLAY=${WSL2IP}:0
