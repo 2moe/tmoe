@@ -1107,7 +1107,9 @@ INSTALLXFCE4DESKTOP() {
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			powershell.exe "start .\config.xlaunch"
+			#powershell.exe "start .\config.xlaunch"
+			cmd.exe /c "taskkill.exe /f /im vcxsrv.exe"
+			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 				echo "注：vcsrvc需改为安装路径，默认为C:\Program Files\VcXsrv"
@@ -1258,9 +1260,12 @@ INSTALLMATEDESKTOP() {
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			powershell.exe "start .\config.xlaunch"
+			#powershell.exe "start .\config.xlaunch"
+			cmd.exe /c "taskkill.exe /f /im vcxsrv.exe"
+			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+				echo "注：vcsrvc需改为安装路径，默认为C:\Program Files\VcXsrv"
 		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
@@ -1269,6 +1274,7 @@ INSTALLMATEDESKTOP() {
 			fi
 			sleep 2
 		fi
+		#不要将上面uname -r的检测修改为WINDOWSDISTRO
 		export LANG="zh_CN.UTF-8"
 		mate-session
 	EndOfFile
@@ -1320,9 +1326,12 @@ INSTALLLXDEDESKTOP() {
 			powershell.exe "start .\pulseaudio.exe"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			powershell.exe "start .\config.xlaunch"
+			#powershell.exe "start .\config.xlaunch"
+			cmd.exe /c "taskkill.exe /f /im vcxsrv.exe"
+			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+				echo "注：vcsrvc需改为安装路径，默认为C:\Program Files\VcXsrv"
 		        echo "检测到您当前使用的可能是WSL2，您需要在xlaunch.exe中勾选勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 				export PULSE_SERVER=${WSL2IP}
@@ -1331,6 +1340,7 @@ INSTALLLXDEDESKTOP() {
 			fi
 			sleep 2
 		fi
+		#不要将上面uname -r的检测修改为WINDOWSDISTRO
 		export LANG="zh_CN.UTF-8"
 		startlxde
 	EndOfFile
@@ -1399,19 +1409,6 @@ STARTVNCANDSTOPVNC() {
 			export PULSE_SERVER=${WSL2IP}
 			export DISPLAY=${WSL2IP}:0
 			echo "已将您的X和音频服务ip修改为${WSL2IP}"
-			echo "${YELLOW}请问您是否需要安装windows的X服务呢？此服务用于转发linux的显示画面到windows宿主机上[Y/n]${RESET} "
-			echo "${YELLOW}按回车键确认，输n拒绝。${RESET}"
-			echo "若您已经安装过本程序（vcxsrv-win64），请输n"
-			echo "If you have X server installed, then please type ${YELLOW}n${RESET} .[Y/n]"
-			read opt
-			case $opt in
-			y* | Y* | "")
-				aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "vcxsrv-64.exe" 'https://cdn.tmoe.me/windows/Xserver/vcxsrv-64.exe' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "vcxsrv-64.exe" 'https://m.tmoe.me/show/share/windows/Xserver/vcxsrv-64.exe'
-				powershell.exe "start .\vcxsrv-64.exe"
-				;;
-			n* | N*) echo "skipped." ;;
-			*) echo "Invalid choice. skipped." ;;
-			esac
 		else
 			echo "${YELLOW}检测到您使用的是WSL1(第一代win10的Linux子系统)${RESET}"
 			echo "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
@@ -1430,11 +1427,7 @@ STARTVNCANDSTOPVNC() {
 		fi
 		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
-		if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
-			echo "WSL2 vcxsrv文件位置可自选，可能为C:\Program Files\VcXsrv\vcxsrv.exe"
-		else
-			echo "WSL1 vcxsrv文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-		fi
+		echo "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read

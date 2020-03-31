@@ -859,3 +859,22 @@ INSTALLKALIROLLING() {
 sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" && exit0 ||
     sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" && exit0 ||
     sudo sh -c "$(wget --no-check-certificate -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
+#########1411行
+echo "${YELLOW}请问您是否需要安装windows的X服务呢？此服务用于转发linux的显示画面到windows宿主机上[Y/n]${RESET} "
+echo "${YELLOW}按回车键确认，输n拒绝。${RESET}"
+echo "若您已经安装过本程序（vcxsrv-win64），请输n"
+echo "If you have X server installed, then please type ${YELLOW}n${RESET} .[Y/n]"
+read opt
+case $opt in
+y* | Y* | "")
+    aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "vcxsrv-64.exe" 'https://cdn.tmoe.me/windows/Xserver/vcxsrv-64.exe' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "vcxsrv-64.exe" 'https://m.tmoe.me/show/share/windows/Xserver/vcxsrv-64.exe'
+    powershell.exe "start .\vcxsrv-64.exe"
+    ;;
+n* | N*) echo "skipped." ;;
+*) echo "Invalid choice. skipped." ;;
+esac
+if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+    echo "WSL2 vcxsrv文件位置可自选，可能为C:\Program Files\VcXsrv\vcxsrv.exe"
+else
+    echo "WSL1 vcxsrv文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+fi
