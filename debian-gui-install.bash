@@ -1422,6 +1422,7 @@ STARTVNCANDSTOPVNC() {
 		if [ ! -e "Firewall-pulseaudio.png" ]; then
 			wget -O "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
 		fi
+		cmd.exe /c "start Firewall.cpl"
 		cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
 		############
 		if [ ! -e 'XserverHightDPI.png' ]; then
