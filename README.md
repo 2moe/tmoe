@@ -239,12 +239,6 @@ nano /usr/bin/startvnc
 
 相关软件的安装选项已经整合进**debian-i**内
 
-##### 3.安装 Linux qq
-
-```shell
-wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb ; apt install -y ./linuxqq.deb
-```
-
 ---
 
 #### 更新日志
@@ -335,6 +329,12 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
   当检测到设备为 riscv 架构时，将下载 arm64 架构版的容器镜像。
   调用 qemu+chroot 来实现跨 CPU 架构运行容器，这是一个理论性操作，未实际测试。
 
+##### 2020-03-25 更新日志
+
+- 1.在 iOS 13.3 上发现致命 bug,不再对 iOS-iSH 提供支持。
+- 请勿在苹果 iOS 设备上使用本脚本！
+- 注：[iSH](https://ish.app/)为苹果 iOS 上的 Alpine Linux i686 模拟器。
+
 ##### 2020-03-26 更新日志
 
 - 1.全面适配 WSL2 （第二代 windows 的 linux 子系统）
@@ -342,3 +342,10 @@ wget -O linuxqq.deb https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1
 - 1-1.输`startxsdl`能同时启动 windows 的 X 服务
 - 1-2.支持 WSL 的音频传输
 - 2.修复 novnc 在非 Android 系统上重复安装的问题
+
+##### 2020-03-27 至 2020-04-01 更新日志
+
+- 1.在软件商店中加入了大量第三方可选的软件，例如网易云音乐、百度网盘、微信和 Telegram 等等。
+- 2.全面优化 Windows 平台的 pulseaudio(音频传输)服务
+- 3.对于 WSL 的常见问题，给出了解决方案，部分内容还附有截图。
+- 4.加入了修复度盘客户端无法打开的功能

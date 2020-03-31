@@ -154,8 +154,12 @@ DEBIANMENU() {
 	fi
 	###################################
 	if [ "${OPTION}" == '10' ]; then
-		INSTALLORREMOVEVSCODE
-
+		if [ "$(uname -m)" = "aarch64" ]; then
+			INSTALLORREMOVEVSCODE
+		else
+			echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
+			echo "请自行安装VScode"
+		fi
 	fi
 	###################################
 	if [ "${OPTION}" == '11' ]; then
