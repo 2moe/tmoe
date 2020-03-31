@@ -1544,8 +1544,13 @@ BetaFeatures() {
 			apt install -y ./typora.deb
 			rm -vf ./typora.deb
 			echo "安装完成，如需卸载，请手动输apt purge -y typora"
-		else
+		elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 			echo "非常抱歉，暂不支持您的架构"
+		else
+			wget -O 'typora.deb' wget 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+			apt install -y ./typora.deb
+			rm -vf ./typora.deb
+			echo "安装完成，如需卸载，请手动输apt purge -y typora"
 		fi
 	fi
 	############################
