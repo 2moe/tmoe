@@ -351,7 +351,9 @@ nano /usr/bin/startvnc
 - 3.对于 WSL 的常见问题，给出了解决方案，部分内容还附有截图。
 - 4.加入了修复度盘客户端无法打开的功能
 
-> 对 WSL2 的支持已经称得上完善了!  
-> **在 win10 2004 下同时运行 linux 和 windows 程序预览截图**：
+> **对 WSL2 的支持已经称得上完善了!**  
+> 最关键的地方在于脚本大量调用了 win10 原系统的程序。  
+> **在 win10 2004 下同时运行 linux 和 windows 程序的预览截图**：
 > ![GlyxZ8.png](https://s1.ax1x.com/2020/04/01/GlyxZ8.png)  
-> WSL2 与宿主机原系统（win10）的交互联动比普通虚拟机强很多，在 linux 子系统下可以直接用 powershell.exe 调用 windows 程序。
+> WSL2 与宿主机原系统（win10）的交互联动要比普通虚拟机强数倍，在 linux 子系统下可以直接调用 powershell.exe 等 windows 程序。  
+> ~~如上图所示，目前已经可以接近完美地将 win10 和 GNU/Linux 融为一体。~~
