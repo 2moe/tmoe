@@ -159,6 +159,10 @@ DEBIANMENU() {
 		else
 			echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
 			echo "请自行安装VScode"
+			echo "${YELLOW}按回车键返回。${RESET}"
+			echo "Press enter to return."
+			read
+			DEBIANMENU
 		fi
 	fi
 	###################################
