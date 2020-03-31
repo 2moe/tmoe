@@ -353,5 +353,5 @@ nano /usr/bin/startvnc
 
 > 对 WSL2 的支持已经称得上完善了!  
 > **在 win10 2004 下同时运行 linux 和 windows 程序预览截图**：
-> [![GlyxZ8.md.png](https://s1.ax1x.com/2020/04/01/GlyxZ8.md.png)](https://imgchr.com/i/GlyxZ8)
+> [![GlyxZ8.md.png](https://s1.ax1x.com/2020/04/01/GlyxZ8.md.png)](https://imgchr.com/i/GlyxZ8)  
 > WSL2 与宿主机原系统（win10）的交互联动比普通虚拟机强很多，在 linux 子系统下可以直接用 powershell.exe 调用 windows 程序。
