@@ -236,15 +236,21 @@ GNULINUX() {
 		fi
 	fi
 
+	if [ ! -e /usr/bin/sudo ]; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} sudo"
+		fi
+	fi
+
 	if [ "${archtype}" = "riscv" ]; then
 		dependencies="${dependencies} qemu qemu-user-static debootstrap"
 	fi
 
 	if [ ! -z "$dependencies" ]; then
 		if [ "$(id -u)" != "0" ]; then
-			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-				sudo sh -c "$(wget --no-check-certificate -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
+			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" && exit 0 ||
+				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)"
+			exit 0
 		fi
 
 		if [ "${LINUXDISTRO}" = "debian" ]; then

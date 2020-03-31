@@ -185,7 +185,7 @@ DEBIANMENU() {
 	###############################
 	if [ "${OPTION}" == '0' ]; then
 
-		exit
+		exit 0
 
 	fi
 }

@@ -855,3 +855,7 @@ INSTALLKALIROLLING() {
         sed 's/debian容器/kali容器/g' |
         sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
 }
+#################
+sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" && exit0 ||
+    sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" && exit0 ||
+    sudo sh -c "$(wget --no-check-certificate -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
