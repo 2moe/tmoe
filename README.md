@@ -342,10 +342,11 @@ nano /usr/bin/startvnc
 - 1-1.输`startxsdl`能同时启动 windows 的 X 服务
 - 1-2.支持 WSL 的音频传输
 - 2.修复 novnc 在非 Android 系统上重复安装的问题
+- 3.在软件商店中加入了网易云音乐和百度网盘
 
 ##### 2020-03-27 至 2020-04-01 更新日志
 
-- 1.在软件商店中加入了大量第三方可选的软件，例如网易云音乐、百度网盘、微信和 Telegram 等等。
+- 1.加入测试功能，可在工具内手动安装输入法（如 sunpinyin 和 sogou-pinyin）、电子书阅读器、视频剪辑(openshot)、数字绘图(krita)、社交应用（如 Wechat 和 Telegram） 等等。
 - 2.全面优化 Windows 平台的 pulseaudio(音频传输)服务
 - 3.对于 WSL 的常见问题，给出了解决方案，部分内容还附有截图。
 - 4.加入了修复度盘客户端无法打开的功能

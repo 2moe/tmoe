@@ -74,8 +74,6 @@ CheckArch() {
 	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
 	autoCheck
 }
-#未来可能不会增加的功能:加入路由器(mipsel架构)支持，需要从软件源开始构建。
-#路由器要把whiptail改成dialog，还要改一下opkg安装的依赖项目。
 #########################################################
 autoCheck() {
 
