@@ -2148,18 +2148,22 @@ GNULINUXTUNASOURCESLIST() {
 		if grep -q 'bullseye' "/etc/issue"; then
 			SOURCELISTCODE='sid'
 			BACKPORTCODE='bullseye'
+			echo "Debian 11 bullseye"
 
 		elif grep -q 'buster' "/etc/issue"; then
 			SOURCELISTCODE='stable'
 			BACKPORTCODE='bullseye'
+			echo "Debian 10 buster"
 
 		elif grep -q 'stretch' "/etc/issue"; then
 			SOURCELISTCODE='stretch'
 			BACKPORTCODE='stretch'
+			echo "Debian 9 stretch"
 
 		elif grep -q 'jessie' "/etc/issue"; then
 			SOURCELISTCODE='jessie'
 			BACKPORTCODE='jessie'
+			echo "Debian 8 jessie"
 
 		else
 			echo '暂不支持您当前的系统版本'
