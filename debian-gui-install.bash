@@ -1474,6 +1474,7 @@ BetaFeatures() {
 		"4" "krita(数字绘画)" \
 		"5" "openshot(视频剪辑)" \
 		"6" "telegram(注重保护隐私的社交app)" \
+		"7" "typora(markdown编辑器)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1532,6 +1533,18 @@ BetaFeatures() {
 		apt update
 		apt install -y telegram-desktop
 		echo "安装完成，如需卸载，请手动输apt purge -y telegram-desktop"
+	fi
+	############################
+	if [ "${TMOEBETA}" == '7' ]; then
+		cd /tmp
+		if [ "$(uname -m)" = "x86_64" ]; then
+			wget -O 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
+			apt install -y ./typora.deb
+			rm -vf ./typora.deb
+			echo "安装完成，如需卸载，请手动输apt purge -y typora"
+		else
+			echo "非常抱歉，暂不支持您的架构"
+		fi
 	fi
 
 	############################
