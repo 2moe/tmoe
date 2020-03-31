@@ -1476,6 +1476,7 @@ BetaFeatures() {
 		"6" "telegram(注重保护隐私的社交app)" \
 		"7" "typora(markdown编辑器)" \
 		"8" "electronic-wechat(第三方微信客户端)" \
+		"9" "qbittorrent(P2P下载工具)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1558,6 +1559,12 @@ BetaFeatures() {
 		else
 			echo "非常抱歉，暂不支持您的架构"
 		fi
+	fi
+	##############################
+	if [ "${TMOEBETA}" == '9' ]; then
+		apt update
+		apt install -y qbittorrent
+		echo "安装完成，如需卸载，请手动输apt purge -y qbittorrent"
 	fi
 
 	############################
