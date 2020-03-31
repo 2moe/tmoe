@@ -1548,9 +1548,15 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 			(a)本工具安装的是原生GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
 			同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
 
-			7.最终用户许可协议的更改
+			7.其它说明
+			(a)若您需要在开源项目中引用本脚本，建议您先于原开发者联系,并附上本git-repo的原链接https://gitee.com/mo2/linux
+			If you want to reference this script in an open source project, please indicate the original link of this repo and suggest that you contact the original developer before that.
+
+			8.最终用户许可协议的更改
 			(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
 			(b)本工具开发者保留随时修改本协议的权利，因此请经常查看。
+
+
 		EndOfFile
 		echo 'You must agree to EULA to use this tool.'
 		echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
