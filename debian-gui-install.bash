@@ -1103,12 +1103,12 @@ INSTALLXFCE4DESKTOP() {
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
-			powershell.exe "start .\pulseaudio.exe"
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+			cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#powershell.exe "start .\config.xlaunch"
-			cmd.exe /c "taskkill.exe /f /im vcxsrv.exe"
+			#cmd.exe /c "start .\config.xlaunch"
+			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
@@ -1205,7 +1205,7 @@ MODIFYXRDPCONF() {
 		echo '检测到您使用的是WSL，正在为您打开音频服务'
 		export PULSE_SERVER=tcp:127.0.0.1
 		cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
-		cmd.exe /c "start .\pulseaudio.exe" 2>/dev/null
+		cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
 		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 	fi
 	echo 'Press Enter to return.'
@@ -1255,12 +1255,12 @@ INSTALLMATEDESKTOP() {
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
-			powershell.exe "start .\pulseaudio.exe"
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+			cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#powershell.exe "start .\config.xlaunch"
-			cmd.exe /c "taskkill.exe /f /im vcxsrv.exe"
+			#cmd.exe /c "start .\config.xlaunch"
 			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
@@ -1320,12 +1320,12 @@ INSTALLLXDEDESKTOP() {
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
-			powershell.exe "start .\pulseaudio.exe"
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+			cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#powershell.exe "start .\config.xlaunch"
-			cmd.exe /c "taskkill.exe /f /im vcxsrv.exe"
+			#cmd.exe /c "start .\config.xlaunch"
+			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
@@ -1357,8 +1357,8 @@ STARTVNCANDSTOPVNC() {
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin/"
-			powershell.exe "start .\pulseaudio.exe"
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+			cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2"
@@ -1429,7 +1429,7 @@ STARTVNCANDSTOPVNC() {
 		echo "${YELLOW}Press enter to startx${RESET}"
 		read
 		cd "/mnt/c/Users/Public/Downloads"
-		powershell.exe "start ."
+		cmd.exe /c "start ."
 		startxsdl &
 	fi
 	echo 'Press Enter to return.'

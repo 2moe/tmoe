@@ -878,3 +878,14 @@ if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf";
 else
     echo "WSL1 vcxsrv文件位置C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 fi
+		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
+			echo "正在为您下载windows版pulseaudio"
+			echo "目录C:\Users\Public\Downloads\pulseaudio"
+			mkdir -p /mnt/c/Users/Public/Downloads
+			cd /mnt/c/Users/Public/Downloads
+			rm -rf ./WSLPULSEAUDIOTEMPFILE 2>/dev/null
+			git clone -b audio --depth=1 https://gitee.com/mo2/wsl.git ./WSLPULSEAUDIOTEMPFILE
+			mv ./WSLPULSEAUDIOTEMPFILE/pulseaudio-win.tar.xz ./
+			tar -Jxvf pulseaudio-win.tar.xz
+			rm -rf ./WSLPULSEAUDIOTEMPFILE pulseaudio-win.tar.xz
+		fi

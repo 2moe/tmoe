@@ -313,16 +313,13 @@ GNULINUX() {
 		WSL="[WSL(win10的linux子系统)]"
 		WINDOWSDISTRO='WSL'
 		echo '检测到您使用的是WSL'
-		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
+		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat" ]; then
 			echo "正在为您下载windows版pulseaudio"
 			echo "目录C:\Users\Public\Downloads\pulseaudio"
 			mkdir -p /mnt/c/Users/Public/Downloads
 			cd /mnt/c/Users/Public/Downloads
-			rm -rf ./WSLPULSEAUDIOTEMPFILE 2>/dev/null
-			git clone -b audio --depth=1 https://gitee.com/mo2/wsl.git ./WSLPULSEAUDIOTEMPFILE
-			mv ./WSLPULSEAUDIOTEMPFILE/pulseaudio-win.tar.xz ./
-			tar -Jxvf pulseaudio-win.tar.xz
-			rm -rf ./WSLPULSEAUDIOTEMPFILE pulseaudio-win.tar.xz
+			rm -rf ./pulseaudio 2>/dev/null
+			git clone -b pulseaudio --depth=1 https://gitee.com/mo2/wsl.git ./pulseaudio
 		fi
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
