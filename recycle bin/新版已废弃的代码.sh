@@ -889,4 +889,3 @@ if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
     tar -Jxvf pulseaudio-win.tar.xz
     rm -rf ./WSLPULSEAUDIOTEMPFILE pulseaudio-win.tar.xz
 fi
-#####################
