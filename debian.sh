@@ -248,7 +248,7 @@ GNULINUX() {
 
 	if [ ! -z "$dependencies" ]; then
 		if [ "$(id -u)" != "0" ]; then
-			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" && exit 0 ||
+			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
 				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)"
 			exit 0
 		fi
