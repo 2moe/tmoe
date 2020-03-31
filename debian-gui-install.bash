@@ -1418,6 +1418,12 @@ STARTVNCANDSTOPVNC() {
 			echo "您也可以手动输startvnc来启动vnc服务"
 		fi
 		cd ./VcXsrv
+		echo "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
+		if [ ! -e "Firewall-pulseaudio.png" ]; then
+			wget -O "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
+		fi
+		cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
+		############
 		if [ ! -e 'XserverHightDPI.png' ]; then
 			wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
