@@ -396,6 +396,9 @@ GNULINUX() {
 						fi
 						echo "请手动运行setup.exe"
 						explorer.exe '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
+						echo "按任意键继续"
+						echo "${YELLOW}Press any key to continue! ${RESET}"
+						read
 					fi
 
 					;;
