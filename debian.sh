@@ -353,7 +353,7 @@ GNULINUX() {
 				echo "wsl --set-default-version 2"
 				echo "wsl --set-version ${WSL_DISTRO_NAME} 2"
 				echo "wsl -l -v"
-				echo "最后安装wsl_update_x64.msi升级WSL2内核"
+				echo "最后以管理员身份安装wsl_update_x64.msi（升级WSL2内核）"
 				echo 'Press Enter to continue.'
 				echo "${YELLOW}按回车键继续。${RESET}"
 				read
