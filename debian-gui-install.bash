@@ -457,7 +457,7 @@ INSTALLGUI() {
 			cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads/VcXsrv"
 		fi
 		cd "/mnt/c/Users/Public/Downloads/VcXsrv"
-		cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
 	fi
 
 	if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
@@ -1115,12 +1115,12 @@ INSTALLXFCE4DESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			cmd.exe /c "start .\pulseaudio.bat"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#cmd.exe /c "start .\config.xlaunch"
+			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
 			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
@@ -1220,7 +1220,7 @@ MODIFYXRDPCONF() {
 		echo '检测到您使用的是WSL，正在为您打开音频服务'
 		export PULSE_SERVER=tcp:127.0.0.1
 		cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
-		cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
 		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 	fi
 	echo 'Press Enter to return.'
@@ -1272,11 +1272,11 @@ INSTALLMATEDESKTOP() {
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-			cmd.exe /c "start .\pulseaudio.bat"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#cmd.exe /c "start .\config.xlaunch"
-			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
+			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
@@ -1340,12 +1340,12 @@ INSTALLLXDEDESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			cmd.exe /c "start .\pulseaudio.bat"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#cmd.exe /c "start .\config.xlaunch"
+			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
 			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-			cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
@@ -1381,7 +1381,7 @@ STARTVNCANDSTOPVNC() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			cmd.exe /c "start .\pulseaudio.bat"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2"
@@ -1448,13 +1448,13 @@ STARTVNCANDSTOPVNC() {
 		if [ ! -e "Firewall-pulseaudio.png" ]; then
 			wget -O "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
 		fi
-		cmd.exe /c "start Firewall.cpl"
-		cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start Firewall.cpl"
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
 		############
 		if [ ! -e 'XserverHightDPI.png' ]; then
 			wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
-		cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
 		echo "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		echo "${YELLOW}按回车键启动X${RESET}"
@@ -1463,7 +1463,7 @@ STARTVNCANDSTOPVNC() {
 		#上面那行必须要单引号
 		read
 		cd "/mnt/c/Users/Public/Downloads"
-		cmd.exe /c "start ."
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start ."
 		startxsdl &
 	fi
 	echo 'Press Enter to return.'

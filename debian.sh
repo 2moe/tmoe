@@ -346,14 +346,14 @@ GNULINUX() {
 				echo "正在下载WSL2内核..."
 				echo "目录C:\Users\Public\Downloads"
 				aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/show/share/windows/20H1/wsl_update_x64.msi'
-				#cmd.exe /c "start .\wsl_update_x64.msi"
+				#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\wsl_update_x64.msi"
 			fi
 			if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
 				echo "检测到您当前使用的是chroot容器，将不会自动调用Windows程序。"
 				echo "请手动启动音频服务和X服务。"
 			fi
 			echo "您当前使用的可能不是WSL2,部分功能无法正常运行。"
-			CURRENTwinVersion=$(cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)
+			CURRENTwinVersion=$(/mnt/c/WINDOWS/system32/cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)
 			echo "您当前的系统版本为${CURRENTwinVersion}"
 			if (("${CURRENTwinVersion}" >= '19041')); then
 				echo "您需要以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
@@ -373,7 +373,7 @@ GNULINUX() {
 				echo "请在更新完系统后，以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart"
 				echo "dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
 				echo "wsl --set-default-version 2"
-				control.exe /name Microsoft.WindowsUpdate
+				/mnt/c/WINDOWS/system32/control.exe /name Microsoft.WindowsUpdate
 				echo ""
 				read opt
 				case $opt in
@@ -384,7 +384,7 @@ GNULINUX() {
 						echo "目录C:\Users\Public\Downloads"
 						aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" 'https://cdn.tmoe.me/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" 'https://m.tmoe.me/down/share/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
 					fi
-					cmd.exe /c "start ."
+					/mnt/c/WINDOWS/system32/cmd.exe /c "start ."
 					#下面那处需要再次if,而不是else
 					if [ -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" ]; then
 						echo "正在校验sha256sum..."
@@ -404,7 +404,7 @@ GNULINUX() {
 							echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
 						fi
 						echo "请手动运行${YELLOW}setup.exe${RESET}"
-						explorer.exe '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
+						/mnt/c/WINDOWS/explorer.exe '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
 						echo "按任意键继续"
 						echo "${YELLOW}Press any key to continue! ${RESET}"
 						read
