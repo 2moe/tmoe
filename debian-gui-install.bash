@@ -218,13 +218,16 @@ MODIFYVNCCONF() {
 		read
 	fi
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
-		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) 。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) 。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then
-			sed -i "5 c vncserver -geometry $TARGET  -depth 24 -name remote-desktop :1" "$(which startvnc)"
+			sed -i '/vncserver -geometry/d' "$(which startvnc)"
+			sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name remote-desktop :1" "$(which startvnc)"
 			echo 'Your current resolution has been modified.'
 			echo '您当前的分辨率已经修改为'
-			echo $(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			echo $(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			#echo $(sed -n \$p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			#$p表示最后一行，必须用反斜杠转义。
 			stopvnc 2>/dev/null
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
@@ -233,7 +236,7 @@ MODIFYVNCCONF() {
 
 		else
 			echo '您当前的分辨率为'
-			echo $(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			echo $(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 		fi
 
 	else
@@ -244,13 +247,13 @@ MODIFYVNCCONF() {
 			echo '您可以手动修改vnc的配置信息'
 			echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
 			echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
-			echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+			echo "您当前分辨率为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 			echo '改完后按Ctrl+S保存，Ctrl+X退出。'
 			echo "Press Enter to confirm."
 			echo "${YELLOW}按回车键确认编辑。${RESET}"
 			read
 			nano /usr/local/bin/startvnc || nano $(which startvnc)
-			echo "您当前分辨率为$(sed -n 5p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+			echo "您当前分辨率为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 		fi
 		stopvnc 2>/dev/null
 		echo 'Press Enter to return.'
@@ -1392,7 +1395,6 @@ STARTVNCANDSTOPVNC() {
 		stopvnc >/dev/null 2>&1
 		export USER="$(whoami)"
 		export HOME="${HOME}"
-		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 		if [ ! -e "${HOME}/.vnc/xstartup" ]; then
 			sudo cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
 		fi
@@ -1419,9 +1421,10 @@ STARTVNCANDSTOPVNC() {
 			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 			fi 
 		fi
-		export LANG="zh_CN.UTF-8"
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		#启动VNC服务的命令为最后一行
+		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 	EndOfFile
 	##############
 	cat >stopvnc <<-'EndOfFile'
