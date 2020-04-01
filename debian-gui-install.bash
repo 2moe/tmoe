@@ -1135,7 +1135,7 @@ INSTALLXFCE4DESKTOP() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
 		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-		        fi
+		fi
 		export LANG="zh_CN.UTF-8"
 		startxfce4
 	EndOfFile
@@ -1291,7 +1291,7 @@ INSTALLMATEDESKTOP() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
 		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-		        fi
+		fi
 		export LANG="zh_CN.UTF-8"
 		mate-session
 	EndOfFile
@@ -1360,7 +1360,7 @@ INSTALLLXDEDESKTOP() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
 		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-		        fi
+		fi
 		export LANG="zh_CN.UTF-8"
 		startlxde
 	EndOfFile
@@ -1395,7 +1395,7 @@ STARTVNCANDSTOPVNC() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
 		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-		        fi
+		fi
 		export LANG="zh_CN.UTF-8"
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
