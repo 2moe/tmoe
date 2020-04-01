@@ -369,6 +369,7 @@ GNULINUX() {
 				echo "请在更新完系统后，以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart"
 				echo "dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
 				echo "wsl --set-default-version 2"
+				control.exe /name Microsoft.WindowsUpdate
 				echo ""
 				read opt
 				case $opt in
