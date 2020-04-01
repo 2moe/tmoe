@@ -1405,7 +1405,6 @@ STARTVNCANDSTOPVNC() {
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				grep -q 'LANG=' "${HOME}/.vnc/xstartup" || sed -i '2 a\export LANG="zh_CN.UTF-8"' ~/.vnc/xstartup
 				sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" ~/.vnc/xstartup
 				echo "已将您的音频服务ip修改为${WSL2IP}"
 			fi
@@ -1447,6 +1446,11 @@ STARTVNCANDSTOPVNC() {
 		else
 			chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 		fi
+	fi
+
+	if [ "${LANG}" != 'zh_CN.UTF8' ]; then
+		grep -q 'LANG=\"zh_' "/etc/profile" || sed -i '$ a\export LANG="zh_CN.UTF-8"' "/etc/profile"
+		grep -q 'LANG=\"zh_' "${HOME}/.zlogin" || echo 'export LANG="zh_CN.UTF-8"' >>"${HOME}/.zlogin"
 	fi
 	echo 'The vnc service is about to start for you. The password you entered is hidden.'
 	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
