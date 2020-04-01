@@ -1397,6 +1397,10 @@ STARTVNCANDSTOPVNC() {
 	#暂不卸载。若卸载则将破坏其依赖关系。
 	#umount .gvfs
 	#apt purge "gvfs*" "udisks2*"
+	if [ ! -z "$(ls /home/)" ]; then
+		CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+	fi
 	echo 'The vnc service is about to start for you. The password you entered is hidden.'
 	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
