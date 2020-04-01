@@ -1136,9 +1136,13 @@ INSTALLXFCE4DESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
-		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
+			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
+		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+			else
+			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+			fi 
 		fi
 		export LANG="zh_CN.UTF-8"
 		startxfce4
@@ -1292,9 +1296,13 @@ INSTALLMATEDESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
-		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
+			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
+		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+			else
+			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+			fi 
 		fi
 		export LANG="zh_CN.UTF-8"
 		mate-session
@@ -1361,9 +1369,13 @@ INSTALLLXDEDESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
-		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
+			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
+		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+			else
+			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+			fi 
 		fi
 		export LANG="zh_CN.UTF-8"
 		startlxde
@@ -1382,7 +1394,7 @@ STARTVNCANDSTOPVNC() {
 		export HOME="${HOME}"
 		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 		if [ ! -e "${HOME}/.vnc/xstartup" ]; then
-			sudo cp -rf "/root/.vnc" "${HOME}" || su -c 'cp -rf "/root/.vnc" "${HOME}"'
+			sudo cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
 		fi
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
@@ -1401,7 +1413,11 @@ STARTVNCANDSTOPVNC() {
 		fi
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-			chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
+		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+			else
+			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+			fi 
 		fi
 		export LANG="zh_CN.UTF-8"
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
@@ -1410,8 +1426,8 @@ STARTVNCANDSTOPVNC() {
 	##############
 	cat >stopvnc <<-'EndOfFile'
 		#!/bin/bash
-		export USER=root
-		export HOME=/root
+		export USER="$(whoami)"
+		export HOME="${HOME}"
 		vncserver -kill :1
 		rm -rf /tmp/.X1-lock
 		rm -rf /tmp/.X11-unix/X1
@@ -1425,7 +1441,11 @@ STARTVNCANDSTOPVNC() {
 	#apt purge "gvfs*" "udisks2*"
 	if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 		CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
+			sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+		else
+			chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		fi
 	fi
 	echo 'The vnc service is about to start for you. The password you entered is hidden.'
 	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
