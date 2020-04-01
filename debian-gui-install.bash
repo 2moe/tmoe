@@ -1132,6 +1132,10 @@ INSTALLXFCE4DESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
+		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		        fi
 		export LANG="zh_CN.UTF-8"
 		startxfce4
 	EndOfFile
@@ -1284,6 +1288,10 @@ INSTALLMATEDESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
+		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		        fi
 		export LANG="zh_CN.UTF-8"
 		mate-session
 	EndOfFile
@@ -1349,6 +1357,10 @@ INSTALLLXDEDESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
+		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		        fi
 		export LANG="zh_CN.UTF-8"
 		startlxde
 	EndOfFile
@@ -1380,6 +1392,10 @@ STARTVNCANDSTOPVNC() {
 			fi
 			sleep 2
 		fi
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
+		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		        fi
 		export LANG="zh_CN.UTF-8"
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
@@ -1400,7 +1416,7 @@ STARTVNCANDSTOPVNC() {
 	#暂不卸载。若卸载则将破坏其依赖关系。
 	#umount .gvfs
 	#apt purge "gvfs*" "udisks2*"
-	if [ ! -z "$(ls /home/)" ]; then
+	if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 		CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 		chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 	fi
