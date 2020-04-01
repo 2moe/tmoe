@@ -32,6 +32,10 @@ CHECKdependencies() {
 		dependencies="${dependencies} catimg"
 	fi
 
+	if [ ! -e /usr/bin/sudo ]; then
+		dependencies="${dependencies} sudo"
+	fi
+
 	if [ ! -e /usr/bin/wget ]; then
 		dependencies="${dependencies} wget"
 	fi
@@ -1374,17 +1378,20 @@ STARTVNCANDSTOPVNC() {
 	cat >startvnc <<-'EndOfFile'
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
-		export USER=root
-		export HOME=/root
+		export USER="$(whoami)"
+		export HOME="${HOME}"
 		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+		if [ ! -e "${HOME}/.vnc/xstartup" ]; then
+			sudo cp -rf "/root/.vnc" "${HOME}" || su -c 'cp -rf "/root/.vnc" "${HOME}"'
+		fi
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			export PULSE_SERVER=tcp:127.0.0.1   
+			export PULSE_SERVER=tcp:127.0.0.1
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
-		        echo "检测到您当前使用的可能是WSL2"
+				echo "检测到您当前使用的可能是WSL2"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				sed -i '2 a\export LANG="zh_CN.UTF-8"' ~/.vnc/xstartup
 				sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" ~/.vnc/xstartup
@@ -1392,9 +1399,9 @@ STARTVNCANDSTOPVNC() {
 			fi
 			sleep 2
 		fi
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1 )" ]; then
-		    CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
+			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+			chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 		fi
 		export LANG="zh_CN.UTF-8"
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
