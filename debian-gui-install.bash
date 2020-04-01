@@ -1104,6 +1104,9 @@ INSTALLXFCE4DESKTOP() {
 		startxfce4 &
 	EndOfFile
 	chmod +x ./xstartup
+	if [ ! -e "/root/.vnc/xstartup" ]; then
+		cp -rpf ~/.vnc /root/
+	fi
 
 	cd /usr/local/bin
 	cat >startxsdl <<-'EndOfFile'
@@ -1139,7 +1142,7 @@ INSTALLXFCE4DESKTOP() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
 			else
 			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 			fi 
@@ -1299,7 +1302,7 @@ INSTALLMATEDESKTOP() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
 			else
 			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 			fi 
@@ -1372,7 +1375,7 @@ INSTALLLXDEDESKTOP() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
 			else
 			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 			fi 
@@ -1414,7 +1417,7 @@ STARTVNCANDSTOPVNC() {
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
 			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		                sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
 			else
 			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 			fi 
