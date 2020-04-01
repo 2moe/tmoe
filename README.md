@@ -357,3 +357,8 @@ nano /usr/bin/startvnc
 > ![GlyxZ8.png](https://s1.ax1x.com/2020/04/01/GlyxZ8.png)  
 > WSL2 与宿主机原系统（win10）的交互联动要比普通虚拟机强数倍，在 linux 子系统下可以直接调用 powershell.exe 等 windows 程序。  
 > ~~如上图所示，目前已经可以接近完美地将 win10 和 GNU/Linux 融为一体。~~
+
+##### 2020-04-02 更新日志
+
+- 1.支持非 root 用户配置 vnc 服务
+- 2.修复大量 bug

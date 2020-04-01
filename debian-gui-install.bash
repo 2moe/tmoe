@@ -7,7 +7,9 @@ CHECKdependencies() {
 
 	if [ "$(id -u)" != "0" ]; then
 		sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)" ||
-			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)" ||
+			su -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+		exit 0
 	fi
 
 	dependencies=""
@@ -80,7 +82,7 @@ DEBIANMENU() {
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
 			"4" "Other software/games 其它软件/游戏" \
-			"5" "Modify VNC/XSDL/XRDP conf" \
+			"5" "Modify VNC/XSDL/XRDP(远程桌面)conf" \
 			"6" "Modify to Kali sources list 配置kali源" \
 			"7" "Update Debian tool 更新本工具" \
 			"8" "Install Chinese manual 安装中文手册" \
@@ -275,12 +277,12 @@ MODIFYXSDLCONF() {
 
 	fi
 
-	XSDLXSERVER=$(whiptail --title "请选择您要修改的项目" --menu "Choose your option" 15 60 4 \
-		"0" "Back to the main menu 返回主菜单" \
+	XSDLXSERVER=$(whiptail --title "Modify x server conf" --menu "Choose your option" 15 60 5 \
 		"1" "音频端口 Pulse server port " \
 		"2" "显示编号 Display number" \
 		"3" "ip address" \
 		"4" "手动编辑 Edit manually" \
+		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 
 	###########
@@ -1419,10 +1421,11 @@ STARTVNCANDSTOPVNC() {
 		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
 			else
 			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-			fi 
+			fi
 		fi
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		export LANG="zh_CN.UTF8"
 		#启动VNC服务的命令为最后一行
 		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
 	EndOfFile
@@ -1464,6 +1467,7 @@ STARTVNCANDSTOPVNC() {
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
 	cp -rpf ~/.vnc /root/ 2>/dev/null
+	chown -R root:root /root/
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
