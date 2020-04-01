@@ -1104,9 +1104,6 @@ INSTALLXFCE4DESKTOP() {
 		startxfce4 &
 	EndOfFile
 	chmod +x ./xstartup
-	if [ ! -e "/root/.vnc/xstartup" ]; then
-		cp -rpf ~/.vnc /root/
-	fi
 
 	cd /usr/local/bin
 	cat >startxsdl <<-'EndOfFile'
@@ -1459,6 +1456,7 @@ STARTVNCANDSTOPVNC() {
 	startvnc
 	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
+	cp -rpf ~/.vnc /root/ 2>/dev/null
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
