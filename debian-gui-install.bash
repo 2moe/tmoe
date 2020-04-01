@@ -1119,7 +1119,7 @@ INSTALLXFCE4DESKTOP() {
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
-			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
@@ -1271,7 +1271,7 @@ INSTALLMATEDESKTOP() {
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			export PULSE_SERVER=tcp:127.0.0.1   
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
@@ -1344,7 +1344,7 @@ INSTALLLXDEDESKTOP() {
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
-			taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
