@@ -1889,17 +1889,13 @@ STARTWEBNOVNC() {
 	echo "在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。"
 	echo "如需启动vnc app，而非web端，那么您下次可以输startvnc"
 	echo "若无声音，则请输stopvnc并重启终端。"
-	if [ "${LINUXDISTRO}" = 'Android' ]; then
-		bash launch.sh --vnc localhost:5901 --listen 6080 &
-	else
-		sudo bash launch.sh --vnc localhost:5901 --listen 6080 &
-	fi
+	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
 	if [ "${LINUXDISTRO}" = 'Android' ]; then
 		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
-		powershell.exe "start http://localhost:6080/vnc.html"
+		/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start http://localhost:6080/vnc.html"
 	else
 		firefox 'http://localhost:6080/vnc.html'
 	fi
