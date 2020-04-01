@@ -321,7 +321,7 @@ GNULINUX() {
 		fi
 
 		if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
-			if grep -q '172..*1' "/etc/resolv.conf" || grep -q '192..*1' "/etc/resolv.conf"; then
+			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2，正在为您下载windows版VcXsrv"
 			else
 				echo "检测到您当前使用的可能是初代WSL，正在为您下载windows版VcXsrv"
@@ -336,7 +336,7 @@ GNULINUX() {
 			rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
 		fi
 		#######此处download iso
-		if ! grep -q '172..*1' "/etc/resolv.conf" && ! grep -q '192..*1' "/etc/resolv.conf"; then
+		if ! grep -q '172..*1' "/etc/resolv.conf"; then
 			if [ ! -e "/mnt/c/Users/Public/Downloads/wsl_update_x64.msi" ]; then
 				cd /mnt/c/Users/Public/Downloads/
 				echo "正在下载WSL2内核..."
