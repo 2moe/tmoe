@@ -394,7 +394,7 @@ GNULINUX() {
 							echo 'Congratulations,检测到sha256sum一致'
 							echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
 						fi
-						echo "请手动运行setup.exe"
+						echo "请手动运行${YELLOW}setup.exe${RESET}"
 						explorer.exe '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
 						echo "按任意键继续"
 						echo "${YELLOW}Press any key to continue! ${RESET}"
