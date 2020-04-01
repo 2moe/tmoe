@@ -345,8 +345,12 @@ GNULINUX() {
 				cd /mnt/c/Users/Public/Downloads/
 				echo "正在下载WSL2内核..."
 				echo "目录C:\Users\Public\Downloads"
-				aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/show/share/windows/20H1/wsl_update_x64.msi'
+				aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/show/share/windows/20H1/wsl_update_x64.msi'
 				#cmd.exe /c "start .\wsl_update_x64.msi"
+			fi
+			if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+				echo "检测到您当前使用的是chroot容器，将不会自动调用Windows程序。"
+				echo "请手动启动音频服务和X服务。"
 			fi
 			echo "您当前使用的可能不是WSL2,部分功能无法正常运行。"
 			CURRENTwinVersion=$(cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)

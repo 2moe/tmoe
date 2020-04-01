@@ -1440,6 +1440,7 @@ STARTVNCANDSTOPVNC() {
 		echo "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		echo "${YELLOW}按回车键启动X${RESET}"
 		echo "${YELLOW}Press enter to startx${RESET}"
+		echo "运行过程中，您可以按Ctrl+C终止前台进程，输pkill -u $(whoami)终止当前用户所有进程"
 		read
 		cd "/mnt/c/Users/Public/Downloads"
 		cmd.exe /c "start ."
