@@ -1121,7 +1121,7 @@ INSTALLXFCE4DESKTOP() {
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
 				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
@@ -1273,7 +1273,7 @@ INSTALLMATEDESKTOP() {
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
 				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
@@ -1338,7 +1338,7 @@ INSTALLLXDEDESKTOP() {
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
 				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
@@ -1370,8 +1370,9 @@ STARTVNCANDSTOPVNC() {
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 		        echo "检测到您当前使用的可能是WSL2"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
-				export PULSE_SERVER=${WSL2IP}
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+				sed -i '2 a\export LANG="zh_CN.UTF-8"' ~/.vnc/xstartup
+				sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" ~/.vnc/xstartup
 				echo "已将您的音频服务ip修改为${WSL2IP}"
 			fi
 			sleep 2
@@ -1410,7 +1411,7 @@ STARTVNCANDSTOPVNC() {
 		cd "/mnt/c/Users/Public/Downloads"
 		if grep -q '172..*1' "/etc/resolv.conf"; then
 			echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 			export PULSE_SERVER=${WSL2IP}
 			export DISPLAY=${WSL2IP}:0
 			echo "已将您的X和音频服务ip修改为${WSL2IP}"
