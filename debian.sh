@@ -244,13 +244,14 @@ GNULINUX() {
 		dependencies="${dependencies} qemu qemu-user-static debootstrap"
 	fi
 
-	if [ ! -z "$dependencies" ]; then
-		if [ "$(id -u)" != "0" ]; then
-			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-				sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)"
-			exit 0
-		fi
+	if [ "$(id -u)" != "0" ]; then
+		sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
+			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
+			su -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
+		exit 0
+	fi
 
+	if [ ! -z "$dependencies" ]; then
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			if ! grep -q '^deb.*edu.cn' "/etc/apt/sources.list"; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
@@ -310,6 +311,9 @@ GNULINUX() {
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WSL="[WSL(win10的linux子系统)]"
 		WINDOWSDISTRO='WSL'
+		export PATH="${PATH}:/mnt/c/WINDOWS/system32/:/mnt/c/WINDOWS/system32/WindowsPowerShell/v1.0/"
+		#此处必须设定环境变量，因为sudo的环境变量会发生改变。
+		#不能使用这条alias：alias sudo='sudo env PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH'
 		echo '检测到您使用的是WSL'
 		if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat" ]; then
 			echo "正在为您下载windows版pulseaudio"
