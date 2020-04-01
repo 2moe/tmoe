@@ -871,9 +871,9 @@ OTHERSOFTWARE() {
 		fi
 
 		if [ "$(uname -m)" = "aarch64" ]; then
-			wget -O LINUXQQ.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_arm64.deb'
+			wget -O LINUXQQ.deb 'http://down.qq.com/qqweb/LinuxQQ/%E5%AE%89%E8%A3%85%E5%8C%85/linuxqq_2.0.0-b2-1076_arm64.deb'
 		elif [ "$(uname -m)" = "x86_64" ]; then
-			wget -O LINUXQQ.deb 'https://qd.myapp.com/myapp/qqteam/linuxQQ/linuxqq_2.0.0-b1-1024_amd64.deb'
+			wget -O LINUXQQ.deb 'http://down.qq.com/qqweb/LinuxQQ/%E5%AE%89%E8%A3%85%E5%8C%85/linuxqq_2.0.0-b2-1076_amd64.deb'
 		else
 			echo "暂不支持您的架构"
 			echo 'Press Enter to return.'
