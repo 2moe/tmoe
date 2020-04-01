@@ -1408,10 +1408,11 @@ STARTVNCANDSTOPVNC() {
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				grep -q 'LANG=' "~/.vnc/xstartup" || sed -i '2 a\export LANG="zh_CN.UTF-8"' ~/.vnc/xstartup
+				grep -q 'LANG=' "${HOME}/.vnc/xstartup" || sed -i '2 a\export LANG="zh_CN.UTF-8"' ~/.vnc/xstartup
 				sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" ~/.vnc/xstartup
 				echo "已将您的音频服务ip修改为${WSL2IP}"
 			fi
+			#grep 无法从"~/.vnc"中读取文件，去掉双引号就可以了。
 			sleep 2
 		fi
 		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
