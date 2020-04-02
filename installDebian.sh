@@ -487,7 +487,7 @@ It is recommended that you back up the entire system before removal. If the data
   if [ ! -z "$(ps -e | grep proot)" ]; then
       echo '检测到proot容器正在运行，请先输stopvnc停止运行'
   elif [ ! -z "$(ps -e | grep chroot)" ]; then
-      echo '检测到chroot容器正在运行，您可以输pkill -u $(whocmi) 来终止所有进程'    
+      echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
 	fi
   #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting debian system footprint... 正在检测debian system占用空间大小'
