@@ -722,8 +722,8 @@ RootMode() {
 			apt install -y tsu
 		fi
 		if ! grep -q 'pulseaudio --system' ${PREFIX}/bin/debian; then
-			sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
-			sed -i '3 a\pulseaudio --system --start' ${PREFIX}/bin/debian
+			#sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
+			sed -i '4 c\pulseaudio --system --start' ${PREFIX}/bin/debian
 		fi
 		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startvnc; then
 			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startvnc
