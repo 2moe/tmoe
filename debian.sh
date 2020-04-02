@@ -520,7 +520,7 @@ ANDROIDTERMUX() {
 	fi
 
 	if [ -e ${PREFIX}/bin/debian ]; then
-		grep -q "pulseaudio" ${PREFIX}/bin/debian || sed -i '2 a\pulseaudio --start' ${PREFIX}/bin/debian
+		grep -q "pulseaudio" ${PREFIX}/bin/debian || sed -i '3 a\pulseaudio --start' ${PREFIX}/bin/debian
 	fi
 
 	MainMenu
@@ -723,7 +723,7 @@ RootMode() {
 		fi
 		if ! grep -q 'pulseaudio --system' ${PREFIX}/bin/debian; then
 			sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
-			sed -i '2 a\pulseaudio --system --start' ${PREFIX}/bin/debian
+			sed -i '3 a\pulseaudio --system --start' ${PREFIX}/bin/debian
 		fi
 		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startvnc; then
 			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startvnc
@@ -1764,7 +1764,9 @@ TERMUXINSTALLXFCE() {
 		cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
 			pkill Xvnc 2>/dev/null 
-			pulseaudio --start 
+			if [ ! -z "$(ps -e | grep pulseaudio)" ]; then
+			    pulseaudio --start
+			fi
 			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 			export DISPLAY=:1
