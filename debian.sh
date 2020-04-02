@@ -440,6 +440,10 @@ ANDROIDTERMUX() {
 		dependencies="${dependencies} pv"
 	fi
 
+	if [ ! -e ${PREFIX}/bin/git ]; then
+		dependencies="${dependencies} git"
+	fi
+
 	if [ ! -e ${PREFIX}/bin/termux-audio-info ]; then
 		dependencies="${dependencies} termux-api"
 	fi
@@ -531,7 +535,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200331-18)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200403-00)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
