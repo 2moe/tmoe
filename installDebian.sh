@@ -383,7 +383,7 @@ else
   cat >${PREFIX}/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
-if [ -z "$(ps -e | grep pulseaudio)" ]; then
+if [ -z "\$(ps -e | grep pulseaudio)" ]; then
 	  pulseaudio --start
 fi
 unset LD_PRELOAD
