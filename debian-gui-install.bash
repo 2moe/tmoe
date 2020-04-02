@@ -1466,10 +1466,12 @@ STARTVNCANDSTOPVNC() {
 			chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
 		fi
 	fi
-
-	if [ "${LANG}" != 'zh_CN.UTF8' ]; then
-		grep -q 'LANG=\"zh_' "/etc/profile" || sed -i '$ a\export LANG="zh_CN.UTF-8"' "/etc/profile"
-		grep -q 'LANG=\"zh_' "${HOME}/.zlogin" || echo 'export LANG="zh_CN.UTF-8"' >>"${HOME}/.zlogin"
+	#仅针对WSL修改语言设定
+	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if [ "${LANG}" != 'zh_CN.UTF8' ]; then
+			grep -q 'LANG=\"zh_' "/etc/profile" || sed -i '$ a\export LANG="zh_CN.UTF-8"' "/etc/profile"
+			grep -q 'LANG=\"zh_' "${HOME}/.zlogin" || echo 'export LANG="zh_CN.UTF-8"' >>"${HOME}/.zlogin"
+		fi
 	fi
 	echo 'The vnc service is about to start for you. The password you entered is hidden.'
 	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'

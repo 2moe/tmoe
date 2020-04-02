@@ -385,7 +385,7 @@ cd ~
 if [ -z "\$(ps -e | grep pulseaudio)" ]; then
 	  pulseaudio --start
 fi
-#启动pulseaudio需为第4行，否则将影响tsudo function
+#pulseaudio需为第4行，否则将影响tsudo function
 unset LD_PRELOAD
 command="proot"
 command+=" --link2symlink"
