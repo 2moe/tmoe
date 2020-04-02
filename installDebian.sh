@@ -332,7 +332,6 @@ if [ -f "${HOME}/.ChrootInstallationDetectionFile" ]; then
   DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
 
   if [ -f ${DebianCHROOT}/bin/zsh ]; then
-
     sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
   else
     sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
