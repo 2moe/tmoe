@@ -421,8 +421,22 @@ installBROWSER() {
 		echo "1s后将自动开始安装"
 		sleep 1
 		apt update
+		#新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
 		if [ "${LINUXDISTRO}" = 'ubuntu' ]; then
-			apt install -y chromium-browser chromium-browser-l10n
+			if ! grep 'bionic-update' "/etc/apt/sources.list"; then
+				if [ $(uname -m) = "aarch64" ] || [ $(uname -m) = "armv7l" ] || [ $(uname -m) = "armv6l" ]; then
+					sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
+				else
+					sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
+				fi
+				apt update
+				apt install -y chromium-browser/bionic-updates
+				apt install -y chromium-browser-l10n/bionic-updates
+				sed -i '$ d' "/etc/apt/sources.list"
+				apt update
+			else
+				apt install -y chromium-browser chromium-browser-l10n
+			fi
 			sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' /usr/share/applications/chromium-browser.desktop
 			grep 'chromium-browser' /etc/profile || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /etc/profile
 		else
@@ -431,7 +445,6 @@ installBROWSER() {
 			grep 'chromium' /etc/profile || sed -i '$ a\alias chromium="chromium --no-sandbox"' /etc/profile
 		#echo 'alias chromium="chromium --no-sandbox"' >>/etc/profile
 		fi
-
 	fi
 	echo 'Press enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
