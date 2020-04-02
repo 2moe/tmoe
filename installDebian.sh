@@ -480,11 +480,16 @@ ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
   echo "Before removing the system, make sure you have unmounted the chroot mount directory.
 It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
   fi
-  ps -e | grep proot
-  ps -e | grep startvnc
   echo "移除系统前，请先确保您已停止容器的进程。"
   pkill proot 2>/dev/null
-  echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+  ps -e | grep proot
+  ps -e | grep startvnc
+  if [ ! -z "$(ps -e | grep proot)" ]; then
+      echo '检测到proot容器正在运行，请先输stopvnc停止运行'
+  elif [ ! -z "$(ps -e | grep chroot)" ]; then
+      echo '检测到chroot容器正在运行，您可以输pkill -u $(whocmi) 来终止所有进程'    
+	fi
+  #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting debian system footprint... 正在检测debian system占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
