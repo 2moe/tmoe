@@ -811,7 +811,7 @@ It is recommended that you back up the entire system before removal. If the data
 	fi
 	ps -e | grep proot
 	ps -e | grep startvnc
-	echo "移除系统前，请先确保您已停止debian容器。"
+	echo "移除系统前，请先确保您已停止GNU/Linux容器。"
 	pkill proot 2>/dev/null
 	echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'

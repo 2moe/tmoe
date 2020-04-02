@@ -889,8 +889,8 @@ if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio" ]; then
     tar -Jxvf pulseaudio-win.tar.xz
     rm -rf ./WSLPULSEAUDIOTEMPFILE pulseaudio-win.tar.xz
 fi
-	if [ "${LINUXDISTRO}" = 'Android' ]; then
-		bash launch.sh --vnc localhost:5901 --listen 6080 &
-	else
-		bash launch.sh --vnc localhost:5901 --listen 6080 & 
-	fi
+if [ "${LINUXDISTRO}" = 'Android' ]; then
+    bash launch.sh --vnc localhost:5901 --listen 6080 &
+else
+    bash launch.sh --vnc localhost:5901 --listen 6080 &
+fi
