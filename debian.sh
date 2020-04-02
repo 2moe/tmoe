@@ -1764,7 +1764,7 @@ TERMUXINSTALLXFCE() {
 		cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
 			pkill Xvnc 2>/dev/null 
-			if [ ! -z "$(ps -e | grep pulseaudio)" ]; then
+			if [ -z "$(ps -e | grep pulseaudio)" ]; then
 			    pulseaudio --start
 			fi
 			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
