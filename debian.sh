@@ -1768,9 +1768,8 @@ TERMUXINSTALLXFCE() {
 		cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
 			#!/data/data/com.termux/files/usr/bin/bash
 			pkill Xvnc 2>/dev/null 
-			if [ -z "$(ps -e | grep pulseaudio)" ]; then
-			    pulseaudio --start
-			fi
+			pulseaudio --kill 2>/dev/null
+			pulseaudio --start
 			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 			export DISPLAY=:1
@@ -1885,7 +1884,7 @@ INSTALLWEBNOVNC() {
 }
 #######################
 STARTWEBNOVNC() {
-	pkill pulseaudio 2>/dev/null
+	pulseaudio --kill 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify || sudo git clone git://github.com/novnc/websockify.git --depth=1 ./websockify

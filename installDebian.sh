@@ -382,9 +382,8 @@ else
   cat >${PREFIX}/bin/debian <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
-if [ -z "\$(ps -e | grep pulseaudio)" ]; then
-	  pulseaudio --start
-fi
+pulseaudio --kill 2>/dev/null
+pulseaudio --start
 #pulseaudio需为第4行，否则将影响tsudo function
 unset LD_PRELOAD
 command="proot"
@@ -427,7 +426,7 @@ fi
 
 cat >${PREFIX}/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
-pkill pulseaudio 2>/dev/null
+pulseaudio --kill 2>/dev/null
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 touch ~/${DebianFolder}/root/.vnc/startvnc
 ${PREFIX}/bin/debian
