@@ -77,7 +77,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200401-20)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。0331优化WSL2" 19 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200403-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。0331优化WSL2" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -855,7 +855,7 @@ DEBIANSOURCESLIST() {
 OTHERSOFTWARE() {
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
-			"您想要安装哪个软件？\n Which software do you want to install?您需要使用方向键或pgdown来翻页。 " 17 60 6 \
+			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 您需要先安装gui才能安装里面的软件！" 17 60 6 \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ：在线聊天软件" \
 			"3" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
