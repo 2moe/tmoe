@@ -1896,6 +1896,7 @@ STARTWEBNOVNC() {
 	echo "若无声音，则请输stopvnc并重启终端。"
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
+	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	if [ "${LINUXDISTRO}" = 'Android' ]; then
 		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
