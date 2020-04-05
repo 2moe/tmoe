@@ -1,6 +1,6 @@
 # 🍭Tmoe-linux
 
-> 原名（Termux-linux)
+> 若无法加载 readme，则请手动打开[使用说明](https://gitee.com/mo2/linux/blob/master/README.md)
 
 ## 介绍
 
@@ -40,7 +40,7 @@ Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86
 
 **您不仅可以在 Android 手机上运行本工具，亦可在 GNU/Linux 上运行。**
 
-#### 1.windows10
+#### 1.Windows10
 
 教程：  
 ![我不知道怎么用](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/247f4fvoKnj56MwN.png)  
@@ -77,8 +77,9 @@ _**精简命令**_
     wget -qO- l.tmoe.me | bash
 ```
 
-> 注：精简命令和长命令调用的内容是一样的，二选一即可。
-> 区别在于长命令加入了 wget 的检测。
+> 注：精简命令和长命令调用的内容是一样的，二选一即可。  
+> 区别在于长命令重复安装了 wget。  
+> 建议使用精简命令，除非 wget 被您不慎卸载掉了。
 
 _**长命令**_
 
