@@ -119,7 +119,7 @@ _**长命令**_
 
 #### 2.Android-Termux
 
-> 1.安装安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
+> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
 > 2.打开 termux，输入以下命令
 
 _**精简命令**_
