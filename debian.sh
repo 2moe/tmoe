@@ -1844,7 +1844,7 @@ DOWNLOADTERMUXAPKAGAIN() {
 	echo 'Downloading termux apk...'
 	echo '正在为您下载至/sdcard/Download目录...'
 	echo '下载完成后，需要您手动安装。'
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux_92.apk'
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://apk.tmoe.me/termux' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux_92.apk'
 	INSTALLTERMUXAPK
 }
 INSTALLTERMUXAPK() {
