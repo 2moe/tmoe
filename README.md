@@ -40,14 +40,120 @@ Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86
 
 **您不仅可以在 Android 手机上运行本工具，亦可在 GNU/Linux 上运行。**
 
-1.Android-Termux
+#### 1.windows10
+
+教程：  
+![我不知道怎么用](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/247f4fvoKnj56MwN.png)  
+![以admin身份运行powershell](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/h4IrTwyx4AaC8joE.png)
+
+```powershell
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+```
+
+重启系统后再次以管理员身份运行 _powershell_ ，然后输
+
+```powershell
+wsl --set-default-version 2
+```
+
+[![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)  
+![store](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/FLpQu0i7LbIP2K9L.png)  
+若无法连接 _Microsoft Store_,那么也可以手动安装。  
+请从以下三者中选择：  
+[Debian](https://aka.ms/wsl-debian-gnulinux)  
+[Kali](https://aka.ms/wsl-kali-linux-new)  
+[Ubuntu](https://aka.ms/wsl-ubuntu-1804)
+
+打开子系统，然后根据提示更新 WSL2 的 linux 内核。更新完成后，当提示输普通账号用户名时，直接关掉窗口。
+
+> 注：这样子默认就是 root 账号，可以省下输 sudo 密码的步骤，之后可以使用 adduser 命令来单独增加普通账号。默认以非管理员身份运行的子系统 root 账号并没有 windows 管理员权限哦！只拥有 linux 的 root 权限而已，要是以管理员身份运行子系统的话，就真的要谨慎操作了。PC 用 root 账号的问题不大，又不是服务器。
+
+重新打开子系统，然后输
+
+_**精简命令**_
+
+```shell
+    wget -qO- l.tmoe.me | bash
+```
+
+> 注：精简命令和长命令调用的内容是一样的，二选一即可。
+> 区别在于长命令加入了 wget 的检测。
+
+_**长命令**_
+
+```shell
+    apt update
+    apt install -y wget
+    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+```
+
+最后按方向键和回车键进行操作。
+
+> 注：WSL 请选择安装工具
+
+![你这个小可爱](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
+![不可以骂人家](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
+![并没有在说你](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
+![01](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/kGTCjub8kg4WbMU6.png)  
+![02](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/5B20sqYFe0ZV15Hg.png)  
+![03](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/UvqZWPa3XSkEEprK.png)
+![04](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/CLvZ5AQaslZDZHWu.png)  
+![05](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/gXWDvCibdouH6IqX.png)
+
+> 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
+
+![停止VNC](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/KvMfXNGnHKbspTNs.png)  
+![stopvnc](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/buq1rhY6i55M2Dv4.png)  
+![06](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/6CDOlyOZb6qDbYqb.png)  
+![07](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/GrPC2ckH7KavXw0p.png)  
+![08](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/DZNjgwyVIrUjd3TH.png)  
+![09](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ACPJKw4lYfedt9D6.png)  
+![10](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/nqvK1beXuKXsrljA.png)  
+![11](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/3luF9hHGPnPuhwHu.png)  
+![12](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/YsZou4mIXZUFUYdZ.png)
+
+![14](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/56LaqsyefesPOa2t.png)  
+![perfect](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ILwcxdCOYVCS3lB6.png)
+
+#### 2.Android-Termux
+
+> 1.安装安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
+> 2.打开 termux，输入以下命令
+
+_**精简命令**_
+
+```shell
+    curl -sL l.tmoe.me | bash -
+```
+
+> 注：精简命令和长命令调用的内容是一样的，二选一即可。
+
+_**长命令**_
 
 ```shell
     apt install -y curl
     bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-2.Debian/Ubuntu/Mint/Kali/Deepin/Devuan/MX 等 deb 系发行版
+> 3.如需使用 gui,可能还需安装 VNC apk  
+> 注：web 端的 novnc 无需安装 apk,但触控操作体验不佳。
+
+#### 3.Debian/Ubuntu/Mint/Kali/Deepin/Devuan/MX 等 deb 系发行版
+
+_**精简命令**_
+
+```shell
+    wget -qO- l.tmoe.me | bash
+```
+
+> 注：精简命令和长命令调用的内容是一样的，二选一即可。  
+> 区别在于长命令增加了 wget 的检测。  
+> 超精简的 debian 容器镜像内可能无 wget 和 sudo。  
+> 尽管大部分 deb 系列发行版使用 apt 安装软件时都需要 root 权限，但却有极少部分系统禁止以 root 权限运行，故并非一开始就调用 su -c  
+> 例如：使用 apt 包管理的 Android Termux，禁止以 root 权限运行 apt install
+
+_**长命令**_
 
 ```shell
 if [ ! -f /usr/bin/wget ]; then
@@ -57,21 +163,21 @@ fi
 bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-3.RedHat/Fedora/CentOS
+#### 4.RedHat/Fedora/CentOS
 
 ```shell
     dnf install -y curl || yum install -y curl
     bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-4.Arch/Manjaro
+#### 5.Arch/Manjaro
 
 ```shell
     pacman -Syu --noconfirm curl
     bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-5.OpenWRT/Entware
+#### 6.OpenWRT/Entware
 
 ```shell
     opkg update
@@ -79,14 +185,14 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
     bash -c "$(wget --no-check-certificate -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-6.Alpine
+#### 7.Alpine
 
 ```shell
     apk add -q wget
     wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh' | ash
 ```
 
-7.Void
+#### 8.Void
 
 ```shell
     xbps-install -S
@@ -94,14 +200,15 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
     bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-8.Gentoo/Funtoo
+#### 9.Gentoo/Funtoo
 
 ```shell
     emerge -av net-misc/wget
     bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```
 
-9.其它 system 未测试,以下系统请自行解决依赖关系。  
+#### 10.其它 system 未测试,以下系统请自行解决依赖关系
+
 例如:**OpenSuse**和**GuixSD**等发行版。
 
 相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
