@@ -894,3 +894,15 @@ if [ "${LINUXDISTRO}" = 'Android' ]; then
 else
     bash launch.sh --vnc localhost:5901 --listen 6080 &
 fi
+##########
+#检测当前用户的方式存在问题，在sudo下无法通过whoami判断用户。
+CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+HOMEUSER=$(echo ${HOME} | cut -d '/' -f 3)
+if [ "${HOMEUSER}" = "${CURRENTuser}" ]; then
+    sudo chown -R "${CURRENTuser}":"${CURRENTuser}" ${HOME}
+fi
+if [ "${HOME}" = "/home/${CURRENTuser}" ]; then
+    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+else
+    sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
+fi

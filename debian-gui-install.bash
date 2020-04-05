@@ -1135,7 +1135,7 @@ INSTALLXFCE4DESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			export PULSE_SERVER=tcp:127.0.0.1   
+			export PULSE_SERVER=tcp:127.0.0.1
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
@@ -1145,7 +1145,7 @@ INSTALLXFCE4DESKTOP() {
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
-		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
@@ -1154,14 +1154,22 @@ INSTALLXFCE4DESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
-			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
-			else
-			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-			fi 
+		#sudo下无法用whoami检测用户
+		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		if [ ! -z "${CURRENTuser}" ]; then
+			if [ -e "${HOME}/.profile" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.bashrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.zshrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			fi
+			chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
+
 		export LANG="zh_CN.UTF-8"
 		startxfce4
 	EndOfFile
@@ -1295,7 +1303,7 @@ INSTALLMATEDESKTOP() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			export PULSE_SERVER=tcp:127.0.0.1   
+			export PULSE_SERVER=tcp:127.0.0.1
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
@@ -1305,7 +1313,7 @@ INSTALLMATEDESKTOP() {
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
-		        echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:0
@@ -1314,13 +1322,19 @@ INSTALLMATEDESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
-			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
-			else
-			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-			fi 
+		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		if [ ! -z "${CURRENTuser}" ]; then
+			if [ -e "${HOME}/.profile" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.bashrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.zshrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			fi
+			chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		export LANG="zh_CN.UTF-8"
 		mate-session
@@ -1387,13 +1401,19 @@ INSTALLLXDEDESKTOP() {
 			sleep 2
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
-			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
-			else
-			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-			fi 
+		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		if [ ! -z "${CURRENTuser}" ]; then
+		if [ -e "${HOME}/.profile" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+		elif [ -e "${HOME}/.bashrc" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+		elif [ -e "${HOME}/.zshrc" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+		fi
+		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		export LANG="zh_CN.UTF-8"
 		startlxde
@@ -1428,13 +1448,19 @@ STARTVNCANDSTOPVNC() {
 			#grep 无法从"~/.vnc"中读取文件，去掉双引号就可以了。
 			sleep 2
 		fi
-		if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
-			CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-			if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-		         sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
-			else
-			    chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
-			fi
+		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		if [ ! -z "${CURRENTuser}" ]; then
+		if [ -e "${HOME}/.profile" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+		elif [ -e "${HOME}/.bashrc" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+		elif [ -e "${HOME}/.zshrc" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+		fi
+		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
@@ -1458,13 +1484,19 @@ STARTVNCANDSTOPVNC() {
 	#暂不卸载。若卸载则将破坏其依赖关系。
 	#umount .gvfs
 	#apt purge "gvfs*" "udisks2*"
-	if [ ! -z "$(ls -l /home/ | grep ^d | head -n 1)" ]; then
-		CURRENTuser=$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ "$(whoami)" != "${CURRENTuser}" ] && [ "$(id -u)" != "0" ]; then
-			sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
-		else
-			chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTuser} "/home/${CURRENTuser}"
+	CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+	if [ ! -z "${CURRENTuser}" ]; then
+		if [ -e "${HOME}/.profile" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+		elif [ -e "${HOME}/.bashrc" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+		elif [ -e "${HOME}/.zshrc" ]; then
+			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
+		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 	fi
 	#仅针对WSL修改语言设定
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
