@@ -1739,7 +1739,7 @@ TERMUXINSTALLXFCE() {
 		"2" "modify vnc conf" \
 		"3" "remove xfce4" \
 		"4" "更换为清华源(支持termux、debian、ubuntu)" \
-		"5" "下载termux_0.92_Fdroid.apk" \
+		"5" "下载termux_Fdroid.apk" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
