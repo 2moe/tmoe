@@ -1971,8 +1971,8 @@ MODIFYANDROIDTERMUXVNCCONF() {
 }
 ###############
 REMOVEANDROIDTERMUXXFCE() {
-	echo "${YELLOW}按回车键确认卸载,按Ctfl+C取消${RESET} "
-	echo 'Press enter to confirm ,press Ctfl + C to cancel'
+	echo "${YELLOW}按回车键确认卸载,按Ctrl+C取消${RESET} "
+	echo 'Press enter to confirm ,press Ctrl + C to cancel'
 	read
 	apt purge -y ^xfce tigervnc aterm
 	apt purge -y x11-repo
