@@ -544,8 +544,8 @@ REMOVEGUI() {
 	echo '"lxde" "很庆幸能与阁下相遇（；´д｀）ゞ "  '
 	echo '"mate" "喔...喔呜...我不舍得你走/(ㄒoㄒ)/~~"  '
 
-	echo "${YELLOW}按回车键确认卸载,按Ctfl+C取消${RESET} "
-	echo 'Press enter to confirm ,press Ctfl + C to cancel'
+	echo "${YELLOW}按回车键确认卸载,按Ctrl+C取消${RESET} "
+	echo 'Press enter to confirm ,press Ctrl + C to cancel'
 	read
 	apt purge -y xfce4 xfce4-terminal tightvncserver xfce4-goodies
 	apt purge -y ^xfce
@@ -563,16 +563,16 @@ REMOVEGUI() {
 REMOVEBROWSER() {
 	if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno '火狐娘:“虽然知道总有离别时，但我没想到这一天竟然会这么早。虽然很不舍，但还是很感激您曾选择了我。希望我们下次还会再相遇，呜呜...(;´༎ຶД༎ຶ`)”chromium娘：“哼(￢︿̫̿￢☆)，负心人，走了之后就别回来了！o(TヘTo) 。”  ✨请做出您的选择！' 10 60); then
 		echo '呜呜...我...我才...才不会为了这点小事而流泪呢！ヽ(*。>Д<)o゜'
-		echo "${YELLOW}按回车键确认卸载firefox,按Ctfl+C取消${RESET} "
-		echo 'Press enter to confirm uninstall firefox,press Ctfl + C to cancel'
+		echo "${YELLOW}按回车键确认卸载firefox,按Ctrl+C取消${RESET} "
+		echo 'Press enter to confirm uninstall firefox,press Ctrl + C to cancel'
 		read
 		apt purge -y firefox-esr firefox-esr-l10n-zh-cn
 		apt purge -y firefox firefox-l10n-zh-cn
 		apt autopurge
 	else
 		echo '小声嘀咕：“妾身不在的时候，你一定要好好照顾好自己。” '
-		echo "${YELLOW}按回车键确认卸载chromium,按Ctfl+C取消${RESET} "
-		echo 'Press enter to confirm uninstall chromium,press Ctfl + C to cancel'
+		echo "${YELLOW}按回车键确认卸载chromium,按Ctrl+C取消${RESET} "
+		echo 'Press enter to confirm uninstall chromium,press Ctrl + C to cancel'
 		read
 		apt purge -y chromium chromium-l10n
 		apt autopurge
