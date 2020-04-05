@@ -1167,6 +1167,7 @@ INSTALLXFCE4DESKTOP() {
 				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 			fi
+			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
 			chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 
@@ -1334,6 +1335,7 @@ INSTALLMATEDESKTOP() {
 				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 			fi
+			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
 			chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		export LANG="zh_CN.UTF-8"
@@ -1413,6 +1415,7 @@ INSTALLLXDEDESKTOP() {
 			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
+		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
 		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		export LANG="zh_CN.UTF-8"
@@ -1460,6 +1463,7 @@ STARTVNCANDSTOPVNC() {
 			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
+		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
 		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
@@ -1496,6 +1500,7 @@ STARTVNCANDSTOPVNC() {
 			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
+		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
 		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 	fi
 	#仅针对WSL修改语言设定
