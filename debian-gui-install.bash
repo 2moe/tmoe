@@ -1156,7 +1156,7 @@ INSTALLXFCE4DESKTOP() {
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
 		#sudo下无法用whoami检测用户
 		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ]; then
+		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
 			if [ -e "${HOME}/.profile" ]; then
 				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
@@ -1325,7 +1325,7 @@ INSTALLMATEDESKTOP() {
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
 		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ]; then
+		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
 			if [ -e "${HOME}/.profile" ]; then
 				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
@@ -1406,7 +1406,7 @@ INSTALLLXDEDESKTOP() {
 		fi
 		#不要将上面uname -r的检测修改为WINDOWSDISTRO
 		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ]; then
+		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
 		if [ -e "${HOME}/.profile" ]; then
 			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
@@ -1455,7 +1455,7 @@ STARTVNCANDSTOPVNC() {
 			sleep 2
 		fi
 		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ]; then
+		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
 		if [ -e "${HOME}/.profile" ]; then
 			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
@@ -1525,7 +1525,7 @@ STARTVNCANDSTOPVNC() {
 	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
 	if [ "${HOME}" != "/root" ]; then
 		cp -rpf ~/.vnc /root/ &
-		chown -R root:root /root/ &
+		chown -R root:root /root/.vnc &
 	fi
 	echo '若xsdl音频端口不是4713，而是4712，则请输xsdl-4712进行修复。'
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
