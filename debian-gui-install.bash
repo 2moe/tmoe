@@ -1075,12 +1075,18 @@ OTHERSOFTWARE() {
 
 ####################################
 INSTALLXFCE4DESKTOP() {
-	apt-mark hold udisks2
+	#apt-mark hold gvfs
 	apt update
+	apt install -y udisks2
+	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
+		echo "" >/var/lib/dpkg/info/udisks2.postinst
+	fi
+	apt-mark hold udisks2
+	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+	dpkg --configure -a
 	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 	echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
 	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
-	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	apt install -y fonts-noto-cjk xfce4 xfce4-terminal xfce4-goodies
 	apt install -y tightvncserver
 	apt autopurge -y ^libfprint || apt purge -y ^libfprint
@@ -1270,11 +1276,12 @@ INSTALLMATEDESKTOP() {
 	apt-mark hold gvfs
 	apt update
 	apt install udisks2 -y
-	if [ "$(uname -m)" = "aarch64" ]; then
+	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
 		echo "" >/var/lib/dpkg/info/udisks2.postinst
 	fi
 	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
+	dpkg --configure -a
 	apt install -y aptitude
 	mkdir -p /run/lock /var/lib/aptitude
 	touch /var/lib/aptitude/pkgstates
@@ -1355,9 +1362,14 @@ INSTALLMATEDESKTOP() {
 }
 #################################
 INSTALLLXDEDESKTOP() {
-	apt-mark hold udisks2
 	apt update
+	apt install -y udisks2
+	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
+		echo "" >/var/lib/dpkg/info/udisks2.postinst
+	fi
+	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
+	dpkg --configure -a
 	echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 	echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
 	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
