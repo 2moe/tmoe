@@ -1503,7 +1503,7 @@ cat >xstartup<<-'EndOfFile'
 xrdb ${HOME}/.Xresources
 export PULSE_SERVER=127.0.0.1
 #plasma_session &
-dbus-launch startkde & || dbus-launch startplasma-x11 &
+dbus-launch startkde || dbus-launch startplasma-x11 &
 EndOfFile
 chmod +x ./xstartup
 
