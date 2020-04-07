@@ -996,6 +996,7 @@ OTHERSOFTWARE() {
 	##########################
 	if [ "${SOFTWARE}" == '8' ]; then
 		#ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
+		ps -e >/dev/null || echo "检测到/proc分区未挂载"
 		echo 'Press Enter to confirm，press Ctrl+C to cancel.'
 		echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
 		read
