@@ -1086,7 +1086,7 @@ OTHERSOFTWARE() {
 INSTALLXFCE4DESKTOP() {
 	#apt-mark hold gvfs
 	apt update
-	apt install -y udisks2
+	apt install -y udisks2 2>/dev/null
 	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
 		echo "" >/var/lib/dpkg/info/udisks2.postinst
 	fi
@@ -1284,7 +1284,7 @@ MODIFYXRDPCONF() {
 INSTALLMATEDESKTOP() {
 	apt-mark hold gvfs
 	apt update
-	apt install udisks2 -y
+	apt install -y udisks2 2>/dev/null
 	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
 		echo "" >/var/lib/dpkg/info/udisks2.postinst
 	fi
@@ -1372,7 +1372,7 @@ INSTALLMATEDESKTOP() {
 #################################
 INSTALLLXDEDESKTOP() {
 	apt update
-	apt install -y udisks2
+	apt install -y udisks2 2>/dev/null
 	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
 		echo "" >/var/lib/dpkg/info/udisks2.postinst
 	fi
