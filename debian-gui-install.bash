@@ -77,7 +77,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200403-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。0331优化WSL2" 19 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200408-05)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。0326本次更新在软件商店中加入了度盘和云音乐。0331优化WSL2" 19 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1161,14 +1161,15 @@ INSTALLXFCE4DESKTOP() {
 				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
 			elif [ -e "${HOME}/.bashrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
 			elif [ -e "${HOME}/.zshrc" ]; then
 				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 			fi
-			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-			chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
+			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+			cd ${HOME}
+			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 
 		export LANG="zh_CN.UTF-8"
@@ -1329,14 +1330,15 @@ INSTALLMATEDESKTOP() {
 				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
 			elif [ -e "${HOME}/.bashrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
 			elif [ -e "${HOME}/.zshrc" ]; then
 				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 			fi
-			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-			chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
+			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+			cd ${HOME}
+			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		export LANG="zh_CN.UTF-8"
 		mate-session
@@ -1409,14 +1411,15 @@ INSTALLLXDEDESKTOP() {
 			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
 		elif [ -e "${HOME}/.bashrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
 		elif [ -e "${HOME}/.zshrc" ]; then
 			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
-		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
+		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+			cd ${HOME}
+		chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		export LANG="zh_CN.UTF-8"
 		startlxde
@@ -1457,14 +1460,15 @@ STARTVNCANDSTOPVNC() {
 			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
 		elif [ -e "${HOME}/.bashrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
 		elif [ -e "${HOME}/.zshrc" ]; then
 			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
-		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
+		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+			cd ${HOME}
+		chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 		fi
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
@@ -1494,14 +1498,15 @@ STARTVNCANDSTOPVNC() {
 			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
 		elif [ -e "${HOME}/.bashrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+			CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
 		elif [ -e "${HOME}/.zshrc" ]; then
 			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
 			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
 		fi
-		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-		chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
+		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+		cd ${HOME}
+		chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} "${HOME}"
 	fi
 	#仅针对WSL修改语言设定
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
