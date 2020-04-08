@@ -31,7 +31,12 @@ CHECKdependencies() {
 	fi
 
 	if [ ! -e /usr/bin/catimg ]; then
-		dependencies="${dependencies} catimg"
+		DEBIANVERSION=$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2)
+		if (("${DEBIANVERSION}" <= '9')); then
+			echo "检测到您的系统版本低于debian10，跳过安装catimg"
+		else
+			dependencies="${dependencies} catimg"
+		fi
 	fi
 
 	if [ ! -e /usr/bin/sudo ]; then
@@ -305,7 +310,7 @@ EDITVNCPULSEAUDIO() {
 		echo 'Your current PULSEAUDIO SERVER address has been modified.'
 		echo '您当前的音频地址已修改为'
 		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2)
-	    echo "请输startvnc重启vnc服务，以使配置生效"
+		echo "请输startvnc重启vnc服务，以使配置生效"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		MODIFYOTHERCONF
@@ -753,7 +758,17 @@ CONFIGTHEMES() {
 
 	if [ "$INSTALLTHEME" == '1' ]; then
 		apt install ukui-themes
-		gtk-update-icon-cache /usr/share/icons/ukui-icon-theme/ 2>/dev/null
+
+		if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
+			cd /tmp
+			UKUITHEME="$(curl -sL 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			wget -O 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
+			apt install -y ./ukui-themes.deb
+			rm -f ukui-themes.deb
+		else
+			echo '请前往外观设置手动修改图标'
+		fi
+		#gtk-update-icon-cache /usr/share/icons/ukui-icon-theme/ 2>/dev/null
 		echo "安装完成，如需卸载，请手动输apt purge -y ukui-themes"
 	fi
 
