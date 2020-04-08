@@ -92,7 +92,7 @@ CHECKdependencies() {
 	################
 
 	if [ ! -e /usr/bin/catimg ]; then
-		CATIMGlatestVersion="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
+		CATIMGlatestVersion="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 		cd /tmp
 		wget -O 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${archtype}.deb"
 		apt install -y ./catimg.deb
@@ -807,7 +807,7 @@ CONFIGTHEMES() {
 
 		if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
 			cd /tmp
-			UKUITHEME="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			UKUITHEME="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			wget -O 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
 			apt install -y ./ukui-themes.deb
 			rm -f ukui-themes.deb
@@ -882,7 +882,7 @@ Installkaliundercover() {
 			apt install -y kali-undercover
 		else
 			cd /tmp
-			UNDERCOVERlatestLINK="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			UNDERCOVERlatestLINK="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			wget -O kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
 			apt install -y ./kali-undercover.deb
 			rm -f ./kali-undercover.deb
@@ -1243,7 +1243,7 @@ INSTALLXFCE4DESKTOP() {
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			cd /tmp
 			rm -f ./kali-themes-common.deb 2>/dev/null
-			KaliTHEMElatestLINK="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			KaliTHEMElatestLINK="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			wget -O 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
 			apt install -y ./kali-themes-common.deb
 			rm -f ./kali-themes-common.deb
