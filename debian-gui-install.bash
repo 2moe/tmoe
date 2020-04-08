@@ -56,6 +56,48 @@ CHECKdependencies() {
 		apt update
 		apt install -y ${dependencies}
 	fi
+	################
+	case $(uname -m) in
+	aarch64)
+		archtype="arm64"
+		;;
+	armv7l)
+		archtype="armhf"
+		;;
+	armv6l)
+		archtype="armel"
+		;;
+	x86_64)
+		archtype="amd64"
+		;;
+	i*86)
+		archtype="i386"
+		;;
+	x86)
+		archtype="i386"
+		;;
+	s390*)
+		archtype="s390x"
+		;;
+	ppc*)
+		archtype="ppc64el"
+		;;
+	mips*)
+		archtype="mipsel"
+		;;
+	risc*)
+		archtype="riscv"
+		;;
+	esac
+	################
+
+	if [ ! -e /usr/bin/catimg ]; then
+		CATIMGlatestVersion="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
+		cd /tmp
+		wget -O 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${archtype}.deb"
+		apt install -y ./catimg.deb
+		rm -f catimg.deb
+	fi
 
 	if grep -q 'ubuntu' /etc/os-release; then
 		LINUXDISTRO='ubuntu'
