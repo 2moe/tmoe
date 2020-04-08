@@ -1086,10 +1086,6 @@ OTHERSOFTWARE() {
 INSTALLXFCE4DESKTOP() {
 	#apt-mark hold gvfs
 	apt update
-	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
-		echo "" >/var/lib/dpkg/info/udisks2.postinst
-		apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
-	fi
 	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
 	dpkg --configure -a
@@ -1372,10 +1368,6 @@ INSTALLMATEDESKTOP() {
 #################################
 INSTALLLXDEDESKTOP() {
 	apt update
-	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
-		echo "" >/var/lib/dpkg/info/udisks2.postinst
-		apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
-	fi
 	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
 	dpkg --configure -a
@@ -1596,6 +1588,7 @@ FrequentlyAskedQuestions() {
 	TMOEFAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 15 60 4 \
 		"1" "Cannot open Baidu Netdisk" \
+		"2" "udisks2/gvfs配置失败" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1613,7 +1606,14 @@ FrequentlyAskedQuestions() {
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	DEBIANMENU
-
+	#######################
+	if [ "${TMOEFAQ}" == '2' ]; then
+		echo "${YELLOW}按回车键卸载gvfs和udisks2，按Ctrl+C取消${RESET}"
+		read
+		apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
+		DEBIANMENU
+	fi
+	#############################
 }
 #################
 BetaFeatures() {
