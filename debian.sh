@@ -535,7 +535,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200403-00)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200408-10)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -543,7 +543,7 @@ MainMenu() {
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
 			"1" "proot安装 install debian" \
 			"2" "chroot安装 debian" \
-			"3" "原系统gui及软件源" \
+			"3" "原系统gui、音频服务及软件源" \
 			"4" "novnc(web端控制)" \
 			"5" "移除 remove system" \
 			"6" "备份系统 backup system" \
