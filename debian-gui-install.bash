@@ -1086,9 +1086,9 @@ OTHERSOFTWARE() {
 INSTALLXFCE4DESKTOP() {
 	#apt-mark hold gvfs
 	apt update
-	apt install -y udisks2 2>/dev/null
 	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
 		echo "" >/var/lib/dpkg/info/udisks2.postinst
+		apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
 	fi
 	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
@@ -1372,9 +1372,9 @@ INSTALLMATEDESKTOP() {
 #################################
 INSTALLLXDEDESKTOP() {
 	apt update
-	apt install -y udisks2 2>/dev/null
 	if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
 		echo "" >/var/lib/dpkg/info/udisks2.postinst
+		apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
 	fi
 	apt-mark hold udisks2
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
