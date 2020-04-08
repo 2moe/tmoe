@@ -761,7 +761,7 @@ CONFIGTHEMES() {
 
 		if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
 			cd /tmp
-			UKUITHEME="$(curl -sL 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			UKUITHEME="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			wget -O 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
 			apt install -y ./ukui-themes.deb
 			rm -f ukui-themes.deb
