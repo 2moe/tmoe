@@ -305,6 +305,7 @@ EDITVNCPULSEAUDIO() {
 		echo 'Your current PULSEAUDIO SERVER address has been modified.'
 		echo '您当前的音频地址已修改为'
 		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2)
+	    echo "请输startvnc重启vnc服务，以使配置生效"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		MODIFYOTHERCONF
