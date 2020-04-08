@@ -301,7 +301,7 @@ EDITVNCPULSEAUDIO() {
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
-		sed -i "2 a\export PULSE_SERVER=$TARGET" "$(which startxsdl)"
+		sed -i "2 a\export PULSE_SERVER=$TARGET" ~/.vnc/xstartup
 		echo 'Your current PULSEAUDIO SERVER address has been modified.'
 		echo '您当前的音频地址已修改为'
 		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2)
