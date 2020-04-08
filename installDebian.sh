@@ -642,11 +642,11 @@ set -e
 # Default settings
 ZSH=${ZSH:-~/.oh-my-zsh}
 
-REPO=${REPO:-mirrors/oh-my-zsh}
-REMOTE=${REMOTE:-https://gitee.com/${REPO}.git}
+#REPO=${REPO:-mirrors/oh-my-zsh}
+#REMOTE=${REMOTE:-https://gitee.com/${REPO}.git}
 
-#REPO=${REPO:-ohmyzsh/ohmyzsh}
-#REMOTE=${REMOTE:-https://github.com/${REPO}.git}
+REPO=${REPO:-ohmyzsh/ohmyzsh}
+REMOTE=${REMOTE:-https://github.com/${REPO}.git}
 BRANCH=${BRANCH:-master}
 
 # Other options

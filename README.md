@@ -2,11 +2,15 @@
 
 > If you do not understand Chinese, then please open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)
 
-## 介绍
+## 介绍 Introduction
+
+Without any basic knowledge of linux shell, you can run GNU/Linux on your mobile phone/PC, and you can easily install a graphical desktop environment.
 
 在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
-在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。  
+在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。
+
 🍸 目前支持：
+Supported containers:
 
 - [x] **Debian buster/sid**
 - [x] **Ubuntu 20.04**
@@ -14,7 +18,8 @@
 - [x] **Funtoo**
 - [x] **Void**  
        ✨ 支持自动配置中文环境，并执行其它优化步骤。🍹  
-       所有的配置和优化步骤仅适用于 deb 系！
+       所有的配置和优化步骤仅适用于 deb 系！  
+       All configuration and optimization steps only apply to debian based distributions!
 
 ![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
 
@@ -22,7 +27,7 @@
 
 ![截图_2020-02-01_08-53-21.jpg](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/yMgxSkGh0Tx4IJz0.jpg)
 
-### 软件架构
+### 支持的架构 Supported architecture
 
 Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s390x 和 ppc64el**
 
