@@ -74,7 +74,7 @@ wsl --set-default-version 2
 _**精简命令**_
 
 ```shell
-    wget -qO- l.tmoe.me | bash
+    bash -c "$(wget -qO- l.tmoe.me)"
 ```
 
 > 注：精简命令和长命令调用的内容是一样的，二选一即可。  
@@ -145,7 +145,7 @@ _**长命令**_
 _**精简命令**_
 
 ```shell
-    wget -qO- l.tmoe.me | bash
+    bash -c "$(wget -qO- l.tmoe.me)"
 ```
 
 > 注：精简命令和长命令调用的内容是一样的，二选一即可。  
