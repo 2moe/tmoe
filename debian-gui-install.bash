@@ -836,7 +836,8 @@ Installkaliundercover() {
 			apt install -y kali-undercover
 		else
 			cd /tmp
-			wget -O kali-undercover.deb https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/kali-undercover_2020.2.0_all.deb
+			UNDERCOVERlatestLINK="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			wget -O kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
 			apt install -y ./kali-undercover.deb
 			rm -f ./kali-undercover.deb
 		fi
@@ -1196,7 +1197,8 @@ INSTALLXFCE4DESKTOP() {
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			cd /tmp
 			rm -f ./kali-themes-common.deb 2>/dev/null
-			wget -O 'kali-themes-common.deb' 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/kali-themes-common_2020.2.0_all.deb'
+			KaliTHEMElatestLINK="$(wget -qO- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			wget -O 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
 			apt install -y ./kali-themes-common.deb
 			rm -f ./kali-themes-common.deb
 		fi
