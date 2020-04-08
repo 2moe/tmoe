@@ -1839,6 +1839,8 @@ TERMUXPULSEAUDIOLAN() {
 		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' default.pa
 	fi
 	echo "修改完成！(￣▽￣)"
+	echo "如需单独启动音频服务，请输pulseaudio --start"
+	echo "若无声音，则您需要安装termux:api的apk,并升级termux至最新版本"
 	echo 'press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
