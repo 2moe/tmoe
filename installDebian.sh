@@ -1140,21 +1140,36 @@ echo 'Congratulations on your successful installation of Debian GNU/Linux. After
 echo '正在执行优化步骤，请勿退出!'
 echo 'Optimization steps are in progress. Do not exit!'
 
-#配置国内时区
-echo 'Asia/Shanghai' >/etc/timezone
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+echo "${YELLOW}请问您是否配置中文语言环境[Y/n]${RESET} "
+echo "${YELLOW}按回车键确认，输n拒绝。${RESET}"
+echo "If you do not understand the above description, then please type ${YELLOW}n${RESET} .[Y/n]"
+read opt
+case $opt in
+y* | Y* | "")
 
-echo "正在配置中文环境..."
-echo "Configuring Chinese environment..."
-sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+    #配置国内时区
+    echo 'Asia/Shanghai' >/etc/timezone
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-cat >/etc/default/locale <<-'EOF'
+    echo "正在配置中文环境..."
+    echo "Configuring Chinese environment..."
+    sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+
+    cat >/etc/default/locale <<-'EOF'
 LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
 LC_ALL="zh_CN.UTF-8"
 EOF
-locale-gen
-source /etc/default/locale 2>/dev/null
+    locale-gen
+    source /etc/default/locale 2>/dev/null
+    ;;
+n* | N*)
+echo 'export LANG="en_US.UTF8"' >> "/etc/profile"
+echo 'export LANG="en_US.UTF8"' >> "$HOME/.zlogin"
+ echo "Your language has been changed to English." 
+ ;;
+*) echo "Invalid choice. skipped." ;;
+esac
 
 echo "                                         "
 echo "         DL.                             "
@@ -1185,7 +1200,7 @@ apt install -y apt-utils
 apt install -y ca-certificates wget
 echo "Replacing http software source list with https."
 echo "正在将http源替换为https..."
-sed -i 's/http/https/' /etc/apt/sources.list
+sed -i 's@http:@https:@g' /etc/apt/sources.list
 
 if grep -q 'Funtoo GNU/Linux' '/etc/os-release'; then
     GNULINUXOSRELEASE=FUNTOO
