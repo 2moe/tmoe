@@ -915,3 +915,10 @@ fi
 if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "change password" --no-button "Edit manually" --yesno "Would you like to change the password or edit it manually?  ♪(^∇^*) " 9 50); then
     vncpasswd
 fi
+if [ -e ${PREFIX}/bin/tsu ]; then
+    DEVICENAME="$(getprop ro.product.model)"
+    if [ "$(hostname)" = "localhost" ]; then
+        echo "检测到您当前的hostname为localhost,正在修改hostname为product model"
+        tsudo hostname ${DEVICENAME}
+    fi
+fi
