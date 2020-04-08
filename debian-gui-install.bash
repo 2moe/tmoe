@@ -32,7 +32,7 @@ CHECKdependencies() {
 
 	if [ ! -e /usr/bin/catimg ]; then
 		if grep -q 'VERSION_ID' "/etc/os-release"; then
-			DEBIANVERSION="$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2)"
+			DEBIANVERSION="$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2 | cut -d '.' -f 1)"
 		else
 			DEBIANVERSION="10"
 		fi
