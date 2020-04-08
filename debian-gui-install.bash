@@ -297,7 +297,7 @@ MODIFYOTHERCONF() {
 }
 #########################
 EDITVNCPULSEAUDIO() {
-	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备，那么您可在此处修改。默认为127.0.0.1，当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2) \n若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux（仅限Android和win10），并配置允许局域网连接，则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端，Android-Termux需输pulseaudio --start,win10需手动打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat .至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。默认为127.0.0.1,当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2) \n若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
@@ -307,13 +307,11 @@ EDITVNCPULSEAUDIO() {
 		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2)
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
-		MODIFYOTHERVNCCONF
+		MODIFYOTHERCONF
 	else
-		MODIFYOTHERVNCCONF
+		MODIFYOTHERCONF
 	fi
-
 }
-
 ##################
 NANOSTARTVNCMANUALLY() {
 	echo '您可以手动修改vnc的配置信息'
