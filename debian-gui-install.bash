@@ -31,8 +31,12 @@ CHECKdependencies() {
 	fi
 
 	if [ ! -e /usr/bin/catimg ]; then
-		DEBIANVERSION=$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2)
-		if (("${DEBIANVERSION}" <= '9')); then
+		if grep -q 'VERSION_ID' "/etc/os-release"; then
+			DEBIANVERSION="$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2)"
+		else
+			DEBIANVERSION="10"
+		fi
+		if ((${DEBIANVERSION} <= 9)); then
 			echo "检测到您的系统版本低于debian10，跳过安装catimg"
 		else
 			dependencies="${dependencies} catimg"
