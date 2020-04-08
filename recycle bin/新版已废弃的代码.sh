@@ -906,3 +906,8 @@ if [ "${HOME}" = "/home/${CURRENTuser}" ]; then
 else
     sudo chown -R "$(whoami)":"$(whoami)" ${HOME}
 fi
+
+if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x86_64" ] && [ "$(uname -m)" != "i686" ]; then
+    echo "" >/var/lib/dpkg/info/udisks2.postinst
+    apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
+fi

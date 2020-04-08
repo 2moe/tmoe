@@ -1601,11 +1601,11 @@ FrequentlyAskedQuestions() {
 		echo "${YELLOW}按回车键自动执行，按Ctrl+C取消${RESET}"
 		read
 		rm -vf ~/baidunetdisk/baidunetdiskdata.db
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		DEBIANMENU
 	fi
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
-	DEBIANMENU
 	#######################
 	if [ "${TMOEFAQ}" == '2' ]; then
 		echo "${YELLOW}按回车键卸载gvfs和udisks2，按Ctrl+C取消${RESET}"
