@@ -437,8 +437,8 @@ touch ~/${DebianFolder}/root/.vnc/startxsdl
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
-#wget -qO ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+#wget -qO ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
+aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 cat >${PREFIX}/bin/debian-rm <<-EndOfFile
     #!/data/data/com.termux/files/usr/bin/bash
 	  YELLOW=\$(printf '\033[33m')
@@ -600,7 +600,7 @@ if [ ! -z "$dependencies" ]; then
   apt install -y ${dependencies}
 fi
 
-wget -qO /usr/local/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash'
+wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
 chmod +x /usr/local/bin/debian-i
 
 rm -rf ${HOME}/.oh-my-zsh
@@ -918,7 +918,7 @@ else
     echo "Configuring zsh theme 正在配置zsh主题(powerlevel 10k)..."
     cd ${HOME}/.oh-my-zsh/custom/themes || mkdir -p ${HOME}/.oh-my-zsh/custom/themes && cd ${HOME}/.oh-my-zsh/custom/themes
     rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
-    git clone https://gitee.com/mo2/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
+    git clone https://github.com/romkatv/powerlevel10k "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1 || git clone https://gitee.com/mo2/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" --depth=1
     sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
     sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
     # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
@@ -957,8 +957,7 @@ fi
   rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
   mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
 
-  # git clone --depth=1 git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting
-  git clone --depth=1 https://gitee.com/mo2/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting || git clone --depth=1 https://gitee.com/mo2/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
   grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ${HOME}/.zshrc
   #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${HOME}/.zshrc
@@ -966,8 +965,8 @@ fi
   echo "正在克隆zsh-autosuggestions自动补全插件..."
   rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
 
-  #git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-  git clone --depth=1 https://gitee.com/mo2/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 https://gitee.com/mo2/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
 
   grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
   #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
@@ -1074,14 +1073,21 @@ cat >.profile <<-'EDITBASHPROFILE'
 YELLOW=$(printf '\033[33m')
 RESET=$(printf '\033[m')
 cd ~
-
 #配置清华源
 if [ "$(uname -m)" = "mips" ]; then
-  chattr +i /etc/apt/sources.list
-  sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
+    chattr +i /etc/apt/sources.list
+    sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
 fi
-#stable-backports会出错，需改为buster-backports
-cat >/etc/apt/sources.list <<-'EndOfFile'
+
+echo "${YELLOW}请问您是否需要将sources.list更换为清华源[Y/n]${RESET} "
+echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+read opt
+case $opt in
+y* | Y* | "")
+
+    #stable-backports会出错，需改为buster-backports
+    cat >/etc/apt/sources.list <<-'EndOfFile'
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable-updates main contrib non-free
 #deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free
@@ -1089,18 +1095,18 @@ cat >/etc/apt/sources.list <<-'EndOfFile'
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 EndOfFile
 
-	if grep -q 'Kali' "/etc/issue"; then
-echo "检测到您使用的是Kali系统"
-cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+    if grep -q 'Kali' "/etc/issue"; then
+        echo "检测到您使用的是Kali系统"
+        cat >/etc/apt/sources.list <<-"EndOfSourcesList"
 deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
 # deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
 EndOfSourcesList
-    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
-	fi
+        #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
+    fi
 
-if [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
-    cat >/etc/apt/sources.list <<-'EndOfFile'
+    if [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
+        cat >/etc/apt/sources.list <<-'EndOfFile'
 deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
 deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
 deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
@@ -1108,9 +1114,13 @@ deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-security main restri
 # proposed为预发布软件源，不建议启用
 # deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
 EndOfFile
-    touch ~/.hushlogin
-fi
+        touch ~/.hushlogin
+    fi
 
+    ;;
+n* | N*) echo "skipped." ;;
+*) echo "Invalid choice. skipped." ;;
+esac
 
 #配置dns解析
 rm -f /etc/resolv.conf

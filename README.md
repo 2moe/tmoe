@@ -1,6 +1,6 @@
 # 🍭Tmoe-linux
 
-> 若无法加载 readme，则请手动打开[使用说明](https://gitee.com/mo2/linux/blob/master/README.md)
+> If you do not understand Chinese, then please open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)
 
 ## 介绍
 
@@ -30,7 +30,7 @@ Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86
 
 2020-03-24 已经支持 **mipsel** 架构了！(已经在路由器上测试过了 🍥)
 
-可能支持 **RISC-V** (靠理论知识写出来的，未实际测试。由于现在暂时无法构建 risc-v 的基础容器镜像，故只能靠 qemu 在 risc-v 的设备上模拟其它架构的系统。）
+可能支持 **RISC-V** (由于现在暂时无法构建 risc-v 的基础容器镜像，故只能靠 qemu 在 risc-v 的设备上模拟其它架构的系统。）
 
 这可能是你见过的为数不多的，全架构 ~~、全平台~~ 项目。 ~~（win10 仅支持 wsl，不是全平台)~~
 
@@ -86,7 +86,7 @@ _**长命令**_
 ```shell
     apt update
     apt install -y wget
-    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 最后按方向键和回车键进行操作。
@@ -128,13 +128,14 @@ _**精简命令**_
     curl -sL l.tmoe.me | bash -
 ```
 
-> 注：精简命令和长命令调用的内容是一样的，二选一即可。
+> 注：精简命令和长命令调用的内容是不一样的，二选一即可。
+> 前者针对国内网络进行优化，而后者使用的是 github 仓库的脚本。
 
 _**长命令**_
 
 ```shell
     apt install -y curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 > 3.如需使用 gui,可能还需要安装 VNC apk,您可以前往 Google play 或使用 Tmoe-linux 的 debian-i 来下载。  
@@ -148,8 +149,8 @@ _**精简命令**_
     bash -c "$(wget -qO- l.tmoe.me)"
 ```
 
-> 注：精简命令和长命令调用的内容是一样的，二选一即可。  
-> 区别在于长命令增加了 wget 的检测。  
+> 注：精简命令和长命令调用的内容是不一样的，二选一即可。  
+> 最主要区别在于后者增加了 wget 的检测，其次就是前者针对国内网络进行了优化。  
 > 超精简的 debian 容器镜像内可能无 wget 和 sudo。  
 > 尽管大部分 deb 系列发行版使用 apt 安装软件时都需要 root 权限，但却有极少部分系统禁止以 root 权限运行，故并非一开始就调用 su -c  
 > 例如：使用 apt 包管理的 Android Termux，禁止以 root 权限运行 apt install
@@ -161,21 +162,21 @@ if [ ! -f /usr/bin/wget ]; then
     apt update || sudo apt update || su -c "apt update"
     apt install -y wget || sudo apt install -y wget || su -c "apt install -y wget"
 fi
-bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 #### 4.RedHat/Fedora/CentOS
 
 ```shell
     dnf install -y curl || yum install -y curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 #### 5.Arch/Manjaro
 
 ```shell
     pacman -Syu --noconfirm curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 #### 6.OpenWRT/Entware
@@ -183,14 +184,14 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```shell
     opkg update
     opkg install wget bash
-    bash -c "$(wget --no-check-certificate -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 #### 7.Alpine
 
 ```shell
     apk add -q wget
-    wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh' | ash
+    wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' | ash
 ```
 
 #### 8.Void
@@ -198,14 +199,14 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 ```shell
     xbps-install -S
     xbps-install -y wget
-    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 #### 9.Gentoo/Funtoo
 
 ```shell
     emerge -av net-misc/wget
-    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 #### 10.其它 system 未测试,以下系统请自行解决依赖关系
@@ -223,7 +224,7 @@ bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
 - 1.安装 Tmoe GNU/Linux 管理工具的命令(仅支持在原系统内输)
 
 ```shell
-bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 > 进入工具后，按方向键和回车键进行操作，基本上所有操作都有提示。
@@ -273,7 +274,7 @@ startvnc
 ```shell
 apt update
 apt install -y wget
-bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 **(旧版)视频教程**[链接](https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA) 提取码: **debb**
@@ -356,10 +357,6 @@ nano /usr/bin/startvnc
 本文首发于酷安网@**萌系生物研究员**
 旧版脚本部分命令借鉴了 atilo-cn 和 AnLinux，除此之外，大部分都是本人手打的。
 可能会有出错的地方，欢迎指正。
-
-> ~~后期注:Anlinux 的脚本有些地方写得并不好，并且我知道它存在的某些缺陷。反正原作者也看不到，所以我在这里调侃也没事。😹
-> 你去了解更本质的东西就知道哪些地方写得不好了！`(_>﹏<_)′
-> 相比之下，Linux Deploy 的开发者写的东西要比他强很多。~~
 
 ##### 2020-02-15
 

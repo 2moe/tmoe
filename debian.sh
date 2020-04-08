@@ -100,7 +100,7 @@ GNULINUX() {
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUXDISTRO='openwrt'
 		cd /tmp
-		wget --no-check-certificate -qO "router-debian.bash" https://gitee.com/mo2/linux/raw/master/debian.sh
+		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
 		chmod +x 'router-debian.bash'
 		#bash -c "$(cat 'router-zsh.bash' |sed 's@/usr/bin@/opt/bin@g' |sed 's@-e /bin@-e /opt/bin@g' |sed 's@whiptail@dialog@g')"
 		sed -i 's@/usr/bin@/opt/bin@g' 'router-debian.bash'
@@ -245,9 +245,9 @@ GNULINUX() {
 	fi
 
 	if [ "$(id -u)" != "0" ]; then
-		sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-			su -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
+		sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+			su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		exit 0
 	fi
 
@@ -425,7 +425,7 @@ GNULINUX() {
 
 	if [ "${LINUXDISTRO}" = "debian" ]; then
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "安装工具" --no-button "管理工具" --yesno "检测到您使用的是deb系linux ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 9 50); then
-			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 	fi
@@ -679,8 +679,8 @@ installDebian() {
 				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 				source ${PREFIX}/etc/profile >/dev/null 2>&1
 				INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
-				#bash -c "$(curl -fLsS 'https://gitee.com/mo2/linux/raw/master/installDebian.sh')"
-				#bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/installDebian.sh')"
+				#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
+				#bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 				;;
 			n* | N*)
 				echo "skipped."
@@ -701,7 +701,7 @@ installDebian() {
 
 	else
 		INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
-		#bash -c "$(curl -fLsS 'https://gitee.com/mo2/linux/raw/master/installDebian.sh')"
+		#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 
 	fi
 }
@@ -1378,8 +1378,8 @@ SpaceOccupation() {
 
 ########################################################################
 UPDATEMANAGER() {
-	#curl -L -o ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || wget -O ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	#curl -L -o ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
+	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || wget -O ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	if [ "${LINUXDISTRO}" != "Android" ]; then
 		sed -i '1 c\#!/bin/bash' ${PREFIX}/bin/debian-i
 	fi
@@ -1750,7 +1750,7 @@ TERMUXINSTALLXFCE() {
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 
@@ -1790,7 +1790,7 @@ TERMUXINSTALLXFCE() {
 	#######################
 	if [ "${OPTION}" == '2' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 		MODIFYANDROIDTERMUXVNCCONF
@@ -1802,7 +1802,7 @@ TERMUXINSTALLXFCE() {
 	##################
 	if [ "${OPTION}" == '6' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
+			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 		REMOVEANDROIDTERMUXXFCE
@@ -2130,18 +2130,18 @@ INSTALLDEBIANGNULINUXDISTRO() {
 BUSTERORSID() {
 	if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
 		if [ "${LINUXDISTRO}" != 'iSH' ]; then
-			bash -c "$(curl -fLsS 'https://gitee.com/mo2/linux/raw/master/installDebian.sh')"
+			bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 		else
-			wget -qO- 'https://gitee.com/mo2/linux/raw/master/installDebian.sh' | bash
+			wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh' | bash
 		fi
 	else
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
 	fi
 }
 #############
 INSTALLUBUNTUDISTRO2004() {
 	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
@@ -2150,7 +2150,7 @@ INSTALLUBUNTUDISTRO2004() {
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 	else
 		#ubuntu-ports
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
@@ -2160,7 +2160,7 @@ INSTALLUBUNTUDISTRO2004() {
 }
 ##########
 INSTALLKALIROLLING() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:kali-rolling:g' |
 		sed 's:debian/sid:kali/current:g' |
 		sed 's/debian系统/kali系统/g' |
@@ -2170,7 +2170,7 @@ INSTALLKALIROLLING() {
 }
 ################
 INSTALLFuntooDISTRO() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:funtoo-1.3:g' |
 		sed 's:debian/sid:funtoo/1.3:g' |
 		sed 's/debian系统/funtoo系统/g' |
@@ -2180,7 +2180,7 @@ INSTALLFuntooDISTRO() {
 }
 #######################
 INSTALLVOIDLINUXDISTRO() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/installDebian.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:voidlinux-default:g' |
 		sed 's:debian/sid:voidlinux/current:g' |
 		sed 's/debian系统/void系统/g' |

@@ -19,7 +19,7 @@ The following containers are now **supported**:
 
 ```shell
     apt install -y curl
-    bash -c "$(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
 
 ### **via wget**
@@ -27,5 +27,5 @@ The following containers are now **supported**:
 ```shell
     apt update
     apt install -y wget
-    bash -c "$(wget -qO- 'https://gitee.com/mo2/linux/raw/master/debian.sh')"
+    bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
 ```
