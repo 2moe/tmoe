@@ -1737,9 +1737,10 @@ TERMUXINSTALLXFCE() {
 	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 16 60 4 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
-		"3" "remove xfce4" \
+		"3" "配置Termux局域网音频传输" \
 		"4" "更换为清华源(支持termux、debian、ubuntu)" \
 		"5" "下载termux_Fdroid.apk" \
+		"6" "remove xfce4" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1796,6 +1797,10 @@ TERMUXINSTALLXFCE() {
 	fi
 	##################
 	if [ "${OPTION}" == '3' ]; then
+		TERMUXPULSEAUDIOLAN
+	fi
+	##################
+	if [ "${OPTION}" == '6' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
 			bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian-gui-install.bash)"
 			exit 0
@@ -1814,10 +1819,32 @@ TERMUXINSTALLXFCE() {
 	if [ "${OPTION}" == '5' ]; then
 		ARIA2CDOWNLOADTERMUXAPK
 	fi
-
 }
-
 #####################################
+TERMUXPULSEAUDIOLAN() {
+	cd $PREFIX/etc/pulse
+	if grep -q '192.168.0.0/16' default.pa; then
+		LANPULSE='检测到您已启用局域网音频传输'
+	else
+		LANPULSE='检测到您未启用局域网音频传输，默认仅允许本机传输'
+	fi
+
+	if (whiptail --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'enable(*￣▽￣*)o' --no-button 'Disable(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！" 8 50); then
+		sed -i '/auth-ip-acl/d' default.pa
+		sed -i '/module-native-protocol-tcp/d' default.pa
+		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16;172.16.0.0/12 auth-anonymous=1' default.pa
+	else
+		sed -i '/auth-ip-acl/d' default.pa
+		sed -i '/module-native-protocol-tcp/d' default.pa
+		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' default.pa
+	fi
+	echo "修改完成！(￣▽￣)"
+	echo 'press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	TERMUXINSTALLXFCE
+}
+#############################
 ARIA2CDOWNLOADTERMUXAPK() {
 	cd /sdcard/Download
 	if [ -f "com.termux_Fdroid.apk" ]; then

@@ -911,3 +911,7 @@ if [ ! -e "/etc/tmp/.ChrootInstallationDetectionFile" ] && [ "$(uname -m)" != "x
     echo "" >/var/lib/dpkg/info/udisks2.postinst
     apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
 fi
+
+if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "change password" --no-button "Edit manually" --yesno "Would you like to change the password or edit it manually?  ♪(^∇^*) " 9 50); then
+    vncpasswd
+fi

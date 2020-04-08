@@ -242,27 +242,96 @@ MODIFYVNCCONF() {
 		fi
 
 	else
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "change password" --no-button "Edit manually" --yesno "Would you like to change the password or edit it manually?  ♪(^∇^*) " 9 50); then
+		MODIFYOTHERCONF
+	fi
+}
+################################
+MODIFYOTHERCONF() {
 
-			/usr/bin/vncpasswd
-		else
-			echo '您可以手动修改vnc的配置信息'
-			echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
-			echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
-			echo "您当前分辨率为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-			echo '改完后按Ctrl+S保存，Ctrl+X退出。'
-			echo "Press Enter to confirm."
-			echo "${YELLOW}按回车键确认编辑。${RESET}"
-			read
-			nano /usr/local/bin/startvnc || nano $(which startvnc)
-			echo "您当前分辨率为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-		fi
+	MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Choose your option" 15 60 5 \
+		"1" "音频地址 Pulse server address" \
+		"2" "VNC密码 password" \
+		"3" "Edit xstartup manually 手动编辑xstartup" \
+		"4" "Edit startvnc manually 手动编辑vnc启动脚本" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	###########
+	if [ "${MODIFYOTHERVNCCONF}" == '0' ]; then
+		DEBIANMENU
+	fi
+	###########
+	if [ "${MODIFYOTHERVNCCONF}" == '1' ]; then
+		EDITVNCPULSEAUDIO
+	fi
+	###########
+	if [ "${MODIFYOTHERVNCCONF}" == '2' ]; then
+		echo 'The password you entered is hidden.'
+		echo '您需要输两遍（不可见的）密码。'
+		echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+		echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+		echo '请输入6至8位密码'
+		/usr/bin/vncpasswd
+		echo '修改完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
+		echo "正在为您停止VNC服务..."
+		sleep 1
 		stopvnc 2>/dev/null
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
-		DEBIANMENU
+		MODIFYOTHERCONF
 	fi
+	###########
+	if [ "${MODIFYOTHERVNCCONF}" == '3' ]; then
+		nano ~/.vnc/xstartup
+		stopvnc 2>/dev/null
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		MODIFYOTHERCONF
+	fi
+	###########
+	if [ "${MODIFYOTHERVNCCONF}" == '4' ]; then
+		NANOSTARTVNCMANUALLY
+	fi
+	##########
+}
+#########################
+EDITVNCPULSEAUDIO() {
+	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备，那么您可在此处修改。默认为127.0.0.1，当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2) \n若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux（仅限Android和win10），并配置允许局域网连接，则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端，Android-Termux需输pulseaudio --start,win10需手动打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat .至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+		sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
+		sed -i "2 a\export PULSE_SERVER=$TARGET" "$(which startxsdl)"
+		echo 'Your current PULSEAUDIO SERVER address has been modified.'
+		echo '您当前的音频地址已修改为'
+		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2)
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		MODIFYOTHERVNCCONF
+	else
+		MODIFYOTHERVNCCONF
+	fi
+
+}
+
+##################
+NANOSTARTVNCMANUALLY() {
+	echo '您可以手动修改vnc的配置信息'
+	echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
+	echo '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
+	echo "您当前分辨率为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+	echo '改完后按Ctrl+S保存，Ctrl+X退出。'
+	echo "Press Enter to confirm."
+	echo "${YELLOW}按回车键确认编辑。${RESET}"
+	read
+	nano /usr/local/bin/startvnc || nano $(which startvnc)
+	echo "您当前分辨率为$(grep '\-geometry' "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+
+	stopvnc 2>/dev/null
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MODIFYOTHERCONF
 
 }
 
