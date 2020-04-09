@@ -475,7 +475,7 @@ It is recommended that you back up the entire system before removal. If the data
   ps -e | grep proot
   ps -e | grep startvnc
   pgrep proot &> /dev/null
-if [ ! $? -ne 0 ]; then
+if [ ! \$? -ne 0 ]; then
     echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 fi
  #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
