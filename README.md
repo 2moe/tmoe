@@ -50,7 +50,7 @@ Supported containers:
        （未打勾的选项在容器环境下存在一些问题）  
        1.Arch + Deepin desktop 在 VNC 下会黑屏
       ![Snipaste_2020-04-12_05-09-13.png](https://i.loli.net/2020/04/18/LQcrOqZxwU2svJ5.png)  
-       2.如下图所示，Debian sid + KDE 2.Plasma 5 转发 X11 后，窗口显示会出现问题。  
+       2.如下图所示，Debian sid + KDE Plasma 5 转发 X11 后，窗口显示会出现问题。  
        注：在 RDP 下此问题未复现
       ![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)
 
