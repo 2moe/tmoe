@@ -36,8 +36,7 @@ Supported containers:
 
 ![截图_2020-02-01_08-53-21.jpg](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/yMgxSkGh0Tx4IJz0.jpg)
 
-🍸 目前支持的桌面环境：  
-（仅部分系统支持）
+🍸 目前支持的桌面环境：
 
 - [x] **xfce4**
 - [x] **lxde**
@@ -46,13 +45,18 @@ Supported containers:
 - [ ] **kde plasma 5**
 - [ ] **cinnamon**
 - [ ] **gnome 3**
-- [ ] **deepin desktop**  
-       （未打勾的选项在容器/远程桌面环境下存在一些问题）  
-       1.Arch + Deepin desktop 在 VNC 下会黑屏
-      ![Snipaste_2020-04-12_05-09-13.png](https://i.loli.net/2020/04/18/LQcrOqZxwU2svJ5.png)  
-       2.如下图所示，Debian sid + KDE Plasma 5 转发 X11 后，窗口显示会出现问题。  
-       注：在 RDP 下此问题未复现
-      ![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)
+- [ ] **deepin desktop**
+
+> 注 1：仅部分系统支持  
+> 注 2：优先适配 xfce  
+> 注 3： 未打勾的选项在容器/远程桌面环境下存在一些问题
+
+1.Arch + Deepin desktop 在 VNC 下会黑屏  
+下图的 Arch 是运行在 debian 里的 chroot 容器。
+![Snipaste_2020-04-12_05-09-13.png](https://i.loli.net/2020/04/18/LQcrOqZxwU2svJ5.png)  
+2.如下图所示，Debian sid + KDE Plasma 5 转发 X11 后，窗口显示会出现问题。
+注：在 RDP 下此问题未复现
+![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)
 
 ### 支持的架构 Supported architecture
 
