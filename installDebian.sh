@@ -620,8 +620,8 @@ elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
   rm -f ../etc/resolv.conf
   #使用相对路径
   cat >../etc/resolv.conf <<-'EndOfFile'
-nameserver 114.114.114.114
-nameserver 240c::6666
+nameserver 1.0.0.1
+nameserver 2606:4700:4700::1111
 EndOfFile
 elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
   #sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
@@ -1257,8 +1257,8 @@ fi
 #配置dns解析
 rm -f /etc/resolv.conf
 cat > /etc/resolv.conf <<-'EndOfFile'
-nameserver 114.114.114.114
-nameserver 240c::6666
+nameserver 1.0.0.1
+nameserver 2606:4700:4700::1111
 EndOfFile
 
 if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
