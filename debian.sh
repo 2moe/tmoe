@@ -94,7 +94,19 @@ autoCheck() {
 }
 ########################################
 GNULINUX() {
-	if grep -q 'debian' '/etc/os-release'; then
+
+	if [ "$(id -u)" != "0" ]; then
+		if [ -e "/usr/bin/curl" ]; then
+			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+		else
+			sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+		fi
+		exit 0
+	fi
+	##############
+	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
 		LINUXDISTRO='debian'
 
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
@@ -112,89 +124,42 @@ GNULINUX() {
 
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUXDISTRO='redhat'
+		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
+			REDHATDISTRO='centos'
+		elif grep -q 'Fedora' "/etc/os-release"; then
+			REDHATDISTRO='fedora'
+		fi
 
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUXDISTRO='alpine'
 
-	elif grep -Eq "Arch|Manjaro" '/etc/os-release'; then
+	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 		LINUXDISTRO='arch'
 
 	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
 		LINUXDISTRO='gentoo'
+
+	elif grep -qi 'suse' '/etc/os-release'; then
+		LINUXDISTRO='suse'
+
+	elif [ "$(cat /etc/issue | cut -c 1-4)" = "Void" ]; then
+		LINUXDISTRO='void'
 	fi
 
+	######################################
 	dependencies=""
 
-	if [ ! -e /bin/tar ]; then
+	if [ ! -e /usr/bin/aria2c ]; then
 		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} app-arch/tar"
+			dependencies="${dependencies} net-misc/aria2"
 		else
-			dependencies="${dependencies} tar"
+			dependencies="${dependencies} aria2"
 		fi
 	fi
 
-	if [ ! -e /bin/grep ] && [ ! -e /usr/bin/grep ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-apps/grep"
-		else
-			dependencies="${dependencies} grep"
-		fi
-	fi
-
-	if [ ! -e /usr/bin/pv ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-apps/pv"
-		else
-			dependencies="${dependencies} pv"
-		fi
-	fi
-
-	if [ ! -e /usr/bin/proot ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} proot"
-		fi
-	fi
-
-	if [ ! -e /usr/bin/git ]; then
-		if [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} git git-http"
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} dev-vcs/git"
-		else
-			dependencies="${dependencies} git"
-		fi
-	fi
-
-	if [ ! -e /usr/bin/xz ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} xz-utils"
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} app-arch/xz-utils"
-		else
-			dependencies="${dependencies} xz"
-		fi
-	fi
-
-	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} whiptail"
-		elif [ "${LINUXDISTRO}" = "arch" ]; then
-			dependencies="${dependencies} libnewt"
-		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} dialog"
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} dev-libs/newt"
-		else
-			dependencies="${dependencies} newt"
-		fi
-	fi
-
-	if [ ! -e /usr/bin/pkill ]; then
-
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-process/procps"
-		elif [ "${LINUXDISTRO}" != "openwrt" ]; then
-			dependencies="${dependencies} procps"
+	if [ ! -e /bin/bash ]; then
+		if [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "openwrt" ]; then
+			dependencies="${dependencies} bash"
 		fi
 	fi
 
@@ -206,14 +171,26 @@ GNULINUX() {
 		fi
 	fi
 
-	if [ ! -e /usr/bin/aria2c ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} net-misc/aria2"
+	#####################
+
+	if [ ! -e /usr/bin/git ]; then
+		if [ "${LINUXDISTRO}" = "openwrt" ]; then
+			dependencies="${dependencies} git git-http"
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} dev-vcs/git"
 		else
-			dependencies="${dependencies} aria2"
+			dependencies="${dependencies} git"
 		fi
 	fi
 
+	if [ ! -e /bin/grep ] && [ ! -e /usr/bin/grep ]; then
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-apps/grep"
+		else
+			dependencies="${dependencies} grep"
+		fi
+	fi
+	########################
 	if [ ! -e "/usr/bin/less" ]; then
 		if [ "${LINUXDISTRO}" = "gentoo" ]; then
 			dependencies="${dependencies} sys-apps/less"
@@ -227,31 +204,77 @@ GNULINUX() {
 			dependencies="${dependencies} less"
 		fi
 	fi
+	####################
 
-	if [ ! -e /bin/bash ]; then
-		if [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} bash"
+	if [ ! -e /usr/bin/pv ]; then
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-apps/pv"
+		elif [ "${LINUXDISTRO}" = 'redhat' ]; then
+			if [ "${REDHATDISTRO}" = 'fedora' ]; then
+				dependencies="${dependencies} pv"
+			fi
+		else
+			dependencies="${dependencies} pv"
 		fi
 	fi
 
+	if [ ! -e /usr/bin/proot ]; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} proot"
+		fi
+	fi
+	#####################
+	if [ ! -e /usr/bin/xz ]; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} xz-utils"
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} app-arch/xz-utils"
+		else
+			dependencies="${dependencies} xz"
+		fi
+	fi
+
+	if [ ! -e /usr/bin/pkill ]; then
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} sys-process/procps"
+		elif [ "${LINUXDISTRO}" != "openwrt" ]; then
+			dependencies="${dependencies} procps"
+		fi
+	fi
+	#####################
 	if [ ! -e /usr/bin/sudo ]; then
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			dependencies="${dependencies} sudo"
 		fi
 	fi
-
+	#####################
+	if [ ! -e /bin/tar ]; then
+		if [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} app-arch/tar"
+		else
+			dependencies="${dependencies} tar"
+		fi
+	fi
+	#####################
+	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dependencies="${dependencies} whiptail"
+		elif [ "${LINUXDISTRO}" = "arch" ]; then
+			dependencies="${dependencies} libnewt"
+		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+			dependencies="${dependencies} dialog"
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			dependencies="${dependencies} dev-libs/newt"
+		else
+			dependencies="${dependencies} newt"
+		fi
+	fi
+	##############
 	if [ "${archtype}" = "riscv" ]; then
 		dependencies="${dependencies} qemu qemu-user-static debootstrap"
 	fi
-
-	if [ "$(id -u)" != "0" ]; then
-		sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
-			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
-			su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
-		exit 0
-	fi
-
-	if [ ! -z "$dependencies" ]; then
+	##############
+	if [ ! -z "${dependencies}" ]; then
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			if ! grep -q '^deb.*edu.cn' "/etc/apt/sources.list"; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
@@ -275,7 +298,7 @@ GNULINUX() {
 
 		elif [ "${LINUXDISTRO}" = "alpine" ]; then
 			apk update
-			apk add -q ${dependencies}
+			apk add ${dependencies}
 
 		elif [ "${LINUXDISTRO}" = "arch" ]; then
 			pacman -Syu --noconfirm ${dependencies}
@@ -288,15 +311,21 @@ GNULINUX() {
 			opkg install ${dependencies} || opkg install whiptail
 
 		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			emerge -av ${dependencies}
+			emerge -vk ${dependencies}
+
+		elif [ "${LINUXDISTRO}" = "suse" ]; then
+			zypper in -y ${dependencies}
+
+		elif [ "${LINUXDISTRO}" = "void" ]; then
+			xbps-install -S -y ${dependencies}
+
 		else
+
 			apt update
-			apt install -y ${dependencies} || port install ${dependencies} || zypper in ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies}
-
+			apt install -y ${dependencies} || port install ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies}
 		fi
-
 	fi
-
+	########################
 	if [ "${LINUXDISTRO}" = "openwrt" ]; then
 		if [ -d "/opt/bin" ]; then
 			PREFIX="/opt"
@@ -348,7 +377,7 @@ GNULINUX() {
 				aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/show/share/windows/20H1/wsl_update_x64.msi'
 				#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\wsl_update_x64.msi"
 			fi
-			if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+			if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 				echo "检测到您当前使用的是chroot容器，将不会自动调用Windows程序。"
 				echo "请手动启动音频服务和X服务。"
 			fi
@@ -423,9 +452,15 @@ GNULINUX() {
 		WSL=""
 	fi
 
-	if [ "${LINUXDISTRO}" = "debian" ]; then
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "安装工具" --no-button "管理工具" --yesno "检测到您使用的是deb系linux ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 9 50); then
-			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+	if [ ! -z "${LINUXDISTRO}" ]; then
+		if grep -q 'PRETTY_NAME=' /etc/os-release; then
+			OSRELEASE="$(cat /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2)"
+		else
+			OSRELEASE="$(cat /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)"
+		fi
+
+		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Installation tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
+			bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash')"
 			exit 0
 		fi
 	fi
@@ -484,7 +519,7 @@ ANDROIDTERMUX() {
 		dependencies="${dependencies} curl"
 	fi
 
-	if [ ! -z "$dependencies" ]; then
+	if [ ! -z "${dependencies}" ]; then
 		if (("${ANDROIDVERSION}" >= '7')); then
 			if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
@@ -535,7 +570,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200408-10)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200414-01)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -549,7 +584,7 @@ MainMenu() {
 			"6" "备份系统 backup system" \
 			"7" "还原 restore" \
 			"8" "查询空间占用 query space occupation" \
-			"9" "更新本管理器 update debian manager" \
+			"9" "更新 update debian manager" \
 			"10" "配置zsh(优化termux) Configure zsh" \
 			"11" "Download VNC apk" \
 			"12" "VSCode Server arm64" \
@@ -569,7 +604,9 @@ MainMenu() {
 			MainMenu
 
 		fi
-
+		rm -f ~/.Chroot-Container-Detection-File
+		rm -f "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
+		touch ~/.Tmoe-Proot-Container-Detection-File
 		installDebian
 
 	fi
@@ -679,8 +716,6 @@ installDebian() {
 				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 				source ${PREFIX}/etc/profile >/dev/null 2>&1
 				INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
-				#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
-				#bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 				;;
 			n* | N*)
 				echo "skipped."
@@ -788,7 +823,7 @@ RootMode() {
 REMOVESYSTEM() {
 
 	cd ~
-	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
@@ -827,7 +862,12 @@ It is recommended that you back up the entire system before removal. If the data
 	read
 
 	chmod 777 -R ${DebianFolder}
-	rm -rf "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rf "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+	rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+	if [ -d "${HOME}/debian_armhf" ]; then
+		echo "检测到疑似存在树莓派armhf系统，正在移除..."
+		chmod 777 -R "${HOME}/debian_armhf"
+		rm -rf "${HOME}/debian_armhf" 2>/dev/null || tsudo rm -rfv "${HOME}/debian_armhf"
+	fi
 	sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 	sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 	source profile >/dev/null 2>&1
@@ -864,7 +904,7 @@ It is recommended that you back up the entire system before removal. If the data
 ########################################################################
 #
 BackupSystem() {
-	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
@@ -879,6 +919,7 @@ BackupSystem() {
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "备份Debian" \
 		"2" "备份Termux" \
+		"3" "使用Timeshift备份宿主机系统" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '1' ]; then
@@ -920,9 +961,11 @@ BackupSystem() {
 			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
-
-			tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
-
+			if [ ! -z "$(command -v pv)" ]; then
+				tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+			else
+				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+			fi
 			#最新版弃用了whiptail的进度条！！！
 			#tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 
@@ -943,7 +986,36 @@ BackupSystem() {
 		BACKUPTERMUX
 
 	fi
+	###################
+	if [ "${OPTION}" == '3' ]; then
+		if [ "${LINUXDISTRO}" = "Android" ]; then
+			echo 'Sorry,本功能不支持Android系统'
+			echo "${YELLOW}按回车键返回。${RESET}"
+			echo "Press enter to return."
+			read
+			MainMenu
+		fi
 
+		if [ ! -e "/usr/bin/timeshift" ]; then
+			if [ "${LINUXDISTRO}" = "debian" ]; then
+				apt update
+				apt install -y timeshift
+			elif [ "${LINUXDISTRO}" = "arch" ]; then
+				pacman -Syu --noconfirm timeshift
+			elif [ "${LINUXDISTRO}" = "redhat" ]; then
+				dnf install timeshift
+			fi
+		fi
+
+		if [ -e "/usr/bin/timeshift" ]; then
+			timeshift-launcher &
+			echo "安装完成，如需卸载，请手动输apt purge -y timeshift"
+			echo "${YELLOW}按回车键返回。${RESET}"
+			echo "Press enter to return."
+			read
+			BackupSystem
+		fi
+	fi
 	##########################################
 	if [ "${OPTION}" == '0' ]; then
 
@@ -994,7 +1066,7 @@ BACKUPTERMUX() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
-			tar -PJpvcf ${TMPtime}.tar.xz --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/sd --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/termux --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/tf /data/data/com.termux/files/home
+			tar -PJpvcf ${TMPtime}.tar.xz --exclude=${DebianCHROOT}/root/sd --exclude=${DebianCHROOT}/root/termux --exclude=${DebianCHROOT}/root/tf ${HOME}
 
 			#xz -z -T0 -e -9 -v ${TMPtime}.tar
 
@@ -1013,7 +1085,7 @@ BACKUPTERMUX() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
-			tar -Ppvczf ${TMPtime}.tar.gz --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/sd --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/termux --exclude=/data/data/com.termux/files/home/${DebianFolder}/root/tf /data/data/com.termux/files/home
+			tar -Ppvczf ${TMPtime}.tar.gz --exclude=${DebianCHROOT}/root/sd --exclude=${DebianCHROOT}/root/termux --exclude=${DebianCHROOT}/root/tf ${HOME}
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
 			echo "部分目录无权限备份是正常现象。"
@@ -1032,10 +1104,9 @@ BACKUPTERMUX() {
 	if [ "$TERMUXBACKUP" == 'usr' ]; then
 
 		if [ ! -d /sdcard/Download/backup ]; then
-			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
-		else
-			cd /sdcard/Download/backup
+			mkdir -p /sdcard/Download/backup
 		fi
+		cd /sdcard/Download/backup
 
 		ls -lth ./termux-usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 
@@ -1053,7 +1124,13 @@ BACKUPTERMUX() {
 
 			#tar -PJpcf ${TMPtime}.tar /data/data/com.termux/files/usr
 			echo '正在压缩成tar.xz'
-			tar -PJpcf - /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
+
+			if [ ! -z "$(command -v pv)" ]; then
+				tar -PpJcf - ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
+			else
+				tar -PpJcvf ${TMPtime}.tar.xz ${PREFIX}
+			fi
+
 			#echo '正在压缩成xz'
 			#xz -z -T0 -e -9 -v ${TMPtime}.tar
 
@@ -1073,7 +1150,13 @@ BACKUPTERMUX() {
 			read
 
 			#tar -Ppczf ${TMPtime}.tar.gz   /data/data/com.termux/files/usr
-			tar -Ppczf - /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+
+			if [ ! -z "$(command -v pv)" ]; then
+				tar -Ppczf - ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+			else
+				tar -Ppczvf ${TMPtime}.tar.gz ${PREFIX}
+			fi
+
 			##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
@@ -1113,7 +1196,12 @@ BACKUPTERMUX() {
 
 			#tar -PJpcf ${TMPtime}.tar /data/data/com.termux/files/usr
 			echo '正在压缩成tar.xz'
-			tar -PJpcf - /data/data/com.termux/files/home /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
+			if [ ! -z "$(command -v pv)" ]; then
+				tar -PpJcf - ${HOME} ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
+			else
+				tar -PpJcvf ${TMPtime}.tar.xz ${HOME} ${PREFIX}
+			fi
+
 			#echo '正在压缩成xz'
 			#xz -z -T0 -e -9 -v ${TMPtime}.tar
 
@@ -1133,7 +1221,11 @@ BACKUPTERMUX() {
 			read
 
 			#tar -Ppczf ${TMPtime}.tar.gz   /data/data/com.termux/files/usr
-			tar -Ppczf - /data/data/com.termux/files/home /data/data/com.termux/files/usr | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+			if [ ! -z "$(command -v pv)" ]; then
+				tar -Ppczf - ${HOME} ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+			else
+				tar -Ppczvf ${TMPtime}.tar.gz ${HOME} ${PREFIX}
+			fi
 			##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
@@ -1160,7 +1252,7 @@ BACKUPTERMUX() {
 ########################################################################
 #
 RESTORESYSTEM() {
-	if [ -e "${DebianCHROOT}/etc/tmp/.ChrootInstallationDetectionFile" ]; then
+	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
@@ -1201,12 +1293,20 @@ RESTORESYSTEM() {
 			#0-6是截取字符
 			if [ "${RESTORE:0-6:6}" == 'tar.xz' ]; then
 				echo 'tar.xz'
-				pv ${RESTORE} | tar -PJx
+				if [ ! -z "$(command -v pv)" ]; then
+					pv ${RESTORE} | tar -PJx
+				else
+					tar -PpJxvf ${RESTORE}
+				fi
 			fi
 
 			if [ "${RESTORE:0-6:6}" == 'tar.gz' ]; then
 				echo 'tar.gz'
-				pv ${RESTORE} | tar -Pzx
+				if [ ! -z "$(command -v pv)" ]; then
+					pv ${RESTORE} | tar -Pzx
+				else
+					tar -Ppzxvf ${RESTORE}
+				fi
 			fi
 
 			;;
@@ -1252,12 +1352,20 @@ RESTORESYSTEM() {
 
 			if [ "${RESTORE:0-6:6}" == 'tar.xz' ]; then
 				echo 'tar.xz'
-				pv ${RESTORE} | tar -PJx
+				if [ ! -z "$(command -v pv)" ]; then
+					pv ${RESTORE} | tar -PJx
+				else
+					tar -PpJxvf ${RESTORE}
+				fi
 			fi
 
 			if [ "${RESTORE:0-6:6}" == 'tar.gz' ]; then
 				echo 'tar.gz'
-				pv ${RESTORE} | tar -Pzx
+				if [ ! -z "$(command -v pv)" ]; then
+					pv ${RESTORE} | tar -Pzx
+				else
+					tar -Ppzxvf ${RESTORE}
+				fi
 			fi
 
 			;;
@@ -1379,7 +1487,7 @@ SpaceOccupation() {
 ########################################################################
 UPDATEMANAGER() {
 	#curl -L -o ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
-	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || wget -O ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
+	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	if [ "${LINUXDISTRO}" != "Android" ]; then
 		sed -i '1 c\#!/bin/bash' ${PREFIX}/bin/debian-i
 	fi
@@ -1491,10 +1599,10 @@ STARTVSCODE() {
 		chmod +x ${PREFIX}/bin/code
 	fi
 
-	if [ ! -e "${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ]; then
-		mkdir -p ${HOME}/${DebianFolder}/etc/tmp/
+	if [ ! -e "${HOME}/${DebianFolder}/tmp/sed-vscode.tmp" ]; then
+		mkdir -p ${HOME}/${DebianFolder}/tmp/
 
-		cat >${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp <<-'EOF'
+		cat >${HOME}/${DebianFolder}/tmp/sed-vscode.tmp <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
 				echo "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
 				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
@@ -1516,8 +1624,8 @@ STARTVSCODE() {
 		echo "" >>${HOME}/${DebianFolder}/root/.bashrc
 	fi
 
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.zshrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/etc/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.zshrc
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
+	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.zshrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.zshrc
 
 	if [ -e "${HOME}/${DebianFolder}/usr/bin/code" ]; then
 		code
@@ -1568,7 +1676,7 @@ DownloadVideoTutorial() {
 
 ##########################
 DOWNLOADVideoTutorialAGAIN() {
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || wget -O "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
 	PLAYVideoTutorial
 }
 PLAYVideoTutorial() {
@@ -1592,7 +1700,9 @@ CHROOTINSTALLDebian() {
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
-	touch ~/.ChrootInstallationDetectionFile
+	rm -f "${DebianCHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
+	rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+	touch ~/.Chroot-Container-Detection-File
 	installDebian
 }
 #################################
@@ -1634,7 +1744,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 			同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
 
 			7.其它说明
-			(a)若您需要在开源项目中引用本脚本，建议您先于原开发者联系,并附上本git-repo的原链接https://gitee.com/mo2/linux
+			(a)若您需要在开源项目中引用本脚本，建议您先与原开发者联系,并附上本git-repo的原链接gitee.com/mo2/linux
 			If you want to reference this script in an open source project, please indicate the original link of this repo and suggest that you contact the original developer before that.
 
 			8.最终用户许可协议的更改
@@ -1703,6 +1813,7 @@ UNXZDEBIANRECOVERYKIT() {
 	echo "正在解压debian_2020-03-11_17-31.tar.xz，Decompressing debian-xfce recovery package, please be patient."
 	pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
 	cd "$cur"
+	#用绝对路径
 	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
 		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
@@ -1734,13 +1845,14 @@ TERMUXINSTALLXFCE() {
 		echo "${YELLOW}按回车键继续${RESET}"
 		read
 	fi
-	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 16 60 4 \
+	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 17 60 6 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
 		"3" "配置Termux局域网音频传输" \
-		"4" "更换为清华源(支持termux、debian、ubuntu)" \
-		"5" "下载termux_Fdroid.apk" \
-		"6" "remove xfce4" \
+		"4" "切换VNC音频传输方式" \
+		"5" "更换为清华源(支持termux、debian、ubuntu)" \
+		"6" "下载termux_Fdroid.apk" \
+		"7" "remove xfce4" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1750,7 +1862,7 @@ TERMUXINSTALLXFCE() {
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+			bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 
@@ -1790,7 +1902,7 @@ TERMUXINSTALLXFCE() {
 	#######################
 	if [ "${OPTION}" == '2' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+			bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 		MODIFYANDROIDTERMUXVNCCONF
@@ -1800,15 +1912,19 @@ TERMUXINSTALLXFCE() {
 		TERMUXPULSEAUDIOLAN
 	fi
 	##################
-	if [ "${OPTION}" == '6' ]; then
+	if [ "${OPTION}" == '4' ]; then
+		SWITCHvncPULSEaudio
+	fi
+	##################
+	if [ "${OPTION}" == '7' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+			bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
 			exit 0
 		fi
 		REMOVEANDROIDTERMUXXFCE
 	fi
 	##################
-	if [ "${OPTION}" == '4' ]; then
+	if [ "${OPTION}" == '5' ]; then
 		if [ "${LINUXDISTRO}" = 'Android' ]; then
 			TERMUXTUNASOURCESLIST
 		else
@@ -1816,11 +1932,36 @@ TERMUXINSTALLXFCE() {
 		fi
 	fi
 	##################
-	if [ "${OPTION}" == '5' ]; then
+	if [ "${OPTION}" == '6' ]; then
 		ARIA2CDOWNLOADTERMUXAPK
 	fi
 }
 #####################################
+SWITCHvncPULSEaudio() {
+	cd ${DebianCHROOT}/root
+	if grep -Eq '4712|4713' ./.vnc/xstartup; then
+		PULSEtransportMethon='检测到您当前使用的可能是XSDL音频传输'
+	else
+		PULSEtransportMethon='检测到您当前使用的是termux音频传输'
+	fi
+
+	if (whiptail --title "您想用哪个软件来传输VNC音频？(｡･∀･)ﾉﾞ" --yes-button 'Termux(*￣▽￣*)o' --no-button 'XSDL(っ °Д °)' --yesno "${PULSEtransportMethon},请选择您需要切换的传输类型！注：您必须先安装XSDL app才能使用XSDL的音频服务，切换成XSDL后，启动VNC时将自动打开XSDL,此时不会转发X,您也无需执行任何操作。" 11 50); then
+
+		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1/' ${DebianCHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
+		sed -i '/x.org.server.MainActivity/d' $PREFIX/bin/startvnc
+		sed -i '/sleep 5/d' $PREFIX/bin/startvnc
+	else
+		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1:4713/' ${DebianCHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
+		cd $PREFIX/bin/
+		grep -q 'x.org.server' startvnc || sed -i '2 a\am start -n x.org.server/x.org.server.MainActivity \nsleep 5' startvnc
+	fi
+	echo "修改完成！(￣▽￣),您需要输startvnc来启动vnc"
+	echo 'press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	TERMUXINSTALLXFCE
+}
+###############################
 TERMUXPULSEAUDIOLAN() {
 	cd $PREFIX/etc/pulse
 	if grep -q '192.168.0.0/16' default.pa; then
@@ -1931,7 +2072,7 @@ STARTWEBNOVNC() {
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
 		/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start http://localhost:6080/vnc.html"
 	else
-		firefox 'http://localhost:6080/vnc.html'
+		firefox 'http://localhost:6080/vnc.html' 2>/dev/null
 	fi
 	echo "本机默认novnc地址${YELLOW}http://localhost:6080/vnc.html${RESET}"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
@@ -1945,7 +2086,7 @@ STARTWEBNOVNC() {
 		if [ "${LINUXDISTRO}" = 'Android' ]; then
 			${PREFIX}/bin/startvnc
 		else
-			bash -c "$(sed 's:^export HOME=.*:export HOME=/root:' $(which startvnc))"
+			bash -c "$(sed 's:^export HOME=.*:export HOME=/root:' $(command -v startvnc))"
 		fi
 	fi
 	#注：必须要先启动novnc后，才能接着启动VNC。
@@ -1961,10 +2102,10 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 	fi
-	CURRENTTERMUXVNCRES=$(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+	CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
-		if grep -q 'debian_' "$(which startvnc)"; then
-			echo "您当前使用的startvnc配置为debian系统专用版，请进入debian系统后输debian-i修改"
+		if grep -q 'debian_' "$(command -v startvnc)"; then
+			echo "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输debian-i修改"
 			echo "本选项仅适用于termux原系统。"
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
@@ -1975,11 +2116,11 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		#此处termux的whiptail跟debian不同，必须截取Error前的字符。
 		TRUETARGET="$(echo ${TARGET} | cut -d 'E' -f 1)"
 		#下面那条变量TRUETARGETTARGET前加空格
-		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(which startvnc)"
-		sed -i "7 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(which startvnc)"
+		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(command -v startvnc)"
+		sed -i "7 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
 		echo 'Your current resolution has been modified.'
 		echo '您当前的分辨率已经修改为'
-		echo $(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+		echo $(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 	else
 		echo '您可以手动修改vnc的配置信息'
 		echo 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
@@ -1989,8 +2130,8 @@ MODIFYANDROIDTERMUXVNCCONF() {
 		echo "Press Enter to confirm."
 		echo "${YELLOW}按回车键确认编辑。${RESET}"
 		read
-		nano ${PREFIX}/bin/startvnc || nano $(which startvnc)
-		echo "您当前分辨率为$(sed -n 7p "$(which startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		nano ${PREFIX}/bin/startvnc || nano $(command -v startvnc)
+		echo "您当前分辨率为$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 	fi
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
@@ -2066,8 +2207,9 @@ CHOOSEWHICHGNULINUX() {
 		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "Funtoo:专注于改进Gentoo" \
-		"5" "Void:基于xbps包管理器的独立发行版" \
+		"4" "Other其它系统(公测版新功能):mint,centos" \
+		"5" "fedora 31(红帽社区版,新技术试验场)" \
+		"6" "arch(系统设计以KISS为总体指导原则)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 
@@ -2090,20 +2232,235 @@ CHOOSEWHICHGNULINUX() {
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '4' ]; then
+		INSTALLotherSystems
+	fi
+	##############################
+	if [ "${SELECTGNULINUX}" == '5' ]; then
+		touch ~/.REDHATDetectionFILE
+		if [ "${archtype}" = 'armhf' ]; then
+			echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/fedora系统/g' |
+				sed 's/debian system/fedora system/g' |
+				sed 's:debian-sid:fedora-29:g' |
+				sed 's:debian/sid:fedora/29:g' |
+				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
+		elif [ "${archtype}" = 'i386' ]; then
+			echo "Fedora不支持您的架构"
+		else
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/fedora系统/g' |
+				sed 's/debian system/fedora system/g' |
+				sed 's:debian-sid:fedora-31:g' |
+				sed 's:debian/sid:fedora/31:g' |
+				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
+		fi
+	fi
+	##############################
+	if [ "${SELECTGNULINUX}" == '6' ]; then
+		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
+			echo "检测到Arch Linux不支持您当前的架构"
+		else
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/arch系统/g' |
+				sed 's/debian system/arch system/g' |
+				sed 's:debian-sid:archlinux-current:g' |
+				sed 's:debian/sid:archlinux/current:g' |
+				sed 's:Debian GNU/Linux:Arch GNU/Linux:g')"
+		fi
+	fi
+	####################
+
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	MainMenu
+}
+##############################
+INSTALLotherSystems() {
+	BETASYSTEM=$(
+		whiptail --title "Beta features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nBeta features may not work properly." 17 55 7 \
+			"1" "Funtoo:专注于改进Gentoo" \
+			"2" "Void:基于xbps包管理器的独立发行版" \
+			"3" "centos 8(基于红帽的社区企业操作系统)" \
+			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+			"5" "alpine edge(非glibc的精简系统)" \
+			"6" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"7" "樹莓派raspbian buster(armhf)" \
+			"8" "mint tricia(简单易用的系统,x86,x64)" \
+			"9" "openwrt(常见于路由器,x64)" \
+			"10" "devuan ascii(不使用systemd,基于debian)" \
+			"11" "apertis 18.12" \
+			"12" "alt p9" \
+			"0" "Back to the main menu 返回主菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	if [ "${BETASYSTEM}" == '0' ]; then
+		MainMenu
+	fi
+	####################
+
+	if [ "${BETASYSTEM}" == '1' ]; then
 		INSTALLFuntooDISTRO
 	fi
 	#############################
-	if [ "${SELECTGNULINUX}" == '5' ]; then
+	if [ "${BETASYSTEM}" == '2' ]; then
 		INSTALLVOIDLINUXDISTRO
 	fi
-	##############################
+	####################
+	if [ "${BETASYSTEM}" == '3' ]; then
+		touch ~/.REDHATDetectionFILE
+		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
+			echo "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/centos系统/g' |
+				sed 's/debian system/centos system/g' |
+				sed 's:debian-sid:centos-7:g' |
+				sed 's:debian/sid:centos/7:g' |
+				sed 's:Debian GNU/Linux:CentOS GNU/Linux:g')"
+		else
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/centos系统/g' |
+				sed 's/debian system/centos system/g' |
+				sed 's:debian-sid:centos-8:g' |
+				sed 's:debian/sid:centos/8:g' |
+				sed 's:Debian GNU/Linux:CentOS GNU/Linux:g')"
+		fi
+	fi
+	####################
+	if [ "${BETASYSTEM}" == '4' ]; then
+		if [ "${archtype}" = 'arm64' ]; then
+			echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed '72 a\archtype="armhf"' |
+				sed 's/debian系统/gentoo系统/g' |
+				sed 's/debian system/gentoo system/g' |
+				sed 's:debian-sid:gentoo-current:g' |
+				sed 's:debian/sid:gentoo/current:g' |
+				sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
+		else
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/gentoo系统/g' |
+				sed 's/debian system/gentoo system/g' |
+				sed 's:debian-sid:gentoo-current:g' |
+				sed 's:debian/sid:gentoo/current:g' |
+				sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
+		fi
+	fi
+
+	####################
+	if [ "${BETASYSTEM}" == '5' ]; then
+		touch ~/.ALPINELINUXDetectionFILE
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed 's/debian系统/alpine系统/g' |
+			sed 's/debian system/alpine system/g' |
+			sed 's:debian-sid:alpine-edge:g' |
+			sed 's:debian/sid:alpine/edge:g' |
+			sed 's:Debian GNU/Linux:Alpine Linux:g')"
+	fi
+	####################
+	if [ "${BETASYSTEM}" == '6' ]; then
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed 's/debian系统/opensuse系统/g' |
+			sed 's/debian system/opensuse system/g' |
+			sed 's:debian-sid:opensuse-tumbleweed:g' |
+			sed 's:debian/sid:opensuse/tumbleweed:g' |
+			sed 's:Debian GNU/Linux:Opensuse GNU/Linux:g')"
+	fi
+
+	####################
+	if [ "${BETASYSTEM}" == '7' ]; then
+		if [ "${archtype}" != 'arm64' ] && [ "${archtype}" != 'armhf' ]; then
+			apt install -y qemu qemu-user-static debootstrap
+		fi
+		touch ~/.RASPBIANARMHFDetectionFILE
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed '72 a\archtype="armhf"' |
+			sed 's:/sid:/buster:g' |
+			sed 's:extract z:extract:' |
+			sed 's@#deb http@deb http@g' |
+			sed 's/.*sid main/#&/' |
+			sed 's/debian系统/raspbian系统/g' |
+			sed 's/debian system/raspbian system/g' |
+			sed 's:debian-sid:raspbian-buster:g' |
+			sed 's:debian/sid:debian/buster:g' |
+			sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
+	fi
+	#先下载debian buster容器镜像，再换源成树莓派。
+	####################
+	if [ "${BETASYSTEM}" == '8' ]; then
+		if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/mint系统/g' |
+				sed 's/debian system/mint system/g' |
+				sed 's:debian-sid:mint-tricia:g' |
+				sed 's:debian/sid:mint/tricia:g' |
+				sed 's:Debian GNU/Linux:Mint GNU/Linux:g')"
+		else
+			echo "Linux Mint不支持您的架构"
+		fi
+	fi
+
+	####################
+	if [ "${BETASYSTEM}" == '9' ]; then
+		if [ "${archtype}" = 'amd64' ]; then
+			touch ~/.ALPINELINUXDetectionFILE
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/openwrt系统/g' |
+				sed 's/debian system/openwrt system/g' |
+				sed 's:debian-sid:openwrt-snapshot:g' |
+				sed 's:debian/sid:openwrt/snapshot:g' |
+				sed 's:Debian GNU/Linux:OpenWRT Linux:g')"
+		else
+			echo "开发者暂时还没有构建${archtype}架构的容器镜像呢！"
+			echo "您可以换用x86_64架构的设备进行安装"
+		fi
+	fi
+	####################
+	if [ "${BETASYSTEM}" == '10' ]; then
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed 's/debian系统/devuan系统/g' |
+			sed 's/debian system/devuan system/g' |
+			sed 's:debian-sid:devuan-ascii:g' |
+			sed 's:debian/sid:devuan/ascii:g' |
+			sed 's:Debian GNU/Linux:Devuan GNU/Linux:g')"
+	fi
+	####################
+	if [ "${BETASYSTEM}" == '11' ]; then
+		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
+			echo "检测到apertis不支持您当前的架构"
+		else
+			touch ~/.ALPINELINUXDetectionFILE
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/apertis系统/g' |
+				sed 's/debian system/apertis system/g' |
+				sed 's:debian-sid:apertis-18.12:g' |
+				sed 's:debian/sid:apertis/18.12:g' |
+				sed 's:Debian GNU/Linux:Arch Linux:g')"
+		fi
+	fi
+	####################
+	if [ "${BETASYSTEM}" == '12' ]; then
+		if [ "${archtype}" = 'armhf' ]; then
+			echo "检测到alt不支持您当前的架构"
+		else
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+				sed 's/debian系统/alt系统/g' |
+				sed 's/debian system/alt system/g' |
+				sed 's:debian-sid:alt-p9:g' |
+				sed 's:debian/sid:alt/p9:g' |
+				sed 's:Debian GNU/Linux:Alt GNU/Linux:g')"
+		fi
+	fi
+	####################
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	MainMenu
 }
 
-##############################
+#########################
 INSTALLDEBIANGNULINUXDISTRO() {
 	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
 		BUSTERORSID
@@ -2132,7 +2489,7 @@ BUSTERORSID() {
 		if [ "${LINUXDISTRO}" != 'iSH' ]; then
 			bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 		else
-			wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh' | bash
+			curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh' | bash
 		fi
 	else
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
@@ -2192,22 +2549,22 @@ INSTALLVOIDLINUXDISTRO() {
 GNULINUXTUNASOURCESLIST() {
 	cp -pf /etc/apt/sources.list /etc/apt/sources.list.bak
 	if grep -q 'Debian' "/etc/issue"; then
-		if grep -q 'bullseye' "/etc/issue"; then
+		if grep -q 'bullseye' "/etc/os-release"; then
 			SOURCELISTCODE='sid'
 			BACKPORTCODE='bullseye'
 			echo "Debian 11 bullseye"
 
-		elif grep -q 'buster' "/etc/issue"; then
+		elif grep -q 'buster' "/etc/os-release"; then
 			SOURCELISTCODE='stable'
 			BACKPORTCODE='bullseye'
 			echo "Debian 10 buster"
 
-		elif grep -q 'stretch' "/etc/issue"; then
+		elif grep -q 'stretch' "/etc/os-release"; then
 			SOURCELISTCODE='stretch'
 			BACKPORTCODE='stretch'
 			echo "Debian 9 stretch"
 
-		elif grep -q 'jessie' "/etc/issue"; then
+		elif grep -q 'jessie' "/etc/os-release"; then
 			SOURCELISTCODE='jessie'
 			BACKPORTCODE='jessie'
 			echo "Debian 8 jessie"
@@ -2220,14 +2577,14 @@ GNULINUXTUNASOURCESLIST() {
 			GNULINUX
 		fi
 		echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
-
+		sed -i 's/^deb/# &/g' /etc/apt/sources.list
 		if [ "${SOURCELISTCODE}" = "sid" ]; then
-			cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+			cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
 			EndOfSourcesList
 		else
 			#下面那行EndOfSourcesList不能加单引号
-			cat >/etc/apt/sources.list <<-EndOfSourcesList
+			cat >>/etc/apt/sources.list <<-EndOfSourcesList
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
@@ -2239,7 +2596,8 @@ GNULINUXTUNASOURCESLIST() {
 	###################
 	if grep -q 'Kali' "/etc/issue"; then
 		echo "检测到您使用的是Kali系统"
-		cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+		sed -i 's/^deb/# &/g' /etc/apt/sources.list
+		cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 			deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
 			deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
 			# deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
@@ -2276,8 +2634,9 @@ GNULINUXTUNASOURCESLIST() {
 			GNULINUX
 		fi
 		echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
+		sed -i 's/^deb/# &/g' /etc/apt/sources.list
 		#下面那行EndOfSourcesList不能有单引号
-		cat >/etc/apt/sources.list <<-EndOfSourcesList
+		cat >>/etc/apt/sources.list <<-EndOfSourcesList
 			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE} main restricted universe multiverse
 			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-updates main restricted universe multiverse
 			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-backports main restricted universe multiverse
@@ -2296,7 +2655,7 @@ GNULINUXTUNASOURCESLIST() {
 		echo "Replacing http software source list with https."
 		echo "正在将http源替换为https..."
 		update-ca-certificates
-		sed -i 's:http:https:g' /etc/apt/sources.list
+		sed -i 's@http:@https:@g' /etc/apt/sources.list
 	fi
 	apt update
 	apt dist-upgrade -y

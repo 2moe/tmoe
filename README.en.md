@@ -8,6 +8,8 @@ The following containers are now **supported**:
 - [x] **Debian buster/sid**
 - [x] **Ubuntu 20.04**
 - [x] **Kali rolling**
+- [x] **Arch**
+- [x] **Fedora 31**
 - [x] **Funtoo**
 - [x] **Void**
 
@@ -19,7 +21,7 @@ The following containers are now **supported**:
 
 ```shell
     apt install -y curl
-    bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
+    bash -c "$(curl -Lv 'https://git.io/linux.sh')"
 ```
 
 ### **via wget**
@@ -27,5 +29,5 @@ The following containers are now **supported**:
 ```shell
     apt update
     apt install -y wget
-    bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh')"
+    bash -c "$(wget -O- 'https://git.io/linux.sh')"
 ```

@@ -15,11 +15,22 @@ Supported containers:
 - [x] **Debian buster/sid**
 - [x] **Ubuntu 20.04**
 - [x] **Kali rolling**
+- [x] **Arch**
+- [x] **Fedora 31**
+- [x] **CentOS 8**
+- [x] **Ubuntu 20.04**
+- [x] **Gentoo**
 - [x] **Funtoo**
-- [x] **Void**  
+- [x] **Fedora**
+- [x] **Alpine edge**
+- [x] **OpenSUSE tumbleweed**
+- [x] **Void**
+- [x] **Raspbian buster**
+- [x] **Mint tricia**
+- [x] **Devuan ascii**  
        ✨ 支持自动配置中文环境，并执行其它优化步骤。🍹  
-       所有的配置和优化步骤仅适用于 deb 系！  
-       All configuration and optimization steps only apply to debian based distributions!
+       配置和优化步骤仅适用于 Debian、Ubuntu、Kali、、Arch、Fedora 和 Gentoo(x64)。
+      All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Arch and Fedora.
 
 ![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
 
@@ -79,7 +90,7 @@ wsl --set-default-version 2
 _**精简命令**_
 
 ```shell
-    bash -c "$(wget -qO- l.tmoe.me)"
+    bash -c "$(wget -O- l.tmoe.me)"
 ```
 
 > 注：精简命令和长命令调用的内容是不一样的，二选一即可。  
@@ -91,16 +102,16 @@ _**长命令**_
 ```shell
     apt update
     apt install -y wget
-    bash -c "$(wget -qO- 'https://git.io/linux.sh')"
+    bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
 最后按方向键和回车键进行操作。
 
 > 注：WSL 请选择安装工具
 
-![你这个小可爱](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
-![不可以骂人家](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
-![并没有在说你](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
+![000](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
+![001](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
+![002](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
 ![01](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/kGTCjub8kg4WbMU6.png)  
 ![02](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/5B20sqYFe0ZV15Hg.png)  
 ![03](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/UvqZWPa3XSkEEprK.png)
@@ -140,7 +151,7 @@ _**长命令**_
 
 ```shell
     apt install -y curl
-    bash -c "$(curl -LfsS 'https://git.io/linux.sh')"
+    bash -c "$(curl -Lv https://git.io/linux.sh)"
 ```
 
 > 3.如需使用 gui,可能还需要安装 VNC apk,您可以前往 Google play 或使用 Tmoe-linux 的 debian-i 来下载。  
@@ -151,7 +162,7 @@ _**长命令**_
 _**精简命令**_
 
 ```shell
-    bash -c "$(wget -qO- l.tmoe.me)"
+    bash -c "$(wget -O- l.tmoe.me)"
 ```
 
 > 注：精简命令和长命令调用的内容是不一样的，二选一即可。  
@@ -167,21 +178,21 @@ if [ ! -f /usr/bin/wget ]; then
     apt update || sudo apt update || su -c "apt update"
     apt install -y wget || sudo apt install -y wget || su -c "apt install -y wget"
 fi
-bash -c "$(wget -qO- 'https://git.io/linux.sh')"
+bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
 #### 4.RedHat/Fedora/CentOS
 
 ```shell
     dnf install -y curl || yum install -y curl
-    bash -c "$(curl -LfsS 'https://git.io/linux.sh')"
+    bash -c "$(curl -Lv https://git.io/linux.sh)"
 ```
 
 #### 5.Arch/Manjaro
 
 ```shell
     pacman -Syu --noconfirm curl
-    bash -c "$(curl -LfsS 'https://git.io/linux.sh')"
+    bash -c "$(curl -Lv https://git.io/linux.sh)"
 ```
 
 #### 6.OpenWRT/Entware
@@ -189,14 +200,14 @@ bash -c "$(wget -qO- 'https://git.io/linux.sh')"
 ```shell
     opkg update
     opkg install wget bash
-    bash -c "$(wget --no-check-certificate -qO- 'https://git.io/linux.sh')"
+    bash -c "$(wget --no-check-certificate -O- https://git.io/linux.sh)"
 ```
 
 #### 7.Alpine
 
 ```shell
-    apk add -q wget
-    wget -qO- 'https://git.io/linux.sh' | ash
+    apk add wget
+    wget -O- https://git.io/linux.sh | ash
 ```
 
 #### 8.Void
@@ -204,14 +215,14 @@ bash -c "$(wget -qO- 'https://git.io/linux.sh')"
 ```shell
     xbps-install -S
     xbps-install -y wget
-    bash -c "$(wget -qO- 'https://git.io/linux.sh')"
+    bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
 #### 9.Gentoo/Funtoo
 
 ```shell
-    emerge -av net-misc/wget
-    bash -c "$(wget -qO- 'https://git.io/linux.sh')"
+    emerge -avk net-misc/wget
+    bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
 #### 10.其它 system 未测试,以下系统请自行解决依赖关系
@@ -229,7 +240,7 @@ bash -c "$(wget -qO- 'https://git.io/linux.sh')"
 - 1.安装 Tmoe GNU/Linux 管理工具的命令(仅支持在原系统内输)
 
 ```shell
-bash -c "$(curl -LfsS 'https://git.io/linux.sh')"
+bash -c "$(curl -Lv https://git.io/linux.sh)"
 ```
 
 > 进入工具后，按方向键和回车键进行操作，基本上所有操作都有提示。
@@ -279,7 +290,7 @@ startvnc
 ```shell
 apt update
 apt install -y wget
-bash -c "$(wget -qO- 'https://git.io/linux.sh')"
+bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
 **(旧版)视频教程**[链接](https://pan.baidu.com/s/1rh7Nkcd0gG9RPx77JyGqZA) 提取码: **debb**
@@ -472,3 +483,20 @@ nano /usr/bin/startvnc
 
 - 1.支持非 root 用户配置 vnc 服务
 - 2.修复大量 bug
+
+##### 2020-04-10 更新日志
+
+- 1.加入测试版容器 arch,fedora,centos.raspbian,mint 等等
+
+##### 2020-04-11 更新日志
+
+- 1.加入测试版桌面 lxqt,kde,gnome 等。
+- 2.除 deb 系外，还支持给其它发行版安装 gui。
+- 3.支持修复 vnc 闪退。
+- 注 1：由于在这几天的更新中给所有的桌面都加入了 dbus-launch，故在部分安卓设备的 Proot 容器上出现了兼容性问题，容易造成不稳定的状况。
+- 注 2：该操作在 linux 虚拟机及 win10 子系统上没有任何问题
+- 注 3：在最新更新的版本（容器安装方式）中已加入检测功能，理论上不会再出现此问题。你也可以在更新 debian-i 后，单独进行修复。
+
+##### 2020-04-12 更新日志
+
+- 1.支持切换 VNC 音频传输方式。
