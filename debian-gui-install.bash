@@ -263,7 +263,7 @@ CHECKdependencies() {
 			if [ ! -e "/usr/sbin/locale-gen" ]; then
 				apt install -y locales
 			fi
-			sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+			sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 			locale-gen
 			apt install -y language-pack-zh-hans 2>/dev/null
 		fi

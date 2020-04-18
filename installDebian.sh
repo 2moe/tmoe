@@ -318,7 +318,7 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 
   grep -q 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
-  grep -q 'zh_CN.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep -q 'en_US.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   grep -q 'HOME=/root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
@@ -408,7 +408,7 @@ command+=" /usr/bin/env -i"
 command+=" HOME=/root"
 command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
 command+=" TERM=\$TERM"
-command+=" LANG=zh_CN.UTF-8"
+command+=" LANG=en_US.UTF-8"
 command+=" /bin/bash --login"
 com="\$@"
 #为防止匹配行被替换，故采用base64加密。
@@ -1068,7 +1068,7 @@ ENDOFPOWERLEVEL
 
     if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
         grep -q 'unset LD_PRELOAD' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${HOME}/.zshrc >/dev/null 2>&1
-        grep -q 'zh_CN.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
+        grep -q 'en_US.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
         grep -q 'HOME=/root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${HOME}/.zshrc >/dev/null 2>&1
         grep -q 'cd /root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" ${HOME}/.zshrc >/dev/null 2>&1
     fi
@@ -1288,10 +1288,10 @@ if grep -q 'openSUSE' "/etc/issue"; then
         #zypper dup --no-allow-vendor-change -y
     fi
     zypper install -y wget curl
-    sed -i 's@RC_LANG=.*@RC_LANG="zh_CN.UTF8"@' /etc/sysconfig/language
-    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="zh_CN.UTF8"@' /etc/sysconfig/language
-    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="zh_CN"@' /etc/sysconfig/language
-    zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
+    sed -i 's@RC_LANG=.*@RC_LANG="en_US.UTF8"@' /etc/sysconfig/language
+    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="en_US.UTF8"@' /etc/sysconfig/language
+    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="en_US"@' /etc/sysconfig/language
+    zypper install -y glibc-locale glibc-i18ndata translation-update-en_US
 fi
 
 apt update
@@ -1312,13 +1312,13 @@ echo 'Optimization steps are in progress. Do not exit!'
 echo 'Asia/Shanghai' >/etc/timezone
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-echo "正在配置中文环境..."
 echo "Configuring Chinese environment..."
-sed -i 's/^#.*zh_CN.UTF-8.*/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
+sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 cat >/etc/default/locale <<-'EOF'
-LANG="zh_CN.UTF-8"
-LANGUAGE="zh_CN:zh"
-LC_ALL="zh_CN.UTF-8"
+LANG="en_US.UTF-8"
+LANGUAGE="en_US:zh"
+LC_ALL="en_US.UTF-8"
 EOF
 #locale-gen
 locale-gen zh_CN.UTF-8
@@ -1361,9 +1361,9 @@ fi
 
 if grep -Eq 'Funtoo|Gentoo' '/etc/os-release'; then
     LINUXDISTRO=gentoo
-    grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
+    grep -q 'en_US' /etc/locale.gen || echo -e '\nen_US.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
     locale-gen
-    GENTOOLOCALE="$(eselect locale list | grep 'zh_CN' | head -n 1| cut -d '[' -f 2 | cut -d ']' -f 1)"
+    GENTOOLOCALE="$(eselect locale list | grep 'en_US' | head -n 1| cut -d '[' -f 2 | cut -d ']' -f 1)"
     eselect locale set "${GENTOOLOCALE}"
     #bash /etc/profile
     mkdir -p '/usr/portage'
@@ -1371,7 +1371,7 @@ if grep -Eq 'Funtoo|Gentoo' '/etc/os-release'; then
 cat >/etc/portage/make.conf <<-'Endofmakeconf'
 #语言设定
 L10N="zh-CN en-US"
-LINGUAS="zh_CN en_US"
+LINGUAS="en_US zh_CN"
 
 #FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
 ACCEPT_LICENSE="*"
@@ -1457,8 +1457,8 @@ EndofgentooConf
 elif grep -qi 'Void' '/etc/issue'; then
     LINUXDISTRO='void'
     cat >/etc/locale.conf <<-'EOF'
-LANG="zh_CN.UTF-8"
-LANGUAGE="zh_CN:zh"
+LANG="en_US.UTF-8"
+LANGUAGE="en_US:zh"
 LC_COLLATE=C
 EOF
     mkdir -p /etc/xbps.d
@@ -1511,7 +1511,7 @@ chmod +x /usr/local/bin/neofetch
 neofetch
 #############################
 if [ "$(cat /etc/issue | cut -c 1-4)" = "Arch" ]; then
-  grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="zh_CN.UTF-8"' >> /etc/locale.conf
+  grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="en_US.UTF-8"' >> /etc/locale.conf
   if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
     cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 #Server = https://mirror.archlinuxarm.org/$arch/$repo
@@ -1563,7 +1563,7 @@ skip_if_unavailable=False
 EndOfYumRepo
     fi
   dnf install -y glibc-langpack-zh
-  #localedef -c -f UTF-8 -i zh_CN zh_CN.utf8 
+  #localedef -c -f UTF-8 -i en_US zh_CN.utf8 
 
 elif [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "centos" ]; then
     cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
