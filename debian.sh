@@ -1708,6 +1708,8 @@ CHROOTINSTALLDebian() {
 #################################
 INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 	if [ ! -d "${DebianCHROOT}" ]; then
+		CurrentLANG=$LANG
+		export LANG="en_US.UTF-8"
 		less -meQ <<-'EndOfFile'
 			   Tmoe-Debian-Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
 			本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
@@ -1756,6 +1758,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		echo 'You must agree to EULA to use this tool.'
 		echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
 		echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
+		export LANG=${CurrentLANG}
 		read
 	fi
 	CHOOSEWHICHGNULINUX
@@ -2286,7 +2289,7 @@ INSTALLotherSystems() {
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
 			"5" "alpine edge(非glibc的精简系统)" \
 			"6" "opensuse tumbleweed(小蜥蜴风滚草)" \
-			"7" "樹莓派raspbian buster(armhf)" \
+			"7" "raspbian樹莓派 buster(armhf)" \
 			"8" "mint tricia(简单易用的系统,x86,x64)" \
 			"9" "openwrt(常见于路由器,x64)" \
 			"10" "devuan ascii(不使用systemd,基于debian)" \
