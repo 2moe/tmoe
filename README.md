@@ -9,7 +9,7 @@ Without any basic knowledge of linux shell, you can run GNU/Linux on your mobile
 在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
 在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。
 
-🍸 目前支持：
+🍸 目前支持的容器：
 Supported containers:
 
 - [x] **Debian buster/sid**
@@ -25,8 +25,10 @@ Supported containers:
 - [x] **Void**
 - [x] **Raspbian buster**
 - [x] **Mint tricia**
-- [x] **Devuan ascii**  
-       ✨ 安装完容器后，能自动执行其它优化步骤。🍹  
+- [x] **Devuan ascii**
+- [x] **Slackware**
+- [x] **Armbian**
+      ✨ 安装完容器后，能自动执行其它优化步骤。🍹  
        配置和优化步骤仅适用于 Debian、Ubuntu、Kali、、Arch、Fedora 和 Gentoo(x64)。  
        All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Arch and Fedora.
 

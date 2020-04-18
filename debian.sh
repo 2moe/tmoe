@@ -2303,6 +2303,7 @@ INSTALLotherSystems() {
 			"11" "apertis 18.12" \
 			"12" "alt p9" \
 			"13" "slackware(armhf)" \
+			"14" "armbian bullseye(arm64,armhf)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2486,6 +2487,61 @@ INSTALLotherSystems() {
 			sed 's:debian-sid:slackware-current:g' |
 			sed 's:debian/sid:slackware/current:g' |
 			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
+	fi
+	###########################
+	if [ "${BETASYSTEM}" == '14' ]; then
+		cd ~
+		#touch .SLACKDetectionFILE
+		if [ "${archtype}" != 'armhf' ] && [ "${archtype}" != 'arm64' ]; then
+			if [ ! -e "/usr/bin/qemu-arm-static" ]; then
+				apt update
+				apt install qemu-user-static
+			fi
+		fi
+		echo "armbian-bullseye-desktop已预装xfce4"
+		if [ ! -e "armbian-bullseye-rootfs.tar.lz4" ]; then
+			if [ "${archtype}" = 'armhf' ]; then
+				LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep 'armhf' | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+				aria2c -x 5 -s 5 -k 1M -o "armbian-bullseye-rootfs.tar.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
+			else
+				LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep 'arm64' | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+				aria2c -x 5 -s 5 -k 1M -o "armbian-bullseye-rootfs.tar.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
+			fi
+		fi
+
+		if [ ! -e "/usr/bin/lz4" ]; then
+			apt update 2>/dev/null
+			apt install -y lz4 2>/dev/null
+			pacman -Syu --noconfirm lz4 2>/dev/null
+			dnf install -y lz4 2>/dev/null
+			zypper in -y lz4 2>/dev/null
+		fi
+
+		mkdir -p ${DebianCHROOT}
+		rm -vf ~/armbian-bullseye-rootfs.tar
+		lz4 -d ~/armbian-bullseye-rootfs.tar.lz4
+		cd ${DebianCHROOT}
+		if [ "${LINUXDISTRO}" = "Android" ]; then
+			pv ~/armbian-bullseye-rootfs.tar | proot --link2symlink tar -px
+		else
+			if [ -e "/usr/bin/pv" ]; then
+				pv ~/armbian-bullseye-rootfs.tar | tar -px
+			else
+				tar -pxvf ~/armbian-bullseye-rootfs.tar
+			fi
+		fi
+		#相对路径，不是绝对路径
+		sed -i 's/^deb/#&/g' ./etc/apt/sources.list.d/armbian.list
+		sed -i '$ a\deb http://mirrors.tuna.tsinghua.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' ./etc/apt/sources.list.d/armbian.list
+		rm -vf ~/armbian-bullseye-rootfs.tar
+
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed 's/debian系统/armbian系统/g' |
+			sed 's/debian system/armbian system/g' |
+			sed 's:debian-sid:armbian-bullseye:g' |
+			sed 's:debian/sid:armbian/bullseye:g' |
+			sed 's:rootfs.tar.xz:rootfs.tar.lz4:g' |
+			sed 's:Debian GNU/Linux:Armbian GNU/Linux:g')"
 	fi
 	####################
 	echo 'Press Enter to return.'
