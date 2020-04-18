@@ -1760,7 +1760,9 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		echo 'You must agree to EULA to use this tool.'
 		echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
 		echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
-		export LANG=${CurrentLANG}
+		if [ "${LINUXDISTRO}" != 'Android' ]; then
+			export LANG=${CurrentLANG}
+		fi
 		read
 	fi
 	CHOOSEWHICHGNULINUX
