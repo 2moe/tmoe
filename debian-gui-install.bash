@@ -259,7 +259,7 @@ CHECKdependencies() {
 			fi
 		fi
 
-		if ! grep -q "^en_US" "/etc/locale.gen"; then
+		if ! grep -q "^zh_CN" "/etc/locale.gen"; then
 			if [ ! -e "/usr/sbin/locale-gen" ]; then
 				apt install -y locales
 			fi

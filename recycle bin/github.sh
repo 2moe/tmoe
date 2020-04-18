@@ -3,6 +3,7 @@ cd ..
 sed -i 's/zh_CN/en_US/g' ./*sh
 sed -i 's@en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/@zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/@' ./*sh
 sed -i 's@en_US en_US@en_US zh_CN@g' ./installDebian.sh
+sed -i 's@\^en_US@\^zh_CN@' debian-gui-install.bash
 sed -i 's@locale-gen en_US@locale-gen zh_CN@g' ./*sh
 #sed -i 's/zh_CN/en_US/g' ./debian.sh
 sed -i '/正在配置中文环境/d' ./installDebian.sh

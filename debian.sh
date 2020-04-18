@@ -459,7 +459,7 @@ GNULINUX() {
 			OSRELEASE="$(cat /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)"
 		fi
 
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Installation tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
+		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
 			bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash')"
 			exit 0
 		fi
@@ -576,21 +576,21 @@ MainMenu() {
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
-			"1" "proot安装 install debian" \
-			"2" "chroot安装 debian" \
-			"3" "原系统gui、音频服务及软件源" \
+			"1" "proot安装" \
+			"2" "chroot安装" \
+			"3" "GUI,audio & sources.list" \
 			"4" "novnc(web端控制)" \
-			"5" "移除 remove system" \
-			"6" "备份系统 backup system" \
-			"7" "还原 restore" \
-			"8" "查询空间占用 query space occupation" \
-			"9" "更新 update debian manager" \
-			"10" "配置zsh(优化termux) Configure zsh" \
+			"5" "remove system移除" \
+			"6" "backup system备份系统" \
+			"7" "restore还原" \
+			"8" "query space occupation查询空间占用" \
+			"9" "update更新" \
+			"10" "Configure zsh" \
 			"11" "Download VNC apk" \
 			"12" "VSCode Server arm64" \
 			"13" "赋予proot容器真实root权限" \
 			"14" "Video tutorial" \
-			"0" "退出 exit" \
+			"0" "exit退出" \
 			3>&1 1>&2 2>&3
 	)
 
@@ -1848,10 +1848,10 @@ TERMUXINSTALLXFCE() {
 	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 17 60 6 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
-		"3" "配置Termux局域网音频传输" \
-		"4" "切换VNC音频传输方式" \
+		"3" "configure Termux LAN audio局域网音频传输" \
+		"4" "switch VNC audio音频传输方式" \
 		"5" "更换为清华源(支持termux、debian、ubuntu)" \
-		"6" "下载termux_Fdroid.apk" \
+		"6" "download termux_Fdroid.apk" \
 		"7" "remove xfce4" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
