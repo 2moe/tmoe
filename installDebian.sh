@@ -1218,8 +1218,9 @@ fi
 
 if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
     if grep -q 'Debian' "/etc/issue"; then
+        sed -i 's/^deb/##&/g' /etc/apt/sources.list
         #stable-backports会出错，需改为buster-backports
-        cat >/etc/apt/sources.list <<-'EndOfFile'
+        cat >>/etc/apt/sources.list <<-'EndOfFile'
 #deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 #deb http://mirrors.huaweicloud.com/debian/ stable-updates main contrib non-free
 #deb http://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free
@@ -1230,7 +1231,8 @@ EndOfFile
 fi
 	if grep -q 'Kali' "/etc/issue"; then
 echo "检测到您使用的是Kali系统"
-cat >/etc/apt/sources.list <<-"EndOfSourcesList"
+sed -i 's/^deb/##&/g' /etc/apt/sources.list
+cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 deb http://mirrors.huaweicloud.com/kali/ kali-rolling main contrib non-free
 deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 # deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
@@ -1239,7 +1241,8 @@ EndOfSourcesList
 	fi
 
 if [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
-    cat >/etc/apt/sources.list <<-'EndOfFile'
+sed -i 's/^deb/##&/g' /etc/apt/sources.list
+    cat >>/etc/apt/sources.list <<-'EndOfFile'
 deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse
 deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-updates main restricted universe multiverse
 deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-backports main restricted universe multiverse
