@@ -1529,10 +1529,14 @@ EndOfArchMirrors
   pacman -Syyu --noconfirm
 fi
 #################################
-
-
-
-
+if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
+    LINUXDISTRO='slackware'
+    sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
+    sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
+    sed -i '$ a\https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
+    slackpkg update gpg
+    slackpkg update
+fi
 #############################################
 if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "fedora" ]; then
     tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d

@@ -881,22 +881,25 @@ It is recommended that you back up the entire system before removal. If the data
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo '若需删除debian管理器，则请输rm -f ${PREFIX}/bin/debian-i'
 	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
-	ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
-	ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
-	ls -lh ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-	ls -lh ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-	ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+	#ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
+	#ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
+	#ls -lh ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+	#ls -lh ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+	#ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+	cd ~
+	ls -lh *-rootfs.tar.xz
 	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
 	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
 
 	read opt
 	case $opt in
 	y* | Y* | "")
-		rm -vf ~/debian-sid-rootfs.tar.xz ${PREFIX}/bin/debian-rm 2>/dev/null
-		rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
-		rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-		rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-		rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+		#rm -vf ~/debian-sid-rootfs.tar.xz ${PREFIX}/bin/debian-rm 2>/dev/null
+		#rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
+		#rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+		#rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+		#rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+		rm -vf *-rootfs.tar.xz 2>/dev/null
 		echo "Deleted已删除"
 		;;
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
@@ -2299,6 +2302,7 @@ INSTALLotherSystems() {
 			"10" "devuan ascii(不使用systemd,基于debian)" \
 			"11" "apertis 18.12" \
 			"12" "alt p9" \
+			"13" "slackware(armhf)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2459,6 +2463,29 @@ INSTALLotherSystems() {
 				sed 's:debian/sid:alt/p9:g' |
 				sed 's:Debian GNU/Linux:Alt GNU/Linux:g')"
 		fi
+	fi
+	###########################
+	if [ "${BETASYSTEM}" == '13' ]; then
+		cd ~
+		#touch .SLACKDetectionFILE
+		if [ "${archtype}" != 'armhf' ] && [ "${archtype}" != 'arm64' ]; then
+			if [ ! -e "/usr/bin/qemu-arm-static" ]; then
+				apt update
+				apt install qemu-user-static
+			fi
+		fi
+
+		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
+			LatestSlack="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			aria2c -x 5 -s 5 -k 1M -o "slackware-current-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
+		fi
+
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed 's/debian系统/slackware系统/g' |
+			sed 's/debian system/slackware system/g' |
+			sed 's:debian-sid:slackware-current:g' |
+			sed 's:debian/sid:slackware/current:g' |
+			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
 	fi
 	####################
 	echo 'Press Enter to return.'
