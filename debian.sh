@@ -325,6 +325,10 @@ GNULINUX() {
 			apt install -y ${dependencies} || port install ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies}
 		fi
 	fi
+	##################
+	#解决乱码问题
+	CurrentLANG=$LANG
+	export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
 	########################
 	if [ "${LINUXDISTRO}" = "openwrt" ]; then
 		if [ -d "/opt/bin" ]; then
@@ -1708,8 +1712,6 @@ CHROOTINSTALLDebian() {
 #################################
 INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 	if [ ! -d "${DebianCHROOT}" ]; then
-		CurrentLANG=$LANG
-		export LANG="en_US.UTF-8"
 		less -meQ <<-'EndOfFile'
 			   Tmoe-Debian-Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
 			本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
