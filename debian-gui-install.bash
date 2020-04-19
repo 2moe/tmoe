@@ -700,6 +700,8 @@ installBROWSER() {
 			elif [ "${LINUXDISTRO}" = "gentoo" ]; then
 				dispatch-conf
 				emerge -avk www-client/firefox
+			elif [ "${LINUXDISTRO}" = "suse" ]; then
+				zypper in -y MozillaFirefox MozillaFirefox-translations-common
 			fi
 		else
 			echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
@@ -721,6 +723,8 @@ installBROWSER() {
 			elif [ "${LINUXDISTRO}" = "gentoo" ]; then
 				dispatch-conf
 				emerge -avk www-client/firefox-bin
+			elif [ "${LINUXDISTRO}" = "suse" ]; then
+				zypper in -y MozillaFirefox MozillaFirefox-translations-common
 			fi
 		fi
 		echo "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
@@ -768,7 +772,9 @@ installBROWSER() {
 		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
 			dispatch-conf
 			emerge -avk www-client/chromium
-			#emerge -avk www-client/google-chrome-unstable
+		#emerge -avk www-client/google-chrome-unstable
+		elif [ "${LINUXDISTRO}" = "suse" ]; then
+			zypper in -y chromium chromium-plugin-widevinecdm chromium-ffmpeg-extra
 		fi
 	fi
 	echo 'Press enter to return.'
@@ -946,6 +952,8 @@ INSTALL-lXQT-DESKTOP() {
 		dispatch-conf
 		etc-update
 		emerge -avk lxqt-base/lxqt-meta net-misc/tigervnc media-fonts/wqy-bitmapfont
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y patterns-lxqt-lxqt
 	fi
 
 	mkdir -p ~/.vnc
@@ -1005,6 +1013,8 @@ INSTALL-KDE-PLASMA5-DESKTOP() {
 		etc-update
 		#emerge -auvDN --with-bdeps=y @world
 		emerge -avk plasma-desktop plasma-nm plasma-pa sddm konsole net-misc/tigervnc
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y patterns-kde-kde_plasma
 	fi
 
 	mkdir -p ~/.vnc
@@ -1066,6 +1076,8 @@ INSTALL-GNOME3-DESKTOP() {
 		dispatch-conf
 		etc-update
 		emerge -avk gnome-shell gdm gnome-terminal net-misc/tigervnc media-fonts/wqy-bitmapfont
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y patterns-gnome-gnome_x11
 	fi
 
 	mkdir -p ~/.vnc
@@ -1115,6 +1127,8 @@ INSTALL-cinnamon-DESKTOP() {
 		dispatch-conf
 		etc-update
 		emerge -avk gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations net-misc/tigervnc media-fonts/wqy-bitmapfont
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y cinnamon cinnamon-control-center
 	fi
 
 	mkdir -p ~/.vnc
@@ -2016,7 +2030,8 @@ INSTALLXFCE4DESKTOP() {
 		dispatch-conf
 		etc-update
 		emerge -avk xfce4-meta x11-terms/xfce4-terminal net-misc/tigervnc media-fonts/wqy-bitmapfont
-
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y patterns-xfce-xfce
 	fi
 
 	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
@@ -2195,6 +2210,8 @@ INSTALLMATEDESKTOP() {
 		dispatch-conf
 		etc-update
 		emerge -avk mate-base/mate-desktop mate-base/mate x11-base/xorg-x11 mate-base/mate-panel net-misc/tigervnc media-fonts/wqy-bitmapfont
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y patterns-mate-mate
 	fi
 	mkdir -p ~/.vnc
 	cd ~/.vnc
@@ -2238,6 +2255,8 @@ INSTALLLXDEDESKTOP() {
 		dispatch-conf
 		etc-update
 		emerge -avk lxde-base/lxde-meta net-misc/tigervnc media-fonts/wqy-bitmapfont
+	elif [ "${LINUXDISTRO}" = "suse" ]; then
+		zypper in -y patterns-lxde-lxde
 	fi
 
 	mkdir -p ~/.vnc
@@ -2441,8 +2460,8 @@ STARTVNCANDSTOPVNC() {
 	#仅针对WSL修改语言设定
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		if [ "${LANG}" != 'en_US.UTF8' ]; then
-			grep -q 'LANG=\"zh_' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
-			grep -q 'LANG=\"zh_' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
+			grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
+			grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
 		fi
 	fi
 	echo 'The vnc service is about to start for you. The password you entered is hidden.'
