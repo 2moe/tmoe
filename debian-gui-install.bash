@@ -953,7 +953,7 @@ INSTALL-lXQT-DESKTOP() {
 		etc-update
 		emerge -avk lxqt-base/lxqt-meta net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc patterns-lxqt-lxqt
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-lxqt-lxqt
 	fi
 
 	mkdir -p ~/.vnc
@@ -1014,7 +1014,7 @@ INSTALL-KDE-PLASMA5-DESKTOP() {
 		#emerge -auvDN --with-bdeps=y @world
 		emerge -avk plasma-desktop plasma-nm plasma-pa sddm konsole net-misc/tigervnc
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc patterns-kde-kde_plasma
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-kde-kde_plasma
 	fi
 
 	mkdir -p ~/.vnc
@@ -1077,7 +1077,7 @@ INSTALL-GNOME3-DESKTOP() {
 		etc-update
 		emerge -avk gnome-shell gdm gnome-terminal net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc patterns-gnome-gnome_x11
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-gnome-gnome_x11
 	fi
 
 	mkdir -p ~/.vnc
@@ -1128,7 +1128,7 @@ INSTALL-cinnamon-DESKTOP() {
 		etc-update
 		emerge -avk gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc cinnamon cinnamon-control-center
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts cinnamon cinnamon-control-center
 	fi
 
 	mkdir -p ~/.vnc
@@ -2031,7 +2031,7 @@ INSTALLXFCE4DESKTOP() {
 		etc-update
 		emerge -avk xfce4-meta x11-terms/xfce4-terminal net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc patterns-xfce-xfce
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-xfce-xfce
 	fi
 
 	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
@@ -2211,7 +2211,7 @@ INSTALLMATEDESKTOP() {
 		etc-update
 		emerge -avk mate-base/mate-desktop mate-base/mate x11-base/xorg-x11 mate-base/mate-panel net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc patterns-mate-mate
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-mate-mate
 	fi
 	mkdir -p ~/.vnc
 	cd ~/.vnc
@@ -2256,7 +2256,7 @@ INSTALLLXDEDESKTOP() {
 		etc-update
 		emerge -avk lxde-base/lxde-meta net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc patterns-lxde-lxde
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-lxde-lxde
 	fi
 
 	mkdir -p ~/.vnc
