@@ -256,7 +256,7 @@ CHECKdependencies() {
 		fi
 	fi
 
-	if [ ! -e /usr/bin/busybox ] && [ ! -e /usr/local/bin/busybox ]; then
+	if [ ! -e /usr/bin/busybox ] && [ ! -e /bin/busybox ] && [ ! -e /usr/local/bin/busybox ]; then
 		cd /tmp
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
