@@ -1569,13 +1569,13 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
 skip_if_unavailable=False
 EndOfYumRepo
     fi
-  dnf install -y glibc-langpack-zh
+  #dnf install -y glibc-langpack-zh
   #localedef -c -f UTF-8 -i en_US zh_CN.utf8 
+  #dnf clean packages
 
 elif [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "centos" ]; then
     cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
     curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
-    dnf install -y glibc-langpack-zh
 fi
 
 ############################

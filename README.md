@@ -163,7 +163,7 @@ _**长命令**_
 _**精简命令**_
 
 ```shell
-    curl -sL l.tmoe.me | bash -
+    bash -c "$(curl -Lv l.tmoe.me)"
 ```
 
 > 注：精简命令和长命令调用的内容是不一样的，二选一即可。
