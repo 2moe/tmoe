@@ -1323,13 +1323,8 @@ REMOVEBROWSER() {
 }
 #############################################
 VSCODESERVER() {
-	if [ ! -f "/usr/bin/git" ]; then
-		apt update
-		apt install -y git
-	fi
 
 	if [ ! -e "/tmp/sed-vscode.tmp" ]; then
-		mkdir -p /tmp
 
 		cat >"/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
@@ -1337,40 +1332,38 @@ VSCODESERVER() {
 				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
 
 				rm -f /tmp/startcode.tmp
-				code &
-				echo "已为您启动VSCode服务!"
-				echo "VScodeServer has been started,enjoy it !"
-				echo "您可以输pkill code来停止服务(器)。"
-				echo 'You can type "pkill code" to stop vscode service(server).'
+				code-server &
+				echo "已为您启动VS Code Server!"
+				echo "VS Code Server has been started,enjoy it !"
+				echo "您可以输pkill code-server来停止服务(器)。"
+				echo 'You can type "pkill code-server" to stop vscode service(server).'
 			fi
 		EOF
 	fi
 	grep '/tmp/startcode.tmp' /root/.bashrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" /root/.bashrc
 	grep '/tmp/startcode.tmp' /root/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" /root/.zshrc
-	if [ ! -x "/usr/bin/code" ]; then
-		chmod +x /usr/bin/code 2>/dev/null || echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
+	if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
+		chmod +x /usr/local/bin/code-server-data/code-server 2>/dev/null || echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
 	fi
-	if [ ! -f "/usr/bin/code" ]; then
+	if [ ! -e "/usr/local/bin/code-server-data/code-server" ]; then
 
-		cd ${HOME}
+		cd /tmp
 		if [ -d ".VSCODESERVERTMPFILE" ]; then
 			rm -rf .VSCODESERVERTMPFILE
 		fi
 
-		git clone -b build --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
+		git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
 		cd .VSCODESERVERTMPFILE
-		tar -Jxvf code-server-arm64.tar.xz
-		chmod +x code
-		mv -f code "/usr/bin/"
+		tar -PpJxvf code.tar.xz
 		cd ${cur}
-		rm -rf ${HOME}/.VSCODESERVERTMPFILE
+		rm -rf /tmp/.VSCODESERVERTMPFILE
 		echo "即将为您启动VSCode服务,请复制密码，并在浏览器中粘贴。"
 		echo "The VSCode server is starting, please copy the password and paste it in your browser."
-		echo "您之后可以输code来启动VSCode Server."
-		echo 'You can type "code" to start VSCodeServer.'
-		/usr/bin/code
+		echo "您之后可以输code-server来启动VSCode Server."
+		echo 'You can type "code-server" to start VSCodeServer.'
+		/usr/local/bin/code-server-data/code-server
 	else
-		/usr/bin/code
+		/usr/local/bin/code-server-data/code-server
 
 	fi
 
@@ -1578,7 +1571,7 @@ Installkaliundercover() {
 }
 #####################################################
 INSTALLORREMOVEVSCODE() {
-	if [ -e "/usr/bin/code" ]; then
+	if [ -e "/usr/local/bin/code-server-data/code-server" ]; then
 		VSCODEINSTALLSTATUS="检测到您已安装vscode."
 		VSCODESTART='Start启动'
 	else
@@ -1592,7 +1585,7 @@ INSTALLORREMOVEVSCODE() {
 		echo "按任意键确认移除，按Ctrl+C取消。"
 		echo "${YELLOW}Press any key to remove VSCode Server. ${RESET}"
 		read
-		rm -f /usr/bin/code /tmp/sed-vscode.tmp
+		rm -rvf /usr/local/bin/code-server-data/ /usr/local/bin/code-server /tmp/sed-vscode.tmp
 		echo "${YELLOW}移除成功，按回车键返回。${RESET}"
 		echo "Remove successfully.Press enter to return."
 		read

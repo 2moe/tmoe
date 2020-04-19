@@ -1575,67 +1575,60 @@ DOWNLOADVNCAPK() {
 }
 #########################################
 STARTVSCODE() {
-	if [ ! -e ${PREFIX}/bin/git ]; then
-		apt update
-		apt install -y git
-	fi
-
 	if [ ! -d "${HOME}/${DebianFolder}" ]; then
-		echo "未检测到${DebianFolder},请先安装debian_arm64"
-		echo "Detected that you did not install ${DebianFolder}, please install debian first."
+		echo "未检测到${DebianFolder},请先安装GNU/Linux容器"
+		echo "Detected that you did not install ${DebianFolder}, please install container first."
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo 'Press enter to return.'
 		read
 		MainMenu
 	fi
-	if [ ! -e "${PREFIX}/bin/code" ]; then
-		cat >${PREFIX}/bin/code <<-EndOfFile
+
+	if [ ! -e "${PREFIX}/bin/code-server" ]; then
+		cat >${PREFIX}/bin/code-server <<-EndOfFile
 			#!/data/data/com.termux/files/usr/bin/bash
-			touch "${HOME}/debian_arm64/tmp/startcode.tmp"
+			touch "${DebianCHROOT}/tmp/startcode.tmp"
 			am start -a android.intent.action.VIEW -d "http://localhost:8080"
 			echo "本机默认vscode服务地址localhost:8080"
 			echo The LAN VNC address 局域网地址\$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080
 			echo "Please paste the address into your browser!"
 			echo "请将地址粘贴到浏览器的地址栏中"
 
-
-			echo "您之后可以输code来启动VSCode Server."
-			echo 'You can type "code" to start VScodeServer.'
+			echo "您之后可以输code-server来启动VS Code."
+			echo 'You can type "code-server" to start VS Code.'
 			debian
 		EndOfFile
-		chmod +x ${PREFIX}/bin/code
+		chmod +x ${PREFIX}/bin/code-server
 	fi
 
-	if [ ! -e "${HOME}/${DebianFolder}/tmp/sed-vscode.tmp" ]; then
-		mkdir -p ${HOME}/${DebianFolder}/tmp/
-
-		cat >${HOME}/${DebianFolder}/tmp/sed-vscode.tmp <<-'EOF'
+	if [ ! -e "${DebianCHROOT}/tmp/sed-vscode.tmp" ]; then
+		cat >${DebianCHROOT}/tmp/sed-vscode.tmp <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
 				echo "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
 				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
 
 				rm -f /tmp/startcode.tmp
-				code &
+				code-server &
 				echo "已为您启动VSCode服务!"
 				echo "VScodeServer has been started,enjoy it !"
-				echo "您可以输pkill code来停止服务(器)。"
-				echo 'You can type "pkill code" to stop vscode service(server).'
+				echo "您可以输pkill code-server来停止服务(器)。"
+				echo 'You can type "pkill code-server" to stop vscode service(server).'
 			fi
 		EOF
 	fi
 
-	if [ ! -f "${HOME}/${DebianFolder}/root/.zshrc" ]; then
-		echo "" >>${HOME}/${DebianFolder}/root/.zshrc
+	if [ ! -f "${DebianCHROOT}/root/.zshrc" ]; then
+		echo "" >>${DebianCHROOT}/root/.zshrc
 	fi
-	if [ ! -f "${HOME}/${DebianFolder}/root/.bashrc" ]; then
-		echo "" >>${HOME}/${DebianFolder}/root/.bashrc
+	if [ ! -f "${DebianCHROOT}/root/.bashrc" ]; then
+		echo "" >>${DebianCHROOT}/root/.bashrc
 	fi
 
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.bashrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.bashrc
-	grep '/tmp/startcode.tmp' ${HOME}/${DebianFolder}/root/.zshrc >/dev/null || sed -i "$ r ${HOME}/${DebianFolder}/tmp/sed-vscode.tmp" ${HOME}/${DebianFolder}/root/.zshrc
+	grep '/tmp/startcode.tmp' ${DebianCHROOT}/root/.bashrc >/dev/null || sed -i "$ r ${DebianCHROOT}/tmp/sed-vscode.tmp" ${DebianCHROOT}/root/.bashrc
+	grep '/tmp/startcode.tmp' ${DebianCHROOT}/root/.zshrc >/dev/null || sed -i "$ r ${DebianCHROOT}/tmp/sed-vscode.tmp" ${DebianCHROOT}/root/.zshrc
 
-	if [ -e "${HOME}/${DebianFolder}/usr/bin/code" ]; then
-		code
+	if [ -e "${DebianCHROOT}/usr/local/bin/code-server" ]; then
+		code-server
 	else
 
 		cd ${HOME}
@@ -1644,23 +1637,20 @@ STARTVSCODE() {
 		fi
 
 		echo "server版商店中不包含所有插件，如需下载额外插件，请前往微软vscode官方在线商店下载vsix后缀的离线插件，并手动安装。 https://marketplace.visualstudio.com/vscode"
-		git clone -b build --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
-		cd .VSCODESERVERTMPFILE
-		tar -Jxvf code-server-arm64.tar.xz
-		chmod +x code
-		mv -f code "${HOME}/${DebianFolder}/usr/bin/"
-		cd ${cur}
+		git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
+		cd ${DebianCHROOT}
+		tar -Jpxvf ${HOME}/.VSCODESERVERTMPFILE/code.tar.xz
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
 		echo "Congratulations, you have successfully installed vscode server!"
-		echo "您已成功安装VSCode服务，如需卸载请输rm -f ${PREFIX}/bin/code  ${HOME}/${DebianFolder}/usr/bin/code"
+		echo "您已成功安装VSCode服务，如需卸载请输rm -rf ${PREFIX}/bin/code-server ${DebianCHROOT}/usr/local/bin/code-server ${DebianCHROOT}/usr/local/bin/code-server-data"
 
-		grep "keyCode" ${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${HOME}/${DebianFolder}/root/.local/share/code-server/User && cat >${HOME}/${DebianFolder}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
+		grep "keyCode" ${DebianCHROOT}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${DebianCHROOT}/root/.local/share/code-server/User && cat >${DebianCHROOT}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
 			{
 			"keyboard.dispatch": "keyCode"
 			}
 		EndOfFile
 
-		code
+		code-server
 	fi
 
 }
