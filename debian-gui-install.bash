@@ -1615,7 +1615,7 @@ MODIFYTOKALISourcesList() {
 		DEBIANMENU
 	fi
 
-	if ! grep -q "kali" /etc/apt/sources.list; then
+	if ! grep -q "^deb.*kali" /etc/apt/sources.list; then
 		echo "检测到您当前为debian源，是否修改为kali源？"
 		echo "Detected that your current software sources list is debian, do you need to modify it to kali source?"
 		echo 'Press Enter to confirm.'
@@ -1642,9 +1642,10 @@ KALISOURCESLIST() {
 	cd /etc/apt/
 	cp -f sources.list sources.list.bak
 
-	#sed  's/^/#&/g' /etc/apt/sources.list
-
-	echo 'deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib' >/etc/apt/sources.list
+	sed -i 's/^deb/#&/g' /etc/apt/sources.list
+	cat >>/etc/apt/sources.list <<-'EOF'
+		deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
+	EOF
 	apt update
 	apt list --upgradable
 	apt dist-upgrade -y
@@ -1657,7 +1658,10 @@ KALISOURCESLIST() {
 }
 #######################
 DEBIANSOURCESLIST() {
-	echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free' >/etc/apt/sources.list
+	sed -i 's/^deb/#&/g' /etc/apt/sources.list
+	cat >>/etc/apt/sources.list <<-'EOF'
+		deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
+	EOF
 	apt update
 	apt list --upgradable
 	echo '您已换回debian源'
