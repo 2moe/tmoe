@@ -1306,7 +1306,7 @@ if grep -q 'openSUSE' "/etc/issue"; then
     sed -i 's@RC_LANG=.*@RC_LANG="en_US.UTF8"@' /etc/sysconfig/language
     sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="en_US.UTF8"@' /etc/sysconfig/language
     sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="en_US"@' /etc/sysconfig/language
-    zypper install -y glibc-locale glibc-i18ndata translation-update-en_US
+    zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
 fi
 
 apt update
