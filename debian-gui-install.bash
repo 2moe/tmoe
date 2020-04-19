@@ -64,7 +64,7 @@ CHECKdependencies() {
 		dependencies="${dependencies} bash"
 	fi
 
-	if [ ! -e /usr/bin/busybox ] && [ ! -e /bin/busybox ]; then
+	if [ ! -e /usr/bin/busybox ] && [ ! -e /bin/busybox ] && [ ! -e /sbin/busybox ]; then
 		if [ "${LINUXDISTRO}" = "gentoo" ]; then
 			dependencies="${dependencies} sys-apps/busybox"
 		else
