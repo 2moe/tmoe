@@ -1212,7 +1212,7 @@ if [ "$(uname -m)" = "mips" ]; then
   sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
 fi
 
-if ! grep -Eqi 'debian|ubuntu|kali|raspbian' "/etc/issue"; then
+if ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
   chattr +i /etc/apt/sources.list 2>/dev/null
 fi
 
@@ -1252,6 +1252,18 @@ deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-security main restricted 
 EndOfFile
     touch ~/.hushlogin
 fi
+
+	if grep -q 'Mint' "/etc/issue"; then
+echo "检测到您使用的是Linux Mint"
+sed -i 's/^deb/##&/g' /etc/apt/sources.list
+cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
+deb http://mirrors.huaweicloud.com/linuxmint/ tricia main upstream import backport
+deb http://mirrors.huaweicloud.com/ubuntu/ bionic main restricted universe multiverse
+deb http://mirrors.huaweicloud.com/ubuntu/ bionic-updates main restricted universe multiverse
+deb http://mirrors.huaweicloud.com/ubuntu/ bionic-backports main restricted universe multiverse
+deb http://mirrors.huaweicloud.com/ubuntu/ bionic-security main restricted universe multiverse
+EndOfSourcesList
+	fi
 
 
 #配置dns解析
@@ -1481,7 +1493,7 @@ EOF
     #exit 0
 elif [ "$(uname -m)" = "mips" ]; then
   chattr -i /etc/apt/sources.list    
-elif ! grep -Eqi 'debian|ubuntu|kali|raspbian' "/etc/issue"; then
+elif ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
   chattr -i /etc/apt/sources.list 2>/dev/null
 fi
 apt update
