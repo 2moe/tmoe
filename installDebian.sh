@@ -1480,7 +1480,8 @@ EOF
     cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
     sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.tuna.tsinghua.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
     xbps-install -S
-    xbps-install -y wget
+    xbps-install -uy xbps
+    xbps-install -y wget curl
     #wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
     neofetch
     rm -f vnc* zsh* .profile

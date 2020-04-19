@@ -67,6 +67,10 @@ CHECKdependencies() {
 	if [ ! -e /usr/bin/busybox ] && [ ! -e /bin/busybox ] && [ ! -e /sbin/busybox ]; then
 		if [ "${LINUXDISTRO}" = "gentoo" ]; then
 			dependencies="${dependencies} sys-apps/busybox"
+		elif [ "${LINUXDISTRO}" = "redhat" ]; then
+			if [ "${REDHATDISTRO}" = "fedora" ]; then
+				dependencies="${dependencies} busybox"
+			fi
 		else
 			dependencies="${dependencies} busybox"
 		fi
@@ -85,7 +89,7 @@ CHECKdependencies() {
 				dependencies="${dependencies} catimg"
 			fi
 
-		elif [ "${LINUXDISTRO}" = "redhat" ] || [ "${LINUXDISTRO}" = "arch" ]; then
+		elif [ "${REDHATDISTRO}" = "fedora" ] || [ "${LINUXDISTRO}" = "arch" ]; then
 			dependencies="${dependencies} catimg"
 		fi
 	fi
@@ -250,6 +254,19 @@ CHECKdependencies() {
 			apt install -y ./catimg.deb
 			rm -f catimg.deb
 		fi
+	fi
+
+	if [ ! -e /usr/bin/busybox ] && [ ! -e /usr/local/bin/busybox ]; then
+		cd /tmp
+		wget --no-check-certificate -O ".busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
+		chmod +x .busybox
+		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${archtype} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		wget -O '.busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
+		mkdir -p .busybox-static
+		./.busybox dpkg-deb -X .busybox.deb ./.busybox-static
+		mv -f ./.busybox-static/bin/busybox /usr/local/bin/
+		chmod +x /usr/local/bin/busybox
+		rm -rf .busybox .busybox-static .busybox.deb
 	fi
 
 	if [ "${LINUXDISTRO}" = "debian" ]; then
@@ -2031,7 +2048,7 @@ INSTALLXFCE4DESKTOP() {
 		etc-update
 		emerge -avk xfce4-meta x11-terms/xfce4-terminal net-misc/tigervnc media-fonts/wqy-bitmapfont
 	elif [ "${LINUXDISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-xfce-xfce
+		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-xfce-xfce xfce4-terminal
 	fi
 
 	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
