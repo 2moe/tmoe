@@ -2447,7 +2447,7 @@ INSTALLotherSystems() {
 				sed 's/debian system/apertis system/g' |
 				sed 's:debian-sid:apertis-18.12:g' |
 				sed 's:debian/sid:apertis/18.12:g' |
-				sed 's:Debian GNU/Linux:Arch Linux:g')"
+				sed 's:Debian GNU/Linux:Apertis Linux:g')"
 		fi
 	fi
 	####################
