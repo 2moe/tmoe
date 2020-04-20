@@ -29,7 +29,7 @@ Supported containers:
 - [x] **Slackware**
 - [x] **Armbian**
       ✨ 安装完容器后，能自动执行其它优化步骤。🍹  
-       配置和优化步骤仅适用于 Debian、Ubuntu、Kali、、Arch、Fedora 和 Gentoo(x64)。  
+       配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Gentoo(x64)。  
        All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Arch and Fedora.
 
 ![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)

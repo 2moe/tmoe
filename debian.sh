@@ -2300,7 +2300,7 @@ INSTALLotherSystems() {
 			"10" "devuan ascii(不使用systemd,基于debian)" \
 			"11" "apertis 18.12" \
 			"12" "alt p9" \
-			"13" "slackware(armhf)" \
+			"13" "slackware(armhf,x64)" \
 			"14" "armbian bullseye(arm64,armhf)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -2467,16 +2467,16 @@ INSTALLotherSystems() {
 	if [ "${BETASYSTEM}" == '13' ]; then
 		cd ~
 		#touch .SLACKDetectionFILE
-		if [ "${archtype}" != 'armhf' ] && [ "${archtype}" != 'arm64' ]; then
-			if [ ! -e "/usr/bin/qemu-arm-static" ]; then
-				apt update
-				apt install qemu-user-static
+		if [ "${archtype}" = 'amd64' ]; then
+			if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
+				aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
 			fi
-		fi
+		else
 
-		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
-			LatestSlack="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			aria2c -x 5 -s 5 -k 1M -o "slackware-current-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
+			if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
+				LatestSlack="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+				aria2c -x 5 -s 5 -k 1M -o "slackware-current-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
+			fi
 		fi
 
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
