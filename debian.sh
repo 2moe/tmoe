@@ -1635,7 +1635,7 @@ STARTVSCODE() {
 	grep '/tmp/startcode.tmp' ${DebianCHROOT}/root/.bashrc >/dev/null || sed -i "$ r ${DebianCHROOT}/tmp/sed-vscode.tmp" ${DebianCHROOT}/root/.bashrc
 	grep '/tmp/startcode.tmp' ${DebianCHROOT}/root/.zshrc >/dev/null || sed -i "$ r ${DebianCHROOT}/tmp/sed-vscode.tmp" ${DebianCHROOT}/root/.zshrc
 
-	if [ -e "${DebianCHROOT}/usr/local/bin/code-server" ]; then
+	if [ -e "${DebianCHROOT}/usr/local/bin/code-server" ] || [ -L "${DebianCHROOT}/usr/local/bin/code-server" ]; then
 		code-server
 	else
 
