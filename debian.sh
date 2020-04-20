@@ -574,7 +574,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200414-01)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200420-03)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1575,6 +1575,14 @@ DOWNLOADVNCAPK() {
 }
 #########################################
 STARTVSCODE() {
+	if [ "${archtype}" != 'arm64' ]; then
+		echo "It is detected that your current architecture is not arm64, please install the server version yourself."
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo 'Press enter to return.'
+		read
+		MainMenu
+	fi
+
 	if [ ! -d "${HOME}/${DebianFolder}" ]; then
 		echo "未检测到${DebianFolder},请先安装GNU/Linux容器"
 		echo "Detected that you did not install ${DebianFolder}, please install container first."

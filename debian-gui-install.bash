@@ -305,7 +305,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200415-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0410适配其它系统和桌面,0411支持修复VNC闪退" 20 50 6 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200420-05)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0411支持修复VNC闪退,0420增加其它版本的VSCode" 20 50 6 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -315,7 +315,7 @@ DEBIANMENU() {
 			"7" "Update Debian tool 更新本工具" \
 			"8" "Install Chinese manual 安装中文手册" \
 			"9" "Enable zsh tool 启用zsh管理工具" \
-			"10" "VSCode server arm64" \
+			"10" "VSCode" \
 			"11" "Remove GUI 卸载图形界面" \
 			"12" "Remove browser 卸载浏览器" \
 			"13" "FAQ 常见问题" \
@@ -389,16 +389,7 @@ DEBIANMENU() {
 	fi
 	###################################
 	if [ "${OPTION}" == '10' ]; then
-		if [ "$(uname -m)" = "aarch64" ]; then
-			INSTALLORREMOVEVSCODE
-		else
-			echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
-			echo "请自行安装VScode"
-			echo "${YELLOW}按回车键返回。${RESET}"
-			echo "Press enter to return."
-			read
-			DEBIANMENU
-		fi
+		WHICHVSCODEedition
 	fi
 	###################################
 	if [ "${OPTION}" == '11' ]; then
@@ -426,9 +417,201 @@ DEBIANMENU() {
 
 	fi
 }
-
 ############################
+WHICHVSCODEedition() {
+	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用XSDL打开VSCode本地版")
+	VSCODEedition=$(whiptail --title "VS Code" --menu \
+		"${VSCODEtips} Which edition do you want to install" 15 60 5 \
+		"1" "VS Code Server(arm64,web版)" \
+		"2" "VS Codium" \
+		"3" "VS Code OSS" \
+		"4" "Microsoft Official(x64,官方版)" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	if [ "${VSCODEedition}" == '0' ]; then
+		DEBIANMENU
+	fi
+	##############################
+	if [ "${VSCODEedition}" == '1' ]; then
+		if [ "$(uname -m)" = "aarch64" ]; then
+			INSTALLORREMOVEVSCODE
+		else
+			echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
+			echo "请选择其它版本"
+			echo "${YELLOW}按回车键返回。${RESET}"
+			echo "Press enter to return."
+			read
+			DEBIANMENU
+		fi
+	fi
+	##############################
+	if [ "${VSCODEedition}" == '2' ]; then
+		InstallVScodium
+	fi
+	##############################
+	if [ "${VSCODEedition}" == '3' ]; then
+		InstallVScodeOSS
+	fi
+	##############################
+	if [ "${VSCODEedition}" == '4' ]; then
+		InstallVSCodeOfficial
+	fi
+	#########################
+	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press enter to return."
+	read
+	DEBIANMENU
+}
+#################################
+InstallVScodium() {
+	cd /tmp
+	if [ "${archtype}" = 'arm64' ]; then
+		CodiumARCH=arm64
+	elif [ "${archtype}" = 'armhf' ]; then
+		CodiumARCH=arm
+		#CodiumDebArch=armhf
+	elif [ "${archtype}" = 'amd64' ]; then
+		CodiumARCH=x64
+	elif [ "${archtype}" = 'i386' ]; then
+		echo "暂不支持i386 linux"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	fi
 
+	if [ -e "/usr/bin/codium" ]; then
+		echo '检测到您已安装VSCodium,请手动输以下命令启动'
+		#echo 'codium --user-data-dir=${HOME}/.config/VSCodium'
+		echo "codium --user-data-dir=${HOME}"
+		echo "如需卸载，请手动输apt purge -y codium"
+	elif [ -e "/usr/local/bin/vscodium-data/codium" ]; then
+		echo "检测到您已安装VSCodium,请输codium --no-sandbox启动"
+		echo "如需卸载，请手动输rm -rvf /usr/local/bin/vscodium-data/ /usr/local/bin/vscodium"
+	fi
+
+	if [ $(command -v codium) ]; then
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	fi
+
+	if [ "${LINUXDISTRO}" = 'debian' ]; then
+		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${archtype} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		wget -O 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		apt install -y ./VSCodium.deb
+		rm -vf VSCodium.deb
+		#echo '安装完成,请输codium --user-data-dir=${HOME}/.config/VSCodium启动'
+		echo "安装完成,请输codium --user-data-dir=${HOME}启动"
+	else
+		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		wget -O 'VSCodium.tar.gz' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		mkdir -p /usr/local/bin/vscodium-data
+		tar -zxvf VSCodium.tar.gz -C /usr/local/bin/vscodium-data
+		rm -vf VSCodium.tar.gz
+		ln -sf /usr/local/bin/vscodium-data/codium /usr/local/bin/codium
+		echo "安装完成，输codium --no-sandbox启动"
+	fi
+	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press enter to return."
+	read
+	WHICHVSCODEedition
+}
+########################
+InstallVScodeOSS() {
+
+	if [ -e "/usr/bin/code-oss" ]; then
+		echo "检测到您已安装VSCode OSS,请手动输以下命令启动"
+		#echo 'code-oss --user-data-dir=${HOME}/.config/Code\ -\ OSS\ \(headmelted\)'
+		echo "code-oss --user-data-dir=${HOME}"
+		echo "如需卸载，请手动输apt purge -y code-oss"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	fi
+
+	if [ "${LINUXDISTRO}" = 'debian' ]; then
+		apt update
+		apt install -y gpg
+		bash -c "$(wget -O- https://code.headmelted.com/installers/apt.sh)"
+	elif [ "${LINUXDISTRO}" = 'redhat' ]; then
+		. <(wget -O - https://code.headmelted.com/installers/yum.sh)
+	else
+		echo "检测到您当前使用的可能不是deb系或红帽系发行版，跳过安装"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	fi
+	echo "安装完成,请手动输以下命令启动"
+	echo "code-oss --user-data-dir=${HOME}"
+	echo "如需卸载，请手动输apt purge -y code-oss"
+	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press enter to return."
+	read
+	WHICHVSCODEedition
+
+}
+#######################
+InstallVSCodeOfficial() {
+
+	cd /tmp
+	if [ "${archtype}" != 'amd64' ]; then
+		echo "当前仅支持x86_64架构"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	fi
+
+	if [ -e "/usr/bin/code" ]; then
+		echo '检测到您已安装VSCode,请手动输以下命令启动'
+		#echo 'code --user-data-dir=${HOME}/.vscode'
+		echo 'code --user-data-dir=${HOME}'
+		echo "如需卸载，请手动输apt purge -y code"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	elif [ -e "/usr/local/bin/vscode-data/code" ]; then
+		echo "检测到您已安装VSCode,请输code --no-sandbox启动"
+		echo "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		WHICHVSCODEedition
+	fi
+
+	if [ "${LINUXDISTRO}" = 'debian' ]; then
+		wget -O 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
+		apt install -y ./VSCODE.deb
+		rm -vf VSCODE.deb
+		echo "安装完成,请输code --user-data-dir=${HOME}启动"
+
+	elif [ "${LINUXDISTRO}" = 'redhat' ]; then
+		wget -O 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
+		rpm -ivh ./VSCODE.rpm
+		rm -vf VSCODE.rpm
+		echo "安装完成,请输code --user-data-dir=${HOME}启动"
+	else
+		wget -O 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
+		#mkdir -p /usr/local/bin/vscode-data
+		tar -zxvf VSCODE.tar.gz -C /usr/local/bin/
+
+		rm -vf VSCode.tar.gz
+		ln -sf /usr/local/bin/VSCode-linux-x64/code /usr/local/bin/code
+		echo "安装完成，输code --no-sandbox启动"
+	fi
+	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press enter to return."
+	read
+	WHICHVSCODEedition
+}
+
+#######################
 MODIFYVNCCONF() {
 	if [ ! -e /bin/nano ]; then
 		apt update
