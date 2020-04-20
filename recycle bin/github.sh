@@ -10,6 +10,7 @@ sed -i 's/114.114.114.114/1.0.0.1/' installDebian.sh
 sed -i 's/240c::6666/2606:4700:4700::1111/' installDebian.sh
 #sed -i 's/zh_CN/en_US/g' ./debian.sh
 sed -i '/正在配置中文环境/d' installDebian.sh
+sed -i 's@###tmoe-github@@' installDebian.sh
 sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh
 sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' installDebian.sh
 sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' installDebian.sh

@@ -1265,6 +1265,7 @@ deb http://mirrors.huaweicloud.com/ubuntu/ bionic-security main restricted unive
 EndOfSourcesList
 	fi
 
+ sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
 
 #配置dns解析
 rm -f /etc/resolv.conf
