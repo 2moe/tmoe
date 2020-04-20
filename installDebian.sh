@@ -1607,7 +1607,7 @@ EDITBASHPROFILE
 
 if [ "${LINUXDISTRO}" != 'Android' ]; then
   sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
-  sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DebianFolder}/remove-debian.sh
+  sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DebianCHROOT}/remove-debian.sh
 fi
 
 bash ${PREFIX}/bin/debian
