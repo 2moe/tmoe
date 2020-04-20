@@ -1371,6 +1371,7 @@ if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
   echo "Replacing http software source list with https."
   echo "正在将http源替换为https..."
   sed -i 's@http:@https:@g' /etc/apt/sources.list
+  sed -i 's@https://security@http://security@g' /etc/apt/sources.list
 else
    rm -f "/tmp/.RASPBIANARMHFDetectionFILE"  
 fi
