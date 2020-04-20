@@ -2296,7 +2296,7 @@ INSTALLotherSystems() {
 			"6" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"7" "raspbian樹莓派 buster(armhf)" \
 			"8" "mint tricia(简单易用的系统,x86,x64)" \
-			"9" "openwrt(常见于路由器,x64)" \
+			"9" "openwrt(常见于路由器,arm64,x64)" \
 			"10" "devuan ascii(不使用systemd,基于debian)" \
 			"11" "apertis 18.12" \
 			"12" "alt p9" \
@@ -2401,6 +2401,7 @@ INSTALLotherSystems() {
 	####################
 	if [ "${BETASYSTEM}" == '8' ]; then
 		if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
+
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 				sed 's/debian系统/mint系统/g' |
 				sed 's/debian system/mint system/g' |
@@ -2414,18 +2415,19 @@ INSTALLotherSystems() {
 
 	####################
 	if [ "${BETASYSTEM}" == '9' ]; then
-		if [ "${archtype}" = 'amd64' ]; then
-			touch ~/.ALPINELINUXDetectionFILE
-			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
-				sed 's/debian系统/openwrt系统/g' |
-				sed 's/debian system/openwrt system/g' |
-				sed 's:debian-sid:openwrt-snapshot:g' |
-				sed 's:debian/sid:openwrt/snapshot:g' |
-				sed 's:Debian GNU/Linux:OpenWRT Linux:g')"
-		else
-			echo "开发者暂时还没有构建${archtype}架构的容器镜像呢！"
-			echo "您可以换用x86_64架构的设备进行安装"
+		if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
+			cd ~
+			if [ "${archtype}" = 'arm64' ]; then
+				aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/show/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
+			fi
 		fi
+		touch ~/.ALPINELINUXDetectionFILE
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+			sed 's/debian系统/openwrt系统/g' |
+			sed 's/debian system/openwrt system/g' |
+			sed 's:debian-sid:openwrt-snapshot:g' |
+			sed 's:debian/sid:openwrt/snapshot:g' |
+			sed 's:Debian GNU/Linux:OpenWRT Linux:g')"
 	fi
 	####################
 	if [ "${BETASYSTEM}" == '10' ]; then
