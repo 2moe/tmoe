@@ -27,8 +27,8 @@ Supported containers:
 - [x] **Mint tricia**
 - [x] **Devuan ascii**
 - [x] **Slackware**
-- [x] **Armbian**
-      ✨ 安装完容器后，能自动执行其它优化步骤。🍹  
+- [x] **Armbian**  
+       ✨ 安装完容器后，还能自动执行其它优化步骤。🍹  
        配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Gentoo(x64)。  
        All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Arch and Fedora.
 
@@ -116,14 +116,13 @@ _**精简命令**_
 ```
 
 > 注：精简命令和长命令调用的内容是不一样的，二选一即可。  
-> 区别在于前者对国内的网络进行了优化，而后者重复安装了 wget。  
-> 建议使用精简命令，除非 wget 被您不慎卸载掉了。
+> 区别在于前者对国内的网络进行了优化，而后者重复安装了 wget。
 
 _**长命令**_
 
 ```shell
-    apt update
-    apt install -y wget
+    sudo apt update
+    sudo apt install -y wget
     bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
@@ -172,7 +171,6 @@ _**精简命令**_
 _**长命令**_
 
 ```shell
-    apt install -y curl
     bash -c "$(curl -Lv https://git.io/linux.sh)"
 ```
 
@@ -221,7 +219,7 @@ bash -c "$(wget -O- https://git.io/linux.sh)"
 
 ```shell
     opkg update
-    opkg install wget bash
+    opkg install libustream-openssl ca-bundle ca-certificates wget bash
     bash -c "$(wget --no-check-certificate -O- https://git.io/linux.sh)"
 ```
 
@@ -229,7 +227,7 @@ bash -c "$(wget -O- https://git.io/linux.sh)"
 
 ```shell
     apk add wget
-    wget -O- https://git.io/linux.sh | ash
+    ash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
 #### 8.Void
