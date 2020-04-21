@@ -1682,7 +1682,9 @@ CONFIGTHEMES() {
 		cat url.txt
 		tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
 		rm -rf /tmp/UosICONS
-		echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos"
+		apt update
+		apt install -y deepin-icon-theme
+		echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; apt purge -y deepin-icon-theme"
 	fi
 	###########################################
 
