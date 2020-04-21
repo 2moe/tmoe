@@ -420,7 +420,7 @@ DEBIANMENU() {
 ############################
 WHICHVSCODEedition() {
 	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用XSDL打开VSCode本地版")
-	VSCODEedition=$(whiptail --title "VS Code" --menu \
+	VSCODEedition=$(whiptail --title "Visual Studio Code" --menu \
 		"${VSCODEtips} Which edition do you want to install" 15 60 5 \
 		"1" "VS Code Server(arm64,web版)" \
 		"2" "VS Codium" \
