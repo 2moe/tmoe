@@ -576,7 +576,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200420-03)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200422-05)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1858,7 +1858,7 @@ TERMUXINSTALLXFCE() {
 		"2" "modify vnc conf" \
 		"3" "configure Termux LAN audio局域网音频传输" \
 		"4" "switch VNC audio音频传输方式" \
-		"5" "更换为清华源(支持termux、debian、ubuntu)" \
+		"5" "更换为清华源(支持termux、debian、ubuntu和kali)" \
 		"6" "download termux_Fdroid.apk" \
 		"7" "remove xfce4" \
 		"0" "Back to the main menu 返回主菜单" \
