@@ -392,7 +392,9 @@ GNULINUX() {
 				echo "您需要以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
 				echo "重启PC，然后输入以下命令"
 				echo "wsl --set-default-version 2"
-				echo "wsl --set-version ${WSL_DISTRO_NAME} 2"
+				echo "wsl --set-version 当前发行版名称 2"
+				echo "您可以输wsl -l -v来获取发行版名称和版本号"
+				#echo ${WSL_DISTRO_NAME}
 				echo "wsl -l -v"
 				echo "最后以管理员身份安装wsl_update_x64.msi（升级WSL2内核）"
 				echo 'Press Enter to continue.'
