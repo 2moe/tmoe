@@ -32,11 +32,11 @@ Supported containers:
        配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Gentoo(x64)。  
        All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Arch and Fedora.
 
-![Capture__2020-02-16-02-23-49.png](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/KtxgGq3bFSf4Uwvo.png)
+![Capture__2020-02-16-02-23-49.png](https://s1.ax1x.com/2020/04/23/JUR15q.md.png)
 
 支持一键安装图形界面。
 
-![截图_2020-02-01_08-53-21.jpg](https://gitee.com/mo2/pic_api/raw/test/2020/02/16/yMgxSkGh0Tx4IJz0.jpg)
+![截图_2020-02-01_08-53-21.jpg](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)
 
 🍸 目前支持的桌面环境：
 
@@ -96,7 +96,7 @@ wsl --set-default-version 2
 ```
 
 [![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)  
-![store](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/FLpQu0i7LbIP2K9L.png)  
+![store](https://s1.ax1x.com/2020/04/23/JUW3eH.png)  
 若无法连接 _Microsoft Store_,那么也可以手动安装。  
 请从以下三者中选择：  
 [Debian](https://aka.ms/wsl-debian-gnulinux)  
@@ -265,7 +265,7 @@ bash -c "$(curl -Lv https://git.io/linux.sh)"
 
 > 进入工具后，按方向键和回车键进行操作，基本上所有操作都有提示。
 
-[![Snipaste_2020-03-20_17-10-48.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/20/0W0hSgimlmeXIBjO.png)](https://gitee.com/mo2/pic_api/raw/test/2020/03/20/0W0hSgimlmeXIBjO.png)
+[![Snipaste_2020-03-20_17-10-48.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/20/0W0hSgimlmeXIBjO.png)](https://s1.ax1x.com/2020/04/23/JUWw6S.md.png)
 
 - 2.启动命令(仅支持在原系统内输)
 
@@ -464,7 +464,7 @@ nano /usr/bin/startvnc
 
 - 1.支持 mipsel 架构，已在路由器上测试过了。
 
-![Snipaste_2020-03-24_05-36-44.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/1dc0XmN262GBr9QG.png)
+![Snipaste_2020-03-24_05-36-44.png](https://s1.ax1x.com/2020/04/23/JUWsTs.png)
 
 - 2.尝试让 RISC-V 架构的设备能运行 debian 容器，需要宿主机原系统为 deb 系。
   当检测到设备为 riscv 架构时，将下载 arm64 架构版的容器镜像。
