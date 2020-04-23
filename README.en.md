@@ -46,11 +46,12 @@ The script can automatically configure the Pulseaudio server for Android and Win
 ```
 
 After installing the container, you can type `debian` to start any system.  
-I did not do multi-system configuration, all system startup commands are `debian`
+The developer did not do multi-system configuration, all system startup commands are `debian`  
+Whether in the container or the original system,you can start the toolbox by typing `debian-i`.
 
 After installing the GUI, you can start vnc by typing `startvnc`,and you can start XServer by typing `startxsdl`.
 
-It is recommended that you install a VNC client.  
+If you are using Android,it is recommended that you install a VNC client.  
 [Google Play](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)
 
-If you are using WSL2, then it is recommended that you use the X service.
+If you are using WSL2,it is recommended that you use the X service.
