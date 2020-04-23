@@ -78,13 +78,11 @@ In addition, the **mipsel** architecture is also supported! The developer has te
 
 2020-03-24 已经支持 **mipsel** 架构了！(已经在路由器上测试过了 🍥)
 
-Already supports the **mipsel** architecture
-Already tested on the router 🍥)
-
 可能支持 **RISC-V** (由于现在暂时无法构建 risc-v 的基础容器镜像，故只能靠 qemu 在 risc-v 的设备上模拟其它架构的系统。）
 
 这可能是你见过的为数不多的，全架构 ~~、全平台~~ 项目。 ~~（win10 仅支持 wsl，不是全平台)~~
 
+Containers other than debian may only support mainstream architectures, not s390x and ppc64el.
 其它系统容器可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
 
 ### 不同平台的安装教程 Installation tutorials for different platforms
