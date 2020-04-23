@@ -39,7 +39,7 @@ Supported containers:
 ![Capture__2020-02-16-02-23-49.png](https://s1.ax1x.com/2020/04/23/JUR15q.md.png)
 
 支持一键安装图形界面。
-Support one-key installation graphical interface.
+Support one-key installation Graphical User Interface.
 
 ![截图_2020-02-01_08-53-21.jpg](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)
 
