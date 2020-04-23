@@ -4,8 +4,7 @@
 
 ## 介绍 Introduction
 
-Without any basic knowledge of linux shell, you can run GNU/Linux on your mobile phone/PC, and you can easily install a graphical desktop environment.  
-And you can install a graphical desktop environment on Windows Subsystem for Linux and configure pulseaudio server.  
+🍭Without any basic knowledge of linux shell,🍹 you can run GNU/Linux on your android phone and windows PC, and you can easily install a graphical desktop environment and configure pulseaudio server.✨
 You can also run Gentoo, Arch and other systems in WSL.
 
 在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
