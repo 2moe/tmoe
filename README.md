@@ -9,7 +9,7 @@ You can also run Gentoo, Arch and other systems in WSL.
 
 在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
 在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。  
-在 **win10**上一键安装桌面环境。
+在 **win10(WSL)**上一键安装桌面环境。
 
 **Android**和**Win10**还支持配置音频服务。
 
@@ -94,8 +94,8 @@ Containers other than debian may only support mainstream architectures, not s390
 
 Tutorial（教程）：  
 ![我不知道怎么用](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/247f4fvoKnj56MwN.png)  
-Q:I don't know how to use it?
-![以admin身份运行powershell](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/h4IrTwyx4AaC8joE.png)
+Q:I don't know how to use it?  
+![以admin身份运行powershell](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/h4IrTwyx4AaC8joE.png)  
 A:Run PowerShell as an administrator and enter the following command.
 
 ```powershell
@@ -153,54 +153,54 @@ Finally, press Enter and arrow keys to operate.
 > When prompted Tool/Manager, please select Tool
 
 ![000](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
-**Just press enter and arrow keys, it won't be so simple, you are really adorkable!**
+**Just press enter and arrow keys, it won't be so simple, you are really adorkable!**  
 ![001](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
-**How can you scold me?**
+**How can you scold me?**  
 ![002](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
-**I'm not talking about you!**
+**I'm not talking about you!**  
 ![01](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/kGTCjub8kg4WbMU6.png)  
-**How to start the X server?**
+**How to start the X server?**  
 ![02](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/5B20sqYFe0ZV15Hg.png)  
-**Just enter `startxsdl`, it should be ok**
+**Just enter `startxsdl`, it should be ok**  
 ![03](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/UvqZWPa3XSkEEprK.png)
-**How to start the VNC?**
+**How to start the VNC?**  
 ![04](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/CLvZ5AQaslZDZHWu.png)  
 **Just enter `startvnc`**  
-**And you can also enter `debian-i` to start the tmoe-linux tool**
+**And you can also enter `debian-i` to start the tmoe-linux tool**  
 ![05](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/gXWDvCibdouH6IqX.png)
 
 > 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
 
 ![停止VNC](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/KvMfXNGnHKbspTNs.png)  
-**How to stop VNC?**
+**How to stop VNC?**  
 ![stopvnc](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/buq1rhY6i55M2Dv4.png)  
-**Oh,I know,enter `stopvnc`**
+**Oh,I know,enter `stopvnc`**  
 ![06](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/6CDOlyOZb6qDbYqb.png)  
-**Can anyone tell me how to modify the resolution?**
+**Can anyone tell me how to modify the resolution?**  
 ![07](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/GrPC2ckH7KavXw0p.png)  
-**Nobody answered, only read the [readme](https://github.com/2moe/tmoe-linux/blob/master/README.en.md) written by the developer.**
+**Nobody answered, only read the [readme](https://github.com/2moe/tmoe-linux/blob/master/README.en.md) written by the developer.**  
 ![08](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/DZNjgwyVIrUjd3TH.png)  
 ![09](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ACPJKw4lYfedt9D6.png)  
 **Wow! This is too complicated, I can't remember the order at all.**  
 ![10](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/nqvK1beXuKXsrljA.png)  
 **WSL users only need to remember `startxsdl`**  
-**Android users only need to remember `startvnc`.**
+**Android users only need to remember `startvnc`.**  
 ![11](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/3luF9hHGPnPuhwHu.png)  
 ![12](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/YsZou4mIXZUFUYdZ.png)
 
 ![14](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/56LaqsyefesPOa2t.png)  
-**I think the script you wrote is garbage, I don’t want to use it!**
+**I think the script you wrote is garbage, I don’t want to use it!**  
 ![perfect](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ILwcxdCOYVCS3lB6.png)
 
-**If you don’t like it, you don’t have to use it.But few peope integrate win10 and linux so perfectly.**
+**If you don’t like it, you don’t have to use it.But few peope integrate win10 and linux so perfectly.**  
 
 #### 2.Android-Termux
 
-> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
-> 2.打开 termux，输入下面 bash 开头的命令
->
 > 1.Go to google play, then install [Termux](https://play.google.com/store/apps/details?id=com.termux) and [Termux:api](https://play.google.com/store/apps/details?id=com.termux.api)  
 > 2.Open termux and enter the following command.
+>
+> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
+> 2.打开 termux，输入下面 bash 开头的命令
 
 _**If you do not live in China, please enter**_
 
