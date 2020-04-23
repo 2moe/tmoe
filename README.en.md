@@ -10,8 +10,17 @@ The following containers are now **supported**:
 - [x] **Kali rolling**
 - [x] **Arch**
 - [x] **Fedora 31**
+- [x] **CentOS 8**
+- [x] **Gentoo**
 - [x] **Funtoo**
+- [x] **Alpine edge**
+- [x] **OpenSUSE tumbleweed**
 - [x] **Void**
+- [x] **Raspbian buster**
+- [x] **Mint tricia**
+- [x] **Devuan ascii**
+- [x] **Slackware**
+- [x] **Armbian**
 
 ## Installation
 
@@ -39,7 +48,7 @@ The script can automatically configure the Pulseaudio server for Android and Win
 After installing the container, you can type `debian` to start any system.  
 I did not do multi-system configuration, all system startup commands are `debian`
 
-After installing the GUI, you can start vnc by typing `startvnc`
+After installing the GUI, you can start vnc by typing `startvnc`,and you can start XServer by typing `startxsdl`.
 
 It is recommended that you install a VNC client.  
 [Google Play](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)

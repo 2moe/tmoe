@@ -1,13 +1,18 @@
 # 🍭Tmoe-linux
 
-> If you do not understand Chinese, then please open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)
+> If you do not understand the following readme, please give me an issue to explain the situation,or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)
 
 ## 介绍 Introduction
 
-Without any basic knowledge of linux shell, you can run GNU/Linux on your mobile phone/PC, and you can easily install a graphical desktop environment.
+Without any basic knowledge of linux shell, you can run GNU/Linux on your mobile phone/PC, and you can easily install a graphical desktop environment.  
+And you can install a graphical desktop environment on Windows Subsystem for Linux and configure pulseaudio server.  
+You can also run Gentoo, Arch and other systems in WSL.
 
 在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
-在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。
+在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。  
+在 **win10**上一键安装桌面环境。
+
+**Android**和**Win10**还支持配置音频服务。
 
 🍸 目前支持的容器：
 Supported containers:
@@ -35,10 +40,11 @@ Supported containers:
 ![Capture__2020-02-16-02-23-49.png](https://s1.ax1x.com/2020/04/23/JUR15q.md.png)
 
 支持一键安装图形界面。
+Support one-key installation graphical interface.
 
 ![截图_2020-02-01_08-53-21.jpg](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)
 
-🍸 目前支持的桌面环境：
+🍸 Supported GUI/DE 目前支持的桌面环境：
 
 - [x] **xfce4**
 - [x] **lxde**
@@ -49,24 +55,31 @@ Supported containers:
 - [ ] **gnome 3**
 - [ ] **deepin desktop**
 
-> 注 1：仅部分系统支持  
-> 注 2：优先适配 xfce  
-> 注 3： 未打勾的选项在容器/远程桌面环境下存在一些问题
-
-1.Arch + Deepin desktop 在 VNC 下会黑屏  
-下图的 Arch 是运行在 debian 里的 chroot 容器。
-![Snipaste_2020-04-12_05-09-13.png](https://i.loli.net/2020/04/18/LQcrOqZxwU2svJ5.png)  
-2.如下图所示，Debian sid + KDE Plasma 5 转发 X11 后，窗口显示会出现问题。
-注：在 RDP 下此问题未复现
-![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)
+> 注 1：Only some systems support desktop environment installation.  
+> 仅部分系统支持  
+> 注 2：Prioritize XFCE  
+> 优先适配 xfce  
+> 注 3： 未打勾的选项在容器/远程桌面环境下存在一些问题  
+> **Some desktops may not display properly through the remote desktop**
+>
+> 1.Arch + Deepin desktop 在 VNC 下会黑屏  
+> 下图的 Arch 是运行在 debian 里的 chroot 容器。
+> ![Snipaste_2020-04-12_05-09-13.png](https://i.loli.net/2020/04/18/LQcrOqZxwU2svJ5.png)  
+> 2.如下图所示，Debian sid + KDE Plasma 5 转发 X11 后，窗口显示会出现问题。
+> 注：在 RDP 下此问题未复现
+> ![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)
 
 ### 支持的架构 Supported architecture
 
 Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86)、s390x 和 ppc64el**
 
-~~可以支持，但不想支持的是 **mipsel**~~
+~~可以支持，但不想支持的是 **mipsel**~~  
+In addition, the **mipsel** architecture is also supported! The developer has tested it on the router
 
 2020-03-24 已经支持 **mipsel** 架构了！(已经在路由器上测试过了 🍥)
+
+Already supports the **mipsel** architecture
+Already tested on the router 🍥)
 
 可能支持 **RISC-V** (由于现在暂时无法构建 risc-v 的基础容器镜像，故只能靠 qemu 在 risc-v 的设备上模拟其它架构的系统。）
 
@@ -74,22 +87,27 @@ Debian 容器支持 **arm64(aarch64)、armhf、armel、amd64(x86_64) 、i386(x86
 
 其它系统容器可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
 
-### 不同平台的安装教程
+### 不同平台的安装教程 Installation tutorials for different platforms
+
+**You can run this tool not only on Android, but also on GNU/Linux.**
 
 **您不仅可以在 Android 手机上运行本工具，亦可在 GNU/Linux 上运行。**
 
 #### 1.Windows10
 
-教程：  
+Tutorial（教程）：  
 ![我不知道怎么用](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/247f4fvoKnj56MwN.png)  
+Q:I don't know how to use it?
 ![以admin身份运行powershell](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/h4IrTwyx4AaC8joE.png)
+A:Run PowerShell as an administrator and enter the following command.
 
 ```powershell
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
 
-重启系统后再次以管理员身份运行 _powershell_ ，然后输
+重启系统后再次以管理员身份运行 _powershell_ ，然后输下面 wsl 开头的命令。  
+After restarting the system, run _powershell_ again as an administrator, then press the following command.
 
 ```powershell
 wsl --set-default-version 2
@@ -97,28 +115,116 @@ wsl --set-default-version 2
 
 [![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)  
 ![store](https://s1.ax1x.com/2020/04/23/JUW3eH.png)  
+When you download the subsystem from the Microsoft Store, be sure to choose Ubuntu, Kali and Debian.  
 若无法连接 _Microsoft Store_,那么也可以手动安装。  
 请从以下三者中选择：  
 [Debian](https://aka.ms/wsl-debian-gnulinux)  
 [Kali](https://aka.ms/wsl-kali-linux-new)  
 [Ubuntu](https://aka.ms/wsl-ubuntu-1804)
 
+Open the subsystem and update the Linux kernel of WSL2 according to the prompt. After the update is complete, when prompted to enter the user name of the UNIX account, if you do not care about security issues, then you can close the window directly. The advantage of this is that you do not need to enter the sudo password.  
 打开子系统，然后根据提示更新 WSL2 的 linux 内核。更新完成后，当提示输普通账号用户名时，直接关掉窗口。
 
 > 注：这样子默认就是 root 账号，可以省下输 sudo 密码的步骤，之后可以使用 adduser 命令来单独增加普通账号。默认以非管理员身份运行的子系统 root 账号并没有 windows 管理员权限哦！只拥有 linux 的 root 权限而已，要是以管理员身份运行子系统的话，就真的要谨慎操作了。PC 用 root 账号的问题不大，又不是服务器。
 
-重新打开子系统，然后输
+Restart the subsystem
+重新打开子系统
 
-_**精简命令**_
+_**If you do not live in China, please enter**_
 
 ```shell
+    sudo apt update
+    sudo apt install -y wget
+    bash -c "$(wget -O- git.io/linux.sh)"
+```
+
+_**如果你在国内,那么请输**_
+
+```shell
+    sudo apt update
+    sudo apt install -y wget
     bash -c "$(wget -O- l.tmoe.me)"
 ```
 
-> 注：精简命令和长命令调用的内容是不一样的，二选一即可。  
-> 区别在于前者对国内的网络进行了优化，而后者重复安装了 wget。
+> 注:前后两者调用的内容是不一样的，二选一即可。  
+> 区别在于后者对国内的网络进行了优化。
 
-_**长命令**_
+最后按方向键和回车键进行操作。  
+Finally, press Enter and arrow keys to operate.
+
+> 注：WSL 请选择安装工具  
+> When prompted Tool/Manager, please select Tool
+
+![000](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
+**Just press enter and arrow keys, it won't be so simple, you are really adorkable!**
+![001](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
+**How can you scold me?**
+![002](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
+**I'm not talking about you!**
+![01](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/kGTCjub8kg4WbMU6.png)  
+**How to start the X server?**
+![02](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/5B20sqYFe0ZV15Hg.png)  
+**Just enter `startxsdl`, it should be ok**
+![03](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/UvqZWPa3XSkEEprK.png)
+**How to start the VNC?**
+![04](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/CLvZ5AQaslZDZHWu.png)  
+**Just enter `startvnc`**  
+**And you can also enter `debian-i` to start the tmoe-linux tool**
+![05](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/gXWDvCibdouH6IqX.png)
+
+> 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
+
+![停止VNC](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/KvMfXNGnHKbspTNs.png)  
+**How to stop VNC?**
+![stopvnc](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/buq1rhY6i55M2Dv4.png)  
+**Oh,I know,enter `stopvnc`**
+![06](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/6CDOlyOZb6qDbYqb.png)  
+**Can anyone tell me how to modify the resolution?**
+![07](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/GrPC2ckH7KavXw0p.png)  
+**Nobody answered, only read the [readme](https://github.com/2moe/tmoe-linux/blob/master/README.en.md) written by the developer.**
+![08](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/DZNjgwyVIrUjd3TH.png)  
+![09](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ACPJKw4lYfedt9D6.png)  
+**Wow! This is too complicated, I can't remember the order at all.**  
+![10](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/nqvK1beXuKXsrljA.png)  
+**WSL users only need to remember `startxsdl`**  
+**Android users only need to remember `startvnc`.**
+![11](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/3luF9hHGPnPuhwHu.png)  
+![12](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/YsZou4mIXZUFUYdZ.png)
+
+![14](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/56LaqsyefesPOa2t.png)  
+**I think the script you wrote is garbage, I don’t want to use it!**
+![perfect](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ILwcxdCOYVCS3lB6.png)
+
+**If you don’t like it, you don’t have to use it.But few peope integrate win10 and linux so perfectly.**
+
+#### 2.Android-Termux
+
+> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
+> 2.打开 termux，输入下面 bash 开头的命令
+>
+> 1.Go to google play, then install [Termux](https://play.google.com/store/apps/details?id=com.termux) and [Termux:api](https://play.google.com/store/apps/details?id=com.termux.api)  
+> 2.Open termux and enter the following command.
+
+_**If you do not live in China, please enter**_
+
+```shell
+    bash -c "$(curl -Lv https://git.io/linux.sh)"
+```
+
+_**如果你在国内,那么请输**_
+
+```shell
+    bash -c "$(curl -Lv l.tmoe.me)"
+```
+
+> 3-EN.Goto Google Play,then install [VNC client](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) or [X server](https://play.google.com/store/apps/details?id=x.org.server)
+>
+> 3-CN.如需使用 gui,可能还需要安装 VNC apk,您可以前往 Google play 或使用 Tmoe-linux 的 debian-i 来下载。  
+> 注：web 端的 novnc 无需安装 apk,但触控操作体验不佳。
+
+#### 3.Debian/Ubuntu/Mint/Kali/Deepin/Devuan/MX 等 deb 系发行版
+
+_**If you do not live in China, please enter**_
 
 ```shell
     sudo apt update
@@ -126,79 +232,12 @@ _**长命令**_
     bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
-最后按方向键和回车键进行操作。
-
-> 注：WSL 请选择安装工具
-
-![000](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
-![001](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
-![002](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
-![01](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/kGTCjub8kg4WbMU6.png)  
-![02](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/5B20sqYFe0ZV15Hg.png)  
-![03](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/UvqZWPa3XSkEEprK.png)
-![04](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/CLvZ5AQaslZDZHWu.png)  
-![05](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/gXWDvCibdouH6IqX.png)
-
-> 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
-
-![停止VNC](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/KvMfXNGnHKbspTNs.png)  
-![stopvnc](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/buq1rhY6i55M2Dv4.png)  
-![06](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/6CDOlyOZb6qDbYqb.png)  
-![07](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/GrPC2ckH7KavXw0p.png)  
-![08](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/DZNjgwyVIrUjd3TH.png)  
-![09](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ACPJKw4lYfedt9D6.png)  
-![10](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/nqvK1beXuKXsrljA.png)  
-![11](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/3luF9hHGPnPuhwHu.png)  
-![12](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/YsZou4mIXZUFUYdZ.png)
-
-![14](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/56LaqsyefesPOa2t.png)  
-![perfect](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ILwcxdCOYVCS3lB6.png)
-
-#### 2.Android-Termux
-
-> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_41.apk)  
-> 2.打开 termux，输入以下命令
-
-_**精简命令**_
+_**如果你在国内,那么请输**_
 
 ```shell
-    bash -c "$(curl -Lv l.tmoe.me)"
-```
-
-> 注：精简命令和长命令调用的内容是不一样的，二选一即可。
-> 前者针对国内网络进行优化，而后者使用的是 github 仓库的脚本。
-
-_**长命令**_
-
-```shell
-    bash -c "$(curl -Lv https://git.io/linux.sh)"
-```
-
-> 3.如需使用 gui,可能还需要安装 VNC apk,您可以前往 Google play 或使用 Tmoe-linux 的 debian-i 来下载。  
-> 注：web 端的 novnc 无需安装 apk,但触控操作体验不佳。
-
-#### 3.Debian/Ubuntu/Mint/Kali/Deepin/Devuan/MX 等 deb 系发行版
-
-_**精简命令**_
-
-```shell
-    bash -c "$(wget -O- l.tmoe.me)"
-```
-
-> 注：精简命令和长命令调用的内容是不一样的，二选一即可。  
-> 最主要区别在于后者增加了 wget 的检测。  
-> 超精简的 debian 容器镜像内可能无 wget 和 sudo。  
-> 尽管大部分 deb 系列发行版使用 apt 安装软件时都需要 root 权限，但却有极少部分系统禁止以 root 权限运行，故并非一开始就调用 su -c  
-> 例如：使用 apt 包管理的 Android Termux，禁止以 root 权限运行 apt install
-
-_**长命令**_
-
-```shell
-if [ ! -f /usr/bin/wget ]; then
-    apt update || sudo apt update || su -c "apt update"
-    apt install -y wget || sudo apt install -y wget || su -c "apt install -y wget"
-fi
-bash -c "$(wget -O- https://git.io/linux.sh)"
+     sudo apt update
+     sudo apt install -y wget
+     bash -c "$(wget -O- l.tmoe.me)"
 ```
 
 #### 4.RedHat/Fedora/CentOS
@@ -255,43 +294,50 @@ bash -c "$(wget -O- https://git.io/linux.sh)"
 
 ### 使用说明
 
-#### 简易版说明（萌新专用）
+#### 简易版说明（萌新专用）Novice tutorial
 
 - 1.安装 Tmoe GNU/Linux 管理工具的命令(仅支持在原系统内输)
+- Enter the following command in the terminal.
 
 ```shell
 bash -c "$(curl -Lv https://git.io/linux.sh)"
 ```
 
+> After executing the command, press the enter and arrow keys to operate, basically all operations have prompts.  
 > 进入工具后，按方向键和回车键进行操作，基本上所有操作都有提示。
 
 [![Snipaste_2020-03-20_17-10-48.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/20/0W0hSgimlmeXIBjO.png)](https://s1.ax1x.com/2020/04/23/JUWw6S.md.png)
 
-- 2.启动命令(仅支持在原系统内输)
+- 2.Command to enter the container
+- 启动命令(仅支持在原系统内输)
 
 ```shell
 debian
 ```
 
-- 3.卸载命令(仅支持在原系统内输)
+- 3.Command to remove the container
+- 卸载命令(仅支持在原系统内输)
 
 ```shell
 debian-rm
 ```
 
-- 4.启动工具箱(同时支持，但管理的内容不同)
+- 4.Start the toolbox, which can be executed in the original system and container, but the management content is different.
+- 启动工具箱(同时支持，但管理的内容不同)
 
 ```shell
 debian-i
 ```
 
-- 5.启动 vnc 命令（同时支持）
+- 5.Command to start vnc
+- 启动 vnc 命令（同时支持）
 
 ```shell
 startvnc
 ```
 
-- 6.停止 vnc 命令（同时支持）
+- 6.Command to stop vnc
+- 停止 vnc 命令（同时支持）
 
 ```shell
  stopvnc
