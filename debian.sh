@@ -1723,7 +1723,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 						This tool will update this agreement from time to time. When you agree to this tool service use agreement, you are deemed to have agreed to the entire contents of this agreement. This agreement is an integral part of the tool service agreement.
 
 			            欢迎使用本工具制作出富有创意的视频，并分享至B站。若您愿意告知开发者，那么开发者将很乐意为您分享的首个视频送上“素质三连”的支持。🍹
-						Welcome to use this tool to create creative videos and share them on youtube. If you attach your video sharing url to the github issue of this git-repo, the developer will like the video you shared. 👍
+						Welcome to use this tool to create creative videos and share them on youtube. If you attach your video sharing url to the issue of this github-repo, the developer will like the video you shared. 👍
 
 						1.禁止条例
 						(a)禁止将本工具安装的GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
