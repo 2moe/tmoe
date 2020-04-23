@@ -1233,7 +1233,7 @@ fi
 echo "检测到您使用的是Kali系统"
 sed -i 's/^deb/##&/g' /etc/apt/sources.list
 cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-deb http://mirrors.huaweicloud.com/kali/ kali-rolling main contrib non-free
+deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
 deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 # deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 EndOfSourcesList

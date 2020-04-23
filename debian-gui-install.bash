@@ -1903,7 +1903,7 @@ OTHERSOFTWARE() {
 
 		if [ "${archtype}" = "arm64" ]; then
 			if [ "${LINUXDISTRO}" = "debian" ]; then
-				wget -O LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ/%E5%AE%89%E8%A3%85%E5%8C%85/linuxqq_2.0.0-b2-1076_arm64.deb"
+				wget -O LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
 				apt install -y ./LINUXQQ.deb
 			else
 				wget -O LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
@@ -1913,8 +1913,9 @@ OTHERSOFTWARE() {
 			fi
 		elif [ "${archtype}" = "amd64" ]; then
 			if [ "${LINUXDISTRO}" = "debian" ]; then
-				wget -O LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ/%E5%AE%89%E8%A3%85%E5%8C%85/linuxqq_2.0.0-b2-1076_amd64.deb"
+				wget -O LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
 				apt install -y ./LINUXQQ.deb
+				#http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb
 			else
 				wget -O LINUXQQ.sh "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_x86_64.sh"
 				chmod +x LINUXQQ.sh

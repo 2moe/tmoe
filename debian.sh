@@ -801,9 +801,8 @@ RootMode() {
 		source profile >/dev/null 2>&1
 		alias debian="tsudo debian"
 		alias debian-rm="tsudo debian-rm"
-		if [ -d "${DebianCHROOT}/root/.vnc" ]; then
-			tsudo chown root:root -R "${DebianCHROOT}/root/.vnc" 2>/dev/null || su -c "chown root:root -R ${DebianCHROOT}/root/.vnc"
-		fi
+		echo "Modifying folder permissions"
+		tsudo chown root:root -R "${DebianCHROOT}/root/" 2>/dev/null || su -c "chown root:root -R ${DebianCHROOT}/root/"
 
 		echo "You have modified debian to run with root privileges, this action will destabilize debian."
 		echo "If you want to restore, please reinstall debian."
