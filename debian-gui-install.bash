@@ -1559,15 +1559,15 @@ INSTALLsynaptic() {
 		apt install -y gdebi
 		sed -i 's/synaptic-pkexec/synaptic/g' /usr/share/applications/synaptic.desktop
 		echo "synaptic和gdebi安装完成，建议您将deb文件的默认打开程序修改为gdebi"
-		echo "按任意键返回"
-		echo "${YELLOW}Press any key to return! ${RESET}"
+		echo "按回车键返回"
+		echo "${YELLOW}Press enter to return! ${RESET}"
 		read
 	else
 
 		echo "${YELLOW}您真的要离开我么？哦呜。。。${RESET}"
 		echo "Do you really want to remove synaptic?"
-		echo "按任意键继续，按Ctrl+C取消。"
-		echo "${YELLOW}Press any key to continue! ${RESET}"
+		echo "按回车键继续，按Ctrl+C取消。"
+		echo "${YELLOW}Press enter to continue! ${RESET}"
 		read
 		apt purge -y synaptic
 		apt purge -y gdebi
@@ -1771,8 +1771,8 @@ INSTALLORREMOVEVSCODE() {
 	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "${VSCODESTART}" --no-button "Remove移除" --yesno "${VSCODEINSTALLSTATUS} \nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 16 50); then
 		VSCODESERVER
 	else
-		echo "按任意键确认移除，按Ctrl+C取消。"
-		echo "${YELLOW}Press any key to remove VSCode Server. ${RESET}"
+		echo "按回车键确认移除，按Ctrl+C取消。"
+		echo "${YELLOW}Press enter to remove VSCode Server. ${RESET}"
 		read
 		rm -rvf /usr/local/bin/code-server-data/ /usr/local/bin/code-server /tmp/sed-vscode.tmp
 		echo "${YELLOW}移除成功，按回车键返回。${RESET}"
