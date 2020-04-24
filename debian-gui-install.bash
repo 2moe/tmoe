@@ -1567,6 +1567,7 @@ INSTALLsynaptic() {
 		echo "${YELLOW}Press any key to continue! ${RESET}"
 		read
 		apt purge -y synaptic
+		apt purge -y gdebi
 	fi
 	DEBIANMENU
 
@@ -1866,8 +1867,7 @@ OTHERSOFTWARE() {
 			"10" "百度网盘(x86_64):提供文件的网络备份、同步和分享服务" \
 			"11" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
 			"12" "ADB:Android Debug Bridge" \
-			"13" "文件管理器:thunar/nautilus/dolphin" \
-			"14" "BleachBit:垃圾清理" \
+			"13" "BleachBit:垃圾清理" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2078,51 +2078,9 @@ OTHERSOFTWARE() {
 			adb shell
 		fi
 	fi
+
 	###########################
 	if [ "${SOFTWARE}" == '13' ]; then
-		dependencies=""
-		if [ ! -e /usr/bin/thunar ]; then
-			dependencies="${dependencies} thunar"
-		fi
-
-		if [ ! -e /usr/bin/nautilus ]; then
-			dependencies="${dependencies} nautilus"
-		fi
-
-		if [ ! -e /usr/bin/dolphin ]; then
-			dependencies="${dependencies} dolphin"
-		fi
-
-		if [ ! -z "${dependencies}" ]; then
-			if [ "${LINUXDISTRO}" = "debian" ]; then
-				apt update
-				apt install -y ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "alpine" ]; then
-				apk update
-				apk add ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "arch" ]; then
-				pacman -Syu --noconfirm ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "redhat" ]; then
-				dnf install -y ${dependencies} || yum install -y ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "openwrt" ]; then
-				#opkg update
-				opkg install ${dependencies} || opkg install ${dependencies}
-			elif [ "${LINUXDISTRO}" = "void" ]; then
-				xbps-install -S -y lxqt tigervnc
-
-			elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-				emerge -vk ${dependencies}
-			fi
-		fi
-		echo "安装完成，如需卸载，请手动输apt purge -y nautilus dolphin"
-	fi
-
-	###########################
-	if [ "${SOFTWARE}" == '14' ]; then
 
 		if [ ! -e /usr/bin/bleachbit ]; then
 			if [ "${LINUXDISTRO}" = "debian" ]; then
@@ -2985,6 +2943,52 @@ BetaFeatures() {
 		fi
 		gparted &
 		echo "安装完成，如需卸载，请手动输apt purge -y gparted baobab"
+	fi
+	######################
+	if [ "${TMOEBETA}" == '13' ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			echo "检测到您使用的是Proot容器，软件可能无法正常运行。"
+			echo "Press enter to continue,press Ctrl+C to canacel."
+		fi
+		dependencies=""
+		if [ ! -e /usr/bin/thunar ]; then
+			dependencies="${dependencies} thunar"
+		fi
+
+		if [ ! -e /usr/bin/nautilus ]; then
+			dependencies="${dependencies} nautilus"
+		fi
+
+		if [ ! -e /usr/bin/dolphin ]; then
+			dependencies="${dependencies} dolphin"
+		fi
+
+		if [ ! -z "${dependencies}" ]; then
+			if [ "${LINUXDISTRO}" = "debian" ]; then
+				apt update
+				apt install -y ${dependencies}
+
+			elif [ "${LINUXDISTRO}" = "alpine" ]; then
+				apk update
+				apk add ${dependencies}
+
+			elif [ "${LINUXDISTRO}" = "arch" ]; then
+				pacman -Syu --noconfirm ${dependencies}
+
+			elif [ "${LINUXDISTRO}" = "redhat" ]; then
+				dnf install -y ${dependencies} || yum install -y ${dependencies}
+
+			elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+				#opkg update
+				opkg install ${dependencies} || opkg install ${dependencies}
+			elif [ "${LINUXDISTRO}" = "void" ]; then
+				xbps-install -S -y lxqt tigervnc
+
+			elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+				emerge -vk ${dependencies}
+			fi
+		fi
+		echo "安装完成，如需卸载，请手动输apt purge -y nautilus dolphin"
 	fi
 	########################################
 	echo 'Press Enter to return.'
