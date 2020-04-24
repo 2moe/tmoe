@@ -2813,6 +2813,7 @@ BetaFeatures() {
 		"10" "plasma-discover:KDE发现(软件中心)" \
 		"11" "gnome-software软件商店" \
 		"12" "gparted:磁盘分区工具" \
+		"13" "文件管理器:thunar/nautilus/dolphin" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -2947,7 +2948,8 @@ BetaFeatures() {
 	######################
 	if [ "${TMOEBETA}" == '13' ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			echo "检测到您使用的是Proot容器，软件可能无法正常运行。"
+			echo "检测到您当前使用的是Proot容器，软件可能无法正常运行。"
+			echo "安装后将有可能导致VNC黑屏"
 			echo "Press enter to continue,press Ctrl+C to canacel."
 		fi
 		dependencies=""
