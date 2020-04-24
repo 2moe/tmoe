@@ -1867,6 +1867,7 @@ OTHERSOFTWARE() {
 			"11" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
 			"12" "ADB:Android Debug Bridge" \
 			"13" "文件管理器:thunar/nautilus/dolphin" \
+			"14" "BleachBit:垃圾清理" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1878,6 +1879,12 @@ OTHERSOFTWARE() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '1' ]; then
+		if [ -e "/usr/bin/mpv" ]; then
+			echo "检测到您已安装mpv,按回车键继续,按Ctrl+C取消"
+			echo "Press enter to continue."
+			read
+		fi
+
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			apt update
 			apt install -y mpv
@@ -1887,10 +1894,6 @@ OTHERSOFTWARE() {
 			dnf install -y kmplayer || yum install -y kmplayer
 		fi
 		echo "安装完成，如需卸载，请手动输apt purge -y mpv"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '2' ]; then
@@ -1932,10 +1935,6 @@ OTHERSOFTWARE() {
 		echo "url: https://im.qq.com/linuxqq/download.html"
 		rm -fv ./LINUXQQ.deb
 		echo "安装完成，如需卸载，请手动输apt purge -y linuxqq"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	##############################
 
@@ -1943,10 +1942,6 @@ OTHERSOFTWARE() {
 		apt update
 		apt install -y wesnoth
 		echo "安装完成，如需卸载，请手动输apt purge -y wesnoth"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '4' ]; then
@@ -1978,10 +1973,6 @@ OTHERSOFTWARE() {
 		echo "${YELLOW}按回车键启动游戏。${RESET}"
 		read
 		desmume "${HOME}/斯隆与马克贝尔的谜之物语/3782.nds" 2>/dev/null &
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '5' ]; then
@@ -2009,10 +2000,6 @@ OTHERSOFTWARE() {
 		apt install -y gimp
 		gimp &
 		echo "安装完成，如需卸载，请手动输apt purge -y gimp"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '8' ]; then
@@ -2032,10 +2019,6 @@ OTHERSOFTWARE() {
 			chmod +x oosplash
 		fi
 		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 
 	##############################
@@ -2043,10 +2026,6 @@ OTHERSOFTWARE() {
 		apt update
 		apt install -y parole
 		echo "安装完成，如需卸载，请手动输apt purge -y parole"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '10' ]; then
@@ -2067,10 +2046,6 @@ OTHERSOFTWARE() {
 		apt install -y ./baidunetdisk.deb
 		echo "安装完成，如需卸载，请手动输apt purge -y baidunetdisk"
 		rm -fv ./baidunetdisk.deb
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	###########################
 	if [ "${SOFTWARE}" == '11' ]; then
@@ -2094,16 +2069,14 @@ OTHERSOFTWARE() {
 
 		if [ -e /usr/bin/adb ]; then
 			adb --help
-			echo "adb安装完成,正在重启进程,您也可以手动输adb devices来获取设备列表"
+			echo "adb安装完成"
+			echo "如需卸载，请手动输apt purge -y adb"
+			echo "正在重启进程,您也可以手动输adb devices来获取设备列表"
 			adb kill-server
 			adb devices -l
 			echo "即将为您自动进入adb shell模式，您也可以手动输adb shell来进入该模式"
 			adb shell
 		fi
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 	###########################
 	if [ "${SOFTWARE}" == '13' ]; then
@@ -2146,14 +2119,34 @@ OTHERSOFTWARE() {
 			fi
 		fi
 		echo "安装完成，如需卸载，请手动输apt purge -y nautilus dolphin"
-		nautilus &
-		dolphin &
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		DEBIANMENU
 	fi
 
+	###########################
+	if [ "${SOFTWARE}" == '14' ]; then
+
+		if [ ! -e /usr/bin/bleachbit ]; then
+			if [ "${LINUXDISTRO}" = "debian" ]; then
+				apt update
+				apt install -y bleachbit
+
+			elif [ "${LINUXDISTRO}" = "arch" ]; then
+				pacman -Syu --noconfirm bleachbit
+
+			elif [ "${LINUXDISTRO}" = "redhat" ]; then
+				dnf install -y bleachbit || yum install -y bleachbit
+			fi
+		fi
+
+		if [ -e /usr/bin/bleachbit ]; then
+			bleachbit --help
+			echo "bleachbit安装完成，如需卸载，请手动输apt purge -y bleachbit"
+		fi
+	fi
+	############################################
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	DEBIANMENU
 }
 ######################
 163NETEASEMUSIC() {
