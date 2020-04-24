@@ -1542,6 +1542,16 @@ Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
 EndOfArchMirrors
   fi
   pacman -Syyu --noconfirm
+  if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
+  cat >>/etc/pacman.conf<<-'Endofpacman'
+[archlinuxcn]
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+Endofpacman
+  fi
+  pacman -Syu --noconfirm archlinux-keyring
+  pacman -Sy --noconfirm archlinuxcn-keyring
+  pacman -S --noconfirm yay
+  yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 fi
 #################################
 if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then

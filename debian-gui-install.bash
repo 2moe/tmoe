@@ -2045,10 +2045,17 @@ OTHERSOFTWARE() {
 			read
 		fi
 		cd /tmp
-		wget -O baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
-		apt install -y ./baidunetdisk.deb
-		echo "安装完成，如需卸载，请手动输apt purge -y baidunetdisk"
-		rm -fv ./baidunetdisk.deb
+		if [ "${LINUXDISTRO}" = "arch" ]; then
+			yay -Syu --noconfirm baidunetdisk-bin
+		elif [ "${LINUXDISTRO}" = "redhat" ]; then
+			wget -O 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
+			rpm -ivh 'baidunetdisk.rpm'
+		else
+			wget -O baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+			apt install -y ./baidunetdisk.deb
+			echo "安装完成，如需卸载，请手动输apt purge -y baidunetdisk"
+			rm -fv ./baidunetdisk.deb
+		fi
 	fi
 	###########################
 	if [ "${SOFTWARE}" == '11' ]; then
@@ -2124,14 +2131,22 @@ OTHERSOFTWARE() {
 		read
 	fi
 	cd /tmp
-	if [ "${archtype}" = "amd64" ]; then
-		wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+	if [ "${LINUXDISTRO}" = "arch" ]; then
+		yay -Syu --noconfirm netease-cloud-music
+	elif [ "${LINUXDISTRO}" = "redhat" ]; then
+		wget https://dl.senorsen.com/pub/package/linux/add_repo.sh -qO - | sudo sh
+		sudo dnf install http://dl-http.senorsen.com/pub/package/linux/rpm/senorsen-repo-0.0.1-1.noarch.rpm
+		sudo dnf install -y netease-cloud-music
 	else
-		wget -O netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
+		if [ "${archtype}" = "amd64" ]; then
+			wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+		else
+			wget -O netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
+		fi
+		apt install -y ./netease-cloud-music.deb
+		echo "安装完成，如需卸载，请手动输apt purge -y netease-cloud-music"
+		rm -fv ./netease-cloud-music.deb
 	fi
-	apt install -y ./netease-cloud-music.deb
-	echo "安装完成，如需卸载，请手动输apt purge -y netease-cloud-music"
-	rm -fv ./netease-cloud-music.deb
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
