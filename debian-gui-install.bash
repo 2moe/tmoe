@@ -305,7 +305,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200420-05)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0411支持修复VNC闪退,0420增加其它版本的VSCode" 20 50 6 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200424-15)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0411支持修复VNC闪退,0420增加其它版本的VSCode" 20 50 6 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1558,7 +1558,10 @@ INSTALLsynaptic() {
 		apt install -y synaptic
 		apt install -y gdebi
 		sed -i 's/synaptic-pkexec/synaptic/g' /usr/share/applications/synaptic.desktop
-
+		echo "synaptic和gdebi安装完成，建议您将deb文件的默认打开程序修改为gdebi"
+		echo "按任意键返回"
+		echo "${YELLOW}Press any key to return! ${RESET}"
+		read
 	else
 
 		echo "${YELLOW}您真的要离开我么？哦呜。。。${RESET}"
