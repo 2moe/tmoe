@@ -2704,7 +2704,8 @@ FrequentlyAskedQuestions() {
 	fi
 	############################
 	if [ "${TMOEFAQ}" == '1' ]; then
-		echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
+		#echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
+		echo "若无法打开，则请手动输rm -rf ~/baidunetdisk"
 		echo "${YELLOW}按回车键自动执行上述命令，按Ctrl+C取消${RESET}"
 		read
 		rm -vf ~/baidunetdisk/baidunetdiskdata.db

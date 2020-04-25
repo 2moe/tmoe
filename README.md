@@ -9,7 +9,7 @@ You can also run Gentoo, Arch and other systems in WSL.
 
 在 **GNU/Linux** 上一键安装 **GNU/Linux chroot** 容器。  
 在 **Android Termux** 上一键安装 **GNU/Linux proot** 容器。  
-在 **win10(WSL)**上一键安装桌面环境。
+在 **WSL**上一键安装桌面环境。
 
 **Android**和**Win10**还支持配置音频服务。
 
@@ -192,7 +192,7 @@ Finally, press Enter and arrow keys to operate.
 **I think the script you wrote is garbage, I don’t want to use it!**  
 ![perfect](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/ILwcxdCOYVCS3lB6.png)
 
-**If you don’t like it, you don’t have to use it.But few peope integrate win10 and linux so perfectly.**  
+**If you don’t like it, you don’t have to use it.But few peope integrate win10 and linux so perfectly.**
 
 #### 2.Android-Termux
 
@@ -413,7 +413,7 @@ _gnome_ 和 _kde_ 是用来卖萌用的，不要安装。如需安装，请自�
 
 ```shell
 apt install -y nano
-nano /usr/bin/startvnc
+nano $(which startvnc)
 ```
 
 > 将 **1440x720**（竖屏）改成你需要的分辨率，例如 **1920x10780**（横屏)

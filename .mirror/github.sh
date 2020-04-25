@@ -8,6 +8,7 @@ sed -i 's@\^en_US@\^zh_CN@' debian-gui-install.bash
 sed -i 's@locale-gen en_US@locale-gen zh_CN@g' ./*sh
 sed -i 's/114.114.114.114/1.0.0.1/' installDebian.sh
 sed -i 's/240c::6666/2606:4700:4700::1111/' installDebian.sh
+sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' installDebian.sh
 #sed -i 's/zh_CN/en_US/g' ./debian.sh
 sed -i '/正在配置中文环境/d' installDebian.sh
 sed -i 's@###tmoe-github@@' installDebian.sh
