@@ -576,7 +576,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200422-05)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200430-15)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -802,7 +802,11 @@ RootMode() {
 		alias debian="tsudo debian"
 		alias debian-rm="tsudo debian-rm"
 		echo "Modifying folder permissions"
-		tsudo chown root:root -R "${DebianCHROOT}/root/" 2>/dev/null || su -c "chown root:root -R ${DebianCHROOT}/root/"
+		echo "正在修改文件权限..."
+		tsudo chown root:root -R "${DebianCHROOT}" 2>/dev/null || su -c "chown root:root -R ${DebianCHROOT}"
+		if [ -d "${HOME}/debian_armhf" ]; then
+			tsudo chown root:root -R "${HOME}/debian_armhf" 2>/dev/null || su -c "chown root:root -R ${HOME}/debian_armhf"
+		fi
 
 		echo "You have modified debian to run with root privileges, this action will destabilize debian."
 		echo "If you want to restore, please reinstall debian."

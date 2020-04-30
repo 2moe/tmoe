@@ -250,7 +250,7 @@ CHECKdependencies() {
 		if [ "${LINUXDISTRO}" = "debian" ]; then
 			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
-			wget -O 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${archtype}.deb"
+			curl -Lvo 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${archtype}.deb"
 			apt install -y ./catimg.deb
 			rm -f catimg.deb
 		fi
@@ -261,7 +261,7 @@ CHECKdependencies() {
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
 		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${archtype} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		wget -O '.busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
+		curl -Lvo '.busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
 		mkdir -p .busybox-static
 		./busybox dpkg-deb -X .busybox.deb ./.busybox-static
 		mv -f ./.busybox-static/bin/busybox /usr/local/bin/
@@ -500,14 +500,14 @@ InstallVScodium() {
 
 	if [ "${LINUXDISTRO}" = 'debian' ]; then
 		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${archtype} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		wget -O 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		curl -Lvo 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
 		apt install -y ./VSCodium.deb
 		rm -vf VSCodium.deb
 		#echo '安装完成,请输codium --user-data-dir=${HOME}/.config/VSCodium启动'
 		echo "安装完成,请输codium --user-data-dir=${HOME}启动"
 	else
 		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		wget -O 'VSCodium.tar.gz' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		curl -Lvo 'VSCodium.tar.gz' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
 		mkdir -p /usr/local/bin/vscodium-data
 		tar -zxvf VSCodium.tar.gz -C /usr/local/bin/vscodium-data
 		rm -vf VSCodium.tar.gz
@@ -538,7 +538,7 @@ InstallVScodeOSS() {
 		apt install -y gpg
 		bash -c "$(wget -O- https://code.headmelted.com/installers/apt.sh)"
 	elif [ "${LINUXDISTRO}" = 'redhat' ]; then
-		. <(wget -O - https://code.headmelted.com/installers/yum.sh)
+		. <(wget -O- https://code.headmelted.com/installers/yum.sh)
 	else
 		echo "检测到您当前使用的可能不是deb系或红帽系发行版，跳过安装"
 		echo "${YELLOW}按回车键返回。${RESET}"
@@ -586,18 +586,18 @@ InstallVSCodeOfficial() {
 	fi
 
 	if [ "${LINUXDISTRO}" = 'debian' ]; then
-		wget -O 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
+		curl -Lvo 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
 		apt install -y ./VSCODE.deb
 		rm -vf VSCODE.deb
 		echo "安装完成,请输code --user-data-dir=${HOME}启动"
 
 	elif [ "${LINUXDISTRO}" = 'redhat' ]; then
-		wget -O 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
+		curl -Lvo 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
 		rpm -ivh ./VSCODE.rpm
 		rm -vf VSCODE.rpm
 		echo "安装完成,请输code --user-data-dir=${HOME}启动"
 	else
-		wget -O 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
+		curl -Lvo 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
 		#mkdir -p /usr/local/bin/vscode-data
 		tar -zxvf VSCODE.tar.gz -C /usr/local/bin/
 
@@ -1584,7 +1584,7 @@ CHINESEMANPAGES() {
 	if [ ! -e "${HOME}/文档/debian-handbook/usr/share/doc/debian-handbook/html" ]; then
 		mkdir -p ${HOME}/文档/debian-handbook
 		cd ${HOME}/文档/debian-handbook
-		wget -O 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
+		curl -Lvo 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
 		busybox ar xv 'debian-handbook.deb'
 		tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
 		ls | grep -v usr | xargs rm -rf
@@ -1625,7 +1625,7 @@ CONFIGTHEMES() {
 			mkdir -p /tmp/.ukui-gtk-themes
 			cd /tmp/.ukui-gtk-themes
 			UKUITHEME="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			wget -O 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
+			curl -Lvo 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
 			busybox ar xv 'ukui-themes.deb'
 			cd /
 			tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
@@ -1705,7 +1705,7 @@ CONFIGTHEMES() {
 			mkdir -p /tmp/.kali-themes-common
 			cd /tmp/.kali-themes-common
 			KaliTHEMElatestLINK="$(curl -L 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			wget -O 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
+			curl -Lvo 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
 			busybox ar xv 'kali-themes-common.deb'
 			update-icon-caches /usr/share/icons/Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base
 			cd /
@@ -1736,7 +1736,7 @@ Installkaliundercover() {
 			mkdir -p /tmp/.kali-undercover-win10-theme
 			cd /tmp/.kali-undercover-win10-theme
 			UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			wget -O kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
+			curl -Lvo kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
 			apt install -y ./kali-undercover.deb
 			if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
 				busybox ar xv kali-undercover.deb
@@ -1912,21 +1912,21 @@ OTHERSOFTWARE() {
 
 		if [ "${archtype}" = "arm64" ]; then
 			if [ "${LINUXDISTRO}" = "debian" ]; then
-				wget -O LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
+				curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
 				apt install -y ./LINUXQQ.deb
 			else
-				wget -O LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
+				curl -Lvo LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
 				chmod +x LINUXQQ.sh
 				sudo ./LINUXQQ.sh
 				#即使是root用户也需要加sudo
 			fi
 		elif [ "${archtype}" = "amd64" ]; then
 			if [ "${LINUXDISTRO}" = "debian" ]; then
-				wget -O LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
+				curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
 				apt install -y ./LINUXQQ.deb
 				#http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb
 			else
-				wget -O LINUXQQ.sh "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_x86_64.sh"
+				curl -Lvo LINUXQQ.sh "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_x86_64.sh"
 				chmod +x LINUXQQ.sh
 				sudo ./LINUXQQ.sh
 			fi
@@ -1963,8 +1963,8 @@ OTHERSOFTWARE() {
 
 			mkdir -p '斯隆与马克贝尔的谜之物语'
 			cd '斯隆与马克贝尔的谜之物语'
-			wget -O slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
-			wget -O mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
+			curl -Lvo slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
+			curl -Lvo mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
 			7za x slymkbr1.zip
 			7za x mayomonogatari2.zip
 			mv -f 斯隆与马克贝尔的谜之物语k73/* ./
@@ -2051,10 +2051,10 @@ OTHERSOFTWARE() {
 		if [ "${LINUXDISTRO}" = "arch" ]; then
 			pacman -Syu --noconfirm baidunetdisk-bin
 		elif [ "${LINUXDISTRO}" = "redhat" ]; then
-			wget -O 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
+			curl -Lvo 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
 			rpm -ivh 'baidunetdisk.rpm'
 		else
-			wget -O baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+			curl -Lvo baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
 			apt install -y ./baidunetdisk.deb
 			echo "安装完成，如需卸载，请手动输apt purge -y baidunetdisk"
 			rm -fv ./baidunetdisk.deb
@@ -2142,9 +2142,9 @@ OTHERSOFTWARE() {
 		sudo dnf install -y netease-cloud-music
 	else
 		if [ "${archtype}" = "amd64" ]; then
-			wget -O netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+			curl -Lvo netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
 		else
-			wget -O netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
+			curl -Lvo netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
 		fi
 		apt install -y ./netease-cloud-music.deb
 		echo "安装完成，如需卸载，请手动输apt purge -y netease-cloud-music"
@@ -2666,13 +2666,13 @@ STARTVNCANDSTOPVNC() {
 		cd ./VcXsrv
 		echo "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
 		if [ ! -e "Firewall-pulseaudio.png" ]; then
-			wget -O "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
+			curl -Lvo "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
 		fi
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start Firewall.cpl"
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
 		############
 		if [ ! -e 'XserverHightDPI.png' ]; then
-			wget -O 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
+			curl -Lvo 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
@@ -2881,18 +2881,18 @@ BetaFeatures() {
 			BetaFeatures
 		fi
 
-		if [ "$(uname -m)" = "x86_64" ]; then
+		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "i386" ]; then
 			cd /tmp
-			wget -O 'sogou_pinyin.deb' 'http://cdn2.ime.sogou.com/dl/index/1571302197/sogoupinyin_2.3.1.0112_amd64.deb?st=LibLXDSBIhQIpXS1y64TXg&e=1585607434&fn=sogoupinyin_2.3.1.0112_amd64.deb'
-			apt install -y ./sogou_pinyin.deb
-			rm -f sogou_pinyin.deb
-		elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
-			echo "架构不支持，跳过安装搜狗输入法。"
+			LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${archtype} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
+			curl -Lvo 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
 		else
-			wget -O 'sogou_pinyin.deb' 'http://cdn2.ime.sogou.com/dl/index/1524572032/sogoupinyin_2.2.0.0108_i386.deb?st=Y2AOqkQafg4B0WBAkItOyA&e=1585607434&fn=sogoupinyin_2.2.0.0108_i386.deb'
-			apt install -y ./sogou_pinyin.deb
-			rm -f sogou_pinyin.deb
+			echo "架构不支持，跳过安装搜狗输入法。"
 		fi
+		apt install -y ./sogou_pinyin.deb
+		echo "若安装失败，则请前往官网手动下载安装。"
+		echo 'url: https://pinyin.sogou.com/linux/'
+		rm -fv sogou_pinyin.deb
+		echo "安装完成！"
 		echo "如需卸载，请手动输apt purge -y sogoupinyin fcitx-sunpinyin fcitx-googlepinyin fcitx"
 	fi
 
@@ -2905,35 +2905,21 @@ BetaFeatures() {
 			read
 		fi
 
-		if [ "${LINUXDISTRO}" = "arch" ]; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			dpkg --configure -a
+			LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${archtype}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+			curl -Lvo WPSoffice.deb "${LatestWPSLink}"
+			apt install -y ./WPSoffice.deb
+
+		elif [ "${LINUXDISTRO}" = "arch" ]; then
 			pacman -Syu --noconfirm wps-office
+
+		elif [ "${LINUXDISTRO}" = "redhat" ]; then
+			LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+			curl -Lvo WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+			rpm -ivh ./WPSoffice.rpm
 		fi
 
-		if [ "${archtype}" = "arm64" ]; then
-			if [ "${LINUXDISTRO}" = "debian" ]; then
-				dpkg --configure -a
-				wget -O WPSoffice.deb "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office_11.1.0.9505_arm64.deb"
-				apt install -y ./WPSoffice.deb
-			elif [ "${LINUXDISTRO}" = "redhat" ]; then
-				wget -O WPSoffice.rpm 'https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.aarch64.rpm'
-				rpm -ivh ./WPSoffice.rpm
-			fi
-		elif [ "${archtype}" = "amd64" ]; then
-			if [ "${LINUXDISTRO}" = "debian" ]; then
-				dpkg --configure -a
-				wget -O WPSoffice.deb "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office_11.1.0.9505_amd64.deb"
-				apt install -y ./WPSoffice.deb
-			elif [ "${LINUXDISTRO}" = "redhat" ]; then
-				wget -O WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
-				rpm -ivh ./WPSoffice.rpm
-			fi
-		else
-			echo "暂不支持您的架构"
-			echo 'Press Enter to return.'
-			echo "${YELLOW}按回车键返回。${RESET}"
-			read
-			BetaFeatures
-		fi
 		echo "若安装失败，则请前往官网手动下载安装。"
 		echo "url: https://linux.wps.cn"
 		rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
@@ -2990,27 +2976,24 @@ BetaFeatures() {
 	if [ "${TMOEBETA}" == '7' ]; then
 		cd /tmp
 		if [ "$(uname -m)" = "x86_64" ]; then
-			wget -O 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
-			apt install -y ./typora.deb
-			rm -vf ./typora.deb
-			echo "安装完成，如需卸载，请手动输apt purge -y typora"
+			curl -Lvo 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
 		elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 			echo "非常抱歉，暂不支持您的架构"
-		else
-			wget -O 'typora.deb' wget 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
-			apt install -y ./typora.deb
-			rm -vf ./typora.deb
-			echo "安装完成，如需卸载，请手动输apt purge -y typora"
+		elif [ "${archtype}" = "i386" ]; then
+			curl -Lvo 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
 		fi
+		apt install -y ./typora.deb
+		rm -vf ./typora.deb
+		echo "安装完成，如需卸载，请手动输apt purge -y typora"
 	fi
 	############################
 	if [ "${TMOEBETA}" == '8' ]; then
 		cd /tmp
 		if [ "${archtype}" = "amd64" ]; then
-			wget -O 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
-			#wget -O 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
+			curl -Lvo 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
+			#curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
 		elif [ "${archtype}" = "i386" ]; then
-			wget -O 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
+			curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
 		else
 			echo "非常抱歉，暂不支持您的架构"
 		fi
