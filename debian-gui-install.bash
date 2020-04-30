@@ -988,20 +988,20 @@ INSTALLGUI() {
 	echo 'lxde预览截图'
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
 	if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
-		curl -Lo 'LXDE_BUSYeSLZRqq3i3oM.png' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
+		curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
 	fi
 	catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
 
 	echo 'mate预览截图'
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
 	if [ ! -f 'MATE_1frRp1lpOXLPz6mO.jpg' ]; then
-		curl -Lo 'MATE_1frRp1lpOXLPz6mO.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
+		curl -sLo 'MATE_1frRp1lpOXLPz6mO.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
 	fi
 	catimg 'MATE_1frRp1lpOXLPz6mO.jpg'
 	echo 'xfce预览截图'
 
 	if [ ! -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' ]; then
-		curl -Lo 'XFCE_a7IQ9NnfgPckuqRt.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
+		curl -sLo 'XFCE_a7IQ9NnfgPckuqRt.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
 	fi
 	catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
@@ -1030,7 +1030,7 @@ INSTALLGUI() {
 		fc-cache
 	fi
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
-	echo "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
+	#echo "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
 	echo "按回车键选择您需要安装的图形桌面环境"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
