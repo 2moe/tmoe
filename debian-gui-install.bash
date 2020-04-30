@@ -305,7 +305,7 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200429-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0411支持修复VNC闪退,0420增加其它版本的VSCode" 20 50 6 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200430-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0411支持修复VNC闪退,0420增加其它版本的VSCode" 20 50 6 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -365,7 +365,7 @@ DEBIANMENU() {
 	###################################
 	if [ "${OPTION}" == '7' ]; then
 
-		wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
+		curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
 		echo 'Update completed, press Enter to return.'
 		echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 		chmod +x /usr/local/bin/debian-i
@@ -988,20 +988,20 @@ INSTALLGUI() {
 	echo 'lxde预览截图'
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
 	if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
-		wget -qO 'LXDE_BUSYeSLZRqq3i3oM.png' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
+		curl -Lo 'LXDE_BUSYeSLZRqq3i3oM.png' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
 	fi
 	catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
 
 	echo 'mate预览截图'
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
 	if [ ! -f 'MATE_1frRp1lpOXLPz6mO.jpg' ]; then
-		wget -qO 'MATE_1frRp1lpOXLPz6mO.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
+		curl -Lo 'MATE_1frRp1lpOXLPz6mO.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
 	fi
 	catimg 'MATE_1frRp1lpOXLPz6mO.jpg'
 	echo 'xfce预览截图'
 
 	if [ ! -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' ]; then
-		wget -qO 'XFCE_a7IQ9NnfgPckuqRt.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
+		curl -Lo 'XFCE_a7IQ9NnfgPckuqRt.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
 	fi
 	catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
@@ -1019,7 +1019,7 @@ INSTALLGUI() {
 		if [ -e "font.ttf" ]; then
 			mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
 		else
-			wget -qO 'Iosevka.tar.xz' 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
+			curl -Lo 'Iosevka.tar.xz' 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
 			tar -xvf 'Iosevka.tar.xz'
 			rm -f 'Iosevka.tar.xz'
 			mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
@@ -1704,7 +1704,7 @@ CONFIGTHEMES() {
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			mkdir -p /tmp/.kali-themes-common
 			cd /tmp/.kali-themes-common
-			KaliTHEMElatestLINK="$(wget -O- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+			KaliTHEMElatestLINK="$(curl -L 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			wget -O 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
 			busybox ar xv 'kali-themes-common.deb'
 			update-icon-caches /usr/share/icons/Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base
@@ -1826,7 +1826,10 @@ KALISOURCESLIST() {
 
 	sed -i 's/^deb/#&/g' /etc/apt/sources.list
 	cat >>/etc/apt/sources.list <<-'EOF'
-		deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
+		deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
+		deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
+		# deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
+		# deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
 	EOF
 	apt update
 	apt list --upgradable
@@ -2018,7 +2021,7 @@ OTHERSOFTWARE() {
 			mkdir -p /prod/version
 			cd /usr/lib/libreoffice/program
 			rm -f oosplash
-			wget -qO 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
+			curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
 			chmod +x oosplash
 		fi
 		echo "安装完成，如需卸载，请手动输apt purge -y ^libreoffice"
@@ -2207,8 +2210,8 @@ INSTALLXFCE4DESKTOP() {
 		mkdir -p /tmp/.kali-themes-common
 		cd /tmp/.kali-themes-common
 		#rm -f ./kali-themes-common.deb 2>/dev/null
-		KaliTHEMElatestLINK="$(wget -O- 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		wget -O 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
+		KaliTHEMElatestLINK="$(curl -L 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		curl -Lo 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
 		busybox ar xv 'kali-themes-common.deb'
 		update-icon-caches /usr/share/icons/Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base
 		#tar -Jxvf data.tar.xz -C /
@@ -2220,7 +2223,7 @@ INSTALLXFCE4DESKTOP() {
 	fi
 	cd /usr/share/xfce4/terminal
 	echo "正在配置xfce4终端配色..."
-	wget -qO "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
+	curl -Lo "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
 	tar -Jxvf "colorschemes.tar.xz"
 
 	mkdir -p ~/.vnc

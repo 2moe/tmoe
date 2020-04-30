@@ -611,7 +611,7 @@ chmod +x zsh-i.sh
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
   mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DebianCHROOT}/tmp/"
   #树莓派换源
-  wget -O "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
+  curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
   tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DebianFolder}/etc/apt/
   rm -f "raspbian-sources-gpg.tar.xz"
 elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
@@ -769,7 +769,12 @@ if [ ! -z "${dependencies}" ]; then
 
 fi
 ###############################
-wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
+if [ -e "/usr/bin/curl" ]; then
+    curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
+else
+    wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
+fi
+
 chmod +x /usr/local/bin/debian-i
 
 rm -rf ${HOME}/.oh-my-zsh
@@ -1058,12 +1063,18 @@ main() {
         sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
         # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
         echo '检测到您选择的是powerlevel 10k主题,若无法弹出配置面板，则请拉宽屏幕显示大小，然后输p10k configure'
-        if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
-            wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh' || curl -sLo /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-            cat >>${HOME}/.zshrc <<-"ENDOFPOWERLEVEL"
+if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
+    if [ -e "/usr/bin/curl" ]; then
+        curl -sLo /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+    else
+        wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+    fi
+
+    cat >>${HOME}/.zshrc <<-"ENDOFPOWERLEVEL"
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 ENDOFPOWERLEVEL
-        fi
+fi
+
     fi
 
     if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
@@ -1366,7 +1377,7 @@ echo "    5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y     "
 echo "    S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7     "
 echo "           .            i   7            "
 apt install -y apt-utils
-apt install -y ca-certificates wget
+apt install -y ca-certificates wget curl
 if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
   echo "Replacing http software source list with https."
   echo "正在将http源替换为https..."
