@@ -424,7 +424,7 @@ DEBIANMENU() {
 ############################
 DOWNLOADvideo() {
 	VIDEOTOOL=$(
-		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 20 50 6 \
+		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 14 50 6 \
 			"1" "Annie" \
 			"2" "You-get" \
 			"3" "Youtube-dl" \
@@ -633,7 +633,7 @@ cookiesREADME() {
 INSTALLorRemoveVideoTOOL() {
 	cat <<-'ENDofTable'
 		╔═══╦════════════╦════════╦════════╦═════════╦
-		║   ║     💻     ║    🎞  ║   🌁   ║   📚    ║
+		║   ║     💻     ║    🎬  ║   🌁   ║   📚   ║
 		║   ║  website   ║ Videos ║ Images ║Playlist ║
 		║   ║            ║        ║        ║         ║
 		║---║------------║--------║--------║---------║
@@ -712,6 +712,7 @@ INSTALLorRemoveVideoTOOL() {
 		║   ║          ║        github.com/║                    
 		║ 3 ║youtube-dl║ytdl-org/youtube-dl║  ${YOTUBEdlVersion}
 
+
 	ENDofTable
 	#对原开发者iawia002的代码进行自动编译，并
 	echo "annie将于每月1号凌晨4点自动编译并发布最新版"
@@ -726,9 +727,37 @@ INSTALLorRemoveVideoTOOL() {
 	fi
 
 	if [ ! $(command -v ffmpeg) ]; then
-		dependencies="${dependencies} ffmpeg"
+		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "arm64" ]; then
+			cd /tmp
+			rm -rf .FFMPEGTEMPFOLDER
+			git clone -b linux_$(uname -m) --depth=1 https://gitee.com/mo2/ffmpeg.git ./.FFMPEGTEMPFOLDER
+			cd /usr/local/bin
+			tar -Jxvf /tmp/.FFMPEGTEMPFOLDER/ffmpeg.tar.xz ffmpeg
+			chmod +x ffmpeg
+			rm -rf /tmp/.FFMPEGTEMPFOLDER
+		else
+			dependencies="${dependencies} ffmpeg"
+		fi
+	fi
+	#检测两次
+	if [ ! $(command -v ffmpeg) ]; then
+		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "arm64" ]; then
+			dependencies="${dependencies} ffmpeg"
+		fi
 	fi
 
+	if [ ! $(command -v pip3) ]; then
+		apt update 2>/dev/null
+		apt install -y python3 python3-distutils 2>/dev/null
+		cd /tmp
+		curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.00
+		curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.01
+		cat .get-pip.tar.gz.* >.get-pip.tar.gz
+		tar -zxvf .get-pip.tar.gz
+		python3 get-pip.py -i https://pypi.tuna.tsinghua.edu.cn/simple
+		rm -f .get-pip.tar.gz* get-pip.py
+	fi
+	#检测两次
 	if [ ! $(command -v pip3) ]; then
 		dependencies="${dependencies} python3-pip"
 	fi
@@ -770,9 +799,19 @@ INSTALLorRemoveVideoTOOL() {
 
 	cd /tmp
 	if [ ! $(command -v pip3) ]; then
-		curl -O https://bootstrap.pypa.io/get-pip.py
-		python3 get-pip.py
+		curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.00
+		curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.01
+		cat .get-pip.tar.gz.* >.get-pip.tar.gz
+		tar -zxvf .get-pip.tar.gz
+		if [ -f "get-pip.py" ]; then
+			rm -f .get-pip.tar.gz*
+		else
+			curl -LO https://bootstrap.pypa.io/get-pip.py
+		fi
+		python3 get-pip.py -i https://pypi.tuna.tsinghua.edu.cn/simple
+		rm -f get-pip.py
 	fi
+
 	rm -rf ./.ANNIETEMPFOLDER
 	git clone -b linux_${archtype} --depth=1 https://gitee.com/mo2/annie ./.ANNIETEMPFOLDER
 	mv ./.ANNIETEMPFOLDER/annie /usr/local/bin/
@@ -786,15 +825,13 @@ INSTALLorRemoveVideoTOOL() {
 	pip3 install youtube-dl -U
 	youtube-dl -v 2>&1 | grep version
 	echo "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
-	echo "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get ; apt purge python3-pip${RESET}"
-	echo "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl; apt purge python3-pip${RESET}"
+	echo "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
+	echo "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
 	echo 'Press Enter to start annie'
 	echo "${YELLOW}按回车键启动annie。${RESET}"
 	read
 	golangANNIE
 }
-
-#################
 
 ##################
 WHICHVSCODEedition() {
