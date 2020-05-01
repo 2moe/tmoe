@@ -466,7 +466,9 @@ GNULINUX() {
 		fi
 
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
-			bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash')"
+			#bash <(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash')
+			curl -sLo /tmp/.debian-gui-install.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
+			bash /tmp/.debian-gui-install.bash
 			exit 0
 		fi
 	fi
@@ -576,7 +578,7 @@ ANDROIDTERMUX() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200430-15)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200501-14)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
