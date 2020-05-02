@@ -3717,8 +3717,6 @@ filebrowser_onekey() {
 	filebrowser config set --locale zh-cn
 	#修改日志文件路径
 	#filebrowser config set --log /var/log/filebrowser.log
-	#新建管理员用户,neko为用户名,neko@tmoe.me为密码，请自行修改
-	#filebrowser users add neko neko@tmoe.me --perm.admin
 	TARGET_USERNAME=$(whiptail --inputbox "请输入自定义用户名,例如root,admin等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
@@ -3737,7 +3735,7 @@ filebrowser_onekey() {
 		read
 		filebrowser_onekey
 	fi
-	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin || filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
 
 	cat >/etc/systemd/system/filebrowser.service <<-'EndOFsystemd'
 		[Unit]
@@ -3818,7 +3816,7 @@ filebrowser_add_admin() {
 		filebrowser_add_admin
 	fi
 	cd /etc
-	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin || filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
 }
 #################
 filebrowser_port() {
