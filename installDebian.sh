@@ -104,8 +104,31 @@ if [ "$(uname -o)" = "Android" ]; then
   fi
   cd ~/.termux || mkdir -p ~/.termux && cd ~/.termux
   if [ ! -e "colors.properties" ]; then
-    echo '检测到termux配色文件不存在，正在为您下载...'
-    aria2c --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/colors.properties'
+    echo '检测到termux配色文件不存在，正在自动生成...'
+    # aria2c --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/colors.properties'
+    cat >colors.properties <<-'EndofMonokai'
+	# monokai.dark.colors
+	# Color scheme from https://github.com/Mayccoll/Gogh
+	color0=#75715e
+	color1=#f92672
+	color2=#a6e22e
+	color3=#f4bf75
+	color4=#66d9ef
+	color5=#ae81ff
+	color6=#2AA198
+	color7=#f9f8f5
+	color8=#272822
+	color9=#f92672
+	color10=#a6e22e
+	color11=#f4bf75
+	color12=#66d9ef
+	color13=#ae81ff
+	color14=#2AA198
+	color15=#f8f8f2
+	background=#272822
+	foreground=#f8f8f2
+	cursor=#f8f8f2
+EndofMonokai
   fi
 
   if [ ! -e "termux.properties" ]; then
@@ -325,7 +348,7 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
   grep -q 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   #此处EndOfChrootFile不要加单引号
-cat >${PREFIX}/bin/debian <<-EndOfChrootFile
+  cat >${PREFIX}/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
   if [ ! -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then

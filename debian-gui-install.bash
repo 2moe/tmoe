@@ -1,9 +1,26 @@
 #!/bin/bash
 ########################################################################
-#-- 自动检测相关依赖和发行版
-
-CHECKdependencies() {
-
+main() {
+	case "$1" in
+	i | -i)
+		DEBIANMENU
+		;;
+	up | -u)
+		tmoe_linux_tool_upgrade
+		;;
+	h | -h | --help)
+		FrequentlyAskedQuestions
+		;;
+	file | filebrowser)
+		filebrowser_restart
+		;;
+	*)
+		CHECK_ROOT
+		;;
+	esac
+}
+################
+CHECK_ROOT() {
 	if [ "$(id -u)" != "0" ]; then
 		if [ -e "/usr/bin/curl" ]; then
 			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
@@ -14,8 +31,10 @@ CHECKdependencies() {
 		fi
 		exit 0
 	fi
-	#############################
-
+	CHECKdependencies
+}
+#############################
+CHECKdependencies() {
 	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
 		LINUXDISTRO='debian'
 		if grep -q 'ubuntu' /etc/os-release; then
@@ -305,15 +324,15 @@ CHECKdependencies() {
 DEBIANMENU() {
 	cd ${cur}
 	OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200501-15)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0501支持解析并下载B站、油管视频" 20 50 6 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200503-02)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOENODEBIAN} 更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
 			"4" "Other software/games 其它软件/游戏" \
 			"5" "Modify VNC/XSDL/XRDP(远程桌面)conf" \
 			"6" "Download video 解析视频链接" \
-			"7" "Update Debian tool 更新本工具" \
-			"8" "Install Chinese manual 安装中文手册" \
+			"7" "Filebrowser:简单轻量的个人网盘" \
+			"8" "Update Debian tool 更新本工具" \
 			"9" "Enable zsh tool 启用zsh管理工具" \
 			"10" "VSCode" \
 			"11" "Remove GUI 卸载图形界面" \
@@ -361,25 +380,17 @@ DEBIANMENU() {
 		DOWNLOADvideo
 		#MODIFYVNCORXSDLCONF
 	fi
+	#######################################
+	if [ "${OPTION}" == '7' ]; then
+		install_filebrowser
+	fi
 
 	###################################
-	if [ "${OPTION}" == '7' ]; then
-
-		curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
-		echo 'Update completed, press Enter to return.'
-		echo "${YELLOW}更新完成，按回车键返回。${RESET}"
-		chmod +x /usr/local/bin/debian-i
-		read
-		#bash /usr/local/bin/debian-i
-		source /usr/local/bin/debian-i
-	fi
-	################
-
 	if [ "${OPTION}" == '8' ]; then
 
-		CHINESEMANPAGES
-
+		tmoe_linux_tool_upgrade
 	fi
+	################
 
 	#################################
 	if [ "${OPTION}" == '9' ]; then
@@ -422,6 +433,17 @@ DEBIANMENU() {
 	fi
 }
 ############################
+tmoe_linux_tool_upgrade() {
+	curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
+	echo 'Update completed, press Enter to return.'
+	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
+	chmod +x /usr/local/bin/debian-i
+	read
+	#bash /usr/local/bin/debian-i
+	source /usr/local/bin/debian-i
+}
+#####################
+
 DOWNLOADvideo() {
 	VIDEOTOOL=$(
 		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 14 50 6 \
@@ -588,10 +610,11 @@ cookiesREADME() {
 		您需要安装浏览器扩展插件来导出cookie，部分插件还需手动配置导出格式为Netscape，并将后缀名修改为txt
 		对于不同平台(windows、linux和macos)导出的cookie文件，如需跨平台加载，则需要转换为相应系统的换行符。
 		浏览器商店中包含多个相关扩展插件，但不同插件导出的cookie文件可能存在兼容性的差异。
-		例如火狐扩展cookies-txt（适用于you-get）
+		例如火狐扩展cookies-txt（适用于you-get v0.4.1432，不适用于annie v0.9.8）
 		https://addons.mozilla.org/zh-CN/firefox/addon/cookies-txt/
-		再次提醒，cookie非常重要，请仔细甄别，堤防恶意插件。
-		同时希望您能够了解，将cookie文件泄露出去等同于账号泄密！
+		再次提醒，cookie非常重要!
+		希望您请仔细甄别，堤防恶意插件。
+		同时希望您能够了解，将cookie文件泄露出去等同于将账号泄密！
 		请妥善保管好该文件及相关数据！
 	EndOFcookies
 	echo "Press enter to continue"
@@ -821,11 +844,12 @@ INSTALLorRemoveVideoTOOL() {
 	chmod +x /usr/local/bin/annie
 	annie -v
 	rm -rf ./.ANNIETEMPFOLDER
+	#mkdir -p ${HOME}/.config
 	pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-	pip3 install pip -U 2>/dev/null
-	pip3 install you-get -U
+	pip3 install pip -U -i https://pypi.tuna.tsinghua.edu.cn/simple 2>/dev/null
+	pip3 install you-get -U -i https://pypi.tuna.tsinghua.edu.cn/simple
 	you-get -V
-	pip3 install youtube-dl -U
+	pip3 install youtube-dl -U -i https://pypi.tuna.tsinghua.edu.cn/simple
 	youtube-dl -v 2>&1 | grep version
 	echo "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
 	echo "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
@@ -2000,7 +2024,6 @@ INSTALLsynaptic() {
 }
 ##########################################
 CHINESEMANPAGES() {
-
 	echo '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
 	apt update
 	apt install -y debian-reference-zh-cn manpages manpages-zh man-db
@@ -2017,11 +2040,6 @@ CHINESEMANPAGES() {
 	echo "man a help manual software, which can help you understand the detailed usage of the command."
 	echo "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
 	echo "如需卸载，请手动输apt purge -y debian-reference-zh-cn manpages manpages-zh man-db "
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
-
-	DEBIANMENU
 }
 ########################################################################
 CONFIGTHEMES() {
@@ -2297,6 +2315,7 @@ OTHERSOFTWARE() {
 			"11" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
 			"12" "ADB:Android Debug Bridge" \
 			"13" "BleachBit:垃圾清理" \
+			"14" "Install Chinese manual 安装中文手册" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2536,11 +2555,16 @@ OTHERSOFTWARE() {
 			echo "bleachbit安装完成，如需卸载，请手动输apt purge -y bleachbit"
 		fi
 	fi
+	########################
+	if [ "${SOFTWARE}" == '14' ]; then
+		CHINESEMANPAGES
+	fi
 	############################################
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	DEBIANMENU
+	OTHERSOFTWARE
+	#DEBIANMENU
 }
 ######################
 163NETEASEMUSIC() {
@@ -3293,60 +3317,12 @@ BetaFeatures() {
 	fi
 	####################
 	if [ "${TMOEBETA}" == '1' ]; then
-		apt update
-		apt install -y fcitx
-		apt install -y fcitx-sunpinyin
-		apt install -y fcitx-googlepinyin
-		if [ "${LINUXDISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm fcitx-sogoupinyin
-			echo "fcitx-sogoupinyin安装完成,按回车键返回"
-			read
-			BetaFeatures
-		fi
-
-		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "i386" ]; then
-			cd /tmp
-			LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${archtype} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
-			curl -Lvo 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
-		else
-			echo "架构不支持，跳过安装搜狗输入法。"
-		fi
-		apt install -y ./sogou_pinyin.deb
-		echo "若安装失败，则请前往官网手动下载安装。"
-		echo 'url: https://pinyin.sogou.com/linux/'
-		rm -fv sogou_pinyin.deb
-		echo "安装完成！"
-		echo "如需卸载，请手动输apt purge -y sogoupinyin fcitx-sunpinyin fcitx-googlepinyin fcitx"
+		install_pinyin_input_method
 	fi
 
 	##############################
 	if [ "${TMOEBETA}" == '2' ]; then
-		cd /tmp
-		if [ -e "/usr/share/applications/wps-office-wps.desktop" ]; then
-			echo "检测到您已安装WPS office,按回车键重新安装,按Ctrl+C取消"
-			echo "Press enter to continue."
-			read
-		fi
-
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dpkg --configure -a
-			LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${archtype}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-			curl -Lvo WPSoffice.deb "${LatestWPSLink}"
-			apt install -y ./WPSoffice.deb
-
-		elif [ "${LINUXDISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm wps-office
-
-		elif [ "${LINUXDISTRO}" = "redhat" ]; then
-			LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-			curl -Lvo WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
-			rpm -ivh ./WPSoffice.rpm
-		fi
-
-		echo "若安装失败，则请前往官网手动下载安装。"
-		echo "url: https://linux.wps.cn"
-		rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
-		echo "安装完成，如需卸载，请手动输apt purge -y wps-office"
+		InstallWPSoffice
 	fi
 	##############################
 	if [ "${TMOEBETA}" == '3' ]; then
@@ -3360,25 +3336,7 @@ BetaFeatures() {
 	fi
 	##############################
 	if [ "${TMOEBETA}" == '4' ]; then
-
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			apt update
-			apt install -y gnome-system-monitor
-
-		elif [ "${LINUXDISTRO}" = "alpine" ]; then
-			apk update
-			apk add gnome-system-monitor
-
-		elif [ "${LINUXDISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm gnome-system-monitor
-
-		elif [ "${LINUXDISTRO}" = "redhat" ]; then
-			dnf install -y gnome-system-monitor || yum install -y gnome-system-monitor
-
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			emerge -vk gnome-system-monitor
-		fi
-		echo "安装完成，如需卸载，请手动输apt purge -y gnome-system-monitor"
+		Install_Gnome_System_Monitor
 	fi
 
 	################################
@@ -3397,35 +3355,11 @@ BetaFeatures() {
 	fi
 	############################
 	if [ "${TMOEBETA}" == '7' ]; then
-		cd /tmp
-		if [ "$(uname -m)" = "x86_64" ]; then
-			curl -Lvo 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
-		elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
-			echo "非常抱歉，暂不支持您的架构"
-		elif [ "${archtype}" = "i386" ]; then
-			curl -Lvo 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
-		fi
-		apt install -y ./typora.deb
-		rm -vf ./typora.deb
-		echo "安装完成，如需卸载，请手动输apt purge -y typora"
+		Install_Typora
 	fi
 	############################
 	if [ "${TMOEBETA}" == '8' ]; then
-		cd /tmp
-		if [ "${archtype}" = "amd64" ]; then
-			curl -Lvo 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
-			#curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
-		elif [ "${archtype}" = "i386" ]; then
-			curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
-		else
-			echo "非常抱歉，暂不支持您的架构"
-		fi
-
-		apt install -y ./electronic-wechat.deb
-		rm -vf ./electronic-wechat.deb
-		if [ -e "/usr/bin/electronic-wechat" ]; then
-			echo "安装完成，如需卸载，请手动输apt purge -y electronic-wechat"
-		fi
+		InstallElectronicWechat
 	fi
 	##############################
 	if [ "${TMOEBETA}" == '9' ]; then
@@ -3433,8 +3367,6 @@ BetaFeatures() {
 		apt install -y qbittorrent
 		echo "安装完成，如需卸载，请手动输apt purge -y qbittorrent"
 	fi
-
-	################################
 	##################################
 	if [ "${TMOEBETA}" == '10' ]; then
 		if [ ! -e "/usr/bin/plasma-discover" ]; then
@@ -3462,51 +3394,7 @@ BetaFeatures() {
 	fi
 	######################
 	if [ "${TMOEBETA}" == '13' ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			echo "检测到您当前使用的是Proot容器，软件可能无法正常运行。"
-			echo "安装后将有可能导致VNC黑屏,按Ctrl+C取消"
-			echo "Press enter to continue,press Ctrl+C to canacel."
-			read
-		fi
-		dependencies=""
-		if [ ! -e /usr/bin/thunar ]; then
-			dependencies="${dependencies} thunar"
-		fi
-
-		if [ ! -e /usr/bin/nautilus ]; then
-			dependencies="${dependencies} nautilus"
-		fi
-
-		if [ ! -e /usr/bin/dolphin ]; then
-			dependencies="${dependencies} dolphin"
-		fi
-
-		if [ ! -z "${dependencies}" ]; then
-			if [ "${LINUXDISTRO}" = "debian" ]; then
-				apt update
-				apt install -y ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "alpine" ]; then
-				apk update
-				apk add ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "arch" ]; then
-				pacman -Syu --noconfirm ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "redhat" ]; then
-				dnf install -y ${dependencies} || yum install -y ${dependencies}
-
-			elif [ "${LINUXDISTRO}" = "openwrt" ]; then
-				#opkg update
-				opkg install ${dependencies} || opkg install ${dependencies}
-			elif [ "${LINUXDISTRO}" = "void" ]; then
-				xbps-install -S -y lxqt tigervnc
-
-			elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-				emerge -vk ${dependencies}
-			fi
-		fi
-		echo "安装完成，如需卸载，请手动输apt purge -y nautilus dolphin"
+		thunar_nautilus_dolphion
 	fi
 	##############################
 	if [ "${TMOEBETA}" == '14' ]; then
@@ -3517,23 +3405,7 @@ BetaFeatures() {
 	fi
 	####################
 	if [ "${TMOEBETA}" == '15' ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			apt update
-			apt install -y ffmpeg obs-studio
-
-		elif [ "${LINUXDISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm obs-studio
-
-		elif [ "${LINUXDISTRO}" = "redhat" ]; then
-			dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-			dnf install -y obs-studio || yum install -y obs-studio
-			#dnf install xorg-x11-drv-nvidia-cuda
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			emerge -vk media-video/obs-studio
-		fi
-		echo "若安装失败，则请前往官网阅读安装说明。"
-		echo "url: https://obsproject.com/wiki/install-instructions#linux"
-		echo "安装完成，如需卸载，请手动输apt purge -y ffmpeg obs-studio"
+		Install_OBS_Studio
 	fi
 	##############################
 	if [ "${TMOEBETA}" == '16' ]; then
@@ -3547,6 +3419,505 @@ BetaFeatures() {
 	read
 	BetaFeatures
 }
+####################
+install_pinyin_input_method() {
+	apt update
+	apt install -y fcitx
+	apt install -y fcitx-sunpinyin
+	apt install -y fcitx-googlepinyin
+	if [ "${LINUXDISTRO}" = "arch" ]; then
+		pacman -Syu --noconfirm fcitx-sogoupinyin
+		echo "fcitx-sogoupinyin安装完成,按回车键返回"
+		read
+		BetaFeatures
+	fi
+
+	if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "i386" ]; then
+		cd /tmp
+		LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${archtype} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
+		curl -Lvo 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
+	else
+		echo "架构不支持，跳过安装搜狗输入法。"
+	fi
+	apt install -y ./sogou_pinyin.deb
+	echo "若安装失败，则请前往官网手动下载安装。"
+	echo 'url: https://pinyin.sogou.com/linux/'
+	rm -fv sogou_pinyin.deb
+	echo "安装完成！"
+	echo "如需卸载，请手动输apt purge -y sogoupinyin fcitx-sunpinyin fcitx-googlepinyin fcitx"
+}
+############
+Install_Gnome_System_Monitor() {
+	if [ "${LINUXDISTRO}" = "debian" ]; then
+		apt update
+		apt install -y gnome-system-monitor
+
+	elif [ "${LINUXDISTRO}" = "alpine" ]; then
+		apk update
+		apk add gnome-system-monitor
+
+	elif [ "${LINUXDISTRO}" = "arch" ]; then
+		pacman -Syu --noconfirm gnome-system-monitor
+
+	elif [ "${LINUXDISTRO}" = "redhat" ]; then
+		dnf install -y gnome-system-monitor || yum install -y gnome-system-monitor
+
+	elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+		emerge -vk gnome-system-monitor
+	fi
+	echo "安装完成，如需卸载，请手动输apt purge -y gnome-system-monitor"
+}
+################
+Install_Typora() {
+	cd /tmp
+	if [ "$(uname -m)" = "x86_64" ]; then
+		curl -Lvo 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
+	elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
+		echo "非常抱歉，暂不支持您的架构"
+	elif [ "${archtype}" = "i386" ]; then
+		curl -Lvo 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+	fi
+	apt install -y ./typora.deb
+	rm -vf ./typora.deb
+	echo "安装完成，如需卸载，请手动输apt purge -y typora"
+}
+####################
+InstallWPSoffice() {
+	cd /tmp
+	if [ -e "/usr/share/applications/wps-office-wps.desktop" ]; then
+		echo "检测到您已安装WPS office,按回车键重新安装,按Ctrl+C取消"
+		echo "Press enter to continue."
+		read
+	fi
+
+	if [ "${LINUXDISTRO}" = "debian" ]; then
+		dpkg --configure -a
+		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${archtype}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+		curl -Lvo WPSoffice.deb "${LatestWPSLink}"
+		apt install -y ./WPSoffice.deb
+
+	elif [ "${LINUXDISTRO}" = "arch" ]; then
+		pacman -Syu --noconfirm wps-office
+
+	elif [ "${LINUXDISTRO}" = "redhat" ]; then
+		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+		curl -Lvo WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+		rpm -ivh ./WPSoffice.rpm
+	fi
+
+	echo "若安装失败，则请前往官网手动下载安装。"
+	echo "url: https://linux.wps.cn"
+	rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
+	echo "安装完成，如需卸载，请手动输apt purge -y wps-office"
+}
+
+###################
+thunar_nautilus_dolphion() {
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "检测到您当前使用的是Proot容器，软件可能无法正常运行。"
+		echo "安装后将有可能导致VNC黑屏,按Ctrl+C取消"
+		echo "Press enter to continue,press Ctrl+C to canacel."
+		read
+	fi
+	dependencies=""
+	if [ ! -e /usr/bin/thunar ]; then
+		dependencies="${dependencies} thunar"
+	fi
+
+	if [ ! -e /usr/bin/nautilus ]; then
+		dependencies="${dependencies} nautilus"
+	fi
+
+	if [ ! -e /usr/bin/dolphin ]; then
+		dependencies="${dependencies} dolphin"
+	fi
+
+	if [ ! -z "${dependencies}" ]; then
+		if [ "${LINUXDISTRO}" = "debian" ]; then
+			apt update
+			apt install -y ${dependencies}
+
+		elif [ "${LINUXDISTRO}" = "alpine" ]; then
+			apk update
+			apk add ${dependencies}
+
+		elif [ "${LINUXDISTRO}" = "arch" ]; then
+			pacman -Syu --noconfirm ${dependencies}
+
+		elif [ "${LINUXDISTRO}" = "redhat" ]; then
+			dnf install -y ${dependencies} || yum install -y ${dependencies}
+
+		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+			#opkg update
+			opkg install ${dependencies} || opkg install ${dependencies}
+		elif [ "${LINUXDISTRO}" = "void" ]; then
+			xbps-install -S -y lxqt tigervnc
+
+		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+			emerge -vk ${dependencies}
+		fi
+	fi
+	echo "安装完成，如需卸载，请手动输apt purge -y nautilus dolphin"
+
+}
+##################
+InstallElectronicWechat() {
+	cd /tmp
+	if [ "${archtype}" = "amd64" ]; then
+		curl -Lvo 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
+		#curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
+	elif [ "${archtype}" = "i386" ]; then
+		curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
+	else
+		echo "非常抱歉，暂不支持您的架构"
+	fi
+
+	apt install -y ./electronic-wechat.deb
+	rm -vf ./electronic-wechat.deb
+	if [ -e "/usr/bin/electronic-wechat" ]; then
+		echo "安装完成，如需卸载，请手动输apt purge -y electronic-wechat"
+	fi
+}
+#############
+Install_OBS_Studio() {
+	if [ "${LINUXDISTRO}" = "debian" ]; then
+		apt update
+		apt install -y ffmpeg obs-studio
+
+	elif [ "${LINUXDISTRO}" = "arch" ]; then
+		pacman -Syu --noconfirm obs-studio
+
+	elif [ "${LINUXDISTRO}" = "redhat" ]; then
+		dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+		dnf install -y obs-studio || yum install -y obs-studio
+		#dnf install xorg-x11-drv-nvidia-cuda
+	elif [ "${LINUXDISTRO}" = "gentoo" ]; then
+		emerge -vk media-video/obs-studio
+	fi
+	echo "若安装失败，则请前往官网阅读安装说明。"
+	echo "url: https://obsproject.com/wiki/install-instructions#linux"
+	echo "安装完成，如需卸载，请手动输apt purge -y ffmpeg obs-studio"
+}
+################
+install_filebrowser() {
+	if [ ! $(command -v filebrowser) ]; then
+		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "arm64" ]; then
+			cd /tmp
+			rm -rf .FileBrowserTEMPFOLDER
+			git clone -b linux_${archtype} --depth=1 https://gitee.com/mo2/filebrowser.git ./.FileBrowserTEMPFOLDER
+			cd /usr/local/bin
+			tar -Jxvf /tmp/.FileBrowserTEMPFOLDER/filebrowser.tar.xz filebrowser
+			chmod +x filebrowser
+			rm -rf /tmp/.FileBrowserTEMPFOLDER
+		else
+			curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
+		fi
+	fi
+	pgrep filebrowser &>/dev/null
+	if [ "$?" = "0" ]; then
+		FILEBROWSER_STATUS='检测到filebrowser进程正在运行'
+		FILEBROWSER_PROCESS='Restart重启'
+	else
+		FILEBROWSER_STATUS='检测到filebrowser进程未运行'
+		FILEBROWSER_PROCESS='Start启动'
+	fi
+
+	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
+		if [ ! -e "/etc/filebrowser.db" ]; then
+			echo "检测到数据库文件不存在，2s后将为您自动配置服务。"
+			sleep 2s
+			filebrowser_onekey
+		fi
+		filebrowser_restart
+	else
+		configure_filebrowser
+	fi
+}
+############
+configure_filebrowser() {
+	#先进入etc目录，防止database加载失败
+	cd /etc
+	OPTION=$(
+		whiptail --title "CONFIGURE FILEBROWSER" --menu "您想要修改哪些配置？" 14 50 5 \
+			"1" "One-key conf 初始化一键配置" \
+			"2" "add admin 新建管理员" \
+			"3" "port 修改端口" \
+			"4" "view logs 查看日志" \
+			"5" "language语言环境" \
+			"6" "listen addr/ip 监听ip" \
+			"7" "进程管理说明" \
+			"8" "stop 停止" \
+			"9" "reset 重置所有配置信息" \
+			"0" "Back to the main menu 返回主菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	if [ "${OPTION}" == '0' ]; then
+		DEBIANMENU
+	fi
+	##############################
+	if [ "${OPTION}" == '1' ]; then
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
+		filebrowser_onekey
+	fi
+	##############################
+	if [ "${OPTION}" == '2' ]; then
+		filebrowser_add_admin
+	fi
+	##############################
+	if [ "${OPTION}" == '3' ]; then
+		filebrowser_port
+	fi
+	##############################
+	if [ "${OPTION}" == '4' ]; then
+		filebrowser_logs
+	fi
+	##############################
+	if [ "${OPTION}" == '5' ]; then
+		filebrowser_language
+	fi
+	##############################
+	if [ "${OPTION}" == '6' ]; then
+		filebrowser_listen_ip
+	fi
+	##############################
+	if [ "${OPTION}" == '7' ]; then
+		filebrowser_systemd
+	fi
+	##############################
+	if [ "${OPTION}" == '8' ]; then
+		echo "正在停止服务进程..."
+		echo "Stopping..."
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
+	fi
+	##############################
+	if [ "${OPTION}" == '9' ]; then
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
+		filebrowser_reset
+	fi
+	########################################
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	configure_filebrowser
+}
+##############
+filebrowser_onekey() {
+	cd /etc
+	#初始化数据库文件
+	filebrowser -d filebrowser.db config init
+	#监听0.0.0.0
+	filebrowser config set --address 0.0.0.0
+	#设定根目录为当前主目录
+	filebrowser config set --root ${HOME}
+	filebrowser config set --port 38080
+	#设置语言环境为中文简体
+	filebrowser config set --locale zh-cn
+	#修改日志文件路径
+	#filebrowser config set --log /var/log/filebrowser.log
+	#新建管理员用户,neko为用户名,neko@tmoe.me为密码，请自行修改
+	#filebrowser users add neko neko@tmoe.me --perm.admin
+	TARGET_USERNAME=$(whiptail --inputbox "请输入自定义用户名,例如root,admin等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "用户名无效，请返回重试。"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		filebrowser_onekey
+	fi
+	TARGET_USERPASSWD=$(whiptail --inputbox "请设定管理员密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "密码包含无效字符，请返回重试。"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		filebrowser_onekey
+	fi
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+
+	cat >/etc/systemd/system/filebrowser.service <<-'EndOFsystemd'
+		[Unit]
+		Description=FileBrowser
+		After=network.target
+		Wants=network.target
+
+		[Service]
+		Type=simple
+		PIDFile=/var/run/filebrowser.pid
+		ExecStart=/usr/local/bin/filebrowser -d /etc/filebrowser.db
+		Restart=on-failure
+
+		[Install]
+		WantedBy=multi-user.target
+	EndOFsystemd
+	chmod +x /etc/systemd/system/filebrowser.service
+	systemctl daemon-reload 2>/dev/null
+	#systemctl start filebrowser
+	#service filebrowser start
+	if (whiptail --title "systemctl enable filebrowser？" --yes-button 'Yes' --no-button 'No！' --yesno "是否需要将此服务设置为开机自启？" 9 50); then
+		systemctl enable filebrowser
+	fi
+	filebrowser_restart
+	########################################
+	echo 'Press Enter to return.'
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	configure_filebrowser
+	#此处的返回步骤并非多余
+}
+############
+filebrowser_restart() {
+	FILEBROWSER_PORT=$(cat /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
+	service filebrowser restart 2>/dev/null
+	if [ "$?" != "0" ]; then
+		pkill filebrowser
+		nohup /usr/local/bin/filebrowser -d /etc/filebrowser.db 2>&1 >/var/log/filebrowser.log &
+		cat /var/log/filebrowser.log | head -n 20
+	fi
+	echo "正在为您启动filebrowser服务，本机默认访问地址为localhost:${FILEBROWSER_PORT}"
+	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${FILEBROWSER_PORT}
+	echo The WAN VNC address 外网地址 $(curl -sL ip.sb | head -n 1):${FILEBROWSER_PORT}
+	service filebrowser status 2>/dev/null
+	if [ "$?" = "0" ]; then
+		echo "您可以输${YELLOW}service filebrowser stop${RESET}来停止进程"
+	else
+		echo "您可以输${YELLOW}pkill filebrowser${RESET}来停止进程"
+	fi
+	#systemctl status filebrowser
+	service filebrowser status 2>/dev/null
+}
+#############
+filebrowser_add_admin() {
+	pkill filebrowser
+	service filebrowser stop 2>/dev/null
+	echo "Stopping filebrowser..."
+	echo "正在停止filebrowser进程..."
+	echo "正在检测您当前已创建的用户..."
+	filebrowser -d /etc/filebrowser.db users ls
+	echo 'Press Enter to continue.'
+	echo "${YELLOW}按回车键继续。${RESET}"
+	read
+	TARGET_USERNAME=$(whiptail --inputbox "请输入自定义用户名,例如root,admin等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "用户名无效，操作取消"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		configure_filebrowser
+	fi
+	TARGET_USERPASSWD=$(whiptail --inputbox "请设定管理员密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "密码包含无效字符，请返回重试。"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		filebrowser_add_admin
+	fi
+	cd /etc
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+}
+#################
+filebrowser_port() {
+	FILEBROWSER_PORT=$(cat /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
+	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的端口为${FILEBROWSER_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		configure_filebrowser
+	fi
+	filebrowser config set --port ${TARGET_PORT}
+}
+############
+filebrowser_logs() {
+	if [ ! -f "/var/log/filebrowser.log" ]; then
+		echo "日志文件不存在，您可能没有启用记录日志的功能"
+		echo "${YELLOW}按回车键启用。${RESET}"
+		read
+		filebrowser -d /etc/filebrowser.db config set --log /var/log/filebrowser.log
+	fi
+	ls -lh /var/log/filebrowser.log
+	echo "按Ctrl+C退出日志追踪，press Ctrl+C to exit."
+	tail -Fvn 35 /var/log/filebrowser.log
+	#if [ $(command -v less) ]; then
+	#	cat /var/log/filebrowser.log | less -meQ
+	#else
+	#	cat /var/log/filebrowser.log
+	#fi
+
+}
+#################
+filebrowser_language() {
+	TARGET_LANG=$(whiptail --inputbox "Please enter the language format, for example en,zh-cn" 12 50 --title "LANGUAGE" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		configure_filebrowser
+	fi
+	filebrowser config set --port ${TARGET_LANG}
+}
+###############
+filebrowser_listen_ip() {
+	TARGET_IP=$(whiptail --inputbox "Please enter the listen address, for example 0.0.0.0\n默认情况下无需修改。" 12 50 --title "listen" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		echo 'Press Enter to return.'
+		echo "${YELLOW}按回车键返回。${RESET}"
+		read
+		configure_filebrowser
+	fi
+	filebrowser config set --address ${TARGET_IP}
+}
+##################
+filebrowser_systemd() {
+	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
+		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
+	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "检测到您当前处于proot容器环境下，无法使用systemctl命令"
+	fi
+
+	cat <<-'EOF'
+		systemd管理
+			输systemctl start filebrowser启动
+			输systemctl stop filebrowser停止
+			输systemctl status filebrowser查看进程状态
+			输systemctl enable filebrowser开机自启
+			输systemctl disable filebrowser禁用开机自启
+
+			service命令
+			输service filebrowser start启动
+			输service filebrowser stop停止
+			输service filebrowser status查看进程状态
+		        
+		    其它命令(适用于service和systemctl都无法使用的情况)
+			输debian-i file启动
+			pkill filebrowser停止
+	EOF
+}
+###############
+filebrowser_reset() {
+	echo "${YELLOW}WARNING！继续执行此操作将丢失所有配置信息！${RESET}"
+	echo 'Press Enter to confirm,press Ctrl+C to cancel.'
+	echo "${YELLOW}按回车键确认${RESET}"
+	read
+	rm -vf filebrowser.db
+	filebrowser -d filebrowser.db config init
+}
+
 ###########################################
-CHECKdependencies
+#CHECKdependencies "$@"
+main "$@"
 ########################################################################
