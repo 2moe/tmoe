@@ -325,7 +325,7 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
   grep -q 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
 
   #此处EndOfChrootFile不要加单引号
-  cat >${PREFIX}/bin/debian <<-EndOfChrootFile
+cat >${PREFIX}/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
   DebianCHROOT=${HOME}/${DebianFolder}
   if [ ! -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
@@ -351,11 +351,10 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
   mount -t proc proc ${DebianCHROOT}/proc >/dev/null 2>&1
   #mount -t proc proc /proc >/dev/null 2>&1
 
-  #mount -t sysfs sysfs ${DebianCHROOT}/sys >/dev/null 2>&1
-  mount -t sysfs sys ${DebianCHROOT}/sys >/dev/null 2>&1
+  mount -t sysfs sysfs ${DebianCHROOT}/sys >/dev/null 2>&1
 
   mount -t devpts devpts ${DebianCHROOT}/dev/pts >/dev/null 2>&1
- # mount -t devpts devpts /dev/pts >/dev/null 2>&1
+  # mount -t devpts devpts /dev/pts >/dev/null 2>&1
 
   #mount --bind /dev/shm ${DebianCHROOT}/dev/shm >/dev/null 2>&1
   mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
@@ -364,17 +363,17 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 
   mount --rbind ${DebianCHROOT} ${DebianCHROOT}/ >/dev/null 2>&1
 
-  if [ -d "/sdcard" ]; then
-    mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
-    #mount --rbind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
-  fi
   if [ "$(uname -o)" = "Android" ]; then
-    if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
-      TFcardFolder=$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')
-      mount -o bind /mnt/media_rw/${TFcardFolder} ${DebianCHROOT}/root/tf >/dev/null 2>&1
+    TFcardFolder="\$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')"
+    if [ -d "/mnt/media_rw/\${TFcardFolder}" ]; then
+      mount -o bind /mnt/media_rw/\${TFcardFolder} ${DebianCHROOT}/root/tf >/dev/null 2>&1
     fi
     if [ -d "/data/data/com.termux/files/home" ]; then
       mount -o bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux >/dev/null 2>&1
+    fi
+    if [ -d "/sdcard" ]; then
+      mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
+      #mount --rbind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
     fi
   fi
   chroot \${DebianCHROOT} /bin/bash --login
@@ -488,7 +487,7 @@ ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
 ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
   df -h |grep debian
   echo '移除系统前，请先确保您已卸载chroot挂载目录。'
-  echo '建议您在移除前进行备份，若因操作不当导致数据丢失，开发者概不负责！！！'
+  echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
   echo "Before removing the system, make sure you have unmounted the chroot mount directory.
 It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
   fi
@@ -501,7 +500,7 @@ if [ "\$?" = "0" ]; then
     echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 fi
 
-	ls -l ${DebianCHROOT}/root/sd/*
+	ls -l ${DebianCHROOT}/root/sd/* 2>/dev/null
 	if [ "\$?" = "0" ]; then
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"

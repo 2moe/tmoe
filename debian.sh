@@ -624,16 +624,19 @@ MainMenu() {
 			su -c "ls ${HOME} >/dev/null"
 			if [ "$?" != "0" ]; then
 				echo '检测到root权限授予失败，您无法安装chroot容器'
-				echo "${YELLOW}按回车键返回。${RESET}"
-				echo "Press enter to return."
-				read
-				MainMenu
 			else
 				echo "检测到您使用的是Android系统"
-				echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
+				#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
+				echo "Android系统请换用proot容器。"
+				echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
 			fi
+			echo "${YELLOW}按回车键返回。${RESET}"
+			echo "Press enter to return."
+			read
+			MainMenu
+		else
+			CHROOTINSTALLDebian
 		fi
-		CHROOTINSTALLDebian
 	fi
 
 	if [ "${OPTION}" == '3' ]; then
@@ -840,7 +843,7 @@ REMOVESYSTEM() {
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
@@ -869,7 +872,7 @@ REMOVESYSTEM() {
 	if [ "$?" = "0" ]; then
 		echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 	fi
-	ls -l ${DebianCHROOT}/root/sd/*
+	ls -l ${DebianCHROOT}/root/sd/* 2>/dev/null
 	if [ "$?" = "0" ]; then
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"
@@ -1735,11 +1738,12 @@ CHROOTINSTALLDebian() {
 #################################
 INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 	if [ ! -d "${DebianCHROOT}" ]; then
-		less -meQ <<-'EndOfFile'
+		#less -meQ
+		cat <<-'EndOfFile'
 			                              End-user license agreement 
 						   Tmoe-linux Tool（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
 						本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
-						由于恢复包未存储于git仓库，而存储于天萌网盘，故您必须承担并知悉其中的风险。
+						由于恢复包未存储于git仓库，而存储于第三方网盘，故您必须承担并知悉其中的风险。
 						强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
 						本工具的开发者郑重承诺：恢复包内的系统不会使用和披露您的个人信息，也不存在任何侵害您个人隐私的行为。
 						本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
@@ -1750,7 +1754,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 						Do not use GNU/Linux installed by this tool for illegal behavior!
 
 						2. 适用范围
-						(a)在您使用本工具时，通过天萌网盘下载的恢复包系统；
+						(a)在您使用本工具时，通过第三方网盘下载的恢复包系统；
 						(b)在您使用本工具时，通过清华镜像站安装的基础系统。
 						您了解并同意，以下信息不适用本许可协议：
 						(a)您在本工具的相关网站发布的有关信息数据，包括但不限于参与活动、点赞信息及评价详情；
@@ -1762,7 +1766,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 						(b)本工具亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息。
 						                 
 						4.下载说明
-						(a)天萌网盘内的文件有可能由于网站被黑、文件失效、文件被替换、网站服务器出错等原因而导致下载出错或下载内容被劫持,故本工具在解压前会自动校验文件的sha256哈希值。
+						(a)第三方网盘内的文件有可能由于网站被黑、文件失效、文件被替换、网站服务器出错等原因而导致下载出错或下载内容被劫持,故本工具在解压前会自动校验文件的sha256哈希值。
 						(b)强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
 
 						5. 恢复包的使用
@@ -1773,13 +1777,18 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 						(a)本工具安装的是原生GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
 						同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
 
-						7.其它说明
+						7.卸载说明
+						(a)您在移除容器前，必须先停止容器进程。
+						(b)由于在测试chroot容器的过程中，出现了部分已挂载目录无法强制卸载的情况，故本工具在移除容器前会进行检测，并给出相关提示。
+						建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！
+
+						8.其它说明
 						(a)若您需要在开源项目中引用本脚本，建议您先与原开发者联系，若无法联系，则只需附上本git-repo的链接gitee.com/mo2/linux
 						If you want to reference this script in an open source project,it is recommended that you contact the original developer.If you can't contact the developer, just attach the github link: https://github.com/2moe/tmoe-linux
 
-						8.最终用户许可协议的更改
+						9.最终用户许可协议的更改
 						(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
-						(b)本工具开发者保留随时修改本协议的权利，因此请经常查看。 
+						(b)本工具开发者保留随时修改本协议的权利,因此建议您不定期查看。
 						The developer of this tool reserves the right to modify this agreement at any time.
 		EndOfFile
 		echo 'You must agree to EULA to use this tool.'
