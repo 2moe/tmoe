@@ -346,16 +346,16 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
     exit
   fi
   mount -o bind /dev ${DebianCHROOT}/dev >/dev/null 2>&1
-  mount -o bind /dev /dev >/dev/null 2>&1
+  #mount -o bind /dev /dev >/dev/null 2>&1
 
   mount -t proc proc ${DebianCHROOT}/proc >/dev/null 2>&1
-  mount -t proc proc /proc >/dev/null 2>&1
+  #mount -t proc proc /proc >/dev/null 2>&1
 
   #mount -t sysfs sysfs ${DebianCHROOT}/sys >/dev/null 2>&1
   mount -t sysfs sys ${DebianCHROOT}/sys >/dev/null 2>&1
 
   mount -t devpts devpts ${DebianCHROOT}/dev/pts >/dev/null 2>&1
-  mount -t devpts devpts /dev/pts >/dev/null 2>&1
+ # mount -t devpts devpts /dev/pts >/dev/null 2>&1
 
   #mount --bind /dev/shm ${DebianCHROOT}/dev/shm >/dev/null 2>&1
   mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
@@ -366,6 +366,7 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 
   if [ -d "/sdcard" ]; then
     mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
+    #mount --rbind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
   fi
   if [ "$(uname -o)" = "Android" ]; then
     if [ -d "/mnt/media_rw/${TFcardFolder}" ]; then
@@ -499,9 +500,22 @@ It is recommended that you back up the entire system before removal. If the data
 if [ "\$?" = "0" ]; then
     echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 fi
+
+	ls -lA ${DebianCHROOT}/root/sd 2>&1 >/dev/null
+	if [ "\$?" = "0" ]; then
+		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
+		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"
+		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+		echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
+		echo "Press enter to exit."
+		echo "${YELLOW}按回车键退出。${RESET} "
+		read
+		exit 0
+	fi
+
  #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
   #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-	echo 'Detecting debian system footprint... 正在检测debian system占用空间大小'
+	echo 'Detecting debian system size... 正在检测debian system占用空间大小'
   	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
 		echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"

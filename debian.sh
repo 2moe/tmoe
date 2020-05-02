@@ -606,7 +606,7 @@ MainMenu() {
 		if [ "$(uname -o)" != "Android" ]; then
 			echo "非常抱歉，本功能仅适配安卓系统。"
 			echo "Linux系统请换用chroot容器。"
-			echo "Press enter to return。"
+			echo "Press enter to return."
 			echo "${YELLOW}按回车键返回。${RESET} "
 			read
 			MainMenu
@@ -621,17 +621,19 @@ MainMenu() {
 
 	if [ "${OPTION}" == '2' ]; then
 		if [ "$(uname -o)" = "Android" ]; then
-			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
-			echo "Android系统请换用proot容器。"
-			echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
-			echo "Press enter to return。"
-			echo "${YELLOW}按回车键返回。${RESET} "
-			read
-			MainMenu
-		else
-			CHROOTINSTALLDebian
+			su -c "ls ${HOME} >/dev/null"
+			if [ "$?" != "0" ]; then
+				echo '检测到root权限授予失败，您无法安装chroot容器'
+				echo "${YELLOW}按回车键返回。${RESET}"
+				echo "Press enter to return."
+				read
+				MainMenu
+			else
+				echo "检测到您使用的是Android系统"
+				echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
+			fi
 		fi
-
+		CHROOTINSTALLDebian
 	fi
 
 	if [ "${OPTION}" == '3' ]; then
@@ -709,11 +711,11 @@ MainMenu() {
 
 installDebian() {
 	if [ -d ~/${DebianFolder} ]; then
-		if (whiptail --title "检测到您已安装debian,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 7 60); then
+		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 7 60); then
 			debian
 		else
 
-			echo "${YELLOW}检测到您已安装debian,是否重新安装？[Y/n]${RESET} "
+			echo "${YELLOW}检测到您已安装GNU/Linux容器,是否重新安装？[Y/n]${RESET} "
 			echo "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
 			echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
 			read opt
@@ -727,14 +729,14 @@ installDebian() {
 				;;
 			n* | N*)
 				echo "skipped."
-				echo "Press enter to return。"
+				echo "Press enter to return."
 				echo "${YELLOW}按回车键返回。${RESET} "
 				read
 				MainMenu
 				;;
 			*)
 				echo "Invalid choice. skipped."
-				echo "Press enter to return。"
+				echo "Press enter to return."
 				echo "${YELLOW}按回车键返回。${RESET} "
 				read
 				MainMenu
@@ -756,13 +758,13 @@ RootMode() {
 	if [ "$(uname -o)" != "Android" ]; then
 		echo "非常抱歉，本功能仅适配安卓系统。"
 		echo "chroot容器默认即为真实root权限。"
-		echo "Press enter to return。"
+		echo "Press enter to return."
 		echo "${YELLOW}按回车键返回。${RESET} "
 		read
 		MainMenu
 	fi
 
-	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装debian，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在debian系统内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除debian。" 10 60); then
+	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装容器，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在容器内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除容器。" 10 60); then
 
 		if [ ! -f ${PREFIX}/bin/tsu ]; then
 			apt update
@@ -855,16 +857,31 @@ REMOVESYSTEM() {
 		ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
 		df -h | grep debian
 		echo '移除系统前，请先确保您已卸载chroot挂载目录。'
-		echo '建议您在移除前进行备份，若因操作不当导致数据丢失，开发者概不负责！！！'
-		echo "Before removing the system, make sure you have unmounted the chroot mount directory.
-It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
+		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+		echo "Before removing the system, make sure you have unmounted the chroot mount directory."
+		echo "It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
 	fi
 	ps -e | grep proot
 	ps -e | grep startvnc
 	echo "移除系统前，请先确保您已停止GNU/Linux容器。"
 	pkill proot 2>/dev/null
+	pgrep proot &>/dev/null
+	if [ "$?" = "0" ]; then
+		echo '检测到proot容器正在运行，请先输stopvnc停止运行'
+	fi
+	ls -lA ${DebianCHROOT}/root/sd 2>&1 >/dev/null
+	if [ "$?" = "0" ]; then
+		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
+		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"
+		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+		echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
+		echo "Press enter to return."
+		echo "${YELLOW}按回车键返回。${RESET} "
+		read
+		MainMenu
+	fi
 	echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-	echo 'Detecting Debian system footprint... 正在检测debian系统占用空间大小'
+	echo 'Detecting container size... 正在检测容器占用空间大小'
 	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
 	if [ ! -d ~/${DebianFolder} ]; then
 		echo "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
@@ -882,7 +899,7 @@ It is recommended that you back up the entire system before removal. If the data
 	sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 	sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 	source profile >/dev/null 2>&1
-	echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
+	echo 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
 	echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo '其它相关依赖，如pv、dialog、procps、proot、wget等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
@@ -931,7 +948,7 @@ BackupSystem() {
 	fi
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
-		"1" "备份Debian" \
+		"1" "备份GNU/Linux容器" \
 		"2" "备份Termux" \
 		"3" "使用Timeshift备份宿主机系统" \
 		3>&1 1>&2 2>&3)
@@ -1065,8 +1082,8 @@ BACKUPTERMUX() {
 
 		ls -lth ./termux-home*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 
-		#echo 'This operation will only backup the home directory of termux, not the debian system. If you need to backup debian, please select both options or backup debian separately.'
-		#echo '本次操作将只备份termux的主目录，不包含主目录下的debian系统。如您需备份debian,请同时选择home和usr，或单独备份debian。'
+		#echo 'This operation will only backup the home directory of termux, not the container. If you need to backup debian, please select both options or backup debian separately.'
+		#echo '本次操作将只备份termux的主目录，不包含主目录下的容器。如您需备份GNU/Linux容器,请同时选择home和usr，或单独备份GNU/Linux容器。'
 
 		echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
 		read
@@ -1279,7 +1296,7 @@ RESTORESYSTEM() {
 	fi
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
-		"1" "Restore the latest debian backup 还原Debian" \
+		"1" "Restore the latest debian backup 还原GNU/Linux容器" \
 		"2" "Restore the latest termux backup 还原Termux" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1705,8 +1722,8 @@ PLAYVideoTutorial() {
 CHROOTINSTALLDebian() {
 	echo "This feature currently only supports Linux systems and is still in beta."
 	echo "本功能目前仅对Linux系统测试开放。"
-	echo "This feature is currently in the beta stage. If you find that some directories cannot be unloaded forcibly before removing the debian system, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
-	echo "本功能目前仍处于测试阶段，移除debian系统前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
+	echo "This feature is currently in the beta stage. If you find that some directories cannot be unmounted forcibly before removing the container, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
+	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
@@ -1835,7 +1852,7 @@ UNXZDEBIANRECOVERYKIT() {
 		rm -f ${HOME}/debian_arm64/root/tf 2>/dev/null
 	fi
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-	echo '在debian系统内输debian-i启动debian应用安装及远程桌面配置修改工具。'
+	echo '在容器内输debian-i启动debian应用安装及远程桌面配置修改工具。'
 	echo 'The vnc service is about to start for you. The password you entered is hidden.'
 	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -1860,7 +1877,7 @@ TERMUXINSTALLXFCE() {
 		echo "${YELLOW}按回车键继续${RESET}"
 		read
 	fi
-	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a debian system. Termux原系统GUI可玩性较低，建议您安装GNU/Linux系统" 17 60 6 \
+	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a container. Termux原系统GUI可玩性较低，建议您安装GNU/Linux容器" 17 60 6 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
 		"3" "configure Termux LAN audio局域网音频传输" \
