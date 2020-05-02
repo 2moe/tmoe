@@ -3637,7 +3637,7 @@ configure_filebrowser() {
 	#先进入etc目录，防止database加载失败
 	cd /etc
 	OPTION=$(
-		whiptail --title "CONFIGURE FILEBROWSER" --menu "您想要修改哪些配置？" 14 50 5 \
+		whiptail --title "CONFIGURE FILEBROWSER" --menu "您想要修改哪项配置？修改配置前将自动停止服务。" 14 50 5 \
 			"1" "One-key conf 初始化一键配置" \
 			"2" "add admin 新建管理员" \
 			"3" "port 修改端口" \
@@ -3662,10 +3662,14 @@ configure_filebrowser() {
 	fi
 	##############################
 	if [ "${OPTION}" == '2' ]; then
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
 		filebrowser_add_admin
 	fi
 	##############################
 	if [ "${OPTION}" == '3' ]; then
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
 		filebrowser_port
 	fi
 	##############################
@@ -3674,10 +3678,14 @@ configure_filebrowser() {
 	fi
 	##############################
 	if [ "${OPTION}" == '5' ]; then
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
 		filebrowser_language
 	fi
 	##############################
 	if [ "${OPTION}" == '6' ]; then
+		pkill filebrowser
+		service filebrowser stop 2>/dev/null
 		filebrowser_listen_ip
 	fi
 	##############################
@@ -3735,8 +3743,8 @@ filebrowser_onekey() {
 		read
 		filebrowser_onekey
 	fi
-	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin 
-	#filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} 
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+	#filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD}
 
 	cat >/etc/systemd/system/filebrowser.service <<-'EndOFsystemd'
 		[Unit]
@@ -3817,7 +3825,7 @@ filebrowser_add_admin() {
 		filebrowser_add_admin
 	fi
 	cd /etc
-	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin 
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
 	#filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
 }
 #################
