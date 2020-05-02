@@ -407,19 +407,15 @@ DEBIANMENU() {
 
 		REMOVEGUI
 	fi
-
 	###############################
 
 	if [ "${OPTION}" == '12' ]; then
 
 		REMOVEBROWSER
 	fi
-
 	###############################
 	if [ "${OPTION}" == '13' ]; then
-
 		FrequentlyAskedQuestions
-
 	fi
 	############
 	if [ "${OPTION}" == '14' ]; then
@@ -427,10 +423,13 @@ DEBIANMENU() {
 	fi
 	###############################
 	if [ "${OPTION}" == '15' ]; then
-
 		BetaFeatures
-
 	fi
+	#########################
+	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press enter to return."
+	read
+	DEBIANMENU
 }
 ############################
 tmoe_linux_tool_upgrade() {
@@ -3788,8 +3787,6 @@ filebrowser_restart() {
 	else
 		echo "您可以输${YELLOW}pkill filebrowser${RESET}来停止进程"
 	fi
-	#systemctl status filebrowser
-	service filebrowser status 2>/dev/null
 }
 #############
 filebrowser_add_admin() {
