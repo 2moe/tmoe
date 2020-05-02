@@ -621,15 +621,17 @@ MainMenu() {
 
 	if [ "${OPTION}" == '2' ]; then
 		if [ "$(uname -o)" = "Android" ]; then
+			echo Android :${ANDROIDVERSION}
 			su -c "ls ${HOME} >/dev/null"
 			if [ "$?" != "0" ]; then
 				echo '检测到root权限授予失败，您无法安装chroot容器'
 			else
 				echo "检测到您使用的是Android系统"
+				echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
 				#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
 				echo "Android系统请换用proot容器。"
-				echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
 			fi
+			echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
 			echo "${YELLOW}按回车键返回。${RESET}"
 			echo "Press enter to return."
 			read
@@ -1299,7 +1301,7 @@ RESTORESYSTEM() {
 	fi
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
-		"1" "Restore the latest debian backup 还原GNU/Linux容器" \
+		"1" "Restore the latest container backup 还原GNU/Linux容器" \
 		"2" "Restore the latest termux backup 还原Termux" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
