@@ -501,7 +501,7 @@ if [ "\$?" = "0" ]; then
     echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 fi
 
-	ls -lA ${DebianCHROOT}/root/sd 2>&1 >/dev/null
+	ls -l ${DebianCHROOT}/root/sd/*
 	if [ "\$?" = "0" ]; then
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"

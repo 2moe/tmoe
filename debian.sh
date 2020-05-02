@@ -711,7 +711,7 @@ MainMenu() {
 
 installDebian() {
 	if [ -d ~/${DebianFolder} ]; then
-		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Debian has been installed, please choose what you need to do!" 7 60); then
+		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do!" 7 60); then
 			debian
 		else
 
@@ -869,7 +869,7 @@ REMOVESYSTEM() {
 	if [ "$?" = "0" ]; then
 		echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 	fi
-	ls -lA ${DebianCHROOT}/root/sd 2>&1 >/dev/null
+	ls -l ${DebianCHROOT}/root/sd/*
 	if [ "$?" = "0" ]; then
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"
