@@ -3735,7 +3735,8 @@ filebrowser_onekey() {
 		read
 		filebrowser_onekey
 	fi
-	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin || filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin 
+	#filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} 
 
 	cat >/etc/systemd/system/filebrowser.service <<-'EndOFsystemd'
 		[Unit]
@@ -3816,7 +3817,8 @@ filebrowser_add_admin() {
 		filebrowser_add_admin
 	fi
 	cd /etc
-	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin || filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
+	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin 
+	#filebrowser users update ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
 }
 #################
 filebrowser_port() {
