@@ -963,6 +963,7 @@ vscode_server_upgrade() {
 	ENDofTable
 	echo "${YELLOW}按回车键确认更新${RESET}"
 	echo 'Press Enter to confirm'
+	read
 	if [ ! -e "/tmp/sed-vscode.tmp" ]; then
 		cat >"/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
