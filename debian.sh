@@ -1906,7 +1906,7 @@ TERMUXINSTALLXFCE() {
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
 
@@ -1946,7 +1946,7 @@ TERMUXINSTALLXFCE() {
 	#######################
 	if [ "${OPTION}" == '2' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
 		MODIFYANDROIDTERMUXVNCCONF
@@ -1962,7 +1962,7 @@ TERMUXINSTALLXFCE() {
 	##################
 	if [ "${OPTION}" == '7' ]; then
 		if [ "${LINUXDISTRO}" != 'Android' ]; then
-			bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)"
+			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
 		REMOVEANDROIDTERMUXXFCE
