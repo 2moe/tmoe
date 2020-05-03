@@ -578,7 +578,7 @@ android_termux() {
 
 MainMenu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200501-14)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200504-01)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -2252,7 +2252,7 @@ choose_which_gnu_linux_distro() {
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
 		"4" "Other其它系统(公测版新功能):mint,centos" \
-		"5" "fedora 31(红帽社区版,新技术试验场)" \
+		"5" "fedora 32(红帽社区版,新技术试验场)" \
 		"6" "arch(系统设计以KISS为总体指导原则)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
@@ -2295,8 +2295,8 @@ choose_which_gnu_linux_distro() {
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 				sed 's/debian系统/fedora系统/g' |
 				sed 's/debian system/fedora system/g' |
-				sed 's:debian-sid:fedora-31:g' |
-				sed 's:debian/sid:fedora/31:g' |
+				sed 's:debian-sid:fedora-32:g' |
+				sed 's:debian/sid:fedora/32:g' |
 				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
 		fi
 	fi
@@ -2654,8 +2654,8 @@ install_kali_rolling_gnu_linux_distro() {
 ################
 INSTALLFuntooDISTRO() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
-		sed 's:debian-sid:funtoo-1.3:g' |
-		sed 's:debian/sid:funtoo/1.3:g' |
+		sed 's:debian-sid:funtoo-1.4:g' |
+		sed 's:debian/sid:funtoo/1.4:g' |
 		sed 's/debian系统/funtoo系统/g' |
 		sed 's/debian system/funtoo system/g' |
 		sed 's/debian容器/funtoo容器/g' |
