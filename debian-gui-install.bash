@@ -940,6 +940,7 @@ golangANNIE() {
 	cd ${HOME}/sd/Download/Videos
 
 	AnnieVideoURL=$(whiptail --inputbox "Please enter a url.请输入视频链接,例如https://www.bilibili.com/video/av号,或者直接输入avxxx(av号或BV号)。您可以在url前加-f参数来指定清晰度，-p来下载整个播放列表。Press Enter after the input is completed." 12 50 --title "请在地址栏内输入 视频链接" 3>&1 1>&2 2>&3)
+
 	# echo ${AnnieVideoURL} >> ${HOME}/.video_history
 	if [ "$(echo ${AnnieVideoURL} | grep 'b23.tv')" ]; then
 		AnnieVideoURL="$(echo ${AnnieVideoURL} | sed 's@b23.tv@www.bilibili.com/video@')"
@@ -953,7 +954,7 @@ golangANNIE() {
 	fi
 	echo ${AnnieVideoURL}
 	echo "正在解析中..."
-	echo "Analyzing ..."
+	echo "Parsing ..."
 	#if [ ! $(echo ${AnnieVideoURL} | grep -E '^BV|^av|^http') ]; then
 	#	AnnieVideoURL=$(echo ${AnnieVideoURL} | sed 's@^@http://&@')
 	#fi
@@ -987,10 +988,13 @@ pythonYOUGET() {
 	cd ${HOME}/sd/Download/Videos
 
 	AnnieVideoURL=$(whiptail --inputbox "Please enter a url.请输入视频链接,例如https://www.bilibili.com/video/av号,您可以在url前加--format参数来指定清晰度，-l来下载整个播放列表。Press Enter after the input is completed." 12 50 --title "请在地址栏内输入 视频链接" 3>&1 1>&2 2>&3)
-
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		DOWNLOADvideo
+	fi
 	echo ${AnnieVideoURL}
 	echo "正在解析中..."
-	echo "Analyzing ..."
+	echo "Parsing ..."
 	you-get -i ${AnnieVideoURL}
 	if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
 		VideoCookies=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
@@ -1020,10 +1024,13 @@ pythonYOUTUBEdl() {
 	cd ${HOME}/sd/Download/Videos
 
 	AnnieVideoURL=$(whiptail --inputbox "Please enter a url.请输入视频链接,例如https://www.bilibili.com/video/av号,您可以在url前加--yes-playlist来下载整个播放列表。Press Enter after the input is completed." 12 50 --title "请在地址栏内输入 视频链接" 3>&1 1>&2 2>&3)
-
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		DOWNLOADvideo
+	fi
 	echo ${AnnieVideoURL}
 	echo "正在解析中..."
-	echo "Analyzing ..."
+	echo "Parsing ..."
 	youtube-dl -e --get-description --get-duration ${AnnieVideoURL}
 	if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
 		VideoCookies=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
@@ -2642,12 +2649,16 @@ INSTALLORREMOVEVSCODE() {
 	if [ -e "/usr/local/bin/code-server-data/code-server" ]; then
 		VSCODEINSTALLSTATUS="检测到您已安装vscode."
 		VSCODESTART='Start启动'
+		CHECK_LOCAL_VSCODE_VERSION=$(code-server --version | cut -d ' ' -f 1)
+		LOCAL_VSCODE_VERSION="本地版本${CHECK_LOCAL_VSCODE_VERSION},"
 	else
 		VSCODEINSTALLSTATUS="检测到您未安装vscode."
 		VSCODESTART='Install安装'
 	fi
+	CHECK_REMOTE_VSCODE_VERSION=$(curl -sL https://gitee.com/mo2/vscode-server/raw/aarch64/version.txt | head -n 1)
+	REMOTE_VSCODE_VERSION="最新版本${CHECK_REMOTE_VSCODE_VERSION}"
 
-	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "${VSCODESTART}" --no-button "Remove移除" --yesno "${VSCODEINSTALLSTATUS} \nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 16 50); then
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "${VSCODESTART}" --no-button "Remove移除" --yesno "${VSCODEINSTALLSTATUS} ${LOCAL_VSCODE_VERSION} ${REMOTE_VSCODE_VERSION} \nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 16 50); then
 		VSCODESERVER
 	else
 		echo "按回车键确认移除，按Ctrl+C取消。"
