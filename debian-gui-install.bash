@@ -955,11 +955,11 @@ vscode_server_upgrade() {
 	cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
 		║   ║          ║                   ║                    
-		║   ║ software ║    ✨最新版本    ║   本地版本 🎪
+		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
-		║ 1 ║   annie  ║                      ${LOCAL_VSCODE_VERSION} 
-		║   ║          ║${LATEST_VSCODE_VERSION} 
+		║ 1 ║ vscode   ║                      ${LOCAL_VSCODE_VERSION} 
+		║   ║ server   ║${LATEST_VSCODE_VERSION} 
 
 	ENDofTable
 	echo "${YELLOW}按回车键确认更新${RESET}"

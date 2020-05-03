@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ########################################################################
 #检测架构 CHECK architecture
-CheckArch() {
+check_arch() {
 
 	case $(uname -m) in
 	aarch64)
@@ -72,15 +72,15 @@ CheckArch() {
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
 	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
-	autoCheck
+	auto_check
 }
 #########################################################
-autoCheck() {
+auto_check() {
 
 	if [ "$(uname -o)" = "Android" ]; then
 		LINUX_DISTRO='Android'
 		termux-setup-storage
-		ANDROIDTERMUX
+		android_termux
 	elif [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
 		LINUX_DISTRO='iSH'
 		if grep -q 'cdn.alpinelinux.org' "/etc/apk/repositories"; then
@@ -476,7 +476,7 @@ GNULINUX() {
 	MainMenu
 }
 ########################################
-ANDROIDTERMUX() {
+android_termux() {
 	DEPENDENCIES=""
 
 	if [ ! -e ${PREFIX}/bin/pv ]; then
@@ -659,7 +659,7 @@ MainMenu() {
 
 	if [ "${OPTION}" == '6' ]; then
 
-		BackupSystem
+		backup_system
 
 	fi
 
@@ -940,7 +940,7 @@ REMOVESYSTEM() {
 }
 ########################################################################
 #
-BackupSystem() {
+backup_system() {
 	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
@@ -1020,7 +1020,7 @@ BackupSystem() {
 	fi
 	###################
 	if [ "${OPTION}" == '2' ]; then
-		BACKUPTERMUX
+		backup_termux
 
 	fi
 	###################
@@ -1050,7 +1050,7 @@ BackupSystem() {
 			echo "${YELLOW}按回车键返回。${RESET}"
 			echo "Press enter to return."
 			read
-			BackupSystem
+			backup_system
 		fi
 	fi
 	##########################################
@@ -1061,7 +1061,7 @@ BackupSystem() {
 	MainMenu
 }
 
-BACKUPTERMUX() {
+backup_termux() {
 	TERMUXBACKUP=$(whiptail --title "多项选择题" --checklist \
 		"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认 \n Which directory do you want to backup? Please press the space to select and press Enter to confirm." 15 60 4 \
 		"home" "Termux主目录,主要用来保存用户文件" ON \
@@ -1280,7 +1280,7 @@ BACKUPTERMUX() {
 
 	################################
 	if [ $exitstatus = 1 ]; then
-		BackupSystem
+		backup_system
 
 	fi
 
@@ -1802,7 +1802,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		#fi
 		read
 	fi
-	CHOOSEWHICHGNULINUX
+	choose_which_gnu_linux_distro
 }
 
 ###################################################
@@ -1949,7 +1949,7 @@ TERMUXINSTALLXFCE() {
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
-		MODIFYANDROIDTERMUXVNCCONF
+		MODIFYandroid_termuxVNCCONF
 	fi
 	##################
 	if [ "${OPTION}" == '3' ]; then
@@ -1965,7 +1965,7 @@ TERMUXINSTALLXFCE() {
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
-		REMOVEANDROIDTERMUXXFCE
+		REMOVEandroid_termuxXFCE
 	fi
 	##################
 	if [ "${OPTION}" == '5' ]; then
@@ -1977,7 +1977,7 @@ TERMUXINSTALLXFCE() {
 	fi
 	##################
 	if [ "${OPTION}" == '6' ]; then
-		ARIA2CDOWNLOADTERMUXAPK
+		aria2_download_termux_apk
 	fi
 }
 #####################################
@@ -2032,7 +2032,7 @@ TERMUXPULSEAUDIOLAN() {
 	TERMUXINSTALLXFCE
 }
 #############################
-ARIA2CDOWNLOADTERMUXAPK() {
+aria2_download_termux_apk() {
 	cd /sdcard/Download
 	if [ -f "com.termux_Fdroid.apk" ]; then
 
@@ -2138,7 +2138,7 @@ STARTWEBNOVNC() {
 }
 
 #################
-MODIFYANDROIDTERMUXVNCCONF() {
+MODIFYandroid_termuxVNCCONF() {
 	if [ ! -e ${PREFIX}/bin/startvnc ]; then
 		echo "${PREFIX}/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
 		echo '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
@@ -2184,7 +2184,7 @@ MODIFYANDROIDTERMUXVNCCONF() {
 
 }
 ###############
-REMOVEANDROIDTERMUXXFCE() {
+REMOVEandroid_termuxXFCE() {
 	echo "${YELLOW}按回车键确认卸载,按Ctrl+C取消${RESET} "
 	echo 'Press enter to confirm ,press Ctrl + C to cancel'
 	read
@@ -2241,12 +2241,12 @@ TERMUXTUNASOURCESLIST() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	ANDROIDTERMUX
+	android_termux
 	#此处要返回依赖检测处！
 
 }
 ##################
-CHOOSEWHICHGNULINUX() {
+choose_which_gnu_linux_distro() {
 	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
 		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
@@ -2589,7 +2589,7 @@ install_other_containers() {
 #########################
 install_debian_gnu_linux_distro() {
 	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
-		BUSTERORSID
+		buster_or_sid
 	else
 		if [ ! -d "/sdcard/Download/backup" ]; then
 			mkdir -p /sdcard/Download/backup
@@ -2610,7 +2610,7 @@ install_debian_gnu_linux_distro() {
 }
 
 ########################
-BUSTERORSID() {
+buster_or_sid() {
 	if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 			bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
@@ -2796,6 +2796,6 @@ GNULINUXTUNASOURCESLIST() {
 	#此处要返回依赖检测处！
 }
 ####################
-CheckArch
+check_arch
 ##取消注释，测试用。
 ##MainMenu
