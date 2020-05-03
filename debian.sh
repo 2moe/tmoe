@@ -622,6 +622,7 @@ MainMenu() {
 	if [ "${OPTION}" == '2' ]; then
 		if [ "$(uname -o)" = "Android" ]; then
 			echo Android :${ANDROIDVERSION}
+			echo "$(getprop ro.product.model)"
 			su -c "ls ${HOME} >/dev/null"
 			if [ "$?" != "0" ]; then
 				echo '检测到root权限授予失败，您无法安装chroot容器'
