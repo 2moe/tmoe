@@ -2292,12 +2292,21 @@ choose_which_gnu_linux_distro() {
 		elif [ "${archtype}" = 'i386' ]; then
 			echo "Fedora不支持您的架构"
 		else
-			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
-				sed 's/debian系统/fedora系统/g' |
-				sed 's/debian system/fedora system/g' |
-				sed 's:debian-sid:fedora-32:g' |
-				sed 's:debian/sid:fedora/32:g' |
-				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
+			if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要修改安装哪个版本？" 9 50); then
+				bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+					sed 's/debian系统/fedora系统/g' |
+					sed 's/debian system/fedora system/g' |
+					sed 's:debian-sid:fedora-31:g' |
+					sed 's:debian/sid:fedora/31:g' |
+					sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
+			else
+				bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
+					sed 's/debian系统/fedora系统/g' |
+					sed 's/debian system/fedora system/g' |
+					sed 's:debian-sid:fedora-32:g' |
+					sed 's:debian/sid:fedora/32:g' |
+					sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
+			fi
 		fi
 	fi
 	##############################
