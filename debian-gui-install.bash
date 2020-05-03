@@ -616,7 +616,7 @@ cookies_readme() {
 	fi
 
 	mkdir -p "${HOME}/.config/tmoe-linux"
-	if (whiptail --title "modify cookie path and status" --yes-button '修改cookie path' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} What configuration do you want to modify?" 9 50); then
+	if (whiptail --title "modify cookie path and status" --yes-button '修改cookie path' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
 		TARGET=$(whiptail --inputbox "请输入cookie文件路径,例如 /root/sd/Download/cookies.txt \n${CurrentCOOKIESpath} Press Enter after the input is completed." 16 50 --title "Press enter the cookie path" 3>&1 1>&2 2>&3)
 
 		exitstatus=$?
@@ -2792,7 +2792,7 @@ modify_vnc_conf() {
 		read
 	fi
 
-	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
+	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
 		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) 。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then

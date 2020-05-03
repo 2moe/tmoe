@@ -2147,7 +2147,7 @@ MODIFYandroid_termuxVNCCONF() {
 		read
 	fi
 	CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
-	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪些配置信息？What configuration do you want to modify?" 9 50); then
+	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
 		if grep -q 'debian_' "$(command -v startvnc)"; then
 			echo "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输debian-i修改"
 			echo "本选项仅适用于termux原系统。"
