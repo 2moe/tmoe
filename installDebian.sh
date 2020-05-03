@@ -71,36 +71,36 @@ esac
 #apt install -y curl openssl proot aria2 procps
 #gentoo在下一行修改archtype的变量
 
-#requirements and dependencies.
+#requirements and DEPENDENCIES.
 
-dependencies=""
+DEPENDENCIES=""
 
 if [ "$(uname -o)" = "Android" ]; then
-  LINUXDISTRO='Android'
+  LINUX_DISTRO='Android'
   termux-setup-storage
   if [ ! -e ${PREFIX}/bin/proot ]; then
-    dependencies="${dependencies} proot"
+    DEPENDENCIES="${DEPENDENCIES} proot"
   fi
 
   if [ ! -e ${PREFIX}/bin/pkill ]; then
-    dependencies="${dependencies} procps"
+    DEPENDENCIES="${DEPENDENCIES} procps"
   fi
 
   if [ ! -e ${PREFIX}/bin/pv ]; then
-    dependencies="${dependencies} pv"
+    DEPENDENCIES="${DEPENDENCIES} pv"
   fi
 
   if [ ! -e ${PREFIX}/bin/curl ]; then
-    dependencies="${dependencies} curl"
+    DEPENDENCIES="${DEPENDENCIES} curl"
   fi
 
   if [ ! -e ${PREFIX}/bin/aria2c ]; then
-    dependencies="${dependencies} aria2"
+    DEPENDENCIES="${DEPENDENCIES} aria2"
   fi
 
-  if [ ! -z "${dependencies}" ]; then
+  if [ ! -z "${DEPENDENCIES}" ]; then
     echo "正在安装相关依赖..."
-    apt install -y ${dependencies}
+    apt install -y ${DEPENDENCIES}
   fi
   cd ~/.termux || mkdir -p ~/.termux && cd ~/.termux
   if [ ! -e "colors.properties" ]; then
@@ -178,7 +178,7 @@ fi
 ##############################
 if [ "$(uname -o)" != "Android" ]; then
   if grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
-    LINUXDISTRO='openwrt'
+    LINUX_DISTRO='openwrt'
     if [ -d "/opt/bin" ]; then
       PREFIX="/opt"
     else
@@ -192,14 +192,14 @@ if [ "$(uname -o)" != "Android" ]; then
 fi
 
 if [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
-  LINUXDISTRO='iSH'
+  LINUX_DISTRO='iSH'
   echo "检测到您使用的是iOS系统"
 elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release' 2>/dev/null; then
-  LINUXDISTRO='redhat'
+  LINUX_DISTRO='redhat'
   if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
-    REDHATDISTRO='centos'
+    REDHAT_DISTRO='centos'
   elif grep -q 'Fedora' "/etc/os-release"; then
-    REDHATDISTRO='fedora'
+    REDHAT_DISTRO='fedora'
   fi
 fi
 
@@ -257,7 +257,7 @@ if [ ! -f ${DebianTarXz} ]; then
     echo "正在从清华大学开源镜像站下载容器镜像"
     echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
     ttime=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
-    if [ "${LINUXDISTRO}" != 'iSH' ]; then
+    if [ "${LINUX_DISTRO}" != 'iSH' ]; then
       aria2c -x 5 -k 1M --split 5 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
     else
       wget -O $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
@@ -269,15 +269,15 @@ fi
 cur=$(pwd)
 cd ${DebianCHROOT}
 echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
-if [ "${LINUXDISTRO}" = "Android" ]; then
+if [ "${LINUX_DISTRO}" = "Android" ]; then
   pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
-elif [ "${LINUXDISTRO}" = "iSH" ]; then
+elif [ "${LINUX_DISTRO}" = "iSH" ]; then
   tar -pJxvf ${cur}/${DebianTarXz}
 elif [ "${archtype}" = "mipsel" ]; then
   cd ~
   pv ${DebianTarXz} | tar -pJx
-elif [ "${LINUXDISTRO}" = "redhat" ]; then
-  if [ "${REDHATDISTRO}" != "fedora" ]; then
+elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+  if [ "${REDHAT_DISTRO}" != "fedora" ]; then
     tar -pJxvf ${cur}/${DebianTarXz}
   else
     pv ${cur}/${DebianTarXz} | tar -pJx
@@ -286,7 +286,7 @@ else
   pv ${cur}/${DebianTarXz} | tar -pJx
 fi
 cp -f ~/.termux/font.ttf ~/${DebianFolder}/tmp/ 2>/dev/null
-if [ "${LINUXDISTRO}" = 'openwrt' ]; then
+if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
   touch ~/${DebianFolder}/tmp/.openwrtcheckfile
 fi
 #proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
@@ -673,133 +673,133 @@ cat >zsh.sh <<-'ADDZSHSHELL'
 #!/bin/bash
 
 if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
-    LINUXDISTRO='debian'
+    LINUX_DISTRO='debian'
     if grep -q 'ubuntu' /etc/os-release; then
-        DEBIANDISTRO='ubuntu'
+        DEBIAN_DISTRO='ubuntu'
     elif [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
-        DEBIANDISTRO='kali'
+        DEBIAN_DISTRO='kali'
     fi
 
 elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
-    LINUXDISTRO='redhat'
+    LINUX_DISTRO='redhat'
     if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
-        REDHATDISTRO='centos'
+        REDHAT_DISTRO='centos'
     elif grep -q 'Fedora' "/etc/os-release"; then
-        REDHATDISTRO='fedora'
+        REDHAT_DISTRO='fedora'
     fi
 
 elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
-    LINUXDISTRO='alpine'
+    LINUX_DISTRO='alpine'
 
 elif grep -Eq "Arch|Manjaro" '/etc/os-release'; then
-    LINUXDISTRO='arch'
+    LINUX_DISTRO='arch'
 
 elif grep -qi 'Void' '/etc/issue'; then
-    LINUXDISTRO='void'
+    LINUX_DISTRO='void'
 
 elif grep -qi 'suse' '/etc/os-release'; then
-    LINUXDISTRO='suse'
+    LINUX_DISTRO='suse'
 
 elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
-    LINUXDISTRO='gentoo'
+    LINUX_DISTRO='gentoo'
 fi
 #####################
-dependencies=""
+DEPENDENCIES=""
 if [ ! -e /bin/bash ]; then
-    dependencies="${dependencies} bash"
+    DEPENDENCIES="${DEPENDENCIES} bash"
 fi
 
 if [ ! -e "/usr/lib/command-not-found" ]; then
-    if [ "${LINUXDISTRO}" = "debian" ]; then
-        dependencies="${dependencies} command-not-found"
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        DEPENDENCIES="${DEPENDENCIES} command-not-found"
     fi
 fi
 ##################
-if [ "${LINUXDISTRO}" = "debian" ]; then
+if [ "${LINUX_DISTRO}" = "debian" ]; then
     if [ ! -f "/tmp/.openwrtcheckfile" ]; then
         if [ ! -d /usr/share/command-not-found ]; then
-            dependencies="${dependencies} command-not-found"
+            DEPENDENCIES="${DEPENDENCIES} command-not-found"
         fi
     fi
 
     if [ ! -d /usr/share/doc/fonts-powerline ]; then
-        dependencies="${dependencies} fonts-powerline"
+        DEPENDENCIES="${DEPENDENCIES} fonts-powerline"
     fi
 fi
 ###########################################
 if [ ! -e /usr/bin/fzf ]; then
-    if [ "${LINUXDISTRO}" = "debian" ] || [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "arch" ]; then
-        dependencies="${dependencies} fzf"
+    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCIES="${DEPENDENCIES} fzf"
     fi
 fi
 
 if [ ! -e /usr/bin/git ]; then
-    if [ "${LINUXDISTRO}" = "openwrt" ]; then
-        dependencies="${dependencies} git git-http"
-    elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-        dependencies="${dependencies} dev-vcs/git"
+    if [ "${LINUX_DISTRO}" = "openwrt" ]; then
+        DEPENDENCIES="${DEPENDENCIES} git git-http"
+    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        DEPENDENCIES="${DEPENDENCIES} dev-vcs/git"
     else
-        dependencies="${dependencies} git"
+        DEPENDENCIES="${DEPENDENCIES} git"
     fi
 fi
 ####################################
 if [ ! -e /usr/bin/wget ]; then
-    if [ "${LINUXDISTRO}" = "gentoo" ]; then
-        dependencies="${dependencies} net-misc/wget"
+    if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        DEPENDENCIES="${DEPENDENCIES} net-misc/wget"
     else
-        dependencies="${dependencies} wget"
+        DEPENDENCIES="${DEPENDENCIES} wget"
     fi
 fi
 ###########################
 
 if [ ! -e /bin/zsh ]; then
-    if [ "${LINUXDISTRO}" = "alpine" ]; then
-        dependencies="${dependencies} zsh zsh-vcs"
-    elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-        dependencies="${dependencies} app-shells/zsh"
+    if [ "${LINUX_DISTRO}" = "alpine" ]; then
+        DEPENDENCIES="${DEPENDENCIES} zsh zsh-vcs"
+    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        DEPENDENCIES="${DEPENDENCIES} app-shells/zsh"
     else
-        dependencies="${dependencies} zsh"
+        DEPENDENCIES="${DEPENDENCIES} zsh"
     fi
 fi
 
 #############################
-if [ ! -z "${dependencies}" ]; then
+if [ ! -z "${DEPENDENCIES}" ]; then
     echo "正在安装相关依赖..."
 
-    if [ "${LINUXDISTRO}" = "debian" ]; then
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
         apt update
-        apt install -y ${dependencies} || apt install -y command-not-found zsh git wget whiptail command-not-found
+        apt install -y ${DEPENDENCIES} || apt install -y command-not-found zsh git wget whiptail command-not-found
 
-    elif [ "${LINUXDISTRO}" = "alpine" ]; then
-        apk add ${dependencies}
+    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        apk add ${DEPENDENCIES}
         #apk add xz newt tar zsh git wget bash zsh-vcs pv
 
-    elif [ "${LINUXDISTRO}" = "arch" ]; then
-        pacman -Syu --noconfirm ${dependencies}
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        pacman -Syu --noconfirm ${DEPENDENCIES}
 
-    elif [ "${LINUXDISTRO}" = "redhat" ]; then
-        dnf install -y ${dependencies} || yum install -y ${dependencies}
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        dnf install -y ${DEPENDENCIES} || yum install -y ${DEPENDENCIES}
         #dnf install -y zsh git pv wget xz tar newt || yum install -y zsh git pv wget xz tar newt
 
-    elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+    elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
         #opkg update
-        opkg install ${dependencies} || opkg install whiptail
+        opkg install ${DEPENDENCIES} || opkg install whiptail
 
-    elif [ "${LINUXDISTRO}" = "void" ]; then
+    elif [ "${LINUX_DISTRO}" = "void" ]; then
         xbps-install -S
-        xbps-install -y ${dependencies}
+        xbps-install -y ${DEPENDENCIES}
 
-    elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-        emerge -avk ${dependencies}
+    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        emerge -avk ${DEPENDENCIES}
 
     elif
-        [ "${LINUXDISTRO}" = "suse" ]
+        [ "${LINUX_DISTRO}" = "suse" ]
     then
-        zypper in -y ${dependencies}
+        zypper in -y ${DEPENDENCIES}
 
     else
         apt update
-        apt install -y command-not-found zsh git wget whiptail command-not-found || port install ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies}
+        apt install -y command-not-found zsh git wget whiptail command-not-found || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
 
     fi
 
@@ -1143,15 +1143,15 @@ fi
 ps -e 2>/dev/null | tail -n 20
 EndOfFile
 
-if [ "${LINUXDISTRO}" != "redhat" ]; then
+if [ "${LINUX_DISTRO}" != "redhat" ]; then
     sed -i "1 c\cat /etc/issue" .zlogin
 fi
 
 
-    if [ "${LINUXDISTRO}" = "debian" ]; then
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
         if [ -e "/usr/lib/command-not-found" ]; then
             grep -q 'command-not-found/command-not-found.plugin.zsh' ${HOME}/.zshrc 2>/dev/null || sed -i "$ a\source ${HOME}/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" ${HOME}/.zshrc
-            if [ "${DEBIANDISTRO}" != "ubuntu" ]; then
+            if [ "${DEBIAN_DISTRO}" != "ubuntu" ]; then
                 echo "正在配置command-not-found插件..."
                 apt-file update 2>/dev/null
                 update-command-not-found 2>/dev/null
@@ -1178,7 +1178,7 @@ fi
     #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
 
     echo "正在克隆fzf-tab插件..."
-    if [ "${LINUXDISTRO}" = "debian" ] || [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "arch" ]; then
+    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
         if [ -e /usr/bin/fzf ] || [ -e /bin/fzf ]; then
             rm -rf ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab 2>/dev/null
             git clone --depth=1 https://gitee.com/mo2/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab || git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab
@@ -1187,7 +1187,7 @@ fi
         fi
     fi
 
-    if [ "${LINUXDISTRO}" = "debian" ] || [ "${LINUXDISTRO}" = "arch" ]; then
+    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
         sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
     else
         sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
@@ -1200,9 +1200,9 @@ fi
     fi
 
     echo 'All optimization steps have been completed, enjoy it!'
-    echo 'zsh配置完成，2s后将为您启动Tmoe-debian工具'
-    echo '您也可以手动输debian-i进入'
-    echo 'After 2 seconds, Tmoe-debian gui installation manager will be launched.'
+    echo 'zsh配置完成，2s后将为您启动Tmoe-linux工具'
+    echo "您也可以手动输${YELLOW}debian-i${RESET}进入"
+    echo 'After 2 seconds, Tmoe-linux gui installation manager will be launched.'
     echo 'You can also enter debian-i manually to start it.'
     sleep 2
     bash /usr/local/bin/debian-i
@@ -1341,7 +1341,7 @@ if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
 fi
 
 if grep -q 'openSUSE' "/etc/issue"; then
-    LINUXDISTRO='opensuse'
+    LINUX_DISTRO='opensuse'
     if [ "$(uname -m)" != "aarch64" ] && [ "$(uname -m)" != "armv7l" ]; then
         zypper mr -da
         zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss/ tuna-mirrors-oss
@@ -1424,7 +1424,7 @@ else
 fi
 
 if grep -Eq 'Funtoo|Gentoo' '/etc/os-release'; then
-    LINUXDISTRO=gentoo
+    LINUX_DISTRO=gentoo
     grep -q 'en_US' /etc/locale.gen || echo -e '\nen_US.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
     locale-gen
     GENTOOLOCALE="$(eselect locale list | grep 'en_US' | head -n 1| cut -d '[' -f 2 | cut -d ']' -f 1)"
@@ -1519,7 +1519,7 @@ EndofgentooConf
    # exit 0
 
 elif grep -qi 'Void' '/etc/issue'; then
-    LINUXDISTRO='void'
+    LINUX_DISTRO='void'
     cat >/etc/locale.conf <<-'EOF'
 LANG="en_US.UTF-8"
 LANGUAGE="en_US:zh"
@@ -1570,7 +1570,7 @@ if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
 fi
 
 echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
-echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-debian工具。"
+echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
 #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
 chmod +x /usr/local/bin/neofetch
 neofetch
@@ -1602,7 +1602,7 @@ Endofpacman
 fi
 #################################
 if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
-    LINUXDISTRO='slackware'
+    LINUX_DISTRO='slackware'
     sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
     sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
     sed -i '$ a\https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
@@ -1653,7 +1653,7 @@ fi
 ############################
 if ! grep -q 'debian' '/etc/os-release'; then
   echo "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
-  echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输debian-i打开软件安装工具"
+  echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
   bash zsh.sh
   debian-i
   bash zsh-i.sh
@@ -1663,7 +1663,7 @@ else
 fi  
 EDITBASHPROFILE
 
-if [ "${LINUXDISTRO}" != 'Android' ]; then
+if [ "${LINUX_DISTRO}" != 'Android' ]; then
   sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
   sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DebianCHROOT}/remove-debian.sh
 fi

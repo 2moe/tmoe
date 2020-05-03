@@ -78,11 +78,11 @@ CheckArch() {
 autoCheck() {
 
 	if [ "$(uname -o)" = "Android" ]; then
-		LINUXDISTRO='Android'
+		LINUX_DISTRO='Android'
 		termux-setup-storage
 		ANDROIDTERMUX
 	elif [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
-		LINUXDISTRO='iSH'
+		LINUX_DISTRO='iSH'
 		if grep -q 'cdn.alpinelinux.org' "/etc/apk/repositories"; then
 			sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g'
 		fi
@@ -107,10 +107,10 @@ GNULINUX() {
 	fi
 	##############
 	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
-		LINUXDISTRO='debian'
+		LINUX_DISTRO='debian'
 
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
-		LINUXDISTRO='openwrt'
+		LINUX_DISTRO='openwrt'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
 		chmod +x 'router-debian.bash'
@@ -123,159 +123,159 @@ GNULINUX() {
 		bash router-debian.bash
 
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
-		LINUXDISTRO='redhat'
+		LINUX_DISTRO='redhat'
 		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
-			REDHATDISTRO='centos'
+			REDHAT_DISTRO='centos'
 		elif grep -q 'Fedora' "/etc/os-release"; then
-			REDHATDISTRO='fedora'
+			REDHAT_DISTRO='fedora'
 		fi
 
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
-		LINUXDISTRO='alpine'
+		LINUX_DISTRO='alpine'
 
 	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
-		LINUXDISTRO='arch'
+		LINUX_DISTRO='arch'
 
 	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
-		LINUXDISTRO='gentoo'
+		LINUX_DISTRO='gentoo'
 
 	elif grep -qi 'suse' '/etc/os-release'; then
-		LINUXDISTRO='suse'
+		LINUX_DISTRO='suse'
 
 	elif [ "$(cat /etc/issue | cut -c 1-4)" = "Void" ]; then
-		LINUXDISTRO='void'
+		LINUX_DISTRO='void'
 	fi
 
 	######################################
-	dependencies=""
+	DEPENDENCIES=""
 
 	if [ ! -e /usr/bin/aria2c ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} net-misc/aria2"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} net-misc/aria2"
 		else
-			dependencies="${dependencies} aria2"
+			DEPENDENCIES="${DEPENDENCIES} aria2"
 		fi
 	fi
 
 	if [ ! -e /bin/bash ]; then
-		if [ "${LINUXDISTRO}" = "alpine" ] || [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} bash"
+		if [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} bash"
 		fi
 	fi
 
 	if [ ! -e /usr/bin/curl ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} net-misc/curl"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} net-misc/curl"
 		else
-			dependencies="${dependencies} curl"
+			DEPENDENCIES="${DEPENDENCIES} curl"
 		fi
 	fi
 
 	#####################
 
 	if [ ! -e /usr/bin/git ]; then
-		if [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} git git-http"
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} dev-vcs/git"
+		if [ "${LINUX_DISTRO}" = "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} git git-http"
+		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} dev-vcs/git"
 		else
-			dependencies="${dependencies} git"
+			DEPENDENCIES="${DEPENDENCIES} git"
 		fi
 	fi
 
 	if [ ! -e /bin/grep ] && [ ! -e /usr/bin/grep ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-apps/grep"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-apps/grep"
 		else
-			dependencies="${dependencies} grep"
+			DEPENDENCIES="${DEPENDENCIES} grep"
 		fi
 	fi
 	########################
 	if [ ! -e "/usr/bin/less" ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-apps/less"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-apps/less"
 		else
-			dependencies="${dependencies} less"
+			DEPENDENCIES="${DEPENDENCIES} less"
 		fi
 	fi
 
 	if [ -L "/usr/bin/less" ]; then
-		if [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} less"
+		if [ "${LINUX_DISTRO}" = "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} less"
 		fi
 	fi
 	####################
 
 	if [ ! -e /usr/bin/pv ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-apps/pv"
-		elif [ "${LINUXDISTRO}" = 'redhat' ]; then
-			if [ "${REDHATDISTRO}" = 'fedora' ]; then
-				dependencies="${dependencies} pv"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-apps/pv"
+		elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
+			if [ "${REDHAT_DISTRO}" = 'fedora' ]; then
+				DEPENDENCIES="${DEPENDENCIES} pv"
 			fi
 		else
-			dependencies="${dependencies} pv"
+			DEPENDENCIES="${DEPENDENCIES} pv"
 		fi
 	fi
 
 	if [ ! -e /usr/bin/proot ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} proot"
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCIES="${DEPENDENCIES} proot"
 		fi
 	fi
 	#####################
 	if [ ! -e /usr/bin/xz ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} xz-utils"
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} app-arch/xz-utils"
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCIES="${DEPENDENCIES} xz-utils"
+		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} app-arch/xz-utils"
 		else
-			dependencies="${dependencies} xz"
+			DEPENDENCIES="${DEPENDENCIES} xz"
 		fi
 	fi
 
 	if [ ! -e /usr/bin/pkill ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} sys-process/procps"
-		elif [ "${LINUXDISTRO}" != "openwrt" ]; then
-			dependencies="${dependencies} procps"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-process/procps"
+		elif [ "${LINUX_DISTRO}" != "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} procps"
 		fi
 	fi
 	#####################
 	if [ ! -e /usr/bin/sudo ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} sudo"
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sudo"
 		fi
 	fi
 	#####################
 	if [ ! -e /bin/tar ]; then
-		if [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} app-arch/tar"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} app-arch/tar"
 		else
-			dependencies="${dependencies} tar"
+			DEPENDENCIES="${DEPENDENCIES} tar"
 		fi
 	fi
 	#####################
 	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
-			dependencies="${dependencies} whiptail"
-		elif [ "${LINUXDISTRO}" = "arch" ]; then
-			dependencies="${dependencies} libnewt"
-		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
-			dependencies="${dependencies} dialog"
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			dependencies="${dependencies} dev-libs/newt"
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCIES="${DEPENDENCIES} whiptail"
+		elif [ "${LINUX_DISTRO}" = "arch" ]; then
+			DEPENDENCIES="${DEPENDENCIES} libnewt"
+		elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} dialog"
+		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} dev-libs/newt"
 		else
-			dependencies="${dependencies} newt"
+			DEPENDENCIES="${DEPENDENCIES} newt"
 		fi
 	fi
 	##############
 	if [ "${archtype}" = "riscv" ]; then
-		dependencies="${dependencies} qemu qemu-user-static debootstrap"
+		DEPENDENCIES="${DEPENDENCIES} qemu qemu-user-static debootstrap"
 	fi
 	##############
-	if [ ! -z "${dependencies}" ]; then
-		if [ "${LINUXDISTRO}" = "debian" ]; then
+	if [ ! -z "${DEPENDENCIES}" ]; then
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			if ! grep -q '^deb.*edu.cn' "/etc/apt/sources.list"; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
 				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
@@ -292,37 +292,37 @@ GNULINUX() {
 		fi
 		echo "正在安装相关依赖..."
 
-		if [ "${LINUXDISTRO}" = "debian" ]; then
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
-			apt install -y ${dependencies}
+			apt install -y ${DEPENDENCIES}
 
-		elif [ "${LINUXDISTRO}" = "alpine" ]; then
+		elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 			apk update
-			apk add ${dependencies}
+			apk add ${DEPENDENCIES}
 
-		elif [ "${LINUXDISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm ${dependencies}
+		elif [ "${LINUX_DISTRO}" = "arch" ]; then
+			pacman -Syu --noconfirm ${DEPENDENCIES}
 
-		elif [ "${LINUXDISTRO}" = "redhat" ]; then
-			dnf install -y ${dependencies} || yum install -y ${dependencies}
+		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+			dnf install -y ${DEPENDENCIES} || yum install -y ${DEPENDENCIES}
 
-		elif [ "${LINUXDISTRO}" = "openwrt" ]; then
+		elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
 			#opkg update
-			opkg install ${dependencies} || opkg install whiptail
+			opkg install ${DEPENDENCIES} || opkg install whiptail
 
-		elif [ "${LINUXDISTRO}" = "gentoo" ]; then
-			emerge -vk ${dependencies}
+		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			emerge -vk ${DEPENDENCIES}
 
-		elif [ "${LINUXDISTRO}" = "suse" ]; then
-			zypper in -y ${dependencies}
+		elif [ "${LINUX_DISTRO}" = "suse" ]; then
+			zypper in -y ${DEPENDENCIES}
 
-		elif [ "${LINUXDISTRO}" = "void" ]; then
-			xbps-install -S -y ${dependencies}
+		elif [ "${LINUX_DISTRO}" = "void" ]; then
+			xbps-install -S -y ${DEPENDENCIES}
 
 		else
 
 			apt update
-			apt install -y ${dependencies} || port install ${dependencies} || guix package -i ${dependencies} || pkg install ${dependencies} || pkg_add ${dependencies} || pkgutil -i ${dependencies}
+			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
 		fi
 	fi
 	##################
@@ -330,7 +330,7 @@ GNULINUX() {
 	CurrentLANG=$LANG
 	export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
 	########################
-	if [ "${LINUXDISTRO}" = "openwrt" ]; then
+	if [ "${LINUX_DISTRO}" = "openwrt" ]; then
 		if [ -d "/opt/bin" ]; then
 			PREFIX="/opt"
 		else
@@ -458,7 +458,7 @@ GNULINUX() {
 		WSL=""
 	fi
 
-	if [ ! -z "${LINUXDISTRO}" ]; then
+	if [ ! -z "${LINUX_DISTRO}" ]; then
 		if grep -q 'PRETTY_NAME=' /etc/os-release; then
 			OSRELEASE="$(cat /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2)"
 		else
@@ -477,57 +477,57 @@ GNULINUX() {
 }
 ########################################
 ANDROIDTERMUX() {
-	dependencies=""
+	DEPENDENCIES=""
 
 	if [ ! -e ${PREFIX}/bin/pv ]; then
-		dependencies="${dependencies} pv"
+		DEPENDENCIES="${DEPENDENCIES} pv"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/git ]; then
-		dependencies="${dependencies} git"
+		DEPENDENCIES="${DEPENDENCIES} git"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/termux-audio-info ]; then
-		dependencies="${dependencies} termux-api"
+		DEPENDENCIES="${DEPENDENCIES} termux-api"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/pulseaudio ]; then
-		dependencies="${dependencies} pulseaudio"
+		DEPENDENCIES="${DEPENDENCIES} pulseaudio"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/grep ]; then
-		dependencies="${dependencies} grep"
+		DEPENDENCIES="${DEPENDENCIES} grep"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/aria2c ]; then
-		dependencies="${dependencies} aria2"
+		DEPENDENCIES="${DEPENDENCIES} aria2"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/proot ]; then
-		dependencies="${dependencies} proot"
+		DEPENDENCIES="${DEPENDENCIES} proot"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/xz ]; then
-		dependencies="${dependencies} xz-utils"
+		DEPENDENCIES="${DEPENDENCIES} xz-utils"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/tar ]; then
-		dependencies="${dependencies} tar"
+		DEPENDENCIES="${DEPENDENCIES} tar"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/whiptail ]; then
-		dependencies="${dependencies} dialog"
+		DEPENDENCIES="${DEPENDENCIES} dialog"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/pkill ]; then
-		dependencies="${dependencies} procps"
+		DEPENDENCIES="${DEPENDENCIES} procps"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/curl ]; then
-		dependencies="${dependencies} curl"
+		DEPENDENCIES="${DEPENDENCIES} curl"
 	fi
 
-	if [ ! -z "${dependencies}" ]; then
+	if [ ! -z "${DEPENDENCIES}" ]; then
 		if (("${ANDROIDVERSION}" >= '7')); then
 			if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
@@ -545,7 +545,7 @@ ANDROIDTERMUX() {
 		fi
 		echo "正在安装相关依赖..."
 		apt update
-		apt install -y ${dependencies}
+		apt install -y ${DEPENDENCIES}
 	fi
 	##The vnc sound repair script from andronix has been slightly modified and optimized.
 	if ! grep -q 'anonymous=1' ${HOME}/../usr/etc/pulse/default.pa; then
@@ -1025,7 +1025,7 @@ BackupSystem() {
 	fi
 	###################
 	if [ "${OPTION}" == '3' ]; then
-		if [ "${LINUXDISTRO}" = "Android" ]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			echo 'Sorry,本功能不支持Android系统'
 			echo "${YELLOW}按回车键返回。${RESET}"
 			echo "Press enter to return."
@@ -1034,12 +1034,12 @@ BackupSystem() {
 		fi
 
 		if [ ! -e "/usr/bin/timeshift" ]; then
-			if [ "${LINUXDISTRO}" = "debian" ]; then
+			if [ "${LINUX_DISTRO}" = "debian" ]; then
 				apt update
 				apt install -y timeshift
-			elif [ "${LINUXDISTRO}" = "arch" ]; then
+			elif [ "${LINUX_DISTRO}" = "arch" ]; then
 				pacman -Syu --noconfirm timeshift
-			elif [ "${LINUXDISTRO}" = "redhat" ]; then
+			elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 				dnf install timeshift
 			fi
 		fi
@@ -1525,7 +1525,7 @@ SpaceOccupation() {
 UPDATEMANAGER() {
 	#curl -L -o ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
-	if [ "${LINUXDISTRO}" != "Android" ]; then
+	if [ "${LINUX_DISTRO}" != "Android" ]; then
 		sed -i '1 c\#!/bin/bash' ${PREFIX}/bin/debian-i
 	fi
 
@@ -1797,7 +1797,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 		echo 'You must agree to EULA to use this tool.'
 		echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
 		echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
-		#if [ "${LINUXDISTRO}" != 'Android' ]; then
+		#if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		#export LANG=${CurrentLANG}
 		#fi
 		read
@@ -1875,7 +1875,7 @@ UNXZDEBIANRECOVERYKIT() {
 }
 ###############################
 TERMUXINSTALLXFCE() {
-	if [ "${LINUXDISTRO}" = 'Android' ]; then
+	if [ "${LINUX_DISTRO}" = 'Android' ]; then
 		if (("${ANDROIDVERSION}" < '7')); then
 			echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
 			echo "Since termux has officially stopped maintaining the old system below android 7, it is not recommended that you continue to operate."
@@ -1905,7 +1905,7 @@ TERMUXINSTALLXFCE() {
 	fi
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
-		if [ "${LINUXDISTRO}" != 'Android' ]; then
+		if [ "${LINUX_DISTRO}" != 'Android' ]; then
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
@@ -1945,7 +1945,7 @@ TERMUXINSTALLXFCE() {
 	fi
 	#######################
 	if [ "${OPTION}" == '2' ]; then
-		if [ "${LINUXDISTRO}" != 'Android' ]; then
+		if [ "${LINUX_DISTRO}" != 'Android' ]; then
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
@@ -1961,7 +1961,7 @@ TERMUXINSTALLXFCE() {
 	fi
 	##################
 	if [ "${OPTION}" == '7' ]; then
-		if [ "${LINUXDISTRO}" != 'Android' ]; then
+		if [ "${LINUX_DISTRO}" != 'Android' ]; then
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
@@ -1969,7 +1969,7 @@ TERMUXINSTALLXFCE() {
 	fi
 	##################
 	if [ "${OPTION}" == '5' ]; then
-		if [ "${LINUXDISTRO}" = 'Android' ]; then
+		if [ "${LINUX_DISTRO}" = 'Android' ]; then
 			TERMUXTUNASOURCESLIST
 		else
 			GNULINUXTUNASOURCESLIST
@@ -2069,12 +2069,12 @@ INSTALLTERMUXAPK() {
 
 ##################################
 INSTALLWEBNOVNC() {
-	if [ "${LINUXDISTRO}" = 'Android' ]; then
+	if [ "${LINUX_DISTRO}" = 'Android' ]; then
 		if [ ! -e "${PREFIX}/bin/python" ]; then
 			apt update
 			apt install -y python
 		fi
-	elif [ "${LINUXDISTRO}" = 'debian' ]; then
+	elif [ "${LINUX_DISTRO}" = 'debian' ]; then
 		if [ ! -e "/usr/bin/python3" ]; then
 			sudo apt install -y python3 || su -c 'apt install -y python3'
 			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
@@ -2111,7 +2111,7 @@ STARTWEBNOVNC() {
 	echo '正在为您启动novnc'
 	echo 'Starting novnc service,please be patient.'
 	bash launch.sh --vnc localhost:5901 --listen 6080 &
-	if [ "${LINUXDISTRO}" = 'Android' ]; then
+	if [ "${LINUX_DISTRO}" = 'Android' ]; then
 		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
 		/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start http://localhost:6080/vnc.html"
@@ -2127,7 +2127,7 @@ STARTWEBNOVNC() {
 		touch ~/${DebianFolder}/root/.vnc/startvnc
 		${PREFIX}/bin/debian
 	else
-		if [ "${LINUXDISTRO}" = 'Android' ]; then
+		if [ "${LINUX_DISTRO}" = 'Android' ]; then
 			${PREFIX}/bin/startvnc
 		else
 			bash -c "$(sed 's:^export HOME=.*:export HOME=/root:' $(command -v startvnc))"
@@ -2264,19 +2264,19 @@ CHOOSEWHICHGNULINUX() {
 	#########################
 	if [ "${SELECTGNULINUX}" == '1' ]; then
 
-		INSTALLDEBIANGNULINUXDISTRO
+		install_debian_gnu_linux_distro
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '2' ]; then
-		INSTALLUBUNTUDISTRO2004
+		install_ubuntu_gnu_linux_2004_distro
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '3' ]; then
-		INSTALLKALIROLLING
+		install_kali_rolling_gnu_linux_distro
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '4' ]; then
-		INSTALLotherSystems
+		install_other_containers
 	fi
 	##############################
 	if [ "${SELECTGNULINUX}" == '5' ]; then
@@ -2321,7 +2321,7 @@ CHOOSEWHICHGNULINUX() {
 	MainMenu
 }
 ##############################
-INSTALLotherSystems() {
+install_other_containers() {
 	BETASYSTEM=$(
 		whiptail --title "Beta features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nBeta features may not work properly." 17 55 7 \
 			"1" "Funtoo:专注于改进Gentoo" \
@@ -2352,7 +2352,7 @@ INSTALLotherSystems() {
 	fi
 	#############################
 	if [ "${BETASYSTEM}" == '2' ]; then
-		INSTALLVOIDLINUXDISTRO
+		INSTALLVOIDLINUX_DISTRO
 	fi
 	####################
 	if [ "${BETASYSTEM}" == '3' ]; then
@@ -2557,7 +2557,7 @@ INSTALLotherSystems() {
 		rm -vf ~/armbian-bullseye-rootfs.tar
 		lz4 -d ~/armbian-bullseye-rootfs.tar.lz4
 		cd ${DebianCHROOT}
-		if [ "${LINUXDISTRO}" = "Android" ]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			pv ~/armbian-bullseye-rootfs.tar | proot --link2symlink tar -px
 		else
 			if [ -e "/usr/bin/pv" ]; then
@@ -2587,7 +2587,7 @@ INSTALLotherSystems() {
 }
 
 #########################
-INSTALLDEBIANGNULINUXDISTRO() {
+install_debian_gnu_linux_distro() {
 	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
 		BUSTERORSID
 	else
@@ -2612,7 +2612,7 @@ INSTALLDEBIANGNULINUXDISTRO() {
 ########################
 BUSTERORSID() {
 	if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
-		if [ "${LINUXDISTRO}" != 'iSH' ]; then
+		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 			bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 		else
 			curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh' | bash
@@ -2622,7 +2622,7 @@ BUSTERORSID() {
 	fi
 }
 #############
-INSTALLUBUNTUDISTRO2004() {
+install_ubuntu_gnu_linux_2004_distro() {
 	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 			sed 's/debian系统/ubuntu系统/g' |
@@ -2642,7 +2642,7 @@ INSTALLUBUNTUDISTRO2004() {
 	fi
 }
 ##########
-INSTALLKALIROLLING() {
+install_kali_rolling_gnu_linux_distro() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:kali-rolling:g' |
 		sed 's:debian/sid:kali/current:g' |
@@ -2662,7 +2662,7 @@ INSTALLFuntooDISTRO() {
 		sed 's:Debian GNU/Linux:Funtoo GNU/Linux:g')"
 }
 #######################
-INSTALLVOIDLINUXDISTRO() {
+INSTALLVOIDLINUX_DISTRO() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:voidlinux-default:g' |
 		sed 's:debian/sid:voidlinux/current:g' |
