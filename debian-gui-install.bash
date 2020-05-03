@@ -883,7 +883,8 @@ install_vscode_server() {
 }
 #################
 check_vscode_server_status() {
-	pgrep code-server &>/dev/null
+	#pgrep code-server &>/dev/null
+	pgrep node &>/dev/null
 	if [ "$?" = "0" ]; then
 		VSCODE_SERVER_STATUS='检测到code-server进程正在运行'
 		VSCODE_SERVER_PROCESS='Restart重启'
@@ -915,8 +916,8 @@ configure_vscode_server() {
 	fi
 	##############################
 	if [ "${CODE_SERVER_OPTION}" == '1' ]; then
-		pkill code-server
-		service code-server stop 2>/dev/null
+		pkill node
+		#service code-server stop 2>/dev/null
 		vscode_server_upgrade
 	fi
 	##############################
@@ -927,8 +928,8 @@ configure_vscode_server() {
 	if [ "${CODE_SERVER_OPTION}" == '3' ]; then
 		echo "正在停止服务进程..."
 		echo "Stopping..."
-		pkill code-server
-		service code-server stop 2>/dev/null
+		pkill node
+		#service code-server stop 2>/dev/null
 		#service vscode_server status
 	fi
 	##############################
@@ -974,8 +975,8 @@ vscode_server_upgrade() {
 				code-server &
 				echo "已为您启动VS Code Server!"
 				echo "VS Code Server has been started,enjoy it !"
-				echo "您可以输pkill code-server来停止服务(器)。"
-				echo 'You can type "pkill code-server" to stop vscode service(server).'
+				echo "您可以输pkill node来停止服务(器)。"
+				echo 'You can type "pkill node" to stop vscode service(server).'
 			fi
 		EOF
 	fi
@@ -1038,7 +1039,7 @@ vscode_server_restart() {
 	/usr/local/bin/code-server-data/code-server &
 	echo "正在为您启动code-server，本机默认访问地址为localhost:8080"
 	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080
-	echo "您可以输${YELLOW}pkill code-server${RESET}来停止进程"
+	echo "您可以输${YELLOW}pkill node${RESET}来停止进程"
 }
 #############
 vscode_server_password() {
@@ -1059,8 +1060,8 @@ vscode_server_password() {
 }
 #################
 vscode_server_remove() {
-	pkill code-server
-	service code-server stop 2>/dev/null
+	pkill node
+	#service code-server stop 2>/dev/null
 	echo "正在停止code-server进程..."
 	echo "Stopping code-server..."
 	#service vscode-server stop 2>/dev/null
