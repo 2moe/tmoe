@@ -66,8 +66,8 @@ check_arch() {
 		exit 1
 		;;
 	esac
-	DebianFolder=debian_${archtype}
-	DebianCHROOT=${HOME}/${DebianFolder}
+	DEBIAN_FOLDER=debian_${archtype}
+	DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
@@ -381,7 +381,7 @@ gnu_linux() {
 				aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/show/share/windows/20H1/wsl_update_x64.msi'
 				#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\wsl_update_x64.msi"
 			fi
-			if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+			if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 				echo "检测到您当前使用的是chroot容器，将不会自动调用Windows程序。"
 				echo "请手动启动音频服务和X服务。"
 			fi
@@ -562,8 +562,8 @@ android_termux() {
 	fi
 	#exit-idle-time 可设为180
 
-	if [ -e ${DebianCHROOT}/root/.vnc/xstartup ]; then
-		grep -q "PULSE_SERVER" ${DebianCHROOT}/root/.vnc/xstartup || sed -i '2 a\export PULSE_SERVER=127.0.0.1' ${DebianCHROOT}/root/.vnc/xstartup
+	if [ -e ${DEBIAN_CHROOT}/root/.vnc/xstartup ]; then
+		grep -q "PULSE_SERVER" ${DEBIAN_CHROOT}/root/.vnc/xstartup || sed -i '2 a\export PULSE_SERVER=127.0.0.1' ${DEBIAN_CHROOT}/root/.vnc/xstartup
 	fi
 
 	if [ -e ${PREFIX}/bin/debian ]; then
@@ -613,7 +613,7 @@ tmoe_manager_main_menu() {
 
 		fi
 		rm -f ~/.Chroot-Container-Detection-File
-		rm -f "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
+		rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
 		touch ~/.Tmoe-Proot-Container-Detection-File
 		install_gnu_linux_container
 
@@ -716,7 +716,7 @@ tmoe_manager_main_menu() {
 ########################################################################
 
 install_gnu_linux_container() {
-	if [ -d ~/${DebianFolder} ]; then
+	if [ -d ~/${DEBIAN_FOLDER} ]; then
 		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do!" 7 60); then
 			debian
 		else
@@ -813,7 +813,7 @@ enable_root_mode() {
 		alias debian-rm="tsudo debian-rm"
 		echo "Modifying folder permissions"
 		echo "正在修改文件权限..."
-		tsudo chown root:root -R "${DebianCHROOT}" 2>/dev/null || su -c "chown root:root -R ${DebianCHROOT}"
+		tsudo chown root:root -R "${DEBIAN_CHROOT}" 2>/dev/null || su -c "chown root:root -R ${DEBIAN_CHROOT}"
 		if [ -d "${HOME}/debian_armhf" ]; then
 			tsudo chown root:root -R "${HOME}/debian_armhf" 2>/dev/null || su -c "chown root:root -R ${HOME}/debian_armhf"
 		fi
@@ -842,25 +842,25 @@ enable_root_mode() {
 remove_gnu_linux_container() {
 
 	cd ~
-	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
-		ls -lah ${DebianCHROOT}/dev 2>/dev/null
-		ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
-		ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
-		ls -lah ${DebianCHROOT}/proc 2>/dev/null
-		ls -lah ${DebianCHROOT}/sys 2>/dev/null
-		ls -lah ${DebianCHROOT}/tmp 2>/dev/null
-		ls -lah ${DebianCHROOT}/root/sd 2>/dev/null
-		ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
-		ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
+	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
+		ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/proc 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/sys 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/tmp 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/root/sd 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
 		df -h | grep debian
 		echo '移除系统前，请先确保您已卸载chroot挂载目录。'
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
@@ -875,10 +875,10 @@ remove_gnu_linux_container() {
 	if [ "$?" = "0" ]; then
 		echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 	fi
-	ls -l ${DebianCHROOT}/root/sd/* 2>/dev/null
+	ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
 	if [ "$?" = "0" ]; then
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
-		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"
+		echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 		echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
 		echo "Press enter to return."
@@ -888,15 +888,15 @@ remove_gnu_linux_container() {
 	fi
 	echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting container size... 正在检测容器占用空间大小'
-	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
-	if [ ! -d ~/${DebianFolder} ]; then
+	du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+	if [ ! -d ~/${DEBIAN_FOLDER} ]; then
 		echo "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
 	fi
 	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
 	read
 
-	chmod 777 -R ${DebianFolder}
-	rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+	chmod 777 -R ${DEBIAN_FOLDER}
+	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
 	if [ -d "${HOME}/debian_armhf" ]; then
 		echo "检测到疑似存在树莓派armhf系统，正在移除..."
 		chmod 777 -R "${HOME}/debian_armhf"
@@ -941,16 +941,16 @@ remove_gnu_linux_container() {
 ########################################################################
 #
 backup_system() {
-	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
 	fi
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
@@ -979,9 +979,9 @@ backup_system() {
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
-			tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+			tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 			#whiptail进度条已弃用
-			#tar -PJpcf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
+			#tar -PJpcf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 
 			#xz -z -T0 -e -9 -f -v ${TMPtime}.tar
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
@@ -999,12 +999,12 @@ backup_system() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 			if [ ! -z "$(command -v pv)" ]; then
-				tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 			else
-				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 			fi
 			#最新版弃用了whiptail的进度条！！！
-			#tar -Ppczf - --exclude=~/${DebianFolder}/root/sd --exclude=~/${DebianFolder}/root/tf --exclude=~/${DebianFolder}/root/termux ~/${DebianFolder} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
+			#tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
 			echo "部分目录无权限备份是正常现象。"
@@ -1084,7 +1084,7 @@ backup_termux() {
 			cd /sdcard/Download/backup
 		fi
 
-		##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+		##tar -czf - ~/${DEBIAN_FOLDER} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
 
 		ls -lth ./termux-home*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 
@@ -1103,7 +1103,7 @@ backup_termux() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
-			tar -PJpvcf ${TMPtime}.tar.xz --exclude=${DebianCHROOT}/root/sd --exclude=${DebianCHROOT}/root/termux --exclude=${DebianCHROOT}/root/tf ${HOME}
+			tar -PJpvcf ${TMPtime}.tar.xz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux --exclude=${DEBIAN_CHROOT}/root/tf ${HOME}
 
 			#xz -z -T0 -e -9 -v ${TMPtime}.tar
 
@@ -1122,7 +1122,7 @@ backup_termux() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 			read
 
-			tar -Ppvczf ${TMPtime}.tar.gz --exclude=${DebianCHROOT}/root/sd --exclude=${DebianCHROOT}/root/termux --exclude=${DebianCHROOT}/root/tf ${HOME}
+			tar -Ppvczf ${TMPtime}.tar.gz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux --exclude=${DEBIAN_CHROOT}/root/tf ${HOME}
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
 			echo "部分目录无权限备份是正常现象。"
@@ -1194,7 +1194,7 @@ backup_termux() {
 				tar -Ppczvf ${TMPtime}.tar.gz ${PREFIX}
 			fi
 
-			##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+			##tar -czf - ~/${DEBIAN_FOLDER} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
 			echo "部分目录无权限备份是正常现象。"
@@ -1263,7 +1263,7 @@ backup_termux() {
 			else
 				tar -Ppczvf ${TMPtime}.tar.gz ${HOME} ${PREFIX}
 			fi
-			##tar -czf - ~/${DebianFolder} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
+			##tar -czf - ~/${DEBIAN_FOLDER} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
 
 			echo "Don't worry too much, it is normal for some directories to backup without permission."
 			echo "部分目录无权限备份是正常现象。"
@@ -1289,16 +1289,16 @@ backup_termux() {
 ########################################################################
 #
 restore_gnu_linux_container() {
-	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "	umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
 	fi
 	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
@@ -1613,9 +1613,9 @@ start_vscode() {
 		tmoe_manager_main_menu
 	fi
 
-	if [ ! -d "${HOME}/${DebianFolder}" ]; then
-		echo "未检测到${DebianFolder},请先安装GNU/Linux容器"
-		echo "Detected that you did not install ${DebianFolder}, please install container first."
+	if [ ! -d "${HOME}/${DEBIAN_FOLDER}" ]; then
+		echo "未检测到${DEBIAN_FOLDER},请先安装GNU/Linux容器"
+		echo "Detected that you did not install ${DEBIAN_FOLDER}, please install container first."
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo 'Press enter to return.'
 		read
@@ -1625,7 +1625,7 @@ start_vscode() {
 	if [ ! -e "${PREFIX}/bin/code-server" ]; then
 		cat >${PREFIX}/bin/code-server <<-EndOfFile
 			#!/data/data/com.termux/files/usr/bin/bash
-			touch "${DebianCHROOT}/tmp/startcode.tmp"
+			touch "${DEBIAN_CHROOT}/tmp/startcode.tmp"
 			am start -a android.intent.action.VIEW -d "http://localhost:8080"
 			echo "本机默认vscode服务地址localhost:8080"
 			echo The LAN VNC address 局域网地址\$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080
@@ -1639,8 +1639,8 @@ start_vscode() {
 		chmod +x ${PREFIX}/bin/code-server
 	fi
 
-	if [ ! -e "${DebianCHROOT}/tmp/sed-vscode.tmp" ]; then
-		cat >${DebianCHROOT}/tmp/sed-vscode.tmp <<-'EOF'
+	if [ ! -e "${DEBIAN_CHROOT}/tmp/sed-vscode.tmp" ]; then
+		cat >${DEBIAN_CHROOT}/tmp/sed-vscode.tmp <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
 				echo "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
 				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
@@ -1655,17 +1655,17 @@ start_vscode() {
 		EOF
 	fi
 
-	if [ ! -f "${DebianCHROOT}/root/.zshrc" ]; then
-		echo "" >>${DebianCHROOT}/root/.zshrc
+	if [ ! -f "${DEBIAN_CHROOT}/root/.zshrc" ]; then
+		echo "" >>${DEBIAN_CHROOT}/root/.zshrc
 	fi
-	if [ ! -f "${DebianCHROOT}/root/.bashrc" ]; then
-		echo "" >>${DebianCHROOT}/root/.bashrc
+	if [ ! -f "${DEBIAN_CHROOT}/root/.bashrc" ]; then
+		echo "" >>${DEBIAN_CHROOT}/root/.bashrc
 	fi
 
-	grep '/tmp/startcode.tmp' ${DebianCHROOT}/root/.bashrc >/dev/null || sed -i "$ r ${DebianCHROOT}/tmp/sed-vscode.tmp" ${DebianCHROOT}/root/.bashrc
-	grep '/tmp/startcode.tmp' ${DebianCHROOT}/root/.zshrc >/dev/null || sed -i "$ r ${DebianCHROOT}/tmp/sed-vscode.tmp" ${DebianCHROOT}/root/.zshrc
+	grep '/tmp/startcode.tmp' ${DEBIAN_CHROOT}/root/.bashrc >/dev/null || sed -i "$ r ${DEBIAN_CHROOT}/tmp/sed-vscode.tmp" ${DEBIAN_CHROOT}/root/.bashrc
+	grep '/tmp/startcode.tmp' ${DEBIAN_CHROOT}/root/.zshrc >/dev/null || sed -i "$ r ${DEBIAN_CHROOT}/tmp/sed-vscode.tmp" ${DEBIAN_CHROOT}/root/.zshrc
 
-	if [ -e "${DebianCHROOT}/usr/local/bin/code-server" ] || [ -L "${DebianCHROOT}/usr/local/bin/code-server" ]; then
+	if [ -e "${DEBIAN_CHROOT}/usr/local/bin/code-server" ] || [ -L "${DEBIAN_CHROOT}/usr/local/bin/code-server" ]; then
 		code-server
 	else
 
@@ -1676,13 +1676,13 @@ start_vscode() {
 
 		echo "server版商店中不包含所有插件，如需下载额外插件，请前往微软vscode官方在线商店下载vsix后缀的离线插件，并手动安装。 https://marketplace.visualstudio.com/vscode"
 		git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODESERVERTMPFILE
-		cd ${DebianCHROOT}
+		cd ${DEBIAN_CHROOT}
 		tar -Jpxvf ${HOME}/.VSCODESERVERTMPFILE/code.tar.xz
 		rm -rf ${HOME}/.VSCODESERVERTMPFILE
 		echo "Congratulations, you have successfully installed vscode server!"
-		echo "您已成功安装VSCode服务，如需卸载请输rm -rf ${PREFIX}/bin/code-server ${DebianCHROOT}/usr/local/bin/code-server ${DebianCHROOT}/usr/local/bin/code-server-data"
+		echo "您已成功安装VSCode服务，如需卸载请输rm -rf ${PREFIX}/bin/code-server ${DEBIAN_CHROOT}/usr/local/bin/code-server ${DEBIAN_CHROOT}/usr/local/bin/code-server-data"
 
-		grep "keyCode" ${DebianCHROOT}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${DebianCHROOT}/root/.local/share/code-server/User && cat >${DebianCHROOT}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
+		grep "keyCode" ${DEBIAN_CHROOT}/root/.local/share/code-server/User/settings.json >/dev/null || mkdir -p ${DEBIAN_CHROOT}/root/.local/share/code-server/User && cat >${DEBIAN_CHROOT}/root/.local/share/code-server/User/settings.json <<-'EndOfFile'
 			{
 			"keyboard.dispatch": "keyCode"
 			}
@@ -1733,14 +1733,14 @@ chroot_install_debian() {
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
-	rm -f "${DebianCHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
+	rm -f "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
 	rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
 	touch ~/.Chroot-Container-Detection-File
 	install_gnu_linux_container
 }
 #################################
 install_debian_or_download_recovery_pkg_tar_xz() {
-	if [ ! -d "${DebianCHROOT}" ]; then
+	if [ ! -d "${DEBIAN_CHROOT}" ]; then
 		#less -meQ
 		cat <<-'EndOfFile'
 			                              End-user license agreement 
@@ -1982,7 +1982,7 @@ termux_install_xfce() {
 }
 #####################################
 switch_vnc_pulse_audio_transport_method() {
-	cd ${DebianCHROOT}/root
+	cd ${DEBIAN_CHROOT}/root
 	if grep -Eq '4712|4713' ./.vnc/xstartup; then
 		PULSEtransportMethon='检测到您当前使用的可能是XSDL音频传输'
 	else
@@ -1991,11 +1991,11 @@ switch_vnc_pulse_audio_transport_method() {
 
 	if (whiptail --title "您想用哪个软件来传输VNC音频？(｡･∀･)ﾉﾞ" --yes-button 'Termux(*￣▽￣*)o' --no-button 'XSDL(っ °Д °)' --yesno "${PULSEtransportMethon},请选择您需要切换的传输类型！注：您必须先安装XSDL app才能使用XSDL的音频服务，切换成XSDL后，启动VNC时将自动打开XSDL,此时不会转发X,您也无需执行任何操作。" 11 50); then
 
-		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1/' ${DebianCHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
+		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1/' ${DEBIAN_CHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
 		sed -i '/x.org.server.MainActivity/d' $PREFIX/bin/startvnc
 		sed -i '/sleep 5/d' $PREFIX/bin/startvnc
 	else
-		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1:4713/' ${DebianCHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
+		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1:4713/' ${DEBIAN_CHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
 		cd $PREFIX/bin/
 		grep -q 'x.org.server' startvnc || sed -i '2 a\am start -n x.org.server/x.org.server.MainActivity \nsleep 5' startvnc
 	fi
@@ -2123,8 +2123,8 @@ start_web_novnc() {
 	echo "注意：novnc地址和vnc地址是${YELLOW}不同${RESET}的，请在${YELLOW}浏览器${RESET}中输入novnc地址。"
 	echo 'Other devices in the LAN need to enter the novnc address of the LAN. Do not forget /vnc.html after the port number'
 	echo "非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html"
-	if [ -d "${DebianCHROOT}" ]; then
-		touch ~/${DebianFolder}/root/.vnc/startvnc
+	if [ -d "${DEBIAN_CHROOT}" ]; then
+		touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
 		${PREFIX}/bin/debian
 	else
 		if [ "${LINUX_DISTRO}" = 'Android' ]; then
@@ -2562,10 +2562,10 @@ install_other_containers() {
 			zypper in -y lz4 2>/dev/null
 		fi
 
-		mkdir -p ${DebianCHROOT}
+		mkdir -p ${DEBIAN_CHROOT}
 		rm -vf ~/armbian-bullseye-rootfs.tar
 		lz4 -d ~/armbian-bullseye-rootfs.tar.lz4
-		cd ${DebianCHROOT}
+		cd ${DEBIAN_CHROOT}
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			pv ~/armbian-bullseye-rootfs.tar | proot --link2symlink tar -px
 		else

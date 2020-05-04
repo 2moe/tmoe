@@ -1,7 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-
 #检测架构
-
 case $(uname -m) in
 aarch64)
   archtype="arm64"
@@ -164,16 +162,16 @@ fi
 #旧版将相关设立了alias，新版需要删掉。
 ####################
 #卸载chroot挂载目录
-if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-  su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-  su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-  su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+  su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
+  su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
+  su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
 fi
 ##############################
 if [ "$(uname -o)" != "Android" ]; then
@@ -205,9 +203,9 @@ fi
 
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
-DebianFolder=debian_${archtype}
-DebianCHROOT=${HOME}/${DebianFolder}
-#DebianFolder=debian_arm64
+DEBIAN_FOLDER=debian_${archtype}
+DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+#DEBIAN_FOLDER=debian_arm64
 
 echo "                                        "
 echo "                 .::::..                "
@@ -238,16 +236,16 @@ if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
   echo "已将您的架构临时识别为armhf"
 fi
 echo "Detected that your current architecture is ${archtype}"
-echo "检测到您当前的架构为${archtype} ，GNU/Linux系统将安装至~/${DebianFolder}"
+echo "检测到您当前的架构为${archtype} ，GNU/Linux系统将安装至~/${DEBIAN_FOLDER}"
 
 cd ~
 
-if [ -d "${DebianFolder}" ]; then
+if [ -d "${DEBIAN_FOLDER}" ]; then
   downloaded=1
   echo "Detected that you have debian installed 检测到您已安装debian"
 fi
 
-mkdir -p ~/${DebianFolder}
+mkdir -p ~/${DEBIAN_FOLDER}
 
 DebianTarXz="debian-sid-rootfs.tar.xz"
 
@@ -267,7 +265,7 @@ if [ ! -f ${DebianTarXz} ]; then
   fi
 fi
 cur=$(pwd)
-cd ${DebianCHROOT}
+cd ${DEBIAN_CHROOT}
 echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
 if [ "${LINUX_DISTRO}" = "Android" ]; then
   pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
@@ -285,9 +283,9 @@ elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 else
   pv ${cur}/${DebianTarXz} | tar -pJx
 fi
-cp -f ~/.termux/font.ttf ~/${DebianFolder}/tmp/ 2>/dev/null
+cp -f ~/.termux/font.ttf ~/${DEBIAN_FOLDER}/tmp/ 2>/dev/null
 if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
-  touch ~/${DebianFolder}/tmp/.openwrtcheckfile
+  touch ~/${DEBIAN_FOLDER}/tmp/.openwrtcheckfile
 fi
 #proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
 cd "$cur"
@@ -321,44 +319,44 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
   echo "Creating chroot startup script"
   echo "正在创建chroot启动脚本${PREFIX}/bin/debian "
   if [ -d "/sdcard" ]; then
-    mkdir -p ${DebianCHROOT}/root/sd
+    mkdir -p ${DEBIAN_CHROOT}/root/sd
   fi
   if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-    mkdir -p ${DebianCHROOT}/root/tf
+    mkdir -p ${DEBIAN_CHROOT}/root/tf
   fi
   if [ -d "/data/data/com.termux/files/home" ]; then
-    mkdir -p ${DebianCHROOT}/root/termux
+    mkdir -p ${DEBIAN_CHROOT}/root/termux
   fi
-  if [ ! -f "${DebianCHROOT}/etc/profile" ]; then
-    echo "" >>${DebianCHROOT}/etc/profile
+  if [ ! -f "${DEBIAN_CHROOT}/etc/profile" ]; then
+    echo "" >>${DEBIAN_CHROOT}/etc/profile
   fi
   #此处若不创建，将有可能导致chromium无法启动。
-  mkdir -p ${DebianCHROOT}/run/shm
-  chmod 1777 ${DebianCHROOT}/dev/shm 2>/dev/null
-  grep -q 'export PATH=' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\export PATH='/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games'" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  mkdir -p ${DEBIAN_CHROOT}/run/shm
+  chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+  grep -q 'export PATH=' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\export PATH='/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games'" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
-  grep -q 'export PATH=' ${DebianCHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DebianCHROOT}/root/.zshenv
+  grep -q 'export PATH=' ${DEBIAN_CHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DEBIAN_CHROOT}/root/.zshenv
 
-  grep -q 'unset LD_PRELOAD' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep -q 'unset LD_PRELOAD' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
-  grep -q 'en_US.UTF-8' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep -q 'en_US.UTF-8' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
-  grep -q 'HOME=/root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep -q 'HOME=/root' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
-  grep -q 'cd /root' ${DebianCHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DebianCHROOT}/etc/profile >/dev/null 2>&1
+  grep -q 'cd /root' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
   #此处EndOfChrootFile不要加单引号
   cat >${PREFIX}/bin/debian <<-EndOfChrootFile
   #!/data/data/com.termux/files/usr/bin/bash
-  DebianCHROOT=${HOME}/${DebianFolder}
-  if [ ! -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
+  DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+  if [ ! -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
   fi
   #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
   DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
   DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
 
-  if [ -f ${DebianCHROOT}/bin/zsh ]; then
+  if [ -f ${DEBIAN_CHROOT}/bin/zsh ]; then
     sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
   else
     sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
@@ -368,38 +366,38 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
     su -c "/bin/sh ${PREFIX}/bin/debian"
     exit
   fi
-  mount -o bind /dev ${DebianCHROOT}/dev >/dev/null 2>&1
+  mount -o bind /dev ${DEBIAN_CHROOT}/dev >/dev/null 2>&1
   #mount -o bind /dev /dev >/dev/null 2>&1
 
-  mount -t proc proc ${DebianCHROOT}/proc >/dev/null 2>&1
+  mount -t proc proc ${DEBIAN_CHROOT}/proc >/dev/null 2>&1
   #mount -t proc proc /proc >/dev/null 2>&1
 
-  mount -t sysfs sysfs ${DebianCHROOT}/sys >/dev/null 2>&1
+  mount -t sysfs sysfs ${DEBIAN_CHROOT}/sys >/dev/null 2>&1
 
-  mount -t devpts devpts ${DebianCHROOT}/dev/pts >/dev/null 2>&1
+  mount -t devpts devpts ${DEBIAN_CHROOT}/dev/pts >/dev/null 2>&1
   # mount -t devpts devpts /dev/pts >/dev/null 2>&1
 
-  #mount --bind /dev/shm ${DebianCHROOT}/dev/shm >/dev/null 2>&1
+  #mount --bind /dev/shm ${DEBIAN_CHROOT}/dev/shm >/dev/null 2>&1
   mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
 
-  #mount -t tmpfs tmpfs ${DebianCHROOT}/tmp  >/dev/null 2>&1
+  #mount -t tmpfs tmpfs ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1
 
-  mount --rbind ${DebianCHROOT} ${DebianCHROOT}/ >/dev/null 2>&1
+  mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ >/dev/null 2>&1
 
   if [ "$(uname -o)" = "Android" ]; then
     TFcardFolder="\$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')"
     if [ -d "/mnt/media_rw/\${TFcardFolder}" ]; then
-      mount -o bind /mnt/media_rw/\${TFcardFolder} ${DebianCHROOT}/root/tf >/dev/null 2>&1
+      mount -o bind /mnt/media_rw/\${TFcardFolder} ${DEBIAN_CHROOT}/root/tf >/dev/null 2>&1
     fi
     if [ -d "/data/data/com.termux/files/home" ]; then
-      mount -o bind /data/data/com.termux/files/home ${DebianCHROOT}/root/termux >/dev/null 2>&1
+      mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1
     fi
     if [ -d "/sdcard" ]; then
-      mount -o bind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
-      #mount --rbind /sdcard ${DebianCHROOT}/root/sd >/dev/null 2>&1
+      mount -o bind /sdcard ${DEBIAN_CHROOT}/root/sd >/dev/null 2>&1
+      #mount --rbind /sdcard ${DEBIAN_CHROOT}/root/sd >/dev/null 2>&1
     fi
   fi
-  chroot \${DebianCHROOT} /bin/bash --login
+  chroot \${DEBIAN_CHROOT} /bin/bash --login
 
 EndOfChrootFile
 #上面那行不要有空格
@@ -418,10 +416,10 @@ unset LD_PRELOAD
 command="proot"
 command+=" --link2symlink"
 command+=" -0"
-command+=" -r ${DebianFolder}"
+command+=" -r ${DEBIAN_FOLDER}"
 command+=" -b /dev"
 command+=" -b /proc"
-command+=" -b ${DebianFolder}/root:/dev/shm"
+command+=" -b ${DEBIAN_FOLDER}/root:/dev/shm"
 #您可以在此处修改挂载目录
 command+=" -b /sdcard:/root/sd"
 command+=" -b /data/data/com.termux/files/home/storage/external-1:/root/tf"
@@ -438,14 +436,14 @@ com="\$@"
 DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
 DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
 
-if [ -f ~/${DebianFolder}/bin/zsh ];then
+if [ -f ~/${DEBIAN_FOLDER}/bin/zsh ];then
     sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
 else
     sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
 fi
 
-if [ ! -e "${DebianCHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-  echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+if [ ! -e "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+  echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
 fi
 
 if [ -z "\$1" ];then
@@ -461,7 +459,7 @@ cat >${PREFIX}/bin/startvnc <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 pulseaudio --kill 2>/dev/null
 am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
-touch ~/${DebianFolder}/root/.vnc/startvnc
+touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
 ${PREFIX}/bin/debian
 EndOfFile
 #debian前不需要加上bash
@@ -476,7 +474,7 @@ EndOfFile
 cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 #!/data/data/com.termux/files/usr/bin/bash
 am start -n x.org.server/x.org.server.MainActivity
-touch ~/${DebianFolder}/root/.vnc/startxsdl
+touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
 /data/data/com.termux/files/usr/bin/debian
 EndOfFile
 
@@ -488,26 +486,26 @@ cat >${PREFIX}/bin/debian-rm <<-EndOfFile
 	  RESET=\$(printf '\033[m')
     cd ~
     
-  if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
-	  su -c "umount -lf ${DebianCHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "	umount -lf ${DebianCHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DebianCHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DebianCHROOT}/root/termux >/dev/null 2>&1"
+  if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
+	  su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
+		su -c "	umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
+		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
 
-ls -lah ${DebianCHROOT}/dev 2>/dev/null
-ls -lah ${DebianCHROOT}/dev/shm 2>/dev/null
-ls -lah ${DebianCHROOT}/dev/pts 2>/dev/null
-ls -lah ${DebianCHROOT}/proc 2>/dev/null
-ls -lah ${DebianCHROOT}/sys 2>/dev/null
-ls -lah ${DebianCHROOT}/tmp 2>/dev/null
-ls -lah ${DebianCHROOT}/root/sd 2>/dev/null
-ls -lah ${DebianCHROOT}/root/tf 2>/dev/null
-ls -lah ${DebianCHROOT}/root/termux 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/proc 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/sys 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/tmp 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/root/sd 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
+ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
   df -h |grep debian
   echo '移除系统前，请先确保您已卸载chroot挂载目录。'
   echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
@@ -523,10 +521,10 @@ if [ "\$?" = "0" ]; then
     echo '检测到proot容器正在运行，请先输stopvnc停止运行'
 fi
 
-	ls -l ${DebianCHROOT}/root/sd/* 2>/dev/null
+	ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
 	if [ "\$?" = "0" ]; then
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
-		echo "若为误报，则请先停止容器进程，再手动移除${DebianCHROOT}/root/sd"
+		echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 		echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
 		echo "Press enter to exit."
@@ -538,15 +536,15 @@ fi
  #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
   #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting debian system size... 正在检测debian system占用空间大小'
-  	du -sh ./${DebianFolder} --exclude=./${DebianFolder}/root/tf --exclude=./${DebianFolder}/root/sd --exclude=./${DebianFolder}/root/termux
-	if [ ! -d ~/${DebianFolder} ]; then
+  	du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+	if [ ! -d ~/${DEBIAN_FOLDER} ]; then
 		echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
 	fi
 	echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
   pkill proot 2>/dev/null
 	read
-    chmod 777 -R ${DebianFolder}
-	rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+    chmod 777 -R ${DEBIAN_FOLDER}
+	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
 
     sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 	  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
@@ -601,13 +599,13 @@ echo "You can type rm ~/${DebianTarXz} to delete the image file"
 echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
 
-cd ~/${DebianFolder}
+cd ~/${DEBIAN_FOLDER}
 #配置卸载脚本
 cat >remove-debian.sh <<-EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
-chmod 777 -R ${DebianFolder}
-rm -rfv "${DebianFolder}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+chmod 777 -R ${DEBIAN_FOLDER}
+rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 if grep -q 'alias debian' "${PREFIX}/etc/profile"; then
   sed -i '/alias debian=/d' ${PREFIX}/etc/profile
   sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
@@ -620,39 +618,39 @@ chmod +x remove-debian.sh
 
 ########################
 
-if [ -d "${DebianCHROOT}/usr/local/bin" ]; then
-  mkdir -p ${DebianCHROOT}/usr/local/bin
+if [ -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
+  mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
 
 if [ -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ]; then
-  mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DebianCHROOT}/tmp
-  echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+  mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
+  echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
 elif [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
-  mv -f "${HOME}/.Chroot-Container-Detection-File" ${DebianCHROOT}/tmp
-  echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DebianCHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
+  mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
+  echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
 fi
-cd ${DebianCHROOT}/usr/local/bin
+cd ${DEBIAN_CHROOT}/usr/local/bin
 
 curl -sLo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
 curl -sLo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash'
 chmod +x neofetch debian-i
 
-cd ${DebianCHROOT}/root
-chmod u+w "${DebianCHROOT}/root"
+cd ${DEBIAN_CHROOT}/root
+chmod u+w "${DEBIAN_CHROOT}/root"
 curl -sLo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
 sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' zsh-i.sh
 chmod +x zsh-i.sh
 #zsh-i和zsh是不同的
 
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
-  mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DebianCHROOT}/tmp/"
+  mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
   #树莓派换源
   curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
-  tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DebianFolder}/etc/apt/
+  tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
   rm -f "raspbian-sources-gpg.tar.xz"
 elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
   rm -f "${HOME}/.REDHATDetectionFILE"
-  chmod u+w "${DebianCHROOT}/root"
+  chmod u+w "${DEBIAN_CHROOT}/root"
   rm -f ../etc/resolv.conf
   #使用相对路径
   cat >../etc/resolv.conf <<-'EndOfFile'
@@ -665,7 +663,7 @@ elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
   #sed -i 's@sed -i \"s:\${DE@#&@g' $(command -v debian)
   sed -i 's/bash --login/ash --login/g' $(command -v debian)
   sed -i 's/zsh --login/ash --login/g' $(command -v debian)
-  mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DebianCHROOT}/tmp
+  mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
 fi
 
 #配置zsh
@@ -1688,7 +1686,7 @@ EDITBASHPROFILE
 
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
   sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
-  sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DebianCHROOT}/remove-debian.sh
+  sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
 
 bash ${PREFIX}/bin/debian
