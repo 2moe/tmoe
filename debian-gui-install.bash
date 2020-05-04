@@ -3689,7 +3689,7 @@ install_obs_studio() {
 personal_netdisk() {
 	WHICH_NETDISK=$(whiptail --title "FILE SHARE SERVER" --menu "你想要使用哪个软件来共享文件呢" 14 50 6 \
 		"1" "Filebrowser:简单轻量的个人网盘" \
-		"2" "Nginx WebDAV:比ftp更适合传输流媒体" \
+		"2" "Nginx WebDAV:比ftp更适合用来传输流媒体" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################

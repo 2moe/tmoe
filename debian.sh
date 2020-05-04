@@ -572,10 +572,8 @@ android_termux() {
 
 	tmoe_manager_main_menu
 }
-
 ########################################################################
 #-- 主菜单 main menu
-
 tmoe_manager_main_menu() {
 	OPTION=$(
 		whiptail --title "Tmoe-Debian GNU/Linux manager(20200504-01)" --backtitle "$(
@@ -603,118 +601,118 @@ tmoe_manager_main_menu() {
 	)
 
 	if [ "${OPTION}" == '1' ]; then
-		if [ "$(uname -o)" != "Android" ]; then
-			echo "非常抱歉，本功能仅适配安卓系统。"
-			echo "Linux系统请换用chroot容器。"
-			echo "Press enter to return."
-			echo "${YELLOW}按回车键返回。${RESET} "
-			read
-			tmoe_manager_main_menu
-
-		fi
-		rm -f ~/.Chroot-Container-Detection-File
-		rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
-		touch ~/.Tmoe-Proot-Container-Detection-File
-		install_gnu_linux_container
-
+		install_proot_container
 	fi
 
 	if [ "${OPTION}" == '2' ]; then
-		if [ "$(uname -o)" = "Android" ]; then
-			echo Android :${ANDROIDVERSION}
-			echo "$(getprop ro.product.model)"
-			su -c "ls ${HOME} >/dev/null"
-			if [ "$?" != "0" ]; then
-				echo '检测到root权限授予失败，您无法安装chroot容器'
-			else
-				echo "检测到您使用的是Android系统"
-				echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
-				#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
-				echo "Android系统请换用proot容器。"
-			fi
-			echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
-			echo "${YELLOW}按回车键返回。${RESET}"
-			echo "Press enter to return."
-			read
-			tmoe_manager_main_menu
-		else
-			chroot_install_debian
-		fi
+		install_chroot_container
 	fi
 
 	if [ "${OPTION}" == '3' ]; then
-
 		termux_install_xfce
 	fi
-	if [ "${OPTION}" == '4' ]; then
 
+	if [ "${OPTION}" == '4' ]; then
 		install_web_novnc
 	fi
 
 	if [ "${OPTION}" == '5' ]; then
-
 		remove_gnu_linux_container
-
 	fi
 
 	if [ "${OPTION}" == '6' ]; then
-
 		backup_system
-
 	fi
 
 	if [ "${OPTION}" == '7' ]; then
-
 		restore_gnu_linux_container
-
 	fi
 
 	if [ "${OPTION}" == '8' ]; then
-
 		space_occupation
-
 	fi
 
 	if [ "${OPTION}" == '9' ]; then
-
 		update_tmoe_linux_manager
 	fi
 
 	if [ "${OPTION}" == '10' ]; then
 		bash -c "$(curl -fLsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
-
 	fi
 
 	if [ "${OPTION}" == '11' ]; then
-
 		download_vnc_apk
-
 	fi
 
 	if [ "${OPTION}" == '12' ]; then
 		start_vscode
-
 	fi
 
 	if [ "${OPTION}" == '13' ]; then
-
 		enable_root_mode
 	fi
 
 	if [ "${OPTION}" == '14' ]; then
-
 		download_video_tutorial
 	fi
 
 	if [ "${OPTION}" == '0' ]; then
-		exit
-
+		exit 0
 	fi
-
 }
-
+#########################################
+install_proot_container() {
+	if [ "$(uname -o)" != "Android" ]; then
+		echo "非常抱歉，本功能仅适配安卓系统。"
+		echo "Linux系统请换用chroot容器。"
+		echo "Press enter to return."
+		echo "${YELLOW}按回车键返回。${RESET} "
+		read
+		tmoe_manager_main_menu
+	fi
+	rm -f ~/.Chroot-Container-Detection-File
+	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
+	touch ~/.Tmoe-Proot-Container-Detection-File
+	install_gnu_linux_container
+}
+##############################################
+install_chroot_container() {
+	if [ "$(uname -o)" = "Android" ]; then
+		echo Android :${ANDROIDVERSION}
+		echo "$(getprop ro.product.model)"
+		su -c "ls ${HOME} >/dev/null"
+		if [ "$?" != "0" ]; then
+			echo '检测到root权限授予失败，您无法安装chroot容器'
+		else
+			echo "检测到您使用的是Android系统"
+			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
+			#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
+			echo "Android系统请换用proot容器。"
+		fi
+		echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
+		echo "${YELLOW}按回车键返回。${RESET}"
+		echo "Press enter to return."
+		read
+		tmoe_manager_main_menu
+	else
+		chroot_install_tips
+	fi
+}
+###################################
+chroot_install_tips() {
+	echo "This feature currently only supports Linux systems and is still in beta."
+	echo "本功能目前仅对Linux系统测试开放。"
+	echo "This feature is currently in the beta stage. If you find that some directories cannot be unmounted forcibly before removing the container, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
+	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
+	echo "按回车键继续,按Ctrl+C取消。"
+	echo "${YELLOW}Press enter to continue.${RESET}"
+	read
+	rm -f "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
+	rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+	touch ~/.Chroot-Container-Detection-File
+	install_gnu_linux_container
+}
 ########################################################################
-
 install_gnu_linux_container() {
 	if [ -d ~/${DEBIAN_FOLDER} ]; then
 		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do!" 7 60); then
@@ -753,13 +751,10 @@ install_gnu_linux_container() {
 	else
 		install_debian_or_download_recovery_pkg_tar_xz
 		#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
-
 	fi
 }
-
-########################################################################
-#
-
+########################################
+########################################
 enable_root_mode() {
 	if [ "$(uname -o)" != "Android" ]; then
 		echo "非常抱歉，本功能仅适配安卓系统。"
@@ -837,10 +832,9 @@ enable_root_mode() {
 	fi
 	#不要忘记此处的fi
 }
-########################################################################
-#
+#################################
+#################################
 remove_gnu_linux_container() {
-
 	cd ~
 	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
@@ -938,8 +932,8 @@ remove_gnu_linux_container() {
 	tmoe_manager_main_menu
 
 }
-########################################################################
-#
+#################################
+#################################
 backup_system() {
 	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
@@ -1060,22 +1054,14 @@ backup_system() {
 	fi
 	tmoe_manager_main_menu
 }
-
+####################
 backup_termux() {
 	TERMUXBACKUP=$(whiptail --title "多项选择题" --checklist \
 		"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认 \n Which directory do you want to backup? Please press the space to select and press Enter to confirm." 15 60 4 \
 		"home" "Termux主目录,主要用来保存用户文件" ON \
 		"usr" "保存软件、命令和其它东西" OFF \
 		3>&1 1>&2 2>&3)
-
-	#####################################
-	#$TERMUXBACKUP=$(whiptail --title "选择您需要备份的目录" --menu "Choose your $TERMUXBACKUP" 15 60 4 \
-	#"0" "Back to previous menu 返回上层菜单" \
-	#"1" "备份home目录" \
-	#"2" "备份usr目录 " \
-	#"3" "我全都要" \
-	#3>&1 1>&2 2>&3)'
-	##########################
+	#########################
 	if [ "$TERMUXBACKUP" == 'home' ]; then
 
 		if [ ! -d /sdcard/Download/backup ]; then
@@ -1134,7 +1120,6 @@ backup_termux() {
 			read
 			tmoe_manager_main_menu
 		fi
-
 	fi
 
 	##########################
@@ -1206,7 +1191,6 @@ backup_termux() {
 			read
 			tmoe_manager_main_menu
 		fi
-
 	fi
 
 	##########################
@@ -1275,19 +1259,15 @@ backup_termux() {
 			read
 			tmoe_manager_main_menu
 		fi
-
 	fi
 
 	################################
 	if [ $exitstatus = 1 ]; then
 		backup_system
-
 	fi
-
 }
-
-########################################################################
-#
+#################################
+#################################
 restore_gnu_linux_container() {
 	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
@@ -1361,9 +1341,7 @@ restore_gnu_linux_container() {
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
 		read
 		tmoe_manager_main_menu
-
 	fi
-
 	###################
 	if [ "${OPTION}" == '2' ]; then
 
@@ -1601,7 +1579,6 @@ download_vnc_apk() {
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 		cd ${cur}
 	fi
-
 }
 #########################################
 start_vscode() {
@@ -1704,7 +1681,6 @@ download_video_tutorial() {
 		fi
 	else
 		download_video_tutorial_again
-
 	fi
 
 }
@@ -1723,20 +1699,6 @@ paly_video_tutorial() {
 	read
 	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 	cd ${cur}
-}
-#####################################
-chroot_install_debian() {
-	echo "This feature currently only supports Linux systems and is still in beta."
-	echo "本功能目前仅对Linux系统测试开放。"
-	echo "This feature is currently in the beta stage. If you find that some directories cannot be unmounted forcibly before removing the container, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
-	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
-	echo "按回车键继续,按Ctrl+C取消。"
-	echo "${YELLOW}Press enter to continue.${RESET}"
-	read
-	rm -f "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
-	rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
-	touch ~/.Chroot-Container-Detection-File
-	install_gnu_linux_container
 }
 #################################
 install_debian_or_download_recovery_pkg_tar_xz() {
@@ -1889,6 +1851,7 @@ termux_install_xfce() {
 		echo "${YELLOW}按回车键继续${RESET}"
 		read
 	fi
+	####################
 	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a container. Termux原系统GUI可玩性较低，建议您安装GNU/Linux容器" 17 60 6 \
 		"1" "install xfce4" \
 		"2" "modify vnc conf" \
@@ -1905,43 +1868,7 @@ termux_install_xfce() {
 	fi
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
-		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
-			exit 0
-		fi
-
-		if [ -e "${PREFIX}/bin/xfwm4" ]; then
-			echo "检测到您已安装，是否继续？"
-			echo 'Press enter to continue'
-			echo "${YELLOW}按回车键确认继续,按Ctrl+C取消。${RESET}"
-			read
-		fi
-		apt update
-		apt install -y x11-repo
-		apt update
-		apt dist-upgrade -y
-
-		apt install -y xfce tigervnc aterm
-		cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
-			#!/data/data/com.termux/files/usr/bin/bash
-			pkill Xvnc 2>/dev/null 
-			pulseaudio --kill 2>/dev/null
-			pulseaudio --start
-			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-			export DISPLAY=:1
-			Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
-			export PULSE_SERVER=127.0.0.1
-			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
-			sleep 1s
-			thunar &
-			echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
-			echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
-			startxfce4
-
-		EndOfFile
-		chmod +x ${PREFIX}/bin/startvnc
-		source ${PREFIX}/bin/startvnc
+		install_termux_xfce4_desktop
 	fi
 	#######################
 	if [ "${OPTION}" == '2' ]; then
@@ -1981,6 +1908,46 @@ termux_install_xfce() {
 	fi
 }
 #####################################
+install_termux_xfce4_desktop() {
+	if [ "${LINUX_DISTRO}" != 'Android' ]; then
+		bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
+		exit 0
+	fi
+
+	if [ -e "${PREFIX}/bin/xfwm4" ]; then
+		echo "检测到您已安装，是否继续？"
+		echo 'Press enter to continue'
+		echo "${YELLOW}按回车键确认继续,按Ctrl+C取消。${RESET}"
+		read
+	fi
+	apt update
+	apt install -y x11-repo
+	apt update
+	apt dist-upgrade -y
+
+	apt install -y xfce tigervnc aterm
+	cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
+		#!/data/data/com.termux/files/usr/bin/bash
+		pkill Xvnc 2>/dev/null 
+		pulseaudio --kill 2>/dev/null
+		pulseaudio --start
+		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		export DISPLAY=:1
+		Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
+		export PULSE_SERVER=127.0.0.1
+		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+		sleep 1s
+		thunar &
+		echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
+		echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
+		startxfce4
+
+	EndOfFile
+	chmod +x ${PREFIX}/bin/startvnc
+	source ${PREFIX}/bin/startvnc
+}
+##############################
 switch_vnc_pulse_audio_transport_method() {
 	cd ${DEBIAN_CHROOT}/root
 	if grep -Eq '4712|4713' ./.vnc/xstartup; then
@@ -2066,7 +2033,6 @@ install_termux_apk() {
 	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 	cd ${cur}
 }
-
 ##################################
 install_web_novnc() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
@@ -2136,7 +2102,6 @@ start_web_novnc() {
 	#注：必须要先启动novnc后，才能接着启动VNC。
 	#否则将导致安卓proot容器提前启动。
 }
-
 #################
 modify_android_termux_vnc_config() {
 	if [ ! -e ${PREFIX}/bin/startvnc ]; then
@@ -2181,7 +2146,6 @@ modify_android_termux_vnc_config() {
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_manager_main_menu
-
 }
 ###############
 remove_android_termux_xfce() {
@@ -2195,7 +2159,6 @@ remove_android_termux_xfce() {
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_manager_main_menu
-
 }
 #################
 termux_tuna_sources_list() {
@@ -2725,7 +2688,6 @@ gnu_linux_sources_list() {
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}/updates main contrib non-free
 			EndOfSourcesList
-
 		fi
 	fi
 	###################
