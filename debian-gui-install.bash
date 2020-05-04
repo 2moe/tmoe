@@ -232,34 +232,34 @@ check_dependencies() {
 	################
 	case $(uname -m) in
 	aarch64)
-		archtype="arm64"
+		ARCH_TYPE="arm64"
 		;;
 	armv7l)
-		archtype="armhf"
+		ARCH_TYPE="armhf"
 		;;
 	armv6l)
-		archtype="armel"
+		ARCH_TYPE="armel"
 		;;
 	x86_64)
-		archtype="amd64"
+		ARCH_TYPE="amd64"
 		;;
 	i*86)
-		archtype="i386"
+		ARCH_TYPE="i386"
 		;;
 	x86)
-		archtype="i386"
+		ARCH_TYPE="i386"
 		;;
 	s390*)
-		archtype="s390x"
+		ARCH_TYPE="s390x"
 		;;
 	ppc*)
-		archtype="ppc64el"
+		ARCH_TYPE="ppc64el"
 		;;
 	mips*)
-		archtype="mipsel"
+		ARCH_TYPE="mipsel"
 		;;
 	risc*)
-		archtype="riscv"
+		ARCH_TYPE="riscv"
 		;;
 	esac
 	################
@@ -267,7 +267,7 @@ check_dependencies() {
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
-			curl -Lvo 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${archtype}.deb"
+			curl -Lvo 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
 			apt install -y ./catimg.deb
 			rm -f catimg.deb
 		fi
@@ -277,7 +277,7 @@ check_dependencies() {
 		cd /tmp
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
-		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${archtype} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		curl -Lvo '.busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
 		mkdir -p .busybox-static
 		./busybox dpkg-deb -X .busybox.deb ./.busybox-static
@@ -742,7 +742,7 @@ upgrade_video_download_tool() {
 	fi
 
 	if [ ! $(command -v ffmpeg) ]; then
-		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "arm64" ]; then
+		if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "arm64" ]; then
 			cd /tmp
 			rm -rf .FFMPEGTEMPFOLDER
 			git clone -b linux_$(uname -m) --depth=1 https://gitee.com/mo2/ffmpeg.git ./.FFMPEGTEMPFOLDER
@@ -756,7 +756,7 @@ upgrade_video_download_tool() {
 	fi
 	#检测两次
 	if [ ! $(command -v ffmpeg) ]; then
-		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "arm64" ]; then
+		if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "arm64" ]; then
 			DEPENDENCY_01="${DEPENDENCY_01} ffmpeg"
 		fi
 	fi
@@ -803,7 +803,7 @@ upgrade_video_download_tool() {
 	fi
 
 	rm -rf ./.ANNIETEMPFOLDER
-	git clone -b linux_${archtype} --depth=1 https://gitee.com/mo2/annie ./.ANNIETEMPFOLDER
+	git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/annie ./.ANNIETEMPFOLDER
 	mv ./.ANNIETEMPFOLDER/annie /usr/local/bin/
 	chmod +x /usr/local/bin/annie
 	annie -v
@@ -990,13 +990,13 @@ vscode_server_upgrade() {
 	cd /tmp
 	rm -rvf .VSCODE_SERVER_TEMP_FOLDER
 
-	if [ "${archtype}" = "arm64" ]; then
+	if [ "${ARCH_TYPE}" = "arm64" ]; then
 		git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODE_SERVER_TEMP_FOLDER
 		cd .VSCODE_SERVER_TEMP_FOLDER
 		tar -PpJxvf code.tar.xz
 		cd ${cur}
 		rm -rf /tmp/.VSCODE_SERVER_TEMP_FOLDER
-	elif [ "${archtype}" = "amd64" ]; then
+	elif [ "${ARCH_TYPE}" = "amd64" ]; then
 		mkdir -p .VSCODE_SERVER_TEMP_FOLDER
 		cd .VSCODE_SERVER_TEMP_FOLDER
 		LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'x86_64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
@@ -1077,14 +1077,14 @@ vscode_server_remove() {
 ##########################
 install_vscodium() {
 	cd /tmp
-	if [ "${archtype}" = 'arm64' ]; then
+	if [ "${ARCH_TYPE}" = 'arm64' ]; then
 		CodiumARCH=arm64
-	elif [ "${archtype}" = 'armhf' ]; then
+	elif [ "${ARCH_TYPE}" = 'armhf' ]; then
 		CodiumARCH=arm
 		#CodiumDebArch=armhf
-	elif [ "${archtype}" = 'amd64' ]; then
+	elif [ "${ARCH_TYPE}" = 'amd64' ]; then
 		CodiumARCH=x64
-	elif [ "${archtype}" = 'i386' ]; then
+	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "暂不支持i386 linux"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo "Press enter to return."
@@ -1110,7 +1110,7 @@ install_vscodium() {
 	fi
 
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
-		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${archtype} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		curl -Lvo 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
 		apt install -y ./VSCodium.deb
 		rm -vf VSCodium.deb
@@ -1167,7 +1167,7 @@ install_vscode_oss() {
 #######################
 install_vscode_official() {
 	cd /tmp
-	if [ "${archtype}" != 'amd64' ]; then
+	if [ "${ARCH_TYPE}" != 'amd64' ]; then
 		echo "当前仅支持x86_64架构"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo "Press enter to return."
@@ -1395,7 +1395,7 @@ install_browser() {
 			#新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
 			if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 				if ! grep -q '^deb.*bionic-update' "/etc/apt/sources.list"; then
-					if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "i386" ]; then
+					if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
 						sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
 					else
 						sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
@@ -1589,7 +1589,7 @@ install_xfce4_desktop() {
 			apt install -y kali-undercover
 			apt install -y zenmap
 			apt install -y kali-themes-common
-			if [ "${archtype}" = "arm64" ] || [ "${archtype}" = "armhf" ]; then
+			if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "armhf" ]; then
 				apt install -y kali-linux-arm
 			fi
 			apt install -y chromium-l10n
@@ -1703,7 +1703,7 @@ install_mate_desktop() {
 		apt-mark hold gvfs
 		apt update
 		apt install -y udisks2 2>/dev/null
-		if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${archtype}" != "amd64" ] && [ "${archtype}" != "i386" ]; then
+		if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 			echo "" >/var/lib/dpkg/info/udisks2.postinst
 		fi
 		apt-mark hold udisks2
@@ -1988,7 +1988,7 @@ install_cinnamon_desktop() {
 ####################
 install_deepin_desktop() {
 
-	if [ "${archtype}" != "i386" ] && [ "${archtype}" != "amd64" ]; then
+	if [ "${ARCH_TYPE}" != "i386" ] && [ "${ARCH_TYPE}" != "amd64" ]; then
 		echo "非常抱歉，深度桌面不支持您当前的架构。"
 		echo "建议您在换用x86_64或i386架构的设备后，再来尝试。"
 		#echo "${YELLOW}按回车键返回。${RESET}"
@@ -2497,7 +2497,7 @@ install_linux_qq() {
 		read
 	fi
 
-	if [ "${archtype}" = "arm64" ]; then
+	if [ "${ARCH_TYPE}" = "arm64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
 			apt install -y ./LINUXQQ.deb
@@ -2507,7 +2507,7 @@ install_linux_qq() {
 			sudo ./LINUXQQ.sh
 			#即使是root用户也需要加sudo
 		fi
-	elif [ "${archtype}" = "amd64" ]; then
+	elif [ "${ARCH_TYPE}" = "amd64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
 			apt install -y ./LINUXQQ.deb
@@ -2627,7 +2627,7 @@ install_libre_office() {
 	apt update
 	apt install --no-install-recommends -y libreoffice-l10n-zh-cn
 	apt install -y libreoffice-l10n-zh-cn libreoffice-gtk3
-	if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${archtype}" != "amd64" ] && [ "${archtype}" != "i386" ]; then
+	if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		mkdir -p /prod/version
 		cd /usr/lib/libreoffice/program
 		rm -f oosplash
@@ -2638,7 +2638,7 @@ install_libre_office() {
 }
 ###################
 install_baidu_netdisk() {
-	if [ "${archtype}" != "amd64" ] && [ "${archtype}" != "i386" ]; then
+	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		echo "暂不支持您的架构"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
@@ -2665,7 +2665,7 @@ install_baidu_netdisk() {
 }
 ######################
 install_netease_163_cloud_music() {
-	if [ "${archtype}" != "amd64" ] && [ "${archtype}" != "i386" ]; then
+	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		echo "暂不支持您的架构"
 		echo 'Press Enter to return.'
 		echo "${YELLOW}按回车键返回。${RESET}"
@@ -2685,7 +2685,7 @@ install_netease_163_cloud_music() {
 		sudo dnf install http://dl-http.senorsen.com/pub/package/linux/rpm/senorsen-repo-0.0.1-1.noarch.rpm
 		sudo dnf install -y netease-cloud-music
 	else
-		if [ "${archtype}" = "amd64" ]; then
+		if [ "${ARCH_TYPE}" = "amd64" ]; then
 			curl -Lvo netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
 		else
 			curl -Lvo netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
@@ -3538,9 +3538,9 @@ install_pinyin_input_method() {
 		beta_features
 	fi
 
-	if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "i386" ]; then
+	if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
 		cd /tmp
-		LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${archtype} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
+		LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
 		curl -Lvo 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
 	else
 		echo "架构不支持，跳过安装搜狗输入法。"
@@ -3590,7 +3590,7 @@ install_typora() {
 		curl -Lvo 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
 	elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 		echo "非常抱歉，暂不支持您的架构"
-	elif [ "${archtype}" = "i386" ]; then
+	elif [ "${ARCH_TYPE}" = "i386" ]; then
 		curl -Lvo 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
 	fi
 	apt install -y ./typora.deb
@@ -3608,7 +3608,7 @@ install_wps_office() {
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dpkg --configure -a
-		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${archtype}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
 		curl -Lvo WPSoffice.deb "${LatestWPSLink}"
 		apt install -y ./WPSoffice.deb
 
@@ -3649,10 +3649,10 @@ thunar_nautilus_dolphion() {
 ##################
 install_electronic_wechat() {
 	cd /tmp
-	if [ "${archtype}" = "amd64" ]; then
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
 		curl -Lvo 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
 		#curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
-	elif [ "${archtype}" = "i386" ]; then
+	elif [ "${ARCH_TYPE}" = "i386" ]; then
 		curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
 	else
 		echo "非常抱歉，暂不支持您的架构"
@@ -4125,9 +4125,9 @@ nginx_reset() {
 install_filebrowser() {
 	if [ ! $(command -v filebrowser) ]; then
 		cd /tmp
-		if [ "${archtype}" = "amd64" ] || [ "${archtype}" = "arm64" ]; then
+		if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "arm64" ]; then
 			rm -rf .FileBrowserTEMPFOLDER
-			git clone -b linux_${archtype} --depth=1 https://gitee.com/mo2/filebrowser.git ./.FileBrowserTEMPFOLDER
+			git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/filebrowser.git ./.FileBrowserTEMPFOLDER
 			cd /usr/local/bin
 			tar -Jxvf /tmp/.FileBrowserTEMPFOLDER/filebrowser.tar.xz filebrowser
 			chmod +x filebrowser
@@ -4135,9 +4135,9 @@ install_filebrowser() {
 		else
 			#https://github.com/filebrowser/filebrowser/releases
 			#curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
-			if [ "${archtype}" = "armhf" ]; then
+			if [ "${ARCH_TYPE}" = "armhf" ]; then
 				curl -Lvo .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-armv7-filebrowser.tar.gz'
-			elif [ "${archtype}" = "i386" ]; then
+			elif [ "${ARCH_TYPE}" = "i386" ]; then
 				curl -Lvo .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-386-filebrowser.tar.gz'
 			fi
 			cd /usr/local/bin

@@ -2,56 +2,56 @@
 #检测架构
 case $(uname -m) in
 aarch64)
-  archtype="arm64"
+  ARCH_TYPE="arm64"
   ;;
 arm64)
-  archtype="arm64"
+  ARCH_TYPE="arm64"
   ;;
 armv8a)
-  archtype="arm64"
+  ARCH_TYPE="arm64"
   ;;
 arm)
-  archtype="armhf"
+  ARCH_TYPE="armhf"
   ;;
 armv7l)
-  archtype="armhf"
+  ARCH_TYPE="armhf"
   ;;
 armhf)
-  archtype="armhf"
+  ARCH_TYPE="armhf"
   ;;
 armv6l)
-  archtype="armel"
+  ARCH_TYPE="armel"
   ;;
 armel)
-  archtype="armel"
+  ARCH_TYPE="armel"
   ;;
 amd64)
-  archtype="amd64"
+  ARCH_TYPE="amd64"
   ;;
 x86_64)
-  archtype="amd64"
+  ARCH_TYPE="amd64"
   ;;
 i*86)
-  archtype="i386"
+  ARCH_TYPE="i386"
   ;;
 x86)
-  archtype="i386"
+  ARCH_TYPE="i386"
   ;;
 s390*)
-  archtype="s390x"
+  ARCH_TYPE="s390x"
   ;;
 ppc*)
-  archtype="ppc64el"
+  ARCH_TYPE="ppc64el"
   ;;
 mips*)
-  archtype="mipsel"
+  ARCH_TYPE="mipsel"
   #echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
   #exit 1
   ;;
 risc*)
-  #archtype="riscv"
+  #ARCH_TYPE="riscv"
   echo "检测到您当前的架构为risc-v，将为您安装arm64版的容器。"
-  archtype="arm64"
+  ARCH_TYPE="arm64"
   #此处改为arm64，
   #2020-03-23加入riscv+qemu跨架构运行的测试版功能
   #echo '暂不支持risc-v'
@@ -67,7 +67,7 @@ esac
 #安装必要依赖
 #apt update
 #apt install -y curl openssl proot aria2 procps
-#gentoo在下一行修改archtype的变量
+#gentoo在下一行修改ARCH_TYPE的变量
 
 #requirements and DEPENDENCIES.
 
@@ -203,7 +203,7 @@ fi
 
 #创建必要文件夹，防止挂载失败
 mkdir -p ~/storage/external-1
-DEBIAN_FOLDER=debian_${archtype}
+DEBIAN_FOLDER=debian_${ARCH_TYPE}
 DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
 #DEBIAN_FOLDER=debian_arm64
 
@@ -235,8 +235,8 @@ if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
   echo "检测到您选择的是raspbian树莓派系统，将通过debian buster来间接安装raspbian buster"
   echo "已将您的架构临时识别为armhf"
 fi
-echo "Detected that your current architecture is ${archtype}"
-echo "检测到您当前的架构为${archtype} ，GNU/Linux系统将安装至~/${DEBIAN_FOLDER}"
+echo "Detected that your current architecture is ${ARCH_TYPE}"
+echo "检测到您当前的架构为${ARCH_TYPE} ，GNU/Linux系统将安装至~/${DEBIAN_FOLDER}"
 
 cd ~
 
@@ -251,14 +251,14 @@ DebianTarXz="debian-sid-rootfs.tar.xz"
 
 #if [ "$downloaded" != 1 ];then
 if [ ! -f ${DebianTarXz} ]; then
-  if [ "${archtype}" != 'mipsel' ]; then
+  if [ "${ARCH_TYPE}" != 'mipsel' ]; then
     echo "正在从清华大学开源镜像站下载容器镜像"
     echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
-    ttime=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ttime=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-      aria2c -x 5 -k 1M --split 5 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
+      aria2c -x 5 -k 1M --split 5 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz"
     else
-      wget -O $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${archtype}/default/${ttime}rootfs.tar.xz"
+      wget -O $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz"
     fi
   else
     aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/debian_mipsel.tar.xz' || aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://m.tmoe.me/show/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
@@ -271,7 +271,7 @@ if [ "${LINUX_DISTRO}" = "Android" ]; then
   pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
 elif [ "${LINUX_DISTRO}" = "iSH" ]; then
   tar -pJxvf ${cur}/${DebianTarXz}
-elif [ "${archtype}" = "mipsel" ]; then
+elif [ "${ARCH_TYPE}" = "mipsel" ]; then
   cd ~
   pv ${DebianTarXz} | tar -pJx
 elif [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -605,7 +605,7 @@ cat >remove-debian.sh <<-EOF
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~
 chmod 777 -R ${DEBIAN_FOLDER}
-rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$archtype" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$ARCH_TYPE" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 if grep -q 'alias debian' "${PREFIX}/etc/profile"; then
   sed -i '/alias debian=/d' ${PREFIX}/etc/profile
   sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile

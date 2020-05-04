@@ -5,58 +5,58 @@ check_arch() {
 
 	case $(uname -m) in
 	aarch64)
-		archtype="arm64"
+		ARCH_TYPE="arm64"
 		;;
 	arm64)
-		archtype="arm64"
+		ARCH_TYPE="arm64"
 		;;
 	armv8a)
-		archtype="arm64"
+		ARCH_TYPE="arm64"
 		;;
 	arm)
-		archtype="armhf"
+		ARCH_TYPE="armhf"
 		;;
 	armv7l)
-		archtype="armhf"
+		ARCH_TYPE="armhf"
 		;;
 	armhf)
-		archtype="armhf"
+		ARCH_TYPE="armhf"
 		;;
 	armv6l)
-		archtype="armel"
+		ARCH_TYPE="armel"
 		;;
 	armel)
-		archtype="armel"
+		ARCH_TYPE="armel"
 		;;
 	amd64)
-		archtype="amd64"
+		ARCH_TYPE="amd64"
 		;;
 	x86_64)
-		archtype="amd64"
+		ARCH_TYPE="amd64"
 		;;
 	i*86)
-		archtype="i386"
+		ARCH_TYPE="i386"
 		;;
 	x86)
-		archtype="i386"
+		ARCH_TYPE="i386"
 		;;
 	s390*)
-		archtype="s390x"
+		ARCH_TYPE="s390x"
 		#经测试uname -m输出的结果为s390x
 		;;
 	ppc*)
-		archtype="ppc64el"
+		ARCH_TYPE="ppc64el"
 		#经测试uname -m输出的结果为ppc64le，而不是ppc64el
 		;;
 	mips*)
-		archtype="mipsel"
+		ARCH_TYPE="mipsel"
 		#echo -e 'Embedded devices such as routers are not supported at this time\n暂不支持mips架构的嵌入式设备'
 		#20200323注：手动构建了mipsel架构的debian容器镜像，现在已经支持了。
 		#经测试uname -m输出的结果为mips，而不是mipsel
 		#exit 1
 		;;
 	risc*)
-		archtype="riscv"
+		ARCH_TYPE="riscv"
 		#20200323注：riscv靠qemu实现跨cpu架构运行chroot容器
 		#echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
 		#exit 1
@@ -66,7 +66,7 @@ check_arch() {
 		exit 1
 		;;
 	esac
-	DEBIAN_FOLDER=debian_${archtype}
+	DEBIAN_FOLDER=debian_${ARCH_TYPE}
 	DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
@@ -270,7 +270,7 @@ gnu_linux() {
 		fi
 	fi
 	##############
-	if [ "${archtype}" = "riscv" ]; then
+	if [ "${ARCH_TYPE}" = "riscv" ]; then
 		DEPENDENCIES="${DEPENDENCIES} qemu qemu-user-static debootstrap"
 	fi
 	##############
@@ -1605,7 +1605,7 @@ download_vnc_apk() {
 }
 #########################################
 start_vscode() {
-	if [ "${archtype}" != 'arm64' ]; then
+	if [ "${ARCH_TYPE}" != 'arm64' ]; then
 		echo "It is detected that your current architecture is not arm64, please install the server version yourself."
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo 'Press enter to return.'
@@ -2281,7 +2281,7 @@ choose_which_gnu_linux_distro() {
 	##############################
 	if [ "${SELECTgnu_linux}" == '5' ]; then
 		touch ~/.REDHATDetectionFILE
-		if [ "${archtype}" = 'armhf' ]; then
+		if [ "${ARCH_TYPE}" = 'armhf' ]; then
 			echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 				sed 's/debian系统/fedora系统/g' |
@@ -2289,7 +2289,7 @@ choose_which_gnu_linux_distro() {
 				sed 's:debian-sid:fedora-29:g' |
 				sed 's:debian/sid:fedora/29:g' |
 				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
-		elif [ "${archtype}" = 'i386' ]; then
+		elif [ "${ARCH_TYPE}" = 'i386' ]; then
 			echo "Fedora不支持您的架构"
 		else
 			if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
@@ -2311,7 +2311,7 @@ choose_which_gnu_linux_distro() {
 	fi
 	##############################
 	if [ "${SELECTgnu_linux}" == '6' ]; then
-		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
+		if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 			echo "检测到Arch Linux不支持您当前的架构"
 		else
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
@@ -2366,7 +2366,7 @@ install_other_containers() {
 	####################
 	if [ "${BETASYSTEM}" == '3' ]; then
 		touch ~/.REDHATDetectionFILE
-		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
+		if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 			echo "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 				sed 's/debian系统/centos系统/g' |
@@ -2385,10 +2385,10 @@ install_other_containers() {
 	fi
 	####################
 	if [ "${BETASYSTEM}" == '4' ]; then
-		if [ "${archtype}" = 'arm64' ]; then
+		if [ "${ARCH_TYPE}" = 'arm64' ]; then
 			echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
-				sed '72 a\archtype="armhf"' |
+				sed '72 a\ARCH_TYPE="armhf"' |
 				sed 's/debian系统/gentoo系统/g' |
 				sed 's/debian system/gentoo system/g' |
 				sed 's:debian-sid:gentoo-current:g' |
@@ -2426,12 +2426,12 @@ install_other_containers() {
 
 	####################
 	if [ "${BETASYSTEM}" == '7' ]; then
-		if [ "${archtype}" != 'arm64' ] && [ "${archtype}" != 'armhf' ]; then
+		if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'armhf' ]; then
 			apt install -y qemu qemu-user-static debootstrap
 		fi
 		touch ~/.RASPBIANARMHFDetectionFILE
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
-			sed '72 a\archtype="armhf"' |
+			sed '72 a\ARCH_TYPE="armhf"' |
 			sed 's:/sid:/buster:g' |
 			sed 's:extract z:extract:' |
 			sed 's@#deb http@deb http@g' |
@@ -2445,7 +2445,7 @@ install_other_containers() {
 	#先下载debian buster容器镜像，再换源成树莓派。
 	####################
 	if [ "${BETASYSTEM}" == '8' ]; then
-		if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
+		if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 				sed 's/debian系统/mint系统/g' |
@@ -2462,7 +2462,7 @@ install_other_containers() {
 	if [ "${BETASYSTEM}" == '9' ]; then
 		if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
 			cd ~
-			if [ "${archtype}" = 'arm64' ]; then
+			if [ "${ARCH_TYPE}" = 'arm64' ]; then
 				aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/show/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
 			fi
 		fi
@@ -2485,7 +2485,7 @@ install_other_containers() {
 	fi
 	####################
 	if [ "${BETASYSTEM}" == '11' ]; then
-		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
+		if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 			echo "检测到apertis不支持您当前的架构"
 		else
 			touch ~/.ALPINELINUXDetectionFILE
@@ -2499,7 +2499,7 @@ install_other_containers() {
 	fi
 	####################
 	if [ "${BETASYSTEM}" == '12' ]; then
-		if [ "${archtype}" = 'armhf' ]; then
+		if [ "${ARCH_TYPE}" = 'armhf' ]; then
 			echo "检测到alt不支持您当前的架构"
 		else
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
@@ -2514,7 +2514,7 @@ install_other_containers() {
 	if [ "${BETASYSTEM}" == '13' ]; then
 		cd ~
 		#touch .SLACKDetectionFILE
-		if [ "${archtype}" = 'amd64' ]; then
+		if [ "${ARCH_TYPE}" = 'amd64' ]; then
 			if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
 				aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
 			fi
@@ -2537,7 +2537,7 @@ install_other_containers() {
 	if [ "${BETASYSTEM}" == '14' ]; then
 		cd ~
 		#touch .SLACKDetectionFILE
-		if [ "${archtype}" != 'armhf' ] && [ "${archtype}" != 'arm64' ]; then
+		if [ "${ARCH_TYPE}" != 'armhf' ] && [ "${ARCH_TYPE}" != 'arm64' ]; then
 			if [ ! -e "/usr/bin/qemu-arm-static" ]; then
 				apt update
 				apt install qemu-user-static
@@ -2545,7 +2545,7 @@ install_other_containers() {
 		fi
 		echo "armbian-bullseye-desktop已预装xfce4"
 		if [ ! -e "armbian-bullseye-rootfs.tar.lz4" ]; then
-			if [ "${archtype}" = 'armhf' ]; then
+			if [ "${ARCH_TYPE}" = 'armhf' ]; then
 				LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep 'armhf' | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 				aria2c -x 5 -s 5 -k 1M -o "armbian-bullseye-rootfs.tar.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
 			else
@@ -2632,7 +2632,7 @@ buster_or_sid() {
 }
 #############
 install_ubuntu_gnu_linux_2004_distro() {
-	if [ "${archtype}" = 'amd64' ] || [ "${archtype}" = 'i386' ]; then
+	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
@@ -2779,7 +2779,7 @@ gnu_linux_sources_list() {
 			# 预发布软件源，不建议启用
 			# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-proposed main restricted universe multiverse
 		EndOfSourcesList
-		if [ "${archtype}" != 'amd64' ] && [ "${archtype}" != 'i386' ]; then
+		if [ "${ARCH_TYPE}" != 'amd64' ] && [ "${ARCH_TYPE}" != 'i386' ]; then
 			sed -i 's:/ubuntu:/ubuntu-ports:g' /etc/apt/sources.list
 		fi
 	fi
