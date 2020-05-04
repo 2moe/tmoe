@@ -86,14 +86,14 @@ auto_check() {
 		if grep -q 'cdn.alpinelinux.org' "/etc/apk/repositories"; then
 			sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g'
 		fi
-		GNULINUX
+		gnu_linux
 	else
-		GNULINUX
+		gnu_linux
 	fi
-	##当检测到ish后一定要加上GNULINUX，且不能在最后一个fi后添加。
+	##当检测到ish后一定要加上gnu_linux，且不能在最后一个fi后添加。
 }
 ########################################
-GNULINUX() {
+gnu_linux() {
 
 	if [ "$(id -u)" != "0" ]; then
 		if [ -e "/usr/bin/curl" ]; then
@@ -283,7 +283,7 @@ GNULINUX() {
 				read opt
 				case $opt in
 				y* | Y* | "")
-					GNULINUXTUNASOURCESLIST
+					gnu_linux_sources_list
 					;;
 				n* | N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
@@ -473,7 +473,7 @@ GNULINUX() {
 		fi
 	fi
 
-	MainMenu
+	tmoe_manager_main_menu
 }
 ########################################
 android_termux() {
@@ -536,7 +536,7 @@ android_termux() {
 				read opt
 				case $opt in
 				y* | Y* | "")
-					TERMUXTUNASOURCESLIST
+					termux_tuna_sources_list
 					;;
 				n* | N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
@@ -570,13 +570,13 @@ android_termux() {
 		grep -q "pulseaudio" ${PREFIX}/bin/debian || sed -i '3 a\pulseaudio --start' ${PREFIX}/bin/debian
 	fi
 
-	MainMenu
+	tmoe_manager_main_menu
 }
 
 ########################################################################
 #-- 主菜单 main menu
 
-MainMenu() {
+tmoe_manager_main_menu() {
 	OPTION=$(
 		whiptail --title "Tmoe-Debian GNU/Linux manager(20200504-01)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
@@ -609,13 +609,13 @@ MainMenu() {
 			echo "Press enter to return."
 			echo "${YELLOW}按回车键返回。${RESET} "
 			read
-			MainMenu
+			tmoe_manager_main_menu
 
 		fi
 		rm -f ~/.Chroot-Container-Detection-File
 		rm -f "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
 		touch ~/.Tmoe-Proot-Container-Detection-File
-		installDebian
+		install_gnu_linux_container
 
 	fi
 
@@ -636,24 +636,24 @@ MainMenu() {
 			echo "${YELLOW}按回车键返回。${RESET}"
 			echo "Press enter to return."
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		else
-			CHROOTINSTALLDebian
+			chroot_install_debian
 		fi
 	fi
 
 	if [ "${OPTION}" == '3' ]; then
 
-		TERMUXINSTALLXFCE
+		termux_install_xfce
 	fi
 	if [ "${OPTION}" == '4' ]; then
 
-		INSTALLWEBNOVNC
+		install_web_novnc
 	fi
 
 	if [ "${OPTION}" == '5' ]; then
 
-		REMOVESYSTEM
+		remove_gnu_linux_container
 
 	fi
 
@@ -665,19 +665,19 @@ MainMenu() {
 
 	if [ "${OPTION}" == '7' ]; then
 
-		RESTORESYSTEM
+		restore_gnu_linux_container
 
 	fi
 
 	if [ "${OPTION}" == '8' ]; then
 
-		SpaceOccupation
+		space_occupation
 
 	fi
 
 	if [ "${OPTION}" == '9' ]; then
 
-		UPDATEMANAGER
+		update_tmoe_linux_manager
 	fi
 
 	if [ "${OPTION}" == '10' ]; then
@@ -687,23 +687,23 @@ MainMenu() {
 
 	if [ "${OPTION}" == '11' ]; then
 
-		DOWNLOADVNCAPK
+		download_vnc_apk
 
 	fi
 
 	if [ "${OPTION}" == '12' ]; then
-		STARTVSCODE
+		start_vscode
 
 	fi
 
 	if [ "${OPTION}" == '13' ]; then
 
-		RootMode
+		enable_root_mode
 	fi
 
 	if [ "${OPTION}" == '14' ]; then
 
-		DownloadVideoTutorial
+		download_video_tutorial
 	fi
 
 	if [ "${OPTION}" == '0' ]; then
@@ -715,7 +715,7 @@ MainMenu() {
 
 ########################################################################
 
-installDebian() {
+install_gnu_linux_container() {
 	if [ -d ~/${DebianFolder} ]; then
 		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do!" 7 60); then
 			debian
@@ -731,27 +731,27 @@ installDebian() {
 				sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
 				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 				source ${PREFIX}/etc/profile >/dev/null 2>&1
-				INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
+				install_debian_or_download_recovery_pkg_tar_xz
 				;;
 			n* | N*)
 				echo "skipped."
 				echo "Press enter to return."
 				echo "${YELLOW}按回车键返回。${RESET} "
 				read
-				MainMenu
+				tmoe_manager_main_menu
 				;;
 			*)
 				echo "Invalid choice. skipped."
 				echo "Press enter to return."
 				echo "${YELLOW}按回车键返回。${RESET} "
 				read
-				MainMenu
+				tmoe_manager_main_menu
 				;;
 			esac
 		fi
 
 	else
-		INSTALLDEBIANORDOWNLOADRECOVERYTARXZ
+		install_debian_or_download_recovery_pkg_tar_xz
 		#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh')"
 
 	fi
@@ -760,14 +760,14 @@ installDebian() {
 ########################################################################
 #
 
-RootMode() {
+enable_root_mode() {
 	if [ "$(uname -o)" != "Android" ]; then
 		echo "非常抱歉，本功能仅适配安卓系统。"
 		echo "chroot容器默认即为真实root权限。"
 		echo "Press enter to return."
 		echo "${YELLOW}按回车键返回。${RESET} "
 		read
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 
 	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装容器，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在容器内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除容器。" 10 60); then
@@ -830,16 +830,16 @@ RootMode() {
 		echo '如果您不需要在登录界面显示任务进程，请手动注释掉"~/.zshrc"里的"ps -e"'
 		sleep 2
 		tsudo debian
-		MainMenu
+		tmoe_manager_main_menu
 		#############
 	else
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 	#不要忘记此处的fi
 }
 ########################################################################
 #
-REMOVESYSTEM() {
+remove_gnu_linux_container() {
 
 	cd ~
 	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
@@ -884,7 +884,7 @@ REMOVESYSTEM() {
 		echo "Press enter to return."
 		echo "${YELLOW}按回车键返回。${RESET} "
 		read
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 	echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting container size... 正在检测容器占用空间大小'
@@ -935,7 +935,7 @@ REMOVESYSTEM() {
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
 	*) echo "${YELLOW}Invalid choice，skipped.已跳过，按回车键返回。${RESET} " ;;
 	esac
-	MainMenu
+	tmoe_manager_main_menu
 
 }
 ########################################################################
@@ -991,7 +991,7 @@ backup_system() {
 			ls -lth ./*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 
 		else
 
@@ -1015,7 +1015,7 @@ backup_system() {
 			echo 'gzip压缩至60%完成是正常现象。'
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		fi
 	fi
 	###################
@@ -1030,7 +1030,7 @@ backup_system() {
 			echo "${YELLOW}按回车键返回。${RESET}"
 			echo "Press enter to return."
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		fi
 
 		if [ ! -e "/usr/bin/timeshift" ]; then
@@ -1056,9 +1056,9 @@ backup_system() {
 	##########################################
 	if [ "${OPTION}" == '0' ]; then
 
-		MainMenu
+		tmoe_manager_main_menu
 	fi
-	MainMenu
+	tmoe_manager_main_menu
 }
 
 backup_termux() {
@@ -1114,7 +1114,7 @@ backup_termux() {
 			ls -lth ./termux-home*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 
 		else
 
@@ -1132,7 +1132,7 @@ backup_termux() {
 			ls -lth ./termux-home*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		fi
 
 	fi
@@ -1178,7 +1178,7 @@ backup_termux() {
 			ls -lth ./termux-usr*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 
 		else
 
@@ -1204,7 +1204,7 @@ backup_termux() {
 			ls -lth ./*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		fi
 
 	fi
@@ -1249,7 +1249,7 @@ backup_termux() {
 			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 
 		else
 
@@ -1273,7 +1273,7 @@ backup_termux() {
 			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
 			echo '备份完成,按回车键返回。'
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		fi
 
 	fi
@@ -1288,7 +1288,7 @@ backup_termux() {
 
 ########################################################################
 #
-RESTORESYSTEM() {
+restore_gnu_linux_container() {
 	if [ -e "${DebianCHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DebianCHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DebianCHROOT}/dev/shm  >/dev/null 2>&1"
@@ -1360,7 +1360,7 @@ RESTORESYSTEM() {
 
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
 		read
-		MainMenu
+		tmoe_manager_main_menu
 
 	fi
 
@@ -1419,20 +1419,20 @@ RESTORESYSTEM() {
 
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
 		read
-		MainMenu
+		tmoe_manager_main_menu
 
 	fi
 
 	#####################################
 	if [ "${OPTION}" == '0' ]; then
 
-		MainMenu
+		tmoe_manager_main_menu
 	fi
-	MainMenu
+	tmoe_manager_main_menu
 }
 
 ########################################################################
-SpaceOccupation() {
+space_occupation() {
 	cd ~/..
 	OPTION=$(whiptail --title "Query space occupation ranking" --menu "查询空间占用排行" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
@@ -1471,7 +1471,7 @@ SpaceOccupation() {
 		echo ''
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
 		read
-		SpaceOccupation
+		space_occupation
 
 	fi
 	###############################
@@ -1483,7 +1483,7 @@ SpaceOccupation() {
 		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
 		read
-		SpaceOccupation
+		space_occupation
 
 	fi
 
@@ -1500,7 +1500,7 @@ SpaceOccupation() {
 
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
 		read
-		SpaceOccupation
+		space_occupation
 	fi
 
 	if [ "${OPTION}" == '4' ]; then
@@ -1508,21 +1508,21 @@ SpaceOccupation() {
 		df -h | grep G | grep -v tmpfs
 		echo "${YELLOW}按回车键返回。Press enter to return.${RESET} "
 		read
-		SpaceOccupation
+		space_occupation
 	fi
 
 	#####################################
 	if [ "${OPTION}" == '0' ]; then
 
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 
-	MainMenu
+	tmoe_manager_main_menu
 
 }
 
 ########################################################################
-UPDATEMANAGER() {
+update_tmoe_linux_manager() {
 	#curl -L -o ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
@@ -1538,7 +1538,7 @@ UPDATEMANAGER() {
 
 }
 #################################
-DOWNLOADVNCAPK() {
+download_vnc_apk() {
 	if [ ! -e ${PREFIX}/bin/git ]; then
 		apt update
 		apt install -y git
@@ -1604,13 +1604,13 @@ DOWNLOADVNCAPK() {
 
 }
 #########################################
-STARTVSCODE() {
+start_vscode() {
 	if [ "${archtype}" != 'arm64' ]; then
 		echo "It is detected that your current architecture is not arm64, please install the server version yourself."
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo 'Press enter to return.'
 		read
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 
 	if [ ! -d "${HOME}/${DebianFolder}" ]; then
@@ -1619,7 +1619,7 @@ STARTVSCODE() {
 		echo "${YELLOW}按回车键返回。${RESET}"
 		echo 'Press enter to return.'
 		read
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 
 	if [ ! -e "${PREFIX}/bin/code-server" ]; then
@@ -1693,28 +1693,28 @@ STARTVSCODE() {
 
 }
 #####################################
-DownloadVideoTutorial() {
+download_video_tutorial() {
 	cd /sdcard/Download
 	if [ -f "20200229vnc教程06.mp4" ]; then
 
 		if (whiptail --title "检测到视频已下载,请选择您需要执行的操作！" --yes-button 'Play播放o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the video has been downloaded, do you want to play it, or download it again?" 7 60); then
-			PLAYVideoTutorial
+			paly_video_tutorial
 		else
-			DOWNLOADVideoTutorialAGAIN
+			download_video_tutorial_again
 		fi
 	else
-		DOWNLOADVideoTutorialAGAIN
+		download_video_tutorial_again
 
 	fi
 
 }
 
 ##########################
-DOWNLOADVideoTutorialAGAIN() {
+download_video_tutorial_again() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
-	PLAYVideoTutorial
+	paly_video_tutorial
 }
-PLAYVideoTutorial() {
+paly_video_tutorial() {
 	termux-open "20200229vnc教程06.mp4"
 	echo "${YELLOW}若视频无法自动播放，则请进入下载目录手动播放。${RESET}"
 	echo "If the video does not play automatically, please enter the download directory to play it manually."
@@ -1725,7 +1725,7 @@ PLAYVideoTutorial() {
 	cd ${cur}
 }
 #####################################
-CHROOTINSTALLDebian() {
+chroot_install_debian() {
 	echo "This feature currently only supports Linux systems and is still in beta."
 	echo "本功能目前仅对Linux系统测试开放。"
 	echo "This feature is currently in the beta stage. If you find that some directories cannot be unmounted forcibly before removing the container, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
@@ -1736,10 +1736,10 @@ CHROOTINSTALLDebian() {
 	rm -f "${DebianCHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
 	rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
 	touch ~/.Chroot-Container-Detection-File
-	installDebian
+	install_gnu_linux_container
 }
 #################################
-INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
+install_debian_or_download_recovery_pkg_tar_xz() {
 	if [ ! -d "${DebianCHROOT}" ]; then
 		#less -meQ
 		cat <<-'EndOfFile'
@@ -1806,7 +1806,7 @@ INSTALLDEBIANORDOWNLOADRECOVERYTARXZ() {
 }
 
 ###################################################
-DOWNLOADDEBIANXFCETARXZ() {
+download_debian_xfce_tar_xz() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/show/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
 	echo 'Verifying sha256sum ...'
 	echo '正在校验sha256sum...'
@@ -1825,11 +1825,11 @@ DOWNLOADDEBIANXFCETARXZ() {
 		echo 'Congratulations,检测到sha256sum一致'
 		echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
 	fi
-	UNXZDEBIANRECOVERYKIT
+	un_xz_debian_recovery_kit
 
 }
 #####################################
-UNXZDEBIANRECOVERYKIT() {
+un_xz_debian_recovery_kit() {
 	echo "                                        "
 	echo "                            .:7E        "
 	echo "            .iv7vrrrrr7uQBBBBBBB:       "
@@ -1874,7 +1874,7 @@ UNXZDEBIANRECOVERYKIT() {
 
 }
 ###############################
-TERMUXINSTALLXFCE() {
+termux_install_xfce() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
 		if (("${ANDROIDVERSION}" < '7')); then
 			echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
@@ -1901,7 +1901,7 @@ TERMUXINSTALLXFCE() {
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '0' ]; then
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
@@ -1949,15 +1949,15 @@ TERMUXINSTALLXFCE() {
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
-		MODIFYandroid_termuxVNCCONF
+		modify_android_termux_vnc_config
 	fi
 	##################
 	if [ "${OPTION}" == '3' ]; then
-		TERMUXPULSEAUDIOLAN
+		termux_pulse_audio_lan
 	fi
 	##################
 	if [ "${OPTION}" == '4' ]; then
-		SWITCHvncPULSEaudio
+		switch_vnc_pulse_audio_transport_method
 	fi
 	##################
 	if [ "${OPTION}" == '7' ]; then
@@ -1965,14 +1965,14 @@ TERMUXINSTALLXFCE() {
 			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian-gui-install.bash)
 			exit 0
 		fi
-		REMOVEandroid_termuxXFCE
+		remove_android_termux_xfce
 	fi
 	##################
 	if [ "${OPTION}" == '5' ]; then
 		if [ "${LINUX_DISTRO}" = 'Android' ]; then
-			TERMUXTUNASOURCESLIST
+			termux_tuna_sources_list
 		else
-			GNULINUXTUNASOURCESLIST
+			gnu_linux_sources_list
 		fi
 	fi
 	##################
@@ -1981,7 +1981,7 @@ TERMUXINSTALLXFCE() {
 	fi
 }
 #####################################
-SWITCHvncPULSEaudio() {
+switch_vnc_pulse_audio_transport_method() {
 	cd ${DebianCHROOT}/root
 	if grep -Eq '4712|4713' ./.vnc/xstartup; then
 		PULSEtransportMethon='检测到您当前使用的可能是XSDL音频传输'
@@ -2003,10 +2003,10 @@ SWITCHvncPULSEaudio() {
 	echo 'press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	TERMUXINSTALLXFCE
+	termux_install_xfce
 }
 ###############################
-TERMUXPULSEAUDIOLAN() {
+termux_pulse_audio_lan() {
 	cd $PREFIX/etc/pulse
 	if grep -q '192.168.0.0/16' default.pa; then
 		LANPULSE='检测到您已启用局域网音频传输'
@@ -2029,7 +2029,7 @@ TERMUXPULSEAUDIOLAN() {
 	echo 'press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	TERMUXINSTALLXFCE
+	termux_install_xfce
 }
 #############################
 aria2_download_termux_apk() {
@@ -2037,21 +2037,21 @@ aria2_download_termux_apk() {
 	if [ -f "com.termux_Fdroid.apk" ]; then
 
 		if (whiptail --title "检测到文件已下载,请选择您需要执行的操作！" --yes-button 'install(*￣▽￣*)o' --no-button 'Download again(っ °Д °)' --yesno "Detected that the file has been downloaded, do you want to install it, or download it again?" 7 60); then
-			INSTALLTERMUXAPK
+			install_termux_apk
 		else
-			DOWNLOADTERMUXAPKAGAIN
+			download_termux_apk_again
 		fi
 	else
-		DOWNLOADTERMUXAPKAGAIN
+		download_termux_apk_again
 
 	fi
 	echo 'press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	MainMenu
+	tmoe_manager_main_menu
 }
 #######################################
-DOWNLOADTERMUXAPKAGAIN() {
+download_termux_apk_again() {
 	echo 'Press enter to start the download, and press Ctrl + C to cancel.'
 	echo "${YELLOW}按回车键开始下载，按Ctrl+C取消。${RESET}"
 	read
@@ -2059,16 +2059,16 @@ DOWNLOADTERMUXAPKAGAIN() {
 	echo '正在为您下载至/sdcard/Download目录...'
 	echo '下载完成后，需要您手动安装。'
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://apk.tmoe.me/termux' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux_94.apk'
-	INSTALLTERMUXAPK
+	install_termux_apk
 }
-INSTALLTERMUXAPK() {
+install_termux_apk() {
 	echo "${YELLOW}下载完成，请进入下载目录手动安装。${RESET}"
 	am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 	cd ${cur}
 }
 
 ##################################
-INSTALLWEBNOVNC() {
+install_web_novnc() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
 		if [ ! -e "${PREFIX}/bin/python" ]; then
 			apt update
@@ -2094,10 +2094,10 @@ INSTALLWEBNOVNC() {
 		cp -rf ./usr/share/doc ./ || sudo cp -rf ./usr/share/doc ./
 		rm -rf ./usr || sudo rm -rf ./usr
 	fi
-	STARTWEBNOVNC
+	start_web_novnc
 }
 #######################
-STARTWEBNOVNC() {
+start_web_novnc() {
 	pulseaudio --kill 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
@@ -2138,7 +2138,7 @@ STARTWEBNOVNC() {
 }
 
 #################
-MODIFYandroid_termuxVNCCONF() {
+modify_android_termux_vnc_config() {
 	if [ ! -e ${PREFIX}/bin/startvnc ]; then
 		echo "${PREFIX}/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
 		echo '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
@@ -2154,7 +2154,7 @@ MODIFYandroid_termuxVNCCONF() {
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
 			read
-			MainMenu
+			tmoe_manager_main_menu
 		fi
 		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
 		#此处termux的whiptail跟debian不同，必须截取Error前的字符。
@@ -2180,11 +2180,11 @@ MODIFYandroid_termuxVNCCONF() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	MainMenu
+	tmoe_manager_main_menu
 
 }
 ###############
-REMOVEandroid_termuxXFCE() {
+remove_android_termux_xfce() {
 	echo "${YELLOW}按回车键确认卸载,按Ctrl+C取消${RESET} "
 	echo 'Press enter to confirm ,press Ctrl + C to cancel'
 	read
@@ -2194,11 +2194,11 @@ REMOVEandroid_termuxXFCE() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	MainMenu
+	tmoe_manager_main_menu
 
 }
 #################
-TERMUXTUNASOURCESLIST() {
+termux_tuna_sources_list() {
 	if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
 		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
@@ -2247,7 +2247,7 @@ TERMUXTUNASOURCESLIST() {
 }
 ##################
 choose_which_gnu_linux_distro() {
-	SELECTGNULINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
+	SELECTgnu_linux=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
 		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
@@ -2258,28 +2258,28 @@ choose_which_gnu_linux_distro() {
 		3>&1 1>&2 2>&3)
 
 	##############################
-	if [ "${SELECTGNULINUX}" == '0' ]; then
-		MainMenu
+	if [ "${SELECTgnu_linux}" == '0' ]; then
+		tmoe_manager_main_menu
 	fi
 	#########################
-	if [ "${SELECTGNULINUX}" == '1' ]; then
+	if [ "${SELECTgnu_linux}" == '1' ]; then
 
 		install_debian_gnu_linux_distro
 	fi
 	##############################
-	if [ "${SELECTGNULINUX}" == '2' ]; then
+	if [ "${SELECTgnu_linux}" == '2' ]; then
 		install_ubuntu_gnu_linux_2004_distro
 	fi
 	##############################
-	if [ "${SELECTGNULINUX}" == '3' ]; then
+	if [ "${SELECTgnu_linux}" == '3' ]; then
 		install_kali_rolling_gnu_linux_distro
 	fi
 	##############################
-	if [ "${SELECTGNULINUX}" == '4' ]; then
+	if [ "${SELECTgnu_linux}" == '4' ]; then
 		install_other_containers
 	fi
 	##############################
-	if [ "${SELECTGNULINUX}" == '5' ]; then
+	if [ "${SELECTgnu_linux}" == '5' ]; then
 		touch ~/.REDHATDetectionFILE
 		if [ "${archtype}" = 'armhf' ]; then
 			echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
@@ -2310,7 +2310,7 @@ choose_which_gnu_linux_distro() {
 		fi
 	fi
 	##############################
-	if [ "${SELECTGNULINUX}" == '6' ]; then
+	if [ "${SELECTgnu_linux}" == '6' ]; then
 		if [ "${archtype}" = 'armhf' ] || [ "${archtype}" = 'i386' ]; then
 			echo "检测到Arch Linux不支持您当前的架构"
 		else
@@ -2327,7 +2327,7 @@ choose_which_gnu_linux_distro() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	MainMenu
+	tmoe_manager_main_menu
 }
 ##############################
 install_other_containers() {
@@ -2352,16 +2352,16 @@ install_other_containers() {
 	)
 	##############################
 	if [ "${BETASYSTEM}" == '0' ]; then
-		MainMenu
+		tmoe_manager_main_menu
 	fi
 	####################
 
 	if [ "${BETASYSTEM}" == '1' ]; then
-		INSTALLFuntooDISTRO
+		install_funtoo_linux_distro
 	fi
 	#############################
 	if [ "${BETASYSTEM}" == '2' ]; then
-		INSTALLVOIDLINUX_DISTRO
+		install_void_linux_distro
 	fi
 	####################
 	if [ "${BETASYSTEM}" == '3' ]; then
@@ -2592,7 +2592,7 @@ install_other_containers() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	MainMenu
+	tmoe_manager_main_menu
 }
 
 #########################
@@ -2606,13 +2606,13 @@ install_debian_gnu_linux_distro() {
 		cd /sdcard/Download/backup
 		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
 			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要重新直接解压还是重新下载？" 14 50); then
-				UNXZDEBIANRECOVERYKIT
+				un_xz_debian_recovery_kit
 			else
-				DOWNLOADDEBIANXFCETARXZ
+				download_debian_xfce_tar_xz
 
 			fi
 		else
-			DOWNLOADDEBIANXFCETARXZ
+			download_debian_xfce_tar_xz
 
 		fi
 	fi
@@ -2661,7 +2661,7 @@ install_kali_rolling_gnu_linux_distro() {
 		sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
 }
 ################
-INSTALLFuntooDISTRO() {
+install_funtoo_linux_distro() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:funtoo-1.4:g' |
 		sed 's:debian/sid:funtoo/1.4:g' |
@@ -2671,7 +2671,7 @@ INSTALLFuntooDISTRO() {
 		sed 's:Debian GNU/Linux:Funtoo GNU/Linux:g')"
 }
 #######################
-INSTALLVOIDLINUX_DISTRO() {
+install_void_linux_distro() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/installDebian.sh |
 		sed 's:debian-sid:voidlinux-default:g' |
 		sed 's:debian/sid:voidlinux/current:g' |
@@ -2681,7 +2681,7 @@ INSTALLVOIDLINUX_DISTRO() {
 		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
 }
 ######################
-GNULINUXTUNASOURCESLIST() {
+gnu_linux_sources_list() {
 	cp -pf /etc/apt/sources.list /etc/apt/sources.list.bak
 	if grep -q 'Debian' "/etc/issue"; then
 		if grep -q 'bullseye' "/etc/os-release"; then
@@ -2709,7 +2709,7 @@ GNULINUXTUNASOURCESLIST() {
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
 			read
-			GNULINUX
+			gnu_linux
 		fi
 		echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
 		sed -i 's/^deb/# &/g' /etc/apt/sources.list
@@ -2766,7 +2766,7 @@ GNULINUXTUNASOURCESLIST() {
 			echo 'Press Enter to return.'
 			echo "${YELLOW}按回车键返回。${RESET}"
 			read
-			GNULINUX
+			gnu_linux
 		fi
 		echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
 		sed -i 's/^deb/# &/g' /etc/apt/sources.list
@@ -2801,10 +2801,10 @@ GNULINUXTUNASOURCESLIST() {
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
-	GNULINUX
+	gnu_linux
 	#此处要返回依赖检测处！
 }
 ####################
 check_arch
 ##取消注释，测试用。
-##MainMenu
+##tmoe_manager_main_menu

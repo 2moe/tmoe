@@ -322,7 +322,7 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200503-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOE_NOT_DEBIAN} 更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200503-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键或触屏上下滑动，按回车键确认。${TMOE_NOT_DEBIAN} 更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘,0503优化code-server的配置" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -330,9 +330,9 @@ tmoe_linux_tool_menu() {
 			"5" "Modify VNC/XSDL/XRDP(远程桌面)conf" \
 			"6" "Download video 解析视频链接" \
 			"7" "Personal netdisk 个人云网盘/文件共享" \
-			"8" "Update Debian tool 更新本工具" \
-			"9" "Enable zsh tool 启用zsh管理工具" \
-			"10" "VSCode" \
+			"8" "Update tmoe-linux tool 更新本工具" \
+			"9" "VSCode" \
+			"10" "Start zsh tool 启动zsh管理工具" \
 			"11" "Remove GUI 卸载图形界面" \
 			"12" "Remove browser 卸载浏览器" \
 			"13" "FAQ 常见问题" \
@@ -379,13 +379,13 @@ tmoe_linux_tool_menu() {
 	if [ "${TMOE_OPTION}" == '8' ]; then
 		tmoe_linux_tool_upgrade
 	fi
-	#################################
-	if [ "${TMOE_OPTION}" == '9' ]; then
-		bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
-	fi
 	###################################
-	if [ "${TMOE_OPTION}" == '10' ]; then
+	if [ "${TMOE_OPTION}" == '9' ]; then
 		which_vscode_edition
+	fi
+	#################################
+	if [ "${TMOE_OPTION}" == '10' ]; then
+		bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
 	fi
 	###################################
 	if [ "${TMOE_OPTION}" == '11' ]; then
@@ -601,7 +601,7 @@ cookies_readme() {
 		例如火狐扩展cookies-txt（适用于you-get v0.4.1432，不适用于annie v0.9.8）
 		https://addons.mozilla.org/zh-CN/firefox/addon/cookies-txt/
 		再次提醒，cookie非常重要!
-		希望您请仔细甄别，堤防恶意插件。
+		希望您能仔细甄别，堤防恶意插件。
 		同时希望您能够了解，将cookie文件泄露出去等同于将账号泄密！
 		请妥善保管好该文件及相关数据！
 	EndOFcookies
