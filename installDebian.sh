@@ -526,11 +526,11 @@ fi
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-		echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
-		echo "Press enter to exit."
-		echo "${YELLOW}按回车键退出。${RESET} "
-		read
-		exit 0
+	#	echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
+	#	echo "Press enter to exit."
+	#	echo "${YELLOW}按回车键退出。${RESET} "
+	#	read
+	#	exit 0
 	fi
 
  #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    

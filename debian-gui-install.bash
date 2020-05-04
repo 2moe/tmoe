@@ -738,7 +738,7 @@ upgrade_video_download_tool() {
 	DEPENDENCY_02=""
 
 	if [ ! $(command -v python3) ]; then
-		DEPENDENCY_01="python3"
+		DEPENDENCY_01="${DEPENDENCY_01} python3"
 	fi
 
 	if [ ! $(command -v ffmpeg) ]; then
@@ -781,7 +781,9 @@ upgrade_video_download_tool() {
 		echo "正在安装相关依赖..."
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
-			apt install -y ${DEPENDENCY_01} ${DEPENDENCY_02}
+			apt install -y ffmpeg
+			apt install -y python3 python3-distutils
+			apt install -y python3-pip
 		else
 			different_distro_software_install
 		fi

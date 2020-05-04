@@ -865,11 +865,11 @@ remove_gnu_linux_container() {
 		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-		echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
-		echo "Press enter to return."
-		echo "${YELLOW}按回车键返回。${RESET} "
-		read
-		tmoe_manager_main_menu
+		#echo '为防止数据丢失，建议您重启设备后再重试。'
+	    #echo "Press enter to return."
+		#echo "${YELLOW}按回车键返回。${RESET} "
+		#read
+		#tmoe_manager_main_menu
 	fi
 	echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo 'Detecting container size... 正在检测容器占用空间大小'
