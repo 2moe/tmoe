@@ -39,7 +39,7 @@ Supported containers:
 ![Capture__2020-02-16-02-23-49.png](https://s1.ax1x.com/2020/04/23/JUR15q.md.png)
 
 支持一键安装图形界面。
-Support one-key installation Graphical User Interface.
+Support one-key graphical user interface installation.
 
 ![截图_2020-02-01_08-53-21.jpg](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)
 
@@ -580,3 +580,28 @@ nano $(which startvnc)
 ##### 2020-04-22 更新日志
 
 - 1.修复赋予 proot 容器真实 root 权限后，vnc 出现的权限问题。
+
+##### 2020-04-24 更新日志
+
+- 1.给 ArchLinux 容器添加了 archlinuxcn 源，并将自动安装 yay
+
+##### 2020-04-29 更新日志
+
+- 1.应 gitee 的小伙伴要求，在测试功能中支持 WPS office 的安装。
+
+##### 2020-05-01 更新日志
+
+- 1.支持解析视频网站链接，与原版 [annie](https://github.com/iawia002/annie) 最大的区别是支持解析 b23.tv ，并且无需完整链接，就能直接解析 BV 号。
+
+##### 2020-05-02 更新日志
+
+- 1.支持搭建个人云网盘（来自 github 开源项目[filebrowser](https://github.com/filebrowser/filebrowser)），配合我写的配置脚本来实现简易化管理。
+
+##### 2020-05-03 更新日志
+
+- 1.支持搭建并配置 WebDAV(nginx)服务，可以非常方便地配置和管理端口号、访问目录、访问账号、日志和进程等内容。
+- 2.支持在工具内配置 VSCode Server 的访问密码。
+
+##### 2020-05-04 更新日志
+
+- 1.增加 fedora 32 容器，由于在测试过程中发现某些问题，故保留了之前的 31，可以自由选择版本。
