@@ -421,8 +421,8 @@ tmoe_linux_tool_menu() {
 		beta_features
 	fi
 	#########################
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -500,7 +500,7 @@ different_distro_software_install() {
 ############################
 tmoe_linux_tool_upgrade() {
 	curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	echo 'Update completed, press Enter to return.'
+	echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	chmod +x /usr/local/bin/debian-i
 	read
@@ -547,8 +547,8 @@ download_videos() {
 		upgrade_video_download_tool
 	fi
 	#########################
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -595,8 +595,8 @@ golang_annie() {
 	fi
 	ls -lAth ./ | head -n 3
 	echo "视频文件默认下载至$(pwd)"
-	echo "Press enter to return."
-	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	download_videos
 }
@@ -631,8 +631,8 @@ python_you_get() {
 	fi
 	ls -lAth ./ | head -n 3
 	echo "视频文件默认下载至$(pwd)"
-	echo "Press enter to return."
-	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	download_videos
 }
@@ -667,8 +667,8 @@ python_youtube_dl() {
 	fi
 	ls -lAth ./ | head -n 3
 	echo "视频文件默认下载至$(pwd)"
-	echo "Press enter to return."
-	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	download_videos
 }
@@ -722,8 +722,8 @@ cookies_readme() {
 		echo "已禁用加载cookie功能"
 	fi
 
-	echo "Press enter to return."
-	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	download_videos
 }
@@ -954,8 +954,8 @@ which_vscode_edition() {
 		install_vscode_official
 	fi
 	#########################
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -1027,7 +1027,7 @@ configure_vscode_server() {
 		vscode_server_remove
 	fi
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	configure_vscode_server
@@ -1101,7 +1101,7 @@ vscode_server_upgrade() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		vscode_server_password
@@ -1113,7 +1113,7 @@ vscode_server_upgrade() {
 	export PASSWORD=${TARGET_USERPASSWD}
 	vscode_server_restart
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	configure_vscode_server
@@ -1136,7 +1136,7 @@ vscode_server_password() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，操作取消"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_vscode_server
@@ -1177,7 +1177,7 @@ install_vscodium() {
 	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "暂不支持i386 linux"
 		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		which_vscode_edition
 	fi
@@ -1194,7 +1194,7 @@ install_vscodium() {
 
 	if [ $(command -v codium) ]; then
 		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		which_vscode_edition
 	fi
@@ -1215,8 +1215,8 @@ install_vscodium() {
 		ln -sf /usr/local/bin/vscodium-data/codium /usr/local/bin/codium
 		echo "安装完成，输codium --no-sandbox启动"
 	fi
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	which_vscode_edition
 }
@@ -1228,7 +1228,7 @@ install_vscode_oss() {
 		echo "code-oss --user-data-dir=${HOME}"
 		echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} code-oss"
 		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		which_vscode_edition
 	fi
@@ -1242,15 +1242,15 @@ install_vscode_oss() {
 	else
 		echo "检测到您当前使用的可能不是deb系或红帽系发行版，跳过安装"
 		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		which_vscode_edition
 	fi
 	echo "安装完成,请手动输以下命令启动"
 	echo "code-oss --user-data-dir=${HOME}"
 	echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} code-oss"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	which_vscode_edition
 }
@@ -1269,14 +1269,14 @@ install_vscode_official() {
 		echo 'code --user-data-dir=${HOME}'
 		echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} code"
 		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		which_vscode_edition
 	elif [ -e "/usr/local/bin/vscode-data/code" ]; then
 		echo "检测到您已安装VSCode,请输code --no-sandbox启动"
 		echo "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
 		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		which_vscode_edition
 	fi
@@ -1301,8 +1301,8 @@ install_vscode_official() {
 		ln -sf /usr/local/bin/VSCode-linux-x64/code /usr/local/bin/code
 		echo "安装完成，输code --no-sandbox启动"
 	fi
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	which_vscode_edition
 }
@@ -1337,7 +1337,7 @@ modify_other_vnc_conf() {
 		echo "正在为您停止VNC服务..."
 		sleep 1
 		stopvnc 2>/dev/null
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		modify_other_vnc_conf
@@ -1346,7 +1346,7 @@ modify_other_vnc_conf() {
 	if [ "${MODIFYOTHERVNCCONF}" == '3' ]; then
 		nano ~/.vnc/xstartup
 		stopvnc 2>/dev/null
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		modify_other_vnc_conf
@@ -1397,7 +1397,7 @@ nano_startvnc_manually() {
 	echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 
 	stopvnc 2>/dev/null
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	modify_other_vnc_conf
@@ -1566,7 +1566,7 @@ install_browser() {
 	else
 		install_chromium_browser
 	fi
-	echo 'Press enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -1621,8 +1621,8 @@ install_gui() {
 	fi
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
 	#echo "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
-	echo "按回车键选择您需要安装的图形桌面环境"
-	echo "${YELLOW}Press enter to continue.${RESET}"
+	echo "按${GREEN}回车键${RESET}${RED}选择${RESET}您需要${YELLOW}安装${RESET}的${BLUE}图形桌面环境${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
 	read
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 5 \
@@ -1653,7 +1653,7 @@ install_gui() {
 		tmoe_linux_tool_menu
 	fi
 	##########################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -1694,7 +1694,7 @@ other_desktop() {
 		install_deepin_desktop
 	fi
 	##########################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -2067,9 +2067,8 @@ install_gnome3_desktop() {
 		echo "${YELLOW}警告！GNOME3可能无法正常运行${RESET}"
 		echo "WARNING! 检测到您未挂载/proc分区，请勿安装！"
 	fi
-	echo 'Press Enter to continue，press Ctrl+C to cancel.'
-	echo "${YELLOW}按回车键继续安装，按Ctrl+C取消${RESET}"
-	read
+	RETURN_TO_WHERE="other_desktop"
+	do_you_want_to_continue
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
 		apt update
@@ -2184,7 +2183,7 @@ install_deepin_desktop() {
 		echo "非常抱歉，深度桌面不支持您当前的架构。"
 		echo "建议您在换用x86_64或i386架构的设备后，再来尝试。"
 		#echo "${YELLOW}按回车键返回。${RESET}"
-		#echo "Press enter to return."
+		#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		#read
 		#tmoe_linux_tool_menu
 		echo "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
@@ -2265,7 +2264,7 @@ remove_gui() {
 	echo '"mate" "喔...喔呜...我不舍得你走/(ㄒoㄒ)/~~"  '
 	#新功能预告：即将适配非deb系linux的gui卸载功能
 	echo "${YELLOW}按回车键确认卸载${RESET}"
-	echo 'Press enter to confirm ,press Ctrl + C to cancel'
+	echo 'Press enter to remove,press Ctrl + C to cancel'
 	RETURN_TO_WHERE='tmoe_linux_tool_menu'
 	do_you_want_to_continue
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2389,9 +2388,8 @@ configure_theme() {
 	if [ "${INSTALL_THEME}" == '3' ]; then
 		if [ -d "/usr/share/themes/Mojave-dark" ]; then
 			echo "检测到主题已下载，是否继续。"
-			echo 'Press Enter to continue.'
-			echo "${YELLOW}按回车键继续。${RESET}"
-			read
+			RETURN_TO_WHERE='configure_theme'
+			do_you_want_to_continue
 		fi
 
 		if [ -d "/tmp/McMojave" ]; then
@@ -2410,9 +2408,8 @@ configure_theme() {
 	if [ "${INSTALL_THEME}" == '4' ]; then
 		if [ -d "/usr/share/icons/Uos" ]; then
 			echo "检测到Uos图标包已下载，是否继续。"
-			echo 'Press Enter to continue.'
-			echo "${YELLOW}按回车键继续。${RESET}"
-			read
+			RETURN_TO_WHERE='configure_theme'
+			do_you_want_to_continue
 		fi
 
 		if [ -d "/tmp/UosICONS" ]; then
@@ -2444,7 +2441,7 @@ configure_theme() {
 		echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
 	fi
 	##############################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -2478,7 +2475,7 @@ install_kali_undercover() {
 		fi
 	fi
 	echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} kali-undercover"
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -2487,14 +2484,14 @@ install_kali_undercover() {
 modify_to_kali_sources_list() {
 	if [ "${LINUX_DISTRO}" != "debian" ]; then
 		echo "${YELLOW}非常抱歉，检测到您使用的不是deb系linux，按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		tmoe_linux_tool_menu
 	fi
 
 	if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 		echo "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
-		echo "Press enter to return."
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		read
 		tmoe_linux_tool_menu
 	fi
@@ -2536,8 +2533,8 @@ kali_sources_list() {
 	apt dist-upgrade -y
 	apt search kali-linux
 	echo 'You have successfully replaced your debian source with a kali source.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -2551,8 +2548,8 @@ debian_sources_list() {
 	apt list --upgradable
 	echo '您已换回debian源'
 	apt dist-upgrade -y
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -2648,7 +2645,7 @@ other_software() {
 		install_chinese_manpages
 	fi
 	############################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	other_software
@@ -2737,7 +2734,7 @@ install_game_cataclysm() {
 	beta_features_quick_install
 	echo "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
 	echo "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键启动。${RESET}"
 	read
 	cataclysm
@@ -2894,7 +2891,7 @@ install_netease_163_cloud_music() {
 		rm -fv ./netease-cloud-music.deb
 		beta_features_install_completed
 	fi
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -2953,7 +2950,7 @@ modify_remote_desktop_config() {
 		modify_xrdp_conf
 	fi
 	#######################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	modify_remote_desktop_config
@@ -2985,7 +2982,7 @@ modify_vnc_conf() {
 			#echo $(sed -n \$p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 			#$p表示最后一行，必须用反斜杠转义。
 			stopvnc 2>/dev/null
-			echo 'Press Enter to return.'
+			echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 			echo "${YELLOW}按回车键返回。${RESET}"
 			read
 			tmoe_linux_tool_menu
@@ -3051,7 +3048,7 @@ modify_startxsdl_manually() {
 
 	echo '您当前的音频端口为'
 	echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	modify_xsdl_conf
@@ -3375,14 +3372,14 @@ first_configure_startvnc() {
 			grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
 		fi
 	fi
-	echo 'The vnc service is about to start for you. The password you entered is hidden.'
-	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
-	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
-	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
-	echo '请输入6至8位密码'
+	echo "The vnc service is about to start for you. The password you entered is hidden."
+	echo "即将为您启动vnc服务，您需要输两遍${RED}（不可见的）${RESET}密码。"
+	echo "When prompted for a view-only password, it is recommended that you enter${YELLOW} 'n'${RESET}"
+	echo "如果提示${BLUE}view-only${RESET},那么建议您输${YELLOW}n${RESET},选择权在您自己的手上。"
+	echo "请输入${RED}6至8位${RESET}${BLUE}密码${RESET}"
 	startvnc
-	echo '您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-	echo '您还可以在termux原系统或windows的linux子系统里输startxsdl来启动xsdl，按Ctrl+C或在termux原系统里输stopvnc来停止进程'
+	echo "您之后可以输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
+	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来启动xsdl，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
 	if [ "${HOME}" != "/root" ]; then
 		cp -rpf ~/.vnc /root/ &
 		chown -R root:root /root/.vnc &
@@ -3425,7 +3422,7 @@ first_configure_startvnc() {
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start ."
 		startxsdl &
 	fi
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	tmoe_linux_tool_menu
@@ -3453,7 +3450,7 @@ frequently_asked_questions() {
 		echo "${YELLOW}按回车键自动执行上述命令，按Ctrl+C取消${RESET}"
 		read
 		rm -vf ~/baidunetdisk/baidunetdiskdata.db
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		tmoe_linux_tool_menu
@@ -3471,7 +3468,7 @@ frequently_asked_questions() {
 		echo "${YELLOW}按回车键自动执行上述命令，按Ctrl+C取消${RESET}"
 		read
 		rm -rvf ~/.config/tencent-qq/
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		tmoe_linux_tool_menu
@@ -3496,7 +3493,7 @@ frequently_asked_questions() {
 		echo "您可以输${YELLOW}sudo su - ${RESET}或${YELLOW}sudo -i ${RESET}切换至root用户"
 		echo "亦可输${YELLOW}sudo su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
 		echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		tmoe_linux_tool_menu
@@ -3576,7 +3573,7 @@ fix_vnc_dbus_launch() {
 	echo "${YELLOW}修改完成，按回车键返回${RESET}"
 	echo "若无法修复，则请前往gitee.com/mo2/linux提交issue，并附上报错截图和详细说明。"
 	echo "还建议您附上cat /usr/local/bin/startxsdl 和 cat ~/.vnc/xstartup 的启动脚本截图"
-	echo "Press Enter to return"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -3595,7 +3592,7 @@ non_debian_function() {
 	if [ "${LINUX_DISTRO}" != 'debian' ]; then
 		echo "非常抱歉，本功能仅适配deb系发行版"
 		echo "Sorry, this feature is only suitable for debian based distributions"
-		echo "Press enter to return"
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键退出。${RESET}"
 		read
 		beta_features
@@ -3775,7 +3772,7 @@ beta_features() {
 		install_telegram
 	fi
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	beta_features
@@ -4184,8 +4181,8 @@ personal_netdisk() {
 		install_nginx_webdav
 	fi
 	#########################
-	echo "${YELLOW}按回车键返回。${RESET}"
-	echo "Press enter to return."
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 	tmoe_linux_tool_menu
 }
@@ -4300,7 +4297,7 @@ configure_nginx_webdav() {
 		apt remove nginx nginx-extras
 	fi
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	configure_nginx_webdav
@@ -4386,7 +4383,7 @@ nginx_onekey() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		nginx_onekey
@@ -4395,7 +4392,7 @@ nginx_onekey() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		nginx_onekey
@@ -4409,7 +4406,7 @@ nginx_onekey() {
 	fi
 	nginx_restart
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	configure_nginx_webdav
@@ -4443,7 +4440,7 @@ nginx_add_admin() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，操作取消"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_nginx_webdav
@@ -4452,7 +4449,7 @@ nginx_add_admin() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		nginx_add_admin
@@ -4467,7 +4464,7 @@ nginx_webdav_port() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_nginx_webdav
@@ -4485,7 +4482,7 @@ nginx_port() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_nginx_webdav
@@ -4515,7 +4512,7 @@ nginx_webdav_root_dir() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_nginx_webdav
@@ -4696,7 +4693,7 @@ configure_filebrowser() {
 		rm -fv /etc/filebrowser.db
 	fi
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	configure_filebrowser
@@ -4719,7 +4716,7 @@ filebrowser_onekey() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		filebrowser_onekey
@@ -4728,7 +4725,7 @@ filebrowser_onekey() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		filebrowser_onekey
@@ -4760,7 +4757,7 @@ filebrowser_onekey() {
 	fi
 	filebrowser_restart
 	########################################
-	echo 'Press Enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}按回车键返回。${RESET}"
 	read
 	configure_filebrowser
@@ -4802,7 +4799,7 @@ filebrowser_add_admin() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，操作取消"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_filebrowser
@@ -4811,7 +4808,7 @@ filebrowser_add_admin() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		filebrowser_add_admin
@@ -4827,7 +4824,7 @@ filebrowser_port() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_filebrowser
@@ -4858,7 +4855,7 @@ filebrowser_language() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_filebrowser
@@ -4871,7 +4868,7 @@ filebrowser_listen_ip() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo 'Press Enter to return.'
+		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_filebrowser
