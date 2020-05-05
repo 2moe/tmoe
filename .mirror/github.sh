@@ -1,25 +1,22 @@
 #!/bin/bash
 cd ..
 sed -i 's/zh_CN/en_US/g' ./*sh
+#locale-gen
 sed -i 's@en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/@zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/@' ./*sh
-sed -i 's@en_US en_US@en_US zh_CN@g' installDebian.sh
-sed -i 's@translation-update-en_US@translation-update-zh_CN@' installDebian.sh
-sed -i 's@\^en_US@\^zh_CN@' debian-gui-install.bash
+#gentoo_lang
+sed -i 's@en_US en_US@en_US zh_CN@g' install.sh
+sed -i 's@translation-update-en_US@translation-update-zh_CN@' install.sh
+sed -i 's@\^en_US@\^zh_CN@' tool.sh
 sed -i 's@locale-gen en_US@locale-gen zh_CN@g' ./*sh
-sed -i 's/114.114.114.114/1.0.0.1/' installDebian.sh
-sed -i 's/240c::6666/2606:4700:4700::1111/' installDebian.sh
-sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' installDebian.sh
+sed -i 's/114.114.114.114/1.0.0.1/' install.sh
+sed -i 's/240c::6666/2606:4700:4700::1111/' install.sh
 
-REPO=${REPO:-mirrors/oh-my-zsh}
-REMOTE=${REMOTE:-https://gitee.com/${REPO}.git}
-sed -i 's@^REPO=\${REPO:-mirrors@## &@g' installDebian.sh
-sed -i 's@^REMOTE=\${REMOTE:-https@## &@g' installDebian.sh
-sed -i 's/^#REMOTE=\$/REMOTE=\$/g' installDebian.sh
-sed -i 's/^#REPO=\$/REPO=\$/g' installDebian.sh
-#sed -i 's/zh_CN/en_US/g' ./debian.sh
-sed -i '/正在配置中文环境/d' installDebian.sh
-sed -i 's@###tmoe-github@@' installDebian.sh
+sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' install.sh
+sed -i 's@gitee.com/mirrors/oh-my-zsh/raw/master/templates/zshrc.zsh-template@raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template@g' install.sh
+sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' install.sh
+sed -i '/正在配置中文环境/d' install.sh
+sed -i 's@###tmoe-github@@' install.sh
 sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh
-sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' installDebian.sh
-sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' installDebian.sh
-sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' installDebian.sh
+sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' install.sh
+sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' install.sh
+sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' install.sh
