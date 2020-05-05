@@ -3938,7 +3938,6 @@ redhat_add_virtual_box_repo() {
 }
 ###############
 install_virtual_box() {
-	ARCH_TYPE=arm64
 	if [ "${ARCH_TYPE}" != "amd64" ]; then
 		arch_does_not_support
 		beta_features
