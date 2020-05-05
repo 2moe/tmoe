@@ -2579,7 +2579,7 @@ install_manjaro_linux_distro() {
 
 	#aria2c -x 5 -k 1M --split 5 -o manjaro-latest-rootfs.tar.gz "https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz"
 	#https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
-    touch ~/.MANJARO_ARM_DETECTION_FILE
+	touch ~/.MANJARO_ARM_DETECTION_FILE
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's@lxc-images/images/debian/sid.*xz@osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 		sed 's@tar \-pJx@tar \-pzx@g' |
