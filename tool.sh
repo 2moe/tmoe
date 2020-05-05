@@ -335,7 +335,7 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200505-15)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘,0503优化code-server的配置" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200506-02)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘,0503优化code-server的配置" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -778,39 +778,46 @@ upgrade_video_download_tool() {
 
 	if [ -e "/usr/local/bin/annie" ]; then
 		echo "正在检测版本信息..."
-		AnnieVersion=$(annie -v | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
+		#AnnieVersion=$(annie -v | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
+		AnnieVersion=$(cat ~/.config/tmoe-linux/annie_version.txt | head -n 1)
 	else
 		AnnieVersion='您尚未安装annie'
 	fi
+	LATEST_ANNIE_VERSION=$(curl -LfsS https://gitee.com/mo2/annie/raw/linux_amd64/annie_version.txt | head -n 1)
 
+	####################
 	if [ $(command -v you-get) ]; then
 		YouGetVersion=$(you-get -V 2>&1 | head -n 1 | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
 	else
 		YouGetVersion='您尚未安装you-get'
 	fi
-
+	LATEST_YOU_GET_VERSION=$(curl -LfsS https://github.com/soimort/you-get/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
+	#######################
 	if [ $(command -v youtube-dl) ]; then
 		YOTUBEdlVersion=$(youtube-dl --version 2>&1 | head -n 1)
 	else
 		YOTUBEdlVersion='您尚未安装youtube-dl'
 	fi
-
+	LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://github.com/ytdl-org/youtube-dl/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
+	##################
 	cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
 		║   ║          ║                   ║                    
-		║   ║ software ║    github link    ║   本地版本 🎪
-		║   ║          ║      ✨           ║  Local version     
+		║   ║ software ║ 最新版本          ║   本地版本 🎪
+		║   ║          ║latest      ✨    ║  Local version     
 		║---║----------║-------------------║--------------------
-		║ 1 ║   annie  ║        github.com/║  ${AnnieVersion}
-		║   ║          ║ iawia002/annie    ║
+		║ 1 ║   annie  ║                   ║  ${AnnieVersion}
+		║   ║          ║${LATEST_ANNIE_VERSION}║
 		║---║----------║-------------------║--------------------
-		║   ║          ║        github.com/║                    
-		║ 2 ║ you-get  ║soimort/you-get    ║  ${YouGetVersion}
+		║   ║          ║                   ║ ${YouGetVersion}                   
+		║ 2 ║ you-get  ║${LATEST_YOU_GET_VERSION}          ║  
 		║---║----------║-------------------║--------------------
-		║   ║          ║        github.com/║                    
-		║ 3 ║youtube-dl║ytdl-org/youtube-dl║  ${YOTUBEdlVersion}
+		║   ║          ║                   ║  ${YOTUBEdlVersion}                  
+		║ 3 ║youtube-dl║${LATEST_YOUTUBE_DL_VERSION}         ║  
 
-
+		annie: github.com/iawia002/annie
+		you-get : github.com/soimort/you-get
+		youtube-dl：github.com/ytdl-org/youtube-dl
 	ENDofTable
 	#对原开发者iawia002的代码进行自动编译，并
 	echo "annie将于每月1号凌晨4点自动编译并发布最新版"
@@ -884,9 +891,14 @@ upgrade_video_download_tool() {
 
 	rm -rf ./.ANNIETEMPFOLDER
 	git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/annie ./.ANNIETEMPFOLDER
-	mv ./.ANNIETEMPFOLDER/annie /usr/local/bin/
-	chmod +x /usr/local/bin/annie
+	cd ./.ANNIETEMPFOLDER
+	tar -Jxvf annie.tar.xz
+	chmod +x annie
+	mkdir -p ~/.config/tmoe-linux/
+	mv -f annie_version.txt ~/.config/tmoe-linux/
+	mv -f annie /usr/local/bin/
 	annie -v
+	cd ..
 	rm -rf ./.ANNIETEMPFOLDER
 	#mkdir -p ${HOME}/.config
 	pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
@@ -2827,9 +2839,6 @@ install_baidu_netdisk() {
 	DEPENDENCY_02=""
 	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		arch_does_not_support
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
 		other_software
 	fi
 
@@ -2858,9 +2867,6 @@ install_netease_163_cloud_music() {
 
 	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		arch_does_not_support
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
 		other_software
 	fi
 	if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
@@ -3708,7 +3714,7 @@ beta_features() {
 		install_docker_ce
 	fi
 	####################
-	if [ "${TMOE_BETA}" == '6' ]; then
+	if [ "${TMOE_BETA}" == '4' ]; then
 		install_virtual_box
 	fi
 	###################
@@ -3932,6 +3938,7 @@ redhat_add_virtual_box_repo() {
 }
 ###############
 install_virtual_box() {
+	ARCH_TYPE=arm64
 	if [ "${ARCH_TYPE}" != "amd64" ]; then
 		arch_does_not_support
 		beta_features
