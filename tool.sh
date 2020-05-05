@@ -2537,31 +2537,23 @@ other_software() {
 }
 ###########
 install_mpv() {
-	if [ -e "/usr/bin/mpv" ]; then
-		echo "检测到您已安装mpv,按回车键重新安装,按Ctrl+C取消"
-		echo "Press enter to reinstall."
-		read
+	if [ "${LINUX_DISTRO}" = "redhat" ]; then
+		DEPENDENCY_01="kmplayer"
+	else
+		DEPENDENCY_01="mpv"
 	fi
-
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		apt update
-		apt install -y mpv
-	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm mpv
-	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		dnf install -y kmplayer || yum install -y kmplayer
-	fi
-	echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} mpv"
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
 }
 #############
 install_linux_qq() {
-	cd /tmp
+	DEPENDENCY_01="linuxqq"
+	DEPENDENCY_02=""
 	if [ -e "/usr/share/tencent-qq" ]; then
-		echo "检测到您已安装linuxQQ,按回车键重新安装,按Ctrl+C取消"
-		echo "Press enter to reinstall."
-		read
+		press_enter_to_reinstall
 	fi
-
+	cd /tmp
 	if [ "${ARCH_TYPE}" = "arm64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
@@ -2582,42 +2574,35 @@ install_linux_qq() {
 			chmod +x LINUXQQ.sh
 			sudo ./LINUXQQ.sh
 		fi
-	else
-		echo "暂不支持您的架构"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		other_software
 	fi
 	echo "若安装失败，则请前往官网手动下载安装。"
 	echo "url: https://im.qq.com/linuxqq/download.html"
 	rm -fv ./LINUXQQ.deb ./LINUXQQ.sh 2>/dev/null
-	echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} linuxqq"
+	beta_features_install_completed
 }
 ###################
 install_nds_game_mayomonogatari() {
-	if [ ! -e "/usr/games/desmume" ]; then
-		apt update
-		apt install -y desmume unzip p7zip-full
+	DEPENDENCY_01="desmume"
+	DEPENDENCY_02="p7zip-full"
+	NON_DEBIAN='false'
+	beta_features_quick_install
+	if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
+		echo "检测到您已下载游戏文件，路径为/root/斯隆与马克贝尔的谜之物语"
+		press_enter_to_reinstall
 	fi
 	cd ~
-	if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
-		echo "检测到您已安装。"
+	mkdir -p '斯隆与马克贝尔的谜之物语'
+	cd '斯隆与马克贝尔的谜之物语'
+	curl -Lvo slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
+	curl -Lvo mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
+	7za x slymkbr1.zip
+	7za x mayomonogatari2.zip
+	mv -f 斯隆与马克贝尔的谜之物语k73/* ./
+	mv -f 迷之物语/* ./
+	rm -f *url *txt
+	rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
+	rm -f slymkbr1.zip* mayomonogatari2.zip*
 
-	else
-
-		mkdir -p '斯隆与马克贝尔的谜之物语'
-		cd '斯隆与马克贝尔的谜之物语'
-		curl -Lvo slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
-		curl -Lvo mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
-		7za x slymkbr1.zip
-		7za x mayomonogatari2.zip
-		mv -f 斯隆与马克贝尔的谜之物语k73/* ./
-		mv -f 迷之物语/* ./
-		rm -f *url *txt
-		rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
-		rm -f slymkbr1.zip* mayomonogatari2.zip*
-	fi
 	echo "安装完成，您需要手动进入'/root/斯隆与马克贝尔的谜之物语'目录加载游戏"
 	echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 	echo 'Press enter to start the nds emulator.'
@@ -2627,12 +2612,10 @@ install_nds_game_mayomonogatari() {
 }
 ##################
 install_game_cataclysm() {
-	if [ ! -e "/usr/games/cataclysm-tiles" ]; then
-		apt update
-		apt install -y cataclysm-dda-curses cataclysm-dda-sdl
-	fi
-
-	echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} ^cataclysm-dda"
+	DEPENDENCY_01="cataclysm-dda-curses"
+	DEPENDENCY_02="cataclysm-dda-sdl"
+	NON_DEBIAN='false'
+	beta_features_quick_install
 	echo "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
 	echo "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
 	echo 'Press Enter to return.'
@@ -2643,16 +2626,13 @@ install_game_cataclysm() {
 ##############################################################
 install_synaptic() {
 	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Install安装" --no-button "Remove移除" --yesno "新立德是一款使用apt的图形化软件包管理工具，您也可以把它理解为软件商店。Synaptic is a graphical package management program for apt. It provides the same features as the apt-get command line utility with a GUI front-end based on Gtk+.它提供与apt-get命令行相同的功能，并带有基于Gtk+的GUI前端。功能：1.安装、删除、升级和降级单个或多个软件包。 2.升级整个系统。 3.管理软件源列表。  4.自定义过滤器选择(搜索)软件包。 5.按名称、状态、大小或版本对软件包进行排序。 6.浏览与所选软件包相关的所有可用在线文档。♪(^∇^*) " 19 50); then
-		apt update
-		apt install -y synaptic
-		apt install -y gdebi
+		DEPENDENCY_01="synaptic"
+		DEPENDENCY_02="gdebi"
+		NON_DEBIAN='true'
+		beta_features_quick_install
 		sed -i 's/synaptic-pkexec/synaptic/g' /usr/share/applications/synaptic.desktop
-		echo "synaptic和gdebi安装完成，建议您将deb文件的默认打开程序修改为gdebi"
-		echo "按回车键返回"
-		echo "${YELLOW}Press enter to return! ${RESET}"
-		read
+		echo "synaptic和gdebi安装完成，您可以将deb文件的默认打开程序修改为gdebi"
 	else
-
 		echo "${YELLOW}您真的要离开我么？哦呜。。。${RESET}"
 		echo "Do you really want to remove synaptic?"
 		echo "按回车键继续，按Ctrl+C取消。"
@@ -2661,13 +2641,14 @@ install_synaptic() {
 		apt purge -y synaptic
 		apt purge -y gdebi
 	fi
-	tmoe_linux_tool_menu
 }
 ##########################################
 install_chinese_manpages() {
 	echo '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
-	apt update
-	apt install -y debian-reference-zh-cn manpages manpages-zh man-db
+	DEPENDENCY_01="manpages manpages-zh man-db"
+	DEPENDENCY_02="debian-reference-zh-cn"
+	NON_DEBIAN='false'
+	beta_features_quick_install
 	if [ ! -e "${HOME}/文档/debian-handbook/usr/share/doc/debian-handbook/html" ]; then
 		mkdir -p ${HOME}/文档/debian-handbook
 		cd ${HOME}/文档/debian-handbook
@@ -2680,7 +2661,7 @@ install_chinese_manpages() {
 	echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
 	echo "man a help manual software, which can help you understand the detailed usage of the command."
 	echo "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
-	echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} debian-reference-zh-cn manpages manpages-zh man-db "
+	beta_features_install_completed
 }
 #####################
 install_libre_office() {
@@ -2689,9 +2670,14 @@ install_libre_office() {
 	echo 'Press Enter to confirm，press Ctrl+C to cancel.'
 	echo "${YELLOW}按回车键确认安装,按Ctrl+C取消。${RESET}"
 	read
-	apt update
-	apt install --no-install-recommends -y libreoffice-l10n-zh-cn
-	apt install -y libreoffice-l10n-zh-cn libreoffice-gtk3
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_01='--no-install-recommends libreoffice'
+	else
+		DEPENDENCY_01="libreoffice"
+	fi
+	DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
+	NON_DEBIAN='false'
+	beta_features_quick_install
 	if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		mkdir -p /prod/version
 		cd /usr/lib/libreoffice/program
@@ -2699,10 +2685,12 @@ install_libre_office() {
 		curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
 		chmod +x oosplash
 	fi
-	echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} ^libreoffice"
+	beta_features_install_completed
 }
 ###################
 install_baidu_netdisk() {
+	DEPENDENCY_01="baidunetdisk"
+	DEPENDENCY_02=""
 	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		echo "暂不支持您的架构"
 		echo 'Press Enter to return.'
@@ -2710,10 +2698,9 @@ install_baidu_netdisk() {
 		read
 		other_software
 	fi
+
 	if [ -e "/usr/share/applications/baidunetdisk.desktop" ]; then
-		echo "检测到您已安装baidunetdisk,按回车键重新安装,按Ctrl+C取消"
-		echo "Press enter to reinstall."
-		read
+		press_enter_to_reinstall
 	fi
 	cd /tmp
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -2724,12 +2711,17 @@ install_baidu_netdisk() {
 	else
 		curl -Lvo baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
 		apt install -y ./baidunetdisk.deb
-		echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} baidunetdisk"
-		rm -fv ./baidunetdisk.deb
 	fi
+	echo "若安装失败，则请前往官网手动下载安装"
+	echo "url：https://pan.baidu.com/download"
+	rm -fv ./baidunetdisk.deb
+	beta_features_install_completed
 }
 ######################
 install_netease_163_cloud_music() {
+	DEPENDENCY_01="netease-cloud-music"
+	DEPENDENCY_02=""
+
 	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 		echo "暂不支持您的架构"
 		echo 'Press Enter to return.'
@@ -2738,9 +2730,7 @@ install_netease_163_cloud_music() {
 		other_software
 	fi
 	if [ -e "/usr/share/applications/netease-cloud-music.desktop" ]; then
-		echo "检测到您已安装netease-cloud-music,按回车键重新安装,按Ctrl+C取消"
-		echo "Press enter to reinstall."
-		read
+		press_enter_to_reinstall
 	fi
 	cd /tmp
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -2750,14 +2740,17 @@ install_netease_163_cloud_music() {
 		sudo dnf install http://dl-http.senorsen.com/pub/package/linux/rpm/senorsen-repo-0.0.1-1.noarch.rpm
 		sudo dnf install -y netease-cloud-music
 	else
+		non_debian_function
 		if [ "${ARCH_TYPE}" = "amd64" ]; then
 			curl -Lvo netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
 		else
 			curl -Lvo netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
 		fi
 		apt install -y ./netease-cloud-music.deb
-		echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} netease-cloud-music"
+		echo "若安装失败，则请前往官网手动下载安装。"
+		echo 'url: https://music.163.com/st/download'
 		rm -fv ./netease-cloud-music.deb
+		beta_features_install_completed
 	fi
 	echo 'Press Enter to return.'
 	echo "${YELLOW}按回车键返回。${RESET}"
@@ -2766,49 +2759,30 @@ install_netease_163_cloud_music() {
 }
 ############################
 install_android_debug_bridge() {
-	if [ ! -e /usr/bin/adb ]; then
+	if [ ! $(command -v adb) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			apt update
-			apt install -y adb
-
-		elif [ "${LINUX_DISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm android-tools
-
-		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			dnf install -y android-tools || yum install -y android-tools
+			DEPENDENCY_01="adb"
+		else
+			DEPENDENCY_01="android-tools"
 		fi
 	fi
 
-	if [ -e /usr/bin/adb ]; then
-		adb --help
-		echo "adb安装完成"
-		echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} adb"
-		echo "正在重启进程,您也可以手动输adb devices来获取设备列表"
-		adb kill-server
-		adb devices -l
-		echo "即将为您自动进入adb shell模式，您也可以手动输adb shell来进入该模式"
-		adb shell
-	fi
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
+	adb --help
+	echo "正在重启进程,您也可以手动输adb devices来获取设备列表"
+	adb kill-server
+	adb devices -l
+	echo "即将为您自动进入adb shell模式，您也可以手动输adb shell来进入该模式"
+	adb shell
 }
 ####################
 install_bleachbit_cleaner() {
-	if [ ! -e /usr/bin/bleachbit ]; then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			apt update
-			apt install -y bleachbit
-
-		elif [ "${LINUX_DISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm bleachbit
-
-		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			dnf install -y bleachbit || yum install -y bleachbit
-		fi
-	fi
-
-	if [ -e /usr/bin/bleachbit ]; then
-		bleachbit --help
-		echo "bleachbit安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} bleachbit"
-	fi
+	DEPENDENCY_01="bleachbit"
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
 }
 ##########################
 ##########################
@@ -3478,9 +3452,16 @@ non_debian_function() {
 }
 ############
 press_enter_to_reinstall() {
+	echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
+	echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
 	echo "${YELLOW}按回车键重新安装,按Ctrl+C取消${RESET}"
 	echo "Press enter to reinstall,press Ctrl+C to cancel"
 	read
+}
+#######################
+beta_features_install_completed() {
+	echo "安装${GREEN}完成${RESET}，如需${RED}卸载${RESET}，请手动输${BLUE} ${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+	echo "The installation is complete. If you want to remove, please enter the above highlighted command."
 }
 ####################
 beta_features_quick_install() {
@@ -3512,18 +3493,15 @@ beta_features_quick_install() {
 	############
 	if [ "${EXISTS_COMMAND}" = "true" ]; then
 		EXISTS_COMMAND='false'
-		press_enter_to_reinstall
+		echo "${YELLOW}按回车键重新安装,按Ctrl+C取消${RESET}"
+		echo "Press enter to reinstall,press Ctrl+C to cancel"
+		read
+		#上面不能调用press_enter_function
 	fi
 	############
 	different_distro_software_install
 	#############
-	echo "安装完成，如需${RED}卸载${RESET}，请手动输${BLUE} ${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-	echo "The installation is complete. If you want to uninstall, please enter the above highlighted command."
-}
-#######################
-beta_features_install_completed() {
-	echo "安装完成，如需${RED}卸载${RESET}，请手动输${BLUE} ${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} sogoupinyin ${RESET}"
-	echo "The installation is complete. If you want to uninstall, please enter the above highlighted command."
+	beta_features_install_completed
 }
 ####################
 beta_features() {
@@ -3697,8 +3675,6 @@ install_wps_office() {
 	DEPENDENCY_02=""
 	cd /tmp
 	if [ -e "/usr/share/applications/wps-office-wps.desktop" ]; then
-		echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
-		echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${RESET}"
 		press_enter_to_reinstall
 	fi
 
