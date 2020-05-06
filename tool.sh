@@ -2604,9 +2604,7 @@ other_software() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
-		apt update
-		apt install -y wesnoth
-		echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} wesnoth"
+		install_wesnoth_game
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '4' ]; then
@@ -2663,6 +2661,13 @@ other_software() {
 	read
 	other_software
 	#tmoe_linux_tool_menu
+}
+###########
+install_wesnoth_game() {
+	DEPENDENCY_01="wesnoth"
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
 }
 ###########
 install_mpv() {

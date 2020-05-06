@@ -159,7 +159,7 @@ else
 		sed -i '/alias debian-i=/d' "${HOME}/.zshrc"
 	fi
 fi
-#旧版将相关设立了alias，新版需要删掉。
+#旧版将相关命令设立了alias，新版需要删掉。
 ####################
 #卸载chroot挂载目录
 if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
@@ -683,7 +683,7 @@ cat >zsh.sh <<-'ADDZSHSHELL'
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUX_DISTRO='alpine'
 
-	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -q 'Manjaro' '/etc/issue'; then
+	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
 
 	elif grep -qi 'Void' '/etc/issue'; then
@@ -1028,36 +1028,36 @@ fi
 #############
 cat >.profile <<-'EDITBASHPROFILE'
 	YELLOW=$(printf '\033[33m')
-	RESET=$(printf '\033[m')
-	cd ~
-	###############
-	#函数放在前面
-	debian_sources_list() {
-		sed -i 's/^deb/##&/g' /etc/apt/sources.list
-		#stable-backports会出错，需改为buster-backports
-		cat >>/etc/apt/sources.list <<-'EndOfFile'
+RESET=$(printf '\033[m')
+cd ~
+###############
+#函数放在前面
+debian_sources_list() {
+    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+    #stable-backports会出错，需改为buster-backports
+    cat >>/etc/apt/sources.list <<-'EndOfFile'
 			#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 			#deb http://mirrors.huaweicloud.com/debian/ stable-updates main contrib non-free
 			#deb http://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free
 			#deb http://mirrors.huaweicloud.com/debian-security stable/updates main contrib non-free
 			deb http://mirrors.huaweicloud.com/debian/ sid main contrib non-free
 		EndOfFile
-	}
-	##############################
-	kali_sources_list() {
-		echo "检测到您使用的是Kali系统"
-		sed -i 's/^deb/##&/g' /etc/apt/sources.list
-		cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
+}
+##############################
+kali_sources_list() {
+    echo "检测到您使用的是Kali系统"
+    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 			deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
 			deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 			# deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 		EndOfSourcesList
-		#注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
-	}
-	######################
-	ubuntu_sources_list() {
-		sed -i 's/^deb/##&/g' /etc/apt/sources.list
-		cat >>/etc/apt/sources.list <<-'EndOfFile'
+    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
+}
+######################
+ubuntu_sources_list() {
+    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+    cat >>/etc/apt/sources.list <<-'EndOfFile'
 			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse
 			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-updates main restricted universe multiverse
 			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-backports main restricted universe multiverse
@@ -1065,193 +1065,195 @@ cat >.profile <<-'EDITBASHPROFILE'
 			# proposed为预发布软件源，不建议启用
 			# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 		EndOfFile
-		touch ~/.hushlogin
-	}
-	#########################
-	mint_sources_list() {
-		echo "检测到您使用的是Linux Mint"
-		sed -i 's/^deb/##&/g' /etc/apt/sources.list
-		cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
+    touch ~/.hushlogin
+}
+#########################
+mint_sources_list() {
+    echo "检测到您使用的是Linux Mint"
+    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 			deb http://mirrors.huaweicloud.com/linuxmint/ tricia main upstream import backport
 			deb http://mirrors.huaweicloud.com/ubuntu/ bionic main restricted universe multiverse
 			deb http://mirrors.huaweicloud.com/ubuntu/ bionic-updates main restricted universe multiverse
 			deb http://mirrors.huaweicloud.com/ubuntu/ bionic-backports main restricted universe multiverse
 			deb http://mirrors.huaweicloud.com/ubuntu/ bionic-security main restricted universe multiverse
 		EndOfSourcesList
-	}
-	###################
-	arch_linux_mirror_list() {
-		sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
-		if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
-			cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+}
+###################
+arch_linux_mirror_list() {
+    sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
+    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
+        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 				#Server = https://mirror.archlinuxarm.org/$arch/$repo
 				Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
 			EndOfArchMirrors
-		else
-			cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+    else
+        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 				#Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
-				Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
+				#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
+                Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
 			EndOfArchMirrors
-		fi
-	}
-	#############################
-	manjaro_mirror_list() {
-		if [ "$(uname -m)" = "aarch64" ]; then
-			#sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
-			#manjaro精简容器竟然没grep、awk和sed
-			cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-			cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+    fi
+}
+#############################
+manjaro_mirror_list() {
+    if [ "$(uname -m)" = "aarch64" ]; then
+        #sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
+        #manjaro精简容器竟然没grep、awk和sed
+        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 				#Server = https://mirror.archlinuxarm.org/$arch/$repo
 				#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
-				Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/$repo/$arch
+				#Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/$repo/$arch
+                Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
 			EndOfArchMirrors
-			curl -Lo 'archlinuxarm-keyring.pkg.tar.xz' https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/core/aarch64/archlinuxarm-keyring-20140119-1-any.pkg.tar.xz
-			pacman-key --init
-			pacman -U --noconfirm ./archlinuxarm-keyring.pkg.tar.xz
-			rm -fv ./archlinuxarm-keyring.pkg.tar.xz 
-			pacman-key --populate archlinux manjaro
-			pacman -Sy --noconfirm archlinux-keyring
-		fi
-	}
-	#################
-	arch_linux_yay() {
-		grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="en_US.UTF-8"' >>/etc/locale.conf
-		pacman -Syyu --noconfirm
-		if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
-			cat >>/etc/pacman.conf <<-'Endofpacman'
+        #curl -Lo 'archlinuxarm-keyring.pkg.tar.xz' https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/core/aarch64/archlinuxarm-keyring-20140119-1-any.pkg.tar.xz
+        #pacman-key --init
+        #pacman -U --noconfirm ./archlinuxarm-keyring.pkg.tar.xz
+        #rm -fv ./archlinuxarm-keyring.pkg.tar.xz
+        #pacman-key --populate archlinux manjaro
+        #pacman -Sy --noconfirm archlinux-keyring
+    fi
+}
+#################
+arch_linux_yay() {
+    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="en_US.UTF-8"' >>/etc/locale.conf
+    pacman -Syyu --noconfirm
+    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
+        cat >>/etc/pacman.conf <<-'Endofpacman'
 				[archlinuxcn]
 				Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 			Endofpacman
-		fi
-		pacman -Syu --noconfirm archlinux-keyring
-		pacman -Sy --noconfirm archlinuxcn-keyring
-		pacman -S --noconfirm yay
-		yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
-	}
-	#################
-	#################
-		if [ "$(cat /etc/issue | cut -c 1-4)" = "Arch" ]; then
-			arch_linux_mirror_list
-		elif [ "$(cat /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
-			manjaro_mirror_list
-			pacman -Sy --noconfirm grep sed awk
-		fi
+    fi
+    pacman -Syu --noconfirm archlinux-keyring
+    pacman -Sy --noconfirm archlinuxcn-keyring
+    pacman -S --noconfirm yay
+    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
+}
+#################
+#################
+if [ "$(cat /etc/issue | cut -c 1-4)" = "Arch" ]; then
+    arch_linux_mirror_list
+elif [ "$(cat /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
+    manjaro_mirror_list
+    #pacman -Sy --noconfirm grep sed awk
+fi
 
-		if [ -e "/etc/pacman.conf" ] && [ $(command -v grep) ]; then
-			arch_linux_yay
-	  	fi
-	#######################
-	#if grep -Eq 'Arch|Manjaro' /etc/os-release; then	
-	#fi
-	#################################
-	#配置国内镜像源
-	if [ "$(uname -m)" = "mips" ]; then
-		chattr +i /etc/apt/sources.list
-		sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
-	fi
-	##################
-	if ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
-		chattr +i /etc/apt/sources.list 2>/dev/null
-	fi
-	####################
-	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
-		if grep -q 'Debian' "/etc/issue"; then
-			debian_sources_list
-		fi
-	fi
-	###############
-	if grep -q 'Kali' "/etc/issue"; then
-		kali_sources_list
-	elif [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
-		ubuntu_sources_list
-	elif grep -q 'Mint' "/etc/issue"; then
-		mint_sources_list
-	fi
-	#################
-	 sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
+if [ -e "/etc/pacman.conf" ] && [ $(command -v grep) ]; then
+    arch_linux_yay
+fi
+#######################
+#if grep -Eq 'Arch|Manjaro' /etc/os-release; then
+#fi
+#################################
+#配置国内镜像源
+if [ "$(uname -m)" = "mips" ]; then
+    chattr +i /etc/apt/sources.list
+    sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
+fi
+##################
+if ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
+    chattr +i /etc/apt/sources.list 2>/dev/null
+fi
+####################
+if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
+    if grep -q 'Debian' "/etc/issue"; then
+        debian_sources_list
+    fi
+fi
+###############
+if grep -q 'Kali' "/etc/issue"; then
+    kali_sources_list
+elif [ "$(cat /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
+    ubuntu_sources_list
+elif grep -q 'Mint' "/etc/issue"; then
+    mint_sources_list
+fi
+#################
+ sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
 
-	#配置dns解析
-	rm -f /etc/resolv.conf
-	cat >/etc/resolv.conf <<-'EndOfFile'
+#配置dns解析
+rm -f /etc/resolv.conf
+cat >/etc/resolv.conf <<-'EndOfFile'
 		nameserver 1.0.0.1
 		nameserver 2606:4700:4700::1111
 	EndOfFile
-	######################
-	alpine_linux_configure() {
-		echo "检测到您使用的不是deb系linux，将不会为您配置额外优化步骤"
-		if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
-			sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-			apk update
-			apk add bash
-		fi
-		rm -f "/tmp/.ALPINELINUXDetectionFILE"
-		rm -f ~/.profile
-		mv -f ~/.profile.bak ~/.profile 2>/dev/null
-		if grep -q 'OpenWrt' "/etc/os-release"; then
-			mkdir -p /var/lock/
-			touch /var/lock/opkg.lock
-			opkg update
-			opkg install libustream-openssl ca-bundle ca-certificates bash
-		fi
-		# ash -c "$(wget --no-check-certificate -O- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
-	}
-	########################
-	opensuse_linux_repo() {
-		LINUX_DISTRO='suse'
-		if [ "$(uname -m)" != "aarch64" ] && [ "$(uname -m)" != "armv7l" ]; then
-			zypper mr -da
-			zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss/ tuna-mirrors-oss
-			zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss/ tuna-mirrors-non-oss
-			zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed/ tuna-mirrors_Tumbleweed
-			zypper --gpg-auto-import-keys refresh
-			#zypper dup --no-allow-vendor-change -y
-		fi
-		zypper install -y wget curl
-		sed -i 's@RC_LANG=.*@RC_LANG="en_US.UTF8"@' /etc/sysconfig/language
-		sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="en_US.UTF8"@' /etc/sysconfig/language
-		sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="en_US"@' /etc/sysconfig/language
-		zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
-	}
-	################################
-	if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
-		alpine_linux_configure
-	elif grep -q 'openSUSE' "/etc/issue"; then
-		opensuse_linux_repo
-	fi
-	##############################
-	apt update 2>/dev/null
-	if [ ! -e "/usr/sbin/locale-gen" ] && [ ! -e "/sbin/locale-gen" ]; then
-		apt install -y locales 2>/dev/null
-	fi
+######################
+alpine_linux_configure() {
+    echo "检测到您使用的不是deb系linux，将不会为您配置额外优化步骤"
+    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
+        sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+        apk update
+        apk add bash
+    fi
+    rm -f "/tmp/.ALPINELINUXDetectionFILE"
+    rm -f ~/.profile
+    mv -f ~/.profile.bak ~/.profile 2>/dev/null
+    if grep -q 'OpenWrt' "/etc/os-release"; then
+        mkdir -p /var/lock/
+        touch /var/lock/opkg.lock
+        opkg update
+        opkg install libustream-openssl ca-bundle ca-certificates bash
+    fi
+    # ash -c "$(wget --no-check-certificate -O- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
+}
+########################
+opensuse_linux_repo() {
+    LINUX_DISTRO='suse'
+    if [ "$(uname -m)" != "aarch64" ] && [ "$(uname -m)" != "armv7l" ]; then
+        zypper mr -da
+        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss/ tuna-mirrors-oss
+        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss/ tuna-mirrors-non-oss
+        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed/ tuna-mirrors_Tumbleweed
+        zypper --gpg-auto-import-keys refresh
+        #zypper dup --no-allow-vendor-change -y
+    fi
+    zypper install -y wget curl
+    sed -i 's@RC_LANG=.*@RC_LANG="en_US.UTF8"@' /etc/sysconfig/language
+    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="en_US.UTF8"@' /etc/sysconfig/language
+    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="en_US"@' /etc/sysconfig/language
+    zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
+}
+################################
+if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
+    alpine_linux_configure
+elif grep -q 'openSUSE' "/etc/issue"; then
+    opensuse_linux_repo
+fi
+##############################
+apt update 2>/dev/null
+if [ ! -e "/usr/sbin/locale-gen" ] && [ ! -e "/sbin/locale-gen" ]; then
+    apt install -y locales 2>/dev/null
+fi
 
-	if grep -q 'ubuntu' /etc/os-release; then
-		apt install -y language-pack-zh-hans
-	fi
+if grep -q 'ubuntu' /etc/os-release; then
+    apt install -y language-pack-zh-hans
+fi
 
-	echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
-	echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
-	echo '正在执行优化步骤，请勿退出!'
-	echo 'Optimization steps are in progress. Do not exit!'
+echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
+echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
+echo '正在执行优化步骤，请勿退出!'
+echo 'Optimization steps are in progress. Do not exit!'
 
-	#配置国内时区
-	echo 'Asia/Shanghai' >/etc/timezone
-	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+#配置国内时区
+echo 'Asia/Shanghai' >/etc/timezone
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-	echo "Configuring Chinese environment..."
-	#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
-	sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-	sed -i 's/^/#&/g' /etc/default/locale
-	cat >>/etc/default/locale <<-'EOF'
+echo "Configuring Chinese environment..."
+#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
+sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+sed -i 's/^/#&/g' /etc/default/locale
+cat >>/etc/default/locale <<-'EOF'
 		LANG="en_US.UTF-8"
 		LANGUAGE="en_US:zh"
 		LC_ALL="en_US.UTF-8"
 	EOF
-	#locale-gen
-	locale-gen zh_CN.UTF-8
-	source /etc/default/locale 2>/dev/null
-	#################
-	printf "$YELLOW"
-	cat <<-'EndOFneko'
+#locale-gen
+locale-gen zh_CN.UTF-8
+source /etc/default/locale 2>/dev/null
+#################
+printf "$YELLOW"
+cat <<-'EndOFneko'
 		                                     
 		       DL.                           
 		       QBBBBBKv:rr77ri:.             
@@ -1279,29 +1281,29 @@ cat >.profile <<-'EDITBASHPROFILE'
 		         .            i   7          
 
 	EndOFneko
-	printf "$RESET"
-	####################
-	apt install -y apt-utils
-	apt install -y ca-certificates wget curl
-	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
-		echo "Replacing http software source list with https."
-		echo "正在将http源替换为https..."
-		sed -i 's@http:@https:@g' /etc/apt/sources.list
-		sed -i 's@https://security@http://security@g' /etc/apt/sources.list
-	else
-		rm -f "/tmp/.RASPBIANARMHFDetectionFILE"
-	fi
-	##########################
-	gentoo_gnu_linux_make_conf() {
-		LINUX_DISTRO=gentoo
-		grep -q 'en_US' /etc/locale.gen || echo -e '\nen_US.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
-		locale-gen
-		GENTOOLOCALE="$(eselect locale list | grep 'en_US' | head -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
-		eselect locale set "${GENTOOLOCALE}"
-		#bash /etc/profile
-		mkdir -p '/usr/portage'
-		#下面生成的文件不要留空格
-		cat >/etc/portage/make.conf <<-'Endofmakeconf'
+printf "$RESET"
+####################
+apt install -y apt-utils
+apt install -y ca-certificates wget curl
+if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
+    echo "Replacing http software source list with https."
+    echo "正在将http源替换为https..."
+    sed -i 's@http:@https:@g' /etc/apt/sources.list
+    sed -i 's@https://security@http://security@g' /etc/apt/sources.list
+else
+    rm -f "/tmp/.RASPBIANARMHFDetectionFILE"
+fi
+##########################
+gentoo_gnu_linux_make_conf() {
+    LINUX_DISTRO=gentoo
+    grep -q 'en_US' /etc/locale.gen || echo -e '\nen_US.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
+    locale-gen
+    GENTOOLOCALE="$(eselect locale list | grep 'en_US' | head -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
+    eselect locale set "${GENTOOLOCALE}"
+    #bash /etc/profile
+    mkdir -p '/usr/portage'
+    #下面生成的文件不要留空格
+    cat >/etc/portage/make.conf <<-'Endofmakeconf'
 			#语言设定
 			L10N="zh-CN en-US"
 			LINGUAS="en_US zh_CN"
@@ -1355,9 +1357,9 @@ cat >.profile <<-'EDITBASHPROFILE'
 			QEMU_USER_TARGETS="alpha aarch64 arm armeb i386 mips mipsel ppc ppc64 ppc64abi32 s390x sh4 sh4eb sparc sparc32plus sparc64"
 			#关于该配置文件的相关选项参数，详见wiki.gentoo.org/wiki//etc/portage/make.conf
 		Endofmakeconf
-		source /etc/portage/make.conf 2>/dev/null
-		mkdir -p /etc/portage/repos.conf/
-		cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
+    source /etc/portage/make.conf 2>/dev/null
+    mkdir -p /etc/portage/repos.conf/
+    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
 			[gentoo]
 			location = /usr/portage
 			sync-type = rsync
@@ -1365,114 +1367,114 @@ cat >.profile <<-'EDITBASHPROFILE'
 			sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
 			auto-sync = yes
 		EndofgentooConf
-		source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
-		#同步过于耗时，故注释掉
-		#emerge --sync
-		emerge-webrsync
-		emerge --config sys-libs/timezone-data 2>/dev/null
-		#eselect profile list
-		GENTOOnosystemdStable="$(eselect profile list | grep -Ev 'desktop|hardened|developer|systemd|selinux|multilib' | grep stable | tail -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
-		eselect profile set "${GENTOOnosystemdStable}"
-		etc-update --automode -3
-		etc-update
-		#dispatch-conf
-		emerge -uvDN --with-bdeps=y @world
-		emerge eix 2>/dev/null
-		echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
-		#rm -f vnc* zsh* .profile
-		mv -f .profile.bak .profile 2>/dev/null
-		#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-		chmod +x /usr/local/bin/neofetch
-		neofetch
-		#bash
-		# exit 0
-	}
-	#############################
-	void_linux_repository() {
-		LINUX_DISTRO='void'
-		cat >/etc/locale.conf <<-'EOF'
+    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
+    #同步过于耗时，故注释掉
+    #emerge --sync
+    emerge-webrsync
+    emerge --config sys-libs/timezone-data 2>/dev/null
+    #eselect profile list
+    GENTOOnosystemdStable="$(eselect profile list | grep -Ev 'desktop|hardened|developer|systemd|selinux|multilib' | grep stable | tail -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
+    eselect profile set "${GENTOOnosystemdStable}"
+    etc-update --automode -3
+    etc-update
+    #dispatch-conf
+    emerge -uvDN --with-bdeps=y @world
+    emerge eix 2>/dev/null
+    echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+    #rm -f vnc* zsh* .profile
+    mv -f .profile.bak .profile 2>/dev/null
+    #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+    chmod +x /usr/local/bin/neofetch
+    neofetch
+    #bash
+    # exit 0
+}
+#############################
+void_linux_repository() {
+    LINUX_DISTRO='void'
+    cat >/etc/locale.conf <<-'EOF'
 			LANG="en_US.UTF-8"
 			LANGUAGE="en_US:zh"
 			LC_COLLATE=C
 		EOF
-		mkdir -p /etc/xbps.d
-		cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
-		sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.tuna.tsinghua.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
-		xbps-install -S
-		xbps-install -uy xbps
-		xbps-install -y wget curl
-		#wget -qO- 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' | bash -
-		neofetch
-		rm -f vnc* zsh* .profile
-		mv -f .profile.bak .profile 2>/dev/null
-		#wget -qO zsh.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
-		#sed -i '1 c\#!/bin/bash' zsh.sh
-		#chmod +x zsh.sh
-		echo '检测到您当前的系统为Void GNU/Linux,将不会为您继续配置任何优化步骤！'
-		#zsh 2>/dev/null || bash
-		#exit 0
-	}
-	##########################
-	if grep -Eq 'Funtoo|Gentoo' '/etc/os-release'; then
-		gentoo_gnu_linux_make_conf
-	elif grep -qi 'Void' '/etc/issue'; then
-		void_linux_repository
-	elif [ "$(uname -m)" = "mips" ]; then
-		chattr -i /etc/apt/sources.list
-	elif ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
-		chattr -i /etc/apt/sources.list 2>/dev/null
-	fi
-	####################
-	apt update
-	apt list --upgradable
-	echo "正在升级所有软件包..."
-	apt dist-upgrade -y
-	apt install -y procps
-	apt clean
+    mkdir -p /etc/xbps.d
+    cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+    sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.tuna.tsinghua.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
+    xbps-install -S
+    xbps-install -uy xbps
+    xbps-install -y wget curl
+    #wget -qO- 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' | bash -
+    neofetch
+    rm -f vnc* zsh* .profile
+    mv -f .profile.bak .profile 2>/dev/null
+    #wget -qO zsh.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
+    #sed -i '1 c\#!/bin/bash' zsh.sh
+    #chmod +x zsh.sh
+    echo '检测到您当前的系统为Void GNU/Linux,将不会为您继续配置任何优化步骤！'
+    #zsh 2>/dev/null || bash
+    #exit 0
+}
+##########################
+if grep -Eq 'Funtoo|Gentoo' '/etc/os-release'; then
+    gentoo_gnu_linux_make_conf
+elif grep -qi 'Void' '/etc/issue'; then
+    void_linux_repository
+elif [ "$(uname -m)" = "mips" ]; then
+    chattr -i /etc/apt/sources.list
+elif ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
+    chattr -i /etc/apt/sources.list 2>/dev/null
+fi
+####################
+apt update
+apt list --upgradable
+echo "正在升级所有软件包..."
+apt dist-upgrade -y
+apt install -y procps
+apt clean
 
-	#############################
-	grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
+#############################
+grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
 
-	echo "Welcome to Debian GNU/Linux."
-	cat /etc/issue
-	uname -a
-	rm -f vnc-autostartup .profile
-	if [ -f ".profile.bak" ]; then
-		mv -f .profile.bak .profile
-	fi
-	#################
-	if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
-		mv -f .bash_profile.bak .bash_profile.bak 2>/dev/null
-		mv -f .bash_login.bak .basfh_login.bak 2>/dev/null
-	fi
-	####################
-	echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
-	echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
-	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-	chmod +x /usr/local/bin/neofetch
-	neofetch
-	################
-	################
-	slackware_mirror_list() {
-		LINUX_DISTRO='slackware'
-		sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
-		sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
-		sed -i '$ a\https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
-		slackpkg update gpg
-		slackpkg update
-	}
-	###################
-	if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
-		slackware_mirror_list
-	fi
-	#############################################
-	fedora_31_repos() {
-		curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
-		curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
-	}
-	###########
-	fedora_32_repos() {
-		cat >/etc/yum.repos.d/fedora.repo <<-'EndOfYumRepo'
+echo "Welcome to Debian GNU/Linux."
+cat /etc/issue
+uname -a
+rm -f vnc-autostartup .profile
+if [ -f ".profile.bak" ]; then
+    mv -f .profile.bak .profile
+fi
+#################
+if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
+    mv -f .bash_profile.bak .bash_profile.bak 2>/dev/null
+    mv -f .bash_login.bak .basfh_login.bak 2>/dev/null
+fi
+####################
+echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
+echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
+#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+chmod +x /usr/local/bin/neofetch
+neofetch
+################
+################
+slackware_mirror_list() {
+    LINUX_DISTRO='slackware'
+    sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
+    sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
+    sed -i '$ a\https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
+    slackpkg update gpg
+    slackpkg update
+}
+###################
+if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
+    slackware_mirror_list
+fi
+#############################################
+fedora_31_repos() {
+    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
+    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
+}
+###########
+fedora_32_repos() {
+    cat >/etc/yum.repos.d/fedora.repo <<-'EndOfYumRepo'
 			[fedora]
 			name=Fedora $releasever - $basearch
 			failovermethod=priority
@@ -1483,7 +1485,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 			skip_if_unavailable=False
 		EndOfYumRepo
 
-		cat >/etc/yum.repos.d/fedora-updates.repoo <<-'EndOfYumRepo'
+    cat >/etc/yum.repos.d/fedora-updates.repoo <<-'EndOfYumRepo'
 			[updates]
 			name=Fedora $releasever - $basearch - Updates
 			failovermethod=priority
@@ -1494,10 +1496,10 @@ cat >.profile <<-'EDITBASHPROFILE'
 			gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
 			skip_if_unavailable=False
 		EndOfYumRepo
-	}
-	#########################
-	fedora_3x_repos() {
-		cat >/etc/yum.repos.d/fedora-modular.repo <<-'EndOfYumRepo'
+}
+#########################
+fedora_3x_repos() {
+    cat >/etc/yum.repos.d/fedora-modular.repo <<-'EndOfYumRepo'
 			[fedora-modular]
 			name=Fedora Modular $releasever - $basearch
 			failovermethod=priority
@@ -1509,7 +1511,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 			skip_if_unavailable=False
 		EndOfYumRepo
 
-		cat >/etc/yum.repos.d/fedora-updates-modular.repo <<-'EndOfYumRepo'
+    cat >/etc/yum.repos.d/fedora-updates-modular.repo <<-'EndOfYumRepo'
 			[updates-modular]
 			name=Fedora Modular $releasever - $basearch - Updates
 			failovermethod=priority
@@ -1520,43 +1522,43 @@ cat >.profile <<-'EDITBASHPROFILE'
 			gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
 			skip_if_unavailable=False
 		EndOfYumRepo
-		#dnf install -y glibc-langpack-zh
-		#localedef -c -f UTF-8 -i en_US zh_CN.utf8
-		#dnf clean packages
-	}
-	######################
-	if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "fedora" ]; then
-		tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
-		mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
-		FEDORA_VERSION="$(cat /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
-		if ((${FEDORA_VERSION} >= 30)); then
-			if ((${FEDORA_VERSION} >= 32)); then
-				fedora_32_repos
-			else
-				fedora_31_repos
-			fi
-			fedora_3x_repos
-		fi
+    #dnf install -y glibc-langpack-zh
+    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
+    #dnf clean packages
+}
+######################
+if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "fedora" ]; then
+    tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
+    mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
+    FEDORA_VERSION="$(cat /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
+    if ((${FEDORA_VERSION} >= 30)); then
+        if ((${FEDORA_VERSION} >= 32)); then
+            fedora_32_repos
+        else
+            fedora_31_repos
+        fi
+        fedora_3x_repos
+    fi
 
-	elif [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "centos" ]; then
-		cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
-		curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
-	fi
-	############################
-	note_of_non_debian() {
-		echo "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
-		echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
-		bash zsh.sh
-		debian-i
-		#bash zsh-i.sh
-		#bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')" || bash -c "$(wget -qO- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
-	}
-	################
-	if ! grep -q 'debian' '/etc/os-release'; then
-		note_of_non_debian
-	else
-		bash zsh.sh
-	fi
+elif [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "centos" ]; then
+    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+    curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
+fi
+############################
+note_of_non_debian() {
+    echo "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
+    echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
+    bash zsh.sh
+    debian-i
+    #bash zsh-i.sh
+    #bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')" || bash -c "$(wget -qO- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
+}
+################
+if ! grep -q 'debian' '/etc/os-release'; then
+    note_of_non_debian
+else
+    bash zsh.sh
+fi
 EDITBASHPROFILE
 
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
