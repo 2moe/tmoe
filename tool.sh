@@ -1768,7 +1768,7 @@ install_xfce4_desktop() {
 	#上面的依赖摆放的位置是有讲究的。
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 		dpkg --configure -a
 		echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 		echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
@@ -1850,7 +1850,7 @@ install_lxde_desktop() {
 	DEPENDENCY_01='lxde'
 	DEPENDENCY_02="tigervnc"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 		dpkg --configure -a
 		echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 		echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
@@ -1918,7 +1918,7 @@ install_mate_desktop() {
 		if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
 			echo "" >/var/lib/dpkg/info/udisks2.postinst
 		fi
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 		dpkg --configure -a
 		aptitude install -y mate-desktop-environment mate-terminal 2>/dev/null || apt install -y mate-desktop-environment-core mate-terminal
 		apt autopurge -y ^libfprint
@@ -1969,7 +1969,7 @@ install_lxqt_desktop() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
 		apt update
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 
 		dpkg --configure -a
 		echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -2028,7 +2028,7 @@ install_kde_plasma5_desktop() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
 		apt update
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 		echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tightvncserver等软件包。'
 		dpkg --configure -a
 		echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -2088,7 +2088,7 @@ install_gnome3_desktop() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
 		apt update
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 		echo '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
 		dpkg --configure -a
 		echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -2146,7 +2146,7 @@ install_cinnamon_desktop() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
 		apt update
-		apt-mark hold udisks2
+		#apt-mark hold udisks2
 		echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
 		dpkg --configure -a
 		echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
