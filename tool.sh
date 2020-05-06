@@ -689,9 +689,8 @@ cookies_readme() {
 		同时希望您能够了解，将cookie文件泄露出去等同于将账号泄密！
 		请妥善保管好该文件及相关数据！
 	EndOFcookies
-	echo "Press enter to continue"
-	echo "${YELLOW}按回车键继续。${RESET}"
-	read
+	RETURN_TO_WHERE='download_videos'
+	do_you_want_to_continue
 	if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
 		COOKIESTATUS="检测到您已启用加载cookie功能"
 		CurrentCOOKIESpath="您当前的cookie路径为$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
@@ -1192,9 +1191,7 @@ install_vscodium() {
 		CodiumARCH=x64
 	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "暂不支持i386 linux"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		read
+		arch_does_not_support
 		which_vscode_edition
 	fi
 
@@ -1475,7 +1472,7 @@ install_chromium_browser() {
 	echo "请问您是否需要关闭沙盒模式？"
 	echo "若您需要以root权限运行chromium，则需要关闭，否则请保持开启状态。"
 	echo "${YELLOW}Do you need to turn off the sandbox mode?[Y/n]${RESET}"
-	echo "Press enter to close,type n to cancel."
+	echo "Press enter to close this mode,type n to cancel."
 	echo "按${YELLOW}回车${RESET}键${RED}关闭${RESET}该模式，输${YELLOW}n${RESET}取消"
 	read opt
 	case $opt in
@@ -3484,16 +3481,18 @@ frequently_asked_questions() {
 	fi
 	#######################
 	if [ "${TMOE_FAQ}" == '2' ]; then
-		echo "${YELLOW}按回车键卸载gvfs和udisks2，按Ctrl+C取消${RESET}"
-		read
+		echo "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"
+		RETURN_TO_WHERE='frequently_asked_questions'
+		do_you_want_to_continue
 		apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
 		tmoe_linux_tool_menu
 	fi
 	############################
 	if [ "${TMOE_FAQ}" == '3' ]; then
 		echo "如果版本更新后登录出现闪退的情况，那么您可以输rm -rf ~/.config/tencent-qq/ 后重新登录。"
-		echo "${YELLOW}按回车键自动执行上述命令，按Ctrl+C取消${RESET}"
-		read
+		echo "${YELLOW}按回车键自动执行上述命令${RESET}"
+		RETURN_TO_WHERE='frequently_asked_questions'
+		do_you_want_to_continue
 		rm -rvf ~/.config/tencent-qq/
 		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
@@ -3537,7 +3536,6 @@ fix_vnc_dbus_launch() {
 	fi
 	RETURN_TO_WHERE='frequently_asked_questions'
 	do_you_want_to_continue
-	read
 
 	if grep 'dbus-launch' ~/.vnc/xstartup; then
 		DBUSstatus="$(echo 检测到dbus-launch当前在VNC脚本中处于启用状态)"
