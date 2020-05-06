@@ -3148,7 +3148,8 @@ modify_xrdp_conf() {
 
 	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
 		if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
-			echo "未检测到已备份的xrdp配置文件，2s后将为您自动安装。"
+			echo "未检测到已备份的xrdp配置文件，请重新配置"
+			echo "Please reconfigure xrdp"
 			sleep 2s
 			xrdp_onekey
 		fi
@@ -3401,7 +3402,7 @@ xrdp_onekey() {
 		});
 	EndOfxrdp
 	#############
-	cat >"/etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla" <<-'ENDofpolkit'
+	cat >/etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla <<-'ENDofpolkit'
 		[Allow Colord all Users]
 		Identity=unix-user:*
 		Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
@@ -3537,6 +3538,7 @@ xrdp_reset() {
 	echo 'Press Enter to confirm,press Ctrl+C to cancel.'
 	RETURN_TO_WHERE='configure_xrdp'
 	do_you_want_to_continue
+	rm -f /etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla /etc/polkit-1/localauthority.conf.d/02-allow-colord.conf
 	cd ${HOME}/.config/tmoe-linux
 	cp -pf xrdp.ini startwm.sh /etc/xrdp/
 }
