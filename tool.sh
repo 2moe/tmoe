@@ -2969,6 +2969,7 @@ modify_remote_desktop_config() {
 	modify_remote_desktop_config
 }
 #########################
+#########################
 modify_vnc_conf() {
 	if [ ! -e /bin/nano ]; then
 		apt update
@@ -3119,54 +3120,310 @@ modify_xsdl_ip_address() {
 		modify_xsdl_conf
 	fi
 }
-#################################################
+#############################################
+#############################################
+press_enter_to_return_configure_xrdp() {
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	configure_xrdp
+}
+##############
 modify_xrdp_conf() {
-	if [ ! -e "/usr/sbin/xrdp" ]; then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			apt update
-			apt install -y xrdp
-		elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-			apk update
-			apk add xrdp
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
+		echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}xrdp可以正常连接！"
+		RETURN_TO_WHERE='modify_remote_desktop_config'
+		do_you_want_to_continue
+	fi
 
-		elif [ "${LINUX_DISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm xrdp
+	pgrep xrdp &>/dev/null
+	if [ "$?" = "0" ]; then
+		FILEBROWSER_STATUS='检测到xrdp进程正在运行'
+		FILEBROWSER_PROCESS='Restart重启'
+	else
+		FILEBROWSER_STATUS='检测到xrdp进程未运行'
+		FILEBROWSER_PROCESS='Start启动'
+	fi
 
-		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			dnf install -y xrdp || yum install -y xrdp
-
-		elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
-			#opkg update
-			opkg install xrdp
-
-		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			emerge -av layman
-			layman -a bleeding-edge
-			layman -S
-			#ACCEPT_KEYWORDS="~amd64" USE="server" emerge -a xrdp
-			emerge -av xrdp
+	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
+		if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
+			echo "未检测到已备份的xrdp配置文件，2s后将为您自动安装。"
+			sleep 2s
+			xrdp_onekey
 		fi
-
-		if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-			echo '检测到您使用的是WSL,为防止与windows自带的远程桌面的端口冲突，建议您将默认的3389端口修改为其它'
+		xrdp_restart
+	else
+		configure_xrdp
+	fi
+}
+#############
+xrdp_desktop_enviroment() {
+	X11_OR_WAYLAND_DESKTOP='xrdp'
+	configure_remote_desktop_enviroment
+}
+#############
+configure_xrdp() {
+	#进入xrdp配置文件目录
+	cd /etc/xrdp/
+	TMOE_OPTION=$(
+		whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？" 14 50 5 \
+			"1" "One-key conf 初始化一键配置" \
+			"2" "指定xrdp桌面环境" \
+			"3" "xrdp port 修改xrdp端口" \
+			"4" "xrdp.ini修改配置文件" \
+			"5" "startwm.sh修改启动脚本" \
+			"6" "stop 停止" \
+			"7" "status 进程状态" \
+			"8" "pulse_server音频服务" \
+			"9" "reset 重置" \
+			"10" "remove 卸载/移除" \
+			"11" "进程管理说明" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	if [ "${TMOE_OPTION}" == '0' ]; then
+		#tmoe_linux_tool_menu
+		modify_remote_desktop_config
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '1' ]; then
+		service xrdp stop 2>/dev/null
+		xrdp_onekey
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '2' ]; then
+		X11_OR_WAYLAND_DESKTOP='xrdp'
+		#xrdp_desktop_enviroment
+		configure_remote_desktop_enviroment
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '3' ]; then
+		xrdp_port
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '4' ]; then
+		nano /etc/xrdp/xrdp.ini
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '5' ]; then
+		nano /etc/xrdp/startwm.sh
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '6' ]; then
+		service xrdp stop 2>/dev/null
+		service xrdp status | head -n 24
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '7' ]; then
+		echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
+		service xrdp status
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '8' ]; then
+		xrdp_pulse_server
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '9' ]; then
+		xrdp_reset
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '10' ]; then
+		pkill xrdp
+		echo "正在停止xrdp进程..."
+		echo "Stopping xrdp..."
+		service xrdp stop 2>/dev/null
+		echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+		#service xrdp restart
+		RETURN_TO_WHERE='configure_xrdp'
+		do_you_want_to_continue
+		rm -fv /etc/xrdp/xrdp.ini /etc/xrdp/startwm.sh
+		echo "${YELLOW}已删除xrdp配置文件${RESET}"
+		echo "即将为您卸载..."
+		${PACKAGES_REMOVE_COMMAND} xrdp
+	fi
+	########################################
+	if [ "${TMOE_OPTION}" == '11' ]; then
+		xrdp_systemd
+	fi
+	##############################
+	press_enter_to_return_configure_xrdp
+}
+#############
+configure_remote_desktop_enviroment() {
+	INSTALLDESKTOP=$(whiptail --title "REMOTE_DESKTOP" --menu \
+		"您想要配置哪个桌面？按方向键选择，回车键确认！\n Which desktop environment do you want to configure? " 15 60 5 \
+		"1" "xfce：兼容性高" \
+		"2" "lxde：轻量化桌面" \
+		"3" "mate：基于GNOME 2" \
+		"4" "lxqt" \
+		"5" "kde plasma 5" \
+		"6" "gnome 3" \
+		"7" "cinnamon" \
+		"8" "dde (deepin desktop)" \
+		"0" "我一个都不选 =￣ω￣=" \
+		3>&1 1>&2 2>&3)
+	##########################
+	if [ "$INSTALLDESKTOP" == '1' ]; then
+		REMOTE_DESKTOP_SESSION='xfce4-session'
+		#configure_remote_xfce4_desktop
+	fi
+	##########################
+	if [ "$INSTALLDESKTOP" == '2' ]; then
+		REMOTE_DESKTOP_SESSION='lxde-session'
+		#configure_remote_lxde_desktop
+	fi
+	##########################
+	if [ "$INSTALLDESKTOP" == '3' ]; then
+		REMOTE_DESKTOP_SESSION='mate-session'
+		#configure_remote_mate_desktop
+	fi
+	##############################
+	if [ "${BETA_DESKTOP}" == '4' ]; then
+		REMOTE_DESKTOP_SESSION='lxqt-session'
+		#configure_remote_lxqt_desktop
+	fi
+	##############################
+	if [ "${BETA_DESKTOP}" == '5' ]; then
+		#REMOTE_DESKTOP_SESSION='plasma-x11-session'
+		#configure_remote_kde_plasma5_desktop
+		if [ $(command -v startkde) ]; then
+			REMOTE_DESKTOP_SESSION="startkde"
+		else
+			REMOTE_DESKTOP_SESSION="startplasma-x11"
 		fi
 	fi
-	if [ ! -e "/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf" ]; then
-		mkdir -p /etc/polkit-1/localauthority.conf.d
-		cat >/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf <<-'EndOfFile'
-			polkit.addRule(function(action, subject) {
-			if ((action.id == “org.freedesktop.color-manager.create-device” || action.id == “org.freedesktop.color-manager.create-profile” || action.id == “org.freedesktop.color-manager.delete-device” || action.id == “org.freedesktop.color-manager.delete-profile” || action.id == “org.freedesktop.color-manager.modify-device” || action.id == “org.freedesktop.color-manager.modify-profile”) && subject.isInGroup(“{group}”))
-			{
-			return polkit.Result.YES;
-			}
-			});
-		EndOfFile
+	##############################
+	if [ "${BETA_DESKTOP}" == '6' ]; then
+		REMOTE_DESKTOP_SESSION='gnome-session'
+		#configure_remote_gnome3_desktop
+	fi
+	##############################
+	if [ "${BETA_DESKTOP}" == '7' ]; then
+		REMOTE_DESKTOP_SESSION='cinnamon-session'
+		#configure_remote_cinnamon_desktop
+	fi
+	##############################
+	if [ "${BETA_DESKTOP}" == '8' ]; then
+		REMOTE_DESKTOP_SESSION='startdde'
+		#configure_remote_deepin_desktop
+	fi
+	##########################
+	if [ "$INSTALLDESKTOP" == '0' ]; then
+		modify_remote_desktop_config
+	fi
+	##########################
+	configure_remote_desktop_session
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	modify_remote_desktop_config
+}
+##############
+configure_remote_desktop_session() {
+	if [ "${X11_OR_WAYLAND_DESKTOP}" == 'xrdp' ]; then
+		echo "${REMOTE_DESKTOP_SESSION}" >~/.xsession
+		#touch ~/.session
+		sed -i '/X11\/Xsession/d' startwm.sh
+		cat >>startwm.sh <<-'EnfOfStartWM'
+			test -x /etc/X11/Xsession && exec /etc/X11/Xsession
+			exec /bin/sh /etc/X11/Xsession
+		EnfOfStartWM
+		sed -i "s:exec /bin/sh.*/etc/X11/Xsession:exec /bin/sh ${REMOTE_DESKTOP_SESSION} /etc/X11/Xsession:g" /etc/xrdp/startwm.sh
+	fi
+	echo "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
+	echo "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
+	echo "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
+	echo 'If the configuration fails, please use the mandatory configuration function！'
+	echo "Press enter to return,type f to force congigure."
+	echo "按${GREEN}回车键${RESET}${RED}返回${RESET}，输${YELLOW}f${RESET}启用${BLUE}强制配置功能${RESET}"
+
+	read opt
+	case $opt in
+	y* | Y* | "") ;;
+	f* | F*)
+		sed -i "s@/etc/X11/Xsession@${REMOTE_DESKTOP_SESSION}@g" startwm.sh
+		;;
+	*)
+		echo "Invalid choice. skipped."
+		${RETURN_TO_WHERE}
+		#beta_features
+		;;
+	esac
+	service xrdp restart
+	service xrdp status
+}
+#####################
+xrdp_pulse_server() {
+	cd /etc/xrdp
+	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么请可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2) \n若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux,并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'" 15 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+
+		if grep '^export.*PULSE_SERVER' startwm.sh; then
+			sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startwm.sh
+		else
+			sed -i "4 a\export PULSE_SERVER=$TARGET" startwm.sh
+		fi
+		echo 'Your current PULSEAUDIO SERVER address has been modified.'
+		echo '您当前的音频地址已修改为'
+		echo $(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2)
+		press_enter_to_return_configure_xrdp
+	else
+		configure_xrdp
 	fi
 
-	service xrdp restart || systemctl restart xrdp
-	if [ -e /usr/bin/ufw ]; then
-		ufw allow 3389
+}
+##############
+xrdp_onekey() {
+	RETURN_TO_WHERE='configure_xrdp'
+	do_you_want_to_continue
+
+	DEPENDENCY_01='xrdp'
+	DEPENDENCY_02='nano'
+	NON_DEBIAN='false'
+	if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+		emerge -avk layman
+		layman -a bleeding-edge
+		layman -S
+		#ACCEPT_KEYWORDS="~amd64" USE="server" emerge -a xrdp
 	fi
+	beta_features_quick_install
+	##############
+	mkdir -p /etc/polkit-1/localauthority.conf.d /etc/polkit-1/localauthority/50-local.d/
+	cat >/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf <<-'EndOfxrdp'
+		polkit.addRule(function(action, subject) {
+		if ((action.id == “org.freedesktop.color-manager.create-device” || action.id == “org.freedesktop.color-manager.create-profile” || action.id == “org.freedesktop.color-manager.delete-device” || action.id == “org.freedesktop.color-manager.delete-profile” || action.id == “org.freedesktop.color-manager.modify-device” || action.id == “org.freedesktop.color-manager.modify-profile”) && subject.isInGroup(“{group}”))
+		{
+		return polkit.Result.YES;
+		}
+		});
+	EndOfxrdp
+	#############
+	cat >"/etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla" <<-'ENDofpolkit'
+		[Allow Colord all Users]
+		Identity=unix-user:*
+		Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
+		ResultAny=no
+		ResultInactive=no
+		ResultActive=yes
+
+		[Allow Package Management all Users]
+		Identity=unix-user:*
+		Action=org.debian.apt.*;io.snapcraft.*;org.freedesktop.packagekit.*;com.ubuntu.update-notifier.*
+		ResultAny=no
+		ResultInactive=no
+		ResultActive=yes
+	ENDofpolkit
+	###################
+
+	if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
+		mkdir -p ${HOME}/.config/tmoe-linux/
+		cd /etc/xrdp/
+		cp -p startwm.sh xrdp.ini ${HOME}/.config/tmoe-linux/
+	fi
+	####################
 	if [ -e "/usr/bin/xfce4-session" ]; then
 		if [ ! -e " ~/.xsession" ]; then
 			echo 'xfce4-session' >~/.xsession
@@ -3175,25 +3432,113 @@ modify_xrdp_conf() {
 		fi
 	fi
 
-	if ! grep -q 'PULSE_SERVER' /etc/xrdp/startwm.sh; then
-		sed -i '/test -x \/etc\/X11/i\#export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
+	if ! grep -q '^export PULSE_SERVER' /etc/xrdp/startwm.sh; then
+		sed -i '/test -x \/etc\/X11/i\export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
 	fi
-
-	service xrdp status || systemctl status xrdp
-	echo "如需修改启动脚本，请输nano /etc/xrdp/startwm.sh"
-	echo "如需修改配置文件，请输nano /etc/xrdp/xrdp.ini"
-	echo "已经为您启动xrdp服务，默认端口为3389"
+	###########################
+	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+		if grep -q '172..*1' "/etc/resolv.conf"; then
+			echo "检测到您当前使用的可能是WSL2"
+			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+			sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" /etc/xrdp/startwm.sh
+			echo "已将您的音频服务ip修改为${WSL2IP}"
+		fi
+		echo '检测到您使用的是WSL,为防止与windows自带的远程桌面的3389端口冲突，请您设定一个新的端口'
+		sleep 2s
+	fi
+	xrdp_port
+	xrdp_restart
+	################
+	press_enter_to_return_configure_xrdp
+	#此处的返回步骤并非多余
+}
+############
+xrdp_restart() {
+	cd /etc/xrdp/
+	RDP_PORT=$(cat xrdp.ini | grep 'port=' | head -n 1 | cut -d '=' -f 2)
+	service xrdp restart 2>/dev/null
+	if [ "$?" != "0" ]; then
+		/etc/init.d/xrdp restart
+	fi
+	service xrdp status | head -n 24
+	echo "您可以输${YELLOW}service xrdp stop${RESET}来停止进程"
 	echo "您当前的IP地址为"
 	ip -4 -br -c a | cut -d '/' -f 1
+	echo "端口号为${RDP_PORT}"
+	echo "正在为您启动xrdp服务，本机默认访问地址为localhost:${RDP_PORT}"
+	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
 	echo "如需修改当前用户密码，请输passwd"
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo '检测到您使用的是WSL，正在为您打开音频服务'
 		export PULSE_SERVER=tcp:127.0.0.1
+		if grep -q '172..*1' "/etc/resolv.conf"; then
+			echo "检测到您当前使用的可能是WSL2"
+			WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+			export PULSE_SERVER=tcp:${WSL2IP}
+			echo "已将您的音频服务ip修改为${WSL2IP}"
+		fi
 		cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
 		echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 	fi
+}
+#################
+xrdp_port() {
+	cd /etc/xrdp/
+	RDP_PORT=$(cat xrdp.ini | grep 'port=' | head -n 1 | cut -d '=' -f 2)
+	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,不建议您将其设置为22、80、443或3389,检测到您当前的端口为${RDP_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		press_enter_to_return_configure_xrdp
+	fi
+	sed -i "s@port=${RDP_PORT}@port=${TARGET_PORT}@" xrdp.ini
+	ls -l $(pwd)/xrdp.ini
+	cat xrdp.ini | grep 'port=' | head -n 1
+	/etc/init.d/xrdp restart
+}
+#################
+xrdp_systemd() {
+	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
+		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
+	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
+	fi
+
+	cat <<-'EOF'
+		    systemd管理
+			输systemctl start xrdp启动
+			输systemctl stop xrdp停止
+			输systemctl status xrdp查看进程状态
+			输systemctl enable xrdp开机自启
+			输systemctl disable xrdp禁用开机自启
+
+			service命令
+			输service xrdp start启动
+			输service xrdp stop停止
+			输service xrdp status查看进程状态
+
+		    init.d管理
+			/etc/init.d/xrdp start启动
+			/etc/init.d/xrdp restart重启
+			/etc/init.d/xrdp stop停止
+			/etc/init.d/xrdp statuss查看进程状态
+			/etc/init.d/xrdp force-reload重新加载
+	EOF
+}
+###############
+xrdp_reset() {
+	echo "正在停止xrdp进程..."
+	echo "Stopping xrdp..."
+	pkill xrdp
+	service xrdp stop 2>/dev/null
+	echo "${YELLOW}WARNING！继续执行此操作将丢失xrdp配置信息！${RESET}"
+	echo 'Press Enter to confirm,press Ctrl+C to cancel.'
+	RETURN_TO_WHERE='configure_xrdp'
+	do_you_want_to_continue
+	cd ${HOME}/.config/tmoe-linux
+	cp -pf xrdp.ini startwm.sh /etc/xrdp/
 }
 #################################
 #################################
@@ -3470,14 +3815,12 @@ frequently_asked_questions() {
 	if [ "${TMOE_FAQ}" == '1' ]; then
 		#echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
 		echo "若无法打开，则请手动输rm -rf ~/baidunetdisk"
-		echo "${YELLOW}按回车键自动执行上述命令，按Ctrl+C取消${RESET}"
+		echo "按回车键自动执行${YELLOW}rm -vf ~/baidunetdisk/baidunetdiskdata.db${RESET}"
 		RETURN_TO_WHERE='frequently_asked_questions'
 		do_you_want_to_continue
 		rm -vf ~/baidunetdisk/baidunetdiskdata.db
 		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		tmoe_linux_tool_menu
 	fi
 	#######################
 	if [ "${TMOE_FAQ}" == '2' ]; then
@@ -3716,6 +4059,7 @@ beta_features() {
 			"16" "fbreader(epub阅读器)" \
 			"17" "gnome-system-monitor(资源监视器)" \
 			"18" "telegram(注重保护隐私的社交app)" \
+			"19" "Grub Customizer(图形化开机引导编辑器)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3795,6 +4139,10 @@ beta_features() {
 	############################
 	if [ "${TMOE_BETA}" == '18' ]; then
 		install_telegram
+	fi
+	############################
+	if [ "${TMOE_BETA}" == '19' ]; then
+		install_grub_customizer
 	fi
 	########################################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -4164,6 +4512,13 @@ install_telegram() {
 	NON_DEBIAN='false'
 	beta_features_quick_install
 }
+######################
+install_grub_customizer() {
+	DEPENDENCY_01="grub-customizer"
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
+}
 ############################
 install_qbitorrent() {
 	DEPENDENCY_01="qbittorrent"
@@ -4257,7 +4612,7 @@ install_nginx_webdav() {
 configure_nginx_webdav() {
 	#进入nginx webdav配置文件目录
 	cd /etc/nginx/conf.d/
-	TMOE_OPTION=$(whiptail --title "CONFIGURE FILEBROWSER" --menu "您想要修改哪项配置？" 14 50 5 \
+	TMOE_OPTION=$(whiptail --title "CONFIGURE WEBDAV" --menu "您想要修改哪项配置？" 14 50 5 \
 		"1" "One-key conf 初始化一键配置" \
 		"2" "管理访问账号" \
 		"3" "view logs 查看日志" \
@@ -4336,7 +4691,7 @@ configure_nginx_webdav() {
 		RETURN_TO_WHERE='configure_nginx_webdav'
 		do_you_want_to_continue
 		service nginx stop
-		apt remove nginx nginx-extras
+		${PACKAGES_REMOVE_COMMAND} nginx nginx-extras
 	fi
 	########################################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
