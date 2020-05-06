@@ -727,6 +727,58 @@ cookies_readme() {
 	read
 	download_videos
 }
+#########
+check_latest_video_download_tool_version() {
+	echo "正在${YELLOW}检测${RESET}${GREEN}版本信息${RESET}..."
+	cat <<-ENDofnote
+		如需${YELLOW}卸载${RESET}${BLUE}annie${RESET},请输${GREEN}rm /usr/local/bin/annie${RESET}
+		如需${YELLOW}卸载${RESET}${BLUE}you-get${RESET},请输${GREEN}pip3 uninstall you-get${RESET}
+		如需${YELLOW}卸载${RESET}${BLUE}youtube-dl${RESET},请输${GREEN}pip3 uninstall youtube-dl${RESET}
+	ENDofnote
+
+	LATEST_ANNIE_VERSION=$(curl -LfsS https://gitee.com/mo2/annie/raw/linux_amd64/annie_version.txt | head -n 1)
+
+	####################
+	if [ $(command -v you-get) ]; then
+		YouGetVersion=$(you-get -V 2>&1 | head -n 1 | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
+	else
+		YouGetVersion='您尚未安装you-get'
+	fi
+	#LATEST_YOU_GET_VERSION=$(curl -LfsS https://github.com/soimort/you-get/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
+
+	#######################
+	if [ $(command -v youtube-dl) ]; then
+		YOTUBEdlVersion=$(youtube-dl --version 2>&1 | head -n 1)
+	else
+		YOTUBEdlVersion='您尚未安装youtube-dl'
+	fi
+	#LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://github.com/ytdl-org/youtube-dl/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
+	LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://pypi.tuna.tsinghua.edu.cn/simple/youtube-dl/ | grep .whl | tail -n 1 | cut -d '=' -f 3 | cut -d '>' -f 2 | cut -d '<' -f 1 | cut -d '-' -f 2)
+	##################
+	cat <<-ENDofTable
+		╔═══╦══════════╦═══════════════════╦════════════════════
+		║   ║          ║                   ║                    
+		║   ║ software ║ 最新版本          ║   本地版本 🎪
+		║   ║          ║latest version✨   ║  Local version     
+		║---║----------║-------------------║--------------------
+		║ 1 ║   annie  ║                   ║  ${AnnieVersion}
+		║   ║          ║${LATEST_ANNIE_VERSION}║
+		║---║----------║-------------------║--------------------
+		║   ║          ║                   ║ ${YouGetVersion}                   
+		║ 2 ║ you-get  ║                   ║  
+		║---║----------║-------------------║--------------------
+		║   ║          ║                   ║  ${YOTUBEdlVersion}                  
+		║ 3 ║youtube-dl║${LATEST_YOUTUBE_DL_VERSION}           ║  
+
+		annie: github.com/iawia002/annie
+		you-get : github.com/soimort/you-get
+		youtube-dl：github.com/ytdl-org/youtube-dl
+	ENDofTable
+	#对原开发者iawia002的代码进行自动编译
+	echo "为避免加载超时，故${RED}隐藏${RESET}了部分软件的${GREEN}版本信息。${RESET}"
+	echo "annie将于每月1号凌晨4点自动编译并发布最新版"
+	echo "您可以按${GREEN}回车键${RESET}来${BLUE}获取更新${RESET}，亦可前往原开发者的仓库来${GREEN}手动下载${RESET}新版"
+}
 ##################
 upgrade_video_download_tool() {
 	cat <<-'ENDofTable'
@@ -777,52 +829,16 @@ upgrade_video_download_tool() {
 	ENDofTable
 
 	if [ -e "/usr/local/bin/annie" ]; then
-		echo "正在检测版本信息..."
 		#AnnieVersion=$(annie -v | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
 		AnnieVersion=$(cat ~/.config/tmoe-linux/annie_version.txt | head -n 1)
+		check_latest_video_download_tool_version
+
 	else
 		AnnieVersion='您尚未安装annie'
+		echo "检测到您${RED}尚未安装${RESET}annie，跳过${GREEN}版本检测！${RESET}"
 	fi
-	LATEST_ANNIE_VERSION=$(curl -LfsS https://gitee.com/mo2/annie/raw/linux_amd64/annie_version.txt | head -n 1)
 
-	####################
-	if [ $(command -v you-get) ]; then
-		YouGetVersion=$(you-get -V 2>&1 | head -n 1 | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
-	else
-		YouGetVersion='您尚未安装you-get'
-	fi
-	LATEST_YOU_GET_VERSION=$(curl -LfsS https://github.com/soimort/you-get/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
-	#######################
-	if [ $(command -v youtube-dl) ]; then
-		YOTUBEdlVersion=$(youtube-dl --version 2>&1 | head -n 1)
-	else
-		YOTUBEdlVersion='您尚未安装youtube-dl'
-	fi
-	LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://github.com/ytdl-org/youtube-dl/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
-	##################
-	cat <<-ENDofTable
-		╔═══╦══════════╦═══════════════════╦════════════════════
-		║   ║          ║                   ║                    
-		║   ║ software ║ 最新版本          ║   本地版本 🎪
-		║   ║          ║latest      ✨    ║  Local version     
-		║---║----------║-------------------║--------------------
-		║ 1 ║   annie  ║                   ║  ${AnnieVersion}
-		║   ║          ║${LATEST_ANNIE_VERSION}║
-		║---║----------║-------------------║--------------------
-		║   ║          ║                   ║ ${YouGetVersion}                   
-		║ 2 ║ you-get  ║${LATEST_YOU_GET_VERSION}          ║  
-		║---║----------║-------------------║--------------------
-		║   ║          ║                   ║  ${YOTUBEdlVersion}                  
-		║ 3 ║youtube-dl║${LATEST_YOUTUBE_DL_VERSION}         ║  
-
-		annie: github.com/iawia002/annie
-		you-get : github.com/soimort/you-get
-		youtube-dl：github.com/ytdl-org/youtube-dl
-	ENDofTable
-	#对原开发者iawia002的代码进行自动编译，并
-	echo "annie将于每月1号凌晨4点自动编译并发布最新版"
-	echo "您可以按回车键来获取更新，亦可前往原开发者的仓库来手动下载新版"
-	echo "${YELLOW}按回车键将同时更新annie、you-get和youtube-dl${RESET}"
+	echo "按${GREEN}回车键${RESET}将同时更新${YELLOW}annie、you-get和youtube-dl${RESET}"
 	echo 'Press Enter to update'
 	RETURN_TO_WHERE='download_videos'
 	do_you_want_to_continue
@@ -3190,6 +3206,16 @@ first_configure_startvnc() {
 			sed -i 's:dbus-launch::' ~/.vnc/xstartup
 		fi
 	fi
+
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ! -f "/tmp/.Tmoe-MATE-Desktop-Detection-FILE" ]; then
+		echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
+		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
+		else
+			${PACKAGES_REMOVE_COMMAND} ^udisks2 ^gvfs
+		fi
+	fi
+
 	cd /usr/local/bin
 	cat >startvnc <<-'EndOfFile'
 		#!/bin/bash
@@ -3300,7 +3326,7 @@ first_configure_startvnc() {
 	EndOfFile
 
 	if [ -f "/tmp/.Tmoe-MATE-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-MATE-Desktop-Detection-FILE
+		#rm -f /tmp/.Tmoe-MATE-Desktop-Detection-FILE
 		sed -i '/dbus-launch/d' startxsdl
 		sed -i '$ a\dbus-launch mate-session' startxsdl
 	elif [ -f "/tmp/.Tmoe-LXDE-Desktop-Detection-FILE" ]; then
@@ -3448,7 +3474,8 @@ frequently_asked_questions() {
 		#echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
 		echo "若无法打开，则请手动输rm -rf ~/baidunetdisk"
 		echo "${YELLOW}按回车键自动执行上述命令，按Ctrl+C取消${RESET}"
-		read
+		RETURN_TO_WHERE='frequently_asked_questions'
+		do_you_want_to_continue
 		rm -vf ~/baidunetdisk/baidunetdiskdata.db
 		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		echo "${YELLOW}按回车键返回。${RESET}"
@@ -3501,7 +3528,7 @@ frequently_asked_questions() {
 }
 #################
 fix_vnc_dbus_launch() {
-	echo "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的Proot容器上出现了兼容性问题。"
+	echo "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的${BLUE}proot容器${RESET}上出现了兼容性问题。"
 	echo "注1：该操作在linux虚拟机及win10子系统上没有任何问题"
 	echo "注2：2020-0412更新的版本已加入检测功能，理论上不会再出现此问题。"
 	if [ ! -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
@@ -4031,7 +4058,7 @@ install_wps_office() {
 ###################
 thunar_nautilus_dolphion() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "检测到您当前使用的是Proot容器，软件可能无法正常运行。"
+		echo "检测到您当前使用的是${BLUE}proot容器${RESET}，软件可能无法正常运行。"
 		echo "安装后将有可能导致VNC黑屏,按Ctrl+C取消"
 		echo "Press enter to continue,press Ctrl+C to canacel."
 		read
@@ -4305,7 +4332,7 @@ configure_nginx_webdav() {
 ##############
 nginx_onekey() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ] || [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "检测到您处于chroot/proot容器环境下，部分功能可能出现异常。"
+		echo "检测到您处于${BLUE}chroot/proot容器${RESET}环境下，部分功能可能出现异常。"
 		echo "部分系统可能会出现failed，但仍能正常连接。"
 		CHROOT_STATUS='1'
 	fi
@@ -4527,7 +4554,7 @@ nginx_systemd() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
 		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
 	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "检测到您当前处于proot容器环境下，无法使用systemctl命令"
+		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
 	fi
 
 	cat <<-'EOF'
@@ -4880,7 +4907,7 @@ filebrowser_systemd() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
 		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
 	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "检测到您当前处于proot容器环境下，无法使用systemctl命令"
+		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
 	fi
 
 	cat <<-'EOF'
