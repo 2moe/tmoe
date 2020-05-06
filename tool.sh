@@ -293,12 +293,12 @@ check_dependencies() {
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
 		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		curl -Lvo '.busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
-		mkdir -p .busybox-static
-		./busybox dpkg-deb -X .busybox.deb ./.busybox-static
-		mv -f ./.busybox-static/bin/busybox /usr/local/bin/
+		curl -Lvo 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
+		mkdir -p busybox-static
+		./busybox dpkg-deb -X busybox.deb ./busybox-static
+		mv -f ./busybox-static/bin/busybox /usr/local/bin/
 		chmod +x /usr/local/bin/busybox
-		rm -rvf busybox .busybox-static .busybox.deb
+		rm -rvf busybox busybox-static busybox.deb
 	fi
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -3535,7 +3535,6 @@ xrdp_reset() {
 	pkill xrdp
 	service xrdp stop 2>/dev/null
 	echo "${YELLOW}WARNING！继续执行此操作将丢失xrdp配置信息！${RESET}"
-	echo 'Press Enter to confirm,press Ctrl+C to cancel.'
 	RETURN_TO_WHERE='configure_xrdp'
 	do_you_want_to_continue
 	rm -f /etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla /etc/polkit-1/localauthority.conf.d/02-allow-colord.conf
@@ -4954,7 +4953,6 @@ nginx_systemd() {
 ###############
 nginx_reset() {
 	echo "${YELLOW}WARNING！继续执行此操作将丢失nginx配置信息！${RESET}"
-	echo 'Press Enter to confirm,press Ctrl+C to cancel.'
 	RETURN_TO_WHERE='configure_nginx_webdav'
 	do_you_want_to_continue
 	cd /etc/nginx/sites-available
@@ -5303,7 +5301,6 @@ filebrowser_systemd() {
 ###############
 filebrowser_reset() {
 	echo "${YELLOW}WARNING！继续执行此操作将丢失所有配置信息！${RESET}"
-	echo 'Press Enter to confirm,press Ctrl+C to cancel.'
 	RETURN_TO_WHERE='configure_filebrowser'
 	do_you_want_to_continue
 	rm -vf filebrowser.db

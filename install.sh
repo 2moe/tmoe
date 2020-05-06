@@ -683,7 +683,7 @@ cat >zsh.sh <<-'ADDZSHSHELL'
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUX_DISTRO='alpine'
 
-	elif grep -Eq "Arch|Manjaro" '/etc/os-release'; then
+	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -q 'Manjaro' '/etc/issue'; then
 		LINUX_DISTRO='arch'
 
 	elif grep -qi 'Void' '/etc/issue'; then
@@ -1548,7 +1548,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 		echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
 		bash zsh.sh
 		debian-i
-		bash zsh-i.sh
+		#bash zsh-i.sh
 		#bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')" || bash -c "$(wget -qO- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
 	}
 	################
