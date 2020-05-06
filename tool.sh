@@ -4058,17 +4058,34 @@ install_wps_office() {
 ###################
 thunar_nautilus_dolphion() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "检测到您当前使用的是${BLUE}proot容器${RESET}，软件可能无法正常运行。"
-		echo "安装后将有可能导致VNC黑屏,按Ctrl+C取消"
-		echo "Press enter to continue,press Ctrl+C to canacel."
-		read
-		DEPENDENCY_01="nautilus"
-		DEPENDENCY_02="thunar"
-	else
-		DEPENDENCY_01="dolphin"
-		DEPENDENCY_02="thunar nautilus"
+		echo "检测到您当前使用的是${BLUE}proot容器${RESET}，请勿安装${RED}dolphion${RESET}"
+		echo "安装后将有可能导致VNC黑屏"
+		echo "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"
 	fi
-
+	DEPENDENCY_02=""
+	echo "${YELLOW}Which file manager do you want to install?[t/n/d/r]${RESET}"
+	echo "请选择您需要安装的${BLUE}文件管理器${RESET}，输${YELLOW}t${RESET}安装${GREEN}thunar${RESET},输${YELLOW}n${RESET}安装${GREEN}nautilus${RESET}，输${YELLOW}d${RESET}安装${GREEN}dolphion${RESET}，输${YELLOW}r${RESET}${BLUE}返回${RESET}。"
+	echo "Type t to install thunar,type n to install nautils,type d to install dolphin,type b to return."
+	read opt
+	case $opt in
+	t* | T* | "")
+		DEPENDENCY_01="thunar"
+		;;
+	n* | N*)
+		DEPENDENCY_01="nautilus"
+		;;
+	d* | D*)
+		DEPENDENCY_02="dolphin"
+		;;
+	r* | R*)
+		beta_features
+		;;
+	*)
+		echo "Invalid choice. skipped."
+		beta_features
+		#beta_features
+		;;
+	esac
 	NON_DEBIAN='false'
 	beta_features_quick_install
 }
