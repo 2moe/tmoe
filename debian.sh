@@ -2230,7 +2230,7 @@ choose_which_gnu_linux_distro() {
 		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "Other其它系统(公测版新功能):mint,centos" \
+		"4" "Other其它系统(公测版新功能):manjaro,centos" \
 		"5" "arch(系统设计以KISS为总体指导原则)" \
 		"6" "fedora 32(红帽社区版,新技术试验场)" \
 		"0" "Back to the main menu 返回主菜单" \
@@ -2273,14 +2273,14 @@ choose_which_gnu_linux_distro() {
 install_other_containers() {
 	BETA_SYSTEM=$(
 		whiptail --title "Beta features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nBeta features may not work properly." 17 55 7 \
-			"1" "Funtoo:专注于改进Gentoo" \
+			"1" "manjaro(让arch更方便用户使用,arm64)" \
 			"2" "Void:基于xbps包管理器的独立发行版" \
 			"3" "centos 8(基于红帽的社区企业操作系统)" \
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
 			"5" "alpine edge(非glibc的精简系统)" \
 			"6" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"7" "raspbian樹莓派 buster(armhf)" \
-			"8" "manjaro(让arch更方便用户使用,arm64)" \
+			"8" "Funtoo:专注于改进Gentoo" \
 			"9" "openwrt(常见于路由器,arm64,x64)" \
 			"10" "devuan ascii(不使用systemd,基于debian)" \
 			"11" "apertis 18.12" \
@@ -2296,11 +2296,11 @@ install_other_containers() {
 		tmoe_manager_main_menu
 	fi
 	####################
-
 	if [ "${BETA_SYSTEM}" == '1' ]; then
-		install_funtoo_linux_distro
+		install_manjaro_linux_distro
 	fi
-	#############################
+	####################
+
 	if [ "${BETA_SYSTEM}" == '2' ]; then
 		install_void_linux_distro
 	fi
@@ -2327,9 +2327,9 @@ install_other_containers() {
 	#先下载debian buster容器镜像，再换源成树莓派。
 	####################
 	if [ "${BETA_SYSTEM}" == '8' ]; then
-		install_manjaro_linux_distro
+		install_funtoo_linux_distro
 	fi
-	####################
+	#############################
 	if [ "${BETA_SYSTEM}" == '9' ]; then
 		install_openwrt_linux_distro
 	fi
