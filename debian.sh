@@ -68,11 +68,21 @@ check_arch() {
 	esac
 	DEBIAN_FOLDER=debian_${ARCH_TYPE}
 	DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+	RED=$(printf '\033[31m')
+	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
+	BLUE=$(printf '\033[34m')
+	BOLD=$(printf '\033[1m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
 	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
 	auto_check
+}
+###############
+press_enter_to_return() {
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+	read
 }
 #########################################################
 auto_check() {
@@ -577,7 +587,7 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200506-22)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200507-14)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -668,9 +678,7 @@ install_proot_container() {
 	if [ "$(uname -o)" != "Android" ]; then
 		echo "非常抱歉，本功能仅适配安卓系统。"
 		echo "Linux系统请换用chroot容器。"
-		echo "Press enter to return."
-		echo "${YELLOW}按回车键返回。${RESET} "
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 
 	fi
@@ -694,9 +702,7 @@ install_chroot_container() {
 			echo "Android系统请换用proot容器。"
 		fi
 		echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	else
 		chroot_install_debian
@@ -723,16 +729,12 @@ install_gnu_linux_container() {
 				;;
 			n* | N*)
 				echo "skipped."
-				echo "Press enter to return."
-				echo "${YELLOW}按回车键返回。${RESET} "
-				read
+				press_enter_to_return
 				tmoe_manager_main_menu
 				;;
 			*)
 				echo "Invalid choice. skipped."
-				echo "Press enter to return."
-				echo "${YELLOW}按回车键返回。${RESET} "
-				read
+				press_enter_to_return
 				tmoe_manager_main_menu
 				;;
 			esac
@@ -749,9 +751,7 @@ enable_root_mode() {
 	if [ "$(uname -o)" != "Android" ]; then
 		echo "非常抱歉，本功能仅适配安卓系统。"
 		echo "chroot容器默认即为真实root权限。"
-		echo "Press enter to return."
-		echo "${YELLOW}按回车键返回。${RESET} "
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 
@@ -866,8 +866,8 @@ remove_gnu_linux_container() {
 		echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 		#echo '为防止数据丢失，建议您重启设备后再重试。'
-		#echo "Press enter to return."
-		#echo "${YELLOW}按回车键返回。${RESET} "
+		#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+		#echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 		#read
 		#tmoe_manager_main_menu
 	fi
@@ -960,8 +960,8 @@ backup_system() {
 		install_timeshift
 	fi
 	####################
-	#echo "${YELLOW}按回车键返回。${RESET}"
-	#echo "Press enter to return."
+	#echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+	#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	#read
 	tmoe_manager_main_menu
 }
@@ -996,8 +996,8 @@ backup_gnu_linux_container() {
 		rm -f backuptime.tmp
 		pwd
 		ls -lth ./*tar* | grep ^- | head -n 1
-		echo '备份完成,按回车键返回。'
-		read
+		echo '备份完成'
+		press_enter_to_return
 		tmoe_manager_main_menu
 
 	else
@@ -1020,8 +1020,8 @@ backup_gnu_linux_container() {
 		pwd
 		ls -lth ./*tar* | grep ^- | head -n 1
 		echo 'gzip压缩至60%完成是正常现象。'
-		echo '备份完成,按回车键返回。'
-		read
+		echo '备份完成'
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 }
@@ -1029,9 +1029,7 @@ backup_gnu_linux_container() {
 install_timeshift() {
 	if [ "${LINUX_DISTRO}" = "Android" ]; then
 		echo 'Sorry,本功能不支持Android系统'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 
@@ -1049,9 +1047,7 @@ install_timeshift() {
 	if [ -e "/usr/bin/timeshift" ]; then
 		timeshift-launcher &
 		echo "安装完成，如需卸载，请手动输apt purge -y timeshift"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press enter to return."
-		read
+		press_enter_to_return
 		backup_system
 	fi
 }
@@ -1099,8 +1095,8 @@ backup_termux() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./termux-home*tar* | grep ^- | head -n 1
-			echo '备份完成,按回车键返回。'
-			read
+			echo "备份${GREEN}完成${RESET}"
+			press_enter_to_return
 			tmoe_manager_main_menu
 
 		else
@@ -1117,8 +1113,8 @@ backup_termux() {
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
 			ls -lth ./termux-home*tar* | grep ^- | head -n 1
-			echo '备份完成,按回车键返回。'
-			read
+			echo '备份完成'
+			press_enter_to_return
 			tmoe_manager_main_menu
 		fi
 	fi
@@ -1161,8 +1157,8 @@ backup_termux() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./termux-usr*tar* | grep ^- | head -n 1
-			echo '备份完成,按回车键返回。'
-			read
+			echo "备份${GREEN}完成${RESET}"
+			press_enter_to_return
 			tmoe_manager_main_menu
 
 		else
@@ -1187,8 +1183,8 @@ backup_termux() {
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
 			ls -lth ./*tar* | grep ^- | head -n 1
-			echo '备份完成,按回车键返回。'
-			read
+			echo "备份${GREEN}完成${RESET}"
+			press_enter_to_return
 			tmoe_manager_main_menu
 		fi
 	fi
@@ -1230,8 +1226,8 @@ backup_termux() {
 			rm -f backuptime.tmp
 			pwd
 			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
-			echo '备份完成,按回车键返回。'
-			read
+			echo "备份${GREEN}完成${RESET}"
+			press_enter_to_return
 			tmoe_manager_main_menu
 
 		else
@@ -1254,8 +1250,8 @@ backup_termux() {
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
 			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
-			echo '备份完成,按回车键返回。'
-			read
+			echo "备份${GREEN}完成${RESET}"
+			press_enter_to_return
 			tmoe_manager_main_menu
 		fi
 	fi
@@ -1337,8 +1333,7 @@ restore_gnu_linux_container() {
 
 		esac
 
-		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 
 	fi
@@ -1396,8 +1391,7 @@ restore_gnu_linux_container() {
 
 		esac
 
-		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 
@@ -1448,8 +1442,7 @@ space_occupation() {
 		du -hsx ./usr/share/* 2>/dev/null | sort -rh | head -n 8
 
 		echo ''
-		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
-		read
+		press_enter_to_return
 		space_occupation
 
 	fi
@@ -1460,8 +1453,7 @@ space_occupation() {
 		echo "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
 
 		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
-		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
-		read
+		press_enter_to_return
 		space_occupation
 
 	fi
@@ -1477,16 +1469,14 @@ space_occupation() {
 
 		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
 
-		echo "${YELLOW}按回车键返回。Press enter to return.${RESET}"
-		read
+		press_enter_to_return
 		space_occupation
 	fi
 
 	if [ "${OPTION}" == '4' ]; then
 		echo "${YELLOW}Disk usage${RESET}"
 		df -h | grep G | grep -v tmpfs
-		echo "${YELLOW}按回车键返回。Press enter to return.${RESET} "
-		read
+		press_enter_to_return
 		space_occupation
 	fi
 
@@ -1509,7 +1499,7 @@ update_tmoe_linux_manager() {
 	fi
 
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
-	echo 'Press enter to return.'
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	chmod +x ${PREFIX}/bin/debian-i
 	read
 	#bash ${PREFIX}/bin/debian-i
@@ -1586,18 +1576,14 @@ download_vnc_apk() {
 start_vscode() {
 	if [ "${ARCH_TYPE}" != 'arm64' ]; then
 		echo "It is detected that your current architecture is not arm64, please install the server version yourself."
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo 'Press enter to return.'
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 
 	if [ ! -d "${HOME}/${DEBIAN_FOLDER}" ]; then
 		echo "未检测到${DEBIAN_FOLDER},请先安装GNU/Linux容器"
 		echo "Detected that you did not install ${DEBIAN_FOLDER}, please install container first."
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo 'Press enter to return.'
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 
@@ -1774,8 +1760,8 @@ install_debian_or_download_recovery_pkg_tar_xz() {
 						The developer of this tool reserves the right to modify this agreement at any time.
 		EndOfFile
 		echo 'You must agree to EULA to use this tool.'
-		echo 'Press Enter to agree, otherwise press Ctrl + C or close the terminal directly.'
-		echo "${YELLOW}按回车键同意《最终用户许可协议》，否则请按Ctrl+C或直接关闭终端。${RESET} "
+		echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
+		echo "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
 		#if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		#export LANG=${CurrentLANG}
 		#fi
@@ -1979,9 +1965,7 @@ switch_vnc_pulse_audio_transport_method() {
 		grep -q 'x.org.server' startvnc || sed -i '2 a\am start -n x.org.server/x.org.server.MainActivity \nsleep 5' startvnc
 	fi
 	echo "修改完成！(￣▽￣),您需要输startvnc来启动vnc"
-	echo 'press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	termux_install_xfce
 }
 ###############################
@@ -2005,9 +1989,7 @@ termux_pulse_audio_lan() {
 	echo "修改完成！(￣▽￣)"
 	echo "如需单独启动音频服务，请输pulseaudio --start"
 	echo "若无声音，则您需要安装termux:api的apk,并升级termux至最新版本"
-	echo 'press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	termux_install_xfce
 }
 #############################
@@ -2024,9 +2006,7 @@ aria2_download_termux_apk() {
 		download_termux_apk_again
 
 	fi
-	echo 'press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_manager_main_menu
 }
 #######################################
@@ -2130,9 +2110,7 @@ modify_android_termux_vnc_config() {
 		if grep -q 'debian_' "$(command -v startvnc)"; then
 			echo "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输debian-i修改"
 			echo "本选项仅适用于termux原系统。"
-			echo 'Press Enter to return.'
-			echo "${YELLOW}按回车键返回。${RESET}"
-			read
+			press_enter_to_return
 			tmoe_manager_main_menu
 		fi
 		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
@@ -2156,9 +2134,7 @@ modify_android_termux_vnc_config() {
 		nano ${PREFIX}/bin/startvnc || nano $(command -v startvnc)
 		echo "您当前分辨率为$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 	fi
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_manager_main_menu
 
 }
@@ -2170,9 +2146,7 @@ remove_android_termux_xfce() {
 	apt purge -y ^xfce tigervnc aterm
 	apt purge -y x11-repo
 	apt autoremove
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_manager_main_menu
 
 }
@@ -2217,9 +2191,7 @@ termux_tuna_sources_list() {
 	cat /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
 	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
 	echo "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	android_termux
 	#此处要返回依赖检测处！
 
@@ -2230,9 +2202,10 @@ choose_which_gnu_linux_distro() {
 		"1" "Debian:最早的发行版之一" \
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "Other其它系统(公测版新功能):manjaro,centos" \
-		"5" "arch(系统设计以KISS为总体指导原则)" \
-		"6" "fedora 32(红帽社区版,新技术试验场)" \
+		"4" "beta公测版:manjaro,centos" \
+		"5" "alpha内测版:gentoo,void" \
+		"6" "arch(系统设计以KISS为总体指导原则)" \
+		"7" "fedora 32(红帽社区版,新技术试验场)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -2253,114 +2226,129 @@ choose_which_gnu_linux_distro() {
 	fi
 	##############################
 	if [ "${SELECTED_GNU_LINUX}" == '4' ]; then
-		install_other_containers
+		install_beta_containers
 	fi
 	##############################
 	if [ "${SELECTED_GNU_LINUX}" == '5' ]; then
-		install_arch_linux_distro
+		install_alpha_containers
 	fi
 	##############################
 	if [ "${SELECTED_GNU_LINUX}" == '6' ]; then
+		install_arch_linux_distro
+	fi
+	##############################
+	if [ "${SELECTED_GNU_LINUX}" == '7' ]; then
 		install_fedora_gnu_linux_distro
 	fi
 	####################
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_manager_main_menu
 }
 ##############################
-install_other_containers() {
-	BETA_SYSTEM=$(
-		whiptail --title "Beta features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nBeta features may not work properly." 17 55 7 \
-			"1" "manjaro(让arch更方便用户使用,arm64)" \
+install_alpha_containers() {
+	ALPHA_SYSTEM=$(
+		whiptail --title "Alpha features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nAlpha features may not work properly." 17 55 7 \
+			"1" "armbian bullseye(arm64,armhf)" \
 			"2" "Void:基于xbps包管理器的独立发行版" \
-			"3" "centos 8(基于红帽的社区企业操作系统)" \
+			"3" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
 			"5" "alpine edge(非glibc的精简系统)" \
-			"6" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"6" "slackware(armhf,x64)" \
 			"7" "raspbian樹莓派 buster(armhf)" \
 			"8" "Funtoo:专注于改进Gentoo" \
 			"9" "openwrt(常见于路由器,arm64,x64)" \
 			"10" "devuan ascii(不使用systemd,基于debian)" \
 			"11" "apertis 18.12" \
 			"12" "alt p9" \
-			"13" "slackware(armhf,x64)" \
-			"14" "armbian bullseye(arm64,armhf)" \
-			"15" "mint tricia(简单易用的系统,x86,x64)" \
-			"0" "Back to the main menu 返回主菜单" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	if [ "${ALPHA_SYSTEM}" == '0' ]; then
+		choose_which_gnu_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '1' ]; then
+		install_armbian_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '2' ]; then
+		install_void_linux_distro
+	fi
+	####################
+	if [ "${BETA_SYSTEM}" == '3' ]; then
+		install_opensuse_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '4' ]; then
+		install_gentoo_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '5' ]; then
+		install_alpine_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '6' ]; then
+		install_slackware_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '7' ]; then
+		install_raspbian_linux_distro
+	fi
+	#先下载debian buster容器镜像，再换源成树莓派。
+	####################
+	if [ "${ALPHA_SYSTEM}" == '8' ]; then
+		install_funtoo_linux_distro
+	fi
+	#############################
+	if [ "${ALPHA_SYSTEM}" == '9' ]; then
+		install_openwrt_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '10' ]; then
+		install_devuan_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '11' ]; then
+		install_apertis_linux_distro
+	fi
+	####################
+	if [ "${ALPHA_SYSTEM}" == '12' ]; then
+		install_alt_linux_distro
+	fi
+	###########################
+	press_enter_to_return
+	tmoe_manager_main_menu
+	####################
+}
+#########################
+install_beta_containers() {
+	BETA_SYSTEM=$(
+		whiptail --title "Beta features" --menu "WARNING！本功能仍处于公测阶段,可能存在一些bug。\nBeta features may not work properly." 17 55 7 \
+			"1" "manjaro(让arch更方便用户使用,arm64)" \
+			"2" "centos 8(基于红帽的社区企业操作系统)" \
+			"3" "mint tricia(简单易用的系统,x86,x64)" \
+			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
 	if [ "${BETA_SYSTEM}" == '0' ]; then
-		tmoe_manager_main_menu
+		choose_which_gnu_linux_distro
 	fi
 	####################
 	if [ "${BETA_SYSTEM}" == '1' ]; then
 		install_manjaro_linux_distro
 	fi
 	####################
-
 	if [ "${BETA_SYSTEM}" == '2' ]; then
-		install_void_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '3' ]; then
 		install_centos_linux_distro
 	fi
 	####################
-	if [ "${BETA_SYSTEM}" == '4' ]; then
-		install_gentoo_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '5' ]; then
-		install_alpine_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '6' ]; then
-		install_opensuse_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '7' ]; then
-		install_raspbian_linux_distro
-	fi
-	#先下载debian buster容器镜像，再换源成树莓派。
-	####################
-	if [ "${BETA_SYSTEM}" == '8' ]; then
-		install_funtoo_linux_distro
-	fi
-	#############################
-	if [ "${BETA_SYSTEM}" == '9' ]; then
-		install_openwrt_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '10' ]; then
-		install_devuan_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '11' ]; then
-		install_apertis_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '12' ]; then
-		install_alt_linux_distro
-	fi
-	###########################
-	if [ "${BETA_SYSTEM}" == '13' ]; then
-		install_slackware_linux_distro
-	fi
-	###########################
-	if [ "${BETA_SYSTEM}" == '14' ]; then
-		install_armbian_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '15' ]; then
+	if [ "${BETA_SYSTEM}" == '3' ]; then
 		install_mint_linux_distro
 	fi
-	####################
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	######################
+	press_enter_to_return
 	tmoe_manager_main_menu
 	####################
 }
@@ -2571,9 +2559,7 @@ install_raspbian_linux_distro() {
 install_manjaro_linux_distro() {
 	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'amd64' ]; then
 		echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配"
-		echo 'Press Enter to return.'
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
 
@@ -2723,6 +2709,7 @@ install_armbian_linux_distro() {
 }
 #######################
 install_mint_linux_distro() {
+	ARCH_TYPE=arm64
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/mint系统/g' |
@@ -2731,7 +2718,11 @@ install_mint_linux_distro() {
 			sed 's:debian/sid:mint/tricia:g' |
 			sed 's:Debian GNU/Linux:Mint GNU/Linux:g')"
 	else
-		echo "Linux Mint不支持您的架构"
+		echo "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
+		echo "Linux Mint${RED}不支持${RESET}您的架构"
+		echo "请换用${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}设备后再来重试"
+		press_enter_to_return
+		install_beta_containers
 	fi
 }
 ######################
@@ -2761,9 +2752,7 @@ gnu_linux_sources_list() {
 
 		else
 			echo '暂不支持您当前的系统版本'
-			echo 'Press Enter to return.'
-			echo "${YELLOW}按回车键返回。${RESET}"
-			read
+			press_enter_to_return
 			gnu_linux
 		fi
 		echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
@@ -2818,9 +2807,7 @@ gnu_linux_sources_list() {
 			echo '19.10'
 		else
 			echo '暂不支持您当前的系统版本'
-			echo 'Press Enter to return.'
-			echo "${YELLOW}按回车键返回。${RESET}"
-			read
+			press_enter_to_return
 			gnu_linux
 		fi
 		echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
@@ -2853,9 +2840,7 @@ gnu_linux_sources_list() {
 	cat /etc/apt/sources.list
 	cat /etc/apt/sources.list.d/* 2>/dev/null
 	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑软件源列表"
-	echo 'Press Enter to return.'
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	gnu_linux
 	#此处要返回依赖检测处！
 }
