@@ -3542,6 +3542,10 @@ xrdp_restart() {
 	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
 	echo "如需修改当前用户密码，请输passwd"
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		echo "检测到您使用的是arch系发行版，您之后可以输xrdp来启动xrdp服务"
+		xrdp
+	fi
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 		echo '检测到您使用的是WSL，正在为您打开音频服务'
 		export PULSE_SERVER=tcp:127.0.0.1
@@ -3626,8 +3630,8 @@ first_configure_startvnc() {
 		echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
 			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
-		else
-			${PACKAGES_REMOVE_COMMAND} udisks2 gvfs
+		#else
+		#	${PACKAGES_REMOVE_COMMAND} udisks2 gvfs
 		fi
 	fi
 

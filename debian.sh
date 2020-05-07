@@ -2441,7 +2441,7 @@ install_fedora_gnu_linux_distro() {
 	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "Fedora不支持您的架构"
 	else
-		if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
+		if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？31的兼容性更加。Which version do you want to install?" 9 50); then
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 				sed 's/debian系统/fedora系统/g' |
 				sed 's/debian system/fedora system/g' |
@@ -2709,7 +2709,6 @@ install_armbian_linux_distro() {
 }
 #######################
 install_mint_linux_distro() {
-	ARCH_TYPE=arm64
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/mint系统/g' |
