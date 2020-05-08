@@ -1942,7 +1942,7 @@ install_mate_desktop() {
 		#apt autopurge -y ^libfprint
 		apt clean
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='@mate-desktop'
+		DEPENDENCY_01='@mate-desktop --skip-broken'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
 		echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
