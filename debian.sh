@@ -767,12 +767,13 @@ enable_root_mode() {
 		#fi
 		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startvnc; then
 			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startvnc
-			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo &:' ${PREFIX}/bin/startvnc
+			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' ${PREFIX}/bin/startvnc
 		fi
+		#上处改成tsudo &将会失败
 		###############
 		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startxsdl; then
 			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startxsdl
-			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo &:' ${PREFIX}/bin/startxsdl
+			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' ${PREFIX}/bin/startxsdl
 		fi
 		#pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;tsudo debian
 		#上面那个是Termux专用的，勿改。
