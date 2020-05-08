@@ -1786,7 +1786,7 @@ configure_xfce4_xstartup() {
 	#dbus-launch startxfce4 &
 	chmod +x ./xstartup
 	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	#touch /tmp/.Tmoe-XFCE4-Desktop-Detection-FILE
+	touch /tmp/.Tmoe-XFCE4-Desktop-Detection-FILE
 	first_configure_startvnc
 }
 ##########################
@@ -3626,6 +3626,7 @@ configure_xwayland_remote_desktop_session() {
 	echo "配置完成，请先打开sparkle app，点击Start"
 	echo "然后在GNU/Linux容器里输startw启动xwayland"
 	echo "在使用过程中，您可以按音量+调出键盘"
+	echo "执行完startw,您可能需要经历长达30s的黑屏"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}"
 	echo "按${GREEN}回车键${RESET}执行${BLUE}startw${RESET}"
 	read
@@ -3837,7 +3838,7 @@ first_configure_startvnc() {
 		fi
 	fi
 
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ! -f "/tmp/.Tmoe-MATE-Desktop-Detection-FILE" ]; then
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ -f "/tmp/.Tmoe-XFCE4-Desktop-Detection-FILE" ]; then
 		echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
 			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
@@ -3956,7 +3957,7 @@ first_configure_startvnc() {
 	EndOfFile
 
 	if [ -f "/tmp/.Tmoe-MATE-Desktop-Detection-FILE" ]; then
-		#rm -f /tmp/.Tmoe-MATE-Desktop-Detection-FILE
+		rm -f /tmp/.Tmoe-MATE-Desktop-Detection-FILE
 		sed -i '/dbus-launch/d' startxsdl
 		sed -i '$ a\dbus-launch mate-session' startxsdl
 	elif [ -f "/tmp/.Tmoe-LXDE-Desktop-Detection-FILE" ]; then
