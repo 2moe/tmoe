@@ -872,8 +872,12 @@ upgrade_video_download_tool() {
 	fi
 
 	if [ ! $(command -v pip3) ]; then
-		apt update 2>/dev/null
-		apt install -y python3 python3-distutils 2>/dev/null
+		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			apt update 2>/dev/null
+			apt install -y python3 python3-distutils 2>/dev/null
+		else
+			${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+		fi
 		cd /tmp
 		curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.00
 		curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.01
@@ -884,7 +888,11 @@ upgrade_video_download_tool() {
 	fi
 	#检测两次
 	if [ ! $(command -v pip3) ]; then
-		DEPENDENCY_02="${DEPENDENCY_02} python3-pip"
+		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			DEPENDENCY_02="${DEPENDENCY_02} python3-pip"
+		else
+			DEPENDENCY_02="${DEPENDENCY_02} python-pip"
+		fi
 	fi
 
 	if [ ! -z "${DEPENDENCY_01}" ] && [ ! -z "${DEPENDENCY_02}" ]; then
@@ -1517,7 +1525,6 @@ install_firefox_esr_browser() {
 		fi
 		#################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01="firefox-esr-gtk2"
 		DEPENDENCY_02="firefox-esr-i18n-zh-cn"
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		dispatch-conf

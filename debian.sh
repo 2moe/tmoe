@@ -2454,7 +2454,7 @@ install_debian_gnu_linux_distro() {
 		fi
 		cd /sdcard/Download/backup
 		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
-			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要重新直接解压还是重新下载？" 14 50); then
+			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要直接解压还是重新下载？" 14 50); then
 				un_xz_debian_recovery_kit
 			else
 				download_debian_xfce_tar_xz
