@@ -3637,7 +3637,7 @@ configure_xwayland_remote_desktop_session() {
 	echo "配置完成，请先打开sparkle app，点击Start"
 	echo "然后在GNU/Linux容器里输startw启动xwayland"
 	echo "在使用过程中，您可以按音量+调出键盘"
-	echo "执行完startw,您可能需要经历长达30s的黑屏"
+	echo "执行完startw后,您可能需要经历长达30s的黑屏"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}"
 	echo "按${GREEN}回车键${RESET}执行${BLUE}startw${RESET}"
 	read
