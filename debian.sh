@@ -587,7 +587,7 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200507-14)" --backtitle "$(
+		whiptail --title "Tmoe-Debian GNU/Linux manager(20200508-08)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -603,7 +603,7 @@ tmoe_manager_main_menu() {
 			"8" "query space occupation查询空间占用" \
 			"9" "update更新" \
 			"10" "Configure zsh" \
-			"11" "Download VNC apk" \
+			"11" "Download VNC/xwayland/xsdl apk" \
 			"12" "VSCode Server arm64" \
 			"13" "赋予proot容器真实root权限" \
 			"14" "Video tutorial" \
@@ -1485,9 +1485,7 @@ space_occupation() {
 
 		tmoe_manager_main_menu
 	fi
-
 	tmoe_manager_main_menu
-
 }
 
 ########################################################################
@@ -1504,16 +1502,9 @@ update_tmoe_linux_manager() {
 	read
 	#bash ${PREFIX}/bin/debian-i
 	source ${PREFIX}/bin/debian-i
-
 }
-#################################
-download_vnc_apk() {
-	if [ ! -e ${PREFIX}/bin/git ]; then
-		apt update
-		apt install -y git
-	fi
-
-	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
+#######################
+download_vnc_or_xsdl_apk() {
 	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,当前版本已经可以通过pulse server来传输音频。xsdl对某些软件的兼容性更高，但操作体验没有vnc好。VNC has a better operating experience and is also smoother.XSDL is more compatible with some software， but the experience is not as good as VNC in every way.\n若VNC启动后仍无声音，则请前往Play商店或Fdroid更新termux至最新版本,再安装termux:api.apk" 16 50); then
 		echo 'Press enter to start the download, and press Ctrl + C to cancel.'
 		echo "${YELLOW}按回车键开始下载，按Ctrl+C取消。${RESET}"
@@ -1570,7 +1561,93 @@ download_vnc_apk() {
 		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
 		cd ${cur}
 	fi
-
+}
+###################
+xwayland_warning() {
+	echo "${RED}WARNING！${RESET}本功能目前仍处于${YELLOW}测试阶段${RESET}，且需要${RED}root权限${RESET}"
+	echo "请在下载并安装完apk后，开启proot容器真实root权限功能！"
+	echo "由于目前在Android设备上只能靠软件来渲染，故实际体验将会非常糟糕！"
+	echo "同时，由于触控操作体验极差。若您无蓝牙鼠标等外接设备，则不建议您配置本服务。"
+	echo "您在安装完apk后，还需进入GNU/Linux容器内，输debian-i，并选择配置xwayland的选项"
+	download_xwayland_apk
+}
+############
+configure_termux_xwayland_mount() {
+	su -c "ls /data/data/com.sion.sparkle"
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "配置${RED}失败！${RESET}请先安装sparkle，并检查root权限设置"
+		press_enter_to_return
+		download_vnc_apk
+	fi
+	GET_DEBIAN_BIND_LINE=$(cat $PREFIX/bin/debian | grep -n 'command+=" -b /data' | cut -d ':' -f 1 | head -n 1)
+	sed -i '/com.sion.sparkle/d' $PREFIX/bin/debian
+	#rm ${DEBIAN_CHROOT}/etc/xwayland || tsudo rm ${DEBIAN_CHROOT}/etc/xwayland
+	sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" -b /data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
+	echo "termux配置完成，您还需要进入GNU/Linux容器环境内，单独选择xwayland桌面配置选项!"
+}
+################
+download_xwayland_apk() {
+	echo "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}download apk${RESET},type c to configure，type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}下载apk${RESET}，输${YELLOW}c${RESET}配置，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+	read opt
+	case $opt in
+	y* | Y* | "")
+		rm -rf .X_WAYLAND_APK_TEMP_FOLDER
+		git clone -b xwayland --depth=1 https://gitee.com/mo2/VncClient .X_WAYLAND_APK_TEMP_FOLDER
+		cd .X_WAYLAND_APK_TEMP_FOLDER
+		tar -Jxvf xwayland.tar.xz
+		mv *apk ../
+		cd ..
+		rm -rf .X_WAYLAND_APK_TEMP_FOLDER
+		echo '解压成功，请进入下载目录手动安装。'
+		echo '文件名称 Sparkle*.apk'
+		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
+		echo "请在安装完成后，按回车键启用root权限"
+		read
+		#su -c "ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland"
+		configure_termux_xwayland_mount
+		enable_root_mode
+		;;
+	c* | C*)
+		#tsudo ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland || su -c "ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland"
+		configure_termux_xwayland_mount
+		#tsudo ls ${DEBIAN_CHROOT}/etc/xwayland/* >/dev/null || echo "配置${RED}失败${RESET}，请检查root权限设置"
+		press_enter_to_return
+		;;
+	n* | N*)
+		echo "skipped."
+		download_vnc_apk
+		;;
+	*)
+		echo "Invalid choice. skipped."
+		download_vnc_apk
+		;;
+	esac
+}
+#################################
+download_vnc_apk() {
+	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
+	OPTION=$(whiptail --title "remote desktop apk" --menu "Which remote desktop software do you want to install?" 15 60 4 \
+		"1" "vnc/xsdl" \
+		"2" "xwayland" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	if [ "${OPTION}" == '0' ]; then
+		tmoe_manager_main_menu
+	fi
+	####################
+	if [ "${OPTION}" == '1' ]; then
+		download_vnc_or_xsdl_apk
+	fi
+	##################
+	if [ "${OPTION}" == '2' ]; then
+		xwayland_warning
+	fi
+	#####################
+	tmoe_manager_main_menu
 }
 #########################################
 start_vscode() {

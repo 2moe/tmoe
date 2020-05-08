@@ -337,12 +337,12 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200507-10)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘,0503优化code-server的配置" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200508-08)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘,0503优化code-server的配置" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
 			"4" "Other software/games 其它软件/游戏" \
-			"5" "Modify VNC/XSDL/XRDP(远程桌面)conf" \
+			"5" "Modify vnc/xsdl/rdp(远程桌面)conf" \
 			"6" "Download video 解析视频链接" \
 			"7" "Personal netdisk 个人云网盘/文件共享" \
 			"8" "Update tmoe-linux tool 更新本工具" \
@@ -1648,8 +1648,35 @@ install_gui() {
 	standand_desktop_install
 }
 ########################
-standand_desktop_install() {
+preconfigure_gui_dependecies_02() {
 	NON_DEBIAN='false'
+	DEPENDENCY_02="tigervnc"
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
+		#上面的依赖摆放的位置是有讲究的。
+		##############
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		DEPENDENCY_02="tigervnc-server google-noto-cjk-fonts"
+		##################
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02="noto-fonts-cjk tigervnc"
+		##################
+	elif [ "${LINUX_DISTRO}" = "void" ]; then
+		DEPENDENCY_02="tigervnc"
+		#################
+	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+		dispatch-conf
+		etc-update
+		DEPENDENCY_02="media-fonts/wqy-bitmapfont net-misc/tigervnc"
+		#################
+	elif [ "${LINUX_DISTRO}" = "suse" ]; then
+		DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts"
+		##############
+	fi
+}
+########################
+standand_desktop_install() {
+	preconfigure_gui_dependecies_02
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 5 \
 		"1" "xfce：兼容性高" \
@@ -1770,61 +1797,55 @@ kali_xfce4_extras() {
 	apt install -y kali-themes-common
 	if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "armhf" ]; then
 		apt install -y kali-linux-arm
-		apt install -y chromium-l10n
-		fix_chromium_root_no_sandbox
+		if [ $(command -v chromium) ]; then
+			apt install -y chromium-l10n
+			fix_chromium_root_no_sandbox
+		fi
 		apt search kali-linux
+	fi
+}
+###################
+apt_purge_libfprint() {
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		apt purge -y ^libfprint
+		apt clean
+		apt autoclean
 	fi
 }
 ##################
 install_xfce4_desktop() {
-
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
-	DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
-	DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
-	#上面的依赖摆放的位置是有讲究的。
+	DEPENDENCY_01="xfce4"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#apt-mark hold gvfs
-		#apt-mark hold udisks2
+		DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
 		dpkg --configure -a
 		auto_select_keyboard_layout
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01="xfce4"
-		DEPENDENCY_02="tigervnc-server google-noto-cjk-fonts"
+		DEPENDENCY_01="@xfce"
 		rm -rf /etc/xdg/autostart/xfce-polkit.desktop
 		##################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="xfce4 xfce4-terminal xfce4-goodies"
-		DEPENDENCY_02="noto-fonts-cjk tigervnc"
 		##################
 	elif [ "${LINUX_DISTRO}" = "void" ]; then
 		DEPENDENCY_01="xfce4"
-		DEPENDENCY_02="tigervnc"
 		#################
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		dispatch-conf
 		etc-update
 		DEPENDENCY_01="xfce4-meta x11-terms/xfce4-terminal"
-		DEPENDENCY_02="net-misc/tigervnc media-fonts/wqy-bitmapfont"
 		#################
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal"
-		DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts"
-		##############
-	else
-		DEPENDENCY_01="xfce4"
-		DEPENDENCY_02="tigervnc"
 	fi
 	##################
 	beta_features_quick_install
 	####################
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-			kali_xfce4_extras
-		fi
-		apt purge -y ^libfprint
-		apt clean
+	if [ "${DEBIAN_DISTRO}" = "kali" ]; then
+		kali_xfce4_extras
 	fi
+	apt_purge_libfprint
 	#################
 	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 		download_kali_themes_common
@@ -1859,44 +1880,31 @@ configure_lxde_xstartup() {
 }
 ###############
 install_lxde_desktop() {
-	NON_DEBIAN='false'
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
 	DEPENDENCY_01='lxde'
-	DEPENDENCY_02="tigervnc"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#apt-mark hold udisks2
 		dpkg --configure -a
 		auto_select_keyboard_layout
 		DEPENDENCY_01="lxde-core lxterminal"
-		DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
-		#apt clean
 		#############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		#dnf groupinstall -y lxde-desktop || yum groupinstall -y lxde-desktop
-		#dnf install -y tigervnc-server google-noto-cjk-fonts || yum install -y tigervnc-server google-noto-cjk-fonts
 		DEPENDENCY_01='@lxde-desktop'
-		DEPENDENCY_02="google-noto-cjk-fonts tigervnc-server"
 		#############
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='lxde'
-		DEPENDENCY_02="noto-fonts-cjk tigervnc"
 		############
 	elif [ "${LINUX_DISTRO}" = "void" ]; then
 		DEPENDENCY_01='lxde'
-		DEPENDENCY_02=" tigervnc"
 		#############
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-		dispatch-conf
-		etc-update
 		DEPENDENCY_01='media-fonts/wqy-bitmapfont lxde-base/lxde-meta'
-		DEPENDENCY_02="net-misc/tigervnc"
 		##################
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='noto-sans-sc-fonts patterns-lxde-lxde'
-		DEPENDENCY_02="tigervnc-x11vnc"
 	fi
 	############
 	beta_features_quick_install
+	apt_purge_libfprint
 	configure_lxde_xstartup
 }
 ###########################
@@ -1918,27 +1926,23 @@ configure_mate_xstartup() {
 }
 ############################
 install_mate_desktop() {
-	NON_DEBIAN='false'
 	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
 	DEPENDENCY_01='mate'
-	DEPENDENCY_02="tigervnc"
-
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		#apt-mark hold gvfs
 		apt update
 		apt install -y udisks2 2>/dev/null
-		if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			echo "" >/var/lib/dpkg/info/udisks2.postinst
 		fi
 		#apt-mark hold udisks2
 		dpkg --configure -a
+		auto_select_keyboard_layout
 		DEPENDENCY_01='mate-desktop-environment mate-terminal'
-		DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
 		#apt autopurge -y ^libfprint
-		#apt clean
+		apt clean
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='@mate-desktop'
-		DEPENDENCY_02='google-noto-cjk-fonts tigervnc-server'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
 		echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
@@ -1973,18 +1977,14 @@ install_mate_desktop() {
 			;;
 		esac
 		DEPENDENCY_01='mate mate-extra'
-		DEPENDENCY_02="noto-fonts-cjk tigervnc"
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-		dispatch-conf
-		etc-update
 		DEPENDENCY_01='mate-base/mate-desktop mate-base/mate'
-		DEPENDENCY_02="media-fonts/wqy-bitmapfont x11-base/xorg-x11 mate-base/mate-panel net-misc/tigervnc "
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='patterns-mate-mate'
-		DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts"
 	fi
 	####################
 	beta_features_quick_install
+	apt_purge_libfprint
 	configure_mate_xstartup
 }
 #############
@@ -2005,41 +2005,26 @@ configure_lxqt_xstartup() {
 	first_configure_startvnc
 }
 ######################
+#DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
 install_lxqt_desktop() {
-	NON_DEBIAN='false'
-	DEPENDENCY_01=""
-	DEPENDENCY_02=""
+	DEPENDENCY_01="lxqt"
 	echo '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#apt-mark hold gvfs
-		apt update
-		#apt-mark hold udisks2
-
 		dpkg --configure -a
 		auto_select_keyboard_layout
-		apt install -y fonts-noto-cjk lxqt-core lxqt-config qterminal
-		apt install -y dbus-x11
-		apt install -y tightvncserver
-		apt purge -y ^libfprint
-		apt clean
-
+		DEPENDENCY_01="lxqt-core lxqt-config qterminal"
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		dnf groupinstall -y lxqt || yum groupinstall -y lxqt
-		dnf install -y tigervnc-server google-noto-cjk-fonts || yum install -y tigervnc-server google-noto-cjk-fonts
-
+		DEPENDENCY_01="@lxqt"
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm lxqt xorg
-		pacman -S --noconfirm tigervnc
-		pacman -S --noconfirm noto-fonts-cjk
-	elif [ "${LINUX_DISTRO}" = "void" ]; then
-		xbps-install -S -y lxqt tigervnc
+		DEPENDENCY_01="lxqt xorg"
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-		dispatch-conf
-		etc-update
-		emerge -avk lxqt-base/lxqt-meta net-misc/tigervnc media-fonts/wqy-bitmapfont
+		DEPENDENCY_01="lxqt-base/lxqt-meta"
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-lxqt-lxqt
+		DEPENDENCY_01="tigervnc-x11vnc patterns-lxqt-lxqt"
 	fi
+	####################
+	beta_features_quick_install
+	apt_purge_libfprint
 	configure_lxqt_xstartup
 }
 ####################
@@ -2066,55 +2051,46 @@ configure_kde_plasma5_xstartup() {
 }
 ##################
 install_kde_plasma5_desktop() {
+	DEPENDENCY_01="plasma-desktop"
+	echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#apt-mark hold gvfs
-		apt update
-		#apt-mark hold udisks2
-		echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tightvncserver等软件包。'
 		dpkg --configure -a
 		auto_select_keyboard_layout
-		aptitude install -y kde-plasma-desktop || apt install -y kde-plasma-desktop
-		apt install -y fonts-noto-cjk dbus-x11
-		apt install -y tightvncserver
-		apt purge -y ^libfprint
-		apt clean
-
+		DEPENDENCY_01="kde-plasma-desktop"
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		#yum groupinstall kde-desktop
-		dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
-		dnf install -y sddm || yum install -y sddm
-		dnf install -y tigervnc-server google-noto-cjk-fonts || yum install -y tigervnc-server google-noto-cjk-fonts
-
+		#dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
+		#dnf install -y sddm || yum install -y sddm
+		DEPENDENCY_01="@KDE"
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -S --noconfirm phonon-qt5-vnc plasma-desktop xorg
-		pacman -S --noconfirm sddm sddm-kcm
+		DEPENDENCY_01="plasma-desktop phonon-qt5-vnc xorg kdebase sddm sddm-kcm"
+		#pacman -S --noconfirm sddm sddm-kcm
 		#中文输入法
 		#pacman -S fcitx fcitx-rime fcitx-im kcm-fcitx fcitx-sogoupinyin
-		pacman -S --noconfirm kdebase
-		#pacman -S pamac-aur
-		pacman -S --noconfirm tigervnc
-		pacman -S --noconfirm noto-fonts-cjk
 	elif [ "${LINUX_DISTRO}" = "void" ]; then
-		xbps-install -S -y kde tigervnc
-
+		DEPENDENCY_01="kde"
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		PLASMAnoSystemd=$(eselect profile list | grep plasma | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
 		eselect profile set ${PLASMAnoSystemd}
 		dispatch-conf
 		etc-update
 		#emerge -auvDN --with-bdeps=y @world
-		emerge -avk plasma-desktop plasma-nm plasma-pa sddm konsole net-misc/tigervnc
+		DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-kde-kde_plasma
+		DEPENDENCY_01="patterns-kde-kde_plasma"
 	fi
+	##############
+	beta_features_quick_install
+	apt_purge_libfprint
 	configure_kde_plasma5_xstartup
 }
-####################
-install_gnome3_desktop() {
+##################
+gnome3_warning() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
 		echo "检测到您当前可能处于chroot容器环境！"
 		echo "${YELLOW}警告！GNOME3可能无法正常运行${RESET}"
 	fi
+
 	ps -e >/dev/null 2>&1
 	exitstatus=$?
 	if [ "${exitstatus}" != "0" ]; then
@@ -2122,47 +2098,19 @@ install_gnome3_desktop() {
 		echo "${YELLOW}警告！GNOME3可能无法正常运行${RESET}"
 		echo "WARNING! 检测到您未挂载/proc分区，请勿安装！"
 	fi
+
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
+		echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}GNOME桌面安装后可以正常运行。"
+		RETURN_TO_WHERE='other_desktop'
+		do_you_want_to_continue
+	fi
+	DEPENDENCY_01="plasma-desktop"
 	RETURN_TO_WHERE="other_desktop"
 	do_you_want_to_continue
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#apt-mark hold gvfs
-		apt update
-		#apt-mark hold udisks2
-		echo '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
-		dpkg --configure -a
-		auto_select_keyboard_layout
-		#aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
-		apt install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
-		apt install -y fonts-noto-cjk
-		apt install -y dbus-x11 xinit
-		apt install -y tightvncserver
-		apt purge -y ^libfprint
-		apt clean
-
-	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		#yum groupremove "GNOME Desktop Environment"
-		#yum groupinstall "GNOME Desktop Environment"
-		dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
-		dnf install -y tigervnc-server google-noto-cjk-fonts || yum install -y tigervnc-server google-noto-cjk-fonts
-
-	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm gnome gnome-extra
-		pacman -S --noconfirm tigervnc
-		pacman -S --noconfirm noto-fonts-cjk
-	elif [ "${LINUX_DISTRO}" = "void" ]; then
-		xbps-install -S -y gnome tigervnc
-
-	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-		GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
-		eselect profile set ${GNOMEnoSystemd}
-		#emerge -auvDN --with-bdeps=y @world
-		dispatch-conf
-		etc-update
-		emerge -avk gnome-shell gdm gnome-terminal net-misc/tigervnc media-fonts/wqy-bitmapfont
-	elif [ "${LINUX_DISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts patterns-gnome-gnome_x11
-	fi
-
+}
+###############
+configure_gnome3_xstartup() {
 	mkdir -p ~/.vnc
 	cd ~/.vnc
 	cat >xstartup <<-'EndOfFile'
@@ -2179,39 +2127,41 @@ install_gnome3_desktop() {
 	first_configure_startvnc
 }
 ####################
-install_cinnamon_desktop() {
+install_gnome3_desktop() {
+	gnome3_warning
+	DEPENDENCY_01="gnome"
+	echo '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#apt-mark hold gvfs
-		apt update
-		#apt-mark hold udisks2
-		echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
 		dpkg --configure -a
 		auto_select_keyboard_layout
-		#task-cinnamon-desktop
-		aptitude install -y cinnamon
-		aptitude install -y cinnamon-desktop-environment
-		apt install -y fonts-noto-cjk
-		apt install -y dbus-x11
-		apt install -y tightvncserver
-		apt purge -y ^libfprint
-		apt clean
-
+		#aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
+		#apt install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
+		DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell'
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		dnf groupinstall -y "Cinnamon Desktop" || yum groupinstall -y "Cinnamon Desktop"
-		dnf install -y tigervnc-server google-noto-cjk-fonts || yum install -y tigervnc-server google-noto-cjk-fonts
+		#yum groupinstall "GNOME Desktop Environment"
+		#dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
+		DEPENDENCY_01='@GNOME'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm sddm cinnamon xorg
-		pacman -S --noconfirm tigervnc
-		pacman -S --noconfirm noto-fonts-cjk
+		DEPENDENCY_01='gnome gnome-extra'
+
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+		GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
+		eselect profile set ${GNOMEnoSystemd}
+		#emerge -auvDN --with-bdeps=y @world
 		dispatch-conf
 		etc-update
-		emerge -avk gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations net-misc/tigervnc media-fonts/wqy-bitmapfont
+		DEPENDENCY_01='gnome-shell gdm gnome-terminal'
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
-		zypper in -y tigervnc-x11vnc noto-sans-sc-fonts cinnamon cinnamon-control-center
+		DEPENDENCY_01='patterns-gnome-gnome_x11'
 	fi
-
+	##############
+	beta_features_quick_install
+	apt_purge_libfprint
+	configure_gnome3_xstartup
+}
+#################
+configure_cinnamon_xstartup() {
 	mkdir -p ~/.vnc
 	cd ~/.vnc
 	cat >xstartup <<-'EndOfFile'
@@ -2227,69 +2177,75 @@ install_cinnamon_desktop() {
 	touch /tmp/.Tmoe-cinnamon-Desktop-Detection-FILE
 	first_configure_startvnc
 }
-####################
-install_deepin_desktop() {
+#################
+install_cinnamon_desktop() {
+	DEPENDENCY_01="cinnamon"
+	echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		dpkg --configure -a
+		auto_select_keyboard_layout
+		DEPENDENCY_01="cinnamon cinnamon-desktop-environment"
 
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		DEPENDENCY_01="@Cinnamon Desktop"
+
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01="sddm cinnamon xorg"
+
+	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+		DEPENDENCY_01="gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations"
+
+	elif [ "${LINUX_DISTRO}" = "suse" ]; then
+		DEPENDENCY_01="cinnamon cinnamon-control-center"
+	fi
+	##############
+	beta_features_quick_install
+	apt_purge_libfprint
+	configure_cinnamon_xstartup
+}
+####################
+deepin_desktop_warning() {
 	if [ "${ARCH_TYPE}" != "i386" ] && [ "${ARCH_TYPE}" != "amd64" ]; then
 		echo "非常抱歉，深度桌面不支持您当前的架构。"
 		echo "建议您在换用x86_64或i386架构的设备后，再来尝试。"
-		#echo "${YELLOW}按回车键返回。${RESET}"
-		#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		#read
-		#tmoe_linux_tool_menu
 		echo "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
 		arch_does_not_support
 		other_desktop
 	fi
-
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ ! -e "/usr/bin/gpg" ]; then
-			apt update
-			apt install gpg -y
-		fi
-		#apt-mark hold gvfs
-		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			add-apt-repository ppa:leaeasy/dde
-		else
-			cd /etc/apt/
-			if ! grep -q '^deb.*deepin' sources.list.d/deepin.list 2>/dev/null; then
-				cat >/etc/apt/sources.list.d/deepin.list <<-'EOF'
-					   #如需使用apt upgrade命令，请禁用deepin软件源,否则将有可能导致系统崩溃。
-						deb [by-hash=force] https://mirrors.tuna.tsinghua.edu.cn/deepin unstable main contrib non-free
-				EOF
-			fi
-		fi
-		wget https://mirrors.tuna.tsinghua.edu.cn/deepin/project/deepin-keyring.gpg
-		gpg --import deepin-keyring.gpg
-		gpg --export --armor 209088E7 | apt-key add -
-		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
-
+}
+#################
+deepin_desktop_debian() {
+	if [ ! -e "/usr/bin/gpg" ]; then
 		apt update
-		echo '即将为您安装思源黑体(中文字体)、和tightvncserver等软件包。'
-		dpkg --configure -a
-		auto_select_keyboard_layout
-		aptitude install -y dde
-		sed -i 's/^deb/#&/g' /etc/apt/sources.list.d/deepin.list
-		apt update
-		apt install -y fonts-noto-cjk
-		apt install -y dbus-x11
-		apt install -y tightvncserver
-		apt purge -y ^libfprint
-		apt clean
-
-	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		dnf install -y deepin-desktop || yum install -y deepin-desktop
-		dnf install -y tigervnc-server google-noto-cjk-fonts || yum install -y tigervnc-server google-noto-cjk-fonts
-
-	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm deepin deepin-extra lightdm lightdm-deepin-greeter xorg
-		#pacman -S --noconfirm deepin-kwin
-		#pacman -S --noconfirm file-roller evince
-		pacman -S --noconfirm tigervnc
-		pacman -S --noconfirm noto-fonts-cjk
-		rm -v ~/.pam_environment 2>/dev/null
+		apt install gpg -y
 	fi
+	DEPENDENCY_01="deepin-desktop"
 
+	if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+		add-apt-repository ppa:leaeasy/dde
+	else
+		cd /etc/apt/
+		if ! grep -q '^deb.*deepin' sources.list.d/deepin.list 2>/dev/null; then
+			cat >/etc/apt/sources.list.d/deepin.list <<-'EOF'
+				   #如需使用apt upgrade命令，请禁用deepin软件源,否则将有可能导致系统崩溃。
+					deb [by-hash=force] https://mirrors.tuna.tsinghua.edu.cn/deepin unstable main contrib non-free
+			EOF
+		fi
+	fi
+	wget https://mirrors.tuna.tsinghua.edu.cn/deepin/project/deepin-keyring.gpg
+	gpg --import deepin-keyring.gpg
+	gpg --export --armor 209088E7 | apt-key add -
+	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
+	echo '即将为您安装思源黑体(中文字体)、和tightvncserver等软件包。'
+	dpkg --configure -a
+	apt update
+	auto_select_keyboard_layout
+	aptitude install -y dde
+	sed -i 's/^deb/#&/g' /etc/apt/sources.list.d/deepin.list
+	apt update
+}
+################
+configure_deepin_desktop_xstartup() {
 	mkdir -p ~/.vnc
 	cd ~/.vnc
 	cat >xstartup <<-'EndOfFile'
@@ -2305,9 +2261,32 @@ install_deepin_desktop() {
 	touch /tmp/.Tmoe-DEEPIN-Desktop-Detection-FILE
 	first_configure_startvnc
 }
+################
+install_deepin_desktop() {
+	deepin_desktop_warning
+	DEPENDENCY_01="deepin-desktop"
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		deepin_desktop_debian
+		DEPENDENCY_01="dde"
+
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		DEPENDENCY_01="deepin-desktop"
+
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		#pacman -S --noconfirm deepin-kwin
+		#pacman -S --noconfirm file-roller evince
+		#rm -v ~/.pam_environment 2>/dev/null
+		DEPENDENCY_01="deepin deepin-extra lightdm lightdm-deepin-greeter xorg"
+	fi
+	####################
+	beta_features_quick_install
+	apt_purge_libfprint
+	configure_deepin_desktop_xstartup
+}
 ############################
 ############################
 remove_gui() {
+	DEPENDENCY_01="xfce lxde mate lxqt cinnamon gnome dde deepin-desktop kde-plasma"
 	echo '"xfce" "呜呜，(≧﹏ ≦)您真的要离开我么"  '
 	echo '"lxde" "很庆幸能与阁下相遇（；´д｀）ゞ "  '
 	echo '"mate" "喔...喔呜...我不舍得你走/(ㄒoㄒ)/~~"  '
@@ -2348,9 +2327,9 @@ remove_gui() {
 		dnf groupremove -y lxqt
 		dnf groupremove -y "KDE" "GNOME" "Cinnamon Desktop"
 		dnf remove -y deepin-desktop
+	else
+		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01}
 	fi
-
-	tmoe_linux_tool_menu
 }
 ##########################
 remove_browser() {
@@ -2520,7 +2499,10 @@ install_breeze_theme() {
 
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="breeze-icons breeze-gtk"
-		DEPENDENCY_02="breeze-grub xfwm4-theme-breeze"
+		DEPENDENCY_02="xfwm4-theme-breeze"
+		if [ $(command -v grub-install) ]; then
+			DEPENDENCY_02="${DEPENDENCY_02} breeze-grub"
+		fi
 	fi
 	beta_features_quick_install
 }
@@ -3015,7 +2997,8 @@ modify_remote_desktop_config() {
 		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 4 \
 		"1" "VNC" \
 		"2" "XSDL" \
-		"3" "RDP" \
+		"3" "XRDP" \
+		"4" "Xwayland" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -3033,6 +3016,10 @@ modify_remote_desktop_config() {
 	##########################
 	if [ "${REMOTE_DESKTOP}" == '3' ]; then
 		modify_xrdp_conf
+	fi
+	##########################
+	if [ "${REMOTE_DESKTOP}" == '4' ]; then
+		modify_xwayland_conf
 	fi
 	#######################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -3193,6 +3180,11 @@ modify_xsdl_ip_address() {
 	fi
 }
 #############################################
+press_enter_to_return() {
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+}
 #############################################
 press_enter_to_return_configure_xrdp() {
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -3201,6 +3193,202 @@ press_enter_to_return_configure_xrdp() {
 	configure_xrdp
 }
 ##############
+modify_xwayland_conf() {
+	if [ ! -e "/etc/xwayland" ] && [ ! -L "/etc/xwayland" ]; then
+		echo "${RED}WARNING！${RESET}检测到xwayland目录${YELLOW}不存在${RESET}"
+		echo "请先在termux里进行配置，再返回此处选择您需要配置的桌面环境"
+		echo "若您无root权限，则有可能配置失败！"
+		press_enter_to_return
+		modify_remote_desktop_config
+	fi
+	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "启动" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？" 9 50); then
+		if [ ! -e "/usr/local/bin/startw" ] || [ ! $(command -v weston) ]; then
+			echo "未检测到启动脚本，请重新配置"
+			echo "Please reconfigure xwayland"
+			sleep 2s
+			xwayland_onekey
+		fi
+		/usr/local/bin/startw
+	else
+		configure_xwayland
+	fi
+}
+##################
+#############
+press_enter_to_return_configure_xwayland() {
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "${YELLOW}按回车键返回。${RESET}"
+	read
+	configure_xwayland
+}
+#######################
+xwayland_desktop_enviroment() {
+	X11_OR_WAYLAND_DESKTOP='xwayland'
+	configure_remote_desktop_enviroment
+}
+#############
+configure_xwayland() {
+	#进入xwayland配置文件目录
+	cd /etc/xwayland/
+	TMOE_OPTION=$(
+		whiptail --title "CONFIGURE xwayland" --menu "您想要修改哪项配置？" 14 50 5 \
+			"1" "One-key conf 初始化一键配置" \
+			"2" "指定xwayland桌面环境" \
+			"3" "pulse_server音频服务" \
+			"4" "remove 卸载/移除" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	if [ "${TMOE_OPTION}" == '0' ]; then
+		#tmoe_linux_tool_menu
+		modify_remote_desktop_config
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '1' ]; then
+		xwayland_onekey
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '2' ]; then
+		xwayland_desktop_enviroment
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '3' ]; then
+		xwayland_pulse_server
+	fi
+	##############################
+	if [ "${TMOE_OPTION}" == '4' ]; then
+		echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+		#service xwayland restart
+		RETURN_TO_WHERE='configure_xwayland'
+		do_you_want_to_continue
+		DEPENDENCY_01='weston'
+		DEPENDENCY_02='xwayland'
+		NON_DEBIAN='false'
+		if [ "${LINUX_DISTRO}" = "arch" ]; then
+			DEPENDENCY_02='xorg-server-xwayland'
+		fi
+		rm -fv /etc/xwayland/startw
+		echo "${YELLOW}已删除xwayland启动脚本${RESET}"
+		echo "即将为您卸载..."
+		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+	fi
+	########################################
+	press_enter_to_return_configure_xwayland
+}
+#####################
+##############
+xwayland_pulse_server() {
+	cd /usr/local/bin/
+	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么请可在此处修改。当前为$(grep 'PULSE_SERVER' startw | grep -v '^#' | cut -d '=' -f 2) \n若您曾在音频服务端（接收音频的设备,仅限）上运行过Tmoe-linux,并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'" 15 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+		if grep '^export.*PULSE_SERVER' startw; then
+			sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startw
+		else
+			sed -i "3 a\export PULSE_SERVER=$TARGET" startw
+		fi
+		echo 'Your current PULSEAUDIO SERVER address has been modified.'
+		echo '您当前的音频地址已修改为'
+		echo $(grep 'PULSE_SERVER' startw | grep -v '^#' | cut -d '=' -f 2)
+		press_enter_to_return_configure_xwayland
+	else
+		configure_xwayland
+	fi
+}
+##############
+xwayland_onekey() {
+	RETURN_TO_WHERE='configure_xwayland'
+	do_you_want_to_continue
+
+	DEPENDENCY_01='weston'
+	DEPENDENCY_02='xwayland'
+	NON_DEBIAN='false'
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ $(command -v startplasma-x11) ]; then
+			DEPENDENCY_02='xwayland plasma-workspace-wayland'
+		fi
+	fi
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02='xorg-server-xwayland'
+	fi
+	beta_features_quick_install
+	###################
+	cat >${HOME}/.config/weston.ini <<-'EndOFweston'
+		[core]
+		### uncomment this line for xwayland support ###
+		modules=xwayland.so
+
+		[shell]
+		background-image=/usr/share/backgrounds/gnome/Aqua.jpg
+		background-color=0xff002244
+		panel-color=0x90ff0000
+		locking=true
+		animation=zoom
+		#binding-modifier=ctrl
+		#num-workspaces=6
+		### for cursor themes install xcursor-themes pkg from Extra. ###
+		#cursor-theme=whiteglass
+		#cursor-size=24
+
+		### tablet options ###
+		#lockscreen-icon=/usr/share/icons/gnome/256x256/actions/lock.png
+		#lockscreen=/usr/share/backgrounds/gnome/Garden.jpg
+		#homescreen=/usr/share/backgrounds/gnome/Blinds.jpg
+		#animation=fade
+
+		[keyboard]
+		keymap_rules=evdev
+		#keymap_layout=gb
+		#keymap_options=caps:ctrl_modifier,shift:both_capslock_cancel
+		### keymap_options from /usr/share/X11/xkb/rules/base.lst ###
+
+		[terminal]
+		#font=DroidSansMono
+		#font-size=14
+
+		[screensaver]
+		# Uncomment path to disable screensaver
+		path=/usr/libexec/weston-screensaver
+		duration=600
+
+		[input-method]
+		path=/usr/libexec/weston-keyboard
+
+		###  for Laptop displays  ###
+		#[output]
+		#name=LVDS1
+		#mode=1680x1050
+		#transform=90
+
+		#[output]
+		#name=VGA1
+		# The following sets the mode with a modeline, you can get modelines for your preffered resolutions using the cvt utility
+		#mode=173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync
+		#transform=flipped
+
+		#[output]
+		#name=X1
+		mode=1440x720
+		#transform=flipped-270
+	EndOFweston
+	cd /usr/local/bin
+	cat >startw <<-'EndOFwayland'
+		#!/bin/bash
+		chmod +x -R /etc/xwayland
+		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
+		export PULSE_SERVER=127.0.0.1:0
+		export DISPLAY=:0
+		startxfce4
+	EndOFwayland
+	chmod +x startw
+	xwayland_desktop_enviroment
+	###########################
+	press_enter_to_return_configure_xwayland
+	#此处的返回步骤并非多余
+}
+###########
+##################
 modify_xrdp_conf() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
@@ -3394,24 +3582,21 @@ configure_remote_desktop_enviroment() {
 	modify_remote_desktop_config
 }
 ##############
-configure_remote_desktop_session() {
-	if [ "${X11_OR_WAYLAND_DESKTOP}" == 'xrdp' ]; then
-		echo "${REMOTE_DESKTOP_SESSION}" >~/.xsession
-		#touch ~/.session
-		sed -i '/X11\/Xsession/d' startwm.sh
-		cat >>startwm.sh <<-'EnfOfStartWM'
-			test -x /etc/X11/Xsession && exec /etc/X11/Xsession
-			exec /bin/sh /etc/X11/Xsession
-		EnfOfStartWM
-		sed -i "s:exec /bin/sh.*/etc/X11/Xsession:exec /bin/sh ${REMOTE_DESKTOP_SESSION} /etc/X11/Xsession:g" /etc/xrdp/startwm.sh
-	fi
+configure_xrdp_remote_desktop_session() {
+	echo "${REMOTE_DESKTOP_SESSION}" >~/.xsession
+	#touch ~/.session
+	sed -i '/X11\/Xsession/d' startwm.sh
+	cat >>startwm.sh <<-'EnfOfStartWM'
+		test -x /etc/X11/Xsession && exec /etc/X11/Xsession
+		exec /bin/sh /etc/X11/Xsession
+	EnfOfStartWM
+	sed -i "s:exec /bin/sh.*/etc/X11/Xsession:exec /bin/sh ${REMOTE_DESKTOP_SESSION} /etc/X11/Xsession:g" /etc/xrdp/startwm.sh
 	echo "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
 	echo "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
 	echo "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
 	echo 'If the configuration fails, please use the mandatory configuration function！'
 	echo "Press enter to return,type f to force congigure."
 	echo "按${GREEN}回车键${RESET}${RED}返回${RESET}，输${YELLOW}f${RESET}启用${BLUE}强制配置功能${RESET}"
-
 	read opt
 	case $opt in
 	y* | Y* | "") ;;
@@ -3426,6 +3611,31 @@ configure_remote_desktop_session() {
 	esac
 	service xrdp restart
 	service xrdp status
+}
+##############
+configure_xwayland_remote_desktop_session() {
+	cat >startw <<-EndOFwayland
+		#!/bin/bash
+		chmod +x -R /etc/xwayland
+		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
+		export PULSE_SERVER=127.0.0.1:0
+		export DISPLAY=:0
+		${REMOTE_DESKTOP_SESSION}
+	EndOFwayland
+	chmod +x startw
+	echo "配置完成，请先打开sparkle app，点击Start"
+	echo "然后在GNU/Linux容器里输startw启动xwayland"
+	echo "在使用过程中，您可以按音量+调出键盘"
+	read
+	startw
+}
+#################
+configure_remote_desktop_session() {
+	if [ "${X11_OR_WAYLAND_DESKTOP}" == 'xrdp' ]; then
+		configure_xrdp_remote_desktop_session
+	elif [ "${X11_OR_WAYLAND_DESKTOP}" == 'xwayland' ]; then
+		configure_xwayland_remote_desktop_session
+	fi
 }
 #####################
 xrdp_pulse_server() {
@@ -3446,7 +3656,6 @@ xrdp_pulse_server() {
 	else
 		configure_xrdp
 	fi
-
 }
 ##############
 xrdp_onekey() {
