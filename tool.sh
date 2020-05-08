@@ -1942,7 +1942,7 @@ install_mate_desktop() {
 		#apt autopurge -y ^libfprint
 		apt clean
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='@mate-desktop --skip-broken'
+		DEPENDENCY_01='--skip-broken @mate-desktop'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
 		echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
@@ -3268,6 +3268,8 @@ configure_xwayland() {
 		NON_DEBIAN='false'
 		if [ "${LINUX_DISTRO}" = "arch" ]; then
 			DEPENDENCY_02='xorg-server-xwayland'
+		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+			DEPENDENCY_02='xorg-x11-server-Xwayland'
 		fi
 		rm -fv /etc/xwayland/startw
 		echo "${YELLOW}已删除xwayland启动脚本${RESET}"
