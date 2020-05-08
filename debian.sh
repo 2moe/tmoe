@@ -761,13 +761,18 @@ enable_root_mode() {
 			apt update
 			apt install -y tsu
 		fi
-		if ! grep -q 'pulseaudio --system' ${PREFIX}/bin/debian; then
-			#sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
-			sed -i '4 c\pulseaudio --system --start' ${PREFIX}/bin/debian
-		fi
+		#if ! grep -q 'pulseaudio --system' ${PREFIX}/bin/debian; then
+		#sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
+		#	sed -i '4 c\pulseaudio --system --start' ${PREFIX}/bin/debian
+		#fi
 		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startvnc; then
 			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startvnc
-			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' ${PREFIX}/bin/startvnc
+			#sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' ${PREFIX}/bin/startvnc
+		fi
+		###############
+		if ! grep -q 'tsudo touch' ${PREFIX}/bin/startxsdl; then
+			sed -i 's/^touch ~/tsudo &/' ${PREFIX}/bin/startxsdl
+			#sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo /data/data/com.termux/files/usr/bin/debian:' ${PREFIX}/bin/startxsdl
 		fi
 		#上面那个是Termux专用的，勿改。
 
@@ -790,9 +795,14 @@ enable_root_mode() {
 		fi
 		cp -pf profile profile.bak
 
-		grep 'alias debian=' profile >/dev/null 2>&1 || sed -i '$ a\alias debian="tsudo debian"' profile
-		grep 'alias debian-rm=' profile >/dev/null 2>&1 || sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
-
+		sed -i '/alias debian=/d' profile
+		sed -i '/alias debian-rm=/d' profile
+		sed -i '/pulseaudio/d' $PREFIX/bin/debian
+		#grep 'alias debian=' profile >/dev/null 2>&1 ||
+		#sed -i '$ a\alias debian="tsudo debian"' profile
+		sed -i '$ a\alias debian="pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;tsudo debian' profile
+		#grep 'alias debian-rm=' profile >/dev/null 2>&1 ||
+		sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
 		source profile >/dev/null 2>&1
 		alias debian="tsudo debian"
 		alias debian-rm="tsudo debian-rm"
@@ -1585,6 +1595,9 @@ configure_termux_xwayland_mount() {
 	#rm ${DEBIAN_CHROOT}/etc/xwayland || tsudo rm ${DEBIAN_CHROOT}/etc/xwayland
 	sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" -b /data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
 	echo "termux配置完成，您还需要进入GNU/Linux容器环境内，单独选择xwayland桌面配置选项!"
+	echo "按回车键打开wayland服务端app"
+	read
+	am start -n com.sion.sparkle/com.sion.sparkle.MainActivity
 }
 ################
 download_xwayland_apk() {

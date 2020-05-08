@@ -410,8 +410,7 @@ else
 		#!/data/data/com.termux/files/usr/bin/bash
 		cd ~
 		pulseaudio --kill 2>/dev/null
-		pulseaudio --start
-		#pulseaudio需为第4行，否则将影响tsudo function
+		pulseaudio --start 2>/dev/null
 		unset LD_PRELOAD
 		command="proot"
 		command+=" --link2symlink"
@@ -457,11 +456,11 @@ fi
 
 cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
-	pulseaudio --kill 2>/dev/null
 	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
-	${PREFIX}/bin/debian
+	debian
 EndOfFile
+#pulseaudio --kill 2>/dev/null
 #debian前不需要加上bash
 
 cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
@@ -475,8 +474,9 @@ cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
 	am start -n x.org.server/x.org.server.MainActivity
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
-	/data/data/com.termux/files/usr/bin/debian
+	debian
 EndOfFile
+#/data/data/com.termux/files/usr/bin/
 
 #wget -qO ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
