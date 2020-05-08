@@ -457,8 +457,10 @@ fi
 cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
 	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+	pulseaudio --kill 2>/dev/null
+	pulseaudio --start 2>/dev/null
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
-	debian
+	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
 #pulseaudio --kill 2>/dev/null
 #debian前不需要加上bash
@@ -474,7 +476,7 @@ cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
 	am start -n x.org.server/x.org.server.MainActivity
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
-	debian
+	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
 #/data/data/com.termux/files/usr/bin/
 
@@ -581,8 +583,8 @@ EndOfFile
 
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 
- sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
- sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'
 echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
@@ -618,15 +620,15 @@ chmod +x remove-debian.sh
 
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
- mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
+	mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
 
 if [ -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ]; then
- mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
- echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+	mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
+	echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
 elif [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
- mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
- echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
+	mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
+	echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
 fi
 cd ${DEBIAN_CHROOT}/usr/local/bin
 
@@ -641,24 +643,24 @@ sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' zsh-i.sh
 chmod +x zsh-i.sh
 #zsh-i和zsh是不同的
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
- mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
- #树莓派换源
- curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
- tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
- rm -f "raspbian-sources-gpg.tar.xz"
+	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
+	#树莓派换源
+	curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
+	tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
+	rm -f "raspbian-sources-gpg.tar.xz"
 elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
- rm -f "${HOME}/.REDHATDetectionFILE"
- chmod u+w "${DEBIAN_CHROOT}/root"
+	rm -f "${HOME}/.REDHATDetectionFILE"
+	chmod u+w "${DEBIAN_CHROOT}/root"
 elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
- #sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
- #sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
- #sed -i 's@sed -i \"s:\${DE@#&@g' $(command -v debian)
- sed -i 's/bash --login/ash --login/g' $(command -v debian)
- sed -i 's/zsh --login/ash --login/g' $(command -v debian)
- mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
+	#sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
+	#sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
+	#sed -i 's@sed -i \"s:\${DE@#&@g' $(command -v debian)
+	sed -i 's/bash --login/ash --login/g' $(command -v debian)
+	sed -i 's/zsh --login/ash --login/g' $(command -v debian)
+	mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
 elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
- rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
- sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
+	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
+	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########################
 #配置zsh
@@ -998,18 +1000,18 @@ cat >vnc-autostartup <<-'EndOfFile'
 EndOfFile
 ############
 if [ ! -f ".bashrc" ]; then
- echo '' >>.bashrc || touch .bashrc
+	echo '' >>.bashrc || touch .bashrc
 fi
 sed -i '1 r vnc-autostartup' ./.bashrc
 #cp -f .bashrc .bashrc.bak
 if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
- mv -f .bash_profile .bash_profile.bak 2>/dev/null
- mv -f .bash_login .basfh_login.bak 2>/dev/null
+	mv -f .bash_profile .bash_profile.bak 2>/dev/null
+	mv -f .bash_login .basfh_login.bak 2>/dev/null
 fi
 if [ ! -f ".profile" ]; then
- echo '' >>.profile || touch .profle
+	echo '' >>.profile || touch .profle
 else
- mv -f .profile .profile.bak
+	mv -f .profile .profile.bak
 fi
 #############
 cat >.profile <<-'EDITBASHPROFILE'
@@ -1551,8 +1553,8 @@ cat >.profile <<-'EDITBASHPROFILE'
 EDITBASHPROFILE
 
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
- sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
- sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
+	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
 
 bash ${PREFIX}/bin/debian
