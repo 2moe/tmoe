@@ -3514,7 +3514,7 @@ configure_xrdp() {
 }
 #############
 configure_remote_desktop_enviroment() {
-	INSTALLDESKTOP=$(whiptail --title "REMOTE_DESKTOP" --menu \
+	BETA_DESKTOP=$(whiptail --title "REMOTE_DESKTOP" --menu \
 		"您想要配置哪个桌面？按方向键选择，回车键确认！\n Which desktop environment do you want to configure? " 15 60 5 \
 		"1" "xfce：兼容性高" \
 		"2" "lxde：轻量化桌面" \
@@ -3527,23 +3527,23 @@ configure_remote_desktop_enviroment() {
 		"0" "我一个都不选 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
-	if [ "$INSTALLDESKTOP" == '1' ]; then
+	if [ "${BETA_DESKTOP}" == '1' ]; then
 		REMOTE_DESKTOP_SESSION='xfce4-session'
 		#configure_remote_xfce4_desktop
 	fi
 	##########################
-	if [ "$INSTALLDESKTOP" == '2' ]; then
+	if [ "${BETA_DESKTOP}" == '2' ]; then
 		REMOTE_DESKTOP_SESSION='lxde-session'
 		#configure_remote_lxde_desktop
 	fi
 	##########################
-	if [ "$INSTALLDESKTOP" == '3' ]; then
+	if [ "${BETA_DESKTOP}" == '3' ]; then
 		REMOTE_DESKTOP_SESSION='mate-session'
 		#configure_remote_mate_desktop
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '4' ]; then
-		REMOTE_DESKTOP_SESSION='lxqt-session'
+		REMOTE_DESKTOP_SESSION='startlxqt'
 		#configure_remote_lxqt_desktop
 	fi
 	##############################
@@ -3553,7 +3553,7 @@ configure_remote_desktop_enviroment() {
 		if [ $(command -v startkde) ]; then
 			REMOTE_DESKTOP_SESSION="startkde"
 		else
-			REMOTE_DESKTOP_SESSION="startplasma-x11"
+			REMOTE_DESKTOP_SESSION='startplasma-x11'
 		fi
 	fi
 	##############################
@@ -3598,7 +3598,8 @@ configure_xrdp_remote_desktop_session() {
 		test -x /etc/X11/Xsession && exec /etc/X11/Xsession
 		exec /bin/sh /etc/X11/Xsession
 	EnfOfStartWM
-	sed -i "s:exec /bin/sh.*/etc/X11/Xsession:exec /bin/sh ${REMOTE_DESKTOP_SESSION}:g" /etc/xrdp/startwm.sh
+	sed -i "s@exec /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
+	sed -i "s@exec /bin/sh /etc/X11/Xsession@exec /bin/sh ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
 	echo "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
 	echo "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
 	echo "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
