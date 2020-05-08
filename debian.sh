@@ -2431,7 +2431,7 @@ install_beta_containers() {
 }
 #########################
 install_debian_gnu_linux_distro() {
-	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快，且更加方便。若您无使用GUI的需求，建议选择前者。" 15 50); then
+	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 15 50); then
 		buster_or_sid
 	else
 		if [ ! -d "/sdcard/Download/backup" ]; then
@@ -2518,7 +2518,7 @@ install_fedora_gnu_linux_distro() {
 	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "Fedora不支持您的架构"
 	else
-		if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？31的兼容性更加。Which version do you want to install?" 9 50); then
+		if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
 			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 				sed 's/debian系统/fedora系统/g' |
 				sed 's/debian system/fedora system/g' |
