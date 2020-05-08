@@ -1106,7 +1106,8 @@ cat >.profile <<-'EDITBASHPROFILE'
 	    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 				#Server = https://mirror.archlinuxarm.org/$arch/$repo
-				Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
+				#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
+				Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
 			EndOfArchMirrors
 	    else
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'

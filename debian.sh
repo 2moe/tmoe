@@ -800,7 +800,7 @@ enable_root_mode() {
 		sed -i '/pulseaudio/d' $PREFIX/bin/debian
 		#grep 'alias debian=' profile >/dev/null 2>&1 ||
 		#sed -i '$ a\alias debian="tsudo debian"' profile
-		sed -i '$ a\alias debian="pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;tsudo debian' profile
+		sed -i '$ a\alias debian="pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;tsudo debian"' profile
 		#grep 'alias debian-rm=' profile >/dev/null 2>&1 ||
 		sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
 		source profile >/dev/null 2>&1

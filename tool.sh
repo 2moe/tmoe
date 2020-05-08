@@ -2669,10 +2669,7 @@ other_software() {
 	fi
 	###############################
 	if [ "${SOFTWARE}" == '7' ]; then
-		apt update
-		apt install -y gimp
-		gimp &
-		echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} gimp"
+		install_gimp
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '8' ]; then
@@ -2680,9 +2677,7 @@ other_software() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '9' ]; then
-		apt update
-		apt install -y parole
-		echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} parole"
+		install_parole
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '10' ]; then
@@ -2819,6 +2814,20 @@ install_package_manager_gui() {
 	fi
 }
 ######################
+install_gimp() {
+	DEPENDENCY_01="gimp"
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
+}
+##############
+install_parole() {
+	DEPENDENCY_01="parole"
+	DEPENDENCY_02=""
+	NON_DEBIAN='false'
+	beta_features_quick_install
+}
+###############
 install_pamac_gtk() {
 	DEPENDENCY_01="pamac"
 	DEPENDENCY_02=""
