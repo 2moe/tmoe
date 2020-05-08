@@ -3057,7 +3057,7 @@ modify_vnc_conf() {
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then
 			sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
-			sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name remote-desktop :1" "$(command -v startvnc)"
+			sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
 			echo 'Your current resolution has been modified.'
 			echo '您当前的分辨率已经修改为'
 			echo $(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
@@ -3913,7 +3913,7 @@ first_configure_startvnc() {
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 		export LANG="en_US.UTF8"
 		#启动VNC服务的命令为最后一行
-		vncserver -geometry 720x1440 -depth 24 -name remote-desktop :1
+		vncserver -geometry 720x1440 -depth 24 -name tmoe-linux :1
 	EndOfFile
 	##############
 	cat >stopvnc <<-'EndOfFile'
