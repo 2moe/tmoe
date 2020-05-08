@@ -337,7 +337,7 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200508-08)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站、油管视频,0502支持搭建个人云网盘,0503优化code-server的配置" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200508-08)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -3195,13 +3195,13 @@ press_enter_to_return_configure_xrdp() {
 ##############
 modify_xwayland_conf() {
 	if [ ! -e "/etc/xwayland" ] && [ ! -L "/etc/xwayland" ]; then
-		echo "${RED}WARNING！${RESET}检测到xwayland目录${YELLOW}不存在${RESET}"
+		echo "${RED}WARNING！${RESET}检测到wayland目录${YELLOW}不存在${RESET}"
 		echo "请先在termux里进行配置，再返回此处选择您需要配置的桌面环境"
 		echo "若您无root权限，则有可能配置失败！"
 		press_enter_to_return
 		modify_remote_desktop_config
 	fi
-	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "启动" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？" 9 50); then
+	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "启动" --no-button 'Configure配置' --yesno "您是想要启动桌面还是配置wayland？" 9 50); then
 		if [ ! -e "/usr/local/bin/startw" ] || [ ! $(command -v weston) ]; then
 			echo "未检测到启动脚本，请重新配置"
 			echo "Please reconfigure xwayland"
@@ -3626,6 +3626,8 @@ configure_xwayland_remote_desktop_session() {
 	echo "配置完成，请先打开sparkle app，点击Start"
 	echo "然后在GNU/Linux容器里输startw启动xwayland"
 	echo "在使用过程中，您可以按音量+调出键盘"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}"
+	echo "按${GREEN}回车键${RESET}执行${BLUE}startw${RESET}"
 	read
 	startw
 }
