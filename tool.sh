@@ -123,7 +123,7 @@ check_dependencies() {
 				DEPENDENCIES="${DEPENDENCIES} catimg"
 			fi
 
-		elif [ "${REDHAT_DISTRO}" = "fedora" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
+		elif [ "${REDHAT_DISTRO}" = "fedora" ] || [ "${LINUX_DISTRO}" = "arch" ] || [ "${LINUX_DISTRO}" = "void" ]; then
 			DEPENDENCIES="${DEPENDENCIES} catimg"
 		fi
 	fi
@@ -2043,8 +2043,8 @@ install_lxde_desktop() {
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='noto-sans-sc-fonts patterns-lxde-lxde'
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-		DEPENDENCY_01="i3wm"
-		REMOTE_DESKTOP_SESSION='i3'
+		DEPENDENCY_01="fvwm"
+		REMOTE_DESKTOP_SESSION='fvwm'
 	###################
 	fi
 	############
@@ -2178,8 +2178,8 @@ install_lxqt_desktop() {
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01="tigervnc-x11vnc patterns-lxqt-lxqt"
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-		DEPENDENCY_01="fvwm"
-		REMOTE_DESKTOP_SESSION='fvwm'
+		DEPENDENCY_01="openbox pcmfm rxvt-unicode tint2"
+		REMOTE_DESKTOP_SESSION='openbox'
 	fi
 	####################
 	beta_features_quick_install
@@ -2276,7 +2276,7 @@ gnome3_warning() {
 		RETURN_TO_WHERE='other_desktop'
 		do_you_want_to_continue
 	fi
-	DEPENDENCY_01="plasma-desktop"
+	#DEPENDENCY_01="plasma-desktop"
 	RETURN_TO_WHERE="other_desktop"
 	do_you_want_to_continue
 }
