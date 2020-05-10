@@ -284,7 +284,7 @@ git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}
 grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
 #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
 #####################################
-if grep -q 'Bionic|Buster' /etc/os-release; then
+if grep -Eq 'Bionic|Buster' /etc/os-release; then
     sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
 fi
 
