@@ -67,7 +67,7 @@ esac
 #安装必要依赖
 #apt update
 #apt install -y curl openssl proot aria2 procps
-#gentoo在下一行修改ARCH_TYPE的变量
+#gentoo_arm64在下一行修改ARCH_TYPE的变量为armhf
 
 #requirements and DEPENDENCIES.
 
@@ -206,6 +206,12 @@ mkdir -p ~/storage/external-1
 DEBIAN_FOLDER=debian_${ARCH_TYPE}
 DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
 #DEBIAN_FOLDER=debian_arm64
+RED=$(printf '\033[31m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
 
 echo "                                        "
 echo "                 .::::..                "
@@ -313,8 +319,8 @@ echo "      i7LUJv.   . .     .:   YI7bIr :ur "
 echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
 echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
 echo "         :   r. ..      .. .:i  ...     "
-
-if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
+####################
+creat_chroot_startup_script() {
 	#rm -f ${HOME}/.Chroot-Container-Detection-File
 	echo "Creating chroot startup script"
 	echo "正在创建chroot启动脚本${PREFIX}/bin/debian "
@@ -400,9 +406,10 @@ if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 		  chroot \${DEBIAN_CHROOT} /bin/bash --login
 
 	EndOfChrootFile
-#上面那行不要有空格
-else
-
+	#上面那行不要有空格
+}
+###################
+creat_proot_startup_script() {
 	echo "Creating proot startup script"
 	echo "正在创建proot启动脚本${PREFIX}/bin/debian "
 	#此处EndOfFile不要加单引号
@@ -451,9 +458,116 @@ else
 		    \$command -c "\$com"
 		fi
 	EndOfFile
+	##################
+	if [ "${LINUX_DISTRO}" != 'Android' ]; then
+		sed -i 's@command+=" --link2sy@#&@' ${PREFIX}/bin/debian
+	fi
+	if [ ! -e "/sdcard" ]; then
+		sed -i 's@command+=" -b /sdcard@#&@g' ${PREFIX}/bin/debian
+	fi
+	if [ ! -e "/data/data/com.termux/files/home" ]; then
+		sed -i 's@command+=" -b /data/data/com.termux/files/home:/root/termux"@#&@g' ${PREFIX}/bin/debian
+	fi
+}
+######################
+if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
+	creat_chroot_startup_script
+else
+	creat_proot_startup_script
 fi
 #######################################################
+creat_linux_container_remove_script() {
+	cat >${PREFIX}/bin/debian-rm <<-EndOfFile
+		    #!/data/data/com.termux/files/usr/bin/bash
+			  YELLOW=\$(printf '\033[33m')
+			  RESET=\$(printf '\033[m')
+		    cd ~
+		    
+		  if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+				su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
+				su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
+			  su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
+				su -c " umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
+				su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
+				su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
+				su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
+				su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
+				su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
 
+		ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/proc 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/sys 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/tmp 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/root/sd 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
+		ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
+		  df -h |grep debian
+		  echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+		  echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+		  echo "Before removing the system, make sure you have unmounted the chroot mount directory.
+		It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
+		  fi
+		  echo "移除系统前，请先确保您已停止容器的进程。"
+		  pkill proot 2>/dev/null
+		  ps -e | grep proot
+		  ps -e | grep startvnc
+		  pgrep proot &> /dev/null
+		if [ "\$?" = "0" ]; then
+		    echo '检测到proot容器正在运行，请先输stopvnc停止运行'
+		fi
+
+			ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
+			if [ "\$?" = "0" ]; then
+				echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
+				echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
+				echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+			# echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
+			# echo "Press enter to exit."
+			# echo "${YELLOW}按回车键退出。${RESET} "
+			# read
+			# exit 0
+			fi
+
+		 #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
+		  #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+			echo 'Detecting debian system size... 正在检测debian system占用空间大小'
+		   du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+			if [ ! -d ~/${DEBIAN_FOLDER} ]; then
+				echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
+			fi
+			echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
+		  pkill proot 2>/dev/null
+			read
+		    chmod 777 -R ${DEBIAN_FOLDER}
+			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+
+		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
+			  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
+			source profile >/dev/null 2>&1
+			echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
+		  echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+			echo 'If you want to reinstall, it is not recommended to remove the image file.'
+			echo '若需要重装，则不建议移除镜像文件。'
+			echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
+			echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
+
+		    read opt
+			case \$opt in
+				y*|Y*|"") rm -vf ~/debian-sid-rootfs.tar.xz 2>/dev/null
+		    rm -f ${PREFIX}/bin/debian-rm
+				rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
+				rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
+				rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
+				rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+		    echo "Deleted已删除" ;;
+				n*|N*) echo "skipped." ;;
+				*) echo "Invalid choice. skipped." ;;
+			esac
+	EndOfFile
+}
+########################
 cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
 	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
@@ -462,15 +576,13 @@ cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
 	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
-#pulseaudio --kill 2>/dev/null
-#debian前不需要加上bash
-
+###############
 cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
 	#!/data/data/com.termux/files/usr/bin/bash
 	#pkill -u $(whoami)
 	sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
 EndOfFile
-
+#################
 #不要单引号
 cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
@@ -478,111 +590,12 @@ cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
 	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
-#/data/data/com.termux/files/usr/bin/
-
+creat_linux_container_remove_script
+################
 #wget -qO ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
-cat >${PREFIX}/bin/debian-rm <<-EndOfFile
-	    #!/data/data/com.termux/files/usr/bin/bash
-		  YELLOW=\$(printf '\033[33m')
-		  RESET=\$(printf '\033[m')
-	    cd ~
-	    
-	  if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-			su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
-			su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
-		  su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
-			su -c " umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
-			su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
-			su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
-			su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
-			su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
-			su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
-
-	ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/proc 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/sys 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/tmp 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/root/sd 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
-	ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
-	  df -h |grep debian
-	  echo '移除系统前，请先确保您已卸载chroot挂载目录。'
-	  echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-	  echo "Before removing the system, make sure you have unmounted the chroot mount directory.
-	It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
-	  fi
-	  echo "移除系统前，请先确保您已停止容器的进程。"
-	  pkill proot 2>/dev/null
-	  ps -e | grep proot
-	  ps -e | grep startvnc
-	  pgrep proot &> /dev/null
-	if [ "\$?" = "0" ]; then
-	    echo '检测到proot容器正在运行，请先输stopvnc停止运行'
-	fi
-
-		ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
-		if [ "\$?" = "0" ]; then
-			echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
-			echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
-			echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-		# echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
-		# echo "Press enter to exit."
-		# echo "${YELLOW}按回车键退出。${RESET} "
-		# read
-		# exit 0
-		fi
-
-	 #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
-	  #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-		echo 'Detecting debian system size... 正在检测debian system占用空间大小'
-	   du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
-		if [ ! -d ~/${DEBIAN_FOLDER} ]; then
-			echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
-		fi
-		echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
-	  pkill proot 2>/dev/null
-		read
-	    chmod 777 -R ${DEBIAN_FOLDER}
-		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
-
-	    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
-		  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
-		source profile >/dev/null 2>&1
-		echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
-	  echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
-		echo 'If you want to reinstall, it is not recommended to remove the image file.'
-		echo '若需要重装，则不建议移除镜像文件。'
-		echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
-		echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
-
-	    read opt
-		case \$opt in
-			y*|Y*|"") rm -vf ~/debian-sid-rootfs.tar.xz 2>/dev/null
-	    rm -f ${PREFIX}/bin/debian-rm
-			rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
-			rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-			rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-			rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
-	    echo "Deleted已删除" ;;
-			n*|N*) echo "skipped." ;;
-			*) echo "Invalid choice. skipped." ;;
-		esac
-
-EndOfFile
-
-#tfcard=$(ls -l /data/data/com.termux/files/home/storage/external-1 |cut -c 1)
-
-#if [ "$tfcard" == 'l' ]; then
-
-#   sed -i '/external-1/d' ${PREFIX}/bin/debian
-
-#fi
-
+#############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-
 	sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 	sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
@@ -592,11 +605,10 @@ echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
 cd ${PREFIX}/bin
 
 chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl
-
 #设定alias,防止debian-root的alias依旧在生效。
 alias debian="${PREFIX}/bin/debian"
 alias debian-rm="${PREFIX}/bin/debian-rm"
-
+################
 echo "You can type rm ~/${DebianTarXz} to delete the image file"
 echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
@@ -632,8 +644,8 @@ elif [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 fi
 cd ${DEBIAN_CHROOT}/usr/local/bin
 
-curl -sLo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-curl -sLo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 chmod +x neofetch debian-i
 
 cd ${DEBIAN_CHROOT}/root
@@ -641,7 +653,7 @@ chmod u+w "${DEBIAN_CHROOT}/root"
 curl -sLo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
 sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' zsh-i.sh
 chmod +x zsh-i.sh
-#zsh-i和zsh是不同的
+###########
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
 	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
 	#树莓派换源
@@ -664,318 +676,8 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 fi
 ########################
 #配置zsh
-cat >zsh.sh <<-'ADDZSHSHELL'
-	#!/bin/bash
-	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
-	    LINUX_DISTRO='debian'
-	    if grep -q 'ubuntu' /etc/os-release; then
-	        DEBIAN_DISTRO='ubuntu'
-	    elif [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
-	        DEBIAN_DISTRO='kali'
-	    fi
-
-	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
-	    LINUX_DISTRO='redhat'
-	    if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
-	        REDHAT_DISTRO='centos'
-	    elif grep -q 'Fedora' "/etc/os-release"; then
-	        REDHAT_DISTRO='fedora'
-	    fi
-
-	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
-	    LINUX_DISTRO='alpine'
-
-	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
-	    LINUX_DISTRO='arch'
-
-	elif grep -qi 'Void' '/etc/issue'; then
-	    LINUX_DISTRO='void'
-
-	elif grep -qi 'suse' '/etc/os-release'; then
-	    LINUX_DISTRO='suse'
-
-	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
-	    LINUX_DISTRO='gentoo'
-	fi
-	#####################
-	DEPENDENCIES=""
-	if [ ! -e /bin/bash ]; then
-	    DEPENDENCIES="${DEPENDENCIES} bash"
-	fi
-
-	if [ ! -e "/usr/lib/command-not-found" ]; then
-	    if [ "${LINUX_DISTRO}" = "debian" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} command-not-found"
-	    fi
-	fi
-	##################
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-	    if [ ! -f "/tmp/.openwrtcheckfile" ]; then
-	        if [ ! -d /usr/share/command-not-found ]; then
-	            DEPENDENCIES="${DEPENDENCIES} command-not-found"
-	        fi
-	    fi
-
-	    if [ ! -d /usr/share/doc/fonts-powerline ]; then
-	        DEPENDENCIES="${DEPENDENCIES} fonts-powerline"
-	    fi
-	fi
-	###########################################
-	if [ ! -e /usr/bin/fzf ]; then
-	    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} fzf"
-	    fi
-	fi
-
-	if [ ! -e /usr/bin/git ]; then
-	    if [ "${LINUX_DISTRO}" = "openwrt" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} git git-http"
-	    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} dev-vcs/git"
-	    else
-	        DEPENDENCIES="${DEPENDENCIES} git"
-	    fi
-	fi
-	####################################
-	if [ ! -e /usr/bin/wget ]; then
-	    if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} net-misc/wget"
-	    else
-	        DEPENDENCIES="${DEPENDENCIES} wget"
-	    fi
-	fi
-	###########################
-
-	if [ ! -e /bin/zsh ]; then
-	    if [ "${LINUX_DISTRO}" = "alpine" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} zsh zsh-vcs"
-	    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-	        DEPENDENCIES="${DEPENDENCIES} app-shells/zsh"
-	    else
-	        DEPENDENCIES="${DEPENDENCIES} zsh"
-	    fi
-	fi
-	#############################
-	if [ ! -z "${DEPENDENCIES}" ]; then
-	    echo "正在安装相关依赖..."
-
-	    if [ "${LINUX_DISTRO}" = "debian" ]; then
-	        apt update
-	        apt install -y ${DEPENDENCIES} || apt install -y command-not-found zsh git wget whiptail command-not-found
-
-	    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-	        apk add ${DEPENDENCIES}
-	        #apk add xz newt tar zsh git wget bash zsh-vcs pv
-
-	    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-	        pacman -Syu --noconfirm ${DEPENDENCIES}
-
-	    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-	        dnf install -y ${DEPENDENCIES} || yum install -y ${DEPENDENCIES}
-	        #dnf install -y zsh git pv wget xz tar newt || yum install -y zsh git pv wget xz tar newt
-
-	    elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
-	        #opkg update
-	        opkg install ${DEPENDENCIES} || opkg install whiptail
-
-	    elif [ "${LINUX_DISTRO}" = "void" ]; then
-	        xbps-install -S
-	        xbps-install -y ${DEPENDENCIES}
-
-	    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-	        emerge -avk ${DEPENDENCIES}
-
-	    elif
-	        [ "${LINUX_DISTRO}" = "suse" ]
-	    then
-	        zypper in -y ${DEPENDENCIES}
-
-	    else
-	        apt update
-	        apt install -y command-not-found zsh git wget whiptail command-not-found || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
-	    fi
-	fi
-	###############################
-	if [ -e "/usr/bin/curl" ]; then
-	    curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	else
-	    wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	fi
-	chmod +x /usr/local/bin/debian-i
-	#########################
-	rm -rf ${HOME}/.oh-my-zsh
-	#https://github.com/ohmyzsh/ohmyzsh
-	git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
-	#chmod 755 -R "${HOME}/.oh-my-zsh"
-	if [ ! -f "${HOME}/.zshrc" ]; then
-	    cp "${HOME}/.oh-my-zsh/templates/zshrc.zsh-template" "${HOME}/.zshrc" || curl -Lo "${HOME}/.zshrc" 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template'
-	    #https://github.com/ohmyzsh/ohmyzsh/raw/master/templates/zshrc.zsh-template
-	fi
-	######################
-	chsh -s /usr/bin/zsh || chsh -s /bin/zsh
-
-	RED=$(printf '\033[31m')
-	GREEN=$(printf '\033[32m')
-	YELLOW=$(printf '\033[33m')
-	BLUE=$(printf '\033[34m')
-	BOLD=$(printf '\033[1m')
-	RESET=$(printf '\033[m')
-
-	printf "$BLUE"
-	cat <<-'EndOFneko'
-			               .::::..                
-			    ::::rrr7QQJi::i:iirijQBBBQB.      
-			    BBQBBBQBP. ......:::..1BBBB       
-			    .BuPBBBX  .........r.  vBQL  :Y.  
-			     rd:iQQ  ..........7L   MB    rr  
-			      7biLX .::.:....:.:q.  ri    .   
-			       JX1: .r:.r....i.r::...:.  gi5  
-			       ..vr .7: 7:. :ii:  v.:iv :BQg  
-			       : r:  7r:i7i::ri:DBr..2S       
-			    i.:r:. .i:XBBK...  :BP ::jr   .7. 
-			    r  i....ir r7.         r.J:   u.  
-			   :..X: .. .v:           .:.Ji       
-			  i. ..i .. .u:.     .   77: si   1Q  
-			 ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  
-			7  iK::r  . ii7r LJLrL1r7DPi iJ     r 
-			  .  ::.:   .  ri 5DZDBg7JR7.:r:   i. 
-			 .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  
-			 QB rJ.:rvDE: .. ri uv . iir.7j r7.   
-			iBg ::.7251QZ. . :.      irr:Iu: r.   
-			 QB  .:5.71Si..........  .sr7ivi:U    
-			 7BJ .7: i2. ........:..  sJ7Lvr7s    
-			  jBBdD. :. ........:r... YB  Bi      
-			     :7j1.                 :  :       
-
-		EndOFneko
-	printf "$RESET"
-	###############
-	configure_power_level_10k() {
-	    echo "Configuring zsh theme 正在配置zsh主题(powerlevel 10k)..."
-	    mkdir -p ${HOME}/.oh-my-zsh/custom/themes
-	    cd ${HOME}/.oh-my-zsh/custom/themes
-	    rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
-	    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" || git clone --depth=1 git://github.com/romkatv/powerlevel10k "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
-	    sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
-	    sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
-	    # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
-	    echo '您可以输p10k configure来配置powerlevel10k'
-	    if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
-	        if [ -e "/usr/bin/curl" ]; then
-	            curl -sLo /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-	        else
-	            wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
-	        fi
-
-	        cat >>${HOME}/.zshrc <<-"ENDOFPOWERLEVEL"
-					  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
-				ENDOFPOWERLEVEL
-	    fi
-	}
-	###################
-	if [ "$(uname -m)" = "mips" ]; then
-	    echo "Configuring zsh theme 正在配置zsh主题(agnoster)..."
-	    sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
-	    sed -i "1 i\ZSH_THEME='agnoster'" "${HOME}/.zshrc"
-	else
-	    configure_power_level_10k
-	fi
-	#############################
-	chroot_export_language_and_home() {
-	    grep -q 'unset LD_PRELOAD' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${HOME}/.zshrc >/dev/null 2>&1
-	    grep -q 'en_US.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
-	    grep -q 'HOME=/root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${HOME}/.zshrc >/dev/null 2>&1
-	    grep -q 'cd /root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" ${HOME}/.zshrc >/dev/null 2>&1
-	}
-	#######################
-	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
-	    chroot_export_language_and_home
-	fi
-	#######################
-	cd ~
-
-	cat >~/.zlogin <<-'EndOfFile'
-			cat /etc/os-release | grep PRETTY_NAME |cut -d '"' -f 2
-
-			if [ -f "/root/.vnc/startvnc" ]; then
-				/usr/local/bin/startvnc
-				echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
-				rm -f /root/.vnc/startvnc
-			fi
-
-			if [ -f "/root/.vnc/startxsdl" ]; then
-			    echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
-				echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
-				rm -f /root/.vnc/startxsdl
-			    echo '9s后将为您启动xsdl'
-			    echo 'xsdl will start in 9 seconds'
-			    sleep 9
-				/usr/local/bin/startxsdl
-			fi
-			ps -e 2>/dev/null | tail -n 20
-		EndOfFile
-	#########################
-	configure_command_not_found() {
-	    if [ -e "/usr/lib/command-not-found" ]; then
-	        grep -q 'command-not-found/command-not-found.plugin.zsh' ${HOME}/.zshrc 2>/dev/null || sed -i "$ a\source ${HOME}/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" ${HOME}/.zshrc
-	        if [ "${DEBIAN_DISTRO}" != "ubuntu" ]; then
-	            echo "正在配置command-not-found插件..."
-	            apt-file update 2>/dev/null
-	            update-command-not-found 2>/dev/null
-	        fi
-	    fi
-	}
-	######################
-	if [ "${LINUX_DISTRO}" != "redhat" ]; then
-	    sed -i "1 c\cat /etc/issue" .zlogin
-	fi
-	#######################
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-	    configure_command_not_found
-	fi
-	############################
-	echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
-	rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
-	mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
-
-	git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting || git clone --depth=1 git://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh-syntax-highlighting ${HOME}/.oh-my-zsh/custom/plugins/
-
-	grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ${HOME}/.zshrc
-	#echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${HOME}/.zshrc
-	#######################
-	echo "正在克隆zsh-autosuggestions自动补全插件..."
-	rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
-
-	git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestionszsh-autosuggestions
-
-	grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
-	#echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
-	#####################################
-	if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
-	    sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
-	else
-	    sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
-	fi
-	############################
-	if [ -f "/tmp/.openwrtcheckfile" ]; then
-	    ADMINACCOUNT="$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
-	    cp -rf /root/.z* /root/.oh-my-zsh /root/*sh /home/${ADMINACCOUNT}
-	    rm -f /tmp/.openwrtcheckfile
-	fi
-	########################
-	echo 'All optimization steps have been completed, enjoy it!'
-	echo 'zsh配置完成，2s后将为您启动Tmoe-linux工具'
-	echo "您也可以手动输${YELLOW}debian-i${RESET}进入"
-	echo 'After 2 seconds, Tmoe-linux tool will be launched.'
-	echo 'You can also enter debian-i manually to start it.'
-	sleep 2
-	bash /usr/local/bin/debian-i
-	exec zsh -l
-	source ~/.zshrc
-	zsh
-ADDZSHSHELL
-chmod +x zsh.sh
-
+curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
+chmod u+x ./*
 #vnc自动启动
 cat >vnc-autostartup <<-'EndOfFile'
 	cat /etc/issue
@@ -1014,7 +716,10 @@ else
 	mv -f .profile .profile.bak
 fi
 #############
-cat >.profile <<-'EDITBASHPROFILE'
+#curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
+#chmod u+x .profile
+#不要将profile转换为外部脚本，否则将影响sed
+cat >'.profile' <<-'ENDOFbashPROFILE'
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
 	cd ~
@@ -1024,48 +729,51 @@ cat >.profile <<-'EDITBASHPROFILE'
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    #stable-backports会出错，需改为buster-backports
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-			#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
-			#deb http://mirrors.huaweicloud.com/debian/ stable-updates main contrib non-free
-			#deb http://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free
-			#deb http://mirrors.huaweicloud.com/debian-security stable/updates main contrib non-free
-			deb http://mirrors.huaweicloud.com/debian/ sid main contrib non-free
-		EndOfFile
+				#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian/ stable-updates main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian-security/ stable/updates main contrib non-free
+				deb http://mirrors.huaweicloud.com/debian/ sid main contrib non-free
+			EndOfFile
 	}
 	##############################
 	kali_sources_list() {
 	    echo "检测到您使用的是Kali系统"
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-			deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
-			deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
-			# deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
-		EndOfSourcesList
+				deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
+				deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
+				# deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
+			EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
 	}
 	######################
 	ubuntu_sources_list() {
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse
-			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-updates main restricted universe multiverse
-			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-backports main restricted universe multiverse
-			deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-security main restricted universe multiverse
-			# proposed为预发布软件源，不建议启用
-			# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
-		EndOfFile
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-security main restricted universe multiverse
+				# proposed为预发布软件源，不建议启用
+				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
+			EndOfFile
 	    touch ~/.hushlogin
+	    if grep -q 'Bionic Beaver' "/etc/os-release"; then
+	        sed -i 's/focal/bionic/g' /etc/apt/sources.list
+	    fi
 	}
 	#########################
 	mint_sources_list() {
 	    echo "检测到您使用的是Linux Mint"
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-			deb http://mirrors.huaweicloud.com/linuxmint/ tricia main upstream import backport
-			deb http://mirrors.huaweicloud.com/ubuntu/ bionic main restricted universe multiverse
-			deb http://mirrors.huaweicloud.com/ubuntu/ bionic-updates main restricted universe multiverse
-			deb http://mirrors.huaweicloud.com/ubuntu/ bionic-backports main restricted universe multiverse
-			deb http://mirrors.huaweicloud.com/ubuntu/ bionic-security main restricted universe multiverse
-		EndOfSourcesList
+				deb http://mirrors.huaweicloud.com/linuxmint/ tricia main upstream import backport
+				deb http://mirrors.huaweicloud.com/ubuntu/ bionic main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu/ bionic-updates main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu/ bionic-backports main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu/ bionic-security main restricted universe multiverse
+			EndOfSourcesList
 	}
 	#################################
 	#配置国内镜像源
@@ -1097,9 +805,9 @@ cat >.profile <<-'EDITBASHPROFILE'
 	#配置dns解析
 	rm -f /etc/resolv.conf
 	cat >/etc/resolv.conf <<-'EndOfFile'
-		nameserver 1.0.0.1
-		nameserver 2606:4700:4700::1111
-	EndOfFile
+			nameserver 1.0.0.1
+			nameserver 2606:4700:4700::1111
+		EndOfFile
 	######################
 	###################
 	###################
@@ -1107,16 +815,16 @@ cat >.profile <<-'EDITBASHPROFILE'
 	    sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
 	    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-				#Server = https://mirror.archlinuxarm.org/$arch/$repo
-				#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
-				Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
-			EndOfArchMirrors
+					#Server = https://mirror.archlinuxarm.org/$arch/$repo
+					#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
+					Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
+				EndOfArchMirrors
 	    else
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-				#Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
-				#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
-				Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
-			EndOfArchMirrors
+					#Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
+					#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch
+					Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
+				EndOfArchMirrors
 	    fi
 	}
 	#############################
@@ -1126,35 +834,35 @@ cat >.profile <<-'EDITBASHPROFILE'
 	        #清华镜像站的manjaro rootfs容器竟然没grep、awk和sed
 	        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-				#Server = https://mirror.archlinuxarm.org/$arch/$repo
-				#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
-				#Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/$repo/$arch
-	            Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
-			EndOfArchMirrors
+					#Server = https://mirror.archlinuxarm.org/$arch/$repo
+					#Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
+					#Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/$repo/$arch
+		            Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
+				EndOfArchMirrors
 	        #curl -Lo 'archlinuxarm-keyring.pkg.tar.xz' https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/core/aarch64/archlinuxarm-keyring-20140119-1-any.pkg.tar.xz
 	        #pacman-key --init
 	        #pacman -U --noconfirm ./archlinuxarm-keyring.pkg.tar.xz
 	        #rm -fv ./archlinuxarm-keyring.pkg.tar.xz
 	        #pacman-key --populate archlinux manjaro
 	        #pacman -Sy --noconfirm archlinux-keyring
-			#pacman -S --noconfirm iputils
+	        #pacman -S --noconfirm iputils
 	    fi
 	}
 	#################
 	arch_linux_yay() {
 	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="en_US.UTF-8"' >>/etc/locale.conf
-		pacman -Syyu --noconfirm
+	    pacman -Syyu --noconfirm
 	    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
-				[archlinuxcn]
-				Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
-			Endofpacman
+					[archlinuxcn]
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+				Endofpacman
 	    fi
 	    pacman -Syu --noconfirm archlinux-keyring
 	    pacman -Sy --noconfirm archlinuxcn-keyring
 	    pacman -S --noconfirm yay
 	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
-		pacman -S --noconfirm diffutils iproute
+	    pacman -S --noconfirm diffutils iproute
 	}
 	#################
 	#################
@@ -1170,7 +878,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 	fi
 	#######################
 	alpine_linux_configure() {
-	    echo "检测到您使用的不是deb系linux，将不会为您配置额外优化步骤"
+	    echo "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
 	        sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 	        apk update
@@ -1185,6 +893,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
 	    fi
+	    bash zsh.sh
 	    # ash -c "$(wget --no-check-certificate -O- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
 	}
 	########################
@@ -1212,7 +921,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 	fi
 	##############################
 	apt update 2>/dev/null
-	if [ ! -e "/usr/sbin/locale-gen" ] && [ ! -e "/sbin/locale-gen" ]; then
+	if [ ! $(command -v locale-gen) ]; then
 	    apt install -y locales 2>/dev/null
 	fi
 
@@ -1221,7 +930,7 @@ cat >.profile <<-'EDITBASHPROFILE'
 	fi
 
 	echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
-	echo 'Congratulations on your successful installation of Debian GNU/Linux. After that, you can enter debian in termux to enter the debian system. '
+	echo "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
 	echo '正在执行优化步骤，请勿退出!'
 	echo 'Optimization steps are in progress. Do not exit!'
 
@@ -1234,47 +943,47 @@ cat >.profile <<-'EDITBASHPROFILE'
 	sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 	sed -i 's/^/#&/g' /etc/default/locale
 	cat >>/etc/default/locale <<-'EOF'
-		LANG="en_US.UTF-8"
-		LANGUAGE="en_US:zh"
-		LC_ALL="en_US.UTF-8"
-	EOF
+			LANG="en_US.UTF-8"
+			LANGUAGE="en_US:zh"
+			LC_ALL="en_US.UTF-8"
+		EOF
 	#locale-gen
 	locale-gen zh_CN.UTF-8
 	source /etc/default/locale 2>/dev/null
 	#################
 	printf "$YELLOW"
 	cat <<-'EndOFneko'
-		                                     
-		       DL.                           
-		       QBBBBBKv:rr77ri:.             
-		       gBBQdY7::::..::i7vv.          
-		       UBd. . .:.........rBBBQBBBB5  
-		       Pu  :..r......i:....BBBQBBB:  
-		       ri.i:.j:...:. i7... uBBZrd:   
-		 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
-		.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
-		 .27. :r.r:L7i::.7r:vri:...rr  .     
-		  v   ::.Yrviri:7v7v: ::...i.   i    
-		      r:ir: r.iiiir..:7r...r   :P.2Y 
-		      v:vi::.      :  ::. .qI7U1U :1 
-		Qr    7.7.         :.i::. :Di:. i .v:
-		v7..  s.r7.   ...   .:7i: rDi...r .. 
-		 vi: .7.iDBBr  .r   .:.7. rPr:..r    
-		 i   :virZBgi  :vrYJ1vYY .ruY:..i    
-		     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
-		    .1r:q.   rB52SKrj.:i i5isi.:i :.r
-		    YvrY7    r.  . ru :: PIrj7.:r..v 
-		   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
-		  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
-		  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
-		  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
-		         .            i   7          
+			                                     
+			       DL.                           
+			       QBBBBBKv:rr77ri:.             
+			       gBBQdY7::::..::i7vv.          
+			       UBd. . .:.........rBBBQBBBB5  
+			       Pu  :..r......i:....BBBQBBB:  
+			       ri.i:.j:...:. i7... uBBZrd:   
+			 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
+			.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
+			 .27. :r.r:L7i::.7r:vri:...rr  .     
+			  v   ::.Yrviri:7v7v: ::...i.   i    
+			      r:ir: r.iiiir..:7r...r   :P.2Y 
+			      v:vi::.      :  ::. .qI7U1U :1 
+			Qr    7.7.         :.i::. :Di:. i .v:
+			v7..  s.r7.   ...   .:7i: rDi...r .. 
+			 vi: .7.iDBBr  .r   .:.7. rPr:..r    
+			 i   :virZBgi  :vrYJ1vYY .ruY:..i    
+			     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+			    .1r:q.   rB52SKrj.:i i5isi.:i :.r
+			    YvrY7    r.  . ru :: PIrj7.:r..v 
+			   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
+			  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
+			  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
+			  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
+			         .            i   7          
 
-	EndOFneko
+		EndOFneko
 	printf "$RESET"
 	####################
-	apt install -y apt-utils
-	apt install -y ca-certificates wget curl
+	apt install -y apt-utils 2>/dev/null
+	apt install -y ca-certificates wget curl 2>/dev/null
 	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
 	    echo "Replacing http software source list with https."
 	    echo "正在将http源替换为https..."
@@ -1294,69 +1003,69 @@ cat >.profile <<-'EDITBASHPROFILE'
 	    mkdir -p '/usr/portage'
 	    #下面生成的文件不要留空格
 	    cat >/etc/portage/make.conf <<-'Endofmakeconf'
-			#语言设定
-			L10N="zh-CN en-US"
-			LINGUAS="en_US zh_CN"
+				#语言设定
+				L10N="zh-CN en-US"
+				LINGUAS="en_US zh_CN"
 
-			#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
-			ACCEPT_LICENSE="*"
-			# GCC编译时所调用的配置
-			#指定CPU核心数
-			CFLAGS="-march=native -O4 -pipe"
-			CXXFLAGS="${CFLAGS}"
+				#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
+				ACCEPT_LICENSE="*"
+				# GCC编译时所调用的配置
+				#指定CPU核心数
+				CFLAGS="-march=native -O4 -pipe"
+				CXXFLAGS="${CFLAGS}"
 
-			#与CFLAGS变量不同，CHOST变量是固定的，不能轻易更改。你需要选择合适的架构平台。
-			#CHOST="x86_64-pc-linux-gnu"
-			#CHOST="aarch64-pc-linux-gnu"
-			CPU_FLAGS_X86="aes avx avx2 fma3 mmx mmxext pclmul popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3"
-			#线程数
-			MAKEOPTS="-j8"
-			#显卡
-			#VIDEO_CARDS="intel i965"
+				#与CFLAGS变量不同，CHOST变量是固定的，不能轻易更改。你需要选择合适的架构平台。
+				#CHOST="x86_64-pc-linux-gnu"
+				#CHOST="aarch64-pc-linux-gnu"
+				CPU_FLAGS_X86="aes avx avx2 fma3 mmx mmxext pclmul popcnt sse sse2 sse3 sse4_1 sse4_2 ssse3"
+				#线程数
+				MAKEOPTS="-j8"
+				#显卡
+				#VIDEO_CARDS="intel i965"
 
-			# USE
-			SUPPORT="pulseaudio btrfs mtp git chromium"
-			DESKTOP="infinality emoji cjk"
-			FUCK="-bindist -grub -plymouth -systemd consolekit -modemmanager -gnome-shell -gnome -gnome-keyring -nautilus -modules"
-			ELSE="client icu sudo python"
+				# USE
+				SUPPORT="pulseaudio btrfs mtp git chromium"
+				DESKTOP="infinality emoji cjk"
+				FUCK="-bindist -grub -plymouth -systemd consolekit -modemmanager -gnome-shell -gnome -gnome-keyring -nautilus -modules"
+				ELSE="client icu sudo python"
 
-			USE="${SUPPORT} ${DESKTOP} ${FUCK} ${ELSE}"
+				USE="${SUPPORT} ${DESKTOP} ${FUCK} ${ELSE}"
 
-			# Portage
-			PORTDIR="/usr/portage"
-			DISTDIR="${PORTDIR}/distfiles"
-			PKGDIR="${PORTDIR}/packages"
-			#国内镜像源，用于快照更新（emerge-webrsync）
-			#GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
-			GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
+				# Portage
+				PORTDIR="/usr/portage"
+				DISTDIR="${PORTDIR}/distfiles"
+				PKGDIR="${PORTDIR}/packages"
+				#国内镜像源，用于快照更新（emerge-webrsync）
+				#GENTOO_MIRRORS="https://mirrors.ustc.edu.cn/gentoo/"
+				GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"
 
-			#执行emerge时所调用的参数
-			EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
-			EMERGE_DEFAULT_OPTS="--ask --verbose=y --keep-going --with-bdeps=y --load-average"
-			# FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
-			PORTAGE_REPO_DUPLICATE_WARN="0"
-			# PORTAGE_TMPDIR="/var/tmp/notmpfs"
+				#执行emerge时所调用的参数
+				EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
+				EMERGE_DEFAULT_OPTS="--ask --verbose=y --keep-going --with-bdeps=y --load-average"
+				# FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
+				PORTAGE_REPO_DUPLICATE_WARN="0"
+				# PORTAGE_TMPDIR="/var/tmp/notmpfs"
 
-			#ACCEPT_KEYWORDS="~amd64"
-			ACCEPT_LICENSE="*"
+				#ACCEPT_KEYWORDS="~amd64"
+				ACCEPT_LICENSE="*"
 
 
-			RUBY_TARGETS="ruby24 ruby25"
-			#LLVM_TARGETS="X86"
-			QEMU_SOFTMMU_TARGETS="alpha aarch64 arm i386 mips mips64 mips64el mipsel ppc ppc64 s390x sh4 sh4eb sparc sparc64 x86_64"
-			QEMU_USER_TARGETS="alpha aarch64 arm armeb i386 mips mipsel ppc ppc64 ppc64abi32 s390x sh4 sh4eb sparc sparc32plus sparc64"
-			#关于该配置文件的相关选项参数，详见wiki.gentoo.org/wiki//etc/portage/make.conf
-		Endofmakeconf
+				RUBY_TARGETS="ruby24 ruby25"
+				#LLVM_TARGETS="X86"
+				QEMU_SOFTMMU_TARGETS="alpha aarch64 arm i386 mips mips64 mips64el mipsel ppc ppc64 s390x sh4 sh4eb sparc sparc64 x86_64"
+				QEMU_USER_TARGETS="alpha aarch64 arm armeb i386 mips mipsel ppc ppc64 ppc64abi32 s390x sh4 sh4eb sparc sparc32plus sparc64"
+				#关于该配置文件的相关选项参数，详见wiki.gentoo.org/wiki//etc/portage/make.conf
+			Endofmakeconf
 	    source /etc/portage/make.conf 2>/dev/null
 	    mkdir -p /etc/portage/repos.conf/
 	    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
-			[gentoo]
-			location = /usr/portage
-			sync-type = rsync
-			#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
-			sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
-			auto-sync = yes
-		EndofgentooConf
+				[gentoo]
+				location = /usr/portage
+				sync-type = rsync
+				#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
+				sync-uri = rsync://mirrors.tuna.tsinghua.edu.cn/gentoo-portage/
+				auto-sync = yes
+			EndofgentooConf
 	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
 	    #同步过于耗时，故注释掉
 	    #emerge --sync
@@ -1383,10 +1092,10 @@ cat >.profile <<-'EDITBASHPROFILE'
 	void_linux_repository() {
 	    LINUX_DISTRO='void'
 	    cat >/etc/locale.conf <<-'EOF'
-			LANG="en_US.UTF-8"
-			LANGUAGE="en_US:zh"
-			LC_COLLATE=C
-		EOF
+				LANG="en_US.UTF-8"
+				LANGUAGE="en_US:zh"
+				LC_COLLATE=C
+			EOF
 	    mkdir -p /etc/xbps.d
 	    cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
 	    sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.tuna.tsinghua.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
@@ -1423,10 +1132,10 @@ cat >.profile <<-'EDITBASHPROFILE'
 	apt clean
 
 	#############################
-	grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
+	#grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
 
 	echo "Welcome to Debian GNU/Linux."
-	cat /etc/issue
+	cat /etc/issue 2>/dev/null || cat /etc/os-release
 	uname -a
 	rm -f vnc-autostartup .profile
 	if [ -f ".profile.bak" ]; then
@@ -1466,53 +1175,53 @@ cat >.profile <<-'EDITBASHPROFILE'
 	#fedora清华源mirrors.tuna.tsinghua.edu.cn/fedora/releases/
 	fedora_32_repos() {
 	    cat >/etc/yum.repos.d/fedora.repo <<-'EndOfYumRepo'
-			[fedora]
-			name=Fedora $releasever - $basearch
-			failovermethod=priority
-			baseurl=https://mirrors.huaweicloud.com/fedora/releases/$releasever/Everything/$basearch/os/
-			metadata_expire=28d
-			gpgcheck=1
-			gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-			skip_if_unavailable=False
-		EndOfYumRepo
+				[fedora]
+				name=Fedora $releasever - $basearch
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/releases/$releasever/Everything/$basearch/os/
+				metadata_expire=28d
+				gpgcheck=1
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
 
 	    cat >/etc/yum.repos.d/fedora-updates.repoo <<-'EndOfYumRepo'
-			[updates]
-			name=Fedora $releasever - $basearch - Updates
-			failovermethod=priority
-			baseurl=https://mirrors.huaweicloud.com/fedora/updates/$releasever/Everything/$basearch/
-			enabled=1
-			gpgcheck=1
-			metadata_expire=6h
-			gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-			skip_if_unavailable=False
-		EndOfYumRepo
+				[updates]
+				name=Fedora $releasever - $basearch - Updates
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/updates/$releasever/Everything/$basearch/
+				enabled=1
+				gpgcheck=1
+				metadata_expire=6h
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
 	}
 	#########################
 	fedora_3x_repos() {
 	    cat >/etc/yum.repos.d/fedora-modular.repo <<-'EndOfYumRepo'
-			[fedora-modular]
-			name=Fedora Modular $releasever - $basearch
-			failovermethod=priority
-			baseurl=https://mirrors.huaweicloud.com/fedora/releases/$releasever/Modular/$basearch/os/
-			enabled=1
-			metadata_expire=7d
-			gpgcheck=1
-			gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-			skip_if_unavailable=False
-		EndOfYumRepo
+				[fedora-modular]
+				name=Fedora Modular $releasever - $basearch
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/releases/$releasever/Modular/$basearch/os/
+				enabled=1
+				metadata_expire=7d
+				gpgcheck=1
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
 
 	    cat >/etc/yum.repos.d/fedora-updates-modular.repo <<-'EndOfYumRepo'
-			[updates-modular]
-			name=Fedora Modular $releasever - $basearch - Updates
-			failovermethod=priority
-			baseurl=https://mirrors.huaweicloud.com/fedora/updates/$releasever/Modular/$basearch/
-			enabled=1
-			gpgcheck=1
-			metadata_expire=6h
-			gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-			skip_if_unavailable=False
-		EndOfYumRepo
+				[updates-modular]
+				name=Fedora Modular $releasever - $basearch - Updates
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/updates/$releasever/Modular/$basearch/
+				enabled=1
+				gpgcheck=1
+				metadata_expire=6h
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
 	    #dnf install -y glibc-langpack-zh
 	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
 	    #dnf clean packages
@@ -1550,8 +1259,8 @@ cat >.profile <<-'EDITBASHPROFILE'
 	else
 	    bash zsh.sh
 	fi
-EDITBASHPROFILE
-
+ENDOFbashPROFILE
+#####################
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
 	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
 	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh

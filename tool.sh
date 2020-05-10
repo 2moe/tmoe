@@ -337,7 +337,7 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200508-08)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200510-11)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland,0511更新文件选择功能" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -675,6 +675,103 @@ python_youtube_dl() {
 	download_videos
 }
 #############
+check_file_selection_items() {
+	if [[ -d "${SELECTION}" ]]; then # 目录是否已被选择
+		tmoe_file "$1" "${SELECTION}"
+	elif [[ -f "${SELECTION}" ]]; then # 文件已被选择？
+		if [[ ${SELECTION} == *${FILE_EXT_01} ]] || [[ ${SELECTION} == *${FILE_EXT_02} ]]; then
+			# 检查文件扩展名
+			#if (whiptail --title "modify cookie path and status" --yes-button '修改cookie path' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
+			#fi
+			if (whiptail --title "Confirm Selection" --yes-button "Confirm确认" --no-button "Back返回" --yesno "目录: $CURRENT_DIR\n文件: ${SELECTION}" 0 0); then
+				FILE_NAME="${SELECTION}"
+				FILE_PATH="${CURRENT_DIR}"
+				#将文件路径作为已经选择的变量
+			else
+				tmoe_file "$1" "$CURRENT_DIR"
+			fi
+		else
+			whiptail --title "WARNING: File Must have ${FILE_EXT_01} or ${FILE_EXT_02} Extension" \
+				--msgbox "${SELECTION}\n您必须选择${FILE_EXT_01}或${FILE_EXT_02}格式的文件。You Must Select a ${FILE_EXT_01} or ${FILE_EXT_02} file" 0 0
+			tmoe_file "$1" "$CURRENT_DIR"
+		fi
+	else
+		whiptail --title "WARNING: Selection Error" \
+			--msgbox "无法选择该文件或文件夹，请返回。Error Changing to Path ${SELECTION}" 0 0
+		tmoe_file "$1" "$CURRENT_DIR"
+	fi
+}
+#####################
+tmoe_file() {
+	if [ -z $2 ]; then
+		DIR_LIST=$(ls -lhp | awk -F ' ' ' { print $9 " " $5 } ')
+	else
+		cd "$2"
+		DIR_LIST=$(ls -lhp | awk -F ' ' ' { print $9 " " $5 } ')
+	fi
+	###########################
+	CURRENT_DIR=$(pwd)
+	# 检测是否为根目录
+	if [ "$CURRENT_DIR" == "/" ]; then
+		SELECTION=$(whiptail --title "$1" \
+			--menu "${MENU_01}\n$CURRENT_DIR" 0 0 0 \
+			--cancel-button Cancel取消 \
+			--ok-button Select选择 $DIR_LIST 3>&1 1>&2 2>&3)
+	else
+		SELECTION=$(whiptail --title "$1" \
+			--menu "${MENU_01}\n$CURRENT_DIR" 0 0 0 \
+			--cancel-button Cancel取消 \
+			--ok-button Select选择 ../ 返回 $DIR_LIST 3>&1 1>&2 2>&3)
+	fi
+	########################
+	EXIT_STATUS=$?
+	if [ ${EXIT_STATUS} = 1 ]; then # 用户是否取消操作？
+		return 1
+	elif [ ${EXIT_STATUS} = 0 ]; then
+		check_file_selection_items
+	fi
+	############
+}
+################
+tmoe_file_manager() {
+	#START_DIR="/root"
+	#FILE_EXT_01='tar.gz'
+	#FILE_EXT_02='tar.xz'
+	TMOE_TITLE="${FILE_EXT_01} & ${FILE_EXT_02} 文件选择Tmoe-linux管理器"
+	MENU_01="请使用方向键和回车键进行操作"
+	########################################
+	#-bak_rootfs.tar.xz
+	###################
+	#tmoe_file
+	###############
+	tmoe_file "$TMOE_TITLE" "$START_DIR"
+
+	EXIT_STATUS=$?
+	if [ ${EXIT_STATUS} -eq 0 ]; then
+		if [ "${SELECTION}" == "" ]; then
+			echo "检测到您取消了操作,User Pressed Esc with No File Selection"
+		else
+			whiptail --msgbox "文件属性 :  $(ls -lh ${FILE_NAME})\n路径 : ${FILE_PATH}" 0 0
+			COOKIE_FILE_PATH="${CURRENT_DIR}/${SELECTION}"
+			#uncompress_tar_file
+		fi
+	else
+		echo "检测到您取消了操作，没有文件被选择,with No File Selected."
+		#press_enter_to_return
+	fi
+}
+###########
+where_is_start_dir() {
+	if [ -d "/root/sd" ]; then
+		START_DIR='/root/sd/Download'
+	elif [ -d "/sdcard" ]; then
+		START_DIR='/sdcard/'
+	else
+		START_DIR="$(pwd)"
+	fi
+	tmoe_file_manager
+}
+###################################
 cookies_readme() {
 	cat <<-'EndOFcookies'
 		若您需要下载大会员视频，则需要指定cookie文件路径。
@@ -691,6 +788,9 @@ cookies_readme() {
 		同时希望您能够了解，将cookie文件泄露出去等同于将账号泄密！
 		请妥善保管好该文件及相关数据！
 	EndOFcookies
+	if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
+		echo "您当前的cookie路径为$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
+	fi
 	RETURN_TO_WHERE='download_videos'
 	do_you_want_to_continue
 	if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
@@ -701,31 +801,22 @@ cookies_readme() {
 	fi
 
 	mkdir -p "${HOME}/.config/tmoe-linux"
-	if (whiptail --title "modify cookie path and status" --yes-button '修改cookie path' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
-		TARGET=$(whiptail --inputbox "请输入cookie文件路径,例如 /root/sd/Download/cookies.txt \n${CurrentCOOKIESpath} Press Enter after the input is completed." 16 50 --title "Please enter the cookie path" 3>&1 1>&2 2>&3)
-
-		exitstatus=$?
-		if [ $exitstatus = 0 ]; then
-			echo ${TARGET} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
-			ls -a ${TARGET} >/dev/null
-			if [ $? != 0 ]; then
-				echo "没有指定有效的文件路径，请重新输入"
-			fi
-
-			if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-				echo "您当前的cookie路径为$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
-			fi
+	if (whiptail --title "modify cookie path and status" --yes-button '指定cookie file' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
+		FILE_EXT_01='txt'
+		FILE_EXT_02='sqlite'
+		where_is_start_dir
+		echo ${COOKIE_FILE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
+		if [ -z ${COOKIE_FILE_PATH} ]; then
+			echo "没有指定有效的文件，请重新选择"
+		else
+			echo "您已成功修改cookie文件路径"
+			ls -lah ${COOKIE_FILE_PATH}
 		fi
-
 	else
-
 		rm -f "${HOME}/.config/tmoe-linux/videos.cookiepath"
 		echo "已禁用加载cookie功能"
 	fi
-
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
-	read
+	press_enter_to_return
 	download_videos
 }
 #########
@@ -1678,6 +1769,9 @@ preconfigure_gui_dependecies_02() {
 		#################
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts"
+		##################
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_02="curl openssl xvfb dbus-x11 bash font-noto-cjk x11vnc"
 		##############
 	fi
 }
@@ -1796,6 +1890,38 @@ configure_xfce4_xstartup() {
 	touch /tmp/.Tmoe-XFCE4-Desktop-Detection-FILE
 	first_configure_startvnc
 }
+####################
+configure_alpine_xfce_x11vnc() {
+	cd /usr/local/bin/
+	cat >startvnc <<-'EOF'
+		#!/bin/bash
+		export PULSE_SERVER=127.0.0.1
+		export DISPLAY=:1
+		/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
+		sleep 1s
+		startxfce4 &
+		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		#export LANG="en_US.UTF8"
+		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :1 -forever -bg -rfbauth ${HOME}/.vnc/passwd -users $(whoami) -rfbport 5901 -noshm &
+	EOF
+	cat >stopvnc <<-'EOF'
+		#!/bin/bash
+		pkill dbus
+		pkill Xvfb
+		pkill pulse
+	EOF
+	cat >vncpasswd <<-'EOF'
+		#!/bin/bash
+		read -sp "请输入6至8位密码，Please enter the new VNC password: " PASSWORD
+		mkdir -p ${HOME}/.vnc
+		x11vnc -storepasswd $PASSWORD ${HOME}/.vnc/passwd
+	EOF
+	configure_startxsdl
+	chmod +x ./*
+	vncpasswd
+	startvnc
+}
 ##########################
 kali_xfce4_extras() {
 	apt install -y kali-menu
@@ -1845,6 +1971,10 @@ install_xfce4_desktop() {
 		#################
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal"
+		###############
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="faenza-icon-theme xfce4 xfce4-terminal"
+		##############
 	fi
 	##################
 	beta_features_quick_install
@@ -1865,7 +1995,11 @@ install_xfce4_desktop() {
 		tar -Jxvf "colorschemes.tar.xz"
 	fi
 	#########
-	configure_xfce4_xstartup
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		configure_alpine_xfce_x11vnc
+	else
+		configure_xfce4_xstartup
+	fi
 }
 ###############
 ###############
@@ -2927,7 +3061,8 @@ install_baidu_netdisk() {
 	fi
 	cd /tmp
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm baidunetdisk-bin
+		DEPENDENCY_01="baidunetdisk-bin"
+		beta_features_quick_install
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		curl -Lvo 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
 		rpm -ivh 'baidunetdisk.rpm'
@@ -2954,7 +3089,8 @@ install_netease_163_cloud_music() {
 	fi
 	cd /tmp
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm netease-cloud-music
+		DEPENDENCY_01="netease-cloud-music"
+		beta_features_quick_install
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		curl -Lv https://dl.senorsen.com/pub/package/linux/add_repo.sh | sh -
 		dnf install http://dl-http.senorsen.com/pub/package/linux/rpm/senorsen-repo-0.0.1-1.noarch.rpm
@@ -3198,7 +3334,7 @@ modify_xsdl_ip_address() {
 #############################################
 press_enter_to_return() {
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 }
 #############################################
@@ -3860,22 +3996,62 @@ xrdp_reset() {
 }
 #################################
 #################################
-first_configure_startvnc() {
-	if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			sed -i 's:dbus-launch::' ~/.vnc/xstartup
+configure_startxsdl() {
+	cd /usr/local/bin
+	cat >startxsdl <<-'EndOfFile'
+		#!/bin/bash
+		stopvnc >/dev/null 2>&1
+		export DISPLAY=127.0.0.1:0
+		export PULSE_SERVER=tcp:127.0.0.1:4713
+		echo '正在为您启动xsdl,请将display number改为0'
+		echo 'Starting xsdl, please change display number to 0'
+		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL,正在为您打开音频服务'
+			export PULSE_SERVER=tcp:127.0.0.1
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
+			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
+			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
+			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
+			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+			if grep -q '172..*1' "/etc/resolv.conf"; then
+				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+				export PULSE_SERVER=${WSL2IP}
+				export DISPLAY=${WSL2IP}:0
+				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
+			fi
+			sleep 2
 		fi
-	fi
-
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ -f "/tmp/.Tmoe-XFCE4-Desktop-Detection-FILE" ]; then
-		echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
-		if [ "${LINUX_DISTRO}" = 'debian' ]; then
-			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
-		#else
-		#	${PACKAGES_REMOVE_COMMAND} udisks2 gvfs
+		#不要将上面uname -r的检测修改为WINDOWSDISTRO
+		#sudo下无法用whoami检测用户
+		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
+		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
+			if [ -e "${HOME}/.profile" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.bashrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.zshrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			fi
+			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+			cd ${HOME}
+			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
 		fi
-	fi
 
+		export LANG="en_US.UTF-8"
+		dbus-launch startxfce4 
+	EndOfFile
+}
+#################
+configure_startvnc() {
 	cd /usr/local/bin
 	cat >startvnc <<-'EndOfFile'
 		#!/bin/bash
@@ -3932,59 +4108,26 @@ first_configure_startvnc() {
 		rm -rf /tmp/.X11-unix/X1
 		pkill Xtightvnc
 	EndOfFile
+}
+###############
+first_configure_startvnc() {
+	if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			sed -i 's:dbus-launch::' ~/.vnc/xstartup
+		fi
+	fi
+
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ -f "/tmp/.Tmoe-XFCE4-Desktop-Detection-FILE" ]; then
+		echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
+		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
+		#else
+		#	${PACKAGES_REMOVE_COMMAND} udisks2 gvfs
+		fi
+	fi
+	configure_startvnc
+	configure_startxsdl
 	###############################
-	cat >startxsdl <<-'EndOfFile'
-		#!/bin/bash
-		stopvnc >/dev/null 2>&1
-		export DISPLAY=127.0.0.1:0
-		export PULSE_SERVER=tcp:127.0.0.1:4713
-		echo '正在为您启动xsdl,请将display number改为0'
-		echo 'Starting xsdl, please change display number to 0'
-		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
-		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			export PULSE_SERVER=tcp:127.0.0.1
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
-			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
-			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
-			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
-				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				export PULSE_SERVER=${WSL2IP}
-				export DISPLAY=${WSL2IP}:0
-				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
-			fi
-			sleep 2
-		fi
-		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		#sudo下无法用whoami检测用户
-		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
-			if [ -e "${HOME}/.profile" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
-			elif [ -e "${HOME}/.bashrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
-			elif [ -e "${HOME}/.zshrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
-			fi
-			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-			cd ${HOME}
-			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
-		fi
-
-		export LANG="en_US.UTF-8"
-		dbus-launch startxfce4 
-	EndOfFile
-
 	if [ -f "/tmp/.Tmoe-MATE-Desktop-Detection-FILE" ]; then
 		rm -f /tmp/.Tmoe-MATE-Desktop-Detection-FILE
 		sed -i '/dbus-launch/d' startxsdl
@@ -4477,7 +4620,9 @@ install_pinyin_input_method() {
 	#apt install -y fcitx-sunpinyin  fcitx fcitx-googlepinyin
 	#################
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm fcitx-sogoupinyin
+		DEPENDENCY_01="fcitx-sogoupinyin"
+		DEPENDENCY_02=''
+		beta_features_quick_install
 		echo "fcitx-sogoupinyin安装完成,按回车键返回"
 		read
 		beta_features
@@ -4694,6 +4839,7 @@ install_typora() {
 install_wps_office() {
 	DEPENDENCY_01="wps-office"
 	DEPENDENCY_02=""
+	NON_DEBIAN='false'
 	cd /tmp
 	if [ -e "/usr/share/applications/wps-office-wps.desktop" ]; then
 		press_enter_to_reinstall
@@ -4706,8 +4852,8 @@ install_wps_office() {
 		apt install -y ./WPSoffice.deb
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm wps-office
-
+		DEPENDENCY_01="wps-office-cn"
+		beta_features_quick_install
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
 		curl -Lvo WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"

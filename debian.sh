@@ -84,6 +84,12 @@ press_enter_to_return() {
 	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	read
 }
+#####################
+press_enter_to_continue() {
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}"
+	read
+}
 #########################################################
 auto_check() {
 
@@ -587,12 +593,12 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "Tmoe-Debian GNU/Linux manager(20200508-08)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200510-11)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作" 15 60 4 \
+		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509全面升级备份与还原功能" 17 50 6 \
 			"1" "proot安装" \
 			"2" "chroot安装" \
 			"3" "GUI,audio & sources.list" \
@@ -675,17 +681,11 @@ tmoe_manager_main_menu() {
 ##########################
 ##########################
 install_proot_container() {
-	if [ "$(uname -o)" != "Android" ]; then
-		echo "非常抱歉，本功能仅适配安卓系统。"
-		echo "Linux系统请换用chroot容器。"
-		press_enter_to_return
-		tmoe_manager_main_menu
-
-	fi
 	rm -f ~/.Chroot-Container-Detection-File
 	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
 	touch ~/.Tmoe-Proot-Container-Detection-File
 	install_gnu_linux_container
+	#sed -i 's@^command+=" --link2sy@#&@' $(command -v debian)
 }
 ##########################
 install_chroot_container() {
@@ -837,18 +837,9 @@ enable_root_mode() {
 ################################
 ################################
 remove_gnu_linux_container() {
-
 	cd ~
 	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
+		unmount_proc_dev
 		ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
 		ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
 		ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
@@ -937,18 +928,19 @@ remove_gnu_linux_container() {
 }
 #######################
 #######################
-backup_system() {
-	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
+backup_filename() {
+	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称\n Please enter the filename." 12 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+	TARGET_BACKUP_FILE_NAME="$(echo ${TARGET_BACKUP_FILE_NAME} | head -n 1 | cut -d ' ' -f 1)"
+	echo $TARGET_BACKUP_FILE_NAME
+	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
+		echo "文件名称不能为空！"
+		press_enter_to_return
+		backup_system
 	fi
+}
+######################
+backup_system() {
+	unmount_proc_dev
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "备份GNU/Linux容器" \
@@ -979,25 +971,20 @@ backup_system() {
 }
 ###########################
 backup_gnu_linux_container() {
-	if [ ! -d /sdcard/Download/backup ]; then
-		mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
-	else
-		cd /sdcard/Download/backup
-	fi
 
-	ls -lth ./debian*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
+	#ls -lth ./debian*.tar.* 2>/dev/null | head -n 5
+	#echo '您之前所备份的(部分)文件如上所示'
 
-	echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
-	read
-
-	echo $(date +%Y-%m-%d_%H-%M) >backuptime.tmp
-	TMPtime=debian_$(cat backuptime.tmp)
+	#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
+	#press_enter_to_continue
+	termux_backup_pre
+	TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-rootfs_bak"
 
 	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 12 50); then
 
 		echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-		read
+		press_enter_to_continue
 		tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 		#whiptail进度条已弃用
 		#tar -PJpcf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
@@ -1016,8 +1003,8 @@ backup_gnu_linux_container() {
 
 		echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-		read
-		if [ ! -z "$(command -v pv)" ]; then
+		press_enter_to_continue
+		if [ "$(command -v pv)" ]; then
 			tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 		else
 			tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
@@ -1064,39 +1051,37 @@ install_timeshift() {
 	fi
 }
 ######################
+termux_backup_pre() {
+	if [ ! -d /sdcard/Download/backup ]; then
+		mkdir -p /sdcard/Download/backup
+	fi
+	cd /sdcard/Download/backup
+	backup_filename
+	echo $(date +%Y-%m-%d_%H-%M) >backuptime.tmp
+}
+####################
 backup_termux() {
-	TERMUXBACKUP=$(whiptail --title "多项选择题" --checklist \
+	TERMUX_BACKUP=$(dialog --title "多项选择题" --checklist \
 		"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认 \n Which directory do you want to backup? Please press the space to select and press Enter to confirm." 15 60 4 \
 		"home" "Termux主目录,主要用来保存用户文件" ON \
 		"usr" "保存软件、命令和其它东西" OFF \
 		3>&1 1>&2 2>&3)
+	echo ${TERMUX_BACKUP}
 	##########################
-	if [ "$TERMUXBACKUP" == 'home' ]; then
-
-		if [ ! -d /sdcard/Download/backup ]; then
-			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
-		else
-			cd /sdcard/Download/backup
-		fi
-
+	if [ "${TERMUX_BACKUP}" = "home" ]; then
+		termux_backup_pre
+		TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-termux_home_bak"
 		##tar -czf - ~/${DEBIAN_FOLDER} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
-
-		ls -lth ./termux-home*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
-
+		#ls -lth ./termux-home*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 		#echo 'This operation will only backup the home directory of termux, not the container. If you need to backup debian, please select both options or backup debian separately.'
 		#echo '本次操作将只备份termux的主目录，不包含主目录下的容器。如您需备份GNU/Linux容器,请同时选择home和usr，或单独备份GNU/Linux容器。'
-
-		echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
-		read
-
-		echo $(date +%Y-%m-%d_%H-%M) >backuptime.tmp
-		TMPtime=termux-home_$(cat backuptime.tmp)
-
+		#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
+		#		read
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-			read
+			press_enter_to_continue
 
 			tar -PJpvcf ${TMPtime}.tar.xz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux --exclude=${DEBIAN_CHROOT}/root/tf ${HOME}
 
@@ -1106,7 +1091,7 @@ backup_termux() {
 			echo "部分目录无权限备份是正常现象。"
 			rm -f backuptime.tmp
 			pwd
-			ls -lth ./termux-home*tar* | grep ^- | head -n 1
+			ls -lth ./*termux_home*tar* | grep ^- | head -n 1
 			echo "备份${GREEN}完成${RESET}"
 			press_enter_to_return
 			tmoe_manager_main_menu
@@ -1115,7 +1100,7 @@ backup_termux() {
 
 			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-			read
+			press_enter_to_continue
 
 			tar -Ppvczf ${TMPtime}.tar.gz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux --exclude=${DEBIAN_CHROOT}/root/tf ${HOME}
 
@@ -1124,27 +1109,22 @@ backup_termux() {
 			rm -f backuptime.tmp
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
-			ls -lth ./termux-home*tar* | grep ^- | head -n 1
+			ls -lth ./*termux-home*tar* | grep ^- | head -n 1
 			echo '备份完成'
 			press_enter_to_return
 			tmoe_manager_main_menu
 		fi
 	fi
 	##########################
-	if [ "$TERMUXBACKUP" == 'usr' ]; then
+	if [ "${TERMUX_BACKUP}" == 'usr' ]; then
 
-		if [ ! -d /sdcard/Download/backup ]; then
-			mkdir -p /sdcard/Download/backup
-		fi
-		cd /sdcard/Download/backup
+		termux_backup_pre
+		TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-termux_usr_bak"
+		#ls -lth ./termux-usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 
-		ls -lth ./termux-usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
-
-		echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
-		read
-
-		echo $(date +%Y-%m-%d_%H-%M) >backuptime.tmp
-		TMPtime=termux-usr_$(cat backuptime.tmp)
+		#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
+		#read
+		#TMPtime=termux-usr_$(cat backuptime.tmp)
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
@@ -1155,7 +1135,7 @@ backup_termux() {
 			#tar -PJpcf ${TMPtime}.tar /data/data/com.termux/files/usr
 			echo '正在压缩成tar.xz'
 
-			if [ ! -z "$(command -v pv)" ]; then
+			if [ "$(command -v pv)" ]; then
 				tar -PpJcf - ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
 			else
 				tar -PpJcvf ${TMPtime}.tar.xz ${PREFIX}
@@ -1168,7 +1148,7 @@ backup_termux() {
 			echo "部分目录无权限备份是正常现象。"
 			rm -f backuptime.tmp
 			pwd
-			ls -lth ./termux-usr*tar* | grep ^- | head -n 1
+			ls -lth ./*termux_usr*tar* | grep ^- | head -n 1
 			echo "备份${GREEN}完成${RESET}"
 			press_enter_to_return
 			tmoe_manager_main_menu
@@ -1177,11 +1157,11 @@ backup_termux() {
 
 			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-			read
+			press_enter_to_continue
 
 			#tar -Ppczf ${TMPtime}.tar.gz   /data/data/com.termux/files/usr
 
-			if [ ! -z "$(command -v pv)" ]; then
+			if [ "$(command -v pv)" ]; then
 				tar -Ppczf - ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 			else
 				tar -Ppczvf ${TMPtime}.tar.gz ${PREFIX}
@@ -1201,30 +1181,21 @@ backup_termux() {
 		fi
 	fi
 	##########################
-	if [ "$TERMUXBACKUP" == 'home usr' ]; then
+	if [ "${TERMUX_BACKUP}" == 'home usr' ]; then
 
-		if [ ! -d /sdcard/Download/backup ]; then
-			mkdir -p /sdcard/Download/backup && cd /sdcard/Download/backup
-		else
-			cd /sdcard/Download/backup
-		fi
-
-		ls -lth ./termux-home+usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
-
-		echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
-		read
-
-		echo $(date +%Y-%m-%d_%H-%M) >backuptime.tmp
-		TMPtime=termux-home+usr_$(cat backuptime.tmp)
+		#ls -lth ./termux-home+usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
+		termux_backup_pre
+		TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-termux_home+usr_bak"
+		#TMPtime=termux-home+usr_$(cat backuptime.tmp)
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ratio, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-			read
+			press_enter_to_continue
 
 			#tar -PJpcf ${TMPtime}.tar /data/data/com.termux/files/usr
 			echo '正在压缩成tar.xz'
-			if [ ! -z "$(command -v pv)" ]; then
+			if [ "$(command -v pv)" ]; then
 				tar -PpJcf - ${HOME} ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.xz)
 			else
 				tar -PpJcvf ${TMPtime}.tar.xz ${HOME} ${PREFIX}
@@ -1237,7 +1208,7 @@ backup_termux() {
 			echo "部分目录无权限备份是正常现象。"
 			rm -f backuptime.tmp
 			pwd
-			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
+			ls -lth ./*termux_home+usr*tar* | grep ^- | head -n 1
 			echo "备份${GREEN}完成${RESET}"
 			press_enter_to_return
 			tmoe_manager_main_menu
@@ -1246,10 +1217,10 @@ backup_termux() {
 
 			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-			read
+			press_enter_to_continue
 
 			#tar -Ppczf ${TMPtime}.tar.gz   /data/data/com.termux/files/usr
-			if [ ! -z "$(command -v pv)" ]; then
+			if [ "$(command -v pv)" ]; then
 				tar -Ppczf - ${HOME} ${PREFIX} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 			else
 				tar -Ppczvf ${TMPtime}.tar.gz ${HOME} ${PREFIX}
@@ -1261,7 +1232,7 @@ backup_termux() {
 			rm -f backuptime.tmp
 			#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 			pwd
-			ls -lth ./termux-home+usr*tar* | grep ^- | head -n 1
+			ls -lth ./*termux-home+usr*tar* | grep ^- | head -n 1
 			echo "备份${GREEN}完成${RESET}"
 			press_enter_to_return
 			tmoe_manager_main_menu
@@ -1273,9 +1244,109 @@ backup_termux() {
 		backup_system
 	fi
 }
+###############
+
 ##################################
 ##################################
-restore_gnu_linux_container() {
+uncompress_tar_xz_file() {
+	echo 'tar.xz'
+	echo "即将为您解压..."
+	echo "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
+	if [ "$(command -v pv)" ]; then
+		pv ${RESTORE} | tar -PpJx
+	else
+		tar -PpJxvf ${RESTORE}
+	fi
+}
+######################
+uncompress_tar_gz_file() {
+	echo 'tar.gz'
+	echo "即将为您解压..."
+	echo "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
+	if [ "$(command -v pv)" ]; then
+		pv ${RESTORE} | tar -Ppzx
+	else
+		tar -Ppzxvf ${RESTORE}
+	fi
+}
+#####################
+uncompress_tar_file() {
+	case "${RESTORE:0-6:6}" in
+	tar.xz)
+		uncompress_tar_xz_file
+		;;
+	tar.gz)
+		uncompress_tar_gz_file
+		;;
+	esac
+	press_enter_to_return
+	restore_gnu_linux_container
+}
+#######################
+uncompress_tar_gz_file_test() {
+	FILE_EXT_6="${RESTORE:0-6:6}"
+	if [ "${FILE_EXT_6}" = 'tar.gz' ]; then
+		uncompress_tar_gz_file
+	elif [ "${FILE_EXT_6}" = 'tar.xz' ]; then
+		uncompress_tar_xz_file
+	fi
+}
+################
+select_file_manually() {
+	count=0
+	echo '您可以在此列表中选择需要恢复的压缩包'
+	for restore_file in "${START_DIR}"/${BACKUP_FILE_NAME}; do
+		restore_file_name[count]=$(echo $restore_file | awk -F'/' '{print $NF}')
+		echo -e "($count) ${restore_file_name[count]}"
+		count=$(($count + 1))
+	done
+	count=$(($count - 1))
+
+	while true; do
+		read -p '请输入选项数字,并按回车键。Please type the option number and press Enter:' number
+		if [[ -z "$number" ]]; then
+			break
+		elif ! [[ $number =~ ^[0-9]+$ ]]; then
+			echo "Please enter the right number!"
+			echo "请输正确的数字编号!"
+		elif (($number >= 0 && $number <= $count)); then
+			eval RESTORE=${restore_file_name[number]}
+			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
+			RETURN_TO_WHERE='restore_gnu_linux_container'
+			do_you_want_to_continue
+			uncompress_tar_file
+			break
+		else
+			echo "Please enter the right number!"
+			echo "请输正确的数字编号!"
+		fi
+	done
+	press_enter_to_return
+	restore_gnu_linux_container
+}
+################
+restore_the_latest_backup_file() {
+	#echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
+	#echo 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
+	#echo '请注意大小写，并把文件名改成具体名称'
+	if [ -z "${RESTORE}" ]; then
+		echo "${RED}未检测${RESTORE}到${BLUE}备份文件${RESTORE},请${GREEN}手动选择${RESTORE}"
+		press_enter_to_continue
+		BACKUP_FILE_NAME=*
+		manually_select_the_file_directory
+		select_file_manually
+		# tmoe_file_manager
+	else
+		ls -lh ${RESTORE}
+		RETURN_TO_WHERE='restore_gnu_linux_container'
+		do_you_want_to_continue
+		uncompress_tar_file
+	fi
+	press_enter_to_return
+	restore_gnu_linux_container
+}
+#########################
+unmount_proc_dev() {
 	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
 		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
@@ -1287,133 +1358,105 @@ restore_gnu_linux_container() {
 		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
 		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
 	fi
-	OPTION=$(whiptail --title "Restore System" --menu "Choose your option" 15 60 4 \
+}
+
+##########################
+do_you_want_to_continue() {
+	echo "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+	read opt
+	case $opt in
+	y* | Y* | "") ;;
+
+	n* | N*)
+		echo "skipped."
+		${RETURN_TO_WHERE}
+		;;
+	*)
+		echo "Invalid choice. skipped."
+		${RETURN_TO_WHERE}
+		#beta_features
+		;;
+	esac
+}
+#########################
+where_is_start_dir() {
+	if [ -d "/sdcard" ]; then
+		START_DIR='/sdcard/Download/backup'
+	elif [ -d "/root/sd" ]; then
+		START_DIR='/root/sd/Download/backup'
+	else
+		START_DIR="$(pwd)"
+	fi
+	select_file_manually
+}
+###############
+file_directory_selection() {
+
+	if (whiptail --title "FILE PATH" --yes-button '自动' --no-button '手动' --yesno "您想要手动指定文件目录还是自动选择？" 9 50); then
+		where_is_start_dir
+	else
+		manually_select_the_file_directory
+		select_file_manually
+	fi
+}
+###################
+manually_select_the_file_directory() {
+	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为/sdcard/Download/backup\n Please enter the file path." 12 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
+	START_DIR="$(echo ${TARGET_BACKUP_FILE_PATH} | head -n 1 | cut -d ' ' -f 1)"
+	echo $START_DIR
+	if [ -z ${START_DIR} ]; then
+		echo "文件目录不能为空"
+		press_enter_to_return
+		restore_gnu_linux_container
+	fi
+}
+###############
+restore_gnu_linux_container() {
+	unmount_proc_dev
+	OPTION=$(whiptail --title "Restore System" --menu "你想要恢复哪个小可爱到之前的备份状态" 15 55 4 \
+		"1" "Restore GNU/Linux container容器" \
+		"2" "Restore termux" \
+		"3" "select path manually手动选择路径" \
 		"0" "Back to the main menu 返回主菜单" \
-		"1" "Restore the latest container backup 还原GNU/Linux容器" \
-		"2" "Restore the latest termux backup 还原Termux" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '1' ]; then
-		cd /sdcard/Download/backup
-		ls -lth debian*tar* | head -n 10 2>/dev/null || echo '未检测到备份文件'
-
-		echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
-
-		echo 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
-		echo '请注意大小写，并把文件名改成具体名称'
-
-		RESTORE=$(ls -lth ./debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
-		echo " "
-		ls -lh ${RESTORE}
-		printf "${YELLOW}即将为您还原${RESTORE}，请问是否确认？[Y/n]${RESET} "
-		#printf之后分行
-		echo ''
-		echo 'Do you want to restore it?[Y/n]'
-
-		read opt
-		case $opt in
-		y* | Y* | "")
-
-			#0-6是截取字符
-			if [ "${RESTORE:0-6:6}" == 'tar.xz' ]; then
-				echo 'tar.xz'
-				if [ ! -z "$(command -v pv)" ]; then
-					pv ${RESTORE} | tar -PJx
-				else
-					tar -PpJxvf ${RESTORE}
-				fi
-			fi
-
-			if [ "${RESTORE:0-6:6}" == 'tar.gz' ]; then
-				echo 'tar.gz'
-				if [ ! -z "$(command -v pv)" ]; then
-					pv ${RESTORE} | tar -Pzx
-				else
-					tar -Ppzxvf ${RESTORE}
-				fi
-			fi
-
-			;;
-
-		\
-			\
-			n* | N*) echo "skipped." ;;
-		*) echo "Invalid choice. skipped." ;;
-
-			#tar xfv $pathTar -C $path
-			#(pv -n $pathTar | tar xfv $pathTar -C $path ) 2>&1 | dialog --gauge "Extracting file..." 6 50
-
-		esac
-
-		press_enter_to_return
-		tmoe_manager_main_menu
-
+		#ls -lth debian*tar* 2>/dev/null || echo '未检测到备份文件' | head -n 10
+		if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件？" 9 50); then
+			#RESTORE=$(ls -lth ./*debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
+			cd /sdcard/Download/backup
+			RESTORE=$(ls -lth ./*-rootfs_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
+			restore_the_latest_backup_file
+		else
+			BACKUP_FILE_NAME="*-rootfs_bak.tar*"
+			where_is_start_dir
+		fi
 	fi
-
 	###################
 	if [ "${OPTION}" == '2' ]; then
-
-		cd /sdcard/Download/backup
-		ls -lth termux*tar* 2>/dev/null || echo '未检测到备份文件' | head -n 10
-
-		echo '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
-
-		echo 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
-		echo '请注意大小写，并把文件名改成具体名称'
-
-		RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
-		echo " "
-		ls -lh ${RESTORE}
-		printf "${YELLOW}即将为您还原${RESTORE}，请问是否确认？[Y/n]${RESET} "
-		#printf之后分行
-		echo ''
-		echo 'Do you want to restore it?[Y/n]'
-
-		read opt
-		case $opt in
-		y* | Y* | "")
-
-			if [ "${RESTORE:0-6:6}" == 'tar.xz' ]; then
-				echo 'tar.xz'
-				if [ ! -z "$(command -v pv)" ]; then
-					pv ${RESTORE} | tar -PJx
-				else
-					tar -PpJxvf ${RESTORE}
-				fi
-			fi
-
-			if [ "${RESTORE:0-6:6}" == 'tar.gz' ]; then
-				echo 'tar.gz'
-				if [ ! -z "$(command -v pv)" ]; then
-					pv ${RESTORE} | tar -Pzx
-				else
-					tar -Ppzxvf ${RESTORE}
-				fi
-			fi
-
-			;;
-
-		\
-			\
-			n* | N*) echo "skipped." ;;
-		*) echo "Invalid choice. skipped." ;;
-
-			#tar xfv $pathTar -C $path
-			#(pv -n $pathTar | tar xfv $pathTar -C $path ) 2>&1 | dialog --gauge "Extracting file..." 6 50
-
-		esac
-
-		press_enter_to_return
-		tmoe_manager_main_menu
+		if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件？" 9 50); then
+			#RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
+			cd /sdcard/Download/backup
+			RESTORE=$(ls -lth ./*-termux*_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
+			restore_the_latest_backup_file
+		else
+			BACKUP_FILE_NAME="*-termux*_bak.tar*"
+			where_is_start_dir
+		fi
 	fi
-
+	###################
+	if [ "${OPTION}" == '3' ]; then
+		BACKUP_FILE_NAME="*tar*"
+		file_directory_selection
+	fi
 	##########################
 	if [ "${OPTION}" == '0' ]; then
-
 		tmoe_manager_main_menu
 	fi
 	##########################
-	tmoe_manager_main_menu
+	#tmoe_manager_main_menu
 }
 ############################
 ############################
@@ -2207,7 +2250,8 @@ modify_android_termux_vnc_config() {
 		fi
 		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
 		#此处termux的whiptail跟debian不同，必须截取Error前的字符。
-		TRUETARGET="$(echo ${TARGET} | cut -d 'E' -f 1)"
+		#TRUETARGET="$(echo ${TARGET} | cut -d 'E' -f 1)"
+		TRUETARGET="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 		#下面那条变量TRUETARGETTARGET前加空格
 		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(command -v startvnc)"
 		sed -i "7 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
@@ -2310,7 +2354,7 @@ choose_which_gnu_linux_distro() {
 	fi
 	##############################
 	if [ "${SELECTED_GNU_LINUX}" == '2' ]; then
-		install_ubuntu_gnu_linux_2004_distro
+		install_ubuntu_gnu_linu_distro
 	fi
 	##############################
 	if [ "${SELECTED_GNU_LINUX}" == '3' ]; then
@@ -2344,7 +2388,7 @@ install_alpha_containers() {
 			"2" "Void:基于xbps包管理器的独立发行版" \
 			"3" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"5" "alpine edge(非glibc的精简系统)" \
+			"5" "alpine 3.11(非glibc的精简系统)" \
 			"6" "slackware(armhf,x64)" \
 			"7" "raspbian樹莓派 buster(armhf)" \
 			"8" "Funtoo:专注于改进Gentoo" \
@@ -2477,6 +2521,26 @@ buster_or_sid() {
 	fi
 }
 #############
+install_ubuntu_gnu_linux_1804_distro() {
+	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+			sed 's/debian系统/ubuntu系统/g' |
+			sed 's/debian system/ubuntu system/g' |
+			sed 's:debian-sid:ubuntu-bionic:g' |
+			sed 's:debian/sid:ubuntu/bionic:g' |
+			sed 's:/ubuntu-ports:/ubuntu:g' |
+			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+	else
+		#ubuntu-ports
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+			sed 's/debian系统/ubuntu系统/g' |
+			sed 's/debian system/ubuntu system/g' |
+			sed 's:debian-sid:ubuntu-bionic:g' |
+			sed 's:debian/sid:ubuntu/bionic:g' |
+			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+	fi
+}
+#########################
 install_ubuntu_gnu_linux_2004_distro() {
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
@@ -2494,6 +2558,14 @@ install_ubuntu_gnu_linux_2004_distro() {
 			sed 's:debian-sid:ubuntu-focal:g' |
 			sed 's:debian/sid:ubuntu/focal:g' |
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
+	fi
+}
+#########################
+install_ubuntu_gnu_linu_distro() {
+	if (whiptail --title "Ubuntu VERSION" --yes-button '20.04' --no-button '18.04' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
+		install_ubuntu_gnu_linux_2004_distro
+	else
+		install_ubuntu_gnu_linux_1804_distro
 	fi
 }
 ##########
@@ -2595,7 +2667,7 @@ install_gentoo_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'arm64' ]; then
 		echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed '72 a\ARCH_TYPE="armhf"' |
+			sed '70 a\ARCH_TYPE="armhf"' |
 			sed 's/debian系统/gentoo系统/g' |
 			sed 's/debian system/gentoo system/g' |
 			sed 's:debian-sid:gentoo-current:g' |
@@ -2613,11 +2685,13 @@ install_gentoo_linux_distro() {
 ###########################
 install_alpine_linux_distro() {
 	touch ~/.ALPINELINUXDetectionFILE
+	wget https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/alpine/
+
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/alpine系统/g' |
 		sed 's/debian system/alpine system/g' |
-		sed 's:debian-sid:alpine-edge:g' |
-		sed 's:debian/sid:alpine/edge:g' |
+		sed 's:debian-sid:alpine-3.11:g' |
+		sed 's:debian/sid:alpine/3.11:g' |
 		sed 's:Debian GNU/Linux:Alpine Linux:g')"
 }
 #####################

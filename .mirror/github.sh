@@ -11,12 +11,12 @@ sed -i 's@locale-gen en_US@locale-gen zh_CN@g' ./*sh
 sed -i 's/114.114.114.114/1.0.0.1/' install.sh
 sed -i 's/240c::6666/2606:4700:4700::1111/' install.sh
 
-sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' install.sh
-sed -i 's@gitee.com/mirrors/oh-my-zsh/raw/master/templates/zshrc.zsh-template@raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template@g' install.sh
-sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' install.sh
+sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' install.sh zsh.sh
+sed -i 's@gitee.com/mirrors/oh-my-zsh/raw/master/templates/zshrc.zsh-template@raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template@g' install.sh zsh.sh
+sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' install.sh zsh.sh
 sed -i '/正在配置中文环境/d' install.sh
-sed -i 's@###tmoe-github@@' install.sh
+sed -i 's@###tmoe-github@@' install.sh zsh.sh
 sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh
-sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' install.sh
-sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' install.sh
-sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' install.sh
+sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' install.sh zsh.sh
+sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' install.sh zsh.sh
+sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' install.sh zsh.sh
