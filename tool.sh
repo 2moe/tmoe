@@ -809,7 +809,7 @@ cookies_readme() {
 			echo "没有指定有效的文件，请重新选择"
 		else
 			echo ${COOKIE_FILE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
-			echo "您已成功修改cookie文件路径"
+			echo "您当前的cookie文件路径为${COOKIE_FILE_PATH}"
 			ls -lah ${COOKIE_FILE_PATH}
 		fi
 	else

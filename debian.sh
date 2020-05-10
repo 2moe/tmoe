@@ -750,12 +750,11 @@ install_gnu_linux_container() {
 enable_root_mode() {
 	if [ "$(uname -o)" != "Android" ]; then
 		echo "非常抱歉，本功能仅适配安卓系统。"
-		echo "chroot容器默认即为真实root权限。"
+		echo "Linux系统请自行使用sudo，并修改相应目录的文件权限。"
 		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
-
-	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装容器，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输tsudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在容器内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除容器。" 10 60); then
+	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装容器，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输sudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在容器内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除容器。" 10 60); then
 
 		if [ ! -f ${PREFIX}/bin/tsu ]; then
 			apt update
@@ -766,16 +765,16 @@ enable_root_mode() {
 		#	sed -i '4 c\pulseaudio --system --start' ${PREFIX}/bin/debian
 		#fi
 		cd ${PREFIX}/bin/
-		if ! grep -q 'tsudo touch' startvnc; then
-			sed -i 's/^touch ~/tsudo &/' startvnc
-			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo &:' startvnc
+		if ! grep -q 'sudo touch' startvnc; then
+			sed -i 's/^touch ~/sudo &/' startvnc
+			sed -i 's:/data/data/com.termux/files/usr/bin/debian:sudo &:' startvnc
 		fi
 		###############
-		if ! grep -q 'tsudo touch' startxsdl; then
-			sed -i 's/^touch ~/tsudo &/' startxsdl
-			sed -i 's:/data/data/com.termux/files/usr/bin/debian:tsudo &:' startxsdl
+		if ! grep -q 'sudo touch' startxsdl; then
+			sed -i 's/^touch ~/sudo &/' startxsdl
+			sed -i 's:/data/data/com.termux/files/usr/bin/debian:sudo &:' startxsdl
 		fi
-		#pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;tsudo debian
+		#pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;sudo debian
 		#上面那个是Termux专用的，勿改。
 
 		mkdir -p /data/data/com.termux/files/usr/etc/storage/
@@ -787,7 +786,7 @@ enable_root_mode() {
 
 		TFcardFolder=$(tsu -c 'ls /mnt/media_rw/| head -n 1')
 
-		tsudo ln -s /mnt/media_rw/${TFcardFolder} ./external-tf
+		sudo ln -s /mnt/media_rw/${TFcardFolder} ./external-tf
 
 		sed -i 's:/home/storage/external-1:/usr/etc/storage/external-tf:g' ${PREFIX}/bin/debian
 
@@ -801,18 +800,18 @@ enable_root_mode() {
 		sed -i '/alias debian-rm=/d' profile
 		sed -i '/pulseaudio/d' $PREFIX/bin/debian
 		#grep 'alias debian=' profile >/dev/null 2>&1 ||
-		#sed -i '$ a\alias debian="tsudo debian"' profile
-		sed -i '$ a\alias debian="pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;tsudo debian"' profile
+		#sed -i '$ a\alias debian="sudo debian"' profile
+		sed -i '$ a\alias debian="pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;sudo debian"' profile
 		#grep 'alias debian-rm=' profile >/dev/null 2>&1 ||
-		sed -i '$ a\alias debian-rm="tsudo debian-rm"' profile
-		source profile >/dev/null 2>&1
-		alias debian="tsudo debian"
-		alias debian-rm="tsudo debian-rm"
+		sed -i '$ a\alias debian-rm="sudo debian-rm"' profile
+		#source profile >/dev/null 2>&1
+		alias debian="sudo debian"
+		alias debian-rm="sudo debian-rm"
 		echo "Modifying folder permissions"
 		echo "正在修改文件权限..."
-		tsudo chown root:root -R "${DEBIAN_CHROOT}" 2>/dev/null || su -c "chown root:root -R ${DEBIAN_CHROOT}"
+		sudo chown root:root -R "${DEBIAN_CHROOT}" 2>/dev/null || su -c "chown root:root -R ${DEBIAN_CHROOT}"
 		if [ -d "${HOME}/debian_armhf" ]; then
-			tsudo chown root:root -R "${HOME}/debian_armhf" 2>/dev/null || su -c "chown root:root -R ${HOME}/debian_armhf"
+			sudo chown root:root -R "${HOME}/debian_armhf" 2>/dev/null || su -c "chown root:root -R ${HOME}/debian_armhf"
 		fi
 
 		echo "You have modified debian to run with root privileges, this action will destabilize debian."
@@ -826,7 +825,7 @@ enable_root_mode() {
 		echo 'If you do not need to display the task progress in the login interface, please manually add "#" (comment symbol) before the "ps -e" line in "~/.zshrc" or "~/.bashrc"'
 		echo '如果您不需要在登录界面显示任务进程，请手动注释掉"~/.zshrc"里的"ps -e"'
 		sleep 2
-		tsudo debian
+		sudo debian
 		tmoe_manager_main_menu
 		#############
 	else
@@ -884,11 +883,11 @@ remove_gnu_linux_container() {
 	read
 
 	chmod 777 -R ${DEBIAN_FOLDER}
-	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
 	if [ -d "${HOME}/debian_armhf" ]; then
 		echo "检测到疑似存在树莓派armhf系统，正在移除..."
 		chmod 777 -R "${HOME}/debian_armhf"
-		rm -rf "${HOME}/debian_armhf" 2>/dev/null || tsudo rm -rfv "${HOME}/debian_armhf"
+		rm -rf "${HOME}/debian_armhf" 2>/dev/null || sudo rm -rfv "${HOME}/debian_armhf"
 	fi
 	sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 	sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
@@ -1637,7 +1636,7 @@ configure_termux_xwayland_mount() {
 	fi
 	GET_DEBIAN_BIND_LINE=$(cat $PREFIX/bin/debian | grep -n 'command+=" -b /data' | cut -d ':' -f 1 | head -n 1)
 	sed -i '/com.sion.sparkle/d' $PREFIX/bin/debian
-	#rm ${DEBIAN_CHROOT}/etc/xwayland || tsudo rm ${DEBIAN_CHROOT}/etc/xwayland
+	#rm ${DEBIAN_CHROOT}/etc/xwayland || sudo rm ${DEBIAN_CHROOT}/etc/xwayland
 	sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" -b /data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
 	echo "termux配置完成，您还需要进入GNU/Linux容器环境内，单独选择xwayland桌面配置选项!"
 	echo "按回车键打开wayland服务端app"
@@ -1669,9 +1668,9 @@ download_xwayland_apk() {
 		enable_root_mode
 		;;
 	c* | C*)
-		#tsudo ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland || su -c "ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland"
+		#sudo ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland || su -c "ln -sf /data/data/com.sion.sparkle/files ${DEBIAN_CHROOT}/etc/xwayland"
 		configure_termux_xwayland_mount
-		#tsudo ls ${DEBIAN_CHROOT}/etc/xwayland/* >/dev/null || echo "配置${RED}失败${RESET}，请检查root权限设置"
+		#sudo ls ${DEBIAN_CHROOT}/etc/xwayland/* >/dev/null || echo "配置${RED}失败${RESET}，请检查root权限设置"
 		press_enter_to_return
 		;;
 	n* | N*)

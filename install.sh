@@ -541,7 +541,7 @@ creat_linux_container_remove_script() {
 		  pkill proot 2>/dev/null
 			read
 		    chmod 777 -R ${DEBIAN_FOLDER}
-			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || tsudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
 
 		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 			  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
@@ -619,7 +619,7 @@ cat >remove-debian.sh <<-EOF
 	#!/data/data/com.termux/files/usr/bin/bash
 	cd ~
 	chmod 777 -R ${DEBIAN_FOLDER}
-	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || tsudo rm -rf "debian_$ARCH_TYPE" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || sudo rm -rf "debian_$ARCH_TYPE" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 	if grep -q 'alias debian' "${PREFIX}/etc/profile"; then
 	  sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 	  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
