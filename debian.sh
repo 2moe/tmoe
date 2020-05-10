@@ -782,9 +782,9 @@ enable_root_mode() {
 
 		rm -rf external-tf
 
-		tsu -c 'ls /mnt/media_rw/*' 2>/dev/null || mkdir external-tf
+		su -c 'ls /mnt/media_rw/*' 2>/dev/null || mkdir external-tf
 
-		TFcardFolder=$(tsu -c 'ls /mnt/media_rw/| head -n 1')
+		TFcardFolder=$(su -c 'ls /mnt/media_rw/| head -n 1')
 
 		sudo ln -s /mnt/media_rw/${TFcardFolder} ./external-tf
 
