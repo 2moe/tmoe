@@ -681,8 +681,6 @@ check_file_selection_items() {
 	elif [[ -f "${SELECTION}" ]]; then # 文件已被选择？
 		if [[ ${SELECTION} == *${FILE_EXT_01} ]] || [[ ${SELECTION} == *${FILE_EXT_02} ]]; then
 			# 检查文件扩展名
-			#if (whiptail --title "modify cookie path and status" --yes-button '修改cookie path' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
-			#fi
 			if (whiptail --title "Confirm Selection" --yes-button "Confirm确认" --no-button "Back返回" --yesno "目录: $CURRENT_DIR\n文件: ${SELECTION}" 0 0); then
 				FILE_NAME="${SELECTION}"
 				FILE_PATH="${CURRENT_DIR}"
@@ -1760,7 +1758,7 @@ preconfigure_gui_dependecies_02() {
 		DEPENDENCY_02="noto-fonts-cjk tigervnc"
 		##################
 	elif [ "${LINUX_DISTRO}" = "void" ]; then
-		DEPENDENCY_02="tigervnc"
+		DEPENDENCY_02="xorg tigervnc"
 		#################
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		dispatch-conf
@@ -1772,6 +1770,7 @@ preconfigure_gui_dependecies_02() {
 		##################
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 		DEPENDENCY_02="curl openssl xvfb dbus-x11 bash font-noto-cjk x11vnc"
+		#ca-certificates
 		##############
 	fi
 }
@@ -1891,19 +1890,19 @@ configure_xfce4_xstartup() {
 	first_configure_startvnc
 }
 ####################
-configure_alpine_xfce_x11vnc() {
+configure_alpine_x11vnc() {
 	cd /usr/local/bin/
-	cat >startvnc <<-'EOF'
+	cat >startvnc <<-EOF
 		#!/bin/bash
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:1
 		/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
 		sleep 1s
-		startxfce4 &
+		${REMOTE_DESKTOP_SESSION} &
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 		#export LANG="en_US.UTF8"
-		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :1 -forever -bg -rfbauth ${HOME}/.vnc/passwd -users $(whoami) -rfbport 5901 -noshm &
+		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :1 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
 	EOF
 	cat >stopvnc <<-'EOF'
 		#!/bin/bash
@@ -1974,6 +1973,7 @@ install_xfce4_desktop() {
 		###############
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 		DEPENDENCY_01="faenza-icon-theme xfce4 xfce4-terminal"
+		REMOTE_DESKTOP_SESSION='startxfce4'
 		##############
 	fi
 	##################
@@ -1996,7 +1996,7 @@ install_xfce4_desktop() {
 	fi
 	#########
 	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_alpine_xfce_x11vnc
+		configure_alpine_x11vnc
 	else
 		configure_xfce4_xstartup
 	fi
@@ -2042,11 +2042,19 @@ install_lxde_desktop() {
 		##################
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='noto-sans-sc-fonts patterns-lxde-lxde'
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="i3wm"
+		REMOTE_DESKTOP_SESSION='i3'
+	###################
 	fi
 	############
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_lxde_xstartup
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		configure_alpine_x11vnc
+	else
+		configure_lxde_xstartup
+	fi
 }
 ###########################
 configure_mate_xstartup() {
@@ -2122,11 +2130,18 @@ install_mate_desktop() {
 		DEPENDENCY_01='mate-base/mate-desktop mate-base/mate'
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='patterns-mate-mate'
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="mate-desktop-environment"
+		REMOTE_DESKTOP_SESSION='mate-session'
 	fi
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_mate_xstartup
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		configure_alpine_x11vnc
+	else
+		configure_mate_xstartup
+	fi
 }
 #############
 configure_lxqt_xstartup() {
@@ -2162,11 +2177,18 @@ install_lxqt_desktop() {
 		DEPENDENCY_01="lxqt-base/lxqt-meta"
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01="tigervnc-x11vnc patterns-lxqt-lxqt"
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="fvwm"
+		REMOTE_DESKTOP_SESSION='fvwm'
 	fi
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_lxqt_xstartup
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		configure_alpine_x11vnc
+	else
+		configure_lxqt_xstartup
+	fi
 }
 ####################
 configure_kde_plasma5_xstartup() {
@@ -2219,11 +2241,19 @@ install_kde_plasma5_desktop() {
 		DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01="patterns-kde-kde_plasma"
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="plasma-desktop"
+		REMOTE_DESKTOP_SESSION='startplasma-x11'
 	fi
-	##############
+	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_kde_plasma5_xstartup
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		configure_alpine_x11vnc
+	else
+		configure_kde_plasma5_xstartup
+	fi
+
 }
 ##################
 gnome3_warning() {
@@ -2295,11 +2325,18 @@ install_gnome3_desktop() {
 		DEPENDENCY_01='gnome-shell gdm gnome-terminal'
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='patterns-gnome-gnome_x11'
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="gnome-desktop"
+		REMOTE_DESKTOP_SESSION='gnome-session'
 	fi
-	##############
+	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_gnome3_xstartup
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		configure_alpine_x11vnc
+	else
+		configure_gnome3_xstartup
+	fi
 }
 #################
 configure_cinnamon_xstartup() {
@@ -2338,6 +2375,8 @@ install_cinnamon_desktop() {
 
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01="cinnamon cinnamon-control-center"
+	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01="adapta-cinnamon"
 	fi
 	##############
 	beta_features_quick_install
@@ -2469,7 +2508,7 @@ remove_gui() {
 		dnf groupremove -y "KDE" "GNOME" "Cinnamon Desktop"
 		dnf remove -y deepin-desktop
 	else
-		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01}
+		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
 	fi
 }
 ##########################
