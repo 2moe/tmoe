@@ -337,7 +337,7 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200510-11)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland,0511更新文件选择功能" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200510-21)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.当前主菜单有十几个选项，请使用方向键和回车键操作。更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland,0510更新文件选择功能" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -3221,9 +3221,12 @@ modify_remote_desktop_config() {
 #########################
 #########################
 modify_vnc_conf() {
-	if [ ! -e /bin/nano ]; then
-		apt update
-		apt install -y nano
+	if [ ! $(command -v nano) ]; then
+		DEPENDENCY_01='nano'
+		apt update 2>/dev/null
+		echo "即将为你安装nano"
+		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${RESET}"
+		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
 	fi
 
 	if [ ! -e /usr/local/bin/startvnc ]; then
