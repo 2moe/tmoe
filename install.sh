@@ -100,7 +100,7 @@ if [ "$(uname -o)" = "Android" ]; then
 		echo "正在安装相关依赖..."
 		apt install -y ${DEPENDENCIES}
 	fi
-	cd ~/.termux || mkdir -p ~/.termux && cd ~/.termux
+	cd ${HOME}/.termux || mkdir -p ~/.termux && cd ${HOME}/.termux
 	if [ ! -e "colors.properties" ]; then
 		echo '检测到termux配色文件不存在，正在自动生成...'
 		# aria2c --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/colors.properties'
@@ -244,7 +244,7 @@ fi
 echo "Detected that your current architecture is ${ARCH_TYPE}"
 echo "检测到您当前的架构为${ARCH_TYPE} ，GNU/Linux系统将安装至~/${DEBIAN_FOLDER}"
 
-cd ~
+cd ${HOME}
 
 if [ -d "${DEBIAN_FOLDER}" ]; then
 	downloaded=1
@@ -278,7 +278,7 @@ if [ "${LINUX_DISTRO}" = "Android" ]; then
 elif [ "${LINUX_DISTRO}" = "iSH" ]; then
 	tar -pJxvf ${cur}/${DebianTarXz}
 elif [ "${ARCH_TYPE}" = "mipsel" ]; then
-	cd ~
+	cd ${HOME}
 	pv ${DebianTarXz} | tar -pJx
 elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 	if [ "${REDHAT_DISTRO}" != "fedora" ]; then
@@ -415,7 +415,7 @@ creat_proot_startup_script() {
 	#此处EndOfFile不要加单引号
 	cat >${PREFIX}/bin/debian <<-EndOfFile
 		#!/data/data/com.termux/files/usr/bin/bash
-		cd ~
+		cd ${HOME}
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start 2>/dev/null
 		unset LD_PRELOAD
@@ -481,7 +481,7 @@ creat_linux_container_remove_script() {
 		    #!/data/data/com.termux/files/usr/bin/bash
 			  YELLOW=\$(printf '\033[33m')
 			  RESET=\$(printf '\033[m')
-		    cd ~
+		    cd ${HOME}
 		    
 		  if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 				su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
@@ -613,11 +613,11 @@ echo "You can type rm ~/${DebianTarXz} to delete the image file"
 echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
 
-cd ~/${DEBIAN_FOLDER}
+cd ${HOME}/${DEBIAN_FOLDER}
 #配置卸载脚本
 cat >remove-debian.sh <<-EOF
 	#!/data/data/com.termux/files/usr/bin/bash
-	cd ~
+	cd ${HOME}
 	chmod 777 -R ${DEBIAN_FOLDER}
 	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || sudo rm -rf "debian_$ARCH_TYPE" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 	if grep -q 'alias debian' "${PREFIX}/etc/profile"; then
@@ -722,7 +722,7 @@ fi
 cat >'.profile' <<-'ENDOFbashPROFILE'
 	YELLOW=$(printf '\033[33m')
 	RESET=$(printf '\033[m')
-	cd ~
+	cd ${HOME}
 	###############
 	#函数放在前面
 	debian_sources_list() {

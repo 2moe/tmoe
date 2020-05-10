@@ -1875,7 +1875,7 @@ download_kali_themes_common() {
 ################
 configure_xfce4_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2005,7 +2005,7 @@ install_xfce4_desktop() {
 ###############
 configure_lxde_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2051,7 +2051,7 @@ install_lxde_desktop() {
 ###########################
 configure_mate_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2131,7 +2131,7 @@ install_mate_desktop() {
 #############
 configure_lxqt_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2171,7 +2171,7 @@ install_lxqt_desktop() {
 ####################
 configure_kde_plasma5_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2253,7 +2253,7 @@ gnome3_warning() {
 ###############
 configure_gnome3_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2304,7 +2304,7 @@ install_gnome3_desktop() {
 #################
 configure_cinnamon_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2388,7 +2388,7 @@ deepin_desktop_debian() {
 ################
 configure_deepin_desktop_xstartup() {
 	mkdir -p ~/.vnc
-	cd ~/.vnc
+	cd ${HOME}/.vnc
 	cat >xstartup <<-'EndOfFile'
 		#!/bin/bash
 		unset SESSION_MANAGER
@@ -2909,7 +2909,7 @@ install_nds_game_mayomonogatari() {
 		echo "检测到您已下载游戏文件，路径为/root/斯隆与马克贝尔的谜之物语"
 		press_enter_to_reinstall
 	fi
-	cd ~
+	cd ${HOME}
 	mkdir -p '斯隆与马克贝尔的谜之物语'
 	cd '斯隆与马克贝尔的谜之物语'
 	curl -Lvo slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip

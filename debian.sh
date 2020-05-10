@@ -836,7 +836,7 @@ enable_root_mode() {
 ################################
 ################################
 remove_gnu_linux_container() {
-	cd ~
+	cd ${HOME}
 	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		unmount_proc_dev
 		ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
@@ -903,7 +903,7 @@ remove_gnu_linux_container() {
 	#ls -lh ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
 	#ls -lh ~/kali-rolling-rootfs.tar.xz 2>/dev/null
 	#ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
-	cd ~
+	cd ${HOME}
 	ls -lh *-rootfs.tar.xz
 	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
 	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
@@ -1460,7 +1460,7 @@ restore_gnu_linux_container() {
 ############################
 ############################
 space_occupation() {
-	cd ~/..
+	cd ${HOME}/..
 	OPTION=$(whiptail --title "Query space occupation ranking" --menu "查询空间占用排行" 15 60 4 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "termux各目录" \
@@ -2747,7 +2747,7 @@ install_manjaro_linux_distro() {
 ############################
 install_openwrt_linux_distro() {
 	if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
-		cd ~
+		cd ${HOME}
 		if [ "${ARCH_TYPE}" = 'arm64' ]; then
 			aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/show/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
 		fi
@@ -2798,7 +2798,7 @@ install_alt_linux_distro() {
 }
 ##################
 install_slackware_linux_distro() {
-	cd ~
+	cd ${HOME}
 	#touch .SLACKDetectionFILE
 	if [ "${ARCH_TYPE}" = 'amd64' ]; then
 		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
@@ -2819,7 +2819,7 @@ install_slackware_linux_distro() {
 }
 #########################
 install_armbian_linux_distro() {
-	cd ~
+	cd ${HOME}
 	#touch .SLACKDetectionFILE
 	if [ "${ARCH_TYPE}" != 'armhf' ] && [ "${ARCH_TYPE}" != 'arm64' ]; then
 		if [ ! -e "/usr/bin/qemu-arm-static" ]; then
