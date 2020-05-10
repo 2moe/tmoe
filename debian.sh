@@ -593,12 +593,12 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200510-11)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200510-17)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509全面升级备份与还原功能" 17 50 6 \
+		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复termux sudo" 17 50 6 \
 			"1" "proot安装" \
 			"2" "chroot安装" \
 			"3" "GUI,audio & sources.list" \
@@ -2411,7 +2411,7 @@ install_alpha_containers() {
 		install_void_linux_distro
 	fi
 	####################
-	if [ "${BETA_SYSTEM}" == '3' ]; then
+	if [ "${ALPHA_SYSTEM}" == '3' ]; then
 		install_opensuse_linux_distro
 	fi
 	####################
