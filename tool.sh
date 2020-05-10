@@ -805,10 +805,10 @@ cookies_readme() {
 		FILE_EXT_01='txt'
 		FILE_EXT_02='sqlite'
 		where_is_start_dir
-		echo ${COOKIE_FILE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
 		if [ -z ${COOKIE_FILE_PATH} ]; then
 			echo "没有指定有效的文件，请重新选择"
 		else
+			echo ${COOKIE_FILE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
 			echo "您已成功修改cookie文件路径"
 			ls -lah ${COOKIE_FILE_PATH}
 		fi

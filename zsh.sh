@@ -54,12 +54,6 @@ if [ "${LINUX_DISTRO}" = "debian" ]; then
     fi
 fi
 ###########################################
-if [ ! -e /usr/bin/fzf ]; then
-    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCIES="${DEPENDENCIES} fzf"
-    fi
-fi
-
 if [ ! -e /usr/bin/git ]; then
     if [ "${LINUX_DISTRO}" = "openwrt" ]; then
         DEPENDENCIES="${DEPENDENCIES} git git-http"
@@ -94,7 +88,7 @@ if [ ! -z "${DEPENDENCIES}" ]; then
 
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         apt update
-        apt install -y ${DEPENDENCIES} || apt install -y command-not-found zsh git wget whiptail command-not-found
+        apt install -y ${DEPENDENCIES} || apt install -y command-not-found zsh git wget whiptail
 
     elif [ "${LINUX_DISTRO}" = "alpine" ]; then
         apk add ${DEPENDENCIES}
