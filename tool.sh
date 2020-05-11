@@ -52,7 +52,7 @@ check_dependencies() {
 		##################
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" "/etc/os-release"; then
 		LINUX_DISTRO='redhat'
-		PACKAGES_INSTALL_COMMAND='dnf install -y'
+		PACKAGES_INSTALL_COMMAND='dnf install -y --skip-broken'
 		PACKAGES_REMOVE_COMMAND='dnf remove -y'
 		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
@@ -239,7 +239,7 @@ check_dependencies() {
 			pacman -Syu --noconfirm ${DEPENDENCIES}
 
 		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			dnf install -y ${DEPENDENCIES} || yum install -y ${DEPENDENCIES}
+			dnf install -y --skip-broken ${DEPENDENCIES} || yum install -y --skip-broken ${DEPENDENCIES}
 
 		elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
 			#opkg update
@@ -350,7 +350,7 @@ check_dependencies() {
 tmoe_linux_tool_menu() {
 	cd ${cur}
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200511-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200511-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -486,8 +486,8 @@ different_distro_software_install() {
 		pacman -S --noconfirm ${DEPENDENCY_02} || yay -S ${DEPENDENCY_02}
 		################
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		dnf install -y ${DEPENDENCY_01} || yum install -y ${DEPENDENCY_01}
-		dnf install -y ${DEPENDENCY_02} || yum install -y ${DEPENDENCY_02}
+		dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
+		dnf install -y --skip-broken ${DEPENDENCY_02} || yum install -y --skip-broken ${DEPENDENCY_02}
 		################
 	elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
 		#opkg update
@@ -1696,14 +1696,16 @@ install_browser() {
 	else
 		install_chromium_browser
 	fi
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 ######################################################
 ######################################################
 install_gui() {
+	#该字体检测两次
+	if [ -f '/usr/share/fonts/Iosevka.ttf' ]; then
+		standand_desktop_install
+	fi
 	cd /tmp
 	echo 'lxde预览截图'
 	#curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
@@ -1758,13 +1760,18 @@ install_gui() {
 }
 ########################
 preconfigure_gui_dependecies_02() {
-	NON_DEBIAN='false'
 	DEPENDENCY_02="tigervnc"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			NON_DBUS='true'
+		fi
 		DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
 		#上面的依赖摆放的位置是有讲究的。
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			NON_DBUS='true'
+		fi
 		DEPENDENCY_02="tigervnc-server google-noto-sans-cjk-ttc-fonts"
 		##################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -1789,6 +1796,7 @@ preconfigure_gui_dependecies_02() {
 }
 ########################
 standand_desktop_install() {
+	NON_DEBIAN='false'
 	preconfigure_gui_dependecies_02
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 5 \
@@ -1796,6 +1804,7 @@ standand_desktop_install() {
 		"2" "lxde：轻量化桌面" \
 		"3" "mate：基于GNOME 2" \
 		"4" "Other其它桌面(内测版新功能):lxqt,kde" \
+		"5" "window manager窗口管理器(公测):fvwm,openbox" \
 		"0" "我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -1814,14 +1823,16 @@ standand_desktop_install() {
 	if [ "$INSTALLDESKTOP" == '4' ]; then
 		other_desktop
 	fi
+	#########################
+	if [ "$INSTALLDESKTOP" == '5' ]; then
+		windows_manager_install
+	fi
 	##########################
 	if [ "$INSTALLDESKTOP" == '0' ]; then
 		tmoe_linux_tool_menu
 	fi
 	##########################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 #######################
@@ -1831,14 +1842,324 @@ auto_select_keyboard_layout() {
 	echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 }
 ##################
+#################
+will_be_installed_for_you() {
+	echo "即将为您安装思源黑体(中文字体)、${REMOTE_DESKTOP_SESSION_01}、tightvncserver等软件包"
+}
+########################
+#####################
+windows_manager_install() {
+	NON_DBUS='true'
+	REMOTE_DESKTOP_SESSION_02='x-window-manager'
+	BETA_DESKTOP=$(
+		whiptail --title "WINDOW MANAGER" --menu \
+			"WARNING！本功能仍处于测试阶段哟！\nwindow manager窗口管理器(简称WM)是一种比桌面环境更轻量化的图形界面.\n您想要安装哪个WM呢?\nBeta features may not work properly.\nWhich WM do you want to install?" 0 0 0 "01" "fvwm(twm基础上开发的的虚拟WM)" \
+			"02" "openbox(快速,轻巧,可扩展)" \
+			"03" "i3(改进的动态平铺WM)" \
+			"04" "awesome(平铺式WM)" \
+			"05" "ice(wonderful Win95-OS/2-Motif-like)" \
+			"06" "fluxbox(高度可配置,低资源占用)" \
+			"07" "dwm(dynamic window manager)" \
+			"08" "xmonad(基于Haskell开发的平铺式WM)" \
+			"09" "9wm(X11 WM inspired by Plan 9's rio)" \
+			"10" "metacity(轻量的GTK+ WM)" \
+			"11" "twm(Tab WM)" \
+			"12" "aewm(极简主义WM for X11)" \
+			"13" "aewm++(最小的 WM written in C++)" \
+			"14" "afterstep(拥有NEXTSTEP风格的WM)" \
+			"15" "blackbox(WM for X)" \
+			"16" "enlightenment(X11 WM based on EFL)" \
+			"17" "mutter(轻量的GTK+ WM)" \
+			"18" "bspwm(Binary space partitioning WM)" \
+			"19" "clfswm(Another Common Lisp FullScreen WM)" \
+			"20" "ctwm(Claude's Tab WM)" \
+			"21" "evilwm(极简主义WM for X11)" \
+			"22" "flwm(Fast Light WM)" \
+			"23" "herbstluftwm(manual tiling WM for X11)" \
+			"24" "jwm(very small & pure轻量,纯净)" \
+			"25" "kwin-x11(KDE默认WM,X11 version)" \
+			"26" "lwm(轻量化WM)" \
+			"27" "marco(轻量化GTK+ WM for MATE)" \
+			"28" "matchbox-window-manager(WM for resource-limited systems)" \
+			"29" "miwm(极简主义WM with virtual workspaces)" \
+			"30" "muffin(轻量化window and compositing manager)" \
+			"31" "mwm(Motif WM)" \
+			"32" "oroborus(a 轻量化 themeable WM)" \
+			"33" "pekwm(very light)" \
+			"34" "ratpoison(keyboard-only WM)" \
+			"35" "sapphire(a 最小的 but configurable X11R6 WM)" \
+			"36" "sawfish" \
+			"37" "spectrwm(dynamic tiling WM)" \
+			"38" "stumpwm(tiling,keyboard driven Common Lisp)" \
+			"39" "subtle(grid-based manual tiling)" \
+			"40" "sugar-session(Sugar Learning Platform)" \
+			"41" "tinywm" \
+			"42" "ukwm(轻量化 GTK+ WM)" \
+			"43" "vdesk(manages virtual desktops for 最小的WM)" \
+			"44" "vtwm(Virtual Tab WM)" \
+			"45" "w9wm(enhanced WM based on 9wm)" \
+			"46" "wm2(small,unconfigurable)" \
+			"47" "wmaker(NeXTSTEP-like WM for X)" \
+			"48" "wmii(轻量化 tabbed and tiled WM)" \
+			"49" "xfwm4(xfce4默认WM)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##################
+	case "${BETA_DESKTOP}" in
+	0) standand_desktop_install ;;
+	01)
+		DEPENDENCY_01='fvwm'
+		REMOTE_DESKTOP_SESSION_01='fvwm'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='fvwm fvwm-crystal fvwm-icons'
+		fi
+		;;
+	02)
+		DEPENDENCY_01='openbox'
+		REMOTE_DESKTOP_SESSION_01='openbox-session'
+		REMOTE_DESKTOP_SESSION_02='openbox'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='openbox obmenu openbox-menu'
+		fi
+		;;
+	03)
+		DEPENDENCY_01='i3'
+		REMOTE_DESKTOP_SESSION_01='i3'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='i3 i3-wm i3blocks'
+		fi
+		;;
+	04)
+		DEPENDENCY_01='awesome'
+		REMOTE_DESKTOP_SESSION_01='awesome'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='awesome awesome-extra'
+		fi
+		;;
+	05)
+		DEPENDENCY_01='ice'
+		REMOTE_DESKTOP_SESSION_01='ice'
+		;;
+	06)
+		DEPENDENCY_01='xmonad'
+		REMOTE_DESKTOP_SESSION_01='xmonad'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='xmobar dmenu xmonad'
+		fi
+		;;
+	07)
+		DEPENDENCY_01='dwm'
+		REMOTE_DESKTOP_SESSION_01='dwm'
+		;;
+	08)
+		DEPENDENCY_01='fluxbox'
+		REMOTE_DESKTOP_SESSION_01='fluxbox'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='bbmail bbpager bbtime fbpager flubox'
+		fi
+		;;
+	09)
+		DEPENDENCY_01='9wm'
+		REMOTE_DESKTOP_SESSION_01='9wm'
+		;;
+	10)
+		DEPENDENCY_01='metacity'
+		REMOTE_DESKTOP_SESSION_01='metacity'
+		;;
+	11)
+		DEPENDENCY_01='twm'
+		REMOTE_DESKTOP_SESSION_01='twm'
+		;;
+	12)
+		DEPENDENCY_01='aewm'
+		REMOTE_DESKTOP_SESSION_01='aewm'
+		;;
+	13)
+		DEPENDENCY_01='aewm++'
+		REMOTE_DESKTOP_SESSION_01='aewm++'
+		;;
+	14)
+		DEPENDENCY_01='afterstep'
+		REMOTE_DESKTOP_SESSION_01='afterstep'
+		;;
+	15)
+		DEPENDENCY_01='blackbox'
+		REMOTE_DESKTOP_SESSION_01='blackbox'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='bbmail bbpager bbtime fbpager blackbox'
+		fi
+		;;
+	16)
+		DEPENDENCY_01='enlightenment'
+		REMOTE_DESKTOP_SESSION_01='enlightenment'
+		;;
+	17)
+		DEPENDENCY_01='mutter'
+		REMOTE_DESKTOP_SESSION_01='mutter'
+		;;
+	18)
+		DEPENDENCY_01='bspwm'
+		REMOTE_DESKTOP_SESSION_01='bspwm'
+		;;
+	19)
+		DEPENDENCY_01='clfswm'
+		REMOTE_DESKTOP_SESSION_01='clfswm'
+		;;
+	20)
+		DEPENDENCY_01='ctwm'
+		REMOTE_DESKTOP_SESSION_01='ctwm'
+		;;
+	21)
+		DEPENDENCY_01='evilwm'
+		REMOTE_DESKTOP_SESSION_01='evilwm'
+		;;
+	22)
+		DEPENDENCY_01='flwm'
+		REMOTE_DESKTOP_SESSION_01='flwm'
+		;;
+	23)
+		DEPENDENCY_01='herbstluftwm'
+		REMOTE_DESKTOP_SESSION_01='herbstluftwm'
+		;;
+	24)
+		DEPENDENCY_01='jwm'
+		REMOTE_DESKTOP_SESSION_01='jwm'
+		;;
+	25)
+		DEPENDENCY_01='kwin-x11'
+		REMOTE_DESKTOP_SESSION_01='kwin-x11'
+		;;
+	26)
+		DEPENDENCY_01='lwm'
+		REMOTE_DESKTOP_SESSION_01='lwm'
+		;;
+	27)
+		DEPENDENCY_01='marco'
+		REMOTE_DESKTOP_SESSION_01='marco'
+		;;
+	28)
+		DEPENDENCY_01='matchbox-window-manager'
+		REMOTE_DESKTOP_SESSION_01='matchbox-window-manager'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='matchbox-themes-extra matchbox-window-manager'
+		fi
+		;;
+	29)
+		DEPENDENCY_01='miwm'
+		REMOTE_DESKTOP_SESSION_01='miwm'
+		;;
+	30)
+		DEPENDENCY_01='muffin'
+		REMOTE_DESKTOP_SESSION_01='muffin'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='murrine-themes muffin'
+		fi
+		;;
+	31)
+		DEPENDENCY_01='mwm'
+		REMOTE_DESKTOP_SESSION_01='mwm'
+		;;
+	32)
+		DEPENDENCY_01='oroborus'
+		REMOTE_DESKTOP_SESSION_01='oroborus'
+		;;
+	33)
+		DEPENDENCY_01='pekwm'
+		REMOTE_DESKTOP_SESSION_01='pekwm'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='pekwm-themes pekwm'
+		fi
+		;;
+	34)
+		DEPENDENCY_01='ratpoison'
+		REMOTE_DESKTOP_SESSION_01='ratpoison'
+		;;
+	35)
+		DEPENDENCY_01='sapphire'
+		REMOTE_DESKTOP_SESSION_01='sapphire'
+		;;
+	36)
+		DEPENDENCY_01='sawfish'
+		REMOTE_DESKTOP_SESSION_01='sawfish'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='sawfish-themes sawfish'
+		fi
+		;;
+	37)
+		DEPENDENCY_01='spectrwm'
+		REMOTE_DESKTOP_SESSION_01='spectrwm'
+		;;
+	38)
+		DEPENDENCY_01='stumpwm'
+		REMOTE_DESKTOP_SESSION_01='stumpwm'
+		;;
+	39)
+		DEPENDENCY_01='subtle'
+		REMOTE_DESKTOP_SESSION_01='subtle'
+		;;
+	40)
+		DEPENDENCY_01='sugar-session'
+		REMOTE_DESKTOP_SESSION_01='sugar-session'
+		;;
+	41)
+		DEPENDENCY_01='tinywm'
+		REMOTE_DESKTOP_SESSION_01='tinywm'
+		;;
+	42)
+		DEPENDENCY_01='ukwm'
+		REMOTE_DESKTOP_SESSION_01='ukwm'
+		;;
+	43)
+		DEPENDENCY_01='vdesk'
+		REMOTE_DESKTOP_SESSION_01='vdesk'
+		;;
+	44)
+		DEPENDENCY_01='vtwm'
+		REMOTE_DESKTOP_SESSION_01='vtwm'
+		;;
+	45)
+		DEPENDENCY_01='w9wm'
+		REMOTE_DESKTOP_SESSION_01='w9wm'
+		;;
+	46)
+		DEPENDENCY_01='wm2'
+		REMOTE_DESKTOP_SESSION_01='wm2'
+		;;
+	47)
+		DEPENDENCY_01='wmaker'
+		REMOTE_DESKTOP_SESSION_01='wmaker'
+		;;
+	48)
+		DEPENDENCY_01='wmii'
+		REMOTE_DESKTOP_SESSION_01='wmii'
+		;;
+	49)
+		DEPENDENCY_01='xfwm4'
+		REMOTE_DESKTOP_SESSION_01='xfwm4'
+		;;
+	esac
+	##########################
+	if [ "$?" = '255' ]; then
+		standand_desktop_install
+	fi
+	#############
+	will_be_installed_for_you
+	beta_features_quick_install
+	configure_vnc_xstartup
+	press_enter_to_return
+	tmoe_linux_tool_menu
+}
+##########################
+###################
 other_desktop() {
 	BETA_DESKTOP=$(whiptail --title "Alpha features" --menu \
-		"WARNING！本功能仍处于测试阶段,可能无法正常运行。部分桌面依赖systemd,无法在chroot环境中运行\nBeta features may not work properly." 15 60 6 \
-		"1" "lxqt" \
-		"2" "kde plasma 5" \
-		"3" "gnome 3" \
-		"4" "cinnamon" \
-		"5" "dde (deepin desktop)" \
+		"WARNING！本功能仍处于测试阶段,可能无法正常运行。部分桌面依赖systemd,无法在chroot环境中运行\nAlpha features may not work properly." 15 60 6 \
+		"1" "lxqt(lxde原作者基于QT开发的桌面)" \
+		"2" "kde plasma5(风格华丽的桌面环境)" \
+		"3" "gnome3(GNU项目的一部分)" \
+		"4" "cinnamon(肉桂类似于GNOME2,对用户友好)" \
+		"5" "dde(国产deepin系统桌面)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -1866,9 +2187,7 @@ other_desktop() {
 		install_deepin_desktop
 	fi
 	##########################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 #####################
@@ -1885,21 +2204,26 @@ download_kali_themes_common() {
 	rm -rf /tmp/.kali-themes-common
 }
 ################
-configure_xfce4_xstartup() {
+configure_vnc_xstartup() {
 	mkdir -p ~/.vnc
 	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
+	cat >xstartup <<-EndOfFile
 		#!/bin/bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
+		xrdb \${HOME}/.Xresources
 		export PULSE_SERVER=127.0.0.1
-		dbus-launch startxfce4 &
+		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
+			dbus-launch ${REMOTE_DESKTOP_SESSION_01} &
+		else
+			dbus-launch ${REMOTE_DESKTOP_SESSION_02} &
+		fi
 	EndOfFile
+	if [ "${NON-DBUS}" = "true" ]; then
+		sed -i 's:dbus-launch::' ~/.vnc/xstartup
+	fi
 	#dbus-launch startxfce4 &
 	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	touch /tmp/.Tmoe-XFCE4-Desktop-Detection-FILE
 	first_configure_startvnc
 }
 ####################
@@ -1910,17 +2234,35 @@ configure_x11vnc_remote_desktop_session() {
 		#stopvnc 2>/dev/null
 		stopx11vnc
 		export PULSE_SERVER=127.0.0.1
-		export DISPLAY=:1
-		/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
-		sleep 1s
-		${REMOTE_DESKTOP_SESSION} &
+		export DISPLAY=:233
+		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
+		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+			echo '检测到您使用的是WSL,正在为您打开音频服务'
+			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
+			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+			if grep -q '172..*1' "/etc/resolv.conf"; then
+				echo "检测到您当前使用的可能是WSL2"
+				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+				export PULSE_SERVER=${WSL2IP}
+				echo "已将您的音频服务ip修改为${WSL2IP}"
+			fi
+		fi
+		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
+			 ${REMOTE_DESKTOP_SESSION_01} &
+		else
+			 ${REMOTE_DESKTOP_SESSION_02} &
+		fi
 		#export LANG="en_US.UTF8"
-		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :1 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
+		#tmoe-linux的开发者提醒：不建议再x11vnc后加上使用-ncache 1 的参数
+		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-		echo "您可能会经历长达10多秒的黑屏"
+		echo "您可能会经历长达30s的黑屏,请20s后再来尝试连接"
+		echo "You may experience a black screen for up to 30 seconds, please try to connect after 20s"
 		echo "您之后可以输startx11vnc启动，stopx11vnc停止"
+		echo "You can type startx11vnc to start x11vnc,type stopx11vnc to stop it."
 	EOF
 	cat >stopx11vnc <<-'EOF'
 		#!/bin/bash
@@ -1966,6 +2308,8 @@ apt_purge_libfprint() {
 ##################
 install_xfce4_desktop() {
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+	REMOTE_DESKTOP_SESSION_01='startxfce4'
+	REMOTE_DESKTOP_SESSION_02='xfce4-session'
 	DEPENDENCY_01="xfce4"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
@@ -1973,7 +2317,7 @@ install_xfce4_desktop() {
 		auto_select_keyboard_layout
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='--skip-broken @xfce'
+		DEPENDENCY_01='@xfce'
 		rm -rf /etc/xdg/autostart/xfce-polkit.desktop
 		##################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -1992,7 +2336,6 @@ install_xfce4_desktop() {
 		###############
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 		DEPENDENCY_01="faenza-icon-theme xfce4 xfce4-terminal"
-		REMOTE_DESKTOP_SESSION='startxfce4'
 		##############
 	fi
 	##################
@@ -2014,33 +2357,12 @@ install_xfce4_desktop() {
 		tar -Jxvf "colorschemes.tar.xz"
 	fi
 	#########
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_x11vnc_remote_desktop_session
-		configure_startxsdl
-	else
-		configure_xfce4_xstartup
-	fi
-}
-###############
-###############
-configure_lxde_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		dbus-launch startlxde &
-	EndOfFile
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null
-	touch /tmp/.Tmoe-LXDE-Desktop-Detection-FILE
-	first_configure_startvnc
+	configure_vnc_xstartup
 }
 ###############
 install_lxde_desktop() {
+	REMOTE_DESKTOP_SESSION_01='startlxde'
+	REMOTE_DESKTOP_SESSION_02='lxde-session'
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
 	DEPENDENCY_01='lxde'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2049,7 +2371,7 @@ install_lxde_desktop() {
 		DEPENDENCY_01="lxde-core lxterminal"
 		#############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='--skip-broken lxde-desktop'
+		DEPENDENCY_01='lxde-desktop'
 		#############
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='lxde'
@@ -2061,7 +2383,7 @@ install_lxde_desktop() {
 		DEPENDENCY_01='media-fonts/wqy-bitmapfont lxde-base/lxde-meta'
 		##################
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
-		DEPENDENCY_01='noto-sans-sc-fonts patterns-lxde-lxde'
+		DEPENDENCY_01='patterns-lxde-lxde'
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 		DEPENDENCY_01="fvwm"
 		REMOTE_DESKTOP_SESSION='fvwm'
@@ -2070,32 +2392,12 @@ install_lxde_desktop() {
 	############
 	beta_features_quick_install
 	apt_purge_libfprint
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_x11vnc_remote_desktop_session
-		configure_startxsdl
-	else
-		configure_lxde_xstartup
-	fi
+	configure_vnc_xstartup
 }
-###########################
-configure_mate_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		dbus-launch mate-session &
-	EndOfFile
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null
-	touch /tmp/.Tmoe-MATE-Desktop-Detection-FILE
-	first_configure_startvnc
-}
-############################
+##########################
 install_mate_desktop() {
+	REMOTE_DESKTOP_SESSION_01='mate-session'
+	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
 	DEPENDENCY_01='mate'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2112,7 +2414,7 @@ install_mate_desktop() {
 		#apt autopurge -y ^libfprint
 		apt clean
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='--skip-broken @mate-desktop'
+		DEPENDENCY_01='@mate-desktop'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
 		echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
@@ -2158,33 +2460,14 @@ install_mate_desktop() {
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_x11vnc_remote_desktop_session
-		configure_startxsdl
-	else
-		configure_mate_xstartup
-	fi
+	configure_vnc_xstartup
 }
 #############
-configure_lxqt_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		dbus-launch startlxqt &
-	EndOfFile
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	touch /tmp/.Tmoe-LXQT-Desktop-Detection-FILE
-	first_configure_startvnc
-}
 ######################
 #DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
 install_lxqt_desktop() {
+	REMOTE_DESKTOP_SESSION_01='startlxqt'
+	REMOTE_DESKTOP_SESSION_02='lxqt-session'
 	DEPENDENCY_01="lxqt"
 	echo '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2192,7 +2475,7 @@ install_lxqt_desktop() {
 		auto_select_keyboard_layout
 		DEPENDENCY_01="lxqt-core lxqt-config qterminal"
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='--skip-broken @lxqt'
+		DEPENDENCY_01='@lxqt'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="lxqt xorg"
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
@@ -2206,37 +2489,12 @@ install_lxqt_desktop() {
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_x11vnc_remote_desktop_session
-		configure_startxsdl
-	else
-		configure_lxqt_xstartup
-	fi
+	configure_vnc_xstartup
 }
 ####################
-configure_kde_plasma5_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		if command -v "startkde" >/dev/null; then
-			dbus-launch startkde &
-		else
-			dbus-launch startplasma-x11 &
-		fi
-	EndOfFile
-	#plasma_session
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	touch /tmp/.Tmoe-KDE-PLASMA5-Desktop-Detection-FILE
-	first_configure_startvnc
-}
-##################
 install_kde_plasma5_desktop() {
+	REMOTE_DESKTOP_SESSION_01='startkde'
+	REMOTE_DESKTOP_SESSION_02='startplasma-x11'
 	DEPENDENCY_01="plasma-desktop"
 	echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2247,7 +2505,7 @@ install_kde_plasma5_desktop() {
 		#yum groupinstall kde-desktop
 		#dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
 		#dnf install -y sddm || yum install -y sddm
-		DEPENDENCY_01='--skip-broken @KDE'
+		DEPENDENCY_01='@KDE'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="plasma-desktop phonon-qt5-vnc xorg kdebase sddm sddm-kcm"
 		#pacman -S --noconfirm sddm sddm-kcm
@@ -2271,13 +2529,7 @@ install_kde_plasma5_desktop() {
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_x11vnc_remote_desktop_session
-		configure_startxsdl
-	else
-		configure_kde_plasma5_xstartup
-	fi
-
+	configure_vnc_xstartup
 }
 ##################
 gnome3_warning() {
@@ -2305,25 +2557,10 @@ gnome3_warning() {
 	do_you_want_to_continue
 }
 ###############
-configure_gnome3_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		dbus-launch gnome-session &
-	EndOfFile
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	touch /tmp/.Tmoe-GNOME3-Desktop-Detection-FILE
-	first_configure_startvnc
-}
-####################
 install_gnome3_desktop() {
 	gnome3_warning
+	REMOTE_DESKTOP_SESSION_01='gnome-session'
+	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	DEPENDENCY_01="gnome"
 	echo '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2356,32 +2593,12 @@ install_gnome3_desktop() {
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		configure_x11vnc_remote_desktop_session
-		configure_startxsdl
-	else
-		configure_gnome3_xstartup
-	fi
-}
-#################
-configure_cinnamon_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		dbus-launch cinnamon-launcher &
-	EndOfFile
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	touch /tmp/.Tmoe-cinnamon-Desktop-Detection-FILE
-	first_configure_startvnc
+	configure_vnc_xstartup
 }
 #################
 install_cinnamon_desktop() {
+	REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
+	REMOTE_DESKTOP_SESSION_02='cinnamon-session'
 	DEPENDENCY_01="cinnamon"
 	echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -2406,7 +2623,7 @@ install_cinnamon_desktop() {
 	##############
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_cinnamon_xstartup
+	configure_vnc_xstartup
 }
 ####################
 deepin_desktop_warning() {
@@ -2421,8 +2638,11 @@ deepin_desktop_warning() {
 #################
 deepin_desktop_debian() {
 	if [ ! -e "/usr/bin/gpg" ]; then
-		apt update
-		apt install gpg -y
+		DEPENDENCY_01="gpg"
+		DEPENDENCY_01=""
+		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+		echo "即将为您安装gpg..."
+		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
 	fi
 	DEPENDENCY_01="deepin-desktop"
 
@@ -2441,7 +2661,7 @@ deepin_desktop_debian() {
 	gpg --import deepin-keyring.gpg
 	gpg --export --armor 209088E7 | apt-key add -
 	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
-	echo '即将为您安装思源黑体(中文字体)、和tightvncserver等软件包。'
+	echo '即将为您安装思源黑体(中文字体)、dde和tightvncserver等软件包。'
 	dpkg --configure -a
 	apt update
 	auto_select_keyboard_layout
@@ -2449,26 +2669,12 @@ deepin_desktop_debian() {
 	sed -i 's/^deb/#&/g' /etc/apt/sources.list.d/deepin.list
 	apt update
 }
-################
-configure_deepin_desktop_xstartup() {
-	mkdir -p ~/.vnc
-	cd ${HOME}/.vnc
-	cat >xstartup <<-'EndOfFile'
-		#!/bin/bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb ${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
-		dbus-launch startdde &
-	EndOfFile
-	chmod +x ./xstartup
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null 2>/dev/null
-	touch /tmp/.Tmoe-DEEPIN-Desktop-Detection-FILE
-	first_configure_startvnc
-}
+###############
 ################
 install_deepin_desktop() {
 	deepin_desktop_warning
+	REMOTE_DESKTOP_SESSION_01='startdde'
+	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	DEPENDENCY_01="deepin-desktop"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		deepin_desktop_debian
@@ -2486,7 +2692,7 @@ install_deepin_desktop() {
 	####################
 	beta_features_quick_install
 	apt_purge_libfprint
-	configure_deepin_desktop_xstartup
+	configure_vnc_xstartup
 }
 ############################
 ############################
@@ -3307,7 +3513,7 @@ configure_x11vnc() {
 	####################
 }
 ############
-x11vnc_onekey() {
+x11vnc_warning() {
 	echo "注：x11vnc和tightvnc是有${RED}区别${RESET}的！"
 	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopx11vnc${RESET}${BLUE}停止${RESET}"
 	RETURN_TO_WHERE='configure_x11vnc'
@@ -3327,6 +3533,10 @@ x11vnc_onekey() {
 	if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
 		beta_features_quick_install
 	fi
+}
+############
+x11vnc_onekey() {
+	x11vnc_warning
 	################
 	X11_OR_WAYLAND_DESKTOP='x11vnc'
 	configure_remote_desktop_enviroment
@@ -3427,11 +3637,11 @@ modify_xsdl_conf() {
 		"2" "显示编号 Display number" \
 		"3" "ip address" \
 		"4" "手动编辑 Edit manually" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
 	if [ "${XSDL_XSERVER}" == '0' ]; then
-		tmoe_linux_tool_menu
+		modify_remote_desktop_config
 	fi
 	###########
 	if [ "${XSDL_XSERVER}" == '1' ]; then
@@ -3883,27 +4093,38 @@ configure_remote_desktop_enviroment() {
 	##########################
 	if [ "${BETA_DESKTOP}" == '1' ]; then
 		REMOTE_DESKTOP_SESSION='xfce4-session'
+		REMOTE_DESKTOP_SESSION_01='startxfce4'
+		REMOTE_DESKTOP_SESSION_02='xfce4-session'
 		#configure_remote_xfce4_desktop
 	fi
 	##########################
 	if [ "${BETA_DESKTOP}" == '2' ]; then
 		REMOTE_DESKTOP_SESSION='lxde-session'
+		REMOTE_DESKTOP_SESSION_01='startlxde'
+		REMOTE_DESKTOP_SESSION_02='lxde-session'
 		#configure_remote_lxde_desktop
 	fi
 	##########################
 	if [ "${BETA_DESKTOP}" == '3' ]; then
 		REMOTE_DESKTOP_SESSION='mate-session'
+		REMOTE_DESKTOP_SESSION_01='mate-session'
+		REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		#configure_remote_mate_desktop
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '4' ]; then
 		REMOTE_DESKTOP_SESSION='startlxqt'
+		REMOTE_DESKTOP_SESSION_01='startlxqt'
+		REMOTE_DESKTOP_SESSION_02='lxqt-session'
 		#configure_remote_lxqt_desktop
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '5' ]; then
 		#REMOTE_DESKTOP_SESSION='plasma-x11-session'
 		#configure_remote_kde_plasma5_desktop
+		REMOTE_DESKTOP_SESSION_01='startkde'
+		REMOTE_DESKTOP_SESSION_02='startplasma-x11'
+
 		if [ $(command -v startkde) ]; then
 			REMOTE_DESKTOP_SESSION="startkde"
 		else
@@ -3913,16 +4134,22 @@ configure_remote_desktop_enviroment() {
 	##############################
 	if [ "${BETA_DESKTOP}" == '6' ]; then
 		REMOTE_DESKTOP_SESSION='gnome-session'
+		REMOTE_DESKTOP_SESSION_01='gnome-session'
+		REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		#configure_remote_gnome3_desktop
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '7' ]; then
 		REMOTE_DESKTOP_SESSION='cinnamon-session'
 		#configure_remote_cinnamon_desktop
+		REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
+		REMOTE_DESKTOP_SESSION_02='cinnamon-session'
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '8' ]; then
 		REMOTE_DESKTOP_SESSION='startdde'
+		REMOTE_DESKTOP_SESSION_01='startdde'
+		REMOTE_DESKTOP_SESSION_02='x-window-manager'
 		#configure_remote_deepin_desktop
 	fi
 	##########################
@@ -4245,10 +4472,17 @@ configure_startxsdl() {
 			cd ${HOME}
 			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
 		fi
-
 		export LANG="en_US.UTF-8"
-		dbus-launch startxfce4 
 	EndOfFile
+	cat >>startxsdl <<-ENDofStartxsdl
+		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
+			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
+		else
+			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
+		fi
+	ENDofStartxsdl
+
+	#启动命令结尾无&
 }
 #################
 configure_startvnc() {
@@ -4311,73 +4545,27 @@ configure_startvnc() {
 }
 ###############
 first_configure_startvnc() {
-	if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			sed -i 's:dbus-launch::' ~/.vnc/xstartup
-		fi
-	fi
-
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ -f "/tmp/.Tmoe-XFCE4-Desktop-Detection-FILE" ]; then
-		echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
+	#卸载udisks2，会破坏mate和plasma的依赖关系。
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOTE_DESKTOP_SESSION_01} = 'startxfce4' ]; then
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
+			#umount .gvfs
 			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
-		#else
-		#	${PACKAGES_REMOVE_COMMAND} udisks2 gvfs
 		fi
 	fi
 	configure_startvnc
 	configure_startxsdl
 	###############################
-	if [ -f "/tmp/.Tmoe-MATE-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-MATE-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		sed -i '$ a\dbus-launch mate-session' startxsdl
-	elif [ -f "/tmp/.Tmoe-LXDE-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-LXDE-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		sed -i '$ a\dbus-launch startlxde' startxsdl
-	elif [ -f "/tmp/.Tmoe-LXQT-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-LXQT-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		sed -i '$ a\dbus-launch startlxqt' startxsdl
-	elif [ -f "/tmp/.Tmoe-KDE-PLASMA5-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-KDE-PLASMA5-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		#sed -i '$ a\dbus-launch startplasma-x11' startxsdl
-		cat >>startxsdl <<-'EndOfKDE'
-			if command -v "startkde" >/dev/null; then
-				dbus-launch startkde
-			else
-				dbus-launch startplasma-x11
-			fi
-		EndOfKDE
-	elif [ -f "/tmp/.Tmoe-GNOME3-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-GNOME3-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		sed -i '$ a\dbus-launch gnome-session' startxsdl
-	elif [ -f "/tmp/.Tmoe-cinnamon-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-cinnamon-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		sed -i '$ a\dbus-launch cinnamon-launcher' startxsdl
-	elif [ -f "/tmp/.Tmoe-DEEPIN-Desktop-Detection-FILE" ]; then
-		rm -f /tmp/.Tmoe-DEEPIN-Desktop-Detection-FILE
-		sed -i '/dbus-launch/d' startxsdl
-		sed -i '$ a\dbus-launch startdde' startxsdl
-	fi
+	#debian禁用dbus分两次，并非重复
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			sed -i 's:dbus-launch::' startxsdl
 		fi
 	fi
-	#下面那行需放在检测完成之后才执行
-	rm -f /tmp/.Tmoe-*Desktop-Detection-FILE 2>/dev/null
-
 	######################
 	chmod +x startvnc stopvnc startxsdl
 	dpkg --configure -a 2>/dev/null
-	#暂不卸载。若卸载则将破坏其依赖关系。
-	#umount .gvfs
-	#apt purge "gvfs*" "udisks2*"
+
 	CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 	if [ ! -z "${CURRENTuser}" ]; then
 		if [ -e "${HOME}/.profile" ]; then
@@ -4452,11 +4640,8 @@ first_configure_startvnc() {
 		startxsdl &
 	fi
 	echo "${GREEN}tightvnc/tigervnc & xserver${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
-	x11vnc_onekey
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
-	tmoe_linux_tool_menu
+	x11vnc_warning
+	configure_x11vnc_remote_desktop_session
 }
 ########################
 ########################
@@ -4531,6 +4716,13 @@ frequently_asked_questions() {
 		tmoe_linux_tool_menu
 	fi
 }
+##############
+enable_dbus_launch() {
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/dbus-launch ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i 's/.*${REMOTE_DESKTOP_SESSION_01}.*/dbus-launch ${REMOTE_DESKTOP_SESSION_01}/' "/usr/local/bin/startxsdl"
+	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02} \&/' ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02}/' "/usr/local/bin/startxsdl"
+}
 #################
 fix_vnc_dbus_launch() {
 	echo "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的${BLUE}proot容器${RESET}上出现了兼容性问题。"
@@ -4550,62 +4742,50 @@ fix_vnc_dbus_launch() {
 	fi
 
 	if (whiptail --title "您想要对这个小可爱中做什么 " --yes-button "Disable" --no-button "Enable" --yesno "您是想要禁用dbus-launch，还是启用呢？${DBUSstatus} \n请做出您的选择！✨" 10 50); then
-		sed -i 's:dbus-launch::' "/usr/local/bin/startxsdl"
-		sed -i 's:dbus-launch::' ~/.vnc/xstartup
+		sed -i 's:dbus-launch::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
 	else
 		if grep 'startxfce4' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*startxfce.*/dbus-launch startxfce4 \&/' ~/.vnc/xstartup
-			#sed -i 's/.*startxfce.*/dbus-launch startxfce4 \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch startxfce4 \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='startxfce4'
+			REMOTE_DESKTOP_SESSION_02='xfce4-session'
 		elif grep 'startlxde' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为lxde，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*startlxde.*/dbus-launch startlxde \&/' ~/.vnc/xstartup
-			#sed -i 's/.*startlxde.*/dbus-launch startlxde \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch startlxde \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='startlxde'
+			REMOTE_DESKTOP_SESSION_02='lxde-session'
 		elif grep 'startlxqt' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*startlxqt.*/dbus-launch startlxqt \&/' ~/.vnc/xstartup
-			#sed -i 's/.*startlxqt.*/dbus-launch startlxqt \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch startlxqt \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='startlxqt'
+			REMOTE_DESKTOP_SESSION_02='lxqt-session'
 		elif grep 'mate-session' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为mate，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*mate-session.*/dbus-launch mate-session \&/' ~/.vnc/xstartup
-			#sed -i 's/.*mate-session.*/dbus-launch mate-session \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch mate-session \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='mate-session'
+			REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		elif grep 'startplasma' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为KDE Plasma5，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*startplasma-x11.*/dbus-launch startplasma-x11 \&/' ~/.vnc/xstartup
-			sed -i 's/.*startplasma-x11.*/dbus-launch startplasma-x11/' "/usr/local/bin/startxsdl"
-			sed -i 's/.* startkde.*/ dbus-launch startkde \&/' ~/.vnc/xstartup
-			sed -i 's/.* startkde.*/ dbus-launch startkde/' "/usr/local/bin/startxsdl"
-			#sed -i 's/.*startkde.*/dbus-launch startkde \&/' "/usr/local/bin/startxsdl"
-			#sed -i '$ c\dbus-launch startplasma-x11 \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='startkde'
+			REMOTE_DESKTOP_SESSION_02='startplasma-x11'
 		elif grep 'gnome-session' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为GNOME3，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*gnome-session.*/dbus-launch gnome-session \&/' ~/.vnc/xstartup
-			#sed -i 's/.*gnome-session.*/dbus-launch gnome-session \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch gnome-session \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='gnome-session'
+			REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		elif grep 'cinnamon' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为cinnamon，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*cinnamon.*/dbus-launch cinnamon-launcher \&/' ~/.vnc/xstartup
-			#sed -i 's/.*cinnamon.*/dbus-launch cinnamon \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch cinnamon-launcher \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
+			REMOTE_DESKTOP_SESSION_02='cinnamon-session'
 		elif grep 'startdde' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
-			sed -i 's/.*startdde.*/dbus-launch startdde \&/' ~/.vnc/xstartup
-			#sed -i 's/.*startdde.*/dbus-launch startdde \&/' "/usr/local/bin/startxsdl"
-			sed -i '$ c\dbus-launch startdde \&' "/usr/local/bin/startxsdl"
+			REMOTE_DESKTOP_SESSION_01='startdde'
+			REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		else
 			echo "未检测到vnc相关配置，请更新debian-i后再覆盖安装gui"
 		fi
+		enable_dbus_launch
 	fi
 
 	echo "${YELLOW}修改完成，按回车键返回${RESET}"
 	echo "若无法修复，则请前往gitee.com/mo2/linux提交issue，并附上报错截图和详细说明。"
 	echo "还建议您附上cat /usr/local/bin/startxsdl 和 cat ~/.vnc/xstartup 的启动脚本截图"
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 ###################
@@ -5906,9 +6086,9 @@ filebrowser_logs() {
 	echo "按Ctrl+C退出日志追踪，press Ctrl+C to exit."
 	tail -Fvn 35 /var/log/filebrowser.log
 	#if [ $(command -v less) ]; then
-	#	cat /var/log/filebrowser.log | less -meQ
+	# cat /var/log/filebrowser.log | less -meQ
 	#else
-	#	cat /var/log/filebrowser.log
+	# cat /var/log/filebrowser.log
 	#fi
 
 }
