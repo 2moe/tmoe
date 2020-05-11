@@ -1942,10 +1942,10 @@ windows_manager_install() {
 		REMOTE_DESKTOP_SESSION_01='ice'
 		;;
 	06)
-		DEPENDENCY_01='xmonad'
-		REMOTE_DESKTOP_SESSION_01='xmonad'
+		DEPENDENCY_01='fluxbox'
+		REMOTE_DESKTOP_SESSION_01='fluxbox'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='xmobar dmenu xmonad'
+			DEPENDENCY_01='bbmail bbpager bbtime fbpager flubox'
 		fi
 		;;
 	07)
@@ -1953,10 +1953,10 @@ windows_manager_install() {
 		REMOTE_DESKTOP_SESSION_01='dwm'
 		;;
 	08)
-		DEPENDENCY_01='fluxbox'
-		REMOTE_DESKTOP_SESSION_01='fluxbox'
+		DEPENDENCY_01='xmonad'
+		REMOTE_DESKTOP_SESSION_01='xmonad'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='bbmail bbpager bbtime fbpager flubox'
+			DEPENDENCY_01='xmobar dmenu xmonad'
 		fi
 		;;
 	09)
