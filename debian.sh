@@ -685,7 +685,7 @@ tmoe_manager_main_menu() {
 ##########################
 vnc_can_not_call_pulse_audio() {
 	echo "若您启动VNC后，发现无音频。首先请确保您的termux为最新版本，并安装了termux:api"
-	echo "经测试x11vnc会自动停止pulseaudio服务，您需要手动输${GREEN}pulseaudio --start${RESET}来启动pulseaudio音频服务"
+	echo "x11vnc可能会自动终止pulseaudio服务，您需要手动输${GREEN}pulseaudio --start${RESET}来启动pulseaudio音频服务"
 	echo "您亦可输${GREEN}pulseaudio -D${RESET}"
 	echo "按回车键自动执行上述命令"
 	RETURN_TO_WHERE=frequently_asked_questions
