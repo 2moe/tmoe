@@ -1914,11 +1914,11 @@ configure_x11vnc_remote_desktop_session() {
 		/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
 		sleep 1s
 		${REMOTE_DESKTOP_SESSION} &
-		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 		#export LANG="en_US.UTF8"
 		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :1 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
+		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 		echo "您可能会经历长达10多秒的黑屏"
 		echo "您之后可以输startx11vnc启动，stopx11vnc停止"
 	EOF
