@@ -1804,7 +1804,7 @@ standand_desktop_install() {
 		"2" "lxde：轻量化桌面" \
 		"3" "mate：基于GNOME 2" \
 		"4" "Other其它桌面(内测版新功能):lxqt,kde" \
-		"5" "window manager窗口管理器(公测):fvwm,openbox" \
+		"5" "window manager窗口管理器(公测):ice,fvwm" \
 		"0" "我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -1853,13 +1853,14 @@ windows_manager_install() {
 	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	BETA_DESKTOP=$(
 		whiptail --title "WINDOW MANAGER" --menu \
-			"WARNING！本功能仍处于测试阶段哟！\nwindow manager窗口管理器(简称WM)是一种比桌面环境更轻量化的图形界面.\n您想要安装哪个WM呢?\nBeta features may not work properly.\nWhich WM do you want to install?" 0 0 0 "01" "fvwm(twm基础上开发的的虚拟WM)" \
+			"WARNING！本功能仍处于测试阶段哟！\nwindow manager窗口管理器(简称WM)是一种比桌面环境更轻量化的图形界面.\n您想要安装哪个WM呢?您可以同时安装多个\nBeta features may not work properly.\nWhich WM do you want to install?" 0 0 0 \
+			"01" "ice(意在提升感观和体验,兼顾轻量和可定制性)" \
 			"02" "openbox(快速,轻巧,可扩展)" \
-			"03" "i3(改进的动态平铺WM)" \
+			"03" "fvwm(强大的、与ICCCM2兼容的WM)" \
 			"04" "awesome(平铺式WM)" \
-			"05" "ice(wonderful Win95-OS/2-Motif-like)" \
+			"05" "enlightenment(X11 WM based on EFL)" \
 			"06" "fluxbox(高度可配置,低资源占用)" \
-			"07" "dwm(dynamic window manager)" \
+			"07" "i3(改进的动态平铺WM)" \
 			"08" "xmonad(基于Haskell开发的平铺式WM)" \
 			"09" "9wm(X11 WM inspired by Plan 9's rio)" \
 			"10" "metacity(轻量的GTK+ WM)" \
@@ -1868,7 +1869,7 @@ windows_manager_install() {
 			"13" "aewm++(最小的 WM written in C++)" \
 			"14" "afterstep(拥有NEXTSTEP风格的WM)" \
 			"15" "blackbox(WM for X)" \
-			"16" "enlightenment(X11 WM based on EFL)" \
+			"16" "dwm(dynamic window manager)" \
 			"17" "mutter(轻量的GTK+ WM)" \
 			"18" "bspwm(Binary space partitioning WM)" \
 			"19" "clfswm(Another Common Lisp FullScreen WM)" \
@@ -1909,6 +1910,11 @@ windows_manager_install() {
 	case "${BETA_DESKTOP}" in
 	0) standand_desktop_install ;;
 	01)
+		DEPENDENCY_01='icewm'
+		REMOTE_DESKTOP_SESSION_01='icewm-session'
+		REMOTE_DESKTOP_SESSION_02='icewm'
+		;;
+	02)
 		DEPENDENCY_01='fvwm'
 		REMOTE_DESKTOP_SESSION_01='fvwm'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1923,13 +1929,6 @@ windows_manager_install() {
 			DEPENDENCY_01='openbox obmenu openbox-menu'
 		fi
 		;;
-	03)
-		DEPENDENCY_01='i3'
-		REMOTE_DESKTOP_SESSION_01='i3'
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='i3 i3-wm i3blocks'
-		fi
-		;;
 	04)
 		DEPENDENCY_01='awesome'
 		REMOTE_DESKTOP_SESSION_01='awesome'
@@ -1938,10 +1937,10 @@ windows_manager_install() {
 		fi
 		;;
 	05)
-		DEPENDENCY_01='icewm'
-		REMOTE_DESKTOP_SESSION_01='icewm-session'
-		REMOTE_DESKTOP_SESSION_02='icewm'
+		DEPENDENCY_01='enlightenment'
+		REMOTE_DESKTOP_SESSION_01='enlightenment'
 		;;
+
 	06)
 		DEPENDENCY_01='fluxbox'
 		REMOTE_DESKTOP_SESSION_01='fluxbox'
@@ -1950,8 +1949,11 @@ windows_manager_install() {
 		fi
 		;;
 	07)
-		DEPENDENCY_01='dwm'
-		REMOTE_DESKTOP_SESSION_01='dwm'
+		DEPENDENCY_01='i3'
+		REMOTE_DESKTOP_SESSION_01='i3'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='i3 i3-wm i3blocks'
+		fi
 		;;
 	08)
 		DEPENDENCY_01='xmonad'
@@ -1992,9 +1994,10 @@ windows_manager_install() {
 		fi
 		;;
 	16)
-		DEPENDENCY_01='enlightenment'
-		REMOTE_DESKTOP_SESSION_01='enlightenment'
+		DEPENDENCY_01='dwm'
+		REMOTE_DESKTOP_SESSION_01='dwm'
 		;;
+
 	17)
 		DEPENDENCY_01='mutter'
 		REMOTE_DESKTOP_SESSION_01='mutter'
@@ -2028,8 +2031,13 @@ windows_manager_install() {
 		REMOTE_DESKTOP_SESSION_01='jwm'
 		;;
 	25)
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			echo "检测到您处于proot容器环境下，kwin可能无法正常运行"
+			RETURN_TO_WHERE="windows_manager_install"
+			do_you_want_to_continue
+		fi
 		DEPENDENCY_01='kwin-x11'
-		REMOTE_DESKTOP_SESSION_01='kwin-x11'
+		REMOTE_DESKTOP_SESSION_01='kwin'
 		;;
 	26)
 		DEPENDENCY_01='lwm'
