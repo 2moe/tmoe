@@ -1915,18 +1915,18 @@ windows_manager_install() {
 		REMOTE_DESKTOP_SESSION_02='icewm'
 		;;
 	02)
-		DEPENDENCY_01='fvwm'
-		REMOTE_DESKTOP_SESSION_01='fvwm'
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='fvwm fvwm-crystal fvwm-icons'
-		fi
-		;;
-	02)
 		DEPENDENCY_01='openbox'
 		REMOTE_DESKTOP_SESSION_01='openbox-session'
 		REMOTE_DESKTOP_SESSION_02='openbox'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCY_01='openbox obmenu openbox-menu'
+		fi
+		;;
+	03)
+		DEPENDENCY_01='fvwm'
+		REMOTE_DESKTOP_SESSION_01='fvwm'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_01='fvwm fvwm-crystal fvwm-icons'
 		fi
 		;;
 	04)
@@ -1940,7 +1940,6 @@ windows_manager_install() {
 		DEPENDENCY_01='enlightenment'
 		REMOTE_DESKTOP_SESSION_01='enlightenment'
 		;;
-
 	06)
 		DEPENDENCY_01='fluxbox'
 		REMOTE_DESKTOP_SESSION_01='fluxbox'
@@ -1997,7 +1996,6 @@ windows_manager_install() {
 		DEPENDENCY_01='dwm'
 		REMOTE_DESKTOP_SESSION_01='dwm'
 		;;
-
 	17)
 		DEPENDENCY_01='mutter'
 		REMOTE_DESKTOP_SESSION_01='mutter'
