@@ -1926,7 +1926,10 @@ windows_manager_install() {
 		DEPENDENCY_01='fvwm'
 		REMOTE_DESKTOP_SESSION_01='fvwm'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='fvwm fvwm-crystal fvwm-icons'
+			DEPENDENCY_01='fvwm fvwm-icons'
+			if grep -Eq 'Buster|Bullseye' /etc/os-release; then
+				DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
+			fi
 		fi
 		;;
 	04)
