@@ -1945,7 +1945,7 @@ windows_manager_install() {
 		DEPENDENCY_01='fluxbox'
 		REMOTE_DESKTOP_SESSION_01='fluxbox'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='bbmail bbpager bbtime fbpager flubox'
+			DEPENDENCY_01='bbmail bbpager bbtime fbpager fluxbox'
 		fi
 		;;
 	07)
