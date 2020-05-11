@@ -1973,7 +1973,7 @@ install_xfce4_desktop() {
 		auto_select_keyboard_layout
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01="@xfce"
+		DEPENDENCY_01='--skip-broken @xfce'
 		rm -rf /etc/xdg/autostart/xfce-polkit.desktop
 		##################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -2049,7 +2049,7 @@ install_lxde_desktop() {
 		DEPENDENCY_01="lxde-core lxterminal"
 		#############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='@lxde-desktop'
+		DEPENDENCY_01='--skip-broken lxde-desktop'
 		#############
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='lxde'
@@ -2192,7 +2192,7 @@ install_lxqt_desktop() {
 		auto_select_keyboard_layout
 		DEPENDENCY_01="lxqt-core lxqt-config qterminal"
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01="@lxqt"
+		DEPENDENCY_01='--skip-broken @lxqt'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="lxqt xorg"
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
@@ -2247,7 +2247,7 @@ install_kde_plasma5_desktop() {
 		#yum groupinstall kde-desktop
 		#dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
 		#dnf install -y sddm || yum install -y sddm
-		DEPENDENCY_01="@KDE"
+		DEPENDENCY_01='--skip-broken @KDE'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="plasma-desktop phonon-qt5-vnc xorg kdebase sddm sddm-kcm"
 		#pacman -S --noconfirm sddm sddm-kcm
@@ -2335,7 +2335,7 @@ install_gnome3_desktop() {
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		#yum groupinstall "GNOME Desktop Environment"
 		#dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
-		DEPENDENCY_01='@GNOME'
+		DEPENDENCY_01='--skip-broken @GNOME'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='gnome gnome-extra'
@@ -2390,7 +2390,7 @@ install_cinnamon_desktop() {
 		DEPENDENCY_01="cinnamon cinnamon-desktop-environment"
 
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01="@Cinnamon Desktop"
+		DEPENDENCY_01='--skip-broken @Cinnamon Desktop'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="sddm cinnamon xorg"
@@ -2475,7 +2475,7 @@ install_deepin_desktop() {
 		DEPENDENCY_01="dde"
 
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01="deepin-desktop"
+		DEPENDENCY_01='--skip-broken deepin-desktop'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		#pacman -S --noconfirm deepin-kwin
