@@ -1938,8 +1938,9 @@ windows_manager_install() {
 		fi
 		;;
 	05)
-		DEPENDENCY_01='ice'
-		REMOTE_DESKTOP_SESSION_01='ice'
+		DEPENDENCY_01='icewm'
+		REMOTE_DESKTOP_SESSION_01='icewm-session'
+		REMOTE_DESKTOP_SESSION_02='icewm'
 		;;
 	06)
 		DEPENDENCY_01='fluxbox'
