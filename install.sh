@@ -416,8 +416,9 @@ creat_proot_startup_script() {
 	cat >${PREFIX}/bin/debian <<-EndOfFile
 		#!/data/data/com.termux/files/usr/bin/bash
 		cd ${HOME}
-		pulseaudio --kill 2>/dev/null
-		pulseaudio --start 2>/dev/null
+		#pulseaudio --kill 2>/dev/null & 
+		#为加快启动速度，此处不重启音频服务
+		pulseaudio --start 2>/dev/null &
 		unset LD_PRELOAD
 		command="proot"
 		command+=" --link2symlink"
@@ -571,8 +572,7 @@ creat_linux_container_remove_script() {
 cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	#!/data/data/com.termux/files/usr/bin/bash
 	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
-	pulseaudio --kill 2>/dev/null
-	pulseaudio --start 2>/dev/null
+	pulseaudio --start 2>/dev/null &
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
 	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
@@ -582,6 +582,7 @@ if [ "$(uname -o)" = 'Android' ]; then
 	cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
 		#!/data/data/com.termux/files/usr/bin/bash
 		#pkill -u $(whoami)
+		pulseaudio --kill 2>/dev/null &
 		sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
 	EndOfFile
 fi

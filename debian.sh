@@ -2,7 +2,6 @@
 ########################################################################
 #检测架构 CHECK architecture
 check_arch() {
-
 	case $(uname -m) in
 	aarch64)
 		ARCH_TYPE="arm64"
@@ -602,8 +601,8 @@ tmoe_manager_main_menu() {
 			"1" "proot安装" \
 			"2" "chroot安装" \
 			"3" "GUI,audio & sources.list" \
-			"4" "novnc(web端控制)" \
-			"5" "remove system移除" \
+			"4" "FAQ常见问题" \
+			"5" "novnc(web端控制)" \
 			"6" "backup system备份系统" \
 			"7" "restore还原" \
 			"8" "query space occupation查询空间占用" \
@@ -613,6 +612,7 @@ tmoe_manager_main_menu() {
 			"12" "VSCode Server arm64" \
 			"13" "赋予proot容器真实root权限" \
 			"14" "Video tutorial" \
+			"15" "remove system移除" \
 			"0" "exit退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -630,11 +630,11 @@ tmoe_manager_main_menu() {
 	fi
 	##########################
 	if [ "${OPTION}" == '4' ]; then
-		install_web_novnc
+		frequently_asked_questions
 	fi
 	##########################
 	if [ "${OPTION}" == '5' ]; then
-		remove_gnu_linux_container
+		install_web_novnc
 	fi
 	##########################
 	if [ "${OPTION}" == '6' ]; then
@@ -673,13 +673,45 @@ tmoe_manager_main_menu() {
 		download_video_tutorial
 	fi
 	##########################
+	if [ "${OPTION}" == '15' ]; then
+		remove_gnu_linux_container
+	fi
+	####################
 	if [ "${OPTION}" == '0' ]; then
 		exit
 	fi
 	########
 }
 ##########################
+vnc_can_not_call_pulse_audio() {
+	echo "若您启动VNC后，发现无音频。首先请确保您的termux为最新版本，并安装了termux:api"
+	echo "经测试x11vnc会自动停止pulseaudio服务，您需要手动输${GREEN}pulseaudio --start${RESET}来启动"
+	echo "按回车键自动执行上述命令"
+	RETURN_TO_WHERE=frequently_asked_questions
+	do_you_want_to_continue
+	pulseaudio --start
+}
 ##########################
+frequently_asked_questions() {
+	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
+		"您有哪些疑问？\nWhat questions do you have?" 15 60 5 \
+		"1" "VNC无法调用音频" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${TMOE_FAQ}" in
+	0) tmoe_manager_main_menu ;;
+	1) vnc_can_not_call_pulse_audio ;;
+	esac
+	############################
+	if [ "$?" = '0' ]; then
+		tmoe_manager_main_menu
+	fi
+	#############
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+###############
 install_proot_container() {
 	rm -f ~/.Chroot-Container-Detection-File
 	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null

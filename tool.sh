@@ -2243,9 +2243,9 @@ configure_x11vnc_remote_desktop_session() {
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				export PULSE_SERVER=${WSL2IP}
-				echo "已将您的音频服务ip修改为${WSL2IP}"
+				WSL2IP=\$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+				export PULSE_SERVER=\${WSL2IP}
+				echo "已将您的音频服务ip修改为\${WSL2IP}"
 			fi
 		fi
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
@@ -2259,8 +2259,8 @@ configure_x11vnc_remote_desktop_session() {
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-		echo "您可能会经历长达30s的黑屏,请20s后再来尝试连接"
-		echo "You may experience a black screen for up to 30 seconds, please try to connect after 20s"
+		echo "您可能会经历长达10多秒的黑屏"
+		echo "You may experience a black screen for up to 10 seconds."
 		echo "您之后可以输startx11vnc启动，stopx11vnc停止"
 		echo "You can type startx11vnc to start x11vnc,type stopx11vnc to stop it."
 	EOF
