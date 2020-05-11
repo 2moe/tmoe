@@ -593,7 +593,7 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200510-17)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200511-10)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -2338,7 +2338,7 @@ choose_which_gnu_linux_distro() {
 		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
 		"4" "beta公测版:manjaro,centos" \
-		"5" "alpha内测版:gentoo,void" \
+		"5" "alpha内测版:gentoo,armbian" \
 		"6" "arch(系统设计以KISS为总体指导原则)" \
 		"7" "fedora 32(红帽社区版,新技术试验场)" \
 		"0" "Back to the main menu 返回主菜单" \
@@ -2384,20 +2384,19 @@ install_alpha_containers() {
 	ALPHA_SYSTEM=$(
 		whiptail --title "Alpha features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nAlpha features may not work properly." 17 55 7 \
 			"1" "armbian bullseye(arm64,armhf)" \
-			"2" "Void:基于xbps包管理器的独立发行版" \
-			"3" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"3" "raspbian樹莓派 buster(armhf)" \
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"5" "alpine 3.11(非glibc的精简系统)" \
+			"5" "devuan ascii(不使用systemd,基于debian)" \
 			"6" "slackware(armhf,x64)" \
-			"7" "raspbian樹莓派 buster(armhf)" \
 			"8" "Funtoo:专注于改进Gentoo" \
 			"9" "openwrt(常见于路由器,arm64,x64)" \
-			"10" "devuan ascii(不使用systemd,基于debian)" \
-			"11" "apertis 18.12" \
-			"12" "alt p9" \
+			"10" "apertis v2020.0" \
+			"11" "alt p9" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+
 	##############################
 	if [ "${ALPHA_SYSTEM}" == '0' ]; then
 		choose_which_gnu_linux_distro
@@ -2408,29 +2407,25 @@ install_alpha_containers() {
 	fi
 	####################
 	if [ "${ALPHA_SYSTEM}" == '2' ]; then
-		install_void_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '3' ]; then
 		install_opensuse_linux_distro
 	fi
 	####################
-	if [ "${ALPHA_SYSTEM}" == '4' ]; then
-		install_gentoo_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '5' ]; then
-		install_alpine_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '6' ]; then
-		install_slackware_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '7' ]; then
+	if [ "${ALPHA_SYSTEM}" == '3' ]; then
 		install_raspbian_linux_distro
 	fi
 	#先下载debian buster容器镜像，再换源成树莓派。
+	#################
+	if [ "${ALPHA_SYSTEM}" == '4' ]; then
+		install_gentoo_linux_distro
+	fi
+	###################
+	if [ "${ALPHA_SYSTEM}" == '5' ]; then
+		install_devuan_linux_distro
+	fi
+	#################
+	if [ "${ALPHA_SYSTEM}" == '6' ]; then
+		install_slackware_linux_distro
+	fi
 	####################
 	if [ "${ALPHA_SYSTEM}" == '8' ]; then
 		install_funtoo_linux_distro
@@ -2441,14 +2436,10 @@ install_alpha_containers() {
 	fi
 	####################
 	if [ "${ALPHA_SYSTEM}" == '10' ]; then
-		install_devuan_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '11' ]; then
 		install_apertis_linux_distro
 	fi
 	####################
-	if [ "${ALPHA_SYSTEM}" == '12' ]; then
+	if [ "${ALPHA_SYSTEM}" == '11' ]; then
 		install_alt_linux_distro
 	fi
 	###########################
@@ -2462,7 +2453,9 @@ install_beta_containers() {
 		whiptail --title "Beta features" --menu "WARNING！本功能仍处于公测阶段,可能存在一些bug。\nBeta features may not work properly." 17 55 7 \
 			"1" "manjaro(让arch更方便用户使用,arm64)" \
 			"2" "centos 8(基于红帽的社区企业操作系统)" \
-			"3" "mint tricia(简单易用的系统,x86,x64)" \
+			"3" "Void:基于xbps包管理器的独立发行版" \
+			"4" "alpine 3.11(非glibc的精简系统)" \
+			"5" "mint tricia(简单易用的系统,x86,x64)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2480,6 +2473,14 @@ install_beta_containers() {
 	fi
 	####################
 	if [ "${BETA_SYSTEM}" == '3' ]; then
+		install_void_linux_distro
+	fi
+	####################
+	if [ "${BETA_SYSTEM}" == '4' ]; then
+		install_alpine_linux_distro
+	fi
+	####################
+	if [ "${BETA_SYSTEM}" == '5' ]; then
 		install_mint_linux_distro
 	fi
 	######################
@@ -2769,15 +2770,15 @@ install_devuan_linux_distro() {
 }
 ######################
 install_apertis_linux_distro() {
-	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
+	if [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到apertis不支持您当前的架构"
 	else
 		touch ~/.ALPINELINUXDetectionFILE
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/apertis系统/g' |
 			sed 's/debian system/apertis system/g' |
-			sed 's:debian-sid:apertis-18.12:g' |
-			sed 's:debian/sid:apertis/18.12:g' |
+			sed 's:debian-sid:apertis-v2020.0:g' |
+			sed 's:debian/sid:apertis/v2020.0:g' |
 			sed 's:Debian GNU/Linux:Apertis Linux:g')"
 	fi
 }

@@ -577,11 +577,14 @@ cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
 ###############
-cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
-	#!/data/data/com.termux/files/usr/bin/bash
-	#pkill -u $(whoami)
-	sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
-EndOfFile
+#仅安卓支持终止所有进程
+if [ "$(uname -o)" = 'Android' ]; then
+	cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
+		#!/data/data/com.termux/files/usr/bin/bash
+		#pkill -u $(whoami)
+		sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
+	EndOfFile
+fi
 #################
 #不要单引号
 cat >${PREFIX}/bin/startxsdl <<-EndOfFile
@@ -654,12 +657,16 @@ curl -sLo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
 sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' zsh-i.sh
 chmod +x zsh-i.sh
 ###########
-if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
-	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
-	#树莓派换源
+debian_stable_sources_list_and_gpg_key() {
 	curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
 	tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
 	rm -f "raspbian-sources-gpg.tar.xz"
+}
+############
+if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
+	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
+	#树莓派换源
+	debian_stable_sources_list_and_gpg_key
 elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
 	rm -f "${HOME}/.REDHATDetectionFILE"
 	chmod u+w "${DEBIAN_CHROOT}/root"
@@ -674,6 +681,8 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
 	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
+########
+
 ########################
 #配置zsh
 curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
@@ -878,8 +887,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	#######################
 	alpine_linux_configure() {
-	    echo "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
+		    echo "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
 	        sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 	        apk update
 	        apk add bash
@@ -1227,7 +1236,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dnf clean packages
 	}
 	######################
-	if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "fedora" ]; then
+	if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 |cut -d '"' -f 2)" = "fedora" ]; then
 	    tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 	    mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 	    FEDORA_VERSION="$(cat /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
@@ -1240,9 +1249,19 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        fedora_3x_repos
 	    fi
 
-	elif [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "centos" ]; then
+	elif grep -q 'CentOS' /etc/os-release; then
 	    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
-	    curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
+	    #curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
+		#curl -Lo /etc/yum.repos.d/CentOS-Base.repo https://mirrors.huaweicloud.com/repository/conf/CentOS-8-anon.repo
+		dnf install -y epel-release
+		#dnf update
+		cp -a /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
+	    cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
+	   sed -e 's!^metalink=!#metalink=!g' \
+	    -e 's!^#baseurl=!baseurl=!g' \
+	    -e 's!//download\.fedoraproject\.org/pub!//mirrors.tuna.tsinghua.edu.cn!g' \
+	    -e 's!http://mirrors\.tuna!https://mirrors.tuna!g' \
+	    -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 	fi
 	############################
 	note_of_non_debian() {
