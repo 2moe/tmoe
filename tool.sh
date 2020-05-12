@@ -4812,6 +4812,8 @@ beta_features_management_menu() {
 		echo "即将为您重装..."
 	else
 		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+		press_enter_to_return
+		tmoe_linux_tool_menu
 	fi
 }
 ##############
