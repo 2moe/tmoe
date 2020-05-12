@@ -3340,7 +3340,7 @@ install_chinese_manpages() {
 #####################
 install_libre_office() {
 	#ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
-	ps -e >/dev/null || echo "${RED}WARNING！${RESET}检测到您无权读取${GREEN}/proot${RESET}分区的某些数据！"
+	ps -e >/dev/null || echo "${RED}WARNING！${RESET}检测到您无权读取${GREEN}/proc${RESET}分区的某些数据！"
 	RETURN_TO_WHERE='other_software'
 	do_you_want_to_continue
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
