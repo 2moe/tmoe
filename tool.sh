@@ -3629,7 +3629,7 @@ x11vnc_resolution() {
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		#/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset &
-		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :1 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
 		echo 'Your current resolution has been modified.'
 		echo '您当前的分辨率已经修改为'
 		echo $(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')
