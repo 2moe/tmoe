@@ -3572,7 +3572,10 @@ x11vnc_warning() {
 	DEPENDENCY_01=''
 	DEPENDENCY_02=''
 	if [ ! $(command -v x11vnc) ]; then
-		DEPENDENCY_01='x11vnc'
+		DEPENDENCY_01="${DEPENDENCY_01} x11vnc"
+	fi
+	if [ ! $(command -v pavucontrol) ]; then
+		DEPENDENCY_01="${DEPENDENCY_01} pavucontrol"
 	fi
 	#注意下面那处的大小写
 	if [ ! $(command -v xvfb) ] && [ ! $(command -v Xvfb) ]; then
