@@ -349,8 +349,9 @@ check_dependencies() {
 ####################################################
 tmoe_linux_tool_menu() {
 	cd ${cur}
+	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200511-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0501支持解析并下载B站视频,0502支持搭建个人云网盘,0503优化code-server的配置,0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200512-12)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1044,7 +1045,7 @@ upgrade_video_download_tool() {
 }
 ##################
 which_vscode_edition() {
-	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用XSDL打开VSCode本地版")
+	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
 	VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
 		"${VSCODEtips} Which edition do you want to install" 15 60 5 \
 		"1" "VS Code Server(web版)" \
@@ -2795,9 +2796,10 @@ configure_theme() {
 		"1" "ukui：国产优麒麟ukui桌面主题" \
 		"2" "win10：kali卧底模式主题" \
 		"3" "MacOS：Mojave" \
-		"4" "UOS：国产统一操作系统图标包" \
-		"5" "breeze：plasma桌面微风gtk+版主题" \
-		"6" "Kali：kali-Flat-Remix-Blue主题" \
+		"4" "win10x：更新颖的UI设计" \
+		"5" "UOS：国产统一操作系统图标包" \
+		"6" "breeze：plasma桌面微风gtk+版主题" \
+		"7" "Kali：kali-Flat-Remix-Blue主题" \
 		"0" "我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	########################
@@ -2818,14 +2820,18 @@ configure_theme() {
 	fi
 	##########################
 	if [ "${INSTALL_THEME}" == '4' ]; then
+		download_win10x_theme
+	fi
+	##########################
+	if [ "${INSTALL_THEME}" == '5' ]; then
 		download_uos_icon_theme
 	fi
 	###########################################
-	if [ "${INSTALL_THEME}" == '5' ]; then
+	if [ "${INSTALL_THEME}" == '6' ]; then
 		install_breeze_theme
 	fi
 	######################################
-	if [ "${INSTALL_THEME}" == '6' ]; then
+	if [ "${INSTALL_THEME}" == '7' ]; then
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			download_kali_themes_common
 		else
@@ -2842,6 +2848,27 @@ configure_theme() {
 	tmoe_linux_tool_menu
 }
 ################################
+download_win10x_theme() {
+	if [ -d "/usr/share/icons/We10X-dark" ]; then
+		echo "检测到图标包已下载，是否重新下载？"
+		RETURN_TO_WHERE='configure_theme'
+		do_you_want_to_continue
+	fi
+
+	if [ -d "/tmp/.WINDOWS_10X_ICON_THEME" ]; then
+		rm -rf /tmp/.WINDOWS_10X_ICON_THEME
+	fi
+
+	git clone -b win10x --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/.WINDOWS_10X_ICON_THEME
+	cd /tmp/.WINDOWS_10X_ICON_THEME
+	GITHUB_URL=$(cat url.txt)
+	tar -Jxvf We10X.tar.xz -C /usr/share/icons 2>/dev/null
+	update-icon-caches /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null
+	echo ${GITHUB_URL}
+	rm -rf /tmp/McWe10X
+	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
+}
+###################
 download_uos_icon_theme() {
 	DEPENDENCY_01="deepin-icon-theme"
 	DEPENDENCY_02=""
@@ -2860,8 +2887,10 @@ download_uos_icon_theme() {
 
 	git clone -b Uos --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/UosICONS
 	cd /tmp/UosICONS
-	cat url.txt
+	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
+	update-icon-caches /usr/share/icons/Uos 2>/dev/null
+	echo ${GITHUB_URL}
 	rm -rf /tmp/UosICONS
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${PACKAGES_REMOVE_COMMAND} deepin-icon-theme"
 }
@@ -2879,9 +2908,11 @@ download_macos_mojave_theme() {
 
 	git clone -b McMojave --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/McMojave
 	cd /tmp/McMojave
-	cat url.txt
+	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes 2>/dev/null
 	tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons 2>/dev/null
+	update-icon-caches /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null
+	echo ${GITHUB_URL}
 	rm -rf /tmp/McMojave
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
 }
@@ -3529,7 +3560,9 @@ configure_x11vnc() {
 ############
 x11vnc_warning() {
 	echo "注：x11vnc和tightvnc是有${RED}区别${RESET}的！"
+	echo "x11vnc可以打开tightvnc无法打开的某些应用"
 	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopx11vnc${RESET}${BLUE}停止${RESET}"
+	echo "若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务"
 	echo "x11vnc可能会自动终止音频服务进程，若您的宿主机为Android系统，请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}即可启动音频服务"
 	RETURN_TO_WHERE='configure_x11vnc'
