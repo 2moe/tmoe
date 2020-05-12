@@ -2265,8 +2265,7 @@ configure_x11vnc_remote_desktop_session() {
 			 ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 		#export LANG="en_US.UTF8"
-		#tmoe-linux的开发者提醒：不建议再x11vnc后加上使用-ncache 1 的参数
-		x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
+		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
