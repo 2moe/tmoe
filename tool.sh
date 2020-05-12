@@ -3351,7 +3351,7 @@ install_libre_office() {
 	DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
 	NON_DEBIAN='false'
 	beta_features_quick_install
-	if [ ! -e "/tmp/.Chroot-Container-Detection-File" ] && [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ "${ARCH_TYPE}" = "arm64" ]; then
 		mkdir -p /prod/version
 		cd /usr/lib/libreoffice/program
 		rm -f oosplash
