@@ -2241,10 +2241,6 @@ configure_vnc_xstartup() {
 			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 	EndOfFile
-	#两个空格！！！
-	if [ "${NON-DBUS}" = "true" ]; then
-		sed -i 's:dbus-launch --exit-with-session::' ~/.vnc/xstartup
-	fi
 	#dbus-launch startxfce4 &
 	chmod +x ./xstartup
 	first_configure_startvnc
@@ -4537,13 +4533,12 @@ configure_startxsdl() {
 			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	ENDofStartxsdl
-	#两个空格！！！
 	#启动命令结尾无&
 	###############################
 	#debian禁用dbus分两次，并非重复
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
+	if [ "${NON_DBUS}" = "true" ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			sed -i 's:dbus-launch --exit-with-session::' startxsdl
+			sed -i 's:dbus-launch --exit-with-session::' startxsdl ~/.vnc/xstartup
 		fi
 	fi
 }
