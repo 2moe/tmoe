@@ -2233,13 +2233,13 @@ configure_vnc_xstartup() {
 		xrdb \${HOME}/.Xresources
 		export PULSE_SERVER=127.0.0.1
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch ${REMOTE_DESKTOP_SESSION_01} &
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} &
 		else
-			dbus-launch ${REMOTE_DESKTOP_SESSION_02} &
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 	EndOfFile
 	if [ "${NON-DBUS}" = "true" ]; then
-		sed -i 's:dbus-launch::' ~/.vnc/xstartup
+		sed -i 's:dbus-launch --exit-with-session::' ~/.vnc/xstartup
 	fi
 	#dbus-launch startxfce4 &
 	chmod +x ./xstartup
@@ -4540,13 +4540,19 @@ configure_startxsdl() {
 	EndOfFile
 	cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
 		else
-			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	ENDofStartxsdl
-
 	#启动命令结尾无&
+	###############################
+	#debian禁用dbus分两次，并非重复
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			sed -i 's:dbus-launch --exit-with-session::' startxsdl
+		fi
+	fi
 }
 #################
 configure_startvnc() {
@@ -4619,13 +4625,6 @@ first_configure_startvnc() {
 	fi
 	configure_startvnc
 	configure_startxsdl
-	###############################
-	#debian禁用dbus分两次，并非重复
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			sed -i 's:dbus-launch::' startxsdl
-		fi
-	fi
 	######################
 	chmod +x startvnc stopvnc startxsdl
 	dpkg --configure -a 2>/dev/null
@@ -4782,10 +4781,10 @@ frequently_asked_questions() {
 }
 ##############
 enable_dbus_launch() {
-	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/dbus-launch ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i 's/.*${REMOTE_DESKTOP_SESSION_01}.*/dbus-launch ${REMOTE_DESKTOP_SESSION_01}/' "/usr/local/bin/startxsdl"
-	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02} \&/' ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02}/' "/usr/local/bin/startxsdl"
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i 's/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}/' "/usr/local/bin/startxsdl"
+	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/' ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/' "/usr/local/bin/startxsdl"
 }
 #################
 fix_vnc_dbus_launch() {
