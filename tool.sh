@@ -4606,7 +4606,7 @@ configure_startvnc() {
 ###############
 first_configure_startvnc() {
 	#卸载udisks2，会破坏mate和plasma的依赖关系。
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOTE_DESKTOP_SESSION_01} = 'xfce4-session' ] || [ ${REMOTE_DESKTOP_SESSION_01} = 'lxsession' ]; then
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOTE_DESKTOP_SESSION_01} = 'xfce4-session' ]; then
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
 			echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
 			#umount .gvfs
