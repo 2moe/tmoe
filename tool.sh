@@ -4786,9 +4786,9 @@ frequently_asked_questions() {
 ##############
 enable_dbus_launch() {
 	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i 's/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}/' "/usr/local/bin/startxsdl"
-	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/' ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i 's/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/' "/usr/local/bin/startxsdl"
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}/" "/usr/local/bin/startxsdl"
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
 }
 #################
 fix_vnc_dbus_launch() {
