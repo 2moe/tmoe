@@ -2233,11 +2233,12 @@ configure_vnc_xstartup() {
 		xrdb \${HOME}/.Xresources
 		export PULSE_SERVER=127.0.0.1
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} &
+			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01} &
 		else
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} &
+			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 	EndOfFile
+	#两个空格！！！
 	if [ "${NON-DBUS}" = "true" ]; then
 		sed -i 's:dbus-launch --exit-with-session::' ~/.vnc/xstartup
 	fi
@@ -4544,11 +4545,12 @@ configure_startxsdl() {
 	EndOfFile
 	cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
+			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01}
 		else
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
+			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	ENDofStartxsdl
+	#两个空格！！！
 	#启动命令结尾无&
 	###############################
 	#debian禁用dbus分两次，并非重复
@@ -4785,10 +4787,11 @@ frequently_asked_questions() {
 }
 ##############
 enable_dbus_launch() {
-	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i "s/.*${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}/" "/usr/local/bin/startxsdl"
-	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
+	#两个空格！！！
+	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01}/" "/usr/local/bin/startxsdl"
+	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
 }
 #################
 fix_vnc_dbus_launch() {
@@ -4809,7 +4812,7 @@ fix_vnc_dbus_launch() {
 	fi
 
 	if (whiptail --title "您想要对这个小可爱中做什么 " --yes-button "Disable" --no-button "Enable" --yesno "您是想要禁用dbus-launch，还是启用呢？${DBUSstatus} \n请做出您的选择！✨" 10 50); then
-		sed -i 's:dbus-launch::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
+		sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
 	else
 		if grep 'startxfce4' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
