@@ -1033,7 +1033,7 @@ upgrade_video_download_tool() {
 	cd ..
 	rm -rf ./.ANNIETEMPFOLDER
 	#mkdir -p ${HOME}/.config
-	pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+	#pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 	pip3 install pip -U -i https://pypi.tuna.tsinghua.edu.cn/simple 2>/dev/null
 	pip3 install you-get -U -i https://pypi.tuna.tsinghua.edu.cn/simple
 	you-get -V
@@ -1042,6 +1042,12 @@ upgrade_video_download_tool() {
 	echo "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
 	echo "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
 	echo "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
+	echo "请问您是否需要将pip源切换为清华源[Y/n]?"
+	echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+	RETURN_TO_WHERE='download_videos'
+	do_you_want_to_continue
+	pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+	
 	echo 'Press Enter to start annie'
 	echo "${YELLOW}按回车键启动annie。${RESET}"
 	read
