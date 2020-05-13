@@ -2047,7 +2047,7 @@ windows_manager_install() {
 		else
 			DEPENDENCY_01='kwin-x11'
 		fi
-		REMOTE_DESKTOP_SESSION_01='kwin --replace'
+		REMOTE_DESKTOP_SESSION_01='kwin'
 		;;
 	26)
 		DEPENDENCY_01='lwm'
@@ -2155,7 +2155,7 @@ windows_manager_install() {
 		;;
 	49)
 		DEPENDENCY_01='xfwm4'
-		REMOTE_DESKTOP_SESSION_01='xfwm4 --replace'
+		REMOTE_DESKTOP_SESSION_01='xfwm4'
 		;;
 	esac
 	##########################

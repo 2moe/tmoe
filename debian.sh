@@ -1022,7 +1022,7 @@ backup_gnu_linux_container() {
 		echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 		press_enter_to_continue
-		tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
+		tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 		#whiptail进度条已弃用
 		#tar -PJpcf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
 
@@ -1042,7 +1042,7 @@ backup_gnu_linux_container() {
 		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 		press_enter_to_continue
 		if [ "$(command -v pv)" ]; then
-			tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+			tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 		else
 			tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
 		fi
