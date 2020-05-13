@@ -262,8 +262,10 @@ _**如果你在国内,那么请输**_
 #### 7.Alpine
 
 ```shell
-    apk add wget
-    ash -c "$(wget -O- https://git.io/linux.sh)"
+    apk update
+    apk add wget bash
+    wget -O /tmp/.tmoe-linux.sh https://git.io/linux.sh
+    bash /tmp/.tmoe-linux.sh
 ```
 
 #### 8.Void

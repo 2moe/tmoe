@@ -22,7 +22,7 @@ main() {
 ################
 check_root() {
 	if [ "$(id -u)" != "0" ]; then
-		if [ -e "/usr/bin/curl" ]; then
+		if [ $(command -v curl) ]; then
 			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
 				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		else
@@ -360,7 +360,7 @@ tmoe_linux_tool_menu() {
 			"6" "Download video 解析视频链接" \
 			"7" "Personal netdisk 个人云网盘/文件共享" \
 			"8" "Update tmoe-linux tool 更新本工具" \
-			"9" "VSCode" \
+			"9" "VSCode 现代化代码编辑器" \
 			"10" "Start zsh tool 启动zsh管理工具" \
 			"11" "Remove GUI 卸载图形界面" \
 			"12" "Remove browser 卸载浏览器" \
@@ -515,7 +515,11 @@ different_distro_software_install() {
 ############################
 ############################
 tmoe_linux_tool_upgrade() {
-	curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	else
+		curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	fi
 	echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	chmod +x /usr/local/bin/debian-i
@@ -3573,9 +3577,6 @@ x11vnc_warning() {
 	if [ ! $(command -v x11vnc) ]; then
 		DEPENDENCY_01="${DEPENDENCY_01} x11vnc"
 	fi
-	if [ ! $(command -v pavucontrol) ]; then
-		DEPENDENCY_01="${DEPENDENCY_01} pavucontrol"
-	fi
 	#注意下面那处的大小写
 	if [ ! $(command -v xvfb) ] && [ ! $(command -v Xvfb) ]; then
 		DEPENDENCY_02='xvfb'
@@ -3583,6 +3584,10 @@ x11vnc_warning() {
 
 	if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
 		beta_features_quick_install
+	fi
+	#音频控制器单独检测
+	if [ ! $(command -v pavucontrol) ]; then
+		${PACKAGES_INSTALL_COMMAND} pavucontrol
 	fi
 }
 ############
