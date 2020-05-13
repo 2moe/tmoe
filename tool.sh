@@ -1993,7 +1993,7 @@ windows_manager_install() {
 		DEPENDENCY_01='blackbox'
 		REMOTE_DESKTOP_SESSION_01='blackbox'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='bbmail bbpager bbtime fbpager blackbox'
+			DEPENDENCY_01='bbmail bbpager bbtime blackbox'
 		fi
 		;;
 	16)

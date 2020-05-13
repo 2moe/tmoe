@@ -608,7 +608,7 @@ echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
 #termux-fix-shebang ${PREFIX}/bin/debian
 cd ${PREFIX}/bin
 
-chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl
+chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl 2>/dev/null
 #设定alias,防止debian-root的alias依旧在生效。
 alias debian="${PREFIX}/bin/debian"
 alias debian-rm="${PREFIX}/bin/debian-rm"
