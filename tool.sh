@@ -351,7 +351,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200513-17)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200514-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1047,7 +1047,7 @@ upgrade_video_download_tool() {
 	RETURN_TO_WHERE='download_videos'
 	do_you_want_to_continue
 	pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-	
+
 	echo 'Press Enter to start annie'
 	echo "${YELLOW}按回车键启动annie。${RESET}"
 	read
@@ -1598,11 +1598,7 @@ install_chromium_browser() {
 		apt update
 	fi
 	####################
-	echo "请问您是否需要关闭沙盒模式？"
-	echo "若您需要以root权限运行chromium，则需要关闭，否则请保持开启状态。"
-	echo "${YELLOW}Do you need to turn off the sandbox mode?[Y/n]${RESET}"
-	echo "Press enter to close this mode,type n to cancel."
-	echo "按${YELLOW}回车${RESET}键${RED}关闭${RESET}该模式，输${YELLOW}n${RESET}取消"
+	do_you_want_to_close_the_sandbox_mode
 	read opt
 	case $opt in
 	y* | Y* | "")
@@ -1621,6 +1617,14 @@ install_chromium_browser() {
 	esac
 }
 ############
+do_you_want_to_close_the_sandbox_mode() {
+	echo "请问您是否需要关闭沙盒模式？"
+	echo "若您需要以root权限运行该应用，则需要关闭，否则请保持开启状态。"
+	echo "${YELLOW}Do you need to turn off the sandbox mode?[Y/n]${RESET}"
+	echo "Press enter to close this mode,type n to cancel."
+	echo "按${YELLOW}回车${RESET}键${RED}关闭${RESET}该模式，输${YELLOW}n${RESET}取消"
+}
+#######################
 install_firefox_esr_browser() {
 	echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
 	echo "${YELLOW} “谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。 ${RESET}"
@@ -3083,6 +3087,165 @@ debian_sources_list() {
 	tmoe_linux_tool_menu
 }
 ############################################
+add_debian_opt_repo() {
+	echo "检测到您未添加debian_opt软件源，是否添加？"
+	echo "debian_opt_repo列表的所有软件均来自于开源项目"
+	echo "感谢https://github.com/coslyk/debianopt-repo 仓库的维护者，以及各个项目的原开发者。"
+	RETURN_TO_WHERE='other_software'
+	do_you_want_to_continue
+	cd /tmp
+	curl -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+	apt-key add bintray-public.key.asc
+	echo "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main" >>/etc/apt/sources.list.d/debianopt.list
+	apt update
+}
+#######################
+explore_debian_opt_repo() {
+
+	if [ ! -e "/etc/apt/sources.list.d/debianopt.list" ]; then
+		add_debian_opt_repo
+	fi
+
+	NON_DEBIAN='true'
+	DEPENDENCY_02=''
+	cd /usr/share/applications/
+	INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
+		"您想要安装哪个软件？按方向键选择，回车键确认！\n Which software do you want to install? " 16 50 7 \
+		"1" "cocomusic:第三方QQ音乐客户端" \
+		"2" "iease-music:界面华丽的云音乐客户端" \
+		"3" "electron-netease-cloud-music:云音乐客户端" \
+		"4" "listen1:免费音乐聚合" \
+		"5" "lx-music-desktop:音乐下载助手" \
+		"6" "feeluown(x64):支持网易云、虾米" \
+		"7" "netease-cloud-music-gtk(x64):云音乐" \
+		"8" "picgo:图床上传工具" \
+		"9" "other其他软件" \
+		"10" "remove移除本仓库" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############
+	case "${INSTALL_APP}" in
+	0) tmoe_linux_tool_menu ;;
+	1) install_coco_music ;;
+	2) install_iease_music ;;
+	3) install_electron_netease_cloud_music ;;
+	4) install_listen1 ;;
+	5) install_lx_music_desktop ;;
+	6) install_feeluown ;;
+	7) install_netease_cloud_music_gtk ;;
+	8) install_pic_go ;;
+	9) apt_list_debian_opt ;;
+	10) remove_debian_opt_repo ;;
+	esac
+	##########################
+	if [ "$?" = '255' ]; then
+		other_software
+	fi
+	#############
+	press_enter_to_return
+	explore_debian_opt_repo
+}
+################
+debian_opt_quick_install() {
+	beta_features_quick_install
+	do_you_want_to_close_the_sandbox_mode
+	RETURN_TO_WHERE='explore_debian_opt_repo'
+	do_you_want_to_continue
+}
+############
+with_no_sandbox_model_01() {
+	sed -i "s+${DEPENDENCY_01} %U+${DEPENDENCY_01} --no-sandbox %U+" ${DEPENDENCY_01}.desktop
+}
+########
+with_no_sandbox_model_02() {
+	if ! grep 'sandbox' "${DEPENDENCY_01}.desktop"; then
+		sed -i "s@/usr/bin/${DEPENDENCY_01}@& --no-sandbox@" ${DEPENDENCY_01}.desktop
+	fi
+}
+##################
+remove_debian_opt_repo() {
+	rm -vf /etc/apt/sources.list.d/debianopt.list
+	apt update
+}
+##########
+apt_list_debian_opt() {
+	apt list | grep '~buster'
+	echo "请使用apt install 软件包名称 来安装"
+}
+#############
+install_coco_music() {
+	DEPENDENCY_01='cocomusic'
+	echo "github url：https://github.com/xtuJSer/CoCoMusic"
+	debian_opt_quick_install
+	#sed -i 's+cocomusic %U+electron /opt/CocoMusic --no-sandbox "$@"+' /usr/share/applications/cocomusic.desktop
+	with_no_sandbox_model_01
+}
+#####################
+install_iease_music() {
+	DEPENDENCY_01='iease-music'
+	echo "github url：https://github.com/trazyn/ieaseMusic"
+	debian_opt_quick_install
+	with_no_sandbox_model_02
+}
+#####################
+install_electron_netease_cloud_music() {
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
+		echo "在当前环境下，安装后可能无法正常运行。"
+		RETURN_TO_WHERE='explore_debian_opt_repo'
+		do_you_want_to_continue
+	fi
+	DEPENDENCY_01='electron-netease-cloud-music'
+	echo "github url：https://github.com/Rocket1184/electron-netease-cloud-music"
+	debian_opt_quick_install
+	#with_no_sandbox_model_02
+	if ! grep -q 'sandbox' "$(command -v electron-netease-cloud-music)"; then
+		sed -i 's@exec electron /opt/electron-netease-cloud-music/app.asar@& --no-sandbox@' $(command -v electron-netease-cloud-music)
+	fi
+}
+########################
+install_listen1() {
+	DEPENDENCY_01='listen1'
+	echo "github url：http://listen1.github.io/listen1/"
+	debian_opt_quick_install
+	#sed -i 's+listen1 %U+listen1 --no-sandbox %U+' listen1.desktop
+	with_no_sandbox_model_01
+}
+################
+install_lx_music_desktop() {
+	DEPENDENCY_01='lx-music-desktop'
+	echo "github url：https://github.com/lyswhut/lx-music-desktop"
+	debian_opt_quick_install
+	#sed -i 's+lx-music-desktop %U+lx-music-desktop --no-sandbox %U+' lx-music-desktop.desktop
+	with_no_sandbox_model_01
+}
+####################
+install_feeluown() {
+	DEPENDENCY_01='feeluown'
+	echo "url：https://feeluown.readthedocs.io/en/latest/"
+	beta_features_quick_install
+	if [ ! $(command -v feeluown) ]; then
+		arch_does_not_support
+	fi
+}
+###########
+install_netease_cloud_music_gtk() {
+	DEPENDENCY_01='netease-cloud-music-gtk'
+	echo "github url：https://github.com/gmg137/netease-cloud-music-gtk"
+	beta_features_quick_install
+	if [ ! $(command -v netease-cloud-music-gtk) ]; then
+		arch_does_not_support
+	fi
+}
+###############
+install_pic_go() {
+	DEPENDENCY_01='picgo'
+	echo "github url：https://github.com/Molunerfinn/PicGo"
+	debian_opt_quick_install
+	#sed -i 's+picgo %U+picgo --no-sandbox %U+' picgo.desktop
+	with_no_sandbox_model_01
+}
+############################################
 ############################################
 other_software() {
 	SOFTWARE=$(
@@ -3090,8 +3253,8 @@ other_software() {
 			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 部分软件需要在安装gui后才能使用！" 17 60 6 \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ：在线聊天软件" \
-			"3" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
-			"4" "斯隆与马克贝尔的谜之物语：nds解谜游戏" \
+			"3" "Debian-opt仓库(第三方QQ音乐,云音乐)" \
+			"4" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
 			"5" "大灾变-劫后余生：末日幻想背景的探索生存游戏" \
 			"6" "Synaptic：新立得软件包管理器/软件商店" \
 			"7" "GIMP：GNU 图像处理程序" \
@@ -3102,6 +3265,7 @@ other_software() {
 			"12" "ADB:Android Debug Bridge" \
 			"13" "BleachBit:垃圾清理" \
 			"14" "Install Chinese manual 安装中文手册" \
+			"15" "斯隆与马克贝尔的谜之物语：nds解谜游戏" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3120,11 +3284,12 @@ other_software() {
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '3' ]; then
-		install_wesnoth_game
+		non_debian_function
+		explore_debian_opt_repo
 	fi
 	##############################
 	if [ "${SOFTWARE}" == '4' ]; then
-		install_nds_game_mayomonogatari
+		install_wesnoth_game
 	fi
 	##########################
 	if [ "${SOFTWARE}" == '5' ]; then
@@ -3165,6 +3330,10 @@ other_software() {
 	########################
 	if [ "${SOFTWARE}" == '14' ]; then
 		install_chinese_manpages
+	fi
+	##############################
+	if [ "${SOFTWARE}" == '15' ]; then
+		install_nds_game_mayomonogatari
 	fi
 	############################################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
