@@ -23,11 +23,11 @@ main() {
 check_root() {
 	if [ "$(id -u)" != "0" ]; then
 		if [ $(command -v curl) ]; then
-			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
-				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
+				su -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)"
 		else
-			sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
-				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
+				su -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
 		fi
 		exit 0
 	fi
@@ -516,9 +516,9 @@ different_distro_software_install() {
 ############################
 tmoe_linux_tool_upgrade() {
 	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		wget -O /usr/local/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/tool.sh'
 	else
-		curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		curl -Lvo /usr/local/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/tool.sh'
 	fi
 	echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
@@ -2273,7 +2273,7 @@ configure_x11vnc_remote_desktop_session() {
 		else
 		    ${REMOTE_DESKTOP_SESSION_02} &
 		fi
-		#export LANG="en_US.UTF8"
+		#export LANG="zh_CN.UTF8"
 		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
@@ -4525,7 +4525,7 @@ configure_startxsdl() {
 			cd ${HOME}
 			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
 		fi
-		export LANG="en_US.UTF-8"
+		export LANG="zh_CN.UTF-8"
 	EndOfFile
 	cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
@@ -4588,7 +4588,7 @@ configure_startvnc() {
 		fi
 		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-		export LANG="en_US.UTF8"
+		export LANG="zh_CN.UTF8"
 		#启动VNC服务的命令为最后一行
 		vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
@@ -4637,9 +4637,9 @@ first_configure_startvnc() {
 	fi
 	#仅针对WSL修改语言设定
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-		if [ "${LANG}" != 'en_US.UTF8' ]; then
-			grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
-			grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
+		if [ "${LANG}" != 'zh_CN.UTF8' ]; then
+			grep -q 'LANG=\"zh_CN' "/etc/profile" || sed -i '$ a\export LANG="zh_CN.UTF-8"' "/etc/profile"
+			grep -q 'LANG=\"zh_CN' "${HOME}/.zlogin" || echo 'export LANG="zh_CN.UTF-8"' >>"${HOME}/.zlogin"
 		fi
 	fi
 	echo "The vnc service is about to start for you. The password you entered is hidden."

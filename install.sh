@@ -345,7 +345,7 @@ creat_chroot_startup_script() {
 
 	grep -q 'unset LD_PRELOAD' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
-	grep -q 'en_US.UTF-8' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
+	grep -q 'zh_CN.UTF-8' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=zh_CN.UTF-8" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
 	grep -q 'HOME=/root' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
 
@@ -436,7 +436,7 @@ creat_proot_startup_script() {
 		command+=" HOME=/root"
 		command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
 		command+=" TERM=\$TERM"
-		command+=" LANG=en_US.UTF-8"
+		command+=" LANG=zh_CN.UTF-8"
 		command+=" /bin/bash --login"
 		com="\$@"
 		#为防止匹配行被替换，故采用base64加密。
@@ -596,8 +596,8 @@ cat >${PREFIX}/bin/startxsdl <<-EndOfFile
 EndOfFile
 creat_linux_container_remove_script
 ################
-#wget -qO ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
-aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
+#wget -qO ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
 #############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 	sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
@@ -648,8 +648,8 @@ elif [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 fi
 cd ${DEBIAN_CHROOT}/usr/local/bin
 
-curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+curl -Lo "neofetch" 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
+curl -Lo "debian-i" 'https://gitee.com/mo2/linux/raw/master/tool.sh'
 chmod +x neofetch debian-i
 
 cd ${DEBIAN_CHROOT}/root
@@ -686,7 +686,7 @@ fi
 
 ########################
 #配置zsh
-curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
+curl -Lo zsh.sh 'https://gitee.com/mo2/linux/raw/master/zsh.sh'
 chmod u+x ./*
 #vnc自动启动
 cat >vnc-autostartup <<-'EndOfFile'
@@ -726,7 +726,7 @@ else
 	mv -f .profile .profile.bak
 fi
 #############
-#curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
+#curl -Lo '.profile' 'https://gitee.com/mo2/linux/raw/master/profile.sh'
 #chmod u+x .profile
 #不要将profile转换为外部脚本，否则将影响sed
 cat >'.profile' <<-'ENDOFbashPROFILE'
@@ -810,13 +810,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    mint_sources_list
 	fi
 	#################
-	 sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
+	###tmoe-github sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
 
 	#配置dns解析
 	rm -f /etc/resolv.conf
 	cat >/etc/resolv.conf <<-'EndOfFile'
-			nameserver 1.0.0.1
-			nameserver 2606:4700:4700::1111
+			nameserver 114.114.114.114
+			nameserver 240c::6666
 		EndOfFile
 	######################
 	###################
@@ -860,7 +860,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	arch_linux_yay() {
-	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="en_US.UTF-8"' >>/etc/locale.conf
+	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="zh_CN.UTF-8"' >>/etc/locale.conf
 	    pacman -Syyu --noconfirm
 	    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
@@ -918,9 +918,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        #zypper dup --no-allow-vendor-change -y
 	    fi
 	    zypper install -y wget curl
-	    sed -i 's@RC_LANG=.*@RC_LANG="en_US.UTF8"@' /etc/sysconfig/language
-	    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="en_US.UTF8"@' /etc/sysconfig/language
-	    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="en_US"@' /etc/sysconfig/language
+	    sed -i 's@RC_LANG=.*@RC_LANG="zh_CN.UTF8"@' /etc/sysconfig/language
+	    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="zh_CN.UTF8"@' /etc/sysconfig/language
+	    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="zh_CN"@' /etc/sysconfig/language
 	    zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
 	}
 	################################
@@ -948,14 +948,15 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	echo 'Asia/Shanghai' >/etc/timezone
 	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
+	echo "正在配置中文环境..."
 	echo "Configuring Chinese environment..."
-	#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
+	#sed -i 's/^#.*zh_CN.UTF-8.*/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 	sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 	sed -i 's/^/#&/g' /etc/default/locale
 	cat >>/etc/default/locale <<-'EOF'
-			LANG="en_US.UTF-8"
-			LANGUAGE="en_US:zh"
-			LC_ALL="en_US.UTF-8"
+			LANG="zh_CN.UTF-8"
+			LANGUAGE="zh_CN:zh"
+			LC_ALL="zh_CN.UTF-8"
 		EOF
 	#locale-gen
 	locale-gen zh_CN.UTF-8
@@ -1005,9 +1006,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	##########################
 	gentoo_gnu_linux_make_conf() {
 	    LINUX_DISTRO=gentoo
-	    grep -q 'en_US' /etc/locale.gen || echo -e '\nen_US.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
+	    grep -q 'zh_CN' /etc/locale.gen || echo -e '\nzh_CN.UTF-8 UTF-8\nen_US.UTF-8 UTF-8' >>/etc/locale.gen
 	    locale-gen
-	    GENTOOLOCALE="$(eselect locale list | grep 'en_US' | head -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
+	    GENTOOLOCALE="$(eselect locale list | grep 'zh_CN' | head -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
 	    eselect locale set "${GENTOOLOCALE}"
 	    #bash /etc/profile
 	    mkdir -p '/usr/portage'
@@ -1015,7 +1016,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    cat >/etc/portage/make.conf <<-'Endofmakeconf'
 				#语言设定
 				L10N="zh-CN en-US"
-				LINGUAS="en_US zh_CN"
+				LINGUAS="zh_CN en_US"
 
 				#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
 				ACCEPT_LICENSE="*"
@@ -1092,7 +1093,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	    mv -f .profile.bak .profile 2>/dev/null
-	    #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	    #wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 	    chmod +x /usr/local/bin/neofetch
 	    neofetch
 	    #bash
@@ -1102,8 +1103,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	void_linux_repository() {
 	    LINUX_DISTRO='void'
 	    cat >/etc/locale.conf <<-'EOF'
-				LANG="en_US.UTF-8"
-				LANGUAGE="en_US:zh"
+				LANG="zh_CN.UTF-8"
+				LANGUAGE="zh_CN:zh"
 				LC_COLLATE=C
 			EOF
 	    mkdir -p /etc/xbps.d
@@ -1112,7 +1113,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    xbps-install -S
 	    xbps-install -uy xbps
 	    xbps-install -y wget curl
-	    #wget -qO- 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' | bash -
+	    #wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
 	    neofetch
 	    #rm -f vnc* zsh* .profile
 	    #mv -f .profile.bak .profile 2>/dev/null
@@ -1159,7 +1160,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	####################
 	echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 	echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
-	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	#wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 	chmod +x /usr/local/bin/neofetch
 	neofetch
 	################
@@ -1233,7 +1234,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				skip_if_unavailable=False
 			EndOfYumRepo
 	    #dnf install -y glibc-langpack-zh
-	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
+	    #localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
 	    #dnf clean packages
 	}
 	######################
