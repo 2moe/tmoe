@@ -2233,9 +2233,9 @@ configure_vnc_xstartup() {
 		xrdb \${HOME}/.Xresources
 		export PULSE_SERVER=127.0.0.1
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01} &
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} &
 		else
-			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02} &
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 	EndOfFile
 	#两个空格！！！
@@ -2269,9 +2269,9 @@ configure_x11vnc_remote_desktop_session() {
 			fi
 		fi
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			 ${REMOTE_DESKTOP_SESSION_01} &
+		    ${REMOTE_DESKTOP_SESSION_01} &
 		else
-			 ${REMOTE_DESKTOP_SESSION_02} &
+		    ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 		#export LANG="en_US.UTF8"
 		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
@@ -4153,36 +4153,24 @@ configure_remote_desktop_enviroment() {
 		3>&1 1>&2 2>&3)
 	##########################
 	if [ "${BETA_DESKTOP}" == '1' ]; then
-		REMOTE_DESKTOP_SESSION='xfce4-session'
 		REMOTE_DESKTOP_SESSION_01='xfce4-session'
 		REMOTE_DESKTOP_SESSION_02='startxfce4'
 		#configure_remote_xfce4_desktop
 	fi
 	##########################
 	if [ "${BETA_DESKTOP}" == '2' ]; then
-		if [ $(command -v lxsession) ]; then
-			REMOTE_DESKTOP_SESSION='lxsession'
-		else
-			REMOTE_DESKTOP_SESSION='startlxde'
-		fi
 		REMOTE_DESKTOP_SESSION_01='lxsession'
 		REMOTE_DESKTOP_SESSION_02='startlxde'
 		#configure_remote_lxde_desktop
 	fi
 	##########################
 	if [ "${BETA_DESKTOP}" == '3' ]; then
-		REMOTE_DESKTOP_SESSION='mate-session'
 		REMOTE_DESKTOP_SESSION_01='mate-session'
 		REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		#configure_remote_mate_desktop
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '4' ]; then
-		if [ $(command -v lxqt-session) ]; then
-			REMOTE_DESKTOP_SESSION="lxqt-session"
-		else
-			REMOTE_DESKTOP_SESSION='startlxqt'
-		fi
 		REMOTE_DESKTOP_SESSION_01='lxqt-session'
 		REMOTE_DESKTOP_SESSION_02='startlxqt'
 		#configure_remote_lxqt_desktop
@@ -4193,30 +4181,21 @@ configure_remote_desktop_enviroment() {
 		#configure_remote_kde_plasma5_desktop
 		REMOTE_DESKTOP_SESSION_01='startkde'
 		REMOTE_DESKTOP_SESSION_02='startplasma-x11'
-
-		if [ $(command -v startkde) ]; then
-			REMOTE_DESKTOP_SESSION="startkde"
-		else
-			REMOTE_DESKTOP_SESSION='startplasma-x11'
-		fi
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '6' ]; then
-		REMOTE_DESKTOP_SESSION='gnome-session'
 		REMOTE_DESKTOP_SESSION_01='gnome-session'
 		REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		#configure_remote_gnome3_desktop
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '7' ]; then
-		REMOTE_DESKTOP_SESSION='cinnamon-session'
 		#configure_remote_cinnamon_desktop
 		REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
 		REMOTE_DESKTOP_SESSION_02='cinnamon-session'
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '8' ]; then
-		REMOTE_DESKTOP_SESSION='startdde'
 		REMOTE_DESKTOP_SESSION_01='startdde'
 		REMOTE_DESKTOP_SESSION_02='x-window-manager'
 		#configure_remote_deepin_desktop
@@ -4226,6 +4205,11 @@ configure_remote_desktop_enviroment() {
 		modify_remote_desktop_config
 	fi
 	##########################
+	if [ $(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
+		REMOTE_DESKTOP_SESSION="${REMOTE_DESKTOP_SESSION_01}"
+	else
+		REMOTE_DESKTOP_SESSION="${REMOTE_DESKTOP_SESSION_02}"
+	fi
 	configure_remote_desktop_session
 	press_enter_to_return
 	modify_remote_desktop_config
@@ -4545,9 +4529,9 @@ configure_startxsdl() {
 	EndOfFile
 	cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01}
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
 		else
-			dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02}
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	ENDofStartxsdl
 	#两个空格！！！
@@ -4622,7 +4606,7 @@ configure_startvnc() {
 ###############
 first_configure_startvnc() {
 	#卸载udisks2，会破坏mate和plasma的依赖关系。
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOTE_DESKTOP_SESSION_01} = 'xfce4-session' ]; then
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOTE_DESKTOP_SESSION_01} = 'xfce4-session' ] || [ ${REMOTE_DESKTOP_SESSION_01} = 'lxsession' ]; then
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
 			echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
 			#umount .gvfs
@@ -4787,11 +4771,17 @@ frequently_asked_questions() {
 }
 ##############
 enable_dbus_launch() {
-	#两个空格！！！
-	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_01}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_01}/" "/usr/local/bin/startxsdl"
-	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
-	sed -i "s/.*  ${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session  ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
+	XSTARTUP_LINE=$(cat -n ~/.vnc/xstartup | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+	sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" ~/.vnc/xstartup
+	#################
+	START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+	sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
+	##################
+	START_XSDL_LINE=$(cat -n /usr/local/bin/startxsdl | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+	sed -i "${START_XSDL_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startxsdl
+	#################
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
 }
 #################
 fix_vnc_dbus_launch() {
