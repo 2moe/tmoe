@@ -112,11 +112,11 @@ gnu_linux() {
 
 	if [ "$(id -u)" != "0" ]; then
 		if [ -e "/usr/bin/curl" ]; then
-			sudo bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-				su -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)"
+			sudo bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		else
-			sudo bash -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)" ||
-				su -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
+			sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		fi
 		exit 0
 	fi
@@ -127,7 +127,7 @@ gnu_linux() {
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		cd /tmp
-		wget --no-check-certificate -qO "router-debian.bash" https://gitee.com/mo2/linux/raw/master/debian.sh
+		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
 		chmod +x 'router-debian.bash'
 		#bash -c "$(cat 'router-zsh.bash' |sed 's@/usr/bin@/opt/bin@g' |sed 's@-e /bin@-e /opt/bin@g' |sed 's@whiptail@dialog@g')"
 		sed -i 's@/usr/bin@/opt/bin@g' 'router-debian.bash'
@@ -481,11 +481,11 @@ gnu_linux() {
 		fi
 
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
-			#bash <(curl -LfsS 'https://gitee.com/mo2/linux/raw/master/tool.sh')
+			#bash <(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh')
 			if [ "${LINUX_DISTRO}" = "alpine" ]; then
-				wget -O /tmp/.tmoe-linux-tool.sh 'https://gitee.com/mo2/linux/raw/master/tool.sh'
+				wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 			else
-				curl -sLo /tmp/.tmoe-linux-tool.sh 'https://gitee.com/mo2/linux/raw/master/tool.sh'
+				curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 			fi
 			bash /tmp/.tmoe-linux-tool.sh
 			exit 0
@@ -780,7 +780,7 @@ install_gnu_linux_container() {
 
 	else
 		install_debian_or_download_recovery_pkg_tar_xz
-		#bash -c "$(curl -fLsS 'https://gitee.com/mo2/linux/raw/master/install.sh')"
+		#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
 	fi
 }
 ################################################
@@ -1595,8 +1595,8 @@ space_occupation() {
 
 ########################################################################
 update_tmoe_linux_manager() {
-	#curl -L -o ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
-	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://gitee.com/mo2/linux/raw/master/debian.sh'
+	#curl -L -o ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
+	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh' || sudo aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
 		sed -i '1 c\#!/bin/bash' ${PREFIX}/bin/debian-i
 	fi
@@ -2056,7 +2056,7 @@ termux_install_xfce() {
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
 		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://gitee.com/mo2/linux/raw/master/tool.sh)
+			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh)
 			exit 0
 		fi
 
@@ -2096,7 +2096,7 @@ termux_install_xfce() {
 	#######################
 	if [ "${OPTION}" == '2' ]; then
 		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://gitee.com/mo2/linux/raw/master/tool.sh)
+			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh)
 			exit 0
 		fi
 		modify_android_termux_vnc_config
@@ -2112,7 +2112,7 @@ termux_install_xfce() {
 	##################
 	if [ "${OPTION}" == '7' ]; then
 		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://gitee.com/mo2/linux/raw/master/tool.sh)
+			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh)
 			exit 0
 		fi
 		remove_android_termux_xfce
@@ -2563,18 +2563,18 @@ install_debian_gnu_linux_distro() {
 buster_or_sid() {
 	if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-			bash -c "$(curl -fLsS 'https://gitee.com/mo2/linux/raw/master/install.sh')"
+			bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
 		else
-			curl -LfsS 'https://gitee.com/mo2/linux/raw/master/install.sh' | bash
+			curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' | bash
 		fi
 	else
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
 	fi
 }
 #############
 install_ubuntu_gnu_linux_1804_distro() {
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-bionic:g' |
@@ -2583,7 +2583,7 @@ install_ubuntu_gnu_linux_1804_distro() {
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 	else
 		#ubuntu-ports
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-bionic:g' |
@@ -2594,7 +2594,7 @@ install_ubuntu_gnu_linux_1804_distro() {
 #########################
 install_ubuntu_gnu_linux_2004_distro() {
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
@@ -2603,7 +2603,7 @@ install_ubuntu_gnu_linux_2004_distro() {
 			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
 	else
 		#ubuntu-ports
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/ubuntu系统/g' |
 			sed 's/debian system/ubuntu system/g' |
 			sed 's:debian-sid:ubuntu-focal:g' |
@@ -2621,7 +2621,7 @@ install_ubuntu_gnu_linu_distro() {
 }
 ##########
 install_kali_rolling_gnu_linux_distro() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's:debian-sid:kali-rolling:g' |
 		sed 's:debian/sid:kali/current:g' |
 		sed 's/debian系统/kali系统/g' |
@@ -2634,7 +2634,7 @@ install_arch_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到Arch Linux不支持您当前的架构"
 	else
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/arch系统/g' |
 			sed 's/debian system/arch system/g' |
 			sed 's:debian-sid:archlinux-current:g' |
@@ -2647,7 +2647,7 @@ install_fedora_gnu_linux_distro() {
 	touch ~/.REDHATDetectionFILE
 	if [ "${ARCH_TYPE}" = 'armhf' ]; then
 		echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/fedora系统/g' |
 			sed 's/debian system/fedora system/g' |
 			sed 's:debian-sid:fedora-29:g' |
@@ -2657,14 +2657,14 @@ install_fedora_gnu_linux_distro() {
 		echo "Fedora不支持您的架构"
 	else
 		if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
-			bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 				sed 's/debian系统/fedora系统/g' |
 				sed 's/debian system/fedora system/g' |
 				sed 's:debian-sid:fedora-31:g' |
 				sed 's:debian/sid:fedora/31:g' |
 				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
 		else
-			bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 				sed 's/debian系统/fedora系统/g' |
 				sed 's/debian system/fedora system/g' |
 				sed 's:debian-sid:fedora-32:g' |
@@ -2675,7 +2675,7 @@ install_fedora_gnu_linux_distro() {
 }
 ################
 install_funtoo_linux_distro() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's:debian-sid:funtoo-1.4:g' |
 		sed 's:debian/sid:funtoo/1.4:g' |
 		sed 's/debian系统/funtoo系统/g' |
@@ -2685,7 +2685,7 @@ install_funtoo_linux_distro() {
 }
 #######################
 install_void_linux_distro() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's:debian-sid:voidlinux-default:g' |
 		sed 's:debian/sid:voidlinux/current:g' |
 		sed 's/debian系统/void系统/g' |
@@ -2698,14 +2698,14 @@ install_centos_linux_distro() {
 	touch ~/.REDHATDetectionFILE
 	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/centos系统/g' |
 			sed 's/debian system/centos system/g' |
 			sed 's:debian-sid:centos-7:g' |
 			sed 's:debian/sid:centos/7:g' |
 			sed 's:Debian GNU/Linux:CentOS GNU/Linux:g')"
 	else
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/centos系统/g' |
 			sed 's/debian system/centos system/g' |
 			sed 's:debian-sid:centos-8:g' |
@@ -2717,7 +2717,7 @@ install_centos_linux_distro() {
 install_gentoo_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'arm64' ]; then
 		echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed '70 a\ARCH_TYPE="armhf"' |
 			sed 's/debian系统/gentoo系统/g' |
 			sed 's/debian system/gentoo system/g' |
@@ -2725,7 +2725,7 @@ install_gentoo_linux_distro() {
 			sed 's:debian/sid:gentoo/current:g' |
 			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
 	else
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/gentoo系统/g' |
 			sed 's/debian system/gentoo system/g' |
 			sed 's:debian-sid:gentoo-current:g' |
@@ -2736,7 +2736,7 @@ install_gentoo_linux_distro() {
 ###########################
 install_alpine_linux_distro() {
 	touch ~/.ALPINELINUXDetectionFILE
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/alpine系统/g' |
 		sed 's/debian system/alpine system/g' |
 		sed 's:debian-sid:alpine-3.11:g' |
@@ -2745,7 +2745,7 @@ install_alpine_linux_distro() {
 }
 #####################
 install_opensuse_linux_distro() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/opensuse系统/g' |
 		sed 's/debian system/opensuse system/g' |
 		sed 's:debian-sid:opensuse-tumbleweed:g' |
@@ -2758,7 +2758,7 @@ install_raspbian_linux_distro() {
 		apt install -y qemu qemu-user-static debootstrap
 	fi
 	touch ~/.RASPBIANARMHFDetectionFILE
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed '72 a\ARCH_TYPE="armhf"' |
 		sed 's:/sid:/buster:g' |
 		sed 's:extract z:extract:' |
@@ -2783,7 +2783,7 @@ install_manjaro_linux_distro() {
 	touch ~/.MANJARO_ARM_DETECTION_FILE
 	echo "检测到您选择的是manajro,即将从第三方网盘下载容器镜像。"
 
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's@mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid.*xz@cdn.tmoe.me/Tmoe-Debian-Tool/proot/Manjaro/manjaro_arm64.tar.xz@g' |
 		sed '/清华大学开源镜像站/d' |
 		sed '/Tsinghua University/d' |
@@ -2803,7 +2803,7 @@ install_openwrt_linux_distro() {
 		fi
 	fi
 	touch ~/.ALPINELINUXDetectionFILE
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/openwrt系统/g' |
 		sed 's/debian system/openwrt system/g' |
 		sed 's:debian-sid:openwrt-snapshot:g' |
@@ -2812,7 +2812,7 @@ install_openwrt_linux_distro() {
 }
 ######################
 install_devuan_linux_distro() {
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/devuan系统/g' |
 		sed 's/debian system/devuan system/g' |
 		sed 's:debian-sid:devuan-ascii:g' |
@@ -2825,7 +2825,7 @@ install_apertis_linux_distro() {
 		echo "检测到apertis不支持您当前的架构"
 	else
 		touch ~/.ALPINELINUXDetectionFILE
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/apertis系统/g' |
 			sed 's/debian system/apertis system/g' |
 			sed 's:debian-sid:apertis-v2020.0:g' |
@@ -2838,7 +2838,7 @@ install_alt_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'armhf' ]; then
 		echo "检测到alt不支持您当前的架构"
 	else
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/alt系统/g' |
 			sed 's/debian system/alt system/g' |
 			sed 's:debian-sid:alt-p9:g' |
@@ -2860,7 +2860,7 @@ install_slackware_linux_distro() {
 			aria2c -x 5 -s 5 -k 1M -o "slackware-current-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
 		fi
 	fi
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/slackware系统/g' |
 		sed 's/debian system/slackware system/g' |
 		sed 's:debian-sid:slackware-current:g' |
@@ -2914,7 +2914,7 @@ install_armbian_linux_distro() {
 	sed -i '$ a\deb http://mirrors.tuna.tsinghua.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' ./etc/apt/sources.list.d/armbian.list
 	rm -vf ~/armbian-bullseye-rootfs.tar
 
-	bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian系统/armbian系统/g' |
 		sed 's/debian system/armbian system/g' |
 		sed 's:debian-sid:armbian-bullseye:g' |
@@ -2925,7 +2925,7 @@ install_armbian_linux_distro() {
 #######################
 install_mint_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		bash -c "$(curl -LfsS gitee.com/mo2/linux/raw/master/install.sh |
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed 's/debian系统/mint系统/g' |
 			sed 's/debian system/mint system/g' |
 			sed 's:debian-sid:mint-tricia:g' |
