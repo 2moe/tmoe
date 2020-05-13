@@ -1927,8 +1927,8 @@ install_debian_or_download_recovery_pkg_tar_xz() {
 						(b)本工具开发者保留随时修改本协议的权利,因此建议您不定期查看。
 						The developer of this tool reserves the right to modify this agreement at any time.
 		EndOfFile
-		echo 'You must agree to EULA to use this tool.'
-		echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
+		echo 'You must agree to the EULA to use this tool.'
+		echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
 		echo "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
 		#if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		#export LANG=${CurrentLANG}
@@ -2917,7 +2917,7 @@ install_mint_linux_distro() {
 	else
 		echo "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
 		echo "Linux Mint${RED}不支持${RESET}您的架构"
-		echo "请换用${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}设备后再来重试"
+		echo "请换用${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}设备后，再来尝试"
 		press_enter_to_return
 		install_beta_containers
 	fi

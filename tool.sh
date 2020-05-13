@@ -2247,7 +2247,7 @@ configure_x11vnc_remote_desktop_session() {
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
 		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
@@ -3610,7 +3610,7 @@ x11vnc_pulse_server() {
 	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。当前为$(grep 'PULSE_SERVER' startx11vnc | grep -v '^#' | cut -d '=' -f 2 | head -n 1) \n若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'" 15 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
-		if grep '^export.*PULSE_SERVER' startx11vnc; then
+		if grep -q '^export.*PULSE_SERVER' startx11vnc; then
 			sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startx11vnc
 		else
 			sed -i "3 a\export PULSE_SERVER=$TARGET" startx11vnc
