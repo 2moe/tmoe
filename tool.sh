@@ -2047,7 +2047,7 @@ windows_manager_install() {
 		else
 			DEPENDENCY_01='kwin-x11'
 		fi
-		REMOTE_DESKTOP_SESSION_01='kwin'
+		REMOTE_DESKTOP_SESSION_01='kwin --replace'
 		;;
 	26)
 		DEPENDENCY_01='lwm'
@@ -2155,7 +2155,7 @@ windows_manager_install() {
 		;;
 	49)
 		DEPENDENCY_01='xfwm4'
-		REMOTE_DESKTOP_SESSION_01='xfwm4'
+		REMOTE_DESKTOP_SESSION_01='xfwm4 --replace'
 		;;
 	esac
 	##########################
@@ -2381,8 +2381,8 @@ install_xfce4_desktop() {
 }
 ###############
 install_lxde_desktop() {
+	REMOTE_DESKTOP_SESSION_01='lxsession'
 	REMOTE_DESKTOP_SESSION_02='startlxde'
-	REMOTE_DESKTOP_SESSION_01='lxde-session'
 	echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
 	DEPENDENCY_01='lxde'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -4159,8 +4159,12 @@ configure_remote_desktop_enviroment() {
 	fi
 	##########################
 	if [ "${BETA_DESKTOP}" == '2' ]; then
-		REMOTE_DESKTOP_SESSION='lxde-session'
-		REMOTE_DESKTOP_SESSION_01='lxde-session'
+		if [ $(command -v lxsession) ]; then
+			REMOTE_DESKTOP_SESSION='lxsession'
+		else
+			REMOTE_DESKTOP_SESSION='startlxde'
+		fi
+		REMOTE_DESKTOP_SESSION_01='lxsession'
 		REMOTE_DESKTOP_SESSION_02='startlxde'
 		#configure_remote_lxde_desktop
 	fi
@@ -4814,7 +4818,7 @@ fix_vnc_dbus_launch() {
 		elif grep 'startlxde' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为lxde，正在将dbus-launch加入至启动脚本中..."
 			REMOTE_DESKTOP_SESSION_02='startlxde'
-			REMOTE_DESKTOP_SESSION_01='lxde-session'
+			REMOTE_DESKTOP_SESSION_01='lxsession'
 		elif grep 'startlxqt' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
 			REMOTE_DESKTOP_SESSION_02='startlxqt'
