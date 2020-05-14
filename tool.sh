@@ -2296,6 +2296,9 @@ configure_x11vnc_remote_desktop_session() {
 		mkdir -p ${HOME}/.vnc
 		x11vnc -storepasswd $PASSWORD ${HOME}/.vnc/passwd
 	EOF
+	if [ "${NON_DBUS}" != "true" ]; then
+		enable_dbus_launch
+	fi
 	chmod +x ./*
 	x11vncpasswd
 	startx11vnc
@@ -3737,12 +3740,22 @@ x11vnc_warning() {
 	DEPENDENCY_01=''
 	DEPENDENCY_02=''
 	if [ ! $(command -v x11vnc) ]; then
-		DEPENDENCY_01="${DEPENDENCY_01} x11vnc"
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCY_01='x11-misc/x11vnc'
+		else
+			DEPENDENCY_01="${DEPENDENCY_01} x11vnc"
+		fi
 	fi
 	#注意下面那处的大小写
 	if [ ! $(command -v xvfb) ] && [ ! $(command -v Xvfb) ]; then
 		if [ "${LINUX_DISTRO}" = "arch" ]; then
 			DEPENDENCY_02='xorg-server-xvfb'
+		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+			DEPENDENCY_02='xorg-x11-server-Xvfb'
+		elif [ "${LINUX_DISTRO}" = "suse" ]; then
+			DEPENDENCY_02='xorg-x11-server-Xvfb'
+		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCY_02='x11-misc/xvfb-run'
 		else
 			DEPENDENCY_02='xvfb'
 		fi
@@ -4357,6 +4370,12 @@ configure_remote_desktop_enviroment() {
 		modify_remote_desktop_config
 	fi
 	##########################
+
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
+			NON_DBUS='true'
+		fi
+	fi
 	if [ $(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
 		REMOTE_DESKTOP_SESSION="${REMOTE_DESKTOP_SESSION_01}"
 	else
