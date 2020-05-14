@@ -649,7 +649,21 @@ nano $(which startvnc)
 
 ##### 2020-05-11 更新日志
 
-- 1.支持配置 X11vnc 服务
+- 1.支持配置 X11vnc 服务, 比 XSDL 强太多。
+- 输`startx11vnc`启动，输`stopx11vnc`停止。
 - 2.支持安装窗口管理器
   ![Snipaste_2020-05-11_21-36-18.png](https://i.loli.net/2020/05/11/ZIF7G9jApySEDeV.png)
   在安装时会自动配置 vnc 服务，我没有为它们写单独的 rdp 配置步骤。
+
+##### 2020-05-13 更新日志
+
+- 1.修复大量 bug。
+- 2.支持安装 linux arm64 版的 wechat 和搜狗拼音，不保证可以正常运行。
+  ![arm64_wechat](https://images.gitee.com/uploads/images/2020/0513/212157_13da21ed_5617340.png "Capture+_2020-05-13-21-15-45.png")
+
+##### 2020-05-14 更新日志
+
+- 1.加入[debian-opt](https://github.com/coslyk/debianopt-repo)仓库，支持安装第三方音乐客户端，感谢仓库的维护者 coslyk，以及各个项目的原开发者。
+- 我在部分基于 electron 的应用中，添加了是否关闭沙盒模式的提醒。简单来说，就是修复 root 用户无法启动的问题。
+- 手机预览截图见下
+  ![Screenshot_20200514-024023_1.png](https://i.loli.net/2020/05/14/T5wyZtisuJUIX3x.png)
