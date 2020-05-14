@@ -2513,11 +2513,9 @@ install_ubuntu_gnu_linux_distro() {
 			"1" "20.10 Groovy Gorilla 時髦大猩猩" \
 			"2" "20.04 Focal Fossa 焦點馬島長尾狸貓" \
 			"3" "19.10 Eoan Ermine 黎明白鼬" \
-			"4" "19.04 Disco Dingo 迪斯可澳洲野犬" \
-			"5" "18.10 Cosmic Cuttlefish 宇宙墨魚" \
-			"6" "18.04 Bionic Beaver 仿生海狸" \
-			"7" "16.04 Xenial Xerus 好客的非洲地松鼠" \
-			"8" "Latest(自动检测最新版)" \
+			"4" "18.04 Bionic Beaver 仿生海狸" \
+			"5" "16.04 Xenial Xerus 好客的非洲地松鼠" \
+			"6" "Latest(自动检测最新版)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2527,11 +2525,9 @@ install_ubuntu_gnu_linux_distro() {
 	1) DISTRO_CODE='groovy' ;;
 	2) DISTRO_CODE='focal' ;;
 	3) DISTRO_CODE='eoan' ;;
-	4) DISTRO_CODE='disco' ;;
-	5) DISTRO_CODE='cosmic' ;;
-	6) DISTRO_CODE='bionic' ;;
-	7) DISTRO_CODE='xenial' ;;
-	8) check_the_latest_ubuntu_version ;;
+	4) DISTRO_CODE='bionic' ;;
+	5) DISTRO_CODE='xenial' ;;
+	6) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	do_you_want_to_continue
