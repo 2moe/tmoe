@@ -2600,9 +2600,10 @@ install_arch_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到Arch Linux不支持您当前的架构"
 	else
-		DISTRO_NAME='arch'
-		DISTRO_CODE='current'
-		linux_distro_common_model_01
+		DISTRO_NAME='archlinux'
+		DISTRO_CODE='latest'
+		DISTRO_CODE_02='current'
+		linux_distro_common_model_03
 	fi
 }
 ############
