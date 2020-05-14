@@ -388,10 +388,12 @@ tmoe_linux_tool_menu() {
 	fi
 	###################################
 	if [ "${TMOE_OPTION}" == '4' ]; then
+		RETURN_TO_WHERE='other_software'
 		other_software
 	fi
 	####################
 	if [ "${TMOE_OPTION}" == '5' ]; then
+		RETURN_TO_WHERE='modify_remote_desktop_config'
 		modify_remote_desktop_config
 		#MODIFYVNCORXSDLCONF
 	fi
@@ -410,6 +412,7 @@ tmoe_linux_tool_menu() {
 	fi
 	###################################
 	if [ "${TMOE_OPTION}" == '9' ]; then
+		RETURN_TO_WHERE='which_vscode_edition'
 		which_vscode_edition
 	fi
 	#################################
@@ -1802,6 +1805,7 @@ standand_desktop_install() {
 	NON_DEBIAN='false'
 	preconfigure_gui_dependecies_02
 	REMOVE_UDISK2='false'
+	RETURN_TO_WHERE='standand_desktop_install'
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 5 \
 		"1" "xfce：兼容性高" \
@@ -5056,6 +5060,14 @@ press_enter_to_reinstall() {
 	press_enter_to_reinstall_yes_or_no
 }
 ################
+if_return_to_where_no_empty() {
+	if [ ! -z ${RETURN_TO_WHERE} ]; then
+		${RETURN_TO_WHERE}
+	else
+		beta_features
+	fi
+}
+##########
 press_enter_to_reinstall_yes_or_no() {
 	echo "按${GREEN}回车键${RESET}${RED}重新安装${RESET},输${YELLOW}n${RESET}${BLUE}返回${RESET}"
 	echo "输${YELLOW}m${RESET}打开${BLUE}管理菜单${RESET}"
@@ -5066,14 +5078,14 @@ press_enter_to_reinstall_yes_or_no() {
 	y* | Y* | "") ;;
 	n* | N*)
 		echo "skipped."
-		beta_features
+		if_return_to_where_no_empty
 		;;
 	m* | M*)
 		beta_features_management_menu
 		;;
 	*)
 		echo "Invalid choice. skipped."
-		beta_features
+		if_return_to_where_no_empty
 		;;
 	esac
 }

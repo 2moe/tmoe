@@ -596,12 +596,12 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200511-10)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200514-18)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复termux sudo" 17 50 6 \
+		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复termux sudo,0514支持最新的ubuntu20.10" 17 50 6 \
 			"1" "proot安装" \
 			"2" "chroot安装" \
 			"3" "GUI,audio & sources.list" \
@@ -1672,7 +1672,7 @@ xwayland_warning() {
 	echo "${RED}WARNING！${RESET}本功能目前仍处于${YELLOW}测试阶段${RESET}，且需要${RED}root权限${RESET}"
 	echo "请在下载并安装完apk后，开启proot容器真实root权限功能！"
 	echo "由于目前在Android设备上只能靠软件来渲染，故实际体验将会非常糟糕！"
-	echo "同时，由于触控操作体验极差。若您无蓝牙鼠标等外接设备，则不建议您配置本服务。"
+	echo "同时，由于触控操作体验极差。若您无蓝牙鼠标等外接设备，则不建议您配�����本服务。"
 	echo "您在安装完apk后，还需进入GNU/Linux容器内，输debian-i，并选择配置xwayland的选项"
 	download_xwayland_apk
 }
@@ -2384,48 +2384,28 @@ termux_tuna_sources_list() {
 }
 ##################
 choose_which_gnu_linux_distro() {
+	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
 		"1" "Debian:最早的发行版之一" \
-		"2" "Ubuntu 20.04:我的存在是因為大家的存在" \
+		"2" "Ubuntu:我的存在是因為大家的存在" \
 		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
 		"4" "beta公测版:manjaro,centos" \
 		"5" "alpha内测版:gentoo,armbian" \
-		"6" "arch(系统设计以KISS为总体指导原则)" \
-		"7" "fedora 32(红帽社区版,新技术试验场)" \
+		"6" "arch:系统设计以KISS为总体指导原则" \
+		"7" "fedora:红帽社区版,新技术试验场" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '0' ]; then
-		tmoe_manager_main_menu
-	fi
-	#########################
-	if [ "${SELECTED_GNU_LINUX}" == '1' ]; then
-		install_debian_gnu_linux_distro
-	fi
-	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '2' ]; then
-		install_ubuntu_gnu_linu_distro
-	fi
-	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '3' ]; then
-		install_kali_rolling_gnu_linux_distro
-	fi
-	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '4' ]; then
-		install_beta_containers
-	fi
-	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '5' ]; then
-		install_alpha_containers
-	fi
-	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '6' ]; then
-		install_arch_linux_distro
-	fi
-	##############################
-	if [ "${SELECTED_GNU_LINUX}" == '7' ]; then
-		install_fedora_gnu_linux_distro
-	fi
+	case "${SELECTED_GNU_LINUX}" in
+	0) tmoe_manager_main_menu ;;
+	1) install_debian_gnu_linux_distro ;;
+	2) install_ubuntu_gnu_linux_distro ;;
+	3) install_kali_rolling_gnu_linux_distro ;;
+	4) install_beta_containers ;;
+	5) install_alpha_containers ;;
+	6) install_arch_linux_distro ;;
+	7) install_fedora_gnu_linux_distro ;;
+	esac
 	####################
 	press_enter_to_return
 	tmoe_manager_main_menu
@@ -2440,59 +2420,27 @@ install_alpha_containers() {
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
 			"5" "devuan ascii(不使用systemd,基于debian)" \
 			"6" "slackware(armhf,x64)" \
-			"8" "Funtoo:专注于改进Gentoo" \
-			"9" "openwrt(常见于路由器,arm64,x64)" \
-			"10" "apertis v2020.0" \
-			"11" "alt p9" \
+			"7" "Funtoo:专注于改进Gentoo" \
+			"8" "openwrt(常见于路由器,arm64,x64)" \
+			"9" "apertis" \
+			"10" "alt" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
-
 	##############################
-	if [ "${ALPHA_SYSTEM}" == '0' ]; then
-		choose_which_gnu_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '1' ]; then
-		install_armbian_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '2' ]; then
-		install_opensuse_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '3' ]; then
-		install_raspbian_linux_distro
-	fi
-	#先下载debian buster容器镜像，再换源成树莓派。
-	#################
-	if [ "${ALPHA_SYSTEM}" == '4' ]; then
-		install_gentoo_linux_distro
-	fi
-	###################
-	if [ "${ALPHA_SYSTEM}" == '5' ]; then
-		install_devuan_linux_distro
-	fi
-	#################
-	if [ "${ALPHA_SYSTEM}" == '6' ]; then
-		install_slackware_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '8' ]; then
-		install_funtoo_linux_distro
-	fi
-	#############################
-	if [ "${ALPHA_SYSTEM}" == '9' ]; then
-		install_openwrt_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '10' ]; then
-		install_apertis_linux_distro
-	fi
-	####################
-	if [ "${ALPHA_SYSTEM}" == '11' ]; then
-		install_alt_linux_distro
-	fi
+	case "${ALPHA_SYSTEM}" in
+	0) choose_which_gnu_linux_distro ;;
+	1) install_armbian_linux_distro ;;
+	2) install_opensuse_linux_distro ;;
+	3) install_raspbian_linux_distro ;;
+	4) install_gentoo_linux_distro ;;
+	5) install_devuan_linux_distro ;;
+	6) install_slackware_linux_distro ;;
+	7) install_funtoo_linux_distro ;;
+	8) install_openwrt_linux_distro ;;
+	9) install_apertis_linux_distro ;;
+	10) install_alt_linux_distro ;;
+	esac
 	###########################
 	press_enter_to_return
 	tmoe_manager_main_menu
@@ -2511,29 +2459,14 @@ install_beta_containers() {
 			3>&1 1>&2 2>&3
 	)
 	##############################
-	if [ "${BETA_SYSTEM}" == '0' ]; then
-		choose_which_gnu_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '1' ]; then
-		install_manjaro_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '2' ]; then
-		install_centos_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '3' ]; then
-		install_void_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '4' ]; then
-		install_alpine_linux_distro
-	fi
-	####################
-	if [ "${BETA_SYSTEM}" == '5' ]; then
-		install_mint_linux_distro
-	fi
+	case "${BETA_SYSTEM}" in
+	0) choose_which_gnu_linux_distro ;;
+	1) install_manjaro_linux_distro ;;
+	2) install_centos_linux_distro ;;
+	3) install_void_linux_distro ;;
+	4) install_alpine_linux_distro ;;
+	5) install_mint_linux_distro ;;
+	esac
 	######################
 	press_enter_to_return
 	tmoe_manager_main_menu
@@ -2571,186 +2504,205 @@ buster_or_sid() {
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
 	fi
 }
-#############
-install_ubuntu_gnu_linux_1804_distro() {
-	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/debian system/ubuntu system/g' |
-			sed 's:debian-sid:ubuntu-bionic:g' |
-			sed 's:debian/sid:ubuntu/bionic:g' |
-			sed 's:/ubuntu-ports:/ubuntu:g' |
-			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
-	else
-		#ubuntu-ports
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/debian system/ubuntu system/g' |
-			sed 's:debian-sid:ubuntu-bionic:g' |
-			sed 's:debian/sid:ubuntu/bionic:g' |
-			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
-	fi
+###########
+install_ubuntu_gnu_linux_distro() {
+	DISTRO_NAME='ubuntu'
+	BETA_SYSTEM=$(
+		DISTRO_NAME='ubuntu'
+		whiptail --title "UBUNTU" --menu "您想要安装哪个版本？Which version do you want to install?" 17 55 7 \
+			"1" "20.10 Groovy Gorilla 時髦大猩猩" \
+			"2" "20.04 Focal Fossa 焦點馬島長尾狸貓" \
+			"3" "19.10 Eoan Ermine 黎明白鼬" \
+			"4" "19.04 Disco Dingo 迪斯可澳洲野犬" \
+			"5" "18.10 Cosmic Cuttlefish 宇宙墨魚" \
+			"6" "18.04 Bionic Beaver 仿生海狸" \
+			"7" "16.04 Xenial Xerus 好客的非洲地松鼠" \
+			"8" "Latest(自动检测最新版)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0) choose_which_gnu_linux_distro ;;
+	1) DISTRO_CODE='groovy' ;;
+	2) DISTRO_CODE='focal' ;;
+	3) DISTRO_CODE='eoan' ;;
+	4) DISTRO_CODE='disco' ;;
+	5) DISTRO_CODE='cosmic' ;;
+	6) DISTRO_CODE='bionic' ;;
+	7) DISTRO_CODE='xenial' ;;
+	8) check_the_latest_ubuntu_version ;;
+	esac
+	######################
+	do_you_want_to_continue
+	install_different_ubuntu_gnu_linux_distros
+	press_enter_to_return
+	tmoe_manager_main_menu
 }
 #########################
-install_ubuntu_gnu_linux_2004_distro() {
-	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/debian system/ubuntu system/g' |
-			sed 's:debian-sid:ubuntu-focal:g' |
-			sed 's:debian/sid:ubuntu/focal:g' |
-			sed 's:/ubuntu-ports:/ubuntu:g' |
-			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
-	else
-		#ubuntu-ports
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/ubuntu系统/g' |
-			sed 's/debian system/ubuntu system/g' |
-			sed 's:debian-sid:ubuntu-focal:g' |
-			sed 's:debian/sid:ubuntu/focal:g' |
-			sed 's:Debian GNU/Linux:Ubuntu GNU/Linux:g')"
-	fi
+ubuntu_distro_x64_model() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s/focal/${DISTRO_CODE}/g" |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+############
+ubuntu_distro_arm_model() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s/focal/${DISTRO_CODE}/g" |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+########
+linux_distro_common_model_01() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+####################
+linux_distro_common_model_02() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 #########################
-install_ubuntu_gnu_linu_distro() {
-	if (whiptail --title "Ubuntu VERSION" --yes-button '20.04' --no-button '18.04' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
-		install_ubuntu_gnu_linux_2004_distro
+install_different_ubuntu_gnu_linux_distros() {
+	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
+		ubuntu_distro_x64_model
 	else
-		install_ubuntu_gnu_linux_1804_distro
+		#ubuntu-ports
+		ubuntu_distro_arm_model
+	fi
+}
+############
+check_the_latest_ubuntu_version() {
+	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy' | tail -n 1)
+	if [ -z ${DISTRO_CODE} ]; then
+		echo "未检测到最新版本，将自动获取ubuntu 20.10 groovy"
+		DISTRO_CODE='groovy'
 	fi
 }
 ##########
 install_kali_rolling_gnu_linux_distro() {
-	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's:debian-sid:kali-rolling:g' |
-		sed 's:debian/sid:kali/current:g' |
-		sed 's/debian系统/kali系统/g' |
-		sed 's/debian system/kali system/g' |
-		sed 's/debian容器/kali容器/g' |
-		sed 's:Debian GNU/Linux:Kali GNU/Linux:g')"
+	DISTRO_NAME='kali'
+	DISTRO_CODE='rolling'
+	DISTRO_CODE_02='current'
+	linux_distro_common_model_01
 }
 #####################
 install_arch_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到Arch Linux不支持您当前的架构"
 	else
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/arch系统/g' |
-			sed 's/debian system/arch system/g' |
-			sed 's:debian-sid:archlinux-current:g' |
-			sed 's:debian/sid:archlinux/current:g' |
-			sed 's:Debian GNU/Linux:Arch GNU/Linux:g')"
+		DISTRO_NAME='arch'
+		DISTRO_CODE='current'
+		linux_distro_common_model_01
+	fi
+}
+############
+check_the_latest_distro_version() {
+	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+	which_version_do_you_want_to_install
+}
+#################
+which_version_do_you_want_to_install() {
+	if (whiptail --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
+		linux_distro_common_model_01
+	else
+		DISTRO_CODE="${OLD_STABLE_VERSION}"
+		linux_distro_common_model_01
 	fi
 }
 ######################
 install_fedora_gnu_linux_distro() {
 	touch ~/.REDHATDetectionFILE
+	DISTRO_NAME='fedora'
 	if [ "${ARCH_TYPE}" = 'armhf' ]; then
 		echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/fedora系统/g' |
-			sed 's/debian system/fedora system/g' |
-			sed 's:debian-sid:fedora-29:g' |
-			sed 's:debian/sid:fedora/29:g' |
-			sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
+		DISTRO_CODE='29'
+		linux_distro_common_model_01
 	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "Fedora不支持您的架构"
 	else
-		if (whiptail --title "FEDORA VERSION" --yes-button '31' --no-button '32' --yesno "您想要安装哪个版本？Which version do you want to install?" 9 50); then
-			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-				sed 's/debian系统/fedora系统/g' |
-				sed 's/debian system/fedora system/g' |
-				sed 's:debian-sid:fedora-31:g' |
-				sed 's:debian/sid:fedora/31:g' |
-				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
-		else
-			bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-				sed 's/debian系统/fedora系统/g' |
-				sed 's/debian system/fedora system/g' |
-				sed 's:debian-sid:fedora-32:g' |
-				sed 's:debian/sid:fedora/32:g' |
-				sed 's:Debian GNU/Linux:Fedora GNU/Linux:g')"
-		fi
+		OLD_STABLE_VERSION='31'
+		check_the_latest_distro_version
 	fi
 }
 ################
 install_funtoo_linux_distro() {
-	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's:debian-sid:funtoo-1.4:g' |
-		sed 's:debian/sid:funtoo/1.4:g' |
-		sed 's/debian系统/funtoo系统/g' |
-		sed 's/debian system/funtoo system/g' |
-		sed 's/debian容器/funtoo容器/g' |
-		sed 's:Debian GNU/Linux:Funtoo GNU/Linux:g')"
+	DISTRO_NAME='funtoo'
+	OLD_STABLE_VERSION='1.3'
+	check_the_latest_distro_version
 }
 #######################
-install_void_linux_distro() {
+####################
+linux_distro_common_model_03() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's:debian-sid:voidlinux-default:g' |
-		sed 's:debian/sid:voidlinux/current:g' |
-		sed 's/debian系统/void系统/g' |
-		sed 's/debian system/void system/g' |
-		sed 's/debian容器/void容器/g' |
-		sed 's:Debian GNU/Linux:Void GNU/Linux:g')"
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
+}
+#################
+install_void_linux_distro() {
+	DISTRO_NAME='voidlinux'
+	DISTRO_CODE='default'
+	DISTRO_CODE_02='current'
+	linux_distro_common_model_03
 }
 ##########################
 install_centos_linux_distro() {
 	touch ~/.REDHATDetectionFILE
+	DISTRO_NAME='centos'
 	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/centos系统/g' |
-			sed 's/debian system/centos system/g' |
-			sed 's:debian-sid:centos-7:g' |
-			sed 's:debian/sid:centos/7:g' |
-			sed 's:Debian GNU/Linux:CentOS GNU/Linux:g')"
+		DISTRO_CODE='7'
+		linux_distro_common_model_01
 	else
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/centos系统/g' |
-			sed 's/debian system/centos system/g' |
-			sed 's:debian-sid:centos-8:g' |
-			sed 's:debian/sid:centos/8:g' |
-			sed 's:Debian GNU/Linux:CentOS GNU/Linux:g')"
+		DISTRO_CODE='8'
+		linux_distro_common_model_01
 	fi
 }
 ######################
 install_gentoo_linux_distro() {
+	DISTRO_NAME='gentoo'
 	if [ "${ARCH_TYPE}" = 'arm64' ]; then
 		echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 			sed '70 a\ARCH_TYPE="armhf"' |
-			sed 's/debian系统/gentoo系统/g' |
 			sed 's/debian system/gentoo system/g' |
 			sed 's:debian-sid:gentoo-current:g' |
 			sed 's:debian/sid:gentoo/current:g' |
 			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
 	else
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/gentoo系统/g' |
-			sed 's/debian system/gentoo system/g' |
-			sed 's:debian-sid:gentoo-current:g' |
-			sed 's:debian/sid:gentoo/current:g' |
-			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
+		DISTRO_CODE='current'
+		linux_distro_common_model_01
 	fi
 }
 ###########################
 install_alpine_linux_distro() {
 	touch ~/.ALPINELINUXDetectionFILE
-	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian系统/alpine系统/g' |
-		sed 's/debian system/alpine system/g' |
-		sed 's:debian-sid:alpine-3.11:g' |
-		sed 's:debian/sid:alpine/3.11:g' |
-		sed 's:Debian GNU/Linux:Alpine Linux:g')"
+	DISTRO_NAME='alpine'
+	DISTRO_CODE='3.11'
+	OLD_STABLE_VERSION='edge'
+	which_version_do_you_want_to_install
 }
 #####################
 install_opensuse_linux_distro() {
-	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian系统/opensuse系统/g' |
-		sed 's/debian system/opensuse system/g' |
-		sed 's:debian-sid:opensuse-tumbleweed:g' |
-		sed 's:debian/sid:opensuse/tumbleweed:g' |
-		sed 's:Debian GNU/Linux:Opensuse GNU/Linux:g')"
+	DISTRO_NAME='opensuse'
+	DISTRO_CODE='tumbleweed'
+	linux_distro_common_model_01
 }
 ########################
 install_raspbian_linux_distro() {
@@ -2764,7 +2716,6 @@ install_raspbian_linux_distro() {
 		sed 's:extract z:extract:' |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/' |
-		sed 's/debian系统/raspbian系统/g' |
 		sed 's/debian system/raspbian system/g' |
 		sed 's:debian-sid:raspbian-buster:g' |
 		sed 's:debian/sid:debian/buster:g' |
@@ -2804,7 +2755,6 @@ install_openwrt_linux_distro() {
 	fi
 	touch ~/.ALPINELINUXDetectionFILE
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian系统/openwrt系统/g' |
 		sed 's/debian system/openwrt system/g' |
 		sed 's:debian-sid:openwrt-snapshot:g' |
 		sed 's:debian/sid:openwrt/snapshot:g' |
@@ -2812,12 +2762,9 @@ install_openwrt_linux_distro() {
 }
 ######################
 install_devuan_linux_distro() {
-	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian系统/devuan系统/g' |
-		sed 's/debian system/devuan system/g' |
-		sed 's:debian-sid:devuan-ascii:g' |
-		sed 's:debian/sid:devuan/ascii:g' |
-		sed 's:Debian GNU/Linux:Devuan GNU/Linux:g')"
+	DISTRO_NAME='devuan'
+	DISTRO_CODE='ascii'
+	linux_distro_common_model_01
 }
 ######################
 install_apertis_linux_distro() {
@@ -2825,12 +2772,9 @@ install_apertis_linux_distro() {
 		echo "检测到apertis不支持您当前的架构"
 	else
 		touch ~/.ALPINELINUXDetectionFILE
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/apertis系统/g' |
-			sed 's/debian system/apertis system/g' |
-			sed 's:debian-sid:apertis-v2020.0:g' |
-			sed 's:debian/sid:apertis/v2020.0:g' |
-			sed 's:Debian GNU/Linux:Apertis Linux:g')"
+		DISTRO_NAME='apertis'
+		OLD_STABLE_VERSION='v2019.2'
+		check_the_latest_distro_version
 	fi
 }
 ################################
@@ -2838,12 +2782,9 @@ install_alt_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'armhf' ]; then
 		echo "检测到alt不支持您当前的架构"
 	else
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/alt系统/g' |
-			sed 's/debian system/alt system/g' |
-			sed 's:debian-sid:alt-p9:g' |
-			sed 's:debian/sid:alt/p9:g' |
-			sed 's:Debian GNU/Linux:Alt GNU/Linux:g')"
+		DISTRO_NAME='alt'
+		OLD_STABLE_VERSION='Sisyphus'
+		check_the_latest_distro_version
 	fi
 }
 ##################
@@ -2861,7 +2802,6 @@ install_slackware_linux_distro() {
 		fi
 	fi
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian系统/slackware系统/g' |
 		sed 's/debian system/slackware system/g' |
 		sed 's:debian-sid:slackware-current:g' |
 		sed 's:debian/sid:slackware/current:g' |
@@ -2915,7 +2855,6 @@ install_armbian_linux_distro() {
 	rm -vf ~/armbian-bullseye-rootfs.tar
 
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian系统/armbian系统/g' |
 		sed 's/debian system/armbian system/g' |
 		sed 's:debian-sid:armbian-bullseye:g' |
 		sed 's:debian/sid:armbian/bullseye:g' |
@@ -2925,12 +2864,11 @@ install_armbian_linux_distro() {
 #######################
 install_mint_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed 's/debian系统/mint系统/g' |
-			sed 's/debian system/mint system/g' |
-			sed 's:debian-sid:mint-tricia:g' |
-			sed 's:debian/sid:mint/tricia:g' |
-			sed 's:Debian GNU/Linux:Mint GNU/Linux:g')"
+		DISTRO_NAME='mint'
+		OLD_STABLE_VERSION='tina'
+		LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+		DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|sarah|serena|sonya|sylvia|tara|tessa|tina' | tail -n 1)
+		which_version_do_you_want_to_install
 	else
 		echo "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
 		echo "Linux Mint${RED}不支持${RESET}您的架构"
