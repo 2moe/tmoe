@@ -1165,9 +1165,7 @@ configure_vscode_server() {
 		vscode_server_remove
 	fi
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_vscode_server
 }
 ##############
@@ -1239,9 +1237,7 @@ vscode_server_upgrade() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		vscode_server_password
 	fi
 
@@ -1255,9 +1251,7 @@ vscode_server_upgrade() {
 	export PASSWORD=${TARGET_USERPASSWD}
 	vscode_server_restart
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_vscode_server
 	#此处的返回步骤并非多余
 }
@@ -1274,13 +1268,11 @@ vscode_server_restart() {
 }
 #############
 vscode_server_password() {
-	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password.您的密码将以明文形式保存至.profile和.zshrc" 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，操作取消"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_vscode_server
 	fi
 	if [ ! -e "${HOME}/.profile" ]; then
@@ -1480,18 +1472,14 @@ modify_other_vnc_conf() {
 		echo "正在为您停止VNC服务..."
 		sleep 1
 		stopvnc 2>/dev/null
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		modify_other_vnc_conf
 	fi
 	###########
 	if [ "${MODIFYOTHERVNCCONF}" == '3' ]; then
 		nano ~/.vnc/xstartup
 		stopvnc 2>/dev/null
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		modify_other_vnc_conf
 	fi
 	###########
@@ -1520,8 +1508,7 @@ modify_vnc_pulse_audio() {
 		echo '您当前的音频地址已修改为'
 		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1)
 		echo "请输startvnc重启vnc服务，以使配置生效"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		modify_other_vnc_conf
 	else
 		modify_other_vnc_conf
@@ -1540,9 +1527,7 @@ nano_startvnc_manually() {
 	echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 
 	stopvnc 2>/dev/null
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	modify_other_vnc_conf
 }
 #############################################
@@ -2862,9 +2847,7 @@ configure_theme() {
 		echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
 	fi
 	##############################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 ################################
@@ -3251,6 +3234,7 @@ install_pic_go() {
 ############################################
 ############################################
 other_software() {
+	RETURN_TO_WHERE=other_software
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 部分软件需要在安装gui后才能使用！" 17 60 6 \
@@ -3339,9 +3323,7 @@ other_software() {
 		install_nds_game_mayomonogatari
 	fi
 	############################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	other_software
 	#tmoe_linux_tool_menu
 }
@@ -3608,9 +3590,7 @@ install_netease_163_cloud_music() {
 		rm -fv ./netease-cloud-music.deb
 		beta_features_install_completed
 	fi
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 ############################
@@ -3915,9 +3895,7 @@ modify_startxsdl_manually() {
 
 	echo '您当前的音频端口为'
 	echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	modify_xsdl_conf
 }
 
@@ -3931,8 +3909,7 @@ modify_pulse_server_port() {
 		echo 'Your current PULSE SERVER port has been modified.'
 		echo '您当前的音频端口已修改为'
 		echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		modify_xsdl_conf
 	else
 		modify_xsdl_conf
@@ -3949,8 +3926,7 @@ modify_display_port() {
 		echo 'Your current DISPLAY port has been modified.'
 		echo '您当前的显示端口已修改为'
 		echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		modify_xsdl_conf
 	else
 		modify_xsdl_conf
@@ -3966,8 +3942,7 @@ modify_xsdl_ip_address() {
 		echo 'Your current ip address has been modified.'
 		echo '您当前的ip地址已修改为'
 		echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		modify_xsdl_conf
 	else
 		modify_xsdl_conf
@@ -3987,9 +3962,7 @@ press_enter_to_return() {
 }
 #############################################
 press_enter_to_return_configure_xrdp() {
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_xrdp
 }
 ##############
@@ -4016,9 +3989,7 @@ modify_xwayland_conf() {
 ##################
 #############
 press_enter_to_return_configure_xwayland() {
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_xwayland
 }
 #######################
@@ -4914,9 +4885,7 @@ frequently_asked_questions() {
 		RETURN_TO_WHERE='frequently_asked_questions'
 		do_you_want_to_continue
 		rm -rvf ~/.config/tencent-qq/
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		tmoe_linux_tool_menu
 	fi
 	#######################
@@ -4939,9 +4908,7 @@ frequently_asked_questions() {
 		echo "您可以输${YELLOW}sudo su - ${RESET}或${YELLOW}sudo -i ${RESET}切换至root用户"
 		echo "亦可输${YELLOW}sudo su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
 		echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		tmoe_linux_tool_menu
 	fi
 }
@@ -5013,7 +4980,7 @@ fix_vnc_dbus_launch() {
 			REMOTE_DESKTOP_SESSION_01='startdde'
 			REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		else
-			echo "未检测到vnc相关配置，请更新debian-i后再覆盖安装gui"
+			echo "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新debian-i后再覆盖安装gui"
 		fi
 		enable_dbus_launch
 	fi
@@ -5041,10 +5008,12 @@ non_debian_function() {
 	if [ "${LINUX_DISTRO}" != 'debian' ]; then
 		echo "非常抱歉，本功能仅适配deb系发行版"
 		echo "Sorry, this feature is only suitable for debian based distributions"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
-		beta_features
+		press_enter_to_return
+		if [ ! -z ${RETURN_TO_WHERE} ]; then
+			${RETURN_TO_WHERE}
+		else
+			beta_features
+		fi
 	fi
 }
 ############
@@ -5226,9 +5195,7 @@ beta_features() {
 		install_grub_customizer
 	fi
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	beta_features
 }
 ####################
@@ -5791,9 +5758,7 @@ configure_nginx_webdav() {
 		${PACKAGES_REMOVE_COMMAND} nginx nginx-extras
 	fi
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_nginx_webdav
 }
 ##############
@@ -5877,18 +5842,14 @@ nginx_onekey() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		nginx_onekey
 	fi
 	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		nginx_onekey
 	fi
 	htpasswd -mbc /etc/nginx/conf.d/.htpasswd.webdav ${TARGET_USERNAME} ${TARGET_USERPASSWD}
@@ -5900,9 +5861,7 @@ nginx_onekey() {
 	fi
 	nginx_restart
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_nginx_webdav
 	#此处的返回步骤并非多余
 }
@@ -5934,18 +5893,14 @@ nginx_add_admin() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，操作取消"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_nginx_webdav
 	fi
 	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		nginx_add_admin
 	fi
 	htpasswd -mbc /etc/nginx/conf.d/.htpasswd.webdav ${TARGET_USERNAME} ${TARGET_USERPASSWD}
@@ -5958,9 +5913,7 @@ nginx_webdav_port() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_nginx_webdav
 	fi
 	sed -i "s@${NGINX_WEBDAV_PORT}\;@${TARGET_PORT}\;@" webdav.conf
@@ -5976,9 +5929,7 @@ nginx_port() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_nginx_webdav
 	fi
 	cp -pvf default default.bak
@@ -6006,9 +5957,7 @@ nginx_webdav_root_dir() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_nginx_webdav
 	fi
 	sed -i "s@${NGINX_WEBDAV_ROOT_DIR}\;@${TARGET_PATH}\;@" webdav.conf
@@ -6186,9 +6135,7 @@ configure_filebrowser() {
 		rm -fv /etc/filebrowser.db
 	fi
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_filebrowser
 }
 ##############
@@ -6209,18 +6156,14 @@ filebrowser_onekey() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		filebrowser_onekey
 	fi
 	TARGET_USERPASSWD=$(whiptail --inputbox "请设定管理员密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		filebrowser_onekey
 	fi
 	filebrowser users add ${TARGET_USERNAME} ${TARGET_USERPASSWD} --perm.admin
@@ -6250,9 +6193,7 @@ filebrowser_onekey() {
 	fi
 	filebrowser_restart
 	########################################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}按回车键返回。${RESET}"
-	read
+	press_enter_to_return
 	configure_filebrowser
 	#此处的返回步骤并非多余
 }
@@ -6292,18 +6233,14 @@ filebrowser_add_admin() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "用户名无效，操作取消"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_filebrowser
 	fi
 	TARGET_USERPASSWD=$(whiptail --inputbox "请设定管理员密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		filebrowser_add_admin
 	fi
 	cd /etc
@@ -6317,9 +6254,7 @@ filebrowser_port() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_filebrowser
 	fi
 	filebrowser config set --port ${TARGET_PORT}
@@ -6348,9 +6283,7 @@ filebrowser_language() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_filebrowser
 	fi
 	filebrowser config set --port ${TARGET_LANG}
@@ -6361,9 +6294,7 @@ filebrowser_listen_ip() {
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "检测到您取消了操作，请返回重试。"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		read
+		press_enter_to_return
 		configure_filebrowser
 	fi
 	filebrowser config set --address ${TARGET_IP}
