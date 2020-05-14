@@ -2451,7 +2451,7 @@ install_beta_containers() {
 	BETA_SYSTEM=$(
 		whiptail --title "Beta features" --menu "WARNING！本功能仍处于公测阶段,可能存在一些bug。\nBeta features may not work properly." 17 55 7 \
 			"1" "manjaro(让arch更方便用户使用,arm64)" \
-			"2" "centos 8(基于红帽的社区企业操作系统)" \
+			"2" "centos (基于红帽的社区企业操作系统)" \
 			"3" "Void:基于xbps包管理器的独立发行版" \
 			"4" "alpine 3.11(非glibc的精简系统)" \
 			"5" "mint tricia(简单易用的系统,x86,x64)" \
@@ -2667,8 +2667,10 @@ install_centos_linux_distro() {
 		DISTRO_CODE='7'
 		linux_distro_common_model_01
 	else
-		DISTRO_CODE='8'
-		linux_distro_common_model_01
+		OLD_STABLE_VERSION='8'
+		check_the_latest_distro_version
+		#DISTRO_CODE='8'
+		#linux_distro_common_model_01
 	fi
 }
 ######################
