@@ -3234,7 +3234,7 @@ install_pic_go() {
 ############################################
 ############################################
 other_software() {
-	RETURN_TO_WHERE=other_software
+	RETURN_TO_WHERE='other_software'
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 部分软件需要在安装gui后才能使用！" 17 60 6 \
@@ -3741,7 +3741,11 @@ x11vnc_warning() {
 	fi
 	#注意下面那处的大小写
 	if [ ! $(command -v xvfb) ] && [ ! $(command -v Xvfb) ]; then
-		DEPENDENCY_02='xvfb'
+		if [ "${LINUX_DISTRO}" = "arch" ]; then
+			DEPENDENCY_02='xorg-server-xvfb'
+		else
+			DEPENDENCY_02='xvfb'
+		fi
 	fi
 
 	if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
@@ -4762,6 +4766,9 @@ first_configure_startvnc() {
 	fi
 	configure_startvnc
 	configure_startxsdl
+	if [ "${LINUX_DISTRO}" != "debian" ]; then
+		sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl
+	fi
 	######################
 	chmod +x startvnc stopvnc startxsdl
 	dpkg --configure -a 2>/dev/null
@@ -4925,6 +4932,9 @@ enable_dbus_launch() {
 	#################
 	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
 	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
+	if [ "${LINUX_DISTRO}" != "debian" ]; then
+		sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+	fi
 }
 #################
 fix_vnc_dbus_launch() {
@@ -4945,7 +4955,11 @@ fix_vnc_dbus_launch() {
 	fi
 
 	if (whiptail --title "您想要对这个小可爱中做什么 " --yes-button "Disable" --no-button "Enable" --yesno "您是想要禁用dbus-launch，还是启用呢？${DBUSstatus} \n请做出您的选择！✨" 10 50); then
-		sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
+		else
+			sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+		fi
 	else
 		if grep 'startxfce4' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
