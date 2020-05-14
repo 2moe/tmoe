@@ -601,7 +601,7 @@ tmoe_manager_main_menu() {
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复termux sudo,0514支持最新的ubuntu20.10" 17 50 6 \
+		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复sudo,0514支持最新的ubuntu20.10" 17 50 6 \
 			"1" "proot安装" \
 			"2" "chroot安装" \
 			"3" "GUI,audio & sources.list" \
@@ -2593,7 +2593,7 @@ install_kali_rolling_gnu_linux_distro() {
 	DISTRO_NAME='kali'
 	DISTRO_CODE='rolling'
 	DISTRO_CODE_02='current'
-	linux_distro_common_model_01
+	linux_distro_common_model_02
 }
 #####################
 install_arch_linux_distro() {
