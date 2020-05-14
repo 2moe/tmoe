@@ -4770,6 +4770,7 @@ configure_startvnc() {
 		rm -rf /tmp/.X1-lock
 		rm -rf /tmp/.X11-unix/X1
 		pkill Xtightvnc
+		stopx11vnc 2>/dev/null
 	EndOfFile
 }
 ###############
