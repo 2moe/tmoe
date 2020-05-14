@@ -4350,7 +4350,7 @@ configure_remote_desktop_enviroment() {
 	##############################
 	if [ "${BETA_DESKTOP}" == '6' ]; then
 		REMOTE_DESKTOP_SESSION_01='gnome-session'
-		REMOTE_DESKTOP_SESSION_02='x-windows-manager'
+		REMOTE_DESKTOP_SESSION_02='x-window-manager'
 		#configure_remote_gnome3_desktop
 	fi
 	##############################
@@ -4370,7 +4370,6 @@ configure_remote_desktop_enviroment() {
 		modify_remote_desktop_config
 	fi
 	##########################
-
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
 			NON_DBUS='true'
