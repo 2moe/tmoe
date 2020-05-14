@@ -483,8 +483,8 @@ different_distro_software_install() {
 		apk add ${DEPENDENCY_02}
 		################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S ${DEPENDENCY_01}
-		pacman -S --noconfirm ${DEPENDENCY_02} || yay -S ${DEPENDENCY_02}
+		pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S ${DEPENDENCY_01} || echo "请以非root身份运行yay"
+		pacman -S --noconfirm ${DEPENDENCY_02} || yay -S ${DEPENDENCY_02} || echo "请以非root身份运行yay"
 		################
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
@@ -1282,6 +1282,9 @@ vscode_server_password() {
 		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		configure_vscode_server
+	fi
+	if [ ! -e "${HOME}/.profile" ]; then
+		echo '' >>~/.profile
 	fi
 	sed -i '/export PASSWORD=/d' ~/.profile
 	sed -i '/export PASSWORD=/d' ~/.zshrc
@@ -5039,7 +5042,7 @@ non_debian_function() {
 		echo "非常抱歉，本功能仅适配deb系发行版"
 		echo "Sorry, this feature is only suitable for debian based distributions"
 		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键退出。${RESET}"
+		echo "${YELLOW}按回车键返回。${RESET}"
 		read
 		beta_features
 	fi
