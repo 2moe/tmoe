@@ -5031,7 +5031,7 @@ first_configure_startvnc() {
 	startvnc
 	echo "您之后可以输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
 	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来启动xsdl，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
-	xfce4_hidpi_setting
+	xfce4_tightvnc_hidpi_settings
 	if [ "${HOME}" != "/root" ]; then
 		cp -rpf ~/.vnc /root/ &
 		chown -R root:root /root/.vnc &
@@ -5077,18 +5077,18 @@ first_configure_startvnc() {
 	echo "${GREEN}tightvnc/tigervnc & xserver${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
 	x11vnc_warning
 	configure_x11vnc_remote_desktop_session
-	xfce4_x11vnc_hidpi_setting
+	xfce4_x11vnc_hidpi_settings
 }
 ########################
 ########################
-xfce4_tightvnc_hidpi_setting() {
+xfce4_tightvnc_hidpi_settings() {
 	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
 		echo "检测到您当前的桌面环境为xfce4，将为您自动调整高分屏设定"
 		echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
 		stopvnc >/dev/null 2>&1
-		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
 		sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
 		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
 		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2
 		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
@@ -5098,7 +5098,7 @@ xfce4_tightvnc_hidpi_setting() {
 	#Default-xhdpi默认处于未激活状态
 }
 ################
-xfce4_x11vnc_hidpi_setting() {
+xfce4_x11vnc_hidpi_settings() {
 	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
 		stopx11vnc >/dev/null 2>&1
 		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
