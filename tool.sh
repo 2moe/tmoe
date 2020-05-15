@@ -2835,10 +2835,11 @@ configure_theme() {
 	configure_theme
 }
 ################################
+#下载deb包
 download_theme_model_01() {
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
-	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
 	echo ${THE_LATEST_THEME_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
@@ -2903,9 +2904,9 @@ move_wallpaper_model_01() {
 }
 #################
 download_raspbian_pixel_wallpaper() {
-	THEME_NAME='raspbian_pixel_wallpaper'
+	THEME_NAME='raspberrypi_pixel_wallpaper'
 	WALLPAPER_NAME='pixel-wallpaper'
-	CUSTOM_WALLPAPER_NAME='raspbian-pixel-wallpapers'
+	CUSTOM_WALLPAPER_NAME='raspberrypi-pixel-wallpapers'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
 	download_theme_model_01
 	move_wallpaper_model_01
@@ -2914,12 +2915,12 @@ download_raspbian_pixel_wallpaper() {
 download_deepin_wallpaper() {
 	THEME_NAME='deepin-wallpapers'
 	WALLPAPER_NAME='wallpapers/deepin'
-	GREP_NAME='all.deb|deepin-community-wallpapers'
+	GREP_NAME='deepin-community-wallpapers'
 	CUSTOM_WALLPAPER_NAME='deepin-community-wallpapers'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
 	download_theme_model_01
 	move_wallpaper_model_01
-	GREP_NAME='all.deb|deepin-wallpapers_'
+	GREP_NAME='deepin-wallpapers_'
 	CUSTOM_WALLPAPER_NAME='deepin-wallpapers'
 	download_theme_model_01
 	move_wallpaper_model_01
