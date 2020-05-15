@@ -2886,6 +2886,7 @@ update_icon_caches_model_01() {
 	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
 	rm -rf /tmp/.${THEME_NAME}
 	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null
+	tips_of_delete_icon_theme
 }
 ############
 download_paper_icon_theme() {
@@ -2910,12 +2911,17 @@ download_papirus_icon_theme() {
 	set_default_xfce_icon_theme
 }
 ############################
+tips_of_delete_icon_theme() {
+	echo "解压${BLUE}完成${RESET}，如需${RED}删除${RESET}，请手动输${YELLOW}rm -rf /usr/share/icons/${ICON_NAME} ${RESET}"
+}
+###################
 update_icon_caches_model_02() {
 	tar -Jxvf /tmp/.${THEME_NAME}/${THE_LATEST_THEME_VERSION} 2>/dev/null
 	cp -rf usr /
 	cd /
 	rm -rf /tmp/.${THEME_NAME}
 	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null
+	tips_of_delete_icon_theme
 }
 ###############
 #tar.xz
@@ -3234,8 +3240,7 @@ install_kali_undercover() {
 		rm -rf /tmp/.kali-undercover-win10-theme
 		#rm -f ./kali-undercover.deb
 	fi
-	XFCE_ICRO_NAME='Windows 10'
-	set_default_xfce_icon_theme
+	#XFCE_ICRO_NAME='Windows 10'
 }
 ############################################
 modify_to_kali_sources_list() {
