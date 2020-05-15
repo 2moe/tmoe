@@ -667,3 +667,4 @@ nano $(which startvnc)
 - 我在部分基于 electron 的应用中，添加了是否关闭沙盒模式的提醒。简单来说，就是修复 root 用户无法启动的问题。
 - 手机预览截图见下
   ![Screenshot_20200514-024023_1.png](https://i.loli.net/2020/05/14/T5wyZtisuJUIX3x.png)
+  -2.加入最新的 ubuntu20.10 容器

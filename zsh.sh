@@ -53,6 +53,12 @@ if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCIES="${DEPENDENCIES} fonts-powerline"
     fi
 fi
+
+if [ ! $(command -v fzf) ]; then
+    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${REDHAT_DISTRO}" = "fedora" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCIES="${DEPENDENCIES} fzf"
+    fi
+fi
 ###########################################
 if [ ! -e /usr/bin/git ]; then
     if [ "${LINUX_DISTRO}" = "openwrt" ]; then
@@ -278,6 +284,21 @@ git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}
 grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
 #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
 #####################################
+configure_fzf_tab_plugin() {
+    if [ $(command -v fzf) ]; then
+        if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
+            sed -i '/fzf-tab.zsh/d' "${HOME}/.zshrc"
+            git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" || git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
+            chmod 755 -R "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
+            grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" "${HOME}/.zshrc"
+        fi
+    fi
+}
+##############
+if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "redhat" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
+    configure_fzf_tab_plugin
+fi
+#######################
 if grep -Eq 'Bionic|Buster|Xenial' /etc/os-release; then
     sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
 fi

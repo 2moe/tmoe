@@ -11,6 +11,7 @@ sed -i 's@locale-gen en_US@locale-gen zh_CN@g' ./*sh
 sed -i 's/114.114.114.114/1.0.0.1/' install.sh
 sed -i 's/240c::6666/2606:4700:4700::1111/' install.sh
 
+sed -i 's@gitee.com/mo2/fzf-tab@github.com/Aloxaf/fzf-tab@g' zsh.sh
 sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' install.sh zsh.sh
 sed -i 's@gitee.com/mirrors/oh-my-zsh/raw/master/templates/zshrc.zsh-template@raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template@g' install.sh zsh.sh
 sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' install.sh zsh.sh
