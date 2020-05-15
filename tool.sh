@@ -94,6 +94,14 @@ check_dependencies() {
 		fi
 	fi
 
+	if [ ! $(command -v aria2c) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} net-misc/aria2"
+		else
+			DEPENDENCIES="${DEPENDENCIES} aria2"
+		fi
+	fi
+
 	if [ ! -e /bin/bash ]; then
 		DEPENDENCIES="${DEPENDENCIES} bash"
 	fi
@@ -297,7 +305,7 @@ check_dependencies() {
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
-			curl -Lvo 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
 			apt install -y ./catimg.deb
 			rm -f catimg.deb
 		fi
@@ -308,7 +316,7 @@ check_dependencies() {
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
 		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		curl -Lvo 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
 		mkdir -p busybox-static
 		./busybox dpkg-deb -X busybox.deb ./busybox-static
 		mv -f ./busybox-static/bin/busybox /usr/local/bin/
@@ -351,7 +359,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200514-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200515-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -521,7 +529,7 @@ tmoe_linux_tool_upgrade() {
 	if [ "${LINUX_DISTRO}" = "alpine" ]; then
 		wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	else
-		curl -Lvo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	fi
 	echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
@@ -1228,7 +1236,7 @@ vscode_server_upgrade() {
 		mkdir -p .VSCODE_SERVER_TEMP_FOLDER
 		cd .VSCODE_SERVER_TEMP_FOLDER
 		LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'x86_64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
-		curl -Lvo .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
 		tar -zxvf .VSCODE_SERVER.tar.gz
 		VSCODE_FOLDER_NAME=$(ls -l ./ | grep '^d' | awk -F ' ' '$0=$NF')
 		mv ${VSCODE_FOLDER_NAME} code-server-data
@@ -1339,14 +1347,14 @@ install_vscodium() {
 
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		curl -Lvo 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
 		apt install -y ./VSCodium.deb
 		rm -vf VSCodium.deb
 		#echo '安装完成,请输codium --user-data-dir=${HOME}/.config/VSCodium启动'
 		echo "安装完成,请输codium --user-data-dir=${HOME}启动"
 	else
 		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		curl -Lvo 'VSCodium.tar.gz' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.tar.gz' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
 		mkdir -p /usr/local/bin/vscodium-data
 		tar -zxvf VSCodium.tar.gz -C /usr/local/bin/vscodium-data
 		rm -vf VSCodium.tar.gz
@@ -1420,18 +1428,18 @@ install_vscode_official() {
 	fi
 
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
-		curl -Lvo 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
 		apt install -y ./VSCODE.deb
 		rm -vf VSCODE.deb
 		echo "安装完成,请输code --user-data-dir=${HOME}启动"
 
 	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
-		curl -Lvo 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
 		rpm -ivh ./VSCODE.rpm
 		rm -vf VSCODE.rpm
 		echo "安装完成,请输code --user-data-dir=${HOME}启动"
 	else
-		curl -Lvo 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
 		#mkdir -p /usr/local/bin/vscode-data
 		tar -zxvf VSCODE.tar.gz -C /usr/local/bin/
 
@@ -2215,18 +2223,6 @@ other_desktop() {
 	tmoe_linux_tool_menu
 }
 #####################
-#####################
-download_kali_themes_common() {
-	mkdir -p /tmp/.kali-themes-common
-	cd /tmp/.kali-themes-common
-	KaliTHEMElatestLINK="$(curl -L 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/' | grep kali-themes-common | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-	curl -Lvo 'kali-themes-common.deb' "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/${KaliTHEMElatestLINK}"
-	busybox ar xv 'kali-themes-common.deb'
-	update-icon-caches /usr/share/icons/Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base
-	cd /
-	tar -Jxvf /tmp/.kali-themes-common/data.tar.xz ./usr
-	rm -rf /tmp/.kali-themes-common
-}
 ################
 configure_vnc_xstartup() {
 	mkdir -p ~/.vnc
@@ -2281,7 +2277,7 @@ configure_x11vnc_remote_desktop_session() {
 		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
 		echo "您可能会经历长达10多秒的黑屏"
 		echo "You may experience a black screen for up to 10 seconds."
-		echo "您之后可以输startx11vnc启动，stopx11vnc停止"
+		echo "您之后可以输startx11vnc启动，输stopvnc或stopx11vnc停止"
 		echo "You can type startx11vnc to start x11vnc,type stopx11vnc to stop it."
 		echo 'x11vnc可能会自动终止音频服务进程，若您的宿主机为Android系统，请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输pulseaudio -D来启动音频服务后台进程'
 		echo "若您无法记住该命令，则只需输debian即可启动音频服务"
@@ -2803,8 +2799,9 @@ remove_browser() {
 #############################################
 #############################################
 configure_theme() {
+	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
-		"您想要下载哪个主题？按方向键选择！下载完成后，您需要手动修改外观设置中的样式和图标。注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 15 60 5 \
+		"您想要下载哪个主题？按方向键选择！下载完成后，您需要手动修改外观设置中的样式和图标。注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 17 55 7 \
 		"1" "ukui：国产优麒麟ukui桌面主题" \
 		"2" "win10：kali卧底模式主题" \
 		"3" "MacOS：Mojave" \
@@ -2812,52 +2809,195 @@ configure_theme() {
 		"5" "UOS：国产统一操作系统图标包" \
 		"6" "breeze：plasma桌面微风gtk+版主题" \
 		"7" "Kali：kali-Flat-Remix-Blue主题" \
-		"0" "我一个都不要 =￣ω￣=" \
+		"8" "pixel:raspberrypi树莓派" \
+		"9" "deepin:深度系统壁纸包" \
+		"10" "paper图标包:灵动于纸张之上" \
+		"11" "arch/elementary/manjaro系统壁纸包" \
+		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	########################
-	if [ "${INSTALL_THEME}" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
-	########################
-	if [ "${INSTALL_THEME}" == '1' ]; then
-		download_ukui_theme
-	fi
-	######################
-	if [ "${INSTALL_THEME}" == '2' ]; then
-		install_kali_undercover
-	fi
-	##########################
-	if [ "${INSTALL_THEME}" == '3' ]; then
-		download_macos_mojave_theme
-	fi
-	##########################
-	if [ "${INSTALL_THEME}" == '4' ]; then
-		download_win10x_theme
-	fi
-	##########################
-	if [ "${INSTALL_THEME}" == '5' ]; then
-		download_uos_icon_theme
-	fi
-	###########################################
-	if [ "${INSTALL_THEME}" == '6' ]; then
-		install_breeze_theme
-	fi
+	case "${INSTALL_THEME}" in
+	0) tmoe_linux_tool_menu ;;
+	1) download_ukui_theme ;;
+	2) install_kali_undercover ;;
+	3) download_macos_mojave_theme ;;
+	4) download_win10x_theme ;;
+	5) download_uos_icon_theme ;;
+	6) install_breeze_theme ;;
+	7) download_kali_theme ;;
+	8) download_raspbian_pixel_icon_theme ;;
+	9) download_deepin_wallpaper ;;
+	10) download_paper_icon_theme ;;
+	11) download_manjaro_wallpaper ;;
+	esac
 	######################################
-	if [ "${INSTALL_THEME}" == '7' ]; then
-		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
-			download_kali_themes_common
-		else
-			echo "检测到kali_themes_common已下载，是否重新下载？"
-			RETURN_TO_WHERE='configure_theme'
-			do_you_want_to_continue
-		fi
-		echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
-	fi
-	##############################
 	press_enter_to_return
-	tmoe_linux_tool_menu
+	configure_theme
 }
 ################################
+download_theme_model_01() {
+	mkdir -p /tmp/.${THEME_NAME}
+	cd /tmp/.${THEME_NAME}
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
+	echo ${THE_LATEST_THEME_LINK}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
+	busybox ar xv ${THE_LATEST_THEME_VERSION}
+}
+############################
+update_icon_caches_model_01() {
+	cd /
+	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
+	rm -rf /tmp/.${THEME_NAME}
+	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null
+}
+############
+download_paper_icon_theme() {
+	THEME_NAME='paper_icon_theme'
+	ICON_NAME='Paper /usr/share/icons/Paper-Mono-Dark'
+	GREP_NAME='paper-icon-theme'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/'
+	download_theme_model_02
+	update_icon_caches_model_02
+}
+#############
+############################
+update_icon_caches_model_02() {
+	tar -Jxvf /tmp/.${THEME_NAME}/${THE_LATEST_THEME_VERSION} 2>/dev/null
+	cp -rf usr /
+	cd /
+	rm -rf /tmp/.${THEME_NAME}
+	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null
+}
+###############
+#tar.xz
+download_theme_model_02() {
+	mkdir -p /tmp/.${THEME_NAME}
+	cd /tmp/.${THEME_NAME}
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep -v '.xz.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
+	echo ${THE_LATEST_THEME_LINK}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
+}
+####################
+download_raspbian_pixel_icon_theme() {
+	THEME_NAME='raspbian_pixel_icon_theme'
+	ICON_NAME='PiX'
+	GREP_NAME='all.deb'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pix-icons/'
+	download_theme_model_01
+	update_icon_caches_model_01
+	download_raspbian_pixel_wallpaper
+}
+################
+move_wallpaper_model_01() {
+	tar -Jxvf data.tar.xz 2>/dev/null
+	if [ -d "${HOME}/图片" ]; then
+		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
+	else
+		mkdir -p ${HOME}/Pictures
+		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
+	fi
+	rm -rf /tmp/.${THEME_NAME}
+	echo "壁纸包已经保存至${HOME}/图片/${CUSTOM_WALLPAPER_NAME}"
+}
+#################
+download_raspbian_pixel_wallpaper() {
+	THEME_NAME='raspbian_pixel_wallpaper'
+	WALLPAPER_NAME='pixel-wallpaper'
+	CUSTOM_WALLPAPER_NAME='raspbian-pixel-wallpapers'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
+	download_theme_model_01
+	move_wallpaper_model_01
+}
+########
+download_deepin_wallpaper() {
+	THEME_NAME='deepin-wallpapers'
+	WALLPAPER_NAME='wallpapers/deepin'
+	GREP_NAME='all.deb|deepin-community-wallpapers'
+	CUSTOM_WALLPAPER_NAME='deepin-community-wallpapers'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
+	download_theme_model_01
+	move_wallpaper_model_01
+	GREP_NAME='all.deb|deepin-wallpapers_'
+	CUSTOM_WALLPAPER_NAME='deepin-wallpapers'
+	download_theme_model_01
+	move_wallpaper_model_01
+}
+##########
+download_manjaro_pkg() {
+	mkdir -p /tmp/.${THEME_NAME}
+	cd /tmp/.${THEME_NAME}
+	echo "${THEME_URL}"
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
+}
+############
+download_manjaro_wallpaper() {
+	THEME_NAME='manjaro-2018'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
+	download_manjaro_pkg
+	WALLPAPER_NAME='backgrounds/wallpapers-2018'
+	CUSTOM_WALLPAPER_NAME='wallpapers-2018'
+	move_wallpaper_model_01
+	##############
+	THEME_NAME='manjaro-2017'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/manjaro-sx-wallpapers-20171023-1-any.pkg.tar.xz'
+	download_manjaro_pkg
+	WALLPAPER_NAME='backgrounds'
+	CUSTOM_WALLPAPER_NAME='wallpapers-2017'
+	move_wallpaper_model_01
+	##################
+	download_arch_wallpaper
+}
+#########
+grep_arch_linux_pkg() {
+	ARCH_WALLPAPER_VERSION=$(cat index.html | grep -v '.xz.sig' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
+	echo "${ARCH_WALLPAPER_URL}"
+	aria2c --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+}
+download_arch_wallpaper() {
+	mkdir -p /tmp/.arch_and_elementary
+	cd /tmp/.arch_and_elementary
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/'
+	aria2c --allow-overwrite=true -o index.html "${THEME_URL}"
+	#https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
+	GREP_NAME='archlinux-wallpaper'
+	grep_arch_linux_pkg
+	THEME_NAME=${GREP_NAME}
+	WALLPAPER_NAME='backgrounds/archlinux'
+	CUSTOM_WALLPAPER_NAME='archlinux'
+	move_wallpaper_model_01
+	#https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
+	GREP_NAME='elementary-wallpapers'
+	grep_arch_linux_pkg
+	THEME_NAME='arch_and_elementary'
+	WALLPAPER_NAME='wallpapers/elementary'
+	CUSTOM_WALLPAPER_NAME='elementary'
+	move_wallpaper_model_01
+	#elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
+}
+################
+download_kali_themes_common() {
+	THEME_NAME='kali-themes-common'
+	GREP_NAME='kali-themes-common'
+	ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/'
+	download_theme_model_01
+	update_icon_caches_model_01
+}
+####################
+download_kali_theme() {
+	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
+		download_kali_themes_common
+	else
+		echo "检测到kali_themes_common已下载，是否重新下载？"
+		do_you_want_to_continue
+		download_kali_themes_common
+	fi
+	echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
+}
+##################
 download_win10x_theme() {
 	if [ -d "/usr/share/icons/We10X-dark" ]; then
 		echo "检测到图标包已下载，是否重新下载？"
@@ -2937,7 +3077,7 @@ download_ukui_theme() {
 		mkdir -p /tmp/.ukui-gtk-themes
 		cd /tmp/.ukui-gtk-themes
 		UKUITHEME="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		curl -Lvo 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
 		busybox ar xv 'ukui-themes.deb'
 		cd /
 		tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
@@ -2992,7 +3132,7 @@ install_kali_undercover() {
 		mkdir -p /tmp/.kali-undercover-win10-theme
 		cd /tmp/.kali-undercover-win10-theme
 		UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		curl -Lvo kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
 		apt install -y ./kali-undercover.deb
 		if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
 			busybox ar xv kali-undercover.deb
@@ -3362,21 +3502,21 @@ install_linux_qq() {
 	cd /tmp
 	if [ "${ARCH_TYPE}" = "arm64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
 			apt install -y ./LINUXQQ.deb
 		else
-			curl -Lvo LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
 			chmod +x LINUXQQ.sh
 			sudo ./LINUXQQ.sh
 			#即使是root用户也需要加sudo
 		fi
 	elif [ "${ARCH_TYPE}" = "amd64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			curl -Lvo LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
 			apt install -y ./LINUXQQ.deb
 			#http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb
 		else
-			curl -Lvo LINUXQQ.sh "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_x86_64.sh"
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.sh "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_x86_64.sh"
 			chmod +x LINUXQQ.sh
 			sudo ./LINUXQQ.sh
 		fi
@@ -3399,8 +3539,8 @@ install_nds_game_mayomonogatari() {
 	cd ${HOME}
 	mkdir -p '斯隆与马克贝尔的谜之物语'
 	cd '斯隆与马克贝尔的谜之物语'
-	curl -Lvo slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
-	curl -Lvo mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
 	7za x slymkbr1.zip
 	7za x mayomonogatari2.zip
 	mv -f 斯隆与马克贝尔的谜之物语k73/* ./
@@ -3501,7 +3641,7 @@ install_chinese_manpages() {
 	if [ ! -e "${HOME}/文档/debian-handbook/usr/share/doc/debian-handbook/html" ]; then
 		mkdir -p ${HOME}/文档/debian-handbook
 		cd ${HOME}/文档/debian-handbook
-		curl -Lvo 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
 		busybox ar xv 'debian-handbook.deb'
 		tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
 		ls | grep -v usr | xargs rm -rf
@@ -3551,10 +3691,10 @@ install_baidu_netdisk() {
 		DEPENDENCY_01="baidunetdisk-bin"
 		beta_features_quick_install
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		curl -Lvo 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
 		rpm -ivh 'baidunetdisk.rpm'
 	else
-		curl -Lvo baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
 		apt install -y ./baidunetdisk.deb
 	fi
 	echo "若安装失败，则请前往官网手动下载安装"
@@ -3587,9 +3727,9 @@ install_netease_163_cloud_music() {
 	else
 		non_debian_function
 		if [ "${ARCH_TYPE}" = "amd64" ]; then
-			curl -Lvo netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
 		else
-			curl -Lvo netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
 		fi
 		apt install -y ./netease-cloud-music.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
@@ -3720,7 +3860,7 @@ configure_x11vnc() {
 	##############################
 	if [ "${TMOE_OPTION}" == '7' ]; then
 		echo "输startx11vnc启动x11vnc"
-		echo "输stop11vnc停止x11vnc"
+		echo "输stopvnc或stopx11vnc停止x11vnc"
 		echo "经测试x11vnc会自动停止pulseaudio服务，若您的宿主机为Android系统，则请在启动完成后，手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 		echo "您亦可输${GREEN}pulseaudio --start${RESET}"
 	fi
@@ -3733,7 +3873,7 @@ configure_x11vnc() {
 x11vnc_warning() {
 	echo "注：x11vnc和tightvnc是有${RED}区别${RESET}的！"
 	echo "x11vnc可以打开tightvnc无法打开的某些应用"
-	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopx11vnc${RESET}${BLUE}停止${RESET}"
+	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${BLUE}停止${RESET}"
 	echo "若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务"
 	echo "x11vnc可能会自动终止音频服务进程，若您的宿主机为Android系统，请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}即可启动音频服务"
@@ -4849,13 +4989,13 @@ first_configure_startvnc() {
 		cd ./VcXsrv
 		echo "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
 		if [ ! -e "Firewall-pulseaudio.png" ]; then
-			curl -Lvo "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
 		fi
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start Firewall.cpl"
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
 		############
 		if [ ! -e 'XserverHightDPI.png' ]; then
-			curl -Lvo 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
@@ -5271,13 +5411,13 @@ install_pinyin_input_method() {
 		cd /tmp
 		LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
 		echo ${LATEST_SOGOU_REPO}
-		curl -Lvo 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
 	elif [ "${ARCH_TYPE}" = "arm64" ]; then
 		LATEST_SOGOU_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
 		LATEST_SOGOU_VERSION=$(curl -L "${LATEST_SOGOU_REPO}" | grep 'arm64.deb' | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
 		LATEST_SOUGOU_URL="${LATEST_SOGOU_REPO}${LATEST_SOGOU_VERSION}"
 		echo ${LATEST_SOUGOU_URL}
-		curl -Lvo 'sogou_pinyin.deb' "${LATEST_SOUGOU_URL}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LATEST_SOUGOU_URL}"
 	else
 		echo "架构不支持，跳过安装搜狗输入法。"
 		arch_does_not_support
@@ -5347,7 +5487,7 @@ install_docker_ce() {
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		debian_add_docker_gpg
 	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
-		curl -Lvo /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
+		curl -Lv -o /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
 		sed -i 's@download.docker.com@mirrors.tuna.tsinghua.edu.cn/docker-ce@g' /etc/yum.repos.d/docker-ce.repo
 	elif [ "${LINUX_DISTRO}" = 'arch' ]; then
 		DEPENDENCY_01="docker"
@@ -5465,9 +5605,9 @@ install_typora() {
 	beta_features_quick_install
 	cd /tmp
 	if [ "$(uname -m)" = "x86_64" ]; then
-		curl -Lvo 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
 	elif [ "${ARCH_TYPE}" = "i386" ]; then
-		curl -Lvo 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
 	else
 		arch_does_not_support
 	fi
@@ -5488,7 +5628,7 @@ install_wps_office() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dpkg --configure -a
 		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-		curl -Lvo WPSoffice.deb "${LatestWPSLink}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${LatestWPSLink}"
 		apt install -y ./WPSoffice.deb
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -5496,7 +5636,7 @@ install_wps_office() {
 		beta_features_quick_install
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-		curl -Lvo WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
 		rpm -ivh ./WPSoffice.rpm
 	fi
 
@@ -5552,16 +5692,16 @@ install_electronic_wechat() {
 	non_debian_function
 	cd /tmp
 	if [ "${ARCH_TYPE}" = "amd64" ]; then
-		curl -Lvo 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
-		#curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
 	elif [ "${ARCH_TYPE}" = "i386" ]; then
-		curl -Lvo 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
 	elif [ "${ARCH_TYPE}" = "arm64" ]; then
 		REPO_URL='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/e/electronic-wechat/'
 		LATEST_VERSION=$(curl -L "${REPO_URL}" | grep 'arm64.deb' | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
 		LATEST_URL="${REPO_URL}${LATEST_VERSION}"
 		echo ${LATEST_URL}
-		curl -Lvo 'electronic-wechat.deb' "${LATEST_URL}"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' "${LATEST_URL}"
 	else
 		arch_does_not_support
 	fi
@@ -6063,9 +6203,9 @@ install_filebrowser() {
 			#https://github.com/filebrowser/filebrowser/releases
 			#curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
 			if [ "${ARCH_TYPE}" = "armhf" ]; then
-				curl -Lvo .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-armv7-filebrowser.tar.gz'
+				aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-armv7-filebrowser.tar.gz'
 			elif [ "${ARCH_TYPE}" = "i386" ]; then
-				curl -Lvo .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-386-filebrowser.tar.gz'
+				aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-386-filebrowser.tar.gz'
 			fi
 			cd /usr/local/bin
 			tar -zxvf /tmp/.filebrowser.tar.gz filebrowser

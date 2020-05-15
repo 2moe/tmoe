@@ -2708,7 +2708,30 @@ install_raspbian_linux_distro() {
 	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'armhf' ]; then
 		apt install -y qemu qemu-user-static debootstrap
 	fi
+
 	touch ~/.RASPBIANARMHFDetectionFILE
+	if (whiptail --title "RASPBIAN" --yes-button "直接" --no-button "间接" --yesno "您想要如何安装raspbian呢？How do you want to install raspbian?" 9 50); then
+		install_raspbian_linux_distro_type01
+	else
+		install_raspbian_linux_distro_type02
+	fi
+}
+############################
+install_raspbian_linux_distro_type01() {
+	#https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
+	#https://mirrors.tuna.tsinghua.edu.cn/raspbian-images/raspbian_full/root.tar.xz
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed 's@lxc-images.*rootfs.tar.xz@raspbian-images/raspbian_lite/root.tar.xz@g' |
+		sed 's:/sid:/buster:g' |
+		sed 's@#deb http@deb http@g' |
+		sed 's/.*sid main/#&/' |
+		sed 's/debian system/raspbian system/g' |
+		sed 's:debian-sid:raspbian-buster:g' |
+		sed 's:debian/sid:debian/buster:g' |
+		sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
+}
+##################
+install_raspbian_linux_distro_type02() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed '72 a\ARCH_TYPE="armhf"' |
 		sed 's:/sid:/buster:g' |
@@ -2720,7 +2743,7 @@ install_raspbian_linux_distro() {
 		sed 's:debian/sid:debian/buster:g' |
 		sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
 }
-############################
+#############
 install_manjaro_linux_distro() {
 	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'amd64' ]; then
 		echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配"
