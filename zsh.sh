@@ -185,6 +185,7 @@ printf "$RESET"
 ###############
 configure_power_level_10k() {
     echo "Configuring zsh theme 正在配置zsh主题(powerlevel 10k)..."
+    echo "github.com/romkatv/powerlevel10k"
     mkdir -p ${HOME}/.oh-my-zsh/custom/themes
     cd ${HOME}/.oh-my-zsh/custom/themes
     rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
@@ -268,6 +269,7 @@ if [ "${LINUX_DISTRO}" = "debian" ]; then
 fi
 ############################
 echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
+echo "github.com/zsh-users/zsh-syntax-highlighting"
 rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
 mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
 
@@ -277,6 +279,7 @@ grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ${HOME}/.zshrc >/d
 #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${HOME}/.zshrc
 #######################
 echo "正在克隆zsh-autosuggestions自动补全插件..."
+echo "github.com/zsh-users/zsh-autosuggestions"
 rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
 
 git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestionszsh-autosuggestions
@@ -286,6 +289,8 @@ grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.z
 #####################################
 configure_fzf_tab_plugin() {
     if [ $(command -v fzf) ]; then
+    echo "正在克隆fzf-tab自动补全插件..."
+    echo "github.com/Aloxaf/fzf-tab"
         if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
             sed -i '/fzf-tab.zsh/d' "${HOME}/.zshrc"
             git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" || git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
