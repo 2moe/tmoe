@@ -2943,6 +2943,34 @@ download_manjaro_pkg() {
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
 }
 ############
+link_to_debian_wallpaper() {
+	if [ -e "/usr/share/backgrounds/kali/" ]; then
+		if [ -d "${HOME}/图片" ]; then
+			ln -sf /usr/share/backgrounds/kali/ ${HOME}/图片/kali
+		else
+			mkdir -p ${HOME}/Pictures
+			ln -sf /usr/share/backgrounds/kali/ ${HOME}/Pictures/kali
+		fi
+	fi
+	#########
+	DEBIAN_MOONLIGHT='/usr/share/desktop-base/moonlight-theme/wallpaper/contents/images/'
+	if [ -e "${DEBIAN_MOONLIGHT}" ]; then
+		if [ -d "${HOME}/图片" ]; then
+			ln -sf ${DEBIAN_MOONLIGHT} ${HOME}/图片/debian-moonlight
+		else
+			ln -sf ${DEBIAN_MOONLIGHT} ${HOME}/Pictures/debian-moonlight
+		fi
+	fi
+	DEBIAN_LOCK_SCREEN='/usr/share/desktop-base/lines-theme/lockscreen/contents/images/'
+	if [ -e "${DEBIAN_LOCK_SCREEN}" ]; then
+		if [ -d "${HOME}/图片" ]; then
+			ln -sf ${DEBIAN_LOCK_SCREEN} ${HOME}/图片/debian-lockscreen
+		else
+			ln -sf ${DEBIAN_LOCK_SCREEN} ${HOME}/Pictures/debian-lockscreen
+		fi
+	fi
+}
+#########
 download_manjaro_wallpaper() {
 	THEME_NAME='manjaro-2018'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
@@ -2958,6 +2986,7 @@ download_manjaro_wallpaper() {
 	CUSTOM_WALLPAPER_NAME='wallpapers-2017'
 	move_wallpaper_model_01
 	##################
+	link_to_debian_wallpaper
 	download_arch_wallpaper
 }
 #########
