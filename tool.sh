@@ -1517,7 +1517,9 @@ modify_xfce_window_scaling_factor() {
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
-		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
+		if ((${TARGET} > 1)); then
+			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
+		fi
 		echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
 	else
 		echo '检测到您取消了操作'
@@ -5085,7 +5087,7 @@ xfce4_hidpi_setting() {
 		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
 		sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
 		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
-
+		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2
 		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
 		startvnc >/dev/null 2>&1
