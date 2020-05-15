@@ -2394,6 +2394,11 @@ install_xfce4_desktop() {
 	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 		download_kali_themes_common
 	fi
+	##############
+	if [ ! -e "/usr/share/icons/Papirus" ]; then
+		download_papirus_icon_theme
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+	fi
 
 	if [ ! -e "/usr/share/xfce4/terminal/colorschemes/Monokai Remastered.theme" ]; then
 		cd /usr/share/xfce4/terminal
@@ -2822,6 +2827,10 @@ remove_browser() {
 }
 #############################################
 #############################################
+set_default_xfce_icon_theme() {
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s ${XFCE_ICRO_NAME} 2>/dev/null
+}
+###############
 configure_theme() {
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
@@ -2886,6 +2895,8 @@ download_paper_icon_theme() {
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/'
 	download_theme_model_02
 	update_icon_caches_model_02
+	XFCE_ICRO_NAME='Paper'
+	set_default_xfce_icon_theme
 }
 #############
 download_papirus_icon_theme() {
@@ -2895,6 +2906,8 @@ download_papirus_icon_theme() {
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/p/papirus-icon-theme/'
 	download_theme_model_01
 	update_icon_caches_model_01
+	XFCE_ICRO_NAME='Papirus'
+	set_default_xfce_icon_theme
 }
 ############################
 update_icon_caches_model_02() {
@@ -2944,6 +2957,8 @@ download_raspbian_pixel_wallpaper() {
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
 	download_theme_model_01
 	move_wallpaper_model_01
+	XFCE_ICRO_NAME='PiX'
+	set_default_xfce_icon_theme
 }
 ########
 download_deepin_wallpaper() {
@@ -3060,6 +3075,8 @@ download_kali_theme() {
 		download_kali_themes_common
 	fi
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
+	XFCE_ICRO_NAME='Flat-Remix-Blue-Light'
+	set_default_xfce_icon_theme
 }
 ##################
 download_win10x_theme() {
@@ -3081,6 +3098,8 @@ download_win10x_theme() {
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McWe10X
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
+	XFCE_ICRO_NAME='We10X'
+	set_default_xfce_icon_theme
 }
 ###################
 download_uos_icon_theme() {
@@ -3107,6 +3126,8 @@ download_uos_icon_theme() {
 	echo ${GITHUB_URL}
 	rm -rf /tmp/UosICONS
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${PACKAGES_REMOVE_COMMAND} deepin-icon-theme"
+	XFCE_ICRO_NAME='Uos'
+	set_default_xfce_icon_theme
 }
 #####################
 download_macos_mojave_theme() {
@@ -3129,6 +3150,8 @@ download_macos_mojave_theme() {
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McMojave
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
+	XFCE_ICRO_NAME='McMojave-circle'
+	set_default_xfce_icon_theme
 }
 #######################
 download_ukui_theme() {
@@ -3156,6 +3179,8 @@ download_ukui_theme() {
 	else
 		echo '请前往外观设置手动修改图标'
 	fi
+	XFCE_ICRO_NAME='ukui-icon-theme'
+	set_default_xfce_icon_theme
 	#gtk-update-icon-cache /usr/share/icons/ukui-icon-theme/ 2>/dev/null
 	#echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} ukui-themes"
 }
@@ -3209,6 +3234,8 @@ install_kali_undercover() {
 		rm -rf /tmp/.kali-undercover-win10-theme
 		#rm -f ./kali-undercover.deb
 	fi
+	XFCE_ICRO_NAME='Windows 10'
+	set_default_xfce_icon_theme
 }
 ############################################
 modify_to_kali_sources_list() {
