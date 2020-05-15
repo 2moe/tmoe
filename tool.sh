@@ -2811,8 +2811,9 @@ configure_theme() {
 		"7" "Kali：kali-Flat-Remix-Blue主题" \
 		"8" "pixel:raspberrypi树莓派" \
 		"9" "deepin:深度系统壁纸包" \
-		"10" "paper图标包:灵动于纸张之上" \
-		"11" "arch/elementary/manjaro系统壁纸包" \
+		"10" "paper:简约、灵动、现代化的图标包" \
+		"11" "papirus:优雅的图标包,基于paper" \
+		"12" "arch/elementary/manjaro系统壁纸包" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	########################
@@ -2828,7 +2829,8 @@ configure_theme() {
 	8) download_raspbian_pixel_icon_theme ;;
 	9) download_deepin_wallpaper ;;
 	10) download_paper_icon_theme ;;
-	11) download_manjaro_wallpaper ;;
+	11) download_papirus_icon_theme ;;
+	12) download_manjaro_wallpaper ;;
 	esac
 	######################################
 	press_enter_to_return
@@ -2862,6 +2864,14 @@ download_paper_icon_theme() {
 	update_icon_caches_model_02
 }
 #############
+download_papirus_icon_theme() {
+	THEME_NAME='papirus_icon_theme'
+	ICON_NAME='Papirus /usr/share/icons/Papirus-Dark /usr/share/icons/Papirus-Light'
+	GREP_NAME='papirus-icon-theme'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/p/papirus-icon-theme/'
+	download_theme_model_01
+	update_icon_caches_model_01
+}
 ############################
 update_icon_caches_model_02() {
 	tar -Jxvf /tmp/.${THEME_NAME}/${THE_LATEST_THEME_VERSION} 2>/dev/null
