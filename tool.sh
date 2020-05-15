@@ -1461,6 +1461,7 @@ modify_other_vnc_conf() {
 		"3" "Edit xstartup manually 手动编辑xstartup" \
 		"4" "Edit startvnc manually 手动编辑vnc启动脚本" \
 		"5" "修复VNC闪退" \
+		"6" "调整屏幕缩放比例(仅支持xfce)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########
@@ -1501,9 +1502,29 @@ modify_other_vnc_conf() {
 	if [ "${MODIFYOTHERVNCCONF}" == '5' ]; then
 		fix_vnc_dbus_launch
 	fi
+	###############
+	if [ "${MODIFYOTHERVNCCONF}" == '6' ]; then
+		modify_xfce_window_scaling_factor
+	fi
+	##########
+	press_enter_to_return
+	modify_other_vnc_conf
 	##########
 }
 #########################
+modify_xfce_window_scaling_factor() {
+	TARGET=$(whiptail --inputbox "请输入您需要缩放的比例大小(纯数字)，当前仅支持整数倍，例如1和2，不支持1.5" 10 50 --title "Window Scaling Factor" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
+		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
+		echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
+	else
+		echo '检测到您取消了操作'
+		cat ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml | grep 'WindowScalingFactor' | grep 'value='
+	fi
+}
+##################
 modify_vnc_pulse_audio() {
 	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1) \n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
 	exitstatus=$?
@@ -2976,14 +2997,14 @@ download_manjaro_wallpaper() {
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
 	download_manjaro_pkg
 	WALLPAPER_NAME='backgrounds/wallpapers-2018'
-	CUSTOM_WALLPAPER_NAME='wallpapers-2018'
+	CUSTOM_WALLPAPER_NAME='manjaro-2018'
 	move_wallpaper_model_01
 	##############
 	THEME_NAME='manjaro-2017'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/manjaro-sx-wallpapers-20171023-1-any.pkg.tar.xz'
 	download_manjaro_pkg
 	WALLPAPER_NAME='backgrounds'
-	CUSTOM_WALLPAPER_NAME='wallpapers-2017'
+	CUSTOM_WALLPAPER_NAME='manjaro-2017'
 	move_wallpaper_model_01
 	##################
 	link_to_debian_wallpaper
@@ -5007,6 +5028,7 @@ first_configure_startvnc() {
 	startvnc
 	echo "您之后可以输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
 	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来启动xsdl，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+	xfce4_hidpi_setting
 	if [ "${HOME}" != "/root" ]; then
 		cp -rpf ~/.vnc /root/ &
 		chown -R root:root /root/.vnc &
@@ -5055,6 +5077,21 @@ first_configure_startvnc() {
 }
 ########################
 ########################
+xfce4_hidpi_setting() {
+	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
+		echo "检测到您当前的桌面环境为xfce4，将为您自动调整高分屏设定"
+		echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+		stopvnc >/dev/null 2>&1
+		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+		sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
+		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+
+		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2
+		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
+		startvnc >/dev/null 2>&1
+	fi
+}
+####################
 frequently_asked_questions() {
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 15 60 5 \
