@@ -1519,6 +1519,7 @@ modify_xfce_window_scaling_factor() {
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
 		if ((${TARGET} > 1)); then
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
+			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Dark-xHiDPI
 		fi
 		echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
 	else
@@ -5090,8 +5091,10 @@ xfce4_hidpi_setting() {
 		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2
 		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
+		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Dark-xHiDPI
 		startvnc >/dev/null 2>&1
 	fi
+	#Default-xhdpi默认处于未激活状态
 }
 ####################
 frequently_asked_questions() {
