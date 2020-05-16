@@ -2885,7 +2885,9 @@ update_icon_caches_model_01() {
 	cd /
 	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
 	rm -rf /tmp/.${THEME_NAME}
-	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null
+	updating icon caches...
+	echo "正在刷新图标缓存..."
+	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
 ############
@@ -2902,7 +2904,7 @@ download_paper_icon_theme() {
 #############
 download_papirus_icon_theme() {
 	THEME_NAME='papirus_icon_theme'
-	ICON_NAME='Papirus /usr/share/icons/Papirus-Dark /usr/share/icons/Papirus-Light'
+	ICON_NAME='Papirus /usr/share/icons/Papirus-Dark /usr/share/icons/Papirus-Light /usr/share/icons/ePapirus'
 	GREP_NAME='papirus-icon-theme'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/p/papirus-icon-theme/'
 	download_theme_model_01
@@ -2920,7 +2922,9 @@ update_icon_caches_model_02() {
 	cp -rf usr /
 	cd /
 	rm -rf /tmp/.${THEME_NAME}
-	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null
+	updating icon caches...
+	echo "正在更新图标缓存..."
+	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
 ###############
