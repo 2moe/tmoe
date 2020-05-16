@@ -3976,7 +3976,7 @@ x11vnc_warning() {
 	echo "x11vnc可以打开tightvnc无法打开的某些应用"
 	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${BLUE}停止${RESET}"
 	echo "若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务"
-	echo "若您的宿主机为Android系统，且使用了linux deploy,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 	RETURN_TO_WHERE='configure_x11vnc'
 	do_you_want_to_continue
 	stopvnc 2>/dev/null
