@@ -3335,6 +3335,13 @@ add_debian_opt_repo() {
 }
 #######################
 explore_debian_opt_repo() {
+	if [ ! $(command -v gpg) ]; then
+		DEPENDENCY_01=""
+		DEPENDENCY_02="gpg"
+		beta_features_quick_install
+	else
+		DEPENDENCY_02=""
+	fi
 
 	if [ ! -e "/etc/apt/sources.list.d/debianopt.list" ]; then
 		add_debian_opt_repo
