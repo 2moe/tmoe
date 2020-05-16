@@ -1519,7 +1519,7 @@ modify_xfce_window_scaling_factor() {
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
 		if ((${TARGET} > 1)); then
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
-			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI
+			#dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI
 		fi
 		echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
 	else
@@ -2341,6 +2341,7 @@ kali_xfce4_extras() {
 		fi
 		apt search kali-linux
 	fi
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Flat-Remix-Blue-Light
 }
 ###################
 apt_purge_libfprint() {
@@ -2397,7 +2398,9 @@ install_xfce4_desktop() {
 	##############
 	if [ ! -e "/usr/share/icons/Papirus" ]; then
 		download_papirus_icon_theme
+		if [ "${DEBIAN_DISTRO}" != "kali" ]; then
 		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+		fi
 	fi
 
 	if [ ! -e "/usr/share/xfce4/terminal/colorschemes/Monokai Remastered.theme" ]; then
@@ -5124,11 +5127,11 @@ xfce4_tightvnc_hidpi_settings() {
 		stopvnc >/dev/null 2>&1
 		sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
 		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
-		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
 		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2
-		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
-		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI
+		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
+		#dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
 		startvnc >/dev/null 2>&1
 	fi
 	#Default-xhdpi默认处于未激活状态
