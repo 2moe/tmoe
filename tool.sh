@@ -2310,7 +2310,7 @@ configure_x11vnc_remote_desktop_session() {
 		#!/bin/bash
 		pkill dbus
 		pkill Xvfb
-		pkill pulse
+		#pkill pulse
 	EOF
 	cat >x11vncpasswd <<-'EOF'
 		#!/bin/bash
