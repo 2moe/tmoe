@@ -1516,7 +1516,7 @@ modify_xfce_window_scaling_factor() {
 	TARGET=$(whiptail --inputbox "请输入您需要缩放的比例大小(纯数字)，当前仅支持整数倍，例如1和2，不支持1.5" 10 50 --title "Window Scaling Factor" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
-		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
+		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
 		if ((${TARGET} > 1)); then
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
 			#dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI
@@ -5126,7 +5126,8 @@ xfce4_tightvnc_hidpi_settings() {
 		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
 		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
 		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
-		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2
+		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2 || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s 2
+		#-n创建一个新属性，类型为int
 		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
 		#dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
 		startvnc >/dev/null 2>&1
