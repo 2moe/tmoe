@@ -689,35 +689,62 @@ tmoe_manager_main_menu() {
 ##########################
 vnc_can_not_call_pulse_audio() {
 	echo "若您启动VNC后，发现无音频。首先请确保您的termux为最新版本，并安装了termux:api"
-	echo "x11vnc可能会自动终止音频服务进程，若您的宿主机为Android系统，请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
-	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}即可启动音频服务"
+	echo "若您的宿主机为Android系统，且使用了Linux Deploy,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 	echo "您亦可输${GREEN}pulseaudio --start${RESET}"
 	echo "按回车键自动执行上述命令"
-	RETURN_TO_WHERE=frequently_asked_questions
 	do_you_want_to_continue
 	pulseaudio --start
 }
+###############
+linux_deploy_pulse_server() {
+	echo "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具(Tmoe-linux tool)覆盖安装桌面环境"
+	#echo "覆盖安装之后，您需要通过本工具进行VNC和音频服务的配置"
+	echo "接下来您需要设定一个您独有的启动命令，例如startl"
+	echo "您之后可以在termux里输入此命令来启动Linux Deploy以及音频服务"
+	do_you_want_to_continue
+	TARGET=$(whiptail --inputbox "请自定义启动命令名称\n Please enter the command name." 12 50 --title "COMMAND" 3>&1 1>&2 2>&3)
+	CUT_TARGET="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	if [ "$?" != "0" ]; then
+		echo "检测到您取消了操作"
+	fi
+	cd $PREFIX/bin
+	echo ${CUT_TARGET}
+	cat >"${CUT_TARGET}" <<-'EndofFile'
+		pulseaudio --kill 2>/dev/null &
+		pulseaudio --start 2>/dev/null &
+		echo "pulseaudio服务启动完成，将为您自动打开LinuxDeploy,请点击“启动”。"
+				am start -n ru.meefik.linuxdeploy/ru.meefik.linuxdeploy.Launcher
+				sleep 6
+				am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+	EndofFile
+	chmod +x ${CUT_TARGET}
+	ls -lh ${PREFIX}/bin/${CUT_TARGET}
+	echo "Congratulations!配置成功，您之后可以输${CUT_TARGET}来启动"
+}
 ##########################
 frequently_asked_questions() {
+	RETURN_TO_WHERE=frequently_asked_questions
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 15 60 5 \
 		"1" "VNC无法调用音频" \
+		"2" "给Linux Deploy配置VNC音频" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_FAQ}" in
 	0) tmoe_manager_main_menu ;;
 	1) vnc_can_not_call_pulse_audio ;;
+	2) linux_deploy_pulse_server ;;
 	esac
 	############################
-	if [ "$?" = '0' ]; then
+	if [ "$?" = '255' ]; then
 		tmoe_manager_main_menu
 	fi
 	#############
 	press_enter_to_return
 	tmoe_manager_main_menu
 }
-###############
+###########################
 install_proot_container() {
 	rm -f ~/.Chroot-Container-Detection-File
 	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
