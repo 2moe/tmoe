@@ -2397,7 +2397,7 @@ install_xfce4_desktop() {
 	if [ ! -e "/usr/share/icons/Papirus" ]; then
 		download_papirus_icon_theme
 		if [ "${DEBIAN_DISTRO}" != "kali" ]; then
-		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+			dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
 		fi
 	fi
 
@@ -3962,7 +3962,7 @@ configure_x11vnc() {
 	if [ "${TMOE_OPTION}" == '7' ]; then
 		echo "输startx11vnc启动x11vnc"
 		echo "输stopvnc或stopx11vnc停止x11vnc"
-		echo "经测试x11vnc会自动停止pulseaudio服务，若您的宿主机为Android系统，则请在启动完成后，手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+		echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 		echo "您亦可输${GREEN}pulseaudio --start${RESET}"
 	fi
 	########################################
