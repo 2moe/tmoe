@@ -2885,7 +2885,7 @@ update_icon_caches_model_01() {
 	cd /
 	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
 	rm -rf /tmp/.${THEME_NAME}
-	updating icon caches...
+	echo "updating icon caches..."
 	echo "正在刷新图标缓存..."
 	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
@@ -2922,8 +2922,8 @@ update_icon_caches_model_02() {
 	cp -rf usr /
 	cd /
 	rm -rf /tmp/.${THEME_NAME}
-	updating icon caches...
-	echo "正在更新图标缓存..."
+	echo "updating icon caches..."
+	echo "正在刷新图标缓存..."
 	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
