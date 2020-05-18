@@ -230,7 +230,7 @@ check_dependencies() {
 	##############
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
-		echo "正在安装相关依赖..."
+		echo "正在安装相关软件包及其依赖..."
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
@@ -1965,14 +1965,7 @@ windows_manager_install() {
 		fi
 		;;
 	03)
-		DEPENDENCY_01='fvwm'
-		REMOTE_DESKTOP_SESSION_01='fvwm'
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='fvwm fvwm-icons'
-			if grep -Eq 'Buster|Bullseye' /etc/os-release; then
-				DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
-			fi
-		fi
+		install_fvwm
 		;;
 	04)
 		DEPENDENCY_01='awesome'
@@ -2207,6 +2200,34 @@ windows_manager_install() {
 	tmoe_linux_tool_menu
 }
 ##########################
+install_fvwm() {
+	DEPENDENCY_01='fvwm'
+	REMOTE_DESKTOP_SESSION_01='fvwm'
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_01='fvwm fvwm-icons'
+		REMOTE_DESKTOP_SESSION_01='fvwm-crystal'
+		if grep -Eq 'buster|bullseye|bookworm' /etc/os-release; then
+			DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
+		else
+			REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/f/fvwm-crystal/'
+			GREP_NAME='all'
+			download_deb_comman_model_01
+			if [ $(command -v fvwm-crystal) ]; then
+				REMOTE_DESKTOP_SESSION_01='fvwm-crystal'
+			fi
+		fi
+	fi
+}
+#################
+download_deb_comman_model_01() {
+	cd /tmp/
+	THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
+	echo ${THE_LATEST_DEB_LINK}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+	apt install ./${THE_LATEST_DEB_VERSION}
+	rm -f ${THE_LATEST_DEB_VERSION}
+}
 ###################
 other_desktop() {
 	BETA_DESKTOP=$(whiptail --title "Alpha features" --menu \
@@ -2343,11 +2364,24 @@ kali_xfce4_extras() {
 }
 ###################
 apt_purge_libfprint() {
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
+	if [ "${LINUX_DISTRO}" = "debian" ] && [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		apt purge -y ^libfprint
 		apt clean
 		apt autoclean
 	fi
+}
+###################
+debian_xfce4_extras() {
+	if [ ! $(command -v catfish) ]; then
+		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} catfish ${RESET}"
+		${PACKAGES_INSTALL_COMMAND} catfish
+	fi
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
+			kali_xfce4_extras
+		fi
+	fi
+	apt_purge_libfprint
 }
 ##################
 install_xfce4_desktop() {
@@ -2385,10 +2419,7 @@ install_xfce4_desktop() {
 	##################
 	beta_features_quick_install
 	####################
-	if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-		kali_xfce4_extras
-	fi
-	apt_purge_libfprint
+	debian_xfce4_extras
 	#################
 	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 		download_kali_themes_common
@@ -5393,7 +5424,7 @@ beta_features_quick_install() {
 		fi
 	fi
 	###############
-	echo "即将为您安装相关依赖..."
+	echo "即将为您安装相关软件包及其依赖..."
 	echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
 	echo "Tmoe-linux tool will install relevant dependencies for you."
 	############

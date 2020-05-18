@@ -90,7 +90,7 @@ if [ ! -e /bin/zsh ]; then
 fi
 #############################
 if [ ! -z "${DEPENDENCIES}" ]; then
-    echo "正在安装相关依赖..."
+    echo "正在安装相关软件包及其依赖..."
 
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         apt update

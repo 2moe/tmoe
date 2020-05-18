@@ -305,7 +305,7 @@ gnu_linux() {
 				esac
 			fi
 		fi
-		echo "正在安装相关依赖..."
+		echo "正在安装相关软件包及其依赖..."
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
@@ -562,7 +562,7 @@ android_termux() {
 				esac
 			fi
 		fi
-		echo "正在安装相关依赖..."
+		echo "正在安装相关软件包及其依赖..."
 		apt update
 		apt install -y ${DEPENDENCIES}
 	fi
