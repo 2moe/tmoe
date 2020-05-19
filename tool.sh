@@ -2919,7 +2919,7 @@ update_icon_caches_model_01() {
 	rm -rf /tmp/.${THEME_NAME}
 	echo "updating icon caches..."
 	echo "正在刷新图标缓存..."
-	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
+	gtk-update-icon-cache /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
 ############
@@ -2956,7 +2956,7 @@ update_icon_caches_model_02() {
 	rm -rf /tmp/.${THEME_NAME}
 	echo "updating icon caches..."
 	echo "正在刷新图标缓存..."
-	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
+	gtk-update-icon-cache /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
 ###############
@@ -3136,7 +3136,7 @@ download_win10x_theme() {
 	cd /tmp/.WINDOWS_10X_ICON_THEME
 	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf We10X.tar.xz -C /usr/share/icons 2>/dev/null
-	update-icon-caches /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null
+	gtk-update-icon-cache /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null &
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McWe10X
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
@@ -3164,7 +3164,7 @@ download_uos_icon_theme() {
 	cd /tmp/UosICONS
 	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
-	update-icon-caches /usr/share/icons/Uos 2>/dev/null
+	gtk-update-icon-cache /usr/share/icons/Uos 2>/dev/null &
 	echo ${GITHUB_URL}
 	rm -rf /tmp/UosICONS
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${PACKAGES_REMOVE_COMMAND} deepin-icon-theme"
@@ -3188,7 +3188,7 @@ download_macos_mojave_theme() {
 	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes 2>/dev/null
 	tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons 2>/dev/null
-	update-icon-caches /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null
+	gtk-update-icon-cache /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null &
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McMojave
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
@@ -3210,9 +3210,9 @@ download_ukui_theme() {
 		busybox ar xv 'ukui-themes.deb'
 		cd /
 		tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
-		#if which update-icon-caches >/dev/null 2>&1; then
-		update-icon-caches /usr/share/icons/ukui-icon-theme-basic /usr/share/icons/ukui-icon-theme-classical /usr/share/icons/ukui-icon-theme-default
-		update-icon-caches /usr/share/icons/ukui-icon-theme
+		#if which gtk-update-icon-cache >/dev/null 2>&1; then
+		gtk-update-icon-cache /usr/share/icons/ukui-icon-theme-basic /usr/share/icons/ukui-icon-theme-classical /usr/share/icons/ukui-icon-theme-default 2>/dev/null &
+		gtk-update-icon-cache /usr/share/icons/ukui-icon-theme 2>/dev/null &
 		#fi
 		rm -rf /tmp/.ukui-gtk-themes
 		#apt install -y ./ukui-themes.deb
@@ -3269,8 +3269,8 @@ install_kali_undercover() {
 			busybox ar xv kali-undercover.deb
 			cd /
 			tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
-			#if which update-icon-caches >/dev/null 2>&1; then
-			update-icon-caches /usr/share/icons/Windows-10-Icons
+			#if which gtk-update-icon-cache >/dev/null 2>&1; then
+			gtk-update-icon-cache /usr/share/icons/Windows-10-Icons 2>/dev/null &
 			#fi
 		fi
 		rm -rf /tmp/.kali-undercover-win10-theme
