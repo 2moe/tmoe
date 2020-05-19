@@ -3273,8 +3273,13 @@ download_chameleon_cursor_theme() {
 }
 ##########
 upcompress_deb_file() {
-	cd /
-	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
+	if [ -e "data.tar.xz" ]; then
+		cd /
+		tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
+	elif [ -e "data.tar.gz" ]; then
+		cd /
+		tar -zxvf /tmp/.${THEME_NAME}/data.tar.gz ./usr
+	fi
 	rm -rf /tmp/.${THEME_NAME}
 }
 ####################
