@@ -2879,6 +2879,7 @@ configure_theme() {
 		"10" "paper:简约、灵动、现代化的图标包" \
 		"11" "papirus:优雅的图标包,基于paper" \
 		"12" "arch/elementary/manjaro系统壁纸包" \
+		"13" "chameleon:现代化鼠标指针主题" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	########################
@@ -2896,6 +2897,7 @@ configure_theme() {
 	10) download_paper_icon_theme ;;
 	11) download_papirus_icon_theme ;;
 	12) download_manjaro_wallpaper ;;
+	13) download_chameleon_cursor_theme ;;
 	esac
 	######################################
 	press_enter_to_return
@@ -3231,15 +3233,49 @@ install_breeze_theme() {
 	DEPENDENCY_01="breeze-icon-theme"
 	DEPENDENCY_02="breeze-cursor-theme breeze-gtk-theme xfwm4-theme-breeze"
 	NON_DEBIAN='false'
-
+	mkdir -p /tmp/.breeze_theme
+	cd /tmp/.breeze_theme
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/any/'
+	curl -Lo index.html ${THEME_URL}
+	GREP_NAME='breeze-adapta-cursor-theme-git'
+	grep_arch_linux_pkg
+	tar -Jxvf data.tar.xz 2>/dev/null
+	cp -rf usr /
+	rm -rf /tmp/.breeze_theme
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="breeze-icons breeze-gtk"
-		DEPENDENCY_02="xfwm4-theme-breeze"
+		DEPENDENCY_02="xfwm4-theme-breeze capitaine-cursors"
 		if [ $(command -v grub-install) ]; then
 			DEPENDENCY_02="${DEPENDENCY_02} breeze-grub"
 		fi
 	fi
 	beta_features_quick_install
+}
+#################
+download_chameleon_cursor_theme() {
+	THEME_NAME='breeze-cursor-theme'
+	GREP_NAME="${THEME_NAME}"
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/breeze/'
+	download_theme_model_01
+	upcompress_deb_file
+	#############
+	GREP_NAME='all'
+	THEME_NAME='chameleon-cursor-theme'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/chameleon-cursor-theme/'
+	download_theme_model_01
+	upcompress_deb_file
+	##############
+	THEME_NAME='moblin-cursor-theme'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/m/moblin-cursor-theme/'
+	download_theme_model_01
+	upcompress_deb_file
+	##########
+}
+##########
+upcompress_deb_file() {
+	cd /
+	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
+	rm -rf /tmp/.${THEME_NAME}
 }
 ####################
 install_kali_undercover() {
