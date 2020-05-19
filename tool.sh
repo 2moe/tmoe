@@ -5908,7 +5908,7 @@ install_wine64() {
 #########################
 install_aqemu() {
 	DEPENDENCY_01='qemu'
-	DEPENDENCY_02='aqemu'
+	DEPENDENCY_02='aqemu qemu-system-x86 qemu-system-gui qemu-utils qemu-block-extra'
 	beta_features_quick_install
 }
 #########
@@ -5926,7 +5926,7 @@ install_anbox() {
 	cat <<-'EndOfFile'
 		WARNING!本软件需要安装内核模块补丁,且无法保证可以正常运行!
 		安装完成后，如需卸载该模块，请手动输apt purge -y anbox-modules-dkms
-		您可以使用以下补丁，并将它们构建为模块。
+		您亦可使用以下补丁，并将它们构建为模块。
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/android-enable-building-ashmem-and-binder-as-modules.patch
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/export-symbols-needed-by-android-drivers.patch
 	EndOfFile
