@@ -67,7 +67,7 @@ check_dependencies() {
 		######################
 	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
-		PACKAGES_INSTALL_COMMAND='pacman -Sy'
+		PACKAGES_INSTALL_COMMAND='pacman -Syu --noconfirm'
 		PACKAGES_REMOVE_COMMAND='pacman -Rsc'
 		######################
 	elif grep -Eq "gentoo|funtoo" "/etc/os-release"; then
@@ -5440,9 +5440,10 @@ beta_features_quick_install() {
 }
 ####################
 beta_features() {
+	RETURN_TO_WHERE='beta_features'
 	TMOE_BETA=$(
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 5 \
-			"1" "sunpinyin+google拼音+搜狗拼音" \
+			"1" "input method输入法(搜狗,讯飞,中州韻)" \
 			"2" "WPS office(办公软件)" \
 			"3" "docker-ce:开源的应用容器引擎" \
 			"4" "VirtualBox:甲骨文开源虚拟机(x64)" \
@@ -5551,26 +5552,63 @@ beta_features() {
 }
 ####################
 install_pinyin_input_method() {
-	DEPENDENCY_01="fcitx"
-	DEPENDENCY_02='fcitx-sunpinyin fcitx-googlepinyin'
+	RETURN_TO_WHERE='install_pinyin_input_method'
 	NON_DEBIAN='false'
+	DEPENDENCY_01="fcitx"
+	INPUT_METHOD=$(
+		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 16 55 6 \
+			"1" "sogou搜狗拼音" \
+			"2" "iflyime讯飞语音+拼音+五笔" \
+			"3" "rime中州韻(擊響中文之韻)" \
+			"4" "libpinyin(提供智能整句输入算法核心)" \
+			"5" "sunpinyin(基于统计学语言模型)" \
+			"6" "google谷歌拼音(引擎fork自Android版)" \
+			"7" "uim(Universal Input Method)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	case ${INPUT_METHOD} in
+	0) beta_features ;;
+	1) install_sogou_pinyin ;;
+	2) install_iflyime_pinyin ;;
+	3) install_rime_pinyin ;;
+	4) install_lib_pinyin ;;
+	5) install_sun_pinyin ;;
+	6) install_google_pinyin ;;
+	7) install_uim_pinyin ;;
+	esac
+	###############
+	press_enter_to_return
+	beta_features
+}
+########################
+install_uim_pinyin() {
+	DEPENDENCY_01='uim uim-mozc'
+	DEPENDENCY_02='uim-pinyin'
 	beta_features_quick_install
-	#apt install -y fcitx-sunpinyin  fcitx fcitx-googlepinyin
-	#################
-	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01="fcitx-sogoupinyin"
-		DEPENDENCY_02=''
-		beta_features_quick_install
-		echo "fcitx-sogoupinyin安装完成,按回车键返回"
-		read
-		beta_features
-	fi
-	#################
-	non_debian_function
-	echo "检测到您的系统支持安装sogou-pinyin"
-	echo "是否继续安装搜狗拼音?"
-	RETURN_TO_WHERE='beta_features'
-	do_you_want_to_continue
+}
+###########
+install_rime_pinyin() {
+	DEPENDENCY_02='fcitx-rime'
+	beta_features_quick_install
+}
+#############
+install_lib_pinyin() {
+	DEPENDENCY_02='fcitx-libpinyin'
+	beta_features_quick_install
+}
+######################
+install_sun_pinyin() {
+	DEPENDENCY_02='fcitx-sunpinyin'
+	beta_features_quick_install
+}
+###########
+install_google_pinyin() {
+	DEPENDENCY_02='fcitx-googlepinyin'
+	beta_features_quick_install
+}
+###########
+install_debian_sogou_pinyin() {
 	DEPENDENCY_02="${DEPENDENCY_02} sogoupinyin"
 	###################
 	if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
@@ -5595,7 +5633,61 @@ install_pinyin_input_method() {
 	rm -fv sogou_pinyin.deb
 	beta_features_install_completed
 }
+########
+install_sogou_pinyin() {
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
+		DEPENDENCY_02="fcitx-sogoupinyin"
+		beta_features_quick_install
+		configure_arch_fcitx
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		install_debian_sogou_pinyin
+	else
+		non_debian_function
+	fi
+}
 ############
+configure_arch_fcitx() {
+	if [ ! -e "${HOME}/.xprofile" ]; then
+		echo '' >${HOME}/.xprofile
+	fi
+
+	sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile
+	sed -i 's/^export QT_IM_MODULE=.*/#&/' ${HOME}/.xprofile
+	sed -i 's/^export XMODIFIERS=.*/#&/' ${HOME}/.xprofile
+	cat >>${HOME}/.xprofile <<-'EOF'
+		export GTK_IM_MODULE=fcitx
+		export QT_IM_MODULE=fcitx
+		export XMODIFIERS="@im=fcitx"
+	EOF
+}
+##############
+install_debian_iflyime_pinyin() {
+	DEPENDENCY_02="iflyime"
+	beta_features_quick_install
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/i/iflyime/'
+		GREP_NAME="${ARCH_TYPE}"
+		download_deb_comman_model_01
+	else
+		arch_does_not_support
+		echo "请在更换x64架构的设备后，再来尝试"
+	fi
+}
+#############
+install_iflyime_pinyin() {
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
+		DEPENDENCY_02="iflyime"
+		beta_features_quick_install
+		configure_arch_fcitx
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		install_debian_iflyime_pinyin
+	else
+		non_debian_function
+	fi
+}
+################
 install_gnome_system_monitor() {
 	DEPENDENCY_01="gnome-system-monitor"
 	DEPENDENCY_02="gnome-nettool"
