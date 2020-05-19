@@ -5785,7 +5785,7 @@ download_android_x86_file() {
 download_debian_iso_file() {
 	DEBIAN_FREE='unkown'
 	DEBIAN_ARCH=$(
-		whiptail --title "architecture" --menu "请选择您需要下载的架构，non-free版包含了非自由固件(例如闭源无线网卡驱动等)" 16 55 6 \
+		whiptail --title "architecture" --menu "请选择您需要下载的架构版本，non-free版包含了非自由固件(例如闭源无线网卡驱动等)" 16 55 6 \
 			"1" "x64(non-free,unofficial)" \
 			"2" "x86(non-free,unofficial)" \
 			"3" "x64(free)" \
@@ -5908,7 +5908,7 @@ install_wine64() {
 #########################
 install_aqemu() {
 	DEPENDENCY_01='qemu'
-	DEPENDENCY_02='aqemu qemu-system-x86 qemu-system-gui qemu-utils qemu-block-extra'
+	DEPENDENCY_02='aqemu qemu-system-x86 qemu-system-arm qemu-system-gui qemu-utils qemu-block-extra'
 	beta_features_quick_install
 }
 #########
