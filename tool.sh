@@ -2189,7 +2189,7 @@ windows_manager_install() {
 		;;
 	esac
 	##########################
-	if [ "$?" = '255' ]; then
+	if [ -z "${BETA_DESKTOP}" ]; then
 		standand_desktop_install
 	fi
 	#############
@@ -3434,11 +3434,11 @@ explore_debian_opt_repo() {
 		"8" "picgo:图床上传工具" \
 		"9" "other其他软件" \
 		"10" "remove移除本仓库" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############
 	case "${INSTALL_APP}" in
-	0) tmoe_linux_tool_menu ;;
+	0) other_software ;;
 	1) install_coco_music ;;
 	2) install_iease_music ;;
 	3) install_electron_netease_cloud_music ;;
@@ -3451,7 +3451,7 @@ explore_debian_opt_repo() {
 	10) remove_debian_opt_repo ;;
 	esac
 	##########################
-	if [ "$?" = '255' ]; then
+	if [ -z "${INSTALL_APP}" ]; then
 		other_software
 	fi
 	#############

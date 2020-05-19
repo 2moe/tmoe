@@ -743,7 +743,7 @@ frequently_asked_questions() {
 	2) linux_deploy_pulse_server ;;
 	esac
 	############################
-	if [ "$?" = '255' ]; then
+	if [ -z ${TMOE_FAQ} ]; then
 		tmoe_manager_main_menu
 	fi
 	#############
