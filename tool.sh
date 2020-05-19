@@ -359,7 +359,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200520-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持下载并烧录iso文件" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200520-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -5926,7 +5926,7 @@ install_anbox() {
 	cat <<-'EndOfFile'
 		WARNING!本软件需要安装内核模块补丁,且无法保证可以正常运行!
 		安装完成后，如需卸载该模块，请手动输apt purge -y anbox-modules-dkms
-		如果您不希望内核中内置这些模块，则可以使用以下补丁，并将它们构建为模块。
+		您可以使用以下补丁，并将它们构建为模块。
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/android-enable-building-ashmem-and-binder-as-modules.patch
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/export-symbols-needed-by-android-drivers.patch
 	EndOfFile
