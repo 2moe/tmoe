@@ -359,7 +359,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200515-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200520-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持下载并烧录iso文件" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -5486,8 +5486,7 @@ beta_features() {
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 5 \
 			"1" "input method输入法(搜狗,讯飞,中州韻)" \
 			"2" "WPS office(办公软件)" \
-			"3" "docker-ce:开源的应用容器引擎" \
-			"4" "VirtualBox:甲骨文开源虚拟机(x64)" \
+			"3" "container/VM(docker容器,qemu,vbox虚拟机)" \
 			"5" "gparted:磁盘分区工具" \
 			"6" "OBS-Studio(录屏软件)" \
 			"7" "typora(markdown编辑器)" \
@@ -5506,92 +5505,458 @@ beta_features() {
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
+	##########
+	case ${TMOE_BETA} in
+	0) tmoe_linux_tool_menu ;;
+	1) install_pinyin_input_method ;;
+	2) install_wps_office ;;
+	3) install_container_and_virtual_machine ;;
+	4) install_listen1 ;;
+	5) install_gparted ;;
+	6) install_obs_studio ;;
+	7) install_typora ;;
+	8) install_electronic_wechat ;;
+	9) install_qbitorrent ;;
+	10) install_plasma_discover ;;
+	11) install_gnome_software ;;
+	12) install_calibre ;;
+	13) thunar_nautilus_dolphion ;;
+	14) install_krita ;;
+	15) install_openshot ;;
+	16) install_fbreader ;;
+	17) install_gnome_system_monitor ;;
+	18) install_telegram ;;
+	19) install_grub_customizer ;;
+	esac
 	##############################
-	if [ "${TMOE_BETA}" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
-	####################
-	if [ "${TMOE_BETA}" == '1' ]; then
-		install_pinyin_input_method
-	fi
-	####################
-	if [ "${TMOE_BETA}" == '2' ]; then
-		install_wps_office
-	fi
-	####################
-	if [ "${TMOE_BETA}" == '3' ]; then
-		install_docker_ce
-	fi
-	####################
-	if [ "${TMOE_BETA}" == '4' ]; then
-		install_virtual_box
-	fi
-	###################
-	if [ "${TMOE_BETA}" == '5' ]; then
-		install_gparted
-	fi
-	####################
-	if [ "${TMOE_BETA}" == '6' ]; then
-		install_obs_studio
-	fi
-	############################
-	if [ "${TMOE_BETA}" == '7' ]; then
-		install_typora
-	fi
-	############################
-	if [ "${TMOE_BETA}" == '8' ]; then
-		install_electronic_wechat
-	fi
-	##############################
-	if [ "${TMOE_BETA}" == '9' ]; then
-		install_qbitorrent
-	fi
-	##################################
-	if [ "${TMOE_BETA}" == '10' ]; then
-		install_plasma_discover
-	fi
-	##################################
-	if [ "${TMOE_BETA}" == '11' ]; then
-		install_gnome_software
-	fi
-	############################
-	if [ "${TMOE_BETA}" == '12' ]; then
-		install_calibre
-	fi
-	######################
-	if [ "${TMOE_BETA}" == '13' ]; then
-		thunar_nautilus_dolphion
-	fi
-	##############################
-	if [ "${TMOE_BETA}" == '14' ]; then
-		install_krita
-	fi
-	################################
-	if [ "${TMOE_BETA}" == '15' ]; then
-		install_openshot
-	fi
-	# Blender在WSL2（Xserver）下测试失败，Kdenlive在VNC远程下测试成功。
-	##############################
-	if [ "${TMOE_BETA}" == '16' ]; then
-		install_fbreader
-	fi
-	##############################
-	if [ "${TMOE_BETA}" == '17' ]; then
-		install_gnome_system_monitor
-	fi
-	############################
-	if [ "${TMOE_BETA}" == '18' ]; then
-		install_telegram
-	fi
-	############################
-	if [ "${TMOE_BETA}" == '19' ]; then
-		install_grub_customizer
-	fi
 	########################################
+	# Blender在WSL2（Xserver）下测试失败，Kdenlive在VNC远程下测试成功。
 	press_enter_to_return
 	beta_features
 }
 ####################
+install_container_and_virtual_machine() {
+	RETURN_TO_WHERE='install_container_and_virtual_machine'
+	NON_DEBIAN='false'
+	VIRTUAL_TECH=$(
+		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 55 6 \
+			"1" "qemu" \
+			"2" "download iso(Android,linux等)" \
+			"3" "docker-ce:开源的应用容器引擎" \
+			"4" "VirtualBox:甲骨文开源虚拟机(x64)" \
+			"5" "wine(调用win api并即时转换)" \
+			"6" "anbox:Android in a box(测试)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0) beta_features ;;
+	1) install_aqemu ;;
+	2) download_virtual_machine_iso_file ;;
+	3) install_docker_ce ;;
+	4) install_virtual_box ;;
+	5) install_wine64 ;;
+	6) install_anbox ;;
+	esac
+	###############
+	press_enter_to_return
+	beta_features
+}
+###########
+download_virtual_machine_iso_file() {
+	RETURN_TO_WHERE='install_container_and_virtual_machine'
+	NON_DEBIAN='false'
+	cd ~
+	VIRTUAL_TECH=$(
+		whiptail --title "ISO IMAGE FILE" --menu "Which iso file do you want to download?" 16 55 6 \
+			"1" "Android x86(latest)" \
+			"2" "debian(每周自动构建,包含non-free)" \
+			"3" "ubuntu" \
+			"4" "flash iso烧录镜像文件至U盘" \
+			"5" "windows10" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0) install_container_and_virtual_machine ;;
+	1) download_android_x86_file ;;
+	2) download_debian_iso_file ;;
+	3) download_ubuntu_iso_file ;;
+	4) flash_iso_to_udisk ;;
+	5) download_windows_10_iso ;;
+	esac
+	###############
+	press_enter_to_return
+	install_container_and_virtual_machine
+}
+###########
+flash_iso_to_udisk() {
+	FILE_EXT_01='iso'
+	FILE_EXT_02='ISO'
+	START_DIR="${HOME}"
+	tmoe_file_manager
+	if [ -z ${COOKIE_FILE_PATH} ]; then
+		echo "没有指定有效的文件，请重新选择"
+	else
+		echo "您选择的iso文件为${COOKIE_FILE_PATH}"
+		ls -lah ${COOKIE_FILE_PATH}
+		check_fdisk
+	fi
+}
+################
+check_fdisk() {
+	if [ ! $(command -v fdisk) ]; then
+		DEPENDENCY_01='fdisk'
+		DEPENDENCY_02=''
+		beta_features_quick_install
+	fi
+	lsblk
+	df -h
+	fdisk -l
+	echo "${RED}WARNING！${RESET}您接下来需要选择一个${YELLOW}磁盘分区${RESET}，请复制指定磁盘的${RED}完整路径${RESET}（包含/dev）"
+	echo "若选错磁盘，将会导致该磁盘数据${RED}完全丢失！${RESET}"
+	echo "此操作${RED}不可逆${RESET}！请${GREEN}谨慎${RESET}选择！"
+	echo "建议您在执行本操作前，对指定磁盘进行${BLUE}备份${RESET}"
+	echo "若您因选错了磁盘而${YELLOW}丢失数据${RESET}，开发者${RED}概不负责！！！${RESET}"
+	do_you_want_to_continue
+	dd_flash_iso_to_udisk
+}
+################
+dd_flash_iso_to_udisk() {
+	DD_OF_TARGET=$(whiptail --inputbox "请输入磁盘路径，例如/dev/nvme0n1px或/dev/sdax,请以实际路径为准" 12 50 --title "DEVICES" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		echo "检测到您取消了操作"
+		download_virtual_machine_iso_file
+	fi
+	echo "${DD_OF_TARGET}即将被格式化，所有文件都将丢失"
+	do_you_want_to_continue
+	echo "正在烧录中，这可能需要数分钟的时间..."
+	dd <${COOKIE_FILE_PATH} >${DD_OF_TARGET}
+}
+############
+download_win10_19041_iso() {
+	if [ ! -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" ]; then
+		echo "即将为您下载10.0.19041.172 iso镜像文件..."
+		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" 'https://cdn.tmoe.me/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" 'https://m.tmoe.me/down/share/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
+	fi
+	#下面那处需要再次if,而不是else
+	if [ -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO" ]; then
+		echo "正在校验sha256sum..."
+		echo 'Verifying sha256sum ...'
+		SHA256SUMDEBIAN="$(sha256sum '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' | cut -c 1-64)"
+		CORRENTSHA256SUM='f8972cf8e3d6e7ff1abff5f7f4e3e7deeef05422c33299d911253b21e6ee2b49'
+		if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
+			echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
+			echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
+			echo 'sha256校验值不一致，请重新下载！'
+			echo 'sha256sum value is inconsistent, please download again.'
+		else
+			echo 'Congratulations,检测到sha256sum一致'
+			echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
+		fi
+	fi
+}
+############
+download_windows_10_iso() {
+	if (whiptail --title "请选择版本" --yes-button "19041" --no-button "other" --yesno "您想要下载哪个版本呢？♪(^∇^*) " 10 50); then
+		download_win10_19041_iso
+	else
+		cat <<-'EOF'
+			如需下载arm64架构的版本，那么您可以前往uupdump.ml
+			如需下载其他版本，请前往microsoft官网
+			https://www.microsoft.com/zh-cn/software-download/windows10ISO
+		EOF
+	fi
+}
+####################
+download_ubuntu_iso_file() {
+	if (whiptail --title "请选择版本" --yes-button "20.04" --no-button "自定义版本" --yesno "您是想要下载20.04还是自定义版本呢？♪(^∇^*) " 10 50); then
+		UBUNTU_VERSION='20.04'
+		download_ubuntu_latest_iso_file
+	else
+		TARGET=$(whiptail --inputbox "请输入版本号，例如18.04\n Please enter the version." 12 50 --title "UBUNTU VERSION" 3>&1 1>&2 2>&3)
+		if [ "$?" != "0" ]; then
+			echo "检测到您取消了操作"
+			UBUNTU_VERSION='20.04'
+		else
+			UBUNTU_VERSION="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+		fi
+	fi
+	download_ubuntu_latest_iso_file
+}
+#############
+download_ubuntu_latest_iso_file() {
+	UBUNTU_MIRROR='tuna'
+	UBUNTU_EDITION=$(
+		whiptail --title "UBUNTU EDITION" --menu "请选择您需要下载的版本？Which edition do you want to install?" 16 55 6 \
+			"1" "ubuntu-server(自动识别架构)" \
+			"2" "ubuntu(gnome)" \
+			"3" "xubuntu(xfce)" \
+			"4" "kubuntu(kde plasma)" \
+			"5" "lubuntu(lxqt)" \
+			"6" "ubuntu-mate" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	####################
+	case ${UBUNTU_EDITION} in
+	0) download_virtual_machine_iso_file ;;
+	1) UBUNTU_DISTRO='ubuntu-legacy-server' ;;
+	2) UBUNTU_DISTRO='ubuntu-gnome' ;;
+	3) UBUNTU_DISTRO='xubuntu' ;;
+	4) UBUNTU_DISTRO='kubuntu' ;;
+	5) UBUNTU_DISTRO='lubuntu' ;;
+	6) UBUNTU_DISTRO='ubuntu-mate' ;;
+	esac
+	###############
+	if [ ${UBUNTU_DISTRO} = 'ubuntu-gnome' ]; then
+		download_ubuntu_huawei_mirror_iso
+	else
+		download_ubuntu_tuna_mirror_iso
+	fi
+	press_enter_to_return
+	download_virtual_machine_iso_file
+}
+###############
+ubuntu_arm_warning() {
+	echo "请选择Server版"
+	arch_does_not_support
+	download_ubuntu_latest_iso_file
+}
+################
+aria2c_download_file() {
+	echo ${THE_LATEST_ISO_LINK}
+	cd ~
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
+}
+############
+download_ubuntu_huawei_mirror_iso() {
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/${UBUNTU_VERSION}/ubuntu-${UBUNTU_VERSION}-desktop-amd64.iso"
+	elif [ "${ARCH_TYPE}" = "i386" ]; then
+		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-desktop-i386.iso"
+	else
+		ubuntu_arm_warning
+	fi
+	aria2c_download_file
+}
+####################
+get_ubuntu_server_iso_url() {
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-legacy-server-${ARCH_TYPE}.iso"
+	elif [ "${ARCH_TYPE}" = "i386" ]; then
+		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-server-i386.iso"
+	else
+		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/ubuntu/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-live-server-${ARCH_TYPE}.iso"
+	fi
+}
+##############
+get_other_ubuntu_distros_url() {
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso"
+	elif [ "${ARCH_TYPE}" = "i386" ]; then
+		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/18.04.4/release/${UBUNTU_DISTRO}-18.04.4-desktop-i386.iso"
+	else
+		ubuntu_arm_warning
+	fi
+}
+################
+download_ubuntu_tuna_mirror_iso() {
+	if [ ${UBUNTU_DISTRO} = 'ubuntu-legacy-server' ]; then
+		get_ubuntu_server_iso_url
+	else
+		get_other_ubuntu_distros_url
+	fi
+	aria2c_download_file
+}
+#######################
+download_android_x86_file() {
+	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/osdn/android-x86/'
+	REPO_FOLDER=$(curl -L ${REPO_URL} | grep -v incoming | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
+	echo ${THE_LATEST_ISO_LINK}
+	cd ~
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
+}
+################
+download_debian_iso_file() {
+	DEBIAN_FREE='unkown'
+	DEBIAN_ARCH=$(
+		whiptail --title "architecture" --menu "请选择您需要下载的架构，non-free版包含了非自由固件(例如闭源无线网卡驱动等)" 16 55 6 \
+			"1" "x64(non-free,unofficial)" \
+			"2" "x86(non-free,unofficial)" \
+			"3" "x64(free)" \
+			"4" "x86(free)" \
+			"5" "arm64" \
+			"6" "armhf" \
+			"7" "mips" \
+			"8" "mipsel" \
+			"9" "mips64el" \
+			"10" "ppc64el" \
+			"11" "s390x" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	####################
+	case ${DEBIAN_ARCH} in
+	0) download_virtual_machine_iso_file ;;
+	1)
+		GREP_ARCH='amd64'
+		DEBIAN_FREE='false'
+		download_debian_nonfree_iso
+		;;
+	2)
+		GREP_ARCH='i386'
+		DEBIAN_FREE='false'
+		download_debian_nonfree_iso
+		;;
+	3)
+		GREP_ARCH='amd64'
+		DEBIAN_FREE='true'
+		download_debian_nonfree_iso
+		;;
+	4)
+		GREP_ARCH='i386'
+		DEBIAN_FREE='true'
+		download_debian_nonfree_iso
+		;;
+	5) GREP_ARCH='arm64' ;;
+	6) GREP_ARCH='armhf' ;;
+	7) GREP_ARCH='mips' ;;
+	8) GREP_ARCH='mipsel' ;;
+	9) GREP_ARCH='mips64el' ;;
+	10) GREP_ARCH='ppc64el' ;;
+	11) GREP_ARCH='s390x' ;;
+	esac
+	###############
+	if [ ${DEBIAN_FREE} = 'unkown' ]; then
+		download_debian_weekly_builds_iso
+	fi
+	press_enter_to_return
+	download_virtual_machine_iso_file
+}
+##################
+download_debian_nonfree_iso() {
+	DEBIAN_LIVE=$(
+		whiptail --title "architecture" --menu "您下载的镜像中需要包含何种桌面环境？" 16 55 6 \
+			"1" "cinnamon" \
+			"2" "gnome" \
+			"3" "kde plasma" \
+			"4" "lxde" \
+			"5" "lxqt" \
+			"6" "mate" \
+			"7" "standard(默认无桌面)" \
+			"8" "xfce" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	####################
+	case ${DEBIAN_LIVE} in
+	0) download_debian_iso_file ;;
+	1) DEBIAN_DE='cinnamon' ;;
+	2) DEBIAN_DE='gnome' ;;
+	3) DEBIAN_DE='kde' ;;
+	4) DEBIAN_DE='lxde' ;;
+	5) DEBIAN_DE='lxqt' ;;
+	6) DEBIAN_DE='mate' ;;
+	7) DEBIAN_DE='standard' ;;
+	8) DEBIAN_DE='xfce' ;;
+	esac
+	if [ ${DEBIAN_FREE} = 'false' ]; then
+		download_debian_nonfree_live_iso
+	else
+		download_debian_free_live_iso
+	fi
+}
+###############
+download_debian_weekly_builds_iso() {
+	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-xfce-CD-1.iso"
+	echo ${THE_LATEST_ISO_LINK}
+	cd ~
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-xfce-CD-1.iso" "${THE_LATEST_ISO_LINK}"
+}
+##################
+download_debian_free_live_iso() {
+	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso"
+	echo ${THE_LATEST_ISO_LINK}
+	cd ~
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
+}
+############
+download_debian_nonfree_live_iso() {
+	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}%2Bnonfree.iso"
+	echo ${THE_LATEST_ISO_LINK}
+	cd ~
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
+}
+#####################
+install_wine64() {
+	DEPENDENCY_01='wine winetricks q4wine'
+	DEPENDENCY_02='playonlinux wine32'
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		dpkg --add-architecture i386
+		apt update
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='winetricks-zh'
+		DEPENDENCY_02='playonlinux5-git q4wine'
+	fi
+	beta_features_quick_install
+}
+#########################
+install_aqemu() {
+	DEPENDENCY_01='qemu'
+	DEPENDENCY_02='aqemu'
+	beta_features_quick_install
+}
+#########
+download_ubuntu_ppa_deb_model_01() {
+	cd /tmp/
+	THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | head -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)"
+	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
+	echo ${THE_LATEST_DEB_LINK}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+	apt install ./${THE_LATEST_DEB_VERSION}
+	rm -fv ${THE_LATEST_DEB_VERSION}
+}
+##############
+install_anbox() {
+	cat <<-'EndOfFile'
+		WARNING!本软件需要安装内核模块补丁,且无法保证可以正常运行!
+		安装完成后，如需卸载该模块，请手动输apt purge -y anbox-modules-dkms
+		如果您不希望内核中内置这些模块，则可以使用以下补丁，并将它们构建为模块。
+		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/android-enable-building-ashmem-and-binder-as-modules.patch
+		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/export-symbols-needed-by-android-drivers.patch
+	EndOfFile
+	do_you_want_to_continue
+	DEPENDENCY_01=''
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			add-apt-repository ppa:morphis/anbox-support
+			apt update
+			apt install anbox-modules-dkms
+			apt install linux-headers-generic
+		else
+			REPO_URL='http://ppa.launchpad.net/morphis/anbox-support/ubuntu/pool/main/a/anbox-modules/'
+			GREP_NAME='all'
+			download_ubuntu_ppa_deb_model_01
+		fi
+		modprobe ashmem_linux
+		modprobe binder_linux
+		ls -1 /dev/{ashmem,binder}
+		DEPENDENCY_02='anbox'
+		beta_features_quick_install
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='anbox-modules-dkms-git'
+		DEPENDENCY_02='anbox-git'
+		beta_features_quick_install
+	else
+		non_debian_function
+	fi
+}
+##################
 install_pinyin_input_method() {
 	RETURN_TO_WHERE='install_pinyin_input_method'
 	NON_DEBIAN='false'

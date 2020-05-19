@@ -1705,7 +1705,7 @@ xwayland_warning() {
 	echo "${RED}WARNING！${RESET}本功能目前仍处于${YELLOW}测试阶段${RESET}，且需要${RED}root权限${RESET}"
 	echo "请在下载并安装完apk后，开启proot容器真实root权限功能！"
 	echo "由于目前在Android设备上只能靠软件来渲染，故实际体验将会非常糟糕！"
-	echo "同时，由于触控操作体验极差。若您无蓝牙鼠标等外接设备，则不建议您配�����本服务。"
+	echo "同时，由于触控操作体验极差。若您无蓝牙鼠标等外接设备，则不建议您配置本服务。"
 	echo "您在安装完apk后，还需进入GNU/Linux容器内，输debian-i，并选择配置xwayland的选项"
 	download_xwayland_apk
 }
