@@ -5482,11 +5482,13 @@ beta_features_quick_install() {
 ####################
 beta_features() {
 	RETURN_TO_WHERE='beta_features'
+	NON_DEBIAN='false'
 	TMOE_BETA=$(
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 5 \
 			"1" "input method输入法(搜狗,讯飞,中州韻)" \
 			"2" "WPS office(办公软件)" \
 			"3" "container/VM(docker容器,qemu,vbox虚拟机)" \
+			"4" "geogebra+kalzium(数学+化学)" \
 			"5" "gparted:磁盘分区工具" \
 			"6" "OBS-Studio(录屏软件)" \
 			"7" "typora(markdown编辑器)" \
@@ -5511,7 +5513,7 @@ beta_features() {
 	1) install_pinyin_input_method ;;
 	2) install_wps_office ;;
 	3) install_container_and_virtual_machine ;;
-	4) install_listen1 ;;
+	4) install_geogebra_and_kalzium ;;
 	5) install_gparted ;;
 	6) install_obs_studio ;;
 	7) install_typora ;;
@@ -5955,6 +5957,12 @@ install_anbox() {
 	else
 		non_debian_function
 	fi
+}
+###########
+install_geogebra_and_kalzium() {
+	DEPENDENCY_01='geogebra'
+	DEPENDENCY_02='kalzium'
+	beta_features_quick_install
 }
 ##################
 install_pinyin_input_method() {
