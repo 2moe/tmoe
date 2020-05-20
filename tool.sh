@@ -5912,8 +5912,8 @@ install_wine64() {
 	if [ "${ARCH_TYPE}" != "i386" ]; then
 		cat <<-'EOF'
 			如需完全卸载wine，那么您还需要移除i386架构的软件包。
+			apt purge "*:i386"
 			dpkg  --remove-architecture i386
-			apt purge ".*:i386"
 			apt update
 		EOF
 	fi
