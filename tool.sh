@@ -5968,6 +5968,7 @@ download_ubuntu_kylin_deb_file() {
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_SOGOU_VERSION}" "${LATEST_SOUGOU_URL}"
 	apt show ./${LATEST_SOGOU_VERSION}
 	apt install -y ./${LATEST_SOGOU_VERSION}
+	rm -fv ./${LATEST_SOGOU_VERSION}
 }
 ###################
 install_debian_sogou_pinyin() {
