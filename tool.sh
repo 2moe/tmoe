@@ -5896,9 +5896,12 @@ download_debian_nonfree_live_iso() {
 }
 #####################
 install_wine64() {
-	DEPENDENCY_01='wine winetricks q4wine'
+	DEPENDENCY_01='wine winetricks-zh q4wine'
 	DEPENDENCY_02='playonlinux wine32'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			DEPENDENCY_01='wine winetricks q4wine'
+		fi
 		dpkg --add-architecture i386
 		apt update
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -5910,7 +5913,7 @@ install_wine64() {
 #########################
 install_aqemu() {
 	DEPENDENCY_01='qemu'
-	DEPENDENCY_02='aqemu qemu-system-x86 qemu-system-arm qemu-system-gui qemu-utils qemu-block-extra'
+	DEPENDENCY_02='qemu-system-x86 qemu-system-arm qemu-system-gui qemu-utils qemu-block-extra aqemu'
 	beta_features_quick_install
 }
 #########
@@ -5927,10 +5930,11 @@ download_ubuntu_ppa_deb_model_01() {
 install_anbox() {
 	cat <<-'EndOfFile'
 		WARNING!本软件需要安装内核模块补丁,且无法保证可以正常运行!
-		安装完成后，如需卸载该模块，请手动输apt purge -y anbox-modules-dkms
 		您亦可使用以下补丁，并将它们构建为模块。
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/android-enable-building-ashmem-and-binder-as-modules.patch
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/export-symbols-needed-by-android-drivers.patch
+		若模块安装失败，则请前往官网阅读详细说明https://docs.anbox.io/userguide/install_kernel_modules.html
+		如需卸载该模块，请手动输apt purge -y anbox-modules-dkms
 	EndOfFile
 	do_you_want_to_continue
 	DEPENDENCY_01=''
