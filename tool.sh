@@ -1457,7 +1457,7 @@ modify_other_vnc_conf() {
 	fi
 	##########
 	if [ -z "${MODIFYOTHERVNCCONF}" ]; then
-		modify_xfce_window_scaling_factor
+		modify_remote_desktop_config
 	fi
 	#########
 	press_enter_to_return
