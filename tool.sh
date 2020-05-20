@@ -5484,7 +5484,7 @@ beta_features() {
 	RETURN_TO_WHERE='beta_features'
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
-		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 15 60 5 \
+		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 17 55 8 \
 			"1" "input method输入法(搜狗,讯飞,中州韻)" \
 			"2" "WPS office(办公软件)" \
 			"3" "container/VM(docker容器,qemu,vbox虚拟机)" \
@@ -5572,7 +5572,7 @@ download_virtual_machine_iso_file() {
 	cd ~
 	VIRTUAL_TECH=$(
 		whiptail --title "ISO IMAGE FILE" --menu "Which iso file do you want to download?" 16 55 6 \
-			"1" "Android x86(latest)" \
+			"1" "Android x86_64(latest)" \
 			"2" "debian(每周自动构建,包含non-free)" \
 			"3" "ubuntu" \
 			"4" "flash iso烧录镜像文件至U盘" \
@@ -5777,7 +5777,11 @@ download_ubuntu_tuna_mirror_iso() {
 download_android_x86_file() {
 	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/osdn/android-x86/'
 	REPO_FOLDER=$(curl -L ${REPO_URL} | grep -v incoming | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
-	THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+	if [ "${ARCH_TYPE}" = 'i386' ]; then
+		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep -v 'x86_64' | grep date | grep '.iso' | tail -n 1 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+	else
+		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+	fi
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
 	echo ${THE_LATEST_ISO_LINK}
 	cd ~
@@ -5787,7 +5791,7 @@ download_android_x86_file() {
 download_debian_iso_file() {
 	DEBIAN_FREE='unkown'
 	DEBIAN_ARCH=$(
-		whiptail --title "architecture" --menu "请选择您需要下载的架构版本，non-free版包含了非自由固件(例如闭源无线网卡驱动等)" 16 55 6 \
+		whiptail --title "architecture" --menu "请选择您需要下载的架构版本，non-free版包含了非自由固件(例如闭源无线网卡驱动等)" 18 55 9 \
 			"1" "x64(non-free,unofficial)" \
 			"2" "x86(non-free,unofficial)" \
 			"3" "x64(free)" \
@@ -5843,7 +5847,7 @@ download_debian_iso_file() {
 ##################
 download_debian_nonfree_iso() {
 	DEBIAN_LIVE=$(
-		whiptail --title "architecture" --menu "您下载的镜像中需要包含何种桌面环境？" 16 55 6 \
+		whiptail --title "architecture" --menu "您下载的镜像中需要包含何种桌面环境？" 16 55 8 \
 			"1" "cinnamon" \
 			"2" "gnome" \
 			"3" "kde plasma" \
@@ -5982,14 +5986,15 @@ install_pinyin_input_method() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01="fcitx"
 	INPUT_METHOD=$(
-		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 16 55 6 \
+		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
 			"1" "sogou搜狗拼音" \
 			"2" "iflyime讯飞语音+拼音+五笔" \
 			"3" "rime中州韻(擊響中文之韻)" \
-			"4" "libpinyin(提供智能整句输入算法核心)" \
-			"5" "sunpinyin(基于统计学语言模型)" \
-			"6" "google谷歌拼音(引擎fork自Android版)" \
-			"7" "uim(Universal Input Method)" \
+			"4" "baidu百度输入法" \
+			"5" "libpinyin(提供智能整句输入算法核心)" \
+			"6" "sunpinyin(基于统计学语言模型)" \
+			"7" "google谷歌拼音(引擎fork自Android版)" \
+			"8" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -5998,10 +6003,11 @@ install_pinyin_input_method() {
 	1) install_sogou_pinyin ;;
 	2) install_iflyime_pinyin ;;
 	3) install_rime_pinyin ;;
-	4) install_lib_pinyin ;;
-	5) install_sun_pinyin ;;
-	6) install_google_pinyin ;;
-	7) install_uim_pinyin ;;
+	4) install_baidu_pinyin ;;
+	5) install_lib_pinyin ;;
+	6) install_sun_pinyin ;;
+	7) install_google_pinyin ;;
+	8) install_uim_pinyin ;;
 	esac
 	###############
 	press_enter_to_return
@@ -6034,13 +6040,69 @@ install_google_pinyin() {
 	beta_features_quick_install
 }
 ###########
-install_debian_sogou_pinyin() {
-	DEPENDENCY_02="${DEPENDENCY_02} sogoupinyin"
+install_debian_baidu_pinyin() {
+	DEPENDENCY_02="fcitx-baidupinyin"
+	if [ ! $(command -v unzip) ]; then
+		${PACKAGES_INSTALL_COMMAND} unzip
+	fi
 	###################
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		mkdir /tmp/.BAIDU_IME
+		cd /tmp/.BAIDU_IME
+		THE_Latest_Link='https://imeres.baidu.com/imeres/ime-res/guanwang/img/Ubuntu_Deepin-fcitx-baidupinyin-64.zip'
+		echo ${THE_Latest_Link}
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'fcitx-baidupinyin.zip' "${THE_Latest_Link}"
+		unzip 'fcitx-baidupinyin.zip'
+		DEB_FILE_NAME="$(ls -l ./*deb | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')"
+		apt install ${DEB_FILE_NAME}
+	else
+		echo "架构不支持，跳过安装百度输入法。"
+		arch_does_not_support
+		beta_features
+	fi
+	apt install -y ./fcitx-baidupinyin.deb
+	echo "若安装失败，则请前往官网手动下载安装。"
+	echo 'url: https://srf.baidu.com/site/guanwang_linux/index.html'
+	cd /tmp
+	rm -rfv /tmp/.BAIDU_IME
+	beta_features_install_completed
+}
+########
+install_pkg_warning() {
+	echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
+	echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_02} ${RESET}"
+	press_enter_to_reinstall_yes_or_no
+}
+#############
+install_baidu_pinyin() {
+	DEPENDENCY_02="fcitx-baidupinyin"
+	if [ -e "/opt/apps/com.baidu.fcitx-baidupinyin/" ]; then
+		install_pkg_warning
+	fi
+
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
+		DEPENDENCY_02="fcitx-baidupinyin"
+		beta_features_quick_install
+		configure_arch_fcitx
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		install_debian_baidu_pinyin
+	else
+		non_debian_function
+	fi
+}
+###################
+install_debian_sogou_pinyin() {
+	DEPENDENCY_02="sogoupinyin"
+	###################
+	if [ -e "/usr/share/fcitx-sogoupinyin" ]; then
+		install_pkg_warning
+	fi
+
 	if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
 		cd /tmp
 		LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
-		echo ${LATEST_SOGOU_REPO}
+		echo ${LatestSogouPinyinLink}
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
 	elif [ "${ARCH_TYPE}" = "arm64" ]; then
 		LATEST_SOGOU_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
