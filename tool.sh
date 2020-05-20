@@ -378,75 +378,25 @@ tmoe_linux_tool_menu() {
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
-	###############################
-	if [ "${TMOE_OPTION}" == '0' ]; then
-		exit 0
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '1' ]; then
-		install_gui
-	fi
-	###################################
-	if [ "${TMOE_OPTION}" == '2' ]; then
-		install_browser
-	fi
-	###################################
-	if [ "${TMOE_OPTION}" == '3' ]; then
-		configure_theme
-	fi
-	###################################
-	if [ "${TMOE_OPTION}" == '4' ]; then
-		RETURN_TO_WHERE='other_software'
-		other_software
-	fi
-	####################
-	if [ "${TMOE_OPTION}" == '5' ]; then
-		RETURN_TO_WHERE='modify_remote_desktop_config'
-		modify_remote_desktop_config
-		#MODIFYVNCORXSDLCONF
-	fi
-	####################
-	if [ "${TMOE_OPTION}" == '6' ]; then
-		download_videos
-		#MODIFYVNCORXSDLCONF
-	fi
-	#######################################
-	if [ "${TMOE_OPTION}" == '7' ]; then
-		personal_netdisk
-	fi
-	###################################
-	if [ "${TMOE_OPTION}" == '8' ]; then
-		tmoe_linux_tool_upgrade
-	fi
-	###################################
-	if [ "${TMOE_OPTION}" == '9' ]; then
-		RETURN_TO_WHERE='which_vscode_edition'
-		which_vscode_edition
-	fi
-	#################################
-	if [ "${TMOE_OPTION}" == '10' ]; then
-		bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
-	fi
-	###################################
-	if [ "${TMOE_OPTION}" == '11' ]; then
-		remove_gui
-	fi
-	###############################
-	if [ "${TMOE_OPTION}" == '12' ]; then
-		remove_browser
-	fi
-	###############################
-	if [ "${TMOE_OPTION}" == '13' ]; then
-		frequently_asked_questions
-	fi
-	############
-	if [ "${TMOE_OPTION}" == '14' ]; then
-		modify_to_kali_sources_list
-	fi
-	###############################
-	if [ "${TMOE_OPTION}" == '15' ]; then
-		beta_features
-	fi
+	########
+	case "${TMOE_OPTION}" in
+	0 | "") exit 0 ;;
+	1) install_gui ;;
+	2) install_browser ;;
+	3) configure_theme ;;
+	4) other_software ;;
+	5) modify_remote_desktop_config ;;
+	6) download_videos ;;
+	7) personal_netdisk ;;
+	8) tmoe_linux_tool_upgrade ;;
+	9) which_vscode_edition ;;
+	10) bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')" ;;
+	11) remove_gui ;;
+	12) remove_browser ;;
+	13) frequently_asked_questions ;;
+	14) modify_to_kali_sources_list ;;
+	15) beta_features ;;
+	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
@@ -578,9 +528,11 @@ download_videos() {
 		upgrade_video_download_tool
 	fi
 	#########################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
-	read
+	if [ -z "${VIDEOTOOL}" ]; then
+		tmoe_linux_tool_menu
+	fi
+	###############
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 ###########
@@ -1068,6 +1020,7 @@ upgrade_video_download_tool() {
 }
 ##################
 which_vscode_edition() {
+	RETURN_TO_WHERE='which_vscode_edition'
 	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
 	VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
 		"${VSCODEtips} Which edition do you want to install" 15 60 5 \
@@ -1078,39 +1031,29 @@ which_vscode_edition() {
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
-	if [ "${VSCODE_EDITION}" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
-	##############################
-	if [ "${VSCODE_EDITION}" == '1' ]; then
-		if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "x86_64" ]; then
-			install_vscode_server
-		else
-			echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
-			echo "请选择其它版本"
-			arch_does_not_support
-			which_vscode_edition
-		fi
-	fi
-	##############################
-	if [ "${VSCODE_EDITION}" == '2' ]; then
-		install_vscodium
-	fi
-	##############################
-	if [ "${VSCODE_EDITION}" == '3' ]; then
-		install_vscode_oss
-	fi
-	##############################
-	if [ "${VSCODE_EDITION}" == '4' ]; then
-		install_vscode_official
-	fi
+	case "${VSCODE_EDITION}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1) check_vscode_server_arch ;;
+	2) install_vscodium ;;
+	3) install_vscode_oss ;;
+	4) install_vscode_official ;;
+	esac
 	#########################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
-	read
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 #################################
+check_vscode_server_arch() {
+	if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "x86_64" ]; then
+		install_vscode_server
+	else
+		echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
+		echo "请选择其它版本"
+		arch_does_not_support
+		which_vscode_edition
+	fi
+}
+###################
 install_vscode_server() {
 	if [ ! -e "/usr/local/bin/code-server-data/code-server" ]; then
 		if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "install安装" --no-button "Configure配置" --yesno "检测到您尚未安装vscode-server\nVisual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Java, Python, PHP, Go) and runtimes (such as .NET and Unity).  ♪(^∇^*) " 16 50); then
@@ -1178,6 +1121,10 @@ configure_vscode_server() {
 		vscode_server_remove
 	fi
 	########################################
+	if [ -z "${CODE_SERVER_OPTION}" ]; then
+		which_vscode_edition
+	fi
+	##############
 	press_enter_to_return
 	configure_vscode_server
 }
@@ -1509,6 +1456,10 @@ modify_other_vnc_conf() {
 		modify_xfce_window_scaling_factor
 	fi
 	##########
+	if [ -z "${MODIFYOTHERVNCCONF}" ]; then
+		modify_xfce_window_scaling_factor
+	fi
+	#########
 	press_enter_to_return
 	modify_other_vnc_conf
 	##########
@@ -1850,31 +1801,20 @@ standand_desktop_install() {
 		"0" "我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
-	if [ "$INSTALLDESKTOP" == '1' ]; then
+	case "${INSTALLDESKTOP}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1)
 		REMOVE_UDISK2='true'
 		install_xfce4_desktop
-	fi
-	##########################
-	if [ "$INSTALLDESKTOP" == '2' ]; then
+		;;
+	2)
 		REMOVE_UDISK2='true'
 		install_lxde_desktop
-	fi
-	##########################
-	if [ "$INSTALLDESKTOP" == '3' ]; then
-		install_mate_desktop
-	fi
-	##########################
-	if [ "$INSTALLDESKTOP" == '4' ]; then
-		other_desktop
-	fi
-	#########################
-	if [ "$INSTALLDESKTOP" == '5' ]; then
-		windows_manager_install
-	fi
-	##########################
-	if [ "$INSTALLDESKTOP" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
+		;;
+	3) install_mate_desktop ;;
+	4) other_desktop ;;
+	5) windows_manager_install ;;
+	esac
 	##########################
 	press_enter_to_return
 	tmoe_linux_tool_menu
@@ -1952,7 +1892,7 @@ windows_manager_install() {
 	)
 	##################
 	case "${BETA_DESKTOP}" in
-	0) standand_desktop_install ;;
+	0 | "") standand_desktop_install ;;
 	01)
 		DEPENDENCY_01='icewm'
 		REMOTE_DESKTOP_SESSION_01='icewm-session'
@@ -2190,10 +2130,6 @@ windows_manager_install() {
 		REMOTE_DESKTOP_SESSION_01='xfwm4'
 		;;
 	esac
-	##########################
-	if [ -z "${BETA_DESKTOP}" ]; then
-		standand_desktop_install
-	fi
 	#############
 	will_be_installed_for_you
 	beta_features_quick_install
@@ -2242,30 +2178,15 @@ other_desktop() {
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
-	if [ "${BETA_DESKTOP}" == '0' ]; then
-		standand_desktop_install
-	fi
-	##############################
-	if [ "${BETA_DESKTOP}" == '1' ]; then
-		install_lxqt_desktop
-	fi
-	##############################
-	if [ "${BETA_DESKTOP}" == '2' ]; then
-		install_kde_plasma5_desktop
-	fi
-	##############################
-	if [ "${BETA_DESKTOP}" == '3' ]; then
-		install_gnome3_desktop
-	fi
-	##############################
-	if [ "${BETA_DESKTOP}" == '4' ]; then
-		install_cinnamon_desktop
-	fi
-	##############################
-	if [ "${BETA_DESKTOP}" == '5' ]; then
-		install_deepin_desktop
-	fi
-	##########################
+	case "${BETA_DESKTOP}" in
+	0 | "") standand_desktop_install ;;
+	1) install_lxqt_desktop ;;
+	2) install_kde_plasma5_desktop ;;
+	3) install_gnome3_desktop ;;
+	4) install_cinnamon_desktop ;;
+	5) install_deepin_desktop ;;
+	esac
+	##################
 	press_enter_to_return
 	tmoe_linux_tool_menu
 }
@@ -2886,7 +2807,7 @@ configure_theme() {
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
-	0) tmoe_linux_tool_menu ;;
+	0 | "") tmoe_linux_tool_menu ;;
 	1) download_ukui_theme ;;
 	2) install_kali_undercover ;;
 	3) download_macos_mojave_theme ;;
@@ -3440,7 +3361,7 @@ explore_debian_opt_repo() {
 		3>&1 1>&2 2>&3)
 	##############
 	case "${INSTALL_APP}" in
-	0) other_software ;;
+	0 | "") other_software ;;
 	1) install_coco_music ;;
 	2) install_iease_music ;;
 	3) install_electron_netease_cloud_music ;;
@@ -3453,10 +3374,6 @@ explore_debian_opt_repo() {
 	10) remove_debian_opt_repo ;;
 	esac
 	##########################
-	if [ -z "${INSTALL_APP}" ]; then
-		other_software
-	fi
-	#############
 	press_enter_to_return
 	explore_debian_opt_repo
 }
@@ -3957,6 +3874,7 @@ install_bleachbit_cleaner() {
 ##########################
 ##########################
 modify_remote_desktop_config() {
+	RETURN_TO_WHERE='modify_remote_desktop_config'
 	if [ ! $(command -v nano) ]; then
 		DEPENDENCY_01='nano'
 		DEPENDENCY_02=""
@@ -3974,29 +3892,14 @@ modify_remote_desktop_config() {
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
-	if [ "${REMOTE_DESKTOP}" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
-	##########################
-	if [ "${REMOTE_DESKTOP}" == '1' ]; then
-		modify_vnc_conf
-	fi
-	##########################
-	if [ "${REMOTE_DESKTOP}" == '2' ]; then
-		configure_x11vnc
-	fi
-	##########################
-	if [ "${REMOTE_DESKTOP}" == '3' ]; then
-		modify_xsdl_conf
-	fi
-	##########################
-	if [ "${REMOTE_DESKTOP}" == '4' ]; then
-		modify_xrdp_conf
-	fi
-	##########################
-	if [ "${REMOTE_DESKTOP}" == '5' ]; then
-		modify_xwayland_conf
-	fi
+	case "${REMOTE_DESKTOP}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1) modify_vnc_conf ;;
+	2) configure_x11vnc ;;
+	3) modify_xsdl_conf ;;
+	4) modify_xrdp_conf ;;
+	5) modify_xwayland_conf ;;
+	esac
 	#######################
 	press_enter_to_return
 	modify_remote_desktop_config
@@ -4008,55 +3911,37 @@ configure_x11vnc() {
 			"1" "one-key configure初始化一键配置" \
 			"2" "pulse_server音频服务" \
 			"3" "resolution分辨率" \
-			"4" "startx11vnc启动脚本" \
-			"5" "stopx11vnc停止脚本" \
+			"4" "修改startx11vnc启动脚本" \
+			"5" "修改stopx11vnc停止脚本" \
 			"6" "remove 卸载/移除" \
 			"7" "readme 进程管理说明" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
-	if [ "${TMOE_OPTION}" == '0' ]; then
-		#tmoe_linux_tool_menu
-		modify_remote_desktop_config
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '1' ]; then
-		x11vnc_onekey
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '2' ]; then
-		x11vnc_pulse_server
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '3' ]; then
-		x11vnc_resolution
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '4' ]; then
-		nano /usr/local/bin/startx11vnc
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '5' ]; then
-		nano /usr/local/bin/stopx11vnc
-	fi
-	###################
-	if [ "${TMOE_OPTION}" == '6' ]; then
-		remove_X11vnc
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '7' ]; then
-		echo "输startx11vnc启动x11vnc"
-		echo "输stopvnc或stopx11vnc停止x11vnc"
-		echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
-		echo "您亦可输${GREEN}pulseaudio --start${RESET}"
-	fi
+	case "${TMOE_OPTION}" in
+	0 | "") modify_remote_desktop_config ;;
+	1) x11vnc_onekey ;;
+	2) x11vnc_pulse_server ;;
+	3) x11vnc_resolution ;;
+	4) nano /usr/local/bin/startx11vnc ;;
+	5) nano /usr/local/bin/stopx11vnc ;;
+	6) remove_X11vnc ;;
+	7) x11vnc_process_readme ;;
+	esac
 	########################################
 	press_enter_to_return
 	configure_x11vnc
 	####################
 }
 ############
+x11vnc_process_readme() {
+	echo "输startx11vnc启动x11vnc"
+	echo "输stopvnc或stopx11vnc停止x11vnc"
+	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+	echo "您亦可输${GREEN}pulseaudio --start${RESET}"
+}
+###################
 x11vnc_warning() {
 	echo "注：x11vnc和tightvnc是有${RED}区别${RESET}的！"
 	echo "x11vnc可以打开tightvnc无法打开的某些应用"
@@ -4205,33 +4090,19 @@ modify_xsdl_conf() {
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
-	if [ "${XSDL_XSERVER}" == '0' ]; then
-		modify_remote_desktop_config
-	fi
-	###########
-	if [ "${XSDL_XSERVER}" == '1' ]; then
-		modify_pulse_server_port
-	fi
-	###########
-	if [ "${XSDL_XSERVER}" == '2' ]; then
-		modify_display_port
-	fi
-	###########
-	if [ "${XSDL_XSERVER}" == '3' ]; then
-		modify_xsdl_ip_address
-	fi
-	###########
-	if [ "${XSDL_XSERVER}" == '4' ]; then
-		modify_startxsdl_manually
-	fi
-	###########
+	case "${XSDL_XSERVER}" in
+	0 | "") modify_remote_desktop_config ;;
+	1) modify_pulse_server_port ;;
+	2) modify_display_port ;;
+	3) modify_xsdl_ip_address ;;
+	4) modify_startxsdl_manually ;;
+	esac
+	########################################
+	press_enter_to_return
+	modify_xsdl_conf
 }
 #################
 modify_startxsdl_manually() {
-	if [ ! -e /bin/nano ]; then
-		apt update
-		apt install -y nano
-	fi
 	nano /usr/local/bin/startxsdl || nano $(command -v startxsdl)
 	echo 'See your current xsdl configuration information below.'
 	echo '您当前的ip地址为'
@@ -4346,6 +4217,7 @@ xwayland_desktop_enviroment() {
 }
 #############
 configure_xwayland() {
+	RETURN_TO_WHERE='configure_xwayland'
 	#进入xwayland配置文件目录
 	cd /etc/xwayland/
 	TMOE_OPTION=$(
@@ -4358,46 +4230,35 @@ configure_xwayland() {
 			3>&1 1>&2 2>&3
 	)
 	##############################
-	if [ "${TMOE_OPTION}" == '0' ]; then
-		#tmoe_linux_tool_menu
-		modify_remote_desktop_config
-	fi
+	case "${TMOE_OPTION}" in
+	0 | "") modify_remote_desktop_config ;;
+	1) xwayland_onekey ;;
+	2) xwayland_desktop_enviroment ;;
+	3) xwayland_pulse_server ;;
+	4) remove_xwayland ;;
+	esac
 	##############################
-	if [ "${TMOE_OPTION}" == '1' ]; then
-		xwayland_onekey
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '2' ]; then
-		#X11_OR_WAYLAND_DESKTOP='xwayland'
-		xwayland_desktop_enviroment
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '3' ]; then
-		xwayland_pulse_server
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '4' ]; then
-		echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
-		#service xwayland restart
-		RETURN_TO_WHERE='configure_xwayland'
-		do_you_want_to_continue
-		DEPENDENCY_01='weston'
-		DEPENDENCY_02='xwayland'
-		NON_DEBIAN='false'
-		if [ "${LINUX_DISTRO}" = "arch" ]; then
-			DEPENDENCY_02='xorg-server-xwayland'
-		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			DEPENDENCY_02='xorg-x11-server-Xwayland'
-		fi
-		rm -fv /etc/xwayland/startw
-		echo "${YELLOW}已删除xwayland启动脚本${RESET}"
-		echo "即将为您卸载..."
-		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
-	fi
-	########################################
 	press_enter_to_return_configure_xwayland
 }
 #####################
+remove_xwayland() {
+	echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+	#service xwayland restart
+	RETURN_TO_WHERE='configure_xwayland'
+	do_you_want_to_continue
+	DEPENDENCY_01='weston'
+	DEPENDENCY_02='xwayland'
+	NON_DEBIAN='false'
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02='xorg-server-xwayland'
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		DEPENDENCY_02='xorg-x11-server-Xwayland'
+	fi
+	rm -fv /etc/xwayland/startw
+	echo "${YELLOW}已删除xwayland启动脚本${RESET}"
+	echo "即将为您卸载..."
+	${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+}
 ##############
 xwayland_pulse_server() {
 	cd /usr/local/bin/
@@ -4565,74 +4426,52 @@ configure_xrdp() {
 			3>&1 1>&2 2>&3
 	)
 	##############################
-	if [ "${TMOE_OPTION}" == '0' ]; then
-		#tmoe_linux_tool_menu
-		modify_remote_desktop_config
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '1' ]; then
+	case "${TMOE_OPTION}" in
+	0 | "") modify_remote_desktop_config ;;
+	1)
 		service xrdp stop 2>/dev/null
 		xrdp_onekey
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '2' ]; then
+		;;
+	2)
 		X11_OR_WAYLAND_DESKTOP='xrdp'
 		#xrdp_desktop_enviroment
 		configure_remote_desktop_enviroment
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '3' ]; then
-		xrdp_port
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '4' ]; then
-		nano /etc/xrdp/xrdp.ini
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '5' ]; then
-		nano /etc/xrdp/startwm.sh
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '6' ]; then
+		;;
+	3) xrdp_port ;;
+	4) nano /etc/xrdp/xrdp.ini ;;
+	5) nano /etc/xrdp/startwm.sh ;;
+	6)
 		service xrdp stop 2>/dev/null
 		service xrdp status | head -n 24
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '7' ]; then
+		;;
+	7)
 		echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
 		service xrdp status
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '8' ]; then
-		xrdp_pulse_server
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '9' ]; then
-		xrdp_reset
-	fi
-	##############################
-	if [ "${TMOE_OPTION}" == '10' ]; then
-		pkill xrdp
-		echo "正在停止xrdp进程..."
-		echo "Stopping xrdp..."
-		service xrdp stop 2>/dev/null
-		echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
-		#service xrdp restart
-		RETURN_TO_WHERE='configure_xrdp'
-		do_you_want_to_continue
-		rm -fv /etc/xrdp/xrdp.ini /etc/xrdp/startwm.sh
-		echo "${YELLOW}已删除xrdp配置文件${RESET}"
-		echo "即将为您卸载..."
-		${PACKAGES_REMOVE_COMMAND} xrdp
-	fi
-	########################################
-	if [ "${TMOE_OPTION}" == '11' ]; then
-		xrdp_systemd
-	fi
+		;;
+	8) xrdp_pulse_server ;;
+	9) xrdp_reset ;;
+	10) remove_xrdp ;;
+	11) xrdp_systemd ;;
+	esac
 	##############################
 	press_enter_to_return_configure_xrdp
 }
 #############
+remove_xrdp() {
+	pkill xrdp
+	echo "正在停止xrdp进程..."
+	echo "Stopping xrdp..."
+	service xrdp stop 2>/dev/null
+	echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+	#service xrdp restart
+	RETURN_TO_WHERE='configure_xrdp'
+	do_you_want_to_continue
+	rm -fv /etc/xrdp/xrdp.ini /etc/xrdp/startwm.sh
+	echo "${YELLOW}已删除xrdp配置文件${RESET}"
+	echo "即将为您卸载..."
+	${PACKAGES_REMOVE_COMMAND} xrdp
+}
+################
 configure_remote_desktop_enviroment() {
 	BETA_DESKTOP=$(whiptail --title "REMOTE_DESKTOP" --menu \
 		"您想要配置哪个桌面？按方向键选择，回车键确认！\n Which desktop environment do you want to configure? " 15 60 5 \
@@ -4696,7 +4535,7 @@ configure_remote_desktop_enviroment() {
 		#configure_remote_deepin_desktop
 	fi
 	##########################
-	if [ "$INSTALLDESKTOP" == '0' ]; then
+	if [ "${BETA_DESKTOP}" == '0' ] || [ -z ${BETA_DESKTOP} ]; then
 		modify_remote_desktop_config
 	fi
 	##########################
@@ -5251,8 +5090,6 @@ frequently_asked_questions() {
 		RETURN_TO_WHERE='frequently_asked_questions'
 		do_you_want_to_continue
 		rm -vf ~/baidunetdisk/baidunetdiskdata.db
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		echo "${YELLOW}按回车键返回。${RESET}"
 	fi
 	#######################
 	if [ "${TMOE_FAQ}" == '2' ]; then
@@ -5260,7 +5097,6 @@ frequently_asked_questions() {
 		RETURN_TO_WHERE='frequently_asked_questions'
 		do_you_want_to_continue
 		${PACKAGES_REMOVE_COMMAND} --allow-change-held-packages ^udisks2 ^gvfs
-		tmoe_linux_tool_menu
 	fi
 	############################
 	if [ "${TMOE_FAQ}" == '3' ]; then
@@ -5269,8 +5105,6 @@ frequently_asked_questions() {
 		RETURN_TO_WHERE='frequently_asked_questions'
 		do_you_want_to_continue
 		rm -rvf ~/.config/tencent-qq/
-		press_enter_to_return
-		tmoe_linux_tool_menu
 	fi
 	#######################
 	if [ "${TMOE_FAQ}" == '4' ]; then
@@ -5292,9 +5126,14 @@ frequently_asked_questions() {
 		echo "您可以输${YELLOW}sudo su - ${RESET}或${YELLOW}sudo -i ${RESET}切换至root用户"
 		echo "亦可输${YELLOW}sudo su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
 		echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
-		press_enter_to_return
+	fi
+	##################
+	if [ -z "${TMOE_FAQ}" ]; then
 		tmoe_linux_tool_menu
 	fi
+	###########
+	press_enter_to_return
+	frequently_asked_questions
 }
 ##############
 enable_dbus_launch() {
@@ -5516,7 +5355,7 @@ beta_features() {
 	)
 	##########
 	case ${TMOE_BETA} in
-	0) tmoe_linux_tool_menu ;;
+	0 | "") tmoe_linux_tool_menu ;;
 	1) install_pinyin_input_method ;;
 	2) install_wps_office ;;
 	3) install_container_and_virtual_machine ;;
@@ -5560,7 +5399,7 @@ install_container_and_virtual_machine() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0) beta_features ;;
+	0 | "") beta_features ;;
 	1) install_aqemu ;;
 	2) download_virtual_machine_iso_file ;;
 	3) install_docker_ce ;;
@@ -5589,7 +5428,7 @@ download_virtual_machine_iso_file() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0) install_container_and_virtual_machine ;;
+	0 | "") install_container_and_virtual_machine ;;
 	1) download_android_x86_file ;;
 	2) download_debian_iso_file ;;
 	3) download_ubuntu_iso_file ;;
@@ -6007,7 +5846,7 @@ install_pinyin_input_method() {
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
-	0) beta_features ;;
+	0 | "") beta_features ;;
 	1) install_sogou_pinyin ;;
 	2) install_iflyime_pinyin ;;
 	3) install_rime_pinyin ;;
@@ -6569,21 +6408,13 @@ personal_netdisk() {
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
-	if [ "${WHICH_NETDISK}" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
-	############################
-	if [ "${WHICH_NETDISK}" == '1' ]; then
-		install_filebrowser
-	fi
-	###########################
-	if [ "${WHICH_NETDISK}" == '2' ]; then
-		install_nginx_webdav
-	fi
-	#########################
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
-	read
+	case "${WHICH_NETDISK}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1) install_filebrowser ;;
+	2) install_nginx_webdav ;;
+	esac
+	##################
+	press_enter_to_return
 	tmoe_linux_tool_menu
 }
 ################################
@@ -6697,6 +6528,10 @@ configure_nginx_webdav() {
 		${PACKAGES_REMOVE_COMMAND} nginx nginx-extras
 	fi
 	########################################
+	if [ -z "${TMOE_OPTION}" ]; then
+		personal_netdisk
+	fi
+	###########
 	press_enter_to_return
 	configure_nginx_webdav
 }
@@ -7074,6 +6909,10 @@ configure_filebrowser() {
 		rm -fv /etc/filebrowser.db
 	fi
 	########################################
+	if [ -z "${TMOE_OPTION}" ]; then
+		personal_netdisk
+	fi
+	###########
 	press_enter_to_return
 	configure_filebrowser
 }

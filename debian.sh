@@ -738,7 +738,7 @@ frequently_asked_questions() {
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_FAQ}" in
-	0) tmoe_manager_main_menu ;;
+	0 | "") tmoe_manager_main_menu ;;
 	1) vnc_can_not_call_pulse_audio ;;
 	2) linux_deploy_pulse_server ;;
 	esac
@@ -2430,7 +2430,7 @@ choose_which_gnu_linux_distro() {
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
-	0) tmoe_manager_main_menu ;;
+	0 | "") tmoe_manager_main_menu ;;
 	1) install_debian_gnu_linux_distro ;;
 	2) install_ubuntu_gnu_linux_distro ;;
 	3) install_kali_rolling_gnu_linux_distro ;;
@@ -2462,7 +2462,7 @@ install_alpha_containers() {
 	)
 	##############################
 	case "${ALPHA_SYSTEM}" in
-	0) choose_which_gnu_linux_distro ;;
+	0 | "") choose_which_gnu_linux_distro ;;
 	1) install_armbian_linux_distro ;;
 	2) install_opensuse_linux_distro ;;
 	3) install_raspbian_linux_distro ;;
@@ -2493,7 +2493,7 @@ install_beta_containers() {
 	)
 	##############################
 	case "${BETA_SYSTEM}" in
-	0) choose_which_gnu_linux_distro ;;
+	0 | "") choose_which_gnu_linux_distro ;;
 	1) install_manjaro_linux_distro ;;
 	2) install_centos_linux_distro ;;
 	3) install_void_linux_distro ;;
@@ -2507,7 +2507,7 @@ install_beta_containers() {
 }
 #########################
 install_debian_gnu_linux_distro() {
-	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 15 50); then
+	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,仅支持aarch(arm64)架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 16 55); then
 		buster_or_sid
 	else
 		if [ ! -d "/sdcard/Download/backup" ]; then
@@ -2554,7 +2554,7 @@ install_ubuntu_gnu_linux_distro() {
 	)
 	##############################
 	case "${BETA_SYSTEM}" in
-	0) choose_which_gnu_linux_distro ;;
+	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='groovy' ;;
 	2) DISTRO_CODE='focal' ;;
 	3) DISTRO_CODE='eoan' ;;
