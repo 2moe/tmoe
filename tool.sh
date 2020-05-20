@@ -1297,6 +1297,7 @@ install_vscodium() {
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' "https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+		apt show ./VSCodium.deb
 		apt install -y ./VSCodium.deb
 		rm -vf VSCodium.deb
 		#echo '安装完成,请输codium --user-data-dir=${HOME}/.config/VSCodium启动'
@@ -1378,6 +1379,7 @@ install_vscode_official() {
 
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
+		apt show ./VSCODE.deb
 		apt install -y ./VSCODE.deb
 		rm -vf VSCODE.deb
 		echo "安装完成,请输code --user-data-dir=${HOME}启动"
@@ -3228,6 +3230,7 @@ install_kali_undercover() {
 		cd /tmp/.kali-undercover-win10-theme
 		UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
+		apt show ./kali-undercover.deb
 		apt install -y ./kali-undercover.deb
 		if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
 			busybox ar xv kali-undercover.deb
@@ -3607,6 +3610,7 @@ install_linux_qq() {
 	if [ "${ARCH_TYPE}" = "arm64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
+			apt show ./LINUXQQ.deb
 			apt install -y ./LINUXQQ.deb
 		else
 			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
@@ -3617,6 +3621,7 @@ install_linux_qq() {
 	elif [ "${ARCH_TYPE}" = "amd64" ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
+			apt show ./LINUXQQ.deb
 			apt install -y ./LINUXQQ.deb
 			#http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb
 		else
@@ -3799,6 +3804,7 @@ install_baidu_netdisk() {
 		rpm -ivh 'baidunetdisk.rpm'
 	else
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+		apt show ./baidunetdisk.deb
 		apt install -y ./baidunetdisk.deb
 	fi
 	echo "若安装失败，则请前往官网手动下载安装"
@@ -3835,6 +3841,7 @@ install_netease_163_cloud_music() {
 		else
 			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
 		fi
+		apt show ./netease-cloud-music.deb
 		apt install -y ./netease-cloud-music.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
 		echo 'url: https://music.163.com/st/download'
@@ -5907,6 +5914,7 @@ install_debian_baidu_pinyin() {
 		arch_does_not_support
 		beta_features
 	fi
+	apt show ./fcitx-baidupinyin.deb
 	apt install -y ./fcitx-baidupinyin.deb
 	echo "若安装失败，则请前往官网手动下载安装。"
 	echo 'url: https://srf.baidu.com/site/guanwang_linux/index.html'
@@ -5938,31 +5946,42 @@ install_baidu_pinyin() {
 		non_debian_function
 	fi
 }
-###################
-install_debian_sogou_pinyin() {
-	DEPENDENCY_02="sogoupinyin"
-	###################
-	if [ -e "/usr/share/fcitx-sogoupinyin" ]; then
-		install_pkg_warning
-	fi
-
+##########
+#已废弃！
+sougou_pinyin_amd64() {
 	if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
-		cd /tmp
 		LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
 		echo ${LatestSogouPinyinLink}
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
-	elif [ "${ARCH_TYPE}" = "arm64" ]; then
-		LATEST_SOGOU_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
-		LATEST_SOGOU_VERSION=$(curl -L "${LATEST_SOGOU_REPO}" | grep 'arm64.deb' | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
-		LATEST_SOUGOU_URL="${LATEST_SOGOU_REPO}${LATEST_SOGOU_VERSION}"
-		echo ${LATEST_SOUGOU_URL}
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LATEST_SOUGOU_URL}"
 	else
 		echo "架构不支持，跳过安装搜狗输入法。"
 		arch_does_not_support
 		beta_features
 	fi
-	apt install -y ./sogou_pinyin.deb
+}
+##############
+download_ubuntu_kylin_deb_file() {
+	cd /tmp
+	LATEST_SOGOU_VERSION=$(curl -L "${LATEST_SOGOU_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
+	LATEST_SOUGOU_URL="${LATEST_SOGOU_REPO}${LATEST_SOGOU_VERSION}"
+	echo ${LATEST_SOUGOU_URL}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_SOGOU_VERSION}" "${LATEST_SOUGOU_URL}"
+	apt show ./${LATEST_SOGOU_VERSION}
+	apt install -y ./${LATEST_SOGOU_VERSION}
+}
+###################
+install_debian_sogou_pinyin() {
+	DEPENDENCY_02="sogouimebs"
+	###################
+	if [ -e "/usr/share/fcitx-sogoupinyin" ] || [ -e "/usr/share/sogouimebs/" ]; then
+		install_pkg_warning
+	fi
+	if [ "${ARCH_TYPE}" = "i386" ]; then
+		LATEST_SOGOU_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
+	else
+		LATEST_SOGOU_REPO='http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
+	fi
+	download_ubuntu_kylin_deb_file
 	echo "若安装失败，则请前往官网手动下载安装。"
 	echo 'url: https://pinyin.sogou.com/linux/'
 	rm -fv sogou_pinyin.deb
@@ -6118,6 +6137,7 @@ get_debian_vbox_latest_url() {
 	do_you_want_to_continue
 	cd /tmp
 	curl -Lo .Oracle_VIRTUAL_BOX.deb "${VBOX_DEB_FILE_URL}"
+	apt show ./.Oracle_VIRTUAL_BOX.deb
 	apt install -y ./.Oracle_VIRTUAL_BOX.deb
 	rm -fv ./.Oracle_VIRTUAL_BOX.deb
 }
@@ -6204,6 +6224,7 @@ install_typora() {
 	else
 		arch_does_not_support
 	fi
+	apt show ./typora.deb
 	apt install -y ./typora.deb
 	rm -vf ./typora.deb
 	beta_features_install_completed
@@ -6222,6 +6243,7 @@ install_wps_office() {
 		dpkg --configure -a
 		LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${LatestWPSLink}"
+		apt show ./WPSoffice.deb
 		apt install -y ./WPSoffice.deb
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -6298,6 +6320,7 @@ install_electronic_wechat() {
 	else
 		arch_does_not_support
 	fi
+	apt show ./electronic-wechat.deb
 	apt install -y ./electronic-wechat.deb
 	rm -vf ./electronic-wechat.deb
 	beta_features_install_completed
