@@ -2512,7 +2512,7 @@ install_beta_containers() {
 }
 #########################
 install_debian_gnu_linux_distro() {
-	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz) to install?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,软件包只更新至2020-03-11,且仅支持arm64架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 16 55); then
+	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install debian container via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz)?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,软件包只更新至2020-03-11,且仅支持arm64架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 16 55); then
 		buster_or_sid
 	else
 		if [ ! -d "/sdcard/Download/backup" ]; then
