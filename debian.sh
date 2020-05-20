@@ -706,8 +706,8 @@ linux_deploy_pulse_server() {
 	do_you_want_to_continue
 	TARGET=$(whiptail --inputbox "请自定义启动命令名称\n Please enter the command name." 12 50 --title "COMMAND" 3>&1 1>&2 2>&3)
 	CUT_TARGET="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
-	if [ "$?" != "0" ]; then
-		echo "检测到您取消了操作"
+	if [ -z "${CUT_TARGET}" ]; then
+		echo "命令名称不能为空！！！"
 	fi
 	cd $PREFIX/bin
 	echo ${CUT_TARGET}
@@ -2545,10 +2545,10 @@ install_ubuntu_gnu_linux_distro() {
 		whiptail --title "UBUNTU" --menu "您想要安装哪个版本？Which version do you want to install?" 17 55 7 \
 			"1" "20.10 Groovy Gorilla 時髦大猩猩" \
 			"2" "20.04 Focal Fossa 焦點馬島長尾狸貓" \
-			"3" "19.10 Eoan Ermine 黎明白鼬" \
+			"3" "Custom code手动输入版本代号" \
 			"4" "18.04 Bionic Beaver 仿生海狸" \
 			"5" "16.04 Xenial Xerus 好客的非洲地松鼠" \
-			"6" "Latest(自动检测最新版)" \
+			"6" "Latest(自动检测最新版，测试中)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2557,18 +2557,29 @@ install_ubuntu_gnu_linux_distro() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='groovy' ;;
 	2) DISTRO_CODE='focal' ;;
-	3) DISTRO_CODE='eoan' ;;
+	3) custom_ubuntu_version ;;
 	4) DISTRO_CODE='bionic' ;;
 	5) DISTRO_CODE='xenial' ;;
 	6) check_the_latest_ubuntu_version ;;
 	esac
 	######################
+	echo "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	install_different_ubuntu_gnu_linux_distros
 	press_enter_to_return
 	tmoe_manager_main_menu
 }
 #########################
+custom_ubuntu_version() {
+	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\n Please enter the ubuntu version code." 12 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
+	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${DISTRO_CODE}" ]; then
+		echo "检测到您取消了操作"
+		echo "已自动切换为ubuntu20.04(代号focal)"
+		DISTRO_CODE='focal'
+	fi
+}
+#################
 ubuntu_distro_x64_model() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/focal/${DISTRO_CODE}/g" |
