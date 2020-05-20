@@ -137,7 +137,7 @@ fi
 chmod +x /usr/local/bin/debian-i
 #########################
 rm -rf ${HOME}/.oh-my-zsh
-#https://github.com/ohmyzsh/ohmyzsh
+echo "github.com/ohmyzsh/ohmyzsh"
 git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
 #chmod 755 -R "${HOME}/.oh-my-zsh"
 if [ ! -f "${HOME}/.zshrc" ]; then

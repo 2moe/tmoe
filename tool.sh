@@ -359,7 +359,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200520-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0507支持配置wayland,0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200520-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -710,7 +710,7 @@ check_file_selection_items() {
 	elif [[ -f "${SELECTION}" ]]; then # 文件已被选择？
 		if [[ ${SELECTION} == *${FILE_EXT_01} ]] || [[ ${SELECTION} == *${FILE_EXT_02} ]]; then
 			# 检查文件扩展名
-			if (whiptail --title "Confirm Selection" --yes-button "Confirm确认" --no-button "Back返回" --yesno "目录: $CURRENT_DIR\n文件: ${SELECTION}" 0 0); then
+			if (whiptail --title "Confirm Selection" --yes-button "Confirm确认" --no-button "Back返回" --yesno "目录: $CURRENT_DIR\n文件: ${SELECTION}" 10 55 4); then
 				FILE_NAME="${SELECTION}"
 				FILE_PATH="${CURRENT_DIR}"
 				#将文件路径作为已经选择的变量
@@ -731,10 +731,10 @@ check_file_selection_items() {
 #####################
 tmoe_file() {
 	if [ -z $2 ]; then
-		DIR_LIST=$(ls -lhp | awk -F ' ' ' { print $9 " " $5 } ')
+		DIR_LIST=$(ls -lAhp | awk -F ' ' ' { print $9 " " $5 } ')
 	else
 		cd "$2"
-		DIR_LIST=$(ls -lhp | awk -F ' ' ' { print $9 " " $5 } ')
+		DIR_LIST=$(ls -lAhp | awk -F ' ' ' { print $9 " " $5 } ')
 	fi
 	###########################
 	CURRENT_DIR=$(pwd)
@@ -742,11 +742,13 @@ tmoe_file() {
 	if [ "$CURRENT_DIR" == "/" ]; then
 		SELECTION=$(whiptail --title "$1" \
 			--menu "${MENU_01}\n$CURRENT_DIR" 0 0 0 \
+			--title "$TMOE_TITLE" \
 			--cancel-button Cancel取消 \
 			--ok-button Select选择 $DIR_LIST 3>&1 1>&2 2>&3)
 	else
 		SELECTION=$(whiptail --title "$1" \
 			--menu "${MENU_01}\n$CURRENT_DIR" 0 0 0 \
+			--title "$TMOE_TITLE" \
 			--cancel-button Cancel取消 \
 			--ok-button Select选择 ../ 返回 $DIR_LIST 3>&1 1>&2 2>&3)
 	fi
@@ -779,11 +781,11 @@ tmoe_file_manager() {
 			echo "检测到您取消了操作,User Pressed Esc with No File Selection"
 		else
 			whiptail --msgbox "文件属性 :  $(ls -lh ${FILE_NAME})\n路径 : ${FILE_PATH}" 0 0
-			COOKIE_FILE_PATH="${CURRENT_DIR}/${SELECTION}"
+			TMOE_FILE_ABSOLUTE_PATH="${CURRENT_DIR}/${SELECTION}"
 			#uncompress_tar_file
 		fi
 	else
-		echo "检测到您取消了操作，没有文件被选择,with No File Selected."
+		echo "检测到您${RED}取消了${RESET}${YELLOW}操作${RESET}，没有文件${BLUE}被选择${RESET},with No File ${BLUE}Selected.${RESET}"
 		#press_enter_to_return
 	fi
 }
@@ -832,12 +834,12 @@ cookies_readme() {
 		FILE_EXT_01='txt'
 		FILE_EXT_02='sqlite'
 		where_is_start_dir
-		if [ -z ${COOKIE_FILE_PATH} ]; then
-			echo "没有指定有效的文件，请重新选择"
+		if [ -z ${TMOE_FILE_ABSOLUTE_PATH} ]; then
+			echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		else
-			echo ${COOKIE_FILE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
-			echo "您当前的cookie文件路径为${COOKIE_FILE_PATH}"
-			ls -lah ${COOKIE_FILE_PATH}
+			echo ${TMOE_FILE_ABSOLUTE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
+			echo "您当前的cookie文件路径为${TMOE_FILE_ABSOLUTE_PATH}"
+			ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		fi
 	else
 		rm -f "${HOME}/.config/tmoe-linux/videos.cookiepath"
@@ -902,7 +904,7 @@ check_latest_video_download_tool_version() {
 upgrade_video_download_tool() {
 	cat <<-'ENDofTable'
 		╔═══╦════════════╦════════╦════════╦═════════╦
-		║   ║     💻     ║    🎬  ║   🌁   ║   📚   ║
+		║   ║     💻     ║    🎬  ║   🌁   ║   📚    ║
 		║   ║  website   ║ Videos ║ Images ║Playlist ║
 		║   ║            ║        ║        ║         ║
 		║---║------------║--------║--------║---------║
@@ -1462,11 +1464,11 @@ modify_other_vnc_conf() {
 		"4" "Edit startvnc manually 手动编辑vnc启动脚本" \
 		"5" "修复VNC闪退" \
 		"6" "调整屏幕缩放比例(仅支持xfce)" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
 	if [ "${MODIFYOTHERVNCCONF}" == '0' ]; then
-		tmoe_linux_tool_menu
+		modify_remote_desktop_config
 	fi
 	###########
 	if [ "${MODIFYOTHERVNCCONF}" == '1' ]; then
@@ -3564,11 +3566,11 @@ other_software() {
 	RETURN_TO_WHERE='other_software'
 	SOFTWARE=$(
 		whiptail --title "其它软件" --menu \
-			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 部分软件需要在安装gui后才能使用！" 17 60 6 \
+			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 部分软件需要在安装gui后才能使用！" 17 60 7 \
 			"1" "MPV：开源、跨平台的音视频播放器" \
 			"2" "LinuxQQ：在线聊天软件" \
 			"3" "Debian-opt仓库(第三方QQ音乐,云音乐)" \
-			"4" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
+			"4" "Tmoe-deb软件包安装器" \
 			"5" "大灾变-劫后余生：末日幻想背景的探索生存游戏" \
 			"6" "Synaptic：新立得软件包管理器/软件商店" \
 			"7" "GIMP：GNU 图像处理程序" \
@@ -3580,81 +3582,81 @@ other_software() {
 			"13" "BleachBit:垃圾清理" \
 			"14" "Install Chinese manual 安装中文手册" \
 			"15" "斯隆与马克贝尔的谜之物语：nds解谜游戏" \
+			"16" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#(已移除)"12" "Tasksel:轻松,快速地安装组软件" \
-	##############################
-	if [ "${SOFTWARE}" == '0' ]; then
-		tmoe_linux_tool_menu
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '1' ]; then
-		install_mpv
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '2' ]; then
-		install_linux_qq
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '3' ]; then
+	case "${SOFTWARE}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1) install_mpv ;;
+	2) install_linux_qq ;;
+	3)
 		non_debian_function
 		explore_debian_opt_repo
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '4' ]; then
-		install_wesnoth_game
-	fi
-	##########################
-	if [ "${SOFTWARE}" == '5' ]; then
-		install_game_cataclysm
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '6' ]; then
-		install_package_manager_gui
-	fi
-	###############################
-	if [ "${SOFTWARE}" == '7' ]; then
-		install_gimp
-	fi
-	##########################
-	if [ "${SOFTWARE}" == '8' ]; then
-		install_libre_office
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '9' ]; then
-		install_parole
-	fi
-	##########################
-	if [ "${SOFTWARE}" == '10' ]; then
-		install_baidu_netdisk
-	fi
-	###########################
-	if [ "${SOFTWARE}" == '11' ]; then
-		install_netease_163_cloud_music
-	fi
-	###########################
-	if [ "${SOFTWARE}" == '12' ]; then
-		install_android_debug_bridge
-	fi
-	###########################
-	if [ "${SOFTWARE}" == '13' ]; then
-		install_bleachbit_cleaner
-	fi
-	########################
-	if [ "${SOFTWARE}" == '14' ]; then
-		install_chinese_manpages
-	fi
-	##############################
-	if [ "${SOFTWARE}" == '15' ]; then
-		install_nds_game_mayomonogatari
-	fi
+		;;
+	4) tmoe_deb_file_installer ;;
+	5) install_game_cataclysm ;;
+	6) install_package_manager_gui ;;
+	7) install_gimp ;;
+	8) install_libre_office ;;
+	9) install_parole ;;
+	10) install_baidu_netdisk ;;
+	11) install_netease_163_cloud_music ;;
+	12) install_android_debug_bridge ;;
+	13) install_bleachbit_cleaner ;;
+	14) install_chinese_manpages ;;
+	15) install_nds_game_mayomonogatari ;;
+	16) install_wesnoth_game ;;
+	esac
 	############################################
 	press_enter_to_return
 	other_software
 	#tmoe_linux_tool_menu
 }
 ###########
+deb_file_installer() {
+	#进入deb文件目录
+	cd ${CURRENT_DIR}
+	#./${SELECTION}
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		apt install -y ./${SELECTION}
+	else
+		mkdir -p .DEB_TEMP_FOLDER
+		mv ${SELECTION} .DEB_TEMP_FOLDER
+		cd ./.DEB_TEMP_FOLDER
+		busybox ar xv ${SELECTION}
+		mv ${SELECTION} ../
+		if [ -e "data.tar.xz" ]; then
+			cd /
+			tar -Jxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.xz ./usr
+		elif [ -e "data.tar.gz" ]; then
+			cd /
+			tar -zxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.gz ./usr
+		fi
+		rm -rf ${CURRENT_DIR}/.DEB_TEMP_FOLDER
+	fi
+	echo "${SELECTION}安装${BLUE}完成${RESET}，请问是否需要${RED}删除${RESET}该文件"
+	ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+	echo "Do you want to ${RED}delete${RESET} it?"
+	do_you_want_to_continue
+	rm -fv ${TMOE_FILE_ABSOLUTE_PATH}
+}
+######################
+tmoe_deb_file_installer() {
+	FILE_EXT_01='deb'
+	FILE_EXT_02='DEB'
+	START_DIR="${HOME}"
+	tmoe_file_manager
+	if [ -z ${TMOE_FILE_ABSOLUTE_PATH} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的deb文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		deb_file_installer
+	fi
+}
+##################
 install_wesnoth_game() {
 	DEPENDENCY_01="wesnoth"
 	DEPENDENCY_02=""
@@ -5567,7 +5569,7 @@ install_container_and_virtual_machine() {
 }
 ###########
 download_virtual_machine_iso_file() {
-	RETURN_TO_WHERE='install_container_and_virtual_machine'
+	RETURN_TO_WHERE='download_virtual_machine_iso_file'
 	NON_DEBIAN='false'
 	cd ~
 	VIRTUAL_TECH=$(
@@ -5599,11 +5601,11 @@ flash_iso_to_udisk() {
 	FILE_EXT_02='ISO'
 	START_DIR="${HOME}"
 	tmoe_file_manager
-	if [ -z ${COOKIE_FILE_PATH} ]; then
-		echo "没有指定有效的文件，请重新选择"
+	if [ -z ${TMOE_FILE_ABSOLUTE_PATH} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的iso文件为${COOKIE_FILE_PATH}"
-		ls -lah ${COOKIE_FILE_PATH}
+		echo "您选择的iso文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		check_fdisk
 	fi
 }
@@ -5635,7 +5637,7 @@ dd_flash_iso_to_udisk() {
 	echo "${DD_OF_TARGET}即将被格式化，所有文件都将丢失"
 	do_you_want_to_continue
 	echo "正在烧录中，这可能需要数分钟的时间..."
-	dd <${COOKIE_FILE_PATH} >${DD_OF_TARGET}
+	dd <${TMOE_FILE_ABSOLUTE_PATH} >${DD_OF_TARGET}
 }
 ############
 download_win10_19041_iso() {
@@ -5704,7 +5706,7 @@ download_ubuntu_latest_iso_file() {
 	)
 	####################
 	case ${UBUNTU_EDITION} in
-	0) download_virtual_machine_iso_file ;;
+	0 | "") download_virtual_machine_iso_file ;;
 	1) UBUNTU_DISTRO='ubuntu-legacy-server' ;;
 	2) UBUNTU_DISTRO='ubuntu-gnome' ;;
 	3) UBUNTU_DISTRO='xubuntu' ;;
@@ -5808,7 +5810,7 @@ download_debian_iso_file() {
 	)
 	####################
 	case ${DEBIAN_ARCH} in
-	0) download_virtual_machine_iso_file ;;
+	0 | "") download_virtual_machine_iso_file ;;
 	1)
 		GREP_ARCH='amd64'
 		DEBIAN_FREE='false'
@@ -5861,7 +5863,7 @@ download_debian_nonfree_iso() {
 	)
 	####################
 	case ${DEBIAN_LIVE} in
-	0) download_debian_iso_file ;;
+	0 | "") download_debian_iso_file ;;
 	1) DEBIAN_DE='cinnamon' ;;
 	2) DEBIAN_DE='gnome' ;;
 	3) DEBIAN_DE='kde' ;;
@@ -5871,6 +5873,7 @@ download_debian_nonfree_iso() {
 	7) DEBIAN_DE='standard' ;;
 	8) DEBIAN_DE='xfce' ;;
 	esac
+	##############
 	if [ ${DEBIAN_FREE} = 'false' ]; then
 		download_debian_nonfree_live_iso
 	else
@@ -5945,7 +5948,7 @@ install_anbox() {
 		您亦可使用以下补丁，并将它们构建为模块。
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/android-enable-building-ashmem-and-binder-as-modules.patch
 		https://salsa.debian.org/kernel-team/linux/blob/master/debian/patches/debian/export-symbols-needed-by-android-drivers.patch
-		若模块安装失败，则请前往官网阅读详细说明https://docs.anbox.io/userguide/install_kernel_modules.html
+		若模块安装失败，则请前往官网阅读说明https://docs.anbox.io/userguide/install_kernel_modules.html
 		如需卸载该模块，请手动输apt purge -y anbox-modules-dkms
 	EndOfFile
 	do_you_want_to_continue
