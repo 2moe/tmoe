@@ -700,11 +700,12 @@ creat_start_linux_deploy_sh() {
 	cd $PREFIX/bin
 	echo ${CUT_TARGET}
 	cat >"${CUT_TARGET}" <<-'EndofFile'
+		#!/data/data/com.termux/files/usr/bin/bash
 		pulseaudio --start 2>/dev/null &
 		echo "pulseaudio服务启动完成，将为您自动打开LinuxDeploy,请点击“启动”。"
-				am start -n ru.meefik.linuxdeploy/ru.meefik.linuxdeploy.Launcher
-				sleep 6
-				am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+		am start -n ru.meefik.linuxdeploy/ru.meefik.linuxdeploy.Launcher
+		sleep 6
+		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 	EndofFile
 }
 ##############
