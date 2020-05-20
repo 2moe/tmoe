@@ -3620,6 +3620,11 @@ deb_file_installer() {
 	cd ${CURRENT_DIR}
 	#./${SELECTION}
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		file ./${SELECTION} 2>/dev/null
+		apt show ./${SELECTION}
+		echo "您是否需要安装此软件包？"
+		echo "Do you want to install it?"
+		do_you_want_to_continue
 		apt install -y ./${SELECTION}
 	else
 		mkdir -p .DEB_TEMP_FOLDER
