@@ -1195,7 +1195,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				skip_if_unavailable=False
 			EndOfYumRepo
 
-	    cat >/etc/yum.repos.d/fedora-updates.repoo <<-'EndOfYumRepo'
+	    cat >/etc/yum.repos.d/fedora-updates.repo <<-'EndOfYumRepo'
 				[updates]
 				name=Fedora $releasever - $basearch - Updates
 				failovermethod=priority

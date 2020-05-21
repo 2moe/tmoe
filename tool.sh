@@ -3537,7 +3537,7 @@ check_fedora_version() {
 			fedora_31_repos
 		fi
 		fedora_3x_repos
-		${PACKAGES_UPDATE_COMMAND}
+		#${PACKAGES_UPDATE_COMMAND}
 		dnf makecache
 	else
 		echo "Sorry,不支持fedora29及其以下的版本"
@@ -3864,7 +3864,7 @@ fedora_32_repos() {
 		skip_if_unavailable=False
 	EndOfYumRepo
 
-	cat >/etc/yum.repos.d/fedora-updates.repoo <<-EndOfYumRepo
+	cat >/etc/yum.repos.d/fedora-updates.repo <<-EndOfYumRepo
 		[updates]
 		name=Fedora \$releasever - \$basearch - Updates
 		failovermethod=priority
