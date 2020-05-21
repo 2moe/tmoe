@@ -2953,14 +2953,24 @@ install_mint_linux_distro() {
 gnu_linux_sources_list() {
 	cp -pf /etc/apt/sources.list /etc/apt/sources.list.bak
 	if grep -q 'Debian' "/etc/issue"; then
-		if grep -q 'bullseye' "/etc/os-release"; then
+		NEW_DEBIAN_SOURCES_LIST='false'
+		if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
 			SOURCELISTCODE='sid'
-			BACKPORTCODE='bullseye'
-			echo "Debian 11 bullseye"
+			echo "Debian sid"
+		elif grep -q '^PRETTY_NAME.*testing' "/etc/os-release"; then
+			NEW_DEBIAN_SOURCES_LIST='true'
+			SOURCELISTCODE='testing'
+			BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+			echo "Debian testing"
+
+		elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
+			NEW_DEBIAN_SOURCES_LIST='true'
+			SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+			BACKPORTCODE=${SOURCELISTCODE}
 
 		elif grep -q 'buster' "/etc/os-release"; then
-			SOURCELISTCODE='stable'
-			BACKPORTCODE='bullseye'
+			SOURCELISTCODE='buster'
+			BACKPORTCODE='buster'
 			echo "Debian 10 buster"
 
 		elif grep -q 'stretch' "/etc/os-release"; then
@@ -2972,27 +2982,32 @@ gnu_linux_sources_list() {
 			SOURCELISTCODE='jessie'
 			BACKPORTCODE='jessie'
 			echo "Debian 8 jessie"
-
-		else
-			echo '暂不支持您当前的系统版本'
-			press_enter_to_return
-			gnu_linux
 		fi
+		echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
 		echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
 		sed -i 's/^deb/# &/g' /etc/apt/sources.list
 		if [ "${SOURCELISTCODE}" = "sid" ]; then
 			cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
+				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ experimental main contrib non-free
 			EndOfSourcesList
 		else
-			#下面那行EndOfSourcesList不能加单引号
-			cat >>/etc/apt/sources.list <<-EndOfSourcesList
-				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
-				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
-				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
-				deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}/updates main contrib non-free
-			EndOfSourcesList
-
+			if [ "${NEW_DEBIAN_SOURCES_LIST}" = "true" ]; then
+				cat >>/etc/apt/sources.list <<-EndOfSourcesList
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}-security main contrib non-free
+				EndOfSourcesList
+			else
+				#下面那行EndOfSourcesList不能加单引号
+				cat >>/etc/apt/sources.list <<-EndOfSourcesList
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
+					deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}/updates main contrib non-free
+				EndOfSourcesList
+			fi
 		fi
 	fi
 	###################
@@ -3017,8 +3032,6 @@ gnu_linux_sources_list() {
 		elif grep -q 'Xenial' "/etc/os-release"; then
 			SOURCELISTCODE='xenial'
 			echo '16.04 LTS'
-		elif grep -q 'Xenial' "/etc/os-release"; then
-			SOURCELISTCODE='xenial'
 		elif grep -q 'Cosmic' "/etc/os-release"; then
 			SOURCELISTCODE='cosmic'
 			echo '18.10'
@@ -3029,9 +3042,8 @@ gnu_linux_sources_list() {
 			SOURCELISTCODE='eoan'
 			echo '19.10'
 		else
-			echo '暂不支持您当前的系统版本'
-			press_enter_to_return
-			gnu_linux
+			SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+			echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
 		fi
 		echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
 		sed -i 's/^deb/# &/g' /etc/apt/sources.list
