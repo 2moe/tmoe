@@ -289,21 +289,37 @@ gnu_linux() {
 		DEPENDENCIES="${DEPENDENCIES} qemu qemu-user-static debootstrap"
 	fi
 	##############
+	gnu_linux_tuna_mirror_list() {
+		echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
+		echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+		echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+		read opt
+		case $opt in
+		y* | Y* | "")
+			gnu_linux_sources_list
+			;;
+		n* | N*) echo "skipped." ;;
+		*) echo "Invalid choice. skipped." ;;
+		esac
+	}
+	########################
 	if [ ! -z "${DEPENDENCIES}" ]; then
+		MIRROR_LIST='true'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			if ! grep -q '^deb.*edu.cn' "/etc/apt/sources.list"; then
-				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
-				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
-				echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
-				read opt
-				case $opt in
-				y* | Y* | "")
-					gnu_linux_sources_list
-					;;
-				n* | N*) echo "skipped." ;;
-				*) echo "Invalid choice. skipped." ;;
-				esac
+			if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
+				MIRROR_LIST='false'
 			fi
+		elif [ "${LINUX_DISTRO}" = "arch" ]; then
+			if ! grep -q '^Server.*mirrors' "/etc/pacman.d/mirrorlist"; then
+				MIRROR_LIST='false'
+			fi
+		elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+			if ! grep -q '^http.*mirrors' "/etc/apk/repositories"; then
+				MIRROR_LIST='false'
+			fi
+		fi
+		if [ "${MIRROR_LIST}" = 'false' ]; then
+			gnu_linux_tuna_mirror_list
 		fi
 		echo "正在安装相关软件包及其依赖..."
 
@@ -482,7 +498,7 @@ gnu_linux() {
 
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
 			#bash <(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh')
-			if [ "${LINUX_DISTRO}" = "alpine" ]; then
+			if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
 				wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 			else
 				curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
@@ -2071,11 +2087,6 @@ termux_install_xfce() {
 			echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
 			read
 		fi
-	else
-		echo "检测到您当前使用的系统非Android"
-		echo 'Press Enter to continue.'
-		echo "${YELLOW}按回车键继续${RESET}"
-		read
 	fi
 	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a container. Termux原系统GUI可玩性较低，建议您安装GNU/Linux容器" 17 60 6 \
 		"1" "install xfce4" \
@@ -2094,7 +2105,8 @@ termux_install_xfce() {
 	#####################################
 	if [ "${OPTION}" == '1' ]; then
 		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh)
+			aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			bash /tmp/.tmoe-linux-tool.sh --install-gui
 			exit 0
 		fi
 
@@ -2134,7 +2146,8 @@ termux_install_xfce() {
 	#######################
 	if [ "${OPTION}" == '2' ]; then
 		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh)
+			aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			bash /tmp/.tmoe-linux-tool.sh --modify_remote_desktop_config
 			exit 0
 		fi
 		modify_android_termux_vnc_config
@@ -2148,24 +2161,25 @@ termux_install_xfce() {
 		switch_vnc_pulse_audio_transport_method
 	fi
 	##################
-	if [ "${OPTION}" == '7' ]; then
-		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			bash <(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh)
-			exit 0
-		fi
-		remove_android_termux_xfce
-	fi
-	##################
 	if [ "${OPTION}" == '5' ]; then
 		if [ "${LINUX_DISTRO}" = 'Android' ]; then
 			termux_tuna_sources_list
 		else
-			gnu_linux_sources_list
+			tmoe_sources_list_manager
 		fi
 	fi
 	##################
 	if [ "${OPTION}" == '6' ]; then
 		aria2_download_termux_apk
+	fi
+	##################
+	if [ "${OPTION}" == '7' ]; then
+		if [ "${LINUX_DISTRO}" != 'Android' ]; then
+			aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			bash /tmp/.tmoe-linux-tool.sh --remove_gui
+			exit 0
+		fi
+		remove_android_termux_xfce
 	fi
 }
 #####################################
@@ -2950,132 +2964,20 @@ install_mint_linux_distro() {
 }
 ######################
 ######################
+tmoe_sources_list_manager() {
+	aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	bash /tmp/.tmoe-linux-tool.sh --mirror-list
+}
+##################
+#初次安装时用curl或wget，之后用aria2c
+###########
 gnu_linux_sources_list() {
-	cp -pf /etc/apt/sources.list /etc/apt/sources.list.bak
-	if grep -q 'Debian' "/etc/issue"; then
-		NEW_DEBIAN_SOURCES_LIST='false'
-		if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-			SOURCELISTCODE='sid'
-			echo "Debian sid"
-		elif grep -q '^PRETTY_NAME.*testing' "/etc/os-release"; then
-			NEW_DEBIAN_SOURCES_LIST='true'
-			SOURCELISTCODE='testing'
-			BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
-			echo "Debian testing"
-
-		elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
-			NEW_DEBIAN_SOURCES_LIST='true'
-			SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-			BACKPORTCODE=${SOURCELISTCODE}
-
-		elif grep -q 'buster' "/etc/os-release"; then
-			SOURCELISTCODE='buster'
-			BACKPORTCODE='buster'
-			echo "Debian 10 buster"
-
-		elif grep -q 'stretch' "/etc/os-release"; then
-			SOURCELISTCODE='stretch'
-			BACKPORTCODE='stretch'
-			echo "Debian 9 stretch"
-
-		elif grep -q 'jessie' "/etc/os-release"; then
-			SOURCELISTCODE='jessie'
-			BACKPORTCODE='jessie'
-			echo "Debian 8 jessie"
-		fi
-		echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
-		echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
-		sed -i 's/^deb/# &/g' /etc/apt/sources.list
-		if [ "${SOURCELISTCODE}" = "sid" ]; then
-			cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
-				deb http://mirrors.tuna.tsinghua.edu.cn/debian/ experimental main contrib non-free
-			EndOfSourcesList
-		else
-			if [ "${NEW_DEBIAN_SOURCES_LIST}" = "true" ]; then
-				cat >>/etc/apt/sources.list <<-EndOfSourcesList
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}-security main contrib non-free
-				EndOfSourcesList
-			else
-				#下面那行EndOfSourcesList不能加单引号
-				cat >>/etc/apt/sources.list <<-EndOfSourcesList
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE} main contrib non-free
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${SOURCELISTCODE}-updates main contrib non-free
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian/ ${BACKPORTCODE}-backports main contrib non-free
-					deb http://mirrors.tuna.tsinghua.edu.cn/debian-security ${SOURCELISTCODE}/updates main contrib non-free
-				EndOfSourcesList
-			fi
-		fi
+	if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
+		wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	else
+		curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	fi
-	###################
-	if grep -q 'Kali' "/etc/issue"; then
-		echo "检测到您使用的是Kali系统"
-		sed -i 's/^deb/# &/g' /etc/apt/sources.list
-		cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-			deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
-			deb http://mirrors.tuna.tsinghua.edu.cn/debian/ stable main contrib non-free
-			# deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-last-snapshot main contrib non-free
-		EndOfSourcesList
-		#注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
-	fi
-	#########################
-	if grep -q 'Ubuntu' "/etc/issue"; then
-		if grep -q 'Bionic Beaver' "/etc/os-release"; then
-			SOURCELISTCODE='bionic'
-			echo '18.04 LTS'
-		elif grep -q 'Focal Fossa' "/etc/os-release"; then
-			SOURCELISTCODE='focal'
-			echo '20.04 LTS'
-		elif grep -q 'Xenial' "/etc/os-release"; then
-			SOURCELISTCODE='xenial'
-			echo '16.04 LTS'
-		elif grep -q 'Cosmic' "/etc/os-release"; then
-			SOURCELISTCODE='cosmic'
-			echo '18.10'
-		elif grep -q 'Disco' "/etc/os-release"; then
-			SOURCELISTCODE='disco'
-			echo '19.04'
-		elif grep -q 'Eoan' "/etc/os-release"; then
-			SOURCELISTCODE='eoan'
-			echo '19.10'
-		else
-			SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-			echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
-		fi
-		echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
-		sed -i 's/^deb/# &/g' /etc/apt/sources.list
-		#下面那行EndOfSourcesList不能有单引号
-		cat >>/etc/apt/sources.list <<-EndOfSourcesList
-			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE} main restricted universe multiverse
-			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-updates main restricted universe multiverse
-			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-backports main restricted universe multiverse
-			deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-security main restricted universe multiverse
-			# 预发布软件源，不建议启用
-			# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ ${SOURCELISTCODE}-proposed main restricted universe multiverse
-		EndOfSourcesList
-		if [ "${ARCH_TYPE}" != 'amd64' ] && [ "${ARCH_TYPE}" != 'i386' ]; then
-			sed -i 's:/ubuntu:/ubuntu-ports:g' /etc/apt/sources.list
-		fi
-	fi
-	#结束版本检测
-	###################
-	if [ -e "/usr/sbin/update-ca-certificates" ]; then
-		echo "检测到您已安装ca-certificates"
-		echo "Replacing http software source list with https."
-		echo "正在将http源替换为https..."
-		update-ca-certificates
-		sed -i 's@http:@https:@g' /etc/apt/sources.list
-	fi
-	apt update
-	apt dist-upgrade -y
-	echo '修改完成，您当前的软件源列表如下所示。'
-	cat /etc/apt/sources.list
-	cat /etc/apt/sources.list.d/* 2>/dev/null
-	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑软件源列表"
-	press_enter_to_return
+	bash /tmp/.tmoe-linux-tool.sh -tuna
 	gnu_linux
 	#此处要返回依赖检测处！
 }

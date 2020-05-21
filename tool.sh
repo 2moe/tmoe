@@ -1,9 +1,23 @@
 #!/bin/bash
 ########################################################################
 main() {
+	check_linux_distro
+	check_architecture
 	case "$1" in
 	i | -i)
 		tmoe_linux_tool_menu
+		;;
+	--install-gui | install-gui)
+		install_gui
+		;;
+	--modify_remote_desktop_config)
+		modify_remote_desktop_config
+		;;
+	--remove_gui)
+		remove_gui
+		;;
+	--mirror-list)
+		tmoe_sources_list_manager
 		;;
 	up | -u)
 		tmoe_linux_tool_upgrade
@@ -13,6 +27,10 @@ main() {
 		;;
 	file | filebrowser)
 		filebrowser_restart
+		;;
+	tuna | -tuna | t | -t)
+		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
+		auto_check_distro_and_modify_sources_list
 		;;
 	*)
 		check_root
@@ -31,10 +49,47 @@ check_root() {
 		fi
 		exit 0
 	fi
+	check_linux_distro
+	check_architecture
 	check_dependencies
 }
-#############################
-check_dependencies() {
+#####################
+check_architecture() {
+	case $(uname -m) in
+	aarch64)
+		ARCH_TYPE="arm64"
+		;;
+	armv7l)
+		ARCH_TYPE="armhf"
+		;;
+	armv6l)
+		ARCH_TYPE="armel"
+		;;
+	x86_64)
+		ARCH_TYPE="amd64"
+		;;
+	i*86)
+		ARCH_TYPE="i386"
+		;;
+	x86)
+		ARCH_TYPE="i386"
+		;;
+	s390*)
+		ARCH_TYPE="s390x"
+		;;
+	ppc*)
+		ARCH_TYPE="ppc64el"
+		;;
+	mips*)
+		ARCH_TYPE="mipsel"
+		;;
+	risc*)
+		ARCH_TYPE="riscv"
+		;;
+	esac
+}
+#####################
+check_linux_distro() {
 	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
 		LINUX_DISTRO='debian'
 		PACKAGES_INSTALL_COMMAND='apt install -y'
@@ -90,7 +145,16 @@ check_dependencies() {
 		PACKAGES_INSTALL_COMMAND='xbps-install -S -y'
 		PACKAGES_REMOVE_COMMAND='xbps-remove -R'
 	fi
-	#####################
+	###############
+	RED=$(printf '\033[31m')
+	GREEN=$(printf '\033[32m')
+	YELLOW=$(printf '\033[33m')
+	BLUE=$(printf '\033[34m')
+	BOLD=$(printf '\033[1m')
+	RESET=$(printf '\033[m')
+}
+#############################
+check_dependencies() {
 	DEPENDENCIES=""
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -273,38 +337,6 @@ check_dependencies() {
 		fi
 	fi
 	################
-	case $(uname -m) in
-	aarch64)
-		ARCH_TYPE="arm64"
-		;;
-	armv7l)
-		ARCH_TYPE="armhf"
-		;;
-	armv6l)
-		ARCH_TYPE="armel"
-		;;
-	x86_64)
-		ARCH_TYPE="amd64"
-		;;
-	i*86)
-		ARCH_TYPE="i386"
-		;;
-	x86)
-		ARCH_TYPE="i386"
-		;;
-	s390*)
-		ARCH_TYPE="s390x"
-		;;
-	ppc*)
-		ARCH_TYPE="ppc64el"
-		;;
-	mips*)
-		ARCH_TYPE="mipsel"
-		;;
-	risc*)
-		ARCH_TYPE="riscv"
-		;;
-	esac
 	################
 	if [ ! -e /usr/bin/catimg ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -350,12 +382,6 @@ check_dependencies() {
 		WINDOWSDISTRO='WSL'
 	fi
 	##############
-	RED=$(printf '\033[31m')
-	GREEN=$(printf '\033[32m')
-	YELLOW=$(printf '\033[33m')
-	BLUE=$(printf '\033[34m')
-	BOLD=$(printf '\033[1m')
-	RESET=$(printf '\033[m')
 	cur=$(pwd)
 	tmoe_linux_tool_menu
 }
@@ -3692,14 +3718,14 @@ mirror_sources_station_download_speed_test() {
 	SOURCE_MIRROR_STATION=""
 	rm -f .tmoe_netspeed_test_*_temp_file
 	echo "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
-	echo "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高${RESET}。"
-	echo "请${YELLOW}自行${RESET}选择"
+	echo "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高。${RESET}"
+	echo "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
 }
 ######################
 ping_mirror_sources_list_count_3() {
 	echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
 	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
-	ping ${SOURCE_MIRROR_STATION} -c 3 | grep -E 'avg|time.*' --color=auto
+	ping ${SOURCE_MIRROR_STATION} -c 3 | grep -E 'avg|time.*ms' --color=auto
 	echo "---------------------------"
 }
 ##############
@@ -3727,8 +3753,8 @@ ping_mirror_sources_list() {
 	###此处一定要将SOURCE_MIRROR_STATION赋值为空
 	SOURCE_MIRROR_STATION=""
 	echo "测试${YELLOW}完成${RESET}"
-	echo "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快${RESET}。"
-	echo "请${YELLOW}自行${RESET}选择"
+	echo "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快。${RESET}"
+	echo "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
 }
 ##############
 modify_kali_mirror_sources_list() {
@@ -3752,7 +3778,7 @@ check_ca_certificates_and_apt_update() {
 	fi
 	apt update
 	apt dist-upgrade
-	echo '修改完成，您当前的${BLUE}软件源列表${RESET}如下所示。'
+	echo "修改完成，您当前的${BLUE}软件源列表${RESET}如下所示。"
 	cat /etc/apt/sources.list
 	cat /etc/apt/sources.list.d/* 2>/dev/null
 	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑软件源列表"
