@@ -2207,7 +2207,11 @@ switch_vnc_pulse_audio_transport_method() {
 }
 ###############################
 termux_pulse_audio_lan() {
-	cd $PREFIX/etc/pulse
+	if [ "${LINUX_DISTRO}" = 'Android' ]; then
+		cd $PREFIX/etc/pulse
+	else
+		cd /etc/pulse
+	fi
 	if grep -q '192.168.0.0/16' default.pa; then
 		LANPULSE='检测到您已启用局域网音频传输'
 	else
