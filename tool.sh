@@ -3482,7 +3482,7 @@ trust_sources_list() {
 }
 #####################
 delete_sources_list_invalid_rows() {
-	echo "执行此操作将导致软件源列表内所有注释行被删除,并自动去除重复行"
+	echo "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
 	do_you_want_to_continue
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		sed -i '/^#.*deb/d' ${SOURCES_LIST_FILE}
@@ -3658,6 +3658,7 @@ download_debian_ls_lr() {
 	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/debian/ls-lR.gz"
 	echo "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
 	aria2c --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
+	rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
 	echo "---------------------------"
 }
 ################
@@ -3689,15 +3690,15 @@ mirror_sources_station_download_speed_test() {
 	download_debian_ls_lr
 	###此处一定要将SOURCE_MIRROR_STATION赋值为空
 	SOURCE_MIRROR_STATION=""
-	rm -fv .tmoe_netspeed_test_*_temp_file
-	echo "测试完成，下载速度快并不意味着更新频率高。"
+	rm -f .tmoe_netspeed_test_*_temp_file
+	echo "测试完成，临时文件已自动清除，下载速度快并不意味着更新频率高。"
 	echo "请自行选择！"
 }
 ######################
 ping_mirror_sources_list_count_3() {
 	echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
 	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
-	ping ${SOURCE_MIRROR_STATION} -c 3
+	ping ${SOURCE_MIRROR_STATION} -c 3 | grep -E 'avg|time.*' --color=auto
 	echo "---------------------------"
 }
 ##############
