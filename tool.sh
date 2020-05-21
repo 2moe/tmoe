@@ -3419,13 +3419,14 @@ tmoe_sources_list_manager() {
 			"1" "国内高校镜像源" \
 			"2" "国内商业镜像源" \
 			"3" "镜像站延迟测试" \
-			"4" "restore to default还原默认源" \
-			"5" "edit list manually手动编辑" \
-			"6" "${EXTRA_SOURCE}" \
-			"7" "FAQ常见问题" \
-			"8" "切换http与https" \
-			"9" "去除无效行" \
-			"10" "强制信任软件源" \
+			"4" "镜像站下载速度测试" \
+			"5" "restore to default还原默认源" \
+			"6" "edit list manually手动编辑" \
+			"7" "${EXTRA_SOURCE}" \
+			"8" "FAQ常见问题" \
+			"9" "切换http与https" \
+			"10" "去除无效行" \
+			"11" "强制信任软件源" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3435,13 +3436,14 @@ tmoe_sources_list_manager() {
 	1) china_university_mirror_station ;;
 	2) china_bussiness_mirror_station ;;
 	3) ping_mirror_sources_list ;;
-	4) restore_default_sources_list ;;
-	5) edit_sources_list_manually ;;
-	6) add_extra_source_list ;;
-	7) sources_list_faq ;;
-	8) switch_sources_http_and_https ;;
-	9) delete_sources_list_invalid_rows ;;
-	10) mandatory_trust_software_sources ;;
+	4) mirror_sources_station_download_speed_test ;;
+	5) restore_default_sources_list ;;
+	6) edit_sources_list_manually ;;
+	7) add_extra_source_list ;;
+	8) sources_list_faq ;;
+	9) switch_sources_http_and_https ;;
+	10) delete_sources_list_invalid_rows ;;
+	11) mandatory_trust_software_sources ;;
 	esac
 	##########
 	press_enter_to_return
@@ -3651,6 +3653,47 @@ edit_sources_list_manually() {
 	fi
 }
 ##########
+download_debian_ls_lr() {
+	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/debian/ls-lR.gz"
+	echo "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
+	aria2c --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
+	echo "---------------------------"
+}
+################
+mirror_sources_station_download_speed_test() {
+	echo "此操作可能会消耗您数十至上百兆的流量"
+	press_enter_to_continue
+	cd /tmp
+	echo "---------------------------"
+	SOURCE_MIRROR_STATION_NAME='清华镜像站'
+	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
+	download_debian_ls_lr
+	SOURCE_MIRROR_STATION_NAME='中科大镜像站'
+	SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn'
+	download_debian_ls_lr
+	SOURCE_MIRROR_STATION_NAME='上海交大镜像站'
+	SOURCE_MIRROR_STATION='mirror.sjtu.edu.cn'
+	download_debian_ls_lr
+	SOURCE_MIRROR_STATION_NAME='北外镜像站'
+	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
+	download_debian_ls_lr
+	SOURCE_MIRROR_STATION_NAME='华为云镜像站'
+	SOURCE_MIRROR_STATION='mirrors.huaweicloud.com'
+	download_debian_ls_lr
+	SOURCE_MIRROR_STATION_NAME='阿里云镜像站'
+	SOURCE_MIRROR_STATION='mirrors.aliyun.com'
+	download_debian_ls_lr
+	SOURCE_MIRROR_STATION_NAME='网易镜像站'
+	SOURCE_MIRROR_STATION='mirrors.163.com'
+	download_debian_ls_lr
+	###此处一定要将SOURCE_MIRROR_STATION赋值为空
+	SOURCE_MIRROR_STATION=""
+	rm -fv .tmoe_netspeed_test_*_temp_file
+	echo "测试完成，下载速度快并不意味着更新频率高。"
+	echo "请自行选择！"
+}
+######################
 ping_mirror_sources_list_count_3() {
 	echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
 	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
@@ -3682,7 +3725,6 @@ ping_mirror_sources_list() {
 	###此处一定要将SOURCE_MIRROR_STATION赋值为空
 	SOURCE_MIRROR_STATION=""
 	echo "测试完成，延迟时间低并不意味着下载速度快。"
-	echo "下载速度快并不意味着更新频率高。"
 	echo "请自行选择！"
 }
 ##############
