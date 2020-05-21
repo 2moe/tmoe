@@ -2328,10 +2328,6 @@ apt_purge_libfprint() {
 }
 ###################
 debian_xfce4_extras() {
-	if [ ! $(command -v catfish) ]; then
-		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} catfish ${RESET}"
-		${PACKAGES_INSTALL_COMMAND} catfish
-	fi
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
 			kali_xfce4_extras
@@ -6085,6 +6081,7 @@ beta_features() {
 			"17" "gnome-system-monitor(资源监视器)" \
 			"18" "telegram(注重保护隐私的社交app)" \
 			"19" "Grub Customizer(图形化开机引导编辑器)" \
+			"20" "catfish(文件搜索软件)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6110,6 +6107,7 @@ beta_features() {
 	17) install_gnome_system_monitor ;;
 	18) install_telegram ;;
 	19) install_grub_customizer ;;
+	20) install_catfish ;;
 	esac
 	##############################
 	########################################
@@ -6555,6 +6553,12 @@ install_anbox() {
 	else
 		non_debian_function
 	fi
+}
+###########
+install_catfish() {
+	DEPENDENCY_01=''
+	DEPENDENCY_02='catfish'
+	beta_features_quick_install
 }
 ###########
 install_geogebra_and_kalzium() {
