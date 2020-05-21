@@ -3609,28 +3609,28 @@ check_arch_distro_and_modify_mirror_list() {
 ##############
 modify_manjaro_mirror_list() {
 	if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "armhf" ]; then
-		cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-			#Server = https://${SOURCE_MIRROR_STATION}/archlinuxarm/$arch/$repo
-			Server = https://${SOURCE_MIRROR_STATION}/manjaro/arm-stable/$repo/$arch
+		cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
+			#Server = https://${SOURCE_MIRROR_STATION}/archlinuxarm/\$arch/\$repo
+			Server = https://${SOURCE_MIRROR_STATION}/manjaro/arm-stable/\$repo/\$arch
 		EndOfArchMirrors
 	else
-		cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-			#Server = https://${SOURCE_MIRROR_STATION}/archlinux/$repo/os/$arch
-			Server = https://${SOURCE_MIRROR_STATION}/manjaro/stable/$repo/$arch
+		cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
+			#Server = https://${SOURCE_MIRROR_STATION}/archlinux/\$repo/os/\$arch
+			Server = https://${SOURCE_MIRROR_STATION}/manjaro/stable/\$repo/\$arch
 		EndOfArchMirrors
 	fi
 }
 ###############
 modify_archlinux_mirror_list() {
 	if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "armhf" ]; then
-		cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-			#Server = https://mirror.archlinuxarm.org/$arch/$repo
-			Server = https://${SOURCE_MIRROR_STATION}/archlinuxarm/$arch/$repo
+		cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
+			#Server = https://mirror.archlinuxarm.org/\$arch/\$repo
+			Server = https://${SOURCE_MIRROR_STATION}/archlinuxarm/\$arch/\$repo
 		EndOfArchMirrors
 	else
-		cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-			#Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
-			Server = https://${SOURCE_MIRROR_STATION}/archlinux/$repo/os/$arch
+		cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
+			#Server = http://mirrors.kernel.org/archlinux/\$repo/os/\$arch
+			Server = https://${SOURCE_MIRROR_STATION}/archlinux/\$repo/os/\$arch
 		EndOfArchMirrors
 	fi
 }
@@ -3683,7 +3683,7 @@ ping_mirror_sources_list() {
 modify_kali_mirror_sources_list() {
 	echo "检测到您使用的是Kali系统"
 	sed -i 's/^deb/# &/g' /etc/apt/sources.list
-	cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
+	cat >>/etc/apt/sources.list <<-EndOfSourcesList
 		deb http://${SOURCE_MIRROR_STATION}/kali/ kali-rolling main contrib non-free
 		deb http://${SOURCE_MIRROR_STATION}/debian/ stable main contrib non-free
 		# deb http://${SOURCE_MIRROR_STATION}/kali/ kali-last-snapshot main contrib non-free
@@ -3750,12 +3750,12 @@ modify_debian_mirror_sources_list() {
 	NEW_DEBIAN_SOURCES_LIST='false'
 	if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
 		SOURCELISTCODE='sid'
-		echo "Debian sid"
+
 	elif grep -q '^PRETTY_NAME.*testing' "/etc/os-release"; then
 		NEW_DEBIAN_SOURCES_LIST='true'
 		SOURCELISTCODE='testing'
 		BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
-		echo "Debian testing"
+		#echo "Debian testing"
 
 	elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
 		NEW_DEBIAN_SOURCES_LIST='true'
@@ -3765,17 +3765,17 @@ modify_debian_mirror_sources_list() {
 	elif grep -q 'buster' "/etc/os-release"; then
 		SOURCELISTCODE='buster'
 		BACKPORTCODE='buster'
-		echo "Debian 10 buster"
+		#echo "Debian 10 buster"
 
 	elif grep -q 'stretch' "/etc/os-release"; then
 		SOURCELISTCODE='stretch'
 		BACKPORTCODE='stretch'
-		echo "Debian 9 stretch"
+		#echo "Debian 9 stretch"
 
 	elif grep -q 'jessie' "/etc/os-release"; then
 		SOURCELISTCODE='jessie'
 		BACKPORTCODE='jessie'
-		echo "Debian 8 jessie"
+		#echo "Debian 8 jessie"
 	fi
 	echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
 	echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
