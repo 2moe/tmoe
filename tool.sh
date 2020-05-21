@@ -3350,6 +3350,9 @@ china_university_mirror_station() {
 			"8" "北京交通大学mirror.bjtu.edu.cn" \
 			"9" "兰州大学mirror.lzu.edu.cn" \
 			"10" "大连东软信息学院mirrors.neusoft.edu.cn" \
+			"11" "南京大学mirrors.nju.edu.cn" \
+			"12" "南京邮电大学mirrors.njupt.edu.cn" \
+			"13" "西北农林科技大学mirrors.nwafu.edu.cn" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3366,6 +3369,9 @@ china_university_mirror_station() {
 	8) SOURCE_MIRROR_STATION='mirror.bjtu.edu.cn' ;;
 	9) SOURCE_MIRROR_STATION='mirror.lzu.edu.cn' ;;
 	10) SOURCE_MIRROR_STATION='mirrors.neusoft.edu.cn' ;;
+	11) SOURCE_MIRROR_STATION='mirrors.nju.edu.cn' ;;
+	12) SOURCE_MIRROR_STATION='mirrors.njupt.edu.cn' ;;
+	13) SOURCE_MIRROR_STATION='mirrors.nwafu.edu.cn' ;;
 	esac
 	######################################
 	auto_check_distro_and_modify_sources_list
@@ -3384,6 +3390,7 @@ china_bussiness_mirror_station() {
 			"3" "网易mirrors.163.com" \
 			"4" "中国互联网络信息中心mirrors.cnnic.cn" \
 			"5" "搜狐mirrors.sohu.com" \
+			"6" "首都在线mirrors.yun-idc.com" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3395,6 +3402,7 @@ china_bussiness_mirror_station() {
 	3) SOURCE_MIRROR_STATION='mirrors.163.com' ;;
 	4) SOURCE_MIRROR_STATION='mirrors.cnnic.cn' ;;
 	5) SOURCE_MIRROR_STATION='mirrors.sohu.com' ;;
+	6) SOURCE_MIRROR_STATION='mirrors.yun-idc.com' ;;
 	esac
 	######################################
 	auto_check_distro_and_modify_sources_list
@@ -3773,7 +3781,7 @@ modify_debian_mirror_sources_list() {
 	echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
 	sed -i 's/^deb/# &/g' /etc/apt/sources.list
 	if [ "${SOURCELISTCODE}" = "sid" ]; then
-		cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
+		cat >>/etc/apt/sources.list <<-EndOfSourcesList
 			deb http://${SOURCE_MIRROR_STATION}/debian/ sid main contrib non-free
 			deb http://${SOURCE_MIRROR_STATION}/debian/ experimental main contrib non-free
 		EndOfSourcesList
