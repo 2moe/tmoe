@@ -3691,8 +3691,9 @@ mirror_sources_station_download_speed_test() {
 	###此处一定要将SOURCE_MIRROR_STATION赋值为空
 	SOURCE_MIRROR_STATION=""
 	rm -f .tmoe_netspeed_test_*_temp_file
-	echo "测试完成，临时文件已自动清除，下载速度快并不意味着更新频率高。"
-	echo "请自行选择！"
+	echo "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
+	echo "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高${RESET}。"
+	echo "请${YELLOW}自行${RESET}选择"
 }
 ######################
 ping_mirror_sources_list_count_3() {
@@ -3725,8 +3726,9 @@ ping_mirror_sources_list() {
 	ping_mirror_sources_list_count_3
 	###此处一定要将SOURCE_MIRROR_STATION赋值为空
 	SOURCE_MIRROR_STATION=""
-	echo "测试完成，延迟时间低并不意味着下载速度快。"
-	echo "请自行选择！"
+	echo "测试${YELLOW}完成${RESET}"
+	echo "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快${RESET}。"
+	echo "请${YELLOW}自行${RESET}选择"
 }
 ##############
 modify_kali_mirror_sources_list() {
