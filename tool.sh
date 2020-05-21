@@ -3636,6 +3636,12 @@ modify_archlinux_mirror_list() {
 }
 ###############
 edit_sources_list_manually() {
+	if [ ! $(command -v nano) ]; then
+		DEPENDENCY_01='nano'
+		DEPENDENCY_02=""
+		NON_DEBIAN='false'
+		beta_features_quick_install
+	fi
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt edit-sources || nano ${SOURCES_LIST_FILE}
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
