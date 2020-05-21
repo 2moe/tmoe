@@ -3696,7 +3696,7 @@ check_ca_certificates_and_apt_update() {
 		echo "检测到您已安装ca-certificates"
 		echo "Replacing http software source list with https."
 		echo "正在将http源替换为https..."
-		update-ca-certificates
+		#update-ca-certificates
 		sed -i 's@http:@https:@g' /etc/apt/sources.list
 	fi
 	apt update
