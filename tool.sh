@@ -1506,8 +1506,11 @@ modify_xfce_window_scaling_factor() {
 	if [ $exitstatus = 0 ]; then
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
 		if ((${TARGET} > 1)); then
-			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi
-			#dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI
+			if grep -q 'Focal Fossa' "/etc/os-release"; then
+				dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
+			else
+				dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
+			fi
 		fi
 		echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
 	else
@@ -5871,8 +5874,11 @@ xfce4_tightvnc_hidpi_settings() {
 		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2 || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s 2
 		#-n创建一个新属性，类型为int
-		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
-		#dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
+		if grep -q 'Focal Fossa' "/etc/os-release"; then
+			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
+		else
+			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
+		fi
 		startvnc >/dev/null 2>&1
 	fi
 	#Default-xhdpi默认处于未激活状态
