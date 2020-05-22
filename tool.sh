@@ -6556,6 +6556,16 @@ install_anbox() {
 }
 ###########
 install_catfish() {
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "检测到您处于proot环境下，可能无法成功创建索引数据库"
+		echo "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${PACKAGES_REMOVE_COMMAND} mlocate catfish"
+		do_you_want_to_continue
+		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			echo "检测到您使用的ubuntu，无法为您自动安装"
+			read
+			beta_features
+		fi
+	fi
 	DEPENDENCY_01=''
 	DEPENDENCY_02='catfish'
 	beta_features_quick_install
