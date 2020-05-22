@@ -2198,8 +2198,9 @@ download_deb_comman_model_01() {
 	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 	echo ${THE_LATEST_DEB_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
-	apt install ./${THE_LATEST_DEB_VERSION}
-	rm -f ${THE_LATEST_DEB_VERSION}
+	apt show ./${THE_LATEST_DEB_VERSION}
+	apt install -y ./${THE_LATEST_DEB_VERSION}
+	rm -fv ${THE_LATEST_DEB_VERSION}
 }
 ###################
 other_desktop() {
@@ -4148,7 +4149,7 @@ install_iease_music() {
 	debian_opt_quick_install
 	with_no_sandbox_model_02
 }
-#####################
+######################
 install_electron_netease_cloud_music() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
@@ -4496,8 +4497,11 @@ install_chinese_manpages() {
 	if [ ! -e "${HOME}/文档/debian-handbook/usr/share/doc/debian-handbook/html" ]; then
 		mkdir -p ${HOME}/文档/debian-handbook
 		cd ${HOME}/文档/debian-handbook
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
-		busybox ar xv 'debian-handbook.deb'
+		GREP_NAME='debian-handbook'
+		LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/'
+		download_tuna_repo_deb_file_all_arch
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
+		busybox ar xv ${LATEST_DEB_VERSION}
 		tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
 		ls | grep -v usr | xargs rm -rf
 		ln -sf ./usr/share/doc/debian-handbook/html/zh-CN/index.html ./
@@ -4533,7 +4537,7 @@ install_libre_office() {
 install_baidu_netdisk() {
 	DEPENDENCY_01="baidunetdisk"
 	DEPENDENCY_02=""
-	if [ "${ARCH_TYPE}" != "amd64" ] && [ "${ARCH_TYPE}" != "i386" ]; then
+	if [ "${ARCH_TYPE}" != "amd64" ]; then
 		arch_does_not_support
 		other_software
 	fi
@@ -4548,16 +4552,54 @@ install_baidu_netdisk() {
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
 		rpm -ivh 'baidunetdisk.rpm'
-	else
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
-		apt show ./baidunetdisk.deb
-		apt install -y ./baidunetdisk.deb
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		GREP_NAME='baidunetdisk'
+		LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
+		download_ubuntu_kylin_deb_file_model_02
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+		#apt show ./baidunetdisk.deb
+		#apt install -y ./baidunetdisk.deb
 	fi
 	echo "若安装失败，则请前往官网手动下载安装"
 	echo "url：https://pan.baidu.com/download"
-	rm -fv ./baidunetdisk.deb
+	#rm -fv ./baidunetdisk.deb
 	beta_features_install_completed
 }
+######################
+#####################
+install_deb_file_common_model_01() {
+	cd /tmp
+	LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
+	echo ${LATEST_DEB_URL}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
+	apt show ./${LATEST_DEB_VERSION}
+	apt install -y ./${LATEST_DEB_VERSION}
+	rm -fv ./${LATEST_DEB_VERSION}
+}
+###################
+download_ubuntu_kylin_deb_file_model_02() {
+	LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
+	install_deb_file_common_model_01
+}
+################
+download_debian_cn_repo_deb_file_model_01() {
+	LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+	install_deb_file_common_model_01
+}
+######################
+download_tuna_repo_deb_file_model_03() {
+	LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	install_deb_file_common_model_01
+}
+################
+download_tuna_repo_deb_file_all_arch() {
+	LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "all" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
+	echo ${LATEST_DEB_URL}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
+	apt show ./${LATEST_DEB_VERSION} 2>/dev/null
+}
+##此处不要自动安装deb包
 ######################
 install_netease_163_cloud_music() {
 	DEPENDENCY_01="netease-cloud-music"
@@ -4582,16 +4624,18 @@ install_netease_163_cloud_music() {
 		#appimage格式
 	else
 		non_debian_function
+		GREP_NAME='netease-cloud-music'
 		if [ "${ARCH_TYPE}" = "amd64" ]; then
-			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+			LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
+			download_ubuntu_kylin_deb_file_model_02
+			#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
 		else
-			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
+			LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/'
+			download_debian_cn_repo_deb_file_model_01
+			#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
 		fi
-		apt show ./netease-cloud-music.deb
-		apt install -y ./netease-cloud-music.deb
 		echo "若安装失败，则请前往官网手动下载安装。"
 		echo 'url: https://music.163.com/st/download'
-		rm -fv ./netease-cloud-music.deb
 		beta_features_install_completed
 	fi
 	press_enter_to_return
@@ -6732,17 +6776,6 @@ sougou_pinyin_amd64() {
 		beta_features
 	fi
 }
-##############
-download_ubuntu_kylin_deb_file() {
-	cd /tmp
-	LATEST_SOGOU_VERSION=$(curl -L "${LATEST_SOGOU_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
-	LATEST_SOUGOU_URL="${LATEST_SOGOU_REPO}${LATEST_SOGOU_VERSION}"
-	echo ${LATEST_SOUGOU_URL}
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_SOGOU_VERSION}" "${LATEST_SOUGOU_URL}"
-	apt show ./${LATEST_SOGOU_VERSION}
-	apt install -y ./${LATEST_SOGOU_VERSION}
-	rm -fv ./${LATEST_SOGOU_VERSION}
-}
 ###################
 install_debian_sogou_pinyin() {
 	DEPENDENCY_02="sogouimebs"
@@ -6751,21 +6784,24 @@ install_debian_sogou_pinyin() {
 		install_pkg_warning
 	fi
 	if [ "${ARCH_TYPE}" = "i386" ]; then
-		LATEST_SOGOU_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
+		GREP_NAME='sogoupinyin'
+		LATEST_DEB_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
 	else
-		LATEST_SOGOU_REPO='http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
+		GREP_NAME='sogouimebs'
+		LATEST_DEB_REPO='http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
 	fi
-	download_ubuntu_kylin_deb_file
+	download_ubuntu_kylin_deb_file_model_02
+	#download_ubuntu_kylin_deb_file
 	echo "若安装失败，则请前往官网手动下载安装。"
 	echo 'url: https://pinyin.sogou.com/linux/'
-	rm -fv sogou_pinyin.deb
+	#rm -fv sogou_pinyin.deb
 	beta_features_install_completed
 }
 ########
 install_sogou_pinyin() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
-		DEPENDENCY_02="fcitx-sogoupinyin"
+		DEPENDENCY_02="fcitx-sogouimebs"
 		beta_features_quick_install
 		configure_arch_fcitx
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -6991,16 +7027,21 @@ install_typora() {
 	NON_DEBIAN='true'
 	beta_features_quick_install
 	cd /tmp
-	if [ "$(uname -m)" = "x86_64" ]; then
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
+	GREP_NAME='typora'
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/'
+		download_debian_cn_repo_deb_file_model_01
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
 	elif [ "${ARCH_TYPE}" = "i386" ]; then
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+		LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/'
+		download_tuna_repo_deb_file_model_03
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
 	else
 		arch_does_not_support
 	fi
-	apt show ./typora.deb
-	apt install -y ./typora.deb
-	rm -vf ./typora.deb
+	#apt show ./typora.deb
+	#apt install -y ./typora.deb
+	#rm -vf ./typora.deb
 	beta_features_install_completed
 }
 ####################
@@ -7088,23 +7129,29 @@ install_electronic_wechat() {
 
 	non_debian_function
 	cd /tmp
+	GREP_NAME='electronic-wechat'
 	if [ "${ARCH_TYPE}" = "amd64" ]; then
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
+		LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/'
+		download_debian_cn_repo_deb_file_model_01
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
 		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
 	elif [ "${ARCH_TYPE}" = "i386" ]; then
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
+		LATEST_DEB_REPO='http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/'
+		download_ubuntu_kylin_deb_file_model_02
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_i386.deb'
 	elif [ "${ARCH_TYPE}" = "arm64" ]; then
-		REPO_URL='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/e/electronic-wechat/'
-		LATEST_VERSION=$(curl -L "${REPO_URL}" | grep 'arm64.deb' | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
-		LATEST_URL="${REPO_URL}${LATEST_VERSION}"
-		echo ${LATEST_URL}
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' "${LATEST_URL}"
+		LATEST_DEB_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/e/electronic-wechat/'
+		download_ubuntu_kylin_deb_file_model_02
+		#LATEST_VERSION=$(curl -L "${REPO_URL}" | grep 'arm64.deb' | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
+		#LATEST_URL="${REPO_URL}${LATEST_VERSION}"
+		#echo ${LATEST_URL}
+		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' "${LATEST_URL}"
 	else
 		arch_does_not_support
 	fi
-	apt show ./electronic-wechat.deb
-	apt install -y ./electronic-wechat.deb
-	rm -vf ./electronic-wechat.deb
+	#apt show ./electronic-wechat.deb
+	#apt install -y ./electronic-wechat.deb
+	#rm -vf ./electronic-wechat.deb
 	beta_features_install_completed
 }
 #############
