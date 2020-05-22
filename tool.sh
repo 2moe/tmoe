@@ -2295,7 +2295,7 @@ configure_x11vnc_remote_desktop_session() {
 		echo "正在配置x11vnc server..."
 		read -sp "请输入6至8位密码，Please enter the new VNC password: " PASSWORD
 		mkdir -p ${HOME}/.vnc
-		x11vnc -storepasswd $PASSWORD ${HOME}/.vnc/passwd
+		x11vnc -storepasswd $PASSWORD ${HOME}/.vnc/x11passwd
 	EOF
 	if [ "${NON_DBUS}" != "true" ]; then
 		enable_dbus_launch
