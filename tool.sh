@@ -3509,7 +3509,7 @@ delete_sources_list_invalid_rows() {
 	echo "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
 	do_you_want_to_continue
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		sed -i '/^#.*deb/d' ${SOURCES_LIST_FILE}
+		sed -i '/^#/d' ${SOURCES_LIST_FILE}
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		sed -i '/^#Server.*=/d' ${SOURCES_LIST_FILE}
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
@@ -3813,7 +3813,7 @@ modify_ubuntu_mirror_sources_list() {
 		deb http://${SOURCE_MIRROR_STATION}/ubuntu/ ${SOURCELISTCODE}-updates main restricted universe multiverse
 		deb http://${SOURCE_MIRROR_STATION}/ubuntu/ ${SOURCELISTCODE}-backports main restricted universe multiverse
 		deb http://${SOURCE_MIRROR_STATION}/ubuntu/ ${SOURCELISTCODE}-security main restricted universe multiverse
-		# 预发布软件源，不建议启用
+		# proposed为预发布软件源，不建议启用
 		# deb https://${SOURCE_MIRROR_STATION}/ubuntu/ ${SOURCELISTCODE}-proposed main restricted universe multiverse
 	EndOfSourcesList
 	if [ "${ARCH_TYPE}" != 'amd64' ] && [ "${ARCH_TYPE}" != 'i386' ]; then
