@@ -5807,6 +5807,7 @@ frequently_asked_questions() {
 		"3" "linuxQQ闪退" \
 		"4" "VNC/X11闪退" \
 		"5" "软件禁止以root权限运行" \
+		"6" "初始化mlocate数据库失败" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -5857,6 +5858,14 @@ frequently_asked_questions() {
 		echo "您可以输${YELLOW}sudo su - ${RESET}或${YELLOW}sudo -i ${RESET}切换至root用户"
 		echo "亦可输${YELLOW}sudo su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
 		echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
+	fi
+	###################
+	if [ "${TMOE_FAQ}" == '6' ]; then
+		echo "您是否需要卸载mlocate和catfish"
+		echo "Do you want to remove mlocate and catfish?"
+		do_you_want_to_continue
+		${PACKAGES_REMOVE_COMMAND} mlocate catfish
+		apt autopurge 2>/dev/null
 	fi
 	##################
 	if [ -z "${TMOE_FAQ}" ]; then
