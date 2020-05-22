@@ -405,7 +405,8 @@ tmoe_linux_tool_menu() {
 			"12" "Remove browser 卸载浏览器" \
 			"13" "FAQ 常见问题" \
 			"14" "software sources软件镜像源管理" \
-			"15" "Beta Features 测试版功能" \
+			"15" "download iso(Android,linux等)" \
+			"16" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -426,7 +427,8 @@ tmoe_linux_tool_menu() {
 	12) remove_browser ;;
 	13) frequently_asked_questions ;;
 	14) tmoe_sources_list_manager ;;
-	15) beta_features ;;
+	15) download_virtual_machine_iso_file ;;
+	16) beta_features ;;
 	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -817,7 +819,7 @@ cookies_readme() {
 		FILE_EXT_01='txt'
 		FILE_EXT_02='sqlite'
 		where_is_start_dir
-		if [ -z ${TMOE_FILE_ABSOLUTE_PATH} ]; then
+		if [ -z ${SELECTION} ]; then
 			echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		else
 			echo ${TMOE_FILE_ABSOLUTE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
@@ -4260,10 +4262,11 @@ other_software() {
 }
 ###########
 remove_deb_package() {
-	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "返回" --no-button "Remove移除" --yesno "${PACKAGE_NAME}\n您是想要返回还是卸载这个软件包？Do you want to return,or remove this package?♪(^∇^*) " 10 50); then
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Back返回" --no-button "Remove移除" --yesno "${PACKAGE_NAME}\n您是想要返回还是卸载这个软件包？Do you want to return,or remove this package?♪(^∇^*) " 10 50); then
 		other_software
 	else
 		apt purge ${PACKAGE_NAME}
+		delete_tmoe_deb_file
 		other_software
 	fi
 }
@@ -4282,6 +4285,9 @@ deb_file_installer() {
 		do_you_want_to_continue
 		RETURN_TO_WHERE='other_software'
 		apt install -y ./${SELECTION}
+		DEPENDENCY_01=${PACKAGE_NAME}
+		DEPENDENCY_02=""
+		beta_features_install_completed
 	else
 		mkdir -p .DEB_TEMP_FOLDER
 		mv ${SELECTION} .DEB_TEMP_FOLDER
@@ -4297,19 +4303,23 @@ deb_file_installer() {
 		fi
 		rm -rf ${CURRENT_DIR}/.DEB_TEMP_FOLDER
 	fi
-	echo "${SELECTION}安装${BLUE}完成${RESET}，请问是否需要${RED}删除${RESET}该文件"
+	delete_tmoe_deb_file
+}
+######################
+delete_tmoe_deb_file() {
+	echo "请问是否需要${RED}删除${RESET}安装包文件"
 	ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 	echo "Do you want to ${RED}delete${RESET} it?"
 	do_you_want_to_continue
 	rm -fv ${TMOE_FILE_ABSOLUTE_PATH}
 }
-######################
+#################
 tmoe_deb_file_installer() {
 	FILE_EXT_01='deb'
 	FILE_EXT_02='DEB'
 	START_DIR="${HOME}"
 	tmoe_file_manager
-	if [ -z ${TMOE_FILE_ABSOLUTE_PATH} ]; then
+	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
 		echo "您选择的deb文件为${TMOE_FILE_ABSOLUTE_PATH}"
@@ -6083,7 +6093,7 @@ beta_features() {
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 17 55 8 \
-			"1" "input method输入法(搜狗,讯飞,中州韻)" \
+			"1" "input method输入法(搜狗,讯飞,百度)" \
 			"2" "WPS office(办公软件)" \
 			"3" "container/VM(docker容器,qemu,vbox虚拟机)" \
 			"4" "geogebra+kalzium(数学+化学)" \
@@ -6102,7 +6112,7 @@ beta_features() {
 			"17" "gnome-system-monitor(资源监视器)" \
 			"18" "telegram(注重保护隐私的社交app)" \
 			"19" "Grub Customizer(图形化开机引导编辑器)" \
-			"20" "catfish(文件搜索软件)" \
+			"20" "catfish(文件搜索)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6191,7 +6201,7 @@ download_virtual_machine_iso_file() {
 	esac
 	###############
 	press_enter_to_return
-	install_container_and_virtual_machine
+	download_virtual_machine_iso_file
 }
 ###########
 flash_iso_to_udisk() {
@@ -6199,7 +6209,7 @@ flash_iso_to_udisk() {
 	FILE_EXT_02='ISO'
 	START_DIR="${HOME}"
 	tmoe_file_manager
-	if [ -z ${TMOE_FILE_ABSOLUTE_PATH} ]; then
+	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
 		echo "您选择的iso文件为${TMOE_FILE_ABSOLUTE_PATH}"
