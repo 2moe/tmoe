@@ -1353,24 +1353,28 @@ backup_termux() {
 ##################################
 ##################################
 uncompress_tar_xz_file() {
+	pwd
 	echo 'tar.xz'
 	echo "即将为您解压..."
-	echo "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
-	if [ "$(command -v pv)" ]; then
-		pv ${RESTORE} | tar -PpJx
-	else
+	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
+		echo "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
 		tar -PpJxvf ${RESTORE}
+	else
+		echo "${GREEN} pv ${RESTORE} | tar -PpJx ${RESTORE} ${RESET}"
+		pv ${RESTORE} | tar -PpJx
 	fi
 }
 ######################
 uncompress_tar_gz_file() {
+	pwd
 	echo 'tar.gz'
 	echo "即将为您解压..."
-	echo "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
-	if [ "$(command -v pv)" ]; then
-		pv ${RESTORE} | tar -Ppzx
-	else
+	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
+		echo "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
 		tar -Ppzxvf ${RESTORE}
+	else
+		echo "${GREEN} pv ${RESTORE} | tar -Ppzx ${RESTORE} ${RESET}"
+		pv ${RESTORE} | tar -Ppzx
 	fi
 }
 #####################
@@ -1493,6 +1497,7 @@ where_is_start_dir() {
 	else
 		START_DIR="$(pwd)"
 	fi
+	cd ${START_DIR}
 	select_file_manually
 }
 ###############
@@ -1509,20 +1514,25 @@ file_directory_selection() {
 manually_select_the_file_directory() {
 	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为/sdcard/Download/backup\n Please enter the file path." 12 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
 	START_DIR="$(echo ${TARGET_BACKUP_FILE_PATH} | head -n 1 | cut -d ' ' -f 1)"
-	echo $START_DIR
+	echo ${START_DIR}
 	if [ -z ${START_DIR} ]; then
 		echo "文件目录不能为空"
 		press_enter_to_return
 		restore_gnu_linux_container
+	else
+		cd ${START_DIR}
 	fi
 }
 ###############
 restore_gnu_linux_container() {
 	unmount_proc_dev
-	OPTION=$(whiptail --title "Restore System" --menu "你想要恢复哪个小可爱到之前的备份状态" 15 55 4 \
+	COMPATIBILITY_MODE='fasle'
+	RETURN_TO_WHERE='restore_gnu_linux_container'
+	OPTION=$(whiptail --title "Restore System" --menu "你想要恢复哪个小可爱到之前的备份状态" 13 55 5 \
 		"1" "Restore GNU/Linux container容器" \
 		"2" "Restore termux" \
 		"3" "select path manually手动选择路径" \
+		"4" "Compatibility mode兼容模式" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
@@ -1555,8 +1565,14 @@ restore_gnu_linux_container() {
 		BACKUP_FILE_NAME="*tar*"
 		file_directory_selection
 	fi
+	###################
+	if [ "${OPTION}" == '4' ]; then
+		BACKUP_FILE_NAME="*tar*"
+		COMPATIBILITY_MODE='true'
+		file_directory_selection
+	fi
 	##########################
-	if [ "${OPTION}" == '0' ]; then
+	if [ "${OPTION}" == '0' ] || [ -z "${OPTION}" ]; then
 		tmoe_manager_main_menu
 	fi
 	##########################
