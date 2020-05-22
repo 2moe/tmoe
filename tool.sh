@@ -390,7 +390,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200521-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200522-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -4074,6 +4074,7 @@ explore_debian_opt_repo() {
 
 	NON_DEBIAN='true'
 	DEPENDENCY_02=''
+	RETURN_TO_WHERE='explore_debian_opt_repo'
 	cd /usr/share/applications/
 	INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
 		"您想要安装哪个软件？按方向键选择，回车键确认！\n Which software do you want to install? " 16 50 7 \
@@ -4149,17 +4150,36 @@ install_iease_music() {
 	debian_opt_quick_install
 	with_no_sandbox_model_02
 }
+############
+patch_electron_netease_cloud_music() {
+	cd /tmp
+	git clone -b electron-netease-cloud-music --depth=1 https://gitee.com/mo2/patch ./electron-netease-cloud-music_TEMP_FOLDER
+	cd ./electron-netease-cloud-music_TEMP_FOLDER
+	tar -Jxvf app.asar.tar.xz
+	mv -f app.asar /opt/electron-netease-cloud-music/
+	cd ..
+	rm -rf /tmp/.electron-netease-cloud-music_TEMP_FOLDER
+}
 ######################
-install_electron_netease_cloud_music() {
+proot_warning() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "在当前环境下，安装后可能无法正常运行。"
 		RETURN_TO_WHERE='explore_debian_opt_repo'
 		do_you_want_to_continue
 	fi
+}
+################
+install_electron_netease_cloud_music() {
 	DEPENDENCY_01='electron-netease-cloud-music'
 	echo "github url：https://github.com/Rocket1184/electron-netease-cloud-music"
-	debian_opt_quick_install
+	beta_features_quick_install
+	FILE_SIZE=$(du -s /opt/electron-netease-cloud-music/app.asar | awk '{print $1}')
+	if ((${FILE_SIZE} < 3000)); then
+		patch_electron_netease_cloud_music
+	fi
+	do_you_want_to_close_the_sandbox_mode
+	do_you_want_to_continue
 	#with_no_sandbox_model_02
 	if ! grep -q 'sandbox' "$(command -v electron-netease-cloud-music)"; then
 		sed -i 's@exec electron /opt/electron-netease-cloud-music/app.asar@& --no-sandbox@' $(command -v electron-netease-cloud-music)
@@ -7117,9 +7137,9 @@ install_electronic_wechat() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="electron-wechat"
 		NON_DEBIAN='false'
-		beta_features_quick_install
 	fi
 	################
+	beta_features_quick_install
 	if [ -e "/opt/wechat/electronic-wechat" ] || [ "$(command -v electronic-wechat)" ]; then
 		beta_features_install_completed
 		echo "按回车键重新安装"
