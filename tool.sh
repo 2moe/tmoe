@@ -4259,6 +4259,15 @@ other_software() {
 	#tmoe_linux_tool_menu
 }
 ###########
+remove_deb_package() {
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "返回" --no-button "Remove移除" --yesno "${PACKAGE_NAME}\n您是想要返回还是卸载这个软件包？Do you want to return,or remove this package?♪(^∇^*) " 10 50); then
+		other_software
+	else
+		apt purge ${PACKAGE_NAME}
+		other_software
+	fi
+}
+#############
 deb_file_installer() {
 	#进入deb文件目录
 	cd ${CURRENT_DIR}
@@ -4266,9 +4275,12 @@ deb_file_installer() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		file ./${SELECTION} 2>/dev/null
 		apt show ./${SELECTION}
+		PACKAGE_NAME=$(apt show ./${SELECTION} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
 		echo "您是否需要安装此软件包？"
 		echo "Do you want to install it?"
+		RETURN_TO_WHERE='remove_deb_package'
 		do_you_want_to_continue
+		RETURN_TO_WHERE='other_software'
 		apt install -y ./${SELECTION}
 	else
 		mkdir -p .DEB_TEMP_FOLDER
