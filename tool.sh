@@ -2274,7 +2274,7 @@ configure_x11vnc_remote_desktop_session() {
 		    ${REMOTE_DESKTOP_SESSION_02} &
 		fi
 		#export LANG="en_US.UTF8"
-		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/passwd -users \$(whoami) -rfbport 5901 -noshm &
+		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/x11passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
 		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
@@ -7076,8 +7076,16 @@ install_electronic_wechat() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="electron-wechat"
 		NON_DEBIAN='false'
+		beta_features_quick_install
 	fi
-	beta_features_quick_install
+	################
+	if [ -e "/opt/wechat/electronic-wechat" ] || [ "$(command -v electronic-wechat)" ]; then
+		beta_features_install_completed
+		echo "按回车键重新安装"
+		echo "Press enter to reinstall it?"
+		do_you_want_to_continue
+	fi
+
 	non_debian_function
 	cd /tmp
 	if [ "${ARCH_TYPE}" = "amd64" ]; then
