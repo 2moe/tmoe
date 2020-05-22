@@ -1360,7 +1360,7 @@ uncompress_tar_xz_file() {
 		echo "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
 		tar -PpJxvf ${RESTORE}
 	else
-		echo "${GREEN} pv ${RESTORE} | tar -PpJx ${RESTORE} ${RESET}"
+		echo "${GREEN} pv ${RESTORE} | tar -PpJx ${RESET}"
 		pv ${RESTORE} | tar -PpJx
 	fi
 }
