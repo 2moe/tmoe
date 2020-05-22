@@ -5906,7 +5906,7 @@ enable_dbus_launch() {
 	sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
 	##################
 	START_XSDL_LINE=$(cat -n /usr/local/bin/startxsdl | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-	sed -i "${START_XSDL_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startxsdl
+	sed -i "${START_XSDL_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
 	#################
 	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
 	sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
