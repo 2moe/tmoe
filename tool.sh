@@ -390,7 +390,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200522-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器，0522修复ubuntu20.10和云音乐" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200522-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -6418,12 +6418,10 @@ aria2c_download_file() {
 }
 ############
 download_ubuntu_huawei_mirror_iso() {
-	if [ "${ARCH_TYPE}" = "amd64" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/${UBUNTU_VERSION}/ubuntu-${UBUNTU_VERSION}-desktop-amd64.iso"
-	elif [ "${ARCH_TYPE}" = "i386" ]; then
+	if [ "${ARCH_TYPE}" = "i386" ]; then
 		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-desktop-i386.iso"
 	else
-		ubuntu_arm_warning
+		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/${UBUNTU_VERSION}/ubuntu-${UBUNTU_VERSION}-desktop-amd64.iso"
 	fi
 	aria2c_download_file
 }
@@ -6439,12 +6437,10 @@ get_ubuntu_server_iso_url() {
 }
 ##############
 get_other_ubuntu_distros_url() {
-	if [ "${ARCH_TYPE}" = "amd64" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso"
-	elif [ "${ARCH_TYPE}" = "i386" ]; then
+	if [ "${ARCH_TYPE}" = "i386" ]; then
 		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/18.04.4/release/${UBUNTU_DISTRO}-18.04.4-desktop-i386.iso"
 	else
-		ubuntu_arm_warning
+		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso"
 	fi
 }
 ################
