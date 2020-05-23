@@ -1077,7 +1077,7 @@ which_vscode_edition() {
 }
 #################################
 check_vscode_server_arch() {
-	if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "x86_64" ]; then
+	if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "amd64" ]; then
 		install_vscode_server
 	else
 		echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
@@ -1226,23 +1226,9 @@ vscode_server_upgrade() {
 		mv code-server-data /usr/local/bin/
 		ln -sf /usr/local/bin/code-server-data/code-server /usr/local/bin/code-server
 	fi
-	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus != 0 ]; then
-		echo "密码包含无效字符，请返回重试。"
-		press_enter_to_return
-		vscode_server_password
-	fi
-
-	if [ ! -e "${HOME}/.profile" ]; then
-		echo '' >>~/.profile
-	fi
-	sed -i '/export PASSWORD=/d' ~/.profile
-	sed -i '/export PASSWORD=/d' ~/.zshrc
-	sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.profile
-	sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.zshrc
-	export PASSWORD=${TARGET_USERPASSWD}
+	vscode_server_password
 	vscode_server_restart
+	echo "若您是初次安装，则请重设密码"
 	########################################
 	press_enter_to_return
 	configure_vscode_server
@@ -1250,8 +1236,8 @@ vscode_server_upgrade() {
 }
 ############
 vscode_server_restart() {
-	echo "即将为您启动code-server,请复制密码，并在浏览器中粘贴。"
-	echo "The VSCode server is starting, please copy the password and paste it in your browser."
+	echo "即将为您启动code-server"
+	echo "The VSCode server is starting"
 	echo "您之后可以输code-server来启动Code Server."
 	echo 'You can type "code-server" to start Code Server.'
 	/usr/local/bin/code-server-data/code-server &
@@ -1261,21 +1247,19 @@ vscode_server_restart() {
 }
 #############
 vscode_server_password() {
-	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password.您的密码将以明文形式保存至.profile和.zshrc" 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password.您的密码将以明文形式保存至~/.config/code-server/config.yaml" 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
 		echo "密码包含无效字符，操作取消"
 		press_enter_to_return
 		configure_vscode_server
 	fi
-	if [ ! -e "${HOME}/.profile" ]; then
-		echo '' >>~/.profile
-	fi
-	sed -i '/export PASSWORD=/d' ~/.profile
-	sed -i '/export PASSWORD=/d' ~/.zshrc
-	sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.profile
-	sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.zshrc
-	export PASSWORD=${TARGET_USERPASSWD}
+	sed -i "s@^password:.*@password: ${TARGET_USERPASSWD}@" ~/.config/code-server/config.yaml
+	#sed -i '/export PASSWORD=/d' ~/.profile
+	#sed -i '/export PASSWORD=/d' ~/.zshrc
+	#sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.profile
+	#sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.zshrc
+	#export PASSWORD=${TARGET_USERPASSWD}
 }
 #################
 vscode_server_remove() {
@@ -1288,8 +1272,8 @@ vscode_server_remove() {
 	echo "${YELLOW}Press enter to remove VSCode Server. ${RESET}"
 	RETURN_TO_WHERE='configure_vscode_server'
 	do_you_want_to_continue
-	sed -i '/export PASSWORD=/d' ~/.profile
-	sed -i '/export PASSWORD=/d' ~/.zshrc
+	#sed -i '/export PASSWORD=/d' ~/.profile
+	#sed -i '/export PASSWORD=/d' ~/.zshrc
 	rm -rvf /usr/local/bin/code-server-data/ /usr/local/bin/code-server /tmp/sed-vscode.tmp
 	echo "${YELLOW}移除成功${RESET}"
 	echo "Remove successfully"
