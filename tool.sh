@@ -3675,8 +3675,8 @@ download_debian_ls_lr() {
 }
 ################
 mirror_sources_station_download_speed_test() {
-	echo "此操作可能会消耗您数十至上百兆的流量"
-	press_enter_to_continue
+	echo "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
+	do_you_want_to_continue
 	cd /tmp
 	echo "---------------------------"
 	SOURCE_MIRROR_STATION_NAME='清华镜像站'
