@@ -1224,7 +1224,7 @@ vscode_server_upgrade() {
 		mv ${VSCODE_FOLDER_NAME} code-server-data
 		rm -rvf /usr/local/bin/code-server-data /usr/local/bin/code-server
 		mv code-server-data /usr/local/bin/
-		ln -sf /usr/local/bin/code-server-data/code-server /usr/local/bin/code-server
+		ln -sf /usr/local/bin/code-server-data/bin/code-server /usr/local/bin/code-server
 	fi
 	vscode_server_restart
 	vscode_server_password
