@@ -1226,9 +1226,9 @@ vscode_server_upgrade() {
 		mv code-server-data /usr/local/bin/
 		ln -sf /usr/local/bin/code-server-data/code-server /usr/local/bin/code-server
 	fi
-	vscode_server_password
 	vscode_server_restart
-	echo "若您是初次安装，则请重设密码"
+	vscode_server_password
+	echo "若您是初次安装，则请重启code-server"
 	########################################
 	press_enter_to_return
 	configure_vscode_server
@@ -1240,7 +1240,7 @@ vscode_server_restart() {
 	echo "The VSCode server is starting"
 	echo "您之后可以输code-server来启动Code Server."
 	echo 'You can type "code-server" to start Code Server.'
-	/usr/local/bin/code-server-data/code-server &
+	/usr/local/bin/code-server-data/bin/code-server &
 	echo "正在为您启动code-server，本机默认访问地址为localhost:8080"
 	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080
 	echo "您可以输${YELLOW}pkill node${RESET}来停止进程"
