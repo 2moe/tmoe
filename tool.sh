@@ -390,7 +390,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200522-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0510更新文件选择功能,0511支持配置x11vnc,支持WM,0512增加新图标包，0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200522-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器，0522修复ubuntu20.10和云音乐" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -4759,8 +4759,9 @@ configure_x11vnc() {
 x11vnc_process_readme() {
 	echo "输startx11vnc启动x11vnc"
 	echo "输stopvnc或stopx11vnc停止x11vnc"
-	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 	echo "您亦可输${GREEN}pulseaudio --start${RESET}"
+	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
 }
 ###################
 x11vnc_warning() {
@@ -4769,6 +4770,7 @@ x11vnc_warning() {
 	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${BLUE}停止${RESET}"
 	echo "若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务"
 	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
 	RETURN_TO_WHERE='configure_x11vnc'
 	do_you_want_to_continue
 	stopvnc 2>/dev/null
@@ -7026,7 +7028,7 @@ install_virtual_box() {
 		DEPENDENCY_01="virtualbox virtualbox-guest-iso"
 		DEPENDENCY_02="virtualbox-ext-oracle"
 		echo "您可以在安装完成后，输usermod -G vboxusers -a 当前用户名称"
-		echo "将当前用户添加至vboxusers用户组"
+		echo "将当前用户添加至vboxusers用��组"
 		#
 	fi
 	echo "您可以输modprobe vboxdrv vboxnetadp vboxnetflt来加载内核模块"
