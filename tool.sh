@@ -2341,6 +2341,45 @@ debian_xfce4_extras() {
 	apt_purge_libfprint
 }
 #############
+touch_xfce4_terminal_rc() {
+	cat >terminalrc <<-'ENDOFTERMIANLRC'
+		[Configuration]
+		ColorForeground=#e6e1cf
+		ColorBackground=#0f1419
+		ColorCursor=#f29718
+		ColorPalette=#000000 #ff3333;#b8cc52;#e7c547;#36a3d9;#f07178;#95e6cb;#ffffff;#323232;#ff6565;#eafe84;#fff779;#68d5ff;#ffa3aa;#c7fffd;#ffffff
+		MiscAlwaysShowTabs=FALSE
+		MiscBell=FALSE
+		MiscBellUrgent=FALSE
+		MiscBordersDefault=TRUE
+		MiscCursorBlinks=FALSE
+		MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
+		MiscDefaultGeometry=80x24
+		MiscInheritGeometry=FALSE
+		MiscMenubarDefault=TRUE
+		MiscMouseAutohide=FALSE
+		MiscMouseWheelZoom=TRUE
+		MiscToolbarDefault=FALSE
+		MiscConfirmClose=TRUE
+		MiscCycleTabs=TRUE
+		MiscTabCloseButtons=TRUE
+		MiscTabCloseMiddleClick=TRUE
+		MiscTabPosition=GTK_POS_TOP
+		MiscHighlightUrls=TRUE
+		MiscMiddleClickOpensUri=FALSE
+		MiscCopyOnSelect=FALSE
+		MiscShowRelaunchDialog=TRUE
+		MiscRewrapOnResize=TRUE
+		MiscUseShiftArrowsToScroll=FALSE
+		MiscSlimTabs=FALSE
+		MiscNewTabAdjacent=FALSE
+		BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
+		BackgroundDarkness=0.880000
+		CommandLoginShell=TRUE
+		ScrollingUnlimited=TRUE
+	ENDOFTERMIANLRC
+}
+###################
 xfce4_color_scheme() {
 	if [ ! -e "/usr/share/xfce4/terminal/colorschemes/Monokai Remastered.theme" ]; then
 		cd /usr/share/xfce4/terminal
@@ -2348,10 +2387,18 @@ xfce4_color_scheme() {
 		curl -Lo "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
 		tar -Jxvf "colorschemes.tar.xz"
 	fi
-	cd ${HOME}/.config/xfce4/terminal
+
+	XFCE_TERMINAL_PATH="${HOME}/.config/xfce4/terminal/"
+	if [ ! -e "${XFCE_TERMINAL_PATH}/terminalrc" ]; then
+		mkdir -p ${XFCE_TERMINAL_PATH}
+		cd ${XFCE_TERMINAL_PATH}
+		touch_xfce4_terminal_rc
+	fi
+
 	#/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc
 	#/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
 	#/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc
+	cd ${XFCE_TERMINAL_PATH}
 	if ! grep -q '^ColorPalette' terminalrc; then
 		sed -i '/ColorPalette=/d' terminalrc
 		sed -i '/ColorForeground=/d' terminalrc
@@ -2363,8 +2410,8 @@ xfce4_color_scheme() {
 		EndofAyu
 	fi
 	if ! grep -q '^FontName' terminalrc; then
-		sed -i '/FontName=/d' terminalrc
 		if [ -e "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc" ]; then
+			sed -i '/FontName=/d' terminalrc
 			sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold Italic 12' terminalrc
 		fi
 	fi
