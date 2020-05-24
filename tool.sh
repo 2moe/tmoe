@@ -5974,6 +5974,7 @@ xfce4_tightvnc_hidpi_settings() {
 		else
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
 		fi
+		dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
 		startvnc >/dev/null 2>&1
 	fi
 	#Default-xhdpi默认处于未激活状态
