@@ -2820,7 +2820,42 @@ set_default_xfce_icon_theme() {
 	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s ${XFCE_ICRO_NAME} 2>/dev/null
 }
 ###############
+creat_update_icon_caches() {
+	cd /usr/local/bin/
+	cat >update-icon-caches <<-'EndofFile'
+		#!/bin/sh
+		case "$1" in
+		    ""|-h|--help)
+		        echo "Usage: $0 directory [ ... ]"
+		        exit 1
+		        ;;
+		esac
+
+		for dir in "$@"; do
+		    if [ ! -d "$dir" ]; then
+		        continue
+		    fi
+		    if [ -f "$dir"/index.theme ]; then
+		        if ! gtk-update-icon-cache --force --quiet "$dir"; then
+		            echo "WARNING: icon cache generation failed for $dir"
+		        fi
+		    else
+		        rm -f "$dir"/icon-theme.cache
+		        rmdir -p --ignore-fail-on-non-empty "$dir"
+		    fi
+		done
+		exit 0
+	EndofFile
+	chmod +x update-icon-caches
+}
+check_update_icon_caches_sh() {
+	if [ ! $(command -v update-icon-caches) ]; then
+		creat_update_icon_caches
+	fi
+}
+##############
 configure_theme() {
+	check_update_icon_caches_sh
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
 		"您想要下载哪个主题？按方向键选择！下载完成后，您需要手动修改外观设置中的样式和图标。注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 17 55 7 \
@@ -2878,7 +2913,7 @@ update_icon_caches_model_01() {
 	rm -rf /tmp/.${THEME_NAME}
 	echo "updating icon caches..."
 	echo "正在刷新图标缓存..."
-	gtk-update-icon-cache /usr/share/icons/${ICON_NAME} 2>/dev/null &
+	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
 ############
@@ -2915,7 +2950,7 @@ update_icon_caches_model_02() {
 	rm -rf /tmp/.${THEME_NAME}
 	echo "updating icon caches..."
 	echo "正在刷新图标缓存..."
-	gtk-update-icon-cache /usr/share/icons/${ICON_NAME} 2>/dev/null &
+	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
 ###############
@@ -3059,6 +3094,7 @@ download_arch_wallpaper() {
 }
 ################
 download_kali_themes_common() {
+	check_update_icon_caches_sh
 	THEME_NAME='kali-themes-common'
 	GREP_NAME='kali-themes-common'
 	ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
@@ -3095,7 +3131,7 @@ download_win10x_theme() {
 	cd /tmp/.WINDOWS_10X_ICON_THEME
 	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf We10X.tar.xz -C /usr/share/icons 2>/dev/null
-	gtk-update-icon-cache /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null &
+	update-icon-caches /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null &
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McWe10X
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
@@ -3123,7 +3159,7 @@ download_uos_icon_theme() {
 	cd /tmp/UosICONS
 	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
-	gtk-update-icon-cache /usr/share/icons/Uos 2>/dev/null &
+	update-icon-caches /usr/share/icons/Uos 2>/dev/null &
 	echo ${GITHUB_URL}
 	rm -rf /tmp/UosICONS
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${PACKAGES_REMOVE_COMMAND} deepin-icon-theme"
@@ -3147,7 +3183,7 @@ download_macos_mojave_theme() {
 	GITHUB_URL=$(cat url.txt)
 	tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes 2>/dev/null
 	tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons 2>/dev/null
-	gtk-update-icon-cache /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null &
+	update-icon-caches /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null &
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McMojave
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
@@ -3169,9 +3205,9 @@ download_ukui_theme() {
 		busybox ar xv 'ukui-themes.deb'
 		cd /
 		tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
-		#if which gtk-update-icon-cache >/dev/null 2>&1; then
-		gtk-update-icon-cache /usr/share/icons/ukui-icon-theme-basic /usr/share/icons/ukui-icon-theme-classical /usr/share/icons/ukui-icon-theme-default 2>/dev/null &
-		gtk-update-icon-cache /usr/share/icons/ukui-icon-theme 2>/dev/null &
+		#if which update-icon-caches >/dev/null 2>&1; then
+		update-icon-caches /usr/share/icons/ukui-icon-theme-basic /usr/share/icons/ukui-icon-theme-classical /usr/share/icons/ukui-icon-theme-default 2>/dev/null &
+		update-icon-caches /usr/share/icons/ukui-icon-theme 2>/dev/null &
 		#fi
 		rm -rf /tmp/.ukui-gtk-themes
 		#apt install -y ./ukui-themes.deb
@@ -3182,7 +3218,7 @@ download_ukui_theme() {
 	fi
 	XFCE_ICRO_NAME='ukui-icon-theme'
 	set_default_xfce_icon_theme
-	#gtk-update-icon-cache /usr/share/icons/ukui-icon-theme/ 2>/dev/null
+	#update-icon-caches /usr/share/icons/ukui-icon-theme/ 2>/dev/null
 	#echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} ukui-themes"
 }
 #################################
@@ -3269,7 +3305,7 @@ install_kali_undercover() {
 			cd /
 			tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
 			#if which gtk-update-icon-cache >/dev/null 2>&1; then
-			gtk-update-icon-cache /usr/share/icons/Windows-10-Icons 2>/dev/null &
+			update-icon-caches /usr/share/icons/Windows-10-Icons 2>/dev/null &
 			#fi
 		fi
 		rm -rf /tmp/.kali-undercover-win10-theme
