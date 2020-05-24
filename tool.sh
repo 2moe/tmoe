@@ -2340,6 +2340,36 @@ debian_xfce4_extras() {
 	fi
 	apt_purge_libfprint
 }
+#############
+xfce4_color_scheme() {
+	if [ ! -e "/usr/share/xfce4/terminal/colorschemes/Monokai Remastered.theme" ]; then
+		cd /usr/share/xfce4/terminal
+		echo "正在配置xfce4终端配色..."
+		curl -Lo "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
+		tar -Jxvf "colorschemes.tar.xz"
+	fi
+	cd ${HOME}/.config/xfce4/terminal
+	#/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc
+	#/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+	#/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc
+	if ! grep -q '^ColorPalette' terminalrc; then
+		sed -i '/ColorPalette=/d' terminalrc
+		sed -i '/ColorForeground=/d' terminalrc
+		sed -i '/ColorBackground=/d' terminalrc
+		cat >>terminalrc <<-'EndofAyu'
+			ColorPalette=#000000;#ff3333;#b8cc52;#e7c547;#36a3d9;#f07178;#95e6cb;#ffffff;#323232;#ff6565;#eafe84;#fff779;#68d5ff;#ffa3aa;#c7fffd;#ffffff
+			ColorForeground=#e6e1cf
+			ColorBackground=#0f1419
+		EndofAyu
+	fi
+	if ! grep -q '^FontName' terminalrc; then
+		sed -i '/FontName=/d' terminalrc
+		if [ -e "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc" ]; then
+			sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold Italic 12' terminalrc
+		fi
+	fi
+
+}
 ##################
 install_xfce4_desktop() {
 	echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
@@ -2388,13 +2418,7 @@ install_xfce4_desktop() {
 			dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
 		fi
 	fi
-
-	if [ ! -e "/usr/share/xfce4/terminal/colorschemes/Monokai Remastered.theme" ]; then
-		cd /usr/share/xfce4/terminal
-		echo "正在配置xfce4终端配色..."
-		curl -Lo "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
-		tar -Jxvf "colorschemes.tar.xz"
-	fi
+	xfce4_color_scheme
 	#########
 	configure_vnc_xstartup
 }
@@ -4239,7 +4263,7 @@ install_feeluown() {
 	DEPENDENCY_01='feeluown'
 	echo "url：https://feeluown.readthedocs.io/en/latest/"
 	beta_features_quick_install
-	if [ ! $(command -v feeluown) ]; then
+	if [ ! $(command -v feeluown-launcher) ]; then
 		arch_does_not_support
 	fi
 }
