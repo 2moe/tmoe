@@ -243,6 +243,12 @@ check_dependencies() {
 			DEPENDENCIES="${DEPENDENCIES} xorg-mkfontscale"
 		fi
 	fi
+	################
+	if [ ! $(command -v nano) ]; then
+		if [ "${LINUX_DISTRO}" != "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} nano"
+		fi
+	fi
 	#####################
 	if [ ! -e /usr/bin/xz ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1122,46 +1128,37 @@ configure_vscode_server() {
 		whiptail --title "CONFIGURE VSCODE_SERVER" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 14 50 5 \
 			"1" "upgrade code-server更新/升级" \
 			"2" "password 设定密码" \
-			"3" "stop 停止" \
-			"4" "remove 卸载/移除" \
+			"3" "edit config manually手动编辑配置" \
+			"4" "stop 停止" \
+			"5" "remove 卸载/移除" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
-	##############################
-	if [ "${CODE_SERVER_OPTION}" == '0' ]; then
-		which_vscode_edition
-	fi
-	##############################
-	if [ "${CODE_SERVER_OPTION}" == '1' ]; then
+	################
+	case "${CODE_SERVER_OPTION}" in
+	0 | "") which_vscode_edition ;;
+	1)
 		pkill node
-		#service code-server stop 2>/dev/null
 		vscode_server_upgrade
-	fi
-	##############################
-	if [ "${CODE_SERVER_OPTION}" == '2' ]; then
-		vscode_server_password
-	fi
-	##############################
-	if [ "${CODE_SERVER_OPTION}" == '3' ]; then
+		;;
+	2) vscode_server_password ;;
+	3) edit_code_server_config_manually ;;
+	4)
 		echo "正在停止服务进程..."
 		echo "Stopping..."
 		pkill node
-		#service code-server stop 2>/dev/null
-		#service vscode_server status
-	fi
-	##############################
-	if [ "${CODE_SERVER_OPTION}" == '4' ]; then
-		vscode_server_remove
-	fi
-	########################################
-	if [ -z "${CODE_SERVER_OPTION}" ]; then
-		which_vscode_edition
-	fi
+		;;
+	5) vscode_server_remove ;;
+	esac
 	##############
 	press_enter_to_return
 	configure_vscode_server
 }
 ##############
+edit_code_server_config_manually() {
+	nano ~/.config/code-server/config.yaml
+}
+####################
 vscode_server_upgrade() {
 	echo "正在检测版本信息..."
 	if [ -e "/usr/local/bin/code-server-data/code-server" ]; then
@@ -1229,6 +1226,9 @@ vscode_server_upgrade() {
 	vscode_server_restart
 	vscode_server_password
 	echo "若您是初次安装，则请重启code-server"
+	if grep -q '127.0.0.1:8080' "${HOME}.config/code-server/config.yaml"; then
+		sed -i 's@bind-addr:.*@bind-addr: 0.0.0.0:18080@' "${HOME}.config/code-server/config.yaml"
+	fi
 	########################################
 	press_enter_to_return
 	configure_vscode_server
@@ -1241,8 +1241,9 @@ vscode_server_restart() {
 	echo "您之后可以输code-server来启动Code Server."
 	echo 'You can type "code-server" to start Code Server.'
 	/usr/local/bin/code-server-data/bin/code-server &
-	echo "正在为您启动code-server，本机默认访问地址为localhost:8080"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080
+	SERVER_PORT=$(cat ${HOME}/.config/code-server/config.yaml | grep bind-addr | cut -d ':' -f 3)
+	echo "正在为您启动code-server，本机默认访问地址为localhost:${SERVER_PORT}"
+	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${SERVER_PORT}
 	echo "您可以输${YELLOW}pkill node${RESET}来停止进程"
 }
 #############
@@ -3650,12 +3651,6 @@ modify_archlinux_mirror_list() {
 }
 ###############
 edit_sources_list_manually() {
-	if [ ! $(command -v nano) ]; then
-		DEPENDENCY_01='nano'
-		DEPENDENCY_02=""
-		NON_DEBIAN='false'
-		beta_features_quick_install
-	fi
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt edit-sources || nano ${SOURCES_LIST_FILE}
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -4680,12 +4675,6 @@ install_bleachbit_cleaner() {
 ##########################
 modify_remote_desktop_config() {
 	RETURN_TO_WHERE='modify_remote_desktop_config'
-	if [ ! $(command -v nano) ]; then
-		DEPENDENCY_01='nano'
-		DEPENDENCY_02=""
-		NON_DEBIAN='false'
-		beta_features_quick_install
-	fi
 	##################
 	REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
 		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 4 \
