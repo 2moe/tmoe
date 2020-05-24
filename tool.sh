@@ -2359,7 +2359,7 @@ touch_xfce4_terminal_rc() {
 		MiscMenubarDefault=TRUE
 		MiscMouseAutohide=FALSE
 		MiscMouseWheelZoom=TRUE
-		MiscToolbarDefault=FALSE
+		MiscToolbarDefault=TRUE
 		MiscConfirmClose=TRUE
 		MiscCycleTabs=TRUE
 		MiscTabCloseButtons=TRUE
@@ -2375,7 +2375,6 @@ touch_xfce4_terminal_rc() {
 		MiscNewTabAdjacent=FALSE
 		BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
 		BackgroundDarkness=0.880000
-		CommandLoginShell=TRUE
 		ScrollingUnlimited=TRUE
 	ENDOFTERMIANLRC
 }
