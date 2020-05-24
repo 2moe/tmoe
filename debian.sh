@@ -164,7 +164,7 @@ gnu_linux() {
 	######################################
 	DEPENDENCIES=""
 
-	if [ ! -e /usr/bin/aria2c ]; then
+	if [ ! $(command -v aria2c) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} net-misc/aria2"
 		else
@@ -172,13 +172,11 @@ gnu_linux() {
 		fi
 	fi
 
-	if [ ! -e /bin/bash ]; then
-		if [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "openwrt" ]; then
+	if [ ! $(command -v bash) ]; then
 			DEPENDENCIES="${DEPENDENCIES} bash"
-		fi
 	fi
 
-	if [ ! -e /usr/bin/curl ]; then
+	if [ ! $(command -v curl) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} net-misc/curl"
 		else
@@ -187,8 +185,7 @@ gnu_linux() {
 	fi
 
 	#####################
-
-	if [ ! -e /usr/bin/git ]; then
+	if [ ! $(command -v git) ]; then
 		if [ "${LINUX_DISTRO}" = "openwrt" ]; then
 			DEPENDENCIES="${DEPENDENCIES} git git-http"
 		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
@@ -205,23 +202,8 @@ gnu_linux() {
 			DEPENDENCIES="${DEPENDENCIES} grep"
 		fi
 	fi
-	########################
-	if [ ! -e "/usr/bin/less" ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} sys-apps/less"
-		else
-			DEPENDENCIES="${DEPENDENCIES} less"
-		fi
-	fi
-
-	if [ -L "/usr/bin/less" ]; then
-		if [ "${LINUX_DISTRO}" = "openwrt" ]; then
-			DEPENDENCIES="${DEPENDENCIES} less"
-		fi
-	fi
 	####################
-
-	if [ ! -e /usr/bin/pv ]; then
+	if [ ! $(command -v pv) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} sys-apps/pv"
 		elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
@@ -233,13 +215,13 @@ gnu_linux() {
 		fi
 	fi
 
-	if [ ! -e /usr/bin/proot ]; then
+	if [ ! $(command -v proot) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} proot"
 		fi
 	fi
 	#####################
-	if [ ! -e /usr/bin/xz ]; then
+	if [ ! $(command -v xz) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} xz-utils"
 		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
@@ -249,7 +231,7 @@ gnu_linux() {
 		fi
 	fi
 
-	if [ ! -e /usr/bin/pkill ]; then
+	if [ ! $(command -v pkill) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} sys-process/procps"
 		elif [ "${LINUX_DISTRO}" != "openwrt" ]; then
@@ -257,13 +239,13 @@ gnu_linux() {
 		fi
 	fi
 	#####################
-	if [ ! -e /usr/bin/sudo ]; then
+	if [ ! $(command -v sudo) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} sudo"
 		fi
 	fi
 	#####################
-	if [ ! -e /bin/tar ]; then
+	if [ ! $(command -v tar) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} app-arch/tar"
 		else

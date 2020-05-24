@@ -158,7 +158,7 @@ check_dependencies() {
 	DEPENDENCIES=""
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ ! -e /usr/bin/aptitude ]; then
+		if [ ! $(command -v aptitude) ]; then
 			DEPENDENCIES="${DEPENDENCIES} aptitude"
 		fi
 	fi
@@ -171,7 +171,7 @@ check_dependencies() {
 		fi
 	fi
 
-	if [ ! -e /bin/bash ]; then
+	if [ ! $(command -v bash) ]; then
 		DEPENDENCIES="${DEPENDENCIES} bash"
 	fi
 
@@ -187,7 +187,7 @@ check_dependencies() {
 		fi
 	fi
 	#####################
-	if [ ! -e /usr/bin/catimg ]; then
+	if [ ! $(command -v catimg) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			if grep -q 'VERSION_ID' "/etc/os-release"; then
 				DEBIANVERSION="$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2 | cut -d '.' -f 1)"
@@ -205,7 +205,7 @@ check_dependencies() {
 		fi
 	fi
 
-	if [ ! -e /usr/bin/curl ]; then
+	if [ ! $(command -v curl) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} net-misc/curl"
 		else
@@ -213,7 +213,7 @@ check_dependencies() {
 		fi
 	fi
 	######################
-	if [ ! -e /usr/bin/fc-cache ]; then
+	if [ ! $(command -v fc-cache) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} fontconfig"
 		fi
@@ -226,7 +226,7 @@ check_dependencies() {
 		fi
 	fi
 	####################
-	if [ ! -e /usr/bin/git ]; then
+	if [ ! $(command -v git) ]; then
 		if [ "${LINUX_DISTRO}" = "openwrt" ]; then
 			DEPENDENCIES="${DEPENDENCIES} git git-http"
 		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
@@ -235,8 +235,22 @@ check_dependencies() {
 			DEPENDENCIES="${DEPENDENCIES} git"
 		fi
 	fi
+	########################
+	if [ ! $(command -v less) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-apps/less"
+		else
+			DEPENDENCIES="${DEPENDENCIES} less"
+		fi
+	fi
+
+	if [ -L "/usr/bin/less" ] || [ -L "/opt/bin/less" ]; then
+		if [ "${LINUX_DISTRO}" = "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} less"
+		fi
+	fi
 	####################
-	if [ ! -e /usr/bin/mkfontscale ]; then
+	if [ ! $(command -v mkfontscale) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} xfonts-utils"
 		elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -250,7 +264,7 @@ check_dependencies() {
 		fi
 	fi
 	#####################
-	if [ ! -e /usr/bin/xz ]; then
+	if [ ! $(command -v xz) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} xz-utils"
 		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
@@ -260,7 +274,7 @@ check_dependencies() {
 		fi
 	fi
 
-	if [ ! -e /usr/bin/pkill ]; then
+	if [ ! $(command -v pkill) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} sys-process/procps"
 		elif [ "${LINUX_DISTRO}" != "openwrt" ]; then
@@ -268,7 +282,7 @@ check_dependencies() {
 		fi
 	fi
 	#####################
-	if [ ! -e /usr/bin/sudo ]; then
+	if [ ! $(command -v sudo) ]; then
 		if [ "${LINUX_DISTRO}" != "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} sudo"
 		fi
@@ -281,7 +295,7 @@ check_dependencies() {
 		fi
 	fi
 	#####################
-	if [ ! -e /usr/bin/whiptail ] && [ ! -e /bin/whiptail ]; then
+	if [ ! $(command -v whiptail) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCIES="${DEPENDENCIES} whiptail"
 		elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -295,7 +309,7 @@ check_dependencies() {
 		fi
 	fi
 	##############
-	if [ ! -e /usr/bin/wget ]; then
+	if [ ! $(command -v wget) ]; then
 		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 			DEPENDENCIES="${DEPENDENCIES} net-misc/wget"
 		else
@@ -344,7 +358,7 @@ check_dependencies() {
 	fi
 	################
 	################
-	if [ ! -e /usr/bin/catimg ]; then
+	if [ ! $(command -v catimg) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
