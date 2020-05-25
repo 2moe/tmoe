@@ -410,7 +410,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200522-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200525-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1445,18 +1445,14 @@ modify_other_vnc_conf() {
 		"4" "Edit startvnc manually 手动编辑vnc启动脚本" \
 		"5" "修复VNC闪退" \
 		"6" "调整屏幕缩放比例(仅支持xfce)" \
+		"7" "display port显示端口" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
-	if [ "${MODIFYOTHERVNCCONF}" == '0' ]; then
-		modify_remote_desktop_config
-	fi
-	###########
-	if [ "${MODIFYOTHERVNCCONF}" == '1' ]; then
-		modify_vnc_pulse_audio
-	fi
-	###########
-	if [ "${MODIFYOTHERVNCCONF}" == '2' ]; then
+	case "${MODIFYOTHERVNCCONF}" in
+	0 | "") modify_remote_desktop_config ;;
+	1) modify_vnc_pulse_audio ;;
+	2)
 		echo 'The password you entered is hidden.'
 		echo '您需要输两遍（不可见的）密码。'
 		echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -1469,36 +1465,48 @@ modify_other_vnc_conf() {
 		stopvnc 2>/dev/null
 		press_enter_to_return
 		modify_other_vnc_conf
-	fi
-	###########
-	if [ "${MODIFYOTHERVNCCONF}" == '3' ]; then
+		;;
+	3)
 		nano ~/.vnc/xstartup
 		stopvnc 2>/dev/null
 		press_enter_to_return
 		modify_other_vnc_conf
-	fi
-	###########
-	if [ "${MODIFYOTHERVNCCONF}" == '4' ]; then
-		nano_startvnc_manually
-	fi
-	#########################
-	if [ "${MODIFYOTHERVNCCONF}" == '5' ]; then
-		fix_vnc_dbus_launch
-	fi
-	###############
-	if [ "${MODIFYOTHERVNCCONF}" == '6' ]; then
-		modify_xfce_window_scaling_factor
-	fi
-	##########
-	if [ -z "${MODIFYOTHERVNCCONF}" ]; then
-		modify_remote_desktop_config
-	fi
+		;;
+	4) nano_startvnc_manually ;;
+	5) fix_vnc_dbus_launch ;;
+	6) modify_xfce_window_scaling_factor ;;
+	7) modify_tightvnc_display_port ;;
+	esac
 	#########
 	press_enter_to_return
 	modify_other_vnc_conf
 	##########
 }
+##############
+check_tightvnc_port() {
+	if grep -q 'tmoe-linux.*:1' "/usr/local/bin/startvnc"; then
+		CURRENT_VNC_PORT=5901
+	else
+		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+	fi
+}
 #########################
+modify_tightvnc_display_port() {
+	check_tightvnc_port
+	TARGET=$(whiptail --inputbox "默认显示编号为1，默认VNC服务端口为5901，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为1,则端口为5901，请输入显示编号.Please enter the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+		sed -i "s@tmoe-linux.*:.*@tmoe-linux :$TARGET@" "$(command -v startvnc)"
+		echo 'Your current DISPLAY port has been modified.'
+		check_tightvnc_port
+		echo '您当前的显示端口已修改为'
+		echo ${CURRENT_VNC_PORT}
+		press_enter_to_return
+	fi
+	modify_other_vnc_conf
+}
+######################
 modify_xfce_window_scaling_factor() {
 	TARGET=$(whiptail --inputbox "请输入您需要缩放的比例大小(纯数字)，当前仅支持整数倍，例如1和2，不支持1.5" 10 50 --title "Window Scaling Factor" 3>&1 1>&2 2>&3)
 	exitstatus=$?
@@ -5826,22 +5834,25 @@ configure_startvnc() {
 		fi
 		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
 		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
-		if [ -e "${HOME}/.profile" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
-		elif [ -e "${HOME}/.bashrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
-		elif [ -e "${HOME}/.zshrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
-		fi
-		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+			if [ -e "${HOME}/.profile" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.bashrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
+			elif [ -e "${HOME}/.zshrc" ]; then
+				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
+				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
+			fi
+			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
 			cd ${HOME}
-		chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
+			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
 		fi
-		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		#下面不要加冒号
+		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
 		export LANG="en_US.UTF8"
 		#启动VNC服务的命令为最后一行
 		vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
@@ -5851,7 +5862,8 @@ configure_startvnc() {
 		#!/bin/bash
 		export USER="$(whoami)"
 		export HOME="${HOME}"
-		vncserver -kill :1
+		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+		vncserver -kill :${CURRENT_PORT}
 		rm -rf /tmp/.X1-lock
 		rm -rf /tmp/.X11-unix/X1
 		pkill Xtightvnc
