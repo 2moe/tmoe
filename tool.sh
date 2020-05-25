@@ -323,7 +323,7 @@ check_dependencies() {
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
-			apt install -y ${DEPENDENCIES} || apt-get install -y git wget curl whiptail aria2c xz-utils nano aptitude sudo less
+			apt install -y ${DEPENDENCIES} || apt-get install -y git wget curl whiptail aria2 xz-utils nano aptitude sudo less
 			#创建文件夹防止aptitude报错
 			mkdir -p /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
@@ -1439,12 +1439,12 @@ install_vscode_official() {
 ###############################
 modify_other_vnc_conf() {
 	MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 15 60 7 \
-		"1" "Pulse server address音频地址" \
-		"2" "VNC password密码" \
+		"1" "音频地址 Pulse server address" \
+		"2" "VNC密码 password" \
 		"3" "Edit xstartup manually 手动编辑xstartup" \
 		"4" "Edit startvnc manually 手动编辑vnc启动脚本" \
-		"5" "fix vnc crash修复VNC闪退" \
-		"6" "Window scaling factor调整屏幕缩放比例(仅支持xfce)" \
+		"5" "修复VNC闪退" \
+		"6" "调整屏幕缩放比例(仅支持xfce)" \
 		"7" "display port显示端口" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)

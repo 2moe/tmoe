@@ -173,7 +173,7 @@ gnu_linux() {
 	fi
 
 	if [ ! $(command -v bash) ]; then
-			DEPENDENCIES="${DEPENDENCIES} bash"
+		DEPENDENCIES="${DEPENDENCIES} bash"
 	fi
 
 	if [ ! $(command -v curl) ]; then
