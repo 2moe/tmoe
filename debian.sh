@@ -656,7 +656,7 @@ tmoe_manager_main_menu() {
 	fi
 	##########################
 	if [ "${OPTION}" == '10' ]; then
-		bash -c "$(curl -fLsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
+		bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	fi
 	##########################
 	if [ "${OPTION}" == '11' ]; then
@@ -876,7 +876,7 @@ enable_root_mode() {
 		sed -i '/pulseaudio/d' $PREFIX/bin/debian
 		#grep 'alias debian=' profile >/dev/null 2>&1 ||
 		#sed -i '$ a\alias debian="sudo debian"' profile
-		sed -i '$ a\alias debian="pulseaudio --kill 2>/dev/null;pulseaudio --start 2>/dev/null;sudo debian"' profile
+		sed -i '$ a\alias debian="pulseaudio --start 2>/dev/null;sudo debian"' profile
 		#grep 'alias debian-rm=' profile >/dev/null 2>&1 ||
 		sed -i '$ a\alias debian-rm="sudo debian-rm"' profile
 		#source profile >/dev/null 2>&1

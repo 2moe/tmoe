@@ -442,7 +442,7 @@ tmoe_linux_tool_menu() {
 	7) personal_netdisk ;;
 	8) tmoe_linux_tool_upgrade ;;
 	9) which_vscode_edition ;;
-	10) bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')" ;;
+	10) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
 	11) remove_gui ;;
 	12) remove_browser ;;
 	13) frequently_asked_questions ;;
@@ -1438,7 +1438,7 @@ install_vscode_official() {
 ###############################
 ###############################
 modify_other_vnc_conf() {
-	MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Choose your option" 15 60 5 \
+	MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 15 60 7 \
 		"1" "音频地址 Pulse server address" \
 		"2" "VNC密码 password" \
 		"3" "Edit xstartup manually 手动编辑xstartup" \
@@ -4214,7 +4214,7 @@ explore_debian_opt_repo() {
 		"8" "picgo:图床上传工具" \
 		"9" "other其他软件" \
 		"10" "remove移除本仓库" \
-		"11" "切换仓库软件源" \
+		"11" "切换软件源仓库" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############
@@ -4823,7 +4823,7 @@ modify_remote_desktop_config() {
 	RETURN_TO_WHERE='modify_remote_desktop_config'
 	##################
 	REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
-		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 4 \
+		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 6 \
 		"1" "tightvnc/tigervnc" \
 		"2" "x11vnc" \
 		"3" "XSDL" \
@@ -4847,7 +4847,7 @@ modify_remote_desktop_config() {
 #########################
 configure_x11vnc() {
 	TMOE_OPTION=$(
-		whiptail --title "CONFIGURE x11vnc" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 14 50 5 \
+		whiptail --title "CONFIGURE x11vnc" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 17 50 8 \
 			"1" "one-key configure初始化一键配置" \
 			"2" "pulse_server音频服务" \
 			"3" "resolution分辨率" \
@@ -5352,7 +5352,7 @@ configure_xrdp() {
 	#进入xrdp配置文件目录
 	cd /etc/xrdp/
 	TMOE_OPTION=$(
-		whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 14 50 5 \
+		whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 16 50 7 \
 			"1" "One-key conf 初始化一键配置" \
 			"2" "指定xrdp桌面环境" \
 			"3" "xrdp port 修改xrdp端口" \

@@ -103,7 +103,7 @@ if [ "$(uname -o)" = "Android" ]; then
 	cd ${HOME}/.termux || mkdir -p ~/.termux && cd ${HOME}/.termux
 	if [ ! -e "colors.properties" ]; then
 		echo '检测到termux配色文件不存在，正在自动生成...'
-		# aria2c --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/colors.properties'
+		# aria2c --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/colors.properties'
 		cat >colors.properties <<-'EndofMonokai'
 			# monokai.dark.colors
 			# Color scheme from https://github.com/Mayccoll/Gogh
@@ -131,7 +131,7 @@ if [ "$(uname -o)" = "Android" ]; then
 
 	if [ ! -e "termux.properties" ]; then
 		echo "检测到termux属性文件不存在，正在为您下载..."
-		aria2c --allow-overwrite=true -o "termux.properties" 'https://gitee.com/mo2/zsh/raw/master/.termux/termux.properties'
+		aria2c --allow-overwrite=true -o "termux.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/termux.properties'
 	fi
 	REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
 	LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
@@ -654,7 +654,7 @@ chmod +x neofetch debian-i
 
 cd ${DEBIAN_CHROOT}/root
 chmod u+w "${DEBIAN_CHROOT}/root"
-curl -sLo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
+curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' zsh-i.sh
 chmod +x zsh-i.sh
 ###########
@@ -904,7 +904,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
 	    fi
 	    bash zsh.sh
-	    # ash -c "$(wget --no-check-certificate -O- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
+	    # ash -c "$(wget --no-check-certificate -O- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	}
 	########################
 	opensuse_linux_repo() {
@@ -1116,7 +1116,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    neofetch
 	    #rm -f vnc* zsh* .profile
 	    #mv -f .profile.bak .profile 2>/dev/null
-	    #wget -qO zsh.sh 'https://gitee.com/mo2/zsh/raw/master/zsh.sh'
+	    #wget -qO zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 	    #sed -i '1 c\#!/bin/bash' zsh.sh
 	    #chmod +x zsh.sh
 	    echo '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
@@ -1271,7 +1271,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    bash zsh.sh
 	    debian-i
 	    #bash zsh-i.sh
-	    #bash -c "$(curl -LfsS 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')" || bash -c "$(wget -qO- 'https://gitee.com/mo2/zsh/raw/master/zsh.sh')"
+	    #bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" || bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	}
 	################
 	if ! grep -q 'debian' '/etc/os-release'; then
