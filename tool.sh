@@ -1439,12 +1439,12 @@ install_vscode_official() {
 ###############################
 modify_other_vnc_conf() {
 	MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 15 60 7 \
-		"1" "音频地址 Pulse server address" \
-		"2" "VNC密码 password" \
+		"1" "Pulse server address音频地址" \
+		"2" "VNC password密码" \
 		"3" "Edit xstartup manually 手动编辑xstartup" \
 		"4" "Edit startvnc manually 手动编辑vnc启动脚本" \
-		"5" "修复VNC闪退" \
-		"6" "调整屏幕缩放比例(仅支持xfce)" \
+		"5" "fix vnc crash修复VNC闪退" \
+		"6" "window scaling factor调整屏幕缩放比例(仅支持xfce)" \
 		"7" "display port显示端口" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
