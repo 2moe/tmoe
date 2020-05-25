@@ -323,7 +323,7 @@ check_dependencies() {
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
-			apt install -y ${DEPENDENCIES}
+			apt install -y ${DEPENDENCIES} || apt-get install -y git wget curl whiptail aria2c xz-utils nano aptitude sudo less
 			#创建文件夹防止aptitude报错
 			mkdir -p /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
@@ -362,7 +362,7 @@ check_dependencies() {
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
-			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
+			wget --no-check-certificate -O 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
 			apt install -y ./catimg.deb
 			rm -f catimg.deb
 		fi
@@ -373,7 +373,7 @@ check_dependencies() {
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
 		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
+		wget --no-check-certificate -O 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
 		mkdir -p busybox-static
 		./busybox dpkg-deb -X busybox.deb ./busybox-static
 		mv -f ./busybox-static/bin/busybox /usr/local/bin/
