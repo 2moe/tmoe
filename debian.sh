@@ -876,7 +876,7 @@ enable_root_mode() {
 		sed -i '/pulseaudio/d' $PREFIX/bin/debian
 		#grep 'alias debian=' profile >/dev/null 2>&1 ||
 		#sed -i '$ a\alias debian="sudo debian"' profile
-		sed -i '$ a\alias debian="pulseaudio --start 2>/dev/null;sudo debian"' profile
+		sed -i '$ a\alias debian="pulseaudio -D 2>/dev/null;sudo debian"' profile
 		#grep 'alias debian-rm=' profile >/dev/null 2>&1 ||
 		sed -i '$ a\alias debian-rm="sudo debian-rm"' profile
 		#source profile >/dev/null 2>&1
@@ -900,6 +900,7 @@ enable_root_mode() {
 		echo 'If you do not need to display the task progress in the login interface, please manually add "#" (comment symbol) before the "ps -e" line in "~/.zshrc" or "~/.bashrc"'
 		echo '如果您不需要在登录界面显示任务进程，请手动注释掉"~/.zshrc"里的"ps -e"'
 		sleep 2
+		pulseaudio -D 2>/dev/null
 		sudo debian
 		tmoe_manager_main_menu
 		#############
