@@ -4165,7 +4165,23 @@ add_debian_opt_repo() {
 	cd /tmp
 	curl -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
 	apt-key add bintray-public.key.asc
-	echo "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main" >>/etc/apt/sources.list.d/debianopt.list
+	echo -e "#deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\ndeb https://dl.bintray.com/debianopt/debianopt buster main" >/etc/apt/sources.list.d/debianopt.list
+	apt update
+}
+switch_debian_opt_repo_sources() {
+	OPT_REPO='/etc/apt/sources.list.d/debianopt.list'
+	if grep '^deb.*ustc' ${OPT_REPO}; then
+		OPT_REPO_NAME='USTC'
+	else
+		OPT_REPO_NAME='bintray'
+	fi
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "USTC" --no-button "bintray" --yesno "检测到您当前的软件源为${OPT_REPO_NAME}\n您想要切换为哪个软件源?♪(^∇^*) " 10 50); then
+		#sed -i 's@^#deb@deb@' ${OPT_REPO}
+		#sed -i 's@^deb.*bintray@#&@' ${OPT_REPO}
+		echo -e "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\n#deb https://dl.bintray.com/debianopt/debianopt buster main" >${OPT_REPO}
+	else
+		echo -e "#deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\ndeb https://dl.bintray.com/debianopt/debianopt buster main" >${OPT_REPO}
+	fi
 	apt update
 }
 #######################
@@ -4198,6 +4214,7 @@ explore_debian_opt_repo() {
 		"8" "picgo:图床上传工具" \
 		"9" "other其他软件" \
 		"10" "remove移除本仓库" \
+		"11" "切换仓库软件源" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############
@@ -4213,6 +4230,7 @@ explore_debian_opt_repo() {
 	8) install_pic_go ;;
 	9) apt_list_debian_opt ;;
 	10) remove_debian_opt_repo ;;
+	11) switch_debian_opt_repo_sources ;;
 	esac
 	##########################
 	press_enter_to_return
