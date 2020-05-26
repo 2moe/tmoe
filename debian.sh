@@ -1357,7 +1357,7 @@ uncompress_tar_gz_file() {
 		echo "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
 		tar -Ppzxvf ${RESTORE}
 	else
-		echo "${GREEN} pv ${RESTORE} | tar -Ppzx ${RESTORE} ${RESET}"
+		echo "${GREEN} pv ${RESTORE} | tar -Ppzx ${RESET}"
 		pv ${RESTORE} | tar -Ppzx
 	fi
 }
