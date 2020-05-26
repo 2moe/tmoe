@@ -2502,8 +2502,8 @@ install_lxde_desktop() {
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='patterns-lxde-lxde'
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-		DEPENDENCY_01="fvwm"
-		REMOTE_DESKTOP_SESSION='fvwm'
+		DEPENDENCY_01="lxsession"
+		REMOTE_DESKTOP_SESSION='lxsession'
 	###################
 	fi
 	############
