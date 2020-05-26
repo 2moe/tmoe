@@ -3015,7 +3015,14 @@ gnu_linux_sources_list() {
 	else
 		curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	fi
-	bash /tmp/.tmoe-linux-tool.sh -tuna
+
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		cp -af /etc/apk/repositories /etc/apk/repositories.bak
+		sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+	else
+		bash /tmp/.tmoe-linux-tool.sh -tuna
+	fi
+
 	gnu_linux
 	#此处要返回依赖检测处！
 }

@@ -2284,7 +2284,7 @@ configure_x11vnc_remote_desktop_session() {
 		else
 		    ${REMOTE_DESKTOP_SESSION_02} &
 		fi
-		#export LANG="en_US.UTF8"
+		export LANG="en_US.UTF8"
 		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/x11passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
@@ -6358,9 +6358,10 @@ install_container_and_virtual_machine() {
 			"1" "qemu" \
 			"2" "download iso(Android,linux等)" \
 			"3" "docker-ce:开源的应用容器引擎" \
-			"4" "VirtualBox:甲骨文开源虚拟机(x64)" \
-			"5" "wine(调用win api并即时转换)" \
-			"6" "anbox:Android in a box(测试)" \
+			"4" "portainer(docker图形化web端管理容器)" \
+			"5" "VirtualBox:甲骨文开源虚拟机(x64)" \
+			"6" "wine(调用win api并即时转换)" \
+			"7" "anbox:Android in a box(测试)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6370,9 +6371,10 @@ install_container_and_virtual_machine() {
 	1) install_aqemu ;;
 	2) download_virtual_machine_iso_file ;;
 	3) install_docker_ce ;;
-	4) install_virtual_box ;;
-	5) install_wine64 ;;
-	6) install_anbox ;;
+	4) install_docker_portainer ;;
+	5) install_virtual_box ;;
+	6) install_wine64 ;;
+	7) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
@@ -7042,6 +7044,23 @@ debian_add_docker_gpg() {
 	#$(#lsb_release -cs)
 }
 #################
+install_docker_portainer() {
+	command -v docker >/dev/null
+	if [ "$?" != "0" ]; then
+		echo "检测到您尚未安装docker，请先安装docker"
+		press_enter_to_return
+		install_container_and_virtual_machine
+	fi
+	TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please enter the port." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ] || [ -z "${TARGET_PORT}" ]; then
+		echo "端口无效，请重新输入"
+		press_enter_to_return
+		install_container_and_virtual_machine
+	fi
+	service docker start 2>/dev/null
+	docker run -d -p 39080:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
+}
+#####################
 install_docker_ce() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
@@ -7059,9 +7078,10 @@ install_docker_ce() {
 	else
 		DEPENDENCY_02=""
 	fi
-	DEPENDENCY_01="docker-ce"
+	DEPENDENCY_01="docker"
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
+		DEPENDENCY_01="docker-ce"
 		debian_add_docker_gpg
 	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
 		curl -Lv -o /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
@@ -7550,7 +7570,7 @@ nginx_onekey() {
 		CHROOT_STATUS='1'
 	fi
 	echo "本服务依赖于软件源仓库的nginx,可能无法与宝塔等第三方面板的nginx相互兼容"
-	echo "若80和443端口被占用，则有可能导致nginx启动失败，请修改nginx为1000以上的高位端口。"
+	echo "若80和443端口被占用，则有可能导致nginx启动失败，请修改nginx为1024以上的高位端口。"
 	echo "安装完成后，若浏览器测试连接成功，则您可以换用文件管理器进行管理。"
 	echo "例如Android端的Solid Explorer,windows端的RaiDrive"
 	echo 'Press Enter to confirm.'
