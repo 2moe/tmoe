@@ -2754,9 +2754,9 @@ deepin_desktop_warning() {
 }
 #################
 deepin_desktop_debian() {
-	if [ ! -e "/usr/bin/gpg" ]; then
+	if [ ! $(command -v gpg) ]; then
 		DEPENDENCY_01="gpg"
-		DEPENDENCY_01=""
+		DEPENDENCY_02=""
 		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
 		echo "即将为您安装gpg..."
 		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
@@ -4196,16 +4196,14 @@ explore_debian_opt_repo() {
 		DEPENDENCY_01=""
 		DEPENDENCY_02="gpg"
 		beta_features_quick_install
-	else
-		DEPENDENCY_02=""
 	fi
+	DEPENDENCY_02=""
 
 	if [ ! -e "/etc/apt/sources.list.d/debianopt.list" ]; then
 		add_debian_opt_repo
 	fi
 
 	NON_DEBIAN='true'
-	DEPENDENCY_02=''
 	RETURN_TO_WHERE='explore_debian_opt_repo'
 	cd /usr/share/applications/
 	INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
@@ -7075,9 +7073,8 @@ install_docker_ce() {
 		DEPENDENCY_01=""
 		DEPENDENCY_02="gpg"
 		beta_features_quick_install
-	else
-		DEPENDENCY_02=""
 	fi
+	DEPENDENCY_02=""
 	DEPENDENCY_01="docker"
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
@@ -7158,11 +7155,10 @@ install_virtual_box() {
 	if [ ! $(command -v gpg) ]; then
 		DEPENDENCY_01=""
 		DEPENDENCY_02="gpg"
-		beta_features_quick_install
-	else
-		DEPENDENCY_02=""
+		beta_features_quick_insta
 		#linux-headers
 	fi
+	DEPENDENCY_02=""
 	DEPENDENCY_01="virtualbox"
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
