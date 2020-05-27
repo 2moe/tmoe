@@ -3021,7 +3021,8 @@ gnu_linux_sources_list() {
 
 	if [ "${LINUX_DISTRO}" = "alpine" ]; then
 		cp -af /etc/apk/repositories /etc/apk/repositories.bak
-		sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+		#sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+		sed -i 's@http.*/alpine/@http://mirrors.tuna.tsinghua.edu.cn/alpine/@g' /etc/apk/repositories
 	else
 		bash /tmp/.tmoe-linux-tool.sh -tuna
 	fi

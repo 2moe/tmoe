@@ -368,7 +368,21 @@ check_dependencies() {
 		fi
 	fi
 
-	if [ ! $(command -v busybox) ]; then
+	busybox --help 2>&1 | grep -q ', ar,'
+	if [ "$?" != "0" ]; then
+		BUSYBOX_AR='false'
+		/usr/local/bin/busybox --help 2>&1 | grep -q ', ar,'
+		if [ "$?" != "0" ]; then
+			chmod +x /usr/local/bin/busybox
+			BUSYBOX_AR='false'
+		else
+			BUSYBOX_AR='true'
+		fi
+	else
+		BUSYBOX_AR='true'
+	fi
+
+	if [ "${BUSYBOX_AR}" = 'false' ]; then
 		cd /tmp
 		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
 		chmod +x busybox
@@ -2266,6 +2280,7 @@ configure_x11vnc_remote_desktop_session() {
 		stopx11vnc
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
+		export LANG="en_US.UTF8"
 		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
 		if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
@@ -2284,7 +2299,6 @@ configure_x11vnc_remote_desktop_session() {
 		else
 		    ${REMOTE_DESKTOP_SESSION_02} &
 		fi
-		export LANG="en_US.UTF8"
 		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/x11passwd -users \$(whoami) -rfbport 5901 -noshm &
 		sleep 2s
 		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
@@ -2454,7 +2468,7 @@ install_xfce4_desktop() {
 		DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal"
 		###############
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-		DEPENDENCY_01="faenza-icon-theme xfce4 xfce4-terminal"
+		DEPENDENCY_01="faenza-icon-theme xfce4 xfce4-terminal xfce4-whiskermenu-plugin"
 		##############
 	fi
 	##################
@@ -2462,15 +2476,19 @@ install_xfce4_desktop() {
 	####################
 	debian_xfce4_extras
 	#################
-	if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
-		download_kali_themes_common
-	fi
-	##############
-	if [ ! -e "/usr/share/icons/Papirus" ]; then
-		download_papirus_icon_theme
-		if [ "${DEBIAN_DISTRO}" != "kali" ]; then
-			dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+	if [ "${DEBIAN_DISTRO}" != "alpine" ]; then
+		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
+			download_kali_themes_common
 		fi
+		##############
+		if [ ! -e "/usr/share/icons/Papirus" ]; then
+			download_papirus_icon_theme
+			if [ "${DEBIAN_DISTRO}" != "kali" ]; then
+				dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+			fi
+		fi
+	else
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
 	fi
 	xfce4_color_scheme
 	#########
@@ -2982,7 +3000,11 @@ download_theme_model_01() {
 	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
 	echo ${THE_LATEST_THEME_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
-	busybox ar xv ${THE_LATEST_THEME_VERSION}
+	if [ "${BUSYBOX_AR}" = 'true' ]; then
+		busybox ar xv ${THE_LATEST_THEME_VERSION}
+	else
+		/usr/local/bin/busybox ar xv ${THE_LATEST_THEME_VERSION}
+	fi
 }
 ############################
 update_icon_caches_model_01() {
@@ -3280,7 +3302,11 @@ download_ukui_theme() {
 		cd /tmp/.ukui-gtk-themes
 		UKUITHEME="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
-		busybox ar xv 'ukui-themes.deb'
+		if [ "${BUSYBOX_AR}" = 'true' ]; then
+			busybox ar xv 'ukui-themes.deb'
+		else
+			/usr/local/bin/busybox ar xv 'ukui-themes.deb'
+		fi
 		cd /
 		tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
 		#if which update-icon-caches >/dev/null 2>&1; then
@@ -3379,7 +3405,12 @@ install_kali_undercover() {
 		apt show ./kali-undercover.deb
 		apt install -y ./kali-undercover.deb
 		if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
-			busybox ar xv kali-undercover.deb
+			THE_LATEST_DEB_FILE='kali-undercover.deb'
+			if [ "${BUSYBOX_AR}" = 'true' ]; then
+				busybox ar xv ${THE_LATEST_DEB_FILE}
+			else
+				/usr/local/bin/busybox ar xv ${THE_LATEST_DEB_FILE}
+			fi
 			cd /
 			tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
 			#if which gtk-update-icon-cache >/dev/null 2>&1; then
@@ -4446,7 +4477,11 @@ deb_file_installer() {
 		mkdir -p .DEB_TEMP_FOLDER
 		mv ${SELECTION} .DEB_TEMP_FOLDER
 		cd ./.DEB_TEMP_FOLDER
-		busybox ar xv ${SELECTION}
+		if [ "${BUSYBOX_AR}" = 'true' ]; then
+			busybox ar xv ${SELECTION}
+		else
+			/usr/local/bin/busybox ar xv ${SELECTION}
+		fi
 		mv ${SELECTION} ../
 		if [ -e "data.tar.xz" ]; then
 			cd /
@@ -4654,7 +4689,12 @@ install_chinese_manpages() {
 		LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/'
 		download_tuna_repo_deb_file_all_arch
 		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
-		busybox ar xv ${LATEST_DEB_VERSION}
+		THE_LATEST_DEB_FILE='kali-undercover.deb'
+		if [ "${BUSYBOX_AR}" = 'true' ]; then
+			busybox ar xv ${LATEST_DEB_VERSION}
+		else
+			/usr/local/bin/busybox ar xv ${LATEST_DEB_VERSION}
+		fi
 		tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
 		ls | grep -v usr | xargs rm -rf
 		ln -sf ./usr/share/doc/debian-handbook/html/zh-CN/index.html ./
@@ -6779,8 +6819,9 @@ install_wine64() {
 }
 #########################
 install_aqemu() {
-	DEPENDENCY_01='qemu gnome-boxes'
-	DEPENDENCY_02='qemu-system-x86 qemu-system-arm qemu-system-gui qemu-utils qemu-block-extra aqemu'
+	DEPENDENCY_01='aqemu'
+	DEPENDENCY_02='qemu gnome-boxes'
+	#qemu-block-extra
 	beta_features_quick_install
 }
 #########
