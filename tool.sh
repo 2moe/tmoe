@@ -5595,8 +5595,8 @@ xrdp_onekey() {
 	RETURN_TO_WHERE='configure_xrdp'
 	do_you_want_to_continue
 
-	DEPENDENCY_01='xrdp'
-	DEPENDENCY_02='nano'
+	DEPENDENCY_01=''
+	DEPENDENCY_02='xrdp'
 	NON_DEBIAN='false'
 	if [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		emerge -avk layman
@@ -7056,7 +7056,7 @@ install_docker_portainer() {
 		install_container_and_virtual_machine
 	fi
 	service docker start 2>/dev/null
-	docker run -d -p 39080:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
+	docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
 }
 #####################
 install_docker_ce() {
