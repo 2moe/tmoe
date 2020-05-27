@@ -310,6 +310,9 @@ gnu_linux() {
 			apt install -y ${DEPENDENCIES}
 
 		elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+			if ! grep -q '^http.*community' "/etc/apk/repositories"; then
+				sed -i '$ a\http://mirrors.tuna.tsinghua.edu.cn/alpine/latest-stable/community' "/etc/apk/repositories"
+			fi
 			apk update
 			apk add ${DEPENDENCIES}
 

@@ -410,7 +410,7 @@ tmoe_linux_tool_menu() {
 	cd ${cur}
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200525-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200527-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -6390,6 +6390,7 @@ download_virtual_machine_iso_file() {
 			"3" "ubuntu" \
 			"4" "flash iso烧录镜像文件至U盘" \
 			"5" "windows10" \
+			"6" "alpine(latest-stable)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6401,6 +6402,7 @@ download_virtual_machine_iso_file() {
 	3) download_ubuntu_iso_file ;;
 	4) flash_iso_to_udisk ;;
 	5) download_windows_10_iso ;;
+	6) download_alpine_virtual_iso ;;
 	esac
 	###############
 	press_enter_to_return
@@ -6485,7 +6487,48 @@ download_windows_10_iso() {
 		EOF
 	fi
 }
+##########################
+which_alpine_arch() {
+	if (whiptail --title "请选择架构" --yes-button "x64" --no-button "arm64" --yesno "您是想要下载x86_64还是arm64架构的iso呢？♪(^∇^*) " 10 50); then
+		ALPINE_ARCH='x86_64'
+	else
+		ALPINE_ARCH='aarch64'
+	fi
+}
 ####################
+download_alpine_virtual_iso() {
+	which_alpine_arch
+	WHICH_ALPINE_EDITION=$(
+		whiptail --title "alpine EDITION" --menu "请选择您需要下载的版本？Which edition do you want to install?" 16 55 6 \
+			"1" "standard(标准版)" \
+			"2" "extended(扩展版)" \
+			"3" "virt(虚拟机版)" \
+			"4" "xen(虚拟化)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	####################
+	case ${WHICH_ALPINE_EDITION} in
+	0 | "") download_virtual_machine_iso_file ;;
+	1) ALPINE_EDITION='standard' ;;
+	2) ALPINE_EDITION='extended' ;;
+	3) ALPINE_EDITION='virt' ;;
+	4) ALPINE_EDITION='xen' ;;
+	esac
+	###############
+	download_the_latest_alpine_iso_file
+	press_enter_to_return
+	download_virtual_machine_iso_file
+}
+###############
+download_the_latest_alpine_iso_file() {
+	ALPINE_ISO_REPO="https://mirrors.tuna.tsinghua.edu.cn/alpine/latest-stable/releases/${ALPINE_ARCH}/"
+	RELEASE_FILE="${ALPINE_ISO_REPO}latest-releases.yaml"
+	ALPINE_VERSION=$(curl -L ${RELEASE_FILE} | grep ${ALPINE_EDITION} | grep '.iso' | head -n 1 | awk -F ' ' '$0=$NF')
+	THE_LATEST_ISO_LINK="${ALPINE_ISO_REPO}${ALPINE_VERSION}"
+	aria2c_download_file
+}
+##################
 download_ubuntu_iso_file() {
 	if (whiptail --title "请选择版本" --yes-button "20.04" --no-button "自定义版本" --yesno "您是想要下载20.04还是自定义版本呢？♪(^∇^*) " 10 50); then
 		UBUNTU_VERSION='20.04'
