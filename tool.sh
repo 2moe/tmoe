@@ -4986,6 +4986,9 @@ x11vnc_resolution() {
 }
 ############################
 ######################
+check_vnc_resolution() {
+	CURRENT_VNC_RESOLUTION=$(grep '\-geometry' "$(command -v startvnc)" | tail -n 1 | cut -d 'y' -f 2 | cut -d '-' -f 1)
+}
 modify_vnc_conf() {
 	if [ ! -e /usr/local/bin/startvnc ]; then
 		echo "/usr/local/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
@@ -4994,16 +4997,16 @@ modify_vnc_conf() {
 		RETURN_TO_WHERE='modify_remote_desktop_config'
 		do_you_want_to_continue
 	fi
-
+	check_vnc_resolution
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
-		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1) 。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为${CURRENT_VNC_RESOLUTION}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
 		exitstatus=$?
 		if [ $exitstatus = 0 ]; then
 			sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
 			sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
 			echo 'Your current resolution has been modified.'
-			echo '您当前的分辨率已经修改为'
-			echo $(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			check_vnc_resolution
+			echo "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
 			#echo $(sed -n \$p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 			#$p表示最后一行，必须用反斜杠转义。
 			stopvnc 2>/dev/null
@@ -5012,8 +5015,7 @@ modify_vnc_conf() {
 			read
 			tmoe_linux_tool_menu
 		else
-			echo '您当前的分辨率为'
-			echo $(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+			echo "您当前的分辨率为${CURRENT_VNC_RESOLUTION}"
 		fi
 	else
 		modify_other_vnc_conf
