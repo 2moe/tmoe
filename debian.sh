@@ -1833,15 +1833,16 @@ start_vscode() {
 		cat >${PREFIX}/bin/code-server <<-EndOfFile
 			#!/data/data/com.termux/files/usr/bin/bash
 			touch "${DEBIAN_CHROOT}/tmp/startcode.tmp"
-			am start -a android.intent.action.VIEW -d "http://localhost:8080"
-			echo "本机默认vscode服务地址localhost:8080"
-			echo The LAN VNC address 局域网地址\$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):8080
+			CODE_PORT=$(cat ${HOME}/${DEBIAN_FOLDER}/root/.config/code-server/config.yaml | grep bind-addr | head -n 1 | awk -F ' ' '$0=$NF' | cut -d ':' -f 2)
+			am start -a android.intent.action.VIEW -d "http://localhost:${CODE_PORT}"
+			echo "本机默认vscode服务地址localhost:${CODE_PORT}"
+			echo The LAN VNC address 局域网地址\$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CODE_PORT}
 			echo "Please paste the address into your browser!"
 			echo "请将地址粘贴到浏览器的地址栏中"
 
 			echo "您之后可以输code-server来启动VS Code."
 			echo 'You can type "code-server" to start VS Code.'
-			debian
+			${PREFIX}/bin/debian
 		EndOfFile
 		chmod +x ${PREFIX}/bin/code-server
 	fi
@@ -1905,7 +1906,7 @@ download_video_tutorial() {
 	if [ -f "20200229vnc教程06.mp4" ]; then
 
 		if (whiptail --title "检测到视频已下载,请选择您需要执行的操作！" --yes-button 'Play播放o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the video has been downloaded, do you want to play it, or download it again?" 7 60); then
-			paly_video_tutorial
+			play_video_tutorial
 		else
 			download_video_tutorial_again
 		fi
@@ -1919,9 +1920,9 @@ download_video_tutorial() {
 ##########################
 download_video_tutorial_again() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
-	paly_video_tutorial
+	play_video_tutorial
 }
-paly_video_tutorial() {
+play_video_tutorial() {
 	termux-open "20200229vnc教程06.mp4"
 	echo "${YELLOW}若视频无法自动播放，则请进入下载目录手动播放。${RESET}"
 	echo "If the video does not play automatically, please enter the download directory to play it manually."
@@ -2934,7 +2935,7 @@ install_armbian_linux_distro() {
 	if [ "${LINUX_DISTRO}" = "Android" ]; then
 		pv ~/armbian-bullseye-rootfs.tar | proot --link2symlink tar -px
 	else
-		if [ -e "/usr/bin/pv" ]; then
+		if [ $(command -v pv) ]; then
 			pv ~/armbian-bullseye-rootfs.tar | tar -px
 		else
 			tar -pxvf ~/armbian-bullseye-rootfs.tar

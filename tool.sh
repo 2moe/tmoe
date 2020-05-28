@@ -422,9 +422,10 @@ check_dependencies() {
 ####################################################
 tmoe_linux_tool_menu() {
 	cd ${cur}
+	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200527-13)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,支持WM,0514支持安装qq音乐,0515支持下载壁纸包,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200529-00)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -440,7 +441,8 @@ tmoe_linux_tool_menu() {
 			"13" "FAQ 常见问题" \
 			"14" "software sources软件镜像源管理" \
 			"15" "download iso(Android,linux等)" \
-			"16" "Beta Features 测试版功能" \
+			"16" "qemu虚拟机管理" \
+			"17" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -462,7 +464,8 @@ tmoe_linux_tool_menu() {
 	13) frequently_asked_questions ;;
 	14) tmoe_sources_list_manager ;;
 	15) download_virtual_machine_iso_file ;;
-	16) beta_features ;;
+	16) start_tmoe_qemu_manager ;;
+	17) beta_features ;;
 	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -786,7 +789,11 @@ tmoe_file_manager() {
 	#FILE_EXT_01='tar.gz'
 	#FILE_EXT_02='tar.xz'
 	TMOE_TITLE="${FILE_EXT_01} & ${FILE_EXT_02} 文件选择Tmoe-linux管理器"
-	MENU_01="请使用方向键和回车键进行操作"
+	if [ -z ${IMPORTANT_TIPS} ]; then
+		MENU_01="请使用方向键和回车键进行操作"
+	else
+		MENU_01=${IMPORTANT_TIPS}
+	fi
 	########################################
 	#-bak_rootfs.tar.xz
 	###################
@@ -1254,8 +1261,8 @@ vscode_server_upgrade() {
 	vscode_server_restart
 	vscode_server_password
 	echo "若您是初次安装，则请重启code-server"
-	if grep -q '127.0.0.1:8080' "${HOME}.config/code-server/config.yaml"; then
-		sed -i 's@bind-addr:.*@bind-addr: 0.0.0.0:18080@' "${HOME}.config/code-server/config.yaml"
+	if grep -q '127.0.0.1:8080' "${HOME}/.config/code-server/config.yaml"; then
+		sed -i 's@bind-addr:.*@bind-addr: 0.0.0.0:18080@' "${HOME}/.config/code-server/config.yaml"
 	fi
 	########################################
 	press_enter_to_return
@@ -1512,9 +1519,9 @@ modify_tightvnc_display_port() {
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		sed -i "s@tmoe-linux.*:.*@tmoe-linux :$TARGET@" "$(command -v startvnc)"
-		echo 'Your current DISPLAY port has been modified.'
+		echo 'Your current VNC port has been modified.'
 		check_tightvnc_port
-		echo '您当前的显示端口已修改为'
+		echo '您当前的VNC端口已修改为'
 		echo ${CURRENT_VNC_PORT}
 		press_enter_to_return
 	fi
@@ -2468,7 +2475,7 @@ install_xfce4_desktop() {
 		DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal"
 		###############
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-		DEPENDENCY_01="faenza-icon-theme xfce4 xfce4-terminal xfce4-whiskermenu-plugin"
+		DEPENDENCY_01="faenza-icon-theme xfce4-whiskermenu-plugin xfce4 xfce4-terminal"
 		##############
 	fi
 	##################
@@ -6394,14 +6401,15 @@ install_container_and_virtual_machine() {
 	RETURN_TO_WHERE='install_container_and_virtual_machine'
 	NON_DEBIAN='false'
 	VIRTUAL_TECH=$(
-		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 55 6 \
+		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 50 8 \
 			"1" "qemu" \
-			"2" "download iso(Android,linux等)" \
-			"3" "docker-ce:开源的应用容器引擎" \
-			"4" "portainer(docker图形化web端管理容器)" \
-			"5" "VirtualBox:甲骨文开源虚拟机(x64)" \
-			"6" "wine(调用win api并即时转换)" \
-			"7" "anbox:Android in a box(测试)" \
+			"2" "tmoe-qemu(管理中心)" \
+			"3" "download iso(Android,linux等)" \
+			"4" "docker-ce:开源的应用容器引擎" \
+			"5" "portainer(docker图形化web端管理容器)" \
+			"6" "VirtualBox:甲骨文开源虚拟机(x64)" \
+			"7" "wine(调用win api并即时转换)" \
+			"8" "anbox:Android in a box(测试)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6409,18 +6417,844 @@ install_container_and_virtual_machine() {
 	case ${VIRTUAL_TECH} in
 	0 | "") beta_features ;;
 	1) install_aqemu ;;
-	2) download_virtual_machine_iso_file ;;
-	3) install_docker_ce ;;
-	4) install_docker_portainer ;;
-	5) install_virtual_box ;;
-	6) install_wine64 ;;
-	7) install_anbox ;;
+	2) start_tmoe_qemu_manager ;;
+	3) download_virtual_machine_iso_file ;;
+	4) install_docker_ce ;;
+	5) install_docker_portainer ;;
+	6) install_virtual_box ;;
+	7) install_wine64 ;;
+	8) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
 	beta_features
 }
 ###########
+check_qemu_install() {
+	if [ ! $(command -v qemu-system-x86_64) ]; then
+		DEPENDENCY_01='qemu'
+		DEPENDENCY_02='qemu-system-x86'
+		beta_features_quick_install
+	fi
+}
+#############
+creat_qemu_startup_script() {
+	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
+	mkdir -p ${CONFIG_FOLDER}
+	cd ${CONFIG_FOLDER}
+	cat >startqemu <<-'EndOFqemu'
+		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+		echo "正在为您启动qemu虚拟机，本机默认访问地址为localhost:${CURRENT_VNC_PORT}"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+
+			/usr/bin/qemu-system-x86_64 \
+			    -monitor stdio \
+			    -smp 4 \
+			    -soundhw cs4231a \
+			    -vga vmware \
+			    -machine accel=tcg \
+			    -m 2048 \
+			    -hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
+			    -virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
+			    -boot order=cd,menu=on \
+			    -net nic \
+			    -net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+			    -rtc base=localtime \
+			    -vnc :2 \
+				-name "tmoe-linux-qemu"
+	EndOFqemu
+	chmod +x startqemu
+	cp -pf startqemu /usr/local/bin/
+}
+###########
+modify_qemu_machine_accel() {
+	cd /usr/local/bin/
+	CURRENT_VALUE=$(cat startqemu | grep '\-machine accel' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	VIRTUAL_TECH=$(
+		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,模拟x86系统时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。\n检测到当前为${CURRENT_VALUE}" 15 55 4 \
+			"1" "tcg(default)" \
+			"2" "kvm(Intel VT-d/AMD-V)" \
+			"3" "xen" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) MACHINE_ACCEL=tcg ;;
+	2) MACHINE_ACCEL=kvm ;;
+	3) MACHINE_ACCEL=xen ;;
+	esac
+	###############
+	sed -i "s@-machine accel=.*@-machine accel=${MACHINE_ACCEL} \\\@" startqemu
+	echo "您已将machine accel修改为${MACHINE_ACCEL}"
+	press_enter_to_return
+	start_tmoe_qemu_manager
+}
+#############
+modify_qemnu_graphics_card() {
+	cd /usr/local/bin/
+	CURRENT_VALUE=$(cat startqemu | grep '\-vga' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	VIRTUAL_TECH=$(
+		whiptail --title "显卡型号" --menu "Please select the graphics card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
+			"1" "vmware(VMWare SVGA)" \
+			"2" "std(standard VGA,vesa2.0)" \
+			"3" "cirrus clgd5446" \
+			"4" "qxl(QXL VGA)" \
+			"5" "xenf(Xen paravirtualized framebuffer)" \
+			"6" "tcx" \
+			"7" "cg3" \
+			"8" "none无显卡" \
+			"9" "virtio" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) QEMU_VGA='vmware' ;;
+	2) QEMU_VGA='std' ;;
+	3) QEMU_VGA='cirrus' ;;
+	4) QEMU_VGA='qxl' ;;
+	5) QEMU_VGA='xenf' ;;
+	6) QEMU_VGA='tcx' ;;
+	7) QEMU_VGA='cg3' ;;
+	8) QEMU_VGA='none' ;;
+	9) QEMU_VGA='virtio' ;;
+	esac
+	###############
+	sed -i "s@-vga .*@-vga ${QEMU_VGA} \\\@" startqemu
+	echo "您已将graphics_card修改为${QEMU_VGA}"
+	press_enter_to_return
+	start_tmoe_qemu_manager
+}
+###############
+modify_qemu_exposed_ports() {
+	cd /usr/local/bin/
+	HOST_PORT_01=$(cat startqemu | grep '\-net user,hostfwd' | cut -d ',' -f 2 | cut -d '-' -f 1 | cut -d ':' -f 3)
+	GUEST_PORT_01=$(cat startqemu | grep '\-net user,hostfwd' | cut -d ',' -f 2 | cut -d '-' -f 2 | cut -d ':' -f 2 | awk '{print $1}')
+	HOST_PORT_02=$(cat startqemu | grep '\-net user,hostfwd' | cut -d ',' -f 3 | cut -d '-' -f 1 | cut -d ':' -f 3)
+	GUEST_PORT_02=$(cat startqemu | grep '\-net user,hostfwd' | cut -d ',' -f 3 | cut -d '-' -f 2 | cut -d ':' -f 2 | awk '{print $1}')
+	HOST_PORT_03=$(cat startqemu | grep '\-net user,hostfwd' | cut -d ',' -f 4 | cut -d '-' -f 1 | cut -d ':' -f 3)
+	GUEST_PORT_03=$(cat startqemu | grep '\-net user,hostfwd' | cut -d ',' -f 4 | cut -d '-' -f 2 | cut -d ':' -f 2 | awk '{print $1}')
+
+	VIRTUAL_TECH=$(
+		whiptail --title "TCP端口转发规则" --menu "如需添加更多端口，请手动修改配置文件" 15 55 4 \
+			"1" "主${HOST_PORT_01}虚${GUEST_PORT_01}" \
+			"2" "主${HOST_PORT_02}虚${GUEST_PORT_02}" \
+			"3" "主${HOST_PORT_03}虚${GUEST_PORT_03}" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1)
+		HOST_PORT=${HOST_PORT_01}
+		GUEST_PORT=${GUEST_PORT_01}
+		;;
+	2)
+		HOST_PORT=${HOST_PORT_02}
+		GUEST_PORT=${GUEST_PORT_02}
+		;;
+	3)
+		HOST_PORT=${HOST_PORT_03}
+		GUEST_PORT=${GUEST_PORT_03}
+		;;
+	esac
+	###############
+	modify_qemu_host_and_guest_port
+	if [ ! -z ${TARGET_HOST_PORT} ]; then
+		echo "您已将虚拟机的${TARGET_GUEST_PORT}端口映射到宿主机的${TARGET_HOST_PORT}端口"
+	fi
+	press_enter_to_return
+	modify_qemu_exposed_ports
+}
+#################
+modify_qemu_host_and_guest_port() {
+	TARGET_HOST_PORT=$(whiptail --inputbox "请输入宿主机端口，若您无root权限，则请将其修改为1024以上的高位端口" 10 50 --title "host port" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		modify_qemu_exposed_ports
+	elif [ -z "${TARGET_HOST_PORT}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		sed -i "s@::${HOST_PORT}-@::${TARGET_HOST_PORT}-@" startqemu
+	fi
+
+	TARGET_GUEST_PORT=$(whiptail --inputbox "请输入虚拟机端口" 10 50 --title "guest port" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		modify_qemu_exposed_ports
+	elif [ -z "${TARGET_GUEST_PORT}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		sed -i "s@0.0.0.0:${GUEST_PORT}@0.0.0.0:${TARGET_GUEST_PORT}@" startqemu
+	fi
+}
+########
+modify_qemu_shared_folder() {
+	cd /usr/local/bin
+	if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？" 8 50); then
+		modify_qemu_host_shared_folder
+	else
+		mount_qemu_guest_shared_folder
+	fi
+}
+#############
+disable_qemu_host_shared_folder() {
+	sed -i '/-virtfs local,id=shared_folder/d' startqemu
+	echo "如需还原，请重置配置文件"
+}
+############
+modify_qemu_host_shared_folder_sdcard() {
+	echo "Sorry,当前暂不支持修改挂载目录"
+}
+###############
+modify_qemu_host_shared_folder() {
+	VIRTUAL_TECH=$(
+		whiptail --title "共享磁盘" --menu "如需添加更多共享磁盘，请手动修改配置文件" 15 55 4 \
+			"1" "DISABLE禁用共享" \
+			"2" "/root/sd" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) disable_qemu_host_shared_folder ;;
+	2) modify_qemu_host_shared_folder_sdcard ;;
+	esac
+	###############
+	press_enter_to_return
+	modify_qemu_host_shared_folder
+}
+#################
+configure_mount_script() {
+	cat >mount-9p-filesystem <<-'EOF'
+		#!/usr/bin/env sh
+
+		MOUNT_FOLDER="${HOME}/sd"
+		MOUNT_NAME="shared0"
+		mount_9p() {
+		    mkdir -p "${MOUNT_FOLDER}"
+		    if [ $(id -u) != "0" ]; then
+		        sudo mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap
+		    else
+		        mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap
+		    fi
+		}
+
+		df | grep "${MOUNT_FOLDER}" >/dev/null 2>&1 || mount_9pf
+	EOF
+	cd ~
+	if ! grep -q 'mount-9p-filesystem' .zlogin; then
+		echo "" >>.zlogin
+		sed -i '$ a\/usr/local/bin/mount-9p-filesystem' .zlogin
+	fi
+
+	if ! grep -q 'mount-9p-filesystem' .profile; then
+		echo "" >>.profile
+		sed -i '$ a\/usr/local/bin/mount-9p-filesystem' .profile
+	fi
+	echo "若无法自动挂载，则请手动输$GREEN}mount-9p-filesystem${RESET}"
+}
+#############
+disable_automatic_mount_qemu_folder() {
+	cd ~
+	sed -i '/mount-9p-filesystem/d' .profile .zlogin
+}
+##############
+mount_qemu_guest_shared_folder() {
+	VIRTUAL_TECH=$(
+		whiptail --title "挂载磁盘" --menu "请在虚拟机环境下使用以下配置" 15 55 4 \
+			"1" "configure配置挂载脚本" \
+			"2" "DISABLE禁用自动挂载" \
+			"3" "EDIT MANUALLY手动编辑挂载脚本" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) configure_mount_script ;;
+	2) disable_automatic_mount_qemu_folder ;;
+	3) nano /usr/local/bin/mount-9p-filesystem ;;
+	esac
+	###############
+	press_enter_to_return
+	mount_qemu_guest_shared_folder
+}
+##############
+check_qemu_vnc_port() {
+	CURRENT_PORT=$(cat startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2)
+	CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+}
+#########################
+modify_qemu_vnc_display_port() {
+	check_qemu_vnc_port
+	TARGET=$(whiptail --inputbox "默认显示编号为2，默认VNC服务端口为5902，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为3,则端口为5903，请输入显示编号.Please enter the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+
+	if [ "$?" != "0" ]; then
+		start_tmoe_qemu_manager
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		sed -i "s@-vnc :.*@-vnc :${TARGET} \\\@" startqemu
+	fi
+
+	echo 'Your current VNC port has been modified.'
+	check_qemu_vnc_port
+	echo '您当前VNC端口已修改为'
+	echo ${CURRENT_VNC_PORT}
+}
+###############
+choose_qemu_iso_file() {
+	FILE_EXT_01='iso'
+	FILE_EXT_02='img'
+	START_DIR="${HOME}"
+	if grep -q '\--cdrom' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep '\--cdrom' | tail -n 1 | awk '{print $2}')
+		IMPORTANT_TIPS="您当前已加载的iso文件为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到您当前没有加载iso"
+	fi
+	tmoe_file_manager
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		stat ${TMOE_FILE_ABSOLUTE_PATH}
+		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		cd /usr/local/bin
+		#-cdrom /root/alpine-standard-3.11.6-x86_64.iso \
+		sed -i '/--cdrom /d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_iso_file_test \\ \n/' startqemu
+		sed -i "s@tmoe_iso_file_test@${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	fi
+}
+###############
+choose_qemu_qcow2_or_img_file() {
+	FILE_EXT_01='qcow2'
+	FILE_EXT_02='img'
+	START_DIR="${HOME}"
+	if grep -q '\-hda' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hda' | tail -n 1 | awk '{print $2}')
+		IMPORTANT_TIPS="您当前已加载的虚拟磁盘为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到您当前没有加载虚拟磁盘"
+	fi
+	tmoe_file_manager
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd /usr/local/bin
+		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
+		sed -i "s@-hda .*@-hda ${TMOE_FILE_ABSOLUTE_PATH} \\\@" startqemu
+	fi
+}
+############
+creat_blank_virtual_disk_image() {
+	TARGET_FILE_NAME=$(whiptail --inputbox "请输入磁盘文件名称.\nPlease enter the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		start_tmoe_qemu_manager
+	elif [ -z "${TARGET_FILE_NAME}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+		TARGET_FILE_NAME=$(date +%Y-%m-%d_%H-%M).qcow2
+	else
+		TARGET_FILE_NAME="${TARGET_FILE_NAME}.qcow2"
+	fi
+	DISK_FILE_PATH="${HOME}/sd/Download"
+	mkdir -p ${DISK_FILE_PATH}
+	cd ${DISK_FILE_PATH}
+	TARGET_FILE_SIZE=$(whiptail --inputbox "请设定磁盘文件大小,例如500M,10G,1T(需包含单位)\nPlease enter the disk size." 10 50 --title "SIZE" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		start_tmoe_qemu_manager
+	elif [ -z "${TARGET_FILE_SIZE}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+		echo "您输入了一个无效的数值，将为您自动创建16G大小的磁盘"
+		do_you_want_to_continue
+		qemu-img create -f qcow2 -o preallocation=metadata ${TARGET_FILE_NAME} 16G
+	else
+		qemu-img create -f qcow2 -o preallocation=metadata ${TARGET_FILE_NAME} ${TARGET_FILE_SIZE}
+	fi
+	stat ${TARGET_FILE_NAME}
+	qemu-img info ${TARGET_FILE_NAME}
+	ls -lh ${DISK_FILE_PATH}/${TARGET_FILE_NAME}
+}
+################
+#-spice port=5931,image-compression=quic,renderer=cairo+oglpbuf+oglpixmap,disable-ticketing \
+enable_qemnu_spice_remote() {
+	cd /usr/local/bin/
+	if grep -q '\-spice port=' startqemu; then
+		TMOE_SPICE_STATUS='检测到您已启用speic'
+	else
+		TMOE_SPICE_STATUS='检测到您已禁用speic'
+	fi
+	###########
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS},默认spice端口为5931" 11 45); then
+		sed -i '/-spice port=/d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -spice tmoe_spice_config_test \\ \n/' startqemu
+		sed -i "s@-spice tmoe_spice_config_test@-spice port=5931,image-compression=quic,disable-ticketing@" startqemu
+		echo "启用完成，将在下次启动qemu虚拟机时生效"
+	else
+		sed -i '/-spice port=/d' startqemu
+		echo "禁用完成"
+	fi
+}
+############
+enable_qemnu_win2k_hack() {
+	cd /usr/local/bin/
+	if grep -q '\-win2k-hack' startqemu; then
+		TMOE_SPICE_STATUS='检测到您已启用win2k-hack'
+	else
+		TMOE_SPICE_STATUS='检测到您已禁用win2k-hack'
+	fi
+	###########
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 11 45); then
+		sed -i '/-win2k-hack/d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -win2k-hack \\ \n/' startqemu
+		echo "启用完成，将在下次启动qemu虚拟机时生效"
+	else
+		sed -i '/-win2k-hack/d' startqemu
+		echo "禁用完成"
+	fi
+}
+##############
+modify_qemu_sound_card() {
+	cd /usr/local/bin/
+	CURRENT_VALUE=$(cat startqemu | grep '\-soundhw' | tail -n 1 | awk '{print $2}')
+	VIRTUAL_TECH=$(
+		whiptail --title "声卡型号" --menu "Please select the sound card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
+			"1" "cs4312a" \
+			"2" "sb16(Creative Sound Blaster 16)" \
+			"3" "es1370(ENSONIQ AudioPCI ES1370)" \
+			"4" "ac97(Intel 82801AA AC97)" \
+			"5" "adlib:Yamaha YM3812 (OPL2)" \
+			"6" "gus(Gravis Ultrasound GF1)" \
+			"7" "hda(Intel HD Audio)" \
+			"8" "pcspk(PC speaker)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) QEMU_SOUNDHW='cs4312a' ;;
+	2) QEMU_SOUNDHW='sb16' ;;
+	3) QEMU_SOUNDHW='es1370' ;;
+	4) QEMU_SOUNDHW='ac97' ;;
+	5) QEMU_SOUNDHW='adlib' ;;
+	6) QEMU_SOUNDHW='gus' ;;
+	7) QEMU_SOUNDHW='hda' ;;
+	8) QEMU_SOUNDHW='pcspk' ;;
+	esac
+	###############
+	#-soundhw cs4231a \
+	sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
+	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
+	press_enter_to_return
+	start_tmoe_qemu_manager
+}
+#############
+qemu_snapshoots_manager() {
+	echo "Sorry,本功能正在开发中."
+	echo "请在qemu monitor下手动管理快照"
+}
+############
+start_tmoe_qemu_manager() {
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu" ]; then
+		creat_qemu_startup_script
+	fi
+	cd /usr/local/bin/
+	check_qemu_install
+	RETURN_TO_WHERE='start_tmoe_qemu_manager'
+	VIRTUAL_TECH=$(
+		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
+			"1" "Download alpine+docker qemu img" \
+			"2" "CPU core处理器核心数" \
+			"3" "RAM运行内存" \
+			"4" "kvm/tcg/xen加速类型" \
+			"5" "exposed ports端口映射/转发" \
+			"6" "compress压缩磁盘文件" \
+			"7" "mount挂载共享磁盘" \
+			"8" "VNC port端口" \
+			"9" "edit script manually手动修改配置脚本" \
+			"10" "iso选择启动镜像" \
+			"11" "disk选择启动磁盘" \
+			"12" "process进程管理说明" \
+			"13" "Multi-VM多虚拟机管理" \
+			"14" "snapshoots快照管理" \
+			"15" "creat disk创建(空白)虚拟磁盘" \
+			"16" "restore to default恢复到默认" \
+			"17" "sound card声卡" \
+			"18" "Graphics card显卡" \
+			"19" "spice远程桌面" \
+			"20" "windows2000 hack" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") install_container_and_virtual_machine ;;
+	1) download_alpine_and_docker_x64_img_file ;;
+	2) modify_qemu_cpu_cores_number ;;
+	3) modify_qemu_ram_size ;;
+	4) modify_qemu_machine_accel ;;
+	5) modify_qemu_exposed_ports ;;
+	6) compress_or_dd_qcow2_img_file ;;
+	7) modify_qemu_shared_folder ;;
+	8) modify_qemu_vnc_display_port ;;
+	9) nano startqemu ;;
+	10) choose_qemu_iso_file ;;
+	11) choose_qemu_qcow2_or_img_file ;;
+	12) qemu_process_management_instructions ;;
+	13) multi_qemu_vm_management ;;
+	14) qemu_snapshoots_manager ;;
+	15) creat_blank_virtual_disk_image ;;
+	16) creat_qemu_startup_script ;;
+	17) modify_qemu_sound_card ;;
+	18) modify_qemnu_graphics_card ;;
+	19) enable_qemnu_spice_remote ;;
+	20) enable_qemnu_win2k_hack ;;
+	esac
+	###############
+	press_enter_to_return
+	start_tmoe_qemu_manager
+}
+##############
+delete_current_qemu_vm_disk_file() {
+	QEMU_FILE="$(cat ${THE_QEMU_STARTUP_SCRIPT} | grep '\-hda ' | head -n 1 | awk '{print $2}' | cut -d ':' -f 2)"
+	stat ${QEMU_FILE}
+	qemu-img info ${QEMU_FILE}
+	echo "Do you want to delete it?"
+	echo "删除后将无法撤销，请谨慎操作"
+	do_you_want_to_continue
+	rm -fv ${QEMU_FILE}
+}
+################
+delete_current_qemu_vm_iso_file() {
+	QEMU_FILE="$(cat ${THE_QEMU_STARTUP_SCRIPT} | grep '\--cdrom' | head -n 1 | awk '{print $2}')"
+	stat ${QEMU_FILE}
+	qemu-img info ${QEMU_FILE}
+	echo "Do you want to delete it?"
+	echo "删除后将无法撤销，请谨慎操作"
+	do_you_want_to_continue
+	rm -fv ${QEMU_FILE}
+}
+###############
+multi_qemu_vm_management() {
+	TMOE_QEMU_SCRIPT_FILE_PATH='/usr/local/bin/.tmoe-linux-qemu'
+	THE_QEMU_STARTUP_SCRIPT='/usr/local/bin/startqemu'
+	RETURN_TO_WHERE='multi_qemu_vm_management'
+	VIRTUAL_TECH=$(
+		whiptail --title "multi-vm" --menu "您可以管理多个虚拟机的配置" 17 55 8 \
+			"1" "save conf保存当前虚拟机配置" \
+			"2" "start多虚拟机启动管理" \
+			"3" "delete conf多虚拟配置删除" \
+			"4" "del vm disk删除当前虚拟机磁盘文件" \
+			"5" "del iso删除当前虚拟机iso文件" \
+			"6" "FAQ常见问题" \
+			"7" "del special vm disk删除指定虚拟机的磁盘文件" \
+			"8" "del special vm iso删除指定虚拟机的镜像文件" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) save_current_qemu_conf_as_a_new_script ;;
+	2) multi_vm_start_manager ;;
+	3) delete_multi_qemu_vm_conf ;;
+	4) delete_current_qemu_vm_disk_file ;;
+	5) delete_current_qemu_vm_iso_file ;;
+	6) other_qemu_conf_related_instructions ;;
+	7) delete_the_disk_file_of_the_specified_qemu_vm ;;
+	8) delete_the_iso_file_of_the_specified_qemu_vm ;;
+	esac
+	###############
+	press_enter_to_return
+	multi_qemu_vm_management
+}
+################
+save_current_qemu_conf_as_a_new_script() {
+	mkdir -p ${TMOE_QEMU_SCRIPT_FILE_PATH}
+	cd ${TMOE_QEMU_SCRIPT_FILE_PATH}
+	TARGET_FILE_NAME=$(whiptail --inputbox "请自定义启动脚本名称\nPlease enter the script name." 10 50 --title "SCRIPT NAME" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		multi_qemu_vm_management
+	elif [ -z "${TARGET_FILE_NAME}" ]; then
+		echo "请输入有效的名称"
+		echo "Please enter a valid name"
+		press_enter_to_return
+		multi_qemu_vm_management
+	else
+		cp -pf /usr/local/bin/startqemu ${TMOE_QEMU_SCRIPT_FILE_PATH}/${TARGET_FILE_NAME}
+		ln -sf ${TMOE_QEMU_SCRIPT_FILE_PATH}/${TARGET_FILE_NAME} /usr/local/bin/
+		echo "您之后可以输${GREEN}${TARGET_FILE_NAME}${RESET}来启动该虚拟机"
+	fi
+}
+#########
+delete_the_iso_file_of_the_specified_qemu_vm() {
+	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
+	BACKUP_FILE_NAME='*'
+	echo "选中的虚拟机的iso镜像文件将被删除"
+	echo "按Ctrl+C退出"
+	select_file_manually
+	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
+	THE_QEMU_STARTUP_SCRIPT=${TMOE_FILE_ABSOLUTE_PATH}
+	delete_current_qemu_vm_iso_file
+}
+############
+delete_the_disk_file_of_the_specified_qemu_vm() {
+	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
+	BACKUP_FILE_NAME='*'
+	echo "选中的虚拟机的磁盘文件将被删除"
+	echo "按Ctrl+C退出"
+	select_file_manually
+	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
+	THE_QEMU_STARTUP_SCRIPT=${TMOE_FILE_ABSOLUTE_PATH}
+	delete_current_qemu_vm_disk_file
+}
+############
+select_file_manually() {
+	count=0
+	for restore_file in "${START_DIR}"/${BACKUP_FILE_NAME}; do
+		restore_file_name[count]=$(echo $restore_file | awk -F'/' '{print $NF}')
+		echo -e "($count) ${restore_file_name[count]}"
+		count=$(($count + 1))
+	done
+	count=$(($count - 1))
+
+	while true; do
+		read -p '请输入选项数字,并按回车键。Please type the option number and press Enter:' number
+		if [[ -z "$number" ]]; then
+			break
+		elif ! [[ $number =~ ^[0-9]+$ ]]; then
+			echo "Please enter the right number!"
+			echo "请输正确的数字编号!"
+		elif (($number >= 0 && $number <= $count)); then
+			eval SELECTION=${restore_file_name[number]}
+			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
+			break
+		else
+			echo "Please enter the right number!"
+			echo "请输正确的数字编号!"
+		fi
+	done
+}
+#####################
+multi_vm_start_manager() {
+	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
+	BACKUP_FILE_NAME='*'
+	echo "选中的配置将设定为startqemu的默认配置"
+	echo "按Ctrl+C退出"
+	select_file_manually
+	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
+	cp -pf ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/startqemu
+	echo "您之后可以输startqemu来执行${SELECTION}"
+	echo "是否需要启动${SELECTION}"
+	do_you_want_to_continue
+	${TMOE_FILE_ABSOLUTE_PATH}
+}
+############
+delete_multi_qemu_vm_conf() {
+	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
+	BACKUP_FILE_NAME='*'
+	echo "选中的配置将被删除"
+	echo "按Ctrl+C退出"
+	select_file_manually
+	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
+	rm -fv ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/${SELECTION}
+}
+###############
+other_qemu_conf_related_instructions() {
+	cat <<-"ENDOFTMOEINST"
+		Q:一个个删除配置太麻烦了，有没有更快速的方法？
+		A：有哒！rm -rfv /usr/local/bin/.tmoe-linux-qemu
+	ENDOFTMOEINST
+}
+############
+qemu_process_management_instructions() {
+	check_qemu_vnc_port
+	echo "${BLUE}连接方式01${RESET}"
+	echo "输startqemu启动qemu"
+	echo "${BLUE}关机方式01${RESET}"
+	echo "打开vnc客户端，输入访问地址localhost:${CURRENT_VNC_PORT}"
+	echo "在qemu monitor界面下输system_powerdown关闭虚拟机电源，输stop停止"
+	echo "${BLUE}连接方式02${RESET}"
+	echo "若您需要使用ssh连接，则请新建一个termux会话窗口，并输入${GREEN}ssh -p 2888 root@localhost${RESET}"
+	echo "本工具默认将虚拟机的22端口映射为宿主机的2888端口，若无法连接，则请在虚拟机下新建一个普通用户，再将上述命令中的root修改为普通用户名称"
+	echo "若连接提示${YELLOW}REMOTE HOST IDENTIFICATION HAS CHANGED${RESET}，则请手动输${GREEN}sed -i '/localhost/d' ~/.ssh/known_hosts${RESET}"
+	echo "${BLUE}关机方式02${RESET}"
+	echo "在linux虚拟机内输poweroff"
+	echo "在windows虚拟机内输shutdown /s /t now"
+	echo "${BLUE}重启方式01${RESET}"
+	echo "在linux虚拟机内输reboot"
+	echo "在windows虚拟机内输shutdown /r /t now"
+}
+#################
+#sed '$!N;$!P;$!D;s/\(\n\)/\n    -test \\ \n/' startqemu
+#sed "s@$(cat startqemu | tail -n 1)@& \\\@" startqemu
+modify_qemu_cpu_cores_number() {
+	CURRENT_CORES=$(cat startqemu | grep '\-smp ' | head -n 1 | awk '{print $2}')
+	TARGET=$(whiptail --inputbox "请输入CPU核心数,默认为4,当前为${CURRENT_CORES}\nPlease enter the number of CPU cores, the default is 4" 10 50 --title "CPU" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		#echo "检测到您取消了操作"
+		start_tmoe_qemu_manager
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		sed -i "s@-smp .*@-smp ${TARGET} \\\@" startqemu
+		echo "您已将CPU核心数修改为${TARGET}"
+	fi
+}
+###########
+modify_qemu_ram_size() {
+	CURRENT_VALUE=$(cat startqemu | grep '\-m ' | head -n 1 | awk '{print $2}')
+	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为2048(单位M),当前为${CURRENT_VALUE}\nPlease enter the RAM size, the default is 2048" 10 53 --title "RAM" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		#echo "检测到您取消了操作"
+		start_tmoe_qemu_manager
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+		echo "不建议超过本机实际内存"
+	else
+		sed -i "s@-m .*@-m ${TARGET} \\\@" startqemu
+		echo "您已将RAM size修改为${TARGET}"
+	fi
+}
+#################
+download_alpine_and_docker_x64_img_file() {
+	echo "You can use this image to run docker on Android system."
+	echo "The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5902. If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, enter ${GREEN}ssh -p 2888 test@localhost${RESET}"
+	echo "User: test, password: test"
+	echo "您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker"
+	echo "默认root密码为空"
+	echo "您可以直接使用vnc客户端连接，访问地址为localhost:5902"
+	echo "如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入apt update ;apt install -y openssh"
+	echo "您也可以直接在linux容器里使用ssh客户端，输入${PACKAGES_INSTALL_COMMAND} openssh-client"
+	echo "在安装完ssh客户端后，使用${GREEN}ssh -p 2888 test@localhost${RESET}连接"
+	echo "由于root密码为空，故请使用普通账号连接，账号test,密码test"
+	echo "在登录完普通账号后，您可以输${GREEN}su -${RESET}来切换至root账号"
+	echo "为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码"
+	do_you_want_to_continue
+	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
+	DOWNLOAD_PATH='/root/sd/Download/backup'
+	mkdir -p ${DOWNLOAD_PATH}
+	cd ${DOWNLOAD_PATH}
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded, do you want to unzip it, or download it again?" 7 60); then
+			echo "解压后将重置虚拟机的所有数据"
+			do_you_want_to_continue
+		else
+			download_alpine_and_docker_x64_img_file_again
+		fi
+	else
+		download_alpine_and_docker_x64_img_file_again
+	fi
+	QEMU_DISK_FILE_NAME='alpine_v3.11_x64.qcow2'
+	uncompress_alpine_and_docker_x64_img_file
+	echo "文件已解压至${DOWNLOAD_PATH}"
+	qemu-img info ${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}
+	echo "是否需要启动虚拟机？"
+	echo "您之后可以输startqemu来启动"
+	echo "默认VNC访问地址为localhost:5902"
+	do_you_want_to_continue
+	startqemu
+}
+#############
+download_alpine_and_docker_x64_img_file_again() {
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/show/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
+	aria2c_download_file
+}
+###########
+uncompress_alpine_and_docker_x64_img_file() {
+	if [ $(command -v pv) ]; then
+		pv ${DOWNLOAD_FILE_NAME} | tar -pJx
+	else
+		tar -Jpxvf ${DOWNLOAD_FILE_NAME}
+	fi
+}
+##################
+dd_if_zero_of_qemu_tmp_disk() {
+	rm -fv /tmp/tmoe_qemu
+	echo "请在在虚拟机内执行操作"
+	echo "本操作将填充磁盘所有空白扇区"
+	echo "若执行完成后，无法自动删除临时文件，则请手动输rm -f /tmp/tmoe_qemu"
+	echo "请务必在执行完操作后,关掉虚拟机,并回到宿主机选择转换压缩"
+	do_you_want_to_continue
+	echo "此操作可能需要数分钟的时间..."
+	echo "${GREEN}dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M${RESET}"
+	dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M
+	ls -lh /tmp/tmoe_qemu
+	rm -fv /tmp/tmoe_qemu
+}
+##################
+compress_or_dd_qcow2_img_file() {
+	cd /usr/local/bin
+	if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？" 8 50); then
+		compress_qcow2_img_file
+	else
+		dd_if_zero_of_qemu_tmp_disk
+	fi
+}
+##########################
+compress_qcow2_img_file() {
+	FILE_EXT_01='qcow2'
+	FILE_EXT_02='img'
+	START_DIR="${HOME}"
+	if grep -q '\-hda' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hda' | tail -n 1 | awk '{print $2}')
+		IMPORTANT_TIPS="您当前已加载的虚拟磁盘为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到您当前没有加载虚拟磁盘"
+	fi
+	tmoe_file_manager
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		press_enter_to_return
+		start_tmoe_qemu_manager
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd ${FILE_PATH}
+		stat ${SELECTION}
+		qemu-img info ${SELECTION}
+	fi
+	do_you_want_to_continue
+
+	if (whiptail --title "请选择压缩方式" --yes-button "qemu compress" --no-button "qemu conver" --yesno "前者为常规压缩，后者转换压缩。♪(^∇^*) " 10 50); then
+		qemu-img convert -c -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
+	else
+		qemu-img convert -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
+	fi
+	qemu-img info ${SELECTION}_new-temp-file
+	mv -f ${SELECTION} original_${SELECTION}
+	mv -f ${SELECTION}_new-temp-file ${SELECTION}
+	echo '原文件大小'
+	ls -lh original_${SELECTION} | tail -n 1 | awk '{print $5}'
+	echo '压缩后的文件大小'
+	ls -lh ${SELECTION} | tail -n 1 | awk '{print $5}'
+	echo "压缩完成，是否删除原始文件?"
+	echo "Do you want to delete the original file？"
+	echo "请谨慎操作，在保证新磁盘数据无错前，不建议您删除原始文件，否则将导致原文件数据丢失"
+	echo "若您取消操作，则请手动输rm ${FILE_PATH}/original_${SELECTION}"
+	do_you_want_to_continue
+	rm -fv original_${SELECTION}
+}
+##############
 download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
 	NON_DEBIAN='false'
@@ -6485,8 +7319,9 @@ check_fdisk() {
 ################
 dd_flash_iso_to_udisk() {
 	DD_OF_TARGET=$(whiptail --inputbox "请输入磁盘路径，例如/dev/nvme0n1px或/dev/sdax,请以实际路径为准" 12 50 --title "DEVICES" 3>&1 1>&2 2>&3)
-	if [ "$?" != "0" ]; then
+	if [ "$?" != "0" ] || [ -z "${DD_OF_TARGET}" ]; then
 		echo "检测到您取消了操作"
+		press_enter_to_return
 		download_virtual_machine_iso_file
 	fi
 	echo "${DD_OF_TARGET}即将被格式化，所有文件都将丢失"
@@ -6628,7 +7463,11 @@ ubuntu_arm_warning() {
 ################
 aria2c_download_file() {
 	echo ${THE_LATEST_ISO_LINK}
-	cd ~
+	if [ -z "${DOWNLOAD_PATH}" ]; then
+		cd ~
+	else
+		cd ${DOWNLOAD_PATH}
+	fi
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ############
