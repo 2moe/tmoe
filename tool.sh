@@ -6445,7 +6445,7 @@ creat_qemu_startup_script() {
 	cat >startqemu <<-'EndOFqemu'
 		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-		echo "正在为您启动qemu虚拟机，本机默认访问地址为localhost:${CURRENT_VNC_PORT}"
+		echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
 
 			/usr/bin/qemu-system-x86_64 \
@@ -7176,7 +7176,7 @@ download_alpine_and_docker_x64_img_file() {
 }
 #############
 download_alpine_and_docker_x64_img_file_again() {
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/show/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
 	aria2c_download_file
 }
 ###########
