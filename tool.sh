@@ -7085,10 +7085,10 @@ other_qemu_conf_related_instructions() {
 ############
 qemu_process_management_instructions() {
 	check_qemu_vnc_port
-	echo "${BLUE}连接方式01${RESET}"
 	echo "输startqemu启动qemu"
-	echo "${BLUE}关机方式01${RESET}"
+	echo "${BLUE}连接方式01${RESET}"
 	echo "打开vnc客户端，输入访问地址localhost:${CURRENT_VNC_PORT}"
+	echo "${BLUE}关机方式01${RESET}"
 	echo "在qemu monitor界面下输system_powerdown关闭虚拟机电源，输stop停止"
 	echo "${BLUE}连接方式02${RESET}"
 	echo "若您需要使用ssh连接，则请新建一个termux会话窗口，并输入${GREEN}ssh -p 2888 root@localhost${RESET}"
@@ -7096,10 +7096,10 @@ qemu_process_management_instructions() {
 	echo "若连接提示${YELLOW}REMOTE HOST IDENTIFICATION HAS CHANGED${RESET}，则请手动输${GREEN}sed -i '/localhost/d' ~/.ssh/known_hosts${RESET}"
 	echo "${BLUE}关机方式02${RESET}"
 	echo "在linux虚拟机内输poweroff"
-	echo "在windows虚拟机内输shutdown /s /t now"
+	echo "在windows虚拟机内输shutdown /s /t 0"
 	echo "${BLUE}重启方式01${RESET}"
 	echo "在linux虚拟机内输reboot"
-	echo "在windows虚拟机内输shutdown /r /t now"
+	echo "在windows虚拟机内输shutdown /r /t 0"
 }
 #################
 #sed '$!N;$!P;$!D;s/\(\n\)/\n    -test \\ \n/' startqemu
@@ -7190,7 +7190,7 @@ uncompress_alpine_and_docker_x64_img_file() {
 ##################
 dd_if_zero_of_qemu_tmp_disk() {
 	rm -fv /tmp/tmoe_qemu
-	echo "请在在虚拟机内执行操作"
+	echo "请在虚拟机内执行操作,不建议在宿主机内执行"
 	echo "本操作将填充磁盘所有空白扇区"
 	echo "若执行完成后，无法自动删除临时文件，则请手动输rm -f /tmp/tmoe_qemu"
 	echo "请务必在执行完操作后,关掉虚拟机,并回到宿主机选择转换压缩"
