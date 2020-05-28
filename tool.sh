@@ -6732,7 +6732,7 @@ choose_qemu_iso_file() {
 		cd /usr/local/bin
 		#-cdrom /root/alpine-standard-3.11.6-x86_64.iso \
 		sed -i '/--cdrom /d' startqemu
-		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_iso_file_test \\ \n/' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_iso_file_test \\\n/' startqemu
 		sed -i "s@tmoe_iso_file_test@${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
 	fi
 }
@@ -6802,7 +6802,7 @@ enable_qemnu_spice_remote() {
 	###########
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS},默认spice端口为5931" 11 45); then
 		sed -i '/-spice port=/d' startqemu
-		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -spice tmoe_spice_config_test \\ \n/' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -spice tmoe_spice_config_test \\\n/' startqemu
 		sed -i "s@-spice tmoe_spice_config_test@-spice port=5931,image-compression=quic,disable-ticketing@" startqemu
 		echo "启用完成，将在下次启动qemu虚拟机时生效"
 	else
@@ -6821,7 +6821,7 @@ enable_qemnu_win2k_hack() {
 	###########
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 11 45); then
 		sed -i '/-win2k-hack/d' startqemu
-		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -win2k-hack \\ \n/' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -win2k-hack \\\n/' startqemu
 		echo "启用完成，将在下次启动qemu虚拟机时生效"
 	else
 		sed -i '/-win2k-hack/d' startqemu
