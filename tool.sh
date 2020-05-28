@@ -6953,6 +6953,7 @@ delete_current_qemu_vm_iso_file() {
 }
 ###############
 multi_qemu_vm_management() {
+	SELECTION=""
 	TMOE_QEMU_SCRIPT_FILE_PATH='/usr/local/bin/.tmoe-linux-qemu'
 	THE_QEMU_STARTUP_SCRIPT='/usr/local/bin/startqemu'
 	RETURN_TO_WHERE='multi_qemu_vm_management'
@@ -7060,7 +7061,12 @@ multi_vm_start_manager() {
 	echo "按Ctrl+C退出"
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
-	cp -pf ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/startqemu
+	if [ ! -z "${SELECTION}" ]; then
+		cp -pf ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/startqemu
+	else
+		echo "没有文件被选择"
+	fi
+
 	echo "您之后可以输startqemu来执行${SELECTION}"
 	echo "是否需要启动${SELECTION}"
 	do_you_want_to_continue
