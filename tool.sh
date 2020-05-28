@@ -6782,9 +6782,10 @@ creat_blank_virtual_disk_image() {
 		echo "Please enter a valid value"
 		echo "您输入了一个无效的数值，将为您自动创建16G大小的磁盘"
 		do_you_want_to_continue
-		qemu-img create -f qcow2 -o preallocation=metadata ${TARGET_FILE_NAME} 16G
+		#qemu-img create -f qcow2 -o preallocation=metadata ${TARGET_FILE_NAME} 16G
+		qemu-img create -f qcow2 ${TARGET_FILE_NAME} 16G
 	else
-		qemu-img create -f qcow2 -o preallocation=metadata ${TARGET_FILE_NAME} ${TARGET_FILE_SIZE}
+		qemu-img create -f qcow2 ${TARGET_FILE_NAME} ${TARGET_FILE_SIZE}
 	fi
 	stat ${TARGET_FILE_NAME}
 	qemu-img info ${TARGET_FILE_NAME}
