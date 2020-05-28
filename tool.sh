@@ -7052,6 +7052,11 @@ select_file_manually() {
 			echo "请输正确的数字编号!"
 		fi
 	done
+	if [ -z "${SELECTION}" ]; then
+		echo "没有文件被选择"
+		press_enter_to_return
+		${RETURN_TO_WHERE}
+	fi
 }
 #####################
 multi_vm_start_manager() {
