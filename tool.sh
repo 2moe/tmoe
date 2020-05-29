@@ -6413,12 +6413,14 @@ install_container_and_virtual_machine() {
 			"7" "VirtualBox:甲骨文开源虚拟机(x64)" \
 			"8" "wine(调用win api并即时转换)" \
 			"9" "anbox:Android in a box(测试)" \
+			"00" "Back to the main menu 返回主菜单" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") beta_features ;;
+	00) tmoe_linux_tool_menu ;;
 	1) install_aqemu ;;
 	2) start_tmoe_qemu_manager ;;
 	3) start_tmoe_qemu_aarch64_manager ;;
@@ -6453,33 +6455,60 @@ creat_qemu_aarch64_startup_script() {
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
 	cat >startqemu_aarch64 <<-'EndOFqemu'
-		    #!/usr/bin/env bash
-		    CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
-		    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-		    echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
-		    echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+		#!/usr/bin/env bash
+		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+		echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
 
-		    /usr/bin/qemu-system-aarch64 \
-		        -monitor stdio \
-		        -smp 4 \
-		        -cpu cortex-a72 \
-		        -machine virt \
-		        -m 2048 \
-		        -hda /root/sd/Download/alpine_aarch64.qcow2 \
-		        -virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
-		        -boot order=cd,menu=on \
-		        -net nic \
-		        -net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5909-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
-		        -rtc base=localtime \
-		        -bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
-		        -vnc :2 \
-		        --cdrom /root/alpine-standard-3.11.6-aarch64.iso \
-		        -name "tmoe-linux-aarch64-qemu"
+		/usr/bin/qemu-system-aarch64 \
+			-monitor stdio \
+			-smp 4 \
+			-cpu cortex-a72 \
+			-machine virt \
+			--accel tcg \
+			-m 2048 \
+			-hda /root/sd/Download/alpine_aarch64.qcow2 \
+			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
+			-boot order=cd,menu=on \
+			-net nic \
+			-net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5909-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+			-rtc base=localtime \
+			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
+			-vnc :2 \
+			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
+			-name "tmoe-linux-aarch64-qemu"
 	EndOFqemu
 	chmod +x startqemu_aarch64
 	cp -pf startqemu_aarch64 /usr/local/bin/startqemu
 }
 ######################
+tmoe_qemu_aarch64_cpu_manager() {
+	RETURN_TO_WHERE='tmoe_qemu_aarch64_cpu_manager'
+	VIRTUAL_TECH=$(
+		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 5 \
+			"1" "CPU cores处理器核心数" \
+			"2" "cpu model/type(型号/类型)" \
+			"3" "cpu multithreading多线程" \
+			"4" "machine机器类型" \
+			"5" "kvm/tcg/xen加速类型" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) modify_qemu_cpu_cores_number ;;
+	2) modify_qemu_aarch64_tmoe_cpu_type ;;
+	3) enable_tmoe_qemu_cpu_multi_threading ;;
+	4) modify_qemu_aarch64_tmoe_machine_model ;;
+	5) modify_qemu_machine_accel ;;
+	esac
+	###############
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+############
 start_tmoe_qemu_aarch64_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_aarch64_manager'
 	RETURN_TO_MENU='start_tmoe_qemu_aarch64_manager'
@@ -6493,48 +6522,48 @@ start_tmoe_qemu_aarch64_manager() {
 
 	VIRTUAL_TECH=$(
 		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
-			"1" "cpu model/type(型号/类型)" \
-			"2" "CPU cores处理器核心数" \
-			"3" "RAM运行内存" \
-			"4" "machine机器型号" \
-			"5" "exposed ports端口映射/转发" \
-			"6" "compress压缩磁盘文件" \
-			"7" "mount shared folder挂载共享文件夹" \
-			"8" "VNC port端口" \
-			"9" "edit script manually手动修改配置脚本" \
-			"10" "iso选择启动镜像" \
-			"11" "disk选择启动磁盘" \
-			"12" "FAQ常见问题" \
-			"13" "Multi-VM多虚拟机管理" \
-			"14" "network card model网卡" \
-			"15" "creat disk创建(空白)虚拟磁盘" \
-			"16" "restore to default恢复到默认" \
-			"17" "sound card声卡" \
-			"18" "spice远程桌面" \
+			"1" "CPU管理" \
+			"2" "RAM运行内存" \
+			"3" "edit script manually手动修改配置脚本" \
+			"4" "exposed ports端口映射/转发" \
+			"5" "compress压缩磁盘文件" \
+			"6" "mount shared folder挂载共享文件夹" \
+			"7" "VNC port端口" \
+			"8" "iso选择启动镜像" \
+			"9" "disk选择启动磁盘" \
+			"10" "FAQ常见问题" \
+			"11" "Multi-VM多虚拟机管理" \
+			"12" "network card model网卡" \
+			"13" "creat disk创建(空白)虚拟磁盘" \
+			"14" "restore to default恢复到默认" \
+			"15" "sound card声卡" \
+			"16" "spice远程桌面" \
+			"17" "legacy bios/uefi(开机引导固件)" \
+			"18" "Input devices输入设备" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) modify_qemu_aarch64_tmoe_cpu_type ;;
-	2) modify_qemu_cpu_cores_number ;;
-	3) modify_qemu_ram_size ;;
-	4) modify_qemu_aarch64_tmoe_machine_model ;;
-	5) modify_qemu_exposed_ports ;;
-	6) compress_or_dd_qcow2_img_file ;;
-	7) modify_qemu_shared_folder ;;
-	8) modify_qemu_vnc_display_port ;;
-	9) nano startqemu ;;
-	10) choose_qemu_iso_file ;;
-	11) choose_qemu_qcow2_or_img_file ;;
-	12) tmoe_qemu_faq ;;
-	13) multi_qemu_vm_management ;;
-	14) modify_qemu_tmoe_network_card ;;
-	15) creat_blank_virtual_disk_image ;;
-	16) creat_qemu_startup_script ;;
-	17) modify_qemu_aarch64_tmoe_sound_card ;;
-	18) enable_qemnu_spice_remote ;;
+	1) tmoe_qemu_aarch64_cpu_manager ;;
+	2) modify_qemu_ram_size ;;
+	3) nano startqemu ;;
+	4) modify_qemu_exposed_ports ;;
+	5) compress_or_dd_qcow2_img_file ;;
+	6) modify_qemu_shared_folder ;;
+	7) modify_qemu_vnc_display_port ;;
+	8) choose_qemu_iso_file ;;
+	9) choose_qemu_qcow2_or_img_file ;;
+	10) tmoe_qemu_faq ;;
+	11) multi_qemu_vm_management ;;
+	12) modify_qemu_tmoe_network_card ;;
+	13) creat_blank_virtual_disk_image ;;
+	14) creat_qemu_startup_script ;;
+	15) modify_qemu_aarch64_tmoe_sound_card ;;
+	16) enable_qemnu_spice_remote ;;
+	17) choose_qemu_bios_or_uefi_file ;;
+	28) tmoe_qemu_input_devices ;;
 	esac
 	###############
 	press_enter_to_return
@@ -6700,7 +6729,7 @@ modify_qemu_aarch64_tmoe_machine_model() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") ${RETURN_TO_WHERE} ;;
 	01) TMOE_AARCH64_QEMU_MACHINE="akita" ;;
 	02) TMOE_AARCH64_QEMU_MACHINE="ast2500-evb" ;;
 	03) TMOE_AARCH64_QEMU_MACHINE="borzoi" ;;
@@ -6822,7 +6851,7 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	#############
 	#00) disable_tmoe_qemu_cpu ;;F
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") ${RETURN_TO_WHERE} ;;
 	01) TMOE_AARCH64_QEMU_CPU_TYPE="arm1026" ;;
 	02) TMOE_AARCH64_QEMU_CPU_TYPE="arm1136" ;;
 	03) TMOE_AARCH64_QEMU_CPU_TYPE="arm1136-r2" ;;
@@ -6943,7 +6972,7 @@ creat_qemu_startup_script() {
 			-smp 4 \
 			-soundhw cs4231a \
 			-vga vmware \
-			-machine accel=tcg \
+			--accel tcg \
 			-m 2048 \
 			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
@@ -6959,26 +6988,42 @@ creat_qemu_startup_script() {
 }
 ###########
 modify_qemu_machine_accel() {
+	if grep -Eq 'vmx|smx' /proc/cpuinfo; then
+		if [ "$(lsmod | grep kvm)" ]; then
+			KVM_STATUS='检测到您的CPU可能支持硬件虚拟化,并且已经启用了KVM内核模块。'
+		else
+			KVM_STATUS='检测到您的CPU可能支持硬件虚拟化，但未检测到KVM内核模块。'
+		fi
+	else
+		KVM_STATUS='检测到您的CPU可能不支持硬件虚拟化'
+	fi
 	cd /usr/local/bin/
-	CURRENT_VALUE=$(cat startqemu | grep '\-machine accel' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
 	VIRTUAL_TECH=$(
-		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,模拟x86系统时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。\n检测到当前为${CURRENT_VALUE}" 15 55 4 \
+		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,模拟运行时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。${KVM_STATUS}\n检测到当前为${CURRENT_VALUE}" 16 55 4 \
 			"1" "tcg(default)" \
 			"2" "kvm(Intel VT-d/AMD-V)" \
 			"3" "xen" \
+			"4" "hax" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") ${RETURN_TO_WHERE} ;;
 	1) MACHINE_ACCEL=tcg ;;
 	2) MACHINE_ACCEL=kvm ;;
 	3) MACHINE_ACCEL=xen ;;
+	4) MACHINE_ACCEL=hax ;;
 	esac
 	###############
-	sed -i "s@-machine accel=.*@-machine accel=${MACHINE_ACCEL} \\\@" startqemu
-	echo "您已将machine accel修改为${MACHINE_ACCEL}"
+	if grep -q '\,thread=multi' startqemu; then
+		sed -i "s@--accel .*@--accel ${MACHINE_ACCEL},thread=multi \\\@" startqemu
+		echo "您已将accel修改为${MACHINE_ACCEL},并启用了多线程加速功能"
+	else
+		sed -i "s@--accel .*@--accel ${MACHINE_ACCEL} \\\@" startqemu
+		echo "您已将accel修改为${MACHINE_ACCEL},但并未启用多线程加速功能"
+	fi
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -7999,13 +8044,34 @@ disable_tmoe_qemu_machine() {
 	echo "禁用完成"
 }
 ################
+enable_tmoe_qemu_cpu_multi_threading() {
+	cd /usr/local/bin/
+	if grep -q '\,thread=multi' startqemu; then
+		TMOE_SPICE_STATUS='检测到您已启用多线程加速功能'
+	else
+		TMOE_SPICE_STATUS='检测到您已禁用多线程加速功能'
+	fi
+	###########
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？默认为禁用，${TMOE_SPICE_STATUS}" 11 45); then
+		#CURRENT_VALUE=$(cat startqemu | grep '\-machine accel' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1 | cut -d '=' -f 2)
+		CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
+		sed -i "s@--accel .*@--accel ${CURRENT_VALUE},thread=multi \\\@" startqemu
+		echo "启用完成，将在下次启动qemu虚拟机时生效"
+	else
+		sed -i 's@,thread=multi@@' startqemu
+		echo "禁用完成"
+	fi
+}
+#################
 tmoe_qemu_x64_cpu_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_x64_cpu_manager'
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 16 50 7 \
+		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 5 \
 			"1" "CPU cores处理器核心数" \
 			"2" "cpu model/type(型号/类型)" \
-			"3" "machine机器类型" \
+			"3" "cpu multithreading多线程" \
+			"4" "machine机器类型" \
+			"5" "kvm/tcg/xen加速类型" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8014,12 +8080,78 @@ tmoe_qemu_x64_cpu_manager() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) modify_qemu_cpu_cores_number ;;
 	2) modify_qemu_amd64_tmoe_cpu_type ;;
-	3) modify_qemu_amd64_tmoe_machine_type ;;
+	3) enable_tmoe_qemu_cpu_multi_threading ;;
+	4) modify_qemu_amd64_tmoe_machine_type ;;
+	5) modify_qemu_machine_accel ;;
 	esac
 	###############
 	#-soundhw cs4231a \
 	press_enter_to_return
 	${RETURN_TO_WHERE}
+}
+############
+##############
+tmoe_qemu_storage_devices() {
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='tmoe_qemu_storage_devices'
+	VIRTUAL_TECH=$(
+		whiptail --title "storage devices" --menu "Sorry,本功能正在开发中,请自行修改配置文件" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"01" "am53c974:bus PCI,desc(AMD Am53c974 PCscsi-PCI SCSI adapter)" \
+			"02" "dc390:bus PCI,desc(Tekram DC-390 SCSI adapter)" \
+			"03" "floppy:bus floppy-bus,desc(virtual floppy drive)" \
+			"04" "ich9-ahci:bus PCI,alias(ahci)" \
+			"05" "ide-cd:bus IDE,desc(virtual IDE CD-ROM)" \
+			"06" "ide-drive:bus IDE,desc(virtual IDE disk or CD-ROM (legacy))" \
+			"07" "ide-hd:bus IDE,desc(virtual IDE disk)" \
+			"08" "isa-fdc:bus ISA" \
+			"09" "isa-ide:bus ISA" \
+			"10" "lsi53c810:bus PCI" \
+			"11" "lsi53c895a:bus PCI,alias(lsi)" \
+			"12" "megasas:bus PCI,desc(LSI MegaRAID SAS 1078)" \
+			"13" "megasas-gen2:bus PCI,desc(LSI MegaRAID SAS 2108)" \
+			"14" "mptsas1068:bus PCI,desc(LSI SAS 1068)" \
+			"15" "nvme:bus PCI,desc(Non-Volatile Memory Express)" \
+			"16" "piix3-ide:bus PCI" \
+			"17" "piix3-ide-xen:bus PCI" \
+			"18" "piix4-ide:bus PCI" \
+			"19" "pvscsi:bus PCI" \
+			"20" "scsi-block:bus SCSI,desc(SCSI block device passthrough)" \
+			"21" "scsi-cd:bus SCSI,desc(virtual SCSI CD-ROM)" \
+			"22" "scsi-disk:bus SCSI,desc(virtual SCSI disk or CD-ROM (legacy))" \
+			"23" "scsi-generic:bus SCSI,desc(pass through generic scsi device (/dev/sg*))" \
+			"24" "scsi-hd:bus SCSI,desc(virtual SCSI disk)" \
+			"25" "sdhci-pci:bus PCI" \
+			"26" "usb-bot:bus usb-bus" \
+			"27" "usb-mtp:bus usb-bus,desc(USB Media Transfer Protocol device)" \
+			"28" "usb-storage:bus usb-bus" \
+			"29" "usb-uas:bus usb-bus" \
+			"30" "vhost-scsi:bus virtio-bus" \
+			"31" "vhost-scsi-pci:bus PCI" \
+			"32" "vhost-user-blk:bus virtio-bus" \
+			"33" "vhost-user-blk-pci:bus PCI" \
+			"34" "vhost-user-scsi:bus virtio-bus" \
+			"35" "vhost-user-scsi-pci:bus PCI" \
+			"36" "virtio-9p-device:bus virtio-bus" \
+			"37" "virtio-9p-pci:bus PCI,alias(virtio-9p)" \
+			"38" "virtio-blk-device:bus virtio-bus" \
+			"39" "virtio-blk-pci:bus PCI,alias(virtio-blk)" \
+			"40" "virtio-scsi-device:bus virtio-bus" \
+			"41" "virtio-scsi-pci:bus PCI,alias(virtio-scsi)" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	*) tmoe_qemu_error_tips ;;
+	esac
+	###############
+	press_enter_to_return
+	${RETURN_TO_MENU}
+}
+###############
+tmoe_qemu_error_tips() {
+	echo "Sorry，本功能正在开发中，暂不支持修改storage devices，如需启用相关参数，请手动修改配置文件"
 }
 #####################
 start_tmoe_qemu_manager() {
@@ -8037,12 +8169,12 @@ start_tmoe_qemu_manager() {
 			"1" "Download alpine+docker qemu img" \
 			"2" "CPU管理" \
 			"3" "RAM运行内存" \
-			"4" "kvm/tcg/xen加速类型" \
+			"4" "edit script manually手动修改配置脚本" \
 			"5" "exposed ports端口映射/转发" \
 			"6" "compress压缩磁盘文件" \
 			"7" "mount shared folder挂载共享文件夹" \
 			"8" "VNC port端口" \
-			"9" "edit script manually手动修改配置脚本" \
+			"9" "Input devices输入设备" \
 			"10" "iso选择启动镜像" \
 			"11" "disk选择启动磁盘" \
 			"12" "FAQ常见问题" \
@@ -8055,6 +8187,8 @@ start_tmoe_qemu_manager() {
 			"19" "network card网卡" \
 			"20" "spice远程桌面" \
 			"21" "windows2000 hack" \
+			"22" "legacy bios/uefi(开机引导固件)" \
+			"24" "Storage devices存储设备" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8064,12 +8198,12 @@ start_tmoe_qemu_manager() {
 	1) download_alpine_and_docker_x64_img_file ;;
 	2) tmoe_qemu_x64_cpu_manager ;;
 	3) modify_qemu_ram_size ;;
-	4) modify_qemu_machine_accel ;;
+	4) nano startqemu ;;
 	5) modify_qemu_exposed_ports ;;
 	6) compress_or_dd_qcow2_img_file ;;
 	7) modify_qemu_shared_folder ;;
 	8) modify_qemu_vnc_display_port ;;
-	9) nano startqemu ;;
+	9) tmoe_qemu_input_devices ;;
 	10) choose_qemu_iso_file ;;
 	11) choose_qemu_qcow2_or_img_file ;;
 	12) tmoe_qemu_faq ;;
@@ -8082,12 +8216,187 @@ start_tmoe_qemu_manager() {
 	19) modify_qemu_tmoe_network_card ;;
 	20) enable_qemnu_spice_remote ;;
 	21) enable_qemnu_win2k_hack ;;
+	22) choose_qemu_bios_or_uefi_file ;;
+	24) tmoe_qemu_storage_devices ;;
 	esac
 	###############
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
-##############
+##########
+tmoe_qemu_input_devices() {
+	#qemu-system-x86_64 -device help
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='tmoe_qemu_input_devices'
+	VIRTUAL_TECH=$(
+		whiptail --title "input devices" --menu "请选择您需要启用的输入设备,您可以同时启用多个设备" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"00" "list all enabled列出所有已经启用的设备" \
+			"01" "ccid-card-emulated: bus ccid-bus, desc(emulated smartcard)" \
+			"02" "ccid-card-passthru: bus ccid-bus, desc(passthrough smartcard)" \
+			"03" "ipoctal232: bus IndustryPack, desc(GE IP-Octal 232 8-channel RS-232 IndustryPack)" \
+			"04" "isa-parallel: bus ISA" \
+			"05" "isa-serial: bus ISA" \
+			"06" "pci-serial: bus PCI" \
+			"07" "pci-serial-2x: bus PCI" \
+			"08" "pci-serial-4x: bus PCI" \
+			"09" "tpci200: bus PCI, desc(TEWS TPCI200 IndustryPack carrier)" \
+			"10" "usb-braille: bus usb-bus" \
+			"11" "usb-ccid: bus usb-bus, desc(CCID Rev 1.1 smartcard reader)" \
+			"12" "usb-kbd: bus usb-bus" \
+			"13" "usb-mouse: bus usb-bus" \
+			"14" "usb-serial: bus usb-bus" \
+			"15" "usb-tablet: bus usb-bus" \
+			"16" "usb-wacom-tablet: bus usb-bus, desc(QEMU PenPartner Tablet)" \
+			"17" "virtconsole: bus virtio-serial-bus" \
+			"18" "virtio-input-host-device: bus virtio-bus" \
+			"19" "virtio-input-host-pci: bus PCI, alias(virtio-input-host)" \
+			"20" "virtio-keyboard-device: bus virtio-bus" \
+			"21" "virtio-keyboard-pci: bus PCI, alias(virtio-keyboard)" \
+			"22" "virtio-mouse-device: bus virtio-bus" \
+			"23" "virtio-mouse-pci: bus PCI, alias(virtio-mouse)" \
+			"24" "virtio-serial-device: bus virtio-bus" \
+			"25" "virtio-serial-pci: bus PCI, alias(virtio-serial)" \
+			"26" "virtio-tablet-device: bus virtio-bus" \
+			"27" "virtio-tablet-pci: bus PCI, alias(virtio-tablet)" \
+			"28" "virtserialport: bus virtio-serial-bus" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	00) list_all_enabled_qemu_input_devices ;;
+	01) TMOE_QEMU_INPUT_DEVICE='ccid-card-emulated' ;;
+	02) TMOE_QEMU_INPUT_DEVICE='ccid-card-passthru' ;;
+	03) TMOE_QEMU_INPUT_DEVICE='ipoctal232' ;;
+	04) TMOE_QEMU_INPUT_DEVICE='isa-parallel' ;;
+	05) TMOE_QEMU_INPUT_DEVICE='isa-serial' ;;
+	06) TMOE_QEMU_INPUT_DEVICE='pci-serial' ;;
+	07) TMOE_QEMU_INPUT_DEVICE='pci-serial-2x' ;;
+	08) TMOE_QEMU_INPUT_DEVICE='pci-serial-4x' ;;
+	09) TMOE_QEMU_INPUT_DEVICE='tpci200' ;;
+	10) TMOE_QEMU_INPUT_DEVICE='usb-braille' ;;
+	11) TMOE_QEMU_INPUT_DEVICE='usb-ccid' ;;
+	12) TMOE_QEMU_INPUT_DEVICE='usb-kbd' ;;
+	13) TMOE_QEMU_INPUT_DEVICE='usb-mouse' ;;
+	14) TMOE_QEMU_INPUT_DEVICE='usb-serial' ;;
+	15) TMOE_QEMU_INPUT_DEVICE='usb-tablet' ;;
+	16) TMOE_QEMU_INPUT_DEVICE='usb-wacom-tablet' ;;
+	17) TMOE_QEMU_INPUT_DEVICE='virtconsole' ;;
+	18) TMOE_QEMU_INPUT_DEVICE='virtio-input-host-device' ;;
+	19) TMOE_QEMU_INPUT_DEVICE='virtio-input-host-pci' ;;
+	20) TMOE_QEMU_INPUT_DEVICE='virtio-keyboard-device' ;;
+	21) TMOE_QEMU_INPUT_DEVICE='virtio-keyboard-pci' ;;
+	22) TMOE_QEMU_INPUT_DEVICE='virtio-mouse-device' ;;
+	23) TMOE_QEMU_INPUT_DEVICE='virtio-mouse-pci' ;;
+	24) TMOE_QEMU_INPUT_DEVICE='virtio-serial-device' ;;
+	25) TMOE_QEMU_INPUT_DEVICE='virtio-serial-pci' ;;
+	26) TMOE_QEMU_INPUT_DEVICE='virtio-tablet-device' ;;
+	27) TMOE_QEMU_INPUT_DEVICE='virtio-tablet-pci' ;;
+	28) TMOE_QEMU_INPUT_DEVICE='virtserialport' ;;
+	esac
+	###############
+	enable_qemnu_input_device
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+##########
+list_all_enabled_qemu_input_devices() {
+	cat startqemu | grep '\-device' | awk '{print $2}'
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+#############
+enable_qemnu_input_device() {
+	cd /usr/local/bin/
+	if grep -q "device ${TMOE_QEMU_INPUT_DEVICE}" startqemu; then
+		TMOE_SPICE_STATUS="检测到您已启用${TMOE_QEMU_INPUT_DEVICE}"
+	else
+		TMOE_SPICE_STATUS="检测到您已禁用${TMOE_QEMU_INPUT_DEVICE}"
+	fi
+	###########
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 11 45); then
+		sed -i "/-device ${TMOE_QEMU_INPUT_DEVICE}/d" startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -device tmoe_config_test \\\n/' startqemu
+		sed -i "s@-device tmoe_config_test@-device ${TMOE_QEMU_INPUT_DEVICE}@" startqemu
+		echo "启用完成，将在下次启动qemu虚拟机时生效"
+	else
+		sed -i "/-device ${TMOE_QEMU_INPUT_DEVICE}/d" startqemu
+		echo "禁用完成"
+	fi
+}
+##########################
+tmoe_choose_a_qemu_bios_file() {
+	FILE_EXT_01='fd'
+	FILE_EXT_02='bin'
+	START_DIR="${HOME}"
+	IMPORTANT_TIPS="您当前已加载的bios为${CURRENT_VALUE}"
+	tmoe_file_manager
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		press_enter_to_return
+		${RETURN_TO_WHERE}
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd ${FILE_PATH}
+		file ${SELECTION}
+	fi
+	TMOE_QEMU_BIOS_FILE_PATH="${TMOE_FILE_ABSOLUTE_PATH}"
+	do_you_want_to_continue
+}
+###########
+choose_qemu_bios_or_uefi_file() {
+	if [ ! -e "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd" ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='qemu-efi-aarch64'
+		beta_features_quick_install
+	fi
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='choose_qemu_bios_or_uefi_file'
+	if grep -q '\-bios ' startqemu; then
+		CURRENT_VALUE=$(cat startqemu | grep '\-bios ' | tail -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	else
+		CURRENT_VALUE='默认'
+	fi
+	VIRTUAL_TECH=$(
+		whiptail --title "legacy bios/uefi" --menu "Please select the legacy bios or uefi file.\n当前为${CURRENT_VALUE}" 15 50 4 \
+			"1" "default默认" \
+			"2" "qemu-efi-aarch64:UEFI firmware for arm64" \
+			"3" "ovmf:UEFI firmware for x64" \
+			"4" "choose a file自选文件" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) restore_to_default_qemu_bios ;;
+	2) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/qemu-efi-aarch64/QEMU_EFI.fd' ;;
+	3) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd' ;;
+	4) tmoe_choose_a_qemu_bios_file ;;
+	esac
+	###############
+	sed -i '/-bios /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -bios tmoe_bios_config_test \\\n/' startqemu
+	sed -i "s@-bios tmoe_bios_config_test@-bios ${TMOE_QEMU_BIOS_FILE_PATH}@" startqemu
+	echo "您已将启动引导固件修改为${TMOE_QEMU_BIOS_FILE_PATH}"
+	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+##########
+restore_to_default_qemu_bios() {
+	if [ "${RETURN_TO_MENU}" = "start_tmoe_qemu_manager" ]; then
+		sed -i '/-bios /d' startqemu
+	else
+		#-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
+		sed -i 's@-bios .*@-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \\@' startqemu
+	fi
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+################
 delete_current_qemu_vm_disk_file() {
 	QEMU_FILE="$(cat ${THE_QEMU_STARTUP_SCRIPT} | grep '\-hda ' | head -n 1 | awk '{print $2}' | cut -d ':' -f 2)"
 	stat ${QEMU_FILE}
