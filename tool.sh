@@ -441,8 +441,9 @@ tmoe_linux_tool_menu() {
 			"13" "FAQ 常见问题" \
 			"14" "software sources软件镜像源管理" \
 			"15" "download iso(Android,linux等)" \
-			"16" "qemu虚拟机管理" \
-			"17" "Beta Features 测试版功能" \
+			"16" "qemu(x64虚拟机管理)" \
+			"17" "qemu(arm64虚拟机管理)" \
+			"18" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -465,7 +466,8 @@ tmoe_linux_tool_menu() {
 	14) tmoe_sources_list_manager ;;
 	15) download_virtual_machine_iso_file ;;
 	16) start_tmoe_qemu_manager ;;
-	17) beta_features ;;
+	17) start_tmoe_qemu_aarch64_manager ;;
+	18) beta_features ;;
 	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -6402,14 +6404,15 @@ install_container_and_virtual_machine() {
 	NON_DEBIAN='false'
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 50 8 \
-			"1" "qemu" \
-			"2" "tmoe-qemu(管理中心)" \
-			"3" "download iso(Android,linux等)" \
-			"4" "docker-ce:开源的应用容器引擎" \
-			"5" "portainer(docker图形化web端管理容器)" \
-			"6" "VirtualBox:甲骨文开源虚拟机(x64)" \
-			"7" "wine(调用win api并即时转换)" \
-			"8" "anbox:Android in a box(测试)" \
+			"1" "aqemu(基于qt的qemu前端)" \
+			"2" "tmoe-qemu(x64虚拟机管理)" \
+			"3" "tmoe-qemu(arm64虚拟机管理）" \
+			"4" "download iso(Android,linux等)" \
+			"5" "docker-ce:开源的应用容器引擎" \
+			"6" "portainer(docker图形化web端管理容器)" \
+			"7" "VirtualBox:甲骨文开源虚拟机(x64)" \
+			"8" "wine(调用win api并即时转换)" \
+			"9" "anbox:Android in a box(测试)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6418,18 +6421,405 @@ install_container_and_virtual_machine() {
 	0 | "") beta_features ;;
 	1) install_aqemu ;;
 	2) start_tmoe_qemu_manager ;;
-	3) download_virtual_machine_iso_file ;;
-	4) install_docker_ce ;;
-	5) install_docker_portainer ;;
-	6) install_virtual_box ;;
-	7) install_wine64 ;;
-	8) install_anbox ;;
+	3) start_tmoe_qemu_aarch64_manager ;;
+	4) download_virtual_machine_iso_file ;;
+	5) install_docker_ce ;;
+	6) install_docker_portainer ;;
+	7) install_virtual_box ;;
+	8) install_wine64 ;;
+	9) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
 	beta_features
 }
 ###########
+###########
+check_qemu_aarch64_install() {
+	if [ ! $(command -v qemu-system-aarch64) ]; then
+		DEPENDENCY_01='qemu'
+		DEPENDENCY_02='qemu-system-arm'
+		echo "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
+		beta_features_quick_install
+	fi
+}
+####################
+download_debian_aarch64_img_file() {
+	echo "Sorry,开发者还没上传。"
+}
+###########
+creat_qemu_aarch64_startup_script() {
+	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
+	mkdir -p ${CONFIG_FOLDER}
+	cd ${CONFIG_FOLDER}
+	cat >startqemu_aarch64 <<-'EndOFqemu'
+		    #!/usr/bin/env bash
+		    CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+		    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+		    echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
+		    echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+
+		    /usr/bin/qemu-system-aarch64 \
+		        -monitor stdio \
+		        -smp 4 \
+		        -soundhw es1370 \
+		        -cpu cortex-a57 \
+		        -machine virt \
+		        -m 2048 \
+		        -hda /root/sd/Download/alpine_aarch64.qcow2 \
+		        -virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
+		        -boot order=cd,menu=on \
+		        -net nic \
+		        -net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5909-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+		        -rtc base=localtime \
+		        -bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
+		        -vnc :2 \
+		        --cdrom /root/alpine-standard-3.11.6-aarch64.iso \
+		        -name "tmoe-linux-aarch64-qemu"
+	EndOFqemu
+	chmod +x startqemu_aarch64
+	cp -pf startqemu_aarch64 /usr/local/bin/startqemu
+}
+######################
+start_tmoe_qemu_aarch64_manager() {
+	RETURN_TO_WHERE='start_tmoe_qemu_aarch64_manager'
+	RETURN_TO_MENU='start_tmoe_qemu_aarch64_manager'
+	check_qemu_aarch64_install
+	cd /usr/local/bin/
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64" ]; then
+		echo "启用arm64虚拟机将重置startqemu为arm64的配置"
+		rm -fv "${HOME}/.config/tmoe-linux/startqemu"
+		creat_qemu_aarch64_startup_script
+	fi
+
+	VIRTUAL_TECH=$(
+		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
+			"1" "CPU type类型" \
+			"2" "CPU core处理器核心数" \
+			"3" "RAM运行内存" \
+			"4" "machine机器型号" \
+			"5" "exposed ports端口映射/转发" \
+			"6" "compress压缩磁盘文件" \
+			"7" "mount挂载共享磁盘" \
+			"8" "VNC port端口" \
+			"9" "edit script manually手动修改配置脚本" \
+			"10" "iso选择启动镜像" \
+			"11" "disk选择启动磁盘" \
+			"12" "FAQ常见问题" \
+			"13" "Multi-VM多虚拟机管理" \
+			"14" "network card model网卡" \
+			"15" "creat disk创建(空白)虚拟磁盘" \
+			"16" "restore to default恢复到默认" \
+			"17" "sound card声卡" \
+			"18" "spice远程桌面" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") install_container_and_virtual_machine ;;
+	1) modify_qemu_aarch64_tmoe_cpu_type ;;
+	2) modify_qemu_cpu_cores_number ;;
+	3) modify_qemu_ram_size ;;
+	4) modify_qemu_aarch64_tmoe_machine_model ;;
+	5) modify_qemu_exposed_ports ;;
+	6) compress_or_dd_qcow2_img_file ;;
+	7) modify_qemu_shared_folder ;;
+	8) modify_qemu_vnc_display_port ;;
+	9) nano startqemu ;;
+	10) choose_qemu_iso_file ;;
+	11) choose_qemu_qcow2_or_img_file ;;
+	12) tmoe_qemu_faq ;;
+	13) multi_qemu_vm_management ;;
+	14) modify_qemu_network_model_management ;;
+	15) creat_blank_virtual_disk_image ;;
+	16) creat_qemu_startup_script ;;
+	17) modify_qemu_aarch64_tmoe_sound_card ;;
+	18) enable_qemnu_spice_remote ;;
+	esac
+	###############
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+#############
+modify_qemu_network_model_management() {
+	echo "Sorry,本功能正在开发中."
+	echo "请手动修改配置文件"
+}
+###########
+modify_qemu_aarch64_tmoe_machine_model() {
+	cd /usr/local/bin/
+	CURRENT_VALUE=$(cat startqemu | grep '\-machine' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	VIRTUAL_TECH=$(
+		whiptail --title "机器型号" --menu "Please select the machine model.\n默认为virt,当前为${CURRENT_VALUE}" 0 0 0 \
+			"01" "akita:Sharp SL-C1000 (Akita) PDA (PXA270)" \
+			"02" "ast2500-evb:Aspeed AST2500 EVB (ARM1176)" \
+			"03" "borzoi:Sharp SL-C3100 (Borzoi) PDA (PXA270)" \
+			"04" "canon-a1100:Canon PowerShot A1100 IS" \
+			"05" "cheetah:Palm Tungsten|E aka. Cheetah PDA (OMAP310)" \
+			"06" "collie:Sharp SL-5500 (Collie) PDA (SA-1110)" \
+			"07" "connex:Gumstix Connex (PXA255)" \
+			"08" "cubieboard:cubietech cubieboard" \
+			"09" "emcraft-sf2:SmartFusion2 SOM kit from Emcraft (M2S010)" \
+			"10" "highbank:Calxeda Highbank (ECX-1000)" \
+			"11" "imx25-pdk:ARM i.MX25 PDK board (ARM926)" \
+			"12" "integratorcp:ARM Integrator/CP (ARM926EJ-S)" \
+			"13" "kzm:ARM KZM Emulation Baseboard (ARM1136)" \
+			"14" "lm3s6965evb:Stellaris LM3S6965EVB" \
+			"15" "lm3s811evb:Stellaris LM3S811EVB" \
+			"16" "mainstone:Mainstone II (PXA27x)" \
+			"17" "mcimx6ul-evk:Freescale i.MX6UL Evaluation Kit (Cortex A7)" \
+			"18" "mcimx7d-sabre:Freescale i.MX7 DUAL SABRE (Cortex A7)" \
+			"19" "microbit:BBC micro:bit" \
+			"20" "midway:Calxeda Midway (ECX-2000)" \
+			"21" "mps2-an385:ARM MPS2 with AN385 FPGA image for Cortex-M3" \
+			"22" "mps2-an505:ARM MPS2 with AN505 FPGA image for Cortex-M33" \
+			"23" "mps2-an511:ARM MPS2 with AN511 DesignStart FPGA image for Cortex-M3" \
+			"24" "musicpal:Marvell 88w8618 / MusicPal (ARM926EJ-S)" \
+			"25" "n800:Nokia N800 tablet aka. RX-34 (OMAP2420)" \
+			"26" "n810:Nokia N810 tablet aka. RX-44 (OMAP2420)" \
+			"27" "netduino2:Netduino 2 Machine" \
+			"28" "none:empty machine" \
+			"29" "nuri:Samsung NURI board (Exynos4210)" \
+			"30" "palmetto-bmc:OpenPOWER Palmetto BMC (ARM926EJ-S)" \
+			"31" "raspi2:Raspberry Pi 2" \
+			"32" "raspi3:Raspberry Pi 3" \
+			"33" "realview-eb:ARM RealView Emulation Baseboard (ARM926EJ-S)" \
+			"34" "realview-eb-mpcore:ARM RealView Emulation Baseboard (ARM11MPCore)" \
+			"35" "realview-pb-a8:ARM RealView Platform Baseboard for Cortex-A8" \
+			"36" "realview-pbx-a9:ARM RealView Platform Baseboard Explore for Cortex-A9" \
+			"37" "romulus-bmc:OpenPOWER Romulus BMC (ARM1176)" \
+			"38" "sabrelite:Freescale i.MX6 Quad SABRE Lite Board (Cortex A9)" \
+			"39" "smdkc210:Samsung SMDKC210 board (Exynos4210)" \
+			"40" "spitz:Sharp SL-C3000 (Spitz) PDA (PXA270)" \
+			"41" "sx1:Siemens SX1 (OMAP310) V2" \
+			"42" "sx1-v1:Siemens SX1 (OMAP310) V1" \
+			"43" "terrier:Sharp SL-C3200 (Terrier) PDA (PXA270)" \
+			"44" "tosa:Sharp SL-6000 (Tosa) PDA (PXA255)" \
+			"45" "verdex:Gumstix Verdex (PXA270)" \
+			"46" "versatileab:ARM Versatile/AB (ARM926EJ-S)" \
+			"47" "versatilepb:ARM Versatile/PB (ARM926EJ-S)" \
+			"48" "vexpress-a15:ARM Versatile Express for Cortex-A15" \
+			"49" "vexpress-a9:ARM Versatile Express for Cortex-A9" \
+			"50" "virt-2.10:QEMU 2.10 ARM Virtual Machine" \
+			"51" "virt-2.11:QEMU 2.11 ARM Virtual Machine" \
+			"52" "virt-2.12:QEMU 2.12 ARM Virtual Machine" \
+			"53" "virt-2.6:QEMU 2.6 ARM Virtual Machine" \
+			"54" "virt-2.7:QEMU 2.7 ARM Virtual Machine" \
+			"55" "virt-2.8:QEMU 2.8 ARM Virtual Machine" \
+			"56" "virt-2.9:QEMU 2.9 ARM Virtual Machine" \
+			"57" "virt-3.0:QEMU 3.0 ARM Virtual Machine" \
+			"58" "virt:QEMU 3.1 ARM Virtual Machine (alias of virt-3.1)" \
+			"59" "virt-3.1:QEMU 3.1 ARM Virtual Machine" \
+			"60" "witherspoon-bmc:OpenPOWER Witherspoon BMC (ARM1176)" \
+			"61" "xilinx-zynq-a9:Xilinx Zynq Platform Baseboard for Cortex-A9" \
+			"62" "xlnx-versal-virt:Xilinx Versal Virtual development board" \
+			"63" "xlnx-zcu102:Xilinx ZynqMP ZCU102 board with 4xA53s and 2xR5Fs" \
+			"64" "z2:Zipit Z2 (PXA27x)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	01) TMOE_AARCH64_QEMU_MACHINE="akita" ;;
+	02) TMOE_AARCH64_QEMU_MACHINE="ast2500-evb" ;;
+	03) TMOE_AARCH64_QEMU_MACHINE="borzoi" ;;
+	04) TMOE_AARCH64_QEMU_MACHINE="canon-a1100" ;;
+	05) TMOE_AARCH64_QEMU_MACHINE="cheetah" ;;
+	06) TMOE_AARCH64_QEMU_MACHINE="collie" ;;
+	07) TMOE_AARCH64_QEMU_MACHINE="connex" ;;
+	08) TMOE_AARCH64_QEMU_MACHINE="cubieboard" ;;
+	09) TMOE_AARCH64_QEMU_MACHINE="emcraft-sf2" ;;
+	10) TMOE_AARCH64_QEMU_MACHINE="highbank" ;;
+	11) TMOE_AARCH64_QEMU_MACHINE="imx25-pdk" ;;
+	12) TMOE_AARCH64_QEMU_MACHINE="integratorcp" ;;
+	13) TMOE_AARCH64_QEMU_MACHINE="kzm" ;;
+	14) TMOE_AARCH64_QEMU_MACHINE="lm3s6965evb" ;;
+	15) TMOE_AARCH64_QEMU_MACHINE="lm3s811evb" ;;
+	16) TMOE_AARCH64_QEMU_MACHINE="mainstone" ;;
+	17) TMOE_AARCH64_QEMU_MACHINE="mcimx6ul-evk" ;;
+	18) TMOE_AARCH64_QEMU_MACHINE="mcimx7d-sabre" ;;
+	19) TMOE_AARCH64_QEMU_MACHINE="microbit" ;;
+	20) TMOE_AARCH64_QEMU_MACHINE="midway" ;;
+	21) TMOE_AARCH64_QEMU_MACHINE="mps2-an385" ;;
+	22) TMOE_AARCH64_QEMU_MACHINE="mps2-an505" ;;
+	23) TMOE_AARCH64_QEMU_MACHINE="mps2-an511" ;;
+	24) TMOE_AARCH64_QEMU_MACHINE="musicpal" ;;
+	25) TMOE_AARCH64_QEMU_MACHINE="n800" ;;
+	26) TMOE_AARCH64_QEMU_MACHINE="n810" ;;
+	27) TMOE_AARCH64_QEMU_MACHINE="netduino2" ;;
+	28) TMOE_AARCH64_QEMU_MACHINE="none" ;;
+	29) TMOE_AARCH64_QEMU_MACHINE="nuri" ;;
+	30) TMOE_AARCH64_QEMU_MACHINE="palmetto-bmc" ;;
+	31) TMOE_AARCH64_QEMU_MACHINE="raspi2" ;;
+	32) TMOE_AARCH64_QEMU_MACHINE="raspi3" ;;
+	33) TMOE_AARCH64_QEMU_MACHINE="realview-eb" ;;
+	34) TMOE_AARCH64_QEMU_MACHINE="realview-eb-mpcore" ;;
+	35) TMOE_AARCH64_QEMU_MACHINE="realview-pb-a8" ;;
+	36) TMOE_AARCH64_QEMU_MACHINE="realview-pbx-a9" ;;
+	37) TMOE_AARCH64_QEMU_MACHINE="romulus-bmc" ;;
+	38) TMOE_AARCH64_QEMU_MACHINE="sabrelite" ;;
+	39) TMOE_AARCH64_QEMU_MACHINE="smdkc210" ;;
+	40) TMOE_AARCH64_QEMU_MACHINE="spitz" ;;
+	41) TMOE_AARCH64_QEMU_MACHINE="sx1" ;;
+	42) TMOE_AARCH64_QEMU_MACHINE="sx1-v1" ;;
+	43) TMOE_AARCH64_QEMU_MACHINE="terrier" ;;
+	44) TMOE_AARCH64_QEMU_MACHINE="tosa" ;;
+	45) TMOE_AARCH64_QEMU_MACHINE="verdex" ;;
+	46) TMOE_AARCH64_QEMU_MACHINE="versatileab" ;;
+	47) TMOE_AARCH64_QEMU_MACHINE="versatilepb" ;;
+	48) TMOE_AARCH64_QEMU_MACHINE="vexpress-a15" ;;
+	49) TMOE_AARCH64_QEMU_MACHINE="vexpress-a9" ;;
+	50) TMOE_AARCH64_QEMU_MACHINE="virt-2.10" ;;
+	51) TMOE_AARCH64_QEMU_MACHINE="virt-2.11" ;;
+	52) TMOE_AARCH64_QEMU_MACHINE="virt-2.12" ;;
+	53) TMOE_AARCH64_QEMU_MACHINE="virt-2.6" ;;
+	54) TMOE_AARCH64_QEMU_MACHINE="virt-2.7" ;;
+	55) TMOE_AARCH64_QEMU_MACHINE="virt-2.8" ;;
+	56) TMOE_AARCH64_QEMU_MACHINE="virt-2.9" ;;
+	57) TMOE_AARCH64_QEMU_MACHINE="virt-3.0" ;;
+	58) TMOE_AARCH64_QEMU_MACHINE="virt" ;;
+	59) TMOE_AARCH64_QEMU_MACHINE="virt-3.1" ;;
+	60) TMOE_AARCH64_QEMU_MACHINE="witherspoon-bmc" ;;
+	61) TMOE_AARCH64_QEMU_MACHINE="xilinx-zynq-a9" ;;
+	62) TMOE_AARCH64_QEMU_MACHINE="xlnx-versal-virt" ;;
+	63) TMOE_AARCH64_QEMU_MACHINE="xlnx-zcu102" ;;
+	64) TMOE_AARCH64_QEMU_MACHINE="z2" ;;
+	esac
+	###############
+	sed -i "s@-machine .*@-machine ${TMOE_AARCH64_QEMU_MACHINE} \\\@" startqemu
+	echo "您已将machine修改为${TMOE_AARCH64_QEMU_MACHINE}"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+##############
+modify_qemu_aarch64_tmoe_cpu_type() {
+	cd /usr/local/bin/
+	CURRENT_VALUE=$(cat startqemu | grep '\-cpu' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	VIRTUAL_TECH=$(
+		whiptail --title "CPU" --menu "默认为cortex-a57,当前为${CURRENT_VALUE}" 0 0 0 \
+			"00" "禁用指定cpu参数" \
+			"01" "arm1026" \
+			"02" "arm1136" \
+			"03" "arm1136-r2" \
+			"04" "arm1176" \
+			"05" "arm11mpcore" \
+			"06" "arm926" \
+			"07" "arm946" \
+			"08" "cortex-a15" \
+			"09" "cortex-a53" \
+			"10" "cortex-a57" \
+			"11" "cortex-a7" \
+			"12" "cortex-a72" \
+			"13" "cortex-a8" \
+			"14" "cortex-a9" \
+			"15" "cortex-m0" \
+			"16" "cortex-m3" \
+			"17" "cortex-m33" \
+			"18" "cortex-m4" \
+			"19" "cortex-m7" \
+			"20" "cortex-r5" \
+			"21" "cortex-r5f" \
+			"22" "host" \
+			"23" "max" \
+			"24" "pxa250" \
+			"25" "pxa255" \
+			"26" "pxa260" \
+			"27" "pxa261" \
+			"28" "pxa262" \
+			"29" "pxa270-a0" \
+			"30" "pxa270-a1" \
+			"31" "pxa270" \
+			"32" "pxa270-b0" \
+			"33" "pxa270-b1" \
+			"34" "pxa270-c0" \
+			"35" "pxa270-c5" \
+			"36" "sa1100" \
+			"37" "sa1110" \
+			"38" "ti925t" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	00) disable_tmoe_qemu_cpu ;;
+	01) TMOE_AARCH64_QEMU_CPU_TYPE="arm1026" ;;
+	02) TMOE_AARCH64_QEMU_CPU_TYPE="arm1136" ;;
+	03) TMOE_AARCH64_QEMU_CPU_TYPE="arm1136-r2" ;;
+	04) TMOE_AARCH64_QEMU_CPU_TYPE="arm1176" ;;
+	05) TMOE_AARCH64_QEMU_CPU_TYPE="arm11mpcore" ;;
+	06) TMOE_AARCH64_QEMU_CPU_TYPE="arm926" ;;
+	07) TMOE_AARCH64_QEMU_CPU_TYPE="arm946" ;;
+	08) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a15" ;;
+	09) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a53" ;;
+	10) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a57" ;;
+	11) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a7" ;;
+	12) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a72" ;;
+	13) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a8" ;;
+	14) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-a9" ;;
+	15) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-m0" ;;
+	16) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-m3" ;;
+	17) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-m33" ;;
+	18) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-m4" ;;
+	19) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-m7" ;;
+	20) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-r5" ;;
+	21) TMOE_AARCH64_QEMU_CPU_TYPE="cortex-r5f" ;;
+	22) TMOE_AARCH64_QEMU_CPU_TYPE="host" ;;
+	23) TMOE_AARCH64_QEMU_CPU_TYPE="max" ;;
+	24) TMOE_AARCH64_QEMU_CPU_TYPE="pxa250" ;;
+	25) TMOE_AARCH64_QEMU_CPU_TYPE="pxa255" ;;
+	26) TMOE_AARCH64_QEMU_CPU_TYPE="pxa260" ;;
+	27) TMOE_AARCH64_QEMU_CPU_TYPE="pxa261" ;;
+	28) TMOE_AARCH64_QEMU_CPU_TYPE="pxa262" ;;
+	29) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270-a0" ;;
+	30) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270-a1" ;;
+	31) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270" ;;
+	32) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270-b0" ;;
+	33) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270-b1" ;;
+	34) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270-c0" ;;
+	35) TMOE_AARCH64_QEMU_CPU_TYPE="pxa270-c5" ;;
+	36) TMOE_AARCH64_QEMU_CPU_TYPE="sa1100" ;;
+	37) TMOE_AARCH64_QEMU_CPU_TYPE="sa1110" ;;
+	38) TMOE_AARCH64_QEMU_CPU_TYPE="ti925t" ;;
+	esac
+	###############
+	sed -i "s@-cpu .*@-cpu ${TMOE_AARCH64_QEMU_CPU_TYPE} \\\@" startqemu
+	echo "您已将cpu修改为${TMOE_AARCH64_QEMU_CPU_TYPE}"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+############
+#############
+modify_qemu_aarch64_tmoe_sound_card() {
+	cd /usr/local/bin/
+	CURRENT_VALUE=$(cat startqemu | grep '\-soundhw' | tail -n 1 | awk '{print $2}')
+	VIRTUAL_TECH=$(
+		whiptail --title "声卡型号" --menu "Please select the sound card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
+			"1" "es1370(ENSONIQ AudioPCI ES1370)" \
+			"2" "ac97(Intel 82801AA AC97)" \
+			"3" "adlib:Yamaha YM3812 (OPL2)" \
+			"4" "hda(Intel HD Audio)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) QEMU_SOUNDHW='es1370' ;;
+	2) QEMU_SOUNDHW='ac97' ;;
+	3) QEMU_SOUNDHW='adlib' ;;
+	4) QEMU_SOUNDHW='hda' ;;
+	esac
+	###############
+	#-soundhw cs4231a \
+	sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
+	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+#############
 check_qemu_install() {
 	if [ ! $(command -v qemu-system-x86_64) ]; then
 		DEPENDENCY_01='qemu'
@@ -6443,26 +6833,27 @@ creat_qemu_startup_script() {
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
 	cat >startqemu <<-'EndOFqemu'
+		#!/usr/bin/env bash
 		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 		echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
 
-			/usr/bin/qemu-system-x86_64 \
-			    -monitor stdio \
-			    -smp 4 \
-			    -soundhw cs4231a \
-			    -vga vmware \
-			    -machine accel=tcg \
-			    -m 2048 \
-			    -hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
-			    -virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
-			    -boot order=cd,menu=on \
-			    -net nic \
-			    -net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
-			    -rtc base=localtime \
-			    -vnc :2 \
-				-name "tmoe-linux-qemu"
+		/usr/bin/qemu-system-x86_64 \
+			-monitor stdio \
+			-smp 4 \
+			-soundhw cs4231a \
+			-vga vmware \
+			-machine accel=tcg \
+			-m 2048 \
+			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
+			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
+			-boot order=cd,menu=on \
+			-net nic \
+			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+			-rtc base=localtime \
+			-vnc :2 \
+			-name "tmoe-linux-qemu"
 	EndOFqemu
 	chmod +x startqemu
 	cp -pf startqemu /usr/local/bin/
@@ -6481,7 +6872,7 @@ modify_qemu_machine_accel() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) MACHINE_ACCEL=tcg ;;
 	2) MACHINE_ACCEL=kvm ;;
 	3) MACHINE_ACCEL=xen ;;
@@ -6490,7 +6881,7 @@ modify_qemu_machine_accel() {
 	sed -i "s@-machine accel=.*@-machine accel=${MACHINE_ACCEL} \\\@" startqemu
 	echo "您已将machine accel修改为${MACHINE_ACCEL}"
 	press_enter_to_return
-	start_tmoe_qemu_manager
+	${RETURN_TO_WHERE}
 }
 #############
 modify_qemnu_graphics_card() {
@@ -6512,7 +6903,7 @@ modify_qemnu_graphics_card() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) QEMU_VGA='vmware' ;;
 	2) QEMU_VGA='std' ;;
 	3) QEMU_VGA='cirrus' ;;
@@ -6527,7 +6918,7 @@ modify_qemnu_graphics_card() {
 	sed -i "s@-vga .*@-vga ${QEMU_VGA} \\\@" startqemu
 	echo "您已将graphics_card修改为${QEMU_VGA}"
 	press_enter_to_return
-	start_tmoe_qemu_manager
+	${RETURN_TO_WHERE}
 }
 ###############
 modify_qemu_exposed_ports() {
@@ -6549,7 +6940,7 @@ modify_qemu_exposed_ports() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1)
 		HOST_PORT=${HOST_PORT_01}
 		GUEST_PORT=${GUEST_PORT_01}
@@ -6622,7 +7013,7 @@ modify_qemu_host_shared_folder() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) disable_qemu_host_shared_folder ;;
 	2) modify_qemu_host_shared_folder_sdcard ;;
 	esac
@@ -6677,7 +7068,7 @@ mount_qemu_guest_shared_folder() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) configure_mount_script ;;
 	2) disable_automatic_mount_qemu_folder ;;
 	3) nano /usr/local/bin/mount-9p-filesystem ;;
@@ -6697,7 +7088,7 @@ modify_qemu_vnc_display_port() {
 	TARGET=$(whiptail --inputbox "默认显示编号为2，默认VNC服务端口为5902，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为3,则端口为5903，请输入显示编号.Please enter the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
 
 	if [ "$?" != "0" ]; then
-		start_tmoe_qemu_manager
+		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
 		echo "请输入有效的数值"
 		echo "Please enter a valid value"
@@ -6763,7 +7154,7 @@ choose_qemu_qcow2_or_img_file() {
 creat_blank_virtual_disk_image() {
 	TARGET_FILE_NAME=$(whiptail --inputbox "请输入磁盘文件名称.\nPlease enter the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
-		start_tmoe_qemu_manager
+		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET_FILE_NAME}" ]; then
 		echo "请输入有效的数值"
 		echo "Please enter a valid value"
@@ -6776,7 +7167,7 @@ creat_blank_virtual_disk_image() {
 	cd ${DISK_FILE_PATH}
 	TARGET_FILE_SIZE=$(whiptail --inputbox "请设定磁盘文件大小,例如500M,10G,1T(需包含单位)\nPlease enter the disk size." 10 50 --title "SIZE" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
-		start_tmoe_qemu_manager
+		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET_FILE_SIZE}" ]; then
 		echo "请输入有效的数值"
 		echo "Please enter a valid value"
@@ -6848,7 +7239,7 @@ modify_qemu_sound_card() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) QEMU_SOUNDHW='cs4312a' ;;
 	2) QEMU_SOUNDHW='sb16' ;;
 	3) QEMU_SOUNDHW='es1370' ;;
@@ -6863,7 +7254,7 @@ modify_qemu_sound_card() {
 	sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
 	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
 	press_enter_to_return
-	start_tmoe_qemu_manager
+	${RETURN_TO_WHERE}
 }
 #############
 qemu_snapshoots_manager() {
@@ -6871,17 +7262,676 @@ qemu_snapshoots_manager() {
 	echo "请在qemu monitor下手动管理快照"
 }
 ############
+##############
+modify_qemu_amd64_tmoe_cpu_type() {
+	cd /usr/local/bin/
+	if grep -q '\-cpu' startqemu; then
+		CURRENT_VALUE=$(cat startqemu | grep '\-cpu' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	else
+		CURRENT_VALUE='未指定'
+	fi
+	VIRTUAL_TECH=$(
+		whiptail --title "CPU" --menu "默认未指定cpu类型,当前为${CURRENT_VALUE}" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"001" "disable禁用指定cpu参数" \
+			"002" "486" \
+			"003" "Broadwell:Intel Core Processor (Broadwell)" \
+			"004" "Broadwell-IBRS:Intel Core Processor (Broadwell, IBRS)" \
+			"005" "Broadwell-noTSX:Intel Core Processor (Broadwell, no TSX)" \
+			"006" "Broadwell-noTSX-IBRS:Intel Core Processor (Broadwell, no TSX, IBRS)" \
+			"007" "Cascadelake-Server:Intel Xeon Processor (Cascadelake)" \
+			"008" "Conroe:Intel Celeron_4x0 (Conroe/Merom Class Core 2)" \
+			"009" "EPYC:AMD EPYC Processor" \
+			"010" "EPYC-IBPB:AMD EPYC Processor (with IBPB)" \
+			"011" "Haswell:Intel Core Processor (Haswell)" \
+			"012" "Haswell-IBRS:Intel Core Processor (Haswell, IBRS)" \
+			"013" "Haswell-noTSX:Intel Core Processor (Haswell, no TSX)" \
+			"014" "Haswell-noTSX-IBRS:Intel Core Processor (Haswell, no TSX, IBRS)" \
+			"015" "Icelake-Client:Intel Core Processor (Icelake)" \
+			"016" "Icelake-Server:Intel Xeon Processor (Icelake)" \
+			"017" "IvyBridge:Intel Xeon E3-12xx v2 (Ivy Bridge)" \
+			"018" "IvyBridge-IBRS:Intel Xeon E3-12xx v2 (Ivy Bridge, IBRS)" \
+			"019" "KnightsMill:Intel Xeon Phi Processor (Knights Mill)" \
+			"020" "Nehalem:Intel Core i7 9xx (Nehalem Class Core i7)" \
+			"021" "Nehalem-IBRS:Intel Core i7 9xx (Nehalem Core i7, IBRS update)" \
+			"022" "Opteron_G1:AMD Opteron 240 (Gen 1 Class Opteron)" \
+			"023" "Opteron_G2:AMD Opteron 22xx (Gen 2 Class Opteron)" \
+			"024" "Opteron_G3:AMD Opteron 23xx (Gen 3 Class Opteron)" \
+			"025" "Opteron_G4:AMD Opteron 62xx class CPU" \
+			"026" "Opteron_G5:AMD Opteron 63xx class CPU" \
+			"027" "Penryn:Intel Core 2 Duo P9xxx (Penryn Class Core 2)" \
+			"028" "SandyBridge:Intel Xeon E312xx (Sandy Bridge)" \
+			"029" "SandyBridge-IBRS:Intel Xeon E312xx (Sandy Bridge, IBRS update)" \
+			"030" "Skylake-Client:Intel Core Processor (Skylake)" \
+			"031" "Skylake-Client-IBRS:Intel Core Processor (Skylake, IBRS)" \
+			"032" "Skylake-Server:Intel Xeon Processor (Skylake)" \
+			"033" "Skylake-Server-IBRS:Intel Xeon Processor (Skylake, IBRS)" \
+			"034" "Westmere:Westmere E56xx/L56xx/X56xx (Nehalem-C)" \
+			"035" "Westmere-IBRS:Westmere E56xx/L56xx/X56xx (IBRS update)" \
+			"036" "athlon:QEMU Virtual CPU version 2.5+" \
+			"037" "core2duo:Intel(R) Core(TM)2 Duo CPU T7700@ 2.40GHz" \
+			"038" "coreduo:Genuine Intel(R) CPU T2600@2.16GHz" \
+			"039" "kvm32:Common 32-bit KVM processor" \
+			"040" "kvm64:Common KVM processor" \
+			"041" "n270:Intel(R) Atom(TM) CPU N270   @ 1.60GHz" \
+			"042" "pentium" \
+			"043" "pentium2" \
+			"044" "pentium3" \
+			"045" "phenom:AMD Phenom(tm) 9550 Quad-Core Processor" \
+			"046" "qemu32:QEMU Virtual CPU version 2.5+" \
+			"047" "qemu64:QEMU Virtual CPU version 2.5+" \
+			"048" "base:base CPU model type with no features enabled" \
+			"049" "host:KVM processor with all supported host features" \
+			"050" "max:Enables all features supported by the accelerator in the current host" \
+			"051" "3dnow" \
+			"052" "3dnowext" \
+			"053" "3dnowprefetch" \
+			"054" "abm" \
+			"055" "ace2" \
+			"056" "ace2-en" \
+			"057" "acpi" \
+			"058" "adx" \
+			"059" "aes" \
+			"060" "amd-no-ssb" \
+			"061" "amd-ssbd" \
+			"062" "apic" \
+			"063" "arat" \
+			"064" "arch-capabilities" \
+			"065" "avx" \
+			"066" "avx2" \
+			"067" "avx512-4fmaps" \
+			"068" "avx512-4vnniw" \
+			"069" "avx512-vpopcntdq" \
+			"070" "avx512bitalg" \
+			"071" "avx512bw" \
+			"072" "avx512cd" \
+			"073" "avx512dq" \
+			"074" "avx512er" \
+			"075" "avx512f" \
+			"076" "avx512ifma" \
+			"077" "avx512pf" \
+			"078" "avx512vbmi" \
+			"079" "avx512vbmi2" \
+			"080" "avx512vl" \
+			"081" "avx512vnni" \
+			"082" "bmi1" \
+			"083" "bmi2" \
+			"084" "cid" \
+			"085" "cldemote" \
+			"086" "clflush" \
+			"087" "clflushopt" \
+			"088" "clwb" \
+			"089" "cmov" \
+			"090" "cmp-legacy" \
+			"091" "cr8legacy" \
+			"092" "cx16" \
+			"093" "cx8" \
+			"094" "dca" \
+			"095" "de" \
+			"096" "decodeassists" \
+			"097" "ds" \
+			"098" "ds-cpl" \
+			"099" "dtes64" \
+			"100" "erms" \
+			"101" "est" \
+			"102" "extapic" \
+			"103" "f16c" \
+			"104" "flushbyasid" \
+			"105" "fma" \
+			"106" "fma4" \
+			"107" "fpu" \
+			"108" "fsgsbase" \
+			"109" "fxsr" \
+			"110" "fxsr-opt" \
+			"111" "gfni" \
+			"112" "hle" \
+			"113" "ht" \
+			"114" "hypervisor" \
+			"115" "ia64" \
+			"116" "ibpb" \
+			"117" "ibrs-all" \
+			"118" "ibs" \
+			"119" "intel-pt" \
+			"120" "invpcid" \
+			"121" "invtsc" \
+			"122" "kvm-asyncpf" \
+			"123" "kvm-hint-dedicated" \
+			"124" "kvm-mmu" \
+			"125" "kvm-nopiodelay" \
+			"126" "kvm-pv-eoi" \
+			"127" "kvm-pv-ipi" \
+			"128" "kvm-pv-tlb-flush" \
+			"129" "kvm-pv-unhalt" \
+			"130" "kvm-steal-time" \
+			"131" "kvmclock" \
+			"132" "kvmclock" \
+			"133" "kvmclock-stable-bit" \
+			"134" "la57" \
+			"135" "lahf-lm" \
+			"136" "lbrv" \
+			"137" "lm" \
+			"138" "lwp" \
+			"139" "mca" \
+			"140" "mce" \
+			"141" "md-clear" \
+			"142" "mds-no" \
+			"143" "misalignsse" \
+			"144" "mmx" \
+			"145" "mmxext" \
+			"146" "monitor" \
+			"147" "movbe" \
+			"148" "mpx" \
+			"149" "msr" \
+			"150" "mtrr" \
+			"151" "nodeid-msr" \
+			"152" "npt" \
+			"153" "nrip-save" \
+			"154" "nx" \
+			"155" "osvw" \
+			"156" "pae" \
+			"157" "pat" \
+			"158" "pause-filter" \
+			"159" "pbe" \
+			"160" "pcid" \
+			"161" "pclmulqdq" \
+			"162" "pcommit" \
+			"163" "pconfig" \
+			"164" "pdcm" \
+			"165" "pdpe1gb" \
+			"166" "perfctr-core" \
+			"167" "perfctr-nb" \
+			"168" "pfthreshold" \
+			"169" "pge" \
+			"170" "phe" \
+			"171" "phe-en" \
+			"172" "pku" \
+			"173" "pmm" \
+			"174" "pmm-en" \
+			"175" "pn" \
+			"176" "pni" \
+			"177" "popcnt" \
+			"178" "pschange-mc-no" \
+			"179" "pse" \
+			"180" "pse36" \
+			"181" "rdctl-no" \
+			"182" "rdpid" \
+			"183" "rdrand" \
+			"184" "rdseed" \
+			"185" "rdtscp" \
+			"186" "rsba" \
+			"187" "rtm" \
+			"188" "sep" \
+			"189" "sha-ni" \
+			"190" "skinit" \
+			"191" "skip-l1dfl-vmentry" \
+			"192" "smap" \
+			"193" "smep" \
+			"194" "smx" \
+			"195" "spec-ctrl" \
+			"196" "ss" \
+			"197" "ssb-no" \
+			"198" "ssbd" \
+			"199" "sse" \
+			"200" "sse2" \
+			"201" "sse4.1" \
+			"202" "sse4.2" \
+			"203" "sse4a" \
+			"204" "ssse3" \
+			"205" "svm" \
+			"206" "svm-lock" \
+			"207" "syscall" \
+			"208" "tbm" \
+			"209" "tce" \
+			"210" "tm" \
+			"211" "tm2" \
+			"212" "topoext" \
+			"213" "tsc" \
+			"214" "tsc-adjust" \
+			"215" "tsc-deadline" \
+			"216" "tsc-scale" \
+			"217" "umip" \
+			"218" "vaes" \
+			"219" "virt-ssbd" \
+			"220" "vmcb-clean" \
+			"221" "vme" \
+			"222" "vmx" \
+			"223" "vpclmulqdq" \
+			"224" "wbnoinvd" \
+			"225" "wdt" \
+			"226" "x2apic" \
+			"227" "xcrypt" \
+			"228" "xcrypt-en" \
+			"229" "xgetbv1" \
+			"230" "xop" \
+			"231" "xsave" \
+			"232" "xsavec" \
+			"233" "xsaveopt" \
+			"234" "xsaves" \
+			"235" "xstore" \
+			"236" "xstore-en" \
+			"237" "xtpr" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	001) disable_tmoe_qemu_cpu ;;
+	002) TMOE_AMD64_QEMU_CPU_TYPE="486" ;;
+	003) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell" ;;
+	004) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-IBRS" ;;
+	005) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-noTSX" ;;
+	006) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-noTSX-IBRS" ;;
+	007) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server" ;;
+	008) TMOE_AMD64_QEMU_CPU_TYPE="Conroe" ;;
+	009) TMOE_AMD64_QEMU_CPU_TYPE="EPYC" ;;
+	010) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-IBPB" ;;
+	011) TMOE_AMD64_QEMU_CPU_TYPE="Haswell" ;;
+	012) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-IBRS" ;;
+	013) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-noTSX" ;;
+	014) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-noTSX-IBRS" ;;
+	015) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Client" ;;
+	016) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server" ;;
+	017) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge" ;;
+	018) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge-IBRS" ;;
+	019) TMOE_AMD64_QEMU_CPU_TYPE="KnightsMill" ;;
+	020) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem" ;;
+	021) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem-IBRS" ;;
+	022) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G1" ;;
+	023) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G2" ;;
+	024) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G3" ;;
+	025) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G4" ;;
+	026) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G5" ;;
+	027) TMOE_AMD64_QEMU_CPU_TYPE="Penryn" ;;
+	028) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge" ;;
+	029) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge-IBRS" ;;
+	030) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client" ;;
+	031) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-IBRS" ;;
+	032) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server" ;;
+	033) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-IBRS" ;;
+	034) TMOE_AMD64_QEMU_CPU_TYPE="Westmere" ;;
+	035) TMOE_AMD64_QEMU_CPU_TYPE="Westmere-IBRS" ;;
+	036) TMOE_AMD64_QEMU_CPU_TYPE="athlon" ;;
+	037) TMOE_AMD64_QEMU_CPU_TYPE="core2duo" ;;
+	038) TMOE_AMD64_QEMU_CPU_TYPE="coreduo" ;;
+	039) TMOE_AMD64_QEMU_CPU_TYPE="kvm32" ;;
+	040) TMOE_AMD64_QEMU_CPU_TYPE="kvm64" ;;
+	041) TMOE_AMD64_QEMU_CPU_TYPE="n270" ;;
+	042) TMOE_AMD64_QEMU_CPU_TYPE="pentium" ;;
+	043) TMOE_AMD64_QEMU_CPU_TYPE="pentium2" ;;
+	044) TMOE_AMD64_QEMU_CPU_TYPE="pentium3" ;;
+	045) TMOE_AMD64_QEMU_CPU_TYPE="phenom" ;;
+	046) TMOE_AMD64_QEMU_CPU_TYPE="qemu32" ;;
+	047) TMOE_AMD64_QEMU_CPU_TYPE="qemu64" ;;
+	048) TMOE_AMD64_QEMU_CPU_TYPE="base" ;;
+	049) TMOE_AMD64_QEMU_CPU_TYPE="host" ;;
+	050) TMOE_AMD64_QEMU_CPU_TYPE="max" ;;
+	051) TMOE_AMD64_QEMU_CPU_TYPE="3dnow" ;;
+	052) TMOE_AMD64_QEMU_CPU_TYPE="3dnowext" ;;
+	053) TMOE_AMD64_QEMU_CPU_TYPE="3dnowprefetch" ;;
+	054) TMOE_AMD64_QEMU_CPU_TYPE="abm" ;;
+	055) TMOE_AMD64_QEMU_CPU_TYPE="ace2" ;;
+	056) TMOE_AMD64_QEMU_CPU_TYPE="ace2-en" ;;
+	057) TMOE_AMD64_QEMU_CPU_TYPE="acpi" ;;
+	058) TMOE_AMD64_QEMU_CPU_TYPE="adx" ;;
+	059) TMOE_AMD64_QEMU_CPU_TYPE="aes" ;;
+	060) TMOE_AMD64_QEMU_CPU_TYPE="amd-no-ssb" ;;
+	061) TMOE_AMD64_QEMU_CPU_TYPE="amd-ssbd" ;;
+	062) TMOE_AMD64_QEMU_CPU_TYPE="apic" ;;
+	063) TMOE_AMD64_QEMU_CPU_TYPE="arat" ;;
+	064) TMOE_AMD64_QEMU_CPU_TYPE="arch-capabilities" ;;
+	065) TMOE_AMD64_QEMU_CPU_TYPE="avx" ;;
+	066) TMOE_AMD64_QEMU_CPU_TYPE="avx2" ;;
+	067) TMOE_AMD64_QEMU_CPU_TYPE="avx512-4fmaps" ;;
+	068) TMOE_AMD64_QEMU_CPU_TYPE="avx512-4vnniw" ;;
+	069) TMOE_AMD64_QEMU_CPU_TYPE="avx512-vpopcntdq" ;;
+	070) TMOE_AMD64_QEMU_CPU_TYPE="avx512bitalg" ;;
+	071) TMOE_AMD64_QEMU_CPU_TYPE="avx512bw" ;;
+	072) TMOE_AMD64_QEMU_CPU_TYPE="avx512cd" ;;
+	073) TMOE_AMD64_QEMU_CPU_TYPE="avx512dq" ;;
+	074) TMOE_AMD64_QEMU_CPU_TYPE="avx512er" ;;
+	075) TMOE_AMD64_QEMU_CPU_TYPE="avx512f" ;;
+	076) TMOE_AMD64_QEMU_CPU_TYPE="avx512ifma" ;;
+	077) TMOE_AMD64_QEMU_CPU_TYPE="avx512pf" ;;
+	078) TMOE_AMD64_QEMU_CPU_TYPE="avx512vbmi" ;;
+	079) TMOE_AMD64_QEMU_CPU_TYPE="avx512vbmi2" ;;
+	080) TMOE_AMD64_QEMU_CPU_TYPE="avx512vl" ;;
+	081) TMOE_AMD64_QEMU_CPU_TYPE="avx512vnni" ;;
+	082) TMOE_AMD64_QEMU_CPU_TYPE="bmi1" ;;
+	083) TMOE_AMD64_QEMU_CPU_TYPE="bmi2" ;;
+	084) TMOE_AMD64_QEMU_CPU_TYPE="cid" ;;
+	085) TMOE_AMD64_QEMU_CPU_TYPE="cldemote" ;;
+	086) TMOE_AMD64_QEMU_CPU_TYPE="clflush" ;;
+	087) TMOE_AMD64_QEMU_CPU_TYPE="clflushopt" ;;
+	088) TMOE_AMD64_QEMU_CPU_TYPE="clwb" ;;
+	089) TMOE_AMD64_QEMU_CPU_TYPE="cmov" ;;
+	090) TMOE_AMD64_QEMU_CPU_TYPE="cmp-legacy" ;;
+	091) TMOE_AMD64_QEMU_CPU_TYPE="cr8legacy" ;;
+	092) TMOE_AMD64_QEMU_CPU_TYPE="cx16" ;;
+	093) TMOE_AMD64_QEMU_CPU_TYPE="cx8" ;;
+	094) TMOE_AMD64_QEMU_CPU_TYPE="dca" ;;
+	095) TMOE_AMD64_QEMU_CPU_TYPE="de" ;;
+	096) TMOE_AMD64_QEMU_CPU_TYPE="decodeassists" ;;
+	097) TMOE_AMD64_QEMU_CPU_TYPE="ds" ;;
+	098) TMOE_AMD64_QEMU_CPU_TYPE="ds-cpl" ;;
+	099) TMOE_AMD64_QEMU_CPU_TYPE="dtes64" ;;
+	100) TMOE_AMD64_QEMU_CPU_TYPE="erms" ;;
+	101) TMOE_AMD64_QEMU_CPU_TYPE="est" ;;
+	102) TMOE_AMD64_QEMU_CPU_TYPE="extapic" ;;
+	103) TMOE_AMD64_QEMU_CPU_TYPE="f16c" ;;
+	104) TMOE_AMD64_QEMU_CPU_TYPE="flushbyasid" ;;
+	105) TMOE_AMD64_QEMU_CPU_TYPE="fma" ;;
+	106) TMOE_AMD64_QEMU_CPU_TYPE="fma4" ;;
+	107) TMOE_AMD64_QEMU_CPU_TYPE="fpu" ;;
+	108) TMOE_AMD64_QEMU_CPU_TYPE="fsgsbase" ;;
+	109) TMOE_AMD64_QEMU_CPU_TYPE="fxsr" ;;
+	110) TMOE_AMD64_QEMU_CPU_TYPE="fxsr-opt" ;;
+	111) TMOE_AMD64_QEMU_CPU_TYPE="gfni" ;;
+	112) TMOE_AMD64_QEMU_CPU_TYPE="hle" ;;
+	113) TMOE_AMD64_QEMU_CPU_TYPE="ht" ;;
+	114) TMOE_AMD64_QEMU_CPU_TYPE="hypervisor" ;;
+	115) TMOE_AMD64_QEMU_CPU_TYPE="ia64" ;;
+	116) TMOE_AMD64_QEMU_CPU_TYPE="ibpb" ;;
+	117) TMOE_AMD64_QEMU_CPU_TYPE="ibrs-all" ;;
+	118) TMOE_AMD64_QEMU_CPU_TYPE="ibs" ;;
+	119) TMOE_AMD64_QEMU_CPU_TYPE="intel-pt" ;;
+	120) TMOE_AMD64_QEMU_CPU_TYPE="invpcid" ;;
+	121) TMOE_AMD64_QEMU_CPU_TYPE="invtsc" ;;
+	122) TMOE_AMD64_QEMU_CPU_TYPE="kvm-asyncpf" ;;
+	123) TMOE_AMD64_QEMU_CPU_TYPE="kvm-hint-dedicated" ;;
+	124) TMOE_AMD64_QEMU_CPU_TYPE="kvm-mmu" ;;
+	125) TMOE_AMD64_QEMU_CPU_TYPE="kvm-nopiodelay" ;;
+	126) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-eoi" ;;
+	127) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-ipi" ;;
+	128) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-tlb-flush" ;;
+	129) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-unhalt" ;;
+	130) TMOE_AMD64_QEMU_CPU_TYPE="kvm-steal-time" ;;
+	131) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock" ;;
+	132) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock" ;;
+	133) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock-stable-bit" ;;
+	134) TMOE_AMD64_QEMU_CPU_TYPE="la57" ;;
+	135) TMOE_AMD64_QEMU_CPU_TYPE="lahf-lm" ;;
+	136) TMOE_AMD64_QEMU_CPU_TYPE="lbrv" ;;
+	137) TMOE_AMD64_QEMU_CPU_TYPE="lm" ;;
+	138) TMOE_AMD64_QEMU_CPU_TYPE="lwp" ;;
+	139) TMOE_AMD64_QEMU_CPU_TYPE="mca" ;;
+	140) TMOE_AMD64_QEMU_CPU_TYPE="mce" ;;
+	141) TMOE_AMD64_QEMU_CPU_TYPE="md-clear" ;;
+	142) TMOE_AMD64_QEMU_CPU_TYPE="mds-no" ;;
+	143) TMOE_AMD64_QEMU_CPU_TYPE="misalignsse" ;;
+	144) TMOE_AMD64_QEMU_CPU_TYPE="mmx" ;;
+	145) TMOE_AMD64_QEMU_CPU_TYPE="mmxext" ;;
+	146) TMOE_AMD64_QEMU_CPU_TYPE="monitor" ;;
+	147) TMOE_AMD64_QEMU_CPU_TYPE="movbe" ;;
+	148) TMOE_AMD64_QEMU_CPU_TYPE="mpx" ;;
+	149) TMOE_AMD64_QEMU_CPU_TYPE="msr" ;;
+	150) TMOE_AMD64_QEMU_CPU_TYPE="mtrr" ;;
+	151) TMOE_AMD64_QEMU_CPU_TYPE="nodeid-msr" ;;
+	152) TMOE_AMD64_QEMU_CPU_TYPE="npt" ;;
+	153) TMOE_AMD64_QEMU_CPU_TYPE="nrip-save" ;;
+	154) TMOE_AMD64_QEMU_CPU_TYPE="nx" ;;
+	155) TMOE_AMD64_QEMU_CPU_TYPE="osvw" ;;
+	156) TMOE_AMD64_QEMU_CPU_TYPE="pae" ;;
+	157) TMOE_AMD64_QEMU_CPU_TYPE="pat" ;;
+	158) TMOE_AMD64_QEMU_CPU_TYPE="pause-filter" ;;
+	159) TMOE_AMD64_QEMU_CPU_TYPE="pbe" ;;
+	160) TMOE_AMD64_QEMU_CPU_TYPE="pcid" ;;
+	161) TMOE_AMD64_QEMU_CPU_TYPE="pclmulqdq" ;;
+	162) TMOE_AMD64_QEMU_CPU_TYPE="pcommit" ;;
+	163) TMOE_AMD64_QEMU_CPU_TYPE="pconfig" ;;
+	164) TMOE_AMD64_QEMU_CPU_TYPE="pdcm" ;;
+	165) TMOE_AMD64_QEMU_CPU_TYPE="pdpe1gb" ;;
+	166) TMOE_AMD64_QEMU_CPU_TYPE="perfctr-core" ;;
+	167) TMOE_AMD64_QEMU_CPU_TYPE="perfctr-nb" ;;
+	168) TMOE_AMD64_QEMU_CPU_TYPE="pfthreshold" ;;
+	169) TMOE_AMD64_QEMU_CPU_TYPE="pge" ;;
+	170) TMOE_AMD64_QEMU_CPU_TYPE="phe" ;;
+	171) TMOE_AMD64_QEMU_CPU_TYPE="phe-en" ;;
+	172) TMOE_AMD64_QEMU_CPU_TYPE="pku" ;;
+	173) TMOE_AMD64_QEMU_CPU_TYPE="pmm" ;;
+	174) TMOE_AMD64_QEMU_CPU_TYPE="pmm-en" ;;
+	175) TMOE_AMD64_QEMU_CPU_TYPE="pn" ;;
+	176) TMOE_AMD64_QEMU_CPU_TYPE="pni" ;;
+	177) TMOE_AMD64_QEMU_CPU_TYPE="popcnt" ;;
+	178) TMOE_AMD64_QEMU_CPU_TYPE="pschange-mc-no" ;;
+	179) TMOE_AMD64_QEMU_CPU_TYPE="pse" ;;
+	180) TMOE_AMD64_QEMU_CPU_TYPE="pse36" ;;
+	181) TMOE_AMD64_QEMU_CPU_TYPE="rdctl-no" ;;
+	182) TMOE_AMD64_QEMU_CPU_TYPE="rdpid" ;;
+	183) TMOE_AMD64_QEMU_CPU_TYPE="rdrand" ;;
+	184) TMOE_AMD64_QEMU_CPU_TYPE="rdseed" ;;
+	185) TMOE_AMD64_QEMU_CPU_TYPE="rdtscp" ;;
+	186) TMOE_AMD64_QEMU_CPU_TYPE="rsba" ;;
+	187) TMOE_AMD64_QEMU_CPU_TYPE="rtm" ;;
+	188) TMOE_AMD64_QEMU_CPU_TYPE="sep" ;;
+	189) TMOE_AMD64_QEMU_CPU_TYPE="sha-ni" ;;
+	190) TMOE_AMD64_QEMU_CPU_TYPE="skinit" ;;
+	191) TMOE_AMD64_QEMU_CPU_TYPE="skip-l1dfl-vmentry" ;;
+	192) TMOE_AMD64_QEMU_CPU_TYPE="smap" ;;
+	193) TMOE_AMD64_QEMU_CPU_TYPE="smep" ;;
+	194) TMOE_AMD64_QEMU_CPU_TYPE="smx" ;;
+	195) TMOE_AMD64_QEMU_CPU_TYPE="spec-ctrl" ;;
+	196) TMOE_AMD64_QEMU_CPU_TYPE="ss" ;;
+	197) TMOE_AMD64_QEMU_CPU_TYPE="ssb-no" ;;
+	198) TMOE_AMD64_QEMU_CPU_TYPE="ssbd" ;;
+	199) TMOE_AMD64_QEMU_CPU_TYPE="sse" ;;
+	200) TMOE_AMD64_QEMU_CPU_TYPE="sse2" ;;
+	201) TMOE_AMD64_QEMU_CPU_TYPE="sse4.1" ;;
+	202) TMOE_AMD64_QEMU_CPU_TYPE="sse4.2" ;;
+	203) TMOE_AMD64_QEMU_CPU_TYPE="sse4a" ;;
+	204) TMOE_AMD64_QEMU_CPU_TYPE="ssse3" ;;
+	205) TMOE_AMD64_QEMU_CPU_TYPE="svm" ;;
+	206) TMOE_AMD64_QEMU_CPU_TYPE="svm-lock" ;;
+	207) TMOE_AMD64_QEMU_CPU_TYPE="syscall" ;;
+	208) TMOE_AMD64_QEMU_CPU_TYPE="tbm" ;;
+	209) TMOE_AMD64_QEMU_CPU_TYPE="tce" ;;
+	210) TMOE_AMD64_QEMU_CPU_TYPE="tm" ;;
+	211) TMOE_AMD64_QEMU_CPU_TYPE="tm2" ;;
+	212) TMOE_AMD64_QEMU_CPU_TYPE="topoext" ;;
+	213) TMOE_AMD64_QEMU_CPU_TYPE="tsc" ;;
+	214) TMOE_AMD64_QEMU_CPU_TYPE="tsc-adjust" ;;
+	215) TMOE_AMD64_QEMU_CPU_TYPE="tsc-deadline" ;;
+	216) TMOE_AMD64_QEMU_CPU_TYPE="tsc-scale" ;;
+	217) TMOE_AMD64_QEMU_CPU_TYPE="umip" ;;
+	218) TMOE_AMD64_QEMU_CPU_TYPE="vaes" ;;
+	219) TMOE_AMD64_QEMU_CPU_TYPE="virt-ssbd" ;;
+	220) TMOE_AMD64_QEMU_CPU_TYPE="vmcb-clean" ;;
+	221) TMOE_AMD64_QEMU_CPU_TYPE="vme" ;;
+	222) TMOE_AMD64_QEMU_CPU_TYPE="vmx" ;;
+	223) TMOE_AMD64_QEMU_CPU_TYPE="vpclmulqdq" ;;
+	224) TMOE_AMD64_QEMU_CPU_TYPE="wbnoinvd" ;;
+	225) TMOE_AMD64_QEMU_CPU_TYPE="wdt" ;;
+	226) TMOE_AMD64_QEMU_CPU_TYPE="x2apic" ;;
+	227) TMOE_AMD64_QEMU_CPU_TYPE="xcrypt" ;;
+	228) TMOE_AMD64_QEMU_CPU_TYPE="xcrypt-en" ;;
+	229) TMOE_AMD64_QEMU_CPU_TYPE="xgetbv1" ;;
+	230) TMOE_AMD64_QEMU_CPU_TYPE="xop" ;;
+	231) TMOE_AMD64_QEMU_CPU_TYPE="xsave" ;;
+	232) TMOE_AMD64_QEMU_CPU_TYPE="xsavec" ;;
+	233) TMOE_AMD64_QEMU_CPU_TYPE="xsaveopt" ;;
+	234) TMOE_AMD64_QEMU_CPU_TYPE="xsaves" ;;
+	235) TMOE_AMD64_QEMU_CPU_TYPE="xstore" ;;
+	236) TMOE_AMD64_QEMU_CPU_TYPE="xstore-en" ;;
+	237) TMOE_AMD64_QEMU_CPU_TYPE="xtpr" ;;
+	esac
+	###############
+	sed -i '/-cpu /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -cpu tmoe_cpu_config_test \\\n/' startqemu
+	sed -i "s@-cpu tmoe_cpu_config_test@-cpu ${TMOE_AMD64_QEMU_CPU_TYPE}@" startqemu
+	echo "您已将cpu修改为${TMOE_AMD64_QEMU_CPU_TYPE}"
+	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+############
+disable_tmoe_qemu_cpu() {
+	sed -i '/-cpu /d' startqemu
+	echo "禁用完成"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+############
+modify_qemu_amd64_tmoe_machine_type() {
+	cd /usr/local/bin/
+	if grep -q '\-M ' startqemu; then
+		CURRENT_VALUE=$(cat startqemu | grep '\-M ' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	else
+		CURRENT_VALUE='未指定'
+	fi
+	VIRTUAL_TECH=$(
+		whiptail --title "MACHINE" --menu "Please select the machine type.\n默认未指定机器类型,当前为${CURRENT_VALUE}" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"00" "disable禁用指定机器类型参数" \
+			"01" "pc:Standard PC (i440FX + PIIX, 1996) (alias of pc-i440fx-3.1)" \
+			"02" "pc-i440fx-3.1:Standard PC (i440FX + PIIX, 1996) (default)" \
+			"03" "pc-i440fx-3.0:Standard PC (i440FX + PIIX, 1996)" \
+			"04" "pc-i440fx-2.9:Standard PC (i440FX + PIIX, 1996)" \
+			"05" "pc-i440fx-2.8:Standard PC (i440FX + PIIX, 1996)" \
+			"06" "pc-i440fx-2.7:Standard PC (i440FX + PIIX, 1996)" \
+			"07" "pc-i440fx-2.6:Standard PC (i440FX + PIIX, 1996)" \
+			"08" "pc-i440fx-2.5:Standard PC (i440FX + PIIX, 1996)" \
+			"09" "pc-i440fx-2.4:Standard PC (i440FX + PIIX, 1996)" \
+			"10" "pc-i440fx-2.3:Standard PC (i440FX + PIIX, 1996)" \
+			"11" "pc-i440fx-2.2:Standard PC (i440FX + PIIX, 1996)" \
+			"12" "pc-i440fx-2.12:Standard PC (i440FX + PIIX, 1996)" \
+			"13" "pc-i440fx-2.11:Standard PC (i440FX + PIIX, 1996)" \
+			"14" "pc-i440fx-2.10:Standard PC (i440FX + PIIX, 1996)" \
+			"15" "pc-i440fx-2.1:Standard PC (i440FX + PIIX, 1996)" \
+			"16" "pc-i440fx-2.0:Standard PC (i440FX + PIIX, 1996)" \
+			"17" "pc-i440fx-1.7:Standard PC (i440FX + PIIX, 1996)" \
+			"18" "pc-i440fx-1.6:Standard PC (i440FX + PIIX, 1996)" \
+			"19" "pc-i440fx-1.5:Standard PC (i440FX + PIIX, 1996)" \
+			"20" "pc-i440fx-1.4:Standard PC (i440FX + PIIX, 1996)" \
+			"21" "pc-1.3:Standard PC (i440FX + PIIX, 1996)" \
+			"22" "pc-1.2:Standard PC (i440FX + PIIX, 1996)" \
+			"23" "pc-1.1:Standard PC (i440FX + PIIX, 1996)" \
+			"24" "pc-1.0:Standard PC (i440FX + PIIX, 1996)" \
+			"25" "pc-0.15:Standard PC (i440FX + PIIX, 1996)" \
+			"26" "pc-0.14:Standard PC (i440FX + PIIX, 1996)" \
+			"27" "pc-0.13:Standard PC (i440FX + PIIX, 1996)" \
+			"28" "pc-0.12:Standard PC (i440FX + PIIX, 1996)" \
+			"29" "pc-0.11:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
+			"30" "pc-0.10:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
+			"31" "q35:Standard PC (Q35 + ICH9, 2009) (alias of pc-q35-3.1)" \
+			"32" "pc-q35-3.1:Standard PC (Q35 + ICH9, 2009)" \
+			"33" "pc-q35-3.0:Standard PC (Q35 + ICH9, 2009)" \
+			"34" "pc-q35-2.9:Standard PC (Q35 + ICH9, 2009)" \
+			"35" "pc-q35-2.8:Standard PC (Q35 + ICH9, 2009)" \
+			"36" "pc-q35-2.7:Standard PC (Q35 + ICH9, 2009)" \
+			"37" "pc-q35-2.6:Standard PC (Q35 + ICH9, 2009)" \
+			"38" "pc-q35-2.5:Standard PC (Q35 + ICH9, 2009)" \
+			"39" "pc-q35-2.4:Standard PC (Q35 + ICH9, 2009)" \
+			"40" "pc-q35-2.12:Standard PC (Q35 + ICH9, 2009)" \
+			"41" "pc-q35-2.11:Standard PC (Q35 + ICH9, 2009)" \
+			"42" "pc-q35-2.10:Standard PC (Q35 + ICH9, 2009)" \
+			"43" "isapc:ISA-only PC" \
+			"44" "none:empty machine" \
+			"45" "xenfv:Xen Fully-virtualized PC" \
+			"46" "xenpv:Xen Para-virtualized PC" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	00) disable_tmoe_qemu_machine ;;
+	01) TMOE_AMD64_QEMU_MACHINE="pc" ;;
+	02) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-3.1" ;;
+	03) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-3.0" ;;
+	04) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.9" ;;
+	05) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.8" ;;
+	06) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.7" ;;
+	07) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.6" ;;
+	08) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.5" ;;
+	09) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.4" ;;
+	10) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.3" ;;
+	11) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.2" ;;
+	12) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.12" ;;
+	13) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.11" ;;
+	14) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.10" ;;
+	15) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.1" ;;
+	16) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.0" ;;
+	17) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.7" ;;
+	18) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.6" ;;
+	19) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.5" ;;
+	20) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.4" ;;
+	21) TMOE_AMD64_QEMU_MACHINE="pc-1.3" ;;
+	22) TMOE_AMD64_QEMU_MACHINE="pc-1.2" ;;
+	23) TMOE_AMD64_QEMU_MACHINE="pc-1.1" ;;
+	24) TMOE_AMD64_QEMU_MACHINE="pc-1.0" ;;
+	25) TMOE_AMD64_QEMU_MACHINE="pc-0.15" ;;
+	26) TMOE_AMD64_QEMU_MACHINE="pc-0.14" ;;
+	27) TMOE_AMD64_QEMU_MACHINE="pc-0.13" ;;
+	28) TMOE_AMD64_QEMU_MACHINE="pc-0.12" ;;
+	29) TMOE_AMD64_QEMU_MACHINE="pc-0.11" ;;
+	30) TMOE_AMD64_QEMU_MACHINE="pc-0.10" ;;
+	31) TMOE_AMD64_QEMU_MACHINE="q35" ;;
+	32) TMOE_AMD64_QEMU_MACHINE="pc-q35-3.1" ;;
+	33) TMOE_AMD64_QEMU_MACHINE="pc-q35-3.0" ;;
+	34) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.9" ;;
+	35) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.8" ;;
+	36) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.7" ;;
+	37) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.6" ;;
+	38) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.5" ;;
+	39) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.4" ;;
+	40) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.12" ;;
+	41) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.11" ;;
+	42) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.10" ;;
+	43) TMOE_AMD64_QEMU_MACHINE="isapc" ;;
+	44) TMOE_AMD64_QEMU_MACHINE="none" ;;
+	45) TMOE_AMD64_QEMU_MACHINE="xenfv" ;;
+	46) TMOE_AMD64_QEMU_MACHINE="xenpv" ;;
+	esac
+	###############
+	sed -i '/-M /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -M tmoe_cpu_config_test \\\n/' startqemu
+	sed -i "s@-M tmoe_cpu_config_test@-M ${TMOE_AMD64_QEMU_MACHINE}@" startqemu
+	echo "您已将cpu修改为${TMOE_AMD64_QEMU_MACHINE}"
+	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+##############
+disable_tmoe_qemu_machine() {
+	sed -i '/-M /d' startqemu
+	echo "禁用完成"
+}
+################
+tmoe_qemu_x64_cpu_manager() {
+	RETURN_TO_WHERE='tmoe_qemu_x64_cpu_manager'
+	VIRTUAL_TECH=$(
+		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 16 50 7 \
+			"1" "CPU core处理器核心数" \
+			"2" "CPU type类型" \
+			"3" "machine机器类型" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) modify_qemu_cpu_cores_number ;;
+	2) modify_qemu_amd64_tmoe_cpu_type ;;
+	3) modify_qemu_amd64_tmoe_machine_type ;;
+	esac
+	###############
+	#-soundhw cs4231a \
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+#####################
 start_tmoe_qemu_manager() {
+	RETURN_TO_WHERE='start_tmoe_qemu_manager'
+	RETURN_TO_MENU='start_tmoe_qemu_manager'
+	check_qemu_install
 	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu" ]; then
+		echo "启用x86_64虚拟机将重置startqemu为x86_64的配置"
+		rm -fv "${HOME}/.config/tmoe-linux/startqemu_aarch64"
 		creat_qemu_startup_script
 	fi
 	cd /usr/local/bin/
-	check_qemu_install
-	RETURN_TO_WHERE='start_tmoe_qemu_manager'
 	VIRTUAL_TECH=$(
 		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
 			"1" "Download alpine+docker qemu img" \
-			"2" "CPU core处理器核心数" \
+			"2" "CPU管理" \
 			"3" "RAM运行内存" \
 			"4" "kvm/tcg/xen加速类型" \
 			"5" "exposed ports端口映射/转发" \
@@ -6907,7 +7957,7 @@ start_tmoe_qemu_manager() {
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
 	1) download_alpine_and_docker_x64_img_file ;;
-	2) modify_qemu_cpu_cores_number ;;
+	2) tmoe_qemu_x64_cpu_manager ;;
 	3) modify_qemu_ram_size ;;
 	4) modify_qemu_machine_accel ;;
 	5) modify_qemu_exposed_ports ;;
@@ -6929,7 +7979,7 @@ start_tmoe_qemu_manager() {
 	esac
 	###############
 	press_enter_to_return
-	start_tmoe_qemu_manager
+	${RETURN_TO_WHERE}
 }
 ##############
 delete_current_qemu_vm_disk_file() {
@@ -6981,7 +8031,7 @@ tmoe_qemu_faq() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) qemu_process_management_instructions ;;
 	2) how_to_creat_a_new_tmoe_qemu_vm ;;
 	esac
@@ -7010,7 +8060,7 @@ multi_qemu_vm_management() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") start_tmoe_qemu_manager ;;
+	0 | "") ${RETURN_TO_MENU} ;;
 	1) save_current_qemu_conf_as_a_new_script ;;
 	2) multi_vm_start_manager ;;
 	3) delete_multi_qemu_vm_conf ;;
@@ -7159,7 +8209,7 @@ modify_qemu_cpu_cores_number() {
 	TARGET=$(whiptail --inputbox "请输入CPU核心数,默认为4,当前为${CURRENT_CORES}\nPlease enter the number of CPU cores, the default is 4" 10 50 --title "CPU" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		#echo "检测到您取消了操作"
-		start_tmoe_qemu_manager
+		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
 		echo "请输入有效的数值"
 		echo "Please enter a valid value"
@@ -7174,7 +8224,7 @@ modify_qemu_ram_size() {
 	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为2048(单位M),当前为${CURRENT_VALUE}\nPlease enter the RAM size, the default is 2048" 10 53 --title "RAM" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		#echo "检测到您取消了操作"
-		start_tmoe_qemu_manager
+		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
 		echo "请输入有效的数值"
 		echo "Please enter a valid value"
@@ -7275,7 +8325,7 @@ compress_qcow2_img_file() {
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		press_enter_to_return
-		start_tmoe_qemu_manager
+		${RETURN_TO_WHERE}
 	else
 		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
