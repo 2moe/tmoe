@@ -8383,28 +8383,26 @@ download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
 	NON_DEBIAN='false'
 	cd ~
-	VIRTUAL_TECH=$(
-		whiptail --title "ISO IMAGE FILE" --menu "Which iso file do you want to download?" 16 55 6 \
-			"1" "Android x86_64(latest)" \
-			"2" "debian-iso(每周自动构建,包含non-free)" \
-			"3" "debian-qcow2(虚拟机磁盘)" \
-			"4" "ubuntu" \
-			"5" "flash iso烧录镜像文件至U盘" \
-			"6" "windows10" \
-			"7" "alpine(latest-stable)" \
-			"0" "Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
+	VIRTUAL_TECH=$(whiptail --title "IMAGE FILE" --menu "Which image file do you want to download?" 16 55 7 \
+		"1" "alpine(latest-stable)" \
+		"2" "Android x86_64(latest)" \
+		"3" "debian-iso(每周自动构建,包含non-free)" \
+		"4" "debian-qcow2(虚拟机磁盘)" \
+		"5" "ubuntu" \
+		"6" "flash iso烧录镜像文件至U盘" \
+		"7" "windows10" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) download_android_x86_file ;;
-	2) download_debian_iso_file ;;
-	3) download_debian_qcow2_file ;;
-	4) download_ubuntu_iso_file ;;
-	5) flash_iso_to_udisk ;;
-	6) download_windows_10_iso ;;
-	7) download_alpine_virtual_iso ;;
+	1) download_alpine_virtual_iso ;;
+	2) download_android_x86_file ;;
+	3) download_debian_iso_file ;;
+	4) download_debian_qcow2_file ;;
+	5) download_ubuntu_iso_file ;;
+	6) flash_iso_to_udisk ;;
+	7) download_windows_10_iso ;;
 	esac
 	###############
 	press_enter_to_return
@@ -8502,7 +8500,7 @@ which_alpine_arch() {
 download_alpine_virtual_iso() {
 	which_alpine_arch
 	WHICH_ALPINE_EDITION=$(
-		whiptail --title "alpine EDITION" --menu "请选择您需要下载的版本？Which edition do you want to install?" 16 55 6 \
+		whiptail --title "alpine EDITION" --menu "请选择您需要下载的版本？Which edition do you want to download?" 16 55 6 \
 			"1" "standard(标准版)" \
 			"2" "extended(扩展版)" \
 			"3" "virt(虚拟机版)" \
@@ -8551,7 +8549,7 @@ download_ubuntu_iso_file() {
 download_ubuntu_latest_iso_file() {
 	UBUNTU_MIRROR='tuna'
 	UBUNTU_EDITION=$(
-		whiptail --title "UBUNTU EDITION" --menu "请选择您需要下载的版本？Which edition do you want to install?" 16 55 6 \
+		whiptail --title "UBUNTU EDITION" --menu "请选择您需要下载的版本？Which edition do you want to download?" 16 55 6 \
 			"1" "ubuntu-server(自动识别架构)" \
 			"2" "ubuntu(gnome)" \
 			"3" "xubuntu(xfce)" \
