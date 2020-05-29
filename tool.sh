@@ -6462,7 +6462,6 @@ creat_qemu_aarch64_startup_script() {
 		    /usr/bin/qemu-system-aarch64 \
 		        -monitor stdio \
 		        -smp 4 \
-		        -soundhw es1370 \
 		        -cpu cortex-a57 \
 		        -machine virt \
 		        -m 2048 \
@@ -6790,16 +6789,28 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	${RETURN_TO_WHERE}
 }
 ############
+disable_tmoe_qemu_sound_card() {
+	sed -i '/-soundhw /d' startqemu
+	echo "禁用完成"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
 #############
 modify_qemu_aarch64_tmoe_sound_card() {
 	cd /usr/local/bin/
-	CURRENT_VALUE=$(cat startqemu | grep '\-soundhw' | tail -n 1 | awk '{print $2}')
+	RETURN_TO_WHERE='modify_qemu_aarch64_tmoe_sound_card'
+	if grep -q '\-soundhw ' startqemu; then
+		CURRENT_VALUE=$(cat startqemu | grep '\-soundhw ' | tail -n 1 | awk '{print $2}')
+	else
+		CURRENT_VALUE='未指定'
+	fi
 	VIRTUAL_TECH=$(
-		whiptail --title "声卡型号" --menu "Please select the sound card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
+		whiptail --title "声卡型号" --menu "Please select the sound card model.\n默认未启用,当前为${CURRENT_VALUE}" 16 50 7 \
 			"1" "es1370(ENSONIQ AudioPCI ES1370)" \
 			"2" "ac97(Intel 82801AA AC97)" \
 			"3" "adlib:Yamaha YM3812 (OPL2)" \
 			"4" "hda(Intel HD Audio)" \
+			"5" "disable禁用声卡" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6810,11 +6821,16 @@ modify_qemu_aarch64_tmoe_sound_card() {
 	2) QEMU_SOUNDHW='ac97' ;;
 	3) QEMU_SOUNDHW='adlib' ;;
 	4) QEMU_SOUNDHW='hda' ;;
+	5) disable_tmoe_qemu_sound_card ;;
 	esac
 	###############
 	#-soundhw cs4231a \
-	sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
+	#sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
+	sed -i '/-soundhw /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -soundhw tmoe_cpu_config_test \\\n/' startqemu
+	sed -i "s@-soundhw tmoe_cpu_config_test@-soundhw ${QEMU_SOUNDHW}@" startqemu
 	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
+	echo "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -7179,6 +7195,9 @@ creat_blank_virtual_disk_image() {
 	stat ${TARGET_FILE_NAME}
 	qemu-img info ${TARGET_FILE_NAME}
 	ls -lh ${DISK_FILE_PATH}/${TARGET_FILE_NAME}
+	echo "是否需要将其设置为默认磁盘？"
+	do_you_want_to_continue
+	sed -i "s@-hda .*@-hda ${TMOE_FILE_ABSOLUTE_PATH} \\\@" /usr/local/binstartqemu
 }
 ################
 #-spice port=5931,image-compression=quic,renderer=cairo+oglpbuf+oglpixmap,disable-ticketing \
@@ -7220,8 +7239,13 @@ enable_qemnu_win2k_hack() {
 }
 ##############
 modify_qemu_sound_card() {
+	RETURN_TO_WHERE='modify_qemu_sound_card'
 	cd /usr/local/bin/
-	CURRENT_VALUE=$(cat startqemu | grep '\-soundhw' | tail -n 1 | awk '{print $2}')
+	if grep -q '\-soundhw ' startqemu; then
+		CURRENT_VALUE=$(cat startqemu | grep '\-soundhw ' | tail -n 1 | awk '{print $2}')
+	else
+		CURRENT_VALUE='未指定'
+	fi
 	VIRTUAL_TECH=$(
 		whiptail --title "声卡型号" --menu "Please select the sound card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
 			"1" "cs4312a" \
@@ -7232,6 +7256,7 @@ modify_qemu_sound_card() {
 			"6" "gus(Gravis Ultrasound GF1)" \
 			"7" "hda(Intel HD Audio)" \
 			"8" "pcspk(PC speaker)" \
+			"9" "disable禁用声卡" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -7246,6 +7271,7 @@ modify_qemu_sound_card() {
 	6) QEMU_SOUNDHW='gus' ;;
 	7) QEMU_SOUNDHW='hda' ;;
 	8) QEMU_SOUNDHW='pcspk' ;;
+	9) disable_tmoe_qemu_sound_card ;;
 	esac
 	###############
 	#-soundhw cs4231a \
