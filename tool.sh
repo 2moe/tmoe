@@ -6494,7 +6494,7 @@ start_tmoe_qemu_aarch64_manager() {
 	VIRTUAL_TECH=$(
 		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
 			"1" "CPU type类型" \
-			"2" "CPU core处理器核心数" \
+			"2" "CPU cores处理器核心数" \
 			"3" "RAM运行内存" \
 			"4" "machine机器型号" \
 			"5" "exposed ports端口映射/转发" \
@@ -6530,7 +6530,7 @@ start_tmoe_qemu_aarch64_manager() {
 	11) choose_qemu_qcow2_or_img_file ;;
 	12) tmoe_qemu_faq ;;
 	13) multi_qemu_vm_management ;;
-	14) modify_qemu_network_model_management ;;
+	14) modify_qemu_tmoe_network_card ;;
 	15) creat_blank_virtual_disk_image ;;
 	16) creat_qemu_startup_script ;;
 	17) modify_qemu_aarch64_tmoe_sound_card ;;
@@ -6541,9 +6541,89 @@ start_tmoe_qemu_aarch64_manager() {
 	${RETURN_TO_WHERE}
 }
 #############
-modify_qemu_network_model_management() {
-	echo "Sorry,本功能正在开发中."
-	echo "请手动修改配置文件"
+switch_tmoe_qemu_network_card_to_default() {
+	sed -i 's/-net nic.*/-net nic \\/' startqemu
+	echo "已经切换为默认网卡"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+##########
+modify_qemu_tmoe_network_card() {
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='modify_qemu_tmoe_network_card'
+	if grep -q '\-net nic,model' startqemu; then
+		CURRENT_VALUE=$(cat startqemu | grep '\-net nic,model' | tail -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+	else
+		CURRENT_VALUE='默认网卡'
+	fi
+	VIRTUAL_TECH=$(
+		whiptail --title "网卡型号" --menu "Please select the network card model.\n当前为${CURRENT_VALUE}" 16 50 7 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"00" "default使用默认网卡" \
+			"01" "e1000" \
+			"02" "e1000-82544gc" \
+			"03" "e1000-82545em" \
+			"04" "e1000e" \
+			"05" "rtl8139" \
+			"06" "virtio-net-pci" \
+			"07" "i82550" \
+			"08" "i82551" \
+			"09" "i82557a" \
+			"10" "i82557b" \
+			"11" "i82557c" \
+			"12" "i82558a" \
+			"13" "i82558b" \
+			"14" "i82559a" \
+			"15" "i82559b" \
+			"16" "i82559er" \
+			"17" "i82562" \
+			"18" "i82801" \
+			"19" "ne2k_pci" \
+			"20" "ne2k_isa" \
+			"21" "pcnet" \
+			"22" "smc91c111" \
+			"23" "lance" \
+			"24" "mcf_fec" \
+			"25" "vmxnet3" \
+			"26" "rocker" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	00) switch_tmoe_qemu_network_card_to_default ;;
+	01) TMOE_QEMU_NETWORK_CARD="e1000" ;;
+	02) TMOE_QEMU_NETWORK_CARD="e1000-82544gc" ;;
+	03) TMOE_QEMU_NETWORK_CARD="e1000-82545em" ;;
+	04) TMOE_QEMU_NETWORK_CARD="e1000e" ;;
+	05) TMOE_QEMU_NETWORK_CARD="rtl8139" ;;
+	06) TMOE_QEMU_NETWORK_CARD="virtio-net-pci" ;;
+	07) TMOE_QEMU_NETWORK_CARD="i82550" ;;
+	08) TMOE_QEMU_NETWORK_CARD="i82551" ;;
+	09) TMOE_QEMU_NETWORK_CARD="i82557a" ;;
+	10) TMOE_QEMU_NETWORK_CARD="i82557b" ;;
+	11) TMOE_QEMU_NETWORK_CARD="i82557c" ;;
+	12) TMOE_QEMU_NETWORK_CARD="i82558a" ;;
+	13) TMOE_QEMU_NETWORK_CARD="i82558b" ;;
+	14) TMOE_QEMU_NETWORK_CARD="i82559a" ;;
+	15) TMOE_QEMU_NETWORK_CARD="i82559b" ;;
+	16) TMOE_QEMU_NETWORK_CARD="i82559er" ;;
+	17) TMOE_QEMU_NETWORK_CARD="i82562" ;;
+	18) TMOE_QEMU_NETWORK_CARD="i82801" ;;
+	19) TMOE_QEMU_NETWORK_CARD="ne2k_pci" ;;
+	20) TMOE_QEMU_NETWORK_CARD="ne2k_isa" ;;
+	21) TMOE_QEMU_NETWORK_CARD="pcnet" ;;
+	22) TMOE_QEMU_NETWORK_CARD="smc91c111" ;;
+	23) TMOE_QEMU_NETWORK_CARD="lance" ;;
+	24) TMOE_QEMU_NETWORK_CARD="mcf_fec" ;;
+	25) TMOE_QEMU_NETWORK_CARD="vmxnet3" ;;
+	26) TMOE_QEMU_NETWORK_CARD="rocker" ;;
+	esac
+	###############
+	sed -i "s/-net nic.*/-net nic,model=${TMOE_QEMU_NETWORK_CARD} \\\/" startqemu
+	echo "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
 }
 ###########
 modify_qemu_aarch64_tmoe_machine_model() {
@@ -7923,7 +8003,7 @@ tmoe_qemu_x64_cpu_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_x64_cpu_manager'
 	VIRTUAL_TECH=$(
 		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 16 50 7 \
-			"1" "CPU core处理器核心数" \
+			"1" "CPU cores处理器核心数" \
 			"2" "CPU type类型" \
 			"3" "machine机器类型" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -7972,8 +8052,9 @@ start_tmoe_qemu_manager() {
 			"16" "restore to default恢复到默认" \
 			"17" "sound card声卡" \
 			"18" "Graphics card/VGA(显卡/显示器)" \
-			"19" "spice远程桌面" \
-			"20" "windows2000 hack" \
+			"19" "network card网卡" \
+			"20" "spice远程桌面" \
+			"21" "windows2000 hack" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -7998,8 +8079,9 @@ start_tmoe_qemu_manager() {
 	16) creat_qemu_startup_script ;;
 	17) modify_qemu_sound_card ;;
 	18) modify_qemnu_graphics_card ;;
-	19) enable_qemnu_spice_remote ;;
-	20) enable_qemnu_win2k_hack ;;
+	19) modify_qemu_tmoe_network_card ;;
+	20) enable_qemnu_spice_remote ;;
+	21) enable_qemnu_win2k_hack ;;
 	esac
 	###############
 	press_enter_to_return
