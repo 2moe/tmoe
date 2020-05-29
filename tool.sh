@@ -8386,11 +8386,12 @@ download_virtual_machine_iso_file() {
 	VIRTUAL_TECH=$(
 		whiptail --title "ISO IMAGE FILE" --menu "Which iso file do you want to download?" 16 55 6 \
 			"1" "Android x86_64(latest)" \
-			"2" "debian(每周自动构建,包含non-free)" \
-			"3" "ubuntu" \
-			"4" "flash iso烧录镜像文件至U盘" \
-			"5" "windows10" \
-			"6" "alpine(latest-stable)" \
+			"2" "debian-iso(每周自动构建,包含non-free)" \
+			"3" "debian-qcow2(虚拟机磁盘)" \
+			"4" "ubuntu" \
+			"5" "flash iso烧录镜像文件至U盘" \
+			"6" "windows10" \
+			"7" "alpine(latest-stable)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8399,10 +8400,11 @@ download_virtual_machine_iso_file() {
 	0 | "") install_container_and_virtual_machine ;;
 	1) download_android_x86_file ;;
 	2) download_debian_iso_file ;;
-	3) download_ubuntu_iso_file ;;
-	4) flash_iso_to_udisk ;;
-	5) download_windows_10_iso ;;
-	6) download_alpine_virtual_iso ;;
+	3) download_debian_qcow2_file ;;
+	4) download_ubuntu_iso_file ;;
+	5) flash_iso_to_udisk ;;
+	6) download_windows_10_iso ;;
+	7) download_alpine_virtual_iso ;;
 	esac
 	###############
 	press_enter_to_return
@@ -8645,6 +8647,25 @@ download_android_x86_file() {
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
 }
 ################
+download_debian_qcow2_file() {
+	if (whiptail --title "architecture" --yes-button "x64" --no-button 'arm64' --yesno "您想要下载哪个架构的磁盘镜像文件？" 9 50); then
+		GREP_ARCH='amd64'
+	else
+		GREP_ARCH='arm64'
+	fi
+	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	mkdir -p ${DOWNLOAD_PATH}
+	cd ${DOWNLOAD_PATH}
+	QCOW2_REPO='https://mirrors.ustc.edu.cn/debian-cdimage/openstack/current/'
+	THE_LATEST_FILE_VERSION=$(curl -L ${QCOW2_REPO} | grep "${GREP_AECH}" | grep qcow2 | grep -v '.index' | cut -d '=' -f 2 | cut -d '"' -f 2 | tail -n 1)
+	THE_LATEST_ISO_LINK="${QCOW2_REPO}${THE_LATEST_FILE_VERSION}"
+	aria2c_download_file
+	stat ${THE_LATEST_FILE_VERSION}
+	qemu-img info ${THE_LATEST_FILE_VERSION}
+	ls -lh ${DOWNLOAD_PATH}/${THE_LATEST_FILE_VERSION}
+	echo "下载完成"
+}
+###################
 download_debian_iso_file() {
 	DEBIAN_FREE='unkown'
 	DEBIAN_ARCH=$(
@@ -8737,10 +8758,11 @@ download_debian_nonfree_iso() {
 }
 ###############
 download_debian_weekly_builds_iso() {
-	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-xfce-CD-1.iso"
+	#https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso
+	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-netinst.iso"
 	echo ${THE_LATEST_ISO_LINK}
 	cd ~
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-xfce-CD-1.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
 }
 ##################
 download_debian_free_live_iso() {
