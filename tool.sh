@@ -6462,7 +6462,7 @@ creat_qemu_aarch64_startup_script() {
 		    /usr/bin/qemu-system-aarch64 \
 		        -monitor stdio \
 		        -smp 4 \
-		        -cpu cortex-a57 \
+		        -cpu cortex-a72 \
 		        -machine virt \
 		        -m 2048 \
 		        -hda /root/sd/Download/alpine_aarch64.qcow2 \
@@ -6697,7 +6697,7 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	cd /usr/local/bin/
 	CURRENT_VALUE=$(cat startqemu | grep '\-cpu' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "默认为cortex-a57,当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "CPU" --menu "默认为cortex-a72,当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
 			"01" "arm1026" \
 			"02" "arm1136" \
@@ -7124,14 +7124,13 @@ modify_qemu_vnc_display_port() {
 choose_qemu_iso_file() {
 	FILE_EXT_01='iso'
 	FILE_EXT_02='img'
-	START_DIR="${HOME}"
 	if grep -q '\--cdrom' startqemu; then
 		CURRENT_QEMU_ISO=$(cat startqemu | grep '\--cdrom' | tail -n 1 | awk '{print $2}')
 		IMPORTANT_TIPS="您当前已加载的iso文件为${CURRENT_QEMU_ISO}"
 	else
 		IMPORTANT_TIPS="检测到您当前没有加载iso"
 	fi
-
+	where_is_start_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
