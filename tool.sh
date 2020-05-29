@@ -6552,6 +6552,7 @@ modify_qemu_aarch64_tmoe_machine_model() {
 	CURRENT_VALUE=$(cat startqemu | grep '\-machine' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
 		whiptail --title "机器型号" --menu "Please select the machine model.\n默认为virt,当前为${CURRENT_VALUE}" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
 			"01" "akita:Sharp SL-C1000 (Akita) PDA (PXA270)" \
 			"02" "ast2500-evb:Aspeed AST2500 EVB (ARM1176)" \
 			"03" "borzoi:Sharp SL-C3100 (Borzoi) PDA (PXA270)" \
@@ -6616,7 +6617,6 @@ modify_qemu_aarch64_tmoe_machine_model() {
 			"62" "xlnx-versal-virt:Xilinx Versal Virtual development board" \
 			"63" "xlnx-zcu102:Xilinx ZynqMP ZCU102 board with 4xA53s and 2xR5Fs" \
 			"64" "z2:Zipit Z2 (PXA27x)" \
-			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -6699,7 +6699,7 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	CURRENT_VALUE=$(cat startqemu | grep '\-cpu' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
 		whiptail --title "CPU" --menu "默认为cortex-a57,当前为${CURRENT_VALUE}" 0 0 0 \
-			"00" "禁用指定cpu参数" \
+			"0" "Return to previous menu 返回上级菜单" \
 			"01" "arm1026" \
 			"02" "arm1136" \
 			"03" "arm1136-r2" \
@@ -6738,13 +6738,12 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 			"36" "sa1100" \
 			"37" "sa1110" \
 			"38" "ti925t" \
-			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
+	#00) disable_tmoe_qemu_cpu ;;F
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
-	00) disable_tmoe_qemu_cpu ;;
 	01) TMOE_AARCH64_QEMU_CPU_TYPE="arm1026" ;;
 	02) TMOE_AARCH64_QEMU_CPU_TYPE="arm1136" ;;
 	03) TMOE_AARCH64_QEMU_CPU_TYPE="arm1136-r2" ;;
@@ -7112,7 +7111,7 @@ choose_qemu_iso_file() {
 	else
 		IMPORTANT_TIPS="检测到您当前没有加载iso"
 	fi
-	tmoe_file_manager
+
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
@@ -7131,14 +7130,13 @@ choose_qemu_iso_file() {
 choose_qemu_qcow2_or_img_file() {
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='img'
-	START_DIR="${HOME}"
 	if grep -q '\-hda' startqemu; then
 		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hda' | tail -n 1 | awk '{print $2}')
 		IMPORTANT_TIPS="您当前已加载的虚拟磁盘为${CURRENT_QEMU_ISO}"
 	else
 		IMPORTANT_TIPS="检测到您当前没有加载虚拟磁盘"
 	fi
-	tmoe_file_manager
+	where_is_start_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
