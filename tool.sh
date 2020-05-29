@@ -7200,8 +7200,9 @@ creat_blank_virtual_disk_image() {
 	qemu-img info ${TARGET_FILE_NAME}
 	ls -lh ${DISK_FILE_PATH}/${TARGET_FILE_NAME}
 	echo "是否需要将其设置为默认磁盘？"
+	echo "Do you need to set it as the default disk?"
 	do_you_want_to_continue
-	sed -i "s@-hda .*@-hda ${TMOE_FILE_ABSOLUTE_PATH} \\\@" /usr/local/bin/startqemu
+	sed -i "s@-hda .*@-hda ${DISK_FILE_PATH}/${TARGET_FILE_NAME} \\\@" /usr/local/bin/startqemu
 }
 ################
 #-spice port=5931,image-compression=quic,renderer=cairo+oglpbuf+oglpixmap,disable-ticketing \
