@@ -6497,7 +6497,7 @@ modify_qemnu_graphics_card() {
 	cd /usr/local/bin/
 	CURRENT_VALUE=$(cat startqemu | grep '\-vga' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
-		whiptail --title "显卡型号" --menu "Please select the graphics card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
+		whiptail --title "显卡/显示器型号" --menu "Please select the graphics card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
 			"1" "vmware(VMWare SVGA)" \
 			"2" "std(standard VGA,vesa2.0)" \
 			"3" "cirrus clgd5446" \
@@ -6891,13 +6891,13 @@ start_tmoe_qemu_manager() {
 			"9" "edit script manually手动修改配置脚本" \
 			"10" "iso选择启动镜像" \
 			"11" "disk选择启动磁盘" \
-			"12" "process进程管理说明" \
+			"12" "FAQ常见问题" \
 			"13" "Multi-VM多虚拟机管理" \
 			"14" "snapshoots快照管理" \
 			"15" "creat disk创建(空白)虚拟磁盘" \
 			"16" "restore to default恢复到默认" \
 			"17" "sound card声卡" \
-			"18" "Graphics card显卡" \
+			"18" "Graphics card/VGA(显卡/显示器)" \
 			"19" "spice远程桌面" \
 			"20" "windows2000 hack" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -6917,7 +6917,7 @@ start_tmoe_qemu_manager() {
 	9) nano startqemu ;;
 	10) choose_qemu_iso_file ;;
 	11) choose_qemu_qcow2_or_img_file ;;
-	12) qemu_process_management_instructions ;;
+	12) tmoe_qemu_faq ;;
 	13) multi_qemu_vm_management ;;
 	14) qemu_snapshoots_manager ;;
 	15) creat_blank_virtual_disk_image ;;
@@ -6952,6 +6952,44 @@ delete_current_qemu_vm_iso_file() {
 	rm -fv ${QEMU_FILE}
 }
 ###############
+how_to_creat_a_new_tmoe_qemu_vm() {
+	cat <<-'EOF'
+		   1.下载iso镜像文件 Download a iso file.
+		   若虚拟磁盘内已经安装了系统，则可跳过此步。
+		        
+			2.新建一个虚拟磁盘
+			Creat a vitual disk
+
+			3.选择启动的iso
+			choose iso
+
+			4.选择启动磁盘
+
+			5.修改相关参数
+
+			6.输startqemu
+	EOF
+}
+tmoe_qemu_faq() {
+	RETURN_TO_WHERE='tmoe_qemu_faq'
+	VIRTUAL_TECH=$(
+		whiptail --title "FAQ(よくある質問)" --menu "您有哪些疑问？\nWhat questions do you have?" 13 55 3 \
+			"1" "process进程管理说明" \
+			"2" "creat a new vm如何新建虚拟机" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") start_tmoe_qemu_manager ;;
+	1) qemu_process_management_instructions ;;
+	2) how_to_creat_a_new_tmoe_qemu_vm ;;
+	esac
+	###############
+	press_enter_to_return
+	tmoe_qemu_faq
+}
+################
 multi_qemu_vm_management() {
 	SELECTION=""
 	TMOE_QEMU_SCRIPT_FILE_PATH='/usr/local/bin/.tmoe-linux-qemu'
