@@ -6796,6 +6796,16 @@ disable_tmoe_qemu_sound_card() {
 	${RETURN_TO_WHERE}
 }
 #############
+tmoe_modify_qemu_sound_card() {
+	sed -i '/-soundhw /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -soundhw tmoe_cpu_config_test \\\n/' startqemu
+	sed -i "s@-soundhw tmoe_cpu_config_test@-soundhw ${QEMU_SOUNDHW}@" startqemu
+	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
+	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+###########
 modify_qemu_aarch64_tmoe_sound_card() {
 	cd /usr/local/bin/
 	RETURN_TO_WHERE='modify_qemu_aarch64_tmoe_sound_card'
@@ -6826,13 +6836,7 @@ modify_qemu_aarch64_tmoe_sound_card() {
 	###############
 	#-soundhw cs4231a \
 	#sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
-	sed -i '/-soundhw /d' startqemu
-	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -soundhw tmoe_cpu_config_test \\\n/' startqemu
-	sed -i "s@-soundhw tmoe_cpu_config_test@-soundhw ${QEMU_SOUNDHW}@" startqemu
-	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
-	echo "修改完成，将在下次启动qemu虚拟机时生效"
-	press_enter_to_return
-	${RETURN_TO_WHERE}
+	tmoe_modify_qemu_sound_card
 }
 #############
 check_qemu_install() {
@@ -7274,11 +7278,7 @@ modify_qemu_sound_card() {
 	9) disable_tmoe_qemu_sound_card ;;
 	esac
 	###############
-	#-soundhw cs4231a \
-	sed -i "s@-soundhw .*@-soundhw ${QEMU_SOUNDHW} \\\@" startqemu
-	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
-	press_enter_to_return
-	${RETURN_TO_WHERE}
+	tmoe_modify_qemu_sound_card
 }
 #############
 qemu_snapshoots_manager() {
