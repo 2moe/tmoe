@@ -6589,10 +6589,10 @@ modify_qemu_tmoe_network_card() {
 		whiptail --title "网卡型号" --menu "Please select the network card model.\n当前为${CURRENT_VALUE}" 16 50 7 \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "default使用默认网卡" \
-			"01" "e1000" \
-			"02" "e1000-82544gc" \
+			"01" "e1000:alias e1000-82540em" \
+			"02" "e1000-82544gc:Intel Gigabit Ethernet" \
 			"03" "e1000-82545em" \
-			"04" "e1000e" \
+			"04" "e1000e:Intel 82574L GbE Controller" \
 			"05" "rtl8139" \
 			"06" "virtio-net-pci" \
 			"07" "i82550" \
@@ -6930,6 +6930,7 @@ modify_qemu_aarch64_tmoe_sound_card() {
 			"3" "adlib:Yamaha YM3812 (OPL2)" \
 			"4" "hda(Intel HD Audio)" \
 			"5" "disable禁用声卡" \
+			"6" "all启用所有" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6941,6 +6942,7 @@ modify_qemu_aarch64_tmoe_sound_card() {
 	3) QEMU_SOUNDHW='adlib' ;;
 	4) QEMU_SOUNDHW='hda' ;;
 	5) disable_tmoe_qemu_sound_card ;;
+	6) QEMU_SOUNDHW='all' ;;
 	esac
 	###############
 	#-soundhw cs4231a \
@@ -7386,6 +7388,7 @@ modify_qemu_sound_card() {
 			"7" "hda(Intel HD Audio)" \
 			"8" "pcspk(PC speaker)" \
 			"9" "disable禁用声卡" \
+			"10" "all启用所有" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -7401,6 +7404,7 @@ modify_qemu_sound_card() {
 	7) QEMU_SOUNDHW='hda' ;;
 	8) QEMU_SOUNDHW='pcspk' ;;
 	9) disable_tmoe_qemu_sound_card ;;
+	10) QEMU_SOUNDHW='all' ;;
 	esac
 	###############
 	tmoe_modify_qemu_sound_card
