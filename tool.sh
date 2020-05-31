@@ -8886,6 +8886,13 @@ download_tmoe_iso_file_again() {
 	qemu-img info ${ISO_FILE_NAME}
 }
 ################
+download_win10_2004_x64_iso() {
+	ISO_FILE_NAME='win10_2004_x64_tmoe.iso'
+	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
+	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	download_windows_tmoe_iso_model
+}
+#############################
 download_win10_19041_arm64_iso() {
 	ISO_FILE_NAME='win10_2004_arm64_tmoe.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
@@ -8912,9 +8919,10 @@ download_windows_tmoe_iso_model() {
 download_windows_10_iso() {
 	RETURN_TO_WHERE='download_windows_10_iso'
 	VIRTUAL_TECH=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
-		"1" "win10_2004_x64" \
+		"1" "win10_2004_x64(专业+企业)" \
 		"2" "win10_2004_arm64" \
-		"3" "other" \
+		"3" "win10_2004_arm64(多合一版)" \
+		"4" "other" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
@@ -8922,7 +8930,8 @@ download_windows_10_iso() {
 	0 | "") install_container_and_virtual_machine ;;
 	1) download_win10_19041_x64_iso ;;
 	2) download_win10_19041_arm64_iso ;;
-	3)
+	3) download_win10_2004_x64_iso ;;
+	4)
 		cat <<-'EOF'
 			如需下载其他版本，请前往microsoft官网
 			https://www.microsoft.com/zh-cn/software-download/windows10ISO
