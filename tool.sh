@@ -6478,7 +6478,6 @@ creat_qemu_aarch64_startup_script() {
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
 			-vnc :2 \
 			-usb \
-			-device usb-tablet \
 			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
 			-name "tmoe-linux-aarch64-qemu"
 	EndOFqemu
@@ -8792,7 +8791,9 @@ compress_qcow2_img_file() {
 download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
 	NON_DEBIAN='false'
-	cd ~
+	DOWNLOAD_PATH="${HOME}/sd/Download"
+	mkdir -p ${DOWNLOAD_PATH}
+	cd ${DOWNLOAD_PATH}
 	VIRTUAL_TECH=$(whiptail --title "IMAGE FILE" --menu "Which image file do you want to download?" 16 55 7 \
 		"1" "alpine(latest-stable)" \
 		"2" "Android x86_64(latest)" \
@@ -8910,8 +8911,6 @@ download_windows_tmoe_iso_model() {
 #########
 download_windows_10_iso() {
 	RETURN_TO_WHERE='download_windows_10_iso'
-	NON_DEBIAN='false'
-	cd ~
 	VIRTUAL_TECH=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
 		"1" "win10_2004_x64" \
 		"2" "win10_2004_arm64" \
@@ -9088,7 +9087,6 @@ download_android_x86_file() {
 	fi
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
 	echo ${THE_LATEST_ISO_LINK}
-	cd ~
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
 }
 ################
@@ -9206,21 +9204,18 @@ download_debian_weekly_builds_iso() {
 	#https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-netinst.iso"
 	echo ${THE_LATEST_ISO_LINK}
-	cd ~
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
 }
 ##################
 download_debian_free_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso"
 	echo ${THE_LATEST_ISO_LINK}
-	cd ~
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
 }
 ############
 download_debian_nonfree_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}%2Bnonfree.iso"
 	echo ${THE_LATEST_ISO_LINK}
-	cd ~
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
 }
 #####################
