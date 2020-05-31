@@ -8921,7 +8921,7 @@ download_windows_10_iso() {
 	VIRTUAL_TECH=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
 		"1" "win10_2004_x64(专业+企业)" \
 		"2" "win10_2004_arm64" \
-		"3" "win10_2004_arm64(多合一版)" \
+		"3" "win10_2004_x64(多合一版)" \
 		"4" "other" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
