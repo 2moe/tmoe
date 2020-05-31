@@ -6477,6 +6477,8 @@ creat_qemu_aarch64_startup_script() {
 			-rtc base=localtime \
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
 			-vnc :2 \
+			-usb
+			-device usb-mouse \
 			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
 			-name "tmoe-linux-aarch64-qemu"
 	EndOFqemu
@@ -6984,6 +6986,8 @@ creat_qemu_startup_script() {
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-vnc :2 \
+			-usb
+			-device usb-mouse \
 			-name "tmoe-linux-qemu"
 	EndOFqemu
 	chmod +x startqemu
@@ -8357,6 +8361,11 @@ choose_qemu_bios_or_uefi_file() {
 		DEPENDENCY_02='qemu-efi-aarch64'
 		beta_features_quick_install
 	fi
+	if [ ! -e "/usr/share/ovmf/OVMF.fd" ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='ovmf'
+		beta_features_quick_install
+	fi
 	cd /usr/local/bin/
 	RETURN_TO_WHERE='choose_qemu_bios_or_uefi_file'
 	if grep -q '\-bios ' startqemu; then
@@ -8378,7 +8387,10 @@ choose_qemu_bios_or_uefi_file() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) restore_to_default_qemu_bios ;;
 	2) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/qemu-efi-aarch64/QEMU_EFI.fd' ;;
-	3) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd' ;;
+	3)
+		echo "请将显卡修改为qxl或std"
+		TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd'
+		;;
 	4) tmoe_choose_a_qemu_bios_file ;;
 	esac
 	###############
