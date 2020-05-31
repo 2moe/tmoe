@@ -6477,7 +6477,7 @@ creat_qemu_aarch64_startup_script() {
 			-rtc base=localtime \
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
 			-vnc :2 \
-			-usb
+			-usb \
 			-device usb-tablet \
 			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
 			-name "tmoe-linux-aarch64-qemu"
@@ -6986,7 +6986,7 @@ creat_qemu_startup_script() {
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-vnc :2 \
-			-usb
+			-usb \
 			-device usb-tablet \
 			-name "tmoe-linux-qemu"
 	EndOFqemu
