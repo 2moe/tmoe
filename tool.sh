@@ -6467,6 +6467,7 @@ creat_qemu_aarch64_startup_script() {
 			-cpu cortex-a72 \
 			-machine virt \
 			--accel tcg \
+			-vga std \
 			-m 2048 \
 			-hda /root/sd/Download/alpine_aarch64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
@@ -6489,7 +6490,7 @@ tmoe_qemu_aarch64_cpu_manager() {
 		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 5 \
 			"1" "CPU cores处理器核心数" \
 			"2" "cpu model/type(型号/类型)" \
-			"3" "cpu multithreading多线程" \
+			"3" "multithreading多线程" \
 			"4" "machine机器类型" \
 			"5" "kvm/tcg/xen加速类型" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -6973,7 +6974,7 @@ creat_qemu_startup_script() {
 			-monitor stdio \
 			-smp 4 \
 			-soundhw cs4231a \
-			-vga vmware \
+			-vga std \
 			--accel tcg \
 			-m 2048 \
 			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
@@ -7034,7 +7035,7 @@ modify_qemnu_graphics_card() {
 	cd /usr/local/bin/
 	CURRENT_VALUE=$(cat startqemu | grep '\-vga' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
-		whiptail --title "显卡/显示器型号" --menu "Please select the graphics card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
+		whiptail --title "显卡/显示器型号" --menu "Please select the graphics card model.\n默认为std,当前为${CURRENT_VALUE}" 16 50 7 \
 			"1" "vmware(VMWare SVGA)" \
 			"2" "std(standard VGA,vesa2.0)" \
 			"3" "cirrus clgd5446" \
@@ -8073,7 +8074,7 @@ tmoe_qemu_x64_cpu_manager() {
 		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 5 \
 			"1" "CPU cores处理器核心数" \
 			"2" "cpu model/type(型号/类型)" \
-			"3" "cpu multithreading多线程" \
+			"3" "multithreading多线程" \
 			"4" "machine机器类型" \
 			"5" "kvm/tcg/xen加速类型" \
 			"0" "Return to previous menu 返回上级菜单" \
