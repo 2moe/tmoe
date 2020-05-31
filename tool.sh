@@ -421,7 +421,6 @@ check_dependencies() {
 }
 ####################################################
 tmoe_linux_tool_menu() {
-	cd ${cur}
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
@@ -6527,14 +6526,14 @@ start_tmoe_qemu_aarch64_manager() {
 			"1" "CPU管理" \
 			"2" "RAM运行内存" \
 			"3" "edit script manually手动修改配置脚本" \
-			"4" "exposed ports端口映射/转发" \
+			"4" "Multi-VM多虚拟机管理" \
 			"5" "compress压缩磁盘文件" \
 			"6" "mount shared folder挂载共享文件夹" \
 			"7" "VNC port端口" \
 			"8" "iso选择启动光盘" \
 			"9" "disk选择启动磁盘" \
 			"10" "FAQ常见问题" \
-			"11" "Multi-VM多虚拟机管理" \
+			"11" "exposed ports端口映射/转发" \
 			"12" "network card model网卡" \
 			"13" "creat disk创建(空白)虚拟磁盘" \
 			"14" "restore to default恢复到默认" \
@@ -6552,14 +6551,14 @@ start_tmoe_qemu_aarch64_manager() {
 	1) tmoe_qemu_aarch64_cpu_manager ;;
 	2) modify_qemu_ram_size ;;
 	3) nano startqemu ;;
-	4) modify_qemu_exposed_ports ;;
+	4) multi_qemu_vm_management ;;
 	5) compress_or_dd_qcow2_img_file ;;
 	6) modify_qemu_shared_folder ;;
 	7) modify_qemu_vnc_display_port ;;
 	8) choose_qemu_iso_file ;;
 	9) choose_qemu_qcow2_or_img_file ;;
 	10) tmoe_qemu_faq ;;
-	11) multi_qemu_vm_management ;;
+	11) modify_qemu_exposed_ports ;;
 	12) modify_qemu_tmoe_network_card ;;
 	13) creat_blank_virtual_disk_image ;;
 	14) creat_qemu_startup_script ;;
@@ -8180,7 +8179,7 @@ start_tmoe_qemu_manager() {
 			"2" "CPU管理" \
 			"3" "RAM运行内存" \
 			"4" "edit script manually手动修改配置脚本" \
-			"5" "exposed ports端口映射/转发" \
+			"5" "Multi-VM多虚拟机管理" \
 			"6" "compress压缩磁盘文件" \
 			"7" "mount shared folder挂载共享文件夹" \
 			"8" "VNC port端口" \
@@ -8188,7 +8187,7 @@ start_tmoe_qemu_manager() {
 			"10" "iso选择启动光盘" \
 			"11" "disk选择启动磁盘" \
 			"12" "FAQ常见问题" \
-			"13" "Multi-VM多虚拟机管理" \
+			"13" "exposed ports端口映射/转发" \
 			"14" "snapshoots快照管理" \
 			"15" "creat disk创建(空白)虚拟磁盘" \
 			"16" "restore to default恢复到默认" \
@@ -8209,7 +8208,7 @@ start_tmoe_qemu_manager() {
 	2) tmoe_qemu_x64_cpu_manager ;;
 	3) modify_qemu_ram_size ;;
 	4) nano startqemu ;;
-	5) modify_qemu_exposed_ports ;;
+	5) multi_qemu_vm_management ;;
 	6) compress_or_dd_qcow2_img_file ;;
 	7) modify_qemu_shared_folder ;;
 	8) modify_qemu_vnc_display_port ;;
@@ -8217,7 +8216,7 @@ start_tmoe_qemu_manager() {
 	10) choose_qemu_iso_file ;;
 	11) choose_qemu_qcow2_or_img_file ;;
 	12) tmoe_qemu_faq ;;
-	13) multi_qemu_vm_management ;;
+	13) modify_qemu_exposed_ports ;;
 	14) qemu_snapshoots_manager ;;
 	15) creat_blank_virtual_disk_image ;;
 	16) creat_qemu_startup_script ;;
@@ -8530,7 +8529,8 @@ delete_the_iso_file_of_the_specified_qemu_vm() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
 	echo "选中的虚拟机的iso镜像文件将被删除"
-	echo "按Ctrl+C退出"
+	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
+	echo "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	THE_QEMU_STARTUP_SCRIPT=${TMOE_FILE_ABSOLUTE_PATH}
@@ -8541,7 +8541,8 @@ delete_the_disk_file_of_the_specified_qemu_vm() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
 	echo "选中的虚拟机的磁盘文件将被删除"
-	echo "按Ctrl+C退出"
+	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
+	echo "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	THE_QEMU_STARTUP_SCRIPT=${TMOE_FILE_ABSOLUTE_PATH}
@@ -8558,7 +8559,7 @@ select_file_manually() {
 	count=$(($count - 1))
 
 	while true; do
-		read -p '请输入选项数字,并按回车键。Please type the option number and press Enter:' number
+		read -p "请输入${BLUE}选项数字${RESET},并按${GREEN}回车键。${RESET}Please type the ${BLUE}option number${RESET} and press ${GREEN}Enter:${RESET}" number
 		if [[ -z "$number" ]]; then
 			break
 		elif ! [[ $number =~ ^[0-9]+$ ]]; then
@@ -8584,7 +8585,8 @@ multi_vm_start_manager() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
 	echo "选中的配置将设定为startqemu的默认配置"
-	echo "按Ctrl+C退出"
+	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
+	echo "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	if [ ! -z "${SELECTION}" ]; then
@@ -8603,7 +8605,9 @@ delete_multi_qemu_vm_conf() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
 	echo "选中的配置将被删除"
-	echo "按Ctrl+C退出"
+	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
+	echo "Press Ctrl+C to exit,press enter to return."
+	echo "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	rm -fv ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/${SELECTION}
