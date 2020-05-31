@@ -6519,7 +6519,7 @@ start_tmoe_qemu_aarch64_manager() {
 	cd /usr/local/bin/
 	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64_20200531" ]; then
 		echo "启用arm64虚拟机将重置startqemu为arm64的配置"
-		rm -fv "${HOME}/.config/tmoe-linux/startqemu_amd64_20200531"
+		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_aarch64_startup_script
 	fi
 
@@ -6991,7 +6991,7 @@ creat_qemu_startup_script() {
 			-name "tmoe-linux-qemu"
 	EndOFqemu
 	chmod +x startqemu_amd64_20200531
-	cp -pf startqemu_amd64_20200531 /usr/local/bin/
+	cp -pf startqemu_amd64_20200531 /usr/local/bin/startqemu
 }
 ###########
 modify_qemu_machine_accel() {
@@ -8169,7 +8169,7 @@ start_tmoe_qemu_manager() {
 	check_qemu_install
 	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_20200531" ]; then
 		echo "启用x86_64虚拟机将重置startqemu为x86_64的配置"
-		rm -fv "${HOME}/.config/tmoe-linux/startqemu_aarch64_20200531"
+		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_startup_script
 	fi
 	cd /usr/local/bin/
