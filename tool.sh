@@ -425,7 +425,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200529-00)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持配置x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200531-19)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531修复qemu部分问题" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -6532,7 +6532,7 @@ start_tmoe_qemu_aarch64_manager() {
 			"5" "compress压缩磁盘文件" \
 			"6" "mount shared folder挂载共享文件夹" \
 			"7" "VNC port端口" \
-			"8" "iso选择启动镜像" \
+			"8" "iso选择启动光盘" \
 			"9" "disk选择启动磁盘" \
 			"10" "FAQ常见问题" \
 			"11" "Multi-VM多虚拟机管理" \
@@ -8184,7 +8184,7 @@ start_tmoe_qemu_manager() {
 			"7" "mount shared folder挂载共享文件夹" \
 			"8" "VNC port端口" \
 			"9" "Input devices输入设备" \
-			"10" "iso选择启动镜像" \
+			"10" "iso选择启动光盘" \
 			"11" "disk选择启动磁盘" \
 			"12" "FAQ常见问题" \
 			"13" "Multi-VM多虚拟机管理" \
@@ -8798,7 +8798,7 @@ download_virtual_machine_iso_file() {
 		"4" "debian-qcow2(虚拟机磁盘)" \
 		"5" "ubuntu" \
 		"6" "flash iso烧录镜像文件至U盘" \
-		"7" "windows10" \
+		"7" "windows" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
@@ -8862,39 +8862,76 @@ dd_flash_iso_to_udisk() {
 	dd <${TMOE_FILE_ABSOLUTE_PATH} >${DD_OF_TARGET}
 }
 ############
-download_win10_19041_iso() {
-	if [ ! -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" ]; then
-		echo "即将为您下载10.0.19041.172 iso镜像文件..."
-		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" 'https://cdn.tmoe.me/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" 'https://m.tmoe.me/down/share/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
-	fi
-	#下面那处需要再次if,而不是else
-	if [ -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" ]; then
-		echo "正在校验sha256sum..."
-		echo 'Verifying sha256sum ...'
-		SHA256SUMDEBIAN="$(sha256sum '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso' | cut -c 1-64)"
-		CORRENTSHA256SUM='f8972cf8e3d6e7ff1abff5f7f4e3e7deeef05422c33299d911253b21e6ee2b49'
-		if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
-			echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
-			echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
-			echo 'sha256校验值不一致，请重新下载！'
-			echo 'sha256sum value is inconsistent, please download again.'
-		else
-			echo 'Congratulations,检测到sha256sum一致'
-			echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
-		fi
-	fi
+download_win10_19041_x64_iso() {
+	ISO_FILE_NAME='19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso'
+	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
+	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	download_windows_tmoe_iso_model
+}
+##########
+set_it_as_the_tmoe_qemu_iso() {
+	cd /usr/local/bin
+	sed -i '/--cdrom /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_iso_file_test \\\n/' startqemu
+	sed -i "s@tmoe_iso_file_test@${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	echo "修改完成，相关配置将在下次启动qemu时生效"
+}
+########
+download_tmoe_iso_file_again() {
+	echo "即将为您下载win10 19041 iso镜像文件..."
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" "${TMOE_ISO_URL}"
+	qemu-img info ${ISO_FILE_NAME}
+}
+################
+download_win10_19041_arm64_iso() {
+	ISO_FILE_NAME='win10_2004_arm64.iso'
+	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
+	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	download_windows_tmoe_iso_model
 }
 ############
-download_windows_10_iso() {
-	if (whiptail --title "请选择版本" --yes-button "19041" --no-button "other" --yesno "您想要下载哪个版本呢？♪(^∇^*) " 10 50); then
-		download_win10_19041_iso
+download_windows_tmoe_iso_model() {
+	if [ -e "${ISO_FILE_NAME}" ]; then
+		if (whiptail --title "检测到iso已下载,请选择您需要执行的操作！" --yes-button '设置为qemu iso' --no-button 'DL again重新下载' --yesno "Detected that the file has been downloaded" 7 60); then
+			set_it_as_the_tmoe_qemu_iso
+			${RETURN_TO_WHERE}
+		else
+			download_tmoe_iso_file_again
+		fi
 	else
+		download_tmoe_iso_file_again
+	fi
+	echo "下载完成，是否将其设置为qemu启动光盘？[Y/n]"
+	do_you_want_to_continue
+	set_it_as_the_tmoe_qemu_iso
+}
+#########
+download_windows_10_iso() {
+	RETURN_TO_WHERE='download_windows_10_iso'
+	NON_DEBIAN='false'
+	cd ~
+	VIRTUAL_TECH=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
+		"1" "win10_2004_x64" \
+		"2" "win10_2004_arm64" \
+		"3" "other" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") install_container_and_virtual_machine ;;
+	1) download_win10_19041_x64_iso ;;
+	2) download_win10_19041_arm64_iso ;;
+	3)
 		cat <<-'EOF'
-			如需下载arm64架构的版本，那么您可以前往uupdump.ml
 			如需下载其他版本，请前往microsoft官网
 			https://www.microsoft.com/zh-cn/software-download/windows10ISO
+			您亦可前往uupdump.ml，自行转换iso文件。
 		EOF
-	fi
+		;;
+	esac
+	###############
+	press_enter_to_return
+	${RETURN_TO_WHERE}
 }
 ##########################
 which_alpine_arch() {
