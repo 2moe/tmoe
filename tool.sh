@@ -6543,6 +6543,7 @@ start_tmoe_qemu_aarch64_manager() {
 			"16" "spice远程桌面" \
 			"17" "legacy bios/uefi(开机引导固件)" \
 			"18" "Input devices输入设备" \
+			"19" "Graphics card/VGA(显卡/显示器)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6566,7 +6567,8 @@ start_tmoe_qemu_aarch64_manager() {
 	15) modify_qemu_aarch64_tmoe_sound_card ;;
 	16) enable_qemnu_spice_remote ;;
 	17) choose_qemu_bios_or_uefi_file ;;
-	28) tmoe_qemu_input_devices ;;
+	18) tmoe_qemu_input_devices ;;
+	19) modify_qemnu_graphics_card ;;
 	esac
 	###############
 	press_enter_to_return
@@ -7039,7 +7041,7 @@ modify_qemnu_graphics_card() {
 	cd /usr/local/bin/
 	CURRENT_VALUE=$(cat startqemu | grep '\-vga' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
-		whiptail --title "显卡/显示器型号" --menu "Please select the graphics card model.\n默认为std,当前为${CURRENT_VALUE}" 16 50 7 \
+		whiptail --title "GPU/VGA" --menu "Please select the graphics card model.\n默认为std,当前为${CURRENT_VALUE}" 16 50 7 \
 			"1" "vmware(VMWare SVGA)" \
 			"2" "std(standard VGA,vesa2.0)" \
 			"3" "cirrus clgd5446" \
@@ -8884,7 +8886,7 @@ download_tmoe_iso_file_again() {
 }
 ################
 download_win10_19041_arm64_iso() {
-	ISO_FILE_NAME='win10_2004_arm64.iso'
+	ISO_FILE_NAME='win10_2004_arm64_tmoe.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
 	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
 	download_windows_tmoe_iso_model
