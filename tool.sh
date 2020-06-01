@@ -6412,12 +6412,15 @@ tmoe_uefi_boot_manager() {
 	fi
 
 	CURRENT_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}')
+	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	TMOE_BOOT_MGR=$(
 		whiptail --title "开机启动项管理" --menu "Note: efibootmgr requires that the kernel module efivars be loaded prior
  to use. 'modprobe efivars' should do the trick if it does not
  automatically load." 0 0 0 \
 			"1" "first boot item修改第一启动项" \
 			"2" "boot order自定义排序" \
+			"3" "Backup efi备份" \
+			"4" "Restore efi恢复" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6426,12 +6429,50 @@ tmoe_uefi_boot_manager() {
 	0 | "") beta_features ;;
 	1) modify_first_uefi_boot_item ;;
 	2) custom_uefi_boot_order ;;
+	3) tmoe_backup_efi ;;
+	4) tmoe_restore_efi ;;
 	esac
 	###############
 	press_enter_to_return
 	tmoe_uefi_boot_manager
 }
 ###############
+tmoe_backup_efi() {
+	mkdir -p ${CONFIG_FOLDER}
+	cd ${CONFIG_FOLDER}
+	CURRENT_EFI_DISK=$(df -h | grep '/boot/efi' | awk '{print $1}')
+	EFI_BACKUP_NAME='efi_backup.img'
+	if [ -e "${EFI_BACKUP_NAME}" ]; then
+		stat ${EFI_BACKUP_NAME}
+		ls -lh ${EFI_BACKUP_NAME}
+		echo "备份文件已存在，是否覆盖？"
+		do_you_want_to_continue
+	fi
+
+	echo "正在将${CURRENT_EFI_DISK}备份至${CONFIG_FOLDER}${EFI_BACKUP_NAME}"
+	dd <${CURRENT_EFI_DISK} >${EFI_BACKUP_NAME}
+	echo "备份完成"
+	stat ${EFI_BACKUP_NAME}
+	ls -lh $(pwd)/${EFI_BACKUP_NAME}
+}
+############
+tmoe_restore_efi() {
+	cd ${CONFIG_FOLDER}
+	df -h | grep '/boot/efi'
+	CURRENT_EFI_DISK=$(df -h | grep '/boot/efi' | awk '{print $1}')
+	fdisk -l 2>&1 | grep ${CURRENT_EFI_DISK}
+	EFI_BACKUP_NAME='efi_backup.img'
+	ls -lh /boot/efi/EFI
+	echo "您真的要将${EFI_BACKUP_NAME}烧录至${CURRENT_EFI_DISK}？这将重置${CURRENT_EFI_DISK}的所有数据"
+	echo "请谨慎操作"
+	do_you_want_to_continue
+	echo "正在将${CONFIG_FOLDER}${EFI_BACKUP_NAME}烧录至${CURRENT_EFI_DISK}"
+	dd <${EFI_BACKUP_NAME} >${CURRENT_EFI_DISK}
+	echo "恢复完成"
+	stat ${EFI_BACKUP_NAME}
+	ls -lh $(pwd)/${EFI_BACKUP_NAME}
+}
+##########
 remove_boot_mgr() {
 	if [ $? != 0 ]; then
 		echo "本工具不支持您当前所处的环境，是否卸载？"
@@ -9002,6 +9043,12 @@ download_win10_19041_arm64_iso() {
 	ISO_FILE_NAME='win10_2004_arm64_tmoe.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
 	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	cat <<-'EOF'
+		本文件为uupdump转换的原版iso
+		若您需要在qemu虚拟机里使用，那么请手动制作Windows to Go启动盘
+		您也可以阅览其它人所撰写的教程
+		    https://zhuanlan.zhihu.com/p/32905265
+	EOF
 	download_windows_tmoe_iso_model
 }
 ############
