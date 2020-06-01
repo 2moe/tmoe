@@ -6344,7 +6344,7 @@ beta_features() {
 	TMOE_BETA=$(
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 17 55 8 \
 			"1" "container/VM(docker容器,qemu,vbox虚拟机)" \
-			"2" "UEFI开机启动项管理" \
+			"2" "UEFI bootmgr开机启动项管理" \
 			"3" "input method输入法(搜狗,讯飞,百度)" \
 			"4" "WPS office(办公软件)" \
 			"5" "gparted:磁盘分区工具" \
@@ -6413,7 +6413,7 @@ tmoe_uefi_boot_manager() {
 
 	CURRENT_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}')
 	TMOE_BOOT_MGR=$(
-		whiptail --title "开机启动项顺序管理" --menu "Note: efibootmgr requires that the kernel module efivars be loaded prior
+		whiptail --title "开机启动项管理" --menu "Note: efibootmgr requires that the kernel module efivars be loaded prior
  to use. 'modprobe efivars' should do the trick if it does not
  automatically load." 0 0 0 \
 			"1" "first boot item修改第一启动项" \
@@ -6458,8 +6458,11 @@ modify_first_uefi_boot_item() {
 	case ${TMOE_UEFI_BOOT_ITEM} in
 	0 | "") tmoe_uefi_boot_manager ;;
 	esac
-
-	NEW_TMOE_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}' | sed "s@,${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@^@${TMOE_UEFI_BOOT_ITEM}\,&@")
+	if [ $(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}' | grep ^${TMOE_UEFI_BOOT_ITEM}) ]; then
+		NEW_TMOE_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}' | sed "s@${TMOE_UEFI_BOOT_ITEM},@@" | sed "s@${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@^@${TMOE_UEFI_BOOT_ITEM},&@")
+	else
+		NEW_TMOE_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}' | sed "s@,${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@^@${TMOE_UEFI_BOOT_ITEM},&@")
+	fi
 	echo "已将启动规则修改为${NEW_TMOE_UEFI_BOOT_ORDER}"
 	efibootmgr -o ${NEW_TMOE_UEFI_BOOT_ORDER}
 	remove_boot_mgr
