@@ -6720,13 +6720,17 @@ modify_qemu_aarch64_tmoe_machine_model() {
 			"55" "virt-2.8:QEMU 2.8 ARM Virtual Machine" \
 			"56" "virt-2.9:QEMU 2.9 ARM Virtual Machine" \
 			"57" "virt-3.0:QEMU 3.0 ARM Virtual Machine" \
-			"58" "virt:QEMU 3.1 ARM Virtual Machine (alias of virt-3.1)" \
+			"58" "virt:QEMU latest ARM Virtual Machine (alias of virt latest)" \
 			"59" "virt-3.1:QEMU 3.1 ARM Virtual Machine" \
 			"60" "witherspoon-bmc:OpenPOWER Witherspoon BMC (ARM1176)" \
 			"61" "xilinx-zynq-a9:Xilinx Zynq Platform Baseboard for Cortex-A9" \
 			"62" "xlnx-versal-virt:Xilinx Versal Virtual development board" \
 			"63" "xlnx-zcu102:Xilinx ZynqMP ZCU102 board with 4xA53s and 2xR5Fs" \
 			"64" "z2:Zipit Z2 (PXA27x)" \
+			"65" "virt-4.0:QEMU 4.0 ARM Virtual Machine" \
+			"66" "virt-4.1:QEMU 4.1 ARM Virtual Machine" \
+			"67" "virt-4.2:QEMU 4.2 ARM Virtual Machine" \
+			"68" "virt-5.0:QEMU 5.0 ARM Virtual Machine" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -6796,6 +6800,10 @@ modify_qemu_aarch64_tmoe_machine_model() {
 	62) TMOE_AARCH64_QEMU_MACHINE="xlnx-versal-virt" ;;
 	63) TMOE_AARCH64_QEMU_MACHINE="xlnx-zcu102" ;;
 	64) TMOE_AARCH64_QEMU_MACHINE="z2" ;;
+	65) TMOE_AARCH64_QEMU_MACHINE="virt-4.0" ;;
+	66) TMOE_AARCH64_QEMU_MACHINE="virt-4.1" ;;
+	67) TMOE_AARCH64_QEMU_MACHINE="virt-4.2" ;;
+	68) TMOE_AARCH64_QEMU_MACHINE="virt-5.0" ;;
 	esac
 	###############
 	sed -i "s@-machine .*@-machine ${TMOE_AARCH64_QEMU_MACHINE} \\\@" startqemu
