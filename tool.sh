@@ -6343,10 +6343,10 @@ beta_features() {
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 17 55 8 \
-			"1" "input method输入法(搜狗,讯飞,百度)" \
-			"2" "WPS office(办公软件)" \
-			"3" "container/VM(docker容器,qemu,vbox虚拟机)" \
-			"4" "geogebra+kalzium(数学+化学)" \
+			"1" "container/VM(docker容器,qemu,vbox虚拟机)" \
+			"2" "UEFI开机启动项管理" \
+			"3" "input method输入法(搜狗,讯飞,百度)" \
+			"4" "WPS office(办公软件)" \
 			"5" "gparted:磁盘分区工具" \
 			"6" "OBS-Studio(录屏软件)" \
 			"7" "typora(markdown编辑器)" \
@@ -6363,16 +6363,17 @@ beta_features() {
 			"18" "telegram(注重保护隐私的社交app)" \
 			"19" "Grub Customizer(图形化开机引导编辑器)" \
 			"20" "catfish(文件搜索)" \
+			"21" "geogebra+kalzium(数学+化学)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########
 	case ${TMOE_BETA} in
 	0 | "") tmoe_linux_tool_menu ;;
-	1) install_pinyin_input_method ;;
-	2) install_wps_office ;;
-	3) install_container_and_virtual_machine ;;
-	4) install_geogebra_and_kalzium ;;
+	1) install_container_and_virtual_machine ;;
+	2) tmoe_uefi_boot_manager ;;
+	3) install_pinyin_input_method ;;
+	4) install_wps_office ;;
 	5) install_gparted ;;
 	6) install_obs_studio ;;
 	7) install_typora ;;
@@ -6389,12 +6390,99 @@ beta_features() {
 	18) install_telegram ;;
 	19) install_grub_customizer ;;
 	20) install_catfish ;;
+	21) install_geogebra_and_kalzium ;;
 	esac
 	##############################
 	########################################
 	# Blender在WSL2（Xserver）下测试失败，Kdenlive在VNC远程下测试成功。
 	press_enter_to_return
 	beta_features
+}
+##########
+tmoe_uefi_boot_manager() {
+	RETURN_TO_WHERE='tmoe_uefi_boot_manager'
+	NON_DEBIAN='false'
+	if [ ! $(command -v efibootmgr) ]; then
+		echo "本工具能对UEFI开机引导的顺序进行排序，但不支持容器和WSL"
+		echo "按回车键确认安装"
+		do_you_want_to_continue
+		DEPENDENCY_01=''
+		DEPENDENCY_02='efibootmgr'
+		beta_features_quick_install
+	fi
+
+	CURRENT_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}')
+	TMOE_BOOT_MGR=$(
+		whiptail --title "开机启动项顺序管理" --menu "Note: efibootmgr requires that the kernel module efivars be loaded prior
+ to use. 'modprobe efivars' should do the trick if it does not
+ automatically load." 0 0 0 \
+			"1" "first boot item修改第一启动项" \
+			"2" "boot order自定义排序" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${TMOE_BOOT_MGR} in
+	0 | "") beta_features ;;
+	1) modify_first_uefi_boot_item ;;
+	2) custom_uefi_boot_order ;;
+	esac
+	###############
+	press_enter_to_return
+	tmoe_uefi_boot_manager
+}
+###############
+remove_boot_mgr() {
+	if [ $? != 0 ]; then
+		echo "本工具不支持您当前所处的环境，是否卸载？"
+		echo "Do you want to remove it?"
+		do_you_want_to_continue
+		${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_02}
+		beta_features
+	else
+		echo "修改完成，重启系统生效"
+	fi
+}
+###########
+modify_first_uefi_boot_item() {
+	cd /tmp/
+	efibootmgr | grep -Ev 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 1 | sed 's@Boot@@g' >.tmoe-linux_cache.01
+	efibootmgr | grep -Ev 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 2 | sed 's/ //g' | sed 's/^/\"&/g' | sed 's/$/&\"/g' >.tmoe-linux_cache.02
+	TMOE_UEFI_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+	rm -f tmoe-linux_cache.0*
+	TMOE_UEFI_BOOT_ITEM=$(whiptail --title "BOOT ITEM" --menu \
+		"检测当前的第一启动项为$(efibootmgr | grep 'BootOrder:' | awk '{print $2}' | cut -d ',' -f 1)" 0 0 0 \
+		${TMOE_UEFI_LIST} \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	case ${TMOE_UEFI_BOOT_ITEM} in
+	0 | "") tmoe_uefi_boot_manager ;;
+	esac
+
+	NEW_TMOE_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}' | sed "s@,${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@^@${TMOE_UEFI_BOOT_ITEM}\,&@")
+	echo "已将启动规则修改为${NEW_TMOE_UEFI_BOOT_ORDER}"
+	efibootmgr -o ${NEW_TMOE_UEFI_BOOT_ORDER}
+	remove_boot_mgr
+}
+################
+custom_uefi_boot_order() {
+	TARGET=$(whiptail --inputbox "$(efibootmgr | sed 's@Boot0@0@g' | sed 's@* @:@g')\n请输入启动顺序规则,以半角逗号分开,当前为${CURRENT_UEFI_BOOT_ORDER}\nPlease enter the order, separated by commas." 0 0 --title "BOOT ORDER" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		#echo "检测到您取消了操作"
+		${RETURN_TO_WHERE}
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		echo "错误的规则将会导致系统无法正常引导，请确保您的输入无误"
+		echo "您输入的规则为${TARGET}"
+		echo "若无误，则按回车键确认"
+		echo "If it is correct, press Enter to confirm"
+		do_you_want_to_continue
+		echo "已将启动规则修改为${TARGET}"
+		efibootmgr -o ${TARGET}
+		remove_boot_mgr
+	fi
 }
 ####################
 install_container_and_virtual_machine() {
