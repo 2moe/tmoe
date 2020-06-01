@@ -416,7 +416,6 @@ check_dependencies() {
 		WINDOWSDISTRO='WSL'
 	fi
 	##############
-	cur=$(pwd)
 	tmoe_linux_tool_menu
 }
 ####################################################
@@ -1245,7 +1244,7 @@ vscode_server_upgrade() {
 		git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODE_SERVER_TEMP_FOLDER
 		cd .VSCODE_SERVER_TEMP_FOLDER
 		tar -PpJxvf code.tar.xz
-		cd ${cur}
+		cd ..
 		rm -rf /tmp/.VSCODE_SERVER_TEMP_FOLDER
 	elif [ "${ARCH_TYPE}" = "amd64" ]; then
 		mkdir -p .VSCODE_SERVER_TEMP_FOLDER
@@ -7044,7 +7043,7 @@ modify_qemnu_graphics_card() {
 			"2" "std(standard VGA,vesa2.0)" \
 			"3" "cirrus clgd5446" \
 			"4" "qxl(QXL VGA)" \
-			"5" "xenf(Xen paravirtualized framebuffer)" \
+			"5" "xenfb(Xen paravirtualized framebuffer)" \
 			"6" "tcx" \
 			"7" "cg3" \
 			"8" "none无显卡" \
@@ -7059,7 +7058,7 @@ modify_qemnu_graphics_card() {
 	2) QEMU_VGA='std' ;;
 	3) QEMU_VGA='cirrus' ;;
 	4) QEMU_VGA='qxl' ;;
-	5) QEMU_VGA='xenf' ;;
+	5) QEMU_VGA='xenfb' ;;
 	6) QEMU_VGA='tcx' ;;
 	7) QEMU_VGA='cg3' ;;
 	8) QEMU_VGA='none' ;;
@@ -7314,7 +7313,7 @@ creat_blank_virtual_disk_image() {
 	DISK_FILE_PATH="${HOME}/sd/Download"
 	mkdir -p ${DISK_FILE_PATH}
 	cd ${DISK_FILE_PATH}
-	TARGET_FILE_SIZE=$(whiptail --inputbox "请设定磁盘文件大小,例如500M,10G,1T(需包含单位)\nPlease enter the disk size." 10 50 --title "SIZE" 3>&1 1>&2 2>&3)
+	TARGET_FILE_SIZE=$(whiptail --inputbox "请设定磁盘空间大小,例如500M,10G,1T(需包含单位)\nPlease enter the disk size." 10 50 --title "SIZE" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET_FILE_SIZE}" ]; then
@@ -8446,6 +8445,7 @@ how_to_creat_a_new_tmoe_qemu_vm() {
 			choose iso
 
 			4.选择启动磁盘
+			choose disk
 
 			5.修改相关参数
 
@@ -8627,6 +8627,8 @@ qemu_process_management_instructions() {
 	echo "打开vnc客户端，输入访问地址localhost:${CURRENT_VNC_PORT}"
 	echo "${BLUE}关机方式01${RESET}"
 	echo "在qemu monitor界面下输system_powerdown关闭虚拟机电源，输stop停止"
+	echo "按Ctrl+C退出qemu monitor"
+	echo "Press Ctrl+C to exit qemu monitor."
 	echo "${BLUE}连接方式02${RESET}"
 	echo "若您需要使用ssh连接，则请新建一个termux会话窗口，并输入${GREEN}ssh -p 2888 root@localhost${RESET}"
 	echo "本工具默认将虚拟机的22端口映射为宿主机的2888端口，若无法连接，则请在虚拟机下新建一个普通用户，再将上述命令中的root修改为普通用户名称"
