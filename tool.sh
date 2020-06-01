@@ -6574,7 +6574,7 @@ start_tmoe_qemu_aarch64_manager() {
 #############
 switch_tmoe_qemu_network_card_to_default() {
 	sed -i 's/-net nic.*/-net nic \\/' startqemu
-	echo "已经切换为默认网卡"
+	echo "已经将默认网卡切换为未指定状态"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -6585,19 +6585,19 @@ modify_qemu_tmoe_network_card() {
 	if grep -q '\-net nic,model' startqemu; then
 		CURRENT_VALUE=$(cat startqemu | grep '\-net nic,model' | tail -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	else
-		CURRENT_VALUE='默认网卡'
+		CURRENT_VALUE='未指定'
 	fi
 	VIRTUAL_TECH=$(
 		whiptail --title "网卡型号" --menu "Please select the network card model.\n当前为${CURRENT_VALUE}" 16 50 7 \
 			"0" "Return to previous menu 返回上级菜单" \
-			"00" "default使用默认网卡" \
+			"00" "未指定" \
 			"01" "e1000:alias e1000-82540em" \
 			"02" "e1000-82544gc:Intel Gigabit Ethernet" \
 			"03" "e1000-82545em" \
 			"04" "e1000e:Intel 82574L GbE Controller" \
-			"05" "rtl8139" \
+			"05" "Realtek rtl8139" \
 			"06" "virtio-net-pci" \
-			"07" "i82550" \
+			"07" "i82550:Intel i82550 Ethernet" \
 			"08" "i82551" \
 			"09" "i82557a" \
 			"10" "i82557b" \
@@ -6615,8 +6615,8 @@ modify_qemu_tmoe_network_card() {
 			"22" "smc91c111" \
 			"23" "lance" \
 			"24" "mcf_fec" \
-			"25" "vmxnet3" \
-			"26" "rocker" \
+			"25" "vmxnet3:VMWare Paravirtualized" \
+			"26" "rocker Switch" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -6981,7 +6981,7 @@ creat_qemu_startup_script() {
 			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
-			-net nic \
+			-net nic,model=e1000 \
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-vnc :2 \
