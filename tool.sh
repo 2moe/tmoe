@@ -6603,7 +6603,7 @@ creat_qemu_aarch64_startup_script() {
 		/usr/bin/qemu-system-aarch64 \
 			-monitor stdio \
 			-smp 4 \
-			-cpu cortex-a72 \
+			-cpu max \
 			-machine virt \
 			--accel tcg \
 			-vga std \
@@ -6800,78 +6800,88 @@ modify_qemu_tmoe_network_card() {
 ###########
 modify_qemu_aarch64_tmoe_machine_model() {
 	cd /usr/local/bin/
+	#qemu-system-aarch64 -machine help  >001
 	CURRENT_VALUE=$(cat startqemu | grep '\-machine' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
 		whiptail --title "机器型号" --menu "Please select the machine model.\n默认为virt,当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
 			"01" "akita:Sharp SL-C1000 (Akita) PDA (PXA270)" \
 			"02" "ast2500-evb:Aspeed AST2500 EVB (ARM1176)" \
-			"03" "borzoi:Sharp SL-C3100 (Borzoi) PDA (PXA270)" \
-			"04" "canon-a1100:Canon PowerShot A1100 IS" \
-			"05" "cheetah:Palm Tungsten|E aka. Cheetah PDA (OMAP310)" \
-			"06" "collie:Sharp SL-5500 (Collie) PDA (SA-1110)" \
-			"07" "connex:Gumstix Connex (PXA255)" \
-			"08" "cubieboard:cubietech cubieboard" \
-			"09" "emcraft-sf2:SmartFusion2 SOM kit from Emcraft (M2S010)" \
-			"10" "highbank:Calxeda Highbank (ECX-1000)" \
-			"11" "imx25-pdk:ARM i.MX25 PDK board (ARM926)" \
-			"12" "integratorcp:ARM Integrator/CP (ARM926EJ-S)" \
-			"13" "kzm:ARM KZM Emulation Baseboard (ARM1136)" \
-			"14" "lm3s6965evb:Stellaris LM3S6965EVB" \
-			"15" "lm3s811evb:Stellaris LM3S811EVB" \
-			"16" "mainstone:Mainstone II (PXA27x)" \
-			"17" "mcimx6ul-evk:Freescale i.MX6UL Evaluation Kit (Cortex A7)" \
-			"18" "mcimx7d-sabre:Freescale i.MX7 DUAL SABRE (Cortex A7)" \
-			"19" "microbit:BBC micro:bit" \
-			"20" "midway:Calxeda Midway (ECX-2000)" \
-			"21" "mps2-an385:ARM MPS2 with AN385 FPGA image for Cortex-M3" \
-			"22" "mps2-an505:ARM MPS2 with AN505 FPGA image for Cortex-M33" \
-			"23" "mps2-an511:ARM MPS2 with AN511 DesignStart FPGA image for Cortex-M3" \
-			"24" "musicpal:Marvell 88w8618 / MusicPal (ARM926EJ-S)" \
-			"25" "n800:Nokia N800 tablet aka. RX-34 (OMAP2420)" \
-			"26" "n810:Nokia N810 tablet aka. RX-44 (OMAP2420)" \
-			"27" "netduino2:Netduino 2 Machine" \
-			"28" "none:empty machine" \
-			"29" "nuri:Samsung NURI board (Exynos4210)" \
-			"30" "palmetto-bmc:OpenPOWER Palmetto BMC (ARM926EJ-S)" \
-			"31" "raspi2:Raspberry Pi 2" \
-			"32" "raspi3:Raspberry Pi 3" \
-			"33" "realview-eb:ARM RealView Emulation Baseboard (ARM926EJ-S)" \
-			"34" "realview-eb-mpcore:ARM RealView Emulation Baseboard (ARM11MPCore)" \
-			"35" "realview-pb-a8:ARM RealView Platform Baseboard for Cortex-A8" \
-			"36" "realview-pbx-a9:ARM RealView Platform Baseboard Explore for Cortex-A9" \
-			"37" "romulus-bmc:OpenPOWER Romulus BMC (ARM1176)" \
-			"38" "sabrelite:Freescale i.MX6 Quad SABRE Lite Board (Cortex A9)" \
-			"39" "smdkc210:Samsung SMDKC210 board (Exynos4210)" \
-			"40" "spitz:Sharp SL-C3000 (Spitz) PDA (PXA270)" \
-			"41" "sx1:Siemens SX1 (OMAP310) V2" \
-			"42" "sx1-v1:Siemens SX1 (OMAP310) V1" \
-			"43" "terrier:Sharp SL-C3200 (Terrier) PDA (PXA270)" \
-			"44" "tosa:Sharp SL-6000 (Tosa) PDA (PXA255)" \
-			"45" "verdex:Gumstix Verdex (PXA270)" \
-			"46" "versatileab:ARM Versatile/AB (ARM926EJ-S)" \
-			"47" "versatilepb:ARM Versatile/PB (ARM926EJ-S)" \
-			"48" "vexpress-a15:ARM Versatile Express for Cortex-A15" \
-			"49" "vexpress-a9:ARM Versatile Express for Cortex-A9" \
-			"50" "virt-2.10:QEMU 2.10 ARM Virtual Machine" \
-			"51" "virt-2.11:QEMU 2.11 ARM Virtual Machine" \
-			"52" "virt-2.12:QEMU 2.12 ARM Virtual Machine" \
-			"53" "virt-2.6:QEMU 2.6 ARM Virtual Machine" \
-			"54" "virt-2.7:QEMU 2.7 ARM Virtual Machine" \
-			"55" "virt-2.8:QEMU 2.8 ARM Virtual Machine" \
-			"56" "virt-2.9:QEMU 2.9 ARM Virtual Machine" \
-			"57" "virt-3.0:QEMU 3.0 ARM Virtual Machine" \
-			"58" "virt:QEMU latest ARM Virtual Machine (alias of virt latest)" \
-			"59" "virt-3.1:QEMU 3.1 ARM Virtual Machine" \
-			"60" "witherspoon-bmc:OpenPOWER Witherspoon BMC (ARM1176)" \
-			"61" "xilinx-zynq-a9:Xilinx Zynq Platform Baseboard for Cortex-A9" \
-			"62" "xlnx-versal-virt:Xilinx Versal Virtual development board" \
-			"63" "xlnx-zcu102:Xilinx ZynqMP ZCU102 board with 4xA53s and 2xR5Fs" \
-			"64" "z2:Zipit Z2 (PXA27x)" \
-			"65" "virt-4.0:QEMU 4.0 ARM Virtual Machine" \
-			"66" "virt-4.1:QEMU 4.1 ARM Virtual Machine" \
-			"67" "virt-4.2:QEMU 4.2 ARM Virtual Machine" \
-			"68" "virt-5.0:QEMU 5.0 ARM Virtual Machine" \
+			"03" "ast2600-evb:Aspeed AST2600 EVB (Cortex A7)" \
+			"04" "borzoi:Sharp SL-C3100 (Borzoi) PDA (PXA270)" \
+			"05" "canon-a1100:Canon PowerShot A1100 IS" \
+			"06" "cheetah:Palm Tungsten|E aka. Cheetah PDA (OMAP310)" \
+			"07" "collie:Sharp SL-5500 (Collie) PDA (SA-1110)" \
+			"08" "connex:Gumstix Connex (PXA255)" \
+			"09" "cubieboard:cubietech cubieboard (Cortex-A8)" \
+			"10" "emcraft-sf2:SmartFusion2 SOM kit from Emcraft (M2S010)" \
+			"11" "highbank:Calxeda Highbank (ECX-1000)" \
+			"12" "imx25-pdk:ARM i.MX25 PDK board (ARM926)" \
+			"13" "integratorcp:ARM Integrator/CP (ARM926EJ-S)" \
+			"14" "kzm:ARM KZM Emulation Baseboard (ARM1136)" \
+			"15" "lm3s6965evb:Stellaris LM3S6965EVB" \
+			"16" "lm3s811evb:Stellaris LM3S811EVB" \
+			"17" "mainstone:Mainstone II (PXA27x)" \
+			"18" "mcimx6ul-evk:Freescale i.MX6UL Evaluation Kit (Cortex A7)" \
+			"19" "mcimx7d-sabre:Freescale i.MX7 DUAL SABRE (Cortex A7)" \
+			"20" "microbit:BBC micro:bit" \
+			"21" "midway:Calxeda Midway (ECX-2000)" \
+			"22" "mps2-an385:ARM MPS2 with AN385 FPGA image for Cortex-M3" \
+			"23" "mps2-an505:ARM MPS2 with AN505 FPGA image for Cortex-M33" \
+			"24" "mps2-an511:ARM MPS2 with AN511 DesignStart FPGA image for Cortex-M3" \
+			"25" "mps2-an521:ARM MPS2 with AN521 FPGA image for dual Cortex-M33" \
+			"26" "musca-a:ARM Musca-A board (dual Cortex-M33)" \
+			"27" "musca-b1:ARM Musca-B1 board (dual Cortex-M33)" \
+			"28" "musicpal:Marvell 88w8618 / MusicPal (ARM926EJ-S)" \
+			"29" "n800:Nokia N800 tablet aka. RX-34 (OMAP2420)" \
+			"30" "n810:Nokia N810 tablet aka. RX-44 (OMAP2420)" \
+			"31" "netduino2:Netduino 2 Machine" \
+			"32" "netduinoplus2:Netduino Plus 2 Machine" \
+			"33" "none:empty machine" \
+			"34" "nuri:Samsung NURI board (Exynos4210)" \
+			"35" "orangepi-pc:Orange Pi PC" \
+			"36" "palmetto-bmc:OpenPOWER Palmetto BMC (ARM926EJ-S)" \
+			"37" "raspi2:Raspberry Pi 2B" \
+			"38" "raspi3:Raspberry Pi 3B" \
+			"39" "realview-eb:ARM RealView Emulation Baseboard (ARM926EJ-S)" \
+			"40" "realview-eb-mpcore:ARM RealView Emulation Baseboard (ARM11MPCore)" \
+			"41" "realview-pb-a8:ARM RealView Platform Baseboard for Cortex-A8" \
+			"42" "realview-pbx-a9:ARM RealView Platform Baseboard Explore for Cortex-A9" \
+			"43" "romulus-bmc:OpenPOWER Romulus BMC (ARM1176)" \
+			"44" "sabrelite:Freescale i.MX6 Quad SABRE Lite Board (Cortex A9)" \
+			"45" "sbsa-ref:QEMU 'SBSA Reference' ARM Virtual Machine" \
+			"46" "smdkc210:Samsung SMDKC210 board (Exynos4210)" \
+			"47" "spitz:Sharp SL-C3000 (Spitz) PDA (PXA270)" \
+			"48" "swift-bmc:OpenPOWER Swift BMC (ARM1176)" \
+			"49" "sx1:Siemens SX1 (OMAP310) V2" \
+			"50" "sx1-v1:Siemens SX1 (OMAP310) V1" \
+			"51" "tacoma-bmc:Aspeed AST2600 EVB (Cortex A7)" \
+			"52" "terrier:Sharp SL-C3200 (Terrier) PDA (PXA270)" \
+			"53" "tosa:Sharp SL-6000 (Tosa) PDA (PXA255)" \
+			"54" "verdex:Gumstix Verdex (PXA270)" \
+			"55" "versatileab:ARM Versatile/AB (ARM926EJ-S)" \
+			"56" "versatilepb:ARM Versatile/PB (ARM926EJ-S)" \
+			"57" "vexpress-a15:ARM Versatile Express for Cortex-A15" \
+			"58" "vexpress-a9:ARM Versatile Express for Cortex-A9" \
+			"59" "virt-2.10:QEMU 2.10 ARM Virtual Machine" \
+			"60" "virt-2.11:QEMU 2.11 ARM Virtual Machine" \
+			"61" "virt-2.12:QEMU 2.12 ARM Virtual Machine" \
+			"62" "virt-2.6:QEMU 2.6 ARM Virtual Machine" \
+			"63" "virt-2.7:QEMU 2.7 ARM Virtual Machine" \
+			"64" "virt-2.8:QEMU 2.8 ARM Virtual Machine" \
+			"65" "virt-2.9:QEMU 2.9 ARM Virtual Machine" \
+			"66" "virt-3.0:QEMU 3.0 ARM Virtual Machine" \
+			"67" "virt-3.1:QEMU 3.1 ARM Virtual Machine" \
+			"68" "virt-4.0:QEMU 4.0 ARM Virtual Machine" \
+			"69" "virt-4.1:QEMU 4.1 ARM Virtual Machine" \
+			"70" "virt-4.2:QEMU 4.2 ARM Virtual Machine" \
+			"71" "virt:QEMU 5.0 ARM Virtual Machine (alias of virt-5.0)" \
+			"72" "virt-5.0:QEMU 5.0 ARM Virtual Machine" \
+			"73" "witherspoon-bmc:OpenPOWER Witherspoon BMC (ARM1176)" \
+			"74" "xilinx-zynq-a9:Xilinx Zynq Platform Baseboard for Cortex-A9" \
+			"75" "xlnx-versal-virt:Xilinx Versal Virtual development board" \
+			"76" "xlnx-zcu102:Xilinx ZynqMP ZCU102 board with 4xA53s and 2xR5Fs based on the value of smp" \
+			"77" "z2:Zipit Z2 (PXA27x)" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -6879,72 +6889,81 @@ modify_qemu_aarch64_tmoe_machine_model() {
 	0 | "") ${RETURN_TO_WHERE} ;;
 	01) TMOE_AARCH64_QEMU_MACHINE="akita" ;;
 	02) TMOE_AARCH64_QEMU_MACHINE="ast2500-evb" ;;
-	03) TMOE_AARCH64_QEMU_MACHINE="borzoi" ;;
-	04) TMOE_AARCH64_QEMU_MACHINE="canon-a1100" ;;
-	05) TMOE_AARCH64_QEMU_MACHINE="cheetah" ;;
-	06) TMOE_AARCH64_QEMU_MACHINE="collie" ;;
-	07) TMOE_AARCH64_QEMU_MACHINE="connex" ;;
-	08) TMOE_AARCH64_QEMU_MACHINE="cubieboard" ;;
-	09) TMOE_AARCH64_QEMU_MACHINE="emcraft-sf2" ;;
-	10) TMOE_AARCH64_QEMU_MACHINE="highbank" ;;
-	11) TMOE_AARCH64_QEMU_MACHINE="imx25-pdk" ;;
-	12) TMOE_AARCH64_QEMU_MACHINE="integratorcp" ;;
-	13) TMOE_AARCH64_QEMU_MACHINE="kzm" ;;
-	14) TMOE_AARCH64_QEMU_MACHINE="lm3s6965evb" ;;
-	15) TMOE_AARCH64_QEMU_MACHINE="lm3s811evb" ;;
-	16) TMOE_AARCH64_QEMU_MACHINE="mainstone" ;;
-	17) TMOE_AARCH64_QEMU_MACHINE="mcimx6ul-evk" ;;
-	18) TMOE_AARCH64_QEMU_MACHINE="mcimx7d-sabre" ;;
-	19) TMOE_AARCH64_QEMU_MACHINE="microbit" ;;
-	20) TMOE_AARCH64_QEMU_MACHINE="midway" ;;
-	21) TMOE_AARCH64_QEMU_MACHINE="mps2-an385" ;;
-	22) TMOE_AARCH64_QEMU_MACHINE="mps2-an505" ;;
-	23) TMOE_AARCH64_QEMU_MACHINE="mps2-an511" ;;
-	24) TMOE_AARCH64_QEMU_MACHINE="musicpal" ;;
-	25) TMOE_AARCH64_QEMU_MACHINE="n800" ;;
-	26) TMOE_AARCH64_QEMU_MACHINE="n810" ;;
-	27) TMOE_AARCH64_QEMU_MACHINE="netduino2" ;;
-	28) TMOE_AARCH64_QEMU_MACHINE="none" ;;
-	29) TMOE_AARCH64_QEMU_MACHINE="nuri" ;;
-	30) TMOE_AARCH64_QEMU_MACHINE="palmetto-bmc" ;;
-	31) TMOE_AARCH64_QEMU_MACHINE="raspi2" ;;
-	32) TMOE_AARCH64_QEMU_MACHINE="raspi3" ;;
-	33) TMOE_AARCH64_QEMU_MACHINE="realview-eb" ;;
-	34) TMOE_AARCH64_QEMU_MACHINE="realview-eb-mpcore" ;;
-	35) TMOE_AARCH64_QEMU_MACHINE="realview-pb-a8" ;;
-	36) TMOE_AARCH64_QEMU_MACHINE="realview-pbx-a9" ;;
-	37) TMOE_AARCH64_QEMU_MACHINE="romulus-bmc" ;;
-	38) TMOE_AARCH64_QEMU_MACHINE="sabrelite" ;;
-	39) TMOE_AARCH64_QEMU_MACHINE="smdkc210" ;;
-	40) TMOE_AARCH64_QEMU_MACHINE="spitz" ;;
-	41) TMOE_AARCH64_QEMU_MACHINE="sx1" ;;
-	42) TMOE_AARCH64_QEMU_MACHINE="sx1-v1" ;;
-	43) TMOE_AARCH64_QEMU_MACHINE="terrier" ;;
-	44) TMOE_AARCH64_QEMU_MACHINE="tosa" ;;
-	45) TMOE_AARCH64_QEMU_MACHINE="verdex" ;;
-	46) TMOE_AARCH64_QEMU_MACHINE="versatileab" ;;
-	47) TMOE_AARCH64_QEMU_MACHINE="versatilepb" ;;
-	48) TMOE_AARCH64_QEMU_MACHINE="vexpress-a15" ;;
-	49) TMOE_AARCH64_QEMU_MACHINE="vexpress-a9" ;;
-	50) TMOE_AARCH64_QEMU_MACHINE="virt-2.10" ;;
-	51) TMOE_AARCH64_QEMU_MACHINE="virt-2.11" ;;
-	52) TMOE_AARCH64_QEMU_MACHINE="virt-2.12" ;;
-	53) TMOE_AARCH64_QEMU_MACHINE="virt-2.6" ;;
-	54) TMOE_AARCH64_QEMU_MACHINE="virt-2.7" ;;
-	55) TMOE_AARCH64_QEMU_MACHINE="virt-2.8" ;;
-	56) TMOE_AARCH64_QEMU_MACHINE="virt-2.9" ;;
-	57) TMOE_AARCH64_QEMU_MACHINE="virt-3.0" ;;
-	58) TMOE_AARCH64_QEMU_MACHINE="virt" ;;
-	59) TMOE_AARCH64_QEMU_MACHINE="virt-3.1" ;;
-	60) TMOE_AARCH64_QEMU_MACHINE="witherspoon-bmc" ;;
-	61) TMOE_AARCH64_QEMU_MACHINE="xilinx-zynq-a9" ;;
-	62) TMOE_AARCH64_QEMU_MACHINE="xlnx-versal-virt" ;;
-	63) TMOE_AARCH64_QEMU_MACHINE="xlnx-zcu102" ;;
-	64) TMOE_AARCH64_QEMU_MACHINE="z2" ;;
-	65) TMOE_AARCH64_QEMU_MACHINE="virt-4.0" ;;
-	66) TMOE_AARCH64_QEMU_MACHINE="virt-4.1" ;;
-	67) TMOE_AARCH64_QEMU_MACHINE="virt-4.2" ;;
-	68) TMOE_AARCH64_QEMU_MACHINE="virt-5.0" ;;
+	03) TMOE_AARCH64_QEMU_MACHINE="ast2600-evb" ;;
+	04) TMOE_AARCH64_QEMU_MACHINE="borzoi" ;;
+	05) TMOE_AARCH64_QEMU_MACHINE="canon-a1100" ;;
+	06) TMOE_AARCH64_QEMU_MACHINE="cheetah" ;;
+	07) TMOE_AARCH64_QEMU_MACHINE="collie" ;;
+	08) TMOE_AARCH64_QEMU_MACHINE="connex" ;;
+	09) TMOE_AARCH64_QEMU_MACHINE="cubieboard" ;;
+	10) TMOE_AARCH64_QEMU_MACHINE="emcraft-sf2" ;;
+	11) TMOE_AARCH64_QEMU_MACHINE="highbank" ;;
+	12) TMOE_AARCH64_QEMU_MACHINE="imx25-pdk" ;;
+	13) TMOE_AARCH64_QEMU_MACHINE="integratorcp" ;;
+	14) TMOE_AARCH64_QEMU_MACHINE="kzm" ;;
+	15) TMOE_AARCH64_QEMU_MACHINE="lm3s6965evb" ;;
+	16) TMOE_AARCH64_QEMU_MACHINE="lm3s811evb" ;;
+	17) TMOE_AARCH64_QEMU_MACHINE="mainstone" ;;
+	18) TMOE_AARCH64_QEMU_MACHINE="mcimx6ul-evk" ;;
+	19) TMOE_AARCH64_QEMU_MACHINE="mcimx7d-sabre" ;;
+	20) TMOE_AARCH64_QEMU_MACHINE="microbit" ;;
+	21) TMOE_AARCH64_QEMU_MACHINE="midway" ;;
+	22) TMOE_AARCH64_QEMU_MACHINE="mps2-an385" ;;
+	23) TMOE_AARCH64_QEMU_MACHINE="mps2-an505" ;;
+	24) TMOE_AARCH64_QEMU_MACHINE="mps2-an511" ;;
+	25) TMOE_AARCH64_QEMU_MACHINE="mps2-an521" ;;
+	26) TMOE_AARCH64_QEMU_MACHINE="musca-a" ;;
+	27) TMOE_AARCH64_QEMU_MACHINE="musca-b1" ;;
+	28) TMOE_AARCH64_QEMU_MACHINE="musicpal" ;;
+	29) TMOE_AARCH64_QEMU_MACHINE="n800" ;;
+	30) TMOE_AARCH64_QEMU_MACHINE="n810" ;;
+	31) TMOE_AARCH64_QEMU_MACHINE="netduino2" ;;
+	32) TMOE_AARCH64_QEMU_MACHINE="netduinoplus2" ;;
+	33) TMOE_AARCH64_QEMU_MACHINE="none" ;;
+	34) TMOE_AARCH64_QEMU_MACHINE="nuri" ;;
+	35) TMOE_AARCH64_QEMU_MACHINE="orangepi-pc" ;;
+	36) TMOE_AARCH64_QEMU_MACHINE="palmetto-bmc" ;;
+	37) TMOE_AARCH64_QEMU_MACHINE="raspi2" ;;
+	38) TMOE_AARCH64_QEMU_MACHINE="raspi3" ;;
+	39) TMOE_AARCH64_QEMU_MACHINE="realview-eb" ;;
+	40) TMOE_AARCH64_QEMU_MACHINE="realview-eb-mpcore" ;;
+	41) TMOE_AARCH64_QEMU_MACHINE="realview-pb-a8" ;;
+	42) TMOE_AARCH64_QEMU_MACHINE="realview-pbx-a9" ;;
+	43) TMOE_AARCH64_QEMU_MACHINE="romulus-bmc" ;;
+	44) TMOE_AARCH64_QEMU_MACHINE="sabrelite" ;;
+	45) TMOE_AARCH64_QEMU_MACHINE="sbsa-ref" ;;
+	46) TMOE_AARCH64_QEMU_MACHINE="smdkc210" ;;
+	47) TMOE_AARCH64_QEMU_MACHINE="spitz" ;;
+	48) TMOE_AARCH64_QEMU_MACHINE="swift-bmc" ;;
+	49) TMOE_AARCH64_QEMU_MACHINE="sx1" ;;
+	50) TMOE_AARCH64_QEMU_MACHINE="sx1-v1" ;;
+	51) TMOE_AARCH64_QEMU_MACHINE="tacoma-bmc" ;;
+	52) TMOE_AARCH64_QEMU_MACHINE="terrier" ;;
+	53) TMOE_AARCH64_QEMU_MACHINE="tosa" ;;
+	54) TMOE_AARCH64_QEMU_MACHINE="verdex" ;;
+	55) TMOE_AARCH64_QEMU_MACHINE="versatileab" ;;
+	56) TMOE_AARCH64_QEMU_MACHINE="versatilepb" ;;
+	57) TMOE_AARCH64_QEMU_MACHINE="vexpress-a15" ;;
+	58) TMOE_AARCH64_QEMU_MACHINE="vexpress-a9" ;;
+	59) TMOE_AARCH64_QEMU_MACHINE="virt-2.10" ;;
+	60) TMOE_AARCH64_QEMU_MACHINE="virt-2.11" ;;
+	61) TMOE_AARCH64_QEMU_MACHINE="virt-2.12" ;;
+	62) TMOE_AARCH64_QEMU_MACHINE="virt-2.6" ;;
+	63) TMOE_AARCH64_QEMU_MACHINE="virt-2.7" ;;
+	64) TMOE_AARCH64_QEMU_MACHINE="virt-2.8" ;;
+	65) TMOE_AARCH64_QEMU_MACHINE="virt-2.9" ;;
+	66) TMOE_AARCH64_QEMU_MACHINE="virt-3.0" ;;
+	67) TMOE_AARCH64_QEMU_MACHINE="virt-3.1" ;;
+	68) TMOE_AARCH64_QEMU_MACHINE="virt-4.0" ;;
+	69) TMOE_AARCH64_QEMU_MACHINE="virt-4.1" ;;
+	70) TMOE_AARCH64_QEMU_MACHINE="virt-4.2" ;;
+	71) TMOE_AARCH64_QEMU_MACHINE="virt" ;;
+	72) TMOE_AARCH64_QEMU_MACHINE="virt-5.0" ;;
+	73) TMOE_AARCH64_QEMU_MACHINE="witherspoon-bmc" ;;
+	74) TMOE_AARCH64_QEMU_MACHINE="xilinx-zynq-a9" ;;
+	75) TMOE_AARCH64_QEMU_MACHINE="xlnx-versal-virt" ;;
+	76) TMOE_AARCH64_QEMU_MACHINE="xlnx-zcu102" ;;
+	77) TMOE_AARCH64_QEMU_MACHINE="z2" ;;
 	esac
 	###############
 	sed -i "s@-machine .*@-machine ${TMOE_AARCH64_QEMU_MACHINE} \\\@" startqemu
@@ -6957,7 +6976,7 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	cd /usr/local/bin/
 	CURRENT_VALUE=$(cat startqemu | grep '\-cpu' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "默认为cortex-a72,当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "CPU" --menu "默认为max,当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
 			"01" "arm1026" \
 			"02" "arm1136" \
@@ -7123,6 +7142,7 @@ creat_qemu_startup_script() {
 		/usr/bin/qemu-system-x86_64 \
 			-monitor stdio \
 			-smp 4 \
+			-cpu max \
 			-soundhw all \
 			-vga std \
 			--accel tcg \
@@ -7603,488 +7623,832 @@ modify_qemu_amd64_tmoe_cpu_type() {
 	else
 		CURRENT_VALUE='未指定'
 	fi
+	#qemu-system-x86_64 -cpu help >001
+	#cat 001 | awk '{print $2}' >002
+	#去掉:$
+	#将\r替换为\n
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "默认未指定cpu类型,当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "CPU" --menu "默认为max,当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
-			"001" "disable禁用指定cpu参数" \
-			"002" "486" \
-			"003" "Broadwell:Intel Core Processor (Broadwell)" \
-			"004" "Broadwell-IBRS:Intel Core Processor (Broadwell, IBRS)" \
-			"005" "Broadwell-noTSX:Intel Core Processor (Broadwell, no TSX)" \
-			"006" "Broadwell-noTSX-IBRS:Intel Core Processor (Broadwell, no TSX, IBRS)" \
-			"007" "Cascadelake-Server:Intel Xeon Processor (Cascadelake)" \
-			"008" "Conroe:Intel Celeron_4x0 (Conroe/Merom Class Core 2)" \
-			"009" "EPYC:AMD EPYC Processor" \
-			"010" "EPYC-IBPB:AMD EPYC Processor (with IBPB)" \
-			"011" "Haswell:Intel Core Processor (Haswell)" \
-			"012" "Haswell-IBRS:Intel Core Processor (Haswell, IBRS)" \
-			"013" "Haswell-noTSX:Intel Core Processor (Haswell, no TSX)" \
-			"014" "Haswell-noTSX-IBRS:Intel Core Processor (Haswell, no TSX, IBRS)" \
-			"015" "Icelake-Client:Intel Core Processor (Icelake)" \
-			"016" "Icelake-Server:Intel Xeon Processor (Icelake)" \
-			"017" "IvyBridge:Intel Xeon E3-12xx v2 (Ivy Bridge)" \
-			"018" "IvyBridge-IBRS:Intel Xeon E3-12xx v2 (Ivy Bridge, IBRS)" \
-			"019" "KnightsMill:Intel Xeon Phi Processor (Knights Mill)" \
-			"020" "Nehalem:Intel Core i7 9xx (Nehalem Class Core i7)" \
-			"021" "Nehalem-IBRS:Intel Core i7 9xx (Nehalem Core i7, IBRS update)" \
-			"022" "Opteron_G1:AMD Opteron 240 (Gen 1 Class Opteron)" \
-			"023" "Opteron_G2:AMD Opteron 22xx (Gen 2 Class Opteron)" \
-			"024" "Opteron_G3:AMD Opteron 23xx (Gen 3 Class Opteron)" \
-			"025" "Opteron_G4:AMD Opteron 62xx class CPU" \
-			"026" "Opteron_G5:AMD Opteron 63xx class CPU" \
-			"027" "Penryn:Intel Core 2 Duo P9xxx (Penryn Class Core 2)" \
-			"028" "SandyBridge:Intel Xeon E312xx (Sandy Bridge)" \
-			"029" "SandyBridge-IBRS:Intel Xeon E312xx (Sandy Bridge, IBRS update)" \
-			"030" "Skylake-Client:Intel Core Processor (Skylake)" \
-			"031" "Skylake-Client-IBRS:Intel Core Processor (Skylake, IBRS)" \
-			"032" "Skylake-Server:Intel Xeon Processor (Skylake)" \
-			"033" "Skylake-Server-IBRS:Intel Xeon Processor (Skylake, IBRS)" \
-			"034" "Westmere:Westmere E56xx/L56xx/X56xx (Nehalem-C)" \
-			"035" "Westmere-IBRS:Westmere E56xx/L56xx/X56xx (IBRS update)" \
-			"036" "athlon:QEMU Virtual CPU version 2.5+" \
-			"037" "core2duo:Intel(R) Core(TM)2 Duo CPU T7700@ 2.40GHz" \
-			"038" "coreduo:Genuine Intel(R) CPU T2600@2.16GHz" \
-			"039" "kvm32:Common 32-bit KVM processor" \
-			"040" "kvm64:Common KVM processor" \
-			"041" "n270:Intel(R) Atom(TM) CPU N270   @ 1.60GHz" \
-			"042" "pentium" \
-			"043" "pentium2" \
-			"044" "pentium3" \
-			"045" "phenom:AMD Phenom(tm) 9550 Quad-Core Processor" \
-			"046" "qemu32:QEMU Virtual CPU version 2.5+" \
-			"047" "qemu64:QEMU Virtual CPU version 2.5+" \
-			"048" "base:base CPU model type with no features enabled" \
-			"049" "host:KVM processor with all supported host features" \
-			"050" "max:Enables all features supported by the accelerator in the current host" \
-			"051" "3dnow" \
-			"052" "3dnowext" \
-			"053" "3dnowprefetch" \
-			"054" "abm" \
-			"055" "ace2" \
-			"056" "ace2-en" \
-			"057" "acpi" \
-			"058" "adx" \
-			"059" "aes" \
-			"060" "amd-no-ssb" \
-			"061" "amd-ssbd" \
-			"062" "apic" \
-			"063" "arat" \
-			"064" "arch-capabilities" \
-			"065" "avx" \
-			"066" "avx2" \
-			"067" "avx512-4fmaps" \
-			"068" "avx512-4vnniw" \
-			"069" "avx512-vpopcntdq" \
-			"070" "avx512bitalg" \
-			"071" "avx512bw" \
-			"072" "avx512cd" \
-			"073" "avx512dq" \
-			"074" "avx512er" \
-			"075" "avx512f" \
-			"076" "avx512ifma" \
-			"077" "avx512pf" \
-			"078" "avx512vbmi" \
-			"079" "avx512vbmi2" \
-			"080" "avx512vl" \
-			"081" "avx512vnni" \
-			"082" "bmi1" \
-			"083" "bmi2" \
-			"084" "cid" \
-			"085" "cldemote" \
-			"086" "clflush" \
-			"087" "clflushopt" \
-			"088" "clwb" \
-			"089" "cmov" \
-			"090" "cmp-legacy" \
-			"091" "cr8legacy" \
-			"092" "cx16" \
-			"093" "cx8" \
-			"094" "dca" \
-			"095" "de" \
-			"096" "decodeassists" \
-			"097" "ds" \
-			"098" "ds-cpl" \
-			"099" "dtes64" \
-			"100" "erms" \
-			"101" "est" \
-			"102" "extapic" \
-			"103" "f16c" \
-			"104" "flushbyasid" \
-			"105" "fma" \
-			"106" "fma4" \
-			"107" "fpu" \
-			"108" "fsgsbase" \
-			"109" "fxsr" \
-			"110" "fxsr-opt" \
-			"111" "gfni" \
-			"112" "hle" \
-			"113" "ht" \
-			"114" "hypervisor" \
-			"115" "ia64" \
-			"116" "ibpb" \
-			"117" "ibrs-all" \
-			"118" "ibs" \
-			"119" "intel-pt" \
-			"120" "invpcid" \
-			"121" "invtsc" \
-			"122" "kvm-asyncpf" \
-			"123" "kvm-hint-dedicated" \
-			"124" "kvm-mmu" \
-			"125" "kvm-nopiodelay" \
-			"126" "kvm-pv-eoi" \
-			"127" "kvm-pv-ipi" \
-			"128" "kvm-pv-tlb-flush" \
-			"129" "kvm-pv-unhalt" \
-			"130" "kvm-steal-time" \
-			"131" "kvmclock" \
-			"132" "kvmclock" \
-			"133" "kvmclock-stable-bit" \
-			"134" "la57" \
-			"135" "lahf-lm" \
-			"136" "lbrv" \
-			"137" "lm" \
-			"138" "lwp" \
-			"139" "mca" \
-			"140" "mce" \
-			"141" "md-clear" \
-			"142" "mds-no" \
-			"143" "misalignsse" \
-			"144" "mmx" \
-			"145" "mmxext" \
-			"146" "monitor" \
-			"147" "movbe" \
-			"148" "mpx" \
-			"149" "msr" \
-			"150" "mtrr" \
-			"151" "nodeid-msr" \
-			"152" "npt" \
-			"153" "nrip-save" \
-			"154" "nx" \
-			"155" "osvw" \
-			"156" "pae" \
-			"157" "pat" \
-			"158" "pause-filter" \
-			"159" "pbe" \
-			"160" "pcid" \
-			"161" "pclmulqdq" \
-			"162" "pcommit" \
-			"163" "pconfig" \
-			"164" "pdcm" \
-			"165" "pdpe1gb" \
-			"166" "perfctr-core" \
-			"167" "perfctr-nb" \
-			"168" "pfthreshold" \
-			"169" "pge" \
-			"170" "phe" \
-			"171" "phe-en" \
-			"172" "pku" \
-			"173" "pmm" \
-			"174" "pmm-en" \
-			"175" "pn" \
-			"176" "pni" \
-			"177" "popcnt" \
-			"178" "pschange-mc-no" \
-			"179" "pse" \
-			"180" "pse36" \
-			"181" "rdctl-no" \
-			"182" "rdpid" \
-			"183" "rdrand" \
-			"184" "rdseed" \
-			"185" "rdtscp" \
-			"186" "rsba" \
-			"187" "rtm" \
-			"188" "sep" \
-			"189" "sha-ni" \
-			"190" "skinit" \
-			"191" "skip-l1dfl-vmentry" \
-			"192" "smap" \
-			"193" "smep" \
-			"194" "smx" \
-			"195" "spec-ctrl" \
-			"196" "ss" \
-			"197" "ssb-no" \
-			"198" "ssbd" \
-			"199" "sse" \
-			"200" "sse2" \
-			"201" "sse4.1" \
-			"202" "sse4.2" \
-			"203" "sse4a" \
-			"204" "ssse3" \
-			"205" "svm" \
-			"206" "svm-lock" \
-			"207" "syscall" \
-			"208" "tbm" \
-			"209" "tce" \
-			"210" "tm" \
-			"211" "tm2" \
-			"212" "topoext" \
-			"213" "tsc" \
-			"214" "tsc-adjust" \
-			"215" "tsc-deadline" \
-			"216" "tsc-scale" \
-			"217" "umip" \
-			"218" "vaes" \
-			"219" "virt-ssbd" \
-			"220" "vmcb-clean" \
-			"221" "vme" \
-			"222" "vmx" \
-			"223" "vpclmulqdq" \
-			"224" "wbnoinvd" \
-			"225" "wdt" \
-			"226" "x2apic" \
-			"227" "xcrypt" \
-			"228" "xcrypt-en" \
-			"229" "xgetbv1" \
-			"230" "xop" \
-			"231" "xsave" \
-			"232" "xsavec" \
-			"233" "xsaveopt" \
-			"234" "xsaves" \
-			"235" "xstore" \
-			"236" "xstore-en" \
-			"237" "xtpr" \
+			"000" "disable禁用指定cpu参数" \
+			"001" "486:(alias configured by machine type)" \
+			"002" "486-v1" \
+			"003" "Broadwell:(alias configured by machine type)" \
+			"004" "Broadwell-IBRS:(alias of Broadwell-v3)" \
+			"005" "Broadwell-noTSX:(alias of Broadwell-v2)" \
+			"006" "Broadwell-noTSX-IBRS:(alias of Broadwell-v4)" \
+			"007" "Broadwell-v1:Intel Core Processor (Broadwell)" \
+			"008" "Broadwell-v2:Intel Core Processor (Broadwell, no TSX)" \
+			"009" "Broadwell-v3:Intel Core Processor (Broadwell, IBRS)" \
+			"010" "Broadwell-v4:Intel Core Processor (Broadwell, no TSX, IBRS)" \
+			"011" "Cascadelake-Server:(alias configured by machine type)" \
+			"012" "Cascadelake-Server-noTSX:(alias of Cascadelake-Server-v3)" \
+			"013" "Cascadelake-Server-v1:Intel Xeon Processor (Cascadelake)" \
+			"014" "Cascadelake-Server-v2:Intel Xeon Processor (Cascadelake)" \
+			"015" "Cascadelake-Server-v3:Intel Xeon Processor (Cascadelake)" \
+			"016" "Conroe:(alias configured by machine type)" \
+			"017" "Conroe-v1:Intel Celeron_4x0 (Conroe/Merom Class Core 2)" \
+			"018" "Cooperlake:(alias configured by machine type)" \
+			"019" "Cooperlake-v1:Intel Xeon Processor (Cooperlake)" \
+			"020" "Denverton:(alias configured by machine type)" \
+			"021" "Denverton-v1:Intel Atom Processor (Denverton)" \
+			"022" "Denverton-v2:Intel Atom Processor (Denverton)" \
+			"023" "Dhyana:(alias configured by machine type)" \
+			"024" "Dhyana-v1:Hygon Dhyana Processor" \
+			"025" "EPYC:(alias configured by machine type)" \
+			"026" "EPYC-IBPB:(alias of EPYC-v2)" \
+			"027" "EPYC-Rome:(alias configured by machine type)" \
+			"028" "EPYC-Rome-v1:AMD EPYC-Rome Processor" \
+			"029" "EPYC-v1:AMD EPYC Processor" \
+			"030" "EPYC-v2:AMD EPYC Processor (with IBPB)" \
+			"031" "EPYC-v3:AMD EPYC Processor" \
+			"032" "Haswell:(alias configured by machine type)" \
+			"033" "Haswell-IBRS:(alias of Haswell-v3)" \
+			"034" "Haswell-noTSX:(alias of Haswell-v2)" \
+			"035" "Haswell-noTSX-IBRS:(alias of Haswell-v4)" \
+			"036" "Haswell-v1:Intel Core Processor (Haswell)" \
+			"037" "Haswell-v2:Intel Core Processor (Haswell, no TSX)" \
+			"038" "Haswell-v3:Intel Core Processor (Haswell, IBRS)" \
+			"039" "Haswell-v4:Intel Core Processor (Haswell, no TSX, IBRS)" \
+			"040" "Icelake-Client:(alias configured by machine type)" \
+			"041" "Icelake-Client-noTSX:(alias of Icelake-Client-v2)" \
+			"042" "Icelake-Client-v1:Intel Core Processor (Icelake)" \
+			"043" "Icelake-Client-v2:Intel Core Processor (Icelake)" \
+			"044" "Icelake-Server:(alias configured by machine type)" \
+			"045" "Icelake-Server-noTSX:(alias of Icelake-Server-v2)" \
+			"046" "Icelake-Server-v1:Intel Xeon Processor (Icelake)" \
+			"047" "Icelake-Server-v2:Intel Xeon Processor (Icelake)" \
+			"048" "Icelake-Server-v3:Intel Xeon Processor (Icelake)" \
+			"049" "IvyBridge:(alias configured by machine type)" \
+			"050" "IvyBridge-IBRS:(alias of IvyBridge-v2)" \
+			"051" "IvyBridge-v1:Intel Xeon E3-12xx v2 (Ivy Bridge)" \
+			"052" "IvyBridge-v2:Intel Xeon E3-12xx v2 (Ivy Bridge, IBRS)" \
+			"053" "KnightsMill:(alias configured by machine type)" \
+			"054" "KnightsMill-v1:Intel Xeon Phi Processor (Knights Mill)" \
+			"055" "Nehalem:(alias configured by machine type)" \
+			"056" "Nehalem-IBRS:(alias of Nehalem-v2)" \
+			"057" "Nehalem-v1:Intel Core i7 9xx (Nehalem Class Core i7)" \
+			"058" "Nehalem-v2:Intel Core i7 9xx (Nehalem Core i7, IBRS update)" \
+			"059" "Opteron_G1:(alias configured by machine type)" \
+			"060" "Opteron_G1-v1:AMD Opteron 240 (Gen 1 Class Opteron)" \
+			"061" "Opteron_G2:(alias configured by machine type)" \
+			"062" "Opteron_G2-v1:AMD Opteron 22xx (Gen 2 Class Opteron)" \
+			"063" "Opteron_G3:(alias configured by machine type)" \
+			"064" "Opteron_G3-v1:AMD Opteron 23xx (Gen 3 Class Opteron)" \
+			"065" "Opteron_G4:(alias configured by machine type)" \
+			"066" "Opteron_G4-v1:AMD Opteron 62xx class CPU" \
+			"067" "Opteron_G5:(alias configured by machine type)" \
+			"068" "Opteron_G5-v1:AMD Opteron 63xx class CPU" \
+			"069" "Penryn:(alias configured by machine type)" \
+			"070" "Penryn-v1:Intel Core 2 Duo P9xxx (Penryn Class Core 2)" \
+			"071" "SandyBridge:(alias configured by machine type)" \
+			"072" "SandyBridge-IBRS:(alias of SandyBridge-v2)" \
+			"073" "SandyBridge-v1:Intel Xeon E312xx (Sandy Bridge)" \
+			"074" "SandyBridge-v2:Intel Xeon E312xx (Sandy Bridge, IBRS update)" \
+			"075" "Skylake-Client:(alias configured by machine type)" \
+			"076" "Skylake-Client-IBRS:(alias of Skylake-Client-v2)" \
+			"077" "Skylake-Client-noTSX-IBRS:BRS  (alias of Skylake-Client-v3)" \
+			"078" "Skylake-Client-v1:Intel Core Processor (Skylake)" \
+			"079" "Skylake-Client-v2:Intel Core Processor (Skylake, IBRS)" \
+			"080" "Skylake-Client-v3:Intel Core Processor (Skylake, IBRS, no TSX)" \
+			"081" "Skylake-Server:(alias configured by machine type)" \
+			"082" "Skylake-Server-IBRS:(alias of Skylake-Server-v2)" \
+			"083" "Skylake-Server-noTSX-IBRS:BRS  (alias of Skylake-Server-v3)" \
+			"084" "Skylake-Server-v1:Intel Xeon Processor (Skylake)" \
+			"085" "Skylake-Server-v2:Intel Xeon Processor (Skylake, IBRS)" \
+			"086" "Skylake-Server-v3:Intel Xeon Processor (Skylake, IBRS, no TSX)" \
+			"087" "Snowridge:(alias configured by machine type)" \
+			"088" "Snowridge-v1:Intel Atom Processor (SnowRidge)" \
+			"089" "Snowridge-v2:Intel Atom Processor (Snowridge, no MPX)" \
+			"090" "Westmere:(alias configured by machine type)" \
+			"091" "Westmere-IBRS:(alias of Westmere-v2)" \
+			"092" "Westmere-v1:Westmere E56xx/L56xx/X56xx (Nehalem-C)" \
+			"093" "Westmere-v2:Westmere E56xx/L56xx/X56xx (IBRS update)" \
+			"094" "athlon:(alias configured by machine type)" \
+			"095" "athlon-v1:QEMU Virtual CPU version 2.5+" \
+			"096" "core2duo:(alias configured by machine type)" \
+			"097" "core2duo-v1:Intel(R) Core(TM)2 Duo CPU     T7700  @ 2.40GHz" \
+			"098" "coreduo:(alias configured by machine type)" \
+			"099" "coreduo-v1:Genuine Intel(R) CPU           T2600  @ 2.16GHz" \
+			"100" "kvm32:(alias configured by machine type)" \
+			"101" "kvm32-v1:Common 32-bit KVM processor" \
+			"102" "kvm64:(alias configured by machine type)" \
+			"103" "kvm64-v1:Common KVM processor" \
+			"104" "n270:(alias configured by machine type)" \
+			"105" "n270-v1:Intel(R) Atom(TM) CPU N270   @ 1.60GHz" \
+			"106" "pentium:(alias configured by machine type)" \
+			"107" "pentium-v1" \
+			"108" "pentium2:(alias configured by machine type)" \
+			"109" "pentium2-v1" \
+			"110" "pentium3:(alias configured by machine type)" \
+			"111" "pentium3-v1" \
+			"112" "phenom:(alias configured by machine type)" \
+			"113" "phenom-v1:AMD Phenom(tm) 9550 Quad-Core Processor" \
+			"114" "qemu32:(alias configured by machine type)" \
+			"115" "qemu32-v1:QEMU Virtual CPU version 2.5+" \
+			"116" "qemu64:(alias configured by machine type)" \
+			"117" "qemu64-v1:QEMU Virtual CPU version 2.5+" \
+			"118" "base:base CPU model type with no features enabled" \
+			"119" "host:KVM processor with all supported host features" \
+			"120" "max:Enables all features supported by the accelerator in the current host" \
+			"121" "3dnow" \
+			"122" "3dnowext" \
+			"123" "3dnowprefetch" \
+			"124" "abm" \
+			"125" "ace2" \
+			"126" "ace2-en" \
+			"127" "acpi" \
+			"128" "adx" \
+			"129" "aes" \
+			"130" "amd-no-ssb" \
+			"131" "amd-ssbd" \
+			"132" "amd-stibp" \
+			"133" "apic" \
+			"134" "arat" \
+			"135" "arch-capabilities" \
+			"136" "avx" \
+			"137" "avx2" \
+			"138" "avx512-4fmaps" \
+			"139" "avx512-4vnniw" \
+			"140" "avx512-bf16" \
+			"141" "avx512-vpopcntdq" \
+			"142" "avx512bitalg" \
+			"143" "avx512bw" \
+			"144" "avx512cd" \
+			"145" "avx512dq" \
+			"146" "avx512er" \
+			"147" "avx512f" \
+			"148" "avx512ifma" \
+			"149" "avx512pf" \
+			"150" "avx512vbmi" \
+			"151" "avx512vbmi2" \
+			"152" "avx512vl" \
+			"153" "avx512vnni" \
+			"154" "bmi1" \
+			"155" "bmi2" \
+			"156" "cid" \
+			"157" "cldemote" \
+			"158" "clflush" \
+			"159" "clflushopt" \
+			"160" "clwb" \
+			"161" "clzero" \
+			"162" "cmov" \
+			"163" "cmp-legacy" \
+			"164" "core-capability" \
+			"165" "cr8legacy" \
+			"166" "cx16" \
+			"167" "cx8" \
+			"168" "dca" \
+			"169" "de" \
+			"170" "decodeassists" \
+			"171" "ds" \
+			"172" "ds-cpl" \
+			"173" "dtes64" \
+			"174" "erms" \
+			"175" "est" \
+			"176" "extapic" \
+			"177" "f16c" \
+			"178" "flushbyasid" \
+			"179" "fma" \
+			"180" "fma4" \
+			"181" "fpu" \
+			"182" "fsgsbase" \
+			"183" "fxsr" \
+			"184" "fxsr-opt" \
+			"185" "gfni" \
+			"186" "hle" \
+			"187" "ht" \
+			"188" "hypervisor" \
+			"189" "ia64" \
+			"190" "ibpb" \
+			"191" "ibrs-all" \
+			"192" "ibs" \
+			"193" "intel-pt" \
+			"194" "invpcid" \
+			"195" "invtsc" \
+			"196" "kvm-asyncpf" \
+			"197" "kvm-hint-dedicated" \
+			"198" "kvm-mmu" \
+			"199" "kvm-nopiodelay" \
+			"200" "kvm-poll-control" \
+			"201" "kvm-pv-eoi" \
+			"202" "kvm-pv-ipi" \
+			"203" "kvm-pv-sched-yield" \
+			"204" "kvm-pv-tlb-flush" \
+			"205" "kvm-pv-unhalt" \
+			"206" "kvm-steal-time" \
+			"207" "kvmclock" \
+			"208" "kvmclock" \
+			"209" "kvmclock-stable-bit" \
+			"210" "la57" \
+			"211" "lahf-lm" \
+			"212" "lbrv" \
+			"213" "lm" \
+			"214" "lwp" \
+			"215" "mca" \
+			"216" "mce" \
+			"217" "md-clear" \
+			"218" "mds-no" \
+			"219" "misalignsse" \
+			"220" "mmx" \
+			"221" "mmxext" \
+			"222" "monitor" \
+			"223" "movbe" \
+			"224" "movdir64b" \
+			"225" "movdiri" \
+			"226" "mpx" \
+			"227" "msr" \
+			"228" "mtrr" \
+			"229" "nodeid-msr" \
+			"230" "npt" \
+			"231" "nrip-save" \
+			"232" "nx" \
+			"233" "osvw" \
+			"234" "pae" \
+			"235" "pat" \
+			"236" "pause-filter" \
+			"237" "pbe" \
+			"238" "pcid" \
+			"239" "pclmulqdq" \
+			"240" "pcommit" \
+			"241" "pdcm" \
+			"242" "pdpe1gb" \
+			"243" "perfctr-core" \
+			"244" "perfctr-nb" \
+			"245" "pfthreshold" \
+			"246" "pge" \
+			"247" "phe" \
+			"248" "phe-en" \
+			"249" "pku" \
+			"250" "pmm" \
+			"251" "pmm-en" \
+			"252" "pn" \
+			"253" "pni" \
+			"254" "popcnt" \
+			"255" "pschange-mc-no" \
+			"256" "pse" \
+			"257" "pse36" \
+			"258" "rdctl-no" \
+			"259" "rdpid" \
+			"260" "rdrand" \
+			"261" "rdseed" \
+			"262" "rdtscp" \
+			"263" "rsba" \
+			"264" "rtm" \
+			"265" "sep" \
+			"266" "sha-ni" \
+			"267" "skinit" \
+			"268" "skip-l1dfl-vmentry" \
+			"269" "smap" \
+			"270" "smep" \
+			"271" "smx" \
+			"272" "spec-ctrl" \
+			"273" "split-lock-detect" \
+			"274" "ss" \
+			"275" "ssb-no" \
+			"276" "ssbd" \
+			"277" "sse" \
+			"278" "sse2" \
+			"279" "sse4.1" \
+			"280" "sse4.2" \
+			"281" "sse4a" \
+			"282" "ssse3" \
+			"283" "stibp" \
+			"284" "svm" \
+			"285" "svm-lock" \
+			"286" "syscall" \
+			"287" "taa-no" \
+			"288" "tbm" \
+			"289" "tce" \
+			"290" "tm" \
+			"291" "tm2" \
+			"292" "topoext" \
+			"293" "tsc" \
+			"294" "tsc-adjust" \
+			"295" "tsc-deadline" \
+			"296" "tsc-scale" \
+			"297" "tsx-ctrl" \
+			"298" "umip" \
+			"299" "vaes" \
+			"300" "virt-ssbd" \
+			"301" "vmcb-clean" \
+			"302" "vme" \
+			"303" "vmx" \
+			"304" "vmx-activity-hlt" \
+			"305" "vmx-activity-shutdown" \
+			"306" "vmx-activity-wait-sipi" \
+			"307" "vmx-apicv-register" \
+			"308" "vmx-apicv-vid" \
+			"309" "vmx-apicv-x2apic" \
+			"310" "vmx-apicv-xapic" \
+			"311" "vmx-cr3-load-noexit" \
+			"312" "vmx-cr3-store-noexit" \
+			"313" "vmx-cr8-load-exit" \
+			"314" "vmx-cr8-store-exit" \
+			"315" "vmx-desc-exit" \
+			"316" "vmx-encls-exit" \
+			"317" "vmx-entry-ia32e-mode" \
+			"318" "vmx-entry-load-bndcfgs" \
+			"319" "vmx-entry-load-efer" \
+			"320" "vmx-entry-load-pat" \
+			"321" "vmx-entry-load-perf-global-ctrl" \
+			"322" "vmx-entry-load-rtit-ctl" \
+			"323" "vmx-entry-noload-debugctl" \
+			"324" "vmx-ept" \
+			"325" "vmx-ept-1gb" \
+			"326" "vmx-ept-2mb" \
+			"327" "vmx-ept-advanced-exitinfo" \
+			"328" "vmx-ept-execonly" \
+			"329" "vmx-eptad" \
+			"330" "vmx-eptp-switching" \
+			"331" "vmx-exit-ack-intr" \
+			"332" "vmx-exit-clear-bndcfgs" \
+			"333" "vmx-exit-clear-rtit-ctl" \
+			"334" "vmx-exit-load-efer" \
+			"335" "vmx-exit-load-pat" \
+			"336" "vmx-exit-load-perf-global-ctrl" \
+			"337" "vmx-exit-nosave-debugctl" \
+			"338" "vmx-exit-save-efer" \
+			"339" "vmx-exit-save-pat" \
+			"340" "vmx-exit-save-preemption-timer" \
+			"341" "vmx-flexpriority" \
+			"342" "vmx-hlt-exit" \
+			"343" "vmx-ins-outs" \
+			"344" "vmx-intr-exit" \
+			"345" "vmx-invept" \
+			"346" "vmx-invept-all-context" \
+			"347" "vmx-invept-single-context" \
+			"348" "vmx-invept-single-context" \
+			"349" "vmx-invept-single-context-noglobals" \
+			"350" "vmx-invlpg-exit" \
+			"351" "vmx-invpcid-exit" \
+			"352" "vmx-invvpid" \
+			"353" "vmx-invvpid-all-context" \
+			"354" "vmx-invvpid-single-addr" \
+			"355" "vmx-io-bitmap" \
+			"356" "vmx-io-exit" \
+			"357" "vmx-monitor-exit" \
+			"358" "vmx-movdr-exit" \
+			"359" "vmx-msr-bitmap" \
+			"360" "vmx-mtf" \
+			"361" "vmx-mwait-exit" \
+			"362" "vmx-nmi-exit" \
+			"363" "vmx-page-walk-4" \
+			"364" "vmx-page-walk-5" \
+			"365" "vmx-pause-exit" \
+			"366" "vmx-ple" \
+			"367" "vmx-pml" \
+			"368" "vmx-posted-intr" \
+			"369" "vmx-preemption-timer" \
+			"370" "vmx-rdpmc-exit" \
+			"371" "vmx-rdrand-exit" \
+			"372" "vmx-rdseed-exit" \
+			"373" "vmx-rdtsc-exit" \
+			"374" "vmx-rdtscp-exit" \
+			"375" "vmx-secondary-ctls" \
+			"376" "vmx-shadow-vmcs" \
+			"377" "vmx-store-lma" \
+			"378" "vmx-true-ctls" \
+			"379" "vmx-tsc-offset" \
+			"380" "vmx-unrestricted-guest" \
+			"381" "vmx-vintr-pending" \
+			"382" "vmx-vmfunc" \
+			"383" "vmx-vmwrite-vmexit-fields" \
+			"384" "vmx-vnmi" \
+			"385" "vmx-vnmi-pending" \
+			"386" "vmx-vpid" \
+			"387" "vmx-wbinvd-exit" \
+			"388" "vmx-xsaves" \
+			"389" "vmx-zero-len-inject" \
+			"390" "vpclmulqdq" \
+			"391" "waitpkg" \
+			"392" "wbnoinvd" \
+			"393" "wdt" \
+			"394" "x2apic" \
+			"395" "xcrypt" \
+			"396" "xcrypt-en" \
+			"397" "xgetbv1" \
+			"398" "xop" \
+			"399" "xsave" \
+			"400" "xsavec" \
+			"401" "xsaveerptr" \
+			"402" "xsaveopt" \
+			"403" "xsaves" \
+			"404" "xstore" \
+			"405" "xstore-en" \
+			"406" "xtpr" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_WHERE} ;;
-	001) disable_tmoe_qemu_cpu ;;
-	002) TMOE_AMD64_QEMU_CPU_TYPE="486" ;;
+	000) disable_tmoe_qemu_cpu ;;
+	001) TMOE_AMD64_QEMU_CPU_TYPE="486" ;;
+	002) TMOE_AMD64_QEMU_CPU_TYPE="486-v1" ;;
 	003) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell" ;;
 	004) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-IBRS" ;;
 	005) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-noTSX" ;;
 	006) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-noTSX-IBRS" ;;
-	007) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server" ;;
-	008) TMOE_AMD64_QEMU_CPU_TYPE="Conroe" ;;
-	009) TMOE_AMD64_QEMU_CPU_TYPE="EPYC" ;;
-	010) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-IBPB" ;;
-	011) TMOE_AMD64_QEMU_CPU_TYPE="Haswell" ;;
-	012) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-IBRS" ;;
-	013) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-noTSX" ;;
-	014) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-noTSX-IBRS" ;;
-	015) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Client" ;;
-	016) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server" ;;
-	017) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge" ;;
-	018) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge-IBRS" ;;
-	019) TMOE_AMD64_QEMU_CPU_TYPE="KnightsMill" ;;
-	020) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem" ;;
-	021) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem-IBRS" ;;
-	022) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G1" ;;
-	023) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G2" ;;
-	024) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G3" ;;
-	025) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G4" ;;
-	026) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G5" ;;
-	027) TMOE_AMD64_QEMU_CPU_TYPE="Penryn" ;;
-	028) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge" ;;
-	029) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge-IBRS" ;;
-	030) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client" ;;
-	031) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-IBRS" ;;
-	032) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server" ;;
-	033) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-IBRS" ;;
-	034) TMOE_AMD64_QEMU_CPU_TYPE="Westmere" ;;
-	035) TMOE_AMD64_QEMU_CPU_TYPE="Westmere-IBRS" ;;
-	036) TMOE_AMD64_QEMU_CPU_TYPE="athlon" ;;
-	037) TMOE_AMD64_QEMU_CPU_TYPE="core2duo" ;;
-	038) TMOE_AMD64_QEMU_CPU_TYPE="coreduo" ;;
-	039) TMOE_AMD64_QEMU_CPU_TYPE="kvm32" ;;
-	040) TMOE_AMD64_QEMU_CPU_TYPE="kvm64" ;;
-	041) TMOE_AMD64_QEMU_CPU_TYPE="n270" ;;
-	042) TMOE_AMD64_QEMU_CPU_TYPE="pentium" ;;
-	043) TMOE_AMD64_QEMU_CPU_TYPE="pentium2" ;;
-	044) TMOE_AMD64_QEMU_CPU_TYPE="pentium3" ;;
-	045) TMOE_AMD64_QEMU_CPU_TYPE="phenom" ;;
-	046) TMOE_AMD64_QEMU_CPU_TYPE="qemu32" ;;
-	047) TMOE_AMD64_QEMU_CPU_TYPE="qemu64" ;;
-	048) TMOE_AMD64_QEMU_CPU_TYPE="base" ;;
-	049) TMOE_AMD64_QEMU_CPU_TYPE="host" ;;
-	050) TMOE_AMD64_QEMU_CPU_TYPE="max" ;;
-	051) TMOE_AMD64_QEMU_CPU_TYPE="3dnow" ;;
-	052) TMOE_AMD64_QEMU_CPU_TYPE="3dnowext" ;;
-	053) TMOE_AMD64_QEMU_CPU_TYPE="3dnowprefetch" ;;
-	054) TMOE_AMD64_QEMU_CPU_TYPE="abm" ;;
-	055) TMOE_AMD64_QEMU_CPU_TYPE="ace2" ;;
-	056) TMOE_AMD64_QEMU_CPU_TYPE="ace2-en" ;;
-	057) TMOE_AMD64_QEMU_CPU_TYPE="acpi" ;;
-	058) TMOE_AMD64_QEMU_CPU_TYPE="adx" ;;
-	059) TMOE_AMD64_QEMU_CPU_TYPE="aes" ;;
-	060) TMOE_AMD64_QEMU_CPU_TYPE="amd-no-ssb" ;;
-	061) TMOE_AMD64_QEMU_CPU_TYPE="amd-ssbd" ;;
-	062) TMOE_AMD64_QEMU_CPU_TYPE="apic" ;;
-	063) TMOE_AMD64_QEMU_CPU_TYPE="arat" ;;
-	064) TMOE_AMD64_QEMU_CPU_TYPE="arch-capabilities" ;;
-	065) TMOE_AMD64_QEMU_CPU_TYPE="avx" ;;
-	066) TMOE_AMD64_QEMU_CPU_TYPE="avx2" ;;
-	067) TMOE_AMD64_QEMU_CPU_TYPE="avx512-4fmaps" ;;
-	068) TMOE_AMD64_QEMU_CPU_TYPE="avx512-4vnniw" ;;
-	069) TMOE_AMD64_QEMU_CPU_TYPE="avx512-vpopcntdq" ;;
-	070) TMOE_AMD64_QEMU_CPU_TYPE="avx512bitalg" ;;
-	071) TMOE_AMD64_QEMU_CPU_TYPE="avx512bw" ;;
-	072) TMOE_AMD64_QEMU_CPU_TYPE="avx512cd" ;;
-	073) TMOE_AMD64_QEMU_CPU_TYPE="avx512dq" ;;
-	074) TMOE_AMD64_QEMU_CPU_TYPE="avx512er" ;;
-	075) TMOE_AMD64_QEMU_CPU_TYPE="avx512f" ;;
-	076) TMOE_AMD64_QEMU_CPU_TYPE="avx512ifma" ;;
-	077) TMOE_AMD64_QEMU_CPU_TYPE="avx512pf" ;;
-	078) TMOE_AMD64_QEMU_CPU_TYPE="avx512vbmi" ;;
-	079) TMOE_AMD64_QEMU_CPU_TYPE="avx512vbmi2" ;;
-	080) TMOE_AMD64_QEMU_CPU_TYPE="avx512vl" ;;
-	081) TMOE_AMD64_QEMU_CPU_TYPE="avx512vnni" ;;
-	082) TMOE_AMD64_QEMU_CPU_TYPE="bmi1" ;;
-	083) TMOE_AMD64_QEMU_CPU_TYPE="bmi2" ;;
-	084) TMOE_AMD64_QEMU_CPU_TYPE="cid" ;;
-	085) TMOE_AMD64_QEMU_CPU_TYPE="cldemote" ;;
-	086) TMOE_AMD64_QEMU_CPU_TYPE="clflush" ;;
-	087) TMOE_AMD64_QEMU_CPU_TYPE="clflushopt" ;;
-	088) TMOE_AMD64_QEMU_CPU_TYPE="clwb" ;;
-	089) TMOE_AMD64_QEMU_CPU_TYPE="cmov" ;;
-	090) TMOE_AMD64_QEMU_CPU_TYPE="cmp-legacy" ;;
-	091) TMOE_AMD64_QEMU_CPU_TYPE="cr8legacy" ;;
-	092) TMOE_AMD64_QEMU_CPU_TYPE="cx16" ;;
-	093) TMOE_AMD64_QEMU_CPU_TYPE="cx8" ;;
-	094) TMOE_AMD64_QEMU_CPU_TYPE="dca" ;;
-	095) TMOE_AMD64_QEMU_CPU_TYPE="de" ;;
-	096) TMOE_AMD64_QEMU_CPU_TYPE="decodeassists" ;;
-	097) TMOE_AMD64_QEMU_CPU_TYPE="ds" ;;
-	098) TMOE_AMD64_QEMU_CPU_TYPE="ds-cpl" ;;
-	099) TMOE_AMD64_QEMU_CPU_TYPE="dtes64" ;;
-	100) TMOE_AMD64_QEMU_CPU_TYPE="erms" ;;
-	101) TMOE_AMD64_QEMU_CPU_TYPE="est" ;;
-	102) TMOE_AMD64_QEMU_CPU_TYPE="extapic" ;;
-	103) TMOE_AMD64_QEMU_CPU_TYPE="f16c" ;;
-	104) TMOE_AMD64_QEMU_CPU_TYPE="flushbyasid" ;;
-	105) TMOE_AMD64_QEMU_CPU_TYPE="fma" ;;
-	106) TMOE_AMD64_QEMU_CPU_TYPE="fma4" ;;
-	107) TMOE_AMD64_QEMU_CPU_TYPE="fpu" ;;
-	108) TMOE_AMD64_QEMU_CPU_TYPE="fsgsbase" ;;
-	109) TMOE_AMD64_QEMU_CPU_TYPE="fxsr" ;;
-	110) TMOE_AMD64_QEMU_CPU_TYPE="fxsr-opt" ;;
-	111) TMOE_AMD64_QEMU_CPU_TYPE="gfni" ;;
-	112) TMOE_AMD64_QEMU_CPU_TYPE="hle" ;;
-	113) TMOE_AMD64_QEMU_CPU_TYPE="ht" ;;
-	114) TMOE_AMD64_QEMU_CPU_TYPE="hypervisor" ;;
-	115) TMOE_AMD64_QEMU_CPU_TYPE="ia64" ;;
-	116) TMOE_AMD64_QEMU_CPU_TYPE="ibpb" ;;
-	117) TMOE_AMD64_QEMU_CPU_TYPE="ibrs-all" ;;
-	118) TMOE_AMD64_QEMU_CPU_TYPE="ibs" ;;
-	119) TMOE_AMD64_QEMU_CPU_TYPE="intel-pt" ;;
-	120) TMOE_AMD64_QEMU_CPU_TYPE="invpcid" ;;
-	121) TMOE_AMD64_QEMU_CPU_TYPE="invtsc" ;;
-	122) TMOE_AMD64_QEMU_CPU_TYPE="kvm-asyncpf" ;;
-	123) TMOE_AMD64_QEMU_CPU_TYPE="kvm-hint-dedicated" ;;
-	124) TMOE_AMD64_QEMU_CPU_TYPE="kvm-mmu" ;;
-	125) TMOE_AMD64_QEMU_CPU_TYPE="kvm-nopiodelay" ;;
-	126) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-eoi" ;;
-	127) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-ipi" ;;
-	128) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-tlb-flush" ;;
-	129) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-unhalt" ;;
-	130) TMOE_AMD64_QEMU_CPU_TYPE="kvm-steal-time" ;;
-	131) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock" ;;
-	132) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock" ;;
-	133) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock-stable-bit" ;;
-	134) TMOE_AMD64_QEMU_CPU_TYPE="la57" ;;
-	135) TMOE_AMD64_QEMU_CPU_TYPE="lahf-lm" ;;
-	136) TMOE_AMD64_QEMU_CPU_TYPE="lbrv" ;;
-	137) TMOE_AMD64_QEMU_CPU_TYPE="lm" ;;
-	138) TMOE_AMD64_QEMU_CPU_TYPE="lwp" ;;
-	139) TMOE_AMD64_QEMU_CPU_TYPE="mca" ;;
-	140) TMOE_AMD64_QEMU_CPU_TYPE="mce" ;;
-	141) TMOE_AMD64_QEMU_CPU_TYPE="md-clear" ;;
-	142) TMOE_AMD64_QEMU_CPU_TYPE="mds-no" ;;
-	143) TMOE_AMD64_QEMU_CPU_TYPE="misalignsse" ;;
-	144) TMOE_AMD64_QEMU_CPU_TYPE="mmx" ;;
-	145) TMOE_AMD64_QEMU_CPU_TYPE="mmxext" ;;
-	146) TMOE_AMD64_QEMU_CPU_TYPE="monitor" ;;
-	147) TMOE_AMD64_QEMU_CPU_TYPE="movbe" ;;
-	148) TMOE_AMD64_QEMU_CPU_TYPE="mpx" ;;
-	149) TMOE_AMD64_QEMU_CPU_TYPE="msr" ;;
-	150) TMOE_AMD64_QEMU_CPU_TYPE="mtrr" ;;
-	151) TMOE_AMD64_QEMU_CPU_TYPE="nodeid-msr" ;;
-	152) TMOE_AMD64_QEMU_CPU_TYPE="npt" ;;
-	153) TMOE_AMD64_QEMU_CPU_TYPE="nrip-save" ;;
-	154) TMOE_AMD64_QEMU_CPU_TYPE="nx" ;;
-	155) TMOE_AMD64_QEMU_CPU_TYPE="osvw" ;;
-	156) TMOE_AMD64_QEMU_CPU_TYPE="pae" ;;
-	157) TMOE_AMD64_QEMU_CPU_TYPE="pat" ;;
-	158) TMOE_AMD64_QEMU_CPU_TYPE="pause-filter" ;;
-	159) TMOE_AMD64_QEMU_CPU_TYPE="pbe" ;;
-	160) TMOE_AMD64_QEMU_CPU_TYPE="pcid" ;;
-	161) TMOE_AMD64_QEMU_CPU_TYPE="pclmulqdq" ;;
-	162) TMOE_AMD64_QEMU_CPU_TYPE="pcommit" ;;
-	163) TMOE_AMD64_QEMU_CPU_TYPE="pconfig" ;;
-	164) TMOE_AMD64_QEMU_CPU_TYPE="pdcm" ;;
-	165) TMOE_AMD64_QEMU_CPU_TYPE="pdpe1gb" ;;
-	166) TMOE_AMD64_QEMU_CPU_TYPE="perfctr-core" ;;
-	167) TMOE_AMD64_QEMU_CPU_TYPE="perfctr-nb" ;;
-	168) TMOE_AMD64_QEMU_CPU_TYPE="pfthreshold" ;;
-	169) TMOE_AMD64_QEMU_CPU_TYPE="pge" ;;
-	170) TMOE_AMD64_QEMU_CPU_TYPE="phe" ;;
-	171) TMOE_AMD64_QEMU_CPU_TYPE="phe-en" ;;
-	172) TMOE_AMD64_QEMU_CPU_TYPE="pku" ;;
-	173) TMOE_AMD64_QEMU_CPU_TYPE="pmm" ;;
-	174) TMOE_AMD64_QEMU_CPU_TYPE="pmm-en" ;;
-	175) TMOE_AMD64_QEMU_CPU_TYPE="pn" ;;
-	176) TMOE_AMD64_QEMU_CPU_TYPE="pni" ;;
-	177) TMOE_AMD64_QEMU_CPU_TYPE="popcnt" ;;
-	178) TMOE_AMD64_QEMU_CPU_TYPE="pschange-mc-no" ;;
-	179) TMOE_AMD64_QEMU_CPU_TYPE="pse" ;;
-	180) TMOE_AMD64_QEMU_CPU_TYPE="pse36" ;;
-	181) TMOE_AMD64_QEMU_CPU_TYPE="rdctl-no" ;;
-	182) TMOE_AMD64_QEMU_CPU_TYPE="rdpid" ;;
-	183) TMOE_AMD64_QEMU_CPU_TYPE="rdrand" ;;
-	184) TMOE_AMD64_QEMU_CPU_TYPE="rdseed" ;;
-	185) TMOE_AMD64_QEMU_CPU_TYPE="rdtscp" ;;
-	186) TMOE_AMD64_QEMU_CPU_TYPE="rsba" ;;
-	187) TMOE_AMD64_QEMU_CPU_TYPE="rtm" ;;
-	188) TMOE_AMD64_QEMU_CPU_TYPE="sep" ;;
-	189) TMOE_AMD64_QEMU_CPU_TYPE="sha-ni" ;;
-	190) TMOE_AMD64_QEMU_CPU_TYPE="skinit" ;;
-	191) TMOE_AMD64_QEMU_CPU_TYPE="skip-l1dfl-vmentry" ;;
-	192) TMOE_AMD64_QEMU_CPU_TYPE="smap" ;;
-	193) TMOE_AMD64_QEMU_CPU_TYPE="smep" ;;
-	194) TMOE_AMD64_QEMU_CPU_TYPE="smx" ;;
-	195) TMOE_AMD64_QEMU_CPU_TYPE="spec-ctrl" ;;
-	196) TMOE_AMD64_QEMU_CPU_TYPE="ss" ;;
-	197) TMOE_AMD64_QEMU_CPU_TYPE="ssb-no" ;;
-	198) TMOE_AMD64_QEMU_CPU_TYPE="ssbd" ;;
-	199) TMOE_AMD64_QEMU_CPU_TYPE="sse" ;;
-	200) TMOE_AMD64_QEMU_CPU_TYPE="sse2" ;;
-	201) TMOE_AMD64_QEMU_CPU_TYPE="sse4.1" ;;
-	202) TMOE_AMD64_QEMU_CPU_TYPE="sse4.2" ;;
-	203) TMOE_AMD64_QEMU_CPU_TYPE="sse4a" ;;
-	204) TMOE_AMD64_QEMU_CPU_TYPE="ssse3" ;;
-	205) TMOE_AMD64_QEMU_CPU_TYPE="svm" ;;
-	206) TMOE_AMD64_QEMU_CPU_TYPE="svm-lock" ;;
-	207) TMOE_AMD64_QEMU_CPU_TYPE="syscall" ;;
-	208) TMOE_AMD64_QEMU_CPU_TYPE="tbm" ;;
-	209) TMOE_AMD64_QEMU_CPU_TYPE="tce" ;;
-	210) TMOE_AMD64_QEMU_CPU_TYPE="tm" ;;
-	211) TMOE_AMD64_QEMU_CPU_TYPE="tm2" ;;
-	212) TMOE_AMD64_QEMU_CPU_TYPE="topoext" ;;
-	213) TMOE_AMD64_QEMU_CPU_TYPE="tsc" ;;
-	214) TMOE_AMD64_QEMU_CPU_TYPE="tsc-adjust" ;;
-	215) TMOE_AMD64_QEMU_CPU_TYPE="tsc-deadline" ;;
-	216) TMOE_AMD64_QEMU_CPU_TYPE="tsc-scale" ;;
-	217) TMOE_AMD64_QEMU_CPU_TYPE="umip" ;;
-	218) TMOE_AMD64_QEMU_CPU_TYPE="vaes" ;;
-	219) TMOE_AMD64_QEMU_CPU_TYPE="virt-ssbd" ;;
-	220) TMOE_AMD64_QEMU_CPU_TYPE="vmcb-clean" ;;
-	221) TMOE_AMD64_QEMU_CPU_TYPE="vme" ;;
-	222) TMOE_AMD64_QEMU_CPU_TYPE="vmx" ;;
-	223) TMOE_AMD64_QEMU_CPU_TYPE="vpclmulqdq" ;;
-	224) TMOE_AMD64_QEMU_CPU_TYPE="wbnoinvd" ;;
-	225) TMOE_AMD64_QEMU_CPU_TYPE="wdt" ;;
-	226) TMOE_AMD64_QEMU_CPU_TYPE="x2apic" ;;
-	227) TMOE_AMD64_QEMU_CPU_TYPE="xcrypt" ;;
-	228) TMOE_AMD64_QEMU_CPU_TYPE="xcrypt-en" ;;
-	229) TMOE_AMD64_QEMU_CPU_TYPE="xgetbv1" ;;
-	230) TMOE_AMD64_QEMU_CPU_TYPE="xop" ;;
-	231) TMOE_AMD64_QEMU_CPU_TYPE="xsave" ;;
-	232) TMOE_AMD64_QEMU_CPU_TYPE="xsavec" ;;
-	233) TMOE_AMD64_QEMU_CPU_TYPE="xsaveopt" ;;
-	234) TMOE_AMD64_QEMU_CPU_TYPE="xsaves" ;;
-	235) TMOE_AMD64_QEMU_CPU_TYPE="xstore" ;;
-	236) TMOE_AMD64_QEMU_CPU_TYPE="xstore-en" ;;
-	237) TMOE_AMD64_QEMU_CPU_TYPE="xtpr" ;;
+	007) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-v1" ;;
+	008) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-v2" ;;
+	009) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-v3" ;;
+	010) TMOE_AMD64_QEMU_CPU_TYPE="Broadwell-v4" ;;
+	011) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server" ;;
+	012) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server-noTSX" ;;
+	013) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server-v1" ;;
+	014) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server-v2" ;;
+	015) TMOE_AMD64_QEMU_CPU_TYPE="Cascadelake-Server-v3" ;;
+	016) TMOE_AMD64_QEMU_CPU_TYPE="Conroe" ;;
+	017) TMOE_AMD64_QEMU_CPU_TYPE="Conroe-v1" ;;
+	018) TMOE_AMD64_QEMU_CPU_TYPE="Cooperlake" ;;
+	019) TMOE_AMD64_QEMU_CPU_TYPE="Cooperlake-v1" ;;
+	020) TMOE_AMD64_QEMU_CPU_TYPE="Denverton" ;;
+	021) TMOE_AMD64_QEMU_CPU_TYPE="Denverton-v1" ;;
+	022) TMOE_AMD64_QEMU_CPU_TYPE="Denverton-v2" ;;
+	023) TMOE_AMD64_QEMU_CPU_TYPE="Dhyana" ;;
+	024) TMOE_AMD64_QEMU_CPU_TYPE="Dhyana-v1" ;;
+	025) TMOE_AMD64_QEMU_CPU_TYPE="EPYC" ;;
+	026) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-IBPB" ;;
+	027) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-Rome" ;;
+	028) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-Rome-v1" ;;
+	029) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-v1" ;;
+	030) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-v2" ;;
+	031) TMOE_AMD64_QEMU_CPU_TYPE="EPYC-v3" ;;
+	032) TMOE_AMD64_QEMU_CPU_TYPE="Haswell" ;;
+	033) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-IBRS" ;;
+	034) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-noTSX" ;;
+	035) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-noTSX-IBRS" ;;
+	036) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-v1" ;;
+	037) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-v2" ;;
+	038) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-v3" ;;
+	039) TMOE_AMD64_QEMU_CPU_TYPE="Haswell-v4" ;;
+	040) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Client" ;;
+	041) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Client-noTSX" ;;
+	042) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Client-v1" ;;
+	043) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Client-v2" ;;
+	044) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server" ;;
+	045) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server-noTSX" ;;
+	046) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server-v1" ;;
+	047) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server-v2" ;;
+	048) TMOE_AMD64_QEMU_CPU_TYPE="Icelake-Server-v3" ;;
+	049) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge" ;;
+	050) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge-IBRS" ;;
+	051) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge-v1" ;;
+	052) TMOE_AMD64_QEMU_CPU_TYPE="IvyBridge-v2" ;;
+	053) TMOE_AMD64_QEMU_CPU_TYPE="KnightsMill" ;;
+	054) TMOE_AMD64_QEMU_CPU_TYPE="KnightsMill-v1" ;;
+	055) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem" ;;
+	056) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem-IBRS" ;;
+	057) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem-v1" ;;
+	058) TMOE_AMD64_QEMU_CPU_TYPE="Nehalem-v2" ;;
+	059) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G1" ;;
+	060) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G1-v1" ;;
+	061) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G2" ;;
+	062) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G2-v1" ;;
+	063) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G3" ;;
+	064) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G3-v1" ;;
+	065) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G4" ;;
+	066) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G4-v1" ;;
+	067) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G5" ;;
+	068) TMOE_AMD64_QEMU_CPU_TYPE="Opteron_G5-v1" ;;
+	069) TMOE_AMD64_QEMU_CPU_TYPE="Penryn" ;;
+	070) TMOE_AMD64_QEMU_CPU_TYPE="Penryn-v1" ;;
+	071) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge" ;;
+	072) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge-IBRS" ;;
+	073) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge-v1" ;;
+	074) TMOE_AMD64_QEMU_CPU_TYPE="SandyBridge-v2" ;;
+	075) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client" ;;
+	076) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-IBRS" ;;
+	077) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-noTSX-IBRS" ;;
+	078) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-v1" ;;
+	079) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-v2" ;;
+	080) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Client-v3" ;;
+	081) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server" ;;
+	082) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-IBRS" ;;
+	083) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-noTSX-IBRS" ;;
+	084) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-v1" ;;
+	085) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-v2" ;;
+	086) TMOE_AMD64_QEMU_CPU_TYPE="Skylake-Server-v3" ;;
+	087) TMOE_AMD64_QEMU_CPU_TYPE="Snowridge" ;;
+	088) TMOE_AMD64_QEMU_CPU_TYPE="Snowridge-v1" ;;
+	089) TMOE_AMD64_QEMU_CPU_TYPE="Snowridge-v2" ;;
+	090) TMOE_AMD64_QEMU_CPU_TYPE="Westmere" ;;
+	091) TMOE_AMD64_QEMU_CPU_TYPE="Westmere-IBRS" ;;
+	092) TMOE_AMD64_QEMU_CPU_TYPE="Westmere-v1" ;;
+	093) TMOE_AMD64_QEMU_CPU_TYPE="Westmere-v2" ;;
+	094) TMOE_AMD64_QEMU_CPU_TYPE="athlon" ;;
+	095) TMOE_AMD64_QEMU_CPU_TYPE="athlon-v1" ;;
+	096) TMOE_AMD64_QEMU_CPU_TYPE="core2duo" ;;
+	097) TMOE_AMD64_QEMU_CPU_TYPE="core2duo-v1" ;;
+	098) TMOE_AMD64_QEMU_CPU_TYPE="coreduo" ;;
+	099) TMOE_AMD64_QEMU_CPU_TYPE="coreduo-v1" ;;
+	100) TMOE_AMD64_QEMU_CPU_TYPE="kvm32" ;;
+	101) TMOE_AMD64_QEMU_CPU_TYPE="kvm32-v1" ;;
+	102) TMOE_AMD64_QEMU_CPU_TYPE="kvm64" ;;
+	103) TMOE_AMD64_QEMU_CPU_TYPE="kvm64-v1" ;;
+	104) TMOE_AMD64_QEMU_CPU_TYPE="n270" ;;
+	105) TMOE_AMD64_QEMU_CPU_TYPE="n270-v1" ;;
+	106) TMOE_AMD64_QEMU_CPU_TYPE="pentium" ;;
+	107) TMOE_AMD64_QEMU_CPU_TYPE="pentium-v1" ;;
+	108) TMOE_AMD64_QEMU_CPU_TYPE="pentium2" ;;
+	109) TMOE_AMD64_QEMU_CPU_TYPE="pentium2-v1" ;;
+	110) TMOE_AMD64_QEMU_CPU_TYPE="pentium3" ;;
+	111) TMOE_AMD64_QEMU_CPU_TYPE="pentium3-v1" ;;
+	112) TMOE_AMD64_QEMU_CPU_TYPE="phenom" ;;
+	113) TMOE_AMD64_QEMU_CPU_TYPE="phenom-v1" ;;
+	114) TMOE_AMD64_QEMU_CPU_TYPE="qemu32" ;;
+	115) TMOE_AMD64_QEMU_CPU_TYPE="qemu32-v1" ;;
+	116) TMOE_AMD64_QEMU_CPU_TYPE="qemu64" ;;
+	117) TMOE_AMD64_QEMU_CPU_TYPE="qemu64-v1" ;;
+	118) TMOE_AMD64_QEMU_CPU_TYPE="base" ;;
+	119) TMOE_AMD64_QEMU_CPU_TYPE="host" ;;
+	120) TMOE_AMD64_QEMU_CPU_TYPE="max" ;;
+	121) TMOE_AMD64_QEMU_CPU_TYPE="3dnow" ;;
+	122) TMOE_AMD64_QEMU_CPU_TYPE="3dnowext" ;;
+	123) TMOE_AMD64_QEMU_CPU_TYPE="3dnowprefetch" ;;
+	124) TMOE_AMD64_QEMU_CPU_TYPE="abm" ;;
+	125) TMOE_AMD64_QEMU_CPU_TYPE="ace2" ;;
+	126) TMOE_AMD64_QEMU_CPU_TYPE="ace2-en" ;;
+	127) TMOE_AMD64_QEMU_CPU_TYPE="acpi" ;;
+	128) TMOE_AMD64_QEMU_CPU_TYPE="adx" ;;
+	129) TMOE_AMD64_QEMU_CPU_TYPE="aes" ;;
+	130) TMOE_AMD64_QEMU_CPU_TYPE="amd-no-ssb" ;;
+	131) TMOE_AMD64_QEMU_CPU_TYPE="amd-ssbd" ;;
+	132) TMOE_AMD64_QEMU_CPU_TYPE="amd-stibp" ;;
+	133) TMOE_AMD64_QEMU_CPU_TYPE="apic" ;;
+	134) TMOE_AMD64_QEMU_CPU_TYPE="arat" ;;
+	135) TMOE_AMD64_QEMU_CPU_TYPE="arch-capabilities" ;;
+	136) TMOE_AMD64_QEMU_CPU_TYPE="avx" ;;
+	137) TMOE_AMD64_QEMU_CPU_TYPE="avx2" ;;
+	138) TMOE_AMD64_QEMU_CPU_TYPE="avx512-4fmaps" ;;
+	139) TMOE_AMD64_QEMU_CPU_TYPE="avx512-4vnniw" ;;
+	140) TMOE_AMD64_QEMU_CPU_TYPE="avx512-bf16" ;;
+	141) TMOE_AMD64_QEMU_CPU_TYPE="avx512-vpopcntdq" ;;
+	142) TMOE_AMD64_QEMU_CPU_TYPE="avx512bitalg" ;;
+	143) TMOE_AMD64_QEMU_CPU_TYPE="avx512bw" ;;
+	144) TMOE_AMD64_QEMU_CPU_TYPE="avx512cd" ;;
+	145) TMOE_AMD64_QEMU_CPU_TYPE="avx512dq" ;;
+	146) TMOE_AMD64_QEMU_CPU_TYPE="avx512er" ;;
+	147) TMOE_AMD64_QEMU_CPU_TYPE="avx512f" ;;
+	148) TMOE_AMD64_QEMU_CPU_TYPE="avx512ifma" ;;
+	149) TMOE_AMD64_QEMU_CPU_TYPE="avx512pf" ;;
+	150) TMOE_AMD64_QEMU_CPU_TYPE="avx512vbmi" ;;
+	151) TMOE_AMD64_QEMU_CPU_TYPE="avx512vbmi2" ;;
+	152) TMOE_AMD64_QEMU_CPU_TYPE="avx512vl" ;;
+	153) TMOE_AMD64_QEMU_CPU_TYPE="avx512vnni" ;;
+	154) TMOE_AMD64_QEMU_CPU_TYPE="bmi1" ;;
+	155) TMOE_AMD64_QEMU_CPU_TYPE="bmi2" ;;
+	156) TMOE_AMD64_QEMU_CPU_TYPE="cid" ;;
+	157) TMOE_AMD64_QEMU_CPU_TYPE="cldemote" ;;
+	158) TMOE_AMD64_QEMU_CPU_TYPE="clflush" ;;
+	159) TMOE_AMD64_QEMU_CPU_TYPE="clflushopt" ;;
+	160) TMOE_AMD64_QEMU_CPU_TYPE="clwb" ;;
+	161) TMOE_AMD64_QEMU_CPU_TYPE="clzero" ;;
+	162) TMOE_AMD64_QEMU_CPU_TYPE="cmov" ;;
+	163) TMOE_AMD64_QEMU_CPU_TYPE="cmp-legacy" ;;
+	164) TMOE_AMD64_QEMU_CPU_TYPE="core-capability" ;;
+	165) TMOE_AMD64_QEMU_CPU_TYPE="cr8legacy" ;;
+	166) TMOE_AMD64_QEMU_CPU_TYPE="cx16" ;;
+	167) TMOE_AMD64_QEMU_CPU_TYPE="cx8" ;;
+	168) TMOE_AMD64_QEMU_CPU_TYPE="dca" ;;
+	169) TMOE_AMD64_QEMU_CPU_TYPE="de" ;;
+	170) TMOE_AMD64_QEMU_CPU_TYPE="decodeassists" ;;
+	171) TMOE_AMD64_QEMU_CPU_TYPE="ds" ;;
+	172) TMOE_AMD64_QEMU_CPU_TYPE="ds-cpl" ;;
+	173) TMOE_AMD64_QEMU_CPU_TYPE="dtes64" ;;
+	174) TMOE_AMD64_QEMU_CPU_TYPE="erms" ;;
+	175) TMOE_AMD64_QEMU_CPU_TYPE="est" ;;
+	176) TMOE_AMD64_QEMU_CPU_TYPE="extapic" ;;
+	177) TMOE_AMD64_QEMU_CPU_TYPE="f16c" ;;
+	178) TMOE_AMD64_QEMU_CPU_TYPE="flushbyasid" ;;
+	179) TMOE_AMD64_QEMU_CPU_TYPE="fma" ;;
+	180) TMOE_AMD64_QEMU_CPU_TYPE="fma4" ;;
+	181) TMOE_AMD64_QEMU_CPU_TYPE="fpu" ;;
+	182) TMOE_AMD64_QEMU_CPU_TYPE="fsgsbase" ;;
+	183) TMOE_AMD64_QEMU_CPU_TYPE="fxsr" ;;
+	184) TMOE_AMD64_QEMU_CPU_TYPE="fxsr-opt" ;;
+	185) TMOE_AMD64_QEMU_CPU_TYPE="gfni" ;;
+	186) TMOE_AMD64_QEMU_CPU_TYPE="hle" ;;
+	187) TMOE_AMD64_QEMU_CPU_TYPE="ht" ;;
+	188) TMOE_AMD64_QEMU_CPU_TYPE="hypervisor" ;;
+	189) TMOE_AMD64_QEMU_CPU_TYPE="ia64" ;;
+	190) TMOE_AMD64_QEMU_CPU_TYPE="ibpb" ;;
+	191) TMOE_AMD64_QEMU_CPU_TYPE="ibrs-all" ;;
+	192) TMOE_AMD64_QEMU_CPU_TYPE="ibs" ;;
+	193) TMOE_AMD64_QEMU_CPU_TYPE="intel-pt" ;;
+	194) TMOE_AMD64_QEMU_CPU_TYPE="invpcid" ;;
+	195) TMOE_AMD64_QEMU_CPU_TYPE="invtsc" ;;
+	196) TMOE_AMD64_QEMU_CPU_TYPE="kvm-asyncpf" ;;
+	197) TMOE_AMD64_QEMU_CPU_TYPE="kvm-hint-dedicated" ;;
+	198) TMOE_AMD64_QEMU_CPU_TYPE="kvm-mmu" ;;
+	199) TMOE_AMD64_QEMU_CPU_TYPE="kvm-nopiodelay" ;;
+	200) TMOE_AMD64_QEMU_CPU_TYPE="kvm-poll-control" ;;
+	201) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-eoi" ;;
+	202) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-ipi" ;;
+	203) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-sched-yield" ;;
+	204) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-tlb-flush" ;;
+	205) TMOE_AMD64_QEMU_CPU_TYPE="kvm-pv-unhalt" ;;
+	206) TMOE_AMD64_QEMU_CPU_TYPE="kvm-steal-time" ;;
+	207) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock" ;;
+	208) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock" ;;
+	209) TMOE_AMD64_QEMU_CPU_TYPE="kvmclock-stable-bit" ;;
+	210) TMOE_AMD64_QEMU_CPU_TYPE="la57" ;;
+	211) TMOE_AMD64_QEMU_CPU_TYPE="lahf-lm" ;;
+	212) TMOE_AMD64_QEMU_CPU_TYPE="lbrv" ;;
+	213) TMOE_AMD64_QEMU_CPU_TYPE="lm" ;;
+	214) TMOE_AMD64_QEMU_CPU_TYPE="lwp" ;;
+	215) TMOE_AMD64_QEMU_CPU_TYPE="mca" ;;
+	216) TMOE_AMD64_QEMU_CPU_TYPE="mce" ;;
+	217) TMOE_AMD64_QEMU_CPU_TYPE="md-clear" ;;
+	218) TMOE_AMD64_QEMU_CPU_TYPE="mds-no" ;;
+	219) TMOE_AMD64_QEMU_CPU_TYPE="misalignsse" ;;
+	220) TMOE_AMD64_QEMU_CPU_TYPE="mmx" ;;
+	221) TMOE_AMD64_QEMU_CPU_TYPE="mmxext" ;;
+	222) TMOE_AMD64_QEMU_CPU_TYPE="monitor" ;;
+	223) TMOE_AMD64_QEMU_CPU_TYPE="movbe" ;;
+	224) TMOE_AMD64_QEMU_CPU_TYPE="movdir64b" ;;
+	225) TMOE_AMD64_QEMU_CPU_TYPE="movdiri" ;;
+	226) TMOE_AMD64_QEMU_CPU_TYPE="mpx" ;;
+	227) TMOE_AMD64_QEMU_CPU_TYPE="msr" ;;
+	228) TMOE_AMD64_QEMU_CPU_TYPE="mtrr" ;;
+	229) TMOE_AMD64_QEMU_CPU_TYPE="nodeid-msr" ;;
+	230) TMOE_AMD64_QEMU_CPU_TYPE="npt" ;;
+	231) TMOE_AMD64_QEMU_CPU_TYPE="nrip-save" ;;
+	232) TMOE_AMD64_QEMU_CPU_TYPE="nx" ;;
+	233) TMOE_AMD64_QEMU_CPU_TYPE="osvw" ;;
+	234) TMOE_AMD64_QEMU_CPU_TYPE="pae" ;;
+	235) TMOE_AMD64_QEMU_CPU_TYPE="pat" ;;
+	236) TMOE_AMD64_QEMU_CPU_TYPE="pause-filter" ;;
+	237) TMOE_AMD64_QEMU_CPU_TYPE="pbe" ;;
+	238) TMOE_AMD64_QEMU_CPU_TYPE="pcid" ;;
+	239) TMOE_AMD64_QEMU_CPU_TYPE="pclmulqdq" ;;
+	240) TMOE_AMD64_QEMU_CPU_TYPE="pcommit" ;;
+	241) TMOE_AMD64_QEMU_CPU_TYPE="pdcm" ;;
+	242) TMOE_AMD64_QEMU_CPU_TYPE="pdpe1gb" ;;
+	243) TMOE_AMD64_QEMU_CPU_TYPE="perfctr-core" ;;
+	244) TMOE_AMD64_QEMU_CPU_TYPE="perfctr-nb" ;;
+	245) TMOE_AMD64_QEMU_CPU_TYPE="pfthreshold" ;;
+	246) TMOE_AMD64_QEMU_CPU_TYPE="pge" ;;
+	247) TMOE_AMD64_QEMU_CPU_TYPE="phe" ;;
+	248) TMOE_AMD64_QEMU_CPU_TYPE="phe-en" ;;
+	249) TMOE_AMD64_QEMU_CPU_TYPE="pku" ;;
+	250) TMOE_AMD64_QEMU_CPU_TYPE="pmm" ;;
+	251) TMOE_AMD64_QEMU_CPU_TYPE="pmm-en" ;;
+	252) TMOE_AMD64_QEMU_CPU_TYPE="pn" ;;
+	253) TMOE_AMD64_QEMU_CPU_TYPE="pni" ;;
+	254) TMOE_AMD64_QEMU_CPU_TYPE="popcnt" ;;
+	255) TMOE_AMD64_QEMU_CPU_TYPE="pschange-mc-no" ;;
+	256) TMOE_AMD64_QEMU_CPU_TYPE="pse" ;;
+	257) TMOE_AMD64_QEMU_CPU_TYPE="pse36" ;;
+	258) TMOE_AMD64_QEMU_CPU_TYPE="rdctl-no" ;;
+	259) TMOE_AMD64_QEMU_CPU_TYPE="rdpid" ;;
+	260) TMOE_AMD64_QEMU_CPU_TYPE="rdrand" ;;
+	261) TMOE_AMD64_QEMU_CPU_TYPE="rdseed" ;;
+	262) TMOE_AMD64_QEMU_CPU_TYPE="rdtscp" ;;
+	263) TMOE_AMD64_QEMU_CPU_TYPE="rsba" ;;
+	264) TMOE_AMD64_QEMU_CPU_TYPE="rtm" ;;
+	265) TMOE_AMD64_QEMU_CPU_TYPE="sep" ;;
+	266) TMOE_AMD64_QEMU_CPU_TYPE="sha-ni" ;;
+	267) TMOE_AMD64_QEMU_CPU_TYPE="skinit" ;;
+	268) TMOE_AMD64_QEMU_CPU_TYPE="skip-l1dfl-vmentry" ;;
+	269) TMOE_AMD64_QEMU_CPU_TYPE="smap" ;;
+	270) TMOE_AMD64_QEMU_CPU_TYPE="smep" ;;
+	271) TMOE_AMD64_QEMU_CPU_TYPE="smx" ;;
+	272) TMOE_AMD64_QEMU_CPU_TYPE="spec-ctrl" ;;
+	273) TMOE_AMD64_QEMU_CPU_TYPE="split-lock-detect" ;;
+	274) TMOE_AMD64_QEMU_CPU_TYPE="ss" ;;
+	275) TMOE_AMD64_QEMU_CPU_TYPE="ssb-no" ;;
+	276) TMOE_AMD64_QEMU_CPU_TYPE="ssbd" ;;
+	277) TMOE_AMD64_QEMU_CPU_TYPE="sse" ;;
+	278) TMOE_AMD64_QEMU_CPU_TYPE="sse2" ;;
+	279) TMOE_AMD64_QEMU_CPU_TYPE="sse4.1" ;;
+	280) TMOE_AMD64_QEMU_CPU_TYPE="sse4.2" ;;
+	281) TMOE_AMD64_QEMU_CPU_TYPE="sse4a" ;;
+	282) TMOE_AMD64_QEMU_CPU_TYPE="ssse3" ;;
+	283) TMOE_AMD64_QEMU_CPU_TYPE="stibp" ;;
+	284) TMOE_AMD64_QEMU_CPU_TYPE="svm" ;;
+	285) TMOE_AMD64_QEMU_CPU_TYPE="svm-lock" ;;
+	286) TMOE_AMD64_QEMU_CPU_TYPE="syscall" ;;
+	287) TMOE_AMD64_QEMU_CPU_TYPE="taa-no" ;;
+	288) TMOE_AMD64_QEMU_CPU_TYPE="tbm" ;;
+	289) TMOE_AMD64_QEMU_CPU_TYPE="tce" ;;
+	290) TMOE_AMD64_QEMU_CPU_TYPE="tm" ;;
+	291) TMOE_AMD64_QEMU_CPU_TYPE="tm2" ;;
+	292) TMOE_AMD64_QEMU_CPU_TYPE="topoext" ;;
+	293) TMOE_AMD64_QEMU_CPU_TYPE="tsc" ;;
+	294) TMOE_AMD64_QEMU_CPU_TYPE="tsc-adjust" ;;
+	295) TMOE_AMD64_QEMU_CPU_TYPE="tsc-deadline" ;;
+	296) TMOE_AMD64_QEMU_CPU_TYPE="tsc-scale" ;;
+	297) TMOE_AMD64_QEMU_CPU_TYPE="tsx-ctrl" ;;
+	298) TMOE_AMD64_QEMU_CPU_TYPE="umip" ;;
+	299) TMOE_AMD64_QEMU_CPU_TYPE="vaes" ;;
+	300) TMOE_AMD64_QEMU_CPU_TYPE="virt-ssbd" ;;
+	301) TMOE_AMD64_QEMU_CPU_TYPE="vmcb-clean" ;;
+	302) TMOE_AMD64_QEMU_CPU_TYPE="vme" ;;
+	303) TMOE_AMD64_QEMU_CPU_TYPE="vmx" ;;
+	304) TMOE_AMD64_QEMU_CPU_TYPE="vmx-activity-hlt" ;;
+	305) TMOE_AMD64_QEMU_CPU_TYPE="vmx-activity-shutdown" ;;
+	306) TMOE_AMD64_QEMU_CPU_TYPE="vmx-activity-wait-sipi" ;;
+	307) TMOE_AMD64_QEMU_CPU_TYPE="vmx-apicv-register" ;;
+	308) TMOE_AMD64_QEMU_CPU_TYPE="vmx-apicv-vid" ;;
+	309) TMOE_AMD64_QEMU_CPU_TYPE="vmx-apicv-x2apic" ;;
+	310) TMOE_AMD64_QEMU_CPU_TYPE="vmx-apicv-xapic" ;;
+	311) TMOE_AMD64_QEMU_CPU_TYPE="vmx-cr3-load-noexit" ;;
+	312) TMOE_AMD64_QEMU_CPU_TYPE="vmx-cr3-store-noexit" ;;
+	313) TMOE_AMD64_QEMU_CPU_TYPE="vmx-cr8-load-exit" ;;
+	314) TMOE_AMD64_QEMU_CPU_TYPE="vmx-cr8-store-exit" ;;
+	315) TMOE_AMD64_QEMU_CPU_TYPE="vmx-desc-exit" ;;
+	316) TMOE_AMD64_QEMU_CPU_TYPE="vmx-encls-exit" ;;
+	317) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-ia32e-mode" ;;
+	318) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-load-bndcfgs" ;;
+	319) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-load-efer" ;;
+	320) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-load-pat" ;;
+	321) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-load-perf-global-ctrl" ;;
+	322) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-load-rtit-ctl" ;;
+	323) TMOE_AMD64_QEMU_CPU_TYPE="vmx-entry-noload-debugctl" ;;
+	324) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ept" ;;
+	325) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ept-1gb" ;;
+	326) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ept-2mb" ;;
+	327) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ept-advanced-exitinfo" ;;
+	328) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ept-execonly" ;;
+	329) TMOE_AMD64_QEMU_CPU_TYPE="vmx-eptad" ;;
+	330) TMOE_AMD64_QEMU_CPU_TYPE="vmx-eptp-switching" ;;
+	331) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-ack-intr" ;;
+	332) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-clear-bndcfgs" ;;
+	333) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-clear-rtit-ctl" ;;
+	334) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-load-efer" ;;
+	335) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-load-pat" ;;
+	336) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-load-perf-global-ctrl" ;;
+	337) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-nosave-debugctl" ;;
+	338) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-save-efer" ;;
+	339) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-save-pat" ;;
+	340) TMOE_AMD64_QEMU_CPU_TYPE="vmx-exit-save-preemption-timer" ;;
+	341) TMOE_AMD64_QEMU_CPU_TYPE="vmx-flexpriority" ;;
+	342) TMOE_AMD64_QEMU_CPU_TYPE="vmx-hlt-exit" ;;
+	343) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ins-outs" ;;
+	344) TMOE_AMD64_QEMU_CPU_TYPE="vmx-intr-exit" ;;
+	345) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept" ;;
+	346) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-all-context" ;;
+	347) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-single-context" ;;
+	348) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-single-context" ;;
+	349) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-single-context-noglobals" ;;
+	350) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invlpg-exit" ;;
+	351) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invpcid-exit" ;;
+	352) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invvpid" ;;
+	353) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invvpid-all-context" ;;
+	354) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invvpid-single-addr" ;;
+	355) TMOE_AMD64_QEMU_CPU_TYPE="vmx-io-bitmap" ;;
+	356) TMOE_AMD64_QEMU_CPU_TYPE="vmx-io-exit" ;;
+	357) TMOE_AMD64_QEMU_CPU_TYPE="vmx-monitor-exit" ;;
+	358) TMOE_AMD64_QEMU_CPU_TYPE="vmx-movdr-exit" ;;
+	359) TMOE_AMD64_QEMU_CPU_TYPE="vmx-msr-bitmap" ;;
+	360) TMOE_AMD64_QEMU_CPU_TYPE="vmx-mtf" ;;
+	361) TMOE_AMD64_QEMU_CPU_TYPE="vmx-mwait-exit" ;;
+	362) TMOE_AMD64_QEMU_CPU_TYPE="vmx-nmi-exit" ;;
+	363) TMOE_AMD64_QEMU_CPU_TYPE="vmx-page-walk-4" ;;
+	364) TMOE_AMD64_QEMU_CPU_TYPE="vmx-page-walk-5" ;;
+	365) TMOE_AMD64_QEMU_CPU_TYPE="vmx-pause-exit" ;;
+	366) TMOE_AMD64_QEMU_CPU_TYPE="vmx-ple" ;;
+	367) TMOE_AMD64_QEMU_CPU_TYPE="vmx-pml" ;;
+	368) TMOE_AMD64_QEMU_CPU_TYPE="vmx-posted-intr" ;;
+	369) TMOE_AMD64_QEMU_CPU_TYPE="vmx-preemption-timer" ;;
+	370) TMOE_AMD64_QEMU_CPU_TYPE="vmx-rdpmc-exit" ;;
+	371) TMOE_AMD64_QEMU_CPU_TYPE="vmx-rdrand-exit" ;;
+	372) TMOE_AMD64_QEMU_CPU_TYPE="vmx-rdseed-exit" ;;
+	373) TMOE_AMD64_QEMU_CPU_TYPE="vmx-rdtsc-exit" ;;
+	374) TMOE_AMD64_QEMU_CPU_TYPE="vmx-rdtscp-exit" ;;
+	375) TMOE_AMD64_QEMU_CPU_TYPE="vmx-secondary-ctls" ;;
+	376) TMOE_AMD64_QEMU_CPU_TYPE="vmx-shadow-vmcs" ;;
+	377) TMOE_AMD64_QEMU_CPU_TYPE="vmx-store-lma" ;;
+	378) TMOE_AMD64_QEMU_CPU_TYPE="vmx-true-ctls" ;;
+	379) TMOE_AMD64_QEMU_CPU_TYPE="vmx-tsc-offset" ;;
+	380) TMOE_AMD64_QEMU_CPU_TYPE="vmx-unrestricted-guest" ;;
+	381) TMOE_AMD64_QEMU_CPU_TYPE="vmx-vintr-pending" ;;
+	382) TMOE_AMD64_QEMU_CPU_TYPE="vmx-vmfunc" ;;
+	383) TMOE_AMD64_QEMU_CPU_TYPE="vmx-vmwrite-vmexit-fields" ;;
+	384) TMOE_AMD64_QEMU_CPU_TYPE="vmx-vnmi" ;;
+	385) TMOE_AMD64_QEMU_CPU_TYPE="vmx-vnmi-pending" ;;
+	386) TMOE_AMD64_QEMU_CPU_TYPE="vmx-vpid" ;;
+	387) TMOE_AMD64_QEMU_CPU_TYPE="vmx-wbinvd-exit" ;;
+	388) TMOE_AMD64_QEMU_CPU_TYPE="vmx-xsaves" ;;
+	389) TMOE_AMD64_QEMU_CPU_TYPE="vmx-zero-len-inject" ;;
+	390) TMOE_AMD64_QEMU_CPU_TYPE="vpclmulqdq" ;;
+	391) TMOE_AMD64_QEMU_CPU_TYPE="waitpkg" ;;
+	392) TMOE_AMD64_QEMU_CPU_TYPE="wbnoinvd" ;;
+	393) TMOE_AMD64_QEMU_CPU_TYPE="wdt" ;;
+	394) TMOE_AMD64_QEMU_CPU_TYPE="x2apic" ;;
+	395) TMOE_AMD64_QEMU_CPU_TYPE="xcrypt" ;;
+	396) TMOE_AMD64_QEMU_CPU_TYPE="xcrypt-en" ;;
+	397) TMOE_AMD64_QEMU_CPU_TYPE="xgetbv1" ;;
+	398) TMOE_AMD64_QEMU_CPU_TYPE="xop" ;;
+	399) TMOE_AMD64_QEMU_CPU_TYPE="xsave" ;;
+	400) TMOE_AMD64_QEMU_CPU_TYPE="xsavec" ;;
+	401) TMOE_AMD64_QEMU_CPU_TYPE="xsaveerptr" ;;
+	402) TMOE_AMD64_QEMU_CPU_TYPE="xsaveopt" ;;
+	403) TMOE_AMD64_QEMU_CPU_TYPE="xsaves" ;;
+	404) TMOE_AMD64_QEMU_CPU_TYPE="xstore" ;;
+	405) TMOE_AMD64_QEMU_CPU_TYPE="xstore-en" ;;
+	406) TMOE_AMD64_QEMU_CPU_TYPE="xtpr" ;;
 	esac
 	###############
 	sed -i '/-cpu /d' startqemu
@@ -8110,108 +8474,123 @@ modify_qemu_amd64_tmoe_machine_type() {
 	else
 		CURRENT_VALUE='未指定'
 	fi
+	#qemu-system-x86_64 -machine help >001
+	#cat 001 |awk '{print $1}' >002
+	#paste 002 003 -d ':'
 	VIRTUAL_TECH=$(
 		whiptail --title "MACHINE" --menu "Please select the machine type.\n默认未指定机器类型,当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "disable禁用指定机器类型参数" \
-			"01" "pc:Standard PC (i440FX + PIIX, 1996) (alias of pc-i440fx-3.1)" \
-			"02" "pc-i440fx-3.1:Standard PC (i440FX + PIIX, 1996) (default)" \
-			"03" "pc-i440fx-3.0:Standard PC (i440FX + PIIX, 1996)" \
-			"04" "pc-i440fx-2.9:Standard PC (i440FX + PIIX, 1996)" \
-			"05" "pc-i440fx-2.8:Standard PC (i440FX + PIIX, 1996)" \
-			"06" "pc-i440fx-2.7:Standard PC (i440FX + PIIX, 1996)" \
-			"07" "pc-i440fx-2.6:Standard PC (i440FX + PIIX, 1996)" \
-			"08" "pc-i440fx-2.5:Standard PC (i440FX + PIIX, 1996)" \
-			"09" "pc-i440fx-2.4:Standard PC (i440FX + PIIX, 1996)" \
-			"10" "pc-i440fx-2.3:Standard PC (i440FX + PIIX, 1996)" \
-			"11" "pc-i440fx-2.2:Standard PC (i440FX + PIIX, 1996)" \
-			"12" "pc-i440fx-2.12:Standard PC (i440FX + PIIX, 1996)" \
-			"13" "pc-i440fx-2.11:Standard PC (i440FX + PIIX, 1996)" \
-			"14" "pc-i440fx-2.10:Standard PC (i440FX + PIIX, 1996)" \
-			"15" "pc-i440fx-2.1:Standard PC (i440FX + PIIX, 1996)" \
-			"16" "pc-i440fx-2.0:Standard PC (i440FX + PIIX, 1996)" \
-			"17" "pc-i440fx-1.7:Standard PC (i440FX + PIIX, 1996)" \
-			"18" "pc-i440fx-1.6:Standard PC (i440FX + PIIX, 1996)" \
-			"19" "pc-i440fx-1.5:Standard PC (i440FX + PIIX, 1996)" \
-			"20" "pc-i440fx-1.4:Standard PC (i440FX + PIIX, 1996)" \
-			"21" "pc-1.3:Standard PC (i440FX + PIIX, 1996)" \
-			"22" "pc-1.2:Standard PC (i440FX + PIIX, 1996)" \
-			"23" "pc-1.1:Standard PC (i440FX + PIIX, 1996)" \
-			"24" "pc-1.0:Standard PC (i440FX + PIIX, 1996)" \
-			"25" "pc-0.15:Standard PC (i440FX + PIIX, 1996)" \
-			"26" "pc-0.14:Standard PC (i440FX + PIIX, 1996)" \
-			"27" "pc-0.13:Standard PC (i440FX + PIIX, 1996)" \
-			"28" "pc-0.12:Standard PC (i440FX + PIIX, 1996)" \
-			"29" "pc-0.11:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
-			"30" "pc-0.10:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
-			"31" "q35:Standard PC (Q35 + ICH9, 2009) (alias of pc-q35-3.1)" \
-			"32" "pc-q35-3.1:Standard PC (Q35 + ICH9, 2009)" \
-			"33" "pc-q35-3.0:Standard PC (Q35 + ICH9, 2009)" \
-			"34" "pc-q35-2.9:Standard PC (Q35 + ICH9, 2009)" \
-			"35" "pc-q35-2.8:Standard PC (Q35 + ICH9, 2009)" \
-			"36" "pc-q35-2.7:Standard PC (Q35 + ICH9, 2009)" \
-			"37" "pc-q35-2.6:Standard PC (Q35 + ICH9, 2009)" \
-			"38" "pc-q35-2.5:Standard PC (Q35 + ICH9, 2009)" \
-			"39" "pc-q35-2.4:Standard PC (Q35 + ICH9, 2009)" \
-			"40" "pc-q35-2.12:Standard PC (Q35 + ICH9, 2009)" \
-			"41" "pc-q35-2.11:Standard PC (Q35 + ICH9, 2009)" \
-			"42" "pc-q35-2.10:Standard PC (Q35 + ICH9, 2009)" \
-			"43" "isapc:ISA-only PC" \
-			"44" "none:empty machine" \
-			"45" "xenfv:Xen Fully-virtualized PC" \
-			"46" "xenpv:Xen Para-virtualized PC" \
+			"01" "microvm:microvm (i386)" \
+			"02" "xenfv-4.2:Xen Fully-virtualized PC" \
+			"03" "xenfv:Xen Fully-virtualized PC (alias of xenfv-3.1)" \
+			"04" "xenfv-3.1:Xen Fully-virtualized PC" \
+			"05" "pc:Standard PC (i440FX + PIIX, 1996) (alias of pc-i440fx-5.0)" \
+			"06" "pc-i440fx-5.0:Standard PC (i440FX + PIIX, 1996) (default)" \
+			"07" "pc-i440fx-4.2:Standard PC (i440FX + PIIX, 1996)" \
+			"08" "pc-i440fx-4.1:Standard PC (i440FX + PIIX, 1996)" \
+			"09" "pc-i440fx-4.0:Standard PC (i440FX + PIIX, 1996)" \
+			"10" "pc-i440fx-3.1:Standard PC (i440FX + PIIX, 1996)" \
+			"11" "pc-i440fx-3.0:Standard PC (i440FX + PIIX, 1996)" \
+			"12" "pc-i440fx-2.9:Standard PC (i440FX + PIIX, 1996)" \
+			"13" "pc-i440fx-2.8:Standard PC (i440FX + PIIX, 1996)" \
+			"14" "pc-i440fx-2.7:Standard PC (i440FX + PIIX, 1996)" \
+			"15" "pc-i440fx-2.6:Standard PC (i440FX + PIIX, 1996)" \
+			"16" "pc-i440fx-2.5:Standard PC (i440FX + PIIX, 1996)" \
+			"17" "pc-i440fx-2.4:Standard PC (i440FX + PIIX, 1996)" \
+			"18" "pc-i440fx-2.3:Standard PC (i440FX + PIIX, 1996)" \
+			"19" "pc-i440fx-2.2:Standard PC (i440FX + PIIX, 1996)" \
+			"20" "pc-i440fx-2.12:Standard PC (i440FX + PIIX, 1996)" \
+			"21" "pc-i440fx-2.11:Standard PC (i440FX + PIIX, 1996)" \
+			"22" "pc-i440fx-2.10:Standard PC (i440FX + PIIX, 1996)" \
+			"23" "pc-i440fx-2.1:Standard PC (i440FX + PIIX, 1996)" \
+			"24" "pc-i440fx-2.0:Standard PC (i440FX + PIIX, 1996)" \
+			"25" "pc-i440fx-1.7:Standard PC (i440FX + PIIX, 1996)" \
+			"26" "pc-i440fx-1.6:Standard PC (i440FX + PIIX, 1996)" \
+			"27" "pc-i440fx-1.5:Standard PC (i440FX + PIIX, 1996)" \
+			"28" "pc-i440fx-1.4:Standard PC (i440FX + PIIX, 1996)" \
+			"29" "pc-1.3:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
+			"30" "pc-1.2:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
+			"31" "pc-1.1:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
+			"32" "pc-1.0:Standard PC (i440FX + PIIX, 1996) (deprecated)" \
+			"33" "q35:Standard PC (Q35 + ICH9, 2009) (alias of pc-q35-5.0)" \
+			"34" "pc-q35-5.0:Standard PC (Q35 + ICH9, 2009)" \
+			"35" "pc-q35-4.2:Standard PC (Q35 + ICH9, 2009)" \
+			"36" "pc-q35-4.1:Standard PC (Q35 + ICH9, 2009)" \
+			"37" "pc-q35-4.0.1:Standard PC (Q35 + ICH9, 2009)" \
+			"38" "pc-q35-4.0:Standard PC (Q35 + ICH9, 2009)" \
+			"39" "pc-q35-3.1:Standard PC (Q35 + ICH9, 2009)" \
+			"40" "pc-q35-3.0:Standard PC (Q35 + ICH9, 2009)" \
+			"41" "pc-q35-2.9:Standard PC (Q35 + ICH9, 2009)" \
+			"42" "pc-q35-2.8:Standard PC (Q35 + ICH9, 2009)" \
+			"43" "pc-q35-2.7:Standard PC (Q35 + ICH9, 2009)" \
+			"44" "pc-q35-2.6:Standard PC (Q35 + ICH9, 2009)" \
+			"45" "pc-q35-2.5:Standard PC (Q35 + ICH9, 2009)" \
+			"46" "pc-q35-2.4:Standard PC (Q35 + ICH9, 2009)" \
+			"47" "pc-q35-2.12:Standard PC (Q35 + ICH9, 2009)" \
+			"48" "pc-q35-2.11:Standard PC (Q35 + ICH9, 2009)" \
+			"49" "pc-q35-2.10:Standard PC (Q35 + ICH9, 2009)" \
+			"50" "isapc:ISA-only PC" \
+			"51" "none:empty machine" \
+			"52" "xenpv:Xen Para-virtualized PC" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_WHERE} ;;
 	00) disable_tmoe_qemu_machine ;;
-	01) TMOE_AMD64_QEMU_MACHINE="pc" ;;
-	02) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-3.1" ;;
-	03) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-3.0" ;;
-	04) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.9" ;;
-	05) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.8" ;;
-	06) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.7" ;;
-	07) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.6" ;;
-	08) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.5" ;;
-	09) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.4" ;;
-	10) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.3" ;;
-	11) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.2" ;;
-	12) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.12" ;;
-	13) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.11" ;;
-	14) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.10" ;;
-	15) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.1" ;;
-	16) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.0" ;;
-	17) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.7" ;;
-	18) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.6" ;;
-	19) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.5" ;;
-	20) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.4" ;;
-	21) TMOE_AMD64_QEMU_MACHINE="pc-1.3" ;;
-	22) TMOE_AMD64_QEMU_MACHINE="pc-1.2" ;;
-	23) TMOE_AMD64_QEMU_MACHINE="pc-1.1" ;;
-	24) TMOE_AMD64_QEMU_MACHINE="pc-1.0" ;;
-	25) TMOE_AMD64_QEMU_MACHINE="pc-0.15" ;;
-	26) TMOE_AMD64_QEMU_MACHINE="pc-0.14" ;;
-	27) TMOE_AMD64_QEMU_MACHINE="pc-0.13" ;;
-	28) TMOE_AMD64_QEMU_MACHINE="pc-0.12" ;;
-	29) TMOE_AMD64_QEMU_MACHINE="pc-0.11" ;;
-	30) TMOE_AMD64_QEMU_MACHINE="pc-0.10" ;;
-	31) TMOE_AMD64_QEMU_MACHINE="q35" ;;
-	32) TMOE_AMD64_QEMU_MACHINE="pc-q35-3.1" ;;
-	33) TMOE_AMD64_QEMU_MACHINE="pc-q35-3.0" ;;
-	34) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.9" ;;
-	35) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.8" ;;
-	36) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.7" ;;
-	37) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.6" ;;
-	38) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.5" ;;
-	39) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.4" ;;
-	40) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.12" ;;
-	41) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.11" ;;
-	42) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.10" ;;
-	43) TMOE_AMD64_QEMU_MACHINE="isapc" ;;
-	44) TMOE_AMD64_QEMU_MACHINE="none" ;;
-	45) TMOE_AMD64_QEMU_MACHINE="xenfv" ;;
-	46) TMOE_AMD64_QEMU_MACHINE="xenpv" ;;
+	01) TMOE_AMD64_QEMU_MACHINE="microvm" ;;
+	02) TMOE_AMD64_QEMU_MACHINE="xenfv-4.2" ;;
+	03) TMOE_AMD64_QEMU_MACHINE="xenfv" ;;
+	04) TMOE_AMD64_QEMU_MACHINE="xenfv-3.1" ;;
+	05) TMOE_AMD64_QEMU_MACHINE="pc" ;;
+	06) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-5.0" ;;
+	07) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-4.2" ;;
+	08) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-4.1" ;;
+	09) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-4.0" ;;
+	10) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-3.1" ;;
+	11) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-3.0" ;;
+	12) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.9" ;;
+	13) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.8" ;;
+	14) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.7" ;;
+	15) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.6" ;;
+	16) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.5" ;;
+	17) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.4" ;;
+	18) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.3" ;;
+	19) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.2" ;;
+	20) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.12" ;;
+	21) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.11" ;;
+	22) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.10" ;;
+	23) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.1" ;;
+	24) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-2.0" ;;
+	25) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.7" ;;
+	26) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.6" ;;
+	27) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.5" ;;
+	28) TMOE_AMD64_QEMU_MACHINE="pc-i440fx-1.4" ;;
+	29) TMOE_AMD64_QEMU_MACHINE="pc-1.3" ;;
+	30) TMOE_AMD64_QEMU_MACHINE="pc-1.2" ;;
+	31) TMOE_AMD64_QEMU_MACHINE="pc-1.1" ;;
+	32) TMOE_AMD64_QEMU_MACHINE="pc-1.0" ;;
+	33) TMOE_AMD64_QEMU_MACHINE="q35" ;;
+	34) TMOE_AMD64_QEMU_MACHINE="pc-q35-5.0" ;;
+	35) TMOE_AMD64_QEMU_MACHINE="pc-q35-4.2" ;;
+	36) TMOE_AMD64_QEMU_MACHINE="pc-q35-4.1" ;;
+	37) TMOE_AMD64_QEMU_MACHINE="pc-q35-4.0.1" ;;
+	38) TMOE_AMD64_QEMU_MACHINE="pc-q35-4.0" ;;
+	39) TMOE_AMD64_QEMU_MACHINE="pc-q35-3.1" ;;
+	40) TMOE_AMD64_QEMU_MACHINE="pc-q35-3.0" ;;
+	41) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.9" ;;
+	42) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.8" ;;
+	43) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.7" ;;
+	44) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.6" ;;
+	45) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.5" ;;
+	46) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.4" ;;
+	47) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.12" ;;
+	48) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.11" ;;
+	49) TMOE_AMD64_QEMU_MACHINE="pc-q35-2.10" ;;
+	50) TMOE_AMD64_QEMU_MACHINE="isapc" ;;
+	51) TMOE_AMD64_QEMU_MACHINE="none" ;;
+	52) TMOE_AMD64_QEMU_MACHINE="xenpv" ;;
 	esac
 	###############
 	sed -i '/-M /d' startqemu
@@ -8548,8 +8927,9 @@ explore_qemu_configuration_templates() {
 			"004" "lubuntu18.04内置wine,可玩游戏(github@..)" \
 			"005" "win98 骁龙6系超级流畅(bili@..)" \
 			"006" "winxp有网有声(tieba@..)" \
-			"007" "vista装了许多好玩的东西(tieba@..)" \
+			"007" "vista装了许多好玩的东西,骁龙865流畅(tieba@..)" \
 			"008" "macos ppc上古版本(coolapk@..)" \
+			"009" "xubuntu个人轻度精简,内置qq和百度云(github@..)" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -8721,7 +9101,7 @@ choose_qemu_bios_or_uefi_file() {
 		CURRENT_VALUE='默认'
 	fi
 	VIRTUAL_TECH=$(
-		whiptail --title "uefi/legacy bios" --menu "Please select the legacy bios or uefi file.win8/win10选用uefi或许能加快开机速度.若您使用的是legacy bios，则可以在启动VNC后的3秒钟内按下ESC键选择启动项。若您使用的是uefi,则您可以在启动系统的前几秒内按其他键允许使用光盘\n当前为${CURRENT_VALUE}" 18 50 5 \
+		whiptail --title "uefi/legacy bios" --menu "Please select the legacy bios or uefi file.win8/win10选用uefi或许能加快开机速度.若您使用的是legacy bios，则可以在启动VNC后的3秒钟内按下ESC键选择启动项。若您使用的是uefi,则您可以在启动VNC后的几秒内按其他键允许使用光盘\n当前为${CURRENT_VALUE}" 18 50 5 \
 			"1" "default默认" \
 			"2" "qemu-efi-aarch64:UEFI firmware for arm64" \
 			"3" "ovmf:UEFI firmware for x64" \
