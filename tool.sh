@@ -8945,7 +8945,7 @@ start_tmoe_qemu_manager() {
 modify_tmoe_qemu_network_settings() {
 	RETURN_TO_WHERE='modify_tmoe_qemu_network_settings'
 	VIRTUAL_TECH=$(
-		whiptail --title "display devices" --menu "Which configuration do you want to modify？" 0 0 0 \
+		whiptail --title "network devices" --menu "Which configuration do you want to modify？" 0 0 0 \
 			"1" "network card网卡" \
 			"2" "exposed ports端口映射/转发" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -9072,7 +9072,7 @@ modify_tmoe_qemu_display_device() {
 	###############
 	enable_qemnu_display_device
 	press_enter_to_return
-	tmoe_qemu_display_settings
+	${RETURN_TO_WHERE}
 }
 ##############
 list_all_enabled_qemu_display_devices() {
@@ -9165,7 +9165,7 @@ win7_qemu_template_2020_06_02_17_38() {
       个人主页：https://space.bilibili.com/
       资源链接：https://pan.baidu.com/disk/home#/all?vmode=list&path=%2F%E6%88%91%E7%9A%84%E8%B5%84%E6%BA%90
       大家好，我是来自B站的..
-      不知道今天是哪个幸运儿用到了我发布的镜像和配置脚本呢？希望大家多多给我的视频素质三连😀
+      不知道今天是哪个幸运儿用到了我发布的镜像和配置脚本呢？萌新up主求三连😀
       " 0 0
 	echo "是否将其设置为默认的qemu配置？"
 	do_you_want_to_continue
@@ -9574,7 +9574,7 @@ other_qemu_conf_related_instructions() {
 		Q:一个个删除配置太麻烦了，有没有更快速的方法？
 		A：有哒！rm -rfv /usr/local/bin/.tmoe-linux-qemu
 		Q: 不知道为啥虚拟机启动不了
-		A：你可以看一下资源发布者的相关说明，再调整一下参数。
+		A：你可以看一下资源发布者所撰写的相关说明，再调整一下参数。
 	ENDOFTMOEINST
 }
 ############
