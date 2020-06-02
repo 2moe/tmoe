@@ -423,7 +423,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200531-19)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531修复qemu部分问题" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200602-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531修复qemu部分问题" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -908,13 +908,13 @@ check_latest_video_download_tool_version() {
 		║   ║ software ║ 最新版本          ║   本地版本 🎪
 		║   ║          ║latest version✨   ║  Local version     
 		║---║----------║-------------------║--------------------
-		║ 1 ║   annie  ║                   ║  ${AnnieVersion}
-		║   ║          ║${LATEST_ANNIE_VERSION}║
+		║ 1 ║   annie  ║                   ║ ${AnnieVersion}
+		║   ║          ║${LATEST_ANNIE_VERSION}
 		║---║----------║-------------------║--------------------
 		║   ║          ║                   ║ ${YouGetVersion}                   
 		║ 2 ║ you-get  ║                   ║  
 		║---║----------║-------------------║--------------------
-		║   ║          ║                   ║  ${YOTUBEdlVersion}                  
+		║   ║          ║                   ║ ${YOTUBEdlVersion}                  
 		║ 3 ║youtube-dl║${LATEST_YOUTUBE_DL_VERSION}           ║  
 
 		annie: github.com/iawia002/annie
@@ -1277,6 +1277,9 @@ vscode_server_restart() {
 	echo 'You can type "code-server" to start Code Server.'
 	/usr/local/bin/code-server-data/bin/code-server &
 	SERVER_PORT=$(cat ${HOME}/.config/code-server/config.yaml | grep bind-addr | cut -d ':' -f 3)
+	if [ -z "${SERVER_PORT}" ]; then
+		SERVER_PORT='18080'
+	fi
 	echo "正在为您启动code-server，本机默认访问地址为localhost:${SERVER_PORT}"
 	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${SERVER_PORT}
 	echo "您可以输${YELLOW}pkill node${RESET}来停止进程"
@@ -4346,9 +4349,9 @@ install_electron_netease_cloud_music() {
 	echo "github url：https://github.com/Rocket1184/electron-netease-cloud-music"
 	beta_features_quick_install
 	FILE_SIZE=$(du -s /opt/electron-netease-cloud-music/app.asar | awk '{print $1}')
-	if ((${FILE_SIZE} < 3000)); then
-		patch_electron_netease_cloud_music
-	fi
+	#if ((${FILE_SIZE} < 3000)); then
+	patch_electron_netease_cloud_music
+	#fi
 	do_you_want_to_close_the_sandbox_mode
 	do_you_want_to_continue
 	#with_no_sandbox_model_02
@@ -5403,6 +5406,7 @@ xrdp_desktop_enviroment() {
 #############
 configure_xrdp() {
 	#进入xrdp配置文件目录
+	RETURN_TO_WHERE='configure_xrdp'
 	cd /etc/xrdp/
 	TMOE_OPTION=$(
 		whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 16 50 7 \
@@ -5755,16 +5759,21 @@ xrdp_restart() {
 xrdp_port() {
 	cd /etc/xrdp/
 	RDP_PORT=$(cat xrdp.ini | grep 'port=' | head -n 1 | cut -d '=' -f 2)
-	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,不建议您将其设置为22、80、443或3389,检测到您当前的端口为${RDP_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus != 0 ]; then
-		echo "检测到您取消了操作，请返回重试。"
-		press_enter_to_return_configure_xrdp
+	TARGET=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,不建议您将其设置为22、80、443或3389,检测到您当前的端口为${RDP_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		#echo "检测到您取消了操作"
+		${RETURN_TO_WHERE}
+		#echo "检测到您取消了操作，请返回重试。"
+		#press_enter_to_return_configure_xrdp
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		sed -i "s@port=${RDP_PORT}@port=${TARGET}@" xrdp.ini
+		ls -l $(pwd)/xrdp.ini
+		cat xrdp.ini | grep 'port=' | head -n 1
+		/etc/init.d/xrdp restart
 	fi
-	sed -i "s@port=${RDP_PORT}@port=${TARGET_PORT}@" xrdp.ini
-	ls -l $(pwd)/xrdp.ini
-	cat xrdp.ini | grep 'port=' | head -n 1
-	/etc/init.d/xrdp restart
 }
 #################
 xrdp_systemd() {
@@ -6584,7 +6593,7 @@ creat_qemu_aarch64_startup_script() {
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
-	cat >startqemu_aarch64_20200531 <<-'EndOFqemu'
+	cat >startqemu_aarch64_20200602 <<-'EndOFqemu'
 		#!/usr/bin/env bash
 		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
@@ -6611,8 +6620,8 @@ creat_qemu_aarch64_startup_script() {
 			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
 			-name "tmoe-linux-aarch64-qemu"
 	EndOFqemu
-	chmod +x startqemu_aarch64_20200531
-	cp -pf startqemu_aarch64_20200531 /usr/local/bin/startqemu
+	chmod +x startqemu_aarch64_20200602
+	cp -pf startqemu_aarch64_20200602 /usr/local/bin/startqemu
 }
 ######################
 tmoe_qemu_aarch64_cpu_manager() {
@@ -6646,18 +6655,18 @@ start_tmoe_qemu_aarch64_manager() {
 	RETURN_TO_MENU='start_tmoe_qemu_aarch64_manager'
 	check_qemu_aarch64_install
 	cd /usr/local/bin/
-	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64_20200531" ]; then
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64_20200602" ]; then
 		echo "启用arm64虚拟机将重置startqemu为arm64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_aarch64_startup_script
 	fi
 
 	VIRTUAL_TECH=$(
-		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
-			"1" "CPU管理" \
-			"2" "RAM运行内存" \
-			"3" "edit script manually手动修改配置脚本" \
-			"4" "Multi-VM多虚拟机管理" \
+		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
+			"1" "Multi-VM多虚拟机管理" \
+			"2" "edit script manually手动修改配置脚本" \
+			"3" "CPU管理" \
+			"4" "RAM运行内存" \
 			"5" "compress压缩磁盘文件" \
 			"6" "mount shared folder挂载共享文件夹" \
 			"7" "VNC port端口" \
@@ -6670,7 +6679,7 @@ start_tmoe_qemu_aarch64_manager() {
 			"14" "restore to default恢复到默认" \
 			"15" "sound card声卡" \
 			"16" "spice远程桌面" \
-			"17" "legacy bios/uefi(开机引导固件)" \
+			"17" "uefi/legacy bios(开机引导固件)" \
 			"18" "Input devices输入设备" \
 			"19" "Graphics card/VGA(显卡/显示器)" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -6679,10 +6688,10 @@ start_tmoe_qemu_aarch64_manager() {
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) tmoe_qemu_aarch64_cpu_manager ;;
-	2) modify_qemu_ram_size ;;
-	3) nano startqemu ;;
-	4) multi_qemu_vm_management ;;
+	1) multi_qemu_vm_management ;;
+	2) nano startqemu ;;
+	3) tmoe_qemu_aarch64_cpu_manager ;;
+	4) modify_qemu_ram_size ;;
 	5) compress_or_dd_qcow2_img_file ;;
 	6) modify_qemu_shared_folder ;;
 	7) modify_qemu_vnc_display_port ;;
@@ -7104,7 +7113,7 @@ creat_qemu_startup_script() {
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
-	cat >startqemu_amd64_20200531 <<-'EndOFqemu'
+	cat >startqemu_amd64_20200602 <<-'EndOFqemu'
 		#!/usr/bin/env bash
 		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
@@ -7114,7 +7123,7 @@ creat_qemu_startup_script() {
 		/usr/bin/qemu-system-x86_64 \
 			-monitor stdio \
 			-smp 4 \
-			-soundhw cs4231a \
+			-soundhw all \
 			-vga std \
 			--accel tcg \
 			-m 2048 \
@@ -7129,8 +7138,8 @@ creat_qemu_startup_script() {
 			-device usb-tablet \
 			-name "tmoe-linux-qemu"
 	EndOFqemu
-	chmod +x startqemu_amd64_20200531
-	cp -pf startqemu_amd64_20200531 /usr/local/bin/startqemu
+	chmod +x startqemu_amd64_20200602
+	cp -pf startqemu_amd64_20200602 /usr/local/bin/startqemu
 }
 ###########
 modify_qemu_machine_accel() {
@@ -7150,7 +7159,7 @@ modify_qemu_machine_accel() {
 			"1" "tcg(default)" \
 			"2" "kvm(Intel VT-d/AMD-V)" \
 			"3" "xen" \
-			"4" "hax" \
+			"4" "hax(Intel VT-x)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -7298,6 +7307,7 @@ modify_qemu_host_shared_folder() {
 		whiptail --title "shared folder" --menu "如需添加更多共享文件夹，请手动修改配置文件" 15 55 4 \
 			"1" "DISABLE SHARE禁用共享" \
 			"2" "/root/sd" \
+			"3" "windows共享说明" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -7306,6 +7316,7 @@ modify_qemu_host_shared_folder() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) disable_qemu_host_shared_folder ;;
 	2) modify_qemu_host_shared_folder_sdcard ;;
+	3) echo '请单独使用webdav或Filebrowser文件共享功能，并在windows浏览器内输入局域网访问地址' ;;
 	esac
 	###############
 	press_enter_to_return
@@ -7435,7 +7446,10 @@ choose_qemu_qcow2_or_img_file() {
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
 		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
-		sed -i "s@-hda .*@-hda ${TMOE_FILE_ABSOLUTE_PATH} \\\@" startqemu
+		sed -i '/-hda /d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
+		sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+		#sed -i "s@-hda .*@-hda ${TMOE_FILE_ABSOLUTE_PATH} \\\@" startqemu
 	fi
 }
 ############
@@ -7555,10 +7569,32 @@ modify_qemu_sound_card() {
 }
 #############
 qemu_snapshoots_manager() {
-	echo "Sorry,本功能正在开发中."
-	echo "请在qemu monitor下手动管理快照"
+	echo "Sorry,请在qemu monitor下手动管理快照"
 }
 ############
+tmoe_qemu_todo_list() {
+	cd /usr/local/bin/
+	VIRTUAL_TECH=$(
+		whiptail --title "not todo list" --menu "以下功能可能不会适配，请手动管理qemu" 0 0 0 \
+			"1" "snapshoots快照管理" \
+			"2" "GPU pci passthrough显卡硬件直通" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) qemu_snapshoots_manager ;;
+	2) tmoe_qemu_gpu_passthrough ;;
+	esac
+	press_enter_to_return
+	tmoe_qemu_todo_list
+}
+##########
+tmoe_qemu_gpu_passthrough() {
+	echo "本功能需要使用双显卡，因开发者没有测试条件，故不会适配"
+	echo "请自行研究qemu gpu passthrough"
+}
 ##############
 modify_qemu_amd64_tmoe_cpu_type() {
 	cd /usr/local/bin/
@@ -8243,8 +8279,9 @@ tmoe_qemu_storage_devices() {
 	cd /usr/local/bin/
 	RETURN_TO_WHERE='tmoe_qemu_storage_devices'
 	VIRTUAL_TECH=$(
-		whiptail --title "storage devices" --menu "Sorry,本功能正在开发中,请自行修改配置文件" 0 0 0 \
+		whiptail --title "storage devices" --menu "Sorry,本功能正在开发中,当前仅支持配置virtio磁盘，其它选项请自行修改配置文件" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
+			"00" "virtio-disk" \
 			"01" "am53c974:bus PCI,desc(AMD Am53c974 PCscsi-PCI SCSI adapter)" \
 			"02" "dc390:bus PCI,desc(Tekram DC-390 SCSI adapter)" \
 			"03" "floppy:bus floppy-bus,desc(virtual floppy drive)" \
@@ -8291,13 +8328,115 @@ tmoe_qemu_storage_devices() {
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
+	00) tmoe_qemu_virtio_disk ;;
 	*) tmoe_qemu_error_tips ;;
 	esac
 	###############
 	press_enter_to_return
-	${RETURN_TO_MENU}
+	${RETURN_TO_WHERE}
 }
 ###############
+tmoe_qemu_virtio_disk() {
+	RETURN_TO_WHERE='tmoe_qemu_virtio_disk'
+	cd /usr/local/bin/
+	if ! grep -q 'drive-virtio-disk' startqemu; then
+		VIRTIO_STATUS="检测到您当前未启用virtio-disk"
+	else
+		VIRTIO_STATUS="检测到您当前已经启用virtio-disk"
+	fi
+	VIRTUAL_TECH=$(
+		whiptail --title "VIRTIO-DISK" --menu "${VIRTIO_STATUS}" 15 50 6 \
+			"1" "choose a disk选择virtio磁盘" \
+			"2" "Download virtIO drivers下载驱动" \
+			"3" "readme使用说明" \
+			"4" "disable禁用hda(IDE)磁盘" \
+			"5" "disable禁用virtio磁盘" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") tmoe_qemu_storage_devices ;;
+	1) choose_drive_virtio_disk_01 ;;
+	2) download_virtio_drivers ;;
+	3) echo '请先以常规挂载方式(IDE磁盘)运行虚拟机系统，接着在虚拟机内安装virtio驱动，然后退出虚拟机，最后禁用IDE磁盘，并选择virtio磁盘' ;;
+	4)
+		sed -i '/-hda /d' startqemu
+		echo '禁用完成'
+		;;
+	5)
+		sed -i '/drive-virtio-disk/d' startqemu
+		echo '禁用完成'
+		;;
+	esac
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+##########
+download_virtio_drivers() {
+	DOWNLOAD_PATH="${HOME}/sd/Download"
+	mkdir -p ${DOWNLOAD_PATH}
+	VIRTUAL_TECH=$(
+		whiptail --title "VIRTIO" --menu "${VIRTIO_STATUS}" 15 50 4 \
+			"1" "virtio-win-0.1.173(netdisk)" \
+			"2" "virtio-win-latest(fedora)" \
+			"3" "readme驱动说明" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") tmoe_qemu_virtio_disk ;;
+	1)
+		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/windows/drivers/virtio-win-0.1.173.iso'
+		aria2c_download_file
+		;;
+	2)
+		THE_LATEST_ISO_LINK='https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso'
+		aria2c_download_file
+		;;
+	3)
+		echo 'url: https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html'
+		x-www-browser 'https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html' 2>/dev/null
+		;;
+	4)
+		sed -i '/-hda /d' startqemu
+		echo '禁用完成'
+		;;
+	5)
+		sed -i '/drive-virtio-disk/d' startqemu
+		echo '禁用完成'
+		;;
+	esac
+	press_enter_to_return
+	download_virtio_drivers
+}
+#######################
+choose_drive_virtio_disk_01() {
+	FILE_EXT_01='qcow2'
+	FILE_EXT_02='img'
+	if grep -q 'drive-virtio-disk' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep 'id=drive-virtio-disk' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1 | cut -d '=' -f 2)
+		IMPORTANT_TIPS="您当前已加载的virtio磁盘为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到您当前没有加载virtio磁盘"
+	fi
+	where_is_start_dir
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd /usr/local/bin
+		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
+		sed -i '/=drive-virtio-disk/d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -virtio_disk tmoe_virtio_disk_config_test \\\n/' startqemu
+		sed -i "s@-virtio_disk tmoe_virtio_disk_config_test@-drive file=${TMOE_FILE_ABSOLUTE_PATH},format=qcow2,if=virtio,id=drive-virtio-disk0@" startqemu
+	fi
+}
+###############
+#########################
 tmoe_qemu_error_tips() {
 	echo "Sorry，本功能正在开发中，暂不支持修改storage devices，如需启用相关参数，请手动修改配置文件"
 }
@@ -8306,28 +8445,28 @@ start_tmoe_qemu_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_manager'
 	RETURN_TO_MENU='start_tmoe_qemu_manager'
 	check_qemu_install
-	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_20200531" ]; then
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_20200602" ]; then
 		echo "启用x86_64虚拟机将重置startqemu为x86_64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_startup_script
 	fi
 	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
-		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-05 alpha" 17 55 8 \
-			"1" "Download alpine+docker qemu img" \
-			"2" "CPU管理" \
-			"3" "RAM运行内存" \
-			"4" "edit script manually手动修改配置脚本" \
-			"5" "Multi-VM多虚拟机管理" \
-			"6" "compress压缩磁盘文件" \
-			"7" "mount shared folder挂载共享文件夹" \
-			"8" "VNC port端口" \
-			"9" "Input devices输入设备" \
-			"10" "iso选择启动光盘" \
-			"11" "disk选择启动磁盘" \
-			"12" "FAQ常见问题" \
+		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
+			"1" "qemu templates repo虚拟机配置模板仓库" \
+			"2" "Multi-VM多虚拟机管理" \
+			"3" "edit script manually手动修改配置脚本" \
+			"4" "FAQ常见问题" \
+			"5" "iso选择启动光盘(CD)" \
+			"6" "disk选择启动磁盘(IDE)" \
+			"7" "CPU管理" \
+			"8" "RAM运行内存" \
+			"9" "compress压缩磁盘文件" \
+			"10" "mount shared folder挂载共享文件夹" \
+			"11" "VNC port端口" \
+			"12" "Input devices输入设备" \
 			"13" "exposed ports端口映射/转发" \
-			"14" "snapshoots快照管理" \
+			"14" "Storage devices存储设备" \
 			"15" "creat disk创建(空白)虚拟磁盘" \
 			"16" "restore to default恢复到默认" \
 			"17" "sound card声卡" \
@@ -8335,28 +8474,28 @@ start_tmoe_qemu_manager() {
 			"19" "network card网卡" \
 			"20" "spice远程桌面" \
 			"21" "windows2000 hack" \
-			"22" "legacy bios/uefi(开机引导固件)" \
-			"24" "Storage devices存储设备" \
+			"22" "uefi/legacy bios(开机引导固件)" \
+			"23" "tmoe_qemu_not-todo-list" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) download_alpine_and_docker_x64_img_file ;;
-	2) tmoe_qemu_x64_cpu_manager ;;
-	3) modify_qemu_ram_size ;;
-	4) nano startqemu ;;
-	5) multi_qemu_vm_management ;;
-	6) compress_or_dd_qcow2_img_file ;;
-	7) modify_qemu_shared_folder ;;
-	8) modify_qemu_vnc_display_port ;;
-	9) tmoe_qemu_input_devices ;;
-	10) choose_qemu_iso_file ;;
-	11) choose_qemu_qcow2_or_img_file ;;
-	12) tmoe_qemu_faq ;;
+	1) tmoe_qemu_templates_repo ;;
+	2) multi_qemu_vm_management ;;
+	3) nano startqemu ;;
+	4) tmoe_qemu_faq ;;
+	5) choose_qemu_iso_file ;;
+	6) choose_qemu_qcow2_or_img_file ;;
+	7) tmoe_qemu_x64_cpu_manager ;;
+	8) modify_qemu_ram_size ;;
+	9) compress_or_dd_qcow2_img_file ;;
+	10) modify_qemu_shared_folder ;;
+	11) modify_qemu_vnc_display_port ;;
+	12) tmoe_qemu_input_devices ;;
 	13) modify_qemu_exposed_ports ;;
-	14) qemu_snapshoots_manager ;;
+	14) tmoe_qemu_storage_devices ;;
 	15) creat_blank_virtual_disk_image ;;
 	16) creat_qemu_startup_script ;;
 	17) modify_qemu_sound_card ;;
@@ -8365,13 +8504,82 @@ start_tmoe_qemu_manager() {
 	20) enable_qemnu_spice_remote ;;
 	21) enable_qemnu_win2k_hack ;;
 	22) choose_qemu_bios_or_uefi_file ;;
-	24) tmoe_qemu_storage_devices ;;
+	23) tmoe_qemu_todo_list ;;
 	esac
 	###############
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
+#################
+tmoe_qemu_templates_repo() {
+	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
+	VIRTUAL_TECH=$(
+		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ" 15 50 4 \
+			"1" "Explore templates探索共享模板(未开放)" \
+			"2" "Download alpine+docker qemu img" \
+			"3" "share 分享你的qemu配置(未开放)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#Explore configuration templates
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) explore_qemu_configuration_templates ;;
+	2) download_alpine_and_docker_x64_img_file ;;
+	3) share_qemu_conf_to_git_branch_qemu ;;
+	esac
+	press_enter_to_return
+	tmoe_qemu_templates_repo
+}
 ##########
+share_qemu_conf_to_git_branch_qemu() {
+	echo "Welcome to 施工现场，这个功能还在开发中呢！咕咕咕，建议您明年再来o((>ω< ))o"
+}
+################
+explore_qemu_configuration_templates() {
+	RETURN_TO_WHERE='explore_qemu_configuration_templates'
+	VIRTUAL_TECH=$(
+		whiptail --title "奇怪的虚拟机又增加了" --menu "Welcome to 施工现场，这个功能还在开发中呢！\n咕咕咕，建议您明年再来o((>ω< ))o\n以下配置模板来自于他人的共享,与本工具开发者无关.\n希望大家多多支持原发布者ヽ(゜▽゜　)" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"001" "win7精简不卡,三分钟开机(bili@..)" \
+			"002" "可能是全网最流畅的win10镜像(qq@..)" \
+			"003" "kubuntu20.04 x64豪华配置，略卡(coolapk@..)" \
+			"004" "lubuntu18.04内置wine,可玩游戏(github@..)" \
+			"005" "win98 骁龙6系超级流畅(bili@..)" \
+			"006" "winxp有网有声(tieba@..)" \
+			"007" "vista装了许多好玩的东西(tieba@..)" \
+			"008" "macos ppc上古版本(coolapk@..)" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") tmoe_qemu_templates_repo ;;
+	001) win7_qemu_template_2020_06_02_17_38 ;;
+	008) echo "非常抱歉，本工具暂未适配ppc架构" ;;
+	*) echo "这个模板加载失败了呢！" ;;
+	esac
+	###############
+	echo "暂未开放此功能！咕咕咕，建议您明年再来o((>ω< ))o"
+	press_enter_to_return
+	tmoe_qemu_templates_repo
+}
+##############
+win7_qemu_template_2020_06_02_17_38() {
+	whiptail --title "发布者的留言" \
+		--msgbox "
+      个人主页：https://space.bilibili.com/
+      资源链接：https://pan.baidu.com/disk/home#/all?vmode=list&path=%2F%E6%88%91%E7%9A%84%E8%B5%84%E6%BA%90
+      大家好，我是来自B站的..
+      不知道今天是哪个幸运儿用到了我发布的镜像和配置脚本呢？希望大家多多给我的视频素质三连😀
+      " 0 0
+	echo "是否将其设置为默认的qemu配置？"
+	do_you_want_to_continue
+	#if [ $? = 0]; then
+	#fi
+	echo "这个模板加载失败了呢！光有脚本还不够，您还需要下载镜像资源文件至指定目录呢！"
+}
+##################
 tmoe_qemu_input_devices() {
 	#qemu-system-x86_64 -device help
 	cd /usr/local/bin/
@@ -8513,7 +8721,7 @@ choose_qemu_bios_or_uefi_file() {
 		CURRENT_VALUE='默认'
 	fi
 	VIRTUAL_TECH=$(
-		whiptail --title "legacy bios/uefi" --menu "Please select the legacy bios or uefi file.\n当前为${CURRENT_VALUE}" 15 50 4 \
+		whiptail --title "uefi/legacy bios" --menu "Please select the legacy bios or uefi file.win8/win10选用uefi或许能加快开机速度.若您使用的是legacy bios，则可以在启动VNC后的3秒钟内按下ESC键选择启动项。若您使用的是uefi,则您可以在启动系统的前几秒内按其他键允许使用光盘\n当前为${CURRENT_VALUE}" 18 50 5 \
 			"1" "default默认" \
 			"2" "qemu-efi-aarch64:UEFI firmware for arm64" \
 			"3" "ovmf:UEFI firmware for x64" \
@@ -8525,9 +8733,18 @@ choose_qemu_bios_or_uefi_file() {
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) restore_to_default_qemu_bios ;;
-	2) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/qemu-efi-aarch64/QEMU_EFI.fd' ;;
+	2)
+		if [ "${RETURN_TO_MENU}" = "start_tmoe_qemu_manager" ]; then
+			echo "检测到您选用的是x64虚拟机，不支持qemu-efi-aarch64，将为您自动切换至OVMF EFI"
+			TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd'
+		else
+			TMOE_QEMU_BIOS_FILE_PATH='/usr/share/qemu-efi-aarch64/QEMU_EFI.fd'
+		fi
+		;;
 	3)
-		echo "请将显卡修改为qxl或std"
+		if ! grep -Eq 'std|qxl' /usr/local/bin/startqemu; then
+			echo "请将显卡修改为qxl或std"
+		fi
 		TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd'
 		;;
 	4) tmoe_choose_a_qemu_bios_file ;;
@@ -8582,14 +8799,15 @@ how_to_creat_a_new_tmoe_qemu_vm() {
 			Creat a vitual disk
 
 			3.选择启动的iso
-			choose iso
+			Choose iso
 
 			4.选择启动磁盘
-			choose disk
+			Choose disk
 
 			5.修改相关参数
 
 			6.输startqemu
+			Type startqemu and press enter
 	EOF
 }
 tmoe_qemu_faq() {
@@ -8757,6 +8975,8 @@ other_qemu_conf_related_instructions() {
 	cat <<-"ENDOFTMOEINST"
 		Q:一个个删除配置太麻烦了，有没有更快速的方法？
 		A：有哒！rm -rfv /usr/local/bin/.tmoe-linux-qemu
+		Q: 不知道为啥虚拟机启动不了
+		A：你可以看一下资源发布者的相关说明，再调整一下参数。
 	ENDOFTMOEINST
 }
 ############
