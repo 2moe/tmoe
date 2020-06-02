@@ -6669,7 +6669,6 @@ start_tmoe_qemu_aarch64_manager() {
 			"4" "RAM运行内存" \
 			"5" "compress压缩磁盘文件" \
 			"6" "mount shared folder挂载共享文件夹" \
-			"7" "VNC port端口" \
 			"8" "iso选择启动光盘" \
 			"9" "disk选择启动磁盘" \
 			"10" "FAQ常见问题" \
@@ -6678,10 +6677,9 @@ start_tmoe_qemu_aarch64_manager() {
 			"13" "creat disk创建(空白)虚拟磁盘" \
 			"14" "restore to default恢复到默认" \
 			"15" "sound card声卡" \
-			"16" "spice远程桌面" \
 			"17" "uefi/legacy bios(开机引导固件)" \
 			"18" "Input devices输入设备" \
-			"19" "Graphics card/VGA(显卡/显示器)" \
+			"19" "Display settings显示设定" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6694,7 +6692,6 @@ start_tmoe_qemu_aarch64_manager() {
 	4) modify_qemu_ram_size ;;
 	5) compress_or_dd_qcow2_img_file ;;
 	6) modify_qemu_shared_folder ;;
-	7) modify_qemu_vnc_display_port ;;
 	8) choose_qemu_iso_file ;;
 	9) choose_qemu_qcow2_or_img_file ;;
 	10) tmoe_qemu_faq ;;
@@ -6703,16 +6700,16 @@ start_tmoe_qemu_aarch64_manager() {
 	13) creat_blank_virtual_disk_image ;;
 	14) creat_qemu_startup_script ;;
 	15) modify_qemu_aarch64_tmoe_sound_card ;;
-	16) enable_qemnu_spice_remote ;;
 	17) choose_qemu_bios_or_uefi_file ;;
 	18) tmoe_qemu_input_devices ;;
-	19) modify_qemnu_graphics_card ;;
+	19) tmoe_qemu_display_settings ;;
 	esac
 	###############
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
 #############
+
 switch_tmoe_qemu_network_card_to_default() {
 	sed -i 's/-net nic.*/-net nic \\/' startqemu
 	echo "已经将默认网卡切换为未指定状态"
@@ -6762,7 +6759,7 @@ modify_qemu_tmoe_network_card() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") modify_tmoe_qemu_network_settings ;;
 	00) switch_tmoe_qemu_network_card_to_default ;;
 	01) TMOE_QEMU_NETWORK_CARD="e1000" ;;
 	02) TMOE_QEMU_NETWORK_CARD="e1000-82544gc" ;;
@@ -7222,7 +7219,7 @@ modify_qemnu_graphics_card() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") tmoe_qemu_display_settings ;;
 	1) QEMU_VGA='vmware' ;;
 	2) QEMU_VGA='std' ;;
 	3) QEMU_VGA='cirrus' ;;
@@ -7470,6 +7467,75 @@ choose_qemu_qcow2_or_img_file() {
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
 		sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
 		#sed -i "s@-hda .*@-hda ${TMOE_FILE_ABSOLUTE_PATH} \\\@" startqemu
+	fi
+}
+##########
+choose_hdb_disk_image_file() {
+	FILE_EXT_01='qcow2'
+	FILE_EXT_02='vhd'
+	if grep -q '\-hdb' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hdb' | tail -n 1 | awk '{print $2}')
+		IMPORTANT_TIPS="您当前已加载的第二块虚拟磁盘为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到第二块虚拟磁盘的槽位为空"
+	fi
+	where_is_start_dir
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd /usr/local/bin
+		sed -i '/-hdb /d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hdb tmoe_hda_config_test \\\n/' startqemu
+		sed -i "s@-hdb tmoe_hda_config_test@-hdb ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	fi
+}
+##########
+choose_hdc_disk_image_file() {
+	FILE_EXT_01='qcow2'
+	FILE_EXT_02='vmdk'
+	if grep -q '\-hdc' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hdc' | tail -n 1 | awk '{print $2}')
+		IMPORTANT_TIPS="您当前已加载的第三块虚拟磁盘为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到第三块虚拟磁盘的槽位为空"
+	fi
+	where_is_start_dir
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd /usr/local/bin
+		sed -i '/-hdc /d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hdc tmoe_hda_config_test \\\n/' startqemu
+		sed -i "s@-hdc tmoe_hda_config_test@-hdc ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	fi
+}
+##########
+choose_hdd_disk_image_file() {
+	FILE_EXT_01='qcow2'
+	FILE_EXT_02='vdi'
+	if grep -q '\-hdd' startqemu; then
+		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hdd' | tail -n 1 | awk '{print $2}')
+		IMPORTANT_TIPS="您当前已加载的第四块虚拟磁盘为${CURRENT_QEMU_ISO}"
+	else
+		IMPORTANT_TIPS="检测到第四块虚拟磁盘的槽位为空"
+	fi
+	where_is_start_dir
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		cd /usr/local/bin
+		sed -i '/-hdd /d' startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hdd tmoe_hda_config_test \\\n/' startqemu
+		sed -i "s@-hdd tmoe_hda_config_test@-hdd ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
 	fi
 }
 ############
@@ -8658,7 +8724,7 @@ tmoe_qemu_x64_cpu_manager() {
 ##############
 tmoe_qemu_storage_devices() {
 	cd /usr/local/bin/
-	RETURN_TO_WHERE='tmoe_qemu_storage_devices'
+	#RETURN_TO_WHERE='tmoe_qemu_storage_devices'
 	VIRTUAL_TECH=$(
 		whiptail --title "storage devices" --menu "Sorry,本功能正在开发中,当前仅支持配置virtio磁盘，其它选项请自行修改配置文件" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -8708,13 +8774,13 @@ tmoe_qemu_storage_devices() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") tmoe_qemu_disk_manager ;;
 	00) tmoe_qemu_virtio_disk ;;
 	*) tmoe_qemu_error_tips ;;
 	esac
 	###############
 	press_enter_to_return
-	${RETURN_TO_WHERE}
+	tmoe_qemu_disk_manager
 }
 ###############
 tmoe_qemu_virtio_disk() {
@@ -8838,25 +8904,17 @@ start_tmoe_qemu_manager() {
 			"2" "Multi-VM多虚拟机管理" \
 			"3" "edit script manually手动修改配置脚本" \
 			"4" "FAQ常见问题" \
-			"5" "iso选择启动光盘(CD)" \
-			"6" "disk选择启动磁盘(IDE)" \
-			"7" "CPU管理" \
+			"5" "disk manager磁盘管理器" \
+			"6" "CPU manager中央处理器管理" \
+			"7" "network网络设定" \
 			"8" "RAM运行内存" \
-			"9" "compress压缩磁盘文件" \
-			"10" "mount shared folder挂载共享文件夹" \
-			"11" "VNC port端口" \
-			"12" "Input devices输入设备" \
-			"13" "exposed ports端口映射/转发" \
-			"14" "Storage devices存储设备" \
-			"15" "creat disk创建(空白)虚拟磁盘" \
-			"16" "restore to default恢复到默认" \
-			"17" "sound card声卡" \
-			"18" "Graphics card/VGA(显卡/显示器)" \
-			"19" "network card网卡" \
-			"20" "spice远程桌面" \
-			"21" "windows2000 hack" \
-			"22" "uefi/legacy bios(开机引导固件)" \
-			"23" "tmoe_qemu_not-todo-list" \
+			"9" "Input devices输入设备" \
+			"10" "sound card声卡" \
+			"11" "Display settings显示设置" \
+			"12" "windows2000 hack" \
+			"13" "uefi/legacy bios(开机引导固件)" \
+			"14" "restore to default恢复到默认" \
+			"15" "tmoe_qemu_not-todo-list" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8867,31 +8925,185 @@ start_tmoe_qemu_manager() {
 	2) multi_qemu_vm_management ;;
 	3) nano startqemu ;;
 	4) tmoe_qemu_faq ;;
-	5) choose_qemu_iso_file ;;
-	6) choose_qemu_qcow2_or_img_file ;;
-	7) tmoe_qemu_x64_cpu_manager ;;
+	5) tmoe_qemu_disk_manager ;;
+	6) tmoe_qemu_x64_cpu_manager ;;
+	7) modify_tmoe_qemu_network_settings ;;
 	8) modify_qemu_ram_size ;;
-	9) compress_or_dd_qcow2_img_file ;;
-	10) modify_qemu_shared_folder ;;
-	11) modify_qemu_vnc_display_port ;;
-	12) tmoe_qemu_input_devices ;;
-	13) modify_qemu_exposed_ports ;;
-	14) tmoe_qemu_storage_devices ;;
-	15) creat_blank_virtual_disk_image ;;
-	16) creat_qemu_startup_script ;;
-	17) modify_qemu_sound_card ;;
-	18) modify_qemnu_graphics_card ;;
-	19) modify_qemu_tmoe_network_card ;;
-	20) enable_qemnu_spice_remote ;;
-	21) enable_qemnu_win2k_hack ;;
-	22) choose_qemu_bios_or_uefi_file ;;
-	23) tmoe_qemu_todo_list ;;
+	9) tmoe_qemu_input_devices ;;
+	10) modify_qemu_sound_card ;;
+	11) tmoe_qemu_display_settings ;;
+	12) enable_qemnu_win2k_hack ;;
+	13) choose_qemu_bios_or_uefi_file ;;
+	14) creat_qemu_startup_script ;;
+	15) tmoe_qemu_todo_list ;;
 	esac
 	###############
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
 #################
+modify_tmoe_qemu_network_settings() {
+	RETURN_TO_WHERE='modify_tmoe_qemu_network_settings'
+	VIRTUAL_TECH=$(
+		whiptail --title "display devices" --menu "Which configuration do you want to modify？" 0 0 0 \
+			"1" "network card网卡" \
+			"2" "exposed ports端口映射/转发" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) modify_qemu_tmoe_network_card ;;
+	2) modify_qemu_exposed_ports ;;
+	esac
+	###############
+	press_enter_to_return
+	modify_tmoe_qemu_network_settings
+}
+##############
+tmoe_qemu_disk_manager() {
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='tmoe_qemu_disk_manager'
+	VIRTUAL_TECH=$(
+		whiptail --title "DISK MANAGER" --menu "Which configuration do you want to modify?" 15 50 7 \
+			"1" "iso选择启动光盘(CD)" \
+			"2" "disk选择启动磁盘(IDE)" \
+			"3" "compress压缩磁盘文件" \
+			"4" "mount shared folder挂载共享文件夹" \
+			"5" "Storage devices存储设备" \
+			"6" "creat disk创建(空白)虚拟磁盘" \
+			"7" "second disk选择第二块IDE磁盘" \
+			"8" "third disk选择第三块IDE磁盘" \
+			"9" "fourth disk选择第四块IDE磁盘" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) choose_qemu_iso_file ;;
+	2) choose_qemu_qcow2_or_img_file ;;
+	3) compress_or_dd_qcow2_img_file ;;
+	4) modify_qemu_shared_folder ;;
+	5) tmoe_qemu_storage_devices ;;
+	6) creat_blank_virtual_disk_image ;;
+	7) choose_hdb_disk_image_file ;;
+	8) choose_hdc_disk_image_file ;;
+	9) choose_hdd_disk_image_file ;;
+	esac
+	press_enter_to_return
+	tmoe_qemu_disk_manager
+}
+################
+tmoe_qemu_display_settings() {
+	RETURN_TO_WHERE='tmoe_qemu_display_settings'
+	VIRTUAL_TECH=$(
+		whiptail --title "DISPLAY" --menu "Which configuration do you want to modify?" 15 50 5 \
+			"1" "Graphics card/VGA(显卡/显示器)" \
+			"2" "Display devices显示设备" \
+			"3" "VNC port端口" \
+			"4" "spice远程桌面" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) modify_qemnu_graphics_card ;;
+	2) modify_tmoe_qemu_display_device ;;
+	3) modify_qemu_vnc_display_port ;;
+	4) enable_qemnu_spice_remote ;;
+	esac
+	press_enter_to_return
+	tmoe_qemu_display_settings
+}
+################
+modify_tmoe_qemu_display_device() {
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='modify_tmoe_qemu_display_device'
+	VIRTUAL_TECH=$(
+		whiptail --title "display devices" --menu "您想要修改为哪个显示设备呢？此功能目前仍处于测试阶段，切换前需手动禁用之前的显示设备。" 0 0 0 \
+			"0" "Return to previous menu 返回上级菜单" \
+			"00" "list all enabled列出所有已经启用的设备" \
+			"01" "ati-vga:bus PCI" \
+			"02" "bochs-display:bus PCI" \
+			"03" "cirrus-vga:bus PCI,desc(Cirrus CLGD 54xx VGA" \
+			"04" "isa-cirrus-vga:bus ISA" \
+			"05" "isa-vga:bus ISA" \
+			"06" "qxl:bus PCI,desc(Spice QXL GPU (secondary)" \
+			"07" "qxl-vga:bus PCI,desc(Spice QXL GPU (primary, vga compatible)" \
+			"08" "ramfb:bus System,desc(ram framebuffer standalone device" \
+			"09" "secondary-vga:bus PCI" \
+			"10" "sga:bus ISA,desc(Serial Graphics Adapter" \
+			"11" "VGA:bus PCI" \
+			"12" "vhost-user-gpu:bus virtio-bus" \
+			"13" "vhost-user-gpu-pci:bus PCI" \
+			"14" "vhost-user-vga:bus PCI" \
+			"15" "virtio-gpu-device:bus virtio-bus" \
+			"16" "virtio-gpu-pci:bus PCI,alias(virtio-gpu" \
+			"17" "virtio-vga:bus PCI" \
+			"18" "vmware-svga:bus PCI" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") tmoe_qemu_display_settings ;;
+	00) list_all_enabled_qemu_display_devices ;;
+	01) TMOE_QEMU_DISPLAY_DEVICES="ati-vga" ;;
+	02) TMOE_QEMU_DISPLAY_DEVICES="bochs-display" ;;
+	03) TMOE_QEMU_DISPLAY_DEVICES="cirrus-vga" ;;
+	04) TMOE_QEMU_DISPLAY_DEVICES="isa-cirrus-vga" ;;
+	05) TMOE_QEMU_DISPLAY_DEVICES="isa-vga" ;;
+	06) TMOE_QEMU_DISPLAY_DEVICES="qxl" ;;
+	07) TMOE_QEMU_DISPLAY_DEVICES="qxl-vga" ;;
+	08) TMOE_QEMU_DISPLAY_DEVICES="ramfb" ;;
+	09) TMOE_QEMU_DISPLAY_DEVICES="secondary-vga" ;;
+	10) TMOE_QEMU_DISPLAY_DEVICES="sga" ;;
+	11) TMOE_QEMU_DISPLAY_DEVICES="VGA" ;;
+	12) TMOE_QEMU_DISPLAY_DEVICES="vhost-user-gpu" ;;
+	13) TMOE_QEMU_DISPLAY_DEVICES="vhost-user-gpu-pci" ;;
+	14) TMOE_QEMU_DISPLAY_DEVICES="vhost-user-vga" ;;
+	15) TMOE_QEMU_DISPLAY_DEVICES="virtio-gpu-device" ;;
+	16) TMOE_QEMU_DISPLAY_DEVICES="virtio-gpu-pci" ;;
+	17) TMOE_QEMU_DISPLAY_DEVICES="virtio-vga" ;;
+	18) TMOE_QEMU_DISPLAY_DEVICES="vmware-svga" ;;
+	esac
+	###############
+	enable_qemnu_display_device
+	press_enter_to_return
+	tmoe_qemu_display_settings
+}
+##############
+list_all_enabled_qemu_display_devices() {
+	if ! grep -q '\-device' startqemu; then
+		echo "未启用任何相关设备"
+	else
+		cat startqemu | grep '\-device' | awk '{print $2}'
+	fi
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+#############
+enable_qemnu_display_device() {
+	cd /usr/local/bin/
+	if grep -q "device ${TMOE_QEMU_DISPLAY_DEVICES}" startqemu; then
+		TMOE_SPICE_STATUS="检测到您已启用${TMOE_QEMU_DISPLAY_DEVICES}"
+	else
+		TMOE_SPICE_STATUS="检测到您已禁用${TMOE_QEMU_DISPLAY_DEVICES}"
+	fi
+	###########
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 11 45); then
+		sed -i "/-device ${TMOE_QEMU_DISPLAY_DEVICES}/d" startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -device tmoe_config_test \\\n/' startqemu
+		sed -i "s@-device tmoe_config_test@-device ${TMOE_QEMU_DISPLAY_DEVICES}@" startqemu
+		echo "启用完成，将在下次启动qemu虚拟机时生效"
+	else
+		sed -i "/-device ${TMOE_QEMU_DISPLAY_DEVICES}/d" startqemu
+		echo "禁用完成"
+	fi
+}
+#####################
 tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
 	VIRTUAL_TECH=$(
@@ -9040,7 +9252,11 @@ tmoe_qemu_input_devices() {
 }
 ##########
 list_all_enabled_qemu_input_devices() {
-	cat startqemu | grep '\-device' | awk '{print $2}'
+	if ! grep -q '\-device' startqemu; then
+		echo "未启用任何相关设备"
+	else
+		cat startqemu | grep '\-device' | awk '{print $2}'
+	fi
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
