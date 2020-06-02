@@ -7091,7 +7091,7 @@ modify_qemu_aarch64_tmoe_sound_card() {
 	if grep -q '\-soundhw ' startqemu; then
 		CURRENT_VALUE=$(cat startqemu | grep '\-soundhw ' | tail -n 1 | awk '{print $2}')
 	else
-		CURRENT_VALUE='未指定'
+		CURRENT_VALUE='默认'
 	fi
 	VIRTUAL_TECH=$(
 		whiptail --title "声卡型号" --menu "Please select the sound card model.\n默认未启用,当前为${CURRENT_VALUE}" 16 50 7 \
@@ -8472,13 +8472,13 @@ modify_qemu_amd64_tmoe_machine_type() {
 	if grep -q '\-M ' startqemu; then
 		CURRENT_VALUE=$(cat startqemu | grep '\-M ' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	else
-		CURRENT_VALUE='未指定'
+		CURRENT_VALUE='默认'
 	fi
 	#qemu-system-x86_64 -machine help >001
 	#cat 001 |awk '{print $1}' >002
 	#paste 002 003 -d ':'
 	VIRTUAL_TECH=$(
-		whiptail --title "MACHINE" --menu "Please select the machine type.\n默认未指定机器类型,当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "MACHINE" --menu "Please select the machine type.\n默认为pc-i440fx,当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "disable禁用指定机器类型参数" \
 			"01" "microvm:microvm (i386)" \
@@ -8605,6 +8605,8 @@ modify_qemu_amd64_tmoe_machine_type() {
 disable_tmoe_qemu_machine() {
 	sed -i '/-M /d' startqemu
 	echo "禁用完成"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
 }
 ################
 enable_tmoe_qemu_cpu_multi_threading() {
@@ -9101,7 +9103,7 @@ choose_qemu_bios_or_uefi_file() {
 		CURRENT_VALUE='默认'
 	fi
 	VIRTUAL_TECH=$(
-		whiptail --title "uefi/legacy bios" --menu "Please select the legacy bios or uefi file.win8/win10选用uefi或许能加快开机速度.若您使用的是legacy bios，则可以在启动VNC后的3秒钟内按下ESC键选择启动项。若您使用的是uefi,则您可以在启动VNC后的几秒内按其他键允许使用光盘\n当前为${CURRENT_VALUE}" 18 50 5 \
+		whiptail --title "uefi/legacy bios" --menu "Please select the legacy bios or uefi file.若您使用的是legacy bios，则可以在启动VNC后的3秒钟内按下ESC键选择启动项。若您使用的是uefi,则您可以在启动VNC后的几秒内按其他键允许从光盘启动\n当前为${CURRENT_VALUE}" 18 50 5 \
 			"1" "default默认" \
 			"2" "qemu-efi-aarch64:UEFI firmware for arm64" \
 			"3" "ovmf:UEFI firmware for x64" \
