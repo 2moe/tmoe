@@ -6454,9 +6454,7 @@ tmoe_uefi_boot_manager() {
 	CURRENT_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}')
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	TMOE_BOOT_MGR=$(
-		whiptail --title "开机启动项管理" --menu "Note: efibootmgr requires that the kernel module efivars be loaded prior
- to use. 'modprobe efivars' should do the trick if it does not
- automatically load." 0 0 0 \
+		whiptail --title "开机启动项管理" --menu "Note: efibootmgr requires that the kernel module efivars be loaded prior to use. 'modprobe efivars' should do the trick if it does not automatically load." 16 50 5 \
 			"1" "first boot item修改第一启动项" \
 			"2" "boot order自定义排序" \
 			"3" "Backup efi备份" \
@@ -6701,36 +6699,38 @@ start_tmoe_qemu_aarch64_manager() {
 
 	VIRTUAL_TECH=$(
 		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
-			"1" "Multi-VM多虚拟机管理" \
-			"2" "edit script manually手动修改配置脚本" \
-			"3" "CPU管理" \
-			"4" "Display and audio显示与音频" \
-			"5" "RAM运行内存" \
-			"6" "disk manager磁盘管理器" \
-			"7" "FAQ常见问题" \
-			"8" "exposed ports端口映射/转发" \
-			"9" "network card model网卡" \
-			"10" "restore to default恢复到默认" \
-			"11" "uefi/legacy bios(开机引导固件)" \
-			"12" "Input devices输入设备" \
+			"1" "Creat a new VM 新建虚拟机" \
+			"2" "Multi-VM多虚拟机管理" \
+			"3" "edit script manually手动修改配置脚本" \
+			"4" "CPU管理" \
+			"5" "Display and audio显示与音频" \
+			"6" "RAM运行内存" \
+			"7" "disk manager磁盘管理器" \
+			"8" "FAQ常见问题" \
+			"9" "exposed ports端口映射/转发" \
+			"10" "network card model网卡" \
+			"11" "restore to default恢复到默认" \
+			"12" "uefi/legacy bios(开机引导固件)" \
+			"13" "Input devices输入设备" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) multi_qemu_vm_management ;;
-	2) nano startqemu ;;
-	3) tmoe_qemu_aarch64_cpu_manager ;;
-	4) tmoe_qemu_display_settings ;;
-	5) modify_qemu_ram_size ;;
-	6) tmoe_qemu_disk_manager ;;
-	7) tmoe_qemu_faq ;;
-	8) modify_qemu_exposed_ports ;;
-	9) modify_qemu_tmoe_network_card ;;
-	10) creat_qemu_startup_script ;;
-	11) choose_qemu_bios_or_uefi_file ;;
-	12) tmoe_qemu_input_devices ;;
+	1) creat_a_new_tmoe_qemu_vm ;;
+	2) multi_qemu_vm_management ;;
+	3) nano startqemu ;;
+	4) tmoe_qemu_aarch64_cpu_manager ;;
+	5) tmoe_qemu_display_settings ;;
+	6) modify_qemu_ram_size ;;
+	7) tmoe_qemu_disk_manager ;;
+	8) tmoe_qemu_faq ;;
+	9) modify_qemu_exposed_ports ;;
+	10) modify_qemu_tmoe_network_card ;;
+	11) creat_qemu_startup_script ;;
+	12) choose_qemu_bios_or_uefi_file ;;
+	13) tmoe_qemu_input_devices ;;
 	esac
 	###############
 	press_enter_to_return
@@ -7712,7 +7712,7 @@ modify_qemu_sound_card() {
 	if grep -q '\-soundhw ' startqemu; then
 		CURRENT_VALUE=$(cat startqemu | grep '\-soundhw ' | tail -n 1 | awk '{print $2}')
 	else
-		CURRENT_VALUE='未指定'
+		CURRENT_VALUE='未启用'
 	fi
 	VIRTUAL_TECH=$(
 		whiptail --title "声卡型号" --menu "Please select the sound card model.\n检测到当前为${CURRENT_VALUE}" 16 50 7 \
@@ -8994,42 +8994,71 @@ start_tmoe_qemu_manager() {
 	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
 		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
-			"1" "qemu templates repo虚拟机配置模板仓库" \
-			"2" "Multi-VM多虚拟机管理" \
-			"3" "edit script manually手动修改配置脚本" \
-			"4" "FAQ常见问题" \
-			"5" "Display and audio显示与音频" \
-			"6" "disk manager磁盘管理器" \
-			"7" "CPU manager中央处理器管理" \
-			"8" "network网络设定" \
-			"9" "RAM运行内存" \
-			"10" "Input devices输入设备" \
-			"11" "uefi/legacy bios(开机引导固件)" \
-			"12" "extra options额外选项" \
+			"1" "Creat a new VM 新建虚拟机" \
+			"2" "qemu templates repo虚拟机配置模板仓库" \
+			"3" "Multi-VM多虚拟机管理" \
+			"4" "edit script manually手动修改配置脚本" \
+			"5" "FAQ常见问题" \
+			"6" "Display and audio显示与音频" \
+			"7" "disk manager磁盘管理器" \
+			"8" "CPU manager中央处理器管理" \
+			"9" "network网络设定" \
+			"10" "RAM运行内存" \
+			"11" "Input devices输入设备" \
+			"12" "uefi/legacy bios(开机引导固件)" \
+			"13" "extra options额外选项" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) tmoe_qemu_templates_repo ;;
-	2) multi_qemu_vm_management ;;
-	3) nano startqemu ;;
-	4) tmoe_qemu_faq ;;
-	5) tmoe_qemu_display_settings ;;
-	6) tmoe_qemu_disk_manager ;;
-	7) tmoe_qemu_x64_cpu_manager ;;
-	8) modify_tmoe_qemu_network_settings ;;
-	9) modify_qemu_ram_size ;;
-	10) tmoe_qemu_input_devices ;;
-	11) choose_qemu_bios_or_uefi_file ;;
-	12) modify_tmoe_qemu_extra_options ;;
+	1) creat_a_new_tmoe_qemu_vm ;;
+	2) tmoe_qemu_templates_repo ;;
+	3) multi_qemu_vm_management ;;
+	4) nano startqemu ;;
+	5) tmoe_qemu_faq ;;
+	6) tmoe_qemu_display_settings ;;
+	7) tmoe_qemu_disk_manager ;;
+	8) tmoe_qemu_x64_cpu_manager ;;
+	9) modify_tmoe_qemu_network_settings ;;
+	10) modify_qemu_ram_size ;;
+	11) tmoe_qemu_input_devices ;;
+	12) choose_qemu_bios_or_uefi_file ;;
+	13) modify_tmoe_qemu_extra_options ;;
 	esac
 	###############
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
 ##############
+creat_a_new_tmoe_qemu_vm() {
+	cd /usr/local/bin/
+	RETURN_TO_WHERE='choose_qemu_qcow2_or_img_file'
+	if (whiptail --title "是否需要创建虚拟磁盘" --yes-button 'creat新建' --no-button 'choose选择' --yesno "Do you want to creat a new disk?若您无虚拟磁盘，那就新建一个吧" 8 50); then
+		creat_blank_virtual_disk_image
+	else
+		choose_qemu_qcow2_or_img_file
+	fi
+	SELECTION=""
+	TMOE_QEMU_SCRIPT_FILE_PATH='/usr/local/bin/.tmoe-linux-qemu'
+	THE_QEMU_STARTUP_SCRIPT='/usr/local/bin/startqemu'
+	RETURN_TO_WHERE='save_current_qemu_conf_as_a_new_script'
+	if (whiptail --title "Do you want to choose a iso?" --yes-button 'yes' --no-button 'skip跳过' --yesno "是否需要选择启动光盘" 7 50); then
+		choose_qemu_iso_file
+	fi
+	RETURN_TO_WHERE='multi_qemu_vm_management'
+	save_current_qemu_conf_as_a_new_script
+	echo "处于默认配置下的虚拟机的启动命令是startqemu"
+	echo "是否需要启动虚拟机？"
+	echo "您之后可以输startqemu来启动"
+	echo "You can type startqemu to start the default qemu vm."
+	echo "默认VNC访问地址为localhost:5902"
+	echo "Do you want to start it now?"
+	do_you_want_to_continue
+	startqemu
+}
+##########################
 modify_tmoe_qemu_extra_options() {
 	RETURN_TO_WHERE='modify_tmoe_qemu_extra_options'
 	VIRTUAL_TECH=$(
@@ -9123,8 +9152,8 @@ tmoe_qemu_disk_manager() {
 		whiptail --title "DISK MANAGER" --menu "Which configuration do you want to modify?" 15 50 7 \
 			"1" "choose iso选择启动光盘(CD)" \
 			"2" "choose disk选择启动磁盘(IDE)" \
-			"3" "compress压缩磁盘文件大小" \
-			"4" "expand disk扩容磁盘空间" \
+			"3" "compress压缩磁盘文件(真实大小)" \
+			"4" "expand disk扩容磁盘(最大空间)" \
 			"5" "mount shared folder挂载共享文件夹" \
 			"6" "Storage devices存储设备" \
 			"7" "creat disk创建(空白)虚拟磁盘" \
@@ -9652,7 +9681,7 @@ multi_qemu_vm_management() {
 			"3" "delete conf多虚拟配置删除" \
 			"4" "del vm disk删除当前虚拟机磁盘文件" \
 			"5" "del iso删除当前虚拟机iso文件" \
-			"6" "FAQ常见问题" \
+			"6" "其它说明" \
 			"7" "del special vm disk删除指定虚拟机的磁盘文件" \
 			"8" "del special vm iso删除指定虚拟机的镜像文件" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -9681,6 +9710,11 @@ save_current_qemu_conf_as_a_new_script() {
 	TARGET_FILE_NAME=$(whiptail --inputbox "请自定义启动脚本名称\nPlease enter the script name." 10 50 --title "SCRIPT NAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		multi_qemu_vm_management
+	elif [ "${TARGET_FILE_NAME}" = "startqemu" ]; then
+		echo "startqemu已被占用，请重新输入"
+		echo "Please re-enter."
+		press_enter_to_return
+		save_current_qemu_conf_as_a_new_script
 	elif [ -z "${TARGET_FILE_NAME}" ]; then
 		echo "请输入有效的名称"
 		echo "Please enter a valid name"
