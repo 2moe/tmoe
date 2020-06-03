@@ -423,7 +423,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200603-14)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200603-14)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -6579,8 +6579,8 @@ install_container_and_virtual_machine() {
 			"7" "VirtualBox:甲骨文开源虚拟机(x64)" \
 			"8" "wine(调用win api并即时转换)" \
 			"9" "anbox:Android in a box(测试)" \
-			"00" "Back to the main menu 返回主菜单" \
 			"0" "Return to previous menu 返回上级菜单" \
+			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -9126,9 +9126,9 @@ modify_tmoe_qemu_vnc_pulse_audio_address() {
 ##################
 modify_tmoe_qemu_xsdl_settings() {
 	if grep -q '\-vnc \:' "startqemu"; then
-		X_SERVER_STATUS="检测到您当前启用的是VNC"
+		X_SERVER_STATUS="检测到您当前启用的是VNC,而非X服务"
 	elif grep -q '/-spice port' "startqemu"; then
-		X_SERVER_STATUS="检测到您当前启用的是spice"
+		X_SERVER_STATUS="检测到您当前启用的是spice,而非X服务"
 	else
 		X_SERVER_STATUS="检测到您已经启用了X服务"
 	fi
