@@ -6647,7 +6647,7 @@ creat_qemu_aarch64_startup_script() {
 			--accel tcg,thread=multi \
 			-vga std \
 			-m 2048 \
-			-hda /root/sd/Download/alpine_aarch64.qcow2 \
+			-hda /root/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic \
