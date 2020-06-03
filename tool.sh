@@ -423,7 +423,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200602-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531修复qemu部分问题" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200603-14)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0511支持x11vnc,0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
 			"3" "Download theme 下载主题" \
@@ -1552,8 +1552,12 @@ modify_xfce_window_scaling_factor() {
 ##################
 modify_vnc_pulse_audio() {
 	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1) \n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
+	if [ "$?" != "0" ]; then
+		modify_other_vnc_conf
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
 		#sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
 		#sed -i "2 a\export PULSE_SERVER=$TARGET" ~/.vnc/xstartup
 		if grep '^export.*PULSE_SERVER' "${HOME}/.vnc/xstartup"; then
@@ -1565,10 +1569,6 @@ modify_vnc_pulse_audio() {
 		echo '您当前的音频地址已修改为'
 		echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1)
 		echo "请输startvnc重启vnc服务，以使配置生效"
-		press_enter_to_return
-		modify_other_vnc_conf
-	else
-		modify_other_vnc_conf
 	fi
 }
 ##################
@@ -4875,14 +4875,15 @@ install_bleachbit_cleaner() {
 ##########################
 modify_remote_desktop_config() {
 	RETURN_TO_WHERE='modify_remote_desktop_config'
+	RETURN_TO_TMOE_MENU_01='modify_remote_desktop_config'
 	##################
 	REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
 		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 6 \
-		"1" "tightvnc/tigervnc" \
-		"2" "x11vnc" \
-		"3" "XSDL" \
-		"4" "XRDP" \
-		"5" "Xwayland(测试版)" \
+		"1" "tightvnc/tigervnc(应用广泛)" \
+		"2" "x11vnc(通过VNC来连接真实X桌面)" \
+		"3" "X服务(XSDL/VcXsrv)" \
+		"4" "XRDP(使用微软开发的rdp协议)" \
+		"5" "Wayland(测试版,取代X Window)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -5071,16 +5072,20 @@ modify_vnc_conf() {
 		modify_other_vnc_conf
 	fi
 }
-
 ############################
 modify_xsdl_conf() {
-	if [ ! -f /usr/local/bin/startxsdl ]; then
-		echo "/usr/local/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-		echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
-		RETURN_TO_WHERE='modify_remote_desktop_config'
-		do_you_want_to_continue
+	if [ "${RETURN_TO_TMOE_MENU_01}" = 'modify_remote_desktop_config' ]; then
+		if [ ! -f /usr/local/bin/startxsdl ]; then
+			echo "/usr/local/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+			echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
+			RETURN_TO_WHERE='modify_remote_desktop_config'
+			do_you_want_to_continue
+		fi
+		TMOE_XSDL_SCRIPT_PATH='/usr/local/bin/startxsdl'
+	else
+		TMOE_XSDL_SCRIPT_PATH='/usr/local/bin/startqemu'
 	fi
-	XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Choose your option" 15 60 5 \
+	XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Which configuration do you want to modify?" 15 60 5 \
 		"1" "音频端口 Pulse server port " \
 		"2" "显示编号 Display number" \
 		"3" "ip address" \
@@ -5089,7 +5094,7 @@ modify_xsdl_conf() {
 		3>&1 1>&2 2>&3)
 	###########
 	case "${XSDL_XSERVER}" in
-	0 | "") modify_remote_desktop_config ;;
+	0 | "") ${RETURN_TO_TMOE_MENU_01} ;;
 	1) modify_pulse_server_port ;;
 	2) modify_display_port ;;
 	3) modify_xsdl_ip_address ;;
@@ -5101,66 +5106,88 @@ modify_xsdl_conf() {
 }
 #################
 modify_startxsdl_manually() {
-	nano /usr/local/bin/startxsdl || nano $(command -v startxsdl)
+	nano ${TMOE_XSDL_SCRIPT_PATH}
 	echo 'See your current xsdl configuration information below.'
-	echo '您当前的ip地址为'
-	echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
 
-	echo '您当前的显示端口为'
-	echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
+	check_tmoe_xsdl_display_ip
+	echo "您当前的显示服务的ip地址为${CURRENT_DISPLAY_IP}"
 
-	echo '您当前的音频端口为'
-	echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
-	press_enter_to_return
-	modify_xsdl_conf
+	#echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
+
+	check_tmoe_xsdl_display_port
+	echo "您当前的显示端口为${CURRENT_DISPLAY_PORT}"
+	#echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
+
+	check_tmoe_xsdl_pulse_audio_port
+	echo "您当前的音频端口为${CURRENT_PULSE_AUDIO_PORT}"
+	#echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
 }
-
 ######################
+check_tmoe_xsdl_display_ip() {
+	CURRENT_DISPLAY_IP=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 1)
+}
+######
+check_tmoe_xsdl_display_port() {
+	CURRENT_DISPLAY_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
+}
+#######
+check_tmoe_xsdl_pulse_audio_port() {
+	CURRENT_PULSE_AUDIO_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
+}
+#################
 modify_pulse_server_port() {
-
-	TARGET=$(whiptail --inputbox "若xsdl app显示的端口非4713，则您可在此处修改。默认为4713，当前为$(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2) \n请以xsdl app显示的pulse server地址的最后几位数字为准，输入完成后按回车键确认。" 20 50 --title "MODIFY PULSE SERVER PORT " 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
-		sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:$TARGET" "$(command -v startxsdl)"
-		echo 'Your current PULSE SERVER port has been modified.'
-		echo '您当前的音频端口已修改为'
-		echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
-		press_enter_to_return
+	check_tmoe_xsdl_pulse_audio_port
+	TARGET=$(whiptail --inputbox "若xsdl app显示的端口非4713，则您可在此处修改。默认为4713，当前为${CURRENT_PULSE_AUDIO_PORT}\n请以xsdl app显示的pulse_server地址的最后几位数字为准。若您的宿主机系统非Android,而是win10,且使用了tmoe-linux自带的pulseaudio，则端口为0,输入完成后按回车键确认。" 15 50 --title "MODIFY PULSE SERVER PORT " 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
 		modify_xsdl_conf
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
 	else
-		modify_xsdl_conf
+		#sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:$TARGET" "$(command -v startxsdl)"
+		PULSE_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export PULSE_SERVER' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+		CURRENT_PULSE_IP=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
+		sed -i "${PULSE_LINE} c\export PULSE_SERVER=tcp:${CURRENT_PULSE_IP}:${TARGET}" ${TMOE_XSDL_SCRIPT_PATH}
+		echo 'Your current PULSE SERVER port has been modified.'
+		check_tmoe_xsdl_pulse_audio_port
+		echo "您当前的音频端口已修改为${CURRENT_PULSE_AUDIO_PORT}"
 	fi
 }
-
 ########################################################
 modify_display_port() {
-
-	TARGET=$(whiptail --inputbox "若xsdl app显示的Display number(输出显示的端口数字) 非0，则您可在此处修改。默认为0，当前为$(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2) \n请以xsdl app显示的DISPLAY=:的数字为准，输入完成后按回车键确认。" 20 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
-		sed -i "3 c export DISPLAY=127.0.0.1:$TARGET" "$(command -v startxsdl)"
-		echo 'Your current DISPLAY port has been modified.'
-		echo '您当前的显示端口已修改为'
-		echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
-		press_enter_to_return
+	check_tmoe_xsdl_display_port
+	TARGET=$(whiptail --inputbox "若xsdl app显示的Display number(输出显示的端口数字) 非0，则您可在此处修改。默认为0，当前为${CURRENT_DISPLAY_PORT}\n请以xsdl app显示的DISPLAY=:的数字为准，输入完成后按回车键确认。" 15 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
 		modify_xsdl_conf
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
 	else
+		DISPLAY_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export DISPLAY' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+		sed -i "${DISPLAY_LINE} c\export DISPLAY=${CURRENT_DISPLAY_IP}:$TARGET" "${TMOE_XSDL_SCRIPT_PATH}"
+		echo 'Your current DISPLAY port has been modified.'
+		check_tmoe_xsdl_display_port
+		echo "您当前的显示端口已经修改为${CURRENT_DISPLAY_PORT}"
+		press_enter_to_return
 		modify_xsdl_conf
 	fi
 }
 ###############################################
 modify_xsdl_ip_address() {
-	XSDLIP=$(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
-	TARGET=$(whiptail --inputbox "若您需要用局域网其它设备来连接，则您可在下方输入该设备的IP地址。本机连接请勿修改，默认为127.0.0.1 ,当前为${XSDLIP} \n 请在修改完其它信息后，再来修改此项，否则将被重置为127.0.0.1。windows设备输 ipconfig，linux设备输ip -4 -br -c addr获取ip address，获取到的地址格式类似于192.168.123.234，输入获取到的地址后按回车键确认。" 20 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
-		sed -i "s/${XSDLIP}/${TARGET}/g" "$(command -v startxsdl)"
-		echo 'Your current ip address has been modified.'
-		echo '您当前的ip地址已修改为'
-		echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
-		press_enter_to_return
+	check_tmoe_xsdl_display_ip
+	#XSDLIP=$(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
+	TARGET=$(whiptail --inputbox "若您需要用局域网其它设备来连接，则您可在下方输入该设备的IP地址。本机连接请勿修改，默认为127.0.0.1 ,当前为${CURRENT_DISPLAY_IP}\n windows设备输 ipconfig，linux设备输ip -4 -br -c a获取ip address，获取到的地址格式类似于192.168.123.234，输入获取到的地址后按回车键确认。" 15 50 --title "MODIFY DISPLAY IP" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
 		modify_xsdl_conf
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
 	else
+		sed -i "s/${CURRENT_DISPLAY_IP}/${TARGET}/g" "${TMOE_XSDL_SCRIPT_PATH}"
+		echo 'Your current ip address has been modified.'
+		check_tmoe_xsdl_display_ip
+		echo "您当前的显示服务的ip地址已经修改为${CURRENT_DISPLAY_IP}"
+		press_enter_to_return
 		modify_xsdl_conf
 	fi
 }
@@ -6543,7 +6570,7 @@ install_container_and_virtual_machine() {
 	NON_DEBIAN='false'
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 50 8 \
-			"1" "aqemu(基于qt的qemu前端)" \
+			"1" "aqemu(QEMU和KVM的Qt5前端)" \
 			"2" "tmoe-qemu(x64虚拟机管理)" \
 			"3" "tmoe-qemu(arm64虚拟机管理）" \
 			"4" "download iso(Android,linux等)" \
@@ -6593,12 +6620,24 @@ creat_qemu_aarch64_startup_script() {
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
-	cat >startqemu_aarch64_20200602 <<-'EndOFqemu'
+	cat >startqemu_aarch64_2020060314 <<-'EndOFqemu'
 		#!/usr/bin/env bash
-		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
-		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-		echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+		export DISPLAY=127.0.0.1:0
+		export PULSE_SERVER=127.0.0.1
+		START_QEMU_SCRIPT_PATH='/usr/local/bin/startqemu'
+		if grep -q '\-vnc \:' "${START_QEMU_SCRIPT_PATH}"; then
+			CURRENT_PORT=$(cat ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+			CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+			echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
+			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+		else
+			echo "检测到您当前没有使用VNC服务，若您使用的是Xserver则可无视以下说明"
+			echo "请自行添加端口号"
+			echo "spice默认端口号为5931"
+			echo "正在为您启动qemu虚拟机"
+			echo "本机localhost"
+			echo The LAN ip 局域网ip $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2)
+		fi
 
 		/usr/bin/qemu-system-aarch64 \
 			-monitor stdio \
@@ -6620,8 +6659,8 @@ creat_qemu_aarch64_startup_script() {
 			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
 			-name "tmoe-linux-aarch64-qemu"
 	EndOFqemu
-	chmod +x startqemu_aarch64_20200602
-	cp -pf startqemu_aarch64_20200602 /usr/local/bin/startqemu
+	chmod +x startqemu_aarch64_2020060314
+	cp -pf startqemu_aarch64_2020060314 /usr/local/bin/startqemu
 }
 ######################
 tmoe_qemu_aarch64_cpu_manager() {
@@ -6655,7 +6694,7 @@ start_tmoe_qemu_aarch64_manager() {
 	RETURN_TO_MENU='start_tmoe_qemu_aarch64_manager'
 	check_qemu_aarch64_install
 	cd /usr/local/bin/
-	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64_20200602" ]; then
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64_2020060314" ]; then
 		echo "启用arm64虚拟机将重置startqemu为arm64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_aarch64_startup_script
@@ -7129,12 +7168,24 @@ creat_qemu_startup_script() {
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
-	cat >startqemu_amd64_20200602 <<-'EndOFqemu'
+	cat >startqemu_amd64_2020060314 <<-'EndOFqemu'
 		#!/usr/bin/env bash
-		CURRENT_PORT=$(cat /usr/local/bin/startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
-		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-		echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+		export DISPLAY=127.0.0.1:0
+		export PULSE_SERVER=127.0.0.1
+		START_QEMU_SCRIPT_PATH='/usr/local/bin/startqemu'
+		if grep -q '\-vnc \:' "${START_QEMU_SCRIPT_PATH}"; then
+			CURRENT_PORT=$(cat ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+			CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+			echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
+			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+		else
+			echo "检测到您当前没有使用VNC服务，若您使用的是Xserver则可无视以下说明"
+			echo "请自行添加端口号"
+			echo "spice默认端口号为5931"
+			echo "正在为您启动qemu虚拟机"
+			echo "本机localhost"
+			echo The LAN ip 局域网ip $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2)
+		fi
 
 		/usr/bin/qemu-system-x86_64 \
 			-monitor stdio \
@@ -7155,8 +7206,8 @@ creat_qemu_startup_script() {
 			-device usb-tablet \
 			-name "tmoe-linux-qemu"
 	EndOFqemu
-	chmod +x startqemu_amd64_20200602
-	cp -pf startqemu_amd64_20200602 /usr/local/bin/startqemu
+	chmod +x startqemu_amd64_2020060314
+	cp -pf startqemu_amd64_2020060314 /usr/local/bin/startqemu
 }
 ###########
 modify_qemu_machine_accel() {
@@ -7402,6 +7453,13 @@ check_qemu_vnc_port() {
 }
 #########################
 modify_qemu_vnc_display_port() {
+	if ! grep -q '\-vnc \:' "startqemu"; then
+		echo "检测到您未启用VNC服务，是否启用？"
+		do_you_want_to_continue
+		sed -i "/-vnc :/d" startqemu
+		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -vnc :2 \\\n/' startqemu
+		sed -i 's@export PULSE_SERVER.*@export PULSE_SERVER=127.0.0.1@' startqemu
+	fi
 	check_qemu_vnc_port
 	TARGET=$(whiptail --inputbox "默认显示编号为2，默认VNC服务端口为5902，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为3,则端口为5903，请输入显示编号.Please enter the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
 
@@ -7584,8 +7642,9 @@ enable_qemnu_spice_remote() {
 		TMOE_SPICE_STATUS='检测到您已禁用speic'
 	fi
 	###########
-	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS},默认spice端口为5931" 11 45); then
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS},默认spice端口为5931,启用后将禁用vnc服务。" 10 45); then
 		sed -i '/-spice port=/d' startqemu
+		sed -i "/-vnc :/d" startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -spice tmoe_spice_config_test \\\n/' startqemu
 		sed -i "s@-spice tmoe_spice_config_test@-spice port=5931,image-compression=quic,disable-ticketing@" startqemu
 		echo "启用完成，将在下次启动qemu虚拟机时生效"
@@ -7638,7 +7697,7 @@ modify_qemu_sound_card() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") tmoe_qemu_display_settings ;;
 	1) QEMU_SOUNDHW='cs4312a' ;;
 	2) QEMU_SOUNDHW='sb16' ;;
 	3) QEMU_SOUNDHW='es1370' ;;
@@ -7669,7 +7728,7 @@ tmoe_qemu_todo_list() {
 	)
 	#############
 	case ${VIRTUAL_TECH} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") ${RETURN_TO_WHERE} ;;
 	1) qemu_snapshoots_manager ;;
 	2) tmoe_qemu_gpu_passthrough ;;
 	esac
@@ -8892,7 +8951,7 @@ start_tmoe_qemu_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_manager'
 	RETURN_TO_MENU='start_tmoe_qemu_manager'
 	check_qemu_install
-	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_20200602" ]; then
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_2020060314" ]; then
 		echo "启用x86_64虚拟机将重置startqemu为x86_64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_startup_script
@@ -8904,17 +8963,14 @@ start_tmoe_qemu_manager() {
 			"2" "Multi-VM多虚拟机管理" \
 			"3" "edit script manually手动修改配置脚本" \
 			"4" "FAQ常见问题" \
-			"5" "disk manager磁盘管理器" \
-			"6" "CPU manager中央处理器管理" \
-			"7" "network网络设定" \
-			"8" "RAM运行内存" \
-			"9" "Input devices输入设备" \
-			"10" "sound card声卡" \
-			"11" "Display settings显示设置" \
-			"12" "windows2000 hack" \
-			"13" "uefi/legacy bios(开机引导固件)" \
-			"14" "restore to default恢复到默认" \
-			"15" "tmoe_qemu_not-todo-list" \
+			"5" "Display and audio显示与音频" \
+			"6" "disk manager磁盘管理器" \
+			"7" "CPU manager中央处理器管理" \
+			"8" "network网络设定" \
+			"9" "RAM运行内存" \
+			"10" "Input devices输入设备" \
+			"11" "uefi/legacy bios(开机引导固件)" \
+			"12" "extra options额外选项" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8925,21 +8981,43 @@ start_tmoe_qemu_manager() {
 	2) multi_qemu_vm_management ;;
 	3) nano startqemu ;;
 	4) tmoe_qemu_faq ;;
-	5) tmoe_qemu_disk_manager ;;
-	6) tmoe_qemu_x64_cpu_manager ;;
-	7) modify_tmoe_qemu_network_settings ;;
-	8) modify_qemu_ram_size ;;
-	9) tmoe_qemu_input_devices ;;
-	10) modify_qemu_sound_card ;;
-	11) tmoe_qemu_display_settings ;;
-	12) enable_qemnu_win2k_hack ;;
-	13) choose_qemu_bios_or_uefi_file ;;
-	14) creat_qemu_startup_script ;;
-	15) tmoe_qemu_todo_list ;;
+	5) tmoe_qemu_display_settings ;;
+	6) tmoe_qemu_disk_manager ;;
+	7) tmoe_qemu_x64_cpu_manager ;;
+	8) modify_tmoe_qemu_network_settings ;;
+	9) modify_qemu_ram_size ;;
+	10) tmoe_qemu_input_devices ;;
+	11) choose_qemu_bios_or_uefi_file ;;
+	12) modify_tmoe_qemu_extra_options ;;
 	esac
 	###############
 	press_enter_to_return
 	${RETURN_TO_WHERE}
+}
+##############
+modify_tmoe_qemu_extra_options() {
+	RETURN_TO_WHERE='modify_tmoe_qemu_extra_options'
+	VIRTUAL_TECH=$(
+		whiptail --title "EXTRA OPTIONS" --menu "Which configuration do you want to modify？" 0 0 0 \
+			"1" "windows2000 hack" \
+			"2" "tmoe_qemu_not-todo-list" \
+			"3" "restore to default恢复到默认" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) enable_qemnu_win2k_hack ;;
+	2) tmoe_qemu_todo_list ;;
+	3)
+		creat_qemu_startup_script
+		echo "restore completed"
+		;;
+	esac
+	###############
+	press_enter_to_return
+	modify_tmoe_qemu_extra_options
 }
 #################
 modify_tmoe_qemu_network_settings() {
@@ -8998,12 +9076,17 @@ tmoe_qemu_disk_manager() {
 ################
 tmoe_qemu_display_settings() {
 	RETURN_TO_WHERE='tmoe_qemu_display_settings'
+	RETURN_TO_TMOE_MENU_01='tmoe_qemu_display_settings'
+	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
-		whiptail --title "DISPLAY" --menu "Which configuration do you want to modify?" 15 50 5 \
+		whiptail --title "DISPLAY" --menu "Which configuration do you want to modify?" 15 50 7 \
 			"1" "Graphics card/VGA(显卡/显示器)" \
-			"2" "Display devices显示设备" \
-			"3" "VNC port端口" \
-			"4" "spice远程桌面" \
+			"2" "sound card声卡" \
+			"3" "Display devices显示设备" \
+			"4" "VNC port端口" \
+			"5" "VNC pulseaudio音频" \
+			"6" "X服务(XSDL/VcXsrv)" \
+			"7" "spice远程桌面" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9011,14 +9094,54 @@ tmoe_qemu_display_settings() {
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) modify_qemnu_graphics_card ;;
-	2) modify_tmoe_qemu_display_device ;;
-	3) modify_qemu_vnc_display_port ;;
-	4) enable_qemnu_spice_remote ;;
+	2) modify_qemu_sound_card ;;
+	3) modify_tmoe_qemu_display_device ;;
+	4) modify_qemu_vnc_display_port ;;
+	5) modify_tmoe_qemu_vnc_pulse_audio_address ;;
+	6) modify_tmoe_qemu_xsdl_settings ;;
+	7) enable_qemnu_spice_remote ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_display_settings
 }
 ################
+modify_tmoe_qemu_vnc_pulse_audio_address() {
+	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。本机默认为127.0.0.1,当前为$(cat startqemu | grep 'PULSE_SERVER' | cut -d '=' -f 2 | head -n 1)\n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：若您使用的不是WSL或tmoe-linux安装的容器，则您需要手动启动音频服务,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n若qemu无法调用音频,则请检查qemu启动脚本的声卡参数和虚拟机内的声卡驱动。" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		${RETURN_TO_WHERE}
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		if grep '^export.*PULSE_SERVER' "startqemu"; then
+			sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startqemu
+		else
+			sed -i "2 a\export PULSE_SERVER=$TARGET" startqemu
+		fi
+		echo 'Your current PULSEAUDIO SERVER address has been modified.'
+		echo "您当前的音频地址已修改为$(grep 'PULSE_SERVER' startqemu | cut -d '=' -f 2 | head -n 1)"
+		echo "重启qemu生效"
+	fi
+}
+##################
+modify_tmoe_qemu_xsdl_settings() {
+	if ! grep -q '\-vnc \:' "startqemu"; then
+		X_SERVER_STATUS="检测到您当前启用的是VNC"
+	elif grep -q '/-spice port' "startqemu"; then
+		X_SERVER_STATUS="检测到您当前启用的是spice"
+	else
+		X_SERVER_STATUS="检测到您已经启用了X服务"
+	fi
+
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'configure配置' --yesno "Do you want to enable it?(っ °Д °)\n启用xserver后将禁用vnc和spice,您是想要启用还是配置呢?${X_SERVER_STATUS}" 9 50); then
+		sed -i '/vnc :/d' startqemu
+		sed -i '/-spice port=/d' startqemu
+		sed -i 's@export PULSE_SERVER.*@export PULSE_SERVER=127.0.0.1:4713@' startqemu
+	else
+		modify_xsdl_conf
+	fi
+}
+##############
 modify_tmoe_qemu_display_device() {
 	cd /usr/local/bin/
 	RETURN_TO_WHERE='modify_tmoe_qemu_display_device'
