@@ -6666,7 +6666,7 @@ creat_qemu_aarch64_startup_script() {
 tmoe_qemu_aarch64_cpu_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_aarch64_cpu_manager'
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 5 \
+		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 6 \
 			"1" "CPU cores处理器核心数" \
 			"2" "cpu model/type(型号/类型)" \
 			"3" "multithreading多线程" \
@@ -7354,7 +7354,7 @@ modify_qemu_host_and_guest_port() {
 ########
 modify_qemu_shared_folder() {
 	cd /usr/local/bin
-	if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？" 8 50); then
+		if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？\nAre you in a host or guest environment?" 8 50); then
 		modify_qemu_host_shared_folder
 	else
 		mount_qemu_guest_shared_folder
@@ -8756,7 +8756,7 @@ enable_tmoe_qemu_cpu_multi_threading() {
 tmoe_qemu_x64_cpu_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_x64_cpu_manager'
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 5 \
+		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 6 \
 			"1" "CPU cores处理器核心数" \
 			"2" "cpu model/type(型号/类型)" \
 			"3" "multithreading多线程" \
@@ -9113,7 +9113,7 @@ modify_tmoe_qemu_vnc_pulse_audio_address() {
 		echo "请输入有效的数值"
 		echo "Please enter a valid value"
 	else
-		if grep '^export.*PULSE_SERVER' "startqemu"; then
+		if grep -q '^export.*PULSE_SERVER' "startqemu"; then
 			sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startqemu
 		else
 			sed -i "2 a\export PULSE_SERVER=$TARGET" startqemu
@@ -9136,7 +9136,7 @@ modify_tmoe_qemu_xsdl_settings() {
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'configure配置' --yesno "Do you want to enable it?(っ °Д °)\n启用xserver后将禁用vnc和spice,您是想要启用还是配置呢?${X_SERVER_STATUS}" 9 50); then
 		sed -i '/vnc :/d' startqemu
 		sed -i '/-spice port=/d' startqemu
-		if ! grep '^export.*DISPLAY' "startqemu"; then
+		if ! grep -q '^export.*DISPLAY' "startqemu"; then
 			sed -i "1 a\export DISPLAY=127.0.0.1:0" startqemu
 		fi
 		sed -i 's@export PULSE_SERVER.*@export PULSE_SERVER=127.0.0.1:4713@' startqemu
@@ -9827,7 +9827,7 @@ dd_if_zero_of_qemu_tmp_disk() {
 ##################
 compress_or_dd_qcow2_img_file() {
 	cd /usr/local/bin
-	if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？" 8 50); then
+	if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？\nAre you in a host or guest environment?" 8 50); then
 		compress_qcow2_img_file
 	else
 		dd_if_zero_of_qemu_tmp_disk
