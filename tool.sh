@@ -6648,7 +6648,7 @@ creat_qemu_aarch64_startup_script() {
 			-smp 4 \
 			-cpu max \
 			-machine virt \
-			--accel tcg \
+			--accel tcg,thread=multi \
 			-vga std \
 			-m 2048 \
 			-hda /root/sd/Download/alpine_aarch64.qcow2 \
@@ -7197,7 +7197,7 @@ creat_qemu_startup_script() {
 			-cpu max \
 			-soundhw all \
 			-vga std \
-			--accel tcg \
+			--accel tcg,thread=multi \
 			-m 2048 \
 			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
@@ -7394,6 +7394,7 @@ modify_qemu_host_shared_folder_sdcard() {
 	echo "Sorry,当前暂不支持修改挂载目录"
 }
 ###############
+#-hdd fat:rw:/root/sd \
 modify_qemu_host_shared_folder() {
 	VIRTUAL_TECH=$(
 		whiptail --title "shared folder" --menu "如需添加更多共享文件夹，请手动修改配置文件" 15 55 4 \
@@ -7442,7 +7443,7 @@ configure_mount_script() {
 		echo "" >>.profile
 		sed -i '$ a\/usr/local/bin/mount-9p-filesystem' .profile
 	fi
-	echo "若无法自动挂载，则请手动输$GREEN}mount-9p-filesystem${RESET}"
+	echo "若无法自动挂载，则请手动输${GREEN}mount-9p-filesystem${RESET}"
 }
 #############
 disable_automatic_mount_qemu_folder() {
@@ -8786,7 +8787,7 @@ enable_tmoe_qemu_cpu_multi_threading() {
 		TMOE_SPICE_STATUS='检测到您已禁用多线程加速功能'
 	fi
 	###########
-	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？默认为禁用，${TMOE_SPICE_STATUS}" 11 45); then
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 11 45); then
 		#CURRENT_VALUE=$(cat startqemu | grep '\-machine accel' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1 | cut -d '=' -f 2)
 		CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
 		sed -i "s@--accel .*@--accel ${CURRENT_VALUE},thread=multi \\\@" startqemu
