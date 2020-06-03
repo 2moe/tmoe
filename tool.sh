@@ -439,7 +439,7 @@ tmoe_linux_tool_menu() {
 			"13" "FAQ 常见问题" \
 			"14" "software sources软件镜像源管理" \
 			"15" "download iso(Android,linux等)" \
-			"16" "qemu(x64虚拟机管理)" \
+			"16" "qemu(x86_64虚拟机管理)" \
 			"17" "qemu(arm64虚拟机管理)" \
 			"18" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
@@ -6575,7 +6575,7 @@ install_container_and_virtual_machine() {
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 50 8 \
 			"1" "aqemu(QEMU和KVM的Qt5前端)" \
-			"2" "tmoe-qemu(x64虚拟机管理)" \
+			"2" "tmoe-qemu(x86_64虚拟机管理)" \
 			"3" "tmoe-qemu(arm64虚拟机管理）" \
 			"4" "download iso(Android,linux等)" \
 			"5" "docker-ce:开源的应用容器引擎" \
@@ -9046,6 +9046,7 @@ modify_tmoe_qemu_extra_options() {
 			"1" "windows2000 hack" \
 			"2" "tmoe_qemu_not-todo-list" \
 			"3" "restore to default恢复到默认" \
+			"4" "switch architecture切换架构" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9058,12 +9059,52 @@ modify_tmoe_qemu_extra_options() {
 		creat_qemu_startup_script
 		echo "restore completed"
 		;;
+	4) switch_tmoe_qemu_architecture ;;
 	esac
 	###############
 	press_enter_to_return
 	modify_tmoe_qemu_extra_options
 }
 #################
+switch_tmoe_qemu_architecture() {
+	cd /usr/local/bin
+	if grep -q '/usr/bin/qemu-system-x86_64' startqemu; then
+		QEMU_ARCH_STATUS='检测到您当前启用的是x86_64架构'
+		SED_QEMU_BIN_COMMAND='/usr/bin/qemu-system-x86_64'
+	elif grep -q '/usr/bin/qemu-system-i386' startqemu; then
+		QEMU_ARCH_STATUS='检测到您当前启用的是i386架构'
+		SED_QEMU_BIN_COMMAND='/usr/bin/qemu-system-i386'
+	fi
+	QEMU_ARCH=$(
+		whiptail --title "architecture" --menu "Which architecture do you want to switch？\n您想要切换为哪个架构?${QEMU_ARCH_STATUS}" 16 55 6 \
+			"1" "x86_64" \
+			"2" "i386" \
+			"3" "mips" \
+			"4" "sparc" \
+			"5" "ppc" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	####################
+	case ${QEMU_ARCH} in
+	0 | "") modify_tmoe_qemu_extra_options ;;
+	1)
+		SED_QEMU_BIN_COMMAND_SELECTED='/usr/bin/qemu-system-x86_64'
+		sed -i "s@${SED_QEMU_BIN_COMMAND}@${SED_QEMU_BIN_COMMAND_SELECTED}@" startqemu
+		echo "您已切换至${SED_QEMU_BIN_COMMAND_SELECTED}"
+		;;
+	2)
+		SED_QEMU_BIN_COMMAND_SELECTED='/usr/bin/qemu-system-i386'
+		sed -i "s@${SED_QEMU_BIN_COMMAND}@${SED_QEMU_BIN_COMMAND_SELECTED}@" startqemu
+		echo "您已切换至${SED_QEMU_BIN_COMMAND_SELECTED}"
+		;;
+	*) echo "非常抱歉，本工具暂未适配此架构，请手动修改qemu启动脚本" ;;
+	esac
+	###############
+	press_enter_to_return
+	switch_tmoe_qemu_architecture
+}
+#####################
 modify_tmoe_qemu_network_settings() {
 	RETURN_TO_WHERE='modify_tmoe_qemu_network_settings'
 	VIRTUAL_TECH=$(
