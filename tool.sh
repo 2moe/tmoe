@@ -7422,7 +7422,7 @@ configure_mount_script() {
 
 		MOUNT_FOLDER="${HOME}/sd"
 		MOUNT_NAME="shared0"
-		mount_9p() {
+		mount_tmoe_linux_9p() {
 		    mkdir -p "${MOUNT_FOLDER}"
 		    if [ $(id -u) != "0" ]; then
 		        sudo mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap
@@ -7431,7 +7431,7 @@ configure_mount_script() {
 		    fi
 		}
 
-		df | grep "${MOUNT_FOLDER}" >/dev/null 2>&1 || mount_9pf
+		df | grep "${MOUNT_FOLDER}" >/dev/null 2>&1 || mount_tmoe_linux_9p
 	EOF
 	cd ~
 	if ! grep -q 'mount-9p-filesystem' .zlogin; then
