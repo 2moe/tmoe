@@ -9131,15 +9131,16 @@ tmoe_qemu_disk_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_disk_manager'
 	VIRTUAL_TECH=$(
 		whiptail --title "DISK MANAGER" --menu "Which configuration do you want to modify?" 15 50 7 \
-			"1" "iso选择启动光盘(CD)" \
-			"2" "disk选择启动磁盘(IDE)" \
-			"3" "compress压缩磁盘文件" \
-			"4" "mount shared folder挂载共享文件夹" \
-			"5" "Storage devices存储设备" \
-			"6" "creat disk创建(空白)虚拟磁盘" \
-			"7" "second disk选择第二块IDE磁盘" \
-			"8" "third disk选择第三块IDE磁盘" \
-			"9" "fourth disk选择第四块IDE磁盘" \
+			"1" "choose iso选择启动光盘(CD)" \
+			"2" "choose disk选择启动磁盘(IDE)" \
+			"3" "compress压缩磁盘文件大小" \
+			"4" "expand disk扩容磁盘空间" \
+			"5" "mount shared folder挂载共享文件夹" \
+			"6" "Storage devices存储设备" \
+			"7" "creat disk创建(空白)虚拟磁盘" \
+			"8" "second disk选择第二块IDE磁盘" \
+			"9" "third disk选择第三块IDE磁盘" \
+			"10" "fourth disk选择第四块IDE磁盘" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9149,12 +9150,13 @@ tmoe_qemu_disk_manager() {
 	1) choose_qemu_iso_file ;;
 	2) choose_qemu_qcow2_or_img_file ;;
 	3) compress_or_dd_qcow2_img_file ;;
-	4) modify_qemu_shared_folder ;;
-	5) tmoe_qemu_storage_devices ;;
-	6) creat_blank_virtual_disk_image ;;
-	7) choose_hdb_disk_image_file ;;
-	8) choose_hdc_disk_image_file ;;
-	9) choose_hdd_disk_image_file ;;
+	4) expand_qemu_qcow2_img_file ;;
+	5) modify_qemu_shared_folder ;;
+	6) tmoe_qemu_storage_devices ;;
+	7) creat_blank_virtual_disk_image ;;
+	8) choose_hdb_disk_image_file ;;
+	9) choose_hdc_disk_image_file ;;
+	10) choose_hdd_disk_image_file ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_disk_manager
@@ -9923,7 +9925,7 @@ compress_or_dd_qcow2_img_file() {
 	fi
 }
 ##########################
-compress_qcow2_img_file() {
+choose_tmoe_qemu_qcow2_model() {
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='img'
 	if grep -q '\-hda' startqemu; then
@@ -9944,8 +9946,32 @@ compress_qcow2_img_file() {
 		stat ${SELECTION}
 		qemu-img info ${SELECTION}
 	fi
+}
+#########
+expand_qemu_qcow2_img_file() {
+	choose_tmoe_qemu_qcow2_model
+	CURRENT_VALUE=$(qemu-img info ${SELECTION} | grep 'virtual size' | awk '{print $3}')
+	TARGET=$(whiptail --inputbox "请输入需要增加的空间大小,例如500M或10G(需包含单位),当前空间为${CURRENT_VALUE}\nPlease enter the size" 10 53 --title "virtual size" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		#echo "检测到您取消了操作"
+		${RETURN_TO_WHERE}
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+		echo "不建议超过本机实际内存"
+	else
+		qemu-img resize ${SELECTION} +${TARGET}
+		qemu-img check ${SELECTION}
+		stat ${SELECTION}
+		qemu-img info ${SELECTION}
+		CURRENT_VALUE=$(qemu-img info ${SELECTION} | grep 'virtual size' | awk '{print $3}')
+		echo "您已将virtual size修改为${CURRENT_VALUE}"
+	fi
+}
+##############
+compress_qcow2_img_file() {
+	choose_tmoe_qemu_qcow2_model
 	do_you_want_to_continue
-
 	if (whiptail --title "请选择压缩方式" --yes-button "qemu compress" --no-button "qemu conver" --yesno "前者为常规压缩，后者转换压缩。♪(^∇^*) " 10 50); then
 		qemu-img convert -c -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
 	else
@@ -9959,13 +9985,14 @@ compress_qcow2_img_file() {
 	echo '压缩后的文件大小'
 	ls -lh ${SELECTION} | tail -n 1 | awk '{print $5}'
 	echo "压缩完成，是否删除原始文件?"
+	qemu-img check ${SELECTION}
 	echo "Do you want to delete the original file？"
 	echo "请谨慎操作，在保证新磁盘数据无错前，不建议您删除原始文件，否则将导致原文件数据丢失"
 	echo "若您取消操作，则请手动输rm ${FILE_PATH}/original_${SELECTION}"
 	do_you_want_to_continue
 	rm -fv original_${SELECTION}
 }
-##############
+################
 download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
 	NON_DEBIAN='false'
