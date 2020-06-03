@@ -850,16 +850,20 @@ cookies_readme() {
 	do_you_want_to_continue
 	if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
 		COOKIESTATUS="检测到您已启用加载cookie功能"
-		CurrentCOOKIESpath="您当前的cookie路径为$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
+		CURRENT_COOKIE_PATH=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+		CurrentCOOKIESpath="您当前的cookie路径为${CURRENT_COOKIE_PATH}"
 	else
 		COOKIESTATUS="检测到cookie处于禁用状态"
+		CurrentCOOKIESpath="${COOKIESTATUS}"
 	fi
 
 	mkdir -p "${HOME}/.config/tmoe-linux"
 	if (whiptail --title "modify cookie path and status" --yes-button '指定cookie file' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
+		IMPORTANT_TIPS="${CurrentCOOKIESpath}"
+		CURRENT_QEMU_ISO="${CURRENT_COOKIE_PATH}"
 		FILE_EXT_01='txt'
 		FILE_EXT_02='sqlite'
-		where_is_start_dir
+		where_is_tmoe_file_dir
 		if [ -z ${SELECTION} ]; then
 			echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		else
@@ -7354,7 +7358,7 @@ modify_qemu_host_and_guest_port() {
 ########
 modify_qemu_shared_folder() {
 	cd /usr/local/bin
-		if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？\nAre you in a host or guest environment?" 8 50); then
+	if (whiptail --title "您当前处于哪个环境" --yes-button 'Host' --no-button 'Guest' --yesno "您当前处于宿主机还是虚拟机环境？\nAre you in a host or guest environment?" 8 50); then
 		modify_qemu_host_shared_folder
 	else
 		mount_qemu_guest_shared_folder
@@ -7487,7 +7491,7 @@ choose_qemu_iso_file() {
 	else
 		IMPORTANT_TIPS="检测到您当前没有加载iso"
 	fi
-	where_is_start_dir
+	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
@@ -7503,6 +7507,20 @@ choose_qemu_iso_file() {
 	fi
 }
 ###############
+where_is_tmoe_file_dir() {
+	CURRENT_QEMU_ISO_FILENAME="$(echo ${CURRENT_QEMU_ISO} | awk -F '/' '{print $NF}')"
+	if [ ! -z "${CURRENT_QEMU_ISO}" ]; then
+		CURRENT_QEMU_ISO_FILEPATH="$(echo ${CURRENT_QEMU_ISO} | sed "s@${CURRENT_QEMU_ISO_FILENAME}@@")"
+	fi
+
+	if [ -d "${CURRENT_QEMU_ISO_FILEPATH}" ]; then
+		START_DIR="${CURRENT_QEMU_ISO_FILEPATH}"
+		tmoe_file_manager
+	else
+		where_is_start_dir
+	fi
+}
+##############
 choose_qemu_qcow2_or_img_file() {
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='img'
@@ -7512,7 +7530,8 @@ choose_qemu_qcow2_or_img_file() {
 	else
 		IMPORTANT_TIPS="检测到您当前没有加载虚拟磁盘"
 	fi
-	where_is_start_dir
+	where_is_tmoe_file_dir
+
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
@@ -7537,7 +7556,7 @@ choose_hdb_disk_image_file() {
 	else
 		IMPORTANT_TIPS="检测到第二块虚拟磁盘的槽位为空"
 	fi
-	where_is_start_dir
+	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
@@ -7560,7 +7579,7 @@ choose_hdc_disk_image_file() {
 	else
 		IMPORTANT_TIPS="检测到第三块虚拟磁盘的槽位为空"
 	fi
-	where_is_start_dir
+	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
@@ -7583,7 +7602,7 @@ choose_hdd_disk_image_file() {
 	else
 		IMPORTANT_TIPS="检测到第四块虚拟磁盘的槽位为空"
 	fi
-	where_is_start_dir
+	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
@@ -9409,9 +9428,9 @@ enable_qemnu_input_device() {
 tmoe_choose_a_qemu_bios_file() {
 	FILE_EXT_01='fd'
 	FILE_EXT_02='bin'
-	START_DIR="${HOME}"
 	IMPORTANT_TIPS="您当前已加载的bios为${CURRENT_VALUE}"
-	tmoe_file_manager
+	CURRENT_QEMU_ISO="${CURRENT_VALUE}"
+	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		press_enter_to_return
@@ -9837,14 +9856,13 @@ compress_or_dd_qcow2_img_file() {
 compress_qcow2_img_file() {
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='img'
-	START_DIR="${HOME}"
 	if grep -q '\-hda' startqemu; then
 		CURRENT_QEMU_ISO=$(cat startqemu | grep '\-hda' | tail -n 1 | awk '{print $2}')
 		IMPORTANT_TIPS="您当前已加载的虚拟磁盘为${CURRENT_QEMU_ISO}"
 	else
 		IMPORTANT_TIPS="检测到您当前没有加载虚拟磁盘"
 	fi
-	tmoe_file_manager
+	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		press_enter_to_return
@@ -9913,8 +9931,7 @@ download_virtual_machine_iso_file() {
 flash_iso_to_udisk() {
 	FILE_EXT_01='iso'
 	FILE_EXT_02='ISO'
-	START_DIR="${HOME}"
-	tmoe_file_manager
+	where_is_start_dir
 	if [ -z ${SELECTION} ]; then
 		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
