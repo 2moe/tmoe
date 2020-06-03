@@ -6609,7 +6609,7 @@ install_container_and_virtual_machine() {
 ###########
 check_qemu_aarch64_install() {
 	if [ ! $(command -v qemu-system-aarch64) ]; then
-		DEPENDENCY_01='qemu'
+		DEPENDENCY_01='qemu qemu-system-gui'
 		DEPENDENCY_02='qemu-system-arm'
 		echo "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
 		beta_features_quick_install
@@ -7162,7 +7162,7 @@ modify_qemu_aarch64_tmoe_sound_card() {
 #############
 check_qemu_install() {
 	if [ ! $(command -v qemu-system-x86_64) ]; then
-		DEPENDENCY_01='qemu'
+		DEPENDENCY_01='qemu qemu-system-gui'
 		DEPENDENCY_02='qemu-system-x86'
 		beta_features_quick_install
 	fi
@@ -9159,6 +9159,9 @@ modify_tmoe_qemu_xsdl_settings() {
 			sed -i "1 a\export DISPLAY=127.0.0.1:0" startqemu
 		fi
 		sed -i 's@export PULSE_SERVER.*@export PULSE_SERVER=127.0.0.1:4713@' startqemu
+		echo "启用完成，重启qemu生效"
+		press_enter_to_return
+		modify_tmoe_qemu_xsdl_settings
 	else
 		modify_xsdl_conf
 	fi
@@ -10366,7 +10369,7 @@ install_wine64() {
 }
 #########################
 install_aqemu() {
-	DEPENDENCY_01='aqemu'
+	DEPENDENCY_01='aqemu virt-manager'
 	DEPENDENCY_02='qemu gnome-boxes'
 	#qemu-block-extra
 	beta_features_quick_install
