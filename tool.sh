@@ -9136,6 +9136,9 @@ modify_tmoe_qemu_xsdl_settings() {
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'configure配置' --yesno "Do you want to enable it?(っ °Д °)\n启用xserver后将禁用vnc和spice,您是想要启用还是配置呢?${X_SERVER_STATUS}" 9 50); then
 		sed -i '/vnc :/d' startqemu
 		sed -i '/-spice port=/d' startqemu
+		if ! grep '^export.*DISPLAY' "startqemu"; then
+			sed -i "1 a\export DISPLAY=127.0.0.1:0" startqemu
+		fi
 		sed -i 's@export PULSE_SERVER.*@export PULSE_SERVER=127.0.0.1:4713@' startqemu
 	else
 		modify_xsdl_conf
