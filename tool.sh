@@ -4353,9 +4353,9 @@ install_electron_netease_cloud_music() {
 	echo "github url：https://github.com/Rocket1184/electron-netease-cloud-music"
 	beta_features_quick_install
 	FILE_SIZE=$(du -s /opt/electron-netease-cloud-music/app.asar | awk '{print $1}')
-	#if ((${FILE_SIZE} < 3000)); then
-	patch_electron_netease_cloud_music
-	#fi
+	if ((${FILE_SIZE} < 3000)); then
+		patch_electron_netease_cloud_music
+	fi
 	do_you_want_to_close_the_sandbox_mode
 	do_you_want_to_continue
 	#with_no_sandbox_model_02
@@ -7275,13 +7275,33 @@ modify_qemnu_graphics_card() {
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") tmoe_qemu_display_settings ;;
-	1) QEMU_VGA='vmware' ;;
-	2) QEMU_VGA='std' ;;
-	3) QEMU_VGA='cirrus' ;;
-	4) QEMU_VGA='qxl' ;;
-	5) QEMU_VGA='xenfb' ;;
-	6) QEMU_VGA='tcx' ;;
-	7) QEMU_VGA='cg3' ;;
+	1)
+		echo " VMWare SVGA-II compatible adapter. Use it if you have sufficiently recent XFree86/XOrg server or Windows guest with a driver for this card."
+		QEMU_VGA='vmware'
+		;;
+	2)
+		echo "std Standard VGA card with Bochs VBE extensions.  If your guest OS supports the VESA 2.0 VBE extensions (e.g. Windows XP) and if you want to use high resolution modes (>= 1280x1024x16) then you should use this option. (This card is the default since QEMU 2.2)"
+		QEMU_VGA='std'
+		;;
+	3)
+		echo "Cirrus Logic GD5446 Video card. All Windows versions starting from Windows 95 should recognize and use this graphic card. For optimal performances, use 16 bit color depth in the guest and the host OS.  (This card was the default before QEMU 2.2) "
+		QEMU_VGA='cirrus'
+		;;
+	4)
+		echo "QXL paravirtual graphic card.  It is VGA compatible (including VESA 2.0 VBE support).  Works best with qxl guest drivers installed though.  Recommended choice when using the spice protocol."
+		QEMU_VGA='qxl'
+		;;
+	5)
+		QEMU_VGA='xenfb'
+		;;
+	6)
+		echo "tcx (sun4m only) Sun TCX framebuffer. This is the default framebuffer for sun4m machines and offers both 8-bit and 24-bit colour depths at a fixed resolution of 1024x768."
+		QEMU_VGA='tcx'
+		;;
+	7)
+		echo " cg3 (sun4m only) Sun cgthree framebuffer. This is a simple 8-bit framebuffer for sun4m machines available in both 1024x768 (OpenBIOS) and 1152x900 (OBP) resolutions aimed at people wishing to run older Solaris versions."
+		QEMU_VGA='cg3'
+		;;
 	8) QEMU_VGA='none' ;;
 	9) QEMU_VGA='virtio' ;;
 	esac
@@ -9918,6 +9938,7 @@ download_virtual_machine_iso_file() {
 		"5" "ubuntu" \
 		"6" "flash iso烧录镜像文件至U盘" \
 		"7" "windows" \
+		"8" "LMDE(Linux Mint Debian Edition)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
@@ -9930,6 +9951,7 @@ download_virtual_machine_iso_file() {
 	5) download_ubuntu_iso_file ;;
 	6) flash_iso_to_udisk ;;
 	7) download_windows_10_iso ;;
+	8) download_linux_mint_debian_edition_iso ;;
 	esac
 	###############
 	press_enter_to_return
@@ -10064,6 +10086,23 @@ download_windows_10_iso() {
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
+#####################
+download_linux_mint_debian_edition_iso() {
+	if (whiptail --title "架构" --yes-button "x86_64" --no-button 'x86_32' --yesno "您想要下载哪个架构的版本？\n Which version do you want to download?" 9 50); then
+		GREP_ARCH='64bit'
+	else
+		GREP_ARCH='32bit'
+	fi
+	#THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/linuxmint-cd/debian/lmde-4-cinnamon-64bit.iso"
+	ISO_REPO='https://mirrors.huaweicloud.com/linuxmint-cd/debian/'
+	THE_LATEST_FILE_VERSION=$(curl -L ${ISO_REPO} | grep "${GREP_ARCH}" | grep '.iso' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	THE_LATEST_ISO_LINK="${ISO_REPO}${THE_LATEST_FILE_VERSION}"
+	aria2c_download_file
+	stat ${THE_LATEST_FILE_VERSION}
+	ls -lh ${DOWNLOAD_PATH}/${THE_LATEST_FILE_VERSION}
+	echo "下载完成"
+}
+#####################
 ##########################
 which_alpine_arch() {
 	if (whiptail --title "请选择架构" --yes-button "x64" --no-button "arm64" --yesno "您是想要下载x86_64还是arm64架构的iso呢？♪(^∇^*) " 10 50); then
@@ -10163,6 +10202,7 @@ ubuntu_arm_warning() {
 ################
 aria2c_download_file() {
 	echo ${THE_LATEST_ISO_LINK}
+	do_you_want_to_continue
 	if [ -z "${DOWNLOAD_PATH}" ]; then
 		cd ~
 	else
@@ -10216,8 +10256,9 @@ download_android_x86_file() {
 		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 	fi
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
-	echo ${THE_LATEST_ISO_LINK}
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
+	#echo ${THE_LATEST_ISO_LINK}
+	#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
+	aria2c_download_file
 }
 ################
 download_debian_qcow2_file() {
@@ -10230,7 +10271,7 @@ download_debian_qcow2_file() {
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	QCOW2_REPO='https://mirrors.ustc.edu.cn/debian-cdimage/openstack/current/'
-	THE_LATEST_FILE_VERSION=$(curl -L ${QCOW2_REPO} | grep "${GREP_AECH}" | grep qcow2 | grep -v '.index' | cut -d '=' -f 2 | cut -d '"' -f 2 | tail -n 1)
+	THE_LATEST_FILE_VERSION=$(curl -L ${QCOW2_REPO} | grep "${GREP_ARCH}" | grep qcow2 | grep -v '.index' | cut -d '=' -f 2 | cut -d '"' -f 2 | tail -n 1)
 	THE_LATEST_ISO_LINK="${QCOW2_REPO}${THE_LATEST_FILE_VERSION}"
 	aria2c_download_file
 	stat ${THE_LATEST_FILE_VERSION}
