@@ -6615,10 +6615,6 @@ check_qemu_aarch64_install() {
 		beta_features_quick_install
 	fi
 }
-####################
-download_debian_aarch64_img_file() {
-	echo "Sorry,开发者还没上传。"
-}
 ###########
 creat_qemu_aarch64_startup_script() {
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
@@ -6660,7 +6656,6 @@ creat_qemu_aarch64_startup_script() {
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
 			-vnc :2 \
 			-usb \
-			--cdrom /root/alpine-standard-3.11.6-aarch64.iso \
 			-name "tmoe-linux-aarch64-qemu"
 	EndOFqemu
 	chmod +x startqemu_aarch64_2020060314
@@ -6709,20 +6704,15 @@ start_tmoe_qemu_aarch64_manager() {
 			"1" "Multi-VM多虚拟机管理" \
 			"2" "edit script manually手动修改配置脚本" \
 			"3" "CPU管理" \
-			"4" "RAM运行内存" \
-			"5" "compress压缩磁盘文件" \
-			"6" "mount shared folder挂载共享文件夹" \
-			"8" "iso选择启动光盘" \
-			"9" "disk选择启动磁盘" \
-			"10" "FAQ常见问题" \
-			"11" "exposed ports端口映射/转发" \
-			"12" "network card model网卡" \
-			"13" "creat disk创建(空白)虚拟磁盘" \
-			"14" "restore to default恢复到默认" \
-			"15" "sound card声卡" \
-			"17" "uefi/legacy bios(开机引导固件)" \
-			"18" "Input devices输入设备" \
-			"19" "Display settings显示设定" \
+			"4" "Display and audio显示与音频" \
+			"5" "RAM运行内存" \
+			"6" "disk manager磁盘管理器" \
+			"7" "FAQ常见问题" \
+			"8" "exposed ports端口映射/转发" \
+			"9" "network card model网卡" \
+			"10" "restore to default恢复到默认" \
+			"11" "uefi/legacy bios(开机引导固件)" \
+			"12" "Input devices输入设备" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6732,20 +6722,15 @@ start_tmoe_qemu_aarch64_manager() {
 	1) multi_qemu_vm_management ;;
 	2) nano startqemu ;;
 	3) tmoe_qemu_aarch64_cpu_manager ;;
-	4) modify_qemu_ram_size ;;
-	5) compress_or_dd_qcow2_img_file ;;
-	6) modify_qemu_shared_folder ;;
-	8) choose_qemu_iso_file ;;
-	9) choose_qemu_qcow2_or_img_file ;;
-	10) tmoe_qemu_faq ;;
-	11) modify_qemu_exposed_ports ;;
-	12) modify_qemu_tmoe_network_card ;;
-	13) creat_blank_virtual_disk_image ;;
-	14) creat_qemu_startup_script ;;
-	15) modify_qemu_aarch64_tmoe_sound_card ;;
-	17) choose_qemu_bios_or_uefi_file ;;
-	18) tmoe_qemu_input_devices ;;
-	19) tmoe_qemu_display_settings ;;
+	4) tmoe_qemu_display_settings ;;
+	5) modify_qemu_ram_size ;;
+	6) tmoe_qemu_disk_manager ;;
+	7) tmoe_qemu_faq ;;
+	8) modify_qemu_exposed_ports ;;
+	9) modify_qemu_tmoe_network_card ;;
+	10) creat_qemu_startup_script ;;
+	11) choose_qemu_bios_or_uefi_file ;;
+	12) tmoe_qemu_input_devices ;;
 	esac
 	###############
 	press_enter_to_return
@@ -7558,6 +7543,7 @@ choose_qemu_qcow2_or_img_file() {
 	else
 		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
 		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
@@ -7583,6 +7569,7 @@ choose_hdb_disk_image_file() {
 	else
 		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
 		sed -i '/-hdb /d' startqemu
@@ -7606,6 +7593,7 @@ choose_hdc_disk_image_file() {
 	else
 		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
 		sed -i '/-hdc /d' startqemu
@@ -7629,6 +7617,7 @@ choose_hdd_disk_image_file() {
 	else
 		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
 		sed -i '/-hdd /d' startqemu
@@ -8978,6 +8967,7 @@ choose_drive_virtio_disk_01() {
 	else
 		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
 		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
@@ -9141,6 +9131,7 @@ tmoe_qemu_disk_manager() {
 			"8" "second disk选择第二块IDE磁盘" \
 			"9" "third disk选择第三块IDE磁盘" \
 			"10" "fourth disk选择第四块IDE磁盘" \
+			"11" "disable cdrom禁用光盘" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9157,6 +9148,10 @@ tmoe_qemu_disk_manager() {
 	8) choose_hdb_disk_image_file ;;
 	9) choose_hdc_disk_image_file ;;
 	10) choose_hdd_disk_image_file ;;
+	11)
+		sed -i '/--cdrom /d' startqemu
+		echo "禁用完成"
+		;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_disk_manager
@@ -9869,7 +9864,7 @@ download_alpine_and_docker_x64_img_file() {
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded, do you want to unzip it, or download it again?" 7 60); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
@@ -9891,7 +9886,7 @@ download_alpine_and_docker_x64_img_file() {
 #############
 download_alpine_and_docker_x64_img_file_again() {
 	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
-	aria2c_download_file
+	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ###########
 uncompress_alpine_and_docker_x64_img_file() {
@@ -10331,24 +10326,58 @@ download_android_x86_file() {
 }
 ################
 download_debian_qcow2_file() {
-	if (whiptail --title "architecture" --yes-button "x64" --no-button 'arm64' --yesno "您想要下载哪个架构的磁盘镜像文件？" 9 50); then
-		GREP_ARCH='amd64'
-	else
-		GREP_ARCH='arm64'
-	fi
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
-	QCOW2_REPO='https://mirrors.ustc.edu.cn/debian-cdimage/openstack/current/'
-	THE_LATEST_FILE_VERSION=$(curl -L ${QCOW2_REPO} | grep "${GREP_ARCH}" | grep qcow2 | grep -v '.index' | cut -d '=' -f 2 | cut -d '"' -f 2 | tail -n 1)
-	THE_LATEST_ISO_LINK="${QCOW2_REPO}${THE_LATEST_FILE_VERSION}"
-	aria2c_download_file
-	stat ${THE_LATEST_FILE_VERSION}
-	qemu-img info ${THE_LATEST_FILE_VERSION}
-	ls -lh ${DOWNLOAD_PATH}/${THE_LATEST_FILE_VERSION}
-	echo "下载完成"
+	if (whiptail --title "Edition" --yes-button "tmoe_arm64" --no-button 'openstack_arm64' --yesno "您想要下载哪个版本的磁盘镜像文件？\nWhich edition do you want to download?" 9 50); then
+		download_debian_tmoe_arm64_qemu_qcow2_file
+	else
+		GREP_ARCH='arm64'
+		QCOW2_REPO='https://mirrors.ustc.edu.cn/debian-cdimage/openstack/current/'
+		THE_LATEST_FILE_VERSION=$(curl -L ${QCOW2_REPO} | grep "${GREP_ARCH}" | grep qcow2 | grep -v '.index' | cut -d '=' -f 2 | cut -d '"' -f 2 | tail -n 1)
+		THE_LATEST_ISO_LINK="${QCOW2_REPO}${THE_LATEST_FILE_VERSION}"
+		aria2c_download_file
+		stat ${THE_LATEST_FILE_VERSION}
+		qemu-img info ${THE_LATEST_FILE_VERSION}
+		ls -lh ${DOWNLOAD_PATH}/${THE_LATEST_FILE_VERSION}
+		echo "下载完成"
+	fi
 }
 ###################
+download_debian_tmoe_arm64_qemu_qcow2_file() {
+	DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+	QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
+	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+			echo "解压后将重置虚拟机的所有数据"
+			do_you_want_to_continue
+		else
+			download_debian_tmoe_arm64_img_file_again
+		fi
+	else
+		download_debian_tmoe_arm64_img_file_again
+	fi
+	uncompress_alpine_and_docker_x64_img_file
+	echo "文件已解压至${DOWNLOAD_PATH}"
+	qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
+	qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+	echo "是否将其设置为默认的qemu磁盘？"
+	do_you_want_to_continue
+	cd /usr/local/bin
+	sed -i '/-hda /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
+	sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
+	echo "设置完成，您之后可以输startqemu启动"
+	echo "若启动失败，则请检查arm64虚拟机中的相关设置选项"
+}
+#############
+download_debian_tmoe_arm64_img_file_again() {
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+}
+##########
 download_debian_iso_file() {
 	DEBIAN_FREE='unkown'
 	DEBIAN_ARCH=$(
