@@ -5119,7 +5119,7 @@ modify_startxsdl_manually() {
 	#echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
 
 	check_tmoe_xsdl_pulse_audio_port
-	echo "您当前的音频端口为${CURRENT_PULSE_AUDIO_PORT}"
+	echo "您当前的音频(ip/端口)为${CURRENT_PULSE_AUDIO_PORT}"
 	#echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
 }
 ######################
@@ -9125,7 +9125,7 @@ modify_tmoe_qemu_vnc_pulse_audio_address() {
 }
 ##################
 modify_tmoe_qemu_xsdl_settings() {
-	if ! grep -q '\-vnc \:' "startqemu"; then
+	if grep -q '\-vnc \:' "startqemu"; then
 		X_SERVER_STATUS="检测到您当前启用的是VNC"
 	elif grep -q '/-spice port' "startqemu"; then
 		X_SERVER_STATUS="检测到您当前启用的是spice"
