@@ -2764,8 +2764,8 @@ install_gentoo_linux_distro() {
 install_alpine_linux_distro() {
 	touch ~/.ALPINELINUXDetectionFILE
 	DISTRO_NAME='alpine'
-	DISTRO_CODE='3.11'
-	#DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/alpine/ | grep -v edge | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
+	#DISTRO_CODE='3.11'
+	DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/alpine/ | grep -Ev 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
 	OLD_STABLE_VERSION='edge'
 	which_version_do_you_want_to_install
 }
