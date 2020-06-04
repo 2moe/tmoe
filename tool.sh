@@ -10431,8 +10431,9 @@ download_debian_tmoe_qemu_qcow2_file() {
 	fi
 	uncompress_alpine_and_docker_x64_img_file
 	echo "文件已解压至${DOWNLOAD_PATH}"
-	qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
-	qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
+	cd ${DOWNLOAD_PATH}
+	qemu-img check ${QEMU_DISK_FILE_NAME}
+	qemu-img info ${QEMU_DISK_FILE_NAME}
 	echo "是否将其设置为默认的qemu磁盘？"
 	do_you_want_to_continue
 	cd /usr/local/bin

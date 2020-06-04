@@ -2478,7 +2478,7 @@ install_alpha_containers() {
 			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"3" "raspbian樹莓派 buster(armhf)" \
 			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"5" "devuan ascii(不使用systemd,基于debian)" \
+			"5" "devuan (不使用systemd,基于debian)" \
 			"6" "slackware(armhf,x64)" \
 			"7" "Funtoo:专注于改进Gentoo" \
 			"8" "openwrt(常见于路由器,arm64,x64)" \
@@ -2765,6 +2765,7 @@ install_alpine_linux_distro() {
 	touch ~/.ALPINELINUXDetectionFILE
 	DISTRO_NAME='alpine'
 	DISTRO_CODE='3.11'
+	#DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/alpine/ | grep -v edge | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
 	OLD_STABLE_VERSION='edge'
 	which_version_do_you_want_to_install
 }
@@ -2855,7 +2856,8 @@ install_openwrt_linux_distro() {
 ######################
 install_devuan_linux_distro() {
 	DISTRO_NAME='devuan'
-	DISTRO_CODE='ascii'
+	#DISTRO_CODE='beowulf'
+	DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
 	linux_distro_common_model_01
 }
 ######################
