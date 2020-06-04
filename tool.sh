@@ -6607,8 +6607,8 @@ install_container_and_virtual_machine() {
 ###########
 check_qemu_aarch64_install() {
 	if [ ! $(command -v qemu-system-aarch64) ]; then
-		DEPENDENCY_01='qemu qemu-system-gui'
-		DEPENDENCY_02='qemu-system-arm'
+		DEPENDENCY_01='qemu qemu-system-arm'
+		DEPENDENCY_02='qemu-system-gui'
 		echo "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
 		beta_features_quick_install
 	fi
@@ -6646,7 +6646,7 @@ creat_qemu_aarch64_startup_script() {
 			-vga std \
 			-m 2048 \
 			-hda /root/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
-			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
+			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic \
 			-net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5909-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
@@ -7147,8 +7147,8 @@ modify_qemu_aarch64_tmoe_sound_card() {
 #############
 check_qemu_install() {
 	if [ ! $(command -v qemu-system-x86_64) ]; then
-		DEPENDENCY_01='qemu qemu-system-gui'
-		DEPENDENCY_02='qemu-system-x86'
+		DEPENDENCY_01='qemu  qemu-system-x86'
+		DEPENDENCY_02='qemu-system-gui'
 		beta_features_quick_install
 	fi
 }
@@ -7185,7 +7185,7 @@ creat_qemu_startup_script() {
 			--accel tcg,thread=multi \
 			-m 2048 \
 			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
-			-virtfs local,id=shared_folder_dev_0,path=/root/sd,security_model=none,mount_tag=shared0 \
+			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic,model=e1000 \
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
