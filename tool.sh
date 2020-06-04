@@ -10369,8 +10369,8 @@ download_debian_qcow2_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
-	if (whiptail --title "Edition" --yes-button "tmoe_arm64" --no-button 'openstack_arm64' --yesno "您想要下载哪个版本的磁盘镜像文件？\nWhich edition do you want to download?" 9 50); then
-		download_debian_tmoe_arm64_qemu_qcow2_file
+	if (whiptail --title "Edition" --yes-button "tmoe" --no-button 'openstack_arm64' --yesno "您想要下载哪个版本的磁盘镜像文件？\nWhich edition do you want to download?" 9 50); then
+		download_tmoe_debian_x64_or_arm64_qcow2_file
 	else
 		GREP_ARCH='arm64'
 		QCOW2_REPO='https://mirrors.ustc.edu.cn/debian-cdimage/openstack/current/'
@@ -10384,10 +10384,41 @@ download_debian_qcow2_file() {
 	fi
 }
 ###################
-download_debian_tmoe_arm64_qemu_qcow2_file() {
-	DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
-	QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
+download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+	QEMU_ARCH=$(
+		whiptail --title "Debian qcow2 tmoe edition" --menu "Which version do you want to download？\n您想要下载哪个版本的磁盘文件?${QEMU_ARCH_STATUS}" 0 0 0 \
+			"1" "Buster x86_64" \
+			"2" "Buster arm64" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	####################
+	case ${QEMU_ARCH} in
+	0 | "") download_virtual_machine_iso_file ;;
+	1)
+		DOWNLOAD_FILE_NAME='debian-10.4-generic-20200604_tmoe_x64.tar.xz'
+		QEMU_DISK_FILE_NAME='debian-10-generic-20200604_tmoe_x64.qcow2'
+		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
+		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
+		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4-generic-20200604_tmoe_x64.tar.xz'
+		;;
+	2)
+		DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+		QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
+		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
+		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64F'
+		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+		;;
+	esac
+	###############
+	download_debian_tmoe_qemu_qcow2_file
+	press_enter_to_return
+	download_tmoe_debian_x64_or_arm64_qcow2_file
+}
+#####################
+#################
+download_debian_tmoe_qemu_qcow2_file() {
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
@@ -10408,13 +10439,13 @@ download_debian_tmoe_arm64_qemu_qcow2_file() {
 	sed -i '/-hda /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
 	sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
-	sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
+	sed -i "s@${CURRENT_TMOE_QEMU_BIN}@${LATER_TMOE_QEMU_BIN}@" startqemu
+	# sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
 	echo "设置完成，您之后可以输startqemu启动"
 	echo "若启动失败，则请检查arm64虚拟机中的相关设置选项"
 }
 #############
 download_debian_tmoe_arm64_img_file_again() {
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ##########
