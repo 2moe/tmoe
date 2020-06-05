@@ -10555,7 +10555,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
 		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
-		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64F'
+		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		;;
 	esac
@@ -10590,6 +10590,9 @@ download_debian_tmoe_qemu_qcow2_file() {
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
 	sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
 	sed -i "s@${CURRENT_TMOE_QEMU_BIN}@${LATER_TMOE_QEMU_BIN}@" startqemu
+	if [ ${QEMU_DISK_FILE_NAME} = 'arch_linux_x64_tmoe_20200605.qcow2' ]; then
+		sed -i '/-bios /d' startqemu
+	fi
 	# sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
 	echo "设置完成，您之后可以输startqemu启动"
 	echo "若启动失败，则请检查虚拟机中的相关设置选项"
