@@ -7312,7 +7312,6 @@ creat_qemu_startup_script() {
 			-monitor stdio \
 			-smp 4 \
 			-cpu max \
-			-soundhw all \
 			-vga std \
 			--accel tcg,thread=multi \
 			-m 2048 \
