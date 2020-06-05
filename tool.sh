@@ -10567,6 +10567,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 #####################
 #################
 download_debian_tmoe_qemu_qcow2_file() {
+	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
