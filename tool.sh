@@ -9949,7 +9949,6 @@ delete_multi_qemu_vm_conf() {
 	echo "选中的配置将被删除"
 	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
 	echo "Press Ctrl+C to exit,press enter to return."
-	echo "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	rm -fv ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/${SELECTION}
