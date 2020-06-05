@@ -1487,6 +1487,7 @@ modify_other_vnc_conf() {
 		echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 		echo '请输入6至8位密码'
 		/usr/bin/vncpasswd
+		echo "You can type startvnc to start vncserver,type stopvnc to stop."
 		echo '修改完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 		echo "正在为您停止VNC服务..."
 		sleep 1
@@ -1536,7 +1537,13 @@ modify_tightvnc_display_port() {
 }
 ######################
 modify_xfce_window_scaling_factor() {
-	TARGET=$(whiptail --inputbox "请输入您需要缩放的比例大小(纯数字)，当前仅支持整数倍，例如1和2，不支持1.5" 10 50 --title "Window Scaling Factor" 3>&1 1>&2 2>&3)
+	XFCE_CONFIG_FILE="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
+	if grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE}; then
+		CURRENT_VALUE=$(cat ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value=' | awk '{print $4}' | cut -d '"' -f 2)
+	else
+		CURRENT_VALUE='1'
+	fi
+	TARGET=$(whiptail --inputbox "请输入您需要缩放的比例大小(纯数字)，当前仅支持整数倍，例如1和2，不支持1.5,当前为${CURRENT_VALUE}" 10 50 --title "Window Scaling Factor" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
@@ -6127,6 +6134,7 @@ first_configure_startvnc() {
 	echo "如果提示${BLUE}view-only${RESET},那么建议您输${YELLOW}n${RESET},选择权在您自己的手上。"
 	echo "请输入${RED}6至8位${RESET}${BLUE}密码${RESET}"
 	startvnc
+	echo "You can type startvnc to start vncserver,type stopvnc to stop it."
 	echo "您之后可以输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
 	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来启动xsdl，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
 	xfce4_tightvnc_hidpi_settings
