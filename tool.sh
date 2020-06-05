@@ -1587,12 +1587,12 @@ nano_startvnc_manually() {
 	echo '您可以手动修改vnc的配置信息'
 	echo 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution, such as 1920x1080 (vertical screen).'
 	echo '若您想要修改分辨率，请将默认的1440x720（横屏）改为其它您想要的分辨率，例如720x1440（竖屏）。'
-	echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+	echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
 	echo '改完后按Ctrl+S保存，Ctrl+X退出。'
 	RETURN_TO_WHERE='modify_other_vnc_conf'
 	do_you_want_to_continue
 	nano /usr/local/bin/startvnc || nano $(command -v startvnc)
-	echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+	echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
 
 	stopvnc 2>/dev/null
 	press_enter_to_return
@@ -3931,6 +3931,10 @@ modify_archlinux_mirror_list() {
 edit_sources_list_manually() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt edit-sources || nano ${SOURCES_LIST_FILE}
+		#SOURCES_LIST_FILE="/etc/apt/sources.list"
+		if [ ! -z "$(ls /etc/apt/sources.list.d/)" ]; then
+			nano /etc/apt/sources.list.d/*.list
+		fi
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		nano ${SOURCES_LIST_PATH}/*repo
 	else

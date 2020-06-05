@@ -2,6 +2,27 @@
 ########################################################################
 #检测架构 CHECK architecture
 check_arch() {
+	case "$1" in
+	i* | -i* | -I*)
+		debian-i
+		exit 0
+		;;
+	h* | -h* | --h*)
+		cat <<-'EOF'
+			输debian-i打开tmoe-linux工具
+			输debian -m切换为国内镜像源
+			startvnc启动VNC
+			stopvnc停止vnc
+			startxsdl启动xsdl  
+		EOF
+		echo "Press enter to continue"
+		read
+		;;
+	-m* | m* | -tuna*)
+		gnu_linux_sources_list
+		;;
+	esac
+
 	case $(uname -m) in
 	aarch64)
 		ARCH_TYPE="arm64"
@@ -3034,6 +3055,6 @@ gnu_linux_sources_list() {
 	#此处要返回依赖检测处！
 }
 ####################
-check_arch
+check_arch "$@"
 ##取消注释，测试用。
 ##tmoe_manager_main_menu
