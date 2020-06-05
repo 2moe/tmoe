@@ -6572,7 +6572,6 @@ beta_features() {
 }
 ##########
 tmoe_uefi_boot_manager() {
-	RETURN_TO_WHERE='tmoe_uefi_boot_manager'
 	NON_DEBIAN='false'
 	if [ ! $(command -v efibootmgr) ]; then
 		echo "本工具能对UEFI开机引导的顺序进行排序，但不支持容器和WSL"
@@ -6582,7 +6581,8 @@ tmoe_uefi_boot_manager() {
 		DEPENDENCY_02='efibootmgr'
 		beta_features_quick_install
 	fi
-
+	#RETURN变量不要放在本函数开头
+	RETURN_TO_WHERE='tmoe_uefi_boot_manager'
 	CURRENT_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}')
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
 	TMOE_BOOT_MGR=$(
@@ -9133,7 +9133,7 @@ start_tmoe_qemu_manager() {
 	VIRTUAL_TECH=$(
 		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
 			"1" "Creat a new VM 新建虚拟机" \
-			"2" "qemu templates repo虚拟机配置模板仓库" \
+			"2" "qemu templates repo磁盘与模板在线仓库" \
 			"3" "Multi-VM多虚拟机管理" \
 			"4" "edit script manually手动修改配置脚本" \
 			"5" "FAQ常见问题" \
@@ -9488,10 +9488,12 @@ enable_qemnu_display_device() {
 tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
 	VIRTUAL_TECH=$(
-		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ" 15 50 4 \
+		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ" 15 50 6 \
 			"1" "Explore templates探索共享模板(未开放)" \
-			"2" "Download alpine+docker qemu img" \
-			"3" "share 分享你的qemu配置(未开放)" \
+			"2" "alpine(x64,含docker)" \
+			"3" "Debian buster(arm64+x64,UEFI引导)" \
+			"4" "Arch_x64(legacy bios引导)" \
+			"5" "share 分享你的qemu配置(未开放)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9501,7 +9503,9 @@ tmoe_qemu_templates_repo() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) explore_qemu_configuration_templates ;;
 	2) download_alpine_and_docker_x64_img_file ;;
-	3) share_qemu_conf_to_git_branch_qemu ;;
+	3) download_debian_qcow2_file ;;
+	4) download_arch_linux_qcow2_file ;;
+	5) share_qemu_conf_to_git_branch_qemu ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_templates_repo
@@ -10171,11 +10175,10 @@ download_virtual_machine_iso_file() {
 		"1" "alpine(latest-stable)" \
 		"2" "Android x86_64(latest)" \
 		"3" "debian-iso(每周自动构建,包含non-free)" \
-		"4" "debian-qcow2(虚拟机磁盘)" \
-		"5" "ubuntu" \
-		"6" "flash iso烧录镜像文件至U盘" \
-		"7" "windows" \
-		"8" "LMDE(Linux Mint Debian Edition)" \
+		"4" "ubuntu" \
+		"5" "flash iso烧录镜像文件至U盘" \
+		"6" "windows" \
+		"7" "LMDE(Linux Mint Debian Edition)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
@@ -10184,11 +10187,10 @@ download_virtual_machine_iso_file() {
 	1) download_alpine_virtual_iso ;;
 	2) download_android_x86_file ;;
 	3) download_debian_iso_file ;;
-	4) download_debian_qcow2_file ;;
-	5) download_ubuntu_iso_file ;;
-	6) flash_iso_to_udisk ;;
-	7) download_windows_10_iso ;;
-	8) download_linux_mint_debian_edition_iso ;;
+	4) download_ubuntu_iso_file ;;
+	5) flash_iso_to_udisk ;;
+	6) download_windows_10_iso ;;
+	7) download_linux_mint_debian_edition_iso ;;
 	esac
 	###############
 	press_enter_to_return
@@ -10517,6 +10519,16 @@ download_debian_qcow2_file() {
 	fi
 }
 ###################
+download_arch_linux_qcow2_file() {
+	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20200605.tar.xz'
+	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20200605.qcow2'
+	CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
+	LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
+	echo '使用此磁盘需要将引导方式切换回默认'
+	download_debian_tmoe_qemu_qcow2_file
+}
+################
 download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	QEMU_ARCH=$(
@@ -10528,7 +10540,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	)
 	####################
 	case ${QEMU_ARCH} in
-	0 | "") download_virtual_machine_iso_file ;;
+	0 | "") tmoe_qemu_templates_repo ;;
 	1)
 		DOWNLOAD_FILE_NAME='debian-10.4-generic-20200604_tmoe_x64.tar.xz'
 		QEMU_DISK_FILE_NAME='debian-10-generic-20200604_tmoe_x64.qcow2'
@@ -10576,7 +10588,7 @@ download_debian_tmoe_qemu_qcow2_file() {
 	sed -i "s@${CURRENT_TMOE_QEMU_BIN}@${LATER_TMOE_QEMU_BIN}@" startqemu
 	# sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
 	echo "设置完成，您之后可以输startqemu启动"
-	echo "若启动失败，则请检查arm64虚拟机中的相关设置选项"
+	echo "若启动失败，则请检查虚拟机中的相关设置选项"
 }
 #############
 download_debian_tmoe_arm64_img_file_again() {
