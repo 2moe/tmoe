@@ -9486,6 +9486,9 @@ enable_qemnu_display_device() {
 #####################
 tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
+	mkdir -p ${DOWNLOAD_PATH}
+	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	cd ${DOWNLOAD_PATH}
 	VIRTUAL_TECH=$(
 		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ" 15 50 6 \
 			"1" "Explore templates探索共享模板(未开放)" \
@@ -10519,6 +10522,7 @@ download_debian_qcow2_file() {
 }
 ###################
 download_arch_linux_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20200605.tar.xz'
 	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20200605.qcow2'
 	CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
