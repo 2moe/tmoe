@@ -1702,7 +1702,7 @@ install_firefox_esr_browser() {
 	fi
 	beta_features_quick_install
 	#################
-	if [ ! $(command -v firefox-esr) ]; then
+	if [ ! $(command -v firefox) ] && [ ! $(command -v firefox-esr) ]; then
 		echo "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫姐姐来代替了。${RESET}"
 		echo 'Press Enter to confirm.'
 		RETURN_TO_WHERE='install_browser'
@@ -1864,14 +1864,15 @@ standand_desktop_install() {
 	preconfigure_gui_dependecies_02
 	REMOVE_UDISK2='false'
 	RETURN_TO_WHERE='standand_desktop_install'
-	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
-		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 15 60 5 \
+	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
+		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 17 56 7 \
 		"1" "xfce：兼容性高" \
 		"2" "lxde：轻量化桌面" \
 		"3" "mate：基于GNOME 2" \
 		"4" "Other其它桌面(内测版新功能):lxqt,kde" \
 		"5" "window manager窗口管理器(公测):ice,fvwm" \
-		"0" "我一个都不要 =￣ω￣=" \
+		"6" "display manager显示(登录)管理器:lightdm,sddm" \
+		"0" "none我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${INSTALLDESKTOP}" in
@@ -1886,11 +1887,94 @@ standand_desktop_install() {
 		;;
 	3) install_mate_desktop ;;
 	4) other_desktop ;;
-	5) windows_manager_install ;;
+	5) window_manager_install ;;
+	6) tmoe_display_manager_install ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_linux_tool_menu
+}
+#######################
+tmoe_display_manager_install() {
+	NON_DEBIAN='false'
+	DEPENDENCY_01=''
+	RETURN_TO_WHERE='tmoe_display_manager_install'
+	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
+		"显示管理器(简称DM)是一个在启动最后显示的图形界面,负责管理登录会话。\n Which display manager do you want to install? " 17 50 6 \
+		"1" "lightdm:支持跨桌面,可以使用各种前端写的工具" \
+		"2" "sddm:用于X11的现代DM,替代KDE4的KDM" \
+		"3" "gdm:GNOME默认DM" \
+		"4" "slim:Lightweight轻量" \
+		"5" "lxdm:LXDE默认DM(独立于桌面环境)" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${INSTALLDESKTOP}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1)
+		DEPENDENCY_01='ukui-greeter'
+		DEPENDENCY_02='lightdm'
+		;;
+	2)
+		DEPENDENCY_01='sddm-theme-breeze'
+		DEPENDENCY_02='sddm'
+		;;
+	3)
+		DEPENDENCY_01='gdm'
+		DEPENDENCY_02='gdm3'
+		;;
+	4) DEPENDENCY_02='slim' ;;
+	5) DEPENDENCY_02='lxdm' ;;
+	esac
+	##########################
+	tmoe_display_manager_systemctl
+}
+##################
+tmoe_display_manager_systemctl() {
+	RETURN_TO_WHERE='tmoe_display_manager_systemctl'
+	INSTALLDESKTOP=$(whiptail --title "你想要对这个小可爱做什么？" --menu \
+		"显示管理器软件包基础配置" 14 50 6 \
+		"1" "install/remove 安装/卸载" \
+		"2" "start启动" \
+		"3" "stop停止" \
+		"4" "systemctl enable开机自启" \
+		"5" "systemctl disable禁用自启" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${INSTALLDESKTOP}" in
+	0 | "") standand_desktop_install ;;
+	1)
+		beta_features_quick_install
+		;;
+	2)
+		echo "您可以输${GREEN}systemctl start ${DEPENDENCY_02} ${RESET}或${GREEN}service ${DEPENDENCY_02} start${RESET}来启动"
+		echo "${GREEN}systemctl start ${DEPENDENCY_02} ${RESET}"
+		echo "按回车键启动"
+		do_you_want_to_continue
+		systemctl start ${DEPENDENCY_02} || service ${DEPENDENCY_02} restart
+		;;
+	3)
+		echo "您可以输${GREEN}systemctl stop ${DEPENDENCY_02} ${RESET}或${GREEN}service ${DEPENDENCY_02} stop${RESET}来停止"
+		echo "${GREEN}systemctl stop ${DEPENDENCY_02} ${RESET}"
+		echo "按回车键停止"
+		do_you_want_to_continue
+		systemctl stop ${DEPENDENCY_02} || service ${DEPENDENCY_02} stop
+		;;
+	4)
+		echo "${GREEN}systemctl enable ${DEPENDENCY_02} ${RESET}"
+		systemctl enable ${DEPENDENCY_02} || rc-update add ${DEPENDENCY_02}
+		echo "已添加至自启任务"
+		;;
+	5)
+		echo "${GREEN}systemctl disable ${DEPENDENCY_02} ${RESET}"
+		systemctl disable ${DEPENDENCY_02} || rc-update del ${DEPENDENCY_02}
+		echo "已禁用开机自启"
+		;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_display_manager_systemctl
 }
 #######################
 auto_select_keyboard_layout() {
@@ -1905,7 +1989,7 @@ will_be_installed_for_you() {
 }
 ########################
 #####################
-windows_manager_install() {
+window_manager_install() {
 	NON_DBUS='true'
 	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	BETA_DESKTOP=$(
@@ -2084,7 +2168,7 @@ windows_manager_install() {
 	25)
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			echo "检测到您处于proot容器环境下，kwin可能无法正常运行"
-			RETURN_TO_WHERE="windows_manager_install"
+			RETURN_TO_WHERE="window_manager_install"
 			do_you_want_to_continue
 		fi
 		if [ "${LINUX_DISTRO}" = "alpine" ]; then
@@ -2966,6 +3050,7 @@ check_update_icon_caches_sh() {
 ##############
 configure_theme() {
 	check_update_icon_caches_sh
+	cd /tmp
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
 		"您想要下载哪个主题？按方向键选择！下载完成后，您需要手动修改外观设置中的样式和图标。注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 17 55 7 \
