@@ -9486,8 +9486,8 @@ enable_qemnu_display_device() {
 #####################
 tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
-	mkdir -p ${DOWNLOAD_PATH}
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	VIRTUAL_TECH=$(
 		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ" 15 50 6 \
