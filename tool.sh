@@ -5198,11 +5198,12 @@ modify_xsdl_conf() {
 	else
 		TMOE_XSDL_SCRIPT_PATH='/usr/local/bin/startqemu'
 	fi
-	XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Which configuration do you want to modify?" 15 60 5 \
-		"1" "音频端口 Pulse server port " \
-		"2" "显示编号 Display number" \
+	XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Which configuration do you want to modify?" 15 50 6 \
+		"1" "Pulse server port音频端口" \
+		"2" "Display number显示编号" \
 		"3" "ip address" \
-		"4" "手动编辑 Edit manually" \
+		"4" "Edit manually手动编辑" \
+		"5" "DISPLAY switch转发显示开关(仅qemu)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
@@ -5212,10 +5213,31 @@ modify_xsdl_conf() {
 	2) modify_display_port ;;
 	3) modify_xsdl_ip_address ;;
 	4) modify_startxsdl_manually ;;
+	5) disable_tmoe_qemu_remote_display ;;
 	esac
 	########################################
 	press_enter_to_return
 	modify_xsdl_conf
+}
+#################
+disable_tmoe_qemu_remote_display() {
+	if grep -q '^export.*DISPLAY' "${TMOE_XSDL_SCRIPT_PATH}"; then
+		XSDL_DISPLAY_STATUS='检测到您已经启用了转发X显示画面的功能，打开qemu时，画面将转发至远程XServer'
+		echo ${XSDL_DISPLAY_STATUS}
+		echo "是否需要禁用?"
+		echo "Do you want to disable it"
+		do_you_want_to_continue
+		sed -i '/export DISPLAY=/d' ${TMOE_XSDL_SCRIPT_PATH}
+		echo "禁用完成"
+	else
+		XSDL_DISPLAY_STATUS='检测到您尚未启用转发X显示画面的功能，打开qemu时，将直接调用当前显示器的窗口。'
+		echo ${XSDL_DISPLAY_STATUS}
+		echo "是否需要启用？"
+		echo "Do you want to enable it"
+		do_you_want_to_continue
+		sed -i "1 a\export DISPLAY=127.0.0.1:0" ${TMOE_XSDL_SCRIPT_PATH}
+		echo "启用完成"
+	fi
 }
 #################
 modify_startxsdl_manually() {
@@ -9357,8 +9379,10 @@ modify_tmoe_qemu_xsdl_settings() {
 		X_SERVER_STATUS="检测到您当前启用的是VNC,而非X服务"
 	elif grep -q '\-spice port' "startqemu"; then
 		X_SERVER_STATUS="检测到您当前启用的是spice,而非X服务"
+	elif grep -q '^export.*DISPLAY' "startqemu"; then
+		X_SERVER_STATUS="检测到您已经启用了转发X的功能"
 	else
-		X_SERVER_STATUS="检测到您已经启用了X服务"
+		X_SERVER_STATUS="检测到您已经启用了本地X,但未启用转发"
 	fi
 
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'configure配置' --yesno "Do you want to enable it?(っ °Д °)\n启用xserver后将禁用vnc和spice,您是想要启用还是配置呢?${X_SERVER_STATUS}" 9 50); then
