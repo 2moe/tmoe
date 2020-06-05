@@ -1902,7 +1902,7 @@ tmoe_display_manager_install() {
 	INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
 		"显示管理器(简称DM)是一个在启动最后显示的图形界面,负责管理登录会话。\n Which display manager do you want to install? " 17 50 6 \
 		"1" "lightdm:支持跨桌面,可以使用各种前端写的工具" \
-		"2" "sddm:用于X11的现代DM,替代KDE4的KDM" \
+		"2" "sddm:现代化DM,替代KDE4的KDM" \
 		"3" "gdm:GNOME默认DM" \
 		"4" "slim:Lightweight轻量" \
 		"5" "lxdm:LXDE默认DM(独立于桌面环境)" \
@@ -1932,6 +1932,11 @@ tmoe_display_manager_install() {
 ##################
 tmoe_display_manager_systemctl() {
 	RETURN_TO_WHERE='tmoe_display_manager_systemctl'
+	if [ "${DEPENDENCY_02}" = 'gdm3' ]; then
+		TMOE_DEPENDENCY_SYSTEMCTL='gdm'
+	else
+		TMOE_DEPENDENCY_SYSTEMCTL="${DEPENDENCY_02}"
+	fi
 	INSTALLDESKTOP=$(whiptail --title "你想要对这个小可爱做什么？" --menu \
 		"显示管理器软件包基础配置" 14 50 6 \
 		"1" "install/remove 安装/卸载" \
@@ -1948,28 +1953,36 @@ tmoe_display_manager_systemctl() {
 		beta_features_quick_install
 		;;
 	2)
-		echo "您可以输${GREEN}systemctl start ${DEPENDENCY_02} ${RESET}或${GREEN}service ${DEPENDENCY_02} start${RESET}来启动"
-		echo "${GREEN}systemctl start ${DEPENDENCY_02} ${RESET}"
+		echo "您可以输${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}或${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}来启动"
+		echo "${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
 		echo "按回车键启动"
 		do_you_want_to_continue
-		systemctl start ${DEPENDENCY_02} || service ${DEPENDENCY_02} restart
+		systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} || service ${TMOE_DEPENDENCY_SYSTEMCTL} restart
 		;;
 	3)
-		echo "您可以输${GREEN}systemctl stop ${DEPENDENCY_02} ${RESET}或${GREEN}service ${DEPENDENCY_02} stop${RESET}来停止"
-		echo "${GREEN}systemctl stop ${DEPENDENCY_02} ${RESET}"
+		echo "您可以输${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}或${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}来停止"
+		echo "${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
 		echo "按回车键停止"
 		do_you_want_to_continue
-		systemctl stop ${DEPENDENCY_02} || service ${DEPENDENCY_02} stop
+		systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} || service ${TMOE_DEPENDENCY_SYSTEMCTL} stop
 		;;
 	4)
-		echo "${GREEN}systemctl enable ${DEPENDENCY_02} ${RESET}"
-		systemctl enable ${DEPENDENCY_02} || rc-update add ${DEPENDENCY_02}
-		echo "已添加至自启任务"
+		echo "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+		systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}
+		if [ "$?" = "0" ]; then
+			echo "已添加至自启任务"
+		else
+			echo "添加自启任务失败"
+		fi
 		;;
 	5)
-		echo "${GREEN}systemctl disable ${DEPENDENCY_02} ${RESET}"
-		systemctl disable ${DEPENDENCY_02} || rc-update del ${DEPENDENCY_02}
-		echo "已禁用开机自启"
+		echo "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+		systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}
+		if [ "$?" = "0" ]; then
+			echo "已禁用开机自启"
+		else
+			echo "禁用自启任务失败"
+		fi
 		;;
 	esac
 	##########################
@@ -7297,7 +7310,7 @@ modify_qemu_machine_accel() {
 	cd /usr/local/bin/
 	CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
 	VIRTUAL_TECH=$(
-		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,模拟运行时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。${KVM_STATUS}\n检测到当前为${CURRENT_VALUE}" 16 55 4 \
+		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,进行同架构模拟运行时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。${KVM_STATUS}\n检测到当前为${CURRENT_VALUE}" 17 50 5 \
 			"1" "tcg(default)" \
 			"2" "kvm(Intel VT-d/AMD-V)" \
 			"3" "xen" \
