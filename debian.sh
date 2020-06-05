@@ -2206,6 +2206,9 @@ termux_install_xfce() {
 		fi
 		remove_android_termux_xfce
 	fi
+	###############
+	press_enter_to_return
+	termux_install_xfce
 }
 #####################################
 switch_vnc_pulse_audio_transport_method() {
