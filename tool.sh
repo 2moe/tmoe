@@ -56,22 +56,19 @@ check_root() {
 #####################
 check_architecture() {
 	case $(uname -m) in
-	aarch64)
+	aarch64 | armv8* | arm64)
 		ARCH_TYPE="arm64"
 		;;
-	armv7l)
+	armv7*)
 		ARCH_TYPE="armhf"
 		;;
-	armv6l)
+	armv6* | armv5*)
 		ARCH_TYPE="armel"
 		;;
-	x86_64)
+	x86_64 | amd64)
 		ARCH_TYPE="amd64"
 		;;
-	i*86)
-		ARCH_TYPE="i386"
-		;;
-	x86)
+	i*86 | x86)
 		ARCH_TYPE="i386"
 		;;
 	s390*)
@@ -4336,7 +4333,7 @@ add_debian_opt_repo() {
 	cd /tmp
 	curl -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
 	apt-key add bintray-public.key.asc
-	echo -e "#deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\ndeb https://dl.bintray.com/debianopt/debianopt buster main" >/etc/apt/sources.list.d/debianopt.list
+	echo -e "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\n#deb https://dl.bintray.com/debianopt/debianopt buster main" >/etc/apt/sources.list.d/debianopt.list
 	apt update
 }
 switch_debian_opt_repo_sources() {

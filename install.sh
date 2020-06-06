@@ -1,40 +1,19 @@
 #!/data/data/com.termux/files/usr/bin/bash
 #检测架构
 case $(uname -m) in
-aarch64)
+aarch64 | armv8* | arm64)
 	ARCH_TYPE="arm64"
 	;;
-arm64)
-	ARCH_TYPE="arm64"
-	;;
-armv8a)
-	ARCH_TYPE="arm64"
-	;;
-arm)
+armv7*)
 	ARCH_TYPE="armhf"
 	;;
-armv7l)
-	ARCH_TYPE="armhf"
-	;;
-armhf)
-	ARCH_TYPE="armhf"
-	;;
-armv6l)
+armv6* | armv5*)
 	ARCH_TYPE="armel"
 	;;
-armel)
-	ARCH_TYPE="armel"
-	;;
-amd64)
+x86_64 | amd64)
 	ARCH_TYPE="amd64"
 	;;
-x86_64)
-	ARCH_TYPE="amd64"
-	;;
-i*86)
-	ARCH_TYPE="i386"
-	;;
-x86)
+i*86 | x86)
 	ARCH_TYPE="i386"
 	;;
 s390*)
@@ -430,7 +409,7 @@ creat_proot_startup_script() {
 				debian-i
 				exit 0
 				;;
-			-h | --help)
+			-h* | --h*)
 				get_tmoe_linux_help_info
 				;;
 			-m* | m*)

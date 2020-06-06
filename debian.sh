@@ -10,7 +10,7 @@ check_arch() {
 	h* | -h* | --h*)
 		cat <<-'EOF'
 			输debian-i打开tmoe-linux工具
-			输debian -m切换为国内镜像源
+			输debian-i -m更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
 			startvnc启动VNC
 			stopvnc停止vnc
 			startxsdl启动xsdl  
@@ -24,40 +24,19 @@ check_arch() {
 	esac
 
 	case $(uname -m) in
-	aarch64)
+	aarch64 | armv8* | arm64)
 		ARCH_TYPE="arm64"
 		;;
-	arm64)
-		ARCH_TYPE="arm64"
-		;;
-	armv8a)
-		ARCH_TYPE="arm64"
-		;;
-	arm)
+	armv7*)
 		ARCH_TYPE="armhf"
 		;;
-	armv7l)
-		ARCH_TYPE="armhf"
-		;;
-	armhf)
-		ARCH_TYPE="armhf"
-		;;
-	armv6l)
+	armv6* | armv5*)
 		ARCH_TYPE="armel"
 		;;
-	armel)
-		ARCH_TYPE="armel"
-		;;
-	amd64)
+	x86_64 | amd64)
 		ARCH_TYPE="amd64"
 		;;
-	x86_64)
-		ARCH_TYPE="amd64"
-		;;
-	i*86)
-		ARCH_TYPE="i386"
-		;;
-	x86)
+	i*86 | x86)
 		ARCH_TYPE="i386"
 		;;
 	s390*)
