@@ -419,7 +419,6 @@ creat_proot_startup_script() {
 		#!/data/data/com.termux/files/usr/bin/bash
 		get_tmoe_linux_help_info() {
 			cat <<-'ENDOFHELP'
-
 				         -i      --启动tmoe-linux manager
 						 -m      --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
 						-vnc     --启动VNC
@@ -488,7 +487,7 @@ creat_proot_startup_script() {
 				\$command -c "\$com"
 			fi
 		}
-		main "$@"
+		main "\$@"
 	EndOfFile
 	##################
 	if [ "${LINUX_DISTRO}" != 'Android' ]; then
