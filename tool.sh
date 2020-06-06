@@ -41,10 +41,10 @@ main() {
 check_root() {
 	if [ "$(id -u)" != "0" ]; then
 		if [ $(command -v curl) ]; then
-			sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+			sudo -E bash /usr/local/bin/debian-i ||
 				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		else
-			sudo -E bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+			sudo -E bash /usr/local/bin/debian-i ||
 				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		fi
 		exit 0
