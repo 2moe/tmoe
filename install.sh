@@ -412,52 +412,83 @@ creat_chroot_startup_script() {
 creat_proot_startup_script() {
 	echo "Creating proot startup script"
 	echo "正在创建proot启动脚本${PREFIX}/bin/debian "
+	#DEBIAN_CHROOT=~/debian_arm64
+	#DEBIAN_FOLDER=debian_arm64
 	#此处EndOfFile不要加单引号
 	cat >${PREFIX}/bin/debian <<-EndOfFile
 		#!/data/data/com.termux/files/usr/bin/bash
-		cd ${HOME}
-		#pulseaudio --kill 2>/dev/null & 
-		#为加快启动速度，此处不重启音频服务
-		pulseaudio --start 2>/dev/null &
-		unset LD_PRELOAD
-		command="proot"
-		command+=" --link2symlink"
-		command+=" -0"
-		command+=" -r ${DEBIAN_FOLDER}"
-		command+=" -b /dev"
-		command+=" -b /proc"
-		command+=" -b ${DEBIAN_FOLDER}/root:/dev/shm"
-		#您可以在此处修改挂载目录
-		command+=" -b /sdcard:/root/sd"
-		command+=" -b /data/data/com.termux/files/home/storage/external-1:/root/tf"
-		command+=" -b /data/data/com.termux/files/home:/root/termux"
-		command+=" -w /root"
-		command+=" /usr/bin/env -i"
-		command+=" HOME=/root"
-		command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
-		command+=" TERM=\$TERM"
-		command+=" LANG=en_US.UTF-8"
-		command+=" /bin/bash --login"
-		com="\$@"
-		#为防止匹配行被替换，故采用base64加密。
-		DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
-		DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
+		get_tmoe_linux_help_info() {
+			cat <<-'ENDOFHELP'
 
-		if [ -f ~/${DEBIAN_FOLDER}/bin/zsh ];then
-		    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
-		else
-		    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
-		fi
+				         -i      --启动tmoe-linux manager
+						 -m      --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
+						-vnc     --启动VNC
+			ENDOFHELP
+		}
+		main() {
+			case "$1" in
+			i* | -i* | -I*)
+				debian-i
+				exit 0
+				;;
+			-h | --help)
+				get_tmoe_linux_help_info
+				;;
+			-m* | m*)
+				debian-i -m
+				;;
+			-vnc* | vnc*)
+				startvnc
+				;;
+			*) start_tmoe_gnu_linux_container ;;
+			esac
+		}
+		start_tmoe_gnu_linux_container() {
+			cd ${HOME}
+			#pulseaudio --kill 2>/dev/null &
+			#为加快启动速度，此处不重启音频服务
+			pulseaudio --start 2>/dev/null &
+			unset LD_PRELOAD
+			command="proot"
+			command+=" --link2symlink"
+			command+=" -0"
+			command+=" -r ${DEBIAN_FOLDER}"
+			command+=" -b /dev"
+			command+=" -b /proc"
+			command+=" -b ${DEBIAN_FOLDER}/root:/dev/shm"
+			#您可以在此处修改挂载目录
+			command+=" -b /sdcard:/root/sd"
+			command+=" -b /data/data/com.termux/files/home/storage/external-1:/root/tf"
+			command+=" -b /data/data/com.termux/files/home:/root/termux"
+			command+=" -w /root"
+			command+=" /usr/bin/env -i"
+			command+=" HOME=/root"
+			command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
+			command+=" TERM=\$TERM"
+			command+=" LANG=en_US.UTF-8"
+			command+=" /bin/bash --login"
+			com="\$@"
+			#为防止匹配行被替换，故采用base64加密。
+			DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
+			DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
 
-		if [ ! -e "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		  echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
-		fi
+			if [ -f ~/${DEBIAN_FOLDER}/bin/zsh ]; then
+				sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
+			else
+				sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
+			fi
 
-		if [ -z "\$1" ];then
-		    exec \$command
-		else
-		    \$command -c "\$com"
-		fi
+			if [ ! -e "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+				echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+			fi
+
+			if [ -z "\$1" ]; then
+				exec \$command
+			else
+				\$command -c "\$com"
+			fi
+		}
+		main "$@"
 	EndOfFile
 	##################
 	if [ "${LINUX_DISTRO}" != 'Android' ]; then

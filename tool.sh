@@ -16,7 +16,7 @@ main() {
 	--remove_gui)
 		remove_gui
 		;;
-	--mirror-list)
+	--mirror-list | -m* | m*)
 		tmoe_sources_list_manager
 		;;
 	up | -u)
@@ -6547,6 +6547,7 @@ beta_features() {
 			"19" "Grub Customizer(图形化开机引导编辑器)" \
 			"20" "catfish(文件搜索)" \
 			"21" "geogebra+kalzium(数学+化学)" \
+			"22" "gnome logs" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6574,6 +6575,7 @@ beta_features() {
 	19) install_grub_customizer ;;
 	20) install_catfish ;;
 	21) install_geogebra_and_kalzium ;;
+	22) install_gnome_logs ;;
 	esac
 	##############################
 	########################################
@@ -10858,6 +10860,12 @@ install_catfish() {
 install_geogebra_and_kalzium() {
 	DEPENDENCY_01='geogebra'
 	DEPENDENCY_02='kalzium'
+	beta_features_quick_install
+}
+##################
+install_gnome_logs() {
+	DEPENDENCY_01='gnome-system-tools'
+	DEPENDENCY_02='gnome-logs'
 	beta_features_quick_install
 }
 ##################
