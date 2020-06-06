@@ -425,7 +425,7 @@ creat_proot_startup_script() {
 			ENDOFHELP
 		}
 		main() {
-			case "$1" in
+			case "\$1" in
 			i* | -i* | -I*)
 				debian-i
 				exit 0
