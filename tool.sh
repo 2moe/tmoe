@@ -2865,8 +2865,8 @@ install_gnome3_desktop() {
 }
 #################
 install_cinnamon_desktop() {
-	REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
-	REMOTE_DESKTOP_SESSION_02='cinnamon-session'
+	REMOTE_DESKTOP_SESSION_01='cinnamon-session'
+	REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
 	DEPENDENCY_01="cinnamon"
 	echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -5701,8 +5701,8 @@ configure_remote_desktop_enviroment() {
 	##############################
 	if [ "${BETA_DESKTOP}" == '7' ]; then
 		#configure_remote_cinnamon_desktop
-		REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
-		REMOTE_DESKTOP_SESSION_02='cinnamon-session'
+		REMOTE_DESKTOP_SESSION_01='cinnamon-session'
+		REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '8' ]; then
@@ -6402,8 +6402,8 @@ fix_vnc_dbus_launch() {
 			REMOTE_DESKTOP_SESSION_02='x-windows-manager'
 		elif grep 'cinnamon' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为cinnamon，正在将dbus-launch加入至启动脚本中..."
-			REMOTE_DESKTOP_SESSION_01='cinnamon-launcher'
-			REMOTE_DESKTOP_SESSION_02='cinnamon-session'
+			REMOTE_DESKTOP_SESSION_01='cinnamon-session'
+			REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
 		elif grep 'startdde' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
 			REMOTE_DESKTOP_SESSION_01='startdde'
