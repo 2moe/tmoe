@@ -316,7 +316,8 @@ check_dependencies() {
 	##############
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
-		echo "正在安装相关软件包及其依赖..."
+		echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
+		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCIES} ${RESET}"
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
@@ -350,7 +351,7 @@ check_dependencies() {
 
 		else
 			apt update
-			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || zypper in ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
+			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
 		fi
 	fi
 	################
@@ -413,6 +414,9 @@ check_dependencies() {
 		WINDOWSDISTRO='WSL'
 	fi
 	##############
+	CurrentLANG=$LANG
+	export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
+	export LANG=${CurrentLANG}
 	tmoe_linux_tool_menu
 }
 ####################################################
@@ -6503,7 +6507,7 @@ beta_features_quick_install() {
 		fi
 	fi
 	###############
-	echo "即将为您安装相关软件包及其依赖..."
+	echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
 	echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
 	echo "Tmoe-linux tool will install relevant dependencies for you."
 	############
@@ -9511,7 +9515,9 @@ tmoe_qemu_templates_repo() {
 			"3" "Debian buster(arm64+x64,UEFI引导)" \
 			"4" "Arch_x64(legacy bios引导)" \
 			"5" "FreeBSD_x64(legacy bios引导)" \
-			"6" "share 分享你的qemu配置(未开放)" \
+			"6" "LMDE4(linux mint,legacy bios引导)" \
+			"7" "Ubuntu kylin优麒麟20.04(uefi引导)" \
+			"8" "share 分享你的qemu配置(未开放)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9524,7 +9530,9 @@ tmoe_qemu_templates_repo() {
 	3) download_debian_qcow2_file ;;
 	4) download_arch_linux_qcow2_file ;;
 	5) download_freebsd_qcow2_file ;;
-	6) share_qemu_conf_to_git_branch_qemu ;;
+	6) download_lmde_4_qcow2_file ;;
+	7) download_ubuntu_kylin_20_04_qcow2_file ;;
+	8) share_qemu_conf_to_git_branch_qemu ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_templates_repo
@@ -10084,8 +10092,8 @@ download_alpine_and_docker_x64_img_file() {
 	echo "如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入apt update ;apt install -y openssh"
 	echo "您也可以直接在linux容器里使用ssh客户端，输入${PACKAGES_INSTALL_COMMAND} openssh-client"
 	echo "在安装完ssh客户端后，使用${GREEN}ssh -p 2888 test@localhost${RESET}连接"
-	echo "由于root密码为空，故请使用普通账号连接，账号test,密码test"
-	echo "在登录完普通账号后，您可以输${GREEN}su -${RESET}来切换至root账号"
+	echo "由于root密码为空，故请使用普通用户连接，用户test,密码test"
+	echo "在登录完普通用户后，您可以输${GREEN}su -${RESET}来切换至root用户"
 	echo "为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码"
 	do_you_want_to_continue
 	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
@@ -10578,12 +10586,60 @@ download_debian_qcow2_file() {
 	fi
 }
 ###################
+note_of_qemu_boot_uefi() {
+	echo '使用此磁盘需要将引导方式切换至UEFI'
+	echo 'You should modify the boot method to uefi.'
+}
+############
+note_of_qemu_boot_legacy_bios() {
+	echo '使用此磁盘需要将引导方式切换回默认'
+	echo 'You should modify the boot method to legacy bios.'
+}
+#############
+note_of_tmoe_password() {
+	echo "user:tmoe  password:tmoe"
+	echo "用户：tmoe  密码：tmoe"
+}
+##############
+note_of_empty_root_password() {
+	echo 'user:root'
+	echo 'The password is empty.'
+	echo '用户名root，密码为空'
+}
+################
+download_lmde_4_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
+	DOWNLOAD_FILE_NAME='LMDE4_tmoe_x64.tar.xz'
+	QEMU_DISK_FILE_NAME='LMDE4_tmoe_x64.qcow2'
+	echo 'Download size(下载大小)约2.76GiB，解压后约为9.50GiB'
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
+	note_of_qemu_boot_legacy_bios
+	note_of_tmoe_password
+	do_you_want_to_continue
+	download_debian_tmoe_qemu_qcow2_file
+}
+############
+download_ubuntu_kylin_20_04_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
+	DOWNLOAD_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.tar.xz'
+	QEMU_DISK_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.qcow2'
+	echo 'Download size(下载大小)约1.81GiB，解压后约为7.65GiB'
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/ubuntu_kylin_20-04_tmoe_x64.tar.xz'
+	note_of_qemu_boot_uefi
+	note_of_tmoe_password
+	do_you_want_to_continue
+	download_debian_tmoe_qemu_qcow2_file
+}
+###################
 download_arch_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20200605.tar.xz'
 	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20200605.qcow2'
+	echo 'Download size(下载大小)约678MiB，解压后约为‪1.755GiB'
 	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
-	echo '使用此磁盘需要将引导方式切换回默认'
+	note_of_qemu_boot_legacy_bios
+	note_of_empty_root_password
+	do_you_want_to_continue
 	download_debian_tmoe_qemu_qcow2_file
 }
 ################
@@ -10604,15 +10660,19 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		QEMU_DISK_FILE_NAME='debian-10-generic-20200604_tmoe_x64.qcow2'
 		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
+		echo 'Download size(下载大小)约282MiB，解压后约为‪1.257GiB'
 		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4-generic-20200604_tmoe_x64.tar.xz'
 		;;
 	2)
 		DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
+		echo 'Download size(下载大小)约339MiB，解压后约为‪1.6779GiB'
+		echo '本系统为arm64版，请在下载完成后，手动进入tmoe-qemu arm64专区选择磁盘文件'
 		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		;;
 	esac
 	###############
+	do_you_want_to_continue
 	download_debian_tmoe_qemu_qcow2_file
 	press_enter_to_return
 	download_tmoe_debian_x64_or_arm64_qcow2_file

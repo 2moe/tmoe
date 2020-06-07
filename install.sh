@@ -274,30 +274,34 @@ if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
 fi
 #proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
 cd "$cur"
-echo "                                        "
-echo "                            .:7E        "
-echo "            .iv7vrrrrr7uQBBBBBBB:       "
-echo "           v17::.........:SBBBUg        "
-echo "        vKLi.........:. .  vBQrQ        "
-echo "   sqMBBBr.......... :i. .  SQIX        "
-echo "   BBQBBr.:...:....:. 1:.....v. ..      "
-echo "    UBBB..:..:i.....i YK:: ..:   i:     "
-echo "     7Bg.... iv.....r.ijL7...i. .Lu     "
-echo "  IB: rb...i iui....rir :Si..:::ibr     "
-echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     "
-echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     "
-echo "    :   r:.i5KEv:.:.  :.  ::..X..::     "
-echo "   7is. :v .sr::.         :: :2. ::     "
-echo "   2:.  .u: r.     ::::   r: ij: .r  :  "
-echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  "
-echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    "
-echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   "
-echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  "
-echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. "
-echo "      i7LUJv.   . .     .:   YI7bIr :ur "
-echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
-echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
-echo "         :   r. ..      .. .:i  ...     "
+printf "$YELLOW"
+cat <<-'EndOFneko'
+	                                        
+	                            .:7E        
+	            .iv7vrrrrr7uQBBBBBBB:       
+	           v17::.........:SBBBUg        
+	        vKLi.........:. .  vBQrQ        
+	   sqMBBBr.......... :i. .  SQIX        
+	   BBQBBr.:...:....:. 1:.....v. ..      
+	    UBBB..:..:i.....i YK:: ..:   i:     
+	     7Bg.... iv.....r.ijL7...i. .Lu     
+	  IB: rb...i iui....rir :Si..:::ibr     
+	  J7.  :r.is..vrL:..i7i  7U...Z7i..     
+	  ...   7..I:.: 7v.ri.755P1. .S  ::     
+	    :   r:.i5KEv:.:.  :.  ::..X..::     
+	   7is. :v .sr::.         :: :2. ::     
+	   2:.  .u: r.     ::::   r: ij: .r  :  
+	   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
+	   :u   .iq: :PBEPjvviII5P7::5Du: .v    
+	    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
+	    :v. iiSrr   :..   s i.  vPrvsr. r.  
+	     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
+	      i7LUJv.   . .     .:   YI7bIr :ur 
+	     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
+	    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
+	         :   r. ..      .. .:i  ...     
+EndOFneko
+printf "$RESET"
 ####################
 creat_chroot_startup_script() {
 	#rm -f ${HOME}/.Chroot-Container-Detection-File

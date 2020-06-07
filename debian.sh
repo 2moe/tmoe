@@ -9,17 +9,30 @@ check_arch() {
 		;;
 	h* | -h* | --h*)
 		cat <<-'EOF'
-			输debian-i打开tmoe-linux工具
-			输debian-i -m更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
-			startvnc启动VNC
-			stopvnc停止vnc
-			startxsdl启动xsdl  
+			-m      --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
+			-n      --启动novnc
+			-v      --启动VNC
+			-s      --停止vnc
+			-x      --启动xsdl
+			-h      --获取帮助信息
 		EOF
 		echo "Press enter to continue"
 		read
 		;;
 	-m* | m* | -tuna*)
 		gnu_linux_sources_list
+		;;
+	-novnc | novnc* | -n*)
+		start_web_novnc
+		;;
+	-v | -vnc*)
+		startvnc
+		;;
+	-s | -stop*)
+		stopvnc
+		;;
+	-x | -xsdl)
+		startxsdl
 		;;
 	esac
 
@@ -123,9 +136,13 @@ gnu_linux() {
 	##############
 	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
 		LINUX_DISTRO='debian'
+		PACKAGES_INSTALL_COMMAND='apt install -y'
+		PACKAGES_REMOVE_COMMAND='apt purge -y'
 
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
+		PACKAGES_UPDATE_COMMAND='opkg update'
+		PACKAGES_INSTALL_COMMAND='opkg install'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
 		chmod +x 'router-debian.bash'
@@ -139,6 +156,8 @@ gnu_linux() {
 
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUX_DISTRO='redhat'
+		PACKAGES_UPDATE_COMMAND='dnf update'
+		PACKAGES_INSTALL_COMMAND='dnf install -y --skip-broken'
 		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
 		elif grep -q 'Fedora' "/etc/os-release"; then
@@ -147,18 +166,28 @@ gnu_linux() {
 
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUX_DISTRO='alpine'
+		PACKAGES_UPDATE_COMMAND='apk update'
+		PACKAGES_INSTALL_COMMAND='apk add'
 
 	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
+		PACKAGES_UPDATE_COMMAND='pacman -Syy'
+		PACKAGES_INSTALL_COMMAND='pacman -Syu --noconfirm'
 
 	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
 		LINUX_DISTRO='gentoo'
+		PACKAGES_INSTALL_COMMAND='emerge -vk'
+		PACKAGES_REMOVE_COMMAND='emerge -C'
 
 	elif grep -qi 'suse' '/etc/os-release'; then
 		LINUX_DISTRO='suse'
+		PACKAGES_INSTALL_COMMAND='zypper in -y'
+		PACKAGES_REMOVE_COMMAND='zypper rm'
 
 	elif [ "$(cat /etc/issue | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
+		PACKAGES_INSTALL_COMMAND='xbps-install -S -y'
+		PACKAGES_REMOVE_COMMAND='xbps-remove -R'
 	fi
 
 	######################################
@@ -303,7 +332,8 @@ gnu_linux() {
 		if [ "${MIRROR_LIST}" = 'false' ]; then
 			gnu_linux_tuna_mirror_list
 		fi
-		echo "正在安装相关软件包及其依赖..."
+		echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
+		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCIES} ${RESET}"
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
@@ -336,7 +366,6 @@ gnu_linux() {
 			xbps-install -S -y ${DEPENDENCIES}
 
 		else
-
 			apt update
 			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
 		fi
@@ -2305,7 +2334,7 @@ install_web_novnc() {
 }
 #######################
 start_web_novnc() {
-	pulseaudio --kill 2>/dev/null
+	#pulseaudio --kill 2>/dev/null
 	cd ${HOME}/.vnc/utils/
 	if [ ! -d "websockify" ]; then
 		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify || sudo git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
