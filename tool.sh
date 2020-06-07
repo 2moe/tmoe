@@ -10198,9 +10198,13 @@ expand_qemu_qcow2_img_file() {
 compress_qcow2_img_file() {
 	choose_tmoe_qemu_qcow2_model
 	do_you_want_to_continue
-	if (whiptail --title "请选择压缩方式" --yes-button "qemu compress" --no-button "qemu conver" --yesno "前者为常规压缩，后者转换压缩。♪(^∇^*) " 10 50); then
+	if (whiptail --title "请选择压缩方式" --yes-button "compress" --no-button "convert" --yesno "前者为常规压缩，后者转换压缩。♪(^∇^*) " 10 50); then
+		echo 'compressing...'
+		echo '正在压缩中...'
 		qemu-img convert -c -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
 	else
+		echo 'converting...'
+		echo '正在转换中...'
 		qemu-img convert -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
 	fi
 	qemu-img info ${SELECTION}_new-temp-file
