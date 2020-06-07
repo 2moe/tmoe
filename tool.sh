@@ -10612,7 +10612,7 @@ download_lmde_4_qcow2_file() {
 	DOWNLOAD_FILE_NAME='LMDE4_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='LMDE4_tmoe_x64.qcow2'
 	echo 'Download size(下载大小)约2.76GiB，解压后约为9.50GiB'
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/LMDE4_tmoe_x64.tar.xz'
 	note_of_qemu_boot_legacy_bios
 	note_of_tmoe_password
 	do_you_want_to_continue
