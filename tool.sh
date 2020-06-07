@@ -2774,7 +2774,7 @@ install_kde_plasma5_desktop() {
 		#dnf install -y sddm || yum install -y sddm
 		DEPENDENCY_01='@KDE'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01="plasma-desktop xorg kdebase sddm sddm-kcm"
+		DEPENDENCY_01="plasma-desktop xorg kdebase konsole sddm sddm-kcm"
 		#phonon-qt5
 		#pacman -S --noconfirm sddm sddm-kcm
 		#中文输入法
