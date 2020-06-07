@@ -2662,6 +2662,42 @@ install_lxde_desktop() {
 	configure_vnc_xstartup
 }
 ##########################
+arch_linux_mate_warning() {
+	echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
+	echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
+	echo "建议您${BLUE}更换${RESET}其他桌面！"
+	echo "按${GREEN}回车键${RESET}${BLUE}继续安装${RESET}"
+	echo "${YELLOW}Do you want to continue?[Y/l/x/q/n]${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET},type n to return."
+	echo "Type q to install lxqt,type l to install lxde,type x to install xfce."
+	echo "按${GREEN}回车键${RESET}${RED}继续${RESET}安装mate，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+	echo "输${YELLOW}q${RESET}安装lxqt,输${YELLOW}l${RESET}安装lxde,输${YELLOW}x${RESET}安装xfce"
+	read opt
+	case $opt in
+	y* | Y* | "") ;;
+
+	n* | N*)
+		echo "skipped."
+		standand_desktop_install
+		;;
+	l* | L*)
+		install_lxde_desktop
+		;;
+	q* | Q*)
+		install_lxqt_desktop
+		;;
+	x* | X*)
+		install_xfce4_desktop
+		;;
+	*)
+		echo "Invalid choice. skipped."
+		standand_desktop_install
+		#beta_features
+		;;
+	esac
+	DEPENDENCY_01='mate mate-extra'
+}
+###############
 install_mate_desktop() {
 	REMOTE_DESKTOP_SESSION_01='mate-session'
 	REMOTE_DESKTOP_SESSION_02='x-window-manager'
@@ -2683,39 +2719,12 @@ install_mate_desktop() {
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='@mate-desktop'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
-		echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
-		echo "建议您${BLUE}更换${RESET}其他桌面！"
-		echo "按${GREEN}回车键${RESET}${BLUE}继续安装${RESET}"
-		echo "${YELLOW}Do you want to continue?[Y/l/x/q/n]${RESET}"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET},type n to return."
-		echo "Type q to install lxqt,type l to install lxde,type x to install xfce."
-		echo "按${GREEN}回车键${RESET}${RED}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
-		echo "输${YELLOW}q${RESET}安装lxqt,输${YELLOW}l${RESET}安装lxde,输${YELLOW}x${RESET}安装xfce"
-		read opt
-		case $opt in
-		y* | Y* | "") ;;
+		if [ "${ARCH_TYPE}" != "amd64" ]; then
+			arch_linux_mate_warning
+		else
+			DEPENDENCY_01='mate mate-extra'
+		fi
 
-		n* | N*)
-			echo "skipped."
-			standand_desktop_install
-			;;
-		l* | L*)
-			install_lxde_desktop
-			;;
-		q* | Q*)
-			install_lxqt_desktop
-			;;
-		x* | X*)
-			install_xfce4_desktop
-			;;
-		*)
-			echo "Invalid choice. skipped."
-			standand_desktop_install
-			#beta_features
-			;;
-		esac
-		DEPENDENCY_01='mate mate-extra'
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		DEPENDENCY_01='mate-base/mate-desktop mate-base/mate'
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
