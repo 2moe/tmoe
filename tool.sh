@@ -10030,8 +10030,13 @@ delete_multi_qemu_vm_conf() {
 	echo "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
-	rm -fv ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/${SELECTION}
+	rm -fv ${TMOE_FILE_ABSOLUTE_PATH}
+	TMOE_QEMU_CONFIG_LINK_FILE="/usr/local/bin/${SELECTION}"
+	if [ -h "${TMOE_QEMU_CONFIG_LINK_FILE}" ]; then
+		rm -f ${TMOE_QEMU_CONFIG_LINK_FILE}
+	fi
 }
+
 ###############
 other_qemu_conf_related_instructions() {
 	cat <<-"ENDOFTMOEINST"
@@ -10725,7 +10730,7 @@ set_it_as_default_qemu_disk() {
 	fi
 	# sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
 	echo "设置完成，您之后可以输startqemu启动"
-	echo "若启动失败，则请检查虚拟机中的相关设置选项"
+	echo "若启动失败，则请检查qemu的相关设置选项"
 }
 ##################
 download_debian_tmoe_qemu_qcow2_file() {
