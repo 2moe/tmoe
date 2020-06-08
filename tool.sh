@@ -820,8 +820,8 @@ tmoe_file_manager() {
 }
 ###########
 where_is_start_dir() {
-	if [ -d "/root/sd" ]; then
-		START_DIR='/root/sd/Download'
+	if [ -d "${HOME}/sd" ]; then
+		START_DIR='${HOME}/sd/Download'
 	elif [ -d "/sdcard" ]; then
 		START_DIR='/sdcard/'
 	else
@@ -1237,8 +1237,8 @@ vscode_server_upgrade() {
 			fi
 		EOF
 	fi
-	grep '/tmp/startcode.tmp' /root/.bashrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" /root/.bashrc
-	grep '/tmp/startcode.tmp' /root/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" /root/.zshrc
+	grep '/tmp/startcode.tmp' ${HOME}/.bashrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.bashrc
+	grep '/tmp/startcode.tmp' ${HOME}/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.zshrc
 	if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
 		chmod +x /usr/local/bin/code-server-data/code-server 2>/dev/null
 		#echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
@@ -4724,7 +4724,7 @@ install_nds_game_mayomonogatari() {
 	NON_DEBIAN='false'
 	beta_features_quick_install
 	if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
-		echo "检测到您已下载游戏文件，路径为/root/斯隆与马克贝尔的谜之物语"
+		echo "检测到您已下载游戏文件，路径为${HOME}/斯隆与马克贝尔的谜之物语"
 		press_enter_to_reinstall
 	fi
 	cd ${HOME}
@@ -4740,7 +4740,7 @@ install_nds_game_mayomonogatari() {
 	rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
 	rm -f slymkbr1.zip* mayomonogatari2.zip*
 
-	echo "安装完成，您需要手动进入'/root/斯隆与马克贝尔的谜之物语'目录加载游戏"
+	echo "安装完成，您需要手动进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
 	echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 	echo 'Press enter to start the nds emulator.'
 	echo "${YELLOW}按回车键启动游戏。${RESET}"
@@ -6803,7 +6803,7 @@ creat_qemu_aarch64_startup_script() {
 			--accel tcg,thread=multi \
 			-vga std \
 			-m 2048 \
-			-hda /root/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
+			-hda ${HOME}/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic \
@@ -7341,7 +7341,7 @@ creat_qemu_startup_script() {
 			-vga std \
 			--accel tcg,thread=multi \
 			-m 2048 \
-			-hda /root/sd/Download/backup/alpine_v3.11_x64.qcow2 \
+			-hda ${HOME}/sd/Download/backup/alpine_v3.11_x64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic,model=e1000 \
@@ -7536,13 +7536,13 @@ modify_qemu_host_shared_folder_sdcard() {
 	echo "Sorry,当前暂不支持修改挂载目录"
 }
 ###############
-#-hdd fat:rw:/root/sd \
+#-hdd fat:rw:${HOME}/sd \
 modify_qemu_host_shared_folder() {
 	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
 		whiptail --title "shared folder" --menu "如需添加更多共享文件夹，请手动修改配置文件" 15 55 4 \
 			"1" "DISABLE SHARE禁用共享" \
-			"2" "/root/sd" \
+			"2" "${HOME}/sd" \
 			"3" "windows共享说明" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -10111,7 +10111,7 @@ download_alpine_and_docker_x64_img_file() {
 	echo "为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码"
 	do_you_want_to_continue
 	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
-	DOWNLOAD_PATH='/root/sd/Download/backup'
+	DOWNLOAD_PATH='${HOME}/sd/Download/backup'
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
@@ -11741,16 +11741,16 @@ nginx_onekey() {
 	##############
 	mkdir -p /media
 	touch "/media/欢迎使用tmoe-linux-webdav_你可以将文件复制至根目录下的media文件夹"
-	if [ -e "/root/sd" ]; then
-		ln -sf /root/sd /media/
+	if [ -e "${HOME}/sd" ]; then
+		ln -sf ${HOME}/sd /media/
 	fi
 
-	if [ -e "/root/tf" ]; then
-		ln -sf /root/tf /media/
+	if [ -e "${HOME}/tf" ]; then
+		ln -sf ${HOME}/tf /media/
 	fi
 
-	if [ -e "/root/termux" ]; then
-		ln -sf /root/sd /media/
+	if [ -e "${HOME}/termux" ]; then
+		ln -sf ${HOME}/termux /media/
 	fi
 
 	if [ "${CHROOT_STATUS}" = "1" ]; then
