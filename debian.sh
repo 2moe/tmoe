@@ -1,7 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ########################################################################
-#检测架构 CHECK architecture
-check_arch() {
+main() {
 	case "$1" in
 	i* | -i* | -I*)
 		debian-i
@@ -16,8 +15,6 @@ check_arch() {
 			-x      --启动xsdl
 			-h      --获取帮助信息
 		EOF
-		echo "Press enter to continue"
-		read
 		;;
 	-m* | m* | -tuna*)
 		gnu_linux_sources_list
@@ -34,8 +31,14 @@ check_arch() {
 	-x | -xsdl)
 		startxsdl
 		;;
+	*)
+		check_arch
+		;;
 	esac
-
+}
+#########################
+#检测架构 CHECK architecture
+check_arch() {
 	case $(uname -m) in
 	aarch64 | armv8* | arm64)
 		ARCH_TYPE="arm64"
@@ -3073,6 +3076,6 @@ gnu_linux_sources_list() {
 	#此处要返回依赖检测处！
 }
 ####################
-check_arch "$@"
+main "$@"
 ##取消注释，测试用。
 ##tmoe_manager_main_menu

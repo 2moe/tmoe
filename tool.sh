@@ -6268,14 +6268,15 @@ xfce4_x11vnc_hidpi_settings() {
 }
 ####################
 frequently_asked_questions() {
+	RETURN_TO_WHERE='frequently_asked_questions'
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
-		"您有哪些疑问？\nWhat questions do you have?" 15 60 5 \
+		"您有哪些疑问？\nWhat questions do you have?" 17 50 7 \
 		"1" "Cannot open Baidu Netdisk" \
 		"2" "udisks2/gvfs配置失败" \
 		"3" "linuxQQ闪退" \
 		"4" "VNC/X11闪退" \
 		"5" "软件禁止以root权限运行" \
-		"6" "初始化mlocate数据库失败" \
+		"6" "mlocate数据库初始化失败" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -10036,7 +10037,6 @@ delete_multi_qemu_vm_conf() {
 		rm -f ${TMOE_QEMU_CONFIG_LINK_FILE}
 	fi
 }
-
 ###############
 other_qemu_conf_related_instructions() {
 	cat <<-"ENDOFTMOEINST"
