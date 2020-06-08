@@ -104,7 +104,6 @@ press_enter_to_continue() {
 }
 #########################################################
 auto_check() {
-
 	if [ "$(uname -o)" = "Android" ]; then
 		LINUX_DISTRO='Android'
 		termux-setup-storage
@@ -142,7 +141,7 @@ gnu_linux() {
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		PACKAGES_UPDATE_COMMAND='opkg update'
-		PACKAGES_INSTALL_COMMAND='opkg install'
+		PACKAGES_REMOVE_COMMAND='opkg remove'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
 		chmod +x 'router-debian.bash'
@@ -156,7 +155,7 @@ gnu_linux() {
 
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUX_DISTRO='redhat'
-		PACKAGES_UPDATE_COMMAND='dnf update'
+		PACKAGES_REMOVE_COMMAND='dnf remove -y'
 		PACKAGES_INSTALL_COMMAND='dnf install -y --skip-broken'
 		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
@@ -166,12 +165,12 @@ gnu_linux() {
 
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUX_DISTRO='alpine'
-		PACKAGES_UPDATE_COMMAND='apk update'
 		PACKAGES_INSTALL_COMMAND='apk add'
+		PACKAGES_REMOVE_COMMAND='apk del'
 
 	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
-		PACKAGES_UPDATE_COMMAND='pacman -Syy'
+		PACKAGES_REMOVE_COMMAND='pacman -Rsc'
 		PACKAGES_INSTALL_COMMAND='pacman -Syu --noconfirm'
 
 	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
@@ -332,8 +331,7 @@ gnu_linux() {
 		if [ "${MIRROR_LIST}" = 'false' ]; then
 			gnu_linux_tuna_mirror_list
 		fi
-		echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
-		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCIES} ${RESET}"
+		notes_of_tmoe_package_installation
 
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
@@ -350,7 +348,7 @@ gnu_linux() {
 			pacman -Syu --noconfirm ${DEPENDENCIES}
 
 		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			dnf install -y ${DEPENDENCIES} || yum install -y ${DEPENDENCIES}
+			dnf install -y --skip-broken ${DEPENDENCIES} || yum install -y --skip-broken ${DEPENDENCIES}
 
 		elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
 			#opkg update
@@ -525,7 +523,15 @@ gnu_linux() {
 	tmoe_manager_main_menu
 }
 ########################################
+notes_of_tmoe_package_installation() {
+	echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
+	echo "${GREEN}${PACKAGES_INSTALL_COMMAND}${BLUE}${DEPENDENCIES}${RESET}"
+	echo "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${PACKAGES_REMOVE_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}"
+}
+#####################
 android_termux() {
+	PACKAGES_INSTALL_COMMAND='apt install -y'
+	PACKAGES_REMOVE_COMMAND='apt purge -y'
 	DEPENDENCIES=""
 
 	if [ ! -e ${PREFIX}/bin/pv ]; then
@@ -592,9 +598,10 @@ android_termux() {
 				esac
 			fi
 		fi
-		echo "正在安装相关软件包及其依赖..."
+		notes_of_tmoe_package_installation
 		apt update
 		apt install -y ${DEPENDENCIES}
+
 	fi
 	##The vnc sound repair script from andronix has been slightly modified and optimized.
 	if ! grep -q 'anonymous=1' ${HOME}/../usr/etc/pulse/default.pa; then

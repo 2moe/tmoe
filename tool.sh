@@ -317,8 +317,8 @@ check_dependencies() {
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
 		echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
-		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCIES} ${RESET}"
-
+		echo "${GREEN}${PACKAGES_INSTALL_COMMAND}${BLUE}${DEPENDENCIES}${RESET}"
+		echo "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${PACKAGES_REMOVE_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}"
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			apt update
 			apt install -y ${DEPENDENCIES} || apt-get install -y git wget curl whiptail aria2 xz-utils nano aptitude sudo less
@@ -6520,8 +6520,8 @@ beta_features_quick_install() {
 	fi
 	###############
 	echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
-	echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-	echo "Tmoe-linux tool will install relevant dependencies for you."
+	echo "${GREEN}${PACKAGES_INSTALL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET} ${YELLOW}${DEPENDENCY_02}${RESET}"
+	echo "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you."
 	############
 	if [ "${EXISTS_COMMAND}" = "true" ]; then
 		EXISTS_COMMAND='false'
@@ -9527,9 +9527,10 @@ tmoe_qemu_templates_repo() {
 			"3" "Debian buster(arm64+x64,UEFI引导)" \
 			"4" "Arch_x64(legacy bios引导)" \
 			"5" "FreeBSD_x64(legacy bios引导)" \
-			"6" "LMDE4(linux mint,legacy bios引导)" \
+			"6" "Winserver2008R2数据中心版(legacy bios引导)" \
 			"7" "Ubuntu kylin优麒麟20.04(uefi引导)" \
-			"8" "share 分享你的qemu配置(未开放)" \
+			"8" "LMDE4(linux mint,legacy bios引导)" \
+			"9" "share 分享你的qemu配置(未开放)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -9542,9 +9543,10 @@ tmoe_qemu_templates_repo() {
 	3) download_debian_qcow2_file ;;
 	4) download_arch_linux_qcow2_file ;;
 	5) download_freebsd_qcow2_file ;;
-	6) download_lmde_4_qcow2_file ;;
+	6) download_windows_server_2008_data_center_qcow2_file ;;
 	7) download_ubuntu_kylin_20_04_qcow2_file ;;
-	8) share_qemu_conf_to_git_branch_qemu ;;
+	8) download_lmde_4_qcow2_file ;;
+	9) share_qemu_conf_to_git_branch_qemu ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_templates_repo
@@ -10634,6 +10636,18 @@ download_lmde_4_qcow2_file() {
 	download_debian_tmoe_qemu_qcow2_file
 }
 ############
+download_windows_server_2008_data_center_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
+	DOWNLOAD_FILE_NAME='win2008_r2_tmoe_x64.tar.xz'
+	QEMU_DISK_FILE_NAME='win2008_r2_tmoe_x64.qcow2'
+	echo 'Download size(下载大小)约2.26GiB，解压后约为12.6GiB'
+	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/win2008_r2_tmoe_x64.tar.xz'
+	note_of_qemu_boot_legacy_bios
+	echo '进入虚拟机后，您需要自己设定一个密码'
+	do_you_want_to_continue
+	download_debian_tmoe_qemu_qcow2_file
+}
+#####################
 download_ubuntu_kylin_20_04_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.tar.xz'
