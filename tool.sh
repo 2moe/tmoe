@@ -821,7 +821,7 @@ tmoe_file_manager() {
 ###########
 where_is_start_dir() {
 	if [ -d "${HOME}/sd" ]; then
-		START_DIR='${HOME}/sd/Download'
+		START_DIR="${HOME}/sd/Download"
 	elif [ -d "/sdcard" ]; then
 		START_DIR='/sdcard/'
 	else
@@ -10116,7 +10116,7 @@ download_alpine_and_docker_x64_img_file() {
 	echo "为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码"
 	do_you_want_to_continue
 	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
-	DOWNLOAD_PATH='${HOME}/sd/Download/backup'
+	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
