@@ -446,6 +446,9 @@ tmoe_linux_tool_menu() {
 			3>&1 1>&2 2>&3
 	)
 	########
+	if [ "${CurrentLANG}" != $(echo 'emhfQ04uVVRGLTgK' | base64 -d) ]; then
+		export LANG=C.UTF-8
+	fi
 	case "${TMOE_OPTION}" in
 	0 | "")
 		export LANG=${CurrentLANG}
@@ -10685,6 +10688,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		whiptail --title "Debian qcow2 tmoe edition" --menu "Which version do you want to download？\n您想要下载哪个版本的磁盘文件?${QEMU_ARCH_STATUS}" 0 0 0 \
 			"1" "Buster x86_64" \
 			"2" "Buster arm64" \
+			"3" "关于ssh-server的说明" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -10705,6 +10709,17 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		echo 'Download size(下载大小)约339MiB，解压后约为‪1.6779GiB'
 		echo '本系统为arm64版，请在下载完成后，手动进入tmoe-qemu arm64专区选择磁盘文件'
 		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+		;;
+	3)
+		cat <<-'EOF'
+			       若sshd启动失败，则请执行dpkg-reconfigure openssh-server
+				   如需使用密码登录ssh，则您需要手动修改sshd配置文件
+				   cd /etc/ssh
+				   sed -i 's@PermitRootLogin.*@PermitRootLogin yes@' sshd_config
+			       sed -i 's@PasswordAuthentication.*@PasswordAuthentication yes@' sshd_config
+		EOF
+		press_enter_to_return
+		download_tmoe_debian_x64_or_arm64_qcow2_file
 		;;
 	esac
 	###############
