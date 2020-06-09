@@ -10059,7 +10059,7 @@ qemu_process_management_instructions() {
 	echo "${BLUE}连接方式02${RESET}"
 	echo "若您需要使用ssh连接，则请新建一个termux会话窗口，并输入${GREEN}ssh -p 2888 root@localhost${RESET}"
 	echo "本工具默认将虚拟机的22端口映射为宿主机的2888端口，若无法连接，则请在虚拟机下新建一个普通用户，再将上述命令中的root修改为普通用户名称"
-	echo "若连接提示${YELLOW}REMOTE HOST IDENTIFICATION HAS CHANGED${RESET}，则请手动输${GREEN}sed -i '/localhost/d' ~/.ssh/known_hosts${RESET}"
+	echo "若连接提示${YELLOW}REMOTE HOST IDENTIFICATION HAS CHANGED${RESET}，则请手动输${GREEN}ssh-keygen -f '/root/.ssh/known_hosts' -R '[localhost]:2888'${RESET}"
 	echo "${BLUE}关机方式02${RESET}"
 	echo "在linux虚拟机内输poweroff"
 	echo "在windows虚拟机内输shutdown /s /t 0"
@@ -10202,7 +10202,9 @@ choose_tmoe_qemu_qcow2_model() {
 }
 #########
 expand_qemu_qcow2_img_file() {
-	echo '您必须在虚拟机系统内对该镜像进行分区并格式化后才能真正开始使用新空间。 在收缩磁盘映像时，必须先使用虚拟机内部系统的分区工具减少该分区的大小，然后相应地收缩磁盘映像，否则收缩磁盘映像将导致数据丢失'
+	echo '建议您在调整容量前对磁盘文件进行备份。'
+	echo '调整完成之后，您可以在虚拟机内部使用resize2fs命令对磁盘空间进行重新识别，例如resize2fs /dev/sda1'
+	echo '在扩容之后，您必须在虚拟机系统内对该镜像进行分区并格式化后才能真正开始使用新空间。 在收缩磁盘映像前，必须先使用虚拟机内部系统的分区工具减少该分区的大小，然后相应地收缩磁盘映像，否则收缩磁盘映像将导致数据丢失'
 	echo 'Arch wiki:After enlarging the disk image, you must use file system and partitioning tools inside the virtual machine to actually begin using the new space. When shrinking a disk image, you must first reduce the allocated file systems and partition sizes using the file system and partitioning tools inside the virtual machine and then shrink the disk image accordingly, otherwise shrinking the disk image will result in data loss! For a Windows guest, open the "create and format hard disk partitions" control panel.'
 	do_you_want_to_continue
 	choose_tmoe_qemu_qcow2_model
