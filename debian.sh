@@ -126,6 +126,7 @@ auto_check() {
 gnu_linux() {
 
 	if [ "$(id -u)" != "0" ]; then
+		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ -e "/usr/bin/curl" ]; then
 			sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
 				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"

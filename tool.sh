@@ -40,6 +40,7 @@ main() {
 ################
 check_root() {
 	if [ "$(id -u)" != "0" ]; then
+		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ $(command -v curl) ]; then
 			sudo -E bash /usr/local/bin/debian-i ||
 				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
