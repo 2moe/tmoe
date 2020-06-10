@@ -6630,6 +6630,7 @@ beta_features() {
 network_manager_tui() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
+	NON_DEBIAN='false'
 	RETURN_TO_WHERE='network_manager_tui'
 	if [ ! $(command -v nmtui) ]; then
 		DEPENDENCY_02='network-manager'
@@ -6658,6 +6659,7 @@ network_manager_tui() {
 		"5" "driver网卡驱动" \
 		"6" "View ip address查看ip" \
 		"7" "edit config manually手动编辑" \
+		"8" "blueman(蓝牙管理器,GTK+前端)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -6683,7 +6685,7 @@ network_manager_tui() {
 		ip a
 		ip -br -c a
 		if [ ! -z $(echo ${LANG} | grep zh) ]; then
-			curl myip.ipip.net
+			curl -L myip.ipip.net
 		else
 			curl -L ip.sb
 		fi
@@ -6694,12 +6696,23 @@ network_manager_tui() {
 		nano /etc/network/interfaces.d/*
 		nano /etc/network/interfaces
 		;;
+	8) install_blueman ;;
 	esac
 	##########################
 	press_enter_to_return
 	network_manager_tui
 }
 ###########
+install_blueman() {
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		DEPENDENCY_01='gnome-bluetooth'
+	else
+		DEPENDENCY_01='blueman-manager'
+	fi
+	DEPENDENCY_02='blueman'
+	beta_features_quick_install
+}
+##################
 tmoe_wifi_scan() {
 	DEPENDENCY_01=''
 	if [ ! $(command -v iw) ]; then
@@ -6762,7 +6775,7 @@ check_debian_nonfree_source() {
 }
 ##################
 install_debian_nonfree_network_card_driver() {
-	RETURN_TO_MENU='install_debian_nonfree_network_card_driver'
+	RETURN_TO_WHERE='install_debian_nonfree_network_card_driver'
 	check_debian_nonfree_source
 	DEPENDENCY_01=''
 	NETWORK_MANAGER=$(whiptail --title "你想要安装哪个驱动？" --menu \
@@ -6786,18 +6799,40 @@ install_debian_nonfree_network_card_driver() {
 	6) DEPENDENCY_02='firmware-misc-nonfree' ;;
 	esac
 	##########################
-	beta_features_quick_install
+	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "install安装" --no-button "Download下载" --yesno "您是想要直接安装，还是下载驱动安装包? ♪(^∇^*) " 8 50); then
+		beta_features_quick_install
+	else
+		download_network_card_device
+	fi
 	press_enter_to_return
 	install_debian_nonfree_network_card_driver
 }
 #############
+download_network_card_device() {
+	mkdir -p cd ${HOME}/sd/Download
+	cd ${HOME}/sd/Download
+	echo "即将为您下载至${HOME}/sd/Download"
+	if [ $(command -v apt-get) ]; then
+		apt download ${DEPENDENCY_02}
+	else
+		GREP_NAME=${DEPENDENCY_02}
+		REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/non-free/f/firmware-nonfree/'
+		THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
+		echo ${THE_LATEST_DEB_LINK}
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+		apt show ./${THE_LATEST_DEB_VERSION}
+	fi
+	echo "Download completed,文件已保存至${HOME}/sd/Download"
+}
+###############
 list_network_devices() {
 	if [ ! $(command -v dmidecode) ]; then
 		DEPENDENCY_02='dmidecode'
 		beta_features_quick_install
 	fi
 	dmidecode | less -meQ
-	dmidecode | grep --color=auto -Ei 'Wireless|Net'
+	dmidecode | grep --color=auto -Ei 'Wire|Net'
 	press_enter_to_return
 	install_debian_nonfree_network_card_driver
 }
@@ -11215,30 +11250,44 @@ install_gnome_logs() {
 	beta_features_quick_install
 }
 ##################
-
+kde_config_module_for_fcitx() {
+	DEPENDENCY_01="qt4-qtconfig"
+	DEPENDENCY_02='kcm-fcitx'
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02='kcm-fcitx'
+		#kcm-fcitx
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_02='kde-config-fcitx'
+		#kde-config-fcitx
+	fi
+	beta_features_quick_install
+}
 ############
 install_pinyin_input_method() {
 	RETURN_TO_WHERE='install_pinyin_input_method'
 	NON_DEBIAN='false'
 	DEPENDENCY_01="fcitx"
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01='kcm-fcitx fcitx-im fcitx-configtool'
+		DEPENDENCY_01='fcitx-im fcitx-configtool'
+		#kcm-fcitx
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
-		DEPENDENCY_01='fcitx kde-config-fcitx fcitx-tools fcitx-table'
+		DEPENDENCY_01='fcitx fcitx-tools fcitx-config-gtk'
+		#kde-config-fcitx
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
 			"1" "im-config配置输入法" \
 			"2" "fcitx-diagnose诊断" \
-			"3" "sogou搜狗拼音" \
-			"4" "iflyime讯飞语音+拼音+五笔" \
-			"5" "rime中州韻(擊響中文之韻)" \
-			"6" "baidu百度输入法" \
-			"7" "libpinyin(提供智能整句输入算法核心)" \
-			"8" "sunpinyin(基于统计学语言模型)" \
-			"9" "google谷歌拼音(引擎fork自Android版)" \
-			"10" "fcitx云拼音模块" \
-			"11" "uim(Universal Input Method)" \
+			"3" "KDE配置模块" \
+			"4" "sogou搜狗拼音" \
+			"5" "iflyime讯飞语音+拼音+五笔" \
+			"6" "rime中州韻(擊響中文之韻)" \
+			"7" "baidu百度输入法" \
+			"8" "libpinyin(提供智能整句输入算法核心)" \
+			"9" "sunpinyin(基于统计学语言模型)" \
+			"10" "google谷歌拼音(引擎fork自Android版)" \
+			"11" "fcitx云拼音模块" \
+			"12" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -11249,15 +11298,16 @@ install_pinyin_input_method() {
 		echo '若您无法使用fcitx,则请根据以下诊断信息自行解决'
 		fcitx-diagnose
 		;;
-	3) install_sogou_pinyin ;;
-	4) install_iflyime_pinyin ;;
-	5) install_rime_pinyin ;;
-	6) install_baidu_pinyin ;;
-	7) install_lib_pinyin ;;
-	8) install_sun_pinyin ;;
-	9) install_google_pinyin ;;
-	10) install_fcitx_module_cloud_pinyin ;;
-	11) install_uim_pinyin ;;
+	3) kde_config_module_for_fcitx ;;
+	4) install_sogou_pinyin ;;
+	5) install_iflyime_pinyin ;;
+	6) install_rime_pinyin ;;
+	7) install_baidu_pinyin ;;
+	8) install_lib_pinyin ;;
+	9) install_sun_pinyin ;;
+	10) install_google_pinyin ;;
+	11) install_fcitx_module_cloud_pinyin ;;
+	12) install_uim_pinyin ;;
 	esac
 	###############
 	configure_arch_fcitx
