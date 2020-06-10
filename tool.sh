@@ -11228,27 +11228,29 @@ install_pinyin_input_method() {
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
-			"1" "sogou搜狗拼音" \
-			"2" "iflyime讯飞语音+拼音+五笔" \
-			"3" "rime中州韻(擊響中文之韻)" \
-			"4" "baidu百度输入法" \
-			"5" "libpinyin(提供智能整句输入算法核心)" \
-			"6" "sunpinyin(基于统计学语言模型)" \
-			"7" "google谷歌拼音(引擎fork自Android版)" \
-			"8" "uim(Universal Input Method)" \
+			"1" "im-config配置输入法" \
+			"2" "sogou搜狗拼音" \
+			"3" "iflyime讯飞语音+拼音+五笔" \
+			"4" "rime中州韻(擊響中文之韻)" \
+			"5" "baidu百度输入法" \
+			"6" "libpinyin(提供智能整句输入算法核心)" \
+			"7" "sunpinyin(基于统计学语言模型)" \
+			"8" "google谷歌拼音(引擎fork自Android版)" \
+			"9" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
 	0 | "") beta_features ;;
-	1) install_sogou_pinyin ;;
-	2) install_iflyime_pinyin ;;
-	3) install_rime_pinyin ;;
-	4) install_baidu_pinyin ;;
-	5) install_lib_pinyin ;;
-	6) install_sun_pinyin ;;
-	7) install_google_pinyin ;;
-	8) install_uim_pinyin ;;
+	1) input_method_config ;;
+	2) install_sogou_pinyin ;;
+	3) install_iflyime_pinyin ;;
+	4) install_rime_pinyin ;;
+	5) install_baidu_pinyin ;;
+	6) install_lib_pinyin ;;
+	7) install_sun_pinyin ;;
+	8) install_google_pinyin ;;
+	9) install_uim_pinyin ;;
 	esac
 	###############
 	configure_arch_fcitx
@@ -11256,6 +11258,19 @@ install_pinyin_input_method() {
 	beta_features
 }
 ########################
+input_method_config() {
+	if [ ! $(command -v im-config) ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='im-config'
+		beta_features_quick_install
+	fi
+	#检测两次
+	if [ ! $(command -v im-config) ]; then
+		echo 'Sorry，本功能只支持deb系发行版'
+	fi
+	im-config
+}
+####################
 install_uim_pinyin() {
 	DEPENDENCY_01='uim uim-mozc'
 	DEPENDENCY_02='uim-pinyin'
