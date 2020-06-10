@@ -7659,6 +7659,7 @@ modify_qemu_vnc_display_port() {
 }
 ###############
 choose_qemu_iso_file() {
+	cd /usr/local/bin/
 	FILE_EXT_01='iso'
 	FILE_EXT_02='img'
 	if grep -q '\--cdrom' startqemu; then
@@ -10331,7 +10332,7 @@ dd_flash_iso_to_udisk() {
 	fi
 	echo "${DD_OF_TARGET}即将被格式化，所有文件都将丢失"
 	do_you_want_to_continue
-	umount -lf ${DD_OF_TARGET}
+	umount -lf ${DD_OF_TARGET} 2>/dev/null
 	echo "正在烧录中，这可能需要数分钟的时间..."
 	dd <${TMOE_FILE_ABSOLUTE_PATH} >${DD_OF_TARGET}
 }
