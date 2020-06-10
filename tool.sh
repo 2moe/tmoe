@@ -396,19 +396,25 @@ check_dependencies() {
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			if [ ! -e "/bin/add-apt-repository" ] && [ ! -e "/usr/bin/add-apt-repository" ]; then
+			if [ ! $(command -v add-apt-repository) ]; then
 				apt install -y software-properties-common
 			fi
-		fi
-
-		if ! grep -q "^zh_CN" "/etc/locale.gen"; then
-			if [ ! -e "/usr/sbin/locale-gen" ]; then
-				apt install -y locales
+			if ! grep -q "^zh_CN" "/etc/locale.gen"; then
+				apt install -y language-pack-zh-hans 2>/dev/null
 			fi
-			sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-			locale-gen
-			apt install -y language-pack-zh-hans 2>/dev/null
 		fi
+		if [ ! -e "/usr/sbin/locale-gen" ]; then
+			apt install -y locales
+		fi
+	fi
+
+	if ! grep -q "^zh_CN" "/etc/locale.gen"; then
+		sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+		if ! grep -q "^zh_CN" "/etc/locale.gen"; then
+			echo '' >>/etc/locale.gen
+			sed -i '$ a\zh_CN.UTF-8 UTF-8' /etc/locale.gen
+		fi
+		locale-gen
 	fi
 
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
@@ -450,7 +456,9 @@ tmoe_linux_tool_menu() {
 	#if [ "${CurrentLANG}" != $(echo 'emhfQ04uVVRGLTgK' | base64 -d) ]; then
 	#	export LANG=C.UTF-8
 	#fi
-	export LANG=${CurrentLANG}
+	if [ ! -z "${CurrentLANG}" ]; then
+		export LANG=${CurrentLANG}
+	fi
 	case "${TMOE_OPTION}" in
 	0 | "")
 		#export LANG=${CurrentLANG}
@@ -6322,6 +6330,7 @@ frequently_asked_questions() {
 	fi
 	#######################
 	if [ "${TMOE_FAQ}" == '5' ]; then
+		echo 'deb系创建用户的说明'
 		echo "部分软件出于安全性考虑，禁止以root权限运行。权限越大，责任越大。若root用户不慎操作，将有可能破坏系统。"
 		echo "您可以使用以下命令来新建普通用户"
 		echo "#创建一个用户名为mo2的新用户"
@@ -6331,11 +6340,16 @@ frequently_asked_questions() {
 		echo "${YELLOW}adduser mo2 sudo${RESET}"
 		echo "之后，若需要提权，则只需输sudo 命令"
 		echo "例如${YELLOW}sudo apt update${RESET}"
-		echo ""
+		echo "--------------------"
 		echo "切换用户的说明"
-		echo "您可以输${YELLOW}sudo su - ${RESET}或${YELLOW}sudo -i ${RESET}切换至root用户"
-		echo "亦可输${YELLOW}sudo su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
+		echo "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
+		echo "亦可输${YELLOW}su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
 		echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
+		echo '--------------------'
+		echo 'arch系创建新用户的命令为useradd loveyou'
+		echo '其中loveyou为用户名'
+		echo '输passwd loveyou修改该用户密码'
+		echo '如需将其添加至sudo用户组，那么您可以手动编辑/etc/sudoers'
 	fi
 	###################
 	if [ "${TMOE_FAQ}" == '6' ]; then
@@ -6800,6 +6814,7 @@ install_debian_nonfree_network_card_driver() {
 	esac
 	##########################
 	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "install安装" --no-button "Download下载" --yesno "您是想要直接安装，还是下载驱动安装包? ♪(^∇^*) " 8 50); then
+		do_you_want_to_continue
 		beta_features_quick_install
 	else
 		download_network_card_device

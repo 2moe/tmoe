@@ -3,6 +3,7 @@ cd ..
 sed -i 's/zh_CN/en_US/g' ./*sh
 #locale-gen
 sed -i 's@en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/@zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/@' ./*sh
+sed -i 's@a\\\en_US.UTF-8 UTF-8@a\\\zh_CN.UTF-8 UTF-8@' tool.sh
 #gentoo_lang
 sed -i 's@en_US en_US@en_US zh_CN@g' install.sh
 sed -i 's@translation-update-en_US@translation-update-zh_CN@' install.sh
