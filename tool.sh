@@ -6707,6 +6707,15 @@ tmoe_wifi_scan() {
 		beta_features_quick_install
 	fi
 
+	if [ ! $(command -v iwlist) ]; then
+		if [ "${LINUX_DISTRO}" = "arch" ]; then
+			DEPENDENCY_02='wireless_tools'
+		else
+			DEPENDENCY_02='wireless-tools'
+		fi
+		beta_features_quick_install
+	fi
+
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		if [ ! $(command -v wifi-menu) ]; then
 			DEPENDENCY_01='dialog wpa_supplicant'
@@ -6714,19 +6723,14 @@ tmoe_wifi_scan() {
 			beta_features_quick_install
 		fi
 		wifi-menu
-	else
-		if [ ! $(command -v iwlist) ]; then
-			DEPENDENCY_02='wireless-tools'
-			beta_features_quick_install
-		fi
-		echo 'scanning...'
-		echo '正在扫描中...'
-		cd /tmp
-		iwlist scan 2>/dev/null | tee .tmoe_wifi_scan_cache
-		echo '-------------------------------'
-		cat .tmoe_wifi_scan_cache | grep --color=auto -i 'SSID'
-		rm -f .tmoe_wifi_scan_cache
 	fi
+	echo 'scanning...'
+	echo '正在扫描中...'
+	cd /tmp
+	iwlist scan 2>/dev/null | tee .tmoe_wifi_scan_cache
+	echo '-------------------------------'
+	cat .tmoe_wifi_scan_cache | grep --color=auto -i 'SSID'
+	rm -f .tmoe_wifi_scan_cache
 }
 ##############
 network_devices_status() {
