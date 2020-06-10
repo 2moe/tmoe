@@ -6282,6 +6282,7 @@ frequently_asked_questions() {
 		"4" "VNC/X11闪退" \
 		"5" "软件禁止以root权限运行" \
 		"6" "mlocate数据库初始化失败" \
+		"7" "TTY下中文字体乱码" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -6341,6 +6342,10 @@ frequently_asked_questions() {
 		${PACKAGES_REMOVE_COMMAND} mlocate catfish
 		apt autopurge 2>/dev/null
 	fi
+	###################
+	if [ "${TMOE_FAQ}" == '7' ]; then
+		tty_chinese_code
+	fi
 	##################
 	if [ -z "${TMOE_FAQ}" ]; then
 		tmoe_linux_tool_menu
@@ -6350,6 +6355,20 @@ frequently_asked_questions() {
 	frequently_asked_questions
 }
 ##############
+tty_chinese_code() {
+	if (whiptail --title "您想要对这个小可爱执行哪项方案?" --yes-button 'fbterm' --no-button '修改$LANG' --yesno "目前有两种简单的解决方法(っ °Д °)\n前者提供了一个快速的终端仿真器，它直接运行在你的系统中的帧缓冲 (framebuffer) 之上；而后者则是修改语言变量。" 11 45); then
+		if [ ! $(command -v fbterm) ]; then
+			DEPENDENCY_01='fbterm'
+			${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+		fi
+		echo '若启动失败，则请手动执行fbterm'
+		fbterm
+	else
+		export LANG='C.UTF-8'
+		echo '请手动执行LANG=C.UTF-8'
+	fi
+}
+################
 enable_dbus_launch() {
 	XSTARTUP_LINE=$(cat -n ~/.vnc/xstartup | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
 	sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" ~/.vnc/xstartup
@@ -6610,13 +6629,12 @@ network_manager_tui() {
 	DEPENDENCY_01=''
 	RETURN_TO_WHERE='network_manager_tui'
 	if [ ! $(command -v nmtui) ]; then
-		DEPENDENCY_01=''
 		DEPENDENCY_02='network-manager'
 		beta_features_quick_install
 	fi
 
 	if [ ! $(command -v ip) ]; then
-		DEPENDENCY_01='iproute2'
+		DEPENDENCY_02='iproute2'
 		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
 	fi
 
@@ -6759,7 +6777,7 @@ list_network_devices() {
 		beta_features_quick_install
 	fi
 	dmidecode | less -meQ
-	dmidecode | grep -Ei 'Wireless|Net'
+	dmidecode | grep --color=auto -Ei 'Wireless|Net'
 	press_enter_to_return
 	install_debian_nonfree_network_card_driver
 }
