@@ -447,12 +447,13 @@ tmoe_linux_tool_menu() {
 			3>&1 1>&2 2>&3
 	)
 	########
-	if [ "${CurrentLANG}" != $(echo 'emhfQ04uVVRGLTgK' | base64 -d) ]; then
-		export LANG=C.UTF-8
-	fi
+	#if [ "${CurrentLANG}" != $(echo 'emhfQ04uVVRGLTgK' | base64 -d) ]; then
+	#	export LANG=C.UTF-8
+	#fi
+	export LANG=${CurrentLANG}
 	case "${TMOE_OPTION}" in
 	0 | "")
-		export LANG=${CurrentLANG}
+		#export LANG=${CurrentLANG}
 		exit 0
 		;;
 	1) install_gui ;;
@@ -6566,6 +6567,7 @@ beta_features() {
 			"20" "catfish(文件搜索)" \
 			"21" "geogebra+kalzium(数学+化学)" \
 			"22" "gnome logs" \
+			"23" "network manager网络管理器" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6594,6 +6596,7 @@ beta_features() {
 	20) install_catfish ;;
 	21) install_geogebra_and_kalzium ;;
 	22) install_gnome_logs ;;
+	23) network_manager_tui ;;
 	esac
 	##############################
 	########################################
@@ -10987,6 +10990,16 @@ install_gnome_logs() {
 	beta_features_quick_install
 }
 ##################
+network_manager_tui() {
+	if [ ! $(command -v nmtui) ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='network-manager'
+		beta_features_quick_install
+	fi
+	nmtui
+	beta_features
+}
+############
 install_pinyin_input_method() {
 	RETURN_TO_WHERE='install_pinyin_input_method'
 	NON_DEBIAN='false'
