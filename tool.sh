@@ -6605,6 +6605,188 @@ beta_features() {
 	beta_features
 }
 ##########
+network_manager_tui() {
+	NON_DEBIAN='false'
+	DEPENDENCY_01=''
+	RETURN_TO_WHERE='network_manager_tui'
+	if [ ! $(command -v nmtui) ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='network-manager'
+		beta_features_quick_install
+	fi
+
+	if [ ! $(command -v ip) ]; then
+		DEPENDENCY_01='iproute2'
+		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+	fi
+
+	if grep -q 'managed=false' /etc/NetworkManager/NetworkManager.conf; then
+		sed -i 's@managed=false@managed=true@' /etc/NetworkManager/NetworkManager.conf
+	fi
+
+	NETWORK_MANAGER=$(whiptail --title "NETWORK" --menu \
+		"您想要如何配置网络？\n How do you want to configure the network? " 17 50 8 \
+		"1" "manager管理器" \
+		"2" "enable device启用设备" \
+		"3" "WiFi scan扫描" \
+		"4" "device status设备状态" \
+		"5" "driver网卡驱动" \
+		"6" "View ip address查看ip" \
+		"7" "edit config manually手动编辑" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${NETWORK_MANAGER}" in
+	0 | "") beta_features ;;
+	1)
+		nmtui
+		network_manager_tui
+		;;
+	2)
+		enable_netword_card
+		;;
+	3)
+		tmoe_wifi_scan
+		;;
+	4)
+		network_devices_status
+		;;
+	5)
+		install_debian_nonfree_network_card_driver
+		;;
+	6)
+		ip a
+		ip -br -c a
+		if [ ! -z $(echo ${LANG} | grep zh) ]; then
+			curl myip.ipip.net
+		else
+			curl -L ip.sb
+		fi
+		;;
+	7)
+		nano /etc/NetworkManager/system-connections/*
+		nano /etc/NetworkManager/NetworkManager.conf
+		nano /etc/network/interfaces.d/*
+		nano /etc/network/interfaces
+		;;
+	esac
+	##########################
+	press_enter_to_return
+	network_manager_tui
+}
+###########
+tmoe_wifi_scan() {
+	if [ ! $(command -v iwlist) ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='wireless-tools'
+		beta_features_quick_install
+	fi
+	if [ ! $(command -v iw) ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='iw'
+		beta_features_quick_install
+	fi
+	echo 'scanning...'
+	echo '正在扫描中...'
+	cd /tmp
+	iwlist scan 2>/dev/null | tee .tmoe_wifi_scan_cache
+	echo '-------------------------------'
+	cat .tmoe_wifi_scan_cache | grep --color=auto -i 'SSID'
+	rm -f .tmoe_wifi_scan_cache
+}
+##############
+network_devices_status() {
+	iw phy
+	echo '-------------------------------'
+	nmcli device show 2>&1 | head -n 100
+	echo '-------------------------------'
+	nmcli connection show
+	echo '-------------------------------'
+	iw dev
+	echo '-------------------------------'
+	nmcli radio
+	echo '-------------------------------'
+	nmcli device
+}
+#############
+check_debian_nonfree_source() {
+	if [ "${LINUX_DISTRO}" = 'debian' ]; then
+		if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
+			if ! grep -q '^deb.*non-free' /etc/apt/sources.list; then
+				echo '是否需要添加debian non-free软件源？'
+				echo 'Do you want to add non-free source.list?'
+				do_you_want_to_continue
+				sed -i '$ a\deb https://mirrors.huaweicloud.com/debian/ stable non-free' /etc/apt/sources.list
+				apt update
+			fi
+		fi
+	fi
+}
+##################
+install_debian_nonfree_network_card_driver() {
+	RETURN_TO_MENU='install_debian_nonfree_network_card_driver'
+	check_debian_nonfree_source
+	DEPENDENCY_01=''
+	NETWORK_MANAGER=$(whiptail --title "你想要安装哪个驱动？" --menu \
+		"Which driver do you want to install?" 15 50 7 \
+		"1" "list devices查看设备列表" \
+		"2" "Intel Wireless cards嘤(英)特尔" \
+		"3" "Realtek wired/wifi/BT adapters瑞昱" \
+		"4" "Marvell wireless cards美满" \
+		"5" "TI Connectivity wifi/BT/FM/GPS" \
+		"6" "misc(Broadcom,Ralink,etc.)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${NETWORK_MANAGER}" in
+	0 | "") network_manager_tui ;;
+	1) list_network_devices ;;
+	2) DEPENDENCY_02='firmware-iwlwifi' ;;
+	3) DEPENDENCY_02='firmware-realtek' ;;
+	4) DEPENDENCY_02='firmware-libertas' ;;
+	5) DEPENDENCY_02='firmware-ti-connectivity' ;;
+	6) DEPENDENCY_02='firmware-misc-nonfree' ;;
+	esac
+	##########################
+	beta_features_quick_install
+	press_enter_to_return
+	install_debian_nonfree_network_card_driver
+}
+#############
+list_network_devices() {
+	if [ ! $(command -v dmidecode) ]; then
+		DEPENDENCY_02='dmidecode'
+		beta_features_quick_install
+	fi
+	dmidecode | less -meQ
+	dmidecode | grep -Ei 'Wireless|Net'
+	press_enter_to_return
+	install_debian_nonfree_network_card_driver
+}
+############
+enable_netword_card() {
+	cd /tmp/
+	nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $1}' >.tmoe-linux_cache.01
+	nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}' | sed 's/ /-/g' >.tmoe-linux_cache.02
+	TMOE_NETWORK_CARD_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+	rm -f .tmoe-linux_cache.0*
+	#TMOE_NETWORK_CARD_LIST=$(nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}')
+	TMOE_NETWORK_CARD_ITEM=$(whiptail --title "NETWORK CARD" --menu \
+		"您想要启用哪个网卡？\nWhich network card do you want to enable?" 0 0 0 \
+		${TMOE_NETWORK_CARD_LIST} \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	case ${TMOE_NETWORK_CARD_ITEM} in
+	0 | "") network_manager_tui ;;
+	esac
+	ip link set ${TMOE_NETWORK_CARD_ITEM} up
+	if [ "$?" = '0' ]; then
+		echo "Congratulations,已经启用${TMOE_NETWORK_CARD_ITEM}"
+	else
+		echo 'Sorry,设备启用失败'
+	fi
+}
+##################
 tmoe_uefi_boot_manager() {
 	NON_DEBIAN='false'
 	if [ ! $(command -v efibootmgr) ]; then
@@ -6694,7 +6876,7 @@ modify_first_uefi_boot_item() {
 	efibootmgr | grep -Ev 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 1 | sed 's@Boot@@g' >.tmoe-linux_cache.01
 	efibootmgr | grep -Ev 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 2 | sed 's/ //g' | sed 's/^/\"&/g' | sed 's/$/&\"/g' >.tmoe-linux_cache.02
 	TMOE_UEFI_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
-	rm -f tmoe-linux_cache.0*
+	rm -f .tmoe-linux_cache.0*
 	TMOE_UEFI_BOOT_ITEM=$(whiptail --title "BOOT ITEM" --menu \
 		"检测当前的第一启动项为$(efibootmgr | grep 'BootOrder:' | awk '{print $2}' | cut -d ',' -f 1)" 0 0 0 \
 		${TMOE_UEFI_LIST} \
@@ -10990,15 +11172,7 @@ install_gnome_logs() {
 	beta_features_quick_install
 }
 ##################
-network_manager_tui() {
-	if [ ! $(command -v nmtui) ]; then
-		DEPENDENCY_01=''
-		DEPENDENCY_02='network-manager'
-		beta_features_quick_install
-	fi
-	nmtui
-	beta_features
-}
+
 ############
 install_pinyin_input_method() {
 	RETURN_TO_WHERE='install_pinyin_input_method'
