@@ -11224,38 +11224,45 @@ install_pinyin_input_method() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='kcm-fcitx fcitx-im fcitx-configtool'
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
-		DEPENDENCY_01='fcitx kde-config-fcitx'
+		DEPENDENCY_01='fcitx kde-config-fcitx fcitx-tools fcitx-table'
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
 			"1" "im-config配置输入法" \
-			"2" "sogou搜狗拼音" \
-			"3" "iflyime讯飞语音+拼音+五笔" \
-			"4" "rime中州韻(擊響中文之韻)" \
-			"5" "baidu百度输入法" \
-			"6" "libpinyin(提供智能整句输入算法核心)" \
-			"7" "sunpinyin(基于统计学语言模型)" \
-			"8" "google谷歌拼音(引擎fork自Android版)" \
-			"9" "uim(Universal Input Method)" \
+			"2" "fcitx-diagnose诊断" \
+			"3" "sogou搜狗拼音" \
+			"4" "iflyime讯飞语音+拼音+五笔" \
+			"5" "rime中州韻(擊響中文之韻)" \
+			"6" "baidu百度输入法" \
+			"7" "libpinyin(提供智能整句输入算法核心)" \
+			"8" "sunpinyin(基于统计学语言模型)" \
+			"9" "google谷歌拼音(引擎fork自Android版)" \
+			"10" "fcitx云拼音模块" \
+			"11" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
 	0 | "") beta_features ;;
 	1) input_method_config ;;
-	2) install_sogou_pinyin ;;
-	3) install_iflyime_pinyin ;;
-	4) install_rime_pinyin ;;
-	5) install_baidu_pinyin ;;
-	6) install_lib_pinyin ;;
-	7) install_sun_pinyin ;;
-	8) install_google_pinyin ;;
-	9) install_uim_pinyin ;;
+	2)
+		echo '若您无法使用fcitx,则请根据以下诊断信息自行解决'
+		fcitx-diagnose
+		;;
+	3) install_sogou_pinyin ;;
+	4) install_iflyime_pinyin ;;
+	5) install_rime_pinyin ;;
+	6) install_baidu_pinyin ;;
+	7) install_lib_pinyin ;;
+	8) install_sun_pinyin ;;
+	9) install_google_pinyin ;;
+	10) install_fcitx_module_cloud_pinyin ;;
+	11) install_uim_pinyin ;;
 	esac
 	###############
 	configure_arch_fcitx
 	press_enter_to_return
-	beta_features
+	install_pinyin_input_method
 }
 ########################
 input_method_config() {
@@ -11277,6 +11284,16 @@ install_uim_pinyin() {
 	beta_features_quick_install
 }
 ###########
+install_fcitx_module_cloud_pinyin() {
+	DEPENDENCY_01=''
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_02='fcitx-module-cloudpinyin'
+	else
+		DEPENDENCY_02='fcitx-cloudpinyin'
+	fi
+	beta_features_quick_install
+}
+######################
 install_rime_pinyin() {
 	DEPENDENCY_02='fcitx-rime'
 	beta_features_quick_install
@@ -11406,6 +11423,20 @@ configure_arch_fcitx() {
 			export QT_IM_MODULE=fcitx
 			export XMODIFIERS="@im=fcitx"
 		EOF
+		#sort -u ${HOME}/.xprofile -o ${HOME}/.xprofile
+	fi
+	if ! grep -q 'GTK_IM_MODULE=fcitx' /etc/environment; then
+		sed -i 's/^export INPUT_METHOD.*/#&/' /etc/environment
+		sed -i 's/^export GTK_IM_MODULE.*/#&/' /etc/environment
+		sed -i 's/^export QT_IM_MODULE=.*/#&/' /etc/environment
+		sed -i 's/^export XMODIFIERS=.*/#&/' /etc/environment
+		cat >>/etc/environment <<-'EOF'
+			export INPUT_METHOD=fcitx
+			export GTK_IM_MODULE=fcitx
+			export QT_IM_MODULE=fcitx
+			export XMODIFIERS="@im=fcitx"
+		EOF
+		#sort -u /etc/environment -o /etc/environment
 	fi
 }
 ##############
