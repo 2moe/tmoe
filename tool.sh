@@ -6993,8 +6993,8 @@ install_container_and_virtual_machine() {
 ###########
 check_qemu_aarch64_install() {
 	if [ ! $(command -v qemu-system-aarch64) ]; then
-		DEPENDENCY_01='qemu qemu-system-arm'
-		DEPENDENCY_02='qemu-system-gui'
+		DEPENDENCY_01='qemu'
+		DEPENDENCY_02='qemu-system-arm'
 		echo "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
 		beta_features_quick_install
 	fi
@@ -7532,9 +7532,18 @@ modify_qemu_aarch64_tmoe_sound_card() {
 }
 #############
 check_qemu_install() {
+	DEPENDENCY_01='qemu'
+	DEPENDENCY_02=''
 	if [ ! $(command -v qemu-system-x86_64) ]; then
-		DEPENDENCY_01='qemu  qemu-system-x86'
-		DEPENDENCY_02='qemu-system-gui'
+		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			DEPENDENCY_01='qemu qemu-system-x86'
+			DEPENDENCY_02='qemu-system-gui'
+		elif [ "${LINUX_DISTRO}" = 'alpine' ]; then
+			DEPENDENCY_01='qemu qemu-system-x86_64 qemu-system-i386'
+			DEPENDENCY_02='qemu-system-aarch64'
+		elif [ "${LINUX_DISTRO}" = 'debian' ]; then
+			DEPENDENCY_02='qemu-arch-extra'
+		fi
 		beta_features_quick_install
 	fi
 }
@@ -7816,6 +7825,7 @@ configure_mount_script() {
 		sed -i '$ a\/usr/local/bin/mount-9p-filesystem' .profile
 	fi
 	echo "若无法自动挂载，则请手动输${GREEN}mount-9p-filesystem${RESET}"
+	mount-9p-filesystem
 }
 #############
 disable_automatic_mount_qemu_folder() {
@@ -8067,11 +8077,6 @@ enable_qemnu_spice_remote() {
 	fi
 	###########
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？启用后将禁用vnc服务。${TMOE_SPICE_STATUS},默认spice端口为5931" 10 45); then
-		if [ ! -e "/usr/share/doc/qemu-system-gui/" ]; then
-			DEPENDENCY_01=''
-			DEPENDENCY_02='qemu-system-gui'
-			beta_features_quick_install
-		fi
 		sed -i '/-spice port=/d' startqemu
 		sed -i "/-vnc :/d" startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -spice tmoe_spice_config_test \\\n/' startqemu
