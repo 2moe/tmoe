@@ -5619,7 +5619,7 @@ configure_xrdp() {
 	case "${TMOE_OPTION}" in
 	0 | "") modify_remote_desktop_config ;;
 	1)
-		service xrdp stop 2>/dev/null
+		service xrdp stop 2>/dev/null || systemctl stop xrdp
 		xrdp_onekey
 		;;
 	2)
@@ -5630,14 +5630,8 @@ configure_xrdp() {
 	3) xrdp_port ;;
 	4) nano /etc/xrdp/xrdp.ini ;;
 	5) nano /etc/xrdp/startwm.sh ;;
-	6)
-		service xrdp stop 2>/dev/null
-		service xrdp status | head -n 24
-		;;
-	7)
-		echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
-		service xrdp status
-		;;
+	6) service xrdp stop 2>/dev/null || systemctl stop xrdp ;;
+	7) check_xrdp_status ;;
 	8) xrdp_pulse_server ;;
 	9) xrdp_reset ;;
 	10) remove_xrdp ;;
@@ -5647,11 +5641,20 @@ configure_xrdp() {
 	press_enter_to_return_configure_xrdp
 }
 #############
+check_xrdp_status() {
+	if [ $(command -v service) ]; then
+		service xrdp status | head -n 24 else
+	else
+		echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
+		systemctl status xrdp
+	fi
+}
+####################
 remove_xrdp() {
 	pkill xrdp
 	echo "正在停止xrdp进程..."
 	echo "Stopping xrdp..."
-	service xrdp stop 2>/dev/null
+	service xrdp stop 2>/dev/null || systemctl stop xrdp
 	echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
 	#service xrdp restart
 	RETURN_TO_WHERE='configure_xrdp'
@@ -5779,8 +5782,8 @@ configure_xrdp_remote_desktop_session() {
 		#beta_features
 		;;
 	esac
-	service xrdp restart
-	service xrdp status
+	service xrdp restart || systemctl stop xrdp
+	check_xrdp_status
 }
 ##############
 configure_xwayland_remote_desktop_session() {
@@ -5915,11 +5918,11 @@ xrdp_onekey() {
 xrdp_restart() {
 	cd /etc/xrdp/
 	RDP_PORT=$(cat xrdp.ini | grep 'port=' | head -n 1 | cut -d '=' -f 2)
-	service xrdp restart 2>/dev/null
+	service xrdp restart 2>/dev/null || systemctl restart xrdp
 	if [ "$?" != "0" ]; then
 		/etc/init.d/xrdp restart
 	fi
-	service xrdp status | head -n 24
+	check_xrdp_status
 	echo "您可以输${YELLOW}service xrdp stop${RESET}来停止进程"
 	echo "您当前的IP地址为"
 	ip -4 -br -c a | cut -d '/' -f 1
@@ -6641,6 +6644,10 @@ network_manager_tui() {
 	if grep -q 'managed=false' /etc/NetworkManager/NetworkManager.conf; then
 		sed -i 's@managed=false@managed=true@' /etc/NetworkManager/NetworkManager.conf
 	fi
+	pgrep NetworkManager >/dev/null
+	if [ "$?" != "0" ]; then
+		systemctl start NetworkManager || service NetworkManager start
+	fi
 
 	NETWORK_MANAGER=$(whiptail --title "NETWORK" --menu \
 		"您想要如何配置网络？\n How do you want to configure the network? " 17 50 8 \
@@ -6694,23 +6701,32 @@ network_manager_tui() {
 }
 ###########
 tmoe_wifi_scan() {
-	if [ ! $(command -v iwlist) ]; then
-		DEPENDENCY_01=''
-		DEPENDENCY_02='wireless-tools'
-		beta_features_quick_install
-	fi
+	DEPENDENCY_01=''
 	if [ ! $(command -v iw) ]; then
-		DEPENDENCY_01=''
 		DEPENDENCY_02='iw'
 		beta_features_quick_install
 	fi
-	echo 'scanning...'
-	echo '正在扫描中...'
-	cd /tmp
-	iwlist scan 2>/dev/null | tee .tmoe_wifi_scan_cache
-	echo '-------------------------------'
-	cat .tmoe_wifi_scan_cache | grep --color=auto -i 'SSID'
-	rm -f .tmoe_wifi_scan_cache
+
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		if [ ! $(command -v wifi-menu) ]; then
+			DEPENDENCY_01='dialog wpa_supplicant'
+			DEPENDENCY_02='netctl'
+			beta_features_quick_install
+		fi
+		wifi-menu
+	else
+		if [ ! $(command -v iwlist) ]; then
+			DEPENDENCY_02='wireless-tools'
+			beta_features_quick_install
+		fi
+		echo 'scanning...'
+		echo '正在扫描中...'
+		cd /tmp
+		iwlist scan 2>/dev/null | tee .tmoe_wifi_scan_cache
+		echo '-------------------------------'
+		cat .tmoe_wifi_scan_cache | grep --color=auto -i 'SSID'
+		rm -f .tmoe_wifi_scan_cache
+	fi
 }
 ##############
 network_devices_status() {
@@ -11196,6 +11212,11 @@ install_pinyin_input_method() {
 	RETURN_TO_WHERE='install_pinyin_input_method'
 	NON_DEBIAN='false'
 	DEPENDENCY_01="fcitx"
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='kcm-fcitx fcitx-im fcitx-configtool'
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_01='fcitx kde-config-fcitx'
+	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
 			"1" "sogou搜狗拼音" \
@@ -11221,6 +11242,7 @@ install_pinyin_input_method() {
 	8) install_uim_pinyin ;;
 	esac
 	###############
+	configure_arch_fcitx
 	press_enter_to_return
 	beta_features
 }
@@ -11293,10 +11315,8 @@ install_baidu_pinyin() {
 	fi
 
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
 		DEPENDENCY_02="fcitx-baidupinyin"
 		beta_features_quick_install
-		configure_arch_fcitx
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
 		install_debian_baidu_pinyin
 	else
@@ -11340,10 +11360,8 @@ install_debian_sogou_pinyin() {
 ########
 install_sogou_pinyin() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
 		DEPENDENCY_02="fcitx-sogouimebs"
 		beta_features_quick_install
-		configure_arch_fcitx
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
 		install_debian_sogou_pinyin
 	else
@@ -11352,18 +11370,19 @@ install_sogou_pinyin() {
 }
 ############
 configure_arch_fcitx() {
-	if [ ! -e "${HOME}/.xprofile" ]; then
-		echo '' >${HOME}/.xprofile
+	if ! grep -q 'GTK_IM_MODULE=fcitx' ${HOME}/.xprofile 2>/dev/null; then
+		if [ ! -e "${HOME}/.xprofile" ]; then
+			echo '' >${HOME}/.xprofile
+		fi
+		sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile
+		sed -i 's/^export QT_IM_MODULE=.*/#&/' ${HOME}/.xprofile
+		sed -i 's/^export XMODIFIERS=.*/#&/' ${HOME}/.xprofile
+		cat >>${HOME}/.xprofile <<-'EOF'
+			export GTK_IM_MODULE=fcitx
+			export QT_IM_MODULE=fcitx
+			export XMODIFIERS="@im=fcitx"
+		EOF
 	fi
-
-	sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile
-	sed -i 's/^export QT_IM_MODULE=.*/#&/' ${HOME}/.xprofile
-	sed -i 's/^export XMODIFIERS=.*/#&/' ${HOME}/.xprofile
-	cat >>${HOME}/.xprofile <<-'EOF'
-		export GTK_IM_MODULE=fcitx
-		export QT_IM_MODULE=fcitx
-		export XMODIFIERS="@im=fcitx"
-	EOF
 }
 ##############
 install_debian_iflyime_pinyin() {
@@ -11381,10 +11400,8 @@ install_debian_iflyime_pinyin() {
 #############
 install_iflyime_pinyin() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01='fcitx-im fcitx-cofigtool'
 		DEPENDENCY_02="iflyime"
 		beta_features_quick_install
-		configure_arch_fcitx
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
 		install_debian_iflyime_pinyin
 	else
@@ -11440,7 +11457,7 @@ install_docker_portainer() {
 		press_enter_to_return
 		install_container_and_virtual_machine
 	fi
-	service docker start 2>/dev/null
+	service docker start 2>/dev/null || systemctl start docker
 	docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
 }
 #####################
@@ -11875,7 +11892,7 @@ configure_nginx_webdav() {
 	##############################
 	if [ "${TMOE_OPTION}" == '1' ]; then
 		pkill nginx
-		service nginx stop 2>/dev/null
+		service nginx stop 2>/dev/null || systemctl stop nginx
 		nginx_onekey
 	fi
 	##############################
@@ -11903,8 +11920,8 @@ configure_nginx_webdav() {
 		echo "正在停止服务进程..."
 		echo "Stopping..."
 		pkill nginx
-		service nginx stop 2>/dev/null
-		service nginx status
+		service nginx stop 2>/dev/null || systemctl stop nginx
+		service nginx status || systemctl status nginx
 	fi
 	##############################
 	if [ "${TMOE_OPTION}" == '8' ]; then
@@ -11915,7 +11932,7 @@ configure_nginx_webdav() {
 		echo "正在停止nginx进程..."
 		echo "Stopping nginx..."
 		pkill nginx
-		service nginx stop 2>/dev/null
+		service nginx stop 2>/dev/null || systemctl stop nginx
 		nginx_reset
 	fi
 	##############################
@@ -11923,16 +11940,16 @@ configure_nginx_webdav() {
 		pkill nginx
 		echo "正在停止nginx进程..."
 		echo "Stopping nginx..."
-		service nginx stop 2>/dev/null
+		service nginx stop 2>/dev/null || systemctl stop nginx
 		rm -fv /etc/nginx/conf.d/webdav.conf
 		echo "${YELLOW}已删除webdav配置文件,${RESET}"
 		echo "是否继续卸载nginx?"
 		echo "您正在执行危险操作，卸载nginx将导致您部署的所有网站无法访问！！！"
 		echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
-		service nginx restart
+		service nginx restart || systemctl restart nginx
 		RETURN_TO_WHERE='configure_nginx_webdav'
 		do_you_want_to_continue
-		service nginx stop
+		service nginx stop || systemctl stop nginx
 		${PACKAGES_REMOVE_COMMAND} nginx nginx-extras
 	fi
 	########################################
@@ -12051,11 +12068,11 @@ nginx_onekey() {
 nginx_restart() {
 	cd /etc/nginx/conf.d/
 	NGINX_WEBDAV_PORT=$(cat webdav.conf | grep listen | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
-	service nginx restart 2>/dev/null
+	service nginx restart 2>/dev/null || systemctl restart nginx
 	if [ "$?" != "0" ]; then
 		/etc/init.d/nginx reload
 	fi
-	service nginx status 2>/dev/null
+	service nginx status 2>/dev/null || systemctl status nginx
 	if [ "$?" = "0" ]; then
 		echo "您可以输${YELLOW}service nginx stop${RESET}来停止进程"
 	else
@@ -12257,19 +12274,19 @@ configure_filebrowser() {
 	##############################
 	if [ "${TMOE_OPTION}" == '1' ]; then
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		filebrowser_onekey
 	fi
 	##############################
 	if [ "${TMOE_OPTION}" == '2' ]; then
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		filebrowser_add_admin
 	fi
 	##############################
 	if [ "${TMOE_OPTION}" == '3' ]; then
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		filebrowser_port
 	fi
 	##############################
@@ -12279,13 +12296,13 @@ configure_filebrowser() {
 	##############################
 	if [ "${TMOE_OPTION}" == '5' ]; then
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		filebrowser_language
 	fi
 	##############################
 	if [ "${TMOE_OPTION}" == '6' ]; then
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		filebrowser_listen_ip
 	fi
 	##############################
@@ -12297,13 +12314,13 @@ configure_filebrowser() {
 		echo "正在停止服务进程..."
 		echo "Stopping..."
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
-		service filebrowser status 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
+		service filebrowser status 2>/dev/null || systemctl status filebrowser
 	fi
 	##############################
 	if [ "${TMOE_OPTION}" == '9' ]; then
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		filebrowser_reset
 	fi
 	##############################
@@ -12386,13 +12403,13 @@ filebrowser_onekey() {
 ############
 filebrowser_restart() {
 	FILEBROWSER_PORT=$(cat /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
-	service filebrowser restart 2>/dev/null
+	service filebrowser restart 2>/dev/null || systemctl restart filebrowser
 	if [ "$?" != "0" ]; then
 		pkill filebrowser
 		nohup /usr/local/bin/filebrowser -d /etc/filebrowser.db 2>&1 >/var/log/filebrowser.log &
 		cat /var/log/filebrowser.log | tail -n 20
 	fi
-	service filebrowser status 2>/dev/null
+	service filebrowser status 2>/dev/null || systemctl status filebrowser
 	if [ "$?" = "0" ]; then
 		echo "您可以输${YELLOW}service filebrowser stop${RESET}来停止进程"
 	else
@@ -12407,7 +12424,7 @@ filebrowser_restart() {
 #############
 filebrowser_add_admin() {
 	pkill filebrowser
-	service filebrowser stop 2>/dev/null
+	service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 	echo "Stopping filebrowser..."
 	echo "正在停止filebrowser进程..."
 	echo "正在检测您当前已创建的用户..."
