@@ -6789,8 +6789,8 @@ enable_netword_card() {
 	TMOE_NETWORK_CARD_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
 	#TMOE_NETWORK_CARD_LIST=$(nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}')
-	TMOE_NETWORK_CARD_ITEM=$(whiptail --title "NETWORK CARD" --menu \
-		"您想要启用哪个网卡？\nWhich network card do you want to enable?" 0 0 0 \
+	TMOE_NETWORK_CARD_ITEM=$(whiptail --title "NETWORK DEVICES" --menu \
+		"您想要启用哪个网络设备？\nWhich network device do you want to enable?" 0 0 0 \
 		${TMOE_NETWORK_CARD_LIST} \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
