@@ -7541,7 +7541,7 @@ check_qemu_install() {
 		elif [ "${LINUX_DISTRO}" = 'alpine' ]; then
 			DEPENDENCY_01='qemu qemu-system-x86_64 qemu-system-i386'
 			DEPENDENCY_02='qemu-system-aarch64'
-		elif [ "${LINUX_DISTRO}" = 'debian' ]; then
+		elif [ "${LINUX_DISTRO}" = 'arch' ]; then
 			DEPENDENCY_02='qemu-arch-extra'
 		fi
 		beta_features_quick_install
@@ -11379,10 +11379,10 @@ install_sogou_pinyin() {
 }
 ############
 configure_arch_fcitx() {
-	if ! grep -q 'GTK_IM_MODULE=fcitx' ${HOME}/.xprofile 2>/dev/null; then
-		if [ ! -e "${HOME}/.xprofile" ]; then
-			echo '' >${HOME}/.xprofile
-		fi
+	if [ ! -e "${HOME}/.xprofile" ]; then
+		echo '' >${HOME}/.xprofile
+	fi
+	if ! grep -q 'GTK_IM_MODULE=fcitx' ${HOME}/.xprofile; then
 		sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile
 		sed -i 's/^export QT_IM_MODULE=.*/#&/' ${HOME}/.xprofile
 		sed -i 's/^export XMODIFIERS=.*/#&/' ${HOME}/.xprofile
