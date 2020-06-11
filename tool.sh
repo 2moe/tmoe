@@ -441,14 +441,12 @@ tmoe_linux_tool_menu() {
 			"8" "Update tmoe-linux tool 更新本工具" \
 			"9" "VSCode 现代化代码编辑器" \
 			"10" "Start zsh tool 启动zsh管理工具" \
-			"11" "Remove GUI 卸载图形界面" \
-			"12" "Remove browser 卸载浏览器" \
-			"13" "FAQ 常见问题" \
-			"14" "software sources软件镜像源管理" \
-			"15" "download iso(Android,linux等)" \
-			"16" "qemu(x86_64虚拟机管理)" \
-			"17" "qemu(arm64虚拟机管理)" \
-			"18" "Beta Features 测试版功能" \
+			"11" "other其它" \
+			"12" "FAQ 常见问题" \
+			"13" "software sources软件镜像源管理" \
+			"14" "download iso(Android,linux等)" \
+			"15" "qemu(x86_64虚拟机管理)" \
+			"16" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -474,14 +472,12 @@ tmoe_linux_tool_menu() {
 	8) tmoe_linux_tool_upgrade ;;
 	9) which_vscode_edition ;;
 	10) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
-	11) remove_gui ;;
-	12) remove_browser ;;
-	13) frequently_asked_questions ;;
-	14) tmoe_sources_list_manager ;;
-	15) download_virtual_machine_iso_file ;;
-	16) start_tmoe_qemu_manager ;;
-	17) start_tmoe_qemu_aarch64_manager ;;
-	18) beta_features ;;
+	11) tmoe_other_options_menu ;;
+	12) frequently_asked_questions ;;
+	13) tmoe_sources_list_manager ;;
+	14) download_virtual_machine_iso_file ;;
+	15) start_tmoe_qemu_manager ;;
+	16) beta_features ;;
 	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -491,6 +487,26 @@ tmoe_linux_tool_menu() {
 }
 ############################
 ############################
+tmoe_other_options_menu() {
+	RETURN_TO_WHERE='tmoe_other_options_menu'
+	NON_DEBIAN='false'
+	TMOE_APP=$(whiptail --title "其它选项" --menu \
+		"Welcome to tmoe-linux tool.这里是其它选项的菜单." 0 50 0 \
+		"1" "Remove GUI 卸载图形界面" \
+		"2" "Remove browser 卸载浏览器" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1) remove_gui ;;
+	2) remove_browser ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_other_options_menu
+}
+###################
 arch_does_not_support() {
 	echo "${RED}WARNING！${RESET}检测到${YELLOW}架构${RESET}${RED}不支持！${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -6755,15 +6771,15 @@ tmoe_other_app_menu() {
 	NON_DEBIAN='false'
 	TMOE_APP=$(whiptail --title "SNS" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"17" "geogebra+kalzium(数学+化学)" \
-		"9" "OBS-Studio(录屏软件)" \
+		"1" "geogebra+kalzium(数学+化学)" \
+		"2" "OBS-Studio(录屏软件)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
-	17) install_geogebra_and_kalzium ;;
-	9) install_obs_studio ;;
+	1) install_geogebra_and_kalzium ;;
+	2) install_obs_studio ;;
 	esac
 	##########################
 	press_enter_to_return
@@ -6839,27 +6855,39 @@ tmoe_sns_app_menu() {
 tmoe_paint_app_menu() {
 	RETURN_TO_WHERE='tmoe_paint_app_menu'
 	NON_DEBIAN='false'
-	TMOE_APP=$(whiptail --title "绘图app" --menu \
+	DEPENDENCY_01=""
+	TMOE_APP=$(whiptail --title "绘图/制图app" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"1" "krita(数字绘画)" \
-		"2" "inkscape强大的矢量图绘制工具" \
+		"1" "krita(由KDE社区驱动的开源数字绘画应用)" \
+		"2" "inkscape(强大的矢量图绘制工具)" \
+		"3" "kolourpaint(KDE画图程序,简单易用)" \
+		"4" "latexdraw(用java开发的示意图绘制软件)" \
+		"5" "LibreCAD(轻量化的2D CAD解决方案)" \
+		"6" "FreeCAD(以构建机械工程和产品设计为目标)" \
+		"7" "OpenCAD(通过解释代码来渲染可视化模型)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
-	1) install_krita ;;
-	2) install_inkscape ;;
+	1)
+		DEPENDENCY_01="krita"
+		DEPENDENCY_02="krita-l10n"
+		;;
+	2)
+		DEPENDENCY_01="inkscape-tutorials"
+		DEPENDENCY_02="inkscape"
+		;;
+	3) DEPENDENCY_02="kolourpaint" ;;
+	4) DEPENDENCY_02="latexdraw" ;;
+	5) DEPENDENCY_02="librecad" ;;
+	6) DEPENDENCY_02="freecad" ;;
+	7) DEPENDENCY_02="opencad" ;;
 	esac
 	##########################
+	beta_features_quick_install
 	press_enter_to_return
 	tmoe_paint_app_menu
-}
-#############
-install_inkscape() {
-	DEPENDENCY_01="inkscape-tutorials"
-	DEPENDENCY_02="inkscape"
-	beta_features_quick_install
 }
 ###################
 tmoe_file_browser_app_menu() {
@@ -12212,14 +12240,6 @@ install_plasma_discover() {
 install_calibre() {
 	DEPENDENCY_01="calibre"
 	DEPENDENCY_02=""
-	NON_DEBIAN='false'
-	beta_features_quick_install
-}
-
-############################
-install_krita() {
-	DEPENDENCY_01="krita"
-	DEPENDENCY_02="krita-l10n"
 	NON_DEBIAN='false'
 	beta_features_quick_install
 }
