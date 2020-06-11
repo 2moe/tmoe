@@ -3847,13 +3847,13 @@ china_bussiness_mirror_station() {
 	RETURN_TO_WHERE='china_bussiness_mirror_station'
 	SOURCES_LIST=$(
 		whiptail --title "软件源列表" --menu \
-			"您想要切换为哪个镜像源呢？目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 15 55 5 \
-			"1" "华为云mirrors.huaweicloud.com" \
-			"2" "阿里云mirrors.aliyun.com" \
-			"3" "网易mirrors.163.com" \
-			"4" "中国互联网络信息中心mirrors.cnnic.cn" \
-			"5" "搜狐mirrors.sohu.com" \
-			"6" "首都在线mirrors.yun-idc.com" \
+			"您想要切换为哪个镜像源呢？目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 17 55 7 \
+			"1" "mirrors.huaweicloud.com华为云" \
+			"2" "mirrors.aliyun.com阿里云" \
+			"3" "mirrors.163.com网易" \
+			"4" "mirrors.cnnic.cn中国互联网络信息中心" \
+			"5" "mirrors.sohu.com搜狐" \
+			"6" "mirrors.yun-idc.com首都在线" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3878,18 +3878,18 @@ tmoe_sources_list_manager() {
 	RETURN_TO_WHERE='tmoe_sources_list_manager'
 	SOURCES_LIST=$(
 		whiptail --title "software-sources tmoe-manager" --menu \
-			"您想要对软件源进行何种管理呢？" 17 55 7 \
-			"1" "国内高校镜像源" \
-			"2" "国内商业镜像源" \
-			"3" "镜像站延迟测试" \
-			"4" "镜像站下载速度测试" \
+			"您想要对软件源进行何种管理呢？" 17 50 9 \
+			"1" "university国内高校镜像源" \
+			"2" "business国内商业镜像源" \
+			"3" "ping镜像站延迟测试" \
+			"4" "speed镜像站下载速度测试" \
 			"5" "restore to default还原默认源" \
 			"6" "edit list manually手动编辑" \
 			"7" "${EXTRA_SOURCE}" \
 			"8" "FAQ常见问题" \
-			"9" "切换http与https" \
-			"10" "去除无效行" \
-			"11" "强制信任软件源" \
+			"9" "http/https" \
+			"10" "delete invalid rows去除无效行" \
+			"11" "trust强制信任软件源" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3914,7 +3914,7 @@ tmoe_sources_list_manager() {
 }
 ######################
 mandatory_trust_software_sources() {
-	if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "trust" --no-button "untrust" --yesno "您是想要强制信任还是取消信任呢？♪(^∇^*) " 10 50); then
+	if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "trust" --no-button "untrust" --yesno "您是想要强制信任还是取消信任呢？\nDo you want to trust sources list?♪(^∇^*) " 0 50); then
 		trust_sources_list
 	else
 		untrust_sources_list
@@ -3985,7 +3985,7 @@ switch_sources_list_to_http_tls() {
 }
 #################
 switch_sources_http_and_https() {
-	if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "http" --no-button "https" --yesno "您是想要将软件源切换为http还是https呢？♪(^∇^*) " 10 50); then
+	if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "http" --no-button "https" --yesno "您是想要将软件源切换为http还是https呢？♪(^∇^*) " 0 50); then
 		switch_sources_list_to_http
 	else
 		switch_sources_list_to_http_tls
