@@ -4884,10 +4884,13 @@ tmoe_games_menu() {
 #############
 install_steam_app() {
 	non_debian_function
-	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/steamos/steam/pool/steam/s/steam/'
+	LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/steamos/steam/pool/steam/s/steam/'
 	GREP_NAME='steam-launcher'
+	cd /tmp
 	download_tuna_repo_deb_file_all_arch
 	apt show ./${LATEST_DEB_VERSION}
+	apt install ./${LATEST_DEB_VERSION}
+	rm -fv ./${LATEST_DEB_VERSION}
 }
 ####################
 install_supertuxkart_game() {
