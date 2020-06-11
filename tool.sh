@@ -6791,10 +6791,11 @@ tmoe_system_app_menu() {
 	NON_DEBIAN='false'
 	TMOE_APP=$(whiptail --title "SNS" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"1" "UEFI bootmgr开机启动项管理" \
+		"1" "UEFI bootmgr:开机启动项管理" \
 		"2" "gnome-system-monitor(资源监视器)" \
 		"3" "Grub Customizer(图形化开机引导编辑器)" \
-		"4" "gnome log日志" \
+		"4" "gnome log(便于查看系统日志信息)" \
+		"5" "boot_repair(ubuntu开机引导修复)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -6804,12 +6805,27 @@ tmoe_system_app_menu() {
 	2) install_gnome_system_monitor ;;
 	3) install_grub_customizer ;;
 	4) install_gnome_logs ;;
+	5) install_boot_repair ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_system_app_menu
 }
 #############
+install_boot_repair() {
+	non_debian_function
+	if [ ! $(command -v add-apt-repository) ]; then
+		apt update
+		apt install -y software-properties-common
+	fi
+	add-apt-repository ppa:yannubuntu/boot-repair
+	if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
+		apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 60D8DA0B
+	fi
+	apt update
+	apt install -y boot-repair
+}
+#################
 tmoe_store_app_menu() {
 	RETURN_TO_WHERE='tmoe_store_app_menu'
 	NON_DEBIAN='false'
@@ -6891,26 +6907,51 @@ tmoe_paint_app_menu() {
 }
 ###################
 tmoe_file_browser_app_menu() {
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
 	RETURN_TO_WHERE='tmoe_file_browser_app_menu'
 	TMOE_APP=$(whiptail --title "文件与磁盘" --menu \
 		"Which software do you want to install？" 0 50 0 \
 		"1" "文件管理器:thunar/nautilus/dolphin" \
-		"2" "gparted:磁盘分区工具" \
-		"3" "catfish(文件搜索)" \
+		"2" "catfish(文件搜索)" \
+		"3" "gparted(GNOME磁盘分区工具)" \
+		"4" "cfdisk:在终端下对磁盘进行分区" \
+		"5" "partitionmanager(KDE磁盘分区工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
 	1) thunar_nautilus_dolphion ;;
-	2) install_gparted ;;
-	3) install_catfish ;;
+	2) install_catfish ;;
+	3) install_gparted ;;
+	4) start_cfdisk ;;
+	5) install_partitionmanager ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_file_browser_app_menu
 }
 #############
+start_cfdisk() {
+	if [ ! $(command -v cfdisk) ]; then
+		DEPENDENCY_02="util-linux"
+		beta_features_quick_install
+	fi
+	cfdisk
+}
+##################
+install_partitionmanager() {
+	DEPENDENCY_02="partitionmanager"
+	beta_features_quick_install
+}
+##################
+install_gparted() {
+	DEPENDENCY_01="gparted"
+	DEPENDENCY_02="baobab disk-manager"
+	beta_features_quick_install
+}
+##################
 tmoe_read_app_menu() {
 	RETURN_TO_WHERE='tmoe_read_app_menu'
 	TMOE_APP=$(whiptail --title "TXET & OFFICE" --menu \
@@ -12113,7 +12154,7 @@ thunar_nautilus_dolphion() {
 		DEPENDENCY_02="dolphin"
 		;;
 	r* | R*)
-		beta_features
+		tmoe_file_browser_app_menu
 		;;
 	*)
 		echo "Invalid choice. skipped."
