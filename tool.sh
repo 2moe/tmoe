@@ -4861,33 +4861,48 @@ tmoe_games_menu() {
 	DEPENDENCY_01=""
 	TMOE_APP=$(whiptail --title "GAMES" --menu \
 		"Which game do you want to install?" 0 50 0 \
-		"1" "Steam(蒸汽游戏平台)" \
-		"2" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
-		"3" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
-		"4" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
-		"5" "SuperTuxKart(3D卡丁车)" \
+		"1" "install Steam(安装蒸汽游戏平台)" \
+		"2" "remove Steam(卸载)" \
+		"3" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
+		"4" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
+		"5" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
+		"6" "SuperTuxKart(3D卡丁车)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") other_software ;;
 	1) install_steam_app ;;
-	2) install_game_cataclysm ;;
-	3) install_nds_game_mayomonogatari ;;
-	4) install_wesnoth_game ;;
-	5) install_supertuxkart_game ;;
+	2) remove_steam_app ;;
+	3) install_game_cataclysm ;;
+	4) install_nds_game_mayomonogatari ;;
+	5) install_wesnoth_game ;;
+	6) install_supertuxkart_game ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_games_menu
 }
 #############
+remove_steam_app() {
+	echo "${PACKAGES_REMOVE_COMMAND} steam-launcher"
+	${PACKAGES_REMOVE_COMMAND} steam-launcher
+	if [ "${ARCH_TYPE}" != "i386" ]; then
+		echo 'dpkg  --remove-architecture i386'
+		echo '正在移除对i386软件包的支持'
+		apt purge ".*:i386"
+		dpkg --remove-architecture i386
+		apt update
+	fi
+}
 install_steam_app() {
 	non_debian_function
 	LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/steamos/steam/pool/steam/s/steam/'
 	GREP_NAME='steam-launcher'
 	cd /tmp
 	download_tuna_repo_deb_file_all_arch
+	dpkg --add-architecture i386
+	apt update
 	apt install ./${LATEST_DEB_VERSION}
 	rm -fv ./${LATEST_DEB_VERSION}
 }
