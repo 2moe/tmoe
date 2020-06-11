@@ -6795,7 +6795,7 @@ tmoe_system_app_menu() {
 		"2" "gnome-system-monitor(资源监视器)" \
 		"3" "Grub Customizer(图形化开机引导编辑器)" \
 		"4" "gnome log(便于查看系统日志信息)" \
-		"5" "boot_repair(ubuntu开机引导修复)" \
+		"5" "boot repair(开机引导修复)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7263,7 +7263,7 @@ tmoe_uefi_boot_manager() {
 	)
 	#############
 	case ${TMOE_BOOT_MGR} in
-	0 | "") beta_features ;;
+	0 | "") tmoe_system_app_menu ;;
 	1) modify_first_uefi_boot_item ;;
 	2) custom_uefi_boot_order ;;
 	3) tmoe_backup_efi ;;
