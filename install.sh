@@ -251,7 +251,7 @@ if [ ! -f ${DebianTarXz} ]; then
 fi
 cur=$(pwd)
 cd ${DEBIAN_CHROOT}
-echo "正在解压debian-sid-rootfs.tar.xz，Decompressing Rootfs, please be patient."
+echo "正在解压debian-sid-rootfs.tar.xz，decompressing rootfs, please be patient."
 if [ "${LINUX_DISTRO}" = "Android" ]; then
 	pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
 elif [ "${LINUX_DISTRO}" = "iSH" ]; then

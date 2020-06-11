@@ -430,10 +430,10 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200603-14)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200611-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
 			"2" "Install browser 安装浏览器" \
-			"3" "Download theme 下载主题" \
+			"3" "Desktop beautification桌面美化" \
 			"4" "Other software/games 其它软件/游戏" \
 			"5" "Modify vnc/xsdl/rdp(远程桌面)conf" \
 			"6" "Download video 解析视频链接" \
@@ -466,7 +466,7 @@ tmoe_linux_tool_menu() {
 		;;
 	1) install_gui ;;
 	2) install_browser ;;
-	3) configure_theme ;;
+	3) tmoe_desktop_beautification ;;
 	4) other_software ;;
 	5) modify_remote_desktop_config ;;
 	6) download_videos ;;
@@ -3105,47 +3105,182 @@ check_update_icon_caches_sh() {
 	fi
 }
 ##############
+tmoe_desktop_beautification() {
+	NON_DEBIAN='false'
+	DEPENDENCY_01=''
+	RETURN_TO_WHERE='tmoe_desktop_beautification'
+	BEAUTIFICATION=$(whiptail --title "beautification" --menu \
+		"你想要如何美化桌面？\n How do you want to beautify the desktop environment? " 0 50 0 \
+		"1" "themes主题" \
+		"2" "icon-theme图标包" \
+		"3" "wallpaper壁纸" \
+		"4" "mouse cursor鼠标指针" \
+		"5" "conky(显示系统和资源占用等信息)" \
+		"6" "dock栏(plank/docky)" \
+		"7" "compiz(实现酷炫3D效果)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${BEAUTIFICATION}" in
+	0 | "") tmoe_linux_tool_menu ;;
+	1) configure_theme ;;
+	2) download_icon_themes ;;
+	3) download_wallpapers ;;
+	4) configure_mouse_cursor ;;
+	5) install_conky ;;
+	6) install_docky ;;
+	7) install_compiz ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_desktop_beautification
+}
+###########
+configure_conky() {
+	cd ${HOME}
+	mkdir -p github
+	cd github
+	git clone --depth=1 https://github.com/zagortenay333/Harmattan.git || git clone --depth=1 git://github.com/zagortenay333/Harmattan.git
+	echo "进入${HOME}/github/Harmattan"
+	echo "执行bash preview"
+	echo 'To get more help info,please go to github.'
+	echo 'https://github.com/zagortenay333/Harmattan'
+}
+###############
+install_conky() {
+	DEPENDENCY_01="bc jq"
+	DEPENDENCY_02="conky"
+	beta_features_quick_install
+	configure_conky
+	if [ -e "${HOME}/github/Harmattan" ]; then
+		configure_conky
+	fi
+}
+###########
+install_docky() {
+	DEPENDENCY_01="docky"
+	DEPENDENCY_02="plank"
+	beta_features_quick_install
+}
+###########
+install_compiz() {
+	DEPENDENCY_01="emerald emerald-themes"
+	DEPENDENCY_02="compiz"
+	beta_features_quick_install
+}
+##################
 configure_theme() {
 	check_update_icon_caches_sh
 	cd /tmp
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
-		"您想要下载哪个主题？按方向键选择！下载完成后，您需要手动修改外观设置中的样式和图标。注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 17 55 7 \
-		"1" "ukui:国产优麒麟ukui桌面主题" \
-		"2" "win10:kali卧底模式主题" \
-		"3" "MacOS:Mojave" \
-		"4" "win10x:更新颖的UI设计" \
-		"5" "UOS:国产统一操作系统图标包" \
-		"6" "breeze:plasma桌面微风gtk+版主题" \
-		"7" "Kali:Flat-Remix-Blue主题" \
-		"8" "pixel:raspberrypi树莓派" \
-		"9" "deepin:深度系统壁纸包" \
-		"10" "paper:简约、灵动、现代化的图标包" \
-		"11" "papirus:优雅的图标包,基于paper" \
-		"12" "arch/elementary/manjaro系统壁纸包" \
-		"13" "chameleon:现代化鼠标指针主题" \
-		"0" "Back to the main menu 返回主菜单" \
+		"您想要下载哪个主题？按方向键选择！\n下载完成后，您需要手动修改外观设置中的样式和图标。\n注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 0 50 0 \
+		"1" "win10:kali卧底模式主题" \
+		"2" "MacOS:Mojave" \
+		"3" "breeze:plasma桌面微风gtk+版主题" \
+		"4" "Kali:Flat-Remix-Blue主题" \
+		"5" "ukui:国产优麒麟ukui桌面主题" \
+		"6" "arc:融合透明元素的平面主题" \
+		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
-	0 | "") tmoe_linux_tool_menu ;;
-	1) download_ukui_theme ;;
-	2) install_kali_undercover ;;
-	3) download_macos_mojave_theme ;;
-	4) download_win10x_theme ;;
-	5) download_uos_icon_theme ;;
-	6) install_breeze_theme ;;
-	7) download_kali_theme ;;
-	8) download_raspbian_pixel_icon_theme ;;
-	9) download_deepin_wallpaper ;;
-	10) download_paper_icon_theme ;;
-	11) download_papirus_icon_theme ;;
-	12) download_manjaro_wallpaper ;;
-	13) download_chameleon_cursor_theme ;;
+	0 | "") tmoe_desktop_beautification ;;
+	1) install_kali_undercover ;;
+	2) download_macos_mojave_theme ;;
+	3) install_breeze_theme ;;
+	4) download_kali_theme ;;
+	5) download_ukui_theme ;;
+	6) install_arc_gtk_theme ;;
 	esac
 	######################################
 	press_enter_to_return
 	configure_theme
+}
+#######################
+###################
+install_arc_theme() {
+	DEPENDENCY_01="arc-icon-theme"
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02="arc-gtk-theme"
+	else
+		DEPENDENCY_02="arc-theme"
+	fi
+	beta_features_quick_install
+}
+################
+download_icon_themes() {
+	check_update_icon_caches_sh
+	cd /tmp
+	RETURN_TO_WHERE='download_icon_themes'
+	INSTALL_THEME=$(whiptail --title "图标包" --menu \
+		"您想要下载哪个图标包？\n Which icon-theme do you want to download? " 0 50 0 \
+		"1" "win10x:更新颖的UI设计" \
+		"2" "UOS:国产统一操作系统图标包" \
+		"3" "pixel:raspberrypi树莓派" \
+		"4" "paper:简约、灵动、现代化的图标包" \
+		"5" "papirus:优雅的图标包,基于paper" \
+		"6" "numix:modern现代化" \
+		"7" "moka:简约一致的美学" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	0 | "") tmoe_desktop_beautification ;;
+	1) download_win10x_theme ;;
+	2) download_uos_icon_theme ;;
+	3) download_raspbian_pixel_icon_theme ;;
+	4) download_paper_icon_theme ;;
+	5) download_papirus_icon_theme ;;
+	6) install_numix_theme ;;
+	7) install_moka_theme ;;
+	esac
+	######################################
+	press_enter_to_return
+	download_icon_themes
+}
+###################
+install_moka_theme() {
+	DEPENDENCY_01=""
+	DEPENDENCY_02="moka-icon-theme"
+	beta_features_quick_install
+}
+################
+install_numix_theme() {
+	DEPENDENCY_01="numix-gtk-theme"
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02="numix-circle-icon-theme-git"
+	else
+		DEPENDENCY_02="numix-icon-theme-circle"
+	fi
+	beta_features_quick_install
+}
+################
+download_wallpapers() {
+	cd /tmp
+	RETURN_TO_WHERE='download_wallpapers'
+	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
+		"您想要下载哪套壁纸包？\n Which wallpaper do you want to download? " 0 50 0 \
+		"1" "deepin:深度系统壁纸包" \
+		"2" "arch/elementary/manjaro系统壁纸包" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	0 | "") tmoe_desktop_beautification ;;
+	1) download_deepin_wallpaper ;;
+	2) download_manjaro_wallpaper ;;
+	esac
+	######################################
+	press_enter_to_return
+	download_wallpapers
+}
+###########
+configure_mouse_cursor() {
+	echo "chameleon:现代化鼠标指针主题"
+	echo 'Do you want to download it?'
+	do_you_want_to_continue
+	download_chameleon_cursor_theme
 }
 ################################
 #下载deb包
@@ -3402,7 +3537,7 @@ download_uos_icon_theme() {
 	beta_features_quick_install
 
 	if [ -d "/usr/share/icons/Uos" ]; then
-		echo "检测到Uos图标包已下载，是否继续。"
+		echo "检测到Uos图标包已下载��是否继续。"
 		RETURN_TO_WHERE='configure_theme'
 		do_you_want_to_continue
 	fi
@@ -6584,10 +6719,10 @@ beta_features() {
 			"1" "container/VM(docker容器,qemu,vbox虚拟机)" \
 			"2" "UEFI bootmgr开机启动项管理" \
 			"3" "input method输入法(搜狗,讯飞,百度)" \
-			"4" "WPS office(办公软件)" \
-			"5" "gparted:磁盘分区工具" \
-			"6" "OBS-Studio(录屏软件)" \
-			"7" "typora(markdown编辑器)" \
+			"4" "network manager网络管理器" \
+			"5" "WPS office(办公软件)" \
+			"6" "gparted:磁盘分区工具" \
+			"7" "OBS-Studio(录屏软件)" \
 			"8" "electronic-wechat(第三方微信客户端)" \
 			"9" "qbittorrent(P2P下载工具)" \
 			"10" "plasma-discover:KDE发现(软件中心)" \
@@ -6603,7 +6738,7 @@ beta_features() {
 			"20" "catfish(文件搜索)" \
 			"21" "geogebra+kalzium(数学+化学)" \
 			"22" "gnome logs" \
-			"23" "network manager网络管理器" \
+			"23" "typora(markdown编辑器)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6613,10 +6748,10 @@ beta_features() {
 	1) install_container_and_virtual_machine ;;
 	2) tmoe_uefi_boot_manager ;;
 	3) install_pinyin_input_method ;;
-	4) install_wps_office ;;
-	5) install_gparted ;;
-	6) install_obs_studio ;;
-	7) install_typora ;;
+	4) network_manager_tui ;;
+	5) install_wps_office ;;
+	6) install_gparted ;;
+	7) install_obs_studio ;;
 	8) install_electronic_wechat ;;
 	9) install_qbitorrent ;;
 	10) install_plasma_discover ;;
@@ -6632,7 +6767,7 @@ beta_features() {
 	20) install_catfish ;;
 	21) install_geogebra_and_kalzium ;;
 	22) install_gnome_logs ;;
-	23) network_manager_tui ;;
+	23) install_typora ;;
 	esac
 	##############################
 	########################################
