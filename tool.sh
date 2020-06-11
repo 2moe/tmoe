@@ -1720,7 +1720,7 @@ install_firefox_esr_browser() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 			add-apt-repository -y ppa:mozillateam/ppa
-			DEPENDENCY_02="firefox-esr-locale-zh-hans"
+			DEPENDENCY_02="firefox-esr-locale-zh-hans libavcodec58"
 		fi
 		#################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -1755,7 +1755,7 @@ install_firefox_browser() {
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			DEPENDENCY_02="firefox-locale-zh-hans"
+			DEPENDENCY_02="firefox-locale-zh-hans libavcodec58"
 		fi
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_02="firefox-i18n-zh-cn"
@@ -4861,7 +4861,7 @@ tmoe_games_menu() {
 	DEPENDENCY_01=""
 	TMOE_APP=$(whiptail --title "GAMES" --menu \
 		"Which game do you want to install?" 0 50 0 \
-		"1" "install Steam(安装蒸汽游戏平台)" \
+		"1" "install Steam-x86_64(安装蒸汽游戏平台)" \
 		"2" "remove Steam(卸载)" \
 		"3" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
 		"4" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
