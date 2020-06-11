@@ -4888,7 +4888,6 @@ install_steam_app() {
 	GREP_NAME='steam-launcher'
 	cd /tmp
 	download_tuna_repo_deb_file_all_arch
-	apt show ./${LATEST_DEB_VERSION}
 	apt install ./${LATEST_DEB_VERSION}
 	rm -fv ./${LATEST_DEB_VERSION}
 }
