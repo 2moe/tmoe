@@ -109,7 +109,9 @@ press_enter_to_continue() {
 auto_check() {
 	if [ "$(uname -o)" = "Android" ]; then
 		LINUX_DISTRO='Android'
-		termux-setup-storage
+		if [ ! -h "/data/data/com.termux/files/home/storage/shared" ]; then
+			termux-setup-storage
+		fi
 		android_termux
 	elif [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
 		LINUX_DISTRO='iSH'

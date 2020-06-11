@@ -54,7 +54,10 @@ DEPENDENCIES=""
 
 if [ "$(uname -o)" = "Android" ]; then
 	LINUX_DISTRO='Android'
-	termux-setup-storage
+	if [ ! -h "/data/data/com.termux/files/home/storage/shared" ]; then
+		termux-setup-storage
+	fi
+
 	if [ ! -e ${PREFIX}/bin/proot ]; then
 		DEPENDENCIES="${DEPENDENCIES} proot"
 	fi
