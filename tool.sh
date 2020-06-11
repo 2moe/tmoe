@@ -430,23 +430,20 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200611-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0514支持安装qq音乐,0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200611-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能" 20 50 7 \
 			"1" "Install GUI 安装图形界面" \
-			"2" "Install browser 安装浏览器" \
+			"2" "Software center-01:软件中心试作型1号站" \
 			"3" "Desktop beautification桌面美化" \
-			"4" "Other software/games 其它软件/游戏" \
-			"5" "Modify vnc/xsdl/rdp(远程桌面)conf" \
-			"6" "Download video 解析视频链接" \
-			"7" "Personal netdisk 个人云网盘/文件共享" \
-			"8" "Update tmoe-linux tool 更新本工具" \
-			"9" "VSCode 现代化代码编辑器" \
-			"10" "Start zsh tool 启动zsh管理工具" \
-			"11" "other其它" \
-			"12" "FAQ 常见问题" \
-			"13" "software sources软件镜像源管理" \
-			"14" "download iso(Android,linux等)" \
-			"15" "qemu(x86_64虚拟机管理)" \
-			"16" "Beta Features 测试版功能" \
+			"4" "Modify vnc/xsdl/rdp(远程桌面)conf" \
+			"5" "Download video 解析视频链接" \
+			"6" "Personal netdisk 个人云网盘/文件共享" \
+			"7" "Update tmoe-linux tool 更新本工具" \
+			"8" "Start zsh tool 启动zsh管理工具" \
+			"9" "FAQ 常见问题" \
+			"10" "software sources软件镜像源管理" \
+			"11" "download iso(Android,linux等)" \
+			"12" "qemu(x86_64虚拟机管理)" \
+			"13" "Beta Features 测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -463,21 +460,18 @@ tmoe_linux_tool_menu() {
 		exit 0
 		;;
 	1) install_gui ;;
-	2) install_browser ;;
+	2) other_software ;;
 	3) tmoe_desktop_beautification ;;
-	4) other_software ;;
-	5) modify_remote_desktop_config ;;
-	6) download_videos ;;
-	7) personal_netdisk ;;
-	8) tmoe_linux_tool_upgrade ;;
-	9) which_vscode_edition ;;
-	10) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
-	11) tmoe_other_options_menu ;;
-	12) frequently_asked_questions ;;
-	13) tmoe_sources_list_manager ;;
-	14) download_virtual_machine_iso_file ;;
-	15) start_tmoe_qemu_manager ;;
-	16) beta_features ;;
+	4) modify_remote_desktop_config ;;
+	5) download_videos ;;
+	6) personal_netdisk ;;
+	7) tmoe_linux_tool_upgrade ;;
+	8) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
+	9) frequently_asked_questions ;;
+	10) tmoe_sources_list_manager ;;
+	11) download_virtual_machine_iso_file ;;
+	12) start_tmoe_qemu_manager ;;
+	13) beta_features ;;
 	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -498,7 +492,7 @@ tmoe_other_options_menu() {
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
-	0 | "") tmoe_linux_tool_menu ;;
+	0 | "") other_software ;;
 	1) remove_gui ;;
 	2) remove_browser ;;
 	esac
@@ -1134,15 +1128,15 @@ which_vscode_edition() {
 	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
 	VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
 		"${VSCODEtips} Which edition do you want to install" 15 60 5 \
-		"1" "VS Code Server(web版)" \
-		"2" "VS Codium" \
-		"3" "VS Code OSS" \
+		"1" "VS Code Server:web版,含配置选项" \
+		"2" "VS Codium(不跟踪你的使用数据)" \
+		"3" "VS Code OSS(headmelted编译版)" \
 		"4" "Microsoft Official(x64,官方版)" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${VSCODE_EDITION}" in
-	0 | "") tmoe_linux_tool_menu ;;
+	0 | "") other_software ;;
 	1) check_vscode_server_arch ;;
 	2) install_vscodium ;;
 	3) install_vscode_oss ;;
@@ -1786,9 +1780,9 @@ install_firefox_browser() {
 }
 #####################
 install_browser() {
-	if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓\n我是火狐娘，选我啦！♪(^∇^*) \n妾身是chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
+	if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓\nI am Firefox, choose me.\n我是火狐娘，选我啦！♪(^∇^*) \nI'm chrome's elder sister chromium, be sure to choose me.\n妾身是chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
 
-		if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox-ESR" --no-button "Firefox" --yesno " 我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 15 50); then
+		if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox-ESR" --no-button "Firefox" --yesno "I am Firefox,I have a younger sister called ESR.\n我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 12 53); then
 			#echo 'esr可怜巴巴地说道:“我也想要得到更多的爱。”  '
 			#什么乱七八糟的，2333333戏份真多。
 			install_firefox_esr_browser
@@ -4565,7 +4559,7 @@ explore_debian_opt_repo() {
 		3>&1 1>&2 2>&3)
 	##############
 	case "${INSTALL_APP}" in
-	0 | "") other_software ;;
+	0 | "") tmoe_multimedia_menu ;;
 	1) install_coco_music ;;
 	2) install_iease_music ;;
 	3) install_electron_netease_cloud_music ;;
@@ -4707,56 +4701,200 @@ install_pic_go() {
 other_software() {
 	RETURN_TO_WHERE='other_software'
 	SOFTWARE=$(
-		whiptail --title "其它软件" --menu \
-			"您想要安装哪个软件？\n Which software do you want to install? 您需要使用方向键或pgdown来翻页。 部分软件需要在安装gui后才能使用！" 17 60 7 \
-			"1" "MPV：开源、跨平台的音视频播放器" \
-			"2" "LinuxQQ：在线聊天软件" \
-			"3" "Debian-opt仓库(第三方QQ音乐,云音乐)" \
-			"4" "Tmoe-deb软件包安装器" \
-			"5" "大灾变-劫后余生：末日幻想背景的探索生存游戏" \
-			"6" "Synaptic：新立得软件包管理器/软件商店" \
-			"7" "GIMP：GNU 图像处理程序" \
-			"8" "LibreOffice:开源、自由的办公文档软件" \
-			"9" "Parole：xfce默认媒体播放器，风格简洁" \
-			"10" "百度网盘(x86_64):提供文件的网络备份、同步和分享服务" \
-			"11" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
-			"12" "ADB:Android Debug Bridge" \
-			"13" "BleachBit:垃圾清理" \
-			"14" "Install Chinese manual 安装中文手册" \
-			"15" "斯隆与马克贝尔的谜之物语：nds解谜游戏" \
-			"16" "韦诺之战：奇幻背景的回合制策略战棋游戏" \
+		whiptail --title "Software center-01" --menu \
+			"您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
+			"1" "Browser浏览器" \
+			"2" "Multimedia:图像与影音(mpv,云音乐)" \
+			"3" "SNS:社交类(qq)" \
+			"4" "Games:游戏(steam,wesnoth)" \
+			"5" "Packages&system:软件包与系统管理" \
+			"6" "Documents:文档(libreoffice)" \
+			"7" "VSCode 现代化代码编辑器" \
+			"8" "Download:下载类(baidu)" \
+			"9" "remove:卸载管理" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#(已移除)"12" "Tasksel:轻松,快速地安装组软件" \
 	case "${SOFTWARE}" in
 	0 | "") tmoe_linux_tool_menu ;;
-	1) install_mpv ;;
-	2) install_linux_qq ;;
-	3)
-		non_debian_function
-		explore_debian_opt_repo
-		;;
-	4) tmoe_deb_file_installer ;;
-	5) install_game_cataclysm ;;
-	6) install_package_manager_gui ;;
-	7) install_gimp ;;
-	8) install_libre_office ;;
-	9) install_parole ;;
-	10) install_baidu_netdisk ;;
-	11) install_netease_163_cloud_music ;;
-	12) install_android_debug_bridge ;;
-	13) install_bleachbit_cleaner ;;
-	14) install_chinese_manpages ;;
-	15) install_nds_game_mayomonogatari ;;
-	16) install_wesnoth_game ;;
+	1) install_browser ;;
+	2) tmoe_multimedia_menu ;;
+	3) tmoe_social_network_service ;;
+	4) tmoe_games_menu ;;
+	5) tmoe_software_package_menu ;;
+	6) tmoe_documents_menu ;;
+	7) which_vscode_edition ;;
+	8) tmoe_download_class ;;
+	9) tmoe_other_options_menu ;;
 	esac
 	############################################
 	press_enter_to_return
 	other_software
-	#tmoe_linux_tool_menu
 }
 ###########
+tmoe_software_package_menu() {
+	RETURN_TO_WHERE='tmoe_software_package_menu'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(
+		whiptail --title "PACKAGES MANAGER" --menu \
+			"How do you want to manage software package?" 0 50 0 \
+			"1" "Tmoe-deb软件包安装器" \
+			"2" "Synaptic：新立得软件包管理器/软件商店" \
+			"3" "ADB:Android Debug Bridge" \
+			"4" "BleachBit:垃圾清理" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") other_software ;;
+	1) tmoe_deb_file_installer ;;
+	2) install_package_manager_gui ;;
+	3) install_android_debug_bridge ;;
+	4) install_bleachbit_cleaner ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_software_package_menu
+}
+#############
+tmoe_social_network_service() {
+	RETURN_TO_WHERE='tmoe_social_network_service'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(
+		whiptail --title "SNS" --menu \
+			"Which software do you want to install?" 0 50 0 \
+			"1" "LinuxQQ：在线聊天软件" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") other_software ;;
+	1) install_linux_qq ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_social_network_service
+}
+###################
+tmoe_download_class() {
+	RETURN_TO_WHERE='tmoe_download_class'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(
+		whiptail --title "documents" --menu \
+			"Which software do you want to install?" 0 50 0 \
+			"1" "百度网盘(x86_64):提供文件的网络备份、同步和分享服务" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") other_software ;;
+	1) install_baidu_netdisk ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_download_class
+}
+####################
+tmoe_documents_menu() {
+	RETURN_TO_WHERE='tmoe_documents_menu'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(
+		whiptail --title "documents" --menu \
+			"Which software do you want to install?" 0 50 0 \
+			"1" "LibreOffice(开源、自由的办公文档软件)" \
+			"2" "Chinese manual(中文手册)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") other_software ;;
+	1) install_libre_office ;;
+	2) install_chinese_manpages ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_documents_menu
+}
+####################
+tmoe_multimedia_menu() {
+	RETURN_TO_WHERE='tmoe_multimedia_menu'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
+		"Which software do you want to install?" 0 50 0 \
+		"1" "MPV：开源、跨平台的音视频播放器" \
+		"2" "Music:debian-opt仓库(QQ音乐,云音乐)" \
+		"3" "GIMP：GNU 图像处理程序" \
+		"4" "Parole：xfce默认媒体播放器，风格简洁" \
+		"5" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") other_software ;;
+	1) install_mpv ;;
+	2)
+		non_debian_function
+		explore_debian_opt_repo
+		;;
+	3) install_gimp ;;
+	4) install_parole ;;
+	5) install_netease_163_cloud_music ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_multimedia_menu
+}
+#############
+tmoe_games_menu() {
+	RETURN_TO_WHERE='tmoe_games_menu'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(whiptail --title "GAMES" --menu \
+		"Which game do you want to install?" 0 50 0 \
+		"1" "Steam(蒸汽游戏平台)" \
+		"2" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
+		"3" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
+		"4" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
+		"5" "SuperTuxKart(3D卡丁车)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") other_software ;;
+	1) install_steam_app ;;
+	2) install_game_cataclysm ;;
+	3) install_nds_game_mayomonogatari ;;
+	4) install_wesnoth_game ;;
+	5) install_supertuxkart_game ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_games_menu
+}
+#############
+install_steam_app() {
+	non_debian_function
+	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/steamos/steam/pool/steam/s/steam/'
+	GREP_NAME='steam-launcher'
+	download_tuna_repo_deb_file_all_arch
+	apt show ./${LATEST_DEB_VERSION}
+}
+####################
+install_supertuxkart_game() {
+	DEPENDENCY_02="supertuxkart"
+	beta_features_quick_install
+}
+###################
 remove_deb_package() {
 	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Back返回" --no-button "Remove移除" --yesno "${PACKAGE_NAME}\n您是想要返回还是卸载这个软件包？Do you want to return,or remove this package?♪(^∇^*) " 10 50); then
 		other_software
@@ -10996,7 +11134,7 @@ download_virtual_machine_iso_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
-	VIRTUAL_TECH=$(whiptail --title "IMAGE FILE" --menu "Which image file do you want to download?" 16 55 7 \
+	VIRTUAL_TECH=$(whiptail --title "IMAGE FILE" --menu "Which image file do you want to download?" 0 50 0 \
 		"1" "alpine(latest-stable)" \
 		"2" "Android x86_64(latest)" \
 		"3" "debian-iso(每周自动构建,包含non-free)" \
