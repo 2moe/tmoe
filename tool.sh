@@ -6742,7 +6742,8 @@ beta_features() {
 			"8" "SNS:进行物质和精神交流的社会活动的app" \
 			"9" "Store&download:繁花似锦,一切皆在此中" \
 			"10" "system:系统" \
-			"11" "other:其它类" \
+			"11" "tech&edu:科学与教育" \
+			"12" "other:其它类" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6759,27 +6760,79 @@ beta_features() {
 	8) tmoe_sns_app_menu ;;
 	9) tmoe_store_app_menu ;;
 	10) tmoe_system_app_menu ;;
-	11) tmoe_other_app_menu ;;
+	11) tmoe_education_app_menu ;;
+	12) tmoe_other_app_menu ;;
 	esac
 	##############################
 	press_enter_to_return
 	beta_features
 }
 ##########
-tmoe_other_app_menu() {
-	RETURN_TO_WHERE='tmoe_other_app_menu'
+tmoe_education_app_menu() {
+	RETURN_TO_WHERE='tmoe_education_app_menu'
 	NON_DEBIAN='false'
-	TMOE_APP=$(whiptail --title "OTHER" --menu \
+	DEPENDENCY_01=''
+	TMOE_APP=$(whiptail --title "education" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"1" "geogebra+kalzium(数学+化学)" \
-		"2" "OBS-Studio(录屏软件)" \
+		"1" "geogebra(结合了“几何”、“代数”与“微积分”)" \
+		"2" "kalzium(元素周期表)" \
+		"3" "octave(GNU Octave语言,用于数值计算)" \
+		"4" "scilab(用于数值计算的科学软件包)" \
+		"5" "freemat(科学计算软件,类似于Matlab)" \
+		"6" "maxima(数学软件,类似于Mathematica)" \
+		"7" "gausssum(化学分子运动轨迹计算工具)" \
+		"8" "nwchem(运行在高性能工作站集群上的计算化学软件)" \
+		"9" "avogadro(阿伏伽德罗-分子编辑器)" \
+		"10" "pymol(分子三维结构显示软件)" \
+		"11" "Psi4(量子化学程序集)" \
+		"12" "gromacs(分子动力学模拟器)" \
+		"13" "CP2K(第一性原理材料计算和模拟软件)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
-	1) install_geogebra_and_kalzium ;;
-	2) install_obs_studio ;;
+	1) DEPENDENCY_02='geogebra' ;;
+	2) DEPENDENCY_02='kalzium' ;;
+	3) DEPENDENCY_02='octave' ;;
+	4)
+		DEPENDENCY_01='scilab-minimal-bin'
+		DEPENDENCY_02='octave'
+		;;
+	5)
+		DEPENDENCY_01='freemat'
+		DEPENDENCY_02='freemat-help'
+		;;
+	6)
+		DEPENDENCY_01='maxima'
+		DEPENDENCY_02='wxmaxima'
+		;;
+	7) DEPENDENCY_02='gausssum' ;;
+	8) DEPENDENCY_02='nwchem' ;;
+	9) DEPENDENCY_02='avogadro' ;;
+	10) DEPENDENCY_02='pymol' ;;
+	11) DEPENDENCY_02='psi4' ;;
+	12) DEPENDENCY_02='gromacs' ;;
+	13) DEPENDENCY_02='cp2k' ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_education_app_menu
+}
+####################
+tmoe_other_app_menu() {
+	RETURN_TO_WHERE='tmoe_other_app_menu'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=''
+	TMOE_APP=$(whiptail --title "OTHER" --menu \
+		"Which software do you want to install？" 0 50 0 \
+		"1" "OBS-Studio(录屏软件)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") beta_features ;;
+	1) install_obs_studio ;;
 	esac
 	##########################
 	press_enter_to_return
@@ -6796,6 +6849,7 @@ tmoe_system_app_menu() {
 		"3" "Grub Customizer(图形化开机引导编辑器)" \
 		"4" "gnome log(便于查看系统日志信息)" \
 		"5" "boot repair(开机引导修复)" \
+		"6" "neofetch(显示当前系统信息和发行版logo)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -6806,10 +6860,20 @@ tmoe_system_app_menu() {
 	3) install_grub_customizer ;;
 	4) install_gnome_logs ;;
 	5) install_boot_repair ;;
+	6) start_neofetch ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_system_app_menu
+}
+#############
+start_neofetch() {
+	if [ ! $(command -v neofetch) ]; then
+		cd /usr/local/bin
+		aria2c --allow-overwrite=true -o neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
+		chmod +x neofetch
+	fi
+	neofetch
 }
 #############
 install_boot_repair() {
@@ -6881,6 +6945,9 @@ tmoe_paint_app_menu() {
 		"5" "LibreCAD(轻量化的2D CAD解决方案)" \
 		"6" "FreeCAD(以构建机械工程和产品设计为目标)" \
 		"7" "OpenCAD(通过解释代码来渲染可视化模型)" \
+		"8" "KiCAD(开源的PCB设计工具)" \
+		"9" "OpenSCAD(3D建模软件)" \
+		"10" "gnuplot(命令行交互式绘图工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -6899,6 +6966,15 @@ tmoe_paint_app_menu() {
 	5) DEPENDENCY_02="librecad" ;;
 	6) DEPENDENCY_02="freecad" ;;
 	7) DEPENDENCY_02="opencad" ;;
+	8)
+		DEPENDENCY_01="kicad-templates"
+		DEPENDENCY_02="kicad"
+		;;
+	9) DEPENDENCY_02="openscad" ;;
+	10)
+		DEPENDENCY_01="gnuplot"
+		DEPENDENCY_02="gnuplot-x11"
+		;;
 	esac
 	##########################
 	beta_features_quick_install
@@ -11615,12 +11691,6 @@ install_catfish() {
 	DEPENDENCY_02='catfish'
 	beta_features_quick_install
 }
-###########
-install_geogebra_and_kalzium() {
-	DEPENDENCY_01='geogebra'
-	DEPENDENCY_02='kalzium'
-	beta_features_quick_install
-}
 ##################
 install_gnome_logs() {
 	DEPENDENCY_01='gnome-system-tools'
@@ -12246,6 +12316,8 @@ install_obs_studio() {
 	fi
 	echo "若安装失败，则请前往官网阅读安装说明。"
 	echo "url: https://obsproject.com/wiki/install-instructions#linux"
+	press_enter_to_return
+	tmoe_other_app_menu
 }
 ############################
 install_telegram() {
