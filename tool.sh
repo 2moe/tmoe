@@ -6850,6 +6850,7 @@ tmoe_system_app_menu() {
 		"4" "gnome log(便于查看系统日志信息)" \
 		"5" "boot repair(开机引导修复)" \
 		"6" "neofetch(显示当前系统信息和发行版logo)" \
+		"7" "yasat:简单的安全审计工具" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -6861,6 +6862,7 @@ tmoe_system_app_menu() {
 	4) install_gnome_logs ;;
 	5) install_boot_repair ;;
 	6) start_neofetch ;;
+	7) start_yasat ;;
 	esac
 	##########################
 	press_enter_to_return
@@ -6876,6 +6878,15 @@ start_neofetch() {
 	neofetch
 }
 #############
+start_yasat() {
+	if [ ! $(command -v yasat) ]; then
+		DEPENDENCY_01=''
+		DEPENDENCY_02='yasat'
+		beta_features_quick_install
+	fi
+	yasat --full-scan
+}
+############
 install_boot_repair() {
 	non_debian_function
 	if [ ! $(command -v add-apt-repository) ]; then
@@ -6895,17 +6906,19 @@ tmoe_store_app_menu() {
 	NON_DEBIAN='false'
 	TMOE_APP=$(whiptail --title "Store" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"1" "gnome-software软件商店" \
-		"2" "plasma-discover:KDE发现(软件中心)" \
-		"3" "qbittorrent(P2P下载工具)" \
+		"1" "aptitude:基于终端的软件包管理器" \
+		"2" "gnome-software(软件商店)" \
+		"3" "plasma-discover(KDE发现-软件中心)" \
+		"4" "qbittorrent(P2P下载工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
-	1) install_gnome_software ;;
-	2) install_plasma_discover ;;
-	3) install_qbitorrent ;;
+	1) aptitude ;;
+	2) install_gnome_software ;;
+	3) install_plasma_discover ;;
+	4) install_qbitorrent ;;
 	esac
 	##########################
 	press_enter_to_return
