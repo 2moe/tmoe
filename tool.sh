@@ -6769,7 +6769,7 @@ beta_features() {
 tmoe_other_app_menu() {
 	RETURN_TO_WHERE='tmoe_other_app_menu'
 	NON_DEBIAN='false'
-	TMOE_APP=$(whiptail --title "SNS" --menu \
+	TMOE_APP=$(whiptail --title "OTHER" --menu \
 		"Which software do you want to install？" 0 50 0 \
 		"1" "geogebra+kalzium(数学+化学)" \
 		"2" "OBS-Studio(录屏软件)" \
@@ -6789,7 +6789,7 @@ tmoe_other_app_menu() {
 tmoe_system_app_menu() {
 	RETURN_TO_WHERE='tmoe_system_app_menu'
 	NON_DEBIAN='false'
-	TMOE_APP=$(whiptail --title "SNS" --menu \
+	TMOE_APP=$(whiptail --title "SYSTEM" --menu \
 		"Which software do you want to install？" 0 50 0 \
 		"1" "UEFI bootmgr:开机启动项管理" \
 		"2" "gnome-system-monitor(资源监视器)" \
@@ -6829,7 +6829,7 @@ install_boot_repair() {
 tmoe_store_app_menu() {
 	RETURN_TO_WHERE='tmoe_store_app_menu'
 	NON_DEBIAN='false'
-	TMOE_APP=$(whiptail --title "SNS" --menu \
+	TMOE_APP=$(whiptail --title "Store" --menu \
 		"Which software do you want to install？" 0 50 0 \
 		"1" "gnome-software软件商店" \
 		"2" "plasma-discover:KDE发现(软件中心)" \
