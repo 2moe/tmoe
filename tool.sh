@@ -6887,8 +6887,8 @@ beta_features() {
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
 		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 17 55 8 \
-			"1" "container/VM(docker容器,qemu,vbox虚拟机)" \
-			"2" "input method输入法(搜狗,讯飞,百度)" \
+			"1" "container/vm:docker容器,qemu,vbox虚拟机" \
+			"2" "input method:输入法(搜狗,讯飞,百度)" \
 			"3" "network:网络" \
 			"4" "read:墨纸留香,品味阅读" \
 			"5" "cut video:岁月静好,剪下佳刻" \
@@ -7163,6 +7163,7 @@ tmoe_r_language_menu() {
 			"Which software do you want to install?" 0 50 0 \
 			"1" "r-base(GNU R statistical computation and graphics system)" \
 			"2" "RStudio(x64,R语言IDE)" \
+			"3" "r-recommended(kernsmooth,lattice,mgcv,nlme,rpart,matrix,etc.)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -7171,6 +7172,7 @@ tmoe_r_language_menu() {
 	0 | "") tmoe_paint_app_menu ;;
 	1) install_r_base ;;
 	2) install_r_studio ;;
+	3) install_r_recommended ;;
 	esac
 	##########################
 	press_enter_to_return
@@ -7205,6 +7207,11 @@ install_r_studio() {
 #####################
 install_r_base() {
 	DEPENDENCY_02="r-base"
+	beta_features_quick_install
+}
+#############
+install_r_recommended() {
+	DEPENDENCY_02="r-recommended"
 	beta_features_quick_install
 }
 #############
