@@ -2945,7 +2945,7 @@ deepin_desktop_warning() {
 	fi
 }
 #################
-deepin_desktop_debian() {
+dde_old_version() {
 	if [ ! $(command -v gpg) ]; then
 		DEPENDENCY_01="gpg"
 		DEPENDENCY_02=""
@@ -2978,16 +2978,48 @@ deepin_desktop_debian() {
 	sed -i 's/^deb/#&/g' /etc/apt/sources.list.d/deepin.list
 	apt update
 }
+################
+ubuntu_dde_distro_code() {
+	aria2c --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache 'http://ppa.launchpad.net/ubuntudde-dev/stable/ubuntu/dists/'
+	TARGET_CODE=$(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | tail -n 1 | cut -d '=' -f 5 | cut -d '/' -f 1 | cut -d '"' -f 2)
+	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
+		if [ $(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | grep "${SOURCELISTCODE}") ]; then
+			TARGET_CODE=${SOURCELISTCODE}
+		fi
+	fi
+	rm -f .ubuntu_ppa_tmoe_cache
+}
+####################
+deepin_desktop_debian() {
+	if [ ! $(command -v add-apt-repository) ]; then
+		apt update
+		apt install -y software-properties-common
+	fi
+	add-apt-repository ppa:ubuntudde-dev/stable
+	#84C8BB5C8E93FFC280EAC512C27BE3D0F0FE09DA
+	DEV_TEAM_NAME='ubuntudde-dev'
+	PPA_SOFTWARE_NAME='stable'
+	if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
+		get_ubuntu_ppa_gpg_key
+	else
+		SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+	fi
+	ubuntu_dde_distro_code
+	check_ubuntu_ppa_list
+	sed -i "s@ ${CURRENT_UBUNTU_CODE}@ ${TARGET_CODE}@g" ${PPA_LIST_FILE}
+}
+###################
 ###############
 ################
 install_deepin_desktop() {
-	deepin_desktop_warning
+	#deepin_desktop_warning
 	REMOTE_DESKTOP_SESSION_01='startdde'
 	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	DEPENDENCY_01="deepin-desktop"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		deepin_desktop_debian
-		DEPENDENCY_01="dde"
+		#DEPENDENCY_01="dde"
+		DEPENDENCY_01="ubuntudde-dde"
 
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='--skip-broken deepin-desktop'
@@ -3986,12 +4018,15 @@ get_ubuntu_ppa_gpg_key() {
 	#tmoe_sources_list_manager
 }
 ###################
-modify_ubuntu_sources_list_d_code() {
+check_ubuntu_ppa_list() {
 	cd /etc/apt/sources.list.d
-	#yannubuntu-ubuntu-boot-repair-groovy.list
 	GREP_NAME="${DEV_TEAM_NAME}-ubuntu-${PPA_SOFTWARE_NAME}"
 	PPA_LIST_FILE=$(ls ${GREP_NAME}-* | head -n 1)
 	CURRENT_UBUNTU_CODE=$(cat ${PPA_LIST_FILE} | grep -v '^#' | awk '{print $3}' | head -n 1)
+}
+#################
+modify_ubuntu_sources_list_d_code() {
+	check_ubuntu_ppa_list
 	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ] || grep -Eq 'sid|testing' /etc/issue; then
 		TARGET_BLANK_CODE="${CURRENT_UBUNTU_CODE}"
 	else
