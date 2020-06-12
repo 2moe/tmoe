@@ -2881,7 +2881,7 @@ install_gnome3_desktop() {
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		#yum groupinstall "GNOME Desktop Environment"
 		#dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
-		DEPENDENCY_01='--skip-broken @GNOME'
+		DEPENDENCY_01='@GNOME'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='gnome gnome-extra'
@@ -2916,7 +2916,7 @@ install_cinnamon_desktop() {
 		DEPENDENCY_01="--no-install-recommends cinnamon cinnamon-desktop-environment"
 
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='--skip-broken @Cinnamon Desktop'
+		DEPENDENCY_01='@Cinnamon Desktop'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="sddm cinnamon xorg"
@@ -3022,7 +3022,7 @@ install_deepin_desktop() {
 		DEPENDENCY_01="ubuntudde-dde"
 
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		DEPENDENCY_01='--skip-broken deepin-desktop'
+		DEPENDENCY_01='deepin-desktop'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		#pacman -S --noconfirm deepin-kwin
