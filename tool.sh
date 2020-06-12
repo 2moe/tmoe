@@ -7104,20 +7104,23 @@ tmoe_paint_app_menu() {
 	RETURN_TO_WHERE='tmoe_paint_app_menu'
 	NON_DEBIAN='false'
 	DEPENDENCY_01=""
-	TMOE_APP=$(whiptail --title "绘图/制图app" --menu \
-		"Which software do you want to install？" 0 50 0 \
-		"1" "krita(由KDE社区驱动的开源数字绘画应用)" \
-		"2" "inkscape(强大的矢量图绘制工具)" \
-		"3" "kolourpaint(KDE画图程序,简单易用)" \
-		"4" "latexdraw(用java开发的示意图绘制软件)" \
-		"5" "LibreCAD(轻量化的2D CAD解决方案)" \
-		"6" "FreeCAD(以构建机械工程和产品设计为目标)" \
-		"7" "OpenCAD(通过解释代码来渲染可视化模型)" \
-		"8" "KiCAD(开源的PCB设计工具)" \
-		"9" "OpenSCAD(3D建模软件)" \
-		"10" "gnuplot(命令行交互式绘图工具)" \
-		"0" "Return to previous menu 返回上级菜单" \
-		3>&1 1>&2 2>&3)
+	TMOE_APP=$(
+		whiptail --title "绘图/制图app" --menu \
+			"Which software do you want to install？" 0 50 0 \
+			"1" "krita(由KDE社区驱动的开源数字绘画应用)" \
+			"2" "inkscape(强大的矢量图绘制工具)" \
+			"3" "kolourpaint(KDE画图程序,简单易用)" \
+			"4" "R language:R语言用于统计分析,图形表示和报告" \
+			"5" "latexdraw(用java开发的示意图绘制软件)" \
+			"6" "LibreCAD(轻量化的2D CAD解决方案)" \
+			"7" "FreeCAD(以构建机械工程和产品设计为目标)" \
+			"8" "OpenCAD(通过解释代码来渲染可视化模型)" \
+			"9" "KiCAD(开源的PCB设计工具)" \
+			"10" "OpenSCAD(3D建模软件)" \
+			"11" "gnuplot(命令行交互式绘图工具)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
@@ -7130,16 +7133,17 @@ tmoe_paint_app_menu() {
 		DEPENDENCY_02="inkscape"
 		;;
 	3) DEPENDENCY_02="kolourpaint" ;;
-	4) DEPENDENCY_02="latexdraw" ;;
-	5) DEPENDENCY_02="librecad" ;;
-	6) DEPENDENCY_02="freecad" ;;
-	7) DEPENDENCY_02="opencad" ;;
-	8)
+	4) tmoe_r_language_menu ;;
+	5) DEPENDENCY_02="latexdraw" ;;
+	6) DEPENDENCY_02="librecad" ;;
+	7) DEPENDENCY_02="freecad" ;;
+	8) DEPENDENCY_02="opencad" ;;
+	9)
 		DEPENDENCY_01="kicad-templates"
 		DEPENDENCY_02="kicad"
 		;;
-	9) DEPENDENCY_02="openscad" ;;
-	10)
+	10) DEPENDENCY_02="openscad" ;;
+	11)
 		DEPENDENCY_01="gnuplot"
 		DEPENDENCY_02="gnuplot-x11"
 		;;
@@ -7150,6 +7154,55 @@ tmoe_paint_app_menu() {
 	tmoe_paint_app_menu
 }
 ###################
+tmoe_r_language_menu() {
+	RETURN_TO_WHERE='tmoe_r_language_menu'
+	NON_DEBIAN='false'
+	DEPENDENCY_01=""
+	TMOE_APP=$(
+		whiptail --title "R" --menu \
+			"Which software do you want to install?" 0 50 0 \
+			"1" "r-base(GNU R statistical computation and graphics system)" \
+			"2" "RStudio(x64,R语言IDE)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") tmoe_paint_app_menu ;;
+	1) tmoe_deb_file_installer ;;
+	2) install_r_studio ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_r_language_menu
+}
+#############
+check_rstudio_version() {
+	THE_LATEST_ISO_LINK="$(curl -L ${REPO_URL} | grep ${GREP_NAME} | grep 'http' | sed -n 2p | cut -d '=' -f 2 | cut -d '"' -f 2)"
+	THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_ISO_LINK} | sed 's@/@ @g' | awk -F ' ' '$0=$NF')
+	aria2c_download_file
+}
+##############
+install_r_studio() {
+	if [ "${ARCH_TYPE}" != 'amd64' ]; then
+		arch_does_not_support
+	fi
+	REPO_URL='https://rstudio.com/products/rstudio/download/#download'
+
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		GREP_NAME='amd64.deb'
+		check_rstudio_version
+		apt show ./${THE_LATEST_DEB_VERSION}
+		apt install -y ./${THE_LATEST_DEB_VERSION}
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		GREP_NAME='x86_64.rpm'
+		check_rstudio_version
+		rpm -ivh ./${THE_LATEST_DEB_VERSION}
+	else
+		non_debian_function
+	fi
+}
+#####################
 tmoe_file_browser_app_menu() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=""
