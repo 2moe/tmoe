@@ -6082,10 +6082,10 @@ configure_xrdp() {
 #############
 check_xrdp_status() {
 	if [ $(command -v service) ]; then
-		service xrdp status | head -n 24 else
+		service xrdp status | head -n 24
 	else
-		echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
-		systemctl status xrdp
+		#echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
+		systemctl status xrdp | head -n 24
 	fi
 }
 ####################
@@ -6202,7 +6202,7 @@ configure_xrdp_remote_desktop_session() {
 		exec /bin/sh /etc/X11/Xsession
 	EnfOfStartWM
 	sed -i "s@exec /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
-	sed -i "s@exec /bin/sh /etc/X11/Xsession@exec /bin/sh ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
+	sed -i "s@exec /bin/sh /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
 	echo "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
 	echo "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
 	echo "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
@@ -6221,7 +6221,7 @@ configure_xrdp_remote_desktop_session() {
 		#beta_features
 		;;
 	esac
-	service xrdp restart || systemctl stop xrdp
+	systemctl stop xrdp || service xrdp restart
 	check_xrdp_status
 }
 ##############
