@@ -7347,6 +7347,7 @@ network_manager_tui() {
 		"6" "View ip address查看ip" \
 		"7" "edit config manually手动编辑" \
 		"8" "blueman(蓝牙管理器,GTK+前端)" \
+		"9" "gnome-nettool(网络工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7384,12 +7385,20 @@ network_manager_tui() {
 		nano /etc/network/interfaces
 		;;
 	8) install_blueman ;;
+	9) install_gnome_net_manager ;;
 	esac
 	##########################
 	press_enter_to_return
 	network_manager_tui
 }
 ###########
+################
+install_gnome_net_manager() {
+	DEPENDENCY_01="gnome-nettool"
+	DEPENDENCY_02="network-manager-gnome"
+	beta_features_quick_install
+}
+######################
 install_blueman() {
 	if [ "${LINUX_DISTRO}" = "alpine" ]; then
 		DEPENDENCY_01='gnome-bluetooth'
@@ -12197,9 +12206,8 @@ install_iflyime_pinyin() {
 }
 ################
 install_gnome_system_monitor() {
-	DEPENDENCY_01="gnome-system-monitor"
-	DEPENDENCY_02="network-manager-gnome gnome-nettool"
-	NON_DEBIAN='false'
+	DEPENDENCY_01=''
+	DEPENDENCY_02="gnome-system-monitor"
 	beta_features_quick_install
 }
 ###############
