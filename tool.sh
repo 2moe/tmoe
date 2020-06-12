@@ -19,11 +19,17 @@ main() {
 	--mirror-list | -m* | m*)
 		tmoe_sources_list_manager
 		;;
-	up | -u)
+	up* | -u*)
 		tmoe_linux_tool_upgrade
 		;;
 	h | -h | --help)
-		frequently_asked_questions
+		cat <<-'EOF'
+			-ppa     --添加ppa软件源(add ppa source)   
+			-u       --更新(update tmoe-linux tool)
+			-m       --切换镜像源
+			-tuna    --切换为tuna源
+			file     --运行文件浏览器(run filebrowser)
+		EOF
 		;;
 	file | filebrowser)
 		filebrowser_restart
@@ -31,6 +37,9 @@ main() {
 	tuna | -tuna | t | -t)
 		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
 		auto_check_distro_and_modify_sources_list
+		;;
+	ppa* | -ppa*)
+		tmoe_debian_add_ubuntu_ppa_source
 		;;
 	*)
 		check_root
@@ -3893,13 +3902,14 @@ tmoe_sources_list_manager() {
 			"2" "business国内商业镜像源" \
 			"3" "ping镜像站延迟测试" \
 			"4" "speed镜像站下载速度测试" \
-			"5" "restore to default还原默认源" \
-			"6" "edit list manually手动编辑" \
-			"7" "${EXTRA_SOURCE}" \
-			"8" "FAQ常见问题" \
-			"9" "http/https" \
-			"10" "delete invalid rows去除无效行" \
-			"11" "trust强制信任软件源" \
+			"5" "+ppa(debian添加ubuntu ppa源)" \
+			"6" "restore to default还原默认源" \
+			"7" "edit list manually手动编辑" \
+			"8" "${EXTRA_SOURCE}" \
+			"9" "FAQ常见问题" \
+			"10" "http/https" \
+			"11" "delete invalid rows去除无效行" \
+			"12" "trust强制信任软件源" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3910,19 +3920,99 @@ tmoe_sources_list_manager() {
 	2) china_bussiness_mirror_station ;;
 	3) ping_mirror_sources_list ;;
 	4) mirror_sources_station_download_speed_test ;;
-	5) restore_default_sources_list ;;
-	6) edit_sources_list_manually ;;
-	7) add_extra_source_list ;;
-	8) sources_list_faq ;;
-	9) switch_sources_http_and_https ;;
-	10) delete_sources_list_invalid_rows ;;
-	11) mandatory_trust_software_sources ;;
+	5) tmoe_debian_add_ubuntu_ppa_source ;;
+	6) restore_default_sources_list ;;
+	7) edit_sources_list_manually ;;
+	8) add_extra_source_list ;;
+	9) sources_list_faq ;;
+	10) switch_sources_http_and_https ;;
+	11) delete_sources_list_invalid_rows ;;
+	12) mandatory_trust_software_sources ;;
 	esac
 	##########
 	press_enter_to_return
 	tmoe_sources_list_manager
 }
 ######################
+tmoe_debian_add_ubuntu_ppa_source() {
+	non_debian_function
+	if [ ! $(command -v add-apt-repository) ]; then
+		apt update
+		apt install -y software-properties-common
+	fi
+	TARGET=$(whiptail --inputbox "请输入ppa软件源,以ppa开头,格式为ppa:xxx/xxx\nPlease type the ppa source name,the format is ppa:xx/xx" 0 50 --title "ppa:xxx/xxx" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		tmoe_sources_list_manager
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的名称"
+		echo "Please enter a valid name."
+	else
+		add_ubuntu_ppa_source
+	fi
+}
+####################
+add_ubuntu_ppa_source() {
+	if [ "$(echo ${TARGET} | grep 'sudo add-apt-repository')" ]; then
+		TARGET="$(echo ${TARGET} | sed 's@sudo add-apt-repository@@')"
+	elif [ "$(echo ${TARGET} | grep 'add-apt-repository ')" ]; then
+		TARGET="$(echo ${TARGET} | sed 's@add-apt-repository @@')"
+	fi
+	add-apt-repository ${TARGET}
+	if [ "$?" != "0" ]; then
+		tmoe_sources_list_manager
+	fi
+	DEV_TEAM_NAME=$(echo ${TARGET} | cut -d '/' -f 1 | cut -d ':' -f 2)
+	PPA_SOFTWARE_NAME=$(echo ${TARGET} | cut -d ':' -f 2 | cut -d '/' -f 2)
+	if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
+		get_ubuntu_ppa_gpg_key
+	fi
+	modify_ubuntu_sources_list_d_code
+	apt update
+	echo "添加软件源列表完成，是否需要执行${GREEN}apt install ${PPA_SOFTWARE_NAME}${RESET}"
+	do_you_want_to_continue
+	apt install ${PPA_SOFTWARE_NAME}
+}
+###########
+get_ubuntu_ppa_gpg_key() {
+	DESCRIPTION_PAGE="https://launchpad.net/~${DEV_TEAM_NAME}/+archive/ubuntu/${PPA_SOFTWARE_NAME}"
+	cd /tmp
+	aria2c --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache ${DESCRIPTION_PAGE}
+	FALSE_FINGERPRINT_LINE=$(cat .ubuntu_ppa_tmoe_cache | grep -n 'Fingerprint:' | awk '{print $1}' | cut -d ':' -f 1)
+	TRUE_FINGERPRINT_LINE=$((${FALSE_FINGERPRINT_LINE} + 1))
+	PPA_GPG_KEY=$(cat .ubuntu_ppa_tmoe_cache | sed -n ${TRUE_FINGERPRINT_LINE}p | cut -d '<' -f 2 | cut -d '>' -f 2)
+	rm -f .ubuntu_ppa_tmoe_cache
+	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com ${PPA_GPG_KEY}
+	#press_enter_to_return
+	#tmoe_sources_list_manager
+}
+###################
+modify_ubuntu_sources_list_d_code() {
+	cd /etc/apt/sources.list.d
+	#yannubuntu-ubuntu-boot-repair-groovy.list
+	GREP_NAME="${DEV_TEAM_NAME}-ubuntu-${PPA_SOFTWARE_NAME}"
+	PPA_LIST_FILE=$(ls ${GREP_NAME}-* | head -n 1)
+	CURRENT_UBUNTU_CODE=$(cat ${PPA_LIST_FILE} | grep -v '^#' | awk '{print $3}' | head -n 1)
+	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ] || grep -Eq 'sid|testing' /etc/issue; then
+		TARGET_BLANK_CODE="${CURRENT_UBUNTU_CODE}"
+	else
+		TARGET_BLANK_CODE="bionic"
+	fi
+
+	TARGET_CODE=$(whiptail --inputbox "请输入您当前使用的debian系统对应的ubuntu版本代号,例如focal\n当前ppa软件源的ubuntu代号为${CURRENT_UBUNTU_CODE}\n若取消则不修改,若留空则设定为${TARGET_BLANK_CODE}\nPlease type the ubuntu code name.\nFor example,buster corresponds to bionic." 0 50 --title "Ubuntu code(groovy,focal,etc.)" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		TARGET_CODE="${CURRENT_UBUNTU_CODE}"
+	elif [ -z "${TARGET_CODE}" ]; then
+		TARGET_CODE=${TARGET_BLANK_CODE}
+	fi
+
+	if [ ${TARGET_CODE} = ${CURRENT_UBUNTU_CODE} ]; then
+		echo "您没有修改ubuntu code，当前使用Ubuntu ${TARGET_CODE}的ppa软件源"
+	else
+		sed -i "s@ ${CURRENT_UBUNTU_CODE}@ ${TARGET_CODE}@g" ${PPA_LIST_FILE}
+		echo "已将${CURRENT_UBUNTU_CODE}修改为${TARGET_CODE},若更新错误，则请手动修改$(pwd)/${PPA_LIST_FILE}"
+	fi
+}
+###################
 mandatory_trust_software_sources() {
 	if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "trust" --no-button "untrust" --yesno "您是想要强制信任还是取消信任呢？\nDo you want to trust sources list?♪(^∇^*) " 0 50); then
 		trust_sources_list
