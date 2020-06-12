@@ -6971,6 +6971,7 @@ tmoe_education_app_menu() {
 	13) DEPENDENCY_02='cp2k' ;;
 	esac
 	##########################
+	beta_features_quick_install
 	press_enter_to_return
 	tmoe_education_app_menu
 }
