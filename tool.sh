@@ -7169,7 +7169,7 @@ tmoe_r_language_menu() {
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") tmoe_paint_app_menu ;;
-	1) tmoe_deb_file_installer ;;
+	1) install_r_base ;;
 	2) install_r_studio ;;
 	esac
 	##########################
@@ -7203,6 +7203,11 @@ install_r_studio() {
 	fi
 }
 #####################
+install_r_base() {
+	DEPENDENCY_02="r-base"
+	beta_features_quick_install
+}
+#############
 tmoe_file_browser_app_menu() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=""
