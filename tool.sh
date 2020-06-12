@@ -2913,7 +2913,7 @@ install_cinnamon_desktop() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dpkg --configure -a
 		auto_select_keyboard_layout
-		DEPENDENCY_01="cinnamon cinnamon-desktop-environment"
+		DEPENDENCY_01="--no-install-recommends cinnamon cinnamon-desktop-environment"
 
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='--skip-broken @Cinnamon Desktop'
