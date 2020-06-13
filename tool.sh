@@ -7242,19 +7242,30 @@ tmoe_linux_sudo_user_group_management() {
 	0 | "") tmoe_system_app_menu ;;
 	esac
 
+	SUDO_YES='back返回'
+	SUDO_RETURN='true'
 	if [ $(cat /etc/sudoers | awk '{print $1}' | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/sudoers文件中"
 	elif [ $(cat /etc/group | grep sudo | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/group文件中"
 	else
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}可能不在sudo用户组里"
+		SUDO_YES='add添加♪^∇^*'
+		SUDO_RETURN='false'
 	fi
 
-	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "add添加♪^∇^*" --no-button "del踢走っ °Д °;" --yesno "Do you want to add it to sudo group,or remove it from sudo?\n${SUDO_USER_STATUS}\n您是想要把ta加进sudo这个小家庭，还是踢走ta呢？" 0 50); then
-		add_tmoe_sudo
+	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "${SUDO_YES}" --no-button "del踢走っ °Д °;" --yesno "Do you want to add it to sudo group,or remove it from sudo?\n${SUDO_USER_STATUS}\n您是想要把ta加进sudo这个小家庭，还是踢走ta呢？" 0 50); then
+		if [ "${SUDO_RETURN}" = "true" ]; then
+			tmoe_linux_sudo_user_group_management
+		else
+			add_tmoe_sudo
+		fi
 	else
 		del_tmoe_sudo
 	fi
+	##########################
+	press_enter_to_return
+	tmoe_linux_sudo_user_group_management
 }
 ##################
 del_tmoe_sudo() {
