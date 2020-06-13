@@ -6849,7 +6849,7 @@ frequently_asked_questions() {
 		echo "亦可输${YELLOW}su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
 		echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
 		echo '--------------------'
-		echo 'arch系创建新用户的命令为useradd loveyou'
+		echo 'arch系创建新用户的命令为useradd -m loveyou'
 		echo '其中loveyou为用户名'
 		echo '输passwd loveyou修改该用户密码'
 		echo '如需将其添加至sudo用户组，那么您可以手动编辑/etc/sudoers'
@@ -7205,6 +7205,7 @@ tmoe_system_app_menu() {
 		"6" "neofetch(显示当前系统信息和发行版logo)" \
 		"7" "yasat:简单的安全审计工具" \
 		"8" "rc.local-systemd(修改开机自启动脚本)" \
+		"9" "sudo user group management:sudo用户组管理" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7218,12 +7219,87 @@ tmoe_system_app_menu() {
 	6) start_neofetch ;;
 	7) start_yasat ;;
 	8) modify_rc_local_script ;;
+	9) tmoe_linux_sudo_user_group_management ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_system_app_menu
 }
 #############
+tmoe_linux_sudo_user_group_management() {
+	cd /tmp/
+	cat /etc/passwd | grep -Ev 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
+	cat /etc/passwd | grep -Ev 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
+	TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+	rm -f .tmoe-linux_cache.0*
+	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
+		"您想要将哪个小可爱添加至sudo用户组？\n Which member do you want to add to the sudo group?" 0 0 0 \
+		${TMOE_USER_LIST} \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	case ${TMOE_USER_NAME} in
+	0 | "") tmoe_system_app_menu ;;
+	esac
+
+	if [ $(cat /etc/sudoers | awk '{print $1}' | grep ${TMOE_USER_NAME}) ]; then
+		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/sudoers文件中"
+	elif [ $(cat /etc/group | grep sudo | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
+		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/group文件中"
+	else
+		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}可能不在sudo用户组里"
+	fi
+
+	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "add添加♪^∇^*" --no-button "del踢走っ °Д °;" --yesno "Do you want to add it to sudo group,or remove it from sudo?\n${SUDO_USER_STATUS}\n您是想要把ta加进sudo这个小家庭，还是踢走ta呢？" 0 50); then
+		add_tmoe_sudo
+	else
+		del_tmoe_sudo
+	fi
+}
+##################
+del_tmoe_sudo() {
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		deluser ${TMOE_USER_NAME} sudo || remove_him_from_sudoers
+	else
+		remove_him_from_sudoers
+	fi
+
+	if [ "$?" = '0' ]; then
+		echo "${YELLOW}${TMOE_USER_NAME}${RESET}小可爱非常伤心（；´д｀）ゞ，因为您将其移出了${BLUE}sudo${RESET}用户组"
+	else
+		echo "Sorry,移除${RED}失败${RESET}"
+	fi
+}
+#################
+add_tmoe_sudo() {
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		adduser ${TMOE_USER_NAME} sudo
+	else
+		add_him_to_sudoers
+	fi
+
+	if [ "$?" = '0' ]; then
+		echo "Congratulations,已经将${YELLOW}${TMOE_USER_NAME}${RESET}小可爱添加至${BLUE}sudo${RESET}用户组(｡･∀･)ﾉﾞ"
+	else
+		echo "Sorry,添加${RED}失败${RESET}"
+	fi
+}
+############
+remove_him_from_sudoers() {
+	cd /etc
+	TMOE_USER_SUDO_LINE=$(cat sudoers | grep -n "^${TMOE_USER_NAME}.*ALL" | tail -n 1 | cut -d ':' -f 1)
+	sed -i "${TMOE_USER_SUDO_LINE} d" sudoers
+}
+############
+add_him_to_sudoers() {
+	TMOE_ROOT_SUDO_LINE=$(cat /etc/sudoers | grep 'root.*ALL' -n | tail -n 1 | cut -d ':' -f 1)
+	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
+	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
+		sed "$ a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+	else
+		sed "${TMOE_ROOT_SUDO_LINE}a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+	fi
+}
+###############
 creat_rc_local_startup_script() {
 	cat >rc.local <<'ENDOFRCLOCAL'
 #!/bin/sh -e
