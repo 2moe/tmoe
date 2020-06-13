@@ -4243,6 +4243,8 @@ edit_sources_list_manually() {
 		fi
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		nano ${SOURCES_LIST_PATH}/*repo
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		nano ${SOURCES_LIST_FILE} /etc/pacman.conf
 	else
 		nano ${SOURCES_LIST_FILE}
 	fi
@@ -7191,12 +7193,16 @@ install_boot_repair() {
 tmoe_store_app_menu() {
 	RETURN_TO_WHERE='tmoe_store_app_menu'
 	NON_DEBIAN='false'
-	TMOE_APP=$(whiptail --title "Store" --menu \
+	TMOE_APP=$(whiptail --title "商店与下载工具" --menu \
 		"Which software do you want to install？" 0 50 0 \
 		"1" "aptitude:基于终端的软件包管理器" \
-		"2" "gnome-software(软件商店)" \
-		"3" "plasma-discover(KDE发现-软件中心)" \
-		"4" "qbittorrent(P2P下载工具)" \
+		"2" "deepin:深度软件" \
+		"3" "gnome-software(软件商店)" \
+		"4" "plasma-discover(KDE发现-软件中心)" \
+		"5" "Flatpak(跨平台包管理,便捷安装tim等软件)" \
+		"6" "snap(ubuntu母公司开发的跨平台商店)" \
+		"7" "bauh(旨在处理Flatpak,Snap,AppImage和AUR)" \
+		"8" "qbittorrent(P2P下载工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7206,13 +7212,107 @@ tmoe_store_app_menu() {
 		non_debian_function
 		aptitude
 		;;
-	2) install_gnome_software ;;
-	3) install_plasma_discover ;;
-	4) install_qbitorrent ;;
+	2) install_deepin_software_menu ;;
+	3) install_gnome_software ;;
+	4) install_plasma_discover ;;
+	5) install_flatpak_store ;;
+	6) install_snap_store ;;
+	7) install_bauh_store ;;
+	8) install_qbitorrent ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_store_app_menu
+}
+#############
+#################
+install_deepin_software_menu() {
+	RETURN_TO_WHERE='install_deepin_software_menu'
+	NON_DEBIAN='true'
+	DEPENDENCY_01=""
+	TMOE_APP=$(whiptail --title "deepin store" --menu \
+		"Which software do you want to install？" 0 50 0 \
+		"01" "dde-calendar(深度日历)" \
+		"02" "dde-qt5integration(Qt5 theme integration)" \
+		"03" "deepin-calculator(计算器)" \
+		"04" "deepin-deb-installer(软件包安装器)" \
+		"05" "deepin-gettext-tools(Deepin国际化工具)" \
+		"06" "deepin-image-viewer(图像查看器)" \
+		"07" "deepin-menu(Deepin 菜单服务)" \
+		"08" "deepin-movie(电影播放器)" \
+		"09" "deepin-music(音乐播放器 with brilliant and tweakful UI)" \
+		"10" "deepin-notifications(系统通知)" \
+		"11" "deepin-picker(深度取色器)" \
+		"12" "deepin-screen-recorder(简单截图工具)" \
+		"13" "deepin-screenshot(高级截图工具)" \
+		"14" "deepin-shortcut-viewer(弹出式快捷键查看器)" \
+		"15" "deepin-terminal(深度终端模拟器)" \
+		"16" "deepin-voice-recorder(录音器)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") tmoe_store_app_menu ;;
+	01) DEPENDENCY_02="dde-calendar" ;;
+	02) DEPENDENCY_02="dde-qt5integration" ;;
+	03) DEPENDENCY_02="deepin-calculator" ;;
+	04) DEPENDENCY_02="deepin-deb-installer" ;;
+	05) DEPENDENCY_02="deepin-gettext-tools" ;;
+	06) DEPENDENCY_02="deepin-image-viewer" ;;
+	07) DEPENDENCY_02="deepin-menu" ;;
+	08) DEPENDENCY_02="deepin-movie" ;;
+	09) DEPENDENCY_02="deepin-music" ;;
+	10) DEPENDENCY_02="deepin-notifications" ;;
+	11) DEPENDENCY_02="deepin-picker" ;;
+	12) DEPENDENCY_02="deepin-screen-recorder" ;;
+	13) DEPENDENCY_02="deepin-screenshot" ;;
+	14) DEPENDENCY_02="deepin-shortcut-viewer" ;;
+	15) DEPENDENCY_02="deepin-terminal" ;;
+	16) DEPENDENCY_02="deepin-voice-recorder" ;;
+	esac
+	##########################
+	beta_features_quick_install
+	press_enter_to_return
+	install_deepin_software_menu
+}
+#######################
+install_bauh_store() {
+	if [ ! $(command -v pip3) ]; then
+		DEPENDENCY_01="python3-pip"
+		DEPENDENCY_02="python-pip"
+		beta_features_quick_install
+	fi
+	pip3 install bauh
+}
+#############
+install_snap_store() {
+	echo 'web store url:https://snapcraft.io/store'
+	DEPENDENCY_01="snapd"
+	DEPENDENCY_02="gnome-software-plugin-snap"
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01="snapd"
+		DEPENDENCY_02="snapd-xdg-open-git"
+	fi
+	beta_features_quick_install
+	echo '前往在线商店,获取更多应用'
+	echo 'https://snapcraft.io/store'
+	snap install snap-store
+}
+#############
+install_flatpak_store() {
+	DEPENDENCY_01="flatpak"
+	DEPENDENCY_02="gnome-software-plugin-flatpak"
+	echo 'web store url:https://flathub.org/'
+	if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+		echo 'gentoo用户请前往此处阅读详细说明'
+		echo 'https://github.com/fosero/flatpak-overlay'
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02="gnome-software-packagekit-plugin"
+	fi
+	beta_features_quick_install
+	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+	echo '前往在线商店,获取更多应用'
+	echo 'https://flathub.org/apps'
 }
 #############
 tmoe_sns_app_menu() {
@@ -12678,7 +12778,6 @@ install_electronic_wechat() {
 install_gnome_software() {
 	DEPENDENCY_01="gnome-software"
 	DEPENDENCY_02=""
-	NON_DEBIAN='false'
 	beta_features_quick_install
 }
 #############
