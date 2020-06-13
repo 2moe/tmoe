@@ -5528,7 +5528,7 @@ x11vnc_warning() {
 		x11vnc可以打开tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
 		配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${BLUE}停止${RESET}
 		若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
-		若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。、
+		若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
 	EOF
 
 	RETURN_TO_WHERE='configure_x11vnc'
