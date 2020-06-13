@@ -4829,7 +4829,7 @@ other_software() {
 	SOFTWARE=$(
 		whiptail --title "Software center-01" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
-			"1" "Browser浏览器" \
+			"1" "Browser:浏览器" \
 			"2" "Multimedia:图像与影音(mpv,云音乐)" \
 			"3" "SNS:社交类(qq)" \
 			"4" "Games:游戏(steam,wesnoth)" \
@@ -4866,10 +4866,10 @@ tmoe_software_package_menu() {
 	TMOE_APP=$(
 		whiptail --title "PACKAGES MANAGER" --menu \
 			"How do you want to manage software package?" 0 50 0 \
-			"1" "Tmoe-deb软件包安装器" \
-			"2" "Synaptic：新立得软件包管理器/软件商店" \
-			"3" "ADB:Android Debug Bridge" \
-			"4" "BleachBit:垃圾清理" \
+			"1" "Tmoe-deb-installer:软件包安装器" \
+			"2" "Synaptic(新立得软件包管理器)" \
+			"3" "ADB(Android Debug Bridge,用于调试安卓)" \
+			"4" "BleachBit(垃圾清理)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4893,7 +4893,7 @@ tmoe_social_network_service() {
 	TMOE_APP=$(
 		whiptail --title "SNS" --menu \
 			"Which software do you want to install?" 0 50 0 \
-			"1" "LinuxQQ：在线聊天软件" \
+			"1" "LinuxQQ(在线聊天软件)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4914,7 +4914,7 @@ tmoe_download_class() {
 	TMOE_APP=$(
 		whiptail --title "documents" --menu \
 			"Which software do you want to install?" 0 50 0 \
-			"1" "百度网盘(x86_64):提供文件的网络备份、同步和分享服务" \
+			"1" "百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4957,21 +4957,21 @@ tmoe_multimedia_menu() {
 	DEPENDENCY_01=""
 	TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
 		"Which software do you want to install?" 0 50 0 \
-		"1" "MPV：开源、跨平台的音视频播放器" \
-		"2" "Music:debian-opt仓库(QQ音乐,云音乐)" \
-		"3" "GIMP：GNU 图像处理程序" \
-		"4" "Parole：xfce默认媒体播放器，风格简洁" \
-		"5" "网易云音乐(x86_64):专注于发现与分享的音乐产品" \
+		"1" "Music:debian-opt仓库(QQ音乐,云音乐)" \
+		"2" "MPV(开源、跨平台的音视频播放器)" \
+		"3" "GIMP(GNU 图像处理程序)" \
+		"4" "Parole(xfce默认媒体播放器,风格简洁)" \
+		"5" "网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") other_software ;;
-	1) install_mpv ;;
-	2)
+	1)
 		non_debian_function
 		explore_debian_opt_repo
 		;;
+	2) install_mpv ;;
 	3) install_gimp ;;
 	4) install_parole ;;
 	5) install_netease_163_cloud_music ;;
@@ -7503,7 +7503,7 @@ tmoe_read_app_menu() {
 	RETURN_TO_WHERE='tmoe_read_app_menu'
 	TMOE_APP=$(whiptail --title "TXET & OFFICE" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"1" "calibre:电子书转换器和库管理" \
+		"1" "calibre(电子书转换器和库管理)" \
 		"2" "fbreader(epub阅读器)" \
 		"3" "WPS office(办公软件)" \
 		"4" "typora(markdown编辑器)" \
@@ -7580,13 +7580,13 @@ network_manager_tui() {
 
 	NETWORK_MANAGER=$(whiptail --title "NETWORK" --menu \
 		"您想要如何配置网络？\n How do you want to configure the network? " 17 50 8 \
-		"1" "manager管理器" \
-		"2" "enable device启用设备" \
-		"3" "WiFi scan扫描" \
-		"4" "device status设备状态" \
-		"5" "driver网卡驱动" \
-		"6" "View ip address查看ip" \
-		"7" "edit config manually手动编辑" \
+		"1" "manager:管理器" \
+		"2" "enable device:启用设备" \
+		"3" "WiFi scan:扫描" \
+		"4" "device status:设备状态" \
+		"5" "driver:网卡驱动" \
+		"6" "View ip address:查看ip" \
+		"7" "edit config manually:手动编辑" \
 		"8" "blueman(蓝牙管理器,GTK+前端)" \
 		"9" "gnome-nettool(网络工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
@@ -7942,14 +7942,14 @@ install_container_and_virtual_machine() {
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 50 8 \
 			"1" "aqemu(QEMU和KVM的Qt5前端)" \
-			"2" "tmoe-qemu(x86_64虚拟机管理)" \
-			"3" "tmoe-qemu(arm64虚拟机管理）" \
-			"4" "download iso(Android,linux等)" \
-			"5" "docker-ce:开源的应用容器引擎" \
+			"2" "tmoe-qemu:x86_64虚拟机管理" \
+			"3" "tmoe-qemu:arm64虚拟机管理" \
+			"4" "download iso:下载镜像(Android,linux等)" \
+			"5" "docker-ce(开源的应用容器引擎)" \
 			"6" "portainer(docker图形化web端管理容器)" \
-			"7" "VirtualBox:甲骨文开源虚拟机(x64)" \
+			"7" "VirtualBox(甲骨文开源虚拟机(x64)" \
 			"8" "wine(调用win api并即时转换)" \
-			"9" "anbox:Android in a box(测试)" \
+			"9" "anbox(Android in a box)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -12218,17 +12218,17 @@ install_pinyin_input_method() {
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
-			"1" "fcitx-diagnose诊断" \
-			"2" "KDE配置模块" \
-			"3" "im-config配置输入法" \
+			"1" "fcitx-diagnose:诊断" \
+			"2" "KDE-fcitx-模块" \
+			"3" "im-config:配置输入法" \
 			"4" "google谷歌拼音(引擎fork自Android版)" \
-			"5" "sogou搜狗拼音" \
-			"6" "iflyime讯飞语音+拼音+五笔" \
+			"5" "sogou(搜狗拼音)" \
+			"6" "iflyime(讯飞语音+拼音+五笔)" \
 			"7" "rime中州韻(擊響中文之韻)" \
-			"8" "baidu百度输入法" \
+			"8" "baidu(百度输入法)" \
 			"9" "libpinyin(提供智能整句输入算法核心)" \
 			"10" "sunpinyin(基于统计学语言模型)" \
-			"11" "fcitx云拼音模块" \
+			"11" "fcitx-云拼音模块" \
 			"12" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3

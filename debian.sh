@@ -2109,9 +2109,8 @@ un_xz_debian_recovery_kit() {
 	cd "$cur"
 	#用绝对路径
 	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-
 		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
-		rm -f ${HOME}/debian_arm64/root/tf 2>/dev/null
+		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo '在容器内输debian-i启动debian应用安装及远程桌面配置修改工具。'
