@@ -6852,7 +6852,7 @@ frequently_asked_questions() {
 		echo 'arch系创建新用户的命令为useradd -m loveyou'
 		echo '其中loveyou为用户名'
 		echo '输passwd loveyou修改该用户密码'
-		echo '如需将其添加至sudo用户组，那么您可以手动编辑/etc/sudoers'
+		echo '如需将其添加至sudo用户组，那么您可以使用本工具自带的sudo用户组管理功能(位于测试功能的系统管理选项)'
 	fi
 	###################
 	if [ "${TMOE_FAQ}" == '6' ]; then
@@ -7204,7 +7204,7 @@ tmoe_system_app_menu() {
 		"5" "boot repair(开机引导修复)" \
 		"6" "neofetch(显示当前系统信息和发行版logo)" \
 		"7" "yasat:简单的安全审计工具" \
-		"8" "rc.local-systemd(修改开机自启动脚本)" \
+		"8" "rc.local-systemd:修改开机自启动脚本" \
 		"9" "sudo user group management:sudo用户组管理" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -7227,6 +7227,7 @@ tmoe_system_app_menu() {
 }
 #############
 tmoe_linux_sudo_user_group_management() {
+	RETURN_TO_WHERE='tmoe_linux_sudo_user_group_management'
 	cd /tmp/
 	cat /etc/passwd | grep -Ev 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
 	cat /etc/passwd | grep -Ev 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
