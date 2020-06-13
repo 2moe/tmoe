@@ -7332,6 +7332,9 @@ install_r_studio() {
 		GREP_NAME='x86_64.rpm'
 		check_rstudio_version
 		rpm -ivh ./${THE_LATEST_DEB_VERSION}
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02="rstudio-desktop-git"
+		beta_features_quick_install
 	else
 		non_debian_function
 	fi
@@ -7567,8 +7570,13 @@ tmoe_wifi_scan() {
 
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		if [ ! $(command -v wifi-menu) ]; then
-			DEPENDENCY_01='dialog wpa_supplicant'
+			DEPENDENCY_01='wpa_supplicant'
 			DEPENDENCY_02='netctl'
+			beta_features_quick_install
+		fi
+		if [ ! $(command -v dialog) ]; then
+			DEPENDENCY_01=''
+			DEPENDENCY_02='dialog'
 			beta_features_quick_install
 		fi
 		wifi-menu
