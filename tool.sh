@@ -7243,7 +7243,7 @@ install_deepin_software_menu() {
 		"09" "deepin-music(音乐播放器 with brilliant and tweakful UI)" \
 		"10" "deepin-notifications(系统通知)" \
 		"11" "deepin-picker(深度取色器)" \
-		"12" "deepin-screen-recorder(简单截图工具)" \
+		"12" "deepin-screen-recorder(简单录屏工具)" \
 		"13" "deepin-screenshot(高级截图工具)" \
 		"14" "deepin-shortcut-viewer(弹出式快捷键查看器)" \
 		"15" "deepin-terminal(深度终端模拟器)" \
