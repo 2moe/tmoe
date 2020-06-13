@@ -7287,17 +7287,22 @@ add_tmoe_sudo() {
 remove_him_from_sudoers() {
 	cd /etc
 	TMOE_USER_SUDO_LINE=$(cat sudoers | grep -n "^${TMOE_USER_NAME}.*ALL" | tail -n 1 | cut -d ':' -f 1)
-	sed -i "${TMOE_USER_SUDO_LINE} d" sudoers
+	if [ -z "${TMOE_USER_SUDO_LINE}" ]; then
+		echo "检测到${YELLOW}${TMOE_USER_NAME}${RESET}不在${BLUE}sudo${RESET}用户组中，此事将不会被报告||o(*°▽°*)o|Юﾞ"
+	else
+		sed -i "${TMOE_USER_SUDO_LINE}d" sudoers
+	fi
 }
 ############
 add_him_to_sudoers() {
 	TMOE_ROOT_SUDO_LINE=$(cat /etc/sudoers | grep 'root.*ALL' -n | tail -n 1 | cut -d ':' -f 1)
 	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
 	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
-		sed "$ a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+		sed -i "$ a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
 	else
-		sed "${TMOE_ROOT_SUDO_LINE}a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+		sed -i "${TMOE_ROOT_SUDO_LINE}a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
 	fi
+	cat /etc/sudoers
 }
 ###############
 creat_rc_local_startup_script() {
