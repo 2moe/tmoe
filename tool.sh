@@ -2695,9 +2695,8 @@ install_lxde_desktop() {
 }
 ##########################
 arch_linux_mate_warning() {
-	echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET}"
-	echo "mate-session在远程桌面下可能${RED}无法正常运行${RESET}"
-	echo "建议您${BLUE}更换${RESET}其他桌面！"
+	echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET},并且处于${GREEN}proot容器${RESET}环境下！"
+	echo "mate-session在当前容器环境下可能出现${RED}屏幕闪烁${RESET}的现象"
 	echo "按${GREEN}回车键${RESET}${BLUE}继续安装${RESET}"
 	echo "${YELLOW}Do you want to continue?[Y/l/x/q/n]${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET},type n to return."
@@ -2751,7 +2750,7 @@ install_mate_desktop() {
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='@mate-desktop'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		if [ "${ARCH_TYPE}" != "amd64" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			arch_linux_mate_warning
 		else
 			DEPENDENCY_01='mate mate-extra'
@@ -5520,12 +5519,18 @@ x11vnc_process_readme() {
 }
 ###################
 x11vnc_warning() {
-	echo "注：x11vnc和tightvnc是有${RED}区别${RESET}的！"
-	echo "x11vnc可以打开tightvnc无法打开的某些应用"
-	echo "配置完x11vnc后，输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${BLUE}停止${RESET}"
-	echo "若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务"
-	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
-	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
+	cat <<-EOF
+		Do you want to configure x11vnc? 
+		There are many differences between x11vnc and tightvnc. Mainly reflected in the fluency and special effects of the picture.
+		After configuring x11vnc, you can type ${GREEN}startx11vnc${RESET} to ${BLUE}start${RESET} it.
+		If you find that you cannot connect to the audio server after starting vnc, please create a new termux session and enter ${GREEN}pulseaudio --start${RESET}.
+		注：x11vnc和tightvnc是有${RED}区别${RESET}的！
+		x11vnc可以打开tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
+		配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${BLUE}停止${RESET}
+		若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
+		若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。、
+	EOF
+
 	RETURN_TO_WHERE='configure_x11vnc'
 	do_you_want_to_continue
 	stopvnc 2>/dev/null
@@ -6631,9 +6636,10 @@ first_configure_startvnc() {
 	echo "如果提示${BLUE}view-only${RESET},那么建议您输${YELLOW}n${RESET},选择权在您自己的手上。"
 	echo "请输入${RED}6至8位${RESET}${BLUE}密码${RESET}"
 	startvnc
-	echo "You can type startvnc to start vncserver,type stopvnc to stop it."
-	echo "您之后可以输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来启动xsdl，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+	echo "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
+	echo "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} XSDL."
+	echo "您之后可以在原系统或容器里输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
+	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
 	xfce4_tightvnc_hidpi_settings
 	if [ "${HOME}" != "/root" ]; then
 		cp -rpf ~/.vnc /root/ &

@@ -592,6 +592,7 @@ cat >${PREFIX}/bin/startvnc <<-EndOfFile
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
 	/data/data/com.termux/files/usr/bin/debian
 EndOfFile
+ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 ###############
 #仅安卓支持终止所有进程
 if [ "$(uname -o)" = 'Android' ]; then
