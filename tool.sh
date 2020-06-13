@@ -1908,9 +1908,9 @@ standand_desktop_install() {
 	RETURN_TO_WHERE='standand_desktop_install'
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 17 56 7 \
-		"1" "xfce：兼容性高" \
-		"2" "lxde：轻量化桌面" \
-		"3" "mate：基于GNOME 2" \
+		"1" "xfce(兼容性高)" \
+		"2" "lxde(轻量化桌面)" \
+		"3" "mate(基于GNOME 2)" \
 		"4" "Other其它桌面(内测版新功能):lxqt,kde" \
 		"5" "window manager窗口管理器(公测):ice,fvwm" \
 		"6" "display manager显示(登录)管理器:lightdm,sddm" \
@@ -8011,7 +8011,7 @@ creat_qemu_aarch64_startup_script() {
 			-smp 4 \
 			-cpu max \
 			-machine virt \
-			--accel tcg,thread=multi \
+			--accel tcg \
 			-vga std \
 			-m 2048 \
 			-hda ${HOME}/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
@@ -8559,7 +8559,7 @@ creat_qemu_startup_script() {
 			-smp 4 \
 			-cpu max \
 			-vga std \
-			--accel tcg,thread=multi \
+			--accel tcg \
 			-m 2048 \
 			-hda ${HOME}/sd/Download/backup/alpine_v3.11_x64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
@@ -12193,7 +12193,7 @@ install_gnome_logs() {
 }
 ##################
 kde_config_module_for_fcitx() {
-	DEPENDENCY_01="qt4-qtconfig"
+	DEPENDENCY_01=""
 	DEPENDENCY_02='kcm-fcitx'
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_02='kcm-fcitx'
