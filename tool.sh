@@ -2696,7 +2696,7 @@ install_lxde_desktop() {
 ##########################
 arch_linux_mate_warning() {
 	echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET},并且处于${GREEN}proot容器${RESET}环境下！"
-	echo "mate-session在当前容器环境下可能出现${RED}屏幕闪烁${RESET}的现象"
+	echo "mate-session在当前容器环境下可能会出现${RED}屏幕闪烁${RESET}的现象"
 	echo "按${GREEN}回车键${RESET}${BLUE}继续安装${RESET}"
 	echo "${YELLOW}Do you want to continue?[Y/l/x/q/n]${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET},type n to return."
@@ -12098,16 +12098,16 @@ install_pinyin_input_method() {
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
-			"1" "im-config配置输入法" \
-			"2" "fcitx-diagnose诊断" \
-			"3" "KDE配置模块" \
-			"4" "sogou搜狗拼音" \
-			"5" "iflyime讯飞语音+拼音+五笔" \
-			"6" "rime中州韻(擊響中文之韻)" \
-			"7" "baidu百度输入法" \
-			"8" "libpinyin(提供智能整句输入算法核心)" \
-			"9" "sunpinyin(基于统计学语言模型)" \
-			"10" "google谷歌拼音(引擎fork自Android版)" \
+			"1" "fcitx-diagnose诊断" \
+			"2" "KDE配置模块" \
+			"3" "im-config配置输入法" \
+			"4" "google谷歌拼音(引擎fork自Android版)" \
+			"5" "sogou搜狗拼音" \
+			"6" "iflyime讯飞语音+拼音+五笔" \
+			"7" "rime中州韻(擊響中文之韻)" \
+			"8" "baidu百度输入法" \
+			"9" "libpinyin(提供智能整句输入算法核心)" \
+			"10" "sunpinyin(基于统计学语言模型)" \
 			"11" "fcitx云拼音模块" \
 			"12" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -12115,19 +12115,19 @@ install_pinyin_input_method() {
 	)
 	case ${INPUT_METHOD} in
 	0 | "") beta_features ;;
-	1) input_method_config ;;
-	2)
+	1)
 		echo '若您无法使用fcitx,则请根据以下诊断信息自行解决'
 		fcitx-diagnose
 		;;
-	3) kde_config_module_for_fcitx ;;
-	4) install_sogou_pinyin ;;
-	5) install_iflyime_pinyin ;;
-	6) install_rime_pinyin ;;
-	7) install_baidu_pinyin ;;
-	8) install_lib_pinyin ;;
-	9) install_sun_pinyin ;;
-	10) install_google_pinyin ;;
+	2) kde_config_module_for_fcitx ;;
+	3) input_method_config ;;
+	4) install_google_pinyin ;;
+	5) install_sogou_pinyin ;;
+	6) install_iflyime_pinyin ;;
+	7) install_rime_pinyin ;;
+	8) install_baidu_pinyin ;;
+	9) install_lib_pinyin ;;
+	10) install_sun_pinyin ;;
 	11) install_fcitx_module_cloud_pinyin ;;
 	12) install_uim_pinyin ;;
 	esac
@@ -12138,6 +12138,7 @@ install_pinyin_input_method() {
 }
 ########################
 input_method_config() {
+	NON_DEBIAN='true'
 	if [ ! $(command -v im-config) ]; then
 		DEPENDENCY_01=''
 		DEPENDENCY_02='im-config'
