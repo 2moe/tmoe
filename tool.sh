@@ -1908,9 +1908,9 @@ standand_desktop_install() {
 	RETURN_TO_WHERE='standand_desktop_install'
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
 		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 17 56 7 \
-		"1" "xfce(兼容性高)" \
-		"2" "lxde(轻量化桌面)" \
-		"3" "mate(基于GNOME 2)" \
+		"1" "xfce(兼容性高,简单优雅)" \
+		"2" "lxde(轻量化桌面,资源占用低)" \
+		"3" "mate(GNOME2的延续,让用户体验更舒适的环境)" \
 		"4" "Other其它桌面(内测版新功能):lxqt,kde" \
 		"5" "window manager窗口管理器(公测):ice,fvwm" \
 		"6" "display manager显示(登录)管理器:lightdm,sddm" \
@@ -2390,8 +2390,8 @@ other_desktop() {
 		"WARNING！本功能仍处于测试阶段,可能无法正常运行。部分桌面依赖systemd,无法在chroot环境中运行\nAlpha features may not work properly." 17 50 6 \
 		"1" "lxqt(lxde原作者基于QT开发的桌面)" \
 		"2" "kde plasma5(风格华丽的桌面环境)" \
-		"3" "gnome3(GNU项目的一部分)" \
-		"4" "cinnamon(肉桂类似于GNOME2,对用户友好)" \
+		"3" "gnome3(GNU网络对象模型环境)" \
+		"4" "cinnamon(肉桂类似于GNOME,对用户友好)" \
 		"5" "dde(国产deepin系统桌面)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -5010,19 +5010,31 @@ tmoe_games_menu() {
 	tmoe_games_menu
 }
 #############
-remove_steam_app() {
-	echo "${PACKAGES_REMOVE_COMMAND} steam-launcher"
-	${PACKAGES_REMOVE_COMMAND} steam-launcher
+remove_debian_steam_app() {
 	if [ "${ARCH_TYPE}" != "i386" ]; then
 		echo 'dpkg  --remove-architecture i386'
 		echo '正在移除对i386软件包的支持'
-		apt purge ".*:i386"
+		#apt purge ".*:i386"
+		aptitude remove ~i~ri386
 		dpkg --remove-architecture i386
 		apt update
 	fi
 }
-install_steam_app() {
-	non_debian_function
+###############
+remove_steam_app() {
+	echo "${PACKAGES_REMOVE_COMMAND} steam-launcher steam"
+	${PACKAGES_REMOVE_COMMAND} steam-launcher steam
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		remove_debian_steam_app
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		#remove_fedora_steam_app
+		rm -fv /etc/yum.repos.d/steam.repo
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		remove_arch_steam_app
+	fi
+}
+###############
+install_debian_steam_app() {
 	LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/steamos/steam/pool/steam/s/steam/'
 	GREP_NAME='steam-launcher'
 	cd /tmp
@@ -5031,6 +5043,58 @@ install_steam_app() {
 	apt update
 	apt install ./${LATEST_DEB_VERSION}
 	rm -fv ./${LATEST_DEB_VERSION}
+	DEPENDENCY_02='steam-launcher'
+	beta_features_install_completed
+}
+#################
+install_fedora_steam_app() {
+	cat >/etc/yum.repos.d/steam.repo <<-'ENDOFFEDORASTEAM'
+		[steam]
+		name=Steam RPM packages (and dependencies) for Fedora
+		baseurl=http://spot.fedorapeople.org/steam/fedora-$releasever/
+		enabled=1
+		skip_if_unavailable=1
+		gpgcheck=0
+	ENDOFFEDORASTEAM
+}
+####################
+check_arch_multi_lib_line() {
+	cd /etc
+	ARCH_MULTI_LIB_LINE=$(cat pacman.conf | grep '\[multilib\]' -n | cut -d ':' -f 1 | tail -n 1)
+	ARCH_MULTI_LIB_INCLUDE_LINE=$((${ARCH_MULTI_LIB_LINE} + 1))
+}
+#################
+install_arch_steam_app() {
+	check_arch_multi_lib_line
+	echo "正在修改/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
+	sed -i "${ARCH_MULTI_LIB_LINE}c\[multilib]" pacman.conf
+	sed -i "${ARCH_MULTI_LIB_INCLUDE_LINE}c\Include = /etc/pacman.d/mirrorlist" pacman.conf
+}
+#################
+remove_arch_steam_app() {
+	check_arch_multi_lib_line
+	echo "正在注释掉/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
+	sed -i "${ARCH_MULTI_LIB_LINE}c\#[multilib]" pacman.conf
+	sed -i "${ARCH_MULTI_LIB_INCLUDE_LINE}c\#Include = /etc/pacman.d/mirrorlist" pacman.conf
+}
+################
+install_steam_app() {
+	DEPENDENCY_01='steam-launcher'
+	DEPENDENCY_02="steam"
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		install_debian_steam_app
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		install_fedora_steam_app
+		beta_features_quick_install
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_01='steam-native-runtime'
+		install_arch_steam_app
+		#此处需要选择显卡驱动，故不要使用quick_install_function
+		echo "pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}"
+		pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}
+	else
+		beta_features_quick_install
+	fi
 }
 ####################
 install_supertuxkart_game() {
@@ -7140,6 +7204,7 @@ tmoe_system_app_menu() {
 		"5" "boot repair(开机引导修复)" \
 		"6" "neofetch(显示当前系统信息和发行版logo)" \
 		"7" "yasat:简单的安全审计工具" \
+		"8" "rc.local-systemd(修改开机自启动脚本)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7152,12 +7217,82 @@ tmoe_system_app_menu() {
 	5) install_boot_repair ;;
 	6) start_neofetch ;;
 	7) start_yasat ;;
+	8) modify_rc_local_script ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_system_app_menu
 }
 #############
+creat_rc_local_startup_script() {
+	cat >rc.local <<'ENDOFRCLOCAL'
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+# 请在 exit0 这一行(最末行)以上之处添加您在开机时需要执行的脚本或命令。
+# 例如:您写了一个开机自动挂载硬盘的脚本，该文件位于/usr/local/bin/mount-zfs-filesystem
+# 注：对于外置USB硬盘盒而言，若将其写进/etc/fstab，且硬盘在系统开机前未连接或连接不稳定，则有可能导致开机出现异常，故您使用了脚本来解决。
+# 若您需要在开机时自动执行该脚本，则您可以输入以下那一行命令。
+# bash /usr/local/bin/mount-zfs-filesystem
+# '#'为注释符号，去掉该符号生效。
+
+exit 0
+ENDOFRCLOCAL
+	chmod +x rc.local
+}
+#################
+creat_rc_local_systemd_script() {
+	cat >/etc/systemd/system/rc-local.service <<-'ENDOFSYSTEMD'
+		[Unit]
+		Description=/etc/rc.local
+		ConditionPathExists=/etc/rc.local
+		 
+		[Service]
+		Type=forking
+		ExecStart=/etc/rc.local start
+		TimeoutSec=0
+		StandardOutput=tty
+		RemainAfterExit=yes
+		SysVStartPriority=99
+		 
+		[Install]
+		WantedBy=multi-user.target
+	ENDOFSYSTEMD
+}
+#################
+modify_rc_local_script() {
+	cd /etc
+	if [ ! -e "rc.local" ]; then
+		creat_rc_local_startup_script
+	fi
+	cat <<-EOF
+		${GREEN}systemctl enable rc-local${RESET}  ${BLUE}--开机自启${RESET}
+		${GREEN}systemctl disable rc-local${RESET}  ${BLUE}--禁用开机自启${RESET}
+		${GREEN}systemctl status rc-local${RESET}  ${BLUE}--查看该服务进程状态${RESET}
+		${GREEN}systemctl start rc-local${RESET}  ${BLUE}--启动${RESET}
+		${GREEN}systemctl stop rc-local${RESET}  ${BLUE}--停止${RESET}
+	EOF
+
+	if [ ! -e "/etc/systemd/system/rc-local.service" ]; then
+		creat_rc_local_systemd_script
+		nano rc.local
+		echo "是否将其设置为开机自启？"
+		do_you_want_to_continue
+		systemctl enable rc-local.service
+	else
+		nano rc.local
+	fi
+}
+##################
 start_neofetch() {
 	if [ ! $(command -v neofetch) ]; then
 		cd /usr/local/bin
@@ -12110,7 +12245,7 @@ install_wine64() {
 	if [ "${ARCH_TYPE}" != "i386" ]; then
 		cat <<-'EOF'
 			如需完全卸载wine，那么您还需要移除i386架构的软件包。
-			apt purge "*:i386"
+			aptitude remove ~i~ri386
 			dpkg  --remove-architecture i386
 			apt update
 		EOF
