@@ -7451,7 +7451,11 @@ network_manager_tui() {
 	NON_DEBIAN='false'
 	RETURN_TO_WHERE='network_manager_tui'
 	if [ ! $(command -v nmtui) ]; then
-		DEPENDENCY_02='network-manager'
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCY_02='network-manager'
+		else
+			DEPENDENCY_02='networkmanager'
+		fi
 		beta_features_quick_install
 	fi
 
@@ -7526,7 +7530,12 @@ network_manager_tui() {
 ################
 install_gnome_net_manager() {
 	DEPENDENCY_01="gnome-nettool"
-	DEPENDENCY_02="network-manager-gnome"
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_02="network-manager-gnome"
+	else
+		DEPENDENCY_02="gnome-network-manager"
+	fi
+
 	beta_features_quick_install
 }
 ######################
