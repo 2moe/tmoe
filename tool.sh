@@ -440,19 +440,19 @@ tmoe_linux_tool_menu() {
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
 		whiptail --title "Tmoe-linux Tool输debian-i启动(20200611-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能" 20 50 7 \
-			"1" "Install GUI 安装图形界面" \
+			"1" "Install GUI:安装图形界面" \
 			"2" "Software center-01:软件中心试作型1号站" \
-			"3" "Desktop beautification桌面美化" \
+			"3" "Desktop beautification:桌面美化" \
 			"4" "Modify vnc/xsdl/rdp(远程桌面)conf" \
-			"5" "Download video 解析视频链接" \
-			"6" "Personal netdisk 个人云网盘/文件共享" \
-			"7" "Update tmoe-linux tool 更新本工具" \
-			"8" "Start zsh tool 启动zsh管理工具" \
-			"9" "FAQ 常见问题" \
-			"10" "software sources软件镜像源管理" \
-			"11" "download iso(Android,linux等)" \
-			"12" "qemu(x86_64虚拟机管理)" \
-			"13" "Beta Features 测试版功能" \
+			"5" "Download video:解析视频链接" \
+			"6" "Personal netdisk:个人云网盘/文件共享" \
+			"7" "Update tmoe-linux tool(更新本工具)" \
+			"8" "Start zsh tool:启动zsh管理工具" \
+			"9" "FAQ:常见问题" \
+			"10" "software sources:软件镜像源管理" \
+			"11" "download iso:下载镜像(Android,linux等)" \
+			"12" "qemu:x86_64虚拟机管理" \
+			"13" "Beta Features:测试版功能" \
 			"0" "Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -3161,10 +3161,10 @@ tmoe_desktop_beautification() {
 	RETURN_TO_WHERE='tmoe_desktop_beautification'
 	BEAUTIFICATION=$(whiptail --title "beautification" --menu \
 		"你想要如何美化桌面？\n How do you want to beautify the desktop environment? " 0 50 0 \
-		"1" "themes主题" \
-		"2" "icon-theme图标包" \
-		"3" "wallpaper壁纸" \
-		"4" "mouse cursor鼠标指针" \
+		"1" "themes:主题" \
+		"2" "icon-theme:图标包" \
+		"3" "wallpaper:壁纸" \
+		"4" "mouse cursor(鼠标指针)" \
 		"5" "conky(显示系统和资源占用等信息)" \
 		"6" "dock栏(plank/docky)" \
 		"7" "compiz(实现酷炫3D效果)" \
@@ -3929,18 +3929,18 @@ tmoe_sources_list_manager() {
 	SOURCES_LIST=$(
 		whiptail --title "software-sources tmoe-manager" --menu \
 			"您想要对软件源进行何种管理呢？" 17 50 9 \
-			"1" "university国内高校镜像源" \
-			"2" "business国内商业镜像源" \
-			"3" "ping镜像站延迟测试" \
-			"4" "speed镜像站下载速度测试" \
-			"5" "+ppa(debian添加ubuntu ppa源)" \
-			"6" "restore to default还原默认源" \
-			"7" "edit list manually手动编辑" \
+			"1" "university:国内高校镜像源" \
+			"2" "business:国内商业镜像源" \
+			"3" "ping(镜像站延迟测试)" \
+			"4" "speed(镜像站下载速度测试)" \
+			"5" "+ppa:(debian添加ubuntu ppa源)" \
+			"6" "restore to default(还原默认源)" \
+			"7" "edit list manually(手动编辑)" \
 			"8" "${EXTRA_SOURCE}" \
-			"9" "FAQ常见问题" \
+			"9" "FAQ(常见问题)" \
 			"10" "http/https" \
-			"11" "delete invalid rows去除无效行" \
-			"12" "trust强制信任软件源" \
+			"11" "delete invalid rows(去除无效行)" \
+			"12" "trust(强制信任软件源)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4670,17 +4670,17 @@ explore_debian_opt_repo() {
 	cd /usr/share/applications/
 	INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
 		"您想要安装哪个软件？按方向键选择，回车键确认！\n Which software do you want to install? " 16 50 7 \
-		"1" "cocomusic:第三方QQ音乐客户端" \
-		"2" "iease-music:界面华丽的云音乐客户端" \
-		"3" "electron-netease-cloud-music:云音乐客户端" \
-		"4" "listen1:免费音乐聚合" \
-		"5" "lx-music-desktop:音乐下载助手" \
-		"6" "feeluown(x64):支持网易云、虾米" \
-		"7" "netease-cloud-music-gtk(x64):云音乐" \
-		"8" "picgo:图床上传工具" \
-		"9" "other其他软件" \
-		"10" "remove移除本仓库" \
-		"11" "切换软件源仓库" \
+		"1" "cocomusic(第三方QQ音乐客户端)" \
+		"2" "iease-music(界面华丽的云音乐客户端)" \
+		"3" "electron-netease-cloud-music(云音乐客户端)" \
+		"4" "listen1(免费音乐聚合)" \
+		"5" "lx-music-desktop(音乐下载助手)" \
+		"6" "feeluown(x64,支持网易云、虾米)" \
+		"7" "netease-cloud-music-gtk(x64,云音乐)" \
+		"8" "picgo(图床上传工具)" \
+		"9" "other:其他软件" \
+		"10" "remove(移除本仓库)" \
+		"11" "switch source repo:切换软件源仓库" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############
@@ -5461,11 +5461,11 @@ modify_remote_desktop_config() {
 	##################
 	REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
 		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 6 \
-		"1" "tightvnc/tigervnc(应用广泛)" \
-		"2" "x11vnc(通过VNC来连接真实X桌面)" \
-		"3" "X服务(XSDL/VcXsrv)" \
-		"4" "XRDP(使用微软开发的rdp协议)" \
-		"5" "Wayland(测试版,取代X Window)" \
+		"1" "tightvnc/tigervnc:应用广泛" \
+		"2" "x11vnc:通过VNC来连接真实X桌面" \
+		"3" "X服务:(XSDL/VcXsrv)" \
+		"4" "XRDP:使用微软开发的rdp协议" \
+		"5" "Wayland:(测试版,取代X Window)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
