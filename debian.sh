@@ -425,9 +425,13 @@ gnu_linux() {
 		if ! grep -q '172..*1' "/etc/resolv.conf"; then
 			if [ ! -e "/mnt/c/Users/Public/Downloads/wsl_update_x64.msi" ]; then
 				cd /mnt/c/Users/Public/Downloads/
-				echo "正在下载WSL2内核..."
-				echo "目录C:\Users\Public\Downloads"
-				aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://cdn.tmoe.me/windows/20H1/wsl_update_x64.msi' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' || aria2c -x 5 -k 1M --split=5 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://m.tmoe.me/down/share/windows/20H1/wsl_update_x64.msi'
+				cat <<-EOFKERNEL
+					正在下载WSL2内核...
+					目录C:\Users\Public\Downloads
+					https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel
+					https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
+				EOFKERNEL
+				aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi'
 				#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\wsl_update_x64.msi"
 			fi
 			if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
@@ -450,54 +454,35 @@ gnu_linux() {
 				echo "${YELLOW}按回车键继续。${RESET}"
 				read
 			else
-				echo "您的系统版本低于10.0.19041.1，需要更新系统。"
-				echo "${YELLOW}是否需要下载10.0.19041.172 iso镜像文件，并更新系统？[Y/n]${RESET} "
-				echo "该镜像只合成了专业和企业版,${YELLOW}按回车键确认，输n拒绝。${RESET}"
-				echo "若您使用的不是这两个版本，则请使用windows update 或更换产品密钥，亦或者输 ${YELLOW}n${RESET}拒绝下载 .[Y/n]"
+				echo "Do you want to download win10_2004_x64 iso and upgrade system?[Y/n]"
+				echo "您的宿主机系统版本低于10.0.19041，需要更新系统。"
+				echo "${YELLOW}是否需要下载10.0.19041 iso镜像文件，并更新系统？[Y/n]${RESET} "
+				echo "${YELLOW}按回车键确认，输n拒绝。${RESET}"
+				echo "若您不想通过此ISO来升级，则请输 ${YELLOW}n${RESET}拒绝下载,并使用microsoft windows update.[Y/n]"
 				echo "请在更新完系统后，以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart"
 				echo "dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart"
 				echo "wsl --set-default-version 2"
 				/mnt/c/WINDOWS/system32/control.exe /name Microsoft.WindowsUpdate
-				echo ""
+				echo "-------------------------------"
 				read opt
 				case $opt in
 				y* | Y* | "")
 					cd /mnt/c/Users/Public/Downloads/
-					if [ ! -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" ]; then
-						echo "即将为您下载10.0.19041.172 iso镜像文件..."
+					ISO_FILE_NAME='win10_2004_x64_tmoe.iso'
+					TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+					if [ ! -e "${ISO_FILE_NAME}" ]; then
+						echo "即将为您下载10.0.19041 iso镜像文件..."
 						echo "目录C:\Users\Public\Downloads"
-						aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" 'https://cdn.tmoe.me/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" 'https://m.tmoe.me/down/share/windows/20H1/19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.ISO'
+						aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" 'https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" 'https://cdn.tmoe.me/windows/20H1/${ISO_FILE_NAME}'
 					fi
 					/mnt/c/WINDOWS/system32/cmd.exe /c "start ."
-					#下面那处需要再次if,而不是else
-					if [ -e "19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso" ]; then
-						echo "正在校验sha256sum..."
-						echo 'Verifying sha256sum ...'
-						SHA256SUMDEBIAN="$(sha256sum '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso' | cut -c 1-64)"
-						CORRENTSHA256SUM='f8972cf8e3d6e7ff1abff5f7f4e3e7deeef05422c33299d911253b21e6ee2b49'
-						if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
-							echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
-							echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
-							echo 'sha256校验值不一致，请重新下载！'
-							echo 'sha256sum value is inconsistent, please download again.'
-							echo "按回车键无视错误并继续打开镜像文件,按Ctrl+C取消。"
-							echo "${YELLOW}Press enter to continue.${RESET}"
-							read
-						else
-							echo 'Congratulations,检测到sha256sum一致'
-							echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
-						fi
-						echo "请手动运行${YELLOW}setup.exe${RESET}"
-						/mnt/c/WINDOWS/explorer.exe '19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso'
-						echo "按任意键继续"
-						echo "${YELLOW}Press any key to continue! ${RESET}"
-						read
-					fi
-
+					echo "请手动运行${YELLOW}setup.exe${RESET}"
+					/mnt/c/WINDOWS/explorer.exe ${ISO_FILE_NAME}
+					echo "按任意键继续"
+					echo "${YELLOW}Press any key to continue! ${RESET}"
+					read
 					;;
-
-				\
-					n* | N*) echo "skipped." ;;
+				n* | N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
 				esac
 			fi
