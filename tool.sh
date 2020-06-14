@@ -1954,7 +1954,13 @@ tmoe_display_manager_install() {
 	case "${INSTALLDESKTOP}" in
 	0 | "") tmoe_linux_tool_menu ;;
 	1)
-		DEPENDENCY_01='ukui-greeter lightdm-gtk-greeter-settings'
+		if [ "${LINUX_DISTRO}" = "alpine" ]; then
+			setup-xorg-base
+			DEPENDENCY_01='lightdm-gtk-greeter xf86-input-mouse xf86-input-keyboard polkit consolekit2'
+		else
+			DEPENDENCY_01='ukui-greeter lightdm-gtk-greeter-settings'
+		fi
+
 		DEPENDENCY_02='lightdm'
 		;;
 	2)
@@ -2895,7 +2901,7 @@ install_gnome3_desktop() {
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
 		DEPENDENCY_01='patterns-gnome-gnome_x11'
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-		DEPENDENCY_01="gnome-desktop"
+		DEPENDENCY_01="gnome"
 		REMOTE_DESKTOP_SESSION='gnome-session'
 	fi
 	####################
@@ -7803,7 +7809,11 @@ network_manager_tui() {
 	fi
 	pgrep NetworkManager >/dev/null
 	if [ "$?" != "0" ]; then
-		systemctl start NetworkManager || service NetworkManager start
+		if [ "${LINUX_DISTRO}" = "alpine" ]; then
+			service networkmanager start
+		else
+			systemctl start NetworkManager || service NetworkManager start || service networkmanager start
+		fi
 	fi
 
 	NETWORK_MANAGER=$(whiptail --title "NETWORK" --menu \
@@ -7815,8 +7825,9 @@ network_manager_tui() {
 		"5" "driver:网卡驱动" \
 		"6" "View ip address:查看ip" \
 		"7" "edit config manually:手动编辑" \
-		"8" "blueman(蓝牙管理器,GTK+前端)" \
-		"9" "gnome-nettool(网络工具)" \
+		"8" "systemctl enable NetworkManager开机自启" \
+		"9" "blueman(蓝牙管理器,GTK+前端)" \
+		"10" "gnome-nettool(网络工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7853,8 +7864,28 @@ network_manager_tui() {
 		nano /etc/network/interfaces.d/*
 		nano /etc/network/interfaces
 		;;
-	8) install_blueman ;;
-	9) install_gnome_net_manager ;;
+	8)
+		if [ "${LINUX_DISTRO}" = "alpine" ]; then
+			TMOE_DEPENDENCY_SYSTEMCTL='networkmanager'
+		else
+			TMOE_DEPENDENCY_SYSTEMCTL='NetworkManager'
+		fi
+
+		if (whiptail --title "您想要对这个小可爱做什么" --yes-button "ENABLE启用" --no-button "DISABLE禁用" --yesno "您是否需要启用网络管理器开机自启的功能？♪(^∇^*) " 0 50); then
+			echo "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+			systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}
+			if [ "$?" = "0" ]; then
+				echo "已添加至自启任务"
+			else
+				echo "添加自启任务失败"
+			fi
+		else
+			echo "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+			systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}
+		fi
+		;;
+	9) install_blueman ;;
+	10) install_gnome_net_manager ;;
 	esac
 	##########################
 	press_enter_to_return
