@@ -7738,23 +7738,29 @@ tmoe_file_browser_app_menu() {
 		"Which software do you want to install？" 0 50 0 \
 		"1" "文件管理器:thunar/nautilus/dolphin" \
 		"2" "catfish(文件搜索)" \
-		"3" "gparted(GNOME磁盘分区工具)" \
-		"4" "cfdisk:在终端下对磁盘进行分区" \
-		"5" "partitionmanager(KDE磁盘分区工具)" \
-		"6" "mc:终端下的文件管理器" \
-		"7" "ranger:带有VI键绑定的控制台文件管理器" \
+		"3" "gparted(强大的GNOME磁盘编辑器)" \
+		"4" "baobab(直观易用的GNOME磁盘空间占用分析器)" \
+		"5" "cfdisk:在终端下对磁盘进行分区" \
+		"6" "partitionmanager(KDE磁盘分区工具)" \
+		"7" "mc:终端下的文件管理器" \
+		"8" "ranger:带有VI键绑定的控制台文件管理器" \
+		"9" "gnome-disks(实用的磁盘管理工具)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
+	#"9" "disk-manager(简单易用的分区挂载工具)" \
+	#此软件包依赖python2，已被移除
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
 	1) thunar_nautilus_dolphion ;;
 	2) install_catfish ;;
 	3) install_gparted ;;
-	4) start_cfdisk ;;
-	5) install_partitionmanager ;;
-	6) install_mc_fm ;;
-	7) install_ranger_fm ;;
+	4) install_baobab ;;
+	5) start_cfdisk ;;
+	6) install_partitionmanager ;;
+	7) install_mc_fm ;;
+	8) install_ranger_fm ;;
+	9) install_gnome_disk_utility ;;
 	esac
 	##########################
 	press_enter_to_return
@@ -7787,14 +7793,23 @@ start_cfdisk() {
 	cfdisk
 }
 ##################
+install_gnome_disk_utility() {
+	DEPENDENCY_02="gnome-disk-utility"
+	beta_features_quick_install
+}
+##################
 install_partitionmanager() {
 	DEPENDENCY_02="partitionmanager"
 	beta_features_quick_install
 }
 ##################
+install_baobab() {
+	DEPENDENCY_02="baobab"
+	beta_features_quick_install
+}
+############
 install_gparted() {
-	DEPENDENCY_01="gparted"
-	DEPENDENCY_02="baobab disk-manager"
+	DEPENDENCY_02="gparted"
 	beta_features_quick_install
 }
 ##################
@@ -13025,13 +13040,6 @@ install_virtual_box() {
 		debian_add_virtual_box_gpg
 		beta_features_quick_install
 	fi
-}
-################
-install_gparted() {
-	DEPENDENCY_01="gparted"
-	DEPENDENCY_02="baobab disk-manager"
-	NON_DEBIAN='false'
-	beta_features_quick_install
 }
 ################
 install_typora() {
