@@ -2882,7 +2882,8 @@ install_gnome3_desktop() {
 		auto_select_keyboard_layout
 		#aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
 		#apt install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
-		DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell'
+		DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell gnome-core gnome-shell-extension-dashtodock'
+		#若不包含gnome-core，则为最简化安装
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		#yum groupinstall "GNOME Desktop Environment"
 		#dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
@@ -3513,7 +3514,7 @@ download_manjaro_wallpaper() {
 }
 #########
 grep_arch_linux_pkg() {
-	ARCH_WALLPAPER_VERSION=$(cat index.html | grep -v '.xz.sig' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	ARCH_WALLPAPER_VERSION=$(cat index.html | grep -Ev '.xz.sig|.zst.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
 	echo "${ARCH_WALLPAPER_URL}"
 	aria2c --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
