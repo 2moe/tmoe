@@ -378,7 +378,6 @@ check_dependencies() {
 
 	busybox --help 2>&1 | grep -q ', ar,'
 	if [ "$?" != "0" ]; then
-		BUSYBOX_AR='false'
 		/usr/local/bin/busybox --help 2>&1 | grep -q ', ar,'
 		if [ "$?" != "0" ]; then
 			chmod +x /usr/local/bin/busybox
@@ -6917,9 +6916,7 @@ fix_linux_utc_timezone() {
 	echo "If you want to disable it,then enter ${GREEN}systemctl disable chrony${RESET}"
 	echo "${GREEN}chronyc sourcestats -v${RESET}"
 	chronyc sourcestats -v
-
 }
-
 ##############
 tty_chinese_code() {
 	if (whiptail --title "您想要对这个小可爱执行哪项方案?" --yes-button 'fbterm' --no-button '修改$LANG' --yesno "目前有两种简单的解决方法(っ °Д °)\n前者提供了一个快速的终端仿真器，它直接运行在你的系统中的帧缓冲 (framebuffer) 之上；而后者则是修改语言变量。" 11 45); then
@@ -8056,18 +8053,20 @@ install_debian_nonfree_network_card_driver() {
 		do_you_want_to_continue
 		beta_features_quick_install
 	else
-		download_network_card_device
+		download_network_card_driver
 	fi
 	press_enter_to_return
 	install_debian_nonfree_network_card_driver
 }
 #############
-download_network_card_device() {
+download_network_card_driver() {
 	mkdir -p cd ${HOME}/sd/Download
 	cd ${HOME}/sd/Download
 	echo "即将为您下载至${HOME}/sd/Download"
 	if [ $(command -v apt-get) ]; then
+		apt show ${DEPENDENCY_02}
 		apt download ${DEPENDENCY_02}
+		THE_LATEST_DEB_VERSION="$(ls | grep "${DEPENDENCY_02}.*deb" | head -n 1)"
 	else
 		GREP_NAME=${DEPENDENCY_02}
 		REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/non-free/f/firmware-nonfree/'
@@ -8075,9 +8074,20 @@ download_network_card_device() {
 		THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 		echo ${THE_LATEST_DEB_LINK}
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
-		apt show ./${THE_LATEST_DEB_VERSION}
 	fi
+
+	mkdir -p "${DEPENDENCY_02}"
+	cd "${DEPENDENCY_02}"
+	if [ "${BUSYBOX_AR}" = 'true' ]; then
+		busybox ar xv ../${THE_LATEST_DEB_VERSION}
+	else
+		/usr/local/bin/busybox ar xv ../${THE_LATEST_DEB_VERSION}
+	fi
+	tar -Jxvf ./data.tar.*
+	rm *.tar.* debian-binary
+	cd ..
 	echo "Download completed,文件已保存至${HOME}/sd/Download"
+
 }
 ###############
 list_network_devices() {
