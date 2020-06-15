@@ -7742,6 +7742,8 @@ tmoe_file_browser_app_menu() {
 		"3" "gparted(GNOME磁盘分区工具)" \
 		"4" "cfdisk:在终端下对磁盘进行分区" \
 		"5" "partitionmanager(KDE磁盘分区工具)" \
+		"6" "mc:终端下的文件管理器" \
+		"7" "ranger:带有VI键绑定的控制台文件管理器" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -7752,10 +7754,30 @@ tmoe_file_browser_app_menu() {
 	3) install_gparted ;;
 	4) start_cfdisk ;;
 	5) install_partitionmanager ;;
+	6) install_mc_fm ;;
+	7) install_ranger_fm ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_file_browser_app_menu
+}
+#############
+install_mc_fm() {
+	if [ ! $(command -v mc) ]; then
+		DEPENDENCY_02="mc"
+		beta_features_quick_install
+		echo "安装完成，您之后可以输mc启动"
+	fi
+	mc
+}
+###########
+install_ranger_fm() {
+	if [ ! $(command -v ranger) ]; then
+		DEPENDENCY_02="ranger"
+		beta_features_quick_install
+		echo "安装完成，您之后可以输ranger启动"
+	fi
+	ranger
 }
 #############
 start_cfdisk() {
