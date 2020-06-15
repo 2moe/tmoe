@@ -12655,13 +12655,13 @@ input_method_config() {
 		echo "正在将${HOME}/.config/fcitx和${HOME}/.xprofile的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .config/fcitx .xprofile
 	fi
-	fcitx || fcitx5
+	fcitx &>/dev/null || fcitx5 &>/dev/null
 	echo "请手动修改键盘布局，并打开fcitx-configtool"
 }
 ####################
 check_current_user_name_and_group() {
 	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}')
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
 }
 #################
 install_uim_pinyin() {
