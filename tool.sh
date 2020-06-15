@@ -12649,7 +12649,11 @@ input_method_config() {
 		echo 'Sorry，本功能只支持deb系发行版'
 	fi
 	im-config
-	fcitx-configtool
+	chmod 755 -R .config/fcitx .xprofile
+	chown -R $(whoami):$(whoami) .config/fcitx .xprofile
+	fcitx || fcitx5
+	echo "请手动修改键盘布局，并打开fcitx-configtool"
+	#
 }
 ####################
 install_uim_pinyin() {
