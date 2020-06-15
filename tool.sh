@@ -1693,7 +1693,7 @@ install_chromium_browser() {
 	read opt
 	case $opt in
 	y* | Y* | "")
-		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+		if [ "${DEBIAN_DISTRO}" = "ubuntu" ] || [ "${LINUX_DISTRO}" = "alpine" ]; then
 			fix_chromium_root_ubuntu_no_sandbox
 		else
 			fix_chromium_root_no_sandbox
@@ -2882,7 +2882,7 @@ install_gnome3_desktop() {
 		auto_select_keyboard_layout
 		#aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
 		#apt install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
-		DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell gnome-core gnome-shell-extension-dashtodock'
+		DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell'
 		#若不包含gnome-core，则为最简化安装
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		#yum groupinstall "GNOME Desktop Environment"
@@ -2890,7 +2890,7 @@ install_gnome3_desktop() {
 		DEPENDENCY_01='@GNOME'
 
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_01='gnome gnome-extra'
+		DEPENDENCY_01='gnome-extra gnome'
 
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
@@ -6795,6 +6795,8 @@ xfce4_x11vnc_hidpi_settings() {
 ####################
 frequently_asked_questions() {
 	RETURN_TO_WHERE='frequently_asked_questions'
+	DEPENDENCY_01=''
+	NON_DEBIAN='false'
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 17 50 7 \
 		"1" "Cannot open Baidu Netdisk" \
@@ -6804,6 +6806,7 @@ frequently_asked_questions() {
 		"5" "软件禁止以root权限运行" \
 		"6" "mlocate数据库初始化失败" \
 		"7" "TTY下中文字体乱码" \
+		"8" "Linux与win10双系统时间不一致" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -6873,6 +6876,10 @@ frequently_asked_questions() {
 	if [ "${TMOE_FAQ}" == '7' ]; then
 		tty_chinese_code
 	fi
+	###################
+	if [ "${TMOE_FAQ}" == '8' ]; then
+		fix_linux_utc_timezone
+	fi
 	##################
 	if [ -z "${TMOE_FAQ}" ]; then
 		tmoe_linux_tool_menu
@@ -6881,6 +6888,38 @@ frequently_asked_questions() {
 	press_enter_to_return
 	frequently_asked_questions
 }
+##############
+fix_linux_utc_timezone() {
+	timedatectl status
+	echo "是否需要将硬件时钟设置为本地时区,并开启NTP时间同步？"
+	echo "${GREEN}timedatectl set-local-rtc 1 --adjust-system-clock${RESET}"
+	do_you_want_to_continue
+	#timedatectl set-local-rtc true
+	#hwclock --localtime --systohc
+	if [ ! $(command -v ntpdate) ]; then
+		DEPENDENCY_02='ntpdate'
+		beta_features_quick_install
+	fi
+	if [ ! $(command -v chronyc) ]; then
+		DEPENDENCY_02='chrony'
+		beta_features_quick_install
+	fi
+	echo "正在与microsoft ntp时间同步服务器进行同步..."
+	echo "${GREEN}ntpdate time.windows.com${RESET}"
+	ntpdate time.windows.com
+	echo "${GREEN}timedatectl set-ntp true${RESET}"
+	echo "If you want to close it,then enter ${GREEN}timedatectl set-ntp false${RESET}"
+	echo "You can also modify the config file,the file path is ${BLUE}/etc/systemd/timesyncd.conf${RESET}"
+	echo "正在配置时间自动同步服务..."
+	timedatectl set-ntp true
+	echo "${GREEN}systemctl enable chrony${RESET}"
+	systemctl enable chrony 2>/dev/null || systemctl enable chronyd 2>/dev/null || rc-update add chrony
+	echo "If you want to disable it,then enter ${GREEN}systemctl disable chrony${RESET}"
+	echo "${GREEN}chronyc sourcestats -v${RESET}"
+	chronyc sourcestats -v
+
+}
+
 ##############
 tty_chinese_code() {
 	if (whiptail --title "您想要对这个小可爱执行哪项方案?" --yes-button 'fbterm' --no-button '修改$LANG' --yesno "目前有两种简单的解决方法(っ °Д °)\n前者提供了一个快速的终端仿真器，它直接运行在你的系统中的帧缓冲 (framebuffer) 之上；而后者则是修改语言变量。" 11 45); then
@@ -7187,18 +7226,25 @@ tmoe_other_app_menu() {
 	TMOE_APP=$(whiptail --title "OTHER" --menu \
 		"Which software do you want to install？" 0 50 0 \
 		"1" "OBS-Studio(录屏软件)" \
+		"2" "seahorse(密钥管理)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
 	1) install_obs_studio ;;
+	2) install_seahorse ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_other_app_menu
 }
 ###################
+install_seahorse() {
+	DEPENDENCY_02='seahorse'
+	beta_features_quick_install
+}
+######################
 tmoe_system_app_menu() {
 	RETURN_TO_WHERE='tmoe_system_app_menu'
 	NON_DEBIAN='false'
@@ -8103,7 +8149,7 @@ tmoe_uefi_boot_manager() {
 	press_enter_to_return
 	tmoe_uefi_boot_manager
 }
-###############
+###########
 tmoe_backup_efi() {
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
