@@ -5259,7 +5259,7 @@ install_nds_game_mayomonogatari() {
 	echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 	echo 'Press enter to start the nds emulator.'
 	echo "${YELLOW}按回车键启动游戏。${RESET}"
-	read
+	do_you_want_to_continue
 	/usr/games/desmume "${HOME}/斯隆与马克贝尔的谜之物语/3782.nds" 2>/dev/null &
 }
 ##################
@@ -12559,38 +12559,31 @@ install_pinyin_input_method() {
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
-			"1" "fcitx-diagnose:诊断" \
-			"2" "KDE-fcitx-模块" \
-			"3" "im-config:配置输入法" \
-			"4" "google谷歌拼音(引擎fork自Android版)" \
-			"5" "sogou(搜狗拼音)" \
-			"6" "iflyime(讯飞语音+拼音+五笔)" \
-			"7" "rime中州韻(擊響中文之韻)" \
-			"8" "baidu(百度输入法)" \
-			"9" "libpinyin(提供智能整句输入算法核心)" \
-			"10" "sunpinyin(基于统计学语言模型)" \
-			"11" "fcitx-云拼音模块" \
-			"12" "uim(Universal Input Method)" \
+			"1" "fcitx-FAQ:常见问题与疑难诊断" \
+			"2" "google谷歌拼音(引擎fork自Android版)" \
+			"3" "sogou(搜狗拼音)" \
+			"4" "iflyime(讯飞语音+拼音+五笔)" \
+			"5" "rime中州韻(擊響中文之韻)" \
+			"6" "baidu(百度输入法)" \
+			"7" "libpinyin(提供智能整句输入算法核心)" \
+			"8" "sunpinyin(基于统计学语言模型)" \
+			"9" "fcitx-云拼音模块" \
+			"10" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
 	0 | "") beta_features ;;
-	1)
-		echo '若您无法使用fcitx,则请根据以下诊断信息自行解决'
-		fcitx-diagnose
-		;;
-	2) kde_config_module_for_fcitx ;;
-	3) input_method_config ;;
-	4) install_google_pinyin ;;
-	5) install_sogou_pinyin ;;
-	6) install_iflyime_pinyin ;;
-	7) install_rime_pinyin ;;
-	8) install_baidu_pinyin ;;
-	9) install_lib_pinyin ;;
-	10) install_sun_pinyin ;;
-	11) install_fcitx_module_cloud_pinyin ;;
-	12) install_uim_pinyin ;;
+	1) tmoe_fcitx_faq ;;
+	2) install_google_pinyin ;;
+	3) install_sogou_pinyin ;;
+	4) install_iflyime_pinyin ;;
+	5) install_rime_pinyin ;;
+	6) install_baidu_pinyin ;;
+	7) install_lib_pinyin ;;
+	8) install_sun_pinyin ;;
+	9) install_fcitx_module_cloud_pinyin ;;
+	10) install_uim_pinyin ;;
 	esac
 	###############
 	configure_arch_fcitx
@@ -12598,7 +12591,53 @@ install_pinyin_input_method() {
 	install_pinyin_input_method
 }
 ########################
+##################
+tmoe_fcitx_faq() {
+	NON_DEBIAN='false'
+	DEPENDENCY_01=''
+	RETURN_TO_WHERE='tmoe_fcitx_faq'
+	TMOE_APP=$(whiptail --title "Fcitx FAQ" --menu \
+		"你想要对这个小可爱做什么?" 0 50 5 \
+		"1" "fcitx-diagnose:诊断" \
+		"2" "KDE-fcitx-模块" \
+		"3" "remove ibus移除ibus(防止冲突)" \
+		"4" "im-config:配置输入法" \
+		"5" "edit .xprofile(进入桌面后自动执行的配置)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${TMOE_APP}" in
+	0 | "") install_pinyin_input_method ;;
+	1)
+		echo '若您无法使用fcitx,则请根据以下诊断信息自行解决'
+		fcitx-diagnose
+		;;
+	2) kde_config_module_for_fcitx ;;
+	3) remove_ibus_im ;;
+	4) input_method_config ;;
+	5)
+		cd ${HOME}
+		editor .xprofile
+		chown $(whoami) .xprofile
+		;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_fcitx_faq
+}
+#################
+remove_ibus_im() {
+	${PACKAGES_REMOVE_COMMAND} ibus
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		apt autoremove
+	fi
+}
+##########
 input_method_config() {
+	cd ${HOME}
+	if ! grep '^fcitx' .xprofile; then
+		sed -i '1a\fcitx || fcitx5' .xprofile
+	fi
 	NON_DEBIAN='true'
 	if [ ! $(command -v im-config) ]; then
 		DEPENDENCY_01=''
@@ -12610,6 +12649,7 @@ input_method_config() {
 		echo 'Sorry，本功能只支持deb系发行版'
 	fi
 	im-config
+	fcitx-configtool
 }
 ####################
 install_uim_pinyin() {

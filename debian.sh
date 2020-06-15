@@ -1931,7 +1931,6 @@ start_vscode() {
 download_video_tutorial() {
 	cd /sdcard/Download
 	if [ -f "20200229vnc教程06.mp4" ]; then
-
 		if (whiptail --title "检测到视频已下载,请选择您需要执行的操作！" --yes-button 'Play播放o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the video has been downloaded, do you want to play it, or download it again?" 7 60); then
 			play_video_tutorial
 		else
@@ -1939,11 +1938,8 @@ download_video_tutorial() {
 		fi
 	else
 		download_video_tutorial_again
-
 	fi
-
 }
-
 ##########################
 download_video_tutorial_again() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
