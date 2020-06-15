@@ -438,7 +438,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200611-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200615-18)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0520支持烧录iso,增加tmoe软件包安装器,0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能" 20 50 7 \
 			"1" "Install GUI:安装图形界面" \
 			"2" "Software center-01:软件中心试作型1号站" \
 			"3" "Desktop beautification:桌面美化" \
@@ -6908,7 +6908,6 @@ fix_linux_utc_timezone() {
 	ntpdate time.windows.com
 	echo "${GREEN}timedatectl set-ntp true${RESET}"
 	echo "If you want to close it,then enter ${GREEN}timedatectl set-ntp false${RESET}"
-	echo "You can also modify the config file,the file path is ${BLUE}/etc/systemd/timesyncd.conf${RESET}"
 	echo "正在配置时间自动同步服务..."
 	timedatectl set-ntp true
 	echo "${GREEN}systemctl enable chrony${RESET}"
