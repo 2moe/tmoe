@@ -12650,12 +12650,20 @@ input_method_config() {
 	fi
 	im-config
 	chmod 755 -R .config/fcitx .xprofile
-	chown -R $(whoami):$(whoami) .config/fcitx .xprofile
+	if [ $(id -u) != '0' ]; then
+		check_current_user_name_and_group
+		echo "正在将${HOME}/.config/fcitx和${HOME}/.xprofile的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+		chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .config/fcitx .xprofile
+	fi
 	fcitx || fcitx5
 	echo "请手动修改键盘布局，并打开fcitx-configtool"
-	#
 }
 ####################
+check_current_user_name_and_group() {
+	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}')
+}
+#################
 install_uim_pinyin() {
 	DEPENDENCY_01='uim uim-mozc'
 	DEPENDENCY_02='uim-pinyin'
