@@ -12650,7 +12650,7 @@ input_method_config() {
 	fi
 	im-config
 	chmod 755 -R .config/fcitx .xprofile
-	if [ $(id -u) != '0' ]; then
+	if [ ${HOME} != '/root' ]; then
 		check_current_user_name_and_group
 		echo "正在将${HOME}/.config/fcitx和${HOME}/.xprofile的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .config/fcitx .xprofile
