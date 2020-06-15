@@ -5255,12 +5255,12 @@ install_nds_game_mayomonogatari() {
 	rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
 	rm -f slymkbr1.zip* mayomonogatari2.zip*
 
-	echo "安装完成，您需要手动进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
+	echo "安装完成，您需要手动执行${GREEN}/usr/games/desmume${RESER}，并进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
 	echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
 	echo 'Press enter to start the nds emulator.'
 	echo "${YELLOW}按回车键启动游戏。${RESET}"
 	read
-	desmume "${HOME}/斯隆与马克贝尔的谜之物语/3782.nds" 2>/dev/null &
+	/usr/games/desmume "${HOME}/斯隆与马克贝尔的谜之物语/3782.nds" 2>/dev/null &
 }
 ##################
 install_game_cataclysm() {
