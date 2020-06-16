@@ -2484,12 +2484,10 @@ configure_x11vnc_remote_desktop_session() {
 	fi
 	chmod +x ./*
 
-	if [ ! -e "${HOME}/.vnc/x11passwd" ]; then
+	if [ -e "${HOME}/.vnc/passwd" ]; then
 		cd ${HOME}/.vnc
 		cp -pvf passwd x11passwd
-	fi
-
-	if [ ! -e "${HOME}/.vnc/passwd" ]; then
+	else
 		x11vncpasswd
 	fi
 	echo "x11vnc配置完成，您可以输${GREEN}startx11vnc${RESET}来重启服务"
@@ -6574,24 +6572,6 @@ configure_startxsdl() {
 			fi
 			sleep 2
 		fi
-		#不要将上面uname -r的检测修改为WINDOWSDISTRO
-		#sudo下无法用whoami检测用户
-		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
-			if [ -e "${HOME}/.profile" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
-			elif [ -e "${HOME}/.bashrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
-			elif [ -e "${HOME}/.zshrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
-			fi
-			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-			cd ${HOME}
-			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
-		fi
 		export LANG="en_US.UTF-8"
 	EndOfFile
 	cat >>startxsdl <<-ENDofStartxsdl
@@ -6633,24 +6613,14 @@ configure_startvnc() {
 				sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" ~/.vnc/xstartup
 				echo "已将您的音频服务ip修改为${WSL2IP}"
 			fi
-			#grep 无法从"~/.vnc"中读取文件，去掉双引号就可以了。
 			sleep 2
 		fi
-		CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-		if [ ! -z "${CURRENTuser}" ] && [ "${HOME}" != "/root" ]; then
-			if [ -e "${HOME}/.profile" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
-			elif [ -e "${HOME}/.bashrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
-			elif [ -e "${HOME}/.zshrc" ]; then
-				CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-				CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
-			fi
-			echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
-			cd ${HOME}
-			chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
+		if [ ${HOME} != '/root' ]; then
+		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+		CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+		cd ${HOME}
+		sudo -E chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENTuser}:${CURRENTgroup} .ICEauthority .ICEauthority .vnc" 2>/dev/null
 		fi
 		#下面不要加冒号
 		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
@@ -6693,21 +6663,12 @@ first_configure_startvnc() {
 	chmod +x startvnc stopvnc startxsdl
 	dpkg --configure -a 2>/dev/null
 
-	CURRENTuser=$(ls -lt /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')
-	if [ ! -z "${CURRENTuser}" ]; then
-		if [ -e "${HOME}/.profile" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.profile | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.profile | cut -d ' ' -f 4)
-		elif [ -e "${HOME}/.bashrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.bashrc | cut -d ' ' -f 4)
-		elif [ -e "${HOME}/.zshrc" ]; then
-			CURRENTuser=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 3)
-			CURRENTgroup=$(ls -l ${HOME}/.zshrc | cut -d ' ' -f 4)
-		fi
-		echo "检测到/home目录不为空，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENTuser}用户和${CURRENTgroup}用户组"
+	if [ ${HOME} != '/root' ]; then
+		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+		CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		cd ${HOME}
-		chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || sudo chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null
+		sudo -E chown -R ${CURRENTuser}:${CURRENTgroup} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENTuser}:${CURRENTgroup} .ICEauthority .ICEauthority .vnc" 2>/dev/null
 	fi
 	#仅针对WSL修改语言设定
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
