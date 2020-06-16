@@ -617,6 +617,10 @@ android_termux() {
 		grep -q "pulseaudio" ${PREFIX}/bin/debian || sed -i '3 a\pulseaudio --start' ${PREFIX}/bin/debian
 	fi
 
+	if [ ! -e ${PREFIX}/bin/which ]; then
+		echo "apt install -y debianutils"
+		apt install -y debianutils
+	fi
 	tmoe_manager_main_menu
 }
 
