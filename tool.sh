@@ -153,6 +153,14 @@ check_linux_distro() {
 		PACKAGES_REMOVE_COMMAND='xbps-remove -R'
 	fi
 	###############
+	RB_RED=$(printf '\033[38;5;196m')
+	RB_ORANGE=$(printf '\033[38;5;202m')
+	RB_YELLOW=$(printf '\033[38;5;226m')
+	RB_GREEN=$(printf '\033[38;5;082m')
+	RB_BLUE=$(printf '\033[38;5;021m')
+	RB_INDIGO=$(printf '\033[38;5;093m')
+	RB_VIOLET=$(printf '\033[38;5;163m')
+
 	RED=$(printf '\033[31m')
 	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
@@ -1325,13 +1333,14 @@ vscode_server_restart() {
 #############
 vscode_server_password() {
 	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password.您的密码将以明文形式保存至~/.config/code-server/config.yaml" 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
-	exitstatus=$?
-	if [ $exitstatus != 0 ]; then
-		echo "密码包含无效字符，操作取消"
-		press_enter_to_return
+	if [ "$?" != "0" ]; then
 		configure_vscode_server
+	elif [ -z "${TARGET_USERPASSWD}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		sed -i "s@^password:.*@password: ${TARGET_USERPASSWD}@" ~/.config/code-server/config.yaml
 	fi
-	sed -i "s@^password:.*@password: ${TARGET_USERPASSWD}@" ~/.config/code-server/config.yaml
 	#sed -i '/export PASSWORD=/d' ~/.profile
 	#sed -i '/export PASSWORD=/d' ~/.zshrc
 	#sed -i "$ a\export PASSWORD=${TARGET_USERPASSWD}" ~/.profile
@@ -1498,7 +1507,6 @@ install_vscode_official() {
 	which_vscode_edition
 }
 ###############################
-###############################
 modify_other_vnc_conf() {
 	MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 15 60 7 \
 		"1" "Pulse server address音频地址" \
@@ -1514,21 +1522,7 @@ modify_other_vnc_conf() {
 	case "${MODIFYOTHERVNCCONF}" in
 	0 | "") modify_remote_desktop_config ;;
 	1) modify_vnc_pulse_audio ;;
-	2)
-		echo 'The password you entered is hidden.'
-		echo '您需要输两遍（不可见的）密码。'
-		echo "When prompted for a view-only password, it is recommended that you enter 'n'"
-		echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
-		echo '请输入6至8位密码'
-		/usr/bin/vncpasswd
-		echo "You can type startvnc to start vncserver,type stopvnc to stop."
-		echo '修改完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-		echo "正在为您停止VNC服务..."
-		sleep 1
-		stopvnc 2>/dev/null
-		press_enter_to_return
-		modify_other_vnc_conf
-		;;
+	2) set_vnc_passwd ;;
 	3)
 		nano ~/.vnc/xstartup
 		stopvnc 2>/dev/null
@@ -2489,8 +2483,18 @@ configure_x11vnc_remote_desktop_session() {
 		enable_dbus_launch
 	fi
 	chmod +x ./*
-	x11vncpasswd
-	startx11vnc
+
+	if [ ! -e "${HOME}/.vnc/x11passwd" ]; then
+		cd ${HOME}/.vnc
+		cp -pvf passwd x11passwd
+	fi
+
+	if [ ! -e "${HOME}/.vnc/passwd" ]; then
+		x11vncpasswd
+	fi
+	echo "x11vnc配置完成，您可以输${GREEN}startx11vnc${RESET}来重启服务"
+	echo "You can type ${GREEN}startx11vnc${RESET} to restart it."
+	#startx11vnc
 }
 ##########################
 kali_xfce4_extras() {
@@ -5562,6 +5566,7 @@ configure_x11vnc() {
 			"5" "修改stopx11vnc停止脚本" \
 			"6" "remove 卸载/移除" \
 			"7" "readme 进程管理说明" \
+			"8" "password 密码" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -5575,6 +5580,7 @@ configure_x11vnc() {
 	5) nano /usr/local/bin/stopx11vnc ;;
 	6) remove_X11vnc ;;
 	7) x11vnc_process_readme ;;
+	8) x11vncpasswd ;;
 	esac
 	########################################
 	press_enter_to_return
@@ -5596,11 +5602,15 @@ x11vnc_warning() {
 		There are many differences between x11vnc and tightvnc. Mainly reflected in the fluency and special effects of the picture.
 		After configuring x11vnc, you can type ${GREEN}startx11vnc${RESET} to ${BLUE}start${RESET} it.
 		If you find that you cannot connect to the audio server after starting vnc, please create a new termux session and type ${GREEN}pulseaudio --start${RESET}.
+		------------------------
 		注：x11vnc和tightvnc是有${RED}区别${RESET}的！
 		x11vnc可以打开tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
+		------------------------
 		配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
+		------------------------
 		若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
 		若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
+		------------------------
 	EOF
 
 	RETURN_TO_WHERE='configure_x11vnc'
@@ -6702,20 +6712,50 @@ first_configure_startvnc() {
 			grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
 		fi
 	fi
-	echo "The vnc service is about to start for you. The password you entered is hidden."
-	echo "即将为您启动vnc服务，您需要输两遍${RED}（不可见的）${RESET}密码。"
-	echo "When prompted for a view-only password, it is recommended that you enter${YELLOW} 'n'${RESET}"
-	echo "如果提示${BLUE}view-only${RESET},那么建议您输${YELLOW}n${RESET},选择权在您自己的手上。"
-	echo "请输入${RED}6至8位${RESET}${BLUE}密码${RESET}"
-	startvnc
+	if [ ! -e "${HOME}/.vnc/passwd" ]; then
+		set_vnc_passwd
+	fi
+	printf "$BLUE"
+	cat <<-'EndOFneko'
+		               .::::..                
+		    ::::rrr7QQJi::i:iirijQBBBQB.      
+		    BBQBBBQBP. ......:::..1BBBB       
+		    .BuPBBBX  .........r.  vBQL  :Y.  
+		     rd:iQQ  ..........7L   MB    rr  
+		      7biLX .::.:....:.:q.  ri    .   
+		       JX1: .r:.r....i.r::...:.  gi5  
+		       ..vr .7: 7:. :ii:  v.:iv :BQg  
+		       : r:  7r:i7i::ri:DBr..2S       
+		    i.:r:. .i:XBBK...  :BP ::jr   .7. 
+		    r  i....ir r7.         r.J:   u.  
+		   :..X: .. .v:           .:.Ji       
+		  i. ..i .. .u:.     .   77: si   1Q  
+		 ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  
+		7  iK::r  . ii7r LJLrL1r7DPi iJ     r 
+		  .  ::.:   .  ri 5DZDBg7JR7.:r:   i. 
+		 .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  
+		 QB rJ.:rvDE: .. ri uv . iir.7j r7.   
+		iBg ::.7251QZ. . :.      irr:Iu: r.   
+		 QB  .:5.71Si..........  .sr7ivi:U    
+		 7BJ .7: i2. ........:..  sJ7Lvr7s    
+		  jBBdD. :. ........:r... YB  Bi      
+		     :7j1.                 :  :       
+
+	EndOFneko
+	printf "$RESET"
+	echo '------------------------'
 	echo "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
-	echo "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} XSDL."
-	echo "您之后可以在原系统或容器里输${GREEN}startvnc${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
+	echo "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and server."
+	echo '------------------------'
+	echo "您之后可以在原系统或容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
 	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+	echo '------------------------'
 	xfce4_tightvnc_hidpi_settings
+	echo '------------------------'
+	echo '------------------------'
 	if [ "${HOME}" != "/root" ]; then
-		cp -rpf ~/.vnc /root/ &
-		chown -R root:root /root/.vnc &
+		cp -rpf ~/.vnc /root/
+		chown -R root:root /root/.vnc
 	fi
 
 	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
@@ -6756,12 +6796,58 @@ first_configure_startvnc() {
 		startxsdl &
 	fi
 	echo "${GREEN}tightvnc/tigervnc & xserver${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
+	echo "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
+	press_enter_to_continue
+	echo '------------------------'
 	x11vnc_warning
 	configure_x11vnc_remote_desktop_session
 	xfce4_x11vnc_hidpi_settings
 }
 ########################
 ########################
+set_vnc_passwd() {
+	TARGET_VNC_PASSWD=$(whiptail --inputbox "请设定6至8位VNC访问密码\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		echo "请重新输入密码"
+		echo "Please type passwd again."
+		press_enter_to_return
+		set_vnc_passwd
+	elif [ -z "${TARGET_VNC_PASSWD}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+		press_enter_to_return
+		set_vnc_passwd
+	else
+		check_vnc_passsword_length
+	fi
+}
+###########
+check_vnc_passsword_length() {
+	PASSWORD_LENGTH=$(echo -n ${TARGET_VNC_PASSWD} | wc -L)
+	if ((${PASSWORD_LENGTH} > 8)); then
+		echo ${PASSWORD_LENGTH}
+		echo "密码超过${RED}8个字符${RESET}，请${BLUE}重新输入${RESET}"
+		echo "${RED}WARNING！${RESET}The maximum password length is ${RED}8 digits.${RESET}"
+		press_enter_to_return
+		set_vnc_passwd
+	elif ((${PASSWORD_LENGTH} < 6)); then
+		echo ${PASSWORD_LENGTH}
+		echo "密码少于${RED}6个字符${RESET}，请${BLUE}重新输入${RESET}"
+		echo "${RED}WARNING！${RESET}The minimum password length is ${RED}6 digits.${RESET}"
+		press_enter_to_return
+		set_vnc_passwd
+	else
+		mkdir -p ${HOME}/.vnc
+		echo "${PASSWORD_LENGTH}" | vncpasswd -f >${HOME}/.vnc/passwd
+		if [ $? = 0 ]; then
+			echo "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
+			#echo "You can type ${GREEN}startvnc${RESET} to restart it. "
+		else
+			echo "密码设定失败，内部发生错误。"
+		fi
+	fi
+}
+###################
 xfce4_tightvnc_hidpi_settings() {
 	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
 		echo "检测到您当前的桌面环境为xfce4，将为您自动调整高分屏设定"
@@ -6779,7 +6865,7 @@ xfce4_tightvnc_hidpi_settings() {
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
 		fi
 		dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
-		startvnc >/dev/null 2>&1
+		#startvnc >/dev/null 2>&1
 	fi
 	#Default-xhdpi默认处于未激活状态
 }
