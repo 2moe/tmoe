@@ -9435,6 +9435,7 @@ creat_blank_virtual_disk_image() {
 	DISK_FILE_PATH="${HOME}/sd/Download"
 	mkdir -p ${DISK_FILE_PATH}
 	cd ${DISK_FILE_PATH}
+	TMOE_FILE_ABSOLUTE_PATH="${DISK_FILE_PATH}/${TARGET_FILE_NAME}"
 	TARGET_FILE_SIZE=$(whiptail --inputbox "请设定磁盘空间大小,例如500M,10G,1T(需包含单位)\nPlease enter the disk size." 10 50 --title "SIZE" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
