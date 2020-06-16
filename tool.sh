@@ -9457,8 +9457,8 @@ creat_blank_virtual_disk_image() {
 	#sed -i "s@-hda .*@-hda ${DISK_FILE_PATH}/${TARGET_FILE_NAME} \\\@" /usr/local/bin/startqemu
 	cd /usr/local/bin
 	sed -i '/-hda /d' startqemu
-	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hdd tmoe_hda_config_test \\\n/' startqemu
-	sed -i "s@-hdd tmoe_hda_config_test@-hdd ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
+	sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
 }
 ################
 #-spice port=5931,image-compression=quic,renderer=cairo+oglpbuf+oglpixmap,disable-ticketing \
