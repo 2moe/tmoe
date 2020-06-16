@@ -5607,9 +5607,13 @@ x11vnc_warning() {
 		x11vnc可以打开tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
 		------------------------
 		配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
-		------------------------
 		若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
-		若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
+		------------------------
+		FAQ-01：
+		关于音频服务无法自动启动的说明：
+		正常情况下，音频服务会自动启用。若因某些特殊原因导致启动或调用异常，则请您阅读以下说明。
+		若您的宿主机为Android系统，且发现音频服务无法自动启动。请在图形界面启动完成后，新建一个termux会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
+		若您的宿主机为windows10系统，则请手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'，并修改音频服务地址。
 		------------------------
 	EOF
 
@@ -6747,8 +6751,10 @@ first_configure_startvnc() {
 	echo "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
 	echo "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and server."
 	echo '------------------------'
-	echo "您之后可以在原系统或容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-	echo "您还可以在termux原系统或windows的linux子系统里输${GREEN}startxsdl${RESET}来同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+	echo "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}来${BLUE}同时启动${RESET}vnc服务端和客户端。"
+	echo "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
+	echo "在原系统里输${GREEN}startxsdl${RESET}来同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+	echo "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
 	echo '------------------------'
 	xfce4_tightvnc_hidpi_settings
 	echo '------------------------'
@@ -6839,7 +6845,7 @@ check_vnc_passsword_length() {
 	else
 		mkdir -p ${HOME}/.vnc
 		cd ${HOME}/.vnc
-		echo "${PASSWORD_LENGTH}" | vncpasswd -f >passwd
+		echo "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
 		chmod 600 passwd
 		if [ $? = 0 ]; then
 			echo "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
