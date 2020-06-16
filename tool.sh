@@ -6838,7 +6838,9 @@ check_vnc_passsword_length() {
 		set_vnc_passwd
 	else
 		mkdir -p ${HOME}/.vnc
-		echo "${PASSWORD_LENGTH}" | vncpasswd -f >${HOME}/.vnc/passwd
+		cd ${HOME}/.vnc
+		echo "${PASSWORD_LENGTH}" | vncpasswd -f >passwd
+		chmod 600 passwd
 		if [ $? = 0 ]; then
 			echo "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
 			#echo "You can type ${GREEN}startvnc${RESET} to restart it. "
