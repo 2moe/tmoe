@@ -3314,9 +3314,9 @@ xfce_theme_parsing() {
 	echo "Downloading index.html..."
 	aria2c --allow-overwrite=true -o .theme_index_cache_tmoe.html ${THEME_TMOE_URL}
 
-	cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | grep -E 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
+	cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | grep -E 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
 	THEME_LINE=$(cat .tmoe-linux_cache.01 | wc -l)
-	cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | grep -E '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
+	cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | grep -E '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
 	TMOE_THEME_FILE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
 
@@ -3328,7 +3328,7 @@ xfce_theme_parsing() {
 	case ${TMOE_THEME_ITEM} in
 	0 | "") configure_theme ;;
 	esac
-	DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | grep -E 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
+	DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | grep -E 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
 	DOWNLOAD_PATH=/tmp
 	aria2c_download_normal_file_s3
 	tmoe_theme_installer
@@ -12298,7 +12298,9 @@ ubuntu_arm_warning() {
 aria2c_download_normal_file_s3() {
 	echo ${YELLOW}${DOWNLOAD_FILE_URL}${RESET}
 	cd ${DOWNLOAD_PATH}
-	aria2c --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
+	#aria2c --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
+	#此处用wget会自动转义url
+	wget "${DOWNLOAD_FILE_URL}"
 }
 ######################
 aria2c_download_file() {
