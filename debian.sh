@@ -165,6 +165,8 @@ gnu_linux() {
 		PACKAGES_INSTALL_COMMAND='dnf install -y --skip-broken'
 		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
+		elif grep -q 'Sliverblue' "/etc/os-release"; then
+			echo "Sorry,不支持Fedora SliverBlue"
 		elif grep -q 'Fedora' "/etc/os-release"; then
 			REDHAT_DISTRO='fedora'
 		fi

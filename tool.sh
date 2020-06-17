@@ -7793,7 +7793,7 @@ tmoe_file_browser_app_menu() {
 		"Which software do you want to install？" 0 50 0 \
 		"1" "文件管理器:thunar/nautilus/dolphin" \
 		"2" "catfish(文件搜索)" \
-		"3" "gparted(强大的GNOME磁盘编辑器)" \
+		"3" "gparted(强大的GNOME分区编辑器)" \
 		"4" "baobab(直观易用的GNOME磁盘空间占用分析器)" \
 		"5" "cfdisk:在终端下对磁盘进行分区" \
 		"6" "partitionmanager(KDE磁盘分区工具)" \
@@ -7928,6 +7928,8 @@ network_manager_tui() {
 	if [ ! $(command -v nmtui) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCY_02='network-manager'
+		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+			DEPENDENCY_02='NetworkManager'
 		else
 			DEPENDENCY_02='networkmanager'
 		fi
