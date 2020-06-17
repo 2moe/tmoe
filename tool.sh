@@ -1900,7 +1900,7 @@ standand_desktop_install() {
 	REMOVE_UDISK2='false'
 	RETURN_TO_WHERE='standand_desktop_install'
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-		"您想要安装哪个桌面？按方向键选择，回车键确认！仅xfce桌面支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 17 56 7 \
+		"您想要安装哪个桌面？按方向键选择，回车键确认！仅GTK+环境(如xfce等)支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 17 56 7 \
 		"1" "xfce(兼容性高,简单优雅)" \
 		"2" "lxde(轻量化桌面,资源占用低)" \
 		"3" "mate(GNOME2的延续,让用户体验更舒适的环境)" \
@@ -3233,30 +3233,165 @@ configure_theme() {
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
 		"您想要下载哪个主题？按方向键选择！\n下载完成后，您需要手动修改外观设置中的样式和图标。\n注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 0 50 0 \
-		"1" "win10:kali卧底模式主题" \
-		"2" "MacOS:Mojave" \
-		"3" "breeze:plasma桌面微风gtk+版主题" \
-		"4" "Kali:Flat-Remix-Blue主题" \
-		"5" "ukui:国产优麒麟ukui桌面主题" \
-		"6" "arc:融合透明元素的平面主题" \
+		"1" "XFCE-LOOK-parser主题链接解析器" \
+		"2" "local-theme-installer本地主题安装器" \
+		"3" "win10:kali卧底模式主题" \
+		"4" "MacOS:Mojave" \
+		"5" "breeze:plasma桌面微风gtk+版主题" \
+		"6" "Kali:Flat-Remix-Blue主题" \
+		"7" "ukui:国产优麒麟ukui桌面主题" \
+		"8" "arc:融合透明元素的平面主题" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
 	0 | "") tmoe_desktop_beautification ;;
-	1) install_kali_undercover ;;
-	2) download_macos_mojave_theme ;;
-	3) install_breeze_theme ;;
-	4) download_kali_theme ;;
-	5) download_ukui_theme ;;
-	6) install_arc_gtk_theme ;;
+	1) xfce_theme_parsing ;;
+	2) local_theme_installer ;;
+	3) install_kali_undercover ;;
+	4) download_macos_mojave_theme ;;
+	5) install_breeze_theme ;;
+	6) download_kali_theme ;;
+	7) download_ukui_theme ;;
+	8) install_arc_gtk_theme ;;
 	esac
 	######################################
 	press_enter_to_return
 	configure_theme
 }
 #######################
+local_theme_installer() {
+	FILE_EXT_01='tar.gz'
+	FILE_EXT_02='tar.xz'
+	#where_is_tmoe_file_dir
+	START_DIR='/tmp'
+	tmoe_file_manager
+	if [ -z ${SELECTION} ]; then
+		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+	else
+		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+		TMOE_THEME_ITEM=${TMOE_FILE_ABSOLUTE_PATH}
+		tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u
+		do_you_want_to_continue
+		tmoe_theme_installer
+	fi
+}
+#################
+check_theme_url() {
+	if [ "$(echo ${THEME_TMOE_URL} | grep -v 'xfce-look.org')" ]; then
+		echo "原始链接中不包含xfce-look，可能会出现错误。"
+	fi
+
+	if [ "$(echo ${THEME_TMOE_URL} | grep 'XFCE/p')" ]; then
+		TMOE_THEME_STATUS='检测到当前文件可能是图标包'
+	elif [ "$(echo ${THEME_TMOE_URL} | grep 'Gnome/p')" ]; then
+		TMOE_THEME_STATUS='检测到当前文件可能是Gnome图标包'
+	else
+		TMOE_THEME_STATUS='主题和图标包的解压路径不同，请手动判断'
+	fi
+
+	#当未添加http时，将自动修复。
+	if [ "$(echo ${THEME_TMOE_URL} | grep -E 'www')" ] && [ ! "$(echo ${THEME_TMOE_URL} | grep 'http')" ]; then
+		THEME_TMOE_URL=$(echo ${THEME_TMOE_URL} | sed 's@www@https://&@')
+	fi
+}
+###############
+xfce_theme_parsing() {
+	THEME_TMOE_URL=$(whiptail --inputbox "Please enter a url.请输入主题链接\n例如https://www.xfce-look.org/p/xxxx \n Press Enter after the input is completed." 0 50 --title "请在地址栏内输入 主题链接" 3>&1 1>&2 2>&3)
+
+	if [ "$?" != "0" ]; then
+		configure_theme
+	elif [ -z ${THEME_TMOE_URL} ]; then
+		echo "请输入有效的url"
+		echo "Please enter a valid url."
+	else
+		check_theme_url
+	fi
+
+	cd /tmp/
+	echo "正在下载网页文件.."
+	echo "Downloading index.html..."
+	aria2c --allow-overwrite=true -o .theme_index_cache_tmoe.html ${THEME_TMOE_URL}
+
+	cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | grep -E 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
+	THEME_LINE=$(cat .tmoe-linux_cache.01 | wc -l)
+	cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | grep -E '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
+	TMOE_THEME_FILE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+	rm -f .tmoe-linux_cache.0*
+
+	TMOE_THEME_ITEM=$(whiptail --title "THEME" --menu \
+		"您想要下载哪个主题？\nWhich theme do you want to download?\n文件名称                 下载次数(可能有严重偏差)" 0 0 0 \
+		${TMOE_THEME_FILE_LIST} \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	case ${TMOE_THEME_ITEM} in
+	0 | "") configure_theme ;;
+	esac
+	DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | grep -E 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
+	DOWNLOAD_PATH=/tmp
+	aria2c_download_normal_file_s3
+	tmoe_theme_installer
+}
 ###################
+tmoe_theme_installer() {
+	if (whiptail --title "Please choose the file type" --yes-button 'THEME主题' --no-button 'ICON图标包' --yesno "Is this file a theme or an icon pack?\n这个文件是主题包还是图标包呢?(っ °Д °)\n${TMOE_THEME_STATUS}" 0 50); then
+		EXTRACT_FILE_PATH='/usr/share/themes'
+		check_tar_ext_format
+	else
+		EXTRACT_FILE_PATH='/usr/share/icons'
+		check_tar_ext_format
+		cd ${EXTRACT_FILE_PATH}
+		update-icon-caches ${EXTRACT_FILE_FOLDER} &
+		cd /tmp
+	fi
+	echo "解压完成，如需删除该主题，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
+	echo "是否${RED}删除${RESET}主题压缩包${BLUE}原文件？${RESET}"
+	echo "Do you want to delete the original compressed file？[Y/n]"
+	do_you_want_to_continue
+	rm -fv ${TMOE_THEME_ITEM} .theme_index_cache_tmoe.html
+}
+#########################
+check_theme_folder_exists_status() {
+	if [ -e "${EXTRACT_FILE_PATH}/${EXTRACT_FILE_FOLDER_HEAD_01}" ]; then
+		echo "检测到您已安装该主题，如需删除，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
+		echo "是否重新解压？"
+		echo "Do you want to uncompress again?"
+		do_you_want_to_continue
+	fi
+	uncompress_theme_file
+}
+###################
+uncompress_theme_file() {
+	case "${TMOE_THEME_ITEM:0-6:6}" in
+	tar.xz)
+		tar -Jxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null
+		;;
+	tar.gz)
+		tar -zxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null
+		;;
+	*)
+		tar -xvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null
+		;;
+	esac
+}
+############
+check_tar_ext_format() {
+	case "${TMOE_THEME_ITEM:0-6:6}" in
+	tar.xz)
+		EXTRACT_FILE_FOLDER=$(tar -Jtf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
+		;;
+	tar.gz)
+		EXTRACT_FILE_FOLDER=$(tar -ztf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
+		;;
+	*)
+		EXTRACT_FILE_FOLDER=$(tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
+		;;
+	esac
+	EXTRACT_FILE_FOLDER_HEAD_01=$(echo ${EXTRACT_FILE_FOLDER} | awk '{print $1}')
+	check_theme_folder_exists_status
+}
+################
 install_arc_gtk_theme() {
 	DEPENDENCY_01="arc-icon-theme"
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -12160,6 +12295,12 @@ ubuntu_arm_warning() {
 	download_ubuntu_latest_iso_file
 }
 ################
+aria2c_download_normal_file_s3() {
+	echo ${YELLOW}${DOWNLOAD_FILE_URL}${RESET}
+	cd ${DOWNLOAD_PATH}
+	aria2c --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
+}
+######################
 aria2c_download_file() {
 	echo ${THE_LATEST_ISO_LINK}
 	do_you_want_to_continue
