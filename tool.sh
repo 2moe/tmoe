@@ -3257,7 +3257,7 @@ configure_theme() {
 }
 #######################
 ###################
-install_arc_theme() {
+install_arc_gtk_theme() {
 	DEPENDENCY_01="arc-icon-theme"
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_02="arc-gtk-theme"
