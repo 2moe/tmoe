@@ -5725,30 +5725,25 @@ configure_x11vnc() {
 x11vnc_process_readme() {
 	echo "输startx11vnc启动x11vnc"
 	echo "输stopvnc或stopx11vnc停止x11vnc"
-	echo "若您的宿主机为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+	echo "若您的音频服务端为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
 	echo "您亦可输${GREEN}pulseaudio --start${RESET}"
 	echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
 }
 ###################
 x11vnc_warning() {
 	cat <<-EOF
-		Do you want to configure x11vnc? 
-		There are many differences between x11vnc and tightvnc. Mainly reflected in the fluency and special effects of the picture.
-		After configuring x11vnc, you can type ${GREEN}startx11vnc${RESET} to ${BLUE}start${RESET} it.
-		If you find that you cannot connect to the audio server after starting vnc, please create a new termux session and type ${GREEN}pulseaudio --start${RESET}.
-		------------------------
-		注：x11vnc和tightvnc是有${RED}区别${RESET}的！
-		x11vnc可以打开tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
-		------------------------
-		配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
-		若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
-		------------------------
-		FAQ-01：
-		关于音频服务无法自动启动的说明：
-		正常情况下，音频服务会自动启用。若因某些特殊原因导致启动或调用异常，则请您阅读以下说明。
-		若您的宿主机为Android系统，且发现音频服务无法自动启动。请在图形界面启动完成后，新建一个termux会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
-		若您的宿主机为windows10系统，则请手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'，并修改音频服务地址。
-		------------------------
+		    ${YELLOW}关于X11VNC服务的启动说明${RESET}：
+			Do you want to configure x11vnc? 
+			There are many differences between x11vnc and tightvnc. Mainly reflected in the fluency and special effects of the picture.
+			After configuring x11vnc, you can type ${GREEN}startx11vnc${RESET} to ${BLUE}start${RESET} it.
+			------------------------
+			注：x11vnc和tightvnc是有${RED}区别${RESET}的！
+			x11vnc可以打开tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
+			------------------------
+			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
+			若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
+			------------------------
+			您是否需要配置${BLUE}X11VNC${RESET}服务？
 	EOF
 
 	RETURN_TO_WHERE='configure_x11vnc'
@@ -6844,13 +6839,30 @@ first_configure_startvnc() {
 
 	EndOFneko
 	printf "$RESET"
+	cat <<-EOF
+		------------------------
+		一：
+		${YELLOW}关于音频服务无法自动启动的说明${RESET}：
+		------------------------
+		If you find that you cannot connect to the audio server after starting vnc, please create a new termux session and type ${GREEN}pulseaudio --start${RESET}.
+		正常情况下，音频服务会自动启用。若因某些特殊原因导致启动或调用异常，则请您阅读以下说明。
+		------------------------
+		若您的音频服务端为${BLUE}Android系统${RESET}，请在图形界面启动完成后，新建一个termux会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
+		------------------------
+		若您的音频服务端为${BLUE}windows10系统${RESET}，则请手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'，并修改音频服务地址。
+		------------------------
+		若您使用的是${BLUE}Android版${RESET}${YELLOW}Linux Deploy${RESET}或${YELLOW}Userland${RESET}，则您可以使用本脚本${RED}覆盖安装${RESET}图形界面。之后,您可以在${BLUE}Termux${RESET}上输${GREEN}debian-i${RESET}运行Tmoe-linux manager,查看${YELLOW}FAQ${RESET}并配置Linux Deploy的${BLUE}音频服务启动脚本。${RESET}
+		------------------------
+	EOF
+	echo "二："
+	echo "${YELLOW}关于VNC和X的启动说明${RESET}"
 	echo '------------------------'
 	echo "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
 	echo "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and server."
 	echo '------------------------'
-	echo "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}来${BLUE}同时启动${RESET}vnc服务端和客户端。"
-	echo "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}来${BLUE}启动${RESET}vnc服务，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-	echo "在原系统里输${GREEN}startxsdl${RESET}来同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+	echo "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}${BLUE}同时启动${RESET}vnc服务端和客户端。"
+	echo "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
+	echo "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
 	echo "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
 	echo '------------------------'
 	xfce4_tightvnc_hidpi_settings
@@ -6902,6 +6914,7 @@ first_configure_startvnc() {
 	echo "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
 	press_enter_to_continue
 	echo '------------------------'
+	echo '三：'
 	x11vnc_warning
 	configure_x11vnc_remote_desktop_session
 	xfce4_x11vnc_hidpi_settings
