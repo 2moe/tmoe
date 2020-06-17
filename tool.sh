@@ -7924,12 +7924,11 @@ network_manager_tui() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
 	NON_DEBIAN='false'
-	RETURN_TO_WHERE='network_manager_tui'
 	if [ ! $(command -v nmtui) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCY_02='network-manager'
 		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			DEPENDENCY_02='NetworkManager'
+			DEPENDENCY_02='NetworkManager-tui'
 		else
 			DEPENDENCY_02='networkmanager'
 		fi
@@ -7938,7 +7937,8 @@ network_manager_tui() {
 
 	if [ ! $(command -v ip) ]; then
 		DEPENDENCY_02='iproute2'
-		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+		echo "${GREEN}${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_02}${RESET}"
+		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_02}
 	fi
 
 	if grep -q 'managed=false' /etc/NetworkManager/NetworkManager.conf; then
@@ -7952,7 +7952,7 @@ network_manager_tui() {
 			systemctl start NetworkManager || service NetworkManager start || service networkmanager start
 		fi
 	fi
-
+	RETURN_TO_WHERE='network_manager_tui'
 	NETWORK_MANAGER=$(whiptail --title "NETWORK" --menu \
 		"您想要如何配置网络？\n How do you want to configure the network? " 17 50 8 \
 		"1" "manager:管理器" \
