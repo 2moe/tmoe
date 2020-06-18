@@ -447,7 +447,7 @@ tmoe_linux_tool_menu() {
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
 		whiptail --title "Tmoe-linux Tool输debian-i启动(20200618-04)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能,0618支持解析主题链接" 20 50 7 \
-			"1" "🍭GUI:图形界面" \
+			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
 			"4" "🌌vnc/x/rdp:远程桌面" \
@@ -1899,8 +1899,9 @@ standand_desktop_install() {
 		"Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则您只需选择第一项\nIf you are using container,then choose container_DE.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
 		"1" "🍰Container_DE(容器可运行:xfce,mate,lxde)" \
 		"2" "🍱VM_DE(虚拟机可运行:lxqt,kde,gnome)" \
-		"3" "🍙window manager窗口管理器(公测):ice,fvwm" \
-		"4" "🍣display manager显示(登录)管理器:lightdm,sddm" \
+		"3" "🍙window manager窗口管理器:ice,fvwm" \
+		"4" "🍣display manager显示/登录管理器:lightdm,sddm" \
+		"5" "🍤FAQ:常见问题" \
 		"0" "🌚none我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -1910,12 +1911,78 @@ standand_desktop_install() {
 	2) tmoe_virtual_machine_desktop ;;
 	3) window_manager_install ;;
 	4) tmoe_display_manager_install ;;
+	5) tmoe_desktop_faq ;;
 	esac
 	##########################
 	press_enter_to_return
-	tmoe_linux_tool_menu
+	standand_desktop_install
 }
 #######################
+tmoe_desktop_faq() {
+	printf "$YELLOW"
+	cat <<-'EndOFneko'
+		                                        
+		                            .:7E        
+		            .iv7vrrrrr7uQBBBBBBB:       
+		           v17::.........:SBBBUg        
+		        vKLi.........:. .  vBQrQ        
+		   sqMBBBr.......... :i. .  SQIX        
+		   BBQBBr.:...:....:. 1:.....v. ..      
+		    UBBB..:..:i.....i YK:: ..:   i:     
+		     7Bg.... iv.....r.ijL7...i. .Lu     
+		  IB: rb...i iui....rir :Si..:::ibr     
+		  J7.  :r.is..vrL:..i7i  7U...Z7i..     
+		  ...   7..I:.: 7v.ri.755P1. .S  ::     
+		    :   r:.i5KEv:.:.  :.  ::..X..::     
+		   7is. :v .sr::.         :: :2. ::     
+		   2:.  .u: r.     ::::   r: ij: .r  :  
+		   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
+		   :u   .iq: :PBEPjvviII5P7::5Du: .v    
+		    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
+		    :v. iiSrr   :..   s i.  vPrvsr. r.  
+		     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
+		      i7LUJv.   . .     .:   YI7bIr :ur 
+		     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
+		    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
+		         :   r. ..      .. .:i  ...     
+	EndOFneko
+	printf "$RESET"
+	cat <<-EOF
+		Q:安装过程中，当提示输入密码时，termux无法弹出虚拟键盘
+
+		A:有三种解决方法：
+		① 先将termux切换至后台，再切换回来
+		② 使用悬浮键盘
+		③ 侧划termux底部小键盘至黑色区域，点击该区域即可弹出。
+		------------------------
+		Q:I don't know how to use it?
+
+		A:Type ${GREEN}startvnc${RESET} to start vncserver,type ${GREEN}stopvnc${RESET} to stop it.
+		You can also type ${GREEN}startxsdl${RESET} to startx.
+		------------------------
+		Q:启动VNC的命令有点复杂，我记不住🤣，欺负老年人么？st...什么来着😨
+
+		A:完整命令是startvnc，您只需记住st，然后就能借助vnc的自动补全插件来解决。
+		输完st后，您可以按下TAB键(⇆),即可生成补全内容。
+		您也可以直接按方向键→或者是↑，此操作亦能自动补全。
+		------------------------
+		Q:我可以在Linux Deploy上使用这个脚本吗？
+
+		A:可以哒！ヾ(≧▽≦*)o 您可以在其它主流的GNU/Linux发行版，包括但不限于容器、虚拟机和实体机上使用这个脚本。
+		------------------------
+		Q:有隐藏的彩蛋或功能吗？
+		A:应该算有吧！emmmmm...
+		-----------------------
+		Q:为什么绝大多数的命令和文件夹名称都是跟debian有关，在用arch,我觉得特别别扭。
+
+		A:因为去年(2019年)只适配了debian,今年(2020年)早些时候又适配debian系列的其它发行版，例如kali和ubuntu。
+		后面才适配了其它系的发行版，例如：arch系，红帽系和alpine等。
+		适配不同的发行版是一件非常浪费时间的事情，有时候修复一个小bug都要花上几个小时的时间。
+		因为我不想把时间浪费在无所谓的事情上，所以就不想改了。
+		虽然修改相关命令和文件夹名称很简单，但是需要花费大量的时间去调试。
+		-----------------------
+	EOF
+}
 tmoe_container_desktop() {
 	INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
 		"您想要安装哪个桌面环境?\n仅GTK+环境(如xfce等)支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 0 0 0 \
@@ -13331,8 +13398,8 @@ install_wps_office() {
 ###################
 thunar_nautilus_dolphion() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "检测到您当前使用的是${BLUE}proot容器${RESET}，请勿安装${RED}dolphion${RESET}"
-		echo "安装后将有可能导致VNC黑屏"
+		echo "检测到您当前使用的是${BLUE}proot容器${RESET}，不建议您安装${RED}dolphion${RESET}"
+		echo "dolphion在当前环境下可能无法正常启动"
 		echo "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"
 	fi
 	DEPENDENCY_02=""
