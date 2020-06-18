@@ -1735,8 +1735,7 @@ install_firefox_esr_browser() {
 	#################
 	if [ ! $(command -v firefox) ] && [ ! $(command -v firefox-esr) ]; then
 		echo "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫姐姐来代替了。${RESET}"
-		echo 'Press Enter to confirm.'
-		RETURN_TO_WHERE='install_browser'
+		echo 'Press Enter to install firefox.'
 		do_you_want_to_continue
 		install_firefox_browser
 	fi
@@ -1771,7 +1770,6 @@ install_firefox_browser() {
 	################
 	if [ ! $(command -v firefox) ]; then
 		echo "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫妹妹ESR来代替了。${RESET}"
-		RETURN_TO_WHERE='install_browser'
 		do_you_want_to_continue
 		install_firefox_esr_browser
 	fi
@@ -1791,8 +1789,6 @@ install_browser() {
 	else
 		install_chromium_browser
 	fi
-	press_enter_to_return
-	tmoe_linux_tool_menu
 }
 ######################################################
 ######################################################
