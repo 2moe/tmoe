@@ -447,20 +447,18 @@ tmoe_linux_tool_menu() {
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
 		whiptail --title "Tmoe-linux Tool输debian-i启动(20200618-04)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能,0618支持解析主题链接" 20 50 7 \
-			"1" "Install GUI:安装图形界面" \
-			"2" "Software center-01:软件中心试作型1号站" \
-			"3" "Desktop beautification:桌面美化" \
-			"4" "Modify vnc/xsdl/rdp(远程桌面)conf" \
-			"5" "Download video:解析视频链接" \
-			"6" "Personal netdisk:个人云网盘/文件共享" \
-			"7" "Update tmoe-linux tool(更新本工具)" \
-			"8" "Start zsh tool:启动zsh管理工具" \
-			"9" "FAQ:常见问题" \
-			"10" "software sources:软件镜像源管理" \
-			"11" "download iso:下载镜像(Android,linux等)" \
-			"12" "qemu:x86_64虚拟机管理" \
-			"13" "Beta Features:测试版功能" \
-			"0" "Exit 退出" \
+			"1" "🍭GUI:图形界面" \
+			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
+			"3" "🌈Desktop beautification:桌面美化(主题)" \
+			"4" "🌌vnc/x/rdp:远程桌面" \
+			"5" "🍻Download video:解析视频链接(bili,Y2B)" \
+			"6" "☃File shared:文件共享与网盘(Webdav)" \
+			"7" "✨Update tmoe-linux tool(更新本工具)" \
+			"8" "🏫FAQ:常见问题" \
+			"9" "🍥software sources:软件镜像源管理" \
+			"10" "💻qemu:x86_64虚拟机管理" \
+			"11" "🌸The Secret Garden秘密花园" \
+			"0" "🌚Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 	########
@@ -482,12 +480,10 @@ tmoe_linux_tool_menu() {
 	5) download_videos ;;
 	6) personal_netdisk ;;
 	7) tmoe_linux_tool_upgrade ;;
-	8) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
-	9) frequently_asked_questions ;;
-	10) tmoe_sources_list_manager ;;
-	11) download_virtual_machine_iso_file ;;
-	12) start_tmoe_qemu_manager ;;
-	13) beta_features ;;
+	8) frequently_asked_questions ;;
+	9) tmoe_sources_list_manager ;;
+	10) start_tmoe_qemu_manager ;;
+	11) beta_features ;;
 	esac
 	#########################
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -605,11 +601,11 @@ tmoe_linux_tool_upgrade() {
 download_videos() {
 	VIDEOTOOL=$(
 		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 14 50 6 \
-			"1" "Annie" \
-			"2" "You-get" \
-			"3" "Youtube-dl" \
-			"4" "cookie说明" \
-			"5" "upgrade更新下载工具" \
+			"1" "🥂Annie" \
+			"2" "🍷You-get" \
+			"3" "🍾Youtube-dl" \
+			"4" "🍹cookie说明" \
+			"5" "🍺upgrade更新下载工具" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1900,18 +1896,37 @@ standand_desktop_install() {
 	REMOVE_UDISK2='false'
 	RETURN_TO_WHERE='standand_desktop_install'
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-		"您想要安装哪个桌面？按方向键选择，回车键确认！仅GTK+环境(如xfce等)支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 17 56 7 \
-		"1" "xfce(兼容性高,简单优雅)" \
-		"2" "lxde(轻量化桌面,资源占用低)" \
-		"3" "mate(GNOME2的延续,让用户体验更舒适的环境)" \
-		"4" "Other其它桌面(内测版新功能):lxqt,kde" \
-		"5" "window manager窗口管理器(公测):ice,fvwm" \
-		"6" "display manager显示(登录)管理器:lightdm,sddm" \
-		"0" "none我一个都不要 =￣ω￣=" \
+		"Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则您只需选择第一项\nIf you are using container,then choose container_DE.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
+		"1" "🍰Container_DE(容器可运行:xfce,mate,lxde)" \
+		"2" "🍱VM_DE(虚拟机可运行:lxqt,kde,gnome)" \
+		"3" "🍙window manager窗口管理器(公测):ice,fvwm" \
+		"4" "🍣display manager显示(登录)管理器:lightdm,sddm" \
+		"0" "🌚none我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${INSTALLDESKTOP}" in
 	0 | "") tmoe_linux_tool_menu ;;
+	1) tmoe_container_desktop ;;
+	2) tmoe_virtual_machine_desktop ;;
+	3) window_manager_install ;;
+	4) tmoe_display_manager_install ;;
+	esac
+	##########################
+	press_enter_to_return
+	tmoe_linux_tool_menu
+}
+#######################
+tmoe_container_desktop() {
+	INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
+		"您想要安装哪个桌面环境?\n仅GTK+环境(如xfce等)支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 0 0 0 \
+		"1" "xfce(兼容性高,简单优雅)" \
+		"2" "lxde(轻量化桌面,资源占用低)" \
+		"3" "mate(GNOME2的延续,让用户体验更舒适的环境)" \
+		"0" "none我一个都不要 =￣ω￣=" \
+		3>&1 1>&2 2>&3)
+	##########################
+	case "${INSTALLDESKTOP}" in
+	0 | "") standand_desktop_install ;;
 	1)
 		REMOVE_UDISK2='true'
 		install_xfce4_desktop
@@ -1921,15 +1936,12 @@ standand_desktop_install() {
 		install_lxde_desktop
 		;;
 	3) install_mate_desktop ;;
-	4) other_desktop ;;
-	5) window_manager_install ;;
-	6) tmoe_display_manager_install ;;
 	esac
 	##########################
 	press_enter_to_return
-	tmoe_linux_tool_menu
+	tmoe_container_desktop
 }
-#######################
+####################
 tmoe_display_manager_install() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
@@ -2048,7 +2060,8 @@ window_manager_install() {
 	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	BETA_DESKTOP=$(
 		whiptail --title "WINDOW MANAGER" --menu \
-			"WARNING！本功能仍处于测试阶段哟！\nwindow manager窗口管理器(简称WM)是一种比桌面环境更轻量化的图形界面.\n您想要安装哪个WM呢?您可以同时安装多个\nBeta features may not work properly.\nWhich WM do you want to install?" 0 0 0 \
+			"Window manager窗口管理器(简称WM)是一种比桌面环境更轻量化的图形界面.\n您想要安装哪个WM呢?您可以同时安装多个\nWhich WM do you want to install?" 0 0 0 \
+			"00" "Return to previous menu 返回上级菜单" \
 			"01" "ice(意在提升感观和体验,兼顾轻量和可定制性)" \
 			"02" "openbox(快速,轻巧,可扩展)" \
 			"03" "fvwm(强大的、与ICCCM2兼容的WM)" \
@@ -2098,12 +2111,11 @@ window_manager_install() {
 			"47" "wmaker(NeXTSTEP-like WM for X)" \
 			"48" "wmii(轻量化 tabbed and tiled WM)" \
 			"49" "xfwm4(xfce4默认WM)" \
-			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##################
 	case "${BETA_DESKTOP}" in
-	0 | "") standand_desktop_install ;;
+	00 | "") standand_desktop_install ;;
 	01)
 		DEPENDENCY_01='icewm'
 		REMOTE_DESKTOP_SESSION_01='icewm-session'
@@ -2384,9 +2396,9 @@ download_deb_comman_model_01() {
 	download_deb_comman_model_02
 }
 ###################
-other_desktop() {
-	BETA_DESKTOP=$(whiptail --title "Alpha features" --menu \
-		"WARNING！本功能仍处于测试阶段,可能无法正常运行。部分桌面依赖systemd,无法在chroot环境中运行\nAlpha features may not work properly." 17 50 6 \
+tmoe_virtual_machine_desktop() {
+	BETA_DESKTOP=$(whiptail --title "DE" --menu \
+		"您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
 		"1" "lxqt(lxde原作者基于QT开发的桌面)" \
 		"2" "kde plasma5(风格华丽的桌面环境)" \
 		"3" "gnome3(GNU网络对象模型环境)" \
@@ -2864,11 +2876,11 @@ gnome3_warning() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}GNOME桌面安装后可以正常运行。"
-		RETURN_TO_WHERE='other_desktop'
+		RETURN_TO_WHERE='tmoe_virtual_machine_desktop'
 		do_you_want_to_continue
 	fi
 	#DEPENDENCY_01="plasma-desktop"
-	RETURN_TO_WHERE="other_desktop"
+	RETURN_TO_WHERE="tmoe_virtual_machine_desktop"
 	do_you_want_to_continue
 }
 ###############
@@ -2948,7 +2960,7 @@ deepin_desktop_warning() {
 		echo "建议您在换用x86_64或i386架构的设备后，再来尝试。"
 		echo "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
 		arch_does_not_support
-		other_desktop
+		tmoe_virtual_machine_desktop
 	fi
 }
 #################
@@ -3163,19 +3175,20 @@ check_update_icon_caches_sh() {
 	fi
 }
 ##############
+#
 tmoe_desktop_beautification() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
 	RETURN_TO_WHERE='tmoe_desktop_beautification'
 	BEAUTIFICATION=$(whiptail --title "beautification" --menu \
-		"你想要如何美化桌面？\n How do you want to beautify the desktop environment? " 0 50 0 \
-		"1" "themes:主题" \
-		"2" "icon-theme:图标包" \
-		"3" "wallpaper:壁纸" \
-		"4" "mouse cursor(鼠标指针)" \
-		"5" "conky(显示系统和资源占用等信息)" \
-		"6" "dock栏(plank/docky)" \
-		"7" "compiz(实现酷炫3D效果)" \
+		"你想要如何美化桌面？\nHow do you want to beautify the DE? " 0 50 0 \
+		"1" "🍨themes:主题(你有一双善于发现美的眼睛)" \
+		"2" "🎀icon-theme:图标包(点缀出惊艳绝伦)" \
+		"3" "🍹wallpaper:壁纸(感受万物之息)" \
+		"4" "↗mouse cursor(璀璨夺目的鼠标指针)" \
+		"5" "🌦conky(显示资源占用情况,还有...天气预报)" \
+		"6" "💫dock栏(plank/docky)" \
+		"7" "🎇compiz(如花火般绚烂)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -3228,16 +3241,17 @@ install_compiz() {
 }
 ##################
 configure_theme() {
+	#\n下载完成后，您需要手动修改外观设置中的样式和图标。\n注：您需修改窗口管理器样式才能解决标题栏丢失的问题。
 	check_update_icon_caches_sh
 	cd /tmp
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
-		"您想要下载哪个主题？按方向键选择！\n下载完成后，您需要手动修改外观设置中的样式和图标。\n注：您需修改窗口管理器样式才能解决标题栏丢失的问题。\n Which theme do you want to download? " 0 50 0 \
-		"1" "XFCE-LOOK-parser主题链接解析器" \
-		"2" "local-theme-installer本地主题安装器" \
-		"3" "win10:kali卧底模式主题" \
-		"4" "MacOS:Mojave" \
-		"5" "breeze:plasma桌面微风gtk+版主题" \
+		"您想要下载哪个主题？\n Which theme do you want to download? " 0 50 0 \
+		"1" "🌈XFCE-LOOK-parser主题链接解析器" \
+		"2" "⚡local-theme-installer本地主题安装器" \
+		"3" "🎭win10:kali卧底模式主题" \
+		"4" "🚥MacOS:Mojave" \
+		"5" "🎋breeze:plasma桌面微风gtk+版主题" \
 		"6" "Kali:Flat-Remix-Blue主题" \
 		"7" "ukui:国产优麒麟ukui桌面主题" \
 		"8" "arc:融合透明元素的平面主题" \
@@ -4077,7 +4091,7 @@ tmoe_sources_list_manager() {
 			"2" "business:国内商业镜像源" \
 			"3" "ping(镜像站延迟测试)" \
 			"4" "speed(镜像站下载速度测试)" \
-			"5" "+ppa:(debian添加ubuntu ppa源)" \
+			"5" "+ppa:(🍥debian添加ubuntu ppa源)" \
 			"6" "restore to default(还原默认源)" \
 			"7" "edit list manually(手动编辑)" \
 			"8" "${EXTRA_SOURCE}" \
@@ -4973,15 +4987,16 @@ other_software() {
 	SOFTWARE=$(
 		whiptail --title "Software center-01" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
-			"1" "Browser:浏览器" \
-			"2" "Multimedia:图像与影音(mpv,云音乐)" \
-			"3" "SNS:社交类(qq)" \
-			"4" "Games:游戏(steam,wesnoth)" \
-			"5" "Packages&system:软件包与系统管理" \
-			"6" "Documents:文档(libreoffice)" \
-			"7" "VSCode 现代化代码编辑器" \
-			"8" "Download:下载类(baidu)" \
-			"9" "remove:卸载管理" \
+			"1" "🦊Browser:浏览器" \
+			"2" "🎵Multimedia:图像与影音(mpv,云音乐)" \
+			"3" "🐧SNS:社交类(qq)" \
+			"4" "🎮Games:游戏(steam,wesnoth)" \
+			"5" "🔯Packages&system:软件包与系统管理" \
+			"6" "📚Documents:文档(libreoffice)" \
+			"7" "📘VSCode 现代化代码编辑器" \
+			"8" "🎁Download:下载类(baidu)" \
+			"9" "🥙Start zsh tool:启动zsh管理工具" \
+			"10" "🌚remove:卸载管理" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4996,7 +5011,8 @@ other_software() {
 	6) tmoe_documents_menu ;;
 	7) which_vscode_edition ;;
 	8) tmoe_download_class ;;
-	9) tmoe_other_options_menu ;;
+	9) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
+	10) tmoe_other_options_menu ;;
 	esac
 	############################################
 	press_enter_to_return
@@ -5058,7 +5074,7 @@ tmoe_download_class() {
 	TMOE_APP=$(
 		whiptail --title "documents" --menu \
 			"Which software do you want to install?" 0 50 0 \
-			"1" "百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
+			"1" "📉百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -5733,7 +5749,6 @@ x11vnc_process_readme() {
 x11vnc_warning() {
 	cat <<-EOF
 		    ${YELLOW}关于X11VNC服务的启动说明${RESET}：
-			Do you want to configure x11vnc? 
 			There are many differences between x11vnc and tightvnc. Mainly reflected in the fluency and special effects of the picture.
 			After configuring x11vnc, you can type ${GREEN}startx11vnc${RESET} to ${BLUE}start${RESET} it.
 			------------------------
@@ -5743,6 +5758,7 @@ x11vnc_warning() {
 			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
 			若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务
 			------------------------
+			Do you want to configure x11vnc? 
 			您是否需要配置${BLUE}X11VNC${RESET}服务？
 	EOF
 
@@ -7325,23 +7341,24 @@ beta_features_quick_install() {
 	beta_features_install_completed
 }
 ####################
+#测试版功能可能无法正常运行\nBeta features may not work properly.
 beta_features() {
 	RETURN_TO_WHERE='beta_features'
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
-		whiptail --title "Beta features" --menu "测试版功能可能无法正常运行\nBeta features may not work properly." 17 55 8 \
-			"1" "container/vm:docker容器,qemu,vbox虚拟机" \
-			"2" "input method:输入法(搜狗,讯飞,百度)" \
-			"3" "network:网络" \
-			"4" "read:墨纸留香,品味阅读" \
-			"5" "cut video:岁月静好,剪下佳刻" \
-			"6" "paint:融入意境,绘画真谛" \
-			"7" "file:文件,浩如烟海" \
-			"8" "SNS:进行物质和精神交流的社会活动的app" \
-			"9" "Store&download:繁花似锦,一切皆在此中" \
-			"10" "system:系统" \
-			"11" "tech&edu:科学与教育" \
-			"12" "other:其它类" \
+		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 17 55 8 \
+			"1" "💻container/vm:docker容器,qemu,vbox虚拟机" \
+			"2" "⌨input method:输入法(搜狗,讯飞,百度)" \
+			"3" "🥅network:网络" \
+			"4" "📝read:墨纸留香,品味阅读" \
+			"5" "🎞cut video:岁月静好,剪下佳刻" \
+			"6" "🎨paint:融入意境,绘画真谛" \
+			"7" "💾file:文件,浩如烟海" \
+			"8" "👬SNS:进行物质和精神交流的社会活动的app" \
+			"9" "🌼Store&download:繁花似锦,一切皆在此中" \
+			"10" "🔨system:系统" \
+			"11" "🌌tech&edu:科学与教育" \
+			"12" "🍛other:其它类" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
