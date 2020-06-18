@@ -1867,9 +1867,9 @@ start_vscode() {
 			#!/data/data/com.termux/files/usr/bin/bash
 			touch "${DEBIAN_CHROOT}/tmp/startcode.tmp"
 			CODE_PORT=$(cat ${HOME}/${DEBIAN_FOLDER}/root/.config/code-server/config.yaml | grep bind-addr | head -n 1 | awk -F ' ' '$0=$NF' | cut -d ':' -f 2)
-			am start -a android.intent.action.VIEW -d "http://localhost:${CODE_PORT}"
-			echo "本机默认vscode服务地址localhost:${CODE_PORT}"
-			echo The LAN VNC address 局域网地址\$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CODE_PORT}
+			am start -a android.intent.action.VIEW -d "http://localhost:\${CODE_PORT}"
+			echo "本机默认vscode服务地址localhost:\${CODE_PORT}"
+			echo The LAN VNC address 局域网地址\$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):\${CODE_PORT}
 			echo "Please paste the address into your browser!"
 			echo "请将地址粘贴到浏览器的地址栏中"
 
