@@ -452,7 +452,7 @@ tmoe_linux_tool_menu() {
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
 			"4" "🌌vnc/x/rdp:远程桌面" \
 			"5" "🍻Download video:解析视频链接(bili,Y2B)" \
-			"6" "🥧File shared:文件共享与网盘(Webdav)" \
+			"6" "🥗File shared:文件共享与网盘(Webdav)" \
 			"7" "🍧*°▽°*Update tmoe-linux tool(更新本工具)" \
 			"8" "🏫FAQ:常见问题" \
 			"9" "🍥software sources:软件镜像源管理" \
