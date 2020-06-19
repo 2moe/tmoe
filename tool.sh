@@ -1557,7 +1557,6 @@ switch_tight_or_tiger_vncserver() {
 		non_debian_function
 		echo "${RED}${PACKAGES_REMOVE_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
 		${PACKAGES_REMOVE_COMMAND} ${VNC_SERVER_BIN_NOW}
-		DEPENDENCY_02=${VNC_SERVER_BIN}
 		beta_features_quick_install
 	fi
 }
