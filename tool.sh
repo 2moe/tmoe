@@ -5811,9 +5811,15 @@ install_chinese_manpages() {
 #####################
 install_libre_office() {
 	#ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
-	ps -e >/dev/null || echo "${RED}WARNING！${RESET}检测到您无权读取${GREEN}/proc${RESET}分区的某些数据！"
-	RETURN_TO_WHERE='other_software'
-	do_you_want_to_continue
+	ps -e >/dev/null
+	EXIT_STATUS="$?"
+	if [ "${EXIT_STATUS}" != "0" ]; then
+		echo "${RED}WARNING！${RESET}检测到您无权读取${GREEN}/proc${RESET}目录的某些数据！"
+		echo "本工具将为此软件自动打补丁以解决无法运行的问题，但无法保证补丁有效。"
+	fi
+
+	#RETURN_TO_WHERE='other_software'
+	#do_you_want_to_continue
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		DEPENDENCY_01='--no-install-recommends libreoffice'
 	else
@@ -5822,15 +5828,18 @@ install_libre_office() {
 	DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
 	NON_DEBIAN='false'
 	beta_features_quick_install
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ "${ARCH_TYPE}" = "arm64" ]; then
-		mkdir -p /prod/version
-		cd /usr/lib/libreoffice/program
-		rm -f oosplash
-		curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
-		chmod +x oosplash
+	if [ "${EXIT_STATUS}" != "0" ]; then
+		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+			mkdir -p /prod/version
+			cd /usr/lib/libreoffice/program
+			rm -f oosplash
+			curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
+			chmod +x oosplash
+		fi
+		echo "打补丁完成"
 	fi
-	beta_features_install_completed
 }
+
 ###################
 install_baidu_netdisk() {
 	DEPENDENCY_01="baidunetdisk"
