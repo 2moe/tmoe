@@ -1877,13 +1877,13 @@ preconfigure_gui_dependecies_02() {
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			NON_DBUS='true'
 		fi
-		DEPENDENCY_02="dbus-x11 fonts-noto-cjk fonts-noto-color-emoji"
+		DEPENDENCY_02="dbus-x11 fonts-noto-cjk fonts-noto-color-emoji tightvncserver"
 
-		if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-			DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
-		else
-			DEPENDENCY_02="${DEPENDENCY_02} tightvncserver"
-		fi
+		#if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
+		#	DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
+		#else
+		#	DEPENDENCY_02="${DEPENDENCY_02} tightvncserver"
+		#fi
 		#上面的依赖摆放的位置是有讲究的。
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -3110,7 +3110,7 @@ install_lxqt_desktop() {
 	elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
 		DEPENDENCY_01="lxqt-base/lxqt-meta"
 	elif [ "${LINUX_DISTRO}" = "suse" ]; then
-		DEPENDENCY_01="tigervnc-x11vnc patterns-lxqt-lxqt"
+		DEPENDENCY_01="patterns-lxqt-lxqt"
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 		DEPENDENCY_01="openbox pcmfm rxvt-unicode tint2"
 		REMOTE_DESKTOP_SESSION='openbox'
