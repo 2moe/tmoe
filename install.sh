@@ -224,7 +224,7 @@ if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
 	echo "已将您的架构临时识别为armhf"
 fi
 echo "Detected that your current architecture is ${ARCH_TYPE}"
-echo "检测到您当前的架构为${ARCH_TYPE} ，GNU/Linux系统将安装至~/${DEBIAN_FOLDER}"
+echo "检测到您当前的架构为${ARCH_TYPE} ，debian system将安装至~/${DEBIAN_FOLDER}"
 
 cd ${HOME}
 

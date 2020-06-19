@@ -1877,17 +1877,30 @@ preconfigure_gui_dependecies_02() {
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			NON_DBUS='true'
 		fi
-		DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
+		DEPENDENCY_02="dbus-x11 fonts-noto-cjk fonts-noto-color-emoji"
+
+		if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
+			DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
+		else
+			DEPENDENCY_02="${DEPENDENCY_02} tightvncserver"
+		fi
 		#上面的依赖摆放的位置是有讲究的。
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 			NON_DBUS='true'
 		fi
-		DEPENDENCY_02="tigervnc-server google-noto-sans-cjk-ttc-fonts"
+		DEPENDENCY_02="google-noto-sans-cjk-ttc-fonts google-noto-emoji-color-fonts tigervnc-server"
 		##################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		DEPENDENCY_02="noto-fonts-cjk tigervnc"
+		DEPENDENCY_02="tigervnc"
+		if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
+			DEPENDENCY_02="noto-fonts-cjk ${DEPENDENCY_02}"
+		fi
+		if [ ! -e "/usr/share/fonts/noto/NotoColorEmoji.ttf" ]; then
+			DEPENDENCY_02="noto-fonts-emoji ${DEPENDENCY_02}"
+		fi
+
 		##################
 	elif [ "${LINUX_DISTRO}" = "void" ]; then
 		DEPENDENCY_02="xorg tigervnc wqy-microhei"
@@ -1913,7 +1926,7 @@ standand_desktop_install() {
 	REMOVE_UDISK2='false'
 	RETURN_TO_WHERE='standand_desktop_install'
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-		"Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
+		"Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose container_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
 		"1" "🍰Container_DE(容器可运行:xfce,mate,lxde)" \
 		"2" "🍱VM_DE(虚拟机可运行:lxqt,kde,gnome)" \
 		"3" "🍙window manager窗口管理器:ice,fvwm" \
@@ -2828,9 +2841,6 @@ debian_xfce4_extras() {
 			THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			download_deb_comman_model_02
 		fi
-		if [ ! -e /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]; then
-			apt install -y fonts-noto-color-emoji
-		fi
 	fi
 	apt_purge_libfprint
 }
@@ -2902,13 +2912,17 @@ xfce4_color_scheme() {
 			ColorBackground=#0f1419
 		EndofAyu
 	fi
+
 	if ! grep -q '^FontName' terminalrc; then
+		sed -i '/FontName=/d' terminalrc
 		if [ -e "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc" ]; then
-			sed -i '/FontName=/d' terminalrc
 			sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold Italic 12' terminalrc
+		elif [ -e "/usr/share/fonts/noto-cjk/NotoSansCJK-Bold.ttc" ]; then
+			sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 12' terminalrc
+		elif [ -e "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc" ]; then
+			sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 13' terminalrc
 		fi
 	fi
-
 }
 ##################
 install_xfce4_desktop() {
