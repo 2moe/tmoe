@@ -1562,12 +1562,8 @@ switch_tight_or_tiger_vncserver() {
 }
 #################
 check_tightvnc_port() {
-	if grep -q 'tmoe-linux.*:1' "/usr/local/bin/startvnc"; then
-		CURRENT_VNC_PORT=5901
-	else
-		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-	fi
+	CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+	CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 }
 #########################
 modify_tightvnc_display_port() {
@@ -2831,6 +2827,9 @@ debian_xfce4_extras() {
 			GREP_NAME="xfce4-panel-profiles"
 			THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			download_deb_comman_model_02
+		fi
+		if [ ! -e /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]; then
+			apt install -y fonts-noto-color-emoji
 		fi
 	fi
 	apt_purge_libfprint
