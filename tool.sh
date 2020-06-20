@@ -4166,28 +4166,112 @@ download_ubuntu-mate_wallpaper() {
 	move_wallpaper_model_01
 }
 #####################
+linux_mint_backgrounds() {
+	RETURN_TO_WHERE='linux_mint_backgrounds'
+	#cat index.html | grep mint-backgrounds | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1 | cut -d '-' -f 3,4
+	GREP_NAME_02="mint-backgrounds"
+	INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
+		"Download Mint Wallpapers" 0 50 0 \
+		"00" "Back返回" \
+		"01" "katya-extra" \
+		"02" "lisa-extra" \
+		"03" "maya" \
+		"04" "nadia" \
+		"05" "olivia" \
+		"06" "petra" \
+		"07" "qiana" \
+		"08" "rafaela" \
+		"09" "rebecca" \
+		"10" "retro" \
+		"11" "rosa" \
+		"12" "sarah" \
+		"13" "serena" \
+		"14" "sonya" \
+		"15" "sylvia" \
+		"16" "tara" \
+		"17" "tessa" \
+		"18" "tina" \
+		"19" "tricia" \
+		"20" "ulyana" \
+		"21" "xfce-2014" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	00 | "") download_wallpapers ;;
+	01) MINT_CODE="katya-extra" ;;
+	02) MINT_CODE="lisa-extra" ;;
+	03) MINT_CODE="maya" ;;
+	04) MINT_CODE="nadia" ;;
+	05) MINT_CODE="olivia" ;;
+	06) MINT_CODE="petra" ;;
+	07) MINT_CODE="qiana" ;;
+	08) MINT_CODE="rafaela" ;;
+	09) MINT_CODE="rebecca" ;;
+	10) MINT_CODE="retro" ;;
+	11) MINT_CODE="rosa" ;;
+	12) MINT_CODE="sarah" ;;
+	13) MINT_CODE="serena" ;;
+	14) MINT_CODE="sonya" ;;
+	15) MINT_CODE="sylvia" ;;
+	16) MINT_CODE="tara" ;;
+	17) MINT_CODE="tessa" ;;
+	18) MINT_CODE="tina" ;;
+	19) MINT_CODE="tricia" ;;
+	20) MINT_CODE="ulyana" ;;
+	21)
+		MINT_CODE="xfce"
+		GREP_NAME_02="_2014.06.09"
+		;;
+	esac
+	######################################
+	if [ "${MINT_CODE}" = 'xfce' ]; then
+		WALLPAPER_NAME='xfce4/backdrops'
+	else
+		WALLPAPER_NAME="backgrounds/linuxmint-${MINT_CODE}"
+	fi
+	download_mint_backgrounds
+	press_enter_to_return
+	linux_mint_backgrounds
+}
+###############
+download_mint_backgrounds() {
+	CUSTOM_WALLPAPER_NAME="mint-backgrounds/linuxmint-${MINT_CODE}"
+	if [ -d "${HOME}/图片" ]; then
+		mkdir -p ${HOME}/图片/mint-backgrounds
+	else
+		mkdir -p ${HOME}/Pictures/mint-backgrounds
+	fi
+	THEME_NAME="mint_backgrounds_${MINT_CODE}"
+	GREP_NAME_01='all.deb'
+	THEME_URL="https://mirrors.tuna.tsinghua.edu.cn/linuxmint/pool/main/m/mint-backgrounds-${MINT_CODE}/"
+	grep_theme_model_03
+	move_wallpaper_model_01
+}
+###############
 download_wallpapers() {
 	cd /tmp
 	RETURN_TO_WHERE='download_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
 		"您想要下载哪套壁纸包？\n Which wallpaper-pack do you want to download? " 0 50 0 \
 		"1" "ubuntu:汇聚了官方及社区的绝赞壁纸包" \
-		"2" "deepin-community+official" \
-		"3" "arch & elementary" \
-		"4" "raspbian pixel" \
-		"5" "manjaro-2017+2018" \
-		"6" "gnome-backgrounds" \
+		"2" "Mint:聆听自然的律动与风之呼吸,感受清新而唯美" \
+		"3" "deepin-community+official" \
+		"4" "arch & elementary" \
+		"5" "raspbian pixel" \
+		"6" "manjaro-2017+2018" \
+		"7" "gnome-backgrounds" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
 	0 | "") tmoe_desktop_beautification ;;
 	1) ubuntu_wallpapers_and_photos ;;
-	2) download_deepin_wallpaper ;;
-	3) download_arch_wallpaper ;;
-	4) download_raspbian_pixel_wallpaper ;;
-	5) download_manjaro_wallpaper ;;
-	6) download_debian_gnome_wallpaper ;;
+	2) linux_mint_backgrounds ;;
+	3) download_deepin_wallpaper ;;
+	4) download_arch_wallpaper ;;
+	5) download_raspbian_pixel_wallpaper ;;
+	6) download_manjaro_wallpaper ;;
+	7) download_debian_gnome_wallpaper ;;
 	esac
 	######################################
 	press_enter_to_return
@@ -4320,7 +4404,14 @@ download_raspbian_pixel_icon_theme() {
 }
 ################
 move_wallpaper_model_01() {
-	tar -Jxvf data.tar.xz 2>/dev/null
+	if [ -e "data.tar.xz" ]; then
+		tar -Jxvf data.tar.xz 2>/dev/null
+	elif [ -e "data.tar.gz" ]; then
+		tar -zxvf data.tar.gz 2>/dev/null
+	else
+		tar -xvf data.* 2>/dev/null
+	fi
+
 	if [ -d "${HOME}/图片" ]; then
 		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
 	else
@@ -4445,17 +4536,19 @@ download_arch_wallpaper() {
 	aria2c --allow-overwrite=true -o index.html "${THEME_URL}"
 	#https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
 	GREP_NAME='archlinux-wallpaper'
-	grep_arch_linux_pkg
 	THEME_NAME=${GREP_NAME}
 	WALLPAPER_NAME='backgrounds/archlinux'
 	CUSTOM_WALLPAPER_NAME='archlinux'
+	check_theme_folder
+	grep_arch_linux_pkg
 	move_wallpaper_model_01
 	#https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
 	GREP_NAME='elementary-wallpapers'
-	grep_arch_linux_pkg
 	THEME_NAME='arch_and_elementary'
 	WALLPAPER_NAME='wallpapers/elementary'
 	CUSTOM_WALLPAPER_NAME='elementary'
+	check_theme_folder
+	grep_arch_linux_pkg
 	move_wallpaper_model_01
 	#elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
 }
