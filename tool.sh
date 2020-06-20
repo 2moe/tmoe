@@ -1591,7 +1591,7 @@ modify_xfce_window_scaling_factor() {
 	TARGET=$(whiptail --inputbox "请输入您需要缩放的比例大小(纯数字)，当前仅支持整数倍，例如1和2，不支持1.5,当前为${CURRENT_VALUE}" 10 50 --title "Window Scaling Factor" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
-		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET}
+		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
 		if ((${TARGET} > 1)); then
 			if grep -q 'Focal Fossa' "/etc/os-release"; then
 				dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
@@ -1602,7 +1602,7 @@ modify_xfce_window_scaling_factor() {
 		echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
 	else
 		echo '检测到您取消了操作'
-		cat ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml | grep 'WindowScalingFactor' | grep 'value='
+		cat ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value='
 	fi
 }
 ##################
@@ -2961,6 +2961,14 @@ install_xfce4_desktop() {
 	beta_features_quick_install
 	####################
 	debian_xfce4_extras
+	if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
+		download_arch_breeze_adapta_cursor_theme
+		dbus-launch xfconf-query -c xsettings -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
+	fi
+
+	if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
+		auto_configure_xfce4_panel
+	fi
 	#################
 	if [ "${DEBIAN_DISTRO}" != "alpine" ]; then
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
@@ -2981,6 +2989,166 @@ install_xfce4_desktop() {
 	configure_vnc_xstartup
 }
 ###############
+auto_configure_xfce4_panel() {
+	XFCE_CONFIG_FOLDER="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml"
+	mkdir -p ${XFCE_CONFIG_FOLDER}
+	cd ${XFCE_CONFIG_FOLDER}
+	cat >>xfce4-panel.xml <<-'ENDOFXFCEPANEL'
+		<?xml version="1.0" encoding="UTF-8"?>
+
+		<channel name="xfce4-panel" version="1.0">
+		<property name="configver" type="int" value="2"/>
+		<property name="panels" type="array">
+			<value type="int" value="1"/>
+			<value type="int" value="2"/>
+			<property name="panel-1" type="empty">
+				<property name="autohide-behavior" type="uint" value="0"/>
+				<property name="background-alpha" type="uint" value="100"/>
+				<property name="background-style" type="uint" value="0"/>
+				<property name="disable-struts" type="bool" value="false"/>
+				<property name="enter-opacity" type="uint" value="88"/>
+				<property name="leave-opacity" type="uint" value="74"/>
+				<property name="length" type="uint" value="100"/>
+				<property name="mode" type="uint" value="0"/>
+				<property name="nrows" type="uint" value="1"/>
+				<property name="plugin-ids" type="array">
+					<value type="int" value="7"/>
+					<value type="int" value="1"/>
+					<value type="int" value="2"/>
+					<value type="int" value="3"/>
+					<value type="int" value="24"/>
+					<value type="int" value="4"/>
+					<value type="int" value="5"/>
+					<value type="int" value="6"/>
+					<value type="int" value="8"/>
+					<value type="int" value="9"/>
+					<value type="int" value="10"/>
+					<value type="int" value="11"/>
+					<value type="int" value="12"/>
+					<value type="int" value="13"/>
+					<value type="int" value="14"/>
+				</property>
+				<property name="position" type="string" value="p=6;x=0;y=0"/>
+				<property name="position-locked" type="bool" value="true"/>
+				<property name="size" type="uint" value="26"/>
+			</property>
+			<property name="panel-2" type="empty">
+				<property name="autohide-behavior" type="uint" value="1"/>
+				<property name="background-alpha" type="uint" value="100"/>
+				<property name="background-style" type="uint" value="0"/>
+				<property name="disable-struts" type="bool" value="false"/>
+				<property name="enter-opacity" type="uint" value="88"/>
+				<property name="leave-opacity" type="uint" value="77"/>
+				<property name="length" type="uint" value="10"/>
+				<property name="length-adjust" type="bool" value="true"/>
+				<property name="mode" type="uint" value="0"/>
+				<property name="nrows" type="uint" value="1"/>
+				<property name="plugin-ids" type="array">
+					<value type="int" value="15"/>
+					<value type="int" value="16"/>
+					<value type="int" value="17"/>
+					<value type="int" value="18"/>
+					<value type="int" value="19"/>
+					<value type="int" value="20"/>
+					<value type="int" value="21"/>
+					<value type="int" value="22"/>
+				</property>
+				<property name="position" type="string" value="p=10;x=0;y=0"/>
+				<property name="position-locked" type="bool" value="true"/>
+				<property name="size" type="uint" value="48"/>
+			</property>
+		</property>
+		<property name="plugins" type="empty">
+			<property name="plugin-10" type="string" value="notification-plugin"/>
+			<property name="plugin-11" type="string" value="separator">
+				<property name="expand" type="bool" value="false"/>
+				<property name="style" type="uint" value="0"/>
+			</property>
+			<property name="plugin-12" type="string" value="clock">
+				<property name="digital-format" type="string" value="%a,%b %d,%R:%S"/>
+				<property name="mode" type="uint" value="2"/>
+				<property name="show-frame" type="bool" value="true"/>
+				<property name="tooltip-format" type="string" value="%A %d %B %Y"/>
+			</property>
+			<property name="plugin-13" type="string" value="separator">
+				<property name="expand" type="bool" value="false"/>
+				<property name="style" type="uint" value="0"/>
+			</property>
+			<property name="plugin-14" type="string" value="actions">
+				<property name="appearance" type="uint" value="1"/>
+				<property name="ask-confirmation" type="bool" value="true"/>
+			</property>
+			<property name="plugin-15" type="string" value="showdesktop"/>
+			<property name="plugin-16" type="string" value="separator">
+				<property name="expand" type="bool" value="false"/>
+				<property name="style" type="uint" value="1"/>
+			</property>
+			<property name="plugin-17" type="string" value="launcher">
+				<property name="items" type="array">
+					<value type="string" value="exo-terminal-emulator.desktop"/>
+				</property>
+			</property>
+			<property name="plugin-18" type="string" value="launcher">
+				<property name="items" type="array">
+					<value type="string" value="exo-file-manager.desktop"/>
+				</property>
+			</property>
+			<property name="plugin-19" type="string" value="launcher">
+				<property name="items" type="array">
+					<value type="string" value="exo-web-browser.desktop"/>
+				</property>
+			</property>
+			<property name="plugin-2" type="string" value="tasklist">
+				<property name="grouping" type="uint" value="1"/>
+			</property>
+			<property name="plugin-20" type="string" value="launcher">
+				<property name="items" type="array">
+					<value type="string" value="xfce4-appfinder.desktop"/>
+				</property>
+			</property>
+			<property name="plugin-21" type="string" value="separator">
+				<property name="expand" type="bool" value="false"/>
+				<property name="style" type="uint" value="1"/>
+			</property>
+			<property name="plugin-22" type="string" value="directorymenu">
+				<property name="expand" type="bool" value="true"/>
+				<property name="style" type="uint" value="0"/>
+			</property>
+			<property name="plugin-3" type="string" value="separator">
+				<property name="expand" type="bool" value="true"/>
+				<property name="style" type="uint" value="0"/>
+			</property>
+			<property name="plugin-4" type="string" value="pager">
+				<property name="miniature-view" type="bool" value="true"/>
+				<property name="rows" type="uint" value="1"/>
+				<property name="workspace-scrolling" type="bool" value="false"/>
+			</property>
+			<property name="plugin-5" type="string" value="separator">
+				<property name="expand" type="bool" value="false"/>
+				<property name="style" type="uint" value="0"/>
+			</property>
+			<property name="plugin-6" type="string" value="systray">
+				<property name="show-frame" type="bool" value="false"/>
+				<property name="size-max" type="uint" value="22"/>
+				<property name="square-icons" type="bool" value="true"/>
+				<property name="names-ordered" type="array">
+				</property>
+			</property>
+			<property name="plugin-8" type="string" value="pulseaudio">
+				<property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+				<property name="show-notifications" type="bool" value="true"/>
+			</property>
+			<property name="plugin-9" type="string" value="power-manager-plugin"/>
+			<property name="plugin-7" type="string" value="whiskermenu"/>
+			<property name="plugin-1" type="string" value="applicationsmenu"/>
+			<property name="plugin-24" type="string" value="xfce4-clipman-plugin"/>
+		</property>
+		</channel>
+	ENDOFXFCEPANEL
+	CURRENT_USER_FILE=$(pwd)
+	fix_non_root_permissions
+}
+############
 install_lxde_desktop() {
 	REMOTE_DESKTOP_SESSION_01='lxsession'
 	REMOTE_DESKTOP_SESSION_02='startlxde'
@@ -4128,10 +4296,7 @@ download_ukui_theme() {
 	#echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} ukui-themes"
 }
 #################################
-install_breeze_theme() {
-	DEPENDENCY_01="breeze-icon-theme"
-	DEPENDENCY_02="breeze-cursor-theme breeze-gtk-theme xfwm4-theme-breeze"
-	NON_DEBIAN='false'
+download_arch_breeze_adapta_cursor_theme() {
 	mkdir -p /tmp/.breeze_theme
 	cd /tmp/.breeze_theme
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/any/'
@@ -4141,6 +4306,13 @@ install_breeze_theme() {
 	tar -Jxvf data.tar.xz 2>/dev/null
 	cp -rf usr /
 	rm -rf /tmp/.breeze_theme
+}
+#############
+install_breeze_theme() {
+	DEPENDENCY_01="breeze-icon-theme"
+	DEPENDENCY_02="breeze-cursor-theme breeze-gtk-theme xfwm4-theme-breeze"
+	NON_DEBIAN='false'
+	download_arch_breeze_adapta_cursor_theme
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="breeze-icons breeze-gtk"
 		DEPENDENCY_02="xfwm4-theme-breeze capitaine-cursors"
@@ -7102,6 +7274,15 @@ configure_startvnc() {
 	EndOfFile
 }
 ###############
+fix_non_root_permissions() {
+	if [ ${HOME} != '/root' ]; then
+		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+		CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${CURRENT_USER_FILE}的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "$CURRENT_USER_FILE}" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} $CURRENT_USER_FILE}" 2>/dev/null
+	fi
+}
+################
 first_configure_startvnc() {
 	#卸载udisks2，会破坏mate和plasma的依赖关系。
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOVE_UDISK2} = 'true' ]; then
@@ -7301,14 +7482,14 @@ xfce4_tightvnc_hidpi_settings() {
 		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
 		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
 		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
-		dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s 2 || dbus-launch xfconf-query -n -t int -c xsettings -p /Gdk/WindowScalingFactor -s 2
+		dbus-launch xfconf-query -c xsettings -np /Gdk/WindowScalingFactor -s 2 || dbus-launch xfconf-query -n -t int -c xsettings -np /Gdk/WindowScalingFactor -s 2
 		#-n创建一个新属性，类型为int
 		if grep -q 'Focal Fossa' "/etc/os-release"; then
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
 		else
 			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
 		fi
-		dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
+		#dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
 		#startvnc >/dev/null 2>&1
 	fi
 	#Default-xhdpi默认处于未激活状态
