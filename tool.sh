@@ -3003,9 +3003,11 @@ MODIFY_XFCE_VNC0_WALLPAPER() {
 }
 ##################
 debian_xfce_wallpaper() {
-	WALLPAPER_FILE='/usr/share/xfce4/backdrops/Untitled_by_Troy_Jarrell.jpg'
+	#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Untitled_by_Troy_Jarrell.jpg'
+	WALLPAPER_FILE='/usr/share/backgrounds/gabriele-diwald-201135.jpg'
 	if [ ! -e "${WALLPAPER_FILE}" ]; then
-		debian_download_xubuntu_xenial_wallpaper
+		#debian_download_xubuntu_xenial_wallpaper
+		debian_download_ubuntu_mate_wallpaper
 	fi
 	MODIFY_XFCE_VNC0_WALLPAPER
 }
@@ -3036,9 +3038,23 @@ modify_the_default_xfce_wallpaper() {
 		if [ -e "${WALLPAPER_FILE}" ]; then
 			MODIFY_XFCE_VNC0_WALLPAPER
 		fi
+	else
+		debian_xfce_wallpaper
 	fi
 }
 #################
+debian_download_ubuntu_mate_wallpaper() {
+	FORCIBLY_DOWNLOAD='true'
+	download_ubuntu-mate_wallpaper
+	if [ -e "${HOME}/Pictures/ubuntu-mate-photos" ]; then
+		mv ${HOME}/Pictures/ubuntu-mate-photos/* /usr/share/backgrounds -f
+		rm -rf ${HOME}/Pictures/ubuntu-mate-photos/
+	elif [ -e "${HOME}/图片/ubuntu-mate-photos" ]; then
+		mv ${HOME}/图片/ubuntu-mate-photos/* /usr/share/backgrounds -f
+		rm -rf ${HOME}/图片/ubuntu-mate-photos/
+	fi
+}
+#####################
 debian_download_xubuntu_xenial_wallpaper() {
 	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
 	GREP_NAME_01='xubuntu-community-wallpapers-xenial'
@@ -4250,6 +4266,7 @@ download_mint_backgrounds() {
 ###############
 download_wallpapers() {
 	cd /tmp
+	FORCIBLY_DOWNLOAD='false'
 	RETURN_TO_WHERE='download_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
 		"您想要下载哪套壁纸包？\n Which wallpaper-pack do you want to download? " 0 50 0 \
@@ -4323,7 +4340,9 @@ download_theme_deb_and_extract_01() {
 ###############
 #多GREP
 grep_theme_model_03() {
-	check_theme_folder
+	if [ ${FORCIBLY_DOWNLOAD} != 'true' ]; then
+		check_theme_folder
+	fi
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
 	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
@@ -4413,7 +4432,7 @@ move_wallpaper_model_01() {
 	elif [ -e "data.tar.gz" ]; then
 		tar -zxvf data.tar.gz 2>/dev/null
 	elif [ -e "data.tar.zst" ]; then
-		tar --zstd -xvf data.tar.zst 2>/dev/null
+		tar --zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
 	else
 		tar -xvf data.* 2>/dev/null
 	fi
