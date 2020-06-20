@@ -4147,7 +4147,7 @@ ubuntu_wallpapers_and_photos() {
 download_ubuntu_kylin_walllpaper() {
 	THEME_NAME='ubuntukylin_wallpapers'
 	WALLPAPER_NAME='ubuntukylin-wallpapers'
-	CUSTOM_WALLPAPER_NAME='ubuntu-kylin'
+	CUSTOM_WALLPAPER_NAME='ubuntukylin-wallpapers'
 	GREP_NAME_01='.tar.xz'
 	GREP_NAME_02='ubuntukylin-wallpapers_'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
