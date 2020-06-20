@@ -2671,7 +2671,7 @@ install_fvwm() {
 		else
 			REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/f/fvwm-crystal/'
 			GREP_NAME='all'
-			download_deb_comman_model_01
+			grep_deb_comman_model_01
 			if [ $(command -v fvwm-crystal) ]; then
 				REMOTE_DESKTOP_SESSION_01='fvwm-crystal'
 			fi
@@ -2689,8 +2689,12 @@ download_deb_comman_model_02() {
 	rm -fv ${THE_LATEST_DEB_VERSION}
 }
 #########################
-download_deb_comman_model_01() {
-	cd /tmp/
+grep_deb_comman_model_02() {
+	THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	download_deb_comman_model_02
+}
+###################
+grep_deb_comman_model_01() {
 	THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 	download_deb_comman_model_02
 }
@@ -2878,7 +2882,7 @@ touch_xfce4_terminal_rc() {
 		MiscSlimTabs=FALSE
 		MiscNewTabAdjacent=FALSE
 		BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
-		BackgroundDarkness=0.880000
+		BackgroundDarkness=0.730000
 		ScrollingUnlimited=TRUE
 	ENDOFTERMIANLRC
 }
@@ -2963,14 +2967,19 @@ install_xfce4_desktop() {
 	debian_xfce4_extras
 	if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
 		download_arch_breeze_adapta_cursor_theme
-		dbus-launch xfconf-query -c xsettings -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
+		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
+	fi
+	cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
+	XFCE_WORK_SPACE_01=$(cat xfce4-desktop.xml | grep -n workspace1 | awk '{print $1}' | cut -d ':' -f 1)
+	if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
+		modify_the_default_xfce_wallpaper
 	fi
 
 	if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
 		auto_configure_xfce4_panel
 	fi
 	#################
-	if [ "${DEBIAN_DISTRO}" != "alpine" ]; then
+	if [ "${LINUX_DISTRO}" != "alpine" ]; then
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			download_kali_themes_common
 		fi
@@ -2987,6 +2996,54 @@ install_xfce4_desktop() {
 	xfce4_color_scheme
 	#########
 	configure_vnc_xstartup
+}
+###############
+MODIFY_XFCE_VNC0_WALLPAPER() {
+	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+}
+##################
+debian_xfce_wallpaper() {
+	WALLPAPER_FILE='/usr/share/xfce4/backdrops/Untitled_by_Troy_Jarrell.jpg'
+	if [ ! -e "${WALLPAPER_FILE}" ]; then
+		debian_download_xubuntu_xenial_wallpaper
+	fi
+	MODIFY_XFCE_VNC0_WALLPAPER
+}
+#################
+if_exists_other_debian_distro_wallpaper() {
+	if [ -e "${WALLPAPER_FILE}" ]; then
+		MODIFY_XFCE_VNC0_WALLPAPER
+	else
+		debian_xfce_wallpaper
+	fi
+}
+###############
+modify_the_default_xfce_wallpaper() {
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
+			WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
+			if_exists_other_debian_distro_wallpaper
+		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
+			if_exists_other_debian_distro_wallpaper
+		else
+			debian_xfce_wallpaper
+		fi
+	fi
+
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
+		if [ -e "${WALLPAPER_FILE}" ]; then
+			MODIFY_XFCE_VNC0_WALLPAPER
+		fi
+	fi
+}
+#################
+debian_download_xubuntu_xenial_wallpaper() {
+	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
+	GREP_NAME_01='xubuntu-community-wallpapers-xenial'
+	GREP_NAME_02='all.deb'
+	grep_deb_comman_model_02
 }
 ###############
 auto_configure_xfce4_panel() {
@@ -3609,7 +3666,7 @@ remove_browser() {
 #############################################
 #############################################
 set_default_xfce_icon_theme() {
-	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s ${XFCE_ICRO_NAME} 2>/dev/null
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s ${XFCE_ICON_NAME} 2>/dev/null
 }
 ###############
 creat_update_icon_caches() {
@@ -3935,26 +3992,87 @@ install_numix_theme() {
 	beta_features_quick_install
 }
 ################
+xubuntu_wallpapers() {
+	RETURN_TO_WHERE='xubuntu_wallpapers'
+	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
+		"您想要下载哪套壁纸包？\n Which wallpaper do you want to download? " 0 50 0 \
+		"1" "xubuntu-trusty" \
+		"2" "xubuntu-xenial" \
+		"3" "xubuntu-bionic" \
+		"4" "xubuntu-focal" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	0 | "") download_wallpapers ;;
+	1)
+		GREP_NAME_02='xubuntu-community-wallpapers-trusty'
+		CUSTOM_WALLPAPER_NAME='xubuntu-community-artwork/trusty'
+		download_xubuntu_wallpaper
+		;;
+	2)
+		GREP_NAME_02='xubuntu-community-wallpapers-xenial'
+		CUSTOM_WALLPAPER_NAME='xubuntu-community-artwork/xenial'
+		download_xubuntu_wallpaper
+		;;
+	3)
+		GREP_NAME_02='xubuntu-community-wallpapers-bionic'
+		CUSTOM_WALLPAPER_NAME='xubuntu-community-artwork/bionic'
+		download_xubuntu_wallpaper
+		;;
+	4)
+		GREP_NAME_02='xubuntu-community-wallpapers-focal'
+		CUSTOM_WALLPAPER_NAME='xubuntu-community-artwork/focal'
+		download_xubuntu_wallpaper
+		;;
+	esac
+	######################################
+	press_enter_to_return
+	xubuntu_wallpapers
+}
+###############
 download_wallpapers() {
 	cd /tmp
 	RETURN_TO_WHERE='download_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
 		"您想要下载哪套壁纸包？\n Which wallpaper do you want to download? " 0 50 0 \
-		"1" "deepin:深度系统壁纸包" \
-		"2" "arch/elementary/manjaro系统壁纸包" \
+		"1" "deepin-community+official" \
+		"2" "arch & elementary" \
+		"3" "raspbian pixel" \
+		"4" "manjaro-2017+2018" \
+		"5" "xubuntu-community:(bionic,focal,etc.)" \
+		"6" "gnome-backgrounds" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
 	0 | "") tmoe_desktop_beautification ;;
 	1) download_deepin_wallpaper ;;
-	2) download_manjaro_wallpaper ;;
+	2) download_arch_wallpaper ;;
+	3) download_raspbian_pixel_wallpaper ;;
+	4) download_manjaro_wallpaper ;;
+	5) xubuntu_wallpapers ;;
+	6) download_debian_gnome_wallpaper ;;
 	esac
 	######################################
 	press_enter_to_return
 	download_wallpapers
 }
 ###########
+download_xubuntu_wallpaper() {
+	if [ -d "${HOME}/图片" ]; then
+		mkdir -p ${HOME}/图片/xubuntu-community-artwork
+	else
+		mkdir -p ${HOME}/Pictures/xubuntu-community-artwork
+	fi
+	THEME_NAME='xubuntu_wallpaper'
+	WALLPAPER_NAME='xfce4/backdrops'
+	GREP_NAME_01='all.deb'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
+	grep_theme_model_03
+	move_wallpaper_model_01
+}
+############
 configure_mouse_cursor() {
 	echo "chameleon:现代化鼠标指针主题"
 	echo 'Do you want to download it?'
@@ -3962,11 +4080,24 @@ configure_mouse_cursor() {
 	download_chameleon_cursor_theme
 }
 ################################
-#下载deb包
-download_theme_model_01() {
+check_theme_folder() {
+	if [ -e "${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}" ] || [ -e ${HOME}/图片/${CUSTOM_WALLPAPER_NAME} ]; then
+		echo "检测到您${RED}已经下载过${RESET}该壁纸包了"
+		echo "壁纸包位于${BLUE}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}(图片)目录"
+		echo "Do you want to ${RED}download again?${RESET}"
+		do_you_want_to_continue
+	fi
+}
+##############
+grep_theme_model_01() {
+	check_theme_folder
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
 	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	download_theme_deb_and_extract_01
+}
+###############
+download_theme_deb_and_extract_01() {
 	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
 	echo ${THE_LATEST_THEME_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
@@ -3976,7 +4107,28 @@ download_theme_model_01() {
 		/usr/local/bin/busybox ar xv ${THE_LATEST_THEME_VERSION}
 	fi
 }
+###############
+#多GREP
+grep_theme_model_03() {
+	check_theme_folder
+	mkdir -p /tmp/.${THEME_NAME}
+	cd /tmp/.${THEME_NAME}
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	download_theme_deb_and_extract_01
+}
 ############################
+#tar.xz
+#manjaro仓库
+grep_theme_model_02() {
+	check_theme_folder
+	mkdir -p /tmp/.${THEME_NAME}
+	cd /tmp/.${THEME_NAME}
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep -v '.xz.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
+	echo ${THE_LATEST_THEME_LINK}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
+}
+###########
 update_icon_caches_model_01() {
 	cd /
 	tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
@@ -3992,9 +4144,9 @@ download_paper_icon_theme() {
 	ICON_NAME='Paper /usr/share/icons/Paper-Mono-Dark'
 	GREP_NAME='paper-icon-theme'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/'
-	download_theme_model_02
+	grep_theme_model_02
 	update_icon_caches_model_02
-	XFCE_ICRO_NAME='Paper'
+	XFCE_ICON_NAME='Paper'
 	set_default_xfce_icon_theme
 }
 #############
@@ -4003,9 +4155,9 @@ download_papirus_icon_theme() {
 	ICON_NAME='Papirus /usr/share/icons/Papirus-Dark /usr/share/icons/Papirus-Light /usr/share/icons/ePapirus'
 	GREP_NAME='papirus-icon-theme'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/p/papirus-icon-theme/'
-	download_theme_model_01
+	grep_theme_model_01
 	update_icon_caches_model_01
-	XFCE_ICRO_NAME='Papirus'
+	XFCE_ICON_NAME='Papirus'
 	set_default_xfce_icon_theme
 }
 ############################
@@ -4023,25 +4175,16 @@ update_icon_caches_model_02() {
 	update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
 	tips_of_delete_icon_theme
 }
-###############
-#tar.xz
-download_theme_model_02() {
-	mkdir -p /tmp/.${THEME_NAME}
-	cd /tmp/.${THEME_NAME}
-	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep -v '.xz.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
-	echo ${THE_LATEST_THEME_LINK}
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
-}
 ####################
 download_raspbian_pixel_icon_theme() {
 	THEME_NAME='raspbian_pixel_icon_theme'
 	ICON_NAME='PiX'
 	GREP_NAME='all.deb'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pix-icons/'
-	download_theme_model_01
+	grep_theme_model_01
 	update_icon_caches_model_01
-	download_raspbian_pixel_wallpaper
+	XFCE_ICON_NAME='PiX'
+	set_default_xfce_icon_theme
 }
 ################
 move_wallpaper_model_01() {
@@ -4049,35 +4192,45 @@ move_wallpaper_model_01() {
 	if [ -d "${HOME}/图片" ]; then
 		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
 	else
-		mkdir -p ${HOME}/Pictures
+		mkdir -p ${HOME}/Pictures/
 		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
 	fi
 	rm -rf /tmp/.${THEME_NAME}
-	echo "壁纸包已经保存至${HOME}/图片/${CUSTOM_WALLPAPER_NAME}"
+	echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
+	echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
 }
 #################
 download_raspbian_pixel_wallpaper() {
 	THEME_NAME='raspberrypi_pixel_wallpaper'
 	WALLPAPER_NAME='pixel-wallpaper'
 	CUSTOM_WALLPAPER_NAME='raspberrypi-pixel-wallpapers'
+	GREP_NAME='pixel-wallpaper'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
-	download_theme_model_01
+	grep_theme_model_01
 	move_wallpaper_model_01
-	XFCE_ICRO_NAME='PiX'
-	set_default_xfce_icon_theme
 }
 ########
+download_debian_gnome_wallpaper() {
+	THEME_NAME='gnome_backgrounds'
+	WALLPAPER_NAME='backgrounds/gnome'
+	CUSTOM_WALLPAPER_NAME='gnome-backgrounds'
+	GREP_NAME='gnome-backgrounds'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/g/gnome-backgrounds/'
+	grep_theme_model_01
+	move_wallpaper_model_01
+}
+##############
 download_deepin_wallpaper() {
 	THEME_NAME='deepin-wallpapers'
 	WALLPAPER_NAME='wallpapers/deepin'
 	GREP_NAME='deepin-community-wallpapers'
 	CUSTOM_WALLPAPER_NAME='deepin-community-wallpapers'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
-	download_theme_model_01
+	grep_theme_model_01
 	move_wallpaper_model_01
 	GREP_NAME='deepin-wallpapers_'
 	CUSTOM_WALLPAPER_NAME='deepin-wallpapers'
-	download_theme_model_01
+	grep_theme_model_01
 	move_wallpaper_model_01
 }
 ##########
@@ -4131,8 +4284,6 @@ download_manjaro_wallpaper() {
 	CUSTOM_WALLPAPER_NAME='manjaro-2017'
 	move_wallpaper_model_01
 	##################
-	link_to_debian_wallpaper
-	download_arch_wallpaper
 }
 #########
 grep_arch_linux_pkg() {
@@ -4141,7 +4292,9 @@ grep_arch_linux_pkg() {
 	echo "${ARCH_WALLPAPER_URL}"
 	aria2c --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
+###################
 download_arch_wallpaper() {
+	link_to_debian_wallpaper
 	mkdir -p /tmp/.arch_and_elementary
 	cd /tmp/.arch_and_elementary
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/'
@@ -4169,7 +4322,7 @@ download_kali_themes_common() {
 	GREP_NAME='kali-themes-common'
 	ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/'
-	download_theme_model_01
+	grep_theme_model_01
 	update_icon_caches_model_01
 }
 ####################
@@ -4182,7 +4335,7 @@ download_kali_theme() {
 		download_kali_themes_common
 	fi
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
-	XFCE_ICRO_NAME='Flat-Remix-Blue-Light'
+	XFCE_ICON_NAME='Flat-Remix-Blue-Light'
 	set_default_xfce_icon_theme
 }
 ##################
@@ -4205,7 +4358,7 @@ download_win10x_theme() {
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McWe10X
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
-	XFCE_ICRO_NAME='We10X'
+	XFCE_ICON_NAME='We10X'
 	set_default_xfce_icon_theme
 }
 ###################
@@ -4233,7 +4386,7 @@ download_uos_icon_theme() {
 	echo ${GITHUB_URL}
 	rm -rf /tmp/UosICONS
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${PACKAGES_REMOVE_COMMAND} deepin-icon-theme"
-	XFCE_ICRO_NAME='Uos'
+	XFCE_ICON_NAME='Uos'
 	set_default_xfce_icon_theme
 }
 #####################
@@ -4257,7 +4410,7 @@ download_macos_mojave_theme() {
 	echo ${GITHUB_URL}
 	rm -rf /tmp/McMojave
 	echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
-	XFCE_ICRO_NAME='McMojave-circle'
+	XFCE_ICON_NAME='McMojave-circle'
 	set_default_xfce_icon_theme
 }
 #######################
@@ -4290,7 +4443,7 @@ download_ukui_theme() {
 	else
 		echo '请前往外观设置手动修改图标'
 	fi
-	XFCE_ICRO_NAME='ukui-icon-theme'
+	XFCE_ICON_NAME='ukui-icon-theme'
 	set_default_xfce_icon_theme
 	#update-icon-caches /usr/share/icons/ukui-icon-theme/ 2>/dev/null
 	#echo "安装完成，如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} ukui-themes"
@@ -4327,18 +4480,18 @@ download_chameleon_cursor_theme() {
 	THEME_NAME='breeze-cursor-theme'
 	GREP_NAME="${THEME_NAME}"
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/breeze/'
-	download_theme_model_01
+	grep_theme_model_01
 	upcompress_deb_file
 	#############
 	GREP_NAME='all'
 	THEME_NAME='chameleon-cursor-theme'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/chameleon-cursor-theme/'
-	download_theme_model_01
+	grep_theme_model_01
 	upcompress_deb_file
 	##############
 	THEME_NAME='moblin-cursor-theme'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/m/moblin-cursor-theme/'
-	download_theme_model_01
+	grep_theme_model_01
 	upcompress_deb_file
 	##########
 }
@@ -4394,7 +4547,7 @@ install_kali_undercover() {
 		rm -rf /tmp/.kali-undercover-win10-theme
 		#rm -f ./kali-undercover.deb
 	fi
-	#XFCE_ICRO_NAME='Windows 10'
+	#XFCE_ICON_NAME='Windows 10'
 }
 #################
 check_tmoe_sources_list_backup_file() {
@@ -7346,6 +7499,19 @@ first_configure_startvnc() {
 
 	EndOFneko
 	printf "$RESET"
+	echo '------------------------'
+	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
+		if (whiptail --title "Are you using a high-resolution monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用高分辨率屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若2K<x<4K,则选择YES;\n若x<=1080p,则选择NO。" 0 50); then
+			TMOE_HIGH_DPI='true'
+			xfce4_tightvnc_hidpi_settings
+		else
+			TMOE_HIGH_DPI='false'
+			echo "默认分辨率为1440x720，窗口缩放大小为1x"
+			dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
+			echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+			echo "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
+		fi
+	fi
 	cat <<-EOF
 		------------------------
 		一：
@@ -7371,8 +7537,6 @@ first_configure_startvnc() {
 	echo "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
 	echo "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
 	echo "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
-	echo '------------------------'
-	xfce4_tightvnc_hidpi_settings
 	echo '------------------------'
 	echo '------------------------'
 	if [ "${HOME}" != "/root" ]; then
@@ -7402,10 +7566,10 @@ first_configure_startvnc() {
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start Firewall.cpl"
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
 		############
-		if [ ! -e 'XserverHightDPI.png' ]; then
-			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverHightDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
+		if [ ! -e 'XserverhighDPI.png' ]; then
+			aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverhighDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
 		fi
-		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverHightDPI.png" 2>/dev/null
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverhighDPI.png" 2>/dev/null
 		echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
 		echo "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 		echo "${YELLOW}按回车键启动X${RESET}"
@@ -7474,32 +7638,32 @@ check_vnc_passsword_length() {
 }
 ###################
 xfce4_tightvnc_hidpi_settings() {
-	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
-		echo "检测到您当前的桌面环境为xfce4，将为您自动调整高分屏设定"
-		echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
-		stopvnc >/dev/null 2>&1
-		sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
-		sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
-		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
-		echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
-		dbus-launch xfconf-query -c xsettings -np /Gdk/WindowScalingFactor -s 2 || dbus-launch xfconf-query -n -t int -c xsettings -np /Gdk/WindowScalingFactor -s 2
-		#-n创建一个新属性，类型为int
-		if grep -q 'Focal Fossa' "/etc/os-release"; then
-			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
-		else
-			dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
-		fi
-		#dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
-		#startvnc >/dev/null 2>&1
+	echo "检测到您当前的桌面环境为xfce4，将为您自动调整高分屏设定"
+	echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+	stopvnc >/dev/null 2>&1
+	sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
+	sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+	sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
+	echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
+	dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
+	#-n创建一个新属性，类型为int
+	if grep -q 'Focal Fossa' "/etc/os-release"; then
+		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
+	else
+		dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
 	fi
+	#dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
+	#startvnc >/dev/null 2>&1
 	#Default-xhdpi默认处于未激活状态
 }
 ################
 xfce4_x11vnc_hidpi_settings() {
-	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
-		stopx11vnc >/dev/null 2>&1
-		sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
-		startx11vnc >/dev/null 2>&1
+	if [ ${TMOE_HIGH_DPI} = 'true' ]; then
+		if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
+			#stopx11vnc >/dev/null 2>&1
+			sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+			#startx11vnc >/dev/null 2>&1
+		fi
 	fi
 }
 ####################
@@ -13570,7 +13734,7 @@ install_debian_iflyime_pinyin() {
 	if [ "${ARCH_TYPE}" = "amd64" ]; then
 		REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/i/iflyime/'
 		GREP_NAME="${ARCH_TYPE}"
-		download_deb_comman_model_01
+		grep_deb_comman_model_01
 	else
 		arch_does_not_support
 		echo "请在更换x64架构的设备后，再来尝试"
