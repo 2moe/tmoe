@@ -66,14 +66,14 @@ check_root() {
 #####################
 check_architecture() {
 	case $(uname -m) in
-	aarch64 | armv8* | arm64)
-		ARCH_TYPE="arm64"
-		;;
-	armv7*)
+	armv7* | armv8l)
 		ARCH_TYPE="armhf"
 		;;
 	armv6* | armv5*)
 		ARCH_TYPE="armel"
+		;;
+	aarch64 | armv8* | arm64)
+		ARCH_TYPE="arm64"
 		;;
 	x86_64 | amd64)
 		ARCH_TYPE="amd64"
