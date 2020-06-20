@@ -3995,7 +3995,7 @@ install_numix_theme() {
 xubuntu_wallpapers() {
 	RETURN_TO_WHERE='xubuntu_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
-		"您想要下载哪套壁纸包？\n Which wallpaper do you want to download? " 0 50 0 \
+		"您想要下载哪套xubuntu壁纸包？\n Which xubuntu wallpaper-pack do you want to download? " 0 50 0 \
 		"1" "xubuntu-trusty" \
 		"2" "xubuntu-xenial" \
 		"3" "xubuntu-bionic" \
@@ -4004,7 +4004,7 @@ xubuntu_wallpapers() {
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
-	0 | "") download_wallpapers ;;
+	0 | "") ubuntu_wallpapers_and_photos ;;
 	1)
 		GREP_NAME_02='xubuntu-community-wallpapers-trusty'
 		CUSTOM_WALLPAPER_NAME='xubuntu-community-artwork/trusty'
@@ -4031,34 +4031,6 @@ xubuntu_wallpapers() {
 	xubuntu_wallpapers
 }
 ###############
-download_wallpapers() {
-	cd /tmp
-	RETURN_TO_WHERE='download_wallpapers'
-	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
-		"您想要下载哪套壁纸包？\n Which wallpaper do you want to download? " 0 50 0 \
-		"1" "deepin-community+official" \
-		"2" "arch & elementary" \
-		"3" "raspbian pixel" \
-		"4" "manjaro-2017+2018" \
-		"5" "xubuntu-community:(bionic,focal,etc.)" \
-		"6" "gnome-backgrounds" \
-		"0" "Back to the main menu 返回主菜单" \
-		3>&1 1>&2 2>&3)
-	########################
-	case "${INSTALL_THEME}" in
-	0 | "") tmoe_desktop_beautification ;;
-	1) download_deepin_wallpaper ;;
-	2) download_arch_wallpaper ;;
-	3) download_raspbian_pixel_wallpaper ;;
-	4) download_manjaro_wallpaper ;;
-	5) xubuntu_wallpapers ;;
-	6) download_debian_gnome_wallpaper ;;
-	esac
-	######################################
-	press_enter_to_return
-	download_wallpapers
-}
-###########
 download_xubuntu_wallpaper() {
 	if [ -d "${HOME}/图片" ]; then
 		mkdir -p ${HOME}/图片/xubuntu-community-artwork
@@ -4071,6 +4043,155 @@ download_xubuntu_wallpaper() {
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
 	grep_theme_model_03
 	move_wallpaper_model_01
+}
+###############
+ubuntu_gnome_walllpapers() {
+	RETURN_TO_WHERE='ubuntu_gnome_walllpapers'
+	#cat index.html | sort -u | grep 20.04 | grep all.deb | cut -d '=' -f 4 | cut -d '"' -f 2 |cut -d '_' -f 1 | cut -d '-' -f 3
+	INSTALL_THEME=$(whiptail --title "UBUNTU壁纸" --menu \
+		"Download ubuntu wallpapers" 0 50 0 \
+		"00" "Back返回" \
+		"01" "artful" \
+		"02" "bionic" \
+		"03" "cosmic" \
+		"04" "disco" \
+		"05" "eoan" \
+		"06" "karmic" \
+		"07" "lucid" \
+		"08" "maverick" \
+		"09" "natty" \
+		"10" "oneiric" \
+		"11" "precise" \
+		"12" "quantal" \
+		"13" "raring" \
+		"14" "saucy" \
+		"15" "trusty" \
+		"16" "utopic" \
+		"17" "vivid" \
+		"18" "wily" \
+		"19" "xenial" \
+		"20" "yakkety" \
+		"21" "zesty" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	00 | "") ubuntu_wallpapers_and_photos ;;
+	01) UBUNTU_CODE="artful" ;;
+	02) UBUNTU_CODE="bionic" ;;
+	03) UBUNTU_CODE="cosmic" ;;
+	04) UBUNTU_CODE="disco" ;;
+	05) UBUNTU_CODE="eoan" ;;
+	06) UBUNTU_CODE="karmic" ;;
+	07) UBUNTU_CODE="lucid" ;;
+	08) UBUNTU_CODE="maverick" ;;
+	09) UBUNTU_CODE="natty" ;;
+	10) UBUNTU_CODE="oneiric" ;;
+	11) UBUNTU_CODE="precise" ;;
+	12) UBUNTU_CODE="quantal" ;;
+	13) UBUNTU_CODE="raring" ;;
+	14) UBUNTU_CODE="saucy" ;;
+	15) UBUNTU_CODE="trusty" ;;
+	16) UBUNTU_CODE="utopic" ;;
+	17) UBUNTU_CODE="vivid" ;;
+	18) UBUNTU_CODE="wily" ;;
+	19) UBUNTU_CODE="xenial" ;;
+	20) UBUNTU_CODE="yakkety" ;;
+	21) UBUNTU_CODE="zesty" ;;
+	esac
+	######################################
+	GREP_NAME_02="ubuntu-wallpapers-${UBUNTU_CODE}"
+	CUSTOM_WALLPAPER_NAME="ubuntu-wallpapers/${UBUNTU_CODE}"
+	download_ubuntu_wallpaper
+	press_enter_to_return
+	ubuntu_gnome_walllpapers
+}
+###############
+download_ubuntu_wallpaper() {
+	if [ -d "${HOME}/图片" ]; then
+		mkdir -p ${HOME}/图片/ubuntu-wallpapers
+	else
+		mkdir -p ${HOME}/Pictures/ubuntu-wallpapers
+	fi
+	THEME_NAME='ubuntu_wallpaper'
+	WALLPAPER_NAME='backgrounds'
+	GREP_NAME_01='all.deb'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntu-wallpapers/'
+	grep_theme_model_03
+	move_wallpaper_model_01
+}
+###############
+ubuntu_wallpapers_and_photos() {
+	RETURN_TO_WHERE='ubuntu_wallpapers_and_photos'
+	INSTALL_THEME=$(whiptail --title "Ubuntu壁纸包" --menu \
+		"您想要下载哪套Ubuntu壁纸包？\n Which ubuntu wallpaper-pack do you want to download? " 0 50 0 \
+		"1" "ubuntu-gnome:(bionic,cosmic,etc.)" \
+		"2" "xubuntu-community:(bionic,focal,etc.)" \
+		"3" "ubuntu-mate" \
+		"4" "ubuntu-kylin 优麒麟" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	0 | "") download_wallpapers ;;
+	1) ubuntu_gnome_walllpapers ;;
+	2) xubuntu_wallpapers ;;
+	3) download_ubuntu-mate_wallpaper ;;
+	4) download_ubuntu_kylin_walllpaper ;;
+	esac
+	######################################
+	press_enter_to_return
+	ubuntu_wallpapers_and_photos
+}
+#######################
+#ubuntukylin-wallpapers_20.04.2.tar.xz
+download_ubuntu_kylin_walllpaper() {
+	THEME_NAME='ubuntukylin_wallpapers'
+	WALLPAPER_NAME='ubuntukylin-wallpapers'
+	CUSTOM_WALLPAPER_NAME='ubuntukylin-wallpapers'
+	GREP_NAME_01='.tar.xz'
+	GREP_NAME_02='ubuntukylin-wallpapers_'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
+	grep_theme_model_04
+	move_wallpaper_model_02
+}
+#############
+download_ubuntu-mate_wallpaper() {
+	GREP_NAME_02='ubuntu-mate-wallpapers-photos'
+	CUSTOM_WALLPAPER_NAME='ubuntu-mate-photos'
+	THEME_NAME='ubuntu_wallpapers_and_photos'
+	WALLPAPER_NAME='backgrounds/ubuntu-mate-photos'
+	GREP_NAME_01='all.deb'
+	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntu-mate-artwork/'
+	grep_theme_model_03
+	move_wallpaper_model_01
+}
+#####################
+download_wallpapers() {
+	cd /tmp
+	RETURN_TO_WHERE='download_wallpapers'
+	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
+		"您想要下载哪套壁纸包？\n Which wallpaper-pack do you want to download? " 0 50 0 \
+		"1" "ubuntu:汇聚了官方及社区的绝赞壁纸包" \
+		"2" "deepin-community+official" \
+		"3" "arch & elementary" \
+		"4" "raspbian pixel" \
+		"5" "manjaro-2017+2018" \
+		"6" "gnome-backgrounds" \
+		"0" "Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	########################
+	case "${INSTALL_THEME}" in
+	0 | "") tmoe_desktop_beautification ;;
+	1) ubuntu_wallpapers_and_photos ;;
+	2) download_deepin_wallpaper ;;
+	3) download_arch_wallpaper ;;
+	4) download_raspbian_pixel_wallpaper ;;
+	5) download_manjaro_wallpaper ;;
+	6) download_debian_gnome_wallpaper ;;
+	esac
+	######################################
+	press_enter_to_return
+	download_wallpapers
 }
 ############
 configure_mouse_cursor() {
@@ -4097,10 +4218,14 @@ grep_theme_model_01() {
 	download_theme_deb_and_extract_01
 }
 ###############
-download_theme_deb_and_extract_01() {
+aria2c_download_theme_file() {
 	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
 	echo ${THE_LATEST_THEME_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
+}
+##########
+download_theme_deb_and_extract_01() {
+	aria2c_download_theme_file
 	if [ "${BUSYBOX_AR}" = 'true' ]; then
 		busybox ar xv ${THE_LATEST_THEME_VERSION}
 	else
@@ -4113,8 +4238,17 @@ grep_theme_model_03() {
 	check_theme_folder
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
-	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 	download_theme_deb_and_extract_01
+}
+############################
+grep_theme_model_04() {
+	check_theme_folder
+	mkdir -p /tmp/.${THEME_NAME}
+	cd /tmp/.${THEME_NAME}
+	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	aria2c_download_theme_file
+	mv ${THE_LATEST_THEME_VERSION} data.tar.xz
 }
 ############################
 #tar.xz
@@ -4124,9 +4258,7 @@ grep_theme_model_02() {
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
 	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep -v '.xz.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-	THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
-	echo ${THE_LATEST_THEME_LINK}
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
+	aria2c_download_theme_file
 }
 ###########
 update_icon_caches_model_01() {
@@ -4194,6 +4326,18 @@ move_wallpaper_model_01() {
 	else
 		mkdir -p ${HOME}/Pictures/
 		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
+	fi
+	rm -rf /tmp/.${THEME_NAME}
+	echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
+	echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
+}
+#################
+move_wallpaper_model_02() {
+	if [ -d "${HOME}/图片" ]; then
+		tar -Jxvf data.tar.xz -C ${HOME}/图片
+	else
+		mkdir -p ${HOME}/Pictures/
+		tar -Jxvf data.tar.xz -C ${HOME}/Pictures/
 	fi
 	rm -rf /tmp/.${THEME_NAME}
 	echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
