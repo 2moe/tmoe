@@ -4147,7 +4147,7 @@ ubuntu_wallpapers_and_photos() {
 download_ubuntu_kylin_walllpaper() {
 	THEME_NAME='ubuntukylin_wallpapers'
 	WALLPAPER_NAME='ubuntukylin-wallpapers'
-	CUSTOM_WALLPAPER_NAME='ubuntukylin-wallpapers'
+	CUSTOM_WALLPAPER_NAME='ubuntu-kylin'
 	GREP_NAME_01='.tar.xz'
 	GREP_NAME_02='ubuntukylin-wallpapers_'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
@@ -4459,7 +4459,7 @@ download_deepin_wallpaper() {
 	THEME_NAME='deepin-wallpapers'
 	WALLPAPER_NAME='wallpapers/deepin'
 	GREP_NAME='deepin-community-wallpapers'
-	CUSTOM_WALLPAPER_NAME='deepin-community-wallpapers'
+	CUSTOM_WALLPAPER_NAME='deepin-community'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
 	grep_theme_model_01
 	move_wallpaper_model_01
@@ -4470,6 +4470,7 @@ download_deepin_wallpaper() {
 }
 ##########
 download_manjaro_pkg() {
+	check_theme_folder
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
 	echo "${THEME_URL}"
@@ -4507,16 +4508,16 @@ link_to_debian_wallpaper() {
 download_manjaro_wallpaper() {
 	THEME_NAME='manjaro-2018'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
-	download_manjaro_pkg
 	WALLPAPER_NAME='backgrounds/wallpapers-2018'
 	CUSTOM_WALLPAPER_NAME='manjaro-2018'
+	download_manjaro_pkg
 	move_wallpaper_model_01
 	##############
 	THEME_NAME='manjaro-2017'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/manjaro-sx-wallpapers-20171023-1-any.pkg.tar.xz'
-	download_manjaro_pkg
 	WALLPAPER_NAME='backgrounds'
 	CUSTOM_WALLPAPER_NAME='manjaro-2017'
+	download_manjaro_pkg
 	move_wallpaper_model_01
 	##################
 }
