@@ -501,7 +501,7 @@ gnu_linux() {
 			OSRELEASE="$(cat /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)"
 		fi
 
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}您是想要启动software安装工具，还是system管理工具？ ♪(^∇^*) " 10 50); then
+		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理工具？\nDo you want to start the software installation tool \nor the system manager? ♪(^∇^*) " 0 50); then
 			#bash <(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh')
 			if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
 				wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
