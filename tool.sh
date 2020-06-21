@@ -2970,10 +2970,14 @@ install_xfce4_desktop() {
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 	fi
 	cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
-	XFCE_WORK_SPACE_01=$(cat xfce4-desktop.xml | grep -n workspace1 | awk '{print $1}' | cut -d ':' -f 1)
-	if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
+	if [ ! -e "xfce4-desktop.xml" ]; then
 		modify_the_default_xfce_wallpaper
 	fi
+
+	#XFCE_WORK_SPACE_01=$(cat xfce4-desktop.xml | grep -n workspace1 | awk '{print $1}' | cut -d ':' -f 1)
+	#if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
+	#	modify_the_default_xfce_wallpaper
+	#fi
 
 	if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
 		auto_configure_xfce4_panel
@@ -2999,7 +3003,8 @@ install_xfce4_desktop() {
 }
 ###############
 MODIFY_XFCE_VNC0_WALLPAPER() {
-	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	#dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
 }
 ##################
 debian_xfce_wallpaper() {
@@ -7797,7 +7802,7 @@ first_configure_startvnc() {
 	printf "$RESET"
 	echo '------------------------'
 	if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
-		if (whiptail --title "Are you using a high-resolution monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用高分辨率屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若2K<x<4K,则选择YES;\n若x<=1080p,则选择NO。" 0 50); then
+		if (whiptail --title "Are you using a high-resolution monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用高分辨率屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若x>=2K,则选择YES;\n若x<=1080p,则选择NO。" 0 50); then
 			TMOE_HIGH_DPI='true'
 			xfce4_tightvnc_hidpi_settings
 		else
