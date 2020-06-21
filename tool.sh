@@ -3002,9 +3002,12 @@ install_xfce4_desktop() {
 	configure_vnc_xstartup
 }
 ###############
-MODIFY_XFCE_VNC0_WALLPAPER() {
-	#dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
-	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
+modify_xfce_vnc0_wallpaper() {
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	else
+		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	fi
 }
 ##################
 debian_xfce_wallpaper() {
@@ -3014,12 +3017,12 @@ debian_xfce_wallpaper() {
 		#debian_download_xubuntu_xenial_wallpaper
 		debian_download_ubuntu_mate_wallpaper
 	fi
-	MODIFY_XFCE_VNC0_WALLPAPER
+	modify_xfce_vnc0_wallpaper
 }
 #################
 if_exists_other_debian_distro_wallpaper() {
 	if [ -e "${WALLPAPER_FILE}" ]; then
-		MODIFY_XFCE_VNC0_WALLPAPER
+		modify_xfce_vnc0_wallpaper
 	else
 		debian_xfce_wallpaper
 	fi
@@ -3041,7 +3044,7 @@ modify_the_default_xfce_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "arch" ]; then
 		WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
 		if [ -e "${WALLPAPER_FILE}" ]; then
-			MODIFY_XFCE_VNC0_WALLPAPER
+			modify_xfce_vnc0_wallpaper
 		fi
 	else
 		debian_xfce_wallpaper
