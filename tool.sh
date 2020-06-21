@@ -1238,7 +1238,7 @@ edit_code_server_config_manually() {
 ####################
 vscode_server_upgrade() {
 	echo "正在检测版本信息..."
-	if [ -e "/usr/local/bin/code-server-data/code-server" ]; then
+	if [ -e "/usr/local/bin/code-server-data/bin/code-server" ]; then
 		LOCAL_VSCODE_VERSION=$(code-server --version | grep -v info | head -n 1 | awk '{print $1}')
 	else
 		LOCAL_VSCODE_VERSION='您尚未安装code-server'
@@ -2188,10 +2188,11 @@ tmoe_desktop_faq() {
 			-----------------------
 			Q:${YELLOW}安装过程中，当提示输入密码时，termux无法弹出虚拟键盘${RESET}
 
-			A:有三种解决方法：
+			A:有四种解决方法：
 			① 先将termux切换至后台，再切换回来
 			② 使用悬浮键盘
 			③ 侧划termux底部小键盘至黑色区域，点击该区域即可弹出。
+			④ 直接点击输入框
 			------------------------
 			Q:${YELLOW}I don't know how to use it?${RESET}
 
@@ -2752,7 +2753,7 @@ configure_x11vnc_remote_desktop_session() {
 		stopx11vnc
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
-		export LANG="en_US.UTF8"
+		export LANG="en_US.UTF-8"
 		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
 		if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
@@ -4319,6 +4320,7 @@ check_theme_folder() {
 		echo "检测到您${RED}已经下载过${RESET}该壁纸包了"
 		echo "壁纸包位于${BLUE}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}(图片)目录"
 		echo "Do you want to ${RED}download again?${RESET}"
+		echo "是否想要重新下载？"
 		do_you_want_to_continue
 	fi
 }
@@ -7713,7 +7715,7 @@ configure_startvnc() {
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
-		export LANG="en_US.UTF8"
+		export LANG="en_US.UTF-8"
 		#启动VNC服务的命令为最后一行
 		vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
@@ -7766,12 +7768,12 @@ first_configure_startvnc() {
 		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .ICEauthority .vnc" 2>/dev/null
 	fi
 	#仅针对WSL修改语言设定
-	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-		if [ "${LANG}" != 'en_US.UTF8' ]; then
-			grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
-			grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
-		fi
-	fi
+	#if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+	#	if [ "${LANG}" != 'en_US.UTF-8' ]; then
+			#grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
+			#grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
+	#	fi
+	#fi
 	if [ ! -e "${HOME}/.vnc/passwd" ]; then
 		set_vnc_passwd
 	fi
