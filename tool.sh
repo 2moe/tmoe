@@ -8421,6 +8421,7 @@ tmoe_other_app_menu() {
 		"Which software do you want to install？" 0 50 0 \
 		"1" "OBS-Studio(录屏软件)" \
 		"2" "seahorse(密钥管理)" \
+		"3" "kodi(家庭影院软件)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -8428,6 +8429,7 @@ tmoe_other_app_menu() {
 	0 | "") beta_features ;;
 	1) install_obs_studio ;;
 	2) install_seahorse ;;
+	3) install_kodi ;;
 	esac
 	##########################
 	press_enter_to_return
@@ -8436,6 +8438,12 @@ tmoe_other_app_menu() {
 ###################
 install_seahorse() {
 	DEPENDENCY_02='seahorse'
+	beta_features_quick_install
+}
+###################
+install_kodi() {
+	DEPENDENCY_01='kodi'
+	DEPENDENCY_02='kodi-wayland'
 	beta_features_quick_install
 }
 ######################
