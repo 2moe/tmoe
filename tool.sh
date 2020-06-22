@@ -7768,10 +7768,11 @@ first_configure_startvnc() {
 		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .ICEauthority .vnc" 2>/dev/null
 	fi
 	#仅针对WSL修改语言设定
+	#/etc/default/locale
 	#if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
 	#	if [ "${LANG}" != 'en_US.UTF-8' ]; then
-			#grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
-			#grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
+	#grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
+	#grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
 	#	fi
 	#fi
 	if [ ! -e "${HOME}/.vnc/passwd" ]; then
@@ -7902,7 +7903,7 @@ set_vnc_passwd() {
 	TARGET_VNC_PASSWD=$(whiptail --inputbox "请设定6至8位VNC访问密码\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		echo "请重新输入密码"
-		echo "Please type passwd again."
+		echo "Please enter the password again."
 		press_enter_to_return
 		set_vnc_passwd
 	elif [ -z "${TARGET_VNC_PASSWD}" ]; then
