@@ -449,7 +449,7 @@ creat_proot_startup_script() {
 			command+=" /usr/bin/env -i"
 			command+=" HOME=/root"
 			command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
-			command+=" TERM=\$TERM"
+			command+=" TERM=xterm-256color"
 			command+=" LANG=en_US.UTF-8"
 			command+=" /bin/bash --login"
 			com="\$@"

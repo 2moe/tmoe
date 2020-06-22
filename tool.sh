@@ -6224,27 +6224,42 @@ deb_file_installer() {
 		DEPENDENCY_02=""
 		beta_features_install_completed
 	else
-		mkdir -p .DEB_TEMP_FOLDER
-		mv ${SELECTION} .DEB_TEMP_FOLDER
-		cd ./.DEB_TEMP_FOLDER
-		if [ "${BUSYBOX_AR}" = 'true' ]; then
-			busybox ar xv ${SELECTION}
+		if [ ! $(command -v dpkg) ]; then
+			DEPENDENCY_01='dpkg'
+			DEPENDENCY_02=''
+			echo ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+			${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+			beta_features_install_completed
+		fi
+		if [ $(command -v dpkg) ]; then
+			dpkg -i ./${SELECTION}
 		else
-			/usr/local/bin/busybox ar xv ${SELECTION}
+			uncompress_deb_file
 		fi
-		mv ${SELECTION} ../
-		if [ -e "data.tar.xz" ]; then
-			cd /
-			tar -Jxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.xz ./usr
-		elif [ -e "data.tar.gz" ]; then
-			cd /
-			tar -zxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.gz ./usr
-		fi
-		rm -rf ${CURRENT_DIR}/.DEB_TEMP_FOLDER
 	fi
 	delete_tmoe_deb_file
 }
 ######################
+uncompress_deb_file() {
+	mkdir -p .DEB_TEMP_FOLDER
+	mv ${SELECTION} .DEB_TEMP_FOLDER
+	cd ./.DEB_TEMP_FOLDER
+	if [ "${BUSYBOX_AR}" = 'true' ]; then
+		busybox ar xv ${SELECTION}
+	else
+		/usr/local/bin/busybox ar xv ${SELECTION}
+	fi
+	mv ${SELECTION} ../
+	if [ -e "data.tar.xz" ]; then
+		cd /
+		tar -Jxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.xz ./usr
+	elif [ -e "data.tar.gz" ]; then
+		cd /
+		tar -zxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.gz ./usr
+	fi
+	rm -rf ${CURRENT_DIR}/.DEB_TEMP_FOLDER
+}
+########################
 delete_tmoe_deb_file() {
 	echo "请问是否需要${RED}删除${RESET}安装包文件"
 	ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
