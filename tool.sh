@@ -9292,7 +9292,8 @@ install_debian_nonfree_network_card_driver() {
 		"3" "Realtek wired/wifi/BT adapters瑞昱" \
 		"4" "Marvell wireless cards美满" \
 		"5" "TI Connectivity wifi/BT/FM/GPS" \
-		"6" "misc(Broadcom,Ralink,etc.)" \
+		"6" "Broadcom博通" \
+		"7" "misc(Ralink,etc.)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -9303,7 +9304,8 @@ install_debian_nonfree_network_card_driver() {
 	3) DEPENDENCY_02='firmware-realtek' ;;
 	4) DEPENDENCY_02='firmware-libertas' ;;
 	5) DEPENDENCY_02='firmware-ti-connectivity' ;;
-	6) DEPENDENCY_02='firmware-misc-nonfree' ;;
+	6) DEPENDENCY_02='firmware-brcm80211' ;;
+	7) DEPENDENCY_02='firmware-misc-nonfree' ;;
 	esac
 	##########################
 	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "install安装" --no-button "Download下载" --yesno "您是想要直接安装，还是下载驱动安装包? ♪(^∇^*) " 8 50); then
