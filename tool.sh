@@ -388,7 +388,7 @@ check_dependencies() {
 	if [ "$?" != "0" ]; then
 		/usr/local/bin/busybox --help 2>&1 | grep -q ', ar,'
 		if [ "$?" != "0" ]; then
-			chmod +x /usr/local/bin/busybox
+			#chmod +x /usr/local/bin/busybox 2>/dev/null
 			BUSYBOX_AR='false'
 		else
 			BUSYBOX_AR='true'
@@ -397,13 +397,15 @@ check_dependencies() {
 		BUSYBOX_AR='true'
 	fi
 
-	if [ "${BUSYBOX_AR}" = 'false' ]; then
-		DEPENDENCY_01='binutils'
-		echo ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
-		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
-		if [ ! $(command -v ar) ]; then
-			download_busybox_deb
-			BUSYBOX_AR='true'
+	if [ ! $(command -v ar) ]; then
+		if [ "${BUSYBOX_AR}" = 'false' ]; then
+			DEPENDENCY_01='binutils'
+			echo ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+			${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+			if [ ! $(command -v ar) ]; then
+				download_busybox_deb
+				BUSYBOX_AR='true'
+			fi
 		fi
 	fi
 
