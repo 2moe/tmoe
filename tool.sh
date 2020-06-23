@@ -556,8 +556,12 @@ different_distro_software_install() {
 	check_current_user_name_and_group
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt update
-		apt install -y ${DEPENDENCY_01} || aptitude install ${DEPENDENCY_01}
-		apt install -y ${DEPENDENCY_02} || aptitude install ${DEPENDENCY_02}
+		if [ ! -z "${DEPENDENCY_01}" ]; then
+			apt install -y ${DEPENDENCY_01} || aptitude install ${DEPENDENCY_01}
+		fi
+		if [ ! -z "${DEPENDENCY_02}" ]; then
+			apt install -y ${DEPENDENCY_02} || aptitude install ${DEPENDENCY_02}
+		fi
 		################
 	elif [ "${LINUX_DISTRO}" = "alpine" ]; then
 		apk update
@@ -565,12 +569,20 @@ different_distro_software_install() {
 		apk add ${DEPENDENCY_02}
 		################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_01}"
-		pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_02},请手动执行"
+		if [ ! -z "${DEPENDENCY_01}" ]; then
+			pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_01}"
+		fi
+		if [ ! -z "${DEPENDENCY_02}" ]; then
+			pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_02},请手动执行"
+		fi
 		################
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
-		dnf install -y --skip-broken ${DEPENDENCY_02} || yum install -y --skip-broken ${DEPENDENCY_02}
+		if [ ! -z "${DEPENDENCY_01}" ]; then
+			dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
+		fi
+		if [ ! -z "${DEPENDENCY_02}" ]; then
+			dnf install -y --skip-broken ${DEPENDENCY_02} || yum install -y --skip-broken ${DEPENDENCY_02}
+		fi
 		################
 	elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
 		#opkg update
