@@ -376,7 +376,7 @@ check_dependencies() {
 	################
 	if [ ! $(command -v catimg) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep arm64 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
+			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
 			wget --no-check-certificate -O 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
 			apt install -y ./catimg.deb
@@ -398,16 +398,13 @@ check_dependencies() {
 	fi
 
 	if [ "${BUSYBOX_AR}" = 'false' ]; then
-		cd /tmp
-		wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
-		chmod +x busybox
-		LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		wget --no-check-certificate -O 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
-		mkdir -p busybox-static
-		./busybox dpkg-deb -X busybox.deb ./busybox-static
-		mv -f ./busybox-static/bin/busybox /usr/local/bin/
-		chmod +x /usr/local/bin/busybox
-		rm -rvf busybox busybox-static busybox.deb
+		DEPENDENCY_01='binutils'
+		echo ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+		${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01}
+		if [ ! $(command -v ar) ]; then
+			download_busybox_deb
+			BUSYBOX_AR='true'
+		fi
 	fi
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -442,6 +439,19 @@ check_dependencies() {
 	tmoe_linux_tool_menu
 }
 ####################################################
+download_busybox_deb() {
+	cd /tmp
+	wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
+	chmod +x busybox
+	LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	wget --no-check-certificate -O 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
+	mkdir -p busybox-static
+	./busybox dpkg-deb -X busybox.deb ./busybox-static
+	mv -f ./busybox-static/bin/busybox /usr/local/bin/
+	chmod +x /usr/local/bin/busybox
+	rm -rvf busybox busybox-static busybox.deb
+}
+######################
 tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
@@ -541,6 +551,7 @@ do_you_want_to_continue() {
 }
 ######################
 different_distro_software_install() {
+	check_current_user_name_and_group
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt update
 		apt install -y ${DEPENDENCY_01} || aptitude install ${DEPENDENCY_01}
@@ -552,8 +563,8 @@ different_distro_software_install() {
 		apk add ${DEPENDENCY_02}
 		################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S ${DEPENDENCY_01} || echo "请以非root身份运行yay"
-		pacman -S --noconfirm ${DEPENDENCY_02} || yay -S ${DEPENDENCY_02} || echo "请以非root身份运行yay"
+		pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_01}"
+		pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_02},请手动执行"
 		################
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
@@ -4344,7 +4355,7 @@ download_theme_deb_and_extract_01() {
 	if [ "${BUSYBOX_AR}" = 'true' ]; then
 		busybox ar xv ${THE_LATEST_THEME_VERSION}
 	else
-		/usr/local/bin/busybox ar xv ${THE_LATEST_THEME_VERSION}
+		ar xv ${THE_LATEST_THEME_VERSION}
 	fi
 }
 ###############
@@ -4675,7 +4686,7 @@ download_uos_icon_theme() {
 	beta_features_quick_install
 
 	if [ -d "/usr/share/icons/Uos" ]; then
-		echo "检测到Uos图标包已下载��是否继续。"
+		echo "检测到Uos图标包已下载,是否继续？[Y/n]"
 		RETURN_TO_WHERE='configure_theme'
 		do_you_want_to_continue
 	fi
@@ -4734,7 +4745,7 @@ download_ukui_theme() {
 		if [ "${BUSYBOX_AR}" = 'true' ]; then
 			busybox ar xv 'ukui-themes.deb'
 		else
-			/usr/local/bin/busybox ar xv 'ukui-themes.deb'
+			ar xv 'ukui-themes.deb'
 		fi
 		cd /
 		tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
@@ -4842,7 +4853,7 @@ install_kali_undercover() {
 			if [ "${BUSYBOX_AR}" = 'true' ]; then
 				busybox ar xv ${THE_LATEST_DEB_FILE}
 			else
-				/usr/local/bin/busybox ar xv ${THE_LATEST_DEB_FILE}
+				ar xv ${THE_LATEST_DEB_FILE}
 			fi
 			cd /
 			tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
@@ -6247,7 +6258,7 @@ uncompress_deb_file() {
 	if [ "${BUSYBOX_AR}" = 'true' ]; then
 		busybox ar xv ${SELECTION}
 	else
-		/usr/local/bin/busybox ar xv ${SELECTION}
+		ar xv ${SELECTION}
 	fi
 	mv ${SELECTION} ../
 	if [ -e "data.tar.xz" ]; then
@@ -6458,7 +6469,7 @@ install_chinese_manpages() {
 		if [ "${BUSYBOX_AR}" = 'true' ]; then
 			busybox ar xv ${LATEST_DEB_VERSION}
 		else
-			/usr/local/bin/busybox ar xv ${LATEST_DEB_VERSION}
+			ar xv ${LATEST_DEB_VERSION}
 		fi
 		tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
 		ls | grep -v usr | xargs rm -rf
@@ -9325,7 +9336,7 @@ download_network_card_driver() {
 	if [ "${BUSYBOX_AR}" = 'true' ]; then
 		busybox ar xv ../${THE_LATEST_DEB_VERSION}
 	else
-		/usr/local/bin/busybox ar xv ../${THE_LATEST_DEB_VERSION}
+		ar xv ../${THE_LATEST_DEB_VERSION}
 	fi
 	tar -Jxvf ./data.tar.*
 	rm *.tar.* debian-binary
@@ -14232,7 +14243,7 @@ install_virtual_box() {
 		beta_features_quick_insta
 		#linux-headers
 	fi
-	DEPENDENCY_02=""
+	DEPENDENCY_02="virtualbox-qt"
 	DEPENDENCY_01="virtualbox"
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
@@ -14244,11 +14255,15 @@ install_virtual_box() {
 		DEPENDENCY_01="virtualbox virtualbox-guest-iso"
 		DEPENDENCY_02="virtualbox-ext-oracle"
 		echo "您可以在安装完成后，输usermod -G vboxusers -a 当前用户名称"
-		echo "将当前用户添加至vboxusers用��组"
-		#
+		echo "将当前用户添加至vboxusers用户组"
 	fi
 	echo "您可以输modprobe vboxdrv vboxnetadp vboxnetflt来加载内核模块"
 	beta_features_quick_install
+	if [ "${LINUX_DISTRO}" = 'arch' ]; then
+		echo "usermod -G vboxusers -a ${CURRENT_USER_NAME}"
+		do_you_want_to_continue
+		usermod -G vboxusers -a ${CURRENT_USER_NAME}
+	fi
 	####################
 	if [ ! $(command -v virtualbox) ]; then
 		echo "检测到virtual box安装失败，是否将其添加到软件源？"
