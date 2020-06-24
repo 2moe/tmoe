@@ -6162,7 +6162,6 @@ install_debian_steam_app() {
 	apt update
 	apt install ./${LATEST_DEB_VERSION}
 	rm -fv ./${LATEST_DEB_VERSION}
-	DEPENDENCY_02='steam-launcher'
 	beta_features_install_completed
 }
 #################
@@ -9317,7 +9316,7 @@ install_debian_nonfree_network_card_driver() {
 	4) DEPENDENCY_02='firmware-libertas' ;;
 	5) DEPENDENCY_02='firmware-ti-connectivity' ;;
 	6) DEPENDENCY_02='firmware-brcm80211' ;;
-	7) DEPENDENCY_02='firmware-misc-nonfree' ;;
+	7) install_linux_firmware_nonfree ;;
 	esac
 	##########################
 	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "install安装" --no-button "Download下载" --yesno "您是想要直接安装，还是下载驱动安装包? ♪(^∇^*) " 8 50); then
@@ -9330,6 +9329,14 @@ install_debian_nonfree_network_card_driver() {
 	install_debian_nonfree_network_card_driver
 }
 #############
+install_linux_firmware_nonfree() {
+	DEPENDENCY_02='firmware-misc-nonfree'
+	case "${LINUX_DISTRO}" in
+	debian | "") ;;
+	*) DEPENDENCY_01='linux-firmware' ;;
+	esac
+}
+###############
 download_network_card_driver() {
 	mkdir -p cd ${HOME}/sd/Download
 	cd ${HOME}/sd/Download
