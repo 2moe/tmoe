@@ -7745,11 +7745,16 @@ configure_startvnc() {
 		if [ ${HOME} != '/root' ]; then
 		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
 		CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
-		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-		cd ${HOME}
-		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .ICEauthority .vnc" 2>/dev/null
+		if [ -z "${CURRENT_USER_GROUP}" ]; then
+		   CURRENT_USER_GROUP=${CURRENT_USER_NAME}
 		fi
-		#下面不要加冒号
+		CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l ${HOME}/.vnc/passwd | awk -F ' ' '{print $3}')
+		if [ "${CURRENT_USER_VNC_FILE_PERMISSION}" != "${CURRENT_USER_NAME}" ];then
+		   echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+		   cd ${HOME}
+		   sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .ICEauthority .vnc" 2>/dev/null 
+		fi
+		fi
 		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
@@ -7774,10 +7779,9 @@ configure_startvnc() {
 ###############
 fix_non_root_permissions() {
 	if [ ${HOME} != '/root' ]; then
-		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-		CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+		check_current_user_name_and_group
 		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${CURRENT_USER_FILE}的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "$CURRENT_USER_FILE}" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} $CURRENT_USER_FILE}" 2>/dev/null
+		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "${CURRENT_USER_FILE}" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${CURRENT_USER_FILE}" 2>/dev/null
 	fi
 }
 ################
@@ -13928,6 +13932,9 @@ input_method_config() {
 check_current_user_name_and_group() {
 	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
 	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+	if [ -z "${CURRENT_USER_GROUP}" ]; then
+		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+	fi
 }
 #################
 install_uim_pinyin() {
