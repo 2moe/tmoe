@@ -8565,11 +8565,11 @@ del_tmoe_sudo() {
 }
 #################
 add_tmoe_sudo() {
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		adduser ${TMOE_USER_NAME} sudo
-	else
-		add_him_to_sudoers
-	fi
+	#if [ "${LINUX_DISTRO}" = "debian" ]; then
+	#	adduser ${TMOE_USER_NAME} sudo
+	#else
+	add_him_to_sudoers
+	#fi
 
 	if [ "$?" = '0' ]; then
 		echo "Congratulations,已经将${YELLOW}${TMOE_USER_NAME}${RESET}小可爱添加至${BLUE}sudo${RESET}用户组(｡･∀･)ﾉﾞ"
