@@ -2018,9 +2018,6 @@ tmoe_desktop_faq() {
 
 			注：novnc相当于浏览器版的vnc客户端，让您无需安装vnc app即可使用vnc连接。
 
-		    一个小小的改动，尚且能带来这么大的变化。
-			更何况是在如此多的软件情况下呢？
-
 			再举个更麻烦的情况。
 			VScode server在之前某次更新中发生了重大变更。
 			我必须要修改远程服务器的自动打包方案，并且几乎完全重写了配置脚本。
@@ -13781,8 +13778,33 @@ install_anbox() {
 	else
 		non_debian_function
 	fi
+	if [ $(command -v anbox) ] && [ ! -f "/var/lib/anbox/android.img" ]; then
+		download_anbox_rom
+	fi
+	service anbox-container-manager start
+	echo "service anbox-container-manager start"
+	service anbox-container-manager start || systemctl start anbox-container-manager
+	service anbox-container-manager status || systemctl status anbox-container-manager
+	echo 'anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity'
+	echo 'Do you want to start it?'
+	do_you_want_to_continue
+	anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity
 }
 ###########
+download_anbox_rom() {
+	lsmod | grep -e ashmem_linux -e binder_linux
+	ls -lh /dev/binder /dev/ashmem
+	anbox check-features
+	if [ "${ARCH_TYPE}" = "amd64" ]; then
+		THE_LATEST_ISO_LINK="https://build.anbox.io/android-images/2018/07/19/android_amd64.img"
+	elif [ "${ARCH_TYPE}" = "arm64" ]; then
+		THE_LATEST_ISO_LINK="https://build.anbox.io/android-images/2017/08/04/android_1_arm64.img"
+	fi
+	echo ${THE_LATEST_ISO_LINK}
+	do_you_want_to_continue
+	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+}
+###############
 install_catfish() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "检测到您处于proot环境下，可能无法成功创建索引数据库"
