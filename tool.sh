@@ -7857,19 +7857,11 @@ first_configure_startvnc() {
 			TMOE_HIGH_DPI='false'
 			echo "默认分辨率为1440x720，窗口缩放大小为1x"
 			dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
+			dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-DPI 2>/dev/null
 			echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
 			echo "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
 		fi
 	fi
-
-	if grep -Eq 'Focal Fossa|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
-		dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
-	else
-		dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
-	fi
-	#dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
-	#startvnc >/dev/null 2>&1
-	#Default-xhdpi默认处于未激活状态
 	cat <<-EOF
 		------------------------
 		一：
@@ -8005,6 +7997,14 @@ xfce4_tightvnc_hidpi_settings() {
 	echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 	dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
 	#-n创建一个新属性，类型为int
+	if grep -Eq 'Focal Fossa|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+		dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-DPI 2>/dev/null
+	else
+		dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
+	fi
+	#dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
+	#startvnc >/dev/null 2>&1
+	#Default-xhdpi默认处于未激活状态
 }
 ################
 xfce4_x11vnc_hidpi_settings() {
