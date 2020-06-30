@@ -8416,7 +8416,7 @@ tmoe_education_app_menu() {
 	3) DEPENDENCY_02='octave' ;;
 	4)
 		DEPENDENCY_01='scilab-minimal-bin'
-		DEPENDENCY_02='octave'
+		DEPENDENCY_02='scilab'
 		;;
 	5)
 		DEPENDENCY_01='freemat'
