@@ -2861,6 +2861,8 @@ debian_xfce4_extras() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
 			kali_xfce4_extras
+		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			apt install -y xubuntu-community-wallpapers-focal || apt install -y xubuntu-community-wallpapers-bionic
 		fi
 		if [ ! $(command -v xfce4-panel-profiles) ]; then
 			REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
@@ -9615,7 +9617,7 @@ creat_qemu_aarch64_startup_script() {
 			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic \
-			-net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5909-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+			-net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
 			-vnc :2 \
