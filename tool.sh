@@ -2862,7 +2862,8 @@ debian_xfce4_extras() {
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
 			kali_xfce4_extras
 		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			apt install -y xubuntu-community-wallpapers-focal || apt install -y xubuntu-community-wallpapers-bionic
+			echo 'apt install -y xubuntu-community-wallpapers-focal'
+			apt install -y xubuntu-community-wallpapers-focal
 		fi
 		if [ ! $(command -v xfce4-panel-profiles) ]; then
 			REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
