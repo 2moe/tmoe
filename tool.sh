@@ -2861,9 +2861,6 @@ debian_xfce4_extras() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
 			kali_xfce4_extras
-		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			echo 'apt install -y xubuntu-community-wallpapers-focal'
-			apt install -y xubuntu-community-wallpapers-focal
 		fi
 		if [ ! $(command -v xfce4-panel-profiles) ]; then
 			REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
@@ -3004,30 +3001,33 @@ install_xfce4_desktop() {
 	#if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
 	#	modify_the_default_xfce_wallpaper
 	#fi
-
 	if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
 		auto_configure_xfce4_panel
 	fi
 	#################
-	if [ "${LINUX_DISTRO}" != "alpine" ]; then
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
+	else
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			download_kali_themes_common
 		fi
-		##############
-		if [ ! -e "/usr/share/icons/Papirus" ]; then
-			download_papirus_icon_theme
-			if [ "${DEBIAN_DISTRO}" != "kali" ]; then
-				dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
-			fi
-		fi
-	else
-		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Flat-Remix-Blue-Light
 	fi
+	##############
 	xfce4_color_scheme
 	#########
 	configure_vnc_xstartup
 }
 ###############
+xfce_papirus_icon_theme() {
+	if [ ! -e "/usr/share/icons/Papirus" ]; then
+		download_papirus_icon_theme
+		if [ "${DEBIAN_DISTRO}" != "kali" ]; then
+			dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+		fi
+	fi
+}
+#############
 modify_xfce_vnc0_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
@@ -3037,10 +3037,11 @@ modify_xfce_vnc0_wallpaper() {
 }
 ##################
 debian_xfce_wallpaper() {
-	#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Untitled_by_Troy_Jarrell.jpg'
-	WALLPAPER_FILE='/usr/share/backgrounds/gabriele-diwald-201135.jpg'
 	if [ ! -e "${WALLPAPER_FILE}" ]; then
 		#debian_download_xubuntu_xenial_wallpaper
+		if [ ${LANG} = "en_US.UTF-8" ]; then
+			mkdir -p ${HOME}/图片
+		fi
 		debian_download_ubuntu_mate_wallpaper
 	fi
 	modify_xfce_vnc0_wallpaper
@@ -3056,23 +3057,29 @@ if_exists_other_debian_distro_wallpaper() {
 ###############
 modify_the_default_xfce_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		WALLPAPER_FILE='/usr/share/backgrounds/gabriele-diwald-201135.jpg'
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-			WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
-			if_exists_other_debian_distro_wallpaper
+			#WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
+			#if_exists_other_debian_distro_wallpaper
+			WALLPAPER_FILE='/usr/share/backgrounds/nattu-adnan-328570.jpg'
 		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
-			if_exists_other_debian_distro_wallpaper
-		else
-			debian_xfce_wallpaper
+			#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
+			WALLPAPER_FILE='/usr/share/backgrounds/nattu-adnan-328570.jpg'
 		fi
-	fi
-
-	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		debian_xfce_wallpaper
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
 		if [ -e "${WALLPAPER_FILE}" ]; then
 			modify_xfce_vnc0_wallpaper
+		else
+			WALLPAPER_FILE='/usr/share/backgrounds/nasa-53884.jpg'
+			debian_xfce_wallpaper
 		fi
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		WALLPAPER_FILE='/usr/share/backgrounds/kristopher-roller-110203.jpg'
+		debian_xfce_wallpaper
 	else
+		WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
 		debian_xfce_wallpaper
 	fi
 }
