@@ -90,7 +90,7 @@ check_arch() {
 	BOLD=$(printf '\033[1m')
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
-	ANDROIDVERSION=$(getprop ro.build.version.release 2>/dev/null) || ANDROIDVERSION=6
+	ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1) || ANDROID_VERSION=6
 	auto_check
 }
 ###############
@@ -576,7 +576,7 @@ android_termux() {
 	fi
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
-		if (("${ANDROIDVERSION}" >= '7')); then
+		if (("${ANDROID_VERSION}" >= '7')); then
 			if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
 				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
@@ -801,7 +801,7 @@ install_proot_container() {
 ##########################
 install_chroot_container() {
 	if [ "$(uname -o)" = "Android" ]; then
-		echo Android :${ANDROIDVERSION}
+		echo Android :${ANDROID_VERSION}
 		echo "$(getprop ro.product.model)"
 		su -c "ls ${HOME} >/dev/null"
 		if [ "$?" != "0" ]; then
@@ -2112,7 +2112,7 @@ un_xz_debian_recovery_kit() {
 ###############################
 termux_install_xfce() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
-		if (("${ANDROIDVERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < '7')); then
 			echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
 			echo "Since termux has officially stopped maintaining the old system below android 7, it is not recommended that you continue to operate."
 			echo 'Press Enter to continue.'

@@ -5748,7 +5748,7 @@ add_debian_opt_repo() {
 	RETURN_TO_WHERE='other_software'
 	do_you_want_to_continue
 	cd /tmp
-	curl -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+	curl -Lv -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
 	apt-key add bintray-public.key.asc
 	echo -e "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\n#deb https://dl.bintray.com/debianopt/debianopt buster main" >/etc/apt/sources.list.d/debianopt.list
 	apt update
@@ -5787,11 +5787,11 @@ explore_debian_opt_repo() {
 	cd /usr/share/applications/
 	INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
 		"您想要安装哪个软件？按方向键选择，回车键确认！\n Which software do you want to install? " 16 50 7 \
-		"1" "cocomusic(第三方QQ音乐客户端)" \
-		"2" "iease-music(界面华丽的云音乐客户端)" \
-		"3" "electron-netease-cloud-music(云音乐客户端)" \
-		"4" "listen1(免费音乐聚合)" \
-		"5" "lx-music-desktop(音乐下载助手)" \
+		"1" "listen1(免费音乐聚合)" \
+		"2" "electron-netease-cloud-music(云音乐客户端)" \
+		"3" "lx-music-desktop(洛雪音乐助手)" \
+		"4" "iease-music(界面华丽的云音乐客户端)" \
+		"5" "cocomusic(第三方QQ音乐客户端)" \
 		"6" "feeluown(x64,支持网易云、虾米)" \
 		"7" "netease-cloud-music-gtk(x64,云音乐)" \
 		"8" "picgo(图床上传工具)" \
@@ -5803,11 +5803,11 @@ explore_debian_opt_repo() {
 	##############
 	case "${INSTALL_APP}" in
 	0 | "") tmoe_multimedia_menu ;;
-	1) install_coco_music ;;
-	2) install_iease_music ;;
-	3) install_electron_netease_cloud_music ;;
-	4) install_listen1 ;;
-	5) install_lx_music_desktop ;;
+	1) install_listen1 ;;
+	2) install_electron_netease_cloud_music ;;
+	3) install_lx_music_desktop ;;
+	4) install_iease_music ;;
+	5) install_coco_music ;;
 	6) install_feeluown ;;
 	7) install_netease_cloud_music_gtk ;;
 	8) install_pic_go ;;
