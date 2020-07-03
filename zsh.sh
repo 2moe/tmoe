@@ -317,7 +317,7 @@ if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${
     configure_fzf_tab_plugin
 fi
 #######################
-if grep -Eq 'Bionic|Buster|Xenial' /etc/os-release; then
+if grep -Eq 'Bionic|buster|Xenial' /etc/os-release; then
     sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
 fi
 

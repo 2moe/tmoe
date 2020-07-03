@@ -1677,9 +1677,9 @@ ubuntu_install_chromium_browser() {
 		else
 			sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
 		fi
-		DEPENDENCY_01="chromium-browser/bionic-updates"
-		DEPENDENCY_02="chromium-browser-l10n/bionic-updates"
 	fi
+	DEPENDENCY_01="chromium-browser/bionic-updates"
+	DEPENDENCY_02="chromium-browser-l10n/bionic-updates"
 }
 #########
 fix_chromium_root_ubuntu_no_sandbox() {
@@ -2846,7 +2846,7 @@ kali_xfce4_extras() {
 		fi
 		apt search kali-linux
 	fi
-	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Flat-Remix-Blue-Light
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Windows-10-Icons
 }
 ###################
 apt_purge_libfprint() {
@@ -2861,9 +2861,6 @@ debian_xfce4_extras() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
 			kali_xfce4_extras
-		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			echo 'apt install -y xubuntu-community-wallpapers-focal'
-			apt install -y xubuntu-community-wallpapers-focal
 		fi
 		if [ ! $(command -v xfce4-panel-profiles) ]; then
 			REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
@@ -3004,30 +3001,35 @@ install_xfce4_desktop() {
 	#if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
 	#	modify_the_default_xfce_wallpaper
 	#fi
-
 	if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
 		auto_configure_xfce4_panel
 	fi
 	#################
-	if [ "${LINUX_DISTRO}" != "alpine" ]; then
+	if [ "${LINUX_DISTRO}" = "alpine" ]; then
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
+	else
 		if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
 			download_kali_themes_common
 		fi
-		##############
-		if [ ! -e "/usr/share/icons/Papirus" ]; then
-			download_papirus_icon_theme
-			if [ "${DEBIAN_DISTRO}" != "kali" ]; then
-				dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
-			fi
+		if [ "${DEBIAN_DISTRO}" != "kali" ]; then
+			dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Flat-Remix-Blue-Light
 		fi
-	else
-		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
 	fi
+	##############
 	xfce4_color_scheme
 	#########
 	configure_vnc_xstartup
 }
 ###############
+xfce_papirus_icon_theme() {
+	if [ ! -e "/usr/share/icons/Papirus" ]; then
+		download_papirus_icon_theme
+		if [ "${DEBIAN_DISTRO}" != "kali" ]; then
+			dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+		fi
+	fi
+}
+#############
 modify_xfce_vnc0_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
@@ -3037,10 +3039,12 @@ modify_xfce_vnc0_wallpaper() {
 }
 ##################
 debian_xfce_wallpaper() {
-	#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Untitled_by_Troy_Jarrell.jpg'
-	WALLPAPER_FILE='/usr/share/backgrounds/gabriele-diwald-201135.jpg'
 	if [ ! -e "${WALLPAPER_FILE}" ]; then
 		#debian_download_xubuntu_xenial_wallpaper
+		if [ ${LANG} = "en_US.UTF-8" ]; then
+			mkdir -p ${HOME}/图片
+		fi
+		echo "壁纸包将保存至/usr/share/backgrounds"
 		debian_download_ubuntu_mate_wallpaper
 	fi
 	modify_xfce_vnc0_wallpaper
@@ -3056,23 +3060,29 @@ if_exists_other_debian_distro_wallpaper() {
 ###############
 modify_the_default_xfce_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		WALLPAPER_FILE='/usr/share/backgrounds/gabriele-diwald-201135.jpg'
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-			WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
-			if_exists_other_debian_distro_wallpaper
+			#WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
+			#if_exists_other_debian_distro_wallpaper
+			WALLPAPER_FILE='/usr/share/backgrounds/nattu-adnan-328570.jpg'
 		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
-			if_exists_other_debian_distro_wallpaper
-		else
-			debian_xfce_wallpaper
+			#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
+			WALLPAPER_FILE='/usr/share/backgrounds/nattu-adnan-328570.jpg'
 		fi
-	fi
-
-	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		debian_xfce_wallpaper
+	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
 		if [ -e "${WALLPAPER_FILE}" ]; then
 			modify_xfce_vnc0_wallpaper
+		else
+			WALLPAPER_FILE='/usr/share/backgrounds/nasa-53884.jpg'
+			debian_xfce_wallpaper
 		fi
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		WALLPAPER_FILE='/usr/share/backgrounds/kristopher-roller-110203.jpg'
+		debian_xfce_wallpaper
 	else
+		WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
 		debian_xfce_wallpaper
 	fi
 }
@@ -5748,7 +5758,7 @@ add_debian_opt_repo() {
 	RETURN_TO_WHERE='other_software'
 	do_you_want_to_continue
 	cd /tmp
-	curl -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+	curl -Lv -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
 	apt-key add bintray-public.key.asc
 	echo -e "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\n#deb https://dl.bintray.com/debianopt/debianopt buster main" >/etc/apt/sources.list.d/debianopt.list
 	apt update
@@ -5787,11 +5797,11 @@ explore_debian_opt_repo() {
 	cd /usr/share/applications/
 	INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
 		"您想要安装哪个软件？按方向键选择，回车键确认！\n Which software do you want to install? " 16 50 7 \
-		"1" "cocomusic(第三方QQ音乐客户端)" \
-		"2" "iease-music(界面华丽的云音乐客户端)" \
-		"3" "electron-netease-cloud-music(云音乐客户端)" \
-		"4" "listen1(免费音乐聚合)" \
-		"5" "lx-music-desktop(音乐下载助手)" \
+		"1" "listen1(免费音乐聚合)" \
+		"2" "electron-netease-cloud-music(云音乐客户端)" \
+		"3" "lx-music-desktop(洛雪音乐助手)" \
+		"4" "iease-music(界面华丽的云音乐客户端)" \
+		"5" "cocomusic(第三方QQ音乐客户端)" \
 		"6" "feeluown(x64,支持网易云、虾米)" \
 		"7" "netease-cloud-music-gtk(x64,云音乐)" \
 		"8" "picgo(图床上传工具)" \
@@ -5803,11 +5813,11 @@ explore_debian_opt_repo() {
 	##############
 	case "${INSTALL_APP}" in
 	0 | "") tmoe_multimedia_menu ;;
-	1) install_coco_music ;;
-	2) install_iease_music ;;
-	3) install_electron_netease_cloud_music ;;
-	4) install_listen1 ;;
-	5) install_lx_music_desktop ;;
+	1) install_listen1 ;;
+	2) install_electron_netease_cloud_music ;;
+	3) install_lx_music_desktop ;;
+	4) install_iease_music ;;
+	5) install_coco_music ;;
 	6) install_feeluown ;;
 	7) install_netease_cloud_music_gtk ;;
 	8) install_pic_go ;;
@@ -7857,7 +7867,7 @@ first_configure_startvnc() {
 			TMOE_HIGH_DPI='false'
 			echo "默认分辨率为1440x720，窗口缩放大小为1x"
 			dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
-			if grep -Eq 'Focal Fossa|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+			if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
 				dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-DPI 2>/dev/null
 			fi
 			echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
@@ -7999,7 +8009,7 @@ xfce4_tightvnc_hidpi_settings() {
 	echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
 	dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
 	#-n创建一个新属性，类型为int
-	if grep -Eq 'Focal Fossa|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+	if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
 		dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
 	else
 		dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
@@ -9618,7 +9628,7 @@ creat_qemu_aarch64_startup_script() {
 			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic \
-			-net user,hostfwd=tcp::2889-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
 			-vnc :2 \
