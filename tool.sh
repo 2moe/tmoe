@@ -3029,14 +3029,66 @@ xfce_papirus_icon_theme() {
 		fi
 	fi
 }
+###########
+creat_xfce4_desktop_wallpaper_config() {
+	cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml
+	cat >xfce4-desktop.xml <<-'EOF'
+		<?xml version="1.0" encoding="UTF-8"?>
+
+		<channel name="xfce4-desktop" version="1.0">
+		    <property name="backdrop" type="empty">
+		        <property name="screen0" type="empty">
+		            <property name="monitor0" type="empty">
+		                <property name="brightness" type="empty"/>
+		                <property name="color1" type="empty"/>
+		                <property name="color2" type="empty"/>
+		                <property name="color-style" type="empty"/>
+		                <property name="image-path" type="empty"/>
+		                <property name="image-show" type="empty"/>
+		                <property name="last-image" type="empty"/>
+		                <property name="last-single-image" type="empty"/>
+		                <property name="workspace0" type="empty">
+		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                </property>
+		            </property>
+		            <property name="monitor1" type="empty">
+		                <property name="brightness" type="empty"/>
+		                <property name="color1" type="empty"/>
+		                <property name="color2" type="empty"/>
+		                <property name="color-style" type="empty"/>
+		                <property name="image-path" type="empty"/>
+		                <property name="image-show" type="empty"/>
+		                <property name="last-image" type="empty"/>
+		                <property name="last-single-image" type="empty"/>
+		            </property>
+		            <property name="monitorVNC-0" type="empty">
+		                <property name="workspace0" type="empty">
+		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                </property>
+		            </property>
+		            <property name="monitorrdp0" type="empty">
+		                <property name="workspace0" type="empty">
+		                    <property name="color-style" type="int" value="1"/>
+		                    <property name="image-style" type="int" value="5"/>
+		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                </property>
+		            </property>
+		        </property>
+		    </property>
+		</channel>
+	EOF
+	cat xfce4-desktop.xml
+}
 #############
 modify_xfce_vnc0_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ "${VNC_SERVER}" = "tiger" ]; then
-			dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
-		else
-			dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
-		fi
+		#if [ "${VNC_SERVER_BIN}" = "tigervnc" ]; then
+		#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+		#else
+		#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
+		#fi
+		creat_xfce4_desktop_wallpaper_config
+		sed -i "s@/usr/share/backgrounds/xfce/xfce-stripes.png@${WALLPAPER_FILE}@" xfce4-desktop.xml
 	else
 		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
 	fi
@@ -7801,14 +7853,12 @@ fix_non_root_permissions() {
 ################
 which_vnc_server_do_you_prefer() {
 	if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的兼容性较差,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
-		VNC_SERVER='tiger'
-		VNC_SERVER_BIN_NOW="tightvncserver"
 		VNC_SERVER_BIN="tigervnc"
+		VNC_SERVER_BIN_NOW="tightvncserver"
 		DEPENDENCY_02="tigervnc-standalone-server"
 	else
-		VNC_SERVER='tight'
-		VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
 		VNC_SERVER_BIN="tightvnc"
+		VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
 		DEPENDENCY_02="tightvncserver"
 	fi
 	echo "${RED}${PACKAGES_REMOVE_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
