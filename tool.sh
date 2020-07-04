@@ -3032,7 +3032,11 @@ xfce_papirus_icon_theme() {
 #############
 modify_xfce_vnc0_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
+		if [ "${VNC_SERVER}" = "tiger" ]; then
+			dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+		else
+			dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
+		fi
 	else
 		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
 	fi
@@ -7795,6 +7799,24 @@ fix_non_root_permissions() {
 	fi
 }
 ################
+which_vnc_server_do_you_prefer() {
+	if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的兼容性较差,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
+		VNC_SERVER='tiger'
+		VNC_SERVER_BIN_NOW="tightvncserver"
+		VNC_SERVER_BIN="tigervnc"
+		DEPENDENCY_02="tigervnc-standalone-server"
+	else
+		VNC_SERVER='tight'
+		VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
+		VNC_SERVER_BIN="tightvnc"
+		DEPENDENCY_02="tightvncserver"
+	fi
+	echo "${RED}${PACKAGES_REMOVE_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
+	${PACKAGES_REMOVE_COMMAND} ${VNC_SERVER_BIN_NOW}
+	echo "${BLUE}${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_02}${RESET}"
+	${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_02}
+}
+###################
 first_configure_startvnc() {
 	#卸载udisks2，会破坏mate和plasma的依赖关系。
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOVE_UDISK2} = 'true' ]; then
@@ -7806,13 +7828,16 @@ first_configure_startvnc() {
 	fi
 	configure_startvnc
 	configure_startxsdl
+	chmod +x startvnc stopvnc startxsdl
 	if [ "${LINUX_DISTRO}" != "debian" ]; then
 		sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl
+	else
+		if ! grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+			which_vnc_server_do_you_prefer
+		fi
 	fi
 	######################
-	chmod +x startvnc stopvnc startxsdl
 	dpkg --configure -a 2>/dev/null
-
 	if [ ${HOME} != '/root' ]; then
 		check_current_user_name_and_group
 		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
