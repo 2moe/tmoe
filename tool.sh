@@ -3049,6 +3049,8 @@ creat_xfce4_desktop_wallpaper_config() {
 		                <property name="last-single-image" type="empty"/>
 		                <property name="workspace0" type="empty">
 		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                    <property name="backdrop-cycle-enable" type="bool" value="true"/>
+		                    <property name="backdrop-cycle-random-order" type="bool" value="true"/>
 		                </property>
 		            </property>
 		            <property name="monitor1" type="empty">
@@ -3064,13 +3066,26 @@ creat_xfce4_desktop_wallpaper_config() {
 		            <property name="monitorVNC-0" type="empty">
 		                <property name="workspace0" type="empty">
 		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                    <property name="backdrop-cycle-enable" type="bool" value="true"/>
+		                    <property name="backdrop-cycle-random-order" type="bool" value="true"/>
 		                </property>
 		            </property>
 		            <property name="monitorrdp0" type="empty">
 		                <property name="workspace0" type="empty">
-		                    <property name="color-style" type="int" value="1"/>
-		                    <property name="image-style" type="int" value="5"/>
+		                    <property name="color-style" type="empty"/>
+		                    <property name="image-style" type="empty"/>
 		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                    <property name="backdrop-cycle-enable" type="bool" value="true"/>
+		                    <property name="backdrop-cycle-random-order" type="bool" value="true"/>
+		                </property>
+		            </property>
+		            <property name="monitorscreen" type="empty">
+		                <property name="workspace0" type="empty">
+		                    <property name="color-style" type="empty"/>
+		                    <property name="image-style" type="empty"/>
+		                    <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-stripes.png"/>
+		                    <property name="backdrop-cycle-enable" type="bool" value="true"/>
+		                    <property name="backdrop-cycle-random-order" type="bool" value="true"/>
 		                </property>
 		            </property>
 		        </property>
@@ -3081,17 +3096,17 @@ creat_xfce4_desktop_wallpaper_config() {
 }
 #############
 modify_xfce_vnc0_wallpaper() {
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		#if [ "${VNC_SERVER_BIN}" = "tigervnc" ]; then
-		#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
-		#else
-		#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
-		#fi
-		creat_xfce4_desktop_wallpaper_config
-		sed -i "s@/usr/share/backgrounds/xfce/xfce-stripes.png@${WALLPAPER_FILE}@" xfce4-desktop.xml
-	else
-		dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
-	fi
+	#if [ "${LINUX_DISTRO}" = "debian" ]; then
+	#if [ "${VNC_SERVER_BIN}" = "tigervnc" ]; then
+	#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	#else
+	#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	#fi
+	creat_xfce4_desktop_wallpaper_config
+	sed -i "s@/usr/share/backgrounds/xfce/xfce-stripes.png@${WALLPAPER_FILE}@" xfce4-desktop.xml
+	#else
+	#	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
+	#fi
 }
 ##################
 debian_xfce_wallpaper() {
@@ -7852,7 +7867,7 @@ fix_non_root_permissions() {
 }
 ################
 which_vnc_server_do_you_prefer() {
-	if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的兼容性较差,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
+	if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的兼容性不佳,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
 		VNC_SERVER_BIN="tigervnc"
 		VNC_SERVER_BIN_NOW="tightvncserver"
 		DEPENDENCY_02="tigervnc-standalone-server"
