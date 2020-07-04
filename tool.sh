@@ -8606,15 +8606,19 @@ check_android_studio() {
 		echo "是否需要重新安装？"
 		echo "Do you want to reinstall it?"
 		do_you_want_to_continue
-		if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
-			download_android_studio
-		fi
-	else
+	fi
+	if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
 		download_android_studio
 	fi
+	DEPENDENCY_01=''
 	if [ ! $(command -v java) ]; then
-		DEPENDENCY_01=''
-		DEPENDENCY_02='default-jre'
+
+		case "${LINUX_DISTRO}" in
+		arch) DEPENDENCY_02='jre-openjdk' ;;
+		debian | "") DEPENDENCY_02='default-jre' ;;
+		alpine) DEPENDENCY_02='openjdk11-jre' ;;
+		*) DEPENDENCY_01='java' ;;
+		esac
 		beta_features_quick_install
 	fi
 }
@@ -8623,7 +8627,7 @@ install_android_studio() {
 	check_android_studio
 	tar -zxvf android_studio_linux_64bit.tar.gz -C /opt
 	creat_android_studio_application_link
-	echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} /opt/android-studio /usr/share/applications/android_studio.desktop;${PACKAGES_REMOVE_COMMAND} default-jre"
+	echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio /usr/share/applications/android_studio.desktop${RESET};${RED}${PACKAGES_REMOVE_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 }
 ##################
 install_seahorse() {
