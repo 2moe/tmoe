@@ -4889,6 +4889,7 @@ install_breeze_theme() {
 }
 #################
 download_chameleon_cursor_theme() {
+	CUSTOM_WALLPAPER_NAME='breeze-cursor-theme'
 	THEME_NAME='breeze-cursor-theme'
 	GREP_NAME="${THEME_NAME}"
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/breeze/'
@@ -7867,7 +7868,7 @@ fix_non_root_permissions() {
 }
 ################
 which_vnc_server_do_you_prefer() {
-	if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的兼容性不佳,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
+	if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的流畅度可能不如后者,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
 		VNC_SERVER_BIN="tigervnc"
 		VNC_SERVER_BIN_NOW="tightvncserver"
 		DEPENDENCY_02="tigervnc-standalone-server"
