@@ -13102,18 +13102,21 @@ modify_qemu_ram_size() {
 }
 #################
 download_alpine_and_docker_x64_img_file() {
-	echo "You can use this image to run docker on Android system."
-	echo "The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5902. If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, enter ${GREEN}ssh -p 2888 test@localhost${RESET}"
-	echo "User: test, password: test"
-	echo "您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker"
-	echo "默认root密码为空"
-	echo "您可以直接使用vnc客户端连接，访问地址为localhost:5902"
-	echo "如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入apt update ;apt install -y openssh"
-	echo "您也可以直接在linux容器里使用ssh客户端，输入${PACKAGES_INSTALL_COMMAND} openssh-client"
-	echo "在安装完ssh客户端后，使用${GREEN}ssh -p 2888 test@localhost${RESET}连接"
-	echo "由于root密码为空，故请使用普通用户连接，用户test,密码test"
-	echo "在登录完普通用户后，您可以输${GREEN}su -${RESET}来切换至root用户"
-	echo "为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码"
+	cat <<-EOF
+		You can use this image to run docker on Android system.
+		The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5902. If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, enter ${GREEN}ssh -p 2888 test@localhost${RESET}
+		User: test, password: test
+		您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker
+		默认root密码为空
+		您可以直接使用vnc客户端连接，访问地址为localhost:5902
+		如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入apt update ;apt install -y openssh
+		您也可以直接在linux容器里使用ssh客户端，输入${PACKAGES_INSTALL_COMMAND} openssh-client
+		在安装完ssh客户端后，使用${GREEN}ssh -p 2888 test@localhost${RESET}连接
+		由于root密码为空，故请使用普通用户连接，用户test,密码test
+		在登录完普通用户后，您可以输${GREEN}su -${RESET}来切换至root用户
+		为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码
+		Download size(下载大小)约217MB，解压后约为1.2GB
+	EOF
 	do_you_want_to_continue
 	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
@@ -13655,7 +13658,7 @@ download_lmde_4_qcow2_file() {
 	DOWNLOAD_FILE_NAME='LMDE4_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='LMDE4_tmoe_x64.qcow2'
 	echo 'Download size(下载大小)约2.76GiB，解压后约为9.50GiB'
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/LMDE4_tmoe_x64.tar.xz'
+	THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/LMDE4_tmoe_x64.tar.xz'
 	note_of_qemu_boot_legacy_bios
 	note_of_tmoe_password
 	do_you_want_to_continue
@@ -13667,7 +13670,7 @@ download_windows_server_2008_data_center_qcow2_file() {
 	DOWNLOAD_FILE_NAME='win2008_r2_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='win2008_r2_tmoe_x64.qcow2'
 	echo 'Download size(下载大小)约2.26GiB，解压后约为12.6GiB'
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/win2008_r2_tmoe_x64.tar.xz'
+	THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/win2008_r2_tmoe_x64.tar.xz'
 	note_of_qemu_boot_legacy_bios
 	echo '进入虚拟机后，您需要自己设定一个密码'
 	do_you_want_to_continue
@@ -13679,7 +13682,7 @@ download_ubuntu_kylin_20_04_qcow2_file() {
 	DOWNLOAD_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.qcow2'
 	echo 'Download size(下载大小)约1.81GiB，解压后约为7.65GiB'
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/ubuntu_kylin_20-04_tmoe_x64.tar.xz'
+	THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/ubuntu_kylin_20-04_tmoe_x64.tar.xz'
 	note_of_qemu_boot_uefi
 	note_of_tmoe_password
 	do_you_want_to_continue
@@ -13691,11 +13694,53 @@ download_arch_linux_qcow2_file() {
 	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20200605.tar.xz'
 	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20200605.qcow2'
 	echo 'Download size(下载大小)约678MiB，解压后约为‪1.755GiB'
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
+	#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
 	note_of_qemu_boot_legacy_bios
 	note_of_empty_root_password
 	do_you_want_to_continue
-	download_debian_tmoe_qemu_qcow2_file
+	check_arch_linux_qemu_qcow2_file
+}
+################
+check_arch_linux_qemu_qcow2_file() {
+	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+			echo "解压后将重置虚拟机的所有数据"
+			do_you_want_to_continue
+		else
+			git_clone_arch_linux_qemu_qcow2_file
+		fi
+	else
+		git_clone_arch_linux_qemu_qcow2_file
+	fi
+	uncompress_alpine_and_docker_x64_img_file
+	set_it_as_default_qemu_disk
+}
+#################
+git_clone_arch_linux_qemu_qcow2_file() {
+	mkdir -p .ARCH_QEMU_TEMP_FOLDER
+	cd .ARCH_QEMU_TEMP_FOLDER
+	git clone --depth=1 -b x64 https://gitee.com/ak2/arch_qemu_01 .ARCH_QEMU_TEMP_FOLDER_01
+	cd .ARCH_QEMU_TEMP_FOLDER_01
+	mv arch_linux_* ../
+	cd ..
+	git clone --depth=1 -b x64 https://gitee.com/ak2/arch_qemu_02 .ARCH_QEMU_TEMP_FOLDER_02
+	cd .ARCH_QEMU_TEMP_FOLDER_02
+	mv arch_linux_* ../
+	cd ..
+	cat arch_linux_* >${DOWNLOAD_FILE_NAME}
+	mv ${DOWNLOAD_FILE_NAME} ../
+	cd ../
+	rm -rf .ARCH_QEMU_TEMP_FOLDER
+}
+################
+git_clone_tmoe_linux_qemu_qcow2_file() {
+	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_QEMU_REPO} .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
+	cd .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
+	cat ${QEMU_QCOW2_FILE_PREFIX}* >${DOWNLOAD_FILE_NAME}
+	mv ${DOWNLOAD_FILE_NAME} ../
+	cd ../
+	rm -rf .ARCH_QEMU_TEMP_FOLDER
 }
 ################
 download_tmoe_debian_x64_or_arm64_qcow2_file() {
@@ -13717,14 +13762,20 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
 		echo 'Download size(下载大小)约282MiB，解压后约为‪1.257GiB'
-		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4-generic-20200604_tmoe_x64.tar.xz'
+		#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4-generic-20200604_tmoe_x64.tar.xz'
+		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/debian_qemu'
+		BRANCH_NAME='x64'
+		QEMU_QCOW2_FILE_PREFIX='debian_linux_'
 		;;
 	2)
 		DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
 		echo 'Download size(下载大小)约339MiB，解压后约为‪1.6779GiB'
 		echo '本系统为arm64版，请在下载完成后，手动进入tmoe-qemu arm64专区选择磁盘文件'
-		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+		#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
+		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/debian_arm64_qemu'
+		BRANCH_NAME='arm64'
+		QEMU_QCOW2_FILE_PREFIX='debian_linux_'
 		;;
 	3)
 		cat <<-'EOF'
@@ -13740,7 +13791,8 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	esac
 	###############
 	do_you_want_to_continue
-	download_debian_tmoe_qemu_qcow2_file
+	#download_debian_tmoe_qemu_qcow2_file
+	check_tmoe_qemu_qcow2_file_and_git
 	press_enter_to_return
 	download_tmoe_debian_x64_or_arm64_qcow2_file
 }
@@ -13782,6 +13834,22 @@ download_debian_tmoe_qemu_qcow2_file() {
 	set_it_as_default_qemu_disk
 }
 #############
+check_tmoe_qemu_qcow2_file_and_git() {
+	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+			echo "解压后将重置虚拟机的所有数据"
+			do_you_want_to_continue
+		else
+			git_clone_tmoe_linux_qemu_qcow2_file
+		fi
+	else
+		git_clone_tmoe_linux_qemu_qcow2_file
+	fi
+	uncompress_alpine_and_docker_x64_img_file
+	set_it_as_default_qemu_disk
+}
+##############################
 download_debian_tmoe_arm64_img_file_again() {
 	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }
@@ -15000,8 +15068,8 @@ nginx_restart() {
 	cat /var/log/nginx/webdav.error.log | tail -n 10
 	cat /var/log/nginx/webdav.access.log | tail -n 10
 	echo "正在为您启动nginx服务，本机默认访问地址为localhost:${NGINX_WEBDAV_PORT}"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${NGINX_WEBDAV_PORT}
-	echo The WAN VNC address 外网地址 $(curl -sL ip.sb | head -n 1):${NGINX_WEBDAV_PORT}
+	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${NGINX_WEBDAV_PORT}
+	echo The WAN address 外网地址 $(curl -sL ip.sb | head -n 1):${NGINX_WEBDAV_PORT}
 	echo "${YELLOW}您可以使用文件管理器或浏览器来打开WebDAV访问地址${RESET}"
 	echo "Please use your browser to open the access address"
 }
@@ -15247,7 +15315,8 @@ configure_filebrowser() {
 		RETURN_TO_WHERE='configure_filebrowser'
 		do_you_want_to_continue
 		pkill filebrowser
-		service filebrowser stop 2>/dev/null
+		systemctl disable filebrowser
+		service filebrowser stop 2>/dev/null || systemctl stop filebrowser
 		rm -fv /usr/local/bin/filebrowser
 		rm -fv /etc/systemd/system/filebrowser.service
 		rm -fv /etc/filebrowser.db
@@ -15335,8 +15404,8 @@ filebrowser_restart() {
 		echo "您可以输${YELLOW}pkill filebrowser${RESET}来停止进程"
 	fi
 	echo "正在为您启动filebrowser服务，本机默认访问地址为localhost:${FILEBROWSER_PORT}"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${FILEBROWSER_PORT}
-	echo The WAN VNC address 外网地址 $(curl -sL ip.sb | head -n 1):${FILEBROWSER_PORT}
+	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${FILEBROWSER_PORT}
+	echo The WAN address 外网地址 $(curl -sL ip.sb | head -n 1):${FILEBROWSER_PORT}
 	echo "${YELLOW}请使用浏览器打开上述地址${RESET}"
 	echo "Please use your browser to open the access address"
 }
