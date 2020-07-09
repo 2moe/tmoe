@@ -458,7 +458,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200618-04)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能,0618支持解析主题链接" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200709-11)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能,0618支持解析主题链接" 20 50 7 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -2225,14 +2225,30 @@ tmoe_desktop_faq() {
 
 			A:完整命令是startvnc，您只需记住st，然后就能借助zsh的自动补全插件来解决。
 			输完st后，您可以按下TAB键(⇆),即可生成补全内容。
-			您也可以直接按方向键→或者是↑，此操作亦能自动补全。
+			您也可以直接按方向键→或者是↑，此操作亦能自动补全。😋
+		Q:啊，就这？
+		不会吧，不会吧，不会真的有人认为我连这么简单的命令都记不住？🙂
+		Linux Deploy它不香吗？什么命令都不用记。
+		A:
+		可是你刚刚。。。
+		Q:
+		可是什么可是！ 
+		你在教我做事？
+		哈哈，我在钓鱼，你上钩了。懂？
+		你品，你细品。
+
+		A:
+		宁可真是位带阴阳师呢！
+
+		Q:
+		你急了，你急了
 			------------------------
 			Q:${YELLOW}我可以在Linux Deploy上使用这个脚本吗？${RESET}
 
 			A:可以哒！ヾ(≧▽≦*)o 您可以在其它主流的GNU/Linux发行版，包括但不限于容器、虚拟机和实体机上使用这个脚本。
 			------------------------
 			END（完结）
-			                                                                                 2020年6月中旬修订
+			                                                                                 2020年6月初稿，7月修订
 			                                                                                 Tmoe-linux开发者
 			------------------------
 	EOF
@@ -13101,6 +13117,8 @@ download_alpine_and_docker_x64_img_file() {
 	do_you_want_to_continue
 	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	QEMU_DISK_FILE_NAME='alpine_v3.11_x64.qcow2'
+	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
@@ -13114,20 +13132,29 @@ download_alpine_and_docker_x64_img_file() {
 	else
 		download_alpine_and_docker_x64_img_file_again
 	fi
-	QEMU_DISK_FILE_NAME='alpine_v3.11_x64.qcow2'
 	uncompress_alpine_and_docker_x64_img_file
-	echo "文件已解压至${DOWNLOAD_PATH}"
-	qemu-img info ${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}
-	echo "是否需要启动虚拟机？"
 	echo "您之后可以输startqemu来启动"
 	echo "默认VNC访问地址为localhost:5902"
-	do_you_want_to_continue
+	set_it_as_default_qemu_disk
 	startqemu
 }
 #############
+alpine_qemu_old() {
+	echo "文件已解压至${DOWNLOAD_PATH}"
+	qemu-img info ${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}
+	echo "是否需要启动虚拟机？"
+	do_you_want_to_continue
+}
+###########
 download_alpine_and_docker_x64_img_file_again() {
-	THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
-	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
+	#aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	git clone --depth=1 -b x64 https://gitee.com/ak2/alpine_qemu .ALPINE_QEMU_TEMP_FOLDER
+	cd .ALPINE_QEMU_TEMP_FOLDER
+	cat alpine_v3.11_* >alpine_v3.11_x64-qemu.tar.xz
+	mv alpine_v3.11_x64-qemu.tar.xz ../
+	cd ../
+	rm -rf .ALPINE_QEMU_TEMP_FOLDER
 }
 ###########
 uncompress_alpine_and_docker_x64_img_file() {
@@ -14361,6 +14388,10 @@ install_docker_portainer() {
 		install_container_and_virtual_machine
 	fi
 	service docker start 2>/dev/null || systemctl start docker
+	docker stop portainer 2>/dev/null
+	docker rm portainer 2>/dev/null
+	#docker rmi portainer/portainer:latest 2>/dev/null
+	docker pull portainer/portainer:latest
 	docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
 }
 #####################
