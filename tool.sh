@@ -12085,7 +12085,7 @@ download_virtio_drivers() {
 	mkdir -p ${DOWNLOAD_PATH}
 	VIRTUAL_TECH=$(
 		whiptail --title "VIRTIO" --menu "${VIRTIO_STATUS}" 15 50 4 \
-			"1" "virtio-win-0.1.173(netdisk)" \
+			"1" "virtio-win" \
 			"2" "virtio-win-latest(fedora)" \
 			"3" "readme驱动说明" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -12095,11 +12095,20 @@ download_virtio_drivers() {
 	case ${VIRTUAL_TECH} in
 	0 | "") tmoe_qemu_virtio_disk ;;
 	1)
-		THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/windows/drivers/virtio-win-0.1.173.iso'
-		aria2c_download_file
+		#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/windows/drivers/virtio-win-0.1.173.iso'
+		#aria2c_download_file
+		cd ${DOWNLOAD_PATH}
+		echo "即将为您下载至${DOWNLOAD_PATH}"
+		BRANCH_NAME='win'
+		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/virtio'
+		DOWNLOAD_FILE_NAME='virtio-win.iso'
+		QEMU_QCOW2_FILE_PREFIX='.virtio_'
+		git_clone_tmoe_linux_qemu_qcow2_file
+		uncompress_tar_gz_file
 		;;
 	2)
-		THE_LATEST_ISO_LINK='https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso'
+		#https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
+		THE_LATEST_ISO_LINK='https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso'
 		aria2c_download_file
 		;;
 	3)
@@ -13161,6 +13170,7 @@ download_alpine_and_docker_x64_img_file_again() {
 }
 ###########
 uncompress_alpine_and_docker_x64_img_file() {
+	#txz
 	echo '正在解压中...'
 	if [ $(command -v pv) ]; then
 		pv ${DOWNLOAD_FILE_NAME} | tar -pJx
@@ -13169,6 +13179,15 @@ uncompress_alpine_and_docker_x64_img_file() {
 	fi
 }
 ##################
+uncompress_tar_gz_file() {
+	echo '正在解压中...'
+	if [ $(command -v pv) ]; then
+		pv ${DOWNLOAD_FILE_NAME} | tar -pzx
+	else
+		tar -zpxvf ${DOWNLOAD_FILE_NAME}
+	fi
+}
+###################
 dd_if_zero_of_qemu_tmp_disk() {
 	rm -fv /tmp/tmoe_qemu
 	echo "请在虚拟机内执行操作,不建议在宿主机内执行"
@@ -13722,14 +13741,14 @@ git_clone_arch_linux_qemu_qcow2_file() {
 	cd .ARCH_QEMU_TEMP_FOLDER
 	git clone --depth=1 -b x64 https://gitee.com/ak2/arch_qemu_01 .ARCH_QEMU_TEMP_FOLDER_01
 	cd .ARCH_QEMU_TEMP_FOLDER_01
-	mv arch_linux_* ../
+	mv -f arch_linux_* ../
 	cd ..
 	git clone --depth=1 -b x64 https://gitee.com/ak2/arch_qemu_02 .ARCH_QEMU_TEMP_FOLDER_02
 	cd .ARCH_QEMU_TEMP_FOLDER_02
-	mv arch_linux_* ../
+	mv -f arch_linux_* ../
 	cd ..
 	cat arch_linux_* >${DOWNLOAD_FILE_NAME}
-	mv ${DOWNLOAD_FILE_NAME} ../
+	mv -f ${DOWNLOAD_FILE_NAME} ../
 	cd ../
 	rm -rf .ARCH_QEMU_TEMP_FOLDER
 }
@@ -13738,9 +13757,9 @@ git_clone_tmoe_linux_qemu_qcow2_file() {
 	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_QEMU_REPO} .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
 	cd .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
 	cat ${QEMU_QCOW2_FILE_PREFIX}* >${DOWNLOAD_FILE_NAME}
-	mv ${DOWNLOAD_FILE_NAME} ../
+	mv -f ${DOWNLOAD_FILE_NAME} ../
 	cd ../
-	rm -rf .ARCH_QEMU_TEMP_FOLDER
+	rm -rf .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
 }
 ################
 download_tmoe_debian_x64_or_arm64_qcow2_file() {
