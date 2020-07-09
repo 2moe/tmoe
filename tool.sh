@@ -12080,6 +12080,32 @@ tmoe_qemu_virtio_disk() {
 	${RETURN_TO_WHERE}
 }
 ##########
+set_it_as_the_default_qemu_iso() {
+	echo "文件已解压至${DOWNLOAD_PATH}"
+	echo "是否将其设置为默认的qemu光盘？"
+	do_you_want_to_continue
+	cd /usr/local/bin
+	sed -i '/--cdrom /d' startqemu
+	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_hda_config_test \\\n/' startqemu
+	sed -i "s@--cdrom tmoe_hda_config_test@--cdrom ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
+	#echo "设置完成，您之后可以输startqemu启动"
+	#echo "若启动失败，则请检查qemu的相关设置选项"
+}
+#############
+check_tmoe_qemu_iso_file_and_git() {
+	cd ${DOWNLOAD_PATH}
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+			echo "解压后将重置虚拟机的所有数据"
+			do_you_want_to_continue
+		else
+			git_clone_tmoe_linux_qemu_qcow2_file
+		fi
+	else
+		git_clone_tmoe_linux_qemu_qcow2_file
+	fi
+}
+###############
 download_virtio_drivers() {
 	DOWNLOAD_PATH="${HOME}/sd/Download"
 	mkdir -p ${DOWNLOAD_PATH}
@@ -12097,14 +12123,16 @@ download_virtio_drivers() {
 	1)
 		#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/windows/drivers/virtio-win-0.1.173.iso'
 		#aria2c_download_file
-		cd ${DOWNLOAD_PATH}
 		echo "即将为您下载至${DOWNLOAD_PATH}"
 		BRANCH_NAME='win'
 		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/virtio'
-		DOWNLOAD_FILE_NAME='virtio-win.iso'
+		DOWNLOAD_FILE_NAME='virtio-win.tar.gz'
 		QEMU_QCOW2_FILE_PREFIX='.virtio_'
-		git_clone_tmoe_linux_qemu_qcow2_file
+		QEMU_DISK_FILE_NAME='virtio-win.iso'
+		TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+		check_tmoe_qemu_iso_file_and_git
 		uncompress_tar_gz_file
+		set_it_as_the_default_qemu_iso
 		;;
 	2)
 		#https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
@@ -13425,19 +13453,17 @@ download_windows_tmoe_iso_model() {
 download_windows_10_iso() {
 	RETURN_TO_WHERE='download_windows_10_iso'
 	VIRTUAL_TECH=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
-		"1" "win10_2004_x64(专业+企业)" \
+		"1" "win10_2004_x64(多合一版)" \
 		"2" "win10_2004_arm64" \
-		"3" "win10_2004_x64(多合一版)" \
-		"4" "other" \
+		"3" "other" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) download_win10_19041_x64_iso ;;
+	1) download_win10_2004_x64_iso ;;
 	2) download_win10_19041_arm64_iso ;;
-	3) download_win10_2004_x64_iso ;;
-	4)
+	3)
 		cat <<-'EOF'
 			如需下载其他版本，请前往microsoft官网
 			https://www.microsoft.com/zh-cn/software-download/windows10ISO

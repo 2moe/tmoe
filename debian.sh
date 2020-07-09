@@ -475,7 +475,7 @@ gnu_linux() {
 					if [ ! -e "${ISO_FILE_NAME}" ]; then
 						echo "即将为您下载10.0.19041 iso镜像文件..."
 						echo "目录C:\Users\Public\Downloads"
-						aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" 'https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" 'https://cdn.tmoe.me/windows/20H1/${ISO_FILE_NAME}'
+						aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" 'https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" 'https://cdn.tmoe.me/windows/20H1/${ISO_FILE_NAME}'
 					fi
 					/mnt/c/WINDOWS/system32/cmd.exe /c "start ."
 					echo "请手动运行${YELLOW}setup.exe${RESET}"
@@ -2857,18 +2857,17 @@ install_manjaro_linux_distro() {
 	#aria2c -x 5 -k 1M --split 5 -o manjaro-latest-rootfs.tar.gz "https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz"
 	#https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
 	touch ~/.MANJARO_ARM_DETECTION_FILE
-	echo "检测到您选择的是manajro,即将从第三方网盘下载容器镜像。"
+	#echo "检测到您选择的是manajro,即将从第三方网盘下载容器镜像。"
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid.*xz@m.tmoe.me/down/share/Tmoe-linux/chroot/manjaro_arm64.tar.xz@g' |
-		sed '/清华大学开源镜像站/d' |
-		sed '/Tsinghua University/d' |
+		sed 's@mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid.*xz@mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 		sed 's/debian system/manjaro system/g' |
 		sed 's:debian-sid:manjaro-stable:g' |
 		sed 's:debian/sid:manjaro/stable:g' |
 		sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
+		sed 's@tar -pJx@tar -pzx@g' |
 		sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
 }
-
+#		sed 's@tar -pJxvf@tar -pzxvf@g'
 ############################
 install_openwrt_linux_distro() {
 	if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
