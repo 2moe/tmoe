@@ -13396,7 +13396,7 @@ dd_flash_iso_to_udisk() {
 download_win10_19041_x64_iso() {
 	ISO_FILE_NAME='19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
 	download_windows_tmoe_iso_model
 }
 ##########
@@ -13417,14 +13417,14 @@ download_tmoe_iso_file_again() {
 download_win10_2004_x64_iso() {
 	ISO_FILE_NAME='win10_2004_x64_tmoe.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
 	download_windows_tmoe_iso_model
 }
 #############################
 download_win10_19041_arm64_iso() {
 	ISO_FILE_NAME='win10_2004_arm64_tmoe.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
 	cat <<-'EOF'
 		本文件为uupdump转换的原版iso
 		若您需要在qemu虚拟机里使用，那么请手动制作Windows to Go启动盘

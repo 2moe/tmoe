@@ -22,8 +22,11 @@ main() {
 	-novnc | novnc* | -n*)
 		start_web_novnc
 		;;
-	-v | -vnc*)
+	-v | -vnc)
 		startvnc
+		;;
+	passwd | -passwd)
+		set_vnc_passwd
 		;;
 	-s | -stop*)
 		stopvnc
@@ -471,7 +474,7 @@ gnu_linux() {
 				y* | Y* | "")
 					cd /mnt/c/Users/Public/Downloads/
 					ISO_FILE_NAME='win10_2004_x64_tmoe.iso'
-					TMOE_ISO_URL="https://m.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+					TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
 					if [ ! -e "${ISO_FILE_NAME}" ]; then
 						echo "即将为您下载10.0.19041 iso镜像文件..."
 						echo "目录C:\Users\Public\Downloads"
@@ -645,7 +648,7 @@ tmoe_manager_main_menu() {
 			"7" "restore还原" \
 			"8" "query space occupation查询空间占用" \
 			"9" "update更新" \
-			"10" "Configure zsh" \
+			"10" "Configure zsh美化终端" \
 			"11" "Download VNC/xwayland/xsdl apk" \
 			"12" "VSCode Server arm64" \
 			"13" "赋予proot容器真实root权限" \
@@ -1714,7 +1717,6 @@ download_vnc_or_xsdl_apk() {
 
 		git clone -b vnc --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
 		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/vnc/vnc36142089.tar.xz ./
-		#aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/linux/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
 		echo '正在解压...'
 		tar -Jxvf vnc36142089.tar.xz
 		#tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
@@ -1741,7 +1743,6 @@ download_vnc_or_xsdl_apk() {
 
 		git clone -b xsdl --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
 		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/XSERVERXSDLANDROID.tar.xz ./
-		#		aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://cdn.tmoe.me/git/linux/XServerXSDL-X-org-server_1-20-41.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true 'https://m.tmoe.me/down/share/Android/VNC/XServerXSDL-X-org-server_1-20-41.tar.xz'
 		echo '正在解压...'
 		tar -Jxvf XSERVERXSDLANDROID.tar.xz
 		#tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
@@ -2351,7 +2352,7 @@ start_web_novnc() {
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
 		/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start http://localhost:6080/vnc.html"
 	else
-		firefox 'http://localhost:6080/vnc.html' 2>/dev/null
+		xdg-open 'http://localhost:6080/vnc.html' 2>/dev/null
 	fi
 	echo "本机默认novnc地址${YELLOW}http://localhost:6080/vnc.html${RESET}"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html
