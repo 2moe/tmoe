@@ -13807,6 +13807,7 @@ check_arch_linux_qemu_qcow2_file() {
 }
 #################
 git_clone_arch_linux_qemu_qcow2_file() {
+	cd /tmp
 	mkdir -p .ARCH_QEMU_TEMP_FOLDER
 	cd .ARCH_QEMU_TEMP_FOLDER
 	git clone --depth=1 -b x64 https://gitee.com/ak2/arch_qemu_01 .ARCH_QEMU_TEMP_FOLDER_01
@@ -13818,9 +13819,10 @@ git_clone_arch_linux_qemu_qcow2_file() {
 	mv -f arch_linux_* ../
 	cd ..
 	cat arch_linux_* >${DOWNLOAD_FILE_NAME}
-	mv -f ${DOWNLOAD_FILE_NAME} ../
+	mv -f ${DOWNLOAD_FILE_NAME} ${DOWNLOAD_PATH}
 	cd ../
 	rm -rf .ARCH_QEMU_TEMP_FOLDER
+	cd ${DOWNLOAD_PATH}
 }
 ################
 git_clone_tmoe_linux_qemu_qcow2_file() {
