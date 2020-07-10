@@ -13231,12 +13231,14 @@ alpine_qemu_old() {
 download_alpine_and_docker_x64_img_file_again() {
 	#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
 	#aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	cd /tmp
 	git clone --depth=1 -b x64 https://gitee.com/ak2/alpine_qemu .ALPINE_QEMU_TEMP_FOLDER
 	cd .ALPINE_QEMU_TEMP_FOLDER
 	cat alpine_v3.11_* >alpine_v3.11_x64-qemu.tar.xz
-	mv alpine_v3.11_x64-qemu.tar.xz ../
+	mv alpine_v3.11_x64-qemu.tar.xz ${DOWNLOAD_PATH}
 	cd ../
 	rm -rf .ALPINE_QEMU_TEMP_FOLDER
+	cd ${DOWNLOAD_PATH}
 }
 ###########
 uncompress_alpine_and_docker_x64_img_file() {
@@ -13822,12 +13824,14 @@ git_clone_arch_linux_qemu_qcow2_file() {
 }
 ################
 git_clone_tmoe_linux_qemu_qcow2_file() {
+	cd /tmp
 	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_QEMU_REPO} .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
 	cd .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
 	cat ${QEMU_QCOW2_FILE_PREFIX}* >${DOWNLOAD_FILE_NAME}
-	mv -f ${DOWNLOAD_FILE_NAME} ../
+	mv -f ${DOWNLOAD_FILE_NAME} ${DOWNLOAD_PATH}
 	cd ../
 	rm -rf .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
+	cd ${DOWNLOAD_PATH}
 }
 ################
 download_tmoe_debian_x64_or_arm64_qcow2_file() {
