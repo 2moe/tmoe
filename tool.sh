@@ -494,7 +494,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200709-11)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529增加qemu配置中心,0531至0603修复qemu部分问题,6月上旬增加更多系统管理功能,0618支持解析主题链接" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200711-07)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529至0603修复qemu部分问题,0618支持解析主题链接,0711修复arm64下载x64qemu模板仓库内的文件" 20 50 7 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -12601,15 +12601,15 @@ tmoe_qemu_templates_repo() {
 	CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 	LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
 	VIRTUAL_TECH=$(
-		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ" 15 50 7 \
+		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ\nUEFI与legacy bios为开机引导类型" 0 50 0 \
 			"1" "Explore templates探索共享模板(未开放)" \
-			"2" "alpine(x64,含docker)" \
-			"3" "Debian buster(arm64+x64,UEFI引导)" \
-			"4" "Arch_x64(legacy bios引导)" \
-			"5" "FreeBSD_x64(legacy bios引导)" \
-			"6" "Winserver2008R2数据中心版(legacy bios引导)" \
-			"7" "Ubuntu kylin优麒麟20.04(uefi引导)" \
-			"8" "LMDE4(linux mint,legacy bios引导)" \
+			"2" "alpine(x64,含docker,217M,legacy)" \
+			"3" "Debian buster(arm64+x64,UEFI)" \
+			"4" "Arch_x64(678M,legacy)" \
+			"5" "FreeBSD_x64(500M,legacy)" \
+			"6" "Winserver2008R2数据中心版(x64,2.2G,legacy)" \
+			"7" "Ubuntu kylin优麒麟20.04(x64,1.8G,uefi)" \
+			"8" "LMDE4(linux mint x64,2.7G,legacy)" \
 			"9" "share 分享你的qemu配置(未开放)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
