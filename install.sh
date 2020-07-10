@@ -397,7 +397,7 @@ creat_chroot_startup_script() {
 ###################
 creat_proot_startup_script() {
 	echo "Creating proot startup script"
-	echo "正在创建proot启动脚本${PREFIX}/bin/debian "
+	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
 	#DEBIAN_CHROOT=~/debian_arm64
 	#DEBIAN_FOLDER=debian_arm64
 	#此处EndOfFile不要加单引号
@@ -825,6 +825,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    ubuntu_sources_list
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
+	elif grep -q 'OpenWrt' "/etc/os-release"; then
+	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
+		sed -i 's@downloads.openwrt.org@mirrors.tuna.tsinghua.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
 	fi
 	#################
 	 sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list

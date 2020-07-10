@@ -2889,17 +2889,36 @@ install_manjaro_linux_distro() {
 #		sed 's@tar -pJxvf@tar -pzxvf@g'
 ############################
 install_openwrt_linux_distro() {
-	if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
-		cd ${HOME}
-		if [ "${ARCH_TYPE}" = 'arm64' ]; then
-			#aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
-		fi
-	fi
+	#if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
+	#	cd ${HOME}
+	#aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
+	#fi
 	touch ~/.ALPINELINUXDetectionFILE
+	CONTAINER_REPO='https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/'
+	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | grep -Ev 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
+	THE_LATEST_ROOTFS_REPO="${CONTAINER_REPO}${THE_LATEST_VERSION}/targets/"
+
+	if [ "${ARCH_TYPE}" = 'amd64' ]; then
+		#https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/19.07.3/targets/x86/64/openwrt-19.07.3-x86-64-generic-rootfs.tar.gz
+		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/64/openwrt-${THE_LATEST_VERSION}-x86-64-generic-rootfs.tar.gz"
+	elif [ "${ARCH_TYPE}" = 'i386' ]; then
+		#https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/19.07.3/targets/x86/generic/openwrt-19.07.3-x86-generic-generic-rootfs.tar.gz
+		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/generic/openwrt-${THE_LATEST_VERSION}-x86-generic-generic-rootfs.tar.gz"
+	elif [ "${ARCH_TYPE}" = 'arm64' ]; then
+		#https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/19.07.3/targets/armvirt/64/openwrt-19.07.3-armvirt-64-default-rootfs.tar.gz
+		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/64/openwrt-${THE_LATEST_VERSION}-armvirt-64-default-rootfs.tar.gz"
+	elif [ "${ARCH_TYPE}" = 'armhf' ]; then
+		#https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/19.07.3/targets/armvirt/32/openwrt-19.07.3
+		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/32/openwrt-${THE_LATEST_VERSION}-armvirt-32-default-rootfs.tar.gz"
+	fi
+
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s@https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid.*xz@${THE_LATEST_ISO_LINK}@g" |
 		sed 's/debian system/openwrt system/g' |
-		sed 's:debian-sid:openwrt-snapshot:g' |
+		sed 's:debian-sid:openwrt-latest:g' |
 		sed 's:debian/sid:openwrt/snapshot:g' |
+		sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
+		sed 's@tar -pJx@tar -pzx@g' |
 		sed 's:Debian GNU/Linux:OpenWRT Linux:g')"
 }
 ######################
@@ -2936,7 +2955,12 @@ install_slackware_linux_distro() {
 	#touch .SLACKDetectionFILE
 	if [ "${ARCH_TYPE}" = 'amd64' ]; then
 		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
-			aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
+			git clone -b x64 --depth=1 https://gitee.com/ak2/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
+			#aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
+			cd .SLACKWARE_AMD64_TEMP_FOLDER
+			mv -f slackware_amd64.tar.xz ../slackware-current-rootfs.tar.xz
+			cd ..
+			rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
 		fi
 	else
 		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
