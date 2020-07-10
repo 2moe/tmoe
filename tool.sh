@@ -8139,7 +8139,9 @@ check_vnc_passsword_length() {
 		chmod 600 passwd
 		if [ $? = 0 ]; then
 			echo "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
-			#echo "You can type ${GREEN}startvnc${RESET} to restart it. "
+			echo "You can type ${GREEN}startvnc${RESET} to restart it. "
+			echo "若您想要修改其它vnc选项，那么您可以输${BLUE}debian-i${RESET}"
+			echo "You can also type ${BLUE}debian-i${RESET} to start tmoe-linux tool."
 		else
 			echo "密码设定失败，内部发生错误。"
 		fi
