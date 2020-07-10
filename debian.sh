@@ -633,13 +633,13 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200523-00)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200710-22)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复sudo,0514支持最新的ubuntu20.10" 17 50 6 \
-			"1" "proot安装" \
+			"1" "proot安装(๑•̀ㅂ•́)و✧" \
 			"2" "chroot安装" \
 			"3" "GUI,audio & sources.list" \
 			"4" "FAQ常见问题" \
@@ -2044,37 +2044,225 @@ install_debian_or_download_recovery_pkg_tar_xz() {
 }
 
 ###################################################
-download_debian_xfce_tar_xz() {
-	# aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/down/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
-	echo "即将为您下载至${DOWNLOAD_PATH}"
-	BRANCH_NAME='win'
-	TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/virtio'
-	DOWNLOAD_FILE_NAME='virtio-win.tar.gz'
-	QEMU_QCOW2_FILE_PREFIX='.virtio_'
-	QEMU_DISK_FILE_NAME='virtio-win.iso'
-	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
-	check_tmoe_qemu_iso_file_and_git
+git_clone_tmoe_linux_container_file() {
+	TMOE_TRUE_TEMP_FOLDER='.TMOE_LINUX_CONTAINER_TEMP_FOLDER'
+	mkdir -p ${TMOE_TRUE_TEMP_FOLDER}
+	cd ${TMOE_TRUE_TEMP_FOLDER}
 
-	echo 'Verifying sha256sum ...'
-	echo '正在校验sha256sum...'
-	SHA256SUMDEBIAN="$(sha256sum ${DOWNLOAD_FILE_NAME} | cut -c 1-64)"
-	CORRENTSHA256SUM='e8b1ca74e539d92cfdda074906fa41373ad5708747f4eba80a7aae96c4f8fab3' #DevSkim: ignore DS173237
-	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
-		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
-		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
-		echo 'sha256校验值不一致，请重新下载！'
-		echo 'sha256sum value is inconsistent, please download again.'
-		echo "按回车键无视错误并继续安装,按Ctrl+C取消。"
-		echo "${YELLOW}Press enter to continue.${RESET}"
-		read
-	else
-		echo 'Congratulations,检测到sha256sum一致'
-		echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
+	TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_01"
+	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_CONTAINER_REPO_01} ${TMOE_TEMP_FOLDER}
+	cd ${TMOE_TEMP_FOLDER}
+	mv .container_linux_* ..
+	cd ..
+	if [ ! -z ${TMOE_LINUX_CONTAINER_REPO_02} ]; then
+		TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_02"
+		git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_CONTAINER_REPO_02} ${TMOE_TEMP_FOLDER}
+		cd ${TMOE_TEMP_FOLDER}
+		mv .container_linux_* ..
+		cd ..
 	fi
+	if [ ! -z ${TMOE_LINUX_CONTAINER_REPO_03} ]; then
+		TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_03"
+		git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_CONTAINER_REPO_03} ${TMOE_TEMP_FOLDER}
+		cd ${TMOE_TEMP_FOLDER}
+		mv .container_linux_* ..
+		cd ..
+	fi
+	cat .container_linux_* >${DOWNLOAD_FILE_NAME}
+	mv -f ${DOWNLOAD_FILE_NAME} ../
+	cd ../
+	rm -rf ${TMOE_TRUE_TEMP_FOLDER}
+}
+#################
+################
+check_tmoe_linux_container_rec_pkg_file_and_git() {
+	mkdir -p ${DOWNLOAD_PATH}
+	cd ${DOWNLOAD_PATH}
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?\n检测到恢复包已经下载,\n您想要直接解压还是重新下载？" 0 0); then
+			echo "解压后将覆盖容器的所有数据"
+			do_you_want_to_continue
+		else
+			git_clone_tmoe_linux_container_file
+		fi
+	else
+		git_clone_tmoe_linux_container_file
+	fi
+	verify_sha256sum
 	un_xz_debian_recovery_kit
 }
+########################
+debian_sid_arm64_xfce_recovery_package() {
+	echo "即将为您下载至${DOWNLOAD_PATH}"
+	echo '下载大小1.2GB,解压后约占3.8GB+'
+	CORRENTSHA256SUM='d6d5604bb5559336921ddb7b1055c742ce6e146a5562e965cb3967055b45f5e8' #DevSkim: ignore DS173237
+	BRANCH_NAME='arm64'
+	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_sid_rootfs_01'
+	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_sid_rootfs_02'
+	TMOE_LINUX_CONTAINER_REPO_03='https://gitee.com/ak2/debian_sid_rootfs_03'
+	DOWNLOAD_FILE_NAME='debian-sid+xfce4.14-2020-07-10_16-00-rootfs_bak.tar.xz'
+	check_tmoe_linux_container_rec_pkg_file_and_git
+}
+##################
+debian_buster_arm64_xfce_recovery_package() {
+	echo "即将为您下载至${DOWNLOAD_PATH}"
+	echo '下载大小638MB,解压后约占2.2GB'
+	CORRENTSHA256SUM='70e28558ddf42f12e709c1a0091117a64f32aa58ff7e90d7a11731bdc9305a40' #DevSkim: ignore DS173237
+	BRANCH_NAME='arm64'
+	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_stable_rootfs_01'
+	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_stable_rootfs_02'
+	TMOE_LINUX_CONTAINER_REPO_03=''
+	DOWNLOAD_FILE_NAME='debian-buster+xfce4.12-2020-07-10_06-40-rootfs_bak.tar.xz'
+	check_tmoe_linux_container_rec_pkg_file_and_git
+}
+#################
+install_debian_sid_via_tuna() {
+	if [ "${LINUX_DISTRO}" != 'iSH' ]; then
+		bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
+	else
+		curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' | bash
+	fi
+}
+#################
+install_debian_sid_gnu_linux_container() {
+	DISTRO_CODE='sid'
+	BETA_SYSTEM=$(
+		DISTRO_NAME='debian'
+		whiptail --title "DEBIAN CONTAINER" --menu "Do you want to install debian container via Tsinghua University open source mirror station,\n or download the recovery package (debian-xfce.tar.xz)?\n您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？\n软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构,\n安装基础系统速度很快，但安装gui速度较慢。\n恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。\n若您无使用GUI的需求，建议通过软件源镜像站来安装。" 0 50 0 \
+			"1" "Download arm64 rec pkg(xfce4.14桌面+音乐app,1.2GB)" \
+			"2" "Software source(通过软件源来安装)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") install_debian_gnu_linux_distro ;;
+	1) debian_sid_arm64_xfce_recovery_package ;;
+	2) install_debian_sid_via_tuna ;;
+	esac
+	######################
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+###########
+install_debian_buster_via_tuna() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s:/sid:/${DISTRO_CODE}:g" |
+		sed "s:-sid:-${DISTRO_CODE}:g" |
+		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
+		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
+		sed 's@#deb http@deb http@g' |
+		sed 's/.*sid main/#&/')"
+}
+############
+install_debian_testing_via_tuna() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s:/sid:/${DISTRO_CODE}:g" |
+		sed "s:-sid:-${DISTRO_CODE}:g" |
+		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
+		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
+		sed 's@#deb http@deb http@g' |
+		sed 's/.*sid main/#&/')"
+}
+#################
+install_debian_buster_gnu_linux_container() {
+	DISTRO_CODE='buster'
+	BETA_SYSTEM=$(
+		whiptail --title "DEBIAN CONTAINER" --menu "DEBIAN BUSTER" 0 50 0 \
+			"1" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
+			"2" "Software source(通过软件源来安装)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") install_debian_gnu_linux_distro ;;
+	1) debian_buster_arm64_xfce_recovery_package ;;
+	2) install_debian_buster_via_tuna ;;
+	esac
+	######################
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+########################
+install_debian_gnu_linux_distro() {
+	RETURN_TO_WHERE='install_debian_gnu_linux_distro'
+	DOWNLOAD_PATH="/sdcard/Download/backup"
+	#DISTRO_CODE=''
+	DISTRO_NAME='debian'
+	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+	BETA_SYSTEM=$(
+		DISTRO_NAME='debian'
+		whiptail --title "请选择您需要安装的debian version" --menu "Buster为2019~2021年的stable版,sid永远都为unstable。\nStable版更加稳定且bug较少,但stable的软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new." 0 50 0 \
+			"1" "Sid(滚动更新,隔壁的男孩席德,玩具终结者)" \
+			"2" "🐕10-buster(2019~2022,安弟一家养的小狗)" \
+			"3" "Custom code手动输入版本代号" \
+			"4" "🐎11-bullseye(2021~2024,胡迪骑的马)" \
+			"5" "📕🐛12-bookworm(2023~2026,熊抱哥的手下)" \
+			"6" "自动检测debian-13 (2025~2028)" \
+			"7" "🐙9-stretch(2017~2020,玩具总动员3中的紫色章鱼)" \
+			"8" "🤠8-jessie(2015~2018,翠丝,女牛仔)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") choose_which_gnu_linux_distro ;;
+	1) install_debian_sid_gnu_linux_container ;;
+	2) install_debian_buster_gnu_linux_container ;;
+	3) custom_debian_version ;;
+	4) DISTRO_CODE='bullseye' ;;
+	5) check_debian_12 ;;
+	6) check_debian_new_version ;;
+	7) DISTRO_CODE='stretch' ;;
+	8) DISTRO_CODE='jessie' ;;
+	esac
+	######################
+	echo "即将为您安装debian ${DISTRO_CODE} GNU/Linux container"
+	do_you_want_to_continue
+	case "${DISTRO_CODE}" in
+	squeeze | wheezy | jessie | stretch | buster) install_debian_buster_via_tuna ;;
+	*) install_debian_testing_via_tuna ;;
+	esac
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+#########################
+#"9" "🐧7-wheezy(2013~2016,吱吱,带着领结的玩具企鹅)" \
+#"10" "👽6-squeeze(2011~2014,三只眼的外星人)" \
+############
+check_debian_12() {
+	#DISTRO_CODE='bookworm'
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'jessie|stretch|buster|bullseye|sid|size' | tail -n 1)
+	if [ -z ${DISTRO_CODE} ]; then
+		echo "检测到debian12尚未发布，建议您等到2023年时再来尝试"
+		echo "因无法下载该版本，故将自动获取debian sid"
+		do_you_want_to_continue
+		install_debian_sid_gnu_linux_container
+	fi
+}
+#############
+custom_debian_version() {
+	TARGET=$(whiptail --inputbox "请输入最近四年的debian版本代号，例如buster(英文小写)\n Please enter the debian version code." 12 50 --title "DEBIAN CODE" 3>&1 1>&2 2>&3)
+	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${DISTRO_CODE}" ]; then
+		echo "检测到您取消了操作"
+		echo "已自动切换为debian10(代号buster)"
+		DISTRO_CODE='buster'
+	fi
+}
+#################
+check_debian_new_version() {
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'jessie|stretch|buster|bullseye|bookworm|sid|size' | tail -n 1)
+	if [ -z ${DISTRO_CODE} ]; then
+		echo "检测到debian13尚未发布，建议您等到2025年时再来尝试"
+		echo "因无法下载该版本，故将自动获取debian sid"
+		do_you_want_to_continue
+		install_debian_sid_gnu_linux_container
+	fi
+}
 #####################################
-un_xz_debian_recovery_kit() {
+verify_sha256sum() {
 	printf "$BLUE"
 	cat <<-'EndOFneko'
 		                                        
@@ -2103,6 +2291,23 @@ un_xz_debian_recovery_kit() {
 		         :   r. ..      .. .:i  ...     
 	EndOFneko
 	printf "$RESET"
+	echo 'Verifying sha256hash...'
+	echo '正在校验sha256哈希值...'
+	LOCAL_FILE_SHA256_SUM="$(sha256sum ${DOWNLOAD_FILE_NAME} | cut -c 1-64)"
+	if [ "${LOCAL_FILE_SHA256_SUM}" != "${CORRENTSHA256SUM}" ]; then
+		echo "当前文件的sha256校验值为${LOCAL_FILE_SHA256_SUM}"
+		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
+		echo 'sha256校验值不一致，请重新下载！'
+		echo 'sha256hash value is inconsistent, please download again.'
+		echo "按回车键无视错误并继续安装,按Ctrl+C取消。"
+		do_you_want_to_continue
+	else
+		echo 'Congratulations,检测到sha256哈希值一致'
+		echo 'Detected that sha256hash is the same as the source code, and your download is correct.'
+	fi
+}
+##########################
+un_xz_debian_recovery_kit() {
 	echo "正在解压${DOWNLOAD_FILE_NAME}，Decompressing recovery package, please be patient."
 	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
 	echo '正在解压中...'
@@ -2126,9 +2331,19 @@ un_xz_debian_recovery_kit() {
 	#echo "When prompted for a view-only password, it is recommended that you enter 'n'"
 	#echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 	echo '请输入6至8位的VNC密码'
+	switch_termux_rootfs_to_linux
 	source ${PREFIX}/bin/startvnc
 }
 ###############################
+switch_termux_rootfs_to_linux() {
+	if [ "${LINUX_DISTRO}" != 'Android' ]; then
+		cd /data/data/com.termux/files/usr/bin
+		sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' ./)
+		sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+		cp -pf ./* ${PREFIX}/bin/
+	fi
+}
+####################
 termux_install_xfce() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
 		if (("${ANDROID_VERSION}" < '7')); then
@@ -2496,13 +2711,13 @@ termux_tuna_sources_list() {
 choose_which_gnu_linux_distro() {
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
-		"1" "Debian:最早的发行版之一" \
-		"2" "Ubuntu:我的存在是因為大家的存在" \
-		"3" "Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "beta公测版:manjaro,centos" \
-		"5" "alpha内测版:gentoo,armbian" \
+		"1" "🍥Debian:最早的发行版之一" \
+		"2" "🍛Ubuntu:我的存在是因為大家的存在" \
+		"3" "🐉Kali Rolling:设计用于数字取证和渗透测试" \
+		"4" "🍱beta公测版:manjaro,centos" \
+		"5" "🍭alpha内测版:gentoo,armbian" \
 		"6" "arch:系统设计以KISS为总体指导原则" \
-		"7" "fedora:红帽社区版,新技术试验场" \
+		"7" "👒fedora:红帽社区版,新技术试验场" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -2582,50 +2797,18 @@ install_beta_containers() {
 	tmoe_manager_main_menu
 	####################
 }
-#########################
-install_debian_gnu_linux_distro() {
-	DOWNLOAD_PATH="/sdcard/Download/backup"
-	if (whiptail --title "Install GNU/Linux container" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install debian container via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz)?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 16 55); then
-		buster_or_sid
-	else
-		mkdir -p ${DOWNLOAD_PATH}
-		cd ${DOWNLOAD_PATH}
-		#1152.1 MiB
-		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
-			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要直接解压还是重新下载？" 14 50); then
-				un_xz_debian_recovery_kit
-			else
-				download_debian_xfce_tar_xz
-			fi
-		else
-			download_debian_xfce_tar_xz
-		fi
-	fi
-}
-########################
-buster_or_sid() {
-	if (whiptail --title "Debian version" --yes-button 'Sid' --no-button 'Buster' --yesno "请选择您需要安装的debian版本，Please select the debian version you need to install.Buster为当前的stable版,sid为unstable。Buster更加稳定且bug较少,但buster的软件包较旧,而sid较新。Buster is more stable and has fewer bugs, but the packages inside the buster software source are older. The sid package is relatively new." 15 50); then
-		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-			bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
-		else
-			curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' | bash
-		fi
-	else
-		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh | sed 's:/sid:/buster:g' | sed 's:extract z:extract:' | sed 's:-sid:-buster:g' | sed 's@#deb http@deb http@g' | sed 's/.*sid main/#&/')"
-	fi
-}
-###########
+#####################
 install_ubuntu_gnu_linux_distro() {
 	DISTRO_NAME='ubuntu'
 	BETA_SYSTEM=$(
 		DISTRO_NAME='ubuntu'
-		whiptail --title "UBUNTU" --menu "您想要安装哪个版本？Which version do you want to install?" 17 55 7 \
-			"1" "20.10 Groovy Gorilla 時髦大猩猩" \
-			"2" "20.04 Focal Fossa 焦點馬島長尾狸貓" \
+		whiptail --title "UBUNTU" --menu "您想要安装哪个版本？Which version do you want to install?\n2020至2025年的LTS长期支持版为focal 20.04(2020年4月正式发布),上一个LTS为18.04(2018年4月)\n下一个LTS可能为22.04\n设当前年份为x,若x>=2022,则请手动输入版本代号。" 0 50 0 \
+			"1" "🦍20.10 Groovy Gorilla 時髦大猩猩" \
+			"2" "🐱20.04 Focal Fossa 焦點馬島長尾狸貓" \
 			"3" "Custom code手动输入版本代号" \
 			"4" "18.04 Bionic Beaver 仿生海狸" \
 			"5" "16.04 Xenial Xerus 好客的非洲地松鼠" \
-			"6" "Latest(自动检测最新版，测试中)" \
+			"6" "Latest(自动检测21.04，测试中)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -2703,7 +2886,7 @@ install_different_ubuntu_gnu_linux_distros() {
 ############
 check_the_latest_ubuntu_version() {
 	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy' | tail -n 1)
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy' | tail -n 1)
 	if [ -z ${DISTRO_CODE} ]; then
 		echo "未检测到最新版本，将自动获取ubuntu 20.10 groovy"
 		DISTRO_CODE='groovy'

@@ -1017,6 +1017,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	####################
 	apt install -y apt-utils 2>/dev/null
 	apt install -y ca-certificates wget curl 2>/dev/null
+	if grep -Eq 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
+	     apt install -y apt-transport-https 2>/dev/null
+	fi
 	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
 	    echo "Replacing http software source list with https."
 	    echo "正在将http源替换为https..."

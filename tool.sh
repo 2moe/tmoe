@@ -5695,7 +5695,7 @@ modify_debian_mirror_sources_list() {
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${SOURCELISTCODE} main contrib non-free
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${SOURCELISTCODE}-updates main contrib non-free
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${BACKPORTCODE}-backports main contrib non-free
-				deb http://${SOURCE_MIRROR_STATION}/debian-security ${SOURCELISTCODE}-security main contrib non-free
+				deb http://${SOURCE_MIRROR_STATION}/debian-security/ ${SOURCELISTCODE}-security main contrib non-free
 			EndOfSourcesList
 		else
 			#下面那行EndOfSourcesList不能加单引号
@@ -5703,7 +5703,7 @@ modify_debian_mirror_sources_list() {
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${SOURCELISTCODE} main contrib non-free
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${SOURCELISTCODE}-updates main contrib non-free
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${BACKPORTCODE}-backports main contrib non-free
-				deb http://${SOURCE_MIRROR_STATION}/debian-security ${SOURCELISTCODE}/updates main contrib non-free
+				deb http://${SOURCE_MIRROR_STATION}/debian-security/ ${SOURCELISTCODE}/updates main contrib non-free
 			EndOfSourcesList
 		fi
 	fi
@@ -12132,7 +12132,7 @@ set_it_as_the_default_qemu_iso() {
 check_tmoe_qemu_iso_file_and_git() {
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it  o(*￣▽￣*)o, or download it again?(っ °Д °)" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
@@ -12640,7 +12640,7 @@ download_freebsd_qcow2_file() {
 	THE_LATEST_ISO_LINK="${THE_LATEST_ISO_REPO}${THE_LATEST_FILE_VERSION}"
 	# stat ${THE_LATEST_FILE_VERSION}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to uncompress it, or download it again?" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to uncompress it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
@@ -13200,7 +13200,7 @@ download_alpine_and_docker_x64_img_file() {
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
@@ -13786,7 +13786,7 @@ download_arch_linux_qcow2_file() {
 check_arch_linux_qemu_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
@@ -13903,7 +13903,7 @@ set_it_as_default_qemu_disk() {
 download_debian_tmoe_qemu_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
@@ -13919,7 +13919,7 @@ download_debian_tmoe_qemu_qcow2_file() {
 check_tmoe_qemu_qcow2_file_and_git() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压o(*￣▽￣*)o' --no-button '重新下载(っ °Д °)' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
 			echo "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
