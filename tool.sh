@@ -22,6 +22,9 @@ main() {
 	up* | -u*)
 		tmoe_linux_tool_upgrade
 		;;
+	passwd | -passwd)
+		set_vnc_passwd
+		;;
 	h | -h | --help)
 		cat <<-'EOF'
 			-ppa     --添加ppa软件源(add ppa source)   

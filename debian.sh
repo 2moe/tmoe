@@ -25,9 +25,6 @@ main() {
 	-v | -vnc)
 		startvnc
 		;;
-	passwd | -passwd)
-		set_vnc_passwd
-		;;
 	-s | -stop*)
 		stopvnc
 		;;
