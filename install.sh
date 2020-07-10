@@ -249,7 +249,7 @@ if [ ! -f ${DebianTarXz} ]; then
 			wget -O $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz"
 		fi
 	else
-		aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://webdav.tmoe.me/down/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+		aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
 	fi
 fi
 cur=$(pwd)

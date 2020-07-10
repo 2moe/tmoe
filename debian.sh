@@ -1949,7 +1949,7 @@ download_video_tutorial() {
 }
 ##########################
 download_video_tutorial_again() {
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://m.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/20200229VNC%E6%95%99%E7%A8%8B06.mp4'
+	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://webdav.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://webdav.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
 	play_video_tutorial
 }
 play_video_tutorial() {
@@ -2045,11 +2045,20 @@ install_debian_or_download_recovery_pkg_tar_xz() {
 
 ###################################################
 download_debian_xfce_tar_xz() {
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://cdn.tmoe.me/Tmoe-Debian-Tool/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/down/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
+	# aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "debian_2020-03-11_17-31.tar.xz" 'https://m.tmoe.me/down/share/Android/proot/Debian-xfce/debian_2020-03-11_17-31.tar.xz'
+	echo "即将为您下载至${DOWNLOAD_PATH}"
+	BRANCH_NAME='win'
+	TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/virtio'
+	DOWNLOAD_FILE_NAME='virtio-win.tar.gz'
+	QEMU_QCOW2_FILE_PREFIX='.virtio_'
+	QEMU_DISK_FILE_NAME='virtio-win.iso'
+	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+	check_tmoe_qemu_iso_file_and_git
+
 	echo 'Verifying sha256sum ...'
 	echo '正在校验sha256sum...'
-	SHA256SUMDEBIAN="$(sha256sum 'debian_2020-03-11_17-31.tar.xz' | cut -c 1-64)"
-	CORRENTSHA256SUM='931565aa44cd12a7a5ed40c12715724d6bed51eb4fccf1a91a3c6a4346d12721' #DevSkim: ignore DS173237
+	SHA256SUMDEBIAN="$(sha256sum ${DOWNLOAD_FILE_NAME} | cut -c 1-64)"
+	CORRENTSHA256SUM='e8b1ca74e539d92cfdda074906fa41373ad5708747f4eba80a7aae96c4f8fab3' #DevSkim: ignore DS173237
 	if [ "${SHA256SUMDEBIAN}" != "${CORRENTSHA256SUM}" ]; then
 		echo "当前文件的sha256校验值为${SHA256SUMDEBIAN}"
 		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
@@ -2058,42 +2067,50 @@ download_debian_xfce_tar_xz() {
 		echo "按回车键无视错误并继续安装,按Ctrl+C取消。"
 		echo "${YELLOW}Press enter to continue.${RESET}"
 		read
-
 	else
 		echo 'Congratulations,检测到sha256sum一致'
 		echo 'Detected that sha256sum is the same as the source code, and your download is correct.'
 	fi
 	un_xz_debian_recovery_kit
-
 }
 #####################################
 un_xz_debian_recovery_kit() {
-	echo "                                        "
-	echo "                            .:7E        "
-	echo "            .iv7vrrrrr7uQBBBBBBB:       "
-	echo "           v17::.........:SBBBUg        "
-	echo "        vKLi.........:. .  vBQrQ        "
-	echo "   sqMBBBr.......... :i. .  SQIX        "
-	echo "   BBQBBr.:...:....:. 1:.....v. ..      "
-	echo "    UBBB..:..:i.....i YK:: ..:   i:     "
-	echo "     7Bg.... iv.....r.ijL7...i. .Lu     "
-	echo "  IB: rb...i iui....rir :Si..:::ibr     "
-	echo "  J7.  :r.is..vrL:..i7i  7U...Z7i..     "
-	echo "  ...   7..I:.: 7v.ri.755P1. .S  ::     "
-	echo "    :   r:.i5KEv:.:.  :.  ::..X..::     "
-	echo "   7is. :v .sr::.         :: :2. ::     "
-	echo "   2:.  .u: r.     ::::   r: ij: .r  :  "
-	echo "   ..   .v1 .v.    .   .7Qr: Lqi .r. i  "
-	echo "   :u   .iq: :PBEPjvviII5P7::5Du: .v    "
-	echo "    .i  :iUr r:v::i:::::.:.:PPrD7: ii   "
-	echo "    :v. iiSrr   :..   s i.  vPrvsr. r.  "
-	echo "     ...:7sv:  ..PL  .Q.:.   IY717i .7. "
-	echo "      i7LUJv.   . .     .:   YI7bIr :ur "
-	echo "     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 "
-	echo "    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v "
-	echo "         :   r. ..      .. .:i  ...     "
-	echo "正在解压debian_2020-03-11_17-31.tar.xz，Decompressing debian-xfce recovery package, please be patient."
-	pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
+	printf "$BLUE"
+	cat <<-'EndOFneko'
+		                                        
+		                            .:7E        
+		            .iv7vrrrrr7uQBBBBBBB:       
+		           v17::.........:SBBBUg        
+		        vKLi.........:. .  vBQrQ        
+		   sqMBBBr.......... :i. .  SQIX        
+		   BBQBBr.:...:....:. 1:.....v. ..      
+		    UBBB..:..:i.....i YK:: ..:   i:     
+		     7Bg.... iv.....r.ijL7...i. .Lu     
+		  IB: rb...i iui....rir :Si..:::ibr     
+		  J7.  :r.is..vrL:..i7i  7U...Z7i..     
+		  ...   7..I:.: 7v.ri.755P1. .S  ::     
+		    :   r:.i5KEv:.:.  :.  ::..X..::     
+		   7is. :v .sr::.         :: :2. ::     
+		   2:.  .u: r.     ::::   r: ij: .r  :  
+		   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
+		   :u   .iq: :PBEPjvviII5P7::5Du: .v    
+		    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
+		    :v. iiSrr   :..   s i.  vPrvsr. r.  
+		     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
+		      i7LUJv.   . .     .:   YI7bIr :ur 
+		     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
+		    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
+		         :   r. ..      .. .:i  ...     
+	EndOFneko
+	printf "$RESET"
+	echo "正在解压${DOWNLOAD_FILE_NAME}，Decompressing recovery package, please be patient."
+	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
+	echo '正在解压中...'
+	if [ $(command -v pv) ]; then
+		pv ${DOWNLOAD_FILE_NAME} | tar -PpJx
+	else
+		tar -PpJxvf ${DOWNLOAD_FILE_NAME}
+	fi
 	cd "$cur"
 	#用绝对路径
 	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
@@ -2101,14 +2118,15 @@ un_xz_debian_recovery_kit() {
 		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-	echo '在容器内输debian-i启动debian应用安装及远程桌面配置修改工具。'
-	echo 'The vnc service is about to start for you. The password you entered is hidden.'
-	echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
-	echo "When prompted for a view-only password, it is recommended that you enter 'n'"
-	echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+	echo 'You can type startvnc to start vnc.'
+	echo '在容器内输debian-i启动软件安装及远程桌面配置管理工具。'
+	echo 'The vnc service is about to start for you.'
+	# The password you entered is hidden.'
+	#echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
+	#echo "When prompted for a view-only password, it is recommended that you enter 'n'"
+	#echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
 	echo '请输入6至8位的VNC密码'
 	source ${PREFIX}/bin/startvnc
-
 }
 ###############################
 termux_install_xfce() {
@@ -2566,13 +2584,13 @@ install_beta_containers() {
 }
 #########################
 install_debian_gnu_linux_distro() {
-	if (whiptail --title "Install GNU/Linux" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install debian container via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz)?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,软件包只更新至2020-03-11,且仅支持arm64架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 16 55); then
+	DOWNLOAD_PATH="/sdcard/Download/backup"
+	if (whiptail --title "Install GNU/Linux container" --yes-button 'Software source' --no-button 'Download Rec pkg' --yesno "Do you want to install debian container via Tsinghua University open source mirror station, or download the recovery package (debian-xfce.tar.xz)?The latter only supports arm64.您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构，安装基础系统速度很快，但安装gui速度较慢。恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。若您无使用GUI的需求，建议选择前者。" 16 55); then
 		buster_or_sid
 	else
-		if [ ! -d "/sdcard/Download/backup" ]; then
-			mkdir -p /sdcard/Download/backup
-		fi
-		cd /sdcard/Download/backup
+		mkdir -p ${DOWNLOAD_PATH}
+		cd ${DOWNLOAD_PATH}
+		#1152.1 MiB
 		if [ -e "debian_2020-03-11_17-31.tar.xz" ]; then
 			if (whiptail --title "Install Debian" --yes-button '解压uncompress' --no-button 'Download again' --yesno "It was detected that the recovery package has been downloaded. Do you want to uncompress it, or download it again?检测到恢复包已经下载,您想要直接解压还是重新下载？" 14 50); then
 				un_xz_debian_recovery_kit
@@ -2874,7 +2892,7 @@ install_openwrt_linux_distro() {
 	if [ ! -e "openwrt-snapshot-rootfs.tar.xz" ]; then
 		cd ${HOME}
 		if [ "${ARCH_TYPE}" = 'arm64' ]; then
-			aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
+			#aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/openwrt_arm64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "openwrt-snapshot-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/openwrt_arm64.tar.xz"
 		fi
 	fi
 	touch ~/.ALPINELINUXDetectionFILE

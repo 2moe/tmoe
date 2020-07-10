@@ -454,6 +454,39 @@ download_busybox_deb() {
 	rm -rvf busybox busybox-static busybox.deb
 }
 ######################
+check_tmoe_linux_desktop_link() {
+	if [ ! -e "/usr/share/applications/tmoe-linux.desktop" ]; then
+		curl -Lv -o /usr/share/icons/tmoe-linux.png 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/icon.png'
+		chmod 644 /usr/share/icons/tmoe-linux.png
+		cd /usr/share/applications
+		creat_tmoe_linux_desktop_icon
+	fi
+}
+###################
+creat_tmoe_linux_desktop_icon() {
+	if [ ! $(command -v debian-i) ]; then
+		cd /usr/local/bin
+		curl -Lv -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		chmod +x debian-i
+	fi
+	cat >tmoe-linux.desktop <<-'EOF'
+		[Desktop Entry]
+		Name=Tmoe-linux tool
+		Comment=Easily configure remote desktop server and qemu vm.
+		Exec=/usr/local/bin/debian-i
+		Terminal=true
+		X-MultipleArgs=false
+		Type=Application
+		StartupNotify=false
+		Categories=System;Settings;
+		Icon=/usr/share/icons/tmoe-linux.png
+		X-Ubuntu-Gettext-Domain=tmoe-linux
+		X-KDE-SubstituteUID=true
+		Keywords=tmoe;Tmoe;moe;vnc;aria2;xserver;xsdl;startvnc;debian-i;tool;manager;configuration;settings;menu;
+	EOF
+	chmod 644 tmoe-linux.desktop
+}
+#######################
 tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
@@ -480,6 +513,7 @@ tmoe_linux_tool_menu() {
 	if [ ! -z "${CurrentLANG}" ]; then
 		export LANG=${CurrentLANG}
 	fi
+	check_tmoe_linux_desktop_link
 	case "${TMOE_OPTION}" in
 	0 | "")
 		#export LANG=${CurrentLANG}
@@ -3008,6 +3042,7 @@ install_xfce4_desktop() {
 		download_arch_breeze_adapta_cursor_theme
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 	fi
+	mkdir -p ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
 	cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
 	if [ ! -e "xfce4-desktop.xml" ]; then
 		modify_the_default_xfce_wallpaper
@@ -7903,9 +7938,11 @@ first_configure_startvnc() {
 	#卸载udisks2，会破坏mate和plasma的依赖关系。
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOVE_UDISK2} = 'true' ]; then
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
-			echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
-			#umount .gvfs
-			apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
+			if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+				echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
+				#umount .gvfs
+				apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
+			fi
 		fi
 	fi
 	configure_startvnc
