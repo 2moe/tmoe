@@ -2125,15 +2125,13 @@ install_debian_sid_via_tuna() {
 }
 #################
 install_debian_sid_gnu_linux_container() {
+	#Do you want to install debian container via Tsinghua University open source mirror station,\nor download the recovery package (debian-xfce.tar.xz)?\n您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？\n软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构,\n安装基础系统速度很快，但安装gui速度较慢。\n恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。\n若您无使用GUI的需求，建议通过软件源镜像站来安装。" 0 50 0 \
 	DISTRO_CODE='sid'
-	BETA_SYSTEM=$(
-		DISTRO_NAME='debian'
-		whiptail --title "DEBIAN CONTAINER" --menu "Do you want to install debian container via Tsinghua University open source mirror station,\n or download the recovery package (debian-xfce.tar.xz)?\n您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？\n软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构,\n安装基础系统速度很快，但安装gui速度较慢。\n恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。\n若您无使用GUI的需求，建议通过软件源镜像站来安装。" 0 50 0 \
-			"1" "Download arm64 rec pkg(xfce4.14桌面+音乐app,1.2GB)" \
-			"2" "Software source(通过软件源来安装)" \
-			"0" "Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
+	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
+		"1" "arm64 xfce4.14桌面+音乐app,1.2GB-20200710" \
+		"2" "Software source(通过软件源来安装)" \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") install_debian_gnu_linux_distro ;;
@@ -2168,7 +2166,7 @@ install_debian_testing_via_tuna() {
 install_debian_buster_gnu_linux_container() {
 	DISTRO_CODE='buster'
 	BETA_SYSTEM=$(
-		whiptail --title "DEBIAN CONTAINER" --menu "DEBIAN BUSTER" 0 50 0 \
+		whiptail --title "DEBIAN CONTAINER" --menu "BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new." 0 50 0 \
 			"1" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
 			"2" "Software source(通过软件源来安装)" \
 			"0" "Return to previous menu 返回上级菜单" \
@@ -2191,9 +2189,10 @@ install_debian_gnu_linux_distro() {
 	#DISTRO_CODE=''
 	DISTRO_NAME='debian'
 	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+	#\nStable版更加稳定且bug较少,但stable的软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new.
 	BETA_SYSTEM=$(
 		DISTRO_NAME='debian'
-		whiptail --title "请选择您需要安装的debian version" --menu "Buster为2019~2021年的stable版,sid永远都为unstable。\nStable版更加稳定且bug较少,但stable的软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new." 0 50 0 \
+		whiptail --title "请选择您需要安装的debian version" --menu "Buster为2019~2021年的stable版,sid永远都为unstable,sid的软件包较新。\nStable has fewer bugs,\nbut the packages inside the software source are older." 0 50 0 \
 			"1" "Sid(滚动更新,隔壁的男孩席德,玩具终结者)" \
 			"2" "🐕10-buster(2019~2022,安弟一家养的小狗)" \
 			"3" "Custom code手动输入版本代号" \
@@ -2236,9 +2235,9 @@ check_debian_12() {
 	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'jessie|stretch|buster|bullseye|sid|size' | tail -n 1)
 	if [ -z ${DISTRO_CODE} ]; then
 		echo "检测到debian12尚未发布，建议您等到2023年时再来尝试"
-		echo "因无法下载该版本，故将自动获取debian sid"
-		do_you_want_to_continue
-		install_debian_sid_gnu_linux_container
+		echo "如需体验最新版本，请安装debian sid，并添加experimental软件源"
+		press_enter_to_return
+		install_debian_gnu_linux_distro
 	fi
 }
 #############
@@ -2256,9 +2255,9 @@ check_debian_new_version() {
 	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'jessie|stretch|buster|bullseye|bookworm|sid|size' | tail -n 1)
 	if [ -z ${DISTRO_CODE} ]; then
 		echo "检测到debian13尚未发布，建议您等到2025年时再来尝试"
-		echo "因无法下载该版本，故将自动获取debian sid"
-		do_you_want_to_continue
-		install_debian_sid_gnu_linux_container
+		echo "如需体验最新版本，请安装debian sid，并添加experimental软件源"
+		press_enter_to_return
+		install_debian_gnu_linux_distro
 	fi
 }
 #####################################
@@ -2802,7 +2801,7 @@ install_ubuntu_gnu_linux_distro() {
 	DISTRO_NAME='ubuntu'
 	BETA_SYSTEM=$(
 		DISTRO_NAME='ubuntu'
-		whiptail --title "UBUNTU" --menu "您想要安装哪个版本？Which version do you want to install?\n2020至2025年的LTS长期支持版为focal 20.04(2020年4月正式发布),上一个LTS为18.04(2018年4月)\n下一个LTS可能为22.04\n设当前年份为x,若x>=2022,则请手动输入版本代号。" 0 50 0 \
+		whiptail --title "Which version do you want to install?" --menu "您想要安装哪个版本?2020至2025年的LTS长期支持版为focal 20.04(2020年4月正式发布),上一个LTS为18.04(2018年4月),下一个LTS可能为22.04\n设当前年份为x,若x>=2022,则请手动输入版本代号。" 0 50 0 \
 			"1" "🦍20.10 Groovy Gorilla 時髦大猩猩" \
 			"2" "🐱20.04 Focal Fossa 焦點馬島長尾狸貓" \
 			"3" "Custom code手动输入版本代号" \
