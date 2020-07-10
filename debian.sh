@@ -2094,7 +2094,7 @@ check_tmoe_linux_container_rec_pkg_file_and_git() {
 ########################
 debian_sid_arm64_xfce_recovery_package() {
 	echo "即将为您下载至${DOWNLOAD_PATH}"
-	echo '下载大小1.2GB,解压后约占3.8GB+'
+	echo '下载大小1.2GB,解压后约占3.9GB'
 	CORRENTSHA256SUM='d6d5604bb5559336921ddb7b1055c742ce6e146a5562e965cb3967055b45f5e8' #DevSkim: ignore DS173237
 	BRANCH_NAME='arm64'
 	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_sid_rootfs_01'
@@ -2199,7 +2199,7 @@ install_debian_gnu_linux_distro() {
 			"4" "🐎11-bullseye(2021~2024,胡迪骑的马)" \
 			"5" "📕🐛12-bookworm(2023~2026,熊抱哥的手下)" \
 			"6" "自动检测debian-13 (2025~2028)" \
-			"7" "🐙9-stretch(2017~2020,玩具总动员3中的紫色章鱼)" \
+			"7" "🐙9-stretch(2017~2020,玩具总动员3中的章鱼)" \
 			"8" "🤠8-jessie(2015~2018,翠丝,女牛仔)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
