@@ -680,7 +680,7 @@ tmoe_manager_main_menu() {
 tmoe_locales_settings() {
 	CONTAINER_LOCALE=$(
 		whiptail --title "locales" \
-			--menu "请在安装完容器后，再来修改locales设定" 0 0 0 \
+			--menu "LOCALE SETTINGS" 0 0 0 \
 			"00" "Back 返回" \
 			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
 			"02" "sq_AL.UTF-8 Albanian_Albania" \
