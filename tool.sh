@@ -482,7 +482,7 @@ creat_tmoe_linux_desktop_icon() {
 		X-MultipleArgs=false
 		Type=Application
 		StartupNotify=false
-		Categories=System;Settings;
+		Categories=System;
 		Icon=/usr/share/icons/tmoe-linux.png
 		X-Ubuntu-Gettext-Domain=tmoe-linux
 		X-KDE-SubstituteUID=true
