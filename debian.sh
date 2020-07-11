@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ ! -z ${TMPDIR} ]; then
+if [ -z ${TMPDIR} ]; then
 	TMPDIR=/tmp
 	mkdir -p ${TMPDIR}
 fi
