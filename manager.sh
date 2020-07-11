@@ -865,14 +865,17 @@ tmoe_locales_settings() {
 			EOF
 		fi
 	fi
-	cd ${TMOE_SCRIPT_PATH}/etc
-	sed -i 's@^@#@g' locale.gen 2>/dev/null
-	sed -i 's@##@#@g' locale.gen 2>/dev/null
-	if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
-		sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
-	fi
-	if [ -z "${TMOE_SCRIPT_PATH}" ]; then
-		locale-gen ${TMOE_LANG} 2>/dev/null
+	#cd ${TMOE_SCRIPT_PATH}/etc
+	if [ "${LINUX_DISTRO}" != "Android" ]; then
+		cd /etc
+		sed -i 's@^@#@g' locale.gen 2>/dev/null
+		sed -i 's@##@#@g' locale.gen 2>/dev/null
+		if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
+			sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
+		fi
+		if [ -z "${TMOE_SCRIPT_PATH}" ]; then
+			locale-gen ${TMOE_LANG} 2>/dev/null
+		fi
 	fi
 	#############
 	press_enter_to_return
