@@ -871,7 +871,7 @@ tmoe_locales_settings() {
 	if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
 		sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
 	fi
-	if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
+	if [ -z "${TMOE_SCRIPT_PATH}" ]; then
 		locale-gen ${TMOE_LANG} 2>/dev/null
 	fi
 	#############
