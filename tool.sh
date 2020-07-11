@@ -494,7 +494,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200711-07)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529至0603修复qemu部分问题,0618支持解析主题链接,0711修复arm64下载x64qemu模板仓库内的文件" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200711-07)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529至0603修复qemu部分问题,0618支持解析主题链接,0711修复arm64设备下载x64qemu模板仓库内的文件" 20 50 7 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \

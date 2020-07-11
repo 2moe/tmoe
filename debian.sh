@@ -2933,7 +2933,8 @@ install_fedora_gnu_linux_distro() {
 	elif [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "Fedora不支持您的架构"
 	else
-		OLD_STABLE_VERSION='31'
+		#OLD_STABLE_VERSION='31'
+		OLD_STABLE_VERSION=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 		check_the_latest_distro_version
 	fi
 }
