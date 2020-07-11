@@ -205,13 +205,13 @@ Finally, press Enter and arrow keys to operate.
 _**If you do not live in China, please enter**_
 
 ```shell
-    bash -c "$(curl -Lv https://git.io/linux.sh)"
+    bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
 _**如果你在国内,那么请输**_
 
 ```shell
-    bash -c "$(curl -Lv l.tmoe.me)"
+    bash -c "$(curl -L l.tmoe.me)"
 ```
 
 > 3-EN.Goto Google Play,then install [VNC client](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) or [X server](https://play.google.com/store/apps/details?id=x.org.server)
@@ -241,14 +241,14 @@ _**如果你在国内,那么请输**_
 
 ```shell
     dnf install -y curl || yum install -y curl
-    bash -c "$(curl -Lv https://git.io/linux.sh)"
+    bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
 #### 5.Arch/Manjaro
 
 ```shell
     pacman -Syu --noconfirm curl
-    bash -c "$(curl -Lv https://git.io/linux.sh)"
+    bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
 #### 6.OpenWRT/Entware
@@ -299,7 +299,7 @@ _**如果你在国内,那么请输**_
 - Enter the following command in the terminal.
 
 ```shell
-bash -c "$(curl -Lv https://git.io/linux.sh)"
+bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
 > After executing the command, press the enter and arrow keys to operate, basically all operations have prompts.  

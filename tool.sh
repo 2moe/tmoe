@@ -24,6 +24,7 @@ main() {
 		;;
 	passwd | -passwd)
 		set_vnc_passwd
+		check_libreoffice_patch
 		;;
 	h | -h | --help)
 		cat <<-'EOF'
@@ -6650,17 +6651,27 @@ install_libre_office() {
 	beta_features_quick_install
 	if [ "${EXIT_STATUS}" != "0" ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			mkdir -p /prod/version
-			cd /usr/lib/libreoffice/program
-			rm -f oosplash
-			curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
-			chmod +x oosplash
+			patch_libreoffice
 		fi
 		echo "打补丁完成"
 	fi
 }
 
 ###################
+patch_libreoffice() {
+	mkdir -p /prod/version
+	cd /usr/lib/libreoffice/program
+	rm -f oosplash
+	curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
+	chmod +x oosplash
+}
+##################
+check_libreoffice_patch() {
+	if [ $(command -v libreoffice) ]; then
+		patch_libreoffice
+	fi
+}
+############
 install_baidu_netdisk() {
 	DEPENDENCY_01="baidunetdisk"
 	DEPENDENCY_02=""
