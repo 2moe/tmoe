@@ -13,10 +13,8 @@ else
 fi
 if [ $(command -v bash) ]; then
 	bash .tmoe-linux.sh
-elif [ $(command -v ash) ]; then
-	ash .tmoe-linux.sh
-elif [ $(command -v zsh) ]; then
-	zsh .tmoe-linux.sh
 else
-	sh .tmoe-linux.sh
+	DEPENDENCY_01='bash'
+	sudo su -c "apk add ${DEPENDENCY_01} || apt install -y ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01} || pacman -S ${DEPENDENCY_01} || dnf install ${DEPENDENCY_01} || eopkg install ${DEPENDENCY_01}"
+	bash .tmoe-linux.sh
 fi

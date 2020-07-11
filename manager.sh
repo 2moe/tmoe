@@ -629,7 +629,7 @@ android_termux() {
 ########################################################################
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
-	OPTION=$(
+	TMOE_OPTION=$(
 		whiptail --title "GNU/Linux Tmoe manager(20200710-22)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
@@ -638,89 +638,247 @@ tmoe_manager_main_menu() {
 		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复sudo,0514支持最新的ubuntu20.10" 17 50 6 \
 			"1" "proot安装(๑•̀ㅂ•́)و✧" \
 			"2" "chroot安装" \
-			"3" "GUI,audio & sources.list" \
-			"4" "FAQ常见问题" \
-			"5" "novnc(web端控制)" \
-			"6" "backup system备份系统" \
-			"7" "restore还原" \
-			"8" "query space occupation查询空间占用" \
-			"9" "update更新" \
-			"10" "Configure zsh美化终端" \
-			"11" "Download VNC/xwayland/xsdl apk" \
-			"12" "VSCode Server arm64" \
-			"13" "赋予proot容器真实root权限" \
-			"14" "Video tutorial" \
-			"15" "remove system移除" \
+			"3" "locales/区域/ロケール/로케일" \
+			"4" "GUI,audio & sources.list" \
+			"5" "FAQ常见问题" \
+			"6" "novnc(web端控制)" \
+			"7" "backup system备份系统" \
+			"8" "restore还原" \
+			"9" "query space occupation查询空间占用" \
+			"10" "update更新" \
+			"11" "Configure zsh美化终端" \
+			"12" "Download VNC/xwayland/xsdl apk" \
+			"13" "VSCode Server arm64" \
+			"14" "赋予proot容器真实root权限" \
+			"15" "Video tutorial" \
+			"16" "remove system移除" \
 			"0" "exit退出" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
-	if [ "${OPTION}" == '1' ]; then
-		install_proot_container
-	fi
-	##########################
-	if [ "${OPTION}" == '2' ]; then
-		install_chroot_container
-	fi
-	##########################
-	if [ "${OPTION}" == '3' ]; then
-		termux_install_xfce
-	fi
-	##########################
-	if [ "${OPTION}" == '4' ]; then
-		frequently_asked_questions
-	fi
-	##########################
-	if [ "${OPTION}" == '5' ]; then
-		install_web_novnc
-	fi
-	##########################
-	if [ "${OPTION}" == '6' ]; then
-		backup_system
-	fi
-	##########################
-	if [ "${OPTION}" == '7' ]; then
-		restore_gnu_linux_container
-	fi
-	##########################
-	if [ "${OPTION}" == '8' ]; then
-		space_occupation
-	fi
-	##########################
-	if [ "${OPTION}" == '9' ]; then
-		update_tmoe_linux_manager
-	fi
-	##########################
-	if [ "${OPTION}" == '10' ]; then
-		bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
-	fi
-	##########################
-	if [ "${OPTION}" == '11' ]; then
-		download_vnc_apk
-	fi
-	##########################
-	if [ "${OPTION}" == '12' ]; then
-		start_vscode
-	fi
-	##########################
-	if [ "${OPTION}" == '13' ]; then
-		enable_root_mode
-	fi
-	##########################
-	if [ "${OPTION}" == '14' ]; then
-		download_video_tutorial
-	fi
-	##########################
-	if [ "${OPTION}" == '15' ]; then
-		remove_gnu_linux_container
-	fi
-	####################
-	if [ "${OPTION}" == '0' ]; then
-		exit
-	fi
-	########
+	case "${TMOE_OPTION}" in
+	0 | "") exit 0 ;;
+	1) install_proot_container ;;
+	2) install_chroot_container ;;
+	3) tmoe_locales_settings ;;
+	4) termux_install_xfce ;;
+	5) frequently_asked_questions ;;
+	6) install_web_novnc ;;
+	7) backup_system ;;
+	8) restore_gnu_linux_container ;;
+	9) space_occupation ;;
+	10) update_tmoe_linux_manager ;;
+	11) bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
+	12) download_vnc_apk ;;
+	13) start_vscode ;;
+	14) enable_root_mode ;;
+	15) download_video_tutorial ;;
+	16) remove_gnu_linux_container ;;
+	esac
 }
 ##########################
+tmoe_locales_settings() {
+	CONTAINER_LOCALE=$(
+		whiptail --title "locales" \
+			--menu "请在安装完容器后，再来修改locales设定" 0 0 0 \
+			"00" "Back 返回" \
+			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
+			"02" "sq_AL.UTF-8 Albanian_Albania" \
+			"03" "ar_SA.UTF-8 Arabic_Saudi Arabia" \
+			"04" "eu_ES.UTF-8 Basque_Spain" \
+			"05" "be_BY.UTF-8 Belarusian_Belarus" \
+			"06" "bs_BA.UTF-8 Bosnian (Latin)" \
+			"07" "bg_BG.UTF-8 Bulgarian_Bulgaria" \
+			"08" "ca_ES.UTF-8 Catalan_Spain" \
+			"09" "hr_HR.UTF-8 Croatian_Croatia" \
+			"10" "en_US.UTF-8 Chinese_China中国" \
+			"11" "zh_TW.UTF-8 Chinese_Taiwan臺灣" \
+			"12" "cs_CZ.UTF-8 Czech_Czech Republic" \
+			"13" "da_DK.UTF-8 Danish_Denmark" \
+			"14" "nl_NL.UTF-8 Dutch_Netherlands" \
+			"15" "en.UTF-8 English_Australia" \
+			"16" "et_EE.UTF-8 Estonian_Estonia" \
+			"17" "fa_IR.UTF-8 Farsi_Iran" \
+			"18" "fil_PH.UTF-8 Filipino_Philippines" \
+			"19" "fi_FI.UTF-8 Finnish_Finland" \
+			"20" "fr_FR.UTF-8 French_France" \
+			"21" "ga.UTF-8 Gaelic;Scottish" \
+			"22" "gl_ES.UTF-8 Galician_Spain" \
+			"23" "ka_GE.UTF-8 Georgian_Georgia" \
+			"24" "de_DE.UTF-8 German_Germany" \
+			"25" "el_GR.UTF-8 Greek_Greece" \
+			"26" "gu.UTF-8 Gujarati_India" \
+			"27" "he_IL.utf8 Hebrew_Israel" \
+			"28" "hi_IN.UTF-8 Hindi" \
+			"29" "hu.UTF-8 Hungarian_Hungary" \
+			"30" "is_IS.UTF-8 Icelandic_Iceland" \
+			"31" "id_ID.UTF-8 Indonesian_indonesia" \
+			"32" "it_IT.UTF-8 Italian_Italy" \
+			"33" "ja_JP.UTF-8 Japanese_Japan日本" \
+			"34" "kn_IN.UTF-8 Kannada" \
+			"35" "km_KH.UTF-8 Khmer" \
+			"36" "ko_KR.UTF-8 Korean_Korea한국" \
+			"37" "lo_LA.UTF-8 Lao_Laos" \
+			"38" "lt_LT.UTF-8 Lithuanian_Lithuania" \
+			"39" "lat.UTF-8 Latvian_Latvia" \
+			"40" "ml_IN.UTF-8 Malayalam_India.x-iscii-ma" \
+			"41" "ms_MY.UTF-8 Malay_malaysia" \
+			"42" "mi_NZ.UTF-8 Ngai_Tahu" \
+			"43" "mi_NZ.UTF-8 Waikoto_Uni" \
+			"44" "mn.UTF-8 Cyrillic_Mongolian" \
+			"45" "no_NO.UTF-8 Norwegian_Norway" \
+			"46" "nn_NO.UTF-8 Norwegian-Nynorsk_Norway" \
+			"47" "pl.UTF-8 Polish_Poland" \
+			"48" "pt_PT.UTF-8 Portuguese_Portugal" \
+			"49" "pt_BR.UTF-8 Portuguese_Brazil(Brazil) " \
+			"50" "ro_RO.UTF-8 Romanian_Romania" \
+			"51" "ru_RU.UTF-8 Russian_Russia" \
+			"52" "mi_NZ.UTF-8 Maori" \
+			"53" "sr_CS.UTF-8 Bosnian(Cyrillic),Serbian" \
+			"54" "sk_SK.UTF-8 Slovak_Slovakia" \
+			"55" "sl_SI.UTF-8 Slovenian_Slovenia" \
+			"56" "so_SO.UTF-8 Somali Somali" \
+			"57" "es_ES.UTF-8 Spanish_Spain(International)" \
+			"58" "sv_SE.UTF-8 Swedish_Sweden" \
+			"59" "tl.UTF-8 Philippines" \
+			"60" "ta_IN.UTF-8 English_Australia" \
+			"61" "th_TH.UTF-8 Thai_Thailand" \
+			"62" "mi_NZ.UTF-8 Maori" \
+			"63" "tr_TR.UTF-8 Turkish_Turkey" \
+			"64" "uk_UA.UTF-8 Ukrainian_Ukraine" \
+			"65" "vi_VN.UTF-8 Vietnamese_Vietnam" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${CONTAINER_LOCALE}" in
+	00 | "") tmoe_manager_main_menu ;;
+	01) TMOE_LANG='af_ZA.UTF-8' ;;
+	02) TMOE_LANG='sq_AL.UTF-8' ;;
+	03) TMOE_LANG='ar_SA.UTF-8' ;;
+	04) TMOE_LANG='eu_ES.UTF-8' ;;
+	05) TMOE_LANG='be_BY.UTF-8' ;;
+	06) TMOE_LANG='bs_BA.UTF-8' ;;
+	07) TMOE_LANG='bg_BG.UTF-8' ;;
+	08) TMOE_LANG='ca_ES.UTF-8' ;;
+	09) TMOE_LANG='hr_HR.UTF-8' ;;
+	10) TMOE_LANG='en_US.UTF-8' ;;
+	11) TMOE_LANG='zh_TW.UTF-8' ;;
+	12) TMOE_LANG='cs_CZ.UTF-8' ;;
+	13) TMOE_LANG='da_DK.UTF-8' ;;
+	14) TMOE_LANG='nl_NL.UTF-8' ;;
+	15) TMOE_LANG='en.UTF-8' ;;
+	16) TMOE_LANG='et_EE.UTF-8' ;;
+	17) TMOE_LANG='fa_IR.UTF-8' ;;
+	18) TMOE_LANG='fil_PH.UTF-8' ;;
+	19) TMOE_LANG='fi_FI.UTF-8' ;;
+	20) TMOE_LANG='fr_FR.UTF-8' ;;
+	21) TMOE_LANG='ga.UTF-8' ;;
+	22) TMOE_LANG='gl_ES.UTF-8' ;;
+	23) TMOE_LANG='ka_GE.UTF-8' ;;
+	24) TMOE_LANG='de_DE.UTF-8' ;;
+	25) TMOE_LANG='el_GR.UTF-8' ;;
+	26) TMOE_LANG='gu.UTF-8' ;;
+	27) TMOE_LANG='he_IL.utf8' ;;
+	28) TMOE_LANG='hi_IN.UTF-8' ;;
+	29) TMOE_LANG='hu.UTF-8' ;;
+	30) TMOE_LANG='is_IS.UTF-8' ;;
+	31) TMOE_LANG='id_ID.UTF-8' ;;
+	32) TMOE_LANG='it_IT.UTF-8' ;;
+	33) TMOE_LANG='ja_JP.UTF-8' ;;
+	34) TMOE_LANG='kn_IN.UTF-8' ;;
+	35) TMOE_LANG='km_KH.UTF-8' ;;
+	36) TMOE_LANG='ko_KR.UTF-8' ;;
+	37) TMOE_LANG='lo_LA.UTF-8' ;;
+	38) TMOE_LANG='lt_LT.UTF-8' ;;
+	39) TMOE_LANG='lat.UTF-8' ;;
+	40) TMOE_LANG='ml_IN.UTF-8' ;;
+	41) TMOE_LANG='ms_MY.UTF-8' ;;
+	42) TMOE_LANG='mi_NZ.UTF-8' ;;
+	43) TMOE_LANG='mi_NZ.UTF-8' ;;
+	44) TMOE_LANG='mn.UTF-8' ;;
+	45) TMOE_LANG='no_NO.UTF-8' ;;
+	46) TMOE_LANG='nn_NO.UTF-8' ;;
+	47) TMOE_LANG='pl.UTF-8' ;;
+	48) TMOE_LANG='pt_PT.UTF-8' ;;
+	49) TMOE_LANG='pt_BR.UTF-8' ;;
+	50) TMOE_LANG='ro_RO.UTF-8' ;;
+	51) TMOE_LANG='ru_RU.UTF-8' ;;
+	52) TMOE_LANG='mi_NZ.UTF-8' ;;
+	53) TMOE_LANG='sr_CS.UTF-8' ;;
+	54) TMOE_LANG='sk_SK.UTF-8' ;;
+	55) TMOE_LANG='sl_SI.UTF-8' ;;
+	56) TMOE_LANG='so_SO.UTF-8' ;;
+	57) TMOE_LANG='es_ES.UTF-8' ;;
+	58) TMOE_LANG='sv_SE.UTF-8' ;;
+	59) TMOE_LANG='tl.UTF-8' ;;
+	60) TMOE_LANG='ta_IN.UTF-8' ;;
+	61) TMOE_LANG='th_TH.UTF-8' ;;
+	62) TMOE_LANG='mi_NZ.UTF-8' ;;
+	63) TMOE_LANG='tr_TR.UTF-8' ;;
+	64) TMOE_LANG='uk_UA.UTF-8' ;;
+	65) TMOE_LANG='vi_VN.UTF-8' ;;
+	esac
+	###############
+	mkdir -p ${HOME}/.config/tmoe-linux
+	cd ${HOME}/.config/tmoe-linux
+	echo ${TMOE_LANG} >locale.txt
+	if [ $(command -v debian) ]; then
+		PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	fi
+	if [ -e "${DEBIAN_CHROOT}" ]; then
+		TMOE_SCRIPT_PATH=${DEBIAN_CHROOT}
+	else
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
+			echo "Detected that you have not installed a container."
+			press_enter_to_return
+			tmoe_manager_main_menu
+		else
+			TMOE_SCRIPT_PATH=''
+		fi
+	fi
+	if [ ! -z "${PROOT_LANG}" ]; then
+		sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
+	fi
+	cd ${TMOE_SCRIPT_PATH}/usr/local/bin/
+	VNC_LANG=$(cat startvnc | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	sed -i "s@${VNC_LANG}@${TMOE_LANG}@" startvnc
+	X_LANG=$(cat startxsdl | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	sed -i "s@${X_LANG}@${TMOE_LANG}@" startxsdl
+	X11VNC_LANG=$(cat startx11vnc | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	sed -i "s@${X11VNC_LANG}@${TMOE_LANG}@" startx11vnc
+	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	DEBIAN_LOCALE_GEN=$(cat debian-i | grep '"/etc/locale.gen"; then' | head -n 1 | cut -d '"' -f 2 | cut -d '^' -f 2)
+	sed -i "s@${DEBIAN_LOCALE_GEN}@${TMOE_LANG_HALF}@" debian-i
+	cd ${TMOE_SCRIPT_PATH}/etc/default
+	if grep -q 'LANG' locale; then
+		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
+		sed -i "s@{DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
+	else
+		if [ "$(pwd)" != "${HOME}" ]; then
+			cp locale locale.bak 2>/dev/null
+			sed -i 's@^@#&@g' locale
+			cat >>locale <<-EOF
+				LANG="${TMOE_LANG_HALF}.UTF-8"
+				LANGUAGE="${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}"
+				LC_ALL="${TMOE_LANG_HALF}.UTF-8"
+			EOF
+		fi
+	fi
+	cd ${TMOE_SCRIPT_PATH}/etc
+	sed -i 's@^@#@g' locale.gen 2>/dev/null
+	sed -i 's@##@#@g' locale.gen 2>/dev/null
+	if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
+		sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
+	fi
+	if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
+		locale-gen ${TMOE_LANG} 2>/dev/null
+	fi
+	#############
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+#####################
 vnc_can_not_call_pulse_audio() {
 	echo "若您启动VNC后，发现无音频。首先请确保您的termux为最新版本，并安装了termux:api"
 	echo "若您的宿主机为Android系统，且发现音频服务无法启动，请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
@@ -2091,7 +2249,7 @@ check_tmoe_linux_container_rec_pkg_file_and_git() {
 ########################
 debian_sid_arm64_xfce_recovery_package() {
 	echo "即将为您下载至${DOWNLOAD_PATH}"
-	echo '下载大小1.2GB,解压后约占3.9GB'
+	echo '下载大小1.12GB,解压后约占3.9GB'
 	echo "2020-07-11凌晨注：忘记给LibreOffice打补丁了 (ㄒoㄒ)/~~，请在安装完成后使用tmoe-linux tool给libreoffice打补丁"
 	CORRENTSHA256SUM='d6d5604bb5559336921ddb7b1055c742ce6e146a5562e965cb3967055b45f5e8' #DevSkim: ignore DS173237
 	BRANCH_NAME='arm64'
@@ -2126,7 +2284,7 @@ install_debian_sid_gnu_linux_container() {
 	#Do you want to install debian container via Tsinghua University open source mirror station,\nor download the recovery package (debian-xfce.tar.xz)?\n您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？\n软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构,\n安装基础系统速度很快，但安装gui速度较慢。\n恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。\n若您无使用GUI的需求，建议通过软件源镜像站来安装。" 0 50 0 \
 	DISTRO_CODE='sid'
 	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
-		"1" "arm64 xfce4.14桌面+音乐app,1.2GB-20200710" \
+		"1" "arm64 xfce4.14桌面+音乐app,1.13G-20200710" \
 		"2" "Software source(通过软件源来安装)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -2164,7 +2322,7 @@ install_debian_testing_via_tuna() {
 install_debian_buster_gnu_linux_container() {
 	DISTRO_CODE='buster'
 	BETA_SYSTEM=$(
-		whiptail --title "DEBIAN CONTAINER" --menu "BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new." 0 50 0 \
+		whiptail --title "DEBIAN CONTAINER" --menu "BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs" 0 50 0 \
 			"1" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
 			"2" "Software source(通过软件源来安装)" \
 			"0" "Return to previous menu 返回上级菜单" \

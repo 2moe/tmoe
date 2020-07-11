@@ -614,7 +614,7 @@ EndOfFile
 creat_linux_container_remove_script
 ################
 #wget -qO ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
-aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
+aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 #############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 	sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
@@ -700,6 +700,13 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
+if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
+	mkdir -p ./.config/tmoe-linux
+	cp ${HOME}/.config/tmoe-linux/locale.txt ./.config/tmoe-linux/locale.txt
+	TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
+fi
 
 ########################
 #配置zsh
@@ -970,11 +977,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#配置国内时区
 	echo 'Asia/Shanghai' >/etc/timezone
 	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-
+	sed -i 's/^/#&/g' /etc/default/locale
+	sed -i 's/##/#/g' /etc/default/locale
+	if [ ! -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
 	echo "Configuring Chinese environment..."
 	#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-	sed -i 's/^/#&/g' /etc/default/locale
 	cat >>/etc/default/locale <<-'EOF'
 			LANG="en_US.UTF-8"
 			LANGUAGE="en_US:zh"
@@ -982,6 +990,27 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		EOF
 	#locale-gen
 	locale-gen zh_CN.UTF-8
+	else
+	TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt |head -n 1)
+	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	echo "Configuring ${TMOE_LANG_HALF} environment..."
+	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
+	cat >>/etc/default/locale <<-EOF
+			LANG="${TMOE_LANG}"
+			LANGUAGE="${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}"
+			LC_ALL="${TMOE_LANG}"
+		EOF
+		if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
+	        sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
+			echo '' >>/etc/locale.gen
+			sed -i "$ a\${TMOE_LANG} UTF-8" /etc/locale.gen
+		fi
+	locale-gen ${TMOE_LANG}
+	sed -i "s@en_US@${TMOE_LANG_HALF}@" $(command -v debian-i)
+	sed -i "s@en_US@${TMOE_LANG_HALF}@" $(command -v debian-i)
+	fi
 	source /etc/default/locale 2>/dev/null
 	#################
 	printf "$YELLOW"
