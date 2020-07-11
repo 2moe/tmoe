@@ -853,7 +853,8 @@ tmoe_locales_settings() {
 	cd ${TMOE_SCRIPT_PATH}/etc/default
 	if grep -q 'LANG' locale; then
 		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
-		sed -i "s@{DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
+		sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
+		source locale
 	else
 		if [ "$(pwd)" != "${HOME}" ]; then
 			cp locale locale.bak 2>/dev/null
