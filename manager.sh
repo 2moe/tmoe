@@ -378,8 +378,8 @@ gnu_linux() {
 	fi
 	##################
 	#解决乱码问题
-	CurrentLANG=$LANG
-	export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
+	#CurrentLANG=$LANG
+	#export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
 	########################
 	if [ "${LINUX_DISTRO}" = "openwrt" ]; then
 		if [ -d "/opt/bin" ]; then

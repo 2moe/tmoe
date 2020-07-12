@@ -1020,8 +1020,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			sed -i "$ a\${TMOE_LANG} UTF-8" /etc/locale.gen
 		fi
 	locale-gen ${TMOE_LANG}
-	sed -i "s@en_US@${TMOE_LANG_HALF}@" $(command -v debian-i)
-	sed -i "s@en_US@${TMOE_LANG_HALF}@" $(command -v debian-i)
 	fi
 	source /etc/default/locale 2>/dev/null
 	#################
