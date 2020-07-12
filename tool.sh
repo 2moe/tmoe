@@ -2848,7 +2848,12 @@ configure_x11vnc_remote_desktop_session() {
 		stopx11vnc
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
-		export LANG="en_US.UTF-8"
+		if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
+		    TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+		    export LANG="${TMOE_LANG}"
+		else
+		    export LANG="en_US.UTF-8"
+		fi
 		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
 		if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
@@ -7865,7 +7870,12 @@ configure_startxsdl() {
 			fi
 			sleep 2
 		fi
-		export LANG="en_US.UTF-8"
+		if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
+		    TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+		    export LANG="${TMOE_LANG}"
+		else
+		    export LANG="en_US.UTF-8"
+		fi
 	EndOfFile
 	cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
@@ -7925,7 +7935,12 @@ configure_startvnc() {
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
-		export LANG="en_US.UTF-8"
+		if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
+		    TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+		    export LANG="${TMOE_LANG}"
+		else
+		    export LANG="en_US.UTF-8"
+		fi
 		#启动VNC服务的命令为最后一行
 		vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
