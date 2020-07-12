@@ -696,7 +696,7 @@ tmoe_locales_settings() {
 			"12" "cs_CZ.UTF-8 Czech_Czech Republic" \
 			"13" "da_DK.UTF-8 Danish_Denmark" \
 			"14" "nl_NL.UTF-8 Dutch_Netherlands" \
-			"15" "en.UTF-8 English_Australia" \
+			"15" "en_US.UTF-8 English_America" \
 			"16" "et_EE.UTF-8 Estonian_Estonia" \
 			"17" "fa_IR.UTF-8 Farsi_Iran" \
 			"18" "fil_PH.UTF-8 Filipino_Philippines" \
