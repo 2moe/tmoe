@@ -743,10 +743,9 @@ tmoe_locales_settings() {
 			"59" "tl.UTF-8 Philippines" \
 			"60" "ta_IN.UTF-8 English_Australia" \
 			"61" "th_TH.UTF-8 Thai_Thailand" \
-			"62" "mi_NZ.UTF-8 Maori" \
-			"63" "tr_TR.UTF-8 Turkish_Turkey" \
-			"64" "uk_UA.UTF-8 Ukrainian_Ukraine" \
-			"65" "vi_VN.UTF-8 Vietnamese_Vietnam" \
+			"62" "tr_TR.UTF-8 Turkish_Turkey" \
+			"63" "uk_UA.UTF-8 Ukrainian_Ukraine" \
+			"63" "vi_VN.UTF-8 Vietnamese_Vietnam" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -813,10 +812,9 @@ tmoe_locales_settings() {
 	59) TMOE_LANG='tl.UTF-8' ;;
 	60) TMOE_LANG='ta_IN.UTF-8' ;;
 	61) TMOE_LANG='th_TH.UTF-8' ;;
-	62) TMOE_LANG='mi_NZ.UTF-8' ;;
-	63) TMOE_LANG='tr_TR.UTF-8' ;;
-	64) TMOE_LANG='uk_UA.UTF-8' ;;
-	65) TMOE_LANG='vi_VN.UTF-8' ;;
+	62) TMOE_LANG='tr_TR.UTF-8' ;;
+	63) TMOE_LANG='uk_UA.UTF-8' ;;
+	64) TMOE_LANG='vi_VN.UTF-8' ;;
 	esac
 	###############
 	mkdir -p ${HOME}/.config/tmoe-linux
