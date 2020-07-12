@@ -684,7 +684,7 @@ tmoe_locale_settings() {
 	else
 		TMOE_LANG="en_US.UTF-8"
 	fi
-	TMOE_LOCALE_STATUS="You current locale/lang is ${TMOE_LANG}"
+	TMOE_LOCALE_STATUS="Your current lang/locale is ${TMOE_LANG}"
 	#######################
 	CONTAINER_LOCALE=$(
 		whiptail --title "LOCALE SETTINGS" \
@@ -889,6 +889,7 @@ tmoe_locale_settings() {
 		fi
 	fi
 	#############
+	echo "${RED}Congratulations${RESET},your current lang/locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
 	press_enter_to_return
 	#tmoe_manager_main_menu
 	tmoe_locale_settings
@@ -1001,7 +1002,7 @@ install_gnu_linux_container() {
 
 			echo "${YELLOW}检测到您已安装GNU/Linux容器,是否重新安装？[Y/n]${RESET} "
 			echo "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
-			echo "Detected that you have debian installed, do you want to reinstall it?[Y/n]"
+			echo "Detected that you have GNU/Linux container installed, do you want to reinstall it?[Y/n]"
 			read opt
 			case $opt in
 			y* | Y* | "")

@@ -700,15 +700,15 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
-if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
+TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+if [ -e "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
 	mkdir -p ${TMOE_LOCALE_PATH}
-	cp ${HOME}/.config/tmoe-linux/locale.txt ${TMOE_LOCALE_PATH}
-	TMOE_LANG=$(cat ${TMOE_LOCALE_PATH}/locale.txt | head -n 1)
+	cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_PATH}
+	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
 	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi
-
 ########################
 #配置zsh
 curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
