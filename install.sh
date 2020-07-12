@@ -701,9 +701,10 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 fi
 ########
 if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
-	mkdir -p ./.config/tmoe-linux
-	cp ${HOME}/.config/tmoe-linux/locale.txt ./.config/tmoe-linux/locale.txt
-	TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+	TMOE_LOCALE_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+	mkdir -p ${TMOE_LOCALE_PATH}
+	cp ${HOME}/.config/tmoe-linux/locale.txt ${TMOE_LOCALE_PATH}
+	TMOE_LANG=$(cat ${TMOE_LOCALE_PATH}/locale.txt | head -n 1)
 	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
 	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi

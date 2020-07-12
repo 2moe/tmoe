@@ -419,48 +419,14 @@ check_dependencies() {
 			fi
 		fi
 	fi
-
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			if [ ! $(command -v add-apt-repository) ]; then
-				apt install -y software-properties-common
-			fi
-			if ! grep -q "^zh_CN" "/etc/locale.gen"; then
-				apt install -y language-pack-zh-hans 2>/dev/null
-			fi
-		fi
-		if [ ! -e "/usr/sbin/locale-gen" ]; then
-			apt install -y locales
-		fi
-	fi
-
-	if ! grep -q "^zh_CN" "/etc/locale.gen"; then
-		sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-		if ! grep -q "^zh_CN" "/etc/locale.gen"; then
-			echo '' >>/etc/locale.gen
-			sed -i '$ a\zh_CN.UTF-8 UTF-8' /etc/locale.gen
-		fi
-		locale-gen
-	fi
-
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WINDOWSDISTRO='WSL'
 	fi
 	##############
 	CurrentLANG=$LANG
+	TMOE_LOCALE_SETTINGS
 	#export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
 	#20200711為解決多區域設定問題，故不設定語言
-	if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
-		TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
-		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-		cd /usr/local/bin
-		if grep -q '\^zh_CN' $(command -v debian-i); then
-			sed -i "s@en_US@${TMOE_LANG_HALF}@" debian-i
-		else
-			sed -i "s@en_US@${TMOE_LANG_HALF}@" debian-i
-		fi
-	fi
 	tmoe_linux_tool_menu
 }
 ####################################################
@@ -477,6 +443,51 @@ download_busybox_deb() {
 	rm -rvf busybox busybox-static busybox.deb
 }
 ######################
+TMOE_LOCALE_SETTINGS() {
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		#cd /usr/local/bin
+		#if grep -q '\^zh_CN' $(command -v debian-i); then
+		#	sed -i "s@en_US@${TMOE_LANG_HALF}@" debian-i
+		#else
+		#	sed -i "s@en_US@${TMOE_LANG_HALF}@" debian-i
+		#fi
+	else
+		TMOE_LANG="en_US.UTF-8"
+		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	fi
+
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			if [ ! $(command -v add-apt-repository) ]; then
+				apt install -y software-properties-common
+			fi
+			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+			fi
+		fi
+		if [ ! -e "/usr/sbin/locale-gen" ]; then
+			apt install -y locales
+		fi
+	fi
+
+	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+		cd /etc
+		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
+		if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+			echo '' >>locale.gen
+			sed -i 's@^@#@g' locale.gen 2>/dev/null
+			sed -i 's@##@#@g' locale.gen 2>/dev/null
+			sed -i "$ a ${TMOE_LANG}" locale.gen
+		fi
+		locale-gen ${TMOE_LANG}
+	fi
+}
+#####################
 check_tmoe_linux_desktop_link() {
 	if [ ! -e "/usr/share/applications/tmoe-linux.desktop" ]; then
 		curl -Lv -o /usr/share/icons/tmoe-linux.png 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/icon.png'
@@ -533,9 +544,9 @@ tmoe_linux_tool_menu() {
 	#if [ "${CurrentLANG}" != $(echo 'emhfQ04uVVRGLTgK' | base64 -d) ]; then
 	#	export LANG=C.UTF-8
 	#fi
-	if [ ! -z "${CurrentLANG}" ]; then
-		export LANG=${CurrentLANG}
-	fi
+	#if [ ! -z "${CurrentLANG}" ]; then
+	#	export LANG=${CurrentLANG}
+	#fi
 	check_tmoe_linux_desktop_link
 	case "${TMOE_OPTION}" in
 	0 | "")
@@ -2848,8 +2859,9 @@ configure_x11vnc_remote_desktop_session() {
 		stopx11vnc
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
-		if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
-		    TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+		if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		    TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 		    export LANG="${TMOE_LANG}"
 		else
 		    export LANG="en_US.UTF-8"
@@ -7870,8 +7882,9 @@ configure_startxsdl() {
 			fi
 			sleep 2
 		fi
-		if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
-		    TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+		if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		    TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 		    export LANG="${TMOE_LANG}"
 		else
 		    export LANG="en_US.UTF-8"
@@ -7935,8 +7948,9 @@ configure_startvnc() {
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
-		if [ -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
-		    TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt | head -n 1)
+		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+		if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		    TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 		    export LANG="${TMOE_LANG}"
 		else
 		    export LANG="en_US.UTF-8"

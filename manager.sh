@@ -866,6 +866,10 @@ tmoe_locales_settings() {
 	fi
 	#cd ${TMOE_SCRIPT_PATH}/etc
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
+		mkdir -p /usr/local/etc/tmoe-linux/
+		cd /usr/local/etc/tmoe-linux/
+		cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
+		chmod +r locale.txt
 		cd /etc
 		sed -i 's@^@#@g' locale.gen 2>/dev/null
 		sed -i 's@##@#@g' locale.gen 2>/dev/null
