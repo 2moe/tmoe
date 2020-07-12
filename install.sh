@@ -702,9 +702,9 @@ fi
 ########
 TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
 if [ -e "${TMOE_LOCALE_FILE}" ]; then
-	TMOE_LOCALE_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-	mkdir -p ${TMOE_LOCALE_PATH}
-	cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_PATH}
+	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+	mkdir -p ${TMOE_LOCALE_NEW_PATH}
+	cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
 	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
 	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
@@ -991,7 +991,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	sed -i 's/^/#&/g' /etc/default/locale
 	sed -i 's/##/#/g' /etc/default/locale
-	if [ ! -e "${HOME}/.config/tmoe-linux/locale.txt" ]; then
+	if [ ! -e "/usr/local/etc/tmoe-linux" ]; then
 	echo "Configuring Chinese environment..."
 	#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
@@ -1003,7 +1003,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#locale-gen
 	locale-gen zh_CN.UTF-8
 	else
-	TMOE_LANG=$(cat ${HOME}/.config/tmoe-linux/locale.txt |head -n 1)
+	TMOE_LANG=$(cat /usr/local/etc/tmoe-linux |head -n 1)
 	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
 	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	echo "Configuring ${TMOE_LANG_HALF} environment..."

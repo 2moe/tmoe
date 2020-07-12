@@ -835,7 +835,8 @@ tmoe_locale_settings() {
 		TMOE_SCRIPT_PATH=${DEBIAN_CHROOT}
 	else
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			echo "Detected that you have not installed a container."
+			#echo "Detected that you have not installed a container."
+			echo "${RED}Congratulations${RESET},your current lang/locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
 			press_enter_to_return
 			tmoe_manager_main_menu
 		else
@@ -860,11 +861,12 @@ tmoe_locale_settings() {
 	if grep -q 'LANG' locale; then
 		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
 		sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
-		source locale
+		source ./locale
 	else
 		if [ "$(pwd)" != "${HOME}" ]; then
 			cp locale locale.bak 2>/dev/null
 			sed -i 's@^@#&@g' locale
+			sed -i 's@##@#@g' locale
 			cat >>locale <<-EOF
 				LANG="${TMOE_LANG_HALF}.UTF-8"
 				LANGUAGE="${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}"
