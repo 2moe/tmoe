@@ -16,20 +16,20 @@ You can also run Gentoo, Arch and other systems in WSL.
 🍸 目前支持的容器：
 Supported containers:
 
-- [x] **Debian buster/sid**
-- [x] **Ubuntu 20.04**
+- [x] **Debian stable+sid**
+- [x] **Ubuntu LTS + dev**
 - [x] **Kali rolling**
 - [x] **Arch**
-- [x] **Fedora 31**
-- [x] **CentOS 8**
+- [x] **Fedora**
+- [x] **CentOS**
 - [x] **Gentoo**
 - [x] **Funtoo**
 - [x] **Alpine edge**
 - [x] **OpenSUSE tumbleweed**
 - [x] **Void**
-- [x] **Raspbian buster**
-- [x] **Mint tricia**
-- [x] **Devuan ascii**
+- [x] **Raspbian**
+- [x] **Mint**
+- [x] **Devuan**
 - [x] **Slackware**
 - [x] **Armbian**  
        ✨ 安装完容器后，还能自动执行其它优化步骤。🍹  
@@ -42,6 +42,9 @@ Supported containers:
 Support one-key graphical user interface installation.
 
 ![截图_2020-02-01_08-53-21.jpg](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)
+
+![Screenshot_20200712-084151_1.png](https://i.loli.net/2020/07/12/cwFIHjgyimpd5QN.png)
+![Screenshot_20200711-155224.png](https://i.loli.net/2020/07/12/pSwVqvWy7mH5LP1.png)
 
 🍸 Supported GUI/DE 目前支持的桌面环境：
 
@@ -131,16 +134,16 @@ _**If you do not live in China, please enter**_
 
 ```shell
     sudo apt update
-    sudo apt install -y wget
-    bash -c "$(wget -O- git.io/linux.sh)"
+    sudo apt install -y curl
+    bash -c "$(curl -L git.io/linux.sh)"
 ```
 
 _**如果你在国内,那么请输**_
 
 ```shell
     sudo apt update
-    sudo apt install -y wget
-    bash -c "$(wget -O- l.tmoe.me)"
+    sudo apt install -y curl
+    bash -c "$(curl -L l.tmoe.me)"
 ```
 
 > 注:前后两者调用的内容是不一样的，二选一即可。  
@@ -205,13 +208,13 @@ Finally, press Enter and arrow keys to operate.
 _**If you do not live in China, please enter**_
 
 ```shell
-    bash -c "$(curl -L https://git.io/linux.sh)"
+    . <(curl -L git.io/linux.sh)
 ```
 
 _**如果你在国内,那么请输**_
 
 ```shell
-    bash -c "$(curl -L l.tmoe.me)"
+    . <(curl -L l.tmoe.me)
 ```
 
 > 3-EN.Goto Google Play,then install [VNC client](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) or [X server](https://play.google.com/store/apps/details?id=x.org.server)
@@ -668,3 +671,70 @@ nano $(which startvnc)
 - 手机预览截图见下
   ![Screenshot_20200514-024023_1.png](https://i.loli.net/2020/05/14/T5wyZtisuJUIX3x.png)
   -2.加入最新的 ubuntu20.10 容器
+
+##### 2020-05-20 更新日志
+
+- 1.支持安装 wine、anbox 和 aqemu
+- 2.增加 iso 镜像文件下载功能，支持自动获取 android_x86 镜像，支持下载各个架构的 debian iso 镜像(包含 non-free 固件)，以及各个 ubuntu 的衍生版
+- 3.增加烧录 iso 文件至 U 盘的功能
+- 4.支持安装 linux 版百度输入法，此前已经支持讯飞和搜狗输入法。
+- 5.增加 tmoe-deb 软件包安装器，支持在脚本内选择并安装 deb 文件。deb 系发行版使用此功能会自动解决依赖关系，但非 deb 系不会。
+
+##### 2020-05-21 更新日志
+
+- 1.全面升级换源功能，支持选择多个镜像站。debian,ubuntu,kali,arch,manjaro,fedora 和 alpine 可以单独使用换源功能。
+
+##### 2020-05-22 更新日志
+
+- 1.修复 Ubuntu20.10 存在的各种问题。
+- 2.修复 arm64 架构上的[Rocket1184/electron-netease-cloud-music](https://github.com/Rocket1184/electron-netease-cloud-music)
+- ![163music](https://images.gitee.com/uploads/images/2020/0522/221902_3490dfd0_5617340.png "截图_2020-05-22_21-43-28.png")
+
+- 3.镜像站支持测延迟+测速，支持强制信任软件源，去除多余行，一键切换 http/https。
+- 除了主要源外，还支持配置额外源。对于不同的发行版，显示的额外源是不同的。对于 debian,显示的是切换为 kali 源。对于 arch，显示的是配置 archlinux-cn 源。对于 centos，显示的是 epel 源。
+
+##### 2020-05-23 更新日志
+
+- 1.修复 code-server
+
+##### 2020 年 05 月末 更新日志
+
+- 1.加入 qemu 配置功能，支持高度的自定义配置。
+- 以 CPU 这一块为例，支持配置 cpu 核心数，cpu 类型，加速类型，多线程。
+- 其中仅 x86_64 架构就可选 200 多种 CPU 类型。
+- 除了 x86_64 架构外，还适配了 arm64 架构。
+- 除此之外，还支持运行内存分配，多虚拟机管理，磁盘文件管理，配置共享文件夹和端口映射等虚拟机常见功能。
+- 支持自由选择声卡，显卡和网卡，以及 bios 文件。
+- 支持下载 demo 镜像，能在宿主机为安卓的设备上快速运行 docker 容器。
+
+-目前暂不支持的功能： 1.虚拟机显卡硬件直通（需要双显卡，我没有测试条件） 2.快照管理（请自行在 qemu monitor 里管理 snapshoots）
+
+##### 2020-06-01 更新日志
+
+- 1.支持修改 uefi 开机启动项,备份和恢复 efi 分区。
+
+##### 2020-06-02 更新日志
+
+- 1.qemu 虚拟机增加 virtio 磁盘的配置选项。
+
+##### 2020-06-03 更新日志
+
+- 1.修复 qemu 在 VNC 远程桌面环境下无法调用音频的问题
+- 2.更新 Tmoe 文件选择器，自动重定向文件路径。
+
+##### 2020-06-05 更新日志
+
+- 1.支持配置显示管理器 (Display manager)
+
+##### 2020 年 06 月上旬 更新日志
+
+- 1.增加更多系统配置选项，例如配置时间同步服务，开机自启脚本和管理 sudo 用户组等。
+- 2.增加 Debian 配置 Ubuntu ppa 软件源的功能。Debian 使用原版的 add-apt-repository 存在某些弊端，例如添加 gpg 密钥失败，而此功能的目的就是解决这些问题。
+- 填写完 ppa 源名称后，会自动检测 launchpad 中该软件描述页面的 gpg 密钥，并添加。接着，需要指定 ubuntu 版本代号，完成后会自动修改软件源列表。
+- 此功能对于 ubuntu 同样有效，经测试部分 ppa 软件源不包含 ubuntu 20.10 groovy 的仓库，此功能可以帮你解决手动修改/etc/apt/sources.list.d/中相关软件源列表的烦恼。
+
+##### 2020 年 07 月上旬 更新日志
+
+- 1.修复 qemu 模板仓库
+- 2.支持更多的 debian 容器版本，自动检测 debian12 bookworm 等未发布版本。
+- 3.多区域/语言环境配置

@@ -2204,6 +2204,9 @@ install_debian_or_download_recovery_pkg_tar_xz() {
 
 ###################################################
 git_clone_tmoe_linux_container_file() {
+	if [ ! $(command -v debian-i) ]; then
+		aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
+	fi
 	TMOE_TRUE_TEMP_FOLDER='.TMOE_LINUX_CONTAINER_TEMP_FOLDER'
 	mkdir -p ${TMOE_TRUE_TEMP_FOLDER}
 	cd ${TMOE_TRUE_TEMP_FOLDER}
