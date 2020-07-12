@@ -660,7 +660,7 @@ tmoe_manager_main_menu() {
 	0 | "") exit 0 ;;
 	1) install_proot_container ;;
 	2) install_chroot_container ;;
-	3) tmoe_locales_settings ;;
+	3) tmoe_locale_settings ;;
 	4) termux_install_xfce ;;
 	5) frequently_asked_questions ;;
 	6) install_web_novnc ;;
@@ -677,10 +677,18 @@ tmoe_manager_main_menu() {
 	esac
 }
 ##########################
-tmoe_locales_settings() {
+tmoe_locale_settings() {
+	TMOE_LOCALE_FILE=${HOME}/.config/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+	else
+		TMOE_LANG="en_US.UTF-8"
+	fi
+	TMOE_LOCALE_STATUS="You current locale/lang is ${TMOE_LANG}"
+	#######################
 	CONTAINER_LOCALE=$(
-		whiptail --title "locales" \
-			--menu "LOCALE SETTINGS" 0 0 0 \
+		whiptail --title "LOCALE SETTINGS" \
+			--menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
 			"00" "Back 返回" \
 			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
 			"02" "sq_AL.UTF-8 Albanian_Albania" \
@@ -882,7 +890,8 @@ tmoe_locales_settings() {
 	fi
 	#############
 	press_enter_to_return
-	tmoe_manager_main_menu
+	#tmoe_manager_main_menu
+	tmoe_locale_settings
 }
 #####################
 vnc_can_not_call_pulse_audio() {

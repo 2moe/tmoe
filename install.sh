@@ -966,8 +966,19 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    apt install -y locales 2>/dev/null
 	fi
 
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	else
+		TMOE_LANG="en_US.UTF-8"
+		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	fi
+
 	if grep -q 'ubuntu' /etc/os-release; then
-	    apt install -y language-pack-zh-hans
+	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
 
 	echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
