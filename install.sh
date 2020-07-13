@@ -242,14 +242,14 @@ if [ ! -f ${DebianTarXz} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
 		echo "正在从清华大学开源镜像站下载容器镜像"
 		echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
-		ttime=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-			aria2c -x 5 -k 1M --split 5 -o $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz"
+			aria2c -x 5 -k 1M --split 5 -o ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}/rootfs.tar.xz"
 		else
-			wget -O $DebianTarXz "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz"
+			wget -O ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}/rootfs.tar.xz"
 		fi
 	else
-		aria2c -x 16 -k 1M --split 16 -o $DebianTarXz 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+		aria2c -x 16 -k 1M --split 16 -o ${DebianTarXz} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
 	fi
 fi
 cur=$(pwd)
@@ -992,34 +992,34 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	sed -i 's/^/#&/g' /etc/default/locale
 	sed -i 's/##/#/g' /etc/default/locale
 	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
-	echo "Configuring Chinese environment..."
-	#sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
-	sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
-	cat >>/etc/default/locale <<-'EOF'
+	  echo "Configuring Chinese environment..."
+	  #sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
+	  sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+	  cat >>/etc/default/locale <<-'EOF'
 			LANG="en_US.UTF-8"
 			LANGUAGE="en_US:zh"
 			LC_ALL="en_US.UTF-8"
 		EOF
-	#locale-gen
-	locale-gen zh_CN.UTF-8
+	  #locale-gen
+	  locale-gen zh_CN.UTF-8
 	else
-	TMOE_LANG=$(cat /usr/local/etc/tmoe-linux/locale.txt |head -n 1)
-	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-	echo "Configuring ${TMOE_LANG_HALF} environment..."
-	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
-	cat >>/etc/default/locale <<-EOF
+	  TMOE_LANG=$(cat /usr/local/etc/tmoe-linux/locale.txt | head -n 1)
+	  TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+	  TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	  echo "Configuring ${TMOE_LANG_HALF} environment..."
+	  sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
+	  cat >>/etc/default/locale <<-EOF
 			LANG="${TMOE_LANG}"
 			LANGUAGE="${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}"
 			LC_ALL="${TMOE_LANG}"
 		EOF
-		if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
-	        sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
-			echo '' >>/etc/locale.gen
-			sed -i "$ a\${TMOE_LANG} UTF-8" /etc/locale.gen
-		fi
-	locale-gen ${TMOE_LANG}
+	  if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
+	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
+	    echo '' >>/etc/locale.gen
+	    sed -i "$ a\${TMOE_LANG} UTF-8" /etc/locale.gen
+	  fi
+	  locale-gen ${TMOE_LANG}
 	fi
 	source /etc/default/locale 2>/dev/null
 	#################
