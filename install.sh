@@ -242,11 +242,11 @@ if [ ! -f ${DebianTarXz} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
 		echo "正在从清华大学开源镜像站下载容器镜像"
 		echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
-		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-			aria2c -x 5 -k 1M --split 5 -o ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}/rootfs.tar.xz"
+			aria2c -x 5 -k 1M --split 5 -o ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
 		else
-			wget -O ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}/rootfs.tar.xz"
+			wget -O ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
 		fi
 	else
 		aria2c -x 16 -k 1M --split 16 -o ${DebianTarXz} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'

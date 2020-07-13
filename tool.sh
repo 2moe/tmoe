@@ -3,6 +3,7 @@
 main() {
 	check_linux_distro
 	check_architecture
+	check_current_user_name_and_group
 	case "$1" in
 	i | -i)
 		tmoe_linux_tool_menu
@@ -73,8 +74,6 @@ check_root() {
 		fi
 		exit 0
 	fi
-	check_linux_distro
-	check_architecture
 	check_dependencies
 }
 #####################
@@ -624,7 +623,7 @@ do_you_want_to_continue() {
 }
 ######################
 different_distro_software_install() {
-	check_current_user_name_and_group
+	#check_current_user_name_and_group
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt update
 		if [ ! -z "${DEPENDENCY_01}" ]; then
@@ -7981,7 +7980,7 @@ configure_startvnc() {
 ###############
 fix_non_root_permissions() {
 	if [ ${HOME} != '/root' ]; then
-		check_current_user_name_and_group
+		#check_current_user_name_and_group
 		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${CURRENT_USER_FILE}的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "${CURRENT_USER_FILE}" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${CURRENT_USER_FILE}" 2>/dev/null
 	fi
@@ -8027,7 +8026,7 @@ first_configure_startvnc() {
 	######################
 	dpkg --configure -a 2>/dev/null
 	if [ ${HOME} != '/root' ]; then
-		check_current_user_name_and_group
+		#check_current_user_name_and_group
 		echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		cd ${HOME}
 		sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".ICEauthority" ".vnc" 2>/dev/null || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .ICEauthority .vnc" 2>/dev/null
@@ -8581,14 +8580,14 @@ beta_features() {
 		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 17 55 8 \
 			"1" "💻container/vm:docker容器,qemu,vbox虚拟机" \
 			"2" "⌨input method:输入法(搜狗,讯飞,百度)" \
-			"3" "🥅network:网络" \
+			"3" "🥅network:网络(网卡驱动,WiFi扫描)" \
 			"4" "📝read:墨纸留香,品味阅读" \
 			"5" "🎬cut video:岁月静好,剪下佳刻" \
 			"6" "🎨paint:融入意境,绘画真谛" \
 			"7" "💾file:文件,浩如烟海" \
 			"8" "👬SNS:进行物质和精神交流的社会活动的app" \
 			"9" "🌼Store&download:繁花似锦,一切皆在此中" \
-			"10" "🔨system:系统" \
+			"10" "🔨system:系统(启动项与用户组管理)" \
 			"11" "🌌tech&edu:科学与教育" \
 			"12" "🍕other:其它类" \
 			"0" "Back to the main menu 返回主菜单" \
@@ -9961,7 +9960,7 @@ start_tmoe_qemu_aarch64_manager() {
 			"4" "CPU管理" \
 			"5" "Display and audio显示与音频" \
 			"6" "RAM运行内存" \
-			"7" "disk manager磁盘管理器" \
+			"7" "💾disk manager磁盘管理器" \
 			"8" "FAQ常见问题" \
 			"9" "exposed ports端口映射/转发" \
 			"10" "network card model网卡" \
@@ -11412,7 +11411,7 @@ modify_qemu_amd64_tmoe_cpu_type() {
 			"345" "vmx-invept" \
 			"346" "vmx-invept-all-context" \
 			"347" "vmx-invept-single-context" \
-			"348" "vmx-invept-single-context" \
+			"348" "vmx-invept-context" \
 			"349" "vmx-invept-single-context-noglobals" \
 			"350" "vmx-invlpg-exit" \
 			"351" "vmx-invpcid-exit" \
@@ -11824,7 +11823,7 @@ modify_qemu_amd64_tmoe_cpu_type() {
 	345) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept" ;;
 	346) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-all-context" ;;
 	347) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-single-context" ;;
-	348) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-single-context" ;;
+	348) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-context" ;;
 	349) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invept-single-context-noglobals" ;;
 	350) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invlpg-exit" ;;
 	351) TMOE_AMD64_QEMU_CPU_TYPE="vmx-invpcid-exit" ;;
@@ -12065,12 +12064,13 @@ enable_tmoe_qemu_cpu_multi_threading() {
 tmoe_qemu_x64_cpu_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_x64_cpu_manager'
 	VIRTUAL_TECH=$(
-		whiptail --title "CPU" --menu "Which configuration do you want to modify?" 15 50 6 \
+		whiptail --title "CPU & RAM" --menu "Which configuration do you want to modify?" 15 50 6 \
 			"1" "CPU cores处理器核心数" \
 			"2" "cpu model/type(型号/类型)" \
-			"3" "multithreading多线程" \
-			"4" "machine机器类型" \
-			"5" "kvm/tcg/xen加速类型" \
+			"3" "RAM运行内存" \
+			"4" "multithreading多线程" \
+			"5" "machine机器类型" \
+			"6" "kvm/tcg/xen加速类型" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -12079,9 +12079,10 @@ tmoe_qemu_x64_cpu_manager() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) modify_qemu_cpu_cores_number ;;
 	2) modify_qemu_amd64_tmoe_cpu_type ;;
-	3) enable_tmoe_qemu_cpu_multi_threading ;;
-	4) modify_qemu_amd64_tmoe_machine_type ;;
-	5) modify_qemu_machine_accel ;;
+	3) modify_qemu_ram_size ;;
+	4) enable_tmoe_qemu_cpu_multi_threading ;;
+	5) modify_qemu_amd64_tmoe_machine_type ;;
+	6) modify_qemu_machine_accel ;;
 	esac
 	###############
 	#-soundhw cs4231a \
@@ -12305,20 +12306,19 @@ start_tmoe_qemu_manager() {
 	fi
 	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
-		whiptail --title "x86_64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
-			"1" "Creat a new VM 新建虚拟机" \
-			"2" "qemu templates repo磁盘与模板在线仓库" \
-			"3" "Multi-VM多虚拟机管理" \
-			"4" "edit script manually手动修改配置脚本" \
-			"5" "FAQ常见问题" \
-			"6" "Display and audio显示与音频" \
-			"7" "disk manager磁盘管理器" \
-			"8" "CPU manager中央处理器管理" \
-			"9" "network网络设定" \
-			"10" "RAM运行内存" \
-			"11" "Input devices输入设备" \
-			"12" "uefi/legacy bios(开机引导固件)" \
-			"13" "extra options额外选项" \
+		whiptail --title "x86_64 qemu虚拟机管理器" --menu "同架构/跨架构模拟运行系统" 17 55 8 \
+			"1" "🍹Creat a new VM 新建虚拟机" \
+			"2" "🏭qemu templates repo磁盘与模板在线仓库" \
+			"3" "🍱Multi-VM多虚拟机管理" \
+			"4" "🥗edit script manually手动修改配置脚本" \
+			"5" "🍤FAQ常见问题" \
+			"6" "🎵Display and audio显示与音频" \
+			"7" "💾disk manager磁盘管理器" \
+			"8" "🍭CPU & RAM 中央处理器与内存管理" \
+			"9" "🧺network网络设定" \
+			"10" "🖱Input devices输入设备" \
+			"11" "🔌uefi/legacy bios(开机引导固件)" \
+			"12" "😋extra options额外选项" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -12334,10 +12334,9 @@ start_tmoe_qemu_manager() {
 	7) tmoe_qemu_disk_manager ;;
 	8) tmoe_qemu_x64_cpu_manager ;;
 	9) modify_tmoe_qemu_network_settings ;;
-	10) modify_qemu_ram_size ;;
-	11) tmoe_qemu_input_devices ;;
-	12) choose_qemu_bios_or_uefi_file ;;
-	13) modify_tmoe_qemu_extra_options ;;
+	10) tmoe_qemu_input_devices ;;
+	11) choose_qemu_bios_or_uefi_file ;;
+	12) modify_tmoe_qemu_extra_options ;;
 	esac
 	###############
 	press_enter_to_return
@@ -12462,7 +12461,7 @@ tmoe_qemu_disk_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_disk_manager'
 	VIRTUAL_TECH=$(
 		whiptail --title "DISK MANAGER" --menu "Which configuration do you want to modify?" 15 50 7 \
-			"1" "choose iso选择启动光盘(CD)" \
+			"1" "💽choose iso选择启动光盘(CD)" \
 			"2" "choose disk选择启动磁盘(IDE)" \
 			"3" "compress压缩磁盘文件(真实大小)" \
 			"4" "expand disk扩容磁盘(最大空间)" \
@@ -12668,14 +12667,14 @@ tmoe_qemu_templates_repo() {
 	LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
 	VIRTUAL_TECH=$(
 		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ\nUEFI与legacy bios为开机引导类型" 0 50 0 \
-			"1" "Explore templates探索共享模板(未开放)" \
-			"2" "alpine(x64,含docker,217M,legacy)" \
-			"3" "Debian buster(arm64+x64,UEFI)" \
-			"4" "Arch_x64(678M,legacy)" \
-			"5" "FreeBSD_x64(500M,legacy)" \
-			"6" "Winserver2008R2数据中心版(x64,2.2G,legacy)" \
-			"7" "Ubuntu kylin优麒麟20.04(x64,1.8G,uefi)" \
-			"8" "LMDE4(linux mint x64,2.7G,legacy)" \
+			"1" "alpine_x64(含docker,217M,legacy)" \
+			"2" "Debian buster_arm64/x64(300M,UEFI)" \
+			"3" "Arch_x64(678M,legacy)" \
+			"4" "FreeBSD_x64(500M,legacy)" \
+			"5" "Winserver2008R2数据中心版_x64(2.2G,legacy)" \
+			"6" "Ubuntu kylin优麒麟20.04_x64(1.8G,uefi)" \
+			"7" "LMDE4_x64(linux mint,2.7G,legacy)" \
+			"8" "Explore templates探索共享模板(未开放)" \
 			"9" "share 分享你的qemu配置(未开放)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -12684,14 +12683,14 @@ tmoe_qemu_templates_repo() {
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
-	1) explore_qemu_configuration_templates ;;
-	2) download_alpine_and_docker_x64_img_file ;;
-	3) download_debian_qcow2_file ;;
-	4) download_arch_linux_qcow2_file ;;
-	5) download_freebsd_qcow2_file ;;
-	6) download_windows_server_2008_data_center_qcow2_file ;;
-	7) download_ubuntu_kylin_20_04_qcow2_file ;;
-	8) download_lmde_4_qcow2_file ;;
+	1) download_alpine_and_docker_x64_img_file ;;
+	2) download_debian_qcow2_file ;;
+	3) download_arch_linux_qcow2_file ;;
+	4) download_freebsd_qcow2_file ;;
+	5) download_windows_server_2008_data_center_qcow2_file ;;
+	6) download_ubuntu_kylin_20_04_qcow2_file ;;
+	7) download_lmde_4_qcow2_file ;;
+	8) explore_qemu_configuration_templates ;;
 	9) share_qemu_conf_to_git_branch_qemu ;;
 	esac
 	press_enter_to_return
@@ -14365,7 +14364,7 @@ input_method_config() {
 	im-config
 	chmod 755 -R .config/fcitx .xprofile
 	if [ ${HOME} != '/root' ]; then
-		check_current_user_name_and_group
+		#check_current_user_name_and_group
 		echo "正在将${HOME}/.config/fcitx和${HOME}/.xprofile的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .config/fcitx .xprofile
 	fi
