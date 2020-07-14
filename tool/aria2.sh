@@ -1682,7 +1682,7 @@ configure_aria2_rpc_server() {
     RETURN_TO_WHERE='configure_aria2_rpc_server'
     #进入aria2配置文件目录
     cd ${TMOE_ARIA2_PATH}
-    TMOE_OPTION=$(whiptail --title "CONFIGURE ARIA2 RPC SERVER" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
+    TMOE_OPTION=$(whiptail --title "2020071412-CONFIGURE ARIA2 RPC SERVER" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
         "1" "One-key conf 初始化一键配置" \
         "2" "process进程管理" \
         "3" "FAQ常见问题" \
@@ -1754,7 +1754,7 @@ tmoe_aria2_systemd() {
         echo "按回车键启动"
         do_you_want_to_continue
         systemctl daemon-reload 2>/dev/null
-        service ${TMOE_DEPENDENCY_SYSTEMCTL} restart || systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL}
+        service ${TMOE_DEPENDENCY_SYSTEMCTL} start || systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL}
         ;;
     2)
         echo "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}或${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来停止"
@@ -1926,6 +1926,9 @@ aria2_restart() {
     pkill aria2c
     echo '正在启动aria2 rpc服务...'
     su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
+    if [ "$(pgrep aria2c)" ]; then
+        service aria2 start
+    fi
 }
 #############
 creat_aria2_hook_script() {
