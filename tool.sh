@@ -5239,6 +5239,118 @@ china_bussiness_mirror_station() {
 	china_bussiness_mirror_station
 }
 ###########
+worldwide_mirror_station() {
+	SOURCE_MIRROR_STATION=""
+	RETURN_TO_WHERE='worldwide_mirror_station'
+	SOURCES_LIST=$(
+		whiptail --title "www.debian.org/mirror/list.html" --menu \
+			"Not only debian,but also ubuntu." 0 50 0 \
+			"00" "Return to previous menu 返回上级菜单" \
+			"01" "Armenia:ftp.am.debian.org" \
+			"02" "Australia:ftp.au.debian.org" \
+			"03" "Austria:ftp.at.debian.org" \
+			"04" "Belarus:ftp.by.debian.org" \
+			"05" "Belgium:ftp.be.debian.org" \
+			"06" "Brazil:ftp.br.debian.org" \
+			"07" "Bulgaria:ftp.bg.debian.org" \
+			"08" "Canada:ftp.ca.debian.org" \
+			"09" "Chile:ftp.cl.debian.org" \
+			"10" "清华:ftp2.cn.debian.org" \
+			"11" "中科大:ftp.cn.debian.org" \
+			"12" "Croatia:ftp.hr.debian.org" \
+			"13" "Czech Republic:ftp.cz.debian.org" \
+			"14" "Denmark:ftp.dk.debian.org" \
+			"15" "El Salvador:ftp.sv.debian.org" \
+			"16" "Estonia:ftp.ee.debian.org" \
+			"17" "France:ftp.fr.debian.org" \
+			"18" "Germany:ftp2.de.debian.org" \
+			"19" "Germany:ftp.de.debian.org" \
+			"20" "Greece:ftp.gr.debian.org" \
+			"21" "香港:ftp.hk.debian.org" \
+			"22" "Hungary:ftp.hu.debian.org" \
+			"23" "Italy:ftp.it.debian.org" \
+			"24" "日本:ftp.jp.debian.org" \
+			"25" "한국:ftp.kr.debian.org" \
+			"26" "Lithuania:ftp.lt.debian.org" \
+			"27" "Mexico:ftp.mx.debian.org" \
+			"28" "Moldova:ftp.md.debian.org" \
+			"29" "Netherlands:ftp.nl.debian.org" \
+			"30" "New Caledonia:ftp.nc.debian.org" \
+			"31" "New Zealand:ftp.nz.debian.org" \
+			"32" "Norway:ftp.no.debian.org" \
+			"33" "Poland:ftp.pl.debian.org" \
+			"34" "Portugal:ftp.pt.debian.org" \
+			"35" "Romania:ftp.ro.debian.org" \
+			"36" "Russia:ftp.ru.debian.org" \
+			"37" "Slovakia:ftp.sk.debian.org" \
+			"38" "Slovenia:ftp.si.debian.org" \
+			"39" "Spain:ftp.es.debian.org" \
+			"40" "Sweden:ftp.fi.debian.org" \
+			"41" "Sweden:ftp.se.debian.org" \
+			"42" "Switzerland:ftp.ch.debian.org" \
+			"43" "自由軟體實驗室:ftp.tw.debian.org" \
+			"44" "Turkey:ftp.tr.debian.org" \
+			"45" "United Kingdom:ftp.is.debian.org" \
+			"46" "United Kingdom:ftp.uk.debian.org" \
+			"47" "United States:ftp.us.debian.org" \
+			3>&1 1>&2 2>&3
+	)
+	########################
+	case "${SOURCES_LIST}" in
+	00 | "") tmoe_sources_list_manager ;;
+	01) SOURCE_MIRROR_STATION='ftp.am.debian.org' ;;
+	02) SOURCE_MIRROR_STATION='ftp.au.debian.org' ;;
+	03) SOURCE_MIRROR_STATION='ftp.at.debian.org' ;;
+	04) SOURCE_MIRROR_STATION='ftp.by.debian.org' ;;
+	05) SOURCE_MIRROR_STATION='ftp.be.debian.org' ;;
+	06) SOURCE_MIRROR_STATION='ftp.br.debian.org' ;;
+	07) SOURCE_MIRROR_STATION='ftp.bg.debian.org' ;;
+	08) SOURCE_MIRROR_STATION='ftp.ca.debian.org' ;;
+	09) SOURCE_MIRROR_STATION='ftp.cl.debian.org' ;;
+	10) SOURCE_MIRROR_STATION='ftp2.cn.debian.org' ;;
+	11) SOURCE_MIRROR_STATION='ftp.cn.debian.org' ;;
+	12) SOURCE_MIRROR_STATION='ftp.hr.debian.org' ;;
+	13) SOURCE_MIRROR_STATION='ftp.cz.debian.org' ;;
+	14) SOURCE_MIRROR_STATION='ftp.dk.debian.org' ;;
+	15) SOURCE_MIRROR_STATION='ftp.sv.debian.org' ;;
+	16) SOURCE_MIRROR_STATION='ftp.ee.debian.org' ;;
+	17) SOURCE_MIRROR_STATION='ftp.fr.debian.org' ;;
+	18) SOURCE_MIRROR_STATION='ftp2.de.debian.org' ;;
+	19) SOURCE_MIRROR_STATION='ftp.de.debian.org' ;;
+	20) SOURCE_MIRROR_STATION='ftp.gr.debian.org' ;;
+	21) SOURCE_MIRROR_STATION='ftp.hk.debian.org' ;;
+	22) SOURCE_MIRROR_STATION='ftp.hu.debian.org' ;;
+	23) SOURCE_MIRROR_STATION='ftp.it.debian.org' ;;
+	24) SOURCE_MIRROR_STATION='ftp.jp.debian.org' ;;
+	25) SOURCE_MIRROR_STATION='ftp.kr.debian.org' ;;
+	26) SOURCE_MIRROR_STATION='ftp.lt.debian.org' ;;
+	27) SOURCE_MIRROR_STATION='ftp.mx.debian.org' ;;
+	28) SOURCE_MIRROR_STATION='ftp.md.debian.org' ;;
+	29) SOURCE_MIRROR_STATION='ftp.nl.debian.org' ;;
+	30) SOURCE_MIRROR_STATION='ftp.nc.debian.org' ;;
+	31) SOURCE_MIRROR_STATION='ftp.nz.debian.org' ;;
+	32) SOURCE_MIRROR_STATION='ftp.no.debian.org' ;;
+	33) SOURCE_MIRROR_STATION='ftp.pl.debian.org' ;;
+	34) SOURCE_MIRROR_STATION='ftp.pt.debian.org' ;;
+	35) SOURCE_MIRROR_STATION='ftp.ro.debian.org' ;;
+	36) SOURCE_MIRROR_STATION='ftp.ru.debian.org' ;;
+	37) SOURCE_MIRROR_STATION='ftp.sk.debian.org' ;;
+	38) SOURCE_MIRROR_STATION='ftp.si.debian.org' ;;
+	39) SOURCE_MIRROR_STATION='ftp.es.debian.org' ;;
+	40) SOURCE_MIRROR_STATION='ftp.fi.debian.org' ;;
+	41) SOURCE_MIRROR_STATION='ftp.se.debian.org' ;;
+	42) SOURCE_MIRROR_STATION='ftp.ch.debian.org' ;;
+	43) SOURCE_MIRROR_STATION='ftp.tw.debian.org' ;;
+	44) SOURCE_MIRROR_STATION='ftp.tr.debian.org' ;;
+	45) SOURCE_MIRROR_STATION='ftp.is.debian.org' ;;
+	46) SOURCE_MIRROR_STATION='ftp.uk.debian.org' ;;
+	47) SOURCE_MIRROR_STATION='ftp.us.debian.org' ;;
+	esac
+	######################################
+	auto_check_distro_and_modify_sources_list
+	worldwide_mirror_station
+}
+#####################################
 tmoe_sources_list_manager() {
 	check_tmoe_sources_list_backup_file
 	SOURCE_MIRROR_STATION=""
@@ -5246,36 +5358,38 @@ tmoe_sources_list_manager() {
 	SOURCES_LIST=$(
 		whiptail --title "software-sources tmoe-manager" --menu \
 			"您想要对软件源进行何种管理呢？" 17 50 9 \
-			"1" "university:国内高校镜像源" \
-			"2" "business:国内商业镜像源" \
-			"3" "ping(镜像站延迟测试)" \
-			"4" "speed(镜像站下载速度测试)" \
-			"5" "+ppa:(🍥debian添加ubuntu ppa源)" \
-			"6" "restore to default(还原默认源)" \
-			"7" "edit list manually(手动编辑)" \
-			"8" "${EXTRA_SOURCE}" \
-			"9" "FAQ(常见问题)" \
-			"10" "http/https" \
-			"11" "delete invalid rows(去除无效行)" \
-			"12" "trust(强制信任软件源)" \
+			"1" "worldwide mirror sites全球镜像站" \
+			"2" "university:国内高校镜像源" \
+			"3" "business:国内商业镜像源" \
+			"4" "ping(镜像站延迟测试)" \
+			"5" "speed(镜像站下载速度测试)" \
+			"6" "+ppa:(🍥debian添加ubuntu ppa源)" \
+			"7" "restore to default(还原默认源)" \
+			"8" "edit list manually(手动编辑)" \
+			"9" "${EXTRA_SOURCE}" \
+			"10" "FAQ(常见问题)" \
+			"11" "http/https" \
+			"12" "delete invalid rows(去除无效行)" \
+			"13" "trust(强制信任软件源)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	########################
 	case "${SOURCES_LIST}" in
 	0 | "") tmoe_linux_tool_menu ;;
-	1) china_university_mirror_station ;;
-	2) china_bussiness_mirror_station ;;
-	3) ping_mirror_sources_list ;;
-	4) mirror_sources_station_download_speed_test ;;
-	5) tmoe_debian_add_ubuntu_ppa_source ;;
-	6) restore_default_sources_list ;;
-	7) edit_sources_list_manually ;;
-	8) add_extra_source_list ;;
-	9) sources_list_faq ;;
-	10) switch_sources_http_and_https ;;
-	11) delete_sources_list_invalid_rows ;;
-	12) mandatory_trust_software_sources ;;
+	1) worldwide_mirror_station ;;
+	2) china_university_mirror_station ;;
+	3) china_bussiness_mirror_station ;;
+	4) ping_mirror_sources_list ;;
+	5) mirror_sources_station_download_speed_test ;;
+	6) tmoe_debian_add_ubuntu_ppa_source ;;
+	7) restore_default_sources_list ;;
+	8) edit_sources_list_manually ;;
+	9) add_extra_source_list ;;
+	10) sources_list_faq ;;
+	11) switch_sources_http_and_https ;;
+	12) delete_sources_list_invalid_rows ;;
+	13) mandatory_trust_software_sources ;;
 	esac
 	##########
 	press_enter_to_return
