@@ -1926,7 +1926,7 @@ aria2_restart() {
     pkill aria2c
     echo '正在启动aria2 rpc服务...'
     su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
-    if [ "$(pgrep aria2c)" ]; then
+    if [ ! "$(pgrep aria2c)" ]; then
         service aria2 start
     fi
 }
