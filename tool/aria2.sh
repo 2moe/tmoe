@@ -1420,6 +1420,7 @@ update_aria2_bt_tracker() {
     echo ${BT_TRACKER_REPO}
     if [ ! -d "trackerslist" ]; then
         git clone --depth=1 ${BT_TRACKER_REPO} trackerslist
+        cd trackerslist
     else
         cd trackerslist
         git reset --hard origin/master
