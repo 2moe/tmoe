@@ -5269,7 +5269,7 @@ worldwide_mirror_station() {
 			"21" "香港:ftp.hk.debian.org" \
 			"22" "Hungary:ftp.hu.debian.org" \
 			"23" "Italy:ftp.it.debian.org" \
-			"24" "日本:ftp.jp.debian.org" \
+			"24" "地球流体電脳倶楽部:ftp.jp.debian.org" \
 			"25" "한국:ftp.kr.debian.org" \
 			"26" "Lithuania:ftp.lt.debian.org" \
 			"27" "Mexico:ftp.mx.debian.org" \
@@ -5868,7 +5868,7 @@ modify_debian_mirror_sources_list() {
 	if [ "${SOURCELISTCODE}" = "sid" ]; then
 		cat >>/etc/apt/sources.list <<-EndOfSourcesList
 			deb http://${SOURCE_MIRROR_STATION}/debian/ sid main contrib non-free
-			deb http://${SOURCE_MIRROR_STATION}/debian/ experimental main contrib non-free
+			#deb http://${SOURCE_MIRROR_STATION}/debian/ experimental main contrib non-free
 		EndOfSourcesList
 	else
 		if [ "${NEW_DEBIAN_SOURCES_LIST}" = "true" ]; then
