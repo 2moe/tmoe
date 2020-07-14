@@ -1915,7 +1915,7 @@ exit 0
 
     #if [ ! -e "/usr/share/applications/ariang.desktop" ]; then
     creat_ariang_script
-    creat_aria_ng_desktop_link
+    #creat_aria_ng_desktop_link
     cd /usr/share/applications/
     creat_aria_ng_desktop_link
     # fi
@@ -2092,7 +2092,7 @@ EOF
 ############
 creat_aria_ng_desktop_link() {
     if [ ! -e "/usr/share/icons/ariang.png" ]; then
-        aria2c --allow-overwrite=true -o /usr/share/icons/ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
+        aria2c --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
     fi
     cat >ariang.desktop <<-'EOF'
 [Desktop Entry]
