@@ -56,6 +56,14 @@ main() {
 	esac
 }
 ################
+check_current_user_name_and_group() {
+	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+	if [ -z "${CURRENT_USER_GROUP}" ]; then
+		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+	fi
+}
+#################
 check_pic_go_sandbox() {
 	if [ $(command -v picgo) ]; then
 		sed -i 's+picgo %U+picgo --no-sandbox %U+' /usr/share/applications/picgo.desktop
@@ -65,12 +73,24 @@ check_pic_go_sandbox() {
 check_root() {
 	if [ "$(id -u)" != "0" ]; then
 		export PATH=${PATH}:/usr/sbin:/sbin
-		if [ $(command -v curl) ]; then
-			sudo -E bash /usr/local/bin/debian-i ||
-				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+		if [ -z ${TMPDIR} ]; then
+			TMPDIR=/tmp
+			mkdir -p ${TMPDIR}
+		fi
+		cd ${TMPDIR}
+		if [ -e ".tmoe-linux-tool.sh" ]; then
+			sudo -E bash .tmoe-linux-tool.sh || su -c "bash .tmoe-linux-tool.sh"
+		elif [ -e "/usr/local/bin/debian-i" ]; then
+			sudo -E bash /usr/local/bin/debian-i
 		else
-			sudo -E bash /usr/local/bin/debian-i ||
+			if [ $(command -v curl) ]; then
+				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			elif [ $(command -v aria2c) ]; then
+				aria2c --allow-overwrite=true -o /tmp/.tmoe-linux-tool.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh
+				bash /tmp/.tmoe-linux-tool.sh
+			else
 				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			fi
 		fi
 		exit 0
 	fi
@@ -684,6 +704,7 @@ tmoe_linux_tool_upgrade() {
 	else
 		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	fi
+	cp -f /usr/local/bin/debian-i /tmp/.tmoe-linux-tool.sh
 	echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	chmod +x /usr/local/bin/debian-i
@@ -2428,6 +2449,7 @@ tmoe_display_manager_systemctl() {
 		systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} || service ${TMOE_DEPENDENCY_SYSTEMCTL} stop
 		;;
 	4)
+		echo "您可以输${GREEN}rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来添加开机自启任务"
 		echo "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
 		systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}
 		if [ "$?" = "0" ]; then
@@ -2437,6 +2459,7 @@ tmoe_display_manager_systemctl() {
 		fi
 		;;
 	5)
+		echo "您可以输${GREEN}rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来禁止开机自启"
 		echo "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
 		systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}
 		if [ "$?" = "0" ]; then
@@ -6226,6 +6249,16 @@ tmoe_download_class() {
 	tmoe_download_class
 }
 ####################
+tmoe_aria2_manager() {
+	if [ "$(command -v aria2-i)" ]; then
+		aria2-i
+	else
+		cd /usr/local/bin/
+		aria2c --allow-overwrite=true -o aria2-i https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh
+		chmod +x aria2-i
+	fi
+}
+#############
 tmoe_documents_menu() {
 	RETURN_TO_WHERE='tmoe_documents_menu'
 	NON_DEBIAN='false'
@@ -8912,6 +8945,7 @@ creat_rc_local_startup_script() {
 exit 0
 ENDOFRCLOCAL
 	chmod +x rc.local
+	systemctl daemon-reload 2>/dev/null
 }
 #################
 creat_rc_local_systemd_script() {
@@ -9992,7 +10026,6 @@ start_tmoe_qemu_aarch64_manager() {
 	${RETURN_TO_WHERE}
 }
 #############
-
 switch_tmoe_qemu_network_card_to_default() {
 	sed -i 's/-net nic.*/-net nic \\/' startqemu
 	echo "已经将默认网卡切换为未指定状态"
@@ -14372,14 +14405,6 @@ input_method_config() {
 	echo "请手动修改键盘布局，并打开fcitx-configtool"
 }
 ####################
-check_current_user_name_and_group() {
-	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
-	if [ -z "${CURRENT_USER_GROUP}" ]; then
-		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
-	fi
-}
-#################
 install_uim_pinyin() {
 	DEPENDENCY_01='uim uim-mozc'
 	DEPENDENCY_02='uim-pinyin'
@@ -15658,7 +15683,6 @@ filebrowser_reset() {
 	rm -vf filebrowser.db
 	filebrowser -d filebrowser.db config init
 }
-
 ###########################################
 main "$@"
-########################################################################
+#######################################################################
