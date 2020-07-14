@@ -657,7 +657,7 @@ tmoe_aria2_logs() {
         TMOE_ARIA2_TIPS='默认为false,建议保持false状态'
         ;;
     03)
-        TMOE_ARIA2_OPTION_01="-"
+        TMOE_ARIA2_OPTION_01='-'
         TMOE_ARIA2_OPTION_02=""
         TMOE_ARIA2_GREP_NAME='log'
         TMOE_ARIA2_TIPS='日志文件的路径. 如果设置为 "-", 日志则写入到 stdout. 如果设置为空字符串(""), 日志将不会记录到磁盘上.'
@@ -2090,6 +2090,9 @@ EOF
 }
 ############
 creat_aria_ng_desktop_link() {
+    if [ ! -e "/usr/share/icons/ariang.png" ]; then
+        aria2c --allow-overwrite=true -o /usr/share/icons/ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
+    fi
     cat >ariang.desktop <<-'EOF'
 [Desktop Entry]
 Type=Application
@@ -2098,7 +2101,7 @@ Name=AriaNg
 Comment=AriaNg, a modern web frontend making aria2 easier to use.
 Keywords=aria2;web-frontend;index;html;download;webgui;javascript;ui;ariang;web
 Exec=/usr/local/bin/startariang
-Icon=wine-internet-explorer
+Icon=/usr/share/icons/ariang.png
 Terminal=false
 Categories=Network;
 EOF
