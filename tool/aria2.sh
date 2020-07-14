@@ -1909,12 +1909,13 @@ exit 0
 	EndOFaria
     chmod +x aria2
     #############
-    if [ ! -e "/usr/local/bin/startariang" ]; then
-        creat_ariang_script
-    fi
+    #if [ ! -e "/usr/local/bin/startariang" ]; then
+    # creat_ariang_script
+    #fi
 
     #if [ ! -e "/usr/share/applications/ariang.desktop" ]; then
     creat_ariang_script
+    creat_aria_ng_desktop_link
     cd /usr/share/applications/
     creat_aria_ng_desktop_link
     # fi
