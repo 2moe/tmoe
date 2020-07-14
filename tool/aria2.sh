@@ -1412,10 +1412,20 @@ EOF
 ################
 update_aria2_bt_tracker() {
     #此处环境变量并非多余
+    TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
     TMOE_ARIA2_FILE='/usr/local/etc/tmoe-linux/aria2/aria2.conf'
     BT_TRACKER_URL='https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt'
-    echo ${BT_TRACKER_URL}
-    list=$(curl -L ${BT_TRACKER_URL} | awk NF | sed ":a;N;s/\n/,/g;ta")
+    BT_TRACKER_REPO='https://github.com/ngosang/trackerslist'
+    cd ${TMOE_ARIA2_PATH}
+    echo ${BT_TRACKER_REPO}
+    if [ ! -d "trackerslist" ]; then
+        git clone --depth=1 ${BT_TRACKER_REPO} trackerslist
+    else
+        cd trackerslist
+        git reset --hard origin/master
+        git pull --depth=1 origin master --allow-unrelated-histories
+    fi
+    list=$(cat ./trackers_all.txt | awk NF | sed ":a;N;s/\n/,/g;ta")
     if grep -q 'bt-tracker=' "${TMOE_ARIA2_FILE}"; then
         sed -i "s@bt-tracker.*@bt-tracker=$list@g" ${TMOE_ARIA2_FILE}
         echo 更新中......
