@@ -100,7 +100,7 @@ tmoe_aria2_manager() {
 
     TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
     TMOE_ARIA2_FILE="${TMOE_ARIA2_PATH}/aria2.conf"
-    if [ -d "${TMOE_ARIA2_PATH}" ]; then
+    if [ ! -e "${TMOE_ARIA2_FILE}" ]; then
         mkdir -p ${TMOE_ARIA2_PATH}
     fi
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${TMOE_ARIA2_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？\n${TMOE_ARIA2_STATUS}\n${TMOE_ARIA2_WARNING}" 0 50); then

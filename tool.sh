@@ -547,7 +547,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200711-07)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529至0603修复qemu部分问题,0618支持解析主题链接,0711修复x64qemu模板仓库内文件" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200714-12)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529至0603修复qemu部分问题,0618支持解析主题链接,0711修复x64qemu模板仓库内文件,0711-0714 aria2配置管理工具" 20 50 7 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -6153,7 +6153,7 @@ other_software() {
 			"5" "🔯Packages&system:软件包与系统管理" \
 			"6" "📚Documents:文档(libreoffice)" \
 			"7" "📘VSCode 现代化代码编辑器" \
-			"8" "🎁Download:下载类(baidu)" \
+			"8" "🎁Download:下载类(aria2,baidu)" \
 			"9" "🥙Start zsh tool:启动zsh管理工具" \
 			"10" "🌚remove:卸载管理" \
 			"0" "Back to the main menu 返回主菜单" \
@@ -6233,7 +6233,7 @@ tmoe_download_class() {
 	TMOE_APP=$(
 		whiptail --title "documents" --menu \
 			"Which software do you want to install?" 0 50 0 \
-			"1" "aria2(linux平台超强文件下载器)" \
+			"1" "🍨aria2(linux平台超强文件下载器)" \
 			"2" "📉百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -6250,13 +6250,12 @@ tmoe_download_class() {
 }
 ####################
 tmoe_aria2_manager() {
-	if [ "$(command -v aria2-i)" ]; then
-		aria2-i
-	else
+	if [ ! "$(command -v aria2-i)" ]; then
 		cd /usr/local/bin/
 		aria2c --allow-overwrite=true -o aria2-i https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh
 		chmod +x aria2-i
 	fi
+	aria2-i
 }
 #############
 tmoe_documents_menu() {
