@@ -1424,7 +1424,7 @@ update_aria2_bt_tracker() {
     else
         cd trackerslist
         git reset --hard origin/master
-        git pull --depth=1 origin master --allow-unrelated-histories
+        git pull || git pull --depth=1 origin master --allow-unrelated-histories
     fi
     list=$(cat ./trackers_all.txt | awk NF | sed ":a;N;s/\n/,/g;ta")
     if grep -q 'bt-tracker=' "${TMOE_ARIA2_FILE}"; then
@@ -1535,7 +1535,7 @@ custom_aria2_config() {
 #############
 #############
 other_tmoe_aria2_conf() {
-    TMOE_OPTION=$(whiptail --title "RROTOCAL" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
+    TMOE_OPTION=$(whiptail --title "其它选项" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
         "1" "update 更新" \
         "2" "DEL conf删除配置文件" \
         "3" "DEL ariang删除AriaNG" \
@@ -1693,7 +1693,7 @@ configure_aria2_rpc_server() {
     RETURN_TO_WHERE='configure_aria2_rpc_server'
     #进入aria2配置文件目录
     cd ${TMOE_ARIA2_PATH}
-    TMOE_OPTION=$(whiptail --title "2020071412-CONFIGURE ARIA2 RPC SERVER" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
+    TMOE_OPTION=$(whiptail --title "Tmoe-aria2-tool 2020071412" --menu "您想要修改哪项配置？输aria2-i启动本工具\nWhich conf do you want to modify?" 0 50 0 \
         "1" "One-key conf 初始化一键配置" \
         "2" "process进程管理" \
         "3" "FAQ常见问题" \
