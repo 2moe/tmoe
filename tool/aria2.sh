@@ -1762,6 +1762,10 @@ tmoe_aria2_systemd() {
         echo "按回车键停止"
         do_you_want_to_continue
         service ${TMOE_DEPENDENCY_SYSTEMCTL} stop || systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL}
+        if [ $(pgrep aria2c) ]; then
+            echo '正在强制停止aria2c'
+            pkill aria2c
+        fi
         ;;
     3)
         echo "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} status${RESET}或${GREEN}systemctl status ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来查看进程状态"
