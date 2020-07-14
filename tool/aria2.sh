@@ -562,8 +562,8 @@ tmoe_aria2_proxy() {
     case "${TMOE_OPTION}" in
     00 | "") configure_aria2_rpc_server ;;
     01)
-        TMOE_ARIA2_OPTION_01='192.168.1.1:8022'
-        TMOE_ARIA2_OPTION_02='192.168.0.1:8088'
+        TMOE_ARIA2_OPTION_01='http://192.168.1.1:8022'
+        TMOE_ARIA2_OPTION_02='http://192.168.0.1:8088'
         TMOE_ARIA2_GREP_NAME='all-proxy'
         TMOE_ARIA2_TIPS='设置所有协议的代理服务器地址. 如果覆盖之前设置的代理服务器, 使用 "" 即可. 您还可以针对特定的协议覆盖此选项, 即使用 --http-proxy, --https-proxy 和 --ftp-proxy 选项. 此设置将会影响所有下载. 代理服务器地址的格式为 [http://][USER:PASSWORD@]HOST[:PORT].'
         ;;
@@ -582,14 +582,14 @@ tmoe_aria2_proxy() {
         TMOE_ARIA2_TIPS='设置用来请求代理服务器的方法. 方法可设置为 GET 或 TUNNEL. HTTPS 下载将忽略此选项并总是使用 TUNNEL.'
         ;;
     05)
-        TMOE_ARIA2_OPTION_01='192.168.1.1'
-        TMOE_ARIA2_OPTION_02='192.168.0.1'
+        TMOE_ARIA2_OPTION_01='http://192.168.1.1'
+        TMOE_ARIA2_OPTION_02='http://192.168.0.1'
         TMOE_ARIA2_GREP_NAME='no-proxy'
         TMOE_ARIA2_TIPS='设置不使用代理服务器的主机名, 域名, 包含或不包含子网掩码的网络地址, 多个使用逗号分隔.'
         ;;
     06)
-        TMOE_ARIA2_OPTION_01='192.168.1.1:8443'
-        TMOE_ARIA2_OPTION_02='192.168.0.1:443'
+        TMOE_ARIA2_OPTION_01='https://192.168.1.1:8443'
+        TMOE_ARIA2_OPTION_02='https://192.168.0.1:443'
         TMOE_ARIA2_GREP_NAME='https-proxy'
         ;;
     07)
