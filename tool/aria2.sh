@@ -1239,8 +1239,8 @@ tmoe_aria2_bt_and_pt() {
         TMOE_ARIA2_TIPS='默认:50K.如果一个 BT 下载的整体下载速度低于此选项设置的值, aria2 会临时提高连接数以提高下载速度. 在某些情况下, 设置期望下载速度可以提高您的下载速度. 您可以增加数值的单位 K 或 M (1K = 1024, 1M = 1024K).'
         ;;
     09)
-        TMOE_ARIA2_OPTION_01="-TR2940-"
-        TMOE_ARIA2_OPTION_02="A2-1-35-0-"
+        TMOE_ARIA2_OPTION_01="\-TR2940-"
+        TMOE_ARIA2_OPTION_02='A2-1-35-0-'
         TMOE_ARIA2_GREP_NAME='peer-id-prefix'
         TMOE_ARIA2_TIPS='Tmoe-linux下的aria2配置默认伪装成Transmission 2.94\n指定节点 ID 的前缀. BT 中节点 ID 长度为 20 字节. 如果超过 20 字节, 将仅使用前 20 字节. 如果少于 20 字节, 将在其后不足随机的数据保证为 20 字节,默认:A2-1-35-0-'
         ;;
