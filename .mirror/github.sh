@@ -19,7 +19,7 @@ sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' inst
 sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ./*sh
 sed -i '/正在配置中文环境/d' install.sh
 sed -i 's@###tmoe-github@@' install.sh zsh.sh
-sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh
+sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh ./tool/*sh
 sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' install.sh zsh.sh
 sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' install.sh zsh.sh
 sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' install.sh zsh.sh

@@ -75,7 +75,7 @@ press_enter_to_return() {
 ################
 upgrade_tmoe_aria2_tool() {
     cd /usr/local/bin
-    curl -Lv -o aria2-i 'https://gitee.com/mo2/linux/raw/master/tool/aria2.sh'
+    curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh'
     chmod +x aria2-i
 }
 ################
@@ -1822,7 +1822,7 @@ tmoe_aria2_onekey() {
     fi
 
     #cp -pvf ${HOME}/gitee/linux-gitee/.config/aria2.conf ./
-    aria2c --allow-overwrite=true -o aria2.conf 'https://gitee.com/mo2/linux/raw/master/.config/aria2.conf'
+    aria2c --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
     if [ -e "/tmp/.Chroot-Container-Detection-File" ] || [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
         echo "检测到您处于${BLUE}chroot/proot容器${RESET}环境下"
         #echo "部分系统可能会出现failed，但仍能正常连接。"
@@ -1907,11 +1907,11 @@ exit 0
     ########################################
     cd ${TMOE_ARIA2_PATH}
     if [ ! -e "dht.dat" ]; then
-        aria2c --allow-overwrite=true -o dht.dat https://gitee.com/mo2/linux/raw/master/.config/dht.dat
+        aria2c --allow-overwrite=true -o dht.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht.dat
         chmod 666 dht.dat
     fi
     if [ ! -e "dht6.dat" ]; then
-        aria2c --allow-overwrite=true -o dht6.dat https://gitee.com/mo2/linux/raw/master/.config/dht6.dat
+        aria2c --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht6.dat
         chmod 666 dht6.dat
     fi
     creat_aria2_hook_script
