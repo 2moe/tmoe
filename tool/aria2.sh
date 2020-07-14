@@ -166,11 +166,11 @@ tmoe_aria2_file() {
     03)
         TMOE_ARIA2_GREP_NAME='file-allocation'
         TMOE_ARIA2_TIPS='默认:prealloc,预分配所需时间: none < falloc ? trunc < prealloc\nfalloc和trunc则需要文件系统和内核支持\n"none" 不会预先分配文件空间;"prealloc"会在下载开始前预先分配空间, 这将会根据文件的大小需要一定的时间。 如果您使用的是较新的文件系统, 例如 ext4 (带扩展支持)、 btrfs、 xfs 或 NTFS (仅 MinGW 构建), "falloc" 是最好的选择。其几乎可以瞬间分配大文件(数 GiB)。\n不要在旧的文件系统, 例如 ext3 和 FAT32 上使用 falloc, 因为该方式与 prealloc 花费的时间相同, 并且它还会在分配完成前阻塞 aria2。\n当您的系统不支持 posix_fallocate(3) 函数时, falloc 可能无法使用。 "trunc" 使用 ftruncate(2)  系统调用或平台特定的实现将文件截取到特定的长度。在多文件的 BitTorrent 下载中, 若某文件与其相邻的文件共享相同的分片时。 则相邻的文件也会被分配.\nwindows(非管理员运行)请勿将选项值改为falloc'
-        TMOE_ARIA2_SETTINGS_MODEL='02'
         TMOE_ARIA2_OPTION_01='none'
         TMOE_ARIA2_OPTION_02='falloc'
         TMOE_ARIA2_OPTION_03='trunc'
         TMOE_ARIA2_OPTION_04='prealloc'
+        TMOE_ARIA2_SETTINGS_MODEL='02'
         ;;
     04)
         TMOE_ARIA2_GREP_NAME='allow-overwrite'
@@ -1086,6 +1086,7 @@ tmoe_aria2_http() {
         TMOE_ARIA2_OPTION_02=""
         TMOE_ARIA2_OPTION_03="feedback"
         TMOE_ARIA2_OPTION_04="adaptive"
+        TMOE_ARIA2_SETTINGS_MODEL='02'
         TMOE_ARIA2_GREP_NAME='uri-selector'
         TMOE_ARIA2_TIPS='指定 URI 选择的算法. 可选的值包括"inorder"(按顺序), "feedback"(反馈） 和 "adaptive"(自适应). 如果设置为"inorder", URI 将按列表中出现的顺序使用. 如果设置为"feedback", aria2 将根据之前的下载速度选择 URI 列表中下载速度最快的服务器. 同时也将有效跳过无效镜像. 之前统计的下载速度将作为服务器状态文件的一部分, 参见 --server-stat-of 和 --server-stat-if 选项. 如果设置为"adaptive", 将从最好的镜像和保留的连接里选择一项. 补充说明, 其返回的镜像没有被测试过, 同时如果每个镜像都已经被测试过时, 返回的镜像还会被重新测试. 否则, 其将不会选择其他镜像. 例如"feedback", 其使用服务器状态文件.'
         ;;
