@@ -77,6 +77,7 @@ upgrade_tmoe_aria2_tool() {
     cd /usr/local/bin
     curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh'
     chmod +x aria2-i
+    bash /usr/local/bin/aria2-i
 }
 ################
 tmoe_aria2_manager() {
