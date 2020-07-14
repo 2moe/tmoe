@@ -6363,13 +6363,22 @@ tmoe_download_class() {
 	tmoe_download_class
 }
 ####################
+download_tmoe_aria2() {
+	cd /usr/local/bin/
+	aria2c --allow-overwrite=true -o aria2-i https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh
+	chmod +x aria2-i
+}
+############
 tmoe_aria2_manager() {
-	if [ ! "$(command -v aria2-i)" ]; then
-		cd /usr/local/bin/
-		aria2c --allow-overwrite=true -o aria2-i https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh
-		chmod +x aria2-i
+	cd /usr/local/bin/
+	FILE_SIZE=$(du -s aria2-i | awk '{print $1}')
+	if ((${FILE_SIZE} < 50)); then
+		download_tmoe_aria2
 	fi
-	aria2-i
+	if [ ! "$(command -v aria2-i)" ]; then
+		download_tmoe_aria2
+	fi
+	bash aria2-i
 }
 #############
 tmoe_documents_menu() {
