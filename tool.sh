@@ -28,6 +28,7 @@ main() {
 		;;
 	passwd | -passwd)
 		set_vnc_passwd
+		check_mouse_cursor
 		#check_libreoffice_patch
 		#check_pic_go_sandbox
 		;;
@@ -56,6 +57,14 @@ main() {
 	esac
 }
 ################
+check_mouse_cursor() {
+	if [ -e "/usr/share/icons/breeze" ]; then
+		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s breeze 2>/dev/null
+	elif [ -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
+		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
+	fi
+}
+############
 check_current_user_name_and_group() {
 	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
 	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
