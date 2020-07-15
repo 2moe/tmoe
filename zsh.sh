@@ -248,6 +248,7 @@ cat /etc/os-release | grep PRETTY_NAME | cut -d '"' -f 2
 			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
 			if grep -q ubuntu '/etc/os-release'; then
 				if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+                    apt update
 					apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 				fi
 			fi
