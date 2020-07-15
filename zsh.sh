@@ -242,19 +242,24 @@ fi
 cd ~
 cat >~/.zlogin <<-'EndOfFile'
 cat /etc/os-release | grep PRETTY_NAME | cut -d '"' -f 2
-locale_gen_tmoe_language() {
-    if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-        cd /etc
-        sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
-        if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
-            echo '' >>locale.gen
-            sed -i 's@^@#@g' locale.gen 2>/dev/null
-            sed -i 's@##@#@g' locale.gen 2>/dev/null
-            sed -i "$ a ${TMOE_LANG}" locale.gen
-        fi
-        locale-gen ${TMOE_LANG}
-    fi
-}
+	locale_gen_tmoe_language() {
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			cd /etc
+			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
+			if grep -q ubuntu '/etc/os-release'; then
+				if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+					apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+				fi
+			fi
+			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+				echo '' >>locale.gen
+				sed -i 's@^@#@g' locale.gen 2>/dev/null
+				sed -i 's@##@#@g' locale.gen 2>/dev/null
+				sed -i "$ a ${TMOE_LANG}" locale.gen
+			fi
+			locale-gen ${TMOE_LANG}
+		fi
+	}
 check_tmoe_locale_file() {
     TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
