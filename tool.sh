@@ -28,8 +28,8 @@ main() {
 		;;
 	passwd | -passwd)
 		set_vnc_passwd
-		check_libreoffice_patch
-		check_pic_go_sandbox
+		#check_libreoffice_patch
+		#check_pic_go_sandbox
 		;;
 	h | -h | --help)
 		cat <<-'EOF'

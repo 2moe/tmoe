@@ -2270,14 +2270,14 @@ check_tmoe_linux_container_rec_pkg_file_and_git() {
 ########################
 debian_sid_arm64_xfce_recovery_package() {
 	echo "即将为您下载至${DOWNLOAD_PATH}"
-	echo '下载大小1.12GB,解压后约占3.9GB'
-	echo "2020-07-11凌晨注：忘记给LibreOffice打补丁了 (ㄒoㄒ)/~~，请在安装完成后使用tmoe-linux tool给libreoffice打补丁"
-	CORRENTSHA256SUM='d6d5604bb5559336921ddb7b1055c742ce6e146a5562e965cb3967055b45f5e8' #DevSkim: ignore DS173237
+	echo '下载大小1.5G,解压后约占5G'
+	#echo "2020-07-11凌晨注：忘记给LibreOffice打补丁了 (ㄒoㄒ)/~~，请在安装完成后使用tmoe-linux tool给libreoffice打补丁"
+	CORRENTSHA256SUM='f838d3151ce9019ecc74c214d5e23952ca9de2a74406a04d457840ebbe0e21e9' #DevSkim: ignore DS173237
 	BRANCH_NAME='arm64'
 	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_sid_rootfs_01'
 	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_sid_rootfs_02'
 	TMOE_LINUX_CONTAINER_REPO_03='https://gitee.com/ak2/debian_sid_rootfs_03'
-	DOWNLOAD_FILE_NAME='debian-sid+xfce4.14-2020-07-10_16-00-rootfs_bak.tar.xz'
+	DOWNLOAD_FILE_NAME='debian-sid_arm64+xfce4.14-2020-07-15_14-06-rootfs_bak.tar.xz'
 	check_tmoe_linux_container_rec_pkg_file_and_git
 }
 ##################
@@ -2306,7 +2306,7 @@ install_debian_sid_gnu_linux_container() {
 	DISTRO_CODE='sid'
 	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
 		"1" "netinstall(通过软件源在线安装)" \
-		"2" "arm64 xfce4.14桌面+音乐app,1.13G-20200710" \
+		"2" "arm64 xfce4.14桌面+音乐app,1.1G-20200715" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -2483,6 +2483,18 @@ verify_sha256sum() {
 	fi
 }
 ##########################
+copy_tmoe_locale_file_to_container() {
+	TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+		mkdir -p ${TMOE_LOCALE_NEW_PATH}
+		cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+		PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+		sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
+	fi
+}
+########################
 un_xz_debian_recovery_kit() {
 	echo "正在解压${DOWNLOAD_FILE_NAME}，Decompressing recovery package, please be patient."
 	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
@@ -2506,6 +2518,7 @@ un_xz_debian_recovery_kit() {
 	#echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 	#echo "When prompted for a view-only password, it is recommended that you enter 'n'"
 	#echo '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
+	copy_tmoe_locale_file_to_container
 	echo '请输入6至8位的VNC密码'
 	switch_termux_rootfs_to_linux
 	source ${PREFIX}/bin/startvnc
