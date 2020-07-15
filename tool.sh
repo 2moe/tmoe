@@ -59,7 +59,7 @@ main() {
 ################
 check_mouse_cursor() {
 	if [ -e "/usr/share/icons/breeze" ]; then
-		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s breeze 2>/dev/null
+		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s breeze_cursors 2>/dev/null
 	elif [ -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 	fi
