@@ -212,13 +212,13 @@ tmoe_aria2_file() {
         ;;
     13)
         TMOE_ARIA2_GREP_NAME='keep-unfinished-download-result'
-        TMOE_ARIA2_TIPS='保留所有未完成的下载结果, 即使超过了 --max-download-result 选项设置的数量. 这将有助于在会话文件中保存所有的未完成的下载 (参考 --save-session 选项). 需要注意的是, 未完成任务的数量没有上限. 如果不希望这样, 请关闭此选项.'
+        TMOE_ARIA2_TIPS='即使超过了 --max-download-result 选项设置的数量，仍保留所有未完成的下载结果,. 这将有助于在会话文件中保存所有的未完成的下载 (参考 --save-session 选项). 需要注意的是, 未完成任务的数量没有上限. 如果不希望这样, 请关闭此选项.'
         ;;
     14)
         TMOE_ARIA2_OPTION_01="1000"
         TMOE_ARIA2_OPTION_02="1"
         TMOE_ARIA2_GREP_NAME='max-download-result'
-        TMOE_ARIA2_TIPS='设置内存中存储最多的下载结果数量. 下载结果包括已完成/错误/已删除的下载. 下载结果存储在一个先进先出的队列中, 因此其可以存储最多指定的下载结果的数量. 当队列已满且有新的下载结果创建时, 最老的下载结果将从队列的最前部移除, 新的将放在最后. 此选项设置较大的值后如果经过几千次的下载将导致较高的内存消耗. 设置为 0 表示不存储下载结果. 注意, 未完成的下载将始终保存在内存中, 不考虑该选项的设置. 参考 --keep-unfinished-download-result 选项.'
+        TMOE_ARIA2_TIPS='设置内存中存储最多的下载结果数量. 下载结果包括已完成/错误/已删除的下载. 下载结果存储在一个先进先出的队列中, 因此其可以存储最多指定的下载结果的数量. 当队列已满且有新的下载结果创建时, 最早的下载结果将从队列的最前部移除, 新的将放在最后. 此选项设置较大的值后如果经过几千次的下载将导致较高的内存消耗. 设置为 0 表示不存储下载结果. 注意, 未完成的下载将始终保存在内存中, 不考虑该选项的设置. 参考 --keep-unfinished-download-result 选项.'
         ;;
     15)
         TMOE_ARIA2_OPTION_01="9223372036854775807"
@@ -236,7 +236,7 @@ tmoe_aria2_file() {
         TMOE_ARIA2_OPTION_01="5M"
         TMOE_ARIA2_OPTION_02="10M"
         TMOE_ARIA2_GREP_NAME='no-file-allocation-limit'
-        TMOE_ARIA2_TIPS='不对比此参数设置大小小的分配文件. 您可以增加数值的单位 K 或 M (1K = 1024, 1M = 1024K).'
+        TMOE_ARIA2_TIPS='不分配尺寸小于该参数值的文件. 您可以增加数值的单位 K 或 M (1K = 1024, 1M = 1024K).'
         ;;
     18)
         TMOE_ARIA2_GREP_NAME='no-conf'
@@ -562,7 +562,7 @@ tmoe_aria2_proxy() {
     case "${TMOE_OPTION}" in
     00 | "") configure_aria2_rpc_server ;;
     01)
-        TMOE_ARIA2_OPTION_01='http://192.168.1.1:8022'
+        TMOE_ARIA2_OPTION_01='http://192.168.1.1:7890'
         TMOE_ARIA2_OPTION_02='http://192.168.0.1:8088'
         TMOE_ARIA2_GREP_NAME='all-proxy'
         TMOE_ARIA2_TIPS='设置所有协议的代理服务器地址. 如果覆盖之前设置的代理服务器, 使用 "" 即可. 您还可以针对特定的协议覆盖此选项, 即使用 --http-proxy, --https-proxy 和 --ftp-proxy 选项. 此设置将会影响所有下载. 代理服务器地址的格式为 [http://][USER:PASSWORD@]HOST[:PORT].'
