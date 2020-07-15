@@ -6371,10 +6371,13 @@ download_tmoe_aria2() {
 ############
 tmoe_aria2_manager() {
 	cd /usr/local/bin/
-	FILE_SIZE=$(du -s aria2-i | awk '{print $1}')
-	if ((${FILE_SIZE} < 50)); then
-		download_tmoe_aria2
+	if [ -e "aria2-i" ]; then
+		FILE_SIZE=$(du -s aria2-i | awk '{print $1}')
+		if ((${FILE_SIZE} < 50)); then
+			download_tmoe_aria2
+		fi
 	fi
+
 	if [ ! "$(command -v aria2-i)" ]; then
 		download_tmoe_aria2
 	fi

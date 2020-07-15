@@ -716,7 +716,35 @@ chmod u+x ./*
 #vnc自动启动
 cat >vnc-autostartup <<-'EndOfFile'
 	cat /etc/issue
+	locale_gen_tmoe_language() {
+	    if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+	        cd /etc
+	        sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
+	        if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+	            echo '' >>locale.gen
+	            sed -i 's@^@#@g' locale.gen 2>/dev/null
+	            sed -i 's@##@#@g' locale.gen 2>/dev/null
+	            sed -i "$ a ${TMOE_LANG}" locale.gen
+	        fi
+	        locale-gen ${TMOE_LANG}
+	    fi
+	}
+	check_tmoe_locale_file() {
+	    TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+	        TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+	        TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+	        TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	        locale_gen_tmoe_language
+	    fi
+	}
 
+	if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
+	    check_tmoe_locale_file
+	    curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	    chmod +x /usr/local/bin/debian-i
+	    /usr/local/bin/debian-i passwd
+	fi
 	grep  'cat /etc/issue' ~/.bashrc >/dev/null 2>&1 || sed -i '1 a\cat /etc/issue' ~/.bashrc
 	if [ -f "/root/.vnc/startvnc" ]; then
 		/usr/local/bin/startvnc
