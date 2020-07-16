@@ -6394,7 +6394,7 @@ install_nodejs() {
 	if [ ! $(command -v node) ]; then
 		DEPENDENCY_02="nodejs"
 	fi
-	if [ ! -z "${DEPENDENCY_01}" ] && [ ! -z "${DEPENDENCY_02}" ]; then
+	if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
 		beta_features_quick_install
 	fi
 

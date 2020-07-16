@@ -168,7 +168,7 @@ tips_of_unlock_work_crawler() {
 ② ： 特定遠端桌面
 ③ ： 沙箱
    TUI 解鎖條件
-①： 以2開頭的純數字   
+① ： 以2開頭的純數字   
 EOF
 }
 ############
@@ -208,7 +208,7 @@ install_tmoe_work_crawler_electron() {
 		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
-		║ 1 ║ work     ║                      ${LOCAL_VSCODE_VERSION} 
+		║ 1 ║ work     ║                   ║${LOCAL_VSCODE_VERSION} 
 		║   ║crawler   ║${LATEST_VSCODE_VERSION} 
 
 	ENDofTable
