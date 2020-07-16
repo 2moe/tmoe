@@ -8860,7 +8860,7 @@ tmoe_education_app_menu() {
 		"4" "scilab(用于数值计算的科学软件包)" \
 		"5" "freemat(科学计算软件,类似于Matlab)" \
 		"6" "maxima(数学软件,类似于Mathematica)" \
-		"7" "gausssum(化学分子运动轨迹计算工具)" \
+		"7" "goldendict(多功能字典查询程序)" \
 		"8" "nwchem(运行在高性能工作站集群上的计算化学软件)" \
 		"9" "avogadro(阿伏伽德罗-分子编辑器)" \
 		"10" "pymol(分子三维结构显示软件)" \
@@ -8887,7 +8887,7 @@ tmoe_education_app_menu() {
 		DEPENDENCY_01='maxima'
 		DEPENDENCY_02='wxmaxima'
 		;;
-	7) DEPENDENCY_02='gausssum' ;;
+	7) DEPENDENCY_02='goldendict' ;;
 	8) DEPENDENCY_02='nwchem' ;;
 	9) DEPENDENCY_02='avogadro' ;;
 	10) DEPENDENCY_02='pymol' ;;
