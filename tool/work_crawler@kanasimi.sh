@@ -253,7 +253,7 @@ EOF
 }
 ############
 remove_kanasimi_work_crawler_tool() {
-    rm -rvf ${HOME}/github/work_crawler /usr/share/applications/work_crawler.desktop /usr/local/bin/work-crawler /usr/local/bin/work-i /opt/work_crawler
+    rm -rvf ${HOME}/github/work_crawler /usr/share/applications/work_crawler.desktop /usr/local/bin/work-crawler /usr/local/bin/work-i /opt/work_crawler ${HOME}/.config/tmoe-linux/work_crawler_eula
     apt remove nodejs 2>/dev/null
     exit 0
 }

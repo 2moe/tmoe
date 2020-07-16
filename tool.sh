@@ -8930,13 +8930,15 @@ tmoe_other_app_menu() {
 ###################
 creat_android_studio_application_link() {
 	cd /usr/share/applications
+	#Icon=android-studio
 	cat >android_studio.desktop <<-'EOF'
 		[Desktop Entry]
 		Name=Android Studio
 		Type=Application
+		Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
 		Exec=/opt/android-studio/bin/studio.sh %F
-		Icon=android-studio
-		Categories=Utility;TextEditor;Development;IDE;
+		Icon=/opt/android-studio/bin/studio.svg
+		Categories=TextEditor;Development;IDE;
 		MimeType=text/plain;inode/directory;
 		Terminal=false
 		Actions=new-empty-window;
