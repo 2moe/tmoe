@@ -5,7 +5,8 @@ main() {
     check_current_user_name_and_group
     case "$1" in
     g | gui | -gui)
-        start_kanasimi_work_crawler_electron
+        #start_kanasimi_work_crawler_electron
+        /usr/local/bin/work-crawler %U
         ;;
     up* | -u*)
         upgrade_tmoe_work_crawler_tool
@@ -15,6 +16,9 @@ main() {
 			-u       --更新work_crawler(update work_crawler@kanasimi)
             g        --啓動圖形介面
 		EOF
+        ;;
+    eula)
+        work_crawler_eula
         ;;
     *)
         kanasimi_work_crawler
@@ -135,7 +139,7 @@ kanasimi_work_crawler() {
     #NON_DEBIAN='true'
     # DEPENDENCY_01=""
     TMOE_APP=$(
-        whiptail --title "輸work-i啓動本工具(20200716-10)" --menu \
+        whiptail --title "輸work-i啓動本工具(20200716-23)" --menu \
             "漫畫與小説下載工具\nTitle:CeJS online novels and comics downloader\nAuthor:Colorless echo,License:BSD-3-Clause\nHomepage:github.com/kanasimi/work_crawler" 0 50 0 \
             "1" "TUI:文本用戶介面" \
             "2" "GUI(視窗/图形/グラフィカル)" \
@@ -159,19 +163,22 @@ kanasimi_work_crawler() {
 ############
 tips_of_unlock_work_crawler() {
     cat <<-EOF
+    GUI解鎖條件
 ① ： 特定分發版能在另一個軟體/工具中找到條件一
 ② ： 特定遠端桌面
 ③ ： 沙箱
+   TUI 解鎖條件
+①： 以2開頭的純數字   
 EOF
 }
 ############
 kanasimi_work_crawler_electron_gui() {
+    RETURN_TO_WHERE='kanasimi_work_crawler_electron_gui'
     TMOE_APP=$(
         whiptail --title "gui版本的安裝" --menu \
             "您必須解開所有謎題，才能安裝GUI版本" 0 50 0 \
-            "1" "install安裝" \
-            "2" "update更新GUI模塊" \
-            "3" "解鎖條件" \
+            "1" "install安裝/更新" \
+            "2" "解鎖條件" \
             "0" "Return to previous menu 返回上層菜單" \
             3>&1 1>&2 2>&3
     )
@@ -179,20 +186,74 @@ kanasimi_work_crawler_electron_gui() {
     case "${TMOE_APP}" in
     0 | "") kanasimi_work_crawler ;;
     1) install_tmoe_work_crawler_electron ;;
-    2) upgrade_tmoe_work_crawler_electron ;;
-    3) tips_of_unlock_work_crawler ;;
+    2) tips_of_unlock_work_crawler ;;
     esac
     ##########################
     press_enter_to_return
     kanasimi_work_crawler_electron_gui
 }
-##########
+#####################
 install_tmoe_work_crawler_electron() {
-    echo "預計將於今晚23點更新..."
+    echo "正在检测版本信息..."
+    if [ -e "/opt/work_crawler" ]; then
+        LOCAL_VSCODE_VERSION=$(cat /opt/work_crawler/work_crawler-version.txt | head -n 1)
+    else
+        LOCAL_VSCODE_VERSION='您尚未安装work_crawler gui模块'
+    fi
+    LATEST_VSCODE_VERSION=$(curl -sL https://gitee.com/ak2/work-i/raw/build/work_crawler-version.txt | head -n 1)
+
+    cat <<-ENDofTable
+		╔═══╦══════════╦═══════════════════╦════════════════════
+		║   ║          ║                   ║                    
+		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
+		║   ║          ║  Latest version   ║  Local version     
+		║---║----------║-------------------║--------------------
+		║ 1 ║ work     ║                      ${LOCAL_VSCODE_VERSION} 
+		║   ║crawler   ║${LATEST_VSCODE_VERSION} 
+
+	ENDofTable
+    do_you_want_to_continue
+    cd /opt
+    rm -rvf work_crawler
+    git clone -b build --depth=1 https://gitee.com/ak2/work-i.git work_crawler
+    cd work_crawler
+    tar -Jxvf work_crawler.tar.xz
+    rm -rf work_crawler.tar.xz .git
+    ICON_FILE='/usr/share/icons/work_crawler.png'
+    if [ ! -e "${ICON_FILE}" ]; then
+        ICON_URL='https://gitee.com/kanasimi/work_crawler/raw/master/gui_electron/icon/rasen2.png'
+        curl -Lv -o "${ICON_FILE}" ${ICON_URL}
+    fi
+    cd /usr/share/applications
+    cat >work_crawler.desktop <<-'EOF'
+[Desktop Entry]
+Type=Application
+Name=Work crawler
+Comment=Tools to download novels and comics
+Icon=/usr/share/icons/work_crawler.png
+Exec=/usr/local/bin/work-crawler %U
+Categories=Network;
+EOF
+    chmod +r work_crawler.desktop
+    cd /usr/local/bin
+    if [ "${HOME}" = '/root' ]; then
+        cat >work-crawler <<-'EOF'
+#!/bin/bash
+export ELECTRON_IS_DEV=0
+exec electron /opt/work_crawler/app.asar --no-sandbox "$@"
+EOF
+    else
+        cat >work-crawler <<-'EOF'
+#!/bin/bash
+export ELECTRON_IS_DEV=0
+exec electron /opt/work_crawler/app.asar "$@"
+EOF
+    fi
+    chmod +x work-crawler
 }
 ############
 remove_kanasimi_work_crawler_tool() {
-    rm -rvf ${HOME}/github/work_crawler /usr/share/applications/work_crawler.desktop /usr/local/bin/work-crawler /usr/local/bin/work-i
+    rm -rvf ${HOME}/github/work_crawler /usr/share/applications/work_crawler.desktop /usr/local/bin/work-crawler /usr/local/bin/work-i /opt/work_crawler
     apt remove nodejs 2>/dev/null
     exit 0
 }
@@ -208,6 +269,7 @@ upgrade_kanasimi_work_crawler_tool() {
     echo "${YELLOW}更新完成，按回車鍵返回。${RESET}"
     read
     source /usr/local/bin/work-i
+    work_crawler_eula
 }
 ############
 parsing_comic() {
@@ -558,7 +620,7 @@ comic_cmn_hans_cn_tmoe_tui() {
             "05" "57mh:57漫画网" \
             "06" "733dm:733动漫网" \
             "07" "733mh:733漫画网" \
-            "08" "76:76漫画" \
+            "08" "zymk:小明太极(湖北)国漫文化有限公司 知音漫客" \
             "09" "88bag:188漫画网" \
             "10" "930mh:亲亲漫画网" \
             "11" "aikanmh:爱看漫画" \
@@ -591,13 +653,11 @@ comic_cmn_hans_cn_tmoe_tui() {
             "38" "r2hm:无双漫画" \
             "39" "sfacg:SF漫画" \
             "40" "taduo:塔多漫画网" \
-            "41" "tohomh:土豪漫画" \
-            "42" "toomics_sc:Toomics 玩漫" \
-            "43" "u17:有妖气原创漫画梦工厂" \
-            "44" "weibo:漫画-微博动漫-" \
-            "45" "wuyouhui:友绘漫画网" \
-            "46" "youma:有码漫画" \
-            "47" "zymk:小明太极(湖北)国漫文化有限公司 知音漫客" \
+            "41" "toomics_sc:Toomics 玩漫" \
+            "42" "u17:有妖气原创漫画梦工厂" \
+            "43" "weibo:漫画-微博动漫-" \
+            "44" "wuyouhui:友绘漫画网" \
+            "45" "youma:有码漫画" \
             3>&1 1>&2 2>&3
     )
     ##########################
@@ -610,7 +670,7 @@ comic_cmn_hans_cn_tmoe_tui() {
     05) WORK_CRAWLER_SITE='57mh' ;;
     06) WORK_CRAWLER_SITE='733dm' ;;
     07) WORK_CRAWLER_SITE='733mh' ;;
-    08) WORK_CRAWLER_SITE='76' ;;
+    08) WORK_CRAWLER_SITE='zymk' ;;
     09) WORK_CRAWLER_SITE='88bag' ;;
     10) WORK_CRAWLER_SITE='930mh' ;;
     11) WORK_CRAWLER_SITE='aikanmh' ;;
@@ -643,13 +703,11 @@ comic_cmn_hans_cn_tmoe_tui() {
     38) WORK_CRAWLER_SITE='r2hm' ;;
     39) WORK_CRAWLER_SITE='sfacg' ;;
     40) WORK_CRAWLER_SITE='taduo' ;;
-    41) WORK_CRAWLER_SITE='tohomh' ;;
-    42) WORK_CRAWLER_SITE='toomics_sc' ;;
-    43) WORK_CRAWLER_SITE='u17' ;;
-    44) WORK_CRAWLER_SITE='weibo' ;;
-    45) WORK_CRAWLER_SITE='wuyouhui' ;;
-    46) WORK_CRAWLER_SITE='youma' ;;
-    47) WORK_CRAWLER_SITE='zymk' ;;
+    41) WORK_CRAWLER_SITE='toomics_sc' ;;
+    42) WORK_CRAWLER_SITE='u17' ;;
+    43) WORK_CRAWLER_SITE='weibo' ;;
+    44) WORK_CRAWLER_SITE='wuyouhui' ;;
+    45) WORK_CRAWLER_SITE='youma' ;;
     esac
     ##########################
     parsing_chinese_website
@@ -657,7 +715,6 @@ comic_cmn_hans_cn_tmoe_tui() {
     comic_cmn_hans_cn_tmoe_tui
 }
 #############
-#ICON_URL='https://gitee.com/kanasimi/work_crawler/raw/master/gui_electron/icon/rasen2.png'
 ###########
 main "$@"
 ###########################################
