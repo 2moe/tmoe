@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 ########################################################################
 main() {
-    check_current_user_name_and_group
     check_dependencies
+    check_current_user_name_and_group
     case "$1" in
     up* | -u*)
         upgrade_tmoe_aria2_tool
@@ -31,6 +31,12 @@ check_current_user_name_and_group() {
 }
 ##########
 check_dependencies() {
+    RED=$(printf '\033[31m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    BOLD=$(printf '\033[1m')
+    RESET=$(printf '\033[m')
     if [ ! $(command -v aria2c) ]; then
         echo '请先安装aria2'
     fi
@@ -38,12 +44,6 @@ check_dependencies() {
     if [ ! $(command -v whiptail) ]; then
         echo '请安装whiptail'
     fi
-    RED=$(printf '\033[31m')
-    GREEN=$(printf '\033[32m')
-    YELLOW=$(printf '\033[33m')
-    BLUE=$(printf '\033[34m')
-    BOLD=$(printf '\033[1m')
-    RESET=$(printf '\033[m')
 }
 ################
 ##########################
@@ -76,8 +76,12 @@ press_enter_to_return() {
 upgrade_tmoe_aria2_tool() {
     cd /usr/local/bin
     curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh'
+    echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    echo "${YELLOW}更新完成，按回车键返回。${RESET}"
     chmod +x aria2-i
-    bash /usr/local/bin/aria2-i
+    read
+    #bash /usr/local/bin/aria2-i
+    source /usr/local/bin/aria2-i
 }
 ################
 tmoe_aria2_manager() {
