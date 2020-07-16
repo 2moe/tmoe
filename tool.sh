@@ -2893,6 +2893,9 @@ configure_x11vnc_remote_desktop_session() {
 		stopx11vnc
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
+		if [ ! -e "${HOME}/.vnc/x11passwd" ]; then
+		          x11vncpasswd
+		fi
 		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 		if [ -e "\${TMOE_LOCALE_FILE}" ]; then
 		    TMOE_LANG=\$(cat ${TMOE_LOCALE_FILE} | head -n 1)
