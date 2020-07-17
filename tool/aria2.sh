@@ -626,7 +626,7 @@ tmoe_aria2_port() {
     03)
         TMOE_ARIA2_OPTION_01="56881-56999"
         TMOE_ARIA2_OPTION_02="6881-6999"
-        TMOE_ARIA2_GREP_NAME='min-split-size'
+        TMOE_ARIA2_GREP_NAME='dht-listen-port'
         TMOE_ARIA2_TIPS='默认:6881-6999\n设置 BT 下载的 TCP 端口. 多个端口可以使用逗号 "," 分隔, 例如: 6881,6885. 您还可以使用短横线 "-" 表示范围: 6881-6999, 或可以一起使用: 6881-6889, 6999'
         ;;
     esac

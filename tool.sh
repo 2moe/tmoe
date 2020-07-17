@@ -6073,18 +6073,38 @@ debian_sources_list() {
 	tmoe_linux_tool_menu
 }
 ############################################
-add_debian_opt_repo() {
-	echo "检测到您未添加debian_opt软件源，是否添加？"
-	echo "debian_opt_repo列表的所有软件均来自于开源项目"
-	echo "感谢https://github.com/coslyk/debianopt-repo 仓库的维护者，以及各个项目的原开发者。"
-	RETURN_TO_WHERE='other_software'
-	do_you_want_to_continue
+add_debian_opt_gpg_key() {
 	cd /tmp
 	curl -Lv -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
 	apt-key add bintray-public.key.asc
 	echo -e "deb https://bintray.proxy.ustclug.org/debianopt/debianopt/ buster main\n#deb https://dl.bintray.com/debianopt/debianopt buster main" >/etc/apt/sources.list.d/debianopt.list
 	apt update
 }
+###########
+add_debian_opt_repo() {
+	echo "检测到您未添加debian_opt软件源，是否添加？"
+	echo "debian_opt_repo列表的所有软件均来自于开源项目"
+	echo "感谢https://github.com/coslyk/debianopt-repo 仓库的维护者，以及各个项目的原开发者。"
+	RETURN_TO_WHERE='other_software'
+	do_you_want_to_continue
+	add_debian_opt_gpg_key
+}
+###################
+debian_install_electron() {
+	if [ "${LINUX_DISTRO}" = "debian" ] && [ ! $(command -v electron) ]; then
+		OPT_REPO='/etc/apt/sources.list.d/debianopt.list'
+		if [ ! -e "${OPT_REPO}" ]; then
+			add_debian_opt_gpg_key
+		fi
+		cat <<-EOF
+			即将为您安装electron
+			apt install -y electron
+			如需卸载，请手动执行apt purge electron
+		EOF
+		apt install -y electron
+	fi
+}
+##############
 switch_debian_opt_repo_sources() {
 	OPT_REPO='/etc/apt/sources.list.d/debianopt.list'
 	if grep '^deb.*ustc' ${OPT_REPO}; then
@@ -15085,12 +15105,11 @@ install_electronic_wechat() {
 	################
 	beta_features_quick_install
 	if [ -e "/opt/wechat/electronic-wechat" ] || [ "$(command -v electronic-wechat)" ]; then
-		beta_features_install_completed
+		#beta_features_install_completed
 		echo "按回车键重新安装"
 		echo "Press enter to reinstall it?"
 		do_you_want_to_continue
 	fi
-
 	non_debian_function
 	cd /tmp
 	GREP_NAME='electronic-wechat'
@@ -15116,9 +15135,40 @@ install_electronic_wechat() {
 	#apt show ./electronic-wechat.deb
 	#apt install -y ./electronic-wechat.deb
 	#rm -vf ./electronic-wechat.deb
+	if [ "${ARCH_TYPE}" = "arm64" ]; then
+		debian_install_electron
+		creat_electron_wechat_desktop_link
+		cat <<-EOF
+			electronic-wechat已经停止维护，访问项目主页了解更多详情。
+			https://github.com/geeeeeeeeek/electronic-wechat
+			tightvnc可能无法正常启动本应用，
+			您可以使用x11vnc来启动。
+		EOF
+	fi
 	beta_features_install_completed
+
 }
 #############
+creat_electron_wechat_desktop_link() {
+	cd /usr/share/applications
+	sed -i 's@/opt/wechat/electronic-wechat@&.sh@' electronic-wechat.desktop
+	cd /opt/wechat/
+	if [ "${HOME}" = '/root' ]; then
+		cat >electronic-wechat.sh <<-'EOF'
+			#!/bin/bash
+			export ELECTRON_IS_DEV=0
+			exec electron /opt/wechat/resources/app.asar --no-sandbox "$@"
+		EOF
+	else
+		cat >electronic-wechat.sh <<-'EOF'
+			#!/bin/bash
+			export ELECTRON_IS_DEV=0
+			exec electron /opt/wechat/resources/app.asar "$@"
+		EOF
+	fi
+	chmod +x electronic-wechat.sh
+}
+###########
 install_gnome_software() {
 	DEPENDENCY_01="gnome-software"
 	DEPENDENCY_02=""
