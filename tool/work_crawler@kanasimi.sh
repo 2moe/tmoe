@@ -349,7 +349,7 @@ parsing_website() {
 ##############
 chinese_website_warning() {
     echo "伺服器已經斷開連結，您可能沒有權限下載${WORK_CRAWLER_SITE}的資源"
-    echo "${RED}警告！${RESET}由於中國大陸的法規和版權原因，您無法下載${WORK_CRAWLER_SITE}的资源"
+    echo "${RED}警告！${RESET}因中國大陸的法規和版權原因，您無法下載${WORK_CRAWLER_SITE}的资源"
     echo "若您强行${RED}破解${RESET}，則可能${RED}觸犯${RESET}相關法規。"
 }
 ################
@@ -362,11 +362,11 @@ parsing_chinese_website() {
         echo "Please enter a valid value"
         ${RETURN_TO_WHERE}
     elif [ "$(echo "${ED25519_PART_99}" | cut -d 'x' -f 2 | cut -d '*' -f 1)" = 'x^2dx=f(a)+f(b)=a^2+b^2y' ]; then
-        echo "根据国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
+        echo "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
         FALSE_TARGET="$(echo ${TURE_TARGET} | awk '{print $2}')"
         TRUE_TARGET="${FALSE_TARGET}+975fc7c0ecc6c82577ac26f99900cfb61e521d2dbd72b5372e41ed6d66dbed96c653c9208e2944c7838af4371469bab2aab9aef30787b005fb199c0a178dc95f"
     elif [ "$(echo ${TRUE_TARGET} | sha256sum | grep $(echo 'MWIxZWUwNzVkZjc3ZTFhZTliY2U3ZTk0ODMxZGV6Mzg3N2U1MThmNmYyZTZiODVkNWNkZTNhYWJi' | base64 -d | cut -d 'z' -f 1))" ]; then
-        echo "根据国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
+        echo "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
         echo "检测到您正在${RED}非法破解${RESET}本工具的下载功能！！！"
         echo "您必须独自承担下载该网站资源的而造成的所有法律责任"
         echo "请立即关闭本工具！！！"
@@ -374,7 +374,7 @@ parsing_chinese_website() {
         echo "Please close this tool now."
         $(echo cGFyc2luZ19jb21pYwo= | base64 -d)
     elif [ "$(echo ${TARGET} | sha512sum | grep $(echo 'YmRjZTJjYzY0YmIwOGJhNGRhYzlkemNlNGFiY2RkYzU1N2I5ZGI0Y2NhMDczYTY4Cg==' | base64 -d | cut -d 'z' -f 1))" ]; then
-        #echo "根据国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能"
+        #echo "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能"
         FALSE_TARGET="$(echo ${TARGET} | cut -d '-' -f 1)"
         TRUE_TARGET="${FALSE_TARGET}"
         ED25519_PART_99="${TRUE_TARGET}+be3e4ff3c93abb538b81484a19d95aafedc5a3d598893571e36c05a26edad8a1"
@@ -611,7 +611,7 @@ comic_cmn_hans_cn_tmoe_tui() {
     #cat 233.txt | cut -d 'D' -f 1 | sed 's@* 批量下載 @@g' |sed 's@的工具。@@g'
     COMIC_WEBSITE=$(
         whiptail --title "COMIC WEBSITES" --menu \
-            "根据国家法规和版权原因，本工具不提供以下站点的漫画资源解析及下载功能。" 0 50 0 \
+            "因国家法规和版权原因，本工具不提供以下站点的漫画资源解析及下载功能。" 0 50 0 \
             "00" "Return to previous menu 返回上级菜单" \
             "01" "1kkk:极速漫画" \
             "02" "36mh:36漫画网" \

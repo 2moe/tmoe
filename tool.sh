@@ -12553,14 +12553,14 @@ start_tmoe_qemu_manager() {
 			"6" "🎵Display and audio显示与音频" \
 			"7" "💾disk manager磁盘管理器" \
 			"8" "🍭CPU & RAM 中央处理器与内存管理" \
-			"9" "🧺network网络设定" \
+			"9" "🥅network网络设定" \
 			"10" "🖱Input devices输入设备" \
 			"11" "🔌uefi/legacy bios(开机引导固件)" \
 			"12" "😋extra options额外选项" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
-	#############
+	##############🧺
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
 	1) creat_a_new_tmoe_qemu_vm ;;
