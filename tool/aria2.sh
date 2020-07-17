@@ -84,6 +84,100 @@ upgrade_tmoe_aria2_tool() {
     source /usr/local/bin/aria2-i
 }
 ################
+check_file_selection_items() {
+    if [[ -d "${SELECTION}" ]]; then # 目录是否已被选择
+        tmoe_file "$1" "${SELECTION}"
+    elif [[ -f "${SELECTION}" ]]; then # 文件已被选择？
+        if [[ ${SELECTION} == *${FILE_EXT_01} ]] || [[ ${SELECTION} == *${FILE_EXT_02} ]]; then
+            # 检查文件扩展名
+            if (whiptail --title "Confirm Selection" --yes-button "Confirm确认" --no-button "Back返回" --yesno "目录: $CURRENT_DIR\n文件: ${SELECTION}" 10 55 4); then
+                FILE_NAME="${SELECTION}"
+                FILE_PATH="${CURRENT_DIR}"
+                #将文件路径作为已经选择的变量
+            else
+                tmoe_file "$1" "$CURRENT_DIR"
+            fi
+        else
+            whiptail --title "WARNING: File Must have ${FILE_EXT_01} or ${FILE_EXT_02} Extension" \
+                --msgbox "${SELECTION}\n您必须选择${FILE_EXT_01}或${FILE_EXT_02}格式的文件。You Must Select a ${FILE_EXT_01} or ${FILE_EXT_02} file" 0 0
+            tmoe_file "$1" "$CURRENT_DIR"
+        fi
+    else
+        whiptail --title "WARNING: Selection Error" \
+            --msgbox "无法选择该文件或文件夹，请返回。Error Changing to Path ${SELECTION}" 0 0
+        tmoe_file "$1" "$CURRENT_DIR"
+    fi
+}
+#####################
+tmoe_file() {
+    if [ -z $2 ]; then
+        DIR_LIST=$(ls -lAhp | awk -F ' ' ' { print $9 " " $5 } ')
+    else
+        cd "$2"
+        DIR_LIST=$(ls -lAhp | awk -F ' ' ' { print $9 " " $5 } ')
+    fi
+    ###########################
+    CURRENT_DIR=$(pwd)
+    # 检测是否为根目录
+    if [ "$CURRENT_DIR" == "/" ]; then
+        SELECTION=$(whiptail --title "$1" \
+            --menu "${MENU_01}\n$CURRENT_DIR" 0 0 0 \
+            --title "$TMOE_TITLE" \
+            --cancel-button Cancel取消 \
+            --ok-button Select选择 $DIR_LIST 3>&1 1>&2 2>&3)
+    else
+        SELECTION=$(whiptail --title "$1" \
+            --menu "${MENU_01}\n$CURRENT_DIR" 0 0 0 \
+            --title "$TMOE_TITLE" \
+            --cancel-button Cancel取消 \
+            --ok-button Select选择 ../ 返回 $DIR_LIST 3>&1 1>&2 2>&3)
+    fi
+    ########################
+    EXIT_STATUS=$?
+    if [ ${EXIT_STATUS} = 1 ]; then # 用户是否取消操作？
+        return 1
+    elif [ ${EXIT_STATUS} = 0 ]; then
+        check_file_selection_items
+    fi
+    ############
+}
+################
+tmoe_file_manager() {
+    TMOE_TITLE="${FILE_EXT_01} & ${FILE_EXT_02} 文件选择Tmoe-linux管理器"
+    if [ -z ${IMPORTANT_TIPS} ]; then
+        MENU_01="请使用方向键和回车键进行操作"
+    else
+        MENU_01=${IMPORTANT_TIPS}
+    fi
+    ###############
+    tmoe_file "$TMOE_TITLE" "$START_DIR"
+
+    EXIT_STATUS=$?
+    if [ ${EXIT_STATUS} -eq 0 ]; then
+        if [ "${SELECTION}" == "" ]; then
+            echo "检测到您取消了操作,User Pressed Esc with No File Selection"
+        else
+            whiptail --msgbox "文件属性 :  $(ls -lh ${FILE_NAME})\n路径 : ${FILE_PATH}" 0 0
+            TMOE_FILE_ABSOLUTE_PATH="${CURRENT_DIR}/${SELECTION}"
+            #uncompress_tar_file
+        fi
+    else
+        echo "检测到您${RED}取消了${RESET}${YELLOW}操作${RESET}，没有文件${BLUE}被选择${RESET},with No File ${BLUE}Selected.${RESET}"
+        #press_enter_to_return
+    fi
+}
+###########
+where_is_start_dir() {
+    if [ -d "${HOME}/sd" ]; then
+        START_DIR="${HOME}/sd/Download"
+    elif [ -d "/sdcard" ]; then
+        START_DIR='/sdcard/'
+    else
+        START_DIR="$(pwd)"
+    fi
+    tmoe_file_manager
+}
+###################################
 tmoe_aria2_manager() {
     pgrep aria2 &>/dev/null
     if [ "$?" = "0" ]; then
@@ -120,6 +214,13 @@ tmoe_aria2_manager() {
     fi
 }
 #############
+case_tmoe_aria2_settings_model() {
+    case "${TMOE_ARIA2_SETTINGS_MODEL}" in
+    01) tmoe_aria2_settings_model_01 ;;
+    02) tmoe_aria2_settings_model_02 ;;
+    03) tmoe_aria2_settings_model_03 ;;
+    esac
+}
 #############
 tmoe_aria2_file() {
     TMOE_ARIA2_OPTION_01='true'
@@ -270,15 +371,11 @@ tmoe_aria2_file() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     tmoe_aria2_file
 }
-#############
+############
 tmoe_aria2_connection_threads() {
     TMOE_ARIA2_OPTION_01='true'
     TMOE_ARIA2_OPTION_02='false'
@@ -411,6 +508,11 @@ tmoe_aria2_connection_threads() {
         TMOE_ARIA2_TIPS='默认为false,根据可用带宽优化并发下载的数量. aria2 使用之前统计的下载速度通过规则 N = A + B Log10 (速度单位为 Mbps) 得到并发下载的数量. 其中系数 A 和 B 可以在参数中以冒号分隔自定义. 默认值 (A=5, B=25) 可以在 1Mbps 网络上使用通常 5 个并发下载, 在 100Mbps 网络上为 50 个. 并发下载的数量保持在 --max-concurrent-downloads 参数定义的最大之下.'
         ;;
     19)
+        FILE_EXT_01='session'
+        FILE_EXT_02='Session'
+        START_DIR="${TMOE_ARIA2_PATH}"
+        IMPORTANT_TIPS='您可以选择aria2.session会话文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="${HOME}/.aria2/aria2.session"
         TMOE_ARIA2_OPTION_02="./aria2.session"
         TMOE_ARIA2_GREP_NAME='input-file'
@@ -434,11 +536,7 @@ tmoe_aria2_connection_threads() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     tmoe_aria2_connection_threads
 }
@@ -446,16 +544,20 @@ tmoe_aria2_connection_threads() {
 tmoe_aria2_hook() {
     TMOE_ARIA2_OPTION_01="${TMOE_ARIA2_PATH}/auto_upload_onedrive.sh"
     TMOE_ARIA2_OPTION_02="${TMOE_ARIA2_PATH}/auto_move_media_files.sh"
-    TMOE_ARIA2_SETTINGS_MODEL='01'
+    FILE_EXT_01='sh'
+    FILE_EXT_02='py'
+    START_DIR="${TMOE_ARIA2_PATH}"
+    IMPORTANT_TIPS='您可以选择脚本文件'
+    TMOE_ARIA2_SETTINGS_MODEL='03'
     RETURN_TO_WHERE='tmoe_aria2_hook'
     TMOE_OPTION=$(whiptail --title "钩子" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
         "00" "Return to previous menu 返回上级菜单" \
-        "01" "(全局)下载完成后执行的操作" \
-        "02" "BT下载完成" \
-        "03" "下载错误" \
-        "04" "下载暂停" \
-        "05" "下载开始" \
-        "06" "下载停止" \
+        "01" "on-download-complete:(全局)下载完成后执行的操作" \
+        "02" "on-bt-download-complete:BT下载完成" \
+        "03" "on-download-error:下载错误" \
+        "04" "on-download-pause:下载暂停" \
+        "05" "on-download-start:下载开始" \
+        "06" "on-download-stop:下载停止" \
         3>&1 1>&2 2>&3)
     ##############################
     case "${TMOE_OPTION}" in
@@ -486,11 +588,7 @@ tmoe_aria2_hook() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -533,11 +631,7 @@ tmoe_aria2_port() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -615,11 +709,7 @@ tmoe_aria2_proxy() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -651,6 +741,11 @@ tmoe_aria2_logs() {
     case "${TMOE_OPTION}" in
     00 | "") configure_aria2_rpc_server ;;
     01)
+        FILE_EXT_01='conf'
+        FILE_EXT_02='json'
+        START_DIR="${TMOE_ARIA2_PATH}"
+        IMPORTANT_TIPS='您可以选择aria2.conf配置文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="/usr/local/etc/tmoe-linux/aria2/aria2.conf"
         TMOE_ARIA2_OPTION_02="${HOME}/.aria2/aria2.conf"
         TMOE_ARIA2_GREP_NAME='conf-path'
@@ -728,11 +823,7 @@ tmoe_aria2_logs() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -788,12 +879,22 @@ tmoe_aria2_rpc_server_and_tls() {
         TMOE_ARIA2_TIPS='经测试无法使用自签名证书，若启用此选项，则建议您使用Let’s Encrypt等组织签发的有效证书\n启用加密后 ，RPC 将通过 SSL/TLS 加密传输, RPC 服务需要使用 https 或者 wss 协议连接\nRPC 客户端需要使用 https 协议连接服务器. 对于 WebSocket 客户端, 使用 wss 协议. 使用 --rpc-certificate 和 --rpc-private-key 选项设置服务器的证书和私钥.'
         ;;
     06)
+        FILE_EXT_01='pem'
+        FILE_EXT_02='crt'
+        START_DIR="/www/server/"
+        IMPORTANT_TIPS='您可以选择TLS证书文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="/www/server/ca-certificates.pem"
         TMOE_ARIA2_OPTION_02="./ca-certificates.pem"
         TMOE_ARIA2_GREP_NAME='rpc-certificate'
         TMOE_ARIA2_TIPS=' 使用 PEM 格式时，您必须通过 --rpc-private-key 指定私钥'
         ;;
     07)
+        FILE_EXT_01='key'
+        FILE_EXT_02='crt'
+        START_DIR="/www/server/"
+        IMPORTANT_TIPS='您可以选择证书私钥文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="/www/server/ca-certificates.key"
         TMOE_ARIA2_OPTION_02="./ca-certificates.key"
         TMOE_ARIA2_GREP_NAME='rpc-private-key'
@@ -804,6 +905,11 @@ tmoe_aria2_rpc_server_and_tls() {
         TMOE_ARIA2_TIPS=' 默认为false'
         ;;
     09)
+        FILE_EXT_01='crt'
+        FILE_EXT_02='pem'
+        START_DIR="/usr/share/ca-certificates/mozilla/"
+        IMPORTANT_TIPS='您可以选择ca证书文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="/usr/share/ca-certificates/mozilla/SecureTrust_CA.crt"
         TMOE_ARIA2_OPTION_02="./ca-certificates.crt"
         TMOE_ARIA2_GREP_NAME='ca-certificate'
@@ -836,11 +942,7 @@ tmoe_aria2_rpc_server_and_tls() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -959,11 +1061,7 @@ tmoe_aria2_ftp_and_metalink() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -1041,6 +1139,11 @@ tmoe_aria2_http() {
         TMOE_ARIA2_TIPS='如果 aria2 从远程 HTTP/FTP 服务器收到 "文件未找到" 的状态超过此选项设置的次数后下载将会失败. 设置为 0 将会禁用此选项. 此选项仅影响 HTTP/FTP 服务器. 重试时同时会记录重试次数, 所以也需要设置 --max-tries 这个选项.'
         ;;
     07)
+        FILE_EXT_01='netrc'
+        FILE_EXT_02='rc'
+        START_DIR="${TMOE_ARIA2_PATH}"
+        IMPORTANT_TIPS='您可以选择.netrc文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="${HOME}/.aria2/.netrc"
         TMOE_ARIA2_OPTION_02='./.netrc'
         TMOE_ARIA2_GREP_NAME='netrc-path'
@@ -1135,6 +1238,11 @@ tmoe_aria2_http() {
         TMOE_ARIA2_TIPS='增加 HTTP 请求头内容.'
         ;;
     24)
+        FILE_EXT_01='txt'
+        FILE_EXT_02='sqlite'
+        START_DIR="${HOME}/sd"
+        IMPORTANT_TIPS='您可以选择cookie文件'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="${HOME}/sd/Download/cookies.sqlite"
         TMOE_ARIA2_OPTION_02="${HOME}/sd/Download/cookies.txt"
         TMOE_ARIA2_GREP_NAME='save-cookies'
@@ -1146,11 +1254,7 @@ tmoe_aria2_http() {
         ;;
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -1371,12 +1475,22 @@ tmoe_aria2_bt_and_pt() {
         TMOE_ARIA2_TIPS='默认为60'
         ;;
     33)
+        FILE_EXT_01='dat'
+        FILE_EXT_02='dbt'
+        START_DIR="${TMOE_ARIA2_PATH}"
+        IMPORTANT_TIPS='您可以选择aria2的IPv4 DHT文件,支持dBase III DBT格式'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="${HOME}/.aria2/dht.dat"
         TMOE_ARIA2_OPTION_02="./dht.dat"
         TMOE_ARIA2_GREP_NAME='dht-file-path'
         TMOE_ARIA2_TIPS='修改 IPv4 DHT 路由表文件路径.'
         ;;
     34)
+        FILE_EXT_01='dat'
+        FILE_EXT_02='dbt'
+        START_DIR="${TMOE_ARIA2_PATH}"
+        IMPORTANT_TIPS='您可以选择aria2的IPv6 DHT文件,支持dBase III DBT格式'
+        TMOE_ARIA2_SETTINGS_MODEL='03'
         TMOE_ARIA2_OPTION_01="${HOME}/.aria2/dht6.dat"
         TMOE_ARIA2_OPTION_02="./dht6.dat"
         TMOE_ARIA2_GREP_NAME='dht-file-path6'
@@ -1391,11 +1505,7 @@ tmoe_aria2_bt_and_pt() {
 
     esac
     ##############################
-    if [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "01" ]; then
-        tmoe_aria2_settings_model_01
-    elif [ "${TMOE_ARIA2_SETTINGS_MODEL}" = "02" ]; then
-        tmoe_aria2_settings_model_02
-    fi
+    case_tmoe_aria2_settings_model
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -1461,6 +1571,7 @@ check_tmoe_aria2_config_value() {
 tmoe_aria2_settings_model_01() {
     #此处不要设置RETURN_TO_WHERE的变量
     check_tmoe_aria2_config_value
+    RETURN_TO_MENU='tmoe_aria2_settings_model_01'
     TMOE_OPTION=$(whiptail --title "您想要将参数${TMOE_ARIA2_GREP_NAME}修改为哪个值" --menu "${TMOE_ARIA2_CONFIG_STATUS}\n${TMOE_ARIA2_TIPS}" 0 50 0 \
         "0" "Return to previous menu 返回上级菜单" \
         "1" "${TMOE_ARIA2_OPTION_01}" \
@@ -1484,6 +1595,7 @@ tmoe_aria2_settings_model_01() {
 ######################
 tmoe_aria2_settings_model_02() {
     check_tmoe_aria2_config_value
+    RETURN_TO_MENU='tmoe_aria2_settings_model_02'
     TMOE_OPTION=$(whiptail --title "您想要将参数${TMOE_ARIA2_GREP_NAME}修改为哪个值" --menu "${TMOE_ARIA2_CONFIG_STATUS}\n${TMOE_ARIA2_TIPS}" 0 50 0 \
         "0" "Return to previous menu 返回上级菜单" \
         "1" "${TMOE_ARIA2_OPTION_01}" \
@@ -1509,6 +1621,47 @@ tmoe_aria2_settings_model_02() {
     tmoe_aria2_settings_model_02
 }
 #############
+select_tmoe_aria2_file() {
+    #where_is_tmoe_file_dir
+    tmoe_file_manager
+    if [ -z ${SELECTION} ]; then
+        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+        #${RETURN_TO_WHERE}
+        ${RETURN_TO_MENU}
+    else
+        echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+        ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+        TMOE_ARIA2_OPTION_TARGET=${TMOE_FILE_ABSOLUTE_PATH}
+    fi
+}
+######################
+tmoe_aria2_settings_model_03() {
+    #此处不要设置RETURN_TO_WHERE的变量
+    RETURN_TO_MENU='tmoe_aria2_settings_model_03'
+    check_tmoe_aria2_config_value
+    TMOE_OPTION=$(whiptail --title "您想要将参数${TMOE_ARIA2_GREP_NAME}修改为哪个值" --menu "${TMOE_ARIA2_CONFIG_STATUS}\n${TMOE_ARIA2_TIPS}" 0 50 0 \
+        "0" "Return to previous menu 返回上级菜单" \
+        "1" "select选择文件" \
+        "2" "${TMOE_ARIA2_OPTION_01}" \
+        "3" "${TMOE_ARIA2_OPTION_02}" \
+        "4" "custom手动输入" \
+        "5" "注释/隐藏${TMOE_ARIA2_GREP_NAME}(禁用该参数或使用默认值)" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1) select_tmoe_aria2_file ;;
+    2) TMOE_ARIA2_OPTION_TARGET=${TMOE_ARIA2_OPTION_01} ;;
+    3) TMOE_ARIA2_OPTION_TARGET=${TMOE_ARIA2_OPTION_02} ;;
+    4) custom_aria2_config ;;
+    5) TMOE_ARIA2_CONFIG_ENABLED='hide' ;;
+    esac
+    ##############################
+    modify_aria2_config_value
+    press_enter_to_return
+    tmoe_aria2_settings_model_03
+}
+######################
 modify_aria2_config_value() {
     case "${TMOE_ARIA2_CONFIG_ENABLED}" in
     true | false) #sed -i "s@${TMOE_ARIA2_CONFIG_VALUE}@${TMOE_ARIA2_OPTION_TARGET}@g" ${TMOE_ARIA2_FILE}
@@ -1700,7 +1853,7 @@ configure_aria2_rpc_server() {
     RETURN_TO_WHERE='configure_aria2_rpc_server'
     #进入aria2配置文件目录
     cd ${TMOE_ARIA2_PATH}
-    TMOE_OPTION=$(whiptail --title "Tmoe-aria2-tool 2020071412" --menu "您想要修改哪项配置？输aria2-i启动本工具\nWhich conf do you want to modify?" 0 50 0 \
+    TMOE_OPTION=$(whiptail --title "Tmoe-aria2-tool 2020071713" --menu "您想要修改哪项配置？输aria2-i启动本工具\nWhich conf do you want to modify?" 0 50 0 \
         "1" "One-key conf 初始化一键配置" \
         "2" "process进程管理" \
         "3" "FAQ常见问题" \

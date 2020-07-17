@@ -17,6 +17,9 @@ main() {
 	--modify_remote_desktop_config)
 		modify_remote_desktop_config
 		;;
+	qemu)
+		start_tmoe_qemu_manager
+		;;
 	--remove_gui)
 		remove_gui
 		;;
@@ -39,6 +42,7 @@ main() {
 			-m       --切换镜像源
 			-tuna    --切换为tuna源
 			file     --运行文件浏览器(run filebrowser)
+			qemu     --x64 qemu虚拟机管理
 		EOF
 		;;
 	file | filebrowser)
