@@ -570,7 +570,7 @@ novel_hans_cn_tmoe_tui() {
             "12" "piaotian:飘天文学小说阅读网piaotian.com" \
             "13" "qidian:起点中文网qidian.com" \
             "14" "x81zw:2013 新八一中文网" \
-            "15" "xbiquge:笔趣阁" \
+            "15" "xbiquge.cc:笔趣阁" \
             "16" "xbiquge:新笔趣阁小说" \
             "17" "zhuishubang:追书帮小說" \
             "18" "zwdu:2015 八一中文网" \
@@ -593,7 +593,7 @@ novel_hans_cn_tmoe_tui() {
     12) WORK_CRAWLER_SITE='piaotian' ;;
     13) WORK_CRAWLER_SITE='qidian' ;;
     14) WORK_CRAWLER_SITE='x81zw' ;;
-    15) WORK_CRAWLER_SITE='xbiquge' ;;
+    15) WORK_CRAWLER_SITE='xbiquge.cc' ;;
     16) WORK_CRAWLER_SITE='xbiquge' ;;
     17) WORK_CRAWLER_SITE='zhuishubang' ;;
     18) WORK_CRAWLER_SITE='zwdu' ;;
