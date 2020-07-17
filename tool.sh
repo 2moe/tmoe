@@ -521,8 +521,10 @@ TMOE_LOCALE_SETTINGS() {
 #####################
 check_tmoe_linux_desktop_link() {
 	if [ ! -e "/usr/share/applications/tmoe-linux.desktop" ]; then
-		curl -Lv -o /usr/share/icons/tmoe-linux.png 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/icon.png'
-		chmod 644 /usr/share/icons/tmoe-linux.png
+		mkdir -p /usr/share/applications /usr/share/icons
+		cd /usr/share/icons
+		curl -Lv -o tmoe-linux.png 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/icon.png'
+		chmod 644 tmoe-linux.png
 		cd /usr/share/applications
 		creat_tmoe_linux_desktop_icon
 	fi
@@ -8961,7 +8963,7 @@ check_android_studio() {
 	cd ${HOME}/sd/Download
 	if [ -e "/opt/android-studio" ]; then
 		echo '您已安装Android studio'
-		echo "若您需要卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio /usr/share/applications/android_studio.desktop${RESET};${RED}${PACKAGES_REMOVE_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+		echo "若您需要卸载，则请输${RED}rm -rv${RESET} ${HOME}/sd/Download/android_studio_linux_64bit.tar.gz ${BLUE}/opt/android-studio /usr/share/applications/android_studio.desktop${RESET};${RED}${PACKAGES_REMOVE_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 		echo "是否需要重新安装？"
 		echo "Do you want to reinstall it?"
 		do_you_want_to_continue
