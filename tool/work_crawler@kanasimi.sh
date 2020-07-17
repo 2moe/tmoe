@@ -447,7 +447,7 @@ comic_ja_jp_tmoe_tui() {
     ##########################
     case "${COMIC_WEBSITE}" in
     00 | "") kanasimi_work_crawler_tmoe_tui ;;
-    01) WORK_CRAWLER_SITE='AlphaPolis_manga' ;;
+    01) WORK_CRAWLER_SITE='AlphaPolis_official_manga' ;;
     02) WORK_CRAWLER_SITE='comico_jp' ;;
     03) WORK_CRAWLER_SITE='comico_jp_plus' ;;
     04) WORK_CRAWLER_SITE='ComicWalker' ;;
