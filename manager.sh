@@ -1612,7 +1612,7 @@ select_file_manually() {
 			break
 		elif ! [[ $number =~ ^[0-9]+$ ]]; then
 			echo "Please enter the right number!"
-			echo "请输正确的数字编号!"
+			echo '请输入正确的数字编号！'
 		elif (($number >= 0 && $number <= $count)); then
 			eval RESTORE=${restore_file_name[number]}
 			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
@@ -1622,7 +1622,7 @@ select_file_manually() {
 			break
 		else
 			echo "Please enter the right number!"
-			echo "请输正确的数字编号!"
+			echo '请输入正确的数字编号！'
 		fi
 	done
 	press_enter_to_return
