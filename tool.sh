@@ -562,7 +562,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200714-12)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0529至0603修复qemu部分问题,0618支持解析主题链接,0711修复x64qemu模板仓库内文件,0711-0714 aria2配置管理工具" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200719-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0618支持解析主题链接,0711 fix qemu x64repo,0711-0714 aria2-tool,0718 scrcpy" 20 50 7 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -8937,7 +8937,8 @@ tmoe_other_app_menu() {
 			"1" "OBS-Studio(录屏软件)" \
 			"2" "seahorse(密钥管理)" \
 			"3" "kodi(家庭影院软件)" \
-			"4" "Android-studio(安卓开发IDE)" \
+			"4" "Android-studio(安卓开发工具IDE)" \
+			"5" "scrcpy(开源的Android投屏软件)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8948,12 +8949,84 @@ tmoe_other_app_menu() {
 	2) install_seahorse ;;
 	3) install_kodi ;;
 	4) install_android_studio ;;
+	5) configure_scrcpy ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_other_app_menu
 }
 ###################
+configure_scrcpy() {
+	RETURN_TO_WHERE='configure_scrcpy'
+	DEPENDENCY_01=''
+	SCRCPY_OPTION=$(
+		whiptail --title "SCRCPY" --menu \
+			"How do you want to configure the scrcpy?" 0 50 0 \
+			"1" "install/remove(安装/卸载)" \
+			"2" "连接管理" \
+			"3" "重启adb" \
+			"4" "连接说明" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${SCRCPY_OPTION}" in
+	0 | "") beta_features ;;
+	1) install_scrcpy ;;
+	2) scrcpy_connect_to_android_device ;;
+	3) restart_adb ;;
+	4) scrpy_faq ;;
+	esac
+	##########################
+	press_enter_to_return
+	configure_scrcpy
+}
+##############
+scrpy_faq(){ 
+cat <<-EOF
+    tightvnc可能无法正常启动本应用（scrcpy）,您可以在x11vnc环境下启动它。
+    启动前请先确保adb已正常连接至您的安卓设备。
+    若adb无法连接，则请重启adb服务。
+	启动本应用的命令为${GREEN}scrcpy${RESET}
+EOF
+}
+###############
+scrcpy_connect_to_android_device(){ 
+#请输入adb
+	TARGET=$(whiptail --inputbox "① 若Android无root权限，且系统未自带ADB网络调试功能，则请开启USB调试功能，并使用USB数据线连接本机（Linux设备)。\n② 若Android无root权限，且系统自带ADB网络调试功能，则请同时开启USB和网络调试功能，您无需使用数据线即可连接。\n③ 若Android有root权限，则您可以通过安装网络ADB调试软件https://coolapk.com/apk/com.yaerin.wadb 来开启网络ADB调试功能。 \n请输入adb连接地址，例如192.168.99.3:5555。若不添加端口,则使用默认值" 0 0 --title "Please type the adb address" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		${RETURN_TO_WHERE}
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+		echo "检测到您未输入有效的adb地址，已自动调整为localhost:5555"
+	else
+	   if [ ! $(echo ${TARGET} | grep ':') ];then
+            TARGET=${TARGET}:5555
+			echo "检测到您未添加端口，已将端口修改为5555"
+	   fi
+	fi
+		echo "正在通过ADB连接至Android设备..."
+		echo "${BLUE}adb connect ${TARGET}${RESET}"
+		echo "Connecting to adb device..."
+	    adb connect ${TARGET}
+		adb devices -l
+		echo "您可以在x11VNC下使用scrcpy来启动本应用"
+		echo "您是否需要立刻启动scrcpy?"
+		do_you_want_to_continue
+        scrcpy
+} 
+##################
+restart_adb(){ 
+   adb kill-server
+   adb devices -l
+}
+###########
+install_scrcpy(){ 
+	DEPENDENCY_02='scrcpy'
+	beta_features_quick_install
+}
+############
 creat_android_studio_application_link() {
 	cd /usr/share/applications
 	#Icon=android-studio
