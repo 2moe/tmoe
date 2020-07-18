@@ -773,7 +773,7 @@ tmoe_locale_settings() {
 	12) TMOE_LANG='cs_CZ.UTF-8' ;;
 	13) TMOE_LANG='da_DK.UTF-8' ;;
 	14) TMOE_LANG='nl_NL.UTF-8' ;;
-	15) TMOE_LANG='en.UTF-8' ;;
+	15) TMOE_LANG='en_US.UTF-8' ;;
 	16) TMOE_LANG='et_EE.UTF-8' ;;
 	17) TMOE_LANG='fa_IR.UTF-8' ;;
 	18) TMOE_LANG='fil_PH.UTF-8' ;;
