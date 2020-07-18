@@ -8963,9 +8963,10 @@ configure_scrcpy() {
 		whiptail --title "SCRCPY" --menu \
 			"How do you want to configure the scrcpy?" 0 50 0 \
 			"1" "install/remove(安装/卸载)" \
-			"2" "连接管理" \
-			"3" "重启adb" \
-			"4" "连接说明" \
+			"2" "connection连接管理" \
+			"3" "switch device切换设备" \
+			"4" "restart 重启adb" \
+			"5" "readme连接说明" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -8974,20 +8975,57 @@ configure_scrcpy() {
 	0 | "") beta_features ;;
 	1) install_scrcpy ;;
 	2) scrcpy_connect_to_android_device ;;
-	3) restart_adb ;;
-	4) scrpy_faq ;;
+	3) switch_scrcpy_device ;;
+	4) restart_adb ;;
+	5) scrpy_faq ;;
 	esac
 	##########################
 	press_enter_to_return
 	configure_scrcpy
 }
 ##############
+switch_scrcpy_device(){ 
+	cd /tmp/
+	adb devices 2>&1 | sed '1d;$d' | awk '{print $1}' >.tmoe-linux_cache.01
+	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $4.$3}' | sed 's@model:@@g' |sed 's@product:@-@' >.tmoe-linux_cache.02
+	TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+	cat .tmoe-linux_cache.0*
+	echo ${TMOE_ADB_DEVICE_LIST}
+	TMOE_ADB_DEVICE_ITEM=$(whiptail --title "SCRCPY DEVICES" --menu \
+		"您想要切换至哪个设备？\nWhich device do you want to switch?" 0 0 0 \
+		${TMOE_ADB_DEVICE_LIST} \
+		"0" "Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	case ${TMOE_ADB_DEVICE_ITEM} in
+	0 | "") configure_scrcpy ;;
+	esac
+	echo "scrcpy -s ${TMOE_ADB_DEVICE_ITEM}"
+	scrcpy -s ${TMOE_ADB_DEVICE_ITEM}
+}
+#############
 scrpy_faq(){ 
 cat <<-EOF
     tightvnc可能无法正常启动本应用（scrcpy）,您可以在x11vnc环境下启动它。
     启动前请先确保adb已正常连接至您的安卓设备。
     若adb无法连接，则请重启adb服务。
 	启动本应用的命令为${GREEN}scrcpy${RESET}
+	使用说明详见https://github.com/Genymobile/scrcpy/blob/master/README.md
+	https://www.iplaysoft.com/scrcpy.html
+关闭手机屏幕	scrcpy -S
+限制画面分辨率	scrcpy -m 1024 (比如限制为 1024)
+修改视频码率	scrcpy -b 4M (默认 8Mbps，改成 4Mbps)
+裁剪画面	scrcpy -c 1920:1080:0:0
+表示分辨率 1920x1080 并且偏移坐标为 (0,0)
+窗口置顶	scrcpy -T
+显示触摸点击	scrcpy -t
+在演示或录制教程时，可在画面上对应显示出点击动作
+全屏显示	scrcpy -f
+文件传输默认路径	scrcpy --push-target /你的/目录
+将文件拖放到 scrcpy 可以传输文件，此命令指定默认保存目录
+只读模式(仅显示不控制)	scrcpy -n
+屏幕录像	scrcpy -r 视频文件名.mp4 或 .mkv
+屏幕录像 (禁用电脑显示)	scrcpy -Nr 文件名.mkv
+设置窗口标题	scrcpy --window-title '2333'
 EOF
 }
 ###############
