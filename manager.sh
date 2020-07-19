@@ -682,7 +682,7 @@ tmoe_locale_settings() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 	else
-		TMOE_LANG="en_US.UTF-8"
+		TMOE_LANG=en_US.UTF-8
 	fi
 	TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
 	#######################
@@ -858,7 +858,7 @@ tmoe_locale_settings() {
 	DEBIAN_LOCALE_GEN=$(cat debian-i | grep '"/etc/locale.gen"; then' | head -n 1 | cut -d '"' -f 2 | cut -d '^' -f 2)
 	sed -i "s@${DEBIAN_LOCALE_GEN}@${TMOE_LANG_HALF}@" debian-i
 	cd ${TMOE_SCRIPT_PATH}/etc/default
-	if grep -q 'LANG' locale; then
+	if grep -q 'LANG=' locale; then
 		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
 		sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
 		source ./locale
@@ -868,9 +868,9 @@ tmoe_locale_settings() {
 			sed -i 's@^@#&@g' locale
 			sed -i 's@##@#@g' locale
 			cat >>locale <<-EOF
-				LANG="${TMOE_LANG_HALF}.UTF-8"
-				LANGUAGE="${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}"
-				LC_ALL="${TMOE_LANG_HALF}.UTF-8"
+				LANG=${TMOE_LANG_HALF}.UTF-8
+				LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
+				LC_ALL=${TMOE_LANG_HALF}.UTF-8
 			EOF
 		fi
 	fi

@@ -920,7 +920,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	arch_linux_yay() {
-	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG="en_US.UTF-8"' >>/etc/locale.conf
+	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG=en_US.UTF-8' >>/etc/locale.conf
 	    pacman -Syyu --noconfirm
 	    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
@@ -981,9 +981,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        #zypper dup --no-allow-vendor-change -y
 	    fi
 	    zypper install -y wget curl
-	    sed -i 's@RC_LANG=.*@RC_LANG="en_US.UTF8"@' /etc/sysconfig/language
-	    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL="en_US.UTF8"@' /etc/sysconfig/language
-	    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES="en_US"@' /etc/sysconfig/language
+	    sed -i 's@RC_LANG=.*@RC_LANG=en_US.UTF8@' /etc/sysconfig/language
+	    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL=en_US.UTF8@' /etc/sysconfig/language
+	    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES=en_US@' /etc/sysconfig/language
 	    zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
 	}
 	################################
@@ -1028,9 +1028,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	  #sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	  sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
 	  cat >>/etc/default/locale <<-'EOF'
-			LANG="en_US.UTF-8"
-			LANGUAGE="en_US:zh"
-			LC_ALL="en_US.UTF-8"
+			LANG=en_US.UTF-8
+			LANGUAGE=en_US:zh
+			LC_ALL=en_US.UTF-8
 		EOF
 	  #locale-gen
 	  locale-gen zh_CN.UTF-8
@@ -1041,9 +1041,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	  echo "Configuring ${TMOE_LANG_HALF} environment..."
 	  sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
 	  cat >>/etc/default/locale <<-EOF
-			LANG="${TMOE_LANG}"
-			LANGUAGE="${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}"
-			LC_ALL="${TMOE_LANG}"
+			LANG=${TMOE_LANG}
+			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
+			LC_ALL=${TMOE_LANG}
 		EOF
 	  if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
@@ -1199,8 +1199,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	void_linux_repository() {
 	    LINUX_DISTRO='void'
 	    cat >/etc/locale.conf <<-'EOF'
-				LANG="en_US.UTF-8"
-				LANGUAGE="en_US:zh"
+				LANG=en_US.UTF-8
+				LANGUAGE=en_US:zh
 				LC_COLLATE=C
 			EOF
 	    mkdir -p /etc/xbps.d
