@@ -681,8 +681,10 @@ tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=${HOME}/.config/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+	elif [ ${LINUX_DISTRO} != 'Android' ]; then
+		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2)
 	else
-		TMOE_LANG=en_US.UTF-8
+		TMOE_LANG='default'
 	fi
 	TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
 	#######################
