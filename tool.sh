@@ -5185,7 +5185,7 @@ china_university_mirror_station() {
 	RETURN_TO_WHERE='china_university_mirror_station'
 	SOURCES_LIST=$(
 		whiptail --title "软件源列表" --menu \
-			"您想要切换为哪个镜像源呢？目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 17 55 7 \
+			"您想要切换为哪个镜像源呢？\n目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 0 50 0 \
 			"1" "清华大学mirrors.tuna.tsinghua.edu.cn" \
 			"2" "中国科学技术大学mirrors.ustc.edu.cn" \
 			"3" "浙江大学mirrors.zju.edu.cn" \
@@ -5230,7 +5230,7 @@ china_bussiness_mirror_station() {
 	RETURN_TO_WHERE='china_bussiness_mirror_station'
 	SOURCES_LIST=$(
 		whiptail --title "软件源列表" --menu \
-			"您想要切换为哪个镜像源呢？目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 17 55 7 \
+			"您想要切换为哪个镜像源呢？\n目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 0 50 0 \
 			"1" "mirrors.huaweicloud.com华为云" \
 			"2" "mirrors.cloud.tencent.com腾讯云" \
 			"3" "mirrors.aliyun.com阿里云" \
@@ -5260,10 +5260,12 @@ china_bussiness_mirror_station() {
 worldwide_mirror_station() {
 	SOURCE_MIRROR_STATION=""
 	RETURN_TO_WHERE='worldwide_mirror_station'
+	DEBIAN_SECURITY_SOURCE='true'
 	SOURCES_LIST=$(
 		whiptail --title "www.debian.org/mirror/list.html" --menu \
 			"Not only debian,but also ubuntu." 0 50 0 \
-			"00" "Return to previous menu 返回上级菜单" \
+			"0" "Return to previous menu 返回上级菜单" \
+			"00" "official官方:deb.debian.org+archive.ubuntu.com" \
 			"01" "Armenia:ftp.am.debian.org" \
 			"02" "Australia:ftp.au.debian.org" \
 			"03" "Austria:ftp.at.debian.org" \
@@ -5315,7 +5317,15 @@ worldwide_mirror_station() {
 	)
 	########################
 	case "${SOURCES_LIST}" in
-	00 | "") tmoe_sources_list_manager ;;
+	0 | "") tmoe_sources_list_manager ;;
+	00)
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			SOURCE_MIRROR_STATION='deb.debian.org'
+			if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+				SOURCE_MIRROR_STATION='archive.ubuntu.com'
+			fi
+		fi
+		;;
 	01) SOURCE_MIRROR_STATION='ftp.am.debian.org' ;;
 	02) SOURCE_MIRROR_STATION='ftp.au.debian.org' ;;
 	03) SOURCE_MIRROR_STATION='ftp.at.debian.org' ;;
@@ -5370,15 +5380,16 @@ worldwide_mirror_station() {
 }
 #####################################
 tmoe_sources_list_manager() {
+	DEBIAN_SECURITY_SOURCE='false'
 	check_tmoe_sources_list_backup_file
 	SOURCE_MIRROR_STATION=""
 	RETURN_TO_WHERE='tmoe_sources_list_manager'
 	SOURCES_LIST=$(
 		whiptail --title "software-sources tmoe-manager" --menu \
 			"您想要对软件源进行何种管理呢？" 17 50 9 \
-			"1" "worldwide mirror sites全球镜像站" \
+			"1" "business:国内商业镜像源" \
 			"2" "university:国内高校镜像源" \
-			"3" "business:国内商业镜像源" \
+			"3" "worldwide mirror sites全球镜像站" \
 			"4" "ping(镜像站延迟测试)" \
 			"5" "speed(镜像站下载速度测试)" \
 			"6" "+ppa:(🍥debian添加ubuntu ppa源)" \
@@ -5395,9 +5406,9 @@ tmoe_sources_list_manager() {
 	########################
 	case "${SOURCES_LIST}" in
 	0 | "") tmoe_linux_tool_menu ;;
-	1) worldwide_mirror_station ;;
-	2) china_university_mirror_station ;;
-	3) china_bussiness_mirror_station ;;
+	1) china_bussiness_mirror_station ;;
+    2) china_university_mirror_station ;;
+	3) worldwide_mirror_station ;;
 	4) ping_mirror_sources_list ;;
 	5) mirror_sources_station_download_speed_test ;;
 	6) tmoe_debian_add_ubuntu_ppa_source ;;
@@ -5789,12 +5800,15 @@ modify_kali_mirror_sources_list() {
 }
 #############
 check_ca_certificates_and_apt_update() {
-	if [ -e "/usr/sbin/update-ca-certificates" ]; then
+	if [ "${DEBIAN_SECURITY_SOURCE}" != "true" ]; then
+	  if [ -e "/usr/sbin/update-ca-certificates" ]; then
 		echo "检测到您已安装ca-certificates"
 		echo "Replacing http software source list with https."
 		echo "正在将http源替换为https..."
 		#update-ca-certificates
 		sed -i 's@http:@https:@g' /etc/apt/sources.list
+		sed -i 's@https://security@http://security@g' /etc/apt/sources.list
+	  fi
 	fi
 	apt update
 	apt dist-upgrade
@@ -5845,17 +5859,19 @@ modify_ubuntu_mirror_sources_list() {
 #############
 modify_debian_mirror_sources_list() {
 	NEW_DEBIAN_SOURCES_LIST='false'
-	if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-		SOURCELISTCODE='sid'
-
-	elif grep -q '^PRETTY_NAME.*testing' "/etc/os-release"; then
-		NEW_DEBIAN_SOURCES_LIST='true'
+	if [ ! "$(command -v lsb_release)" ];then
+	    echo 'apt install lsb-release'
+	    apt install lsb-release
+	fi
+    if [ "$(lsb_release -rs | cut -d '/' -f 1)" = 'testing' ];then
+        NEW_DEBIAN_SOURCES_LIST='true'
 		SOURCELISTCODE='testing'
 		BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
-		#echo "Debian testing"
+	elif grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
+		SOURCELISTCODE='sid'
 
 	elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
-		NEW_DEBIAN_SOURCES_LIST='true'
+	       NEW_DEBIAN_SOURCES_LIST='true'
 		if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
 			SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
 		else
@@ -5896,6 +5912,12 @@ modify_debian_mirror_sources_list() {
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${BACKPORTCODE}-backports main contrib non-free
 				deb http://${SOURCE_MIRROR_STATION}/debian-security/ ${SOURCELISTCODE}-security main contrib non-free
 			EndOfSourcesList
+			if [ "${DEBIAN_SECURITY_SOURCE}" = "true" ]; then
+				sed -i 's@^deb.*debian-security@#&@' /etc/apt/sources.list
+				cat >>/etc/apt/sources.list <<-EndOfsecuritySource
+					deb http://security.debian.org/debian-security/ ${SOURCELISTCODE}-security main contrib non-free
+				EndOfsecuritySource
+			fi
 		else
 			#下面那行EndOfSourcesList不能加单引号
 			cat >>/etc/apt/sources.list <<-EndOfSourcesList
@@ -5904,6 +5926,12 @@ modify_debian_mirror_sources_list() {
 				deb http://${SOURCE_MIRROR_STATION}/debian/ ${BACKPORTCODE}-backports main contrib non-free
 				deb http://${SOURCE_MIRROR_STATION}/debian-security/ ${SOURCELISTCODE}/updates main contrib non-free
 			EndOfSourcesList
+			if [ "${DEBIAN_SECURITY_SOURCE}" = "true" ]; then
+				sed -i 's@^deb.*debian-security@#&@' /etc/apt/sources.list
+				cat >>/etc/apt/sources.list <<-EndOfsecuritySource
+                deb http://security.debian.org/debian-security/ ${SOURCELISTCODE}/updates main contrib non-free
+				EndOfsecuritySource
+			fi
 		fi
 	fi
 }
@@ -8984,10 +9012,10 @@ configure_scrcpy() {
 	configure_scrcpy
 }
 ##############
-switch_scrcpy_device(){ 
+switch_scrcpy_device() {
 	cd /tmp/
 	adb devices 2>&1 | sed '1d;$d' | awk '{print $1}' >.tmoe-linux_cache.01
-	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $4.$3}' | sed 's@model:@@g' |sed 's@product:@-@' >.tmoe-linux_cache.02
+	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $4.$3}' | sed 's@model:@@g' | sed 's@product:@-@' >.tmoe-linux_cache.02
 	TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	cat .tmoe-linux_cache.0*
 	echo ${TMOE_ADB_DEVICE_LIST}
@@ -9003,34 +9031,34 @@ switch_scrcpy_device(){
 	scrcpy -s ${TMOE_ADB_DEVICE_ITEM}
 }
 #############
-scrpy_faq(){ 
-cat <<-EOF
-    tightvnc可能无法正常启动本应用（scrcpy）,您可以在x11vnc环境下启动它。
-    启动前请先确保adb已正常连接至您的安卓设备。
-    若adb无法连接，则请重启adb服务。
-	启动本应用的命令为${GREEN}scrcpy${RESET}
-	使用说明详见https://github.com/Genymobile/scrcpy/blob/master/README.md
-	https://www.iplaysoft.com/scrcpy.html
-关闭手机屏幕	scrcpy -S
-限制画面分辨率	scrcpy -m 1024 (比如限制为 1024)
-修改视频码率	scrcpy -b 4M (默认 8Mbps，改成 4Mbps)
-裁剪画面	scrcpy -c 1920:1080:0:0
-表示分辨率 1920x1080 并且偏移坐标为 (0,0)
-窗口置顶	scrcpy -T
-显示触摸点击	scrcpy -t
-在演示或录制教程时，可在画面上对应显示出点击动作
-全屏显示	scrcpy -f
-文件传输默认路径	scrcpy --push-target /你的/目录
-将文件拖放到 scrcpy 可以传输文件，此命令指定默认保存目录
-只读模式(仅显示不控制)	scrcpy -n
-屏幕录像	scrcpy -r 视频文件名.mp4 或 .mkv
-屏幕录像 (禁用电脑显示)	scrcpy -Nr 文件名.mkv
-设置窗口标题	scrcpy --window-title '2333'
-EOF
+scrpy_faq() {
+	cat <<-EOF
+		    tightvnc可能无法正常启动本应用（scrcpy）,您可以在x11vnc环境下启动它。
+		    启动前请先确保adb已正常连接至您的安卓设备。
+		    若adb无法连接，则请重启adb服务。
+			启动本应用的命令为${GREEN}scrcpy${RESET}
+			使用说明详见https://github.com/Genymobile/scrcpy/blob/master/README.md
+			https://www.iplaysoft.com/scrcpy.html
+		关闭手机屏幕  scrcpy -S
+		限制画面分辨率 scrcpy -m 1024 (比如限制为 1024)
+		修改视频码率  scrcpy -b 4M (默认 8Mbps，改成 4Mbps)
+		裁剪画面    scrcpy -c 1920:1080:0:0
+		表示分辨率 1920x1080 并且偏移坐标为 (0,0)
+		窗口置顶   scrcpy -T
+		显示触摸点击 scrcpy -t
+		在演示或录制教程时，可在画面上对应显示出点击动作
+		全屏显示     scrcpy -f
+		文件传输默认路径 scrcpy --push-target /你的/目录
+		将文件拖放到 scrcpy 可以传输文件，此命令指定默认保存目录
+		只读模式(仅显示不控制)  scrcpy -n
+		屏幕录像          scrcpy -r 视频文件名.mp4 或 .mkv
+		屏幕录像 (禁用电脑显示) scrcpy -Nr 文件名.mkv
+		设置窗口标题        scrcpy --window-title '2333'
+	EOF
 }
 ###############
-scrcpy_connect_to_android_device(){ 
-#请输入adb
+scrcpy_connect_to_android_device() {
+	#请输入adb
 	TARGET=$(whiptail --inputbox "① 若Android无root权限，且系统未自带ADB网络调试功能，则请开启USB调试功能，并使用USB数据线连接本机（Linux设备)。\n② 若Android无root权限，且系统自带ADB网络调试功能，则请同时开启USB和网络调试功能，您无需使用数据线即可连接。\n③ 若Android有root权限，则您可以通过安装网络ADB调试软件https://coolapk.com/apk/com.yaerin.wadb 来开启网络ADB调试功能。 \n请输入adb连接地址，例如192.168.99.3:5555。若不添加端口,则使用默认值" 0 0 --title "Please type the adb address" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
@@ -9039,28 +9067,28 @@ scrcpy_connect_to_android_device(){
 		echo "Please enter a valid value"
 		echo "检测到您未输入有效的adb地址，已自动调整为localhost:5555"
 	else
-	   if [ ! $(echo ${TARGET} | grep ':') ];then
-            TARGET=${TARGET}:5555
+		if [ ! $(echo ${TARGET} | grep ':') ]; then
+			TARGET=${TARGET}:5555
 			echo "检测到您未添加端口，已将端口修改为5555"
-	   fi
+		fi
 	fi
-		echo "正在通过ADB连接至Android设备..."
-		echo "${BLUE}adb connect ${TARGET}${RESET}"
-		echo "Connecting to adb device..."
-	    adb connect ${TARGET}
-		adb devices -l
-		echo "您可以在x11VNC下使用scrcpy来启动本应用"
-		echo "您是否需要立刻启动scrcpy?"
-		do_you_want_to_continue
-        scrcpy
-} 
+	echo "正在通过ADB连接至Android设备..."
+	echo "${BLUE}adb connect ${TARGET}${RESET}"
+	echo "Connecting to adb device..."
+	adb connect ${TARGET}
+	adb devices -l
+	echo "您可以在x11VNC下使用scrcpy来启动本应用"
+	echo "您是否需要立刻启动scrcpy?"
+	do_you_want_to_continue
+	scrcpy
+}
 ##################
-restart_adb(){ 
-   adb kill-server
-   adb devices -l
+restart_adb() {
+	adb kill-server
+	adb devices -l
 }
 ###########
-install_scrcpy(){ 
+install_scrcpy() {
 	DEPENDENCY_02='scrcpy'
 	beta_features_quick_install
 }
