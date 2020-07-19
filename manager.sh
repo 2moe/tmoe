@@ -682,7 +682,7 @@ tmoe_locale_settings() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 	elif [ ${LINUX_DISTRO} != 'Android' ]; then
-		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2)
+		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2 | cut -d '"' -f 2)
 	else
 		TMOE_LANG='default'
 	fi
