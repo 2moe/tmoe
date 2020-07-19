@@ -689,7 +689,8 @@ tmoe_locale_settings() {
 	CONTAINER_LOCALE=$(
 		whiptail --title "LOCALE SETTINGS" \
 			--menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
-			"00" "Back 返回" \
+			"0" "Back 返回" \
+			"00" "Edit manually手动编辑" \
 			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
 			"02" "sq_AL.UTF-8 Albanian_Albania" \
 			"03" "ar_SA.UTF-8 Arabic_Saudi Arabia" \
@@ -758,7 +759,8 @@ tmoe_locale_settings() {
 	)
 	##########################
 	case "${CONTAINER_LOCALE}" in
-	00 | "") tmoe_manager_main_menu ;;
+	0 | "") tmoe_manager_main_menu ;;
+	00) edit_tmoe_locale_file_manually ;;
 	01) TMOE_LANG='af_ZA.UTF-8' ;;
 	02) TMOE_LANG='sq_AL.UTF-8' ;;
 	03) TMOE_LANG='ar_SA.UTF-8' ;;
@@ -897,6 +899,23 @@ tmoe_locale_settings() {
 	tmoe_locale_settings
 }
 #####################
+edit_tmoe_locale_file_manually() {
+	if [ -e "/etc/locale.gen" ]; then
+		editor /etc/default/locale
+		editor /etc/locale.gen
+	fi
+	if [ $(command -v debian) ]; then
+		editor $(command -v debian)
+	fi
+	if [ -e "${DEBIAN_CHROOT}/etc" ]; then
+		editor ${DEBIAN_CHROOT}/etc/default/locale
+		editor ${DEBIAN_CHROOT}/etc/locale.gen
+	fi
+	press_enter_to_return
+	#tmoe_manager_main_menu
+	tmoe_locale_settings
+}
+############
 vnc_can_not_call_pulse_audio() {
 	echo "若您启动VNC后，发现无音频。首先请确保您的termux为最新版本，并安装了termux:api"
 	echo "若您的宿主机为Android系统，且发现音频服务无法启动，请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
