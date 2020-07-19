@@ -9006,8 +9006,8 @@ configure_scrcpy() {
 	3) switch_scrcpy_device ;;
 	4) restart_adb ;;
 	5) scrpy_faq ;;
-	esac
-	##########################
+	esac 
+	#########################
 	press_enter_to_return
 	configure_scrcpy
 }
@@ -9015,7 +9015,7 @@ configure_scrcpy() {
 switch_scrcpy_device() {
 	cd /tmp/
 	adb devices 2>&1 | sed '1d;$d' | awk '{print $1}' >.tmoe-linux_cache.01
-	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $4.$3}' | sed 's@model:@@g' | sed 's@product:@-@' >.tmoe-linux_cache.02
+	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $5,$4,$3}' | sed 's@model:@@g' | sed 's@-@_@g' | sed 's@product:@-@g' | sed 's@:@-@g' | sed 's@ @-@g' >.tmoe-linux_cache.02
 	TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	cat .tmoe-linux_cache.0*
 	echo ${TMOE_ADB_DEVICE_LIST}
