@@ -921,15 +921,29 @@ tmoe_locale_settings() {
 #####################
 edit_tmoe_locale_file_manually() {
 	if [ -e "/etc/locale.gen" ]; then
-		editor /etc/default/locale
-		editor /etc/locale.gen
+		if [ $(command -v editor) ]; then
+			editor /etc/default/locale
+			editor /etc/locale.gen
+		else
+			nano /etc/default/locale
+			nano /etc/locale.gen
+		fi
 	fi
 	if [ $(command -v debian) ]; then
-		editor $(command -v debian)
+		if [ $(command -v editor) ]; then
+			editor $(command -v debian)
+		else
+			nano $(command -v debian)
+		fi
 	fi
 	if [ -e "${DEBIAN_CHROOT}/etc" ]; then
-		editor ${DEBIAN_CHROOT}/etc/default/locale
-		editor ${DEBIAN_CHROOT}/etc/locale.gen
+		if [ $(command -v editor) ]; then
+			editor ${DEBIAN_CHROOT}/etc/default/locale
+			editor ${DEBIAN_CHROOT}/etc/locale.gen
+		else
+			nano ${DEBIAN_CHROOT}/etc/default/locale
+			nano ${DEBIAN_CHROOT}/etc/locale.gen
+		fi
 	fi
 	press_enter_to_return
 	#tmoe_manager_main_menu
@@ -2425,7 +2439,7 @@ tmoe_qemu_user_manager() {
 			"05" "armel（支持软浮点运算,常见于旧设备）" \
 			"06" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
 			"07" "s390x(常见于IBM大型机)" \
-			"08" "mipsel(暂适配debian stable,常见于龙芯cpu或和嵌入式设备)" \
+			"08" "mipsel(暂仅适配debian stable,常见于龙芯cpu或和嵌入式设备)" \
 			"09" "riscv64（开源架构,精简指令集）" \
 			3>&1 1>&2 2>&3
 	)

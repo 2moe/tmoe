@@ -14731,7 +14731,11 @@ tmoe_fcitx_faq() {
 	4) input_method_config ;;
 	5)
 		cd ${HOME}
-		editor .xprofile
+		if [ $(command -v editor) ]; then
+			editor .xprofile
+		else
+		    nano .xprofile
+		fi
 		chown $(whoami) .xprofile
 		;;
 	esac
