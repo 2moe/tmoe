@@ -648,7 +648,7 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200720-04)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200721-04)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1230,8 +1230,9 @@ remove_gnu_linux_container() {
 	#ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 	cd ${HOME}
 	ls -lh *-rootfs.tar.xz
+	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '-' -f 1)
 	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
-	echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
+	echo 'Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]'
 
 	read opt
 	case $opt in
@@ -1241,7 +1242,9 @@ remove_gnu_linux_container() {
 		#rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
 		#rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
 		#rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
-		rm -vf *-rootfs.tar.xz 2>/dev/null
+		#rm -vf *-rootfs.tar.xz 2>/dev/null
+		rm -fv ~/${DEBIAN_FOLDER}-rootfs.tar.xz
+		rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz
 		echo "Deleted已删除"
 		;;
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
@@ -2416,7 +2419,7 @@ tmoe_qemu_user_manager() {
 			"0" "Back to the main menu 返回主菜单" \
 			"00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
 			"01" "i386(常见于32位cpu的旧式传统pc)" \
-			"02" "x64/amd64(2020年为止最主流的64位架构,应用于pc和服务器）" \
+			"02" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
 			"03" "arm64（2020年移动平台主流cpu架构）" \
 			"04" "armhf(32位arm架构,支持硬浮点运算)" \
 			"05" "armel（支持软浮点运算,常见于旧设备）" \
