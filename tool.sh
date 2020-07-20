@@ -9006,8 +9006,8 @@ configure_scrcpy() {
 	3) switch_scrcpy_device ;;
 	4) restart_adb ;;
 	5) scrpy_faq ;;
-	esac
-	##########################
+	esac 
+	#########################
 	press_enter_to_return
 	configure_scrcpy
 }
@@ -9015,7 +9015,7 @@ configure_scrcpy() {
 switch_scrcpy_device() {
 	cd /tmp/
 	adb devices 2>&1 | sed '1d;$d' | awk '{print $1}' >.tmoe-linux_cache.01
-	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $4.$3}' | sed 's@model:@@g' | sed 's@product:@-@' >.tmoe-linux_cache.02
+	adb devices -l 2>&1 | sed '1d;$d' | awk '{print $5,$4,$3}' | sed 's@model:@@g' | sed 's@-@_@g' | sed 's@product:@-@g' | sed 's@:@-@g' | sed 's@ @-@g' >.tmoe-linux_cache.02
 	TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	cat .tmoe-linux_cache.0*
 	echo ${TMOE_ADB_DEVICE_LIST}
@@ -9861,7 +9861,7 @@ network_manager_tui() {
 		if [ ! -z $(echo ${LANG} | grep zh) ]; then
 			curl -L myip.ipip.net
 		else
-			curl -L ip.sb
+			curl -L ip.cip.cc
 		fi
 		;;
 	7)
@@ -15626,7 +15626,7 @@ nginx_restart() {
 	cat /var/log/nginx/webdav.access.log | tail -n 10
 	echo "正在为您启动nginx服务，本机默认访问地址为localhost:${NGINX_WEBDAV_PORT}"
 	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${NGINX_WEBDAV_PORT}
-	echo The WAN address 外网地址 $(curl -sL ip.sb | head -n 1):${NGINX_WEBDAV_PORT}
+	echo The WAN address 外网地址 $(curl -sL ip.cip.cc | head -n 1):${NGINX_WEBDAV_PORT}
 	echo "${YELLOW}您可以使用文件管理器或浏览器来打开WebDAV访问地址${RESET}"
 	echo "Please use your browser to open the access address"
 }
@@ -15962,7 +15962,7 @@ filebrowser_restart() {
 	fi
 	echo "正在为您启动filebrowser服务，本机默认访问地址为localhost:${FILEBROWSER_PORT}"
 	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${FILEBROWSER_PORT}
-	echo The WAN address 外网地址 $(curl -sL ip.sb | head -n 1):${FILEBROWSER_PORT}
+	echo The WAN address 外网地址 $(curl -sL ip.cip.cc | head -n 1):${FILEBROWSER_PORT}
 	echo "${YELLOW}请使用浏览器打开上述地址${RESET}"
 	echo "Please use your browser to open the access address"
 }

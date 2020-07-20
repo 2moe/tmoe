@@ -1800,11 +1800,6 @@ EOF
 }
 ############
 how_to_connect_to_aria2_rpc_server() {
-    ARIA2_RPC_PORT=$(cat ${TMOE_ARIA2_FILE} | grep 'rpc-listen-port=' | cut -d '=' -f 2)
-    echo "本机默认RPC服务地址为ws://localhost:${ARIA2_RPC_PORT}/jsonrpc"
-    echo The LAN RPC address 局域网RPC服务地址 ws://$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2 | awk '{print $1}'):${ARIA2_RPC_PORT}/jsonrpc
-    echo The WAN RPC address 外网RPC服务地址 ws://$(curl -sL ip.sb | head -n 1):${ARIA2_RPC_PORT}/jsonrpc
-    echo '若存在兼容问题，则可将websocket(ws)替换为http'
     cat <<-'EOF'
     AriaNG网页地址
     http://mo2.gitee.io/a2
@@ -1814,6 +1809,12 @@ EOF
     echo "您可以使用浏览器来打开${YELLOW}AriaNG网页地址${RESET}，并在AriaNG设置页面中连接至${RESET}RPC服务${RESET}(需输入地址，端口和密钥)"
     echo Q:为什么无法连接？明明RPC地址，密钥和端口都没错
     echo A:防火墙放行${ARIA2_RPC_PORT}端口
+    echo -------------------------------
+    ARIA2_RPC_PORT=$(cat ${TMOE_ARIA2_FILE} | grep 'rpc-listen-port=' | cut -d '=' -f 2)
+    echo "本机默认RPC服务地址为ws://localhost:${ARIA2_RPC_PORT}/jsonrpc"
+    echo The LAN RPC address 局域网RPC服务地址 ws://$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2 | awk '{print $1}'):${ARIA2_RPC_PORT}/jsonrpc
+    echo The WAN RPC address 外网RPC服务地址 ws://$(curl -sL ip.cip.cc | head -n 1):${ARIA2_RPC_PORT}/jsonrpc
+    echo '若存在兼容问题，则可将websocket(ws)替换为http'
 }
 ###########
 what_is_the_different_of_ariang_and_rpc() {
