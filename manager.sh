@@ -2398,7 +2398,7 @@ download_qemu_user() {
 }
 ##############
 remove_qemu_user_static() {
-	rm -rv $PREFIX/bin/qemu-*-static "$PREFIX/bin/qemu-*-static"
+	rm -rv $PREFIX/bin/qemu-*-static "$PREFIX/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
 	apt remove ^qemu-user
 }
 ##############
