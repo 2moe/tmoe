@@ -49,9 +49,36 @@ esac
 #gentoo_arm64在下一行修改ARCH_TYPE的变量为armhf
 
 #requirements and DEPENDENCIES.
+TRUE_ARCH_TYPE=${ARCH_TYPE}
+QEMU_ARCH=''
+CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
+ACROSS_ARCH_FILE="${CONFIG_FOLDER}across_architecture_container.txt"
+if [ -e "${ACROSS_ARCH_FILE}" ]; then
+	ARCH_TYPE="$(cat ${ACROSS_ARCH_FILE} | head -n 1)"
+	QEMU_ARCH="$(cat ${ACROSS_ARCH_FILE} | sed -n 2p)"
+fi
+
+LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}linux_container_distro.txt"
+DEBIAN_FOLDER=debian_${ARCH_TYPE}
+if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
+	LINUX_CONTAINER_DISTRO=$(cat ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+	if [ ! -z "${LINUX_CONTAINER_DISTRO}" ]; then
+		DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
+	fi
+fi
+DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+
+#创建必要文件夹，防止挂载失败
+mkdir -p ~/storage/external-1
+#DEBIAN_FOLDER=debian_arm64
+RED=$(printf '\033[31m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
 
 DEPENDENCIES=""
-
 if [ "$(uname -o)" = "Android" ]; then
 	LINUX_DISTRO='Android'
 	if [ ! -h "/data/data/com.termux/files/home/storage/shared" ]; then
@@ -182,19 +209,6 @@ elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release' 2>/dev/null; the
 		REDHAT_DISTRO='fedora'
 	fi
 fi
-
-#创建必要文件夹，防止挂载失败
-mkdir -p ~/storage/external-1
-DEBIAN_FOLDER=debian_${ARCH_TYPE}
-DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
-#DEBIAN_FOLDER=debian_arm64
-RED=$(printf '\033[31m')
-GREEN=$(printf '\033[32m')
-YELLOW=$(printf '\033[33m')
-BLUE=$(printf '\033[34m')
-BOLD=$(printf '\033[1m')
-RESET=$(printf '\033[m')
-
 echo "                                        "
 echo "                 .::::..                "
 echo "      ::::rrr7QQJi::i:iirijQBBBQB.      "
@@ -229,19 +243,17 @@ echo "检测到您当前的架构为${ARCH_TYPE} ，debian system将安装至~/$
 cd ${HOME}
 
 if [ -d "${DEBIAN_FOLDER}" ]; then
-	downloaded=1
 	echo "Detected that you have debian installed 检测到您已安装debian"
 fi
 
 mkdir -p ~/${DEBIAN_FOLDER}
 
-DebianTarXz="debian-sid-rootfs.tar.xz"
+DebianTarXz="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 
-#if [ "$downloaded" != 1 ];then
 if [ ! -f ${DebianTarXz} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
 		echo "正在从清华大学开源镜像站下载容器镜像"
-		echo "Downloading debian-sid-rootfs.tar.xz from Tsinghua University Open Source Mirror Station."
+		echo "Downloading ${DebianTarXz} from Tsinghua University Open Source Mirror Station."
 		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 			aria2c -x 5 -k 1M --split 5 -o ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
@@ -249,19 +261,19 @@ if [ ! -f ${DebianTarXz} ]; then
 			wget -O ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
 		fi
 	else
-		aria2c -x 16 -k 1M --split 16 -o ${DebianTarXz} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+		aria2c -x 6 -k 1M --split 6 -o ${DebianTarXz} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
 	fi
 fi
 cur=$(pwd)
 cd ${DEBIAN_CHROOT}
-echo "正在解压debian-sid-rootfs.tar.xz，decompressing rootfs, please be patient."
-if [ "${LINUX_DISTRO}" = "Android" ]; then
+echo "正在解压${DebianTarXz}，decompressing rootfs, please be patient."
+if [ "${ARCH_TYPE}" = "mipsel" ]; then
+	pv ${cur}/${DebianTarXz} | tar -pJx
+	mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
+elif [ "${LINUX_DISTRO}" = "Android" ]; then
 	pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
 elif [ "${LINUX_DISTRO}" = "iSH" ]; then
 	tar -pJxvf ${cur}/${DebianTarXz}
-elif [ "${ARCH_TYPE}" = "mipsel" ]; then
-	cd ${HOME}
-	pv ${DebianTarXz} | tar -pJx
 elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 	if [ "${REDHAT_DISTRO}" != "fedora" ]; then
 		tar -pJxvf ${cur}/${DebianTarXz}
@@ -438,6 +450,7 @@ creat_proot_startup_script() {
 			command+=" --link2symlink"
 			command+=" -0"
 			command+=" -r ${DEBIAN_FOLDER}"
+			#command+=" -q qemu-x86_64-staic"
 			command+=" -b /dev"
 			command+=" -b /proc"
 			command+=" -b ${DEBIAN_FOLDER}/root:/dev/shm"
@@ -484,6 +497,10 @@ creat_proot_startup_script() {
 	fi
 	if [ ! -e "/data/data/com.termux/files/home" ]; then
 		sed -i 's@command+=" -b /data/data/com.termux/files/home:/root/termux"@#&@g' ${PREFIX}/bin/debian
+	fi
+	if [ ! -z "${QEMU_ARCH}" ]; then
+		sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
+		sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
 	fi
 }
 ######################
@@ -558,7 +575,7 @@ creat_linux_container_remove_script() {
 		  pkill proot 2>/dev/null
 			read
 		    chmod 777 -R ${DEBIAN_FOLDER}
-			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
 
 		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 			  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
@@ -567,17 +584,20 @@ creat_linux_container_remove_script() {
 		  echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 			echo 'If you want to reinstall, it is not recommended to remove the image file.'
 			echo '若需要重装，则不建议移除镜像文件。'
+			#echo '若需要跨架构运行,则建议移除该文件,以便重新下载相应架构的镜像文件'
 			echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
-			echo 'Do you need to delete the image file (debian-sid-rootfs.tar.xz)?[Y/n]'
+			echo 'Do you need to delete the image file (*rootfs.tar.xz)?[Y/n]'
 
 		    read opt
 			case \$opt in
-				y*|Y*|"") rm -vf ~/debian-sid-rootfs.tar.xz 2>/dev/null
+				y*|Y*|"") rm -vf ~/debian-sid*rootfs.tar.xz 2>/dev/null
 		    rm -f ${PREFIX}/bin/debian-rm
-				rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
-				rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-				rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-				rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
+			rm -vf ~/fedora*rootfs.tar.xz 2>/dev/null
+			rm -vf ~/arch*rootfs.tar.xz 2>/dev/null
+				rm -vf ~/debian-buster*rootfs.tar.xz 2>/dev/null
+				rm -vf ~/ubuntu-focal*rootfs.tar.xz 2>/dev/null
+				rm -vf ~/kali-rolling*rootfs.tar.xz 2>/dev/null
+				rm -vf ~/funtoo*rootfs.tar.xz 2>/dev/null
 		    echo "Deleted已删除" ;;
 				n*|N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
@@ -633,24 +653,6 @@ alias debian-rm="${PREFIX}/bin/debian-rm"
 echo "You can type rm ~/${DebianTarXz} to delete the image file"
 echo "您可以输rm ~/${DebianTarXz}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
-
-cd ${HOME}/${DEBIAN_FOLDER}
-#配置卸载脚本
-cat >remove-debian.sh <<-EOF
-	#!/data/data/com.termux/files/usr/bin/bash
-	cd ${HOME}
-	chmod 777 -R ${DEBIAN_FOLDER}
-	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc 2>/dev/null || sudo rm -rf "debian_$ARCH_TYPE" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc
-	if grep -q 'alias debian' "${PREFIX}/etc/profile"; then
-	  sed -i '/alias debian=/d' ${PREFIX}/etc/profile
-	  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
-	  source profile >/dev/null 2>&1
-	fi
-	echo '删除完成，如需卸载aria2,请输apt remove aria2'
-	echo '如需删除镜像文件，请输rm -f ~/debian-sid-rootfs.tar.xz'
-EOF
-chmod +x remove-debian.sh
-
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
 	mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
@@ -796,11 +798,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    #stable-backports会出错，需改为buster-backports
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-				#deb http://mirrors.163.com/debian/ stable main contrib non-free
-				#deb http://mirrors.163.com/debian/ stable-updates main contrib non-free
-				#deb http://mirrors.163.com/debian/ buster-backports main contrib non-free
-				#deb http://mirrors.163.com/debian-security/ stable/updates main contrib non-free
-				deb http://mirrors.163.com/debian/ sid main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian/ stable-updates main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free
+				#deb http://mirrors.huaweicloud.com/debian-security/ stable/updates main contrib non-free
+				deb http://mirrors.huaweicloud.com/debian/ sid main contrib non-free
 			EndOfFile
 	}
 	##############################
@@ -879,7 +881,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			nameserver 2606:4700:4700::1111
 		EndOfFile
 	######################
-	###################
 	###################
 	arch_linux_mirror_list() {
 	    sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
@@ -1380,7 +1381,7 @@ ENDOFbashPROFILE
 #####################
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
 	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
-	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+	#sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
 
 bash ${PREFIX}/bin/debian

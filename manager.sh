@@ -81,8 +81,26 @@ check_arch() {
 		#exit 1
 		;;
 	esac
+	TRUE_ARCH_TYPE=${ARCH_TYPE}
+	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
+	if [ ! -e "${CONFIG_FOLDER}" ]; then
+		mkdir -p ${CONFIG_FOLDER}
+	fi
+	ACROSS_ARCH_FILE="${CONFIG_FOLDER}across_architecture_container.txt"
+	if [ -e "${ACROSS_ARCH_FILE}" ]; then
+		ARCH_TYPE="$(cat ${ACROSS_ARCH_FILE} | head -n 1)"
+		QEMU_ARCH="$(cat ${ACROSS_ARCH_FILE} | sed -n 2p)"
+	fi
+	LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}linux_container_distro.txt"
 	DEBIAN_FOLDER=debian_${ARCH_TYPE}
+	if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
+		LINUX_CONTAINER_DISTRO=$(cat ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+		if [ ! -z "${LINUX_CONTAINER_DISTRO}" ]; then
+			DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
+		fi
+	fi
 	DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+	#echo $DEBIAN_FOLDER $DEBIAN_CHROOT
 	RED=$(printf '\033[31m')
 	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
@@ -630,12 +648,12 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200715-15)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200720-04)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复sudo,0514支持最新的ubuntu20.10" 17 50 6 \
+		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复sudo,0514支持最新的ubuntu20.10,0720优化跨架构运行" 17 50 6 \
 			"1" "proot安装(๑•̀ㅂ•́)و✧" \
 			"2" "chroot安装" \
 			"3" "🌏locales/区域/ロケール/로케일" \
@@ -971,6 +989,7 @@ frequently_asked_questions() {
 		"您有哪些疑问？\nWhat questions do you have?" 15 60 5 \
 		"1" "VNC无法调用音频" \
 		"2" "给Linux Deploy配置VNC音频" \
+		"3" "disable qemu(禁用以适用于向下兼容)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -978,11 +997,8 @@ frequently_asked_questions() {
 	0 | "") tmoe_manager_main_menu ;;
 	1) vnc_can_not_call_pulse_audio ;;
 	2) linux_deploy_pulse_server ;;
+	3) disale_qemu_user_static ;;
 	esac
-	############################
-	if [ -z ${TMOE_FAQ} ]; then
-		tmoe_manager_main_menu
-	fi
 	#############
 	press_enter_to_return
 	tmoe_manager_main_menu
@@ -1018,11 +1034,11 @@ install_chroot_container() {
 }
 ########################
 install_gnu_linux_container() {
+	#此处不能用变量debian_chroot
 	if [ -d ~/${DEBIAN_FOLDER} ]; then
 		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do" 0 0); then
 			debian
 		else
-
 			echo "${YELLOW}检测到您已安装GNU/Linux容器,是否重新安装？[Y/n]${RESET} "
 			echo "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
 			echo "Detected that you have GNU/Linux container installed, do you want to reinstall it?[Y/n]"
@@ -1033,7 +1049,7 @@ install_gnu_linux_container() {
 				sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
 				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 				source ${PREFIX}/etc/profile >/dev/null 2>&1
-				install_debian_or_download_recovery_pkg_tar_xz
+				tmoe_linux_container_eula
 				;;
 			n* | N*)
 				echo "skipped."
@@ -1049,7 +1065,7 @@ install_gnu_linux_container() {
 		fi
 
 	else
-		install_debian_or_download_recovery_pkg_tar_xz
+		tmoe_linux_container_eula
 		#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
 	fi
 }
@@ -1192,7 +1208,7 @@ remove_gnu_linux_container() {
 	read
 
 	chmod 777 -R ${DEBIAN_FOLDER}
-	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code 2>/dev/null
+	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
 	if [ -d "${HOME}/debian_armhf" ]; then
 		echo "检测到疑似存在树莓派armhf系统，正在移除..."
 		chmod 777 -R "${HOME}/debian_armhf"
@@ -2171,7 +2187,7 @@ chroot_install_debian() {
 	install_gnu_linux_container
 }
 #################################
-install_debian_or_download_recovery_pkg_tar_xz() {
+tmoe_linux_container_eula() {
 	if [ ! -d "${DEBIAN_CHROOT}" ]; then
 		#less -meQ
 		cat <<-'EndOfFile'
@@ -2234,10 +2250,254 @@ install_debian_or_download_recovery_pkg_tar_xz() {
 		#fi
 		read
 	fi
-	choose_which_gnu_linux_distro
+	same_arch_or_different_arch
 }
-
 ###################################################
+same_arch_or_different_arch() {
+	if (whiptail --title "您是想要同架构运行,还是跨架构呢？" --yes-button 'same同' --no-button 'across跨' --yesno "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?\n除向下兼容外,跨架构运行的效率可能偏低" 0 0); then
+		rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
+		choose_which_gnu_linux_distro
+	else
+		tmoe_qemu_user_manager
+	fi
+	###################
+}
+###############
+disale_qemu_user_static() {
+	if (whiptail --title "若无法向下兼容，则尝试禁用该参数" --yes-button 'disable禁用' --no-button 'enable启用' --yesno "Do you want to disable it?" 0 0); then
+		sed -i "s@qemu-x86_64-staic@#&@" ${PREFIX}/bin/debian
+	else
+		sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
+		sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
+	fi
+}
+#############
+tmoe_qemu_user_static() {
+	RETURN_TO_WHERE='tmoe_qemu_user_static'
+	BETA_SYSTEM=$(
+		whiptail --title "qemu_user_static" --menu "QEMU的user模式跨架构运行的效率可能比system模式更高，但存在更多的局限性" 0 50 0 \
+			"1" "chart架构支持表格" \
+			"2" "install/upgrade(安装/更新)" \
+			"3" "remove(移除/卸载)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") tmoe_qemu_user_manager ;;
+	1) tmoe_qemu_user_chart ;;
+	2) install_qemu_user_static ;;
+	3) remove_qemu_user_static ;;
+	esac
+	######################
+	press_enter_to_return
+	tmoe_qemu_user_static
+}
+#####################
+tmoe_qemu_user_chart() {
+	cat <<-'ENDofTable'
+		下表中的所有系统均支持x64和arm64
+		*表示仅旧版支持
+			╔═══╦════════════╦════════╦════════╦═════════╦
+			║   ║architecture║        ║        ║         ║
+			║   ║----------- ║ x86    ║armhf   ║ppc64el  ║
+			║   ║System      ║        ║        ║         ║
+			║---║------------║--------║--------║---------║
+			║ 1 ║  Debian    ║  ✓     ║    ✓   ║   ✓     ║
+			║   ║            ║        ║        ║         ║
+			║---║------------║--------║--------║---------║
+			║   ║            ║        ║        ║         ║
+			║ 2 ║  Ubuntu    ║  ✓     ║  ✓     ║   ✓     ║
+			║---║------------║--------║--------║---------║
+			║   ║            ║        ║        ║         ║
+			║ 3 ║ Kali       ║  ✓     ║   ✓    ║    ✓    ║
+			║---║------------║--------║--------║---------║
+			║   ║            ║        ║        ║         ║
+			║ 4 ║ arch       ║  X     ║   ✓    ║   X     ║
+			║---║------------║--------║--------║---------║
+			║   ║            ║        ║        ║         ║
+			║ 5 ║ fedora     ║ *<=29  ║ *<=29  ║  ✓      ║
+			║---║------------║--------║--------║---------║
+			║   ║            ║        ║        ║         ║
+			║ 6 ║  alpine    ║  ✓     ║    ✓   ║   ✓     ║
+			║---║------------║--------║--------║---------║
+			║   ║            ║        ║        ║         ║
+			║ 7 ║ centos     ║ *<=7   ║ *<=7   ║   ✓     ║
+	ENDofTable
+}
+###############
+install_qemu_user_static() {
+	echo "正在检测版本信息..."
+	if [ -e "${QEMU_USER_LOCAL_VERSION_FILE}" ]; then
+		LOCAL_QEMU_USER_VERSION=$(cat ${QEMU_USER_LOCAL_VERSION_FILE} | head -n 1)
+	else
+		LOCAL_QEMU_USER_VERSION='您尚未安装QEMU-USER-STATIC'
+	fi
+	check_qemu_user_version
+	cat <<-ENDofTable
+		╔═══╦══════════╦═══════════════════╦════════════════════
+		║   ║          ║                   ║                    
+		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
+		║   ║          ║  Latest version   ║  Local version     
+		║---║----------║-------------------║--------------------
+		║ 1 ║qemu-user ║                    ${LOCAL_QEMU_USER_VERSION} 
+		║   ║ static   ║${THE_LATEST_DEB_VERSION_CODE}
+
+	ENDofTable
+	do_you_want_to_continue
+	#check_qemu_user_version
+	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
+	echo ${THE_LATEST_DEB_LINK}
+	echo "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		apt update
+		echo 'apt install -y qemu-user-static'
+		apt install -y qemu-user-static
+	else
+		download_qemu_user
+	fi
+}
+##############
+check_qemu_user_version() {
+	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/q/qemu/'
+	THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	THE_LATEST_DEB_VERSION_CODE=$(echo ${THE_LATEST_DEB_VERSION} | cut -d '_' -f 2)
+}
+###############
+unxz_deb_file() {
+	if [ ! $(command -v ar) ]; then
+		DEPENDENCY_01='binutils'
+		apt update
+		echo "apt install -y ${DEPENDENCY_01}"
+		apt install -y ${DEPENDENCY_01} || pacman -S ${DEPENDENCY_01} || dnf install ${DEPENDENCY_01} || apk add ${DEPENDENCY_01} || zypper in ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01} || eopkg install ${DEPENDENCY_01}
+	fi
+	ar xv ${THE_LATEST_DEB_VERSION}
+	#tar -Jxvf data.tar.xz ./usr/bin -C $PREFIX/..
+	tar -Jxvf data.tar.xz
+	cp -rf ./usr/bin $PREFIX
+	cd ..
+	rm -rv ${TEMP_FOLDER}
+}
+########################
+download_qemu_user() {
+	if [ -z ${TMPDIR} ]; then
+		TMPDIR=/tmp
+		#mkdir -p ${TMPDIR}
+		#chmod 777 /tmp
+	fi
+	cd ${TMPDIR}
+	TEMP_FOLDER='.QEMU_USER_BIN'
+	mkdir -p ${TEMP_FOLDER}
+	cd ${TEMP_FOLDER}
+	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+	unxz_deb_file
+}
+##############
+remove_qemu_user_static() {
+	rm -rv $PREFIX/bin/qemu-*-static "$PREFIX/bin/qemu-*-static"
+	apt remove ^qemu-user
+}
+##############
+creat_tmoe_arch_file() {
+	cat >${ACROSS_ARCH_FILE} <<-EOF
+		${NEW_TMOE_ARCH}
+		${TMOE_QEMU_ARCH}
+	EOF
+}
+#############
+tmoe_qemu_user_manager() {
+	QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}qemu-user-static_version.txt"
+	cd ${CONFIG_FOLDER}
+	NEW_TMOE_ARCH=''
+	RETURN_TO_WHERE='tmoe_qemu_user_manager'
+	BETA_SYSTEM=$(
+		whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
+			"0" "Back to the main menu 返回主菜单" \
+			"00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
+			"01" "i386(常见于32位cpu的旧式传统pc)" \
+			"02" "x64/amd64(2020年为止最主流的64位架构,应用于pc和服务器）" \
+			"03" "arm64（2020年移动平台主流cpu架构）" \
+			"04" "armhf(32位arm架构,支持硬浮点运算)" \
+			"05" "armel（支持软浮点运算,常见于旧设备）" \
+			"06" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
+			"07" "s390x(常见于IBM大型机)" \
+			"08" "mipsel(暂适配debian stable,常见于龙芯cpu或和嵌入式设备)" \
+			"09" "riscv64（开源架构,精简指令集）" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") tmoe_manager_main_menu ;;
+	00) tmoe_qemu_user_static ;;
+	01)
+		NEW_TMOE_ARCH='i386'
+		case ${TRUE_ARCH_TYPE} in
+		amd64 | i386) TMOE_QEMU_ARCH="" ;;
+		*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
+		esac
+		;;
+	02)
+		NEW_TMOE_ARCH='amd64'
+		TMOE_QEMU_ARCH="x86_64"
+		;;
+	03)
+		NEW_TMOE_ARCH='arm64'
+		TMOE_QEMU_ARCH="aarch64"
+		;;
+	04)
+		NEW_TMOE_ARCH='armhf'
+		case ${TRUE_ARCH_TYPE} in
+		arm64 | armhf) TMOE_QEMU_ARCH="" ;;
+		*) TMOE_QEMU_ARCH="arm" ;;
+		esac
+		;;
+	05)
+		NEW_TMOE_ARCH='armel'
+		case ${TRUE_ARCH_TYPE} in
+		arm64 | armhf | armel) TMOE_QEMU_ARCH="" ;;
+		*) TMOE_QEMU_ARCH="armeb" ;;
+		esac
+		;;
+	06)
+		NEW_TMOE_ARCH='ppc64el'
+		TMOE_QEMU_ARCH="ppc64le"
+		;;
+	07)
+		NEW_TMOE_ARCH='s390x'
+		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+		;;
+	08)
+		NEW_TMOE_ARCH='mipsel'
+		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+		;;
+	09)
+		if [ "${TRUE_ARCH_TYPE}" != 'riscv' ]; then
+			echo '检测到您当前可能不是riscv架构'
+			echo '本工具暂不对您的架构开放，且对于risc-v架构的设备，也将自动识别为其他架构'
+			press_enter_to_return
+			tmoe_qemu_user_manager
+		fi
+		NEW_TMOE_ARCH='riscv'
+		TMOE_QEMU_ARCH="riscv64"
+		;;
+	esac
+	######################
+	if [ ! -z "${NEW_TMOE_ARCH}" ]; then
+		if [ "${TRUE_ARCH_TYPE}" = "${NEW_TMOE_ARCH}" ]; then
+			TMOE_QEMU_ARCH=""
+		fi
+		creat_tmoe_arch_file
+		ARCH_TYPE=${NEW_TMOE_ARCH}
+
+		if [ ! -e "$PREFIX/bin/qemu-x86_64-static" ] && [ ! -e "/usr/bin/qemu-x86_64-static" ]; then
+			install_qemu_user_static
+		fi
+		choose_which_gnu_linux_distro
+	fi
+	press_enter_to_return
+	tmoe_qemu_user_manager
+}
+#####################
 git_clone_tmoe_linux_container_file() {
 	if [ ! $(command -v debian-i) ]; then
 		aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
@@ -2381,6 +2641,10 @@ install_debian_buster_gnu_linux_container() {
 	tmoe_manager_main_menu
 }
 ########################
+creat_container_edition_txt() {
+	echo ${TMOE_LINUX_CONTAINER_DISTRO} >${CONFIG_FOLDER}linux_container_distro.txt
+}
+#############
 install_debian_gnu_linux_distro() {
 	RETURN_TO_WHERE='install_debian_gnu_linux_distro'
 	DOWNLOAD_PATH="/sdcard/Download/backup"
@@ -2405,8 +2669,18 @@ install_debian_gnu_linux_distro() {
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_debian_sid_gnu_linux_container ;;
-	2) install_debian_buster_gnu_linux_container ;;
+	1)
+		DISTRO_CODE='sid'
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+		creat_container_edition_txt
+		install_debian_sid_gnu_linux_container
+		;;
+	2)
+		DISTRO_CODE='buster'
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+		creat_container_edition_txt
+		install_debian_buster_gnu_linux_container
+		;;
 	3) custom_debian_version ;;
 	4) DISTRO_CODE='bullseye' ;;
 	5) check_debian_12 ;;
@@ -2415,6 +2689,8 @@ install_debian_gnu_linux_distro() {
 	8) DISTRO_CODE='jessie' ;;
 	esac
 	######################
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+	creat_container_edition_txt
 	echo "即将为您安装debian ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	case "${DISTRO_CODE}" in
@@ -2517,7 +2793,7 @@ copy_tmoe_locale_file_to_container() {
 }
 ########################
 un_xz_debian_recovery_kit() {
-	echo "正在解压${DOWNLOAD_FILE_NAME}，Decompressing recovery package, please be patient."
+	echo "正在解压${DOWNLOAD_FILE_NAME}，decompressing recovery package, please be patient."
 	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
 	echo '正在解压中...'
 	if [ $(command -v pv) ]; then
@@ -2549,7 +2825,7 @@ switch_termux_rootfs_to_linux() {
 	if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		cd /data/data/com.termux/files/usr/bin
 		sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' ./)
-		sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+		#sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 		cp -pf ./* ${PREFIX}/bin/
 	fi
 }
@@ -2857,7 +3133,6 @@ modify_android_termux_vnc_config() {
 	fi
 	press_enter_to_return
 	tmoe_manager_main_menu
-
 }
 ###############
 remove_android_termux_xfce() {
@@ -2915,11 +3190,11 @@ termux_tuna_sources_list() {
 	press_enter_to_return
 	android_termux
 	#此处要返回依赖检测处！
-
 }
 ##################
 choose_which_gnu_linux_distro() {
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
+	TMOE_LINUX_CONTAINER_DISTRO=''
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
 		"1" "🍥Debian:最早的发行版之一" \
 		"2" "🍛Ubuntu:我的存在是因為大家的存在" \
@@ -2933,13 +3208,31 @@ choose_which_gnu_linux_distro() {
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") tmoe_manager_main_menu ;;
-	1) install_debian_gnu_linux_distro ;;
-	2) install_ubuntu_gnu_linux_distro ;;
-	3) install_kali_rolling_gnu_linux_distro ;;
+	1)
+		install_debian_gnu_linux_distro
+		;;
+	2)
+		install_ubuntu_gnu_linux_distro
+		;;
+	3)
+		TMOE_LINUX_CONTAINER_DISTRO='kali_rolling'
+		creat_container_edition_txt
+		install_kali_rolling_gnu_linux_distro
+		;;
 	4) install_beta_containers ;;
-	5) install_alpha_containers ;;
-	6) install_arch_linux_distro ;;
-	7) install_fedora_gnu_linux_distro ;;
+	5)
+		install_alpha_containers
+		;;
+	6)
+		TMOE_LINUX_CONTAINER_DISTRO='arch'
+		creat_container_edition_txt
+		install_arch_linux_distro
+		;;
+	7)
+		TMOE_LINUX_CONTAINER_DISTRO='fedora'
+		creat_container_edition_txt
+		install_fedora_gnu_linux_distro
+		;;
 	esac
 	####################
 	press_enter_to_return
@@ -2965,16 +3258,56 @@ install_alpha_containers() {
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_armbian_linux_distro ;;
-	2) install_opensuse_linux_distro ;;
-	3) install_raspbian_linux_distro ;;
-	4) install_gentoo_linux_distro ;;
-	5) install_devuan_linux_distro ;;
-	6) install_slackware_linux_distro ;;
-	7) install_funtoo_linux_distro ;;
-	8) install_openwrt_linux_distro ;;
-	9) install_apertis_linux_distro ;;
-	10) install_alt_linux_distro ;;
+	1)
+		TMOE_LINUX_CONTAINER_DISTRO='armbian'
+		creat_container_edition_txt
+		install_armbian_linux_distro
+		;;
+	2)
+		TMOE_LINUX_CONTAINER_DISTRO='opensuse'
+		creat_container_edition_txt
+		install_opensuse_linux_distro
+		;;
+	3)
+		TMOE_LINUX_CONTAINER_DISTRO='raspbian'
+		creat_container_edition_txt
+		install_raspbian_linux_distro
+		;;
+	4)
+		TMOE_LINUX_CONTAINER_DISTRO='gentoo'
+		creat_container_edition_txt
+		install_gentoo_linux_distro
+		;;
+	5)
+		TMOE_LINUX_CONTAINER_DISTRO='devuan'
+		creat_container_edition_txt
+		install_devuan_linux_distro
+		;;
+	6)
+		TMOE_LINUX_CONTAINER_DISTRO='slackware'
+		creat_container_edition_txt
+		install_slackware_linux_distro
+		;;
+	7)
+		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
+		creat_container_edition_txt
+		install_funtoo_linux_distro
+		;;
+	8)
+		TMOE_LINUX_CONTAINER_DISTRO='openwrt'
+		creat_container_edition_txt
+		install_openwrt_linux_distro
+		;;
+	9)
+		TMOE_LINUX_CONTAINER_DISTRO='apertis'
+		creat_container_edition_txt
+		install_apertis_linux_distro
+		;;
+	10)
+		TMOE_LINUX_CONTAINER_DISTRO='alt'
+		creat_container_edition_txt
+		install_alt_linux_distro
+		;;
 	esac
 	###########################
 	press_enter_to_return
@@ -2996,11 +3329,31 @@ install_beta_containers() {
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_manjaro_linux_distro ;;
-	2) install_centos_linux_distro ;;
-	3) install_void_linux_distro ;;
-	4) install_alpine_linux_distro ;;
-	5) install_mint_linux_distro ;;
+	1)
+		TMOE_LINUX_CONTAINER_DISTRO='manjaro'
+		creat_container_edition_txt
+		install_manjaro_linux_distro
+		;;
+	2)
+		TMOE_LINUX_CONTAINER_DISTRO='centos'
+		creat_container_edition_txt
+		install_centos_linux_distro
+		;;
+	3)
+		TMOE_LINUX_CONTAINER_DISTRO='void'
+		creat_container_edition_txt
+		install_void_linux_distro
+		;;
+	4)
+		TMOE_LINUX_CONTAINER_DISTRO='alpine'
+		creat_container_edition_txt
+		install_alpine_linux_distro
+		;;
+	5)
+		TMOE_LINUX_CONTAINER_DISTRO='mint'
+		creat_container_edition_txt
+		install_mint_linux_distro
+		;;
 	esac
 	######################
 	press_enter_to_return
@@ -3033,6 +3386,8 @@ install_ubuntu_gnu_linux_distro() {
 	6) check_the_latest_ubuntu_version ;;
 	esac
 	######################
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+	creat_container_edition_txt
 	echo "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	install_different_ubuntu_gnu_linux_distros
@@ -3224,7 +3579,6 @@ install_raspbian_linux_distro() {
 	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'armhf' ]; then
 		apt install -y qemu qemu-user-static debootstrap
 	fi
-
 	touch ~/.RASPBIANARMHFDetectionFILE
 	if (whiptail --title "RASPBIAN" --yes-button "直接" --no-button "间接" --yesno "您想要如何安装raspbian呢？How do you want to install raspbian?" 9 50); then
 		install_raspbian_linux_distro_type01

@@ -88,7 +88,7 @@ check_root() {
 		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ -z ${TMPDIR} ]; then
 			TMPDIR=/tmp
-			mkdir -p ${TMPDIR}
+			#mkdir -p ${TMPDIR}
 		fi
 		cd ${TMPDIR}
 		if [ -e ".tmoe-linux-tool.sh" ]; then
@@ -1103,9 +1103,9 @@ check_latest_video_download_tool_version() {
 upgrade_video_download_tool() {
 	cat <<-'ENDofTable'
 		╔═══╦════════════╦════════╦════════╦═════════╦
-		║   ║     💻     ║    🎬  ║   🌁   ║   📚    ║
-		║   ║  website   ║ Videos ║ Images ║Playlist ║
-		║   ║            ║        ║        ║         ║
+		║   ║ 💻 type    ║    🎬  ║   🌁   ║   📚    ║
+		║   ║----------- ║ Videos ║ Images ║Playlist ║
+		║   ║ website    ║        ║        ║         ║
 		║---║------------║--------║--------║---------║
 		║ 1 ║  bilibili  ║  ✓     ║        ║   ✓     ║
 		║   ║            ║        ║        ║         ║
@@ -9000,7 +9000,7 @@ configure_scrcpy() {
 	)
 	##########################
 	case "${SCRCPY_OPTION}" in
-	0 | "") beta_features ;;
+	0 | "") tmoe_other_app_menu ;;
 	1) install_scrcpy ;;
 	2) scrcpy_connect_to_android_device ;;
 	3) switch_scrcpy_device ;;
