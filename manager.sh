@@ -2256,6 +2256,7 @@ tmoe_linux_container_eula() {
 same_arch_or_different_arch() {
 	if (whiptail --title "您是想要同架构运行,还是跨架构呢？" --yes-button 'same同' --no-button 'across跨' --yesno "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?\n除向下兼容外,跨架构运行的效率可能偏低" 0 0); then
 		rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
+		ARCH_TYPE=${TRUE_ARCH_TYPE}
 		choose_which_gnu_linux_distro
 	else
 		tmoe_qemu_user_manager
