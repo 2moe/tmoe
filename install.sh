@@ -568,11 +568,8 @@ creat_linux_container_remove_script() {
 		  #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 			echo 'Detecting debian system size... 正在检测debian system占用空间大小'
 		   du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
-			if [ ! -d ~/${DEBIAN_FOLDER} ]; then
-				echo "\${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian\${RESET}"
-			fi
 			echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
-		  pkill proot 2>/dev/null
+		    pkill proot 2>/dev/null
 			read
 		    chmod 777 -R ${DEBIAN_FOLDER}
 			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
@@ -586,18 +583,22 @@ creat_linux_container_remove_script() {
 			echo '若需要重装，则不建议移除镜像文件。'
 			#echo '若需要跨架构运行,则建议移除该文件,以便重新下载相应架构的镜像文件'
 			echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
-			echo 'Do you need to delete the image file (*rootfs.tar.xz)?[Y/n]'
+			ROOTFS_NAME=$(echo ${DEBIAN_FOLDER}| cut -d '-' -f 1)
+			echo 'Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]'
 
 		    read opt
 			case \$opt in
-				y*|Y*|"") rm -vf ~/debian-sid*rootfs.tar.xz 2>/dev/null
-		    rm -f ${PREFIX}/bin/debian-rm
-			rm -vf ~/fedora*rootfs.tar.xz 2>/dev/null
-			rm -vf ~/arch*rootfs.tar.xz 2>/dev/null
-				rm -vf ~/debian-buster*rootfs.tar.xz 2>/dev/null
-				rm -vf ~/ubuntu-focal*rootfs.tar.xz 2>/dev/null
-				rm -vf ~/kali-rolling*rootfs.tar.xz 2>/dev/null
-				rm -vf ~/funtoo*rootfs.tar.xz 2>/dev/null
+				y*|Y*|"") 
+			rm -fv ~/${DEBIAN_FOLDER}-rootfs.tar.xz
+			rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz
+			#rm -vf ~/debian-sid*rootfs.tar.xz 2>/dev/null
+		    #rm -f ${PREFIX}/bin/debian-rm
+			#rm -vf ~/fedora*rootfs.tar.xz 2>/dev/null
+			#rm -vf ~/arch*rootfs.tar.xz 2>/dev/null
+			#rm -vf ~/debian-buster*rootfs.tar.xz 2>/dev/null
+			#rm -vf ~/ubuntu-focal*rootfs.tar.xz 2>/dev/null
+			#rm -vf ~/kali-rolling*rootfs.tar.xz 2>/dev/null
+			#rm -vf ~/funtoo*rootfs.tar.xz 2>/dev/null
 		    echo "Deleted已删除" ;;
 				n*|N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;

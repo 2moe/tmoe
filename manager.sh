@@ -2671,13 +2671,13 @@ install_debian_gnu_linux_distro() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
 		DISTRO_CODE='sid'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		install_debian_sid_gnu_linux_container
 		;;
 	2)
 		DISTRO_CODE='buster'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		install_debian_buster_gnu_linux_container
 		;;
@@ -2689,7 +2689,7 @@ install_debian_gnu_linux_distro() {
 	8) DISTRO_CODE='jessie' ;;
 	esac
 	######################
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	creat_container_edition_txt
 	echo "即将为您安装debian ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
@@ -3215,7 +3215,7 @@ choose_which_gnu_linux_distro() {
 		install_ubuntu_gnu_linux_distro
 		;;
 	3)
-		TMOE_LINUX_CONTAINER_DISTRO='kali_rolling'
+		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
 		creat_container_edition_txt
 		install_kali_rolling_gnu_linux_distro
 		;;
@@ -3386,7 +3386,7 @@ install_ubuntu_gnu_linux_distro() {
 	6) check_the_latest_ubuntu_version ;;
 	esac
 	######################
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}_${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	creat_container_edition_txt
 	echo "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
