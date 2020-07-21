@@ -21,7 +21,7 @@ You can also run Gentoo, Arch and other systems in WSL.
 Running debian GNU/Linux arm64 container application on Android system.
 ![debian arm64](https://images.gitee.com/uploads/images/2020/0721/190834_db02f784_5617340.png "截图_2020-07-15_13-48-40.png")  
 ② 跨架构支持，在 Qualcomm 高通 arm64 cpu 的手机上借助 qemu-user 来模拟运行 x86(i686)架构的 Debian GNU/Linux，并通过 pulseaudio 来传输音频。  
-Support cross-architecture running containers, use qemu-user-static on Qualcomm arm64 cpu mobile phones to simulate Debian GNU/Linux x86 architecture, and transmit audio through termux pulseaudio server.
+Support cross-architecture running containers, use qemu-user-static on Qualcomm arm64 phone to simulate Debian GNU/Linux x86 architecture, and transmit audio through termux pulseaudio server.
 ![debian i386](https://images.gitee.com/uploads/images/2020/0721/192119_96d0b95d_5617340.png "Screenshot_20200721-173852.png")  
 2.Ubuntu container  
 在 Android 设备上运行的 Ubuntu 容器，你可以通过 VNC 来连接自己；  
