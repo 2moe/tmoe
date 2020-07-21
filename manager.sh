@@ -1039,7 +1039,7 @@ install_chroot_container() {
 			echo '检测到root权限授予失败，您无法安装chroot容器'
 		else
 			echo "检测到您使用的是Android系统"
-			echo "非常抱歉，本功能仅适配Linux系统，暂未适配Android。"
+			echo "非常抱歉，本功能仅适配GNU/Linux系统，暂未适配Android。"
 			#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
 			echo "Android系统请换用proot容器。"
 		fi
