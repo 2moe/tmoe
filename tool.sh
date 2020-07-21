@@ -2882,8 +2882,6 @@ configure_vnc_xstartup() {
 		export PULSE_SERVER=127.0.0.1
 		if [ \$(command -v x-terminal-emulator) ]; then
 			x-terminal-emulator &
-		else
-			x-terminal-emulator &
 		fi
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
 			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} &
