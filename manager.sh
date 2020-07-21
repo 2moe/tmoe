@@ -2355,7 +2355,7 @@ install_qemu_user_static() {
 		---------------------------
 		一般来说，新版的qemu-user会引入新的功能，并带来性能上的提升。
 		尽管有可能会引入一些新bug，但是也有可能修复了旧版的bug。
-		We recommend you to use the new version.
+		We recommend that you to use the new version.
 		---------------------------
 	EOF
 	check_qemu_user_version
