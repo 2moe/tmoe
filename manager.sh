@@ -1027,6 +1027,10 @@ install_proot_container() {
 }
 ##########################
 install_chroot_container() {
+	echo "This feature currently only supports Linux systems and is still in beta."
+	echo "本功能目前仅对Linux系统测试开放。"
+	echo "This feature is still in the beta stage. If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
+	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
 	if [ "$(uname -o)" = "Android" ]; then
 		echo Android :${ANDROID_VERSION}
 		echo "$(getprop ro.product.model)"
@@ -2202,10 +2206,6 @@ play_video_tutorial() {
 }
 #####################################
 chroot_install_debian() {
-	echo "This feature currently only supports Linux systems and is still in beta."
-	echo "本功能目前仅对Linux系统测试开放。"
-	echo "This feature is currently in the beta stage. If you find that some directories cannot be unmounted forcibly before removing the container, please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
-	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
 	echo "按回车键继续,按Ctrl+C取消。"
 	echo "${YELLOW}Press enter to continue.${RESET}"
 	read
