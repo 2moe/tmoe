@@ -2572,7 +2572,7 @@ window_manager_install() {
 		REMOTE_DESKTOP_SESSION_01='openbox-session'
 		REMOTE_DESKTOP_SESSION_02='openbox'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_01='openbox obmenu openbox-menu'
+			DEPENDENCY_01='openbox openbox-menu'
 		fi
 		;;
 	03)
@@ -2874,6 +2874,7 @@ tmoe_virtual_machine_desktop() {
 configure_vnc_xstartup() {
 	mkdir -p ~/.vnc
 	cd ${HOME}/.vnc
+	#由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
 	cat >xstartup <<-EndOfFile
 		#!/bin/bash
 		unset SESSION_MANAGER
