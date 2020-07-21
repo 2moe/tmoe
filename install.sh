@@ -549,9 +549,8 @@ creat_linux_container_remove_script() {
 		  ps -e | grep startvnc
 		  pgrep proot &> /dev/null
 		if [ "\$?" = "0" ]; then
-		    echo '检测到proot容器正在运行，请先输stopvnc停止运行'
+		    echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行,亦或者是重启设备'
 		fi
-
 			ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
 			if [ "\$?" = "0" ]; then
 				echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
@@ -568,22 +567,33 @@ creat_linux_container_remove_script() {
 		  #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 			echo 'Detecting debian system size... 正在检测debian system占用空间大小'
 		   du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
-			echo "\${YELLOW}按回车键确认移除 Press enter to confirm.\${RESET} "
+			echo "Do you want to remove it?[Y/n]"
+			echo "\${YELLOW}按回车键确认移除 Press enter to remove.\${RESET} "
 		    pkill proot 2>/dev/null
-			read
+			read opt
+			case \$opt in
+				y*|Y*|"") 
 		    chmod 777 -R ${DEBIAN_FOLDER}
 			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
-
 		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 			  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 			source profile >/dev/null 2>&1
 			echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
 		  echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+		   echo "Deleted已删除" ;;
+				n*|N*) echo "skipped."
+				exit 1
+				 ;;
+				*) 
+				echo "Invalid choice. skipped." 
+				exit 1
+				;;
+			esac
 			echo 'If you want to reinstall, it is not recommended to remove the image file.'
 			echo '若需要重装，则不建议移除镜像文件。'
 			#echo '若需要跨架构运行,则建议移除该文件,以便重新下载相应架构的镜像文件'
 			echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
-			ROOTFS_NAME=$(echo ${DEBIAN_FOLDER}| cut -d '_' -f 1)
+			ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
 			echo "rm -fv ~/\${ROOTFS_NAME}*rootfs.tar.xz"
 			echo "Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]"
 

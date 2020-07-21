@@ -1060,11 +1060,16 @@ install_gnu_linux_container() {
 			case $opt in
 			y* | Y* | "")
 				bash ${PREFIX}/bin/debian-rm 2>/dev/null
-				sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
-				sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
-				source ${PREFIX}/etc/profile >/dev/null 2>&1
-				tmoe_linux_container_eula
+				if [ "$?" != '0' ]; then
+					echo "容器没有被移除"
+					press_enter_to_return
+					tmoe_manager_main_menu
+				else
+					tmoe_linux_container_eula
+				fi
+
 				;;
+
 			n* | N*)
 				echo "skipped."
 				press_enter_to_return
@@ -1153,13 +1158,13 @@ enable_root_mode() {
 		fi
 
 		echo "You have modified debian to run with root privileges, this action will destabilize debian."
-		echo "If you want to restore, please reinstall debian."
-		echo "您已将debian修改为以root权限运行，如需还原，请重新安装debian。"
+		echo "If you want to restore, please reinstall container."
+		echo "您已将container修改为以root权限运行，如需还原，请重新安装GNU/Linux 容器。"
 		echo "The next time you start debian, it will automatically run as root."
-		echo "下次启动debian，将自动以root权限运行。"
+		echo "下次启动容器，将自动以root权限运行。"
 
-		echo 'Debian will start automatically after 2 seconds.'
-		echo '2s后将为您自动启动debian'
+		echo 'Container will start automatically after 2 seconds.'
+		echo '2s后将为您自动启动容器'
 		echo 'If you do not need to display the task progress in the login interface, please manually add "#" (comment symbol) before the "ps -e" line in "~/.zshrc" or "~/.bashrc"'
 		echo '如果您不需要在登录界面显示任务进程，请手动注释掉"~/.zshrc"里的"ps -e"'
 		sleep 2
@@ -1199,7 +1204,7 @@ remove_gnu_linux_container() {
 	pkill proot 2>/dev/null
 	pgrep proot &>/dev/null
 	if [ "$?" = "0" ]; then
-		echo '检测到proot容器正在运行，请先输stopvnc或手动停止运行'
+		echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
 	fi
 	ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
 	if [ "$?" = "0" ]; then
@@ -1220,23 +1225,28 @@ remove_gnu_linux_container() {
 		echo "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
 	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
-	read
-
-	chmod 777 -R ${DEBIAN_FOLDER}
-	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
-	if [ -d "${HOME}/debian_armhf" ]; then
-		echo "检测到疑似存在树莓派armhf系统，正在移除..."
-		chmod 777 -R "${HOME}/debian_armhf"
-		rm -rf "${HOME}/debian_armhf" 2>/dev/null || sudo rm -rfv "${HOME}/debian_armhf"
-	fi
-	sed -i '/alias debian=/d' ${PREFIX}/etc/profile
-	sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
-	source profile >/dev/null 2>&1
-	echo 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
-	echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
-	echo '其它相关依赖，如pv、dialog、procps、proot、wget等，均需手动卸载。'
-	echo 'If you want to reinstall, it is not recommended to remove the image file.'
+	read opt
+	case $opt in
+	y* | Y* | "")
+		chmod 777 -R ${DEBIAN_FOLDER}
+		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
+		if [ -d "${HOME}/debian_armhf" ]; then
+			echo "检测到疑似存在树莓派armhf系统，正在移除..."
+			chmod 777 -R "${HOME}/debian_armhf"
+			rm -rf "${HOME}/debian_armhf" 2>/dev/null || sudo rm -rfv "${HOME}/debian_armhf"
+		fi
+		sed -i '/alias debian=/d' ${PREFIX}/etc/profile
+		sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
+		source profile >/dev/null 2>&1
+		echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
+		echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+		echo "Deleted已删除"
+		;;
+	n* | N*) echo "skipped." ;;
+	*) echo "Invalid choice. skipped." ;;
+	esac
 	echo "若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i"
+	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo "${YELLOW}若您需要重装容器，则不建议删除镜像文件。${RESET} "
 	#ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
 	#ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
