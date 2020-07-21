@@ -584,7 +584,8 @@ creat_linux_container_remove_script() {
 			#echo '若需要跨架构运行,则建议移除该文件,以便重新下载相应架构的镜像文件'
 			echo "\${YELLOW}是否需要删除镜像文件？[Y/n]\${RESET} "
 			ROOTFS_NAME=$(echo ${DEBIAN_FOLDER}| cut -d '-' -f 1)
-			echo 'Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]'
+			echo "rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz"
+			echo "Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]"
 
 		    read opt
 			case \$opt in

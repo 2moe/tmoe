@@ -653,7 +653,7 @@ tmoe_manager_main_menu() {
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.当前主菜单下有十几个选项,请使用方向键和回车键进行操作。更新日志：0509升级备份与还原功能,0510修复sudo,0514支持最新的ubuntu20.10,0720优化跨架构运行" 17 50 6 \
+		)" --menu "Please use the enter and arrow keys to operate.\n当前主菜单下有十几个选项,请使用方向键和回车键进行操作。\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行" 0 50 0 \
 			"1" "proot安装(๑•̀ㅂ•́)و✧" \
 			"2" "chroot安装" \
 			"3" "🌏locales/区域/ロケール/로케일" \
@@ -1199,7 +1199,7 @@ remove_gnu_linux_container() {
 	pkill proot 2>/dev/null
 	pgrep proot &>/dev/null
 	if [ "$?" = "0" ]; then
-		echo '检测到proot容器正在运行，请先输stopvnc停止运行'
+		echo '检测到proot容器正在运行，请先输stopvnc或手动停止运行'
 	fi
 	ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
 	if [ "$?" = "0" ]; then
@@ -1212,17 +1212,18 @@ remove_gnu_linux_container() {
 		#read
 		#tmoe_manager_main_menu
 	fi
-	echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-	echo 'Detecting container size... 正在检测容器占用空间大小'
+	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '-' -f 1)
+	echo "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+	echo "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
 	du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
 	if [ ! -d ~/${DEBIAN_FOLDER} ]; then
-		echo "${YELLOW}Detected that you are not currently installed 检测到您当前未安装debian${RESET}"
+		echo "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
 	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
 	read
 
 	chmod 777 -R ${DEBIAN_FOLDER}
-	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
+	rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
 	if [ -d "${HOME}/debian_armhf" ]; then
 		echo "检测到疑似存在树莓派armhf系统，正在移除..."
 		chmod 777 -R "${HOME}/debian_armhf"
@@ -1235,8 +1236,8 @@ remove_gnu_linux_container() {
 	echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo '其它相关依赖，如pv、dialog、procps、proot、wget等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
-	echo '若需删除debian管理器，则请输rm -f ${PREFIX}/bin/debian-i'
-	echo "${YELLOW}若您需要重装debian，则不建议删除镜像文件。${RESET} "
+	echo '若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i'
+	echo "${YELLOW}若您需要重装容器，则不建议删除镜像文件。${RESET} "
 	#ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
 	#ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
 	#ls -lh ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
@@ -1244,10 +1245,9 @@ remove_gnu_linux_container() {
 	#ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 	cd ${HOME}
 	ls -lh *-rootfs.tar.xz
-	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '-' -f 1)
 	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
-	echo 'Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]'
-
+	echo "${RED}rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz${RESET}"
+	echo "Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]"
 	read opt
 	case $opt in
 	y* | Y* | "")
@@ -2317,7 +2317,7 @@ tmoe_qemu_user_chart() {
 		下表中的所有系统均支持x64和arm64
 		*表示仅旧版支持
 			╔═══╦════════════╦════════╦════════╦═════════╦
-			║   ║architecture║        ║        ║         ║
+			║   ║Architecture║        ║        ║         ║
 			║   ║----------- ║ x86    ║armhf   ║ppc64el  ║
 			║   ║System      ║        ║        ║         ║
 			║---║------------║--------║--------║---------║
@@ -2328,19 +2328,19 @@ tmoe_qemu_user_chart() {
 			║ 2 ║  Ubuntu    ║  ✓     ║  ✓     ║   ✓     ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 3 ║ Kali       ║  ✓     ║   ✓    ║    ✓    ║
+			║ 3 ║ Kali       ║  ✓     ║   ✓    ║    X    ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 4 ║ arch       ║  X     ║   ✓    ║   X     ║
+			║ 4 ║ Arch       ║  X     ║   ✓    ║   X     ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 5 ║ fedora     ║ *<=29  ║ *<=29  ║  ✓      ║
+			║ 5 ║ Fedora     ║ *<=29  ║ *<=29  ║  ✓      ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 6 ║  alpine    ║  ✓     ║    ✓   ║   ✓     ║
+			║ 6 ║  Alpine    ║  ✓     ║    ✓   ║   ✓     ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 7 ║ centos     ║ *<=7   ║ *<=7   ║   ✓     ║
+			║ 7 ║ Centos     ║ *<=7   ║ *<=7   ║   ✓     ║
 	ENDofTable
 }
 ###############
@@ -3220,7 +3220,7 @@ termux_tuna_sources_list() {
 choose_which_gnu_linux_distro() {
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
 	TMOE_LINUX_CONTAINER_DISTRO=''
-	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? 您想要安装哪个GNU/Linux发行版?" 15 50 6 \
+	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? \n您想要安装哪个GNU/Linux发行版?" 0 50 0 \
 		"1" "🍥Debian:最早的发行版之一" \
 		"2" "🍛Ubuntu:我的存在是因為大家的存在" \
 		"3" "🐉Kali Rolling:设计用于数字取证和渗透测试" \
@@ -3266,7 +3266,7 @@ choose_which_gnu_linux_distro() {
 ##############################
 install_alpha_containers() {
 	ALPHA_SYSTEM=$(
-		whiptail --title "Alpha features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nAlpha features may not work properly." 17 55 7 \
+		whiptail --title "Alpha features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nAlpha features may not work properly." 0 55 0 \
 			"1" "armbian bullseye(arm64,armhf)" \
 			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"3" "raspbian樹莓派 buster(armhf)" \
@@ -3342,7 +3342,7 @@ install_alpha_containers() {
 #########################
 install_beta_containers() {
 	BETA_SYSTEM=$(
-		whiptail --title "Beta features" --menu "WARNING！本功能仍处于公测阶段,可能存在一些bug。\nBeta features may not work properly." 17 55 7 \
+		whiptail --title "Beta features" --menu "WARNING！本功能仍处于公测阶段,可能存在一些bug。\nBeta features may not work properly." 0 55 0 \
 			"1" "manjaro(让arch更方便用户使用,arm64)" \
 			"2" "centos (基于红帽的社区企业操作系统)" \
 			"3" "Void:基于xbps包管理器的独立发行版" \
