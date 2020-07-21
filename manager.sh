@@ -1256,7 +1256,7 @@ remove_gnu_linux_container() {
 	#ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 	cd ${HOME}
 	ls -lh *-rootfs.tar.xz
-	echo "${YELLOW}请问您是否需要删除镜像文件？[Y/n]${RESET} "
+	echo "${YELLOW}请问您是否需要删除容器镜像文件？[Y/n]${RESET} "
 	echo "${RED}rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz${RESET}"
 	echo "Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]"
 	read opt
