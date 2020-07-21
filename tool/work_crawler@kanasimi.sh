@@ -83,36 +83,36 @@ press_enter_to_return() {
 work_crawler_eula() {
     RETURN_TO_WHERE='exit 1'
     cat <<-'EndOfFile'
-			                              End-user license agreement 
-						本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
-						This tool will update this agreement from time to time. When you agree to this tool service use agreement, you are deemed to have agreed to the entire contents of this agreement. This agreement is an integral part of the tool service agreement.
+	                  End-user license agreement 
+	本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
+	This tool will update this agreement from time to time. When you agree to this tool service use agreement, you are deemed to have agreed to the entire contents of this agreement. This agreement is an integral part of the tool service agreement.
 
-						1.免责声明
-						(a) 本工具获取到的资源均来自于互联网，仅供学习和交流使用，版权归原作者所有；
-                        (b) 您在使用本工具前，必须购入相关作品的正版授权；
-                        (c) 您了解并同意，下载这些资源可能带来的后果；
-                        您必须独自承担由此可能带来的所有法律责任。
+	1.免责声明
+	(a) 本工具获取到的资源均来自于互联网，仅供学习和交流使用，版权归原作者所有；
+    (b) 您在使用本工具前，必须购入相关作品的正版授权；
+    (c) 您了解并同意，下载这些资源可能带来的后果；
+    您必须独自承担由此可能带来的所有法律责任。
 
-						2. 适用范围
-						(a)在您使用本工具时，下载的所有资源；
-						
-                        3.不适用范围
-                        您了解并同意，以下内容不适用本许可协议：
-						(a) 您在使用本工具下载相关作品前，未购入该作品的正版授权;
-                        (b) 您使用了技术手段强行破解了本工具对下载的限制;
-						(c) 违反法律规定或违反本工具规则行为及本工具已对您采取的措施。
-                        
-                        4.权益相关
-                        (a) 您必须同意本协议，否则您将无法使用本工具;
-                        (b) 为了维护漫画网站的合法权益，您即便同意本协议，也仍然无法通过本工具下载中国内地的漫画作品;
-                        若您强行破解，则您必须承担由此带来所有的法律责任;
-                        (c) 若本工具侵犯了您的权益，请到https://github.com/kanasimi/work_crawler 联系原开发者，以便及时删除。
-                
-						5.最终用户许可协议的更改
-						(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益；
-						(b)本工具开发者保留随时修改本协议的权利,因此建议您不定期查看。
-						The developer of this tool reserves the right to modify this agreement at any time.
-		EndOfFile
+	2. 适用范围
+	(a)在您使用本工具时，下载的所有资源；
+	
+    3.不适用范围
+    您了解并同意，以下内容不适用本许可协议：
+	(a) 您在使用本工具下载相关作品前，未购入该作品的正版授权;
+    (b) 您使用了技术手段强行破解了本工具对下载的限制;
+	(c) 违反法律规定或违反本工具规则行为及本工具已对您采取的措施。
+    
+    4.权益相关
+    (a) 您必须同意本协议，否则您将无法使用本工具;
+    (b) 为了维护漫画网站的合法权益，您即便同意本协议，也仍然无法通过本工具下载中国内地的漫画作品;
+    若您强行破解，则您必须承担由此带来所有的法律责任;
+    (c) 若本工具侵犯了您的权益，请到https://github.com/kanasimi/work_crawler 联系原开发者，以便及时删除。
+    
+	5.最终用户许可协议的更改
+	(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益；
+	(b)本工具开发者保留随时修改本协议的权利,因此建议您不定期查看。
+	The developer of this tool reserves the right to modify this agreement at any time.
+EndOfFile
     echo 'You must agree to the EULA to use this tool.'
     echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
     echo "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
