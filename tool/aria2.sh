@@ -1811,13 +1811,15 @@ EOF
     echo A:防火墙放行${ARIA2_RPC_PORT}端口
     echo UFW防火墙的用法为ufw allow ${ARIA2_RPC_PORT}
     echo -------------------------------
-    echo '若您为初次配置，则建议您前往“RPC服务器与TLS加密”-->“rpc-secret RPC 令牌密钥” 选项处，设定一个访问密码。在公网环境下，无密码是非常危险的一件事。'
+    echo '若您为初次配置，则建议您前往“RPC服务器与TLS加密”-->“rpc-secret RPC 令牌密钥” 选项处，设定一个访问密码。'
+    echo '在公网环境下，无密码是一件非常危险的事。'
     echo -------------------------------
     ARIA2_RPC_PORT=$(cat ${TMOE_ARIA2_FILE} | grep 'rpc-listen-port=' | cut -d '=' -f 2)
     echo "本机默认RPC服务地址为ws://localhost:${ARIA2_RPC_PORT}/jsonrpc"
     echo The LAN RPC address 局域网RPC服务地址 ws://$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2 | awk '{print $1}'):${ARIA2_RPC_PORT}/jsonrpc
     echo The WAN RPC address 外网RPC服务地址 ws://$(curl -sL ip.cip.cc | head -n 1):${ARIA2_RPC_PORT}/jsonrpc
     echo '若存在兼容问题，则可将websocket(ws)替换为http'
+
 }
 ###########
 what_is_the_different_of_ariang_and_rpc() {

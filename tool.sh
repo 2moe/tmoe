@@ -14524,7 +14524,7 @@ download_debian_nonfree_live_iso() {
 }
 #####################
 install_wine64() {
-	DEPENDENCY_01='wine winetricks-zh q4wine'
+	DEPENDENCY_01='wine winetricks q4wine'
 	DEPENDENCY_02='playonlinux wine32'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
@@ -14532,6 +14532,7 @@ install_wine64() {
 		fi
 		dpkg --add-architecture i386
 		apt update
+		apt install winetricks-zh
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='winetricks-zh'
 		DEPENDENCY_02='playonlinux5-git q4wine'
