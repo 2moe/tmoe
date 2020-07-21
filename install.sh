@@ -538,12 +538,12 @@ creat_linux_container_remove_script() {
 		ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 		ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
 		  df -h |grep debian
-		  echo '移除系统前，请先确保您已卸载chroot挂载目录。'
+		  echo '移除容器前，请先确保您已卸载chroot挂载目录。'
 		  echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 		  echo "Before removing the system, make sure you have unmounted the chroot mount directory.
 		It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
 		  fi
-		  echo "移除系统前，请先确保您已停止容器的进程。"
+		  echo "移除容器前，请先确保您已停止容器的进程。"
 		  pkill proot 2>/dev/null
 		  ps -e | grep proot
 		  ps -e | grep startvnc

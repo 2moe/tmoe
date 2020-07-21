@@ -1224,7 +1224,8 @@ remove_gnu_linux_container() {
 	if [ ! -d ~/${DEBIAN_FOLDER} ]; then
 		echo "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
-	echo "${YELLOW}按回车键确认移除,按Ctrl+C取消 Press enter to confirm.${RESET} "
+	echo "Do you want to remove it?[Y/n]"
+	echo "${YELLOW}按回车键确认移除 Press enter to remove.${RESET} "
 	read opt
 	case $opt in
 	y* | Y* | "")
