@@ -1212,7 +1212,7 @@ remove_gnu_linux_container() {
 		#read
 		#tmoe_manager_main_menu
 	fi
-	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '-' -f 1)
+	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
 	echo "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
 	du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
@@ -1236,7 +1236,7 @@ remove_gnu_linux_container() {
 	echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 	echo '其它相关依赖，如pv、dialog、procps、proot、wget等，均需手动卸载。'
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
-	echo '若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i'
+	echo "若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i"
 	echo "${YELLOW}若您需要重装容器，则不建议删除镜像文件。${RESET} "
 	#ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
 	#ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
