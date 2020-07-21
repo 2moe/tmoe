@@ -8869,7 +8869,7 @@ beta_features() {
 	RETURN_TO_WHERE='beta_features'
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
-		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 17 55 8 \
+		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 0 55 0 \
 			"1" "💻container/vm:docker容器,qemu,vbox虚拟机" \
 			"2" "⌨input method:输入法(搜狗,讯飞,百度)" \
 			"3" "🥅network:网络(网卡驱动,WiFi扫描)" \
@@ -8881,7 +8881,7 @@ beta_features() {
 			"9" "🌼Store&download:繁花似锦,一切皆在此中" \
 			"10" "🔨system:系统(启动项与用户组管理)" \
 			"11" "🌌tech&edu:科学与教育" \
-			"12" "🍕other:其它类" \
+			"12" "🍕other:其它类(Android-studio,scrcpy)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
