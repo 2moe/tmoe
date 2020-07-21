@@ -1011,7 +1011,7 @@ frequently_asked_questions() {
 	0 | "") tmoe_manager_main_menu ;;
 	1) vnc_can_not_call_pulse_audio ;;
 	2) linux_deploy_pulse_server ;;
-	3) disale_qemu_user_static ;;
+	3) disable_qemu_user_static ;;
 	esac
 	#############
 	press_enter_to_return
@@ -2281,12 +2281,12 @@ same_arch_or_different_arch() {
 	###################
 }
 ###############
-disale_qemu_user_static() {
+disable_qemu_user_static() {
 	if (whiptail --title "若无法向下兼容，则尝试禁用该参数" --yes-button 'disable禁用' --no-button 'enable启用' --yesno "Do you want to disable it?" 0 0); then
-		sed -i "s@qemu-x86_64-staic@#&@" ${PREFIX}/bin/debian
+		#sed -i "s@command.*qemu-.*-staic@#&@" ${PREFIX}/bin/debian
+		sed -i 's@command+=\" -q qemu-@#&@' ${PREFIX}/bin/debian
 	else
-		sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
-		sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
+		sed -i 's@#command+=\" -q qemu-@command+=\" -q qemu@' ${PREFIX}/bin/debian
 	fi
 }
 #############
