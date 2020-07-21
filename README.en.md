@@ -54,4 +54,4 @@ After installing the GUI, you can start vnc by typing `startvnc`,and you can sta
 If you are using Android,it is recommended that you install a VNC client.  
 [Google Play](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)
 
-If you are using WSL2,it is recommended that you use the X service.
+If you are using WSL2,it is recommended that you use the X server.
