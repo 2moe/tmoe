@@ -35,7 +35,7 @@ You can also use scrcpy+adb to cast screen.
 Mint and Ubuntu wallpaper packs for the past ten years.
 ![wallpaper01](https://images.gitee.com/uploads/images/2020/0721/193421_cb268a12_5617340.png "截图_2020-07-11_08-56-45.png")
 
-### 番外篇  Extra  
+### 番外篇 Extra
 
 🍸 目前支持的容器：
 Supported containers:
@@ -75,23 +75,23 @@ Konfigurieren Sie die mehrsprachige Umgebung
 ![Screenshot_20200712-084151_1.png](https://i.loli.net/2020/07/12/cwFIHjgyimpd5QN.png)
 在安装容器前选择相关选项，运行容器后会自动配置相应语言环境，以“日语\_日本”为例。  
 Take "ja_JP" as an example.  
-「日本語_日本」を例にとろう  
+「日本語\_日本」を例にとろう  
 ![Screenshot_20200711-155224.png](https://i.loli.net/2020/07/12/pSwVqvWy7mH5LP1.png)
 2-1.换源功能，全球镜像站  
 worldwide mirror sites.
- ![全球镜像站](https://images.gitee.com/uploads/images/2020/0721/195617_ab223077_5617340.png "Capture+_2020-07-21-19-48-41.png")
+![全球镜像站](https://images.gitee.com/uploads/images/2020/0721/195617_ab223077_5617340.png "Capture+_2020-07-21-19-48-41.png")
 除 debian 官方的全球镜像站外，更有 arch,alpine,fedora,kali 和 manjaro 国内镜像站。
 
 2-2. 额外源功能：arch 添加 archlinux_cn 源，centos 添加 epel 源，debian 添加 kali 源，debian 添加 ubuntu ppa 源并自动解决公钥问题。  
 ![kali-rooling-terminal](https://s1.ax1x.com/2020/04/23/JUR15q.md.png)
 
-3.sudo group management 用户组管理 
+3.sudo group management 用户组管理
 
 ![sudo用户组](https://images.gitee.com/uploads/images/2020/0721/200945_8b7bde03_5617340.png)
 
 4.UEFI Startup item management 开机启动项管理
 
-![uefi开机启动项](https://images.gitee.com/uploads/images/2020/0721/201713_0218fe60_5617340.png "Snipaste_2020-06-21_18-24-13.png")  
+![uefi开机启动项](https://images.gitee.com/uploads/images/2020/0721/201713_0218fe60_5617340.png "Snipaste_2020-06-21_18-24-13.png")
 
 ### 三：Remote Desktop Configuration 远程桌面配置篇
 
@@ -143,18 +143,18 @@ Configure vnc for dde.
 ![Snipaste_2020-04-12_05-09-13.png](https://i.loli.net/2020/04/18/LQcrOqZxwU2svJ5.png)  
 后期注：经测试 qemu 虚拟机下的 arch+dde+tigervncserver 没有问题，但是我没有再次测试 WSL2 的兼容性。  
 4-2.如下图所示，Debian sid + KDE Plasma 5 转发 X11 后，窗口显示会出现问题。  
-Configure vnc for plasma5.    
+Configure vnc for plasma5.  
 注：在 RDP 下此问题未复现  
 注 2：qemu 虚拟机运行的 Debian+KDE+x11vnc 也没有问题。  
 ![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)  
 4-3.GNOME3 的 VNC 配置脚本也没有问题。  
 Configure vnc for gnome3.  
 虽然在 Proot 容器上跑可能会出问题，但是换 qemu-system 虚拟机后就没问题了。
-![Screenshot_20200608-003126.png](https://images.gitee.com/uploads/images/2020/0718/103733_9b989b37_5617340.png) 
+![Screenshot_20200608-003126.png](https://images.gitee.com/uploads/images/2020/0718/103733_9b989b37_5617340.png)
 
 ### 四：Software configuration 软件配置篇
 
-1.提供了某些官方软件源中不包含的软件包，例如vscode。
+1.提供了某些官方软件源中不包含的软件包，例如 vscode。
 ![vscode_desktop_version](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)  
 You can install vscode in the container of your phone.
 你可以在手机的容器里安装 vscode。  
@@ -209,7 +209,8 @@ Containers other than debian may only support mainstream architectures, not s390
     		║   ║            ║        ║        ║         ║
     		║ 7 ║ Centos     ║ *<=7   ║ *<=7   ║   ✓     ║
 
-### 六.不同平台的安装教程 Installation tutorials for different platforms  
+### 六.不同平台的安装教程 Installation tutorials for different platforms
+
 **You can run this tool not only on Android, but also on GNU/Linux.**
 
 **您不仅可以在 Android 手机上运行本工具，亦可在 GNU/Linux 上运行。**
