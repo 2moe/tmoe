@@ -1454,7 +1454,7 @@ vscode_server_restart() {
 		SERVER_PORT='18080'
 	fi
 	echo "正在为您启动code-server，本机默认访问地址为localhost:${SERVER_PORT}"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${SERVER_PORT}
+	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${SERVER_PORT}
 	echo "您可以输${YELLOW}pkill node${RESET}来停止进程"
 }
 #############
@@ -8064,7 +8064,7 @@ xrdp_restart() {
 	ip -4 -br -c a | cut -d '/' -f 1
 	echo "端口号为${RDP_PORT}"
 	echo "正在为您启动xrdp服务，本机默认访问地址为localhost:${RDP_PORT}"
-	echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
+	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
 	echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
 	echo "如需修改当前用户密码，请输passwd"
 	if [ "${LINUX_DISTRO}" = "arch" ]; then

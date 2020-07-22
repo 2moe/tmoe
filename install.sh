@@ -767,7 +767,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	grep 'cat /etc/issue' ~/.bashrc >/dev/null 2>&1 || sed -i '1 a\cat /etc/issue' ~/.bashrc
 	if [ -f "/root/.vnc/startvnc" ]; then
 		/usr/local/bin/startvnc
-		echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
+		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
 		rm -f /root/.vnc/startvnc
 	fi
 
