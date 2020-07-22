@@ -24,12 +24,15 @@ Running debian GNU/Linux arm64 container application on Android system.
 Support cross-architecture running containers, use qemu-user-static on Qualcomm arm64 phone to simulate Debian GNU/Linux x86 architecture, and transmit audio through termux pulseaudio server.
 ![debian i386](https://images.gitee.com/uploads/images/2020/0721/192119_96d0b95d_5617340.png "Screenshot_20200721-173852.png")  
 2.Ubuntu container  
-在 Android 设备上运行的 Ubuntu 容器，你可以通过 VNC 来连接自己；  
+① 在 Android 设备上运行的 Ubuntu 容器，你可以通过 VNC 来连接自己；  
 通过 adb 远程来调试自己(Android)；  
 还能通过 scrcpy+adb 调试来实现自己投屏给自己，将手机中 VNC 的画面投屏给手机中的 VNC。  
 For Ubuntu containers running on Android devices, you can connect to the desktop through a VNC client. And remotely debug this device (Android) through adb.  
 You can also use scrcpy+adb to cast screen.  
 ![ubuntu arm64 scrcpy](https://images.gitee.com/uploads/images/2020/0721/192606_c10e724e_5617340.png "截图_2020-07-18_23-08-59.png")  
+② 在Ubuntu里玩各种有趣♂的东西  
+Playing some interesting things in ubuntu.  
+![island](https://images.gitee.com/uploads/images/2020/0722/181116_710a9cd1_5617340.png "Snipaste_2020-07-22_18-05-57.png")   
 3.美化功能 Desktop environment beautification function  
 十年 Mint 和 Ubuntu 壁纸包+主题解析功能。  
 Mint and Ubuntu wallpaper packs for the past ten years.
