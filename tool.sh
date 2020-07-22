@@ -14779,6 +14779,16 @@ install_fcitx5(){
 	fi
 	configure_system_fcitx5
 	beta_features_quick_install
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+	  if [ ! $(command -v fcitx5-config-qt) ]; then
+		  DEPENDENCY_01=""
+		  echo '检测到您的软件源中不包含kde-config-fcitx5,您可以添加第三方ppa源来安装'
+		  echo "${GREEN}add-apt-repository ppa:hosxy/test${RESET}"
+		  echo '若ppa源添加失败，则请使用本工具内置的ppa源添加器'
+		  add-apt-repository ppa:hosxy/test
+		  beta_features_quick_install
+	  fi
+	fi
 }
 ##############
 install_fcitx5_rime(){ 
