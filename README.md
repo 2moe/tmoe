@@ -14,7 +14,7 @@ You can also run Gentoo, Arch and other systems in WSL.
 
 在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。
 
-### 一：Android 篇
+### 一：Container 篇
 
 1.Debian container  
 ① 在 Android 系统上运行 debian GNU/Linux arm64 应用。  
