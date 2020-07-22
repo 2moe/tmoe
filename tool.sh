@@ -14692,7 +14692,7 @@ tmoe_fcitx5_menu(){
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
-	0 | "") beta_features ;;
+	0 | "") install_pinyin_input_method ;;
 	1) install_fcitx5 ;;
 	2) felixonmars_fcitx5_wiki_dict ;;
 	3) outloudvi_fcitx5_moegirl_dict ;;
@@ -14857,6 +14857,8 @@ tmoe_fcitx_faq() {
 		"3" "remove ibus移除ibus(防止冲突)" \
 		"4" "im-config:配置输入法" \
 		"5" "edit .xprofile(进入桌面后自动执行的配置)" \
+		"6" "edit .pam_environment(用户环境变量配置文件)" \
+		"7" "edit /etc/environment(系统环境变量配置文件)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -14869,14 +14871,14 @@ tmoe_fcitx_faq() {
 	2) kde_config_module_for_fcitx ;;
 	3) remove_ibus_im ;;
 	4) input_method_config ;;
-	5)
-		cd ${HOME}
-		if [ $(command -v editor) ]; then
-			editor .xprofile
-		else
-		    nano .xprofile
-		fi
-		chown $(whoami) .xprofile
+	5) FCITX_ENV_FILE="${HOME}/.xprofile"
+      edit_fcitx_env_file
+		;;
+	6) FCITX_ENV_FILE="${HOME}/.pam_environment"
+      edit_fcitx_env_file
+		;;
+	7) FCITX_ENV_FILE="/etc/environment"
+      edit_fcitx_env_file
 		;;
 	esac
 	##########################
@@ -14884,6 +14886,15 @@ tmoe_fcitx_faq() {
 	tmoe_fcitx_faq
 }
 #################
+edit_fcitx_env_file(){ 
+        if [ $(command -v editor) ]; then
+			editor ${FCITX_ENV_FILE}
+		else
+		    nano ${FCITX_ENV_FILE}
+		fi
+	chown ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${FCITX_ENV_FILE}
+}
+###########
 remove_ibus_im() {
 	${PACKAGES_REMOVE_COMMAND} ibus
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -14893,6 +14904,10 @@ remove_ibus_im() {
 ##########
 input_method_config() {
 	cd ${HOME}
+	if grep '^fcitx5' .xprofile; then
+	    sed -i 's@^fcitx5@#&@' .xprofile
+		sed -i '1a\fcitx || fcitx5' .xprofile
+	fi
 	if ! grep '^fcitx' .xprofile; then
 		sed -i '1a\fcitx || fcitx5' .xprofile
 	fi
@@ -15053,16 +15068,16 @@ fcitx5_config_file(){
 	if [ ! -e "${FCITX5_FILE}" ]; then
 		echo '' >> ${FCITX5_FILE}
 	fi
-if ! grep -q 'GTK_IM_MODULE=fcitx5' ${FCITX5_FILE}; then
+if ! grep '^export GTK_IM_MODULE=fcitx5' ${FCITX5_FILE}; then
 		sed -i 's/^export INPUT_METHOD.*/#&/' ${FCITX5_FILE}
 		sed -i 's/^export GTK_IM_MODULE.*/#&/' ${FCITX5_FILE}
 		sed -i 's/^export QT_IM_MODULE=.*/#&/' ${FCITX5_FILE}
 		sed -i 's/^export XMODIFIERS=.*/#&/' ${FCITX5_FILE}
 		cat >>${FCITX5_FILE} <<-'EOF'
-			export INPUT_METHOD=fcitx
+			export INPUT_METHOD=fcitx5
 			export GTK_IM_MODULE=fcitx5
 			export QT_IM_MODULE=fcitx5
-			export XMODIFIERS="@im=fcitx"
+			export XMODIFIERS="@im=fcitx5"
 		EOF
 fi
 }
@@ -15085,7 +15100,14 @@ configure_arch_fcitx() {
 	if [ ! -e "${HOME}/.xprofile" ]; then
 		echo '' >${HOME}/.xprofile
 	fi
-	if ! grep -q 'GTK_IM_MODULE=fcitx' ${HOME}/.xprofile; then
+
+	if grep -q '^export GTK_IM_MODULE=fcitx5' ${HOME}/.xprofile; then
+		sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile /etc/environment
+		sed -i 's/^export QT_IM_MODULE=.*/#&/' ${HOME}/.xprofile /etc/environment
+		sed -i 's/^export XMODIFIERS=.*/#&/' ${HOME}/.xprofile /etc/environment
+	fi
+
+	if ! grep -q '^export GTK_IM_MODULE=fcitx' ${HOME}/.xprofile; then
 		sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile
 		sed -i 's/^export QT_IM_MODULE=.*/#&/' ${HOME}/.xprofile
 		sed -i 's/^export XMODIFIERS=.*/#&/' ${HOME}/.xprofile
@@ -15096,7 +15118,7 @@ configure_arch_fcitx() {
 		EOF
 		#sort -u ${HOME}/.xprofile -o ${HOME}/.xprofile
 	fi
-	if ! grep -q 'GTK_IM_MODULE=fcitx' /etc/environment; then
+	if ! grep -q '^export GTK_IM_MODULE=fcitx' /etc/environment; then
 		sed -i 's/^export INPUT_METHOD.*/#&/' /etc/environment
 		sed -i 's/^export GTK_IM_MODULE.*/#&/' /etc/environment
 		sed -i 's/^export QT_IM_MODULE=.*/#&/' /etc/environment
