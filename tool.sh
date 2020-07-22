@@ -562,7 +562,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200719-01)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0618支持解析主题链接,0711 fix qemu x64repo,0711-0714 aria2-tool,0718 scrcpy" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200722-23)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0618支持解析主题链接,0711 fix qemu x64repo,0711-0714 aria2-tool,0718 scrcpy" 20 50 7 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -4817,6 +4817,13 @@ grep_arch_linux_pkg_02() {
 	aria2c --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 ###################
+grep_arch_linux_pkg_03() {
+	ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
+	echo "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
+	aria2c --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+}
+#################
 download_arch_community_repo_html() {
 	THEME_NAME=${GREP_NAME}
 	mkdir -p /tmp/.${THEME_NAME}
@@ -4841,6 +4848,7 @@ download_arch_xfce_artwork() {
 	if [ ! $(command -v unzstd) ]; then
 		echo "${PACKAGES_INSTALL_COMMAND} zstd"
 		${PACKAGES_INSTALL_COMMAND} zstd
+		echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} zstd"
 	fi
 	GREP_NAME='xfce4-artwork'
 	#https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
@@ -14665,6 +14673,121 @@ kde_config_module_for_fcitx() {
 	beta_features_quick_install
 }
 ############
+tmoe_fcitx5_menu(){ 
+	if [ ! $(command -v unzstd) ]; then
+		echo "${PACKAGES_INSTALL_COMMAND} zstd"
+		${PACKAGES_INSTALL_COMMAND} zstd
+		echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} zstd"
+	fi
+    RETURN_TO_WHERE='tmoe_fcitx5_menu'
+	NON_DEBIAN='false'
+	INPUT_METHOD=$(
+		whiptail --title "Fcitx5" --menu "词库是输入法保存的一些流行词语、常用词语或专业术语等的信息,\n添加流行词库能增加流行候选词的命中率" 0 55 0 \
+			"1" "fcitx5安装与卸载" \
+			"2" "肥猫百万大词库@felixonmars" \
+			"3" "萌娘百科词库@outloudvi" \
+			"4" "fcitx5-rime" \
+			"5" "输入法美化主题(开发中...)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	case ${INPUT_METHOD} in
+	0 | "") beta_features ;;
+	1) install_fcitx5 ;;
+	2) felixonmars_fcitx5_wiki_dict ;;
+	3) outloudvi_fcitx5_moegirl_dict ;;
+	4) install_fcitx_rime ;;
+	5) input_method_beautification ;;
+	esac
+	#"5" "Material Design质感主题@hosxy" \
+	###############
+	press_enter_to_return
+	tmoe_fcitx5_menu
+}
+############
+check_fcitx5_dict(){ 
+if [ ! -d ${FCITX5_DIICT_PATH} ];then
+    mkdir -p ${FCITX5_DIICT_PATH}
+fi
+DICT_FILE="${FCITX5_DIICT_PATH}/${DICT_NAME}"
+DICT_SHARE_FILE=".${FCITX5_DIICT_PATH}/${DICT_NAME}"
+#勿忘点
+#usr/share/fcitx5/pinyin/dictionaries/
+	if [ -e "${DICT_FILE}" ]; then
+		echo "检测到您${RED}已经下载过${RESET}${DICT_NAME}了"
+		echo "该文件位于${BLUE}${FCITX5_DIICT_PATH}${RESET}"
+		echo "如需删除，请手动执行${RED}rm -v ${DICT_FILE}${RESET}"
+		ls -lah ${DICT_FILE}
+		echo "Do you want to ${RED}update it?${RESET}"
+		echo "是否想要更新版本？"
+		do_you_want_to_continue
+	fi
+}
+#############
+move_dict_model_01() {
+	if [ -e "data.tar.zst" ]; then
+		tar --zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
+	elif [ -e "data.tar.xz" ]; then
+		tar -Jxvf data.tar.xz 2>/dev/null
+	elif [ -e "data.tar.gz" ]; then
+		tar -zxvf data.tar.gz 2>/dev/null
+	else
+		tar -xvf data.* 2>/dev/null
+	fi
+	#DICT_SHARE_PATH=fcitx5/pinyin/dictionaries/moegirl.dict
+    mv -fv ${DICT_SHARE_FILE} ${FCITX5_DIICT_PATH}
+	cd ..
+	rm -rf /tmp/.${THEME_NAME}
+	echo "${BLUE}文件${RESET}已经保存至${DICT_FILE}"
+	echo "${BLUE}The file${RESET} have been saved to ${DICT_FILE}"
+	ls -lah ${DICT_FILE}
+    echo "如需删除，请手动执行rm -v ${DICT_FILE}"
+}
+###################
+download_dict_model_01(){ 
+	 GREP_NAME_V='rime'
+	 THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/aarch64/'
+	 THEME_NAME="${GREP_NAME}"
+	 FCITX5_DIICT_PATH='/usr/share/fcitx5/pinyin/dictionaries'
+	 check_fcitx5_dict
+	download_arch_community_repo_html
+	grep_arch_linux_pkg_03
+	move_dict_model_01
+}
+############
+outloudvi_fcitx5_moegirl_dict(){ 
+     DICT_NAME='moegirl.dict'
+     GREP_NAME='fcitx5-pinyin-moegirl'
+     download_dict_model_01
+	 echo 'https://github.com/outloudvi/fcitx5-pinyin-moegirl'
+}
+#################
+felixonmars_fcitx5_wiki_dict(){ 
+     DICT_NAME='zhwiki.dict'
+     GREP_NAME='fcitx5-pinyin-zhwiki'
+     download_dict_model_01
+	 echo 'https://github.com/felixonmars/fcitx5-pinyin-zhwiki'
+}
+#################
+install_fcitx5(){ 
+	DEPENDENCY_01="fcitx5-chinese-addons fcitx5"
+	DEPENDENCY_02=""
+	if [ "${LINUX_DISTRO}" = "arch" ]; then
+		DEPENDENCY_02='fcitx5-qt fcitx5-gtk kcm-fcitx5'
+	elif [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_02='kde-config-fcitx5'
+	fi
+	configure_system_fcitx5
+	beta_features_quick_install
+}
+##############
+install_fcitx5_rime(){ 
+	DEPENDENCY_01="fcitx5-rime"
+	DEPENDENCY_02=""
+	configure_system_fcitx5
+	beta_features_quick_install
+}
+#################
 install_pinyin_input_method() {
 	RETURN_TO_WHERE='install_pinyin_input_method'
 	NON_DEBIAN='false'
@@ -14679,30 +14802,32 @@ install_pinyin_input_method() {
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
 			"1" "fcitx-FAQ:常见问题与疑难诊断" \
-			"2" "google谷歌拼音(引擎fork自Android版)" \
-			"3" "sogou(搜狗拼音)" \
-			"4" "iflyime(讯飞语音+拼音+五笔)" \
-			"5" "rime中州韻(擊響中文之韻)" \
-			"6" "baidu(百度输入法)" \
-			"7" "libpinyin(提供智能整句输入算法核心)" \
-			"8" "sunpinyin(基于统计学语言模型)" \
-			"9" "fcitx-云拼音模块" \
-			"10" "uim(Universal Input Method)" \
+			"2" "fcitx5(软件与词库)" \
+			"3" "google谷歌拼音(引擎fork自Android版)" \
+			"4" "sogou(搜狗拼音)" \
+			"5" "iflyime(讯飞语音+拼音+五笔)" \
+			"6" "rime中州韻(擊響中文之韻)" \
+			"7" "baidu(百度输入法)" \
+			"8" "libpinyin(提供智能整句输入算法核心)" \
+			"9" "sunpinyin(基于统计学语言模型)" \
+			"10" "fcitx-云拼音模块" \
+			"11" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
 	0 | "") beta_features ;;
 	1) tmoe_fcitx_faq ;;
-	2) install_google_pinyin ;;
-	3) install_sogou_pinyin ;;
-	4) install_iflyime_pinyin ;;
-	5) install_rime_pinyin ;;
-	6) install_baidu_pinyin ;;
-	7) install_lib_pinyin ;;
-	8) install_sun_pinyin ;;
-	9) install_fcitx_module_cloud_pinyin ;;
-	10) install_uim_pinyin ;;
+	2) tmoe_fcitx5_menu ;;
+	3) install_google_pinyin ;;
+	4) install_sogou_pinyin ;;
+	5) install_iflyime_pinyin ;;
+	6) install_rime_pinyin ;;
+	7) install_baidu_pinyin ;;
+	8) install_lib_pinyin ;;
+	9) install_sun_pinyin ;;
+	10) install_fcitx_module_cloud_pinyin ;;
+	11) install_uim_pinyin ;;
 	esac
 	###############
 	configure_arch_fcitx
@@ -14914,6 +15039,38 @@ install_sogou_pinyin() {
 	fi
 }
 ############
+fcitx5_config_file(){ 
+	if [ ! -e "${FCITX5_FILE}" ]; then
+		echo '' >> ${FCITX5_FILE}
+	fi
+if ! grep -q 'GTK_IM_MODULE=fcitx5' ${FCITX5_FILE}; then
+		sed -i 's/^export INPUT_METHOD.*/#&/' ${FCITX5_FILE}
+		sed -i 's/^export GTK_IM_MODULE.*/#&/' ${FCITX5_FILE}
+		sed -i 's/^export QT_IM_MODULE=.*/#&/' ${FCITX5_FILE}
+		sed -i 's/^export XMODIFIERS=.*/#&/' ${FCITX5_FILE}
+		cat >>${FCITX5_FILE} <<-'EOF'
+			export INPUT_METHOD=fcitx
+			export GTK_IM_MODULE=fcitx5
+			export QT_IM_MODULE=fcitx5
+			export XMODIFIERS="@im=fcitx"
+		EOF
+fi
+}
+############
+configure_system_fcitx5() {
+	FCITX5_FILE="${HOME}/.xprofile"
+	cd ${HOME}
+    fcitx5_config_file
+	if ! grep -q '^fcitx5' .xprofile; then
+		sed -i 's@^fcitx@#&' .xprofile
+		sed -i '1a\fcitx5 || fcitx' .xprofile
+	fi
+	FCITX5_FILE='/etc/environment'
+	fcitx5_config_file
+	FCITX5_FILE="${HOME}/.pam_environment"
+    fcitx5_config_file
+}
+##############
 configure_arch_fcitx() {
 	if [ ! -e "${HOME}/.xprofile" ]; then
 		echo '' >${HOME}/.xprofile
