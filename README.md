@@ -278,7 +278,7 @@ Finally, press Enter and arrow keys to operate.
 > When prompted Tool/Manager, please select Tool
 
 ![000](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/EOErMiCMvxKOTUI1.png)  
-**Just press enter and arrow keys, it won't be so simple, you are really adorkable!**  
+**Just press enter and arrow keys, it's so simple, you are really adorkable!**  
 ![001](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/WJRMr0Gk64p5D2eJ.png)  
 **How can you scold me?**  
 ![002](https://gitee.com/mo2/pic_api/raw/test/2020/04/03/b2oKdVCvZmlx9aZI.png)  
