@@ -7147,11 +7147,11 @@ modify_remote_desktop_config() {
 	RETURN_TO_TMOE_MENU_01='modify_remote_desktop_config'
 	##################
 	REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
-		"您想要修改哪个远程桌面的配置？\nWhich remote desktop configuration do you want to modify?" 15 60 6 \
+		"您想要修改哪个远程桌面的配置？\nWhich remote desktop config do you want to modify?" 0 50 0 \
 		"1" "tightvnc/tigervnc:应用广泛" \
 		"2" "x11vnc:通过VNC来连接真实X桌面" \
 		"3" "X服务:(XSDL/VcXsrv)" \
-		"4" "XRDP:使用微软开发的rdp协议" \
+		"4" "XRDP:使用microsoft微软开发的rdp协议" \
 		"5" "Wayland:(测试版,取代X Window)" \
 		"0" "Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
