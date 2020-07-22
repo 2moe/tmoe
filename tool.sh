@@ -14705,6 +14705,46 @@ tmoe_fcitx5_menu(){
 	tmoe_fcitx5_menu
 }
 ############
+input_method_beautification(){ 
+    RETURN_TO_WHERE='input_method_beautification'
+	DEPENDENCY_01=''
+	NON_DEBIAN='false'
+	INPUT_METHOD=$(
+		whiptail --title "Fcitx5" --menu "fcitx主题" 0 55 0 \
+			"1" "Material Design(微软拼音风格)@hosxy" \
+			"2" "kimpanel(支持kde-wayland)" \
+			"3" "gnome-shell-extension-kimpanel(支持gnome-wayland)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	case ${INPUT_METHOD} in
+	0 | "") tmoe_fcitx5_menu ;;
+	1) install_fcitx5_material_color_theme ;;
+	2) install_kimpanel ;;
+	3) install_gnome_shell_extension_kimpanel ;;
+	esac
+	###############
+	press_enter_to_return
+	input_method_beautification
+}
+##############
+install_fcitx5_material_color_theme (){ 
+	DEPENDENCY_02='fcitx5-material-color'
+	beta_features_quick_install
+	echo '请前往github阅读使用说明'
+	echo 'https://github.com/hosxy/Fcitx5-Material-Color'
+}
+#################
+install_kimpanel(){ 
+	DEPENDENCY_02='fcitx5-module-kimpanel'
+	beta_features_quick_install
+}
+#############
+install_gnome_shell_extension_kimpanel(){ 
+    DEPENDENCY_02='gnome-shell-extension-kimpanel'
+	beta_features_quick_install
+}
+############
 check_fcitx5_dict(){ 
 if [ ! -d ${FCITX5_DIICT_PATH} ];then
     mkdir -p ${FCITX5_DIICT_PATH}
