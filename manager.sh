@@ -3584,8 +3584,11 @@ install_gentoo_linux_distro() {
 	DISTRO_NAME='gentoo'
 	if [ "${ARCH_TYPE}" = 'arm64' ]; then
 		echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
+		NEW_TMOE_ARCH='armhf'
+		TMOE_QEMU_ARCH=""
+		creat_tmoe_arch_file
+		#sed '45 a\ARCH_TYPE="armhf"' |
 		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-			sed '45 a\ARCH_TYPE="armhf"' |
 			sed 's/debian system/gentoo system/g' |
 			sed 's:debian-sid:gentoo-current:g' |
 			sed 's:debian/sid:gentoo/current:g' |
@@ -3615,6 +3618,9 @@ install_raspbian_linux_distro() {
 	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'armhf' ]; then
 		apt install -y qemu qemu-user-static debootstrap
 	fi
+	NEW_TMOE_ARCH='armhf'
+	TMOE_QEMU_ARCH=""
+	creat_tmoe_arch_file
 	touch ~/.RASPBIANARMHFDetectionFILE
 	if (whiptail --title "RASPBIAN" --yes-button "直接" --no-button "间接" --yesno "您想要如何安装raspbian呢？How do you want to install raspbian?" 9 50); then
 		install_raspbian_linux_distro_type01
@@ -3638,8 +3644,8 @@ install_raspbian_linux_distro_type01() {
 }
 ##################
 install_raspbian_linux_distro_type02() {
+	#sed '72 a\ARCH_TYPE="armhf"'
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed '72 a\ARCH_TYPE="armhf"' |
 		sed 's:/sid:/buster:g' |
 		sed 's:extract z:extract:' |
 		sed 's@#deb http@deb http@g' |
