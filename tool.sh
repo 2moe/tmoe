@@ -14696,7 +14696,7 @@ tmoe_fcitx5_menu(){
 	1) install_fcitx5 ;;
 	2) felixonmars_fcitx5_wiki_dict ;;
 	3) outloudvi_fcitx5_moegirl_dict ;;
-	4) install_fcitx_rime ;;
+	4) install_fcitx5_rime ;;
 	5) input_method_beautification ;;
 	esac
 	#"5" "Material Design质感主题@hosxy" \
