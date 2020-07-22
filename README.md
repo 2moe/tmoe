@@ -31,7 +31,7 @@ For Ubuntu containers running on Android devices, you can connect to the desktop
 You can also use scrcpy+adb to cast screen.  
 ![ubuntu arm64 scrcpy](https://images.gitee.com/uploads/images/2020/0721/192606_c10e724e_5617340.png "截图_2020-07-18_23-08-59.png")  
 ② 在Ubuntu里玩各种有趣♂的东西  
-Playing some interesting things in ubuntu.  
+Playing some interesting things on ubuntu.  
 ![island](https://images.gitee.com/uploads/images/2020/0722/181116_710a9cd1_5617340.png "Snipaste_2020-07-22_18-05-57.png")   
 3.美化功能 Desktop environment beautification function  
 十年 Mint 和 Ubuntu 壁纸包+主题解析功能。  
