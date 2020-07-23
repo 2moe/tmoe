@@ -14748,7 +14748,10 @@ configure_fcitx5_material_color_theme (){
 	if [ ! -z "${CURRENT_FCITX5_COLOR}" ];then
 	    FCITX_THEME_STATUS="检测到当前fcitx5-material主题配色为${CURRENT_FCITX5_COLOR}"
 	else
-        FCITX_THEME_STATUS="检测到当前fcitx5-material主题配色为默认值"
+        FCITX_THEME_STATUS="检测到您未指定fcitx5-material主题的配色"
+	fi
+	if [ ! -e "${MATERIAL_COLOR_FOLDER}" ];then
+        FCITX_THEME_STATUS="检测您尚未下载fcitx5-material主题"
 	fi
 	PANEL_COLOR_PNG='' 
 	#DEPENDENCY_01=''
