@@ -918,7 +918,7 @@ tmoe_locale_settings() {
 			locale-gen ${TMOE_LANG} 2>/dev/null
 		fi
 		echo "Please try running ${GREEN}source /etc/default/locale${RESET}"
-	    echo "請手動執行${GREEN}source /etc/default/locale${RESET}以刷新locale設定"
+		echo "請手動執行${GREEN}source /etc/default/locale${RESET}以刷新locale設定"
 	fi
 	#############
 	echo "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
@@ -2382,7 +2382,7 @@ tmoe_qemu_user_chart() {
 			║   ║            ║        ║        ║         ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 2 ║  Ubuntu    ║  ✓     ║  ✓     ║   ✓     ║
+			║ 2 ║  Ubuntu    ║*<=19.10║  ✓     ║   ✓     ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
 			║ 3 ║ Kali       ║  ✓     ║   ✓    ║    X    ║
@@ -3469,6 +3469,15 @@ install_ubuntu_gnu_linux_distro() {
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	case ${DISTRO_CODE} in
+	bionic | xenial | eoan) ;;
+	*)
+		if [ "${ARCH_TYPE}" = 'i386' ]; then
+			echo "已不再提供${DISTRO_CODE}的i386镜像,将为您降级到18.04-bionic"
+			DISTRO_CODE='bionic'
+		fi
+		;;
+	esac
 	creat_container_edition_txt
 	echo "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
