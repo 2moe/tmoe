@@ -852,6 +852,9 @@ tmoe_locale_settings() {
 	64) TMOE_LANG='vi_VN.UTF-8' ;;
 	esac
 	###############
+	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+
 	mkdir -p ${HOME}/.config/tmoe-linux
 	cd ${HOME}/.config/tmoe-linux
 	echo ${TMOE_LANG} >locale.txt
@@ -886,10 +889,10 @@ tmoe_locale_settings() {
 	if [ ! -z "${X11VNC_LANG}" ]; then
 		sed -i "s@${X11VNC_LANG}@${TMOE_LANG}@" startx11vnc 2>/dev/null
 	fi
-	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-	DEBIAN_LOCALE_GEN=$(cat debian-i | grep '"/etc/locale.gen"; then' | head -n 1 | cut -d '"' -f 2 | cut -d '^' -f 2)
-	sed -i "s@${DEBIAN_LOCALE_GEN}@${TMOE_LANG_HALF}@" debian-i
+	#DEBIAN_LOCALE_GEN=$(cat debian-i | grep '"/etc/locale.gen"; then' | head -n 1 | cut -d '"' -f 2 | cut -d '^' -f 2)
+	#if [ ! -z "${DEBIAN_LOCALE_GEN}" ]; then
+	#	sed -i "s@${DEBIAN_LOCALE_GEN}@${TMOE_LANG_HALF}@" debian-i
+	#fi
 	set_debian_default_locale
 	#cd ${TMOE_SCRIPT_PATH}/etc
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
