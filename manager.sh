@@ -930,7 +930,9 @@ set_debian_default_locale() {
 	cd ${TMOE_SCRIPT_PATH}/etc/default
 	if grep -q 'LANG=' locale; then
 		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
+		DEFAULT_LANG_QUATER=$(echo ${DEFAULT_LANG} | cut -d '_' -f 1)
 		sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
+		sed -i "s@${TMOE_LANG_HALF}:${DEFAULT_LANG_QUATER}@${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}@g" locale
 		source ./locale
 	else
 		if [ "$(pwd)" != "${HOME}" ]; then
