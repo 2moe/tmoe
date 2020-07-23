@@ -958,6 +958,7 @@ install_ubuntu_language_pack() {
 			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
+		echo "Are you using ubuntu? You can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}"
 		fi
 	fi
 }
