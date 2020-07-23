@@ -161,6 +161,11 @@ gnu_linux() {
 		LINUX_DISTRO='debian'
 		PACKAGES_INSTALL_COMMAND='apt install -y'
 		PACKAGES_REMOVE_COMMAND='apt purge -y'
+		if grep -q 'ubuntu' /etc/os-release; then
+			DEBIAN_DISTRO='ubuntu'
+		elif [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
+			DEBIAN_DISTRO='kali'
+		fi
 
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
@@ -869,12 +874,18 @@ tmoe_locale_settings() {
 		sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 	fi
 	cd ${TMOE_SCRIPT_PATH}/usr/local/bin/
-	VNC_LANG=$(cat startvnc | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
-	sed -i "s@${VNC_LANG}@${TMOE_LANG}@" startvnc 2>/dev/null
-	X_LANG=$(cat startxsdl | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
-	sed -i "s@${X_LANG}@${TMOE_LANG}@" startxsdl 2>/dev/null
-	X11VNC_LANG=$(cat startx11vnc | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
-	sed -i "s@${X11VNC_LANG}@${TMOE_LANG}@" startx11vnc 2>/dev/null
+	VNC_LANG=$(cat startvnc 2>/dev/null | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	if [ ! -z "${VNC_LANG}" ]; then
+		sed -i "s@${VNC_LANG}@${TMOE_LANG}@" startvnc 2>/dev/null
+	fi
+	X_LANG=$(cat startxsdl 2>/dev/null | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	if [ ! -z "${X_LANG}" ]; then
+		sed -i "s@${X_LANG}@${TMOE_LANG}@" startxsdl 2>/dev/null
+	fi
+	X11VNC_LANG=$(cat startx11vnc 2>/dev/null | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	if [ ! -z "${X11VNC_LANG}" ]; then
+		sed -i "s@${X11VNC_LANG}@${TMOE_LANG}@" startx11vnc 2>/dev/null
+	fi
 	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
 	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	DEBIAN_LOCALE_GEN=$(cat debian-i | grep '"/etc/locale.gen"; then' | head -n 1 | cut -d '"' -f 2 | cut -d '^' -f 2)
