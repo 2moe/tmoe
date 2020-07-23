@@ -918,6 +918,7 @@ tmoe_locale_settings() {
 			locale-gen ${TMOE_LANG} 2>/dev/null
 		fi
 		echo "Please try running ${GREEN}source /etc/default/locale${RESET}"
+	    echo "請手動執行${GREEN}source /etc/default/locale${RESET}以刷新locale設定"
 	fi
 	#############
 	echo "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
@@ -958,7 +959,8 @@ install_ubuntu_language_pack() {
 			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
-		echo "Are you using ubuntu? You can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}"
+			echo "You are using ubuntu and you can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}"
+			echo "檢測到您正在使用Ubuntu,您可以手動執行${GREEN}sudo apt install \$(check-language-support)${RESET}來安裝第三方程式的語言支持包"
 		fi
 	fi
 }
