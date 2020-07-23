@@ -497,6 +497,9 @@ TMOE_LOCALE_SETTINGS() {
 	fi
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		if [ ! -e "/usr/sbin/locale-gen" ]; then
+			apt install -y locales
+		fi
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 			if [ ! $(command -v add-apt-repository) ]; then
 				apt install -y software-properties-common
@@ -504,9 +507,6 @@ TMOE_LOCALE_SETTINGS() {
 			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
-		fi
-		if [ ! -e "/usr/sbin/locale-gen" ]; then
-			apt install -y locales
 		fi
 	fi
 
@@ -14736,6 +14736,7 @@ install_fcitx5_material_color_theme (){
 }
 #################
 install_kimpanel(){ 
+	NON_DEBIAN='true'
 	DEPENDENCY_02='fcitx5-module-kimpanel'
 	beta_features_quick_install
 }
