@@ -3468,7 +3468,6 @@ install_ubuntu_gnu_linux_distro() {
 	6) check_the_latest_ubuntu_version ;;
 	esac
 	######################
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case ${DISTRO_CODE} in
 	bionic | xenial | eoan) ;;
 	*)
@@ -3478,6 +3477,7 @@ install_ubuntu_gnu_linux_distro() {
 		fi
 		;;
 	esac
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	creat_container_edition_txt
 	echo "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
