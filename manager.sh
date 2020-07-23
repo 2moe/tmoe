@@ -879,14 +879,14 @@ tmoe_locale_settings() {
 	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	DEBIAN_LOCALE_GEN=$(cat debian-i | grep '"/etc/locale.gen"; then' | head -n 1 | cut -d '"' -f 2 | cut -d '^' -f 2)
 	sed -i "s@${DEBIAN_LOCALE_GEN}@${TMOE_LANG_HALF}@" debian-i
-    set_debian_default_locale
+	set_debian_default_locale
 	#cd ${TMOE_SCRIPT_PATH}/etc
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
-		if [ ! -z "${TMOE_SCRIPT_PATH}"];then
-            TMOE_SCRIPT_PATH=''
-		    set_debian_default_locale
+		if [ ! -z "${TMOE_SCRIPT_PATH}"]; then
+			TMOE_SCRIPT_PATH=''
+			set_debian_default_locale
 			source /etc/default/locale
-	    fi
+		fi
 		mkdir -p /usr/local/etc/tmoe-linux/
 		cd /usr/local/etc/tmoe-linux/
 		cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
@@ -899,10 +899,11 @@ tmoe_locale_settings() {
 			sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
 		fi
 		mv -f locale.gen locale.gen.bak
-		sort -um locale.gen.bak > locale.gen
+		sort -um locale.gen.bak >locale.gen
 		if [ -z "${TMOE_SCRIPT_PATH}" ]; then
 			locale-gen ${TMOE_LANG} 2>/dev/null
 		fi
+		echo "Please try running ${GREEN}source /etc/default/locale${RESET}"
 	fi
 	#############
 	echo "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
@@ -911,7 +912,7 @@ tmoe_locale_settings() {
 	tmoe_locale_settings
 }
 #####################
-set_debian_default_locale(){ 
+set_debian_default_locale() {
 	cd ${TMOE_SCRIPT_PATH}/etc/default
 	if grep -q 'LANG=' locale; then
 		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
@@ -934,7 +935,7 @@ set_debian_default_locale(){
 install_ubuntu_language_pack() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ ! -e "/usr/sbin/locale-gen" ]; then
-		    apt update
+			apt update
 			apt install -y locales
 		fi
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
