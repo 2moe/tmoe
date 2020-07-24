@@ -10249,7 +10249,8 @@ install_container_and_virtual_machine() {
 			"6" "portainer(docker图形化web端管理容器)" \
 			"7" "VirtualBox(甲骨文开源虚拟机(x64)" \
 			"8" "wine(调用win api并即时转换)" \
-			"9" "anbox(Android in a box)" \
+			"9" "wine-dxvk(将DirectX转换为Vulkan api)" \
+			"10" "anbox(Android in a box)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -10266,13 +10267,21 @@ install_container_and_virtual_machine() {
 	6) install_docker_portainer ;;
 	7) install_virtual_box ;;
 	8) install_wine64 ;;
-	9) install_anbox ;;
+	9) install_dxvk ;;
+	10) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
 	beta_features
 }
-###########
+#####################
+install_dxvk(){ 
+	DEPENDENCY_01='dxvk'
+	DEPENDENCY_02='wine-development'
+	beta_features_quick_install
+	dxvk-setup i -s || dxvk-setup i -d
+	dxvk-setup
+}
 ###########
 check_qemu_aarch64_install() {
 	if [ ! $(command -v qemu-system-aarch64) ]; then
