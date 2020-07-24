@@ -1202,9 +1202,9 @@ enable_root_mode() {
 		alias debian-rm="sudo debian-rm"
 		echo "Modifying folder permissions"
 		echo "正在修改文件权限..."
-		sudo chown root:root -R "${DEBIAN_CHROOT}" 2>/dev/null || su -c "chown root:root -R ${DEBIAN_CHROOT}"
+		sudo chown root:root -R "${DEBIAN_CHROOT}" || su -c "chown root:root -R ${DEBIAN_CHROOT}"
 		if [ -d "${HOME}/debian_armhf" ]; then
-			sudo chown root:root -R "${HOME}/debian_armhf" 2>/dev/null || su -c "chown root:root -R ${HOME}/debian_armhf"
+			sudo chown root:root -R "${HOME}/debian_armhf" || su -c "chown root:root -R ${HOME}/debian_armhf"
 		fi
 
 		echo "You have modified debian to run with root privileges, this action will destabilize debian."
