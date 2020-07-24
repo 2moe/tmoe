@@ -18,16 +18,18 @@ You can also run Gentoo, Arch and other systems in WSL.
 
 1.Debian container  
 ① 在 Android 系统上运行 debian GNU/Linux arm64 应用。  
-Running debian GNU/Linux arm64 container application on Android system.
+Running debian GNU/Linux arm64 container applications on Android system.
 ![debian arm64](https://images.gitee.com/uploads/images/2020/0721/190834_db02f784_5617340.png "截图_2020-07-15_13-48-40.png")  
+![debian version](https://images.gitee.com/uploads/images/2020/0725/022931_5b2aa814_7793225.png "Capture+_2020-07-24-12-36-02.png")  
 ② 跨架构支持，在 Qualcomm 高通 arm64 cpu 的手机上借助 qemu-user 来模拟运行 x86(i686)架构的 Debian GNU/Linux，并通过 pulseaudio 来传输音频。  
 Support cross-architecture running containers, use qemu-user-static on Qualcomm arm64 phone to simulate Debian GNU/Linux x86 architecture, and transmit audio through termux pulseaudio server.
 ![debian i386](https://images.gitee.com/uploads/images/2020/0721/192119_96d0b95d_5617340.png "Screenshot_20200721-173852.png")  
+![arch](https://images.gitee.com/uploads/images/2020/0725/023007_2cb90736_7793225.png "Capture+_2020-07-24-12-40-59.png")  
 2.Ubuntu container  
 在 Android 设备上运行的 Ubuntu 容器，你可以通过 VNC 来连接自己；  
 通过 adb 远程来调试自己(Android)；  
 还能通过 scrcpy+adb 调试来实现自己投屏给自己，将手机中 VNC 的画面投屏给手机中的 VNC。  
-For Ubuntu containers running on Android devices, you can connect to the desktop through a VNC client. And remotely debug this device (Android) through adb.  
+For Ubuntu container running on Android device, you can connect to the desktop through a VNC client. And remotely debug this device (Android) through adb.  
 You can also use scrcpy+adb to cast screen.  
 ![ubuntu arm64 scrcpy](https://images.gitee.com/uploads/images/2020/0721/192606_c10e724e_5617340.png "截图_2020-07-18_23-08-59.png")    
 3.美化功能 Desktop environment beautification function  
@@ -37,8 +39,7 @@ Mint and Ubuntu wallpaper packs for the past ten years.
 
 ### 番外篇 Extra
 
-🍸 目前支持的容器：
-Supported containers:
+#### 🍸 目前支持的容器 Supported containers:
 
 - [x] **Debian stable+sid**
 - [x] **Ubuntu LTS+dev**
@@ -57,13 +58,19 @@ Supported containers:
 - [x] **Slackware**
 - [x] **Armbian**
 
-  配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Gentoo(x64)。  
+![gentoo](https://images.gitee.com/uploads/images/2020/0725/023040_88655e91_7793225.png "Capture+_2020-07-22-13-20-47.png")  
+ 配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Alpine。   
   🍹
   All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Fedora and Arch.
 
-部分功能预览 Preview：
+#### 部分功能预览 Preview：  
+qemu-system manager    
+![qemu虚拟机管理](https://images.gitee.com/uploads/images/2020/0725/023844_8d7d0eca_7793225.png "Capture+_2020-07-15-18-47-28.png")   
+install and configure some apps  
 ![secret garden](https://images.gitee.com/uploads/images/2020/0721/221603_079fc8d5_5617340.png "Capture+_2020-07-21-22-12-33.png")  
-![steam](https://images.gitee.com/uploads/images/2020/0721/221625_594e5123_5617340.png "Capture+_2020-07-21-22-13-13.png")
+![steam](https://images.gitee.com/uploads/images/2020/0721/221625_594e5123_5617340.png "Capture+_2020-07-21-22-13-13.png")   
+部分软件因其已存在强大的第三方GUI配置工具,故仅提供安装,不提供配置脚本。  
+![ATRI](https://images.gitee.com/uploads/images/2020/0725/015859_4b32d612_7793225.png "截图_2020-07-25_01-29-32.png")
 
 ### 二：System Configuration 系统配置篇
 
@@ -192,7 +199,7 @@ Containers other than debian may only support mainstream architectures, not s390
     		║   ║            ║        ║        ║         ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
-    		║ 2 ║  Ubuntu    ║  ✓     ║  ✓    ║   ✓     ║
+    		║ 2 ║  Ubuntu    ║*<=19.10║  ✓    ║   ✓     ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
     		║ 3 ║ Kali       ║  ✓     ║   ✓   ║    X    ║
