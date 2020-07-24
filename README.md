@@ -199,10 +199,10 @@ Containers other than debian may only support mainstream architectures, not s390
     		║   ║            ║        ║        ║         ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
-    		║ 2 ║  Ubuntu    ║*<=19.10║  ✓    ║   ✓     ║
+    		║ 2 ║  Ubuntu    ║*<=19.10║  ✓     ║   ✓     ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
-    		║ 3 ║ Kali       ║  ✓     ║   ✓   ║    X    ║
+    		║ 3 ║ Kali       ║  ✓     ║   ✓    ║    X    ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
     		║ 4 ║ Arch       ║  X     ║   ✓    ║   X     ║
@@ -211,7 +211,7 @@ Containers other than debian may only support mainstream architectures, not s390
     		║ 5 ║ Fedora     ║ *<=29  ║ *<=29  ║  ✓      ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
-    		║ 6 ║  Alpine    ║  ✓     ║    ✓  ║   ✓     ║
+    		║ 6 ║  Alpine    ║  ✓     ║    ✓   ║   ✓     ║
     		║---║------------║--------║--------║---------║
     		║   ║            ║        ║        ║         ║
     		║ 7 ║ Centos     ║ *<=7   ║ *<=7   ║   ✓     ║
