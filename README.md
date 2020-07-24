@@ -31,7 +31,7 @@ Support cross-architecture running containers, use qemu-user-static on Qualcomm 
 还能通过 scrcpy+adb 调试来实现自己投屏给自己，将手机中 VNC 的画面投屏给手机中的 VNC。  
 For Ubuntu container running on Android device, you can connect to the desktop through a VNC client. And remotely debug this device (Android) through adb.  
 You can also use scrcpy+adb to cast screen.  
-![ubuntu arm64 scrcpy](https://images.gitee.com/uploads/images/2020/0721/192606_c10e724e_5617340.png "截图_2020-07-18_23-08-59.png")    
+![ubuntu arm64 scrcpy](https://images.gitee.com/uploads/images/2020/0721/192606_c10e724e_5617340.png "截图_2020-07-18_23-08-59.png")  
 3.美化功能 Desktop environment beautification function  
 十年 Mint 和 Ubuntu 壁纸包+主题解析功能。  
 Mint and Ubuntu wallpaper packs for the past ten years.
@@ -59,17 +59,18 @@ Mint and Ubuntu wallpaper packs for the past ten years.
 - [x] **Armbian**
 
 ![gentoo](https://images.gitee.com/uploads/images/2020/0725/023040_88655e91_7793225.png "Capture+_2020-07-22-13-20-47.png")  
- 配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Alpine。   
-  🍹
-  All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Fedora and Arch.
+ 配置和优化步骤仅适用于 Debian、Ubuntu、Kali、Arch、Fedora 和 Alpine。  
+ 🍹
+All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Fedora and Arch.
 
-#### 部分功能预览 Preview：  
-qemu-system manager    
-![qemu虚拟机管理](https://images.gitee.com/uploads/images/2020/0725/023844_8d7d0eca_7793225.png "Capture+_2020-07-15-18-47-28.png")   
+#### 部分功能预览 Preview：
+
+qemu-system manager  
+![qemu虚拟机管理](https://images.gitee.com/uploads/images/2020/0725/023844_8d7d0eca_7793225.png "Capture+_2020-07-15-18-47-28.png")  
 install and configure some apps  
 ![secret garden](https://images.gitee.com/uploads/images/2020/0721/221603_079fc8d5_5617340.png "Capture+_2020-07-21-22-12-33.png")  
-![steam](https://images.gitee.com/uploads/images/2020/0721/221625_594e5123_5617340.png "Capture+_2020-07-21-22-13-13.png")   
-部分软件因其已存在强大的第三方GUI配置工具,故仅提供安装,不提供配置脚本。  
+![steam](https://images.gitee.com/uploads/images/2020/0721/221625_594e5123_5617340.png "Capture+_2020-07-21-22-13-13.png")  
+部分软件因其已存在强大的第三方 GUI 配置工具,故仅提供安装,不提供配置脚本。  
 ![ATRI](https://images.gitee.com/uploads/images/2020/0725/015859_4b32d612_7793225.png "截图_2020-07-25_01-29-32.png")
 
 ### 二：System Configuration 系统配置篇
@@ -108,7 +109,7 @@ Support one-key graphical user interface installation.
 
 2.TUI 式界面，便捷配置  
 Convenient configuration  
-![remote desktop configuration](https://images.gitee.com/uploads/images/2020/0722/143751_d5f4d9c4_5617340.png "Capture+_2020-07-22-14-36-25.png")   
+![remote desktop configuration](https://images.gitee.com/uploads/images/2020/0722/143751_d5f4d9c4_5617340.png "Capture+_2020-07-22-14-36-25.png")  
 ![分辨率](https://images.gitee.com/uploads/images/2020/0721/203215_9823fc25_5617340.png "Capture+_2020-07-11-10-05-41.png")
 
 3.对于不同系统，不同虚拟化环境进行适配  
@@ -190,31 +191,17 @@ Containers other than debian may only support mainstream architectures, not s390
     	下表中的所有系统均支持x64和arm64
       All systems in the table below support x64 and arm64
     	*表示仅旧版支持
-    		╔═══╦════════════╦════════╦════════╦═════════╦
-    		║   ║Architecture║        ║        ║         ║
-    		║   ║----------- ║ x86    ║armhf   ║ppc64el  ║
-    		║   ║System      ║        ║        ║         ║
-    		║---║------------║--------║--------║---------║
-    		║ 1 ║  Debian    ║  ✓     ║    ✓  ║   ✓     ║
-    		║   ║            ║        ║        ║         ║
-    		║---║------------║--------║--------║---------║
-    		║   ║            ║        ║        ║         ║
-    		║ 2 ║  Ubuntu    ║*<=19.10║  ✓     ║   ✓     ║
-    		║---║------------║--------║--------║---------║
-    		║   ║            ║        ║        ║         ║
-    		║ 3 ║ Kali       ║  ✓     ║   ✓    ║    X    ║
-    		║---║------------║--------║--------║---------║
-    		║   ║            ║        ║        ║         ║
-    		║ 4 ║ Arch       ║  X     ║   ✓    ║   X     ║
-    		║---║------------║--------║--------║---------║
-    		║   ║            ║        ║        ║         ║
-    		║ 5 ║ Fedora     ║ *<=29  ║ *<=29  ║  ✓      ║
-    		║---║------------║--------║--------║---------║
-    		║   ║            ║        ║        ║         ║
-    		║ 6 ║  Alpine    ║  ✓     ║    ✓   ║   ✓     ║
-    		║---║------------║--------║--------║---------║
-    		║   ║            ║        ║        ║         ║
-    		║ 7 ║ Centos     ║ *<=7   ║ *<=7   ║   ✓     ║
+
+
+| Distro |    x86    | armhf  | ppc64el |
+| ------ | :-------: | :----: | :-----: |
+| Debian |     ✓     |   ✓    |    ✓    |
+| Ubuntu | \*<=19.10 |   ✓    |    ✓    |
+| Kali   |     ✓     |   ✓    |    X    |
+| Arch   |     X     |   ✓    |    X    |
+| Fedora |  \*<=29   | \*<=29 |    ✓    |
+| Alpine |     ✓     |   ✓    |    ✓    |
+| CentOS |   \*<=7   | \*<=7  |    ✓    |
 
 ### 六.不同平台的安装教程 Installation tutorials for different platforms
 
