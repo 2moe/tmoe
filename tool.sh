@@ -7236,7 +7236,7 @@ x11vnc_warning() {
 
 	RETURN_TO_WHERE='configure_x11vnc'
 	do_you_want_to_continue
-	stopvnc 2>/dev/null
+	#stopvnc 2>/dev/null
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
 	DEPENDENCY_02=''
