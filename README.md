@@ -192,7 +192,6 @@ Containers other than debian may only support mainstream architectures, not s390
       All systems in the table below support x64 and arm64
     	*表示仅旧版支持
 
-
 | Distro |    x86    | armhf  | ppc64el |
 | ------ | :-------: | :----: | :-----: |
 | Debian |     ✓     |   ✓    |    ✓    |

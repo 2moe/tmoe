@@ -2897,6 +2897,7 @@ configure_vnc_xstartup() {
 ####################
 configure_x11vnc_remote_desktop_session() {
 	cd /usr/local/bin/
+	rm -f startx11vnc
 	cat >startx11vnc <<-EOF
 		#!/bin/bash
 		stopvnc 2>/dev/null
@@ -8215,6 +8216,7 @@ configure_startxsdl() {
 #################
 configure_startvnc() {
 	cd /usr/local/bin
+	rm -f startvnc
 	cat >startvnc <<-'EndOfFile'
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
