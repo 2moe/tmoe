@@ -2676,7 +2676,11 @@ install_debian_sid_gnu_linux_container() {
 	case "${BETA_SYSTEM}" in
 	0 | "") install_debian_gnu_linux_distro ;;
 	1) install_debian_sid_via_tuna ;;
-	2) debian_sid_arm64_xfce_recovery_package ;;
+	2)
+		TMOE_LINUX_CONTAINER_DISTRO="debian"
+		creat_container_edition_txt
+		debian_sid_arm64_xfce_recovery_package
+		;;
 	esac
 	######################
 	press_enter_to_return
@@ -2716,7 +2720,11 @@ install_debian_buster_gnu_linux_container() {
 	case "${BETA_SYSTEM}" in
 	0 | "") install_debian_gnu_linux_distro ;;
 	1) install_debian_buster_via_tuna ;;
-	2) debian_buster_arm64_xfce_recovery_package ;;
+	2)
+		TMOE_LINUX_CONTAINER_DISTRO="debian"
+		creat_container_edition_txt
+		debian_buster_arm64_xfce_recovery_package
+		;;
 	esac
 	######################
 	press_enter_to_return
@@ -2735,7 +2743,6 @@ install_debian_gnu_linux_distro() {
 	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
 	#\nStable版更加稳定且bug较少,但stable的软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new.
 	BETA_SYSTEM=$(
-		DISTRO_NAME='debian'
 		whiptail --title "请选择您需要安装的debian version" --menu "Buster为2019~2021年的stable版,sid永远都为unstable,sid的软件包较新。\nStable has fewer bugs,\nbut the packages inside the software source are older." 0 50 0 \
 			"1" "👦Sid(滚动更新,隔壁的男孩席德,玩具终结者)" \
 			"2" "🐶10-buster(2019~2022,安弟一家养的小狗)" \
@@ -3446,7 +3453,6 @@ install_beta_containers() {
 install_ubuntu_gnu_linux_distro() {
 	DISTRO_NAME='ubuntu'
 	BETA_SYSTEM=$(
-		DISTRO_NAME='ubuntu'
 		whiptail --title "Which version do you want to install?" --menu "您想要安装哪个版本?2020至2025年的LTS长期支持版为focal 20.04(2020年4月正式发布),上一个LTS为18.04(2018年4月),下一个LTS可能为22.04\n设当前年份为x,若x>=2022,则请手动输入版本代号。" 0 50 0 \
 			"1" "🦍20.10 Groovy Gorilla 時髦大猩猩" \
 			"2" "🐱20.04 Focal Fossa 焦點馬島長尾狸貓" \
@@ -3894,7 +3900,6 @@ which_linux_mint_distro() {
 	RETURN_TO_WHERE='which_linux_mint_distro'
 	DISTRO_NAME='mint'
 	BETA_SYSTEM=$(
-		DISTRO_NAME='mint'
 		whiptail --title "mint" --menu "您想要安装哪个版本？Which version do you want to install?" 17 55 7 \
 			"1" "自动检测版本" \
 			"2" "Custom code手动输入版本代号" \
