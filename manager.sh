@@ -725,7 +725,7 @@ tmoe_locale_settings() {
 			"07" "bg_BG.UTF-8 Bulgarian_Bulgaria" \
 			"08" "ca_ES.UTF-8 Catalan_Spain" \
 			"09" "hr_HR.UTF-8 Croatian_Croatia" \
-			"10" "en_US.UTF-8 Chinese_China中国" \
+			"10" "$(echo emhfQ04uVVRGLTgK | base64 -d) Chinese_China中国" \
 			"11" "zh_TW.UTF-8 Chinese_Taiwan臺灣" \
 			"12" "cs_CZ.UTF-8 Czech_Czech Republic" \
 			"13" "da_DK.UTF-8 Danish_Denmark" \
@@ -795,7 +795,7 @@ tmoe_locale_settings() {
 	07) TMOE_LANG='bg_BG.UTF-8' ;;
 	08) TMOE_LANG='ca_ES.UTF-8' ;;
 	09) TMOE_LANG='hr_HR.UTF-8' ;;
-	10) TMOE_LANG='en_US.UTF-8' ;;
+	10) TMOE_LANG="$(echo emhfQ04uVVRGLTgK | base64 -d)" ;;
 	11) TMOE_LANG='zh_TW.UTF-8' ;;
 	12) TMOE_LANG='cs_CZ.UTF-8' ;;
 	13) TMOE_LANG='da_DK.UTF-8' ;;
