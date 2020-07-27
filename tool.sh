@@ -2120,12 +2120,12 @@ tmoe_desktop_faq() {
 			     
 			另外最麻烦的一点在于：如果上游发生了变更，那么就有可能导致脚本的部分地方失效。
 			
-			举个简单的例子：Termux在v0.95版中不再预装debianutils,导致novnc无法正常连接，其本质原因是novnc依赖于which这种最基础的命令。
+			举个例子：Termux在v0.95版中不再预装debianutils,导致novnc无法正常连接，其本质原因是novnc依赖于which这种最基础的命令。
 			解决方法特别简单，把该依赖（debianutils）再装回来就可以了。
 
 			注：novnc相当于浏览器版的vnc客户端，让您无需安装vnc app即可使用vnc连接。
 
-			再举个更麻烦的例子。
+			再举个例子:
 			VScode server在之前某次更新中发生了重大变更。
 			我必须要修改远程服务器的自动打包方案，并且几乎完全重写了配置脚本。
 
@@ -10240,6 +10240,62 @@ custom_uefi_boot_order() {
 	fi
 }
 ####################
+wine_menu(){ 
+	RETURN_TO_WHERE='wine_menu'
+	NON_DEBIAN='false'
+	VIRTUAL_TECH=$(
+		whiptail --title "WINE" --menu "Wine is not an emulator" 0 50 0 \
+			"1" "install安装" \
+			"2" "remove卸载" \
+			"3" "wine-dxvk(将DirectX转换为Vulkan api)" \
+			"4" "wine-wechat微信" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") install_container_and_virtual_machine ;;
+	1) install_wine64 ;;
+	2) remove_wine_bin ;;
+	3) install_dxvk ;;
+	4) install_wine_wechat ;;
+	esac
+	###############
+	press_enter_to_return
+	wine_menu
+}
+##########
+remove_wine_bin(){ 
+	if [ "${ARCH_TYPE}" != "i386" ]; then
+		echo 'dpkg  --remove-architecture i386'
+		echo '正在移除对i386软件包的支持'
+		#apt purge ".*:i386"
+		aptitude remove ~i~ri386
+		dpkg --remove-architecture i386
+		apt update
+	fi
+	INSTALL_WINE='false'
+	wine_depencies
+	echo "${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}"
+	${PACKAGES_REMOVE_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+}
+############
+install_wine_wechat(){ 
+cat <<-'EOF'
+微信安装包将下载/tmp目录
+若安装失败，请手动执行wine /tmp/WeChatSetup.exe
+https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe
+建议您在安装完成后执行winecfg,并选择“函数库”.接着添加riched20，最后选择"原装先于内建"。
+EOF
+cd /tmp
+if [ ! -e "WeChatSetup.exe" ];then 
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WeChatSetup.exe 'https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe'
+fi
+sudo -iu master  wine /tmp/WeChatSetup.exe
+sudo -iu ${CURRENT_USER_NAME} winetricks riched20
+sudo -iu ${CURRENT_USER_NAME} winecfg
+}
+################
 install_container_and_virtual_machine() {
 	RETURN_TO_WHERE='install_container_and_virtual_machine'
 	NON_DEBIAN='false'
@@ -10253,8 +10309,7 @@ install_container_and_virtual_machine() {
 			"6" "portainer(docker图形化web端管理容器)" \
 			"7" "VirtualBox(甲骨文开源虚拟机(x64)" \
 			"8" "wine(调用win api并即时转换)" \
-			"9" "wine-dxvk(将DirectX转换为Vulkan api)" \
-			"10" "anbox(Android in a box)" \
+			"9" "anbox(Android in a box)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -10270,9 +10325,8 @@ install_container_and_virtual_machine() {
 	5) install_docker_ce ;;
 	6) install_docker_portainer ;;
 	7) install_virtual_box ;;
-	8) install_wine64 ;;
-	9) install_dxvk ;;
-	10) install_anbox ;;
+	8) wine_menu ;;
+	9) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
@@ -14548,20 +14602,29 @@ download_debian_nonfree_live_iso() {
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
 }
 #####################
-install_wine64() {
-	DEPENDENCY_01='wine winetricks q4wine'
+wine_depencies(){ 
+    DEPENDENCY_01='wine winetricks q4wine'
 	DEPENDENCY_02='playonlinux wine32'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 			DEPENDENCY_01='wine winetricks q4wine'
 		fi
-		dpkg --add-architecture i386
-		apt update
-		apt install winetricks-zh
+		if [ "${INSTALL_WINE}" = "true" ]; then
+			dpkg --add-architecture i386
+		    apt update
+		    apt install winetricks-zh wine64
+		else
+		     apt purge winetricks-zh	
+		fi
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01='winetricks-zh'
 		DEPENDENCY_02='playonlinux5-git q4wine'
 	fi
+}
+##########
+install_wine64() {
+	INSTALL_WINE='true'
+	wine_depencies
 	beta_features_quick_install
 	if [ "${ARCH_TYPE}" != "i386" ]; then
 		cat <<-'EOF'

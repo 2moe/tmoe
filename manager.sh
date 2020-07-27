@@ -2899,7 +2899,7 @@ un_xz_debian_recovery_kit() {
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo 'You can type startvnc to start vnc.'
 	echo '在容器内输debian-i启动软件安装及远程桌面配置管理工具。'
-	echo 'The vnc service is about to start for you.'
+	echo 'The vnc server is about to start for you.'
 	# The password you entered is hidden.'
 	#echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
 	#echo "When prompted for a view-only password, it is recommended that you enter 'n'"
@@ -2976,7 +2976,7 @@ termux_install_xfce() {
 			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 			sleep 1s
 			thunar &
-			echo "已为您启动vnc服务 Vnc service has been started, enjoy it!"
+			echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
 			echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
 			startxfce4
 
