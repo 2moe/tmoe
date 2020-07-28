@@ -305,7 +305,7 @@ tmoe_aria2_file() {
         ;;
     10)
         TMOE_ARIA2_GREP_NAME='enable-mmap'
-        TMOE_ARIA2_TIPS='内存中存放映射文件. 当文件空间没有预先分配至, 此选项无效. 参见 --file-allocation.'
+        TMOE_ARIA2_TIPS='内存中存放映射文件. 当文件空间没有预先分配时, 此选项无效. 参见 --file-allocation.'
         ;;
     11)
         TMOE_ARIA2_GREP_NAME='save-not-found'
