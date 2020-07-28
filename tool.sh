@@ -2275,7 +2275,7 @@ tmoe_desktop_faq() {
 
 					在上文中已经提过了，虚拟机和容器环境有很大的区别，此处不再赘述。
 
-					之前曾在Android的Ubuntu 18.04 proot容器体验过kde plasma，流畅度并不如xfce。
+					之前曾在Android的Ubuntu 18.04 proot容器里体验过kde plasma，流畅度并不如xfce。
 			                
 					如果直接在proot容器里安装的话，那么很有可能遇到程序崩溃，无法正常启动的问题，此外你还得要自己解决很多问题，修bug可不是一件简单的事情。
 
@@ -2813,7 +2813,7 @@ install_fvwm() {
 	REMOTE_DESKTOP_SESSION_01='fvwm'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		DEPENDENCY_01='fvwm fvwm-icons'
-		REMOTE_DESKTOP_SESSION_01='fvwm-crystal'
+		#REMOTE_DESKTOP_SESSION_01='fvwm'
 		if grep -Eq 'buster|bullseye|bookworm' /etc/os-release; then
 			DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
 		else
@@ -3103,7 +3103,7 @@ install_xfce4_desktop() {
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='@xfce'
-		rm -rf /etc/xdg/autostart/xfce-polkit.desktop
+		rm -v /etc/xdg/autostart/xfce-polkit.desktop
 		##################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_01="xfce4 xfce4-terminal xfce4-goodies"
@@ -7373,12 +7373,13 @@ modify_xsdl_conf() {
 	else
 		TMOE_XSDL_SCRIPT_PATH='/usr/local/bin/startqemu'
 	fi
-	XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Which configuration do you want to modify?" 15 50 6 \
+	XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Which configuration do you want to modify?" 0 50 0 \
 		"1" "Pulse server port音频端口" \
 		"2" "Display number显示编号" \
 		"3" "ip address" \
 		"4" "Edit manually手动编辑" \
 		"5" "DISPLAY switch转发显示开关(仅qemu)" \
+		"6" "VcXsrv显示端口(仅win10)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
@@ -7389,6 +7390,7 @@ modify_xsdl_conf() {
 	3) modify_xsdl_ip_address ;;
 	4) modify_startxsdl_manually ;;
 	5) disable_tmoe_qemu_remote_display ;;
+	6) modify_vcxsrv_display_port ;;
 	esac
 	########################################
 	press_enter_to_return
@@ -7437,6 +7439,10 @@ check_tmoe_xsdl_display_ip() {
 	CURRENT_DISPLAY_IP=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 1)
 }
 ######
+check_tmoe_vcxsrv_display_port() {
+	CURRENT_VSCSRV_DISPLAY_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'VCXSRV_DISPLAY_PORT=' | head -n 1 | cut -d '=' -f 2)
+}
+######
 check_tmoe_xsdl_display_port() {
 	CURRENT_DISPLAY_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
 }
@@ -7464,7 +7470,27 @@ modify_pulse_server_port() {
 	fi
 }
 ########################################################
+modify_vcxsrv_display_port (){ 
+    check_tmoe_vcxsrv_display_port
+	TARGET=$(whiptail --inputbox "若您需要指定vcxsrv显示的Display number(输出显示的端口数字),\n则可在此处修改。默认为37985，当前为${CURRENT_VSCSRV_DISPLAY_PORT}" 0 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		modify_xsdl_conf
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的数值"
+		echo "Please enter a valid value"
+	else
+		DISPLAY_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'VCXSRV_DISPLAY_PORT=' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+		sed -i "${DISPLAY_LINE} c\VCXSRV_DISPLAY_PORT=${TARGET}" "${TMOE_XSDL_SCRIPT_PATH}"
+		echo 'Your current DISPLAY port has been modified.'
+		check_tmoe_vcxsrv_display_port
+		echo "您当前的VcXsrv显示端口已经修改为${CURRENT_VSCSRV_DISPLAY_PORT}"
+		press_enter_to_return
+		modify_xsdl_conf
+	fi
+}
+###########
 modify_display_port() {
+	check_tmoe_xsdl_display_ip
 	check_tmoe_xsdl_display_port
 	TARGET=$(whiptail --inputbox "若xsdl app显示的Display number(输出显示的端口数字) 非0，则您可在此处修改。默认为0，当前为${CURRENT_DISPLAY_PORT}\n请以xsdl app显示的DISPLAY=:的数字为准，输入完成后按回车键确认。" 15 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
@@ -7474,7 +7500,7 @@ modify_display_port() {
 		echo "Please enter a valid value"
 	else
 		DISPLAY_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export DISPLAY' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
-		sed -i "${DISPLAY_LINE} c\export DISPLAY=${CURRENT_DISPLAY_IP}:$TARGET" "${TMOE_XSDL_SCRIPT_PATH}"
+		sed -i "${DISPLAY_LINE} c\export DISPLAY=${CURRENT_DISPLAY_IP}:${TARGET}" "${TMOE_XSDL_SCRIPT_PATH}"
 		echo 'Your current DISPLAY port has been modified.'
 		check_tmoe_xsdl_display_port
 		echo "您当前的显示端口已经修改为${CURRENT_DISPLAY_PORT}"
@@ -7556,7 +7582,7 @@ configure_xwayland() {
 	#进入xwayland配置文件目录
 	cd /etc/xwayland/
 	TMOE_OPTION=$(
-		whiptail --title "CONFIGURE xwayland" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 14 50 5 \
+		whiptail --title "CONFIGURE xwayland" --menu "您想要修改哪项配置？\nWhich configuration do you want to modify?" 0 50 0 \
 			"1" "One-key conf 初始化一键配置" \
 			"2" "指定xwayland桌面环境" \
 			"3" "pulse_server音频服务" \
@@ -8172,6 +8198,7 @@ configure_startxsdl() {
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
+			VCXSRV_DISPLAY_PORT=37985
 			export PULSE_SERVER=tcp:127.0.0.1
 			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
@@ -8179,14 +8206,16 @@ configure_startxsdl() {
 			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
 			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :0 -multiwindow -clipboard -wgl -ac"
+			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac"
 			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
 				export PULSE_SERVER=${WSL2IP}
-				export DISPLAY=${WSL2IP}:0
+				export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
 				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
+			else
+                export DISPLAY="$(echo ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
 			fi
 			sleep 2
 		fi
