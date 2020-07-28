@@ -7472,7 +7472,7 @@ modify_pulse_server_port() {
 ########################################################
 modify_vcxsrv_display_port (){ 
     check_tmoe_vcxsrv_display_port
-	TARGET=$(whiptail --inputbox "若您需要指定vcxsrv显示的Display number(输出显示的端口数字),\n则可在此处修改。默认为37985，当前为${CURRENT_VSCSRV_DISPLAY_PORT}" 0 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "若您需要指定vcxsrv的显示端口,\n则可在此处修改。默认为37985，当前为${CURRENT_VSCSRV_DISPLAY_PORT}" 0 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		modify_xsdl_conf
 	elif [ -z "${TARGET}" ]; then
