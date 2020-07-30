@@ -9046,7 +9046,7 @@ tmoe_physics_menu() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "physics" --menu \
-		"物理学是一门研究自然现象背后的物质和能量法则的自然科学。\nWhich software do you want to install？" 0 50 0 \
+		"物理学是一门研究自然现象背后的物质和能量法则的自然科学。\nWARNING！本功能仍处于内测阶段,可能无法正常运行。\nAlpha features may not work properly." 0 50 0 \
 		"1" "Step(交互式物理模拟器,归属于KDE教育项目)" \
 		"2" "OpenFOAM 简化偏微分方程的数值解法" \
 		"3" "Geant321 物质间离子流动的仿真工具包" \
@@ -9336,7 +9336,7 @@ tmoe_education_app_menu() {
 	NON_DEBIAN='false'
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "education" --menu \
-		"WARNING！本功能仍处于内测阶段,可能无法正常运行。\nAlpha features may not work properly.\nPlay玩Linux X\nStudy学习  ✓" 0 50 0 \
+		"Play玩Linux X\nStudy学习  ✓" 0 50 0 \
 		"1" "高考(培养学科核心素养,提高综合能力)" \
 		"2" "考研(全国硕士研究生统一招生考试)" \
 		"3" "mathematics数学" \
