@@ -2921,6 +2921,7 @@ un_xz_debian_recovery_kit() {
 	fi
 	if [ -e "${HOME}/debian_arm64" ]; then
 		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/startvnc
+		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/startxsdl
 	fi
 	
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
