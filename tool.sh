@@ -31,7 +31,8 @@ main() {
 		;;
 	passwd | -passwd)
 		set_vnc_passwd
-		check_mouse_cursor
+		#check_mouse_cursor
+		check_win10x_icon
 		#check_libreoffice_patch
 		#check_pic_go_sandbox
 		;;
@@ -61,12 +62,15 @@ main() {
 	esac
 }
 ################
+check_win10x_icon(){ 
+	if [ -e "/usr/share/icons/We10X" ]; then
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s We10X
+	fi
+}
+##########
 check_mouse_cursor() {
 	if [ -e "/usr/share/icons/breeze" ]; then
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s breeze_cursors 2>/dev/null
-		echo '正在将鼠标指针设定为breeze'
-		sleep 1
-		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s We10X
 	elif [ -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 	fi
