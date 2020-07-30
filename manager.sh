@@ -653,7 +653,7 @@ android_termux() {
 #-- 主菜单 main menu
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200721-04)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200730-16)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -1343,7 +1343,7 @@ backup_filename() {
 ######################
 backup_system() {
 	unmount_proc_dev
-	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 15 60 4 \
+	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \
 		"0" "Back to the main menu 返回主菜单" \
 		"1" "备份GNU/Linux容器" \
 		"2" "备份Termux" \
@@ -1372,6 +1372,12 @@ backup_system() {
 	tmoe_manager_main_menu
 }
 ###########################
+check_backup_file() {
+	if [ -e "${BACKUP_FILE}" ]; then
+		BACKUP_FOLDER="${BACKUP_FOLDER} ${BACKUP_FILE}"
+	fi
+}
+############
 backup_gnu_linux_container() {
 
 	#ls -lth ./debian*.tar.* 2>/dev/null | head -n 5
@@ -1381,6 +1387,13 @@ backup_gnu_linux_container() {
 	#press_enter_to_continue
 	termux_backup_pre
 	TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-rootfs_bak"
+	BACKUP_FOLDER="${DEBIAN_CHROOT} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc"
+	BACKUP_FILE="${PREFIX}/bin/stopvnc"
+	check_backup_file
+	BACKUP_FILE="${ACROSS_ARCH_FILE}"
+	check_backup_file
+	BACKUP_FILE="${LINUX_CONTAINER_DISTRO_FILE}"
+	check_backup_file
 
 	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 12 50); then
 
@@ -1388,11 +1401,7 @@ backup_gnu_linux_container() {
 		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 		press_enter_to_continue
 		#stopvnc（pkill all）在linux不会自动生成
-		if [ -e "${PREFIX}/bin/stopvnc" ]; then
-			tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
-		else
-			tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${ACROSS_ARCH_FILE} ${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
-		fi
+		tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 
 		#whiptail进度条已弃用
 		#tar -PJpcf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
@@ -1408,22 +1417,22 @@ backup_gnu_linux_container() {
 		tmoe_manager_main_menu
 
 	else
-		echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
-		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
-		press_enter_to_continue
-		if [ "$(command -v pv)" ]; then
-			if [ -e "${PREFIX}/bin/stopvnc" ]; then
-				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+		if (whiptail --title "Choose the type of backup选择备份类型" --yes-button "tar.gz" --no-button "tar" --yesno "Which do yo like better? \n tar只进行打包，不压缩，速度快。\ntar.gz在打包的基础上进行压缩。" 9 50); then
+			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
+			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
+			press_enter_to_continue
+			if [ "$(command -v pv)" ]; then
+				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 			else
-				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 			fi
 		else
-			if [ -e "${PREFIX}/bin/stopvnc" ]; then
-				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
-			else
-				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
-			fi
+			echo "您选择了tar,只进行打包,不进行压缩，即将为您备份至/sdcard/Download/backup/${TMPtime}.tar"
+			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
+			press_enter_to_continue
+			tar -Ppcvf ${TMPtime}.tar --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 		fi
+
 		#最新版弃用了whiptail的进度条！！！
 		#tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.gz) 2>&1 | whiptail --gauge "Packaging into tar.gz \n正在打包成tar.gz" 10 70
 
@@ -1433,7 +1442,7 @@ backup_gnu_linux_container() {
 		#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
 		pwd
 		ls -lth ./*tar* | grep ^- | head -n 1
-		echo 'gzip压缩至60%完成是正常现象。'
+		#echo 'gzip压缩至60%完成是正常现象。'
 		echo '备份完成'
 		press_enter_to_return
 		tmoe_manager_main_menu
@@ -1659,10 +1668,20 @@ backup_termux() {
 		backup_system
 	fi
 }
-###############
-
 ##################################
 ##################################
+uncompress_other_format_file() {
+	pwd
+	echo "即将为您解压..."
+	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
+		echo "${GREEN} tar -Ppxvf ${RESTORE} ${RESET}"
+		tar -Ppxvf ${RESTORE}
+	else
+		echo "${GREEN} pv ${RESTORE} | tar -Ppx ${RESET}"
+		pv ${RESTORE} | tar -Ppx
+	fi
+}
+##############
 uncompress_tar_xz_file() {
 	pwd
 	echo 'tar.xz'
@@ -1708,6 +1727,8 @@ uncompress_tar_gz_file_test() {
 		uncompress_tar_gz_file
 	elif [ "${FILE_EXT_6}" = 'tar.xz' ]; then
 		uncompress_tar_xz_file
+	else
+		uncompress_other_format_file
 	fi
 }
 ################
@@ -1814,7 +1835,7 @@ where_is_start_dir() {
 ###############
 file_directory_selection() {
 
-	if (whiptail --title "FILE PATH" --yes-button '自动' --no-button '手动' --yesno "您想要手动指定文件目录还是自动选择？" 9 50); then
+	if (whiptail --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择？" 9 50); then
 		where_is_start_dir
 	else
 		manually_select_the_file_directory
@@ -2633,14 +2654,14 @@ check_tmoe_linux_container_rec_pkg_file_and_git() {
 ########################
 debian_sid_arm64_xfce_recovery_package() {
 	echo "即将为您下载至${DOWNLOAD_PATH}"
-	echo '下载大小1.41GB,解压后约占5G'
+	echo '下载大小1302.2MiB,解压后约占4.9GiB'
 	#echo "2020-07-11凌晨注：忘记给LibreOffice打补丁了 (ㄒoㄒ)/~~，请在安装完成后使用tmoe-linux tool给libreoffice打补丁"
-	CORRENTSHA256SUM='f838d3151ce9019ecc74c214d5e23952ca9de2a74406a04d457840ebbe0e21e9' #DevSkim: ignore DS173237
+	CORRENTSHA256SUM='0a3f6f964903d8a20d255754386a754020db71b12ef0c26659f2a54cb7e5ebf1' #DevSkim: ignore DS173237
 	BRANCH_NAME='arm64'
 	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_sid_rootfs_01'
 	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_sid_rootfs_02'
 	TMOE_LINUX_CONTAINER_REPO_03='https://gitee.com/ak2/debian_sid_rootfs_03'
-	DOWNLOAD_FILE_NAME='debian-sid_arm64+xfce4.14-2020-07-15_14-06-rootfs_bak.tar.xz'
+	DOWNLOAD_FILE_NAME='debian-sid_arm64+xfce4.14-2020-07-30_16-08-rootfs_bak.tar.xz'
 	check_tmoe_linux_container_rec_pkg_file_and_git
 }
 ##################
@@ -2669,7 +2690,7 @@ install_debian_sid_gnu_linux_container() {
 	DISTRO_CODE='sid'
 	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
 		"1" "netinstall(通过软件源在线安装)" \
-		"2" "arm64 xfce4.14桌面+音乐app,1.41GB-20200715" \
+		"2" "arm64 xfce4.14桌面+音乐app,1.3G-20200730" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################

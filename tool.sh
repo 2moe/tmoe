@@ -8612,7 +8612,7 @@ frequently_asked_questions() {
 		"3" "linuxQQ闪退" \
 		"4" "VNC/X11闪退" \
 		"5" "软件禁止以root权限运行" \
-		"6" "mlocate数据库初始化���败" \
+		"6" "mlocate数据库初始化失败" \
 		"7" "TTY下中文字体乱码" \
 		"8" "Linux与win10双系统时间不一致" \
 		"0" "Back to the main menu 返回主菜单" \
@@ -9222,8 +9222,8 @@ RETURN_TO_WHERE='college_entrance_examination_paper'
 	TMOE_APP=$(whiptail --title "college_entrance_examination_paper" --menu \
 		"高考真题" 0 50 0 \
 		"1" "2020(大小79.9MiB)" \
-		"2" "2013-2018精校(146.3MiB)" \
-		"3" "2008-2019(不含听力及口语听说,392.2MiB)" \
+		"2" "2008-2019(不含听力及口语听说,392.2MiB)" \
+		"3" "2013-2018精校(146.3MiB)" \
 		"4" "2008-2018(仅英语听力音频,244.9MiB)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -9236,14 +9236,14 @@ RETURN_TO_WHERE='college_entrance_examination_paper'
 	DOWNLOAD_FILE_NAME='2020年高考真题.tar.xz'
 	 ;;
 	2) 
-	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/gaokao_paper_2013_to_2018'
-	BRANCH_NAME='2018'
-	DOWNLOAD_FILE_NAME='2013-2018高考真题.tar.xz'
-	 ;;
-	3) 
 	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/gaokao_paper_2019'
 	BRANCH_NAME='2019'
 	DOWNLOAD_FILE_NAME='2008-2019高考真题.tar.xz'
+	 ;;
+	3) 
+	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/gaokao_paper_2013_to_2018'
+	BRANCH_NAME='2018'
+	DOWNLOAD_FILE_NAME='2013-2018高考真题.tar.xz'
 	 ;;
 	4) 
 	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/gaokao_english_listening'
