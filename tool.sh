@@ -9161,7 +9161,7 @@ check_tmoe_study_materials(){
 	fi
 	cd ${DOWNLOAD_FOLDER}
 	if [ -e ${DOWNLOAD_FILE_NAME} ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?\n检测到恢复包已经下载,\n您想要直接解压还是重新下载？" 0 0); then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?\n您想要直接解压还是重新下载？" 0 0); then
 			unzip_tmoe_study_file
 		else
 			git_clone_tmoe_study_file
