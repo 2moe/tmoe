@@ -1115,11 +1115,11 @@ install_gnu_linux_container() {
 					press_enter_to_return
 					tmoe_manager_main_menu
 				else
+					if [ -d "${HOME}/debian_arm64" ]; then
+						echo '正在强制删除'
+						remove_gnu_linux_container
+					fi
 					tmoe_linux_container_eula
-				fi
-				if [ -d "${HOME}/debian_arm64" ]; then
-					echo '正在强制删除'
-					remove_gnu_linux_container
 				fi
 				;;
 
