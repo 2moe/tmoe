@@ -2061,9 +2061,9 @@ preconfigure_gui_dependecies_02() {
 standand_desktop_install() {
 	NON_DEBIAN='false'
 	NON_DBUS='false'
-	preconfigure_gui_dependecies_02
 	REMOVE_UDISK2='false'
 	RETURN_TO_WHERE='standand_desktop_install'
+	preconfigure_gui_dependecies_02
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
 		"Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose container_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
 		"1" "🍰Container_DE(容器可运行:xfce,mate,lxde)" \
@@ -9117,7 +9117,7 @@ tmoe_physics_menu() {
 	##########################
 	beta_features_quick_install
 	press_enter_to_return
-	tmoe_chemistry_menu
+	tmoe_physics_menu
 }
 ####################
 tips_of_dict(){ 
