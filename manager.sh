@@ -1112,6 +1112,8 @@ install_gnu_linux_container() {
 				bash ${PREFIX}/bin/debian-rm 2>/dev/null
 				if [ "$?" != '0' ]; then
 					echo "容器没有被移除"
+					echo '正在强制删除'
+					remove_gnu_linux_container
 					press_enter_to_return
 					tmoe_manager_main_menu
 				else
@@ -2917,6 +2919,10 @@ un_xz_debian_recovery_kit() {
 		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
+	if [ -e "${HOME}/debian_arm64" ]; then
+		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/startvnc
+	fi
+	
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo 'You can type startvnc to start vnc.'
 	echo '在容器内输debian-i启动软件安装及远程桌面配置管理工具。'
