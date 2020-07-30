@@ -10200,7 +10200,7 @@ tmoe_read_app_menu() {
 		"2" "fbreader(epub阅读器)" \
 		"3" "WPS office(办公软件)" \
 		"4" "typora(markdown编辑器)" \
-		"5" "Xournal(PDF手写笔记)" \
+		"5" "Xournal(手写编辑PDF)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
