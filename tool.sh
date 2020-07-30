@@ -4510,17 +4510,17 @@ linux_mint_backgrounds() {
 		;;
 	esac
 	######################################
-	if [ "${MINT_CODE}" = 'xfce' ]; then
-		WALLPAPER_NAME='xfce4/backdrops'
-	else
-		WALLPAPER_NAME="backgrounds/linuxmint-${MINT_CODE}"
-	fi
 	download_mint_backgrounds
 	press_enter_to_return
 	linux_mint_backgrounds
 }
 ###############
 download_mint_backgrounds() {
+	if [ "${MINT_CODE}" = 'xfce' ]; then
+		WALLPAPER_NAME='xfce4/backdrops'
+	else
+		WALLPAPER_NAME="backgrounds/linuxmint-${MINT_CODE}"
+	fi
 	if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ];then
 		CUSTOM_WALLPAPER_NAME="backgrounds"
 	else
