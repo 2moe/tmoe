@@ -3296,6 +3296,7 @@ modify_the_default_xfce_wallpaper() {
 			#if_exists_other_debian_distro_wallpaper
 			MINT_CODE="ulyana"
 			WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
+			mv /usr/share/backgrounds/kali/* /usr/share/backgrounds/
 		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 			MINT_CODE="tricia" 
 			#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
@@ -3306,6 +3307,7 @@ modify_the_default_xfce_wallpaper() {
 		#WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
 		MINT_CODE='tessa'
 		WALLPAPER_FILE="/usr/share/backgrounds/fhaller_surreal_sunset.jpg"
+		mv /usr/share/backgrounds/xfce/* /usr/share/backgrounds/
 		#if [ -e "${WALLPAPER_FILE}" ]; then
 		#	modify_xfce_vnc0_wallpaper
 		#else
