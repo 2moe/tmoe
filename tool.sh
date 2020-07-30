@@ -3280,6 +3280,7 @@ if_exists_other_debian_distro_wallpaper() {
 }
 ###############
 modify_the_default_xfce_wallpaper() {
+	FORCIBLY_DOWNLOAD='true'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		MINT_CODE="tina" 
 		WALLPAPER_FILE='/usr/share/backgrounds/adeole_yosemite.jpg'
@@ -4540,6 +4541,7 @@ download_mint_backgrounds() {
 download_wallpapers() {
 	cd /tmp
 	SET_MINT_AS_WALLPAPER='false'
+	FORCIBLY_DOWNLOAD='false'
 	RETURN_TO_WHERE='download_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
 		"您想要下载哪套壁纸包？\n Which wallpaper-pack do you want to download? " 0 50 0 \
@@ -4614,7 +4616,9 @@ download_theme_deb_and_extract_01() {
 ###############
 #多GREP
 grep_theme_model_03() {
-	check_theme_folder
+	if [ ${FORCIBLY_DOWNLOAD} != 'true' ]; then
+		check_theme_folder
+	fi
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
 	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
