@@ -3297,7 +3297,7 @@ modify_the_default_xfce_wallpaper() {
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		#WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
 		MINT_CODE='tessa'
-		WALLPAPER_FILE="/usr/share/backgrounds/xfce/fhaller_surreal_sunset.jpg"
+		WALLPAPER_FILE="/usr/share/backgrounds/fhaller_surreal_sunset.jpg"
 		#if [ -e "${WALLPAPER_FILE}" ]; then
 		#	modify_xfce_vnc0_wallpaper
 		#else
