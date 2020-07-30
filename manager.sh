@@ -1112,14 +1112,15 @@ install_gnu_linux_container() {
 				bash ${PREFIX}/bin/debian-rm 2>/dev/null
 				if [ "$?" != '0' ]; then
 					echo "容器没有被移除"
-					echo '正在强制删除'
-					remove_gnu_linux_container
 					press_enter_to_return
 					tmoe_manager_main_menu
 				else
 					tmoe_linux_container_eula
 				fi
-
+				if [ -d "${HOME}/debian_arm64" ]; then
+					echo '正在强制删除'
+					remove_gnu_linux_container
+				fi
 				;;
 
 			n* | N*)
@@ -2920,11 +2921,9 @@ un_xz_debian_recovery_kit() {
 		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
 	if [ -e "${HOME}/debian_arm64" ]; then
-		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/startvnc
-		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/startxsdl
-		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/debian-rm
+		sed -i 's@debian-sid_arm64@debian_arm64' ${PREFIX}/bin/startvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm
 	fi
-	
+
 	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
 	echo 'You can type startvnc to start vnc.'
 	echo '在容器内输debian-i启动软件安装及远程桌面配置管理工具。'
