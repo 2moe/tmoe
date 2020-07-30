@@ -2060,6 +2060,7 @@ preconfigure_gui_dependecies_02() {
 ########################
 standand_desktop_install() {
 	NON_DEBIAN='false'
+	NON_DBUS='false'
 	preconfigure_gui_dependecies_02
 	REMOVE_UDISK2='false'
 	RETURN_TO_WHERE='standand_desktop_install'
@@ -2510,7 +2511,7 @@ will_be_installed_for_you() {
 ########################
 #####################
 window_manager_install() {
-	NON_DBUS='true'
+	#NON_DBUS='true'
 	REMOTE_DESKTOP_SESSION_02='x-window-manager'
 	BETA_DESKTOP=$(
 		whiptail --title "WINDOW MANAGER" --menu \
