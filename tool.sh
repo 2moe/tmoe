@@ -9312,7 +9312,7 @@ tmoe_postgraduate_entrance_examination(){
 	1) 
 	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/postgraduate_politics'
 	BRANCH_NAME='2019'
-	DOWNLOAD_FILE_NAME='2003-2019政治真题'
+	DOWNLOAD_FILE_NAME='2003-2019政治真题.tar.xz'
 	;;
 	2) 
 	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/postgraduate_english'
