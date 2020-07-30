@@ -3258,7 +3258,6 @@ debian_xfce_wallpaper() {
 	if [ ! -e "${WALLPAPER_FILE}" ]; then
 		#debian_download_xubuntu_xenial_wallpaper
 		echo "壁纸包将保存至/usr/share/backgrounds"
-		#debian_download_ubuntu_mate_wallpaper
 		debian_download_mint_wallpaper
 	fi
 	modify_xfce_vnc0_wallpaper
@@ -3266,11 +3265,8 @@ debian_xfce_wallpaper() {
 #################
 check_mate_wallpaper_pack() {
 	if [ ! -e "${WALLPAPER_FILE}" ]; then
-		if [ ${LANG} = "en_US.UTF-8" ]; then
-			mkdir -p ${HOME}/图片
-		fi
 		echo "壁纸包将保存至/usr/share/backgrounds"
-		#debian_download_ubuntu_mate_wallpaper
+		debian_download_ubuntu_mate_wallpaper
 	fi
 	modify_xfce_vnc0_wallpaper
 }
@@ -3319,15 +3315,8 @@ modify_the_default_xfce_wallpaper() {
 }
 #################
 debian_download_ubuntu_mate_wallpaper() {
-	FORCIBLY_DOWNLOAD='true'
+	SET_MINT_AS_WALLPAPER='true'
 	download_ubuntu-mate_wallpaper
-	if [ -e "${HOME}/Pictures/ubuntu-mate-photos" ]; then
-		mv ${HOME}/Pictures/ubuntu-mate-photos/* /usr/share/backgrounds -f
-		rm -rf ${HOME}/Pictures/ubuntu-mate-photos/
-	elif [ -e "${HOME}/图片/ubuntu-mate-photos" ]; then
-		mv ${HOME}/图片/ubuntu-mate-photos/* /usr/share/backgrounds -f
-		rm -rf ${HOME}/图片/ubuntu-mate-photos/
-	fi
 }
 #####################
 debian_download_xubuntu_xenial_wallpaper() {
@@ -4448,11 +4437,15 @@ download_ubuntu_kylin_walllpaper() {
 #############
 download_ubuntu-mate_wallpaper() {
 	GREP_NAME_02='ubuntu-mate-wallpapers-photos'
-	CUSTOM_WALLPAPER_NAME='ubuntu-mate-photos'
 	THEME_NAME='ubuntu_wallpapers_and_photos'
 	WALLPAPER_NAME='backgrounds/ubuntu-mate-photos'
 	GREP_NAME_01='all.deb'
 	THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntu-mate-artwork/'
+	if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ];then
+		CUSTOM_WALLPAPER_NAME="backgrounds"
+	else
+		CUSTOM_WALLPAPER_NAME='ubuntu-mate-photos'
+	fi
 	grep_theme_model_03
 	move_wallpaper_model_01
 }
@@ -4546,7 +4539,6 @@ download_mint_backgrounds() {
 ###############
 download_wallpapers() {
 	cd /tmp
-	FORCIBLY_DOWNLOAD='false'
 	SET_MINT_AS_WALLPAPER='false'
 	RETURN_TO_WHERE='download_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
@@ -4622,9 +4614,7 @@ download_theme_deb_and_extract_01() {
 ###############
 #多GREP
 grep_theme_model_03() {
-	if [ ${FORCIBLY_DOWNLOAD} != 'true' ]; then
-		check_theme_folder
-	fi
+	check_theme_folder
 	mkdir -p /tmp/.${THEME_NAME}
 	cd /tmp/.${THEME_NAME}
 	THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
