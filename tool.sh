@@ -9239,6 +9239,11 @@ RETURN_TO_WHERE='college_entrance_examination_paper'
 	DOWNLOAD_FILE_NAME='2013-2018高考真题.tar.xz'
 	 ;;
 	3) 
+	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/gaokao_paper_2019'
+	BRANCH_NAME='2019'
+	DOWNLOAD_FILE_NAME='2008-2019高考真题.tar.xz'
+	 ;;
+	4) 
 	TMOE_LINUX_STUDY_REPO_01='https://gitee.com/ak2/gaokao_english_listening'
 	BRANCH_NAME='2018'
 	DOWNLOAD_FILE_NAME='2008-2018高考英语听力.tar.xz'
