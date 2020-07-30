@@ -4340,7 +4340,7 @@ ubuntu_gnome_walllpapers() {
 	RETURN_TO_WHERE='ubuntu_gnome_walllpapers'
 	#cat index.html | sort -u | grep 20.04 | grep all.deb | cut -d '=' -f 4 | cut -d '"' -f 2 |cut -d '_' -f 1 | cut -d '-' -f 3
 	INSTALL_THEME=$(whiptail --title "UBUNTU壁纸" --menu \
-		"Download ubuntu wallpapers" 0 50 0 \
+		"Download ubuntu wallpaper-packs" 0 50 0 \
 		"00" "Back返回" \
 		"01" "artful" \
 		"02" "bionic" \
@@ -4463,7 +4463,7 @@ linux_mint_backgrounds() {
 	#cat index.html | grep mint-backgrounds | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1 | cut -d '-' -f 3,4
 	GREP_NAME_02="mint-backgrounds"
 	INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
-		"Download Mint Wallpapers" 0 50 0 \
+		"Download Mint wallpaper-packs" 0 50 0 \
 		"00" "Back返回" \
 		"01" "katya-extra" \
 		"02" "lisa-extra" \
