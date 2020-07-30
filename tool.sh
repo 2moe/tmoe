@@ -64,6 +64,9 @@ main() {
 check_mouse_cursor() {
 	if [ -e "/usr/share/icons/breeze" ]; then
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s breeze_cursors 2>/dev/null
+		echo '正在将鼠标指针设定为breeze'
+		sleep 1
+		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s We10X
 	elif [ -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 	fi
