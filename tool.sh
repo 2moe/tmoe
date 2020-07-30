@@ -9147,6 +9147,7 @@ unzip_tmoe_study_file(){
 }
 ##############
 git_clone_tmoe_study_file() {
+	cd /tmp
 	TMOE_TRUE_TEMP_FOLDER='.TMOE_STUDY_MATERIALS_TEMP_FOLDER'
 	mkdir -p ${TMOE_TRUE_TEMP_FOLDER}
 	cd ${TMOE_TRUE_TEMP_FOLDER}
@@ -9157,9 +9158,10 @@ git_clone_tmoe_study_file() {
 	mv .study_* ..
 	cd ..
 	cat .study_* >${DOWNLOAD_FILE_NAME}
-	mv -f ${DOWNLOAD_FILE_NAME} ../
+	mv -f ${DOWNLOAD_FILE_NAME} ${DOWNLOAD_FOLDER}
 	cd ../
 	rm -rvf ${TMOE_TRUE_TEMP_FOLDER}
+	cd ${DOWNLOAD_FOLDER}
 	unzip_tmoe_study_file
 }
 #########################
