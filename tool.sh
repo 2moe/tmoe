@@ -3249,18 +3249,32 @@ modify_xfce_vnc0_wallpaper() {
 	#fi
 }
 ##################
+debian_download_mint_wallpaper(){ 
+	SET_MINT_AS_WALLPAPER='true'
+	download_mint_backgrounds
+}
+#############
 debian_xfce_wallpaper() {
 	if [ ! -e "${WALLPAPER_FILE}" ]; then
 		#debian_download_xubuntu_xenial_wallpaper
-		if [ ${LANG} = "en_US.UTF-8" ]; then
-			mkdir -p ${HOME}/图片
-		fi
 		echo "壁纸包将保存至/usr/share/backgrounds"
-		debian_download_ubuntu_mate_wallpaper
+		#debian_download_ubuntu_mate_wallpaper
+		debian_download_mint_wallpaper
 	fi
 	modify_xfce_vnc0_wallpaper
 }
 #################
+check_mate_wallpaper_pack() {
+	if [ ! -e "${WALLPAPER_FILE}" ]; then
+		if [ ${LANG} = "en_US.UTF-8" ]; then
+			mkdir -p ${HOME}/图片
+		fi
+		echo "壁纸包将保存至/usr/share/backgrounds"
+		#debian_download_ubuntu_mate_wallpaper
+	fi
+	modify_xfce_vnc0_wallpaper
+}
+###############
 if_exists_other_debian_distro_wallpaper() {
 	if [ -e "${WALLPAPER_FILE}" ]; then
 		modify_xfce_vnc0_wallpaper
@@ -3271,30 +3285,36 @@ if_exists_other_debian_distro_wallpaper() {
 ###############
 modify_the_default_xfce_wallpaper() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		WALLPAPER_FILE='/usr/share/backgrounds/gabriele-diwald-201135.jpg'
+		MINT_CODE="tina" 
+		WALLPAPER_FILE='/usr/share/backgrounds/adeole_yosemite.jpg'
 		if [ "${DEBIAN_DISTRO}" = "kali" ]; then
 			#WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
 			#if_exists_other_debian_distro_wallpaper
-			WALLPAPER_FILE='/usr/share/backgrounds/nattu-adnan-328570.jpg'
+			MINT_CODE="ulyana"
+			WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
 		elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+			MINT_CODE="tricia" 
 			#WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
-			WALLPAPER_FILE='/usr/share/backgrounds/nattu-adnan-328570.jpg'
+			WALLPAPER_FILE='/usr/share/backgrounds/amarttinen_argentina.jpg'
 		fi
 		debian_xfce_wallpaper
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
-		if [ -e "${WALLPAPER_FILE}" ]; then
-			modify_xfce_vnc0_wallpaper
-		else
-			WALLPAPER_FILE='/usr/share/backgrounds/nasa-53884.jpg'
-			debian_xfce_wallpaper
-		fi
+		#WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
+		MINT_CODE='tessa'
+		WALLPAPER_FILE="/usr/share/backgrounds/xfce/fhaller_surreal_sunset.jpg"
+		#if [ -e "${WALLPAPER_FILE}" ]; then
+		#	modify_xfce_vnc0_wallpaper
+		#else
+		#	WALLPAPER_FILE='/usr/share/backgrounds/nasa-53884.jpg'
+		debian_xfce_wallpaper
+		#fi
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		WALLPAPER_FILE='/usr/share/backgrounds/kristopher-roller-110203.jpg'
+		MINT_CODE='tara'
+		WALLPAPER_FILE='/usr/share/backgrounds/jplenio_lake.jpg'
 		debian_xfce_wallpaper
 	else
 		WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
-		debian_xfce_wallpaper
+		check_mate_wallpaper_pack
 	fi
 }
 #################
@@ -4439,6 +4459,7 @@ download_ubuntu-mate_wallpaper() {
 #####################
 linux_mint_backgrounds() {
 	RETURN_TO_WHERE='linux_mint_backgrounds'
+	SET_MINT_AS_WALLPAPER='false'
 	#cat index.html | grep mint-backgrounds | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1 | cut -d '-' -f 3,4
 	GREP_NAME_02="mint-backgrounds"
 	INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
@@ -4506,11 +4527,15 @@ linux_mint_backgrounds() {
 }
 ###############
 download_mint_backgrounds() {
-	CUSTOM_WALLPAPER_NAME="mint-backgrounds/linuxmint-${MINT_CODE}"
-	if [ -d "${HOME}/图片" ]; then
-		mkdir -p ${HOME}/图片/mint-backgrounds
+	if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ];then
+		CUSTOM_WALLPAPER_NAME="backgrounds"
 	else
-		mkdir -p ${HOME}/Pictures/mint-backgrounds
+		CUSTOM_WALLPAPER_NAME="mint-backgrounds/linuxmint-${MINT_CODE}"
+		if [ -d "${HOME}/图片" ]; then
+			mkdir -p ${HOME}/图片/mint-backgrounds
+		else
+			mkdir -p ${HOME}/Pictures/mint-backgrounds
+		fi
 	fi
 	THEME_NAME="mint_backgrounds_${MINT_CODE}"
 	GREP_NAME_01='all.deb'
@@ -4522,6 +4547,7 @@ download_mint_backgrounds() {
 download_wallpapers() {
 	cd /tmp
 	FORCIBLY_DOWNLOAD='false'
+	SET_MINT_AS_WALLPAPER='false'
 	RETURN_TO_WHERE='download_wallpapers'
 	INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
 		"您想要下载哪套壁纸包？\n Which wallpaper-pack do you want to download? " 0 50 0 \
@@ -4692,16 +4718,22 @@ move_wallpaper_model_01() {
 	else
 		tar -xvf data.* 2>/dev/null
 	fi
-
-	if [ -d "${HOME}/图片" ]; then
-		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
+	if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ];then
+		mv ./usr/share/${WALLPAPER_NAME}/* /usr/share/${CUSTOM_WALLPAPER_NAME}
+		rm -rf /tmp/.${THEME_NAME}
+		echo "${BLUE}壁纸包${RESET}已经保存至/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
+		echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
 	else
-		mkdir -p ${HOME}/Pictures/
-		mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
+		if [ -d "${HOME}/图片" ]; then
+			mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
+		else
+			mkdir -p ${HOME}/Pictures/
+			mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
+		fi
+		rm -rf /tmp/.${THEME_NAME}
+		echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
+		echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
 	fi
-	rm -rf /tmp/.${THEME_NAME}
-	echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
-	echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
 }
 #################
 move_wallpaper_model_02() {
@@ -9223,7 +9255,7 @@ RETURN_TO_WHERE='college_entrance_examination_paper'
 		"高考真题" 0 50 0 \
 		"1" "2020(大小79.9MiB)" \
 		"2" "2008-2019(不含听力及口语听说,392.2MiB)" \
-		"3" "2013-2018精校(146.3MiB)" \
+		"3" "2013-2018版(146.3MiB)" \
 		"4" "2008-2018(仅英语听力音频,244.9MiB)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)

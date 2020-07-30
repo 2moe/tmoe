@@ -811,11 +811,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    #stable-backports会出错，需改为buster-backports
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-				#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
-				#deb http://mirrors.huaweicloud.com/debian/ stable-updates main contrib non-free
-				#deb http://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free
-				#deb http://mirrors.huaweicloud.com/debian-security/ stable/updates main contrib non-free
-				deb http://mirrors.huaweicloud.com/debian/ sid main contrib non-free
+				#deb http://mirrors.163.com/debian/ stable main contrib non-free
+				#deb http://mirrors.163.com/debian/ stable-updates main contrib non-free
+				#deb http://mirrors.163.com/debian/ buster-backports main contrib non-free
+				#deb http://mirrors.163.com/debian-security/ stable/updates main contrib non-free
+				deb http://mirrors.163.com/debian/ sid main contrib non-free
 			EndOfFile
 	}
 	##############################

@@ -2690,7 +2690,7 @@ install_debian_sid_gnu_linux_container() {
 	DISTRO_CODE='sid'
 	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
 		"1" "netinstall(通过软件源在线安装)" \
-		"2" "arm64 xfce4.14桌面+音乐app,1.3G-20200730" \
+		"2" "arm64 xfce4.14桌面+音乐app,1302.2MiB-20200730" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
