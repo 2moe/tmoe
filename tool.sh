@@ -466,7 +466,10 @@ check_dependencies() {
 	fi
 	##############
 	CurrentLANG=$LANG
-	TMOE_LOCALE_SETTINGS
+		if [ ! $(echo ${LANG} | grep UTF-8) ]; then
+	  		export LANG=C.UTF-8
+		fi
+	tmoe_locale_settings
 	#export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
 	#20200711為解決多區域設定問題，故不設定語言
 	tmoe_linux_tool_menu
@@ -485,7 +488,7 @@ download_busybox_deb() {
 	rm -rvf busybox busybox-static busybox.deb
 }
 ######################
-TMOE_LOCALE_SETTINGS() {
+tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
@@ -8769,7 +8772,7 @@ tty_chinese_code() {
 		fbterm
 	else
 		export LANG='C.UTF-8'
-		echo '请手动执行LANG=C.UTF-8'
+		echo "请手动执行${GREEN}export LANG=C.UTF-8${RESET}"
 	fi
 }
 ################

@@ -401,8 +401,11 @@ gnu_linux() {
 	fi
 	##################
 	#解决乱码问题
-	#CurrentLANG=$LANG
+	CurrentLANG=$LANG
 	#export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
+	if [ ! $(echo ${LANG} | grep UTF-8) ]; then
+		export LANG=C.UTF-8
+	fi
 	########################
 	if [ "${LINUX_DISTRO}" = "openwrt" ]; then
 		if [ -d "/opt/bin" ]; then
@@ -2755,7 +2758,7 @@ install_debian_buster_gnu_linux_container() {
 }
 ########################
 creat_container_edition_txt() {
-	echo ${TMOE_LINUX_CONTAINER_DISTRO} > ${LINUX_CONTAINER_DISTRO_FILE}
+	echo ${TMOE_LINUX_CONTAINER_DISTRO} >${LINUX_CONTAINER_DISTRO_FILE}
 }
 #############
 install_debian_gnu_linux_distro() {
