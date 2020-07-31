@@ -466,7 +466,7 @@ check_dependencies() {
 	fi
 	##############
 	CurrentLANG=$LANG
-		if [ ! $(echo ${LANG} | grep UTF-8) ]; then
+		if [ ! $(echo ${LANG} | grep -E 'UTF-8|UTF8') ]; then
 	  		export LANG=C.UTF-8
 		fi
 	tmoe_locale_settings

@@ -403,7 +403,7 @@ gnu_linux() {
 	#解决乱码问题
 	CurrentLANG=$LANG
 	#export LANG=$(echo 'emhfQ04uVVRGLTgK' | base64 -d)
-	if [ ! $(echo ${LANG} | grep UTF-8) ]; then
+	if [ ! $(echo ${LANG} | grep -E 'UTF-8|UTF8') ]; then
 		export LANG=C.UTF-8
 	fi
 	########################
