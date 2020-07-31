@@ -154,6 +154,7 @@ gnu_linux() {
 			sudo -E bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
 				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 		fi
+		#此处一定为debian.sh，而非manager.sh
 		exit 0
 	fi
 	##############
@@ -532,7 +533,7 @@ gnu_linux() {
 			if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
 				wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 			else
-				curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+				curl -Lv -o /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 			fi
 			bash /tmp/.tmoe-linux-tool.sh
 			exit 0
@@ -1025,7 +1026,7 @@ creat_start_linux_deploy_sh() {
 linux_deploy_pulse_server() {
 	echo "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具(Tmoe-linux tool)覆盖安装桌面环境"
 	echo "您在安装Linux deploy的chroot容器前，可以将安装类型修改为目录，安装路径修改为/data/data/ru.meefik.linuxdeploy/linux"
-	echo "脚本用法：ssh连接后，输入apt install -y curl;bash <(curl -L raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+	echo "脚本用法：ssh连接后，输入apt install -y curl;bash <(curl -L gitee.com/mo2/linux/raw/2/2)"
 	#echo "覆盖安装之后，您需要通过本工具进行VNC和音频服务的配置"
 	echo "接下来您需要设定一个您独有的启动命令，例如startl"
 	echo "您之后可以在termux里输入此命令来启动Linux Deploy以及音频服务"

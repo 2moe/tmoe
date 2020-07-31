@@ -5913,7 +5913,7 @@ modify_ubuntu_mirror_sources_list() {
 modify_debian_mirror_sources_list() {
 	NEW_DEBIAN_SOURCES_LIST='false'
 	if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-		if (whiptail --title "DEBIAN VERSION" --yes-button "sid" --no-button "testing" --yesno "Are you using debian sid or testing?\n汝今何版用？♪(^∇^*) " 0 0); then
+		if (whiptail --title "DEBIAN VERSION" --yes-button "sid" --no-button "testing" --yesno "Are you using debian sid or testing?\n汝今方用何本？♪(^∇^*) " 0 0); then
 			SOURCELISTCODE='sid'
 		else
 			NEW_DEBIAN_SOURCES_LIST='true'
