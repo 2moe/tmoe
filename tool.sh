@@ -15537,7 +15537,8 @@ install_pinyin_input_method() {
 			"8" "libpinyin(提供智能整句输入算法核心)" \
 			"9" "sunpinyin(基于统计学语言模型)" \
 			"10" "fcitx-云拼音模块" \
-			"11" "uim(Universal Input Method)" \
+			"11" "onboard(屏幕虚拟键盘)" \
+			"12" "uim(Universal Input Method)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -15553,7 +15554,8 @@ install_pinyin_input_method() {
 	8) install_lib_pinyin ;;
 	9) install_sun_pinyin ;;
 	10) install_fcitx_module_cloud_pinyin ;;
-	11) install_uim_pinyin ;;
+	11) install_onboard ;;
+	12) install_uim_pinyin ;;
 	esac
 	###############
 	configure_arch_fcitx
@@ -15561,6 +15563,11 @@ install_pinyin_input_method() {
 	install_pinyin_input_method
 }
 ########################
+install_onboard() {
+	DEPENDENCY_01=''
+	DEPENDENCY_02='onboard'
+	beta_features_quick_install
+}
 ##################
 tmoe_fcitx_faq() {
 	NON_DEBIAN='false'
