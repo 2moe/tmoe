@@ -5909,17 +5909,14 @@ modify_ubuntu_mirror_sources_list() {
 #############
 modify_debian_mirror_sources_list() {
 	NEW_DEBIAN_SOURCES_LIST='false'
-	if [ ! "$(command -v lsb_release)" ];then
-	    echo 'apt install lsb-release'
-	    apt install lsb-release
-	fi
-    if [ "$(lsb_release -rs | cut -d '/' -f 1)" = 'testing' ];then
-        NEW_DEBIAN_SOURCES_LIST='true'
-		SOURCELISTCODE='testing'
-		BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
-	elif grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-		SOURCELISTCODE='sid'
-
+	if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
+		if (whiptail --title "DEBIAN VERSION" --yes-button "sid" --no-button "testing" --yesno "Are you using debian sid or testing?\n汝今何版用？♪(^∇^*) " 0 0); then
+			SOURCELISTCODE='sid'
+		else
+			NEW_DEBIAN_SOURCES_LIST='true'
+			SOURCELISTCODE='testing'
+			BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)	
+		fi
 	elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
 	       NEW_DEBIAN_SOURCES_LIST='true'
 		if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
