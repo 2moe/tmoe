@@ -572,7 +572,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200730-09)" --menu "Type 'debian-i' to start this tool.Please use the enter and arrow keys to operate.请使用方向键和回车键操作,更新日志:0522修复ubuntu20.10和云音乐,0618支持解析主题链接,0711 fix qemu x64repo,0711-0714 aria2-tool,0718 scrcpy,0730考试真题" 20 50 7 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200803-05)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -594,7 +594,6 @@ tmoe_linux_tool_menu() {
 	#if [ ! -z "${CurrentLANG}" ]; then
 	#	export LANG=${CurrentLANG}
 	#fi
-	check_tmoe_linux_desktop_link
 	case "${TMOE_OPTION}" in
 	0 | "")
 		#export LANG=${CurrentLANG}
@@ -627,6 +626,7 @@ tmoe_other_options_menu() {
 		"Welcome to tmoe-linux tool.这里是其它选项的菜单." 0 50 0 \
 		"1" "Remove GUI 卸载图形界面" \
 		"2" "Remove browser 卸载浏览器" \
+		"3" "Remove tmoe-linux tool" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -634,12 +634,23 @@ tmoe_other_options_menu() {
 	0 | "") other_software ;;
 	1) remove_gui ;;
 	2) remove_browser ;;
+	3) remove_tmoe_linux_tool ;;
 	esac
 	##########################
 	press_enter_to_return
 	tmoe_other_options_menu
 }
 ###################
+remove_tmoe_linux_tool(){ 
+	cd /usr/local/bin
+	echo "${RED}rm -rv ${HOME}/.config/tmoe-linux /usr/share/applications/tmoe-linux.desktop /usr/local/etc/tmoe-linux startvnc stopvnc debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu${RESET}"
+	echo "${RED}${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl less xz-utils newt whiptail${RESET}"
+	do_you_want_to_continue
+ 	rm -rfv /usr/share/applications/tmoe-linux.desktop /usr/local/etc/tmoe-linux startvnc stopvnc debian-i startx11vnc sartxsdl x11vncpasswd
+	${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl grep procps less tar xz newt whiptail
+	exit 1
+}
+##############
 arch_does_not_support() {
 	echo "${RED}WARNING！${RESET}检测到${YELLOW}架构${RESET}${RED}不支持！${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -724,6 +735,7 @@ different_distro_software_install() {
 ############################
 ############################
 tmoe_linux_tool_upgrade() {
+	check_tmoe_linux_desktop_link
 	if [ "${LINUX_DISTRO}" = "alpine" ]; then
 		wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	else
