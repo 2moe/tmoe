@@ -644,10 +644,11 @@ tmoe_other_options_menu() {
 remove_tmoe_linux_tool(){ 
 	cd /usr/local/bin
 	echo "${RED}rm -rv ${HOME}/.config/tmoe-linux /usr/share/applications/tmoe-linux.desktop /usr/local/etc/tmoe-linux startvnc stopvnc debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu${RESET}"
-	echo "${RED}${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl less xz-utils newt whiptail${RESET}"
+	DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
+	echo "${RED}${PACKAGES_REMOVE_COMMAND} ${DEPENDENCIES}${RESET}"
 	do_you_want_to_continue
  	rm -rfv /usr/share/applications/tmoe-linux.desktop /usr/local/etc/tmoe-linux startvnc stopvnc debian-i startx11vnc startxsdl x11vncpasswd
-	${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl less xz-utils newt whiptail
+	${PACKAGES_REMOVE_COMMAND} ${DEPENDENCIES}
 	exit 1
 }
 ##############
