@@ -647,7 +647,7 @@ remove_tmoe_linux_tool(){
 	echo "${RED}${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl less xz-utils newt whiptail${RESET}"
 	do_you_want_to_continue
  	rm -rfv /usr/share/applications/tmoe-linux.desktop /usr/local/etc/tmoe-linux startvnc stopvnc debian-i startx11vnc sartxsdl x11vncpasswd
-	${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl grep procps less tar xz newt whiptail
+	${PACKAGES_REMOVE_COMMAND} git aria2 pv wget curl less xz-utils newt whiptail
 	exit 1
 }
 ##############
