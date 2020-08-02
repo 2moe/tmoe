@@ -32,12 +32,15 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
 
+[![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)  
+
 重启系统后再次以管理员身份运行 _powershell_ ，然后输下面 wsl 开头的命令。  
 After restarting the system, run _powershell_ again as an administrator, then press the following command.
 
 ```powershell
 wsl --set-default-version 2
 ```
+![store](https://s1.ax1x.com/2020/04/23/JUW3eH.png) 
 
 When you download the subsystem from the Microsoft Store, be sure to choose Ubuntu, Kali and Debian.  
 若无法连接 _Microsoft Store_,那么也可以手动安装。  

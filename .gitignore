@@ -17,3 +17,5 @@ locale
 file.conf
 aria2.session
 .config/aria2_test.conf
+test.md
+README.md
