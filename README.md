@@ -25,7 +25,7 @@ You can also run Gentoo, Arch and other systems in WSL.
 Tutorial（教程）：  
 
 Q:I don't know how to use it?  
-A:Run PowerShell as an administrator and enter the following command.
+A:Run PowerShell as an administrator and type the following command.
 
 ```powershell
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
@@ -35,7 +35,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 [![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)  
 
 重启系统后再次以管理员身份运行 _powershell_ ，然后输下面 wsl 开头的命令。  
-After restarting the system, run _powershell_ again as an administrator, then press the following command.
+After restarting the system, run _powershell_ again as an administrator, then type the following command.
 
 ```powershell
 wsl --set-default-version 2
