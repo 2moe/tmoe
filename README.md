@@ -9,12 +9,9 @@
 
 ## 介绍 Introduction
 
-🍭Without any basic knowledge of linux shell,🍹 you can run GNU/Linux on your android phone and windows PC, and you can easily install a graphical desktop environment and configure pulseaudio server.✨
-You can also run Gentoo, Arch and other systems in WSL.
-
 在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。  
 
-### 一.不同平台的安装教程 Installation tutorials for different platforms
+### 一.不同平台的安装教程 Installation
 
 **You can run this tool not only on Android, but also on GNU/Linux.**
 
@@ -26,7 +23,11 @@ Tutorial（教程）：
 
 Q:I don't know how to use it?  
 A:Run PowerShell as an administrator and type the following command.
-
+##### 序章  WSL篇  
+###### 本(伪)漫画讲述的是少女们机缘巧合之下卷入了debian状的旋涡，最终穿梭时空拯救世界的故事。  
+![001](https://gitee.com/mo2/tmoe-linux-comic/raw/master/001.png)
+![002](https://gitee.com/mo2/tmoe-linux-comic/raw/master/002.png)
+![003](https://gitee.com/mo2/tmoe-linux-comic/raw/master/003.png)  
 ```powershell
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
@@ -45,11 +46,21 @@ wsl --set-default-version 2
 When you download the subsystem from the Microsoft Store, be sure to choose Ubuntu, Kali and Debian.  
 若无法连接 _Microsoft Store_,那么也可以手动安装。  
 请从以下三者中选择：  
+[Ubuntu](https://aka.ms/wsl-ubuntu-1804)  
 [Debian](https://aka.ms/wsl-debian-gnulinux)  
 [Kali](https://aka.ms/wsl-kali-linux-new)  
-[Ubuntu](https://aka.ms/wsl-ubuntu-1804)
 
-Open the subsystem and update the Linux kernel of WSL2 according to the prompt. After the update is complete, when prompted to enter the user name of the UNIX account, if you do not care about security issues, then you can close the window directly. The advantage of this is that you do not need to enter the sudo password.  
+![004](https://gitee.com/mo2/tmoe-linux-comic/raw/master/004.png)
+![005](https://gitee.com/mo2/tmoe-linux-comic/raw/master/005.png)
+![006](https://gitee.com/mo2/tmoe-linux-comic/raw/master/006.png)
+![007](https://gitee.com/mo2/tmoe-linux-comic/raw/master/007.png)
+![008](https://gitee.com/mo2/tmoe-linux-comic/raw/master/008.png)
+![009](https://gitee.com/mo2/tmoe-linux-comic/raw/master/009.png)  
+
+**序章WSL篇完结，如需阅览第二章，则请继续阅读README。**
+---  
+
+Open the subsystem and update the Linux kernel of WSL2. 
 打开子系统，然后根据提示更新 WSL2 的 linux 内核。更新完成后，当提示输普通账号用户名时，直接关掉窗口。
 
 > 注：这样子默认就是 root 账号，可以省下输 sudo 密码的步骤，之后可以使用 adduser 命令来单独增加普通账号。默认以非管理员身份运行的子系统 root 账号并没有 windows 管理员权限哦！只拥有 linux 的 root 权限而已，要是以管理员身份运行子系统的话，就真的要谨慎操作了。PC 用 root 账号的问题不大，又不是服务器。
@@ -177,9 +188,101 @@ _**如果你在国内,那么请输**_
 
 例如:**OpenSuse**和**GuixSD**等发行版。
 
-相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
+相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`  
 
+---  
+#### 第二章  remote-desktop 远程桌面篇  
+![010](https://gitee.com/mo2/tmoe-linux-comic/raw/master/010.png)
+![011](https://gitee.com/mo2/tmoe-linux-comic/raw/master/011.png)
+![012](https://gitee.com/mo2/tmoe-linux-comic/raw/master/012.png)
+![013](https://gitee.com/mo2/tmoe-linux-comic/raw/master/013.png)
+![014](https://gitee.com/mo2/tmoe-linux-comic/raw/master/014.png)
+![015](https://gitee.com/mo2/tmoe-linux-comic/raw/master/015.png)
+![016](https://gitee.com/mo2/tmoe-linux-comic/raw/master/016.png)
+![017](https://gitee.com/mo2/tmoe-linux-comic/raw/master/017.png)
+![018](https://gitee.com/mo2/tmoe-linux-comic/raw/master/018.png)
+![019](https://gitee.com/mo2/tmoe-linux-comic/raw/master/019.png)
+![020](https://gitee.com/mo2/tmoe-linux-comic/raw/master/020.png)
+![021](https://gitee.com/mo2/tmoe-linux-comic/raw/master/021.png)
+![022](https://gitee.com/mo2/tmoe-linux-comic/raw/master/022.png)
+![023](https://gitee.com/mo2/tmoe-linux-comic/raw/master/023.png)
+![024](https://gitee.com/mo2/tmoe-linux-comic/raw/master/024.png)
+![025](https://gitee.com/mo2/tmoe-linux-comic/raw/master/025.png)
+![026](https://gitee.com/mo2/tmoe-linux-comic/raw/master/026.png)
 ---
+#### 第三章  stink 恶臭篇  
+![027](https://gitee.com/mo2/tmoe-linux-comic/raw/master/027.png)
+![028](https://gitee.com/mo2/tmoe-linux-comic/raw/master/028.png)
+![029](https://gitee.com/mo2/tmoe-linux-comic/raw/master/029.png)
+![030](https://gitee.com/mo2/tmoe-linux-comic/raw/master/030.png)
+![031](https://gitee.com/mo2/tmoe-linux-comic/raw/master/031.png)
+![032](https://gitee.com/mo2/tmoe-linux-comic/raw/master/032.png)
+![033](https://gitee.com/mo2/tmoe-linux-comic/raw/master/033.png)
+---
+#### 第四章  loli篇  
+![034](https://gitee.com/mo2/tmoe-linux-comic/raw/master/034.png)
+![035](https://gitee.com/mo2/tmoe-linux-comic/raw/master/035.png)
+![036](https://gitee.com/mo2/tmoe-linux-comic/raw/master/036.png)
+![037](https://gitee.com/mo2/tmoe-linux-comic/raw/master/037.png)
+![038](https://gitee.com/mo2/tmoe-linux-comic/raw/master/038.png)
+![039](https://gitee.com/mo2/tmoe-linux-comic/raw/master/039.png)
+![040](https://gitee.com/mo2/tmoe-linux-comic/raw/master/040.png)
+![041](https://gitee.com/mo2/tmoe-linux-comic/raw/master/041.png)
+---
+#### 第五章  Mr.Jie篇  
+![042](https://gitee.com/mo2/tmoe-linux-comic/raw/master/042.png)
+![043](https://gitee.com/mo2/tmoe-linux-comic/raw/master/043.png)
+![044](https://gitee.com/mo2/tmoe-linux-comic/raw/master/044.png)
+![045](https://gitee.com/mo2/tmoe-linux-comic/raw/master/045.png)
+![046](https://gitee.com/mo2/tmoe-linux-comic/raw/master/046.png)
+---
+#### 第六章  dog 狗子的死亡探究篇  
+![047](https://gitee.com/mo2/tmoe-linux-comic/raw/master/047.png)
+![048](https://gitee.com/mo2/tmoe-linux-comic/raw/master/048.png)
+![049](https://gitee.com/mo2/tmoe-linux-comic/raw/master/049.png)
+![050](https://gitee.com/mo2/tmoe-linux-comic/raw/master/050.png)
+![051](https://gitee.com/mo2/tmoe-linux-comic/raw/master/051.png)
+![052](https://gitee.com/mo2/tmoe-linux-comic/raw/master/052.png)
+![053](https://gitee.com/mo2/tmoe-linux-comic/raw/master/053.png)
+---
+#### 第七章  hat篇  
+![054](https://gitee.com/mo2/tmoe-linux-comic/raw/master/054.png)
+![055](https://gitee.com/mo2/tmoe-linux-comic/raw/master/055.png)
+![056](https://gitee.com/mo2/tmoe-linux-comic/raw/master/056.png)
+![057](https://gitee.com/mo2/tmoe-linux-comic/raw/master/057.png)
+![058](https://gitee.com/mo2/tmoe-linux-comic/raw/master/058.png)
+![059](https://gitee.com/mo2/tmoe-linux-comic/raw/master/059.png)
+![060](https://gitee.com/mo2/tmoe-linux-comic/raw/master/060.png)
+![061](https://gitee.com/mo2/tmoe-linux-comic/raw/master/061.png)
+![062](https://gitee.com/mo2/tmoe-linux-comic/raw/master/062.png)
+![063](https://gitee.com/mo2/tmoe-linux-comic/raw/master/063.png)
+![064](https://gitee.com/mo2/tmoe-linux-comic/raw/master/064.png)
+![065](https://gitee.com/mo2/tmoe-linux-comic/raw/master/065.png)
+![066](https://gitee.com/mo2/tmoe-linux-comic/raw/master/066.png)
+![067](https://gitee.com/mo2/tmoe-linux-comic/raw/master/067.png)
+---
+#### 第八章  pass&future篇  
+![068](https://gitee.com/mo2/tmoe-linux-comic/raw/master/068.png)
+![069](https://gitee.com/mo2/tmoe-linux-comic/raw/master/069.png)
+![070](https://gitee.com/mo2/tmoe-linux-comic/raw/master/070.png)
+![071](https://gitee.com/mo2/tmoe-linux-comic/raw/master/071.png)
+![072](https://gitee.com/mo2/tmoe-linux-comic/raw/master/072.png)
+![073](https://gitee.com/mo2/tmoe-linux-comic/raw/master/073.png)
+![074](https://gitee.com/mo2/tmoe-linux-comic/raw/master/074.png)
+![075](https://gitee.com/mo2/tmoe-linux-comic/raw/master/075.png)
+![076](https://gitee.com/mo2/tmoe-linux-comic/raw/master/076.png)
+![077](https://gitee.com/mo2/tmoe-linux-comic/raw/master/077.png)
+![078](https://gitee.com/mo2/tmoe-linux-comic/raw/master/078.png)
+![079](https://gitee.com/mo2/tmoe-linux-comic/raw/master/079.png)
+![080](https://gitee.com/mo2/tmoe-linux-comic/raw/master/080.png)
+![081](https://gitee.com/mo2/tmoe-linux-comic/raw/master/081.png)
+![082](https://gitee.com/mo2/tmoe-linux-comic/raw/master/082.png)
+![083](https://gitee.com/mo2/tmoe-linux-comic/raw/master/083.png)  
+ ---
+- 1.由于gitee未登录用户无法下载大于1M的文件，故上图皆经过二到三次的压缩。  
+- 2.请不要找我要原画。  
+- 3.我不怎么想更新了。 
+ ---
 
 ### 二：Container 篇
 
