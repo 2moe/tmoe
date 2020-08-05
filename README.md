@@ -23,7 +23,7 @@ Tutorial（教程）：
 
 Q:I don't know how to use it?  
 A:Run PowerShell as an administrator and type the following command.
-##### 序章  WSL篇  
+##### 第一章  WSL篇  
 ###### 本(伪)漫画讲述的是少女们机缘巧合之下卷入了debian状的旋涡，最终穿梭时空拯救世界的故事。  
 ![001](https://gitee.com/mo2/tmoe-linux-comic/raw/master/001.png)
 ![002](https://gitee.com/mo2/tmoe-linux-comic/raw/master/002.png)
@@ -57,7 +57,7 @@ When you download the subsystem from the Microsoft Store, be sure to choose Ubun
 ![008](https://gitee.com/mo2/tmoe-linux-comic/raw/master/008.png)
 ![009](https://gitee.com/mo2/tmoe-linux-comic/raw/master/009.png)  
 
-**序章WSL篇完结，如需阅览第二章，则请继续阅读README。**
+**第一章WSL篇完结，如需阅览第二章，则请继续阅读README。**
 ---  
 
 Open the subsystem and update the Linux kernel of WSL2. 
