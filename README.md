@@ -383,7 +383,7 @@ Convenient configuration
 ![分辨率](https://images.gitee.com/uploads/images/2020/0721/203215_9823fc25_5617340.png "Capture+_2020-07-11-10-05-41.png")
 
 3.对于不同系统，不同虚拟化环境进行适配  
-![map](https://images.gitee.com/uploads/images/2020/0807/013238_dd17e74a_5617340.png "map.png")  
+![map](https://images.gitee.com/uploads/images/2020/0807/015255_d4c64165_5617340.png "map.png")  
 This tool is adapted to different systems and different virtualization environments.  
 
 3-1.以 tightvnc/tigervnc 服务为例：  
