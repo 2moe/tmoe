@@ -8824,11 +8824,12 @@ fix_vnc_dbus_launch() {
 	fi
 
 	if (whiptail --title "您想要对这个小可爱中做什么 " --yes-button "Disable" --no-button "Enable" --yesno "您是想要禁用dbus-launch，还是启用呢？${DBUSstatus} \n请做出您的选择！✨" 10 50); then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
-		else
+		#if [ "${LINUX_DISTRO}" = "debian" ]; then
+		#	sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
+		#else
 			sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
-		fi
+		#fi
+			sed -i 's@dbus-launch@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
 	else
 		if grep 'startxfce4' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
