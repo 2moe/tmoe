@@ -9,24 +9,21 @@
 
 ## 介绍 Introduction
 
-在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。
+在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。  
+![map](https://images.gitee.com/uploads/images/2020/0807/015255_d4c64165_5617340.png "map.png")
 
 ### 一.不同平台的安装教程 Installation
 
 **You can run this tool not only on Android, but also on GNU/Linux.**
 
-**您不仅可以在 Android 手机上运行本工具，亦可在 GNU/Linux 上运行。**
-
 #### 1.Windows10
-
-Tutorial（教程）：
 
 ##### 第一章 WSL 篇
 
 ###### 本(伪)漫画讲述的是少女们机缘巧合之下卷入了 debian 状的旋涡，最终穿梭时空拯救世界的故事
 
-![001](https://gitee.com/mo2/tmoe-linux-comic/raw/master/001.png)
-**Welcome to the exchange club of Tmoe School.**
+![001](https://gitee.com/mo2/tmoe-linux-comic/raw/master/001.png)  
+**Welcome to the exchange club of Tmoe School.**  
 ![002](https://gitee.com/mo2/tmoe-linux-comic/raw/master/002.png)  
 **How to use tmoe-linux tool on win10.**  
 ![003](https://gitee.com/mo2/tmoe-linux-comic/raw/master/003.png)  
@@ -289,7 +286,7 @@ _**如果你在国内,那么请输**_
 
 ---
 
-#### 第八章 Ctrl+Z篇
+#### 第八章 Ctrl+Z 篇
 
 ![068](https://gitee.com/mo2/tmoe-linux-comic/raw/master/068.png)
 ![069](https://gitee.com/mo2/tmoe-linux-comic/raw/master/069.png)
@@ -409,7 +406,6 @@ Convenient configuration
 ![分辨率](https://images.gitee.com/uploads/images/2020/0721/203215_9823fc25_5617340.png "Capture+_2020-07-11-10-05-41.png")
 
 3.对于不同系统，不同虚拟化环境进行适配  
-![map](https://images.gitee.com/uploads/images/2020/0807/015255_d4c64165_5617340.png "map.png")  
 This tool is adapted to different systems and different virtualization environments.
 
 3-1.以 tightvnc/tigervnc 服务为例：  
@@ -485,9 +481,9 @@ In addition, the **mipsel** architecture is also supported! The developer has te
 Containers other than debian may only support mainstream architectures, not s390x and ppc64el.
 其它系统容器可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
 
->下表中的所有系统均支持x64和arm64  
-      All systems in the table below support x64 and arm64  
-     *表示仅旧版支持  
+> 下表中的所有系统均支持 x64 和 arm64
+> All systems in the table below support x64 and arm64  
+> \*表示仅旧版支持
 
 | Distro |    x86    | armhf  | ppc64el |
 | ------ | :-------: | :----: | :-----: |
@@ -529,7 +525,7 @@ debian
 debian-rm
 ```
 
-- 4.Start the toolbox, which can be executed in the original system and container, but the management content is different.
+- 4.Start the toolbox, which can be executed in the original host system and container, but the management content is different.
 - 启动工具箱(同时支持，但管理的内容不同)
 
 ```shell
@@ -570,7 +566,7 @@ bash -c "$(wget -O- https://git.io/linux.sh)"
 
 ##### 1-2.安装后的步骤
 
-If you want to start GNU/Linux next time, you can just type `debian`.  
+If you want to start GNU/Linux container next time, you can just type `debian`.  
 下次启动 GNU/Linux 的命令是  
 `debian`
 
@@ -636,14 +632,14 @@ nano $(command -v startvnc)
 
 ### 八.更新日志 logs
 
-#### 2019年  
+#### 2019 年
 
 ##### 11、12 月
 
 旧版脚本部分命令借鉴了 [atilo-cn](https://github.com/YadominJinta/atilo) 和 [AnLinux](https://github.com/EXALAB/Anlinux-Resources)，除此之外，大部分都是本人手打的。
 可能会有出错的地方，欢迎指正。
 
-#### 2020年  
+#### 2020 年
 
 ##### 02-15
 
