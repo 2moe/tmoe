@@ -10199,8 +10199,13 @@ install_gparted() {
 	beta_features_quick_install
 }
 ##################
-install_xournal (){ 
+install_xournal(){ 
 	DEPENDENCY_02="xournal"
+	beta_features_quick_install
+}
+##########
+install_evince(){ 
+	DEPENDENCY_02="evince"
 	beta_features_quick_install
 }
 ##########
@@ -10215,6 +10220,7 @@ tmoe_read_app_menu() {
 		"3" "WPS office(办公软件)" \
 		"4" "typora(markdown编辑器)" \
 		"5" "Xournal(手写编辑PDF)" \
+		"6" "evince(gnome-pdf文档阅读器)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -10225,6 +10231,7 @@ tmoe_read_app_menu() {
 	3) install_wps_office ;;
 	4) install_typora ;;
 	5) install_xournal ;;
+	6) install_evince ;;
 	esac
 	##########################
 	#beta_features_quick_install
@@ -11114,14 +11121,67 @@ add_current_user_to_docker_group(){
 	echo "若您需要将当前用户移出docker用户组，则请输${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
 }
 ##########
+docker_163_mirror() {
+	if [ ! -d /etc/docker ]; then
+		mkdir -p /etc/docker
+	fi
+	cd /etc/docker
+	if [ ! -e daemon.json ]; then
+		echo '' >daemon.json
+	fi
+	if ! grep -q 'registry-mirrors' "daemon.json"; then
+		cat >daemon.json <<-'EOF'
+			{
+			"registry-mirrors": [
+			"https://hub-mirror.c.163.com/"
+			]
+			}
+		EOF
+	else
+		cat <<-'EOF'
+			检测到您已经设定了registry-mirrors,请手动修改daemon.json为以下配置。
+			{
+			"registry-mirrors": [
+			"https://hub-mirror.c.163.com/"
+			]
+			}
+		EOF
+	fi
+}
+##########
+docker_mirror_source(){ 
+	RETURN_TO_WHERE='docker_mirror_source'
+	VIRTUAL_TECH=$(
+		whiptail --title "DOCKER MIRROR" --menu "您想要修改哪些docker配置？" 0 0 0 \
+			"1" "163镜像" \
+			"2" "edit daemon.json" \
+			"3" "edit software source软件本体源" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") tmoe_docker_menu ;;
+	1) docker_163_mirror ;;
+	2) nano /etc/docker/daemon.json ;;
+	3) non_debian_function
+	nano /etc/apt/sources.list.d/docker.list
+	;;
+	esac
+	###############
+	press_enter_to_return
+	docker_mirror_source
+}
+##########
 tmoe_docker_menu(){
 	RETURN_TO_WHERE='tmoe_docker_menu'
 	VIRTUAL_TECH=$(
-		whiptail --title "DOCKER容器" --menu "您想要选择哪一项呢？" 0 0 0 \
+		whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
 			"1" "install docker-ce(安装docker社区版引擎)" \
 			"2" "pull distro images(拉取alpine,debian和ubuntu镜像)" \
 			"3" "portainer(web端图形化docker容器管理)" \
-			"4" "add ${CURRENT_USER_NAME} to docker group(添加至docker用户组)" \
+			"4" "mirror source镜像源" \
+			"5" "add ${CURRENT_USER_NAME} to docker group(添加至docker用户组)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -11131,7 +11191,8 @@ tmoe_docker_menu(){
 	1) install_docker_ce_or_io ;;
 	2) choose_gnu_linux_docker_images ;;
 	3) install_docker_portainer ;;
-	4) add_current_user_to_docker_group ;;
+	4) docker_mirror_source ;;
+	5) add_current_user_to_docker_group ;;
 	esac
 	###############
 	press_enter_to_return
