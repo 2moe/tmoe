@@ -9,7 +9,7 @@
 
 ## 介绍 Introduction
 
-在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。  
+在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。
 
 ### 一.不同平台的安装教程 Installation
 
@@ -19,21 +19,25 @@
 
 #### 1.Windows10
 
-Tutorial（教程）：  
+Tutorial（教程）：
 
-Q:I don't know how to use it?  
-A:Run PowerShell as an administrator and type the following command.
-##### 第一章  WSL篇  
-###### 本(伪)漫画讲述的是少女们机缘巧合之下卷入了debian状的旋涡，最终穿梭时空拯救世界的故事。  
+##### 第一章 WSL 篇
+
+###### 本(伪)漫画讲述的是少女们机缘巧合之下卷入了 debian 状的旋涡，最终穿梭时空拯救世界的故事
+
 ![001](https://gitee.com/mo2/tmoe-linux-comic/raw/master/001.png)
-![002](https://gitee.com/mo2/tmoe-linux-comic/raw/master/002.png)
+**Welcome to the exchange club of Tmoe School.**
+![002](https://gitee.com/mo2/tmoe-linux-comic/raw/master/002.png)  
+**How to use tmoe-linux tool on win10.**  
 ![003](https://gitee.com/mo2/tmoe-linux-comic/raw/master/003.png)  
+**Run PowerShell as an administrator and type the following command.**
+
 ```powershell
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
 
-[![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)  
+[![enable](https://i.loli.net/2020/04/03/I9zdphVgMc5Zky3.png)](https://sm.ms/image/I9zdphVgMc5Zky3)
 
 重启系统后再次以管理员身份运行 _powershell_ ，然后输下面 wsl 开头的命令。  
 After restarting the system, run _powershell_ again as an administrator, then type the following command.
@@ -41,26 +45,31 @@ After restarting the system, run _powershell_ again as an administrator, then ty
 ```powershell
 wsl --set-default-version 2
 ```
-![store](https://s1.ax1x.com/2020/04/23/JUW3eH.png) 
+
+![store](https://s1.ax1x.com/2020/04/23/JUW3eH.png)
 
 When you download the subsystem from the Microsoft Store, be sure to choose Ubuntu, Kali and Debian.  
 若无法连接 _Microsoft Store_,那么也可以手动安装。  
 请从以下三者中选择：  
 [Ubuntu](https://aka.ms/wsl-ubuntu-1804)  
 [Debian](https://aka.ms/wsl-debian-gnulinux)  
-[Kali](https://aka.ms/wsl-kali-linux-new)  
+[Kali](https://aka.ms/wsl-kali-linux-new)
 
-![004](https://gitee.com/mo2/tmoe-linux-comic/raw/master/004.png)
-![005](https://gitee.com/mo2/tmoe-linux-comic/raw/master/005.png)
-![006](https://gitee.com/mo2/tmoe-linux-comic/raw/master/006.png)
+![004](https://gitee.com/mo2/tmoe-linux-comic/raw/master/004.png)  
+**The operation is very simple, you only need to press the enter and arrow keys.**  
+![005](https://gitee.com/mo2/tmoe-linux-comic/raw/master/005.png)  
+**OK! Thanks.**  
+![006](https://gitee.com/mo2/tmoe-linux-comic/raw/master/006.png)  
+**You are welcome,this is my honor,and I think this is what I should do.**  
 ![007](https://gitee.com/mo2/tmoe-linux-comic/raw/master/007.png)
 ![008](https://gitee.com/mo2/tmoe-linux-comic/raw/master/008.png)
-![009](https://gitee.com/mo2/tmoe-linux-comic/raw/master/009.png)  
+![009](https://gitee.com/mo2/tmoe-linux-comic/raw/master/009.png)
 
-**第一章WSL篇完结，如需阅览第二章，则请继续阅读README。**
----  
+**第一章 WSL 篇完结，如需阅览第二章，则请继续阅读 README。The first chapter is over.**
 
-Open the subsystem and update the Linux kernel of WSL2. 
+---
+
+Open the subsystem and update the Linux kernel of WSL2.
 打开子系统，然后根据提示更新 WSL2 的 linux 内核。更新完成后，当提示输普通账号用户名时，直接关掉窗口。
 
 > 注：这样子默认就是 root 账号，可以省下输 sudo 密码的步骤，之后可以使用 adduser 命令来单独增加普通账号。默认以非管理员身份运行的子系统 root 账号并没有 windows 管理员权限哦！只拥有 linux 的 root 权限而已，要是以管理员身份运行子系统的话，就真的要谨慎操作了。PC 用 root 账号的问题不大，又不是服务器。
@@ -91,8 +100,7 @@ _**如果你在国内,那么请输**_
 Finally, press Enter and arrow keys to operate.
 
 > 注：WSL 请选择安装工具  
-> When prompted Tool/Manager, please select Tool
-
+> When prompted Tool/Manager, please select Tool  
 > 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
 
 #### 2.Android-Termux
@@ -184,18 +192,21 @@ _**如果你在国内,那么请输**_
     bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
-#### 10.其它 system 未测试,以下系统请自行解决依赖关系
+#### 10.Other 其它 system 未测试,以下系统请自行解决依赖关系
 
 例如:**OpenSuse**和**GuixSD**等发行版。
 
-相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`  
+相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
 
----  
-#### 第二章  remote-desktop 远程桌面篇  
-![010](https://gitee.com/mo2/tmoe-linux-comic/raw/master/010.png)
-![011](https://gitee.com/mo2/tmoe-linux-comic/raw/master/011.png)
+---
+
+#### 第二章 remote-desktop 远程桌面篇
+
+![010](https://gitee.com/mo2/tmoe-linux-comic/raw/master/010.png)  
+![011](https://gitee.com/mo2/tmoe-linux-comic/raw/master/011.png)  
 ![012](https://gitee.com/mo2/tmoe-linux-comic/raw/master/012.png)
-![013](https://gitee.com/mo2/tmoe-linux-comic/raw/master/013.png)
+![013](https://gitee.com/mo2/tmoe-linux-comic/raw/master/013.png)  
+**Nobody knows VNC better than me.**  
 ![014](https://gitee.com/mo2/tmoe-linux-comic/raw/master/014.png)
 ![015](https://gitee.com/mo2/tmoe-linux-comic/raw/master/015.png)
 ![016](https://gitee.com/mo2/tmoe-linux-comic/raw/master/016.png)
@@ -209,8 +220,11 @@ _**如果你在国内,那么请输**_
 ![024](https://gitee.com/mo2/tmoe-linux-comic/raw/master/024.png)
 ![025](https://gitee.com/mo2/tmoe-linux-comic/raw/master/025.png)
 ![026](https://gitee.com/mo2/tmoe-linux-comic/raw/master/026.png)
+
 ---
-#### 第三章  stink 恶臭篇  
+
+#### 第三章 stink 恶臭篇
+
 ![027](https://gitee.com/mo2/tmoe-linux-comic/raw/master/027.png)
 ![028](https://gitee.com/mo2/tmoe-linux-comic/raw/master/028.png)
 ![029](https://gitee.com/mo2/tmoe-linux-comic/raw/master/029.png)
@@ -218,8 +232,11 @@ _**如果你在国内,那么请输**_
 ![031](https://gitee.com/mo2/tmoe-linux-comic/raw/master/031.png)
 ![032](https://gitee.com/mo2/tmoe-linux-comic/raw/master/032.png)
 ![033](https://gitee.com/mo2/tmoe-linux-comic/raw/master/033.png)
+
 ---
-#### 第四章  loli篇  
+
+#### 第四章 loli 篇
+
 ![034](https://gitee.com/mo2/tmoe-linux-comic/raw/master/034.png)
 ![035](https://gitee.com/mo2/tmoe-linux-comic/raw/master/035.png)
 ![036](https://gitee.com/mo2/tmoe-linux-comic/raw/master/036.png)
@@ -228,15 +245,21 @@ _**如果你在国内,那么请输**_
 ![039](https://gitee.com/mo2/tmoe-linux-comic/raw/master/039.png)
 ![040](https://gitee.com/mo2/tmoe-linux-comic/raw/master/040.png)
 ![041](https://gitee.com/mo2/tmoe-linux-comic/raw/master/041.png)
+
 ---
-#### 第五章  Mr.Jie篇  
+
+#### 第五章 Mr.Jie 篇
+
 ![042](https://gitee.com/mo2/tmoe-linux-comic/raw/master/042.png)
 ![043](https://gitee.com/mo2/tmoe-linux-comic/raw/master/043.png)
 ![044](https://gitee.com/mo2/tmoe-linux-comic/raw/master/044.png)
 ![045](https://gitee.com/mo2/tmoe-linux-comic/raw/master/045.png)
 ![046](https://gitee.com/mo2/tmoe-linux-comic/raw/master/046.png)
+
 ---
-#### 第六章  dog 狗子的死亡探究篇  
+
+#### 第六章 dog 狗子的死亡探究篇
+
 ![047](https://gitee.com/mo2/tmoe-linux-comic/raw/master/047.png)
 ![048](https://gitee.com/mo2/tmoe-linux-comic/raw/master/048.png)
 ![049](https://gitee.com/mo2/tmoe-linux-comic/raw/master/049.png)
@@ -244,8 +267,11 @@ _**如果你在国内,那么请输**_
 ![051](https://gitee.com/mo2/tmoe-linux-comic/raw/master/051.png)
 ![052](https://gitee.com/mo2/tmoe-linux-comic/raw/master/052.png)
 ![053](https://gitee.com/mo2/tmoe-linux-comic/raw/master/053.png)
+
 ---
-#### 第七章  hat篇  
+
+#### 第七章 hat 篇
+
 ![054](https://gitee.com/mo2/tmoe-linux-comic/raw/master/054.png)
 ![055](https://gitee.com/mo2/tmoe-linux-comic/raw/master/055.png)
 ![056](https://gitee.com/mo2/tmoe-linux-comic/raw/master/056.png)
@@ -260,8 +286,11 @@ _**如果你在国内,那么请输**_
 ![065](https://gitee.com/mo2/tmoe-linux-comic/raw/master/065.png)
 ![066](https://gitee.com/mo2/tmoe-linux-comic/raw/master/066.png)
 ![067](https://gitee.com/mo2/tmoe-linux-comic/raw/master/067.png)
+
 ---
-#### 第八章  pass&future篇  
+
+#### 第八章 Ctrl+Z篇
+
 ![068](https://gitee.com/mo2/tmoe-linux-comic/raw/master/068.png)
 ![069](https://gitee.com/mo2/tmoe-linux-comic/raw/master/069.png)
 ![070](https://gitee.com/mo2/tmoe-linux-comic/raw/master/070.png)
@@ -277,12 +306,9 @@ _**如果你在国内,那么请输**_
 ![080](https://gitee.com/mo2/tmoe-linux-comic/raw/master/080.png)
 ![081](https://gitee.com/mo2/tmoe-linux-comic/raw/master/081.png)
 ![082](https://gitee.com/mo2/tmoe-linux-comic/raw/master/082.png)
-![083](https://gitee.com/mo2/tmoe-linux-comic/raw/master/083.png)  
- ---
-- 1.由于gitee未登录用户无法下载大于1M的文件，故上图皆经过二到三次的压缩。  
-- 2.请不要找我要原画。  
-- 3.我不怎么想更新了。 
- ---
+![083](https://gitee.com/mo2/tmoe-linux-comic/raw/master/083.png)
+
+---
 
 ### 二：Container 篇
 
@@ -309,7 +335,7 @@ Mint and Ubuntu wallpaper packs for the past ten years.
 
 ### 番外篇 Extra
 
-#### 🍸 目前支持的容器 Supported containers:
+#### 🍸 目前支持的容器 Supported containers
 
 - [x] **Debian stable+sid**
 - [x] **Ubuntu LTS+dev**
@@ -333,7 +359,7 @@ Mint and Ubuntu wallpaper packs for the past ten years.
  🍹
 All configuration and optimization steps only apply to Debian,Ubuntu,Kali,Fedora and Arch.
 
-#### 部分功能预览 Preview：
+#### 部分功能预览 Preview
 
 qemu-system manager  
 ![qemu虚拟机管理](https://images.gitee.com/uploads/images/2020/0725/023844_8d7d0eca_7793225.png "Capture+_2020-07-15-18-47-28.png")  
@@ -384,7 +410,7 @@ Convenient configuration
 
 3.对于不同系统，不同虚拟化环境进行适配  
 ![map](https://images.gitee.com/uploads/images/2020/0807/015255_d4c64165_5617340.png "map.png")  
-This tool is adapted to different systems and different virtualization environments.  
+This tool is adapted to different systems and different virtualization environments.
 
 3-1.以 tightvnc/tigervnc 服务为例：  
 对于 deb 系的虚拟机和实体机，启动 de/wm 的脚本中包含了 dbus-launch --exit-with-session,不加的话可能会出现无法连接至设置服务的错误，而 deb 系的 proot 容器加上这个会很容易闪退，所以对 proot 容器和虚拟机分别进行适配。  
@@ -459,9 +485,9 @@ In addition, the **mipsel** architecture is also supported! The developer has te
 Containers other than debian may only support mainstream architectures, not s390x and ppc64el.
 其它系统容器可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
 
-    	下表中的所有系统均支持x64和arm64
-      All systems in the table below support x64 and arm64
-    	*表示仅旧版支持
+>下表中的所有系统均支持x64和arm64  
+      All systems in the table below support x64 and arm64  
+     *表示仅旧版支持  
 
 | Distro |    x86    | armhf  | ppc64el |
 | ------ | :-------: | :----: | :-----: |
@@ -559,11 +585,6 @@ If you want to start GNU/Linux next time, you can just type `debian`.
 
 进入 GNU/Linux 容器后，请从 _xfce、lxde、mate_ 中选择一种。
 
-_gnome_ 和 _kde_ 是用来卖萌用的，不要安装。如需安装，请自行解决依赖关系和其它问题。
-四选一！千万不要一下子装两个桌面！
-
-> 后期注：_KDE_ 已经在 _chroot_ 环境中测试成功，但由于操作流畅度堪忧，且存在 bug，故和 _lxqt_ 一样移除了支持，但您仍然可以使用主目录下的脚本进行安装。
-
 ##### 2-2.安装中
 
 安装过程会提示选择键盘布局，请直接按回车。
@@ -615,13 +636,16 @@ nano $(command -v startvnc)
 
 ### 八.更新日志 logs
 
-##### 2019-11、12 月
+#### 2019年  
 
-本文首发于酷安网@**萌系生物研究员**
-旧版脚本部分命令借鉴了 atilo-cn 和 AnLinux，除此之外，大部分都是本人手打的。
+##### 11、12 月
+
+旧版脚本部分命令借鉴了 [atilo-cn](https://github.com/YadominJinta/atilo) 和 [AnLinux](https://github.com/EXALAB/Anlinux-Resources)，除此之外，大部分都是本人手打的。
 可能会有出错的地方，欢迎指正。
 
-##### 2020-02-15
+#### 2020年  
+
+##### 02-15
 
 > **完全重写脚本！**
 > 和别人写的脚本已经**完全不一样**了，重点不在于安装的方式，而在于配置优化以及与安卓原系统的联动，难点在于一些鬼点子。
