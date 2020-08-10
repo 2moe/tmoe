@@ -1291,7 +1291,7 @@ upgrade_video_download_tool() {
 ##################
 which_vscode_edition() {
 	RETURN_TO_WHERE='which_vscode_edition'
-	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc分区的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
+	ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
 	VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
 		"${VSCODEtips} Which edition do you want to install" 15 60 5 \
 		"1" "VS Code Server:web版,含配置选项" \
@@ -3705,7 +3705,7 @@ gnome3_warning() {
 	if [ "${exitstatus}" != "0" ]; then
 		echo "检测到您当前可能处于容器环境！"
 		echo "${YELLOW}警告！GNOME3可能无法正常运行${RESET}"
-		echo "WARNING! 检测到您未挂载/proc分区，请勿安装！"
+		echo "WARNING! 检测到您未挂载/proc，请勿安装！"
 	fi
 
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
@@ -11130,7 +11130,8 @@ docker_163_mirror() {
 		echo '' >daemon.json
 	fi
 	if ! grep -q 'registry-mirrors' "daemon.json"; then
-		cat >daemon.json <<-'EOF'
+		cat >>daemon.json <<-'EOF'
+		
 			{
 			"registry-mirrors": [
 			"https://hub-mirror.c.163.com/"
@@ -11181,7 +11182,7 @@ tmoe_docker_menu(){
 			"2" "pull distro images(拉取alpine,debian和ubuntu镜像)" \
 			"3" "portainer(web端图形化docker容器管理)" \
 			"4" "mirror source镜像源" \
-			"5" "add ${CURRENT_USER_NAME} to docker group(添加至docker用户组)" \
+			"5" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -16389,7 +16390,7 @@ check_docker_installation(){
 ############
 install_docker_portainer() {
 	check_docker_installation
-	TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please enter the port." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please enter the port." 0 50 --title "PORT" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ] || [ -z "${TARGET_PORT}" ]; then
 		echo "端口无效，请重新输入"
 		press_enter_to_return
