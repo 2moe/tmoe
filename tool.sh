@@ -3627,8 +3627,8 @@ install_mate_desktop() {
 ######################
 #DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
 install_lxqt_desktop() {
-	REMOTE_DESKTOP_SESSION_02='startlxqt'
-	REMOTE_DESKTOP_SESSION_01='lxqt-session'
+	REMOTE_DESKTOP_SESSION_01='startlxqt'
+	REMOTE_DESKTOP_SESSION_02='lxqt-session'
 	DEPENDENCY_01="lxqt"
 	echo '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -3661,7 +3661,7 @@ install_kde_plasma5_desktop() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dpkg --configure -a
 		auto_select_keyboard_layout
-		DEPENDENCY_01="kde-plasma-desktop"
+		DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		#yum groupinstall kde-desktop
 		#dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
@@ -7944,8 +7944,8 @@ configure_remote_desktop_enviroment() {
 	fi
 	##############################
 	if [ "${BETA_DESKTOP}" == '4' ]; then
-		REMOTE_DESKTOP_SESSION_01='lxqt-session'
-		REMOTE_DESKTOP_SESSION_02='startlxqt'
+		REMOTE_DESKTOP_SESSION_01='startlxqt'
+		REMOTE_DESKTOP_SESSION_02='lxqt-session'
 		#configure_remote_lxqt_desktop
 	fi
 	##############################
@@ -8841,8 +8841,8 @@ fix_vnc_dbus_launch() {
 			REMOTE_DESKTOP_SESSION_01='lxsession'
 		elif grep 'startlxqt' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
-			REMOTE_DESKTOP_SESSION_02='startlxqt'
-			REMOTE_DESKTOP_SESSION_01='lxqt-session'
+			REMOTE_DESKTOP_SESSION_01='startlxqt'
+			REMOTE_DESKTOP_SESSION_02='lxqt-session'
 		elif grep 'mate-session' ~/.vnc/xstartup; then
 			echo "检测您当前的VNC配置为mate，正在将dbus-launch加入至启动脚本中..."
 			REMOTE_DESKTOP_SESSION_01='mate-session'
