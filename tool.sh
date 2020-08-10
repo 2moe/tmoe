@@ -572,7 +572,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200803-05)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+		whiptail --title "Tmoe-linux Tool输debian-i启动(20200811-04)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
@@ -1761,7 +1761,7 @@ modify_xfce_window_scaling_factor() {
 }
 ##################
 modify_vnc_pulse_audio() {
-	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1) \n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+ 	TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1) \n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		modify_other_vnc_conf
 	elif [ -z "${TARGET}" ]; then
@@ -3657,7 +3657,7 @@ install_kde_plasma5_desktop() {
 	REMOTE_DESKTOP_SESSION_01='startkde'
 	REMOTE_DESKTOP_SESSION_02='startplasma-x11'
 	DEPENDENCY_01="plasma-desktop"
-	echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tightvncserver等软件包。'
+	echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		dpkg --configure -a
 		auto_select_keyboard_layout
@@ -8987,16 +8987,16 @@ beta_features() {
 	TMOE_BETA=$(
 		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 0 55 0 \
 			"1" "💻container/vm:docker容器,qemu,vbox虚拟机" \
-			"2" "⌨input method:输入法(搜狗,讯飞,百度)" \
-			"3" "🌌science&edu:科学与教育(高考,考研,科研)" \
-			"4" "📝read:墨纸留香,品味阅读" \
-			"5" "🎬cut video:岁月静好,剪下佳刻" \
-			"6" "🎨paint:融入意境,绘画真谛" \
-			"7" "💾file:文件,浩如烟海" \
-			"8" "👬SNS:进行物质和精神交流的社会活动的app" \
-			"9" "🌼Store&download:繁花似锦,一切皆在此中" \
-			"10" "🔨system:系统(启动项与用户组管理)" \
-			"11" "🥅network:网络(网卡驱动,WiFi扫描)" \
+			"2" "🌌science&edu:科学与教育(高考,考研,科研)" \
+			"3" "📝read:墨纸留香,品味阅读" \
+			"4" "🎬cut video:岁月静好,剪下佳刻" \
+			"5" "🎨paint:融入意境,绘画真谛" \
+			"6" "💾file:文件,浩如烟海" \
+			"7" "👬SNS:进行物质和精神交流的社会活动的app" \
+			"8" "🌼Store&download:繁花似锦,一切皆在此中" \
+			"9" "🔨system:系统(启动项与用户组管理)" \
+			"10" "🥅network:网络(网卡驱动,WiFi扫描)" \
+			"11" "⌨input method:输入法(搜狗,讯飞,百度)" \
 			"12" "🍕other:其它类(Android-studio,scrcpy)" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -9005,16 +9005,16 @@ beta_features() {
 	case ${TMOE_BETA} in
 	0 | "") tmoe_linux_tool_menu ;;
 	1) install_container_and_virtual_machine ;;
-	2) install_pinyin_input_method ;;
-	3) tmoe_education_app_menu ;;
-	4) tmoe_read_app_menu ;;
-	5) tmoe_media_menu ;;
-	6) tmoe_paint_app_menu ;;
-	7) tmoe_file_browser_app_menu ;;
-	8) tmoe_sns_app_menu ;;
-	9) tmoe_store_app_menu ;;
-	10) tmoe_system_app_menu ;;
-	11) network_manager_tui ;;
+	2) tmoe_education_app_menu ;;
+	3) tmoe_read_app_menu ;;
+	4) tmoe_media_menu ;;
+	5) tmoe_paint_app_menu ;;
+	6) tmoe_file_browser_app_menu ;;
+	7) tmoe_sns_app_menu ;;
+	8) tmoe_store_app_menu ;;
+	9) tmoe_system_app_menu ;;
+	10) network_manager_tui ;;
+	11) install_pinyin_input_method ;;
 	12) tmoe_other_app_menu ;;
 	esac
 	##############################
@@ -10751,20 +10751,404 @@ sudo -iu ${CURRENT_USER_NAME} winetricks riched20
 sudo -iu ${CURRENT_USER_NAME} winecfg
 }
 ################
+install_aqemu() {
+	DEPENDENCY_02='aqemu'
+	#qemu-block-extra
+	beta_features_quick_install
+}
+#########################
+install_virt_manager(){ 
+	DEPENDENCY_02='virt-manager'
+	beta_features_quick_install
+}
+############
+install_gnome_boxes(){ 
+	DEPENDENCY_02='gnome-boxes'
+	beta_features_quick_install
+}
+############
+qemu_system_menu(){
+	RETURN_TO_WHERE='qemu_system_menu'
+	DEPENDENCY_01=''
+	VIRTUAL_TECH=$(
+		whiptail --title "qemu-system" --menu "您想要选择哪一项呢？" 0 0 0 \
+			"1" "tmoe-qemu:x86_64虚拟机管理" \
+			"2" "tmoe-qemu:arm64虚拟机管理" \
+			"3" "aqemu(QEMU和KVM的Qt5前端)" \
+			"4" "virt-manager(红帽共享的GUI虚拟机管理器)" \
+			"5" "gnome-boxes(简单地管理远程和本地虚拟系统)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") install_container_and_virtual_machine ;;
+	1) start_tmoe_qemu_manager ;;
+	2) start_tmoe_qemu_aarch64_manager ;;
+	3) install_aqemu ;;
+	4) install_virt_manager ;;
+	5) install_gnome_boxes ;;
+	esac
+	###############
+	press_enter_to_return
+	qemu_system_menu
+}
+#############
+run_special_tag_docker_container(){ 
+	service docker start 2>/dev/null || systemctl start docker
+	docker stop ${CONTAINER_NAME} 2>/dev/null
+	mkdir -p /media/docker/${CONTAINER_NAME}
+	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v /media/docker/${CONTAINER_NAME}:/media/docker ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+	docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v /media/docker/${CONTAINER_NAME}:/media/docker ${DOCKER_NAME}:${DOCKER_TAG}
+	echo "已将宿主机的${YELLOW}/media/docker/${CONTAINER_NAME}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}/media/docker${RESET}"
+	echo "You can type ${GREEN}sudo docker exec -it ${CONTAINER_NAME} sh${RESET} to connect ${CONTAINER_NAME} container."
+	echo "您可以输${GREEN}docker attach ${CONTAINER_NAME}${RESET}来连接${CONTAINER_NAME}容器"
+	docker start ${CONTAINER_NAME}
+	docker exec -it ${CONTAINER_NAME} /bin/bash || docker exec -it ${CONTAINER_NAME} /bin/sh
+}
+##############
+delete_docker_container_and_image(){ 
+	service docker start 2>/dev/null || systemctl start docker
+	docker stop ${CONTAINER_NAME} 2>/dev/null
+	cat <<-EOF
+		${RED}docker rm ${CONTAINER_NAME}
+		docker rmi ${DOCKER_NAME}:${DOCKER_TAG}
+		docker rmi ${DOCKER_NAME}:${DOCKER_TAG_02}${RESET}
+	EOF
+	do_you_want_to_continue
+	docker rm ${CONTAINER_NAME} 2>/dev/null
+	docker rmi ${DOCKER_NAME}:${DOCKER_TAG} 2>/dev/null
+	if [ ! -z "${DOCKER_TAG_02}" ];then
+		docker rmi ${DOCKER_NAME}:${DOCKER_TAG_02} 2>/dev/null
+	fi
+	docker rmi ${DOCKER_NAME} 2>/dev/null
+	if [ ! -z "${DOCKER_NAME_02}" ];then
+		docker rmi ${DOCKER_NAME_02}:${DOCKER_TAG} 2>/dev/null
+		docker rmi ${DOCKER_NAME_02}:${DOCKER_TAG_02} 2>/dev/null
+		docker rmi ${DOCKER_NAME_02} 2>/dev/null
+	fi
+}
+##################
+reset_docker_container(){
+	delete_docker_container_and_image
+	echo "${BLUE}docker pull ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+	docker pull ${DOCKER_NAME}:${DOCKER_TAG}
+	run_special_tag_docker_container
+}
+###############
+tmoe_docker_readme(){ 
+	cat <<-ENDOFDOCKER
+	${GREEN}service docker start || systemctl start docker${RESET}	${BLUE}启动docker${RESET}
+	${GREEN}systemctl enable docker${RESET}	${BLUE}将docker设定为开机自启${RESET}
+	---------------------------------
+    ${GREEN}docker ps${RESET} 	${BLUE}列出当前正在运行的容器${RESET}
+    ${GREEN}docker ps -a${RESET} 	${BLUE}列出所有容器${RESET}
+    ${GREEN}docker start ${CONTAINER_NAME}${RESET}	${BLUE}启动${CONTAINER_NAME}容器${RESET}
+    ${GREEN}docker stop ${CONTAINER_NAME}${RESET} 	${BLUE}停止${CONTAINER_NAME}容器${RESET}
+    ${GREEN}docker attach ${CONTAINER_NAME}${RESET} 	${BLUE}连接${CONTAINER_NAME}容器${RESET}
+    ${GREEN}docker exec -it ${CONTAINER_NAME} /bin/bash${RESET} 	${BLUE}对${CONTAINER_NAME}容器执行/bin/bash${RESET}
+	${GREEN}docker exec -it ${CONTAINER_NAME} /bin/sh${RESET} 	${BLUE}对${CONTAINER_NAME}容器执行/bin/sh${RESET}
+ENDOFDOCKER
+}
+#############
+custom_docker_container_tag(){
+	if [ "$(echo ${DOCKER_NAME} | grep '/')" ];then
+		#https://hub.docker.com/r/kalilinux/kali-rolling/tags
+		DOCKER_URL="https://hub.docker.com/r/${DOCKER_NAME}/tags"
+	else
+		DOCKER_URL="https://hub.docker.com/_/${DOCKER_NAME}?tab=tags"
+	fi
+	TARGET=$(whiptail --inputbox "Please type the container tag,\nyou may be able to get more info via \n${DOCKER_URL}" 0 50 --title "DOCKER TAG" 3>&1 1>&2 2>&3)
+	if [ "$?" != "0" ]; then
+		${RETURN_TO_WHERE}
+	elif [ -z "${TARGET}" ]; then
+		echo "请输入有效的值"
+		echo "Please enter a valid value"
+	else
+		DOCKER_TAG=${TARGET}
+		run_special_tag_docker_container
+	fi
+}
+##########
+tmoe_docker_management_menu_01(){ 
+	RETURN_TO_WHERE='tmoe_docker_management_menu_01'
+	DOCKER_TAG=${DOCKER_TAG_01}
+	VIRTUAL_TECH=$(
+		whiptail --title "${DOCKER_NAME} CONTAINER(docker容器)" --menu "Which container do you want to run?" 0 0 0 \
+			"1" "${DOCKER_TAG_01}" \
+			"2" "${DOCKER_TAG_02}" \
+			"3" "custom tag(运行自定义标签的容器)" \
+			"4" "readme of ${CONTAINER_NAME} 说明" \
+			"5" "reset(重置容器数据并重拉${DOCKER_TAG}镜像)" \
+			"6" "delete(删除${CONTAINER_NAME}容器及其镜像)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") choose_gnu_linux_docker_images ;;
+	1) 
+		DOCKER_TAG=${DOCKER_TAG_01}
+		run_special_tag_docker_container
+	;;
+	2)  DOCKER_TAG=${DOCKER_TAG_02}
+		run_special_tag_docker_container
+	;;
+	3) custom_docker_container_tag ;;
+	4) tmoe_docker_readme ;;
+	5) reset_docker_container ;;
+	6) delete_docker_container_and_image ;;
+	esac
+	###############
+	press_enter_to_return
+	tmoe_docker_management_menu_01
+}
+###########
+tmoe_docker_management_menu_02(){ 
+	RETURN_TO_WHERE='tmoe_docker_management_menu_02'
+	DOCKER_TAG=${DOCKER_TAG_01}
+	VIRTUAL_TECH=$(
+		whiptail --title "${DOCKER_NAME} CONTAINER(docker容器)" --menu "Which container do you want to run?" 0 0 0 \
+			"1" "${DOCKER_NAME}" \
+			"2" "${DOCKER_NAME_02}" \
+			"3" "custom tag(运行自定义标签的容器)" \
+			"4" "readme of ${CONTAINER_NAME} 说明" \
+			"5" "reset(重置容器数据并重拉${DOCKER_NAME}:${DOCKER_TAG_01}镜像)" \
+			"6" "delete(删除${CONTAINER_NAME}容器及其镜像)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") choose_gnu_linux_docker_images ;;
+	1) run_special_tag_docker_container ;;
+	2)  DOCKER_NAME=${DOCKER_NAME_02}
+		run_special_tag_docker_container
+	;;
+	3) custom_docker_container_tag ;;
+	4) tmoe_docker_readme ;;
+	5) reset_docker_container ;;
+	6) delete_docker_container_and_image ;;
+	esac
+	###############
+	press_enter_to_return
+	tmoe_docker_management_menu_02
+}
+###########
+tmoe_docker_management_menu_03(){ 
+	RETURN_TO_WHERE='tmoe_docker_management_menu_03'
+	DOCKER_TAG=${DOCKER_TAG_01}
+	VIRTUAL_TECH=$(
+		whiptail --title "${DOCKER_NAME} CONTAINER(docker容器)" --menu "Which container do you want to run?" 0 0 0 \
+			"1" "${DOCKER_TAG_01}" \
+			"2" "custom tag(运行自定义标签的容器)" \
+			"3" "readme of ${CONTAINER_NAME} 说明" \
+			"4" "reset(重置容器数据并重拉${DOCKER_TAG_01}镜像)" \
+			"5" "delete(删除${CONTAINER_NAME}容器及其镜像)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") choose_gnu_linux_docker_images ;;
+	1) run_special_tag_docker_container ;;
+	2) custom_docker_container_tag ;;
+	3) tmoe_docker_readme ;;
+	4) reset_docker_container ;;
+	5) delete_docker_container_and_image ;;
+	esac
+	###############
+	press_enter_to_return
+	tmoe_docker_management_menu_03
+}
+###########
+choose_gnu_linux_docker_images(){ 
+	check_docker_installation
+	RETURN_TO_WHERE='choose_gnu_linux_docker_images'
+	DOCKER_TAG_01='latest'
+	CONTAINER_NAME=''
+	DOCKER_MANAGEMENT_MENU='01'
+	SELECTED_GNU_LINUX=$(whiptail --title "DOCKER IMAGES" --menu "Which distribution image do you want to pull? \n您想要拉取哪个GNU/Linux发行版的镜像?" 0 50 0 \
+			"00" "Return to previous menu 返回上级菜单" \
+			"01" "alpine(非glibc的精简系统)" \
+			"02" "🍥Debian:最早的发行版之一" \
+			"03" "🍛Ubuntu:我的存在是因為大家的存在" \
+			"04" "🐉Kali Rolling:设计用于数字取证和渗透测试" \
+			"05" "arch:系统设计以KISS为总体指导原则" \
+			"06" "👒fedora:红帽社区版,新技术试验场" \
+			"07" "centos(基于红帽的社区企业操作系统)" \
+			"08" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"09" "gentoo(追求极限配置和极高自由,stage3-amd64)" \
+			"10" "clearlinux(intel发行的系统)" \
+			"11" "Void(基于xbps包管理器的独立发行版)" \
+			"12" "oracle(甲骨文基于红帽发行的系统)" \
+			"13" "amazon(亚马逊云服务发行版)" \
+			"14" "crux(lightweight轻量化)" \
+			"15" "openwrt(常见于路由器)" \
+			"16" "alt(起源于俄罗斯的发行版)" \
+			"17" "photon(VMware专为ESXi定制的容器系统)" \
+		3>&1 1>&2 2>&3)
+	#############
+	case ${SELECTED_GNU_LINUX} in
+	00 | "") tmoe_docker_menu ;;
+	01) 
+	DOCKER_TAG_02='edge'
+	DOCKER_NAME='alpine'
+	;;
+	02) 
+	DOCKER_TAG_01='unstable'
+	DOCKER_TAG_02='stable'
+	DOCKER_NAME='debian'
+	;;
+	03) 
+	DOCKER_TAG_02='devel'
+	DOCKER_NAME='ubuntu'
+	;;
+	04) 
+	DOCKER_NAME='kalilinux/kali-rolling'
+	DOCKER_NAME_02='kalilinux/kali'
+	CONTAINER_NAME='kali'
+	DOCKER_MANAGEMENT_MENU='02'
+	;;
+	05) 
+	DOCKER_NAME='archlinux'
+	CONTAINER_NAME='arch'
+	DOCKER_MANAGEMENT_MENU='03'
+	;;
+	06) 
+	DOCKER_TAG_02='rawhide'
+	DOCKER_NAME='fedora'
+	;;
+	07) 
+	DOCKER_TAG_01='latest'
+	DOCKER_TAG_02='7'
+	DOCKER_NAME='centos'
+	CONTAINER_NAME='cent'
+	;;
+	08)
+	DOCKER_NAME='opensuse/tumbleweed'
+	DOCKER_NAME_02='opensuse/leap'
+	CONTAINER_NAME='suse'
+	DOCKER_MANAGEMENT_MENU='02'
+	;;
+	09) 
+	DOCKER_NAME='gentoo/stage3-amd64'
+	DOCKER_NAME_02='gentoo/stage3-amd64-hardened-nomultilib'
+	CONTAINER_NAME='gentoo'
+	DOCKER_MANAGEMENT_MENU='02'
+	;;
+	10) 
+	DOCKER_TAG_01='latest'
+	DOCKER_TAG_02='base'
+	DOCKER_NAME='clearlinux'
+	CONTAINER_NAME='clear'
+	;;
+	11) 
+	DOCKER_NAME='voidlinux/voidlinux'
+	DOCKER_NAME_02='voidlinux/voidlinux-musl'
+	CONTAINER_NAME='void'
+	DOCKER_MANAGEMENT_MENU='02'
+	;;
+	12)
+	DOCKER_TAG_02='7'
+	DOCKER_NAME='oraclelinux'
+	CONTAINER_NAME='oracle'
+	;;
+	13) 
+	DOCKER_TAG_02='with-sources'
+	DOCKER_NAME='amazonlinux'
+	CONTAINER_NAME='amazon'
+	;;
+	14) 
+	DOCKER_TAG_02='3.4'
+	DOCKER_NAME='crux'
+	;;
+	15) 
+	DOCKER_NAME='openwrtorg/rootfs'
+	CONTAINER_NAME='openwrt'
+	DOCKER_MANAGEMENT_MENU='03'
+	;;
+	16) 
+	DOCKER_TAG_02='sisyphus'
+	DOCKER_NAME='alt'
+	;;
+	17) 
+	DOCKER_TAG_02='2.0'
+	DOCKER_NAME='photon'
+	;;
+	esac
+	###############
+	if [ -z "${CONTAINER_NAME}" ];then
+		CONTAINER_NAME=${DOCKER_NAME}
+	fi
+	case ${DOCKER_MANAGEMENT_MENU} in
+	01) tmoe_docker_management_menu_01 ;;
+	02) tmoe_docker_management_menu_02 ;;
+	03) tmoe_docker_management_menu_03 ;;
+	esac
+	###########
+	press_enter_to_return
+	choose_gnu_linux_docker_images
+}
+#############
+install_docker_ce_or_io(){ 
+	if (whiptail --title "DOCKER本体" --yes-button 'docker-ce' --no-button 'docker.io' --yesno "Which software do you want to install?\n为避免冲突,请只选择其中一个" 0 50); then
+		install_docker_ce
+	else
+		install_docker_io
+	fi
+	docker version
+}
+##############
+add_current_user_to_docker_group(){
+	cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}'
+	echo "Do you want to add ${CURRENT_USER_NAME} to docker group?"
+	echo "${YELLOW}gpasswd -a ${CURRENT_USER_NAME} docker${RESE}"
+	do_you_want_to_continue
+	if [ ! "$(groups | grep docker)" ];then
+		groupadd docker  
+	fi
+	gpasswd -a ${CURRENT_USER_NAME} docker
+	echo "您可以手动执行${GREEN}newgrp docker${RESET}来刷新docker用户组"
+	echo "If you want to remove it,then type ${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
+	echo "若您需要将当前用户移出docker用户组，则请输${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
+}
+##########
+tmoe_docker_menu(){
+	RETURN_TO_WHERE='tmoe_docker_menu'
+	VIRTUAL_TECH=$(
+		whiptail --title "DOCKER容器" --menu "您想要选择哪一项呢？" 0 0 0 \
+			"1" "install docker-ce(安装docker社区版引擎)" \
+			"2" "pull distro images(拉取alpine,debian和ubuntu镜像)" \
+			"3" "portainer(web端图形化docker容器管理)" \
+			"4" "add ${CURRENT_USER_NAME} to docker group(添加至docker用户组)" \
+			"0" "Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	#############
+	case ${VIRTUAL_TECH} in
+	0 | "") install_container_and_virtual_machine ;;
+	1) install_docker_ce_or_io ;;
+	2) choose_gnu_linux_docker_images ;;
+	3) install_docker_portainer ;;
+	4) add_current_user_to_docker_group ;;
+	esac
+	###############
+	press_enter_to_return
+	tmoe_docker_menu
+}
+############
 install_container_and_virtual_machine() {
 	RETURN_TO_WHERE='install_container_and_virtual_machine'
 	NON_DEBIAN='false'
 	VIRTUAL_TECH=$(
-		whiptail --title "虚拟化与api的转换" --menu "您想要选择哪一项呢？" 16 50 8 \
-			"1" "aqemu(QEMU和KVM的Qt5前端)" \
-			"2" "tmoe-qemu:x86_64虚拟机管理" \
-			"3" "tmoe-qemu:arm64虚拟机管理" \
-			"4" "download iso:下载镜像(Android,linux等)" \
-			"5" "docker-ce(开源的应用容器引擎)" \
-			"6" "portainer(docker图形化web端管理容器)" \
-			"7" "VirtualBox(甲骨文开源虚拟机(x64)" \
-			"8" "wine(调用win api并即时转换)" \
-			"9" "anbox(Android in a box)" \
+		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
+			"1" "qemu:开源、跨平台的虚拟机" \
+			"2" "docker:开源的应用容器引擎" \
+			"3" "download iso:下载镜像(Android,linux等)" \
+			"4" "VirtualBox(甲骨文开源虚拟机(x64)" \
+			"5" "wine(调用win api并即时转换)" \
+			"6" "anbox(Android in a box)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -10773,20 +11157,19 @@ install_container_and_virtual_machine() {
 	case ${VIRTUAL_TECH} in
 	0 | "") beta_features ;;
 	00) tmoe_linux_tool_menu ;;
-	1) install_aqemu ;;
-	2) start_tmoe_qemu_manager ;;
-	3) start_tmoe_qemu_aarch64_manager ;;
-	4) download_virtual_machine_iso_file ;;
-	5) install_docker_ce ;;
-	6) install_docker_portainer ;;
-	7) install_virtual_box ;;
-	8) wine_menu ;;
-	9) install_anbox ;;
+	1) qemu_system_menu ;;
+	2) tmoe_docker_menu ;;
+	3) download_virtual_machine_iso_file ;;
+	4) install_virtual_box ;;
+	5) wine_menu ;;
+	6) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
-	beta_features
+	install_container_and_virtual_machine
 }
+#"4" "OpenMediaVault(基于debian的NAS网络连接存储解决方案)" \
+#4) install_open_media_vault ;;
 #####################
 install_dxvk(){ 
 	DEPENDENCY_01='dxvk'
@@ -15090,13 +15473,6 @@ install_wine64() {
 		EOF
 	fi
 }
-#########################
-install_aqemu() {
-	DEPENDENCY_01='aqemu virt-manager'
-	DEPENDENCY_02='qemu gnome-boxes'
-	#qemu-block-extra
-	beta_features_quick_install
-}
 #########
 download_ubuntu_ppa_deb_model_01() {
 	cd /tmp/
@@ -15914,40 +16290,49 @@ debian_add_docker_gpg() {
 	else
 		DOCKER_RELEASE='debian'
 	fi
-
-	curl -Lv https://download.docker.com/linux/${DOCKER_RELEASE}/gpg | apt-key add -
-	cd /etc/apt/sources.list.d/
-	sed -i 's/^deb/# &/g' docker.list
-	DOCKER_CODE="$(lsb_release -cs)"
-
+	cd /tmp
+	curl -Lv -o '.docker-tuna.html' "https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/dists/"
+	DOCKER_TUNA_FIRST_CODE=$(cat .docker-tuna.html | grep link | sed -n 2p | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
+	#curl -Lv https://download.docker.com/linux/${DOCKER_RELEASE}/gpg | apt-key add -
 	if [ ! $(command -v lsb_release) ]; then
-		DOCKER_CODE="buster"
+		apt update
+		apt install lsb-release
 	fi
 
-	if [ "$(lsb_release -cs)" = "focal" ]; then
-		DOCKER_CODE="eoan"
-	#2020-05-05：暂没有focal的仓库
-	elif [ "$(lsb_release -cs)" = "bullseye" ]; then
-		DOCKER_CODE="buster"
-	elif [ "$(lsb_release -cs)" = "bookworm" ]; then
-		DOCKER_CODE="bullseye"
+	CURRENT_DOCKER_CODE=$(cat .docker-tuna.html | grep link | grep $(lsb_release -cs))
+	if [ -z "${CURRENT_DOCKER_CODE}" ]; then
+		DOCKER_CODE=${DOCKER_TUNA_FIRST_CODE}
+	else
+		DOCKER_CODE="$(lsb_release -cs)"
 	fi
-	echo "deb https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
-	#$(#lsb_release -cs)
+	rm .docker-tuna.html
+	curl -Lv https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/gpg | apt-key add -
+	cd /etc/apt/sources.list.d/
+	sed -i 's/^deb/# &/g' docker.list 2>/dev/null
+	#case "$(lsb_release -cs)" in
+	#sid) DOCKER_CODE="buster" ;;
+	#esac
+	if (whiptail --title "请选择软件源" --yes-button "tuna" --no-button "docker.com" --yesno "Please select docker software source." 0 50); then
+		echo "deb https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+	else
+		echo "deb https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+	fi
 }
 #################
-install_docker_portainer() {
-	command -v docker >/dev/null
-	if [ "$?" != "0" ]; then
+check_docker_installation(){ 
+	if [ ! "$(command -v docker)" ];then
 		echo "检测到您尚未安装docker，请先安装docker"
-		press_enter_to_return
-		install_container_and_virtual_machine
+		install_docker_ce_or_io
 	fi
+}
+############
+install_docker_portainer() {
+	check_docker_installation
 	TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please enter the port." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ] || [ -z "${TARGET_PORT}" ]; then
 		echo "端口无效，请重新输入"
 		press_enter_to_return
-		install_container_and_virtual_machine
+		tmoe_docker_menu
 	fi
 	service docker start 2>/dev/null || systemctl start docker
 	docker stop portainer 2>/dev/null
@@ -15957,6 +16342,12 @@ install_docker_portainer() {
 	docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
 }
 #####################
+install_docker_io(){ 
+	DEPENDENCY_01=""
+	DEPENDENCY_02="docker.io"
+	beta_features_quick_install
+}
+###########
 install_docker_ce() {
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
@@ -15988,12 +16379,11 @@ install_docker_ce() {
 	if [ ! $(command -v docker) ]; then
 		echo "安装失败，请执行${PACKAGES_INSTALL_COMMAND} docker.io"
 	fi
-
 }
 #################
 debian_add_virtual_box_gpg() {
 	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
-		VBOX_RELEASE='bionic'
+		VBOX_RELEASE='focal'
 	else
 		VBOX_RELEASE='buster'
 	fi
@@ -16009,7 +16399,7 @@ get_debian_vbox_latest_url() {
 	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
 		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep -E "Ubuntu" | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	else
-		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep -E "Debian" | head -n 1 | cut -d '=' -f 7 | cut -d '"' -f 2)
+		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep -E "Debian" | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	fi
 	VBOX_DEB_FILE_URL="${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION}${LATEST_VBOX_FILE}"
 	echo "获取到vbox的最新链接为${VBOX_DEB_FILE_URL},是否下载并安装？"
@@ -16048,7 +16438,6 @@ install_virtual_box() {
 		arch_does_not_support
 		beta_features
 	fi
-
 	NON_DEBIAN='false'
 	if [ ! $(command -v gpg) ]; then
 		DEPENDENCY_01=""
