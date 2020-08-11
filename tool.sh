@@ -10804,26 +10804,43 @@ qemu_system_menu(){
 run_special_tag_docker_container(){ 
 	service docker start 2>/dev/null || systemctl start docker
 	docker stop ${CONTAINER_NAME} 2>/dev/null
-	mkdir -p /media/docker/${CONTAINER_NAME}
-	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v /media/docker/${CONTAINER_NAME}:/media/docker ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
-	docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v /media/docker/${CONTAINER_NAME}:/media/docker ${DOCKER_NAME}:${DOCKER_TAG}
-	echo "已将宿主机的${YELLOW}/media/docker/${CONTAINER_NAME}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}/media/docker${RESET}"
+	MOUNT_DOCKER_FOLDER=/media/docker
+	if [ ! -d "${MOUNT_DOCKER_FOLDER}" ];then
+		mkdir -p ${MOUNT_DOCKER_FOLDER}
+		chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${MOUNT_DOCKER_FOLDER}
+	fi
+	TMOE_LINUX_DOCKER_SHELL_FILE="${MOUNT_DOCKER_FOLDER}/.tmoe-linux-docker.sh"
+	if [ ! -e "${TMOE_LINUX_DOCKER_SHELL_FILE}" ];then
+		aria2c --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
+	fi
+	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+	docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+	echo "已将宿主机的${YELLOW}${MOUNT_DOCKER_FOLDER}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}${MOUNT_DOCKER_FOLDER}${RESET}"
 	echo "You can type ${GREEN}sudo docker exec -it ${CONTAINER_NAME} sh${RESET} to connect ${CONTAINER_NAME} container."
 	echo "您可以输${GREEN}docker attach ${CONTAINER_NAME}${RESET}来连接${CONTAINER_NAME}容器"
 	docker start ${CONTAINER_NAME}
-	docker exec -it ${CONTAINER_NAME} /bin/bash || docker exec -it ${CONTAINER_NAME} /bin/sh
+	docker exec -it ${CONTAINER_NAME} /bin/sh ${TMOE_LINUX_DOCKER_SHELL_FILE}
 }
 ##############
-delete_docker_container_and_image(){ 
-	service docker start 2>/dev/null || systemctl start docker
-	docker stop ${CONTAINER_NAME} 2>/dev/null
+only_delete_docker_container(){ 
+    service docker start 2>/dev/null || systemctl start docker
+	
 	cat <<-EOF
-		${RED}docker rm ${CONTAINER_NAME}
-		docker rmi ${DOCKER_NAME}:${DOCKER_TAG}
-		docker rmi ${DOCKER_NAME}:${DOCKER_TAG_02}${RESET}
+		${RED}docker stop ${CONTAINER_NAME}
+		docker rm ${CONTAINER_NAME}${RESET}
 	EOF
 	do_you_want_to_continue
+	docker stop ${CONTAINER_NAME} 2>/dev/null
 	docker rm ${CONTAINER_NAME} 2>/dev/null
+}
+##########
+delete_docker_container_and_image(){ 
+	only_delete_docker_container
+	cat <<-EOF
+		${RED}docker rmi ${DOCKER_NAME}:${DOCKER_TAG}
+		docker rmi ${DOCKER_NAME}:${DOCKER_TAG_02}${RESET}
+	EOF
+	#docker rm ${CONTAINER_NAME} 2>/dev/null
 	docker rmi ${DOCKER_NAME}:${DOCKER_TAG} 2>/dev/null
 	if [ ! -z "${DOCKER_TAG_02}" ];then
 		docker rmi ${DOCKER_NAME}:${DOCKER_TAG_02} 2>/dev/null
@@ -10887,7 +10904,7 @@ tmoe_docker_management_menu_01(){
 			"3" "custom tag(运行自定义标签的容器)" \
 			"4" "readme of ${CONTAINER_NAME} 说明" \
 			"5" "reset(重置容器数据并重拉${DOCKER_TAG}镜像)" \
-			"6" "delete(删除${CONTAINER_NAME}容器及其镜像)" \
+			"6" "delete(删除${CONTAINER_NAME}容器)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -10904,13 +10921,21 @@ tmoe_docker_management_menu_01(){
 	3) custom_docker_container_tag ;;
 	4) tmoe_docker_readme ;;
 	5) reset_docker_container ;;
-	6) delete_docker_container_and_image ;;
+	6) delete_docker_container ;;
 	esac
 	###############
 	press_enter_to_return
 	tmoe_docker_management_menu_01
 }
 ###########
+delete_docker_container(){ 
+	if (whiptail --title "Delete container" --yes-button 'container' --no-button 'container+image' --yesno "What do you want to delete?\n您是想要删除容器,还是删除容器+镜像？" 0 50); then
+		only_delete_docker_container
+	else
+		delete_docker_container_and_image
+	fi
+}
+############
 tmoe_docker_management_menu_02(){ 
 	RETURN_TO_WHERE='tmoe_docker_management_menu_02'
 	DOCKER_TAG=${DOCKER_TAG_01}
@@ -10935,7 +10960,7 @@ tmoe_docker_management_menu_02(){
 	3) custom_docker_container_tag ;;
 	4) tmoe_docker_readme ;;
 	5) reset_docker_container ;;
-	6) delete_docker_container_and_image ;;
+	6) delete_docker_container ;;
 	esac
 	###############
 	press_enter_to_return
@@ -10962,7 +10987,7 @@ tmoe_docker_management_menu_03(){
 	2) custom_docker_container_tag ;;
 	3) tmoe_docker_readme ;;
 	4) reset_docker_container ;;
-	5) delete_docker_container_and_image ;;
+	5) delete_docker_container ;;
 	esac
 	###############
 	press_enter_to_return
