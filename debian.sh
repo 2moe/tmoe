@@ -40,7 +40,7 @@ else
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
 
-###apt install -y locales 2>/dev/null ; sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen ;locale-gen ${LANG}
+###apt install -y locales 2>/dev/null ; dnf install -y glibc-langpack-zh 2>/dev/null ; sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen ;locale-gen ${LANG}
 ###sed -i '/^apt install -y locales/d' /media/docker/.tmoe-linux-docker.sh
 #用于docker容器自动配置区域与语言环境。
 
