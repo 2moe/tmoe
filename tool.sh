@@ -11362,7 +11362,7 @@ start_tmoe_qemu_aarch64_manager() {
 	fi
 
 	VIRTUAL_TECH=$(
-		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 17 55 8 \
+		whiptail --title "aarch64 qemu虚拟机管理器" --menu "v2020-06-02 beta" 0 50 0 \
 			"1" "Creat a new VM 新建虚拟机" \
 			"2" "Multi-VM多虚拟机管理" \
 			"3" "edit script manually手动修改配置脚本" \
@@ -13714,7 +13714,7 @@ start_tmoe_qemu_manager() {
 	fi
 	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
-		whiptail --title "x86_64 qemu虚拟机管理器" --menu "同架构/跨架构模拟运行系统" 17 55 8 \
+		whiptail --title "x86_64 qemu虚拟机管理器" --menu "同架构/跨架构模拟运行系统" 0 50 0 \
 			"1" "🍹Creat a new VM 新建虚拟机" \
 			"2" "🏭qemu templates repo磁盘与模板在线仓库" \
 			"3" "🍱Multi-VM多虚拟机管理" \
