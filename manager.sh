@@ -923,6 +923,7 @@ tmoe_locale_settings() {
 		fi
 		echo "Please try running ${GREEN}source /etc/default/locale${RESET}"
 		echo "請手動執行${GREEN}source /etc/default/locale${RESET}以刷新locale設定"
+		echo "若无法生效，则请执行${GREEN}export LANG=${TMOE_LANG}${RESET}"
 	fi
 	#############
 	echo "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
