@@ -578,7 +578,7 @@ tmoe_linux_tool_menu() {
 			"3" "🌈 Desktop beautification:桌面美化(主题)" \
 			"4" "🌌 vnc/x/rdp:远程桌面" \
 			"5" "🍻 Download video:解析视频链接(bili,Y2B)" \
-			"6" "🐋 docker:开源的应用容器引擎" \
+			"6" "🐳 docker:开源的应用容器引擎" \
 			"7" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
 			"8" "🏫 FAQ:常见问题" \
 			"9" "🍥 software sources:软件镜像源管理" \
@@ -8994,7 +8994,7 @@ beta_features() {
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
 		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 0 55 0 \
-			"1" "💻 container/vm:docker容器,qemu,vbox虚拟机" \
+			"1" "🐬 container/vm:docker容器,qemu,vbox虚拟机" \
 			"2" "🌌 science&edu:科学与教育(高考,考研,科研)" \
 			"3" "📝 read:墨纸留香,品味阅读" \
 			"4" "🎬 cut video:岁月静好,剪下佳刻" \
@@ -11250,7 +11250,7 @@ install_container_and_virtual_machine() {
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
-			"2" "🐋 docker:开源的应用容器引擎" \
+			"2" "🐳 docker:开源的应用容器引擎" \
 			"3" "💿 download iso:下载镜像(Android,linux等)" \
 			"4" "VirtualBox(甲骨文开源虚拟机(x64)" \
 			"5" "🍷 wine(调用win api并即时转换)" \
@@ -16024,7 +16024,7 @@ install_pinyin_input_method() {
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
 			"1" "fcitx-FAQ:常见问题与疑难诊断" \
-			"2" "fcitx5(软件与词库)" \
+			"2" "🍀 fcitx5(软件与词库)" \
 			"3" "google谷歌拼音(引擎fork自Android版)" \
 			"4" "sogou(搜狗拼音)" \
 			"5" "iflyime(讯飞语音+拼音+五笔)" \
