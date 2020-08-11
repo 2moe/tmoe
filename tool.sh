@@ -578,7 +578,7 @@ tmoe_linux_tool_menu() {
 			"3" "🌈Desktop beautification:桌面美化(主题)" \
 			"4" "🌌vnc/x/rdp:远程桌面" \
 			"5" "🍻Download video:解析视频链接(bili,Y2B)" \
-			"6" "🥗File shared:文件共享与网盘(Webdav)" \
+			"6" "🐋docker:开源的应用容器引擎" \
 			"7" "🍧*°▽°*Update tmoe-linux tool(更新本工具)" \
 			"8" "🏫FAQ:常见问题" \
 			"9" "🍥software sources:软件镜像源管理" \
@@ -604,7 +604,7 @@ tmoe_linux_tool_menu() {
 	3) tmoe_desktop_beautification ;;
 	4) modify_remote_desktop_config ;;
 	5) download_videos ;;
-	6) personal_netdisk ;;
+	6) tmoe_docker_menu ;;
 	7) tmoe_linux_tool_upgrade ;;
 	8) frequently_asked_questions ;;
 	9) tmoe_sources_list_manager ;;
@@ -754,7 +754,7 @@ tmoe_linux_tool_upgrade() {
 #####################
 download_videos() {
 	VIDEOTOOL=$(
-		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 14 50 6 \
+		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 0 50 0 \
 			"1" "🥂Annie" \
 			"2" "🍷You-get" \
 			"3" "🍾Youtube-dl" \
@@ -1356,7 +1356,7 @@ check_vscode_server_status() {
 ###############
 configure_vscode_server() {
 	CODE_SERVER_OPTION=$(
-		whiptail --title "CONFIGURE VSCODE_SERVER" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 14 50 5 \
+		whiptail --title "CONFIGURE VSCODE_SERVER" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 0 50 0 \
 			"1" "upgrade code-server更新/升级" \
 			"2" "password 设定密码" \
 			"3" "edit config manually手动编辑配置" \
@@ -2460,7 +2460,7 @@ tmoe_display_manager_systemctl() {
 		TMOE_DEPENDENCY_SYSTEMCTL="${DEPENDENCY_02}"
 	fi
 	INSTALLDESKTOP=$(whiptail --title "你想要对这个小可爱做什么？" --menu \
-		"显示管理器软件包基础配置" 14 50 6 \
+		"显示管理器软件包基础配置" 0 50 0 \
 		"1" "install/remove 安装/卸载" \
 		"2" "start启动" \
 		"3" "stop停止" \
@@ -6403,7 +6403,8 @@ other_software() {
 			"7" "📘VSCode 现代化代码编辑器" \
 			"8" "🎁Download:下载类(aria2,baidu)" \
 			"9" "🥙Start zsh tool:启动zsh管理工具" \
-			"10" "🌚remove:卸载管理" \
+			"10" "🥗File shared:文件共享与网盘(Webdav)" \
+			"11" "🌚remove:卸载管理" \
 			"0" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -6419,7 +6420,8 @@ other_software() {
 	7) which_vscode_edition ;;
 	8) tmoe_download_class ;;
 	9) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
-	10) tmoe_other_options_menu ;;
+	10) personal_netdisk ;; 
+	11) tmoe_other_options_menu ;;
 	esac
 	############################################
 	press_enter_to_return
@@ -9278,7 +9280,7 @@ RETURN_TO_WHERE='college_entrance_examination_paper'
 		"高考真题" 0 50 0 \
 		"1" "2020(大小79.9MiB)" \
 		"2" "2008-2019(不含听力及口语听说,392.2MiB)" \
-		"3" "2013-2018版(146.3MiB)" \
+		"3" "2013-2018理科版(146.3MiB)" \
 		"4" "2008-2018(仅英语听力音频,244.9MiB)" \
 		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -10957,7 +10959,7 @@ tmoe_docker_management_menu_02(){
 			"3" "custom tag(运行自定义标签的容器)" \
 			"4" "readme of ${CONTAINER_NAME} 说明" \
 			"5" "reset(重置容器数据并重拉${DOCKER_NAME}:${DOCKER_TAG_01}镜像)" \
-			"6" "delete(删除${CONTAINER_NAME})" \
+			"6" "delete(删除${CONTAINER_NAME}容器)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -10987,7 +10989,7 @@ tmoe_docker_management_menu_03(){
 			"2" "custom tag(运行自定义标签的容器)" \
 			"3" "readme of ${CONTAINER_NAME} 说明" \
 			"4" "reset(重置容器数据并重拉${DOCKER_TAG_01}镜像)" \
-			"5" "delete(删除${CONTAINER_NAME})" \
+			"5" "delete(删除${CONTAINER_NAME}容器)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -11213,10 +11215,10 @@ tmoe_docker_menu(){
 	RETURN_TO_WHERE='tmoe_docker_menu'
 	VIRTUAL_TECH=$(
 		whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
-			"1" "install docker-ce(安装docker社区版引擎)" \
-			"2" "pull distro images(拉取alpine,debian和ubuntu镜像)" \
-			"3" "portainer(web端图形化docker容器管理)" \
-			"4" "mirror source镜像源" \
+			"1" "🐋install docker-ce(安装docker社区版引擎)" \
+			"2" "🍭pull distro images(拉取alpine,debian和ubuntu镜像)" \
+			"3" "🌉portainer(web端图形化docker容器管理)" \
+			"4" "🍥mirror source镜像源" \
 			"5" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -11240,12 +11242,12 @@ install_container_and_virtual_machine() {
 	NON_DEBIAN='false'
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
-			"1" "qemu:开源、跨平台的虚拟机" \
-			"2" "docker:开源的应用容器引擎" \
-			"3" "download iso:下载镜像(Android,linux等)" \
+			"1" "💻qemu:开源、跨平台的虚拟机" \
+			"2" "🐋docker:开源的应用容器引擎" \
+			"3" "💿download iso:下载镜像(Android,linux等)" \
 			"4" "VirtualBox(甲骨文开源虚拟机(x64)" \
-			"5" "wine(调用win api并即时转换)" \
-			"6" "anbox(Android in a box)" \
+			"5" "🍷wine(调用win api并即时转换)" \
+			"6" "🥡anbox(Android in a box)" \
 			"0" "Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -16820,20 +16822,20 @@ install_fbreader() {
 ################
 ################
 personal_netdisk() {
-	WHICH_NETDISK=$(whiptail --title "FILE SHARE SERVER" --menu "你想要使用哪个软件来共享文件呢" 11 50 3 \
+	WHICH_NETDISK=$(whiptail --title "FILE SHARE SERVER" --menu "你想要使用哪个软件来共享文件呢" 0 50 0 \
 		"1" "Filebrowser:简单轻量的个人网盘" \
 		"2" "Nginx WebDAV:比ftp更适合用于传输流媒体" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${WHICH_NETDISK}" in
-	0 | "") tmoe_linux_tool_menu ;;
+	0 | "") other_software ;;
 	1) install_filebrowser ;;
 	2) install_nginx_webdav ;;
 	esac
 	##################
 	press_enter_to_return
-	tmoe_linux_tool_menu
+	personal_netdisk
 }
 ################################
 ################################
@@ -16863,7 +16865,7 @@ install_nginx_webdav() {
 configure_nginx_webdav() {
 	#进入nginx webdav配置文件目录
 	cd /etc/nginx/conf.d/
-	TMOE_OPTION=$(whiptail --title "CONFIGURE WEBDAV" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 14 50 5 \
+	TMOE_OPTION=$(whiptail --title "CONFIGURE WEBDAV" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 0 50 0 \
 		"1" "One-key conf 初始化一键配置" \
 		"2" "管理访问账号" \
 		"3" "view logs 查看日志" \
@@ -17221,7 +17223,7 @@ configure_filebrowser() {
 	#先进入etc目录，防止database加载失败
 	cd /etc
 	TMOE_OPTION=$(
-		whiptail --title "CONFIGURE FILEBROWSER" --menu "您想要修改哪项配置？修改配置前将自动停止服务。" 14 50 5 \
+		whiptail --title "CONFIGURE FILEBROWSER" --menu "您想要修改哪项配置？修改配置前将自动停止服务。" 0 50 0 \
 			"1" "One-key conf 初始化一键配置" \
 			"2" "add admin 新建管理员" \
 			"3" "port 修改端口" \
