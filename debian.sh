@@ -22,10 +22,15 @@ install_dependency() {
 tuna_mirror() {
 	if [ "${LANG}" = "en_US.UTF-8" ]; then
 		CHINA_MIRROR='mirrors.huaweicloud.com'
-		sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" /etc/apt/sources.list
-		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" /etc/apt/sources.list
+		SOURCE_LIST=/etc/apt/sources.list
+		sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" ${SOURCE_LIST}
+		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST}
 	fi
-	apt install -y locales 2>/dev/null
+
+	if [ ! $(command -v locale-gen) ]; then
+		apt update 2>/dev/null
+		apt install -y locales 2>/dev/null
+	fi
 	dnf install -y glibc-langpack-zh 2>/dev/null
 	sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen
 	locale-gen ${LANG}
@@ -40,8 +45,8 @@ elif [ $(command -v aria2c) ]; then
 elif [ $(command -v wget) ]; then
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 else
-	DEPENDENCY_01='wget'
 	###tuna_mirror
+	DEPENDENCY_01='wget'
 	install_dependency
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
