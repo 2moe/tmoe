@@ -969,7 +969,7 @@ install_ubuntu_language_pack() {
 		fi
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			dnf install -y glibc-langpack-${TMOE_LANG_HALF}
+			dnf install -y glibc-langpack-${TMOE_LANG_QUATER}
 		fi
 	fi
 }
