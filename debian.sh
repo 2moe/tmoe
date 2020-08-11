@@ -20,7 +20,7 @@ install_dependency() {
 }
 #########
 tuna_mirror() {
-	if [ "${LANG}" = "en_US.UTF-8" ]; then
+	if [ "${LANG}" = "$(echo 'emhfQ04uVVRGLTgK' | base64 -d)" ]; then
 		CHINA_MIRROR='mirrors.huaweicloud.com'
 		SOURCE_LIST=/etc/apt/sources.list
 		sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" ${SOURCE_LIST}
@@ -39,7 +39,7 @@ tmoe_locale_gen() {
 		fi
 		apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 		dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null
-		pacman -Sy glibc
+		pacman -Sy glibc 2>/dev/null
 		sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen
 		locale-gen ${LANG}
 		#用于docker容器自动配置区域与语言环境。
