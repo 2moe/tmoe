@@ -37,7 +37,6 @@ tmoe_locale_gen() {
 				apt update 2>/dev/null
 				apt install -y locales 2>/dev/null
 			fi
-			dnf install -y glibc-langpack-zh 2>/dev/null
 			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null
 			pacman -Sy glibc
