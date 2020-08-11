@@ -42,7 +42,6 @@ tmoe_locale_gen() {
 		pacman -Sy glibc 2>/dev/null
 		sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen
 		locale-gen ${LANG}
-		#用于docker容器自动配置区域与语言环境。
 	fi
 	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 		cd /etc
@@ -63,12 +62,13 @@ elif [ $(command -v aria2c) ]; then
 elif [ $(command -v wget) ]; then
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 else
+	#带三个#为docker容器专用
 	###tuna_mirror
 	DEPENDENCY_01='wget'
 	install_dependency
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
-
+#用于docker容器自动配置区域与语言环境。
 ###tmoe_locale_gen
 if [ $(command -v bash) ]; then
 	bash .tmoe-linux.sh

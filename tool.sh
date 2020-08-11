@@ -10957,7 +10957,7 @@ tmoe_docker_management_menu_02(){
 			"3" "custom tag(运行自定义标签的容器)" \
 			"4" "readme of ${CONTAINER_NAME} 说明" \
 			"5" "reset(重置容器数据并重拉${DOCKER_NAME}:${DOCKER_TAG_01}镜像)" \
-			"6" "delete(删除${CONTAINER_NAME}容器及其镜像)" \
+			"6" "delete(删除${CONTAINER_NAME})" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -10987,7 +10987,7 @@ tmoe_docker_management_menu_03(){
 			"2" "custom tag(运行自定义标签的容器)" \
 			"3" "readme of ${CONTAINER_NAME} 说明" \
 			"4" "reset(重置容器数据并重拉${DOCKER_TAG_01}镜像)" \
-			"5" "delete(删除${CONTAINER_NAME}容器及其镜像)" \
+			"5" "delete(删除${CONTAINER_NAME})" \
 			"0" "Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
