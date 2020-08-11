@@ -11141,7 +11141,6 @@ install_docker_ce_or_io(){
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "若您使用的是${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
 		echo "否则请直接退出安装！！！"
-		RETURN_TO_WHERE='beta_features'
 		do_you_want_to_continue
 	fi
 	if (whiptail --title "DOCKER本体" --yes-button 'docker-ce' --no-button 'docker.io' --yesno "Which software do you want to install?\n为避免冲突,请只选择其中一个" 0 50); then
