@@ -49,7 +49,7 @@ main() {
 	file | filebrowser)
 		filebrowser_restart
 		;;
-	tuna | -tuna | t | -t)
+	tuna | -tuna | --tuna | t | -t)
 		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
 		auto_check_distro_and_modify_sources_list
 		;;
@@ -5926,15 +5926,20 @@ modify_ubuntu_mirror_sources_list() {
 modify_debian_mirror_sources_list() {
 	NEW_DEBIAN_SOURCES_LIST='false'
 	if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-		if (whiptail --title "DEBIAN VERSION" --yes-button "sid" --no-button "testing" --yesno "Are you using debian sid or testing?\n汝今方用何本？♪(^∇^*) " 0 0); then
-			SOURCELISTCODE='sid'
+		if [ "$(lsb_release -cs)" = 'testing' ]; then
+			if (whiptail --title "DEBIAN VERSION" --yes-button "sid" --no-button "testing" --yesno "Are you using debian sid or testing?\n汝今方用何本？♪(^∇^*) " 0 0); then
+				SOURCELISTCODE='sid'
+			else
+				NEW_DEBIAN_SOURCES_LIST='true'
+				SOURCELISTCODE='testing'
+				BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+			fi
 		else
-			NEW_DEBIAN_SOURCES_LIST='true'
-			SOURCELISTCODE='testing'
-			BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)	
+			SOURCELISTCODE='sid'
 		fi
+
 	elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
-	       NEW_DEBIAN_SOURCES_LIST='true'
+		NEW_DEBIAN_SOURCES_LIST='true'
 		if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
 			SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
 		else
@@ -5992,7 +5997,7 @@ modify_debian_mirror_sources_list() {
 			if [ "${DEBIAN_SECURITY_SOURCE}" = "true" ]; then
 				sed -i 's@^deb.*debian-security@#&@' /etc/apt/sources.list
 				cat >>/etc/apt/sources.list <<-EndOfsecuritySource
-                deb http://security.debian.org/debian-security/ ${SOURCELISTCODE}/updates main contrib non-free
+					deb http://security.debian.org/debian-security/ ${SOURCELISTCODE}/updates main contrib non-free
 				EndOfsecuritySource
 			fi
 		fi
@@ -10812,7 +10817,9 @@ run_special_tag_docker_container(){
 	TMOE_LINUX_DOCKER_SHELL_FILE="${MOUNT_DOCKER_FOLDER}/.tmoe-linux-docker.sh"
 	if [ ! -e "${TMOE_LINUX_DOCKER_SHELL_FILE}" ];then
 		aria2c --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
+		#aria2c --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-tool.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh
 		sed -i 's@###apt@apt@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
+		sed -i 's@###tuna_mirror@tuna_mirror@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
 	fi
 	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
 	docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
@@ -11137,7 +11144,6 @@ install_docker_ce_or_io(){
 }
 ##############
 add_current_user_to_docker_group(){
-	cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}'
 	echo "Do you want to add ${CURRENT_USER_NAME} to docker group?"
 	echo "${YELLOW}gpasswd -a ${CURRENT_USER_NAME} docker${RESE}"
 	do_you_want_to_continue

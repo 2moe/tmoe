@@ -19,6 +19,14 @@ install_dependency() {
 	fi
 }
 #########
+tuna_mirror() {
+	if [ "${LANG}" = "en_US.UTF-8" ]; then
+		CHINA_MIRROR='mirrors.huaweicloud.com'
+		sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" /etc/apt/sources.list
+		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" /etc/apt/sources.list
+	fi
+}
+#########
 if [ $(command -v curl) ]; then
 	curl -Lvo .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 elif [ $(command -v aria2c) ]; then
@@ -27,11 +35,12 @@ elif [ $(command -v wget) ]; then
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 else
 	DEPENDENCY_01='wget'
+	###tuna_mirror
 	install_dependency
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
 
-###apt install -y locales 2>/dev/null ; locale-gen ${LANG} 
+###apt install -y locales 2>/dev/null ; sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen ;locale-gen ${LANG}
 ###sed -i '/^apt install -y locales/d' /media/docker/.tmoe-linux-docker.sh
 #用于docker容器自动配置区域与语言环境。
 
