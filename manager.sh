@@ -967,6 +967,10 @@ install_ubuntu_language_pack() {
 			echo "You are using ubuntu and you can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}"
 			echo "檢測到您正在使用Ubuntu,您可以手動執行${GREEN}sudo apt install \$(check-language-support)${RESET}來安裝第三方程式的語言支持包"
 		fi
+	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			dnf install -y glibc-langpack-${TMOE_LANG_HALF}
+		fi
 	fi
 }
 #############
