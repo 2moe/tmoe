@@ -961,9 +961,9 @@ install_ubuntu_language_pack() {
 			apt install -y locales
 		fi
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-			fi
+			#if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+			#fi
 			echo "You are using ubuntu and you can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}"
 			echo "檢測到您正在使用Ubuntu,您可以手動執行${GREEN}sudo apt install \$(check-language-support)${RESET}來安裝第三方程式的語言支持包"
 		fi

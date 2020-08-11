@@ -527,7 +527,7 @@ tmoe_locale_settings() {
 			echo '' >>locale.gen
 			sed -i 's@^@#@g' locale.gen 2>/dev/null
 			sed -i 's@##@#@g' locale.gen 2>/dev/null
-			sed -i "$ a ${TMOE_LANG}" locale.gen
+			sed -i "$ a ${TMOE_LANG} UTF-8" locale.gen
 		fi
 		locale-gen ${TMOE_LANG}
 	fi
@@ -10818,7 +10818,7 @@ run_special_tag_docker_container(){
 	if [ ! -e "${TMOE_LINUX_DOCKER_SHELL_FILE}" ];then
 		aria2c --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
 		#aria2c --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-tool.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh
-		sed -i 's@###apt@apt@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
+		#sed -i 's@###apt@apt@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
 		sed -i 's@###tuna_mirror@tuna_mirror@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
 	fi
 	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"

@@ -25,6 +25,12 @@ tuna_mirror() {
 		sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" /etc/apt/sources.list
 		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" /etc/apt/sources.list
 	fi
+	apt install -y locales 2>/dev/null
+	dnf install -y glibc-langpack-zh 2>/dev/null
+	sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen
+	locale-gen ${LANG}
+	###sed -i '/^apt install -y locales/d' /media/docker/.tmoe-linux-docker.sh
+	#用于docker容器自动配置区域与语言环境。
 }
 #########
 if [ $(command -v curl) ]; then
@@ -39,10 +45,6 @@ else
 	install_dependency
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
-
-###apt install -y locales 2>/dev/null ; dnf install -y glibc-langpack-zh 2>/dev/null ; sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen ;locale-gen ${LANG}
-###sed -i '/^apt install -y locales/d' /media/docker/.tmoe-linux-docker.sh
-#用于docker容器自动配置区域与语言环境。
 
 if [ $(command -v bash) ]; then
 	bash .tmoe-linux.sh
