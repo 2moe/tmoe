@@ -8886,7 +8886,7 @@ fix_vnc_dbus_launch() {
 ###################
 ###################
 beta_features_management_menu() {
-	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "reinstall重装" --no-button "remove移除" --yesno "检测到您已安装${DEPENDENCY_01} ${DEPENDENCY_02} \nDo you want to reinstall or remove it? ♪(^∇^*) " 10 50); then
+	if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "reinstall重装" --no-button "remove移除" --yesno "检测到您已安装${DEPENDENCY_01} ${DEPENDENCY_02} \nDo you want to reinstall or remove it? ♪(^∇^*) " 0 50); then
 		echo "${GREEN} ${PACKAGES_INSTALL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
 		echo "即将为您重装..."
 	else
@@ -11252,7 +11252,7 @@ install_container_and_virtual_machine() {
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
 			"2" "🐳 docker:开源的应用容器引擎" \
 			"3" "💿 download iso:下载镜像(Android,linux等)" \
-			"4" "VirtualBox(甲骨文开源虚拟机(x64)" \
+			"4" "VirtualBox(甲骨文开源虚拟机{x64})" \
 			"5" "🍷 wine(调用win api并即时转换)" \
 			"6" "🥡 anbox(Android in a box)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -16449,8 +16449,8 @@ install_docker_portainer() {
 }
 #####################
 install_docker_io(){ 
-	DEPENDENCY_01=""
-	DEPENDENCY_02="docker.io"
+	DEPENDENCY_01="docker.io"
+	DEPENDENCY_02="docker"
 	beta_features_quick_install
 }
 ###########
@@ -16466,6 +16466,7 @@ install_docker_ce() {
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		DEPENDENCY_01="docker-ce"
+		DEPENDENCY_02="docker"
 		debian_add_docker_gpg
 	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
 		curl -Lv -o /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
