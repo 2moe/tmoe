@@ -11140,8 +11140,8 @@ choose_gnu_linux_docker_images(){
 install_docker_ce_or_io(){
 	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
-		echo "若您使用的是${BOLD}Android${RESET}系统，且使用的是容器，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
-		echo "否则请直接退出安装！！！或者通过qemu-system来运行GNU/Linux虚拟机，并运行docker。"
+		echo "若您的宿主机为${BOLD}Android${RESET}系统，且处于容器环境下，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
+		echo "否则请直接退出安装！！！或者通过qemu-system来运行GNU/Linux虚拟机，再安装docker。"
 		echo "If your host is android, it is recommended that you use the qemu-system virtual machine to run docker."
 		do_you_want_to_continue
 	fi
