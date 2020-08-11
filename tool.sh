@@ -4082,11 +4082,11 @@ configure_theme() {
 	RETURN_TO_WHERE='configure_theme'
 	INSTALL_THEME=$(whiptail --title "桌面环境主题" --menu \
 		"您想要下载哪个主题？\n Which theme do you want to download? " 0 50 0 \
-		"1" "🌈XFCE-LOOK-parser主题链接解析器" \
-		"2" "⚡local-theme-installer本地主题安装器" \
-		"3" "🎭win10:kali卧底模式主题" \
-		"4" "🚥MacOS:Mojave" \
-		"5" "🎋breeze:plasma桌面微风gtk+版主题" \
+		"1" "🌈 XFCE-LOOK-parser主题链接解析器" \
+		"2" "⚡ local-theme-installer本地主题安装器" \
+		"3" "🎭 win10:kali卧底模式主题" \
+		"4" "🚥 MacOS:Mojave" \
+		"5" "🎋 breeze:plasma桌面微风gtk+版主题" \
 		"6" "Kali:Flat-Remix-Blue主题" \
 		"7" "ukui:国产优麒麟ukui桌面主题" \
 		"8" "arc:融合透明元素的平面主题" \
@@ -11136,7 +11136,14 @@ choose_gnu_linux_docker_images(){
 	choose_gnu_linux_docker_images
 }
 #############
-install_docker_ce_or_io(){ 
+install_docker_ce_or_io(){
+	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
+		echo "若您使用的是${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
+		echo "否则请直接退出安装！！！"
+		RETURN_TO_WHERE='beta_features'
+		do_you_want_to_continue
+	fi
 	if (whiptail --title "DOCKER本体" --yes-button 'docker-ce' --no-button 'docker.io' --yesno "Which software do you want to install?\n为避免冲突,请只选择其中一个" 0 50); then
 		install_docker_ce
 	else
@@ -16448,14 +16455,6 @@ install_docker_io(){
 }
 ###########
 install_docker_ce() {
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
-		echo "若您使用的是${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
-		echo "否则请直接退出安装！！！"
-		RETURN_TO_WHERE='beta_features'
-		do_you_want_to_continue
-	fi
-
 	NON_DEBIAN='false'
 	if [ ! $(command -v gpg) ]; then
 		DEPENDENCY_01=""
