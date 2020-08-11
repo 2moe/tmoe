@@ -2947,7 +2947,7 @@ configure_x11vnc_remote_desktop_session() {
 			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2"
-				WSL2IP=\$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+				WSL2IP=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2}' | head -n 1)
 				export PULSE_SERVER=\${WSL2IP}
 				echo "已将您的音频服务ip修改为\${WSL2IP}"
 			fi
