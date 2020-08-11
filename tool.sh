@@ -16467,7 +16467,7 @@ install_docker_ce() {
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		DEPENDENCY_01="docker-ce"
-		DEPENDENCY_02="docker"
+		DEPENDENCY_02="docker-ce-cli docker"
 		debian_add_docker_gpg
 	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
 		curl -Lv -o /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
