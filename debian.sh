@@ -31,6 +31,10 @@ else
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
 
+###apt install -y locales 2>/dev/null ; locale-gen ${LANG} 
+###sed -i '/^apt install -y locales/d' /media/docker/.tmoe-linux-docker.sh
+#用于docker容器自动配置区域与语言环境。
+
 if [ $(command -v bash) ]; then
 	bash .tmoe-linux.sh
 else

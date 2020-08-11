@@ -10812,9 +10812,10 @@ run_special_tag_docker_container(){
 	TMOE_LINUX_DOCKER_SHELL_FILE="${MOUNT_DOCKER_FOLDER}/.tmoe-linux-docker.sh"
 	if [ ! -e "${TMOE_LINUX_DOCKER_SHELL_FILE}" ];then
 		aria2c --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
+		sed -i 's@###apt@apt@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
 	fi
-	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
-	docker run -itd --name ${CONTAINER_NAME} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+	echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+	docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
 	echo "已将宿主机的${YELLOW}${MOUNT_DOCKER_FOLDER}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}${MOUNT_DOCKER_FOLDER}${RESET}"
 	echo "You can type ${GREEN}sudo docker exec -it ${CONTAINER_NAME} sh${RESET} to connect ${CONTAINER_NAME} container."
 	echo "您可以输${GREEN}docker attach ${CONTAINER_NAME}${RESET}来连接${CONTAINER_NAME}容器"
