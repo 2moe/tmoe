@@ -969,7 +969,7 @@ install_ubuntu_language_pack() {
 		fi
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*"
+			dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*"
 		fi
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then

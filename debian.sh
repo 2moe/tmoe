@@ -26,18 +26,36 @@ tuna_mirror() {
 		sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" ${SOURCE_LIST}
 		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST}
 	fi
-
-	if [ ! $(command -v locale-gen) ]; then
-		apt update 2>/dev/null
-		apt install -y locales 2>/dev/null
-	fi
-	dnf install -y glibc-langpack-zh 2>/dev/null
-	sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen
-	locale-gen ${LANG}
-	###sed -i '/^apt install -y locales/d' /media/docker/.tmoe-linux-docker.sh
-	#用于docker容器自动配置区域与语言环境。
 }
 #########
+tmoe_locale_gen() {
+	if [ ! -z "${LANG}" ]; then
+		TMOE_LANG_HALF=$(echo ${LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(echo ${LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			if [ ! $(command -v locale-gen) ]; then
+				apt update 2>/dev/null
+				apt install -y locales 2>/dev/null
+			fi
+			dnf install -y glibc-langpack-zh 2>/dev/null
+			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+			dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null
+			pacman -Sy glibc
+			sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen
+			locale-gen ${LANG}
+			#用于docker容器自动配置区域与语言环境。
+		fi
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			cd /etc
+			echo '' >>locale.gen
+			sed -i 's@^@#&@g' locale.gen 2>/dev/null
+			sed -i 's@##@#@g' locale.gen 2>/dev/null
+			sed -i "$ a ${LANG} UTF-8" locale.gen
+			locale-gen ${LANG}
+		fi
+	fi
+}
+############
 if [ $(command -v curl) ]; then
 	curl -Lvo .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 elif [ $(command -v aria2c) ]; then
@@ -51,6 +69,7 @@ else
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 fi
 
+###tmoe_locale_gen
 if [ $(command -v bash) ]; then
 	bash .tmoe-linux.sh
 else
