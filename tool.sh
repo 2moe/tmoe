@@ -10818,6 +10818,9 @@ run_special_tag_docker_container(){
 	echo "已将宿主机的${YELLOW}${MOUNT_DOCKER_FOLDER}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}${MOUNT_DOCKER_FOLDER}${RESET}"
 	echo "You can type ${GREEN}sudo docker exec -it ${CONTAINER_NAME} sh${RESET} to connect ${CONTAINER_NAME} container."
 	echo "您可以输${GREEN}docker attach ${CONTAINER_NAME}${RESET}来连接${CONTAINER_NAME}容器"
+	echo "Do you want to start and configure this container?"
+	echo "您是否想要启动并配置本容器？"
+	do_you_want_to_continue
 	docker start ${CONTAINER_NAME}
 	docker exec -it ${CONTAINER_NAME} /bin/sh ${TMOE_LINUX_DOCKER_SHELL_FILE}
 }
