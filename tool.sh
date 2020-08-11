@@ -16496,7 +16496,7 @@ get_debian_vbox_latest_url() {
 	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
 		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep -E "Ubuntu" | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	else
-		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep -E "Debian" | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep -E "Debian" | head -n 1 | cut -d '=' -f 7 | cut -d '"' -f 2)
 	fi
 	VBOX_DEB_FILE_URL="${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION}${LATEST_VBOX_FILE}"
 	echo "获取到vbox的最新链接为${VBOX_DEB_FILE_URL},是否下载并安装？"
