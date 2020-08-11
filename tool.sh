@@ -573,18 +573,18 @@ tmoe_linux_tool_menu() {
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
 		whiptail --title "Tmoe-linux Tool输debian-i启动(20200811-04)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
-			"1" "🍭GUI:图形界面(桌面,WM,登录管理器)" \
-			"2" "🎦Software center:软件(浏览器,游戏,影音)" \
-			"3" "🌈Desktop beautification:桌面美化(主题)" \
-			"4" "🌌vnc/x/rdp:远程桌面" \
-			"5" "🍻Download video:解析视频链接(bili,Y2B)" \
-			"6" "🐋docker:开源的应用容器引擎" \
-			"7" "🍧*°▽°*Update tmoe-linux tool(更新本工具)" \
-			"8" "🏫FAQ:常见问题" \
-			"9" "🍥software sources:软件镜像源管理" \
-			"10" "💻qemu:x86_64虚拟机管理" \
-			"11" "🌸The Secret Garden秘密花园" \
-			"0" "🌚Exit 退出" \
+			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
+			"2" "🎦 Software center:软件(浏览器,游戏,影音)" \
+			"3" "🌈 Desktop beautification:桌面美化(主题)" \
+			"4" "🌌 vnc/x/rdp:远程桌面" \
+			"5" "🍻 Download video:解析视频链接(bili,Y2B)" \
+			"6" "🐋 docker:开源的应用容器引擎" \
+			"7" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
+			"8" "🏫 FAQ:常见问题" \
+			"9" "🍥 software sources:软件镜像源管理" \
+			"10" "💻 qemu:x86_64虚拟机管理" \
+			"11" "🌸 The Secret Garden秘密花园" \
+			"0" "🌚 Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 	########
@@ -627,7 +627,7 @@ tmoe_other_options_menu() {
 		"1" "Remove GUI 卸载图形界面" \
 		"2" "Remove browser 卸载浏览器" \
 		"3" "Remove tmoe-linux tool" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -755,12 +755,12 @@ tmoe_linux_tool_upgrade() {
 download_videos() {
 	VIDEOTOOL=$(
 		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 0 50 0 \
-			"1" "🥂Annie" \
-			"2" "🍷You-get" \
-			"3" "🍾Youtube-dl" \
-			"4" "🍹cookie说明" \
-			"5" "🍺upgrade更新下载工具" \
-			"0" "Back to the main menu 返回主菜单" \
+			"1" "🥂 Annie" \
+			"2" "🍷 You-get" \
+			"3" "🍾 Youtube-dl" \
+			"4" "🍹 cookie说明" \
+			"5" "🍺 upgrade更新下载工具" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -1298,7 +1298,7 @@ which_vscode_edition() {
 		"2" "VS Codium(不跟踪你的使用数据)" \
 		"3" "VS Code OSS(headmelted编译版)" \
 		"4" "Microsoft Official(x64,官方版)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${VSCODE_EDITION}" in
@@ -1362,7 +1362,7 @@ configure_vscode_server() {
 			"3" "edit config manually手动编辑配置" \
 			"4" "stop 停止" \
 			"5" "remove 卸载/移除" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	################
@@ -1667,7 +1667,7 @@ modify_other_vnc_conf() {
 		"6" "fix vnc crash修复VNC闪退" \
 		"7" "window scaling factor调整屏幕缩放比例(仅支持xfce)" \
 		"8" "display port显示端口" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
 	case "${MODIFYOTHERVNCCONF}" in
@@ -2082,12 +2082,12 @@ standand_desktop_install() {
 	preconfigure_gui_dependecies_02
 	INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
 		"Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose container_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
-		"1" "🍰Container_DE(容器可运行:xfce,mate,lxde)" \
-		"2" "🍱VM_DE(虚拟机可运行:lxqt,kde,gnome)" \
-		"3" "🍙window manager窗口管理器:ice,fvwm" \
-		"4" "🍣display manager显示/登录管理器:lightdm,sddm" \
-		"5" "🍤FAQ:vnc和gui的常见问题" \
-		"0" "🌚none我一个都不要 =￣ω￣=" \
+		"1" "🍰 Container_DE(容器可运行:xfce,mate,lxde)" \
+		"2" "🍱 VM_DE(虚拟机可运行:lxqt,kde,gnome)" \
+		"3" "🍙 window manager窗口管理器:ice,fvwm" \
+		"4" "🍣 display manager显示/登录管理器:lightdm,sddm" \
+		"5" "🍤 FAQ:vnc和gui的常见问题" \
+		"0" "🌚 none我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${INSTALLDESKTOP}" in
@@ -2466,7 +2466,7 @@ tmoe_display_manager_systemctl() {
 		"3" "stop停止" \
 		"4" "systemctl enable开机自启" \
 		"5" "systemctl disable禁用自启" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${INSTALLDESKTOP}" in
@@ -2879,7 +2879,7 @@ tmoe_virtual_machine_desktop() {
 		"3" "gnome3(GNU网络对象模型环境)" \
 		"4" "cinnamon(肉桂类似于GNOME,对用户友好)" \
 		"5" "dde(国产deepin系统桌面)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${BETA_DESKTOP}" in
@@ -4017,14 +4017,14 @@ tmoe_desktop_beautification() {
 	RETURN_TO_WHERE='tmoe_desktop_beautification'
 	BEAUTIFICATION=$(whiptail --title "beautification" --menu \
 		"你想要如何美化桌面？\nHow do you want to beautify the DE? " 0 50 0 \
-		"1" "🍨themes:主题(你有一双善于发现美的眼睛)" \
-		"2" "🎀icon-theme:图标包(点缀出惊艳绝伦)" \
-		"3" "🍹wallpaper:壁纸(感受万物之息)" \
-		"4" "↗mouse cursor(璀璨夺目的鼠标指针)" \
-		"5" "⛈conky(显示资源占用情况,还有...天气预报)" \
-		"6" "💫dock栏(plank/docky)" \
-		"7" "🎇compiz(如花火般绚烂)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"1" "🍨 themes:主题(你有一双善于发现美的眼睛)" \
+		"2" "🎀 icon-theme:图标包(点缀出惊艳绝伦)" \
+		"3" "🍹 wallpaper:壁纸(感受万物之息)" \
+		"4" "↗ mouse cursor(璀璨夺目的鼠标指针)" \
+		"5" "⛈ conky(显示资源占用情况,还有...天气预报)" \
+		"6" "💫 dock栏(plank/docky)" \
+		"7" "🎇 compiz(如花火般绚烂)" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${BEAUTIFICATION}" in
@@ -4090,7 +4090,7 @@ configure_theme() {
 		"6" "Kali:Flat-Remix-Blue主题" \
 		"7" "ukui:国产优麒麟ukui桌面主题" \
 		"8" "arc:融合透明元素的平面主题" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	########################
 	case "${INSTALL_THEME}" in
@@ -4173,7 +4173,7 @@ xfce_theme_parsing() {
 	TMOE_THEME_ITEM=$(whiptail --title "THEME" --menu \
 		"您想要下载哪个主题？\nWhich theme do you want to download?\n文件名称                 下载次数(可能有严重偏差)" 0 0 0 \
 		${TMOE_THEME_FILE_LIST} \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	case ${TMOE_THEME_ITEM} in
 	0 | "") configure_theme ;;
@@ -5265,7 +5265,7 @@ china_university_mirror_station() {
 			"11" "南京大学mirrors.nju.edu.cn" \
 			"12" "南京邮电大学mirrors.njupt.edu.cn" \
 			"13" "西北农林科技大学mirrors.nwafu.edu.cn" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	########################
@@ -5304,7 +5304,7 @@ china_bussiness_mirror_station() {
 			"5" "mirrors.cnnic.cn中国互联网络信息中心" \
 			"6" "mirrors.sohu.com搜狐" \
 			"7" "mirrors.yun-idc.com首都在线" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	########################
@@ -5330,7 +5330,7 @@ worldwide_mirror_station() {
 	SOURCES_LIST=$(
 		whiptail --title "www.debian.org/mirror/list.html" --menu \
 			"Not only debian,but also ubuntu." 0 50 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "official官方:deb.debian.org+archive.ubuntu.com" \
 			"01" "Armenia:ftp.am.debian.org" \
 			"02" "Australia:ftp.au.debian.org" \
@@ -6246,7 +6246,7 @@ explore_debian_opt_repo() {
 		"9" "other:其他软件" \
 		"10" "remove(移除本仓库)" \
 		"11" "switch source repo:切换软件源仓库" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############
 	case "${INSTALL_APP}" in
@@ -6394,18 +6394,18 @@ other_software() {
 	SOFTWARE=$(
 		whiptail --title "Software center-01" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
-			"1" "🦊Browser:浏览器(firefox,chromium)" \
-			"2" "🎵Multimedia:图像与影音(mpv,云音乐)" \
-			"3" "🐧SNS:社交类(qq)" \
-			"4" "🎮Games:游戏(steam,wesnoth)" \
-			"5" "🔯Packages&system:软件包与系统管理" \
-			"6" "📚Documents:文档(libreoffice)" \
-			"7" "📘VSCode 现代化代码编辑器" \
-			"8" "🎁Download:下载类(aria2,baidu)" \
-			"9" "🥙Start zsh tool:启动zsh管理工具" \
-			"10" "🥗File shared:文件共享与网盘(Webdav)" \
-			"11" "🌚remove:卸载管理" \
-			"0" "Back to the main menu 返回主菜单" \
+			"1" "🦊 Browser:浏览器(firefox,chromium)" \
+			"2" "🎵 Multimedia:图像与影音(mpv,云音乐)" \
+			"3" "🐧 SNS:社交类(qq)" \
+			"4" "🎮 Games:游戏(steam,wesnoth)" \
+			"5" "🔯 Packages&system:软件包与系统管理" \
+			"6" "📚 Documents:文档(libreoffice)" \
+			"7" "📘 VSCode 现代化代码编辑器" \
+			"8" "🎁 Download:下载类(aria2,baidu)" \
+			"9" "🥙 Start zsh tool:启动zsh管理工具" \
+			"10" "🥗 File shared:文件共享与网盘(Webdav)" \
+			"11" "💔 remove:卸载管理" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#(已移除)"12" "Tasksel:轻松,快速地安装组软件" \
@@ -6439,7 +6439,7 @@ tmoe_software_package_menu() {
 			"2" "Synaptic(新立得软件包管理器)" \
 			"3" "ADB(Android Debug Bridge,用于调试安卓)" \
 			"4" "BleachBit(垃圾清理)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -6463,7 +6463,7 @@ tmoe_social_network_service() {
 		whiptail --title "SNS" --menu \
 			"Which software do you want to install?" 0 50 0 \
 			"1" "LinuxQQ(在线聊天软件)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -6483,10 +6483,10 @@ tmoe_download_class() {
 	TMOE_APP=$(
 		whiptail --title "documents" --menu \
 			"Which software do you want to install?" 0 50 0 \
-			"1" "🍨aria2(linux平台超强文件下载器)" \
-			"2" "🖼work_crawler:漫畫、小説下載工具@kanasimi" \
-			"3" "📉百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"1" "🍨 aria2(linux平台超强文件下载器)" \
+			"2" "🖼 work_crawler:漫畫、小説下載工具@kanasimi" \
+			"3" "📉 百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -6593,7 +6593,7 @@ tmoe_documents_menu() {
 			"Which software do you want to install?" 0 50 0 \
 			"1" "LibreOffice(开源、自由的办公文档软件)" \
 			"2" "Chinese manual(中文手册)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -6618,7 +6618,7 @@ tmoe_multimedia_menu() {
 		"3" "GIMP(GNU 图像处理程序)" \
 		"4" "Parole(xfce默认媒体播放器,风格简洁)" \
 		"5" "网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -6651,7 +6651,7 @@ tmoe_games_menu() {
 		"6" "SuperTuxKart(3D卡丁车)" \
 		"7" "retroarch(全能复古游戏模拟器)" \
 		"8" "dolphin-emu(任天堂wii模拟器)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -7271,7 +7271,7 @@ configure_x11vnc() {
 			"6" "remove 卸载/移除" \
 			"7" "readme 进程管理说明" \
 			"8" "password 密码" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -7461,7 +7461,7 @@ modify_xsdl_conf() {
 		"4" "Edit manually手动编辑" \
 		"5" "DISPLAY switch转发显示开关(仅qemu)" \
 		"6" "VcXsrv显示端口(仅win10)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	###########
 	case "${XSDL_XSERVER}" in
@@ -7668,7 +7668,7 @@ configure_xwayland() {
 			"2" "指定xwayland桌面环境" \
 			"3" "pulse_server音频服务" \
 			"4" "remove 卸载/移除" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -7865,7 +7865,7 @@ configure_xrdp() {
 			"9" "reset 重置" \
 			"10" "remove 卸载/移除" \
 			"11" "进程管理说明" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -8993,19 +8993,19 @@ beta_features() {
 	NON_DEBIAN='false'
 	TMOE_BETA=$(
 		whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 0 55 0 \
-			"1" "💻container/vm:docker容器,qemu,vbox虚拟机" \
-			"2" "🌌science&edu:科学与教育(高考,考研,科研)" \
-			"3" "📝read:墨纸留香,品味阅读" \
-			"4" "🎬cut video:岁月静好,剪下佳刻" \
-			"5" "🎨paint:融入意境,绘画真谛" \
-			"6" "💾file:文件,浩如烟海" \
-			"7" "👬SNS:进行物质和精神交流的社会活动的app" \
-			"8" "🌼Store&download:繁花似锦,一切皆在此中" \
-			"9" "🔨system:系统(启动项与用户组管理)" \
-			"10" "🥅network:网络(网卡驱动,WiFi扫描)" \
-			"11" "⌨input method:输入法(搜狗,讯飞,百度)" \
-			"12" "🍕other:其它类(Android-studio,scrcpy)" \
-			"0" "Back to the main menu 返回主菜单" \
+			"1" "💻 container/vm:docker容器,qemu,vbox虚拟机" \
+			"2" "🌌 science&edu:科学与教育(高考,考研,科研)" \
+			"3" "📝 read:墨纸留香,品味阅读" \
+			"4" "🎬 cut video:岁月静好,剪下佳刻" \
+			"5" "🎨 paint:融入意境,绘画真谛" \
+			"6" "💾 file:文件,浩如烟海" \
+			"7" "👬 SNS:进行物质和精神交流的社会活动的app" \
+			"8" "🌼 Store&download:繁花似锦,一切皆在此中" \
+			"9" "🔨 system:系统(启动项与用户组管理)" \
+			"10" "🥅 network:网络(网卡驱动,WiFi扫描)" \
+			"11" "⌨ input method:输入法(搜狗,讯飞,百度)" \
+			"12" "🍕 other:其它类(Android-studio,scrcpy)" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########
@@ -9040,7 +9040,7 @@ tmoe_mathematics_menu() {
 		"3" "scilab(用于数值计算的科学软件包)" \
 		"4" "freemat(科学计算软件,类似于Matlab)" \
 		"5" "maxima(数学软件,类似于Mathematica)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9079,7 +9079,7 @@ tmoe_chemistry_menu() {
 		"5" "Psi4(量子化学程序集)" \
 		"6" "gromacs(分子动力学模拟器)" \
 		"7" "CP2K(第一性原理材料计算和模拟软件)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9113,7 +9113,7 @@ tmoe_physics_menu() {
 		"7" "McStas 中子射线仿真应用" \
 		"8" "Elmer 多物理问题的有限元软件" \
 		"9" "ROOT 解决高能物理学中的数据分析所面临的新的挑战" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9160,7 +9160,7 @@ tmoe_golden_dict_menu(){
 		"开源、跨平台，支持屏幕取词，支持mdx/mdd, dsl, bgl 等十余种词典格式" 0 50 0 \
 		"1" "install/remove(安装/卸载)" \
 		"2" "词库(朗文,柯林斯,韦氏,剑桥,牛津)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9241,7 +9241,7 @@ RETURN_TO_WHERE='cet4_and_6_exam_paper'
 	TMOE_APP=$(whiptail --title "cet4_and_6_exam_paper" --menu \
 		"CET4 and CET6真题" 0 50 0 \
 		"1" "2013-2019(6.7MiB)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9260,7 +9260,7 @@ tmoe_english_menu(){
 		"1" "goldendict(多功能字典查询程序)" \
 		"2" "四六级真题(不含听力音频)" \
 		"3" "Masterpieces名著(提高阅读能力,222.8MiB)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9282,7 +9282,7 @@ RETURN_TO_WHERE='college_entrance_examination_paper'
 		"2" "2008-2019(不含听力及口语听说,392.2MiB)" \
 		"3" "2013-2018理科版(146.3MiB)" \
 		"4" "2008-2018(仅英语听力音频,244.9MiB)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9320,7 +9320,7 @@ RETURN_TO_WHERE='college_entrance_examination_notes'
 		"笔记" 0 50 0 \
 		"1" "生物(大小131.8MiB)" \
 		"2" "英语(5.4MiB)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9348,7 +9348,7 @@ tmoe_college_entrance_examination(){
 		"高考" 0 50 0 \
 		"1" "真题" \
 		"2" "学习笔记" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9368,7 +9368,7 @@ tmoe_postgraduate_entrance_examination(){
 		"1" "2003-2019政治(6.2MiB)" \
 		"2" "2001-2019英语(7.7MiB)" \
 		"3" "1987-2020数学真题(含解析,15.5MiB)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9407,7 +9407,7 @@ tmoe_education_app_menu() {
 		"4" "English英语(词典,四六级,名著)" \
 		"5" "physics物理" \
         "6" "chemistry化学" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9436,7 +9436,7 @@ tmoe_other_app_menu() {
 			"3" "kodi(家庭影院软件)" \
 			"4" "Android-studio(安卓开发工具IDE)" \
 			"5" "scrcpy(开源的Android投屏软件)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -9464,7 +9464,7 @@ configure_scrcpy() {
 			"3" "switch device切换设备" \
 			"4" "restart 重启adb" \
 			"5" "readme连接说明" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -9491,7 +9491,7 @@ switch_scrcpy_device() {
 	TMOE_ADB_DEVICE_ITEM=$(whiptail --title "SCRCPY DEVICES" --menu \
 		"您想要切换至哪个设备？\nWhich device do you want to switch?" 0 0 0 \
 		${TMOE_ADB_DEVICE_LIST} \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	case ${TMOE_ADB_DEVICE_ITEM} in
 	0 | "") configure_scrcpy ;;
@@ -9647,7 +9647,7 @@ tmoe_system_app_menu() {
 		"7" "yasat:简单的安全审计工具" \
 		"8" "rc.local-systemd:修改开机自启动脚本" \
 		"9" "sudo user group management:sudo用户组管理" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9677,7 +9677,7 @@ tmoe_linux_sudo_user_group_management() {
 	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
 		"您想要将哪个小可爱添加至sudo用户组？\n Which member do you want to add to the sudo group?" 0 0 0 \
 		${TMOE_USER_LIST} \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	case ${TMOE_USER_NAME} in
 	0 | "") tmoe_system_app_menu ;;
@@ -9873,7 +9873,7 @@ tmoe_store_app_menu() {
 		"6" "snap(ubuntu母公司开发的跨平台商店)" \
 		"7" "bauh(旨在处理Flatpak,Snap,AppImage和AUR)" \
 		"8" "qbittorrent(P2P下载工具)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9918,7 +9918,7 @@ install_deepin_software_menu() {
 		"14" "deepin-shortcut-viewer(弹出式快捷键查看器)" \
 		"15" "deepin-terminal(深度终端模拟器)" \
 		"16" "deepin-voice-recorder(录音器)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -9992,7 +9992,7 @@ tmoe_sns_app_menu() {
 		"Which software do you want to install？" 0 50 0 \
 		"1" "electronic-wechat(第三方微信客户端)" \
 		"2" "telegram(注重保护隐私的社交app)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -10023,7 +10023,7 @@ tmoe_paint_app_menu() {
 			"9" "KiCAD(开源的PCB设计工具)" \
 			"10" "OpenSCAD(3D建模软件)" \
 			"11" "gnuplot(命令行交互式绘图工具)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -10069,7 +10069,7 @@ tmoe_r_language_menu() {
 			"1" "r-base(GNU R statistical computation and graphics system)" \
 			"2" "RStudio(x64,R语言IDE)" \
 			"3" "r-recommended(kernsmooth,lattice,mgcv,nlme,rpart,matrix,etc.)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##########################
@@ -10138,7 +10138,7 @@ tmoe_file_browser_app_menu() {
 		"7" "mc:终端下的文件管理器" \
 		"8" "ranger:带有VI键绑定的控制台文件管理器" \
 		"9" "gnome-disks(实用的磁盘管理工具)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	#"9" "disk-manager(简单易用的分区挂载工具)" \
@@ -10228,7 +10228,7 @@ tmoe_read_app_menu() {
 		"4" "typora(markdown编辑器)" \
 		"5" "Xournal(手写编辑PDF)" \
 		"6" "evince(gnome-pdf文档阅读器)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -10257,7 +10257,7 @@ tmoe_media_menu() {
 		"3" "kdenlive(来自KDE的开源视频编辑器)" \
 		"4" "mkvtoolnix-gui(分割,编辑,混流,分离,合并和提取mkv)" \
 		"5" "flowblade(旨在提供一个快速,精确的功能)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${BEAUTIFICATION}" in
@@ -10309,7 +10309,7 @@ network_manager_tui() {
 	RETURN_TO_WHERE='network_manager_tui'
 	NETWORK_MANAGER=$(whiptail --title "NETWORK" --menu \
 		"您想要如何配置网络？\n How do you want to configure the network? " 17 50 8 \
-		"1" "manager:管理器" \
+		"1" "nmtui:文本用户界面网络管理器" \
 		"2" "enable device:启用设备" \
 		"3" "WiFi scan:扫描" \
 		"4" "device status:设备状态" \
@@ -10319,7 +10319,7 @@ network_manager_tui() {
 		"8" "systemctl enable NetworkManager开机自启" \
 		"9" "blueman(蓝牙管理器,GTK+前端)" \
 		"10" "gnome-nettool(网络工具)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${NETWORK_MANAGER}" in
@@ -10484,7 +10484,7 @@ install_debian_nonfree_network_card_driver() {
 		"5" "TI Connectivity wifi/BT/FM/GPS" \
 		"6" "Broadcom博通" \
 		"7" "misc(Ralink,etc.)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${NETWORK_MANAGER}" in
@@ -10568,7 +10568,7 @@ enable_netword_card() {
 	TMOE_NETWORK_CARD_ITEM=$(whiptail --title "NETWORK DEVICES" --menu \
 		"您想要启用哪个网络设备？\nWhich network device do you want to enable?" 0 0 0 \
 		${TMOE_NETWORK_CARD_LIST} \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	case ${TMOE_NETWORK_CARD_ITEM} in
 	0 | "") network_manager_tui ;;
@@ -10601,7 +10601,7 @@ tmoe_uefi_boot_manager() {
 			"2" "boot order自定义排序" \
 			"3" "Backup efi备份" \
 			"4" "Restore efi恢复" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -10674,7 +10674,7 @@ modify_first_uefi_boot_item() {
 	TMOE_UEFI_BOOT_ITEM=$(whiptail --title "BOOT ITEM" --menu \
 		"检测当前的第一启动项为$(efibootmgr | grep 'BootOrder:' | awk '{print $2}' | cut -d ',' -f 1)" 0 0 0 \
 		${TMOE_UEFI_LIST} \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	case ${TMOE_UEFI_BOOT_ITEM} in
 	0 | "") tmoe_uefi_boot_manager ;;
@@ -10718,7 +10718,7 @@ wine_menu(){
 			"2" "remove卸载" \
 			"3" "wine-dxvk(将DirectX转换为Vulkan api)" \
 			"4" "wine-wechat微信" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -10791,7 +10791,7 @@ qemu_system_menu(){
 			"3" "aqemu(QEMU和KVM的Qt5前端)" \
 			"4" "virt-manager(红帽共享的GUI虚拟机管理器)" \
 			"5" "gnome-boxes(简单地管理远程和本地虚拟系统)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -10918,7 +10918,7 @@ tmoe_docker_management_menu_01(){
 			"4" "readme of ${CONTAINER_NAME} 说明" \
 			"5" "reset(重置容器数据并重拉${DOCKER_TAG}镜像)" \
 			"6" "delete(删除${CONTAINER_NAME}容器)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -10960,7 +10960,7 @@ tmoe_docker_management_menu_02(){
 			"4" "readme of ${CONTAINER_NAME} 说明" \
 			"5" "reset(重置容器数据并重拉${DOCKER_NAME}:${DOCKER_TAG_01}镜像)" \
 			"6" "delete(删除${CONTAINER_NAME}容器)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -10990,7 +10990,7 @@ tmoe_docker_management_menu_03(){
 			"3" "readme of ${CONTAINER_NAME} 说明" \
 			"4" "reset(重置容器数据并重拉${DOCKER_TAG_01}镜像)" \
 			"5" "delete(删除${CONTAINER_NAME}容器)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11016,11 +11016,11 @@ choose_gnu_linux_docker_images(){
 	SELECTED_GNU_LINUX=$(whiptail --title "DOCKER IMAGES" --menu "Which distribution image do you want to pull? \n您想要拉取哪个GNU/Linux发行版的镜像?" 0 50 0 \
 			"00" "Return to previous menu 返回上级菜单" \
 			"01" "alpine(非glibc的精简系统)" \
-			"02" "🍥Debian:最早的发行版之一" \
-			"03" "🍛Ubuntu:我的存在是因為大家的存在" \
-			"04" "🐉Kali Rolling:设计用于数字取证和渗透测试" \
+			"02" "🍥 Debian:最早的发行版之一" \
+			"03" "🍛 Ubuntu:我的存在是因為大家的存在" \
+			"04" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
 			"05" "arch:系统设计以KISS为总体指导原则" \
-			"06" "👒fedora:红帽社区版,新技术试验场" \
+			"06" "👒 fedora:红帽社区版,新技术试验场" \
 			"07" "centos(基于红帽的社区企业操作系统)" \
 			"08" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"09" "gentoo(追求极限配置和极高自由,stage3-amd64)" \
@@ -11194,7 +11194,7 @@ docker_mirror_source(){
 			"1" "163镜像" \
 			"2" "edit daemon.json" \
 			"3" "edit software source软件本体源" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11215,12 +11215,12 @@ tmoe_docker_menu(){
 	RETURN_TO_WHERE='tmoe_docker_menu'
 	VIRTUAL_TECH=$(
 		whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
-			"1" "🐋install docker-ce(安装docker社区版引擎)" \
-			"2" "🍭pull distro images(拉取alpine,debian和ubuntu镜像)" \
-			"3" "🌉portainer(web端图形化docker容器管理)" \
-			"4" "🍥mirror source镜像源" \
+			"1" "🐋 install docker-ce(安装docker社区版引擎)" \
+			"2" "🍭 pull distro images(拉取alpine,debian和ubuntu镜像)" \
+			"3" "🌉 portainer(web端图形化docker容器管理)" \
+			"4" "🍥 mirror source镜像源" \
 			"5" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11248,7 +11248,7 @@ install_container_and_virtual_machine() {
 			"4" "VirtualBox(甲骨文开源虚拟机(x64)" \
 			"5" "🍷wine(调用win api并即时转换)" \
 			"6" "🥡anbox(Android in a box)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -11342,7 +11342,7 @@ tmoe_qemu_aarch64_cpu_manager() {
 			"3" "multithreading多线程" \
 			"4" "machine机器类型" \
 			"5" "kvm/tcg/xen加速类型" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11378,14 +11378,14 @@ start_tmoe_qemu_aarch64_manager() {
 			"4" "CPU管理" \
 			"5" "Display and audio显示与音频" \
 			"6" "RAM运行内存" \
-			"7" "💾disk manager磁盘管理器" \
+			"7" "💾 disk manager磁盘管理器" \
 			"8" "FAQ常见问题" \
 			"9" "exposed ports端口映射/转发" \
 			"10" "network card model网卡" \
 			"11" "restore to default恢复到默认" \
 			"12" "uefi/legacy bios(开机引导固件)" \
 			"13" "Input devices输入设备" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11427,7 +11427,7 @@ modify_qemu_tmoe_network_card() {
 	fi
 	VIRTUAL_TECH=$(
 		whiptail --title "网卡型号" --menu "Please select the network card model.\n当前为${CURRENT_VALUE}" 16 50 7 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "未指定" \
 			"01" "e1000:alias e1000-82540em" \
 			"02" "e1000-82544gc:Intel Gigabit Ethernet" \
@@ -11501,7 +11501,7 @@ modify_qemu_aarch64_tmoe_machine_model() {
 	CURRENT_VALUE=$(cat startqemu | grep '\-machine' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
 		whiptail --title "机器型号" --menu "Please select the machine model.\n默认为virt,当前为${CURRENT_VALUE}" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"01" "akita:Sharp SL-C1000 (Akita) PDA (PXA270)" \
 			"02" "ast2500-evb:Aspeed AST2500 EVB (ARM1176)" \
 			"03" "ast2600-evb:Aspeed AST2600 EVB (Cortex A7)" \
@@ -11674,7 +11674,7 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	CURRENT_VALUE=$(cat startqemu | grep '\-cpu' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	VIRTUAL_TECH=$(
 		whiptail --title "CPU" --menu "默认为max,当前为${CURRENT_VALUE}" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"01" "arm1026" \
 			"02" "arm1136" \
 			"03" "arm1136-r2" \
@@ -11798,7 +11798,7 @@ modify_qemu_aarch64_tmoe_sound_card() {
 			"4" "hda(Intel HD Audio)" \
 			"5" "disable禁用声卡" \
 			"6" "all启用所有" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11897,7 +11897,7 @@ modify_qemu_machine_accel() {
 			"2" "kvm(Intel VT-d/AMD-V)" \
 			"3" "xen" \
 			"4" "hax(Intel VT-x)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11934,7 +11934,7 @@ modify_qemnu_graphics_card() {
 			"7" "cg3" \
 			"8" "none无显卡" \
 			"9" "virtio" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -11991,7 +11991,7 @@ modify_qemu_exposed_ports() {
 			"1" "主${HOST_PORT_01}虚${GUEST_PORT_01}" \
 			"2" "主${HOST_PORT_02}虚${GUEST_PORT_02}" \
 			"3" "主${HOST_PORT_03}虚${GUEST_PORT_03}" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -12067,7 +12067,7 @@ modify_qemu_host_shared_folder() {
 			"1" "DISABLE SHARE禁用共享" \
 			"2" "${HOME}/sd" \
 			"3" "windows共享说明" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -12126,7 +12126,7 @@ mount_qemu_guest_shared_folder() {
 			"1" "configure配置挂载脚本" \
 			"2" "DISABLE禁用自动挂载" \
 			"3" "EDIT MANUALLY手动编辑挂载脚本" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -12417,7 +12417,7 @@ modify_qemu_sound_card() {
 			"8" "pcspk(PC speaker)" \
 			"9" "disable禁用声卡" \
 			"10" "all启用所有" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -12448,7 +12448,7 @@ tmoe_qemu_todo_list() {
 		whiptail --title "not todo list" --menu "以下功能可能不会适配，请手动管理qemu" 0 0 0 \
 			"1" "snapshoots快照管理" \
 			"2" "GPU pci passthrough显卡硬件直通" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -12479,7 +12479,7 @@ modify_qemu_amd64_tmoe_cpu_type() {
 	#将\r替换为\n
 	VIRTUAL_TECH=$(
 		whiptail --title "CPU" --menu "默认为max,当前为${CURRENT_VALUE}" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"000" "disable禁用指定cpu参数" \
 			"001" "486:(alias configured by machine type)" \
 			"002" "486-v1" \
@@ -13329,7 +13329,7 @@ modify_qemu_amd64_tmoe_machine_type() {
 	#paste 002 003 -d ':'
 	VIRTUAL_TECH=$(
 		whiptail --title "MACHINE" --menu "Please select the machine type.\n默认为pc-i440fx,当前为${CURRENT_VALUE}" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "disable禁用指定机器类型参数" \
 			"01" "microvm:microvm (i386)" \
 			"02" "xenfv-4.2:Xen Fully-virtualized PC" \
@@ -13488,7 +13488,7 @@ tmoe_qemu_x64_cpu_manager() {
 			"4" "multithreading多线程" \
 			"5" "machine机器类型" \
 			"6" "kvm/tcg/xen加速类型" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13513,7 +13513,7 @@ tmoe_qemu_storage_devices() {
 	#RETURN_TO_WHERE='tmoe_qemu_storage_devices'
 	VIRTUAL_TECH=$(
 		whiptail --title "storage devices" --menu "Sorry,本功能正在开发中,当前仅支持配置virtio磁盘，其它选项请自行修改配置文件" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "virtio-disk" \
 			"01" "am53c974:bus PCI,desc(AMD Am53c974 PCscsi-PCI SCSI adapter)" \
 			"02" "dc390:bus PCI,desc(Tekram DC-390 SCSI adapter)" \
@@ -13584,7 +13584,7 @@ tmoe_qemu_virtio_disk() {
 			"3" "readme使用说明" \
 			"4" "disable禁用hda(IDE)磁盘" \
 			"5" "disable禁用virtio磁盘" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13640,7 +13640,7 @@ download_virtio_drivers() {
 			"1" "virtio-win" \
 			"2" "virtio-win-latest(fedora)" \
 			"3" "readme驱动说明" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13724,19 +13724,19 @@ start_tmoe_qemu_manager() {
 	cd /usr/local/bin/
 	VIRTUAL_TECH=$(
 		whiptail --title "x86_64 qemu虚拟机管理器" --menu "同架构/跨架构模拟运行系统" 0 50 0 \
-			"1" "🍹Creat a new VM 新建虚拟机" \
-			"2" "🏭qemu templates repo磁盘与模板在线仓库" \
-			"3" "🍱Multi-VM多虚拟机管理" \
-			"4" "🥗edit script manually手动修改配置脚本" \
-			"5" "🍤FAQ常见问题" \
-			"6" "🎵Display and audio显示与音频" \
-			"7" "💾disk manager磁盘管理器" \
-			"8" "🍭CPU & RAM 中央处理器与内存管理" \
-			"9" "🥅network网络设定" \
-			"10" "🖱Input devices输入设备" \
-			"11" "🔌uefi/legacy bios(开机引导固件)" \
-			"12" "😋extra options额外选项" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"1" "🍹 Creat a new VM 新建虚拟机" \
+			"2" "🏭 qemu templates repo磁盘与模板在线仓库" \
+			"3" "🍱 Multi-VM多虚拟机管理" \
+			"4" "🥗 edit script manually手动修改配置脚本" \
+			"5" "🍤 FAQ常见问题" \
+			"6" "🎵 Display and audio显示与音频" \
+			"7" "💾 disk manager磁盘管理器" \
+			"8" "🍭 CPU & RAM 中央处理器与内存管理" \
+			"9" "🥅 network网络设定" \
+			"10" "🖱 Input devices输入设备" \
+			"11" "🔌 uefi/legacy bios(开机引导固件)" \
+			"12" "😋 extra options额外选项" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############🧺
@@ -13795,7 +13795,7 @@ modify_tmoe_qemu_extra_options() {
 			"2" "tmoe_qemu_not-todo-list" \
 			"3" "restore to default恢复到默认" \
 			"4" "switch architecture切换架构" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13830,7 +13830,7 @@ switch_tmoe_qemu_architecture() {
 			"3" "mips" \
 			"4" "sparc" \
 			"5" "ppc" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	####################
@@ -13859,7 +13859,7 @@ modify_tmoe_qemu_network_settings() {
 		whiptail --title "network devices" --menu "Which configuration do you want to modify？" 0 0 0 \
 			"1" "network card网卡" \
 			"2" "exposed ports端口映射/转发" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13889,7 +13889,7 @@ tmoe_qemu_disk_manager() {
 			"9" "third disk选择第三块IDE磁盘" \
 			"10" "fourth disk选择第四块IDE磁盘" \
 			"11" "disable cdrom禁用光盘" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13927,7 +13927,7 @@ tmoe_qemu_display_settings() {
 			"5" "VNC pulseaudio音频" \
 			"6" "X服务(XSDL/VcXsrv)" \
 			"7" "spice远程桌面" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -13995,7 +13995,7 @@ modify_tmoe_qemu_display_device() {
 	RETURN_TO_WHERE='modify_tmoe_qemu_display_device'
 	VIRTUAL_TECH=$(
 		whiptail --title "display devices" --menu "您想要修改为哪个显示设备呢？此功能目前仍处于测试阶段，切换前需手动禁用之前的显示设备。" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "list all enabled列出所有已经启用的设备" \
 			"01" "ati-vga:bus PCI" \
 			"02" "bochs-display:bus PCI" \
@@ -14093,7 +14093,7 @@ tmoe_qemu_templates_repo() {
 			"7" "LMDE4_x64(linux mint,2.7G,legacy)" \
 			"8" "Explore templates探索共享模板(未开放)" \
 			"9" "share 分享你的qemu配置(未开放)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#Explore configuration templates
@@ -14156,7 +14156,7 @@ explore_qemu_configuration_templates() {
 	RETURN_TO_WHERE='explore_qemu_configuration_templates'
 	VIRTUAL_TECH=$(
 		whiptail --title "奇怪的虚拟机又增加了" --menu "Welcome to 施工现场，这个功能还在开发中呢！\n咕咕咕，建议您明年再来o((>ω< ))o\n以下配置模板来自于他人的共享,与本工具开发者无关.\n希望大家多多支持原发布者ヽ(゜▽゜　)" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"001" "win7精简不卡,三分钟开机(bili@..)" \
 			"002" "可能是全网最流畅的win10镜像(qq@..)" \
 			"003" "kubuntu20.04 x64豪华配置，略卡(coolapk@..)" \
@@ -14202,7 +14202,7 @@ tmoe_qemu_input_devices() {
 	RETURN_TO_WHERE='tmoe_qemu_input_devices'
 	VIRTUAL_TECH=$(
 		whiptail --title "input devices" --menu "请选择您需要启用的输入设备,您可以同时启用多个设备" 0 0 0 \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "list all enabled列出所有已经启用的设备" \
 			"01" "ccid-card-emulated: bus ccid-bus, desc(emulated smartcard)" \
 			"02" "ccid-card-passthru: bus ccid-bus, desc(passthrough smartcard)" \
@@ -14346,7 +14346,7 @@ choose_qemu_bios_or_uefi_file() {
 			"2" "qemu-efi-aarch64:UEFI firmware for arm64" \
 			"3" "ovmf:UEFI firmware for x64" \
 			"4" "choose a file自选文件" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -14436,7 +14436,7 @@ tmoe_qemu_faq() {
 		whiptail --title "FAQ(よくある質問)" --menu "您有哪些疑问？\nWhat questions do you have?" 13 55 3 \
 			"1" "process进程管理说明" \
 			"2" "creat a new vm如何新建虚拟机" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -14465,7 +14465,7 @@ multi_qemu_vm_management() {
 			"6" "其它说明" \
 			"7" "del special vm disk删除指定虚拟机的磁盘文件" \
 			"8" "del special vm iso删除指定虚拟机的镜像文件" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
@@ -14856,7 +14856,7 @@ download_virtual_machine_iso_file() {
 		"5" "flash iso烧录镜像文件至U盘" \
 		"6" "windows" \
 		"7" "LMDE(Linux Mint Debian Edition)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
 	case ${VIRTUAL_TECH} in
@@ -14982,7 +14982,7 @@ download_windows_10_iso() {
 		"1" "win10_2004_x64(多合一版)" \
 		"2" "win10_2004_arm64" \
 		"3" "other" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
 	case ${VIRTUAL_TECH} in
@@ -15020,7 +15020,7 @@ download_linux_mint_debian_edition_iso() {
 #####################
 ##########################
 which_alpine_arch() {
-	if (whiptail --title "请选择架构" --yes-button "x64" --no-button "arm64" --yesno "您是想要下载x86_64还是arm64架构的iso呢？♪(^∇^*) " 10 50); then
+	if (whiptail --title "请选择架构" --yes-button "x64" --no-button "arm64" --yesno "您是想要下载x86_64还是arm64架构的iso呢？\nDo you want to download x86_64 or arm64 iso?♪(^∇^*) " 0 50); then
 		ALPINE_ARCH='x86_64'
 	else
 		ALPINE_ARCH='aarch64'
@@ -15030,12 +15030,12 @@ which_alpine_arch() {
 download_alpine_virtual_iso() {
 	which_alpine_arch
 	WHICH_ALPINE_EDITION=$(
-		whiptail --title "alpine EDITION" --menu "请选择您需要下载的版本？Which edition do you want to download?" 16 55 6 \
+		whiptail --title "alpine EDITION" --menu "请选择您需要下载的版本？\nWhich edition do you want to download?" 0 50 0 \
 			"1" "standard(标准版)" \
 			"2" "extended(扩展版)" \
 			"3" "virt(虚拟机版)" \
 			"4" "xen(虚拟化)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	####################
@@ -15086,7 +15086,7 @@ download_ubuntu_latest_iso_file() {
 			"4" "kubuntu(kde plasma)" \
 			"5" "lubuntu(lxqt)" \
 			"6" "ubuntu-mate" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	####################
@@ -15325,7 +15325,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 			"1" "Buster x86_64" \
 			"2" "Buster arm64" \
 			"3" "关于ssh-server的说明" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	####################
@@ -15432,7 +15432,7 @@ download_debian_tmoe_arm64_img_file_again() {
 download_debian_iso_file() {
 	DEBIAN_FREE='unkown'
 	DEBIAN_ARCH=$(
-		whiptail --title "architecture" --menu "请选择您需要下载的架构版本，non-free版包含了非自由固件(例如闭源无线网卡驱动等)" 18 55 9 \
+		whiptail --title "architecture" --menu "请选择您需要下载的架构版本\nwhich architecture version do you want to download?\nnon-free版包含了非自由固件(例如闭源无线网卡驱动等)" 0 50 0 \
 			"1" "x64(non-free,unofficial)" \
 			"2" "x86(non-free,unofficial)" \
 			"3" "x64(free)" \
@@ -15444,7 +15444,7 @@ download_debian_iso_file() {
 			"9" "mips64el" \
 			"10" "ppc64el" \
 			"11" "s390x" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	####################
@@ -15497,7 +15497,7 @@ download_debian_nonfree_iso() {
 			"6" "mate" \
 			"7" "standard(默认无桌面)" \
 			"8" "xfce" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	####################
@@ -15694,7 +15694,7 @@ tmoe_fcitx5_menu(){
 			"3" "萌娘百科词库@outloudvi" \
 			"4" "fcitx5-rime" \
 			"5" "beautification输入法美化主题" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
@@ -15723,7 +15723,7 @@ input_method_beautification(){
 			"2" "kimpanel(支持kde-wayland)" \
 			"3" "gnome-shell-extension-kimpanel(支持gnome-wayland)" \
 			"4" "edit config编辑主题配置" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
@@ -15774,7 +15774,7 @@ configure_fcitx5_material_color_theme (){
 			"8" "Red红" \
 			"9" "Teal水鸭绿" \
 			"10" "origin原始" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
@@ -16028,7 +16028,7 @@ install_pinyin_input_method() {
 			"10" "fcitx-云拼音模块" \
 			"11" "onboard(屏幕虚拟键盘)" \
 			"12" "uim(Universal Input Method)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	case ${INPUT_METHOD} in
@@ -16071,7 +16071,7 @@ tmoe_fcitx_faq() {
 		"5" "edit .xprofile(进入桌面后自动执行的配置)" \
 		"6" "edit .pam_environment(用户环境变量配置文件)" \
 		"7" "edit /etc/environment(系统环境变量配置文件)" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
@@ -16825,7 +16825,7 @@ personal_netdisk() {
 	WHICH_NETDISK=$(whiptail --title "FILE SHARE SERVER" --menu "你想要使用哪个软件来共享文件呢" 0 50 0 \
 		"1" "Filebrowser:简单轻量的个人网盘" \
 		"2" "Nginx WebDAV:比ftp更适合用于传输流媒体" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${WHICH_NETDISK}" in
@@ -16876,7 +16876,7 @@ configure_nginx_webdav() {
 		"8" "Root dir修改根目录" \
 		"9" "reset nginx重置nginx" \
 		"10" "remove 卸载/移除" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_OPTION}" in
@@ -17234,7 +17234,7 @@ configure_filebrowser() {
 			"8" "stop 停止" \
 			"9" "reset 重置所有配置信息" \
 			"10" "remove 卸载/移除" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
