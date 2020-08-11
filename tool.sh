@@ -11016,7 +11016,7 @@ choose_gnu_linux_docker_images(){
 	DOCKER_MANAGEMENT_MENU='01'
 	SELECTED_GNU_LINUX=$(whiptail --title "DOCKER IMAGES" --menu "Which distribution image do you want to pull? \n您想要拉取哪个GNU/Linux发行版的镜像?" 0 50 0 \
 			"00" "Return to previous menu 返回上级菜单" \
-			"01" "alpine(非glibc的精简系统)" \
+			"01" "🏔️ alpine:非glibc的精简系统" \
 			"02" "🍥 Debian:最早的发行版之一" \
 			"03" "🍛 Ubuntu:我的存在是因為大家的存在" \
 			"04" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
