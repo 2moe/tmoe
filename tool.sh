@@ -6419,7 +6419,7 @@ other_software() {
 	6) tmoe_documents_menu ;;
 	7) which_vscode_edition ;;
 	8) tmoe_download_class ;;
-	9) bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
+	9) start_tmoe_zsh_manager ;;
 	10) personal_netdisk ;; 
 	11) tmoe_other_options_menu ;;
 	esac
@@ -6428,6 +6428,15 @@ other_software() {
 	other_software
 }
 ###########
+start_tmoe_zsh_manager(){
+	TMOE_ZSH_SCRIPT="${HOME}/.termux-zsh/zsh.sh"
+	if [ -e "${TMOE_ZSH_SCRIPT}" ];then
+		bash ${TMOE_ZSH_SCRIPT}
+	else
+		bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
+	fi
+}
+##########
 tmoe_software_package_menu() {
 	RETURN_TO_WHERE='tmoe_software_package_menu'
 	NON_DEBIAN='false'
