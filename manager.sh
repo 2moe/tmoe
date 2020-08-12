@@ -695,7 +695,7 @@ tmoe_manager_main_menu() {
 	8) restore_gnu_linux_container ;;
 	9) space_occupation ;;
 	10) update_tmoe_linux_manager ;;
-	11) bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" ;;
+	11) start_tmoe_zsh_manager ;;
 	12) download_vnc_apk ;;
 	13) start_vscode ;;
 	14) enable_root_mode ;;
@@ -704,6 +704,15 @@ tmoe_manager_main_menu() {
 	esac
 }
 ##########################
+start_tmoe_zsh_manager() {
+	TMOE_ZSH_SCRIPT="${HOME}/.termux-zsh/zsh.sh"
+	if [ -e "${TMOE_ZSH_SCRIPT}" ]; then
+		bash ${TMOE_ZSH_SCRIPT}
+	else
+		bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
+	fi
+}
+##########
 remove_termux_linux_manager() {
 	cd ${PREFIX}/bin
 	echo "${RED}rm -rv ${HOME}/.config/tmoe-linux ${PREFIX}/bin/debian-i${RESET}"
