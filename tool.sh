@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash 
 ########################################################################
 main() {
 	check_linux_distro
@@ -743,7 +743,7 @@ tmoe_linux_tool_upgrade() {
 		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	fi
 	cp -f /usr/local/bin/debian-i /tmp/.tmoe-linux-tool.sh
-	echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	echo "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	chmod +x /usr/local/bin/debian-i
 	read
@@ -11259,7 +11259,7 @@ install_container_and_virtual_machine() {
 			"2" "🐳 docker:开源的应用容器引擎" \
 			"3" "💿 download iso:下载镜像(Android,linux等)" \
 			"4" "VirtualBox(甲骨文开源虚拟机{x64})" \
-			"5" "🍷 wine(调用win api并即时转换)" \
+			"5" "🍷 wine:调用win api并即时转换" \
 			"6" "🥡 anbox(Android in a box)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \

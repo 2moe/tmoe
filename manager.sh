@@ -1684,7 +1684,6 @@ backup_termux() {
 	fi
 }
 ##################################
-##################################
 uncompress_other_format_file() {
 	pwd
 	echo "即将为您解压..."
@@ -1731,22 +1730,14 @@ uncompress_tar_file() {
 	tar.gz)
 		uncompress_tar_gz_file
 		;;
+	*)
+		uncompress_other_format_file
+		;;
 	esac
 	press_enter_to_return
 	restore_gnu_linux_container
 }
 #######################
-uncompress_tar_gz_file_test() {
-	FILE_EXT_6="${RESTORE:0-6:6}"
-	if [ "${FILE_EXT_6}" = 'tar.gz' ]; then
-		uncompress_tar_gz_file
-	elif [ "${FILE_EXT_6}" = 'tar.xz' ]; then
-		uncompress_tar_xz_file
-	else
-		uncompress_other_format_file
-	fi
-}
-################
 select_file_manually() {
 	count=0
 	echo '您可以在此列表中选择需要恢复的压缩包'

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
     LINUX_DISTRO='debian'
     if grep -q 'ubuntu' /etc/os-release; then
