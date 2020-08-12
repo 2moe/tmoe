@@ -706,7 +706,9 @@ tmoe_manager_main_menu() {
 ##########################
 start_tmoe_zsh_manager() {
 	TMOE_ZSH_SCRIPT="${HOME}/.termux-zsh/zsh.sh"
-	if [ -e "${TMOE_ZSH_SCRIPT}" ]; then
+	if [ $(command -v zsh-i) ];then
+		zsh-i
+	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
 		bash ${TMOE_ZSH_SCRIPT}
 	else
 		bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
