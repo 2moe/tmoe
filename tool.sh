@@ -3713,7 +3713,6 @@ gnome3_warning() {
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}GNOME桌面安装后可以正常运行。"
 		RETURN_TO_WHERE='tmoe_virtual_machine_desktop'
-		do_you_want_to_continue
 	fi
 	#DEPENDENCY_01="plasma-desktop"
 	RETURN_TO_WHERE="tmoe_virtual_machine_desktop"

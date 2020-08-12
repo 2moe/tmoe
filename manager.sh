@@ -678,7 +678,7 @@ tmoe_manager_main_menu() {
 			"13" "VSCode Server arm64" \
 			"14" "赋予proot容器真实root权限" \
 			"15" "Video tutorial" \
-			"16" "remove system移除" \
+			"16" "remove移除" \
 			"0" "exit退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -700,10 +700,39 @@ tmoe_manager_main_menu() {
 	13) start_vscode ;;
 	14) enable_root_mode ;;
 	15) download_video_tutorial ;;
-	16) remove_gnu_linux_container ;;
+	16) tmoe_linux_remove_function ;;
 	esac
 }
 ##########################
+remove_termux_linux_manager() {
+	cd ${PREFIX}/bin
+	echo "${RED}rm -rv ${HOME}/.config/tmoe-linux ${PREFIX}/bin/debian-i${RESET}"
+	DEPENDENCIES='git aria2 pv wget xz newt whiptail dialog'
+	echo "${RED}${PACKAGES_REMOVE_COMMAND} ${DEPENDENCIES}${RESET}"
+	do_you_want_to_continue
+	rm -rfv rm -rv ${HOME}/.config/tmoe-linux debian-i
+	${PACKAGES_REMOVE_COMMAND} ${DEPENDENCIES}
+	exit 1
+}
+############
+tmoe_linux_remove_function() {
+	RETURN_TO_WHERE='tmoe_linux_remove_function'
+	OPTION=$(whiptail --title "Removable items" --menu "您想要移除哪个项目？\nWhich item do you want to remove?" 0 50 0 \
+		"0" "Back to the main menu 返回主菜单" \
+		"1" "Container 容器" \
+		"2" "Tmoe-linux manager" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${OPTION}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) remove_gnu_linux_container ;;
+	2) remove_termux_linux_manager ;;
+	esac
+	##########
+	press_enter_to_return
+	tmoe_linux_remove_function
+}
+##########
 tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=${HOME}/.config/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
