@@ -2389,10 +2389,10 @@ tmoe_desktop_faq() {
 tmoe_container_desktop() {
 	INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
 		"您想要安装哪个桌面环境?\n仅GTK+环境(如xfce等)支持在本工具内便捷下载主题。 \n Which desktop environment do you want to install? " 0 0 0 \
-		"1" "xfce(兼容性高,简单优雅)" \
-		"2" "lxde(轻量化桌面,资源占用低)" \
-		"3" "mate(GNOME2的延续,让用户体验更舒适的环境)" \
-		"0" "none我一个都不要 =￣ω￣=" \
+		"1" "🐭 xfce(兼容性高,简单优雅)" \
+		"2" "🕊️ lxde(轻量化桌面,资源占用低)" \
+		"3" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
+		"0" "🌚 none我一个都不要 =￣ω￣=" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${INSTALLDESKTOP}" in
@@ -2875,10 +2875,10 @@ grep_deb_comman_model_01() {
 tmoe_virtual_machine_desktop() {
 	BETA_DESKTOP=$(whiptail --title "DE" --menu \
 		"您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
-		"1" "lxqt(lxde原作者基于QT开发的桌面)" \
-		"2" "kde plasma5(风格华丽的桌面环境)" \
-		"3" "gnome3(GNU网络对象模型环境)" \
-		"4" "cinnamon(肉桂类似于GNOME,对用户友好)" \
+		"1" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
+		"2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+		"3" "👣 gnome3(GNU网络对象模型环境)" \
+		"4" "🌲 cinnamon(肉桂类似于GNOME,对用户友好)" \
 		"5" "dde(国产deepin系统桌面)" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -5170,7 +5170,7 @@ check_tmoe_sources_list_backup_file() {
 		SOURCES_LIST_FILE_NAME="sources.list"
 		SOURCES_LIST_BACKUP_FILE="${HOME}/.config/tmoe-linux/sources.list.bak"
 		SOURCES_LIST_BACKUP_FILE_NAME="sources.list.bak"
-		EXTRA_SOURCE='debian更换为kali源'
+		EXTRA_SOURCE='🐉debian更换为kali源'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		SOURCES_LIST_PATH="/etc/pacman.d/"
 		SOURCES_LIST_FILE="/etc/pacman.d/mirrorlist"
@@ -5455,7 +5455,7 @@ tmoe_sources_list_manager() {
 			"您想要对软件源进行何种管理呢？" 17 50 9 \
 			"1" "business:国内商业镜像源" \
 			"2" "university:国内高校镜像源" \
-			"3" "worldwide mirror sites全球镜像站" \
+			"3" "worldwide mirror sites:全球镜像站" \
 			"4" "ping(镜像站延迟测试)" \
 			"5" "speed(镜像站下载速度测试)" \
 			"6" "+ppa:(🍥debian添加ubuntu ppa源)" \
@@ -6395,7 +6395,7 @@ other_software() {
 		whiptail --title "Software center-01" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
 			"1" "🦊 Browser:浏览器(firefox,chromium)" \
-			"2" "🎵 Multimedia:图像与影音(mpv,云音乐)" \
+			"2" "📺 Multimedia:图像与影音(mpv,云音乐)" \
 			"3" "🐧 SNS:社交类(qq)" \
 			"4" "🎮 Games:游戏(steam,wesnoth)" \
 			"5" "🔯 Packages&system:软件包与系统管理" \
@@ -6624,11 +6624,11 @@ tmoe_multimedia_menu() {
 	DEPENDENCY_01=""
 	TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
 		"Which software do you want to install?" 0 50 0 \
-		"1" "Music:debian-opt仓库(QQ音乐,云音乐)" \
-		"2" "MPV(开源、跨平台的音视频播放器)" \
-		"3" "GIMP(GNU 图像处理程序)" \
-		"4" "Parole(xfce默认媒体播放器,风格简洁)" \
-		"5" "网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
+		"1" "🎶 Music:debian-opt仓库(QQ音乐,云音乐)" \
+		"2" "📽️ MPV(开源、跨平台的音视频播放器)" \
+		"3" "🖼 GIMP(GNU 图像处理程序)" \
+		"4" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
+		"5" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -11267,8 +11267,8 @@ install_container_and_virtual_machine() {
 		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
 			"2" "🐳 docker:开源的应用容器引擎" \
-			"3" "💿 download iso:下载镜像(Android,linux等)" \
-			"4" "VirtualBox(甲骨文开源虚拟机{x64})" \
+			"3" "📀 download iso:下载镜像(Android,linux等)" \
+			"4" "🖥️ VirtualBox(甲骨文开源虚拟机{x64})" \
 			"5" "🍷 wine:调用win api并即时转换" \
 			"6" "🥡 anbox(Android in a box)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -13752,7 +13752,7 @@ start_tmoe_qemu_manager() {
 			"3" "🍱 Multi-VM多虚拟机管理" \
 			"4" "🥗 edit script manually手动修改配置脚本" \
 			"5" "🍤 FAQ常见问题" \
-			"6" "🎵 Display and audio显示与音频" \
+			"6" "📺 Display and audio显示与音频" \
 			"7" "💾 disk manager磁盘管理器" \
 			"8" "🍭 CPU & RAM 中央处理器与内存管理" \
 			"9" "🥅 network网络设定" \
@@ -16039,7 +16039,7 @@ install_pinyin_input_method() {
 	fi
 	INPUT_METHOD=$(
 		whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
-			"1" "fcitx-FAQ:常见问题与疑难诊断" \
+			"1" "🍁 fcitx-FAQ:常见问题与疑难诊断" \
 			"2" "🍀 fcitx5(软件与词库)" \
 			"3" "google谷歌拼音(引擎fork自Android版)" \
 			"4" "sogou(搜狗拼音)" \

@@ -82,16 +82,16 @@ check_arch() {
 		;;
 	esac
 	TRUE_ARCH_TYPE=${ARCH_TYPE}
-	CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
+	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
 		mkdir -p ${CONFIG_FOLDER}
 	fi
-	ACROSS_ARCH_FILE="${CONFIG_FOLDER}across_architecture_container.txt"
+	ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
 	if [ -e "${ACROSS_ARCH_FILE}" ]; then
 		ARCH_TYPE="$(cat ${ACROSS_ARCH_FILE} | head -n 1)"
 		QEMU_ARCH="$(cat ${ACROSS_ARCH_FILE} | sed -n 2p)"
 	fi
-	LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}linux_container_distro.txt"
+	LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
 	DEBIAN_FOLDER=debian_${ARCH_TYPE}
 	if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
 		LINUX_CONTAINER_DISTRO=$(cat ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
@@ -605,7 +605,7 @@ android_termux() {
 	if [ ! -z "${DEPENDENCIES}" ]; then
 		if (("${ANDROID_VERSION}" >= '7')); then
 			if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-				echo "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/n]${RESET} "
+				echo "${YELLOW}检测到您当前使用的sources.list不是北外源,是否需要更换为北外源[Y/n]${RESET} "
 				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
 				echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
 				read opt
@@ -655,58 +655,54 @@ android_termux() {
 
 ########################################################################
 #-- 主菜单 main menu
+#\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200730-16)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200814-03)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
-		)" --menu "Please use the enter and arrow keys to operate.\n当前主菜单下有十几个选项,请使用方向键和回车键进行操作。\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行" 0 50 0 \
+		)" --menu "Please use the enter and arrow keys to operate.\n请使用方向键和回车键进行操作" 0 50 0 \
 			"1" "proot安装(๑•̀ㅂ•́)و✧" \
 			"2" "chroot安装" \
 			"3" "🌏locales/区域/ロケール/로케일" \
-			"4" "GUI,audio & sources.list" \
-			"5" "FAQ常见问题" \
-			"6" "novnc(web端控制)" \
-			"7" "backup system备份系统" \
-			"8" "restore还原" \
-			"9" "query space occupation查询空间占用" \
+			"4" " mirror sources镜像源(清华,北外,中科大)" \
+			"5" "📱 Android-termux专区" \
+			"6" "FAQ常见问题" \
+			"7" "novnc:web端控制的vnc客户端" \
+			"8" "backup 备份" \
+			"9" "restore 还原/恢复" \
 			"10" "update更新" \
-			"11" "Configure zsh美化终端" \
-			"12" "Download VNC/xwayland/xsdl apk" \
-			"13" "VSCode Server arm64" \
-			"14" "赋予proot容器真实root权限" \
-			"15" "Video tutorial" \
-			"16" "remove移除" \
-			"0" "exit退出" \
+			"11" "🌈 Configure zsh美化终端" \
+			"12" "赋予proot容器真实root权限" \
+			"13" "remove 移除" \
+			"0" "🌚 exit 退出" \
 			3>&1 1>&2 2>&3
 	)
+	#"5" "GUI & audio 图形界面与音频" \
 	##########################
 	case "${TMOE_OPTION}" in
 	0 | "") exit 0 ;;
 	1) install_proot_container ;;
 	2) install_chroot_container ;;
 	3) tmoe_locale_settings ;;
-	4) termux_install_xfce ;;
-	5) frequently_asked_questions ;;
-	6) install_web_novnc ;;
-	7) backup_system ;;
-	8) restore_gnu_linux_container ;;
-	9) space_occupation ;;
+	4) tmoe_switch_sources_list ;;
+	5) android_termux_tmoe_area ;;
+	6) frequently_asked_questions ;;
+	7) install_web_novnc ;;
+	8) backup_system ;;
+	9) restore_gnu_linux_container ;;
 	10) update_tmoe_linux_manager ;;
 	11) start_tmoe_zsh_manager ;;
-	12) download_vnc_apk ;;
-	13) start_vscode ;;
-	14) enable_root_mode ;;
-	15) download_video_tutorial ;;
-	16) tmoe_linux_remove_function ;;
+	12) enable_root_mode ;;
+	13) tmoe_linux_remove_function ;;
 	esac
 }
 ##########################
 start_tmoe_zsh_manager() {
 	TMOE_ZSH_SCRIPT="${HOME}/.termux-zsh/zsh.sh"
-	if [ $(command -v zsh-i) ];then
+	if [ $(command -v zsh-i) ]; then
 		zsh-i
 	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
 		bash ${TMOE_ZSH_SCRIPT}
@@ -729,7 +725,7 @@ remove_termux_linux_manager() {
 tmoe_linux_remove_function() {
 	RETURN_TO_WHERE='tmoe_linux_remove_function'
 	OPTION=$(whiptail --title "Removable items" --menu "您想要移除哪个项目？\nWhich item do you want to remove?" 0 50 0 \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
 		"1" "Container 容器" \
 		"2" "Tmoe-linux manager" \
 		3>&1 1>&2 2>&3)
@@ -758,7 +754,7 @@ tmoe_locale_settings() {
 	CONTAINER_LOCALE=$(
 		whiptail --title "LOCALE SETTINGS" \
 			--menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
-			"0" "Back 返回" \
+			"0" "🌚 Back 返回" \
 			"00" "Edit manually手动编辑" \
 			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
 			"02" "sq_AL.UTF-8 Albanian_Albania" \
@@ -1098,12 +1094,13 @@ linux_deploy_pulse_server() {
 ##########################
 frequently_asked_questions() {
 	RETURN_TO_WHERE=frequently_asked_questions
+	# 15 60 5
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
-		"您有哪些疑问？\nWhat questions do you have?" 15 60 5 \
+		"您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
 		"1" "VNC无法调用音频" \
 		"2" "给Linux Deploy配置VNC音频" \
 		"3" "disable qemu(禁用以适用于向下兼容)" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_FAQ}" in
@@ -1399,7 +1396,7 @@ backup_filename() {
 backup_system() {
 	unmount_proc_dev
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
 		"1" "备份GNU/Linux容器" \
 		"2" "备份Termux" \
 		"3" "使用Timeshift备份宿主机系统" \
@@ -1912,7 +1909,7 @@ restore_gnu_linux_container() {
 		"2" "Restore termux" \
 		"3" "select path manually手动选择路径" \
 		"4" "Compatibility mode兼容模式" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
 	if [ "${OPTION}" == '1' ]; then
@@ -1958,88 +1955,59 @@ restore_gnu_linux_container() {
 	#tmoe_manager_main_menu
 }
 ############################
-############################
 space_occupation() {
 	cd ${HOME}/..
 	OPTION=$(whiptail --title "Query space occupation ranking" --menu "查询空间占用排行" 15 60 4 \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "🌚 Back返回" \
 		"1" "termux各目录" \
 		"2" "termux文件" \
 		"3" "sdcard" \
 		"4" "总存储空间用量Disk usage" \
 		3>&1 1>&2 2>&3)
 	###########################################################################
-	#echo "${YELLOW}2333333333${RESET}"
-	if [ "${OPTION}" == '1' ]; then
+	case ${OPTION} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1)
 		echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
 		echo "${YELLOW}主目录 TOP15${RESET}"
-
 		du -hsx ./home/* ./home/.* 2>/dev/null | sort -rh | head -n 15
-
-		echo ''
-
+		echo '-------------------'
 		echo "${YELLOW}usr 目录 TOP6${RESET}"
-
 		du -hsx ./usr/* 2>/dev/null | sort -rh | head -n 6
-
-		echo ''
-
+		echo '-------------------'
 		echo "${YELLOW}usr/lib 目录 TOP8${RESET}"
-
 		du -hsx ./usr/lib/* 2>/dev/null | sort -rh | head -n 8
-
-		echo ''
-
+		echo '-------------------'
 		echo "${YELLOW}usr/share 目录 TOP8${RESET}"
-
 		du -hsx ./usr/share/* 2>/dev/null | sort -rh | head -n 8
-
-		echo ''
-		press_enter_to_return
-		space_occupation
-
-	fi
-	###############################
-	if [ "${OPTION}" == '2' ]; then
+		echo '-------------------'
+		;;
+	2)
 		echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
 		echo "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
-
 		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
-		press_enter_to_return
-		space_occupation
-
-	fi
-
-	if [ "${OPTION}" == '3' ]; then
+		;;
+	3)
 		cd /sdcard
 		echo '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		echo 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
 		echo "${YELLOW}sdcard 目录 TOP15${RESET}"
 		du -hsx ./* ./.* 2>/dev/null | sort -rh | head -n 15
-
 		echo "${YELLOW}sdcard文件大小排行榜(30名)${RESET}"
-
 		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
-
-		press_enter_to_return
-		space_occupation
-	fi
-
-	if [ "${OPTION}" == '4' ]; then
+		;;
+	4)
 		echo "${YELLOW}Disk usage${RESET}"
 		df -h | grep G | grep -v tmpfs
 		press_enter_to_return
 		space_occupation
-	fi
-
+		;;
+	esac
 	#####################################
-	if [ "${OPTION}" == '0' ]; then
-
-		tmoe_manager_main_menu
-	fi
-	tmoe_manager_main_menu
+	press_enter_to_return
+	space_occupation
 }
 ########################################################################
 update_tmoe_linux_manager() {
@@ -2183,25 +2151,22 @@ download_xwayland_apk() {
 #################################
 download_vnc_apk() {
 	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
-	OPTION=$(whiptail --title "remote desktop apk" --menu "Which remote desktop software do you want to install?" 15 60 4 \
+	RETURN_TO_WHERE='download_vnc_apk'
+	#15 60 4
+	OPTION=$(whiptail --title "remote desktop apk" --menu "Which remote desktop software do you want to install?" 0 50 0 \
 		"1" "vnc/xsdl" \
 		"2" "xwayland" \
-		"0" "Back to the main menu 返回主菜单" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
-	if [ "${OPTION}" == '0' ]; then
-		tmoe_manager_main_menu
-	fi
-	####################
-	if [ "${OPTION}" == '1' ]; then
-		download_vnc_or_xsdl_apk
-	fi
-	##################
-	if [ "${OPTION}" == '2' ]; then
-		xwayland_warning
-	fi
-	#####################
-	tmoe_manager_main_menu
+	case "${OPTION}" in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) download_vnc_or_xsdl_apk ;;
+	2) xwayland_warning ;;
+	esac
+	###########
+	press_enter_to_return
+	${RETURN_TO_WHERE}
 }
 #########################################
 start_vscode() {
@@ -2417,7 +2382,7 @@ tmoe_qemu_user_static() {
 			"1" "chart架构支持表格" \
 			"2" "install/upgrade(安装/更新)" \
 			"3" "remove(移除/卸载)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -2551,13 +2516,13 @@ creat_tmoe_arch_file() {
 }
 #############
 tmoe_qemu_user_manager() {
-	QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}qemu-user-static_version.txt"
+	QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}/qemu-user-static_version.txt"
 	cd ${CONFIG_FOLDER}
 	NEW_TMOE_ARCH=''
 	RETURN_TO_WHERE='tmoe_qemu_user_manager'
 	BETA_SYSTEM=$(
 		whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
-			"0" "Back to the main menu 返回主菜单" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
 			"00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
 			"01" "i386(常见于32位cpu的旧式传统pc)" \
 			"02" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
@@ -2733,7 +2698,7 @@ install_debian_sid_gnu_linux_container() {
 	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
 		"1" "netinstall(通过软件源在线安装)" \
 		"2" "arm64 xfce4.14桌面+音乐app,1.27G,20200730" \
-		"0" "Return to previous menu 返回上级菜单" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${BETA_SYSTEM}" in
@@ -2776,7 +2741,7 @@ install_debian_buster_gnu_linux_container() {
 		whiptail --title "DEBIAN CONTAINER" --menu "BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs" 0 50 0 \
 			"1" "netinstall(通过软件源在线安装)" \
 			"2" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -2815,7 +2780,7 @@ install_debian_gnu_linux_distro() {
 			"6" "自动检测debian-13 (2025~2028)" \
 			"7" "🐙9-stretch(2017~2020,玩具总动员3中的章鱼)" \
 			"8" "🤠8-jessie(2015~2018,翠丝,女牛仔)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -2986,112 +2951,424 @@ switch_termux_rootfs_to_linux() {
 	fi
 }
 ####################
-termux_install_xfce() {
+tmoe_install_xfce() {
+	if [ "${LINUX_DISTRO}" != 'Android' ]; then
+		aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		bash /tmp/.tmoe-linux-tool.sh --install-gui
+		exit 0
+	fi
+
+	if [ -e "${PREFIX}/bin/xfwm4" ]; then
+		echo "检测到您已安装，是否继续？"
+		echo 'Press enter to continue'
+		echo "${YELLOW}按回车键确认继续,按Ctrl+C取消。${RESET}"
+		read
+	fi
+	apt update
+	apt install -y x11-repo
+	apt update
+	apt dist-upgrade -y
+
+	apt install -y xfce tigervnc aterm
+	cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
+		#!/data/data/com.termux/files/usr/bin/bash
+		pkill Xvnc 2>/dev/null 
+		pulseaudio --kill 2>/dev/null
+		pulseaudio --start
+		echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
+		export DISPLAY=:1
+		Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
+		export PULSE_SERVER=127.0.0.1
+		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+		sleep 1s
+		thunar &
+		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
+		echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
+		startxfce4
+
+	EndOfFile
+	chmod +x ${PREFIX}/bin/startvnc
+	source ${PREFIX}/bin/startvnc
+}
+##########
+tmoe_modify_vnc_conf() {
+	if [ "${LINUX_DISTRO}" != 'Android' ]; then
+		aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		bash /tmp/.tmoe-linux-tool.sh --modify_remote_desktop_config
+		exit 0
+	fi
+	modify_android_termux_vnc_config
+}
+#########
+tmoe_switch_sources_list() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
-		if (("${ANDROID_VERSION}" < '7')); then
-			echo "检测到您当前的安卓系统版本低于7，继续操作可能存在问题，是否继续？"
-			echo "Since termux has officially stopped maintaining the old system below android 7, it is not recommended that you continue to operate."
-			echo 'Press Enter to continue.'
-			echo "${YELLOW}按回车键继续，按Ctrl+C取消。${RESET}"
-			read
-		fi
+		tmoe_sources_list_manager
+		#termux_tuna_sources_list
+	else
+		gnu_linux_mirror_source_manager
 	fi
-	OPTION=$(whiptail --title "Termux GUI" --menu "Termux native GUI has fewer software packages. It is recommended that you install a container. Termux原系统GUI可玩性较低，建议您安装GNU/Linux容器" 17 60 6 \
-		"1" "install xfce4" \
-		"2" "modify vnc conf" \
-		"3" "configure Termux LAN audio局域网音频传输" \
-		"4" "switch VNC audio音频传输方式" \
-		"5" "更换为清华源(支持termux、debian、ubuntu和kali)" \
-		"6" "download termux_Fdroid.apk" \
-		"7" "remove xfce4" \
-		"0" "Back to the main menu 返回主菜单" \
-		3>&1 1>&2 2>&3)
-	###########################################################################
-	if [ "${OPTION}" == '0' ]; then
-		tmoe_manager_main_menu
+}
+##########
+ustc_termux() {
+	if (("${ANDROID_VERSION}" < '7')); then
+		SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn'
+		modify_android_termux_old_mirror_sources_list
+		press_enter_to_return
+		tmoe_sources_list_manager
+	else
+		SOURCE_MIRROR_STATION='bintray.proxy.ustclug.org'
+		official_termux_mirror_source_format
 	fi
-	#####################################
-	if [ "${OPTION}" == '1' ]; then
-		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-			bash /tmp/.tmoe-linux-tool.sh --install-gui
-			exit 0
-		fi
-
-		if [ -e "${PREFIX}/bin/xfwm4" ]; then
-			echo "检测到您已安装，是否继续？"
-			echo 'Press enter to continue'
-			echo "${YELLOW}按回车键确认继续,按Ctrl+C取消。${RESET}"
-			read
-		fi
-		apt update
-		apt install -y x11-repo
-		apt update
-		apt dist-upgrade -y
-
-		apt install -y xfce tigervnc aterm
-		cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
-			#!/data/data/com.termux/files/usr/bin/bash
-			pkill Xvnc 2>/dev/null 
-			pulseaudio --kill 2>/dev/null
-			pulseaudio --start
-			echo "正在启动vnc服务,本机默认vnc地址localhost:5901"
-			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-			export DISPLAY=:1
-			Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
-			export PULSE_SERVER=127.0.0.1
-			am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
-			sleep 1s
-			thunar &
-			echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-			echo "默认为前台运行，您可以按Ctrl+C终止当前进程。"
-			startxfce4
-
-		EndOfFile
-		chmod +x ${PREFIX}/bin/startvnc
-		source ${PREFIX}/bin/startvnc
-	fi
-	#######################
-	if [ "${OPTION}" == '2' ]; then
-		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-			bash /tmp/.tmoe-linux-tool.sh --modify_remote_desktop_config
-			exit 0
-		fi
-		modify_android_termux_vnc_config
-	fi
-	##################
-	if [ "${OPTION}" == '3' ]; then
-		termux_pulse_audio_lan
-	fi
-	##################
-	if [ "${OPTION}" == '4' ]; then
-		switch_vnc_pulse_audio_transport_method
-	fi
-	##################
-	if [ "${OPTION}" == '5' ]; then
-		if [ "${LINUX_DISTRO}" = 'Android' ]; then
-			termux_tuna_sources_list
-		else
-			tmoe_sources_list_manager
-		fi
-	fi
-	##################
-	if [ "${OPTION}" == '6' ]; then
-		aria2_download_termux_apk
-	fi
-	##################
-	if [ "${OPTION}" == '7' ]; then
-		if [ "${LINUX_DISTRO}" != 'Android' ]; then
-			aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-			bash /tmp/.tmoe-linux-tool.sh --remove_gui
-			exit 0
-		fi
-		remove_android_termux_xfce
-	fi
-	###############
+}
+#######
+standard_termux_mirror_source_format() {
+	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-packages-24 stable main"
+	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root-packages-24 root stable"
+	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/game-packages-24 games stable"
+	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/science-packages-24 science stable"
+	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/unstable-packages unstable main"
+	TERMUX_SOUCRE_URL="https://${SOURCE_MIRROR_STATION}/x11-packages x11 main"
+}
+#########
+official_termux_mirror_source_format() {
+	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux/termux-packages-24 stable main"
+	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/grimler/termux-root-packages-24 root stable"
+	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/grimler/game-packages-24 games stable"
+	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/grimler/science-packages-24 science stable"
+	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/xeffyr/unstable-packages unstable main"
+	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/xeffyr/x11-packages x11 main"
+}
+########
+xeffyr_termux_mirror_source_format() {
+	TERMUX_MAIN_SOURCE="https://main.${SOURCE_MIRROR_STATION} stable main"
+	TERMUX_ROOT_SOURCE="https://root.${SOURCE_MIRROR_STATION} root stable"
+	TERMUX_GAME_SOURCE="https://games.${SOURCE_MIRROR_STATION} games stable"
+	TERMUX_SCIENCE_SOURCE="https://science.${SOURCE_MIRROR_STATION} science stable"
+	TERMUX_UNSTABLE_SOURCE="https://unstable.${SOURCE_MIRROR_STATION} unstable main"
+	TERMUX_X11_SOURCE="https://x11.${SOURCE_MIRROR_STATION} x11 main"
+	#TERMUX_EXTRA_SOURCE="https://its-pointless.${SOURCE_MIRROR_STATION} termux extras"
+}
+########
+china_university_mirror_station() {
+	#NEW_TERMUX_SOURCES_LIST='true'
+	SOURCE_MIRROR_STATION=""
+	RETURN_TO_WHERE='china_university_mirror_station'
+	SOURCES_LIST=$(
+		whiptail --title "软件源列表" --menu \
+			"您想要切换为哪个镜像源呢？" 0 50 0 \
+			"1" "清华大学mirrors.tuna.tsinghua.edu.cn" \
+			"2" "北京外国语大学mirrors.bfsu.edu.cn" \
+			"3" "中国科学技术大学mirrors.ustc.edu.cn" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	########################
+	case "${SOURCES_LIST}" in
+	0 | "") tmoe_sources_list_manager ;;
+	1)
+		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
+		standard_termux_mirror_source_format
+		;;
+	2)
+		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
+		standard_termux_mirror_source_format
+		;;
+	3) ustc_termux ;;
+	esac
+	######################################
+	modify_android_termux_mirror_sources_list
 	press_enter_to_return
-	termux_install_xfce
+	china_university_mirror_station
+}
+#############
+worldwide_mirror_station() {
+	NEW_TERMUX_SOURCES_LIST='true'
+	SOURCE_MIRROR_STATION=""
+	RETURN_TO_WHERE='worldwide_mirror_station'
+	SOURCES_LIST=$(
+		whiptail --title "TERMUX MIRROR SOURCE" --menu \
+			"Which mirror source do you want to switch to?" 0 50 0 \
+			"1" "official官方:termux.org/packages" \
+			"2" "a1batross:termux.mentality.rip" \
+			"3" "Grimler:grimler.se" \
+			"4" "Xeffyr:termux-mirror.ml" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	########################
+	case "${SOURCES_LIST}" in
+	0 | "") tmoe_sources_list_manager ;;
+	1)
+		SOURCE_MIRROR_STATION='dl.bintray.com'
+		official_termux_mirror_source_format
+		;;
+	2)
+		SOURCE_MIRROR_STATION='termux.mentality.rip'
+		standard_termux_mirror_source_format
+		;;
+	3)
+		SOURCE_MIRROR_STATION='grimler.se'
+		standard_termux_mirror_source_format
+		;;
+	4)
+		SOURCE_MIRROR_STATION='termux-mirror.ml'
+		xeffyr_termux_mirror_source_format
+		;;
+	esac
+	######################################
+	modify_android_termux_mirror_sources_list
+	press_enter_to_return
+	worldwide_mirror_station
+}
+############
+check_tmoe_sources_list_backup_file() {
+	SOURCES_LIST_PATH="${PREFIX}/etc/apt/"
+	SOURCES_LIST_FILE="${PREFIX}/etc/apt/sources.list"
+	SOURCES_LIST_FILE_NAME="sources.list"
+	SOURCES_LIST_BACKUP_FILE="${CONFIG_FOLDER}/sources-list_bak.tar.xz"
+	SOURCES_LIST_BACKUP_FILE_02="${SOURCES_LIST_FILE}.bak"
+	EXTRA_SOURCE='TERMUX额外源'
+	if [ ! -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
+		cp -pf "${SOURCES_LIST_FILE}" "${SOURCES_LIST_BACKUP_FILE_02}"
+		tar -PpcJvf ${SOURCES_LIST_BACKUP_FILE} ${SOURCES_LIST_FILE} "${SOURCES_LIST_FILE}.d"
+	fi
+}
+##########
+restore_default_sources_list() {
+	if [ -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
+		tar -PpJxvf ${SOURCES_LIST_BACKUP_FILE}
+		cat ${SOURCES_LIST_FILE}.d/* ${SOURCES_LIST_FILE}
+	else
+		echo "${RED}File is missing, restore failed.${RESET}"
+		echo "备份文件丢失,恢复失败"
+	fi
+}
+######################
+ping_mirror_sources_list_count_3() {
+	echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
+	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+	ping ${SOURCE_MIRROR_STATION} -c 3 | grep -E 'avg|time.*ms' --color=auto
+	echo "---------------------------"
+}
+##############
+ping_mirror_sources_list() {
+	echo "时间越短，延迟越低"
+	echo "---------------------------"
+	SOURCE_MIRROR_STATION_NAME='清华镜像站'
+	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
+	ping_mirror_sources_list_count_3
+	SOURCE_MIRROR_STATION_NAME='中科大反向代理站'
+	SOURCE_MIRROR_STATION='bintray.proxy.ustclug.org'
+	ping_mirror_sources_list_count_3
+	SOURCE_MIRROR_STATION_NAME='北外镜像站'
+	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
+	ping_mirror_sources_list_count_3
+	SOURCE_MIRROR_STATION_NAME='官方official'
+	SOURCE_MIRROR_STATION='dl.bintray.com'
+	ping_mirror_sources_list_count_3
+	SOURCE_MIRROR_STATION_NAME='a1batross'
+	SOURCE_MIRROR_STATION='termux.mentality.rip'
+	ping_mirror_sources_list_count_3
+	SOURCE_MIRROR_STATION_NAME='Grimler'
+	SOURCE_MIRROR_STATION='grimler.se'
+	ping_mirror_sources_list_count_3
+	SOURCE_MIRROR_STATION_NAME='Xeffyr'
+	SOURCE_MIRROR_STATION='main.termux-mirror.ml'
+	ping_mirror_sources_list_count_3
+	###此处一定要将SOURCE_MIRROR_STATION赋值为空
+	SOURCE_MIRROR_STATION=""
+	echo "测试${YELLOW}完成${RESET}"
+	echo "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快。${RESET}"
+	echo "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
+}
+##############
+download_termux_clang() {
+	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/termux-packages-24/aarch64/${CLANG_FILE}"
+	echo "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
+	aria2c --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
+	rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
+	echo "---------------------------"
+}
+################
+mirror_sources_station_download_speed_test() {
+	echo "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
+	do_you_want_to_continue
+	cd ${TMPDIR}
+	CLANG_FILE="$(curl -L https://mirrors.bfsu.edu.cn/termux/termux-packages-24/aarch64/ | grep -v 'clang_9.0' | grep clang | tail -n 1 | cut -d '"' -f 4)"
+	echo "---------------------------"
+	SOURCE_MIRROR_STATION_NAME='清华镜像站'
+	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
+	download_termux_clang
+	SOURCE_MIRROR_STATION_NAME='中科大反向代理站'
+	SOURCE_MIRROR_STATION='bintray.proxy.ustclug.org/termux'
+	download_termux_clang
+	SOURCE_MIRROR_STATION_NAME='北外镜像站'
+	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
+	download_termux_clang
+	SOURCE_MIRROR_STATION_NAME='官方official'
+	SOURCE_MIRROR_STATION='dl.bintray.com'
+	download_termux_clang
+	SOURCE_MIRROR_STATION_NAME='a1batross'
+	SOURCE_MIRROR_STATION='termux.mentality.rip'
+	download_termux_clang
+	SOURCE_MIRROR_STATION_NAME='Grimler'
+	SOURCE_MIRROR_STATION='grimler.se'
+	download_termux_clang
+	###此处一定要将SOURCE_MIRROR_STATION赋值为空
+	SOURCE_MIRROR_STATION=""
+	rm -f .tmoe_netspeed_test_*_temp_file
+	echo "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
+	echo "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高。${RESET}"
+	echo "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
+}
+######################
+delete_sources_list_invalid_rows() {
+	echo "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
+	do_you_want_to_continue
+	sed -i '/^#/d' ${SOURCES_LIST_FILE}
+	sed -i '/^#/d' ${SOURCES_LIST_FILE}.d/*list
+	sort -u ${SOURCES_LIST_FILE} -o ${SOURCES_LIST_FILE}
+	cat ${SOURCES_LIST_FILE}
+}
+###################
+enable_or_disable_termux_repo() {
+	if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?♪(^∇^*)" 10 50); then
+		apt update
+		apt install -y ${TERMUX_REPO}-repo
+		echo "启用完成,默认为官方源"
+	else
+		apt purge -y ${TERMUX_REPO}-repo
+		apt update
+	fi
+}
+###########
+termux_repo_manager() {
+	RETURN_TO_WHERE='termux_repo_manager'
+	SOURCES_LIST=$(
+		whiptail --title "TERMUX REPO" --menu \
+			"Which repo do you want to enable?" 0 50 0 \
+			"1" "game:游戏" \
+			"2" "root:适用于已root设备" \
+			"3" "science:科学软件仓库" \
+			"4" "unstable:包含了最新/不稳定的包" \
+			"5" "x11:包含了桌面应用和qemu虚拟机等" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	########################
+	case "${SOURCES_LIST}" in
+	0 | "") tmoe_sources_list_manager ;;
+	1) TERMUX_REPO='game' ;;
+	2) TERMUX_REPO='root' ;;
+	3) TERMUX_REPO='science' ;;
+	4) TERMUX_REPO='unstable' ;;
+	5) TERMUX_REPO='x11' ;;
+	esac
+	##########
+	press_enter_to_return
+	termux_repo_manager
+}
+########
+tmoe_sources_list_manager() {
+	#NEW_TERMUX_SOURCES_LIST='true'
+	check_tmoe_sources_list_backup_file
+	SOURCE_MIRROR_STATION=""
+	RETURN_TO_WHERE='tmoe_sources_list_manager'
+	SOURCES_LIST=$(
+		whiptail --title "software-sources tmoe-manager" --menu \
+			"Do you want to switch the mirror source?" 0 50 0 \
+			"1" "university:国内高校镜像站" \
+			"2" "worldwide mirror sites:全球镜像站" \
+			"3" "enable/disable repo(启用/禁用仓库)" \
+			"4" "edit list manually(手动编辑)" \
+			"5" "ping(镜像站延迟测试)" \
+			"6" "speed(镜像站下载速度测试)" \
+			"7" "delete invalid rows(去除无效行)" \
+			"8" "restore to default(恢复默认源)" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
+			3>&1 1>&2 2>&3
+	)
+	########################
+	case "${SOURCES_LIST}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) china_university_mirror_station ;;
+	2) worldwide_mirror_station ;;
+	3) termux_repo_manager ;;
+	4) edit_sources_list_manually ;;
+	5) ping_mirror_sources_list ;;
+	6) mirror_sources_station_download_speed_test ;;
+	7) delete_sources_list_invalid_rows ;;
+	8) restore_default_sources_list ;;
+	esac
+	##########
+	press_enter_to_return
+	tmoe_sources_list_manager
+}
+######################
+edit_sources_list_manually() {
+	apt edit-sources || nano ${SOURCES_LIST_FILE}
+	if [ ! -z "$(ls ${SOURCES_LIST_FILE}.d/)" ]; then
+		nano ${SOURCES_LIST_FILE}.d/*.list
+	fi
+}
+#########
+tmoe_remove_xfce() {
+	if [ "${LINUX_DISTRO}" != 'Android' ]; then
+		aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		bash /tmp/.tmoe-linux-tool.sh --remove_gui
+		exit 0
+	fi
+	remove_android_termux_xfce
+}
+##########I
+check_android_version() {
+	ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
+	if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
+		if (("${ANDROID_VERSION}" < '7')); then
+			echo "检测到您当前的安卓系统版本低于7,如需换源,则请选择USTC。" >${ANDROID_6_FILE}
+			cat ${ANDROID_6_FILE}
+			echo "Your current Android system version is lower than 7."
+			press_enter_to_continue
+		fi
+	fi
+}
+###########
+android_termux_tmoe_area() {
+	check_android_version
+	RETURN_TO_MENU='android_termux_tmoe_area'
+	#17 60 6
+	OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages. \nIt is recommended that you install a container.\nTermux原系统GUI可玩性较低，建议您安装GNU/Linux（proot/chroot)容器,\n或通过qemu-system来使用docker容器。" 0 50 0 \
+		"1" "📺 modify termux-vnc conf" \
+		"2" "🎶 configure Termux LAN audio局域网音频传输" \
+		"3" "🎧 switch VNC audio音频传输方式" \
+		"4" "🤖 download termux_fdroid.apk下载termux" \
+		"5" "query space occupation查询空间占用" \
+		"6" "download VNC/xsdl/xwayland下载VNC客户端" \
+		"7" "VSCode Server arm64" \
+		"8" "Video tutorial(2020-02)" \
+		"9" "🐹 install termux-xfce4" \
+		"10" "💔 remove xfce4" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	########################################
+	case "${OPTION}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) tmoe_modify_vnc_conf ;;
+	2) termux_pulse_audio_lan ;;
+	3) switch_vnc_pulse_audio_transport_method ;;
+	4) aria2_download_termux_apk ;;
+	5) space_occupation ;;
+	6) download_vnc_apk ;;
+	7) start_vscode ;;
+	8) download_video_tutorial ;;
+	9) tmoe_install_xfce ;;
+	10) tmoe_remove_xfce ;;
+	esac
+	####################################
+	press_enter_to_return
+	android_termux_tmoe_area
 }
 #####################################
 switch_vnc_pulse_audio_transport_method() {
@@ -3114,7 +3391,7 @@ switch_vnc_pulse_audio_transport_method() {
 	fi
 	echo "修改完成！(￣▽￣),您需要输startvnc来启动vnc"
 	press_enter_to_return
-	termux_install_xfce
+	android_termux_tmoe_area
 }
 ###############################
 termux_pulse_audio_lan() {
@@ -3142,7 +3419,7 @@ termux_pulse_audio_lan() {
 	echo "如需单独启动音频服务，请输pulseaudio --start"
 	echo "若无声音，则您需要安装termux:api的apk,并升级termux至最新版本"
 	press_enter_to_return
-	termux_install_xfce
+	android_termux_tmoe_area
 }
 #############################
 aria2_download_termux_apk() {
@@ -3300,42 +3577,58 @@ remove_android_termux_xfce() {
 	apt autoremove
 	press_enter_to_return
 	tmoe_manager_main_menu
-
 }
 #################
-termux_tuna_sources_list() {
-	if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
-		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-			echo -e '\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
-		fi
+annotate_the_old_list() {
+	if [ -e "${SOURCES_LIST_FILE_NAME}" ]; then
+		sed -i 's@^@#&@g' ${SOURCES_LIST_FILE_NAME}
+		sed -i 's@##@#@g' ${SOURCES_LIST_FILE_NAME}
+		cat >>${SOURCES_LIST_FILE_NAME} <<-EndOfSourcesList
+			deb ${TERMUX_SOUCRE_URL}
+		EndOfSourcesList
 	fi
-
-	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
-		sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/game-packages-24 games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
-	fi
-
-	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
-		sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/science-packages-24 science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
-	fi
-
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list" ]; then
-		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list'; then
-			sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/x11-packages x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
-		fi
-	fi
-
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list" ]; then
-		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list'; then
-			sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/unstable-packages unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
-		fi
-	fi
-
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list" ]; then
-		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list'; then
-			sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-root-packages-24 root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
-		fi
-	fi
+}
+############
+modify_android_termux_old_mirror_sources_list() {
+	cd ${PREFIX}/etc/apt
+	SOURCES_LIST_FILE_NAME="sources.list"
+	#deb https://mirrors.ustc.edu.cn/termux stable main
+	TERMUX_SOUCRE_URL="https://${SOURCE_MIRROR_STATION}/termux stable main"
+	annotate_the_old_list
+	apt_dist_upgrade
+}
+#############
+modify_android_termux_mirror_sources_list() {
+	cd ${PREFIX}/etc/apt
+	SOURCES_LIST_FILE_NAME="sources.list"
+	TERMUX_SOUCRE_URL="${TERMUX_MAIN_SOURCE}"
+	annotate_the_old_list
+	#####
+	cd sources.list.d
+	SOURCES_LIST_FILE_NAME="root.list"
+	TERMUX_SOUCRE_URL="${TERMUX_ROOT_SOURCE}"
+	annotate_the_old_list
+	#######
+	SOURCES_LIST_FILE_NAME="game.list"
+	TERMUX_SOUCRE_URL="${TERMUX_GAME_SOURCE}"
+	annotate_the_old_list
+	######
+	SOURCES_LIST_FILE_NAME="science.list"
+	TERMUX_SOUCRE_URL="${TERMUX_SCIENCE_SOURCE}"
+	annotate_the_old_list
+	######
+	SOURCES_LIST_FILE_NAME="unstable.list"
+	TERMUX_SOUCRE_URL="${TERMUX_UNSTABLE_SOURCE}"
+	annotate_the_old_list
+	########
+	SOURCES_LIST_FILE_NAME="x11.list"
+	TERMUX_SOUCRE_URL="${TERMUX_X11_SOURCE}"
+	annotate_the_old_list
+	######
+	apt_dist_upgrade
+}
+#############
+apt_dist_upgrade() {
 	apt update
 	apt dist-upgrade -y
 	echo '修改完成，您当前的软件源列表如下所示。'
@@ -3343,6 +3636,42 @@ termux_tuna_sources_list() {
 	cat /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
 	echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
 	echo "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
+}
+#########
+termux_tuna_sources_list() {
+	if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
+		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+			echo -e '\ndeb https://mirrors.bfsu.edu.cn/termux/termux-packages-24 stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
+		fi
+	fi
+
+	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
+		sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/game-packages-24 games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
+	fi
+
+	if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
+		sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/science-packages-24 science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
+	fi
+
+	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list" ]; then
+		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list'; then
+			sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/x11-packages x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
+		fi
+	fi
+
+	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list" ]; then
+		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list'; then
+			sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/unstable-packages unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
+		fi
+	fi
+
+	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list" ]; then
+		if ! grep -q '^deb.*tuna' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list'; then
+			sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/termux-root-packages-24 root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
+		fi
+	fi
+	apt_dist_upgrade
 	press_enter_to_return
 	android_termux
 	#此处要返回依赖检测处！
@@ -3352,14 +3681,14 @@ choose_which_gnu_linux_distro() {
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? \n您想要安装哪个GNU/Linux发行版?" 0 50 0 \
-		"1" "🍥Debian:最早的发行版之一" \
-		"2" "🍛Ubuntu:我的存在是因為大家的存在" \
-		"3" "🐉Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "🍱beta公测版:manjaro,centos" \
-		"5" "🍭alpha内测版:gentoo,armbian" \
-		"6" "🌉arch:系统设计以KISS为总体指导原则" \
-		"7" "👒fedora:红帽社区版,新技术试验场" \
-		"0" "Back to the main menu 返回主菜单" \
+		"1" "🍥 Debian:最早的发行版之一" \
+		"2" "🍛 Ubuntu:我的存在是因為大家的存在" \
+		"3" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
+		"4" "🍱 beta公测版:manjaro,centos" \
+		"5" "🦎 alpha内测版:gentoo,opensuse" \
+		"6" "🌉 arch:系统设计以KISS为总体指导原则" \
+		"7" "👒 fedora:红帽社区版,新技术试验场" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
@@ -3408,7 +3737,7 @@ install_alpha_containers() {
 			"8" "openwrt(常见于路由器,arm64,x64)" \
 			"9" "apertis" \
 			"10" "alt" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -3479,7 +3808,7 @@ install_beta_containers() {
 			"3" "Void:基于xbps包管理器的独立发行版" \
 			"4" "🏔️ alpine(非glibc的精简系统)" \
 			"5" "mint(简单易用的系统,x86,x64)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -3521,13 +3850,13 @@ install_ubuntu_gnu_linux_distro() {
 	DISTRO_NAME='ubuntu'
 	BETA_SYSTEM=$(
 		whiptail --title "Which version do you want to install?" --menu "您想要安装哪个版本?2020至2025年的LTS长期支持版为focal 20.04(2020年4月正式发布),上一个LTS为18.04(2018年4月),下一个LTS可能为22.04\n设当前年份为x,若x>=2022,则请手动输入版本代号。" 0 50 0 \
-			"1" "🦍20.10 Groovy Gorilla 時髦大猩猩" \
-			"2" "🐱20.04 Focal Fossa 焦點馬島長尾狸貓" \
+			"1" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
+			"2" "🐱 20.04 Focal Fossa 焦點馬島長尾狸貓" \
 			"3" "Custom code手动输入版本代号" \
-			"4" "18.04 Bionic Beaver 仿生海狸" \
-			"5" "16.04 Xenial Xerus 好客的非洲地松鼠" \
+			"4" "🦦 18.04 Bionic Beaver 仿生海狸" \
+			"5" "🐿️ 16.04 Xenial Xerus 好客的非洲地松鼠" \
 			"6" "Latest(自动检测21.04，测试中)" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -3970,7 +4299,7 @@ which_linux_mint_distro() {
 		whiptail --title "mint" --menu "您想要安装哪个版本？Which version do you want to install?" 17 55 7 \
 			"1" "自动检测版本" \
 			"2" "Custom code手动输入版本代号" \
-			"0" "Return to previous menu 返回上级菜单" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
@@ -3998,7 +4327,7 @@ custom_mint_version() {
 }
 ######################
 ######################
-tmoe_sources_list_manager() {
+gnu_linux_mirror_source_manager() {
 	aria2c --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	bash /tmp/.tmoe-linux-tool.sh --mirror-list
 }
@@ -4006,20 +4335,18 @@ tmoe_sources_list_manager() {
 #初次安装时用curl或wget，之后用aria2c
 ###########
 gnu_linux_sources_list() {
-	if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
-		wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	if [ "${LINUX_DISTRO}" != "alpine" ]; then
+		if [ ! $(command -v curl) ]; then
+			wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		else
+			curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		fi
+		bash /tmp/.tmoe-linux-tool.sh -tuna
 	else
-		curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	fi
-
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
 		cp -af /etc/apk/repositories /etc/apk/repositories.bak
 		#sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 		sed -i 's@http.*/alpine/@http://mirrors.tuna.tsinghua.edu.cn/alpine/@g' /etc/apk/repositories
-	else
-		bash /tmp/.tmoe-linux-tool.sh -tuna
 	fi
-
 	gnu_linux
 	#此处要返回依赖检测处！
 }
