@@ -1881,7 +1881,7 @@ where_is_start_dir() {
 ###############
 file_directory_selection() {
 
-	if (whiptail --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择？" 9 50); then
+	if (whiptail --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择?\nDo you want to automatically select the file directory" 9 50); then
 		where_is_start_dir
 	else
 		manually_select_the_file_directory
@@ -1890,7 +1890,8 @@ file_directory_selection() {
 }
 ###################
 manually_select_the_file_directory() {
-	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为/sdcard/Download/backup\n Please enter the file path." 12 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
+	#12 50
+	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为/sdcard/Download/backup\n Please enter the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
 	START_DIR="$(echo ${TARGET_BACKUP_FILE_PATH} | head -n 1 | cut -d ' ' -f 1)"
 	echo ${START_DIR}
 	if [ -z ${START_DIR} ]; then
@@ -1916,7 +1917,7 @@ restore_gnu_linux_container() {
 	###########################################################################
 	if [ "${OPTION}" == '1' ]; then
 		#ls -lth debian*tar* 2>/dev/null || echo '未检测到备份文件' | head -n 10
-		if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件？" 9 50); then
+		if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
 			#RESTORE=$(ls -lth ./*debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
 			cd /sdcard/Download/backup
 			RESTORE=$(ls -lth ./*-rootfs_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
@@ -1928,7 +1929,7 @@ restore_gnu_linux_container() {
 	fi
 	###################
 	if [ "${OPTION}" == '2' ]; then
-		if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件？" 9 50); then
+		if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
 			#RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
 			cd /sdcard/Download/backup
 			RESTORE=$(ls -lth ./*-termux*_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
