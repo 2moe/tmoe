@@ -3067,11 +3067,11 @@ china_university_mirror_station() {
 	case "${SOURCES_LIST}" in
 	0 | "") tmoe_sources_list_manager ;;
 	1)
-		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
+		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
 		standard_termux_mirror_source_format
 		;;
 	2)
-		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
+		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
 		standard_termux_mirror_source_format
 		;;
 	3) ustc_termux ;;
@@ -3205,7 +3205,7 @@ mirror_sources_station_download_speed_test() {
 	SOURCE_MIRROR_STATION='bintray.proxy.ustclug.org/termux'
 	download_termux_clang
 	SOURCE_MIRROR_STATION_NAME='北外镜像站'
-	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
+	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
 	download_termux_clang
 	SOURCE_MIRROR_STATION_NAME='官方official'
 	SOURCE_MIRROR_STATION='dl.bintray.com'
