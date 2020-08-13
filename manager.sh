@@ -664,19 +664,19 @@ tmoe_manager_main_menu() {
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.\n请使用方向键和回车键进行操作" 0 50 0 \
-			"1" "proot安装(๑•̀ㅂ•́)و✧" \
-			"2" "chroot安装" \
-			"3" "🌏locales/区域/ロケール/로케일" \
-			"4" " mirror sources镜像源(清华,北外,中科大)" \
+			"1" "🍀 proot安装(๑•̀ㅂ•́)و✧" \
+			"2" "🌸 chroot容器安装(only for GNU/Linux)" \
+			"3" "🌏 locales/区域/ロケール/로케일" \
+			"4" "🍳 mirror sources镜像源(清华,北外,中科大)" \
 			"5" "📱 Android-termux专区" \
-			"6" "FAQ常见问题" \
-			"7" "novnc:web端控制的vnc客户端" \
-			"8" "backup 备份" \
-			"9" "restore 还原/恢复" \
-			"10" "update更新" \
+			"6" "🍩 FAQ常见问题" \
+			"7" "🍬 novnc:web端控制的vnc客户端" \
+			"8" "🍹 backup 备份" \
+			"9" "🔯 restore 还原/恢复" \
+			"10" "🍧 *°▽°*update更新" \
 			"11" "🌈 Configure zsh美化终端" \
-			"12" "赋予proot容器真实root权限" \
-			"13" "remove 移除" \
+			"12" "🍒 赋予proot容器真实root权限" \
+			"13" "💔 remove 移除" \
 			"0" "🌚 exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -3194,9 +3194,10 @@ download_termux_clang() {
 ################
 mirror_sources_station_download_speed_test() {
 	echo "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
+	echo "在测试过程中，您可以按${YELLOW}Ctrl+C${RESET}取消。"
 	do_you_want_to_continue
 	cd ${TMPDIR}
-	CLANG_FILE="$(curl -L http://bintray.proxy.ustclug.org/termux/termux-packages-24/aarch64/ | grep clang | head -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)"
+	CLANG_FILE="$(curl -L dl.bintray.com/termux/termux-packages-24/aarch64/ | grep clang | head -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)"
 	echo "---------------------------"
 	SOURCE_MIRROR_STATION_NAME='清华镜像站'
 	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
@@ -3233,8 +3234,18 @@ delete_sources_list_invalid_rows() {
 	cat ${SOURCES_LIST_FILE}
 }
 ###################
+check_termux_repo() {
+	cd ${SOURCES_LIST_FILE}.d
+	if grep -q '^deb' ${TERMUX_REPO}.list; then
+		TERMUX_REPO_ENABLED_STATUS="检测到您已启用本仓库\nYou have enabled ${TERMUX_REPO}-repo."
+	else
+		TERMUX_REPO_ENABLED_STATUS="检测到您已禁用本仓库\nYou have disabled ${TERMUX_REPO}-repo"
+	fi
+}
+##########
 enable_or_disable_termux_repo() {
-	if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?♪(^∇^*)" 10 50); then
+	check_termux_repo
+	if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?\n您是想要启用${TERMUX_REPO}-repo还是禁用呢？♪(^∇^*)\n${TERMUX_REPO_ENABLED_STATUS}" 9 50); then
 		apt update
 		apt install -y ${TERMUX_REPO}-repo
 		apt list | grep "/${TERMUX_REPO}"

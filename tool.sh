@@ -574,10 +574,10 @@ tmoe_linux_tool_menu() {
 	TMOE_OPTION=$(
 		whiptail --title "Tmoe-linux Tool输debian-i启动(20200811-04)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
-			"2" "🎦 Software center:软件(浏览器,游戏,影音)" \
+			"2" "🍮 Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈 Desktop beautification:桌面美化(主题)" \
 			"4" "🌌 vnc/x/rdp:远程桌面" \
-			"5" "🍻 Download video:解析视频链接(bili,Y2B)" \
+			"5" "📺 Download video:解析视频链接(bili,Y2B)" \
 			"6" "🐳 docker:开源的应用容器引擎" \
 			"7" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
 			"8" "🏫 FAQ:常见问题" \
@@ -755,7 +755,7 @@ tmoe_linux_tool_upgrade() {
 download_videos() {
 	VIDEOTOOL=$(
 		whiptail --title "DOWNLOAD VIDEOS" --menu "你想要使用哪个工具来下载视频呢" 0 50 0 \
-			"1" "🥂 Annie" \
+			"1" "🍻 Annie" \
 			"2" "🍷 You-get" \
 			"3" "🍾 Youtube-dl" \
 			"4" "🍹 cookie说明" \
