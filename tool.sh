@@ -574,20 +574,22 @@ tmoe_linux_tool_menu() {
 	TMOE_OPTION=$(
 		whiptail --title "Tmoe-linux Tool输debian-i启动(20200811-04)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
-			"2" "🍮 Software center:软件(浏览器,游戏,影音)" \
+			"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈 Desktop beautification:桌面美化(主题)" \
 			"4" "🌌 vnc/x/rdp:远程桌面" \
 			"5" "📺 Download video:解析视频链接(bili,Y2B)" \
 			"6" "🐳 docker:开源的应用容器引擎" \
 			"7" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
-			"8" "🏫 FAQ:常见问题" \
+			"8" "🍩 FAQ:常见问题" \
 			"9" "🍥 software sources:软件镜像源管理" \
 			"10" "💻 qemu:x86_64虚拟机管理" \
-			"11" "🌸 The Secret Garden秘密花园" \
+			"11" "🌺 The Secret Garden秘密花园" \
 			"0" "🌚 Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
 	########
+	#faq的emoji为🏫学校，原意是希望大家能从中学到东西。后来觉得太丑了，就删掉了。。。
+	#🌡️
 	#if [ "${CurrentLANG}" != $(echo 'emhfQ04uVVRGLTgK' | base64 -d) ]; then
 	#	export LANG=C.UTF-8
 	#fi
@@ -6395,7 +6397,7 @@ other_software() {
 		whiptail --title "Software center-01" --menu \
 			"您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
 			"1" "🦊 Browser:浏览器(firefox,chromium)" \
-			"2" "📺 Multimedia:图像与影音(mpv,云音乐)" \
+			"2" "🎵 Multimedia:图像与影音(mpv,云音乐)" \
 			"3" "🐧 SNS:社交类(qq)" \
 			"4" "🎮 Games:游戏(steam,wesnoth)" \
 			"5" "🔯 Packages&system:软件包与系统管理" \

@@ -3356,9 +3356,9 @@ android_termux_tmoe_area() {
 		"1" "📺 modify termux-vnc conf" \
 		"2" "🎶 configure Termux LAN audio局域网音频传输" \
 		"3" "🎧 switch VNC audio音频传输方式" \
-		"4" "🤖 download termux_fdroid.apk下载termux" \
-		"5" "query space occupation查询空间占用" \
-		"6" "download VNC/xsdl/xwayland下载VNC客户端" \
+		"4" "🍅 query space occupation查询空间占用" \
+		"5" "🍑 download VNC/xsdl/xwayland下载VNC客户端" \
+		"6" "🤖 download termux_fdroid.apk下载termux" \
 		"7" "VSCode Server arm64" \
 		"8" "Video tutorial(2020-02)" \
 		"9" "🐹 install termux-xfce4" \
@@ -3371,9 +3371,9 @@ android_termux_tmoe_area() {
 	1) tmoe_modify_vnc_conf ;;
 	2) termux_pulse_audio_lan ;;
 	3) switch_vnc_pulse_audio_transport_method ;;
-	4) aria2_download_termux_apk ;;
-	5) space_occupation ;;
-	6) download_vnc_apk ;;
+	4) space_occupation ;;
+	5) download_vnc_apk ;;
+	6) aria2_download_termux_apk ;;
 	7) start_vscode ;;
 	8) download_video_tutorial ;;
 	9) tmoe_install_xfce ;;
