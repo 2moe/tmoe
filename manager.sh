@@ -3164,9 +3164,9 @@ ping_mirror_sources_list() {
 	SOURCE_MIRROR_STATION_NAME='北外镜像站'
 	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
 	ping_mirror_sources_list_count_3
-	SOURCE_MIRROR_STATION_NAME='官方official'
-	SOURCE_MIRROR_STATION='dl.bintray.com'
-	ping_mirror_sources_list_count_3
+	#SOURCE_MIRROR_STATION_NAME='官方official'
+	#SOURCE_MIRROR_STATION='dl.bintray.com'
+	#ping_mirror_sources_list_count_3
 	SOURCE_MIRROR_STATION_NAME='a1batross'
 	SOURCE_MIRROR_STATION='termux.mentality.rip'
 	ping_mirror_sources_list_count_3
@@ -3196,7 +3196,7 @@ mirror_sources_station_download_speed_test() {
 	echo "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
 	do_you_want_to_continue
 	cd ${TMPDIR}
-	CLANG_FILE="$(curl -L http://dl.bintray.com/termux/termux-packages-24/aarch64/ | grep clang | head -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)"
+	CLANG_FILE="$(curl -L http://bintray.proxy.ustclug.org/termux/termux-packages-24/aarch64/ | grep clang | head -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)"
 	echo "---------------------------"
 	SOURCE_MIRROR_STATION_NAME='清华镜像站'
 	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
@@ -3237,6 +3237,7 @@ enable_or_disable_termux_repo() {
 	if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?♪(^∇^*)" 10 50); then
 		apt update
 		apt install -y ${TERMUX_REPO}-repo
+		apt list | grep "/${TERMUX_REPO}"
 		echo "启用完成,默认为官方源"
 	else
 		apt purge -y ${TERMUX_REPO}-repo
@@ -3267,6 +3268,7 @@ termux_repo_manager() {
 	5) TERMUX_REPO='x11' ;;
 	esac
 	##########
+	enable_or_disable_termux_repo
 	press_enter_to_return
 	termux_repo_manager
 }
