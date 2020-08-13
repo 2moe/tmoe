@@ -5822,7 +5822,7 @@ mirror_sources_station_download_speed_test() {
 ping_mirror_sources_list_count_3() {
 	echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
 	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
-	ping ${SOURCE_MIRROR_STATION} -c 3 | grep -E 'avg|time.*ms' --color=auto
+	ping -c 3 ${SOURCE_MIRROR_STATION} | grep -E 'avg|time.*ms' --color=auto
 	echo "---------------------------"
 }
 ##############

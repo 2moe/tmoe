@@ -3148,7 +3148,7 @@ restore_default_sources_list() {
 ping_mirror_sources_list_count_3() {
 	echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
 	echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
-	ping ${SOURCE_MIRROR_STATION} -c 3 | grep -E 'avg|time.*ms' --color=auto
+	ping -c 3 ${SOURCE_MIRROR_STATION} | grep -E 'avg|time.*ms' --color=auto
 	echo "---------------------------"
 }
 ##############
@@ -3196,7 +3196,7 @@ mirror_sources_station_download_speed_test() {
 	echo "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
 	do_you_want_to_continue
 	cd ${TMPDIR}
-	CLANG_FILE="$(curl -L https://mirrors.bfsu.edu.cn/termux/termux-packages-24/aarch64/ | grep -v 'clang_9.0' | grep clang | tail -n 1 | cut -d '"' -f 4)"
+	CLANG_FILE="$(curl -L http://dl.bintray.com/termux/termux-packages-24/aarch64/ | grep clang | head -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)"
 	echo "---------------------------"
 	SOURCE_MIRROR_STATION_NAME='清华镜像站'
 	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
@@ -3208,7 +3208,7 @@ mirror_sources_station_download_speed_test() {
 	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
 	download_termux_clang
 	SOURCE_MIRROR_STATION_NAME='官方official'
-	SOURCE_MIRROR_STATION='dl.bintray.com'
+	SOURCE_MIRROR_STATION='dl.bintray.com/termux'
 	download_termux_clang
 	SOURCE_MIRROR_STATION_NAME='a1batross'
 	SOURCE_MIRROR_STATION='termux.mentality.rip'
