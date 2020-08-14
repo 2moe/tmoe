@@ -255,7 +255,6 @@ DebianTarXz="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 cat <<-EOF
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示${RESET}:
-
 			01:不同远程桌面的体验有可能是不同的哦！
 			-------------------
 			Different remote desktops may have different experiences.
@@ -274,7 +273,8 @@ cat <<-EOF
 			-------------------
 			Some fonts do not support powerlevel10k special characters.
 			-------------------
-			echo "少女祈禱中..."
+			少女祈禱中...
+			-------------------
 EOF
 
 if [ ! -f ${DebianTarXz} ]; then
