@@ -326,7 +326,7 @@ cat <<-EOF
 			-------------------
 			您可以输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 			-------------------
-			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server.${RESET}
+			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 			-------------------
 			输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
 			-------------------

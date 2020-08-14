@@ -2887,7 +2887,7 @@ verify_sha256sum() {
 
 				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
 				-------------------
-				You can type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
+				You can type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 				------------------
 				在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
 				-------------------
@@ -2921,6 +2921,34 @@ copy_tmoe_locale_file_to_container() {
 }
 ########################
 un_xz_debian_recovery_kit() {
+	printf "$BLUE"
+	cat <<-'EndOFneko'
+		       DL.                           
+		       QBBBBBKv:rr77ri:.             
+		       gBBQdY7::::..::i7vv.          
+		       UBd. . .:.........rBBBQBBBB5  
+		       Pu  :..r......i:....BBBQBBB:  
+		       ri.i:.j:...:. i7... uBBZrd:   
+		 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
+		.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
+		 .27. :r.r:L7i::.7r:vri:...rr  .     
+		  v   ::.Yrviri:7v7v: ::...i.   i    
+		      r:ir: r.iiiir..:7r...r   :P.2Y 
+		      v:vi::.      :  ::. .qI7U1U :1 
+		Qr    7.7.         :.i::. :Di:. i .v:
+		v7..  s.r7.   ...   .:7i: rDi...r .. 
+		 vi: .7.iDBBr  .r   .:.7. rPr:..r    
+		 i   :virZBgi  :vrYJ1vYY .ruY:..i    
+		     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+		    .1r:q.   rB52SKrj.:i i5isi.:i :.r
+		    YvrY7    r.  . ru :: PIrj7.:r..v 
+		   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
+		  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
+		  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
+		  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
+		         .            i   7          
+	EndOFneko
+	printf "$RESET"
 	echo "正在解压${DOWNLOAD_FILE_NAME}，decompressing recovery package, please be patient."
 	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
 	cat <<-EOF
@@ -2933,7 +2961,7 @@ un_xz_debian_recovery_kit() {
 				-------------------
 				您可以在解压完成之后输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 				-------------------
-				You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server.${RESET}
+				You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 				-------------------
 	EOF
 	echo "正在${GREEN}解压${RESET}中..."
