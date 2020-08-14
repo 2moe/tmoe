@@ -658,7 +658,7 @@ android_termux() {
 #\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200814-03)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200815-04)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -669,12 +669,12 @@ tmoe_manager_main_menu() {
 			"3" "🌏 locales/区域/ロケール/로케일" \
 			"4" "🍳 mirror sources镜像源(清华,北外,中科大)" \
 			"5" "📱 Android-termux专区" \
-			"6" "🍩 FAQ常见问题" \
-			"7" "🍬 novnc:web端控制的vnc客户端" \
+			"6" "🍬 novnc:web端控制的vnc客户端" \
+			"7" "🌈 Configure zsh美化终端" \
 			"8" "🍹 backup 备份" \
 			"9" "🔯 restore 还原/恢复" \
 			"10" "🍧 *°▽°*update更新" \
-			"11" "🌈 Configure zsh美化终端" \
+			"11" "🍩 FAQ常见问题" \
 			"12" "🍒 赋予proot容器真实root权限" \
 			"13" "💔 remove 移除" \
 			"0" "🌚 exit 退出" \
@@ -689,12 +689,12 @@ tmoe_manager_main_menu() {
 	3) tmoe_locale_settings ;;
 	4) tmoe_switch_sources_list ;;
 	5) android_termux_tmoe_area ;;
-	6) frequently_asked_questions ;;
-	7) install_web_novnc ;;
+	6) install_web_novnc ;;
+	7) start_tmoe_zsh_manager ;;
 	8) backup_system ;;
 	9) restore_gnu_linux_container ;;
 	10) update_tmoe_linux_manager ;;
-	11) start_tmoe_zsh_manager ;;
+	11) frequently_asked_questions ;;
 	12) enable_root_mode ;;
 	13) tmoe_linux_remove_function ;;
 	esac
@@ -1151,14 +1151,16 @@ startvnc_or_enter_the_container() {
 	if [ -e "${DEBIAN_CHROOT}/usr/local/bin/startvnc" ]; then
 		cat <<-EOF
 			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
+			You can also type ${GREEN}debian-i${RESET} to start ${BLUE}Tmoe-linux tool.${RESET}
 		EOF
 		if [ "${LINUX_DISTRO}" = 'Android' ]; then
-			echo "在Android宿主机的Termux原系统下输${GREEN}startvnc${RESET}将同时启动Android版Realvnc viewer和${DEBIAN_FOLDER}容器内的tight/tigervnc服务，输${GREEN}debian${RESET}仅支持进入${BLUE}${DEBIAN_FOLDER}容器${RESET}"
+			echo "在Android宿主机的Termux原系统下输${GREEN}startvnc${RESET}将同时启动Android版Realvnc viewer和${DEBIAN_FOLDER}容器内的tight或tiger vnc服务，输${GREEN}debian${RESET}仅支持进入${BLUE}${DEBIAN_FOLDER}容器${RESET}。"
 		fi
 		startvnc
 	else
 		cat <<-EOF
-			You can type ${GREEN}debian${RESET} to enter the ${BLUE}${DEBIAN_FOLDER} container.${RESET}
+			You can type ${GREEN}debian${RESET} to enter the ${BLUE}${DEBIAN_FOLDER} container${RESET}.
+			You can also type ${GREEN}debian-i${RESET} to start ${BLUE}Tmoe-linux tool${RESET}.
 		EOF
 		debian
 	fi
@@ -2344,20 +2346,26 @@ tmoe_linux_container_eula() {
 						(a)第三方网盘内的文件有可能由于网站被黑、文件失效、文件被替换、网站服务器出错等原因而导致下载出错或下载内容被劫持,故本工具在解压前会自动校验文件的sha256哈希值。
 						(b)强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
 
-						5. 恢复包的使用
-						(a)在您未拒绝接受恢复包的情况下，本工具会将恢复包下载至内置存储设备，并将其解压出来，以便您能快速安装并使用Debian GNU/Linux的图形桌面环境。本工具下载的恢复包不会为您提供个性化服务，您需要自行安装、配置第三方软件和主题美化。
+						5. 关于美化和配置功能
+						(a)本工具会为您提供个性化服务，您可以安装、配置软件和主题美化。
+						(b)本工具为部分第三方软件提供安装、配置和管理功能，并尽量保持此类软件的纯净性。
+						(c)本工具同时提供了一些原创的内容，开发者不对您使用本工具所进行的任何行为负责。
+						(d)请您自行承担使用第三方软件的后果，开发者不对这些软件造成的后果负责，也不对您使用这些软件进行的违法行为负责。
+
+						6. 恢复包的使用
+						(a)在您未拒绝接受恢复包的情况下，本工具会将恢复包下载至内置存储设备，并将其解压出来，以便您能快速安装并使用Debian GNU/Linux的图形桌面环境。
 						(b)您有权选择接受或拒绝使用恢复包或本工具。
 
-						6. 信息安全
+						7. 信息安全
 						(a)本工具安装的是原生GNU/Linux 系统，截至2020-03-12，默认没有开启安全保护和防火墙功能，请您妥善保管root密码及其它重要账号信息。
 						同时希望您能注意在信息网络上不存在“绝对完善的安全措施”。
 
-						7.卸载说明
+						8.卸载说明
 						(a)您在移除容器前，必须先停止容器进程。
 						(b)由于在测试chroot容器的过程中，出现了部分已挂载目录无法强制卸载的情况，故本工具在移除容器前会进行检测，并给出相关提示。
 						建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！
 
-						8.最终用户许可协议的更改
+						9.最终用户许可协议的更改
 						(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
 						(b)本工具开发者保留随时修改本协议的权利,因此建议您不定期查看。
 						The developer of this tool reserves the right to modify this agreement at any time.
@@ -2365,6 +2373,13 @@ tmoe_linux_container_eula() {
 		echo 'You must agree to the EULA to use this tool.'
 		echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
 		echo "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
+		cat <<-'EndOfFile'
+			本项目的原地址为https://gitee.com/mo2/linux
+			有空的话，可以来看看哦！φ(≧ω≦*)♪
+			听说尊重他人的劳动成果，会让世界变得更加美好呢！
+			The original URL of this project is https://github.com/2moe/tmoe-linux
+			If you give me a star, then I will feel very happy.
+		EndOfFile
 		#if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		#export LANG=${CurrentLANG}
 		#fi
@@ -3415,36 +3430,53 @@ check_android_version() {
 	fi
 }
 ###########
+termux_original_system_gui() {
+	RETURN_TO_WHERE='termux_original_system_gui'
+	OPTION=$(whiptail --title "Termux" --menu "这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system." 0 50 0 \
+		"1" "modify termux-vnc conf" \
+		"2" "🐹 install termux-xfce4" \
+		"3" "💔 remove xfce4" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	#####################################
+	case "${OPTION}" in
+	0 | "") android_termux_tmoe_area ;;
+	1) tmoe_modify_vnc_conf ;;
+	2) tmoe_install_xfce ;;
+	3) tmoe_remove_xfce ;;
+	esac
+	####################################
+	press_enter_to_return
+	termux_original_system_gui
+}
+###############
 android_termux_tmoe_area() {
 	check_android_version
 	RETURN_TO_MENU='android_termux_tmoe_area'
+	RETURN_TO_WHERE='android_termux_tmoe_area'
 	#17 60 6
 	OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages. \nIt is recommended that you install a container.\nTermux原系统GUI可玩性较低，建议您安装GNU/Linux（proot/chroot)容器,\n或通过qemu-system虚拟机来使用docker容器。" 0 50 0 \
-		"1" "📺 modify termux-vnc conf" \
-		"2" "🎶 configure Termux LAN audio局域网音频传输" \
-		"3" "🎧 switch VNC audio音频传输方式" \
-		"4" "🍅 query space occupation查询空间占用" \
-		"5" "🍑 download VNC/xsdl/xwayland下载VNC客户端" \
-		"6" "🤖 download termux_fdroid.apk下载termux" \
-		"7" "VSCode Server arm64" \
-		"8" "Video tutorial(2020-02)" \
-		"9" "🐹 install termux-xfce4" \
-		"10" "💔 remove xfce4" \
+		"1" "🎶 configure Termux LAN audio局域网音频传输" \
+		"2" "🎧 switch VNC audio音频传输方式" \
+		"3" "🍅 query space occupation查询空间占用" \
+		"4" "🍑 vnc/xsdl/xwayland.apk下载VNC客户端" \
+		"5" "🤖 termux_fdroid.apk下载termux" \
+		"6" "VSCode Server arm64" \
+		"7" "Video tutorial(2020-02,旧版教程)" \
+		"8" "📺 termux original GUI:原系统GUI" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	########################################
 	case "${OPTION}" in
 	0 | "") tmoe_manager_main_menu ;;
-	1) tmoe_modify_vnc_conf ;;
-	2) termux_pulse_audio_lan ;;
-	3) switch_vnc_pulse_audio_transport_method ;;
-	4) space_occupation ;;
-	5) download_vnc_apk ;;
-	6) aria2_download_termux_apk ;;
-	7) start_vscode ;;
-	8) download_video_tutorial ;;
-	9) tmoe_install_xfce ;;
-	10) tmoe_remove_xfce ;;
+	1) termux_pulse_audio_lan ;;
+	2) switch_vnc_pulse_audio_transport_method ;;
+	3) space_occupation ;;
+	4) download_vnc_apk ;;
+	5) aria2_download_termux_apk ;;
+	6) start_vscode ;;
+	7) download_video_tutorial ;;
+	8) termux_original_system_gui ;;
 	esac
 	####################################
 	press_enter_to_return
@@ -3649,9 +3681,10 @@ modify_android_termux_vnc_config() {
 }
 ###############
 remove_android_termux_xfce() {
-	echo "${YELLOW}按回车键确认卸载,按Ctrl+C取消${RESET} "
-	echo 'Press enter to confirm ,press Ctrl + C to cancel'
-	read
+	#echo "${YELLOW}按回车键确认卸载,按Ctrl+C取消${RESET} "
+	#echo 'Press enter to confirm ,press Ctrl + C to cancel'
+	#read
+	do_you_want_to_continue
 	apt purge -y ^xfce tigervnc aterm
 	apt purge -y x11-repo
 	apt autoremove

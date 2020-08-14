@@ -252,25 +252,25 @@ DebianTarXz="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 cat <<-EOF
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示${RESET}:
-			01:不同远程桌面的体验有可能是不同的哦！
+			01:不同远程桌面的体验有可能是不同的呢！ヽ(✿ﾟ▽ﾟ)ノ
 			-------------------
 			Different remote desktops may have different experiences.
 			-------------------
 			02:在某种环境下执行某条命令，将同时调用宿主机的VNC viewer和容器的vnc server。
-			究竟是何种环境，以及哪条命令呢?
 			-------------------
 			Executing a certain command in a certain environment will call the processes of the host and the container almost simultaneously.
 			---------------
-			03:所有容器的启动命令皆为${GREEN}debian${RESET}
-			但是呢！输${GREEN}debian${RESET}仅支持启动${BLUE}GNU/Linux容器${RESET}，不会自动启动远程桌面服务。
+			03:所有容器的启动命令都是一样的哦！o( =•ω•= )m
+			但是呢！输那条启动命令仅支持启动${BLUE}${DEBIAN_FOLDER}容器${RESET}，不会自动启动远程桌面服务。
 			-------------------
-			You can type ${GREEN}debian${RESET} to start and enter this ${BLUE}container.${RESET}
+			You can type ${GREEN}debian${RESET} to start and enter the ${BLUE}${DEBIAN_FOLDER} container${RESET}.
 			-------------------
 			04:并非所有${YELLOW}字体${RESET}都支持${BLUE}powerlevel 10k${RESET}的特殊字符哦！🍥
 			-------------------
 			Some fonts do not support powerlevel10k special characters.
 			-------------------
 EOF
+#究竟是何种环境，以及哪条命令呢?
 echo "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
 echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
 
@@ -319,6 +319,7 @@ cat <<-'EndOFneko'
 EndOFneko
 printf "$RESET"
 cat <<-EOF
+	少女祈禱中...
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
 

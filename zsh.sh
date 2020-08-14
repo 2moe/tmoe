@@ -312,6 +312,18 @@ if [ "${LINUX_DISTRO}" = "debian" ]; then
     configure_command_not_found
 fi
 ############################
+cat <<-EOF
+	少女祈禱中...
+        現在可公開的情報:
+		${BOLD}Tmoe-linux 小提示06${RESET}:
+
+		在${YELLOW}Android-termux${RESET}上运行的GNU/Linux的Tmoe-linux tool支持使用${BLUE}触摸屏${RESET}上下滑动。
+        运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager则支持使用${GREEN}数字键${RESET}快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
+		-------------------
+        You can use the ${BLUE}touch screen${RESET} on ${YELLOW}Android-termux${RESET} to slide the menu options of the tmoe-linux tool.
+		-------------------
+EOF
+##################
 echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
 echo "github.com/zsh-users/zsh-syntax-highlighting"
 rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
