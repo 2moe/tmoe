@@ -269,7 +269,30 @@ if [ ! -f ${DebianTarXz} ]; then
 fi
 cur=$(pwd)
 cd ${DEBIAN_CHROOT}
-echo "正在解压${DebianTarXz}，decompressing rootfs, please be patient."
+cat <<-EOF
+	現在可公開的情報:
+	${BOLD}Tmoe-linux 小提示01${RESET}(仅适用于GUI安装完成后):
+
+			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
+			-------------------
+			您可以输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
+			-------------------
+			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server.${RESET}
+			-------------------
+			输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
+			-------------------
+			You can also type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
+			------------------
+	${BOLD}小提示02${RESET}:
+
+			在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}.
+			-------------------
+EOF
+
+echo "正在${GREEN}解压${RESET}${BLUE}${DebianTarXz}...${RESET}"
+echo "少女祈禱中..."
+echo "Decompressing ${DebianTarXz}, please be patient."
 if [ "${ARCH_TYPE}" = "mipsel" ]; then
 	pv ${cur}/${DebianTarXz} | tar -pJx
 	mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}

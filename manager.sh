@@ -2912,7 +2912,25 @@ copy_tmoe_locale_file_to_container() {
 un_xz_debian_recovery_kit() {
 	echo "正在解压${DOWNLOAD_FILE_NAME}，decompressing recovery package, please be patient."
 	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
-	echo '正在解压中...'
+	cat <<-EOF
+		現在可公開的情報:
+			${BOLD}Tmoe-linux 小提示${RESET}:
+
+				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
+				-------------------
+				您可以在解压完成之后输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
+				-------------------
+				You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server.${RESET}
+				-------------------
+				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
+				-------------------
+				You can also type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
+				------------------
+				在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+				-------------------
+	EOF
+	echo "正在${GREEN}解压${RESET}中..."
+	echo "少女祈禱中..."
 	if [ $(command -v pv) ]; then
 		pv ${DOWNLOAD_FILE_NAME} | tar -PpJx
 	else
@@ -2927,10 +2945,6 @@ un_xz_debian_recovery_kit() {
 	if [ -e "${HOME}/debian_arm64" ]; then
 		sed -i 's@debian-sid_arm64@debian_arm64@g' ${PREFIX}/bin/startvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm
 	fi
-
-	echo '解压完成，您之后可以输startvnc来启动vnc服务，输stopvnc停止'
-	echo 'You can type startvnc to start vnc.'
-	echo '在容器内输debian-i启动软件安装及远程桌面配置管理工具。'
 	echo 'The vnc server is about to start for you.'
 	# The password you entered is hidden.'
 	#echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
@@ -3870,12 +3884,13 @@ install_ubuntu_gnu_linux_distro() {
 			"1" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
 			"2" "🐱 20.04 Focal Fossa 焦點馬島長尾狸貓" \
 			"3" "Custom code手动输入版本代号" \
-			"4" "🦦 18.04 Bionic Beaver 仿生海狸" \
+			"4" "18.04 Bionic Beaver 仿生海狸" \
 			"5" "🐿️ 16.04 Xenial Xerus 好客的非洲地松鼠" \
 			"6" "Latest(自动检测21.04，测试中)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+	#🦦
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
