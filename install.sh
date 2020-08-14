@@ -252,11 +252,35 @@ fi
 mkdir -p ~/${DEBIAN_FOLDER}
 
 DebianTarXz="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
+cat <<-EOF
+	現在可公開的情報:
+	${BOLD}Tmoe-linux 小提示${RESET}:
+
+			01:不同远程桌面的体验有可能是不同的哦！
+			-------------------
+			Different remote desktops may have different experiences.
+			-------------------
+			02:在某种环境下执行某条命令，将同时调用宿主机的VNC viewer和容器的vnc server。
+			究竟是何种环境，以及哪条命令呢?
+			-------------------
+			Executing a certain command in a certain environment will call the processes of the host and the container almost simultaneously.
+			---------------
+			03:所有容器的启动命令皆为${GREEN}debian${RESET}
+			但是呢！输${GREEN}debian${RESET}仅支持启动${BLUE}GNU/Linux容器${RESET}，不会自动启动远程桌面服务。
+			-------------------
+			You can type ${GREEN}debian${RESET} to start and enter this ${BLUE}container.${RESET}
+			-------------------
+			04:并非所有${YELLOW}字体${RESET}都支持${BLUE}powerlevel 10k${RESET}的特殊字符哦！🍥
+			-------------------
+			Some fonts do not support powerlevel10k special characters.
+			-------------------
+			echo "少女祈禱中..."
+EOF
 
 if [ ! -f ${DebianTarXz} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
-		echo "正在从清华大学开源镜像站下载容器镜像"
-		echo "Downloading ${DebianTarXz} from Tsinghua University Open Source Mirror Station."
+		echo "正在从${YELLOW}清华大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+		echo "Downloading ${BLUE}${DebianTarXz}${RESET} from Tsinghua University Open Source Mirror Station."
 		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 			aria2c -x 5 -k 1M --split 5 -o ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
@@ -269,9 +293,37 @@ if [ ! -f ${DebianTarXz} ]; then
 fi
 cur=$(pwd)
 cd ${DEBIAN_CHROOT}
+printf "$BLUE"
+cat <<-'EndOFneko'
+	       DL.                           
+	       QBBBBBKv:rr77ri:.             
+	       gBBQdY7::::..::i7vv.          
+	       UBd. . .:.........rBBBQBBBB5  
+	       Pu  :..r......i:....BBBQBBB:  
+	       ri.i:.j:...:. i7... uBBZrd:   
+	 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
+	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
+	 .27. :r.r:L7i::.7r:vri:...rr  .     
+	  v   ::.Yrviri:7v7v: ::...i.   i    
+	      r:ir: r.iiiir..:7r...r   :P.2Y 
+	      v:vi::.      :  ::. .qI7U1U :1 
+	Qr    7.7.         :.i::. :Di:. i .v:
+	v7..  s.r7.   ...   .:7i: rDi...r .. 
+	 vi: .7.iDBBr  .r   .:.7. rPr:..r    
+	 i   :virZBgi  :vrYJ1vYY .ruY:..i    
+	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+	    .1r:q.   rB52SKrj.:i i5isi.:i :.r
+	    YvrY7    r.  . ru :: PIrj7.:r..v 
+	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
+	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
+	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
+	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
+	         .            i   7          
+EndOFneko
+printf "$RESET"
 cat <<-EOF
 	現在可公開的情報:
-	${BOLD}Tmoe-linux 小提示01${RESET}(仅适用于GUI安装完成后):
+	${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
 
 			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
 			-------------------
@@ -283,15 +335,13 @@ cat <<-EOF
 			-------------------
 			You can also type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
 			------------------
-	${BOLD}小提示02${RESET}:
+	${BOLD}小提示06${RESET}:
 
 			在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
 			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}.
 			-------------------
 EOF
-
 echo "正在${GREEN}解压${RESET}${BLUE}${DebianTarXz}...${RESET}"
-echo "少女祈禱中..."
 echo "Decompressing ${DebianTarXz}, please be patient."
 if [ "${ARCH_TYPE}" = "mipsel" ]; then
 	pv ${cur}/${DebianTarXz} | tar -pJx
