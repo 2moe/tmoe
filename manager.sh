@@ -2881,6 +2881,17 @@ verify_sha256sum() {
 		         :   r. ..      .. .:i  ...     
 	EndOFneko
 	printf "$RESET"
+	cat <<-EOF
+		現在可公開的情報:
+			${BOLD}Tmoe-linux 小提示01${RESET}:
+
+				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
+				-------------------
+				You can type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
+				------------------
+				在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+				-------------------
+	EOF
 	echo 'Verifying sha256hash...'
 	echo '正在校验sha256哈希值...'
 	LOCAL_FILE_SHA256_SUM="$(sha256sum ${DOWNLOAD_FILE_NAME} | cut -c 1-64)"
@@ -2913,20 +2924,16 @@ un_xz_debian_recovery_kit() {
 	echo "正在解压${DOWNLOAD_FILE_NAME}，decompressing recovery package, please be patient."
 	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
 	cat <<-EOF
-		現在可公開的情報:
-			${BOLD}Tmoe-linux 小提示${RESET}:
+		少女祈禱中...
+			${BOLD}Tmoe-linux 小提示02${RESET}:
 
 				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
+				-------------------
+				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会自动启动远程桌面服务。
 				-------------------
 				您可以在解压完成之后输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 				-------------------
 				You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server.${RESET}
-				-------------------
-				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
-				-------------------
-				You can also type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
-				------------------
-				在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
 				-------------------
 	EOF
 	echo "正在${GREEN}解压${RESET}中..."
