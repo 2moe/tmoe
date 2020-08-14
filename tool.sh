@@ -16479,7 +16479,7 @@ install_docker_ce() {
 		DEPENDENCY_02="gpg"
 		beta_features_quick_install
 	fi
-	DEPENDENCY_02=""
+	DEPENDENCY_02="docker-ce"
 	DEPENDENCY_01="docker"
 	#apt remove docker docker-engine docker.io
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
