@@ -1147,11 +1147,29 @@ install_chroot_container() {
 	fi
 }
 ########################
+startvnc_or_enter_the_container() {
+	if [ -e "${DEBIAN_CHROOT}/usr/local/bin/startvnc" ]; then
+		cat <<-EOF
+			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
+		EOF
+		if [ "${LINUX_DISTRO}" = 'Android' ]; then
+			echo "在Android宿主机的Termux原系统下输${GREEN}startvnc${RESET}将同时启动Android版Realvnc viewer和${DEBIAN_FOLDER}容器内的tight/tigervnc服务，输${GREEN}debian${RESET}仅支持进入${BLUE}${DEBIAN_FOLDER}容器${RESET}"
+		fi
+		startvnc
+	else
+		cat <<-EOF
+			You can type ${GREEN}debian${RESET} to enter the ${BLUE}${DEBIAN_FOLDER} container.${RESET}
+		EOF
+		debian
+	fi
+}
+#######################
 install_gnu_linux_container() {
 	#此处不能用变量debian_chroot
 	if [ -d ~/${DEBIAN_FOLDER} ]; then
 		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do" 0 0); then
-			debian
+			#debian
+			startvnc_or_enter_the_container
 		else
 			echo "${YELLOW}检测到您已安装GNU/Linux容器,是否重新安装？[Y/n]${RESET} "
 			echo "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
