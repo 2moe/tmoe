@@ -139,19 +139,22 @@ if [ "$(uname -o)" = "Android" ]; then
 	fi
 
 	if [ ! -e "termux.properties" ]; then
-		echo "检测到termux属性文件不存在，正在为您下载..."
+		echo -e "Detected that the termux.properties file does not exist.\n检测到termux属性文件不存在，正在为您下载..."
 		aria2c --allow-overwrite=true -o "termux.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/termux.properties'
 	fi
-	REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
-	LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
-	if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
-		echo '正在配置字体...'
+	#REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
+	#LOCALFONT="$(sha256sum font.ttf | cut -c 1-64)" || LOCALFONT="0"
+	if [ ! -e "font.ttf" ]; then
+		#if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
+		echo -e 'Detected that the font file does not exist.\n检测到字体文件不存在，正在自动配置字体...'
+		echo "只有少部分字体能显示powerlevel10k的特殊字符，例如Iosevka"
 		#仓库为Termux-zsh/raw/p10k，批量重命名的时候要小心一点。
 		aria2c --allow-overwrite=true -o Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
-		mv -f font.ttf font.ttf.bak
+		#mv -f font.ttf font.ttf.bak
 		tar -Jxf Iosevka.tar.xz
 		rm -f Iosevka.tar.xz
 		termux-reload-settings
+		#fi
 	fi
 else
 	if grep -q 'alias debian=' "/etc/profile"; then
