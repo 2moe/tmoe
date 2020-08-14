@@ -240,9 +240,6 @@ if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
 	echo "检测到您选择的是raspbian树莓派系统，将通过debian buster来间接安装raspbian buster"
 	echo "已将您的架构临时识别为armhf"
 fi
-echo "Detected that your current architecture is ${ARCH_TYPE}"
-echo "检测到您当前的架构为${ARCH_TYPE} ，debian system将安装至~/${DEBIAN_FOLDER}"
-
 cd ${HOME}
 
 if [ -d "${DEBIAN_FOLDER}" ]; then
@@ -273,9 +270,9 @@ cat <<-EOF
 			-------------------
 			Some fonts do not support powerlevel10k special characters.
 			-------------------
-			少女祈禱中...
-			-------------------
 EOF
+echo "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
+echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
 
 if [ ! -f ${DebianTarXz} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
