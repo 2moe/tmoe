@@ -1630,6 +1630,7 @@ install_vscode_official() {
 		#echo "${YELLOW}按回车键返回。${RESET}"
 		#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 		#read
+		code --version
 		echo "请问您是否需要下载最新版安装包？"
 		echo "Do you want to download the latest vscode?"
 		do_you_want_to_continue

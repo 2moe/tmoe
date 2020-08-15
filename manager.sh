@@ -3465,7 +3465,8 @@ check_android_version() {
 ###########
 termux_original_system_gui() {
 	RETURN_TO_WHERE='termux_original_system_gui'
-	OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages. \nIt is recommended that you install a container.\nTermux原系统GUI可玩性较低，建议您安装GNU/Linux（proot/chroot)容器,\n或通过qemu-system虚拟机来使用docker容器。\n这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system." 0 50 0 \
+	#\n这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system.
+	OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages. \nIt is recommended that you install a container.\nTermux原系统GUI可玩性较低，建议您安装GNU/Linux（proot/chroot)容器,\n或通过qemu-system虚拟机来使用docker容器。" 0 50 0 \
 		"1" "modify termux-vnc conf" \
 		"2" "🐹 install termux-xfce4" \
 		"3" "💔 remove xfce4" \
