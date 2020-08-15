@@ -1607,6 +1607,13 @@ install_vscode_oss() {
 	which_vscode_edition
 }
 #######################
+download_vscode_x64_deb(){ 
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
+		apt show ./VSCODE.deb
+		apt install -y ./VSCODE.deb
+		rm -vf VSCODE.deb
+}
+##########
 install_vscode_official() {
 	cd /tmp
 	if [ "${ARCH_TYPE}" != 'amd64' ]; then
@@ -1620,10 +1627,14 @@ install_vscode_official() {
 		#echo 'code --user-data-dir=${HOME}/.vscode'
 		echo 'code --user-data-dir=${HOME}'
 		echo "如需卸载，请手动输${PACKAGES_REMOVE_COMMAND} code"
-		echo "${YELLOW}按回车键返回。${RESET}"
-		echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-		read
-		which_vscode_edition
+		#echo "${YELLOW}按回车键返回。${RESET}"
+		#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+		#read
+		echo "请问您是否需要下载最新版安装包？"
+		echo "Do you want to download the latest vscode?"
+		do_you_want_to_continue
+		download_vscode_x64_deb
+		#which_vscode_edition
 	elif [ -e "/usr/local/bin/vscode-data/code" ]; then
 		echo "检测到您已安装VSCode,请输code --no-sandbox启动"
 		echo "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
@@ -1634,10 +1645,7 @@ install_vscode_official() {
 	fi
 
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
-		apt show ./VSCODE.deb
-		apt install -y ./VSCODE.deb
-		rm -vf VSCODE.deb
+		download_vscode_x64_deb
 		echo "安装完成,请输code --user-data-dir=${HOME}启动"
 
 	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
