@@ -3143,7 +3143,7 @@ standard_termux_mirror_source_format() {
 	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/game-packages-24 games stable"
 	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/science-packages-24 science stable"
 	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/unstable-packages unstable main"
-	TERMUX_SOUCRE_URL="https://${SOURCE_MIRROR_STATION}/x11-packages x11 main"
+	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/x11-packages x11 main"
 }
 #########
 official_termux_mirror_source_format() {
