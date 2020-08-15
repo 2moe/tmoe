@@ -340,7 +340,7 @@ cat <<-EOF
 			-------------------
 EOF
 echo "正在${GREEN}解压${RESET}${BLUE}${DebianTarXz}...${RESET}"
-echo "Decompressing ${DebianTarXz}, please be patient."
+echo "Extracting ${DebianTarXz}, please wait."
 if [ "${ARCH_TYPE}" = "mipsel" ]; then
 	pv ${cur}/${DebianTarXz} | tar -pJx
 	mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}

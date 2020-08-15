@@ -1113,7 +1113,7 @@ frequently_asked_questions() {
 	esac
 	#############
 	press_enter_to_return
-	tmoe_manager_main_menu
+	frequently_asked_questions
 }
 ###########################
 questions_about_tmoe_automatic_configuration() {

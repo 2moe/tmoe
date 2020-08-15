@@ -12360,6 +12360,13 @@ choose_hdd_disk_image_file() {
 	fi
 }
 ############
+fix_qemu_vdisk_file_perssions(){ 
+	if [ ${HOME} != '/root' ]; then
+		echo "正在将${TARGET_FILE_NAME}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        chown ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TARGET_FILE_NAME}
+	fi
+}
+##########
 creat_blank_virtual_disk_image() {
 	TARGET_FILE_NAME=$(whiptail --inputbox "请输入磁盘文件名称.\nPlease enter the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
@@ -12388,6 +12395,7 @@ creat_blank_virtual_disk_image() {
 	else
 		qemu-img create -f qcow2 ${TARGET_FILE_NAME} ${TARGET_FILE_SIZE}
 	fi
+	fix_qemu_vdisk_file_perssions
 	stat ${TARGET_FILE_NAME}
 	qemu-img info ${TARGET_FILE_NAME}
 	ls -lh ${DISK_FILE_PATH}/${TARGET_FILE_NAME}
@@ -16553,7 +16561,7 @@ get_debian_vbox_latest_url() {
 	rm -fv ./.Oracle_VIRTUAL_BOX.deb
 }
 ################
-debian_download_latest_vbox_deb() {
+install_debian_virtual_box(){ 
 	if [ ! $(command -v virtualbox) ]; then
 		get_debian_vbox_latest_url
 	else
@@ -16561,6 +16569,20 @@ debian_download_latest_vbox_deb() {
 		RETURN_TO_WHERE='beta_features'
 		do_you_want_to_continue
 		debian_add_virtual_box_gpg
+	fi
+}
+#############
+install_virtual_qt(){ 
+	DEPENDENCY_01="virtualbox-qt"
+	DEPENDENCY_02=""
+	beta_features_quick_install
+}
+##############
+debian_download_latest_vbox_deb() {
+	if (whiptail --title "VirtualBox" --yes-button 'virtualbox-qt' --no-button 'virtualbox' --yesno "Which software do you want to install?" 0 50); then
+		install_virtual_qt
+	else
+		install_debian_virtual_box
 	fi
 }
 #############
