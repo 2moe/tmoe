@@ -701,7 +701,7 @@ tmoe_manager_main_menu() {
 }
 ##########################
 start_tmoe_zsh_manager() {
-	TMOE_ZSH_SCRIPT="${HOME}/.termux-zsh/zsh.sh"
+	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
 	if [ $(command -v zsh-i) ]; then
 		zsh-i
 	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then

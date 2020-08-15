@@ -6440,7 +6440,7 @@ other_software() {
 }
 ###########
 start_tmoe_zsh_manager(){
-	TMOE_ZSH_SCRIPT="${HOME}/.termux-zsh/zsh.sh"
+	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
 	if [ -e /usr/local/bin/zsh-i ];then
 		bash /usr/local/bin/zsh-i
 	elif [ -e "${TMOE_ZSH_SCRIPT}" ];then
@@ -7135,13 +7135,13 @@ install_baidu_netdisk() {
 		DEPENDENCY_01="baidunetdisk-bin"
 		beta_features_quick_install
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.rpm"
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/Linuxguanjia/3.3.2/baidunetdisk-3.3.2.x86_64.rpm"
 		rpm -ivh 'baidunetdisk.rpm'
 	elif [ "${LINUX_DISTRO}" = "debian" ]; then
-		GREP_NAME='baidunetdisk'
-		LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
-		download_ubuntu_kylin_deb_file_model_02
-		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/LinuxGuanjia/3.0.1/baidunetdisk_linux_3.0.1.2.deb"
+		#GREP_NAME='baidunetdisk'
+		#LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
+		#download_ubuntu_kylin_deb_file_model_02
+		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/Linuxguanjia/3.3.2/baidunetdisk_3.3.2_amd64.deb"
 		#apt show ./baidunetdisk.deb
 		#apt install -y ./baidunetdisk.deb
 	fi
@@ -7151,15 +7151,18 @@ install_baidu_netdisk() {
 	beta_features_install_completed
 }
 ######################
-#####################
-install_deb_file_common_model_01() {
+install_deb_file_common_model_02() {
 	cd /tmp
-	LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
 	echo ${LATEST_DEB_URL}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
 	apt show ./${LATEST_DEB_VERSION}
 	apt install -y ./${LATEST_DEB_VERSION}
 	rm -fv ./${LATEST_DEB_VERSION}
+}
+###############
+install_deb_file_common_model_01() {
+	LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
+	install_deb_file_common_model_02
 }
 ###################
 download_ubuntu_kylin_deb_file_model_02() {
@@ -7210,6 +7213,12 @@ install_netease_163_cloud_music() {
 	else
 		non_debian_function
 		GREP_NAME='netease-cloud-music'
+		case $(date +%Y%m) in
+		202008 | 202009) 
+			echo "优麒麟软件仓库于2020年8月份中下旬进行维护，您可能无法正常下载" 
+			do_you_want_to_continue
+			;;
+		esac
 		if [ "${ARCH_TYPE}" = "amd64" ]; then
 			LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
 			download_ubuntu_kylin_deb_file_model_02
@@ -16279,23 +16288,26 @@ sougou_pinyin_amd64() {
 }
 ###################
 install_debian_sogou_pinyin() {
-	DEPENDENCY_02="sogouimebs"
+	#DEPENDENCY_02="sogouimebs"
+	DEPENDENCY_02='sogoupinyin'
 	###################
 	if [ -e "/usr/share/fcitx-sogoupinyin" ] || [ -e "/usr/share/sogouimebs/" ]; then
 		install_pkg_warning
 	fi
-	if [ "${ARCH_TYPE}" = "i386" ]; then
-		GREP_NAME='sogoupinyin'
-		LATEST_DEB_REPO='http://archive.kylinos.cn/kylin/KYLIN-ALL/pool/main/s/sogoupinyin/'
-	else
-		GREP_NAME='sogouimebs'
-		LATEST_DEB_REPO='http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
-	fi
-	download_ubuntu_kylin_deb_file_model_02
-	#download_ubuntu_kylin_deb_file
+	case "${ARCH_TYPE}" in
+	amd64 | i386) 
+		echo "本脚本提供的是搜狗官网的版本"
+		echo "Debian sid、Kali rolling和ubuntu 20.04等高版本可能无法正常运行,您可以前往优麒麟软件仓库手动下载安装。"
+		echo 'http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
+		do_you_want_to_continue
+	LATEST_DEB_URL=$(curl -L 'https://pinyin.sogou.com/linux/' | grep ${ARCH_TYPE} |  grep deb | awk '{print $3}' | cut -d '"' -f 2)
+	LATEST_DEB_VERSION="sogouimebs_${ARCH_TYPE}.deb"
+	install_deb_file_common_model_02
+	;;
+	arm64) echo "请手动前往优麒麟软件仓库手动下载安装arm64版sogouimebs" ;;
+	esac
 	echo "若安装失败，则请前往官网手动下载安装。"
-	echo 'url: https://pinyin.sogou.com/linux/'
-	#rm -fv sogou_pinyin.deb
+	echo "url: ${YELLOW}https://pinyin.sogou.com/linux/${RESET}"
 	beta_features_install_completed
 }
 ########
@@ -16390,14 +16402,17 @@ configure_arch_fcitx() {
 install_debian_iflyime_pinyin() {
 	DEPENDENCY_02="iflyime"
 	beta_features_quick_install
-	if [ "${ARCH_TYPE}" = "amd64" ]; then
+	case "${ARCH_TYPE}" in
+	amd64) 
 		REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/i/iflyime/'
 		GREP_NAME="${ARCH_TYPE}"
 		grep_deb_comman_model_01
-	else
-		arch_does_not_support
-		echo "请在更换x64架构的设备后，再来尝试"
-	fi
+	;;
+	*) 
+	arch_does_not_support
+	echo "请在更换x64架构的设备后，再来尝试"
+	;;
+	esac
 }
 #############
 install_iflyime_pinyin() {
@@ -16710,11 +16725,15 @@ install_electronic_wechat() {
 	non_debian_function
 	cd /tmp
 	GREP_NAME='electronic-wechat'
+	case $(date +%Y%m) in
+	202008) 
+			echo "优麒麟软件仓库于2020年8月份中下旬进行维护，您可能无法正常下载" 
+			do_you_want_to_continue
+			;;
+	esac
 	if [ "${ARCH_TYPE}" = "amd64" ]; then
 		LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/'
 		download_debian_cn_repo_deb_file_model_01
-		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/e/electronic-wechat/electronic-wechat_2.0~repack0~debiancn0_amd64.deb'
-		#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'electronic-wechat.deb' 'http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/electronic-wechat_2.0.1_amd64.deb'
 	elif [ "${ARCH_TYPE}" = "i386" ]; then
 		LATEST_DEB_REPO='http://archive.ubuntukylin.com:10006/ubuntukylin/pool/main/e/electronic-wechat/'
 		download_ubuntu_kylin_deb_file_model_02
