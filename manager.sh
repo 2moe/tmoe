@@ -3524,7 +3524,7 @@ switch_vnc_pulse_audio_transport_method() {
 		PULSEtransportMethon='检测到您当前使用的是termux音频传输'
 	fi
 
-	if (whiptail --title "您想用哪个软件来传输VNC音频？(｡･∀･)ﾉﾞ" --yes-button 'Termux(*￣▽￣*)o' --no-button 'XSDL(っ °Д °)' --yesno "${PULSEtransportMethon},请选择您需要切换的传输类型！注：您必须先安装XSDL app才能使用XSDL的音频服务，切换成XSDL后，启动VNC时将自动打开XSDL,此时不会转发X,您也无需执行任何操作。" 11 50); then
+	if (whiptail --title "您想用哪个软件来传输VNC音频？(｡･∀･)ﾉﾞ" --yes-button 'Termux(*￣▽￣*)o' --no-button 'XSDL(っ °Д °)' --yesno "${PULSEtransportMethon},请选择您需要切换的传输类型！注：您必须先安装XSDL app才能使用XSDL的音频服务，切换成XSDL后，启动VNC时将自动打开XSDL,此时不会转发X,您也无需执行任何操作。\nWhich software do you want to use to transmit VNC audio?" 13 50); then
 
 		sed -i 's/^export.*PULSE.*/export PULSE_SERVER=127.0.0.1/' ${DEBIAN_CHROOT}/root/.vnc/xstartup || echo "没有找到vnc xstartup呢！请确保您已安装gui"
 		sed -i '/x.org.server.MainActivity/d' $PREFIX/bin/startvnc
@@ -3546,12 +3546,12 @@ termux_pulse_audio_lan() {
 		cd /etc/pulse
 	fi
 	if grep -q '192.168.0.0/16' default.pa; then
-		LANPULSE='检测到您已启用局域网音频传输'
+		LANPULSE='检测到您已启用局域网音频传输,you have enabled LAN audio transmission'
 	else
-		LANPULSE='检测到您未启用局域网音频传输，默认仅允许本机传输'
+		LANPULSE='检测到您未启用局域网音频传输，默认仅允许本机传输,you have disabled LAN audio transmission'
 	fi
-
-	if (whiptail --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'enable(*￣▽￣*)o' --no-button 'Disable(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！" 8 50); then
+#10 50
+	if (whiptail --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'yes(*￣▽￣*)o' --no-button 'no(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！\nDo you want to enable LAN audio transmission?" 11 50); then
 		sed -i '/auth-ip-acl/d' default.pa
 		sed -i '/module-native-protocol-tcp/d' default.pa
 		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16;172.16.0.0/12 auth-anonymous=1' default.pa
