@@ -862,11 +862,6 @@ elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
 	rm -f "${HOME}/.REDHATDetectionFILE"
 	chmod u+w "${DEBIAN_CHROOT}/root"
 elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
-	#sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
-	#sed -i '/DEFAULTZSHLOGIN/d' $(command -v debian)
-	#sed -i 's@sed -i \"s:\${DE@#&@g' $(command -v debian)
-	sed -i 's/bash --login/ash --login/g' $(command -v debian)
-	sed -i 's/zsh --login/ash --login/g' $(command -v debian)
 	mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
 elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
@@ -1389,6 +1384,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #sed -i '1 c\#!/bin/bash' zsh.sh
 	    #chmod +x zsh.sh
 	    echo '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
+		xbps-reconfigure -f glibc-locales
 	    #zsh 2>/dev/null || bash
 	    #exit 0
 	}

@@ -209,6 +209,7 @@ check_linux_distro() {
 		########################
 	elif [ "$(cat /etc/issue | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
+		export LANG='en_US.UTF-8'
 		PACKAGES_INSTALL_COMMAND='xbps-install -S -y'
 		PACKAGES_REMOVE_COMMAND='xbps-remove -R'
 	fi
