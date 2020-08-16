@@ -145,6 +145,13 @@ if [ ! -f "${HOME}/.zshrc" ]; then
     #https://github.com/ohmyzsh/ohmyzsh/raw/master/templates/zshrc.zsh-template
 fi
 ######################
+ps -e &>/dev/null
+if [ "$?" != '0' ]; then
+    TERMUX_PS_FILE='/data/data/com.termux/files/usr/bin/ps'
+    if [ -e "${TERMUX_PS_FILE}" ]; then
+        cp ${TERMUX_PS_FILE} /usr/local/bin
+    fi
+fi
 chsh -s /usr/bin/zsh || chsh -s /bin/zsh
 
 RB_RED=$(printf '\033[38;5;196m')
