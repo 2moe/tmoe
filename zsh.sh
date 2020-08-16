@@ -297,7 +297,7 @@ if [ -f "/root/.vnc/startxsdl" ]; then
     sleep 9
     /usr/local/bin/startxsdl
 fi
-ps -e 2>/dev/null | tail -n 20
+ps -e 2>/dev/null | grep -Ev 'bash|zsh' |tail -n 20
 EndOfFile
 #########################
 configure_command_not_found() {

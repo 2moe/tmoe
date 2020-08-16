@@ -2440,7 +2440,7 @@ disable_qemu_user_static() {
 		sed -i 's@^set.*qemu=qemu@#test03&@g' ${PREFIX}/bin/debian
 	else
 		#sed -i 's@#command+=\" -q qemu-@command+=\" -q qemu@' ${PREFIX}/bin/debian
-		sed -i 's@^#test03@@g' ${PREFIX}/bin/debian
+		sed -i 's@#test03@@g' ${PREFIX}/bin/debian
 	fi
 }
 #############
