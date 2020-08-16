@@ -431,6 +431,13 @@ check_dependencies() {
 			apt update
 			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES}
 		fi
+		ps -e &>/dev/null
+		if [ "$?" != '0' ]; then
+    	TERMUX_PS_FILE='/data/data/com.termux/files/usr/bin/ps'
+    		if [ -e "${TERMUX_PS_FILE}" ]; then
+	        	cp ${TERMUX_PS_FILE} /usr/local/bin
+    		fi
+		fi
 	fi
 	################
 	################
