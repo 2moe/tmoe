@@ -63,10 +63,23 @@ main() {
 	esac
 }
 ################
+check_release_version() {
+	if [ "${LINUX_DISTRO}" = "Android" ]; then
+		OSRELEASE="Android"
+	elif grep -q 'NAME=' /etc/os-release; then
+		OSRELEASE=$(cat /etc/os-release | grep -v 'PRETTY' | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+	elif grep -q 'ID=' /etc/os-release; then
+		OSRELEASE=$(cat /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+	else	
+		OSRELEASE=LINUX
+	fi
+}
+##############
 gnu_linux_env(){ 
 if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
 	TMOE_PROOT='true'
 fi
+check_release_version
 }
 ################
 check_win10x_icon(){ 
@@ -587,7 +600,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux Tool输debian-i启动(20200811-04)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+		whiptail --title "Tmoe-linux running on ${OSRELEASE}(20200816)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌈 Desktop beautification:桌面美化(主题)" \
@@ -5220,7 +5233,7 @@ check_tmoe_sources_list_backup_file() {
 		SOURCES_LIST_BACKUP_FILE_NAME="yum.repos.d-backup.tar.gz"
 		EXTRA_SOURCE='epel源'
 	else
-		EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源'
+		EXTRA_SOURCE="不支持修改${LINUX_DISTRO}源"
 	fi
 
 	if [ ! -e "${SOURCES_LIST_BACKUP_FILE}" ]; then

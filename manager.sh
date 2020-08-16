@@ -393,6 +393,7 @@ gnu_linux() {
 			zypper in -y ${DEPENDENCIES}
 
 		elif [ "${LINUX_DISTRO}" = "void" ]; then
+			export LANG='en_US.UTF-8'
 			xbps-install -S -y ${DEPENDENCIES}
 
 		else
@@ -658,7 +659,7 @@ android_termux() {
 #\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200815-04)" --backtitle "$(
+		whiptail --title "GNU/Linux Tmoe manager(20200816-20)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
