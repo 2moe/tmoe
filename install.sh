@@ -506,17 +506,17 @@ check_tmoe_proot_container_proc() {
 	if [ ! -e "${TMOE_PROC_PATH}" ]; then
 		mkdir -p ${TMOE_PROC_PATH}
 	fi
-	echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
-	creat_tmoe_proot_stat_file
 	FILE_01=version
 	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
+		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
 		sed -i "s@#test01@@" ${PREFIX}/bin/debian
 	fi
 	#######
 	FILE_02=stat
 	TMOE_PROC_FILE=$(cat /proc/${FILE_02} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
+		creat_tmoe_proot_stat_file
 		sed -i "s@#test02@@" ${PREFIX}/bin/debian
 	fi
 }
@@ -587,7 +587,8 @@ creat_proot_startup_script() {
 		    else
 		      TMOE_SHELL="/bin/su"
 		    fi
-		    set -- "\${TMOE_SHELL}" "--login" "\$@"
+			#考虑到兼容性，此处应为-l,而非--login
+		    set -- "\${TMOE_SHELL}" "-l" "\$@"
 		    if [ -e "/data/data/com.termux" ]; then
 		      set -- "PREFIX=/data/data/com.termux/files/usr" "\$@"
 		    fi
@@ -638,7 +639,7 @@ creat_proot_startup_script() {
 		    set -- "--pwd=/root" "\$@"
 		    set -- "--rootfs=${DEBIAN_CHROOT}" "\$@"
 		    if [ "$(uname -o)" = 'Android' ]; then
-		      set_android_mount_dir
+		      #set_android_mount_dir
 		      if [ -e "/system" ]; then
 		        set -- "--mount=/system" "\$@"
 		      fi
