@@ -14539,7 +14539,7 @@ multi_qemu_vm_management() {
 save_current_qemu_conf_as_a_new_script() {
 	mkdir -p ${TMOE_QEMU_SCRIPT_FILE_PATH}
 	cd ${TMOE_QEMU_SCRIPT_FILE_PATH}
-	TARGET_FILE_NAME=$(whiptail --inputbox "请自定义启动脚本名称\nPlease enter the script name." 10 50 --title "SCRIPT NAME" 3>&1 1>&2 2>&3)
+	TARGET_FILE_NAME=$(whiptail --inputbox "请自定义启动脚本名称,当前虚拟机的命令始终为startqemu\nPlease enter the script name." 10 50 --title "SCRIPT NAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		multi_qemu_vm_management
 	elif [ "${TARGET_FILE_NAME}" = "startqemu" ] || [ "${TARGET_FILE_NAME}" = "debian-i" ] || [ "${TARGET_FILE_NAME}" = "startvnc" ]; then
@@ -15227,7 +15227,7 @@ download_android_x86_file() {
 	if [ "${ARCH_TYPE}" = 'i386' ]; then
 		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep -v 'x86_64' | grep date | grep '.iso' | tail -n 1 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 	else
-		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 	fi
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
 	#echo ${THE_LATEST_ISO_LINK}
@@ -16574,7 +16574,7 @@ install_debian_virtual_box(){
 #############
 install_virtual_qt(){ 
 	DEPENDENCY_01="virtualbox-qt"
-	DEPENDENCY_02=""
+	DEPENDENCY_02="virtualbox-ext-pack"
 	beta_features_quick_install
 }
 ##############

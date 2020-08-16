@@ -481,9 +481,47 @@ creat_chroot_startup_script() {
 	#上面那行不要有空格
 }
 ###################
+creat_tmoe_proot_stat_file() {
+	cat >${TMOE_PROC_PREFIX}.${FILE_02} <<-'ENDOFSTAT'
+		cpu  13543674 2263150 11590764 15571271 210309 1343827 851885 0 0 0
+		cpu0 3629787 489276 3129188 15571051 210302 802654 516635 0 0 0
+		cpu1 3221514 563397 2565534 19 0 168835 110203 0 0 0
+		cpu2 2884314 491225 2361364 18 1 161981 92821 0 0 0
+		cpu3 2664267 457057 2282166 21 0 166631 88732 0 0 0
+		cpu4 365877 83980 417984 25 6 15600 10165 0 0 0
+		cpu5 296831 71203 325638 39 0 9363 14383 0 0 0
+		cpu6 262541 59844 288038 49 0 10350 10848 0 0 0
+		cpu7 218543 47168 220852 49 0 8413 8098 0 0 0
+		intr 1168051864 0 0 0 276005458 0 24952856 5 4 5 0 0 958 302 0 0 0 543988 116 0 1 0 92 184 0 0 0 0 0 0 0 2 0 145446 16538 11 11 358496 0 1779 0 0 0 0 0 1761 106944 0 221398 21826498 15065436 42829013 0 361294 4515 66197491 0 0 82 0 0 0 95 11438 0 0 0 0 0 0 0 0 0 0 288050 6 5498890 688446 388694 0 0 0 0 0 1674782 2042455 0 0 0 0 0 90 120387 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 7 190 0 1434 3096 2536 13 13822 11167 0 0 485674 0 4 3244478 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9327 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 18 0 0 0 0 30003 0 0 0 1471954 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3975713 62570 292 1841582 5903677 88 1324421 35786 38 0 95 601 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77575 30048 0 680 0 106 0 0 0 0 0 0 0 38 0 0 0 0 0 0 116 111 112 0 113 80 17256 201 0 0 0 0 0 0 0 0 1071 0 12984 5 151277 20 171 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6969 0 45 0 0 4309 20 0 10 4 0 0 0 0 618 0 0 587152 46371 1206 0 493 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		ctxt 1941467212
+		btime 1597149124
+		processes 1324243
+		procs_running 9
+		procs_blocked 1
+		softirq 268005113 132391 49905524 287215 24847758 108137456 132391 1472849 45583820 0 37505709
+	ENDOFSTAT
+}
+###############
+check_tmoe_proot_container_proc() {
+	FILE_01=version
+	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+		sed -i "s@#test01@@" ${PREFIX}/bin/debian
+	fi
+	#############
+	FILE_02=stat
+	TMOE_PROC_FILE=$(cat /proc/${FILE_02} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		creat_tmoe_proot_stat_file
+		sed -i "s@#test02@@" ${PREFIX}/bin/debian
+	fi
+}
+###########
 creat_proot_startup_script() {
 	echo "Creating proot startup script"
 	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
+	TMOE_PROC_PREFIX="${DEBIAN_CHROOT}/proc/.tmoe-container"
 	#DEBIAN_CHROOT=~/debian_arm64
 	#DEBIAN_FOLDER=debian_arm64
 	#此处EndOfFile不要加单引号
@@ -522,17 +560,25 @@ creat_proot_startup_script() {
 			unset LD_PRELOAD
 			command="proot"
 			command+=" --link2symlink"
-			command+=" -0"
-			command+=" -r ${DEBIAN_FOLDER}"
+			command+=" --kill-on-exit"
+			command+=" --root-id"
+			command+=" --rootfs=${DEBIAN_FOLDER}"
 			#command+=" -q qemu-x86_64-staic"
-			command+=" -b /dev"
-			command+=" -b /proc"
-			command+=" -b ${DEBIAN_FOLDER}/root:/dev/shm"
+			command+=" --mount=/dev"
+			command+=" --mount=/sys"
+			command+=" --mount=/proc"
+			command+=" --mount=/proc/self/fd:/dev/fd"
+			command+=" --mount=/proc/self/fd/0:/dev/stdin"
+			command+=" --mount=/proc/self/fd/1:/dev/stdout"
+			command+=" --mount=/proc/self/fd/2:/dev/stderr"
+			command+=" --mount=${DEBIAN_FOLDER}/root:/dev/shm"
+			#test01command+=" --mount=${TMOE_PROC_PREFIX}.version:/proc/version"
+			#test02command+=" --mount=${TMOE_PROC_PREFIX}.stat:/proc/stat"
 			#您可以在此处修改挂载目录
-			command+=" -b /sdcard:/root/sd"
-			command+=" -b /data/data/com.termux/files/home/storage/external-1:/root/tf"
-			command+=" -b /data/data/com.termux/files/home:/root/termux"
-			command+=" -w /root"
+			command+=" --mount=/sdcard:/root/sd"
+			command+=" --mount=/data/data/com.termux/files/home/storage/external-1:/root/tf"
+			command+=" --mount=/data/data/com.termux/files/home:/root/termux"
+			command+=" --pwd=/root"
 			command+=" /usr/bin/env -i"
 			command+=" HOME=/root"
 			command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
@@ -563,14 +609,15 @@ creat_proot_startup_script() {
 		main "\$@"
 	EndOfFile
 	##################
+	check_tmoe_proot_container_proc
 	if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		sed -i 's@command+=" --link2sy@#&@' ${PREFIX}/bin/debian
 	fi
 	if [ ! -e "/sdcard" ]; then
-		sed -i 's@command+=" -b /sdcard@#&@g' ${PREFIX}/bin/debian
+		sed -i 's@command+=" --mount=/sdcard@#&@g' ${PREFIX}/bin/debian
 	fi
 	if [ ! -e "/data/data/com.termux/files/home" ]; then
-		sed -i 's@command+=" -b /data/data/com.termux/files/home:/root/termux"@#&@g' ${PREFIX}/bin/debian
+		sed -i 's@command+=" --mount=/data/data/com.termux/files/home:/root/termux"@#&@g' ${PREFIX}/bin/debian
 	fi
 	if [ ! -z "${QEMU_ARCH}" ]; then
 		sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
@@ -724,7 +771,7 @@ creat_linux_container_remove_script
 aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 #############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-	sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 	sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'

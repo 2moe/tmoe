@@ -2152,10 +2152,10 @@ configure_termux_xwayland_mount() {
 		press_enter_to_return
 		download_vnc_apk
 	fi
-	GET_DEBIAN_BIND_LINE=$(cat $PREFIX/bin/debian | grep -n 'command+=" -b /data' | cut -d ':' -f 1 | head -n 1)
+	GET_DEBIAN_BIND_LINE=$(cat $PREFIX/bin/debian | grep -n 'command+=" --mount=/data' | cut -d ':' -f 1 | head -n 1)
 	sed -i '/com.sion.sparkle/d' $PREFIX/bin/debian
 	#rm ${DEBIAN_CHROOT}/etc/xwayland || sudo rm ${DEBIAN_CHROOT}/etc/xwayland
-	sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" -b /data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
+	sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" --mount=/data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
 	echo "termux配置完成，您还需要进入GNU/Linux容器环境内，单独选择xwayland桌面配置选项!"
 	echo "按回车键打开wayland服务端app"
 	read
@@ -3040,7 +3040,7 @@ un_xz_debian_recovery_kit() {
 	cd "$cur"
 	#用绝对路径
 	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-		sed -i 's@^command+=" -b /data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+		sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
 	if [ -e "${HOME}/debian_arm64" ]; then
