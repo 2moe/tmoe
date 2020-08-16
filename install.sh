@@ -51,14 +51,14 @@ esac
 #requirements and DEPENDENCIES.
 TRUE_ARCH_TYPE=${ARCH_TYPE}
 QEMU_ARCH=''
-CONFIG_FOLDER="${HOME}/.config/tmoe-linux/"
-ACROSS_ARCH_FILE="${CONFIG_FOLDER}across_architecture_container.txt"
+CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
+ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
 if [ -e "${ACROSS_ARCH_FILE}" ]; then
 	ARCH_TYPE="$(cat ${ACROSS_ARCH_FILE} | head -n 1)"
 	QEMU_ARCH="$(cat ${ACROSS_ARCH_FILE} | sed -n 2p)"
 fi
 
-LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}linux_container_distro.txt"
+LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
 DEBIAN_FOLDER=debian_${ARCH_TYPE}
 if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
 	LINUX_CONTAINER_DISTRO=$(cat ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
@@ -503,21 +503,20 @@ creat_tmoe_proot_stat_file() {
 }
 ###############
 check_tmoe_proot_container_proc() {
-	if [ ! -e "${DEBIAN_CHROOT}/proc" ]; then
-		mkdir -p ${DEBIAN_CHROOT}/proc
+	if [ ! -e "${TMOE_PROC_PATH}" ]; then
+		mkdir -p ${TMOE_PROC_PATH}
 	fi
-
+	echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+	creat_tmoe_proot_stat_file
 	FILE_01=version
 	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
-		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
 		sed -i "s@#test01@@" ${PREFIX}/bin/debian
 	fi
 	#######
 	FILE_02=stat
 	TMOE_PROC_FILE=$(cat /proc/${FILE_02} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
-		creat_tmoe_proot_stat_file
 		sed -i "s@#test02@@" ${PREFIX}/bin/debian
 	fi
 }
@@ -537,7 +536,8 @@ creat_proot_startup_script() {
 	#需要注释掉
 	echo "Creating proot startup script"
 	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
-	TMOE_PROC_PREFIX="${DEBIAN_CHROOT}/proc/.tmoe-container"
+	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proc"
+	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	#此处ENDOFPROOT不要加单引号
 	cat >${PREFIX}/bin/debian <<-ENDOFPROOT
 		  #!/data/data/com.termux/files/usr/bin/bash
@@ -617,7 +617,6 @@ creat_proot_startup_script() {
 		      set -- "--mount=/storage/emulated/0:/root/sd" "\$@"
 		    fi
 		    #######################
-			#以下安卓专属目录将不会被挂载
 		    set_android_mount_dir() {
 		      if [ -e "/vendor" ]; then
 		        set -- "--mount=/vendor" "\$@"
@@ -639,7 +638,7 @@ creat_proot_startup_script() {
 		    set -- "--pwd=/root" "\$@"
 		    set -- "--rootfs=${DEBIAN_CHROOT}" "\$@"
 		    if [ "$(uname -o)" = 'Android' ]; then
-		       #set_android_mount_dir
+		      set_android_mount_dir
 		      if [ -e "/system" ]; then
 		        set -- "--mount=/system" "\$@"
 		      fi
