@@ -1150,7 +1150,7 @@ questions_about_tmoe_automatic_configuration() {
 install_proot_container() {
 	rm -f ~/.Chroot-Container-Detection-File
 	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
-	touch ~/.Tmoe-Proot-Container-Detection-File
+	#touch ~/.Tmoe-Proot-Container-Detection-File
 	install_gnu_linux_container
 	#sed -i 's@^command+=" --link2sy@#&@' $(command -v debian)
 }
@@ -1278,7 +1278,7 @@ enable_root_mode() {
 		mkdir -p /data/data/com.termux/files/usr/etc/storage/
 		cd /data/data/com.termux/files/usr/etc/storage/
 
-		rm -rf external-tf
+		#rm -rf external-tf
 
 		su -c 'ls /mnt/media_rw/*' 2>/dev/null || mkdir external-tf
 
@@ -2152,10 +2152,11 @@ configure_termux_xwayland_mount() {
 		press_enter_to_return
 		download_vnc_apk
 	fi
-	GET_DEBIAN_BIND_LINE=$(cat $PREFIX/bin/debian | grep -n 'command+=" --mount=/data' | cut -d ':' -f 1 | head -n 1)
+	GET_DEBIAN_BIND_LINE=$(cat $PREFIX/bin/debian | grep -n 'mount=/sys' | cut -d ':' -f 1 | head -n 1)
 	sed -i '/com.sion.sparkle/d' $PREFIX/bin/debian
 	#rm ${DEBIAN_CHROOT}/etc/xwayland || sudo rm ${DEBIAN_CHROOT}/etc/xwayland
-	sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" --mount=/data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
+	sed -i "${GET_DEBIAN_BIND_LINE} i\set -- \"--mount=/data/data/com.sion.sparkle/files:/etc/xwayland\" \"\$@\"" $PREFIX/bin/debian
+	#sed -i "${GET_DEBIAN_BIND_LINE} i\ command+=\" --mount=/data/data/com.sion.sparkle/files:/etc/xwayland\"" $PREFIX/bin/debian
 	echo "termux配置完成，您还需要进入GNU/Linux容器环境内，单独选择xwayland桌面配置选项!"
 	echo "按回车键打开wayland服务端app"
 	read
@@ -2435,9 +2436,11 @@ same_arch_or_different_arch() {
 disable_qemu_user_static() {
 	if (whiptail --title "若无法向下兼容，则尝试禁用该参数" --yes-button 'disable禁用' --no-button 'enable启用' --yesno "Do you want to disable it?" 0 0); then
 		#sed -i "s@command.*qemu-.*-staic@#&@" ${PREFIX}/bin/debian
-		sed -i 's@command+=\" -q qemu-@#&@' ${PREFIX}/bin/debian
+		#sed -i 's@command+=\" -q qemu-@#&@' ${PREFIX}/bin/debian
+		sed -i 's@^set.*qemu=qemu@#test03&@g' ${PREFIX}/bin/debian
 	else
-		sed -i 's@#command+=\" -q qemu-@command+=\" -q qemu@' ${PREFIX}/bin/debian
+		#sed -i 's@#command+=\" -q qemu-@command+=\" -q qemu@' ${PREFIX}/bin/debian
+		sed -i 's@^#test03@@g' ${PREFIX}/bin/debian
 	fi
 }
 #############
@@ -3040,7 +3043,7 @@ un_xz_debian_recovery_kit() {
 	cd "$cur"
 	#用绝对路径
 	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-		sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+		#sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
 	if [ -e "${HOME}/debian_arm64" ]; then
@@ -3551,7 +3554,7 @@ termux_pulse_audio_lan() {
 	else
 		LANPULSE='检测到您未启用局域网音频传输，默认仅允许本机传输,you have disabled LAN audio transmission'
 	fi
-#10 50
+	#10 50
 	if (whiptail --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'yes(*￣▽￣*)o' --no-button 'no(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！\nDo you want to enable LAN audio transmission?" 11 50); then
 		sed -i '/auth-ip-acl/d' default.pa
 		sed -i '/module-native-protocol-tcp/d' default.pa

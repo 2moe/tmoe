@@ -509,7 +509,7 @@ check_tmoe_proot_container_proc() {
 		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
 		sed -i "s@#test01@@" ${PREFIX}/bin/debian
 	fi
-	#############
+	#######
 	FILE_02=stat
 	TMOE_PROC_FILE=$(cat /proc/${FILE_02} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
@@ -518,117 +518,149 @@ check_tmoe_proot_container_proc() {
 	fi
 }
 ###########
-creat_proot_startup_script() {
-	echo "Creating proot startup script"
-	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
-	TMOE_PROC_PREFIX="${DEBIAN_CHROOT}/proc/.tmoe-container"
-	#DEBIAN_CHROOT=~/debian_arm64
-	#DEBIAN_FOLDER=debian_arm64
-	#此处EndOfFile不要加单引号
-	cat >${PREFIX}/bin/debian <<-EndOfFile
-		#!/data/data/com.termux/files/usr/bin/bash
-		get_tmoe_linux_help_info() {
-			cat <<-'ENDOFHELP'
-				         -i      --启动tmoe-linux manager
-						 -m      --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
-						-vnc     --启动VNC
-			ENDOFHELP
-		}
-		main() {
-			case "\$1" in
-			i* | -i* | -I*)
-				debian-i
-				exit 0
-				;;
-			-h* | --h*)
-				get_tmoe_linux_help_info
-				;;
-			-m* | m*)
-				debian-i -m
-				;;
-			-vnc* | vnc*)
-				startvnc
-				;;
-			*) start_tmoe_gnu_linux_container ;;
-			esac
-		}
-		start_tmoe_gnu_linux_container() {
-			cd ${HOME}
-			#pulseaudio --kill 2>/dev/null &
-			#为加快启动速度，此处不重启音频服务
-			pulseaudio --start 2>/dev/null &
-			unset LD_PRELOAD
-			command="proot"
-			command+=" --link2symlink"
-			command+=" --kill-on-exit"
-			command+=" --root-id"
-			command+=" --rootfs=${DEBIAN_FOLDER}"
-			#command+=" -q qemu-x86_64-staic"
-			command+=" --mount=/dev"
-			command+=" --mount=/sys"
-			command+=" --mount=/proc"
-			command+=" --mount=/proc/self/fd:/dev/fd"
-			command+=" --mount=/proc/self/fd/0:/dev/stdin"
-			command+=" --mount=/proc/self/fd/1:/dev/stdout"
-			command+=" --mount=/proc/self/fd/2:/dev/stderr"
-			command+=" --mount=${DEBIAN_FOLDER}/root:/dev/shm"
-			#test01command+=" --mount=${TMOE_PROC_PREFIX}.version:/proc/version"
-			#test02command+=" --mount=${TMOE_PROC_PREFIX}.stat:/proc/stat"
-			#您可以在此处修改挂载目录
-			command+=" --mount=/sdcard:/root/sd"
-			command+=" --mount=/data/data/com.termux/files/home/storage/external-1:/root/tf"
-			command+=" --mount=/data/data/com.termux/files/home:/root/termux"
-			command+=" --pwd=/root"
-			command+=" /usr/bin/env -i"
-			command+=" HOME=/root"
-			command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
-			command+=" TERM=xterm-256color"
-			command+=" LANG=en_US.UTF-8"
-			command+=" /bin/bash --login"
-			com="\$@"
-			#为防止匹配行被替换，故采用base64加密。
-			DEFAULTZSHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL3pzaCAtLWxvZ2luIgo=' | base64 -d)"
-			DEFAULTBASHLOGIN="\$(echo 'Y29tbWFuZCs9IiAvYmluL2Jhc2ggLS1sb2dpbiIK' | base64 -d)"
-
-			if [ -f ~/${DEBIAN_FOLDER}/bin/zsh ]; then
-				sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
-			else
-				sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
-			fi
-
-			if [ ! -e "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-				echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
-			fi
-
-			if [ -z "\$1" ]; then
-				exec \$command
-			else
-				\$command -c "\$com"
-			fi
-		}
-		main "\$@"
-	EndOfFile
-	##################
-	check_tmoe_proot_container_proc
-	if [ "${LINUX_DISTRO}" != 'Android' ]; then
-		sed -i 's@command+=" --link2sy@#&@' ${PREFIX}/bin/debian
-	fi
-	if [ ! -e "/sdcard" ]; then
-		sed -i 's@command+=" --mount=/sdcard@#&@g' ${PREFIX}/bin/debian
-	fi
-	if [ ! -e "/data/data/com.termux/files/home" ]; then
-		sed -i 's@command+=" --mount=/data/data/com.termux/files/home:/root/termux"@#&@g' ${PREFIX}/bin/debian
-	fi
+check_proot_qemu() {
 	if [ ! -z "${QEMU_ARCH}" ]; then
-		sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
+		#sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
+		#sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
+		sed -i 's@#test03@@' ${PREFIX}/bin/debian
 		sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
 	fi
 }
-######################
+############
+creat_proot_startup_script() {
+	#DEBIAN_CHROOT=~/debian-sid_arm64
+	#DEBIAN_FOLDER=debian-sid_arm64
+	#需要注释掉
+	echo "Creating proot startup script"
+	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
+	TMOE_PROC_PREFIX="${DEBIAN_CHROOT}/proc/.tmoe-container"
+	#此处ENDOFPROOT不要加单引号
+	cat >${PREFIX}/bin/debian <<-ENDOFPROOT
+		  #!/data/data/com.termux/files/usr/bin/bash
+		  get_tmoe_linux_help_info() {
+		    cat <<-'ENDOFHELP'
+						-i     --启动tmoe-linux manager
+						-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
+						-vnc   --启动VNC
+						-h     --get help info
+					ENDOFHELP
+		  }
+		  ############
+		  main() {
+		    case "\$1" in
+		    i* | -i* | -I*)
+		      debian-i
+		      exit 0
+		      ;;
+		    -h* | --h*)
+		      get_tmoe_linux_help_info
+		      ;;
+		    -m* | m*)
+		      debian-i -m
+		      ;;
+		    -vnc* | vnc*)
+		      startvnc
+		      ;;
+		    *) start_tmoe_gnu_linux_container ;;
+		    esac
+		  }
+		  ##############
+		  start_tmoe_gnu_linux_container() {
+		    cd ${HOME}
+		    #pulseaudio --kill 2>/dev/null &
+		    #为加快启动速度，此处不重启音频服务
+		    pulseaudio --start 2>/dev/null &
+		    unset LD_PRELOAD
+		    ############
+		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+		    PROC_FD_PATH="/proc/self/fd"
+		    if [ -f "${DEBIAN_CHROOT}/bin/zsh" ]; then
+		      TMOE_SHELL="/bin/zsh"
+		    elif [ -f "${DEBIAN_CHROOT}/bin/bash" ]; then
+		      TMOE_SHELL="/bin/bash"
+		    elif [ -f "${DEBIAN_CHROOT}/bin/ash" ]; then
+		      TMOE_SHELL="/bin/ash"
+		    else
+		      TMOE_SHELL="/bin/su"
+		    fi
+		    set -- "\${TMOE_SHELL}" "--login" "\$@"
+		    if [ -e "/data/data/com.termux" ]; then
+		      set -- "PREFIX=/data/data/com.termux/files/usr" "\$@"
+		    fi
+		    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
+		      set -- "LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)" "\$@"
+		    else
+		      set -- "LANG=en_US.UTF-8" "\$@"
+		    fi
+		    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TERM=xterm-256color" "\$@"
+		    set -- "--mount=/sys" "\$@"
+		    set -- "--mount=/dev" "\$@"
+		    #/dev/shm为tmpfs临时文件系统
+		    set -- "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm" "\$@"
+		    set -- "--mount=\${PROC_FD_PATH}:/dev/fd" "\$@"
+		    set -- "--mount=\${PROC_FD_PATH}/0:/dev/stdin" "\$@"
+		    set -- "--mount=\${PROC_FD_PATH}/1:/dev/stdout" "\$@"
+		    set -- "--mount=\${PROC_FD_PATH}/2:/dev/stderr" "\$@"
+		    #勿删test注释
+			#test03set -- "--qemu=qemu-x86_64-staic" "\$@"
+		    set -- "--mount=/dev/urandom:/dev/random" "\$@"
+		    set -- "--mount=/proc" "\$@"
+		    if [ -e "/storage/self/primary" ]; then
+		      set -- "--mount=/storage/self/primary:/root/sd" "\$@"
+		    elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
+		      set -- "--mount=/sdcard:/root/sd" "\$@"
+		    elif [ -e "/storage/emulated/0" ]; then
+		      set -- "--mount=/storage/emulated/0:/root/sd" "\$@"
+		    fi
+		    #######################
+		    set_android_mount_dir() {
+		      if [ -e "/vendor" ]; then
+		        set -- "--mount=/vendor" "\$@"
+		      fi
+		      if [ -e "/apex" ]; then
+		        #Android 10特性：APEX模块化
+		        set -- "--mount=/apex" "\$@"
+		      fi
+		      if [ -e "/plat_property_contexts" ]; then
+		        set -- "--mount=/plat_property_contexts" "\$@"
+		      fi
+		      if [ -e "/property_contexts" ]; then
+		        set -- "--mount=/property_contexts" "\$@"
+		      fi
+		    }
+		    #################
+		    #test01set -- "--mount=${TMOE_PROC_PREFIX}.stat:/proc/stat" "\$@"
+		    #test02set -- "--mount=${TMOE_PROC_PREFIX}.version:/proc/version" "\$@"
+		    set -- "--pwd=/root" "\$@"
+		    set -- "--rootfs=${DEBIAN_CHROOT}" "\$@"
+		    if [ "$(uname -o)" = 'Android' ]; then
+		      set_android_mount_dir
+		      if [ -e "/system" ]; then
+		        set -- "--mount=/system" "\$@"
+		      fi
+		      if [ -h "${HOME}/storage/external-1" ]; then
+		        set -- "--mount=${HOME}/storage/external-1:/root/tf" "\$@"
+		      fi
+		      if [ -e "/data/data/com.termux" ]; then
+		        set -- "--mount=/data/data/com.termux" "\$@"
+		      fi
+		      set -- "--link2symlink" "\$@"
+		    fi
+		    set -- "--root-id" "\$@"
+		    set -- "--kill-on-exit" "\$@"
+		    set -- "proot" "\$@"
+		    exec "\$@"
+		  }
+		  main "\$@"
+	ENDOFPROOT
+}
+#########
 if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 	creat_chroot_startup_script
 else
 	creat_proot_startup_script
+	check_proot_qemu
+	check_tmoe_proot_container_proc
 fi
 #######################################################
 creat_linux_container_remove_script() {
@@ -792,10 +824,10 @@ if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
 	mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
 
-if [ -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ]; then
-	mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
-	echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
-elif [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
+#if [ -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ]; then
+#mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
+#echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
 	mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
 	echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
 fi
@@ -901,7 +933,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 		sleep 9
 		/usr/local/bin/startxsdl
 	fi
-	ps -e 2>/dev/null | tail -n 25
+	ps -e 2>/dev/null | tail -n 20
 EndOfFile
 ############
 if [ ! -f ".bashrc" ]; then

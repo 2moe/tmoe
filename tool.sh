@@ -4,6 +4,7 @@ main() {
 	check_linux_distro
 	check_architecture
 	check_current_user_name_and_group
+	gnu_linux_env
 	case "$1" in
 	i | -i)
 		tmoe_linux_tool_menu
@@ -60,6 +61,12 @@ main() {
 		check_root
 		;;
 	esac
+}
+################
+gnu_linux_env(){ 
+if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	TMOE_PROOT='true'
+fi
 }
 ################
 check_win10x_icon(){ 
@@ -2041,7 +2048,7 @@ install_gui() {
 preconfigure_gui_dependecies_02() {
 	DEPENDENCY_02="tigervnc"
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			NON_DBUS='true'
 		fi
 		DEPENDENCY_02="dbus-x11 fonts-noto-cjk fonts-noto-color-emoji tightvncserver"
@@ -2054,7 +2061,7 @@ preconfigure_gui_dependecies_02() {
 		#上面的依赖摆放的位置是有讲究的。
 		##############
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			NON_DBUS='true'
 		fi
 		DEPENDENCY_02="google-noto-sans-cjk-ttc-fonts google-noto-emoji-color-fonts tigervnc-server"
@@ -2716,7 +2723,7 @@ window_manager_install() {
 		REMOTE_DESKTOP_SESSION_01='jwm'
 		;;
 	25)
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			echo "检测到您处于proot容器环境下，kwin可能无法正常运行"
 			RETURN_TO_WHERE="window_manager_install"
 			do_you_want_to_continue
@@ -3026,7 +3033,7 @@ kali_xfce4_extras() {
 }
 ###################
 apt_purge_libfprint() {
-	if [ "${LINUX_DISTRO}" = "debian" ] && [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${LINUX_DISTRO}" = "debian" ] && [ "${TMOE_PROOT}" = 'true' ]; then
 		apt purge -y ^libfprint
 		apt clean
 		apt autoclean
@@ -3605,7 +3612,7 @@ install_mate_desktop() {
 		#apt-mark hold gvfs
 		apt update
 		apt install -y udisks2 2>/dev/null
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			echo "" >/var/lib/dpkg/info/udisks2.postinst
 		fi
 		#apt-mark hold udisks2
@@ -3617,7 +3624,7 @@ install_mate_desktop() {
 	elif [ "${LINUX_DISTRO}" = "redhat" ]; then
 		DEPENDENCY_01='@mate-desktop'
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			arch_linux_mate_warning
 		else
 			DEPENDENCY_01='mate mate-extra'
@@ -3721,7 +3728,7 @@ gnome3_warning() {
 		echo "WARNING! 检测到您未挂载/proc，请勿安装！"
 	fi
 
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}GNOME桌面安装后可以正常运行。"
 		RETURN_TO_WHERE='tmoe_virtual_machine_desktop'
@@ -6334,7 +6341,7 @@ patch_electron_netease_cloud_music() {
 }
 ######################
 proot_warning() {
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "在当前环境下，安装后可能无法正常运行。"
 		RETURN_TO_WHERE='explore_debian_opt_repo'
@@ -7098,7 +7105,7 @@ install_libre_office() {
 	NON_DEBIAN='false'
 	beta_features_quick_install
 	if [ "${EXIT_STATUS}" != "0" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			patch_libreoffice
 		fi
 		echo "打补丁完成"
@@ -7846,7 +7853,7 @@ xwayland_onekey() {
 ###########
 ##################
 modify_xrdp_conf() {
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}xrdp可以正常连接！"
 		RETURN_TO_WHERE='modify_remote_desktop_config'
@@ -8017,7 +8024,7 @@ configure_remote_desktop_enviroment() {
 		modify_remote_desktop_config
 	fi
 	##########################
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
 			NON_DBUS='true'
 		fi
@@ -8258,7 +8265,7 @@ xrdp_port() {
 xrdp_systemd() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
 		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
-	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	elif [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
 	fi
 
@@ -8351,7 +8358,7 @@ configure_startxsdl() {
 	###############################
 	#debian禁用dbus分两次，并非重复
 	if [ "${NON_DBUS}" = "true" ]; then
-		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+		if [ "${TMOE_PROOT}" = 'true' ]; then
 			sed -i 's:dbus-launch --exit-with-session::' startxsdl ~/.vnc/xstartup
 		fi
 	fi
@@ -8449,7 +8456,7 @@ which_vnc_server_do_you_prefer() {
 ###################
 first_configure_startvnc() {
 	#卸载udisks2，会破坏mate和plasma的依赖关系。
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ] && [ ${REMOVE_UDISK2} = 'true' ]; then
+	if [ "${TMOE_PROOT}" = 'true' ] && [ ${REMOVE_UDISK2} = 'true' ]; then
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
 			if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
 				echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
@@ -8849,7 +8856,7 @@ fix_vnc_dbus_launch() {
 	echo "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的${BLUE}proot容器${RESET}上出现了兼容性问题。"
 	echo "注1：该操作在linux虚拟机及win10子系统上没有任何问题"
 	echo "注2：2020-0412更新的版本已加入检测功能，理论上不会再出现此问题。"
-	if [ ! -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ ! "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您当前可能处于非proot环境下，是否继续修复？"
 		echo "如需重新配置vnc启动脚本，请更新debian-i后再覆盖安装gui"
 	fi
@@ -11174,7 +11181,7 @@ choose_gnu_linux_docker_images(){
 }
 #############
 install_docker_ce_or_io(){
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
 		echo "若您处于容器环境下,且宿主机为${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
 		echo "否则请通过qemu-system来运行GNU/Linux虚拟机，再安装docker。"
@@ -15697,7 +15704,7 @@ download_anbox_rom() {
 }
 ###############
 install_catfish() {
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您处于proot环境下，可能无法成功创建索引数据库"
 		echo "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${PACKAGES_REMOVE_COMMAND} mlocate catfish"
 		do_you_want_to_continue
@@ -16696,7 +16703,7 @@ install_wps_office() {
 }
 ###################
 thunar_nautilus_dolphion() {
-	if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您当前使用的是${BLUE}proot容器${RESET}，不建议您安装${RED}dolphion${RESET}"
 		echo "dolphion在当前环境下可能无法正常启动"
 		echo "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"
@@ -17002,7 +17009,7 @@ remove_nginx() {
 }
 ###################
 nginx_onekey() {
-	if [ -e "/tmp/.Chroot-Container-Detection-File" ] || [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	if [ -e "/tmp/.Chroot-Container-Detection-File" ] || [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您处于${BLUE}chroot/proot容器${RESET}环境下，部分功能可能出现异常。"
 		echo "部分系统可能会出现failed，但仍能正常连接。"
 		CHROOT_STATUS='1'
@@ -17208,7 +17215,7 @@ nginx_webdav_root_dir() {
 nginx_systemd() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
 		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
-	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	elif [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
 	fi
 
@@ -17547,7 +17554,7 @@ filebrowser_listen_ip() {
 filebrowser_systemd() {
 	if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
 		echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令"
-	elif [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
+	elif [ "${TMOE_PROOT}" = 'true' ]; then
 		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
 	fi
 
