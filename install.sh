@@ -503,6 +503,10 @@ creat_tmoe_proot_stat_file() {
 }
 ###############
 check_tmoe_proot_container_proc() {
+	if [ ! -e "${DEBIAN_CHROOT}/proc" ]; then
+		mkdir -p ${DEBIAN_CHROOT}/proc
+	fi
+
 	FILE_01=version
 	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
@@ -613,6 +617,7 @@ creat_proot_startup_script() {
 		      set -- "--mount=/storage/emulated/0:/root/sd" "\$@"
 		    fi
 		    #######################
+			#以下安卓专属目录将不会被挂载
 		    set_android_mount_dir() {
 		      if [ -e "/vendor" ]; then
 		        set -- "--mount=/vendor" "\$@"
@@ -634,7 +639,7 @@ creat_proot_startup_script() {
 		    set -- "--pwd=/root" "\$@"
 		    set -- "--rootfs=${DEBIAN_CHROOT}" "\$@"
 		    if [ "$(uname -o)" = 'Android' ]; then
-		      set_android_mount_dir
+		       #set_android_mount_dir
 		      if [ -e "/system" ]; then
 		        set -- "--mount=/system" "\$@"
 		      fi
@@ -1499,6 +1504,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dnf install -y glibc-langpack-zh
 	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
 	    #dnf clean packages
+		TMOE_LANG_HALF=$(echo $LANG | cut -d '.' -f 1 |cut -d '_' -f 1)
+		dnf install -y "glibc-langpack-${TMOE_LANG_HALF}*"
 	}
 	######################
 	if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 |cut -d '"' -f 2)" = "fedora" ]; then
