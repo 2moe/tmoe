@@ -1905,7 +1905,8 @@ install_firefox_esr_browser() {
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
 			add-apt-repository -y ppa:mozillateam/ppa
-			DEPENDENCY_02="firefox-esr-locale-zh-hans libavcodec58"
+			DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
+			#libavcodec58
 		fi
 		#################
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -1939,7 +1940,7 @@ install_firefox_browser() {
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			DEPENDENCY_02="firefox-locale-zh-hans libavcodec58"
+			DEPENDENCY_02="firefox-locale-zh-hans ffmpeg"
 		fi
 	elif [ "${LINUX_DISTRO}" = "arch" ]; then
 		DEPENDENCY_02="firefox-i18n-zh-cn"
@@ -1972,7 +1973,7 @@ install_browser() {
 		else
 			install_firefox_browser
 		fi
-		echo "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
+		#echo "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
 	else
 		install_chromium_browser
 	fi
