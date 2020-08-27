@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+TMOE_BIN='/opt/vscodium-data/bin/codium'
+#export ELECTRON_IS_DEV=0
+case "$(id -u)" in
+0) ${TMOE_BIN} --no-sandbox --user-data-dir=${HOME}/.codium "$@" ;;
+*)
+    ${TMOE_BIN} "$@"
+    case "$?" in
+    0) ;;
+    *) ${TMOE_BIN} --no-sandbox --user-data-dir=${HOME}/.codium "$@" ;;
+    esac
+    ;;
+esac

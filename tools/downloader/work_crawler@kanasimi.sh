@@ -107,11 +107,6 @@ work_crawler_eula() {
     (b) 为了维护漫画网站的合法权益，您即便同意本协议，也仍然无法通过本工具下载中国内地的漫画作品;
     若您强行破解，则您必须承担由此带来所有的法律责任;
     (c) 若本工具侵犯了您的权益，请到https://github.com/kanasimi/work_crawler 联系原开发者，以便及时删除。
-    
-	5.最终用户许可协议的更改
-	(a)如果决定更改最终用户许可协议，我们会在本协议中、本工具网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益；
-	(b)本工具开发者保留随时修改本协议的权利,因此建议您不定期查看。
-	The developer of this tool reserves the right to modify this agreement at any time.
 EndOfFile
     echo 'You must agree to the EULA to use this tool.'
     echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
@@ -238,13 +233,13 @@ EOF
     cd /usr/local/bin
     if [ "${HOME}" = '/root' ]; then
         cat >work-crawler <<-'EOF'
-#!/bin/bash
+#!/usr/bin/env bash
 export ELECTRON_IS_DEV=0
 exec electron /opt/work_crawler/app.asar --no-sandbox "$@"
 EOF
     else
         cat >work-crawler <<-'EOF'
-#!/bin/bash
+#!/usr/bin/env bash
 export ELECTRON_IS_DEV=0
 exec electron /opt/work_crawler/app.asar "$@"
 EOF
@@ -263,13 +258,13 @@ upgrade_kanasimi_work_crawler_tool() {
     git reset --hard
     git pull
     cd /usr/local/bin
-    curl -Lv -o work-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/work_crawler@kanasimi.sh'
+    curl -Lv -o work-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/work_crawler@kanasimi.sh'
     chmod +x work-i
     echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
     echo "${YELLOW}更新完成，按回車鍵返回。${RESET}"
     read
     source /usr/local/bin/work-i
-    work_crawler_eula
+    #work_crawler_eula
 }
 ############
 parsing_comic() {

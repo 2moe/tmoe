@@ -1,0 +1,339 @@
+#!/usr/bin/env bash
+################################
+install_nginx_webdav() {
+	pgrep nginx &>/dev/null
+	if [ "$?" = "0" ]; then
+		FILEBROWSER_STATUS='检测到nginx进程正在运行'
+		FILEBROWSER_PROCESS='Restart重启'
+	else
+		FILEBROWSER_STATUS='检测到nginx进程未运行'
+		FILEBROWSER_PROCESS='Start启动'
+	fi
+
+	if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
+		if [ ! -e "/etc/nginx/conf.d/webdav.conf" ]; then
+			echo "检测到配置文件不存在，2s后将为您自动配置服务。"
+			sleep 2s
+			nginx_onekey
+		fi
+		nginx_restart
+	else
+		configure_nginx_webdav
+	fi
+}
+#############
+configure_nginx_webdav() {
+	#进入nginx webdav配置文件目录
+	cd /etc/nginx/conf.d/
+	TMOE_OPTION=$(whiptail --title "CONFIGURE WEBDAV" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 0 50 0 \
+		"1" "One-key conf 初始化一键配置" \
+		"2" "管理访问账号" \
+		"3" "view logs 查看日志" \
+		"4" "WebDAV port 修改webdav端口" \
+		"5" "Nginx port 修改nginx端口" \
+		"6" "进程管理说明" \
+		"7" "stop 停止" \
+		"8" "Root dir修改根目录" \
+		"9" "reset nginx重置nginx" \
+		"10" "remove 卸载/移除" \
+		"0" "🌚 Return to previous menu 返回上级菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${TMOE_OPTION}" in
+	0 | "") personal_netdisk ;;
+	1)
+		pkill nginx
+		service nginx stop 2>/dev/null || systemctl stop nginx
+		nginx_onekey
+		;;
+	2) nginx_add_admin ;;
+	3) nginx_logs ;;
+	4) nginx_webdav_port ;;
+	5) nginx_port ;;
+	6) nginx_systemd ;;
+	7)
+		echo "正在停止服务进程..."
+		echo "Stopping..."
+		pkill nginx
+		service nginx stop 2>/dev/null || systemctl stop nginx
+		service nginx status || systemctl status nginx
+		;;
+	8) nginx_webdav_root_dir ;;
+	9)
+		echo "正在停止nginx进程..."
+		echo "Stopping nginx..."
+		pkill nginx
+		service nginx stop 2>/dev/null || systemctl stop nginx
+		nginx_reset
+		;;
+	10)
+		remove_nginx
+		;;
+	esac
+	##############################
+	press_enter_to_return
+	configure_nginx_webdav
+}
+##############
+remove_nginx() {
+	pkill nginx
+	echo "正在停止nginx进程..."
+	echo "Stopping nginx..."
+	service nginx stop 2>/dev/null || systemctl stop nginx
+	rm -fv /etc/nginx/conf.d/webdav.conf
+	echo "${YELLOW}已删除webdav配置文件,${RESET}"
+	echo "是否继续卸载nginx?"
+	echo "您正在执行危险操作，卸载nginx将导致您部署的所有网站无法访问！！！"
+	echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+	service nginx restart || systemctl restart nginx
+	RETURN_TO_WHERE='configure_nginx_webdav'
+	do_you_want_to_continue
+	service nginx stop || systemctl stop nginx
+	${TMOE_REMOVAL_COMMAND} nginx nginx-extras
+}
+###################
+nginx_onekey() {
+	case "${TMOE_PROOT}" in
+	true | no | false)
+		echo "检测到您处于${BLUE}chroot/proot容器${RESET}环境下，部分功能可能出现异常。"
+		echo "部分系统可能会出现failed，但仍能正常连接。"
+		CHROOT_STATUS='1'
+		;;
+	esac
+	echo "本服务依赖于软件源仓库的nginx,可能无法与宝塔等第三方面板的nginx相互兼容"
+	echo "若80和443端口被占用，则有可能导致nginx启动失败，请修改nginx为1024以上的高位端口。"
+	echo "安装完成后，若浏览器测试连接成功，则您可以换用文件管理器进行管理。"
+	echo "例如Android端的Solid Explorer,windows端的RaiDrive"
+	echo 'Press Enter to confirm.'
+	echo "默认webdav根目录为/media，您可以在安装完成后自行修改。"
+	RETURN_TO_WHERE='configure_nginx_webdav'
+	do_you_want_to_continue
+
+	DEPENDENCY_01='nginx'
+	DEPENDENCY_02='apache2-utils'
+	NON_DEBIAN='false'
+
+	if [ "${LINUX_DISTRO}" = "debian" ]; then
+		DEPENDENCY_01="${DEPENDENCY_01} nginx-extras"
+	fi
+	beta_features_quick_install
+	##############
+	mkdir -p /media
+	touch "/media/欢迎使用tmoe-linux-webdav_你可以将文件复制至根目录下的media文件夹"
+	if [ -e "${HOME}/sd" ]; then
+		ln -sf ${HOME}/sd /media/
+	fi
+
+	if [ -e "${HOME}/tf" ]; then
+		ln -sf ${HOME}/tf /media/
+	fi
+
+	if [ -e "${HOME}/termux" ]; then
+		ln -sf ${HOME}/termux /media/
+	fi
+
+	if [ "${CHROOT_STATUS}" = "1" ]; then
+		echo "检测到您处于容器环境下"
+		cd /etc/nginx/sites-available
+		if [ ! -f "default.tar.gz" ]; then
+			tar -zcvf default.tar.gz default
+		fi
+		tar -zxvf default.tar.gz default
+		ls -lh /etc/nginx/sites-available/default
+		sed -i 's@80 default_server@2086 default_server@g' default
+		sed -i 's@443 ssl default_server@8443 ssl default_server@g' default
+		echo "已将您的nginx的http端口从80修改为2086，https端口从443修改为8443"
+	fi
+
+	cd /etc/nginx/conf.d/
+	cat >webdav.conf <<-'EndOFnginx'
+		server {
+		    listen       28080;
+		    server_name  webdav;
+		    error_log /var/log/nginx/webdav.error.log error;
+		    access_log  /var/log/nginx/webdav.access.log combined;
+		    location / {
+		        root /media;
+		        charset utf-8;
+		        autoindex on;
+		        dav_methods PUT DELETE MKCOL COPY MOVE;
+		        dav_ext_methods PROPFIND OPTIONS;
+		        create_full_put_path  on;
+		        dav_access user:rw group:r all:r;
+		        auth_basic "Not currently available";
+		        auth_basic_user_file /etc/nginx/conf.d/.htpasswd.webdav;
+		    }
+		    error_page   500 502 503 504  /50x.html;
+		    location = /50x.html {
+		        root   /usr/share/nginx/html;
+		    }
+		}
+	EndOFnginx
+	#############
+	TARGET_USERNAME=$(whiptail --inputbox "请自定义webdav用户名,例如root,admin,kawaii,moe,neko等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "用户名无效，请返回重试。"
+		press_enter_to_return
+		nginx_onekey
+	fi
+	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "密码包含无效字符，请返回重试。"
+		press_enter_to_return
+		nginx_onekey
+	fi
+	htpasswd -mbc /etc/nginx/conf.d/.htpasswd.webdav ${TARGET_USERNAME} ${TARGET_USERPASSWD}
+	nginx -t
+	if [ "$?" != "0" ]; then
+		sed -i 's@dav_methods@# &@' webdav.conf
+		sed -i 's@dav_ext_methods@# &@' webdav.conf
+		nginx -t
+	fi
+	nginx_restart
+	########################################
+	press_enter_to_return
+	configure_nginx_webdav
+	#此处的返回步骤并非多余
+}
+############
+nginx_restart() {
+	cd /etc/nginx/conf.d/
+	NGINX_WEBDAV_PORT=$(cat webdav.conf | grep listen | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
+	service nginx restart 2>/dev/null || systemctl restart nginx
+	if [ "$?" != "0" ]; then
+		/etc/init.d/nginx reload
+	fi
+	service nginx status 2>/dev/null || systemctl status nginx
+	if [ "$?" = "0" ]; then
+		echo "您可以输${YELLOW}service nginx stop${RESET}来停止进程"
+	else
+		echo "您可以输${YELLOW}/etc/init.d/nginx stop${RESET}来停止进程"
+	fi
+	cat /var/log/nginx/webdav.error.log | tail -n 10
+	cat /var/log/nginx/webdav.access.log | tail -n 10
+	echo "正在为您启动nginx服务，本机默认访问地址为localhost:${NGINX_WEBDAV_PORT}"
+	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${NGINX_WEBDAV_PORT}
+	echo The WAN address 外网地址 $(curl -sL ip.cip.cc | head -n 1):${NGINX_WEBDAV_PORT}
+	echo "${YELLOW}您可以使用文件管理器或浏览器来打开WebDAV访问地址${RESET}"
+	echo "Please use your browser to open the access address"
+}
+#############
+nginx_add_admin() {
+	TARGET_USERNAME=$(whiptail --inputbox "您正在重置webdav访问用户,请输入新用户名,例如root,admin,kawaii,moe,neko等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "用户名无效，操作取消"
+		press_enter_to_return
+		configure_nginx_webdav
+	fi
+	TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "密码包含无效字符，请返回重试。"
+		press_enter_to_return
+		nginx_add_admin
+	fi
+	htpasswd -mbc /etc/nginx/conf.d/.htpasswd.webdav ${TARGET_USERNAME} ${TARGET_USERPASSWD}
+	nginx_restart
+}
+#################
+nginx_webdav_port() {
+	NGINX_WEBDAV_PORT=$(cat webdav.conf | grep listen | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
+	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的端口为${NGINX_WEBDAV_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		press_enter_to_return
+		configure_nginx_webdav
+	fi
+	sed -i "s@${NGINX_WEBDAV_PORT}\;@${TARGET_PORT}\;@" webdav.conf
+	ls -l $(pwd)/webdav.conf
+	cat webdav.conf | grep listen
+	/etc/init.d/nginx reload
+}
+#################
+nginx_port() {
+	cd /etc/nginx/sites-available
+	NGINX_PORT=$(cat default | grep -E 'listen|default' | head -n 1 | cut -d ';' -f 1 | cut -d 'd' -f 1 | awk -F ' ' '$0=$NF')
+	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的Nginx端口为${NGINX_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		press_enter_to_return
+		configure_nginx_webdav
+	fi
+	cp -pvf default default.bak
+	tar -zxvf default.tar.gz default
+	sed -i "s@80 default_server@${TARGET_PORT} default_server@g" default
+	ls -l $(pwd)/default
+	cat default | grep -E 'listen|default' | grep -v '#'
+	/etc/init.d/nginx reload
+}
+############
+nginx_logs() {
+	cat /var/log/nginx/webdav.error.log | tail -n 10
+	if [ $(command -v less) ]; then
+		cat /var/log/nginx/webdav.access.log | less -meQ
+	else
+		cat /var/log/nginx/webdav.access.log | tail -n 10
+	fi
+	ls -lh /var/log/nginx/webdav.error.log
+	ls -lh /var/log/nginx/webdav.access.log
+}
+#############
+nginx_webdav_root_dir() {
+	NGINX_WEBDAV_ROOT_DIR=$(cat webdav.conf | grep root | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
+	TARGET_PATH=$(whiptail --inputbox "请输入新的路径,例如/media/root,检测到您当前的webDAV根目录为${NGINX_WEBDAV_ROOT_DIR}\n Please enter the port number." 12 50 --title "PATH" 3>&1 1>&2 2>&3)
+	exitstatus=$?
+	if [ $exitstatus != 0 ]; then
+		echo "检测到您取消了操作，请返回重试。"
+		press_enter_to_return
+		configure_nginx_webdav
+	fi
+	sed -i "s@${NGINX_WEBDAV_ROOT_DIR}\;@${TARGET_PATH}\;@" webdav.conf
+	ls -l $(pwd)/webdav.conf
+	echo "您当前的webdav根目录已修改为$(cat webdav.conf | grep root | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')"
+	/etc/init.d/nginx reload
+}
+#################
+nginx_systemd() {
+	case "${TMOE_PROOT}" in
+	true | no)
+		echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
+		;;
+	false) echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;
+	esac
+	cat <<-'EOF'
+		    systemd管理
+			输systemctl start nginx启动
+			输systemctl stop nginx停止
+			输systemctl status nginx查看进程状态
+			输systemctl enable nginx开机自启
+			输systemctl disable nginx禁用开机自启
+
+			service命令
+			输service nginx start启动
+			输service nginx stop停止
+			输service nginx status查看进程状态
+
+		    init.d管理
+			/etc/init.d/nginx start启动
+			/etc/init.d/nginx restart重启
+			/etc/init.d/nginx stop停止
+			/etc/init.d/nginx statuss查看进程状态
+			/etc/init.d/nginx reload重新加载
+
+	EOF
+}
+###############
+nginx_reset() {
+	echo "${YELLOW}WARNING！继续执行此操作将丢失nginx配置信息！${RESET}"
+	RETURN_TO_WHERE='configure_nginx_webdav'
+	do_you_want_to_continue
+	cd /etc/nginx/sites-available
+	tar zcvf default.tar.gz default
+}
+###############
+install_nginx_webdav

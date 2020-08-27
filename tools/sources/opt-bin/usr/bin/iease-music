@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+TMOE_BIN='/opt/iease-music/dist'
+ELECTRON_BIN='/opt/electron-v8/electron'
+#ieasemusic需要指定electron版本
+#######################
+export ELECTRON_IS_DEV=0
+case "$(id -u)" in
+0) ${ELECTRON_BIN} ${TMOE_BIN} --no-sandbox "$@" ;;
+*)
+    ${ELECTRON_BIN} ${TMOE_BIN} "$@"
+    case "$?" in
+    0) ;;
+    *) ${ELECTRON_BIN} ${TMOE_BIN} --no-sandbox "$@" ;;
+    esac
+    ;;
+esac

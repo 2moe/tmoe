@@ -1,5 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
-#检测架构
+#!/data/data/com.termux/files/usr/bin/env bash
 case $(uname -m) in
 armv7* | armv8l)
 	ARCH_TYPE="armhf"
@@ -42,7 +41,7 @@ risc*)
 	exit 1
 	;;
 esac
-
+######################
 #安装必要依赖
 #apt update
 #apt install -y curl openssl proot aria2 procps
@@ -84,6 +83,12 @@ if [ "$(uname -o)" = "Android" ]; then
 	if [ ! -h "/data/data/com.termux/files/home/storage/shared" ]; then
 		termux-setup-storage
 	fi
+	TF_CARD_PATH="${HOME}/storage/external-1"
+	if [ -h "${TF_CARD_PATH}" ]; then
+		if [ ! -e "${TF_CARD_PATH}/path.txt" ]; then
+			echo "$(readlink ${TF_CARD_PATH})" >${TF_CARD_PATH}/path.txt
+		fi
+	fi
 
 	if [ ! -e ${PREFIX}/bin/proot ]; then
 		DEPENDENCIES="${DEPENDENCIES} proot"
@@ -111,7 +116,8 @@ if [ "$(uname -o)" = "Android" ]; then
 	fi
 	cd ${HOME}/.termux || mkdir -p ~/.termux && cd ${HOME}/.termux
 	if [ ! -e "colors.properties" ]; then
-		echo '检测到termux配色文件不存在，正在自动生成...'
+		echo "检测到termux配色文件不存在，正在自动生成..."
+		echo "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/colors.properties${RESET}"
 		# aria2c --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/colors.properties'
 		cat >colors.properties <<-'EndofMonokai'
 			# monokai.dark.colors
@@ -140,6 +146,7 @@ if [ "$(uname -o)" = "Android" ]; then
 
 	if [ ! -e "termux.properties" ]; then
 		echo -e "Detected that the termux.properties file does not exist.\n检测到termux属性文件不存在，正在为您下载..."
+		echo "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/termux.properties${RESET}"
 		aria2c --allow-overwrite=true -o "termux.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/termux.properties'
 	fi
 	#REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
@@ -147,12 +154,14 @@ if [ "$(uname -o)" = "Android" ]; then
 	if [ ! -e "font.ttf" ]; then
 		#if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
 		echo -e 'Detected that the font file does not exist.\n检测到字体文件不存在，正在自动配置字体...'
-		echo "只有少部分字体能显示powerlevel10k的特殊字符，例如Iosevka"
-		#仓库为Termux-zsh/raw/p10k，批量重命名的时候要小心一点。
 		aria2c --allow-overwrite=true -o Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
+		echo "只有少部分字体能显示powerlevel10k的特殊字符，例如Iosevka和MesloLGS"
+		echo "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/font.ttf${RESET}"
+		#仓库为Termux-zsh/raw/p10k，批量重命名的时候要小心一点。
 		#mv -f font.ttf font.ttf.bak
-		tar -Jxf Iosevka.tar.xz
+		tar -Jxvf Iosevka.tar.xz
 		rm -f Iosevka.tar.xz
+		sleep 1
 		termux-reload-settings
 		#fi
 	fi
@@ -263,7 +272,7 @@ cat <<-EOF
 			03:所有容器的启动命令都是一样的哦！o( =•ω•= )m
 			但是呢！输那条启动命令仅支持启动${BLUE}${DEBIAN_FOLDER}容器${RESET}，不会自动启动远程桌面服务。
 			-------------------
-			You can type ${GREEN}debian${RESET} to start and enter the ${BLUE}${DEBIAN_FOLDER} container${RESET}.
+			The start command of the container supports starting and attaching the ${DEBIAN_FOLDER} container.
 			-------------------
 			04:并非所有${YELLOW}字体${RESET}都支持${BLUE}powerlevel 10k${RESET}的特殊字符哦！🍥
 			-------------------
@@ -289,7 +298,13 @@ if [ ! -f ${DebianTarXz} ]; then
 	fi
 fi
 cur=$(pwd)
+if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
+	aria2c -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true 'https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
+fi
 cd ${DEBIAN_CHROOT}
+if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
+	tar -Jxf ${CONFIG_FOLDER}/proc.tar.xz 2>/dev/null
+fi
 printf "$BLUE"
 cat <<-'EndOFneko'
 	       DL.                           
@@ -425,8 +440,9 @@ creat_chroot_startup_script() {
 
 	#此处EndOfChrootFile不要加单引号
 	cat >${PREFIX}/bin/debian <<-EndOfChrootFile
-		  #!/data/data/com.termux/files/usr/bin/bash
+		  #!/data/data/com.termux/files/usr/bin/env bash
 		  DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+		  cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
 		  if [ ! -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
 		    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
 		  fi
@@ -478,7 +494,6 @@ creat_chroot_startup_script() {
 		  chroot \${DEBIAN_CHROOT} /bin/bash --login
 
 	EndOfChrootFile
-	#上面那行不要有空格
 }
 ###################
 creat_tmoe_proot_stat_file() {
@@ -519,12 +534,24 @@ check_tmoe_proot_container_proc() {
 		creat_tmoe_proot_stat_file
 		sed -i "s@#test02@@" ${PREFIX}/bin/debian
 	fi
+	#######
+	FILE_03='/proc/bus/pci/devices'
+	TMOE_PROC_FILE=$(cat ${FILE_03} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		sed -i "s@#test04@@" ${PREFIX}/bin/debian
+	fi
+	######
+	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kmsg kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
+		TMOE_PROC_FILE=$(cat /proc/${i} 2>/dev/null)
+		if [ -z "${TMOE_PROC_FILE}" ]; then
+			sed -i "s@##${i}#@@" ${PREFIX}/bin/debian
+		fi
+	done
+	unset i
 }
 ###########
 check_proot_qemu() {
 	if [ ! -z "${QEMU_ARCH}" ]; then
-		#sed -i 's@#command+=" -q qemu-x86_64-staic"@command+=" -q qemu-x86_64-staic"@' ${PREFIX}/bin/debian
-		#sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
 		sed -i 's@#test03@@' ${PREFIX}/bin/debian
 		sed -i "s@qemu-x86_64-staic@qemu-${QEMU_ARCH}-static@" ${PREFIX}/bin/debian
 	fi
@@ -536,127 +563,165 @@ creat_proot_startup_script() {
 	#需要注释掉
 	echo "Creating proot startup script"
 	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
-	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proc"
+	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	#此处ENDOFPROOT不要加单引号
 	cat >${PREFIX}/bin/debian <<-ENDOFPROOT
-		  #!/data/data/com.termux/files/usr/bin/bash
-		  get_tmoe_linux_help_info() {
+		#!/data/data/com.termux/files/usr/bin/env bash
+		get_tmoe_linux_help_info() {
 		    cat <<-'ENDOFHELP'
-						-i     --启动tmoe-linux manager
-						-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
-						-vnc   --启动VNC
-						-h     --get help info
-					ENDOFHELP
-		  }
-		  ############
-		  main() {
+										-i     --启动tmoe-linux manager
+										-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
+										-vnc   --启动VNC
+										-h     --get help info
+									ENDOFHELP
+		}
+		############
+		main() {
 		    case "\$1" in
 		    i* | -i* | -I*)
-		      debian-i
-		      exit 0
-		      ;;
+		        debian-i
+		        exit 0
+		        ;;
 		    -h* | --h*)
-		      get_tmoe_linux_help_info
-		      ;;
+		        get_tmoe_linux_help_info
+		        ;;
 		    -m* | m*)
-		      debian-i -m
-		      ;;
+		        debian-i -m
+		        ;;
 		    -vnc* | vnc*)
-		      startvnc
-		      ;;
+		        startvnc
+		        ;;
 		    *) start_tmoe_gnu_linux_container ;;
 		    esac
-		  }
-		  ##############
-		  start_tmoe_gnu_linux_container() {
+		}
+		##############
+		start_tmoe_gnu_linux_container() {
 		    cd ${HOME}
+			cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
 		    #pulseaudio --kill 2>/dev/null &
 		    #为加快启动速度，此处不重启音频服务
 		    pulseaudio --start 2>/dev/null &
 		    unset LD_PRELOAD
 		    ############
+		    FAKE_PROOT_PROC=true
 		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
 		    PROC_FD_PATH="/proc/self/fd"
 		    if [ -f "${DEBIAN_CHROOT}/bin/zsh" ]; then
-		      TMOE_SHELL="/bin/zsh"
+		        TMOE_SHELL="/bin/zsh"
 		    elif [ -f "${DEBIAN_CHROOT}/bin/bash" ]; then
-		      TMOE_SHELL="/bin/bash"
+		        TMOE_SHELL="/bin/bash"
 		    elif [ -f "${DEBIAN_CHROOT}/bin/ash" ]; then
-		      TMOE_SHELL="/bin/ash"
+		        TMOE_SHELL="/bin/ash"
 		    else
-		      TMOE_SHELL="/bin/su"
+		        TMOE_SHELL="/bin/su"
 		    fi
-			#考虑到兼容性，此处应为-l,而非--login
+		    #考虑到alpine兼容性，此处应为-l,而非--login
 		    set -- "\${TMOE_SHELL}" "-l" "\$@"
 		    if [ -e "/data/data/com.termux" ]; then
-		      set -- "PREFIX=/data/data/com.termux/files/usr" "\$@"
+		        set -- "PREFIX=/data/data/com.termux/files/usr" "\$@"
 		    fi
 		    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
-		      set -- "LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)" "\$@"
+		        set -- "LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)" "\$@"
 		    else
-		      set -- "LANG=en_US.UTF-8" "\$@"
+		        set -- "LANG=en_US.UTF-8" "\$@"
 		    fi
 		    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TERM=xterm-256color" "\$@"
 		    set -- "--mount=/sys" "\$@"
 		    set -- "--mount=/dev" "\$@"
-		    #/dev/shm为tmpfs临时文件系统
 		    set -- "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm" "\$@"
 		    set -- "--mount=\${PROC_FD_PATH}:/dev/fd" "\$@"
 		    set -- "--mount=\${PROC_FD_PATH}/0:/dev/stdin" "\$@"
 		    set -- "--mount=\${PROC_FD_PATH}/1:/dev/stdout" "\$@"
 		    set -- "--mount=\${PROC_FD_PATH}/2:/dev/stderr" "\$@"
 		    #勿删test注释
-			#test03set -- "--qemu=qemu-x86_64-staic" "\$@"
+		    #test03set -- "--qemu=qemu-x86_64-staic" "\$@"
 		    set -- "--mount=/dev/urandom:/dev/random" "\$@"
 		    set -- "--mount=/proc" "\$@"
 		    if [ -e "/storage/self/primary" ]; then
-		      set -- "--mount=/storage/self/primary:/root/sd" "\$@"
+		        set -- "--mount=/storage/self/primary:/root/sd" "\$@"
 		    elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
-		      set -- "--mount=/sdcard:/root/sd" "\$@"
+		        set -- "--mount=/sdcard:/root/sd" "\$@"
 		    elif [ -e "/storage/emulated/0" ]; then
-		      set -- "--mount=/storage/emulated/0:/root/sd" "\$@"
+		        set -- "--mount=/storage/emulated/0:/root/sd" "\$@"
 		    fi
 		    #######################
 		    set_android_mount_dir() {
-		      if [ -e "/vendor" ]; then
-		        set -- "--mount=/vendor" "\$@"
-		      fi
-		      if [ -e "/apex" ]; then
-		        #Android 10特性：APEX模块化
-		        set -- "--mount=/apex" "\$@"
-		      fi
-		      if [ -e "/plat_property_contexts" ]; then
-		        set -- "--mount=/plat_property_contexts" "\$@"
-		      fi
-		      if [ -e "/property_contexts" ]; then
-		        set -- "--mount=/property_contexts" "\$@"
-		      fi
+		        if [ -e "/vendor" ]; then
+		            set -- "--mount=/vendor" "\$@"
+		        fi
+		        if [ -e "/apex" ]; then
+		            #Android 10特性：APEX模块化
+		            set -- "--mount=/apex" "\$@"
+		        fi
+		        if [ -e "/plat_property_contexts" ]; then
+		            set -- "--mount=/plat_property_contexts" "\$@"
+		        fi
+		        if [ -e "/property_contexts" ]; then
+		            set -- "--mount=/property_contexts" "\$@"
+		        fi
 		    }
 		    #################
-		    #test01set -- "--mount=${TMOE_PROC_PREFIX}.stat:/proc/stat" "\$@"
-		    #test02set -- "--mount=${TMOE_PROC_PREFIX}.version:/proc/version" "\$@"
+			#不同系统对文件权限的限制可能有所区别，以下文件在安装时会自动检测，仅当宿主机无权读取时,才会去除注释符号。
+		    if [ "\${FAKE_PROOT_PROC}" = 'true' ]; then
+		        #test01set -- "--mount=${TMOE_PROC_PREFIX}.stat:/proc/stat" "\$@"
+		        #test02set -- "--mount=${TMOE_PROC_PREFIX}.version:/proc/version" "\$@"
+		        if [ -e "${TMOE_PROC_PATH}/uptime" ]; then
+		            #test04set -- "--mount=${TMOE_PROC_PATH}/bus:/proc/bus"  "\$@"
+		            ##buddyinfo#set -- "--mount=${TMOE_PROC_PATH}/buddyinfo:/proc/buddyinfo"  "\$@"
+		            ##cgroups#set -- "--mount=${TMOE_PROC_PATH}/cgroups:/proc/cgroups"  "\$@"
+		            ##consoles#set -- "--mount=${TMOE_PROC_PATH}/consoles:/proc/consoles"  "\$@"
+		            ##crypto#set -- "--mount=${TMOE_PROC_PATH}/crypto:/proc/crypto"  "\$@"
+		            ##devices#set -- "--mount=${TMOE_PROC_PATH}/devices:/proc/devices"  "\$@"
+		            ##diskstats#set -- "--mount=${TMOE_PROC_PATH}/diskstats:/proc/diskstats"  "\$@"
+		            ##execdomains#set -- "--mount=${TMOE_PROC_PATH}/execdomains:/proc/execdomains"  "\$@"
+		            ##fb#set -- "--mount=${TMOE_PROC_PATH}/fb:/proc/fb"  "\$@"
+		            ##filesystems#set -- "--mount=${TMOE_PROC_PATH}/filesystems:/proc/filesystems"  "\$@"
+		            ##interrupts#set -- "--mount=${TMOE_PROC_PATH}/interrupts:/proc/interrupts"  "\$@"
+		            ##iomem#set -- "--mount=${TMOE_PROC_PATH}/iomem:/proc/iomem"  "\$@"
+		            ##ioports#set -- "--mount=${TMOE_PROC_PATH}/ioports:/proc/ioports"  "\$@"
+		            ##kallsyms#set -- "--mount=${TMOE_PROC_PATH}/kallsyms:/proc/kallsyms"  "\$@"
+		            ##keys#set -- "--mount=${TMOE_PROC_PATH}/keys:/proc/keys"  "\$@"
+		            ##key-users#set -- "--mount=${TMOE_PROC_PATH}/key-users:/proc/key-users"  "\$@"
+		            ##kmsg#set -- "--mount=${TMOE_PROC_PATH}/kmsg:/proc/kmsg"  "\$@"
+		            ##kpageflags#set -- "--mount=${TMOE_PROC_PATH}/kpageflags:/proc/kpageflags"  "\$@"
+		            ##loadavg#set -- "--mount=${TMOE_PROC_PATH}/loadavg:/proc/loadavg"  "\$@"
+		            ##locks#set -- "--mount=${TMOE_PROC_PATH}/locks:/proc/locks"  "\$@"
+		            ##misc#set -- "--mount=${TMOE_PROC_PATH}/misc:/proc/misc"  "\$@"
+		            ##modules#set -- "--mount=${TMOE_PROC_PATH}/modules:/proc/modules"  "\$@"
+		            ##pagetypeinfo#set -- "--mount=${TMOE_PROC_PATH}/pagetypeinfo:/proc/pagetypeinfo"  "\$@"
+		            ##partitions#set -- "--mount=${TMOE_PROC_PATH}/partitions:/proc/partitions"  "\$@"
+		            ##sched_debug#set -- "--mount=${TMOE_PROC_PATH}/sched_debug:/proc/sched_debug"  "\$@"
+		            ##softirqs#set -- "--mount=${TMOE_PROC_PATH}/softirqs:/proc/softirqs"  "\$@"
+		            ##timer_list#set -- "--mount=${TMOE_PROC_PATH}/timer_list:/proc/timer_list"  "\$@"
+		            ##uptime#set -- "--mount=${TMOE_PROC_PATH}/uptime:/proc/uptime"  "\$@"
+		            ##vmallocinfo#set -- "--mount=${TMOE_PROC_PATH}/vmallocinfo:/proc/vmallocinfo"  "\$@"
+		            ##vmstat#set -- "--mount=${TMOE_PROC_PATH}/vmstat:/proc/vmstat"  "\$@"
+		            ##zoneinfo#set -- "--mount=${TMOE_PROC_PATH}/zoneinfo:/proc/zoneinfo"  "\$@"
+		        fi
+		    fi
 		    set -- "--pwd=/root" "\$@"
 		    set -- "--rootfs=${DEBIAN_CHROOT}" "\$@"
 		    if [ "$(uname -o)" = 'Android' ]; then
-		      #set_android_mount_dir
-		      if [ -e "/system" ]; then
-		        set -- "--mount=/system" "\$@"
-		      fi
-		      if [ -h "${HOME}/storage/external-1" ]; then
-		        set -- "--mount=${HOME}/storage/external-1:/root/tf" "\$@"
-		      fi
-		      if [ -e "/data/data/com.termux" ]; then
-		        set -- "--mount=/data/data/com.termux" "\$@"
-		      fi
-		      set -- "--link2symlink" "\$@"
+		        #set_android_mount_dir
+		        set -- "--kill-on-exit" "\$@"
+		        if [ -e "/system" ]; then
+		            set -- "--mount=/system" "\$@"
+		        fi
+		        if [ -h "${HOME}/storage/external-1" ]; then
+		            set -- "--mount=${HOME}/storage/external-1:/root/tf" "\$@"
+		        fi
+		        if [ -e "/data/data/com.termux/files/home" ]; then
+		            set -- "--mount=/data/data/com.termux" "\$@"
+		            set -- "--mount=/data/data/com.termux/files/home:/root/termux" "\$@"
+		        fi
+		        set -- "--link2symlink" "\$@"
 		    fi
 		    set -- "--root-id" "\$@"
-		    set -- "--kill-on-exit" "\$@"
 		    set -- "proot" "\$@"
 		    exec "\$@"
-		  }
-		  main "\$@"
+		}
+		main "\$@"
 	ENDOFPROOT
 }
 #########
@@ -670,7 +735,7 @@ fi
 #######################################################
 creat_linux_container_remove_script() {
 	cat >${PREFIX}/bin/debian-rm <<-EndOfFile
-		    #!/data/data/com.termux/files/usr/bin/bash
+		    #!/data/data/com.termux/files/usr/bin/env bash
 			  YELLOW=\$(printf '\033[33m')
 			  RESET=\$(printf '\033[m')
 		    cd ${HOME}
@@ -776,47 +841,56 @@ creat_linux_container_remove_script() {
 	EndOfFile
 }
 ########################
-cat >${PREFIX}/bin/startvnc <<-EndOfFile
-	#!/data/data/com.termux/files/usr/bin/bash
-	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
-	pulseaudio --start 2>/dev/null &
+cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
+	#!/data/data/com.termux/files/usr/bin/env bash
+	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+	if [ ! "\$(pgrep pulseaudio)" ];then
+		pulseaudio --start 2>/dev/null &
+	fi
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
-	/data/data/com.termux/files/usr/bin/debian
-EndOfFile
-ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
+	${PREFIX}/bin/debian
+ENDOFVNC
+#ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
+cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
+	#!/data/data/com.termux/files/usr/bin/env bash
+	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+	if [ ! "\$(pgrep pulseaudio)" ];then
+		pulseaudio --start 2>/dev/null &
+	fi
+	touch ~/${DEBIAN_FOLDER}/root/.vnc/startx11vnc
+	${PREFIX}/bin/debian
+ENDOFX11VNC
+ln -s ${PREFIX}/bin/startvnc ${HOME}/vnc 2>/dev/null
 ###############
-#仅安卓支持终止所有进程
-if [ "$(uname -o)" = 'Android' ]; then
-	cat >${PREFIX}/bin/stopvnc <<-'EndOfFile'
-		#!/data/data/com.termux/files/usr/bin/bash
-		#pkill -u $(whoami)
-		pulseaudio --kill 2>/dev/null &
-		sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
-	EndOfFile
-fi
+#此處僅適配Android,故shebang爲termux目錄
+cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
+	#!/data/data/com.termux/files/usr/bin/env bash
+	pulseaudio --kill 2>/dev/null &
+	sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
+ENDOFSTOPVNC
 #################
 #不要单引号
-cat >${PREFIX}/bin/startxsdl <<-EndOfFile
-	#!/data/data/com.termux/files/usr/bin/bash
-	am start -n x.org.server/x.org.server.MainActivity
+cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
+	#!/data/data/com.termux/files/usr/bin/env bash
+	am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
-	/data/data/com.termux/files/usr/bin/debian
-EndOfFile
+	${PREFIX}/bin/debian
+ENDOFXSDL
 creat_linux_container_remove_script
 ################
 #wget -qO ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 #############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-	sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
-	sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+ sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+ sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'
 echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
 #termux-fix-shebang ${PREFIX}/bin/debian
 cd ${PREFIX}/bin
 
-chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl 2>/dev/null
+chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl startx11vnc 2>/dev/null
 #设定alias,防止debian-root的alias依旧在生效。
 alias debian="${PREFIX}/bin/debian"
 alias debian-rm="${PREFIX}/bin/debian-rm"
@@ -826,15 +900,12 @@ echo "您可以输${RED}rm ~/${DebianTarXz}${RESET}来删除容器镜像文件"
 ls -lh ~/${DebianTarXz}
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
-	mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
+ mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
 
-#if [ -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ]; then
-#mv -f "${HOME}/.Tmoe-Proot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
-#echo "本文件为Proot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File 2>/dev/null
 if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
-	mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
-	echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
+ mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
+ echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
 fi
 cd ${DEBIAN_CHROOT}/usr/local/bin
 
@@ -845,37 +916,37 @@ chmod +x neofetch debian-i
 cd ${DEBIAN_CHROOT}/root
 chmod u+w "${DEBIAN_CHROOT}/root"
 curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
-sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' zsh-i.sh
+sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
 chmod +x zsh-i.sh
 ###########
 debian_stable_sources_list_and_gpg_key() {
-	curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
-	tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
-	rm -f "raspbian-sources-gpg.tar.xz"
+ curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
+ tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
+ rm -f "raspbian-sources-gpg.tar.xz"
 }
 ############
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
-	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
-	#树莓派换源
-	debian_stable_sources_list_and_gpg_key
+ mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
+ #树莓派换源
+ debian_stable_sources_list_and_gpg_key
 elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
-	rm -f "${HOME}/.REDHATDetectionFILE"
-	chmod u+w "${DEBIAN_CHROOT}/root"
+ rm -f "${HOME}/.REDHATDetectionFILE"
+ chmod u+w "${DEBIAN_CHROOT}/root"
 elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
-	mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
+ mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
 elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
-	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
-	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
+ rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
+ sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
 TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
 if [ -e "${TMOE_LOCALE_FILE}" ]; then
-	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-	mkdir -p ${TMOE_LOCALE_NEW_PATH}
-	cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
-	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
-	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
+ TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+ mkdir -p ${TMOE_LOCALE_NEW_PATH}
+ cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+ TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+ PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+ sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi
 ########################
 #配置zsh
@@ -883,14 +954,13 @@ curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh
 chmod u+x ./*
 #vnc自动启动
 cat >vnc-autostartup <<-'EndOfFile'
-	cat /etc/issue
 	locale_gen_tmoe_language() {
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 			cd /etc
 			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
 			if grep -q ubuntu '/etc/os-release'; then
-				    apt update
-					apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+				apt update
+				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
 			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
 				echo '' >>locale.gen
@@ -901,6 +971,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 			locale-gen ${TMOE_LANG}
 		fi
 	}
+	############
 	check_tmoe_locale_file() {
 		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 		if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -910,45 +981,64 @@ cat >vnc-autostartup <<-'EndOfFile'
 			locale_gen_tmoe_language
 		fi
 	}
-
+	#############
+	vnc_warning() {
+		echo "Sorry,VNC server启动失败，请输debian-i重新安装并配置桌面环境。"
+		echo "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
+	}
+	###########
 	if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
 		check_tmoe_locale_file
+		cd /usr/local/etc/tmoe-linux/git
+		git fetch --depth=1
+		git reset --hard origin/master
+		git pull origin master --allow-unrelated-histories
 		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 		chmod +x /usr/local/bin/debian-i
 		/usr/local/bin/debian-i passwd
 	fi
-	grep 'cat /etc/issue' ~/.bashrc >/dev/null 2>&1 || sed -i '1 a\cat /etc/issue' ~/.bashrc
-	if [ -f "/root/.vnc/startvnc" ]; then
-		/usr/local/bin/startvnc
-		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-		rm -f /root/.vnc/startvnc
-	fi
 
-	if [ -f "/root/.vnc/startxsdl" ]; then
+	if [ -f "/root/.vnc/startvnc" ]; then
+		rm -f /root/.vnc/startvnc
+		if [ -f /usr/local/bin/startvnc ]; then
+			/usr/local/bin/startvnc
+			echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
+		else
+			vnc_warning
+		fi
+	elif [ -f "/root/.vnc/startx11vnc" ]; then
+		rm -f /root/.vnc/startx11vnc
+		if [ -f /usr/local/bin/startx11vnc ]; then
+			/usr/local/bin/startx11vnc
+			echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
+		else
+			vnc_warning
+		fi
+	elif [ -f "/root/.vnc/startxsdl" ]; then
 		echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
-		echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android  application has been opened.'
+		echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
 		rm -f /root/.vnc/startxsdl
 		echo '9s后将为您启动xsdl'
 		echo 'xsdl will start in 9 seconds'
 		sleep 9
 		/usr/local/bin/startxsdl
 	fi
-	ps -e 2>/dev/null | grep -Ev 'bash|zsh' |tail -n 20
+	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
 EndOfFile
 ############
 if [ ! -f ".bashrc" ]; then
-	echo '' >>.bashrc || touch .bashrc
+ echo '' >>.bashrc || touch .bashrc
 fi
 sed -i '1 r vnc-autostartup' ./.bashrc
 #cp -f .bashrc .bashrc.bak
 if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
-	mv -f .bash_profile .bash_profile.bak 2>/dev/null
-	mv -f .bash_login .basfh_login.bak 2>/dev/null
+ mv -f .bash_profile .bash_profile.bak 2>/dev/null
+ mv -f .bash_login .basfh_login.bak 2>/dev/null
 fi
 if [ ! -f ".profile" ]; then
-	echo '' >>.profile || touch .profle
+ echo '' >>.profile || touch .profle
 else
-	mv -f .profile .profile.bak
+ mv -f .profile .profile.bak
 fi
 #############
 #curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
@@ -994,6 +1084,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 			EndOfFile
 	    touch ~/.hushlogin
+		touch /home/ubuntu/.hushlogin
 	    if grep -q 'Bionic Beaver' "/etc/os-release"; then
 	        sed -i 's/focal/bionic/g' /etc/apt/sources.list
 	    fi
@@ -1151,7 +1242,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's@RC_LANG=.*@RC_LANG=en_US.UTF8@' /etc/sysconfig/language
 	    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL=en_US.UTF8@' /etc/sysconfig/language
 	    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES=en_US@' /etc/sysconfig/language
-	    zypper install -y glibc-locale glibc-i18ndata translation-update-zh_CN
+	    zypper install -y glibc-locale glibc-i18ndata translation-update-en_US
 	}
 	################################
 	if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
@@ -1193,14 +1284,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
 	  echo "Configuring Chinese environment..."
 	  #sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
-	  sed -i 's/^#.*zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen
+	  sed -i 's/^#.*en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	  cat >>/etc/default/locale <<-'EOF'
 			LANG=en_US.UTF-8
 			LANGUAGE=en_US:zh
 			LC_ALL=en_US.UTF-8
 		EOF
 	  #locale-gen
-	  locale-gen zh_CN.UTF-8
+	  locale-gen en_US.UTF-8
 	else
 	  TMOE_LANG=$(cat /usr/local/etc/tmoe-linux/locale.txt | head -n 1)
 	  TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
@@ -1353,7 +1444,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dispatch-conf
 	    emerge -uvDN --with-bdeps=y @world
 	    emerge eix 2>/dev/null
-	    echo '检测到您当前的系统为Funtoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+	    echo '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	    mv -f .profile.bak .profile 2>/dev/null
 	    #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
@@ -1381,7 +1472,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #rm -f vnc* zsh* .profile
 	    #mv -f .profile.bak .profile 2>/dev/null
 	    #wget -qO zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
-	    #sed -i '1 c\#!/bin/bash' zsh.sh
+	    #sed -i '1 c\#!/usr/bin/env bash' zsh.sh
 	    #chmod +x zsh.sh
 	    echo '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
 		xbps-reconfigure -f glibc-locales
@@ -1399,12 +1490,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    chattr -i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
-	apt update
-	apt list --upgradable
+	apt update 2>/dev/null
+	apt list --upgradable 2>/dev/null
 	echo "正在升级所有软件包..."
-	apt dist-upgrade -y
-	apt install -y procps
-	apt clean
+	apt dist-upgrade -y 2>/dev/null
+	apt install -y procps 2>/dev/null
+	apt clean 2>/dev/null
 
 	#############################
 	#grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
@@ -1549,8 +1640,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 ENDOFbashPROFILE
 #####################
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
-	sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
-	#sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+ sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
+ #sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
 
 bash ${PREFIX}/bin/debian

@@ -1,0 +1,811 @@
+#!/usr/bin/env bash
+############################################
+#测试版功能可能无法正常运行\nBeta features may not work properly.
+beta_features() {
+    RETURN_TO_WHERE='beta_features'
+    NON_DEBIAN='false'
+    TMOE_BETA=$(
+        whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 0 55 0 \
+            "1" "🐬 container/vm:docker容器,qemu,vbox虚拟机" \
+            "2" "🌌 science&edu:科学与教育(高考,考研,科研)" \
+            "3" "📝 read:墨纸留香,品味阅读" \
+            "4" "🎬 cut video:岁月静好,剪下佳刻" \
+            "5" "🎨 paint:融入意境,绘画真谛" \
+            "6" "💾 file:文件,浩如烟海" \
+            "7" "🌼 Store&download:繁花似锦,一切皆在此中" \
+            "8" "🔨 system:系统(启动项与用户组管理)" \
+            "9" "🥅 network:网络(网卡驱动,WiFi扫描)" \
+            "10" "⌨ input method:输入法(搜狗,讯飞,百度)" \
+            "11" "🍕 other:其它类(Android-studio,scrcpy)" \
+            "0" "🌚 Back to the main menu 返回主菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##########
+    case ${TMOE_BETA} in
+    0 | "") tmoe_linux_tool_menu ;;
+    1) install_container_and_virtual_machine ;;
+    2) tmoe_education_app_menu ;;
+    3) tmoe_reader_app_menu ;;
+    4) tmoe_media_menu ;;
+    5) tmoe_paint_app_menu ;;
+    6) tmoe_file_browser_app_menu ;;
+    7) tmoe_store_app_menu ;;
+    8) tmoe_system_app_menu ;;
+    9) network_manager_tui ;;
+    10) install_pinyin_input_method ;;
+    11) tmoe_other_app_menu ;;
+    esac
+    ##############################
+    press_enter_to_return
+    beta_features
+}
+##########
+# 已废弃 "7" "👬 SNS:进行物质和精神交流的社会活动的app" \
+#7) tmoe_sns_app_menu ;;
+##########
+tmoe_other_app_menu() {
+    RETURN_TO_WHERE='tmoe_other_app_menu'
+    NON_DEBIAN='false'
+    DEPENDENCY_01=''
+    TMOE_APP=$(
+        whiptail --title "OTHER" --menu \
+            "Which software do you want to install？" 0 50 0 \
+            "1" "OBS-Studio(录屏软件)" \
+            "2" "seahorse(密钥管理)" \
+            "3" "kodi(家庭影院软件)" \
+            "4" "Android-studio(安卓开发工具IDE)" \
+            "5" "scrcpy(开源的Android投屏软件)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") beta_features ;;
+    1) install_obs_studio ;;
+    2) install_seahorse ;;
+    3) install_kodi ;;
+    4) install_android_studio ;;
+    5) configure_scrcpy ;;
+    esac
+    ##########################
+    press_enter_to_return
+    tmoe_other_app_menu
+}
+###################
+configure_scrcpy() {
+    RETURN_TO_WHERE='configure_scrcpy'
+    DEPENDENCY_01=''
+    SCRCPY_OPTION=$(
+        whiptail --title "SCRCPY" --menu \
+            "How do you want to configure the scrcpy?" 0 50 0 \
+            "1" "install/remove(安装/卸载)" \
+            "2" "connection连接管理" \
+            "3" "switch device切换设备" \
+            "4" "restart 重启adb" \
+            "5" "readme连接说明" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    case "${SCRCPY_OPTION}" in
+    0 | "") tmoe_other_app_menu ;;
+    1) install_scrcpy ;;
+    2) scrcpy_connect_to_android_device ;;
+    3) switch_scrcpy_device ;;
+    4) restart_adb ;;
+    5) scrpy_faq ;;
+    esac
+    #########################
+    press_enter_to_return
+    configure_scrcpy
+}
+##############
+switch_scrcpy_device() {
+    cd /tmp/
+    adb devices 2>&1 | sed '1d;$d' | awk '{print $1}' >.tmoe-linux_cache.01
+    adb devices -l 2>&1 | sed '1d;$d' | awk '{print $5,$4,$3}' | sed 's@model:@@g' | sed 's@-@_@g' | sed 's@product:@-@g' | sed 's@:@-@g' | sed 's@ @-@g' >.tmoe-linux_cache.02
+    TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+    cat .tmoe-linux_cache.0*
+    echo ${TMOE_ADB_DEVICE_LIST}
+    TMOE_ADB_DEVICE_ITEM=$(whiptail --title "SCRCPY DEVICES" --menu \
+        "您想要切换至哪个设备？\nWhich device do you want to switch?" 0 0 0 \
+        ${TMOE_ADB_DEVICE_LIST} \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    case ${TMOE_ADB_DEVICE_ITEM} in
+    0 | "") configure_scrcpy ;;
+    esac
+    echo "scrcpy -s ${TMOE_ADB_DEVICE_ITEM}"
+    scrcpy -s ${TMOE_ADB_DEVICE_ITEM}
+}
+#############
+scrpy_faq() {
+    cat <<-EOF
+		    tightvnc可能无法正常启动本应用（scrcpy）,您可以在x11vnc环境下启动它。
+		    启动前请先确保adb已正常连接至您的安卓设备。
+		    若adb无法连接，则请重启adb服务。
+			启动本应用的命令为${GREEN}scrcpy${RESET}
+			---------------
+			① 若Android无root权限，且系统未自带ADB网络调试功能，则请开启USB调试功能，并使用USB数据线连接本机（Linux设备)。
+			② 若Android无root权限，且系统自带ADB网络调试功能，则请同时开启USB和网络调试功能，您无需使用数据线即可连接。
+			③ 若Android有root权限，则您可以通过安装网络ADB调试软件https://coolapk.com/apk/com.yaerin.wadb 来开启网络ADB调试功能。
+			---------------
+			使用说明详见https://github.com/Genymobile/scrcpy/blob/master/README.md
+			https://www.iplaysoft.com/scrcpy.html
+		关闭手机屏幕  scrcpy -S
+		限制画面分辨率 scrcpy -m 1024 (比如限制为 1024)
+		修改视频码率  scrcpy -b 4M (默认 8Mbps，改成 4Mbps)
+		裁剪画面    scrcpy -c 1920:1080:0:0
+		表示分辨率 1920x1080 并且偏移坐标为 (0,0)
+		窗口置顶   scrcpy -T
+		显示触摸点击 scrcpy -t
+		在演示或录制教程时，可在画面上对应显示出点击动作
+		全屏显示     scrcpy -f
+		文件传输默认路径 scrcpy --push-target /你的/目录
+		将文件拖放到 scrcpy 可以传输文件，此命令指定默认保存目录
+		只读模式(仅显示不控制)  scrcpy -n
+		屏幕录像          scrcpy -r 视频文件名.mp4 或 .mkv
+		屏幕录像 (禁用电脑显示) scrcpy -Nr 文件名.mkv
+		设置窗口标题        scrcpy --window-title '2333'
+	EOF
+}
+###############
+scrcpy_connect_to_android_device() {
+    #请输入adb
+    TARGET=$(whiptail --inputbox "请输入adb连接地址，例如192.168.99.3:5555\n若不添加端口,则使用默认值" 0 0 --title "Please type the adb address" 3>&1 1>&2 2>&3)
+    if [ "$?" != "0" ]; then
+        ${RETURN_TO_WHERE}
+    elif [ -z "${TARGET}" ]; then
+        echo "请输入有效的数值"
+        echo "Please enter a valid value"
+        echo "检测到您未输入有效的adb地址，已自动调整为localhost:5555"
+    else
+        if [ ! $(echo ${TARGET} | grep ':') ]; then
+            TARGET=${TARGET}:5555
+            echo "检测到您未添加端口，已将端口修改为5555"
+        fi
+    fi
+    echo "正在通过ADB连接至Android设备..."
+    echo "${BLUE}adb connect ${TARGET}${RESET}"
+    echo "Connecting to adb device..."
+    adb connect ${TARGET}
+    adb devices -l
+    echo "您可以在x11VNC下使用scrcpy来启动本应用"
+    echo "您是否需要立刻启动scrcpy?"
+    do_you_want_to_continue
+    scrcpy
+}
+##################
+restart_adb() {
+    adb kill-server
+    adb devices -l
+}
+###########
+install_scrcpy() {
+    DEPENDENCY_02='scrcpy'
+    beta_features_quick_install
+}
+############
+creat_android_studio_application_link() {
+    cd ${APPS_LNK_DIR}
+    #Icon=android-studio
+    cat >android_studio.desktop <<-'EOF'
+		[Desktop Entry]
+		Name=Android Studio
+		Type=Application
+		Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
+		Exec=/opt/android-studio/bin/studio.sh %F
+		Icon=/opt/android-studio/bin/studio.svg
+		Categories=TextEditor;Development;IDE;
+		MimeType=text/plain;inode/directory;
+		Terminal=false
+		Actions=new-empty-window;
+		StartupNotify=true
+		StartupWMClass=Android-Studio
+	EOF
+    chmod +x android_studio.desktop
+}
+#########################
+download_android_studio() {
+    THE_LATEST_DEB_LINK="$(curl -Lv 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
+    echo ${THE_LATEST_DEB_LINK}
+    echo "Do you want to download and install it?"
+    do_you_want_to_continue
+    aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
+}
+###############
+check_android_studio() {
+    mkdir -p ${HOME}/sd/Download
+    cd ${HOME}/sd/Download
+    if [ -e "/opt/android-studio" ]; then
+        echo '您已安装Android studio'
+        echo "若您需要卸载，则请输${RED}rm -rv${RESET} ${HOME}/sd/Download/android_studio_linux_64bit.tar.gz ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+        echo "是否需要重新安装？"
+        echo "Do you want to reinstall it?"
+        do_you_want_to_continue
+    fi
+    if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
+        download_android_studio
+    fi
+    DEPENDENCY_01=''
+    install_java
+}
+##############
+install_android_studio() {
+    check_android_studio
+    tar -zxvf android_studio_linux_64bit.tar.gz -C /opt
+    creat_android_studio_application_link
+    echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+}
+##################
+install_seahorse() {
+    DEPENDENCY_02='seahorse'
+    beta_features_quick_install
+}
+###################
+install_kodi() {
+    DEPENDENCY_01='kodi'
+    DEPENDENCY_02='kodi-wayland'
+    beta_features_quick_install
+}
+######################
+tmoe_store_app_menu() {
+    RETURN_TO_WHERE='tmoe_store_app_menu'
+    NON_DEBIAN='false'
+    TMOE_APP=$(whiptail --title "商店与下载工具" --menu \
+        "Which software do you want to install？" 0 50 0 \
+        "1" "aptitude:基于终端的软件包管理器" \
+        "2" "deepin:深度软件" \
+        "3" "gnome-software(软件商店)" \
+        "4" "plasma-discover(KDE发现-软件中心)" \
+        "5" "Flatpak(跨平台包管理,便捷安装tim等软件)" \
+        "6" "snap(ubuntu母公司开发的跨平台商店)" \
+        "7" "bauh(旨在处理Flatpak,Snap,AppImage和AUR)" \
+        "8" "qbittorrent(P2P下载工具)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") beta_features ;;
+    1)
+        non_debian_function
+        aptitude
+        ;;
+    2) install_deepin_software_menu ;;
+    3) install_gnome_software ;;
+    4) install_plasma_discover ;;
+    5) install_flatpak_store ;;
+    6) install_snap_store ;;
+    7) install_bauh_store ;;
+    8) install_qbitorrent ;;
+    esac
+    ##########################
+    press_enter_to_return
+    tmoe_store_app_menu
+}
+#################
+install_deepin_software_menu() {
+    RETURN_TO_WHERE='install_deepin_software_menu'
+    NON_DEBIAN='true'
+    DEPENDENCY_01=""
+    TMOE_APP=$(whiptail --title "deepin store" --menu \
+        "Which software do you want to install？" 0 50 0 \
+        "01" "dde-calendar(深度日历)" \
+        "02" "dde-qt5integration(Qt5 theme integration)" \
+        "03" "deepin-calculator(计算器)" \
+        "04" "deepin-deb-installer(软件包安装器)" \
+        "05" "deepin-gettext-tools(Deepin国际化工具)" \
+        "06" "deepin-image-viewer(图像查看器)" \
+        "07" "deepin-menu(Deepin 菜单服务)" \
+        "08" "deepin-movie(电影播放器)" \
+        "09" "deepin-music(音乐播放器 with brilliant and tweakful UI)" \
+        "10" "deepin-notifications(系统通知)" \
+        "11" "deepin-picker(深度取色器)" \
+        "12" "deepin-screen-recorder(简单录屏工具)" \
+        "13" "deepin-screenshot(高级截图工具)" \
+        "14" "deepin-shortcut-viewer(弹出式快捷键查看器)" \
+        "15" "deepin-terminal(深度终端模拟器)" \
+        "16" "deepin-voice-recorder(录音器)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") tmoe_store_app_menu ;;
+    01) DEPENDENCY_02="dde-calendar" ;;
+    02) DEPENDENCY_02="dde-qt5integration" ;;
+    03) DEPENDENCY_02="deepin-calculator" ;;
+    04) DEPENDENCY_02="deepin-deb-installer" ;;
+    05) DEPENDENCY_02="deepin-gettext-tools" ;;
+    06) DEPENDENCY_02="deepin-image-viewer" ;;
+    07) DEPENDENCY_02="deepin-menu" ;;
+    08) DEPENDENCY_02="deepin-movie" ;;
+    09) DEPENDENCY_02="deepin-music" ;;
+    10) DEPENDENCY_02="deepin-notifications" ;;
+    11) DEPENDENCY_02="deepin-picker" ;;
+    12) DEPENDENCY_02="deepin-screen-recorder" ;;
+    13) DEPENDENCY_02="deepin-screenshot" ;;
+    14) DEPENDENCY_02="deepin-shortcut-viewer" ;;
+    15) DEPENDENCY_02="deepin-terminal" ;;
+    16) DEPENDENCY_02="deepin-voice-recorder" ;;
+    esac
+    ##########################
+    beta_features_quick_install
+    press_enter_to_return
+    install_deepin_software_menu
+}
+#######################
+install_bauh_store() {
+    if [ ! $(command -v pip3) ]; then
+        DEPENDENCY_01="python3-pip"
+        DEPENDENCY_02="python-pip"
+        beta_features_quick_install
+    fi
+    pip3 install bauh
+}
+#############
+install_snap_store() {
+    echo 'web store url:https://snapcraft.io/store'
+    DEPENDENCY_01="snapd"
+    DEPENDENCY_02="gnome-software-plugin-snap"
+    if [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01="snapd"
+        DEPENDENCY_02="snapd-xdg-open-git"
+    fi
+    beta_features_quick_install
+    echo '前往在线商店,获取更多应用'
+    echo 'https://snapcraft.io/store'
+    snap install snap-store
+}
+#############
+install_flatpak_store() {
+    DEPENDENCY_01="flatpak"
+    DEPENDENCY_02="gnome-software-plugin-flatpak"
+    echo 'web store url:https://flathub.org/'
+    if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        echo 'gentoo用户请前往此处阅读详细说明'
+        echo 'https://github.com/fosero/flatpak-overlay'
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_02="gnome-software-packagekit-plugin"
+    fi
+    beta_features_quick_install
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    echo '前往在线商店,获取更多应用'
+    echo 'https://flathub.org/apps'
+}
+#############
+tmoe_paint_app_menu() {
+    RETURN_TO_WHERE='tmoe_paint_app_menu'
+    NON_DEBIAN='false'
+    DEPENDENCY_01=""
+    TMOE_APP=$(
+        whiptail --title "绘图/制图app" --menu \
+            "Which software do you want to install？" 0 50 0 \
+            "1" "krita(由KDE社区驱动的开源数字绘画应用)" \
+            "2" "inkscape(强大的矢量图绘制工具)" \
+            "3" "kolourpaint(KDE画图程序,简单易用)" \
+            "4" "R language:R语言用于统计分析,图形表示和报告" \
+            "5" "latexdraw(用java开发的示意图绘制软件)" \
+            "6" "LibreCAD(轻量化的2D CAD解决方案)" \
+            "7" "FreeCAD(以构建机械工程和产品设计为目标)" \
+            "8" "OpenCAD(通过解释代码来渲染可视化模型)" \
+            "9" "KiCAD(开源的PCB设计工具)" \
+            "10" "OpenSCAD(3D建模软件)" \
+            "11" "gnuplot(命令行交互式绘图工具)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") beta_features ;;
+    1)
+        DEPENDENCY_01="krita"
+        DEPENDENCY_02="krita-l10n"
+        ;;
+    2)
+        DEPENDENCY_01="inkscape-tutorials"
+        DEPENDENCY_02="inkscape"
+        ;;
+    3) DEPENDENCY_02="kolourpaint" ;;
+    4) tmoe_r_language_menu ;;
+    5) DEPENDENCY_02="latexdraw" ;;
+    6) DEPENDENCY_02="librecad" ;;
+    7) DEPENDENCY_02="freecad" ;;
+    8) DEPENDENCY_02="opencad" ;;
+    9)
+        DEPENDENCY_01="kicad-templates"
+        DEPENDENCY_02="kicad"
+        ;;
+    10) DEPENDENCY_02="openscad" ;;
+    11)
+        DEPENDENCY_01="gnuplot"
+        DEPENDENCY_02="gnuplot-x11"
+        ;;
+    esac
+    ##########################
+    beta_features_quick_install
+    press_enter_to_return
+    tmoe_paint_app_menu
+}
+###################
+tmoe_r_language_menu() {
+    RETURN_TO_WHERE='tmoe_r_language_menu'
+    NON_DEBIAN='false'
+    DEPENDENCY_01=""
+    TMOE_APP=$(
+        whiptail --title "R" --menu \
+            "Which software do you want to install?" 0 50 0 \
+            "1" "r-base(GNU R statistical computation and graphics system)" \
+            "2" "RStudio(x64,R语言IDE)" \
+            "3" "r-recommended(kernsmooth,lattice,mgcv,nlme,rpart,matrix,etc.)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") tmoe_paint_app_menu ;;
+    1) install_r_base ;;
+    2) install_r_studio ;;
+    3) install_r_recommended ;;
+    esac
+    ##########################
+    press_enter_to_return
+    tmoe_r_language_menu
+}
+#############
+check_rstudio_version() {
+    THE_LATEST_ISO_LINK="$(curl -L ${REPO_URL} | grep ${GREP_NAME} | grep 'http' | sed -n 2p | cut -d '=' -f 2 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_ISO_LINK} | sed 's@/@ @g' | awk -F ' ' '$0=$NF')
+    aria2c_download_file
+}
+##############
+install_r_studio() {
+    if [ "${ARCH_TYPE}" != 'amd64' ]; then
+        arch_does_not_support
+    fi
+    REPO_URL='https://rstudio.com/products/rstudio/download/#download'
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        GREP_NAME='amd64.deb'
+        check_rstudio_version
+        apt show ./${THE_LATEST_DEB_VERSION}
+        apt install -y ./${THE_LATEST_DEB_VERSION}
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        GREP_NAME='x86_64.rpm'
+        check_rstudio_version
+        rpm -ivh ./${THE_LATEST_DEB_VERSION}
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_02="rstudio-desktop-git"
+        beta_features_quick_install
+    else
+        non_debian_function
+    fi
+}
+#####################
+install_r_base() {
+    DEPENDENCY_02="r-base"
+    beta_features_quick_install
+}
+#############
+install_r_recommended() {
+    DEPENDENCY_02="r-recommended"
+    beta_features_quick_install
+}
+#############
+tmoe_file_browser_app_menu() {
+    NON_DEBIAN='false'
+    DEPENDENCY_01=""
+    RETURN_TO_WHERE='tmoe_file_browser_app_menu'
+    TMOE_APP=$(whiptail --title "文件与磁盘" --menu \
+        "Which software do you want to install？" 0 50 0 \
+        "1" "文件管理器:thunar/nautilus/dolphin" \
+        "2" "catfish(文件搜索)" \
+        "3" "gparted(强大的GNOME分区编辑器)" \
+        "4" "baobab(直观易用的GNOME磁盘空间占用分析器)" \
+        "5" "cfdisk:在终端下对磁盘进行分区" \
+        "6" "partitionmanager(KDE磁盘分区工具)" \
+        "7" "mc:终端下的文件管理器" \
+        "8" "ranger:带有VI键绑定的控制台文件管理器" \
+        "9" "gnome-disks(实用的磁盘管理工具)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    #"9" "disk-manager(简单易用的分区挂载工具)" \
+    #此软件包依赖python2，已被移除
+    case "${TMOE_APP}" in
+    0 | "") beta_features ;;
+    1) thunar_nautilus_dolphion ;;
+    2) install_catfish ;;
+    3) install_gparted ;;
+    4) install_baobab ;;
+    5) start_cfdisk ;;
+    6) install_partitionmanager ;;
+    7) install_mc_fm ;;
+    8) install_ranger_fm ;;
+    9) install_gnome_disk_utility ;;
+    esac
+    ##########################
+    press_enter_to_return
+    tmoe_file_browser_app_menu
+}
+#############
+install_mc_fm() {
+    if [ ! $(command -v mc) ]; then
+        DEPENDENCY_02="mc"
+        beta_features_quick_install
+        echo "安装完成，您之后可以输mc启动"
+    fi
+    mc
+}
+###########
+install_ranger_fm() {
+    if [ ! $(command -v ranger) ]; then
+        DEPENDENCY_02="ranger"
+        beta_features_quick_install
+        echo "安装完成，您之后可以输ranger启动"
+    fi
+    ranger
+}
+#############
+start_cfdisk() {
+    if [ ! $(command -v cfdisk) ]; then
+        DEPENDENCY_02="util-linux"
+        beta_features_quick_install
+    fi
+    cfdisk
+}
+##################
+install_gnome_disk_utility() {
+    DEPENDENCY_02="gnome-disk-utility"
+    beta_features_quick_install
+}
+##################
+install_partitionmanager() {
+    DEPENDENCY_02="partitionmanager"
+    beta_features_quick_install
+}
+##################
+install_baobab() {
+    DEPENDENCY_02="baobab"
+    beta_features_quick_install
+}
+############
+install_gparted() {
+    DEPENDENCY_02="gparted"
+    beta_features_quick_install
+}
+##################
+install_xournal() {
+    DEPENDENCY_02="xournal"
+    beta_features_quick_install
+}
+##########
+install_evince() {
+    DEPENDENCY_02="evince"
+    beta_features_quick_install
+}
+##########
+tmoe_reader_app_menu() {
+    RETURN_TO_WHERE='tmoe_reader_app_menu'
+    DEPENDENCY_01=""
+    NON_DEBIAN='false'
+    TMOE_APP=$(whiptail --title "TXET & OFFICE" --menu \
+        "Which software do you want to install？" 0 50 0 \
+        "1" "calibre(电子书转换器和库管理)" \
+        "2" "fbreader(epub阅读器)" \
+        "3" "WPS office(办公软件)" \
+        "4" "typora(markdown编辑器)" \
+        "5" "Xournal(手写编辑PDF)" \
+        "6" "evince(gnome-pdf文档阅读器)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") beta_features ;;
+    1) install_calibre ;;
+    2) install_fbreader ;;
+    3) install_wps_office ;;
+    4) install_typora ;;
+    5) install_xournal ;;
+    6) install_evince ;;
+    esac
+    ##########################
+    #beta_features_quick_install
+    press_enter_to_return
+    tmoe_reader_app_menu
+}
+#############
+tmoe_media_menu() {
+    RETURN_TO_WHERE='tmoe_media_menu'
+    DEPENDENCY_01=''
+    NON_DEBIAN='false'
+    BEAUTIFICATION=$(whiptail --title "多媒体文件制作与剪辑" --menu \
+        "Which software do you want to install？" 0 50 0 \
+        "1" "openshot(界面简单,多用途)" \
+        "2" "blender(工业级,用于电影制作和设计3D模型)" \
+        "3" "kdenlive(来自KDE的开源视频编辑器)" \
+        "4" "mkvtoolnix-gui(分割,编辑,混流,分离,合并和提取mkv)" \
+        "5" "flowblade(旨在提供一个快速,精确的功能)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${BEAUTIFICATION}" in
+    0 | "") beta_features ;;
+    1) DEPENDENCY_02="openshot" ;;
+    2) DEPENDENCY_02="blender" ;;
+    3) DEPENDENCY_02="kdenlive" ;;
+    4) DEPENDENCY_02="mkvtoolnix-gui" ;;
+    5) DEPENDENCY_02='flowblade' ;;
+    esac
+    ##########################
+    beta_features_quick_install
+    press_enter_to_return
+    tmoe_media_menu
+}
+################
+download_ubuntu_ppa_deb_model_01() {
+    cd /tmp/
+    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | head -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
+    echo ${THE_LATEST_DEB_LINK}
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+    apt install ./${THE_LATEST_DEB_VERSION}
+    rm -fv ${THE_LATEST_DEB_VERSION}
+}
+##############
+install_catfish() {
+    case "${TMOE_PROOT}" in
+    true | no)
+        echo "检测到您处于proot环境下，可能无法成功创建索引数据库"
+        echo "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${TMOE_REMOVAL_COMMAND} mlocate catfish"
+        do_you_want_to_continue
+        if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+            echo "检测到您使用的ubuntu，您真的要继续安装吗？"
+            press_enter_to_continue
+        fi
+        ;;
+    esac
+    DEPENDENCY_01=''
+    DEPENDENCY_02='catfish'
+    beta_features_quick_install
+}
+##################
+install_gnome_logs() {
+    DEPENDENCY_01='gnome-system-tools'
+    DEPENDENCY_02='gnome-logs'
+    beta_features_quick_install
+}
+##################
+install_wps_office() {
+    DEPENDENCY_01="wps-office"
+    DEPENDENCY_02=""
+    NON_DEBIAN='false'
+    cd /tmp
+    if [ -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
+        press_enter_to_reinstall
+    fi
+
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        dpkg --configure -a
+        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${LatestWPSLink}"
+        apt show ./WPSoffice.deb
+        apt install -y ./WPSoffice.deb
+
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01="wps-office-cn"
+        beta_features_quick_install
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+        rpm -ivh ./WPSoffice.rpm
+    fi
+
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: https://linux.wps.cn"
+    rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
+    beta_features_install_completed
+}
+###################
+thunar_nautilus_dolphion() {
+    case "${TMOE_PROOT}" in
+    true | no)
+        echo "检测到您当前使用的是${BLUE}proot容器${RESET}，不建议您安装${RED}dolphion${RESET}"
+        echo "dolphion在当前环境下可能无法正常启动"
+        echo "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"
+        ;;
+    esac
+    DEPENDENCY_02=""
+    echo "${YELLOW}Which file manager do you want to install?[t/n/d/r]${RESET}"
+    echo "请选择您需要安装的${BLUE}文件管理器${RESET}，输${YELLOW}t${RESET}安装${GREEN}thunar${RESET},输${YELLOW}n${RESET}安装${GREEN}nautilus${RESET}，输${YELLOW}d${RESET}安装${GREEN}dolphion${RESET}，输${YELLOW}r${RESET}${BLUE}返回${RESET}。"
+    echo "Type t to install thunar,type n to install nautils,type d to install dolphin,type r to return."
+    read opt
+    case $opt in
+    t* | T* | "")
+        DEPENDENCY_01="thunar"
+        ;;
+    n* | N*)
+        DEPENDENCY_01="nautilus"
+        ;;
+    d* | D*)
+        DEPENDENCY_02="dolphin"
+        ;;
+    r* | R*)
+        tmoe_file_browser_app_menu
+        ;;
+    *)
+        echo "Invalid choice. skipped."
+        beta_features
+        #beta_features
+        ;;
+    esac
+    NON_DEBIAN='false'
+    beta_features_quick_install
+}
+##################
+#############
+install_obs_studio() {
+    if [ ! $(command -v ffmpeg) ]; then
+        DEPENDENCY_01="ffmpeg"
+    else
+        DEPENDENCY_01=""
+    fi
+
+    if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        DEPENDENCY_02="media-video/obs-studio"
+    else
+        DEPENDENCY_02="obs-studio"
+    fi
+
+    NON_DEBIAN='false'
+    beta_features_quick_install
+
+    if [ "${LINUX_DISTRO}" = "redhat" ]; then
+        if [ $(command -v dnf) ]; then
+            dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+            dnf install -y obs-studio
+        else
+            yum install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+            yum install -y obs-studio
+        fi
+        #dnf install xorg-x11-drv-nvidia-cuda
+    fi
+    echo "若安装失败，则请前往官网阅读安装说明。"
+    echo "url: https://obsproject.com/wiki/install-instructions#linux"
+    press_enter_to_return
+    tmoe_other_app_menu
+}
+######################
+install_grub_customizer() {
+    DEPENDENCY_01="grub-customizer"
+    DEPENDENCY_02=""
+    NON_DEBIAN='false'
+    beta_features_quick_install
+}
+############################
+install_qbitorrent() {
+    DEPENDENCY_01="qbittorrent"
+    DEPENDENCY_02=""
+    NON_DEBIAN='false'
+    beta_features_quick_install
+}
+############################
+install_plasma_discover() {
+    DEPENDENCY_01="plasma-discover"
+    if [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01="discover"
+    fi
+    DEPENDENCY_02=""
+    NON_DEBIAN='false'
+    beta_features_quick_install
+}
+############################
+install_calibre() {
+    DEPENDENCY_02="calibre"
+    beta_features_quick_install
+}
+############################
+install_fbreader() {
+    DEPENDENCY_02="fbreader"
+    beta_features_quick_install
+}
+################
+beta_features

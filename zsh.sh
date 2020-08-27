@@ -129,10 +129,12 @@ if [ ! -z "${DEPENDENCIES}" ]; then
     fi
 fi
 ###############################
-if [ -e "/usr/bin/curl" ]; then
-    curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-else
-    wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+if [ ! $(command -v debian-i) ]; then
+    if [ -e "/usr/bin/curl" ]; then
+        curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+    else
+        wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+    fi
 fi
 chmod +x /usr/local/bin/debian-i
 #########################
@@ -147,9 +149,10 @@ fi
 ######################
 ps -e &>/dev/null
 if [ "$?" != '0' ]; then
-    TERMUX_PS_FILE='/data/data/com.termux/files/usr/bin/ps'
-    if [ -e "${TERMUX_PS_FILE}" ]; then
-        cp ${TERMUX_PS_FILE} /usr/local/bin
+    TERMUX_BIN_PATH='/data/data/com.termux/files/usr/bin/'
+    if [ -e "${TERMUX_BIN_PATH}/ps" ]; then
+        ln -s ${TERMUX_BIN_PATH}/ps /usr/local/bin/ps 2>/dev/null
+        ln -s ${TERMUX_BIN_PATH}/pstree /usr/local/bin/pstree 2>/dev/null
     fi
 fi
 chsh -s /usr/bin/zsh || chsh -s /bin/zsh
@@ -213,17 +216,17 @@ configure_power_level_10k() {
     sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
     sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
     # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
-    echo '您可以输p10k configure来配置powerlevel10k'
+    echo "您可以输${GREEN}p10k configure${RESET}来配置${BLUE}powerlevel10k${RESET}"
+    echo "You can type ${GREEN}p10k configure${RESET} to configure ${BLUE}powerlevel 10k${RESET}."
     if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
         if [ -e "/usr/bin/curl" ]; then
             curl -sLo /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
         else
             wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
         fi
-
         cat >>${HOME}/.zshrc <<-"ENDOFPOWERLEVEL"
-					  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
-				ENDOFPOWERLEVEL
+		[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
+		ENDOFPOWERLEVEL
     fi
 }
 ###################
@@ -248,77 +251,78 @@ fi
 #######################
 cd ~
 cat >~/.zlogin <<-'EndOfFile'
-cat /etc/os-release | grep PRETTY_NAME | cut -d '"' -f 2
-	locale_gen_tmoe_language() {
-		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			cd /etc
-			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
-			if grep -q ubuntu '/etc/os-release'; then
-                    apt update
-					apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-			fi
-			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
-				echo '' >>locale.gen
-				sed -i 's@^@#@g' locale.gen 2>/dev/null
-				sed -i 's@##@#@g' locale.gen 2>/dev/null
-				sed -i "$ a ${TMOE_LANG}" locale.gen
-			fi
-			locale-gen ${TMOE_LANG}
+locale_gen_tmoe_language() {
+	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+		cd /etc
+		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
+		if grep -q ubuntu '/etc/os-release'; then
+			apt update
+			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 		fi
-	}
-check_tmoe_locale_file() {
-    TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-    if [ -e "${TMOE_LOCALE_FILE}" ]; then
-        TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-        TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-        TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-        locale_gen_tmoe_language
-    fi
+		if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+			echo '' >>locale.gen
+			sed -i 's@^@#@g' locale.gen 2>/dev/null
+			sed -i 's@##@#@g' locale.gen 2>/dev/null
+			sed -i "$ a ${TMOE_LANG}" locale.gen
+		fi
+		locale-gen ${TMOE_LANG}
+	fi
 }
-
+############
+check_tmoe_locale_file() {
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		locale_gen_tmoe_language
+	fi
+}
+#############
+vnc_warning() {
+	echo "Sorry,VNC server启动失败，请输debian-i重新安装并配置桌面环境。"
+	echo "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
+}
+###########
 if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
-    check_tmoe_locale_file
-    curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-    chmod +x /usr/local/bin/debian-i
-    /usr/local/bin/debian-i passwd
-fi
-if [ -f "/root/.vnc/startvnc" ]; then
-    /usr/local/bin/startvnc
-    echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-    rm -f /root/.vnc/startvnc
+	check_tmoe_locale_file
+	cd /usr/local/etc/tmoe-linux/git
+	git fetch --depth=1
+	git reset --hard origin/master
+	git pull origin master --allow-unrelated-histories
+	curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+	chmod +x /usr/local/bin/debian-i
+	/usr/local/bin/debian-i passwd
 fi
 
-if [ -f "/root/.vnc/startxsdl" ]; then
-    echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
-    echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
-    rm -f /root/.vnc/startxsdl
-    echo '9s后将为您启动xsdl'
-    echo 'xsdl will start in 9 seconds'
-    sleep 9
-    /usr/local/bin/startxsdl
+if [ -f "/root/.vnc/startvnc" ]; then
+	rm -f /root/.vnc/startvnc
+	if [ -f /usr/local/bin/startvnc ]; then
+		/usr/local/bin/startvnc
+		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
+	else
+		vnc_warning
+	fi
+elif [ -f "/root/.vnc/startx11vnc" ]; then
+	rm -f /root/.vnc/startx11vnc
+	if [ -f /usr/local/bin/startx11vnc ]; then
+		/usr/local/bin/startx11vnc
+		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
+	else
+		vnc_warning
+	fi
+elif [ -f "/root/.vnc/startxsdl" ]; then
+	echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
+	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
+	rm -f /root/.vnc/startxsdl
+	echo '9s后将为您启动xsdl'
+	echo 'xsdl will start in 9 seconds'
+	sleep 9
+	/usr/local/bin/startxsdl
 fi
-ps -e 2>/dev/null | grep -Ev 'bash|zsh' |tail -n 20
+ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
 EndOfFile
 #########################
-configure_command_not_found() {
-    if [ -e "/usr/lib/command-not-found" ]; then
-        grep -q 'command-not-found/command-not-found.plugin.zsh' ${HOME}/.zshrc 2>/dev/null || sed -i "$ a\source ${HOME}/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" ${HOME}/.zshrc
-        if [ "${DEBIAN_DISTRO}" != "ubuntu" ]; then
-            echo "正在配置command-not-found插件..."
-            apt-file update 2>/dev/null
-            update-command-not-found 2>/dev/null
-        fi
-    fi
-}
-######################
-if [ "${LINUX_DISTRO}" != "redhat" ]; then
-    sed -i "1 c\cat /etc/issue" .zlogin
-fi
-#######################
-if [ "${LINUX_DISTRO}" = "debian" ]; then
-    configure_command_not_found
-fi
-############################
 cat <<-EOF
 	少女祈禱中...
         現在可公開的情報:
@@ -329,8 +333,27 @@ cat <<-EOF
 		-------------------
         You can use the ${BLUE}touch screen${RESET} on ${YELLOW}Android-termux${RESET} to slide the menu options of the tmoe-linux tool.
 		-------------------
+        07:容器的启动命令是${GREEN}debian${RESET}！o( =•ω•= )m
+		-------------------
+		You can type ${GREEN}debian${RESET} to start and attach the ${BLUE}container${RESET}.
+        -------------------
 EOF
 ##################
+configure_command_not_found() {
+    if [ -e "/usr/lib/command-not-found" ]; then
+        grep -q 'command-not-found/command-not-found.plugin.zsh' ${HOME}/.zshrc 2>/dev/null || sed -i "$ a\source ${HOME}/.oh-my-zsh/plugins/command-not-found/command-not-found.plugin.zsh" ${HOME}/.zshrc
+        if [ "${DEBIAN_DISTRO}" != "ubuntu" ]; then
+            echo "正在配置command-not-found插件..."
+            apt-file update 2>/dev/null
+            update-command-not-found 2>/dev/null
+        fi
+    fi
+}
+#######################
+if [ "${LINUX_DISTRO}" = "debian" ]; then
+    configure_command_not_found
+fi
+############################
 echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
 echo "github.com/zsh-users/zsh-syntax-highlighting"
 rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
@@ -367,7 +390,7 @@ if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${
     configure_fzf_tab_plugin
 fi
 #######################
-if grep -Eq 'Bionic|buster|Xenial' /etc/os-release; then
+if grep -Eq 'Bionic|buster|stretch|jessie|Xenial' /etc/os-release; then
     sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
 fi
 
@@ -384,10 +407,18 @@ if [ -f "/tmp/.openwrtcheckfile" ]; then
 fi
 ########################
 echo 'All optimization steps have been completed, enjoy it!'
-echo 'zsh配置完成，2s后将为您启动Tmoe-linux工具'
+echo 'zsh配置完成，即将为您启动Tmoe-linux工具'
 echo "您也可以手动输${YELLOW}debian-i${RESET}进入"
-echo 'After 2 seconds, Tmoe-linux tool will be launched.'
+echo 'Tmoe-linux tool will be launched.'
 echo 'You can also enter debian-i manually to start it.'
-sleep 2s
+#sleep 1s
+########################
+TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+mkdir -p ${TMOE_LINUX_DIR}
+TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
+echo "gitee.com/mo2/linux"
+git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+cp ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 bash /usr/local/bin/debian-i
 exec zsh -l || source ~/.zshrc

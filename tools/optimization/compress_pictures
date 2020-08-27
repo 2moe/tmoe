@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+####################
+image_compression_menu() {
+    RETURN_TO_WHERE='image_compression_menu'
+    SOFTWARE=$(
+        whiptail --title "image_compression" --menu \
+            "批量压缩图片小工具" 0 0 0 \
+            "1" "start 启动" \
+            "2" "install 安装" \
+            "3" "remove 卸载" \
+            "0" "🌚 Back to the main menu 返回主菜单" \
+            3>&1 1>&2 2>&3
+    )
+    case "${SOFTWARE}" in
+    0 | "") tmoe_multimedia_menu ;;
+    1) image_compression_tool_gui_or_tui ;;
+    2) install_image_compression_tool ;;
+    3) remove_image_compression_tool ;;
+    esac
+    ############################################
+    press_enter_to_return
+    image_compression_menu
+}
+###########
+remove_image_compression_tool() {
+    DEPENDENCY_01='imagemagick'
+    DEPENDENCY_02='zenity'
+    echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
+    do_you_want_to_continue
+    ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+}
+##########
+install_image_compression_tool() {
+    NON_DEBIAN='false'
+    DEPENDENCY_01='imagemagick'
+    DEPENDENCY_02='zenity'
+    beta_features_quick_install
+}
+###############
+tui_image_compression_tool() {
+    FILE_EXT_01='jpg'
+    FILE_EXT_02='png'
+    if [ -e "${HOME}/图片" ]; then
+        START_DIR="${HOME}/图片"
+    elif [ -e "${HOME}/Pictures" ]; then
+        START_DIR="${HOME}/Pictures"
+    else
+        START_DIR="${HOME}"
+    fi
+    IMPORTANT_TIPS='任意选择一张图片,该文件夹内的所有图片都将被压缩'
+    tmoe_file_manager
+    if [ -z ${SELECTION} ]; then
+        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+    else
+        choose_the_pic_quality
+        catimg ${TMOE_FILE_ABSOLUTE_PATH} 2>/dev/null
+        echo "该文件夹内的${RED}所有图片${RESET}（不包含子目录) 都将被压缩"
+        echo "压缩过的图片将保存至${FILE_PATH}/${TMOE_COMPRESSION_FOLDER}"
+        do_you_want_to_continue
+        compress_pics
+    fi
+}
+#################
+compress_pics() {
+    cd ${FILE_PATH}
+    if [ ! -e "${TMOE_COMPRESSION_FOLDER}" ]; then
+        mkdir -p ${TMOE_COMPRESSION_FOLDER}
+    fi
+    for TMOE_PICS in *; do
+        convert +profile "*" -strip -quality ${TARGET} ${TMOE_PICS} ${TMOE_COMPRESSION_FOLDER}/${TMOE_PICS%%.*}.jpg
+    done
+    echo "压缩完成。"
+    ls -lah ${FILE_PATH}/${TMOE_COMPRESSION_FOLDER}
+    xdg-open ${TMOE_COMPRESSION_FOLDER} 2>/dev/null
+}
+#############
+choose_the_pic_quality() {
+    TARGET=$(whiptail --inputbox "若数值为空,则自动调整为80" 0 50 --title "请输入图片质量(1-99)" 3>&1 1>&2 2>&3)
+    if [ "$?" != "0" ]; then
+        ${RETURN_TO_WHERE}
+    elif [ -z "${TARGET}" ]; then
+        TARGET='80'
+    fi
+    TMOE_COMPRESSION_FOLDER="tmoe_compression_quality_${TARGET}"
+}
+##################
+image_compression_tool_gui_or_tui() {
+    check_imagemagick
+    if (whiptail --title "GUI or TUI" --yes-button "GUI" --no-button "TUI" --yesno "您是想用图形用户界面,还是文本用户界面呢？\nDo you want to use GUI or TUI?\n若您处于桌面环境下,则建议选择GUI,否则请选择TUI♪(^∇^*) " 0 0); then
+        gui_image_compression_tool
+    else
+        tui_image_compression_tool
+    fi
+}
+################
+check_imagemagick() {
+    if [ ! $(command -v convert) ]; then
+        NON_DEBIAN='false'
+        DEPENDENCY_01='imagemagick'
+        DEPENDENCY_02=''
+        beta_features_quick_install
+    fi
+}
+#################
+gui_image_compression_tool() {
+    check_zenity
+    PIC_DIR=$(zenity --title "请选择图片文件夹，并按确认键" --file-selection --directory)
+    case "$?" in
+    0) cd ${PIC_DIR} ;;
+    *) ${RETURN_TO_WHERE} ;;
+    esac
+    ########
+    zenity --question --title="tmoe-pic-compressor的提示o(*￣▽￣*)o" --text="${PIC_DIR} 内的所有图片文件将被压缩！" --ok-label="好哒" --cancel-label="我知道啦"
+    TARGET=$(zenity --scale --title="Picture quality图片质量" --text "1为最低,99为最高" --min-value=1 --max-value=99 --value=2 --step 2)
+    case "$?" in
+    0)
+        TMOE_COMPRESSION_FOLDER="tmoe_compression_quality_${TARGET}"
+        if [ ! -e "${TMOE_COMPRESSION_FOLDER}" ]; then
+            mkdir -p ${TMOE_COMPRESSION_FOLDER}
+        fi
+        xdg-open ${TMOE_COMPRESSION_FOLDER}
+        (
+            echo "10"
+            echo "40"
+            sleep 1
+            for TMOE_PICS in *; do
+                convert +profile "*" -strip -quality ${TARGET} ${TMOE_PICS} ${TMOE_COMPRESSION_FOLDER}/${TMOE_PICS%%.*}.jpg
+            done
+            echo "100"
+            sleep 1
+        ) | zenity --progress --title="正在压缩图片..." --text="正在保存至${TMOE_COMPRESSION_FOLDER}" --percentage=0 --auto-close
+        ls -lah ${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}
+        echo "文件已经保存至${BLUE}${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}${RESET}"
+        ;;
+    *) ${RETURN_TO_WHERE} ;;
+    esac
+}
+###########
+image_compression_menu

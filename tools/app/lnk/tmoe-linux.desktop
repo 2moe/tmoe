@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Tmoe-linux tool
+Comment=Easily configure remote desktop server and qemu vm.
+Exec=/usr/local/bin/debian-i
+Terminal=true
+X-MultipleArgs=false
+Type=Application
+StartupNotify=false
+Categories=System;
+Icon=/usr/local/etc/tmoe-linux/git/.mirror/icon.png
+X-Ubuntu-Gettext-Domain=tmoe-linux
+X-KDE-SubstituteUID=true
+Keywords=tmoe;Tmoe;moe;vnc;aria2;xserver;xsdl;startvnc;debian-i;tool;manager;configuration;settings;menu;

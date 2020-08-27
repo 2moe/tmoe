@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/env bash
 ########################################################################
 main() {
 	case "$1" in
@@ -33,11 +33,23 @@ main() {
 		;;
 	*)
 		check_arch
+		auto_check
+		tmoe_manager_env
+		tmoe_manager_main_menu
 		;;
 	esac
 }
 #########################
-#检测架构 CHECK architecture
+tmoe_manager_env() {
+	check_release_version
+	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
+	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
+	TMOE_GIT_URL=='github.com/2moe/tmoe-linux'
+	APPS_LNK_DIR='/usr/share/applications'
+}
+#######
 check_arch() {
 	case $(uname -m) in
 	armv7* | armv8l)
@@ -109,7 +121,6 @@ check_arch() {
 	RESET=$(printf '\033[m')
 	cur=$(pwd)
 	ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1) || ANDROID_VERSION=6
-	auto_check
 }
 ###############
 press_enter_to_return() {
@@ -144,34 +155,41 @@ auto_check() {
 }
 ########################################
 gnu_linux() {
-
+	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	if [ "$(id -u)" != "0" ]; then
 		export PATH=${PATH}:/usr/sbin:/sbin
-		if [ -e "/usr/bin/curl" ]; then
-			sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
-				su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+		if [ -e "${TMOE_GIT_DIR}/manager.sh" ]; then
+			sudo -E bash ${TMOE_GIT_DIR}/manager.sh || su -c "bash manager.sh"
 		else
-			sudo -E bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
-				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			if [ -e "/usr/bin/curl" ]; then
+				sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+					su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			else
+				sudo -E bash -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" ||
+					su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+			fi
+			#此处一定为debian.sh，而非manager.sh
 		fi
-		#此处一定为debian.sh，而非manager.sh
 		exit 0
 	fi
 	##############
-	if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
+	if grep -Eq 'debian|ubuntu|deepin' "/etc/os-release"; then
 		LINUX_DISTRO='debian'
-		PACKAGES_INSTALL_COMMAND='apt install -y'
-		PACKAGES_REMOVE_COMMAND='apt purge -y'
+		TMOE_INSTALLATON_COMMAND='apt install -y'
+		TMOE_REMOVAL_COMMAND='apt purge -y'
 		if grep -q 'ubuntu' /etc/os-release; then
 			DEBIAN_DISTRO='ubuntu'
 		elif [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
 			DEBIAN_DISTRO='kali'
+		elif grep -q 'deepin' /etc/os-release; then
+			DEBIAN_DISTRO='deepin'
 		fi
 
 	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
-		PACKAGES_UPDATE_COMMAND='opkg update'
-		PACKAGES_REMOVE_COMMAND='opkg remove'
+		TMOE_INSTALLATON_COMMAND='opkg install'
+		TMOE_REMOVAL_COMMAND='opkg remove'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 		chmod +x 'router-debian.bash'
@@ -185,8 +203,8 @@ gnu_linux() {
 
 	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUX_DISTRO='redhat'
-		PACKAGES_REMOVE_COMMAND='dnf remove -y'
-		PACKAGES_INSTALL_COMMAND='dnf install -y --skip-broken'
+		TMOE_REMOVAL_COMMAND='dnf remove -y'
+		TMOE_INSTALLATON_COMMAND='dnf install -y --skip-broken'
 		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
 		elif grep -q 'Sliverblue' "/etc/os-release"; then
@@ -197,28 +215,28 @@ gnu_linux() {
 
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
 		LINUX_DISTRO='alpine'
-		PACKAGES_INSTALL_COMMAND='apk add'
-		PACKAGES_REMOVE_COMMAND='apk del'
+		TMOE_INSTALLATON_COMMAND='apk add'
+		TMOE_REMOVAL_COMMAND='apk del'
 
 	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
-		PACKAGES_REMOVE_COMMAND='pacman -Rsc'
-		PACKAGES_INSTALL_COMMAND='pacman -Syu --noconfirm'
+		TMOE_REMOVAL_COMMAND='pacman -Rsc'
+		TMOE_INSTALLATON_COMMAND='pacman -Syu --noconfirm'
 
 	elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
 		LINUX_DISTRO='gentoo'
-		PACKAGES_INSTALL_COMMAND='emerge -vk'
-		PACKAGES_REMOVE_COMMAND='emerge -C'
+		TMOE_INSTALLATON_COMMAND='emerge -vk'
+		TMOE_REMOVAL_COMMAND='emerge -C'
 
 	elif grep -qi 'suse' '/etc/os-release'; then
 		LINUX_DISTRO='suse'
-		PACKAGES_INSTALL_COMMAND='zypper in -y'
-		PACKAGES_REMOVE_COMMAND='zypper rm'
+		TMOE_INSTALLATON_COMMAND='zypper in -y'
+		TMOE_REMOVAL_COMMAND='zypper rm'
 
 	elif [ "$(cat /etc/issue | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
-		PACKAGES_INSTALL_COMMAND='xbps-install -S -y'
-		PACKAGES_REMOVE_COMMAND='xbps-remove -R'
+		TMOE_INSTALLATON_COMMAND='xbps-install -S -y'
+		TMOE_REMOVAL_COMMAND='xbps-remove -R'
 	fi
 
 	######################################
@@ -348,9 +366,14 @@ gnu_linux() {
 	if [ ! -z "${DEPENDENCIES}" ]; then
 		MIRROR_LIST='true'
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
-				MIRROR_LIST='false'
-			fi
+			case ${DEBIAN_DISTRO} in
+			deepin) ;;
+			*)
+				if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
+					MIRROR_LIST='false'
+				fi
+				;;
+			esac
 		elif [ "${LINUX_DISTRO}" = "arch" ]; then
 			if ! grep -q '^Server.*mirrors' "/etc/pacman.d/mirrorlist"; then
 				MIRROR_LIST='false'
@@ -531,28 +554,42 @@ gnu_linux() {
 
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理工具？\nDo you want to start the software installation tool \nor the system manager? ♪(^∇^*) " 0 50); then
 			#bash <(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh')
-			if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
-				wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
+				sudo -E bash ${TMOE_GIT_DIR}/tool.sh || su -c "bash ${TMOE_GIT_DIR}/tool.sh"
 			else
-				curl -Lv -o /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+				if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
+					wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+				else
+					curl -Lv -o /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+				fi
 			fi
 			bash /tmp/.tmoe-linux-tool.sh
 			exit 0
 		fi
 	fi
-
-	tmoe_manager_main_menu
 }
 ########################################
 notes_of_tmoe_package_installation() {
 	echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
-	echo "${GREEN}${PACKAGES_INSTALL_COMMAND}${BLUE}${DEPENDENCIES}${RESET}"
-	echo "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${PACKAGES_REMOVE_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}"
+	echo "${GREEN}${TMOE_INSTALLATON_COMMAND}${BLUE}${DEPENDENCIES}${RESET}"
+	echo "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}"
 }
 #####################
+check_release_version() {
+	if [ "${LINUX_DISTRO}" = "Android" ]; then
+		OSRELEASE="Android"
+	elif grep -q 'NAME=' /etc/os-release; then
+		OSRELEASE=$(cat /etc/os-release | grep -v 'PRETTY' | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+	elif grep -q 'ID=' /etc/os-release; then
+		OSRELEASE=$(cat /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+	else
+		OSRELEASE='GNU/Linux'
+	fi
+}
+###################
 android_termux() {
-	PACKAGES_INSTALL_COMMAND='apt install -y'
-	PACKAGES_REMOVE_COMMAND='apt purge -y'
+	TMOE_INSTALLATON_COMMAND='apt install -y'
+	TMOE_REMOVAL_COMMAND='apt purge -y'
 	DEPENDENCIES=""
 
 	if [ ! -e ${PREFIX}/bin/pv ]; then
@@ -651,15 +688,13 @@ android_termux() {
 		echo "apt install -y debianutils"
 		apt install -y debianutils
 	fi
-	tmoe_manager_main_menu
 }
-
 ########################################################################
 #-- 主菜单 main menu
 #\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "GNU/Linux Tmoe manager(20200816-20)" --backtitle "$(
+		whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-08)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
@@ -716,10 +751,10 @@ remove_termux_linux_manager() {
 	cd ${PREFIX}/bin
 	echo "${RED}rm -rv ${HOME}/.config/tmoe-linux ${PREFIX}/bin/debian-i${RESET}"
 	DEPENDENCIES='git aria2 pv wget xz newt whiptail dialog'
-	echo "${RED}${PACKAGES_REMOVE_COMMAND} ${DEPENDENCIES}${RESET}"
+	echo "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
 	do_you_want_to_continue
 	rm -rfv rm -rv ${HOME}/.config/tmoe-linux debian-i
-	${PACKAGES_REMOVE_COMMAND} ${DEPENDENCIES}
+	${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}
 	exit 1
 }
 ############
@@ -745,12 +780,14 @@ tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=${HOME}/.config/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
 	elif [ ${LINUX_DISTRO} != 'Android' ]; then
 		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2 | cut -d '"' -f 2)
+		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
 	else
-		TMOE_LANG='default'
+		TMOE_LOCALE_STATUS="Your current locale is default."
 	fi
-	TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
+
 	#######################
 	CONTAINER_LOCALE=$(
 		whiptail --title "LOCALE SETTINGS" \
@@ -893,6 +930,10 @@ tmoe_locale_settings() {
 	64) TMOE_LANG='vi_VN.UTF-8' ;;
 	esac
 	###############
+	case ${TMOE_LANG} in
+	"") tmoe_manager_main_menu ;;
+	esac
+	##############
 	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
 	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 
@@ -934,10 +975,16 @@ tmoe_locale_settings() {
 	#if [ ! -z "${DEBIAN_LOCALE_GEN}" ]; then
 	#	sed -i "s@${DEBIAN_LOCALE_GEN}@${TMOE_LANG_HALF}@" debian-i
 	#fi
+	if [ -e "${DEBIAN_CHROOT}" ]; then
+		mkdir -p ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+		cd ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+		cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
+		chmod +r locale.txt
+	fi
 	set_debian_default_locale
 	#cd ${TMOE_SCRIPT_PATH}/etc
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
-		if [ ! -z "${TMOE_SCRIPT_PATH}"]; then
+		if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
 			TMOE_SCRIPT_PATH=''
 			set_debian_default_locale
 			source /etc/default/locale
@@ -1060,7 +1107,7 @@ creat_start_linux_deploy_sh() {
 	cd $PREFIX/bin
 	echo ${CUT_TARGET}
 	cat >"${CUT_TARGET}" <<-'EndofFile'
-		#!/data/data/com.termux/files/usr/bin/bash
+		#!/data/data/com.termux/files/usr/bin/env bash
 		pulseaudio --start 2>/dev/null &
 		echo "pulseaudio服务启动完成，将为您自动打开LinuxDeploy,请点击“启动”。"
 		am start -n ru.meefik.linuxdeploy/ru.meefik.linuxdeploy.Launcher
@@ -1135,7 +1182,7 @@ questions_about_tmoe_automatic_configuration() {
 			您只需要执行${GREEN}rm ${HOME}/.termux/termux.properties${RESET}即可删除配置并还原回默认布局。
 			You can type ${GREEN}rm ~/.termux/termux.properties${RESET} to delete it and restore to default.
 			-----------------------
-			Q:${YELLOW}为什么每次安装都会自动加载EULA?${RESET}
+			Q:${YELLOW}为什么每次会自动加载EULA?${RESET}
 		    
 			A:添加许可协议是为了避免不必要的麻烦。
 			作为一个开源项目，您可以随时审查其中的代码，而不必过多担心恶意代码。
@@ -1143,7 +1190,8 @@ questions_about_tmoe_automatic_configuration() {
 			Q:${YELLOW}为什么安装时会自动显示git仓库的链接?${RESET}
 		    
 			A:因为开源项目花了开发者很长的时间，希望大家能尊重原开发者。
-			换位思考一下：假如你辛辛苦苦录制的视频被别人盗了，没有人知道那个视频真正的原作者，而你的努力最终只能付诸于东流。
+			换位思考一下：假如你辛辛苦苦录制的视频被别人盗了，没有人知道那个视频真正的原作者是谁，而你的努力最终只能付诸于东流。
+			听说尊重他人的劳动成果，会让世界变得更加美好呢！φ(≧ω≦*)♪
 			-----------------------
 	ENDOFFAQ
 }
@@ -1151,7 +1199,6 @@ questions_about_tmoe_automatic_configuration() {
 install_proot_container() {
 	rm -f ~/.Chroot-Container-Detection-File
 	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
-	#touch ~/.Tmoe-Proot-Container-Detection-File
 	install_gnu_linux_container
 	#sed -i 's@^command+=" --link2sy@#&@' $(command -v debian)
 }
@@ -1161,6 +1208,8 @@ install_chroot_container() {
 	echo "本功能目前仅对GNU/Linux系统测试开放。"
 	echo "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
 	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
+	echo "由于在测试chroot容器的过程中出现了部分已挂载的目录${RED}无法强制卸载${RESET}的情况，故建议您换用${BLUE}docker${RESET}容器。"
+	echo "We recommend that you run ${BLUE}docker${RESET} containers on GNU/Linux system instead of ${RED}chroot${RESET} containers."
 	if [ "$(uname -o)" = "Android" ]; then
 		echo Android :${ANDROID_VERSION}
 		echo "$(getprop ro.product.model)"
@@ -1173,7 +1222,6 @@ install_chroot_container() {
 			#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
 			echo "Android系统请换用proot容器。"
 		fi
-		echo "由于在测试过程中出现部分已挂载的目录无法强制卸载的情况，故建议您换用proot容器。"
 		press_enter_to_return
 		tmoe_manager_main_menu
 	else
@@ -1223,7 +1271,7 @@ install_gnu_linux_container() {
 						echo '正在强制删除'
 						remove_gnu_linux_container
 					fi
-					tmoe_linux_container_eula
+					check_and_view_the_eula
 				fi
 				;;
 			n* | N*)
@@ -1240,7 +1288,7 @@ install_gnu_linux_container() {
 		fi
 
 	else
-		tmoe_linux_container_eula
+		check_and_view_the_eula
 		#bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
 	fi
 }
@@ -1263,12 +1311,21 @@ enable_root_mode() {
 		#sed -i '/pulseaudio/d' ${PREFIX}/bin/debian
 		#	sed -i '4 c\pulseaudio --system --start' ${PREFIX}/bin/debian
 		#fi
+		ROOT_PERMISSION=$(sudo ls / 2>/dev/null)
+		if [ -z "${ROOT_PERMISSION}" ]; then
+			echo "${RED}ERROR!${RESET}未检测到root权限！"
+			press_enter_to_return
+			tmoe_manager_main_menu
+		fi
 		cd ${PREFIX}/bin/
 		if ! grep -q 'sudo touch' startvnc; then
 			sed -i 's/^touch ~/sudo &/' startvnc
 			sed -i 's:/data/data/com.termux/files/usr/bin/debian:sudo &:' startvnc
+			sed -i 's:/usr/local/bin/debian:sudo &:' startvnc
 		fi
 		###############
+		sed -i 's@FAKE_PROOT_PROC=true@FAKE_PROOT_PROC=false@g' debian
+		############
 		if ! grep -q 'sudo touch' startxsdl; then
 			sed -i 's/^touch ~/sudo &/' startxsdl
 			sed -i 's:/data/data/com.termux/files/usr/bin/debian:sudo &:' startxsdl
@@ -1493,14 +1550,17 @@ backup_gnu_linux_container() {
 	#press_enter_to_continue
 	termux_backup_pre
 	TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-rootfs_bak"
-	BACKUP_FOLDER="${DEBIAN_CHROOT} ${PREFIX}/bin/debian ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc"
+	BACKUP_FOLDER="${DEBIAN_CHROOT} ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc"
+	BACKUP_FILE="${PREFIX}/bin/debian"
+	check_backup_file
 	BACKUP_FILE="${PREFIX}/bin/stopvnc"
+	check_backup_file
+	BACKUP_FILE="${PREFIX}/bin/startx11vnc"
 	check_backup_file
 	BACKUP_FILE="${ACROSS_ARCH_FILE}"
 	check_backup_file
 	BACKUP_FILE="${LINUX_CONTAINER_DISTRO_FILE}"
 	check_backup_file
-
 	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 12 50); then
 
 		echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
@@ -1656,7 +1716,7 @@ backup_termux() {
 		#read
 		#TMPtime=termux-usr_$(cat backuptime.tmp)
 
-		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
+		if (whiptail --title "Select compression type 选择压��类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
@@ -2068,9 +2128,9 @@ update_tmoe_linux_manager() {
 	#curl -L -o ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh'
 	aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
-		sed -i '1 c\#!/bin/bash' ${PREFIX}/bin/debian-i
+		sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i
 	fi
-
+	echo "${TMOE_GIT_URL}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	chmod +x ${PREFIX}/bin/debian-i
@@ -2240,7 +2300,7 @@ start_vscode() {
 
 	if [ ! -e "${PREFIX}/bin/code-server" ]; then
 		cat >${PREFIX}/bin/code-server <<-EndOfFile
-			#!/data/data/com.termux/files/usr/bin/bash
+			#!/data/data/com.termux/files/usr/bin/env bash
 			touch "${DEBIAN_CHROOT}/tmp/startcode.tmp"
 			CODE_PORT=$(cat ${HOME}/${DEBIAN_FOLDER}/root/.config/code-server/config.yaml | grep bind-addr | head -n 1 | awk -F ' ' '$0=$NF' | cut -d ':' -f 2)
 			am start -a android.intent.action.VIEW -d "http://localhost:\${CODE_PORT}"
@@ -2348,6 +2408,13 @@ chroot_install_debian() {
 	install_gnu_linux_container
 }
 #################################
+check_and_view_the_eula() {
+	if [ ! -e "${CONFIG_FOLDER}/eula" ]; then
+		tmoe_linux_container_eula
+	fi
+	same_arch_or_different_arch
+}
+########################
 tmoe_linux_container_eula() {
 	if [ ! -d "${DEBIAN_CHROOT}" ]; then
 		#less -meQ
@@ -2408,21 +2475,22 @@ tmoe_linux_container_eula() {
 		echo 'You must agree to the EULA to use this tool.'
 		echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
 		echo "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
-		cat <<-'EndOfFile'
-			本项目的原地址为https://gitee.com/mo2/linux
-			有空的话，可以来看看哦！φ(≧ω≦*)♪
-			听说尊重他人的劳动成果，会让世界变得更加美好呢！
-			The original URL of this project is https://github.com/2moe/tmoe-linux
-			If you give me a star, then I will feel very happy.
-		EndOfFile
-		#if [ "${LINUX_DISTRO}" != 'Android' ]; then
-		#export LANG=${CurrentLANG}
-		#fi
+		#note_tmoe_linux_git_repo
 		read
+		touch ${CONFIG_FOLDER}/eula
 	fi
-	same_arch_or_different_arch
 }
 ###################################################
+note_tmoe_linux_git_repo() {
+	cat <<-'EndOfFile'
+		本项目的原地址为https://gitee.com/mo2/linux
+		有空的话，可以来看看哦！φ(≧ω≦*)♪
+		听说尊重他人的劳动成果，会让世界变得更加美好呢！
+		The original URL of this project is https://github.com/2moe/tmoe-linux
+		If you give me a star, then I will feel very happy.
+	EndOfFile
+}
+#################################################
 same_arch_or_different_arch() {
 	if (whiptail --title "您是想要同架构运行,还是跨架构呢？" --yes-button 'same同' --no-button 'across跨' --yesno "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?\n除向下兼容外,跨架构运行的效率可能偏低" 0 0); then
 		rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
@@ -2501,11 +2569,17 @@ tmoe_qemu_user_chart() {
 ###############
 install_qemu_user_static() {
 	echo "正在检测版本信息..."
-	if [ -e "${QEMU_USER_LOCAL_VERSION_FILE}" ]; then
-		LOCAL_QEMU_USER_VERSION=$(cat ${QEMU_USER_LOCAL_VERSION_FILE} | head -n 1)
-	else
-		LOCAL_QEMU_USER_VERSION='您尚未安装QEMU-USER-STATIC'
+	LOCAL_QEMU_USER_FILE=''
+	if [ -e "${PREFIX}/bin/qemu-aarch64-static" ]; then
+		LOCAL_QEMU_USER_FILE="${PREFIX}/bin/qemu-aarch64-static"
+	elif [ -e "/usr/bin/qemu-aarch64-static" ]; then
+		LOCAL_QEMU_USER_FILE='/usr/bin/qemu-aarch64-static'
 	fi
+	case ${LOCAL_QEMU_USER_FILE} in
+	"") LOCAL_QEMU_USER_VERSION='您尚未安装QEMU-USER-STATIC' ;;
+	*) LOCAL_QEMU_USER_VERSION=$(${LOCAL_QEMU_USER_FILE} --version | head -n 1 | awk '{print $5}' | cut -d ':' -f 2 | cut -d ')' -f 1) ;;
+	esac
+
 	cat <<-'EOF'
 		---------------------------
 		一般来说，新版的qemu-user会引入新的功能，并带来性能上的提升。
@@ -2521,14 +2595,13 @@ install_qemu_user_static() {
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
 		║ 1 ║qemu-user ║                    ${LOCAL_QEMU_USER_VERSION} 
-		║   ║ static   ║${THE_LATEST_DEB_VERSION_CODE}
+		║   ║ static   ║$(echo ${THE_LATEST_DEB_VERSION_CODE} | sed 's@%2B@+@')
 
 	ENDofTable
 	do_you_want_to_continue
-	#check_qemu_user_version
 	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 	echo ${THE_LATEST_DEB_LINK}
-	echo "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
+	#echo "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt update
 		echo 'apt install -y qemu-user-static'
@@ -2574,7 +2647,11 @@ download_qemu_user() {
 }
 ##############
 remove_qemu_user_static() {
-	rm -rv $PREFIX/bin/qemu-*-static "$PREFIX/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
+	ls -lah /usr/bin/qemu-*-static ${PREFIX}/bin/qemu-*-static 2>/dev/null
+	echo "${RED}rm -rv${RESET} ${BLUE}${PREFIX}/bin/qemu-*-static${RESET}"
+	echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
+	do_you_want_to_continue
+	rm -rv $PREFIX/bin/qemu-*-static "$PREFIX/bin/qemu-*-static"
 	apt remove ^qemu-user
 }
 ##############
@@ -2586,7 +2663,6 @@ creat_tmoe_arch_file() {
 }
 #############
 tmoe_qemu_user_manager() {
-	QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}/qemu-user-static_version.txt"
 	cd ${CONFIG_FOLDER}
 	NEW_TMOE_ARCH=''
 	RETURN_TO_WHERE='tmoe_qemu_user_manager'
@@ -2598,7 +2674,7 @@ tmoe_qemu_user_manager() {
 			"02" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
 			"03" "arm64（2020年移动平台主流cpu架构）" \
 			"04" "armhf(32位arm架构,支持硬浮点运算)" \
-			"05" "armel（支持软浮点运算,常见于旧设备）" \
+			"05" "armel(支持软浮点运算,常见于旧设备）" \
 			"06" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
 			"07" "s390x(常见于IBM大型机)" \
 			"08" "mipsel(暂仅适配debian stable,常见于龙芯cpu或和嵌入式设备)" \
@@ -2767,10 +2843,10 @@ install_debian_sid_gnu_linux_container() {
 	DISTRO_CODE='sid'
 	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
 		"1" "netinstall(通过软件源在线安装)" \
-		"2" "arm64 xfce4.14桌面+音乐app,1.27G,20200730" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
+	#"2" "arm64 xfce4.14桌面+音乐app,1.27G,20200730" \
 	case "${BETA_SYSTEM}" in
 	0 | "") install_debian_gnu_linux_distro ;;
 	1) install_debian_sid_via_tuna ;;
@@ -2781,8 +2857,9 @@ install_debian_sid_gnu_linux_container() {
 		;;
 	esac
 	######################
-	press_enter_to_return
-	tmoe_manager_main_menu
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 }
 ###########
 install_debian_buster_via_tuna() {
@@ -2791,6 +2868,7 @@ install_debian_buster_via_tuna() {
 		sed "s:-sid:-${DISTRO_CODE}:g" |
 		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
+		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/')"
 }
@@ -2801,6 +2879,7 @@ install_debian_testing_via_tuna() {
 		sed "s:-sid:-${DISTRO_CODE}:g" |
 		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
+		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/')"
 }
@@ -2810,11 +2889,11 @@ install_debian_buster_gnu_linux_container() {
 	BETA_SYSTEM=$(
 		whiptail --title "DEBIAN CONTAINER" --menu "BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs" 0 50 0 \
 			"1" "netinstall(通过软件源在线安装)" \
-			"2" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
+	#"2" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
 	case "${BETA_SYSTEM}" in
 	0 | "") install_debian_gnu_linux_distro ;;
 	1) install_debian_buster_via_tuna ;;
@@ -2825,8 +2904,9 @@ install_debian_buster_gnu_linux_container() {
 		;;
 	esac
 	######################
-	press_enter_to_return
-	tmoe_manager_main_menu
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 }
 ########################
 creat_container_edition_txt() {
@@ -2884,8 +2964,10 @@ install_debian_gnu_linux_distro() {
 	squeeze | wheezy | jessie | stretch | buster) install_debian_buster_via_tuna ;;
 	*) install_debian_testing_via_tuna ;;
 	esac
-	press_enter_to_return
-	tmoe_manager_main_menu
+	###############
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 }
 #########################
 #"9" "🐧7-wheezy(2013~2016,吱吱,带着领结的玩具企鹅)" \
@@ -3043,8 +3125,8 @@ un_xz_debian_recovery_kit() {
 	fi
 	cd "$cur"
 	#用绝对路径
-	if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-		#sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	if [ ! -h '/data/data/com.termux/files/home/storage/external-1' ]; then
+		sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
 	fi
 	if [ -e "${HOME}/debian_arm64" ]; then
@@ -3064,8 +3146,8 @@ un_xz_debian_recovery_kit() {
 switch_termux_rootfs_to_linux() {
 	if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		cd /data/data/com.termux/files/usr/bin
-		sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:g' $(grep -rl 'com.termux' ./)
-		#sed -i 's:#!/data/data/com.termux/files/usr/bin/bash:#!/bin/bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+		sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' ./)
+		#sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 		cp -pf ./* ${PREFIX}/bin/
 	fi
 }
@@ -3090,7 +3172,7 @@ tmoe_install_xfce() {
 
 	apt install -y xfce tigervnc aterm
 	cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
-		#!/data/data/com.termux/files/usr/bin/bash
+		#!/data/data/com.termux/files/usr/bin/env bash
 		pkill Xvnc 2>/dev/null 
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
@@ -3470,7 +3552,7 @@ check_android_version() {
 termux_original_system_gui() {
 	RETURN_TO_WHERE='termux_original_system_gui'
 	#\n这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system.
-	OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages. \nIt is recommended that you install a container.\nTermux原系统GUI可玩性较低，建议您安装GNU/Linux（proot/chroot)容器,\n或通过qemu-system虚拟机来使用docker容器。" 0 50 0 \
+	OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages.It is recommended that you install a container.Termux原系统GUI可玩性较低,建议您安装GNU/Linux(proot/chroot)容器" 0 50 0 \
 		"1" "modify termux-vnc conf" \
 		"2" "🐹 install termux-xfce4" \
 		"3" "💔 remove xfce4" \
@@ -3875,8 +3957,9 @@ choose_which_gnu_linux_distro() {
 		;;
 	esac
 	####################
-	press_enter_to_return
-	tmoe_manager_main_menu
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 }
 ##############################
 install_alpha_containers() {
@@ -3996,8 +4079,9 @@ install_beta_containers() {
 		;;
 	esac
 	######################
-	press_enter_to_return
-	tmoe_manager_main_menu
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 	####################
 }
 #####################
@@ -4040,12 +4124,14 @@ install_ubuntu_gnu_linux_distro() {
 	echo "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	install_different_ubuntu_gnu_linux_distros
-	press_enter_to_return
-	tmoe_manager_main_menu
+	####################
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 }
 #########################
 custom_ubuntu_version() {
-	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\n Please enter the ubuntu version code." 12 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease enter the ubuntu version code." 12 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
 	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		echo "检测到您取消了操作"
@@ -4090,12 +4176,11 @@ linux_distro_common_model_02() {
 }
 #########################
 install_different_ubuntu_gnu_linux_distros() {
-	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		ubuntu_distro_x64_model
-	else
-		#ubuntu-ports
-		ubuntu_distro_arm_model
-	fi
+	case "${ARCH_TYPE}" in
+	amd64 | i386) ubuntu_distro_x64_model ;;
+	*) ubuntu_distro_arm_model ;;
+	esac
+	#UBUNTU ppc64el/s390x/arm架构需使用ports源
 }
 ############
 check_the_latest_ubuntu_version() {
@@ -4143,17 +4228,21 @@ which_version_do_you_want_to_install() {
 install_fedora_gnu_linux_distro() {
 	touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='fedora'
-	if [ "${ARCH_TYPE}" = 'armhf' ]; then
-		echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
-		DISTRO_CODE='29'
-		linux_distro_common_model_01
-	elif [ "${ARCH_TYPE}" = 'i386' ]; then
-		echo "Fedora不支持您的架构"
-	else
+	case "${ARCH_TYPE}" in
+	armhf | armel | i386)
+		#echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
+		#DISTRO_CODE='29'
+		#linux_distro_common_model_01
+		echo "检测到您使用的是${ARCH_TYPE}架构，请换用其他发行版"
+		press_enter_to_return
+		choose_which_gnu_linux_distro
+		;;
+	*)
 		#OLD_STABLE_VERSION='31'
 		OLD_STABLE_VERSION=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 		check_the_latest_distro_version
-	fi
+		;;
+	esac
 }
 ################
 install_funtoo_linux_distro() {

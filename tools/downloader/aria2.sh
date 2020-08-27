@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 ########################################################################
 main() {
+    tmoe_aria2_env
     check_dependencies
     check_current_user_name_and_group
     case "$1" in
@@ -22,6 +23,11 @@ main() {
     esac
 }
 ################
+tmoe_aria2_env() {
+    TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
+    TMOE_ARIA2_FILE="${TMOE_ARIA2_PATH}/aria2.conf"
+}
+##########
 check_current_user_name_and_group() {
     CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
     CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
@@ -75,7 +81,7 @@ press_enter_to_return() {
 ################
 upgrade_tmoe_aria2_tool() {
     cd /usr/local/bin
-    curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool/aria2.sh'
+    curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/aria2.sh'
     echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
     echo "${YELLOW}更新完成，按回车键返回。${RESET}"
     chmod +x aria2-i
@@ -196,9 +202,6 @@ tmoe_aria2_manager() {
             TMOE_ARIA2_WARNING="您将以${CURRENT_USER_NAME}身份运行aria2"
         fi
     fi
-
-    TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
-    TMOE_ARIA2_FILE="${TMOE_ARIA2_PATH}/aria2.conf"
     if [ ! -e "${TMOE_ARIA2_FILE}" ]; then
         mkdir -p ${TMOE_ARIA2_PATH}
     fi
@@ -2000,12 +2003,11 @@ tmoe_aria2_onekey() {
 
     #cp -pvf ${HOME}/gitee/linux-gitee/.config/aria2.conf ./
     aria2c --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
-    if [ -e "/tmp/.Chroot-Container-Detection-File" ] || [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-        echo "检测到您处于${BLUE}chroot/proot容器${RESET}环境下"
-        #echo "部分系统可能会出现failed，但仍能正常连接。"
-        #CHROOT_STATUS='1'
-    fi
-
+    case ${TMOE_PROOT} in
+    true) echo "检测到您处于${BLUE}proot容器${RESET}环境下" ;;
+    false) echo "检测到您处于${BLUE}chroot容器${RESET}环境下" ;;
+    no) echo "检测到您可能处于${BLUE}proot容器${RESET}环境下" ;;
+    esac
     cd /etc/systemd/system
     cat >aria2.service <<-EndOFaria
 [Unit]
@@ -2024,7 +2026,7 @@ WantedBy=multi-user.target
 
     cd /etc/init.d
     cat >aria2 <<-EndOFaria
-#!/bin/bash
+#!/usr/bin/env bash
 ### BEGIN INIT INFO
 # Provides:          aria2
 # Required-Start:    $network $local_fs $remote_fs
@@ -2119,7 +2121,7 @@ creat_aria2_hook_script() {
 ###############
 creat_auto_upload_onedrive_sh() {
     cat >auto_upload_onedrive.sh <<-'EOF'
-    #!/bin/bash
+    #!/usr/bin/env bash
     #https://github.com/MoeClub/OneList/tree/master/OneDriveUploader
     #https://www.moerats.com/archives/1006/
     #需配合萌咖大佬的OnedriveUploader使用
@@ -2162,10 +2164,9 @@ EOF
 }
 #################################
 craet_aria2_auto_move_sh() {
-    #https://github.com/liberize/liberize.github.com/blob/e9b48700c4457463a82e100d0df23df9ead16576/_posts/2015-07-26-turn-raspberry-pi-into-a-downloader.md
     cat >auto_move_media_files.sh <<-'EOF'
-        #!/bin/bash
-
+        #!/usr/bin/env bash
+        #https://github.com/liberize/liberize.github.com/blob/e9b48700c4457463a82e100d0df23df9ead16576/_posts/2015-07-26-turn-raspberry-pi-into-a-downloader.md
         if [ "$(ps -o comm= $PPID)" = 'aria2c' ]; then
             shift 2
         fi
@@ -2203,14 +2204,15 @@ craet_aria2_auto_move_sh() {
 
         cd "$DIR_PATH"
         case "$FILE_PATH" in
-        *.tar.bz2 | *.tbz2) tar jxvf "$FILE_PATH" -C "$FILE_NAME" ;;
-        *.tar.gz | *.tgz) tar zxvf "$FILE_PATH" -C "$FILE_NAME" ;;
+        *.tar.bz2 | *.tbz2) tar -jxvf "$FILE_PATH" -C "$FILE_NAME" ;;
+        *.tar.gz | *.tgz) tar -zxvf "$FILE_PATH" -C "$FILE_NAME" ;;
+        *.tar.xz | *.txz) tar -Jxvf "$FILE_PATH" -C "$FILE_NAME" ;;
         *.bz2) bunzip2 -c "$FILE_PATH" >"$FILE_NAME" ;;
         *.rar) mkdir -p "$FILE_NAME" && cd "$FILE_NAME" && unrar x "$FILE_PATH" && cd .. ;;
         *.gz) gunzip -c "$FILE_PATH" >"$FILE_NAME" ;;
-        *.tar) tar xvf "$FILE_PATH" -C "$FILE_NAME" ;;
         *.zip) unzip -d "$FILE_NAME" "$FILE_PATH" ;;
         *.7z) 7z x -o"$FILE_NAME" "$FILE_PATH" ;;
+        *.tar*) tar xvf "$FILE_PATH" -C "$FILE_NAME" ;;
         *)
             auto_move "$FILE_PATH"
             exit 0
@@ -2254,8 +2256,13 @@ EOF
 }
 ############
 creat_aria_ng_desktop_link() {
+    ARIA_NG_ICON='/usr/local/etc/tmoe-linux/git/.mirror/ariang.png'
     if [ ! -e "/usr/share/icons/ariang.png" ]; then
-        aria2c --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
+        if [ -e "${ARIA_NG_ICON}" ]; then
+            cp ${ARIA_NG_ICON} /usr/share/icons
+        else
+            aria2c --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
+        fi
     fi
     catimg "/usr/share/icons/ariang.png" 2>/dev/null
     cat >ariang.desktop <<-'EOF'

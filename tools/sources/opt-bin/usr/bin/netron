@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+TMOE_BIN='/opt/netron'
+export ELECTRON_IS_DEV=0
+case "$(id -u)" in
+0) electron ${TMOE_BIN} --no-sandbox "$@" ;;
+*)
+    electron ${TMOE_BIN} "$@"
+    case "$?" in
+    0) ;;
+    *) electron ${TMOE_BIN} --no-sandbox "$@" ;;
+    esac
+    ;;
+esac

@@ -1,0 +1,185 @@
+#!/usr/bin/env bash
+####################
+deb_batch_installer_tui_or_gui() {
+    if (whiptail --title "GUI or TUI" --yes-button "GUI" --no-button "TUI" --yesno "您是想用图形用户界面,还是文本用户界面呢？\nDo you want to use GUI or TUI?\n若您处于桌面环境下,则建议选择GUI,否则请选择TUI♪(^∇^*) " 0 0); then
+        gui_deb_batch_installer
+    else
+        tui_deb_batch_installer
+    fi
+}
+#################
+deb_installer_menu() {
+    RETURN_TO_WHERE='deb_installer_menu'
+    SOFTWARE=$(
+        whiptail --title "TMOE-DEB-INSTALLER" --menu \
+            "软件包安装与卸载管理器" 0 0 0 \
+            "1" "batch-installation批量安装" \
+            "2" "单独安装并检测卸载命令" \
+            "0" "🌚 Back to the main menu 返回主菜单" \
+            3>&1 1>&2 2>&3
+    )
+    case "${SOFTWARE}" in
+    0 | "") tmoe_software_package_menu ;;
+    1) deb_batch_installer_tui_or_gui ;;
+    2) tmoe_deb_file_installer ;;
+    esac
+    ############################################
+    press_enter_to_return
+    deb_installer_menu
+}
+###########
+tmoe_deb_batch_installer_01() {
+    DEPENDENCY_02=""
+    for TMOE_DEB_FILE in *deb; do
+        apt show ./${TMOE_DEB_FILE}
+        PACKAGE_NAME=$(apt show ./${TMOE_DEB_FILE} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
+        DEPENDENCY_01=${PACKAGE_NAME}
+        apt install -y ./${TMOE_DEB_FILE}
+        beta_features_install_completed
+    done
+}
+#############
+tmoe_deb_batch_installer_02() {
+    DEPENDENCY_02=""
+    for TMOE_DEB_FILE in *deb; do
+        apt show ./${TMOE_DEB_FILE}
+        PACKAGE_NAME=$(apt show ./${TMOE_DEB_FILE} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
+        DEPENDENCY_01=${PACKAGE_NAME}
+        apt install ./${TMOE_DEB_FILE}
+        beta_features_install_completed
+    done
+}
+#############
+gui_deb_batch_installer() {
+    check_zenity
+    DEB_DIR=$(zenity --title "请选择deb文件所在目录，并按确认键，该目录下所有文件都将被安装。" --file-selection --directory)
+    case "$?" in
+    0) cd ${DEB_DIR} ;;
+    *) ${RETURN_TO_WHERE} ;;
+    esac
+    zenity --question --title="tmoe-deb-installer的提示o(*￣▽￣*)o" --text="${DEB_DIR} 内的所有deb文件将被安装！" --ok-label="好哒" --cancel-label="我知道啦"
+    cd ${DEB_DIR}
+    tmoe_deb_batch_installer_01
+}
+#########
+check_deb_file_start_dir() {
+    if [ -e "${HOME}/下载" ]; then
+        START_DIR="${HOME}/下载"
+    elif [ -e "/var/cache/apt/archives" ]; then
+        START_DIR="/var/cache/apt/archives"
+    else
+        START_DIR="${HOME}"
+    fi
+}
+############
+tui_deb_batch_installer() {
+    FILE_EXT_01='deb'
+    FILE_EXT_02='DEB'
+    check_deb_file_start_dir
+    IMPORTANT_TIPS='任意选择一个deb包,该文件夹内的所有deb包都将被安装'
+    tmoe_file_manager
+    if [ -z ${SELECTION} ]; then
+        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+    else
+        cd ${FILE_PATH}
+        file ${SELECTION}
+        echo "${FILE_PATH}内的${RED}所有deb包${RESET}（不包含子目录) 都将被安装"
+        do_you_want_to_continue
+        tmoe_deb_batch_installer_02
+    fi
+}
+###########
+deb_file_installer() {
+    #进入deb文件目录
+    cd ${CURRENT_DIR}
+    #./${SELECTION}
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        file ./${SELECTION} 2>/dev/null
+        apt show ./${SELECTION}
+        PACKAGE_NAME=$(apt show ./${SELECTION} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
+        echo "您是否需要安装此软件包？"
+        echo "Do you want to install it?"
+        if [ $(command -v ${PACKAGE_NAME}) ]; then
+            echo "检测到您${RED}已安装${RESET}${BLUE}${PACKAGE_NAME}${RESET}"
+            echo "如需卸载,请输${RED}apt purge${RESET} ${BLUE}${PACKAGE_NAME}${RESET}"
+            echo "按${GREEN}回车键${RESET}${RED}重新安装${RESET}。"
+            echo "输${YELLOW}n${RESET}返回并进入${BLUE}卸载菜单${RESET}"
+        fi
+        RETURN_TO_WHERE='remove_deb_package'
+        do_you_want_to_continue
+        RETURN_TO_WHERE='deb_installer_menu'
+        apt install -y ./${SELECTION}
+        DEPENDENCY_01=${PACKAGE_NAME}
+        DEPENDENCY_02=""
+        beta_features_install_completed
+    else
+        if [ ! $(command -v dpkg) ]; then
+            DEPENDENCY_01='dpkg'
+            DEPENDENCY_02=''
+            echo ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+            ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+            beta_features_install_completed
+        fi
+        if [ $(command -v dpkg) ]; then
+            dpkg -i ./${SELECTION}
+        else
+            uncompress_deb_file
+        fi
+    fi
+    delete_tmoe_deb_file
+}
+######################
+uncompress_deb_file() {
+    mkdir -p .DEB_TEMP_FOLDER
+    mv ${SELECTION} .DEB_TEMP_FOLDER
+    cd ./.DEB_TEMP_FOLDER
+    if [ "${BUSYBOX_AR}" = 'true' ]; then
+        busybox ar xv ${SELECTION}
+    else
+        ar xv ${SELECTION}
+    fi
+    mv ${SELECTION} ../
+    if [ -e "data.tar.xz" ]; then
+        cd /
+        tar -Jxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.xz ./usr
+    elif [ -e "data.tar.gz" ]; then
+        cd /
+        tar -zxvf ${CURRENT_DIR}/.DEB_TEMP_FOLDER/data.tar.gz ./usr
+    fi
+    rm -rf ${CURRENT_DIR}/.DEB_TEMP_FOLDER
+}
+########################
+delete_tmoe_deb_file() {
+    echo "请问是否需要${RED}删除${RESET}安装包文件"
+    ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+    echo "Do you want to ${RED}delete${RESET} it?"
+    do_you_want_to_continue
+    rm -fv ${TMOE_FILE_ABSOLUTE_PATH}
+}
+#################
+remove_deb_package() {
+    if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Back返回" --no-button "Remove移除" --yesno "${PACKAGE_NAME}\n您是想要返回还是卸载这个软件包？Do you want to return,or remove this package?♪(^∇^*) " 10 50); then
+        deb_installer_menu
+    else
+        apt purge ${PACKAGE_NAME}
+        delete_tmoe_deb_file
+        deb_installer_menu
+    fi
+}
+#############
+tmoe_deb_file_installer() {
+    FILE_EXT_01='deb'
+    FILE_EXT_02='DEB'
+    check_deb_file_start_dir
+    IMPORTANT_TIPS='若您选中的是已安装的软件包，则将自动检测卸载命令'
+    tmoe_file_manager
+    if [ -z ${SELECTION} ]; then
+        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+    else
+        echo "您选择的deb文件为${TMOE_FILE_ABSOLUTE_PATH}"
+        ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
+        deb_file_installer
+    fi
+}
+##################
+deb_installer_menu
