@@ -109,7 +109,7 @@ gnu_linux_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
-	TMOE_GIT_URL=='github.com/2moe/tmoe-linux'
+	TMOE_GIT_URL='github.com/2moe/tmoe-linux'
 	APPS_LNK_DIR='/usr/share/applications'
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 }
