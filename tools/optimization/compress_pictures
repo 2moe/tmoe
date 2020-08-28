@@ -23,7 +23,7 @@ image_compression_menu() {
 }
 ###########
 remove_image_compression_tool() {
-    DEPENDENCY_01='imagemagick graphicsmagick'
+    DEPENDENCY_01='imagemagick graphicsmagick-imagemagick-compat'
     DEPENDENCY_02='zenity'
     echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
     do_you_want_to_continue
@@ -32,11 +32,19 @@ remove_image_compression_tool() {
 ##########
 install_image_compression_tool() {
     NON_DEBIAN='false'
-    DEPENDENCY_01='imagemagick graphicsmagick'
+    DEPENDENCY_01='imagemagick'
     DEPENDENCY_02='zenity'
     beta_features_quick_install
 }
 ###############
+fix_pic_folder_permissions() {
+    if [ "${HOME}" != '/root' ]; then
+        echo "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TMOE_COMPRESSION_FOLDER}"
+        echo "正在将${TMOE_COMPRESSION_FOLDER}的权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TMOE_COMPRESSION_FOLDER}
+    fi
+}
+###########
 tui_image_compression_tool() {
     FILE_EXT_01='jpg'
     FILE_EXT_02='png'
@@ -70,6 +78,7 @@ compress_pics() {
         convert +profile "*" -strip -quality ${TARGET} ${TMOE_PICS} ${TMOE_COMPRESSION_FOLDER}/${TMOE_PICS%%.*}.jpg
     done
     echo "压缩完成。"
+    fix_pic_folder_permissions
     ls -lah ${FILE_PATH}/${TMOE_COMPRESSION_FOLDER}
     xdg-open ${TMOE_COMPRESSION_FOLDER} 2>/dev/null
 }
@@ -96,8 +105,8 @@ image_compression_tool_gui_or_tui() {
 check_imagemagick() {
     if [ ! $(command -v convert) ]; then
         NON_DEBIAN='false'
-        DEPENDENCY_01='imagemagick graphicsmagick'
-        DEPENDENCY_02='graphicsmagick'
+        DEPENDENCY_01='imagemagick'
+        DEPENDENCY_02=''
         beta_features_quick_install
     fi
 }
@@ -129,6 +138,7 @@ gui_image_compression_tool() {
             echo "100"
             sleep 1
         ) | zenity --progress --title="正在压缩图片..." --text="正在保存至${TMOE_COMPRESSION_FOLDER}" --percentage=0 --auto-close
+        fix_pic_folder_permissions
         ls -lah ${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}
         echo "文件已经保存至${BLUE}${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}${RESET}"
         ;;
