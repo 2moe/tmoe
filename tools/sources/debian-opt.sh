@@ -453,9 +453,15 @@ debian_opt_game_app() {
         amd64 | i386) ;;
         *)
             echo "hmcl依赖于openjfx,如需安装，则请自行解决依赖问题。"
-            echo "${GREEN}apt install -y${RESET} ${BLUE}hmcl${RESET}"
-            apt install -y hmcl
+            non_debian_function
+            add_debian_old_source
+            #echo "${GREEN}apt install -y${RESET} ${BLUE}hmcl${RESET}"
+            #apt install -y hmcl
+            beta_features_quick_install
+            del_debian_old_source
             #arch_does_not_support
+            press_enter_to_return
+            ${RETURN_TO_WHERE}
             ;;
         esac
         ;;

@@ -1060,4 +1060,24 @@ check_zenity() {
     fi
 }
 ###########
+add_debian_old_source() {
+    case ${DEBIAN_DISTRO} in
+    ubuntu) ;;
+    *)
+        if ! grep -q '^deb.*buster' /etc/apt/sources.list; then
+            echo 'deb https://mirrors.huaweicloud.com/debian/ buster main' >>/etc/apt/sources.list.d/tmoe_old_debian_source.list
+            apt update
+        fi
+        ;;
+    esac
+}
+##########
+del_debian_old_source() {
+    DEBIAN_OLD_SOURCE='/etc/apt/sources.list.d/tmoe_old_debian_source.list'
+    if [ -e "${DEBIAN_OLD_SOURCE}" ]; then
+        rm -f ${DEBIAN_OLD_SOURCE}
+        apt update
+    fi
+}
+###############
 gnu_linux_env_02
