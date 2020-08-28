@@ -507,6 +507,7 @@ check_dependencies() {
 	fi
 	################
 	if [ ! $(command -v catimg) ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
+		mkdir -p ${TMOE_LINUX_DIR}
 		touch ${TMOE_LINUX_DIR}/not_install_catimg
 		case "${LINUX_DISTRO}" in
 		debian)

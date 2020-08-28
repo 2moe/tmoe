@@ -555,14 +555,18 @@ gnu_linux() {
 		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理工具？\nDo you want to start the software installation tool \nor the system manager? ♪(^∇^*) " 0 50); then
 			#bash <(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh')
 			if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
-				sudo -E bash ${TMOE_GIT_DIR}/tool.sh || su -c "bash ${TMOE_GIT_DIR}/tool.sh"
+				if [ $(command -v sudo) ]; then
+					sudo -E bash ${TMOE_GIT_DIR}/tool.sh
+				else
+					su -c "bash ${TMOE_GIT_DIR}/tool.sh"
+				fi
 			else
 				if [ "${LINUX_DISTRO}" = "alpine" ] || [ ! $(command -v curl) ]; then
 					wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 				else
 					curl -Lv -o /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 				fi
-				bash /tmp/.tmoe-linux-tool.sh
+				source /tmp/.tmoe-linux-tool.sh
 			fi
 			exit 0
 		fi

@@ -126,7 +126,9 @@ custom_docker_container_tag() {
 }
 ##########
 docker_attch_container() {
-    service docker start 2>/dev/null || systemctl start docker
+    if [ ! "$(pgrep docker)" ]; then
+        service docker start 2>/dev/null || systemctl start docker
+    fi
     if [ "$(docker ps -a | grep ${CONTAINER_NAME})" ]; then
         docker start ${CONTAINER_NAME}
         docker exec -it ${CONTAINER_NAME} /bin/bash || docker attach ${CONTAINER_NAME}
