@@ -56,7 +56,7 @@ debian_opt_menu() {
     #16 50 7
     INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
         "您想要安装哪个软件？\n Which software do you want to install? " 0 0 0 \
-        "1" "🎶 music:洛雪,listen1,coco音乐" \
+        "1" "🎶 music:以雅以南,以龠不僭" \
         "2" "📝 notes笔记:记录灵感,撰写文档,整理材料,回顾日记" \
         "3" "📺 videos视频:全网影视搜索,无损切割视频" \
         "4" "🖼️ pictures图像:bing壁纸,流程图绘制" \

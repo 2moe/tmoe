@@ -133,35 +133,35 @@ tmoe_system_app_menu() {
 	DEPENDENCY_02=""
 	TMOE_APP=$(whiptail --title "SYSTEM" --menu \
 		"Which software do you want to install？" 0 50 0 \
-		"1" "UEFI bootmgr:开机启动项管理" \
-		"2" "gnome-system-monitor(资源监视器)" \
-		"3" "Grub Customizer(图形化开机引导编辑器)" \
-		"4" "gnome log(便于查看系统日志信息)" \
-		"5" "boot repair(开机引导修复)" \
-		"6" "neofetch(显示当前系统信息和发行版logo)" \
-		"7" "yasat:简单的安全审计工具" \
-		"8" "rc.local-systemd:修改开机自启动脚本" \
-		"9" "sudo user group management:sudo用户组管理" \
+		"1" "sudo user group management:sudo用户组管理" \
+		"2" "rc.local-systemd:修改开机自启动脚本" \
+		"3" "UEFI bootmgr:开机启动项管理" \
+		"4" "gnome-system-monitor(资源监视器)" \
+		"5" "Grub Customizer(图形化开机引导编辑器)" \
+		"6" "gnome log(便于查看系统日志信息)" \
+		"7" "boot repair(开机引导修复)" \
+		"8" "neofetch(显示当前系统信息和发行版logo)" \
+		"9" "yasat:简单的安全审计工具" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
 	case "${TMOE_APP}" in
 	0 | "") beta_features ;;
-	1) tmoe_uefi_boot_manager ;;
-	2)
+	1) tmoe_linux_sudo_user_group_management ;;
+	2) modify_rc_local_script ;;
+	3) tmoe_uefi_boot_manager ;;
+	4)
 		DEPENDENCY_01="gnome-system-monitor"
 		DEPENDENCY_02=''
 		;;
-	3) DEPENDENCY_01="grub-customizer" ;;
-	4)
+	5) DEPENDENCY_01="grub-customizer" ;;
+	6)
 		DEPENDENCY_01='gnome-system-tools'
 		DEPENDENCY_02='gnome-logs'
 		;;
-	5) install_boot_repair ;;
-	6) start_neofetch ;;
-	7) start_yasat ;;
-	8) modify_rc_local_script ;;
-	9) tmoe_linux_sudo_user_group_management ;;
+	7) install_boot_repair ;;
+	8) start_neofetch ;;
+	9) start_yasat ;;
 	esac
 	##########################
 	if [ ! -z "${DEPENDENCY_01}" ]; then

@@ -8,12 +8,12 @@ beta_features() {
         whiptail --title "The Secret Garden" --menu "Some functions do not support container environment\n以下并非所有功能都支持容器环境。" 0 55 0 \
             "1" "🐬 container/vm:docker容器,qemu,vbox虚拟机" \
             "2" "🌌 science&edu:科学与教育(高考,考研,科研)" \
-            "3" "📝 read:墨纸留香,品味阅读" \
-            "4" "🎬 cut video:岁月静好,剪下佳刻" \
-            "5" "🎨 paint:融入意境,绘画真谛" \
-            "6" "💾 file:文件,浩如烟海" \
-            "7" "🌼 Store&download:繁花似锦,一切皆在此中" \
-            "8" "🔨 system:系统(启动项与用户组管理)" \
+            "3" "🔨 system:系统(启动项与用户组管理)" \
+            "4" "🌼 Store&download:繁花似锦,一切皆在此中" \
+            "5" "🎬 cut video:岁月静好,剪下佳刻" \
+            "6" "🎨 paint:融入意境,绘画真谛" \
+            "7" "💾 file:文件,浩如烟海" \
+            "8" "📝 read:墨纸留香,品味阅读" \
             "9" "🥅 network:网络(网卡驱动,WiFi扫描)" \
             "10" "⌨ input method:输入法(搜狗,讯飞,百度)" \
             "11" "🍕 other:其它类(Android-studio,scrcpy)" \
@@ -25,12 +25,12 @@ beta_features() {
     0 | "") tmoe_linux_tool_menu ;;
     1) install_container_and_virtual_machine ;;
     2) tmoe_education_app_menu ;;
-    3) tmoe_reader_app_menu ;;
-    4) tmoe_media_menu ;;
-    5) tmoe_paint_app_menu ;;
-    6) tmoe_file_browser_app_menu ;;
-    7) tmoe_store_app_menu ;;
-    8) tmoe_system_app_menu ;;
+    3) tmoe_system_app_menu ;;
+    4) tmoe_store_app_menu ;;
+    5) tmoe_media_menu ;;
+    6) tmoe_paint_app_menu ;;
+    7) tmoe_file_browser_app_menu ;;
+    8) tmoe_reader_app_menu ;;
     9) network_manager_tui ;;
     10) install_pinyin_input_method ;;
     11) tmoe_other_app_menu ;;
