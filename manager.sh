@@ -1447,7 +1447,7 @@ remove_gnu_linux_container() {
 	case $opt in
 	y* | Y* | "")
 		chmod 777 -R ${DEBIAN_FOLDER}
-		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
+		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
 		if [ -d "${HOME}/debian_arm64" ]; then
 			echo "检测到残留文件夹，正在移除..."
 			chmod 777 -R "${HOME}/debian_arm64"
@@ -1510,28 +1510,22 @@ backup_filename() {
 ######################
 backup_system() {
 	unmount_proc_dev
+	RETURN_TO_WHERE='backup_system'
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \
 		"0" "🌚 Back to the main menu 返回主菜单" \
-		"1" "备份GNU/Linux容器" \
-		"2" "备份Termux" \
-		"3" "使用Timeshift备份宿主机系统" \
+		"1" "Clean up container garbage清理容器垃圾" \
+		"2" "backup container备份GNU/Linux容器" \
+		"3" "备份Termux" \
+		"4" "使用Timeshift备份宿主机系统" \
 		3>&1 1>&2 2>&3)
 	#########################################
-	if [ "${OPTION}" == '0' ]; then
-		tmoe_manager_main_menu
-	fi
-	######################
-	if [ "${OPTION}" == '1' ]; then
-		backup_gnu_linux_container
-	fi
-	###################
-	if [ "${OPTION}" == '2' ]; then
-		backup_termux
-	fi
-	###################
-	if [ "${OPTION}" == '3' ]; then
-		install_timeshift
-	fi
+	case "${OPTION}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) clean_up_container_garbage ;;
+	2) backup_gnu_linux_container ;;
+	3) backup_termux ;;
+	4) install_timeshift ;;
+	esac
 	####################
 	#echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
 	#echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -1539,6 +1533,33 @@ backup_system() {
 	tmoe_manager_main_menu
 }
 ###########################
+clean_up_container_garbage() {
+	if [ -e "${DEBIAN_CHROOT}" ]; then
+		cd ${DEBIAN_CHROOT}
+	else
+		echo "未检测到容器目录，无法清理垃圾文件。"
+		press_enter_to_return
+		backup_system
+	fi
+	CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.local root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.cache root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.local root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
+	if [ -e "root/.vnc/passwd" ]; then
+		tree ${CONTAINER_GARBAGE_FILES} 2>/dev/null
+	fi
+	echo "${BOLD}${YELLOW}~/${DEBIAN_FOLDER}${RESET}${RESET}"
+	cat <<-EOF
+		${RED}rm -rv${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES}${RESET}
+	EOF
+	echo "若您需要将容器分享给他人，则可以删除以上文件，否则请勿执行清理操作。"
+	echo "若您使用的是deb系列发行版，则在清理前，可以在容器内以sudo或root权限执行${GREEN}apt clean;apt autoclean;apt autopurge || apt autoremove${RESET}"
+	echo "开发者不对误删除的文件负责，请在清理前确保以上列表中无重要文件，否则请输n"
+	echo "If you want to share the container with others, you can delete the above files, otherwise, please type n to return."
+	do_you_want_to_continue
+	rm -rv ${CONTAINER_GARBAGE_FILES}
+	sed -i 's@^#.*DISABLE_AUTO_UPDATE=@DISABLE_AUTO_UPDATE=@g' root/.zshrc
+	press_enter_to_return
+	backup_system
+}
+#############
 check_backup_file() {
 	if [ -e "${BACKUP_FILE}" ]; then
 		BACKUP_FOLDER="${BACKUP_FOLDER} ${BACKUP_FILE}"
@@ -1546,14 +1567,13 @@ check_backup_file() {
 }
 ############
 backup_gnu_linux_container() {
-
 	#ls -lth ./debian*.tar.* 2>/dev/null | head -n 5
 	#echo '您之前所备份的(部分)文件如上所示'
 
 	#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
 	#press_enter_to_continue
 	termux_backup_pre
-	TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-rootfs_bak"
+	TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)-rootfs_bak"
 	BACKUP_FOLDER="${DEBIAN_CHROOT} ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc"
 	BACKUP_FILE="${PREFIX}/bin/debian"
 	check_backup_file
@@ -1664,7 +1684,7 @@ backup_termux() {
 	##########################
 	if [ "${TERMUX_BACKUP}" = "home" ]; then
 		termux_backup_pre
-		TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-termux_home_bak"
+		TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)-termux_home_bak"
 		##tar -czf - ~/${DEBIAN_FOLDER} | (pv -p --timer --rate --bytes > ${TMPtime}.tar.gz)
 		#ls -lth ./termux-home*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 		#echo 'This operation will only backup the home directory of termux, not the container. If you need to backup debian, please select both options or backup debian separately.'
@@ -1713,14 +1733,14 @@ backup_termux() {
 	if [ "${TERMUX_BACKUP}" == 'usr' ]; then
 
 		termux_backup_pre
-		TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-termux_usr_bak"
+		TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)-termux_usr_bak"
 		#ls -lth ./termux-usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 
 		#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
 		#read
 		#TMPtime=termux-usr_$(cat backuptime.tmp)
 
-		if (whiptail --title "Select compression type 选择压��类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
+		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
 
 			echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
@@ -1779,7 +1799,7 @@ backup_termux() {
 
 		#ls -lth ./termux-home+usr*.tar.* 2>/dev/null && echo '您之前所备份的(部分)文件如上所示'
 		termux_backup_pre
-		TMPtime="${TARGET_BACKUP_FILE_NAME}-$(cat backuptime.tmp)-termux_home+usr_bak"
+		TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)-termux_home+usr_bak"
 		#TMPtime=termux-home+usr_$(cat backuptime.tmp)
 
 		if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ratio, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then

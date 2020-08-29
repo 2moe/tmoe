@@ -325,18 +325,18 @@ EndOfFile
 #########################
 cat <<-EOF
 	少女祈禱中...
-        現在可公開的情報:
+		現在可公開的情報:
 		${BOLD}Tmoe-linux 小提示06${RESET}:
 
 		在${YELLOW}Android-termux${RESET}上运行的GNU/Linux的Tmoe-linux tool支持使用${BLUE}触摸屏${RESET}上下滑动。
-        运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager则支持使用${GREEN}数字键${RESET}快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
+		运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager则支持使用${GREEN}数字键${RESET}快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
 		-------------------
-        You can use the ${BLUE}touch screen${RESET} on ${YELLOW}Android-termux${RESET} to slide the menu options of the tmoe-linux tool.
+		You can use the ${BLUE}touch screen${RESET} on ${YELLOW}Android-termux${RESET} to slide the menu options of the tmoe-linux tool.
 		-------------------
-        07:容器的启动命令是${GREEN}debian${RESET}！o( =•ω•= )m
+		07:容器的启动命令是${GREEN}debian${RESET}！o( =•ω•= )m
 		-------------------
 		You can type ${GREEN}debian${RESET} to start and attach the ${BLUE}container${RESET}.
-        -------------------
+		-------------------
 EOF
 ##################
 configure_command_not_found() {

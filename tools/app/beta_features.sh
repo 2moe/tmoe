@@ -620,20 +620,25 @@ tmoe_media_menu() {
     BEAUTIFICATION=$(whiptail --title "多媒体文件制作与剪辑" --menu \
         "Which software do you want to install？" 0 50 0 \
         "1" "openshot(界面简单,多用途)" \
-        "2" "blender(工业级,用于电影制作和设计3D模型)" \
+        "2" "mkvtoolnix-gui(分割,编辑,混流,分离,合并和提取mkv)" \
         "3" "kdenlive(来自KDE的开源视频编辑器)" \
-        "4" "mkvtoolnix-gui(分割,编辑,混流,分离,合并和提取mkv)" \
-        "5" "flowblade(旨在提供一个快速,精确的功能)" \
+        "4" "flowblade(旨在提供一个快速,精确的功能)" \
+        "5" "shotcut(自由、开源的视频编辑软件)" \
+        "6" "olive(以Final Cut Pro 为目标)" \
+        "7" "blender(工业级,用于电影制作和设计3D模型)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
+    #"6" "DaVinci Resolve(达芬奇调色,专业视频编辑器)" \
     case "${BEAUTIFICATION}" in
     0 | "") beta_features ;;
     1) DEPENDENCY_02="openshot" ;;
-    2) DEPENDENCY_02="blender" ;;
+    2) DEPENDENCY_02="mkvtoolnix-gui" ;;
     3) DEPENDENCY_02="kdenlive" ;;
-    4) DEPENDENCY_02="mkvtoolnix-gui" ;;
-    5) DEPENDENCY_02='flowblade' ;;
+    4) DEPENDENCY_02='flowblade' ;;
+    5) DEPENDENCY_02='shotcut' ;;
+    6) DEPENDENCY_02='olive-editor' ;;
+    7) DEPENDENCY_02="blender" ;;
     esac
     ##########################
     beta_features_quick_install

@@ -797,7 +797,7 @@ creat_linux_container_remove_script() {
 			case \$opt in
 				y*|Y*|"") 
 		    chmod 777 -R ${DEBIAN_FOLDER}
-			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
+			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
 		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 			  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 			source profile >/dev/null 2>&1
@@ -860,7 +860,7 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	touch ~/${DEBIAN_FOLDER}/root/.vnc/startx11vnc
 	${PREFIX}/bin/debian
 ENDOFX11VNC
-ln -s ${PREFIX}/bin/startvnc ${HOME}/vnc 2>/dev/null
+ln -s ${PREFIX}/bin/startx11vnc ${HOME}/vnc 2>/dev/null
 ###############
 #此處僅適配Android,故shebang爲termux目錄
 cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'

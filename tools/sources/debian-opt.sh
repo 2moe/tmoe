@@ -253,6 +253,7 @@ install_opt_app_01() {
         check_electron_netease_cloud_music
         check_163_music_icon
         ;;
+    listen1) check_listen1 ;;
     esac
 }
 ################
@@ -883,6 +884,22 @@ patch_electron_netease_cloud_music() {
     rm -rf /tmp/.electron-netease-cloud-music_TEMP_FOLDER
 }
 ######################
+patch_listen1() {
+    cd /tmp
+    rm -rv .LISTEN1_TEMP_FOLDER 2>/dev/null
+    git clone --depth=1 https://gitee.com/ak2/listen1_patch ./.LISTEN1_TEMP_FOLDER
+    tar -PpJxvf ./.LISTEN1_TEMP_FOLDER/patch.tar.xz
+    rm -rv .LISTEN1_TEMP_FOLDER
+}
+########################
+check_listen1() {
+    FILE_SIZE=$(du -s /opt/Listen1/app | awk '{print $1}')
+    if ((${FILE_SIZE} < 500)); then
+        patch_listen1
+    fi
+    sed -i "s@/app'@/app.asar'@g" /usr/bin/listen1
+}
+############
 check_electron_netease_cloud_music() {
     FILE_SIZE=$(du -s /opt/electron-netease-cloud-music/app.asar | awk '{print $1}')
     if ((${FILE_SIZE} < 3000)); then
@@ -960,7 +977,7 @@ install_debian_buster_or_sid_netease_cloud_music() {
 install_netease_cloud_music_gtk() {
     DEPENDENCY_01='netease-cloud-music-gtk'
     echo "github url：${YELLOW}https://github.com/gmg137/netease-cloud-music-gtk${RESET}"
-    echo "本版本仅兼容deb系发行版,20200827已经修复了播放格式错误的问题。"
+    echo "本版本仅兼容debian sid,ubuntu 20.04/20.10及kali rooling,20200827已经修复了播放格式错误的问题。"
     echo ${DEBIAN_DISTRO}
     non_debian_function
     if [ $(command -v ${DEPENDENCY_01}) ]; then

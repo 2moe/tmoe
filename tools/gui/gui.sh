@@ -935,10 +935,22 @@ debian_xfce4_extras() {
             kali_xfce4_extras
         fi
         if [ ! $(command -v xfce4-panel-profiles) ]; then
-            REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
-            GREP_NAME="xfce4-panel-profiles"
-            THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-            download_deb_comman_model_02
+            case ${DEBIAN_DISTRO} in
+            ubuntu)
+                if ! grep -q 'Bionic' /etc/os-release; then
+                    GREP_NAME="xfce4-panel-profiles"
+                else
+                    GREP_NAME="xfpanel-switch"
+                fi
+                apt install -y ${GREP_NAME}
+                ;;
+            *)
+                REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
+                GREP_NAME="xfce4-panel-profiles"
+                THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+                download_deb_comman_model_02
+                ;;
+            esac
         fi
     fi
     apt_purge_libfprint
@@ -4128,7 +4140,7 @@ first_configure_startvnc() {
         /mnt/c/WINDOWS/system32/cmd.exe /c "start ."
         startxsdl &
     fi
-    echo "${GREEN}tightvnc/tigervnc & xserver${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
+    echo "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     echo "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
     press_enter_to_continue
     echo '------------------------'
