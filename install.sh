@@ -521,12 +521,6 @@ check_tmoe_proot_container_proc() {
 	if [ ! -e "${TMOE_PROC_PATH}" ]; then
 		mkdir -p ${TMOE_PROC_PATH}
 	fi
-	FILE_01=version
-	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
-	if [ -z "${TMOE_PROC_FILE}" ]; then
-		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
-		sed -i "s@#test01@@" ${PREFIX}/bin/debian
-	fi
 	#######
 	FILE_02=stat
 	TMOE_PROC_FILE=$(cat /proc/${FILE_02} 2>/dev/null)
@@ -544,10 +538,21 @@ check_tmoe_proot_container_proc() {
 	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kmsg kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
 		TMOE_PROC_FILE=$(cat /proc/${i} 2>/dev/null)
 		if [ -z "${TMOE_PROC_FILE}" ]; then
+			echo "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
+			echo "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
 			sed -i "s@##${i}#@@" ${PREFIX}/bin/debian
 		fi
 	done
 	unset i
+	#######
+	FILE_01=version
+	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		echo "检测到您无权读取${BLUE}/proc/version${RESET},正在自动伪造新文件..."
+		echo "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
+		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+		sed -i "s@#test01@@" ${PREFIX}/bin/debian
+	fi
 }
 ###########
 check_proot_qemu() {

@@ -1909,6 +1909,9 @@ uncompress_tar_file() {
 		uncompress_other_format_file
 		;;
 	esac
+	if [ -e "${PREFIX}/debian" ]; then
+		check_proot_proc_permissions
+	fi
 	press_enter_to_return
 	restore_gnu_linux_container
 }
@@ -2781,6 +2784,7 @@ tmoe_qemu_user_manager() {
 git_clone_tmoe_linux_container_file() {
 	if [ ! $(command -v debian-i) ]; then
 		aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
+		chmod +x ${PREFIX}/bin/debian-i
 	fi
 	TMOE_TRUE_TEMP_FOLDER='.TMOE_LINUX_CONTAINER_TEMP_FOLDER'
 	mkdir -p ${TMOE_TRUE_TEMP_FOLDER}
@@ -2811,7 +2815,6 @@ git_clone_tmoe_linux_container_file() {
 	rm -rf ${TMOE_TRUE_TEMP_FOLDER}
 }
 #################
-################
 check_tmoe_linux_container_rec_pkg_file_and_git() {
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
@@ -2831,26 +2834,26 @@ check_tmoe_linux_container_rec_pkg_file_and_git() {
 ########################
 debian_sid_arm64_xfce_recovery_package() {
 	echo "即将为您下载至${DOWNLOAD_PATH}"
-	echo '下载大小1302.2MiB,解压后约占4.9GiB'
+	echo '下载大小约1.5G,解压后约占5.8G'
 	#echo "2020-07-11凌晨注：忘记给LibreOffice打补丁了 (ㄒoㄒ)/~~，请在安装完成后使用tmoe-linux tool给libreoffice打补丁"
-	CORRENTSHA256SUM='0a3f6f964903d8a20d255754386a754020db71b12ef0c26659f2a54cb7e5ebf1' #DevSkim: ignore DS173237
+	CORRENTSHA256SUM='5c85ec7857539025fc9744d89b10655219dcd2a535da0f20bd405d28512dfe59' #DevSkim: ignore DS173237
 	BRANCH_NAME='arm64'
 	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_sid_rootfs_01'
 	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_sid_rootfs_02'
 	TMOE_LINUX_CONTAINER_REPO_03='https://gitee.com/ak2/debian_sid_rootfs_03'
-	DOWNLOAD_FILE_NAME='debian-sid_arm64+xfce4.14-2020-07-30_16-08-rootfs_bak.tar.xz'
+	DOWNLOAD_FILE_NAME='debian-sid+xfce4.14_2020-08-29_18-13-rootfs_bak.tar.xz'
 	check_tmoe_linux_container_rec_pkg_file_and_git
 }
 ##################
 debian_buster_arm64_xfce_recovery_package() {
 	echo "即将为您下载至${DOWNLOAD_PATH}"
-	echo '下载大小638MB,解压后约占2.2GB'
-	CORRENTSHA256SUM='70e28558ddf42f12e709c1a0091117a64f32aa58ff7e90d7a11731bdc9305a40' #DevSkim: ignore DS173237
+	echo '下载大小约573MiB,解压后约占2.2G'
+	CORRENTSHA256SUM='a7106647f7b4577c3e9868d790f1bea5464b38362785a592cb5283f44b976512' #DevSkim: ignore DS173237
 	BRANCH_NAME='arm64'
 	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_stable_rootfs_01'
 	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_stable_rootfs_02'
 	TMOE_LINUX_CONTAINER_REPO_03=''
-	DOWNLOAD_FILE_NAME='debian-buster+xfce4.12-2020-07-10_06-40-rootfs_bak.tar.xz'
+	DOWNLOAD_FILE_NAME='debian-buster_arm64-xfce4.12+music-app_2020-08-28_18-27-rootfs_bak.tar.xz'
 	check_tmoe_linux_container_rec_pkg_file_and_git
 }
 #################
@@ -2862,25 +2865,38 @@ install_debian_sid_via_tuna() {
 	fi
 }
 #################
-install_debian_sid_gnu_linux_container() {
+install_debian_gnu_linux_container_via_rec_pkg() {
 	#Do you want to install debian container via Tsinghua University open source mirror station,\nor download the recovery package (debian-xfce.tar.xz)?\n您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？\n软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构,\n安装基础系统速度很快，但安装gui速度较慢。\n恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。\n若您无使用GUI的需求，建议通过软件源镜像站来安装。" 0 50 0 \
-	DISTRO_CODE='sid'
-	BETA_SYSTEM=$(whiptail --title "Install sid via tuna station or DL rec PKG?" --menu "您想要通过软件源镜像站来安装，还是在线下载恢复包来安装?" 0 50 0 \
-		"1" "netinstall(通过软件源在线安装)" \
+	BETA_SYSTEM=$(whiptail --title "Download recovery package and install container" --menu "恢复包在解压完成后，将根据系统对权限的限制来判断特殊文件的挂载与否。" 0 50 0 \
+		"1" "arm64 sid xfce,600+P,1.5G,20200829" \
+		"2" "arm64 buster xfce,200+P,573M,20200828" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
-	#"2" "arm64 xfce4.14桌面+音乐app,1.27G,20200730" \
+	#"1" "netinstall(通过软件源在线安装)" \
 	case "${BETA_SYSTEM}" in
 	0 | "") install_debian_gnu_linux_distro ;;
-	1) install_debian_sid_via_tuna ;;
-	2)
-		TMOE_LINUX_CONTAINER_DISTRO="debian"
-		creat_container_edition_txt
-		debian_sid_arm64_xfce_recovery_package
-		;;
+	1) DISTRO_CODE='sid' ;;
+	2) DISTRO_CODE='buster' ;;
 	esac
 	######################
+	case ${TRUE_ARCH_TYPE} in
+	arm64) ;;
+	*)
+		echo "Sorry，恢复包暂未支持跨架构运行"
+		press_enter_to_return
+		install_debian_gnu_linux_distro
+		;;
+	esac
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	echo "即将为您安装Debian ${DISTRO_CODE} GNU/Linux container"
+	do_you_want_to_continue
+	case "${DISTRO_CODE}" in
+	buster) debian_buster_arm64_xfce_recovery_package ;;
+	sid) debian_sid_arm64_xfce_recovery_package ;;
+	esac
+	###############
 	exit 0
 	#press_enter_to_return
 	#tmoe_manager_main_menu
@@ -2908,31 +2924,7 @@ install_debian_testing_via_tuna() {
 		sed 's/.*sid main/#&/')"
 }
 #################
-install_debian_buster_gnu_linux_container() {
-	DISTRO_CODE='buster'
-	BETA_SYSTEM=$(
-		whiptail --title "DEBIAN CONTAINER" --menu "BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs" 0 50 0 \
-			"1" "netinstall(通过软件源在线安装)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	##############################
-	#"2" "Arm64 rec pkg(20200710,xfce4.12桌面,638MB)" \
-	case "${BETA_SYSTEM}" in
-	0 | "") install_debian_gnu_linux_distro ;;
-	1) install_debian_buster_via_tuna ;;
-	2)
-		TMOE_LINUX_CONTAINER_DISTRO="debian"
-		creat_container_edition_txt
-		debian_buster_arm64_xfce_recovery_package
-		;;
-	esac
-	######################
-	exit 0
-	#press_enter_to_return
-	#tmoe_manager_main_menu
-}
-########################
+#BUSTER更加稳定且bug较少,但软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs
 creat_container_edition_txt() {
 	echo ${TMOE_LINUX_CONTAINER_DISTRO} >${LINUX_CONTAINER_DISTRO_FILE}
 }
@@ -2947,45 +2939,42 @@ install_debian_gnu_linux_distro() {
 	BETA_SYSTEM=$(
 		whiptail --title "请选择您需要安装的debian version" --menu "Buster为2019~2021年的stable版,sid永远都为unstable,sid的软件包较新。\nStable has fewer bugs,\nbut the packages inside the software source are older." 0 50 0 \
 			"1" "👦Sid(滚动更新,隔壁的男孩席德,玩具终结者)" \
-			"2" "🐶10-buster(2019~2022,安弟一家养的小狗)" \
-			"3" "Custom code手动输入版本代号" \
-			"4" "🐎11-bullseye(2021~2024,胡迪骑的马)" \
-			"5" "📕🐛12-bookworm(2023~2026,熊抱哥的手下)" \
-			"6" "自动检测debian-13 (2025~2028)" \
-			"7" "🐙9-stretch(2017~2020,玩具总动员3中的章鱼)" \
-			"8" "🤠8-jessie(2015~2018,翠丝,女牛仔)" \
+			"2" "recovery pkg 恢复包" \
+			"3" "🐶10-buster(2019~2022,安弟一家养的小狗)" \
+			"4" "Custom code手动输入版本代号" \
+			"5" "🐎11-bullseye(2021~2024,胡迪骑的马)" \
+			"6" "📕🐛12-bookworm(2023~2026,熊抱哥的手下)" \
+			"7" "自动检测debian-13 (2025~2028)" \
+			"8" "🐙9-stretch(2017~2020,玩具总动员3中的章鱼)" \
+			"9" "🤠8-jessie(2015~2018,翠丝,女牛仔)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		DISTRO_CODE='sid'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		creat_container_edition_txt
-		install_debian_sid_gnu_linux_container
-		;;
+	1) DISTRO_CODE='sid' ;;
 	2)
-		DISTRO_CODE='buster'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		creat_container_edition_txt
-		install_debian_buster_gnu_linux_container
+		DISTRO_CODE=""
+		install_debian_gnu_linux_container_via_rec_pkg
 		;;
-	3) custom_debian_version ;;
-	4) DISTRO_CODE='bullseye' ;;
-	5) check_debian_12 ;;
-	6) check_debian_new_version ;;
-	7) DISTRO_CODE='stretch' ;;
-	8) DISTRO_CODE='jessie' ;;
+	3) DISTRO_CODE='buster' ;;
+	4) custom_debian_version ;;
+	5) DISTRO_CODE='bullseye' ;;
+	6) check_debian_12 ;;
+	7) check_debian_new_version ;;
+	8) DISTRO_CODE='stretch' ;;
+	9) DISTRO_CODE='jessie' ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	creat_container_edition_txt
-	echo "即将为您安装debian ${DISTRO_CODE} GNU/Linux container"
+	echo "即将为您安装Debian ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	case "${DISTRO_CODE}" in
 	squeeze | wheezy | jessie | stretch | buster) install_debian_buster_via_tuna ;;
+	sid) install_debian_sid_via_tuna ;;
+	"") ;;
 	*) install_debian_testing_via_tuna ;;
 	esac
 	###############
@@ -3013,8 +3002,8 @@ custom_debian_version() {
 	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		echo "检测到您取消了操作"
-		echo "已自动切换为debian10(代号buster)"
-		DISTRO_CODE='buster'
+		echo "已自动切换为debian11(代号bullseye)"
+		DISTRO_CODE='bullseye'
 	fi
 }
 #################
@@ -3070,9 +3059,10 @@ verify_sha256sum() {
 	EOF
 	echo 'Verifying sha256hash...'
 	echo '正在校验sha256哈希值...'
+	echo "${GREEN}${CORRENTSHA256SUM}${RESET}"
 	LOCAL_FILE_SHA256_SUM="$(sha256sum ${DOWNLOAD_FILE_NAME} | cut -c 1-64)"
 	if [ "${LOCAL_FILE_SHA256_SUM}" != "${CORRENTSHA256SUM}" ]; then
-		echo "当前文件的sha256校验值为${LOCAL_FILE_SHA256_SUM}"
+		echo "当前文件的sha256校验值为${RED}${LOCAL_FILE_SHA256_SUM}${RESET}"
 		echo "远程文件的sha256校验值为${CORRENTSHA256SUM}"
 		echo 'sha256校验值不一致，请重新下载！'
 		echo 'sha256hash value is inconsistent, please download again.'
@@ -3149,13 +3139,13 @@ un_xz_debian_recovery_kit() {
 	fi
 	cd "$cur"
 	#用绝对路径
-	if [ ! -h '/data/data/com.termux/files/home/storage/external-1' ]; then
-		sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
-		rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
-	fi
-	if [ -e "${HOME}/debian_arm64" ]; then
-		sed -i 's@debian-sid_arm64@debian_arm64@g' ${PREFIX}/bin/startvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm
-	fi
+	#if [ ! -h '/data/data/com.termux/files/home/storage/external-1' ]; then
+	#	sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	#	rm -f ${DEBIAN_CHROOT}/root/tf 2>/dev/null
+	#fi
+	#if [ -e "${HOME}/debian_arm64" ]; then
+	#	sed -i 's@debian-sid_arm64@debian_arm64@g' ${PREFIX}/bin/startvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm
+	#fi
 	echo 'The vnc server is about to start for you.'
 	# The password you entered is hidden.'
 	#echo '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
@@ -3164,9 +3154,48 @@ un_xz_debian_recovery_kit() {
 	copy_tmoe_locale_file_to_container
 	echo '请输入6至8位的VNC密码'
 	switch_termux_rootfs_to_linux
+	check_proot_proc_permissions
 	source ${PREFIX}/bin/startvnc
 }
 ###############################
+check_proot_proc_permissions() {
+	TMOE_LINUX_ETC_DIR=$(cat ${PREFIX}/bin/debian | grep 'set.*mount.*proot_proc/' | head -n 1 | awk '{print $3}' | cut -d '=' -f 2 | cut -d '"' -f 1 | cut -d ':' -f 1 | sed 's@/proot_proc.*@@g')
+	TMOE_PROC_PATH="${TMOE_LINUX_ETC_DIR}/proot_proc"
+	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
+	#######
+	for i in stat buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kmsg kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
+		TMOE_PROC_FILE=$(cat /proc/${i} 2>/dev/null)
+		if [ ! -z "${TMOE_PROC_FILE}" ]; then
+			sed -i "s@set.*tmoe-linux/proot_proc/${i}@#&@g" ${PREFIX}/bin/debian
+		else
+			echo "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
+			echo "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
+			TMOE_PROC_LINE=$(cat debian | grep -n "set.*tmoe-linux/proot_proc/${i}" | awk '{print $1}' | cut -d ':' -f 1)
+			sed -i "${TMOE_PROC_LINE}s@#.*set --@set --@" ${PREFIX}/bin/debian
+		fi
+	done
+	unset i
+	#####
+	FILE_03='/proc/bus/pci/devices'
+	TMOE_PROC_FILE=$(cat ${FILE_03} 2>/dev/null)
+	if [ ! -z "${TMOE_PROC_FILE}" ]; then
+		sed -i "s@set.*tmoe-linux/proot_proc/bus@#&@g" ${PREFIX}/bin/debian
+	else
+		TMOE_PROC_LINE=$(cat debian | grep -n "set.*tmoe-linux/proot_proc/bus" | awk '{print $1}' | cut -d ':' -f 1)
+		sed -i "${TMOE_PROC_LINE}s@#.*set --@set --@" ${PREFIX}/bin/debian
+	fi
+	#####
+	FILE_01=version
+	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		echo "检测到您无权读取${BLUE}/proc/version${RESET},正在自动伪造新文件..."
+		echo "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
+		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+	else
+		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_01}@#&@g" debian
+	fi
+}
+############################
 switch_termux_rootfs_to_linux() {
 	if [ "${LINUX_DISTRO}" != 'Android' ]; then
 		cd /data/data/com.termux/files/usr/bin

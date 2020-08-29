@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 ###################
 tmoe_desktop_faq() {
-    neko_01_blue
-    cat <<-EOF
+	neko_01_blue
+	cat <<-EOF
 		     ------------------------
 			Q:${YELLOW}我觉得你写的脚本很菜,适配不同发行版有什么难的？不就是apt install或pacman -S,再不然就是dnf、emerge或zypper，有什么难的？${RESET}
 
@@ -111,8 +111,8 @@ tmoe_desktop_faq() {
 			按回车键继续阅览
 			------------------------
 	EOF
-    press_enter_to_continue
-    cat <<-EOF
+	press_enter_to_continue
+	cat <<-EOF
 		            -----------------------------
 			        Q:${YELLOW}哪个发行版最好用，最流畅，最适合新手？如何才能更好地使用linux系统？${RESET}
 
@@ -140,7 +140,8 @@ tmoe_desktop_faq() {
 					Ubuntu在个人计算机上很适合新手使用，因为它对闭源驱动的兼容性可能会更好一点。
 					既然你是在容器中运行，那么配合我的脚本使用debian也是不错的体验呢！
 					还有的话，fedora也可以试试，我觉得它比centos好用很多。
-					至于arch和manjaro，我是更推荐arch的，manjaro修bug真的是修到怕了。
+					至于arch和manjaro，说实在我更推荐arch，不过我觉得都可以试一下。
+					哪个好用就用哪个呗！适合自己的才是最好的。
 					因为我已经解决了安装过程中存在的很多问题，所以你应该都可以无障碍上手。
 			               
 				   后期注：如果你使用的不是手机上的容器，而是实体机，追求的是轻办公、轻娱乐，让人用起来很舒适的环境。
@@ -194,8 +195,8 @@ tmoe_desktop_faq() {
 					${RED}最后一页是正经问答${RESET}
 					-----------------------------
 	EOF
-    press_enter_to_continue
-    cat <<-EOF
+	press_enter_to_continue
+	cat <<-EOF
 		    -----------------------------
 			Q:${YELLOW}为什么绝大多数的命令和文件夹名称都跟debian有关,我有觉得很别扭，特别难受。${RESET}
 
