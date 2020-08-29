@@ -156,6 +156,9 @@ fix_debian_opt_app_sandbox_mode() {
     if [ -e "/opt/Gridea/gridea" ]; then
         cp -pvf ${TMOE_OPT_BIN_DIR}/opt/Gridea/gridea /opt/Gridea
     fi
+    if [ -e "/opt/Listen1/app.asar" ]; then
+        sed -i "s@/app'@/app.asar'@g" /usr/bin/listen1
+    fi
     echo "修复完成"
 }
 ###########
