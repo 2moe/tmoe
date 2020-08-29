@@ -258,24 +258,24 @@ tmoe_multimedia_menu() {
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
         "Which software do you want to install?" 0 50 0 \
-        "1" "📽️ MPV(开源、跨平台的音视频播放器)" \
-        "2" "🎬 腾讯视频:国产Linux在线视频软件" \
-        "3" "🖼 GIMP(GNU 图像处理程序)" \
-        "4" "🍊 Clementine(小柑橘音乐播放器)" \
-        "5" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
-        "6" "Batch compression of pics批量压缩图片" \
+        "1" "🗜️ Batch compression of pics批量压缩图片" \
+        "2" "📽️ MPV(开源、跨平台的音视频播放器)" \
+        "3" "🎬 腾讯视频:国产Linux在线视频软件" \
+        "4" "🖼 GIMP(GNU 图像处理程序)" \
+        "5" "🍊 Clementine(小柑橘音乐播放器)" \
+        "6" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
         "7" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
-    1) install_mpv ;;
-    2) install_tencent_video ;;
-    3) install_gimp ;;
-    4) install_clementine ;;
-    5) install_parole ;;
-    6) batch_compression_of_pictures ;;
+    1) batch_compression_of_pictures ;;
+    2) install_mpv ;;
+    3) install_tencent_video ;;
+    4) install_gimp ;;
+    5) install_clementine ;;
+    6) install_parole ;;
     7) install_netease_163_cloud_music ;;
     esac
     ##########################
