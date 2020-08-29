@@ -890,6 +890,7 @@ patch_listen1() {
     git clone --depth=1 https://gitee.com/ak2/listen1_patch ./.LISTEN1_TEMP_FOLDER
     tar -PpJxvf ./.LISTEN1_TEMP_FOLDER/patch.tar.xz
     rm -rv .LISTEN1_TEMP_FOLDER
+    sed -i "s@/app'@/app.asar'@g" /usr/bin/listen1
 }
 ########################
 check_listen1() {
@@ -897,7 +898,6 @@ check_listen1() {
     if ((${FILE_SIZE} < 500)); then
         patch_listen1
     fi
-    sed -i "s@/app'@/app.asar'@g" /usr/bin/listen1
 }
 ############
 check_electron_netease_cloud_music() {
