@@ -608,15 +608,15 @@ tmoe_linux_tool_menu() {
 		whiptail --title "Tmoe-linux running on ${OSRELEASE}(202008)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
-			"3" "🌈 Desktop beautification:桌面美化(主题)" \
-			"4" "🌌 vnc/x/rdp:远程桌面" \
-			"5" "📺 Download video:解析视频链接(bili,Y2B)" \
-			"6" "🐳 docker:开源的应用容器引擎" \
-			"7" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
-			"8" "🍩 FAQ:常见问题" \
-			"9" "🍥 software sources:软件镜像源管理" \
-			"10" "💻 qemu:x86_64虚拟机管理" \
-			"11" "🌺 The Secret Garden秘密花园" \
+			"3" "🌺 The Secret Garden秘密花园(教育,系统,实验功能)" \
+			"4" "🌈 Desktop beautification:桌面美化(主题)" \
+			"5" "🌌 vnc/x/rdp:远程桌面" \
+			"6" "📺 Download video:解析视频链接(bili,Y2B)" \
+			"7" "🍥 software sources:软件镜像源管理" \
+			"8" "🐳 docker:开源的应用容器引擎" \
+			"9" "💻 qemu:x86_64虚拟机管理" \
+			"10" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
+			"11" "🍩 FAQ:常见问题" \
 			"0" "🌚 Exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -630,15 +630,15 @@ tmoe_linux_tool_menu() {
 		;;
 	1) install_gui ;;
 	2) software_center ;;
-	3) tmoe_desktop_beautification ;;
-	4) modify_remote_desktop_config ;;
-	5) download_videos ;;
-	6) tmoe_docker_menu ;;
-	7) tmoe_linux_tool_upgrade ;;
-	8) frequently_asked_questions ;;
-	9) tmoe_sources_list_manager ;;
-	10) start_tmoe_qemu_manager ;;
-	11) beta_features ;;
+	3) beta_features ;;
+	4) tmoe_desktop_beautification ;;
+	5) modify_remote_desktop_config ;;
+	6) download_videos ;;
+	7) tmoe_sources_list_manager ;;
+	8) tmoe_docker_menu ;;
+	9) start_tmoe_qemu_manager ;;
+	10) tmoe_linux_tool_upgrade ;;
+	11) frequently_asked_questions ;;
 	esac
 	#########################
 	press_enter_to_return

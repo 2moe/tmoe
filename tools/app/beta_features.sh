@@ -5,7 +5,7 @@ beta_features() {
     RETURN_TO_WHERE='beta_features'
     NON_DEBIAN='false'
     TMOE_BETA=$(
-        whiptail --title "The Secret Garden" --menu "Welcome to the secret garden." 0 55 0 \
+        whiptail --title "The Secret Garden" --menu "Some functions do not support container environment\n以下并非所有功能都支持容器环境。" 0 55 0 \
             "1" "🐬 container/vm:docker容器,qemu,vbox虚拟机" \
             "2" "🌌 science&edu:科学与教育(高考,考研,科研)" \
             "3" "📝 read:墨纸留香,品味阅读" \
