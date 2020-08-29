@@ -2809,6 +2809,7 @@ git_clone_tmoe_linux_container_file() {
 		mv .container_linux_* ..
 		cd ..
 	fi
+	echo "Debian恢复包内的数百张壁纸来自于影之音酱"
 	cat .container_linux_* >${DOWNLOAD_FILE_NAME}
 	mv -f ${DOWNLOAD_FILE_NAME} ../
 	cd ../
@@ -3170,8 +3171,9 @@ check_proot_proc_permissions() {
 		else
 			echo "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
 			echo "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
-			TMOE_PROC_LINE=$(cat debian | grep -n "set.*tmoe-linux/proot_proc/${i}" | awk '{print $1}' | cut -d ':' -f 1)
-			sed -i "${TMOE_PROC_LINE}s@#.*set --@set --@" ${PREFIX}/bin/debian
+			#TMOE_PROC_LINE=$(cat debian | grep -n "set.*tmoe-linux/proot_proc/${i}" | awk '{print $1}' | cut -d ':' -f 1)
+			#sed -i "${TMOE_PROC_LINE}s@#.*set --@set --@" ${PREFIX}/bin/debian
+			sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/${i}@set -- \"--mount=${TMOE_PROC_PATH}/${i}@" ${PREFIX}/bin/debian
 		fi
 	done
 	unset i
@@ -3181,8 +3183,17 @@ check_proot_proc_permissions() {
 	if [ ! -z "${TMOE_PROC_FILE}" ]; then
 		sed -i "s@set.*tmoe-linux/proot_proc/bus@#&@g" ${PREFIX}/bin/debian
 	else
-		TMOE_PROC_LINE=$(cat debian | grep -n "set.*tmoe-linux/proot_proc/bus" | awk '{print $1}' | cut -d ':' -f 1)
-		sed -i "${TMOE_PROC_LINE}s@#.*set --@set --@" ${PREFIX}/bin/debian
+		#TMOE_PROC_LINE=$(cat debian | grep -n "set.*tmoe-linux/proot_proc/bus" | awk '{print $1}' | cut -d ':' -f 1)
+		#sed -i "${TMOE_PROC_LINE}s@#.*set --@set --@" ${PREFIX}/bin/debian
+		sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/bus@set -- \"--mount=${TMOE_PROC_PATH}/bus@" ${PREFIX}/bin/debian
+	fi
+	#######
+	FILE_02=stat
+	TMOE_PROC_FILE=$(cat /proc/${FILE_02} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PREFIX}.${FILE_02}@set -- \"--mount=${TMOE_PROC_PREFIX}.${FILE_02}@" ${PREFIX}/bin/debian
+	else
+		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_02}@#&@g" debian
 	fi
 	#####
 	FILE_01=version
