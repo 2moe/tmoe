@@ -1909,7 +1909,7 @@ uncompress_tar_file() {
 		uncompress_other_format_file
 		;;
 	esac
-	if [ -e "${PREFIX}/debian" ]; then
+	if [ -e "${PREFIX}/bin/debian" ]; then
 		check_proot_proc_permissions
 	fi
 	press_enter_to_return
