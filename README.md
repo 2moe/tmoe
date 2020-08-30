@@ -67,10 +67,7 @@ When you download the subsystem from the Microsoft Store, be sure to choose Ubun
 ---
 
 Open the subsystem and update the Linux kernel of WSL2.
-打开子系统，然后根据提示更新 WSL2 的 linux 内核。更新完成后，当提示输普通账号用户名时，直接关掉窗口。
-
-> 注：这样子默认就是 root 账号，可以省下输 sudo 密码的步骤，之后可以使用 adduser 命令来单独增加普通账号。默认以非管理员身份运行的子系统 root 账号并没有 windows 管理员权限哦！只拥有 linux 的 root 权限而已，要是以管理员身份运行子系统的话，就真的要谨慎操作了。PC 用 root 账号的问题不大，又不是服务器。
-
+打开子系统，然后根据提示更新 WSL2 的 linux 内核。
 Restart the subsystem
 重新打开子系统
 
@@ -131,29 +128,29 @@ _**If you do not live in China, please enter**_
 
 ```shell
     sudo apt update
-    sudo apt install -y wget
-    bash -c "$(wget -O- https://git.io/linux.sh)"
+    sudo apt install -y curl
+    bash -c "$(curl -L git.io/linux.sh)"
 ```
 
 _**如果你在国内,那么请输**_
 
 ```shell
      sudo apt update
-     sudo apt install -y wget
-     bash -c "$(wget -O- l.tmoe.me)"
+     sudo apt install -y curl
+     bash -c "$(curl -L l.tmoe.me)"
 ```
 
 #### 4.RedHat/Fedora/CentOS
 
 ```shell
-    dnf install -y curl || yum install -y curl
+    sudo dnf install -y curl || sudo yum install -y curl
     bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
 #### 5.Arch/Manjaro
 
 ```shell
-    pacman -Syu --noconfirm curl
+    sudo pacman -Syu --noconfirm curl
     bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
@@ -630,7 +627,15 @@ nano $(command -v startvnc)
 
 ---
 
-### 八.更新日志 logs
+### 八.相关项目
+
+[termux/proot-distro](https://github.com/termux/proot-distro)
+[ohmyzsh/ohmyzsh](https://github.com/ohmyzsh/ohmyzsh)
+[romkatv/powerlevel10k](https://github.com/romkatv/powerlevel10k)
+[Aloxaf/fzf-tab](https://github.com/Aloxaf/fzf-tab)
+[coslyk/debianopt-repo](https://github.com/coslyk/debianopt-repo)
+
+### 九.更新日志 logs
 
 #### 2019 年
 
@@ -939,4 +944,15 @@ nano $(command -v startvnc)
 - 3.多区域/语言环境配置
 - 4.0711-0716:增加 aria2 配置工具
 - 5.0720-0721:优化跨 cpu 架构运行容器的功能  
-  ![Snipaste_2020-07-21_14-30-25.png](https://i.loli.net/2020/07/21/3imujvP19gnHqLh.png)
+  ![Snipaste_2020-07-21_14-30-25.png](https://images.gitee.com/uploads/images/2020/0807/012632_c98e4bf0_5617340.png)
+- 6.0723:配置 fcitx5
+- 7.0730 更新教育类，增加高考和考研
+
+##### 08 月 更新日志
+
+- 1.08-11:更新 docker 配置选项
+- 2.08-14:更新 termux 的换源功能，支持配置多个镜像站。
+- 3.08-16:重构 proot 脚本，修复 deb 系发行版无法使用`ps`命令的问题。
+- 4.08-21:对 archlinux 等非 deb 系发行版适配音乐 app
+- 5.08-26:支持跨 CPU 架构运行 docker 容器
+- 6.08-29:在恢复容器压缩包时，将根据系统对权限的限制自动判断特殊文件的挂载与否。(仅适用于 0816 之后的版本)
