@@ -4027,6 +4027,7 @@ choose_which_gnu_linux_distro() {
 }
 ##############################
 install_alpha_containers() {
+	RETURN_TO_WHERE='install_alpha_containers'
 	ALPHA_SYSTEM=$(
 		whiptail --title "Alpha features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nAlpha features may not work properly." 0 55 0 \
 			"1" "armbian bullseye(arm64,armhf)" \
@@ -4374,7 +4375,22 @@ install_alpine_linux_distro() {
 	which_version_do_you_want_to_install
 }
 #####################
+opensuse_warning() {
+	case "${LINUX_DISTRO}" in
+	Android)
+		cat <<-EOF
+			${RED}WARNING！${RESET}检测到您使用的是Android系统。
+			本镜像支持GNU/Linux的proot/chroot容器,但不支持termux-proot。
+			经测试在termux的proot环境下存在无法检索到软件包的情况，但GNU/Linux的proot却不存在此问题。
+			若您执意要安装OpenSUSE tumbleweed,则请按回车键。
+		EOF
+		do_you_want_to_continue
+		;;
+	esac
+}
+########
 install_opensuse_linux_distro() {
+	opensuse_warning
 	DISTRO_NAME='opensuse'
 	DISTRO_CODE='tumbleweed'
 	linux_distro_common_model_01

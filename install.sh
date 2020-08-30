@@ -1235,47 +1235,46 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    # ash -c "$(wget --no-check-certificate -O- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	}
 	########################
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+	else
+		TMOE_LANG="en_US.UTF-8"
+	fi
+	TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	############################
 	opensuse_linux_repo() {
 	    LINUX_DISTRO='suse'
-	    if [ "$(uname -m)" != "aarch64" ] && [ "$(uname -m)" != "armv7l" ]; then
+		if [ "$(uname -m)" = 'aarch64' ];then
+			zypper mr -da
+	        zypper addrepo -fcg  https://mirrors.tuna.tsinghua.edu.cn/opensuse/ports/aarch64/tumbleweed/repo/oss tuna-mirrors-oss
+	        zypper --gpg-auto-import-keys refresh
+		elif [ "$(uname -m)" != 'armv7l' ] ;then
 	        zypper mr -da
 	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss/ tuna-mirrors-oss
 	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss/ tuna-mirrors-non-oss
 	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed/ tuna-mirrors_Tumbleweed
 	        zypper --gpg-auto-import-keys refresh
 	        #zypper dup --no-allow-vendor-change -y
-		elif [ "$(uname -m)" = "aarch64" ];then
-	  		zypper mr -da
-	        zypper addrepo -fcg  https://mirrors.tuna.tsinghua.edu.cn/opensuse/ports/aarch64/tumbleweed/repo/oss tuna-mirrors-oss
-	        zypper --gpg-auto-import-keys refresh
-	    fi
-	    zypper install -y wget curl
-	    sed -i 's@RC_LANG=.*@RC_LANG=en_US.UTF8@' /etc/sysconfig/language
-	    sed -i 's@RC_LC_ALL=.*@RC_LC_ALL=en_US.UTF8@' /etc/sysconfig/language
-	    sed -i 's@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES=en_US@' /etc/sysconfig/language
-	    zypper install -y glibc-locale glibc-i18ndata translation-update-en_US
+		fi
+	    zypper in -y wget curl
+	    sed -i "s@RC_LANG=.*@RC_LANG=${TMOE_LANG}@" /etc/sysconfig/language
+	    sed -i "s@RC_LC_ALL=.*@RC_LC_ALL=${TMOE_LANG}@" /etc/sysconfig/language
+	    sed -i "s@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES=${TMOE_LANG_HALF}@" /etc/sysconfig/language
+	    zypper in -y glibc-locale glibc-i18ndata 
+		zypper in -y translation-update-${TMOE_LANG_HALF}
 	}
 	################################
 	if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
 	    alpine_linux_configure
-	elif grep -q 'openSUSE' "/etc/issue"; then
+	elif grep -q 'openSUSE' "/etc/os-release"; then
 	    opensuse_linux_repo
 	fi
 	##############################
 	apt update 2>/dev/null
 	if [ ! $(command -v locale-gen) ]; then
 	    apt install -y locales 2>/dev/null
-	fi
-
-	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-	else
-		TMOE_LANG="en_US.UTF-8"
-		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	fi
 
 	if grep -q 'ubuntu' /etc/os-release; then
@@ -1287,41 +1286,28 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	echo '正在执行优化步骤，请勿退出!'
 	echo 'Optimization steps are in progress. Do not exit!'
 
-	#配置国内时区
+	#配置时区
 	echo 'Asia/Shanghai' >/etc/timezone
 	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-	sed -i 's/^/#&/g' /etc/default/locale
-	sed -i 's/##/#/g' /etc/default/locale
+	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
+	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
 	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
-	  echo "Configuring Chinese environment..."
-	  #sed -i 's/^#.*en_US.UTF-8.*/en_US.UTF-8 UTF-8/' /etc/locale.gen
-	  sed -i 's/^#.*en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-	  cat >>/etc/default/locale <<-'EOF'
-			LANG=en_US.UTF-8
-			LANGUAGE=en_US:zh
-			LC_ALL=en_US.UTF-8
-		EOF
-	  #locale-gen
-	  locale-gen en_US.UTF-8
-	else
-	  TMOE_LANG=$(cat /usr/local/etc/tmoe-linux/locale.txt | head -n 1)
-	  TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-	  TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-	  echo "Configuring ${TMOE_LANG_HALF} environment..."
-	  sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
-	  cat >>/etc/default/locale <<-EOF
+	    echo "Tmoe-locale file not detected."
+	fi
+	echo "Configuring ${TMOE_LANG_HALF} environment..."
+	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
+	cat >>/etc/default/locale <<-EOF
 			LANG=${TMOE_LANG}
 			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 			LC_ALL=${TMOE_LANG}
 		EOF
-	  if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+	if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
 	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
 	    echo '' >>/etc/locale.gen
 	    sed -i "$ a\${TMOE_LANG} UTF-8" /etc/locale.gen
-	  fi
-	  locale-gen ${TMOE_LANG}
 	fi
+	locale-gen ${TMOE_LANG}
 	source /etc/default/locale 2>/dev/null
 	#################
 	printf "$YELLOW"
