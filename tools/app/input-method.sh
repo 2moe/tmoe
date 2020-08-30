@@ -82,7 +82,7 @@ edit_fcitx_theme_config_file() {
 }
 #############
 configure_fcitx5_material_color_theme() {
-    RETURN_TO_WHERE='install_fcitx5_material_color_theme'
+    RETURN_TO_WHERE='configure_fcitx5_material_color_theme'
     MATERIAL_COLOR_FOLDER="${HOME}/.local/share/fcitx5/themes/Material-Color"
     CURRENT_FCITX5_COLOR="$(ls -l ${MATERIAL_COLOR_FOLDER}/panel.png | awk -F ' ' '{print $NF}' | cut -d '-' -f 2 | cut -d '.' -f 1)"
     if [ ! -z "${CURRENT_FCITX5_COLOR}" ]; then
