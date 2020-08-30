@@ -1244,6 +1244,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed/ tuna-mirrors_Tumbleweed
 	        zypper --gpg-auto-import-keys refresh
 	        #zypper dup --no-allow-vendor-change -y
+		elif [ "$(uname -m)" = "aarch64" ];then
+	  		zypper mr -da
+	        zypper addrepo -fcg  https://mirrors.tuna.tsinghua.edu.cn/opensuse/ports/aarch64/tumbleweed/repo/oss tuna-mirrors-oss
+	        zypper --gpg-auto-import-keys refresh
 	    fi
 	    zypper install -y wget curl
 	    sed -i 's@RC_LANG=.*@RC_LANG=en_US.UTF8@' /etc/sysconfig/language
