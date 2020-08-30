@@ -279,7 +279,6 @@ cat <<-EOF
 			Some fonts do not support powerlevel10k special characters.
 			-------------------
 EOF
-#究竟是何种环境，以及哪条命令呢?
 echo "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
 echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
 
@@ -535,7 +534,8 @@ check_tmoe_proot_container_proc() {
 		sed -i "s@#test04@@" ${PREFIX}/bin/debian
 	fi
 	######
-	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kmsg kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
+	#不要读取kmsg
+	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
 		TMOE_PROC_FILE=$(cat /proc/${i} 2>/dev/null)
 		if [ -z "${TMOE_PROC_FILE}" ]; then
 			echo "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
@@ -548,7 +548,7 @@ check_tmoe_proot_container_proc() {
 	FILE_01=version
 	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
-		echo "检测到您无权读取${BLUE}/proc/version${RESET},正在自动伪造新文件..."
+		echo "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
 		echo "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
 		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
 		sed -i "s@#test01@@" ${PREFIX}/bin/debian
@@ -672,6 +672,7 @@ creat_proot_startup_script() {
 		        #test01set -- "--mount=${TMOE_PROC_PREFIX}.stat:/proc/stat" "\$@"
 		        #test02set -- "--mount=${TMOE_PROC_PREFIX}.version:/proc/version" "\$@"
 		        if [ -e "${TMOE_PROC_PATH}/uptime" ]; then
+					echo ""
 		            #test04set -- "--mount=${TMOE_PROC_PATH}/bus:/proc/bus"  "\$@"
 		            ##buddyinfo#set -- "--mount=${TMOE_PROC_PATH}/buddyinfo:/proc/buddyinfo"  "\$@"
 		            ##cgroups#set -- "--mount=${TMOE_PROC_PATH}/cgroups:/proc/cgroups"  "\$@"
@@ -728,6 +729,7 @@ creat_proot_startup_script() {
 		}
 		main "\$@"
 	ENDOFPROOT
+	#echo "" 空行不是多余的
 }
 #########
 if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
