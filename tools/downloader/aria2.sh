@@ -1457,7 +1457,7 @@ tmoe_aria2_bt_and_pt() {
         TMOE_ARIA2_OPTION_01="100"
         TMOE_ARIA2_OPTION_02="0"
         TMOE_ARIA2_GREP_NAME='bt-stop-timeout'
-        TMOE_ARIA2_TIPS='当 BT 任务F下载速度持续为 0, 达到此选项设置的时间后停止下载. 如果设置为 0, 此功能将禁用.'
+        TMOE_ARIA2_TIPS='当 BT 任务下载速度持续为 0, 达到此选项设置的时间后停止下载. 如果设置为 0, 此功能将禁用.'
         ;;
     30)
         TMOE_ARIA2_OPTION_01="0"
