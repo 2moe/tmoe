@@ -1298,7 +1298,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		hostname ${NEW_HOST_NAME} 2>/dev/null
 		sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
 	fi
-	groupadd aid_system -g 1000
+	#groupadd aid_system -g 1000
+	groupadd aid_system -g 1074
 	groupadd aid_radio -g 1001
 	groupadd aid_bluetooth -g 1002
 	groupadd aid_graphics -g 1003
@@ -1398,7 +1399,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	groupadd aid_ext_cache_gid_end -g 49999
 	groupadd aid_shared_gid_start -g 50000
 	groupadd aid_shared_gid_end -g 59999
-	groupadd aid_overflowuid -g 65534
+	#groupadd aid_overflowuid -g 65534
+	groupadd aid_overflowuid -g 65535
 	groupadd aid_isolated_start -g 99000
 	groupadd aid_isolated_end -g 99999
 	groupadd aid_user_offset -g 100000

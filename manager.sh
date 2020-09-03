@@ -2460,6 +2460,7 @@ download_video_tutorial_again() {
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://webdav.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://webdav.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
 	play_video_tutorial
 }
+#######################
 play_video_tutorial() {
 	termux-open "20200229vnc教程06.mp4"
 	echo "${YELLOW}若视频无法自动播放，则请进入下载目录手动播放。${RESET}"
