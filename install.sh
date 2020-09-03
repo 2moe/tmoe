@@ -1236,6 +1236,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	    sleep 9
 	}
 	#########
+	CURRENT_TMOE_DIR=$(pwd)
 	cd ${HOME}/.vnc 2>/dev/null
 	case "$?" in
 	0)
@@ -1259,7 +1260,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	    unset i
 	    ;;
 	esac
-	cd ${HOME}
+	cd ${CURRENT_TMOE_DIR}
 	###########
 	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
 	systemctl(){
