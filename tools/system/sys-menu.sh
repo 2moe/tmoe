@@ -259,6 +259,7 @@ add_him_to_sudoers() {
 	else
 		sed -i "${TMOE_ROOT_SUDO_LINE}a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
 	fi
+	usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin ${TMOE_USER_NAME} 2>/dev/null
 	cat /etc/sudoers
 }
 ###############

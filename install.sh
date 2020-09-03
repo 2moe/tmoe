@@ -182,19 +182,6 @@ else
 fi
 #旧版将相关命令设立了alias，新版需要删掉。
 ####################
-#卸载chroot挂载目录
-if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-	su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
-	su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
-	su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
-fi
-##############################
 if [ "$(uname -o)" != "Android" ]; then
 	if grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
@@ -257,7 +244,7 @@ fi
 
 mkdir -p ~/${DEBIAN_FOLDER}
 
-DebianTarXz="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
+TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 cat <<-EOF
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示${RESET}:
@@ -282,27 +269,31 @@ EOF
 echo "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
 echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
 
-if [ ! -f ${DebianTarXz} ]; then
+if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
 		echo "正在从${YELLOW}清华大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
-		echo "Downloading ${BLUE}${DebianTarXz}${RESET} from Tsinghua University Open Source Mirror Station."
+		echo "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from Tsinghua University Open Source Mirror Station."
 		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-			aria2c -x 5 -k 1M --split 5 -o ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
+			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
 		else
-			wget -O ${DebianTarXz} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
+			wget -O ${TMOE_ROOTFS_TAR_XZ} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
 		fi
 	else
-		aria2c -x 6 -k 1M --split 6 -o ${DebianTarXz} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+		aria2c -x 6 -k 1M --split 6 -o ${TMOE_ROOTFS_TAR_XZ} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
 	fi
 fi
-cur=$(pwd)
-if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
-	aria2c -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true 'https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
-fi
-cd ${DEBIAN_CHROOT}
-if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
-	tar -Jxf ${CONFIG_FOLDER}/proc.tar.xz 2>/dev/null
+CURRENT_TMOE_DIR=$(pwd)
+if [ ! -e "${HOME}/.config/tmoe-linux/chroot_container" ]; then
+	if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
+		aria2c -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true 'https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
+	fi
+	cd ${DEBIAN_CHROOT}
+	if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
+		tar -Jxf ${CONFIG_FOLDER}/proc.tar.xz 2>/dev/null
+	fi
+else
+	cd ${DEBIAN_CHROOT}
 fi
 printf "$BLUE"
 cat <<-'EndOFneko'
@@ -353,30 +344,34 @@ cat <<-EOF
 			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}.
 			-------------------
 EOF
-echo "正在${GREEN}解压${RESET}${BLUE}${DebianTarXz}...${RESET}"
-echo "Extracting ${DebianTarXz}, please wait."
+################
+check_pv() {
+	if [ $(command -v pv) ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
+	else
+		tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	fi
+}
+#############
+echo "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
+echo "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
 if [ "${ARCH_TYPE}" = "mipsel" ]; then
-	pv ${cur}/${DebianTarXz} | tar -pJx
+	pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
 	mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
 elif [ "${LINUX_DISTRO}" = "Android" ]; then
-	pv ${cur}/${DebianTarXz} | proot --link2symlink tar -pJx
+	pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
 elif [ "${LINUX_DISTRO}" = "iSH" ]; then
-	tar -pJxvf ${cur}/${DebianTarXz}
-elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-	if [ "${REDHAT_DISTRO}" != "fedora" ]; then
-		tar -pJxvf ${cur}/${DebianTarXz}
-	else
-		pv ${cur}/${DebianTarXz} | tar -pJx
-	fi
+	tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 else
-	pv ${cur}/${DebianTarXz} | tar -pJx
+	check_pv
 fi
-cp -f ~/.termux/font.ttf ~/${DEBIAN_FOLDER}/tmp/ 2>/dev/null
+#############
+#cp -f ~/.termux/font.ttf ~/${DEBIAN_FOLDER}/tmp/ 2>/dev/null
 if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
 	touch ~/${DEBIAN_FOLDER}/tmp/.openwrtcheckfile
 fi
-#proot --link2symlink tar -Jxvf ${cur}/${DebianTarXz}||:
-cd "$cur"
+#proot --link2symlink tar -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
+cd "${CURRENT_TMOE_DIR}"
 printf "$YELLOW"
 cat <<-'EndOFneko'
 	                                        
@@ -406,93 +401,261 @@ cat <<-'EndOFneko'
 EndOFneko
 printf "$RESET"
 ####################
+cat_tmoe_chroot_script() {
+	cat >${PREFIX}/bin/debian <<-ENDOFTMOECHROOT
+		#!/data/data/com.termux/files/usr/bin/env bash
+		get_tmoe_linux_help_info() {
+		    cat <<-'ENDOFHELP'
+												-i     --启动tmoe-linux manager
+												-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
+												-vnc   --启动VNC
+												-n     --启动novnc
+												-x     --启动x11
+												-h     --get help info
+											ENDOFHELP
+		}
+		############
+		main() {
+		    case "\$1" in
+		    i* | -i* | -I*)
+		        debian-i
+		        exit 0
+		        ;;
+		    -h* | --h*)
+		        get_tmoe_linux_help_info
+		        ;;
+		    -m* | m*)
+		        debian-i -m
+		        ;;
+		    -vnc* | vnc*)
+		        startvnc
+		        ;;
+		    -n* | novnc*)
+		        debian-i novnc
+		        ;;
+		    -x)
+		        startxsdl
+		        ;;
+		    *) start_tmoe_gnu_linux_chroot_container ;;
+		    esac
+		}
+		##############
+		start_tmoe_gnu_linux_chroot_container() {
+		    case \$(uname -o) in
+		    Android);;
+		    *)
+		        case \$(id -u) in
+		        0) ;;
+		        *)
+		            if [ \$(command -v sudo) ]; then
+		                sudo su -c "bash ${PREFIX}/bin/debian"
+		            else
+		                su -c "bash ${PREFIX}/bin/debian"
+		            fi
+		            exit 1
+		            ;;
+		        esac
+		        ;;
+		    esac
+		    ########
+			cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
+		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+		    PROC_FD_PATH="/proc/self/fd"
+		    #########
+		    detect_mount() {
+		        MOUNT_DIR="\$1"
+		        if \$(grep -q " \${MOUNT_DIR%/} " /proc/mounts); then
+		            return 0
+		        else
+		            return 1
+		        fi
+		    }
+		    ##########
+			#arch-linux挂载自身
+			if ! detect_mount "${DEBIAN_CHROOT}/"; then
+			   echo ''
+		       ##arch-chroot#su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
+			 fi
+			 #########
+		    if [ -f "${DEBIAN_CHROOT}/bin/zsh" ]; then
+		        TMOE_SHELL="/bin/zsh"
+		    elif [ -f "${DEBIAN_CHROOT}/bin/bash" ]; then
+		        TMOE_SHELL="/bin/bash"
+		    elif [ -f "${DEBIAN_CHROOT}/bin/ash" ]; then
+		        TMOE_SHELL="/bin/ash"
+		    else
+		        TMOE_SHELL="/bin/su"
+		    fi
+		    set -- "\${TMOE_SHELL}" "-l" "\$@"
+		    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
+		        set -- "LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)" "\$@"
+		    else
+		        set -- "LANG=en_US.UTF-8" "\$@"
+		    fi
+		    ############
+		    mount_01() {
+		        su -c "mount -o bind /\${i} ${DEBIAN_CHROOT}/\${i}"
+		    }
+		    #########
+		    mkdir_01() {
+		        if [ ! -e "/\${i}" ]; then
+		            su -c "mkdir -p /\${i}"
+		        fi
+		    }
+		    ########
+		    #PS1='\u:\w$ '
+		    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "TERM=xterm-256color" "\$@"
+		    for i in dev proc sys dev/pts dev/shm dev/tty0; do
+		        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
+		            case \${i} in
+		            dev) mount_01 ;;
+		            proc) su -c "mount -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}" ;;
+		            sys) su -c "mount -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
+		            dev/pts)
+		                if ! detect_mount "/\${i}"; then
+		                    mkdir_01
+		                    su -c "mount -o rw,nosuid,noexec,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
+		                fi
+		                su -c "mount -t devpts devpts ${DEBIAN_CHROOT}/\${i}"
+		                ;;
+		            dev/shm)
+		                if ! detect_mount "/\${i}"; then
+		                    mkdir_01
+		                    su -c "mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /\${i}"
+		                fi
+		                mount_01
+		                ;;
+		            esac
+		        fi
+		    done
+		    unset i
+		    #dev/random) su -c "mount -o bind /dev/urandom ${DEBIAN_CHROOT}/\${i}" ;;
+		    ########
+			check_android_dev_stdout(){
+		    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
+		        if [ ! -e \${i} ] && [ ! -h \${i} ]; then
+		            case \${i} in
+		            /dev/fd) su -c "ln -s ${PROC_FD_PATH} \${i} &>/dev/null" ;;
+		            /dev/stdin) su -c "ln -s ${PROC_FD}/0 \${i} &>/dev/null" ;;
+		            /dev/stdout) su -c "ln -s ${PROC_FD}/1 \${i} &>/dev/null" ;;
+		            /dev/stderr) su -c "ln -s ${PROC_FD}/2 \${i} &>/dev/null" ;;
+		            /dev/tty0)
+		                #if [ -e "/dev/ttyGS0" ]; then
+		                # su -c "ln -s /dev/ttyGS0 /\${i} &>/dev/null"
+		                #else
+		                su -c "ln -s /dev/null \${i} &>/dev/null"
+		                #fi
+		                ;;
+		            esac
+		        fi
+		    done
+		    unset i
+			}
+		    ###############
+		    mount_read_only_sd() {
+		        ANDROID_EMULATED_0_DIR='/storage/emulated/0'
+		        if [ -e "\${ANDROID_EMULATED_0_DIR}" ]; then
+		            if [ ! -e "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}" ]; then
+		                mkdir -p "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}"
+		            fi
+		            su -c "mount -o ro /storage/emulated/0 ${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR} &>/dev/null"
+		        fi
+		    }
+		    ############
+		    for i in tf termux sd; do
+		        if ! detect_mount "${DEBIAN_CHROOT}/root/\${i}"; then
+		            case \${i} in
+		            tf)
+		                TF_CARD_LINK="${HOME}/storage/external-1"
+		                if [ -h "\${TF_CARD_LINK}" ]; then
+		                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
+		                    if [ "$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
+		                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                    else
+		                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                    fi
+		                fi
+		                ;;
+		            #######
+		            termux)
+		                if [ -d "/data/data/com.termux/files/home" ]; then
+		                    su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                fi
+		                ;;
+		            ###########
+		            sd)
+		                if [ "\$(su -c "ls /data/media/0" 2>/dev/null)" ]; then
+		                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                    #su -c "mount -o bind /data/media/0/Download ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                elif [ -e "/storage/self/primary" ]; then
+		                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                elif [ -e "/sdcard/Download" ] || [ -h "/sdcard/Download" ]; then
+		                    su -c "mount -o bind /sdcard/Download ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                else
+		                    mount_read_only_sd
+		                fi
+		                ;;
+		            esac
+		        fi
+		    done
+		    unset i
+		     ##########
+			case \$(uname -o) in
+		    Android) check_android_dev_stdout;;
+			esac
+			 ###########
+		     set -- "${DEBIAN_CHROOT}" "\$@"
+		     set -- "chroot" "\$@"
+		     unset LD_PRELOAD
+			 su -c "exec \$@"
+		    }
+		    main "\$@"
+	ENDOFTMOECHROOT
+}
+##############
 creat_chroot_startup_script() {
-	#rm -f ${HOME}/.Chroot-Container-Detection-File
+	case ${LINUX_DISTRO} in
+	Android)
+		ANDROID_EMULATED_DIR='/storage/emulated'
+		if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
+			mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			ln -s ../../root/sd ./0
+		fi
+		cd "${DEBIAN_CHROOT}"
+		;;
+	esac
+	if [ -e "/system/bin/wm" ]; then
+		TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+		mkdir -p ${TMOE_CHROOT_ETC}
+		su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1 >${TMOE_CHROOT_ETC}/wm_size.txt
+	fi
+	if [ $(command -v getprop) ]; then
+		echo $(getprop ro.product.model) >${DEBIAN_CHROOT}/etc/hostname
+	fi
 	echo "Creating chroot startup script"
-	echo "正在创建chroot启动脚本${PREFIX}/bin/debian "
-	if [ -d "/sdcard" ]; then
-		mkdir -p ${DEBIAN_CHROOT}/root/sd
-	fi
-	if [ -L '/data/data/com.termux/files/home/storage/external-1' ]; then
-		mkdir -p ${DEBIAN_CHROOT}/root/tf
-	fi
+	echo "正在创建chroot容器启动脚本${PREFIX}/bin/debian "
+	#if [ -e "/storage/self/primary" ] || [ -e "/sdcard" ]; then
+	mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd
+	#fi
 	if [ -d "/data/data/com.termux/files/home" ]; then
 		mkdir -p ${DEBIAN_CHROOT}/root/termux
+		if [ -h "${HOME}/storage/external-1" ]; then
+			mkdir -p ${DEBIAN_CHROOT}/root/tf
+		fi
 	fi
-	if [ ! -f "${DEBIAN_CHROOT}/etc/profile" ]; then
-		echo "" >>${DEBIAN_CHROOT}/etc/profile
-	fi
+	##################
+	#for i in dev proc sys root/sd tmp root/termux root/tf; do
+	#	if [ -e "${DEBIAN_CHROOT}/${i}" ]; then
+	#		su -c "chattr +i ${i}"
+	#	fi
+	#done
+	#unset i
+	###############
 	#此处若不创建，将有可能导致chromium无法启动。
 	mkdir -p ${DEBIAN_CHROOT}/run/shm
-	chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-	grep -q 'export PATH=' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\export PATH='/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games'" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
-
-	grep -q 'export PATH=' ${DEBIAN_CHROOT}/root/.zshenv >/dev/null 2>&1 || echo "export PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >>${DEBIAN_CHROOT}/root/.zshenv
-
-	grep -q 'unset LD_PRELOAD' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
-
-	grep -q 'en_US.UTF-8' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
-
-	grep -q 'HOME=/root' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
-
-	grep -q 'cd /root' ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1 || sed -i "$ a\cd /root" ${DEBIAN_CHROOT}/etc/profile >/dev/null 2>&1
-
-	#此处EndOfChrootFile不要加单引号
-	cat >${PREFIX}/bin/debian <<-EndOfChrootFile
-		  #!/data/data/com.termux/files/usr/bin/env bash
-		  DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
-		  cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
-		  if [ ! -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		    echo "本文件为chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
-		  fi
-		  #sed替换匹配行,加密内容为chroot登录shell。为防止匹配行被替换，故采用base64加密。
-		  DEFAULTZSHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL3pzaCAtLWxvZ2luCg==' | base64 -d)"
-		  DEFAULTBASHLOGIN="\$(echo 'Y2hyb290ICR7RGViaWFuQ0hST09UfSAvYmluL2Jhc2ggLS1sb2dpbgo=' | base64 -d)"
-
-		  if [ -f ${DEBIAN_CHROOT}/bin/zsh ]; then
-		    sed -i "s:\${DEFAULTBASHLOGIN}:\${DEFAULTZSHLOGIN}:g" ${PREFIX}/bin/debian
-		  else
-		    sed -i "s:\${DEFAULTZSHLOGIN}:\${DEFAULTBASHLOGIN}:g" ${PREFIX}/bin/debian
-		  fi
-
-		  if [ "\$(id -u)" != "0" ]; then
-		    su -c "/bin/sh ${PREFIX}/bin/debian"
-		    exit
-		  fi
-		  mount -o bind /dev ${DEBIAN_CHROOT}/dev >/dev/null 2>&1
-		  #mount -o bind /dev /dev >/dev/null 2>&1
-
-		  mount -t proc proc ${DEBIAN_CHROOT}/proc >/dev/null 2>&1
-		  #mount -t proc proc /proc >/dev/null 2>&1
-
-		  mount -t sysfs sysfs ${DEBIAN_CHROOT}/sys >/dev/null 2>&1
-
-		  mount -t devpts devpts ${DEBIAN_CHROOT}/dev/pts >/dev/null 2>&1
-		  # mount -t devpts devpts /dev/pts >/dev/null 2>&1
-
-		  #mount --bind /dev/shm ${DEBIAN_CHROOT}/dev/shm >/dev/null 2>&1
-		  mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm >/dev/null 2>&1
-
-		  #mount -t tmpfs tmpfs ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1
-
-		  mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ >/dev/null 2>&1
-
-		  if [ "$(uname -o)" = "Android" ]; then
-		    TFcardFolder="\$(su -c 'ls /mnt/media_rw/ 2>/dev/null | head -n 1')"
-		    if [ -d "/mnt/media_rw/\${TFcardFolder}" ]; then
-		      mount -o bind /mnt/media_rw/\${TFcardFolder} ${DEBIAN_CHROOT}/root/tf >/dev/null 2>&1
-		    fi
-		    if [ -d "/data/data/com.termux/files/home" ]; then
-		      mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1
-		    fi
-		    if [ -d "/sdcard" ]; then
-		      mount -o bind /sdcard ${DEBIAN_CHROOT}/root/sd >/dev/null 2>&1
-		      #mount --rbind /sdcard ${DEBIAN_CHROOT}/root/sd >/dev/null 2>&1
-		    fi
-		  fi
-		  chroot \${DEBIAN_CHROOT} /bin/bash --login
-
-	EndOfChrootFile
+	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+	cat_tmoe_chroot_script
 }
 ###################
 creat_tmoe_proot_stat_file() {
@@ -578,6 +741,8 @@ creat_proot_startup_script() {
 										-i     --启动tmoe-linux manager
 										-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
 										-vnc   --启动VNC
+										-n     --启动novnc
+										-x     --启动x11
 										-h     --get help info
 									ENDOFHELP
 		}
@@ -597,6 +762,12 @@ creat_proot_startup_script() {
 		    -vnc* | vnc*)
 		        startvnc
 		        ;;
+			-n | novnc*)
+		        debian-i novnc
+		        ;;
+			-x)
+				startxsdl
+			;;
 		    *) start_tmoe_gnu_linux_container ;;
 		    esac
 		}
@@ -717,6 +888,9 @@ creat_proot_startup_script() {
 		        if [ -h "${HOME}/storage/external-1" ]; then
 		            set -- "--mount=${HOME}/storage/external-1:/root/tf" "\$@"
 		        fi
+				if [ -e "/storage" ]; then
+		            set -- "--mount=/storage" "\$@"
+		        fi
 		        if [ -e "/data/data/com.termux/files/home" ]; then
 		            set -- "--mount=/data/data/com.termux" "\$@"
 		            set -- "--mount=/data/data/com.termux/files/home:/root/termux" "\$@"
@@ -732,8 +906,29 @@ creat_proot_startup_script() {
 	#echo "" 空行不是多余的
 }
 #########
-if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
+arch_mount_self() {
+	CONTAINER_DISTRO=$(cat ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+	case ${CONTAINER_DISTRO} in
+	arch | manajro)
+		sed -i 's@##arch-chroot#@@g' ${PREFIX}/bin/debian
+		;;
+	esac
+}
+##########
+fix_gnu_linux_chroot_exec() {
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*)
+		sed -i 's:su -c "exec $@":exec $@:' ${PREFIX}/bin/debian
+		;;
+	esac
+}
+###########
+if [ -e "${HOME}/.config/tmoe-linux/chroot_container" ]; then
+	TMOE_CHROOT='true'
 	creat_chroot_startup_script
+	arch_mount_self
+	fix_gnu_linux_chroot_exec
 else
 	creat_proot_startup_script
 	check_proot_qemu
@@ -745,71 +940,83 @@ creat_linux_container_remove_script() {
 		    #!/data/data/com.termux/files/usr/bin/env bash
 			  YELLOW=\$(printf '\033[33m')
 			  RESET=\$(printf '\033[m')
-		    cd ${HOME}
-		    
-		  if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-				su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
-				su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
-			  su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
-				su -c " umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
-				su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
-				su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
-				su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
-				su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
-				su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
-
-		ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/proc 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/sys 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/tmp 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/root/sd 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
-		  df -h |grep debian
-		  echo '移除容器前，请先确保您已卸载chroot挂载目录。'
-		  echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-		  echo "Before removing the system, make sure you have unmounted the chroot mount directory.
-		It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
-		  fi
+		      cd ${HOME}
+				   if grep -q 'TMOE_CHROOT=' ${PREFIX}/bin/debian || [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+						TMOE_CHROOT='true'
+						TMOE_PREFIX='sudo'
+						su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+						su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+						su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+						su -c "ls -lAh  ${DEBIAN_CHROOT}/root/sd"
+						#for i in dev proc sys root/sd tmp root/termux root/tf; do
+						# if [ -e "${DEBIAN_CHROOT}/\${i}" ]; then
+						#  su -c "chattr -i \${i}"
+						# fi
+						#done
+						#unset i
+					else
+						TMOE_PREFIX=''
+					fi
+					for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0; do
+						if [ -e "${DEBIAN_CHROOT}/\${i}" ]; then
+							ls -lAh "${DEBIAN_CHROOT}\/${i}" 2>/dev/null
+						fi
+					done
+					unset i
+							cat <<-'EOF'
+		              移除容器前，请先确保您已卸载容器挂载目录。
+		              建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！
+		              Before removing the system, make sure you have unmounted dev dev/shm dev/pts proc sys root/sd and other directories.
+		              It is recommended that you backup the entire system before removal. 
+					  If the data is lost due to improper operation, the developer is not responsible! 
+							EOF
+					##################
+		  cat /proc/mounts | grep ${DEBIAN_FOLDER}
 		  echo "移除容器前，请先确保您已停止容器的进程。"
 		  pkill proot 2>/dev/null
 		  ps -e | grep proot
 		  ps -e | grep startvnc
 		  pgrep proot &> /dev/null
-		if [ "\$?" = "0" ]; then
-		    echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行,亦或者是重启设备'
-		fi
-			ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
 			if [ "\$?" = "0" ]; then
-				echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
+			    echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行,亦或者是重启设备'
+			fi
+			##########
+			ls -l ${DEBIAN_CHROOT}/root/termux/* 2>/dev/null
+			if [ "\$?" = "0" ]; then
+				echo 'WARNING！检测到/root/termux 无法强制卸载，您当前使用的可能是chroot容器'
 				echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 				echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-			# echo '为防止数据丢失，禁止移除容器！请重启设备后再重试。'
-			# echo "Press enter to exit."
-			# echo "${YELLOW}按回车键退出。${RESET} "
-			# read
-			# exit 0
 			fi
-
-		 #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
-		  #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+			#############
+			for i in root/sd root/tf proc sys; do
+				if [ "$(ls ${DEBIAN_CHROOT}/\${i} 2>/dev/null)" ]; then
+					echo "检测到~/${DEBIAN_FOLDER}/\${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
+					echo "Please restart the device to unmount the chroot directory."
+					echo "Press enter to exit."
+					echo "\${YELLOW}按回车键退出。\${RESET} "
+					read
+					exit 1
+				fi
+			done
+			unset i
+			##########
+		    #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
+		    #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 			echo 'Detecting debian system size... 正在检测debian system占用空间大小'
-		   du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+		    ${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
 			echo "Do you want to remove it?[Y/n]"
 			echo "\${YELLOW}按回车键确认移除 Press enter to remove.\${RESET} "
 		    pkill proot 2>/dev/null
 			read opt
 			case \$opt in
 				y*|Y*|"") 
-		    chmod 777 -R ${DEBIAN_FOLDER}
+		    chmod 777 -R ${DEBIAN_FOLDER} || sudo chmod 777 -R ${DEBIAN_FOLDER}
 			rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
 		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
-			  sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
+			sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 			source profile >/dev/null 2>&1
 			echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
-		  echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
+		   echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
 		   echo "Deleted已删除" ;;
 				n*|N*) echo "skipped."
 				exit 1
@@ -833,14 +1040,6 @@ creat_linux_container_remove_script() {
 				y*|Y*|"") 
 			rm -fv ~/${DEBIAN_FOLDER}-rootfs.tar.xz
 			rm -fv ~/\${ROOTFS_NAME}*rootfs.tar.xz
-			#rm -vf ~/debian-sid*rootfs.tar.xz 2>/dev/null
-		    #rm -f ${PREFIX}/bin/debian-rm
-			#rm -vf ~/fedora*rootfs.tar.xz 2>/dev/null
-			#rm -vf ~/arch*rootfs.tar.xz 2>/dev/null
-			#rm -vf ~/debian-buster*rootfs.tar.xz 2>/dev/null
-			#rm -vf ~/ubuntu-focal*rootfs.tar.xz 2>/dev/null
-			#rm -vf ~/kali-rolling*rootfs.tar.xz 2>/dev/null
-			#rm -vf ~/funtoo*rootfs.tar.xz 2>/dev/null
 		    echo "Deleted已删除" ;;
 				n*|N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
@@ -854,8 +1053,18 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	if [ ! "\$(pgrep pulseaudio)" ];then
 		pulseaudio --start 2>/dev/null &
 	fi
-	touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
-	${PREFIX}/bin/debian
+
+	vnc_warning() {
+		echo "Sorry,VNC server启动失败，请输debian-i重新配置GUI。"
+		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+	}
+
+	if [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
+		${PREFIX}/bin/debian
+	else
+		vnc_warning
+	fi 
 ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
@@ -864,8 +1073,18 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	if [ ! "\$(pgrep pulseaudio)" ];then
 		pulseaudio --start 2>/dev/null &
 	fi
-	touch ~/${DEBIAN_FOLDER}/root/.vnc/startx11vnc
-	${PREFIX}/bin/debian
+
+	vnc_warning() {
+		echo "Sorry,x11vnc server启动失败，请输debian-i重新配置GUI。"
+		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+	}
+
+	if [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		touch ~/${DEBIAN_FOLDER}/root/.vnc/startx11vnc
+		${PREFIX}/bin/debian
+	else
+		vnc_warning
+	fi
 ENDOFX11VNC
 ln -s ${PREFIX}/bin/startx11vnc ${HOME}/vnc 2>/dev/null
 ###############
@@ -880,8 +1099,18 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/data/data/com.termux/files/usr/bin/env bash
 	am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-	touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
-	${PREFIX}/bin/debian
+
+	vnc_warning() {
+		echo "Sorry,x11启动失败，请输debian-i重新配置GUI。"
+		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+	}
+
+	if [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		touch ~/${DEBIAN_FOLDER}/root/.vnc/startxsdl
+		${PREFIX}/bin/debian
+	else
+		vnc_warning
+	fi
 ENDOFXSDL
 creat_linux_container_remove_script
 ################
@@ -889,8 +1118,8 @@ creat_linux_container_remove_script
 aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 #############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
- sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
- sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'
 echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
@@ -902,17 +1131,12 @@ chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl startx11vnc 2>/dev
 alias debian="${PREFIX}/bin/debian"
 alias debian-rm="${PREFIX}/bin/debian-rm"
 ################
-echo "You can type rm ~/${DebianTarXz} to delete the image file"
-echo "您可以输${RED}rm ~/${DebianTarXz}${RESET}来删除容器镜像文件"
-ls -lh ~/${DebianTarXz}
+echo "You can type rm ~/${TMOE_ROOTFS_TAR_XZ} to delete the image file"
+echo "您可以输${RED}rm ~/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像文件"
+ls -lh ~/${TMOE_ROOTFS_TAR_XZ}
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
- mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
-fi
-
-if [ -f "${HOME}/.Chroot-Container-Detection-File" ]; then
- mv -f "${HOME}/.Chroot-Container-Detection-File" ${DEBIAN_CHROOT}/tmp
- echo "本文件为Chroot容器检测文件 Please do not delete this file!" >>${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File 2>/dev/null
+	mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
 cd ${DEBIAN_CHROOT}/usr/local/bin
 
@@ -927,33 +1151,33 @@ sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' z
 chmod +x zsh-i.sh
 ###########
 debian_stable_sources_list_and_gpg_key() {
- curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
- tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
- rm -f "raspbian-sources-gpg.tar.xz"
+	curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
+	tar -Jxvf "raspbian-sources-gpg.tar.xz" -C ~/${DEBIAN_FOLDER}/etc/apt/
+	rm -f "raspbian-sources-gpg.tar.xz"
 }
 ############
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
- mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
- #树莓派换源
- debian_stable_sources_list_and_gpg_key
+	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
+	#树莓派换源
+	debian_stable_sources_list_and_gpg_key
 elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
- rm -f "${HOME}/.REDHATDetectionFILE"
- chmod u+w "${DEBIAN_CHROOT}/root"
+	rm -f "${HOME}/.REDHATDetectionFILE"
+	chmod u+w "${DEBIAN_CHROOT}/root"
 elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
- mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
+	mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
 elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
- rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
- sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
+	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
+	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
 TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
 if [ -e "${TMOE_LOCALE_FILE}" ]; then
- TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
- mkdir -p ${TMOE_LOCALE_NEW_PATH}
- cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
- TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
- PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
- sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
+	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+	mkdir -p ${TMOE_LOCALE_NEW_PATH}
+	cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi
 ########################
 #配置zsh
@@ -994,58 +1218,75 @@ cat >vnc-autostartup <<-'EndOfFile'
 		echo "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
 	}
 	###########
+	LOCAL_BIN_DIR='/usr/local/bin'
 	if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
 		check_tmoe_locale_file
 		cd /usr/local/etc/tmoe-linux/git
 		git fetch --depth=1
 		git reset --hard origin/master
 		git pull origin master --allow-unrelated-histories
-		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-		chmod +x /usr/local/bin/debian-i
-		/usr/local/bin/debian-i passwd
+		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		chmod +x ${LOCAL_BIN_DIR}/debian-i
+		${LOCAL_BIN_DIR}/debian-i passwd
 	fi
-
-	if [ -f "/root/.vnc/startvnc" ]; then
-		rm -f /root/.vnc/startvnc
-		if [ -f /usr/local/bin/startvnc ]; then
-			/usr/local/bin/startvnc
-			echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-		else
-			vnc_warning
-		fi
-	elif [ -f "/root/.vnc/startx11vnc" ]; then
-		rm -f /root/.vnc/startx11vnc
-		if [ -f /usr/local/bin/startx11vnc ]; then
-			/usr/local/bin/startx11vnc
-			echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-		else
-			vnc_warning
-		fi
-	elif [ -f "/root/.vnc/startxsdl" ]; then
-		echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
-		echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
-		rm -f /root/.vnc/startxsdl
-		echo '9s后将为您启动xsdl'
-		echo 'xsdl will start in 9 seconds'
-		sleep 9
-		/usr/local/bin/startxsdl
-	fi
+	#########
+	notes_of_android_xsdl() {
+	    cat <<-'ENDOFSTARTXSDL'
+		检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app
+		Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.
+		9s后将为您启动xsdl
+		xsdl will start in 9 seconds
+	ENDOFSTARTXSDL
+	    sleep 9
+	}
+	#########
+	cd ${HOME}/.vnc 2>/dev/null
+	case "$?" in
+	0)
+	    for i in startvnc startx11vnc startxsdl; do
+	        if [ -f ${i} ]; then
+	            rm ${i}
+	            case ${i} in
+	            startxsdl)
+	                notes_of_android_xsdl
+	                ;;
+	            esac
+	            if [ -f ${LOCAL_BIN_DIR}/${i} ]; then
+					cd ${HOME}
+	                ${LOCAL_BIN_DIR}/${i}
+					echo "已为您启动vnc服务 Vnc server has been started, enjoy it ！"
+	            else
+	                vnc_warning
+	            fi
+	        fi
+	    done
+	    unset i
+	    ;;
+	esac
+	cd ${HOME}
+	###########
 	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+	systemctl(){
+	    case $2 in
+	        "") systemctl $1 ;;
+	        *) /sbin/service $2 $1 ;;
+	    esac
+	}
 EndOfFile
 ############
 if [ ! -f ".bashrc" ]; then
- echo '' >>.bashrc || touch .bashrc
+	echo '' >>.bashrc || touch .bashrc
 fi
 sed -i '1 r vnc-autostartup' ./.bashrc
 #cp -f .bashrc .bashrc.bak
 if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
- mv -f .bash_profile .bash_profile.bak 2>/dev/null
- mv -f .bash_login .basfh_login.bak 2>/dev/null
+	mv -f .bash_profile .bash_profile.bak 2>/dev/null
+	mv -f .bash_login .basfh_login.bak 2>/dev/null
 fi
 if [ ! -f ".profile" ]; then
- echo '' >>.profile || touch .profle
+	echo '' >>.profile || touch .profle
 else
- mv -f .profile .profile.bak
+	mv -f .profile .profile.bak
 fi
 #############
 #curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
@@ -1056,6 +1297,18 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	RESET=$(printf '\033[m')
 	cd ${HOME}
 	###############
+	if [ -e "/etc/hostname" ]; then
+		NEW_HOST_NAME=$(cat /etc/hostname | head -n 1)
+		hostname ${NEW_HOST_NAME} 2>/dev/null
+		sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
+	fi
+	groupadd -g 3001 aid_bt
+	groupadd -g 3002 aid_bt_net
+	groupadd -g 3003 aid_inet
+	groupadd -g 3004 aid_net_raw
+	groupadd -g 3005 aid_admin
+	usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin root
+	usermod -g aid_inet _apt
 	#函数放在前面
 	debian_sources_list() {
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
@@ -1637,8 +1890,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 ENDOFbashPROFILE
 #####################
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
- sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
- #sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+	sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
+	#sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
-
+case ${TMOE_CHROOT} in
+true) su -c "chown -Rv root:root ${DEBIAN_CHROOT}" ;;
+esac
 bash ${PREFIX}/bin/debian

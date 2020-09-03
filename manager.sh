@@ -48,8 +48,21 @@ tmoe_manager_env() {
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
 	TMOE_GIT_URL='github.com/2moe/tmoe-linux'
 	APPS_LNK_DIR='/usr/share/applications'
+	check_tmoe_container_chroot
 }
 #######
+check_tmoe_container_chroot() {
+	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+		TMOE_CHROOT='true'
+	elif grep -q 'TMOE_CHROOT=' ${PREFIX}/bin/debian; then
+		TMOE_CHROOT='true'
+	fi
+	case ${TMOE_CHROOT} in
+	true) TMOE_PREFIX='sudo' ;;
+	*) TMOE_PREFIX='sudo' ;;
+	esac
+}
+######
 check_arch() {
 	case $(uname -m) in
 	armv7* | armv8l)
@@ -487,10 +500,12 @@ gnu_linux() {
 				aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "wsl_update_x64.msi" 'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi'
 				#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\wsl_update_x64.msi"
 			fi
-			if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
+			case ${TMOE_CHROOT} in
+			true)
 				echo "检测到您当前使用的是chroot容器，将不会自动调用Windows程序。"
 				echo "请手动启动音频服务和X服务。"
-			fi
+				;;
+			esac
 			echo "您当前使用的可能不是WSL2,部分功能无法正常运行。"
 			CURRENTwinVersion=$(/mnt/c/WINDOWS/system32/cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)
 			echo "您当前的系统版本为${CURRENTwinVersion}"
@@ -698,14 +713,14 @@ android_termux() {
 #\n更新日志：0509升级备份与还原功能,0510修复sudo,\n0514支持最新的ubuntu20.10,0720优化跨架构运行
 tmoe_manager_main_menu() {
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-08)" --backtitle "$(
+		whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-09)" --backtitle "$(
 			base64 -d <<-'DoYouWantToSeeWhatIsInside'
 				6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.\n请使用方向键和回车键进行操作" 0 50 0 \
 			"1" "🍀 proot安装(๑•̀ㅂ•́)و✧" \
-			"2" "🌸 chroot容器安装(only for GNU/Linux)" \
+			"2" "🌸 chroot容器安装" \
 			"3" "🌏 locales/区域/ロケール/로케일" \
 			"4" "🍳 mirror sources镜像源(清华,北外,中科大)" \
 			"5" "📱 Android-termux专区" \
@@ -1201,36 +1216,52 @@ questions_about_tmoe_automatic_configuration() {
 }
 ###########################
 install_proot_container() {
-	rm -f ~/.Chroot-Container-Detection-File
-	rm -f "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" 2>/dev/null
+	rm -f ~/.Chroot-Container-Detection-File ${CONFIG_FOLDER}/chroot_container 2>/dev/null
+	TMOE_CHROOT='false'
 	install_gnu_linux_container
 	#sed -i 's@^command+=" --link2sy@#&@' $(command -v debian)
 }
 ##########################
-install_chroot_container() {
-	echo "This feature currently only supports GNU/Linux systems and is still in beta."
-	echo "本功能目前仅对GNU/Linux系统测试开放。"
-	echo "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device before uninstalling the chroot container to prevent the mounted directory from being deleted by mistake."
-	echo "本功能目前仍处于测试阶段，移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
-	echo "由于在测试chroot容器的过程中出现了部分已挂载的目录${RED}无法强制卸载${RESET}的情况，故建议您换用${BLUE}docker${RESET}容器。"
-	echo "We recommend that you run ${BLUE}docker${RESET} containers on GNU/Linux system instead of ${RED}chroot${RESET} containers."
-	if [ "$(uname -o)" = "Android" ]; then
+notes_of_chroot() {
+	#echo "This feature currently only supports GNU/Linux systems and is still in beta."
+	#echo "本功能目前仅对GNU/Linux系统测试开放。"
+	echo "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device."
+	echo "移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！"
+	case ${LINUX_DISTRO} in
+	Android)
 		echo Android :${ANDROID_VERSION}
 		echo "$(getprop ro.product.model)"
 		su -c "ls ${HOME} >/dev/null"
 		if [ "$?" != "0" ]; then
 			echo '检测到root权限授予失败，您无法安装chroot容器'
-		else
-			echo "检测到您使用的是Android系统"
-			echo "非常抱歉，本功能仅适配GNU/Linux系统，暂未适配Android。"
+			#else
+			#	echo "检测到您使用的是Android系统"
+			#	echo "非常抱歉，本功能仅适配GNU/Linux系统，暂未适配Android。"
 			#echo "您在安装chroot容器前必须知悉已挂载目录无法强制卸载的严重性！"
-			echo "Android系统请换用proot容器。"
+			#echo "Android系统请换用proot容器。"
+			press_enter_to_return
+			tmoe_manager_main_menu
+		else
+			if [ ! "$(command -v sudo)" ] && [ ! "$(command -v tsu)" ]; then
+				echo "${GREEN}apt install -y${RESET} ${BLUE}tsu${RESET}"
+				echo "You can type ${RED}apt purge${RESET} ${BLUE}tsu${RESET} to remove it."
+				apt update
+				apt install -y tsu
+			fi
 		fi
-		press_enter_to_return
-		tmoe_manager_main_menu
-	else
-		chroot_install_debian
-	fi
+		;;
+	*)
+		echo "由于在测试chroot容器的过程中出现了部分已挂载的目录${RED}无法强制卸载${RESET}的情况，故建议您换用${BLUE}docker${RESET}容器。"
+		echo "We recommend that you run ${BLUE}docker${RESET} containers on GNU/Linux system instead of ${RED}chroot${RESET} containers."
+		;;
+	esac
+	#else
+	#fi
+}
+#############
+install_chroot_container() {
+	notes_of_chroot
+	chroot_install_debian
 }
 ########################
 startvnc_or_enter_the_container() {
@@ -1395,26 +1426,33 @@ enable_root_mode() {
 	#不要忘记此处的fi
 }
 ################################
-################################
 remove_gnu_linux_container() {
 	cd ${HOME}
-	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		unmount_proc_dev
-		ls -lah ${DEBIAN_CHROOT}/dev 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/dev/pts 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/proc 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/sys 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/tmp 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/root/sd 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/root/tf 2>/dev/null
-		ls -lah ${DEBIAN_CHROOT}/root/termux 2>/dev/null
-		df -h | grep debian
-		echo '移除系统前，请先确保您已卸载chroot挂载目录。'
-		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
-		echo "Before removing the system, make sure you have unmounted the chroot mount directory."
-		echo "It is recommended that you back up the entire system before removal. If the data is lost due to improper operation, the developer is not responsible! "
-	fi
+	unmount_proc_dev
+	for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0; do
+		if [ -e "${DEBIAN_CHROOT}/${i}" ]; then
+			ls -lAh "${DEBIAN_CHROOT}/${i}" 2>/dev/null
+		fi
+	done
+	unset i
+	cat <<-EOF
+		移除系统前，请先确保您已卸载容器挂载目录。
+		建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者${RED}概不负责${RESET}！！！
+		Before removing the system, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd${RESET} and other directories.
+		It is recommended that you backup the entire system before removal. 
+		If the data is lost due to improper operation, the developer is not responsible! 
+	EOF
+	#case ${TMOE_CHROOT} in
+	#true)
+	#	for i in dev proc sys root/sd tmp root/termux root/tf; do
+	#		if [ -e "${DEBIAN_CHROOT}/${i}" ]; then
+	#			su -c "chattr -i ${i}"
+	#		fi
+	#	done
+	#	unset i
+	#	;;
+	#esac
+	cat /proc/mounts | grep ${DEBIAN_FOLDER}
 	ps -e | grep proot
 	ps -e | grep startvnc
 	echo "移除系统前，请先确保您已停止GNU/Linux容器。"
@@ -1423,9 +1461,9 @@ remove_gnu_linux_container() {
 	if [ "$?" = "0" ]; then
 		echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
 	fi
-	ls -l ${DEBIAN_CHROOT}/root/sd/* 2>/dev/null
+	ls -l ${DEBIAN_CHROOT}/root/termux/* 2>/dev/null
 	if [ "$?" = "0" ]; then
-		echo 'WARNING！检测到/root/sd 无法强制卸载，您当前使用的可能是chroot容器'
+		echo 'WARNING！检测到/root/termux无法强制卸载，您当前使用的可能是chroot容器'
 		echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 		#echo '为防止数据丢失，建议您重启设备后再重试。'
@@ -1437,7 +1475,7 @@ remove_gnu_linux_container() {
 	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
 	echo "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
-	du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+	${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
 	if [ ! -d ~/${DEBIAN_FOLDER} ]; then
 		echo "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
@@ -1446,7 +1484,7 @@ remove_gnu_linux_container() {
 	read opt
 	case $opt in
 	y* | Y* | "")
-		chmod 777 -R ${DEBIAN_FOLDER}
+		chmod 777 -R ${DEBIAN_FOLDER} || sudo chmod 777 -R ${DEBIAN_FOLDER}
 		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
 		if [ -d "${HOME}/debian_arm64" ]; then
 			echo "检测到残留文件夹，正在移除..."
@@ -1569,7 +1607,6 @@ check_backup_file() {
 backup_gnu_linux_container() {
 	#ls -lth ./debian*.tar.* 2>/dev/null | head -n 5
 	#echo '您之前所备份的(部分)文件如上所示'
-
 	#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
 	#press_enter_to_continue
 	termux_backup_pre
@@ -1585,13 +1622,16 @@ backup_gnu_linux_container() {
 	check_backup_file
 	BACKUP_FILE="${LINUX_CONTAINER_DISTRO_FILE}"
 	check_backup_file
+	BACKUP_FILE="${CONFIG_FOLDER}/chroot_container"
+	check_backup_file
+
 	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 12 50); then
 
 		echo "您选择了tar.xz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.xz"
 		echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。Press Enter to start the backup.${RESET} "
 		press_enter_to_continue
 		#stopvnc（pkill all）在linux不会自动生成
-		tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
+		${TMOE_PREFIX} tar -PJpcvf ${TMPtime}.tar.xz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 
 		#whiptail进度条已弃用
 		#tar -PJpcf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ~/${DEBIAN_FOLDER} ${PREFIX}/bin/debian | (pv -n >${TMPtime}.tar.xz) 2>&1 | whiptail --gauge "Packaging into tar.xz" 10 70
@@ -1612,15 +1652,15 @@ backup_gnu_linux_container() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
 			press_enter_to_continue
 			if [ "$(command -v pv)" ]; then
-				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+				${TMOE_PREFIX} tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 			else
-				tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
+				${TMOE_PREFIX} tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 			fi
 		else
 			echo "您选择了tar,只进行打包,不进行压缩，即将为您备份至/sdcard/Download/backup/${TMPtime}.tar"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
 			press_enter_to_continue
-			tar -Ppcvf ${TMPtime}.tar --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
+			${TMOE_PREFIX} tar -Ppcvf ${TMPtime}.tar --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 		fi
 
 		#最新版弃用了whiptail的进度条！！！
@@ -1864,10 +1904,10 @@ uncompress_other_format_file() {
 	echo "即将为您解压..."
 	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
 		echo "${GREEN} tar -Ppxvf ${RESTORE} ${RESET}"
-		tar -Ppxvf ${RESTORE}
+		${TMOE_PREFIX} tar -Ppxvf ${RESTORE}
 	else
 		echo "${GREEN} pv ${RESTORE} | tar -Ppx ${RESET}"
-		pv ${RESTORE} | tar -Ppx
+		pv ${RESTORE} | ${TMOE_PREFIX} tar -Ppx
 	fi
 }
 ##############
@@ -1877,10 +1917,10 @@ uncompress_tar_xz_file() {
 	echo "即将为您解压..."
 	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
 		echo "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
-		tar -PpJxvf ${RESTORE}
+		${TMOE_PREFIX} tar -PpJxvf ${RESTORE}
 	else
 		echo "${GREEN} pv ${RESTORE} | tar -PpJx ${RESET}"
-		pv ${RESTORE} | tar -PpJx
+		pv ${RESTORE} | ${TMOE_PREFIX} tar -PpJx
 	fi
 }
 ######################
@@ -1890,10 +1930,10 @@ uncompress_tar_gz_file() {
 	echo "即将为您解压..."
 	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
 		echo "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
-		tar -Ppzxvf ${RESTORE}
+		${TMOE_PREFIX} tar -Ppzxvf ${RESTORE}
 	else
 		echo "${GREEN} pv ${RESTORE} | tar -Ppzx ${RESET}"
-		pv ${RESTORE} | tar -Ppzx
+		pv ${RESTORE} | ${TMOE_PREFIX} tar -Ppzx
 	fi
 }
 #####################
@@ -1971,19 +2011,25 @@ restore_the_latest_backup_file() {
 }
 #########################
 unmount_proc_dev() {
-	if [ -e "${DEBIAN_CHROOT}/tmp/.Chroot-Container-Detection-File" ]; then
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev/shm  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/dev/pts  >/dev/null 2>&1"
-		su -c "	umount -lf ${DEBIAN_CHROOT}/proc  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/sys  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/tmp  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/sd  >/dev/null 2>&1 "
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/tf  >/dev/null 2>&1"
-		su -c "umount -lf ${DEBIAN_CHROOT}/root/termux >/dev/null 2>&1"
-	fi
+	case ${TMOE_CHROOT} in
+	true)
+		su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+		su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+		su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+		su -c "ls -lAh  ${DEBIAN_CHROOT}/root/sd"
+		;;
+	esac
+	#/dev内自带null
+	for i in root/sd root/tf proc sys; do
+		if [ "$(ls ${DEBIAN_CHROOT}/${i} 2>/dev/null)" ]; then
+			echo "检测到~/${DEBIAN_FOLDER}/${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
+			echo "Please restart the device to unmount the chroot directory."
+			press_enter_to_return
+			${RETURN_TO_WHERE}
+		fi
+	done
+	unset i
 }
-
 ##########################
 do_you_want_to_continue() {
 	echo "${YELLOW}Do you want to continue?[Y/n]${RESET}"
@@ -2426,12 +2472,10 @@ play_video_tutorial() {
 }
 #####################################
 chroot_install_debian() {
-	echo "按回车键继续,按Ctrl+C取消。"
-	echo "${YELLOW}Press enter to continue.${RESET}"
-	read
-	rm -f "${DEBIAN_CHROOT}/tmp/.Tmoe-Proot-Container-Detection-File" 2>/dev/null
-	rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
-	touch ~/.Chroot-Container-Detection-File
+	press_enter_to_continue
+	#rm -f ~/.Tmoe-Proot-Container-Detection-File 2>/dev/null
+	touch ${CONFIG_FOLDER}/chroot_container
+	TMOE_CHROOT="true"
 	install_gnu_linux_container
 }
 #################################
@@ -2439,7 +2483,21 @@ check_and_view_the_eula() {
 	if [ ! -e "${CONFIG_FOLDER}/eula" ]; then
 		tmoe_linux_container_eula
 	fi
-	same_arch_or_different_arch
+	case ${LINUX_DISTRO} in
+	Android)
+		case ${TMOE_CHROOT} in
+		true)
+			##部分Android系统无/proc/sys/fs/binfmt_misc, 故本工具移除了chroot跨架构的功能,请换用GNU/Linux系统，或自行使用modprobe binfmt_misc加载内核模块
+			#Debian会自动注册qemu-user的binfmt_misc
+			run_gnu_linux_container_on_same_arch
+			;;
+		*) same_arch_or_different_arch ;;
+		esac
+		;;
+	*)
+		same_arch_or_different_arch
+		;;
+	esac
 }
 ########################
 tmoe_linux_container_eula() {
@@ -2518,11 +2576,15 @@ note_tmoe_linux_git_repo() {
 	EndOfFile
 }
 #################################################
+run_gnu_linux_container_on_same_arch() {
+	rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
+	ARCH_TYPE=${TRUE_ARCH_TYPE}
+	choose_which_gnu_linux_distro
+}
+##############
 same_arch_or_different_arch() {
 	if (whiptail --title "您是想要同架构运行,还是跨架构呢？" --yes-button 'same同' --no-button 'across跨' --yesno "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?\n除向下兼容外,跨架构运行的效率可能偏低" 0 0); then
-		rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
-		ARCH_TYPE=${TRUE_ARCH_TYPE}
-		choose_which_gnu_linux_distro
+		run_gnu_linux_container_on_same_arch
 	else
 		tmoe_qemu_user_manager
 	fi
@@ -2885,6 +2947,13 @@ install_debian_gnu_linux_container_via_rec_pkg() {
 	arm64) ;;
 	*)
 		echo "Sorry，恢复包暂未支持跨架构运行"
+		press_enter_to_return
+		install_debian_gnu_linux_distro
+		;;
+	esac
+	case ${TMOE_CHROOT} in
+	true)
+		echo "检测到您选择的是chroot容器,暂不支持恢复,请在线安装。"
 		press_enter_to_return
 		install_debian_gnu_linux_distro
 		;;

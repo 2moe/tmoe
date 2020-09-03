@@ -4055,22 +4055,63 @@ first_configure_startvnc() {
 	EndOFneko
     printf "$RESET"
     echo '------------------------'
-    TMOE_HIGH_DPI='false'
-    if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
-        if (whiptail --title "Are you using a high-resolution monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用高分辨率屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若x>=2K,则选择YES;\n若x<=1080p,则选择NO。" 0 50); then
+    TMOE_HIGH_DPI='default'
+    if [ -e "${TMOE_LINUX_DIR}/wm_size.txt" ]; then
+        RESOLUTION=$(cat ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2,$1}' | sed 's@ @x@')
+        HORIZONTAL_PIXELS=$(cat ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2}' | head -n 1)
+        if ((${HORIZONTAL_PIXELS} >= 2340)); then
             TMOE_HIGH_DPI='true'
-            xfce4_tightvnc_hidpi_settings
         else
             TMOE_HIGH_DPI='false'
-            echo "默认分辨率为1440x720，窗口缩放大小为1x"
-            dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
-            if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
-                dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-DPI 2>/dev/null
-            fi
-            echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
-            echo "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
+        fi
+        expr ${RESOLUTION} + 0 &>/dev/null
+        [ $? -ne 0] || RESOLUTION=''
+    else
+        RESOLUTION=''
+    fi
+    ##########
+    if [ ! -z "${RESOLUTION}" ]; then
+        if (whiptail --title "Is your resolution ${RESOLUTION}?" --yes-button 'YES' --no-button 'NO' --yesno "检测到您的宿主机为Android系统,且分辨率为${RESOLUTION}" 0 50); then
+            echo "Your resolution is ${RESOLUTION}"
+        else
+            RESOLUTION='1440x720'
+            TMOE_HIGH_DPI='default'
         fi
     fi
+    ###########
+    case ${REMOTE_DESKTOP_SESSION_01} in
+    xfce4-session)
+        if [ -z "${RESOLUTION}" ]; then
+            if (whiptail --title "Are you using a high-resolution monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用高分辨率屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若x>=2K,则选择YES;\n若x<=1080p,则选择NO。" 0 50); then
+                RESOLUTION='2880x1440'
+                TMOE_HIGH_DPI='true'
+            else
+                RESOLUTION='1440x720'
+                TMOE_HIGH_DPI='default'
+            fi
+        fi
+        ;;
+    lxsession)
+        for i in /etc/xdg/autostart/lxpolkit.desktop /usr/bin/lxpolkit; do
+            if [ -f "${i}" ]; then
+                mv -f ${i} ${i}.bak 2>/dev/null
+            fi
+        done
+        unset i
+        ;;
+    esac
+    #######
+    if [ -z "${RESOLUTION}" ]; then
+        RESOLUTION='1440x720'
+        TMOE_HIGH_DPI='default'
+    fi
+    case ${TMOE_HIGH_DPI} in
+    true) xfce4_tightvnc_hidpi_settings ;;
+    false) tmoe_gui_normal_dpi ;;
+    default) tmoe_gui_default_dpi ;;
+    esac
+    ######
+
     cat <<-EOF
 		------------------------
 		一：
@@ -4198,14 +4239,40 @@ check_vnc_passsword_length() {
     fi
 }
 ###################
-xfce4_tightvnc_hidpi_settings() {
-    echo "检测到您当前的桌面环境为xfce4，将为您自动调整高分屏设定"
-    echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
-    stopvnc >/dev/null 2>&1
+tmoe_gui_dpi_01() {
+    echo "默认分辨率为${RESOLUTION}，窗口缩放大小为1x"
+    dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
+    if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+        dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-DPI 2>/dev/null
+    fi
+}
+##########
+tmoe_gui_dpi_02() {
     sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
-    sed -i "$ a\vncserver -geometry 2880x1440 -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
-    sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
-    echo "已将默认分辨率修改为2880x1440，窗口缩放大小调整为2x"
+    sed -i "$ a\vncserver -geometry ${RESOLUTION} -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+    sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
+}
+##########
+tmoe_gui_dpi_03() {
+    echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+    echo "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
+}
+##########
+tmoe_gui_default_dpi() {
+    tmoe_gui_dpi_01
+    tmoe_gui_dpi_03
+}
+#############
+tmoe_gui_normal_dpi() {
+    tmoe_gui_dpi_01
+}
+#############
+xfce4_tightvnc_hidpi_settings() {
+    echo "Tmoe-linux tool将为您自动调整高分屏设定"
+    echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+    #stopvnc >/dev/null 2>&1
+    tmoe_gui_dpi_02
+    echo "已将默认分辨率修改为${RESOLUTION}，窗口缩放大小调整为2x"
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
     #-n创建一个新属性，类型为int
     if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
@@ -4213,19 +4280,19 @@ xfce4_tightvnc_hidpi_settings() {
     else
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
     fi
-    #dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
-    #startvnc >/dev/null 2>&1
     #Default-xhdpi默认处于未激活状态
 }
 ################
 xfce4_x11vnc_hidpi_settings() {
-    if [ ${TMOE_HIGH_DPI} = 'true' ]; then
+    case ${TMOE_HIGH_DPI} in
+    true | false)
         if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
             #stopx11vnc >/dev/null 2>&1
-            sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 2880x1440x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+            sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
             #startx11vnc >/dev/null 2>&1
         fi
-    fi
+        ;;
+    esac
 }
 ####################
 enable_dbus_launch() {

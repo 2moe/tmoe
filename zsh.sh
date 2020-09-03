@@ -251,76 +251,93 @@ fi
 #######################
 cd ~
 cat >~/.zlogin <<-'EndOfFile'
-locale_gen_tmoe_language() {
-	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-		cd /etc
-		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
-		if grep -q ubuntu '/etc/os-release'; then
-			apt update
-			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+	locale_gen_tmoe_language() {
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			cd /etc
+			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
+			if grep -q ubuntu '/etc/os-release'; then
+				apt update
+				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+			fi
+			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+				echo '' >>locale.gen
+				sed -i 's@^@#@g' locale.gen 2>/dev/null
+				sed -i 's@##@#@g' locale.gen 2>/dev/null
+				sed -i "$ a ${TMOE_LANG}" locale.gen
+			fi
+			locale-gen ${TMOE_LANG}
 		fi
-		if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
-			echo '' >>locale.gen
-			sed -i 's@^@#@g' locale.gen 2>/dev/null
-			sed -i 's@##@#@g' locale.gen 2>/dev/null
-			sed -i "$ a ${TMOE_LANG}" locale.gen
+	}
+	############
+	check_tmoe_locale_file() {
+		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+		if [ -e "${TMOE_LOCALE_FILE}" ]; then
+			TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+			TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
+			TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+			locale_gen_tmoe_language
 		fi
-		locale-gen ${TMOE_LANG}
+	}
+	#############
+	vnc_warning() {
+		echo "Sorry,VNC server启动失败，请输debian-i重新安装并配置桌面环境。"
+		echo "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
+	}
+	###########
+	LOCAL_BIN_DIR='/usr/local/bin'
+	if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
+		check_tmoe_locale_file
+		cd /usr/local/etc/tmoe-linux/git
+		git fetch --depth=1
+		git reset --hard origin/master
+		git pull origin master --allow-unrelated-histories
+		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		chmod +x ${LOCAL_BIN_DIR}/debian-i
+		${LOCAL_BIN_DIR}/debian-i passwd
 	fi
-}
-############
-check_tmoe_locale_file() {
-	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
-		locale_gen_tmoe_language
-	fi
-}
-#############
-vnc_warning() {
-	echo "Sorry,VNC server启动失败，请输debian-i重新安装并配置桌面环境。"
-	echo "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
-}
-###########
-if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
-	check_tmoe_locale_file
-	cd /usr/local/etc/tmoe-linux/git
-	git fetch --depth=1
-	git reset --hard origin/master
-	git pull origin master --allow-unrelated-histories
-	curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	chmod +x /usr/local/bin/debian-i
-	/usr/local/bin/debian-i passwd
-fi
-
-if [ -f "/root/.vnc/startvnc" ]; then
-	rm -f /root/.vnc/startvnc
-	if [ -f /usr/local/bin/startvnc ]; then
-		/usr/local/bin/startvnc
-		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-	else
-		vnc_warning
-	fi
-elif [ -f "/root/.vnc/startx11vnc" ]; then
-	rm -f /root/.vnc/startx11vnc
-	if [ -f /usr/local/bin/startx11vnc ]; then
-		/usr/local/bin/startx11vnc
-		echo "已为您启动vnc服务 Vnc server has been started, enjoy it!"
-	else
-		vnc_warning
-	fi
-elif [ -f "/root/.vnc/startxsdl" ]; then
-	echo '检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app'
-	echo 'Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.'
-	rm -f /root/.vnc/startxsdl
-	echo '9s后将为您启动xsdl'
-	echo 'xsdl will start in 9 seconds'
-	sleep 9
-	/usr/local/bin/startxsdl
-fi
-ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+	#########
+	notes_of_android_xsdl() {
+	    cat <<-'ENDOFSTARTXSDL'
+		检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app
+		Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.
+		9s后将为您启动xsdl
+		xsdl will start in 9 seconds
+	ENDOFSTARTXSDL
+	    sleep 9
+	}
+	#########
+	cd ${HOME}/.vnc 2>/dev/null
+	case "$?" in
+	0)
+	    for i in startvnc startx11vnc startxsdl; do
+	        if [ -f ${i} ]; then
+	            rm ${i}
+	            case ${i} in
+	            startxsdl)
+	                notes_of_android_xsdl
+	                ;;
+	            esac
+	            if [ -f ${LOCAL_BIN_DIR}/${i} ]; then
+                    cd ${HOME}
+	                ${LOCAL_BIN_DIR}/${i}
+                    echo "已为您启动vnc服务 Vnc server has been started, enjoy it ！"
+	            else
+	                vnc_warning
+	            fi
+	        fi
+	    done
+	    unset i
+	    ;;
+	esac
+    cd ${HOME}
+	###########
+	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+	systemctl(){
+	    case $2 in
+	        "") systemctl $1 ;;
+	        *) /sbin/service $2 $1 ;;
+	    esac
+	}
 EndOfFile
 #########################
 cat <<-EOF
