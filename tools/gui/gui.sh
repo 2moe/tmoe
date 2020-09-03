@@ -1625,7 +1625,7 @@ install_kde_plasma5_desktop() {
         #emerge -auvDN --with-bdeps=y @world
         DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
     elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01="patterns-kde-kde_plasma"
+        DEPENDENCY_01="patterns-kde-kde_plasma konsole"
     elif [ "${LINUX_DISTRO}" = "alpine" ]; then
         DEPENDENCY_01="plasma-desktop"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
