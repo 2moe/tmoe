@@ -601,8 +601,8 @@ cat_tmoe_chroot_script() {
 		     set -- "${DEBIAN_CHROOT}" "\$@"
 		     set -- "chroot" "\$@"
 		     unset LD_PRELOAD
-			 TMOE_CHROOT_EXEC="exec $@"
-			 su -c "${TMOE_CHROOT_EXEC}"
+			 TMOE_CHROOT_EXEC="exec \$@"
+			 su -c "\${TMOE_CHROOT_EXEC}"
 		    }
 		    main "\$@"
 	ENDOFTMOECHROOT
@@ -952,7 +952,7 @@ creat_linux_container_remove_script() {
 					else
 						TMOE_PREFIX=''
 					fi
-					for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0; do
+					for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd /*; do
 						if [ -e "${DEBIAN_CHROOT}/\${i}" ]; then
 							ls -lAh "${DEBIAN_CHROOT}\/${i}" 2>/dev/null
 						fi
@@ -995,6 +995,7 @@ creat_linux_container_remove_script() {
 			done
 			unset i
 			##########
+			cd ${HOME}
 		    #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
 		    #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 			echo 'Detecting debian system size... 正在检测debian system占用空间大小'

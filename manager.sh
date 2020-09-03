@@ -1429,7 +1429,7 @@ enable_root_mode() {
 remove_gnu_linux_container() {
 	cd ${HOME}
 	unmount_proc_dev
-	for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0; do
+	for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0/*; do
 		if [ -e "${DEBIAN_CHROOT}/${i}" ]; then
 			ls -lAh "${DEBIAN_CHROOT}/${i}" 2>/dev/null
 		fi
@@ -4513,11 +4513,14 @@ install_raspbian_linux_distro_type02() {
 }
 #############
 install_manjaro_linux_distro() {
-	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'amd64' ]; then
+	case ${ARCH_TYPE} in
+	arm64) ;;
+	*)
 		echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配"
 		press_enter_to_return
 		tmoe_manager_main_menu
-	fi
+		;;
+	esac
 
 	#aria2c -x 5 -k 1M --split 5 -o manjaro-latest-rootfs.tar.gz "https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz"
 	#https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
