@@ -458,7 +458,11 @@ cat_tmoe_chroot_script() {
 		        ;;
 		    esac
 		    ########
-			cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
+			if [ -e ${DEBIAN_CHROOT}/etc/os-release ];then
+				cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
+			else
+				cat ${DEBIAN_CHROOT}/etc/issue 2>//dev/null
+			fi
 		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
 		    PROC_FD_PATH="/proc/self/fd"
 		    #########
@@ -769,7 +773,11 @@ creat_proot_startup_script() {
 		##############
 		start_tmoe_gnu_linux_container() {
 		    cd ${HOME}
-			cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
+			if [ -e ${DEBIAN_CHROOT}/etc/os-release ];then
+				cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
+			else
+				cat ${DEBIAN_CHROOT}/etc/issue 2>//dev/null
+			fi
 		    #pulseaudio --kill 2>/dev/null &
 		    #为加快启动速度，此处不重启音频服务
 		    pulseaudio --start 2>/dev/null &
@@ -904,7 +912,7 @@ creat_proot_startup_script() {
 arch_mount_self() {
 	CONTAINER_DISTRO=$(cat ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
 	case ${CONTAINER_DISTRO} in
-	arch | manajro)
+	arch | manjaro)
 		sed -i 's@##arch-chroot#@@g' ${PREFIX}/bin/debian
 		;;
 	esac
