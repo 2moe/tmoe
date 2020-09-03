@@ -461,7 +461,7 @@ cat_tmoe_chroot_script() {
 			if [ -e ${DEBIAN_CHROOT}/etc/os-release ];then
 				cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
 			else
-				cat ${DEBIAN_CHROOT}/etc/issue 2>//dev/null
+				cat ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 			fi
 		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
 		    PROC_FD_PATH="/proc/self/fd"
@@ -776,7 +776,7 @@ creat_proot_startup_script() {
 			if [ -e ${DEBIAN_CHROOT}/etc/os-release ];then
 				cat ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d '"' -f 2
 			else
-				cat ${DEBIAN_CHROOT}/etc/issue 2>//dev/null
+				cat ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 			fi
 		    #pulseaudio --kill 2>/dev/null &
 		    #为加快启动速度，此处不重启音频服务
