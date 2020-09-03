@@ -266,7 +266,7 @@ preconfigure_gui_dependecies_02() {
         DEPENDENCY_02="media-fonts/wqy-bitmapfont net-misc/tigervnc"
         #################
     elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts"
+        DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts perl-base"
         ##################
     elif [ "${LINUX_DISTRO}" = "alpine" ]; then
         DEPENDENCY_02="xvfb dbus-x11 font-noto-cjk x11vnc"
