@@ -534,10 +534,10 @@ cat_tmoe_chroot_script() {
 		    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
 		        if [ ! -e \${i} ] && [ ! -h \${i} ]; then
 		            case \${i} in
-		            /dev/fd) su -c "ln -s ${PROC_FD_PATH} \${i} &>/dev/null" ;;
-		            /dev/stdin) su -c "ln -s ${PROC_FD}/0 \${i} &>/dev/null" ;;
-		            /dev/stdout) su -c "ln -s ${PROC_FD}/1 \${i} &>/dev/null" ;;
-		            /dev/stderr) su -c "ln -s ${PROC_FD}/2 \${i} &>/dev/null" ;;
+		            /dev/fd) su -c "ln -s \${PROC_FD_PATH} \${i} &>/dev/null" ;;
+		            /dev/stdin) su -c "ln -s \${PROC_FD}/0 \${i} &>/dev/null" ;;
+		            /dev/stdout) su -c "ln -s \${PROC_FD}/1 \${i} &>/dev/null" ;;
+		            /dev/stderr) su -c "ln -s \${PROC_FD}/2 \${i} &>/dev/null" ;;
 		            /dev/tty0)
 		                #if [ -e "/dev/ttyGS0" ]; then
 		                # su -c "ln -s /dev/ttyGS0 /\${i} &>/dev/null"
