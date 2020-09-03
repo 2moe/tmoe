@@ -442,7 +442,7 @@ cat_tmoe_chroot_script() {
 		##############
 		start_tmoe_gnu_linux_chroot_container() {
 		    case \$(uname -o) in
-		    Android);;
+		    Android) pulseaudio --start 2>/dev/null &;;
 		    *)
 		        case \$(id -u) in
 		        0) ;;
