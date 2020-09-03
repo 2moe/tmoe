@@ -601,7 +601,8 @@ cat_tmoe_chroot_script() {
 		     set -- "${DEBIAN_CHROOT}" "\$@"
 		     set -- "chroot" "\$@"
 		     unset LD_PRELOAD
-			 su -c "exec \$@"
+			 TMOE_CHROOT_EXEC="exec $@"
+			 su -c "${TMOE_CHROOT_EXEC}"
 		    }
 		    main "\$@"
 	ENDOFTMOECHROOT
@@ -922,7 +923,7 @@ if [ -e "${HOME}/.config/tmoe-linux/chroot_container" ]; then
 	TMOE_CHROOT='true'
 	creat_chroot_startup_script
 	arch_mount_self
-	fix_gnu_linux_chroot_exec
+	#fix_gnu_linux_chroot_exec
 else
 	creat_proot_startup_script
 	check_proot_qemu
@@ -1495,13 +1496,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    LINUX_DISTRO='suse'
 		if [ "$(uname -m)" = 'aarch64' ];then
 			zypper mr -da
-	        zypper addrepo -fcg  https://mirrors.tuna.tsinghua.edu.cn/opensuse/ports/aarch64/tumbleweed/repo/oss tuna-mirrors-oss
+	        zypper addrepo -fcg  https://mirrors.tuna.tsinghua.edu.cn/opensuse/ports/aarch64/tumbleweed/repo/oss tuna-mirror-oss
 	        zypper --gpg-auto-import-keys refresh
 		elif [ "$(uname -m)" != 'armv7l' ] ;then
 	        zypper mr -da
-	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss/ tuna-mirrors-oss
-	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss/ tuna-mirrors-non-oss
-	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed/ tuna-mirrors_Tumbleweed
+	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss/ tuna-mirror-oss
+	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss/ tuna-mirror-non-oss
+	        zypper addrepo -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed/ tuna-mirror_Tumbleweed
 	        zypper --gpg-auto-import-keys refresh
 	        #zypper dup --no-allow-vendor-change -y
 		fi
