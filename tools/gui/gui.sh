@@ -1584,9 +1584,10 @@ kde_warning() {
         if ! grep -qi 'Bionic' /etc/os-release; then
             echo "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
             echo "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
+            echo "您也可以换用chroot容器，并在Arch/Manjaro中安装本桌面。"
         fi
         ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境。" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
