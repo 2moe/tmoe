@@ -4068,7 +4068,7 @@ first_configure_startvnc() {
         else
             TMOE_HIGH_DPI='false'
         fi
-        expr ${RESOLUTION} + 0 &>/dev/null
+        expr ${HORIZONTAL_PIXELS} + 0 &>/dev/null
         [ $? -ne 0] || RESOLUTION=''
     else
         RESOLUTION=''
