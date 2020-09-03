@@ -802,6 +802,10 @@ tmoe_virtual_machine_desktop() {
 }
 ################
 configure_vnc_xstartup() {
+    if [ -e "/etc/machine-id" ]; then
+        echo $(dbus-uuidgen) >"/etc/machine-id" 2>/dev/null
+        mkdir -p /run/dbus /var/run/dbus
+    fi
     mkdir -p ~/.vnc
     cd ${HOME}/.vnc
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
