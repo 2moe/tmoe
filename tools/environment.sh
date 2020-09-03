@@ -453,8 +453,8 @@ beta_features_quick_install() {
 }
 ################
 check_tmoe_linux_desktop_link() {
-    if [ ! -e "/usr/share/applications/tmoe-linux.desktop" ]; then
-        mkdir -p /usr/share/applications
+    if [ ! -e "${APPS_LNK_DIR}/tmoe-linux.desktop" ]; then
+        mkdir -p ${APPS_LNK_DIR}
         creat_tmoe_linux_desktop_icon
     fi
     TMOE_ICON_FILE='/usr/share/icons/tmoe-linux.png'
@@ -470,7 +470,7 @@ creat_tmoe_linux_desktop_icon() {
         curl -Lv -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
         chmod +x debian-i
     fi
-    cp ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop /usr/share/applications
+    cp ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop ${APPS_LNK_DIR}/tmoe-linux.desktop
 }
 ####################
 arch_does_not_support() {
