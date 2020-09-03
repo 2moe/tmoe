@@ -531,7 +531,6 @@ cat_tmoe_chroot_script() {
 		    unset i
 		    #dev/random) su -c "mount -o bind /dev/urandom ${DEBIAN_CHROOT}/\${i}" ;;
 		    ########
-			check_android_dev_stdout(){
 		    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
 		        if [ ! -e \${i} ] && [ ! -h \${i} ]; then
 		            case \${i} in
@@ -550,7 +549,6 @@ cat_tmoe_chroot_script() {
 		        fi
 		    done
 		    unset i
-			}
 		    ###############
 		    mount_read_only_sd() {
 		        ANDROID_EMULATED_0_DIR='/storage/emulated/0'
@@ -599,10 +597,6 @@ cat_tmoe_chroot_script() {
 		        fi
 		    done
 		    unset i
-		     ##########
-			case \$(uname -o) in
-		    Android) check_android_dev_stdout;;
-			esac
 			 ###########
 		     set -- "${DEBIAN_CHROOT}" "\$@"
 		     set -- "chroot" "\$@"

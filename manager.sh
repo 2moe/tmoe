@@ -4447,13 +4447,18 @@ install_alpine_linux_distro() {
 opensuse_warning() {
 	case "${LINUX_DISTRO}" in
 	Android)
-		cat <<-EOF
-			${RED}WARNING！${RESET}检测到您使用的是Android系统。
-			本镜像支持GNU/Linux的proot/chroot容器,但不支持termux-proot。
-			经测试在termux的proot环境下存在无法检索到软件包的情况，但GNU/Linux的proot却不存在此问题。
-			若您执意要安装OpenSUSE tumbleweed,则请按回车键。
-		EOF
-		do_you_want_to_continue
+		case ${TMOE_CHROOT} in
+		true) ;;
+		*)
+			cat <<-EOF
+				${RED}WARNING！${RESET}检测到您使用的是Android系统。
+				本镜像支持GNU/Linux的proot/chroot容器,但不支持termux-proot。
+				经测试在termux的proot环境下存在无法检索到软件包的情况，但GNU/Linux的proot却不存在此问题。
+				若您执意要安装OpenSUSE tumbleweed,则请按回车键。
+			EOF
+			do_you_want_to_continue
+			;;
+		esac
 		;;
 	esac
 }
