@@ -1503,6 +1503,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
 	    if grep -q 'Debian' "/etc/issue"; then
 	        debian_sources_list
+			case $(uname -m) in
+			arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list;;
+			esac
 	    fi
 	fi
 	###############
