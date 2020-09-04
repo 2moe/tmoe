@@ -221,8 +221,9 @@ tmoe_documents_menu() {
         whiptail --title "documents" --menu \
             "Which software do you want to install?" 0 50 0 \
             "1" "LibreOffice(开源、自由的办公文档软件)" \
-            "2" "GNU Emacs(著名的集成开发环境和文本编辑器)" \
-            "3" "Chinese manual(中文手册)" \
+            "2" "WPS office(办公软件)" \
+            "3" "GNU Emacs(著名的集成开发环境和文本编辑器)" \
+            "4" "Chinese manual(中文手册)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -230,8 +231,9 @@ tmoe_documents_menu() {
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_libre_office ;;
-    2) install_emacs ;;
-    3) install_chinese_manpages ;;
+    2) install_wps_office ;;
+    3) install_emacs ;;
+    4) install_chinese_manpages ;;
     esac
     ##########################
     press_enter_to_return
@@ -643,6 +645,37 @@ install_chinese_manpages() {
     echo "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
 }
 #####################
+install_wps_office() {
+    DEPENDENCY_01="wps-office"
+    DEPENDENCY_02=""
+    NON_DEBIAN='false'
+    cd /tmp
+    if [ -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
+        press_enter_to_reinstall
+    fi
+
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        dpkg --configure -a
+        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${LatestWPSLink}"
+        apt show ./WPSoffice.deb
+        apt install -y ./WPSoffice.deb
+
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01="wps-office-cn"
+        beta_features_quick_install
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+        rpm -ivh ./WPSoffice.rpm
+    fi
+
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: https://linux.wps.cn"
+    rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
+    beta_features_install_completed
+}
+###################
 install_libre_office() {
     #ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
     case ${TMOE_PROOT} in

@@ -591,10 +591,9 @@ tmoe_reader_app_menu() {
         "Which software do you want to install？" 0 50 0 \
         "1" "calibre(电子书转换器和库管理)" \
         "2" "fbreader(epub阅读器)" \
-        "3" "WPS office(办公软件)" \
-        "4" "typora(markdown编辑器)" \
-        "5" "Xournal(手写编辑PDF)" \
-        "6" "evince(gnome-pdf文档阅读器)" \
+        "3" "typora(markdown编辑器)" \
+        "4" "Xournal(手写编辑PDF)" \
+        "5" "evince(gnome-pdf文档阅读器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -602,10 +601,9 @@ tmoe_reader_app_menu() {
     0 | "") beta_features ;;
     1) install_calibre ;;
     2) install_fbreader ;;
-    3) install_wps_office ;;
-    4) install_typora ;;
-    5) install_xournal ;;
-    6) install_evince ;;
+    3) install_typora ;;
+    4) install_xournal ;;
+    5) install_evince ;;
     esac
     ##########################
     #beta_features_quick_install
@@ -679,37 +677,6 @@ install_gnome_logs() {
     beta_features_quick_install
 }
 ##################
-install_wps_office() {
-    DEPENDENCY_01="wps-office"
-    DEPENDENCY_02=""
-    NON_DEBIAN='false'
-    cd /tmp
-    if [ -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
-        press_enter_to_reinstall
-    fi
-
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        dpkg --configure -a
-        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${LatestWPSLink}"
-        apt show ./WPSoffice.deb
-        apt install -y ./WPSoffice.deb
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="wps-office-cn"
-        beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
-        rpm -ivh ./WPSoffice.rpm
-    fi
-
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: https://linux.wps.cn"
-    rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
-    beta_features_install_completed
-}
-###################
 thunar_nautilus_dolphion() {
     case "${TMOE_PROOT}" in
     true | no)

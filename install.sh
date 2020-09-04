@@ -642,12 +642,12 @@ creat_chroot_startup_script() {
 	echo "Creating chroot startup script"
 	echo "正在创建chroot容器启动脚本${PREFIX}/bin/debian "
 	#if [ -e "/storage/self/primary" ] || [ -e "/sdcard" ]; then
-	mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd
+	mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd || sudo mkdir -p ${DEBIAN_CHROOT}/root/sd
 	#fi
 	if [ -d "/data/data/com.termux/files/home" ]; then
-		mkdir -p ${DEBIAN_CHROOT}/root/termux
+		mkdir -p ${DEBIAN_CHROOT}/root/termux || sudo mkdir -p ${DEBIAN_CHROOT}/root/termux
 		if [ -h "${HOME}/storage/external-1" ]; then
-			mkdir -p ${DEBIAN_CHROOT}/root/tf
+			mkdir -p ${DEBIAN_CHROOT}/root/tf || sudo mkdir -p ${DEBIAN_CHROOT}/root/tf
 		fi
 	fi
 	##################
