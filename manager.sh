@@ -2694,6 +2694,7 @@ check_gnu_linux_qemu_version() {
 install_qemu_user_static() {
 	echo "正在检测版本信息..."
 	LOCAL_QEMU_USER_FILE=''
+	LOCAL_QEMU_USER_VERSION=''
 	case ${LINUX_DISTRO} in
 	Android)
 		if [ -e "${QEMU_USER_LOCAL_VERSION_FILE}" ]; then
@@ -2703,7 +2704,7 @@ install_qemu_user_static() {
 	*) check_gnu_linux_qemu_version ;;
 	esac
 
-	case ${LOCAL_QEMU_USER_FILE} in
+	case ${LOCAL_QEMU_USER_VERSION} in
 	"") LOCAL_QEMU_USER_VERSION='您尚未安装QEMU-USER-STATIC' ;;
 	*) ;;
 	esac
