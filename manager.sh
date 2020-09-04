@@ -4373,6 +4373,7 @@ check_the_latest_distro_version() {
 }
 #################
 which_version_do_you_want_to_install() {
+
 	if (whiptail --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
 		linux_distro_common_model_01
 	else
@@ -4720,7 +4721,7 @@ which_linux_mint_distro() {
 	RETURN_TO_WHERE='which_linux_mint_distro'
 	DISTRO_NAME='mint'
 	BETA_SYSTEM=$(
-		whiptail --title "mint" --menu "您想要安装哪个版本？Which version do you want to install?" 17 55 7 \
+		whiptail --title "mint" --menu "您想要安装哪个Mint版本？\nWhich version do you want to install?" 0 0 0 \
 			"1" "自动检测版本" \
 			"2" "Custom code手动输入版本代号" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \

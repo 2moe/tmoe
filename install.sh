@@ -1491,7 +1491,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		SOURCE_LIST=/etc/apt/sources.list
 		cp ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
 		sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null
-		sed -i "s@packages.linuxmint.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
+		sed -i "s@packages.linuxmint.com@${CHINA_MIRROR}/linuxmint@g" ${SOURCE_LIST} 2>/dev/null
 		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
 		cat ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
 	}
