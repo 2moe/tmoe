@@ -58,8 +58,14 @@ check_tmoe_container_chroot() {
 		TMOE_CHROOT='true'
 	fi
 	case ${TMOE_CHROOT} in
-	true) TMOE_PREFIX='sudo' ;;
-	*) TMOE_PREFIX='sudo' ;;
+	true)
+		if [ $(command -v sudo) ]; then
+			TMOE_PREFIX='sudo'
+		elif [ $(command -v tsudo) ]; then
+			TMOE_PREFIX='tsudo'
+		fi
+		;;
+	*) TMOE_PREFIX='' ;;
 	esac
 }
 ######
