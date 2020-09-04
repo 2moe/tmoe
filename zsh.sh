@@ -70,6 +70,13 @@ if [ ! -e /usr/bin/git ]; then
     fi
 fi
 ####################################
+if [ ! $(command -v sudo) ]; then
+    case "${LINUX_DISTRO}" in
+    gentoo) ;;
+    *) DEPENDENCIES="${DEPENDENCIES} sudo" ;;
+    esac
+fi
+#######################
 if [ ! -e /usr/bin/wget ]; then
     if [ "${LINUX_DISTRO}" = "gentoo" ]; then
         DEPENDENCIES="${DEPENDENCIES} net-misc/wget"
@@ -78,7 +85,6 @@ if [ ! -e /usr/bin/wget ]; then
     fi
 fi
 ###########################
-
 if [ ! -e /bin/zsh ]; then
     if [ "${LINUX_DISTRO}" = "alpine" ]; then
         DEPENDENCIES="${DEPENDENCIES} zsh zsh-vcs"
@@ -363,6 +369,12 @@ cat <<-EOF
 		You can type ${GREEN}debian${RESET} to start and attach the ${BLUE}container${RESET}.
 		-------------------
 EOF
+##################
+if [ -e "/usr/bin/sudo" ]; then
+    chmod 4755 /usr/bin/sudo
+elif [ -e "/bin/sudo" ]; then
+    chmod 4755 /bin/sudo
+fi
 ##################
 configure_command_not_found() {
     if [ -e "/usr/lib/command-not-found" ]; then
