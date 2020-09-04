@@ -1661,7 +1661,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	##############################
 	apt update 2>/dev/null
 	apt reinstall -y perl-base
-	if [ ! $(command -v locale-gen) ]; then
+	if [ ! -e /usr/lib/locale/en_US ];then
+		apt install -y locales-all 2>/dev/null
+	elif [ ! $(command -v locale-gen) ]; then
 	    apt install -y locales 2>/dev/null
 	fi
 
@@ -2024,11 +2026,35 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 ENDOFbashPROFILE
 #####################
+check_current_user_name_and_group() {
+	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+	if [ -z "${CURRENT_USER_GROUP}" ]; then
+		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+	fi
+}
+#################
 if [ "${LINUX_DISTRO}" != 'Android' ]; then
 	sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
 	#sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
 case ${TMOE_CHROOT} in
 true) su -c "chown -Rv root:root ${DEBIAN_CHROOT}" ;;
+*)
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*)
+		check_current_user_name_and_group
+		case ${HOME} in
+		/root) ;;
+		*)
+			chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${DEBIAN_CHROOT}
+			su - ${CURRENT_USER_NAME} -c "bash ${PREFIX}/bin/debian"
+			exit 0
+			;;
+		esac
+		;;
+	esac
+	;;
 esac
 bash ${PREFIX}/bin/debian
