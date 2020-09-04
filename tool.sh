@@ -288,13 +288,13 @@ check_linux_distro() {
 			REDHAT_DISTRO='fedora'
 		fi
 		###################
-	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" "/etc/os-release"; then
+	elif grep -q "Alpine" '/etc/issue' 2>/dev/null || grep -q "Alpine" "/etc/os-release"; then
 		LINUX_DISTRO='alpine'
 		TMOE_UPDATE_COMMAND='apk update'
 		TMOE_INSTALLATON_COMMAND='apk add'
 		TMOE_REMOVAL_COMMAND='apk del'
 		######################
-	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue'; then
+	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
 		LINUX_DISTRO='arch'
 		TMOE_UPDATE_COMMAND='pacman -Syy'
 		TMOE_INSTALLATON_COMMAND='pacman -Syu --noconfirm'
@@ -310,7 +310,7 @@ check_linux_distro() {
 		TMOE_INSTALLATON_COMMAND='zypper in -y'
 		TMOE_REMOVAL_COMMAND='zypper rm'
 		########################
-	elif [ "$(cat /etc/issue | cut -c 1-4)" = "Void" ]; then
+	elif [ "$(cat /etc/issue 2>/dev/null | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
 		export LANG='en_US.UTF-8'
 		TMOE_INSTALLATON_COMMAND='xbps-install -S -y'

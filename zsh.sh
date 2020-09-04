@@ -72,7 +72,7 @@ fi
 ####################################
 if [ ! $(command -v sudo) ]; then
     case "${LINUX_DISTRO}" in
-    gentoo) ;;
+    gentoo) DEPENDENCIES="${DEPENDENCIES} app-admin/sudo" ;;
     *) DEPENDENCIES="${DEPENDENCIES} sudo" ;;
     esac
 fi

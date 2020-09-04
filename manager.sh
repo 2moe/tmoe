@@ -54,7 +54,7 @@ tmoe_manager_env() {
 check_tmoe_container_chroot() {
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		TMOE_CHROOT='true'
-	elif grep -q 'TMOE_CHROOT=' ${PREFIX}/bin/debian; then
+	elif grep -q 'TMOE_CHROOT=' ${PREFIX}/bin/debian 2>/dev/null; then
 		TMOE_CHROOT='true'
 	fi
 	case ${TMOE_CHROOT} in
@@ -4151,7 +4151,7 @@ install_chroot_exclusive_containers() {
 	RETURN_TO_WHERE='install_chroot_exclusive_containers'
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
-		whiptail --title "chroot exclusive containers" --menu "您仍然可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
+		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
 			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"2" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
 			"3" "Funtoo:专注于改进Gentoo" \
@@ -4187,7 +4187,7 @@ install_chroot_exclusive_containers() {
 install_alpha_containers() {
 	RETURN_TO_WHERE='install_alpha_containers'
 	ALPHA_SYSTEM=$(
-		whiptail --title "Maintenance has ceased" --menu "您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
+		whiptail --title "Maintenance has ceased" --menu "虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
 			"1" "armbian bullseye(arm64,armhf)" \
 			"2" "raspbian樹莓派 buster(armhf)" \
 			"3" "devuan (不使用systemd,基于debian)" \
