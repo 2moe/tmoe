@@ -67,8 +67,8 @@ notes_of_tmoe_sudo_01() {
     echo 'deb系创建用户的说明'
     echo "部分软件出于安全性考虑，禁止以root权限运行。权限越大，责任越大。若root用户不慎操作，将有可能破坏系统。"
     echo "您可以使用以下命令来新建普通用户"
-    echo "#创建一个用户名为mo2的新用户"
-    echo "${YELLOW}adduser mo2${RESET}"
+    echo "#创建一个用户名为moe的新用户"
+    echo "${YELLOW}adduser moe${RESET}"
     echo "#输入的密码是隐藏的，根据提示创建完成后，您可以在本工具内将该用户加入sudo用户组"
     #echo "#将mo2加入到sudo用户组"
     #echo "${YELLOW}adduser mo2 sudo${RESET}"
@@ -77,12 +77,12 @@ notes_of_tmoe_sudo_01() {
     echo "--------------------"
     echo "切换用户的说明"
     echo "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
-    echo "亦可输${YELLOW}su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
+    echo "亦可输${YELLOW}su - moe${RESET}或${YELLOW}sudo -iu moe${RESET}切换回mo2用户"
     echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
     echo '--------------------'
-    echo 'arch系创建新用户的命令为useradd -m loveyou'
-    echo '其中loveyou为用户名'
-    echo '输passwd loveyou修改该用户密码'
+    echo 'arch系创建新用户的命令为useradd -m miku'
+    echo '其中miku为用户名'
+    echo '输passwd miku修改该用户密码'
     echo '如需将其添加至sudo用户组，那么您可以使用本工具自带的sudo用户组管理功能(位于秘密花园的系统管理选项)'
 }
 ##############
