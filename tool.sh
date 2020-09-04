@@ -112,6 +112,9 @@ gnu_linux_env() {
 	TMOE_GIT_URL='github.com/2moe/tmoe-linux'
 	APPS_LNK_DIR='/usr/share/applications'
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
+	if [ ! -e "${CONFIG_FOLDER}" ]; then
+		mkdir -p ${CONFIG_FOLDER}
+	fi
 }
 ############
 set_terminal_color() {
