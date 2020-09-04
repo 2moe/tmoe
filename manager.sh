@@ -1659,11 +1659,16 @@ backup_gnu_linux_container() {
 			echo "您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TMPtime}.tar.gz"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
 			press_enter_to_continue
-			if [ "$(command -v pv)" ]; then
-				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
-			else
-				${TMOE_PREFIX} tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
-			fi
+			case ${TMOE_CHROOT} in
+			true) ${TMOE_PREFIX} tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} ;;
+			*)
+				if [ "$(command -v pv)" ]; then
+					tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+				else
+					tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
+				fi
+				;;
+			esac
 		else
 			echo "您选择了tar,只进行打包,不进行压缩，即将为您备份至/sdcard/Download/backup/${TMPtime}.tar"
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
@@ -1910,7 +1915,7 @@ backup_termux() {
 uncompress_other_format_file() {
 	pwd
 	echo "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
+	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
 		echo "${GREEN} tar -Ppxvf ${RESTORE} ${RESET}"
 		${TMOE_PREFIX} tar -Ppxvf ${RESTORE}
 	else
@@ -1923,7 +1928,7 @@ uncompress_tar_xz_file() {
 	pwd
 	echo 'tar.xz'
 	echo "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
+	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
 		echo "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
 		${TMOE_PREFIX} tar -PpJxvf ${RESTORE}
 	else
@@ -1936,7 +1941,7 @@ uncompress_tar_gz_file() {
 	pwd
 	echo 'tar.gz'
 	echo "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ]; then
+	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
 		echo "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
 		${TMOE_PREFIX} tar -Ppzxvf ${RESTORE}
 	else
@@ -3219,10 +3224,10 @@ un_xz_debian_recovery_kit() {
 	EOF
 	echo "正在${GREEN}解压${RESET}中..."
 	echo "少女祈禱中..."
-	if [ $(command -v pv) ]; then
-		pv ${DOWNLOAD_FILE_NAME} | tar -PpJx
+	if [ ! "$(command -v pv)" ] || [ "${TMOE_CHROOT}" = 'true' ]; then
+		${TMOE_PREFIX} tar -PpJxvf ${DOWNLOAD_FILE_NAME}
 	else
-		tar -PpJxvf ${DOWNLOAD_FILE_NAME}
+		pv ${DOWNLOAD_FILE_NAME} | tar -PpJx
 	fi
 	cd "$cur"
 	#用绝对路径
