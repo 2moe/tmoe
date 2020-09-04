@@ -90,8 +90,8 @@ notes_of_tmoe_sudo_02() {
     cat <<-EOF
     在Android termux上运行的chroot容器（非proot），以root身份执行${GREEN}ping 127.0.0.1${RESET}可以能会遇到${RED}socket 权限不够 Permission denied${RESET}的问题
     解决方法如下：
-    新建一名普通用户，再前往本工具的系统管理选项，将该用户添加至sudo用户组。
-    当检测到TMOE_CHROOT='true'时，将同时把该用户加入aid_inet等用户组。
+    新建一名普通用户，再前往本工具的秘密花园的系统管理选项，将该用户添加至sudo用户组。
+    当检测到TMOE_CHROOT='true'时，将会自动把该用户加入aid_inet等用户组。
     若您的宿主机为Android系统，则需要加入这些用户组。
 EOF
 }
