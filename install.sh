@@ -1824,8 +1824,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				auto-sync = yes
 			EndofgentooConf
 	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
-	    #同步过于耗时，故注释掉
-	    #emerge --sync
+		if grep -q 'Funtoo' /etc/os-release;then
+		   #同步过于耗时
+	       emerge --sync
+		   emerge emerge-webrsync
+		fi 
 	    emerge-webrsync
 	    emerge --config sys-libs/timezone-data 2>/dev/null
 	    #eselect profile list
