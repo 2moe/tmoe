@@ -4154,7 +4154,7 @@ install_chroot_exclusive_containers() {
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
 			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"2" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"3" "Funtoo:专注于改进Gentoo" \
+			"3" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4455,6 +4455,12 @@ install_fedora_gnu_linux_distro() {
 install_funtoo_linux_distro() {
 	DISTRO_NAME='funtoo'
 	OLD_STABLE_VERSION='1.3'
+	if [ "${ARCH_TYPE}" = 'arm64' ]; then
+		echo "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
+		NEW_TMOE_ARCH='armhf'
+		TMOE_QEMU_ARCH=""
+		creat_tmoe_arch_file
+	fi
 	check_the_latest_distro_version
 }
 #######################
