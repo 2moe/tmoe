@@ -1682,7 +1682,7 @@ backup_gnu_linux_container() {
 		echo "Don't worry too much, it is normal for some directories to backup without permission."
 		echo "部分目录无权限备份是正常现象。"
 		rm -f backuptime.tmp
-		#  whiptail --gauge "正在备份,可能需要几分钟的时间请稍后.........." 6 60 0
+		#  whiptail --gauge "正在备份,可能需要几分钟的时间请�������后.........." 6 60 0
 		pwd
 		ls -lth ./*tar* | grep ^- | head -n 1
 		#echo 'gzip压缩至60%完成是正常现象。'
@@ -2625,6 +2625,7 @@ disable_qemu_user_static() {
 }
 #############
 tmoe_qemu_user_static() {
+	qemu_user_env
 	RETURN_TO_WHERE='tmoe_qemu_user_static'
 	BETA_SYSTEM=$(
 		whiptail --title "qemu_user_static" --menu "QEMU的user模式跨架构运行的效率可能比system模式更高，但存在更多的局限性" 0 50 0 \
@@ -2678,17 +2679,33 @@ tmoe_qemu_user_chart() {
 	ENDofTable
 }
 ###############
-install_qemu_user_static() {
-	echo "正在检测版本信息..."
-	LOCAL_QEMU_USER_FILE=''
+check_gnu_linux_qemu_version() {
 	if [ -e "${PREFIX}/bin/qemu-aarch64-static" ]; then
 		LOCAL_QEMU_USER_FILE="${PREFIX}/bin/qemu-aarch64-static"
 	elif [ -e "/usr/bin/qemu-aarch64-static" ]; then
 		LOCAL_QEMU_USER_FILE='/usr/bin/qemu-aarch64-static'
 	fi
 	case ${LOCAL_QEMU_USER_FILE} in
-	"") LOCAL_QEMU_USER_VERSION='您尚未安装QEMU-USER-STATIC' ;;
+	"") ;;
 	*) LOCAL_QEMU_USER_VERSION=$(${LOCAL_QEMU_USER_FILE} --version | head -n 1 | awk '{print $5}' | cut -d ':' -f 2 | cut -d ')' -f 1) ;;
+	esac
+}
+###########
+install_qemu_user_static() {
+	echo "正在检测版本信息..."
+	LOCAL_QEMU_USER_FILE=''
+	case ${LINUX_DISTRO} in
+	Android)
+		if [ -e "${QEMU_USER_LOCAL_VERSION_FILE}" ]; then
+			LOCAL_QEMU_USER_VERSION=$(cat ${QEMU_USER_LOCAL_VERSION_FILE} | head -n 1)
+		fi
+		;;
+	*) check_gnu_linux_qemu_version ;;
+	esac
+
+	case ${LOCAL_QEMU_USER_FILE} in
+	"") LOCAL_QEMU_USER_VERSION='您尚未安装QEMU-USER-STATIC' ;;
+	*) ;;
 	esac
 
 	cat <<-'EOF'
@@ -2711,8 +2728,8 @@ install_qemu_user_static() {
 	ENDofTable
 	do_you_want_to_continue
 	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-	echo ${THE_LATEST_DEB_LINK}
-	#echo "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
+	echo "${YELLOW}${THE_LATEST_DEB_LINK}${RESET}"
+	echo ${THE_LATEST_DEB_VERSION_CODE} | sed 's@%2B@+@' >${QEMU_USER_LOCAL_VERSION_FILE}
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		apt update
 		echo 'apt install -y qemu-user-static'
@@ -2738,11 +2755,14 @@ unxz_deb_file() {
 	ar xv ${THE_LATEST_DEB_VERSION}
 	#tar -Jxvf data.tar.xz ./usr/bin -C $PREFIX/..
 	tar -Jxvf data.tar.xz
-	cp -rf ./usr/bin $PREFIX
+}
+########################
+copy_qemu_user_bin_files() {
+	cp -rf ./usr/bin ${QEMU_BIN_PREFIX}
 	cd ..
 	rm -rv ${TEMP_FOLDER}
 }
-########################
+######################
 download_qemu_user() {
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
@@ -2755,17 +2775,26 @@ download_qemu_user() {
 	cd ${TEMP_FOLDER}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	unxz_deb_file
+	copy_qemu_user_bin_files
 }
 ##############
 remove_qemu_user_static() {
-	ls -lah /usr/bin/qemu-*-static ${PREFIX}/bin/qemu-*-static 2>/dev/null
-	echo "${RED}rm -rv${RESET} ${BLUE}${PREFIX}/bin/qemu-*-static${RESET}"
+	ls -lah /usr/bin/qemu-*-static ${QEMU_BIN_PREFIX}/bin/qemu-*-static 2>/dev/null
+	echo "${RED}rm -rv${RESET} ${BLUE}${QEMU_BIN_PREFIX}/bin/qemu-*-static ${QEMU_USER_LOCAL_VERSION_FILE}${RESET}"
 	echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
 	do_you_want_to_continue
-	rm -rv $PREFIX/bin/qemu-*-static "$PREFIX/bin/qemu-*-static"
-	apt remove ^qemu-user
+	rm -rv ${QEMU_BIN_PREFIX}/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
+	${TMOE_REMOVAL_COMMAND} qemu-user-static
 }
-##############
+###############
+qemu_user_env() {
+	QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}/qemu-user-static_version.txt"
+	case ${LINUX_DISTRO} in
+	Android) QEMU_BIN_PREFIX=${PREFIX} ;;
+	*) QEMU_BIN_PREFIX=/usr ;;
+	esac
+}
+##########
 creat_tmoe_arch_file() {
 	cat >${ACROSS_ARCH_FILE} <<-EOF
 		${NEW_TMOE_ARCH}
@@ -3215,7 +3244,7 @@ un_xz_debian_recovery_kit() {
 
 				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
 				-------------------
-				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会自动启动远程桌面服务。
+				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会���动启动远程桌面服务。
 				-------------------
 				您可以在解压完成之后输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 				-------------------
@@ -4076,10 +4105,11 @@ choose_which_gnu_linux_distro() {
 		"1" "🍥 Debian:最早的发行版之一" \
 		"2" "🍛 Ubuntu:我的存在是因為大家的存在" \
 		"3" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "🍱 beta公测版:manjaro,centos" \
-		"5" "🦎 alpha内测版:gentoo,opensuse" \
-		"6" "🌉 arch:系统设计以KISS为总体指导原则" \
-		"7" "👒 fedora:红帽社区版,新技术试验场" \
+		"4" "🍱 beta公测版:manjaro,centos,alpine" \
+		"5" "🌉 arch:系统设计以KISS为总体指导原则" \
+		"6" "👒 fedora:红帽社区版,新技术试验场" \
+		"7" "🦎 chroot专属:opensuse,gentoo" \
+		"8" "experimental(体验版,不再维护):raspbian" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -4098,18 +4128,17 @@ choose_which_gnu_linux_distro() {
 		;;
 	4) install_beta_containers ;;
 	5)
-		install_alpha_containers
-		;;
-	6)
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		creat_container_edition_txt
 		install_arch_linux_distro
 		;;
-	7)
+	6)
 		TMOE_LINUX_CONTAINER_DISTRO='fedora'
 		creat_container_edition_txt
 		install_fedora_gnu_linux_distro
 		;;
+	7) install_chroot_exclusive_containers ;;
+	8) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
@@ -4117,20 +4146,54 @@ choose_which_gnu_linux_distro() {
 	#tmoe_manager_main_menu
 }
 ##############################
+install_chroot_exclusive_containers() {
+	RETURN_TO_WHERE='install_chroot_exclusive_containers'
+	#\nThe developer only maintains the chroot container in the following list.
+	ALPHA_SYSTEM=$(
+		whiptail --title "chroot exclusive containers" --menu "您仍然可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
+			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"2" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+			"3" "Funtoo:专注于改进Gentoo" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${ALPHA_SYSTEM}" in
+	0 | "") choose_which_gnu_linux_distro ;;
+	1)
+		TMOE_LINUX_CONTAINER_DISTRO='opensuse'
+		creat_container_edition_txt
+		install_opensuse_linux_distro
+		;;
+	2)
+		TMOE_LINUX_CONTAINER_DISTRO='gentoo'
+		creat_container_edition_txt
+		install_gentoo_linux_distro
+		;;
+	3)
+		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
+		creat_container_edition_txt
+		install_funtoo_linux_distro
+		;;
+	esac
+	###########################
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
+	####################
+}
+###############
 install_alpha_containers() {
 	RETURN_TO_WHERE='install_alpha_containers'
 	ALPHA_SYSTEM=$(
-		whiptail --title "Alpha features" --menu "WARNING！本功能仍处于测试阶段,可能无法正常运行。\nAlpha features may not work properly." 0 55 0 \
+		whiptail --title "Maintenance has ceased" --menu "您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
 			"1" "armbian bullseye(arm64,armhf)" \
-			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
-			"3" "raspbian樹莓派 buster(armhf)" \
-			"4" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"5" "devuan (不使用systemd,基于debian)" \
-			"6" "slackware(armhf,x64)" \
-			"7" "Funtoo:专注于改进Gentoo" \
-			"8" "openwrt(常见于路由器,arm64,x64)" \
-			"9" "apertis" \
-			"10" "alt" \
+			"2" "raspbian樹莓派 buster(armhf)" \
+			"3" "devuan (不使用systemd,基于debian)" \
+			"4" "slackware(armhf,x64)" \
+			"5" "openwrt(常见于路由器,arm64,x64)" \
+			"6" "apertis" \
+			"7" "alt" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -4143,60 +4206,46 @@ install_alpha_containers() {
 		install_armbian_linux_distro
 		;;
 	2)
-		TMOE_LINUX_CONTAINER_DISTRO='opensuse'
-		creat_container_edition_txt
-		install_opensuse_linux_distro
-		;;
-	3)
 		TMOE_LINUX_CONTAINER_DISTRO='raspbian'
 		creat_container_edition_txt
 		install_raspbian_linux_distro
 		;;
-	4)
-		TMOE_LINUX_CONTAINER_DISTRO='gentoo'
-		creat_container_edition_txt
-		install_gentoo_linux_distro
-		;;
-	5)
+	3)
 		TMOE_LINUX_CONTAINER_DISTRO='devuan'
 		creat_container_edition_txt
 		install_devuan_linux_distro
 		;;
-	6)
+	4)
 		TMOE_LINUX_CONTAINER_DISTRO='slackware'
 		creat_container_edition_txt
 		install_slackware_linux_distro
 		;;
-	7)
-		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
-		creat_container_edition_txt
-		install_funtoo_linux_distro
-		;;
-	8)
+	5)
 		TMOE_LINUX_CONTAINER_DISTRO='openwrt'
 		creat_container_edition_txt
 		install_openwrt_linux_distro
 		;;
-	9)
+	6)
 		TMOE_LINUX_CONTAINER_DISTRO='apertis'
 		creat_container_edition_txt
 		install_apertis_linux_distro
 		;;
-	10)
+	7)
 		TMOE_LINUX_CONTAINER_DISTRO='alt'
 		creat_container_edition_txt
 		install_alt_linux_distro
 		;;
 	esac
 	###########################
-	press_enter_to_return
-	tmoe_manager_main_menu
+	exit 0
+	#press_enter_to_return
+	#tmoe_manager_main_menu
 	####################
 }
 #########################
 install_beta_containers() {
 	BETA_SYSTEM=$(
-		whiptail --title "Beta features" --menu "WARNING！本功能仍处于公测阶段,可能存在一些bug。\nBeta features may not work properly." 0 55 0 \
+		whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
 			"1" "manjaro(让arch更方便用户使用,arm64)" \
 			"2" "centos (基于红帽的社区企业操作系统)" \
 			"3" "Void:基于xbps包管理器的独立发行版" \
