@@ -674,13 +674,16 @@ install_nginx_webdav() {
 }
 ##########
 add_debian_opt_gpg_key() {
-    cd /tmp
-    curl -Lv -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+    cd /etc/apt/trusted.gpg.d
+    if [ ! -e "bintray-public.key.asc" ]; then
+        curl -Lv -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+    fi
     apt-key add bintray-public.key.asc
     echo -e "deb ${OPT_URL_01} buster main\n#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
     apt update
 }
 ###########
+
 install_container_and_virtual_machine() {
     source ${TMOE_TOOL_DIR}/virtualization/qemu-system.sh -m
 }
