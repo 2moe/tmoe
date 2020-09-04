@@ -282,22 +282,24 @@ standand_desktop_installation() {
     RETURN_TO_WHERE='standand_desktop_installation'
     preconfigure_gui_dependecies_02
     INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-        "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose container_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
-        "1" "🍰 Container_DE(容器可运行:xfce,mate,lxde)" \
-        "2" "🍱 VM_DE(虚拟机可运行:lxqt,kde,gnome)" \
+        "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose proot_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
+        "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
+        "2" "🧁 chroot/docker_DE(chroot容器可运行:kde,lxqt)" \
         "3" "🍙 window manager窗口管理器:ice,fvwm" \
-        "4" "🍣 display manager显示/登录管理器:lightdm,sddm" \
-        "5" "🍤 FAQ:vnc和gui的常见问题" \
+        "4" "🍱 VM_DE(虚拟机可运行:gnome,dde,cinnamon)" \
+        "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
+        "6" "🍤 FAQ:vnc和gui的常见问题" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") tmoe_linux_tool_menu ;;
     1) tmoe_container_desktop ;;
-    2) tmoe_virtual_machine_desktop ;;
+    2) tmoe_docker_and_chroot_container_desktop ;;
     3) window_manager_install ;;
-    4) tmoe_display_manager_install ;;
-    5) tmoe_desktop_faq ;;
+    4) tmoe_virtual_machine_desktop ;;
+    5) tmoe_display_manager_install ;;
+    6) tmoe_desktop_faq ;;
     esac
     ##########################
     press_enter_to_return
@@ -308,6 +310,24 @@ tmoe_desktop_faq() {
     source ${TMOE_TOOL_DIR}/gui/faq.sh
 }
 ######################
+tmoe_docker_and_chroot_container_desktop() {
+    INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
+        "您可以在docker或chroot容器中运行这些桌面\nYou can run these DEs on docker or chroot container." 0 0 0 \
+        "1" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
+        "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+        "0" "🌚 none我一个都不要 =￣ω￣=" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${INSTALLDESKTOP}" in
+    0 | "") standand_desktop_installation ;;
+    1) install_lxqt_desktop ;;
+    2) install_kde_plasma5_desktop ;;
+    esac
+    ##########################
+    press_enter_to_return
+    standand_desktop_installation
+}
+####################
 tmoe_container_desktop() {
     INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
         "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
@@ -780,21 +800,17 @@ tmoe_virtual_machine_desktop() {
     RETURN_TO_WHERE='tmoe_virtual_machine_desktop'
     BETA_DESKTOP=$(whiptail --title "DE" --menu \
         "您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
-        "1" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
-        "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
-        "3" "👣 gnome3(GNU网络对象模型环境)" \
-        "4" "🌲 cinnamon(肉桂类似于GNOME,对用户友好)" \
-        "5" "dde(国产deepin系统桌面)" \
+        "1" "👣 gnome3(GNU网络对象模型环境)" \
+        "2" "🌲 cinnamon(肉桂类似于GNOME,对用户友好)" \
+        "3" "dde(国产deepin系统桌面)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
     case "${BETA_DESKTOP}" in
     0 | "") standand_desktop_installation ;;
-    1) install_lxqt_desktop ;;
-    2) install_kde_plasma5_desktop ;;
-    3) install_gnome3_desktop ;;
-    4) install_cinnamon_desktop ;;
-    5) install_deepin_desktop ;;
+    1) install_gnome3_desktop ;;
+    2) install_cinnamon_desktop ;;
+    3) install_deepin_desktop ;;
     esac
     ##################
     press_enter_to_return
@@ -1584,7 +1600,7 @@ kde_warning() {
         if ! grep -qi 'Bionic' /etc/os-release; then
             echo "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
             echo "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
-            echo "您也可以换用chroot容器，并在Arch/Manjaro中安装本桌面。"
+            echo "您也可以换用chroot容器,再安装本桌面。"
         fi
         ;;
     false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，尽情享受Plasma桌面带来的乐趣吧！" ;;
