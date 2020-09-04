@@ -1652,7 +1652,7 @@ backup_gnu_linux_container() {
 			echo "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
 			press_enter_to_continue
 			if [ "$(command -v pv)" ]; then
-				${TMOE_PREFIX} tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
+				tar -Ppczf - --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${TMPtime}.tar.gz)
 			else
 				${TMOE_PREFIX} tar -Ppczvf ${TMPtime}.tar.gz --exclude=~/${DEBIAN_FOLDER}/root/sd --exclude=~/${DEBIAN_FOLDER}/root/tf --exclude=~/${DEBIAN_FOLDER}/root/termux ${BACKUP_FOLDER}
 			fi
@@ -1907,7 +1907,7 @@ uncompress_other_format_file() {
 		${TMOE_PREFIX} tar -Ppxvf ${RESTORE}
 	else
 		echo "${GREEN} pv ${RESTORE} | tar -Ppx ${RESET}"
-		pv ${RESTORE} | ${TMOE_PREFIX} tar -Ppx
+		pv ${RESTORE} | tar -Ppx
 	fi
 }
 ##############
@@ -1920,7 +1920,7 @@ uncompress_tar_xz_file() {
 		${TMOE_PREFIX} tar -PpJxvf ${RESTORE}
 	else
 		echo "${GREEN} pv ${RESTORE} | tar -PpJx ${RESET}"
-		pv ${RESTORE} | ${TMOE_PREFIX} tar -PpJx
+		pv ${RESTORE} | tar -PpJx
 	fi
 }
 ######################
@@ -1933,7 +1933,7 @@ uncompress_tar_gz_file() {
 		${TMOE_PREFIX} tar -Ppzxvf ${RESTORE}
 	else
 		echo "${GREEN} pv ${RESTORE} | tar -Ppzx ${RESET}"
-		pv ${RESTORE} | ${TMOE_PREFIX} tar -Ppzx
+		pv ${RESTORE} | tar -Ppzx
 	fi
 }
 #####################
