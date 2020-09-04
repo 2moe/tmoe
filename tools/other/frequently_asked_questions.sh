@@ -2,96 +2,107 @@ frequently_asked_questions() {
     RETURN_TO_WHERE='frequently_asked_questions'
     DEPENDENCY_01=''
     NON_DEBIAN='false'
+    #17 50 7
     TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
-        "您有哪些疑问？\nWhat questions do you have?" 17 50 7 \
-        "1" "Cannot open Baidu Netdisk" \
-        "2" "udisks2/gvfs配置失败" \
-        "3" "linuxQQ闪退" \
-        "4" "VNC/X11闪退" \
-        "5" "软件禁止以root权限运行" \
-        "6" "mlocate数据库初始化失败" \
-        "7" "TTY下中文字体乱码" \
-        "8" "Linux与win10双系统时间不一致" \
+        "您有哪些疑问？\nWhat questions do you have?" 0 0 0 \
+        "1" "软件禁止以root权限运行" \
+        "2" "android chroot无法执行ping命令" \
+        "3" "udisks2/gvfs配置失败" \
+        "4" "linuxQQ闪退" \
+        "5" "VNC/X11闪退" \
+        "6" "无法打开Baidu Netdisk" \
+        "7" "mlocate数据库初始化失败" \
+        "8" "TTY下中文字体乱码" \
+        "9" "Linux与win10双系统时间不一致" \
         "0" "Back to the main menu 返回主菜单" \
         3>&1 1>&2 2>&3)
     ##############################
-    if [ "${TMOE_FAQ}" == '0' ]; then
-        tmoe_linux_tool_menu
-    fi
-    ############################
-    if [ "${TMOE_FAQ}" == '1' ]; then
-        #echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
-        echo "若无法打开，则请手动输rm -rf ~/baidunetdisk"
-        echo "按回车键自动执行${YELLOW}rm -vf ~/baidunetdisk/baidunetdiskdata.db${RESET}"
-        RETURN_TO_WHERE='frequently_asked_questions'
-        do_you_want_to_continue
-        rm -vf ~/baidunetdisk/baidunetdiskdata.db
-    fi
-    #######################
-    if [ "${TMOE_FAQ}" == '2' ]; then
+    case "${TMOE_FAQ}" in
+    0 | "") tmoe_linux_tool_menu ;;
+    1)
+        notes_of_tmoe_sudo_01
+        ;;
+    2)
+        notes_of_tmoe_sudo_02
+        ;;
+    3)
         echo "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} --allow-change-held-packages ^udisks2 ^gvfs
-    fi
-    ############################
-    if [ "${TMOE_FAQ}" == '3' ]; then
+        ;;
+    4)
         echo "如果版本更新后登录出现闪退的情况，那么您可以输rm -rf ~/.config/tencent-qq/ 后重新登录。"
         echo "${YELLOW}按回车键自动执行上述命令${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         rm -rvf ~/.config/tencent-qq/
-    fi
-    #######################
-    if [ "${TMOE_FAQ}" == '4' ]; then
+        ;;
+    5)
         fix_vnc_dbus_launch
-    fi
-    #######################
-    if [ "${TMOE_FAQ}" == '5' ]; then
-        echo 'deb系创建用户的说明'
-        echo "部分软件出于安全性考虑，禁止以root权限运行。权限越大，责任越大。若root用户不慎操作，将有可能破坏系统。"
-        echo "您可以使用以下命令来新建普通用户"
-        echo "#创建一个用户名为mo2的新用户"
-        echo "${YELLOW}adduser mo2${RESET}"
-        echo "#输入的密码是隐藏的，根据提示创建完成后，接着输以下命令"
-        echo "#将mo2加入到sudo用户组"
-        echo "${YELLOW}adduser mo2 sudo${RESET}"
-        echo "之后，若需要提权，则只需输sudo 命令"
-        echo "例如${YELLOW}sudo apt update${RESET}"
-        echo "--------------------"
-        echo "切换用户的说明"
-        echo "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
-        echo "亦可输${YELLOW}su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
-        echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
-        echo '--------------------'
-        echo 'arch系创建新用户的命令为useradd -m loveyou'
-        echo '其中loveyou为用户名'
-        echo '输passwd loveyou修改该用户密码'
-        echo '如需将其添加至sudo用户组，那么您可以使用本工具自带的sudo用户组管理功能(位于测试功能的系统管理选项)'
-    fi
-    ###################
-    if [ "${TMOE_FAQ}" == '6' ]; then
+        ;;
+    6)
+        can_not_open_baidu_netdisk
+        ;;
+    7)
         echo "您是否需要卸载mlocate和catfish"
         echo "Do you want to remove mlocate and catfish?"
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} mlocate catfish
         apt autopurge 2>/dev/null
-    fi
-    ###################
-    if [ "${TMOE_FAQ}" == '7' ]; then
+        ;;
+    8)
         tty_chinese_code
-    fi
-    ###################
-    if [ "${TMOE_FAQ}" == '8' ]; then
+        ;;
+    9)
         fix_linux_utc_timezone
-    fi
+        ;;
+    esac
     ##################
-    if [ -z "${TMOE_FAQ}" ]; then
-        tmoe_linux_tool_menu
-    fi
-    ###########
     press_enter_to_return
     frequently_asked_questions
+}
+##############
+notes_of_tmoe_sudo_01() {
+    echo 'deb系创建用户的说明'
+    echo "部分软件出于安全性考虑，禁止以root权限运行。权限越大，责任越大。若root用户不慎操作，将有可能破坏系统。"
+    echo "您可以使用以下命令来新建普通用户"
+    echo "#创建一个用户名为mo2的新用户"
+    echo "${YELLOW}adduser mo2${RESET}"
+    echo "#输入的密码是隐藏的，根据提示创建完成后，您可以在本工具内将该用户加入sudo用户组"
+    #echo "#将mo2加入到sudo用户组"
+    #echo "${YELLOW}adduser mo2 sudo${RESET}"
+    echo "之后，若需要提权，则只需输sudo 命令"
+    echo "例如${YELLOW}sudo apt update${RESET}"
+    echo "--------------------"
+    echo "切换用户的说明"
+    echo "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
+    echo "亦可输${YELLOW}su - mo2${RESET}或${YELLOW}sudo -iu mo2${RESET}切换回mo2用户"
+    echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
+    echo '--------------------'
+    echo 'arch系创建新用户的命令为useradd -m loveyou'
+    echo '其中loveyou为用户名'
+    echo '输passwd loveyou修改该用户密码'
+    echo '如需将其添加至sudo用户组，那么您可以使用本工具自带的sudo用户组管理功能(位于秘密花园的系统管理选项)'
+}
+##############
+notes_of_tmoe_sudo_02() {
+    cat <<-EOF
+    在Android termux上运行的chroot容器（非proot），以root身份执行${GREEN}ping 127.0.0.1${RESET}可以能会遇到${RED}socket 权限不够 Permission denied${RESET}的问题
+    解决方法如下：
+    新建一名普通用户，再前往本工具的系统管理选项，将该用户添加至sudo用户组。
+    当检测到TMOE_CHROOT='true'时，将同时把该用户加入aid_inet等用户组。
+    若您的宿主机为Android系统，则需要加入这些用户组。
+EOF
+}
+###########
+can_not_open_baidu_netdisk() {
+    #echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
+    echo "若无法打开，则请手动输rm -rf ~/baidunetdisk"
+    echo "按回车键自动执行${YELLOW}rm -vf ~/baidunetdisk/baidunetdiskdata.db${RESET}"
+    RETURN_TO_WHERE='frequently_asked_questions'
+    do_you_want_to_continue
+    rm -vf ~/baidunetdisk/baidunetdiskdata.db
 }
 ##############
 fix_linux_utc_timezone() {
