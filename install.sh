@@ -429,7 +429,7 @@ cat_tmoe_chroot_script() {
 		        debian-i -m
 		        ;;
 		    -vnc* | vnc*)
-		        startvnc
+		        startx11vnc
 		        ;;
 		    -n* | novnc*)
 		        debian-i novnc
@@ -766,7 +766,7 @@ creat_proot_startup_script() {
 		        debian-i -m
 		        ;;
 		    -vnc* | vnc*)
-		        startvnc
+		        startx11vnc
 		        ;;
 			-n | novnc*)
 		        debian-i novnc
@@ -1611,7 +1611,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        apk add bash
 	    fi
 	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
-	    rm -f ~/.profile
+	    rm -f ~/.profile vnc-autostartup
 	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
 	    if grep -q 'OpenWrt' "/etc/os-release"; then
 	        mkdir -p /var/lock/

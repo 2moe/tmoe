@@ -1280,7 +1280,7 @@ startvnc_or_enter_the_container() {
 		if [ "${LINUX_DISTRO}" = 'Android' ]; then
 			echo "在Android宿主机的Termux原系统下输${GREEN}startvnc${RESET}将同时启动Android版Realvnc viewer和${DEBIAN_FOLDER}容器内的tight或tiger vnc服务，输${GREEN}debian${RESET}仅支持进入${BLUE}${DEBIAN_FOLDER}容器${RESET}。"
 		fi
-		startvnc
+		startx11vnc
 	else
 		cat <<-EOFDEB
 			You can type ${GREEN}debian${RESET} to enter the ${BLUE}${DEBIAN_FOLDER} container${RESET}.
