@@ -29,6 +29,9 @@ elif grep -qi 'suse' '/etc/os-release'; then
 
 elif grep -Eq "gentoo|funtoo" '/etc/os-release'; then
     LINUX_DISTRO='gentoo'
+
+elif grep -Eq "Slackware" '/etc/os-release'; then
+    LINUX_DISTRO='slackware'
 fi
 #####################
 DEPENDENCIES=""
@@ -124,10 +127,11 @@ if [ ! -z "${DEPENDENCIES}" ]; then
     elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
         emerge -avk ${DEPENDENCIES}
 
-    elif
-        [ "${LINUX_DISTRO}" = "suse" ]
-    then
+    elif [ "${LINUX_DISTRO}" = "suse" ]; then
         zypper in -y ${DEPENDENCIES}
+
+    elif [ "${LINUX_DISTRO}" = "slackware" ]; then
+        slackpkg install ${DEPENDENCIES}
 
     else
         apt update
