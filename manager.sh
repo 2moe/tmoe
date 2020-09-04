@@ -4692,11 +4692,11 @@ install_slackware_linux_distro() {
 		fi
 		;;
 	arm64 | armhf)
+		NEW_TMOE_ARCH='armhf'
+		TMOE_QEMU_ARCH=""
+		creat_tmoe_arch_file
 		if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
 			echo "检测到您当前使用的是${ARCH_TYPE}架构，将为您下载armhf版容器"
-			NEW_TMOE_ARCH='armhf'
-			TMOE_QEMU_ARCH=""
-			creat_tmoe_arch_file
 			LatestSlack="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 			aria2c -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
 		fi
@@ -4724,15 +4724,11 @@ install_armbian_linux_distro() {
 	arm64 | armhf) ;;
 	*) distro_does_not_support ;;
 	esac
-
-	if [ ! -e "armbian-bullseye-rootfs.tar.lz4" ]; then
-		if [ "${ARCH_TYPE}" = 'armhf' ]; then
-			LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep 'armhf' | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			aria2c -x 5 -s 5 -k 1M -o "armbian-bullseye-rootfs.tar.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
-		else
-			LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep 'arm64' | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			aria2c -x 5 -s 5 -k 1M -o "armbian-bullseye-rootfs.tar.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
-		fi
+	ARMBIAN_ROOTFS="armbian-bullseye_${ARCH_TYPE}-rootfs.tar"
+	DEBIAN_CHROOT="${HOME}/armbian_${ARCH_TYPE}"
+	if [ ! -e "${ARMBIAN_ROOTFS}.lz4" ]; then
+		LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		aria2c -x 5 -s 5 -k 1M -o "${ARMBIAN_ROOTFS}.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
 	fi
 
 	if [ ! -e "/usr/bin/lz4" ]; then
@@ -4742,24 +4738,23 @@ install_armbian_linux_distro() {
 		dnf install -y lz4 2>/dev/null
 		zypper in -y lz4 2>/dev/null
 	fi
-	DEBIAN_CHROOT="${HOME}/armbian_${ARCH_TYPE}"
 	mkdir -p ${DEBIAN_CHROOT}
-	rm -vf ~/armbian-bullseye-rootfs.tar
-	lz4 -d ~/armbian-bullseye-rootfs.tar.lz4
+	rm -vf ~/${ARMBIAN_ROOTFS}
+	lz4 -d ~/${ARMBIAN_ROOTFS}.lz4
 	cd ${DEBIAN_CHROOT}
 	if [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ~/armbian-bullseye-rootfs.tar | proot --link2symlink tar -px
+		pv ~/${ARMBIAN_ROOTFS} | proot --link2symlink tar -px
 	else
 		if [ $(command -v pv) ]; then
-			pv ~/armbian-bullseye-rootfs.tar | tar -px
+			pv ~/${ARMBIAN_ROOTFS} | tar -px
 		else
-			tar -pxvf ~/armbian-bullseye-rootfs.tar
+			tar -pxvf ~/${ARMBIAN_ROOTFS}
 		fi
 	fi
 	#相对路径，不是绝对路径
 	sed -i 's/^deb/#&/g' ./etc/apt/sources.list.d/armbian.list
 	sed -i '$ a\deb http://mirrors.tuna.tsinghua.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' ./etc/apt/sources.list.d/armbian.list
-	rm -vf ~/armbian-bullseye-rootfs.tar
+	rm -vf ~/${ARMBIAN_ROOTFS}
 
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian system/armbian system/g' |
