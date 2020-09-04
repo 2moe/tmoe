@@ -1835,6 +1835,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    etc-update
 	    #dispatch-conf
 	    emerge -uvDN --with-bdeps=y @world
+		emerge -avk sys-devel/binutils
 	    emerge eix 2>/dev/null
 	    echo '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile

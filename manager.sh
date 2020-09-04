@@ -130,6 +130,7 @@ check_arch() {
 			DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 		fi
 	fi
+	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
 	DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
 	#echo $DEBIAN_FOLDER $DEBIAN_CHROOT
 	RED=$(printf '\033[31m')
@@ -1293,20 +1294,20 @@ startvnc_or_enter_the_container() {
 install_gnu_linux_container() {
 	#此处不能用变量debian_chroot
 	if [ -d ~/${DEBIAN_FOLDER} ]; then
-		if (whiptail --title "检测到您已安装GNU/Linux容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "Container has been installed, please choose what you need to do" 0 0); then
+		if (whiptail --title "检测到您已安装${ROOTFS_NAME}容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "${ROOTFS_NAME} has been installed, please choose what you need to do" 0 0); then
 			#debian
 			startvnc_or_enter_the_container
 		else
-			echo "${YELLOW}检测到您已安装GNU/Linux容器,是否重新安装？[Y/n]${RESET} "
+			echo "${YELLOW}检测到您已安装${ROOTFS_NAME}容器,是否重新安装？[Y/n]${RESET} "
 			echo "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
-			echo "Detected that you have GNU/Linux container installed, do you want to reinstall it?[Y/n]"
+			echo "Detected that you have ${ROOTFS_NAME} container installed, do you want to reinstall it?[Y/n]"
 			read opt
 			case $opt in
 			y* | Y* | "")
 				#bash ${PREFIX}/bin/debian-rm 2>/dev/null
 				remove_gnu_linux_container
 				if [ "$?" != '0' ]; then
-					echo "容器没有被移除"
+					echo "${ROOTFS_NAME}容器没有被移除"
 					press_enter_to_return
 					tmoe_manager_main_menu
 				else
@@ -1480,7 +1481,6 @@ remove_gnu_linux_container() {
 		#read
 		#tmoe_manager_main_menu
 	fi
-	ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
 	echo "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	echo "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
 	${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
