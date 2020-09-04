@@ -572,7 +572,7 @@ cat_tmoe_chroot_script() {
 		                TF_CARD_LINK="${HOME}/storage/external-1"
 		                if [ -h "\${TF_CARD_LINK}" ]; then
 		                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
-		                    if [ "$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
+		                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
 		                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
 		                    else
 		                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"

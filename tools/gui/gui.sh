@@ -1587,7 +1587,7 @@ kde_warning() {
             echo "您也可以换用chroot容器，并在Arch/Manjaro中安装本桌面。"
         fi
         ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境。" ;;
+    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，尽情享受Plasma桌面带来的乐趣吧！" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
