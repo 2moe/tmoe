@@ -440,7 +440,8 @@ check_dependencies() {
 		esac
 	fi
 
-	if [ ! $(command -v pkill) ]; then
+	if [ ! $(command -v pkill) ] && [ ! -e ${CONFIG_FOLDER}/non-install-procps ]; then
+		echo 'OpenWRT可能无此软件包' >${CONFIG_FOLDER}/non-install-procps
 		case "${LINUX_DISTRO}" in
 		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} procps" ;;
@@ -467,7 +468,7 @@ check_dependencies() {
 		debian) DEPENDENCIES="${DEPENDENCIES} whiptail" ;;
 		arch) DEPENDENCIES="${DEPENDENCIES} libnewt" ;;
 		gentoo) DEPENDENCIES="${DEPENDENCIES} dev-libs/newt" ;;
-		openwrt) DEPENDENCIES="${DEPENDENCIES} dialog" ;;
+		openwrt) DEPENDENCIES="${DEPENDENCIES} whiptail" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} newt" ;;
 		esac
 	fi
@@ -646,8 +647,8 @@ tmoe_linux_tool_menu() {
 }
 #########################
 press_enter_to_return() {
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+	echo "Press ${GREEN}enter${RESET} to ${BLUE}return${RESET},press ${YELLOW}Ctrl+C${RESET} to ${RED}exit.${RESET}"
+	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET},按${YELLOW}Ctrl+C${RESET}${RED}退出${RESET}。"
 	read
 }
 #############
