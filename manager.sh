@@ -595,8 +595,10 @@ notes_of_tmoe_package_installation() {
 }
 #####################
 check_release_version() {
+	CHROOT_NOTE=''
 	if [ "${LINUX_DISTRO}" = "Android" ]; then
 		OSRELEASE="Android"
+		CHROOT_NOTE='(已向Android开放)'
 	elif grep -q 'NAME=' /etc/os-release; then
 		OSRELEASE=$(cat /etc/os-release | grep -v 'PRETTY' | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
 	elif grep -q 'ID=' /etc/os-release; then
@@ -719,8 +721,8 @@ tmoe_manager_main_menu() {
 				bCzokIzns7vnlJ/niannoJTnqbblkZgK
 			DoYouWantToSeeWhatIsInside
 		)" --menu "Please use the enter and arrow keys to operate.\n请使用方向键和回车键进行操作" 0 50 0 \
-			"1" "🍀 proot安装(๑•̀ㅂ•́)و✧" \
-			"2" "🌸 chroot容器安装" \
+			"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
+			"2" "🌸 chroot容器${CHROOT_NOTE}" \
 			"3" "🌏 locales/区域/ロケール/로케일" \
 			"4" "🍳 mirror sources镜像源(清华,北外,中科大)" \
 			"5" "📱 Android-termux专区" \
@@ -1296,7 +1298,8 @@ install_gnu_linux_container() {
 			read opt
 			case $opt in
 			y* | Y* | "")
-				bash ${PREFIX}/bin/debian-rm 2>/dev/null
+				#bash ${PREFIX}/bin/debian-rm 2>/dev/null
+				remove_gnu_linux_container
 				if [ "$?" != '0' ]; then
 					echo "容器没有被移除"
 					press_enter_to_return
@@ -1530,7 +1533,7 @@ remove_gnu_linux_container() {
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
 	*) echo "${YELLOW}Invalid choice，skipped.已跳过，按回车键返回。${RESET} " ;;
 	esac
-	tmoe_manager_main_menu
+	#tmoe_manager_main_menu
 
 }
 #######################
