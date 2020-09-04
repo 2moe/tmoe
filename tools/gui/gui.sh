@@ -3751,6 +3751,9 @@ xrdp_onekey() {
         echo '检测到您使用的是WSL,为防止与windows自带的远程桌面的3389端口冲突，请您设定一个新的端口'
         sleep 2s
     fi
+    case ${TMOE_CHROOT} in
+    true) usermod -a -G aid_inet xrdp ;;
+    esac
     xrdp_port
     xrdp_restart
     ################
