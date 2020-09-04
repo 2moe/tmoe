@@ -1514,6 +1514,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
 	    if grep -q 'Debian' "/etc/issue"; then
 	        debian_sources_list
+			case $(uname -m) in
+			aarch64)
+				if [ -e /etc/apt/sources.list.d/armbian.list ];then
+					dpkg  --remove-architecture armhf
+				fi
+			;;
+			arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
+			esac
 	    fi
 	fi
 	###############
