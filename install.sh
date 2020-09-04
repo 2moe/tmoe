@@ -1487,14 +1487,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#########################
 	mint_sources_list() {
 	    echo "检测到您使用的是Linux Mint"
-	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
-	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-				deb http://mirrors.huaweicloud.com/linuxmint/ tricia main upstream import backport
-				deb http://mirrors.huaweicloud.com/ubuntu/ bionic main restricted universe multiverse
-				deb http://mirrors.huaweicloud.com/ubuntu/ bionic-updates main restricted universe multiverse
-				deb http://mirrors.huaweicloud.com/ubuntu/ bionic-backports main restricted universe multiverse
-				deb http://mirrors.huaweicloud.com/ubuntu/ bionic-security main restricted universe multiverse
-			EndOfSourcesList
+		CHINA_MIRROR='mirrors.huaweicloud.com'
+		SOURCE_LIST=/etc/apt/sources.list
+		cp ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
+		sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null
+		sed -i "s@packages.linuxmint.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
+		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
+		cat ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
 	}
 	#################################
 	#配置国内镜像源

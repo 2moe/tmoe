@@ -142,6 +142,7 @@ tmoe_system_app_menu() {
 		"7" "boot repair(开机引导修复)" \
 		"8" "neofetch(显示当前系统信息和发行版logo)" \
 		"9" "yasat:简单的安全审计工具" \
+		"10" "Tmoe-linux manager" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	##########################
@@ -162,6 +163,7 @@ tmoe_system_app_menu() {
 	7) install_boot_repair ;;
 	8) start_neofetch ;;
 	9) start_yasat ;;
+	10) bash ${TMOE_GIT_DIR}/manager.sh ;;
 	esac
 	##########################
 	if [ ! -z "${DEPENDENCY_01}" ]; then
