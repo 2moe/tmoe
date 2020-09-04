@@ -4440,9 +4440,7 @@ install_fedora_gnu_linux_distro() {
 		#echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
 		#DISTRO_CODE='29'
 		#linux_distro_common_model_01
-		echo "检测到您使用的是${ARCH_TYPE}架构，请换用其他发行版"
-		press_enter_to_return
-		choose_which_gnu_linux_distro
+		distro_does_not_support
 		;;
 	*)
 		#OLD_STABLE_VERSION='31'
@@ -4550,9 +4548,10 @@ install_opensuse_linux_distro() {
 }
 ########################
 install_raspbian_linux_distro() {
-	if [ "${ARCH_TYPE}" != 'arm64' ] && [ "${ARCH_TYPE}" != 'armhf' ]; then
-		apt install -y qemu qemu-user-static debootstrap
-	fi
+	case "${ARCH_TYPE}" in
+	arm64 | armhf) ;;
+	*) distro_does_not_support ;;
+	esac
 	NEW_TMOE_ARCH='armhf'
 	TMOE_QEMU_ARCH=""
 	creat_tmoe_arch_file
@@ -4681,21 +4680,29 @@ install_alt_linux_distro() {
 install_slackware_linux_distro() {
 	cd ${HOME}
 	#touch .SLACKDetectionFILE
-	if [ "${ARCH_TYPE}" = 'amd64' ]; then
-		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
+	case "${ARCH_TYPE}" in
+	amd64)
+		if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
 			git clone -b x64 --depth=1 https://gitee.com/ak2/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
 			#aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
 			cd .SLACKWARE_AMD64_TEMP_FOLDER
-			mv -f slackware_amd64.tar.xz ../slackware-current-rootfs.tar.xz
+			mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
 			cd ..
 			rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
 		fi
-	else
-		if [ ! -e "slackware-current-rootfs.tar.xz" ]; then
+		;;
+	arm64 | armhf)
+		if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
+			echo "检测到您当前使用的是${ARCH_TYPE}架构，将为您下载armhf版容器"
+			NEW_TMOE_ARCH='armhf'
+			TMOE_QEMU_ARCH=""
+			creat_tmoe_arch_file
 			LatestSlack="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			aria2c -x 5 -s 5 -k 1M -o "slackware-current-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
+			aria2c -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
 		fi
-	fi
+		;;
+	*) distro_does_not_support ;;
+	esac
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed 's/debian system/slackware system/g' |
 		sed 's:debian-sid:slackware-current:g' |
@@ -4703,16 +4710,21 @@ install_slackware_linux_distro() {
 		sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
 }
 #########################
+distro_does_not_support() {
+	echo "检测到您使用的是${ARCH_TYPE}架构，请换用其他发行版"
+	press_enter_to_return
+	choose_which_gnu_linux_distro
+}
+##############
 install_armbian_linux_distro() {
 	cd ${HOME}
-	#touch .SLACKDetectionFILE
-	if [ "${ARCH_TYPE}" != 'armhf' ] && [ "${ARCH_TYPE}" != 'arm64' ]; then
-		if [ ! -e "/usr/bin/qemu-arm-static" ]; then
-			apt update
-			apt install qemu-user-static
-		fi
-	fi
 	echo "armbian-bullseye-desktop已预装xfce4"
+
+	case "${ARCH_TYPE}" in
+	arm64 | armhf) ;;
+	*) distro_does_not_support ;;
+	esac
+
 	if [ ! -e "armbian-bullseye-rootfs.tar.lz4" ]; then
 		if [ "${ARCH_TYPE}" = 'armhf' ]; then
 			LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep 'armhf' | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
@@ -4730,7 +4742,7 @@ install_armbian_linux_distro() {
 		dnf install -y lz4 2>/dev/null
 		zypper in -y lz4 2>/dev/null
 	fi
-
+	DEBIAN_CHROOT="${HOME}/armbian_${ARCH_TYPE}"
 	mkdir -p ${DEBIAN_CHROOT}
 	rm -vf ~/armbian-bullseye-rootfs.tar
 	lz4 -d ~/armbian-bullseye-rootfs.tar.lz4
