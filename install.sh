@@ -1288,7 +1288,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	systemctl(){
 	    case $2 in
 	        "") systemctl $1 ;;
-	        *) /sbin/service $2 $1 ;;
+	        *) service $2 $1 ;;
 	    esac
 	}
 EndOfFile
