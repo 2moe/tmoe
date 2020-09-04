@@ -950,16 +950,24 @@ install_docker_ce() {
     DEPENDENCY_02="docker-ce"
     DEPENDENCY_01="docker"
     #apt remove docker docker-engine docker.io
-    if [ "${LINUX_DISTRO}" = 'debian' ]; then
+    case "${LINUX_DISTRO}" in
+    debian)
         DEPENDENCY_01="docker-ce"
         DEPENDENCY_02="docker-ce-cli docker"
         debian_add_docker_gpg
-    elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
+        ;;
+    redhat)
         curl -Lv -o /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
         sed -i 's@download.docker.com@mirrors.tuna.tsinghua.edu.cn/docker-ce@g' /etc/yum.repos.d/docker-ce.repo
-    elif [ "${LINUX_DISTRO}" = 'arch' ]; then
+        ;;
+    arch)
         DEPENDENCY_01="docker"
-    fi
+        ;;
+    alpine)
+        DEPENDENCY_01="docker-engine docker-cli"
+        DEPENDENCY_02="docker"
+        ;;
+    esac
     beta_features_quick_install
     if [ ! $(command -v docker) ]; then
         echo "安装失败，请执行${TMOE_INSTALLATON_COMMAND} docker.io"
