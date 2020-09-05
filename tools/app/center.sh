@@ -910,8 +910,9 @@ remove_tmoe_linux_tool() {
     echo "${RED}rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop ${HOME}/.config/tmoe-linux startvnc stopvnc debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu ${TMOE_GIT_DIR}${RESET}"
     DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
     echo "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
+    echo "${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。"
     do_you_want_to_continue
-    rm -rfv ${APPS_LNK_DIR}/tmoe-linux.desktop ${HOME}/.config/tmoe-linux startvnc stopvnc debian-i startx11vnc ${TMOE_GIT_DIR} startxsdl x11vncpasswd
+    rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop startvnc stopvnc debian-i startx11vnc ${TMOE_GIT_DIR} startxsdl x11vncpasswd
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}
     exit 1
 }
