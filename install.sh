@@ -235,7 +235,9 @@ echo "       :7j1.                 :  :       "
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
 	echo "检测到您选择的是raspbian树莓派系统"
 	echo "已将您的架构临时识别为armhf"
+	echo "若您需要安装arm64版树莓派系统，则请将arm64版的rootfs文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${HOME}${RESET}"
 	#将通过debian buster来间接安装raspbian buster
+	rm -f "${HOME}/.RASPBIANARMHFDetectionFILE"
 fi
 ###############
 cd ${HOME}
@@ -1128,13 +1130,12 @@ creat_linux_container_remove_script() {
 			echo "\${YELLOW}是否需要删除容器镜像文件？[Y/n]\${RESET} "
 			ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
 			echo "rm -fv ~/\${ROOTFS_NAME}*rootfs.tar.xz"
-			echo "Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]"
+			echo "Do you need to delete the image file (${DEBIAN_NAME}*rootfs.tar.xz)?[Y/n]"
 
 		    read opt
 			case \$opt in
 				y*|Y*|"") 
-			rm -fv ~/${DEBIAN_FOLDER}-rootfs.tar.xz
-			rm -fv ~/\${ROOTFS_NAME}*rootfs.tar.xz
+			rm -fv ~/\${ROOTFS_NAME}*-rootfs.tar.xz
 		    echo "Deleted已删除" ;;
 				n*|N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
@@ -1258,11 +1259,11 @@ debian_stable_sources_list_and_gpg_key() {
 	rm -f "raspbian-sources-gpg.tar.xz"
 }
 ############
-if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
-	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
-	#树莓派换源
-	debian_stable_sources_list_and_gpg_key
-elif [ -f "${HOME}/.REDHATDetectionFILE" ]; then
+#if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
+#	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
+#树莓派换源
+#debian_stable_sources_list_and_gpg_key
+if [ -f "${HOME}/.REDHATDetectionFILE" ]; then
 	rm -f "${HOME}/.REDHATDetectionFILE"
 	chmod u+w "${DEBIAN_CHROOT}/root"
 elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
@@ -1595,15 +1596,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    chattr +i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
-	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
-	    if grep -q 'Debian' "/etc/issue"; then
-	        debian_sources_list
-			case $(uname -m) in
-			arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
-			esac
-	    fi
+	if grep -q 'Debian' "/etc/issue"; then
+	    debian_sources_list
+		case $(uname -m) in
+		arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
+		esac
 	fi
 	###############
+	TUNA_MIRROR_URL='mirrors.tuna.tsinghua.edu.cn'
 	if [ -e /etc/apt/sources.list.d/armbian.list ]; then
 			case $(uname -m) in
 				aarch64) dpkg  --remove-architecture armhf ;;
@@ -1615,6 +1615,23 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#sed -i '$ a\deb http://mirrors.tuna.tsinghua.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' /etc/apt/sources.list.d/armbian.list
 		cat armbian.list.bak >>armbian.list
 		rm -f armbian.list.bak
+		cd ~
+	elif [ -e /etc/apt/sources.list.d/raspi.list ]; then
+		cd /etc/apt/sources.list.d
+		cp raspi.list raspi.list.bak
+		sed -i 's/^/#&/g' raspi.list.bak
+		#http://archive.raspberrypi.org/debian/ buster main
+		#deb http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main non-free contrib rpi
+		#mirrors.tuna.tsinghua.edu.cn/raspberrypi/
+
+		sed -i "s@archive.raspberrypi.org/debian@${TUNA_MIRROR_URL}/raspberrypi@g" raspi.list
+		cat raspi.list.bak >>raspi.list
+		rm -f raspi.list.bak
+		cd ..
+		cp sources.list sources.list.bak
+		sed -i "s@raspbian.raspberrypi.org/raspbian@${TUNA_MIRROR_URL}/raspbian/raspbian@g" sources.list
+		sed -i 's/^/#&/g' sources.list.bak
+		cat sources.list.bak >> sources.list
 		cd ~
 	fi
 	###############
@@ -1842,13 +1859,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if grep -Eq 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
 	     apt install -y apt-transport-https 2>/dev/null
 	fi
-	if [ ! -f "/tmp/.RASPBIANARMHFDetectionFILE" ]; then
+	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
 	    echo "Replacing http software source list with https."
 	    echo "正在将http源替换为https..."
 	    sed -i 's@http:@https:@g' /etc/apt/sources.list
 	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list
-	else
-	    rm -f "/tmp/.RASPBIANARMHFDetectionFILE"
 	fi
 	##########################
 	gentoo_gnu_linux_make_conf() {

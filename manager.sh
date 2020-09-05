@@ -4111,7 +4111,7 @@ choose_which_gnu_linux_distro() {
 		"6" "🌉 arch:系统设计以KISS为总体指导原则" \
 		"7" "👒 fedora:红帽社区版,新技术试验场" \
 		"8" "🦎 chroot专属:opensuse,gentoo" \
-		"9" "experimental(体验版,不再维护):raspbian" \
+		"9" "experimental(体验版,不再维护):RaspiOS" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -4563,6 +4563,7 @@ install_raspios_linux_distro() {
 		;;
 	esac
 
+	touch ~/.RASPBIANARMHFDetectionFILE
 	if (whiptail --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
 		install_raspios_full_armhf_rootfs
 	else
@@ -4596,6 +4597,7 @@ install_raspios_lite_armhf_rootfs() {
 		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
+		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
 		sed 's/.*sid main/#&/' |
 		sed 's/debian system/raspios system/g' |
 		sed 's:debian-sid:raspios-buster:g' |
@@ -4607,6 +4609,7 @@ install_raspios_full_armhf_rootfs() {
 		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
+		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
 		sed 's/.*sid main/#&/' |
 		sed 's/debian system/raspios system/g' |
 		sed 's:debian-sid:raspios-buster:g' |
@@ -4623,6 +4626,7 @@ install_raspbian_linux_distro_type01() {
 		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_full/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
+		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
 		sed 's/.*sid main/#&/' |
 		sed 's/debian system/raspbian system/g' |
 		sed 's:debian-sid:raspbian-buster:g' |
@@ -4635,6 +4639,7 @@ install_raspbian_linux_distro_type02() {
 		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_lite/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
+		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
 		sed 's/.*sid main/#&/' |
 		sed 's/debian system/raspbian system/g' |
 		sed 's:debian-sid:raspbian-buster:g' |
@@ -4774,6 +4779,7 @@ distro_does_not_support() {
 }
 ##############
 install_armbian_linux_distro() {
+	RETURN_TO_WHERE='install_armbian_linux_distro'
 	DISTRO_NAME='armbian'
 	BETA_SYSTEM=$(
 		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统。\n以下系统已预装桌面,每个镜像大小约为1G" 0 50 0 \
