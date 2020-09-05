@@ -4106,13 +4106,12 @@ choose_which_gnu_linux_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? \n您想要安装哪个GNU/Linux发行版?" 0 50 0 \
 		"1" "🍥 Debian:致力于自由" \
 		"2" "🍛 Ubuntu:我的存在是因為大家的存在" \
-		"3" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
-		"4" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-		"5" "🍱 beta公测版:manjaro,centos,alpine" \
-		"6" "🌉 arch:系统设计以KISS为总体指导原则" \
-		"7" "👒 fedora:红帽社区版,新技术试验场" \
-		"8" "🦎 chroot专属:opensuse,gentoo" \
-		"9" "experimental(体验版,不再维护):RaspiOS" \
+		"3" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
+		"4" "🍱 beta公测版:manjaro,centos,alpine" \
+		"5" "🌉 arch:系统设计以KISS为总体指导原则" \
+		"6" "👒 fedora:红帽社区版,新技术试验场" \
+		"7" "🦎 chroot专属:armbian,opensuse,gentoo" \
+		"8" "experimental(体验版,不再维护):RaspiOS" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -4120,25 +4119,24 @@ choose_which_gnu_linux_distro() {
 	0 | "") tmoe_manager_main_menu ;;
 	1) install_debian_gnu_linux_distro ;;
 	2) install_ubuntu_gnu_linux_distro ;;
-	3) install_armbian_linux_distro ;;
-	4)
+	3)
 		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
 		creat_container_edition_txt
 		install_kali_rolling_gnu_linux_distro
 		;;
-	5) install_beta_containers ;;
-	6)
+	4) install_beta_containers ;;
+	5)
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		creat_container_edition_txt
 		install_arch_linux_distro
 		;;
-	7)
+	6)
 		TMOE_LINUX_CONTAINER_DISTRO='fedora'
 		creat_container_edition_txt
 		install_fedora_gnu_linux_distro
 		;;
-	8) install_chroot_exclusive_containers ;;
-	9) install_alpha_containers ;;
+	7) install_chroot_exclusive_containers ;;
+	8) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
@@ -4151,26 +4149,28 @@ install_chroot_exclusive_containers() {
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
-			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
-			"2" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"3" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
+			"1" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
+			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"3" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+			"4" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1)
+	1) install_armbian_linux_distro ;;
+	2)
 		TMOE_LINUX_CONTAINER_DISTRO='opensuse'
 		creat_container_edition_txt
 		install_opensuse_linux_distro
 		;;
-	2)
+	3)
 		TMOE_LINUX_CONTAINER_DISTRO='gentoo'
 		creat_container_edition_txt
 		install_gentoo_linux_distro
 		;;
-	3)
+	4)
 		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
 		creat_container_edition_txt
 		install_funtoo_linux_distro
@@ -4794,7 +4794,7 @@ install_armbian_linux_distro() {
 	)
 	##############################
 	case "${BETA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
+	0 | "") install_chroot_exclusive_containers ;;
 	1) DISTRO_CODE='bullseye' ;;
 	2) DISTRO_CODE='focal' ;;
 	3) custom_armbian_version ;;

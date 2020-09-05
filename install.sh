@@ -352,12 +352,12 @@ cat <<-EOF
 	${BOLD}小提示06${RESET}:
 
 			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
-			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}.
+			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
 			-------------------
 	${BOLD}小提示07${RESET}:
 
 			在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
-			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}.
+			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}
 			-------------------
 EOF
 ################
