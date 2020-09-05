@@ -709,7 +709,7 @@ android_termux() {
 	fi
 
 	if [ -e ${PREFIX}/bin/debian ]; then
-		grep -q "pulseaudio" ${PREFIX}/bin/debian || sed -i '3 a\pulseaudio --start' ${PREFIX}/bin/debian
+		grep -q "pulseaudio" ${PREFIX}/bin/debian 2>/dev/null || sed -i '3 a\pulseaudio --start' ${PREFIX}/bin/debian
 	fi
 
 	if [ ! -e ${PREFIX}/bin/which ]; then
@@ -1512,27 +1512,17 @@ remove_gnu_linux_container() {
 	echo "若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i"
 	echo 'If you want to reinstall, it is not recommended to remove the image file.'
 	echo "${YELLOW}若您需要重装容器，则不建议删除镜像文件。${RESET} "
-	#ls -lh ~/debian-sid-rootfs.tar.xz 2>/dev/null
-	#ls -lh ~/debian-buster-rootfs.tar.xz 2>/dev/null
-	#ls -lh ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-	#ls -lh ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-	#ls -lh ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
 	cd ${HOME}
-	ls -lh *-rootfs.tar.xz
+	ls -lh ${ROOTFS_NAME}*-rootfs.tar.* 2>/dev/null
 	echo "${YELLOW}请问您是否需要删除容器镜像文件？[Y/n]${RESET} "
-	echo "${RED}rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz${RESET}"
-	echo "Do you need to delete the image file (${DEBIAN_FOLDER}*rootfs.tar.xz)?[Y/n]"
+	echo "${RED}rm -fv ~/${ROOTFS_NAME}*-rootfs.tar.*${RESET}"
+	echo "Do you need to delete the image file (${ROOTFS_NAME}*-rootfs.tar.*)?[Y/n]"
 	read opt
 	case $opt in
 	y* | Y* | "")
-		#rm -vf ~/debian-sid-rootfs.tar.xz ${PREFIX}/bin/debian-rm 2>/dev/null
-		#rm -vf ~/debian-buster-rootfs.tar.xz 2>/dev/null
-		#rm -vf ~/ubuntu-focal-rootfs.tar.xz 2>/dev/null
-		#rm -vf ~/kali-rolling-rootfs.tar.xz 2>/dev/null
-		#rm -vf ~/funtoo-1.3-rootfs.tar.xz 2>/dev/null
-		#rm -vf *-rootfs.tar.xz 2>/dev/null
-		rm -fv ~/${DEBIAN_FOLDER}-rootfs.tar.xz
-		rm -fv ~/${ROOTFS_NAME}*rootfs.tar.xz
+		#rm -fv ~/${DEBIAN_FOLDER}*-rootfs.tar.*
+		#此处应删除ROOTFS_NAME而非DEBIAN_FOLDER开头的rootfs文件
+		rm -fv ~/${ROOTFS_NAME}*-rootfs.tar.*
 		echo "Deleted已删除"
 		;;
 	n* | N*) echo "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
@@ -1682,7 +1672,7 @@ backup_gnu_linux_container() {
 		echo "Don't worry too much, it is normal for some directories to backup without permission."
 		echo "部分目录无权限备份是正常现象。"
 		rm -f backuptime.tmp
-		#  whiptail --gauge "正在备份,可能需要几分钟的时间请�������后.........." 6 60 0
+		#  whiptail --gauge "���在备份,可能需要几分钟的时间请�������后.........." 6 60 0
 		pwd
 		ls -lth ./*tar* | grep ^- | head -n 1
 		#echo 'gzip压缩至60%完成是正常现象。'
@@ -2216,10 +2206,19 @@ update_tmoe_linux_manager() {
 	if [ "${LINUX_DISTRO}" != "Android" ]; then
 		sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i
 	fi
+	chmod +x ${PREFIX}/bin/debian-i
+	if [ -e "${TMOE_GIT_DIR}" ]; then
+		git reset --hard origin/master
+		git pull origin master --allow-unrelated-histories
+		if [ "$?" != '0' ]; then
+			git fetch --all
+			git reset --hard origin/master
+			git pull origin master --allow-unrelated-histories
+		fi
+	fi
 	echo "${TMOE_GIT_URL}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	chmod +x ${PREFIX}/bin/debian-i
 	read
 	#bash ${PREFIX}/bin/debian-i
 	source ${PREFIX}/bin/debian-i
@@ -3120,7 +3119,7 @@ check_debian_12() {
 }
 #############
 custom_debian_version() {
-	TARGET=$(whiptail --inputbox "请输入最近四年的debian版本代号，例如buster(英文小写)\n Please enter the debian version code." 12 50 --title "DEBIAN CODE" 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "请输入最近四年的debian版本代号，例如buster(英文小写)\n Please type the debian version code." 10 50 --title "DEBIAN CODE" 3>&1 1>&2 2>&3)
 	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		echo "检测到您取消了操作"
@@ -3243,7 +3242,7 @@ un_xz_debian_recovery_kit() {
 		少女祈禱中...
 			${BOLD}Tmoe-linux 小提示02${RESET}:
 
-				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
+				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安���版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
 				-------------------
 				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会���动启动远程桌面服务。
 				-------------------
@@ -4103,43 +4102,41 @@ choose_which_gnu_linux_distro() {
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? \n您想要安装哪个GNU/Linux发行版?" 0 50 0 \
-		"1" "🍥 Debian:最早的发行版之一" \
+		"1" "🍥 Debian:致力于自由" \
 		"2" "🍛 Ubuntu:我的存在是因為大家的存在" \
-		"3" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-		"4" "🍱 beta公测版:manjaro,centos,alpine" \
-		"5" "🌉 arch:系统设计以KISS为总体指导原则" \
-		"6" "👒 fedora:红帽社区版,新技术试验场" \
-		"7" "🦎 chroot专属:opensuse,gentoo" \
-		"8" "experimental(体验版,不再维护):raspbian" \
+		"3" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
+		"4" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
+		"5" "🍱 beta公测版:manjaro,centos,alpine" \
+		"6" "🌉 arch:系统设计以KISS为总体指导原则" \
+		"7" "👒 fedora:红帽社区版,新技术试验场" \
+		"8" "🦎 chroot专属:opensuse,gentoo" \
+		"9" "experimental(体验版,不再维护):raspbian" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") tmoe_manager_main_menu ;;
-	1)
-		install_debian_gnu_linux_distro
-		;;
-	2)
-		install_ubuntu_gnu_linux_distro
-		;;
-	3)
+	1) install_debian_gnu_linux_distro ;;
+	2) install_ubuntu_gnu_linux_distro ;;
+	3) install_armbian_linux_distro ;;
+	4)
 		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
 		creat_container_edition_txt
 		install_kali_rolling_gnu_linux_distro
 		;;
-	4) install_beta_containers ;;
-	5)
+	5) install_beta_containers ;;
+	6)
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		creat_container_edition_txt
 		install_arch_linux_distro
 		;;
-	6)
+	7)
 		TMOE_LINUX_CONTAINER_DISTRO='fedora'
 		creat_container_edition_txt
 		install_fedora_gnu_linux_distro
 		;;
-	7) install_chroot_exclusive_containers ;;
-	8) install_alpha_containers ;;
+	8) install_chroot_exclusive_containers ;;
+	9) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
@@ -4188,8 +4185,8 @@ install_alpha_containers() {
 	RETURN_TO_WHERE='install_alpha_containers'
 	ALPHA_SYSTEM=$(
 		whiptail --title "Maintenance has ceased" --menu "虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
-			"1" "armbian bullseye(arm64,armhf)" \
-			"2" "raspbian樹莓派 buster(armhf)" \
+			"1" "raspios樹莓派新系统 buster" \
+			"2" "raspbian樹莓派旧系统 buster(armhf)" \
 			"3" "devuan (不使用systemd,基于debian)" \
 			"4" "slackware(armhf,x64)" \
 			"5" "openwrt(常见于路由器,arm64,x64)" \
@@ -4202,12 +4199,16 @@ install_alpha_containers() {
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
-		TMOE_LINUX_CONTAINER_DISTRO='armbian'
+		DISTRO_NAME='raspios'
+		DISTRO_CODE='buster'
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
-		install_armbian_linux_distro
+		install_raspios_linux_distro
 		;;
 	2)
-		TMOE_LINUX_CONTAINER_DISTRO='raspbian'
+		DISTRO_NAME='raspbian'
+		DISTRO_CODE='buster'
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		install_raspbian_linux_distro
 		;;
@@ -4337,7 +4338,8 @@ install_ubuntu_gnu_linux_distro() {
 }
 #########################
 custom_ubuntu_version() {
-	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease enter the ubuntu version code." 12 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
+	#12 50
+	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease type the ubuntu version code." 9 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
 	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		echo "检测到您取消了操作"
@@ -4546,50 +4548,98 @@ install_opensuse_linux_distro() {
 	DISTRO_CODE='tumbleweed'
 	linux_distro_common_model_01
 }
-########################
-install_raspbian_linux_distro() {
+####################
+install_raspios_linux_distro() {
 	case "${ARCH_TYPE}" in
-	arm64 | armhf) ;;
+	arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
 	*) distro_does_not_support ;;
 	esac
-	NEW_TMOE_ARCH='armhf'
-	TMOE_QEMU_ARCH=""
-	creat_tmoe_arch_file
+
+	case "${TRUE_ARCH_TYPE}" in
+	arm64 | armhf)
+		TMOE_QEMU_ARCH=""
+		creat_tmoe_arch_file
+		;;
+	esac
+
+	if (whiptail --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
+		install_raspios_full_armhf_rootfs
+	else
+		install_raspios_lite_armhf_rootfs
+	fi
+}
+###################
+install_raspbian_linux_distro() {
+	case "${ARCH_TYPE}" in
+	arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
+	*) distro_does_not_support ;;
+	esac
+
+	case "${TRUE_ARCH_TYPE}" in
+	arm64 | armhf)
+		TMOE_QEMU_ARCH=""
+		creat_tmoe_arch_file
+		;;
+	esac
+
 	touch ~/.RASPBIANARMHFDetectionFILE
-	if (whiptail --title "RASPBIAN" --yes-button "直接" --no-button "间接" --yesno "您想要如何安装raspbian呢？How do you want to install raspbian?" 9 50); then
+	if (whiptail --title "RASPBIAN" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspbian？Full版约1.9G,lite版约260M" 9 50); then
 		install_raspbian_linux_distro_type01
 	else
 		install_raspbian_linux_distro_type02
 	fi
 }
 ############################
+install_raspios_lite_armhf_rootfs() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
+		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
+		sed 's@#deb http@deb http@g' |
+		sed 's/.*sid main/#&/' |
+		sed 's/debian system/raspios system/g' |
+		sed 's:debian-sid:raspios-buster:g' |
+		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
+}
+##################
+install_raspios_full_armhf_rootfs() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
+		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
+		sed 's@#deb http@deb http@g' |
+		sed 's/.*sid main/#&/' |
+		sed 's/debian system/raspios system/g' |
+		sed 's:debian-sid:raspios-buster:g' |
+		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
+}
+##################
 install_raspbian_linux_distro_type01() {
 	#https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
 	#https://mirrors.tuna.tsinghua.edu.cn/raspbian-images/raspbian_full/root.tar.xz
+	#https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_full/archive/2020-02-14-13%3A51/root.tar.xz
+
+	#sed 's@lxc-images.*rootfs.tar.xz@raspbian-images/raspbian_lite/root.tar.xz@g' |
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@lxc-images.*rootfs.tar.xz@raspbian-images/raspbian_lite/root.tar.xz@g' |
-		sed 's:/sid:/buster:g' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_full/archive@' |
+		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/' |
 		sed 's/debian system/raspbian system/g' |
 		sed 's:debian-sid:raspbian-buster:g' |
-		sed 's:debian/sid:debian/buster:g' |
 		sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
 }
 ##################
 install_raspbian_linux_distro_type02() {
 	#sed '72 a\ARCH_TYPE="armhf"'
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's:/sid:/buster:g' |
-		sed 's:extract z:extract:' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_lite/archive@' |
+		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/' |
 		sed 's/debian system/raspbian system/g' |
 		sed 's:debian-sid:raspbian-buster:g' |
-		sed 's:debian/sid:debian/buster:g' |
 		sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
 }
-#############
+##################
 install_manjaro_linux_distro() {
 	case ${ARCH_TYPE} in
 	arm64) ;;
@@ -4605,12 +4655,11 @@ install_manjaro_linux_distro() {
 	touch ~/.MANJARO_ARM_DETECTION_FILE
 	#echo "检测到您选择的是manajro,即将从第三方网盘下载容器镜像。"
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid.*xz@mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
+		sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 		sed 's/debian system/manjaro system/g' |
 		sed 's:debian-sid:manjaro-stable:g' |
 		sed 's:debian/sid:manjaro/stable:g' |
 		sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
-		sed 's@tar -pJx@tar -pzx@g' |
 		sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
 }
 #		sed 's@tar -pJxvf@tar -pzxvf@g'
@@ -4638,13 +4687,12 @@ install_openwrt_linux_distro() {
 		#https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/19.07.3/targets/armvirt/32/openwrt-19.07.3
 		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/32/openwrt-${THE_LATEST_VERSION}-armvirt-32-default-rootfs.tar.gz"
 	fi
-
+	#		sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed "s@https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid.*xz@${THE_LATEST_ISO_LINK}@g" |
+		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_ISO_LINK}@g" |
 		sed 's/debian system/openwrt system/g' |
 		sed 's:debian-sid:openwrt-latest:g' |
 		sed 's:debian/sid:openwrt/snapshot:g' |
-		sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
 		sed 's@tar -pJx@tar -pzx@g' |
 		sed 's:Debian GNU/Linux:OpenWRT Linux:g')"
 }
@@ -4690,24 +4738,32 @@ install_slackware_linux_distro() {
 			cd ..
 			rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
 		fi
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+			sed 's/debian system/slackware system/g' |
+			sed 's:debian-sid:slackware-current:g' |
+			sed 's:debian/sid:slackware/current:g' |
+			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
 		;;
 	arm64 | armhf)
 		NEW_TMOE_ARCH='armhf'
 		TMOE_QEMU_ARCH=""
 		creat_tmoe_arch_file
-		if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
-			echo "检测到您当前使用的是${ARCH_TYPE}架构，将为您下载armhf版容器"
-			LatestSlack="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-			aria2c -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots/${LatestSlack}"
-		fi
+		#if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
+		echo "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
+		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
+		LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		#aria2c -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
+		#fi
+		THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" |
+			sed 's/debian system/slackware system/g' |
+			sed 's:debian-sid:slackware-current:g' |
+			sed 's:debian/sid:slackware/current:g' |
+			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
 		;;
 	*) distro_does_not_support ;;
 	esac
-	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian system/slackware system/g' |
-		sed 's:debian-sid:slackware-current:g' |
-		sed 's:debian/sid:slackware/current:g' |
-		sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
 }
 #########################
 distro_does_not_support() {
@@ -4717,57 +4773,95 @@ distro_does_not_support() {
 }
 ##############
 install_armbian_linux_distro() {
-	cd ${HOME}
-	echo "armbian-bullseye-desktop已预装xfce4"
-
+	DISTRO_NAME='armbian'
+	BETA_SYSTEM=$(
+		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统。\n以下系统已预装桌面,每个镜像大小约为1G" 0 50 0 \
+			"1" "🐎 Bullseye(debian 11)" \
+			"2" "🐱 Focal Fossa 焦點馬島長尾狸貓(ubuntu 20.04)" \
+			"3" "Custom code手动输入版本代号" \
+			"4" "🐶 Buster(debian 10)" \
+			"5" "Bionic Beaver 仿生海狸(ubuntu 18.04)" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") choose_which_gnu_linux_distro ;;
+	1) DISTRO_CODE='bullseye' ;;
+	2) DISTRO_CODE='focal' ;;
+	3) custom_armbian_version ;;
+	4) DISTRO_CODE='buster' ;;
+	5) DISTRO_CODE='bionic' ;;
+	esac
+	######################
 	case "${ARCH_TYPE}" in
 	arm64 | armhf) ;;
 	*) distro_does_not_support ;;
 	esac
-
-	ARMBIAN_ROOTFS="armbian-bullseye_${ARCH_TYPE}-rootfs.tar"
-	DEBIAN_CHROOT="${HOME}/armbian_${ARCH_TYPE}"
-
-	if [ ! -e "${ARMBIAN_ROOTFS}.lz4" ]; then
-		LatestARMbian="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/ | grep -E 'bullseye-desktop' | grep -v '.tar.lz4.asc' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		aria2c -x 5 -s 5 -k 1M -o "${ARMBIAN_ROOTFS}.lz4" "https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs/${LatestARMbian}"
-	fi
-
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	echo "即将为您安装${TMOE_LINUX_CONTAINER_DISTRO} GNU/Linux container"
+	do_you_want_to_continue
+	install_different_armbian_gnu_linux_distros
+	####################
+	exit 0
+}
+#########################
+install_different_armbian_gnu_linux_distros() {
 	if [ ! $(command -v lz4) ]; then
 		apt update 2>/dev/null
 		apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
 	fi
+	ARMBIAN_TUNA_REPO='https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs'
+	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep -E "${DISTRO_CODE}-desktop" | grep -Ev '.tar.lz4.asc|.torrent|.lz4.list' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
 
-	mkdir -p ${DEBIAN_CHROOT}
-	rm -vf ~/${ARMBIAN_ROOTFS}
-	lz4 -d ~/${ARMBIAN_ROOTFS}.lz4
-	cd ${DEBIAN_CHROOT}
-	if [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ~/${ARMBIAN_ROOTFS} | proot --link2symlink tar -px
-	else
-		if [ $(command -v pv) ]; then
-			pv ~/${ARMBIAN_ROOTFS} | tar -px
-		else
-			tar -pxvf ~/${ARMBIAN_ROOTFS}
-		fi
-	fi
-	#相对路径，不是绝对路径
-	sed -i 's/^deb/#&/g' ./etc/apt/sources.list.d/armbian.list
-	sed -i '$ a\deb http://mirrors.tuna.tsinghua.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' ./etc/apt/sources.list.d/armbian.list
-	rm -vf ~/${ARMBIAN_ROOTFS}
-
+	case "${DISTRO_CODE}" in
+	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
+	*) install_armbian_testing_via_tuna ;;
+	esac
+}
+########
+install_armbian_buster_via_tuna() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's/debian system/armbian system/g' |
-		sed 's:debian-sid:armbian-bullseye:g' |
-		sed 's:debian/sid:armbian/bullseye:g' |
-		sed 's:rootfs.tar.xz:rootfs.tar.lz4:g' |
+		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
+		sed "s/focal/${DISTRO_CODE}/g" |
+		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/' |
-		sed 's@debian/ stable@debian/ testing@g' |
-		sed 's@buster-backports@bullseye-backports@g' |
-		sed 's:Debian GNU/Linux:Armbian GNU/Linux:g')"
+		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
+		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
+		sed 's@debian/ stable@debian/ ${DISTRO_CODE}@g' |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
-#######################
+###########
+install_armbian_testing_via_tuna() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
+		sed "s/focal/${DISTRO_CODE}/g" |
+		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed 's@#deb http@deb http@g' |
+		sed 's/.*sid main/#&/' |
+		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
+		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
+		sed 's@debian/ stable@debian/ ${DISTRO_CODE}@g' |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+###########
+custom_armbian_version() {
+	TARGET=$(whiptail --inputbox "请输入armbian版本代号，例如bullseye(英文小写)\nPlease type the armbian version code." 9 50 --title "ARMBIAN CODE" 3>&1 1>&2 2>&3)
+	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${DISTRO_CODE}" ]; then
+		echo "检测到您取消了操作"
+		echo "已自动切换为armbian bullseye"
+		DISTRO_CODE='bullseye'
+	fi
+}
+###########
 install_mint_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'amd64' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		DISTRO_NAME='mint'
@@ -4806,14 +4900,14 @@ which_linux_mint_distro() {
 }
 #########################
 custom_mint_version() {
-	TARGET=$(whiptail --inputbox "请输入mint版本代号，例如tricia(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "请输入mint版本代号，例如ulyana(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
 	DISTRO_CODE="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		echo "检测到您取消了操作"
-		echo "已自动切换为tricia"
-		DISTRO_CODE='tricia'
+		echo "已自动切换为ulyana"
+		DISTRO_CODE='ulyana'
 	fi
-	echo "即将为您安装mint ${DISTRO_CODE} GNU/Linux container"
+	echo "即将为您安装Mint ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	linux_distro_common_model_01
 }

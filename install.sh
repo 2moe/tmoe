@@ -167,14 +167,14 @@ if [ "$(uname -o)" = "Android" ]; then
 	fi
 else
 	if grep -q 'alias debian=' "/etc/profile"; then
-		sed -i '/alias debian-i=/d' "/etc/profile"
+		sed -i '/alias debian=/d' "/etc/profile"
 		sed -i '/alias startvnc=/d' "/etc/profile"
 		sed -i '/alias stopvnc=/d' "/etc/profile"
 		sed -i '/alias debian-i=/d' "/etc/profile"
 	fi
 
 	if grep -q 'alias debian=' "${HOME}/.zshrc"; then
-		sed -i '/alias debian-i=/d' "${HOME}/.zshrc"
+		sed -i '/alias debian=/d' "${HOME}/.zshrc"
 		sed -i '/alias startvnc=/d' "${HOME}/.zshrc"
 		sed -i '/alias stopvnc=/d' "${HOME}/.zshrc"
 		sed -i '/alias debian-i=/d' "${HOME}/.zshrc"
@@ -237,15 +237,18 @@ if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
 	echo "已将您的架构临时识别为armhf"
 	#将通过debian buster来间接安装raspbian buster
 fi
+###############
 cd ${HOME}
-
 if [ -d "${DEBIAN_FOLDER}" ]; then
 	echo "Detected that you have debian installed 检测到您已安装debian"
 fi
-
 mkdir -p ~/${DEBIAN_FOLDER}
-
+############
+TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
+TMOE_MIPSEL_ROOTFS_URL='https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
+###########
 cat <<-EOF
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示${RESET}:
@@ -267,27 +270,29 @@ cat <<-EOF
 			Some fonts do not support powerlevel10k special characters.
 			-------------------
 EOF
+############################
 echo "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
 echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
-
+##################
 if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
 		echo "正在从${YELLOW}清华大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
 		echo "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from Tsinghua University Open Source Mirror Station."
-		TTIME=$(curl -L "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
+			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 		else
-			wget -O ${TMOE_ROOTFS_TAR_XZ} "https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${TTIME}rootfs.tar.xz"
+			wget -O ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 		fi
 	else
-		aria2c -x 6 -k 1M --split 6 -o ${TMOE_ROOTFS_TAR_XZ} 'https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+		aria2c -x 6 -k 1M --split 6 -o ${TMOE_ROOTFS_TAR_XZ} "${TMOE_MIPSEL_ROOTFS_URL}"
 	fi
 fi
+##################
 CURRENT_TMOE_DIR=$(pwd)
-if [ ! -e "${HOME}/.config/tmoe-linux/chroot_container" ]; then
+if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
-		aria2c -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true 'https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
+		aria2c -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
 	fi
 	cd ${DEBIAN_CHROOT}
 	if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
@@ -296,6 +301,7 @@ if [ ! -e "${HOME}/.config/tmoe-linux/chroot_container" ]; then
 else
 	cd ${DEBIAN_CHROOT}
 fi
+####################
 printf "$BLUE"
 cat <<-'EndOFneko'
 	       DL.                           
@@ -346,7 +352,46 @@ cat <<-EOF
 			-------------------
 EOF
 ################
-check_pv() {
+uncompress_other_format_file() {
+	if [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
+	else
+		if [ $(command -v pv) ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -px
+		else
+			tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+	fi
+}
+##############
+uncompress_tar_lz4_file() {
+	TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
+	TMOE_ROOTFS_TAR=$(echo ${TMOE_ROOTFS_TAR_XZ} | sed 's@.tar.lz4@.tar@')
+	cd ${HOME}
+	rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
+	lz4 -d ${TMOE_ROOTFS_TAR_XZ}
+	cd ${DEBIAN_CHROOT}
+
+	TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR}
+	uncompress_other_format_file
+	TMOE_ROOTFS_TAR_XZ=${TRUE_TMOE_ROOTFS_TAR_XZ}
+
+	rm -fv ${HOME}/${TMOE_ROOTFS_TAR}
+}
+###########
+uncompress_tar_gz_file() {
+	if [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
+	else
+		if [ $(command -v pv) ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pzx
+		else
+			tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+	fi
+}
+#####################
+check_tar_xz_pv() {
 	if [ $(command -v pv) ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
 	else
@@ -354,20 +399,59 @@ check_pv() {
 	fi
 }
 #############
-echo "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
-echo "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
-if [ "${ARCH_TYPE}" = "mipsel" ]; then
-	pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
-	mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
-elif [ "${LINUX_DISTRO}" = "Android" ]; then
-	pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
-elif [ "${LINUX_DISTRO}" = "iSH" ]; then
-	tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-else
-	check_pv
-fi
+uncompress_tar_xz_file() {
+	echo "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
+	echo "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
+	if [ "${ARCH_TYPE}" = "mipsel" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
+		mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
+	elif [ "${LINUX_DISTRO}" = "iSH" ]; then
+		tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	else
+		check_tar_xz_pv
+	fi
+}
 #############
-#cp -f ~/.termux/font.ttf ~/${DEBIAN_FOLDER}/tmp/ 2>/dev/null
+#解压前已进入$DEBIAN_CHROOT目录
+uncompress_tar_file() {
+	case "${TMOE_ROOTFS_TAR_XZ:0-6:6}" in
+	tar.xz)
+		uncompress_tar_xz_file
+		;;
+	tar.gz)
+		uncompress_tar_gz_file
+		;;
+	ar.lz4)
+		#此处不为tar.lz4
+		uncompress_tar_lz4_file
+		;;
+	*)
+		uncompress_other_format_file
+		;;
+	esac
+}
+#######################
+uncompress_tar_file
+
+REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
+IOSEVKA_FONT='2b41066b8faea10f7f4356a280b011c2fa3cd007000e6eca25f2f9aaf8b44713'
+MESLO_FONT='4ac3012945f484496c899dce3b6ff6ec1a7395a444e9bf5acdf004867334cd17'
+MESLO_BOLD_FONT='43f8115a8432c29662cec5028cf39a1576cc312db115fe12f2b839d4345d42a9'
+LOCALFONT="$(sha256sum ~/.termux/font.ttf 2>/dev/null | cut -c 1-64)" || LOCALFONT="0"
+mkdir -p ${DEBIAN_CHROOT}/tmp
+case ${LOCALFONT} in
+${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT}) cp -f ~/.termux/font.ttf ${DEBIAN_CHROOT}/tmp 2>/dev/null ;;
+*)
+	MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/MesloLGS-NF-Bold"
+	if [ -e "${MESLO_FONT_DIR}" ]; then
+		cd ${MESLO_FONT_DIR}
+		cp -f 'MesloLGS NF Bold.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
+	fi
+	;;
+esac
+
 if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
 	touch ~/${DEBIAN_FOLDER}/tmp/.openwrtcheckfile
 fi
@@ -464,7 +548,7 @@ cat_tmoe_chroot_script() {
 			else
 				cat ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 			fi
-		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+		    TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 		    PROC_FD_PATH="/proc/self/fd"
 		    #########
 		    detect_mount() {
@@ -791,7 +875,7 @@ creat_proot_startup_script() {
 		    unset LD_PRELOAD
 		    ############
 		    FAKE_PROOT_PROC=true
-		    TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+		    TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 		    PROC_FD_PATH="/proc/self/fd"
 		    if [ -f "${DEBIAN_CHROOT}/bin/zsh" ]; then
 		        TMOE_SHELL="/bin/zsh"
@@ -934,7 +1018,7 @@ fix_gnu_linux_chroot_exec() {
 	esac
 }
 ###########
-if [ -e "${HOME}/.config/tmoe-linux/chroot_container" ]; then
+if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	TMOE_CHROOT='true'
 	creat_chroot_startup_script
 	arch_mount_self
@@ -1188,7 +1272,7 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
-TMOE_LOCALE_FILE="${HOME}/.config/tmoe-linux/locale.txt"
+TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 if [ -e "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
 	mkdir -p ${TMOE_LOCALE_NEW_PATH}
@@ -1484,7 +1568,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 			EndOfFile
 	    touch ~/.hushlogin
-		touch /home/ubuntu/.hushlogin
+		touch /home/ubuntu/.hushlogin 2>/dev/null
 	    if grep -q 'Bionic Beaver' "/etc/os-release"; then
 	        sed -i 's/focal/bionic/g' /etc/apt/sources.list
 	    fi
@@ -1515,14 +1599,23 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if grep -q 'Debian' "/etc/issue"; then
 	        debian_sources_list
 			case $(uname -m) in
-			aarch64)
-				if [ -e /etc/apt/sources.list.d/armbian.list ];then
-					dpkg  --remove-architecture armhf
-				fi
-			;;
 			arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
 			esac
 	    fi
+	fi
+	###############
+	if [ -e /etc/apt/sources.list.d/armbian.list ]; then
+			case $(uname -m) in
+				aarch64) dpkg  --remove-architecture armhf ;;
+			esac 
+		cd /etc/apt/sources.list.d
+		cp armbian.list armbian.list.bak
+		sed -i 's/^/#&/g' armbian.list.bak
+		sed -i 's@apt.armbian.com@mirrors.tuna.tsinghua.edu.cn/armbian@g' armbian.list
+		#sed -i '$ a\deb http://mirrors.tuna.tsinghua.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' /etc/apt/sources.list.d/armbian.list
+		cat armbian.list.bak >>armbian.list
+		rm -f armbian.list.bak
+		cd ~
 	fi
 	###############
 	if grep -q 'Kali' "/etc/issue"; then
