@@ -139,6 +139,14 @@ if [ ! -z "${DEPENDENCIES}" ]; then
     fi
 fi
 ###############################
+if [ -e /etc/apt/sources.list.d/armbian.list ]; then
+    if grep -q 'Focal' /etc/os-release; then
+        #此处不该用reinstall
+        apt purge -y man-db
+        apt install -y man-db
+    fi
+fi
+############
 if [ ! $(command -v debian-i) ]; then
     if [ -e "/usr/bin/curl" ]; then
         curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
