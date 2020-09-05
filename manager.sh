@@ -777,8 +777,9 @@ start_tmoe_zsh_manager() {
 ##########
 remove_termux_linux_manager() {
 	cd ${PREFIX}/bin
-	echo "${RED}rm -rv ${HOME}/.config/tmoe-linux ${PREFIX}/bin/debian-i${RESET}"
+	echo "${RED}rm -rv ${PREFIX}/bin/debian-i${RESET}"
 	DEPENDENCIES='git aria2 pv wget xz newt whiptail dialog'
+	echo "${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。"
 	echo "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
 	do_you_want_to_continue
 	rm -rfv rm -rv ${HOME}/.config/tmoe-linux debian-i
