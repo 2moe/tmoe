@@ -1067,7 +1067,7 @@ creat_linux_container_remove_script() {
 					##################
 		  cat /proc/mounts | grep ${DEBIAN_FOLDER}
 		  echo "移除容器前，请先确保您已停止容器的进程。"
-		  pkill proot 2>/dev/null
+		  pkill -9 proot 2>/dev/null
 		  ps -e | grep proot
 		  ps -e | grep startvnc
 		  pgrep proot &> /dev/null
@@ -1101,7 +1101,7 @@ creat_linux_container_remove_script() {
 		    ${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
 			echo "Do you want to remove it?[Y/n]"
 			echo "\${YELLOW}按回车键确认移除 Press enter to remove.\${RESET} "
-		    pkill proot 2>/dev/null
+		    pkill -9 proot 2>/dev/null
 			read opt
 			case \$opt in
 				y*|Y*|"") 

@@ -1465,7 +1465,7 @@ remove_gnu_linux_container() {
 	ps -e | grep proot
 	ps -e | grep startvnc
 	echo "移除系统前，请先确保您已停止GNU/Linux容器。"
-	pkill proot 2>/dev/null
+	pkill -9 proot 2>/dev/null
 	pgrep proot &>/dev/null
 	if [ "$?" = "0" ]; then
 		echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
