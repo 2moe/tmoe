@@ -233,9 +233,9 @@ echo "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
 echo "    jBBdD. :. ........:r... YB  Bi      "
 echo "       :7j1.                 :  :       "
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
-	echo "检测到您选择的是raspbian树莓派系统"
+	echo "检测到您选择的是树莓派系统"
 	echo "已将您的架构临时识别为armhf"
-	echo "若您需要安装arm64版树莓派系统，则请将arm64版的rootfs文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${HOME}${RESET}"
+	echo "若您需要安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${HOME}${RESET}"
 	#将通过debian buster来间接安装raspbian buster
 	rm -f "${HOME}/.RASPBIANARMHFDetectionFILE"
 fi
@@ -1596,11 +1596,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    chattr +i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
-	if grep -q 'Debian' "/etc/issue"; then
-	    debian_sources_list
-		case $(uname -m) in
-		arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
-		esac
+	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+		if grep -q 'Debian' "/etc/issue"; then
+	     debian_sources_list
+			case $(uname -m) in
+			arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
+			esac
+		fi
 	fi
 	###############
 	TUNA_MIRROR_URL='mirrors.tuna.tsinghua.edu.cn'
