@@ -1795,7 +1795,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	apt reinstall -y perl-base
 	if [ ! -e /usr/lib/locale/en_US ];then
 		apt install -y locales-all 2>/dev/null
-	elif [ ! $(command -v locale-gen) ]; then
+	fi 
+	if [ ! $(command -v locale-gen) ]; then
 	    apt install -y locales 2>/dev/null
 	fi
 
