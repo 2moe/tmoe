@@ -1828,7 +1828,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
 	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
 	    echo '' >>/etc/locale.gen
-	    sed -i "$ a\${TMOE_LANG} UTF-8" /etc/locale.gen
+	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
 	fi
 	locale-gen ${TMOE_LANG}
 	source /etc/default/locale 2>/dev/null
