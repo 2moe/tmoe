@@ -1862,6 +1862,11 @@ install_deepin_desktop() {
 ############################
 set_default_xfce_icon_theme() {
     dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s ${XFCE_ICON_NAME} 2>/dev/null
+    case ${HOME} in
+    /root) ;;
+    *) chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4 ;;
+    esac
+
 }
 ###############
 creat_update_icon_caches() {
@@ -4271,7 +4276,7 @@ tmoe_gui_dpi_01() {
     echo "默认分辨率为${RESOLUTION}，窗口缩放大小为1x"
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
     if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
-        dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-DPI 2>/dev/null
+        dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
     fi
 }
 ##########

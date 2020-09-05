@@ -7,13 +7,14 @@ frequently_asked_questions() {
         "您有哪些疑问？\nWhat questions do you have?" 0 0 0 \
         "1" "软件禁止以root权限运行" \
         "2" "android chroot无法执行ping命令" \
-        "3" "udisks2/gvfs配置失败" \
-        "4" "linuxQQ闪退" \
-        "5" "VNC/X11闪退" \
-        "6" "无法打开Baidu Netdisk" \
-        "7" "mlocate数据库初始化失败" \
-        "8" "TTY下中文字体乱码" \
-        "9" "Linux与win10双系统时间不一致" \
+        "3" "修复xfce配置文件无法写入" \
+        "4" "udisks2/gvfs配置失败" \
+        "5" "linuxQQ闪退" \
+        "6" "VNC/X11闪退" \
+        "7" "无法打开Baidu Netdisk" \
+        "8" "mlocate数据库初始化失败" \
+        "9" "TTY下中文字体乱码" \
+        "10" "Linux与win10双系统时间不一致" \
         "0" "Back to the main menu 返回主菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -26,35 +27,41 @@ frequently_asked_questions() {
         notes_of_tmoe_sudo_02
         ;;
     3)
+        echo "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4"
+        echo "若您遇到其他权限问题，还可以手动执行chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}"
+        do_you_want_to_continue
+        chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4
+        ;;
+    4)
         echo "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} --allow-change-held-packages ^udisks2 ^gvfs
         ;;
-    4)
+    5)
         echo "如果版本更新后登录出现闪退的情况，那么您可以输rm -rf ~/.config/tencent-qq/ 后重新登录。"
         echo "${YELLOW}按回车键自动执行上述命令${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         rm -rvf ~/.config/tencent-qq/
         ;;
-    5)
+    6)
         fix_vnc_dbus_launch
         ;;
-    6)
+    7)
         can_not_open_baidu_netdisk
         ;;
-    7)
+    8)
         echo "您是否需要卸载mlocate和catfish"
         echo "Do you want to remove mlocate and catfish?"
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} mlocate catfish
         apt autopurge 2>/dev/null
         ;;
-    8)
+    9)
         tty_chinese_code
         ;;
-    9)
+    10)
         fix_linux_utc_timezone
         ;;
     esac
