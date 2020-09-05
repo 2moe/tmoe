@@ -4841,7 +4841,7 @@ install_armbian_buster_via_tuna() {
 		sed 's/.*sid main/#&/' |
 		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
 		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
-		sed 's@debian/ stable@debian/ ${DISTRO_CODE}@g' |
+		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########
@@ -4856,7 +4856,7 @@ install_armbian_testing_via_tuna() {
 		sed 's/.*sid main/#&/' |
 		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
 		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
-		sed 's@debian/ stable@debian/ ${DISTRO_CODE}@g' |
+		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########
