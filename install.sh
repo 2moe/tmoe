@@ -337,9 +337,11 @@ cat <<-EOF
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
 
-			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
+			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}VNC服务端${RESET}。
+			------------------
+			输${GREEN}startxsdl${RESET}将${RED}启动${RESET}安卓版${YELLOW}XSDL${RESET}，并于9秒后自动启动${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}x11${RESET}。
 			-------------------
-			您可以输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
+			您也可以在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}startvnc${RESET}来单独启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 			-------------------
 			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 			-------------------
@@ -349,8 +351,13 @@ cat <<-EOF
 			------------------
 	${BOLD}小提示06${RESET}:
 
-			在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
 			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}.
+			-------------------
+	${BOLD}小提示06${RESET}:
+
+			在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
+			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}.
 			-------------------
 EOF
 ################
