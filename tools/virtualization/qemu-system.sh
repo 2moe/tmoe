@@ -1700,7 +1700,7 @@ enable_tmoe_qemu_cpu_multi_threading() {
 	fi
 	###########
 	#11 45
-	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS},qemu5.0以上版本建议禁用" 0 0); then
+	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 0 0); then
 		#CURRENT_VALUE=$(cat startqemu | grep '\-machine accel' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1 | cut -d '=' -f 2)
 		CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
 		sed -i "s@--accel .*@--accel ${CURRENT_VALUE},thread=multi \\\@" startqemu
@@ -2673,22 +2673,28 @@ tmoe_qemu_faq() {
 	RETURN_TO_WHERE='tmoe_qemu_faq'
 	VIRTUAL_TECH=$(
 		whiptail --title "FAQ(よくある質問)" --menu "您有哪些疑问？\nWhat questions do you have?" 13 55 3 \
-			"1" "process进程管理说明" \
-			"2" "creat a new vm如何新建虚拟机" \
+			"1" "qemu的cpu flags和device参数" \
+			"2" "process进程管理说明" \
+			"3" "creat a new vm如何新建虚拟机" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
-	1) qemu_process_management_instructions ;;
-	2) how_to_creat_a_new_tmoe_qemu_vm ;;
+	1) tmoe_qemu_faq_01 ;;
+	2) qemu_process_management_instructions ;;
+	3) how_to_creat_a_new_tmoe_qemu_vm ;;
 	esac
 	###############
 	press_enter_to_return
 	tmoe_qemu_faq
 }
 ################
+tmoe_qemu_faq_01() {
+	less -meQ ${TMOE_TOOL_DIR}/virtualization/qemu-faq
+}
+#############
 multi_qemu_vm_management() {
 	SELECTION=""
 	TMOE_QEMU_SCRIPT_FILE_PATH='/usr/local/bin/.tmoe-linux-qemu'
