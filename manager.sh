@@ -731,7 +731,7 @@ tmoe_manager_main_menu() {
 			"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 			"2" "🌸 chroot容器${CHROOT_NOTE}" \
 			"3" "🌏 locales/区域/ロケール/로케일" \
-			"4" "🍳 mirror sources镜像源(清华,北外)" \
+			"4" "🍳 mirror sources镜像源(北外,腾讯)" \
 			"5" "📱 Android-termux专区" \
 			"6" "🍬 novnc:web端控制的vnc客户端" \
 			"7" "🌈 Configure zsh美化终端" \
@@ -1962,7 +1962,6 @@ uncompress_tar_file() {
 	*chroot-rootfs_bak.*) ;;
 	*) TMOE_PREFIX='' ;;
 	esac
-
 	case "${RESTORE:0-6:6}" in
 	tar.xz)
 		uncompress_tar_xz_file
@@ -3706,7 +3705,7 @@ tmoe_sources_list_manager() {
 	SOURCES_LIST=$(
 		whiptail --title "software-sources tmoe-manager" --menu \
 			"Do you want to switch the mirror source?" 0 50 0 \
-			"1" "university:国内高校镜像站" \
+			"1" "清华,北外,中科大,腾讯云镜像站" \
 			"2" "worldwide mirror sites:全球镜像站" \
 			"3" "enable/disable repo(启用/禁用仓库)" \
 			"4" "edit list manually(手动编辑)" \
