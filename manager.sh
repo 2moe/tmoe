@@ -1340,12 +1340,15 @@ install_gnu_linux_container() {
 ################################################
 ################################################
 enable_root_mode() {
-	if [ "$(uname -o)" != "Android" ]; then
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*)
 		echo "非常抱歉，本功能仅适配安卓系统。"
 		echo "Linux系统请自行使用sudo，并修改相应目录的文件权限。"
 		press_enter_to_return
 		tmoe_manager_main_menu
-	fi
+		;;
+	esac
 	if (whiptail --title "您真的要开启root模式吗" --yes-button '好哒o(*￣▽￣*)o' --no-button '不要(っ °Д °；)っ' --yesno "开启后将无法撤销，除非重装容器，建议您在开启前进行备份。若您的手机存在外置tf卡，则在开启后，会挂载整张卡。若无法备份和还原，请输sudo debian-i启动本管理器。开启root模式后，绝对不要输破坏系统的危险命令！若在容器内输rm -rf /*删除根目录（格式化）命令，将有可能导致安卓原系统崩溃！！！请在本管理器内正常移除容器。" 10 60); then
 
 		if [ ! -f ${PREFIX}/bin/tsu ]; then
@@ -1494,7 +1497,7 @@ remove_gnu_linux_container() {
 	case $opt in
 	y* | Y* | "")
 		chmod 777 -R ${DEBIAN_FOLDER} || sudo chmod 777 -R ${DEBIAN_FOLDER}
-		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc 2>/dev/null
+		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc "${CONFIG_FOLDER}/chroot_container" 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc "${CONFIG_FOLDER}/chroot_container" 2>/dev/null
 		if [ -d "${HOME}/debian_arm64" ]; then
 			echo "检测到残留文件夹，正在移除..."
 			chmod 777 -R "${HOME}/debian_arm64"
@@ -1609,7 +1612,14 @@ backup_gnu_linux_container() {
 	#echo "${YELLOW}按回车键选择压缩类型 Press enter to select compression type${RESET} "
 	#press_enter_to_continue
 	termux_backup_pre
-	TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)-rootfs_bak"
+	case ${TMOE_CHROOT} in
+	true)
+		TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)_chroot-rootfs_bak"
+		;;
+	*)
+		TMPtime="${TARGET_BACKUP_FILE_NAME}_$(cat backuptime.tmp)-rootfs_bak"
+		;;
+	esac
 	BACKUP_FOLDER="${DEBIAN_CHROOT} ${PREFIX}/bin/debian-rm ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc"
 	BACKUP_FILE="${PREFIX}/bin/debian"
 	check_backup_file
@@ -1942,6 +1952,17 @@ uncompress_tar_gz_file() {
 }
 #####################
 uncompress_tar_file() {
+	if [ ! -e "${DEBIAN_CHROOT}" ]; then
+		if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+			rm -fv ${CONFIG_FOLDER}/chroot_container
+		fi
+	fi
+
+	case ${RESTORE} in
+	*chroot-rootfs_bak.*) ;;
+	*) TMOE_PREFIX='' ;;
+	esac
+
 	case "${RESTORE:0-6:6}" in
 	tar.xz)
 		uncompress_tar_xz_file
@@ -1956,6 +1977,7 @@ uncompress_tar_file() {
 	if [ -e "${PREFIX}/bin/debian" ]; then
 		check_proot_proc_permissions
 	fi
+	check_tmoe_container_chroot
 	press_enter_to_return
 	restore_gnu_linux_container
 }
@@ -3446,7 +3468,8 @@ china_university_mirror_station() {
 			"您想要切换为哪个镜像源呢？" 0 50 0 \
 			"1" "清华大学mirrors.tuna.tsinghua.edu.cn" \
 			"2" "北京外国语大学mirrors.bfsu.edu.cn" \
-			"3" "中国科学技术大学mirrors.ustc.edu.cn" \
+			"3" "腾讯云mirrors.cloud.tencent.com" \
+			"4" "中国科学技术大学mirrors.ustc.edu.cn" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -3461,7 +3484,11 @@ china_university_mirror_station() {
 		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
 		standard_termux_mirror_source_format
 		;;
-	3) ustc_termux ;;
+	3)
+		SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
+		standard_termux_mirror_source_format
+		;;
+	4) ustc_termux ;;
 	esac
 	######################################
 	modify_android_termux_mirror_sources_list
