@@ -1607,7 +1607,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if grep -q 'Debian' "/etc/issue"; then
 	     debian_sources_list
 			case $(uname -m) in
-			arm*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
+			arm*|mips*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
 			esac
 		fi
 	fi

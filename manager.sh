@@ -2840,7 +2840,7 @@ tmoe_qemu_user_manager() {
 			"05" "armel(支持软浮点运算,常见于旧设备）" \
 			"06" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
 			"07" "s390x(常见于IBM大型机)" \
-			"08" "mipsel(暂仅适配debian stable,常见于龙芯cpu或和嵌入式设备)" \
+			"08" "mipsel(暂仅适配debian sid,常见于龙芯cpu或和嵌入式设备)" \
 			"09" "riscv64（开源架构,精简指令集）" \
 			3>&1 1>&2 2>&3
 	)
