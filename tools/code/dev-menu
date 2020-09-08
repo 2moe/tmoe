@@ -25,7 +25,7 @@ development_programming_tools() {
     1) which_vscode_edition ;;
     2) #install_android_studio
         GREP_NAME='android-studio'
-        LNK_FILE='${GREP_NAME}.desktop'
+        LNK_FILE="${GREP_NAME}.desktop"
         BIN_FILE="/usr/bin/${GREP_NAME}"
         APP_OPT_DIR="/opt/${GREP_NAME}"
         DEV_MENU=02
