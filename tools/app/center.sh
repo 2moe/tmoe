@@ -653,15 +653,28 @@ install_wps_office() {
     DEPENDENCY_01="wps-office"
     DEPENDENCY_02=""
     NON_DEBIAN='false'
-    cd /tmp
-    if [ -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
-        press_enter_to_reinstall
+    echo "正在检测版本更新..."
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: ${YELLOW}https://linux.wps.cn${RESET}"
+    THE_LATEST_DEB_URL=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
+    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
+    lolcat_tmoe_tips_01
+    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
+    if [ ! -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
+        #press_enter_to_reinstall
+        echo "未检测到本地版本，您可能尚未安装WPS客户端。"
+    elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
+        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+    else
+        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
-
+    do_you_want_to_continue
+    cd /tmp
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
-        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${LatestWPSLink}"
+        #LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb
 
@@ -673,9 +686,7 @@ install_wps_office() {
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
         rpm -ivh ./WPSoffice.rpm
     fi
-
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: https://linux.wps.cn"
+    echo ${THE_LATEST_DEB_VERSION} >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
     rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
     beta_features_install_completed
 }
@@ -728,6 +739,11 @@ lolcat_tmoe_tips_01() {
     else
         echo ${TMOE_TIPS_01}
     fi
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    arch) echo "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
+    redhat) echo "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
+    esac
 }
 #########
 install_baidu_netdisk() {
@@ -739,12 +755,13 @@ install_baidu_netdisk() {
     THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
     THE_LATEST_RPM_URL=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}' | sed 's@_amd64.deb@.x86_64.rpm@')
-    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION},最新版链接为${THE_LATEST_DEB_URL}"
+    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
-    if [ -e "${TMOE_LINUX_DIR}/baidu_netdisk-version" ]; then
-        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/baidu_netdisk-version | head -n 1)"
-    elif [ ! -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
+    echo "最新版链接为${YELLOW}${THE_LATEST_DEB_URL}${RESET}"
+    if [ ! -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
         echo "未检测到本地版本，您可能尚未安装百度网盘客户端。"
+    elif [ -e "${TMOE_LINUX_DIR}/baidu_netdisk-version" ]; then
+        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/baidu_netdisk-version | head -n 1)"
     else
         echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
@@ -786,11 +803,11 @@ install_netease_163_cloud_music() {
     THE_LATEST_DEB_VERSION=$(curl -L ${LATEST_DEB_REPO} | grep "${DEPENDENCY_01}" | cut -d '=' -f 5 | cut -d '"' -f 2 | head -n 1)
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
-    if [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "检测到本地版本为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
-    elif [ ! -e "${APPS_LNK_DIR}/netease-cloud-music.desktop" ]; then
+    if [ ! -e "${APPS_LNK_DIR}/netease-cloud-music.desktop" ]; then
         #press_enter_to_reinstall
         echo "未检测到本地版本，您可能尚未安装网易云音乐官方版客户端"
+    elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
+        echo "检测到本地版本为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
     fi
     case "${ARCH_TYPE}" in
     amd64 | i386) ;;
