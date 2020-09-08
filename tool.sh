@@ -613,7 +613,7 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux running on ${OSRELEASE}(202008)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+		whiptail --title "Tmoe-linux running on ${OSRELEASE}(202009)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \

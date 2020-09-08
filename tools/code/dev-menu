@@ -10,7 +10,7 @@ development_programming_tools() {
             "1" "🇻 🇸 VSCode 现代化代码编辑器" \
             "2" "🇦 🇸 Android-Studio(安卓开发工具IDE)" \
             "3" "🇮 🇯 IntelliJ IDEA(java编程语言集成开发环境)" \
-            "4" "🇵 🇾 PyCharm(python集成开发环境)" \
+            "4" "🇵 🇨 PyCharm(python集成开发环境)" \
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
             "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
