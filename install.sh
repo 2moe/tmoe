@@ -2036,7 +2036,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	####################
 	if [ ! "$(command -v lolcat)" ];then
-		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || dnf install -y lolcat 2>/dev/null
+		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || dnf install -y lolcat 2>/dev/null || apk add lolcat 2>/dev/null
 	fi
 	echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 	echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"

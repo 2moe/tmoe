@@ -224,6 +224,14 @@ install_ide_01() {
         esac
         ;;
     esac
+    UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
+    if [ -e /usr/games/lolcat ]; then
+        echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${UPGRADE_TIPS} | lolcat -a -d 7
+    else
+        echo ${UPGRADE_TIPS}
+    fi
     do_you_want_to_continue
     #############
     grep_arch_linux_pkg_04

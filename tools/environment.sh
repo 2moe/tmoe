@@ -551,7 +551,14 @@ arch_does_not_support() {
 }
 ##########################
 do_you_want_to_continue() {
-    echo "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+    TMOE_TIPS_01="Do you want to continue?${YELLOW}[Y/n]${RESET}"
+    if [ -e /usr/games/lolcat ]; then
+        echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 8
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${TMOE_TIPS_01} | lolcat -a -d 8
+    else
+        echo ${TMOE_TIPS_01}
+    fi
     echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
     echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     read opt
