@@ -720,33 +720,58 @@ check_libreoffice_patch() {
     fi
 }
 ############
+lolcat_tmoe_tips_01() {
+    if [ -e /usr/games/lolcat ]; then
+        echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${TMOE_TIPS_01} | lolcat -a -d 9
+    else
+        echo ${TMOE_TIPS_01}
+    fi
+}
+#########
 install_baidu_netdisk() {
     DEPENDENCY_01="baidunetdisk"
     DEPENDENCY_02=""
+    echo "若安装失败，则请前往官网手动下载安装"
+    echo "url：${YELLOW}https://pan.baidu.com/download${RESET}"
+    echo "正在检测版本更新..."
+    THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
+    THE_LATEST_RPM_URL=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}' | sed 's@_amd64.deb@.x86_64.rpm@')
+    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION},最新版链接为${THE_LATEST_DEB_URL}"
+    lolcat_tmoe_tips_01
+    if [ -e "${TMOE_LINUX_DIR}/baidu_netdisk-version" ]; then
+        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/baidu_netdisk-version | head -n 1)"
+    elif [ ! -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
+        echo "未检测到本地版本，您可能尚未安装百度网盘客户端。"
+    else
+        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+    fi
     if [ "${ARCH_TYPE}" != "amd64" ]; then
         arch_does_not_support
     fi
 
-    if [ -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
-        press_enter_to_reinstall
-    fi
+    #if [ -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
+    #    press_enter_to_reinstall
+    #fi
+    do_you_want_to_continue
     cd /tmp
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="baidunetdisk-bin"
         beta_features_quick_install
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "http://wppkg.baidupcs.com/issue/netdisk/Linuxguanjia/3.3.2/baidunetdisk-3.3.2.x86_64.rpm"
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "${THE_LATEST_RPM_URL}"
         rpm -ivh 'baidunetdisk.rpm'
     elif [ "${LINUX_DISTRO}" = "debian" ]; then
         #GREP_NAME='baidunetdisk'
         #LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
         #download_ubuntu_kylin_deb_file_model_02
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "http://wppkg.baidupcs.com/issue/netdisk/Linuxguanjia/3.3.2/baidunetdisk_3.3.2_amd64.deb"
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
         #apt show ./baidunetdisk.deb
         #apt install -y ./baidunetdisk.deb
     fi
-    echo "若安装失败，则请前往官网手动下载安装"
-    echo "url：https://pan.baidu.com/download"
+    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/baidu_netdisk-version"
     #rm -fv ./baidunetdisk.deb
     beta_features_install_completed
 }
@@ -754,13 +779,24 @@ install_baidu_netdisk() {
 install_netease_163_cloud_music() {
     DEPENDENCY_01="netease-cloud-music"
     DEPENDENCY_02=""
+    echo "正在从优麒麟软件仓库获取最新版网易云音乐版本号..."
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: ${YELLOW}https://music.163.com/st/download${RESET}"
+    LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
+    THE_LATEST_DEB_VERSION=$(curl -L ${LATEST_DEB_REPO} | grep "${DEPENDENCY_01}" | cut -d '=' -f 5 | cut -d '"' -f 2 | head -n 1)
+    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
+    lolcat_tmoe_tips_01
+    if [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
+        echo "检测到本地版本为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+    elif [ ! -e "${APPS_LNK_DIR}/netease-cloud-music.desktop" ]; then
+        #press_enter_to_reinstall
+        echo "未检测到本地版本，您可能尚未安装网易云音乐官方版客户端"
+    fi
     case "${ARCH_TYPE}" in
     amd64 | i386) ;;
     *) arch_does_not_support ;;
     esac
-    if [ -e "${APPS_LNK_DIR}/netease-cloud-music.desktop" ]; then
-        press_enter_to_reinstall
-    fi
+    do_you_want_to_continue
     cd /tmp
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="netease-cloud-music"
@@ -775,7 +811,7 @@ install_netease_163_cloud_music() {
         non_debian_function
         GREP_NAME='netease-cloud-music'
         case $(date +%Y%m) in
-        202008 | 202009)
+        202008)
             echo "优麒麟软件仓库于2020年8月份中下旬进行维护，您可能无法正常下载"
             do_you_want_to_continue
             ;;
@@ -789,10 +825,9 @@ install_netease_163_cloud_music() {
             download_debian_cn_repo_deb_file_model_01
             #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
         fi
-        echo "若安装失败，则请前往官网手动下载安装。"
-        echo 'url: https://music.163.com/st/download'
         beta_features_install_completed
     fi
+    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     press_enter_to_return
     tmoe_linux_tool_menu
 }
