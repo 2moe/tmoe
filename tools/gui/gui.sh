@@ -173,6 +173,7 @@ install_gui() {
     if [ -f '/usr/share/fonts/Iosevka.ttf' ]; then
         standand_desktop_installation
     fi
+    random_neko
     cd /tmp
     echo 'lxde预览截图'
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
