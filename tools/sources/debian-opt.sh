@@ -353,6 +353,16 @@ display_debian_opt_app_version() {
 }
 #################
 upgrade_opt_app_01() {
+    if [ -e "/usr/share/icons/${DEPENDENCY_01}.png" ]; then
+        if [ $(command -v catimg) ]; then
+            catimg /usr/share/icons/${DEPENDENCY_01}.png
+        else
+            random_neko
+        fi
+    else
+        random_neko
+    fi
+
     case "${LINUX_DISTRO}" in
     debian)
         apt update

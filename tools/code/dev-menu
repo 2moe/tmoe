@@ -182,7 +182,6 @@ install_ide_01() {
     else
         random_neko
     fi
-
     echo "正在检测版本更新信息..."
     check_archlinux_cn_html_date
     ############
