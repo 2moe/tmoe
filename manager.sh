@@ -1503,8 +1503,8 @@ remove_gnu_linux_container() {
 			chmod 777 -R "${HOME}/debian_arm64"
 			rm -rf "${HOME}/debian_arm64" 2>/dev/null || sudo rm -rfv "${HOME}/debian_arm64"
 		fi
-		sed -i '/alias debian=/d' ${PREFIX}/etc/profile
-		sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
+		sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
+		sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 		source profile >/dev/null 2>&1
 		echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
 		echo '移除完成，如需卸载aria2,请手动输apt remove aria2'

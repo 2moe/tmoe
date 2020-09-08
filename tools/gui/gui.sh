@@ -3982,8 +3982,8 @@ configure_startvnc() {
 		export HOME="${HOME}"
 		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
 		vncserver -kill :${CURRENT_PORT}
-		rm -rf /tmp/.X1-lock
-		rm -rf /tmp/.X11-unix/X1
+		rm -rf /tmp/.X${CURRENT_PORT}-lock
+		rm -rf /tmp/.X11-unix/X${CURRENT_PORT}
 		pkill Xtightvnc
 		stopx11vnc 2>/dev/null
 	EndOfFile
