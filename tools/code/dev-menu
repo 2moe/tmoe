@@ -22,7 +22,13 @@ development_programming_tools() {
     case "${SOFTWARE}" in
     0 | "") software_center ;;
     1) which_vscode_edition ;;
-    2) install_android_studio ;;
+    2) #install_android_studio
+        GREP_NAME='android-studio'
+        LNK_FILE='${GREP_NAME}.desktop'
+        BIN_FILE="/usr/bin/${GREP_NAME}"
+        ICON_NAME="${GREP_NAME}.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+        ;;
     3)
         GREP_NAME='intellij-idea-ultimate-edition'
         LNK_FILE='jetbrains-idea.desktop'
@@ -178,8 +184,13 @@ install_ide_01() {
         echo "${BLUE}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
         ;;
     pycharm-professional)
-        echo "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请手动前往官网下载安装。"
+        echo "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
         echo "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+        ;;
+    android-studio)
+        THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
+        echo "若安装失败，则请前往官网手动下载安装。"
+        echo "${THE_LATEST_AS_LINK}"
         ;;
     github-desktop-bin)
         case ${ARCH_TYPE} in
