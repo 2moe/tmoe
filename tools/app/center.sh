@@ -39,11 +39,11 @@ software_center() {
             "1" "🦊 Browser:浏览器(firefox,chromium)" \
             "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
             "3" "🎵 Multimedia:图像与影音(腾讯视频,gimp,mpv)" \
-            "4" "🐧 SNS:社交类(qq)" \
-            "5" "🎮 Games:游戏(steam,wesnoth)" \
+            "4" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
+            "5" "📚 Documents:文档(libreoffice,wps)" \
             "6" "🔯 Packages&system:软件包与系统管理" \
-            "7" "📚 Documents:文档(libreoffice)" \
-            "8" "📘 VSCode 现代化代码编辑器" \
+            "7" "🎮 Games:游戏(steam,wesnoth)" \
+            "8" "🐧 SNS:社交类(qq)" \
             "9" "🎁 Download:下载类(aria2,baidu)" \
             "10" "🥙 Start zsh tool:启动zsh管理工具" \
             "11" "🥗 File shared:文件共享与网盘(Webdav)" \
@@ -57,11 +57,11 @@ software_center() {
     1) install_browser ;;
     2) explore_debian_opt_repo ;;
     3) tmoe_multimedia_menu ;;
-    4) tmoe_social_network_service ;;
-    5) tmoe_games_menu ;;
+    4) dev_menu ;;
+    5) tmoe_documents_menu ;;
     6) tmoe_software_package_menu ;;
-    7) tmoe_documents_menu ;;
-    8) which_vscode_edition ;;
+    7) tmoe_games_menu ;;
+    8) tmoe_social_network_service ;;
     9) tmoe_download_class ;;
     10) start_tmoe_zsh_manager ;;
     11) personal_netdisk ;;
@@ -70,6 +70,10 @@ software_center() {
     ############################################
     press_enter_to_return
     software_center
+}
+###########
+dev_menu() {
+    source ${TMOE_TOOL_DIR}/code/dev-menu
 }
 ###########
 start_tmoe_zsh_manager() {

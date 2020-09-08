@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+########################
+development_programming_tools() {
+    RETURN_TO_WHERE='development_programming_tools'
+    SOFTWARE=$(
+        whiptail --title "Development" --menu \
+            "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
+            "1" "🇻 🇸 VSCode 现代化代码编辑器" \
+            "2" "🇦 🇸 Android-Studio(安卓开发工具IDE)" \
+            "3" "🇮 🇯 IntelliJ IDEA(java编程语言集成开发环境)" \
+            "4" "🇵 🇾 PyCharm(python集成开发环境)" \
+            "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
+            "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
+            "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
+            "8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    case "${SOFTWARE}" in
+    0 | "") software_center ;;
+    1) which_vscode_edition ;;
+    2) install_android_studio ;;
+    *) echo "新版即将集成本开发工具的安装，敬请期待" ;;
+    esac
+    ############################################
+    press_enter_to_return
+    development_programming_tools
+}
+###########
+creat_android_studio_application_link() {
+    cd ${APPS_LNK_DIR}
+    #Icon=android-studio
+    cat >android_studio.desktop <<-'EOF'
+		[Desktop Entry]
+		Name=Android Studio
+		Type=Application
+		Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
+		Exec=/opt/android-studio/bin/studio.sh %F
+		Icon=/opt/android-studio/bin/studio.svg
+		Categories=TextEditor;Development;IDE;
+		MimeType=text/plain;inode/directory;
+		Terminal=false
+		Actions=new-empty-window;
+		StartupNotify=true
+		StartupWMClass=Android-Studio
+	EOF
+    chmod +x android_studio.desktop
+}
+#########################
+download_android_studio() {
+    THE_LATEST_DEB_LINK="$(curl -Lv 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
+    echo ${THE_LATEST_DEB_LINK}
+    echo "Do you want to download and install it?"
+    do_you_want_to_continue
+    aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
+}
+###############
+check_android_studio() {
+    mkdir -p ${HOME}/sd/Download
+    cd ${HOME}/sd/Download
+    if [ -e "/opt/android-studio" ]; then
+        echo '您已安装Android studio'
+        echo "若您需要卸载，则请输${RED}rm -rv${RESET} ${HOME}/sd/Download/android_studio_linux_64bit.tar.gz ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+        echo "是否需要重新安装？"
+        echo "Do you want to reinstall it?"
+        do_you_want_to_continue
+    fi
+    if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
+        download_android_studio
+    fi
+    DEPENDENCY_01=''
+    install_java
+}
+##############
+install_android_studio() {
+    check_android_studio
+    tar -zxvf android_studio_linux_64bit.tar.gz -C /opt
+    creat_android_studio_application_link
+    echo "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
+    echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+}
+##################
+development_programming_tools

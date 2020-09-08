@@ -16,7 +16,7 @@ beta_features() {
             "8" "📝 read:墨纸留香,品味阅读" \
             "9" "🥅 network:网络(网卡驱动,WiFi扫描)" \
             "10" "⌨ input method:输入法(搜狗,讯飞,百度)" \
-            "11" "🍕 other:其它类(Android-studio,scrcpy)" \
+            "11" "🍕 other:其它类(obs,scrcpy)" \
             "0" "🌚 Back to the main menu 返回主菜单" \
             3>&1 1>&2 2>&3
     )
@@ -53,8 +53,7 @@ tmoe_other_app_menu() {
             "1" "OBS-Studio(录屏软件)" \
             "2" "seahorse(密钥管理)" \
             "3" "kodi(家庭影院软件)" \
-            "4" "Android-studio(安卓开发工具IDE)" \
-            "5" "scrcpy(开源的Android投屏软件)" \
+            "4" "scrcpy(开源的Android投屏软件)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -64,8 +63,7 @@ tmoe_other_app_menu() {
     1) install_obs_studio ;;
     2) install_seahorse ;;
     3) install_kodi ;;
-    4) install_android_studio ;;
-    5) configure_scrcpy ;;
+    4) configure_scrcpy ;;
     esac
     ##########################
     press_enter_to_return
@@ -186,58 +184,6 @@ install_scrcpy() {
     beta_features_quick_install
 }
 ############
-creat_android_studio_application_link() {
-    cd ${APPS_LNK_DIR}
-    #Icon=android-studio
-    cat >android_studio.desktop <<-'EOF'
-		[Desktop Entry]
-		Name=Android Studio
-		Type=Application
-		Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
-		Exec=/opt/android-studio/bin/studio.sh %F
-		Icon=/opt/android-studio/bin/studio.svg
-		Categories=TextEditor;Development;IDE;
-		MimeType=text/plain;inode/directory;
-		Terminal=false
-		Actions=new-empty-window;
-		StartupNotify=true
-		StartupWMClass=Android-Studio
-	EOF
-    chmod +x android_studio.desktop
-}
-#########################
-download_android_studio() {
-    THE_LATEST_DEB_LINK="$(curl -Lv 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
-    echo ${THE_LATEST_DEB_LINK}
-    echo "Do you want to download and install it?"
-    do_you_want_to_continue
-    aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
-}
-###############
-check_android_studio() {
-    mkdir -p ${HOME}/sd/Download
-    cd ${HOME}/sd/Download
-    if [ -e "/opt/android-studio" ]; then
-        echo '您已安装Android studio'
-        echo "若您需要卸载，则请输${RED}rm -rv${RESET} ${HOME}/sd/Download/android_studio_linux_64bit.tar.gz ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
-        echo "是否需要重新安装？"
-        echo "Do you want to reinstall it?"
-        do_you_want_to_continue
-    fi
-    if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
-        download_android_studio
-    fi
-    DEPENDENCY_01=''
-    install_java
-}
-##############
-install_android_studio() {
-    check_android_studio
-    tar -zxvf android_studio_linux_64bit.tar.gz -C /opt
-    creat_android_studio_application_link
-    echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
-}
-##################
 install_seahorse() {
     DEPENDENCY_02='seahorse'
     beta_features_quick_install
