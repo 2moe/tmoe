@@ -13,7 +13,7 @@ development_programming_tools() {
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
             "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
-            "8" "♐ github-desktop(x64,github官方桌面客户端)" \
+            "8" "github-desktop(x64,github官方桌面客户端)" \
             "9" "⚛️ atom(x64,类Sublime风格编辑器，github出品)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
@@ -174,10 +174,10 @@ install_ide_01() {
     check_ide_version
     case ${GREP_NAME} in
     intellij-idea-ultimate-edition)
-        echo "本版本为旗舰版，如需下载社区版，则请手动前往官网下载安装${YELLOW}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
+        echo "本版本为旗舰版，如需下载社区版，则请手动前往官网下载安装${BLUE}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
         ;;
     pycharm-professional)
-        echo "本版本为专业版，如需下载社区版，则请手动前往官网下载安装${YELLOW}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+        echo "本版本为专业版，如需下载社区版，则请手动前往官网下载安装${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
     github-desktop-bin)
         case ${ARCH_TYPE} in
