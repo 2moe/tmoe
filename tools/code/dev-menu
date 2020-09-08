@@ -41,7 +41,7 @@ development_programming_tools() {
         GREP_NAME='pycharm-professional'
         LNK_FILE='charm.desktop pycharm-professional.desktop'
         BIN_FILE="/usr/bin/charm /usr/bin/pycharm"
-        ICON_NAME="${GREP_NAME}.png"
+        ICON_NAME="pycharm.png"
         APP_OPT_DIR="/opt/${GREP_NAME}"
         ;;
     5)
@@ -227,9 +227,15 @@ uncompress_arch_pkg_tar_zst() {
 install_ide_01() {
     #check_opt_dir_01
     check_zstd
-    if [ -e "/usr/share/pixmaps/${ICON_NAME}" ]; then
+    case ${GREP_NAME} in
+    webstorm) ICON_FILE='/opt/webstorm/bin/webstorm.png' ;;
+    clion-1) ICON_FILE='/opt/clion/bin/clion.png' ;;
+    github-desktop-bin) ICON_FILE='/usr/share/icons/hicolor/256x256/apps/github-desktop.png' ;;
+    *) ICON_FILE="/usr/share/pixmaps/${ICON_NAME}" ;;
+    esac
+    if [ -e "${ICON_FILE}" ]; then
         if [ $(command -v catimg) ]; then
-            catimg /usr/share/pixmaps/${ICON_NAME}
+            catimg "${ICON_FILE}"
         else
             random_neko
         fi
