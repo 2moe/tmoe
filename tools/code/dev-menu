@@ -173,6 +173,7 @@ uncompress_arch_pkg_tar_zst() {
 install_ide_01() {
     #check_opt_dir_01
     check_zstd
+    random_neko
     echo "正在检测版本更新信息..."
     check_archlinux_cn_html_date
     ############
@@ -190,7 +191,7 @@ install_ide_01() {
     android-studio)
         THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         echo "若安装失败，则请前往官网手动下载安装。"
-        echo "${THE_LATEST_AS_LINK}"
+        echo "${BLUE}${THE_LATEST_AS_LINK}${RESET}"
         ;;
     github-desktop-bin)
         case ${ARCH_TYPE} in

@@ -103,11 +103,12 @@ edit_code_server_config_manually() {
 }
 ####################
 vscode_server_upgrade() {
+    random_neko
     echo "正在检测版本信息..."
     if [ -e "/usr/local/bin/code-server-data/bin/code-server" ]; then
         LOCAL_VSCODE_VERSION=$(code-server --version | grep -v info | head -n 1 | awk '{print $1}')
     else
-        LOCAL_VSCODE_VERSION='您尚未安装code-server'
+        LOCAL_VSCODE_VERSION='NOT-INSTALLED未安装'
     fi
     LATEST_VSCODE_VERSION=$(curl -sL https://gitee.com/mo2/vscode-server/raw/aarch64/version.txt | head -n 1)
 

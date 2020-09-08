@@ -679,9 +679,36 @@ install_gnome_software() {
     beta_features_quick_install
 }
 ########################
+random_neko() {
+    case "$(($RANDOM % 3 + 1))" in
+    1) neko_01_blue ;;
+    2) neko_02_blue ;;
+    3 | *) neko_03_blue ;;
+    esac
+}
+###########
+neko_ascii_env() {
+    if [ ! $(command -v lolcat) ] && [ ! -e /usr/games/lolcat ]; then
+        case ${LINUX_DISTRO} in
+        debian)
+            apt install -y lolcat
+            ;;
+        arch) pacman -Syu lolcat ;;
+        esac
+    fi
+    if [ -e /usr/games/lolcat ]; then
+        CATCAT='/usr/games/lolcat'
+    elif [ "$(command -v lolcat)" ]; then
+        CATCAT='lolcat'
+    else
+        CATCAT='cat'
+    fi
+}
+##################
 neko_01_blue() {
+    neko_ascii_env
     printf "$BLUE"
-    cat <<-'EndOFneko'
+    ${CATCAT} <<-'EndOFneko'
 		                                        
 		                            .:7E        
 		            .iv7vrrrrr7uQBBBBBBB:       
@@ -710,6 +737,69 @@ neko_01_blue() {
     printf "$RESET"
 }
 ##############
+neko_02_blue() {
+    neko_ascii_env
+    printf "$BLUE"
+    ${CATCAT} <<-'EndOFneko'
+	       DL.                           
+	       QBBBBBKv:rr77ri:.             
+	       gBBQdY7::::..::i7vv.          
+	       UBd. . .:.........rBBBQBBBB5  
+	       Pu  :..r......i:....BBBQBBB:  
+	       ri.i:.j:...:. i7... uBBZrd:   
+	 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
+	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
+	 .27. :r.r:L7i::.7r:vri:...rr  .     
+	  v   ::.Yrviri:7v7v: ::...i.   i    
+	      r:ir: r.iiiir..:7r...r   :P.2Y 
+	      v:vi::.      :  ::. .qI7U1U :1 
+	Qr    7.7.         :.i::. :Di:. i .v:
+	v7..  s.r7.   ...   .:7i: rDi...r .. 
+	 vi: .7.iDBBr  .r   .:.7. rPr:..r    
+	 i   :virZBgi  :vrYJ1vYY .ruY:..i    
+	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+	    .1r:q.   rB52SKrj.:i i5isi.:i :.r
+	    YvrY7    r.  . ru :: PIrj7.:r..v 
+	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
+	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
+	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
+	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
+	         .            i   7          
+EndOFneko
+    printf "$RESET"
+}
+###########
+neko_03_blue() {
+    neko_ascii_env
+    printf "$BLUE"
+    ${CATCAT} <<-'EndOFneko'
+                     .::::..                
+          ::::rrr7QQJi::i:iirijQBBBQB.      
+          BBQBBBQBP. ......:::..1BBBB       
+          .BuPBBBX  .........r.  vBQL  :Y.  
+           rd:iQQ  ..........7L   MB    rr  
+            7biLX .::.:....:.:q.  ri    .   
+             JX1: .r:.r....i.r::...:.  gi5  
+             ..vr .7: 7:. :ii:  v.:iv :BQg  
+             : r:  7r:i7i::ri:DBr..2S       
+          i.:r:. .i:XBBK...  :BP ::jr   .7. 
+          r  i....ir r7.         r.J:   u.  
+         :..X: .. .v:           .:.Ji       
+        i. ..i .. .u:.     .   77: si   1Q  
+       ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  
+      7  iK::r  . ii7r LJLrL1r7DPi iJ     r 
+        .  ::.:   .  ri 5DZDBg7JR7.:r:   i. 
+       .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  
+       QB rJ.:rvDE: .. ri uv . iir.7j r7.   
+      iBg ::.7251QZ. . :.      irr:Iu: r.   
+       QB  .:5.71Si..........  .sr7ivi:U    
+       7BJ .7: i2. ........:..  sJ7Lvr7s    
+        jBBdD. :. ........:r... YB  Bi      
+           :7j1.                 :  :       
+EndOFneko
+    printf "$RESET"
+}
+############
 modify_xsdl_conf() {
     source ${TMOE_TOOL_DIR}/gui/gui.sh -x
 }

@@ -346,12 +346,9 @@ start_neofetch() {
 		aria2c --allow-overwrite=true -o neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 		chmod +x neofetch
 	fi
-
-	if [ ! "$(command -v lolcat)" ]; then
-		apt install -y lolcat 2>/dev/null || pacman -Sy lolcat 2>/dev/null || dnf install -y lolcat 2>/dev/null
-	fi
-
-	if [ "$(command -v lolcat)" ]; then
+	if [ -e /usr/games/lolcat ]; then
+		neofetch | /usr/games/lolcat
+	elif [ "$(command -v lolcat)" ]; then
 		neofetch | lolcat
 	else
 		neofetch
