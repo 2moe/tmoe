@@ -3,6 +3,7 @@
 development_programming_tools() {
     RETURN_TO_WHERE='development_programming_tools'
     GREP_NAME=''
+    DEV_MENU=01
     SOFTWARE=$(
         whiptail --title "Development" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
@@ -26,8 +27,8 @@ development_programming_tools() {
         GREP_NAME='android-studio'
         LNK_FILE='${GREP_NAME}.desktop'
         BIN_FILE="/usr/bin/${GREP_NAME}"
-        ICON_NAME="${GREP_NAME}.png"
         APP_OPT_DIR="/opt/${GREP_NAME}"
+        DEV_MENU=02
         ;;
     3)
         GREP_NAME='intellij-idea-ultimate-edition'
@@ -83,11 +84,55 @@ development_programming_tools() {
     ############################################
     case ${GREP_NAME} in
     "") ;;
-    *) dev_menu_01 ;;
+    *)
+        case ${DEV_MENU} in
+        01) dev_menu_01 ;;
+        02) dev_menu_02 ;;
+        esac
+        ;;
     esac
     ####################
     press_enter_to_return
     development_programming_tools
+}
+###########
+dev_menu_02() {
+    check_opt_app_version
+    check_download_path
+    RETURN_TO_WHERE='dev_menu_02'
+    SOFTWARE=$(
+        whiptail --title "${GREP_NAME}" --menu \
+            "您想要对${GREP_NAME}小可爱做什么？" 0 50 0 \
+            "1" "install/upgrade(安装/更新)" \
+            "2" "del pkg(删除安装包)" \
+            "3" "remove(卸载${GREP_NAME})" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    case "${SOFTWARE}" in
+    0 | "") development_programming_tools ;;
+    1) install_ide_02 ;;
+    2) delete_ide_pkg_02 ;;
+    3) remove_ide_02 ;;
+    esac
+    ############################################
+    press_enter_to_return
+    dev_menu_02
+}
+###########
+delete_ide_pkg_02() {
+    cd ${DOWNLOAD_PATH}
+    LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.tar.gz 2>/dev/null | head -n 1)
+    case ${LOCAL_ARCH_PKG_VERSION} in
+    "") echo "检测到安装包${RED}不存在${RESET}" ;;
+    *)
+        echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_ARCH_PKG_VERSION}${RESET}"
+        ls -lh ${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}
+        echo "Do you want to delete it?"
+        do_you_want_to_continue
+        rm -v ${LOCAL_ARCH_PKG_VERSION}
+        ;;
+    esac
 }
 ###########
 dev_menu_01() {
@@ -137,7 +182,7 @@ delete_ide_pkg() {
 ###########
 remove_ide_01() {
     cd ${APPS_LNK_DIR}
-    echo "${RED}rm -rv${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    echo "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
     github-desktop-bin)
@@ -148,6 +193,15 @@ remove_ide_01() {
     esac
 }
 ############
+remove_ide_02() {
+    cd ${APPS_LNK_DIR}
+    echo "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    do_you_want_to_continue
+    case ${GREP_NAME} in
+    *) rm -rv ${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT} ;;
+    esac
+}
+#############
 check_ide_version() {
     cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
@@ -199,7 +253,7 @@ install_ide_01() {
     android-studio)
         THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         echo "若安装失败，则请前往官网手动下载安装。"
-        echo "${BLUE}${THE_LATEST_AS_LINK}${RESET}"
+        echo "${BLUE}https://developer.android.google.cn/studio${RESET}"
         ;;
     github-desktop-bin)
         case ${ARCH_TYPE} in
@@ -224,15 +278,7 @@ install_ide_01() {
         esac
         ;;
     esac
-    UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
-    if [ -e /usr/games/lolcat ]; then
-        echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
-    elif [ "$(command -v lolcat)" ]; then
-        echo ${UPGRADE_TIPS} | lolcat -a -d 7
-    else
-        echo ${UPGRADE_TIPS}
-    fi
-    do_you_want_to_continue
+    do_you_want_to_upgrade_it
     #############
     grep_arch_linux_pkg_04
     uncompress_arch_pkg_tar_zst
@@ -242,10 +288,58 @@ install_ide_01() {
     esac
 }
 ##################
+do_you_want_to_upgrade_it() {
+    UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
+    if [ -e /usr/games/lolcat ]; then
+        echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${UPGRADE_TIPS} | lolcat -a -d 7
+    else
+        echo ${UPGRADE_TIPS}
+    fi
+    do_you_want_to_continue
+}
+##################
+install_ide_02() {
+    ICON_FILE='/opt/android-studio/bin/studio.png'
+    if [ -e "${ICON_FILE}" ]; then
+        if [ $(command -v catimg) ]; then
+            catimg ${ICON_FILE}
+        else
+            random_neko
+        fi
+    else
+        random_neko
+    fi
+    echo "正在检测版本更新信息..."
+    #check_archlinux_cn_html_date
+    ############
+    #THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
+    case ${GREP_NAME} in
+    android-studio)
+        THE_LATEST_DEB_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
+        THE_LATEST_APP_VERSION_CODE="$(echo ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
+        DOWNLOAD_FILE_NAME=$(echo ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}')
+        echo "若安装失败，则请前往官网手动下载安装。"
+        echo "${BLUE}https://developer.android.com/studio${RESET}"
+        ;;
+    esac
+    check_ide_version
+    do_you_want_to_upgrade_it
+    #############
+    #grep_arch_linux_pkg_04
+    download_android_studio
+    install_android_studio
+    #uncompress_arch_pkg_tar_zst
+    case ${GREP_NAME} in
+    android-studio) install_java ;;
+    esac
+}
+#############
 creat_android_studio_application_link() {
     cd ${APPS_LNK_DIR}
     #Icon=android-studio
-    cat >android_studio.desktop <<-'EOF'
+    cat >android-studio.desktop <<-'EOF'
 		[Desktop Entry]
 		Name=Android Studio
 		Type=Application
@@ -259,15 +353,21 @@ creat_android_studio_application_link() {
 		StartupNotify=true
 		StartupWMClass=Android-Studio
 	EOF
-    chmod a+r android_studio.desktop
+    chmod a+r android-studio.desktop
 }
 #########################
 download_android_studio() {
-    THE_LATEST_DEB_LINK="$(curl -Lv 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
-    echo ${THE_LATEST_DEB_LINK}
-    echo "Do you want to download and install it?"
-    do_you_want_to_continue
-    aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
+    cd ${DOWNLOAD_PATH}
+    LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.tar.gz 2>/dev/null | head -n 1)
+    case ${LOCAL_ARCH_PKG_VERSION} in
+    ${DOWNLOAD_FILE_NAME}) echo "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
+    *) aria2c --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${DOWNLOAD_FILE_NAME} -x 10 -s 10 -k 1M ${THE_LATEST_DEB_LINK} ;;
+    esac
+    echo ${THE_LATEST_APP_VERSION_CODE} >"${LOCAL_APP_VERSION_TXT}"
+    #echo ${THE_LATEST_DEB_LINK}
+    #echo "Do you want to download and install it?"
+    #do_you_want_to_continue
+    #aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
 }
 ###############
 check_android_studio() {
@@ -287,10 +387,10 @@ check_android_studio() {
 }
 ##############
 install_android_studio() {
-    check_android_studio
-    tar -zxvf android_studio_linux_64bit.tar.gz -C /opt
+    #check_android_studio
+    tar -pzxvf ${DOWNLOAD_PATH}/${DOWNLOAD_FILE_NAME} -C /opt
     creat_android_studio_application_link
-    echo "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
+    #echo "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
     echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 }
 ##################
