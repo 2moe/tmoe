@@ -2,6 +2,7 @@
 ########################
 development_programming_tools() {
     RETURN_TO_WHERE='development_programming_tools'
+    GREP_NAME=''
     SOFTWARE=$(
         whiptail --title "Development" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
@@ -12,21 +13,205 @@ development_programming_tools() {
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
             "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
-            "8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
+            "8" "♐ github-desktop(x64,github官方桌面客户端)" \
+            "9" "⚛️ atom(x64,类Sublime风格编辑器，github出品)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
+    #"8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
     case "${SOFTWARE}" in
     0 | "") software_center ;;
     1) which_vscode_edition ;;
     2) install_android_studio ;;
-    *) echo "新版即将集成本开发工具的安装，敬请期待" ;;
+    3)
+        GREP_NAME='intellij-idea-ultimate-edition'
+        LNK_FILE='jetbrains-idea.desktop'
+        BIN_FILE="/usr/bin/${GREP_NAME}"
+        ICON_NAME="${GREP_NAME}.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+        ;;
+    4)
+        GREP_NAME='pycharm-professional'
+        LNK_FILE='charm.desktop pycharm-professional.desktop'
+        BIN_FILE="/usr/bin/charm /usr/bin/pycharm"
+        ICON_NAME="${GREP_NAME}.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+        ;;
+    5)
+        GREP_NAME='webstorm'
+        LNK_FILE='jetbrains-webstorm.desktop'
+        BIN_FILE="/usr/bin/${GREP_NAME}"
+        ICON_NAME="${GREP_NAME}.svg"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+        ;;
+    6)
+        GREP_NAME='clion-1'
+        LNK_FILE='jetbrains-clion.desktop'
+        BIN_FILE="/usr/bin/clion"
+        ICON_NAME="${GREP_NAME}.svg"
+        APP_OPT_DIR="/opt/clion"
+        ;;
+    7)
+        GREP_NAME='goland'
+        LNK_FILE='jetbrains-goland.desktop'
+        BIN_FILE="/usr/bin/${GREP_NAME}"
+        ICON_NAME="${GREP_NAME}.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+        ;;
+    8)
+        GREP_NAME='github-desktop-bin'
+        LNK_FILE="github-desktop.desktop"
+        BIN_FILE="/usr/bin/github-desktop"
+        ICON_NAME="github-desktop.png"
+        APP_OPT_DIR="/opt/github-desktop"
+        ;;
+    9)
+        GREP_NAME='atom-editor-bin'
+        LNK_FILE='atom.desktop'
+        BIN_FILE="/usr/bin/atom"
+        ICON_NAME="atom.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+        ;;
     esac
+    #) echo "新版即将集成本开发工具的安装，敬请期待" ;;
     ############################################
+    case ${GREP_NAME} in
+    "") ;;
+    *) dev_menu_01 ;;
+    esac
+    ####################
     press_enter_to_return
     development_programming_tools
 }
 ###########
+dev_menu_01() {
+    check_opt_app_version
+    check_download_path
+    RETURN_TO_WHERE='dev_menu_01'
+    SOFTWARE=$(
+        whiptail --title "${GREP_NAME}" --menu \
+            "您想要对${GREP_NAME}小可爱做什么？" 0 50 0 \
+            "1" "install/upgrade(安装/更新)" \
+            "2" "del pkg(删除安装包)" \
+            "3" "remove(卸载${GREP_NAME})" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    case "${SOFTWARE}" in
+    0 | "") development_programming_tools ;;
+    1) install_ide_01 ;;
+    2) delete_ide_pkg ;;
+    3) remove_ide_01 ;;
+    esac
+    ############################################
+    press_enter_to_return
+    dev_menu_01
+}
+###########
+delete_ide_pkg() {
+    case ${LINUX_DISTRO} in
+    debian)
+        apt clean
+        apt autoclean
+        ;;
+    esac
+    cd ${DOWNLOAD_PATH}
+    LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.pkg.tar.zst 2>/dev/null | head -n 1)
+    case ${LOCAL_ARCH_PKG_VERSION} in
+    "") echo "检测到安装包${RED}不存在${RESET}" ;;
+    *)
+        echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_ARCH_PKG_VERSION}${RESET}"
+        ls -lh ${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}
+        echo "Do you want to delete it?"
+        do_you_want_to_continue
+        rm -v ${LOCAL_ARCH_PKG_VERSION}
+        ;;
+    esac
+}
+###########
+remove_ide_01() {
+    cd ${APPS_LNK_DIR}
+    echo "${RED}rm -rv${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    do_you_want_to_continue
+    case ${GREP_NAME} in
+    github-desktop-bin)
+        rm -rv /usr/share/lintian/overrides/github-desktop /usr/share/doc/github-desktop ${APP_OPT_DIR} ${LNK_FILE} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} /usr/share/icons/hicolor/256x256/apps/github-desktop.png /usr/share/icons/hicolor/512x512/apps/github-desktop.png /usr/share/icons/hicolor/1024x1024/apps/github-desktop.png
+        ;;
+    atom-editor-bin) rm -rv atom.desktop atom.desktop.orig /usr/bin/apm /usr/bin/atom /usr/share/atom /usr/share/doc/atom /usr/share/licenses/atom-editor-bin /usr/share/lintian/overrides/atom /usr/share/pixmaps/atom.png /usr/share/polkit-1/actions /usr/share/polkit-1/actions/atom-stable.policy ${LOCAL_APP_VERSION_TXT} ;;
+    *) rm -rv ${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} ;;
+    esac
+}
+############
+check_ide_version() {
+    cat <<-ENDofTable
+		╔═══╦══════════╦═══════════════════╦════════════════════
+		║   ║          ║                   ║                    
+		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
+		║   ║          ║  Latest version   ║  Local version     
+		║---║----------║-------------------║--------------------
+		║ 1 ║${GREP_NAME}                    ${LOCAL_OPT_APP_VERSION} 
+		║   ║          ║$(echo ${THE_LATEST_APP_VERSION_CODE} | sed 's@-x86_64@@')
+
+	ENDofTable
+}
+#########
+uncompress_arch_pkg_tar_zst() {
+    #mkdir -p ${APP_OPT_DIR}
+    #cd ${APP_OPT_DIR}
+    #tar --zstd -xvf ${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION} &>/dev/null || zstdcat "${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION}" | tar xvf -
+    cd /
+    tar --zstd -Ppxvf ${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION} --exclude=.*
+    #cp -pf ${TMOE_TOOL_DIR}/code/lnk/${GREP_NAME}.desktop ${APPS_LNK_DIR}
+}
+###########
+install_ide_01() {
+    #check_opt_dir_01
+    check_zstd
+    echo "正在检测版本更新信息..."
+    check_archlinux_cn_html_date
+    ############
+    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
+    check_ide_version
+    case ${GREP_NAME} in
+    intellij-idea-ultimate-edition)
+        echo "本版本为旗舰版，如需下载社区版，则请手动前往官网下载安装${YELLOW}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
+        ;;
+    pycharm-professional)
+        echo "本版本为专业版，如需下载社区版，则请手动前往官网下载安装${YELLOW}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+        ;;
+    github-desktop-bin)
+        case ${ARCH_TYPE} in
+        amd64) ;;
+        *)
+            echo "本版本仅支持x86_64架构"
+            echo "${ARCH_TYPE}请${RED}自行编译${RESET}"
+            echo "Github url: ${YELLOW}https://github.com/shiftkey/desktop${RESET}"
+            arch_does_not_support
+            ;;
+        esac
+        ;;
+    atom-editor-bin)
+        case ${ARCH_TYPE} in
+        amd64) ;;
+        *)
+            echo "本版本仅支持x86_64架构"
+            echo "${ARCH_TYPE}请${RED}自行编译${RESET}"
+            echo "Github url: ${YELLOW}https://github.com/atom/atom${RESET}"
+            arch_does_not_support
+            ;;
+        esac
+        ;;
+    esac
+    do_you_want_to_continue
+    #############
+    grep_arch_linux_pkg_04
+    uncompress_arch_pkg_tar_zst
+    case ${GREP_NAME} in
+    github-desktop-bin | atom-editor-bin) ;;
+    *) install_java ;;
+    esac
+}
+##################
 creat_android_studio_application_link() {
     cd ${APPS_LNK_DIR}
     #Icon=android-studio
@@ -44,7 +229,7 @@ creat_android_studio_application_link() {
 		StartupNotify=true
 		StartupWMClass=Android-Studio
 	EOF
-    chmod +x android_studio.desktop
+    chmod a+r android_studio.desktop
 }
 #########################
 download_android_studio() {
@@ -68,7 +253,6 @@ check_android_studio() {
     if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
         download_android_studio
     fi
-    DEPENDENCY_01=''
     install_java
 }
 ##############

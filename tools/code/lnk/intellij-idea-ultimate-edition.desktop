@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=IntelliJ IDEA Ultimate Edition
+Type=Application
+Comment=Intelligent coding assistance and ergonomic design make development not only productive but also enjoyable.
+Exec=/opt/intellij-idea-ultimate-edition/opt/intellij-idea-ultimate-edition/bin/idea.sh %u
+Icon=/opt/intellij-idea-ultimate-edition/opt/intellij-idea-ultimate-edition/bin/idea.png
+Terminal=false
+StartupWMClass=jetbrains-idea
+Categories=Development;IDE;
+StartupNotify=true
+MimeType=text/plain;inode/directory;

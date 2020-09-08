@@ -14,7 +14,7 @@ which_vscode_edition() {
         3>&1 1>&2 2>&3)
     ##############################
     case "${VSCODE_EDITION}" in
-    0 | "") software_center ;;
+    0 | "") development_programming_tools ;;
     1) check_vscode_server_arch ;;
     2) install_vscodium ;;
     3) install_vscode_oss ;;

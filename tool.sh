@@ -111,6 +111,10 @@ gnu_linux_env() {
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
 	TMOE_GIT_URL='github.com/2moe/tmoe-linux'
 	APPS_LNK_DIR='/usr/share/applications'
+	if [ ! -e "${APPS_LNK_DIR}" ]; then
+		mkdir -p ${APPS_LNK_DIR}
+	fi
+
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
 		mkdir -p ${CONFIG_FOLDER}

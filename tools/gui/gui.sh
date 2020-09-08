@@ -2582,11 +2582,7 @@ download_arch_wallpaper() {
 }
 ##############
 download_arch_xfce_artwork() {
-    if [ ! $(command -v unzstd) ]; then
-        echo "${TMOE_INSTALLATON_COMMAND} zstd"
-        ${TMOE_INSTALLATON_COMMAND} zstd
-        echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
-    fi
+    check_zstd
     GREP_NAME='xfce4-artwork'
     #https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
     WALLPAPER_NAME='backgrounds/xfce'

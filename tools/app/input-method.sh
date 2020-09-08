@@ -14,11 +14,7 @@ kde_config_module_for_fcitx() {
 }
 ############
 tmoe_fcitx5_menu() {
-    if [ ! $(command -v unzstd) ]; then
-        echo "${TMOE_INSTALLATON_COMMAND} zstd"
-        ${TMOE_INSTALLATON_COMMAND} zstd
-        echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
-    fi
+    check_zstd
     RETURN_TO_WHERE='tmoe_fcitx5_menu'
     NON_DEBIAN='false'
     INPUT_METHOD=$(
