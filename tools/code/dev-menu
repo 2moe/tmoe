@@ -391,7 +391,7 @@ install_android_studio() {
     tar -pzxvf ${DOWNLOAD_PATH}/${DOWNLOAD_FILE_NAME} -C /opt
     creat_android_studio_application_link
     #echo "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
-    echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+    #echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 }
 ##################
 development_programming_tools
