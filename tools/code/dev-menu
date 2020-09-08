@@ -173,7 +173,16 @@ uncompress_arch_pkg_tar_zst() {
 install_ide_01() {
     #check_opt_dir_01
     check_zstd
-    random_neko
+    if [ -e "/usr/share/pixmaps/${ICON_NAME}" ]; then
+        if [ $(command -v catimg) ]; then
+            catimg /usr/share/pixmaps/${ICON_NAME}
+        else
+            random_neko
+        fi
+    else
+        random_neko
+    fi
+
     echo "正在检测版本更新信息..."
     check_archlinux_cn_html_date
     ############
