@@ -191,12 +191,13 @@ install_vivaldi_browser() {
     check_deb_version
     echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
-    rm -v /etc/apt/sources.list.d/vivaldi.list
+    rm -v /etc/apt/sources.list.d/vivaldi.list 2>/dev/null
     cd ${APPS_LNK_DIR}
     if ! grep -q 'vivaldi-stable --no-sandbox' vivaldi-stable.desktop; then
         do_you_want_to_close_the_sandbox_mode
         do_you_want_to_continue
         sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' vivaldi-stable.desktop
+        cat vivaldi-stable.desktop | grep --color=auto 'no-sandbox'
     fi
 }
 #############
@@ -313,6 +314,7 @@ tmoe_browser_menu() {
             do_you_want_to_close_the_sandbox_mode
             do_you_want_to_continue
             sed -i 's@Exec=falkon@& --no-sandbox@g' org.kde.falkon.desktop
+            cat org.kde.falkon.desktop | grep --color=auto 'no-sandbox'
         fi
         ;;
     *) beta_features_quick_install ;;
