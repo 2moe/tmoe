@@ -144,7 +144,7 @@ install_firefox_browser() {
     fi
 }
 #####################
-install_browser() {
+firefox_or_chromium() {
     if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓\nI am Firefox, choose me.\n我是火狐娘，选我啦！♪(^∇^*) \nI'm chrome's elder sister chromium, be sure to choose me.\n妾身是chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
 
         if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "Firefox-ESR" --yesno "I am Firefox,I have a younger sister called ESR.\n我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 12 53); then
@@ -160,5 +160,149 @@ install_browser() {
         install_chromium_browser
     fi
 }
-###########################
-install_browser
+##############
+install_vivaldi_browser() {
+    REPO_URL='https://vivaldi.com/zh-hans/download/'
+    THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep deb | sed 's@ @\n@g' | grep 'deb' | grep 'amd64' | cut -d '"' -f 2 | head -n 1)"
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    i386 | arm64 | armhf) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
+    *) arch_does_not_support ;;
+    esac
+
+    case ${LINUX_DISTRO} in
+    debian | arch) ;;
+    redhat)
+        case ${ARCH_TYPE} in
+        amd64)
+            #THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | head -n 1)"
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.x86_64.rpm@")
+            ;;
+        i386)
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.i386.rpm@")
+            ;;
+        *) arch_does_not_support ;;
+        esac
+        ;;
+    *) non_debian_function ;;
+    esac
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-stable_@@")
+    check_deb_version
+    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
+    download_and_install_deb
+}
+#############
+download_and_install_deb() {
+    do_you_want_to_upgrade_it_02
+    do_you_want_to_continue
+    cd /tmp
+    case ${LINUX_DISTRO} in
+    debian | redhat) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
+    esac
+    case ${LINUX_DISTRO} in
+    debian)
+        apt show ./${THE_LATEST_DEB_FILE}
+        apt install -y ./${THE_LATEST_DEB_FILE}
+        ;;
+    redhat) rpm -ivh ./${THE_LATEST_DEB_FILE} ;;
+    arch) beta_features_quick_install ;;
+    esac
+    rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
+    echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
+    beta_features_install_completed
+}
+############
+install_360_browser() {
+    REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/browser360/'
+    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
+    *) arch_does_not_support ;;
+    esac
+
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    redhat)
+        case ${ARCH_TYPE} in
+        amd64)
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.x86_64.rpm@")
+            ;;
+        arm64)
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.aarch64.rpm@")
+            ;;
+        *) non_debian_function ;;
+        esac
+        ;;
+    esac
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
+    check_deb_version
+    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
+    download_and_install_deb
+}
+##############
+tmoe_browser_menu() {
+    RETURN_TO_WHERE='tmoe_browser_menu'
+    RETURN_TO_MENU='tmoe_browser_menu'
+    NON_DEBIAN='false'
+    DEPENDENCY_02=""
+    TMOE_APP=$(whiptail --title "Browsers" --menu \
+        "Which browser do you want to install?" 0 50 0 \
+        "1" "Firefox & Chromium" \
+        "2" "360安全浏览器" \
+        "3" "midori(轻量级,开源浏览器)" \
+        "4" "vivaldi(一切皆可定制)" \
+        "5" "konqueror(KDE默认浏览器,支持文件管理)" \
+        "6" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine渲染引擎)" \
+        "7" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko引擎)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") software_center ;;
+    1)
+        firefox_or_chromium
+        DEPENDENCY_01=""
+        ;;
+    2)
+        case ${LINUX_DISTRO} in
+        arch) DEPENDENCY_01='browser360' ;;
+        *) DEPENDENCY_01='browser360-cn-stable' ;;
+        esac
+        GREP_NAME='browser360-cn-stable'
+        OFFICIAL_URL='https://browser.360.cn/se/linux/'
+        tmoe_app_menu_01
+        DEPENDENCY_01=""
+        ;;
+    3) DEPENDENCY_01="midori" ;;
+    4)
+        DEPENDENCY_01='vivaldi'
+        case ${LINUX_DISTRO} in
+        arch)
+            case ${ARCH_TYPE} in
+            arm64) DEPENDENCY_01='vivaldi-arm64' ;;
+            esac
+            ;;
+        esac
+        GREP_NAME='vivaldi'
+        OFFICIAL_URL='https://vivaldi.com/download/'
+        tmoe_app_menu_01
+        DEPENDENCY_01=""
+        ;;
+    5) DEPENDENCY_01="konqueror" ;;
+    6) DEPENDENCY_01="falkon" ;;
+    7) DEPENDENCY_01="epiphany-browser" ;;
+    esac
+    ##########################
+    case ${DEPENDENCY_01} in
+    "") ;;
+    *) beta_features_quick_install ;;
+    esac
+    ##############
+    press_enter_to_return
+    tmoe_browser_menu
+}
+#############
+tmoe_browser_menu

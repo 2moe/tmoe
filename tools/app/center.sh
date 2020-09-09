@@ -36,7 +36,7 @@ software_center() {
     SOFTWARE=$(
         whiptail --title "Software center-01" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
-            "1" "🦊 Browser:浏览器(firefox,chromium)" \
+            "1" "🦊 Browser:浏览器(firefox,chromium,vivaldi)" \
             "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
             "3" "🎵 Multimedia:图像与影音(腾讯视频,gimp,mpv)" \
             "4" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \

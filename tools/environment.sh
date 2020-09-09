@@ -1321,4 +1321,61 @@ do_you_want_to_upgrade_it_02() {
     fi
 }
 ##################
+check_deb_version() {
+    cat <<-ENDofTable
+		╔═══╦══════════╦═══════════════════╦════════════════════
+		║   ║          ║                   ║                    
+		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
+		║   ║          ║  Latest version   ║  Local version     
+		║---║----------║-------------------║--------------------
+		║ 1 ║${GREP_NAME}                    ${LOCAL_OPT_APP_VERSION} 
+		║   ║          ║${THE_LATEST_DEB_VERSION}
+
+	ENDofTable
+}
+################
+install_tmoe_app_01() {
+    random_neko
+    echo "正在检测版本更新信息..."
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: ${YELLOW}${OFFICIAL_URL}${RESET}"
+    case ${DEPENDENCY_01} in
+    vivaldi) install_vivaldi_browser ;;
+    browser360-cn-stable) install_360_browser ;;
+    esac
+}
+###########
+remove_tmoe_app_01() {
+    echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_APP_VERSION_TXT}${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
+    do_you_want_to_continue
+    case ${GREP_NAME} in
+    *)
+        rm -v ${LOCAL_APP_VERSION_TXT}
+        ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+        ;;
+    esac
+}
+###########
+tmoe_app_menu_01() {
+    check_opt_app_version
+    #check_download_path
+    RETURN_TO_WHERE='tmoe_app_menu_01'
+    SOFTWARE=$(
+        whiptail --title "${GREP_NAME}" --menu \
+            "您想要对${GREP_NAME}小可爱做什么？" 0 50 0 \
+            "1" "install/upgrade(安装/更新)" \
+            "2" "remove(卸载${GREP_NAME})" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    case "${SOFTWARE}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1) install_tmoe_app_01 ;;
+    2) remove_tmoe_app_01 ;;
+    esac
+    #############################
+    press_enter_to_return
+    tmoe_app_menu_01
+}
+###########
 gnu_linux_env_02
