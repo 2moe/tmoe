@@ -191,6 +191,9 @@ install_vivaldi_browser() {
     check_deb_version
     echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
+    do_you_want_to_close_the_sandbox_mode
+    do_you_want_to_continue
+    sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' ${APPS_LNK_DIR}/vivaldi-stable.desktop
 }
 #############
 download_and_install_deb() {
@@ -251,12 +254,11 @@ tmoe_browser_menu() {
     TMOE_APP=$(whiptail --title "Browsers" --menu \
         "Which browser do you want to install?" 0 50 0 \
         "1" "Firefox & Chromium" \
-        "2" "360安全浏览器" \
-        "3" "midori(轻量级,开源浏览器)" \
-        "4" "vivaldi(一切皆可定制)" \
-        "5" "konqueror(KDE默认浏览器,支持文件管理)" \
-        "6" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine渲染引擎)" \
-        "7" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko引擎)" \
+        "2" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine渲染引擎)" \
+        "3" "vivaldi(一切皆可定制)" \
+        "4" "360安全浏览器" \
+        "5" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko引擎)" \
+        "6" "midori(轻量级,开源浏览器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -266,18 +268,8 @@ tmoe_browser_menu() {
         firefox_or_chromium
         DEPENDENCY_01=""
         ;;
-    2)
-        case ${LINUX_DISTRO} in
-        arch) DEPENDENCY_01='browser360' ;;
-        *) DEPENDENCY_01='browser360-cn-stable' ;;
-        esac
-        GREP_NAME='browser360-cn-stable'
-        OFFICIAL_URL='https://browser.360.cn/se/linux/'
-        tmoe_app_menu_01
-        DEPENDENCY_01=""
-        ;;
-    3) DEPENDENCY_01="midori" ;;
-    4)
+    2) DEPENDENCY_01="falkon" ;;
+    3)
         DEPENDENCY_01='vivaldi'
         case ${LINUX_DISTRO} in
         arch)
@@ -291,13 +283,30 @@ tmoe_browser_menu() {
         tmoe_app_menu_01
         DEPENDENCY_01=""
         ;;
-    5) DEPENDENCY_01="konqueror" ;;
-    6) DEPENDENCY_01="falkon" ;;
-    7) DEPENDENCY_01="epiphany-browser" ;;
+    4)
+        case ${LINUX_DISTRO} in
+        arch) DEPENDENCY_01='browser360' ;;
+        *) DEPENDENCY_01='browser360-cn-stable' ;;
+        esac
+        GREP_NAME='browser360-cn-stable'
+        OFFICIAL_URL='https://browser.360.cn/se/linux/'
+        tmoe_app_menu_01
+        DEPENDENCY_01=""
+        ;;
+    5) DEPENDENCY_01="epiphany-browser" ;;
+    6) DEPENDENCY_01="midori" ;;
     esac
+    #    5) DEPENDENCY_01="konqueror" ;;
+    #    "5" "konqueror(KDE默认浏览器,支持文件管理)" \
     ##########################
     case ${DEPENDENCY_01} in
     "") ;;
+    falkon)
+        beta_features_quick_install
+        do_you_want_to_close_the_sandbox_mode
+        do_you_want_to_continue
+        sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' ${APPS_LNK_DIR}/vivaldi-stable.desktop
+        ;;
     *) beta_features_quick_install ;;
     esac
     ##############
