@@ -187,10 +187,11 @@ install_vivaldi_browser() {
     *) non_debian_function ;;
     esac
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-stable_@@")
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@vivaldi-stable_@@")
     check_deb_version
     echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
+    rm -v /etc/apt/sources.list.d/vivaldi.list
     cd ${APPS_LNK_DIR}
     if ! grep -q 'vivaldi-stable --no-sandbox' vivaldi-stable.desktop; then
         do_you_want_to_close_the_sandbox_mode
@@ -273,10 +274,11 @@ tmoe_browser_menu() {
         ;;
     2) DEPENDENCY_01="falkon" ;;
     3)
-        DEPENDENCY_01='vivaldi'
+        DEPENDENCY_01='vivaldi-stable'
         case ${LINUX_DISTRO} in
         arch)
             case ${ARCH_TYPE} in
+            amd64) DEPENDENCY_01='vivaldi' ;;
             arm64) DEPENDENCY_01='vivaldi-arm64' ;;
             esac
             ;;
