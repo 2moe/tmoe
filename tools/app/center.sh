@@ -519,7 +519,7 @@ install_linux_qq() {
     if [ ! -e "${APPS_LNK_DIR}/qq.desktop" ]; then
         echo "未检测到本地版本，您可能尚未安装腾讯QQ linux版客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
         echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
         echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
@@ -702,7 +702,7 @@ install_wps_office() {
         #press_enter_to_reinstall
         echo "未检测到本地版本，您可能尚未安装WPS客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
         echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
         echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
@@ -782,7 +782,8 @@ lolcat_tmoe_tips_01() {
     arch) echo "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
     redhat) echo "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
     esac
-    do_you_want_to_upgrade_it_02
+    #do_you_want_to_upgrade_it_02
+    echo "您是否需要${GREEN}更新${RESET}${BLUE}${DEPENDENCY_01}${RESET}?"
 }
 #########
 install_baidu_netdisk() {
@@ -816,7 +817,7 @@ install_baidu_netdisk() {
     if [ ! -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
         echo "未检测到本地版本，您可能尚未安装百度网盘客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
         echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
         echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
