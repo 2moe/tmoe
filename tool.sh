@@ -107,6 +107,7 @@ gnu_linux_env() {
 		mkdir -p /usr/local/bin
 	fi
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_ICON_DIR="${TMOE_LINUX_DIR}/icons"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
 	TMOE_GIT_URL='github.com/2moe/tmoe-linux'

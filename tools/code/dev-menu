@@ -233,15 +233,7 @@ install_ide_01() {
     github-desktop-bin) ICON_FILE='/usr/share/icons/hicolor/256x256/apps/github-desktop.png' ;;
     *) ICON_FILE="/usr/share/pixmaps/${ICON_NAME}" ;;
     esac
-    if [ -e "${ICON_FILE}" ]; then
-        if [ $(command -v catimg) ]; then
-            catimg "${ICON_FILE}"
-        else
-            random_neko
-        fi
-    else
-        random_neko
-    fi
+    cat_icon_img
     echo "正在检测版本更新信息..."
     check_archlinux_cn_html_date
     ############
@@ -308,15 +300,7 @@ do_you_want_to_upgrade_it() {
 ##################
 install_ide_02() {
     ICON_FILE='/opt/android-studio/bin/studio.png'
-    if [ -e "${ICON_FILE}" ]; then
-        if [ $(command -v catimg) ]; then
-            catimg ${ICON_FILE}
-        else
-            random_neko
-        fi
-    else
-        random_neko
-    fi
+    cat_icon_img
     echo "正在检测版本更新信息..."
     #check_archlinux_cn_html_date
     ############

@@ -481,37 +481,73 @@ install_mpv() {
 }
 #############
 install_linux_qq() {
+    ICON_FILE='/usr/local/share/tencent-qq/qq.png'
+    cat_icon_img
     DEPENDENCY_01="linuxqq"
     DEPENDENCY_02=""
-    if [ -e "${APPS_LNK_DIR}/qq.desktop" ]; then
-        press_enter_to_reinstall
+    echo "正在检测版本更新..."
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: ${YELLOW}https://im.qq.com/linuxqq/download.html${RESET}"
+    THE_LATEST_PACMAN_URL=$(curl -L https://aur.tuna.tsinghua.edu.cn/packages/linuxqq/ | grep x86_64 | grep qq | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
+    case ${THE_LATEST_DEB_VERSION} in
+    linuxqq_2.0.0-b2-1082)
+        THE_LATEST_DEB_VERSION='linuxqq_2.0.0-b2-1084'
+        THE_LATEST_PACMAN_URL="http://down.qq.com/qqweb/LinuxQQ/linuxqq_2.0.0-b2-1084_x86_64.pkg.tar.xz"
+        ;;
+    esac
+
+    THE_LATEST_DEB_URL=$(echo ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${ARCH_TYPE}.deb@")
+    case ${ARCH_TYPE} in
+    amd64) TMP_ARCH_TYPE=x86_64 ;;
+    arm64) TMP_ARCH_TYPE=arm64 ;;
+    mips*) TMP_ARCH_TYPE=mips64el ;;
+    esac
+
+    THE_LATEST_SH_URL=$(echo ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${TMP_ARCH_TYPE}.sh@")
+    #重复检测版本号
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
+
+    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
+    lolcat_tmoe_tips_01
+
+    case ${LINUX_DISTRO} in
+    debian) echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}" ;;
+    *) echo "最新版链接为${BLUE}${THE_LATEST_SH_URL}${RESET}" ;;
+    esac
+
+    if [ ! -e "${APPS_LNK_DIR}/qq.desktop" ]; then
+        echo "未检测到本地版本，您可能尚未安装腾讯QQ linux版客户端。"
+    elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
+        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+        echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    else
+        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
+    do_you_want_to_continue
+    #if [ -e "${APPS_LNK_DIR}/qq.desktop" ]; then
+    #   press_enter_to_reinstall
+    #fi
     cd /tmp
-    if [ "${ARCH_TYPE}" = "arm64" ]; then
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb"
+    case "${ARCH_TYPE}" in
+    arm64 | amd64)
+        case ${LINUX_DISTRO} in
+        debian)
+            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.deb ${THE_LATEST_DEB_URL}
             apt show ./LINUXQQ.deb
             apt install -y ./LINUXQQ.deb
-        else
-            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.sh http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.sh
+            ;;
+        *)
+            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.sh ${THE_LATEST_SH_URL}
             chmod +x LINUXQQ.sh
             sudo ./LINUXQQ.sh
             #即使是root用户也需要加sudo
-        fi
-    elif [ "${ARCH_TYPE}" = "amd64" ]; then
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.deb "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_amd64.deb"
-            apt show ./LINUXQQ.deb
-            apt install -y ./LINUXQQ.deb
-            #http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_arm64.deb
-        else
-            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.sh "http://down.qq.com/qqweb/LinuxQQ_1/linuxqq_2.0.0-b2-1082_x86_64.sh"
-            chmod +x LINUXQQ.sh
-            sudo ./LINUXQQ.sh
-        fi
-    fi
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: https://im.qq.com/linuxqq/download.html"
+            ;;
+        esac
+        ;;
+    *) arch_does_not_support ;;
+    esac
+    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     rm -fv ./LINUXQQ.deb ./LINUXQQ.sh 2>/dev/null
     beta_features_install_completed
 }
@@ -650,6 +686,7 @@ install_chinese_manpages() {
 }
 #####################
 install_wps_office() {
+    random_neko
     DEPENDENCY_01="wps-office"
     DEPENDENCY_02=""
     NON_DEBIAN='false'
@@ -750,6 +787,22 @@ lolcat_tmoe_tips_01() {
 install_baidu_netdisk() {
     DEPENDENCY_01="baidunetdisk"
     DEPENDENCY_02=""
+    ICON_FILE_01="/usr/share/icons/hicolor/128x128/apps/${DEPENDENCY_01}.png"
+    #ICON_FILE_02='/usr/share/icons/hicolor/scalable/apps/${DEPENDENCY_01}.svg'
+    ICON_FILE_02="${TMOE_ICON_DIR}/${DEPENDENCY_01}.png"
+
+    if [ -e "{ICON_FILE_01}" ]; then
+        ICON_FILE="{ICON_FILE_01}"
+    elif [ -e "{ICON_FILE_02}" ]; then
+        ICON_FILE="{ICON_FILE_02}"
+    else
+        mkdir -p ${TMOE_ICON_DIR}
+        aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o ${DEPENDENCY_01}.png "https://gitee.com/ak2/icons/raw/master/${DEPENDENCY_01}.png"
+        ICON_FILE="{ICON_FILE_02}"
+    fi
+
+    cat_icon_img
+
     echo "若安装失败，则请前往官网手动下载安装"
     echo "url：${YELLOW}https://pan.baidu.com/download${RESET}"
     echo "正在检测版本更新..."
@@ -761,8 +814,8 @@ install_baidu_netdisk() {
     echo "最新版链接为${YELLOW}${THE_LATEST_DEB_URL}${RESET}"
     if [ ! -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
         echo "未检测到本地版本，您可能尚未安装百度网盘客户端。"
-    elif [ -e "${TMOE_LINUX_DIR}/baidu_netdisk-version" ]; then
-        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/baidu_netdisk-version | head -n 1)"
+    elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
+        echo "本地版本可能为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
         echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
         echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
@@ -790,15 +843,23 @@ install_baidu_netdisk() {
         #apt show ./baidunetdisk.deb
         #apt install -y ./baidunetdisk.deb
     fi
-    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/baidu_netdisk-version"
+    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     #rm -fv ./baidunetdisk.deb
     beta_features_install_completed
 }
 ######################
 install_netease_163_cloud_music() {
+    #ICON_FILE_02='/usr/share/icons/hicolor/scalable/apps/netease-cloud-music.svg'
+    ICON_FILE="${TMOE_ICON_DIR}/netease-cloud-music.jpg"
+    if [ ! -e "{ICON_FILE}" ]; then
+        mkdir -p ${TMOE_ICON_DIR}
+        aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o netease-cloud-music.jpg "https://gitee.com/ak2/icons/raw/master/netease-cloud-music.jpg"
+    fi
+
+    cat_icon_img
     DEPENDENCY_01="netease-cloud-music"
     DEPENDENCY_02=""
-    echo "正在从优麒麟软件仓库获取最新版网易云音乐版本号..."
+    echo "正在从优麒麟软件仓库获取最新的网易云音乐版本号..."
     echo "若安装失败，则请前往官网手动下载安装。"
     echo "url: ${YELLOW}https://music.163.com/st/download${RESET}"
     LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'

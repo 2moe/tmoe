@@ -1286,4 +1286,16 @@ check_zstd() {
     fi
 }
 ##############
+cat_icon_img() {
+    if [ -e "${ICON_FILE}" ]; then
+        if [ $(command -v catimg) ]; then
+            catimg "${ICON_FILE}"
+        else
+            random_neko
+        fi
+    else
+        random_neko
+    fi
+}
+##############
 gnu_linux_env_02
