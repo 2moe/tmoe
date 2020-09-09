@@ -191,9 +191,12 @@ install_vivaldi_browser() {
     check_deb_version
     echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
-    do_you_want_to_close_the_sandbox_mode
-    do_you_want_to_continue
-    sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' ${APPS_LNK_DIR}/vivaldi-stable.desktop
+    cd ${APPS_LNK_DIR}
+    if ! grep -q 'vivaldi-stable --no-sandbox' vivaldi-stable.desktop; then
+        do_you_want_to_close_the_sandbox_mode
+        do_you_want_to_continue
+        sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' vivaldi-stable.desktop
+    fi
 }
 #############
 download_and_install_deb() {
@@ -254,10 +257,10 @@ tmoe_browser_menu() {
     TMOE_APP=$(whiptail --title "Browsers" --menu \
         "Which browser do you want to install?" 0 50 0 \
         "1" "Firefox & Chromium" \
-        "2" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine渲染引擎)" \
+        "2" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine)" \
         "3" "vivaldi(一切皆可定制)" \
         "4" "360安全浏览器" \
-        "5" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko引擎)" \
+        "5" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko)" \
         "6" "midori(轻量级,开源浏览器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
@@ -303,9 +306,12 @@ tmoe_browser_menu() {
     "") ;;
     falkon)
         beta_features_quick_install
-        do_you_want_to_close_the_sandbox_mode
-        do_you_want_to_continue
-        sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' ${APPS_LNK_DIR}/vivaldi-stable.desktop
+        cd ${APPS_LNK_DIR}
+        if ! grep -q 'falkon --no-sandbox' org.kde.falkon.desktop; then
+            do_you_want_to_close_the_sandbox_mode
+            do_you_want_to_continue
+            sed -i 's@Exec=falkon@& --no-sandbox@g' org.kde.falkon.desktop
+        fi
         ;;
     *) beta_features_quick_install ;;
     esac
