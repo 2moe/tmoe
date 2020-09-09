@@ -1298,4 +1298,27 @@ cat_icon_img() {
     fi
 }
 ##############
+do_you_want_to_upgrade_it() {
+    UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
+    if [ -e /usr/games/lolcat ]; then
+        echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${UPGRADE_TIPS} | lolcat -a -d 7
+    else
+        echo ${UPGRADE_TIPS}
+    fi
+    do_you_want_to_continue
+}
+##################
+do_you_want_to_upgrade_it_02() {
+    UPGRADE_TIPS="您是否需要更新${DEPENDENCY_01}?"
+    if [ -e /usr/games/lolcat ]; then
+        echo ${UPGRADE_TIPS} | /usr/games/lolcat
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${UPGRADE_TIPS} | lolcat
+    else
+        echo ${UPGRADE_TIPS}
+    fi
+}
+##################
 gnu_linux_env_02

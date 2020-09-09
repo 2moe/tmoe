@@ -782,6 +782,7 @@ lolcat_tmoe_tips_01() {
     arch) echo "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
     redhat) echo "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
     esac
+    do_you_want_to_upgrade_it_02
 }
 #########
 install_baidu_netdisk() {

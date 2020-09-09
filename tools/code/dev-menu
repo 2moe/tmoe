@@ -286,18 +286,6 @@ install_ide_01() {
     esac
 }
 ##################
-do_you_want_to_upgrade_it() {
-    UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
-    if [ -e /usr/games/lolcat ]; then
-        echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
-    elif [ "$(command -v lolcat)" ]; then
-        echo ${UPGRADE_TIPS} | lolcat -a -d 7
-    else
-        echo ${UPGRADE_TIPS}
-    fi
-    do_you_want_to_continue
-}
-##################
 install_ide_02() {
     ICON_FILE='/opt/android-studio/bin/studio.png'
     cat_icon_img
