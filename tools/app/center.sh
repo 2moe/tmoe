@@ -790,15 +790,15 @@ install_baidu_netdisk() {
     ICON_FILE_01="/usr/share/icons/hicolor/128x128/apps/${DEPENDENCY_01}.png"
     #ICON_FILE_02='/usr/share/icons/hicolor/scalable/apps/${DEPENDENCY_01}.svg'
     ICON_FILE_02="${TMOE_ICON_DIR}/${DEPENDENCY_01}.png"
-
-    if [ -e "{ICON_FILE_01}" ]; then
-        ICON_FILE="{ICON_FILE_01}"
-    elif [ -e "{ICON_FILE_02}" ]; then
-        ICON_FILE="{ICON_FILE_02}"
+    #ICON_FILE="/usr/local/etc/tmoe-linux/icons/baidunetdisk.png"
+    ICON_FILE="${ICON_FILE_02}"
+    if [ -e "${ICON_FILE_01}" ]; then
+        ICON_FILE="${ICON_FILE_01}"
+    elif [ -e "${ICON_FILE_02}" ]; then
+        echo ''
     else
         mkdir -p ${TMOE_ICON_DIR}
         aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o ${DEPENDENCY_01}.png "https://gitee.com/ak2/icons/raw/master/${DEPENDENCY_01}.png"
-        ICON_FILE="{ICON_FILE_02}"
     fi
 
     cat_icon_img
@@ -851,7 +851,7 @@ install_baidu_netdisk() {
 install_netease_163_cloud_music() {
     #ICON_FILE_02='/usr/share/icons/hicolor/scalable/apps/netease-cloud-music.svg'
     ICON_FILE="${TMOE_ICON_DIR}/netease-cloud-music.jpg"
-    if [ ! -e "{ICON_FILE}" ]; then
+    if [ ! -e "${ICON_FILE}" ]; then
         mkdir -p ${TMOE_ICON_DIR}
         aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o netease-cloud-music.jpg "https://gitee.com/ak2/icons/raw/master/netease-cloud-music.jpg"
     fi
