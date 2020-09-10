@@ -842,7 +842,8 @@ install_nginx_webdav() {
 add_debian_opt_gpg_key() {
     cd /etc/apt/trusted.gpg.d
     if [ ! -e "bintray-public.key.asc" ]; then
-        curl -Lv -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+        aria2c --allow-overwrite=true -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
+        chmod a+r bintray-public.key.asc
     fi
     apt-key add bintray-public.key.asc
     echo -e "deb ${OPT_URL_01} buster main\n#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}

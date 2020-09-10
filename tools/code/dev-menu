@@ -7,15 +7,16 @@ development_programming_tools() {
     SOFTWARE=$(
         whiptail --title "Development" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
-            "1" "🇻 🇸 VSCode 现代化代码编辑器" \
-            "2" "🇦 🇸 Android-Studio(安卓开发工具IDE)" \
+            "1" "🇻 🇸 Visual Studio Code 现代化代码编辑器" \
+            "2" "🇦 🇸 Android Studio(安卓开发工具IDE)" \
             "3" "🇮 🇯 IntelliJ IDEA(java编程语言集成开发环境)" \
             "4" "🇵 🇨 PyCharm(python集成开发环境)" \
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
             "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
             "8" "github-desktop(x64,github官方桌面客户端)" \
-            "9" "⚛️ atom(x64,类Sublime风格编辑器,github出品)" \
+            "9" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
+            "10" "Sublime Text(x64,漂亮的用户界面,非凡的功能)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -79,6 +80,7 @@ development_programming_tools() {
         ICON_NAME="atom.png"
         APP_OPT_DIR="/opt/${GREP_NAME}"
         ;;
+    10) install_sublime_text_stable ;;
     esac
     #) echo "新版即将集成本开发工具的安装，敬请期待" ;;
     ############################################
@@ -372,4 +374,48 @@ install_android_studio() {
     #echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 }
 ##################
+install_sublime_text_stable() {
+    case ${ARCH_TYPE} in
+    amd64 | i386) ;;
+    *) arch_does_not_support ;;
+    esac
+    case ${LINUX_DISTRO} in
+    debian)
+        install_gpg
+        GPG_URL='https://download.sublimetext.com/sublimehq-pub.gpg'
+        GPG_FILE_NAME='sublimehq-pub.asc'
+        cd /etc/apt/trusted.gpg.d
+        if [ ! -e "${GPG_FILE_NAME}" ]; then
+            echo "${YELLOW}${GPG_URL}${RESET}"
+            aria2c --allow-overwrite=true -o ${GPG_FILE_NAME} ${GPG_URL}
+            chmod a+r ${GPG_FILE_NAME}
+        fi
+        apt-key add ${GPG_FILE_NAME}
+        echo "deb https://download.sublimetext.com/ apt/stable/" >/etc/apt/sources.list.d/sublime-text.list
+        ;;
+    arch)
+        curl -O https://download.sublimetext.com/sublimehq-pub.gpg
+        pacman-key --add sublimehq-pub.gpg
+        pacman-key --lsign-key 8A8F901A
+        rm sublimehq-pub.gpg
+        if grep -q 'sublimetext' /etc/pacman.conf; then
+            echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | sudo tee -a /etc/pacman.conf
+        fi
+        ;;
+    redhat | suse)
+        rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+        if [ $(command -v dnf) ]; then
+            dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+        elif [ $(command -v yum) ]; then
+            yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+        elif [ $(command -v zypper) ]; then
+            zypper addrepo -g -f https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+        fi
+        ;;
+    esac
+    DEPENDENCY_01='sublime-text'
+    DEPENDENCY_02=''
+    beta_features_quick_install
+}
+##############
 development_programming_tools
