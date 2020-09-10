@@ -1340,8 +1340,8 @@ install_tmoe_app_01() {
     echo "若安装失败，则请前往官网手动下载安装。"
     echo "url: ${YELLOW}${OFFICIAL_URL}${RESET}"
     case ${DEPENDENCY_01} in
-    vivaldi-stable) install_vivaldi_browser ;;
-    browser360-cn-stable) install_360_browser ;;
+    vivaldi-stable | vivaldi | vivaldi-arm64) install_vivaldi_browser ;;
+    browser360-cn-stable | browser360) install_360_browser ;;
     esac
 }
 ###########
