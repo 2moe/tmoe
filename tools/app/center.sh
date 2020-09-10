@@ -263,9 +263,10 @@ tmoe_multimedia_menu() {
         "2" "📽️ MPV(开源、跨平台的音视频播放器)" \
         "3" "🎬 腾讯视频:国产Linux在线视频软件" \
         "4" "🖼 GIMP(GNU 图像处理程序)" \
-        "5" "🍊 Clementine(小柑橘音乐播放器)" \
-        "6" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
-        "7" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
+        "5" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
+        "6" "🍊 Clementine(小柑橘音乐播放器)" \
+        "7" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
+        "8" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -275,9 +276,10 @@ tmoe_multimedia_menu() {
     2) install_mpv ;;
     3) install_tencent_video ;;
     4) install_gimp ;;
-    5) install_clementine ;;
-    6) install_parole ;;
-    7) install_netease_163_cloud_music ;;
+    5) install_flameshot ;;
+    6) install_clementine ;;
+    7) install_parole ;;
+    8) install_netease_163_cloud_music ;;
     esac
     ##########################
     press_enter_to_return
@@ -605,14 +607,18 @@ install_package_manager_gui() {
 install_gimp() {
     DEPENDENCY_01="gimp"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
     beta_features_quick_install
 }
 ##############
+install_flameshot() {
+    DEPENDENCY_01="flameshot"
+    DEPENDENCY_02=""
+    beta_features_quick_install
+}
+###############
 install_parole() {
     DEPENDENCY_01="parole"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
     beta_features_quick_install
 }
 ###############
