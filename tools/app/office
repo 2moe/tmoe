@@ -40,7 +40,7 @@ free_office_env() {
 ############
 install_free_office() {
     REPO_URL="${OFFICIAL_URL}"
-    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep 'amd64.deb' | cut -d '"' -f 4 | cut -d '=' -f 2 | head -n 1)
+    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep 'amd64.deb' | sed 's@ @\n@g' | grep deb | cut -d '"' -f 2 | cut -d '=' -f 2 | head -n 1)
     case ${ARCH_TYPE} in
     amd64) ;;
     i386) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
