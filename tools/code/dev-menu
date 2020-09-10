@@ -14,9 +14,10 @@ development_programming_tools() {
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
             "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
-            "8" "github-desktop(x64,github官方桌面客户端)" \
-            "9" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
-            "10" "Sublime Text(x64,漂亮的用户界面,非凡的功能)" \
+            "8" "GNU Emacs(可扩展,可定制,支持自文档化)" \
+            "9" "github-desktop(x64,github官方桌面客户端)" \
+            "10" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
+            "11" "Sublime Text(x64,漂亮的UI,非凡的功能)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -66,21 +67,22 @@ development_programming_tools() {
         ICON_NAME="${GREP_NAME}.png"
         APP_OPT_DIR="/opt/${GREP_NAME}"
         ;;
-    8)
+    8) install_emacs ;;
+    9)
         GREP_NAME='github-desktop-bin'
         LNK_FILE="github-desktop.desktop"
         BIN_FILE="/usr/bin/github-desktop"
         ICON_NAME="github-desktop.png"
         APP_OPT_DIR="/opt/github-desktop"
         ;;
-    9)
+    10)
         GREP_NAME='atom-editor-bin'
         LNK_FILE='atom.desktop'
         BIN_FILE="/usr/bin/atom"
         ICON_NAME="atom.png"
         APP_OPT_DIR="/opt/${GREP_NAME}"
         ;;
-    10) install_sublime_text_stable ;;
+    11) install_sublime_text_stable ;;
     esac
     #) echo "新版即将集成本开发工具的安装，敬请期待" ;;
     ############################################
@@ -97,7 +99,13 @@ development_programming_tools() {
     press_enter_to_return
     development_programming_tools
 }
-###########
+################
+install_emacs() {
+    DEPENDENCY_01="emacs"
+    DEPENDENCY_02=""
+    beta_features_quick_install
+}
+#############
 dev_menu_02() {
     check_opt_app_version
     check_download_path

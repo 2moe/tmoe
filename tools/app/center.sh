@@ -32,6 +32,7 @@ remove_browser() {
 }
 ############################################
 software_center() {
+    NON_DEBIAN='false'
     RETURN_TO_WHERE='software_center'
     SOFTWARE=$(
         whiptail --title "Software center-01" --menu \
@@ -226,27 +227,21 @@ tmoe_documents_menu() {
             "Which software do you want to install?" 0 50 0 \
             "1" "LibreOffice(开源、自由的办公文档软件)" \
             "2" "WPS office(办公软件)" \
-            "3" "GNU Emacs(著名的集成开发环境和文本编辑器)" \
-            "4" "Chinese manual(中文手册)" \
+            "3" "Chinese manual(中文手册)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
+    #"4" "Free Office(全面支持Microsoft Office文件)" \
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_libre_office ;;
     2) install_wps_office ;;
-    3) install_emacs ;;
-    4) install_chinese_manpages ;;
+    3) install_chinese_manpages ;;
     esac
     ##########################
     press_enter_to_return
     tmoe_documents_menu
-}
-####################
-install_emacs() {
-    DEPENDENCY_02="emacs"
-    beta_features_quick_install
 }
 #############
 install_clementine() {
