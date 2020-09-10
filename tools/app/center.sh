@@ -59,7 +59,7 @@ software_center() {
     2) explore_debian_opt_repo ;;
     3) tmoe_multimedia_menu ;;
     4) dev_menu ;;
-    5) tmoe_documents_menu ;;
+    5) source_tmoe_document_app ;;
     6) tmoe_software_package_menu ;;
     7) tmoe_games_menu ;;
     8) tmoe_social_network_service ;;
@@ -73,6 +73,10 @@ software_center() {
     software_center
 }
 ###########
+source_tmoe_document_app() {
+    source ${TMOE_TOOL_DIR}/app/office
+}
+#############
 dev_menu() {
     source ${TMOE_TOOL_DIR}/code/dev-menu
 }
@@ -218,32 +222,6 @@ check_kanasimi_work_crawler() {
     bash "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh"
 }
 ####################
-tmoe_documents_menu() {
-    RETURN_TO_WHERE='tmoe_documents_menu'
-    NON_DEBIAN='false'
-    DEPENDENCY_01=""
-    TMOE_APP=$(
-        whiptail --title "documents" --menu \
-            "Which software do you want to install?" 0 50 0 \
-            "1" "LibreOffice(开源、自由的办公文档软件)" \
-            "2" "WPS office(办公软件)" \
-            "3" "Chinese manual(中文手册)" \
-            "0" "🌚 Return to previous menu 返回上级菜单" \
-            3>&1 1>&2 2>&3
-    )
-    #"4" "Free Office(全面支持Microsoft Office文件)" \
-    ##########################
-    case "${TMOE_APP}" in
-    0 | "") software_center ;;
-    1) install_libre_office ;;
-    2) install_wps_office ;;
-    3) install_chinese_manpages ;;
-    esac
-    ##########################
-    press_enter_to_return
-    tmoe_documents_menu
-}
-#############
 install_clementine() {
     DEPENDENCY_02="clementine"
     beta_features_quick_install
@@ -692,107 +670,6 @@ install_chinese_manpages() {
     echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
     echo "man a help manual software, which can help you understand the detailed usage of the command."
     echo "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
-}
-#####################
-install_wps_office() {
-    random_neko
-    DEPENDENCY_01="wps-office"
-    DEPENDENCY_02=""
-    NON_DEBIAN='false'
-    echo "正在检测版本更新..."
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: ${YELLOW}https://linux.wps.cn${RESET}"
-    THE_LATEST_DEB_URL=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
-    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
-    lolcat_tmoe_tips_01
-    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
-    if [ ! -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
-        #press_enter_to_reinstall
-        echo "未检测到本地版本，您可能尚未安装WPS客户端。"
-    elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
-        echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-    else
-        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
-    fi
-    do_you_want_to_continue
-    cd /tmp
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        dpkg --configure -a
-        #LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
-        apt show ./WPSoffice.deb
-        apt install -y ./WPSoffice.deb
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="wps-office-cn"
-        beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
-        rpm -ivh ./WPSoffice.rpm
-    fi
-    echo ${THE_LATEST_DEB_VERSION} >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
-    rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
-    beta_features_install_completed
-}
-###################
-install_libre_office() {
-    #ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
-    case ${TMOE_PROOT} in
-    no)
-        echo "${RED}WARNING！${RESET}检测到您无权读取${GREEN}/proc${RESET}的某些数据！"
-        echo "本工具将为此软件自动打补丁以解决无法运行的问题，但无法保证补丁有效。"
-        ;;
-    esac
-    #RETURN_TO_WHERE='software_center'
-    #do_you_want_to_continue
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_01='--no-install-recommends libreoffice'
-    else
-        DEPENDENCY_01="libreoffice"
-    fi
-    DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
-    NON_DEBIAN='false'
-    beta_features_quick_install
-    case "${TMOE_PROOT}" in
-    no)
-        patch_libreoffice
-        echo "打补丁完成"
-        ;;
-    esac
-}
-###################
-patch_libreoffice() {
-    mkdir -p /prod/version
-    cd /usr/lib/libreoffice/program
-    rm -f oosplash
-    curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
-    chmod +x oosplash
-}
-##################
-check_libreoffice_patch() {
-    if [ $(command -v libreoffice) ]; then
-        patch_libreoffice
-    fi
-}
-############
-lolcat_tmoe_tips_01() {
-    if [ -e /usr/games/lolcat ]; then
-        echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
-    elif [ "$(command -v lolcat)" ]; then
-        echo ${TMOE_TIPS_01} | lolcat -a -d 9
-    else
-        echo ${TMOE_TIPS_01}
-    fi
-    case ${LINUX_DISTRO} in
-    debian) ;;
-    arch) echo "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
-    redhat) echo "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
-    esac
-    #do_you_want_to_upgrade_it_02
-    echo "您是否需要${GREEN}更新${RESET}${BLUE}${DEPENDENCY_01}${RESET}?"
 }
 #########
 install_baidu_netdisk() {

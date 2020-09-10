@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+#############
+tmoe_documents_menu() {
+    RETURN_TO_WHERE='tmoe_documents_menu'
+    RETURN_TO_MENU='tmoe_documents_menu'
+    NON_DEBIAN='false'
+    DEPENDENCY_01=""
+    DEPENDENCY_02=""
+    TMOE_APP=$(
+        whiptail --title "documents" --menu \
+            "Which software do you want to install?" 0 50 0 \
+            "1" "LibreOffice(开源、自由的办公文档软件)" \
+            "2" "WPS office(打造新一代办公环境)" \
+            "3" "Chinese manual(中文手册)" \
+            "4" "永中Office(x64,秉承集成创新理念)" \
+            "5" "Free Office(x86,x64,全面支持微软Office文件)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    case "${TMOE_APP}" in
+    0 | "") software_center ;;
+    1) install_libre_office ;;
+    2) install_wps_office ;;
+    3) install_chinese_manpages ;;
+    4) yozo_office_env ;;
+    5) free_office_env ;;
+    esac
+    ##########################
+    press_enter_to_return
+    tmoe_documents_menu
+}
+#############
+free_office_env() {
+    DEPENDENCY_01="freeoffice"
+    GREP_NAME="${DEPENDENCY_01}"
+    OFFICIAL_URL='https://www.freeoffice.com/download/applications'
+    tmoe_app_menu_01
+}
+############
+install_free_office() {
+    REPO_URL="${OFFICIAL_URL}"
+    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep 'amd64.deb' | cut -d '"' -f 4 | cut -d '=' -f 2 | head -n 1)
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    i386) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
+    *) arch_does_not_support ;;
+    esac
+    #https://www.softmaker.net/down/softmaker-freeoffice-2018_976-01_amd64.deb
+    case ${LINUX_DISTRO} in
+    debian | arch) ;;
+    redhat)
+        case ${ARCH_TYPE} in
+        amd64)
+            #THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | head -n 1)"
+            #https://www.freeoffice.com/download.php?filename=https://www.softmaker.net/down/softmaker-freeoffice-2018-976.x86_64.rpm
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.x86_64.rpm@" | sed "s@_amd64.deb@.x86_64.rpm@")
+            ;;
+        i386)
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.i386.rpm@" | sed "s@_amd64.deb@.i386.rpm@")
+            ;;
+        *) arch_does_not_support ;;
+        esac
+        ;;
+    *) non_debian_function ;;
+    esac
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed 's@softmaker-freeoffice-@@' | sed "s@${GREP_NAME}_@@")
+    check_deb_version
+    download_and_install_deb
+}
+###################
+yozo_office_env() {
+    DEPENDENCY_01="yozo-office"
+    case ${LINUX_DISTRO} in
+    arch) DEPENDENCY_02="yozo-office-fonts" ;;
+    esac
+    GREP_NAME="${DEPENDENCY_01}"
+    OFFICIAL_URL='https://www.yozosoft.com/product-officelinux.html'
+    tmoe_app_menu_01
+}
+############
+install_yozo_office() {
+    REPO_URL='http://www.yozosoft.com/product-officelinux.html'
+    #https证书错误，因此不加s
+    THE_LATEST_DEB_FILE=$(curl -L ${REPO_URL} | grep 'amd64.deb' | grep '=' | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_URL="https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/${THE_LATEST_DEB_FILE}"
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    *) arch_does_not_support ;;
+    esac
+    #arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    redhat)
+        case ${ARCH_TYPE} in
+        amd64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.x86_64.rpm@") ;;
+        esac
+        ;;
+    esac
+    #THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
+    check_deb_version
+    #echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
+    download_and_install_deb
+}
+###################
+install_wps_office() {
+    random_neko
+    DEPENDENCY_01="wps-office"
+    DEPENDENCY_02=""
+    NON_DEBIAN='false'
+    echo "正在检测版本更新..."
+    echo "若安装失败，则请前往官网手动下载安装。"
+    echo "url: ${YELLOW}https://linux.wps.cn${RESET}"
+    THE_LATEST_DEB_URL=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
+    TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
+    lolcat_tmoe_tips_01
+    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
+    if [ ! -e "${APPS_LNK_DIR}/wps-office-wps.desktop" ]; then
+        #press_enter_to_reinstall
+        echo "未检测到本地版本，您可能尚未安装WPS客户端。"
+    elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
+        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
+        echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    else
+        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+    fi
+    do_you_want_to_continue
+    cd /tmp
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        dpkg --configure -a
+        #LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
+        apt show ./WPSoffice.deb
+        apt install -y ./WPSoffice.deb
+
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01="wps-office-cn"
+        beta_features_quick_install
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+        rpm -ivh ./WPSoffice.rpm
+    fi
+    echo ${THE_LATEST_DEB_VERSION} >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
+    rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
+    beta_features_install_completed
+}
+###################
+install_libre_office() {
+    #ps -e >/dev/null || echo "/proc分区未挂载，请勿安装libreoffice,赋予proot容器真实root权限可解决相关问题，但强烈不推荐！"
+    case ${TMOE_PROOT} in
+    no)
+        echo "${RED}WARNING！${RESET}检测到您无权读取${GREEN}/proc${RESET}的某些数据！"
+        echo "本工具将为此软件自动打补丁以解决无法运行的问题，但无法保证补丁有效。"
+        ;;
+    esac
+    #RETURN_TO_WHERE='software_center'
+    #do_you_want_to_continue
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        DEPENDENCY_01='--no-install-recommends libreoffice'
+    else
+        DEPENDENCY_01="libreoffice"
+    fi
+    DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
+    NON_DEBIAN='false'
+    beta_features_quick_install
+    case "${TMOE_PROOT}" in
+    no)
+        patch_libreoffice
+        echo "打补丁完成"
+        ;;
+    esac
+}
+###################
+patch_libreoffice() {
+    mkdir -p /prod/version
+    cd /usr/lib/libreoffice/program
+    rm -f oosplash
+    curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
+    chmod +x oosplash
+}
+##################
+check_libreoffice_patch() {
+    if [ $(command -v libreoffice) ]; then
+        patch_libreoffice
+    fi
+}
+############
+tmoe_documents_menu

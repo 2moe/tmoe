@@ -1333,6 +1333,7 @@ check_deb_version() {
 		║   ║          ║${THE_LATEST_DEB_VERSION}
 
 	ENDofTable
+    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
 }
 ################
 install_tmoe_app_01() {
@@ -1343,6 +1344,8 @@ install_tmoe_app_01() {
     case ${DEPENDENCY_01} in
     vivaldi-stable | vivaldi | vivaldi-arm64) install_vivaldi_browser ;;
     browser360-cn-stable | browser360) install_360_browser ;;
+    yozo-office) install_yozo_office ;;
+    freeoffice) install_free_office ;;
     esac
 }
 ###########
@@ -1379,4 +1382,44 @@ tmoe_app_menu_01() {
     tmoe_app_menu_01
 }
 ###########
+lolcat_tmoe_tips_01() {
+    if [ -e /usr/games/lolcat ]; then
+        echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
+    elif [ "$(command -v lolcat)" ]; then
+        echo ${TMOE_TIPS_01} | lolcat -a -d 9
+    else
+        echo ${TMOE_TIPS_01}
+    fi
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    arch) echo "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
+    redhat) echo "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
+    esac
+    #do_you_want_to_upgrade_it_02
+    echo "您是否需要${GREEN}更新${RESET}${BLUE}${DEPENDENCY_01}${RESET}?"
+}
+###################
+download_and_install_deb() {
+    do_you_want_to_upgrade_it_02
+    do_you_want_to_continue
+    cd /tmp
+    case ${LINUX_DISTRO} in
+    debian | redhat) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
+    esac
+    case ${LINUX_DISTRO} in
+    debian)
+        apt show ./${THE_LATEST_DEB_FILE}
+        apt install -y ./${THE_LATEST_DEB_FILE}
+        ;;
+    redhat) rpm -ivh ./${THE_LATEST_DEB_FILE} ;;
+    arch) beta_features_quick_install ;;
+    esac
+    rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
+    echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
+    case ${LINUX_DISTRO} in
+    arch) ;;
+    *) beta_features_install_completed ;;
+    esac
+}
+############
 gnu_linux_env_02

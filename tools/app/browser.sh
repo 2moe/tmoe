@@ -189,7 +189,6 @@ install_vivaldi_browser() {
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@vivaldi-stable_@@")
     check_deb_version
-    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
     rm -v /etc/apt/sources.list.d/vivaldi.list 2>/dev/null
     cd ${APPS_LNK_DIR}
@@ -201,29 +200,6 @@ install_vivaldi_browser() {
     fi
 }
 #############
-download_and_install_deb() {
-    do_you_want_to_upgrade_it_02
-    do_you_want_to_continue
-    cd /tmp
-    case ${LINUX_DISTRO} in
-    debian | redhat) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
-    esac
-    case ${LINUX_DISTRO} in
-    debian)
-        apt show ./${THE_LATEST_DEB_FILE}
-        apt install -y ./${THE_LATEST_DEB_FILE}
-        ;;
-    redhat) rpm -ivh ./${THE_LATEST_DEB_FILE} ;;
-    arch) beta_features_quick_install ;;
-    esac
-    rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
-    echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
-    case ${LINUX_DISTRO} in
-    arch) ;;
-    *) beta_features_install_completed ;;
-    esac
-}
-############
 install_360_browser() {
     REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/browser360/'
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
@@ -234,7 +210,7 @@ install_360_browser() {
     esac
 
     case ${LINUX_DISTRO} in
-    debian) ;;
+    debian | arch) ;;
     redhat)
         case ${ARCH_TYPE} in
         amd64)
@@ -243,14 +219,13 @@ install_360_browser() {
         arm64)
             THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.aarch64.rpm@")
             ;;
-        *) non_debian_function ;;
         esac
         ;;
+    *) non_debian_function ;;
     esac
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
     check_deb_version
-    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
 }
 ##############
