@@ -261,12 +261,13 @@ tmoe_multimedia_menu() {
         "Which software do you want to install?" 0 50 0 \
         "1" "🗜️ Batch compression of pics批量压缩图片" \
         "2" "📽️ MPV(开源、跨平台的音视频播放器)" \
-        "3" "🎬 腾讯视频:国产Linux在线视频软件" \
-        "4" "🖼 GIMP(GNU 图像处理程序)" \
-        "5" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
-        "6" "🍊 Clementine(小柑橘音乐播放器)" \
-        "7" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
-        "8" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
+        "3" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
+        "4" "🇵 Peek(简单易用的Gif录制软件)" \
+        "5" "🎬 腾讯视频:国产Linux在线视频软件" \
+        "6" "🖼 GIMP(GNU 图像处理程序)" \
+        "7" "🍊 Clementine(小柑橘音乐播放器)" \
+        "8" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
+        "9" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -274,12 +275,13 @@ tmoe_multimedia_menu() {
     0 | "") software_center ;;
     1) batch_compression_of_pictures ;;
     2) install_mpv ;;
-    3) install_tencent_video ;;
-    4) install_gimp ;;
-    5) install_flameshot ;;
-    6) install_clementine ;;
-    7) install_parole ;;
-    8) install_netease_163_cloud_music ;;
+    3) install_flameshot ;;
+    4) install_peek ;;
+    5) install_tencent_video ;;
+    6) install_gimp ;;
+    7) install_clementine ;;
+    8) install_parole ;;
+    9) install_netease_163_cloud_music ;;
     esac
     ##########################
     press_enter_to_return
@@ -616,6 +618,12 @@ install_flameshot() {
     beta_features_quick_install
 }
 ###############
+install_peek() {
+    DEPENDENCY_01="peek"
+    DEPENDENCY_02=""
+    beta_features_quick_install
+}
+#############
 install_parole() {
     DEPENDENCY_01="parole"
     DEPENDENCY_02=""
