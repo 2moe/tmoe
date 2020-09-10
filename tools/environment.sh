@@ -1412,7 +1412,7 @@ download_and_install_deb() {
         apt install -y ./${THE_LATEST_DEB_FILE}
         ;;
     redhat) rpm -ivh ./${THE_LATEST_DEB_FILE} ;;
-    arch) beta_features_quick_install ;;
+    arch | *) beta_features_quick_install ;;
     esac
     rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
     echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}

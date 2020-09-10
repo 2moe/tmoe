@@ -44,7 +44,6 @@ install_free_office() {
     case ${ARCH_TYPE} in
     amd64) ;;
     i386) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
-    *) arch_does_not_support ;;
     esac
     #https://www.softmaker.net/down/softmaker-freeoffice-2018_976-01_amd64.deb
     case ${LINUX_DISTRO} in
@@ -59,14 +58,17 @@ install_free_office() {
         i386)
             THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.i386.rpm@" | sed "s@_amd64.deb@.i386.rpm@")
             ;;
-        *) arch_does_not_support ;;
         esac
         ;;
-    *) non_debian_function ;;
     esac
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed 's@softmaker-freeoffice-@@' | sed "s@${GREP_NAME}_@@")
     check_deb_version
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    i386) ;;
+    *) arch_does_not_support ;;
+    esac
     download_and_install_deb
 }
 ###################
@@ -85,10 +87,6 @@ install_yozo_office() {
     #https证书错误，因此不加s
     THE_LATEST_DEB_FILE=$(curl -L ${REPO_URL} | grep 'amd64.deb' | grep '=' | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_URL="https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/${THE_LATEST_DEB_FILE}"
-    case ${ARCH_TYPE} in
-    amd64) ;;
-    *) arch_does_not_support ;;
-    esac
     #arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
     case ${LINUX_DISTRO} in
     debian) ;;
@@ -101,6 +99,10 @@ install_yozo_office() {
     #THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
     check_deb_version
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    *) arch_does_not_support ;;
+    esac
     #echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
     download_and_install_deb
 }

@@ -184,8 +184,8 @@ install_vivaldi_browser() {
         *) arch_does_not_support ;;
         esac
         ;;
-    *) non_debian_function ;;
     esac
+    #) non_debian_function ;;
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@vivaldi-stable_@@")
     check_deb_version
@@ -221,8 +221,8 @@ install_360_browser() {
             ;;
         esac
         ;;
-    *) non_debian_function ;;
     esac
+    #) non_debian_function ;;
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
     check_deb_version
