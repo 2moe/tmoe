@@ -594,10 +594,10 @@ different_distro_software_install() {
         ################
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_01}"
+            pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || echo "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || echo "无法以${CURRENT_USER_NAME}身份运行yay -S ${DEPENDENCY_02},请手动执行"
+            pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || echo "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行"
         fi
         ################
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then

@@ -218,7 +218,10 @@ download_and_install_deb() {
     esac
     rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
     echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
-    beta_features_install_completed
+    case ${LINUX_DISTRO} in
+    arch) ;;
+    *) beta_features_install_completed ;;
+    esac
 }
 ############
 install_360_browser() {
