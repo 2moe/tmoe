@@ -83,11 +83,13 @@ yozo_office_env() {
 }
 ############
 install_yozo_office() {
-    REPO_URL='http://www.yozosoft.com/product-officelinux.html'
+    #REPO_URL='http://www.yozosoft.com/product-officelinux.html'
     #https证书错误，因此不加s
-    THE_LATEST_DEB_FILE=$(curl -L ${REPO_URL} | grep 'amd64.deb' | grep '=' | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_URL="https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/${THE_LATEST_DEB_FILE}"
+    #THE_LATEST_DEB_FILE=$(curl -L ${REPO_URL} | grep 'amd64.deb' | grep '=' | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F '/' '{print $NF}')
+    #THE_LATEST_DEB_URL="https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/${THE_LATEST_DEB_FILE}"
     #arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
+    REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/yozo-office/'
+    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${LINUX_DISTRO} in
     debian) ;;
     redhat)
@@ -96,7 +98,7 @@ install_yozo_office() {
         esac
         ;;
     esac
-    #THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
     check_deb_version
     case ${ARCH_TYPE} in
