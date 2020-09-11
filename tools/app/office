@@ -103,11 +103,13 @@ install_yozo_office() {
     #THE_LATEST_DEB_FILE=$(curl -L ${REPO_URL} | grep 'amd64.deb' | grep '=' | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F '/' '{print $NF}')
     #THE_LATEST_DEB_URL="https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/${THE_LATEST_DEB_FILE}"
     #arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
+    #https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/yozo-office_8.0.1331.101ZH.S1_amd64.deb
+    #https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/yozo-office-8.0.1331.101ZH.S1-1.x86_64.rpm
     REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/yozo-office/'
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${LINUX_DISTRO} in
     debian) ;;
-    redhat) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@.x86_64.rpm@") ;;
+    redhat) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@-1.x86_64.rpm@") ;;
     esac
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
     THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
