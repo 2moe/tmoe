@@ -61,6 +61,7 @@ tmoe_other_app_menu() {
             "3" "kodi(家庭影院软件)" \
             "4" "scrcpy(开源的Android投屏软件)" \
             "5" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
+            "6" "telegram(电报是一款注重隐私的聊天软件)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -72,6 +73,7 @@ tmoe_other_app_menu() {
     3) install_kodi ;;
     4) configure_scrcpy ;;
     5) install_flameshot ;;
+    6) install_telegram_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -84,6 +86,12 @@ install_flameshot() {
     beta_features_quick_install
 }
 ###############
+install_telegram_desktop() {
+    this_app_may_non_support_running_on_proot
+    DEPENDENCY_02="telegram-desktop"
+    beta_features_quick_install
+}
+################
 configure_scrcpy() {
     RETURN_TO_WHERE='configure_scrcpy'
     DEPENDENCY_01=''

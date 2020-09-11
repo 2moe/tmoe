@@ -301,6 +301,7 @@ tmoe_multimedia_menu() {
     RETURN_TO_WHERE='tmoe_multimedia_menu'
     NON_DEBIAN='false'
     DEPENDENCY_01=""
+    DEPENDENCY_02=""
     TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
         "Which software do you want to install?" 0 50 0 \
         "1" "🗜️ Batch compression of pics批量压缩图片" \
@@ -314,6 +315,7 @@ tmoe_multimedia_menu() {
         "9" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
         "10" "🎼 Audacity(类似于cooledit的音频处理软件)" \
         "11" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
+        "12" "Spotify(声破天是一个正版流媒体音乐服务平台)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -330,10 +332,43 @@ tmoe_multimedia_menu() {
     9) install_netease_163_cloud_music ;;
     10) install_audacity ;;
     11) install_ardour ;;
+    12) install_spotify ;;
     esac
     ##########################
     press_enter_to_return
     tmoe_multimedia_menu
+}
+#############
+install_spotify() {
+    echo "https://www.spotify.com/tw/download/linux/"
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    *) arch_does_not_support ;;
+    esac
+    DEPENDENCY_02='spotify'
+    case ${LINUX_DISTRO} in
+    debian)
+        cat <<-'EOF'
+    若安装失败，则请手动执行以下命令
+    curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
+    curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
+    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    apt update
+    apt install spotify-client
+    如需卸载，则请输apt purge spotify-client ;rm /etc/apt/sources.list.d/spotify.list
+EOF
+        DEPENDENCY_02='spotify-client'
+        ;;
+    arch) echo "若安装失败，则请手动执行${GREEN}yay -S ${DEPENDENCY_02}${RESET}" ;;
+    esac
+    do_you_want_to_continue
+    case ${LINUX_DISTRO} in
+    debian | arch) beta_features_quick_install ;;
+    *)
+        echo "You can use snap store to install spotify."
+        echo "${GREEN}snap install spotify${RESET}"
+        ;;
+    esac
 }
 #############
 install_tencent_video() {
