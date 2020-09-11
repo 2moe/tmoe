@@ -3705,8 +3705,9 @@ download_debian_iso_file() {
 }
 ##################
 download_debian_nonfree_iso() {
+	#16 55 8
 	DEBIAN_LIVE=$(
-		whiptail --title "architecture" --menu "您下载的镜像中需要包含何种桌面环境？" 16 55 8 \
+		whiptail --title "Desktop environment" --menu "您下载的镜像中需要包含何种桌面环境？\nWhich desktop environment do you prefer?" 0 0 0 \
 			"1" "cinnamon" \
 			"2" "gnome" \
 			"3" "kde plasma" \
