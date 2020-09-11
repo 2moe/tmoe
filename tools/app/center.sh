@@ -149,10 +149,7 @@ tmoe_social_network_service() {
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_linux_qq ;;
-    2)
-        DEPENDENCY_01="thunderbird"
-        DEPENDENCY_02="thunderbird-l10n-zh-cn"
-        ;;
+    2) install_thunder_bird ;;
     3) DEPENDENCY_01="kmail" ;;
     4) DEPENDENCY_01="evolution" ;;
     5) DEPENDENCY_01="empathy" ;;
@@ -170,6 +167,20 @@ tmoe_social_network_service() {
     tmoe_social_network_service
 }
 ###################
+install_thunder_bird() {
+    DEPENDENCY_01="thunderbird"
+    case ${LINUX_DISTRO} in
+    debian)
+        DEPENDENCY_02="thunderbird-l10n-zh-cn"
+        case ${DEBIAN_DISTRO} in
+        ubuntu) DEPENDENCY_02="thunderbird-locale-zh-hans" ;;
+        esac
+        ;;
+    arch) DEPENDENCY_02="thunderbird-i18n-zh-cn" ;;
+    suse) DEPENDENCY_02="thunderbird-translations-common" ;;
+    esac
+}
+###############
 mitalk_env() {
     DEPENDENCY_01='mitalk'
     GREP_NAME='mitalk'
