@@ -3,6 +3,7 @@
 #测试版功能可能无法正常运行\nBeta features may not work properly.
 beta_features() {
     RETURN_TO_WHERE='beta_features'
+    RETURN_TO_MENU='beta_features'
     NON_DEBIAN='false'
     TMOE_BETA=$(
         whiptail --title "The Secret Garden" --menu "Some functions do not support container environment\n以下并非所有功能都支持容器环境。" 0 55 0 \
@@ -16,7 +17,8 @@ beta_features() {
             "8" "📝 read:墨纸留香,品味阅读" \
             "9" "🥅 network:网络(网卡驱动,WiFi扫描)" \
             "10" "⌨ input method:输入法(搜狗,讯飞,百度)" \
-            "11" "🍕 other:其它类(obs,scrcpy)" \
+            "11" ">_ Terminal:终端" \
+            "12" "🍕 other:其它类(obs,scrcpy)" \
             "0" "🌚 Back to the main menu 返回主菜单" \
             3>&1 1>&2 2>&3
     )
@@ -33,7 +35,8 @@ beta_features() {
     8) tmoe_reader_app_menu ;;
     9) network_manager_tui ;;
     10) install_pinyin_input_method ;;
-    11) tmoe_other_app_menu ;;
+    11) source_tmoe_terminal_app_menu ;;
+    12) tmoe_other_app_menu ;;
     esac
     ##############################
     press_enter_to_return
@@ -42,6 +45,9 @@ beta_features() {
 ##########
 # 已废弃 "7" "👬 SNS:进行物质和精神交流的社会活动的app" \
 #7) tmoe_sns_app_menu ;;
+source_tmoe_terminal_app_menu() {
+    source ${TMOE_TOOL_DIR}/app/terminal
+}
 ##########
 tmoe_other_app_menu() {
     RETURN_TO_WHERE='tmoe_other_app_menu'

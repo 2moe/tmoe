@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+########################
+tmoe_terminal_main_menu() {
+    RETURN_TO_WHERE='tmoe_terminal_main_menu'
+    NON_DEBIAN='false'
+    DEPENDENCY_01=""
+    TMOE_APP=$(whiptail --title "TERMINAL APP" --menu \
+        "Which software do you want to install？" 0 50 0 \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        "01" "cool-retro-term(穿梭时光,感受复古风终端,领略CRT显示器的魅力)" \
+        "02" "Terminology(酷炫终端,支持预览图片和视频)" \
+        "03" "Terminator(支持分屏的终端)" \
+        "04" "Yakuake(基于KDE Konsole技术的下拉式终端)" \
+        "05" "Guake(GNOME下拉式终端)" \
+        "06" "Tilda(雷神之锤风格的下拉式终端)" \
+        "07" "Konsole(KDE默认终端)" \
+        "08" "Xfce4-Terminal(xfce默认终端)" \
+        "09" "Gnome-Terminal(gnome默认终端)" \
+        "10" "LXTerminal(lxde默认终端)" \
+        "11" "Mate-Terminal(mate默认终端)" \
+        "12" "LilyTerm(基于libvte,追求轻量和快速)" \
+        "13" "Sakura(如櫻花般優雅)" \
+        "14" "Rxvt(资源占用低,启动速度快)" \
+        "15" "st(简单,清晰,且节约资源)" \
+        "16" "Aterm(基于rxvt,高度可定制)" \
+        "17" "xterm/Uxterm(X11标准指定的虚拟终端)" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    #Terminus (x64,超唯美现代化终端)
+    case "${TMOE_APP}" in
+    0 | "") beta_features ;;
+    01)
+        DEPENDENCY_02="cool-retro-term"
+        echo "${YELLOW}https://github.com/Swordfish90/cool-retro-term${RESET}"
+        ;;
+    02)
+        DEPENDENCY_02="terminology"
+        echo "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
+        ;;
+    03)
+        DEPENDENCY_02="terminator"
+        echo "按Ctrl+Shift+O或E进行切割"
+        ;;
+    04) DEPENDENCY_02="yakuake" ;;
+    05) DEPENDENCY_02="guake" ;;
+    06) DEPENDENCY_02="tilda" ;;
+    07) DEPENDENCY_02="konsole" ;;
+    08) DEPENDENCY_02="xfce4-terminal" ;;
+    09) DEPENDENCY_02="gnome-terminal" ;;
+    10) DEPENDENCY_02="lxterminal" ;;
+    11) DEPENDENCY_02="mate-terminal" ;;
+    12) DEPENDENCY_02="lilyterm" ;;
+    13) DEPENDENCY_02="sakura" ;;
+    14) DEPENDENCY_02="rxvt" ;;
+    15)
+        DEPENDENCY_02="stterm"
+        echo "You can type st to start it.输st或stterm启动"
+        ;;
+    16)
+        DEPENDENCY_02="atem"
+        echo "You can type aterm to start it.输aterm启动"
+        ;;
+    17) DEPENDENCY_02="xterm" ;;
+    esac
+    ##########################
+    beta_features_quick_install
+    case ${DEPENDENCY_02} in
+    cool-retro-term)
+        case ${LINUX_DISTRO} in
+        debian)
+            echo "若安装失败，则请手动添加ppa源，${GREEN}sudo add-apt-repository${RESET} ${BLUE}ppa:noobslab/apps${RESET}"
+            ;;
+        esac
+        ;;
+    terminology)
+        echo "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
+        ;;
+    stterm)
+        echo "You can type st to start it.输st或stterm启动"
+        ;;
+    aterm)
+        echo "You can type aterm to start it.输aterm启动"
+        ;;
+    esac
+    press_enter_to_return
+    tmoe_terminal_main_menu
+}
+#######################
+tmoe_terminal_main_menu

@@ -445,7 +445,7 @@ non_debian_function() {
 ############
 press_enter_to_reinstall() {
     echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-    echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    echo "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     press_enter_to_reinstall_yes_or_no
 }
 ################
@@ -480,7 +480,7 @@ press_enter_to_reinstall_yes_or_no() {
 }
 #######################
 beta_features_install_completed() {
-    echo "安装${GREEN}完成${RESET}，如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    echo "安装${GREEN}完成${RESET},如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     echo "The installation is complete. If you want to remove, please enter the above highlighted command."
 }
 ####################
@@ -493,7 +493,7 @@ beta_features_quick_install() {
         DEPENDENCY_01_COMMAND=$(echo ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
             echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
-            echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${RESET}"
+            echo "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
@@ -502,7 +502,7 @@ beta_features_quick_install() {
         DEPENDENCY_02_COMMAND=$(echo ${DEPENDENCY_02} | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
             echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
-            echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_02} ${RESET}"
+            echo "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_02}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
