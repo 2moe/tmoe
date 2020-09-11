@@ -556,7 +556,7 @@ do_you_want_to_continue() {
     if [ -e /usr/games/lolcat ]; then
         echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 8
     elif [ "$(command -v lolcat)" ]; then
-        echo ${TMOE_TIPS_01} | lolcat -a -d 8
+        echo ${TMOE_TIPS_01} | lolcat
     else
         echo ${TMOE_TIPS_01}
     fi
@@ -1305,7 +1305,7 @@ do_you_want_to_upgrade_it() {
     if [ -e /usr/games/lolcat ]; then
         echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
     elif [ "$(command -v lolcat)" ]; then
-        echo ${UPGRADE_TIPS} | lolcat -a -d 7
+        echo ${UPGRADE_TIPS} | lolcat
     else
         echo ${UPGRADE_TIPS}
     fi
@@ -1388,7 +1388,7 @@ lolcat_tmoe_tips_01() {
     if [ -e /usr/games/lolcat ]; then
         echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
     elif [ "$(command -v lolcat)" ]; then
-        echo ${TMOE_TIPS_01} | lolcat -a -d 9
+        echo ${TMOE_TIPS_01} | lolcat
     else
         echo ${TMOE_TIPS_01}
     fi
