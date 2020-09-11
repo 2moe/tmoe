@@ -60,6 +60,7 @@ tmoe_other_app_menu() {
             "2" "seahorse(密钥管理)" \
             "3" "kodi(家庭影院软件)" \
             "4" "scrcpy(开源的Android投屏软件)" \
+            "5" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -70,12 +71,19 @@ tmoe_other_app_menu() {
     2) install_seahorse ;;
     3) install_kodi ;;
     4) configure_scrcpy ;;
+    5) install_flameshot ;;
     esac
     ##########################
     press_enter_to_return
     tmoe_other_app_menu
 }
-###################
+##############
+install_flameshot() {
+    this_app_may_non_support_running_on_proot
+    DEPENDENCY_02="flameshot"
+    beta_features_quick_install
+}
+###############
 configure_scrcpy() {
     RETURN_TO_WHERE='configure_scrcpy'
     DEPENDENCY_01=''

@@ -316,8 +316,6 @@ tmoe_multimedia_menu() {
         "11" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
-    #        "3" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
-    #    3) install_flameshot ;;
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
@@ -667,12 +665,6 @@ install_gimp() {
     beta_features_quick_install
 }
 ##############
-install_flameshot() {
-    DEPENDENCY_01="flameshot"
-    DEPENDENCY_02=""
-    beta_features_quick_install
-}
-###############
 install_peek() {
     DEPENDENCY_01="peek"
     DEPENDENCY_02=""

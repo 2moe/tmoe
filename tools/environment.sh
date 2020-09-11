@@ -1423,4 +1423,14 @@ download_and_install_deb() {
     esac
 }
 ############
+this_app_may_non_support_running_on_proot() {
+    case ${TMOE_PROOT} in
+    false) ;;
+    true | no)
+        echo "本软件可能不支持在proot容器环境中运行"
+        do_you_want_to_continue
+        ;;
+    esac
+}
+#############
 gnu_linux_env_02
