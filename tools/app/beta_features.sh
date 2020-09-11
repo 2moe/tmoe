@@ -535,6 +535,21 @@ install_evince() {
     beta_features_quick_install
 }
 ##########
+install_okular() {
+    DEPENDENCY_02="okular"
+    beta_features_quick_install
+}
+##############
+install_kchmviewer() {
+    DEPENDENCY_02="kchmviewer"
+    beta_features_quick_install
+}
+#############
+install_pdfchain() {
+    DEPENDENCY_02="pdfchain"
+    beta_features_quick_install
+}
+##############
 tmoe_reader_app_menu() {
     RETURN_TO_WHERE='tmoe_reader_app_menu'
     DEPENDENCY_01=""
@@ -545,7 +560,10 @@ tmoe_reader_app_menu() {
         "2" "fbreader(epub阅读器)" \
         "3" "typora(markdown编辑器)" \
         "4" "Xournal(手写编辑PDF)" \
-        "5" "evince(gnome-pdf文档阅读器)" \
+        "5" "evince(GNOME-pdf文档阅读器)" \
+        "6" "okular(KDE-pdf文档阅读器)" \
+        "7" "kchmviewer(KDE下的chm查看器)" \
+        "8" "pdfchain(pdf编辑器,支持合并,分割,加密)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -556,6 +574,9 @@ tmoe_reader_app_menu() {
     3) install_typora ;;
     4) install_xournal ;;
     5) install_evince ;;
+    6) install_okular ;;
+    7) install_kchmviewer ;;
+    8) install_pdfchain ;;
     esac
     ##########################
     #beta_features_quick_install

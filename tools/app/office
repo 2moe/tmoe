@@ -14,6 +14,8 @@ tmoe_documents_menu() {
             "3" "Chinese manual(中文手册)" \
             "4" "永中Office(x64,秉承集成创新理念)" \
             "5" "Free Office(x86,x64,全面支持微软Office文件)" \
+            "6" "Meld(可视化的文本差异比较工具)" \
+            "7" "Kdiff3(KDE下的文件差异对比工具)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -25,12 +27,24 @@ tmoe_documents_menu() {
     3) install_chinese_manpages ;;
     4) yozo_office_env ;;
     5) free_office_env ;;
+    6) install_meld ;;
+    7) install_kdiff3 ;;
     esac
     ##########################
     press_enter_to_return
     tmoe_documents_menu
 }
 #############
+install_meld() {
+    DEPENDENCY_02="meld"
+    beta_features_quick_install
+}
+############
+install_kdiff3() {
+    DEPENDENCY_02="kdiff3"
+    beta_features_quick_install
+}
+#################
 free_office_env() {
     DEPENDENCY_01="freeoffice"
     GREP_NAME="${DEPENDENCY_01}"

@@ -127,10 +127,18 @@ tmoe_social_network_service() {
     RETURN_TO_WHERE='tmoe_social_network_service'
     NON_DEBIAN='false'
     DEPENDENCY_01=""
+    DEPENDENCY_02=""
     TMOE_APP=$(
         whiptail --title "SNS" --menu \
             "Which software do you want to install?" 0 50 0 \
             "1" "LinuxQQ(在线聊天软件)" \
+            "2" "Thunderbird(雷鸟是Mozilla出品的email客户端)" \
+            "3" "Kmail(KDE邮件客户端)" \
+            "4" "Evolution(GNOME邮件客户端)" \
+            "5" "Empathy(GNOME多协议语音、视频聊天软件)" \
+            "6" "Pidgin(IM即时通讯软件)" \
+            "7" "Xchat(IRC客户端,类似于Amiga的AmIRC)" \
+            "8" "Skype(x64,微软出品的IM软件)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -138,8 +146,19 @@ tmoe_social_network_service() {
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_linux_qq ;;
+    2) DEPENDENCY_01="thunderbird" ;;
+    3) DEPENDENCY_01="kmail" ;;
+    4) DEPENDENCY_01="evolution" ;;
+    5) DEPENDENCY_01="empathy" ;;
+    6) DEPENDENCY_01="pidgin" ;;
+    7) DEPENDENCY_01="xchat" ;;
+    8) install_skype ;;
     esac
     ##########################
+    case ${DEPENDENCY_01} in
+    "") ;;
+    *) beta_features_quick_install ;;
+    esac
     press_enter_to_return
     tmoe_social_network_service
 }
@@ -175,6 +194,43 @@ start_kanasimi_work_crawler() {
     check_kanasimi_work_crawler
 }
 ###############
+install_skype() {
+    #https://go.skype.com/skypeforlinux-64.deb
+    THE_LATEST_DEB_URL='https://repo.skype.com/latest/skypeforlinux-64.deb'
+    DEPENDENCY_01='skypeforlinux'
+    if [ $(command -v skypeforlinux) ]; then
+        press_enter_to_reinstall
+    fi
+    case ${LINUX_DISTRO} in
+    redhat) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@64.deb@64.rpm@') ;;
+    debian) ;;
+    arch) DEPENDENCY_01='skypeforlinux-stable-bin' ;;
+    *) non_debian_function ;;
+    esac
+    echo ${THE_LATEST_DEB_URL}
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    *) arch_does_not_support ;;
+    esac
+    do_you_want_to_continue
+    cd /tmp
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+
+    case ${LINUX_DISTRO} in
+    redhat | debian) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
+    arch) beta_features_quick_install ;;
+    esac
+
+    case ${LINUX_DISTRO} in
+    redhat) rpm -ivh "${THE_LATEST_DEB_FILE}" ;;
+    debian)
+        apt show ./${THE_LATEST_DEB_FILE}
+        apt install -y ./${THE_LATEST_DEB_FILE}
+        ;;
+    esac
+    rm -vf ${THE_LATEST_DEB_FILE} 2>/dev/null
+}
+#############
 install_nodejs() {
     NON_DEBIAN='false'
     DEPENDENCY_01=""
@@ -227,6 +283,16 @@ install_clementine() {
     beta_features_quick_install
 }
 ##########
+install_audacity() {
+    DEPENDENCY_02="audacity"
+    beta_features_quick_install
+}
+##########
+install_ardour() {
+    DEPENDENCY_02="ardour"
+    beta_features_quick_install
+}
+############
 batch_compression_of_pictures() {
     source ${TMOE_TOOL_DIR}/optimization/compress_pictures
 }
@@ -239,27 +305,33 @@ tmoe_multimedia_menu() {
         "Which software do you want to install?" 0 50 0 \
         "1" "🗜️ Batch compression of pics批量压缩图片" \
         "2" "📽️ MPV(开源、跨平台的音视频播放器)" \
-        "3" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
+        "3" "🎥 SMPlayer(MPlayer的前端)" \
         "4" "🇵 Peek(简单易用的Gif录制软件)" \
         "5" "🎬 腾讯视频:国产Linux在线视频软件" \
         "6" "🖼 GIMP(GNU 图像处理程序)" \
         "7" "🍊 Clementine(小柑橘音乐播放器)" \
         "8" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
         "9" "🎧 网易云音乐(x86_64,专注于发现与分享的音乐产品)" \
+        "10" "🎼 Audacity(类似于cooledit的音频处理软件)" \
+        "11" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
+    #        "3" "🔥 Flameshot(火焰截图,强大且易用的截图软件)" \
+    #    3) install_flameshot ;;
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) batch_compression_of_pictures ;;
     2) install_mpv ;;
-    3) install_flameshot ;;
+    3) install_smplayer ;;
     4) install_peek ;;
     5) install_tencent_video ;;
     6) install_gimp ;;
     7) install_clementine ;;
     8) install_parole ;;
     9) install_netease_163_cloud_music ;;
+    10) install_audacity ;;
+    11) install_ardour ;;
     esac
     ##########################
     press_enter_to_return
@@ -443,6 +515,11 @@ install_wesnoth_game() {
     DEPENDENCY_01="wesnoth"
     DEPENDENCY_02=""
     NON_DEBIAN='false'
+    beta_features_quick_install
+}
+###########
+install_smplayer() {
+    DEPENDENCY_02="smplayer"
     beta_features_quick_install
 }
 ###########

@@ -4,7 +4,7 @@ image_compression_menu() {
     RETURN_TO_WHERE='image_compression_menu'
     SOFTWARE=$(
         whiptail --title "image_compression" --menu \
-            "TMOE批量压缩图片小工具" 0 0 0 \
+            "TMOE批量压缩图片小工具,基于graphicsmagick-imagemagick-compat" 0 0 0 \
             "1" "start 启动" \
             "2" "install dependencies安装依赖" \
             "3" "remove 卸载" \
