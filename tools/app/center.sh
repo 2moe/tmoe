@@ -44,7 +44,7 @@ software_center() {
             "5" "📚 Documents:文档(libreoffice,wps)" \
             "6" "🔯 Packages&system:软件包与系统管理" \
             "7" "🎮 Games:游戏(steam,wesnoth)" \
-            "8" "🐧 SNS:社交类(qq)" \
+            "8" "🐧 SNS:社交类(qq,skype)" \
             "9" "🎁 Download:下载类(aria2,baidu)" \
             "10" "🥙 Start zsh tool:启动zsh管理工具" \
             "11" "🥗 File shared:文件共享与网盘(Webdav)" \
@@ -139,6 +139,7 @@ tmoe_social_network_service() {
             "6" "Pidgin(IM即时通讯软件)" \
             "7" "Xchat(IRC客户端,类似于Amiga的AmIRC)" \
             "8" "Skype(x64,微软出品的IM软件)" \
+            "9" "米聊(x64,小米科技出品的即时通讯工具)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -146,13 +147,17 @@ tmoe_social_network_service() {
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_linux_qq ;;
-    2) DEPENDENCY_01="thunderbird" ;;
+    2)
+        DEPENDENCY_01="thunderbird"
+        DEPENDENCY_02="thunderbird-l10n-zh-cn"
+        ;;
     3) DEPENDENCY_01="kmail" ;;
     4) DEPENDENCY_01="evolution" ;;
     5) DEPENDENCY_01="empathy" ;;
     6) DEPENDENCY_01="pidgin" ;;
     7) DEPENDENCY_01="xchat" ;;
     8) install_skype ;;
+    9) mitalk_env ;;
     esac
     ##########################
     case ${DEPENDENCY_01} in
@@ -163,6 +168,37 @@ tmoe_social_network_service() {
     tmoe_social_network_service
 }
 ###################
+mitalk_env() {
+    DEPENDENCY_01='mitalk'
+    GREP_NAME='mitalk'
+    OFFICIAL_URL='http://www.miliao.com/#download-content'
+    tmoe_app_menu_01
+    DEPENDENCY_01=''
+}
+############
+install_mitalk() {
+    REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/mitalk/'
+    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+    #https://s1.zb.mi.com/miliao/apk/miliao/8.8/MiTalk_4.0.100.deb
+    #https://s1.zb.mi.com/miliao/apk/miliao/8.8/MiTalk_4.0.100.AppImage
+    case ${LINUX_DISTRO} in
+    debian | arch) ;;
+    *) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@.deb@.AppImage@") ;;
+    esac
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@MiTalk_@@")
+    ICON_FILE='/usr/share/icons/hicolor/128x128/apps/mitalk.png'
+    if [ -e "${ICON_FILE}" ]; then
+        catimg "${ICON_FILE}" 2>/dev/null
+    fi
+    check_deb_version
+    case ${ARCH_TYPE} in
+    amd64) ;;
+    *) arch_does_not_support ;;
+    esac
+    download_and_install_deb
+}
+###############
 tmoe_download_class() {
     RETURN_TO_WHERE='tmoe_download_class'
     NON_DEBIAN='false'

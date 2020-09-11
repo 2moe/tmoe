@@ -1347,6 +1347,7 @@ install_tmoe_app_01() {
     browser360-cn-stable | browser360) install_360_browser ;;
     yozo-office) install_yozo_office ;;
     freeoffice) install_free_office ;;
+    mitalk) install_mitalk ;;
     esac
 }
 ###########
