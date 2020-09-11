@@ -1538,7 +1538,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#groupadd -g 3005 aid_admin
 		#usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin root
 		usermod -a -G aid_system,aid_radio,aid_bluetooth,aid_graphics,aid_input,aid_audio,aid_camera,aid_log,aid_compass,aid_mount,aid_wifi,aid_adb,aid_install,aid_media,aid_dhcp,aid_sdcard_rw,aid_vpn,aid_keystore,aid_usb,aid_drm,aid_mdnsr,aid_gps,aid_media_rw,aid_mtp,aid_drmrpc,aid_nfc,aid_sdcard_r,aid_clat,aid_loop_radio,aid_media_drm,aid_package_info,aid_sdcard_pics,aid_sdcard_av,aid_sdcard_all,aid_logd,aid_shared_relro,aid_dbus,aid_tlsdate,aid_media_ex,aid_audioserver,aid_metrics_coll,aid_metricsd,aid_webserv,aid_debuggerd,aid_media_codec,aid_cameraserver,aid_firewall,aid_trunks,aid_nvram,aid_dns,aid_dns_tether,aid_webview_zygote,aid_vehicle_network,aid_media_audio,aid_media_video,aid_media_image,aid_tombstoned,aid_media_obb,aid_ese,aid_ota_update,aid_automotive_evs,aid_lowpan,aid_hsm,aid_reserved_disk,aid_statsd,aid_incidentd,aid_secure_element,aid_lmkd,aid_llkd,aid_iorapd,aid_gpu_service,aid_network_stack,aid_shell,aid_cache,aid_diag,aid_oem_reserved_start,aid_oem_reserved_end,aid_net_bt_admin,aid_net_bt,aid_inet,aid_net_raw,aid_net_admin,aid_net_bw_stats,aid_net_bw_acct,aid_readproc,aid_wakelock,aid_uhid,aid_everybody,aid_misc,aid_nobody,aid_app_start,aid_app_end,aid_cache_gid_start,aid_cache_gid_end,aid_ext_gid_start,aid_ext_gid_end,aid_ext_cache_gid_start,aid_ext_cache_gid_end,aid_shared_gid_start,aid_shared_gid_end,aid_overflowuid,aid_isolated_start,aid_isolated_end,aid_user_offset root
-		usermod -g aid_inet _apt
+		usermod -g aid_inet _apt 2>/dev/null
 		usermod -a -G aid_inet,aid_net_raw portage 2>/dev/null
 	fi
 	#函数放在前面
@@ -1818,19 +1818,19 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    echo "Tmoe-locale file not detected."
 	fi
 	echo "Configuring ${TMOE_LANG_HALF} environment..."
-	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen
+	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen 2>/dev/null
 	cat >>/etc/default/locale <<-EOF
 			LANG=${TMOE_LANG}
 			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 			LC_ALL=${TMOE_LANG}
 		EOF
-	if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+	if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
 	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
 	    echo '' >>/etc/locale.gen
 	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
 	fi
-	locale-gen ${TMOE_LANG}
+	locale-gen ${TMOE_LANG} 2>/dev/null
 	source /etc/default/locale 2>/dev/null
 	#################
 	printf "$YELLOW"
@@ -1872,8 +1872,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
 	    echo "Replacing http software source list with https."
 	    echo "正在将http源替换为https..."
-	    sed -i 's@http:@https:@g' /etc/apt/sources.list
-	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list
+	    sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
+	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list 2>/dev/null
 	fi
 	##########################
 	gentoo_gnu_linux_make_conf() {

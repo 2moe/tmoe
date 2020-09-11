@@ -278,7 +278,7 @@ preconfigure_gui_dependecies_02() {
 }
 ########################
 standand_desktop_installation() {
-    
+
     NON_DBUS='false'
     REMOVE_UDISK2='false'
     RETURN_TO_WHERE='standand_desktop_installation'
@@ -359,7 +359,7 @@ tmoe_container_desktop() {
 }
 ####################
 tmoe_display_manager_install() {
-    
+
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_display_manager_install'
     INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
@@ -1904,17 +1904,18 @@ dde_warning() {
     debian)
         echo "本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。"
         echo "非新版的Ubuntu LTS系统可能存在依赖关系问题。"
-        echo "若您需要在容器环境中运行，则建议您换用arch或fedora。"
+        echo "若您需要在arm64容器环境中运行，则建议您换用fedora。"
+        echo "若您需要在x64容器环境中运行，则建议您换用arch。"
         ;;
     esac
 
     case "${TMOE_PROOT}" in
-    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用chroot容器进行安装，但更推荐您换用虚拟机。" ;;
+    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用fedora chroot容器进行安装。" ;;
     false)
         echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境"
         case ${LINUX_DISTRO} in
-        arch | redhat) echo "尽情享受dde带来的乐趣吧！";;
-        debian) echo "若无法运行，则请更换为arch或fedora容器" ;;
+        redhat) echo "尽情享受dde带来的乐趣吧！" ;;
+        debian | *) echo "若无法运行，则请更换为fedora容器" ;;
         esac
         ;;
     no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
@@ -1941,7 +1942,17 @@ install_deepin_desktop() {
         #pacman -S --noconfirm deepin-kwin
         #pacman -S --noconfirm file-roller evince
         #rm -v ~/.pam_environment 2>/dev/null
-        DEPENDENCY_01="deepin deepin-extra lightdm lightdm-deepin-greeter xorg"
+        DEPENDENCY_01="deepin xorg deepin-extra lightdm lightdm-deepin-greeter"
+        case ${ARCH_TYPE} in
+        amd64) ;;
+        *)
+            #DEPENDENCY_01="deepin xorg"
+            #echo "如需安装额外组件，请手动输${GREEN}pacman -Syu${RESET} ${BLUE}deepin-extra lightdm lightdm-deepin-greeter${RESET}"
+            echo "${RED}WARNING！${RESET}检测到您使用的是arch系发行版，${ARCH_TYPE}的仓库可能缺失了deepin-desktop-base，建议您换用x64架构的设备。"
+            echo "若您需要在arm64容器中安装dde,则您可以换用fedora_arm64 chroot容器。"
+            do_you_want_to_continue
+            ;;
+        esac
     fi
     ####################
     beta_features_quick_install
@@ -1993,7 +2004,7 @@ check_update_icon_caches_sh() {
 }
 ##############
 tmoe_desktop_beautification() {
-    
+
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_desktop_beautification'
     BEAUTIFICATION=$(whiptail --title "beautification" --menu \
@@ -2745,7 +2756,7 @@ download_win10x_theme() {
 download_uos_icon_theme() {
     DEPENDENCY_01="deepin-icon-theme"
     DEPENDENCY_02=""
-    
+
     beta_features_quick_install
 
     if [ -d "/usr/share/icons/Uos" ]; then
@@ -2797,7 +2808,7 @@ download_macos_mojave_theme() {
 download_ukui_theme() {
     DEPENDENCY_01="ukui-themes"
     DEPENDENCY_02="ukui-greeter"
-    
+
     beta_features_quick_install
 
     if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
@@ -2844,7 +2855,7 @@ download_arch_breeze_adapta_cursor_theme() {
 install_breeze_theme() {
     DEPENDENCY_01="breeze-icon-theme"
     DEPENDENCY_02="breeze-cursor-theme breeze-gtk-theme xfwm4-theme-breeze"
-    
+
     download_arch_breeze_adapta_cursor_theme
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="breeze-icons breeze-gtk"
@@ -2887,7 +2898,7 @@ install_kali_undercover() {
     fi
     DEPENDENCY_01="kali-undercover"
     DEPENDENCY_02=""
-    
+
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         beta_features_quick_install
     fi
@@ -3007,7 +3018,7 @@ x11vnc_warning() {
     RETURN_TO_WHERE='configure_x11vnc'
     do_you_want_to_continue
     #stopvnc 2>/dev/null
-    
+
     DEPENDENCY_01=''
     DEPENDENCY_02=''
     if [ ! $(command -v x11vnc) ]; then
@@ -3363,7 +3374,7 @@ remove_xwayland() {
     do_you_want_to_continue
     DEPENDENCY_01='weston'
     DEPENDENCY_02='xwayland'
-    
+
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_02='xorg-server-xwayland'
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -3402,7 +3413,7 @@ xwayland_onekey() {
 
     DEPENDENCY_01='weston'
     DEPENDENCY_02='xwayland'
-    
+
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         if [ $(command -v startplasma-x11) ]; then
             DEPENDENCY_02='xwayland plasma-workspace-wayland'
@@ -3777,7 +3788,7 @@ xrdp_onekey() {
 
     DEPENDENCY_01=''
     DEPENDENCY_02='xrdp'
-    
+
     if [ "${LINUX_DISTRO}" = "gentoo" ]; then
         emerge -avk layman
         layman -a bleeding-edge
