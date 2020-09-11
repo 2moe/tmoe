@@ -1428,6 +1428,7 @@ this_app_may_non_support_running_on_proot() {
     false) ;;
     true | no)
         echo "本软件可能不支持在proot容器环境中运行"
+        echo "This application may not support running on a proot container."
         do_you_want_to_continue
         ;;
     esac
