@@ -1226,7 +1226,10 @@ install_java() {
             DEPENDENCY_01='openjdk11-jre'
             DEPENDENCY_02='openjdk11-jdk'
             ;;
-        redhat | *) DEPENDENCY_02='java' ;;
+        redhat | *)
+            DEPENDENCY_02='java-latest-openjdk'
+            DEPENDENCY_02='java-latest-openjdk-devel'
+            ;;
         esac
         beta_features_quick_install
     fi
