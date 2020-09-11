@@ -133,7 +133,7 @@ tmoe_social_network_service() {
     TMOE_APP=$(
         whiptail --title "SNS" --menu \
             "Which software do you want to install?" 0 50 0 \
-            "1" "LinuxQQ(在线聊天软件)" \
+            "1" "LinuxQQ(腾讯出品的IM软件,从心出发,趣无止境)" \
             "2" "Thunderbird(雷鸟是Mozilla出品的email客户端)" \
             "3" "Kmail(KDE邮件客户端)" \
             "4" "Evolution(GNOME邮件客户端)" \
