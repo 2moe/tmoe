@@ -187,7 +187,7 @@ install_vivaldi_browser() {
     esac
     #) non_debian_function ;;
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@vivaldi-stable_@@")
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${DEPENDENCY_01}-@@" | sed "s@vivaldi-stable_@@")
     check_deb_version
     download_and_install_deb
     rm -v /etc/apt/sources.list.d/vivaldi.list 2>/dev/null

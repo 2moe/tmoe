@@ -65,12 +65,13 @@ install_free_office() {
     redhat)
         case ${ARCH_TYPE} in
         amd64)
-            #THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | head -n 1)"
+            THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | cut -d '=' -f 2 | head -n 1)"
             #https://www.freeoffice.com/download.php?filename=https://www.softmaker.net/down/softmaker-freeoffice-2018-976.x86_64.rpm
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.x86_64.rpm@" | sed "s@_amd64.deb@.x86_64.rpm@")
+            #THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.x86_64.rpm@" | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         i386)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.i386.rpm@" | sed "s@_amd64.deb@.i386.rpm@")
+            THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep 'rpm' | sed 's@ @\n@g' | grep rpm | grep i386 | cut -d '"' -f 2 | cut -d '=' -f 2 | head -n 1)
+            #THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.i386.rpm@" | sed "s@_amd64.deb@.i386.rpm@")
             ;;
         esac
         ;;
@@ -106,14 +107,10 @@ install_yozo_office() {
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${LINUX_DISTRO} in
     debian) ;;
-    redhat)
-        case ${ARCH_TYPE} in
-        amd64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@.x86_64.rpm@") ;;
-        esac
-        ;;
+    redhat) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@.x86_64.rpm@") ;;
     esac
     THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
     ICON_FILE='/usr/share/icons/hicolor/48x48/apps/yozoicon.png'
     if [ -e "${ICON_FILE}" ]; then
         catimg "${ICON_FILE}" 2>/dev/null
