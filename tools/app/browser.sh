@@ -176,10 +176,10 @@ install_vivaldi_browser() {
         case ${ARCH_TYPE} in
         amd64)
             #THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | head -n 1)"
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         i386)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.i386.rpm@")
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.i386.rpm@")
             ;;
         *) arch_does_not_support ;;
         esac

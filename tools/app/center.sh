@@ -862,7 +862,7 @@ install_baidu_netdisk() {
     echo "正在检测版本更新..."
     THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
-    THE_LATEST_RPM_URL=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}' | sed 's@_amd64.deb@.x86_64.rpm@')
+    THE_LATEST_RPM_URL=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}' | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed 's@_amd64.deb@.x86_64.rpm@')
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
     echo "最新版链接为${YELLOW}${THE_LATEST_DEB_URL}${RESET}"

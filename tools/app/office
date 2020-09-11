@@ -108,7 +108,7 @@ install_yozo_office() {
     debian) ;;
     redhat)
         case ${ARCH_TYPE} in
-        amd64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.x86_64.rpm@") ;;
+        amd64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@.x86_64.rpm@") ;;
         esac
         ;;
     esac
@@ -163,7 +163,7 @@ install_wps_office() {
         beta_features_quick_install
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "https://wdl1.cache.wps.cn/wps/download/ep/Linux2019/9505/wps-office-11.1.0.9505-1.x86_64.rpm"
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${LatestWPSLink}"
         rpm -ivh ./WPSoffice.rpm
     fi
     echo ${THE_LATEST_DEB_VERSION} >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
