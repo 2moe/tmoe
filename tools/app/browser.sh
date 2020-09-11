@@ -205,19 +205,21 @@ install_360_browser() {
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${ARCH_TYPE} in
     amd64) ;;
-    arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
+    arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
     *) arch_does_not_support ;;
     esac
+    #https://down.360safe.com/gc/browser360-cn-stable_12.2.1070.0-1_amd64.deb
+    #http://down.360safe.com/gc/browser360-cn-stable-10.2.1005.3-1.aarch64.rpm
 
     case ${LINUX_DISTRO} in
     debian | arch) ;;
     redhat)
         case ${ARCH_TYPE} in
         amd64)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         arm64)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@_amd64.deb@.aarch64.rpm@")
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
             ;;
         esac
         ;;
