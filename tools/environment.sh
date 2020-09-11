@@ -426,7 +426,8 @@ beta_features_management_menu() {
     else
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
         press_enter_to_return
-        tmoe_linux_tool_menu
+        #tmoe_linux_tool_menu
+        ${RETURN_TO_WHERE}
     fi
 }
 ##############
@@ -461,7 +462,7 @@ press_enter_to_reinstall_yes_or_no() {
     echo "按${GREEN}回车键${RESET}${RED}重新安装${RESET},输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     echo "输${YELLOW}m${RESET}打开${BLUE}管理菜单${RESET}"
     echo "${YELLOW}Do you want to reinstall it?[Y/m/n]${RESET}"
-    echo "Press enter to reinstall,type n to return,type m to open management menu"
+    echo "Press enter to reinstall,type n to return,type m to open management menu."
     read opt
     case $opt in
     y* | Y* | "") ;;
