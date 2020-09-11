@@ -134,8 +134,15 @@ install_wps_office() {
     echo "正在检测版本更新..."
     echo "若安装失败，则请前往官网手动下载安装。"
     echo "url: ${YELLOW}https://linux.wps.cn${RESET}"
-    THE_LATEST_DEB_URL=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
+    case ${LINUX_DISTRO} in
+    redhat)
+        THE_LATEST_DEB_URL=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        ;;
+    *)
+        THE_LATEST_DEB_URL=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        ;;
+    esac
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}' | sed 's@.deb@@')
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
     echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
@@ -152,7 +159,6 @@ install_wps_office() {
     cd /tmp
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
-        #LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.deb' | grep -i "${ARCH_TYPE}" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb
@@ -161,8 +167,7 @@ install_wps_office() {
         DEPENDENCY_01="wps-office-cn"
         beta_features_quick_install
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        LatestWPSLink=$(curl -L https://linux.wps.cn/ | grep '\.rpm' | grep -i "$(uname -m)" | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${LatestWPSLink}"
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
         rpm -ivh ./WPSoffice.rpm
     fi
     echo ${THE_LATEST_DEB_VERSION} >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
