@@ -312,7 +312,6 @@ upgrade_video_download_tool() {
     echo 'Press Enter to update'
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
-    NON_DEBIAN=false
     DEPENDENCY_01=""
     DEPENDENCY_02=""
 

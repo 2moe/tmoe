@@ -486,9 +486,9 @@ beta_features_install_completed() {
 }
 ####################
 beta_features_quick_install() {
-    if [ "${NON_DEBIAN}" = 'true' ]; then
-        non_debian_function
-    fi
+    #if [ "${NON_DEBIAN}" = 'true' ]; then
+    #   non_debian_function
+    #fi
     #############
     if [ ! -z "${DEPENDENCY_01}" ]; then
         DEPENDENCY_01_COMMAND=$(echo ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
@@ -1019,7 +1019,8 @@ install_gnome_system_monitor() {
 install_typora() {
     DEPENDENCY_01="typora"
     DEPENDENCY_02=""
-    NON_DEBIAN='true'
+    #NON_DEBIAN='true'
+    non_debian_function
     beta_features_quick_install
     cd /tmp
     GREP_NAME='typora'
@@ -1052,7 +1053,6 @@ download_the_latest_electron() {
         if [ ! -e "${OPT_REPO_LIST}" ]; then
             add_debian_opt_gpg_key
         fi
-        NON_DEBIAN='false'
         DEPENDENCY_01=''
         DEPENDENCY_02='electron'
         beta_features_quick_install
@@ -1263,7 +1263,6 @@ install_java() {
 #######
 check_zenity() {
     if [ ! $(command -v zenity) ]; then
-        NON_DEBIAN='false'
         DEPENDENCY_01='zenity'
         DEPENDENCY_02=''
         beta_features_quick_install

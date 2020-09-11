@@ -16,7 +16,7 @@ kde_config_module_for_fcitx() {
 tmoe_fcitx5_menu() {
     check_zstd
     RETURN_TO_WHERE='tmoe_fcitx5_menu'
-    NON_DEBIAN='false'
+    
     INPUT_METHOD=$(
         whiptail --title "Fcitx5" --menu "Fcitx5 是继 Fcitx 后的新一代输入法框架。\n词库是输入法保存的一些流行词语、常用词语或专业术语等的信息,\n添加流行词库能增加流行候选词的命中率" 0 55 0 \
             "1" "fcitx5安装与卸载" \
@@ -44,7 +44,7 @@ tmoe_fcitx5_menu() {
 input_method_beautification() {
     RETURN_TO_WHERE='input_method_beautification'
     DEPENDENCY_01=''
-    NON_DEBIAN='false'
+    
     FCIITX5_CLASSUI_CONF_PATH="${HOME}/.config/fcitx5/conf"
     FCIITX5_CLASSUI_CONF_FILE="${FCIITX5_CLASSUI_CONF_PATH}/classicui.conf"
     INPUT_METHOD=$(
@@ -91,7 +91,7 @@ configure_fcitx5_material_color_theme() {
     fi
     PANEL_COLOR_PNG=''
     #DEPENDENCY_01=''
-    #NON_DEBIAN='false'
+    #
     INPUT_METHOD=$(
         whiptail --title "Fcitx5 Material Design" --menu "https://github.com/hosxy/Fcitx5-Material-Color\n您可以在下载完成后，自由修改主题配色。\n${FCITX_THEME_STATUS}" 0 55 0 \
             "1" "download下载/更新" \
@@ -224,7 +224,8 @@ write_to_fcitx_classui_conf() {
 }
 ###########
 install_kimpanel() {
-    NON_DEBIAN='true'
+    #NON_DEBIAN='true'
+    non_debian_function
     DEPENDENCY_02='fcitx5-module-kimpanel'
     beta_features_quick_install
 }
@@ -335,7 +336,7 @@ install_fcitx5_rime() {
 #################
 install_pinyin_input_method() {
     RETURN_TO_WHERE='install_pinyin_input_method'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01="fcitx"
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01='fcitx-im fcitx-configtool'
@@ -389,7 +390,7 @@ install_onboard() {
 }
 ##################
 tmoe_fcitx_faq() {
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_fcitx_faq'
     TMOE_APP=$(whiptail --title "Fcitx FAQ" --menu \
@@ -456,7 +457,8 @@ input_method_config() {
     if ! grep '^fcitx' .xprofile; then
         sed -i '1a\fcitx || fcitx5' .xprofile
     fi
-    NON_DEBIAN='true'
+    #NON_DEBIAN='true'
+    non_debian_function
     if [ ! $(command -v im-config) ]; then
         DEPENDENCY_01=''
         DEPENDENCY_02='im-config'

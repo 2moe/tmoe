@@ -3,7 +3,7 @@
 tmoe_documents_menu() {
     RETURN_TO_WHERE='tmoe_documents_menu'
     RETURN_TO_MENU='tmoe_documents_menu'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     TMOE_APP=$(
@@ -130,7 +130,7 @@ install_wps_office() {
     random_neko
     DEPENDENCY_01="wps-office"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     echo "正在检测版本更新..."
     echo "若安装失败，则请前往官网手动下载安装。"
     echo "url: ${YELLOW}https://linux.wps.cn${RESET}"
@@ -191,7 +191,7 @@ install_libre_office() {
         DEPENDENCY_01="libreoffice"
     fi
     DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
     case "${TMOE_PROOT}" in
     no)

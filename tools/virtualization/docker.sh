@@ -664,7 +664,7 @@ EOF
 }
 ############
 tmoe_qemu_user_static() {
-    NON_DEBIAN='false'
+    
     RETURN_TO_WHERE='tmoe_qemu_user_static'
     BETA_SYSTEM=$(
         whiptail --title "qemu_user_static" --menu "You can use qemu-user-static to run docker containers across architectures." 0 50 0 \
@@ -941,7 +941,7 @@ install_docker_io() {
 }
 ###########
 install_docker_ce() {
-    NON_DEBIAN='false'
+    
     if [ ! $(command -v gpg) ]; then
         DEPENDENCY_01=""
         DEPENDENCY_02="gpg"

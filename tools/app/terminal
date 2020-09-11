@@ -2,7 +2,6 @@
 ########################
 tmoe_terminal_main_menu() {
     RETURN_TO_WHERE='tmoe_terminal_main_menu'
-    NON_DEBIAN='false'
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "TERMINAL APP" --menu \
         "Which software do you want to install？" 0 50 0 \

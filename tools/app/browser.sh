@@ -27,7 +27,7 @@ install_chromium_browser() {
     echo '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
     echo "1s后将自动开始安装"
     sleep 1
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01="chromium"
     DEPENDENCY_02="chromium-l10n"
 
@@ -79,7 +79,7 @@ install_firefox_esr_browser() {
     echo "1s后将自动开始安装"
     sleep 1
 
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01="firefox-esr"
     DEPENDENCY_02="firefox-esr-l10n-zh-cn"
 
@@ -115,7 +115,7 @@ install_firefox_browser() {
     echo " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET}"
     echo "1s后将自动开始安装"
     sleep 1
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01="firefox"
     DEPENDENCY_02="firefox-l10n-zh-cn"
 
@@ -234,7 +234,7 @@ install_360_browser() {
 tmoe_browser_menu() {
     RETURN_TO_WHERE='tmoe_browser_menu'
     RETURN_TO_MENU='tmoe_browser_menu'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_02=""
     TMOE_APP=$(whiptail --title "Browsers" --menu \
         "Which browser do you want to install?" 0 50 0 \

@@ -1,7 +1,7 @@
 frequently_asked_questions() {
     RETURN_TO_WHERE='frequently_asked_questions'
     DEPENDENCY_01=''
-    NON_DEBIAN='false'
+    
     #17 50 7
     TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
         "您有哪些疑问？\nWhat questions do you have?" 0 0 0 \

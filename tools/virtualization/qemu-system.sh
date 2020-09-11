@@ -59,7 +59,7 @@ qemu_system_menu() {
 #############
 install_container_and_virtual_machine() {
 	RETURN_TO_WHERE='install_container_and_virtual_machine'
-	NON_DEBIAN='false'
+	
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
@@ -3082,7 +3082,7 @@ compress_qcow2_img_file() {
 ################
 download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
-	NON_DEBIAN='false'
+	
 	DOWNLOAD_PATH="${HOME}/sd/Download"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}

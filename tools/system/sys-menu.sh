@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 tmoe_uefi_boot_manager() {
-	NON_DEBIAN='false'
+	
 	if [ ! $(command -v efibootmgr) ]; then
 		echo "本工具能对UEFI开机引导的顺序进行排序，但不支持容器和WSL"
 		echo "按回车键确认安装"
@@ -128,7 +128,7 @@ custom_uefi_boot_order() {
 ####################
 tmoe_system_app_menu() {
 	RETURN_TO_WHERE='tmoe_system_app_menu'
-	NON_DEBIAN='false'
+	
 	DEPENDENCY_01=""
 	DEPENDENCY_02=""
 	TMOE_APP=$(whiptail --title "SYSTEM" --menu \

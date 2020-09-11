@@ -32,7 +32,7 @@ remove_browser() {
 }
 ############################################
 software_center() {
-    NON_DEBIAN='false'
+    
     RETURN_TO_WHERE='software_center'
     RETURN_TO_MENU='software_center'
     SOFTWARE=$(
@@ -95,7 +95,7 @@ start_tmoe_zsh_manager() {
 ##########
 tmoe_software_package_menu() {
     RETURN_TO_WHERE='tmoe_software_package_menu'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     TMOE_APP=$(
         whiptail --title "PACKAGES MANAGER" --menu \
@@ -127,7 +127,7 @@ tmoe_deb_batch_installer() {
 tmoe_social_network_service() {
     RETURN_TO_WHERE='tmoe_social_network_service'
     RETURN_TO_MENU='tmoe_social_network_service'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     TMOE_APP=$(
@@ -227,7 +227,7 @@ install_mitalk() {
 ###############
 tmoe_download_class() {
     RETURN_TO_WHERE='tmoe_download_class'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     TMOE_APP=$(
         whiptail --title "documents" --menu \
@@ -294,7 +294,7 @@ install_skype() {
 }
 #############
 install_nodejs() {
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     if [ ! $(command -v 7za) ]; then
@@ -361,7 +361,7 @@ batch_compression_of_pictures() {
 ############
 tmoe_multimedia_menu() {
     RETURN_TO_WHERE='tmoe_multimedia_menu'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
@@ -454,7 +454,7 @@ git_clone_tenvideo() {
 ############
 tmoe_games_menu() {
     RETURN_TO_WHERE='tmoe_games_menu'
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "GAMES" --menu \
         "Which game do you want to install?" 0 50 0 \
@@ -609,7 +609,7 @@ install_supertuxkart_game() {
 install_wesnoth_game() {
     DEPENDENCY_01="wesnoth"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
 }
 ###########
@@ -625,7 +625,7 @@ install_mpv() {
         DEPENDENCY_01="mpv"
     fi
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
 }
 #############
@@ -704,7 +704,7 @@ install_linux_qq() {
 install_nds_game_mayomonogatari() {
     DEPENDENCY_01="desmume"
     DEPENDENCY_02="p7zip-full"
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
     if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
         echo "检测到您已下载游戏文件，路径为${HOME}/斯隆与马克贝尔的谜之物语"
@@ -734,7 +734,7 @@ install_nds_game_mayomonogatari() {
 install_game_cataclysm() {
     DEPENDENCY_01="cataclysm-dda-curses"
     DEPENDENCY_02="cataclysm-dda-sdl"
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
     echo "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
     echo "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
@@ -777,7 +777,7 @@ install_parole() {
 install_pamac_gtk() {
     DEPENDENCY_01="pamac"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
 }
 #####################
@@ -785,7 +785,8 @@ install_synaptic() {
     if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Install安装" --no-button "Remove移除" --yesno "新立德是一款使用apt的图形化软件包管理工具，您也可以把它理解为软件商店。Synaptic is a graphical package management program for apt. It provides the same features as the apt-get command line utility with a GUI front-end based on Gtk+.它提供与apt-get命令行相同的功能，并带有基于Gtk+的GUI前端。功能：1.安装、删除、升级和降级单个或多个软件包。 2.升级整个系统。 3.管理软件源列表。  4.自定义过滤器选择(搜索)软件包。 5.按名称、状态、大小或版本对软件包进行排序。 6.浏览与所选软件包相关的所有可用在线文档。♪(^∇^*) " 19 50); then
         DEPENDENCY_01="synaptic"
         DEPENDENCY_02="gdebi"
-        NON_DEBIAN='true'
+        #NON_DEBIAN='true'
+        non_debian_function
         beta_features_quick_install
         sed -i 's/synaptic-pkexec/synaptic/g' ${APPS_LNK_DIR}/synaptic.desktop
         echo "synaptic和gdebi安装完成，您可以将deb文件的默认打开程序修改为gdebi"
@@ -814,7 +815,7 @@ install_chinese_manpages() {
         DEPENDENCY_01="man-pages-zh-CN"
     fi
     DEPENDENCY_02="debian-reference-zh-cn"
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
     if [ ! -e "${HOME}/文档/debian-handbook/usr/share/doc/debian-handbook/html" ]; then
         mkdir -p ${HOME}/文档/debian-handbook
@@ -980,7 +981,7 @@ install_android_debug_bridge() {
         fi
     fi
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
     adb --help
     echo "正在重启进程,您也可以手动输adb devices来获取设备列表"
@@ -993,7 +994,7 @@ install_android_debug_bridge() {
 install_bleachbit_cleaner() {
     DEPENDENCY_01="bleachbit"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
 }
 ##########################
@@ -1016,7 +1017,7 @@ personal_netdisk() {
 ################################
 tmoe_other_options_menu() {
     RETURN_TO_WHERE='tmoe_other_options_menu'
-    NON_DEBIAN='false'
+    
     TMOE_APP=$(whiptail --title "其它选项" --menu \
         "Welcome to tmoe-linux tool.这里是其它选项的菜单." 0 50 0 \
         "1" "Remove GUI 卸载图形界面" \

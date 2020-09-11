@@ -796,7 +796,7 @@ restore_normal_default_sources_list() {
 ########
 restore_default_sources_list() {
     if [ ! $(command -v diff) ]; then
-        NON_DEBIAN='false'
+        
         DEPENDENCY_01=""
         DEPENDENCY_02="diffutils"
         beta_features_quick_install

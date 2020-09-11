@@ -4,7 +4,6 @@
 beta_features() {
     RETURN_TO_WHERE='beta_features'
     RETURN_TO_MENU='beta_features'
-    NON_DEBIAN='false'
     TMOE_BETA=$(
         whiptail --title "The Secret Garden" --menu "Some functions do not support container environment\n以下并非所有功能都支持容器环境。" 0 55 0 \
             "1" "🐬 container/vm:docker容器,qemu,vbox虚拟机" \
@@ -51,7 +50,6 @@ source_tmoe_terminal_app_menu() {
 ##########
 tmoe_other_app_menu() {
     RETURN_TO_WHERE='tmoe_other_app_menu'
-    NON_DEBIAN='false'
     DEPENDENCY_01=''
     TMOE_APP=$(
         whiptail --title "OTHER" --menu \
@@ -219,7 +217,7 @@ install_kodi() {
 ######################
 tmoe_store_app_menu() {
     RETURN_TO_WHERE='tmoe_store_app_menu'
-    NON_DEBIAN='false'
+
     TMOE_APP=$(whiptail --title "商店与下载工具" --menu \
         "Which software do you want to install？" 0 50 0 \
         "1" "aptitude:基于终端的软件包管理器" \
@@ -254,7 +252,7 @@ tmoe_store_app_menu() {
 #################
 install_deepin_software_menu() {
     RETURN_TO_WHERE='install_deepin_software_menu'
-    NON_DEBIAN='true'
+    #NON_DEBIAN='true'
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "deepin store" --menu \
         "Which software do you want to install？" 0 50 0 \
@@ -343,7 +341,7 @@ install_flatpak_store() {
 #############
 tmoe_paint_app_menu() {
     RETURN_TO_WHERE='tmoe_paint_app_menu'
-    NON_DEBIAN='false'
+
     DEPENDENCY_01=""
     TMOE_APP=$(
         whiptail --title "绘图/制图app" --menu \
@@ -397,7 +395,7 @@ tmoe_paint_app_menu() {
 ###################
 tmoe_r_language_menu() {
     RETURN_TO_WHERE='tmoe_r_language_menu'
-    NON_DEBIAN='false'
+
     DEPENDENCY_01=""
     TMOE_APP=$(
         whiptail --title "R" --menu \
@@ -459,7 +457,7 @@ install_r_recommended() {
 }
 #############
 tmoe_file_browser_app_menu() {
-    NON_DEBIAN='false'
+
     DEPENDENCY_01=""
     RETURN_TO_WHERE='tmoe_file_browser_app_menu'
     TMOE_APP=$(whiptail --title "文件与磁盘" --menu \
@@ -569,7 +567,7 @@ install_pdfchain() {
 tmoe_reader_app_menu() {
     RETURN_TO_WHERE='tmoe_reader_app_menu'
     DEPENDENCY_01=""
-    NON_DEBIAN='false'
+
     TMOE_APP=$(whiptail --title "TXET & OFFICE" --menu \
         "Which software do you want to install？" 0 50 0 \
         "1" "calibre(电子书转换器和库管理)" \
@@ -603,7 +601,7 @@ tmoe_reader_app_menu() {
 tmoe_media_menu() {
     RETURN_TO_WHERE='tmoe_media_menu'
     DEPENDENCY_01=''
-    NON_DEBIAN='false'
+
     BEAUTIFICATION=$(whiptail --title "多媒体文件制作与剪辑" --menu \
         "Which software do you want to install？" 0 50 0 \
         "1" "openshot(界面简单,多用途)" \
@@ -698,7 +696,7 @@ thunar_nautilus_dolphion() {
         #beta_features
         ;;
     esac
-    NON_DEBIAN='false'
+
     beta_features_quick_install
 }
 ##################
@@ -716,7 +714,6 @@ install_obs_studio() {
         DEPENDENCY_02="obs-studio"
     fi
 
-    NON_DEBIAN='false'
     beta_features_quick_install
 
     if [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -738,14 +735,14 @@ install_obs_studio() {
 install_grub_customizer() {
     DEPENDENCY_01="grub-customizer"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+
     beta_features_quick_install
 }
 ############################
 install_qbitorrent() {
     DEPENDENCY_01="qbittorrent"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+
     beta_features_quick_install
 }
 ############################
@@ -755,7 +752,7 @@ install_plasma_discover() {
         DEPENDENCY_01="discover"
     fi
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+
     beta_features_quick_install
 }
 ############################

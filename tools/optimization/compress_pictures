@@ -31,7 +31,7 @@ remove_image_compression_tool() {
 }
 ##########
 install_image_compression_tool() {
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01='imagemagick'
     DEPENDENCY_02='zenity'
     beta_features_quick_install
@@ -104,7 +104,7 @@ image_compression_tool_gui_or_tui() {
 ################
 check_imagemagick() {
     if [ ! $(command -v convert) ]; then
-        NON_DEBIAN='false'
+        
         DEPENDENCY_01='imagemagick'
         DEPENDENCY_02=''
         beta_features_quick_install

@@ -59,7 +59,8 @@ modify_other_vnc_conf() {
 ##############
 switch_tight_or_tiger_vncserver() {
     DEPENDENCY_01=''
-    NON_DEBIAN='true'
+    #NON_DEBIAN='true'
+    non_debian_function
     if [ $(command -v Xtightvnc) ]; then
         VNC_SERVER_BIN_NOW="tightvncserver"
         VNC_SERVER_BIN="tigervnc"
@@ -277,7 +278,7 @@ preconfigure_gui_dependecies_02() {
 }
 ########################
 standand_desktop_installation() {
-    NON_DEBIAN='false'
+    
     NON_DBUS='false'
     REMOVE_UDISK2='false'
     RETURN_TO_WHERE='standand_desktop_installation'
@@ -285,9 +286,9 @@ standand_desktop_installation() {
     INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
         "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose proot_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
         "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
-        "2" "🍔 chroot/docker_DE(chroot容器可运行:kde,lxqt)" \
+        "2" "🍔 chroot/docker_DE(chroot容器可运行:kde,dde)" \
         "3" "🍙 window manager窗口管理器:ice,fvwm" \
-        "4" "🍱 VM_DE(虚拟机可运行:gnome,dde,cinnamon)" \
+        "4" "🍱 VM_DE(虚拟机可运行:gnome,cinnamon,budgie)" \
         "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
         "6" "🍤 FAQ:vnc和gui的常见问题" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
@@ -316,6 +317,7 @@ tmoe_docker_and_chroot_container_desktop() {
         "您可以在docker或chroot容器中运行这些桌面\nYou can run these DEs on docker or chroot container." 0 0 0 \
         "1" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
         "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+        "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -323,6 +325,7 @@ tmoe_docker_and_chroot_container_desktop() {
     0 | "") standand_desktop_installation ;;
     1) install_lxqt_desktop ;;
     2) install_kde_plasma5_desktop ;;
+    3) install_deepin_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -356,7 +359,7 @@ tmoe_container_desktop() {
 }
 ####################
 tmoe_display_manager_install() {
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_display_manager_install'
     INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
@@ -803,9 +806,8 @@ tmoe_virtual_machine_desktop() {
         "您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
         "1" "👣 gnome3(GNU网络对象模型环境)" \
         "2" "🌲 cinnamon(肉桂基于gnome3,对用户友好)" \
-        "3" "dde(深度deepin desktop,美观易用)" \
-        "4" "🦜 budgie(虎皮鹦鹉基于gnome3,优雅且现代化)" \
-        "5" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
+        "3" "🦜 budgie(虎皮鹦鹉基于gnome3,优雅且现代化)" \
+        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -813,9 +815,8 @@ tmoe_virtual_machine_desktop() {
     0 | "") standand_desktop_installation ;;
     1) install_gnome3_desktop ;;
     2) install_cinnamon_desktop ;;
-    3) install_deepin_desktop ;;
-    4) install_budgie_desktop ;;
-    5) install_ukui_desktop ;;
+    3) install_budgie_desktop ;;
+    4) install_ukui_desktop ;;
     esac
     ##################
     press_enter_to_return
@@ -869,6 +870,17 @@ configure_x11vnc_remote_desktop_session() {
 		else
 		    export LANG="en_US.UTF-8"
 		fi
+        case \${TMOE_CHROOT} in
+        true)
+        if [ ! -e "/run/dbus/pid" ]; then
+            if [ \$(command -v sudo) ]; then
+                sudo dbus-daemon --system --fork 2>/dev/null
+            else
+                su -c "dbus-daemon --system --fork 2>/dev/null"
+            fi
+        fi
+        ;;
+        esac
 		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
 		if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
 			echo '检测到您使用的是WSL,正在为您打开音频服务'
@@ -1700,22 +1712,19 @@ install_budgie_desktop() {
     REMOTE_DESKTOP_SESSION_02='budgie-session'
     DEPENDENCY_01="budgie-desktop"
     echo '即将为您安装思源黑体(中文字体)、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case ${LINUX_DISTRO} in
+    debian)
         dpkg --configure -a
         auto_select_keyboard_layout
         DEPENDENCY_01='budgie-desktop budgie-indicator-applet'
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        #DEPENDENCY_01='@BUDGIE'
-        DEPENDENCY_01='budgie-desktop'
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01='budgie-desktop'
-
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        echo "Sorry,未适配gentoo"
+        ;;
+    arch | void) DEPENDENCY_01='budgie-desktop' ;;
+    *)
+        echo "Sorry,暂未适配${LINUX_DISTRO}"
         press_enter_to_return
         ${RETURN_TO_WHERE}
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -1891,13 +1900,23 @@ deepin_desktop_debian() {
 }
 ###################
 dde_warning() {
-    case "${ARCH_TYPE}" in
-    amd64) ;;
-    *) echo "检测到您当前使用的不是amd64架构，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET},无法保证您当前的架构可以正常运行" ;;
+    case {LINUX_DISTRO} in
+    debian)
+        echo "本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。"
+        echo "非新版的Ubuntu LTS系统可能存在依赖关系问题。"
+        echo "若您需要在容器环境中运行，则建议您换用arch或fedora。"
+        ;;
     esac
+
     case "${TMOE_PROOT}" in
-    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用chroot容器进行安装，但更推荐您换用虚拟机。" ;;
+    false)
+        echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境"
+        case ${LINUX_DISTRO} in
+        arch | redhat) echo "尽情享受dde带来的乐趣吧！";;
+        debian) echo "若无法运行，则请更换为arch或fedora容器" ;;
+        esac
+        ;;
     no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
     do_you_want_to_continue
@@ -1907,7 +1926,8 @@ install_deepin_desktop() {
     #deepin_desktop_warning
     dde_warning
     REMOTE_DESKTOP_SESSION_01='startdde'
-    REMOTE_DESKTOP_SESSION_02='x-window-manager'
+    #REMOTE_DESKTOP_SESSION_02='/usr/sbin/deepin-session'
+    REMOTE_DESKTOP_SESSION_02='dde-launcher'
     DEPENDENCY_01="deepin-desktop"
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         deepin_desktop_debian
@@ -1973,7 +1993,7 @@ check_update_icon_caches_sh() {
 }
 ##############
 tmoe_desktop_beautification() {
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_desktop_beautification'
     BEAUTIFICATION=$(whiptail --title "beautification" --menu \
@@ -2725,7 +2745,7 @@ download_win10x_theme() {
 download_uos_icon_theme() {
     DEPENDENCY_01="deepin-icon-theme"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
 
     if [ -d "/usr/share/icons/Uos" ]; then
@@ -2777,7 +2797,7 @@ download_macos_mojave_theme() {
 download_ukui_theme() {
     DEPENDENCY_01="ukui-themes"
     DEPENDENCY_02="ukui-greeter"
-    NON_DEBIAN='false'
+    
     beta_features_quick_install
 
     if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
@@ -2824,7 +2844,7 @@ download_arch_breeze_adapta_cursor_theme() {
 install_breeze_theme() {
     DEPENDENCY_01="breeze-icon-theme"
     DEPENDENCY_02="breeze-cursor-theme breeze-gtk-theme xfwm4-theme-breeze"
-    NON_DEBIAN='false'
+    
     download_arch_breeze_adapta_cursor_theme
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="breeze-icons breeze-gtk"
@@ -2867,7 +2887,7 @@ install_kali_undercover() {
     fi
     DEPENDENCY_01="kali-undercover"
     DEPENDENCY_02=""
-    NON_DEBIAN='false'
+    
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         beta_features_quick_install
     fi
@@ -2987,7 +3007,7 @@ x11vnc_warning() {
     RETURN_TO_WHERE='configure_x11vnc'
     do_you_want_to_continue
     #stopvnc 2>/dev/null
-    NON_DEBIAN='false'
+    
     DEPENDENCY_01=''
     DEPENDENCY_02=''
     if [ ! $(command -v x11vnc) ]; then
@@ -3343,7 +3363,7 @@ remove_xwayland() {
     do_you_want_to_continue
     DEPENDENCY_01='weston'
     DEPENDENCY_02='xwayland'
-    NON_DEBIAN='false'
+    
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_02='xorg-server-xwayland'
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -3382,7 +3402,7 @@ xwayland_onekey() {
 
     DEPENDENCY_01='weston'
     DEPENDENCY_02='xwayland'
-    NON_DEBIAN='false'
+    
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         if [ $(command -v startplasma-x11) ]; then
             DEPENDENCY_02='xwayland plasma-workspace-wayland'
@@ -3633,7 +3653,7 @@ configure_remote_desktop_enviroment() {
     ##############################
     if [ "${BETA_DESKTOP}" == '8' ]; then
         REMOTE_DESKTOP_SESSION_01='startdde'
-        REMOTE_DESKTOP_SESSION_02='x-window-manager'
+        REMOTE_DESKTOP_SESSION_02='dde-launcher'
         #configure_remote_deepin_desktop
     fi
     ##########################
@@ -3757,7 +3777,7 @@ xrdp_onekey() {
 
     DEPENDENCY_01=''
     DEPENDENCY_02='xrdp'
-    NON_DEBIAN='false'
+    
     if [ "${LINUX_DISTRO}" = "gentoo" ]; then
         emerge -avk layman
         layman -a bleeding-edge
@@ -4037,6 +4057,17 @@ configure_startvnc() {
 		else
 		    export LANG="en_US.UTF-8"
 		fi
+        case ${TMOE_CHROOT} in
+        true)
+        if [ ! -e "/run/dbus/pid" ]; then
+            if [ $(command -v sudo) ]; then
+                sudo dbus-daemon --system --fork 2>/dev/null
+            else
+                su -c "dbus-daemon --system --fork 2>/dev/null"
+            fi
+        fi
+        ;;
+        esac
 		#启动VNC服务的命令为最后一行
 		vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
@@ -4049,6 +4080,15 @@ configure_startvnc() {
 		vncserver -kill :${CURRENT_PORT}
 		rm -rf /tmp/.X${CURRENT_PORT}-lock
 		rm -rf /tmp/.X11-unix/X${CURRENT_PORT}
+        case ${TMOE_CHROOT} in
+        true)
+            if [ $(command -v sudo) ]; then
+                sudo rm -f /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
+            else
+                su -c "rm -f /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
+            fi
+        ;;
+        esac
 		pkill Xtightvnc
 		stopx11vnc 2>/dev/null
 	EndOfFile
@@ -4468,7 +4508,7 @@ fix_vnc_dbus_launch() {
         elif grep 'startdde' ~/.vnc/xstartup; then
             echo "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startdde'
-            REMOTE_DESKTOP_SESSION_02='x-windows-manager'
+            REMOTE_DESKTOP_SESSION_02='dde-launcher'
         else
             echo "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新debian-i后再覆盖安装gui"
         fi

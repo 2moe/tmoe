@@ -1,7 +1,7 @@
 network_manager_tui() {
-	NON_DEBIAN='false'
+	
 	DEPENDENCY_01=''
-	NON_DEBIAN='false'
+	
 	if [ ! $(command -v nmtui) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCY_02='network-manager'

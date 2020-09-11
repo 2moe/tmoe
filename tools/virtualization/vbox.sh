@@ -70,7 +70,7 @@ install_virtual_box() {
     if [ "${ARCH_TYPE}" != "amd64" ]; then
         arch_does_not_support
     fi
-    NON_DEBIAN='false'
+    
     if [ ! $(command -v gpg) ]; then
         DEPENDENCY_01=""
         DEPENDENCY_02="gpg"

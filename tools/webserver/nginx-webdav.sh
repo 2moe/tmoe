@@ -111,7 +111,7 @@ nginx_onekey() {
 
 	DEPENDENCY_01='nginx'
 	DEPENDENCY_02='apache2-utils'
-	NON_DEBIAN='false'
+	
 
 	if [ "${LINUX_DISTRO}" = "debian" ]; then
 		DEPENDENCY_01="${DEPENDENCY_01} nginx-extras"

@@ -48,7 +48,7 @@ explore_debian_opt_repo() {
 }
 #################
 debian_opt_menu() {
-    NON_DEBIAN='false'
+    
     RETURN_TO_WHERE='debian_opt_menu'
     RETURN_TO_MENU='debian_opt_menu'
     DEPENDENCY_02=""

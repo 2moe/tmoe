@@ -44,7 +44,7 @@ install_wine64() {
 #########
 wine_menu() {
     RETURN_TO_WHERE='wine_menu'
-    NON_DEBIAN='false'
+    
     VIRTUAL_TECH=$(
         whiptail --title "WINE" --menu "Wine is not an emulator" 0 50 0 \
             "1" "install安装" \
