@@ -216,10 +216,10 @@ install_360_browser() {
     redhat)
         case ${ARCH_TYPE} in
         amd64)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         arm64)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
+            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
             ;;
         esac
         ;;
