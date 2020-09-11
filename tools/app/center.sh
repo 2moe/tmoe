@@ -34,6 +34,7 @@ remove_browser() {
 software_center() {
     NON_DEBIAN='false'
     RETURN_TO_WHERE='software_center'
+    RETURN_TO_MENU='software_center'
     SOFTWARE=$(
         whiptail --title "Software center-01" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
@@ -125,6 +126,7 @@ tmoe_deb_batch_installer() {
 ############
 tmoe_social_network_service() {
     RETURN_TO_WHERE='tmoe_social_network_service'
+    RETURN_TO_MENU='tmoe_social_network_service'
     NON_DEBIAN='false'
     DEPENDENCY_01=""
     DEPENDENCY_02=""
