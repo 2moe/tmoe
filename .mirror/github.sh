@@ -33,7 +33,7 @@ sed -i 's@###tmoe-github@@' install.sh zsh.sh
 #sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh ./tool/*sh tools/*/* tools/environment.sh
 
 sed -i "s@URL='gitee.com/mo2/linux'@URL='github.com/2moe/tmoe-linux'@" ${ALL_SHELL_FILE}
-sed -i 's@https://gitee.com/mo2/linux/issues/new@https://github.com/2moe/tmoe-linux/issues/new@g' manager.sh
+sed -i 's@https://gitee.com/mo2/linux/issues@https://github.com/2moe/tmoe-linux/issues@g' manager.sh
 sed -i 's@gitee.com/mo2/powerlevel10k@github.com/romkatv/powerlevel10k@g' install.sh zsh.sh
 sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' install.sh zsh.sh
 sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' install.sh zsh.sh
