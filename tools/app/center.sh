@@ -209,6 +209,13 @@ install_mitalk() {
     amd64) ;;
     *) arch_does_not_support ;;
     esac
+    case ${LINUX_DISTRO} in
+    debian | arch) ;;
+    *)
+        echo "请手动下载AppImage软件包"
+        non_debian_function
+        ;;
+    esac
     download_and_install_deb
 }
 ###############
