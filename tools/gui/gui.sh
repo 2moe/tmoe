@@ -802,8 +802,10 @@ tmoe_virtual_machine_desktop() {
     BETA_DESKTOP=$(whiptail --title "DE" --menu \
         "您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
         "1" "👣 gnome3(GNU网络对象模型环境)" \
-        "2" "🌲 cinnamon(肉桂类似于GNOME,对用户友好)" \
-        "3" "dde(国产deepin系统桌面)" \
+        "2" "🌲 cinnamon(肉桂基于gnome3,对用户友好)" \
+        "3" "dde(深度deepin desktop,美观易用)" \
+        "4" "🦜 budgie(虎皮鹦鹉基于gnome3,注重优雅和现代使用)" \
+        "5" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -812,6 +814,8 @@ tmoe_virtual_machine_desktop() {
     1) install_gnome3_desktop ;;
     2) install_cinnamon_desktop ;;
     3) install_deepin_desktop ;;
+    4) install_budgie_desktop ;;
+    5) install_ukui_desktop ;;
     esac
     ##################
     press_enter_to_return
@@ -1654,9 +1658,70 @@ install_kde_plasma5_desktop() {
 }
 ##################
 tips_of_tiger_vnc_server() {
-    echo "在您使用虚拟机安装本桌面的过程中，当提示tiger/tightvnc时,请选择前者。若未弹出提示，则您可以前往本工具的tightvnc配置选项手动切换服务端，或使用x11vnc"
+    echo "在您使用虚拟机安装本桌面的过程中，当提示tiger/tightvnc时,请选择前者。若未弹出提示内容，则您可以前往本工具的tightvnc配置选项手动切换服务端，或使用x11vnc"
 }
 ##################
+tmoe_desktop_warning() {
+    case "${TMOE_PROOT}" in
+    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}本桌面可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
+    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
+    esac
+    tips_of_tiger_vnc_server
+    do_you_want_to_continue
+}
+###############
+install_ukui_desktop() {
+    tmoe_desktop_warning
+    REMOTE_DESKTOP_SESSION_01='ukui-session'
+    REMOTE_DESKTOP_SESSION_02='ukui-session-manager'
+    DEPENDENCY_01="ukui-session-manager"
+    echo '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        dpkg --configure -a
+        auto_select_keyboard_layout
+        DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01='ukui'
+    else
+        echo "Sorry,未适配${LINUX_DISTRO}"
+        press_enter_to_return
+        ${RETURN_TO_WHERE}
+    fi
+    ####################
+    beta_features_quick_install
+    apt_purge_libfprint
+    configure_vnc_xstartup
+}
+##############
+install_budgie_desktop() {
+    tmoe_desktop_warning
+    REMOTE_DESKTOP_SESSION_01='budgie-desktop'
+    REMOTE_DESKTOP_SESSION_02='budgie-session'
+    DEPENDENCY_01="budgie-desktop"
+    echo '即将为您安装思源黑体(中文字体)、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
+    if [ "${LINUX_DISTRO}" = "debian" ]; then
+        dpkg --configure -a
+        auto_select_keyboard_layout
+        DEPENDENCY_01='budgie-desktop budgie-indicator-applet'
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        #DEPENDENCY_01='@BUDGIE'
+        DEPENDENCY_01='budgie-desktop'
+
+    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        DEPENDENCY_01='budgie-desktop'
+
+    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        echo "Sorry,未适配gentoo"
+        press_enter_to_return
+        ${RETURN_TO_WHERE}
+    fi
+    ####################
+    beta_features_quick_install
+    apt_purge_libfprint
+    configure_vnc_xstartup
+}
+##############
 gnome3_warning() {
     case "${TMOE_PROOT}" in
     true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}GNOME3可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
@@ -1668,6 +1733,9 @@ gnome3_warning() {
 }
 ###############
 install_gnome3_desktop() {
+    if [ $(command -v neofetch) ]; then
+        neofetch --logo --ascii_distro GNOME
+    fi
     gnome3_warning
     REMOTE_DESKTOP_SESSION_01='gnome-session'
     REMOTE_DESKTOP_SESSION_02='x-window-manager'

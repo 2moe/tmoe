@@ -48,6 +48,7 @@ tmoe_manager_env() {
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
 	TMOE_GIT_URL='github.com/2moe/tmoe-linux'
 	APPS_LNK_DIR='/usr/share/applications'
+	TMOE_LINUX_ISSUE_URL='https://github.com/2moe/tmoe-linux/issues/new'
 	check_tmoe_container_chroot
 }
 #######
@@ -69,6 +70,14 @@ check_tmoe_container_chroot() {
 	esac
 }
 ######
+check_current_user_name_and_group() {
+	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+	if [ -z "${CURRENT_USER_GROUP}" ]; then
+		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+	fi
+}
+#########################
 check_arch() {
 	case $(uname -m) in
 	armv7* | armv8l)
@@ -177,6 +186,7 @@ auto_check() {
 gnu_linux() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	check_current_user_name_and_group
 	if [ "$(id -u)" != "0" ]; then
 		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ -e "${TMOE_GIT_DIR}/manager.sh" ]; then
@@ -741,6 +751,7 @@ tmoe_manager_main_menu() {
 			"11" "🍩 FAQ常见问题" \
 			"12" "🍒 赋予proot容器真实root权限" \
 			"13" "💔 remove 移除" \
+			"14" "❓ Report a problem(反馈问题/bug)" \
 			"0" "🌚 exit 退出" \
 			3>&1 1>&2 2>&3
 	)
@@ -761,9 +772,18 @@ tmoe_manager_main_menu() {
 	11) frequently_asked_questions ;;
 	12) enable_root_mode ;;
 	13) tmoe_linux_remove_function ;;
+	14) report_tmoe_linux_problem ;;
 	esac
 }
 ##########################
+report_tmoe_linux_problem() {
+	echo "${BLUE}${TMOE_LINUX_ISSUE_URL}${RESET}"
+	case ${LINUX_DISTRO} in
+	Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_ISSUE_URL}" ;;
+	*) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_ISSUE_URL}" ;;
+	esac
+}
+############
 start_tmoe_zsh_manager() {
 	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
 	if [ $(command -v zsh-i) ]; then
@@ -1702,7 +1722,6 @@ backup_gnu_linux_container() {
 		echo "Don't worry too much, it is normal for some directories to backup without permission."
 		echo "部分目录无权限备份是正常现象。"
 		rm -f backuptime.tmp
-		#  whiptail --gauge "���在备份,可能需要几分钟的时间请�������后.........." 6 60 0
 		pwd
 		ls -lth ./*tar* | grep ^- | head -n 1
 		#echo 'gzip压缩至60%完成是正常现象。'
@@ -2258,7 +2277,8 @@ update_tmoe_linux_manager() {
 			git pull origin master --allow-unrelated-histories
 		fi
 	fi
-	echo "${TMOE_GIT_URL}"
+	#echo "${TMOE_GIT_URL}"
+	echo "Thank you for using Tmoe-linux manager."
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	read
@@ -3284,9 +3304,9 @@ un_xz_debian_recovery_kit() {
 		少女祈禱中...
 			${BOLD}Tmoe-linux 小提示02${RESET}:
 
-				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安���版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
+				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}Android版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
 				-------------------
-				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会���动启动远程桌面服务。
+				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会自动启动远程桌面服务。
 				-------------------
 				您可以在解压完成之后输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 				-------------------
@@ -3967,7 +3987,7 @@ start_web_novnc() {
 	elif [ "${WINDOWSDISTRO}" = "WSL" ]; then
 		/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start http://localhost:6080/vnc.html"
 	else
-		xdg-open 'http://localhost:6080/vnc.html' 2>/dev/null
+		su "${CURRENT_USER_NAME}" -c "xdg-open http://localhost:6080/vnc.html 2>/dev/null"
 	fi
 	echo "本机默认novnc地址${YELLOW}http://localhost:6080/vnc.html${RESET}"
 	echo The LAN VNC address 局域网地址$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):6080/vnc.html

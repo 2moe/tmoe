@@ -723,7 +723,8 @@ tmoe_linux_tool_upgrade() {
 	if [ -e "/usr/local/bin/aria2-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/aria2.sh" /usr/local/bin
 	fi
-	echo "${TMOE_GIT_URL}"
+	#echo "${TMOE_GIT_URL}"
+	echo "Thank you for using Tmoe-linux tool."
 	echo "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	#bash /usr/local/bin/debian-i

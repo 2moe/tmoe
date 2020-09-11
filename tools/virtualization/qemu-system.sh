@@ -1900,8 +1900,10 @@ download_virtio_drivers() {
 		aria2c_download_file
 		;;
 	3)
-		echo 'url: https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html'
-		x-www-browser 'https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html' 2>/dev/null
+		FEDORA_VIRTIO_URL='https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html'
+		echo "url: ${FEDORA_VIRTIO_URL}"
+		su "${CURRENT_USER_NAME}" -c "xdg-open ${FEDORA_VIRTIO_URL}"
+		#xdg-open 'https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html' 2>/dev/null
 		;;
 	4)
 		sed -i '/-hda /d' startqemu
