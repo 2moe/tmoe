@@ -7,7 +7,7 @@ tmoe_terminal_main_menu() {
     TMOE_APP=$(whiptail --title "TERMINAL APP" --menu \
         "Which software do you want to install？" 0 50 0 \
         "0" "🌚 Return to previous menu 返回上级菜单" \
-        "01" "cool-retro-term(穿梭时光,感受复古风终端,领略CRT显示器的魅力)" \
+        "01" "cool-retro-term(穿梭时光,感受复古风,领略CRT的魅力)" \
         "02" "Terminology(酷炫终端,支持预览图片和视频)" \
         "03" "Terminator(支持分屏的终端)" \
         "04" "Yakuake(基于KDE Konsole技术的下拉式终端)" \

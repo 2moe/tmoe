@@ -782,6 +782,8 @@ report_tmoe_linux_problem() {
 	Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_ISSUE_URL}" ;;
 	*) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_ISSUE_URL}" ;;
 	esac
+	press_enter_to_return
+	tmoe_manager_main_menu
 }
 ############
 start_tmoe_zsh_manager() {
@@ -2278,7 +2280,7 @@ update_tmoe_linux_manager() {
 		fi
 	fi
 	#echo "${TMOE_GIT_URL}"
-	echo "Thank you for using Tmoe-linux manager."
+	echo '(o゜▽゜)o☆  Thank you for using Tmoe-linux manager.'
 	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
 	echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	read
