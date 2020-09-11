@@ -148,14 +148,20 @@ tmoe_social_network_service() {
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
-    1) install_linux_qq ;;
+    1)
+        install_linux_qq
+        DEPENDENCY_01=""
+        ;;
     2) install_thunder_bird ;;
     3) DEPENDENCY_01="kmail" ;;
     4) DEPENDENCY_01="evolution" ;;
     5) DEPENDENCY_01="empathy" ;;
     6) DEPENDENCY_01="pidgin" ;;
     7) DEPENDENCY_01="xchat" ;;
-    8) install_skype ;;
+    8)
+        install_skype
+        DEPENDENCY_01=""
+        ;;
     9) mitalk_env ;;
     esac
     ##########################
