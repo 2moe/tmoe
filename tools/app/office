@@ -60,13 +60,13 @@ install_free_office() {
     i386) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
     esac
     #https://www.softmaker.net/down/softmaker-freeoffice-2018_976-01_amd64.deb
+    #https://www.softmaker.net/down/softmaker-freeoffice-2018-976.x86_64.rpm
     case ${LINUX_DISTRO} in
     debian | arch) ;;
     redhat)
         case ${ARCH_TYPE} in
         amd64)
             THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | cut -d '=' -f 2 | head -n 1)"
-            #https://www.freeoffice.com/download.php?filename=https://www.softmaker.net/down/softmaker-freeoffice-2018-976.x86_64.rpm
             #THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@-01_amd64.deb@.x86_64.rpm@" | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         i386)
