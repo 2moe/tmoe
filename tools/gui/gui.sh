@@ -4113,6 +4113,8 @@ configure_startvnc() {
                 exit 0
                 #set -- "${@}" "-ZlibLevel=9"
         fi
+        #最后一行命令已废弃，仅作兼容性测试，直接修改其参数值可能不会生效。
+        #20200912注:tigervnc-1.11.0-2及其之后的版本，可能无法使用旧版命令。
         vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
     ##############
