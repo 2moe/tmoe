@@ -45,6 +45,8 @@ install_chromium_browser() {
         DEPENDENCY_02=""
     elif [ "${LINUX_DISTRO}" = "suse" ]; then
         DEPENDENCY_02="chromium-plugin-widevinecdm chromium-ffmpeg-extra"
+    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        DEPENDENCY_02="fedora-chromium-config"
     fi
     beta_features_quick_install
     #####################
@@ -58,8 +60,14 @@ install_chromium_browser() {
     read opt
     case $opt in
     y* | Y* | "")
-        case "${DEBIAN_DISTRO}" in
-        ubuntu | alpine | redhat) fix_chromium_root_ubuntu_no_sandbox ;;
+        case ${LINUX_DISTRO} in
+        debian)
+            case "${DEBIAN_DISTRO}" in
+            ubuntu) fix_chromium_root_ubuntu_no_sandbox ;;
+            *) fix_chromium_root_no_sandbox ;;
+            esac
+            ;;
+        alpine | redhat) fix_chromium_root_ubuntu_no_sandbox ;;
         *) fix_chromium_root_no_sandbox ;;
         esac
         ;;
