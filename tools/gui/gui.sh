@@ -3145,6 +3145,7 @@ modify_vnc_conf() {
         else
             sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
             sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+            sed -i "s@geometry=.*@geometry=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
             echo 'Your current resolution has been modified.'
             check_vnc_resolution
             echo "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
