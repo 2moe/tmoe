@@ -989,8 +989,7 @@ ENDOFTTMOEX11VNC
 		#!/usr/bin/env bash
 		pkill dbus
 		pkill Xvfb
-        rm -rfv /tmp/.X233-lock 2>/dev/null
-		rm -rfv /tmp/.X11-unix/X233 2>/dev/null
+        rm -fv /tmp/.X233-lock /tmp/.X11-unix/X233 2>/dev/null
 	EOF
     #pkill pulse
     cat >x11vncpasswd <<-'EOF'
