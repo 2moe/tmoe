@@ -100,7 +100,7 @@ modify_tightvnc_display_port() {
         echo "Please enter a valid value"
     else
         sed -i "s@tmoe-linux.*:.*@tmoe-linux :$TARGET@" "$(command -v startvnc)"
-        sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
+        sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" "$(command -v startvnc)"
         echo 'Your current VNC port has been modified.'
         check_tightvnc_port
         echo '您当前的VNC端口已修改为'
