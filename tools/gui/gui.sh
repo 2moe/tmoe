@@ -835,29 +835,35 @@ configure_vnc_xstartup() {
 		#!/bin/bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
-		xrdb \${HOME}/.Xresources
-		export PULSE_SERVER=127.0.0.1
 		if [ \$(command -v x-terminal-emulator) ]; then
 			x-terminal-emulator &
 		fi
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} &
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
 		else
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} &
+			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	EndOfFile
+    #xrdb \${HOME}/.Xresources
     #dbus-launch startxfce4 &
     chmod +x ./xstartup
+    congigure_xvnc
     first_configure_startvnc
 }
 ####################
+congigure_xvnc() {
+    mkdir -p /etc/X11/xinit /etc/tigervnc
+    ln -sf ~/.vnc/xstartup /etc/X11/xinit/Xsession
+    cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc
+}
+############
 configure_x11vnc_remote_desktop_session() {
     cd /usr/local/bin/
     rm -f startx11vnc
     cat >startx11vnc <<-EOF
 		#!/bin/bash
 		stopvnc 2>/dev/null
-		stopx11vnc
+		#stopx11vnc
 		export PULSE_SERVER=127.0.0.1
 		export DISPLAY=:233
 		if [ ! -e "${HOME}/.vnc/x11passwd" ]; then
@@ -3823,7 +3829,6 @@ xrdp_onekey() {
 		ResultActive=yes
 	ENDofpolkit
     ###################
-
     if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
         mkdir -p ${HOME}/.config/tmoe-linux/
         cd /etc/xrdp/
@@ -4025,8 +4030,10 @@ configure_startvnc() {
     cat >startvnc <<-'EndOfFile'
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
+        TMOE_VNC_DISPLAY_NUMBER=1
 		export USER="$(whoami)"
 		export HOME="${HOME}"
+        export PULSE_SERVER=127.0.0.1
 		if [ ! -e "${HOME}/.vnc/xstartup" ]; then
 			sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
 		fi
@@ -4079,8 +4086,11 @@ configure_startvnc() {
         fi
         ;;
         esac
-		#启动VNC服务的命令为最后一行
-		vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
+		if [ $(command -v vncsession) ]; then
+            vncsession $(whoami) :${TMOE_VNC_DISPLAY_NUMBER}
+            exit 0
+        fi
+        vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
     ##############
     cat >stopvnc <<-'EndOfFile'
@@ -4101,6 +4111,7 @@ configure_startvnc() {
         ;;
         esac
 		pkill Xtightvnc
+        pkill Xvnc
 		stopx11vnc 2>/dev/null
 	EndOfFile
 }
@@ -4446,7 +4457,8 @@ xfce4_x11vnc_hidpi_settings() {
 ####################
 enable_dbus_launch() {
     XSTARTUP_LINE=$(cat -n ~/.vnc/xstartup | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-    sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" ~/.vnc/xstartup
+    #sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" ~/.vnc/xstartup
+    sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ~/.vnc/xstartup
     #################
     START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
     sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
@@ -4454,7 +4466,8 @@ enable_dbus_launch() {
     START_XSDL_LINE=$(cat -n /usr/local/bin/startxsdl | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
     sed -i "${START_XSDL_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
     #################
-    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" ~/.vnc/xstartup "/usr/local/bin/startx11vnc"
+    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" "/usr/local/bin/startx11vnc"
+    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" ~/.vnc/xstartup
     sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
     if [ "${LINUX_DISTRO}" != "debian" ]; then
         sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
