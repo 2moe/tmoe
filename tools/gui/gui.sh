@@ -902,7 +902,7 @@ start_tmoe_x11vnc() {
     set -- "\${@}" "-bg"
     set -- "\${@}" "-rfbauth" "\${TMOE_X11_PASSWD_FILE}"
     set -- "\${@}" "-users" "\$(whoami)"
-    set -- "\${@}" "-rfbport" "\${TMOE_RFB_PROTOCOL_TCP_PORT}"
+    set -- "\${@}" "-rfbport" "\${TCP_PORT_FOR_RFB_PROTOCOL}"
     set -- "\${@}" "-noshm"
     set -- "\${@}" "-desktop" "tmoe-linux"
     set -- "\${@}" "-shared"
