@@ -23,7 +23,7 @@ image_compression_menu() {
 }
 ###########
 remove_image_compression_tool() {
-    DEPENDENCY_01='imagemagick graphicsmagick-imagemagick-compat'
+    DEPENDENCY_01='ImageMagick imagemagick graphicsmagick-imagemagick-compat'
     DEPENDENCY_02='zenity'
     echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
     do_you_want_to_continue
@@ -31,8 +31,11 @@ remove_image_compression_tool() {
 }
 ##########
 install_image_compression_tool() {
-    
-    DEPENDENCY_01='imagemagick'
+    case ${LINUX_DISTRO} in
+    debian) DEPENDENCY_01='graphicsmagick-imagemagick-compat' ;;
+    redhat) DEPENDENCY_01='ImageMagick' ;;
+    *) DEPENDENCY_01='imagemagick' ;;
+    esac
     DEPENDENCY_02='zenity'
     beta_features_quick_install
 }
@@ -104,10 +107,7 @@ image_compression_tool_gui_or_tui() {
 ################
 check_imagemagick() {
     if [ ! $(command -v convert) ]; then
-        
-        DEPENDENCY_01='imagemagick'
-        DEPENDENCY_02=''
-        beta_features_quick_install
+        install_image_compression_tool
     fi
 }
 #################
