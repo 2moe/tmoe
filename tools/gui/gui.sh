@@ -27,11 +27,12 @@ modify_other_vnc_conf() {
         "1" "Pulse server address音频地址" \
         "2" "VNC password密码" \
         "3" "switch tiger/tightvnc切换服务端" \
-        "4" "Edit xstartup manually 手动编辑xstartup" \
-        "5" "Edit startvnc manually 手动编辑vnc启动脚本" \
-        "6" "fix vnc crash修复VNC闪退" \
-        "7" "window scaling factor调整屏幕缩放比例(仅支持xfce)" \
-        "8" "display port显示端口" \
+        "4" "Edit xstartup 编辑xstartup" \
+        "5" "Edit startvnc 编辑vnc启动脚本" \
+        "6" "Edit tigervnc-config 编辑tigervnc配置" \
+        "7" "fix vnc crash修复VNC闪退" \
+        "8" "window scaling factor调整屏幕缩放比例(仅支持xfce)" \
+        "9" "display port显示端口" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ###########
@@ -43,13 +44,12 @@ modify_other_vnc_conf() {
     4)
         nano ~/.vnc/xstartup
         stopvnc 2>/dev/null
-        press_enter_to_return
-        modify_other_vnc_conf
         ;;
     5) nano_startvnc_manually ;;
-    6) fix_vnc_dbus_launch ;;
-    7) modify_xfce_window_scaling_factor ;;
-    8) modify_tightvnc_display_port ;;
+    6) nano_tigervnc_default_config_manually ;;
+    7) fix_vnc_dbus_launch ;;
+    8) modify_xfce_window_scaling_factor ;;
+    9) modify_tightvnc_display_port ;;
     esac
     #########
     press_enter_to_return
@@ -57,6 +57,10 @@ modify_other_vnc_conf() {
     ##########
 }
 ##############
+nano_tigervnc_default_config_manually() {
+    nano /etc/tigervnc/vncserver-config-defaults
+}
+#############
 switch_tight_or_tiger_vncserver() {
     DEPENDENCY_01=''
     #NON_DEBIAN='true'
@@ -96,6 +100,7 @@ modify_tightvnc_display_port() {
         echo "Please enter a valid value"
     else
         sed -i "s@tmoe-linux.*:.*@tmoe-linux :$TARGET@" "$(command -v startvnc)"
+        sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
         echo 'Your current VNC port has been modified.'
         check_tightvnc_port
         echo '您当前的VNC端口已修改为'
@@ -132,7 +137,7 @@ modify_xfce_window_scaling_factor() {
 }
 ##################
 modify_vnc_pulse_audio() {
-    TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1) \n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "若您需要转发音频到其它设备,那么您可在此处修改。linux默认为127.0.0.1,WSL2默认为宿主机ip,当前为$(grep 'PULSE_SERVER=' $(command -v startvnc) | cut -d '=' -f 2 | head -n 1) \n本功能适用于局域网传输，本机操作无需任何修改。若您曾在音频服务端（接收音频的设备）上运行过Tmoe-linux(仅限Android和win10),并配置允许局域网连接,则只需输入该设备ip,无需加端口号。注：您需要手动启动音频服务端,Android-Termux需输pulseaudio --start,win10需手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat' \n至于其它第三方app,例如安卓XSDL,若其显示的PULSE_SERVER地址为192.168.1.3:4713,那么您需要输入192.168.1.3:4713" 20 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
@@ -141,14 +146,14 @@ modify_vnc_pulse_audio() {
     else
         #sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
         #sed -i "2 a\export PULSE_SERVER=$TARGET" ~/.vnc/xstartup
-        if grep '^export.*PULSE_SERVER' "${HOME}/.vnc/xstartup"; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" ~/.vnc/xstartup
+        if grep '^export.*PULSE_SERVER' "$(command -v startvnc)"; then
+            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" $(command -v startvnc)
         else
-            sed -i "4 a\export PULSE_SERVER=$TARGET" ~/.vnc/xstartup
+            sed -i "4 a\export PULSE_SERVER=$TARGET" $(command -v startvnc)
         fi
         echo 'Your current PULSEAUDIO SERVER address has been modified.'
         echo '您当前的音频地址已修改为'
-        echo $(grep 'PULSE_SERVER' ~/.vnc/xstartup | cut -d '=' -f 2 | head -n 1)
+        echo $(grep 'PULSE_SERVER' $(command -v startvnc) | cut -d '=' -f 2 | head -n 1)
         echo "请输startvnc重启vnc服务，以使配置生效"
     fi
 }
@@ -4030,10 +4035,10 @@ configure_startvnc() {
     cat >startvnc <<-'EndOfFile'
 		#!/bin/bash
 		stopvnc >/dev/null 2>&1
-        TMOE_VNC_DISPLAY_NUMBER=1
+		TMOE_VNC_DISPLAY_NUMBER=1
 		export USER="$(whoami)"
 		export HOME="${HOME}"
-        export PULSE_SERVER=127.0.0.1
+		export PULSE_SERVER=127.0.0.1
 		if [ ! -e "${HOME}/.vnc/xstartup" ]; then
 			sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
 		fi
@@ -4086,13 +4091,32 @@ configure_startvnc() {
         fi
         ;;
         esac
-		if [ $(command -v vncsession) ]; then
+        if [ $(command -v vncsession) ]; then
             vncsession $(whoami) :${TMOE_VNC_DISPLAY_NUMBER}
             exit 0
+        elif [ $(command -v Xvnc) ]; then
+                . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
+                unset "${@}"
+                set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
+                set -- "${@}" "-alwaysshared"
+                set -- "${@}" "-ac"
+                set -- "${@}" "-geometry" "${geometry}"
+                set -- "${@}" "-desktop" "${desktop}"
+                set -- "${@}" "-once"
+                set -- "${@}" "-depth" "24"
+                set -- "${@}" "-deferglyphs" "16"
+                set -- "${@}" "-rfbauth" "${HOME}/.vnc/passwd"
+                set -- "Xvnc" "$@"
+                exec "$@" &
+                export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
+                . /etc/X11/xinit/Xsession &
+                exit 0
+                #set -- "${@}" "-ZlibLevel=9"
         fi
         vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
     ##############
+    #############
     cat >stopvnc <<-'EndOfFile'
 		#!/bin/bash
 		export USER="$(whoami)"
@@ -4124,14 +4148,14 @@ fix_non_root_permissions() {
 }
 ################
 which_vnc_server_do_you_prefer() {
-    if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的流畅度可能不如后者,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
-        VNC_SERVER_BIN="tigervnc"
-        VNC_SERVER_BIN_NOW="tightvncserver"
-        DEPENDENCY_02="tigervnc-standalone-server"
-    else
+    if (whiptail --title "Which vnc server do you prefer" --yes-button 'tight' --no-button 'tiger' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因后者的流畅度可能不如前者,故默认情况下为前者。\nTiger can show more special effects." 0 50); then
         VNC_SERVER_BIN="tightvnc"
         VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
         DEPENDENCY_02="tightvncserver"
+    else
+        VNC_SERVER_BIN="tigervnc"
+        VNC_SERVER_BIN_NOW="tightvncserver"
+        DEPENDENCY_02="tigervnc-standalone-server"
     fi
     echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
     ${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
@@ -4303,7 +4327,6 @@ first_configure_startvnc() {
         cp -rpf ~/.vnc /root/
         chown -R root:root /root/.vnc
     fi
-
     if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
         echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
         cd "/mnt/c/Users/Public/Downloads"
@@ -4410,6 +4433,7 @@ tmoe_gui_dpi_01() {
 tmoe_gui_dpi_02() {
     sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
     sed -i "$ a\vncserver -geometry ${RESOLUTION} -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+    sed -i "s@geometry=.*@geometry=${RESOLUTION}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
     sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
 }
 ##########

@@ -2021,7 +2021,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 
 	#############################
 	#grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
-
 	echo "Welcome to Debian GNU/Linux."
 	cat /etc/issue 2>/dev/null || cat /etc/os-release
 	uname -a
@@ -2064,6 +2063,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    slackware_mirror_list
 	fi
 	#############################################
+	fix_gnu_libxcb_debian(){
+	GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1"
+	if [ -e "${GNU_LIBXCB}" ]; then
+		TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+	    mkdir -p ${TMOE_LINUX_DIR}
+		cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}
+	    sed -i 's@BIG-REQUESTS@_IG-REQUESTS@g' ${GNU_LIBXCB}
+	fi
+	}    
+	####################
 	fedora_31_repos() {
 	    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
 	    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
@@ -2166,6 +2175,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if ! grep -q 'debian' '/etc/os-release'; then
 	    note_of_non_debian
 	else
+		fix_gnu_libxcb_debian
 	    bash zsh.sh
 	fi
 ENDOFbashPROFILE
