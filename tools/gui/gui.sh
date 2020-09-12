@@ -4100,7 +4100,6 @@ configure_startvnc() {
                 unset "${@}"
                 set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
                 set -- "${@}" "-alwaysshared"
-                set -- "${@}" "-ac"
                 set -- "${@}" "-geometry" "${geometry}"
                 set -- "${@}" "-desktop" "${desktop}"
                 set -- "${@}" "-once"
@@ -4149,14 +4148,14 @@ fix_non_root_permissions() {
 }
 ################
 which_vnc_server_do_you_prefer() {
-    if (whiptail --title "Which vnc server do you prefer" --yes-button 'tight' --no-button 'tiger' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因后者的流畅度可能不如前者,故默认情况下为前者。\nTiger can show more special effects." 0 50); then
-        VNC_SERVER_BIN="tightvnc"
-        VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
-        DEPENDENCY_02="tightvncserver"
-    else
+    if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因前者的流畅度可能不如后者,故默认情况下为后者。\nTiger can show more special effects." 0 50); then
         VNC_SERVER_BIN="tigervnc"
         VNC_SERVER_BIN_NOW="tightvncserver"
         DEPENDENCY_02="tigervnc-standalone-server"
+    else
+        VNC_SERVER_BIN="tightvnc"
+        VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
+        DEPENDENCY_02="tightvncserver"
     fi
     echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
     ${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
