@@ -4109,7 +4109,7 @@ configure_startvnc() {
                 set -- "Xvnc" "$@"
                 exec "$@" &
                 export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
-                . /etc/X11/xinit/Xsession &
+                . /etc/X11/xinit/Xsession &>/dev/null &
                 exit 0
                 #set -- "${@}" "-ZlibLevel=9"
         fi
