@@ -878,16 +878,7 @@ TCP_PORT_FOR_RFB_PROTOCOL=5901
 X11VNC_CURSOR_ARROW=2
 #################
 start_windows_10_pulse_audio_server() {
-    echo '检测到您使用的是WSL,正在为您打开音频服务'
-    cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-    /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
-    echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-    if grep -q '172..*1' "/etc/resolv.conf"; then
-        echo "检测到您当前使用的可能是WSL2"
-        WSL2IP=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2}' | head -n 1)
-        export PULSE_SERVER=\${WSL2IP}
-        echo "已将您的音频服务ip修改为\${WSL2IP}"
-    fi
+    . /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
 }
 #####################
 start_tmoe_x11vnc() {
@@ -4068,13 +4059,9 @@ configure_startxsdl() {
 		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
 		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-			echo '检测到您使用的是WSL,正在为您打开音频服务'
 			VCXSRV_DISPLAY_PORT=37985
-			export PULSE_SERVER=tcp:127.0.0.1
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
-			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
+			. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
+            cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
 			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac"
@@ -4082,11 +4069,10 @@ configure_startxsdl() {
 			if grep -q '172..*1' "/etc/resolv.conf"; then
 				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
 				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				export PULSE_SERVER=${WSL2IP}
 				export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
 				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
 			else
-		                export DISPLAY="$(echo ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
+		        export DISPLAY="$(echo ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
 			fi
 			sleep 2
 		fi
@@ -4129,18 +4115,7 @@ configure_startvnc() {
 			sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
 		fi
 		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			export PULSE_SERVER=tcp:127.0.0.1
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
-			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
-				echo "检测到您当前使用的可能是WSL2"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" ~/.vnc/xstartup
-				echo "已将您的音频服务ip修改为${WSL2IP}"
-			fi
-			sleep 2
+			. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
 		fi
 		if [ ${HOME} != '/root' ]; then
 		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
