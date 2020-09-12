@@ -164,6 +164,7 @@ firefox_or_chromium() {
         #firefox将自动安装视频解码器
     else
         install_chromium_browser
+        echo "如需拖拽安装插件，则请在启动命令后加上 --enable-easy-off-store-extension-install"
     fi
 }
 ##############

@@ -751,7 +751,7 @@ tmoe_manager_main_menu() {
 			"11" "🍩 FAQ常见问题" \
 			"12" "🍒 赋予proot容器真实root权限" \
 			"13" "💔 remove 移除" \
-			"14" "❓ Report a problem(反馈问题/bug)" \
+			"14" "🐞 Report a problem(反馈问题/bug)" \
 			"0" "🌚 exit 退出" \
 			3>&1 1>&2 2>&3
 	)

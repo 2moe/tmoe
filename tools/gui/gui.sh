@@ -837,7 +837,7 @@ configure_vnc_xstartup() {
     cd ${HOME}/.vnc
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
     cat >xstartup <<-EndOfFile
-		#!/bin/bash
+		#!/usr/bin/env bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
 		if [ \$(command -v x-terminal-emulator) ]; then
@@ -865,24 +865,71 @@ congigure_xvnc() {
 configure_x11vnc_remote_desktop_session() {
     cd /usr/local/bin/
     rm -f startx11vnc
-    cat >startx11vnc <<-EOF
-		#!/bin/bash
-		stopvnc 2>/dev/null
-		#stopx11vnc
-		export PULSE_SERVER=127.0.0.1
-		export DISPLAY=:233
-		if [ ! -e "${HOME}/.vnc/x11passwd" ]; then
-		          x11vncpasswd
-		fi
-		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-		if [ -e "\${TMOE_LOCALE_FILE}" ]; then
-		    TMOE_LANG=\$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-		    export LANG="\${TMOE_LANG}"
-		else
-		    export LANG="en_US.UTF-8"
-		fi
-        case \${TMOE_CHROOT} in
-        true)
+    cat >startx11vnc <<-ENDOFTTMOEX11VNC
+#!/usr/bin/env bash
+stopvnc 2>/dev/null
+#stopx11vnc
+export PULSE_SERVER=127.0.0.1
+export DISPLAY=:233
+TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+TMOE_X11_PASSWD_FILE=${HOME}/.vnc/x11passwd
+TMOE_X11_RESOLUTION=1440x720
+TCP_PORT_FOR_RFB_PROTOCOL=5901
+X11VNC_CURSOR_ARROW=2
+#################
+start_windows_10_pulse_audio_server() {
+    echo '检测到您使用的是WSL,正在为您打开音频服务'
+    cd "/mnt/c/Users/Public/Downloads/pulseaudio"
+    /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
+    echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+    if grep -q '172..*1' "/etc/resolv.conf"; then
+        echo "检测到您当前使用的可能是WSL2"
+        WSL2IP=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2}' | head -n 1)
+        export PULSE_SERVER=\${WSL2IP}
+        echo "已将您的音频服务ip修改为\${WSL2IP}"
+    fi
+}
+#####################
+start_tmoe_x11vnc() {
+    unset "\${@}"
+    set -- "\${@}" "-ncache_cr"
+    set -- "\${@}" "-xkb"
+    set -- "\${@}" "-noxrecord"
+    #set -- "\${@}" "-noxfixes"
+    set -- "\${@}" "-noxdamage"
+    set -- "\${@}" "-display" "\${DISPLAY}"
+    set -- "\${@}" "-forever"
+    set -- "\${@}" "-bg"
+    set -- "\${@}" "-rfbauth" "\${TMOE_X11_PASSWD_FILE}"
+    set -- "\${@}" "-users" "\$(whoami)"
+    set -- "\${@}" "-rfbport" "\${TMOE_RFB_PROTOCOL_TCP_PORT}"
+    set -- "\${@}" "-noshm"
+    set -- "\${@}" "-desktop" "tmoe-linux"
+    set -- "\${@}" "-shared"
+    set -- "\${@}" "-verbose"
+    set -- "\${@}" "-cursor" "arrow"
+    set -- "\${@}" "-arrow" "\${X11VNC_CURSOR_ARROW}"
+    set -- "\${@}" "-nothreads"
+    set -- "x11vnc" "\${@}"
+    exec "\$@" &
+}
+###################
+tmoe_x11vnc_preconfigure() {
+    if [ ! -e "\${TMOE_X11_PASSWD_FILE}" ]; then
+        x11vncpasswd
+    fi
+
+    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)
+        export LANG="\${TMOE_LANG}"
+    else
+        export LANG="en_US.UTF-8"
+    fi
+}
+#################
+launch_dbus_daemon() {
+    case \${TMOE_CHROOT} in
+    true)
         if [ ! -e "/run/dbus/pid" ]; then
             if [ \$(command -v sudo) ]; then
                 sudo dbus-daemon --system --fork 2>/dev/null
@@ -891,48 +938,72 @@ configure_x11vnc_remote_desktop_session() {
             fi
         fi
         ;;
-        esac
-		/usr/bin/Xvfb :233 -screen 0 1440x720x24 -ac +extension GLX +render -noreset & 
-		if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
-			echo '检测到您使用的是WSL,正在为您打开音频服务'
-			cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
-			echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
-				echo "检测到您当前使用的可能是WSL2"
-				WSL2IP=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2}' | head -n 1)
-				export PULSE_SERVER=\${WSL2IP}
-				echo "已将您的音频服务ip修改为\${WSL2IP}"
-			fi
-		fi
-		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-		    ${REMOTE_DESKTOP_SESSION_01} &
-		else
-		    ${REMOTE_DESKTOP_SESSION_02} &
-		fi
-		x11vnc -ncache_cr -xkb -noxrecord -noxfixes -noxdamage -display :233 -forever -bg -rfbauth \${HOME}/.vnc/x11passwd -users \$(whoami) -rfbport 5901 -noshm &
-		sleep 2s
-		echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 \$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-		echo "您可能会经历长达10多秒的黑屏"
-		echo "You may experience a black screen for up to 10 seconds."
-		echo "您之后可以输startx11vnc启动，输stopvnc或stopx11vnc停止"
-		echo "You can type startx11vnc to start x11vnc,type stopx11vnc to stop it."
-	EOF
+    esac
+}
+###############
+start_tmoe_xvfb() {
+    unset "\${@}"
+    set -- "\${@}" "\${DISPLAY}"
+    set -- "\${@}" "-screen" "0" "\${TMOE_X11_RESOLUTION}x24"
+    set -- "\${@}" "-ac"
+    set -- "\${@}" "+extension" "GLX"
+    set -- "\${@}" "+render"
+    set -- "\${@}" "-deferglyphs" "16"
+    set -- "\${@}" "-br"
+    set -- "\${@}" "-wm"
+    set -- "\${@}" "-retro"
+    set -- "\${@}" "-noreset"
+    set -- "Xvfb" "\${@}"
+    exec "\$@" &
+}
+####################
+if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
+    start_windows_10_pulse_audio_server
+fi
+###############
+start_x_session() {
+    if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
+        ${REMOTE_DESKTOP_SESSION_01} &
+    else
+        ${REMOTE_DESKTOP_SESSION_02} &
+    fi
+}
+#############
+tmoe_x11vnc_preconfigure
+launch_dbus_daemon
+start_tmoe_xvfb
+start_x_session
+start_tmoe_x11vnc
+###########
+sleep 2s
+echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
+TMOE_IP_ADDR=\$(ip -4 -br -c a | awk '{print \$NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
+echo The LAN VNC address 局域网地址 \${TMOE_IP_ADDR} | sed "s@\\\$@:5901@"
+echo "您可能会经历长达10多秒的黑屏"
+echo "You may experience a black screen for up to 10 seconds."
+echo "您之后可以输startx11vnc启动，输stopvnc或stopx11vnc停止"
+echo "You can type startx11vnc to start x11vnc,type stopx11vnc to stop it."
+ENDOFTTMOEX11VNC
+    #######
     cat >stopx11vnc <<-'EOF'
-		#!/bin/bash
+		#!/usr/bin/env bash
 		pkill dbus
 		pkill Xvfb
+        rm -rfv /tmp/.X233-lock 2>/dev/null
+		rm -rfv /tmp/.X11-unix/X233 2>/dev/null
 	EOF
     #pkill pulse
     cat >x11vncpasswd <<-'EOF'
-		#!/bin/bash
+		#!/usr/bin/env bash
 		echo "Configuring x11vnc..."
 		echo "正在配置x11vnc server..."
-		read -sp "请输入6至8位密码，Please enter the new VNC password: " PASSWORD
-		mkdir -p ${HOME}/.vnc
-		x11vnc -storepasswd $PASSWORD ${HOME}/.vnc/x11passwd
+		read -sp "请输入6至8位密码，please type the new VNC password: " TMOE_X11_PASSWD
+		if [ ! -e "${HOME}/.vnc" ]; then
+            mkdir -p ${HOME}/.vnc
+        fi
+		x11vnc -storepasswd ${TMOE_X11_PASSWD} ${HOME}/.vnc/x11passwd
 	EOF
+
     if [ "${NON_DBUS}" != "true" ]; then
         enable_dbus_launch
     fi
@@ -2980,6 +3051,7 @@ configure_x11vnc() {
             "6" "remove 卸载/移除" \
             "7" "readme 进程管理说明" \
             "8" "password 密码" \
+            "9" "read doc阅读文档" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -2994,6 +3066,7 @@ configure_x11vnc() {
     6) remove_X11vnc ;;
     7) x11vnc_process_readme ;;
     8) x11vncpasswd ;;
+    9) x11vnc_doc ;;
     esac
     ########################################
     press_enter_to_return
@@ -3001,8 +3074,16 @@ configure_x11vnc() {
     ####################
 }
 ############
+x11vnc_doc() {
+    X11VNC_DOC_URL='http://www.karlrunge.com/x11vnc/x11vnc_opts.html'
+    echo "url: ${X11VNC_DOC_URL}"
+    su "${CURRENT_USER_NAME}" -c "xdg-open ${X11VNC_DOC_URL}"
+    man x11vnc Xvfb
+}
+###########
 x11vnc_process_readme() {
-    echo "输startx11vnc启动x11vnc"
+    echo "输startx11vnc启动x11vnc服务。"
+    echo "You can type ${GREEN}startx11vnc${RESET} to start it,type ${RED}stopvnc${RESET} to stop it."
     echo "输stopvnc或stopx11vnc停止x11vnc"
     echo "若您的音频服务端为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
     echo "您亦可输${GREEN}pulseaudio --start${RESET}"
@@ -3103,22 +3184,25 @@ x11vnc_pulse_server() {
 }
 ##################
 x11vnc_resolution() {
-    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
         echo "请输入有效的数值"
         echo "Please enter a valid value"
-        echo "您当前的分辨率为$(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')"
+        #echo "您当前的分辨率为$(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')"
+        echo "您当前的分辨率为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
     else
         #/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset &
-        sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+        #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+        sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${TARGET}@" "$(command -v startx11vnc)"
         echo 'Your current resolution has been modified.'
-        echo '您当前的分辨率已经修改为'
-        echo $(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')
+        echo "您当前的分辨率已经修改为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        echo "You can type startx11vnc to restart it."
+        #echo $(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')
         #echo $(sed -n \$p "$(command -v startx11vnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
         #$p表示最后一行，必须用反斜杠转义。
-        stopx11vnc
+        #stopx11vnc
     fi
 }
 ############################
@@ -3496,7 +3580,7 @@ xwayland_onekey() {
 	EndOFweston
     cd /usr/local/bin
     cat >startw <<-'EndOFwayland'
-		#!/bin/bash
+		#!/usr/bin/env bash
 		chmod +x -R /etc/xwayland
 		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
@@ -3744,7 +3828,7 @@ configure_xrdp_remote_desktop_session() {
 configure_xwayland_remote_desktop_session() {
     cd /usr/local/bin
     cat >startw <<-EndOFwayland
-		#!/bin/bash
+		#!/usr/bin/env bash
 		chmod +x -R /etc/xwayland
 		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
@@ -3886,7 +3970,9 @@ xrdp_restart() {
     ip -4 -br -c a | cut -d '/' -f 1
     echo "端口号为${RDP_PORT}"
     echo "正在为您启动xrdp服务，本机默认访问地址为localhost:${RDP_PORT}"
-    echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
+    echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${RDP_PORT}@"
+    #echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
     echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
     echo "如需修改当前用户密码，请输passwd"
     if [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -3974,7 +4060,7 @@ xrdp_reset() {
 configure_startxsdl() {
     cd /usr/local/bin
     cat >startxsdl <<-'EndOfFile'
-		#!/bin/bash
+		#!/usr/bin/env bash
 		stopvnc >/dev/null 2>&1
 		export DISPLAY=127.0.0.1:0
 		export PULSE_SERVER=tcp:127.0.0.1:4713
@@ -4034,7 +4120,7 @@ configure_startvnc() {
     cd /usr/local/bin
     rm -f startvnc
     cat >startvnc <<-'EndOfFile'
-		#!/bin/bash
+		#!/usr/bin/env bash
 		stopvnc >/dev/null 2>&1
 		TMOE_VNC_DISPLAY_NUMBER=1
 		export USER="$(whoami)"
@@ -4073,7 +4159,8 @@ configure_startvnc() {
 		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
+        TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
+        echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${CURRENT_VNC_PORT}@"
 		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 		if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		    TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
@@ -4118,15 +4205,16 @@ configure_startvnc() {
         vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
 	EndOfFile
     ##############
+    #echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
     #############
     cat >stopvnc <<-'EndOfFile'
-		#!/bin/bash
+		#!/usr/bin/env bash
 		export USER="$(whoami)"
 		export HOME="${HOME}"
 		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
 		vncserver -kill :${CURRENT_PORT}
-		rm -rf /tmp/.X${CURRENT_PORT}-lock
-		rm -rf /tmp/.X11-unix/X${CURRENT_PORT}
+		rm -rf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
+		rm -rf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
         case ${TMOE_CHROOT} in
         true)
             if [ $(command -v sudo) ]; then
@@ -4436,7 +4524,8 @@ tmoe_gui_dpi_02() {
     sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
     sed -i "$ a\vncserver -geometry ${RESOLUTION} -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
     sed -i "s@geometry=.*@geometry=${RESOLUTION}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
-    sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
+    #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
+    sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null
 }
 ##########
 tmoe_gui_dpi_03() {
@@ -4474,7 +4563,8 @@ xfce4_x11vnc_hidpi_settings() {
     true | false)
         if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
             #stopx11vnc >/dev/null 2>&1
-            sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+            #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+            sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null
             #startx11vnc >/dev/null 2>&1
         fi
         ;;
