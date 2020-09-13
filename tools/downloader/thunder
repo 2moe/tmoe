@@ -25,7 +25,7 @@ install_thunder_bin() {
     if [ -e "${ICON_FILE}" ]; then
         catimg "${ICON_FILE}" 2>/dev/null
     fi
-    echo "若无法以root用户运行electron应用，则请切换为普通用户，或手动禁用sandbox。"
+    echo "若无法以root身份运行electron应用，则请切换为普通用户，或手动禁用sandbox。"
     case ${LINUX_DISTRO} in
     arch) echo "若安装失败，则请手动输yay -S ${DEPENDENCY_01}" ;;
     esac

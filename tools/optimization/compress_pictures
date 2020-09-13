@@ -14,7 +14,10 @@ image_compression_menu() {
     case "${SOFTWARE}" in
     0 | "") tmoe_multimedia_menu ;;
     1) image_compression_tool_gui_or_tui ;;
-    2) install_image_compression_tool ;;
+    2)
+        DEPENDENCY_02='zenity'
+        install_image_compression_tool
+        ;;
     3) remove_image_compression_tool ;;
     esac
     ############################################
@@ -36,7 +39,6 @@ install_image_compression_tool() {
     redhat) DEPENDENCY_01='ImageMagick' ;;
     *) DEPENDENCY_01='imagemagick' ;;
     esac
-    DEPENDENCY_02='zenity'
     beta_features_quick_install
 }
 ###############
@@ -107,6 +109,7 @@ image_compression_tool_gui_or_tui() {
 ################
 check_imagemagick() {
     if [ ! $(command -v convert) ]; then
+        DEPENDENCY_02=''
         install_image_compression_tool
     fi
 }
