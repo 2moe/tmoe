@@ -67,8 +67,17 @@ if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
 fi
 DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
 
-#创建必要文件夹，防止挂载失败
-mkdir -p ~/storage/external-1
+#mkdir -p ~/storage/external-1
+if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+	TMOE_CHROOT='true'
+	if [ $(command -v sudo) ]; then
+		TMOE_CHROOT_PREFIX=sudo
+	elif [ $(command -v tsudo) ]; then
+		TMOE_CHROOT_PREFIX=tsudo
+	fi
+else
+	TMOE_CHROOT_PREFIX=''
+fi
 #DEBIAN_FOLDER=debian_arm64
 RED=$(printf '\033[31m')
 GREEN=$(printf '\033[32m')
@@ -362,7 +371,9 @@ cat <<-EOF
 EOF
 ################
 uncompress_other_format_file() {
-	if [ "${LINUX_DISTRO}" = "Android" ]; then
+	if [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
 	else
 		if [ $(command -v pv) ]; then
@@ -389,7 +400,9 @@ uncompress_tar_lz4_file() {
 }
 ###########
 uncompress_tar_gz_file() {
-	if [ "${LINUX_DISTRO}" = "Android" ]; then
+	if [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
 	else
 		if [ $(command -v pv) ]; then
@@ -414,6 +427,8 @@ uncompress_tar_xz_file() {
 	if [ "${ARCH_TYPE}" = "mipsel" ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
 		mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
+	elif [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
 	elif [ "${LINUX_DISTRO}" = "iSH" ]; then
@@ -456,13 +471,13 @@ ${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT}) cp -f 
 	MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/MesloLGS-NF-Bold"
 	if [ -e "${MESLO_FONT_DIR}" ]; then
 		cd ${MESLO_FONT_DIR}
-		cp -f 'MesloLGS NF Bold.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
+		${TMOE_CHROOT_PREFIX} cp -f 'MesloLGS NF Bold.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
 	fi
 	;;
 esac
 
 if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
-	touch ~/${DEBIAN_FOLDER}/tmp/.openwrtcheckfile
+	${TMOE_CHROOT_PREFIX} touch ~/${DEBIAN_FOLDER}/tmp/.openwrtcheckfile
 fi
 #proot --link2symlink tar -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
 cd "${CURRENT_TMOE_DIR}"
@@ -711,21 +726,25 @@ creat_chroot_startup_script() {
 	Android)
 		ANDROID_EMULATED_DIR='/storage/emulated'
 		if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
-			mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
-			cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
-			ln -s ../../root/sd ./0
+			${TMOE_CHROOT_PREFIX} mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			#cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			#ln -s ../../root/sd ./0
+			${TMOE_CHROOT_PREFIX} ln -s ../../root/sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
 		fi
-		cd "${DEBIAN_CHROOT}"
 		;;
 	esac
+	cd ${CONFIG_FOLDER}
 	if [ -e "/system/bin/wm" ]; then
 		TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-		mkdir -p ${TMOE_CHROOT_ETC}
-		su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1 >${TMOE_CHROOT_ETC}/wm_size.txt
+		${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_CHROOT_ETC}
+		WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
+		echo ${WM_SIZE} >wm_size.txt
+		${TMOE_CHROOT_PREFIX} mv wm_size.txt ${TMOE_CHROOT_ETC}
 	fi
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model)
-		echo ${ANDROID_HOST_NAME} >${DEBIAN_CHROOT}/etc/hostname
+		echo ${ANDROID_HOST_NAME} >hostname
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc/
 		case $(hostname) in
 		localhost | "")
 			sudo hostname ${ANDROID_HOST_NAME}
@@ -735,12 +754,16 @@ creat_chroot_startup_script() {
 	echo "Creating chroot startup script"
 	echo "正在创建chroot容器启动脚本${PREFIX}/bin/debian "
 	#if [ -e "/storage/self/primary" ] || [ -e "/sdcard" ]; then
-	mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd || sudo mkdir -p ${DEBIAN_CHROOT}/root/sd
+	#mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd ||
+	mkdir -p /sdcard
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/root/sd
 	#fi
 	if [ -d "/data/data/com.termux/files/home" ]; then
-		mkdir -p ${DEBIAN_CHROOT}/root/termux || sudo mkdir -p ${DEBIAN_CHROOT}/root/termux
+		#mkdir -p ${DEBIAN_CHROOT}/root/termux ||
+		${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/root/termux
 		if [ -h "${HOME}/storage/external-1" ]; then
-			mkdir -p ${DEBIAN_CHROOT}/root/tf || sudo mkdir -p ${DEBIAN_CHROOT}/root/tf
+			#mkdir -p ${DEBIAN_CHROOT}/root/tf ||
+			${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/root/tf
 		fi
 	fi
 	##################
@@ -752,7 +775,7 @@ creat_chroot_startup_script() {
 	#unset i
 	###############
 	#此处若不创建，将有可能导致chromium无法启动。
-	mkdir -p ${DEBIAN_CHROOT}/run/shm
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/run/shm
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
 	cat_tmoe_chroot_script
 }
@@ -1229,7 +1252,7 @@ aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubus
 #############
 if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 	sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
-	sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
+	#sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
 echo 'Giving startup script execution permission'
 echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
@@ -1246,19 +1269,28 @@ echo "您可以输${RED}rm ~/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像�
 ls -lh ~/${TMOE_ROOTFS_TAR_XZ}
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
-	mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
-cd ${DEBIAN_CHROOT}/usr/local/bin
 
-curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+#cd ${DEBIAN_CHROOT}/usr/local/bin
+cd ${CONFIG_FOLDER}
+if [ ! -e "neofetch" ]; then
+	curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+fi
+if [ ! -e "debian-i" ]; then
+	curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+fi
 chmod +x neofetch debian-i
+${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin
 
-cd ${DEBIAN_CHROOT}/root
-chmod u+w "${DEBIAN_CHROOT}/root"
+${TMOE_CHROOT_PREFIX} chmod u+w "${DEBIAN_CHROOT}/root"
+
 curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
-chmod +x zsh-i.sh
+curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
+chmod +x zsh.sh zsh-i.sh
+${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
+#chmod u+x ./*
 ###########
 debian_stable_sources_list_and_gpg_key() {
 	curl -Lo "raspbian-sources-gpg.tar.xz" 'https://gitee.com/mo2/patch/raw/raspbian/raspbian-sources-gpg.tar.xz'
@@ -1270,29 +1302,48 @@ debian_stable_sources_list_and_gpg_key() {
 #	mv -f "${HOME}/.RASPBIANARMHFDetectionFILE" "${DEBIAN_CHROOT}/tmp/"
 #树莓派换源
 #debian_stable_sources_list_and_gpg_key
-if [ -f "${HOME}/.REDHATDetectionFILE" ]; then
-	rm -f "${HOME}/.REDHATDetectionFILE"
-	chmod u+w "${DEBIAN_CHROOT}/root"
-elif [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
-	mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
+#if [ -f "${HOME}/.REDHATDetectionFILE" ]; then
+#rm -f "${HOME}/.REDHATDetectionFILE"
+#chmod u+w "${DEBIAN_CHROOT}/root"
+if [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
+	${TMOE_CHROOT_PREFIX} mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
 elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
-	sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
+	${TMOE_CHROOT_PREFIX} sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
-if [ -e "${TMOE_LOCALE_FILE}" ]; then
+if [ -f "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-	mkdir -p ${TMOE_LOCALE_NEW_PATH}
-	cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+	${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_LOCALE_NEW_PATH}
+	${TMOE_CHROOT_PREFIX} cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
 	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
 	PROOT_LANG=$(cat $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
 	sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi
 ########################
-#配置zsh
-curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
-chmod u+x ./*
+#cd ${DEBIAN_CHROOT}/root
+#无权限进入chroot容器的root目录
+case ${TMOE_CHROOT} in
+true)
+	cd ${CONFIG_FOLDER}
+	;;
+*)
+	cd ${DEBIAN_CHROOT}/root
+	############
+	if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
+		mv -f .bash_profile .bash_profile.bak 2>/dev/null
+		mv -f .bash_login .bash_login.bak 2>/dev/null
+	fi
+	if [ ! -f ".profile" ]; then
+		echo '' >>.profile
+	else
+		mv -f .profile .profile.bak
+	fi
+	;;
+esac
+#############
+##################
 #vnc自动启动
 cat >vnc-autostartup <<-'EndOfFile'
 	locale_gen_tmoe_language() {
@@ -1395,23 +1446,8 @@ cat >vnc-autostartup <<-'EndOfFile'
 	             ;;
 	    esac
 	}
+	[ -e ~/.profile ] && . ~/.profile
 EndOfFile
-############
-if [ ! -f ".bashrc" ]; then
-	echo '' >>.bashrc || touch .bashrc
-fi
-sed -i '1 r vnc-autostartup' ./.bashrc
-#cp -f .bashrc .bashrc.bak
-if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
-	mv -f .bash_profile .bash_profile.bak 2>/dev/null
-	mv -f .bash_login .basfh_login.bak 2>/dev/null
-fi
-if [ ! -f ".profile" ]; then
-	echo '' >>.profile || touch .profle
-else
-	mv -f .profile .profile.bak
-fi
-#############
 #curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
 #chmod u+x .profile
 #不要将profile转换为外部脚本，否则将影响sed
@@ -1420,6 +1456,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	RESET=$(printf '\033[m')
 	cd ${HOME}
 	###############
+	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
+	cp -f vnc-autostartup .bash_login
 	if [ -e "/etc/hostname" ]; then
 		NEW_HOST_NAME=$(cat /etc/hostname | head -n 1)
 		hostname ${NEW_HOST_NAME} 2>/dev/null
@@ -1792,7 +1830,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	##############################
 	apt update 2>/dev/null
-	apt reinstall -y perl-base
+	#apt reinstall -y perl-base
 	if [ ! -e /usr/lib/locale/en_US ];then
 		apt install -y locales-all 2>/dev/null
 	fi 
@@ -2018,7 +2056,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	apt dist-upgrade -y 2>/dev/null
 	apt install -y procps 2>/dev/null
 	apt clean 2>/dev/null
-
 	#############################
 	#grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
 	echo "Welcome to Debian GNU/Linux."
@@ -2029,10 +2066,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    mv -f .profile.bak .profile
 	fi
 	#################
-	if [ -f ".bash_profile.bak" ] || [ -f ".bash_login.bak" ]; then
-	    mv -f .bash_profile.bak .bash_profile.bak 2>/dev/null
-	    mv -f .bash_login.bak .basfh_login.bak 2>/dev/null
-	fi
 	####################
 	if [ ! "$(command -v lolcat)" ];then
 		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || dnf install -y lolcat 2>/dev/null || apk add lolcat 2>/dev/null
@@ -2172,13 +2205,22 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" || bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	}
 	################
-	if ! grep -q 'debian|ubuntu' '/etc/os-release'; then
+	if ! grep -Eq 'debian|ubuntu' '/etc/os-release'; then
 	    note_of_non_debian
 	else
 		fix_gnu_libxcb_debian
 	    bash zsh.sh
 	fi
 ENDOFbashPROFILE
+#####################
+case ${TMOE_CHROOT} in
+true)
+	${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/root/.bash_profile ${DEBIAN_CHROOT}/root/.bash_login
+	${TMOE_CHROOT_PREFIX} mv ${DEBIAN_CHROOT}/root/.profile ${DEBIAN_CHROOT}/root/.profile.bak 2>/dev/null
+	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile ${DEBIAN_CHROOT}/root
+	;;
+esac
+#sed -i '1 r vnc-autostartup' ./.bash_login
 #####################
 check_current_user_name_and_group() {
 	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
@@ -2193,7 +2235,8 @@ if [ "${LINUX_DISTRO}" != 'Android' ]; then
 	#sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 fi
 case ${TMOE_CHROOT} in
-true) su -c "chown -Rv root:root ${DEBIAN_CHROOT}" ;;
+true) ;;
+#su -c "chown -Rv root:root ${DEBIAN_CHROOT}"
 *)
 	case ${LINUX_DISTRO} in
 	Android) ;;
