@@ -589,7 +589,7 @@ cat_tmoe_chroot_script() {
 			   #echo ''
 		       ##arch-chroot#
 			   su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
-			   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}/"
+			   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
 			 fi
 			 #########
 		    if [ -f "${DEBIAN_CHROOT}/bin/zsh" ]; then
