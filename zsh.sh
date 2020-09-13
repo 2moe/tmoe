@@ -249,6 +249,9 @@ configure_power_level_10k() {
         else
             wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
         fi
+        #mkdir -p ~/.cache
+        #rm -rv ~/.cache/gitstatus
+        #ln -s ~/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/bin ~/.cache/gitstatus
         cat >>${HOME}/.zshrc <<-"ENDOFPOWERLEVEL"
 		[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 		ENDOFPOWERLEVEL
