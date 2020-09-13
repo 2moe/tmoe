@@ -30,6 +30,7 @@ install_thunder_bin() {
     arch) echo "若安装失败，则请手动输yay -S ${DEPENDENCY_01}" ;;
     esac
     check_deb_version
+    this_app_may_non_support_running_on_proot
     case ${ARCH_TYPE} in
     amd64 | arm64) ;;
     *) arch_does_not_support ;;
