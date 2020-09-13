@@ -1367,6 +1367,7 @@ install_tmoe_app_01() {
     yozo-office) install_yozo_office ;;
     freeoffice) install_free_office ;;
     mitalk) install_mitalk ;;
+    xunlei-bin | com.xunlei.download) install_thunder_bin ;;
     esac
 }
 ###########
@@ -1374,6 +1375,7 @@ remove_tmoe_app_01() {
     echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_APP_VERSION_TXT}${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
+    com.xunlei.download) remove_thunder_opt_app ;;
     *)
         rm -v ${LOCAL_APP_VERSION_TXT}
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}

@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+###########
+thunder_bin_env() {
+    case ${LINUX_DISTRO} in
+    arch) DEPENDENCY_01='xunlei-bin' ;;
+    debian | *) DEPENDENCY_01='com.xunlei.download' ;;
+    esac
+    GREP_NAME='com.xunlei.download'
+    OFFICIAL_URL='https://dl.xunlei.com'
+    tmoe_app_menu_01
+    DEPENDENCY_01=''
+}
+##########
+install_thunder_bin() {
+    REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/xunlei-bin/'
+    THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+    #https://cdn-package-store6.deepin.com/appstore/pool/appstore/c/com.xunlei.download/com.xunlei.download_1.0.0.1_amd64.deb
+    case ${ARCH_TYPE} in
+    arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
+    *) ;;
+    esac
+    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}_@@")
+    ICON_FILE='/opt/apps/com.xunlei.download/entries/icons/hicolor/128x128/apps/com.xunlei.download.png'
+    if [ -e "${ICON_FILE}" ]; then
+        catimg "${ICON_FILE}" 2>/dev/null
+    fi
+    echo "本版本除deb系发行版外，还支持arch和fedora。"
+    case ${LINUX_DISTRO} in
+    arch) echo "若安装失败，则请手动输yay -S ${DEPENDENCY_01}" ;;
+    esac
+    check_deb_version
+    case ${ARCH_TYPE} in
+    amd64 | arm64) ;;
+    *) arch_does_not_support ;;
+    esac
+    do_you_want_to_upgrade_it_02
+    do_you_want_to_continue
+    TEMP_FOLDER="/tmp/.${GREP_NAME}"
+    mkdir -p ${TEMP_FOLDER}
+    cd ${TEMP_FOLDER}
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}"
+    case "${BUSYBOX_AR}" in
+    true) busybox ar xv ${THE_LATEST_DEB_FILE} ;;
+    *) ar xv ${THE_LATEST_DEB_FILE} ;;
+    esac
+    if [ -e "data.tar.gz" ]; then
+        tar -zxvf data.tar.gz -C /
+    elif [ -e data.tar.xz ]; then
+        tar -Jxvf data.tar.xz -C /
+    fi
+    cd /opt/apps/com.xunlei.download/files
+    sed -i 's@thunder -start@thunder --no-sandbox -start@' start.sh
+    cd ../entries
+    sed -i 's@Icon=.*@Icon=/usr/share/icons/hicolor/scalable/apps/com.thunder.download.svg@' applications/com.xunlei.download.desktop
+    cp -rvf ./applications ./icons /usr/share
+    rm -rv ${TEMP_FOLDER} 2>/dev/null
+    echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
+}
+################
+remove_thunder_opt_app() {
+    rm -rv /opt/apps/com.xunlei.download
+    cd /usr/share
+    rm -fv ./applications/com.xunlei.download.desktop ./icons/hicolor/256x256/apps/com.xunlei.download.png ./icons/hicolor/32x32/apps/com.xunlei.download.png ./icons/hicolor/scalable/apps/com.thunder.download.svg ./icons/hicolor/128x128/apps/com.xunlei.download.png ./icons/hicolor/16x16/apps/com.xunlei.download.png ./icons/hicolor/48x48/apps/com.xunlei.download.png ./icons/hicolor/24x24/apps/com.xunlei.download.png
+}
+##############
+thunder_bin_env
