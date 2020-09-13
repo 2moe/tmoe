@@ -586,8 +586,10 @@ cat_tmoe_chroot_script() {
 		    ##########
 			#arch-linux挂载自身
 			if ! detect_mount "${DEBIAN_CHROOT}/"; then
-			   echo ''
-		       ##arch-chroot#su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
+			   #echo ''
+		       ##arch-chroot#
+			   su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
+			   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}/"
 			 fi
 			 #########
 		    if [ -f "${DEBIAN_CHROOT}/bin/zsh" ]; then
@@ -1053,7 +1055,7 @@ fix_gnu_linux_chroot_exec() {
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	TMOE_CHROOT='true'
 	creat_chroot_startup_script
-	arch_mount_self
+	#arch_mount_self
 	#fix_gnu_linux_chroot_exec
 else
 	creat_proot_startup_script
