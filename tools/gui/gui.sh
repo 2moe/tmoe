@@ -3771,13 +3771,6 @@ xrdp_reset() {
 configure_startxsdl() {
     cd /usr/local/bin
     cp -f ${TMOE_TOOL_DIR}/gui/startxsdl ./
-    cat >>startxsdl <<-ENDofStartxsdl
-		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
-		else
-			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
-		fi
-	ENDofStartxsdl
     #--exit-with-session
     #启动命令结尾无&
     ###############################
