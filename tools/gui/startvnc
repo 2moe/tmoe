@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #########################
-stopvnc -no-stop-dbus 2>/dev/null
+stopvnc -non-stop-dbus 2>/dev/null
 TMOE_VNC_DISPLAY_NUMBER=1
 export USER="$(whoami)"
 export HOME="${HOME}"

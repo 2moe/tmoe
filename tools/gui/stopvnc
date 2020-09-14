@@ -5,14 +5,14 @@ stop_vnc_main() {
     rm_vnc_lock
     pkill_vnc
     case "$1" in
-    -no-stop-dbus)
+    -non-stop-dbus)
         stopx11vnc 2>/dev/null
         ;;
-    -no-stop-x11vnc) ;;
+    -non-stop-x11vnc) ;;
     -h | --h | --help | -help)
         cat <<-'EOF'
-			-no-stop-dbus    --不停止dbus-daemon
-			-no-stop-x11vnc  --不停止x11vnc
+			-non-stop-dbus    --不停止dbus-daemon
+			-non-stop-x11vnc  --不停止x11vnc
 			-h               --获取帮助信息
 		EOF
         ;;
