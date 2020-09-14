@@ -84,18 +84,31 @@ start_tmoe_xvnc() {
     #set -- "${@}" "-ZlibLevel=9"
 }
 ##############
+dbus_daemon_fork() {
+    if [ $(command -v sudo) ]; then
+        sudo dbus-daemon --system --fork 2>/dev/null
+    else
+        su -c "dbus-daemon --system --fork 2>/dev/null"
+    fi
+}
+###########
 launch_dbus_daemon() {
     case ${TMOE_CHROOT} in
     true)
-        if [ ! -e "/run/dbus/pid" ]; then
-            if [ $(command -v sudo) ]; then
-                sudo dbus-daemon --system --fork 2>/dev/null
-            else
-                su -c "dbus-daemon --system --fork 2>/dev/null"
+        case $(id -u) in
+        0)
+            rm -vf /run/dbus/pid
+            dbus_daemon_fork
+            ;;
+        *)
+            if [ ! -e "/run/dbus/pid" ]; then
+                dbus_daemon_fork
             fi
-        fi
+            ;;
+        esac
         ;;
     esac
+    #优化体验，避免普通用户启动dbus时需要输密码。
 }
 ###########
 check_vncsession() {
