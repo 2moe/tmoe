@@ -17,8 +17,8 @@ stop_vnc_main() {
 		EOF
         ;;
     *)
-        stop_dbus_daemon
         stopx11vnc 2>/dev/null
+        stop_dbus_daemon
         vnc_server_has_been_stopped
         ;;
     esac
@@ -37,13 +37,19 @@ rm_vnc_lock() {
     rm -vf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
 }
 #############
+rm_dbus_pid_file() {
+    if [ $(command -v sudo) ]; then
+        sudo rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
+    else
+        su -c "rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
+    fi
+}
+############
 stop_dbus_daemon() {
     case ${TMOE_CHROOT} in
     true)
-        if [ $(command -v sudo) ]; then
-            sudo rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
-        else
-            su -c "rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
+        if [ -e "/run/dbus/pid" ]; then
+            rm_dbus_pid_file
         fi
         ;;
     esac
