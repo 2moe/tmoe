@@ -5,6 +5,8 @@ TMOE_VNC_DISPLAY_NUMBER=1
 export USER="$(whoami)"
 export HOME="${HOME}"
 export PULSE_SERVER=127.0.0.1
+TMOE_TOOL_DIR='/usr/local/etc/tmoe-linux/git/tools'
+XSESSION_FILE='/etc/X11/xinit/Xsession'
 ########################
 check_tmoe_locale() {
     TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
@@ -79,36 +81,13 @@ start_tmoe_xvnc() {
     set -- "Xvnc" "$@"
     exec "$@" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
-    . /etc/X11/xinit/Xsession &>/dev/null &
+    . ${XSESSION_FILE} &>/dev/null &
     exit 0
     #set -- "${@}" "-ZlibLevel=9"
 }
 ##############
-dbus_daemon_fork() {
-    if [ $(command -v sudo) ]; then
-        sudo dbus-daemon --system --fork 2>/dev/null
-    else
-        su -c "dbus-daemon --system --fork 2>/dev/null"
-    fi
-}
-###########
-launch_dbus_daemon() {
-    case ${TMOE_CHROOT} in
-    true)
-        case $(id -u) in
-        0)
-            rm -vf /run/dbus/pid
-            dbus_daemon_fork
-            ;;
-        *)
-            if [ ! -e "/run/dbus/pid" ]; then
-                dbus_daemon_fork
-            fi
-            ;;
-        esac
-        ;;
-    esac
-    #优化体验，避免普通用户启动dbus时需要输密码。
+source_tmoe_dbus_daemon() {
+    . ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
 }
 ###########
 check_vncsession() {
@@ -133,7 +112,7 @@ check_xvnc() {
 }
 ##########
 tmoe_vnc_preconfigure
-launch_dbus_daemon
+source_tmoe_dbus_daemon
 display_vnc_ip_addr
 check_vncsession
 ##########

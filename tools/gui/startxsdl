@@ -1,12 +1,29 @@
 #!/usr/bin/env bash
+###################
 stopvnc -non-stop-dbus 2>/dev/null
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4713
-echo '正在为您启动xsdl,请将display number改为0'
-echo 'Starting xsdl, please change display number to 0'
-echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
-echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+TMOE_TOOL_DIR='/usr/local/etc/tmoe-linux/git/tools'
+XSESSION_FILE='/etc/X11/xinit/Xsession'
+###############
+check_tmoe_locale() {
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+		export LANG="${TMOE_LANG}"
+	else
+		export LANG="zh_CN.UTF-8"
+	fi
+}
+###########
+notes_of_xserver() {
+	echo '正在为您启动x11,请将display number改为0'
+	echo 'Starting x11, please change display number to 0'
+	echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+	echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+}
+####################
+start_windows_xserver() {
 	VCXSRV_DISPLAY_PORT=37985
 	. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
 	cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
@@ -23,11 +40,21 @@ if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '
 		export DISPLAY="$(echo ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
 	fi
 	sleep 2
-fi
-TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-if [ -e "${TMOE_LOCALE_FILE}" ]; then
-	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-	export LANG="${TMOE_LANG}"
-else
-	export LANG="zh_CN.UTF-8"
-fi
+}
+###############
+check_wsl() {
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		start_windows_xserver
+	fi
+}
+###############
+source_tmoe_dbus_daemon() {
+	. ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+}
+############
+check_tmoe_locale
+notes_of_xserver
+check_wsl
+source_tmoe_dbus_daemon
+###########
+. ${XSESSION_FILE} &

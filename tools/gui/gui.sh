@@ -846,11 +846,12 @@ configure_vnc_xstartup() {
 			x-terminal-emulator &
 		fi
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
+			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
 		else
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
+			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	EndOfFile
+    #--exit-with-session
     chmod 777 ${XSESSION_FILE}
     #xrdb \${HOME}/.Xresources
     #dbus-launch startxfce4 &
@@ -872,7 +873,6 @@ configure_x11vnc_remote_desktop_session() {
     cat >startx11vnc <<-ENDOFTTMOEX11VNC
 #!/usr/bin/env bash
 stopvnc -non-stop-dbus 2>/dev/null
-#stopx11vnc
 export PULSE_SERVER=127.0.0.1
 export DISPLAY=:233
 TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
@@ -988,27 +988,11 @@ TMOE_IP_ADDR=\$(ip -4 -br -c a | awk '{print \$NF}' | cut -d '/' -f 1 | grep -v 
 echo The LAN VNC address 局域网地址 \${TMOE_IP_ADDR} | sed "s@\\\$@:5901@"
 echo "您可能会经历长达10多秒的黑屏"
 echo "You may experience a black screen for up to 10 seconds."
-echo "您之后可以输startx11vnc启动，输stopvnc或stopx11vnc停止"
-echo "You can type startx11vnc to start x11vnc,type stopx11vnc to stop it."
+echo "您之后可以输startx11vnc启动，输stopvnc停止"
+echo "You can type startx11vnc to start x11vnc,type stopvnc to stop it."
 ENDOFTTMOEX11VNC
     #######
-    cat >stopx11vnc <<-'EOF'
-		#!/usr/bin/env bash
-		pkill dbus
-		pkill Xvfb
-        rm -fv /tmp/.X233-lock /tmp/.X11-unix/X233 2>/dev/null
-	EOF
-    #pkill pulse
-    cat >x11vncpasswd <<-'EOF'
-		#!/usr/bin/env bash
-		echo "Configuring x11vnc..."
-		echo "正在配置x11vnc server..."
-		read -sp "请输入6至8位密码，please type the new VNC password: " TMOE_X11_PASSWD
-		if [ ! -e "${HOME}/.vnc" ]; then
-            mkdir -p ${HOME}/.vnc
-        fi
-		x11vnc -storepasswd ${TMOE_X11_PASSWD} ${HOME}/.vnc/x11passwd
-	EOF
+    cp -f ${TMOE_TOOL_DIR}/gui/x11vncpasswd ./
 
     if [ "${NON_DBUS}" != "true" ]; then
         enable_dbus_launch
@@ -2902,11 +2886,10 @@ configure_x11vnc() {
             "2" "pulse_server音频服务" \
             "3" "resolution分辨率" \
             "4" "修改startx11vnc启动脚本" \
-            "5" "修改stopx11vnc停止脚本" \
-            "6" "remove 卸载/移除" \
-            "7" "readme 进程管理说明" \
-            "8" "password 密码" \
-            "9" "read doc阅读文档" \
+            "5" "remove 卸载/移除" \
+            "6" "readme 进程管理说明" \
+            "7" "password 密码" \
+            "8" "read doc阅读文档" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -2917,11 +2900,10 @@ configure_x11vnc() {
     2) x11vnc_pulse_server ;;
     3) x11vnc_resolution ;;
     4) nano /usr/local/bin/startx11vnc ;;
-    5) nano /usr/local/bin/stopx11vnc ;;
-    6) remove_X11vnc ;;
-    7) x11vnc_process_readme ;;
-    8) x11vncpasswd ;;
-    9) x11vnc_doc ;;
+    5) remove_X11vnc ;;
+    6) x11vnc_process_readme ;;
+    7) x11vncpasswd ;;
+    8) x11vnc_doc ;;
     esac
     ########################################
     press_enter_to_return
@@ -2939,7 +2921,7 @@ x11vnc_doc() {
 x11vnc_process_readme() {
     echo "输startx11vnc启动x11vnc服务。"
     echo "You can type ${GREEN}startx11vnc${RESET} to start it,type ${RED}stopvnc${RESET} to stop it."
-    echo "输stopvnc或stopx11vnc停止x11vnc"
+    echo "输stopvnc停止x11vnc"
     echo "若您的音频服务端为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
     echo "您亦可输${GREEN}pulseaudio --start${RESET}"
     echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
@@ -3009,11 +2991,11 @@ x11vnc_onekey() {
 remove_X11vnc() {
     echo "正在停止x11vnc进程..."
     echo "Stopping x11vnc..."
-    stopx11vnc
+    stopvnc -x11
     echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
     RETURN_TO_WHERE='configure_x11vnc'
     do_you_want_to_continue
-    rm -rfv /usr/local/bin/startx11vnc /usr/local/bin/stopx11vnc
+    rm -rfv /usr/local/bin/startx11vnc
     echo "即将为您卸载..."
     ${TMOE_REMOVAL_COMMAND} x11vnc
 }
@@ -3054,10 +3036,6 @@ x11vnc_resolution() {
         echo 'Your current resolution has been modified.'
         echo "您当前的分辨率已经修改为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
         echo "You can type startx11vnc to restart it."
-        #echo $(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')
-        #echo $(sed -n \$p "$(command -v startx11vnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
-        #$p表示最后一行，必须用反斜杠转义。
-        #stopx11vnc
     fi
 }
 ############################
@@ -3917,17 +3895,19 @@ configure_startxsdl() {
     cp -f ${TMOE_TOOL_DIR}/gui/startxsdl ./
     cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
+			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
 		else
-			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
+			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	ENDofStartxsdl
+    #--exit-with-session
     #启动命令结尾无&
     ###############################
     #debian禁用dbus分两次，并非重复
     if [ "${NON_DBUS}" = "true" ]; then
         case "${TMOE_PROOT}" in
-        true | no) sed -i 's:dbus-launch --exit-with-session::' startxsdl ${XSESSION_FILE} ;;
+        true | no) #sed -i 's:dbus-launch --exit-with-session::' startxsdl ${XSESSION_FILE} ;;
+            sed -i 's:dbus-launch::' ${XSESSION_FILE} ;;
         esac
     fi
 }
@@ -3980,13 +3960,18 @@ first_configure_startvnc() {
     configure_startvnc
     configure_startxsdl
     chmod +x startvnc stopvnc startxsdl
-    if [ "${LINUX_DISTRO}" != "debian" ]; then
-        sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl
-    else
+    #if [ "${LINUX_DISTRO}" != "debian" ]; then
+    #sed -i 's@--exit-with-session@@' ${XSESSION_FILE}
+    #/usr/local/bin/startxsdl
+    #else
+    case ${LINUX_DISTRO} in
+    debian)
         if ! grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
             which_vnc_server_do_you_prefer
         fi
-    fi
+        ;;
+    esac
+    #fi
     ######################
     dpkg --configure -a 2>/dev/null
     if [ ${HOME} != '/root' ]; then
@@ -4270,7 +4255,6 @@ xfce4_x11vnc_hidpi_settings() {
     case ${TMOE_HIGH_DPI} in
     true | false)
         if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
-            #stopx11vnc >/dev/null 2>&1
             #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
             sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null
             #startx11vnc >/dev/null 2>&1
@@ -4281,21 +4265,22 @@ xfce4_x11vnc_hidpi_settings() {
 ####################
 enable_dbus_launch() {
     XSTARTUP_LINE=$(cat -n ${XSESSION_FILE} | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-    #sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" ~/.vnc/xstartup
-    sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
+    #sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
+    sed -i "${XSTARTUP_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
     #################
-    START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-    sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
+    #START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+    #sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
+    #sed -i "${START_X11VNC_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
     ##################
-    START_XSDL_LINE=$(cat -n /usr/local/bin/startxsdl | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-    sed -i "${START_XSDL_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
+    #START_XSDL_LINE=$(cat -n /usr/local/bin/startxsdl | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+    #sed -i "${START_XSDL_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
     #################
-    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" "/usr/local/bin/startx11vnc"
-    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" ${XSESSION_FILE}
-    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
-    if [ "${LINUX_DISTRO}" != "debian" ]; then
-        sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
-    fi
+    #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02} \&/" "/usr/local/bin/startx11vnc"
+    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/  dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" ${XSESSION_FILE}
+    #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
+    #if [ "${LINUX_DISTRO}" != "debian" ]; then
+    #    sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+    #fi
 }
 #################
 fix_vnc_dbus_launch() {
@@ -4318,13 +4303,15 @@ fix_vnc_dbus_launch() {
     fi
 
     if (whiptail --title "您想要对这个小可爱中做什么 " --yes-button "Disable" --no-button "Enable" --yesno "您是想要禁用dbus-launch，还是启用呢？${DBUSstatus} \n请做出您的选择！✨" 10 50); then
-        #if [ "${LINUX_DISTRO}" = "debian" ]; then
-        #	sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
-        #else
-        sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
-        #fi
-        sed -i 's@dbus-launch@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+        #sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+        sed -i 's@dbus-launch@@' ${XSESSION_FILE}
     else
+        #for i in startxfce4 startlxde startlxqt mate-session startplasma gnome-session cinnamon budgie-desktop startdde; do
+        #    if grep ${i} ${XSESSION_FILE}; then
+        #        echo "检测您当前的VNC配置为${i}，正在将dbus-launch加入至启动脚本中..."
+        #    fi
+        #done
+        #unset i
         if grep 'startxfce4' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_02='startxfce4'

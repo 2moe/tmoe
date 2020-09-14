@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+dbus_daemon_fork() {
+    if [ $(command -v sudo) ]; then
+        sudo dbus-daemon --system --fork 2>/dev/null
+    else
+        su -c "dbus-daemon --system --fork 2>/dev/null"
+    fi
+}
+###########
+check_dbus_daemon() {
+    case ${TMOE_CHROOT} in
+    true)
+        case $(id -u) in
+        0)
+            rm -vf /run/dbus/pid
+            dbus_daemon_fork
+            ;;
+        *)
+            if [ ! -e "/run/dbus/pid" ]; then
+                dbus_daemon_fork
+            fi
+            ;;
+        esac
+        ;;
+    esac
+}
+###########
+check_dbus_daemon
