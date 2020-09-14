@@ -922,20 +922,32 @@ tmoe_x11vnc_preconfigure() {
     fi
 }
 #################
+dbus_daemon_fork() {
+    if [ \$(command -v sudo) ]; then
+        sudo dbus-daemon --system --fork 2>/dev/null
+    else
+        su -c "dbus-daemon --system --fork 2>/dev/null"
+    fi
+}
+################
 launch_dbus_daemon() {
     case \${TMOE_CHROOT} in
     true)
-        if [ ! -e "/run/dbus/pid" ]; then
-            if [ \$(command -v sudo) ]; then
-                sudo dbus-daemon --system --fork 2>/dev/null
-            else
-                su -c "dbus-daemon --system --fork 2>/dev/null"
+        case \$(id -u) in
+        0)
+            rm -vf /run/dbus/pid
+            dbus_daemon_fork
+            ;;
+        *)
+            if [ ! -e "/run/dbus/pid" ]; then
+                dbus_daemon_fork
             fi
-        fi
+            ;;
+        esac
         ;;
     esac
 }
-###############
+###########
 start_tmoe_xvfb() {
     unset "\${@}"
     set -- "\${@}" "\${DISPLAY}"
