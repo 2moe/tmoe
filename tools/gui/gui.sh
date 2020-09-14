@@ -836,7 +836,10 @@ configure_vnc_xstartup() {
     mkdir -p ~/.vnc
     cd ${HOME}/.vnc
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
-    cat >xstartup <<-EndOfFile
+    mkdir -p /etc/X11/xinit /etc/tigervnc
+    XSESSION_FILE='/etc/X11/xinit/Xsession'
+    rm -f ${XSESSION_FILE}
+    cat >${XSESSION_FILE} <<-EndOfFile
 		#!/usr/bin/env bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
@@ -849,17 +852,17 @@ configure_vnc_xstartup() {
 			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}
 		fi
 	EndOfFile
+    chmod 777 ${XSESSION_FILE}
     #xrdb \${HOME}/.Xresources
     #dbus-launch startxfce4 &
-    chmod +x ./xstartup
+    #chmod +x ./xstartup
+    ln -sf ${XSESSION_FILE} ./xstartup
     congigure_xvnc
     first_configure_startvnc
 }
 ####################
 congigure_xvnc() {
-    mkdir -p /etc/X11/xinit /etc/tigervnc
-    rm -f /etc/X11/xinit/Xsession
-    cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
+    #cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
     cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc
 }
 ############
