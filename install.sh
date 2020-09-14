@@ -1434,6 +1434,14 @@ cat >vnc-autostartup <<-'EndOfFile'
 	esac
 	###########
 	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+	############
+		case ${TMOE_CHROOT} in
+	    true)
+	        rm -f /run/dbus/pid 2>/dev/null
+	        dbus-daemon --system --fork 2>/dev/null
+	        ;;
+		esac
+	############
 	systemctl(){
 	    case $2 in
 	        "") systemctl $1 ;;

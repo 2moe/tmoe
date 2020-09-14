@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+export USER="$(whoami)"
+export HOME="${HOME}"
+CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+vncserver -kill :${CURRENT_PORT} 2>/dev/null
+rm -vf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
+rm -vf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
+case ${TMOE_CHROOT} in
+true)
+    if [ $(command -v sudo) ]; then
+        sudo rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
+    else
+        su -c "rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
+    fi
+    ;;
+esac
+pkill Xtightvnc
+pkill Xvnc
+stopx11vnc 2>/dev/null
+if [ ! "$(pgrep Xvnc)" ]; then
+    echo "已停止VNC服务！"
+    echo "VNC service has been terminated."
+fi

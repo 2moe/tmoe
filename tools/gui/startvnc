@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+#########################
+stopvnc >/dev/null 2>&1
+TMOE_VNC_DISPLAY_NUMBER=1
+export USER="$(whoami)"
+export HOME="${HOME}"
+export PULSE_SERVER=127.0.0.1
+########################
+check_tmoe_locale() {
+    TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+        export LANG="${TMOE_LANG}"
+    else
+        export LANG="zh_CN.UTF-8"
+    fi
+}
+###########
+check_current_user_name_and_group() {
+    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+    if [ -z "${CURRENT_USER_GROUP}" ]; then
+        CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+    fi
+}
+###############
+fix_vnc_permissions() {
+    check_current_user_name_and_group
+    CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l ${HOME}/.vnc/passwd | awk -F ' ' '{print $3}')
+    case ${CURRENT_USER_VNC_FILE_PERMISSION} in
+    ${CURRENT_USER_NAME}) ;;
+    *)
+        echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        cd ${HOME}
+        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc"
+        for i in ".ICEauthority" ".Xauthority"; do
+            if [ -e "${i}" ]; then
+                sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "${i}" || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${i}"
+            fi
+        done
+        unset i
+        ;;
+    esac
+}
+##############
+tmoe_vnc_preconfigure() {
+    check_tmoe_locale
+    if [ ! -e "${HOME}/.vnc/xstartup" ]; then
+        sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
+    fi
+    if [ ${HOME} != '/root' ]; then
+        fix_vnc_permissions
+    fi
+    if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        . /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
+    fi
+}
+###############
+display_vnc_ip_addr() {
+    CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+    echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
+    echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${CURRENT_VNC_PORT}@"
+}
+############
+start_tmoe_xvnc() {
+    . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
+    unset "${@}"
+    set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
+    set -- "${@}" "-alwaysshared"
+    set -- "${@}" "-geometry" "${geometry}"
+    set -- "${@}" "-desktop" "${desktop}"
+    set -- "${@}" "-once"
+    set -- "${@}" "-depth" "24"
+    set -- "${@}" "-deferglyphs" "16"
+    set -- "${@}" "-rfbauth" "${HOME}/.vnc/passwd"
+    set -- "Xvnc" "$@"
+    exec "$@" &
+    export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
+    . /etc/X11/xinit/Xsession &>/dev/null &
+    exit 0
+    #set -- "${@}" "-ZlibLevel=9"
+}
+##############
+launch_dbus_daemon() {
+    case ${TMOE_CHROOT} in
+    true)
+        if [ ! -e "/run/dbus/pid" ]; then
+            if [ $(command -v sudo) ]; then
+                sudo dbus-daemon --system --fork 2>/dev/null
+            else
+                su -c "dbus-daemon --system --fork 2>/dev/null"
+            fi
+        fi
+        ;;
+    esac
+}
+###########
+check_vncsession() {
+    if [ $(command -v vncsession) ]; then
+        case $(id -u) in
+        0)
+            vncsession $(whoami) :${TMOE_VNC_DISPLAY_NUMBER}
+            exit 0
+            ;;
+        *) check_xvnc ;;
+        esac
+    else
+        check_xvnc
+    fi
+}
+#########
+check_xvnc() {
+    if [ $(command -v Xvnc) ]; then
+        start_tmoe_xvnc
+        exit 0
+    fi
+}
+##########
+tmoe_vnc_preconfigure
+launch_dbus_daemon
+display_vnc_ip_addr
+check_vncsession
+##########
+#最后一行命令已废弃，仅作兼容性测试，直接修改其参数值可能不会生效。
+#20200912注:tigervnc-1.11.0-2及其之后的版本，可能无法使用旧版命令。
+vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1

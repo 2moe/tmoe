@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+stopvnc >/dev/null 2>&1
+export DISPLAY=127.0.0.1:0
+export PULSE_SERVER=tcp:127.0.0.1:4713
+echo '正在为您启动xsdl,请将display number改为0'
+echo 'Starting xsdl, please change display number to 0'
+echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
+echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+	VCXSRV_DISPLAY_PORT=37985
+	. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
+	cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
+	#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
+	/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+	/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac"
+	echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+	if grep -q '172..*1' "/etc/resolv.conf"; then
+		echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+		WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+		export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
+		echo "已将您的显示和音频服务ip修改为${WSL2IP}"
+	else
+		export DISPLAY="$(echo ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
+	fi
+	sleep 2
+fi
+TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+if [ -e "${TMOE_LOCALE_FILE}" ]; then
+	TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+	export LANG="${TMOE_LANG}"
+else
+	export LANG="zh_CN.UTF-8"
+fi

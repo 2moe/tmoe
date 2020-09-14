@@ -858,7 +858,8 @@ configure_vnc_xstartup() {
 ####################
 congigure_xvnc() {
     mkdir -p /etc/X11/xinit /etc/tigervnc
-    ln -sf ~/.vnc/xstartup /etc/X11/xinit/Xsession
+    rm -f /etc/X11/xinit/Xsession
+    cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
     cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc
 }
 ############
@@ -1387,158 +1388,7 @@ auto_configure_xfce4_panel() {
     XFCE_CONFIG_FOLDER="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml"
     mkdir -p ${XFCE_CONFIG_FOLDER}
     cd ${XFCE_CONFIG_FOLDER}
-    cat >>xfce4-panel.xml <<-'ENDOFXFCEPANEL'
-		<?xml version="1.0" encoding="UTF-8"?>
-
-		<channel name="xfce4-panel" version="1.0">
-		<property name="configver" type="int" value="2"/>
-		<property name="panels" type="array">
-			<value type="int" value="1"/>
-			<value type="int" value="2"/>
-			<property name="panel-1" type="empty">
-				<property name="autohide-behavior" type="uint" value="0"/>
-				<property name="background-alpha" type="uint" value="100"/>
-				<property name="background-style" type="uint" value="0"/>
-				<property name="disable-struts" type="bool" value="false"/>
-				<property name="enter-opacity" type="uint" value="88"/>
-				<property name="leave-opacity" type="uint" value="74"/>
-				<property name="length" type="uint" value="100"/>
-				<property name="mode" type="uint" value="0"/>
-				<property name="nrows" type="uint" value="1"/>
-				<property name="plugin-ids" type="array">
-					<value type="int" value="7"/>
-					<value type="int" value="1"/>
-					<value type="int" value="2"/>
-					<value type="int" value="3"/>
-					<value type="int" value="24"/>
-					<value type="int" value="4"/>
-					<value type="int" value="5"/>
-					<value type="int" value="6"/>
-					<value type="int" value="8"/>
-					<value type="int" value="9"/>
-					<value type="int" value="10"/>
-					<value type="int" value="11"/>
-					<value type="int" value="12"/>
-					<value type="int" value="13"/>
-					<value type="int" value="14"/>
-				</property>
-				<property name="position" type="string" value="p=6;x=0;y=0"/>
-				<property name="position-locked" type="bool" value="true"/>
-				<property name="size" type="uint" value="26"/>
-			</property>
-			<property name="panel-2" type="empty">
-				<property name="autohide-behavior" type="uint" value="1"/>
-				<property name="background-alpha" type="uint" value="100"/>
-				<property name="background-style" type="uint" value="0"/>
-				<property name="disable-struts" type="bool" value="false"/>
-				<property name="enter-opacity" type="uint" value="88"/>
-				<property name="leave-opacity" type="uint" value="77"/>
-				<property name="length" type="uint" value="10"/>
-				<property name="length-adjust" type="bool" value="true"/>
-				<property name="mode" type="uint" value="0"/>
-				<property name="nrows" type="uint" value="1"/>
-				<property name="plugin-ids" type="array">
-					<value type="int" value="15"/>
-					<value type="int" value="16"/>
-					<value type="int" value="17"/>
-					<value type="int" value="18"/>
-					<value type="int" value="19"/>
-					<value type="int" value="20"/>
-					<value type="int" value="21"/>
-					<value type="int" value="22"/>
-				</property>
-				<property name="position" type="string" value="p=10;x=0;y=0"/>
-				<property name="position-locked" type="bool" value="true"/>
-				<property name="size" type="uint" value="48"/>
-			</property>
-		</property>
-		<property name="plugins" type="empty">
-			<property name="plugin-10" type="string" value="notification-plugin"/>
-			<property name="plugin-11" type="string" value="separator">
-				<property name="expand" type="bool" value="false"/>
-				<property name="style" type="uint" value="0"/>
-			</property>
-			<property name="plugin-12" type="string" value="clock">
-				<property name="digital-format" type="string" value="%a,%b %d,%R:%S"/>
-				<property name="mode" type="uint" value="2"/>
-				<property name="show-frame" type="bool" value="true"/>
-				<property name="tooltip-format" type="string" value="%A %d %B %Y"/>
-			</property>
-			<property name="plugin-13" type="string" value="separator">
-				<property name="expand" type="bool" value="false"/>
-				<property name="style" type="uint" value="0"/>
-			</property>
-			<property name="plugin-14" type="string" value="actions">
-				<property name="appearance" type="uint" value="1"/>
-				<property name="ask-confirmation" type="bool" value="true"/>
-			</property>
-			<property name="plugin-15" type="string" value="showdesktop"/>
-			<property name="plugin-16" type="string" value="separator">
-				<property name="expand" type="bool" value="false"/>
-				<property name="style" type="uint" value="1"/>
-			</property>
-			<property name="plugin-17" type="string" value="launcher">
-				<property name="items" type="array">
-					<value type="string" value="exo-terminal-emulator.desktop"/>
-				</property>
-			</property>
-			<property name="plugin-18" type="string" value="launcher">
-				<property name="items" type="array">
-					<value type="string" value="exo-file-manager.desktop"/>
-				</property>
-			</property>
-			<property name="plugin-19" type="string" value="launcher">
-				<property name="items" type="array">
-					<value type="string" value="exo-web-browser.desktop"/>
-				</property>
-			</property>
-			<property name="plugin-2" type="string" value="tasklist">
-				<property name="grouping" type="uint" value="1"/>
-			</property>
-			<property name="plugin-20" type="string" value="launcher">
-				<property name="items" type="array">
-					<value type="string" value="xfce4-appfinder.desktop"/>
-				</property>
-			</property>
-			<property name="plugin-21" type="string" value="separator">
-				<property name="expand" type="bool" value="false"/>
-				<property name="style" type="uint" value="1"/>
-			</property>
-			<property name="plugin-22" type="string" value="directorymenu">
-				<property name="expand" type="bool" value="true"/>
-				<property name="style" type="uint" value="0"/>
-			</property>
-			<property name="plugin-3" type="string" value="separator">
-				<property name="expand" type="bool" value="true"/>
-				<property name="style" type="uint" value="0"/>
-			</property>
-			<property name="plugin-4" type="string" value="pager">
-				<property name="miniature-view" type="bool" value="true"/>
-				<property name="rows" type="uint" value="1"/>
-				<property name="workspace-scrolling" type="bool" value="false"/>
-			</property>
-			<property name="plugin-5" type="string" value="separator">
-				<property name="expand" type="bool" value="false"/>
-				<property name="style" type="uint" value="0"/>
-			</property>
-			<property name="plugin-6" type="string" value="systray">
-				<property name="show-frame" type="bool" value="false"/>
-				<property name="size-max" type="uint" value="22"/>
-				<property name="square-icons" type="bool" value="true"/>
-				<property name="names-ordered" type="array">
-				</property>
-			</property>
-			<property name="plugin-8" type="string" value="pulseaudio">
-				<property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-				<property name="show-notifications" type="bool" value="true"/>
-			</property>
-			<property name="plugin-9" type="string" value="power-manager-plugin"/>
-			<property name="plugin-7" type="string" value="whiskermenu"/>
-			<property name="plugin-1" type="string" value="applicationsmenu"/>
-			<property name="plugin-24" type="string" value="xfce4-clipman-plugin"/>
-		</property>
-		</channel>
-	ENDOFXFCEPANEL
+    cp -f ${TMOE_TOOL_DIR}/gui/config/xfce4-panel.xml ./
     CURRENT_USER_FILE=$(pwd)
     fix_non_root_permissions
 }
@@ -4049,41 +3899,7 @@ xrdp_reset() {
 #################################
 configure_startxsdl() {
     cd /usr/local/bin
-    cat >startxsdl <<-'EndOfFile'
-		#!/usr/bin/env bash
-		stopvnc >/dev/null 2>&1
-		export DISPLAY=127.0.0.1:0
-		export PULSE_SERVER=tcp:127.0.0.1:4713
-		echo '正在为您启动xsdl,请将display number改为0'
-		echo 'Starting xsdl, please change display number to 0'
-		echo '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
-		echo 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-			VCXSRV_DISPLAY_PORT=37985
-			. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
-            cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
-			#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
-			/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-			/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac"
-			echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-			if grep -q '172..*1' "/etc/resolv.conf"; then
-				echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-				WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-				export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
-				echo "已将您的显示和音频服务ip修改为${WSL2IP}"
-			else
-		        export DISPLAY="$(echo ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
-			fi
-			sleep 2
-		fi
-		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-		if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		    TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-		    export LANG="${TMOE_LANG}"
-		else
-		    export LANG="en_US.UTF-8"
-		fi
-	EndOfFile
+    cp -f ${TMOE_TOOL_DIR}/gui/startxsdl ./
     cat >>startxsdl <<-ENDofStartxsdl
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
 			dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}
@@ -4103,105 +3919,8 @@ configure_startxsdl() {
 #################
 configure_startvnc() {
     cd /usr/local/bin
-    rm -f startvnc
-    cat >startvnc <<-'EndOfFile'
-		#!/usr/bin/env bash
-		stopvnc >/dev/null 2>&1
-		TMOE_VNC_DISPLAY_NUMBER=1
-		export USER="$(whoami)"
-		export HOME="${HOME}"
-		export PULSE_SERVER=127.0.0.1
-		if [ ! -e "${HOME}/.vnc/xstartup" ]; then
-			sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
-		fi
-		if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-			. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
-		fi
-		if [ ${HOME} != '/root' ]; then
-		CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-		CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
-		if [ -z "${CURRENT_USER_GROUP}" ]; then
-		   CURRENT_USER_GROUP=${CURRENT_USER_NAME}
-		fi
-		CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l ${HOME}/.vnc/passwd | awk -F ' ' '{print $3}')
-		if [ "${CURRENT_USER_VNC_FILE_PERMISSION}" != "${CURRENT_USER_NAME}" ];then
-		   echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-		   cd ${HOME}
-		   sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc"
-		fi
-		fi
-		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-		echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
-        TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
-        echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${CURRENT_VNC_PORT}@"
-		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-		if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		    TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-		    export LANG="${TMOE_LANG}"
-		else
-		    export LANG="en_US.UTF-8"
-		fi
-        case ${TMOE_CHROOT} in
-        true)
-        if [ ! -e "/run/dbus/pid" ]; then
-            if [ $(command -v sudo) ]; then
-                sudo dbus-daemon --system --fork 2>/dev/null
-            else
-                su -c "dbus-daemon --system --fork 2>/dev/null"
-            fi
-        fi
-        ;;
-        esac
-        if [ $(command -v vncsession) ]; then
-            vncsession $(whoami) :${TMOE_VNC_DISPLAY_NUMBER}
-            exit 0
-        elif [ $(command -v Xvnc) ]; then
-                . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
-                unset "${@}"
-                set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
-                set -- "${@}" "-alwaysshared"
-                set -- "${@}" "-geometry" "${geometry}"
-                set -- "${@}" "-desktop" "${desktop}"
-                set -- "${@}" "-once"
-                set -- "${@}" "-depth" "24"
-                set -- "${@}" "-deferglyphs" "16"
-                set -- "${@}" "-rfbauth" "${HOME}/.vnc/passwd"
-                set -- "Xvnc" "$@"
-                exec "$@" &
-                export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
-                . /etc/X11/xinit/Xsession &>/dev/null &
-                exit 0
-                #set -- "${@}" "-ZlibLevel=9"
-        fi
-        #最后一行命令已废弃，仅作兼容性测试，直接修改其参数值可能不会生效。
-        #20200912注:tigervnc-1.11.0-2及其之后的版本，可能无法使用旧版命令。
-        vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
-	EndOfFile
-    ##############
-    #echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
-    #############
-    cat >stopvnc <<-'EndOfFile'
-		#!/usr/bin/env bash
-		export USER="$(whoami)"
-		export HOME="${HOME}"
-		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-		vncserver -kill :${CURRENT_PORT} 2>/dev/null
-		rm -vf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
-		rm -vf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
-        case ${TMOE_CHROOT} in
-        true)
-            if [ $(command -v sudo) ]; then
-                sudo rm -f /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
-            else
-                su -c "rm -f /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
-            fi
-        ;;
-        esac
-		pkill Xtightvnc
-        pkill Xvnc
-		stopx11vnc 2>/dev/null
-	EndOfFile
+    #rm -f startvnc
+    cp -f ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ./
 }
 ###############
 fix_non_root_permissions() {

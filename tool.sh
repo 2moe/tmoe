@@ -707,7 +707,8 @@ tmoe_linux_tool_upgrade() {
 	else
 		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 	fi
-	chmod +x /usr/local/bin/debian-i
+	#chmod +x /usr/local/bin/debian-i
+	chmod 777 /usr/local/bin/debian-i
 	check_tmoe_git_folder
 	cd ${TMOE_GIT_DIR}
 	git reset --hard origin/master

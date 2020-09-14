@@ -154,7 +154,7 @@ if [ ! $(command -v debian-i) ]; then
         wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
     fi
 fi
-chmod +x /usr/local/bin/debian-i
+chmod 777 /usr/local/bin/debian-i
 #########################
 mkdir -p /run/dbus
 rm -rf ${HOME}/.oh-my-zsh
@@ -359,8 +359,16 @@ cat >~/.zlogin <<-'EndOfFile'
 	    ;;
 	esac
     cd ${HOME}
-	###########
+    #############
 	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+    ###########
+    case ${TMOE_CHROOT} in
+    true)
+        rm -f /run/dbus/pid 2>/dev/null
+        dbus-daemon --system --fork 2>/dev/null
+        ;;
+    esac
+    ###########
 	systemctl(){
 	    case $2 in
 	        "") systemctl $1 ;;
