@@ -48,7 +48,7 @@ explore_debian_opt_repo() {
 }
 #################
 debian_opt_menu() {
-    
+
     RETURN_TO_WHERE='debian_opt_menu'
     RETURN_TO_MENU='debian_opt_menu'
     DEPENDENCY_02=""
@@ -844,7 +844,7 @@ install_electron_petal() {
 ############
 remove_debian_opt_repo() {
     non_debian_function
-    rm -vf ${OPT_REPO_LIST}
+    rm -vf ${OPT_REPO_LIST} /etc/apt/trusted.gpg.d/bintray-public.key.asc
     apt update
 }
 ##########
