@@ -1067,11 +1067,12 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
+    echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+    do_you_want_to_continue
 }
 ##########
 install_xfce4_desktop() {
     xfce_warning
-    echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
     DEPENDENCY_01="xfce4"
