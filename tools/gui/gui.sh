@@ -1023,7 +1023,41 @@ xfce4_color_scheme() {
     fi
 }
 ##################
+xfce_warning() {
+    ICON_URL='https://gitee.com/ak2/icons/raw/master/xfce4.jpg'
+    ICON_FILE_NAME='xfce4.jpg'
+    download_and_cat_icon_img
+    cat <<-'ENDofTable'
+    xfce4桌面支持表格 
+    以下数据仅代表tmoe-linux tool所安装的xfce，您可自行编译源代码，并修复bug。
+  ╔═══╦════════════╦════════╦════════╦═════════╦
+  ║   ║vnc/xserver ║        ║        ║         ║
+  ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
+  ║   ║System      ║        ║        ║         ║
+  ║---║------------║--------║--------║---------║
+  ║ 1 ║ Debian,Kali║  ✓     ║    ✓   ║   ✓     ║
+  ║   ║ Ubuntu     ║        ║        ║         ║
+  ║---║------------║--------║--------║---------║
+  ║   ║Fedora      ║        ║        ║         ║
+  ║ 2 ║CentOS      ║  ✓     ║   ✓    ║   ✓     ║
+  ║---║------------║--------║--------║---------║
+  ║   ║ArchLinux   ║        ║        ║         ║
+  ║ 3 ║Manjaro     ║   ✓    ║    ✓   ║    ✓    ║
+  ║---║------------║--------║--------║---------║
+  ║   ║ Alpine     ║        ║        ║         ║
+  ║ 4 ║            ║  ✓     ║   X    ║   ✓     ║ 
+  ║---║------------║--------║--------║---------║
+  ║   ║  Void      ║        ║        ║         ║
+  ║ 5 ║            ║  ?     ║   ✓    ║   ✓     ║ 
+  ║---║------------║--------║--------║---------║
+  ║   ║OpenSUSE    ║        ║        ║         ║
+  ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
+
+ENDofTable
+}
+##########
 install_xfce4_desktop() {
+    xfce_warning
     echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
@@ -1410,6 +1444,33 @@ install_lxqt_desktop() {
 }
 ####################
 kde_warning() {
+    ICON_URL='https://gitee.com/ak2/icons/raw/master/plasma5.jpg'
+    ICON_FILE_NAME='plasma5.jpg'
+    download_and_cat_icon_img
+    cat <<-'ENDofTable'
+    KDE plasma 5桌面支持表格
+    以下数据不适用于proot容器
+  ╔═══╦════════════╦════════╦════════╦═════════╦
+  ║   ║vnc/xserver ║        ║        ║         ║
+  ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
+  ║   ║System      ║        ║        ║         ║
+  ║---║------------║--------║--------║---------║
+  ║ 1 ║Debian sid  ║  ✓     ║    ✓   ║   ?     ║
+  ║   ║            ║        ║        ║         ║
+  ║---║------------║--------║--------║---------║
+  ║   ║Ubuntu 20.10║        ║        ║         ║
+  ║ 2 ║ 20.04      ║  ✓     ║   ✓    ║   ?     ║
+  ║---║------------║--------║--------║---------║
+  ║   ║            ║        ║        ║         ║
+  ║ 3 ║ArchLinux   ║   ✓    ║    ✓   ║   ✓     ║
+  ║---║------------║--------║--------║---------║
+  ║   ║            ║        ║        ║         ║
+  ║ 4 ║Manjaro     ║  ✓     ║   ✓    ║   ?     ║
+  ║---║------------║--------║--------║---------║
+  ║   ║            ║        ║        ║         ║
+  ║ 5 ║Fedora      ║  ✓     ║   ✓    ║   ?     ║
+ENDofTable
+
     case "${TMOE_PROOT}" in
     true | no)
         echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！"
@@ -1704,12 +1765,7 @@ deepin_desktop_debian() {
 dde_warning() {
     ICON_URL='https://gitee.com/ak2/icons/raw/master/deepin.jpg'
     ICON_FILE_NAME='deepin.jpg'
-    if [ ! -e "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" ]; then
-        aria2c -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
-    fi
-    if [ $(command -v catimg) ]; then
-        catimg "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" 2>/dev/null
-    fi
+    download_and_cat_icon_img
 
     cat <<-'ENDofTable'
     Deepin桌面支持表格
@@ -1736,7 +1792,6 @@ dde_warning() {
   ║---║------------║--------║--------║---------║
   ║   ║ArchLinux   ║        ║        ║         ║ 
   ║ 4 ║ amd64      ║  ✓     ║   ✓    ║   ？    ║ 
-  ║---║------------║--------║--------║---------║
 ENDofTable
 
     cat <<-EOF

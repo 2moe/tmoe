@@ -1457,4 +1457,14 @@ this_app_may_non_support_running_on_proot() {
     esac
 }
 #############
+download_and_cat_icon_img() {
+    if [ ! -e "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" ]; then
+        mkdir -p ${TMOE_ICON_DIR}
+        aria2c -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
+    fi
+    if [ $(command -v catimg) ]; then
+        catimg "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" 2>/dev/null
+    fi
+}
+###########
 gnu_linux_env_02
