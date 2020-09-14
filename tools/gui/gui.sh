@@ -4235,11 +4235,14 @@ xfce4_tightvnc_hidpi_settings() {
 xfce4_x11vnc_hidpi_settings() {
     case ${TMOE_HIGH_DPI} in
     true | false)
-        if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
-            #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
-            sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null
-            #startx11vnc >/dev/null 2>&1
-        fi
+        #if [ "${REMOTE_DESKTOP_SESSION_01}" = 'xfce4-session' ]; then
+        #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
+        case ${RESOLUTION} in
+        "") ;;
+        *) sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null ;;
+        esac
+        #startx11vnc >/dev/null 2>&1
+        #fi
         ;;
     esac
 }
