@@ -14,6 +14,7 @@ gnu_linux_env_02() {
     OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt.list'
     ELECTRON_MIRROR_STATION='https://mirrors.huaweicloud.com/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
+    XSESSION_FILE='/etc/X11/xinit/Xsession'
 }
 ########################
 uncompress_theme_file() {

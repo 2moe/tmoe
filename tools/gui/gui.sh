@@ -27,7 +27,7 @@ modify_other_vnc_conf() {
         "1" "Pulse server address音频地址" \
         "2" "VNC password密码" \
         "3" "switch tiger/tightvnc切换服务端" \
-        "4" "Edit xstartup 编辑xstartup" \
+        "4" "Edit xsession 编辑xsession" \
         "5" "Edit startvnc 编辑vnc启动脚本" \
         "6" "Edit tigervnc-config 编辑tigervnc配置" \
         "7" "fix vnc crash修复VNC闪退" \
@@ -42,7 +42,7 @@ modify_other_vnc_conf() {
     2) set_vnc_passwd ;;
     3) switch_tight_or_tiger_vncserver ;;
     4)
-        nano ~/.vnc/xstartup
+        nano ${XSESSION_FILE}
         stopvnc 2>/dev/null
         ;;
     5) nano_startvnc_manually ;;
@@ -837,7 +837,6 @@ configure_vnc_xstartup() {
     cd ${HOME}/.vnc
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
     mkdir -p /etc/X11/xinit /etc/tigervnc
-    XSESSION_FILE='/etc/X11/xinit/Xsession'
     rm -f ${XSESSION_FILE}
     cat >${XSESSION_FILE} <<-EndOfFile
 		#!/usr/bin/env bash
@@ -857,7 +856,7 @@ configure_vnc_xstartup() {
     #dbus-launch startxfce4 &
     #chmod +x ./xstartup
     rm ./xstartup
-    ln -sf ${XSESSION_FILE} ./xstartup
+    ln -svf ${XSESSION_FILE} ./xstartup
     congigure_xvnc
     first_configure_startvnc
 }
@@ -3916,7 +3915,7 @@ configure_startxsdl() {
     #debian禁用dbus分两次，并非重复
     if [ "${NON_DBUS}" = "true" ]; then
         case "${TMOE_PROOT}" in
-        true | no) sed -i 's:dbus-launch --exit-with-session::' startxsdl ~/.vnc/xstartup ;;
+        true | no) sed -i 's:dbus-launch --exit-with-session::' startxsdl ${XSESSION_FILE} ;;
         esac
     fi
 }
@@ -3970,7 +3969,7 @@ first_configure_startvnc() {
     configure_startxsdl
     chmod +x startvnc stopvnc startxsdl
     if [ "${LINUX_DISTRO}" != "debian" ]; then
-        sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl
+        sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl
     else
         if ! grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
             which_vnc_server_do_you_prefer
@@ -4269,9 +4268,9 @@ xfce4_x11vnc_hidpi_settings() {
 }
 ####################
 enable_dbus_launch() {
-    XSTARTUP_LINE=$(cat -n ~/.vnc/xstartup | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+    XSTARTUP_LINE=$(cat -n ${XSESSION_FILE} | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
     #sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" ~/.vnc/xstartup
-    sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ~/.vnc/xstartup
+    sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
     #################
     START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
     sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
@@ -4280,10 +4279,10 @@ enable_dbus_launch() {
     sed -i "${START_XSDL_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
     #################
     sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02} \&/" "/usr/local/bin/startx11vnc"
-    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" ~/.vnc/xstartup
+    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" ${XSESSION_FILE}
     sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
     if [ "${LINUX_DISTRO}" != "debian" ]; then
-        sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+        sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
     fi
 }
 #################
@@ -4300,7 +4299,7 @@ fix_vnc_dbus_launch() {
     esac
     do_you_want_to_continue
 
-    if grep 'dbus-launch' ~/.vnc/xstartup; then
+    if grep 'dbus-launch' ${XSESSION_FILE}; then
         DBUSstatus="$(echo 检测到dbus-launch当前在VNC脚本中处于启用状态)"
     else
         DBUSstatus="$(echo 检测到dbus-launch当前在vnc脚本中处于禁用状态)"
@@ -4310,39 +4309,39 @@ fix_vnc_dbus_launch() {
         #if [ "${LINUX_DISTRO}" = "debian" ]; then
         #	sed -i 's:dbus-launch --exit-with-session::' "/usr/local/bin/startxsdl" "${HOME}/.vnc/xstartup" "/usr/local/bin/startx11vnc"
         #else
-        sed -i 's@--exit-with-session@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+        sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
         #fi
-        sed -i 's@dbus-launch@@' ~/.vnc/xstartup /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
+        sed -i 's@dbus-launch@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
     else
-        if grep 'startxfce4' ~/.vnc/xstartup; then
+        if grep 'startxfce4' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_02='startxfce4'
             REMOTE_DESKTOP_SESSION_01='xfce4-session'
-        elif grep 'startlxde' ~/.vnc/xstartup; then
+        elif grep 'startlxde' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为lxde，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_02='startlxde'
             REMOTE_DESKTOP_SESSION_01='lxsession'
-        elif grep 'startlxqt' ~/.vnc/xstartup; then
+        elif grep 'startlxqt' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startlxqt'
             REMOTE_DESKTOP_SESSION_02='lxqt-session'
-        elif grep 'mate-session' ~/.vnc/xstartup; then
+        elif grep 'mate-session' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为mate，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='mate-session'
             REMOTE_DESKTOP_SESSION_02='x-windows-manager'
-        elif grep 'startplasma' ~/.vnc/xstartup; then
+        elif grep 'startplasma' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为KDE Plasma5，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startkde'
             REMOTE_DESKTOP_SESSION_02='startplasma-x11'
-        elif grep 'gnome-session' ~/.vnc/xstartup; then
+        elif grep 'gnome-session' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为GNOME3，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='gnome-session'
             REMOTE_DESKTOP_SESSION_02='x-windows-manager'
-        elif grep 'cinnamon' ~/.vnc/xstartup; then
+        elif grep 'cinnamon' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为cinnamon，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='cinnamon-session'
             REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
-        elif grep 'startdde' ~/.vnc/xstartup; then
+        elif grep 'startdde' ${XSESSION_FILE}; then
             echo "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startdde'
             REMOTE_DESKTOP_SESSION_02='dde-launcher'
@@ -4354,7 +4353,7 @@ fix_vnc_dbus_launch() {
 
     echo "${YELLOW}修改完成，按回车键返回${RESET}"
     echo "若无法修复，则请前往gitee.com/mo2/linux提交issue，并附上报错截图和详细说明。"
-    echo "还建议您附上cat /usr/local/bin/startxsdl 和 cat ~/.vnc/xstartup 的启动脚本截图"
+    echo "还建议您附上cat /usr/local/bin/startxsdl 和 cat ${XSESSION_FILE} 的启动脚本截图"
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
