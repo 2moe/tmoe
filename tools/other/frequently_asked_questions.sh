@@ -87,14 +87,14 @@ notes_of_tmoe_sudo_01() {
     echo "#创建一个用户名为moe的新用户"
     echo "${YELLOW}adduser moe${RESET}"
     echo "#输入的密码是隐藏的，根据提示创建完成后，您可以在本工具内将该用户加入sudo用户组"
-    #echo "#将mo2加入到sudo用户组"
-    #echo "${YELLOW}adduser mo2 sudo${RESET}"
+    #echo "#将moe加入到sudo用户组"
+    #echo "${YELLOW}adduser moe sudo${RESET}"
     echo "之后，若需要提权，则只需输sudo 命令"
     echo "例如${YELLOW}sudo apt update${RESET}"
     echo "--------------------"
     echo "切换用户的说明"
     echo "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
-    echo "亦可输${YELLOW}su - moe${RESET}或${YELLOW}sudo -iu moe${RESET}切换回mo2用户"
+    echo "亦可输${YELLOW}su - moe${RESET}或${YELLOW}sudo -iu moe${RESET}切换回moe用户"
     echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
     echo '--------------------'
     echo 'arch系创建新用户的命令为useradd -m miku'
