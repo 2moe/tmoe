@@ -69,8 +69,10 @@ display_vnc_ip_addr() {
     CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
     echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
-    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
-    echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${CURRENT_VNC_PORT}@"
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
+    cat <<-EOF
+The LAN VNC address 局域网地址${TMOE_IP_ADDR}
+EOF
 }
 ############
 start_tmoe_xvnc() {
