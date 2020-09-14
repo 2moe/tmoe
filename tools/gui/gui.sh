@@ -181,23 +181,36 @@ install_gui() {
     fi
     random_neko
     cd /tmp
+    case ${WINDOWSDISTRO} in
+    WSL)
+        LXDE_ICON_URL='https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
+        MATE_ICON_URL='https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
+        XFCE_ICON_URL='https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
+        ;;
+    *)
+        LXDE_ICON_URL='https://gitee.com/ak2/icons/raw/master/raspbian-lxde.jpg'
+        MATE_ICON_URL='https://gitee.com/ak2/icons/raw/master/ubuntu-mate.jpg'
+        XFCE_ICON_URL='https://gitee.com/ak2/icons/raw/master/debian-xfce.jpg'
+        ;;
+    esac
+
     echo 'lxde预览截图'
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
     if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
-        curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
+        curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' ${LXDE_ICON_URL}
     fi
     catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
 
     echo 'mate预览截图'
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
     if [ ! -f 'MATE_1frRp1lpOXLPz6mO.jpg' ]; then
-        curl -sLo 'MATE_1frRp1lpOXLPz6mO.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
+        curl -sLo 'MATE_1frRp1lpOXLPz6mO.jpg' ${MATE_ICON_URL}
     fi
     catimg 'MATE_1frRp1lpOXLPz6mO.jpg'
     echo 'xfce预览截图'
 
     if [ ! -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' ]; then
-        curl -sLo 'XFCE_a7IQ9NnfgPckuqRt.jpg' 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg'
+        curl -sLo 'XFCE_a7IQ9NnfgPckuqRt.jpg' ${XFCE_ICON_URL}
     fi
     catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
     if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
