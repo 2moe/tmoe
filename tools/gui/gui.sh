@@ -1675,7 +1675,7 @@ ubuntu_dde_distro_code() {
     aria2c --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache 'http://ppa.launchpad.net/ubuntudde-dev/stable/ubuntu/dists/'
     TARGET_CODE=$(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | tail -n 1 | cut -d '=' -f 5 | cut -d '/' -f 1 | cut -d '"' -f 2)
     if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
-        if [ $(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | grep "${SOURCELISTCODE}") ]; then
+        if [ "$(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | grep "${SOURCELISTCODE}")" ]; then
             TARGET_CODE=${SOURCELISTCODE}
         fi
     fi
