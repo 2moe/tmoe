@@ -21,8 +21,8 @@ tmoe_docker_init() {
 }
 ################
 run_docker_container_with_same_architecture() {
-    echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
-    docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+    echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+    docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
 }
 ##########
 run_special_tag_docker_container() {
@@ -39,8 +39,8 @@ run_special_tag_docker_container() {
         #    QEMU_USER_PATH="${QEMU_USER_STATIC_PATH_02}"
         #fi
 
-        echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
-        docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+        echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+        docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
         ;;
     esac
 
@@ -664,7 +664,7 @@ EOF
 }
 ############
 tmoe_qemu_user_static() {
-    
+
     RETURN_TO_WHERE='tmoe_qemu_user_static'
     BETA_SYSTEM=$(
         whiptail --title "qemu_user_static" --menu "You can use qemu-user-static to run docker containers across architectures." 0 50 0 \
@@ -941,7 +941,7 @@ install_docker_io() {
 }
 ###########
 install_docker_ce() {
-    
+
     if [ ! $(command -v gpg) ]; then
         DEPENDENCY_01=""
         DEPENDENCY_02="gpg"

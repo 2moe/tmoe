@@ -1,20 +1,21 @@
 frequently_asked_questions() {
     RETURN_TO_WHERE='frequently_asked_questions'
     DEPENDENCY_01=''
-    
+
     #17 50 7
     TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
         "您有哪些疑问？\nWhat questions do you have?" 0 0 0 \
         "1" "软件禁止以root权限运行" \
         "2" "android chroot无法执行ping命令" \
         "3" "修复xfce配置文件无法写入" \
-        "4" "udisks2/gvfs配置失败" \
-        "5" "linuxQQ闪退" \
-        "6" "VNC/X11闪退" \
-        "7" "无法打开Baidu Netdisk" \
-        "8" "mlocate数据库初始化失败" \
-        "9" "TTY下中文字体乱码" \
-        "10" "Linux与win10双系统时间不一致" \
+        "4" "无法连接至设置服务/电量信息为空" \
+        "5" "udisks2/gvfs配置失败" \
+        "6" "linuxQQ闪退" \
+        "7" "VNC/X11闪退" \
+        "8" "无法打开Baidu Netdisk" \
+        "9" "mlocate数据库初始化失败" \
+        "10" "TTY下中文字体乱码" \
+        "11" "Linux与win10双系统时间不一致" \
         "0" "Back to the main menu 返回主菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -33,35 +34,44 @@ frequently_asked_questions() {
         chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4
         ;;
     4)
+        echo "无法监控电池信息与dbus有关。"
+        echo "请注意,proot容器可能无权启动dbus-daemon --system,请跳过本题。"
+        echo "无法连接至设置服务同样跟dbus有关，请选择FAQ中的vnc/x11闪退选项。"
+        echo "仅当TMOE_CHROOT变量的值为true时，即您使用的是tmoe-manager安装的chroot/docker容器，dbus-daemon才会自动启动。"
+        echo "若您使用的非tmoe-linux容器，则需要手动启动。"
+        echo "启动命令为sudo dbus-daemon --system --fork"
+        echo "您可以输入rm /run/dbus/pid来删除pid文件。"
+        ;;
+    5)
         echo "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} --allow-change-held-packages ^udisks2 ^gvfs
         ;;
-    5)
+    6)
         echo "如果版本更新后登录出现闪退的情况，那么您可以输rm -rf ~/.config/tencent-qq/ 后重新登录。"
         echo "${YELLOW}按回车键自动执行上述命令${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         rm -rvf ~/.config/tencent-qq/
         ;;
-    6)
+    7)
         fix_vnc_dbus_launch
         ;;
-    7)
+    8)
         can_not_open_baidu_netdisk
         ;;
-    8)
+    9)
         echo "您是否需要卸载mlocate和catfish"
         echo "Do you want to remove mlocate and catfish?"
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} mlocate catfish
         apt autopurge 2>/dev/null
         ;;
-    9)
+    10)
         tty_chinese_code
         ;;
-    10)
+    11)
         fix_linux_utc_timezone
         ;;
     esac
