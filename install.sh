@@ -1013,8 +1013,11 @@ creat_proot_startup_script() {
 		        if [ -e "/system" ]; then
 		            set -- "--mount=/system" "\$@"
 		        fi
-		        if [ -h "${HOME}/storage/external-1" ]; then
-		            set -- "--mount=${HOME}/storage/external-1:/root/tf" "\$@"
+				TF_CARD_LINK="${HOME}/storage/external-1"
+		        if [ -h "\${TF_CARD_LINK}" ]; then
+					TRUE_TF_CARD=\$(readlink \${TF_CARD_LINK})
+					if [ -e "\${TRUE_TF_CARD}" ]
+		            set -- "--mount=\${TRUE_TF_CARD}:/root/tf" "\$@"
 		        fi
 				if [ -e "/storage" ]; then
 		            set -- "--mount=/storage" "\$@"
