@@ -1702,6 +1702,15 @@ deepin_desktop_debian() {
 }
 ###################
 dde_warning() {
+    ICON_URL='https://gitee.com/ak2/icons/raw/master/deepin.jpg'
+    ICON_FILE_NAME='deepin.jpg'
+    if [ ! -e "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" ]; then
+        aria2c -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
+    fi
+    if [ $(command -v catimg) ]; then
+        catimg "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" 2>/dev/null
+    fi
+
     cat <<-'ENDofTable'
     Deepin桌面支持表格
 
