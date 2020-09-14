@@ -70,6 +70,7 @@ stop_dbus_daemon() {
 pkill_vnc() {
     pkill -9 Xtightvnc
     pkill -9 Xvnc
+    pkill -9 vncsession
 }
 #############
 vnc_server_has_been_stopped() {
