@@ -323,6 +323,7 @@ tmoe_docker_and_chroot_container_desktop() {
         "1" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
         "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
         "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
+        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -331,6 +332,7 @@ tmoe_docker_and_chroot_container_desktop() {
     1) install_lxqt_desktop ;;
     2) install_kde_plasma5_desktop ;;
     3) install_deepin_desktop ;;
+    4) install_ukui_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -812,7 +814,6 @@ tmoe_virtual_machine_desktop() {
         "1" "👣 gnome3(GNU网络对象模型环境)" \
         "2" "🌲 cinnamon(肉桂基于gnome3,对用户友好)" \
         "3" "🦜 budgie(虎皮鹦鹉基于gnome3,优雅且现代化)" \
-        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -821,7 +822,6 @@ tmoe_virtual_machine_desktop() {
     1) install_gnome3_desktop ;;
     2) install_cinnamon_desktop ;;
     3) install_budgie_desktop ;;
-    4) install_ukui_desktop ;;
     esac
     ##################
     press_enter_to_return
@@ -1485,7 +1485,7 @@ tmoe_desktop_warning() {
 install_ukui_desktop() {
     tmoe_desktop_warning
     REMOTE_DESKTOP_SESSION_01='ukui-session'
-    REMOTE_DESKTOP_SESSION_02='ukui-session-manager'
+    REMOTE_DESKTOP_SESSION_02='ukui-panel'
     DEPENDENCY_01="ukui-session-manager"
     echo '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1702,14 +1702,43 @@ deepin_desktop_debian() {
 }
 ###################
 dde_warning() {
-    case {LINUX_DISTRO} in
-    debian)
-        echo "本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。"
-        echo "非新版的Ubuntu LTS系统可能存在依赖关系问题。"
-        echo "若您需要在arm64容器环境中运行，则建议您换用fedora。"
-        echo "若您需要在x64容器环境中运行，则建议您换用arch。"
-        ;;
-    esac
+    cat <<-'ENDofTable'
+    Deepin桌面支持表格
+
+    1.因proot无权启动dbus-daemon --system,故不支持proot容器。
+    2.已测试过的系统：
+    ubuntu 20.04和fedora32 arm64 chroot容器(宿主Android)
+    archlinux amd64 qemu虚拟机(宿主Debian)+chroot容器(宿主WSL)
+    3.本表格有效期截至2020年9月中旬,仅供参考，后期会发生变更。
+    4.以下数据仅代表tmoe-linux tool所安装的dde，您可自行编译源代码，并修复bug。
+  ╔═══╦════════════╦════════╦════════╦═════════╦
+  ║   ║vnc/xserver ║        ║        ║         ║
+  ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
+  ║   ║System      ║        ║        ║         ║
+  ║---║------------║--------║--------║---------║
+  ║ 1 ║ Ubuntu     ║  ✓     ║    X   ║   ✓     ║ 
+  ║   ║ 20.04 LTS  ║        ║        ║         ║
+  ║---║------------║--------║--------║---------║
+  ║   ║Fedora      ║        ║        ║         ║ 
+  ║ 2 ║ 32         ║  ✓     ║   ✓    ║   ？    ║
+  ║---║------------║--------║--------║---------║
+  ║   ║ArchLinux   ║        ║        ║         ║ 
+  ║ 3 ║ arm64      ║   X    ║    X   ║    X    ║
+  ║---║------------║--------║--------║---------║
+  ║   ║ArchLinux   ║        ║        ║         ║ 
+  ║ 4 ║ amd64      ║  ✓     ║   ✓    ║   ？    ║ 
+  ║---║------------║--------║--------║---------║
+ENDofTable
+
+    cat <<-EOF
+    对于deb系的发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。
+    您可以使用新版的Ubuntu LTS系统来安装DDE，旧版系统可能存在依赖关系问题。
+    过新的系统亦存在此问题,例如debian sid。
+    而对于其他系发行版，请尽量选择最新的发行版。
+    例如红帽系,请选fedora,勿选centos。
+    若您需要在arm64容器环境中运行,则建议您使用ubuntu LTS或最新版fedora。
+    若您需要在x64容器环境中运行，则建议您使用arch。
+EOF
 
     case "${TMOE_PROOT}" in
     true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用fedora chroot容器进行安装。" ;;
@@ -1735,7 +1764,7 @@ install_deepin_desktop() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         deepin_desktop_debian
         #DEPENDENCY_01="dde"
-        DEPENDENCY_01="ubuntudde-dde"
+        DEPENDENCY_01="ubuntudde-dde deepin-terminal"
 
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='deepin-desktop'
