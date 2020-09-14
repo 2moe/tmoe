@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-stopvnc >/dev/null 2>&1
+stopvnc -no-stop-dbus 2>/dev/null
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4713
 echo '正在为您启动xsdl,请将display number改为0'

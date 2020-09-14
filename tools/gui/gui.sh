@@ -868,7 +868,7 @@ configure_x11vnc_remote_desktop_session() {
     rm -f startx11vnc
     cat >startx11vnc <<-ENDOFTTMOEX11VNC
 #!/usr/bin/env bash
-stopvnc 2>/dev/null
+stopvnc -no-stop-dbus 2>/dev/null
 #stopx11vnc
 export PULSE_SERVER=127.0.0.1
 export DISPLAY=:233
