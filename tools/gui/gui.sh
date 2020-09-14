@@ -4186,9 +4186,9 @@ configure_startvnc() {
 		export USER="$(whoami)"
 		export HOME="${HOME}"
 		CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-		vncserver -kill :${CURRENT_PORT}
-		rm -rf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
-		rm -rf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
+		vncserver -kill :${CURRENT_PORT} 2>/dev/null
+		rm -vf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
+		rm -vf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
         case ${TMOE_CHROOT} in
         true)
             if [ $(command -v sudo) ]; then

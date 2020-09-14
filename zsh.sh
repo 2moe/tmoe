@@ -156,6 +156,7 @@ if [ ! $(command -v debian-i) ]; then
 fi
 chmod +x /usr/local/bin/debian-i
 #########################
+mkdir -p /run/dbus
 rm -rf ${HOME}/.oh-my-zsh
 echo "github.com/ohmyzsh/ohmyzsh"
 git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh || git clone --depth=1 git://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
