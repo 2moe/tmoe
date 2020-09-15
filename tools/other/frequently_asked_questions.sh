@@ -34,9 +34,9 @@ frequently_asked_questions() {
         chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4
         ;;
     4)
-        echo "无法监控电池信息与dbus有关。"
+        echo "无法连接至设置服务跟dbus有关，请选择FAQ中的vnc/x11闪退选项。"
+        echo "无法监控电池信息同样与dbus有关。"
         echo "请注意,proot容器可能无权启动dbus-daemon --system,请跳过本题。"
-        echo "无法连接至设置服务同样跟dbus有关，请选择FAQ中的vnc/x11闪退选项。"
         echo "仅当TMOE_CHROOT变量的值为true时，即您使用的是tmoe-manager安装的chroot/docker容器，dbus-daemon才会自动启动。"
         echo "若您使用的非tmoe-linux容器，则需要手动启动。"
         echo "启动命令为sudo dbus-daemon --system --fork"
