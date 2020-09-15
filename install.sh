@@ -1802,7 +1802,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	true)
 		for i in sd tf; do
 			if [ -e "/root/${i}" ] && [ ! -e "/${i}" ]; then
-				ln -s /root/${i} /${i}
+				ln -s ./root/${i} /${i}
 			fi
 		done
 		unset i
