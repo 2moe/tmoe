@@ -676,7 +676,7 @@ cat_tmoe_chroot_script() {
 		    }
 		    ############
 		    for i in tf termux sd; do
-		        if ! detect_mount "${DEBIAN_CHROOT}/root/\${i}"; then
+		        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then
 		            case \${i} in
 		            tf)
 		                TF_CARD_LINK="${HOME}/storage/external-1"
