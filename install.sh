@@ -2123,12 +2123,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	#############################################
 	fix_gnu_libxcb_debian(){
-	GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1"
+	#cd /usr/lib/$(uname -m)-linux-gnu
+	#GNU_LIBXCB="$(readlink libxcb.so.1)"
+	GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0"
 	if [ -e "${GNU_LIBXCB}" ]; then
 		TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	    mkdir -p ${TMOE_LINUX_DIR}
 		cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}
-	    sed -i 's@BIG-REQUESTS@_IG-REQUESTS@g' ${GNU_LIBXCB}
+	    sed -i 's@BIG-REQUESTS@_IG-REQUESTS@' ${GNU_LIBXCB}
 	fi
 	}    
 	####################
