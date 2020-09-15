@@ -77,7 +77,6 @@ EOF
 ############
 start_tmoe_xvnc() {
     . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
-    unset "${@}"
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "${@}" "-alwaysshared"
     set -- "${@}" "-geometry" "${geometry}"

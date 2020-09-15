@@ -15,7 +15,6 @@ start_windows_10_pulse_audio_server() {
 }
 #####################
 start_tmoe_x11vnc() {
-    unset "${@}"
     set -- "${@}" "-ncache_cr"
     set -- "${@}" "-xkb"
     set -- "${@}" "-noxrecord"
@@ -56,7 +55,6 @@ source_tmoe_dbus_daemon() {
 }
 ###########
 start_tmoe_xvfb() {
-    unset "${@}"
     set -- "${@}" "${DISPLAY}"
     set -- "${@}" "-screen" "0" "${TMOE_X11_RESOLUTION}x24"
     set -- "${@}" "-ac"
