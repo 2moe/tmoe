@@ -1798,6 +1798,17 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    arch_linux_yay
 	fi
 	#######################
+	case ${TMOE_PROOT} in
+	true)
+		for i in sd tf; do
+			if [ -e "/root/${i}" ] && [ ! -e "/${i}" ]; then
+				ln -s /root/${i} /${i}
+			fi
+		done
+		unset i
+		;;
+	esac
+	##############
 	alpine_linux_configure() {
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
 		    echo "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
