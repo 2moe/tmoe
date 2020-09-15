@@ -374,7 +374,7 @@ cat >~/.zlogin <<-'EndOfFile'
 		true) echo "Running in proot, ignoring request." ;;
 		esac
 		case "${#}" in
-		0) /usr/bin/systemctl ;;
+		0) /bin/systemctl ;;
 		2)
 			echo service $2 $1
 			if [ -e "/usr/sbin/service" ]; then
@@ -382,11 +382,11 @@ cat >~/.zlogin <<-'EndOfFile'
 			elif [ -e "/sbin/service" ]; then
 				/sbin/service $2 $1
 			else
-				/usr/bin/systemctl $1 $2
+				/bin/systemctl $1 $2
 			fi
 			;;
 		*)
-			set -- "/usr/bin/systemctl" "${@}"
+			set -- "/bin/systemctl" "${@}"
 			"${@}"
 			;;
 		esac
