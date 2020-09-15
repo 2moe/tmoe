@@ -52,6 +52,14 @@ tmoe_manager_env() {
 	check_tmoe_container_chroot
 }
 #######
+check_sudo() {
+	if [ $(command -v sudo) ]; then
+		TMOE_PREFIX='sudo'
+	elif [ $(command -v tsudo) ]; then
+		TMOE_PREFIX='tsudo'
+	fi
+}
+##########
 check_tmoe_container_chroot() {
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		TMOE_CHROOT='true'
@@ -59,13 +67,7 @@ check_tmoe_container_chroot() {
 		TMOE_CHROOT='true'
 	fi
 	case ${TMOE_CHROOT} in
-	true)
-		if [ $(command -v sudo) ]; then
-			TMOE_PREFIX='sudo'
-		elif [ $(command -v tsudo) ]; then
-			TMOE_PREFIX='tsudo'
-		fi
-		;;
+	true) check_sudo ;;
 	*) TMOE_PREFIX='' ;;
 	esac
 }
@@ -2001,7 +2003,10 @@ uncompress_tar_file() {
 	fi
 
 	case ${RESTORE} in
-	*chroot-rootfs_bak.*) ;;
+	*chroot-rootfs_bak.*)
+		TMOE_CHROOT='true'
+		check_sudo
+		;;
 	*) TMOE_PREFIX='' ;;
 	esac
 	case "${RESTORE:0-6:6}" in
@@ -2015,9 +2020,14 @@ uncompress_tar_file() {
 		uncompress_other_format_file
 		;;
 	esac
-	if [ -e "${PREFIX}/bin/debian" ]; then
-		check_proot_proc_permissions
-	fi
+	case ${TMOE_CHROOT} in
+	true) ;;
+	*)
+		if [ -e "${PREFIX}/bin/debian" ]; then
+			check_proot_proc_permissions
+		fi
+		;;
+	esac
 	check_tmoe_container_chroot
 	press_enter_to_return
 	restore_gnu_linux_container
