@@ -683,27 +683,26 @@ cat_tmoe_chroot_script() {
 		                if [ -h "\${TF_CARD_LINK}" ]; then
 		                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
 		                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
-		                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
 		                    else
-		                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
 		                    fi
 		                fi
 		                ;;
 		            #######
 		            termux)
 		                if [ -d "/data/data/com.termux/files/home" ]; then
-		                    su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                    su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
 		                fi
 		                ;;
 		            ###########
 		            sd)
 		                if [ "\$(su -c "ls /data/media/0" 2>/dev/null)" ]; then
-		                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
-		                    #su -c "mount -o bind /data/media/0/Download ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
 		                elif [ -e "/storage/self/primary" ]; then
-		                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
-		                elif [ -e "/sdcard/Download" ] || [ -h "/sdcard/Download" ]; then
-		                    su -c "mount -o bind /sdcard/Download ${DEBIAN_CHROOT}/root/\${i} &>/dev/null"
+		                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
+		                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
 		                else
 		                    mount_read_only_sd
 		                fi
@@ -731,7 +730,7 @@ creat_chroot_startup_script() {
 			${TMOE_CHROOT_PREFIX} mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 			#cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 			#ln -s ../../root/sd ./0
-			${TMOE_CHROOT_PREFIX} ln -s ../../root/sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
+			${TMOE_CHROOT_PREFIX} ln -s ../../sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
 		fi
 		;;
 	esac
@@ -758,14 +757,19 @@ creat_chroot_startup_script() {
 	#if [ -e "/storage/self/primary" ] || [ -e "/sdcard" ]; then
 	#mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd ||
 	mkdir -p /sdcard
-	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/root/sd
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/mnt/sd
+	${TMOE_CHROOT_PREFIX} ln -sf ../mnt/sd ${DEBIAN_CHROOT}/root/sd
+	${TMOE_CHROOT_PREFIX} ln -sf ./mnt/sd ${DEBIAN_CHROOT}/sd
 	#fi
 	if [ -d "/data/data/com.termux/files/home" ]; then
 		#mkdir -p ${DEBIAN_CHROOT}/root/termux ||
-		${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/root/termux
+		${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/mnt/termux
+		${TMOE_CHROOT_PREFIX} ln -sf ../mnt/termux ${DEBIAN_CHROOT}/root/termux
 		if [ -h "${HOME}/storage/external-1" ]; then
 			#mkdir -p ${DEBIAN_CHROOT}/root/tf ||
-			${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/root/tf
+			${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/mnt/tf
+			${TMOE_CHROOT_PREFIX} ln -sf ../mnt/tf ${DEBIAN_CHROOT}/root/tf
+			${TMOE_CHROOT_PREFIX} ln -sf ./mnt/tf ${DEBIAN_CHROOT}/tf
 		fi
 	fi
 	##################
@@ -1079,7 +1083,7 @@ creat_linux_container_remove_script() {
 						su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
 						su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
 						su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
-						su -c "ls -lAh  ${DEBIAN_CHROOT}/root/sd"
+						su -c "ls -lAh  ${DEBIAN_CHROOT}/mnt/sd 2>/dev/null"
 						#for i in dev proc sys root/sd tmp root/termux root/tf; do
 						# if [ -e "${DEBIAN_CHROOT}/\${i}" ]; then
 						#  su -c "chattr -i \${i}"
@@ -1089,7 +1093,7 @@ creat_linux_container_remove_script() {
 					else
 						TMOE_PREFIX=''
 					fi
-					for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd /*; do
+					for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0/* mnt/sd mnt/tf; do
 						if [ -e "${DEBIAN_CHROOT}/\${i}" ]; then
 							ls -lAh "${DEBIAN_CHROOT}\/${i}" 2>/dev/null
 						fi
@@ -1098,7 +1102,7 @@ creat_linux_container_remove_script() {
 							cat <<-'EOF'
 		              移除容器前，请先确保您已卸载容器挂载目录。
 		              建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！
-		              Before removing the system, make sure you have unmounted dev dev/shm dev/pts proc sys root/sd and other directories.
+		              Before removing the system, make sure you have unmounted dev dev/shm dev/pts proc sys root/sd mnt/sd mnt/tf and other directories.
 		              It is recommended that you backup the entire system before removal. 
 					  If the data is lost due to improper operation, the developer is not responsible! 
 							EOF
@@ -1120,7 +1124,7 @@ creat_linux_container_remove_script() {
 				echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 			fi
 			#############
-			for i in root/sd root/tf proc sys; do
+			for i in root/sd root/tf proc sys mnt/sd mnt/tf; do
 				if [ "$(ls ${DEBIAN_CHROOT}/\${i} 2>/dev/null)" ]; then
 					echo "检测到~/${DEBIAN_FOLDER}/\${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
 					echo "Please restart the device to unmount the chroot directory."
