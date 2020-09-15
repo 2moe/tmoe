@@ -260,7 +260,10 @@ tmoe_browser_menu() {
         firefox_or_chromium
         DEPENDENCY_01=""
         ;;
-    2) DEPENDENCY_01="falkon" ;;
+    2)
+        DEPENDENCY_01="falkon"
+        restore_debian_gnu_libxcb_so
+        ;;
     3)
         DEPENDENCY_01='vivaldi-stable'
         case ${LINUX_DISTRO} in

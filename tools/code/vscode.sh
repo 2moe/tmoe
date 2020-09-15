@@ -10,6 +10,7 @@ which_vscode_edition() {
         "2" "VS Codium(不跟踪你的使用数据)" \
         "3" "VS Code OSS(headmelted编译版)" \
         "4" "Microsoft Official(x64,官方版)" \
+        "5" "修复tightvnc无法打开codeoss/codium" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -19,12 +20,41 @@ which_vscode_edition() {
     2) install_vscodium ;;
     3) install_vscode_oss ;;
     4) install_vscode_official ;;
+    5) fix_tightvnc_oss ;;
     esac
     #########################
     press_enter_to_return
     which_vscode_edition
 }
 #################################
+copy_gnu_lib_xcb_so() {
+    GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0"
+    if [ ! -e "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]; then
+        mkdir -p ${TMOE_LINUX_DIR}/lib
+        cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}/lib/libxcb.so.1
+        sed -i 's@BIG-REQUESTS@_IG-REQUESTS@' ${TMOE_LINUX_DIR}/lib/libxcb.so.1
+    fi
+}
+###########
+fix_tightvnc_vscode_lnk() {
+    sed -i "s@Exec=/usr/share/code-oss/code-oss@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code-oss/code-oss@g" ${APPS_LNK_DIR}/code-oss.desktop 2>/dev/null
+    sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
+    sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
+}
+#########
+fix_tightvnc_oss() {
+    cat <<-EOF
+    deb系发行版在安装时会自动修复。
+    若无法自动修复，则请手动使用以下命令来启动。
+    env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib codium --user-data-dir=${HOME}/.codium
+    env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code-oss --user-data-dir=${HOME}/.codeoss
+    env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code --user-data-dir=${HOME}/.code
+EOF
+    non_debian_function
+    copy_gnu_lib_xcb_so
+    fix_tightvnc_vscode_lnk
+}
+##############
 check_vscode_server_arch() {
     case ${ARCH_TYPE} in
     arm64 | amd64) install_vscode_server ;;
@@ -260,6 +290,8 @@ install_vscodium() {
         apt show ./VSCodium.deb
         apt install -y ./VSCodium.deb
         rm -vf VSCodium.deb
+        copy_gnu_lib_xcb_so
+        fix_tightvnc_vscode_lnk
         echo "安装完成,您可以输codium --user-data-dir=${HOME}/.codium启动"
     else
         LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
@@ -290,8 +322,9 @@ install_vscode_oss() {
     fi
 
     if [ "${LINUX_DISTRO}" = 'debian' ]; then
-        apt update
-        apt install -y gpg
+        install_gpg
+        copy_gnu_lib_xcb_so
+        fix_tightvnc_vscode_lnk
         bash -c "$(wget -O- https://code.headmelted.com/installers/apt.sh)"
     elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
         . <(wget -O- https://code.headmelted.com/installers/yum.sh)
@@ -332,7 +365,7 @@ install_vscode_official() {
         echo "请问您是否需要下载最新版安装包？"
         echo "Do you want to download the latest vscode?"
         do_you_want_to_continue
-        download_vscode_x64_deb
+        #download_vscode_x64_deb
         #which_vscode_edition
     elif [ -e "/usr/local/bin/vscode-data/code" ]; then
         echo "检测到您已安装VSCode,请输code --no-sandbox启动"
