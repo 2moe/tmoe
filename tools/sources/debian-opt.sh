@@ -466,6 +466,7 @@ debian_opt_game_app() {
         case ${ARCH_TYPE} in
         amd64 | i386) ;;
         *)
+            this_app_may_non_support_running_on_proot
             echo "hmcl依赖于openjfx,如需安装，则请自行解决依赖问题。"
             non_debian_function
             add_debian_old_source

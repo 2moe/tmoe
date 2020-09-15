@@ -57,4 +57,4 @@ notes_of_xserver
 check_wsl
 source_tmoe_dbus_daemon
 ###########
-. ${XSESSION_FILE} &
+. ${XSESSION_FILE}
