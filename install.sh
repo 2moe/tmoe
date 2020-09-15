@@ -683,26 +683,26 @@ cat_tmoe_chroot_script() {
 		                if [ -h "\${TF_CARD_LINK}" ]; then
 		                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
 		                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
-		                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 		                    else
-		                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 		                    fi
 		                fi
 		                ;;
 		            #######
 		            termux)
 		                if [ -d "/data/data/com.termux/files/home" ]; then
-		                    su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                    su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 		                fi
 		                ;;
 		            ###########
 		            sd)
 		                if [ "\$(su -c "ls /data/media/0" 2>/dev/null)" ]; then
-		                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 		                elif [ -e "/storage/self/primary" ]; then
-		                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 		                elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
-		                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/mnt/\${i} &>/dev/null"
+		                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 		                else
 		                    mount_read_only_sd
 		                fi
