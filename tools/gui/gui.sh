@@ -1559,8 +1559,17 @@ tmoe_desktop_warning() {
 ###############
 install_ukui_desktop() {
     tmoe_desktop_warning
-    REMOTE_DESKTOP_SESSION_01='ukui-session'
-    REMOTE_DESKTOP_SESSION_02='ukui-panel'
+    case ${TMOE_PROOT} in
+    true | no)
+        REMOTE_DESKTOP_SESSION_01='ukui-panel'
+        REMOTE_DESKTOP_SESSION_02='ukui-session'
+        ;;
+    false | *)
+        REMOTE_DESKTOP_SESSION_01='ukui-session'
+        REMOTE_DESKTOP_SESSION_02='ukui-panel'
+        ;;
+    esac
+
     DEPENDENCY_01="ukui-session-manager"
     echo '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1582,8 +1591,17 @@ install_ukui_desktop() {
 ##############
 install_budgie_desktop() {
     tmoe_desktop_warning
-    REMOTE_DESKTOP_SESSION_01='budgie-desktop'
-    REMOTE_DESKTOP_SESSION_02='budgie-session'
+    case ${TMOE_PROOT} in
+    true | no)
+        REMOTE_DESKTOP_SESSION_01='budgie-panel'
+        REMOTE_DESKTOP_SESSION_02='budgie-wm'
+        ;;
+    false | *)
+        REMOTE_DESKTOP_SESSION_01='budgie-desktop'
+        REMOTE_DESKTOP_SESSION_02='budgie-panel'
+        ;;
+    esac
+
     DEPENDENCY_01="budgie-desktop"
     echo '即将为您安装思源黑体(中文字体)、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
     case ${LINUX_DISTRO} in
@@ -1620,8 +1638,16 @@ install_gnome3_desktop() {
         neofetch --logo --ascii_distro GNOME
     fi
     gnome3_warning
-    REMOTE_DESKTOP_SESSION_01='gnome-session'
-    REMOTE_DESKTOP_SESSION_02='gnome-panel'
+    case ${TMOE_PROOT} in
+    true | no)
+        REMOTE_DESKTOP_SESSION_01='gnome-panel'
+        REMOTE_DESKTOP_SESSION_02='gnome-session'
+        ;;
+    false | *)
+        REMOTE_DESKTOP_SESSION_01='gnome-session'
+        REMOTE_DESKTOP_SESSION_02='gnome-panel'
+        ;;
+    esac
     DEPENDENCY_01="gnome"
     echo '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1673,8 +1699,16 @@ cinnamon_warning() {
 ###############
 install_cinnamon_desktop() {
     cinnamon_warning
-    REMOTE_DESKTOP_SESSION_01='cinnamon-session'
-    REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
+    case ${TMOE_PROOT} in
+    true | no)
+        REMOTE_DESKTOP_SESSION_01='cinnamon-panel'
+        REMOTE_DESKTOP_SESSION_02='cinnamon-session'
+        ;;
+    false | *)
+        REMOTE_DESKTOP_SESSION_01='cinnamon-session'
+        REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
+        ;;
+    esac
     DEPENDENCY_01="cinnamon"
     echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then

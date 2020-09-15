@@ -4010,7 +4010,7 @@ start_web_novnc() {
 	echo 'Other devices in the LAN need to enter the novnc address of the LAN. Do not forget /vnc.html after the port number'
 	echo "非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html"
 	if [ -d "${DEBIAN_CHROOT}" ]; then
-		touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
+		${TMOE_PREFIX} touch ~/${DEBIAN_FOLDER}/root/.vnc/startvnc
 		${PREFIX}/bin/debian
 	else
 		if [ "${LINUX_DISTRO}" = 'Android' ]; then
