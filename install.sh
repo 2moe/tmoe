@@ -1093,7 +1093,7 @@ creat_linux_container_remove_script() {
 					else
 						TMOE_PREFIX=''
 					fi
-					for i in dev dev/shm dev/pts proc sys root/termux root/tf root/sd storage/emulated/0/* media/sd media/tf; do
+					for i in dev dev/shm dev/pts proc sys storage/emulated/0/* media/sd media/tf; do
 						if [ -e "${DEBIAN_CHROOT}/\${i}" ]; then
 							ls -lAh "${DEBIAN_CHROOT}\/${i}" 2>/dev/null
 						fi
