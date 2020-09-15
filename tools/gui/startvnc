@@ -85,8 +85,8 @@ start_tmoe_xvnc() {
     set -- "${@}" "-depth" "24"
     set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${HOME}/.vnc/passwd"
-    set -- "Xvnc" "$@"
-    exec "$@" &
+    set -- "Xvnc" "${@}"
+    "${@}" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     . ${XSESSION_FILE} &>/dev/null &
     exit 0
