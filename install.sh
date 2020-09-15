@@ -2133,18 +2133,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    slackware_mirror_list
 	fi
 	#############################################
-	fix_gnu_libxcb_debian(){
-	#cd /usr/lib/$(uname -m)-linux-gnu
-	#GNU_LIBXCB="$(readlink libxcb.so.1)"
-	GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0"
-	if [ -e "${GNU_LIBXCB}" ]; then
-		TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-	    mkdir -p ${TMOE_LINUX_DIR}
-		cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}
-	    sed -i 's@BIG-REQUESTS@_IG-REQUESTS@' ${GNU_LIBXCB}
-	fi
-	}    
-	####################
 	fedora_31_repos() {
 	    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
 	    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
@@ -2247,7 +2235,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if ! grep -Eq 'debian|ubuntu' '/etc/os-release'; then
 	    note_of_non_debian
 	else
-		fix_gnu_libxcb_debian
 	    bash zsh.sh
 	fi
 ENDOFbashPROFILE
