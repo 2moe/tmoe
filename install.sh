@@ -1451,22 +1451,26 @@ cat >vnc-autostartup <<-'EndOfFile'
 		esac
 	############
 	systemctl() {
-	case ${TMOE_PROOT} in
-	true) echo "Running in proot, ignoring request." ;;
-	esac
-	case "$#" in
-	2)
-		echo service $2 $1
-		if [ -e "/usr/sbin/service" ]; then
-			/usr/sbin/service $2 $1
-		elif [ -e "/sbin/service" ]; then
-			/sbin/service $2 $1
-		else
-			systemctl $1 $2
-		fi
-		;;
-	*) systemctl $@ ;;
-	esac
+		case ${TMOE_PROOT} in
+		true) echo "Running in proot, ignoring request." ;;
+		esac
+		case "${#}" in
+		0) /usr/bin/systemctl ;;
+		2)
+			echo service $2 $1
+			if [ -e "/usr/sbin/service" ]; then
+				/usr/sbin/service $2 $1
+			elif [ -e "/sbin/service" ]; then
+				/sbin/service $2 $1
+			else
+				/usr/bin/systemctl $1 $2
+			fi
+			;;
+		*)
+			set -- "/usr/bin/systemctl" "${@}"
+			"${@}"
+			;;
+		esac
 	}
 	[ -e ~/.profile ] && . ~/.profile
 EndOfFile
