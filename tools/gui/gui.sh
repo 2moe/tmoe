@@ -79,8 +79,10 @@ switch_tight_or_tiger_vncserver() {
         modify_other_vnc_conf
     else
         non_debian_function
-        echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
-        ${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
+        #echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
+        echo "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
+        #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
+        apt remove -y ${VNC_SERVER_BIN_NOW}
         beta_features_quick_install
     fi
 }
@@ -3950,8 +3952,10 @@ which_vnc_server_do_you_prefer() {
         VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
         DEPENDENCY_02="tightvncserver"
     fi
-    echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
-    ${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
+    #echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
+    echo "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
+    #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
+    apt remove -y ${VNC_SERVER_BIN_NOW}
     echo "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
     ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
 }
