@@ -464,7 +464,7 @@ install_bilibili_electron() {
     TMOE_BILI_DIR='/opt/bilibili-web'
     if [ -e "${TMOE_BILI_DIR}/.git" ]; then
         cd ${TMOE_BILI_DIR}
-        git fetch --depth=1
+        git fetch --depth=1 origin build
         git reset --hard origin/build
         git pull origin build --allow-unrelated-histories
     else
