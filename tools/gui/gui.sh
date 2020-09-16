@@ -1519,6 +1519,7 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01='@KDE'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="plasma-desktop xorg konsole sddm sddm-kcm"
+        echo "如需安装额外软件包，请手动输pacman -S plasma plasma-wayland-session kde-applications"
         #kdebase
         #phonon-qt5
         #pacman -S --noconfirm sddm sddm-kcm

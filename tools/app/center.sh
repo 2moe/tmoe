@@ -40,7 +40,7 @@ software_center() {
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
             "1" "🦊 Browser:浏览器(firefox,chromium,vivaldi)" \
             "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
-            "3" "🎵 Multimedia:图像与影音(腾讯视频,gimp,mpv)" \
+            "3" "🎵 Multimedia:图像与影音(哔哩哔哩,gimp,mpv)" \
             "4" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
             "5" "📚 Documents:文档(libreoffice,wps)" \
             "6" "🔯 Packages&system:软件包与系统管理" \
@@ -367,40 +367,40 @@ batch_compression_of_pictures() {
 ############
 tmoe_multimedia_menu() {
     RETURN_TO_WHERE='tmoe_multimedia_menu'
-
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
         "Which software do you want to install?" 0 50 0 \
         "1" "🗜️ Batch compression of pics批量压缩图片" \
-        "2" "📽️ MPV(开源、跨平台的音视频播放器)" \
-        "3" "🎥 SMPlayer(MPlayer的前端)" \
-        "4" "🇵 Peek(简单易用的Gif录制软件)" \
-        "5" "🎬 腾讯视频:国产Linux在线视频软件" \
-        "6" "🖼 GIMP(GNU 图像处理程序)" \
-        "7" "🍊 Clementine(小柑橘音乐播放器)" \
-        "8" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
-        "9" "🎧 网易云音乐(x64,专注于发现与分享的音乐产品)" \
-        "10" "🎼 Audacity(类似于cooledit的音频处理软件)" \
-        "11" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
-        "12" "Spotify(x64,声破天是一个正版流媒体音乐服务平台)" \
-        "0" "🌚 Return to previous menu 返回上级菜单" \
+        "2" "📺 bilibili-web-electron(知名视频弹幕网站)" \
+        "3" "📽️ MPV(开源、跨平台的音视频播放器)" \
+        "4" "🎥 SMPlayer(MPlayer的前端)" \
+        "5" "🇵 Peek(简单易用的Gif录制软件)" \
+        "6" "🎬 腾讯视频(Linux在线视频软件)" \
+        "7" "🖼 GIMP(GNU 图像处理程序)" \
+        "8" "🍊 Clementine(小柑橘音乐播放器)" \
+        "9" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
+        "10" "🎧 网易云音乐(x64,专注于发现与分享的音乐产品)" \
+        "11" "🎼 Audacity(类似于cooledit的音频处理软件)" \
+        "12" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
+        "13" "Spotify(x64,声破天是一个正版流媒体音乐服务平台)" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) batch_compression_of_pictures ;;
-    2) install_mpv ;;
-    3) install_smplayer ;;
-    4) install_peek ;;
-    5) install_tencent_video ;;
-    6) install_gimp ;;
-    7) install_clementine ;;
-    8) install_parole ;;
-    9) install_netease_163_cloud_music ;;
-    10) install_audacity ;;
-    11) install_ardour ;;
-    12) install_spotify ;;
+    2) install_bilibili_electron ;;
+    3) install_mpv ;;
+    4) install_smplayer ;;
+    5) install_peek ;;
+    6) install_tencent_video ;;
+    7) install_gimp ;;
+    8) install_clementine ;;
+    9) install_parole ;;
+    10) install_netease_163_cloud_music ;;
+    11) install_audacity ;;
+    12) install_ardour ;;
+    13) install_spotify ;;
     esac
     ##########################
     press_enter_to_return
@@ -458,9 +458,26 @@ git_clone_tenvideo() {
     echo "安装完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
 }
 ############
+install_bilibili_electron() {
+    check_electron
+    TMOE_BILI_DIR='/opt/bilibili-web'
+    if [ -e "${TMOE_BILI_DIR}/.git" ]; then
+        cd ${TMOE_BILI_DIR}
+        git fetch --depth=1
+        git reset --hard origin/build
+        git pull origin build --allow-unrelated-histories
+    else
+        rm -rv ${TMOE_BILI_DIR} 2>/dev/null
+        mkdir -p /opt
+        cd /opt
+        git clone --depth=1 -b build https://gitee.com/ak2/bilibili-web ./bilibili-web
+    fi
+    cd ${TMOE_BILI_DIR}
+    cp -f bilibili-web.desktop ${APPS_LNK_DIR}
+}
+###########
 tmoe_games_menu() {
     RETURN_TO_WHERE='tmoe_games_menu'
-
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "GAMES" --menu \
         "Which game do you want to install?" 0 50 0 \
