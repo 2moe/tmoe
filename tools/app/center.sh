@@ -371,6 +371,7 @@ tmoe_multimedia_menu() {
     DEPENDENCY_02=""
     TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
         "Which software do you want to install?" 0 50 0 \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
         "1" "🗜️ Batch compression of pics批量压缩图片" \
         "2" "📺 bilibili-web-electron(知名视频弹幕网站)" \
         "3" "📽️ MPV(开源、跨平台的音视频播放器)" \
