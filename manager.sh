@@ -716,9 +716,6 @@ android_termux() {
 	fi
 	#exit-idle-time 可设为180
 	#已废弃
-	#if [ -e ${DEBIAN_CHROOT}/root/.vnc/xstartup ]; then
-	#	grep -q "PULSE_SERVER" ${DEBIAN_CHROOT}/root/.vnc/xstartup || sed -i '2 a\export PULSE_SERVER=127.0.0.1' ${DEBIAN_CHROOT}/root/.vnc/xstartup
-	#fi
 
 	if [ -e ${PREFIX}/bin/debian ]; then
 		grep -q "pulseaudio" ${PREFIX}/bin/debian 2>/dev/null || sed -i '3 a\pulseaudio --start' ${PREFIX}/bin/debian
@@ -3880,8 +3877,8 @@ android_termux_tmoe_area() {
 }
 #####################################
 switch_vnc_pulse_audio_transport_method() {
-	cd ${DEBIAN_CHROOT}/root
-	if grep -Eq '4712|4713' ./.vnc/xstartup; then
+	cd ${DEBIAN_CHROOT}/
+	if grep -Eq '4712|4713' ./usr/local/bin//startvnc; then
 		PULSEtransportMethon='检测到您当前使用的可能是XSDL音频传输'
 	else
 		PULSEtransportMethon='检测到您当前使用的是termux音频传输'
@@ -3889,11 +3886,11 @@ switch_vnc_pulse_audio_transport_method() {
 
 	if (whiptail --title "您想用哪个软件来传输VNC音频？(｡･∀･)ﾉﾞ" --yes-button 'Termux(*￣▽￣*)o' --no-button 'XSDL(っ °Д °)' --yesno "${PULSEtransportMethon},请选择您需要切换的传输类型！注：您必须先安装XSDL app才能使用XSDL的音频服务，切换成XSDL后，启动VNC时将自动打开XSDL,此时不会转发X,您也无需执行任何操作。\nWhich software do you want to use to transmit VNC audio?" 13 50); then
 
-		sed -i 's/^export PULSE_SERVER=.*/export PULSE_SERVER=127.0.0.1/' ${DEBIAN_CHROOT}/usr/local/bin/startvnc || echo "没有找到vnc xstartup呢！请确保您已安装gui"
+		${TMOE_PREFIX} sed -i 's/^export PULSE_SERVER=.*/export PULSE_SERVER=127.0.0.1/' ${DEBIAN_CHROOT}/usr/local/bin/startvnc || echo "没有找到startvnc呢！请确保您已安装gui"
 		sed -i '/x.org.server.MainActivity/d' $PREFIX/bin/startvnc
 		sed -i '/sleep 5/d' $PREFIX/bin/startvnc
 	else
-		sed -i 's/^export PULSE_SERVER=.*/export PULSE_SERVER=127.0.0.1:4713/' ${DEBIAN_CHROOT}/usr/local/bin/startvnc || echo "没有找到vnc xstartup呢！请确保您已安装gui"
+		${TMOE_PREFIX} sed -i 's/^export PULSE_SERVER=.*/export PULSE_SERVER=127.0.0.1:4713/' ${DEBIAN_CHROOT}/usr/local/bin/startvnc || echo "没有找到startvnc呢！请确保您已安装gui"
 		cd $PREFIX/bin/
 		grep -q 'x.org.server' startvnc || sed -i '2 a\am start -n x.org.server/x.org.server.MainActivity \nsleep 5' startvnc
 	fi
