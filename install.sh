@@ -620,7 +620,7 @@ cat_tmoe_chroot_script() {
 		    ########
 		    #PS1='\u:\w$ '
 		    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "TERM=xterm-256color" "\$@"
-		    for i in dev proc sys dev/pts dev/shm dev/tty0; do
+		    for i in dev proc sys dev/pts dev/shm; do
 		        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 		            case \${i} in
 		            dev) mount_01 ;;
