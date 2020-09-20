@@ -1186,6 +1186,7 @@ creat_linux_container_remove_script() {
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/data/data/com.termux/files/usr/bin/env bash
 	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+	termux-wake-lock 2>/dev/null
 	if [ ! "\$(pgrep pulseaudio)" ];then
 		pulseaudio --start 2>/dev/null &
 	fi
@@ -1209,6 +1210,7 @@ ENDOFVNC
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/data/data/com.termux/files/usr/bin/env bash
 	am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+	termux-wake-lock 2>/dev/null
 	if [ ! "\$(pgrep pulseaudio)" ];then
 		pulseaudio --start 2>/dev/null &
 	fi
@@ -1240,7 +1242,7 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/data/data/com.termux/files/usr/bin/env bash
 	am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-
+    termux-wake-lock 2>/dev/null
 	vnc_warning() {
 		echo "Sorry,x11启动失败，请输debian-i重新配置GUI。"
 		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
