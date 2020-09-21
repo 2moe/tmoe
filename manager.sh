@@ -4620,14 +4620,21 @@ install_kali_rolling_gnu_linux_distro() {
 }
 #####################
 install_arch_linux_distro() {
-	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
-		echo "检测到Arch Linux不支持您当前的架构"
-	else
-		DISTRO_NAME='archlinux'
-		DISTRO_CODE='latest'
-		DISTRO_CODE_02='current'
-		linux_distro_common_model_03
-	fi
+	DISTRO_NAME='archlinux'
+	DISTRO_CODE='latest'
+	DISTRO_CODE_02='current'
+	case ${ARCH_TYPE} in
+	armhf)
+		bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/archlinuxarm/os/ArchLinuxARM-armv7-latest.tar.gz@g' |
+			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+			sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
+			sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
+		;;
+	amd64 | arm64) linux_distro_common_model_03 ;;
+	*) distro_does_not_support ;;
+	esac
 }
 ############
 check_the_latest_distro_version() {
