@@ -244,17 +244,17 @@ tmoe_locale_settings() {
 			if [ ! $(command -v add-apt-repository) ]; then
 				apt install -y software-properties-common
 			fi
-			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
 		fi
 		;;
 	esac
 
-	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 		cd /etc
-		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
-		if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
+		if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen" 2>/dev/null; then
 			echo '' >>locale.gen
 			#sed -i 's@^@#@g' locale.gen 2>/dev/null
 			#sed -i 's@##@#@g' locale.gen 2>/dev/null
