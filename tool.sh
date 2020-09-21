@@ -248,20 +248,19 @@ tmoe_locale_settings() {
 				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
 		fi
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
+			cd /etc
+			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
+			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen" 2>/dev/null; then
+				echo '' >>locale.gen
+				#sed -i 's@^@#@g' locale.gen 2>/dev/null
+				#sed -i 's@##@#@g' locale.gen 2>/dev/null
+				sed -i "$ a ${TMOE_LANG} UTF-8" locale.gen
+			fi
+			locale-gen ${TMOE_LANG} 2>/dev/null
+		fi
 		;;
 	esac
-
-	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-		cd /etc
-		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
-		if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen" 2>/dev/null; then
-			echo '' >>locale.gen
-			#sed -i 's@^@#@g' locale.gen 2>/dev/null
-			#sed -i 's@##@#@g' locale.gen 2>/dev/null
-			sed -i "$ a ${TMOE_LANG} UTF-8" locale.gen
-		fi
-		locale-gen ${TMOE_LANG} 2>/dev/null
-	fi
 }
 #####################
 check_linux_distro() {
