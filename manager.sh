@@ -1417,6 +1417,8 @@ enable_root_mode() {
 		if [ -z "${ROOT_PERMISSION}" ]; then
 			echo "${RED}ERROR!${RESET}未检测到root权限！"
 			if [ $(command -v tsudo) ]; then
+				echo Android :${ANDROID_VERSION}
+				echo "$(getprop ro.product.model)" 2>/dev/null
 				echo "本功能不对Android7以下系统提供支持，请换用chroot容器。"
 			fi
 			press_enter_to_return
