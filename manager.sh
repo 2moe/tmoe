@@ -705,6 +705,9 @@ android_termux() {
 				esac
 			fi
 		else
+			echo "Android :${ANDROID_VERSION}"
+			echo "${RED}WARNING！${RESET}检测到您的系统版本低于Android 7,建议您${YELLOW}更新Android系统${RESET}版本和termux版本。"
+			echo "Your current Android system version is lower than 7."
 			if ! grep -q '^deb.*mirrors.*stable' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
 				echo "${YELLOW}检测到您当前使用的sources.list不是中科大源,是否需要更换为中科大源[Y/n]${RESET} "
 				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
@@ -1293,7 +1296,7 @@ notes_of_chroot() {
 	case ${LINUX_DISTRO} in
 	Android)
 		echo Android :${ANDROID_VERSION}
-		echo "$(getprop ro.product.model)"
+		echo "$(getprop ro.product.model)" 2>/dev/null
 		su -c "ls ${HOME} >/dev/null"
 		if [ "$?" != "0" ]; then
 			echo '检测到root权限授予失败，您无法安装chroot容器'
