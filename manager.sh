@@ -1522,7 +1522,7 @@ backup_tmoe_container_zsh() {
 			"$(date +%Y%m)")
 				FILE_TIME_02=$(date -d "$(stat -c '%y' zsh_bak.tar.gz)" +"%Y%m%d")
 				case ${FILE_TIME_02} in
-				202009221)
+				20200921)
 					rm -f zsh_bak.tar.gz
 					tar_zcvf_zsh_dir
 					;;
