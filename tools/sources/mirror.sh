@@ -104,18 +104,19 @@ china_university_mirror_station() {
         whiptail --title "软件源列表" --menu \
             "您想要切换为哪个镜像源呢？\n目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 0 50 0 \
             "1" "清华大学mirrors.tuna.tsinghua.edu.cn" \
-            "2" "中国科学技术大学mirrors.ustc.edu.cn" \
-            "3" "浙江大学mirrors.zju.edu.cn" \
-            "4" "上海交通大学mirrors.zju.edu.cn" \
-            "5" "北京外国语大学mirrors.bfsu.edu.cn" \
-            "6" "华中科技大学mirrors.hust.edu.cn" \
-            "7" "北京理工大学mirror.bit.edu.cn" \
-            "8" "北京交通大学mirror.bjtu.edu.cn" \
-            "9" "兰州大学mirror.lzu.edu.cn" \
-            "10" "大连东软信息学院mirrors.neusoft.edu.cn" \
-            "11" "南京大学mirrors.nju.edu.cn" \
-            "12" "南京邮电大学mirrors.njupt.edu.cn" \
-            "13" "西北农林科技大学mirrors.nwafu.edu.cn" \
+            "2" "tuna姊妹站,北京外国语大学mirrors.bfsu.edu.cn" \
+            "3" "tuna兄弟站opentuna.cn" \
+            "4" "中国科学技术大学mirrors.ustc.edu.cn" \
+            "5" "浙江大学mirrors.zju.edu.cn" \
+            "6" "上海交通大学mirror.sjtu.edu.cn" \
+            "7" "华中科技大学mirrors.hust.edu.cn" \
+            "8" "北京理工大学mirror.bit.edu.cn" \
+            "9" "北京交通大学mirror.bjtu.edu.cn" \
+            "10" "兰州大学mirror.lzu.edu.cn" \
+            "11" "大连东软信息学院mirrors.neusoft.edu.cn" \
+            "12" "南京大学mirrors.nju.edu.cn" \
+            "13" "南京邮电大学mirrors.njupt.edu.cn" \
+            "14" "西北农林科技大学mirrors.nwafu.edu.cn" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -123,18 +124,19 @@ china_university_mirror_station() {
     case "${SOURCES_LIST}" in
     0 | "") tmoe_sources_list_manager ;;
     1) SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn' ;;
-    2) SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn' ;;
-    3) SOURCE_MIRROR_STATION='mirrors.zju.edu.cn' ;;
-    4) SOURCE_MIRROR_STATION='mirror.sjtu.edu.cn' ;;
-    5) SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn' ;;
-    6) SOURCE_MIRROR_STATION='mirrors.hust.edu.cn' ;;
-    7) SOURCE_MIRROR_STATION='mirror.bit.edu.cn' ;;
-    8) SOURCE_MIRROR_STATION='mirror.bjtu.edu.cn' ;;
-    9) SOURCE_MIRROR_STATION='mirror.lzu.edu.cn' ;;
-    10) SOURCE_MIRROR_STATION='mirrors.neusoft.edu.cn' ;;
-    11) SOURCE_MIRROR_STATION='mirrors.nju.edu.cn' ;;
-    12) SOURCE_MIRROR_STATION='mirrors.njupt.edu.cn' ;;
-    13) SOURCE_MIRROR_STATION='mirrors.nwafu.edu.cn' ;;
+    2) SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn' ;;
+    3) SOURCE_MIRROR_STATION='opentuna.cn' ;;
+    4) SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn' ;;
+    5) SOURCE_MIRROR_STATION='mirrors.zju.edu.cn' ;;
+    6) SOURCE_MIRROR_STATION='mirror.sjtu.edu.cn' ;;
+    7) SOURCE_MIRROR_STATION='mirrors.hust.edu.cn' ;;
+    8) SOURCE_MIRROR_STATION='mirror.bit.edu.cn' ;;
+    9) SOURCE_MIRROR_STATION='mirror.bjtu.edu.cn' ;;
+    10) SOURCE_MIRROR_STATION='mirror.lzu.edu.cn' ;;
+    11) SOURCE_MIRROR_STATION='mirrors.neusoft.edu.cn' ;;
+    12) SOURCE_MIRROR_STATION='mirrors.nju.edu.cn' ;;
+    13) SOURCE_MIRROR_STATION='mirrors.njupt.edu.cn' ;;
+    14) SOURCE_MIRROR_STATION='mirrors.nwafu.edu.cn' ;;
     esac
     ######################################
     auto_check_distro_and_modify_sources_list
@@ -796,7 +798,7 @@ restore_normal_default_sources_list() {
 ########
 restore_default_sources_list() {
     if [ ! $(command -v diff) ]; then
-        
+
         DEPENDENCY_01=""
         DEPENDENCY_02="diffutils"
         beta_features_quick_install
