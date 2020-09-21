@@ -695,6 +695,23 @@ android_termux() {
 				*) echo "Invalid choice. skipped." ;;
 				esac
 			fi
+		else
+			if ! grep -q '^deb.*mirrors.*stable' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+				echo "${YELLOW}检测到您当前使用的sources.list不是中科大源,是否需要更换为中科大源[Y/n]${RESET} "
+				echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+				echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+				read opt
+				case $opt in
+				y* | Y* | "")
+					sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.ustc.edu.cn/termux stable main@' '/data/data/com.termux/files/usr/etc/apt/sources.list'
+					apt_dist_upgrade
+					press_enter_to_return
+					android_termux
+					;;
+				n* | N*) echo "skipped." ;;
+				*) echo "Invalid choice. skipped." ;;
+				esac
+			fi
 		fi
 		notes_of_tmoe_package_installation
 		apt update
@@ -3090,6 +3107,7 @@ debian_buster_arm64_xfce_recovery_package() {
 install_debian_sid_via_tuna() {
 	if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 		bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' |
+			sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 			sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@')"
 	else
 		curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' | bash
@@ -3144,6 +3162,7 @@ install_debian_buster_via_tuna() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s:/sid:/${DISTRO_CODE}:g" |
 		sed "s:-sid:-${DISTRO_CODE}:g" |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
@@ -3156,6 +3175,7 @@ install_debian_testing_via_tuna() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s:/sid:/${DISTRO_CODE}:g" |
 		sed "s:-sid:-${DISTRO_CODE}:g" |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
@@ -4224,6 +4244,7 @@ termux_tuna_sources_list() {
 ##################
 choose_which_gnu_linux_distro() {
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
+	CLOUD_ROOTFS='false'
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install? \n您想要安装哪个GNU/Linux发行版?" 0 50 0 \
 		"1" "🍥 Debian:致力于自由" \
@@ -4254,6 +4275,7 @@ choose_which_gnu_linux_distro() {
 		;;
 	6)
 		TMOE_LINUX_CONTAINER_DISTRO='fedora'
+		CLOUD_ROOTFS='true'
 		creat_container_edition_txt
 		install_fedora_gnu_linux_distro
 		;;
@@ -4268,6 +4290,7 @@ choose_which_gnu_linux_distro() {
 ##############################
 install_chroot_exclusive_containers() {
 	RETURN_TO_WHERE='install_chroot_exclusive_containers'
+	CLOUD_ROOTFS='false'
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
@@ -4283,6 +4306,7 @@ install_chroot_exclusive_containers() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) install_armbian_linux_distro ;;
 	2)
+		CLOUD_ROOTFS='true'
 		TMOE_LINUX_CONTAINER_DISTRO='opensuse'
 		creat_container_edition_txt
 		install_opensuse_linux_distro
@@ -4370,6 +4394,7 @@ install_alpha_containers() {
 }
 #########################
 install_beta_containers() {
+	CLOUD_ROOTFS='false'
 	BETA_SYSTEM=$(
 		whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
 			"1" "manjaro(让arch更方便用户使用,arm64)" \
@@ -4389,6 +4414,7 @@ install_beta_containers() {
 		install_manjaro_linux_distro
 		;;
 	2)
+		CLOUD_ROOTFS='true'
 		TMOE_LINUX_CONTAINER_DISTRO='centos'
 		creat_container_edition_txt
 		install_centos_linux_distro
@@ -4476,6 +4502,7 @@ custom_ubuntu_version() {
 ubuntu_distro_x64_model() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/focal/${DISTRO_CODE}/g" |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
@@ -4487,6 +4514,7 @@ ubuntu_distro_x64_model() {
 ubuntu_distro_arm_model() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/focal/${DISTRO_CODE}/g" |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
@@ -4502,15 +4530,30 @@ linux_distro_common_model_01() {
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ####################
+#02为kali-rolling
 linux_distro_common_model_02() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 #########################
+#03为arch linux
+#############
+#04为fedora和centos
+linux_distro_common_model_04() {
+	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+####################
 install_different_ubuntu_gnu_linux_distros() {
 	case "${ARCH_TYPE}" in
 	amd64 | i386) ubuntu_distro_x64_model ;;
@@ -4552,13 +4595,19 @@ check_the_latest_distro_version() {
 	which_version_do_you_want_to_install
 }
 #################
+case_cloud_rootfs_01_04() {
+	case ${CLOUD_ROOTFS} in
+	true) linux_distro_common_model_04 ;;
+	*) linux_distro_common_model_01 ;;
+	esac
+}
+###########
 which_version_do_you_want_to_install() {
-
 	if (whiptail --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
-		linux_distro_common_model_01
+		case_cloud_rootfs_01_04
 	else
 		DISTRO_CODE="${OLD_STABLE_VERSION}"
-		linux_distro_common_model_01
+		case_cloud_rootfs_01_04
 	fi
 }
 ######################
@@ -4596,6 +4645,7 @@ install_funtoo_linux_distro() {
 linux_distro_common_model_03() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s@mirrors.tuna.tsinghua.edu.cn@mirrors.bfsu.edu.cn@g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
@@ -4614,7 +4664,7 @@ install_centos_linux_distro() {
 	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
 		echo "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
 		DISTRO_CODE='7'
-		linux_distro_common_model_01
+		linux_distro_common_model_04
 	else
 		OLD_STABLE_VERSION='8'
 		check_the_latest_distro_version
@@ -4674,7 +4724,7 @@ install_opensuse_linux_distro() {
 	opensuse_warning
 	DISTRO_NAME='opensuse'
 	DISTRO_CODE='tumbleweed'
-	linux_distro_common_model_01
+	linux_distro_common_model_04
 }
 ####################
 install_raspios_linux_distro() {
@@ -4721,7 +4771,7 @@ install_raspbian_linux_distro() {
 ############################
 install_raspios_lite_armhf_rootfs() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
@@ -4733,7 +4783,7 @@ install_raspios_lite_armhf_rootfs() {
 ##################
 install_raspios_full_armhf_rootfs() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
@@ -4750,7 +4800,7 @@ install_raspbian_linux_distro_type01() {
 
 	#sed 's@lxc-images.*rootfs.tar.xz@raspbian-images/raspbian_lite/root.tar.xz@g' |
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_full/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspbian_full/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
@@ -4763,7 +4813,7 @@ install_raspbian_linux_distro_type01() {
 install_raspbian_linux_distro_type02() {
 	#sed '72 a\ARCH_TYPE="armhf"'
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspbian_lite/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspbian_lite/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
@@ -4783,12 +4833,12 @@ install_manjaro_linux_distro() {
 		;;
 	esac
 
-	#aria2c -x 5 -k 1M --split 5 -o manjaro-latest-rootfs.tar.gz "https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz"
-	#https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
+	#aria2c -x 5 -k 1M --split 5 -o manjaro-latest-rootfs.tar.gz "https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz"
+	#https://mirrors.bfsu.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default/${ttime}rootfs.tar.xz
 	touch ~/.MANJARO_ARM_DETECTION_FILE
 	#echo "检测到您选择的是manajro,即将从第三方网盘下载容器镜像。"
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
-		sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
+		sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 		sed 's/debian system/manjaro system/g' |
 		sed 's:debian-sid:manjaro-stable:g' |
 		sed 's:debian/sid:manjaro/stable:g' |

@@ -287,8 +287,8 @@ echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debi
 ##################
 if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
-		echo "正在从${YELLOW}清华大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
-		echo "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from Tsinghua University Open Source Mirror Station."
+		echo "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+		echo "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
 		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
@@ -1755,7 +1755,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	manjaro_mirror_list() {
 	    if [ "$(uname -m)" = "aarch64" ]; then
 	        #sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
-	        #清华镜像站的manjaro rootfs容器竟然没grep、awk和sed
+	        #TUNA镜像站的manjaro rootfs容器竟然没grep、awk和sed
 	        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo
