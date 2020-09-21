@@ -175,8 +175,8 @@ git_clone_oh_my_zsh() {
     echo "github.com/ohmyzsh/ohmyzsh"
     if [ -e "${OH_MY_ZSH_DIR}/.git" ]; then
         cd ${OH_MY_ZSH_DIR}
-        git reset --hard
-        git pull --depth=1 --allow-unrelated-histories
+        #git reset --hard
+        #git pull --depth=1 --allow-unrelated-histories
     else
         rm -rf ${OH_MY_ZSH_DIR} 2>/dev/null
         git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh || git clone --depth=1 git://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
@@ -266,8 +266,8 @@ configure_power_level_10k() {
 
     if [ -e "powerlevel10k/.git" ]; then
         cd powerlevel10k
-        git reset --hard
-        git pull --depth=1 --allow-unrelated-histories
+        #git reset --hard
+        #git pull --depth=1 --allow-unrelated-histories
     else
         rm -rf powerlevel10k 2>/dev/null
         git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" || git clone --depth=1 git://github.com/romkatv/powerlevel10k "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
@@ -463,8 +463,8 @@ echo "github.com/zsh-users/zsh-syntax-highlighting"
 #########
 if [ -e "zsh-syntax-highlighting/.git" ]; then
     cd zsh-syntax-highlighting
-    git reset --hard
-    git pull --depth=1 --allow-unrelated-histories
+    #git reset --hard
+    #git pull --depth=1 --allow-unrelated-histories
     cd ..
 else
     rm -rf zsh-syntax-highlighting 2>/dev/null
@@ -477,8 +477,8 @@ echo "正在克隆zsh-autosuggestions自动补全插件..."
 echo "github.com/zsh-users/zsh-autosuggestions"
 if [ -e "zsh-autosuggestions/.git" ]; then
     cd zsh-autosuggestions
-    git reset --hard
-    git pull --depth=1 --allow-unrelated-histories
+    #git reset --hard
+    #git pull --depth=1 --allow-unrelated-histories
 else
     rm -rf zsh-autosuggestions 2>/dev/null
     git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestionszsh-autosuggestions
