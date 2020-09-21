@@ -1384,6 +1384,9 @@ enable_root_mode() {
 		ROOT_PERMISSION=$(sudo ls / 2>/dev/null)
 		if [ -z "${ROOT_PERMISSION}" ]; then
 			echo "${RED}ERROR!${RESET}未检测到root权限！"
+			if [ $(command -v tsudo) ]; then
+				echo "本功能不对Android7以下系统提供支持，请换用chroot容器。"
+			fi
 			press_enter_to_return
 			tmoe_manager_main_menu
 		fi
@@ -1460,8 +1463,34 @@ enable_root_mode() {
 	fi
 	#不要忘记此处的fi
 }
-################################
+##########################
+tar_zcvf_zsh_dir() {
+	cd ${DEBIAN_CHROOT}
+	${TMOE_PREFIX} tar -zpcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh root/.cache/gitstatus
+}
+#####################
+backup_tmoe_container_zsh() {
+	mkdir -p ${CONFIG_FOLDER}/tmoe-container-zsh-bak/
+	cd ${CONFIG_FOLDER}/tmoe-container-zsh-bak
+	if [ ! -e "zsh_bak.tar.gz" ]; then
+		tar_zcvf_zsh_dir
+	else
+		FILE_SIZE=$(du -s zsh_bak.tar.gz | awk '{print $1}')
+		if ((${FILE_SIZE} < 512)); then
+			rm -f zsh_bak.tar.gz
+			tar_zcvf_zsh_dir
+		else
+			FILE_TIME=$(date -d "$(stat -c '%y' zsh_bak.tar.gz)" +"%Y%m")
+			case ${FILE_TIME} in
+			"$(date +%Y%m)") ;;
+			*) tar_zcvf_zsh_dir ;;
+			esac
+		fi
+	fi
+}
+#########################
 remove_gnu_linux_container() {
+	backup_tmoe_container_zsh
 	cd ${HOME}
 	unmount_proc_dev
 	for i in dev dev/shm dev/pts proc sys storage/emulated/0/* media/sd media/tf; do
@@ -4908,10 +4937,9 @@ install_different_armbian_gnu_linux_distros() {
 		apt update 2>/dev/null
 		apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
 	fi
-	ARMBIAN_TUNA_REPO='https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs'
+	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
 	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep -E "${DISTRO_CODE}-desktop" | grep -Ev '.tar.lz4.asc|.torrent|.lz4.list' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
-
 	case "${DISTRO_CODE}" in
 	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
 	*) install_armbian_testing_via_tuna ;;

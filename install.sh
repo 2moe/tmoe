@@ -458,7 +458,6 @@ uncompress_tar_file() {
 }
 #######################
 uncompress_tar_file
-
 REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
 IOSEVKA_FONT='2b41066b8faea10f7f4356a280b011c2fa3cd007000e6eca25f2f9aaf8b44713'
 MESLO_FONT='4ac3012945f484496c899dce3b6ff6ec1a7395a444e9bf5acdf004867334cd17'
@@ -1060,6 +1059,10 @@ fix_gnu_linux_chroot_exec() {
 	esac
 }
 ###########
+ZSH_BAK_FILE="${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz"
+if [ -e "${ZSH_BAK_FILE}" ]; then
+	cp -f ${ZSH_BAK_FILE} ${DEBIAN_CHROOT}/tmp 2>/dev/null
+fi
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	TMOE_CHROOT='true'
 	creat_chroot_startup_script
@@ -1234,6 +1237,7 @@ ln -s ${PREFIX}/bin/startx11vnc ${HOME}/vnc 2>/dev/null
 #此處僅適配Android,故shebang爲termux目錄
 cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
 	#!/data/data/com.termux/files/usr/bin/env bash
+	termux-wake-unlock 2>/dev/null
 	pulseaudio --kill 2>/dev/null &
 	sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
 ENDOFSTOPVNC
@@ -1242,7 +1246,7 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/data/data/com.termux/files/usr/bin/env bash
 	am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-    termux-wake-lock 2>/dev/null
+	    termux-wake-lock 2>/dev/null
 	vnc_warning() {
 		echo "Sorry,x11启动失败，请输debian-i重新配置GUI。"
 		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
@@ -1827,6 +1831,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
 	    fi
+		bash /usr/local/bin/nofetch
 	    bash zsh.sh
 	    # ash -c "$(wget --no-check-certificate -O- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	}

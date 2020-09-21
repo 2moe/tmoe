@@ -157,14 +157,29 @@ fi
 chmod 777 /usr/local/bin/debian-i
 #########################
 mkdir -p /run/dbus
-rm -rf ${HOME}/.oh-my-zsh
-echo "github.com/ohmyzsh/ohmyzsh"
-git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh || git clone --depth=1 git://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
-#chmod 755 -R "${HOME}/.oh-my-zsh"
-if [ ! -f "${HOME}/.zshrc" ]; then
-    cp "${HOME}/.oh-my-zsh/templates/zshrc.zsh-template" "${HOME}/.zshrc" || curl -Lo "${HOME}/.zshrc" 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template'
-    #https://github.com/ohmyzsh/ohmyzsh/raw/master/templates/zshrc.zsh-template
-fi
+##############
+git_clone_oh_my_zsh() {
+    ZSH_BAK_FILE='/tmp/zsh_bak.tar.gz'
+    if [ -e "${ZSH_BAK_FILE}" ]; then
+        tar -zpxvf ${ZSH_BAK_FILE} -C /
+        rm -f ${ZSH_BAK_FILE}
+    fi
+    OH_MY_ZSH_DIR="${HOME}/.oh-my-zsh"
+    echo "github.com/ohmyzsh/ohmyzsh"
+    if [ -e "${OH_MY_ZSH_DIR}/.git" ]; then
+        cd ${OH_MY_ZSH_DIR}
+        git reset --hard
+        git pull --depth=1 --allow-unrelated-histories
+    else
+        rm -rf ${OH_MY_ZSH_DIR} 2>/dev/null
+        git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh || git clone --depth=1 git://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
+    fi
+    #chmod 755 -R "${HOME}/.oh-my-zsh"
+    if [ ! -f "${HOME}/.zshrc" ]; then
+        cp "${HOME}/.oh-my-zsh/templates/zshrc.zsh-template" "${HOME}/.zshrc" || curl -Lo "${HOME}/.zshrc" 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template'
+        #https://github.com/ohmyzsh/ohmyzsh/raw/master/templates/zshrc.zsh-template
+    fi
+}
 ######################
 ps -e &>/dev/null
 if [ "$?" != '0' ]; then
@@ -174,8 +189,12 @@ if [ "$?" != '0' ]; then
         ln -s ${TERMUX_BIN_PATH}/pstree /usr/local/bin/pstree 2>/dev/null
     fi
 fi
-chsh -s /usr/bin/zsh || chsh -s /bin/zsh
-
+###########
+git_clone_oh_my_zsh
+###########
+if [ $(command -v chsh) ]; then
+    chsh -s /usr/bin/zsh || chsh -s /bin/zsh
+fi
 RB_RED=$(printf '\033[38;5;196m')
 RB_ORANGE=$(printf '\033[38;5;202m')
 RB_YELLOW=$(printf '\033[38;5;226m')
@@ -237,19 +256,29 @@ configure_power_level_10k() {
     echo "github.com/romkatv/powerlevel10k"
     mkdir -p ${HOME}/.oh-my-zsh/custom/themes
     cd ${HOME}/.oh-my-zsh/custom/themes
-    rm -rf "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" || git clone --depth=1 git://github.com/romkatv/powerlevel10k "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
+
+    if [ -e "powerlevel10k/.git" ]; then
+        cd powerlevel10k
+        git reset --hard
+        git pull --depth=1 --allow-unrelated-histories
+    else
+        rm -rf powerlevel10k 2>/dev/null
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" || git clone --depth=1 git://github.com/romkatv/powerlevel10k "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
+    fi
     sed -i '/^ZSH_THEME/d' "${HOME}/.zshrc"
     sed -i "1 i\ZSH_THEME='powerlevel10k/powerlevel10k'" "${HOME}/.zshrc"
     # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnosterzak"/g' ~/.zshrc
     echo "您可以输${GREEN}p10k configure${RESET}来配置${BLUE}powerlevel10k${RESET}"
     echo "You can type ${GREEN}p10k configure${RESET} to configure ${BLUE}powerlevel 10k${RESET}."
-    if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
-        if [ -e "/usr/bin/curl" ]; then
-            curl -sLo /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+    if [ ! -e "${HOME}/.p10k.zsh" ]; then
+        if [ $(command -v curl) ]; then
+            curl -sLo ${HOME}/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
         else
-            wget -qO /root/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
+            wget -qO ${HOME}/.p10k.zsh 'https://gitee.com/mo2/Termux-zsh/raw/p10k/.p10k.zsh'
         fi
+    fi
+
+    if ! grep -q '.p10k.zsh' "${HOME}/.zshrc"; then
         #mkdir -p ~/.cache
         #rm -rv ~/.cache/gitstatus
         #ln -s ~/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/bin ~/.cache/gitstatus
@@ -267,19 +296,8 @@ else
     configure_power_level_10k
 fi
 #############################
-chroot_export_language_and_home() {
-    grep -q 'unset LD_PRELOAD' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "1 a\unset LD_PRELOAD" ${HOME}/.zshrc >/dev/null 2>&1
-    grep -q 'en_US.UTF-8' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export LANG=en_US.UTF-8" ${HOME}/.zshrc >/dev/null 2>&1
-    grep -q 'HOME=/root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\export HOME=/root" ${HOME}/.zshrc >/dev/null 2>&1
-    grep -q 'cd /root' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\cd /root" ${HOME}/.zshrc >/dev/null 2>&1
-}
-#######################
-if [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
-    chroot_export_language_and_home
-fi
-#######################
-cd ~
-cat >~/.zlogin <<-'EndOfFile'
+cd ${HOME}
+cat >.zlogin <<-'EndOfFile'
 	locale_gen_tmoe_language() {
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
 			cd /etc
@@ -318,8 +336,8 @@ cat >~/.zlogin <<-'EndOfFile'
 		check_tmoe_locale_file
 		cd /usr/local/etc/tmoe-linux/git
 		git fetch --depth=1
-		git reset --hard origin/master
-		git pull origin master --allow-unrelated-histories
+		git reset --hard
+		git pull --depth=1 --allow-unrelated-histories
 		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 		chmod +x ${LOCAL_BIN_DIR}/debian-i
 		${LOCAL_BIN_DIR}/debian-i passwd
@@ -430,22 +448,34 @@ if [ "${LINUX_DISTRO}" = "debian" ]; then
     configure_command_not_found
 fi
 ############################
+mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
+cd ${HOME}/.oh-my-zsh/custom/plugins
+#########
 echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
 echo "github.com/zsh-users/zsh-syntax-highlighting"
-rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null
-mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
-
-git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting || git clone --depth=1 git://github.com/zsh-users/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-
+#########
+if [ -e "zsh-syntax-highlighting/.git" ]; then
+    cd zsh-syntax-highlighting
+    git reset --hard
+    git pull --depth=1 --allow-unrelated-histories
+    cd ..
+else
+    rm -rf zsh-syntax-highlighting 2>/dev/null
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting || git clone --depth=1 git://github.com/zsh-users/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+fi
 grep -q 'zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ${HOME}/.zshrc
 #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${HOME}/.zshrc
 #######################
 echo "正在克隆zsh-autosuggestions自动补全插件..."
 echo "github.com/zsh-users/zsh-autosuggestions"
-rm -rf ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null
-
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestionszsh-autosuggestions
-
+if [ -e "zsh-autosuggestions/.git" ]; then
+    cd zsh-autosuggestions
+    git reset --hard
+    git pull --depth=1 --allow-unrelated-histories
+else
+    rm -rf zsh-autosuggestions 2>/dev/null
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 git://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestionszsh-autosuggestions
+fi
 grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
 #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
 #####################################
