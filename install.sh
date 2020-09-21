@@ -1769,7 +1769,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		            Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
 				EndOfArchMirrors
 	        #curl -Lo 'archlinuxarm-keyring.pkg.tar.xz' https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/core/aarch64/archlinuxarm-keyring-20140119-1-any.pkg.tar.xz
-	        #pacman-key --init
 	        #pacman -U --noconfirm ./archlinuxarm-keyring.pkg.tar.xz
 	        #rm -fv ./archlinuxarm-keyring.pkg.tar.xz
 	        #pacman-key --populate archlinux manjaro
@@ -1797,6 +1796,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#################
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Arch" ]; then
 	    arch_linux_mirror_list
+		#case $(uname -m) in
+		#armv7l)
+		pacman-key --init
+	    pacman-key --populate
+		# ;;
+		#esac 
 	elif [ "$(cat /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
 	    manjaro_mirror_list
 			pacman-key --init
