@@ -1447,7 +1447,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	*) cd ${CURRENT_TMOE_DIR} ;;
 	esac
 	###########
-	ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT' | tail -n 20
+	ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
 	############
 		case ${TMOE_CHROOT} in
 	    true)
@@ -1666,7 +1666,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#配置国内镜像源
 	if [ "$(uname -m)" = "mips" ]; then
 	    chattr +i /etc/apt/sources.list
-	    sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen
+	    sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen 2>/dev/null
 	fi
 	##################
 	if ! grep -Eqi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
