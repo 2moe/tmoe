@@ -1396,7 +1396,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	}
 	###########
 	LOCAL_BIN_DIR='/usr/local/bin'
-	if [ -e "${HOME}/.vnc/xstartup" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
+	if [ -e "/etc/X11/xinit/Xsession" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
 		check_tmoe_locale_file
 		cd /usr/local/etc/tmoe-linux/git
 		git fetch --depth=1
