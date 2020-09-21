@@ -550,7 +550,8 @@ install_evince() {
 }
 ##########
 install_okular() {
-    DEPENDENCY_02="okular"
+    DEPENDENCY_01="okular"
+    DEPENDENCY_02="okular-extra-backends"
     beta_features_quick_install
 }
 ##############
@@ -575,7 +576,7 @@ tmoe_reader_app_menu() {
         "3" "typora(markdown编辑器)" \
         "4" "Xournal(手写编辑PDF)" \
         "5" "evince(GNOME-pdf文档阅读器)" \
-        "6" "okular(KDE-pdf文档阅读器)" \
+        "6" "okular(KDE-pdf/epub文档阅读器)" \
         "7" "kchmviewer(KDE下的chm查看器)" \
         "8" "pdfchain(pdf编辑器,支持合并,分割,加密)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
