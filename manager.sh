@@ -1507,9 +1507,9 @@ tar_zcvf_zsh_dir() {
 		rm -f gitstatus_bak.tar.gz
 	fi
 	cd ${DEBIAN_CHROOT}
-	${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh
+	${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh 2>/dev/null
 	if [ ! -e "${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz" ]; then
-		${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz root/.cache/gitstatus
+		${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz root/.cache/gitstatus 2>/dev/null
 	fi
 }
 #####################
