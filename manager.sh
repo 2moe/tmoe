@@ -3089,7 +3089,8 @@ debian_buster_arm64_xfce_recovery_package() {
 #################
 install_debian_sid_via_tuna() {
 	if [ "${LINUX_DISTRO}" != 'iSH' ]; then
-		bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh')"
+		bash -c "$(curl -fLsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' |
+			sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@')"
 	else
 		curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh' | bash
 	fi
@@ -3143,6 +3144,7 @@ install_debian_buster_via_tuna() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s:/sid:/${DISTRO_CODE}:g" |
 		sed "s:-sid:-${DISTRO_CODE}:g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
 		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
@@ -3154,6 +3156,7 @@ install_debian_testing_via_tuna() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s:/sid:/${DISTRO_CODE}:g" |
 		sed "s:-sid:-${DISTRO_CODE}:g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
 		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
 		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
@@ -4473,6 +4476,7 @@ custom_ubuntu_version() {
 ubuntu_distro_x64_model() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/focal/${DISTRO_CODE}/g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
@@ -4483,6 +4487,7 @@ ubuntu_distro_x64_model() {
 ubuntu_distro_arm_model() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/focal/${DISTRO_CODE}/g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
@@ -4500,6 +4505,7 @@ linux_distro_common_model_01() {
 linux_distro_common_model_02() {
 	bash -c "$(curl -LfsS raw.githubusercontent.com/2moe/tmoe-linux/master/install.sh |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
