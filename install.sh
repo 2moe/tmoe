@@ -1831,7 +1831,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
 	    fi
-		bash /usr/local/bin/nofetch
+		bash /usr/local/bin/neofetch
 	    bash zsh.sh
 	    # ash -c "$(wget --no-check-certificate -O- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
 	}
