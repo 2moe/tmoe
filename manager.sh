@@ -1503,7 +1503,7 @@ enable_root_mode() {
 ##########################
 tar_zcvf_zsh_dir() {
 	cd ${DEBIAN_CHROOT}
-	${TMOE_PREFIX} tar -zpcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh root/.cache/gitstatus
+	${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh root/.cache/gitstatus
 }
 #####################
 backup_tmoe_container_zsh() {
