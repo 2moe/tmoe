@@ -33,6 +33,7 @@ modify_other_vnc_conf() {
         "7" "fix vnc crash修复VNC闪退" \
         "8" "window scaling factor调整屏幕缩放比例(仅支持xfce)" \
         "9" "display port显示端口" \
+        "10" "WSL pulseaudio(only for windows)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ###########
@@ -50,6 +51,7 @@ modify_other_vnc_conf() {
     7) fix_vnc_dbus_launch ;;
     8) modify_xfce_window_scaling_factor ;;
     9) modify_tightvnc_display_port ;;
+    10) nano ${TMOE_LINUX_DIR}/wsl_pulse_audio ;;
     esac
     #########
     press_enter_to_return
@@ -873,6 +875,7 @@ configure_vnc_xstartup() {
     #chmod +x ./xstartup
     rm ./xstartup 2>/dev/null
     ln -svf ${XSESSION_FILE} ./xstartup
+    cp -f ${TMOE_TOOL_DIR}/gui/wsl_pulse_audio ${TMOE_LINUX_DIR}
     congigure_xvnc
     first_configure_startvnc
 }

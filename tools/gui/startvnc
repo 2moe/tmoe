@@ -5,7 +5,9 @@ TMOE_VNC_DISPLAY_NUMBER=1
 export USER="$(whoami)"
 export HOME="${HOME}"
 export PULSE_SERVER=127.0.0.1
-TMOE_TOOL_DIR='/usr/local/etc/tmoe-linux/git/tools'
+TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 ########################
 check_tmoe_locale() {
@@ -60,7 +62,7 @@ tmoe_vnc_preconfigure() {
         fix_vnc_permissions
     fi
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-        . /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
+        . ${TMOE_LINUX_DIR}/wsl_pulse_audio
     fi
 }
 ###############

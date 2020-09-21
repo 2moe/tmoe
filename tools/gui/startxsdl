@@ -3,7 +3,9 @@
 stopvnc -non-stop-dbus 2>/dev/null
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4713
-TMOE_TOOL_DIR='/usr/local/etc/tmoe-linux/git/tools'
+TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 ###############
 check_tmoe_locale() {
@@ -25,7 +27,7 @@ notes_of_xserver() {
 ####################
 start_windows_xserver() {
 	VCXSRV_DISPLAY_PORT=37985
-	. /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
+	. ${TMOE_LINUX_DIR}/wsl_pulse_audio
 	cd "/mnt/c/Users/Public/Downloads/VcXsrv/"
 	#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
 	/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null

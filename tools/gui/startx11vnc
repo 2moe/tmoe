@@ -7,11 +7,13 @@ TMOE_X11_PASSWD_FILE=${HOME}/.vnc/x11passwd
 TMOE_X11_RESOLUTION=1440x720
 TCP_PORT_FOR_RFB_PROTOCOL=5901
 X11VNC_CURSOR_ARROW=2
-TMOE_TOOL_DIR='/usr/local/etc/tmoe-linux/git/tools'
+TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 #################
 start_windows_10_pulse_audio_server() {
-    . /usr/local/etc/tmoe-linux/git/tools/gui/wsl_pulse_audio
+    . ${TMOE_LINUX_DIR}/wsl_pulse_audio
 }
 #####################
 start_tmoe_x11vnc() {
