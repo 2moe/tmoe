@@ -1503,7 +1503,10 @@ enable_root_mode() {
 ##########################
 tar_zcvf_zsh_dir() {
 	cd ${DEBIAN_CHROOT}
-	${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh root/.cache/gitstatus
+	${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh
+	if [ ! -e "${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz" ]; then
+		${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz root/.cache/gitstatus
+	fi
 }
 #####################
 backup_tmoe_container_zsh() {
@@ -1514,7 +1517,7 @@ backup_tmoe_container_zsh() {
 	else
 		FILE_SIZE=$(du -s zsh_bak.tar.gz | awk '{print $1}')
 		if ((${FILE_SIZE} < 512)); then
-			rm -f zsh_bak.tar.gz
+			rm -f zsh_bak.tar.gz gitstatus_bak.tar.gz
 			tar_zcvf_zsh_dir
 		else
 			FILE_TIME=$(date -d "$(stat -c '%y' zsh_bak.tar.gz)" +"%Y%m")
@@ -1524,14 +1527,14 @@ backup_tmoe_container_zsh() {
 				case ${FILE_TIME_02} in
 				20200921)
 					rm -f zsh_bak.tar.gz
-					tar_zcvf_zsh_dir
+					#tar_zcvf_zsh_dir
 					;;
 				*) ;;
 				esac
 				;;
 			*)
-				rm -f zsh_bak.tar.gz
-				tar_zcvf_zsh_dir
+				rm -f zsh_bak.tar.gz gitstatus_bak.tar.gz
+				#tar_zcvf_zsh_dir
 				;;
 			esac
 		fi
