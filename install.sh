@@ -1796,12 +1796,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#################
 	if [ "$(cat /etc/issue | cut -c 1-4)" = "Arch" ]; then
 	    arch_linux_mirror_list
-		#case $(uname -m) in
-		#armv7l)
 		pacman-key --init
 	    pacman-key --populate
-		# ;;
-		#esac 
+		if [ -e "/etc/mkinitcpio.d/linux-armv7.preset" ]; then
+			pacman -Rsc --noconfirm linux-armv7
+		fi
 	elif [ "$(cat /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
 	    manjaro_mirror_list
 			pacman-key --init

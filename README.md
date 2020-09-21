@@ -488,7 +488,7 @@ Containers other than debian may only support mainstream architectures, not s390
 | Ubuntu | \*<=19.10 |   ✓    |    ✓    |
 | Kali   |     ✓     |   ✓    |    X    |
 | Arch   |     X     |   ✓    |    X    |
-| Fedora |  \*<=29   | \*<=29 |    ✓    |
+| Fedora |  \*<=29   | \*<=31 |    ✓    |
 | Alpine |     ✓     |   ✓    |    ✓    |
 | CentOS |   \*<=7   | \*<=7  |    ✓    |
 

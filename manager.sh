@@ -2836,7 +2836,7 @@ tmoe_qemu_user_chart() {
 			║ 4 ║ Arch       ║  X     ║   ✓    ║   X     ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
-			║ 5 ║ Fedora     ║ *<=29  ║ *<=29  ║  ✓      ║
+			║ 5 ║ Fedora     ║ *<=29  ║ *<=31  ║  ✓      ║
 			║---║------------║--------║--------║---------║
 			║   ║            ║        ║        ║         ║
 			║ 6 ║  Alpine    ║  ✓     ║    ✓   ║   ✓     ║
@@ -4663,11 +4663,32 @@ install_fedora_gnu_linux_distro() {
 	#touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='fedora'
 	case "${ARCH_TYPE}" in
-	armhf | armel | i386)
+	armel | i386)
 		#echo "检测到您使用的是armhf架构，将为您降级至Fedora 29"
 		#DISTRO_CODE='29'
 		#linux_distro_common_model_01
 		distro_does_not_support
+		;;
+	armhf)
+		DISTRO_CODE=31
+		CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
+		cd ${HOME}
+		FEDORA_ROOTFS_FILE='fedora-31_armhf-rootfs.tar.xz'
+		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
+		if [ ! -e "${FEDORA_ROOTFS_FILE}" ]; then
+			rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
+			git clone --depth=1 https://gitee.com/ak2/fedora-31_armhf ${FEDORA_TEMP_FOLDER}
+			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${HOME}
+			rm -rvf ${FEDORA_TEMP_FOLDER}
+		fi
+		echo 'Verifying sha256hash...'
+		echo '正在校验sha256哈希值...'
+		echo "${CORRENT_SHA256SUM}"
+		LOCAL_SHA256SUM=$(sha256sum ${FEDORA_ROOTFS_FILE} | cut -c 1-64)
+		case ${LOCAL_SHA256SUM} in
+		"${LOCAL_SHA256SUM}") echo "Congratulations！检测到sha256哈希值与源文件一致。" ;;
+		esac
+		linux_distro_common_model_01
 		;;
 	*)
 		#OLD_STABLE_VERSION='31'
