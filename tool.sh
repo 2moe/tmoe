@@ -223,6 +223,19 @@ check_architecture() {
 	TRUE_ARCH_TYPE=${ARCH_TYPE}
 }
 #####################
+ubuntu_ppa_and_locale_gen() {
+	case "${DEBIAN_DISTRO}" in
+	ubuntu)
+		if [ ! $(command -v add-apt-repository) ]; then
+			apt install -y software-properties-common
+		fi
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
+			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+		fi
+		;;
+	esac
+}
+#############
 tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -240,14 +253,7 @@ tmoe_locale_settings() {
 		if [ ! -e "/usr/sbin/locale-gen" ]; then
 			apt install -y locales
 		fi
-		if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-			if [ ! $(command -v add-apt-repository) ]; then
-				apt install -y software-properties-common
-			fi
-			if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-			fi
-		fi
+		ubuntu_ppa_and_locale_gen
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 			cd /etc
 			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
