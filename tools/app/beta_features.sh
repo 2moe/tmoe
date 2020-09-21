@@ -568,7 +568,6 @@ install_pdfchain() {
 tmoe_reader_app_menu() {
     RETURN_TO_WHERE='tmoe_reader_app_menu'
     DEPENDENCY_01=""
-
     TMOE_APP=$(whiptail --title "TXET & OFFICE" --menu \
         "Which software do you want to install？" 0 50 0 \
         "1" "calibre(电子书转换器和库管理)" \
