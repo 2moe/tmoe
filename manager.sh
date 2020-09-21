@@ -1483,7 +1483,10 @@ backup_tmoe_container_zsh() {
 			FILE_TIME=$(date -d "$(stat -c '%y' zsh_bak.tar.gz)" +"%Y%m")
 			case ${FILE_TIME} in
 			"$(date +%Y%m)") ;;
-			*) tar_zcvf_zsh_dir ;;
+			*)
+				rm -f zsh_bak.tar.gz
+				tar_zcvf_zsh_dir
+				;;
 			esac
 		fi
 	fi

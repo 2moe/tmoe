@@ -80,6 +80,13 @@ if [ ! $(command -v sudo) ]; then
     esac
 fi
 #######################
+if [ ! $(command -v tar) ]; then
+    case "${LINUX_DISTRO}" in
+    gentoo) ;;
+    *) DEPENDENCIES="${DEPENDENCIES} tar" ;;
+    esac
+fi
+################
 if [ ! -e /usr/bin/wget ]; then
     if [ "${LINUX_DISTRO}" = "gentoo" ]; then
         DEPENDENCIES="${DEPENDENCIES} net-misc/wget"
@@ -487,24 +494,36 @@ configure_fzf_tab_plugin() {
             sed -i '/fzf-tab.zsh/d' "${HOME}/.zshrc"
             git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" || git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
             chmod 755 -R "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
-            grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" "${HOME}/.zshrc"
         fi
     fi
+    grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" "${HOME}/.zshrc"
 }
 ##############
-if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "alpine" ] || [ "${LINUX_DISTRO}" = "redhat" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
-    configure_fzf_tab_plugin
-fi
+case ${LINUX_DISTRO} in
+debian | arch | redhat | alpine) configure_fzf_tab_plugin ;;
+*) sed -i '/fzf-tab.zsh/d' ~/.zshrc ;;
+esac
 #######################
-if grep -Eq 'Bionic|buster|stretch|jessie|Xenial' /etc/os-release; then
+sed_zsh_plugin_01() {
     sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
-fi
-
-if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
+    sed -i 's/plugins=(git extract z)/plugins=(git extract)/g' ~/.zshrc
+}
+#########
+sed_zsh_plugin_02() {
     sed -i 's/plugins=(git)/plugins=(git extract z)/g' ~/.zshrc
-else
-    sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
-fi
+    sed -i 's/plugins=(git extract)/plugins=(git extract z)/g' ~/.zshrc
+}
+#########
+case ${LINUX_DISTRO} in
+debian | arch | alpine)
+    if grep -Eq 'Bionic|buster|stretch|jessie|Xenial' /etc/os-release; then
+        sed_zsh_plugin_01
+    else
+        sed_zsh_plugin_02
+    fi
+    ;;
+*) sed_zsh_plugin_01 ;;
+esac
 ############################
 if [ -f "/tmp/.openwrtcheckfile" ]; then
     ADMINACCOUNT="$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"

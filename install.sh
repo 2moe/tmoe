@@ -1831,9 +1831,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
 	    fi
+		echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
 		bash /usr/local/bin/neofetch
-	    bash zsh.sh
-	    # ash -c "$(wget --no-check-certificate -O- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
+	    exec bash zsh.sh
+		exit 0
 	}
 	########################
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
@@ -1886,7 +1887,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
 
-	echo "您已成功安装GNU/Linux,之后可以输${YELLOW}debian${RESET}来进入debian system."
+	echo "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
 	echo "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
 	echo '正在执行优化步骤，请勿退出!'
 	echo 'Optimization steps are in progress. Do not exit!'
