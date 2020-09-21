@@ -23,8 +23,9 @@ gui_main() {
 }
 #############################
 modify_other_vnc_conf() {
-    MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 15 60 7 \
-        "1" "Pulse server address音频地址" \
+    #15 60 7
+    MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 0 0 0 \
+        "1" "Pulseaudio server address音频地址" \
         "2" "VNC password密码" \
         "3" "switch tiger/tightvnc切换服务端" \
         "4" "Edit xsession 编辑xsession" \
@@ -3493,11 +3494,12 @@ xrdp_desktop_enviroment() {
 }
 #############
 configure_xrdp() {
+    #16 50 7
     #进入xrdp配置文件目录
     RETURN_TO_WHERE='configure_xrdp'
     cd /etc/xrdp/
     TMOE_OPTION=$(
-        whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 16 50 7 \
+        whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？\nWhich configuration do you want to modify?" 0 0 0 \
             "1" "One-key conf 初始化一键配置" \
             "2" "指定xrdp桌面环境" \
             "3" "xrdp port 修改xrdp端口" \
