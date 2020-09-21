@@ -1,4 +1,20 @@
 #!/usr/bin/env bash
+###################
+RB_RED=$(printf '\033[38;5;196m')
+RB_ORANGE=$(printf '\033[38;5;202m')
+RB_YELLOW=$(printf '\033[38;5;226m')
+RB_GREEN=$(printf '\033[38;5;082m')
+RB_BLUE=$(printf '\033[38;5;021m')
+RB_INDIGO=$(printf '\033[38;5;093m')
+RB_VIOLET=$(printf '\033[38;5;163m')
+
+RED=$(printf '\033[31m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
+##################
 if grep -Eq 'debian|ubuntu' "/etc/os-release"; then
     LINUX_DISTRO='debian'
     if grep -q 'ubuntu' /etc/os-release; then
@@ -109,18 +125,22 @@ if [ ! -z "${DEPENDENCIES}" ]; then
     echo "正在安装相关软件包及其依赖..."
 
     if [ "${LINUX_DISTRO}" = "debian" ]; then
+        echo "${GREEN}apt install -y${RESET} ${BLUE}${DEPENDENCIES}${RESET}"
         apt update
         apt install -y ${DEPENDENCIES} || apt install -y command-not-found zsh git wget whiptail
 
     elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        echo "${GREEN}apk add${RESET} ${BLUE}${DEPENDENCIES}${RESET}"
         apk add ${DEPENDENCIES}
         #apk add xz newt tar zsh git wget bash zsh-vcs pv
 
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        echo "${GREEN}pacman -Syu --noconfirm${RESET} ${BLUE}${DEPENDENCIES}${RESET}"
         pacman -Syu --noconfirm ${DEPENDENCIES}
 
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        dnf install -y ${DEPENDENCIES} || yum install -y ${DEPENDENCIES}
+        echo "${GREEN}dnf install -y${RESET} ${BLUE}${DEPENDENCIES}${RESET}"
+        dnf install -y --skip-broken ${DEPENDENCIES} || yum install -y --skip-broken ${DEPENDENCIES}
         #dnf install -y zsh git pv wget xz tar newt || yum install -y zsh git pv wget xz tar newt
 
     elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
@@ -129,12 +149,14 @@ if [ ! -z "${DEPENDENCIES}" ]; then
 
     elif [ "${LINUX_DISTRO}" = "void" ]; then
         xbps-install -S
+        echo "${GREEN}xbps-install -Sy${RESET} ${BLUE}${DEPENDENCIES}${RESET}"
         xbps-install -y ${DEPENDENCIES}
 
     elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
         emerge -avk ${DEPENDENCIES}
 
     elif [ "${LINUX_DISTRO}" = "suse" ]; then
+        echo "${GREEN}zypper in -y${RESET} ${BLUE}${DEPENDENCIES}${RESET}"
         zypper in -y ${DEPENDENCIES}
 
     elif [ "${LINUX_DISTRO}" = "slackware" ]; then
@@ -207,20 +229,6 @@ git_clone_oh_my_zsh
 if [ $(command -v chsh) ]; then
     chsh -s /usr/bin/zsh || chsh -s /bin/zsh
 fi
-RB_RED=$(printf '\033[38;5;196m')
-RB_ORANGE=$(printf '\033[38;5;202m')
-RB_YELLOW=$(printf '\033[38;5;226m')
-RB_GREEN=$(printf '\033[38;5;082m')
-RB_BLUE=$(printf '\033[38;5;021m')
-RB_INDIGO=$(printf '\033[38;5;093m')
-RB_VIOLET=$(printf '\033[38;5;163m')
-
-RED=$(printf '\033[31m')
-GREEN=$(printf '\033[32m')
-YELLOW=$(printf '\033[33m')
-BLUE=$(printf '\033[34m')
-BOLD=$(printf '\033[1m')
-RESET=$(printf '\033[m')
 printf '%s         %s__      %s           %s        %s       %s     %s__   %s\n' ${RB_RED} ${RB_ORANGE} ${RB_YELLOW} ${RB_GREEN} ${RB_BLUE} ${RB_INDIGO} ${RB_VIOLET} ${RB_RESET}
 printf '%s  ____  %s/ /_    %s ____ ___  %s__  __  %s ____  %s_____%s/ /_  %s\n' ${RB_RED} ${RB_ORANGE} ${RB_YELLOW} ${RB_GREEN} ${RB_BLUE} ${RB_INDIGO} ${RB_VIOLET} ${RB_RESET}
 printf '%s / __ \%s/ __ \  %s / __ `__ \%s/ / / / %s /_  / %s/ ___/%s __ \ %s\n' ${RB_RED} ${RB_ORANGE} ${RB_YELLOW} ${RB_GREEN} ${RB_BLUE} ${RB_INDIGO} ${RB_VIOLET} ${RB_RESET}
