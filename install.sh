@@ -1447,7 +1447,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	*) cd ${CURRENT_TMOE_DIR} ;;
 	esac
 	###########
-	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+	ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT' | tail -n 20
 	############
 		case ${TMOE_CHROOT} in
 	    true)

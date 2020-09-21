@@ -385,7 +385,7 @@ cat >.zlogin <<-'EndOfFile'
 	esac
     cd ${HOME}
     #############
-	ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
+	ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT' | tail -n 20
     ###########
     case ${TMOE_CHROOT} in
     true)
