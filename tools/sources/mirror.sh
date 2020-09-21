@@ -102,7 +102,7 @@ china_university_mirror_station() {
     RETURN_TO_WHERE='china_university_mirror_station'
     SOURCES_LIST=$(
         whiptail --title "软件源列表" --menu \
-            "您想要切换为哪个镜像源呢？\n目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 0 50 0 \
+            "您想要切换为哪个镜像站呢？\n目前仅支持debian,ubuntu,kali,arch,manjaro,fedora和alpine" 0 50 0 \
             "1" "清华大学mirrors.tuna.tsinghua.edu.cn" \
             "2" "tuna姊妹站,北京外国语大学mirrors.bfsu.edu.cn" \
             "3" "tuna兄弟站opentuna.cn" \

@@ -169,8 +169,13 @@ press_enter_to_continue() {
 auto_check() {
 	if [ "$(uname -o)" = "Android" ]; then
 		LINUX_DISTRO='Android'
+		TERMUX_STORAGE='true'
 		if [ ! -h "/data/data/com.termux/files/home/storage/shared" ]; then
-			termux-setup-storage
+			if [ $(command -v termux-setup-storage) ]; then
+				termux-setup-storage
+			else
+				TERMUX_STORAGE='false'
+			fi
 		fi
 		android_termux
 	elif [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
@@ -668,6 +673,10 @@ android_termux() {
 		DEPENDENCIES="${DEPENDENCIES} tar"
 	fi
 
+	if [ ! -e ${PREFIX}/bin/termux-setup-storage ]; then
+		DEPENDENCIES="${DEPENDENCIES} termux-tools"
+	fi
+
 	if [ ! -e ${PREFIX}/bin/whiptail ]; then
 		DEPENDENCIES="${DEPENDENCIES} dialog"
 	fi
@@ -703,7 +712,11 @@ android_termux() {
 				read opt
 				case $opt in
 				y* | Y* | "")
-					sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.ustc.edu.cn/termux stable main@' '/data/data/com.termux/files/usr/etc/apt/sources.list'
+					if grep -q '^deb.*termux stable main' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+						sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.ustc.edu.cn/termux stable main@' '/data/data/com.termux/files/usr/etc/apt/sources.list'
+					else
+						sed -i '$ a\deb https://mirrors.ustc.edu.cn/termux stable main' '/data/data/com.termux/files/usr/etc/apt/sources.list'
+					fi
 					apt_dist_upgrade
 					press_enter_to_return
 					android_termux
@@ -716,7 +729,9 @@ android_termux() {
 		notes_of_tmoe_package_installation
 		apt update
 		apt install -y ${DEPENDENCIES}
-
+		case ${TERMUX_STORAGE} in
+		false) termux-setup-storage ;;
+		esac
 	fi
 	##The vnc sound repair script from andronix has been slightly modified and optimized.
 	if ! grep -q 'anonymous=1' ${HOME}/../usr/etc/pulse/default.pa; then
@@ -3527,10 +3542,15 @@ tmoe_modify_vnc_conf() {
 #########
 tmoe_switch_sources_list() {
 	if [ "${LINUX_DISTRO}" = 'Android' ]; then
+		check_android_version
 		tmoe_sources_list_manager
 		#termux_tuna_sources_list
 	else
-		gnu_linux_mirror_source_manager
+		if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
+			bash ${TMOE_GIT_DIR}/tool.sh --mirror-list
+		else
+			gnu_linux_mirror_source_manager
+		fi
 	fi
 }
 ##########
@@ -3872,6 +3892,7 @@ check_android_version() {
 			echo "检测到您当前的安卓系统版本低于7,如需换源,则请选择USTC。" >${ANDROID_6_FILE}
 			cat ${ANDROID_6_FILE}
 			echo "Your current Android system version is lower than 7."
+			echo "旧版Android可能无法使用本功能。"
 			press_enter_to_continue
 		fi
 	fi
@@ -3899,7 +3920,6 @@ termux_original_system_gui() {
 }
 ###############
 android_termux_tmoe_area() {
-	check_android_version
 	RETURN_TO_MENU='android_termux_tmoe_area'
 	RETURN_TO_WHERE='android_termux_tmoe_area'
 	#17 60 6
