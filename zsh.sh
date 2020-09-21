@@ -206,9 +206,21 @@ git_clone_oh_my_zsh() {
         git pull --depth=1 --allow-unrelated-histories 2>/dev/null
     else
         rm -rf ${OH_MY_ZSH_DIR} 2>/dev/null
-        git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh || git clone --depth=1 git://github.com/ohmyzsh/ohmyzsh.git ${HOME}/.oh-my-zsh
+        git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ${OH_MY_ZSH_DIR} || git clone --depth=1 git://github.com/ohmyzsh/ohmyzsh.git ${OH_MY_ZSH_DIR}
     fi
     #chmod 755 -R "${HOME}/.oh-my-zsh"
+
+    ZINIT_DIR="${HOME}/.zinit/bin"
+    echo "github.com/zdharma/zinit"
+    if [ -e "${ZINIT_DIR}/.git" ]; then
+        cd ${ZINIT_DIR}
+        git reset --hard 2>/dev/null
+        git pull --depth=1 --allow-unrelated-histories 2>/dev/null
+    else
+        rm -rf ${ZINIT_DIR} 2>/dev/null
+        git clone --depth=1 https://gitee.com/ak2/zinit.git ${ZINIT_DIR} || git clone --depth=1 git://github.com/zdharma/zinit.git ${ZINIT_DIR}
+    fi
+
     if [ ! -f "${HOME}/.zshrc" ]; then
         cp "${HOME}/.oh-my-zsh/templates/zshrc.zsh-template" "${HOME}/.zshrc" || curl -Lo "${HOME}/.zshrc" 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template'
         #https://github.com/ohmyzsh/ohmyzsh/raw/master/templates/zshrc.zsh-template
@@ -398,7 +410,7 @@ cat >.zlogin <<-'EndOfFile'
 	esac
     cd ${HOME}
     #############
-	ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
+    #ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
     ###########
     case ${TMOE_CHROOT} in
     true)

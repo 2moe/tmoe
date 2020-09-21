@@ -571,6 +571,7 @@ cat_tmoe_chroot_script() {
 			else
 				cat ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 			fi
+			ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
 		    TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 		    PROC_FD_PATH="/proc/self/fd"
 		    #########
@@ -906,6 +907,7 @@ creat_proot_startup_script() {
 			else
 				cat ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 			fi
+			ps -e 2>/dev/null | grep -Ev 'bash|zsh' | tail -n 20
 		    #pulseaudio --kill 2>/dev/null &
 		    #为加快启动速度，此处不重启音频服务
 		    pulseaudio --start 2>/dev/null &
@@ -1452,7 +1454,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	*) cd ${CURRENT_TMOE_DIR} ;;
 	esac
 	###########
-	ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
+	#ps -e 2>/dev/null | grep -Ev 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
 	############
 		case ${TMOE_CHROOT} in
 	    true)
