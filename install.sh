@@ -1060,9 +1060,14 @@ fix_gnu_linux_chroot_exec() {
 }
 ###########
 ZSH_BAK_FILE="${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz"
-if [ -e "${ZSH_BAK_FILE}" ]; then
-	cp -f ${ZSH_BAK_FILE} ${DEBIAN_CHROOT}/tmp 2>/dev/null
-fi
+GIT_STATUS_FILE="${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz "
+for i in ${ZSH_BAK_FILE} ${GIT_STATUS_FILE}; do
+	if [ -e "${i}" ]; then
+		cp -f ${i} ${DEBIAN_CHROOT}/tmp 2>/dev/null
+	fi
+done
+unset i
+
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	TMOE_CHROOT='true'
 	creat_chroot_startup_script

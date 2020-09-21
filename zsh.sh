@@ -167,10 +167,15 @@ mkdir -p /run/dbus
 ##############
 git_clone_oh_my_zsh() {
     ZSH_BAK_FILE='/tmp/zsh_bak.tar.gz'
-    if [ -e "${ZSH_BAK_FILE}" ]; then
-        tar -pzxvf ${ZSH_BAK_FILE} -C /
-        rm -f ${ZSH_BAK_FILE}
-    fi
+    GIT_STATUS_FILE="/tmp/gitstatus_bak.tar.gz"
+    for i in ${ZSH_BAK_FILE} ${GIT_STATUS_FILE}; do
+        if [ -e "${i}" ]; then
+            tar -pzxvf ${i} -C /
+            rm -f ${i}
+        fi
+    done
+    unset i
+
     OH_MY_ZSH_DIR="${HOME}/.oh-my-zsh"
     echo "github.com/ohmyzsh/ohmyzsh"
     if [ -e "${OH_MY_ZSH_DIR}/.git" ]; then

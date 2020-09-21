@@ -1506,7 +1506,7 @@ tar_zcvf_zsh_dir() {
 	if ((${FILE_SIZE_02} < 256)); then
 		rm -f gitstatus_bak.tar.gz
 	fi
-	cd ${DEBIAN_CHROOT}
+	cd ${DEBIAN_CHROOT} 2>/dev/null
 	${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/zsh_bak.tar.gz root/.oh-my-zsh root/.p10k.zsh 2>/dev/null
 	if [ ! -e "${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz" ]; then
 		${TMOE_PREFIX} tar -Ppzcvf ${CONFIG_FOLDER}/tmoe-container-zsh-bak/gitstatus_bak.tar.gz root/.cache/gitstatus 2>/dev/null
