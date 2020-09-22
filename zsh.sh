@@ -487,6 +487,30 @@ fi
 mkdir -p ${HOME}/.oh-my-zsh/custom/plugins
 cd ${HOME}/.oh-my-zsh/custom/plugins
 #########
+configure_fzf_tab_plugin() {
+    if [ $(command -v fzf) ]; then
+        echo "正在克隆fzf-tab自动补全插件..."
+        echo "github.com/Aloxaf/fzf-tab"
+        if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
+            sed -i '/fzf-tab.zsh/d' "${HOME}/.zshrc"
+            git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" || git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
+            chmod 755 -R "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
+        fi
+        grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" "${HOME}/.zshrc"
+    else
+        sed -i '/fzf-tab\/fzf-tab.zsh/d' ~/.zshrc
+    fi
+}
+##############
+case ${LINUX_DISTRO} in
+redhat)
+    case ${REDHAT_DISTRO} in
+    fedora) ;;
+    *) sed -i '/fzf-tab\/fzf-tab.zsh/d' ~/.zshrc ;;
+    esac
+    ;;
+esac
+#######################
 echo "正在克隆zsh-syntax-highlighting语法高亮插件..."
 echo "github.com/zsh-users/zsh-syntax-highlighting"
 #########
@@ -515,34 +539,6 @@ fi
 grep -q '/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ${HOME}/.zshrc >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ${HOME}/.zshrc
 #echo -e "\nsource ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${HOME}/.zshrc
 #####################################
-configure_fzf_tab_plugin() {
-    if [ $(command -v fzf) ]; then
-        echo "正在克隆fzf-tab自动补全插件..."
-        echo "github.com/Aloxaf/fzf-tab"
-        if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
-            sed -i '/fzf-tab.zsh/d' "${HOME}/.zshrc"
-            git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" || git clone --depth=1 git://github.com/Aloxaf/fzf-tab.git "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
-            chmod 755 -R "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab"
-        fi
-    fi
-    grep -q 'custom/plugins/fzf-tab/fzf-tab.zsh' "${HOME}/.zshrc" >/dev/null 2>&1 || sed -i "$ a\source ${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh" "${HOME}/.zshrc"
-}
-##############
-case ${LINUX_DISTRO} in
-debian | arch | redhat | alpine)
-    configure_fzf_tab_plugin
-    ;;
-*) sed -i '/fzf-tab\/fzf-tab.zsh/d' ~/.zshrc ;;
-esac
-case ${LINUX_DISTRO} in
-redhat)
-    case ${REDHAT_DISTRO} in
-    fedora) ;;
-    *) sed -i '/fzf-tab\/fzf-tab.zsh/d' ~/.zshrc ;;
-    esac
-    ;;
-esac
-#######################
 sed_zsh_plugin_01() {
     sed -i 's/plugins=(git)/plugins=(git extract)/g' ~/.zshrc
     sed -i 's/plugins=(git extract z)/plugins=(git extract)/g' ~/.zshrc
