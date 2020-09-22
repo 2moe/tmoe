@@ -54,15 +54,10 @@ DEPENDENCIES=""
 if [ ! -e /bin/bash ]; then
     DEPENDENCIES="${DEPENDENCIES} bash"
 fi
-
-if [ ! -e "/usr/lib/command-not-found" ]; then
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCIES="${DEPENDENCIES} command-not-found"
-    fi
-fi
 ##################
 if [ "${LINUX_DISTRO}" = "debian" ]; then
     if [ ! -f "/tmp/.openwrtcheckfile" ]; then
+        #if [ ! -e "/usr/lib/command-not-found" ]; then
         if [ ! -d /usr/share/command-not-found ]; then
             DEPENDENCIES="${DEPENDENCIES} command-not-found"
         fi
@@ -187,7 +182,7 @@ chmod 777 /usr/local/bin/debian-i
 #########################
 mkdir -p /run/dbus
 ##############
-git_clone_oh_my_zsh() {
+restore_git_status() {
     ZSH_BAK_FILE='/tmp/zsh_bak.tar.gz'
     GIT_STATUS_FILE="/tmp/gitstatus_bak.tar.gz"
     for i in ${ZSH_BAK_FILE} ${GIT_STATUS_FILE}; do
@@ -197,7 +192,9 @@ git_clone_oh_my_zsh() {
         fi
     done
     unset i
-
+}
+#############
+git_clone_oh_my_zsh() {
     OH_MY_ZSH_DIR="${HOME}/.oh-my-zsh"
     echo "github.com/ohmyzsh/ohmyzsh"
     if [ -e "${OH_MY_ZSH_DIR}/.git" ]; then

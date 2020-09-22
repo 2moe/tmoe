@@ -1546,7 +1546,7 @@ backup_tmoe_container_zsh() {
 }
 #########################
 remove_gnu_linux_container() {
-	backup_tmoe_container_zsh
+	#backup_tmoe_container_zsh
 	cd ${HOME}
 	unmount_proc_dev
 	for i in dev dev/shm dev/pts proc sys storage/emulated/0/* media/sd media/tf; do

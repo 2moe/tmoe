@@ -620,7 +620,7 @@ cat_tmoe_chroot_script() {
 		    ########
 		    #PS1='\u:\w$ '
 		    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "TERM=xterm-256color" "\$@"
-		    for i in dev proc sys dev/pts dev/shm; do
+		    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
 		        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 		            case \${i} in
 		            dev) mount_01 ;;
@@ -640,6 +640,7 @@ cat_tmoe_chroot_script() {
 		                fi
 		                mount_01
 		                ;;
+					etc/gitstatus) su -c "mount -o bind ${CONFIG_FOLDER}/gitstatus ${DEBIAN_CHROOT}/\${i}" ;;
 		            esac
 		        fi
 		    done
@@ -782,6 +783,8 @@ creat_chroot_startup_script() {
 	###############
 	#此处若不创建，将有可能导致chromium无法启动。
 	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/run/shm
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
+	${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
 	cat_tmoe_chroot_script
 }
@@ -943,6 +946,7 @@ creat_proot_startup_script() {
 		    set -- "--mount=\${PROC_FD_PATH}/0:/dev/stdin" "\$@"
 		    set -- "--mount=\${PROC_FD_PATH}/1:/dev/stdout" "\$@"
 		    set -- "--mount=\${PROC_FD_PATH}/2:/dev/stderr" "\$@"
+		    set -- "--mount=${CONFIG_FOLDER}/gitstatus:/root/.cache/gitstatus" "\$@"
 		    #勿删test注释
 		    #test03set -- "--qemu=qemu-x86_64-staic" "\$@"
 		    set -- "--mount=/dev/urandom:/dev/random" "\$@"
@@ -1069,6 +1073,10 @@ for i in ${ZSH_BAK_FILE} ${GIT_STATUS_FILE}; do
 	fi
 done
 unset i
+
+if [ ! -e "${CONFIG_FOLDER}/gitstatus" ]; then
+	mkdir -p ${CONFIG_FOLDER}/gitstatus
+fi
 
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	TMOE_CHROOT='true'
