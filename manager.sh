@@ -1741,6 +1741,8 @@ backup_gnu_linux_container() {
 	check_backup_file
 	BACKUP_FILE="${CONFIG_FOLDER}/chroot_container"
 	check_backup_file
+	BACKUP_FILE="${CONFIG_FOLDER}/gitstatus"
+	check_backup_file
 
 	case ${TMOE_CHROOT} in
 	true) ;;

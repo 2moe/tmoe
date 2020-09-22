@@ -783,8 +783,8 @@ creat_chroot_startup_script() {
 	###############
 	#此处若不创建，将有可能导致chromium无法启动。
 	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/run/shm
-	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
-	${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/etc/gitstatus
+	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
 	cat_tmoe_chroot_script
 }

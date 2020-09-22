@@ -194,7 +194,14 @@ restore_git_status() {
     unset i
 }
 #############
+copy_git_status() {
+    if [ -e "/etc/gitstatus" ]; then
+        mkdir -p ${HOME}/.cache
+        cp -rf /etc/gitstatus ${HOME}/.cache
+    fi
+}
 git_clone_oh_my_zsh() {
+    copy_git_status
     OH_MY_ZSH_DIR="${HOME}/.oh-my-zsh"
     echo "github.com/ohmyzsh/ohmyzsh"
     if [ -e "${OH_MY_ZSH_DIR}/.git" ]; then
