@@ -2133,7 +2133,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	####################
 	if [ ! "$(command -v lolcat)" ];then
 		echo "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
-		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || dnf install -y --skip-broken lolcat 2>/dev/null
+		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
 	fi
 	echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 	echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
@@ -2240,7 +2240,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 	    #curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
 		#curl -Lo /etc/yum.repos.d/CentOS-Base.repo https://mirrors.huaweicloud.com/repository/conf/CentOS-8-anon.repo
-		dnf install -y epel-release
+		[[ $(command -v dnf) ]] || yum install -y dnf
+		dnf install -y epel-release || yum install -y epel-release
 		#dnf update
 		cp -a /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
 	    cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
