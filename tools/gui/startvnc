@@ -21,8 +21,8 @@ check_tmoe_locale() {
 }
 ###########
 check_current_user_name_and_group() {
-    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
+    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
     if [ -z "${CURRENT_USER_GROUP}" ]; then
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
@@ -34,7 +34,7 @@ fix_vnc_permissions() {
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
     ${CURRENT_USER_NAME}) ;;
     *)
-        echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        echo "检测到${HOME}/.vnc/passwd文件所属非当前用户（${CURRENT_USER_NAME}），为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
         sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc"
         for i in ".ICEauthority" ".Xauthority"; do
@@ -58,9 +58,7 @@ tmoe_vnc_preconfigure() {
             debian-i -passwd
         fi
     fi
-    if [ ${HOME} != '/root' ]; then
-        fix_vnc_permissions
-    fi
+    fix_vnc_permissions
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         . ${TMOE_LINUX_DIR}/wsl_pulse_audio
     fi

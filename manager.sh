@@ -73,8 +73,8 @@ check_tmoe_container_chroot() {
 }
 ######
 check_current_user_name_and_group() {
-	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
 	if [ -z "${CURRENT_USER_GROUP}" ]; then
 		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
 	fi
@@ -637,40 +637,23 @@ android_termux() {
 	TMOE_REMOVAL_COMMAND='apt purge -y'
 	DEPENDENCIES=""
 
-	if [ ! -e ${PREFIX}/bin/pv ]; then
-		DEPENDENCIES="${DEPENDENCIES} pv"
-	fi
-
-	if [ ! -e ${PREFIX}/bin/git ]; then
-		DEPENDENCIES="${DEPENDENCIES} git"
-	fi
+	for i in curl git pv grep pulseaudio proot tar; do
+		if [ ! -e "${PREFIX}/bin/${i}" ]; then
+			DEPENDENCIES="${DEPENDENCIES} ${i}"
+		fi
+	done
+	unset i
 
 	if [ ! -e ${PREFIX}/bin/termux-audio-info ]; then
 		DEPENDENCIES="${DEPENDENCIES} termux-api"
-	fi
-
-	if [ ! -e ${PREFIX}/bin/pulseaudio ]; then
-		DEPENDENCIES="${DEPENDENCIES} pulseaudio"
-	fi
-
-	if [ ! -e ${PREFIX}/bin/grep ]; then
-		DEPENDENCIES="${DEPENDENCIES} grep"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/aria2c ]; then
 		DEPENDENCIES="${DEPENDENCIES} aria2"
 	fi
 
-	if [ ! -e ${PREFIX}/bin/proot ]; then
-		DEPENDENCIES="${DEPENDENCIES} proot"
-	fi
-
 	if [ ! -e ${PREFIX}/bin/xz ]; then
 		DEPENDENCIES="${DEPENDENCIES} xz-utils"
-	fi
-
-	if [ ! -e ${PREFIX}/bin/tar ]; then
-		DEPENDENCIES="${DEPENDENCIES} tar"
 	fi
 
 	if [ ! -e ${PREFIX}/bin/termux-setup-storage ]; then
@@ -683,10 +666,6 @@ android_termux() {
 
 	if [ ! -e ${PREFIX}/bin/pkill ]; then
 		DEPENDENCIES="${DEPENDENCIES} procps"
-	fi
-
-	if [ ! -e ${PREFIX}/bin/curl ]; then
-		DEPENDENCIES="${DEPENDENCIES} curl"
 	fi
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
@@ -2819,7 +2798,7 @@ tmoe_qemu_user_static() {
 tmoe_qemu_user_chart() {
 	cat <<-'ENDofTable'
 		下表中的所有系统均支持x64和arm64
-		*表示仅旧版支持
+		\*表示仅旧版支持
 			╔═══╦════════════╦════════╦════════╦═════════╦
 			║   ║Architecture║        ║        ║         ║
 			║   ║----------- ║ x86    ║armhf   ║ppc64el  ║

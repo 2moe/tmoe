@@ -35,6 +35,15 @@ tuna_mirror() {
 			cat ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
 		fi
 	fi
+	case ${TMOE_DOCKER} in
+	true)
+		if grep -q 'Gentoo' /etc/os-release 2>/dev/null; then
+			emerge-webrsync
+		elif grep -q 'openSUSE' /etc/os-release 2>/dev/null; then
+			zypper in -y glibc-locale glibc-i18ndata
+		fi
+		;;
+	esac
 }
 #########
 tmoe_locale_gen() {

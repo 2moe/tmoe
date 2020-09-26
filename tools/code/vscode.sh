@@ -356,7 +356,7 @@ install_vscode_official() {
     if [ -e "/usr/bin/code" ]; then
         echo '检测到您已安装VSCode,请手动输以下命令启动'
         #echo 'code --user-data-dir=${HOME}/.vscode'
-        echo 'code --user-data-dir=${HOME}/.vsode'
+        echo 'code --user-data-dir=${HOME}/.vscode'
         echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
         #echo "${YELLOW}按回车键返回。${RESET}"
         #echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"

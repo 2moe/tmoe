@@ -8,7 +8,7 @@ install_dxvk() {
     dxvk-setup
 }
 ###########
-wine_depencies() {
+wine_dependencies() {
     DEPENDENCY_01='wine winetricks q4wine'
     DEPENDENCY_02='playonlinux wine32'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -30,7 +30,7 @@ wine_depencies() {
 ##########
 install_wine64() {
     INSTALL_WINE='true'
-    wine_depencies
+    wine_dependencies
     beta_features_quick_install
     if [ "${ARCH_TYPE}" != "i386" ]; then
         cat <<-'EOF'
@@ -77,7 +77,7 @@ remove_wine_bin() {
         apt update
     fi
     INSTALL_WINE='false'
-    wine_depencies
+    wine_dependencies
     echo "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}"
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
 }

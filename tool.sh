@@ -411,7 +411,7 @@ check_dependencies() {
 	#manjaro基础容器里无grep
 	if [ ! $(command -v grep) ]; then
 		case "${LINUX_DISTRO}" in
-		gentoo) ;;
+		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/grep" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} grep" ;;
 		esac
 	fi
@@ -440,7 +440,7 @@ check_dependencies() {
 	################
 	if [ ! $(command -v nano) ]; then
 		case "${LINUX_DISTRO}" in
-		gentoo) ;;
+		gentoo) DEPENDENCIES="${DEPENDENCIES} app-editors/nano" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} nano" ;;
 		esac
 	fi
@@ -463,7 +463,7 @@ check_dependencies() {
 	#####################
 	if [ ! $(command -v sudo) ]; then
 		case "${LINUX_DISTRO}" in
-		gentoo) ;;
+		gentoo) DEPENDENCIES="${DEPENDENCIES} app-admin/sudo" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} sudo" ;;
 		esac
 	fi
@@ -471,7 +471,7 @@ check_dependencies() {
 	#centos8基础容器里无tar
 	if [ ! $(command -v tar) ]; then
 		case "${LINUX_DISTRO}" in
-		gentoo) ;;
+		gentoo) DEPENDENCIES="${DEPENDENCIES} app-arch/tar" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} tar" ;;
 		esac
 	fi
@@ -720,8 +720,8 @@ tmoe_linux_tool_upgrade() {
 	git pull origin master --allow-unrelated-histories
 	if [ "$?" != '0' ]; then
 		git fetch --all
-		git reset --hard origin/master
-		git pull origin master --allow-unrelated-histories
+		git reset --hard
+		git pull --allow-unrelated-histories
 	fi
 	if [ -e "/usr/local/bin/work-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh" /usr/local/bin

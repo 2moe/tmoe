@@ -2255,9 +2255,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #echo "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
 	    echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
 	    bash zsh.sh
-	    debian-i
-	    #bash zsh-i.sh
-	    #bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')" || bash -c "$(wget -qO- 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
+	    #debian-i
 	}
 	################
 	if ! grep -Eq 'debian|ubuntu' '/etc/os-release'; then
@@ -2278,7 +2276,7 @@ esac
 #####################
 check_current_user_name_and_group() {
 	CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
-	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1)
+	CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
 	if [ -z "${CURRENT_USER_GROUP}" ]; then
 		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
 	fi
