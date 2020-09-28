@@ -1320,7 +1320,7 @@ curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.s
 sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
 curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
 chmod +x zsh.sh zsh-i.sh
-${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
+${TMOE_CHROOT_PREFIX} mv zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
 #chmod u+x ./*
 ###########
 debian_stable_sources_list_and_gpg_key() {
@@ -1416,7 +1416,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 		cd /usr/local/etc/tmoe-linux/git
 		git fetch --depth=1
 		git reset --hard origin/master
-		git pull origin master --allow-unrelated-histories
+		git pull --rebase --stat origin master --allow-unrelated-histories
 		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 		chmod +x ${LOCAL_BIN_DIR}/debian-i
 		${LOCAL_BIN_DIR}/debian-i passwd

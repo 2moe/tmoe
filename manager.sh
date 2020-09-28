@@ -1668,7 +1668,7 @@ clean_up_container_garbage() {
 		backup_system
 	fi
 
-	CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.local root/.cache root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.local root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
+	CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.cache root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
 	if [ -e "root/.vnc/passwd" ]; then
 		tree ${CONTAINER_GARBAGE_FILES} 2>/dev/null
 	fi
@@ -2358,11 +2358,11 @@ update_tmoe_linux_manager() {
 	if [ -e "${TMOE_GIT_DIR}/.git" ]; then
 		cd ${TMOE_GIT_DIR}
 		git reset --hard origin/master
-		git pull origin master --allow-unrelated-histories
+		git pull --rebase --stat origin master --allow-unrelated-histories
 		if [ "$?" != '0' ]; then
 			git fetch --all
 			git reset --hard origin/master
-			git pull origin master --allow-unrelated-histories
+			git pull --rebase --stat origin master --allow-unrelated-histories
 		fi
 	fi
 	#echo "${TMOE_GIT_URL}"
@@ -2798,7 +2798,7 @@ tmoe_qemu_user_static() {
 tmoe_qemu_user_chart() {
 	cat <<-'ENDofTable'
 		下表中的所有系统均支持x64和arm64
-		\*表示仅旧版支持
+		*表示仅旧版支持
 			╔═══╦════════════╦════════╦════════╦═════════╦
 			║   ║Architecture║        ║        ║         ║
 			║   ║----------- ║ x86    ║armhf   ║ppc64el  ║

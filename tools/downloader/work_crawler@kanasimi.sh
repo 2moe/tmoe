@@ -256,7 +256,7 @@ remove_kanasimi_work_crawler_tool() {
 upgrade_kanasimi_work_crawler_tool() {
     cd ${WORK_CRAWLER_FOLDER}
     git reset --hard
-    git pull
+    git pull --rebase --stat --allow-unrelated-histories
     cd /usr/local/bin
     curl -Lv -o work-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/work_crawler@kanasimi.sh'
     chmod +x work-i

@@ -466,7 +466,7 @@ install_bilibili_electron() {
         cd ${TMOE_BILI_DIR}
         #git fetch --depth=1 origin build
         git reset --hard origin/build
-        git pull origin build --allow-unrelated-histories
+        git pull --rebase --stat origin build --allow-unrelated-histories
     else
         rm -rv ${TMOE_BILI_DIR} 2>/dev/null
         mkdir -p /opt

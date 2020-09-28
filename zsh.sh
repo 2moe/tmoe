@@ -106,7 +106,7 @@ creat_zlogin_file() {
 			cd /usr/local/etc/tmoe-linux/git
 			git fetch --depth=1
 			git reset --hard
-			git pull --depth=1 --allow-unrelated-histories
+			git pull --rebase --stat --depth=1 --allow-unrelated-histories
 			curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 			chmod +x ${LOCAL_BIN_DIR}/debian-i
 			${LOCAL_BIN_DIR}/debian-i passwd
