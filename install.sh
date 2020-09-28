@@ -1416,7 +1416,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 		cd /usr/local/etc/tmoe-linux/git
 		git fetch --depth=1
 		git reset --hard origin/master
-		git pull --rebase --stat origin master --allow-unrelated-histories
+		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 		chmod +x ${LOCAL_BIN_DIR}/debian-i
 		${LOCAL_BIN_DIR}/debian-i passwd

@@ -717,11 +717,11 @@ tmoe_linux_tool_upgrade() {
 	check_tmoe_git_folder
 	cd ${TMOE_GIT_DIR}
 	git reset --hard origin/master
-	git pull --rebase --stat origin master --allow-unrelated-histories
+	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	if [ "$?" != '0' ]; then
 		git fetch --all
 		git reset --hard
-		git pull --rebase --stat --allow-unrelated-histories
+		git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
 	fi
 	if [ -e "/usr/local/bin/work-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh" /usr/local/bin

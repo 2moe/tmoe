@@ -187,7 +187,7 @@ install_fcitx5_material_color_theme() {
         git clone --depth=1 https://github.com/hosxy/Fcitx5-Material-Color.git ${MATERIAL_COLOR_FOLDER}
     else
         cd ${MATERIAL_COLOR_FOLDER}
-        git pull --rebase --stat  --allow-unrelated-histories
+        git pull --rebase --stat  --allow-unrelated-histories || git rebase --skip
     fi
 
     mkdir -p ${FCIITX5_CLASSUI_CONF_PATH}

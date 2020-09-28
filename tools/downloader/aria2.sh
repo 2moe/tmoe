@@ -1543,8 +1543,7 @@ update_aria2_bt_tracker() {
     else
         cd trackerslist
         git reset --hard
-        git pull --rebase --stat --allow-unrelated-histories
-        #|| git pull --rebase --stat --depth=1 origin master --allow-unrelated-histories
+        git pull --rebase --stat --depth=1 --allow-unrelated-histories || git rebase --skip
     fi
     list=$(cat ./trackers_all.txt | awk NF | sed ":a;N;s/\n/,/g;ta")
     if grep -q 'bt-tracker=' "${TMOE_ARIA2_FILE}"; then
