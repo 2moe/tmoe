@@ -72,7 +72,8 @@ remove_gnu_linux_container() {
 	case $opt in
 	y* | Y* | "")
 		chmod 777 -R ${DEBIAN_CHROOT} || sudo chmod 777 -R ${DEBIAN_CHROOT}
-		rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt "${CONFIG_FOLDER}/chroot_container" 2>/dev/null || sudo rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt "${CONFIG_FOLDER}/chroot_container" 2>/dev/null
+		#non-rm "${CONFIG_FOLDER}/chroot_container"
+		rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
 		printf "%s\n" "如需删除（通用的）启动脚本，则请手动输${RED}rm -f${RESET} ${BLUE}${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startx11vnc${RESET}"
 		sed -i '/alias debian=/d ; /alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 		source profile >/dev/null 2>&1
