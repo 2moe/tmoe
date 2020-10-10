@@ -988,7 +988,6 @@ install_netease_163_cloud_music() {
         else
             LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/'
             download_debian_cn_repo_deb_file_model_01
-            #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/netease-cloud-music_1.0.0%2Brepack.debiancn-1_i386.deb"
         fi
         beta_features_install_completed
     fi
