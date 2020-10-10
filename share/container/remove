@@ -72,12 +72,8 @@ remove_gnu_linux_container() {
 	case $opt in
 	y* | Y* | "")
 		chmod 777 -R ${DEBIAN_CHROOT} || sudo chmod 777 -R ${DEBIAN_CHROOT}
-		rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc "${CONFIG_FOLDER}/chroot_container" 2>/dev/null || sudo rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc "${CONFIG_FOLDER}/chroot_container" 2>/dev/null
-		if [ -d "${HOME}/debian_arm64" ]; then
-			printf "%s\n" "检测到残留文件夹，正在移除..."
-			chmod 777 -R "${HOME}/debian_arm64"
-			rm -rf "${HOME}/debian_arm64" 2>/dev/null || sudo rm -rfv "${HOME}/debian_arm64"
-		fi
+		rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt "${CONFIG_FOLDER}/chroot_container" 2>/dev/null || sudo rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt "${CONFIG_FOLDER}/chroot_container" 2>/dev/null
+		printf "%s\n" "如需删除（通用的）启动脚本，则请手动输${RED}rm -f${RESET} ${BLUE}${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startx11vnc${RESET}"
 		sed -i '/alias debian=/d ; /alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 		source profile >/dev/null 2>&1
 		printf '%s\n' 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
