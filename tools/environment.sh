@@ -1074,6 +1074,7 @@ download_the_latest_electron() {
 fix_fedora_electron_libxssl() {
     case ${LINUX_DISTRO} in
     redhat) dnf install -y libXScrnSaver || yum install -y libXScrnSaver ;;
+    arch) [[ -e /usr/lib/libnss3.so ]] || pacman -Syu --noconfirm nss ;;
     esac
 }
 ##########
