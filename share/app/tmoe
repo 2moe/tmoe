@@ -163,7 +163,7 @@ start_tmoe_container() {
 	esac
 	if [[ -n ${EXEC_PROGRAM} ]]; then
 		case ${EXEC_PROGRAM} in
-		startx11vnc | startvvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
+		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
 		startxsdl)
 			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 			printf "%s\n" "Please wait 5s."
