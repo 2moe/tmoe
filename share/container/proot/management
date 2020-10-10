@@ -1,0 +1,261 @@
+#!/usr/bin/env bash
+############################################
+proot_management_menu() {
+	case ${TMOE_CHROOT} in
+	false) TMOE_TIPS_02='' ;;
+	*) TMOE_TIPS_02='\nchroot在未umount前remove将导致宿主系统重要数据被清空' ;;
+	esac
+	RETURN_TO_WHERE='proot_management_menu'
+	CURRENT_DIR="$(pwd)"
+	TMOE_CONTAINER_FORTUNE=true
+	TMOE_CONTAINER_HITOKOTO=true
+	proot_management_menu_en() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
+			"1" "start ${DEBIAN_FOLDER}" \
+			"2" "startvnc(tiger/tight)" \
+			"3" "startx11vnc" \
+			"4" "startnovnc" \
+			"5" "startxsdl" \
+			"6" "backup proot container" \
+			"7" "readme" \
+			"8" "install" \
+			"9" "umount & remove" \
+			"10" "space occupation" \
+			"0" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3)
+	}
+	proot_management_menu_cn() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
+			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
+			"2" "🐯 startvnc:启动tiger/tightvnc" \
+			"3" "⚔️ startx11vnc:启动x11vnc" \
+			"4" "🍬 启动novnc:在浏览器里连接vnc" \
+			"5" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+			"6" "🍹 backup 备份${CONTAINER_TYPE}容器" \
+			"7" "📡 commands 命令说明" \
+			"8" "🥤 install 安装" \
+			"9" "😏 umount & remove 卸载并移除" \
+			"10" "🍅 space occupation 空间占用大小" \
+			"0" "🌚 back 返回上级菜单" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) proot_management_menu_cn ;;
+	*) proot_management_menu_en ;;
+	esac
+	##############################
+	case "${SELECTED_GNU_LINUX}" in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1) normally_start_gnu_linux_distro ;;
+	2) start_gnu_linux_distro_tigervnc ;;
+	3) start_gnu_linux_distro_x11vnc ;;
+	4) install_web_novnc ;;
+	5) start_gnu_linux_distro_x ;;
+	6) backup_tmoe_gnu_linux_distro ;;
+	7) readme_of_gnu_linux_distro ;;
+	8) install_new_tmoe_gnu_linux_distro ;;
+	9) umount_and_remove_gnu_linux_distro ;;
+	10) du_sh_gnu_linux_distro ;;
+	esac
+	####################
+	case "${SELECTED_GNU_LINUX}" in
+	6 | 7 | 10)
+		press_enter_to_return
+		proot_management_menu
+		;;
+	9) ${RETURN_TO_MENU} ;;
+	esac
+	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
+}
+##############################
+readme_of_gnu_linux_distro() {
+	LONG_DISTRO_NAME=$(printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} | awk -F '-' '{print $1}')
+	LONG_DISTRO_CODE=$(printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} | awk -F '-' '{print $2}')
+	case ${LONG_DISTRO_NAME} in
+	arch) SHORT_DISTRO_NAME='a' ;;
+	alpine) SHORT_DISTRO_NAME='ap' ;;
+	armbian) SHORT_DISTRO_NAME='arm' ;;
+	centos) SHORT_DISTRO_NAME='c' ;;
+	debian) SHORT_DISTRO_NAME='d' ;;
+	fedora) SHORT_DISTRO_NAME='f' ;;
+	funtoo) SHORT_DISTRO_NAME='ft' ;;
+	gentoo) SHORT_DISTRO_NAME='g' ;;
+	kali) SHORT_DISTRO_NAME='k' ;;
+	mint) SHORT_DISTRO_NAME='mi' ;;
+	manjaro) SHORT_DISTRO_NAME='m' ;;
+	opensuse) SHORT_DISTRO_NAME='o' ;;
+	openwrt) SHORT_DISTRO_NAME='ow' ;;
+	raspbios) SHORT_DISTRO_NAME='r' ;;
+	slackware) SHORT_DISTRO_NAME='s' ;;
+	ubuntu) SHORT_DISTRO_NAME='u' ;;
+	void) SHORT_DISTRO_NAME='v' ;;
+	*) SHORT_DISTRO_NAME=${LONG_DISTRO_NAME} ;;
+	esac
+	case ${TMOE_CHROOT} in
+	true) SHORT_VIRT_TYPE='c' ;;
+	*) SHORT_VIRT_TYPE='p' ;;
+	esac
+	case "${LONG_DISTRO_CODE}" in
+	focal) SHORT_DISTRO_CODE='20.04' ;;
+	groovy) SHORT_DISTRO_CODE='20.10' ;;
+	sid) SHORT_DISTRO_CODE='s' ;;
+	bionic) SHORT_DISTRO_CODE='18.04' ;;
+	rolling) SHORT_DISTRO_CODE='r' ;;
+	"") SHORT_DISTRO_CODE="" ;;
+	*) SHORT_DISTRO_CODE=${LONG_DISTRO_CODE} ;;
+	esac
+	case ${ARCH_TYPE} in
+	amd64) SHORT_ARCH='x' ;;
+	arm64) SHORT_ARCH='a' ;;
+	armhf) SHORT_ARCH='h' ;;
+	armel) SHORT_ARCH='armel' ;;
+	i386) SHORT_ARCH='i' ;;
+	ppc*) SHORT_ARCH='p' ;;
+	s390*) SHORT_ARCH='s390' ;;
+	mips*) SHORT_ARCH='m' ;;
+	risc*) SHORT_ARCH='risc' ;;
+	esac
+	cat <<-EOF
+		${BOLD}${YELLOW}Full command:${RESET} ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
+		${BOLD}${YELLOW}Simplified command:${RESET}  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
+		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + tigervnc server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
+		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + x11vnc server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} x11${RESET}
+		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + X server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
+		The default ${YELLOW}login shell${RESET} is ${GREEN}zsh${RESET}, if you want to start ${BLUE}bash${RESET},then type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}
+		Start ${BLUE}ash${RESET} as a login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
+		--------------------
+		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
+		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
+		精简命令为  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
+		若您使用的是tmoe-zsh配置的环境，则可以进一步简化为 ${YELLOW}t ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
+		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}tigervnc server${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
+		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}x11vnc server${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} x11${RESET}
+		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}XSDL/VcXsrv${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
+		容器的默认${YELLOW}登陆SHELL${RESET}为${GREEN}zsh${RESET},若您需要使用其它${YELLOW}shell${RESET}，则请使用以下命令
+		临时使用${GREEN}bash${RESET}作为${YELLOW}登陆SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}  
+		临时使用${GREEN}ash${RESET}作为${YELLOW}登陆SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
+		--------------------
+		${BOLD}额外拓展功能${RESET}
+		${YELLOW}（补全功能）${RESET}说明${RESET}
+		${YELLOW}shell环境要求${RESET}：${GREEN}zsh${RESET}
+		The completion function exists separately as a zsh plugin, so bash and other shells are not supported.
+		仅支持${GREEN}zsh${RESET},${RED}不支持${RESET}${PURPLE}bash${RESET}
+
+		tmoe-zsh会自动加载tmoe补全插件，其他插件管理器需要手动加载。
+		zinit插件管理器配置补全插件：${GREEN}
+		[[ \$(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 ascompletion && zinit snippet ${TMOE_SHARE_DIR}/completion/_tmoe' ${HOME}/.zshrc
+		${RESET}
+		至于其他插件管理器，例如oh-my-zsh，因开发者并未进行测试，故请自行加载插件。
+		${BOLD}${YELLOW}TIPS OF TMOE COMPLETION PLUGIN${RESET}${RESET}
+		  1.在TMOE-ZSH配置的环境下,输${YELLOW}t${RESET},按下空格,再按下TAB键${BLUE}⇄${RESET}进行补全，输${GREEN}/${RESET}进行连续补全，在该模式下支持搜索发行版名称。
+		  2.在其他插件管理器配置的环境下，输入${YELLOW}tmoe${RESET},不按回车,按下TAB键${BLUE}⇄${RESET}进行补全.
+		  Type ${GREEN}tmoe${RESET}, then don't press ${RED}enter${RESET}, press Tab${BLUE}⇄${RESET} key to complete.
+	EOF
+}
+######
+install_web_novnc() {
+	source ${TMOE_SHARE_DIR}/app/novnc
+}
+if_container_is_not_installed() {
+	[[ -e ${DEBIAN_CHROOT} ]] || install_new_tmoe_gnu_linux_distro
+	case ${DEB_BOOT_STRAP} in
+	true) install_new_tmoe_gnu_linux_distro ;;
+	esac
+}
+git_pull_tmoe_linux() {
+	cd ${TMOE_GIT_DIR}
+	git reset --hard origin/master
+	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+	cd ${CURRENT_DIR}
+
+}
+normally_start_gnu_linux_distro() {
+	source ${CONFIG_FOLDER}/hitokoto.conf
+	case ${TMOE_CONTAINER_FORTUNE} in
+	true)
+		if [ $(command -v fortune) ]; then
+			fortune
+		elif [ -e /usr/games/fortune ]; then
+			/usr/games/fortune
+		fi
+		;;
+	esac
+	case ${TMOE_CONTAINER_HITOKOTO} in
+	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
+	esac
+	if_container_is_not_installed
+	cat_release_file
+	case $(uname -o) in
+	Android) termux-wake-lock 2>/dev/null ;;
+	esac
+	${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+}
+start_gnu_linux_distro_tigervnc() {
+	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
+	normally_start_gnu_linux_distro
+}
+start_gnu_linux_distro_x11vnc() {
+	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
+	normally_start_gnu_linux_distro
+}
+start_gnu_linux_distro_x() {
+	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
+	normally_start_gnu_linux_distro
+}
+install_new_tmoe_gnu_linux_distro() {
+	check_tmoe_completion_version
+	check_tmoe_completion
+	git_pull_tmoe_linux
+	case ${DISTRO_NAME} in
+	debian) check_debian_distro_code ;;
+	ubuntu) check_ubuntu_distro_code ;;
+	kali) install_kali_rolling_gnu_linux_distro ;;
+	arch) install_arch_linux_distro ;;
+	esac
+}
+umount_and_remove_gnu_linux_distro() {
+	source ${TMOE_SHARE_DIR}/container/remove
+}
+du_sh_gnu_linux_distro() {
+	printf "%s\n" "正在检测${BLUE}${DEBIAN_FOLDER}${RESET}占用空间大小..."
+	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT}
+	printf "%s\n" "${YELLOW}正在列出TOP30...${RESET}"
+	if [ -e "${DEBIAN_CHROOT}" ]; then
+		cd ${DEBIAN_CHROOT}
+		${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
+			-o -path="./root/sd" \
+			-o -path="./root/tf" \
+			-o -path="./root/termux" \
+			-o -path="./media/sd" \
+			-o -path="./media/termux" \
+			-o -path="./media/tf" \
+			-o -path="./sd" \
+			-o -path="./tf" \
+			-o -path="./dev" \
+			-o -path="./sys" \
+			-o -path="./system" \) -prune \
+			-type f -print0 2>/dev/null |
+			xargs -0 du |
+			sort -n |
+			tail -30 |
+			cut -f2 |
+			xargs -I{} du -sh {}
+	else
+		printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
+	fi
+}
+######################
+backup_tmoe_gnu_linux_distro() {
+	if [[ ! -e ${DEBIAN_CHROOT} ]]; then
+		cat <<-EOF
+			您${RED}尚未安装${RESET}${BLUE}${DEBIAN_FOLDER_CAPITAL}${RESET}容器
+			是否使用恢复容器的选项？
+		EOF
+		do_you_want_to_continue
+		source ${TMOE_SHARE_DIR}/compression/restore
+	else
+		source ${TMOE_SHARE_DIR}/compression/backup
+	fi
+}
+#####################
+proot_management_menu $@

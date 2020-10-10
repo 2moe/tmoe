@@ -13,16 +13,16 @@ XSESSION_FILE='/etc/X11/xinit/Xsession'
 check_tmoe_locale() {
     TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
-        TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+        TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
         export LANG="${TMOE_LANG}"
     else
-        export LANG="zh_CN.UTF-8"
+        export LANG="en_US.UTF-8"
     fi
 }
 ###########
 check_current_user_name_and_group() {
-    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
-    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
+    CURRENT_USER_NAME=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
+    CURRENT_USER_GROUP=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
     if [ -z "${CURRENT_USER_GROUP}" ]; then
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
@@ -34,7 +34,7 @@ fix_vnc_permissions() {
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
     ${CURRENT_USER_NAME}) ;;
     *)
-        echo "检测到${HOME}/.vnc/passwd文件所属非当前用户（${CURRENT_USER_NAME}），为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "检测到${HOME}/.vnc/passwd文件所属非当前用户（${CURRENT_USER_NAME}），为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
         sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc"
         for i in ".ICEauthority" ".Xauthority"; do
@@ -65,12 +65,12 @@ tmoe_vnc_preconfigure() {
 }
 ###############
 display_vnc_ip_addr() {
-    #CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+    #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-    echo "正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}"
     TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
     cat <<-EOF
+正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}
 The LAN VNC address 局域网地址${TMOE_IP_ADDR}
 EOF
 }

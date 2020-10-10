@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+##############################
+configure_tmoe_container_main() {
+    case $1 in
+    dns) tmoe_container_dns ;;
+    -menu | *) configure_tmoe_container ;;
+    esac
+}
+#############
+configure_tmoe_container() {
+    RETURN_TO_WHERE='configure_tmoe_container'
+    RETURN_TO_MENU='configure_tmoe_container'
+    TMOE_OPTION=$(whiptail --title "CONF AND MANUAL" --menu "You can view the manual or modify the container configuration here." 0 50 0 \
+        "1" "DNS 域名解析系统" \
+        "2" "hitokoto 一言" \
+        "3" "man mount" \
+        "4" "man umount" \
+        "5" "man x11vnc" \
+        "0" "🌚 Back 返回" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "") proot_container_menu ;;
+    1) tmoe_container_dns ;;
+    2) do_you_want_to_enable_hitokoto ;;
+    3) man_mount ;;
+    4) man_umount ;;
+    5) man_x11vnc ;;
+    esac
+    ####################
+    press_enter_to_return
+    configure_tmoe_container
+}
+##########
+check_man_db() {
+    [[ $(command -v man) ]] || ${TMOE_INSTALLATON_COMMAND} man
+    [[ $(command -v man) ]] || ${TMOE_INSTALLATON_COMMAND} man-db
+    [[ ! $(command -v man) ]] || check_x11vnc_git_manual
+}
+#########
+check_x11vnc_git_manual() {
+    if [[ ! -e ${TMOE_LINUX_DIR}/docs/.git ]]; then
+        mkdir -p ${TMOE_LINUX_DIR}
+        git clone --depth=1 -b main https://gitee.com/ak2/manual ${TMOE_LINUX_DIR}/docs
+    fi
+}
+#######
+man_mount() {
+    check_man_db
+    man ${TMOE_LINUX_DIR}/docs/mount.8
+}
+man_umount() {
+    check_man_db
+    man ${TMOE_LINUX_DIR}/docs/umount.8
+}
+man_x11vnc() {
+    check_man_db
+    man ${TMOE_LINUX_DIR}/docs/x11vnc.1
+}
+how_to_customize_dns() {
+    printf "%s\n %s\n" "When you enter the container, you can type ${GREEN}editor /etc/resolv.conf${RESET}" "or ${GREEN}nano /etc/resolv.conf${RESET} to modify the DNS configuration file."
+    printf "%s\n" "本功能仅适用于容器初始化配置，如需手动修改，则请在容器内部输入${GREEN}nano /etc/resolv.conf${RESET}"
+}
+#########
+tmoe_container_dns() {
+    RETURN_TO_WHERE='tmoe_container_dns'
+    DNS_NAME=''
+    TMOE_OPTION=$(whiptail --title "Please choose DNS" --menu "默认为第一项\nYou can choose cloudflare dns." 0 50 0 \
+        "1" "[240c::6666](CFIEC)" \
+        "2" "[2606:4700:4700::1111](CloudFlare)" \
+        "3" "[2001:4860:4860::8888](Google)" \
+        "4" "[2400:3200::1](Ali)" \
+        "5" "[2400:da00::6666](Baidu)" \
+        "6" "[2001:da8::666](Tsinghua-Tuna)" \
+        "7" "How to customize dns?" \
+        "0" "🌚 Back 返回" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "")
+        case ${RETURN_TO_MENU} in
+        "") configure_tmoe_container ;;
+        *) ${RETURN_TO_MENU} ;;
+        esac
+        ;;
+    1) DNS_NAME='cfiec' ;;
+    2) DNS_NAME='cloudflare' ;;
+    3) DNS_NAME='google' ;;
+    4) DNS_NAME='ali' ;;
+    5) DNS_NAME='baidu' ;;
+    6) DNS_NAME='tuna' ;;
+    7) how_to_customize_dns ;;
+    esac
+    [[ -z ${DNS_NAME} ]] || cp -vf ${TMOE_SHARE_DIR}/configuration/dns/${DNS_NAME} ${CONFIG_FOLDER}/default-dns.conf
+    ####################
+    press_enter_to_return
+    case ${RETURN_TO_MENU} in
+    "") tmoe_container_dns ;;
+    *) ${RETURN_TO_MENU} ;;
+    esac
+}
+##############
+install_fortunes() {
+    if [[ ! $(command -v fortune) ]] && [ ! -e /usr/games/fortune ]; then
+        printf "${GREEN}%s ${PURPLE}%s${RESET}\n" "${TMOE_INSTALLATON_COMMAND}" "fortune"
+        ${TMOE_INSTALLATON_COMMAND} fortunes 2>/dev/null
+        ${TMOE_INSTALLATON_COMMAND} fortune-mod 2>/dev/null
+        ${TMOE_INSTALLATON_COMMAND} fortune 2>/dev/null
+        case ${TMOE_LANG} in
+        zh_*UTF-8)
+            ${TMOE_INSTALLATON_COMMAND} fortunes-zh 2>/dev/null
+            install_fortunes_cn
+            ;;
+        esac
+    fi
+    printf "${YELLOW}%s${RESET}\n" "Enable complete"
+}
+install_fortunes_cn() {
+    case ${LINUX_DISTRO} in
+    Android)
+        THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
+        THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | tail -n 1 | awk -F '=' '{print $3}' | cut -d '"' -f 2)"
+        THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
+        TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP
+        mkdir -p ${TEMP_FOLDER}
+        cd ${TEMP_FOLDER}
+        aria2c --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
+        dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./
+        cd usr/share/games/fortunes
+        for i in $(readlink ./*); do
+            cp -vf ${i} ${PREFIX}/share/games/fortunes
+        done
+        cd ${CURRENT_DIR} || cd ${HOME}
+        rm -rv ${TEMP_FOLDER}
+        ;;
+    esac
+}
+##############
+do_you_want_to_enable_hitokoto() {
+    if (whiptail --title "HITOKOTO AND FORTUNE" --yes-button "YES" --no-button "NO" --yesno "DO YOU WANT TO ENABLE HITOKOTO?\n是否需要启用一言？♪(^∇^*) " 9 50); then
+        cat >${CONFIG_FOLDER}/hitokoto.conf <<-EOF
+			TMOE_CONTAINER_FORTUNE=true
+			TMOE_CONTAINER_HITOKOTO=true
+		EOF
+        install_fortunes
+    else
+        cat >${CONFIG_FOLDER}/hitokoto.conf <<-EOF
+			TMOE_CONTAINER_FORTUNE=false
+			TMOE_CONTAINER_HITOKOTO=false
+		EOF
+        if [[ $(command -v fortune) ]] || [ -e /usr/games/fortune ]; then
+            ${TMOE_REMOVAL_COMMAND} fortune
+            ${TMOE_REMOVAL_COMMAND} fortunes
+            ${TMOE_REMOVAL_COMMAND} fortunes-zh
+        fi
+    fi
+}
+###########
+#不包含$@

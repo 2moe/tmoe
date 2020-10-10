@@ -2,8 +2,8 @@
 tmoe_uefi_boot_manager() {
 	
 	if [ ! $(command -v efibootmgr) ]; then
-		echo "本工具能对UEFI开机引导的顺序进行排序，但不支持容器和WSL"
-		echo "按回车键确认安装"
+		printf "%s\n" "本工具能对UEFI开机引导的顺序进行排序，但不支持容器和WSL"
+		printf "%s\n" "按回车键确认安装"
 		do_you_want_to_continue
 		DEPENDENCY_01=''
 		DEPENDENCY_02='efibootmgr'
@@ -42,13 +42,13 @@ tmoe_backup_efi() {
 	if [ -e "${EFI_BACKUP_NAME}" ]; then
 		stat ${EFI_BACKUP_NAME}
 		ls -lh ${EFI_BACKUP_NAME}
-		echo "备份文件已存在，是否覆盖？"
+		printf "%s\n" "备份文件已存在，是否覆盖？"
 		do_you_want_to_continue
 	fi
 
-	echo "正在将${CURRENT_EFI_DISK}备份至${CONFIG_FOLDER}/${EFI_BACKUP_NAME}"
+	printf "%s\n" "正在将${CURRENT_EFI_DISK}备份至${CONFIG_FOLDER}/${EFI_BACKUP_NAME}"
 	dd <${CURRENT_EFI_DISK} >${EFI_BACKUP_NAME}
-	echo "备份完成"
+	printf "%s\n" "备份完成"
 	stat ${EFI_BACKUP_NAME}
 	ls -lh $(pwd)/${EFI_BACKUP_NAME}
 }
@@ -60,32 +60,32 @@ tmoe_restore_efi() {
 	fdisk -l 2>&1 | grep ${CURRENT_EFI_DISK}
 	EFI_BACKUP_NAME='efi_backup.img'
 	ls -lh /boot/efi/EFI
-	echo "您真的要将${EFI_BACKUP_NAME}烧录至${CURRENT_EFI_DISK}？这将重置${CURRENT_EFI_DISK}的所有数据"
-	echo "请谨慎操作"
+	printf "%s\n" "您真的要将${EFI_BACKUP_NAME}烧录至${CURRENT_EFI_DISK}？这将重置${CURRENT_EFI_DISK}的所有数据"
+	printf "%s\n" "请谨慎操作"
 	do_you_want_to_continue
-	echo "正在将${CONFIG_FOLDER}/${EFI_BACKUP_NAME}烧录至${CURRENT_EFI_DISK}"
+	printf "%s\n" "正在将${CONFIG_FOLDER}/${EFI_BACKUP_NAME}烧录至${CURRENT_EFI_DISK}"
 	dd <${EFI_BACKUP_NAME} >${CURRENT_EFI_DISK}
-	echo "恢复完成"
+	printf "%s\n" "恢复完成"
 	stat ${EFI_BACKUP_NAME}
 	ls -lh $(pwd)/${EFI_BACKUP_NAME}
 }
 ##########
 remove_boot_mgr() {
 	if [ $? != 0 ]; then
-		echo "本工具不支持您当前所处的环境，是否卸载？"
-		echo "Do you want to remove it?"
+		printf "%s\n" "本工具不支持您当前所处的环境，是否卸载？"
+		printf "%s\n" "Do you want to remove it?"
 		do_you_want_to_continue
 		${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_02}
 		beta_features
 	else
-		echo "修改完成，重启系统生效"
+		printf "%s\n" "修改完成，重启系统生效"
 	fi
 }
 ###########
 modify_first_uefi_boot_item() {
 	cd /tmp/
-	efibootmgr | grep -Ev 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 1 | sed 's@Boot@@g' >.tmoe-linux_cache.01
-	efibootmgr | grep -Ev 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 2 | sed 's/ //g' | sed 's/^/\"&/g' | sed 's/$/&\"/g' >.tmoe-linux_cache.02
+	efibootmgr | egrep -v 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 1 | sed 's@Boot@@g' >.tmoe-linux_cache.01
+	efibootmgr | egrep -v 'BootCurrent:|Timeout:|BootOrder:' | cut -d '*' -f 2 | sed 's/ //g' | sed 's/^/\"&/g' | sed 's/$/&\"/g' >.tmoe-linux_cache.02
 	TMOE_UEFI_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
 	TMOE_UEFI_BOOT_ITEM=$(whiptail --title "BOOT ITEM" --menu \
@@ -101,7 +101,7 @@ modify_first_uefi_boot_item() {
 	else
 		NEW_TMOE_UEFI_BOOT_ORDER=$(efibootmgr | grep 'BootOrder:' | cut -d ':' -f 2 | awk '{print $1}' | sed "s@,${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@${TMOE_UEFI_BOOT_ITEM}@@" | sed "s@^@${TMOE_UEFI_BOOT_ITEM},&@")
 	fi
-	echo "已将启动规则修改为${NEW_TMOE_UEFI_BOOT_ORDER}"
+	printf "%s\n" "已将启动规则修改为${NEW_TMOE_UEFI_BOOT_ORDER}"
 	efibootmgr -o ${NEW_TMOE_UEFI_BOOT_ORDER}
 	remove_boot_mgr
 }
@@ -109,18 +109,18 @@ modify_first_uefi_boot_item() {
 custom_uefi_boot_order() {
 	TARGET=$(whiptail --inputbox "$(efibootmgr | sed 's@Boot0@0@g' | sed 's@* @:@g')\n请输入启动顺序规则,以半角逗号分开,当前为${CURRENT_UEFI_BOOT_ORDER}\nPlease enter the order, separated by commas." 0 0 --title "BOOT ORDER" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
-		#echo "检测到您取消了操作"
+		#printf "%s\n" "检测到您取消了操作"
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 	else
-		echo "错误的规则将会导致系统无法正常引导，请确保您的输入无误"
-		echo "您输入的规则为${TARGET}"
-		echo "若无误，则按回车键确认"
-		echo "If it is correct, press Enter to confirm"
+		printf "%s\n" "错误的规则将会导致系统无法正常引导，请确保您的输入无误"
+		printf "%s\n" "您输入的规则为${TARGET}"
+		printf "%s\n" "若无误，则按回车键确认"
+		printf "%s\n" "If it is correct, press Enter to confirm"
 		do_you_want_to_continue
-		echo "已将启动规则修改为${TARGET}"
+		printf "%s\n" "已将启动规则修改为${TARGET}"
 		efibootmgr -o ${TARGET}
 		remove_boot_mgr
 	fi
@@ -176,8 +176,8 @@ tmoe_system_app_menu() {
 tmoe_linux_sudo_user_group_management() {
 	RETURN_TO_WHERE='tmoe_linux_sudo_user_group_management'
 	cd /tmp/
-	cat /etc/passwd | grep -Ev 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
-	cat /etc/passwd | grep -Ev 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
+	sed -n p /etc/passwd | egrep -v 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
+	sed -n p /etc/passwd | egrep -v 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
 	TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
 	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
@@ -191,9 +191,9 @@ tmoe_linux_sudo_user_group_management() {
 
 	SUDO_YES='back返回'
 	SUDO_RETURN='true'
-	if [ $(cat /etc/sudoers | awk '{print $1}' | grep ${TMOE_USER_NAME}) ]; then
+	if [ $(sed -n p /etc/sudoers | awk '{print $1}' | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/sudoers文件中"
-	elif [ $(cat /etc/group | grep sudo | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
+	elif [ $(sed -n p /etc/group | grep sudo | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/group文件中"
 	else
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}可能不在sudo用户组里"
@@ -223,9 +223,9 @@ del_tmoe_sudo() {
 	fi
 
 	if [ "$?" = '0' ]; then
-		echo "${YELLOW}${TMOE_USER_NAME}${RESET}小可爱非常伤心（；´д｀）ゞ，因为您将其移出了${BLUE}sudo${RESET}用户组"
+		printf "%s\n" "${YELLOW}${TMOE_USER_NAME}${RESET}小可爱非常伤心（；´д｀）ゞ，因为您将其移出了${BLUE}sudo${RESET}用户组"
 	else
-		echo "Sorry,移除${RED}失败${RESET}"
+		printf "%s\n" "Sorry,移除${RED}失败${RESET}"
 	fi
 }
 #################
@@ -237,9 +237,9 @@ add_tmoe_sudo() {
 	#fi
 
 	if [ "$?" = '0' ]; then
-		echo "Congratulations,已经将${YELLOW}${TMOE_USER_NAME}${RESET}小可爱添加至${BLUE}sudo${RESET}用户组(｡･∀･)ﾉﾞ"
+		printf "%s\n" "Congratulations,已经将${YELLOW}${TMOE_USER_NAME}${RESET}小可爱添加至${BLUE}sudo${RESET}用户组(｡･∀･)ﾉﾞ"
 	else
-		echo "Sorry,添加${RED}失败${RESET}"
+		printf "%s\n" "Sorry,添加${RED}失败${RESET}"
 	fi
 }
 ############
@@ -247,14 +247,14 @@ remove_him_from_sudoers() {
 	cd /etc
 	TMOE_USER_SUDO_LINE=$(cat sudoers | grep -n "^${TMOE_USER_NAME}.*ALL" | tail -n 1 | cut -d ':' -f 1)
 	if [ -z "${TMOE_USER_SUDO_LINE}" ]; then
-		echo "检测到${YELLOW}${TMOE_USER_NAME}${RESET}不在${BLUE}sudo${RESET}用户组中，此事将不会被报告||o(*°▽°*)o|Юﾞ"
+		printf "%s\n" "检测到${YELLOW}${TMOE_USER_NAME}${RESET}不在${BLUE}sudo${RESET}用户组中，此事将不会被报告||o(*°▽°*)o|Юﾞ"
 	else
 		sed -i "${TMOE_USER_SUDO_LINE}d" sudoers
 	fi
 }
 ############
 add_him_to_sudoers() {
-	TMOE_ROOT_SUDO_LINE=$(cat /etc/sudoers | grep 'root.*ALL' -n | tail -n 1 | cut -d ':' -f 1)
+	TMOE_ROOT_SUDO_LINE=$(sed -n p /etc/sudoers | grep 'root.*ALL' -n | tail -n 1 | cut -d ':' -f 1)
 	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
 	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
 		sed -i "$ a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
@@ -267,7 +267,7 @@ add_him_to_sudoers() {
 		usermod -a -G aid_system,aid_radio,aid_bluetooth,aid_graphics,aid_input,aid_audio,aid_camera,aid_log,aid_compass,aid_mount,aid_wifi,aid_adb,aid_install,aid_media,aid_dhcp,aid_sdcard_rw,aid_vpn,aid_keystore,aid_usb,aid_drm,aid_mdnsr,aid_gps,aid_media_rw,aid_mtp,aid_drmrpc,aid_nfc,aid_sdcard_r,aid_clat,aid_loop_radio,aid_media_drm,aid_package_info,aid_sdcard_pics,aid_sdcard_av,aid_sdcard_all,aid_logd,aid_shared_relro,aid_dbus,aid_tlsdate,aid_media_ex,aid_audioserver,aid_metrics_coll,aid_metricsd,aid_webserv,aid_debuggerd,aid_media_codec,aid_cameraserver,aid_firewall,aid_trunks,aid_nvram,aid_dns,aid_dns_tether,aid_webview_zygote,aid_vehicle_network,aid_media_audio,aid_media_video,aid_media_image,aid_tombstoned,aid_media_obb,aid_ese,aid_ota_update,aid_automotive_evs,aid_lowpan,aid_hsm,aid_reserved_disk,aid_statsd,aid_incidentd,aid_secure_element,aid_lmkd,aid_llkd,aid_iorapd,aid_gpu_service,aid_network_stack,aid_shell,aid_cache,aid_diag,aid_oem_reserved_start,aid_oem_reserved_end,aid_net_bt_admin,aid_net_bt,aid_inet,aid_net_raw,aid_net_admin,aid_net_bw_stats,aid_net_bw_acct,aid_readproc,aid_wakelock,aid_uhid,aid_everybody,aid_misc,aid_nobody,aid_app_start,aid_app_end,aid_cache_gid_start,aid_cache_gid_end,aid_ext_gid_start,aid_ext_gid_end,aid_ext_cache_gid_start,aid_ext_cache_gid_end,aid_shared_gid_start,aid_shared_gid_end,aid_overflowuid,aid_isolated_start,aid_isolated_end,aid_user_offset ${TMOE_USER_NAME}
 		;;
 	esac
-	cat /etc/sudoers
+	sed -n p /etc/sudoers
 }
 ###############
 creat_rc_local_startup_script() {
@@ -332,7 +332,7 @@ modify_rc_local_script() {
 	if [ ! -e "/etc/systemd/system/rc-local.service" ]; then
 		creat_rc_local_systemd_script
 		nano rc.local
-		echo "是否将其设置为开机自启？"
+		printf "%s\n" "是否将其设置为开机自启？"
 		do_you_want_to_continue
 		systemctl enable rc-local.service
 	else

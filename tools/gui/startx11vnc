@@ -2,12 +2,12 @@
 stopvnc -non-stop-dbus 2>/dev/null
 export PULSE_SERVER=127.0.0.1
 export DISPLAY=:233
-TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 TMOE_X11_PASSWD_FILE=${HOME}/.vnc/x11passwd
 TMOE_X11_RESOLUTION=1440x720
 TCP_PORT_FOR_RFB_PROTOCOL=5901
 X11VNC_CURSOR_ARROW=2
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
@@ -45,10 +45,10 @@ tmoe_x11vnc_preconfigure() {
     fi
 
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
-        TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
+        TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
         export LANG="${TMOE_LANG}"
     else
-        export LANG="zh_CN.UTF-8"
+        export LANG="en_US.UTF-8"
     fi
 }
 #################
@@ -86,13 +86,13 @@ start_x_session
 start_tmoe_x11vnc
 ###########
 sleep 2s
-echo "正在启动x11vnc服务,本机默认vnc地址localhost:5901"
-echo "本机IPv6 vnc地址[::]:5900或::"
 TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1' | sed "s@\$@:5901@")
-cat <<-EOF
+cat <<-ENFOFX11VNCTIPS
+正在启动x11vnc服务,本机默认vnc地址localhost:5901
+本机IPv6 vnc地址[::]:5900或::
 The LAN VNC address 局域网地址${TMOE_IP_ADDR}
-EOF
-echo "您可能会经历长达10多秒的黑屏"
-echo "You may experience a black screen for up to 10 seconds."
-echo "您之后可以输startx11vnc启动，输stopvnc停止"
-echo "You can type startx11vnc to start x11vnc,type stopvnc to stop it."
+您可能会经历长达10多秒的黑屏
+You may experience a black screen for up to 10 seconds.
+您之后可以输startx11vnc启动，输stopvnc停止
+You can type startx11vnc to start x11vnc,type stopvnc to stop it.
+ENFOFX11VNCTIPS

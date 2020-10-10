@@ -1,0 +1,337 @@
+#!/usr/bin/env bash
+########################
+locale_gen_or_choose_container_locale() {
+	case ${SET_TMOE_LOCALE} in
+	true) TMOE_LOCALE_GEN='false' ;;
+	*)
+		if (whiptail --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
+			TMOE_LOCALE_GEN='false'
+		else
+			TMOE_LOCALE_GEN='true'
+		fi
+		;;
+	esac
+}
+###################
+tmoe_locale_menu() {
+	locale_gen_or_choose_container_locale
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
+	elif [ $(uname -o) != 'Android' ]; then
+		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2 | cut -d '"' -f 2)
+		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
+	else
+		TMOE_LOCALE_STATUS="Your current locale is default."
+	fi
+	#######################
+	CONTAINER_LOCALE=$(
+		whiptail --title "LOCALE SETTING" \
+			--menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
+			"0" "🌚 Back 返回" \
+			"00" "Edit manually手动编辑" \
+			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
+			"02" "sq_AL.UTF-8 Albanian_Albania" \
+			"03" "ar_SA.UTF-8 Arabic_Saudi Arabia" \
+			"04" "eu_ES.UTF-8 Basque_Spain" \
+			"05" "be_BY.UTF-8 Belarusian_Belarus" \
+			"06" "bs_BA.UTF-8 Bosnian (Latin)" \
+			"07" "bg_BG.UTF-8 Bulgarian_Bulgaria" \
+			"08" "ca_ES.UTF-8 Catalan_Spain" \
+			"09" "hr_HR.UTF-8 Croatian_Croatia" \
+			"10" "$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d) Chinese_China中国" \
+			"11" "zh_TW.UTF-8 Chinese_Taiwan臺灣" \
+			"12" "cs_CZ.UTF-8 Czech_Czech Republic" \
+			"13" "da_DK.UTF-8 Danish_Denmark" \
+			"14" "nl_NL.UTF-8 Dutch_Netherlands" \
+			"15" "en_US.UTF-8 English_America" \
+			"16" "et_EE.UTF-8 Estonian_Estonia" \
+			"17" "fa_IR.UTF-8 Farsi_Iran" \
+			"18" "fil_PH.UTF-8 Filipino_Philippines" \
+			"19" "fi_FI.UTF-8 Finnish_Finland" \
+			"20" "fr_FR.UTF-8 French_France" \
+			"21" "ga.UTF-8 Gaelic;Scottish" \
+			"22" "gl_ES.UTF-8 Galician_Spain" \
+			"23" "ka_GE.UTF-8 Georgian_Georgia" \
+			"24" "de_DE.UTF-8 German_Germany" \
+			"25" "el_GR.UTF-8 Greek_Greece" \
+			"26" "gu.UTF-8 Gujarati_India" \
+			"27" "he_IL.UTF-8 Hebrew_Israel" \
+			"28" "hi_IN.UTF-8 Hindi" \
+			"29" "hu.UTF-8 Hungarian_Hungary" \
+			"30" "is_IS.UTF-8 Icelandic_Iceland" \
+			"31" "id_ID.UTF-8 Indonesian_indonesia" \
+			"32" "it_IT.UTF-8 Italian_Italy" \
+			"33" "ja_JP.UTF-8 Japanese_Japan日本" \
+			"34" "kn_IN.UTF-8 Kannada" \
+			"35" "km_KH.UTF-8 Khmer" \
+			"36" "ko_KR.UTF-8 Korean_Korea한국" \
+			"37" "lo_LA.UTF-8 Lao_Laos" \
+			"38" "lt_LT.UTF-8 Lithuanian_Lithuania" \
+			"39" "lat.UTF-8 Latvian_Latvia" \
+			"40" "ml_IN.UTF-8 Malayalam_India.x-iscii-ma" \
+			"41" "ms_MY.UTF-8 Malay_malaysia" \
+			"42" "mi_NZ.UTF-8 Ngai_Tahu" \
+			"43" "mi_NZ.UTF-8 Waikoto_Uni" \
+			"44" "mn.UTF-8 Cyrillic_Mongolian" \
+			"45" "no_NO.UTF-8 Norwegian_Norway" \
+			"46" "nn_NO.UTF-8 Norwegian-Nynorsk_Norway" \
+			"47" "pl.UTF-8 Polish_Poland" \
+			"48" "pt_PT.UTF-8 Portuguese_Portugal" \
+			"49" "pt_BR.UTF-8 Portuguese_Brazil(Brazil) " \
+			"50" "ro_RO.UTF-8 Romanian_Romania" \
+			"51" "ru_RU.UTF-8 Russian_Russia" \
+			"52" "mi_NZ.UTF-8 Maori" \
+			"53" "sr_CS.UTF-8 Bosnian(Cyrillic),Serbian" \
+			"54" "sk_SK.UTF-8 Slovak_Slovakia" \
+			"55" "sl_SI.UTF-8 Slovenian_Slovenia" \
+			"56" "so_SO.UTF-8 Somali Somali" \
+			"57" "es_ES.UTF-8 Spanish_Spain(International)" \
+			"58" "sv_SE.UTF-8 Swedish_Sweden" \
+			"59" "tl.UTF-8 Philippines" \
+			"60" "ta_IN.UTF-8 English_Australia" \
+			"61" "th_TH.UTF-8 Thai_Thailand" \
+			"62" "tr_TR.UTF-8 Turkish_Turkey" \
+			"63" "uk_UA.UTF-8 Ukrainian_Ukraine" \
+			"63" "vi_VN.UTF-8 Vietnamese_Vietnam" \
+			3>&1 1>&2 2>&3
+	)
+	##########################
+	case "${CONTAINER_LOCALE}" in
+	0 | "") tmoe_manager_main_menu ;;
+	00) edit_tmoe_locale_file_manually ;;
+	01) TMOE_LANG='af_ZA.UTF-8' ;;
+	02) TMOE_LANG='sq_AL.UTF-8' ;;
+	03) TMOE_LANG='ar_SA.UTF-8' ;;
+	04) TMOE_LANG='eu_ES.UTF-8' ;;
+	05) TMOE_LANG='be_BY.UTF-8' ;;
+	06) TMOE_LANG='bs_BA.UTF-8' ;;
+	07) TMOE_LANG='bg_BG.UTF-8' ;;
+	08) TMOE_LANG='ca_ES.UTF-8' ;;
+	09) TMOE_LANG='hr_HR.UTF-8' ;;
+	10) TMOE_LANG="$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d)" ;;
+	11) TMOE_LANG='zh_TW.UTF-8' ;;
+	12) TMOE_LANG='cs_CZ.UTF-8' ;;
+	13) TMOE_LANG='da_DK.UTF-8' ;;
+	14) TMOE_LANG='nl_NL.UTF-8' ;;
+	15) TMOE_LANG='en_US.UTF-8' ;;
+	16) TMOE_LANG='et_EE.UTF-8' ;;
+	17) TMOE_LANG='fa_IR.UTF-8' ;;
+	18) TMOE_LANG='fil_PH.UTF-8' ;;
+	19) TMOE_LANG='fi_FI.UTF-8' ;;
+	20) TMOE_LANG='fr_FR.UTF-8' ;;
+	21) TMOE_LANG='ga.UTF-8' ;;
+	22) TMOE_LANG='gl_ES.UTF-8' ;;
+	23) TMOE_LANG='ka_GE.UTF-8' ;;
+	24) TMOE_LANG='de_DE.UTF-8' ;;
+	25) TMOE_LANG='el_GR.UTF-8' ;;
+	26) TMOE_LANG='gu.UTF-8' ;;
+	27) TMOE_LANG='he_IL.UTF-8' ;;
+	28) TMOE_LANG='hi_IN.UTF-8' ;;
+	29) TMOE_LANG='hu.UTF-8' ;;
+	30) TMOE_LANG='is_IS.UTF-8' ;;
+	31) TMOE_LANG='id_ID.UTF-8' ;;
+	32) TMOE_LANG='it_IT.UTF-8' ;;
+	33) TMOE_LANG='ja_JP.UTF-8' ;;
+	34) TMOE_LANG='kn_IN.UTF-8' ;;
+	35) TMOE_LANG='km_KH.UTF-8' ;;
+	36) TMOE_LANG='ko_KR.UTF-8' ;;
+	37) TMOE_LANG='lo_LA.UTF-8' ;;
+	38) TMOE_LANG='lt_LT.UTF-8' ;;
+	39) TMOE_LANG='lat.UTF-8' ;;
+	40) TMOE_LANG='ml_IN.UTF-8' ;;
+	41) TMOE_LANG='ms_MY.UTF-8' ;;
+	42) TMOE_LANG='mi_NZ.UTF-8' ;;
+	43) TMOE_LANG='mi_NZ.UTF-8' ;;
+	44) TMOE_LANG='mn.UTF-8' ;;
+	45) TMOE_LANG='no_NO.UTF-8' ;;
+	46) TMOE_LANG='nn_NO.UTF-8' ;;
+	47) TMOE_LANG='pl.UTF-8' ;;
+	48) TMOE_LANG='pt_PT.UTF-8' ;;
+	49) TMOE_LANG='pt_BR.UTF-8' ;;
+	50) TMOE_LANG='ro_RO.UTF-8' ;;
+	51) TMOE_LANG='ru_RU.UTF-8' ;;
+	52) TMOE_LANG='mi_NZ.UTF-8' ;;
+	53) TMOE_LANG='sr_CS.UTF-8' ;;
+	54) TMOE_LANG='sk_SK.UTF-8' ;;
+	55) TMOE_LANG='sl_SI.UTF-8' ;;
+	56) TMOE_LANG='so_SO.UTF-8' ;;
+	57) TMOE_LANG='es_ES.UTF-8' ;;
+	58) TMOE_LANG='sv_SE.UTF-8' ;;
+	59) TMOE_LANG='tl.UTF-8' ;;
+	60) TMOE_LANG='ta_IN.UTF-8' ;;
+	61) TMOE_LANG='th_TH.UTF-8' ;;
+	62) TMOE_LANG='tr_TR.UTF-8' ;;
+	63) TMOE_LANG='uk_UA.UTF-8' ;;
+	64) TMOE_LANG='vi_VN.UTF-8' ;;
+	esac
+	###############
+	case ${TMOE_LANG} in
+	"") tmoe_manager_main_menu ;;
+	esac
+	##############
+	TMOE_MENU_LANG=${TMOE_LANG}
+	TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+
+	mkdir -p ${HOME}/.config/tmoe-linux
+	cd ${HOME}/.config/tmoe-linux
+	printf "%s\n" "${TMOE_LANG}" >locale.txt
+
+	if [ -e "${DEBIAN_CHROOT}" ]; then
+		TMOE_SCRIPT_PATH=${DEBIAN_CHROOT}
+		set_debian_default_locale
+	else
+		case "$(uname -o)" in
+		"Android")
+			printf "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}\n"
+			press_enter_to_return
+			tmoe_manager_main_menu
+			;;
+		*)
+			TMOE_SCRIPT_PATH=''
+			;;
+		esac
+	fi
+	#cd ${TMOE_SCRIPT_PATH}/usr/local/bin
+
+	if [ -e "${DEBIAN_CHROOT}" ]; then
+		mkdir -p ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+		cp -fv ${HOME}/.config/tmoe-linux/locale.txt ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+		#chmod +r locale.txt
+	fi
+	case ${TMOE_LOCALE_GEN} in
+	true)
+		case "$(uname -o)" in
+		Android) ;;
+		*)
+			if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
+				TMOE_SCRIPT_PATH=''
+				set_debian_default_locale
+				source /etc/default/locale 2>/dev/null
+			fi
+			mkdir -p /usr/local/etc/tmoe-linux/
+			cd /usr/local/etc/tmoe-linux/
+			cp -f ${HOME}/.config/tmoe-linux/locale.txt ./ || ${TMOE_PREFIX} cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
+			chmod +r locale.txt
+			cd /etc
+			install_ubuntu_language_pack
+			sed -i 's@^@#@g' locale.gen 2>/dev/null
+			sed -i 's@##@#@g' locale.gen 2>/dev/null
+			if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
+				sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
+			fi
+			mv -f locale.gen locale.gen.bak
+			sort -um locale.gen.bak >locale.gen
+			if [ -z "${TMOE_SCRIPT_PATH}" ]; then
+				locale-gen ${TMOE_LANG} 2>/dev/null
+			fi
+			cat <<-EOF
+				Please try running ${GREEN}source /etc/default/locale${RESET}
+				請手動執行${GREEN}source /etc/default/locale${RESET}以刷新locale設定
+				若无法生效，则请执行${GREEN}export LANG=${TMOE_LANG}${RESET}
+			EOF
+			;;
+		esac
+		;;
+	esac
+	#############
+	printf "%s\n" "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
+	press_enter_to_return
+	tmoe_manager_main_menu
+	#tmoe_locale_settings
+}
+#####################
+set_debian_default_locale() {
+	cd ${TMOE_SCRIPT_PATH}/etc/default
+	if grep -q 'LANG=' locale; then
+		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
+		DEFAULT_LANG_QUATER=$(printf '%s\n' ${DEFAULT_LANG} | cut -d '_' -f 1)
+		sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
+		sed -i "s@${TMOE_LANG_HALF}:${DEFAULT_LANG_QUATER}@${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}@g" locale
+		source ./locale
+	else
+		if [ "$(pwd)" != "${HOME}" ]; then
+			cp locale locale.bak 2>/dev/null
+			sed -i 's@^@#&@g' locale
+			sed -i 's@##@#@g' locale
+			cat >>locale <<-EOF
+				LANG=${TMOE_LANG_HALF}.UTF-8
+				LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
+				LC_ALL=${TMOE_LANG_HALF}.UTF-8
+			EOF
+		fi
+	fi
+}
+##########
+install_ubuntu_language_pack() {
+	case "${LINUX_DISTRO}" in
+	debian)
+		if [ ! -e "/usr/sbin/locale-gen" ]; then
+			apt update
+			apt install -y locales
+		fi
+		[[ -e /usr/lib/locale/en_US.utf8 ]] || apt install -y locales-all
+		case "${DEBIAN_DISTRO}" in
+		"ubuntu")
+			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+			cat <<-EOF
+				You are using ubuntu and you can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}
+				檢測到您正在使用Ubuntu,您可以手動執行${GREEN}sudo apt install \$(check-language-support)${RESET}來安裝第三方程式的語言支持包
+			EOF
+			;;
+		esac
+		;;
+	redhat)
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			printf "${BLUE}%s${RESET}\n" "dnf install -y glibc-langpack-${TMOE_LANG_QUATER}*"
+			dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*"
+		fi
+		;;
+	arch)
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			printf "${BLUE}%s${RESET}\n" "pacman -Syu glibc"
+			pacman -Syu glibc
+		fi
+		;;
+	void) xbps-reconfigure -f glibc-locales ;;
+	suse)
+		printf "${BLUE}%s${RESET}\n" "zypper in -y glibc-locale glibc-i18ndata translation-update-${TMOE_LANG_HALF}"
+		zypper in -y glibc-locale glibc-i18ndata
+		zypper in -y translation-update-${TMOE_LANG_HALF}
+		;;
+	esac
+}
+#############
+edit_tmoe_locale_file_manually() {
+	if [ -e "/etc/locale.gen" ]; then
+		if [ $(command -v editor) ]; then
+			editor /etc/default/locale
+			editor /etc/locale.gen
+		else
+			nano /etc/default/locale
+			nano /etc/locale.gen
+		fi
+	fi
+	if [ $(command -v debian) ]; then
+		if [ $(command -v editor) ]; then
+			editor $(command -v debian)
+		else
+			nano $(command -v debian)
+		fi
+	fi
+	if [ -e "${DEBIAN_CHROOT}/etc" ]; then
+		if [ $(command -v editor) ]; then
+			editor ${DEBIAN_CHROOT}/etc/default/locale
+			editor ${DEBIAN_CHROOT}/etc/locale.gen
+		else
+			nano ${DEBIAN_CHROOT}/etc/default/locale
+			nano ${DEBIAN_CHROOT}/etc/locale.gen
+		fi
+	fi
+	press_enter_to_return
+	#tmoe_manager_main_menu
+	tmoe_locale_settings
+}
+############
+tmoe_locale_menu "$@"

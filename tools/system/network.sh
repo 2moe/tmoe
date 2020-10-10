@@ -15,7 +15,7 @@ network_manager_tui() {
 
 	if [ ! $(command -v ip) ]; then
 		DEPENDENCY_02='iproute2'
-		echo "${GREEN}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
+		printf "%s\n" "${GREEN}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
 		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
 	fi
 
@@ -68,7 +68,7 @@ network_manager_tui() {
 	6)
 		ip a
 		ip -br -c a
-		if [ ! -z $(echo ${LANG} | grep zh) ]; then
+		if [ ! -z $(printf '%s\n' ${LANG} | grep zh) ]; then
 			curl -L myip.ipip.net
 		else
 			curl -L ip.cip.cc
@@ -91,15 +91,15 @@ network_manager_tui() {
 		fi
 
 		if (whiptail --title "您想要对这个小可爱做什么" --yes-button "ENABLE启用" --no-button "DISABLE禁用" --yesno "您是否需要启用网络管理器开机自启的功能？♪(^∇^*) " 0 50); then
-			echo "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+			printf "%s\n" "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
 			systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}
 			if [ "$?" = "0" ]; then
-				echo "已添加至自启任务"
+				printf "%s\n" "已添加至自启任务"
 			else
-				echo "添加自启任务失败"
+				printf "%s\n" "添加自启任务失败"
 			fi
 		else
-			echo "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+			printf "%s\n" "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
 			systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}
 		fi
 		;;
@@ -129,7 +129,7 @@ install_wifi_qr() {
 		DEPENDENCY_02=''
 		beta_features_quick_install
 	fi
-	echo 'You can type wifi-qr to start it.'
+	printf '%s\n' 'You can type wifi-qr to start it.'
 	wifi-qr t
 }
 #################
@@ -172,26 +172,26 @@ tmoe_wifi_scan() {
 		fi
 		wifi-menu
 	fi
-	echo 'scanning...'
-	echo '正在扫描中...'
+	printf '%s\n' 'scanning...'
+	printf '%s\n' '正在扫描中...'
 	cd /tmp
 	iwlist scan 2>/dev/null | tee .tmoe_wifi_scan_cache
-	echo '-------------------------------'
+	printf '%s\n' '-------------------------------'
 	cat .tmoe_wifi_scan_cache | grep --color=auto -i 'SSID'
 	rm -f .tmoe_wifi_scan_cache
 }
 ##############
 network_devices_status() {
 	iw phy
-	echo '-------------------------------'
+	printf '%s\n' '-------------------------------'
 	nmcli device show 2>&1 | head -n 100
-	echo '-------------------------------'
+	printf '%s\n' '-------------------------------'
 	nmcli connection show
-	echo '-------------------------------'
+	printf '%s\n' '-------------------------------'
 	iw dev
-	echo '-------------------------------'
+	printf '%s\n' '-------------------------------'
 	nmcli radio
-	echo '-------------------------------'
+	printf '%s\n' '-------------------------------'
 	nmcli device
 }
 #############
@@ -200,8 +200,8 @@ check_debian_nonfree_source() {
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
 			if ! grep -q '^deb.*non-free' /etc/apt/sources.list; then
-				echo '是否需要添加debian non-free软件源？'
-				echo 'Do you want to add non-free source.list?'
+				printf '%s\n' '是否需要添加debian non-free软件源？'
+				printf '%s\n' 'Do you want to add non-free source.list?'
 				do_you_want_to_continue
 				sed -i '$ a\deb https://mirrors.huaweicloud.com/debian/ stable non-free' /etc/apt/sources.list
 				apt update
@@ -258,7 +258,7 @@ install_linux_firmware_nonfree() {
 download_network_card_driver() {
 	mkdir -p cd ${HOME}/sd/Download
 	cd ${HOME}/sd/Download
-	echo "即将为您下载至${HOME}/sd/Download"
+	printf "%s\n" "即将为您下载至${HOME}/sd/Download"
 	if [ $(command -v apt-get) ]; then
 		apt show ${DEPENDENCY_02}
 		apt download ${DEPENDENCY_02}
@@ -268,7 +268,7 @@ download_network_card_driver() {
 		REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/non-free/f/firmware-nonfree/'
 		THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-		echo ${THE_LATEST_DEB_LINK}
+		printf "%s\n" ${THE_LATEST_DEB_LINK}
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	fi
 
@@ -282,7 +282,7 @@ download_network_card_driver() {
 	tar -Jxvf ./data.tar.*
 	rm *.tar.* debian-binary
 	cd ..
-	echo "Download completed,文件已保存至${HOME}/sd/Download"
+	printf "%s\n" "Download completed,文件已保存至${HOME}/sd/Download"
 
 }
 ###############
@@ -299,11 +299,11 @@ list_network_devices() {
 ############
 enable_netword_card() {
 	cd /tmp/
-	nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $1}' >.tmoe-linux_cache.01
-	nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}' | sed 's/ /-/g' >.tmoe-linux_cache.02
+	nmcli d | egrep -v '^lo|^DEVICE' | awk '{print $1}' >.tmoe-linux_cache.01
+	nmcli d | egrep -v '^lo|^DEVICE' | awk '{print $2,$3}' | sed 's/ /-/g' >.tmoe-linux_cache.02
 	TMOE_NETWORK_CARD_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
-	#TMOE_NETWORK_CARD_LIST=$(nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}')
+	#TMOE_NETWORK_CARD_LIST=$(nmcli d | egrep -v '^lo|^DEVICE' | awk '{print $2,$3}')
 	TMOE_NETWORK_CARD_ITEM=$(whiptail --title "NETWORK DEVICES" --menu \
 		"您想要启用哪个网络设备？\nWhich network device do you want to enable?" 0 0 0 \
 		${TMOE_NETWORK_CARD_LIST} \
@@ -314,9 +314,9 @@ enable_netword_card() {
 	esac
 	ip link set ${TMOE_NETWORK_CARD_ITEM} up
 	if [ "$?" = '0' ]; then
-		echo "Congratulations,已经启用${TMOE_NETWORK_CARD_ITEM}"
+		printf "%s\n" "Congratulations,已经启用${TMOE_NETWORK_CARD_ITEM}"
 	else
-		echo 'Sorry,设备启用失败'
+		printf '%s\n' 'Sorry,设备启用失败'
 	fi
 }
 ##################

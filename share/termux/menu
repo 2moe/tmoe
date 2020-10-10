@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+#######################################
+android_termux_tmoe_menu() {
+	RETURN_TO_MENU='android_termux_tmoe_menu'
+	RETURN_TO_WHERE='android_termux_tmoe_menu'
+	#17 60 6
+	android_termux_tmoe_menu_zh() {
+		OPTION=$(whiptail --title "Termux" --menu "您可以通过VNC客户端来连接GNU/Linux(proot/chroot)容器的桌面,\n并在此处修改termux音频服务端的配置\nYou can use vncviewer to connect container DE." 0 50 0 \
+			"1" "🍳 mirror sources镜像源(北外,腾讯)" \
+			"2" "🍹 backup 备份termux" \
+			"3" "🔯 restore 还原/恢复termux" \
+			"4" "🎶 configure Termux LAN audio局域网音频传输" \
+			"5" "🍅 query space occupation查询空间占用" \
+			"6" "🍑 vnc/xsdl.apk下载远程桌面客户端" \
+			"7" "🤖 termux_fdroid.apk下载termux" \
+			"8" "📺 termux original GUI:原系统GUI" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
+			3>&1 1>&2 2>&3)
+	}
+	android_termux_tmoe_menu_ja() {
+		OPTION=$(whiptail --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
+			"1" "🍳 mirror sources" \
+			"2" "🍹 バックアップ termux" \
+			"3" "🔯 復元 termux" \
+			"4" "🎶 LANオーディオ送信を設定する" \
+			"5" "🍅 クエリスペースの占有" \
+			"6" "🍑 vnc.apkをダウンロード" \
+			"7" "🤖 termux_fdroid.apkをダウンロード" \
+			"8" "📺 termux オリジナルのGUI" \
+			"0" "🌚 戻る" \
+			3>&1 1>&2 2>&3)
+	}
+	android_termux_tmoe_menu_en() {
+		OPTION=$(whiptail --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
+			"1" "🍳 mirror sources" \
+			"2" "🍹 backup termux" \
+			"3" "🔯 restore termux" \
+			"4" "🎶 configure Termux LAN audio" \
+			"5" "🍅 query space occupation" \
+			"6" "🍑 vnc/xsdl.apk" \
+			"7" "🤖 termux_fdroid.apk" \
+			"8" "📺 termux original GUI" \
+			"0" "🌚 Back to the main menu" \
+			3>&1 1>&2 2>&3)
+	}
+	########################################
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) android_termux_tmoe_menu_zh ;;
+	ja_JP.UTF-8) android_termux_tmoe_menu_ja ;;
+	*) android_termux_tmoe_menu_en ;;
+	esac
+
+	case "${OPTION}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) tmoe_switch_sources_list ;;
+	2) backup_termux_menu ;;
+	3) restore_termux_menu ;;
+	4) termux_pulse_audio_lan ;;
+	5) space_occupation ;;
+	6) download_vnc_apk ;;
+	7) aria2_download_termux_apk ;;
+	8) termux_original_system_gui ;;
+	esac
+	####################################
+	#			"8" "Video tutorial(2020-02,旧版教程)" \	8) download_video_tutorial ;;
+	press_enter_to_return
+	android_termux_tmoe_menu
+}
+#################
+tmoe_switch_sources_list() {
+	source ${TMOE_SHARE_DIR}/termux/mirror
+}
+backup_termux_menu() {
+	TMOE_CHROOT='false'
+	source ${TMOE_SHARE_DIR}/termux/backup
+}
+restore_termux_menu() {
+	TMOE_CHROOT='false'
+	source ${TMOE_SHARE_DIR}/termux/restore
+}
+space_occupation() {
+	source ${TMOE_SHARE_DIR}/termux/space_occupation
+}
+download_vnc_apk() {
+	source ${TMOE_SHARE_DIR}/app/vnc
+}
+aria2_download_termux_apk() {
+	source ${TMOE_SHARE_DIR}/app/termux
+}
+start_vscode() {
+	source ${TMOE_SHARE_DIR}/app/code-server
+}
+download_video_tutorial() {
+	source ${TMOE_SHARE_DIR}/termux/video_tutorial
+}
+termux_original_system_gui() {
+	source ${TMOE_SHARE_DIR}/termux/xfce
+}
+##################
+termux_pulse_audio_lan() {
+	if [ "${LINUX_DISTRO}" = 'Android' ]; then
+		cd $PREFIX/etc/pulse
+	else
+		cd /etc/pulse
+	fi
+	if grep -q '192.168.0.0/16' default.pa; then
+		LANPULSE='检测到您已启用局域网音频传输,you have enabled LAN audio transmission'
+	else
+		LANPULSE='检测到您未启用局域网音频传输，默认仅允许本机传输,you have disabled LAN audio transmission'
+	fi
+	#10 50
+	if (whiptail --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'yes(*￣▽￣*)o' --no-button 'no(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！\nDo you want to enable LAN audio transmission?" 11 50); then
+		sed -i '/auth-ip-acl/d' default.pa
+		sed -i '/module-native-protocol-tcp/d' default.pa
+		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16;172.16.0.0/12 auth-anonymous=1' default.pa
+	else
+		sed -i '/auth-ip-acl/d' default.pa
+		sed -i '/module-native-protocol-tcp/d' default.pa
+		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' default.pa
+	fi
+	printf "%s\n" "修改完成！(￣▽￣)"
+	printf "%s\n" "如需单独启动音频服务，请输pulseaudio --start"
+	printf "%s\n" "若无声音，则您需要安装termux:api的apk,并升级termux至最新版本"
+	press_enter_to_return
+	android_termux_tmoe_menu
+}
+#####################################
+android_termux_tmoe_menu $@

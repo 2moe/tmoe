@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+############
+debian_main() {
+    case "$1" in
+    i* | -i* | -I*)
+        debian-i
+        exit 0
+        ;;
+    -h* | --h*)
+        printf "%s\n" "暂无帮助信息"
+        ;;
+    -m* | m*)
+        debian-i -m
+        ;;
+    -vnc* | vnc*)
+        startx11vnc
+        ;;
+    -n* | novnc*)
+        debian-i novnc
+        ;;
+    -x)
+        startxsdl
+        ;;
+    *) start_tmoe_gnu_linux_default_container ;;
+    esac
+}
+#########
+start_tmoe_gnu_linux_default_container() {
+    CONFIG_FOLDER=${HOME}/.config/tmoe-linux
+    [[ $(uname -o) = 'Android' ]] || PREFIX=/usr/local
+    if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+        bash ${PREFIX}/bin/tmoe ch
+    else
+        bash ${PREFIX}/bin/tmoe pr
+    fi
+}
+##########
+debian_main "$@"

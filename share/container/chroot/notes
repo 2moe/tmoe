@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#######################################
+check_root_permissions() {
+	case ${LINUX_DISTRO} in
+	Android)
+		su -c "ls ${HOME} >/dev/null"
+		case "$?" in
+		0)
+			if [ ! "$(command -v sudo)" ] && [ ! "$(command -v tsu)" ]; then
+				printf "%s\n" "${GREEN}apt install -y${RESET} ${BLUE}tsu${RESET}"
+				printf "%s\n" "You can type ${RED}apt purge${RESET} ${BLUE}tsu${RESET} to remove it."
+				apt update
+				apt install -y tsu
+			fi
+			;;
+		*)
+			printf "%s\n" Android :${ANDROID_VERSION}
+			printf "%s\n" "$(getprop ro.product.model)" 2>/dev/null
+			printf "%s\n" '检测到root权限授予失败，您无法安装chroot容器'
+			press_enter_to_return
+			tmoe_manager_main_menu
+			;;
+		esac
+		;;
+	esac
+}
+#################
+notes_of_chroot() {
+	printf "%s\n %s\n" "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device." "移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！" >${CONFIG_FOLDER}/chroot-prompt
+	sed -n p ${CONFIG_FOLDER}/chroot-prompt
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*)
+		printf "%s\n" "由于在测试chroot容器的过程中出现了部分已挂载的目录${RED}无法强制卸载${RESET}的情况，故建议您换用${BLUE}docker${RESET}容器。"
+		printf "%s\n" "We recommend that you run ${BLUE}docker${RESET} containers on GNU/Linux system instead of ${RED}chroot${RESET} containers."
+		;;
+	esac
+}
+#############
+#此处不要加$@

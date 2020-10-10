@@ -46,8 +46,6 @@ wsl --set-default-version 2
 ![store](https://s1.ax1x.com/2020/04/23/JUW3eH.png)
 
 When you download the subsystem from the Microsoft Store, be sure to choose Ubuntu, Kali and Debian.  
-若无法连接 _Microsoft Store_,那么也可以手动安装。  
-请从以下三者中选择：  
 [Ubuntu](https://aka.ms/wsl-ubuntu-1804)  
 [Debian](https://aka.ms/wsl-debian-gnulinux)  
 [Kali](https://aka.ms/wsl-kali-linux-new)
@@ -150,11 +148,13 @@ _**如果你在国内,那么请输**_
 #### 5.Arch/Manjaro
 
 ```shell
-    sudo pacman -Syu --noconfirm curl
+    [[ $(command -v curl) ]] || sudo pacman -Syu --noconfirm curl
     bash -c "$(curl -L https://git.io/linux.sh)"
 ```
 
-#### 6.OpenWRT/Entware
+#### 6.~~OpenWRT/Entware~~
+
+2020-10:No longer supports openwrt
 
 ```shell
     opkg update
@@ -174,133 +174,31 @@ _**如果你在国内,那么请输**_
 #### 8.Void
 
 ```shell
-    xbps-install -S
-    xbps-install -y wget
+    sudo xbps-install -y wget
     bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
-#### 9.Gentoo/Funtoo
+#### 9.~~Gentoo/Funtoo~~
+
+2020-10:No longer supports Gentoo
 
 ```shell
     emerge -avk net-misc/wget
     bash -c "$(wget -O- https://git.io/linux.sh)"
 ```
 
-#### 10.Other 其它 system 未测试,以下系统请自行解决依赖关系
+#### 10.OpenSUSE
 
-例如:**OpenSuse**和**GuixSD**等发行版。
+```shell
+    [[ $(command -v curl) ]] || sudo zypper in -y curl
+    bash -c "$(curl -L https://git.io/linux.sh)"
+```
+
+#### 11.Other 其它 system 未测试,以下系统请自行解决依赖关系
+
+例如:**GuixSD**等发行版。
 
 相关依赖为 `git aria2 pv wget curl grep procps less tar xz newt(whiptail)`
-
----
-
-#### 第二章 remote-desktop 远程桌面篇
-
-![010](https://gitee.com/mo2/tmoe-linux-comic/raw/master/010.png)  
-![011](https://gitee.com/mo2/tmoe-linux-comic/raw/master/011.png)  
-![012](https://gitee.com/mo2/tmoe-linux-comic/raw/master/012.png)
-![013](https://gitee.com/mo2/tmoe-linux-comic/raw/master/013.png)  
-**Nobody knows VNC better than me.**  
-![014](https://gitee.com/mo2/tmoe-linux-comic/raw/master/014.png)
-![015](https://gitee.com/mo2/tmoe-linux-comic/raw/master/015.png)
-![016](https://gitee.com/mo2/tmoe-linux-comic/raw/master/016.png)
-![017](https://gitee.com/mo2/tmoe-linux-comic/raw/master/017.png)
-![018](https://gitee.com/mo2/tmoe-linux-comic/raw/master/018.png)
-![019](https://gitee.com/mo2/tmoe-linux-comic/raw/master/019.png)
-![020](https://gitee.com/mo2/tmoe-linux-comic/raw/master/020.png)
-![021](https://gitee.com/mo2/tmoe-linux-comic/raw/master/021.png)
-![022](https://gitee.com/mo2/tmoe-linux-comic/raw/master/022.png)
-![023](https://gitee.com/mo2/tmoe-linux-comic/raw/master/023.png)
-![024](https://gitee.com/mo2/tmoe-linux-comic/raw/master/024.png)
-![025](https://gitee.com/mo2/tmoe-linux-comic/raw/master/025.png)
-![026](https://gitee.com/mo2/tmoe-linux-comic/raw/master/026.png)
-
----
-
-#### 第三章 stink 恶臭篇
-
-![027](https://gitee.com/mo2/tmoe-linux-comic/raw/master/027.png)
-![028](https://gitee.com/mo2/tmoe-linux-comic/raw/master/028.png)
-![029](https://gitee.com/mo2/tmoe-linux-comic/raw/master/029.png)
-![030](https://gitee.com/mo2/tmoe-linux-comic/raw/master/030.png)
-![031](https://gitee.com/mo2/tmoe-linux-comic/raw/master/031.png)
-![032](https://gitee.com/mo2/tmoe-linux-comic/raw/master/032.png)
-![033](https://gitee.com/mo2/tmoe-linux-comic/raw/master/033.png)
-
----
-
-#### 第四章 loli 篇
-
-![034](https://gitee.com/mo2/tmoe-linux-comic/raw/master/034.png)
-![035](https://gitee.com/mo2/tmoe-linux-comic/raw/master/035.png)
-![036](https://gitee.com/mo2/tmoe-linux-comic/raw/master/036.png)
-![037](https://gitee.com/mo2/tmoe-linux-comic/raw/master/037.png)
-![038](https://gitee.com/mo2/tmoe-linux-comic/raw/master/038.png)
-![039](https://gitee.com/mo2/tmoe-linux-comic/raw/master/039.png)
-![040](https://gitee.com/mo2/tmoe-linux-comic/raw/master/040.png)
-![041](https://gitee.com/mo2/tmoe-linux-comic/raw/master/041.png)
-
----
-
-#### 第五章 Mr.Jie 篇
-
-![042](https://gitee.com/mo2/tmoe-linux-comic/raw/master/042.png)
-![043](https://gitee.com/mo2/tmoe-linux-comic/raw/master/043.png)
-![044](https://gitee.com/mo2/tmoe-linux-comic/raw/master/044.png)
-![045](https://gitee.com/mo2/tmoe-linux-comic/raw/master/045.png)
-![046](https://gitee.com/mo2/tmoe-linux-comic/raw/master/046.png)
-
----
-
-#### 第六章 dog 狗子的死亡探究篇
-
-![047](https://gitee.com/mo2/tmoe-linux-comic/raw/master/047.png)
-![048](https://gitee.com/mo2/tmoe-linux-comic/raw/master/048.png)
-![049](https://gitee.com/mo2/tmoe-linux-comic/raw/master/049.png)
-![050](https://gitee.com/mo2/tmoe-linux-comic/raw/master/050.png)
-![051](https://gitee.com/mo2/tmoe-linux-comic/raw/master/051.png)
-![052](https://gitee.com/mo2/tmoe-linux-comic/raw/master/052.png)
-![053](https://gitee.com/mo2/tmoe-linux-comic/raw/master/053.png)
-
----
-
-#### 第七章 hat 篇
-
-![054](https://gitee.com/mo2/tmoe-linux-comic/raw/master/054.png)
-![055](https://gitee.com/mo2/tmoe-linux-comic/raw/master/055.png)
-![056](https://gitee.com/mo2/tmoe-linux-comic/raw/master/056.png)
-![057](https://gitee.com/mo2/tmoe-linux-comic/raw/master/057.png)
-![058](https://gitee.com/mo2/tmoe-linux-comic/raw/master/058.png)
-![059](https://gitee.com/mo2/tmoe-linux-comic/raw/master/059.png)
-![060](https://gitee.com/mo2/tmoe-linux-comic/raw/master/060.png)
-![061](https://gitee.com/mo2/tmoe-linux-comic/raw/master/061.png)
-![062](https://gitee.com/mo2/tmoe-linux-comic/raw/master/062.png)
-![063](https://gitee.com/mo2/tmoe-linux-comic/raw/master/063.png)
-![064](https://gitee.com/mo2/tmoe-linux-comic/raw/master/064.png)
-![065](https://gitee.com/mo2/tmoe-linux-comic/raw/master/065.png)
-![066](https://gitee.com/mo2/tmoe-linux-comic/raw/master/066.png)
-![067](https://gitee.com/mo2/tmoe-linux-comic/raw/master/067.png)
-
----
-
-#### 第八章 Ctrl+Z 篇
-
-![068](https://gitee.com/mo2/tmoe-linux-comic/raw/master/068.png)
-![069](https://gitee.com/mo2/tmoe-linux-comic/raw/master/069.png)
-![070](https://gitee.com/mo2/tmoe-linux-comic/raw/master/070.png)
-![071](https://gitee.com/mo2/tmoe-linux-comic/raw/master/071.png)
-![072](https://gitee.com/mo2/tmoe-linux-comic/raw/master/072.png)
-![073](https://gitee.com/mo2/tmoe-linux-comic/raw/master/073.png)
-![074](https://gitee.com/mo2/tmoe-linux-comic/raw/master/074.png)
-![075](https://gitee.com/mo2/tmoe-linux-comic/raw/master/075.png)
-![076](https://gitee.com/mo2/tmoe-linux-comic/raw/master/076.png)
-![077](https://gitee.com/mo2/tmoe-linux-comic/raw/master/077.png)
-![078](https://gitee.com/mo2/tmoe-linux-comic/raw/master/078.png)
-![079](https://gitee.com/mo2/tmoe-linux-comic/raw/master/079.png)
-![080](https://gitee.com/mo2/tmoe-linux-comic/raw/master/080.png)
-![081](https://gitee.com/mo2/tmoe-linux-comic/raw/master/081.png)
-![082](https://gitee.com/mo2/tmoe-linux-comic/raw/master/082.png)
-![083](https://gitee.com/mo2/tmoe-linux-comic/raw/master/083.png)
 
 ---
 
@@ -955,3 +853,114 @@ nano $(command -v startvnc)
 - 4.08-21:对 archlinux 等非 deb 系发行版适配音乐 app
 - 5.08-26:支持跨 CPU 架构运行 docker 容器
 - 6.08-29:在恢复容器压缩包时，将根据系统对权限的限制自动判断特殊文件的挂载与否。(仅适用于 0816 之后的版本)
+
+### README 结尾彩蛋
+
+#### 第二章 remote-desktop 远程桌面篇
+
+![010](https://gitee.com/mo2/tmoe-linux-comic/raw/master/010.png)
+![011](https://gitee.com/mo2/tmoe-linux-comic/raw/master/011.png)
+![012](https://gitee.com/mo2/tmoe-linux-comic/raw/master/012.png)
+![013](https://gitee.com/mo2/tmoe-linux-comic/raw/master/013.png)
+![014](https://gitee.com/mo2/tmoe-linux-comic/raw/master/014.png)
+![015](https://gitee.com/mo2/tmoe-linux-comic/raw/master/015.png)
+![016](https://gitee.com/mo2/tmoe-linux-comic/raw/master/016.png)
+![017](https://gitee.com/mo2/tmoe-linux-comic/raw/master/017.png)
+![018](https://gitee.com/mo2/tmoe-linux-comic/raw/master/018.png)
+![019](https://gitee.com/mo2/tmoe-linux-comic/raw/master/019.png)
+![020](https://gitee.com/mo2/tmoe-linux-comic/raw/master/020.png)
+![021](https://gitee.com/mo2/tmoe-linux-comic/raw/master/021.png)
+![022](https://gitee.com/mo2/tmoe-linux-comic/raw/master/022.png)
+![023](https://gitee.com/mo2/tmoe-linux-comic/raw/master/023.png)
+![024](https://gitee.com/mo2/tmoe-linux-comic/raw/master/024.png)
+![025](https://gitee.com/mo2/tmoe-linux-comic/raw/master/025.png)
+![026](https://gitee.com/mo2/tmoe-linux-comic/raw/master/026.png)
+
+---
+
+#### 第三章 stink 恶臭篇
+
+![027](https://gitee.com/mo2/tmoe-linux-comic/raw/master/027.png)
+![028](https://gitee.com/mo2/tmoe-linux-comic/raw/master/028.png)
+![029](https://gitee.com/mo2/tmoe-linux-comic/raw/master/029.png)
+![030](https://gitee.com/mo2/tmoe-linux-comic/raw/master/030.png)
+![031](https://gitee.com/mo2/tmoe-linux-comic/raw/master/031.png)
+![032](https://gitee.com/mo2/tmoe-linux-comic/raw/master/032.png)
+![033](https://gitee.com/mo2/tmoe-linux-comic/raw/master/033.png)
+
+---
+
+#### 第四章 loli 篇
+
+![034](https://gitee.com/mo2/tmoe-linux-comic/raw/master/034.png)
+![035](https://gitee.com/mo2/tmoe-linux-comic/raw/master/035.png)
+![036](https://gitee.com/mo2/tmoe-linux-comic/raw/master/036.png)
+![037](https://gitee.com/mo2/tmoe-linux-comic/raw/master/037.png)
+![038](https://gitee.com/mo2/tmoe-linux-comic/raw/master/038.png)
+![039](https://gitee.com/mo2/tmoe-linux-comic/raw/master/039.png)
+![040](https://gitee.com/mo2/tmoe-linux-comic/raw/master/040.png)
+![041](https://gitee.com/mo2/tmoe-linux-comic/raw/master/041.png)
+
+---
+
+#### 第五章 Mr.Jie 篇
+
+![042](https://gitee.com/mo2/tmoe-linux-comic/raw/master/042.png)
+![043](https://gitee.com/mo2/tmoe-linux-comic/raw/master/043.png)
+![044](https://gitee.com/mo2/tmoe-linux-comic/raw/master/044.png)
+![045](https://gitee.com/mo2/tmoe-linux-comic/raw/master/045.png)
+![046](https://gitee.com/mo2/tmoe-linux-comic/raw/master/046.png)
+
+---
+
+#### 第六章 dog 狗子的死亡探究篇
+
+![047](https://gitee.com/mo2/tmoe-linux-comic/raw/master/047.png)
+![048](https://gitee.com/mo2/tmoe-linux-comic/raw/master/048.png)
+![049](https://gitee.com/mo2/tmoe-linux-comic/raw/master/049.png)
+![050](https://gitee.com/mo2/tmoe-linux-comic/raw/master/050.png)
+![051](https://gitee.com/mo2/tmoe-linux-comic/raw/master/051.png)
+![052](https://gitee.com/mo2/tmoe-linux-comic/raw/master/052.png)
+![053](https://gitee.com/mo2/tmoe-linux-comic/raw/master/053.png)
+
+---
+
+#### 第七章 hat 篇
+
+![054](https://gitee.com/mo2/tmoe-linux-comic/raw/master/054.png)
+![055](https://gitee.com/mo2/tmoe-linux-comic/raw/master/055.png)
+![056](https://gitee.com/mo2/tmoe-linux-comic/raw/master/056.png)
+![057](https://gitee.com/mo2/tmoe-linux-comic/raw/master/057.png)
+![058](https://gitee.com/mo2/tmoe-linux-comic/raw/master/058.png)
+![059](https://gitee.com/mo2/tmoe-linux-comic/raw/master/059.png)
+![060](https://gitee.com/mo2/tmoe-linux-comic/raw/master/060.png)
+![061](https://gitee.com/mo2/tmoe-linux-comic/raw/master/061.png)
+![062](https://gitee.com/mo2/tmoe-linux-comic/raw/master/062.png)
+![063](https://gitee.com/mo2/tmoe-linux-comic/raw/master/063.png)
+![064](https://gitee.com/mo2/tmoe-linux-comic/raw/master/064.png)
+![065](https://gitee.com/mo2/tmoe-linux-comic/raw/master/065.png)
+![066](https://gitee.com/mo2/tmoe-linux-comic/raw/master/066.png)
+![067](https://gitee.com/mo2/tmoe-linux-comic/raw/master/067.png)
+
+---
+
+#### 第八章 Ctrl+Z 篇
+
+![068](https://gitee.com/mo2/tmoe-linux-comic/raw/master/068.png)
+![069](https://gitee.com/mo2/tmoe-linux-comic/raw/master/069.png)
+![070](https://gitee.com/mo2/tmoe-linux-comic/raw/master/070.png)
+![071](https://gitee.com/mo2/tmoe-linux-comic/raw/master/071.png)
+![072](https://gitee.com/mo2/tmoe-linux-comic/raw/master/072.png)
+![073](https://gitee.com/mo2/tmoe-linux-comic/raw/master/073.png)
+![074](https://gitee.com/mo2/tmoe-linux-comic/raw/master/074.png)
+![075](https://gitee.com/mo2/tmoe-linux-comic/raw/master/075.png)
+![076](https://gitee.com/mo2/tmoe-linux-comic/raw/master/076.png)
+![077](https://gitee.com/mo2/tmoe-linux-comic/raw/master/077.png)
+![078](https://gitee.com/mo2/tmoe-linux-comic/raw/master/078.png)
+![079](https://gitee.com/mo2/tmoe-linux-comic/raw/master/079.png)
+![080](https://gitee.com/mo2/tmoe-linux-comic/raw/master/080.png)
+![081](https://gitee.com/mo2/tmoe-linux-comic/raw/master/081.png)
+![082](https://gitee.com/mo2/tmoe-linux-comic/raw/master/082.png)
+![083](https://gitee.com/mo2/tmoe-linux-comic/raw/master/083.png)
+
+---

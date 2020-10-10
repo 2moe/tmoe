@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+#######################################
+vnc_can_not_call_pulse_audio() {
+	printf "%s\n" "若您启动VNC后，发现无音频。首先请确保您的termux为最新版本，并安装了termux:api"
+	printf "%s\n" "若您的宿主机为Android系统，且发现音频服务无法启动，请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+	printf "%s\n" "您亦可输${GREEN}pulseaudio --start${RESET}"
+	printf "%s\n" "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
+	printf "%s\n" "按回车键自动启动音频服务"
+	do_you_want_to_continue
+	pulseaudio --start
+}
+###############
+creat_start_linux_deploy_sh() {
+	cd $PREFIX/bin
+	printf "%s\n" ${CUT_TARGET}
+	cat >"${CUT_TARGET}" <<-'EndofFile'
+		#!/usr/bin/env bash
+		pulseaudio --start 2>/dev/null &
+		printf "%s\n" "pulseaudio服务启动完成，将为您自动打开LinuxDeploy,请点击“启动”。"
+		am start -n ru.meefik.linuxdeploy/ru.meefik.linuxdeploy.Launcher
+		sleep 6
+		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
+	EndofFile
+}
+##############
+linux_deploy_pulse_server() {
+	printf "%s\n" "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具(Tmoe-linux tool)覆盖安装桌面环境"
+	printf "%s\n" "您在安装Linux deploy的chroot容器前，可以将安装类型修改为目录，安装路径修改为/data/data/ru.meefik.linuxdeploy/linux"
+	printf "%s\n" "脚本用法：ssh连接后，输入apt install -y curl;bash -c \"(curl -L ${TMOE_GIT_URL}/raw/2/2)\""
+	#printf "%s\n" "覆盖安装之后，您需要通过本工具进行VNC和音频服务的配置"
+	printf "%s\n" "接下来您需要设定一个您独有的启动命令，例如startl"
+	printf "%s\n" "您之后可以在termux里输入此命令来启动Linux Deploy以及音频服务"
+	do_you_want_to_continue
+	TARGET=$(whiptail --inputbox "请自定义启动命令名称\n Please enter the command name." 12 50 --title "COMMAND" 3>&1 1>&2 2>&3)
+	CUT_TARGET="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${CUT_TARGET}" ]; then
+		printf "%s\n" "命令名称不能为空！！！"
+	else
+		creat_start_linux_deploy_sh
+	fi
+	if [ ! -z ${CUT_TARGET} ]; then
+		chmod +x ${CUT_TARGET}
+		ls -lh ${PREFIX}/bin/${CUT_TARGET}
+		printf "%s\n" "Congratulations!配置成功，您之后可以输${CUT_TARGET}来启动"
+	else
+		printf "%s\n" "检测到您取消了操作"
+	fi
+}
+##########################
+manager_frequently_asked_questions() {
+	RETURN_TO_WHERE=manager_frequently_asked_questions
+	# 15 60 5
+	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
+		"您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
+		"1" "About auto conf(关于自动配置)" \
+		"2" "VNC无法调用音频" \
+		"3" "给Linux Deploy配置VNC音频" \
+		"0" "🌚 Back to the main menu 返回主菜单" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${TMOE_FAQ}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) questions_about_tmoe_automatic_configuration ;;
+	2) vnc_can_not_call_pulse_audio ;;
+	3) linux_deploy_pulse_server ;;
+	esac
+	#############
+	press_enter_to_return
+	manager_frequently_asked_questions
+}
+###########################
+questions_about_tmoe_automatic_configuration() {
+	cat <<-ENDOFFAQ
+		    Q:${YELLOW}为什么会自动修改termux的配色、字体和小键盘布局${RESET}
+			Why the color, font and keyboard layout of termux will be automatically modified during installation.
+		    
+			A:只有当${HOME}/.termux目录下的colors.properties、font.ttf和termux.properties${RED}不存在时${RESET}才会自动配置哦！
+			Only when the relevant file in the ~/.termux directory does not exist will it be automatically configured.
+
+			早期会强制更换字体,并自动备份,现在只有当字体不存在时才会自动配置。
+			有人跟我反馈说字体显示异常。
+			这是因为仅部分字体支持zsh的powerlevel 10k主题的特殊字符。
+
+			而配色和键盘一直以来都是只有当文件不存在时，才会自动配置。
+
+			由于本工具严重依赖方向键和回车键，因此修改默认布局稍微有点必要呢！
+			您只需要执行${GREEN}rm ${HOME}/.termux/termux.properties${RESET}即可删除配置并还原回默认布局。
+			You can type ${GREEN}rm ~/.termux/termux.properties${RESET} to delete it and restore to default.
+			-----------------------
+			Q:${YELLOW}为什么每次会自动加载EULA?${RESET}
+		    
+			A:添加许可协议是为了避免不必要的麻烦。
+			作为一个开源项目，您可以随时审查其中的代码，而不必过多担心恶意代码。
+			-----------------------
+			Q:${YELLOW}为什么安装时会自动显示git仓库的链接?${RESET}
+		    
+			A:因为开源项目花了开发者很长的时间，希望大家能尊重原开发者。
+			换位思考一下：假如你辛辛苦苦录制的视频被别人盗了，没有人知道那个视频真正的原作者是谁，而你的努力最终只能付诸于东流。
+			听说尊重他人的劳动成果，会让世界变得更加美好呢！φ(≧ω≦*)♪
+			注：若您需要演示tmoe-linux或分享相关教程，则无需注明git链接。
+			-----------------------
+	ENDOFFAQ
+}
+###########################
+manager_frequently_asked_questions $@

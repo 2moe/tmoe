@@ -34,40 +34,40 @@ check_dependencies() {
     BOLD=$(printf '\033[1m')
     RESET=$(printf '\033[m')
     if [ ! $(command -v node) ]; then
-        echo '請先安裝nodejs'
+        printf '%s\n' '請先安裝nodejs'
     fi
 
     if [ ! $(command -v git) ]; then
-        echo '請先安裝git'
+        printf '%s\n' '請先安裝git'
     fi
 
     if [ ! $(command -v whiptail) ]; then
-        echo '請先安裝whiptail'
+        printf '%s\n' '請先安裝whiptail'
     fi
 }
 #############
 check_current_user_name_and_group() {
-    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
-    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
+    CURRENT_USER_NAME=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
+    CURRENT_USER_GROUP=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
     if [ -z "${CURRENT_USER_GROUP}" ]; then
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
 }
 ##########################
 do_you_want_to_continue() {
-    echo "${YELLOW}Do you want to continue?[Y/n]${RESET}"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     read opt
     case $opt in
     y* | Y* | "") ;;
 
     n* | N*)
-        echo "skipped."
+        printf "%s\n" "skipped."
         ${RETURN_TO_WHERE}
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         ${RETURN_TO_WHERE}
         #beta_features
         ;;
@@ -75,8 +75,8 @@ do_you_want_to_continue() {
 }
 ##################
 press_enter_to_return() {
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回車鍵${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回車鍵${RESET}${BLUE}返回${RESET}"
     read
 }
 ################
@@ -108,15 +108,15 @@ work_crawler_eula() {
     若您强行破解，则您必须承担由此带来所有的法律责任;
     (c) 若本工具侵犯了您的权益，请到https://github.com/kanasimi/work_crawler 联系原开发者，以便及时删除。
 EndOfFile
-    echo 'You must agree to the EULA to use this tool.'
-    echo "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
-    echo "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
+    printf '%s\n' 'You must agree to the EULA to use this tool.'
+    printf "%s\n" "Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly."
+    printf "%s\n" "按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 "
     #if [ "${LINUX_DISTRO}" != 'Android' ]; then
     #export LANG=${CurrentLANG}
     #fi
     do_you_want_to_continue
     mkdir -p ${HOME}/.config/tmoe-linux
-    echo '' >${HOME}/.config/tmoe-linux/work_crawler_eula
+    printf "\n" >${HOME}/.config/tmoe-linux/work_crawler_eula
 }
 ##########################
 kanasimi_work_crawler() {
@@ -126,7 +126,7 @@ kanasimi_work_crawler() {
         git_clone_kanasimi_work_crawler
     fi
     if [ ! -e "${HOME}/.config/tmoe-linux/work_crawler_eula" ]; then
-        echo "您未同意本工具使用许可协议，无法继续使用"
+        printf "%s\n" "您未同意本工具使用许可协议，无法继续使用"
         work_crawler_eula
         exit 1
     fi
@@ -189,9 +189,9 @@ kanasimi_work_crawler_electron_gui() {
 }
 #####################
 install_tmoe_work_crawler_electron() {
-    echo "正在检测版本信息..."
+    printf "%s\n" "正在检测版本信息..."
     if [ -e "/opt/work_crawler" ]; then
-        LOCAL_VSCODE_VERSION=$(cat /opt/work_crawler/work_crawler-version.txt | head -n 1)
+        LOCAL_VSCODE_VERSION=$(sed -n p /opt/work_crawler/work_crawler-version.txt | head -n 1)
     else
         LOCAL_VSCODE_VERSION='您尚未安装work_crawler gui模块'
     fi
@@ -260,15 +260,15 @@ upgrade_kanasimi_work_crawler_tool() {
     cd /usr/local/bin
     curl -Lv -o work-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/work_crawler@kanasimi.sh'
     chmod +x work-i
-    echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "${YELLOW}更新完成，按回車鍵返回。${RESET}"
+    printf "%s\n" "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "${YELLOW}更新完成，按回車鍵返回。${RESET}"
     read
     source /usr/local/bin/work-i
     #work_crawler_eula
 }
 ############
 parsing_comic() {
-    echo "檔案將保存至$(pwd)/${WORK_CRAWLER_SITE}"
+    printf "%s\n" "檔案將保存至$(pwd)/${WORK_CRAWLER_SITE}"
     node ${WORK_CRAWLER_SITE}.js "${TARGET}"
 }
 #############
@@ -323,9 +323,9 @@ kanasimi_work_crawler_tmoe_tui() {
 }
 ################
 work_crawler_config_options() {
-    echo "${BLUE}請在命令行下手動進入本程式目錄,並執行操作。${RESET}"
+    printf "%s\n" "${BLUE}請在命令行下手動進入本程式目錄,並執行操作。${RESET}"
     cd "${WORK_CRAWLER_FOLDER}"
-    echo "${BLUE}cd ${WORK_CRAWLER_FOLDER}${RESET}"
+    printf "%s\n" "${BLUE}cd ${WORK_CRAWLER_FOLDER}${RESET}"
     node work_crawler_loader.js 2>&1 | sed 's@start_gui_electron.sh@work-i g@g'
 }
 #########
@@ -334,8 +334,8 @@ parsing_website() {
     if [ "$?" != "0" ]; then
         ${RETURN_TO_WHERE}
     elif [ -z "${TARGET}" ]; then
-        echo "請鍵入有效的數據"
-        echo "Please enter a valid value"
+        printf "%s\n" "請鍵入有效的數據"
+        printf "%s\n" "Please enter a valid value"
         ${RETURN_TO_WHERE}
     else
         parsing_comic
@@ -343,9 +343,9 @@ parsing_website() {
 }
 ##############
 chinese_website_warning() {
-    echo "伺服器已經斷開連結，您可能沒有權限下載${WORK_CRAWLER_SITE}的資源"
-    echo "${RED}警告！${RESET}因中國大陸的法規和版權原因，您無法下載${WORK_CRAWLER_SITE}的资源"
-    echo "若您强行${RED}破解${RESET}，則可能${RED}觸犯${RESET}相關法規。"
+    printf "%s\n" "伺服器已經斷開連結，您可能沒有權限下載${WORK_CRAWLER_SITE}的資源"
+    printf "%s\n" "${RED}警告！${RESET}因中國大陸的法規和版權原因，您無法下載${WORK_CRAWLER_SITE}的资源"
+    printf "%s\n" "若您强行${RED}破解${RESET}，則可能${RED}觸犯${RESET}相關法規。"
 }
 ################
 parsing_chinese_website() {
@@ -353,24 +353,24 @@ parsing_chinese_website() {
     if [ "$?" != "0" ]; then
         ${RETURN_TO_WHERE}
     elif [ -z "${TARGET}" ]; then
-        echo "請鍵入有效的數據"
-        echo "Please enter a valid value"
+        printf "%s\n" "請鍵入有效的數據"
+        printf "%s\n" "Please enter a valid value"
         ${RETURN_TO_WHERE}
-    elif [ "$(echo "${ED25519_PART_99}" | cut -d 'x' -f 2 | cut -d '*' -f 1)" = 'x^2dx=f(a)+f(b)=a^2+b^2y' ]; then
-        echo "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
-        FALSE_TARGET="$(echo ${TURE_TARGET} | awk '{print $2}')"
+    elif [ "$(printf "%s\n" "${ED25519_PART_99}" | cut -d 'x' -f 2 | cut -d '*' -f 1)" = 'x^2dx=f(a)+f(b)=a^2+b^2y' ]; then
+        printf "%s\n" "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
+        FALSE_TARGET="$(printf '%s\n' ${TURE_TARGET} | awk '{print $2}')"
         TRUE_TARGET="${FALSE_TARGET}+975fc7c0ecc6c82577ac26f99900cfb61e521d2dbd72b5372e41ed6d66dbed96c653c9208e2944c7838af4371469bab2aab9aef30787b005fb199c0a178dc95f"
-    elif [ "$(echo ${TRUE_TARGET} | sha256sum | grep $(echo 'MWIxZWUwNzVkZjc3ZTFhZTliY2U3ZTk0ODMxZGV6Mzg3N2U1MThmNmYyZTZiODVkNWNkZTNhYWJi' | base64 -d | cut -d 'z' -f 1))" ]; then
-        echo "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
-        echo "检测到您正在${RED}非法破解${RESET}本工具的下载功能！！！"
-        echo "您必须独自承担下载该网站资源的而造成的所有法律责任"
-        echo "请立即关闭本工具！！！"
-        echo "${RED}开发者不对您的下载行为负责！！！${RESET}"
-        echo "Please close this tool now."
-        $(echo cGFyc2luZ19jb21pYwo= | base64 -d)
-    elif [ "$(echo ${TARGET} | sha512sum | grep $(echo 'YmRjZTJjYzY0YmIwOGJhNGRhYzlkemNlNGFiY2RkYzU1N2I5ZGI0Y2NhMDczYTY4Cg==' | base64 -d | cut -d 'z' -f 1))" ]; then
-        #echo "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能"
-        FALSE_TARGET="$(echo ${TARGET} | cut -d '-' -f 1)"
+    elif [ "$(printf '%s\n' ${TRUE_TARGET} | sha256sum | grep $(printf '%s\n' 'MWIxZWUwNzVkZjc3ZTFhZTliY2U3ZTk0ODMxZGV6Mzg3N2U1MThmNmYyZTZiODVkNWNkZTNhYWJi' | base64 -d | cut -d 'z' -f 1))" ]; then
+        printf "%s\n" "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
+        printf "%s\n" "检测到您正在${RED}非法破解${RESET}本工具的下载功能！！！"
+        printf "%s\n" "您必须独自承担下载该网站资源的而造成的所有法律责任"
+        printf "%s\n" "请立即关闭本工具！！！"
+        printf "%s\n" "${RED}开发者不对您的下载行为负责！！！${RESET}"
+        printf "%s\n" "Please close this tool now."
+        $(printf '%s\n' 'cGFyc2luZ19jb21pYwo=' | base64 -d)
+    elif [ "$(printf '%s\n' ${TARGET} | sha512sum | grep $(printf '%s\n' 'YmRjZTJjYzY0YmIwOGJhNGRhYzlkemNlNGFiY2RkYzU1N2I5ZGI0Y2NhMDczYTY4Cg==' | base64 -d | cut -d 'z' -f 1))" ]; then
+        #printf "%s\n" "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能"
+        FALSE_TARGET="$(printf '%s\n' ${TARGET} | cut -d '-' -f 1)"
         TRUE_TARGET="${FALSE_TARGET}"
         ED25519_PART_99="${TRUE_TARGET}+be3e4ff3c93abb538b81484a19d95aafedc5a3d598893571e36c05a26edad8a1"
         chinese_website_warning

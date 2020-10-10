@@ -29,8 +29,8 @@ tmoe_aria2_env() {
 }
 ##########
 check_current_user_name_and_group() {
-    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
-    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
+    CURRENT_USER_NAME=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
+    CURRENT_USER_GROUP=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
     if [ -z "${CURRENT_USER_GROUP}" ]; then
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
@@ -44,29 +44,29 @@ check_dependencies() {
     BOLD=$(printf '\033[1m')
     RESET=$(printf '\033[m')
     if [ ! $(command -v aria2c) ]; then
-        echo '请先安装aria2'
+        printf '%s\n' '请先安装aria2'
     fi
 
     if [ ! $(command -v whiptail) ]; then
-        echo '请安装whiptail'
+        printf '%s\n' '请安装whiptail'
     fi
 }
 ################
 ##########################
 do_you_want_to_continue() {
-    echo "${YELLOW}Do you want to continue?[Y/n]${RESET}"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     read opt
     case $opt in
     y* | Y* | "") ;;
 
     n* | N*)
-        echo "skipped."
+        printf "%s\n" "skipped."
         ${RETURN_TO_WHERE}
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         ${RETURN_TO_WHERE}
         #beta_features
         ;;
@@ -74,16 +74,16 @@ do_you_want_to_continue() {
 }
 ##################
 press_enter_to_return() {
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
 }
 ################
 upgrade_tmoe_aria2_tool() {
     cd /usr/local/bin
     curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/aria2.sh'
-    echo "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "${YELLOW}更新完成，按回车键返回。${RESET}"
+    printf "%s\n" "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}"
     chmod +x aria2-i
     read
     #bash /usr/local/bin/aria2-i
@@ -161,14 +161,14 @@ tmoe_file_manager() {
     EXIT_STATUS=$?
     if [ ${EXIT_STATUS} -eq 0 ]; then
         if [ "${SELECTION}" == "" ]; then
-            echo "检测到您取消了操作,User Pressed Esc with No File Selection"
+            printf "%s\n" "检测到您取消了操作,User Pressed Esc with No File Selection"
         else
             whiptail --msgbox "文件属性 :  $(ls -lh ${FILE_NAME})\n路径 : ${FILE_PATH}" 0 0
             TMOE_FILE_ABSOLUTE_PATH="${CURRENT_DIR}/${SELECTION}"
             #uncompress_tar_file
         fi
     else
-        echo "检测到您${RED}取消了${RESET}${YELLOW}操作${RESET}，没有文件${BLUE}被选择${RESET},with No File ${BLUE}Selected.${RESET}"
+        printf "%s\n" "检测到您${RED}取消了${RESET}${YELLOW}操作${RESET}，没有文件${BLUE}被选择${RESET},with No File ${BLUE}Selected.${RESET}"
         #press_enter_to_return
     fi
 }
@@ -207,7 +207,7 @@ tmoe_aria2_manager() {
     fi
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${TMOE_ARIA2_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？\n${TMOE_ARIA2_STATUS}\n${TMOE_ARIA2_WARNING}" 0 50); then
         if [ ! -e "${TMOE_ARIA2_FILE}" ]; then
-            echo "检测到配置文件不存在，1s后将为您自动配置服务。"
+            printf "%s\n" "检测到配置文件不存在，1s后将为您自动配置服务。"
             sleep 1s
             tmoe_aria2_onekey
         fi
@@ -1522,9 +1522,9 @@ aria2_bt_tracker() {
 EOF
     update_aria2_bt_tracker
     check_tmoe_aria2_config_value
-    echo ${TMOE_ARIA2_CONFIG_STATUS}
-    echo "更新完成，您可能需要重启aria2c进程才能生效"
-    echo "如需自动更新，则请手动将${GREEN}aria2-i bt${RESET}添加至定时任务"
+    printf "%s\n" ${TMOE_ARIA2_CONFIG_STATUS}
+    printf "%s\n" "更新完成，您可能需要重启aria2c进程才能生效"
+    printf "%s\n" "如需自动更新，则请手动将${GREEN}aria2-i bt${RESET}添加至定时任务"
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }
@@ -1536,7 +1536,7 @@ update_aria2_bt_tracker() {
     BT_TRACKER_URL='https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt'
     BT_TRACKER_REPO='https://github.com/ngosang/trackerslist'
     cd ${TMOE_ARIA2_PATH}
-    echo ${BT_TRACKER_REPO}
+    printf "%s\n" ${BT_TRACKER_REPO}
     if [ ! -d "trackerslist" ]; then
         git clone --depth=1 ${BT_TRACKER_REPO} trackerslist
         cd trackerslist
@@ -1548,17 +1548,17 @@ update_aria2_bt_tracker() {
     list=$(cat ./trackers_all.txt | awk NF | sed ":a;N;s/\n/,/g;ta")
     if grep -q 'bt-tracker=' "${TMOE_ARIA2_FILE}"; then
         sed -i "s@bt-tracker.*@bt-tracker=$list@g" ${TMOE_ARIA2_FILE}
-        echo 更新中......
+        printf "%s\n" "更新中......"
     else
         sed -i '$a bt-tracker='${list} ${TMOE_ARIA2_FILE}
-        echo 添加中......
+        printf "%s\n" "添加中......"
     fi
     # pkill aria2c && systemctl start aria2
 }
 #######################
 check_tmoe_aria2_config_value() {
-    TMOE_ARIA2_CONFIG_VALUE=$(cat ${TMOE_ARIA2_FILE} | grep ${TMOE_ARIA2_GREP_NAME}= | head -n 1 | cut -d '=' -f 2)
-    TMOE_ARIA2_CONFIG_LINE=$(cat ${TMOE_ARIA2_FILE} | grep -n ${TMOE_ARIA2_GREP_NAME}= | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+    TMOE_ARIA2_CONFIG_VALUE=$(sed -n p ${TMOE_ARIA2_FILE} | grep ${TMOE_ARIA2_GREP_NAME}= | head -n 1 | cut -d '=' -f 2)
+    TMOE_ARIA2_CONFIG_LINE=$(sed -n p ${TMOE_ARIA2_FILE} | grep -n ${TMOE_ARIA2_GREP_NAME}= | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
     if grep -q "^${TMOE_ARIA2_GREP_NAME}=" ${TMOE_ARIA2_FILE}; then
         TMOE_ARIA2_CONFIG_STATUS="检测到${TMOE_ARIA2_GREP_NAME}的值为${TMOE_ARIA2_CONFIG_VALUE}"
         TMOE_ARIA2_CONFIG_ENABLED='true'
@@ -1628,11 +1628,11 @@ select_tmoe_aria2_file() {
     #where_is_tmoe_file_dir
     tmoe_file_manager
     if [ -z ${SELECTION} ]; then
-        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+        printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
         #${RETURN_TO_WHERE}
         ${RETURN_TO_MENU}
     else
-        echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+        printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
         ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
         TMOE_ARIA2_OPTION_TARGET=${TMOE_FILE_ABSOLUTE_PATH}
     fi
@@ -1678,9 +1678,9 @@ modify_aria2_config_value() {
     hide) sed -i "s@^${TMOE_ARIA2_GREP_NAME}=@#&@" ${TMOE_ARIA2_FILE} ;;
     esac
     check_tmoe_aria2_config_value
-    echo "${TMOE_ARIA2_GREP_NAME} has been modified."
-    #echo "${TMOE_ARIA2_GREP_NAME}的值已修改为${TMOE_ARIA2_CONFIG_VALUE}"
-    echo ${TMOE_ARIA2_CONFIG_STATUS}
+    printf "%s\n" "${TMOE_ARIA2_GREP_NAME} has been modified."
+    #printf "%s\n" "${TMOE_ARIA2_GREP_NAME}的值已修改为${TMOE_ARIA2_CONFIG_VALUE}"
+    printf "%s\n" ${TMOE_ARIA2_CONFIG_STATUS}
 }
 ###################
 custom_aria2_config() {
@@ -1688,9 +1688,9 @@ custom_aria2_config() {
     if [ "$?" != "0" ]; then
         ${RETURN_TO_WHERE}
     elif [ -z "${TMOE_ARIA2_OPTION_TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
-        echo "您输入了一个空数值，将自动切换为${TMOE_ARIA2_OPTION_02}"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
+        printf "%s\n" "您输入了一个空数值，将自动切换为${TMOE_ARIA2_OPTION_02}"
         TMOE_ARIA2_OPTION_TARGET=${TMOE_ARIA2_OPTION_02}
     fi
 }
@@ -1809,19 +1809,19 @@ how_to_connect_to_aria2_rpc_server() {
     http://aria2.me
     http://aria2.net
 EOF
-    echo "您可以使用浏览器来打开${YELLOW}AriaNG网页地址${RESET}，并在AriaNG设置页面中连接至${RESET}RPC服务${RESET}(需输入地址，端口和密钥)"
-    echo Q:为什么无法连接？明明RPC地址，密钥和端口都没错
-    echo A:防火墙放行${ARIA2_RPC_PORT}端口
-    echo UFW防火墙的用法为ufw allow ${ARIA2_RPC_PORT}
-    echo -------------------------------
-    echo '若您为初次配置，则建议您前往“RPC服务器与TLS加密”-->“rpc-secret RPC 令牌密钥” 选项处，设定一个访问密码。'
-    echo '在公网环境下，无密码是一件非常危险的事。'
-    echo -------------------------------
-    ARIA2_RPC_PORT=$(cat ${TMOE_ARIA2_FILE} | grep 'rpc-listen-port=' | cut -d '=' -f 2)
-    echo "本机默认RPC服务地址为ws://localhost:${ARIA2_RPC_PORT}/jsonrpc"
+    printf "%s\n" "您可以使用浏览器来打开${YELLOW}AriaNG网页地址${RESET}，并在AriaNG设置页面中连接至${RESET}RPC服务${RESET}(需输入地址，端口和密钥)"
+    printf "%s\n" "Q:为什么无法连接？明明RPC地址，密钥和端口都没错"
+    printf "%s\n" "A:防火墙放行${ARIA2_RPC_PORT}端口"
+    printf "%s\n" "UFW防火墙的用法为ufw allow ${ARIA2_RPC_PORT}"
+    printf "%s\n" "-------------------------------"
+    printf '%s\n' '若您为初次配置，则建议您前往“RPC服务器与TLS加密”-->“rpc-secret RPC 令牌密钥” 选项处，设定一个访问密码。'
+    printf '%s\n' '在公网环境下，无密码是一件非常危险的事。'
+    printf "%s\n" "-------------------------------"
+    ARIA2_RPC_PORT=$(sed -n p ${TMOE_ARIA2_FILE} | grep 'rpc-listen-port=' | cut -d '=' -f 2)
+    printf "%s\n" "本机默认RPC服务地址为ws://localhost:${ARIA2_RPC_PORT}/jsonrpc"
     echo The LAN RPC address 局域网RPC服务地址 ws://$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2 | awk '{print $1}'):${ARIA2_RPC_PORT}/jsonrpc
     echo The WAN RPC address 外网RPC服务地址 ws://$(curl -sL ip.cip.cc | head -n 1):${ARIA2_RPC_PORT}/jsonrpc
-    echo '若存在兼容问题，则可将websocket(ws)替换为http'
+    printf '%s\n' '若存在兼容问题，则可将websocket(ws)替换为http'
 
 }
 ###########
@@ -1929,49 +1929,49 @@ tmoe_aria2_systemd() {
     case "${ARIA2_SYSTEMD_OPTION}" in
     0 | "") configure_aria2_rpc_server ;;
     1)
-        echo "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}或${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来启动"
-        echo "${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}"
-        echo "按回车键启动"
+        printf "%s\n" "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}或${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来启动"
+        printf "%s\n" "${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}"
+        printf "%s\n" "按回车键启动"
         do_you_want_to_continue
         systemctl daemon-reload 2>/dev/null
         service ${TMOE_DEPENDENCY_SYSTEMCTL} start || systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL}
         ;;
     2)
-        echo "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}或${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来停止"
-        echo "${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}"
-        echo "按回车键停止"
+        printf "%s\n" "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}或${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来停止"
+        printf "%s\n" "${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}"
+        printf "%s\n" "按回车键停止"
         do_you_want_to_continue
         service ${TMOE_DEPENDENCY_SYSTEMCTL} stop || systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL}
         if [ $(pgrep aria2c) ]; then
-            echo '正在强制停止aria2c'
+            printf '%s\n' '正在强制停止aria2c'
             pkill aria2c
         fi
         ;;
     3)
-        echo "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} status${RESET}或${GREEN}systemctl status ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来查看进程状态"
-        echo "${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} status${RESET}"
-        #echo "按回车键查看"
+        printf "%s\n" "您可以输${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} status${RESET}或${GREEN}systemctl status ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}来查看进程状态"
+        printf "%s\n" "${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} status${RESET}"
+        #printf "%s\n" "按回车键查看"
         #do_you_want_to_continue
         service ${TMOE_DEPENDENCY_SYSTEMCTL} status || systemctl status ${TMOE_DEPENDENCY_SYSTEMCTL}
         ;;
     4)
-        echo "您可以输${GREEN}rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来添加开机自启任务"
-        echo "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+        printf "%s\n" "您可以输${GREEN}rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来添加开机自启任务"
+        printf "%s\n" "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
         systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}
         if [ "$?" = "0" ]; then
-            echo "已添加至自启任务"
+            printf "%s\n" "已添加至自启任务"
         else
-            echo "添加自启任务失败"
+            printf "%s\n" "添加自启任务失败"
         fi
         ;;
     5)
-        echo "您可以输${GREEN}rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来禁止开机自启"
-        echo "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+        printf "%s\n" "您可以输${GREEN}rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来禁止开机自启"
+        printf "%s\n" "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
         systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}
         if [ "$?" = "0" ]; then
-            echo "已禁用开机自启"
+            printf "%s\n" "已禁用开机自启"
         else
-            echo "禁用自启任务失败"
+            printf "%s\n" "禁用自启任务失败"
         fi
         ;;
     esac
@@ -1983,19 +1983,19 @@ tmoe_aria2_systemd() {
 ##############
 del_tmoe_aria2_conf() {
     pkill aria2c
-    echo "正在停止aria2c进程..."
-    echo "Stopping aria2c..."
+    printf "%s\n" "正在停止aria2c进程..."
+    printf "%s\n" "Stopping aria2c..."
     service aria2 stop 2>/dev/null || systemctl stop aria2
-    echo '正在停用aria2开机自启动任务...'
+    printf '%s\n' '正在停用aria2开机自启动任务...'
     systemctl disable aria2
     rm -fv ${TMOE_ARIA2_FILE} /etc/systemd/system/aria2.service
-    echo "${YELLOW}已删除aria2配置文件${RESET}"
+    printf "%s\n" "${YELLOW}已删除aria2配置文件${RESET}"
 }
 ###################
 tmoe_aria2_onekey() {
     cd ${TMOE_ARIA2_PATH}
     if [ ! -e "aria2.session" ]; then
-        echo '' >aria2.session
+        printf "\n" >aria2.session
     fi
     if [ -e "aria2.conf" ]; then
         cp -vf aria2.conf aria2.conf.bak 2>/dev/null
@@ -2004,9 +2004,9 @@ tmoe_aria2_onekey() {
     #cp -pvf ${HOME}/gitee/linux-gitee/.config/aria2.conf ./
     aria2c --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
     case ${TMOE_PROOT} in
-    true) echo "检测到您处于${BLUE}proot容器${RESET}环境下" ;;
-    false) echo "检测到您处于${BLUE}chroot容器${RESET}环境下" ;;
-    no) echo "检测到您可能处于${BLUE}proot容器${RESET}环境下" ;;
+    true) printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下" ;;
+    false) printf "%s\n" "检测到您处于${BLUE}chroot容器${RESET}环境下" ;;
+    no) printf "%s\n" "检测到您可能处于${BLUE}proot容器${RESET}环境下" ;;
     esac
     cd /etc/systemd/system
     cat >aria2.service <<-EndOFaria
@@ -2051,11 +2051,11 @@ DAEMON_OPTS=""
 
 case "\$1" in
   start)
-    echo "Starting aria2c... "
+    printf "%s\n" "Starting aria2c... "
     su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 && aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf & "
     ;;
   stop)
-    echo "Stopping aria2c... "
+    printf "%s\n" "Stopping aria2c... "
     pkill aria2c
      log_daemon_msg "Stopping $DESC" "$NAME"
      start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --remove-pidfile --exec $DAEMON
@@ -2066,7 +2066,7 @@ case "\$1" in
   status_of_proc -p $PIDFILE "\$DAEMON" "\$NAME" && exit 0 || exit \$?
     ;;
   *)
-    echo "Usage: /etc/init.d/aria2 {start|stop|status}"
+    printf "%s\n" "Usage: /etc/init.d/aria2 {start|stop|status}"
     exit 1
     ;;
 esac
@@ -2104,7 +2104,7 @@ exit 0
 #########
 aria2_restart() {
     pkill aria2c
-    echo '正在启动aria2 rpc服务...'
+    printf '%s\n' '正在启动aria2 rpc服务...'
     su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
     if [ ! "$(pgrep aria2c)" ]; then
         service aria2 start
@@ -2136,7 +2136,7 @@ creat_auto_upload_onedrive_sh() {
     Uploader="/usr/bin/OneDriveUploader"    #上传的程序完整路径
     Config="${HOME}/.aria2/auth.json"  #初始化生成的配置auth.json绝对路径，参考第3步骤生成的路径
 
-    if [[ -z $(echo "$FileNum" | grep -o '[0-9]*' | head -n1) ]]; then FileNum='0'; fi
+    if [[ -z $(printf "%s\n" "$FileNum" | grep -o '[0-9]*' | head -n1) ]]; then FileNum='0'; fi
     if [[ "$FileNum" -le '0' ]]; then exit 0; fi
     if [[ "$#" != '3' ]]; then exit 0; fi
 
@@ -2144,7 +2144,7 @@ creat_auto_upload_onedrive_sh() {
         if [[ ! -e "${Uploader}" ]]; then return; fi
         IFS_BAK=$IFS
         IFS=$'\n'
-        tmpFile="$(echo "${File/#$LocalDIR/}" | cut -f1 -d'/')"
+        tmpFile="$(printf "%s\n" "${File/#$LocalDIR/}" | cut -f1 -d'/')"
         FileLoad="${LocalDIR}${tmpFile}"
         if [[ ! -e "${FileLoad}" ]]; then return; fi
         ItemSize=$(du -s "${FileLoad}" | cut -f1 | grep -o '[0-9]*' | head -n1)
@@ -2172,7 +2172,7 @@ craet_aria2_auto_move_sh() {
         fi
 
         if [ "$1" = "" ]; then
-            echo "usage: $(basename "$0") <file>"
+            printf "%s\n" "usage: $(basename "$0") <file>"
             exit 0
         fi
 
@@ -2188,15 +2188,15 @@ craet_aria2_auto_move_sh() {
         auto_move() {
             case "$1" in
             *.avi | *.mpg | *.wmv | *.mp4 | *.mov | *.mkv | *.rm | *.rmvb | *.3gp | *.flv | *.swf | *.srt | *.ass)
-                echo "moving $1 to $VIDEO_DIR ..."
+                printf "%s\n" "moving $1 to $VIDEO_DIR ..."
                 mv "$1" "$VIDEO_DIR"
                 ;;
             *.mp3 | *.wav | *.wma | *.mid | *.ape | *.flac)
-                echo "moving $1 to $AUDIO_DIR ..."
+                printf "%s\n" "moving $1 to $AUDIO_DIR ..."
                 mv "$1" "$AUDIO_DIR"
                 ;;
             *.jpg | *.jpeg | *.png | *.bmp | *.gif | *.tiff | *.psd | *.ico | *.svg)
-                echo "moving $1 to $IMAGE_DIR ..."
+                printf "%s\n" "moving $1 to $IMAGE_DIR ..."
                 mv "$1" "$IMAGE_DIR"
                 ;;
             esac

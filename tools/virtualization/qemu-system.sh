@@ -94,7 +94,7 @@ check_qemu_aarch64_install() {
 	if [ ! $(command -v qemu-system-aarch64) ]; then
 		DEPENDENCY_01='qemu'
 		DEPENDENCY_02='qemu-system-arm'
-		echo "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
+		printf "%s\n" "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
 		beta_features_quick_install
 	fi
 }
@@ -108,16 +108,16 @@ creat_qemu_aarch64_startup_script() {
 		export PULSE_SERVER=127.0.0.1
 		START_QEMU_SCRIPT_PATH='/usr/local/bin/startqemu'
 		if grep -q '\-vnc \:' "${START_QEMU_SCRIPT_PATH}"; then
-			CURRENT_PORT=$(cat ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+			CURRENT_PORT=$(sed -n p ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 			CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-			echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
+			printf "%s\n" "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
 		else
-			echo "检测到您当前没有使用VNC服务，若您使用的是Xserver则可无视以下说明"
-			echo "请自行添加端口号"
-			echo "spice默认端口号为5931"
-			echo "正在为您启动qemu虚拟机"
-			echo "本机localhost"
+			printf "%s\n" "检测到您当前没有使用VNC服务，若您使用的是Xserver则可无视以下说明"
+			printf "%s\n" "请自行添加端口号"
+			printf "%s\n" "spice默认端口号为5931"
+			printf "%s\n" "正在为您启动qemu虚拟机"
+			printf "%s\n" "本机localhost"
 			echo The LAN ip 局域网ip $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2)
 		fi
 
@@ -176,7 +176,7 @@ start_tmoe_qemu_aarch64_manager() {
 	check_qemu_aarch64_install
 	cd /usr/local/bin/
 	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_aarch64_2020060314" ]; then
-		echo "启用arm64虚拟机将重置startqemu为arm64的配置"
+		printf "%s\n" "启用arm64虚拟机将重置startqemu为arm64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_aarch64_startup_script
 	fi
@@ -223,7 +223,7 @@ start_tmoe_qemu_aarch64_manager() {
 #############
 switch_tmoe_qemu_network_card_to_default() {
 	sed -i 's/-net nic.*/-net nic \\/' startqemu
-	echo "已经将默认网卡切换为未指定状态"
+	printf "%s\n" "已经将默认网卡切换为未指定状态"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -301,7 +301,7 @@ modify_qemu_tmoe_network_card() {
 	esac
 	###############
 	sed -i "s/-net nic.*/-net nic,model=${TMOE_QEMU_NETWORK_CARD} \\\/" startqemu
-	echo "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
+	printf "%s\n" "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -475,7 +475,7 @@ modify_qemu_aarch64_tmoe_machine_model() {
 	esac
 	###############
 	sed -i "s@-machine .*@-machine ${TMOE_AARCH64_QEMU_MACHINE} \\\@" startqemu
-	echo "您已将machine修改为${TMOE_AARCH64_QEMU_MACHINE}"
+	printf "%s\n" "您已将machine修改为${TMOE_AARCH64_QEMU_MACHINE}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -571,14 +571,14 @@ modify_qemu_aarch64_tmoe_cpu_type() {
 	esac
 	###############
 	sed -i "s@-cpu .*@-cpu ${TMOE_AARCH64_QEMU_CPU_TYPE} \\\@" startqemu
-	echo "您已将cpu修改为${TMOE_AARCH64_QEMU_CPU_TYPE}"
+	printf "%s\n" "您已将cpu修改为${TMOE_AARCH64_QEMU_CPU_TYPE}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
 ############
 disable_tmoe_qemu_sound_card() {
 	sed -i '/-soundhw /d' startqemu
-	echo "禁用完成"
+	printf "%s\n" "禁用完成"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -587,8 +587,8 @@ tmoe_modify_qemu_sound_card() {
 	sed -i '/-soundhw /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -soundhw tmoe_cpu_config_test \\\n/' startqemu
 	sed -i "s@-soundhw tmoe_cpu_config_test@-soundhw ${QEMU_SOUNDHW}@" startqemu
-	echo "您已将soundhw修改为${QEMU_SOUNDHW}"
-	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	printf "%s\n" "您已将soundhw修改为${QEMU_SOUNDHW}"
+	printf "%s\n" "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -654,16 +654,16 @@ creat_qemu_startup_script() {
 		export PULSE_SERVER=127.0.0.1
 		START_QEMU_SCRIPT_PATH='/usr/local/bin/startqemu'
 		if grep -q '\-vnc \:' "${START_QEMU_SCRIPT_PATH}"; then
-			CURRENT_PORT=$(cat ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+			CURRENT_PORT=$(sed -n p ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 			CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-			echo "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
+			printf "%s\n" "正在为您启动qemu虚拟机，本机默认VNC访问地址为localhost:${CURRENT_VNC_PORT}"
 			echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${CURRENT_VNC_PORT}
 		else
-			echo "检测到您当前没有使用VNC服务，若您使用的是Xserver则可无视以下说明"
-			echo "请自行添加端口号"
-			echo "spice默认端口号为5931"
-			echo "正在为您启动qemu虚拟机"
-			echo "本机localhost"
+			printf "%s\n" "检测到您当前没有使用VNC服务，若您使用的是Xserver则可无视以下说明"
+			printf "%s\n" "请自行添加端口号"
+			printf "%s\n" "spice默认端口号为5931"
+			printf "%s\n" "正在为您启动qemu虚拟机"
+			printf "%s\n" "本机localhost"
 			echo The LAN ip 局域网ip $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2)
 		fi
 
@@ -690,7 +690,7 @@ creat_qemu_startup_script() {
 }
 ###########
 modify_qemu_machine_accel() {
-	if grep -Eq 'vmx|smx' /proc/cpuinfo; then
+	if egrep -q 'vmx|smx' /proc/cpuinfo; then
 		if [ "$(lsmod | grep kvm)" ]; then
 			KVM_STATUS='检测到您的CPU可能支持硬件虚拟化,并且已经启用了KVM内核模块。'
 		else
@@ -721,10 +721,10 @@ modify_qemu_machine_accel() {
 	###############
 	if grep -q '\,thread=multi' startqemu; then
 		sed -i "s@--accel .*@--accel ${MACHINE_ACCEL},thread=multi \\\@" startqemu
-		echo "您已将accel修改为${MACHINE_ACCEL},并启用了多线程加速功能"
+		printf "%s\n" "您已将accel修改为${MACHINE_ACCEL},并启用了多线程加速功能"
 	else
 		sed -i "s@--accel .*@--accel ${MACHINE_ACCEL} \\\@" startqemu
-		echo "您已将accel修改为${MACHINE_ACCEL},但并未启用多线程加速功能"
+		printf "%s\n" "您已将accel修改为${MACHINE_ACCEL},但并未启用多线程加速功能"
 	fi
 	press_enter_to_return
 	${RETURN_TO_WHERE}
@@ -751,30 +751,30 @@ modify_qemnu_graphics_card() {
 	case ${VIRTUAL_TECH} in
 	0 | "") tmoe_qemu_display_settings ;;
 	1)
-		echo " VMWare SVGA-II compatible adapter. Use it if you have sufficiently recent XFree86/XOrg server or Windows guest with a driver for this card."
+		printf "%s\n" " VMWare SVGA-II compatible adapter. Use it if you have sufficiently recent XFree86/XOrg server or Windows guest with a driver for this card."
 		QEMU_VGA='vmware'
 		;;
 	2)
-		echo "std Standard VGA card with Bochs VBE extensions.  If your guest OS supports the VESA 2.0 VBE extensions (e.g. Windows XP) and if you want to use high resolution modes (>= 1280x1024x16) then you should use this option. (This card is the default since QEMU 2.2)"
+		printf "%s\n" "std Standard VGA card with Bochs VBE extensions.  If your guest OS supports the VESA 2.0 VBE extensions (e.g. Windows XP) and if you want to use high resolution modes (>= 1280x1024x16) then you should use this option. (This card is the default since QEMU 2.2)"
 		QEMU_VGA='std'
 		;;
 	3)
-		echo "Cirrus Logic GD5446 Video card. All Windows versions starting from Windows 95 should recognize and use this graphic card. For optimal performances, use 16 bit color depth in the guest and the host OS.  (This card was the default before QEMU 2.2) "
+		printf "%s\n" "Cirrus Logic GD5446 Video card. All Windows versions starting from Windows 95 should recognize and use this graphic card. For optimal performances, use 16 bit color depth in the guest and the host OS.  (This card was the default before QEMU 2.2) "
 		QEMU_VGA='cirrus'
 		;;
 	4)
-		echo "QXL paravirtual graphic card.  It is VGA compatible (including VESA 2.0 VBE support).  Works best with qxl guest drivers installed though.  Recommended choice when using the spice protocol."
+		printf "%s\n" "QXL paravirtual graphic card.  It is VGA compatible (including VESA 2.0 VBE support).  Works best with qxl guest drivers installed though.  Recommended choice when using the spice protocol."
 		QEMU_VGA='qxl'
 		;;
 	5)
 		QEMU_VGA='xenfb'
 		;;
 	6)
-		echo "tcx (sun4m only) Sun TCX framebuffer. This is the default framebuffer for sun4m machines and offers both 8-bit and 24-bit colour depths at a fixed resolution of 1024x768."
+		printf "%s\n" "tcx (sun4m only) Sun TCX framebuffer. This is the default framebuffer for sun4m machines and offers both 8-bit and 24-bit colour depths at a fixed resolution of 1024x768."
 		QEMU_VGA='tcx'
 		;;
 	7)
-		echo " cg3 (sun4m only) Sun cgthree framebuffer. This is a simple 8-bit framebuffer for sun4m machines available in both 1024x768 (OpenBIOS) and 1152x900 (OBP) resolutions aimed at people wishing to run older Solaris versions."
+		printf "%s\n" " cg3 (sun4m only) Sun cgthree framebuffer. This is a simple 8-bit framebuffer for sun4m machines available in both 1024x768 (OpenBIOS) and 1152x900 (OBP) resolutions aimed at people wishing to run older Solaris versions."
 		QEMU_VGA='cg3'
 		;;
 	8) QEMU_VGA='none' ;;
@@ -782,7 +782,7 @@ modify_qemnu_graphics_card() {
 	esac
 	###############
 	sed -i "s@-vga .*@-vga ${QEMU_VGA} \\\@" startqemu
-	echo "您已将graphics_card修改为${QEMU_VGA}"
+	printf "%s\n" "您已将graphics_card修改为${QEMU_VGA}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -823,7 +823,7 @@ modify_qemu_exposed_ports() {
 	###############
 	modify_qemu_host_and_guest_port
 	if [ ! -z ${TARGET_HOST_PORT} ]; then
-		echo "您已将虚拟机的${TARGET_GUEST_PORT}端口映射到宿主机的${TARGET_HOST_PORT}端口"
+		printf "%s\n" "您已将虚拟机的${TARGET_GUEST_PORT}端口映射到宿主机的${TARGET_HOST_PORT}端口"
 	fi
 	press_enter_to_return
 	modify_qemu_exposed_ports
@@ -834,8 +834,8 @@ modify_qemu_host_and_guest_port() {
 	if [ "$?" != "0" ]; then
 		modify_qemu_exposed_ports
 	elif [ -z "${TARGET_HOST_PORT}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 	else
 		sed -i "s@::${HOST_PORT}-@::${TARGET_HOST_PORT}-@" startqemu
 	fi
@@ -844,8 +844,8 @@ modify_qemu_host_and_guest_port() {
 	if [ "$?" != "0" ]; then
 		modify_qemu_exposed_ports
 	elif [ -z "${TARGET_GUEST_PORT}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 	else
 		sed -i "s@0.0.0.0:${GUEST_PORT}@0.0.0.0:${TARGET_GUEST_PORT}@" startqemu
 	fi
@@ -862,11 +862,11 @@ modify_qemu_shared_folder() {
 #############
 disable_qemu_host_shared_folder() {
 	sed -i '/-virtfs local,id=shared_folder/d' startqemu
-	echo "如需还原，请重置配置文件"
+	printf "%s\n" "如需还原，请重置配置文件"
 }
 ############
 modify_qemu_host_shared_folder_sdcard() {
-	echo "Sorry,当前暂不支持修改挂载目录"
+	printf "%s\n" "Sorry,当前暂不支持修改挂载目录"
 }
 ###############
 #-hdd fat:rw:${HOME}/sd \
@@ -885,7 +885,7 @@ modify_qemu_host_shared_folder() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) disable_qemu_host_shared_folder ;;
 	2) modify_qemu_host_shared_folder_sdcard ;;
-	3) echo '请单独使用webdav或Filebrowser文件共享功能，并在windows浏览器内输入局域网访问地址' ;;
+	3) printf '%s\n' '请单独使用webdav或Filebrowser文件共享功能，并在windows浏览器内输入局域网访问地址' ;;
 	esac
 	###############
 	press_enter_to_return
@@ -912,15 +912,15 @@ configure_mount_script() {
 	chmod +x mount-9p-filesystem
 	cd ~
 	if ! grep -q 'mount-9p-filesystem' .zlogin; then
-		echo "" >>.zlogin
+		printf "\n" >>.zlogin
 		sed -i '$ a\/usr/local/bin/mount-9p-filesystem' .zlogin
 	fi
 
 	if ! grep -q 'mount-9p-filesystem' .profile; then
-		echo "" >>.profile
+		printf "\n" >>.profile
 		sed -i '$ a\/usr/local/bin/mount-9p-filesystem' .profile
 	fi
-	echo "若无法自动挂载，则请手动输${GREEN}mount-9p-filesystem${RESET}"
+	printf "%s\n" "若无法自动挂载，则请手动输${GREEN}mount-9p-filesystem${RESET}"
 	mount-9p-filesystem
 }
 #############
@@ -954,7 +954,7 @@ mount_qemu_guest_shared_folder() {
 check_qemu_vnc_port() {
 	START_QEMU_SCRIPT_PATH='/usr/local/bin/startqemu'
 	if grep -q '\-vnc \:' "${START_QEMU_SCRIPT_PATH}"; then
-		CURRENT_PORT=$(cat ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
+		CURRENT_PORT=$(sed -n p ${START_QEMU_SCRIPT_PATH} | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2 | tail -n 1)
 		CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 	fi
 	#CURRENT_PORT=$(cat startqemu | grep '\-vnc ' | tail -n 1 | awk '{print $2}' | cut -d ':' -f 2)
@@ -963,7 +963,7 @@ check_qemu_vnc_port() {
 #########################
 modify_qemu_vnc_display_port() {
 	if ! grep -q '\-vnc \:' "startqemu"; then
-		echo "检测到您未启用VNC服务，是否启用？"
+		printf "%s\n" "检测到您未启用VNC服务，是否启用？"
 		do_you_want_to_continue
 		sed -i "/-vnc :/d" startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -vnc :2 \\\n/' startqemu
@@ -975,16 +975,16 @@ modify_qemu_vnc_display_port() {
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 	else
 		sed -i "s@-vnc :.*@-vnc :${TARGET} \\\@" startqemu
 	fi
 
-	echo 'Your current VNC port has been modified.'
+	printf '%s\n' 'Your current VNC port has been modified.'
 	check_qemu_vnc_port
-	echo '您当前VNC端口已修改为'
-	echo ${CURRENT_VNC_PORT}
+	printf '%s\n' '您当前VNC端口已修改为'
+	printf "%s\n" ${CURRENT_VNC_PORT}
 }
 ###############
 choose_qemu_iso_file() {
@@ -999,9 +999,9 @@ choose_qemu_iso_file() {
 	fi
 	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		stat ${TMOE_FILE_ABSOLUTE_PATH}
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
@@ -1026,9 +1026,9 @@ choose_qemu_qcow2_or_img_file() {
 	where_is_tmoe_file_dir
 
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
@@ -1052,9 +1052,9 @@ choose_hdb_disk_image_file() {
 	fi
 	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
@@ -1076,9 +1076,9 @@ choose_hdc_disk_image_file() {
 	fi
 	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
@@ -1100,9 +1100,9 @@ choose_hdd_disk_image_file() {
 	fi
 	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
@@ -1115,7 +1115,7 @@ choose_hdd_disk_image_file() {
 ############
 fix_qemu_vdisk_file_perssions() {
 	if [ ${HOME} != '/root' ]; then
-		echo "正在将${TARGET_FILE_NAME}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+		printf "%s\n" "正在将${TARGET_FILE_NAME}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
 		chown ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TARGET_FILE_NAME}
 	fi
 }
@@ -1125,8 +1125,8 @@ creat_blank_virtual_disk_image() {
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET_FILE_NAME}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 		TARGET_FILE_NAME=$(date +%Y-%m-%d_%H-%M).qcow2
 	else
 		TARGET_FILE_NAME="${TARGET_FILE_NAME}.qcow2"
@@ -1139,9 +1139,9 @@ creat_blank_virtual_disk_image() {
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET_FILE_SIZE}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
-		echo "您输入了一个无效的数值，将为您自动创建16G大小的磁盘"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
+		printf "%s\n" "您输入了一个无效的数值，将为您自动创建16G大小的磁盘"
 		do_you_want_to_continue
 		#qemu-img create -f qcow2 -o preallocation=metadata ${TARGET_FILE_NAME} 16G
 		qemu-img create -f qcow2 ${TARGET_FILE_NAME} 16G
@@ -1152,8 +1152,8 @@ creat_blank_virtual_disk_image() {
 	stat ${TARGET_FILE_NAME}
 	qemu-img info ${TARGET_FILE_NAME}
 	ls -lh ${DISK_FILE_PATH}/${TARGET_FILE_NAME}
-	echo "是否需要将其设置为默认磁盘？"
-	echo "Do you need to set it as the default disk?"
+	printf "%s\n" "是否需要将其设置为默认磁盘？"
+	printf "%s\n" "Do you need to set it as the default disk?"
 	do_you_want_to_continue
 	#sed -i "s@-hda .*@-hda ${DISK_FILE_PATH}/${TARGET_FILE_NAME} \\\@" /usr/local/bin/startqemu
 	cd /usr/local/bin
@@ -1176,10 +1176,10 @@ enable_qemnu_spice_remote() {
 		sed -i "/-vnc :/d" startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -spice tmoe_spice_config_test \\\n/' startqemu
 		sed -i "s@-spice tmoe_spice_config_test@-spice port=5931,image-compression=quic,disable-ticketing@" startqemu
-		echo "启用完成，将在下次启动qemu虚拟机时生效"
+		printf "%s\n" "启用完成，将在下次启动qemu虚拟机时生效"
 	else
 		sed -i '/-spice port=/d' startqemu
-		echo "禁用完成"
+		printf "%s\n" "禁用完成"
 	fi
 }
 ############
@@ -1194,10 +1194,10 @@ enable_qemnu_win2k_hack() {
 	if (whiptail --title "您想要对这个小可爱做什么?" --yes-button 'enable启用' --no-button 'disable禁用' --yesno "Do you want to enable it?(っ °Д °)\n您是想要启用还是禁用呢？${TMOE_SPICE_STATUS}" 11 45); then
 		sed -i '/-win2k-hack/d' startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -win2k-hack \\\n/' startqemu
-		echo "启用完成，将在下次启动qemu虚拟机时生效"
+		printf "%s\n" "启用完成，将在下次启动qemu虚拟机时生效"
 	else
 		sed -i '/-win2k-hack/d' startqemu
-		echo "禁用完成"
+		printf "%s\n" "禁用完成"
 	fi
 }
 ##############
@@ -1243,7 +1243,7 @@ modify_qemu_sound_card() {
 }
 #############
 qemu_snapshoots_manager() {
-	echo "Sorry,请在qemu monitor下手动管理快照"
+	printf "%s\n" "Sorry,请在qemu monitor下手动管理快照"
 }
 ############
 tmoe_qemu_todo_list() {
@@ -1266,8 +1266,8 @@ tmoe_qemu_todo_list() {
 }
 ##########
 tmoe_qemu_gpu_passthrough() {
-	echo "本功能需要使用双显卡，因开发者没有测试条件，故不会适配"
-	echo "请自行研究qemu gpu passthrough"
+	printf "%s\n" "本功能需要使用双显卡，因开发者没有测试条件，故不会适配"
+	printf "%s\n" "请自行研究qemu gpu passthrough"
 }
 ##############
 modify_qemu_amd64_tmoe_cpu_type() {
@@ -1536,15 +1536,15 @@ modify_qemu_amd64_tmoe_cpu_type() {
 	sed -i '/-cpu /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -cpu tmoe_cpu_config_test \\\n/' startqemu
 	sed -i "s@-cpu tmoe_cpu_config_test@-cpu ${TMOE_AMD64_QEMU_CPU_TYPE}@" startqemu
-	echo "您已将cpu修改为${TMOE_AMD64_QEMU_CPU_TYPE}"
-	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	printf "%s\n" "您已将cpu修改为${TMOE_AMD64_QEMU_CPU_TYPE}"
+	printf "%s\n" "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
 ############
 disable_tmoe_qemu_cpu() {
 	sed -i '/-cpu /d' startqemu
-	echo "禁用完成"
+	printf "%s\n" "禁用完成"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -1678,15 +1678,15 @@ modify_qemu_amd64_tmoe_machine_type() {
 	sed -i '/-M /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -M tmoe_cpu_config_test \\\n/' startqemu
 	sed -i "s@-M tmoe_cpu_config_test@-M ${TMOE_AMD64_QEMU_MACHINE}@" startqemu
-	echo "您已将cpu修改为${TMOE_AMD64_QEMU_MACHINE}"
-	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	printf "%s\n" "您已将cpu修改为${TMOE_AMD64_QEMU_MACHINE}"
+	printf "%s\n" "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
 ##############
 disable_tmoe_qemu_machine() {
 	sed -i '/-M /d' startqemu
-	echo "禁用完成"
+	printf "%s\n" "禁用完成"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -1704,10 +1704,10 @@ enable_tmoe_qemu_cpu_multi_threading() {
 		#CURRENT_VALUE=$(cat startqemu | grep '\-machine accel' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1 | cut -d '=' -f 2)
 		CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
 		sed -i "s@--accel .*@--accel ${CURRENT_VALUE},thread=multi \\\@" startqemu
-		echo "启用完成，将在下次启动qemu虚拟机时生效"
+		printf "%s\n" "启用完成，将在下次启动qemu虚拟机时生效"
 	else
 		sed -i 's@,thread=multi@@' startqemu
-		echo "禁用完成"
+		printf "%s\n" "禁用完成"
 	fi
 }
 #################
@@ -1826,14 +1826,14 @@ tmoe_qemu_virtio_disk() {
 	0 | "") tmoe_qemu_storage_devices ;;
 	1) choose_drive_virtio_disk_01 ;;
 	2) download_virtio_drivers ;;
-	3) echo '请先以常规挂载方式(IDE磁盘)运行虚拟机系统，接着在虚拟机内安装virtio驱动，然后退出虚拟机，最后禁用IDE磁盘，并选择virtio磁盘' ;;
+	3) printf '%s\n' '请先以常规挂载方式(IDE磁盘)运行虚拟机系统，接着在虚拟机内安装virtio驱动，然后退出虚拟机，最后禁用IDE磁盘，并选择virtio磁盘' ;;
 	4)
 		sed -i '/-hda /d' startqemu
-		echo '禁用完成'
+		printf '%s\n' '禁用完成'
 		;;
 	5)
 		sed -i '/drive-virtio-disk/d' startqemu
-		echo '禁用完成'
+		printf '%s\n' '禁用完成'
 		;;
 	esac
 	press_enter_to_return
@@ -1841,22 +1841,22 @@ tmoe_qemu_virtio_disk() {
 }
 ##########
 set_it_as_the_default_qemu_iso() {
-	echo "文件已解压至${DOWNLOAD_PATH}"
-	echo "是否将其设置为默认的qemu光盘？"
+	printf "%s\n" "文件已解压至${DOWNLOAD_PATH}"
+	printf "%s\n" "是否将其设置为默认的qemu光盘？"
 	do_you_want_to_continue
 	cd /usr/local/bin
 	sed -i '/--cdrom /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_hda_config_test \\\n/' startqemu
 	sed -i "s@--cdrom tmoe_hda_config_test@--cdrom ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
-	#echo "设置完成，您之后可以输startqemu启动"
-	#echo "若启动失败，则请检查qemu的相关设置选项"
+	#printf "%s\n" "设置完成，您之后可以输startqemu启动"
+	#printf "%s\n" "若启动失败，则请检查qemu的相关设置选项"
 }
 #############
 check_tmoe_qemu_iso_file_and_git() {
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it  o(*￣▽￣*)o, or download it again?(っ °Д °)" 0 0); then
-			echo "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
 			git_clone_tmoe_linux_qemu_qcow2_file
@@ -1883,7 +1883,7 @@ download_virtio_drivers() {
 	1)
 		#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/windows/drivers/virtio-win-0.1.173.iso'
 		#aria2c_download_file
-		echo "即将为您下载至${DOWNLOAD_PATH}"
+		printf "%s\n" "即将为您下载至${DOWNLOAD_PATH}"
 		BRANCH_NAME='win'
 		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/virtio'
 		DOWNLOAD_FILE_NAME='virtio-win.tar.gz'
@@ -1901,17 +1901,17 @@ download_virtio_drivers() {
 		;;
 	3)
 		FEDORA_VIRTIO_URL='https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html'
-		echo "url: ${FEDORA_VIRTIO_URL}"
+		printf "%s\n" "url: ${FEDORA_VIRTIO_URL}"
 		su "${CURRENT_USER_NAME}" -c "xdg-open ${FEDORA_VIRTIO_URL}"
 		#xdg-open 'https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html' 2>/dev/null
 		;;
 	4)
 		sed -i '/-hda /d' startqemu
-		echo '禁用完成'
+		printf '%s\n' '禁用完成'
 		;;
 	5)
 		sed -i '/drive-virtio-disk/d' startqemu
-		echo '禁用完成'
+		printf '%s\n' '禁用完成'
 		;;
 	esac
 	press_enter_to_return
@@ -1929,9 +1929,9 @@ choose_drive_virtio_disk_01() {
 	fi
 	where_is_start_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		qemu-img info ${TMOE_FILE_ABSOLUTE_PATH}
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
@@ -1945,7 +1945,7 @@ choose_drive_virtio_disk_01() {
 ###############
 #########################
 tmoe_qemu_error_tips() {
-	echo "Sorry，本功能正在开发中，暂不支持修改storage devices，如需启用相关参数，请手动修改配置文件"
+	printf "%s\n" "Sorry，本功能正在开发中，暂不支持修改storage devices，如需启用相关参数，请手动修改配置文件"
 }
 #####################
 start_tmoe_qemu_manager() {
@@ -1953,7 +1953,7 @@ start_tmoe_qemu_manager() {
 	RETURN_TO_MENU='start_tmoe_qemu_manager'
 	check_qemu_install
 	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_2020060314" ]; then
-		echo "启用x86_64虚拟机将重置startqemu为x86_64的配置"
+		printf "%s\n" "启用x86_64虚拟机将重置startqemu为x86_64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_startup_script
 	fi
@@ -2013,12 +2013,12 @@ creat_a_new_tmoe_qemu_vm() {
 	fi
 	RETURN_TO_WHERE='multi_qemu_vm_management'
 	save_current_qemu_conf_as_a_new_script
-	echo "处于默认配置下的虚拟机的启动命令是startqemu"
-	echo "是否需要启动虚拟机？"
-	echo "您之后可以输startqemu来启动"
-	echo "You can type startqemu to start the default qemu vm."
-	echo "默认VNC访问地址为localhost:5902"
-	echo "Do you want to start it now?"
+	printf "%s\n" "处于默认配置下的虚拟机的启动命令是startqemu"
+	printf "%s\n" "是否需要启动虚拟机？"
+	printf "%s\n" "您之后可以输startqemu来启动"
+	printf "%s\n" "You can type startqemu to start the default qemu vm."
+	printf "%s\n" "默认VNC访问地址为localhost:5902"
+	printf "%s\n" "Do you want to start it now?"
 	do_you_want_to_continue
 	startqemu
 }
@@ -2041,7 +2041,7 @@ modify_tmoe_qemu_extra_options() {
 	2) tmoe_qemu_todo_list ;;
 	3)
 		creat_qemu_startup_script
-		echo "restore completed"
+		printf "%s\n" "restore completed"
 		;;
 	4) switch_tmoe_qemu_architecture ;;
 	esac
@@ -2075,14 +2075,14 @@ switch_tmoe_qemu_architecture() {
 	1)
 		SED_QEMU_BIN_COMMAND_SELECTED='/usr/bin/qemu-system-x86_64'
 		sed -i "s@${SED_QEMU_BIN_COMMAND}@${SED_QEMU_BIN_COMMAND_SELECTED}@" startqemu
-		echo "您已切换至${SED_QEMU_BIN_COMMAND_SELECTED}"
+		printf "%s\n" "您已切换至${SED_QEMU_BIN_COMMAND_SELECTED}"
 		;;
 	2)
 		SED_QEMU_BIN_COMMAND_SELECTED='/usr/bin/qemu-system-i386'
 		sed -i "s@${SED_QEMU_BIN_COMMAND}@${SED_QEMU_BIN_COMMAND_SELECTED}@" startqemu
-		echo "您已切换至${SED_QEMU_BIN_COMMAND_SELECTED}"
+		printf "%s\n" "您已切换至${SED_QEMU_BIN_COMMAND_SELECTED}"
 		;;
-	*) echo "非常抱歉，本工具暂未适配此架构，请手动修改qemu启动脚本" ;;
+	*) printf "%s\n" "非常抱歉，本工具暂未适配此架构，请手动修改qemu启动脚本" ;;
 	esac
 	###############
 	press_enter_to_return
@@ -2143,7 +2143,7 @@ tmoe_qemu_disk_manager() {
 	10) choose_hdd_disk_image_file ;;
 	11)
 		sed -i '/--cdrom /d' startqemu
-		echo "禁用完成"
+		printf "%s\n" "禁用完成"
 		;;
 	esac
 	press_enter_to_return
@@ -2186,17 +2186,17 @@ modify_tmoe_qemu_vnc_pulse_audio_address() {
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 	else
 		if grep -q '^export.*PULSE_SERVER' "startqemu"; then
 			sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startqemu
 		else
 			sed -i "2 a\export PULSE_SERVER=$TARGET" startqemu
 		fi
-		echo 'Your current PULSEAUDIO SERVER address has been modified.'
-		echo "您当前的音频地址已修改为$(grep 'PULSE_SERVER' startqemu | cut -d '=' -f 2 | head -n 1)"
-		echo "重启qemu生效"
+		printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
+		printf "%s\n" "您当前的音频地址已修改为$(grep 'PULSE_SERVER' startqemu | cut -d '=' -f 2 | head -n 1)"
+		printf "%s\n" "重启qemu生效"
 	fi
 }
 ##################
@@ -2218,7 +2218,7 @@ modify_tmoe_qemu_xsdl_settings() {
 			sed -i "1 a\export DISPLAY=127.0.0.1:0" startqemu
 		fi
 		sed -i 's@export PULSE_SERVER.*@export PULSE_SERVER=127.0.0.1:4713@' startqemu
-		echo "启用完成，重启qemu生效"
+		printf "%s\n" "启用完成，重启qemu生效"
 		press_enter_to_return
 		modify_tmoe_qemu_xsdl_settings
 	else
@@ -2284,7 +2284,7 @@ modify_tmoe_qemu_display_device() {
 ##############
 list_all_enabled_qemu_display_devices() {
 	if ! grep -q '\-device' startqemu; then
-		echo "未启用任何相关设备"
+		printf "%s\n" "未启用任何相关设备"
 	else
 		cat startqemu | grep '\-device' | awk '{print $2}'
 	fi
@@ -2304,10 +2304,10 @@ enable_qemnu_display_device() {
 		sed -i "/-device ${TMOE_QEMU_DISPLAY_DEVICES}/d" startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -device tmoe_config_test \\\n/' startqemu
 		sed -i "s@-device tmoe_config_test@-device ${TMOE_QEMU_DISPLAY_DEVICES}@" startqemu
-		echo "启用完成，将在下次启动qemu虚拟机时生效"
+		printf "%s\n" "启用完成，将在下次启动qemu虚拟机时生效"
 	else
 		sed -i "/-device ${TMOE_QEMU_DISPLAY_DEVICES}/d" startqemu
-		echo "禁用完成"
+		printf "%s\n" "禁用完成"
 	fi
 }
 #####################
@@ -2358,13 +2358,13 @@ download_freebsd_qcow2_file() {
 	THE_LATEST_SYSTEM_VERSION=$(curl -L ${ISO_REPO} | grep -v 'README' | grep href | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	#https://mirrors.huaweicloud.com/freebsd/releases/VM-IMAGES/12.1-RELEASE/amd64/Latest/
 	THE_LATEST_ISO_REPO="${ISO_REPO}${THE_LATEST_SYSTEM_VERSION}amd64/Latest/"
-	THE_LATEST_FILE_VERSION=$(curl -L ${THE_LATEST_ISO_REPO} | grep -Ev 'vmdk|vhd|raw.xz|CHECKSUM' | grep qcow2 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+	THE_LATEST_FILE_VERSION=$(curl -L ${THE_LATEST_ISO_REPO} | egrep -v 'vmdk|vhd|raw.xz|CHECKSUM' | grep qcow2 | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	DOWNLOAD_FILE_NAME="${THE_LATEST_FILE_VERSION}"
 	THE_LATEST_ISO_LINK="${THE_LATEST_ISO_REPO}${THE_LATEST_FILE_VERSION}"
 	# stat ${THE_LATEST_FILE_VERSION}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to uncompress it, or download it again?" 0 0); then
-			echo "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
 			aria2c_download_file
@@ -2379,13 +2379,13 @@ download_freebsd_qcow2_file() {
 }
 ########################
 uncompress_qcow2_xz_file() {
-	echo '正在解压中...'
+	printf '%s\n' '正在解压中...'
 	#unxz
 	xz -dv ${DOWNLOAD_FILE_NAME}
 }
 ####################
 share_qemu_conf_to_git_branch_qemu() {
-	echo "Welcome to 施工现场，这个功能还在开发中呢！咕咕咕，建议您明年再来o((>ω< ))o"
+	printf "%s\n" "Welcome to 施工现场，这个功能还在开发中呢！咕咕咕，建议您明年再来o((>ω< ))o"
 }
 ################
 explore_qemu_configuration_templates() {
@@ -2408,11 +2408,11 @@ explore_qemu_configuration_templates() {
 	case ${VIRTUAL_TECH} in
 	0 | "") tmoe_qemu_templates_repo ;;
 	001) win7_qemu_template_2020_06_02_17_38 ;;
-	008) echo "非常抱歉，本工具暂未适配ppc架构" ;;
-	*) echo "这个模板加载失败了呢！" ;;
+	008) printf "%s\n" "非常抱歉，本工具暂未适配ppc架构" ;;
+	*) printf "%s\n" "这个模板加载失败了呢！" ;;
 	esac
 	###############
-	echo "暂未开放此功能！咕咕咕，建议您明年再来o((>ω< ))o"
+	printf "%s\n" "暂未开放此功能！咕咕咕，建议您明年再来o((>ω< ))o"
 	press_enter_to_return
 	tmoe_qemu_templates_repo
 }
@@ -2425,11 +2425,11 @@ win7_qemu_template_2020_06_02_17_38() {
       大家好，我是来自B站的..
       不知道今天是哪个幸运儿用到了我发布的镜像和配置脚本呢？萌新up主求三连😀
       " 0 0
-	echo "是否将其设置为默认的qemu配置？"
+	printf "%s\n" "是否将其设置为默认的qemu配置？"
 	do_you_want_to_continue
 	#if [ $? = 0]; then
 	#fi
-	echo "这个模板加载失败了呢！光有脚本还不够，您还需要下载镜像资源文件至指定目录呢！"
+	printf "%s\n" "这个模板加载失败了呢！光有脚本还不够，您还需要下载镜像资源文件至指定目录呢！"
 }
 ##################
 tmoe_qemu_input_devices() {
@@ -2511,7 +2511,7 @@ tmoe_qemu_input_devices() {
 ##########
 list_all_enabled_qemu_input_devices() {
 	if ! grep -q '\-device' startqemu; then
-		echo "未启用任何相关设备"
+		printf "%s\n" "未启用任何相关设备"
 	else
 		cat startqemu | grep '\-device' | awk '{print $2}'
 	fi
@@ -2531,10 +2531,10 @@ enable_qemnu_input_device() {
 		sed -i "/-device ${TMOE_QEMU_INPUT_DEVICE}/d" startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -device tmoe_config_test \\\n/' startqemu
 		sed -i "s@-device tmoe_config_test@-device ${TMOE_QEMU_INPUT_DEVICE}@" startqemu
-		echo "启用完成，将在下次启动qemu虚拟机时生效"
+		printf "%s\n" "启用完成，将在下次启动qemu虚拟机时生效"
 	else
 		sed -i "/-device ${TMOE_QEMU_INPUT_DEVICE}/d" startqemu
-		echo "禁用完成"
+		printf "%s\n" "禁用完成"
 	fi
 }
 ##########################
@@ -2545,11 +2545,11 @@ tmoe_choose_a_qemu_bios_file() {
 	CURRENT_QEMU_ISO="${CURRENT_VALUE}"
 	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		press_enter_to_return
 		${RETURN_TO_WHERE}
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd ${FILE_PATH}
 		file ${SELECTION}
@@ -2591,15 +2591,15 @@ choose_qemu_bios_or_uefi_file() {
 	1) restore_to_default_qemu_bios ;;
 	2)
 		if [ "${RETURN_TO_MENU}" = "start_tmoe_qemu_manager" ]; then
-			echo "检测到您选用的是x64虚拟机，不支持qemu-efi-aarch64，将为您自动切换至OVMF EFI"
+			printf "%s\n" "检测到您选用的是x64虚拟机，不支持qemu-efi-aarch64，将为您自动切换至OVMF EFI"
 			TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd'
 		else
 			TMOE_QEMU_BIOS_FILE_PATH='/usr/share/qemu-efi-aarch64/QEMU_EFI.fd'
 		fi
 		;;
 	3)
-		if ! grep -Eq 'std|qxl' /usr/local/bin/startqemu; then
-			echo "请将显卡修改为qxl或std"
+		if ! egrep -q 'std|qxl' /usr/local/bin/startqemu; then
+			printf "%s\n" "请将显卡修改为qxl或std"
 		fi
 		TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF.fd'
 		;;
@@ -2609,8 +2609,8 @@ choose_qemu_bios_or_uefi_file() {
 	sed -i '/-bios /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -bios tmoe_bios_config_test \\\n/' startqemu
 	sed -i "s@-bios tmoe_bios_config_test@-bios ${TMOE_QEMU_BIOS_FILE_PATH}@" startqemu
-	echo "您已将启动引导固件修改为${TMOE_QEMU_BIOS_FILE_PATH}"
-	echo "修改完成，将在下次启动qemu虚拟机时生效"
+	printf "%s\n" "您已将启动引导固件修改为${TMOE_QEMU_BIOS_FILE_PATH}"
+	printf "%s\n" "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -2627,21 +2627,21 @@ restore_to_default_qemu_bios() {
 }
 ################
 delete_current_qemu_vm_disk_file() {
-	QEMU_FILE="$(cat ${THE_QEMU_STARTUP_SCRIPT} | grep '\-hda ' | head -n 1 | awk '{print $2}' | cut -d ':' -f 2)"
+	QEMU_FILE="$(sed -n p ${THE_QEMU_STARTUP_SCRIPT} | grep '\-hda ' | head -n 1 | awk '{print $2}' | cut -d ':' -f 2)"
 	stat ${QEMU_FILE}
 	qemu-img info ${QEMU_FILE}
-	echo "Do you want to delete it?"
-	echo "删除后将无法撤销，请谨慎操作"
+	printf "%s\n" "Do you want to delete it?"
+	printf "%s\n" "删除后将无法撤销，请谨慎操作"
 	do_you_want_to_continue
 	rm -fv ${QEMU_FILE}
 }
 ################
 delete_current_qemu_vm_iso_file() {
-	QEMU_FILE="$(cat ${THE_QEMU_STARTUP_SCRIPT} | grep '\--cdrom' | head -n 1 | awk '{print $2}')"
+	QEMU_FILE="$(sed -n p ${THE_QEMU_STARTUP_SCRIPT} | grep '\--cdrom' | head -n 1 | awk '{print $2}')"
 	stat ${QEMU_FILE}
 	qemu-img info ${QEMU_FILE}
-	echo "Do you want to delete it?"
-	echo "删除后将无法撤销，请谨慎操作"
+	printf "%s\n" "Do you want to delete it?"
+	printf "%s\n" "删除后将无法撤销，请谨慎操作"
 	do_you_want_to_continue
 	rm -fv ${QEMU_FILE}
 }
@@ -2739,28 +2739,28 @@ save_current_qemu_conf_as_a_new_script() {
 	if [ "$?" != "0" ]; then
 		multi_qemu_vm_management
 	elif [ "${TARGET_FILE_NAME}" = "startqemu" ] || [ "${TARGET_FILE_NAME}" = "debian-i" ] || [ "${TARGET_FILE_NAME}" = "startvnc" ]; then
-		echo "文件已被占用，请重新输入"
-		echo "Please re-enter."
+		printf "%s\n" "文件已被占用，请重新输入"
+		printf "%s\n" "Please re-enter."
 		press_enter_to_return
 		save_current_qemu_conf_as_a_new_script
 	elif [ -z "${TARGET_FILE_NAME}" ]; then
-		echo "请输入有效的名称"
-		echo "Please enter a valid name"
+		printf "%s\n" "请输入有效的名称"
+		printf "%s\n" "Please enter a valid name"
 		press_enter_to_return
 		multi_qemu_vm_management
 	else
 		cp -pf /usr/local/bin/startqemu ${TMOE_QEMU_SCRIPT_FILE_PATH}/${TARGET_FILE_NAME}
 		ln -sf ${TMOE_QEMU_SCRIPT_FILE_PATH}/${TARGET_FILE_NAME} /usr/local/bin/
-		echo "您之后可以输${GREEN}${TARGET_FILE_NAME}${RESET}来启动该虚拟机"
+		printf "%s\n" "您之后可以输${GREEN}${TARGET_FILE_NAME}${RESET}来启动该虚拟机"
 	fi
 }
 #########
 delete_the_iso_file_of_the_specified_qemu_vm() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
-	echo "选中的虚拟机的iso镜像文件将被删除"
-	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
-	echo "Press Ctrl+C to exit,press enter to return."
+	printf "%s\n" "选中的虚拟机的iso镜像文件将被删除"
+	printf "%s\n" "按Ctrl+C退出,若选项留空,则按回车键返回"
+	printf "%s\n" "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	THE_QEMU_STARTUP_SCRIPT=${TMOE_FILE_ABSOLUTE_PATH}
@@ -2770,9 +2770,9 @@ delete_the_iso_file_of_the_specified_qemu_vm() {
 delete_the_disk_file_of_the_specified_qemu_vm() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
-	echo "选中的虚拟机的磁盘文件将被删除"
-	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
-	echo "Press Ctrl+C to exit,press enter to return."
+	printf "%s\n" "选中的虚拟机的磁盘文件将被删除"
+	printf "%s\n" "按Ctrl+C退出,若选项留空,则按回车键返回"
+	printf "%s\n" "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	THE_QEMU_STARTUP_SCRIPT=${TMOE_FILE_ABSOLUTE_PATH}
@@ -2782,7 +2782,7 @@ delete_the_disk_file_of_the_specified_qemu_vm() {
 select_file_manually() {
 	count=0
 	for restore_file in "${START_DIR}"/${BACKUP_FILE_NAME}; do
-		restore_file_name[count]=$(echo $restore_file | awk -F'/' '{print $NF}')
+		restore_file_name[count]=$(printf '%s\n' $restore_file | awk -F'/' '{print $NF}')
 		echo -e "($count) ${restore_file_name[count]}"
 		count=$(($count + 1))
 	done
@@ -2793,19 +2793,19 @@ select_file_manually() {
 		if [[ -z "$number" ]]; then
 			break
 		elif ! [[ $number =~ ^[0-9]+$ ]]; then
-			echo "Please enter the right number!"
-			echo "请输正确的数字编号!"
+			printf "%s\n" "Please enter the right number!"
+			printf "%s\n" "请输正确的数字编号!"
 		elif (($number >= 0 && $number <= $count)); then
 			eval SELECTION=${restore_file_name[number]}
 			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
 			break
 		else
-			echo "Please enter the right number!"
-			echo "请输正确的数字编号!"
+			printf "%s\n" "Please enter the right number!"
+			printf "%s\n" "请输正确的数字编号!"
 		fi
 	done
 	if [ -z "${SELECTION}" ]; then
-		echo "没有文件被选择"
+		printf "%s\n" "没有文件被选择"
 		press_enter_to_return
 		${RETURN_TO_WHERE}
 	fi
@@ -2814,19 +2814,19 @@ select_file_manually() {
 multi_vm_start_manager() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
-	echo "选中的配置将设定为startqemu的默认配置"
-	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
-	echo "Press Ctrl+C to exit,press enter to return."
+	printf "%s\n" "选中的配置将设定为startqemu的默认配置"
+	printf "%s\n" "按Ctrl+C退出,若选项留空,则按回车键返回"
+	printf "%s\n" "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	if [ ! -z "${SELECTION}" ]; then
 		cp -pf ${TMOE_FILE_ABSOLUTE_PATH} /usr/local/bin/startqemu
 	else
-		echo "没有文件被选择"
+		printf "%s\n" "没有文件被选择"
 	fi
 
-	echo "您之后可以输startqemu来执行${SELECTION}"
-	echo "是否需要启动${SELECTION}"
+	printf "%s\n" "您之后可以输startqemu来执行${SELECTION}"
+	printf "%s\n" "是否需要启动${SELECTION}"
 	do_you_want_to_continue
 	${TMOE_FILE_ABSOLUTE_PATH}
 }
@@ -2834,9 +2834,9 @@ multi_vm_start_manager() {
 delete_multi_qemu_vm_conf() {
 	START_DIR=${TMOE_QEMU_SCRIPT_FILE_PATH}
 	BACKUP_FILE_NAME='*'
-	echo "选中的配置将被删除"
-	echo "按Ctrl+C退出,若选项留空,则按回车键返回"
-	echo "Press Ctrl+C to exit,press enter to return."
+	printf "%s\n" "选中的配置将被删除"
+	printf "%s\n" "按Ctrl+C退出,若选项留空,则按回车键返回"
+	printf "%s\n" "Press Ctrl+C to exit,press enter to return."
 	select_file_manually
 	TMOE_FILE_ABSOLUTE_PATH=${START_DIR}/${SELECTION}
 	rm -fv ${TMOE_FILE_ABSOLUTE_PATH}
@@ -2857,23 +2857,23 @@ other_qemu_conf_related_instructions() {
 ############
 qemu_process_management_instructions() {
 	check_qemu_vnc_port
-	echo "输startqemu启动qemu"
-	echo "${BLUE}连接方式01${RESET}"
-	echo "打开vnc客户端，输入访问地址localhost:${CURRENT_VNC_PORT}"
-	echo "${BLUE}关机方式01${RESET}"
-	echo "在qemu monitor界面下输system_powerdown关闭虚拟机电源，输stop停止"
-	echo "按Ctrl+C退出qemu monitor"
-	echo "Press Ctrl+C to exit qemu monitor."
-	echo "${BLUE}连接方式02${RESET}"
-	echo "若您需要使用ssh连接，则请新建一个termux会话窗口，并输入${GREEN}ssh -p 2888 root@localhost${RESET}"
-	echo "本工具默认将虚拟机的22端口映射为宿主机的2888端口，若无法连接，则请在虚拟机下新建一个普通用户，再将上述命令中的root修改为普通用户名称"
-	echo "若连接提示${YELLOW}REMOTE HOST IDENTIFICATION HAS CHANGED${RESET}，则请手动输${GREEN}ssh-keygen -f '/root/.ssh/known_hosts' -R '[localhost]:2888'${RESET}"
-	echo "${BLUE}关机方式02${RESET}"
-	echo "在linux虚拟机内输poweroff"
-	echo "在windows虚拟机内输shutdown /s /t 0"
-	echo "${BLUE}重启方式01${RESET}"
-	echo "在linux虚拟机内输reboot"
-	echo "在windows虚拟机内输shutdown /r /t 0"
+	printf "%s\n" "输startqemu启动qemu"
+	printf "%s\n" "${BLUE}连接方式01${RESET}"
+	printf "%s\n" "打开vnc客户端，输入访问地址localhost:${CURRENT_VNC_PORT}"
+	printf "%s\n" "${BLUE}关机方式01${RESET}"
+	printf "%s\n" "在qemu monitor界面下输system_powerdown关闭虚拟机电源，输stop停止"
+	printf "%s\n" "按Ctrl+C退出qemu monitor"
+	printf "%s\n" "Press Ctrl+C to exit qemu monitor."
+	printf "%s\n" "${BLUE}连接方式02${RESET}"
+	printf "%s\n" "若您需要使用ssh连接，则请新建一个termux会话窗口，并输入${GREEN}ssh -p 2888 root@localhost${RESET}"
+	printf "%s\n" "本工具默认将虚拟机的22端口映射为宿主机的2888端口，若无法连接，则请在虚拟机下新建一个普通用户，再将上述命令中的root修改为普通用户名称"
+	printf "%s\n" "若连接提示${YELLOW}REMOTE HOST IDENTIFICATION HAS CHANGED${RESET}，则请手动输${GREEN}ssh-keygen -f '/root/.ssh/known_hosts' -R '[localhost]:2888'${RESET}"
+	printf "%s\n" "${BLUE}关机方式02${RESET}"
+	printf "%s\n" "在linux虚拟机内输poweroff"
+	printf "%s\n" "在windows虚拟机内输shutdown /s /t 0"
+	printf "%s\n" "${BLUE}重启方式01${RESET}"
+	printf "%s\n" "在linux虚拟机内输reboot"
+	printf "%s\n" "在windows虚拟机内输shutdown /r /t 0"
 }
 #################
 #sed '$!N;$!P;$!D;s/\(\n\)/\n    -test \\ \n/' startqemu
@@ -2882,14 +2882,14 @@ modify_qemu_cpu_cores_number() {
 	CURRENT_CORES=$(cat startqemu | grep '\-smp ' | head -n 1 | awk '{print $2}')
 	TARGET=$(whiptail --inputbox "请输入CPU核心数,默认为4,当前为${CURRENT_CORES}\nPlease enter the number of CPU cores, the default is 4" 10 50 --title "CPU" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
-		#echo "检测到您取消了操作"
+		#printf "%s\n" "检测到您取消了操作"
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
 	else
 		sed -i "s@-smp .*@-smp ${TARGET} \\\@" startqemu
-		echo "您已将CPU核心数修改为${TARGET}"
+		printf "%s\n" "您已将CPU核心数修改为${TARGET}"
 	fi
 }
 ###########
@@ -2897,15 +2897,15 @@ modify_qemu_ram_size() {
 	CURRENT_VALUE=$(cat startqemu | grep '\-m ' | head -n 1 | awk '{print $2}')
 	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为2048(单位M),当前为${CURRENT_VALUE}\nPlease enter the RAM size, the default is 2048" 10 53 --title "RAM" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
-		#echo "检测到您取消了操作"
+		#printf "%s\n" "检测到您取消了操作"
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
-		echo "不建议超过本机实际内存"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
+		printf "%s\n" "不建议超过本机实际内存"
 	else
 		sed -i "s@-m .*@-m ${TARGET} \\\@" startqemu
-		echo "您已将RAM size修改为${TARGET}"
+		printf "%s\n" "您已将RAM size修改为${TARGET}"
 	fi
 }
 #################
@@ -2935,7 +2935,7 @@ download_alpine_and_docker_x64_img_file() {
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
-			echo "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
 			download_alpine_and_docker_x64_img_file_again
@@ -2944,16 +2944,16 @@ download_alpine_and_docker_x64_img_file() {
 		download_alpine_and_docker_x64_img_file_again
 	fi
 	uncompress_alpine_and_docker_x64_img_file
-	echo "您之后可以输startqemu来启动"
-	echo "默认VNC访问地址为localhost:5902"
+	printf "%s\n" "您之后可以输startqemu来启动"
+	printf "%s\n" "默认VNC访问地址为localhost:5902"
 	set_it_as_default_qemu_disk
 	startqemu
 }
 #############
 alpine_qemu_old() {
-	echo "文件已解压至${DOWNLOAD_PATH}"
+	printf "%s\n" "文件已解压至${DOWNLOAD_PATH}"
 	qemu-img info ${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}
-	echo "是否需要启动虚拟机？"
+	printf "%s\n" "是否需要启动虚拟机？"
 	do_you_want_to_continue
 }
 ###########
@@ -2972,7 +2972,7 @@ download_alpine_and_docker_x64_img_file_again() {
 ###########
 uncompress_alpine_and_docker_x64_img_file() {
 	#txz
-	echo '正在解压中...'
+	printf '%s\n' '正在解压中...'
 	if [ $(command -v pv) ]; then
 		pv ${DOWNLOAD_FILE_NAME} | tar -pJx
 	else
@@ -2982,13 +2982,13 @@ uncompress_alpine_and_docker_x64_img_file() {
 ##################
 dd_if_zero_of_qemu_tmp_disk() {
 	rm -fv /tmp/tmoe_qemu
-	echo "请在虚拟机内执行操作,不建议在宿主机内执行"
-	echo "本操作将填充磁盘所有空白扇区"
-	echo "若执行完成后，无法自动删除临时文件，则请手动输rm -f /tmp/tmoe_qemu"
-	echo "请务必在执行完操作后,关掉虚拟机,并回到宿主机选择转换压缩"
+	printf "%s\n" "请在虚拟机内执行操作,不建议在宿主机内执行"
+	printf "%s\n" "本操作将填充磁盘所有空白扇区"
+	printf "%s\n" "若执行完成后，无法自动删除临时文件，则请手动输rm -f /tmp/tmoe_qemu"
+	printf "%s\n" "请务必在执行完操作后,关掉虚拟机,并回到宿主机选择转换压缩"
 	do_you_want_to_continue
-	echo "此操作可能需要数分钟的时间..."
-	echo "${GREEN}dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M${RESET}"
+	printf "%s\n" "此操作可能需要数分钟的时间..."
+	printf "%s\n" "${GREEN}dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M${RESET}"
 	dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M
 	ls -lh /tmp/tmoe_qemu
 	rm -fv /tmp/tmoe_qemu
@@ -3014,11 +3014,11 @@ choose_tmoe_qemu_qcow2_model() {
 	fi
 	where_is_tmoe_file_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 		press_enter_to_return
 		${RETURN_TO_WHERE}
 	else
-		echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd ${FILE_PATH}
 		stat ${SELECTION}
@@ -3027,28 +3027,28 @@ choose_tmoe_qemu_qcow2_model() {
 }
 #########
 expand_qemu_qcow2_img_file() {
-	echo '建议您在调整容量前对磁盘文件进行备份。'
-	echo '调整完成之后，您可以在虚拟机内部使用resize2fs命令对磁盘空间进行重新识别，例如resize2fs /dev/sda1'
-	echo '在扩容之后，您必须在虚拟机系统内对该镜像进行分区并格式化后才能真正开始使用新空间。 在收缩磁盘映像前，必须先使用虚拟机内部系统的分区工具减少该分区的大小，然后相应地收缩磁盘映像，否则收缩磁盘映像将导致数据丢失'
-	echo 'Arch wiki:After enlarging the disk image, you must use file system and partitioning tools inside the virtual machine to actually begin using the new space. When shrinking a disk image, you must first reduce the allocated file systems and partition sizes using the file system and partitioning tools inside the virtual machine and then shrink the disk image accordingly, otherwise shrinking the disk image will result in data loss! For a Windows guest, open the "create and format hard disk partitions" control panel.'
+	printf '%s\n' '建议您在调整容量前对磁盘文件进行备份。'
+	printf '%s\n' '调整完成之后，您可以在虚拟机内部使用resize2fs命令对磁盘空间进行重新识别，例如resize2fs /dev/sda1'
+	printf '%s\n' '在扩容之后，您必须在虚拟机系统内对该镜像进行分区并格式化后才能真正开始使用新空间。 在收缩磁盘映像前，必须先使用虚拟机内部系统的分区工具减少该分区的大小，然后相应地收缩磁盘映像，否则收缩磁盘映像将导致数据丢失'
+	printf '%s\n' 'Arch wiki:After enlarging the disk image, you must use file system and partitioning tools inside the virtual machine to actually begin using the new space. When shrinking a disk image, you must first reduce the allocated file systems and partition sizes using the file system and partitioning tools inside the virtual machine and then shrink the disk image accordingly, otherwise shrinking the disk image will result in data loss! For a Windows guest, open the "create and format hard disk partitions" control panel.'
 	do_you_want_to_continue
 	choose_tmoe_qemu_qcow2_model
 	CURRENT_VALUE=$(qemu-img info ${SELECTION} | grep 'virtual size' | awk '{print $3}')
 	TARGET=$(whiptail --inputbox "请输入需要增加的空间大小,例如500M或10G(需包含单位),当前空间为${CURRENT_VALUE}\nPlease enter the size" 10 53 --title "virtual size" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
-		#echo "检测到您取消了操作"
+		#printf "%s\n" "检测到您取消了操作"
 		${RETURN_TO_WHERE}
 	elif [ -z "${TARGET}" ]; then
-		echo "请输入有效的数值"
-		echo "Please enter a valid value"
-		echo "不建议超过本机实际内存"
+		printf "%s\n" "请输入有效的数值"
+		printf "%s\n" "Please enter a valid value"
+		printf "%s\n" "不建议超过本机实际内存"
 	else
 		qemu-img resize ${SELECTION} +${TARGET}
 		qemu-img check ${SELECTION}
 		stat ${SELECTION}
 		qemu-img info ${SELECTION}
 		CURRENT_VALUE=$(qemu-img info ${SELECTION} | grep 'virtual size' | awk '{print $3}')
-		echo "您已将virtual size修改为${CURRENT_VALUE}"
+		printf "%s\n" "您已将virtual size修改为${CURRENT_VALUE}"
 	fi
 }
 ##############
@@ -3056,26 +3056,26 @@ compress_qcow2_img_file() {
 	choose_tmoe_qemu_qcow2_model
 	do_you_want_to_continue
 	if (whiptail --title "请选择压缩方式" --yes-button "compress" --no-button "convert" --yesno "前者为常规压缩，后者转换压缩。♪(^∇^*) " 10 50); then
-		echo 'compressing...'
-		echo '正在压缩中...'
+		printf '%s\n' 'compressing...'
+		printf '%s\n' '正在压缩中...'
 		qemu-img convert -c -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
 	else
-		echo 'converting...'
-		echo '正在转换中...'
+		printf '%s\n' 'converting...'
+		printf '%s\n' '正在转换中...'
 		qemu-img convert -O qcow2 ${SELECTION} ${SELECTION}_new-temp-file
 	fi
 	qemu-img info ${SELECTION}_new-temp-file
 	mv -f ${SELECTION} original_${SELECTION}
 	mv -f ${SELECTION}_new-temp-file ${SELECTION}
-	echo '原文件大小'
+	printf '%s\n' '原文件大小'
 	ls -lh original_${SELECTION} | tail -n 1 | awk '{print $5}'
-	echo '压缩后的文件大小'
+	printf '%s\n' '压缩后的文件大小'
 	ls -lh ${SELECTION} | tail -n 1 | awk '{print $5}'
-	echo "压缩完成，是否删除原始文件?"
+	printf "%s\n" "压缩完成，是否删除原始文件?"
 	qemu-img check ${SELECTION}
-	echo "Do you want to delete the original file？"
-	echo "请谨慎操作，在保证新磁盘数据无错前，不建议您删除原始文件，否则将导致原文件数据丢失"
-	echo "若您取消操作，则请手动输rm ${FILE_PATH}/original_${SELECTION}"
+	printf "%s\n" "Do you want to delete the original file？"
+	printf "%s\n" "请谨慎操作，在保证新磁盘数据无错前，不建议您删除原始文件，否则将导致原文件数据丢失"
+	printf "%s\n" "若您取消操作，则请手动输rm ${FILE_PATH}/original_${SELECTION}"
 	do_you_want_to_continue
 	rm -fv original_${SELECTION}
 }
@@ -3117,9 +3117,9 @@ flash_iso_to_udisk() {
 	FILE_EXT_02='ISO'
 	where_is_start_dir
 	if [ -z ${SELECTION} ]; then
-		echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+		printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
 	else
-		echo "您选择的iso文件为${TMOE_FILE_ABSOLUTE_PATH}"
+		printf "%s\n" "您选择的iso文件为${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		check_fdisk
 	fi
@@ -3134,11 +3134,11 @@ check_fdisk() {
 	lsblk
 	df -h
 	fdisk -l
-	echo "${RED}WARNING！${RESET}您接下来需要选择一个${YELLOW}磁盘分区${RESET}，请复制指定磁盘的${RED}完整路径${RESET}（包含/dev）"
-	echo "若选错磁盘，将会导致该磁盘数据${RED}完全丢失！${RESET}"
-	echo "此操作${RED}不可逆${RESET}！请${GREEN}谨慎${RESET}选择！"
-	echo "建议您在执行本操作前，对指定磁盘进行${BLUE}备份${RESET}"
-	echo "若您因选错了磁盘而${YELLOW}丢失数据${RESET}，开发者${RED}概不负责！！！${RESET}"
+	printf "%s\n" "${RED}WARNING！${RESET}您接下来需要选择一个${YELLOW}磁盘分区${RESET}，请复制指定磁盘的${RED}完整路径${RESET}（包含/dev）"
+	printf "%s\n" "若选错磁盘，将会导致该磁盘数据${RED}完全丢失！${RESET}"
+	printf "%s\n" "此操作${RED}不可逆${RESET}！请${GREEN}谨慎${RESET}选择！"
+	printf "%s\n" "建议您在执行本操作前，对指定磁盘进行${BLUE}备份${RESET}"
+	printf "%s\n" "若您因选错了磁盘而${YELLOW}丢失数据${RESET}，开发者${RED}概不负责！！！${RESET}"
 	do_you_want_to_continue
 	dd_flash_iso_to_udisk
 }
@@ -3146,14 +3146,14 @@ check_fdisk() {
 dd_flash_iso_to_udisk() {
 	DD_OF_TARGET=$(whiptail --inputbox "请输入磁盘路径，例如/dev/nvme0n1px或/dev/sdax,请以实际路径为准" 12 50 --title "DEVICES" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ] || [ -z "${DD_OF_TARGET}" ]; then
-		echo "检测到您取消了操作"
+		printf "%s\n" "检测到您取消了操作"
 		press_enter_to_return
 		download_virtual_machine_iso_file
 	fi
-	echo "${DD_OF_TARGET}即将被格式化，所有文件都将丢失"
+	printf "%s\n" "${DD_OF_TARGET}即将被格式化，所有文件都将丢失"
 	do_you_want_to_continue
 	umount -lf ${DD_OF_TARGET} 2>/dev/null
-	echo "正在烧录中，这可能需要数分钟的时间..."
+	printf "%s\n" "正在烧录中，这可能需要数分钟的时间..."
 	dd <${TMOE_FILE_ABSOLUTE_PATH} >${DD_OF_TARGET}
 }
 ############
@@ -3169,11 +3169,11 @@ set_it_as_the_tmoe_qemu_iso() {
 	sed -i '/--cdrom /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_iso_file_test \\\n/' startqemu
 	sed -i "s@tmoe_iso_file_test@${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
-	echo "修改完成，相关配置将在下次启动qemu时生效"
+	printf "%s\n" "修改完成，相关配置将在下次启动qemu时生效"
 }
 ########
 download_tmoe_iso_file_again() {
-	echo "即将为您下载win10 19041 iso镜像文件..."
+	printf "%s\n" "即将为您下载win10 19041 iso镜像文件..."
 	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" "${TMOE_ISO_URL}"
 	qemu-img info ${ISO_FILE_NAME}
 }
@@ -3209,7 +3209,7 @@ download_windows_tmoe_iso_model() {
 	else
 		download_tmoe_iso_file_again
 	fi
-	echo "下载完成，是否将其设置为qemu启动光盘？[Y/n]"
+	printf "%s\n" "下载完成，是否将其设置为qemu启动光盘？[Y/n]"
 	do_you_want_to_continue
 	set_it_as_the_tmoe_qemu_iso
 }
@@ -3253,7 +3253,7 @@ download_linux_mint_debian_edition_iso() {
 	aria2c_download_file
 	stat ${THE_LATEST_FILE_VERSION}
 	ls -lh ${DOWNLOAD_PATH}/${THE_LATEST_FILE_VERSION}
-	echo "下载完成"
+	printf "%s\n" "下载完成"
 }
 ##########################
 which_alpine_arch() {
@@ -3304,10 +3304,10 @@ download_ubuntu_iso_file() {
 	else
 		TARGET=$(whiptail --inputbox "请输入版本号，例如18.04\n Please type the ubuntu version code." 0 50 --title "UBUNTU VERSION" 3>&1 1>&2 2>&3)
 		if [ "$?" != "0" ]; then
-			echo "检测到您取消了操作"
+			printf "%s\n" "检测到您取消了操作"
 			UBUNTU_VERSION='20.04'
 		else
-			UBUNTU_VERSION="$(echo ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+			UBUNTU_VERSION="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
 		fi
 	fi
 	download_ubuntu_latest_iso_file
@@ -3347,7 +3347,7 @@ download_ubuntu_latest_iso_file() {
 }
 ###############
 ubuntu_arm_warning() {
-	echo "请选择Server版"
+	printf "%s\n" "请选择Server版"
 	arch_does_not_support
 	download_ubuntu_latest_iso_file
 }
@@ -3397,7 +3397,7 @@ download_android_x86_file() {
 		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 	fi
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
-	#echo ${THE_LATEST_ISO_LINK}
+	#printf "%s\n" ${THE_LATEST_ISO_LINK}
 	#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
 	aria2c_download_file
 }
@@ -3417,36 +3417,36 @@ download_debian_qcow2_file() {
 		stat ${THE_LATEST_FILE_VERSION}
 		qemu-img info ${THE_LATEST_FILE_VERSION}
 		ls -lh ${DOWNLOAD_PATH}/${THE_LATEST_FILE_VERSION}
-		echo "下载完成"
+		printf "%s\n" "下载完成"
 	fi
 }
 ###################
 note_of_qemu_boot_uefi() {
-	echo '使用此磁盘需要将引导方式切换至UEFI'
-	echo 'You should modify the boot method to uefi.'
+	printf '%s\n' '使用此磁盘需要将引导方式切换至UEFI'
+	printf '%s\n' 'You should modify the boot method to uefi.'
 }
 ############
 note_of_qemu_boot_legacy_bios() {
-	echo '使用此磁盘需要将引导方式切换回默认'
-	echo 'You should modify the boot method to legacy bios.'
+	printf '%s\n' '使用此磁盘需要将引导方式切换回默认'
+	printf '%s\n' 'You should modify the boot method to legacy bios.'
 }
 #############
 note_of_tmoe_password() {
-	echo "user:tmoe  password:tmoe"
-	echo "用户：tmoe  密码：tmoe"
+	printf "%s\n" "user:tmoe  password:tmoe"
+	printf "%s\n" "用户：tmoe  密码：tmoe"
 }
 ##############
 note_of_empty_root_password() {
-	echo 'user:root'
-	echo 'The password is empty.'
-	echo '用户名root，密码为空'
+	printf '%s\n' 'user:root'
+	printf '%s\n' 'The password is empty.'
+	printf '%s\n' '用户名root，密码为空'
 }
 ################
 download_lmde_4_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='LMDE4_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='LMDE4_tmoe_x64.qcow2'
-	echo 'Download size(下载大小)约2.76GiB，解压后约为9.50GiB'
+	printf '%s\n' 'Download size(下载大小)约2.76GiB，解压后约为9.50GiB'
 	THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/LMDE4_tmoe_x64.tar.xz'
 	note_of_qemu_boot_legacy_bios
 	note_of_tmoe_password
@@ -3458,10 +3458,10 @@ download_windows_server_2008_data_center_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='win2008_r2_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='win2008_r2_tmoe_x64.qcow2'
-	echo 'Download size(下载大小)约2.26GiB，解压后约为12.6GiB'
+	printf '%s\n' 'Download size(下载大小)约2.26GiB，解压后约为12.6GiB'
 	THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/win2008_r2_tmoe_x64.tar.xz'
 	note_of_qemu_boot_legacy_bios
-	echo '进入虚拟机后，您需要自己设定一个密码'
+	printf '%s\n' '进入虚拟机后，您需要自己设定一个密码'
 	do_you_want_to_continue
 	download_debian_tmoe_qemu_qcow2_file
 }
@@ -3470,7 +3470,7 @@ download_ubuntu_kylin_20_04_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.tar.xz'
 	QEMU_DISK_FILE_NAME='ubuntu_kylin_20-04_tmoe_x64.qcow2'
-	echo 'Download size(下载大小)约1.81GiB，解压后约为7.65GiB'
+	printf '%s\n' 'Download size(下载大小)约1.81GiB，解压后约为7.65GiB'
 	THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/ubuntu_kylin_20-04_tmoe_x64.tar.xz'
 	note_of_qemu_boot_uefi
 	note_of_tmoe_password
@@ -3482,7 +3482,7 @@ download_arch_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20200605.tar.xz'
 	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20200605.qcow2'
-	echo 'Download size(下载大小)约678MiB，解压后约为‪1.755GiB'
+	printf '%s\n' 'Download size(下载大小)约678MiB，解压后约为‪1.755GiB'
 	#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
 	note_of_qemu_boot_legacy_bios
 	note_of_empty_root_password
@@ -3494,7 +3494,7 @@ check_arch_linux_qemu_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
-			echo "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
 			git_clone_arch_linux_qemu_qcow2_file
@@ -3529,7 +3529,7 @@ git_clone_tmoe_linux_qemu_qcow2_file() {
 	cd /tmp
 	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_QEMU_REPO} .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
 	cd .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
-	cat ${QEMU_QCOW2_FILE_PREFIX}* >${DOWNLOAD_FILE_NAME}
+	sed -n p ${QEMU_QCOW2_FILE_PREFIX}* >${DOWNLOAD_FILE_NAME}
 	mv -f ${DOWNLOAD_FILE_NAME} ${DOWNLOAD_PATH}
 	cd ../
 	rm -rf .${DOWNLOAD_FILE_NAME}_QEMU_TEMP_FOLDER
@@ -3554,7 +3554,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		QEMU_DISK_FILE_NAME='debian-10-generic-20200604_tmoe_x64.qcow2'
 		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
-		echo 'Download size(下载大小)约282MiB，解压后约为‪1.257GiB'
+		printf '%s\n' 'Download size(下载大小)约282MiB，解压后约为‪1.257GiB'
 		#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4-generic-20200604_tmoe_x64.tar.xz'
 		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/debian_qemu'
 		BRANCH_NAME='x64'
@@ -3563,8 +3563,8 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	2)
 		DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
-		echo 'Download size(下载大小)约339MiB，解压后约为‪1.6779GiB'
-		echo '本系统为arm64版，请在下载完成后，手动进入tmoe-qemu arm64专区选择磁盘文件'
+		printf '%s\n' 'Download size(下载大小)约339MiB，解压后约为‪1.6779GiB'
+		printf '%s\n' '本系统为arm64版，请在下载完成后，手动进入tmoe-qemu arm64专区选择磁盘文件'
 		#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/debian_arm64_qemu'
 		BRANCH_NAME='arm64'
@@ -3592,11 +3592,11 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 #####################
 #################
 set_it_as_default_qemu_disk() {
-	echo "文件已解压至${DOWNLOAD_PATH}"
+	printf "%s\n" "文件已解压至${DOWNLOAD_PATH}"
 	cd ${DOWNLOAD_PATH}
 	qemu-img check ${QEMU_DISK_FILE_NAME}
 	qemu-img info ${QEMU_DISK_FILE_NAME}
-	echo "是否将其设置为默认的qemu磁盘？"
+	printf "%s\n" "是否将其设置为默认的qemu磁盘？"
 	do_you_want_to_continue
 	cd /usr/local/bin
 	sed -i '/-hda /d' startqemu
@@ -3607,15 +3607,15 @@ set_it_as_default_qemu_disk() {
 		sed -i '/-bios /d' startqemu
 	fi
 	# sed -i 's@/usr/bin/qemu-system-x86_64@/usr/bin/qemu-system-aarch64@' startqemu
-	echo "设置完成，您之后可以输startqemu启动"
-	echo "若启动失败，则请检查qemu的相关设置选项"
+	printf "%s\n" "设置完成，您之后可以输startqemu启动"
+	printf "%s\n" "若启动失败，则请检查qemu的相关设置选项"
 }
 ##################
 download_debian_tmoe_qemu_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
-			echo "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
 			download_debian_tmoe_arm64_img_file_again
@@ -3631,7 +3631,7 @@ check_tmoe_qemu_qcow2_file_and_git() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
-			echo "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
 			git_clone_tmoe_linux_qemu_qcow2_file
@@ -3742,19 +3742,19 @@ download_debian_nonfree_iso() {
 download_debian_weekly_builds_iso() {
 	#https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-netinst.iso"
-	echo ${THE_LATEST_ISO_LINK}
+	printf "%s\n" ${THE_LATEST_ISO_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
 }
 ##################
 download_debian_free_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso"
-	echo ${THE_LATEST_ISO_LINK}
+	printf "%s\n" ${THE_LATEST_ISO_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
 }
 ############
 download_debian_nonfree_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}%2Bnonfree.iso"
-	echo ${THE_LATEST_ISO_LINK}
+	printf "%s\n" ${THE_LATEST_ISO_LINK}
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
 }
 ####################

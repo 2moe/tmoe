@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 ########################
 check_current_user_name_and_group() {
-    CURRENT_USER_NAME=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
-    CURRENT_USER_GROUP=$(cat /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
+    CURRENT_USER_NAME=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
+    CURRENT_USER_GROUP=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
     if [ -z "${CURRENT_USER_GROUP}" ]; then
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
@@ -43,15 +43,15 @@ check_tar_ext_format() {
         EXTRACT_FILE_FOLDER=$(tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
         ;;
     esac
-    EXTRACT_FILE_FOLDER_HEAD_01=$(echo ${EXTRACT_FILE_FOLDER} | awk '{print $1}')
+    EXTRACT_FILE_FOLDER_HEAD_01=$(printf '%s\n' ${EXTRACT_FILE_FOLDER} | awk '{print $1}')
     check_theme_folder_exists_status
 }
 ################
 check_theme_folder_exists_status() {
     if [ -e "${EXTRACT_FILE_PATH}/${EXTRACT_FILE_FOLDER_HEAD_01}" ]; then
-        echo "检测到您已安装该主题，如需删除，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
-        echo "是否重新解压？"
-        echo "Do you want to uncompress again?"
+        printf "%s\n" "检测到您已安装该主题，如需删除，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
+        printf "%s\n" "是否重新解压？"
+        printf "%s\n" "Do you want to uncompress again?"
         do_you_want_to_continue
     fi
     uncompress_theme_file
@@ -59,10 +59,10 @@ check_theme_folder_exists_status() {
 ###################
 check_theme_folder() {
     if [ -e "${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}" ] || [ -e ${HOME}/图片/${CUSTOM_WALLPAPER_NAME} ]; then
-        echo "检测到您${RED}已经下载过${RESET}该壁纸包了"
-        echo "壁纸包位于${BLUE}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}(图片)目录"
-        echo "Do you want to ${RED}download again?${RESET}"
-        echo "是否想要重新下载？"
+        printf "%s\n" "检测到您${RED}已经下载过${RESET}该壁纸包了"
+        printf "%s\n" "壁纸包位于${BLUE}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}(图片)目录"
+        printf "%s\n" "Do you want to ${RED}download again?${RESET}"
+        printf "%s\n" "是否想要重新下载？"
         do_you_want_to_continue
     fi
 }
@@ -80,8 +80,8 @@ move_wallpaper_model_01() {
     if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ]; then
         mv ./usr/share/${WALLPAPER_NAME}/* /usr/share/${CUSTOM_WALLPAPER_NAME}
         rm -rf /tmp/.${THEME_NAME}
-        echo "${BLUE}壁纸包${RESET}已经保存至/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
-        echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
+        printf "%s\n" "${BLUE}壁纸包${RESET}已经保存至/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
+        printf "%s\n" "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
     else
         if [ -d "${HOME}/图片" ]; then
             mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
@@ -90,8 +90,8 @@ move_wallpaper_model_01() {
             mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
         fi
         rm -rf /tmp/.${THEME_NAME}
-        echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
-        echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
+        printf "%s\n" "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
+        printf "%s\n" "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
     fi
 }
 #################
@@ -103,8 +103,8 @@ move_wallpaper_model_02() {
         tar -Jxvf data.tar.xz -C ${HOME}/Pictures/
     fi
     rm -rf /tmp/.${THEME_NAME}
-    echo "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
-    echo "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
+    printf "%s\n" "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
+    printf "%s\n" "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
 }
 #################
 grep_theme_model_01() {
@@ -117,7 +117,7 @@ grep_theme_model_01() {
 ###############
 aria2c_download_theme_file() {
     THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
-    echo ${THE_LATEST_THEME_LINK}
+    printf "%s\n" ${THE_LATEST_THEME_LINK}
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
 }
 ##########
@@ -164,14 +164,14 @@ update_icon_caches_model_01() {
     cd /
     tar -Jxvf /tmp/.${THEME_NAME}/data.tar.xz ./usr
     rm -rf /tmp/.${THEME_NAME}
-    echo "updating icon caches..."
-    echo "正在刷新图标缓存..."
+    printf "%s\n" "updating icon caches..."
+    printf "%s\n" "正在刷新图标缓存..."
     update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
     tips_of_delete_icon_theme
 }
 ############
 tips_of_delete_icon_theme() {
-    echo "解压${BLUE}完成${RESET}，如需${RED}删除${RESET}，请手动输${YELLOW}rm -rf /usr/share/icons/${ICON_NAME} ${RESET}"
+    printf "%s\n" "解压${BLUE}完成${RESET}，如需${RED}删除${RESET}，请手动输${YELLOW}rm -rf /usr/share/icons/${ICON_NAME} ${RESET}"
 }
 ###################
 update_icon_caches_model_02() {
@@ -179,8 +179,8 @@ update_icon_caches_model_02() {
     cp -rf usr /
     cd /
     rm -rf /tmp/.${THEME_NAME}
-    echo "updating icon caches..."
-    echo "正在刷新图标缓存..."
+    printf "%s\n" "updating icon caches..."
+    printf "%s\n" "正在刷新图标缓存..."
     update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
     tips_of_delete_icon_theme
 }
@@ -198,47 +198,47 @@ download_raspbian_pixel_icon_theme() {
 ################
 #non-zst
 grep_arch_linux_pkg() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep -Ev '.xz.sig|.zst.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | egrep -v '.xz.sig|.zst.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
-    echo "${ARCH_WALLPAPER_URL}"
+    printf "%s\n" "${ARCH_WALLPAPER_URL}"
     aria2c --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 ################
 #grep zst
 grep_arch_linux_pkg_02() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
-    echo "${ARCH_WALLPAPER_URL}"
+    printf "%s\n" "${ARCH_WALLPAPER_URL}"
     aria2c --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 ###################
 grep_arch_linux_pkg_03() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
-    echo "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
     aria2c --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 #################
 grep_arch_linux_pkg_04() {
     #JetBrains IDE
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.pkg.tar.zst 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
-    ${ARCH_WALLPAPER_VERSION}) echo "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
+    ${ARCH_WALLPAPER_VERSION}) printf "%s\n" "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
     *)
         ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
-        #echo "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
+        #printf "%s\n" "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
         aria2c --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${ARCH_WALLPAPER_VERSION} -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
         ;;
     esac
-    echo ${ARCH_WALLPAPER_VERSION} | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
+    printf "%s\n" ${ARCH_WALLPAPER_VERSION} | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
 }
 #################
 check_opt_app_version() {
     LOCAL_APP_VERSION_TXT="${TMOE_LINUX_DIR}/${GREP_NAME}-version"
     if [ -e "${LOCAL_APP_VERSION_TXT}" ]; then
-        LOCAL_OPT_APP_VERSION=$(cat ${LOCAL_APP_VERSION_TXT} | head -n 1)
+        LOCAL_OPT_APP_VERSION=$(sed -n p ${LOCAL_APP_VERSION_TXT} | head -n 1)
     else
         LOCAL_OPT_APP_VERSION="NOT-INSTALLED未安装"
     fi
@@ -267,9 +267,9 @@ check_archlinux_cn_html_date() {
 check_opt_dir_01() {
     APP_OPT_DIR="/opt/${GREP_NAME}"
     if [ -e "${APP_OPT_DIR}" ]; then
-        echo "安装完成，如需卸载，请输${RED}rm -rv${RESET}${BLUE}${APP_OPT_DIR} ${APPS_LNK_DIR}/${GREP_NAME}.desktop ${LOCAL_OPT_APP_VERSION}${RESET}"
-        echo "是否需要强制更新？"
-        echo "Do you want to mandatory upgrade ${GREP_NAME}?"
+        printf "%s\n" "安装完成，如需卸载，请输${RED}rm -rv${RESET}${BLUE}${APP_OPT_DIR} ${APPS_LNK_DIR}/${GREP_NAME}.desktop ${LOCAL_OPT_APP_VERSION}${RESET}"
+        printf "%s\n" "是否需要强制更新？"
+        printf "%s\n" "Do you want to mandatory upgrade ${GREP_NAME}?"
         do_you_want_to_continue
     fi
 }
@@ -308,11 +308,11 @@ upcompress_deb_file() {
 }
 ####################
 do_you_want_to_close_the_sandbox_mode() {
-    echo "请问您是否需要关闭沙盒模式？"
-    echo "若您需要以root权限运行该应用，则需要关闭，否则请保持开启状态。"
-    echo "${YELLOW}Do you need to turn off the sandbox mode?[Y/n]${RESET}"
-    echo "Press enter to close this mode,type n to cancel."
-    echo "按${YELLOW}回车${RESET}键${RED}关闭${RESET}该模式，输${YELLOW}n${RESET}取消"
+    printf "%s\n" "请问您是否需要关闭沙盒模式？"
+    printf "%s\n" "若您需要以root权限运行该应用，则需要关闭，否则请保持开启状态。"
+    printf "%s\n" "${YELLOW}Do you need to turn off the sandbox mode?[Y/n]${RESET}"
+    printf "%s\n" "Press enter to close this mode,type n to cancel."
+    printf "%s\n" "按${YELLOW}回车${RESET}键${RED}关闭${RESET}该模式，输${YELLOW}n${RESET}取消"
 }
 #######################
 check_file_selection_items() {
@@ -375,7 +375,7 @@ tmoe_file() {
 ################
 install_deb_file_common_model_02() {
     cd /tmp
-    echo ${LATEST_DEB_URL}
+    printf "%s\n" ${LATEST_DEB_URL}
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
     apt show ./${LATEST_DEB_VERSION}
     apt install -y ./${LATEST_DEB_VERSION}
@@ -405,7 +405,7 @@ download_tuna_repo_deb_file_model_03() {
 download_tuna_repo_deb_file_all_arch() {
     LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "all" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
-    echo ${LATEST_DEB_URL}
+    printf "%s\n" ${LATEST_DEB_URL}
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
     apt show ./${LATEST_DEB_VERSION} 2>/dev/null
 }
@@ -423,8 +423,8 @@ press_enter_to_return_configure_xwayland() {
 #######################
 beta_features_management_menu() {
     if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "reinstall重装" --no-button "remove移除" --yesno "检测到您已安装${DEPENDENCY_01} ${DEPENDENCY_02} \nDo you want to reinstall or remove it? ♪(^∇^*) " 0 50); then
-        echo "${GREEN} ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-        echo "即将为您重装..."
+        printf "%s\n" "${GREEN} ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "即将为您重装..."
     else
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
         press_enter_to_return
@@ -435,8 +435,8 @@ beta_features_management_menu() {
 ##############
 non_debian_function() {
     if [ "${LINUX_DISTRO}" != 'debian' ]; then
-        echo "非常抱歉，本功能仅适配deb系发行版"
-        echo "Sorry, this feature is only suitable for debian based distributions"
+        printf "%s\n" "非常抱歉，本功能仅适配deb系发行版"
+        printf "%s\n" "Sorry, this feature is only suitable for debian based distributions"
         press_enter_to_return
         if [ ! -z ${RETURN_TO_WHERE} ]; then
             ${RETURN_TO_WHERE}
@@ -447,8 +447,8 @@ non_debian_function() {
 }
 ############
 press_enter_to_reinstall() {
-    echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-    echo "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     press_enter_to_reinstall_yes_or_no
 }
 ################
@@ -461,30 +461,30 @@ if_return_to_where_no_empty() {
 }
 ##########
 press_enter_to_reinstall_yes_or_no() {
-    echo "按${GREEN}回车键${RESET}${RED}重新安装${RESET},输${YELLOW}n${RESET}${BLUE}返回${RESET}"
-    echo "输${YELLOW}m${RESET}打开${BLUE}管理菜单${RESET}"
-    echo "${YELLOW}Do you want to reinstall it?[Y/m/n]${RESET}"
-    echo "Press enter to reinstall,type n to return,type m to open management menu."
+    printf "%s\n" "按${GREEN}回车键${RESET}${RED}重新安装${RESET},输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "输${YELLOW}m${RESET}打开${BLUE}管理菜单${RESET}"
+    printf "%s\n" "${YELLOW}Do you want to reinstall it?[Y/m/n]${RESET}"
+    printf "%s\n" "Press enter to reinstall,type n to return,type m to open management menu."
     read opt
     case $opt in
     y* | Y* | "") ;;
     n* | N*)
-        echo "skipped."
+        printf "%s\n" "skipped."
         if_return_to_where_no_empty
         ;;
     m* | M*)
         beta_features_management_menu
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         if_return_to_where_no_empty
         ;;
     esac
 }
 #######################
 beta_features_install_completed() {
-    echo "安装${GREEN}完成${RESET},如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-    echo "The installation is complete. If you want to remove, please enter the above highlighted command."
+    printf "%s\n" "安装${GREEN}完成${RESET},如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    printf "%s\n" "The installation is complete. If you want to remove, please enter the above highlighted command."
 }
 ####################
 beta_features_quick_install() {
@@ -493,26 +493,26 @@ beta_features_quick_install() {
     #fi
     #############
     if [ ! -z "${DEPENDENCY_01}" ]; then
-        DEPENDENCY_01_COMMAND=$(echo ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
+        DEPENDENCY_01_COMMAND=$(printf '%s\n' ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
-            echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
-            echo "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
+            printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
+            printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
     #############
     if [ ! -z "${DEPENDENCY_02}" ]; then
-        DEPENDENCY_02_COMMAND=$(echo ${DEPENDENCY_02} | awk -F ' ' '$0=$NF')
+        DEPENDENCY_02_COMMAND=$(printf '%s\n' ${DEPENDENCY_02} | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
-            echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
-            echo "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_02}${RESET}"
+            printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
+            printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_02}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
     ###############
-    echo "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
-    echo "${GREEN}${TMOE_INSTALLATON_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET} ${YELLOW}${DEPENDENCY_02}${RESET}"
-    echo "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you."
+    printf "%s\n" "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
+    printf "%s\n" "${GREEN}${TMOE_INSTALLATON_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET} ${YELLOW}${DEPENDENCY_02}${RESET}"
+    printf "%s\n" "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you."
     ############
     if [ "${EXISTS_COMMAND}" = "true" ]; then
         EXISTS_COMMAND='false'
@@ -546,9 +546,9 @@ creat_tmoe_linux_desktop_icon() {
 }
 ####################
 arch_does_not_support() {
-    echo "${RED}WARNING！${RESET}检测到${YELLOW}架构${RESET}${RED}不支持！${RESET}"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "${RED}WARNING！${RESET}检测到${YELLOW}架构${RESET}${RED}不支持！${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
     ${RETURN_TO_WHERE}
 }
@@ -556,24 +556,24 @@ arch_does_not_support() {
 do_you_want_to_continue() {
     TMOE_TIPS_01="Do you want to continue?${YELLOW}[Y/n]${RESET}"
     if [ -e /usr/games/lolcat ]; then
-        echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 8
+        printf "%s\n" ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 8
     elif [ "$(command -v lolcat)" ]; then
-        echo ${TMOE_TIPS_01} | lolcat
+        printf "%s\n" ${TMOE_TIPS_01} | lolcat
     else
-        echo ${TMOE_TIPS_01}
+        printf "%s\n" ${TMOE_TIPS_01}
     fi
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     read opt
     case $opt in
     y* | Y* | "") ;;
 
     n* | N*)
-        echo "skipped."
+        printf "%s\n" "skipped."
         ${RETURN_TO_WHERE}
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         ${RETURN_TO_WHERE}
         #beta_features
         ;;
@@ -597,10 +597,10 @@ different_distro_software_install() {
         ################
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || echo "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
+            pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || echo "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行"
+            pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行"
         fi
         ################
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -659,14 +659,14 @@ tmoe_file_manager() {
     EXIT_STATUS=$?
     if [ ${EXIT_STATUS} -eq 0 ]; then
         if [ "${SELECTION}" == "" ]; then
-            echo "检测到您取消了操作,User Pressed Esc with No File Selection"
+            printf "%s\n" "检测到您取消了操作,User Pressed Esc with No File Selection"
         else
             whiptail --msgbox "文件属性 :  $(ls -lh ${FILE_NAME})\n路径 : ${FILE_PATH}" 0 0
             TMOE_FILE_ABSOLUTE_PATH="${CURRENT_DIR}/${SELECTION}"
             #uncompress_tar_file
         fi
     else
-        echo "检测到您${RED}取消了${RESET}${YELLOW}操作${RESET}，没有文件${BLUE}被选择${RESET},with No File ${BLUE}Selected.${RESET}"
+        printf "%s\n" "检测到您${RED}取消了${RESET}${YELLOW}操作${RESET}，没有文件${BLUE}被选择${RESET},with No File ${BLUE}Selected.${RESET}"
         #press_enter_to_return
     fi
 }
@@ -849,7 +849,7 @@ add_debian_opt_gpg_key() {
         chmod a+r bintray-public.key.asc
     fi
     apt-key add bintray-public.key.asc
-    echo -e "deb ${OPT_URL_01} buster main\n#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+    printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
     apt update
 }
 ###########
@@ -875,9 +875,9 @@ tmoe_system_app_menu() {
 }
 ##########
 where_is_tmoe_file_dir() {
-    CURRENT_QEMU_ISO_FILENAME="$(echo ${CURRENT_QEMU_ISO} | awk -F '/' '{print $NF}')"
+    CURRENT_QEMU_ISO_FILENAME="$(printf '%s\n' ${CURRENT_QEMU_ISO} | awk -F '/' '{print $NF}')"
     if [ ! -z "${CURRENT_QEMU_ISO}" ]; then
-        CURRENT_QEMU_ISO_FILEPATH="$(echo ${CURRENT_QEMU_ISO} | sed "s@${CURRENT_QEMU_ISO_FILENAME}@@")"
+        CURRENT_QEMU_ISO_FILEPATH="$(printf '%s\n' ${CURRENT_QEMU_ISO} | sed "s@${CURRENT_QEMU_ISO_FILENAME}@@")"
     fi
 
     if [ -d "${CURRENT_QEMU_ISO_FILEPATH}" ]; then
@@ -889,7 +889,7 @@ where_is_tmoe_file_dir() {
 }
 ##############
 uncompress_tar_gz_file() {
-    echo '正在解压中...'
+    printf '%s\n' '正在解压中...'
     if [ $(command -v pv) ]; then
         pv ${DOWNLOAD_FILE_NAME} | tar -pzx
     else
@@ -900,7 +900,7 @@ uncompress_tar_gz_file() {
 download_deb_comman_model_02() {
     cd /tmp/
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-    echo ${THE_LATEST_DEB_LINK}
+    printf "%s\n" ${THE_LATEST_DEB_LINK}
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
     apt show ./${THE_LATEST_DEB_VERSION}
     apt install -y ./${THE_LATEST_DEB_VERSION}
@@ -927,31 +927,31 @@ tmoe_debian_add_ubuntu_ppa_source() {
     if [ "$?" != "0" ]; then
         tmoe_sources_list_manager
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的名称"
-        echo "Please enter a valid name."
+        printf "%s\n" "请输入有效的名称"
+        printf "%s\n" "Please enter a valid name."
     else
         add_ubuntu_ppa_source
     fi
 }
 ####################
 add_ubuntu_ppa_source() {
-    if [ "$(echo ${TARGET} | grep 'sudo add-apt-repository')" ]; then
-        TARGET="$(echo ${TARGET} | sed 's@sudo add-apt-repository@@')"
-    elif [ "$(echo ${TARGET} | grep 'add-apt-repository ')" ]; then
-        TARGET="$(echo ${TARGET} | sed 's@add-apt-repository @@')"
+    if [ "$(printf '%s\n' ${TARGET} | grep 'sudo add-apt-repository')" ]; then
+        TARGET="$(printf '%s\n' ${TARGET} | sed 's@sudo add-apt-repository@@')"
+    elif [ "$(printf '%s\n' ${TARGET} | grep 'add-apt-repository ')" ]; then
+        TARGET="$(printf '%s\n' ${TARGET} | sed 's@add-apt-repository @@')"
     fi
     add-apt-repository ${TARGET}
     if [ "$?" != "0" ]; then
         tmoe_sources_list_manager
     fi
-    DEV_TEAM_NAME=$(echo ${TARGET} | cut -d '/' -f 1 | cut -d ':' -f 2)
-    PPA_SOFTWARE_NAME=$(echo ${TARGET} | cut -d ':' -f 2 | cut -d '/' -f 2)
+    DEV_TEAM_NAME=$(printf '%s\n' ${TARGET} | cut -d '/' -f 1 | cut -d ':' -f 2)
+    PPA_SOFTWARE_NAME=$(printf '%s\n' ${TARGET} | cut -d ':' -f 2 | cut -d '/' -f 2)
     if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
         get_ubuntu_ppa_gpg_key
     fi
     modify_ubuntu_sources_list_d_code
     apt update
-    echo "添加软件源列表完成，是否需要执行${GREEN}apt install ${PPA_SOFTWARE_NAME}${RESET}"
+    printf "%s\n" "添加软件源列表完成，是否需要执行${GREEN}apt install ${PPA_SOFTWARE_NAME}${RESET}"
     do_you_want_to_continue
     apt install ${PPA_SOFTWARE_NAME}
 }
@@ -973,12 +973,12 @@ check_ubuntu_ppa_list() {
     cd /etc/apt/sources.list.d
     GREP_NAME="${DEV_TEAM_NAME}-ubuntu-${PPA_SOFTWARE_NAME}"
     PPA_LIST_FILE=$(ls ${GREP_NAME}-* | head -n 1)
-    CURRENT_UBUNTU_CODE=$(cat ${PPA_LIST_FILE} | grep -v '^#' | awk '{print $3}' | head -n 1)
+    CURRENT_UBUNTU_CODE=$(sed -n p ${PPA_LIST_FILE} | grep -v '^#' | awk '{print $3}' | head -n 1)
 }
 #################
 modify_ubuntu_sources_list_d_code() {
     check_ubuntu_ppa_list
-    if [ "${DEBIAN_DISTRO}" = 'ubuntu' ] || grep -Eq 'sid|testing' /etc/issue; then
+    if [ "${DEBIAN_DISTRO}" = 'ubuntu' ] || egrep -q 'sid|testing' /etc/issue; then
         TARGET_BLANK_CODE="${CURRENT_UBUNTU_CODE}"
     else
         TARGET_BLANK_CODE="bionic"
@@ -992,10 +992,10 @@ modify_ubuntu_sources_list_d_code() {
     fi
 
     if [ ${TARGET_CODE} = ${CURRENT_UBUNTU_CODE} ]; then
-        echo "您没有修改ubuntu code，当前使用Ubuntu ${TARGET_CODE}的ppa软件源"
+        printf "%s\n" "您没有修改ubuntu code，当前使用Ubuntu ${TARGET_CODE}的ppa软件源"
     else
         sed -i "s@ ${CURRENT_UBUNTU_CODE}@ ${TARGET_CODE}@g" ${PPA_LIST_FILE}
-        echo "已将${CURRENT_UBUNTU_CODE}修改为${TARGET_CODE},若更新错误，则请手动修改$(pwd)/${PPA_LIST_FILE}"
+        printf "%s\n" "已将${CURRENT_UBUNTU_CODE}修改为${TARGET_CODE},若更新错误，则请手动修改$(pwd)/${PPA_LIST_FILE}"
     fi
 }
 ###################
@@ -1106,16 +1106,16 @@ tenvideo_env() {
     TENVIDEO_GIT='https://gitee.com/ak2/tenvideo.git'
     TENVIDEO_FOLDER='.TENCENT_VIDEO_TMOE_TMEP_FOLDER'
     if [ -e "${TENTVIDEO_OPT}" ]; then
-        echo "检测到${YELLOW}您已安装${RESET} ${GREEN}${DEPENDENCY_02} ${RESET}"
-        echo "如需${RED}卸载${RESET}，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
-        echo "请问您是否需要重装？"
-        echo "Do you want to reinstall it?"
+        printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN}${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
+        printf "%s\n" "请问您是否需要重装？"
+        printf "%s\n" "Do you want to reinstall it?"
         do_you_want_to_continue
     fi
 }
 ########
 aria2c_download_normal_file_s3() {
-    echo ${YELLOW}${DOWNLOAD_FILE_URL}${RESET}
+    printf "%s\n" ${YELLOW}${DOWNLOAD_FILE_URL}${RESET}
     cd ${DOWNLOAD_PATH}
     #aria2c --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
     #此处用wget会自动转义url
@@ -1134,14 +1134,14 @@ aria2c_download_file_00() {
 }
 ###############
 aria2c_download_file() {
-    echo "${YELLOW}${THE_LATEST_ISO_LINK}${RESET}"
+    printf "%s\n" "${YELLOW}${THE_LATEST_ISO_LINK}${RESET}"
     do_you_want_to_continue
     aria2c_download_file_00
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ############
 aria2c_download_file_no_confirm() {
-    echo "${YELLOW}${ELECTRON_FILE_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ELECTRON_FILE_URL}${RESET}"
     aria2c_download_file_00
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}"
 }
@@ -1156,7 +1156,7 @@ extract_electron() {
 }
 #########
 latest_electron() {
-    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | cut -d '=' -f 3 | cut -d '"' -f 2 | grep -E '^1|^2^|^3|^4|^5|^6|^7|^8|^9' | grep -Ev '^v|^1\.|^2\.|^3\.|^4\.|^5\.|^6\.|^7\.|^8\.' | tail -n 1 | cut -d '/' -f 1)
+    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | cut -d '=' -f 3 | cut -d '"' -f 2 | egrep '^1|^2^|^3|^4|^5|^6|^7|^8|^9' | egrep -v '^v|^1\.|^2\.|^3\.|^4\.|^5\.|^6\.|^7\.|^8\.' | tail -n 1 | cut -d '/' -f 1)
     DOWNLOAD_PATH="/opt/electron"
 }
 ###########
@@ -1276,7 +1276,7 @@ add_debian_old_source() {
     ubuntu) ;;
     *)
         if ! grep -q '^deb.*buster' /etc/apt/sources.list; then
-            echo 'deb https://mirrors.huaweicloud.com/debian/ buster main' >>/etc/apt/sources.list.d/tmoe_old_debian_source.list
+            printf '%s\n' 'deb https://mirrors.huaweicloud.com/debian/ buster main' >>/etc/apt/sources.list.d/tmoe_old_debian_source.list
             apt update
         fi
         ;;
@@ -1300,11 +1300,11 @@ tmoe_apt_update() {
 ############
 check_zstd() {
     if [ ! $(command -v unzstd) ]; then
-        echo "正在安装相关依赖..."
-        echo "${GREEN}${TMOE_INSTALLATON_COMMAND}${RESET} ${BLUE}zstd${RESET}"
+        printf "%s\n" "正在安装相关依赖..."
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATON_COMMAND}${RESET} ${BLUE}zstd${RESET}"
         tmoe_apt_update
         ${TMOE_INSTALLATON_COMMAND} zstd
-        echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
+        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
     fi
 }
 ##############
@@ -1323,11 +1323,11 @@ cat_icon_img() {
 do_you_want_to_upgrade_it() {
     UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
     if [ -e /usr/games/lolcat ]; then
-        echo ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
+        printf "%s\n" ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
     elif [ "$(command -v lolcat)" ]; then
-        echo ${UPGRADE_TIPS} | lolcat
+        printf "%s\n" ${UPGRADE_TIPS} | lolcat
     else
-        echo ${UPGRADE_TIPS}
+        printf "%s\n" ${UPGRADE_TIPS}
     fi
     do_you_want_to_continue
 }
@@ -1335,11 +1335,11 @@ do_you_want_to_upgrade_it() {
 do_you_want_to_upgrade_it_02() {
     UPGRADE_TIPS="您是否需要更新${DEPENDENCY_01}?"
     if [ -e /usr/games/lolcat ]; then
-        echo ${UPGRADE_TIPS} | /usr/games/lolcat
+        printf "%s\n" ${UPGRADE_TIPS} | /usr/games/lolcat
     elif [ "$(command -v lolcat)" ]; then
-        echo ${UPGRADE_TIPS} | lolcat
+        printf "%s\n" ${UPGRADE_TIPS} | lolcat
     else
-        echo ${UPGRADE_TIPS}
+        printf "%s\n" ${UPGRADE_TIPS}
     fi
 }
 ##################
@@ -1354,14 +1354,14 @@ check_deb_version() {
 		║   ║          ║${THE_LATEST_DEB_VERSION}
 
 	ENDofTable
-    echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
+    printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
 }
 ################
 install_tmoe_app_01() {
     random_neko
-    echo "正在检测版本更新信息..."
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: ${YELLOW}${OFFICIAL_URL}${RESET}"
+    printf "%s\n" "正在检测版本更新信息..."
+    printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+    printf "%s\n" "url: ${YELLOW}${OFFICIAL_URL}${RESET}"
     case ${DEPENDENCY_01} in
     vivaldi-stable | vivaldi | vivaldi-arm64) install_vivaldi_browser ;;
     browser360-cn-stable | browser360) install_360_browser ;;
@@ -1373,7 +1373,7 @@ install_tmoe_app_01() {
 }
 ###########
 remove_tmoe_app_01() {
-    echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_APP_VERSION_TXT}${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
+    printf "%s\n" "${RED}rm -v${RESET} ${BLUE}${LOCAL_APP_VERSION_TXT}${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
     com.xunlei.download) remove_thunder_opt_app ;;
@@ -1408,19 +1408,19 @@ tmoe_app_menu_01() {
 ###########
 lolcat_tmoe_tips_01() {
     if [ -e /usr/games/lolcat ]; then
-        echo ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
+        printf "%s\n" ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
     elif [ "$(command -v lolcat)" ]; then
-        echo ${TMOE_TIPS_01} | lolcat
+        printf "%s\n" ${TMOE_TIPS_01} | lolcat
     else
-        echo ${TMOE_TIPS_01}
+        printf "%s\n" ${TMOE_TIPS_01}
     fi
     case ${LINUX_DISTRO} in
     debian) ;;
-    arch) echo "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
-    redhat) echo "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
+    arch) printf "%s\n" "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
+    redhat) printf "%s\n" "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
     esac
     #do_you_want_to_upgrade_it_02
-    echo "您是否需要${GREEN}更新${RESET}${BLUE}${DEPENDENCY_01}${RESET}?"
+    printf "%s\n" "您是否需要${GREEN}更新${RESET}${BLUE}${DEPENDENCY_01}${RESET}?"
 }
 ###################
 download_and_install_deb() {
@@ -1439,7 +1439,7 @@ download_and_install_deb() {
     arch | *) beta_features_quick_install ;;
     esac
     rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
-    echo ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
+    printf "%s\n" ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
     case ${LINUX_DISTRO} in
     arch) ;;
     *) beta_features_install_completed ;;
@@ -1450,8 +1450,8 @@ this_app_may_non_support_running_on_proot() {
     case ${TMOE_PROOT} in
     false) ;;
     true | no)
-        echo "本软件可能不支持在proot容器环境中运行"
-        echo "This application may not support running on a proot container."
+        printf "%s\n" "本软件可能不支持在proot容器环境中运行"
+        printf "%s\n" "This application may not support running on a proot container."
         do_you_want_to_continue
         ;;
     esac

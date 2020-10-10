@@ -164,14 +164,14 @@ switch__fcitx5_material_color() {
     ln -sf ${PANEL_COLOR_PNG} panel.png
     ln -sf ${HIGH_LIGHT_COLOR_PNG} highlight.png
     if [ ${HOME} != '/root' ]; then
-        echo "正在将panel.png和highlight.png的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "正在将panel.png和highlight.png的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         chown ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} panel.png highlight.png
     fi
 }
 ############
 delete_fcitx5_material_color_theme() {
-    echo "是否需要删除该主题？"
-    echo "${RED}rm -rv ${MATERIAL_COLOR_FOLDER}${RESET}"
+    printf "%s\n" "是否需要删除该主题？"
+    printf "%s\n" "${RED}rm -rv ${MATERIAL_COLOR_FOLDER}${RESET}"
     do_you_want_to_continue
     rm -rv ${MATERIAL_COLOR_FOLDER}
     sed -i 's@^Theme=@#&@' ${FCIITX5_CLASSUI_CONF_FILE}
@@ -180,8 +180,8 @@ delete_fcitx5_material_color_theme() {
 install_fcitx5_material_color_theme() {
     #DEPENDENCY_02='fcitx5-material-color'
     #beta_features_quick_install
-    #echo '请前往github阅读使用说明'
-    #echo 'https://github.com/hosxy/Fcitx5-Material-Color'
+    #printf '%s\n' '请前往github阅读使用说明'
+    #printf '%s\n' 'https://github.com/hosxy/Fcitx5-Material-Color'
     if [ ! -e ${MATERIAL_COLOR_FOLDER} ]; then
         mkdir -p ${MATERIAL_COLOR_FOLDER}
         git clone --depth=1 https://github.com/hosxy/Fcitx5-Material-Color.git ${MATERIAL_COLOR_FOLDER}
@@ -197,7 +197,7 @@ install_fcitx5_material_color_theme() {
     fi
 
     if [ ${HOME} != '/root' ]; then
-        echo "正在将${MATERIAL_COLOR_FOLDER}和${FCIITX5_CLASSUI_CONF_PATH}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "正在将${MATERIAL_COLOR_FOLDER}和${FCIITX5_CLASSUI_CONF_PATH}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${MATERIAL_COLOR_FOLDER} ${FCIITX5_CLASSUI_CONF_PATH}
     fi
 }
@@ -244,13 +244,13 @@ check_fcitx5_dict() {
     #勿忘点
     #usr/share/fcitx5/pinyin/dictionaries/
     if [ -e "${DICT_FILE}" ]; then
-        echo "检测到您${RED}已经下载过${RESET}${DICT_NAME}了"
-        echo "该文件位于${BLUE}${FCITX5_DIICT_PATH}${RESET}"
-        echo "如需删除，请手动执行${RED}rm -v ${DICT_FILE}${RESET}"
+        printf "%s\n" "检测到您${RED}已经下载过${RESET}${DICT_NAME}了"
+        printf "%s\n" "该文件位于${BLUE}${FCITX5_DIICT_PATH}${RESET}"
+        printf "%s\n" "如需删除，请手动执行${RED}rm -v ${DICT_FILE}${RESET}"
         ls -lah ${DICT_FILE}
-        echo "sha256hash: $(sha256sum ${DICT_FILE})"
-        echo "Do you want to ${RED}update it?${RESET}"
-        echo "是否想要更新版本？"
+        printf "%s\n" "sha256hash: $(sha256sum ${DICT_FILE})"
+        printf "%s\n" "Do you want to ${RED}update it?${RESET}"
+        printf "%s\n" "是否想要更新版本？"
         do_you_want_to_continue
     fi
 }
@@ -267,14 +267,14 @@ move_dict_model_01() {
     fi
     #DICT_SHARE_PATH=fcitx5/pinyin/dictionaries/moegirl.dict
     mv -fv ${DICT_SHARE_FILE} ${FCITX5_DIICT_PATH}
-    echo "chmod +r ${DICT_FILE}"
+    printf "%s\n" "chmod +r ${DICT_FILE}"
     chmod +r ${DICT_FILE}
     cd ..
     rm -rf /tmp/.${THEME_NAME}
-    echo "${BLUE}文件${RESET}已经保存至${DICT_FILE}"
-    echo "${BLUE}The file${RESET} have been saved to ${DICT_FILE}"
+    printf "%s\n" "${BLUE}文件${RESET}已经保存至${DICT_FILE}"
+    printf "%s\n" "${BLUE}The file${RESET} have been saved to ${DICT_FILE}"
     ls -lah ${DICT_FILE}
-    echo "如需删除，请手动执行rm -v ${DICT_FILE}"
+    printf "%s\n" "如需删除，请手动执行rm -v ${DICT_FILE}"
 }
 ###################
 download_dict_model_01() {
@@ -292,14 +292,14 @@ outloudvi_fcitx5_moegirl_dict() {
     DICT_NAME='moegirl.dict'
     GREP_NAME='fcitx5-pinyin-moegirl'
     download_dict_model_01
-    echo 'https://github.com/outloudvi/fcitx5-pinyin-moegirl'
+    printf '%s\n' 'https://github.com/outloudvi/fcitx5-pinyin-moegirl'
 }
 #################
 felixonmars_fcitx5_wiki_dict() {
     DICT_NAME='zhwiki.dict'
     GREP_NAME='fcitx5-pinyin-zhwiki'
     download_dict_model_01
-    echo 'https://github.com/felixonmars/fcitx5-pinyin-zhwiki'
+    printf '%s\n' 'https://github.com/felixonmars/fcitx5-pinyin-zhwiki'
 }
 #################
 install_fcitx5() {
@@ -315,9 +315,9 @@ install_fcitx5() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         if [ ! $(command -v fcitx5-config-qt) ]; then
             DEPENDENCY_01=""
-            echo '检测到您的软件源中不包含kde-config-fcitx5,您可以添加第三方ppa源来安装'
-            echo "${GREEN}add-apt-repository ppa:hosxy/test${RESET}"
-            echo '若ppa源添加失败，则请使用本工具内置的ppa源添加器'
+            printf '%s\n' '检测到您的软件源中不包含kde-config-fcitx5,您可以添加第三方ppa源来安装'
+            printf "%s\n" "${GREEN}add-apt-repository ppa:hosxy/test${RESET}"
+            printf '%s\n' '若ppa源添加失败，则请使用本工具内置的ppa源添加器'
             add-apt-repository ppa:hosxy/test
             beta_features_quick_install
         fi
@@ -328,7 +328,7 @@ install_fcitx5_rime() {
     DEPENDENCY_01="fcitx5-rime"
     DEPENDENCY_02="fcitx5-pinyin-moegirl-rime"
     if [ "${LINUX_DISTRO}" != "arch" ]; then
-        echo '截至20200723，本功能暂只适配Arch系发行版'
+        printf '%s\n' '截至20200723，本功能暂只适配Arch系发行版'
     fi
     configure_system_fcitx5
     beta_features_quick_install
@@ -408,7 +408,7 @@ tmoe_fcitx_faq() {
     case "${TMOE_APP}" in
     0 | "") install_pinyin_input_method ;;
     1)
-        echo '若您无法使用fcitx,则请根据以下诊断信息自行解决'
+        printf '%s\n' '若您无法使用fcitx,则请根据以下诊断信息自行解决'
         fcitx-diagnose
         ;;
     2) kde_config_module_for_fcitx ;;
@@ -466,16 +466,16 @@ input_method_config() {
     fi
     #检测两次
     if [ ! $(command -v im-config) ]; then
-        echo 'Sorry，本功能只支持deb系发行版'
+        printf '%s\n' 'Sorry，本功能只支持deb系发行版'
     fi
     im-config
     chmod 755 -R .config/fcitx .xprofile
     if [ ${HOME} != '/root' ]; then
-        echo "正在将${HOME}/.config/fcitx和${HOME}/.xprofile的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "正在将${HOME}/.config/fcitx和${HOME}/.xprofile的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .config/fcitx .xprofile
     fi
     fcitx &>/dev/null || fcitx5 &>/dev/null
-    echo "请手动修改键盘布局，并打开fcitx-configtool"
+    printf "%s\n" "请手动修改键盘布局，并打开fcitx-configtool"
 }
 ####################
 install_uim_pinyin() {
@@ -524,27 +524,27 @@ install_debian_baidu_pinyin() {
         mkdir /tmp/.BAIDU_IME
         cd /tmp/.BAIDU_IME
         THE_Latest_Link='https://imeres.baidu.com/imeres/ime-res/guanwang/img/Ubuntu_Deepin-fcitx-baidupinyin-64.zip'
-        echo ${THE_Latest_Link}
+        printf "%s\n" ${THE_Latest_Link}
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'fcitx-baidupinyin.zip' "${THE_Latest_Link}"
         unzip 'fcitx-baidupinyin.zip'
         DEB_FILE_NAME="$(ls -l ./*deb | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')"
         apt install ${DEB_FILE_NAME}
     else
-        echo "架构不支持，跳过安装百度输入法。"
+        printf "%s\n" "架构不支持，跳过安装百度输入法。"
         arch_does_not_support
     fi
     apt show ./fcitx-baidupinyin.deb
     apt install -y ./fcitx-baidupinyin.deb
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo 'url: https://srf.baidu.com/site/guanwang_linux/index.html'
+    printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+    printf '%s\n' 'url: https://srf.baidu.com/site/guanwang_linux/index.html'
     cd /tmp
     rm -rfv /tmp/.BAIDU_IME
     beta_features_install_completed
 }
 ########
 install_pkg_warning() {
-    echo "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
-    echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_02} ${RESET}"
+    printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
+    printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_02} ${RESET}"
     press_enter_to_reinstall_yes_or_no
 }
 #############
@@ -568,10 +568,10 @@ install_baidu_pinyin() {
 sougou_pinyin_amd64() {
     if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
         LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
-        echo ${LatestSogouPinyinLink}
+        printf "%s\n" ${LatestSogouPinyinLink}
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
     else
-        echo "架构不支持，跳过安装搜狗输入法。"
+        printf "%s\n" "架构不支持，跳过安装搜狗输入法。"
         arch_does_not_support
     fi
 }
@@ -585,18 +585,18 @@ install_debian_sogou_pinyin() {
     fi
     case "${ARCH_TYPE}" in
     amd64 | i386)
-        echo "本脚本提供的是搜狗官网的版本"
-        echo "Debian sid、Kali rolling和ubuntu 20.04等高版本可能无法正常运行,您可以前往优麒麟软件仓库手动下载安装。"
-        echo 'http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
+        printf "%s\n" "本脚本提供的是搜狗官网的版本"
+        printf "%s\n" "Debian sid、Kali rolling和ubuntu 20.04等高版本可能无法正常运行,您可以前往优麒麟软件仓库手动下载安装。"
+        printf '%s\n' 'http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
         do_you_want_to_continue
         LATEST_DEB_URL=$(curl -L 'https://pinyin.sogou.com/linux/' | grep ${ARCH_TYPE} | grep deb | awk '{print $3}' | cut -d '"' -f 2)
         LATEST_DEB_VERSION="sogouimebs_${ARCH_TYPE}.deb"
         install_deb_file_common_model_02
         ;;
-    arm64) echo "请手动前往优麒麟软件仓库手动下载安装arm64版sogouimebs" ;;
+    arm64) printf "%s\n" "请手动前往优麒麟软件仓库手动下载安装arm64版sogouimebs" ;;
     esac
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: ${YELLOW}https://pinyin.sogou.com/linux/${RESET}"
+    printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+    printf "%s\n" "url: ${YELLOW}https://pinyin.sogou.com/linux/${RESET}"
     beta_features_install_completed
 }
 ########
@@ -613,7 +613,7 @@ install_sogou_pinyin() {
 ############
 fcitx5_config_file() {
     if [ ! -e "${FCITX5_FILE}" ]; then
-        echo '' >>${FCITX5_FILE}
+        printf "\n" >>${FCITX5_FILE}
     fi
     if ! grep -q '^export GTK_IM_MODULE=fcitx5' ${FCITX5_FILE}; then
         sed -i 's/^export INPUT_METHOD.*/#&/' ${FCITX5_FILE}
@@ -631,7 +631,7 @@ fcitx5_config_file() {
 ############
 fix_fcitx5_permissions() {
     if [ ${HOME} != '/root' ]; then
-        echo "正在将${FCITX5_FILE}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "正在将${FCITX5_FILE}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${FCITX5_FILE}
     fi
 }
@@ -654,7 +654,7 @@ configure_system_fcitx5() {
 ##############
 configure_arch_fcitx() {
     if [ ! -e "${HOME}/.xprofile" ]; then
-        echo '' >${HOME}/.xprofile
+        printf "\n" >${HOME}/.xprofile
     fi
     if grep -q '^export GTK_IM_MODULE=fcitx5' ${HOME}/.xprofile; then
         sed -i 's/^export GTK_IM_MODULE.*/#&/' ${HOME}/.xprofile ${HOME}/.pam_environment
@@ -698,7 +698,7 @@ install_debian_iflyime_pinyin() {
         grep_deb_comman_model_01
         ;;
     *)
-        echo "请在更换x64架构的设备后，再来尝试"
+        printf "%s\n" "请在更换x64架构的设备后，再来尝试"
         arch_does_not_support
         ;;
     esac

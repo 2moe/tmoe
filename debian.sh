@@ -20,7 +20,7 @@ install_dependency() {
 }
 #########
 tuna_mirror() {
-	if [ "${LANG}" = "$(echo 'emhfQ04uVVRGLTgK' | base64 -d)" ]; then
+	if [ "${LANG}" = "$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d)" ]; then
 		#ALPINE_SOURCE_LIST=/etc/apk/repositories
 		#cp ${ALPINE_SOURCE_LIST} ${ALPINE_SOURCE_LIST}.bak 2>/dev/null
 		#sed -i "S@dl-cdn.alpinelinux.org@${CHINA_MIRROR}@g" ${ALPINE_SOURCE_LIST} 2>/dev/null
@@ -32,7 +32,7 @@ tuna_mirror() {
 			sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
 			sed -i "s@ports.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
 			sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null
-			cat ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
+			sed -n p ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
 		fi
 	fi
 	case ${TMOE_DOCKER} in
@@ -48,8 +48,8 @@ tuna_mirror() {
 #########
 tmoe_locale_gen() {
 	#if [ ! -z "${LANG}" ]; then
-	TMOE_LANG_HALF=$(echo ${LANG} | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(echo ${LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	TMOE_LANG_HALF=$(printf '%s\n' ${LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' ${LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 		if [ ! $(command -v locale-gen) ]; then
 			apt update 2>/dev/null
@@ -63,7 +63,7 @@ tmoe_locale_gen() {
 	fi
 	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 		cd /etc
-		echo '' >>locale.gen
+		printf "\n" >>locale.gen
 		sed -i 's@^@#&@g' locale.gen 2>/dev/null
 		sed -i 's@##@#@g' locale.gen 2>/dev/null
 		sed -i "$ a ${LANG} UTF-8" locale.gen

@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+gnu_linux_manager_dependencies() {
+	DEPENDENCIES=''
+	if [ ! $(command -v aria2c) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} net-misc/aria2"
+		else
+			DEPENDENCIES="${DEPENDENCIES} aria2"
+		fi
+	fi
+
+	if [ ! $(command -v curl) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} net-misc/curl"
+		else
+			DEPENDENCIES="${DEPENDENCIES} curl"
+		fi
+	fi
+	if [ ! $(command -v git) ]; then
+		case "${LINUX_DISTRO}" in
+		openwrt) DEPENDENCIES="${DEPENDENCIES} git git-http" ;;
+		gentoo) DEPENDENCIES="${DEPENDENCIES} dev-vcs/git" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} git" ;;
+		esac
+	fi
+	if [ ! $(command -v grep) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-apps/grep"
+		else
+			DEPENDENCIES="${DEPENDENCIES} grep"
+		fi
+	fi
+
+	if [ ! $(command -v pv) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-apps/pv"
+		elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
+			if [ "${REDHAT_DISTRO}" = 'fedora' ]; then
+				DEPENDENCIES="${DEPENDENCIES} pv"
+			fi
+		else
+			DEPENDENCIES="${DEPENDENCIES} pv"
+		fi
+	fi
+
+	if [ ! $(command -v proot) ]; then
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCIES="${DEPENDENCIES} proot"
+		fi
+	fi
+	#####################
+	if [ ! $(command -v xz) ]; then
+		if [ "${LINUX_DISTRO}" = "debian" ]; then
+			DEPENDENCIES="${DEPENDENCIES} xz-utils"
+		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} app-arch/xz-utils"
+		else
+			DEPENDENCIES="${DEPENDENCIES} xz"
+		fi
+	fi
+
+	if [ ! $(command -v pkill) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} sys-process/procps"
+		elif [ "${LINUX_DISTRO}" != "openwrt" ]; then
+			DEPENDENCIES="${DEPENDENCIES} procps"
+		fi
+	fi
+	#####################
+	if [ ! $(command -v tar) ]; then
+		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
+			DEPENDENCIES="${DEPENDENCIES} app-arch/tar"
+		else
+			DEPENDENCIES="${DEPENDENCIES} tar"
+		fi
+	fi
+	[[ -z ${DEPENDENCIES} ]] || install_gnu_linux_manager_dependencies_02
+}
+######################
+install_gnu_linux_manager_dependencies_02() {
+	notes_of_tmoe_package_installation
+	case "${LINUX_DISTRO}" in
+	debian)
+		case ${DEBIAN_DISTRO} in
+		deepin) ;;
+		*)
+			if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
+				MIRROR_LIST='false'
+			fi
+			;;
+		esac
+		${TMOE_UPDATE_COMMAND}
+		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATON_COMMAND} git wget curl whiptail aria2 xz-utils nano sudo less procps
+		;;
+	alpine | openwrt | slackware)
+		${TMOE_UPDATE_COMMAND}
+		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+		;;
+	arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} ;;
+	*)
+		apt update
+		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+		apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
+		;;
+	esac
+}
+#################
+gnu_linux_manager_dependencies

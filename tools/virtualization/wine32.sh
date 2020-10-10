@@ -69,8 +69,8 @@ wine_menu() {
 ##########
 remove_wine_bin() {
     if [ "${ARCH_TYPE}" != "i386" ]; then
-        echo 'dpkg  --remove-architecture i386'
-        echo '正在移除对i386软件包的支持'
+        printf '%s\n' 'dpkg  --remove-architecture i386'
+        printf '%s\n' '正在移除对i386软件包的支持'
         #apt purge ".*:i386"
         aptitude remove ~i~ri386
         dpkg --remove-architecture i386
@@ -78,7 +78,7 @@ remove_wine_bin() {
     fi
     INSTALL_WINE='false'
     wine_dependencies
-    echo "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}"
+    printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}"
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
 }
 ############

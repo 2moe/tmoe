@@ -2,9 +2,9 @@
 ####################
 remove_browser() {
     if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno '火狐娘:“虽然知道总有离别时，但我没想到这一天竟然会这么早。虽然很不舍，但还是很感激您曾选择了我。希望我们下次还会再相遇，呜呜...(;´༎ຶД༎ຶ`)”chromium娘：“哼(￢︿̫̿￢☆)，负心人，走了之后就别回来了！o(TヘTo) 。”  ✨请做出您的选择！' 10 60); then
-        echo '呜呜...我...我才...才不会为了这点小事而流泪呢！ヽ(*。>Д<)o゜'
-        echo "${YELLOW}按回车键确认卸载firefox${RESET}"
-        echo 'Press enter to remove firefox,press Ctrl + C to cancel'
+        printf '%s\n' '呜呜...我...我才...才不会为了这点小事而流泪呢！ヽ(*。>Д<)o゜'
+        printf "%s\n" "${YELLOW}按回车键确认卸载firefox${RESET}"
+        printf '%s\n' 'Press enter to remove firefox,press Ctrl + C to cancel'
         RETURN_TO_WHERE='tmoe_linux_tool_menu'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} firefox-esr firefox-esr-l10n-zh-cn
@@ -14,9 +14,9 @@ remove_browser() {
         emerge -C firefox-bin firefox 2>/dev/null
 
     else
-        echo '小声嘀咕：“妾身不在的时候，你一定要好好照顾好自己。” '
-        echo "${YELLOW}按回车键确认卸载chromium${RESET}"
-        echo 'Press enter to confirm uninstall chromium,press Ctrl + C to cancel'
+        printf '%s\n' '小声嘀咕：“妾身不在的时候，你一定要好好照顾好自己。” '
+        printf "%s\n" "${YELLOW}按回车键确认卸载chromium${RESET}"
+        printf '%s\n' 'Press enter to confirm uninstall chromium,press Ctrl + C to cancel'
         RETURN_TO_WHERE='tmoe_linux_tool_menu'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} chromium chromium-l10n
@@ -202,10 +202,10 @@ install_mitalk() {
     #https://s1.zb.mi.com/miliao/apk/miliao/8.8/MiTalk_4.0.100.AppImage
     case ${LINUX_DISTRO} in
     debian | arch) ;;
-    *) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@.deb@.AppImage@") ;;
+    *) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@.deb@.AppImage@") ;;
     esac
-    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@MiTalk_@@")
+    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@MiTalk_@@")
     ICON_FILE='/usr/share/icons/hicolor/128x128/apps/mitalk.png'
     if [ -e "${ICON_FILE}" ]; then
         catimg "${ICON_FILE}" 2>/dev/null
@@ -218,7 +218,7 @@ install_mitalk() {
     case ${LINUX_DISTRO} in
     debian | arch) ;;
     *)
-        echo "请手动下载AppImage软件包"
+        printf "%s\n" "请手动下载AppImage软件包"
         non_debian_function
         ;;
     esac
@@ -270,19 +270,19 @@ install_skype() {
         press_enter_to_reinstall
     fi
     case ${LINUX_DISTRO} in
-    redhat) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@64.deb@64.rpm@') ;;
+    redhat) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed 's@64.deb@64.rpm@') ;;
     debian) ;;
     arch) DEPENDENCY_01='skypeforlinux-stable-bin' ;;
     *) non_debian_function ;;
     esac
-    echo ${THE_LATEST_DEB_URL}
+    printf "%s\n" ${THE_LATEST_DEB_URL}
     case ${ARCH_TYPE} in
     amd64) ;;
     *) arch_does_not_support ;;
     esac
     do_you_want_to_continue
     cd /tmp
-    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
 
     case ${LINUX_DISTRO} in
     redhat | debian) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
@@ -327,9 +327,9 @@ install_nodejs() {
 			npm config set disturl https://npm.taobao.org/dist
 			npm config set electron_mirror https://npm.taobao.org/mirrors/electron/
 		EOF
-        echo "${YELLOW}是否需要将npm官方源更换为淘宝源[Y/n]${RESET} "
-        echo "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
-        echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+        printf "%s\n" "${YELLOW}是否需要将npm官方源更换为淘宝源[Y/n]${RESET} "
+        printf "%s\n" "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
+        printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
         do_you_want_to_continue
         npm config set registry https://registry.npm.taobao.org
         npm config set disturl https://npm.taobao.org/dist
@@ -409,7 +409,7 @@ tmoe_multimedia_menu() {
 }
 #############
 install_spotify() {
-    echo "https://www.spotify.com/tw/download/linux/"
+    printf "%s\n" "https://www.spotify.com/tw/download/linux/"
     case ${ARCH_TYPE} in
     amd64) ;;
     *) arch_does_not_support ;;
@@ -421,30 +421,30 @@ install_spotify() {
     若安装失败，则请手动执行以下命令
     curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
     curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
-    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    printf "%s\n" "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
     apt update
     apt install spotify-client
     如需卸载，则请输apt purge spotify-client ;rm /etc/apt/sources.list.d/spotify.list
 EOF
         DEPENDENCY_02='spotify-client'
         ;;
-    arch) echo "若安装失败，则请手动执行${GREEN}yay -S ${DEPENDENCY_02}${RESET}" ;;
+    arch) printf "%s\n" "若安装失败，则请手动执行${GREEN}yay -S ${DEPENDENCY_02}${RESET}" ;;
     esac
     do_you_want_to_continue
     case ${LINUX_DISTRO} in
     debian | arch) beta_features_quick_install ;;
     *)
-        echo "You can use snap store to install spotify."
-        echo "${GREEN}snap install spotify${RESET}"
+        printf "%s\n" "You can use snap store to install spotify."
+        printf "%s\n" "${GREEN}snap install spotify${RESET}"
         ;;
     esac
 }
 #############
 install_tencent_video() {
-    echo "本文件提取自官方v1.0.10_amd64.deb,开发者分离了amd64的electron环境并对其进行重新打包,以适应arm64架构。"
-    echo "本版本仅适配deb系和arch系发行版，红帽系用户请自行测试。"
-    echo "若安装失败，则请手动前往官网下载安装"
-    echo "URL: ${YELLOW}https://v.qq.com/download.html#Linux${RESET}"
+    printf "%s\n" "本文件提取自官方v1.0.10_amd64.deb,开发者分离了amd64的electron环境并对其进行重新打包,以适应arm64架构。"
+    printf "%s\n" "本版本仅适配deb系和arch系发行版，红帽系用户请自行测试。"
+    printf "%s\n" "若安装失败，则请手动前往官网下载安装"
+    printf "%s\n" "URL: ${YELLOW}https://v.qq.com/download.html#Linux${RESET}"
     tenvideo_env
     check_electron
     git_clone_tenvideo
@@ -456,7 +456,7 @@ git_clone_tenvideo() {
     git clone --depth=1 ${TENVIDEO_GIT} ${TENVIDEO_FOLDER}
     tar -PpJxvf ${TENVIDEO_FOLDER}/app.tar.xz
     rm -rv ${TENVIDEO_FOLDER}
-    echo "安装完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
+    printf "%s\n" "安装完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
 }
 ############
 install_bilibili_electron() {
@@ -475,7 +475,7 @@ install_bilibili_electron() {
     fi
     cd ${TMOE_BILI_DIR}
     cp -f bilibili-web.desktop ${APPS_LNK_DIR}
-    echo "更新完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TMOE_BILI_DIR} ${APPS_LNK_DIR}/bilibili-web.desktop ${TENVIDEO_LNK}${RESET}"
+    printf "%s\n" "更新完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TMOE_BILI_DIR} ${APPS_LNK_DIR}/bilibili-web.desktop ${TENVIDEO_LNK}${RESET}"
 }
 ###########
 tmoe_games_menu() {
@@ -533,8 +533,8 @@ install_dolphin-emu() {
 ################
 remove_debian_steam_app() {
     if [ "${ARCH_TYPE}" != "i386" ]; then
-        echo 'dpkg  --remove-architecture i386'
-        echo '正在移除对i386软件包的支持'
+        printf '%s\n' 'dpkg  --remove-architecture i386'
+        printf '%s\n' '正在移除对i386软件包的支持'
         #apt purge ".*:i386"
         aptitude remove ~i~ri386
         dpkg --remove-architecture i386
@@ -543,7 +543,7 @@ remove_debian_steam_app() {
 }
 ###############
 remove_steam_app() {
-    echo "${TMOE_REMOVAL_COMMAND} steam-launcher steam"
+    printf "%s\n" "${TMOE_REMOVAL_COMMAND} steam-launcher steam"
     ${TMOE_REMOVAL_COMMAND} steam-launcher steam
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         remove_debian_steam_app
@@ -586,14 +586,14 @@ check_arch_multi_lib_line() {
 #################
 install_arch_steam_app() {
     check_arch_multi_lib_line
-    echo "正在修改/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
+    printf "%s\n" "正在修改/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
     sed -i "${ARCH_MULTI_LIB_LINE}c\[multilib]" pacman.conf
     sed -i "${ARCH_MULTI_LIB_INCLUDE_LINE}c\Include = /etc/pacman.d/mirrorlist" pacman.conf
 }
 #################
 remove_arch_steam_app() {
     check_arch_multi_lib_line
-    echo "正在注释掉/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
+    printf "%s\n" "正在注释掉/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
     sed -i "${ARCH_MULTI_LIB_LINE}c\#[multilib]" pacman.conf
     sed -i "${ARCH_MULTI_LIB_INCLUDE_LINE}c\#Include = /etc/pacman.d/mirrorlist" pacman.conf
 }
@@ -602,9 +602,9 @@ install_steam_app() {
     case "${ARCH_TYPE}" in
     amd64 | i386) ;;
     *)
-        echo "${RED}WARNING！${RESET}检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构，请勿在该架构上安装steam"
-        echo "Do not install steam on this architecture."
-        echo "是否需要继续安装？"
+        printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构，请勿在该架构上安装steam"
+        printf "%s\n" "Do not install steam on this architecture."
+        printf "%s\n" "是否需要继续安装？"
         do_you_want_to_continue
         ;;
     esac
@@ -619,7 +619,7 @@ install_steam_app() {
         DEPENDENCY_01='steam-native-runtime'
         install_arch_steam_app
         #此处需要选择显卡驱动，故不要使用quick_install_function
-        echo "pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}"
+        printf "%s\n" "pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}"
         pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}
     else
         beta_features_quick_install
@@ -659,11 +659,11 @@ install_linux_qq() {
     cat_icon_img
     DEPENDENCY_01="linuxqq"
     DEPENDENCY_02=""
-    echo "正在检测版本更新..."
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: ${YELLOW}https://im.qq.com/linuxqq/download.html${RESET}"
+    printf "%s\n" "正在检测版本更新..."
+    printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+    printf "%s\n" "url: ${YELLOW}https://im.qq.com/linuxqq/download.html${RESET}"
     THE_LATEST_PACMAN_URL=$(curl -L https://aur.tuna.tsinghua.edu.cn/packages/linuxqq/ | grep x86_64 | grep qq | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
     case ${THE_LATEST_DEB_VERSION} in
     linuxqq_2.0.0-b2-1082)
         THE_LATEST_DEB_VERSION='linuxqq_2.0.0-b2-1084'
@@ -671,32 +671,32 @@ install_linux_qq() {
         ;;
     esac
 
-    THE_LATEST_DEB_URL=$(echo ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${ARCH_TYPE}.deb@")
+    THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${ARCH_TYPE}.deb@")
     case ${ARCH_TYPE} in
     amd64) TMP_ARCH_TYPE=x86_64 ;;
     arm64) TMP_ARCH_TYPE=arm64 ;;
     mips*) TMP_ARCH_TYPE=mips64el ;;
     esac
 
-    THE_LATEST_SH_URL=$(echo ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${TMP_ARCH_TYPE}.sh@")
+    THE_LATEST_SH_URL=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${TMP_ARCH_TYPE}.sh@")
     #重复检测版本号
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
 
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
 
     case ${LINUX_DISTRO} in
-    debian) echo "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}" ;;
-    *) echo "最新版链接为${BLUE}${THE_LATEST_SH_URL}${RESET}" ;;
+    debian) printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}" ;;
+    *) printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_SH_URL}${RESET}" ;;
     esac
 
     if [ ! -e "${APPS_LNK_DIR}/qq.desktop" ]; then
-        echo "未检测到本地版本，您可能尚未安装腾讯QQ linux版客户端。"
+        printf "%s\n" "未检测到本地版本，您可能尚未安装腾讯QQ linux版客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
-        echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "本地版本可能为${YELLOW}$(sed -n p ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
+        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
-        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
     do_you_want_to_continue
     #if [ -e "${APPS_LNK_DIR}/qq.desktop" ]; then
@@ -721,7 +721,7 @@ install_linux_qq() {
         ;;
     *) arch_does_not_support ;;
     esac
-    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
+    printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     rm -fv ./LINUXQQ.deb ./LINUXQQ.sh 2>/dev/null
     beta_features_install_completed
 }
@@ -732,7 +732,7 @@ install_nds_game_mayomonogatari() {
 
     beta_features_quick_install
     if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
-        echo "检测到您已下载游戏文件，路径为${HOME}/斯隆与马克贝尔的谜之物语"
+        printf "%s\n" "检测到您已下载游戏文件，路径为${HOME}/斯隆与马克贝尔的谜之物语"
         press_enter_to_reinstall
     fi
     cd ${HOME}
@@ -748,10 +748,10 @@ install_nds_game_mayomonogatari() {
     rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
     rm -f slymkbr1.zip* mayomonogatari2.zip*
 
-    echo "安装完成，您需要手动执行${GREEN}/usr/games/desmume${RESER}，并进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
-    echo "如需卸载,则请手动输${TMOE_REMOVAL_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
-    echo 'Press enter to start the nds emulator.'
-    echo "${YELLOW}按回车键启动游戏。${RESET}"
+    printf "%s\n" "安装完成，您需要手动执行${GREEN}/usr/games/desmume${RESER}，并进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
+    printf "%s\n" "如需卸载,则请手动输${TMOE_REMOVAL_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
+    printf '%s\n' 'Press enter to start the nds emulator.'
+    printf "%s\n" "${YELLOW}按回车键启动游戏。${RESET}"
     do_you_want_to_continue
     /usr/games/desmume "${HOME}/斯隆与马克贝尔的谜之物语/3782.nds" 2>/dev/null &
 }
@@ -761,10 +761,10 @@ install_game_cataclysm() {
     DEPENDENCY_02="cataclysm-dda-sdl"
 
     beta_features_quick_install
-    echo "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
-    echo "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "${YELLOW}按回车键启动。${RESET}"
+    printf "%s\n" "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
+    printf "%s\n" "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "${YELLOW}按回车键启动。${RESET}"
     read
     cataclysm
 }
@@ -773,10 +773,10 @@ install_package_manager_gui() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         install_synaptic
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        echo "检测到您使用的是arch系发行版，将为您安装pamac"
+        printf "%s\n" "检测到您使用的是arch系发行版，将为您安装pamac"
         install_pamac_gtk
     else
-        echo "检测到您使用的不是deb系发行版，将为您安装gnome_software"
+        printf "%s\n" "检测到您使用的不是deb系发行版，将为您安装gnome_software"
         install_gnome_software
     fi
 }
@@ -814,10 +814,10 @@ install_synaptic() {
         non_debian_function
         beta_features_quick_install
         sed -i 's/synaptic-pkexec/synaptic/g' ${APPS_LNK_DIR}/synaptic.desktop
-        echo "synaptic和gdebi安装完成，您可以将deb文件的默认打开程序修改为gdebi"
+        printf "%s\n" "synaptic和gdebi安装完成，您可以将deb文件的默认打开程序修改为gdebi"
     else
-        echo "${YELLOW}您真的要离开我么？哦呜。。。${RESET}"
-        echo "Do you really want to remove synaptic?"
+        printf "%s\n" "${YELLOW}您真的要离开我么？哦呜。。。${RESET}"
+        printf "%s\n" "Do you really want to remove synaptic?"
         RETURN_TO_WHERE='software_center'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} synaptic
@@ -826,7 +826,7 @@ install_synaptic() {
 }
 ##########################################
 install_chinese_manpages() {
-    echo '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
+    printf '%s\n' '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
 
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01="manpages manpages-zh man-db"
@@ -859,9 +859,9 @@ install_chinese_manpages() {
         ls | grep -v usr | xargs rm -rf
         ln -sf ./usr/share/doc/debian-handbook/html/zh-CN/index.html ./
     fi
-    echo "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
-    echo "man a help manual software, which can help you understand the detailed usage of the command."
-    echo "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
+    printf "%s\n" "man一款帮助手册软件，它可以帮助您了解关于命令的详细用法。"
+    printf "%s\n" "man a help manual software, which can help you understand the detailed usage of the command."
+    printf "%s\n" "您可以输${YELLOW}man 软件或命令名称${RESET}来获取帮助信息，例如${YELLOW}man bash${RESET}或${YELLOW}man zsh${RESET}"
 }
 #########
 install_baidu_netdisk() {
@@ -875,7 +875,7 @@ install_baidu_netdisk() {
     if [ -e "${ICON_FILE_01}" ]; then
         ICON_FILE="${ICON_FILE_01}"
     elif [ -e "${ICON_FILE_02}" ]; then
-        echo ''
+        printf ""
     else
         mkdir -p ${TMOE_ICON_DIR}
         aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o ${DEPENDENCY_01}.png "https://gitee.com/ak2/icons/raw/master/${DEPENDENCY_01}.png"
@@ -883,26 +883,26 @@ install_baidu_netdisk() {
 
     cat_icon_img
 
-    echo "若安装失败，则请前往官网手动下载安装"
-    echo "url：${YELLOW}https://pan.baidu.com/download${RESET}"
-    echo "正在检测版本更新..."
+    printf "%s\n" "若安装失败，则请前往官网手动下载安装"
+    printf "%s\n" "url：${YELLOW}https://pan.baidu.com/download${RESET}"
+    printf "%s\n" "正在检测版本更新..."
     THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    THE_LATEST_DEB_VERSION=$(echo $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
     case ${LINUX_DISTRO} in
     redhat)
-        THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed 's@_amd64.deb@.x86_64.rpm@')
+        THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed 's@_amd64.deb@.x86_64.rpm@')
         ;;
     esac
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
-    echo "最新版链接为${YELLOW}${THE_LATEST_DEB_URL}${RESET}"
+    printf "%s\n" "最新版链接为${YELLOW}${THE_LATEST_DEB_URL}${RESET}"
     if [ ! -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
-        echo "未检测到本地版本，您可能尚未安装百度网盘客户端。"
+        printf "%s\n" "未检测到本地版本，您可能尚未安装百度网盘客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "本地版本可能为${YELLOW}$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
-        echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "本地版本可能为${YELLOW}$(sed -n p ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
+        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
-        echo "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
     if [ "${ARCH_TYPE}" != "amd64" ]; then
         arch_does_not_support
@@ -927,7 +927,7 @@ install_baidu_netdisk() {
         #apt show ./baidunetdisk.deb
         #apt install -y ./baidunetdisk.deb
     fi
-    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
+    printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     #rm -fv ./baidunetdisk.deb
     beta_features_install_completed
 }
@@ -943,19 +943,19 @@ install_netease_163_cloud_music() {
     cat_icon_img
     DEPENDENCY_01="netease-cloud-music"
     DEPENDENCY_02=""
-    echo "正在从优麒麟软件仓库获取最新的网易云音乐版本号..."
-    echo "若安装失败，则请前往官网手动下载安装。"
-    echo "url: ${YELLOW}https://music.163.com/st/download${RESET}"
+    printf "%s\n" "正在从优麒麟软件仓库获取最新的网易云音乐版本号..."
+    printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+    printf "%s\n" "url: ${YELLOW}https://music.163.com/st/download${RESET}"
     LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
     THE_LATEST_DEB_VERSION=$(curl -L ${LATEST_DEB_REPO} | grep "${DEPENDENCY_01}" | cut -d '=' -f 5 | cut -d '"' -f 2 | head -n 1)
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
     if [ ! -e "${APPS_LNK_DIR}/netease-cloud-music.desktop" ]; then
         #press_enter_to_reinstall
-        echo "未检测到本地版本，您可能尚未安装网易云音乐官方版客户端"
+        printf "%s\n" "未检测到本地版本，您可能尚未安装网易云音乐官方版客户端"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
-        echo "检测到本地版本为$(cat ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
-        echo "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "检测到本地版本为$(sed -n p ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)"
+        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     fi
     case "${ARCH_TYPE}" in
     amd64 | i386) ;;
@@ -977,7 +977,7 @@ install_netease_163_cloud_music() {
         GREP_NAME='netease-cloud-music'
         case $(date +%Y%m) in
         202008)
-            echo "优麒麟软件仓库于2020年8月份中下旬进行维护，您可能无法正常下载"
+            printf "%s\n" "优麒麟软件仓库于2020年8月份中下旬进行维护，您可能无法正常下载"
             do_you_want_to_continue
             ;;
         esac
@@ -992,7 +992,7 @@ install_netease_163_cloud_music() {
         fi
         beta_features_install_completed
     fi
-    echo "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
+    printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     press_enter_to_return
     tmoe_linux_tool_menu
 }
@@ -1009,10 +1009,10 @@ install_android_debug_bridge() {
 
     beta_features_quick_install
     adb --help
-    echo "正在重启进程,您也可以手动输adb devices来获取设备列表"
+    printf "%s\n" "正在重启进程,您也可以手动输adb devices来获取设备列表"
     adb kill-server
     adb devices -l
-    echo "即将为您自动进入adb shell模式，您也可以手动输adb shell来进入该模式"
+    printf "%s\n" "即将为您自动进入adb shell模式，您也可以手动输adb shell来进入该模式"
     adb shell
 }
 ####################
@@ -1064,12 +1064,12 @@ tmoe_other_options_menu() {
 ############################
 remove_gui() {
     DEPENDENCY_01="xfce lxde mate lxqt cinnamon gnome dde deepin-desktop kde-plasma"
-    echo '"xfce" "呜呜，(≧﹏ ≦)您真的要离开我么"  '
-    echo '"lxde" "很庆幸能与阁下相遇（；´д｀）ゞ "  '
-    echo '"mate" "喔...喔呜...我不舍得你走/(ㄒoㄒ)/~~"  '
+    printf '%s\n' '"xfce" "呜呜，(≧﹏ ≦)您真的要离开我么"  '
+    printf '%s\n' '"lxde" "很庆幸能与阁下相遇（；´д｀）ゞ "  '
+    printf '%s\n' '"mate" "喔...喔呜...我不舍得你走/(ㄒoㄒ)/~~"  '
     #新功能预告：即将适配非deb系linux的gui卸载功能
-    echo "${YELLOW}按回车键确认卸载${RESET}"
-    echo 'Press enter to remove,press Ctrl + C to cancel'
+    printf "%s\n" "${YELLOW}按回车键确认卸载${RESET}"
+    printf '%s\n' 'Press enter to remove,press Ctrl + C to cancel'
     RETURN_TO_WHERE='tmoe_linux_tool_menu'
     do_you_want_to_continue
     if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1111,10 +1111,10 @@ remove_gui() {
 ##########################
 remove_tmoe_linux_tool() {
     cd /usr/local/bin
-    echo "${RED}rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop ${HOME}/.config/tmoe-linux startvnc stopvnc debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu ${TMOE_GIT_DIR}${RESET}"
+    printf "%s\n" "${RED}rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop ${HOME}/.config/tmoe-linux startvnc stopvnc debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu ${TMOE_GIT_DIR}${RESET}"
     DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
-    echo "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
-    echo "${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。"
+    printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
+    printf "%s\n" "${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。"
     do_you_want_to_continue
     rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop startvnc stopvnc debian-i startx11vnc ${TMOE_GIT_DIR} startxsdl x11vncpasswd
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}

@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#######################################
+if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat" ]; then
+	printf "%s\n" "正在为您下载windows版pulseaudio"
+	printf "%s\n" "目录C:\Users\Public\Downloads\pulseaudio"
+	mkdir -p /mnt/c/Users/Public/Downloads
+	cd /mnt/c/Users/Public/Downloads
+	rm -rf ./pulseaudio 2>/dev/null
+	git clone -b pulseaudio --depth=1 https://gitee.com/mo2/wsl.git ./pulseaudio
+fi
+
+if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
+	if grep -q '172..*1' "/etc/resolv.conf"; then
+		printf "%s\n" "检测到您当前使用的可能是WSL2，正在为您下载windows版VcXsrv"
+	else
+		printf "%s\n" "检测到您当前使用的可能是初代WSL，正在为您下载windows版VcXsrv"
+	fi
+	printf "%s\n" "目录C:\Users\Public\Downloads\VcXsrv"
+	mkdir -p /mnt/c/Users/Public/Downloads
+	cd /mnt/c/Users/Public/Downloads
+	rm -rf ./.WSLXSERVERTEMPFILE 2>/dev/null
+	git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./.WSLXSERVERTEMPFILE
+	mv ./.WSLXSERVERTEMPFILE/VcXsrv.tar.xz ./
+	tar -Jxvf VcXsrv.tar.xz
+	rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
+fi
+#######此处download iso
+if ! grep -q '172..*1' "/etc/resolv.conf"; then
+	case ${TMOE_CHROOT} in
+	true)
+		printf "%s\n" "检测到您当前使用的是chroot容器，将不会自动调用Windows程序。"
+		printf "%s\n" "请手动启动音频服务和X服务。"
+		;;
+	esac
+	printf "%s\n" "您当前使用的可能不是WSL2,部分功能无法正常运行。"
+	CURRENTwinVersion=$(/mnt/c/WINDOWS/system32/cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)
+	printf "%s\n" "您当前的系统版本为${CURRENTwinVersion}"
+	if (("${CURRENTwinVersion}" >= '19041')); then
+		cat <<-EOF
+			您需要以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+			重启PC，然后输入以下命令
+			wsl --set-default-version 2
+			wsl --set-version 当前发行版名称 2
+			您可以输wsl -l -v来获取发行版名称和版本号
+			wsl -l -v
+			最后以管理员身份安装wsl_update_x64.msi（升级WSL2内核）
+		EOF
+		press_enter_to_continue
+	else
+		cat <<-EOF
+			Do you want to download win10_2004_x64 iso and upgrade system?[Y/n]
+			您的宿主机系统版本低于10.0.19041，需要更新系统。
+			请在更新完系统后，以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+			dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+			wsl --set-default-version 2
+		EOF
+		/mnt/c/WINDOWS/system32/control.exe /name Microsoft.WindowsUpdate
+		printf "%s\n" "-------------------------------"
+	fi
+fi

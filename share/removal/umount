@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#######################################
+unmount_chroot_proc_dev() {
+	#case ${TMOE_CHROOT} in
+	#true)
+	if [ $(command -v su) ]; then
+		su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+		su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+		su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+		su -c "ls -lAh  ${DEBIAN_CHROOT}/media/sd 2>/dev/null"
+	fi
+	#	;;
+	#esac
+	#/dev内自带null
+	for i in root/sd root/tf media/sd media/tf proc sys; do
+		if [ "$(ls ${DEBIAN_CHROOT}/${i} 2>/dev/null)" ]; then
+			printf "%s\n" "检测到${DEBIAN_CHROOT}/${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
+			press_enter_to_return
+			#${RETURN_TO_WHERE}
+			#回到主菜单，而不是返回之前的菜单
+			tmoe_manager_main_menu
+		fi
+	done
+	unset i
+
+	if [ "$(ls ${DEBIAN_CHROOT}/proc 2>/dev/null)" ]; then
+		printf "%s\n" "Please restart the device to unmount the ${DEBIAN_CHROOT}/${i} directory."
+		press_enter_to_return
+		#${RETURN_TO_WHERE}
+		#回到主菜单，而不是返回之前的菜单
+		tmoe_manager_main_menu
+	fi
+}
+##########################
+unmount_chroot_proc_dev

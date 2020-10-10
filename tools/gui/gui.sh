@@ -82,8 +82,8 @@ switch_tight_or_tiger_vncserver() {
         modify_other_vnc_conf
     else
         non_debian_function
-        #echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
-        echo "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
+        #printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
+        printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
         #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
         apt remove -y ${VNC_SERVER_BIN_NOW}
         beta_features_quick_install
@@ -91,7 +91,7 @@ switch_tight_or_tiger_vncserver() {
 }
 #################
 check_tightvnc_port() {
-    CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+    CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 }
 #########################
@@ -101,22 +101,22 @@ modify_tightvnc_display_port() {
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         sed -i "s@tmoe-linux.*:.*@tmoe-linux :$TARGET@" "$(command -v startvnc)"
         sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" "$(command -v startvnc)"
-        echo 'Your current VNC port has been modified.'
+        printf '%s\n' 'Your current VNC port has been modified.'
         check_tightvnc_port
-        echo '您当前的VNC端口已修改为'
-        echo ${CURRENT_VNC_PORT}
+        printf '%s\n' '您当前的VNC端口已修改为'
+        printf "%s\n" ${CURRENT_VNC_PORT}
     fi
 }
 ######################
 modify_xfce_window_scaling_factor() {
     XFCE_CONFIG_FILE="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
     if grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE}; then
-        CURRENT_VALUE=$(cat ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value=' | awk '{print $4}' | cut -d '"' -f 2)
+        CURRENT_VALUE=$(sed -n p ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value=' | awk '{print $4}' | cut -d '"' -f 2)
     else
         CURRENT_VALUE='1'
     fi
@@ -124,10 +124,10 @@ modify_xfce_window_scaling_factor() {
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
-        echo '检测到您取消了操作'
-        cat ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value='
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
+        printf '%s\n' '检测到您取消了操作'
+        sed -n p ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value='
     else
         dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
         if ((${TARGET} > 1)); then
@@ -137,7 +137,7 @@ modify_xfce_window_scaling_factor() {
                 dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
             fi
         fi
-        echo "修改完成，请输${GREEN}startvnc${RESET}重启进程"
+        printf "%s\n" "修改完成，请输${GREEN}startvnc${RESET}重启进程"
     fi
 }
 ##################
@@ -146,8 +146,8 @@ modify_vnc_pulse_audio() {
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         #sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
         #sed -i "2 a\export PULSE_SERVER=$TARGET" ~/.vnc/xstartup
@@ -156,23 +156,23 @@ modify_vnc_pulse_audio() {
         else
             sed -i "4 a\export PULSE_SERVER=$TARGET" $(command -v startvnc)
         fi
-        echo 'Your current PULSEAUDIO SERVER address has been modified.'
-        echo '您当前的音频地址已修改为'
-        echo $(grep 'PULSE_SERVER' $(command -v startvnc) | cut -d '=' -f 2 | head -n 1)
-        echo "请输startvnc重启vnc服务，以使配置生效"
+        printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
+        printf '%s\n' '您当前的音频地址已修改为'
+        printf "%s\n" $(grep 'PULSE_SERVER' $(command -v startvnc) | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" "请输startvnc重启vnc服务，以使配置生效"
     fi
 }
 ##################
 nano_startvnc_manually() {
-    echo '您可以手动修改vnc的配置信息'
-    echo 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution, such as 1920x1080 (vertical screen).'
-    echo '若您想要修改分辨率，请将默认的1440x720（横屏）改为其它您想要的分辨率，例如720x1440（竖屏）。'
-    echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
-    echo '改完后按Ctrl+S保存，Ctrl+X退出。'
+    printf '%s\n' '您可以手动修改vnc的配置信息'
+    printf '%s\n' 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution, such as 1920x1080 (vertical screen).'
+    printf '%s\n' '若您想要修改分辨率，请将默认的1440x720（横屏）改为其它您想要的分辨率，例如720x1440（竖屏）。'
+    printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
+    printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
     RETURN_TO_WHERE='modify_other_vnc_conf'
     do_you_want_to_continue
     nano /usr/local/bin/startvnc || nano $(command -v startvnc)
-    echo "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
+    printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
 
     stopvnc 2>/dev/null
     press_enter_to_return
@@ -180,13 +180,11 @@ nano_startvnc_manually() {
 }
 #############################################
 install_gui() {
-    #该字体检测两次
-    if [ -f '/usr/share/fonts/Iosevka.ttf' ]; then
-        standand_desktop_installation
-    fi
+    [[ "${WINDOWS_DISTRO}" != 'WSL' ]] || source ${TMOE_TOOL_DIR}/gui/wsl
+    [[ ! -s '/usr/share/fonts/Iosevka.ttf' ]] || standand_desktop_installation #该字体检测两次
     random_neko
     cd /tmp
-    case ${WINDOWSDISTRO} in
+    case ${WINDOWS_DISTRO} in
     WSL)
         LXDE_ICON_URL='https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png'
         MATE_ICON_URL='https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg'
@@ -199,26 +197,26 @@ install_gui() {
         ;;
     esac
 
-    echo 'lxde预览截图'
+    printf '%s\n' 'lxde预览截图'
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
     if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
         curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' ${LXDE_ICON_URL}
     fi
     catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
 
-    echo 'mate预览截图'
+    printf '%s\n' 'mate预览截图'
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
     if [ ! -f 'MATE_1frRp1lpOXLPz6mO.jpg' ]; then
         curl -sLo 'MATE_1frRp1lpOXLPz6mO.jpg' ${MATE_ICON_URL}
     fi
     catimg 'MATE_1frRp1lpOXLPz6mO.jpg'
-    echo 'xfce预览截图'
+    printf '%s\n' 'xfce预览截图'
 
     if [ ! -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' ]; then
         curl -sLo 'XFCE_a7IQ9NnfgPckuqRt.jpg' ${XFCE_ICON_URL}
     fi
     catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
-    if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+    if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv/XFCE_a7IQ9NnfgPckuqRt.jpg" ]; then
             cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads/VcXsrv"
         fi
@@ -227,7 +225,7 @@ install_gui() {
     fi
 
     if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
-        echo '正在刷新字体缓存...'
+        printf '%s\n' '正在刷新字体缓存...'
         mkdir -p /usr/share/fonts/
         cd /tmp
         if [ -e "font.ttf" ]; then
@@ -244,8 +242,8 @@ install_gui() {
         fc-cache 2>/dev/null
     fi
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
-    #echo "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
-    echo "按${GREEN}回车键${RESET}${RED}选择${RESET}您需要${YELLOW}安装${RESET}的${BLUE}图形桌面环境${RESET}"
+    #printf "%s\n" "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
+    printf "%s\n" "按${GREEN}回车键${RESET}${RED}选择${RESET}您需要${YELLOW}安装${RESET}的${BLUE}图形桌面环境${RESET}"
     RETURN_TO_WHERE="tmoe_linux_tool_menu"
     do_you_want_to_continue
     standand_desktop_installation
@@ -253,26 +251,26 @@ install_gui() {
 ########################
 preconfigure_gui_dependecies_02() {
     DEPENDENCY_02="tigervnc"
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    debian)
         case "${TMOE_PROOT}" in
         true | no) NON_DBUS='true' ;;
         esac
         DEPENDENCY_02="dbus-x11 fonts-noto-cjk fonts-noto-color-emoji tightvncserver"
-
         #if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
         #	DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
         #else
         #	DEPENDENCY_02="${DEPENDENCY_02} tightvncserver"
         #fi
         #上面的依赖摆放的位置是有讲究的。
-        ##############
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    redhat)
         case "${TMOE_PROOT}" in
         true | no) NON_DBUS='true' ;;
         esac
         DEPENDENCY_02="google-noto-sans-cjk-ttc-fonts google-noto-emoji-color-fonts tigervnc-server"
-        ##################
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    arch)
         DEPENDENCY_02="tigervnc"
         if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
             DEPENDENCY_02="noto-fonts-cjk ${DEPENDENCY_02}"
@@ -280,28 +278,22 @@ preconfigure_gui_dependecies_02() {
         if [ ! -e "/usr/share/fonts/noto/NotoColorEmoji.ttf" ]; then
             DEPENDENCY_02="noto-fonts-emoji ${DEPENDENCY_02}"
         fi
-
-        ##################
-    elif [ "${LINUX_DISTRO}" = "void" ]; then
-        DEPENDENCY_02="xorg tigervnc wqy-microhei"
-        #################
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        ;;
+    void) DEPENDENCY_02="xorg tigervnc wqy-microhei" ;;
+    gentoo)
         dispatch-conf
         etc-update
         DEPENDENCY_02="media-fonts/wqy-bitmapfont net-misc/tigervnc"
-        #################
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts perl-base"
-        ##################
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        ;;
+    suse) DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts perl-base" ;;
+    alpine)
         DEPENDENCY_02="xvfb dbus-x11 font-noto-cjk x11vnc"
         #ca-certificates openssl
-        ##############
-    fi
+        ;;
+    esac
 }
 ########################
 standand_desktop_installation() {
-
     NON_DBUS='false'
     REMOVE_UDISK2='false'
     RETURN_TO_WHERE='standand_desktop_installation'
@@ -447,37 +439,37 @@ tmoe_display_manager_systemctl() {
         beta_features_quick_install
         ;;
     2)
-        echo "您可以输${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}或${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}来启动"
-        echo "${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
-        echo "按回车键启动"
+        printf "%s\n" "您可以输${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}或${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} start${RESET}来启动"
+        printf "%s\n" "${GREEN}systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+        printf "%s\n" "按回车键启动"
         do_you_want_to_continue
         systemctl start ${TMOE_DEPENDENCY_SYSTEMCTL} || service ${TMOE_DEPENDENCY_SYSTEMCTL} restart
         ;;
     3)
-        echo "您可以输${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}或${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}来停止"
-        echo "${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
-        echo "按回车键停止"
+        printf "%s\n" "您可以输${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}或${GREEN}service ${TMOE_DEPENDENCY_SYSTEMCTL} stop${RESET}来停止"
+        printf "%s\n" "${GREEN}systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+        printf "%s\n" "按回车键停止"
         do_you_want_to_continue
         systemctl stop ${TMOE_DEPENDENCY_SYSTEMCTL} || service ${TMOE_DEPENDENCY_SYSTEMCTL} stop
         ;;
     4)
-        echo "您可以输${GREEN}rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来添加开机自启任务"
-        echo "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+        printf "%s\n" "您可以输${GREEN}rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来添加开机自启任务"
+        printf "%s\n" "${GREEN}systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
         systemctl enable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update add ${TMOE_DEPENDENCY_SYSTEMCTL}
         if [ "$?" = "0" ]; then
-            echo "已添加至自启任务"
+            printf "%s\n" "已添加至自启任务"
         else
-            echo "添加自启任务失败"
+            printf "%s\n" "添加自启任务失败"
         fi
         ;;
     5)
-        echo "您可以输${GREEN}rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来禁止开机自启"
-        echo "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
+        printf "%s\n" "您可以输${GREEN}rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}或${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL}${RESET}来禁止开机自启"
+        printf "%s\n" "${GREEN}systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} ${RESET}"
         systemctl disable ${TMOE_DEPENDENCY_SYSTEMCTL} || rc-update del ${TMOE_DEPENDENCY_SYSTEMCTL}
         if [ "$?" = "0" ]; then
-            echo "已禁用开机自启"
+            printf "%s\n" "已禁用开机自启"
         else
-            echo "禁用自启任务失败"
+            printf "%s\n" "禁用自启任务失败"
         fi
         ;;
     esac
@@ -487,14 +479,13 @@ tmoe_display_manager_systemctl() {
 }
 #######################
 auto_select_keyboard_layout() {
-    echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-    echo "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
+    printf '%s\n' 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+    printf "%s\n" "keyboard-configuration keyboard-configuration/layout select 'English (US)'" | debconf-set-selections
     echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections
 }
-##################
 #################
 will_be_installed_for_you() {
-    echo "即将为您安装思源黑体(中文字体)、${REMOTE_DESKTOP_SESSION_01}、tightvncserver等软件包"
+    printf "%s\n" "即将为您安装思源黑体(中文字体)、${REMOTE_DESKTOP_SESSION_01}、tightvncserver等软件包"
 }
 ########################
 #####################
@@ -677,7 +668,7 @@ window_manager_install() {
     25)
         case "${TMOE_PROOT}" in
         true | no)
-            echo "检测到您处于proot容器环境下，kwin可能无法正常运行"
+            printf "%s\n" "检测到您处于proot容器环境下，kwin可能无法正常运行"
             RETURN_TO_WHERE="window_manager_install"
             do_you_want_to_continue
             ;;
@@ -812,7 +803,7 @@ install_fvwm() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01='fvwm fvwm-icons'
         #REMOTE_DESKTOP_SESSION_01='fvwm'
-        if grep -Eq 'buster|bullseye|bookworm' /etc/os-release; then
+        if egrep -q 'buster|bullseye|bookworm' /etc/os-release; then
             DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
         else
             REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/f/fvwm-crystal/'
@@ -848,7 +839,7 @@ tmoe_virtual_machine_desktop() {
 ################
 configure_vnc_xstartup() {
     if [ -e "/etc/machine-id" ]; then
-        echo $(dbus-uuidgen) >"/etc/machine-id" 2>/dev/null
+        printf "%s\n" $(dbus-uuidgen) >"/etc/machine-id" 2>/dev/null
         mkdir -p /run/dbus /var/run/dbus
     fi
     mkdir -p ~/.vnc
@@ -902,8 +893,8 @@ configure_x11vnc_remote_desktop_session() {
     else
         x11vncpasswd
     fi
-    echo "x11vnc配置完成，您可以输${GREEN}startx11vnc${RESET}来重启服务"
-    echo "You can type ${GREEN}startx11vnc${RESET} to restart it."
+    printf "%s\n" "x11vnc配置完成，您可以输${GREEN}startx11vnc${RESET}来重启服务"
+    printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to restart it."
     #startx11vnc
 }
 ##########################
@@ -1003,7 +994,7 @@ touch_xfce4_terminal_rc() {
 xfce4_color_scheme() {
     if [ ! -e "/usr/share/xfce4/terminal/colorschemes/Monokai Remastered.theme" ]; then
         cd /usr/share/xfce4/terminal
-        echo "正在配置xfce4终端配色..."
+        printf "%s\n" "正在配置xfce4终端配色..."
         curl -Lo "colorschemes.tar.xz" 'https://gitee.com/mo2/xfce-themes/raw/terminal/colorschemes.tar.xz'
         tar -Jxvf "colorschemes.tar.xz"
     fi
@@ -1073,7 +1064,7 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
-    echo '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
     do_you_want_to_continue
 }
 ##########
@@ -1124,7 +1115,7 @@ install_xfce4_desktop() {
     fi
 
     #XFCE_WORK_SPACE_01=$(cat xfce4-desktop.xml | grep -n workspace1 | awk '{print $1}' | cut -d ':' -f 1)
-    #if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
+    #if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | egrep 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
     #	modify_the_default_xfce_wallpaper
     #fi
     if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
@@ -1243,7 +1234,7 @@ debian_download_mint_wallpaper() {
 debian_xfce_wallpaper() {
     if [ ! -e "${WALLPAPER_FILE}" ]; then
         #debian_download_xubuntu_xenial_wallpaper
-        echo "壁纸包将保存至/usr/share/backgrounds"
+        printf "%s\n" "壁纸包将保存至/usr/share/backgrounds"
         debian_download_mint_wallpaper
     fi
     modify_xfce_vnc0_wallpaper
@@ -1251,7 +1242,7 @@ debian_xfce_wallpaper() {
 #################
 check_mate_wallpaper_pack() {
     if [ ! -e "${WALLPAPER_FILE}" ]; then
-        echo "壁纸包将保存至/usr/share/backgrounds"
+        printf "%s\n" "壁纸包将保存至/usr/share/backgrounds"
         debian_download_ubuntu_mate_wallpaper
     fi
     modify_xfce_vnc0_wallpaper
@@ -1327,7 +1318,7 @@ auto_configure_xfce4_panel() {
 install_lxde_desktop() {
     REMOTE_DESKTOP_SESSION_01='lxsession'
     REMOTE_DESKTOP_SESSION_02='startlxde'
-    echo '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
     DEPENDENCY_01='lxde'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
@@ -1360,20 +1351,20 @@ install_lxde_desktop() {
 }
 ##########################
 arch_linux_mate_warning() {
-    echo "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET},并且处于${GREEN}proot容器${RESET}环境下！"
-    echo "mate-session在当前容器环境下可能会出现${RED}屏幕闪烁${RESET}的现象"
-    echo "按${GREEN}回车键${RESET}${BLUE}继续安装${RESET}"
-    echo "${YELLOW}Do you want to continue?[Y/l/x/q/n]${RESET}"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET},type n to return."
-    echo "Type q to install lxqt,type l to install lxde,type x to install xfce."
-    echo "按${GREEN}回车键${RESET}${RED}继续${RESET}安装mate，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
-    echo "输${YELLOW}q${RESET}安装lxqt,输${YELLOW}l${RESET}安装lxde,输${YELLOW}x${RESET}安装xfce"
+    printf "%s\n" "${RED}WARNING！${RESET}检测到您当前使用的是${YELLOW}Arch系发行版${RESET},并且处于${GREEN}proot容器${RESET}环境下！"
+    printf "%s\n" "mate-session在当前容器环境下可能会出现${RED}屏幕闪烁${RESET}的现象"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续安装${RESET}"
+    printf "%s\n" "${YELLOW}Do you want to continue?[Y/l/x/q/n]${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET},type n to return."
+    printf "%s\n" "Type q to install lxqt,type l to install lxde,type x to install xfce."
+    printf "%s\n" "按${GREEN}回车键${RESET}${RED}继续${RESET}安装mate，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "输${YELLOW}q${RESET}安装lxqt,输${YELLOW}l${RESET}安装lxde,输${YELLOW}x${RESET}安装xfce"
     read opt
     case $opt in
     y* | Y* | "") ;;
 
     n* | N*)
-        echo "skipped."
+        printf "%s\n" "skipped."
         standand_desktop_installation
         ;;
     l* | L*)
@@ -1386,7 +1377,7 @@ arch_linux_mate_warning() {
         install_xfce4_desktop
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         standand_desktop_installation
         #beta_features
         ;;
@@ -1397,14 +1388,14 @@ arch_linux_mate_warning() {
 install_mate_desktop() {
     REMOTE_DESKTOP_SESSION_01='mate-session'
     REMOTE_DESKTOP_SESSION_02='x-window-manager'
-    echo '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
     DEPENDENCY_01='mate'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         #apt-mark hold gvfs
         apt update
         apt install -y udisks2 2>/dev/null
         #if [ "${TMOE_PROOT}" = 'true' ]; then
-        #    echo "" >/var/lib/dpkg/info/udisks2.postinst
+        #    printf "%s\n" "" >/var/lib/dpkg/info/udisks2.postinst
         #fi
         #apt-mark hold udisks2
         dpkg --configure -a
@@ -1440,7 +1431,7 @@ install_lxqt_desktop() {
     REMOTE_DESKTOP_SESSION_01='startlxqt'
     REMOTE_DESKTOP_SESSION_02='lxqt-session'
     DEPENDENCY_01="lxqt"
-    echo '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1478,8 +1469,8 @@ kde_warning() {
   ║ 1 ║Debian sid  ║  ✓     ║    ✓   ║   ?     ║
   ║   ║            ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
-  ║   ║Ubuntu 20.10║        ║        ║         ║
-  ║ 2 ║ 20.04      ║  ✓     ║   ✓    ║   ?     ║
+  ║   ║            ║        ║        ║         ║
+  ║ 2 ║Ubuntu 20.10║  ✓     ║   ✓    ║   ?     ║
   ║---║------------║--------║--------║---------║
   ║   ║            ║        ║        ║         ║
   ║ 3 ║ArchLinux   ║   ✓    ║    ✓   ║   ✓     ║
@@ -1493,14 +1484,14 @@ ENDofTable
 
     case "${TMOE_PROOT}" in
     true | no)
-        echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！"
+        printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！"
         if ! grep -qi 'Bionic' /etc/os-release; then
-            echo "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
-            echo "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
-            echo "您也可以换用chroot容器,再安装本桌面。"
+            printf "%s\n" "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
+            printf "%s\n" "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
+            printf "%s\n" "您也可以换用chroot容器,再安装本桌面。"
         fi
         ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，尽情享受Plasma桌面带来的乐趣吧！" ;;
+    false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，尽情享受Plasma桌面带来的乐趣吧！" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
@@ -1511,7 +1502,7 @@ install_kde_plasma5_desktop() {
     REMOTE_DESKTOP_SESSION_01='startkde'
     REMOTE_DESKTOP_SESSION_02='startplasma-x11'
     DEPENDENCY_01="plasma-desktop"
-    echo '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1523,7 +1514,7 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01='@KDE'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="plasma-desktop xorg konsole sddm sddm-kcm"
-        echo "如需安装额外软件包，请手动输pacman -S plasma plasma-wayland-session kde-applications"
+        printf "%s\n" "如需安装额外软件包，请手动输pacman -S plasma plasma-wayland-session kde-applications"
         #kdebase
         #phonon-qt5
         #pacman -S --noconfirm sddm sddm-kcm
@@ -1551,14 +1542,14 @@ install_kde_plasma5_desktop() {
 }
 ##################
 tips_of_tiger_vnc_server() {
-    echo "在您使用虚拟机安装本桌面的过程中，当提示tiger/tightvnc时,请选择前者。若未弹出提示内容，则您可以前往本工具的tightvnc配置选项手动切换服务端，或使用x11vnc"
+    printf "%s\n" "在您使用虚拟机安装本桌面的过程中，当提示tiger/tightvnc时,请选择前者。若未弹出提示内容，则您可以前往本工具的tightvnc配置选项手动切换服务端，或使用x11vnc"
 }
 ##################
 tmoe_desktop_warning() {
     case "${TMOE_PROOT}" in
-    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}本桌面可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
-    no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}本桌面可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
+    false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    no) printf "%s\n" "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
@@ -1578,7 +1569,7 @@ install_ukui_desktop() {
     esac
 
     DEPENDENCY_01="ukui-session-manager"
-    echo '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1586,7 +1577,7 @@ install_ukui_desktop() {
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01='ukui'
     else
-        echo "Sorry,未适配${LINUX_DISTRO}"
+        printf "%s\n" "Sorry,未适配${LINUX_DISTRO}"
         press_enter_to_return
         ${RETURN_TO_WHERE}
     fi
@@ -1610,7 +1601,7 @@ install_budgie_desktop() {
     esac
 
     DEPENDENCY_01="budgie-desktop"
-    echo '即将为您安装思源黑体(中文字体)、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
     case ${LINUX_DISTRO} in
     debian)
         dpkg --configure -a
@@ -1619,7 +1610,7 @@ install_budgie_desktop() {
         ;;
     arch | void) DEPENDENCY_01='budgie-desktop' ;;
     *)
-        echo "Sorry,暂未适配${LINUX_DISTRO}"
+        printf "%s\n" "Sorry,暂未适配${LINUX_DISTRO}"
         press_enter_to_return
         ${RETURN_TO_WHERE}
         ;;
@@ -1632,9 +1623,9 @@ install_budgie_desktop() {
 ##############
 gnome3_warning() {
     case "${TMOE_PROOT}" in
-    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}GNOME3可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
-    no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}GNOME3可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
+    false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    no) printf "%s\n" "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
@@ -1656,7 +1647,7 @@ install_gnome3_desktop() {
         ;;
     esac
     DEPENDENCY_01="gnome"
-    echo '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1696,9 +1687,9 @@ install_gnome3_desktop() {
 ##################
 cinnamon_warning() {
     case "${TMOE_PROOT}" in
-    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}cinnamon可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
-    false) echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
-    no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}cinnamon可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
+    false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    no) printf "%s\n" "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
@@ -1717,7 +1708,7 @@ install_cinnamon_desktop() {
         ;;
     esac
     DEPENDENCY_01="cinnamon"
-    echo '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1745,9 +1736,9 @@ install_cinnamon_desktop() {
 ####################
 deepin_desktop_warning() {
     if [ "${ARCH_TYPE}" != "i386" ] && [ "${ARCH_TYPE}" != "amd64" ]; then
-        echo "非常抱歉，深度桌面不支持您当前的架构。"
-        echo "建议您在换用x86_64或i386架构的设备后，再来尝试。"
-        echo "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
+        printf "%s\n" "非常抱歉，深度桌面不支持您当前的架构。"
+        printf "%s\n" "建议您在换用x86_64或i386架构的设备后，再来尝试。"
+        printf "%s\n" "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
         arch_does_not_support
         tmoe_virtual_machine_desktop
     fi
@@ -1757,8 +1748,8 @@ dde_old_version() {
     if [ ! $(command -v gpg) ]; then
         DEPENDENCY_01="gpg"
         DEPENDENCY_02=""
-        echo "${GREEN} ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-        echo "即将为您安装gpg..."
+        printf "%s\n" "${GREEN} ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "即将为您安装gpg..."
         ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
     fi
     DEPENDENCY_01="deepin-desktop"
@@ -1778,7 +1769,7 @@ dde_old_version() {
     gpg --import deepin-keyring.gpg
     gpg --export --armor 209088E7 | apt-key add -
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
-    echo '即将为您安装思源黑体(中文字体)、dde和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装思源黑体(中文字体)、dde和tightvncserver等软件包。'
     dpkg --configure -a
     apt update
     auto_select_keyboard_layout
@@ -1810,7 +1801,7 @@ deepin_desktop_debian() {
     if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
         get_ubuntu_ppa_gpg_key
     else
-        SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+        SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
     fi
     ubuntu_dde_distro_code
     check_ubuntu_ppa_list
@@ -1860,15 +1851,15 @@ ENDofTable
 EOF
 
     case "${TMOE_PROOT}" in
-    true) echo "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用fedora chroot容器进行安装。" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用fedora chroot容器进行安装。" ;;
     false)
-        echo "检测到您当前可能处于${BLUE}chroot容器${RESET}环境"
+        printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境"
         case ${LINUX_DISTRO} in
-        redhat) echo "尽情享受dde带来的乐趣吧！" ;;
-        debian | *) echo "若无法运行，则请更换为fedora容器" ;;
+        redhat) printf "%s\n" "尽情享受dde带来的乐趣吧！" ;;
+        debian | *) printf "%s\n" "若无法运行，则请更换为fedora容器" ;;
         esac
         ;;
-    no) echo "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
+    no) printf "%s\n" "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
     do_you_want_to_continue
 }
@@ -1897,9 +1888,9 @@ install_deepin_desktop() {
         amd64) ;;
         *)
             #DEPENDENCY_01="deepin xorg"
-            #echo "如需安装额外组件，请手动输${GREEN}pacman -Syu${RESET} ${BLUE}deepin-extra lightdm lightdm-deepin-greeter${RESET}"
-            echo "${RED}WARNING！${RESET}检测到您使用的是arch系发行版，${ARCH_TYPE}的仓库可能缺失了deepin-desktop-base，建议您换用x64架构的设备。"
-            echo "若您需要在arm64容器中安装dde,则您可以换用fedora_arm64 chroot容器。"
+            #printf "%s\n" "如需安装额外组件，请手动输${GREEN}pacman -Syu${RESET} ${BLUE}deepin-extra lightdm lightdm-deepin-greeter${RESET}"
+            printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是arch系发行版，${ARCH_TYPE}的仓库可能缺失了deepin-desktop-base，建议您换用x64架构的设备。"
+            printf "%s\n" "若您需要在arm64容器中安装dde,则您可以换用fedora_arm64 chroot容器。"
             do_you_want_to_continue
             ;;
         esac
@@ -1925,7 +1916,7 @@ creat_update_icon_caches() {
 		#!/bin/sh
 		case "$1" in
 		    ""|-h|--help)
-		        echo "Usage: $0 directory [ ... ]"
+		        printf "%s\n" "Usage: $0 directory [ ... ]"
 		        exit 1
 		        ;;
 		esac
@@ -1936,7 +1927,7 @@ creat_update_icon_caches() {
 		    fi
 		    if [ -f "$dir"/index.theme ]; then
 		        if ! gtk-update-icon-cache --force --quiet "$dir"; then
-		            echo "WARNING: icon cache generation failed for $dir"
+		            printf "%s\n" "WARNING: icon cache generation failed for $dir"
 		        fi
 		    else
 		        rm -f "$dir"/icon-theme.cache
@@ -1963,9 +1954,8 @@ tmoe_desktop_beautification() {
         "2" "🎀 icon-theme:图标包(点缀出惊艳绝伦)" \
         "3" "🍹 wallpaper:壁纸(感受万物之息)" \
         "4" "↗ mouse cursor(璀璨夺目的鼠标指针)" \
-        "5" "⛈ conky(显示资源占用情况,还有...天气预报)" \
-        "6" "💫 dock栏(plank/docky)" \
-        "7" "🎇 compiz(如花火般绚烂)" \
+        "5" "💫 dock栏(plank)" \
+        "6" "🎇 compiz(如花火般绚烂)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -1975,10 +1965,10 @@ tmoe_desktop_beautification() {
     2) download_icon_themes ;;
     3) download_wallpapers ;;
     4) configure_mouse_cursor ;;
-    5) install_conky ;;
-    6) install_docky ;;
-    7) install_compiz ;;
+    5) install_docky ;;
+    6) install_compiz ;;
     esac
+    #        "5" "⛈ conky(显示资源占用情况,还有...天气预报)" \    5) install_conky ;;
     ##########################
     press_enter_to_return
     tmoe_desktop_beautification
@@ -1989,10 +1979,10 @@ configure_conky() {
     mkdir -p github
     cd github
     git clone --depth=1 https://github.com/zagortenay333/Harmattan.git || git clone --depth=1 git://github.com/zagortenay333/Harmattan.git
-    echo "进入${HOME}/github/Harmattan"
-    echo "执行bash preview"
-    echo 'To get more help info,please go to github.'
-    echo 'https://github.com/zagortenay333/Harmattan'
+    printf "%s\n" "进入${HOME}/github/Harmattan"
+    printf "%s\n" "执行bash preview"
+    printf '%s\n' 'To get more help info,please go to github.'
+    printf '%s\n' 'https://github.com/zagortenay333/Harmattan'
 }
 ###############
 install_conky() {
@@ -2006,7 +1996,7 @@ install_conky() {
 }
 ###########
 install_docky() {
-    DEPENDENCY_01="docky"
+    DEPENDENCY_01=""
     DEPENDENCY_02="plank"
     beta_features_quick_install
 }
@@ -2059,9 +2049,9 @@ local_theme_installer() {
     IMPORTANT_TIPS='您可以选择已经下载至本地的主题或图标压缩包'
     tmoe_file_manager
     if [ -z ${SELECTION} ]; then
-        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+        printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
     else
-        echo "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+        printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
         ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
         TMOE_THEME_ITEM=${TMOE_FILE_ABSOLUTE_PATH}
         tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u
@@ -2071,44 +2061,44 @@ local_theme_installer() {
 }
 #################
 check_theme_url() {
-    if [ "$(echo ${THEME_TMOE_URL} | grep -v 'xfce-look.org')" ]; then
-        echo "原始链接中不包含xfce-look，可能会出现错误。"
+    if [ "$(printf '%s\n' ${THEME_TMOE_URL} | grep -v 'xfce-look.org')" ]; then
+        printf "%s\n" "原始链接中不包含xfce-look，可能会出现错误。"
     fi
 
-    if [ "$(echo ${THEME_TMOE_URL} | grep 'XFCE/p')" ]; then
+    if [ "$(printf '%s\n' ${THEME_TMOE_URL} | grep 'XFCE/p')" ]; then
         TMOE_THEME_STATUS='检测到当前文件可能是图标包'
-    elif [ "$(echo ${THEME_TMOE_URL} | grep 'Gnome/p')" ]; then
+    elif [ "$(printf '%s\n' ${THEME_TMOE_URL} | grep 'Gnome/p')" ]; then
         TMOE_THEME_STATUS='检测到当前文件可能是Gnome图标包'
     else
         TMOE_THEME_STATUS='主题和图标包的解压路径不同，请手动判断'
     fi
 
     #当未添加http时，将自动修复。
-    if [ "$(echo ${THEME_TMOE_URL} | grep -E 'www')" ] && [ ! "$(echo ${THEME_TMOE_URL} | grep 'http')" ]; then
-        THEME_TMOE_URL=$(echo ${THEME_TMOE_URL} | sed 's@www@https://&@')
+    if [ "$(printf '%s\n' ${THEME_TMOE_URL} | egrep 'www')" ] && [ ! "$(printf '%s\n' ${THEME_TMOE_URL} | grep 'http')" ]; then
+        THEME_TMOE_URL=$(printf '%s\n' ${THEME_TMOE_URL} | sed 's@www@https://&@')
     fi
 }
 ###############
 xfce_theme_parsing() {
-    THEME_TMOE_URL=$(whiptail --inputbox "请输入主题链接Please enter a url\n例如https://www.gnome-look.org/p/1275087" 0 50 --title "Tmoe xfce&gnome theme parser" 3>&1 1>&2 2>&3)
+    THEME_TMOE_URL=$(whiptail --inputbox "请输入主题链接Please enter a url\n例如https://gnome-look.org/xx或https://xfce-look.org/xx" 0 50 --title "Tmoe xfce&gnome theme parser" 3>&1 1>&2 2>&3)
 
     if [ "$?" != "0" ]; then
         configure_theme
     elif [ -z ${THEME_TMOE_URL} ]; then
-        echo "请输入有效的url"
-        echo "Please enter a valid url."
+        printf "%s\n" "请输入有效的url"
+        printf "%s\n" "Please enter a valid url."
     else
         check_theme_url
     fi
 
     cd /tmp/
-    echo "正在下载网页文件.."
-    echo "Downloading index.html..."
+    printf "%s\n" "正在下载网页文件.."
+    printf "%s\n" "Downloading index.html..."
     aria2c --allow-overwrite=true -o .theme_index_cache_tmoe.html ${THEME_TMOE_URL}
 
-    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | grep -E 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
+    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | egrep 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
     THEME_LINE=$(cat .tmoe-linux_cache.01 | wc -l)
-    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | grep -E '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
+    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | egrep '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
     TMOE_THEME_FILE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
     rm -f .tmoe-linux_cache.0*
 
@@ -2120,7 +2110,7 @@ xfce_theme_parsing() {
     case ${TMOE_THEME_ITEM} in
     0 | "") configure_theme ;;
     esac
-    DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | grep -E 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
+    DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | egrep 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
     DOWNLOAD_PATH=/tmp
     aria2c_download_normal_file_s3
     tmoe_theme_installer
@@ -2137,9 +2127,9 @@ tmoe_theme_installer() {
         update-icon-caches ${EXTRACT_FILE_FOLDER} &
         cd /tmp
     fi
-    echo "解压完成，如需删除该主题，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
-    echo "是否${RED}删除${RESET}主题压缩包${BLUE}原文件？${RESET}"
-    echo "Do you want to delete the original compressed file？[Y/n]"
+    printf "%s\n" "解压完成，如需删除该主题，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
+    printf "%s\n" "是否${RED}删除${RESET}主题压缩包${BLUE}原文件？${RESET}"
+    printf "%s\n" "Do you want to delete the original compressed file？[Y/n]"
     do_you_want_to_continue
     rm -fv ${TMOE_THEME_ITEM} .theme_index_cache_tmoe.html
 }
@@ -2503,8 +2493,8 @@ download_wallpapers() {
 }
 ############
 configure_mouse_cursor() {
-    echo "chameleon:现代化鼠标指针主题"
-    echo 'Do you want to download it?'
+    printf "%s\n" "chameleon:现代化鼠标指针主题"
+    printf '%s\n' 'Do you want to download it?'
     do_you_want_to_continue
     download_chameleon_cursor_theme
 }
@@ -2569,7 +2559,7 @@ download_manjaro_pkg() {
     check_theme_folder
     mkdir -p /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
-    echo "${THEME_URL}"
+    printf "%s\n" "${THEME_URL}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
 }
 ############
@@ -2671,18 +2661,18 @@ download_kali_theme() {
     if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
         download_kali_themes_common
     else
-        echo "检测到kali_themes_common已下载，是否重新下载？"
+        printf "%s\n" "检测到kali_themes_common已下载，是否重新下载？"
         do_you_want_to_continue
         download_kali_themes_common
     fi
-    echo "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
+    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
     XFCE_ICON_NAME='Flat-Remix-Blue-Light'
     set_default_xfce_icon_theme
 }
 ##################
 download_win10x_theme() {
     if [ -d "/usr/share/icons/We10X-dark" ]; then
-        echo "检测到图标包已下载，是否重新下载？"
+        printf "%s\n" "检测到图标包已下载，是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
@@ -2696,9 +2686,9 @@ download_win10x_theme() {
     GITHUB_URL=$(cat url.txt)
     tar -Jxvf We10X.tar.xz -C /usr/share/icons 2>/dev/null
     update-icon-caches /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null &
-    echo ${GITHUB_URL}
+    printf "%s\n" ${GITHUB_URL}
     rm -rf /tmp/McWe10X
-    echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
+    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
     XFCE_ICON_NAME='We10X'
     set_default_xfce_icon_theme
 }
@@ -2710,7 +2700,7 @@ download_uos_icon_theme() {
     beta_features_quick_install
 
     if [ -d "/usr/share/icons/Uos" ]; then
-        echo "检测到Uos图标包已下载,是否继续？[Y/n]"
+        printf "%s\n" "检测到Uos图标包已下载,是否继续？[Y/n]"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
@@ -2724,16 +2714,16 @@ download_uos_icon_theme() {
     GITHUB_URL=$(cat url.txt)
     tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
     update-icon-caches /usr/share/icons/Uos 2>/dev/null &
-    echo ${GITHUB_URL}
+    printf "%s\n" ${GITHUB_URL}
     rm -rf /tmp/UosICONS
-    echo "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${TMOE_REMOVAL_COMMAND} deepin-icon-theme"
+    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${TMOE_REMOVAL_COMMAND} deepin-icon-theme"
     XFCE_ICON_NAME='Uos'
     set_default_xfce_icon_theme
 }
 #####################
 download_macos_mojave_theme() {
     if [ -d "/usr/share/themes/Mojave-dark" ]; then
-        echo "检测到主题已下载，是否重新下载？"
+        printf "%s\n" "检测到主题已下载，是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
@@ -2748,9 +2738,9 @@ download_macos_mojave_theme() {
     tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes 2>/dev/null
     tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons 2>/dev/null
     update-icon-caches /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null &
-    echo ${GITHUB_URL}
+    printf "%s\n" ${GITHUB_URL}
     rm -rf /tmp/McMojave
-    echo "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
+    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
     XFCE_ICON_NAME='McMojave-circle'
     set_default_xfce_icon_theme
 }
@@ -2782,12 +2772,12 @@ download_ukui_theme() {
         #rm -f ukui-themes.deb
         #apt install -y ukui-greeter
     else
-        echo '请前往外观设置手动修改图标'
+        printf '%s\n' '请前往外观设置手动修改图标'
     fi
     XFCE_ICON_NAME='ukui-icon-theme'
     set_default_xfce_icon_theme
     #update-icon-caches /usr/share/icons/ukui-icon-theme/ 2>/dev/null
-    #echo "安装完成，如需卸载，请手动输${TMOE_REMOVAL_COMMAND} ukui-themes"
+    #printf "%s\n" "安装完成，如需卸载，请手动输${TMOE_REMOVAL_COMMAND} ukui-themes"
 }
 #################################
 download_arch_breeze_adapta_cursor_theme() {
@@ -2840,9 +2830,9 @@ download_chameleon_cursor_theme() {
 ##########
 install_kali_undercover() {
     if [ -e "/usr/share/icons/Windows-10-Icons" ]; then
-        echo "检测到您已安装win10主题"
-        echo "如需移除，请手动输${TMOE_REMOVAL_COMMAND} kali-undercover;rm -rf /usr/share/icons/Windows-10-Icons"
-        echo "是否重新下载？"
+        printf "%s\n" "检测到您已安装win10主题"
+        printf "%s\n" "如需移除，请手动输${TMOE_REMOVAL_COMMAND} kali-undercover;rm -rf /usr/share/icons/Windows-10-Icons"
+        printf "%s\n" "是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
@@ -2887,11 +2877,10 @@ modify_remote_desktop_config() {
     ##################
     REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
         "您想要修改哪个远程桌面的配置？\nWhich remote desktop config do you want to modify?" 0 50 0 \
-        "1" "tightvnc/tigervnc:应用广泛" \
-        "2" "x11vnc:通过VNC来连接真实X桌面" \
-        "3" "X服务:(XSDL/VcXsrv)" \
-        "4" "XRDP:使用microsoft微软开发的rdp协议" \
-        "5" "Wayland:(测试版,取代X Window)" \
+        "1" "🐯 tightvnc/tigervnc:应用广泛" \
+        "2" "⚔️ x11vnc:通过VNC来连接真实X桌面" \
+        "3" "⚒️ X服务:(XSDL/VcXsrv)" \
+        "4" "⚛️ XRDP:使用microsoft微软开发的rdp协议" \
         "0" "Back to the main menu 返回主菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -2901,9 +2890,9 @@ modify_remote_desktop_config() {
     2) configure_x11vnc ;;
     3) modify_xsdl_conf ;;
     4) modify_xrdp_conf ;;
-    5) modify_xwayland_conf ;;
     esac
     #######################
+    #  "5" "Wayland:(测试版,取代X Window)" \    5) modify_xwayland_conf ;;
     press_enter_to_return
     modify_remote_desktop_config
 }
@@ -2942,18 +2931,18 @@ configure_x11vnc() {
 ############
 x11vnc_doc() {
     X11VNC_DOC_URL='http://www.karlrunge.com/x11vnc/x11vnc_opts.html'
-    echo "url: ${X11VNC_DOC_URL}"
+    printf "%s\n" "url: ${X11VNC_DOC_URL}"
     su "${CURRENT_USER_NAME}" -c "xdg-open ${X11VNC_DOC_URL}"
     man x11vnc Xvfb
 }
 ###########
 x11vnc_process_readme() {
-    echo "输startx11vnc启动x11vnc服务。"
-    echo "You can type ${GREEN}startx11vnc${RESET} to start it,type ${RED}stopvnc${RESET} to stop it."
-    echo "输stopvnc停止x11vnc"
-    echo "若您的音频服务端为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
-    echo "您亦可输${GREEN}pulseaudio --start${RESET}"
-    echo "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
+    printf "%s\n" "输startx11vnc启动x11vnc服务。"
+    printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to start it,type ${RED}stopvnc${RESET} to stop it."
+    printf "%s\n" "输stopvnc停止x11vnc"
+    printf "%s\n" "若您的音频服务端为Android系统，且发现音频服务无法启动,请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+    printf "%s\n" "您亦可输${GREEN}pulseaudio --start${RESET}"
+    printf "%s\n" "若您无法记住该命令，则只需输${GREEN}debian${RESET}"
 }
 ###################
 x11vnc_warning() {
@@ -3018,14 +3007,14 @@ x11vnc_onekey() {
 }
 #############
 remove_X11vnc() {
-    echo "正在停止x11vnc进程..."
-    echo "Stopping x11vnc..."
+    printf "%s\n" "正在停止x11vnc进程..."
+    printf "%s\n" "Stopping x11vnc..."
     stopvnc -x11
-    echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+    printf "%s\n" "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
     RETURN_TO_WHERE='configure_x11vnc'
     do_you_want_to_continue
     rm -rfv /usr/local/bin/startx11vnc
-    echo "即将为您卸载..."
+    printf "%s\n" "即将为您卸载..."
     ${TMOE_REMOVAL_COMMAND} x11vnc
 }
 ################
@@ -3035,36 +3024,36 @@ x11vnc_pulse_server() {
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         if grep -q '^export.*PULSE_SERVER' startx11vnc; then
             sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startx11vnc
         else
             sed -i "3 a\export PULSE_SERVER=$TARGET" startx11vnc
         fi
-        echo 'Your current PULSEAUDIO SERVER address has been modified.'
-        echo '您当前的音频地址已修改为'
-        echo $(grep 'PULSE_SERVER' startx11vnc | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
+        printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
+        printf '%s\n' '您当前的音频地址已修改为'
+        printf "%s\n" $(grep 'PULSE_SERVER' startx11vnc | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
     fi
 }
 ##################
 x11vnc_resolution() {
-    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
-        #echo "您当前的分辨率为$(cat $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')"
-        echo "您当前的分辨率为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
+        #printf "%s\n" "您当前的分辨率为$(sed -n p $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')"
+        printf "%s\n" "您当前的分辨率为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
     else
         #/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset &
         #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
         sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${TARGET}@" "$(command -v startx11vnc)"
-        echo 'Your current resolution has been modified.'
-        echo "您当前的分辨率已经修改为$(cat $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
-        echo "You can type startx11vnc to restart it."
+        printf '%s\n' 'Your current resolution has been modified.'
+        printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        printf "%s\n" "You can type startx11vnc to restart it."
     fi
 }
 ############################
@@ -3074,9 +3063,9 @@ check_vnc_resolution() {
 }
 modify_vnc_conf() {
     if [ ! -e /usr/local/bin/startvnc ]; then
-        echo "/usr/local/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-        echo '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
-        echo "${YELLOW}按回车键确认编辑。${RESET}"
+        printf "%s\n" "/usr/local/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+        printf '%s\n' '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
+        printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
         RETURN_TO_WHERE='modify_remote_desktop_config'
         do_you_want_to_continue
     fi
@@ -3086,16 +3075,16 @@ modify_vnc_conf() {
         if [ "$?" != "0" ]; then
             modify_other_vnc_conf
         elif [ -z "${TARGET}" ]; then
-            echo "请输入有效的数值"
-            echo "Please enter a valid value"
+            printf "%s\n" "请输入有效的数值"
+            printf "%s\n" "Please enter a valid value"
         else
             sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
             sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
             sed -i "s@geometry=.*@geometry=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
-            echo 'Your current resolution has been modified.'
+            printf '%s\n' 'Your current resolution has been modified.'
             check_vnc_resolution
-            echo "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
-            #echo $(sed -n \$p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+            printf "%s\n" "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
+            #printf "%s\n" $(sed -n \$p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
             #$p表示最后一行，必须用反斜杠转义。
             stopvnc 2>/dev/null
             press_enter_to_return
@@ -3104,14 +3093,14 @@ modify_vnc_conf() {
     else
         modify_other_vnc_conf
     fi
-    #echo "您当前的分辨率为${CURRENT_VNC_RESOLUTION}"
+    #printf "%s\n" "您当前的分辨率为${CURRENT_VNC_RESOLUTION}"
 }
 ############################
 modify_xsdl_conf() {
     if [ "${RETURN_TO_TMOE_MENU_01}" = 'modify_remote_desktop_config' ]; then
         if [ ! -f /usr/local/bin/startxsdl ]; then
-            echo "/usr/local/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-            echo '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
+            printf "%s\n" "/usr/local/bin/startxsdl is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+            printf '%s\n' '未检测到startxsdl,您可能尚未安装图形桌面，是否继续编辑。'
             RETURN_TO_WHERE='modify_remote_desktop_config'
             do_you_want_to_continue
         fi
@@ -3146,55 +3135,55 @@ modify_xsdl_conf() {
 disable_tmoe_qemu_remote_display() {
     if grep -q '^export.*DISPLAY' "${TMOE_XSDL_SCRIPT_PATH}"; then
         XSDL_DISPLAY_STATUS='检测到您已经启用了转发X显示画面的功能，打开qemu时，画面将转发至远程XServer'
-        echo ${XSDL_DISPLAY_STATUS}
-        echo "是否需要禁用?"
-        echo "Do you want to disable it"
+        printf "%s\n" ${XSDL_DISPLAY_STATUS}
+        printf "%s\n" "是否需要禁用?"
+        printf "%s\n" "Do you want to disable it"
         do_you_want_to_continue
         sed -i '/export DISPLAY=/d' ${TMOE_XSDL_SCRIPT_PATH}
-        echo "禁用完成"
+        printf "%s\n" "禁用完成"
     else
         XSDL_DISPLAY_STATUS='检测到您尚未启用转发X显示画面的功能，打开qemu时，将直接调用当前显示器的窗口。'
-        echo ${XSDL_DISPLAY_STATUS}
-        echo "是否需要启用？"
-        echo "Do you want to enable it"
+        printf "%s\n" ${XSDL_DISPLAY_STATUS}
+        printf "%s\n" "是否需要启用？"
+        printf "%s\n" "Do you want to enable it"
         do_you_want_to_continue
         sed -i "1 a\export DISPLAY=127.0.0.1:0" ${TMOE_XSDL_SCRIPT_PATH}
-        echo "启用完成"
+        printf "%s\n" "启用完成"
     fi
 }
 #################
 modify_startxsdl_manually() {
     nano ${TMOE_XSDL_SCRIPT_PATH}
-    echo 'See your current xsdl configuration information below.'
+    printf '%s\n' 'See your current xsdl configuration information below.'
 
     check_tmoe_xsdl_display_ip
-    echo "您当前的显示服务的ip地址为${CURRENT_DISPLAY_IP}"
+    printf "%s\n" "您当前的显示服务的ip地址为${CURRENT_DISPLAY_IP}"
 
-    #echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
+    #printf "%s\n" $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
 
     check_tmoe_xsdl_display_port
-    echo "您当前的显示端口为${CURRENT_DISPLAY_PORT}"
-    #echo $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
+    printf "%s\n" "您当前的显示端口为${CURRENT_DISPLAY_PORT}"
+    #printf "%s\n" $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
 
     check_tmoe_xsdl_pulse_audio_port
-    echo "您当前的音频(ip/端口)为${CURRENT_PULSE_AUDIO_PORT}"
-    #echo $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
+    printf "%s\n" "您当前的音频(ip/端口)为${CURRENT_PULSE_AUDIO_PORT}"
+    #printf "%s\n" $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
 }
 ######################
 check_tmoe_xsdl_display_ip() {
-    CURRENT_DISPLAY_IP=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 1)
+    CURRENT_DISPLAY_IP=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 1)
 }
 ######
 check_tmoe_vcxsrv_display_port() {
-    CURRENT_VSCSRV_DISPLAY_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'VCXSRV_DISPLAY_PORT=' | head -n 1 | cut -d '=' -f 2)
+    CURRENT_VSCSRV_DISPLAY_PORT=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'VCXSRV_DISPLAY_PORT=' | head -n 1 | cut -d '=' -f 2)
 }
 ######
 check_tmoe_xsdl_display_port() {
-    CURRENT_DISPLAY_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
+    CURRENT_DISPLAY_PORT=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
 }
 #######
 check_tmoe_xsdl_pulse_audio_port() {
-    CURRENT_PULSE_AUDIO_PORT=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
+    CURRENT_PULSE_AUDIO_PORT=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
 }
 #################
 modify_pulse_server_port() {
@@ -3203,16 +3192,16 @@ modify_pulse_server_port() {
     if [ "$?" != "0" ]; then
         modify_xsdl_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         #sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:$TARGET" "$(command -v startxsdl)"
-        PULSE_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export PULSE_SERVER' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
-        CURRENT_PULSE_IP=$(cat ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
+        PULSE_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export PULSE_SERVER' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+        CURRENT_PULSE_IP=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
         sed -i "${PULSE_LINE} c\export PULSE_SERVER=tcp:${CURRENT_PULSE_IP}:${TARGET}" ${TMOE_XSDL_SCRIPT_PATH}
-        echo 'Your current PULSE SERVER port has been modified.'
+        printf '%s\n' 'Your current PULSE SERVER port has been modified.'
         check_tmoe_xsdl_pulse_audio_port
-        echo "您当前的音频端口已修改为${CURRENT_PULSE_AUDIO_PORT}"
+        printf "%s\n" "您当前的音频端口已修改为${CURRENT_PULSE_AUDIO_PORT}"
     fi
 }
 ########################################################
@@ -3222,14 +3211,14 @@ modify_vcxsrv_display_port() {
     if [ "$?" != "0" ]; then
         modify_xsdl_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
-        DISPLAY_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'VCXSRV_DISPLAY_PORT=' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+        DISPLAY_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'VCXSRV_DISPLAY_PORT=' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
         sed -i "${DISPLAY_LINE} c\VCXSRV_DISPLAY_PORT=${TARGET}" "${TMOE_XSDL_SCRIPT_PATH}"
-        echo 'Your current DISPLAY port has been modified.'
+        printf '%s\n' 'Your current DISPLAY port has been modified.'
         check_tmoe_vcxsrv_display_port
-        echo "您当前的VcXsrv显示端口已经修改为${CURRENT_VSCSRV_DISPLAY_PORT}"
+        printf "%s\n" "您当前的VcXsrv显示端口已经修改为${CURRENT_VSCSRV_DISPLAY_PORT}"
         press_enter_to_return
         modify_xsdl_conf
     fi
@@ -3242,14 +3231,14 @@ modify_display_port() {
     if [ "$?" != "0" ]; then
         modify_xsdl_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
-        DISPLAY_LINE=$(cat "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export DISPLAY' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+        DISPLAY_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export DISPLAY' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
         sed -i "${DISPLAY_LINE} c\export DISPLAY=${CURRENT_DISPLAY_IP}:${TARGET}" "${TMOE_XSDL_SCRIPT_PATH}"
-        echo 'Your current DISPLAY port has been modified.'
+        printf '%s\n' 'Your current DISPLAY port has been modified.'
         check_tmoe_xsdl_display_port
-        echo "您当前的显示端口已经修改为${CURRENT_DISPLAY_PORT}"
+        printf "%s\n" "您当前的显示端口已经修改为${CURRENT_DISPLAY_PORT}"
         press_enter_to_return
         modify_xsdl_conf
     fi
@@ -3262,13 +3251,13 @@ modify_xsdl_ip_address() {
     if [ "$?" != "0" ]; then
         modify_xsdl_conf
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         sed -i "s/${CURRENT_DISPLAY_IP}/${TARGET}/g" "${TMOE_XSDL_SCRIPT_PATH}"
-        echo 'Your current ip address has been modified.'
+        printf '%s\n' 'Your current ip address has been modified.'
         check_tmoe_xsdl_display_ip
-        echo "您当前的显示服务的ip地址已经修改为${CURRENT_DISPLAY_IP}"
+        printf "%s\n" "您当前的显示服务的ip地址已经修改为${CURRENT_DISPLAY_IP}"
         press_enter_to_return
         modify_xsdl_conf
     fi
@@ -3276,16 +3265,16 @@ modify_xsdl_ip_address() {
 #################
 modify_xwayland_conf() {
     if [ ! -e "/etc/xwayland" ] && [ ! -L "/etc/xwayland" ]; then
-        echo "${RED}WARNING！${RESET}检测到wayland目录${YELLOW}不存在${RESET}"
-        echo "请先在termux里进行配置，再返回此处选择您需要配置的桌面环境"
-        echo "若您无root权限，则有可能配置失败！"
+        printf "%s\n" "${RED}WARNING！${RESET}检测到wayland目录${YELLOW}不存在${RESET}"
+        printf "%s\n" "请先在termux里进行配置，再返回此处选择您需要配置的桌面环境"
+        printf "%s\n" "若您无root权限，则有可能配置失败！"
         press_enter_to_return
         modify_remote_desktop_config
     fi
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "启动" --no-button 'Configure配置' --yesno "您是想要启动桌面还是配置wayland？" 9 50); then
         if [ ! -e "/usr/local/bin/startw" ] || [ ! $(command -v weston) ]; then
-            echo "未检测到启动脚本，请重新配置"
-            echo "Please reconfigure xwayland"
+            printf "%s\n" "未检测到启动脚本，请重新配置"
+            printf "%s\n" "Please reconfigure xwayland"
             sleep 2s
             xwayland_onekey
         fi
@@ -3326,7 +3315,7 @@ configure_xwayland() {
 }
 #####################
 remove_xwayland() {
-    echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+    printf "%s\n" "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
     #service xwayland restart
     RETURN_TO_WHERE='configure_xwayland'
     do_you_want_to_continue
@@ -3339,8 +3328,8 @@ remove_xwayland() {
         DEPENDENCY_02='xorg-x11-server-Xwayland'
     fi
     rm -fv /etc/xwayland/startw
-    echo "${YELLOW}已删除xwayland启动脚本${RESET}"
-    echo "即将为您卸载..."
+    printf "%s\n" "${YELLOW}已删除xwayland启动脚本${RESET}"
+    printf "%s\n" "即将为您卸载..."
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
 }
 ##############
@@ -3350,17 +3339,17 @@ xwayland_pulse_server() {
     if [ "$?" != "0" ]; then
         configure_xwayland
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         if grep '^export.*PULSE_SERVER' startw; then
             sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startw
         else
             sed -i "3 a\export PULSE_SERVER=$TARGET" startw
         fi
-        echo 'Your current PULSEAUDIO SERVER address has been modified.'
-        echo '您当前的音频地址已修改为'
-        echo $(grep 'PULSE_SERVER' startw | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
+        printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
+        printf '%s\n' '您当前的音频地址已修改为'
+        printf "%s\n" $(grep 'PULSE_SERVER' startw | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
         press_enter_to_return_configure_xwayland
     fi
 }
@@ -3460,8 +3449,8 @@ xwayland_onekey() {
 modify_xrdp_conf() {
     case "${TMOE_PROOT}" in
     true | no)
-        echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
-        echo "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}xrdp可以正常连接！"
+        printf "%s\n" "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
+        printf "%s\n" "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}xrdp可以正常连接！"
         RETURN_TO_WHERE='modify_remote_desktop_config'
         do_you_want_to_continue
         ;;
@@ -3477,8 +3466,8 @@ modify_xrdp_conf() {
 
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
         if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
-            echo "未检测到已备份的xrdp配置文件，请重新配置"
-            echo "Please reconfigure xrdp"
+            printf "%s\n" "未检测到已备份的xrdp配置文件，请重新配置"
+            printf "%s\n" "Please reconfigure xrdp"
             sleep 2s
             xrdp_onekey
         fi
@@ -3544,23 +3533,23 @@ check_xrdp_status() {
     if [ $(command -v service) ]; then
         service xrdp status | head -n 24
     else
-        #echo "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
+        #printf "%s\n" "Type ${GREEN}q${RESET} to ${BLUE}return.${RESET}"
         systemctl status xrdp | head -n 24
     fi
 }
 ####################
 remove_xrdp() {
     pkill xrdp
-    echo "正在停止xrdp进程..."
-    echo "Stopping xrdp..."
+    printf "%s\n" "正在停止xrdp进程..."
+    printf "%s\n" "Stopping xrdp..."
     service xrdp stop 2>/dev/null || systemctl stop xrdp
-    echo "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
+    printf "%s\n" "${YELLOW}This is a dangerous operation, you must press Enter to confirm${RESET}"
     #service xrdp restart
     RETURN_TO_WHERE='configure_xrdp'
     do_you_want_to_continue
     rm -fv /etc/xrdp/xrdp.ini /etc/xrdp/startwm.sh
-    echo "${YELLOW}已删除xrdp配置文件${RESET}"
-    echo "即将为您卸载..."
+    printf "%s\n" "${YELLOW}已删除xrdp配置文件${RESET}"
+    printf "%s\n" "即将为您卸载..."
     ${TMOE_REMOVAL_COMMAND} xrdp
 }
 ################
@@ -3650,7 +3639,7 @@ configure_remote_desktop_enviroment() {
 }
 ##############
 configure_xrdp_remote_desktop_session() {
-    echo "${REMOTE_DESKTOP_SESSION}" >~/.xsession
+    printf "%s\n" "${REMOTE_DESKTOP_SESSION}" >~/.xsession
     #touch ~/.session
     cd /etc/xrdp
     sed -i '/session/d' startwm.sh
@@ -3666,12 +3655,12 @@ configure_xrdp_remote_desktop_session() {
 	EnfOfStartWM
     sed -i "s@exec /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
     sed -i "s@exec /bin/sh /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
-    echo "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
-    echo "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
-    echo "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
-    echo 'If the configuration fails, please use the mandatory configuration function！'
-    echo "Press enter to return,type f to force congigure."
-    echo "按${GREEN}回车键${RESET}${RED}返回${RESET}，输${YELLOW}f${RESET}启用${BLUE}强制配置功能${RESET}"
+    printf "%s\n" "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
+    printf "%s\n" "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
+    printf "%s\n" "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
+    printf '%s\n' 'If the configuration fails, please use the mandatory configuration function！'
+    printf "%s\n" "Press enter to return,type f to force congigure."
+    printf "%s\n" "按${GREEN}回车键${RESET}${RED}返回${RESET}，输${YELLOW}f${RESET}启用${BLUE}强制配置功能${RESET}"
     read opt
     case $opt in
     y* | Y* | "") ;;
@@ -3679,7 +3668,7 @@ configure_xrdp_remote_desktop_session() {
         sed -i "s@/etc/X11/Xsession@${REMOTE_DESKTOP_SESSION}@g" startwm.sh
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         ${RETURN_TO_WHERE}
         #beta_features
         ;;
@@ -3698,14 +3687,14 @@ configure_xwayland_remote_desktop_session() {
 		export DISPLAY=:0
 		${REMOTE_DESKTOP_SESSION}
 	EndOFwayland
-    echo ${REMOTE_DESKTOP_SESSION}
+    printf "%s\n" ${REMOTE_DESKTOP_SESSION}
     chmod +x startw
-    echo "配置完成，请先打开sparkle app，点击Start"
-    echo "然后在GNU/Linux容器里输startw启动xwayland"
-    echo "在使用过程中，您可以按音量+调出键盘"
-    echo "执行完startw后,您可能需要经历长达30s的黑屏"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}"
-    echo "按${GREEN}回车键${RESET}执行${BLUE}startw${RESET}"
+    printf "%s\n" "配置完成，请先打开sparkle app，点击Start"
+    printf "%s\n" "然后在GNU/Linux容器里输startw启动xwayland"
+    printf "%s\n" "在使用过程中，您可以按音量+调出键盘"
+    printf "%s\n" "执行完startw后,您可能需要经历长达30s的黑屏"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}执行${BLUE}startw${RESET}"
     read
     startw
 }
@@ -3726,17 +3715,17 @@ xrdp_pulse_server() {
     if [ "$?" != "0" ]; then
         configure_xrdp
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         if grep ! '^export.*PULSE_SERVER' startwm.sh; then
             sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startwm.sh
             #sed -i "4 a\export PULSE_SERVER=$TARGET" startwm.sh
         fi
         sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startwm.sh
-        echo 'Your current PULSEAUDIO SERVER address has been modified.'
-        echo '您当前的音频地址已修改为'
-        echo $(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
+        printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
+        printf '%s\n' '您当前的音频地址已修改为'
+        printf "%s\n" $(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
         press_enter_to_return_configure_xrdp
     fi
 }
@@ -3790,7 +3779,7 @@ xrdp_onekey() {
     ####################
     if [ -e "/usr/bin/xfce4-session" ]; then
         if [ ! -e " ~/.xsession" ]; then
-            echo 'xfce4-session' >~/.xsession
+            printf '%s\n' 'xfce4-session' >~/.xsession
             touch ~/.session
             sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session /etc/X11/Xsession:g' /etc/xrdp/startwm.sh
         fi
@@ -3800,14 +3789,14 @@ xrdp_onekey() {
         sed -i '/test -x \/etc\/X11/i\export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
     fi
     ###########################
-    if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+    if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         if grep -q '172..*1' "/etc/resolv.conf"; then
-            echo "检测到您当前使用的可能是WSL2"
-            WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+            printf "%s\n" "检测到您当前使用的可能是WSL2"
+            WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
             sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" /etc/xrdp/startwm.sh
-            echo "已将您的音频服务ip修改为${WSL2IP}"
+            printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
         fi
-        echo '检测到您使用的是WSL,为防止与windows自带的远程桌面的3389端口冲突，请您设定一个新的端口'
+        printf '%s\n' '检测到您使用的是WSL,为防止与windows自带的远程桌面的3389端口冲突，请您设定一个新的端口'
         sleep 2s
     fi
     case ${TMOE_CHROOT} in
@@ -3828,32 +3817,32 @@ xrdp_restart() {
         /etc/init.d/xrdp restart
     fi
     check_xrdp_status
-    echo "您可以输${YELLOW}service xrdp stop${RESET}来停止进程"
-    echo "您当前的IP地址为"
+    printf "%s\n" "您可以输${YELLOW}service xrdp stop${RESET}来停止进程"
+    printf "%s\n" "您当前的IP地址为"
     ip -4 -br -c a | cut -d '/' -f 1
-    echo "端口号为${RDP_PORT}"
-    echo "正在为您启动xrdp服务，本机默认访问地址为localhost:${RDP_PORT}"
+    printf "%s\n" "端口号为${RDP_PORT}"
+    printf "%s\n" "正在为您启动xrdp服务，本机默认访问地址为localhost:${RDP_PORT}"
     TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
     echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${RDP_PORT}@"
     #echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
-    echo "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
-    echo "如需修改当前用户密码，请输passwd"
+    printf "%s\n" "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"
+    printf "%s\n" "如需修改当前用户密码，请输passwd"
     if [ "${LINUX_DISTRO}" = "arch" ]; then
-        echo "检测到您使用的是arch系发行版，您之后可以输xrdp来启动xrdp服务"
+        printf "%s\n" "检测到您使用的是arch系发行版，您之后可以输xrdp来启动xrdp服务"
         xrdp
     fi
-    if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-        echo '检测到您使用的是WSL，正在为您打开音频服务'
+    if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
+        printf '%s\n' '检测到您使用的是WSL，正在为您打开音频服务'
         export PULSE_SERVER=tcp:127.0.0.1
         if grep -q '172..*1' "/etc/resolv.conf"; then
-            echo "检测到您当前使用的可能是WSL2"
-            WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+            printf "%s\n" "检测到您当前使用的可能是WSL2"
+            WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
             export PULSE_SERVER=tcp:${WSL2IP}
-            echo "已将您的音频服务ip修改为${WSL2IP}"
+            printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
         fi
         cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
-        echo "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
+        printf "%s\n" "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
     fi
 }
 #################
@@ -3862,13 +3851,13 @@ xrdp_port() {
     RDP_PORT=$(cat xrdp.ini | grep 'port=' | head -n 1 | cut -d '=' -f 2)
     TARGET=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,不建议您将其设置为22、80、443或3389,检测到您当前的端口为${RDP_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
-        #echo "检测到您取消了操作"
+        #printf "%s\n" "检测到您取消了操作"
         ${RETURN_TO_WHERE}
-        #echo "检测到您取消了操作，请返回重试。"
+        #printf "%s\n" "检测到您取消了操作，请返回重试。"
         #press_enter_to_return_configure_xrdp
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         sed -i "s@port=${RDP_PORT}@port=${TARGET}@" xrdp.ini
         ls -l $(pwd)/xrdp.ini
@@ -3880,9 +3869,9 @@ xrdp_port() {
 xrdp_systemd() {
     case "${TMOE_PROOT}" in
     true | no)
-        echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
+        printf "%s\n" "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
         ;;
-    false) echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;
+    false) printf "%s\n" "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;
     esac
     cat <<-'EOF'
 		    systemd管理
@@ -3907,11 +3896,11 @@ xrdp_systemd() {
 }
 ###############
 xrdp_reset() {
-    echo "正在停止xrdp进程..."
-    echo "Stopping xrdp..."
+    printf "%s\n" "正在停止xrdp进程..."
+    printf "%s\n" "Stopping xrdp..."
     pkill xrdp
     service xrdp stop 2>/dev/null
-    echo "${YELLOW}WARNING！继续执行此操作将丢失xrdp配置信息！${RESET}"
+    printf "%s\n" "${YELLOW}WARNING！继续执行此操作将丢失xrdp配置信息！${RESET}"
     RETURN_TO_WHERE='configure_xrdp'
     do_you_want_to_continue
     rm -f /etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla /etc/polkit-1/localauthority.conf.d/02-allow-colord.conf
@@ -3943,7 +3932,7 @@ configure_startvnc() {
 ###############
 fix_non_root_permissions() {
     if [ ${HOME} != '/root' ]; then
-        echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${CURRENT_USER_FILE}的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${CURRENT_USER_FILE}的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "${CURRENT_USER_FILE}" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${CURRENT_USER_FILE}"
     fi
 }
@@ -3958,11 +3947,11 @@ which_vnc_server_do_you_prefer() {
         VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
         DEPENDENCY_02="tightvncserver"
     fi
-    #echo "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
-    echo "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
+    #printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
+    printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
     #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
     apt remove -y ${VNC_SERVER_BIN_NOW}
-    echo "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
+    printf "%s\n" "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
     ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
 }
 ###################
@@ -3972,8 +3961,8 @@ first_configure_startvnc() {
     true | no)
         if [ ${REMOVE_UDISK2} = 'true' ]; then
             if [ "${LINUX_DISTRO}" = 'debian' ]; then
-                if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
-                    echo "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
+                if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+                    printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
                     #umount .gvfs
                     apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
                 fi
@@ -3991,7 +3980,7 @@ first_configure_startvnc() {
     #else
     case ${LINUX_DISTRO} in
     debian)
-        if ! grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+        if ! egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
             which_vnc_server_do_you_prefer
         fi
         ;;
@@ -4000,16 +3989,16 @@ first_configure_startvnc() {
     ######################
     dpkg --configure -a 2>/dev/null
     if [ ${HOME} != '/root' ]; then
-        echo "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority、.config/xfce4以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority、.config/xfce4以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
         sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config/xfce4" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc" ".config/xfce4"
     fi
     #仅针对WSL修改语言设定
     #/etc/default/locale
-    #if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+    #if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
     #	if [ "${LANG}" != 'en_US.UTF-8' ]; then
     #grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
-    #grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || echo 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
+    #grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || printf '%s\n' 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
     #	fi
     #fi
     if [ ! -e "${HOME}/.vnc/passwd" ]; then
@@ -4043,11 +4032,11 @@ first_configure_startvnc() {
 
 	EndOFneko
     printf "$RESET"
-    echo '------------------------'
+    printf '%s\n' '------------------------'
     TMOE_HIGH_DPI='default'
     if [ -e "${TMOE_LINUX_DIR}/wm_size.txt" ]; then
-        RESOLUTION=$(cat ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2,$1}' | sed 's@ @x@')
-        HORIZONTAL_PIXELS=$(cat ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2}' | head -n 1)
+        RESOLUTION=$(sed -n p ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2,$1}' | sed 's@ @x@')
+        HORIZONTAL_PIXELS=$(sed -n p ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2}' | head -n 1)
         if ((${HORIZONTAL_PIXELS} >= 2340)); then
             TMOE_HIGH_DPI='true'
         else
@@ -4064,7 +4053,7 @@ first_configure_startvnc() {
     ##########
     if [ ! -z "${RESOLUTION}" ]; then
         if (whiptail --title "Is your resolution ${RESOLUTION}?" --yes-button 'YES' --no-button 'NO' --yesno "检测到您的宿主机为Android系统,且分辨率为${RESOLUTION}" 0 50); then
-            echo "Your resolution is ${RESOLUTION}"
+            printf "%s\n" "Your resolution is ${RESOLUTION}"
         else
             RESOLUTION='1440x720'
             TMOE_HIGH_DPI='default'
@@ -4119,38 +4108,38 @@ first_configure_startvnc() {
 		若您使用的是${BLUE}Android版${RESET}${YELLOW}Linux Deploy${RESET}或${YELLOW}Userland${RESET}，则您可以使用本脚本${RED}覆盖安装${RESET}图形界面。之后,您可以在${BLUE}Termux${RESET}上输${GREEN}debian-i${RESET}运行Tmoe-linux manager,查看${YELLOW}FAQ${RESET}并配置Linux Deploy的${BLUE}音频服务启动脚本。${RESET}
 		------------------------
 	EOF
-    echo "二："
-    echo "${YELLOW}关于VNC和X的启动说明${RESET}"
-    echo '------------------------'
-    echo "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
-    echo "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and server."
-    echo '------------------------'
-    echo "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}${BLUE}同时启动${RESET}vnc服务端和客户端。"
-    echo "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-    echo "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
-    echo "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
-    echo '------------------------'
-    echo '------------------------'
+    printf "%s\n" "二："
+    printf "%s\n" "${YELLOW}关于VNC和X的启动说明${RESET}"
+    printf '%s\n' '------------------------'
+    printf "%s\n" "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
+    printf "%s\n" "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and server."
+    printf '%s\n' '------------------------'
+    printf "%s\n" "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}${BLUE}同时启动${RESET}vnc服务端和客户端。"
+    printf "%s\n" "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
+    printf "%s\n" "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+    printf "%s\n" "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
+    printf '%s\n' '------------------------'
+    printf '%s\n' '------------------------'
     if [ "${HOME}" != "/root" ]; then
         cp -rpf ~/.vnc /root/
         chown -R root:root /root/.vnc
     fi
-    if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-        echo "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+    if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
+        printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
         cd "/mnt/c/Users/Public/Downloads"
         if grep -q '172..*1' "/etc/resolv.conf"; then
-            echo "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-            WSL2IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+            printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+            WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
             export PULSE_SERVER=${WSL2IP}
             export DISPLAY=${WSL2IP}:0
-            echo "已将您的X和音频服务ip修改为${WSL2IP}"
+            printf "%s\n" "已将您的X和音频服务ip修改为${WSL2IP}"
         else
-            echo "${YELLOW}检测到您使用的是WSL1(第一代win10的Linux子系统)${RESET}"
-            echo "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
-            echo "您也可以手动输startvnc来启动vnc服务"
+            printf "%s\n" "${YELLOW}检测到您使用的是WSL1(第一代win10的Linux子系统)${RESET}"
+            printf "%s\n" "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
+            printf "%s\n" "您也可以手动输startvnc来启动vnc服务"
         fi
         cd ./VcXsrv
-        echo "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
+        printf "%s\n" "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
         if [ ! -e "Firewall-pulseaudio.png" ]; then
             aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
         fi
@@ -4161,22 +4150,22 @@ first_configure_startvnc() {
             aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverhighDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
         fi
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverhighDPI.png" 2>/dev/null
-        echo "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
-        echo "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-        echo "${YELLOW}按回车键启动X${RESET}"
-        echo "${YELLOW}Press enter to startx${RESET}"
-        echo '运行过程中，您可以按Ctrl+C终止前台进程，输pkill -u $(whoami)终止当前用户所有进程'
+        printf "%s\n" "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
+        printf "%s\n" "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+        printf "%s\n" "${YELLOW}按回车键启动X${RESET}"
+        printf "%s\n" "${YELLOW}Press enter to startx${RESET}"
+        printf '%s\n' '运行过程中，您可以按Ctrl+C终止前台进程，输pkill -u $(whoami)终止当前用户所有进程'
         #上面那行必须要单引号
         read
         cd "/mnt/c/Users/Public/Downloads"
         /mnt/c/WINDOWS/system32/cmd.exe /c "start ."
         startxsdl &
     fi
-    echo "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
-    echo "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
+    printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
+    printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
     press_enter_to_continue
-    echo '------------------------'
-    echo '三：'
+    printf '%s\n' '------------------------'
+    printf '%s\n' '三：'
     x11vnc_warning
     configure_x11vnc_remote_desktop_session
     xfce4_x11vnc_hidpi_settings
@@ -4186,13 +4175,13 @@ first_configure_startvnc() {
 set_vnc_passwd() {
     TARGET_VNC_PASSWD=$(whiptail --inputbox "请设定6至8位VNC访问密码\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
-        echo "请重新输入密码"
-        echo "Please enter the password again."
+        printf "%s\n" "请重新输入密码"
+        printf "%s\n" "Please enter the password again."
         press_enter_to_return
         set_vnc_passwd
     elif [ -z "${TARGET_VNC_PASSWD}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
         press_enter_to_return
         set_vnc_passwd
     else
@@ -4201,39 +4190,39 @@ set_vnc_passwd() {
 }
 ###########
 check_vnc_passsword_length() {
-    PASSWORD_LENGTH=$(echo -n ${TARGET_VNC_PASSWD} | wc -L)
+    PASSWORD_LENGTH=$(printf '%s' ${TARGET_VNC_PASSWD} | wc -L)
     if ((${PASSWORD_LENGTH} > 8)); then
-        echo ${PASSWORD_LENGTH}
-        echo "密码超过${RED}8个字符${RESET}，请${BLUE}重新输入${RESET}"
-        echo "${RED}WARNING！${RESET}The maximum password length is ${RED}8 digits.${RESET}"
+        printf "%s\n" ${PASSWORD_LENGTH}
+        printf "%s\n" "密码超过${RED}8个字符${RESET}，请${BLUE}重新输入${RESET}"
+        printf "%s\n" "${RED}WARNING！${RESET}The maximum password length is ${RED}8 digits.${RESET}"
         press_enter_to_return
         set_vnc_passwd
     elif ((${PASSWORD_LENGTH} < 6)); then
-        echo ${PASSWORD_LENGTH}
-        echo "密码少于${RED}6个字符${RESET}，请${BLUE}重新输入${RESET}"
-        echo "${RED}WARNING！${RESET}The minimum password length is ${RED}6 digits.${RESET}"
+        printf "%s\n" ${PASSWORD_LENGTH}
+        printf "%s\n" "密码少于${RED}6个字符${RESET}，请${BLUE}重新输入${RESET}"
+        printf "%s\n" "${RED}WARNING！${RESET}The minimum password length is ${RED}6 digits.${RESET}"
         press_enter_to_return
         set_vnc_passwd
     else
         mkdir -p ${HOME}/.vnc
         cd ${HOME}/.vnc
-        echo "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
+        printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
         chmod 600 passwd
         if [ $? = 0 ]; then
-            echo "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
-            echo "You can type ${GREEN}startvnc${RESET} to restart it. "
-            echo "若您想要修改其它vnc选项，那么您可以输${BLUE}debian-i${RESET}"
-            echo "You can also type ${BLUE}debian-i${RESET} to start tmoe-linux tool."
+            printf "%s\n" "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
+            printf "%s\n" "You can type ${GREEN}startvnc${RESET} to restart it. "
+            printf "%s\n" "若您想要修改其它vnc选项，那么您可以输${BLUE}debian-i${RESET}"
+            printf "%s\n" "You can also type ${BLUE}debian-i${RESET} to start tmoe-linux tool."
         else
-            echo "密码设定失败，内部发生错误。"
+            printf "%s\n" "密码设定失败，内部发生错误。"
         fi
     fi
 }
 ###################
 tmoe_gui_dpi_01() {
-    echo "默认分辨率为${RESOLUTION}，窗口缩放大小为1x"
+    printf "%s\n" "默认分辨率为${RESOLUTION}，窗口缩放大小为1x"
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
-    if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+    if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
     fi
 }
@@ -4247,8 +4236,8 @@ tmoe_gui_dpi_02() {
 }
 ##########
 tmoe_gui_dpi_03() {
-    echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
-    echo "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
+    printf "%s\n" "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+    printf "%s\n" "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
 }
 ##########
 tmoe_gui_default_dpi() {
@@ -4261,14 +4250,14 @@ tmoe_gui_normal_dpi() {
 }
 #############
 xfce4_tightvnc_hidpi_settings() {
-    echo "Tmoe-linux tool将为您自动调整高分屏设定"
-    echo "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
+    printf "%s\n" "Tmoe-linux tool将为您自动调整高分屏设定"
+    printf "%s\n" "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
     #stopvnc >/dev/null 2>&1
     tmoe_gui_dpi_02
-    echo "已将默认分辨率修改为${RESOLUTION}，窗口缩放大小调整为2x"
+    printf "%s\n" "已将默认分辨率修改为${RESOLUTION}，窗口缩放大小调整为2x"
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
     #-n创建一个新属性，类型为int
-    if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+    if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
     else
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
@@ -4312,14 +4301,14 @@ enable_dbus_launch() {
 }
 #################
 fix_vnc_dbus_launch() {
-    echo "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的${BLUE}proot容器${RESET}上出现了兼容性问题。"
-    echo "注1：该操作在linux虚拟机及win10子系统上没有任何问题"
-    echo "注2：2020-0412更新的版本已加入检测功能，理论上不会再出现此问题。"
+    printf "%s\n" "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的${BLUE}proot容器${RESET}上出现了兼容性问题。"
+    printf "%s\n" "注1：该操作在linux虚拟机及win10子系统上没有任何问题"
+    printf "%s\n" "注2：2020-0412更新的版本已加入检测功能，理论上不会再出现此问题。"
     case "${TMOE_PROOT}" in
     true | no) ;;
     *)
-        echo "检测到您当前可能处于非proot环境下，是否继续修复？"
-        echo "如需重新配置vnc启动脚本，请更新debian-i后再覆盖安装gui"
+        printf "%s\n" "检测到您当前可能处于非proot环境下，是否继续修复？"
+        printf "%s\n" "如需重新配置vnc启动脚本，请更新debian-i后再覆盖安装gui"
         ;;
     esac
     do_you_want_to_continue
@@ -4336,51 +4325,51 @@ fix_vnc_dbus_launch() {
     else
         #for i in startxfce4 startlxde startlxqt mate-session startplasma gnome-session cinnamon budgie-desktop startdde; do
         #    if grep ${i} ${XSESSION_FILE}; then
-        #        echo "检测您当前的VNC配置为${i}，正在将dbus-launch加入至启动脚本中..."
+        #        printf "%s\n" "检测您当前的VNC配置为${i}，正在将dbus-launch加入至启动脚本中..."
         #    fi
         #done
         #unset i
         if grep 'startxfce4' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_02='startxfce4'
             REMOTE_DESKTOP_SESSION_01='xfce4-session'
         elif grep 'startlxde' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为lxde，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为lxde，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_02='startlxde'
             REMOTE_DESKTOP_SESSION_01='lxsession'
         elif grep 'startlxqt' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startlxqt'
             REMOTE_DESKTOP_SESSION_02='lxqt-session'
         elif grep 'mate-session' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为mate，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为mate，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='mate-session'
             REMOTE_DESKTOP_SESSION_02='x-windows-manager'
         elif grep 'startplasma' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为KDE Plasma5，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为KDE Plasma5，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startkde'
             REMOTE_DESKTOP_SESSION_02='startplasma-x11'
         elif grep 'gnome-session' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为GNOME3，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为GNOME3，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='gnome-session'
             REMOTE_DESKTOP_SESSION_02='gnome-panel'
         elif grep 'cinnamon' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为cinnamon，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为cinnamon，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='cinnamon-session'
             REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
         elif grep 'startdde' ${XSESSION_FILE}; then
-            echo "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
+            printf "%s\n" "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='startdde'
             REMOTE_DESKTOP_SESSION_02='dde-launcher'
         else
-            echo "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新debian-i后再覆盖安装gui"
+            printf "%s\n" "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新debian-i后再覆盖安装gui"
         fi
         enable_dbus_launch
     fi
 
-    echo "${YELLOW}修改完成，按回车键返回${RESET}"
-    echo "若无法修复，则请前往gitee.com/mo2/linux提交issue，并附上报错截图和详细说明。"
-    echo "还建议您附上cat /usr/local/bin/startxsdl 和 cat ${XSESSION_FILE} 的启动脚本截图"
+    printf "%s\n" "${YELLOW}修改完成，按回车键返回${RESET}"
+    printf "%s\n" "若无法修复，则请前往${TMOE_GIT_URL}提交issue，并附上报错截图和详细说明。"
+    printf "%s\n" "还建议您附上sed -n p /usr/local/bin/startxsdl 和 sed -n p ${XSESSION_FILE} 的启动脚本截图"
     press_enter_to_return
     ${RETURN_TO_WHERE}
 }

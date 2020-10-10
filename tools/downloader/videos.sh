@@ -27,7 +27,7 @@ download_videos() {
 ###########
 golang_annie() {
     if [ ! -e "/usr/local/bin/annie" ]; then
-        echo "检测到您尚未安装annie，将为您跳转至更新管理中心"
+        printf "%s\n" "检测到您尚未安装annie，将为您跳转至更新管理中心"
         upgrade_video_download_tool
         exit 0
     fi
@@ -40,42 +40,42 @@ golang_annie() {
 
     AnnieVideoURL=$(whiptail --inputbox "Please enter a url.请输入视频链接,例如https://www.bilibili.com/video/av号,或者直接输入avxxx(av号或BV号)。您可以在url前加-f参数来指定清晰度，-p来下载整个播放列表。Press Enter after the input is completed." 12 50 --title "请在地址栏内输入 视频链接" 3>&1 1>&2 2>&3)
 
-    # echo ${AnnieVideoURL} >> ${HOME}/.video_history
-    if [ "$(echo ${AnnieVideoURL} | grep 'b23.tv')" ]; then
-        AnnieVideoURL="$(echo ${AnnieVideoURL} | sed 's@b23.tv@www.bilibili.com/video@')"
-    elif [ "$(echo ${AnnieVideoURL} | grep '^BV')" ]; then
-        AnnieVideoURL="$(echo ${AnnieVideoURL} | sed 's@^BV@https://www.bilibili.com/video/&@')"
+    # printf "%s\n" ${AnnieVideoURL} >> ${HOME}/.video_history
+    if [ "$(printf '%s\n' ${AnnieVideoURL} | grep 'b23.tv')" ]; then
+        AnnieVideoURL="$(printf '%s\n' ${AnnieVideoURL} | sed 's@b23.tv@www.bilibili.com/video@')"
+    elif [ "$(printf '%s\n' ${AnnieVideoURL} | grep '^BV')" ]; then
+        AnnieVideoURL="$(printf '%s\n' ${AnnieVideoURL} | sed 's@^BV@https://www.bilibili.com/video/&@')"
     fi
     #当未添加http时，将自动修复。
-    if [ "$(echo ${AnnieVideoURL} | grep -E 'www|com')" ] && [ ! "$(echo ${AnnieVideoURL} | grep 'http')" ]; then
+    if [ "$(printf '%s\n' ${AnnieVideoURL} | egrep 'www|com')" ] && [ ! "$(printf '%s\n' ${AnnieVideoURL} | grep 'http')" ]; then
         ls
-        AnnieVideoURL=$(echo ${AnnieVideoURL} | sed 's@www@http://&@')
+        AnnieVideoURL=$(printf '%s\n' ${AnnieVideoURL} | sed 's@www@http://&@')
     fi
-    echo ${AnnieVideoURL}
-    echo "正在解析中..."
-    echo "Parsing ..."
-    #if [ ! $(echo ${AnnieVideoURL} | grep -E '^BV|^av|^http') ]; then
-    #	AnnieVideoURL=$(echo ${AnnieVideoURL} | sed 's@^@http://&@')
+    printf "%s\n" ${AnnieVideoURL}
+    printf "%s\n" "正在解析中..."
+    printf "%s\n" "Parsing ..."
+    #if [ ! $(printf '%s\n' ${AnnieVideoURL} | egrep '^BV|^av|^http') ]; then
+    #	AnnieVideoURL=$(printf '%s\n' ${AnnieVideoURL} | sed 's@^@http://&@')
     #fi
 
     annie -i ${AnnieVideoURL}
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        VideoCookies=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        VideoCookies=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
         annie -c ${VideoCookies} -d ${AnnieVideoURL}
     else
         annie -d ${AnnieVideoURL}
     fi
     ls -lAth ./ | head -n 3
-    echo "视频文件默认下载至$(pwd)"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "视频文件默认下载至$(pwd)"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
     download_videos
 }
 ###########
 python_you_get() {
     if [ ! $(command -v you-get) ]; then
-        echo "检测到您尚未安装you-get,将为您跳转至更新管理中心"
+        printf "%s\n" "检测到您尚未安装you-get,将为您跳转至更新管理中心"
         upgrade_video_download_tool
         exit 0
     fi
@@ -91,27 +91,27 @@ python_you_get() {
     if [ $exitstatus != 0 ]; then
         download_videos
     fi
-    echo ${AnnieVideoURL}
-    echo "正在解析中..."
-    echo "Parsing ..."
+    printf "%s\n" ${AnnieVideoURL}
+    printf "%s\n" "正在解析中..."
+    printf "%s\n" "Parsing ..."
     you-get -i ${AnnieVideoURL}
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        VideoCookies=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        VideoCookies=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
         you-get -c ${VideoCookies} -d ${AnnieVideoURL}
     else
         you-get -d ${AnnieVideoURL}
     fi
     ls -lAth ./ | head -n 3
-    echo "视频文件默认下载至$(pwd)"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "视频文件默认下载至$(pwd)"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
     download_videos
 }
 ############
 python_youtube_dl() {
     if [ ! $(command -v youtube-dl) ]; then
-        echo "检测到您尚未安装youtube-dl,将为您跳转至更新管理中心"
+        printf "%s\n" "检测到您尚未安装youtube-dl,将为您跳转至更新管理中心"
         upgrade_video_download_tool
         exit 0
     fi
@@ -127,20 +127,20 @@ python_youtube_dl() {
     if [ $exitstatus != 0 ]; then
         download_videos
     fi
-    echo ${AnnieVideoURL}
-    echo "正在解析中..."
-    echo "Parsing ..."
+    printf "%s\n" ${AnnieVideoURL}
+    printf "%s\n" "正在解析中..."
+    printf "%s\n" "Parsing ..."
     youtube-dl -e --get-description --get-duration ${AnnieVideoURL}
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        VideoCookies=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        VideoCookies=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
         youtube-dl --merge-output-format mp4 --all-subs --cookies ${VideoCookies} -v ${AnnieVideoURL}
     else
         youtube-dl --merge-output-format mp4 --all-subs -v ${AnnieVideoURL}
     fi
     ls -lAth ./ | head -n 3
-    echo "视频文件默认下载至$(pwd)"
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "视频文件默认下载至$(pwd)"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
     download_videos
 }
@@ -163,13 +163,13 @@ cookies_readme() {
 		请妥善保管好该文件及相关数据！
 	EndOFcookies
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        echo "您当前的cookie路径为$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
+        printf "%s\n" "您当前的cookie路径为$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
     fi
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
         COOKIESTATUS="检测到您已启用加载cookie功能"
-        CURRENT_COOKIE_PATH=$(cat ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        CURRENT_COOKIE_PATH=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
         CurrentCOOKIESpath="您当前的cookie路径为${CURRENT_COOKIE_PATH}"
     else
         COOKIESTATUS="检测到cookie处于禁用状态"
@@ -184,22 +184,22 @@ cookies_readme() {
         FILE_EXT_02='sqlite'
         where_is_tmoe_file_dir
         if [ -z ${SELECTION} ]; then
-            echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+            printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
         else
-            echo ${TMOE_FILE_ABSOLUTE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
-            echo "您当前的cookie文件路径为${TMOE_FILE_ABSOLUTE_PATH}"
+            printf "%s\n" ${TMOE_FILE_ABSOLUTE_PATH} >"${HOME}/.config/tmoe-linux/videos.cookiepath"
+            printf "%s\n" "您当前的cookie文件路径为${TMOE_FILE_ABSOLUTE_PATH}"
             ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
         fi
     else
         rm -f "${HOME}/.config/tmoe-linux/videos.cookiepath"
-        echo "已禁用加载cookie功能"
+        printf "%s\n" "已禁用加载cookie功能"
     fi
     press_enter_to_return
     download_videos
 }
 #########
 check_latest_video_download_tool_version() {
-    echo "正在${YELLOW}检测${RESET}${GREEN}版本信息${RESET}..."
+    printf "%s\n" "正在${YELLOW}检测${RESET}${GREEN}版本信息${RESET}..."
     cat <<-ENDofnote
 		如需${YELLOW}卸载${RESET}${BLUE}annie${RESET},请输${GREEN}rm /usr/local/bin/annie${RESET}
 		如需${YELLOW}卸载${RESET}${BLUE}you-get${RESET},请输${GREEN}pip3 uninstall you-get${RESET}
@@ -245,9 +245,9 @@ check_latest_video_download_tool_version() {
 		youtube-dl：github.com/ytdl-org/youtube-dl
 	ENDofTable
     #对原开发者iawia002的代码进行自动编译
-    echo "为避免加载超时，故${RED}隐藏${RESET}了部分软件的${GREEN}版本信息。${RESET}"
-    echo "annie将于每月1号凌晨4点自动编译并发布最新版"
-    echo "您可以按${GREEN}回车键${RESET}来${BLUE}获取更新${RESET}，亦可前往原开发者的仓库来${GREEN}手动下载${RESET}新版"
+    printf "%s\n" "为避免加载超时，故${RED}隐藏${RESET}了部分软件的${GREEN}版本信息。${RESET}"
+    printf "%s\n" "annie将于每月1号凌晨4点自动编译并发布最新版"
+    printf "%s\n" "您可以按${GREEN}回车键${RESET}来${BLUE}获取更新${RESET}，亦可前往原开发者的仓库来${GREEN}手动下载${RESET}新版"
 }
 ##################
 upgrade_video_download_tool() {
@@ -305,11 +305,11 @@ upgrade_video_download_tool() {
 
     else
         AnnieVersion='您尚未安装annie'
-        echo "检测到您${RED}尚未安装${RESET}annie，跳过${GREEN}版本检测！${RESET}"
+        printf "%s\n" "检测到您${RED}尚未安装${RESET}annie，跳过${GREEN}版本检测！${RESET}"
     fi
 
-    echo "按${GREEN}回车键${RESET}将同时更新${YELLOW}annie、you-get和youtube-dl${RESET}"
-    echo 'Press Enter to update'
+    printf "%s\n" "按${GREEN}回车键${RESET}将同时更新${YELLOW}annie、you-get和youtube-dl${RESET}"
+    printf '%s\n' 'Press Enter to update'
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
     DEPENDENCY_01=""
@@ -400,17 +400,17 @@ upgrade_video_download_tool() {
     you-get -V
     pip3 install youtube-dl -U -i https://pypi.tuna.tsinghua.edu.cn/simple
     youtube-dl -v 2>&1 | grep version
-    echo "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
-    echo "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
-    echo "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
-    echo "请问您是否需要将pip源切换为清华源[Y/n]?"
-    echo "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+    printf "%s\n" "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
+    printf "%s\n" "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
+    printf "%s\n" "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
+    printf "%s\n" "请问您是否需要将pip源切换为清华源[Y/n]?"
+    printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
     pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-    echo 'Press Enter to start annie'
-    echo "${YELLOW}按回车键启动annie。${RESET}"
+    printf '%s\n' 'Press Enter to start annie'
+    printf "%s\n" "${YELLOW}按回车键启动annie。${RESET}"
     read
     golang_annie
 }

@@ -28,7 +28,7 @@ image_compression_menu() {
 remove_image_compression_tool() {
     DEPENDENCY_01='ImageMagick imagemagick graphicsmagick-imagemagick-compat'
     DEPENDENCY_02='zenity'
-    echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
+    printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02}${RESET}"
     do_you_want_to_continue
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
 }
@@ -44,8 +44,8 @@ install_image_compression_tool() {
 ###############
 fix_pic_folder_permissions() {
     if [ "${HOME}" != '/root' ]; then
-        echo "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TMOE_COMPRESSION_FOLDER}"
-        echo "正在将${TMOE_COMPRESSION_FOLDER}的权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TMOE_COMPRESSION_FOLDER}"
+        printf "%s\n" "正在将${TMOE_COMPRESSION_FOLDER}的权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TMOE_COMPRESSION_FOLDER}
     fi
 }
@@ -63,12 +63,12 @@ tui_image_compression_tool() {
     IMPORTANT_TIPS='任意选择一张图片,该文件夹内的所有图片都将被压缩'
     tmoe_file_manager
     if [ -z ${SELECTION} ]; then
-        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+        printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
     else
         choose_the_pic_quality
         catimg ${TMOE_FILE_ABSOLUTE_PATH} 2>/dev/null
-        echo "该文件夹内的${RED}所有图片${RESET}（不包含子目录) 都将被压缩"
-        echo "压缩过的图片将保存至${FILE_PATH}/${TMOE_COMPRESSION_FOLDER}"
+        printf "%s\n" "该文件夹内的${RED}所有图片${RESET}（不包含子目录) 都将被压缩"
+        printf "%s\n" "压缩过的图片将保存至${FILE_PATH}/${TMOE_COMPRESSION_FOLDER}"
         do_you_want_to_continue
         compress_pics
     fi
@@ -82,7 +82,7 @@ compress_pics() {
     for TMOE_PICS in *; do
         convert +profile "*" -strip -quality ${TARGET} ${TMOE_PICS} ${TMOE_COMPRESSION_FOLDER}/${TMOE_PICS%%.*}.jpg
     done
-    echo "压缩完成。"
+    printf "%s\n" "压缩完成。"
     fix_pic_folder_permissions
     ls -lah ${FILE_PATH}/${TMOE_COMPRESSION_FOLDER}
     xdg-open ${TMOE_COMPRESSION_FOLDER} 2>/dev/null
@@ -132,18 +132,18 @@ gui_image_compression_tool() {
         fi
         xdg-open ${TMOE_COMPRESSION_FOLDER}
         (
-            echo "10"
-            echo "40"
+            printf "%s\n" "10"
+            printf "%s\n" "40"
             sleep 1
             for TMOE_PICS in *; do
                 convert +profile "*" -strip -quality ${TARGET} ${TMOE_PICS} ${TMOE_COMPRESSION_FOLDER}/${TMOE_PICS%%.*}.jpg
             done
-            echo "100"
+            printf "%s\n" "100"
             sleep 1
         ) | zenity --progress --title="正在压缩图片..." --text="正在保存至${TMOE_COMPRESSION_FOLDER}" --percentage=0 --auto-close
         fix_pic_folder_permissions
         ls -lah ${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}
-        echo "文件已经保存至${BLUE}${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}${RESET}"
+        printf "%s\n" "文件已经保存至${BLUE}${PIC_DIR}/${TMOE_COMPRESSION_FOLDER}${RESET}"
         ;;
     *) ${RETURN_TO_WHERE} ;;
     esac

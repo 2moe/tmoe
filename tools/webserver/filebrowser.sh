@@ -44,7 +44,7 @@ install_filebrowser() {
 
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
         if [ ! -e "/etc/filebrowser.db" ]; then
-            echo "检测到数据库文件不存在，2s后将为您自动配置服务。"
+            printf "%s\n" "检测到数据库文件不存在，2s后将为您自动配置服务。"
             sleep 2s
             filebrowser_onekey
         fi
@@ -117,8 +117,8 @@ configure_filebrowser() {
     fi
     ##############################
     if [ "${TMOE_OPTION}" == '8' ]; then
-        echo "正在停止服务进程..."
-        echo "Stopping..."
+        printf "%s\n" "正在停止服务进程..."
+        printf "%s\n" "Stopping..."
         pkill filebrowser
         service filebrowser stop 2>/dev/null || systemctl stop filebrowser
         service filebrowser status 2>/dev/null || systemctl status filebrowser
@@ -165,14 +165,14 @@ filebrowser_onekey() {
     TARGET_USERNAME=$(whiptail --inputbox "请输入自定义用户名,例如root,admin,kawaii,moe,neko等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "用户名无效，请返回重试。"
+        printf "%s\n" "用户名无效，请返回重试。"
         press_enter_to_return
         filebrowser_onekey
     fi
     TARGET_USERPASSWD=$(whiptail --inputbox "请设定管理员密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "密码包含无效字符，请返回重试。"
+        printf "%s\n" "密码包含无效字符，请返回重试。"
         press_enter_to_return
         filebrowser_onekey
     fi
@@ -209,47 +209,47 @@ filebrowser_onekey() {
 }
 ############
 filebrowser_restart() {
-    FILEBROWSER_PORT=$(cat /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
+    FILEBROWSER_PORT=$(sed -n p /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
     service filebrowser restart 2>/dev/null || systemctl restart filebrowser
     if [ "$?" != "0" ]; then
         pkill filebrowser
         nohup /usr/local/bin/filebrowser -d /etc/filebrowser.db 2>&1 >/var/log/filebrowser.log &
-        cat /var/log/filebrowser.log | tail -n 20
+        sed -n p /var/log/filebrowser.log | tail -n 20
     fi
     service filebrowser status 2>/dev/null || systemctl status filebrowser
     if [ "$?" = "0" ]; then
-        echo "您可以输${YELLOW}service filebrowser stop${RESET}来停止进程"
+        printf "%s\n" "您可以输${YELLOW}service filebrowser stop${RESET}来停止进程"
     else
-        echo "您可以输${YELLOW}pkill filebrowser${RESET}来停止进程"
+        printf "%s\n" "您可以输${YELLOW}pkill filebrowser${RESET}来停止进程"
     fi
-    echo "正在为您启动filebrowser服务，本机默认访问地址为localhost:${FILEBROWSER_PORT}"
+    printf "%s\n" "正在为您启动filebrowser服务，本机默认访问地址为localhost:${FILEBROWSER_PORT}"
     echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${FILEBROWSER_PORT}
     echo The WAN address 外网地址 $(curl -sL ip.cip.cc | head -n 1):${FILEBROWSER_PORT}
-    echo "${YELLOW}请使用浏览器打开上述地址${RESET}"
-    echo "Please use your browser to open the access address"
+    printf "%s\n" "${YELLOW}请使用浏览器打开上述地址${RESET}"
+    printf "%s\n" "Please use your browser to open the access address"
 }
 #############
 filebrowser_add_admin() {
     pkill filebrowser
     service filebrowser stop 2>/dev/null || systemctl stop filebrowser
-    echo "Stopping filebrowser..."
-    echo "正在停止filebrowser进程..."
-    echo "正在检测您当前已创建的用户..."
+    printf "%s\n" "Stopping filebrowser..."
+    printf "%s\n" "正在停止filebrowser进程..."
+    printf "%s\n" "正在检测您当前已创建的用户..."
     filebrowser -d /etc/filebrowser.db users ls
-    echo 'Press Enter to continue.'
-    echo "${YELLOW}按回车键继续。${RESET}"
+    printf '%s\n' 'Press Enter to continue.'
+    printf "%s\n" "${YELLOW}按回车键继续。${RESET}"
     read
     TARGET_USERNAME=$(whiptail --inputbox "请输入自定义用户名,例如root,admin,kawaii,moe,neko等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "用户名无效，操作取消"
+        printf "%s\n" "用户名无效，操作取消"
         press_enter_to_return
         configure_filebrowser
     fi
     TARGET_USERPASSWD=$(whiptail --inputbox "请设定管理员密码\n Please enter the password." 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "密码包含无效字符，请返回重试。"
+        printf "%s\n" "密码包含无效字符，请返回重试。"
         press_enter_to_return
         filebrowser_add_admin
     fi
@@ -259,11 +259,11 @@ filebrowser_add_admin() {
 }
 #################
 filebrowser_port() {
-    FILEBROWSER_PORT=$(cat /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
+    FILEBROWSER_PORT=$(sed -n p /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
     TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的端口为${FILEBROWSER_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "检测到您取消了操作，请返回重试。"
+        printf "%s\n" "检测到您取消了操作，请返回重试。"
         press_enter_to_return
         configure_filebrowser
     fi
@@ -272,18 +272,18 @@ filebrowser_port() {
 ############
 filebrowser_logs() {
     if [ ! -f "/var/log/filebrowser.log" ]; then
-        echo "日志文件不存在，您可能没有启用记录日志的功能"
-        echo "${YELLOW}按回车键启用。${RESET}"
+        printf "%s\n" "日志文件不存在，您可能没有启用记录日志的功能"
+        printf "%s\n" "${YELLOW}按回车键启用。${RESET}"
         read
         filebrowser -d /etc/filebrowser.db config set --log /var/log/filebrowser.log
     fi
     ls -lh /var/log/filebrowser.log
-    echo "按Ctrl+C退出日志追踪，press Ctrl+C to exit."
+    printf "%s\n" "按Ctrl+C退出日志追踪，press Ctrl+C to exit."
     tail -Fvn 35 /var/log/filebrowser.log
     #if [ $(command -v less) ]; then
-    # cat /var/log/filebrowser.log | less -meQ
+    # sed -n p /var/log/filebrowser.log | less -meQ
     #else
-    # cat /var/log/filebrowser.log
+    # sed -n p /var/log/filebrowser.log
     #fi
 
 }
@@ -292,7 +292,7 @@ filebrowser_language() {
     TARGET_LANG=$(whiptail --inputbox "Please enter the language format, for example en,zh-cn" 12 50 --title "LANGUAGE" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "检测到您取消了操作，请返回重试。"
+        printf "%s\n" "检测到您取消了操作，请返回重试。"
         press_enter_to_return
         configure_filebrowser
     fi
@@ -303,7 +303,7 @@ filebrowser_listen_ip() {
     TARGET_IP=$(whiptail --inputbox "Please enter the listen address, for example 0.0.0.0\n默认情况下无需修改。" 12 50 --title "listen" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "检测到您取消了操作，请返回重试。"
+        printf "%s\n" "检测到您取消了操作，请返回重试。"
         press_enter_to_return
         configure_filebrowser
     fi
@@ -313,9 +313,9 @@ filebrowser_listen_ip() {
 filebrowser_systemd() {
     case "${TMOE_PROOT}" in
     true | no)
-        echo "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
+        printf "%s\n" "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
         ;;
-    false) echo "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;
+    false) printf "%s\n" "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;
     esac
     cat <<-'EOF'
 		systemd管理
@@ -337,7 +337,7 @@ filebrowser_systemd() {
 }
 ###############
 filebrowser_reset() {
-    echo "${YELLOW}WARNING！继续执行此操作将丢失所有配置信息！${RESET}"
+    printf "%s\n" "${YELLOW}WARNING！继续执行此操作将丢失所有配置信息！${RESET}"
     RETURN_TO_WHERE='configure_filebrowser'
     do_you_want_to_continue
     rm -vf filebrowser.db

@@ -110,7 +110,7 @@ gnu_linux_env() {
 	TMOE_ICON_DIR="${TMOE_LINUX_DIR}/icons"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
-	TMOE_GIT_URL='github.com/2moe/tmoe-linux'
+	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
 	APPS_LNK_DIR='/usr/share/applications'
 	if [ ! -e "${APPS_LNK_DIR}" ]; then
 		mkdir -p ${APPS_LNK_DIR}
@@ -136,19 +136,23 @@ set_terminal_color() {
 	YELLOW=$(printf '\033[33m')
 	BLUE=$(printf '\033[34m')
 	BOLD=$(printf '\033[1m')
+	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
 }
 ######################
 check_release_version() {
-	if [ "${LINUX_DISTRO}" = "Android" ]; then
-		OSRELEASE="Android"
-	elif grep -q 'NAME=' /etc/os-release; then
-		OSRELEASE=$(cat /etc/os-release | grep -v 'PRETTY' | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-	elif grep -q 'ID=' /etc/os-release; then
-		OSRELEASE=$(cat /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
-	else
-		OSRELEASE=LINUX
-	fi
+	case "${LINUX_DISTRO}" in
+	Android) OSRELEASE="Android" ;;
+	*)
+		if grep -q 'NAME=' /etc/os-release; then
+			OSRELEASE=$(sed -n p /etc/os-release | grep -v 'PRETTY' | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+		elif grep -q 'ID=' /etc/os-release; then
+			OSRELEASE=$(sed -n p /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+		else
+			OSRELEASE=LINUX
+		fi
+		;;
+	esac
 }
 ##############
 check_win10x_icon() {
@@ -166,8 +170,8 @@ check_mouse_cursor() {
 }
 #############
 press_enter_to_continue() {
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}继续${RESET}"
+	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
+	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}"
 	read
 }
 #############################################
@@ -239,13 +243,13 @@ ubuntu_ppa_and_locale_gen() {
 tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(cat ${TMOE_LOCALE_FILE} | head -n 1)
-		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	else
 		TMOE_LANG="en_US.UTF-8"
-		TMOE_LANG_HALF=$(echo ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(echo ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
 	fi
 
 	case "${LINUX_DISTRO}" in
@@ -258,7 +262,7 @@ tmoe_locale_settings() {
 			cd /etc
 			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
 			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen" 2>/dev/null; then
-				echo '' >>locale.gen
+				printf "\n" >>locale.gen
 				#sed -i 's@^@#@g' locale.gen 2>/dev/null
 				#sed -i 's@##@#@g' locale.gen 2>/dev/null
 				sed -i "$ a ${TMOE_LANG} UTF-8" locale.gen
@@ -271,31 +275,31 @@ tmoe_locale_settings() {
 #####################
 check_linux_distro() {
 	set_terminal_color
-	if grep -Eq 'debian|ubuntu|deepin' "/etc/os-release"; then
+	if egrep -q 'debian|ubuntu|deepin' "/etc/os-release"; then
 		LINUX_DISTRO='debian'
 		TMOE_INSTALLATON_COMMAND='apt install -y'
 		TMOE_REMOVAL_COMMAND='apt purge -y'
 		TMOE_UPDATE_COMMAND='apt update'
 		if grep -q 'ubuntu' /etc/os-release; then
 			DEBIAN_DISTRO='ubuntu'
-		elif [ "$(cat /etc/issue | cut -c 1-4)" = "Kali" ]; then
+		elif [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Kali" ]; then
 			DEBIAN_DISTRO='kali'
 		elif grep -q 'deepin' /etc/os-release; then
 			DEBIAN_DISTRO='deepin'
 		fi
 		###################
-	elif grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
+	elif egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		TMOE_UPDATE_COMMAND='opkg update'
 		TMOE_INSTALLATON_COMMAND='opkg install'
 		TMOE_REMOVAL_COMMAND='opkg remove'
 		##################
-	elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" "/etc/os-release"; then
+	elif egrep -qi "Fedora|CentOS|Red Hat|redhat" "/etc/os-release"; then
 		LINUX_DISTRO='redhat'
 		TMOE_UPDATE_COMMAND='dnf update'
 		TMOE_INSTALLATON_COMMAND='dnf install -y --skip-broken'
 		TMOE_REMOVAL_COMMAND='dnf remove -y'
-		if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
+		if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
 		elif grep -q 'Fedora' "/etc/os-release"; then
 			REDHAT_DISTRO='fedora'
@@ -307,13 +311,13 @@ check_linux_distro() {
 		TMOE_INSTALLATON_COMMAND='apk add'
 		TMOE_REMOVAL_COMMAND='apk del'
 		######################
-	elif grep -Eq "Arch|Manjaro" '/etc/os-release' || grep -Eq "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
+	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
 		LINUX_DISTRO='arch'
 		TMOE_UPDATE_COMMAND='pacman -Syy'
 		TMOE_INSTALLATON_COMMAND='pacman -Syu --noconfirm'
 		TMOE_REMOVAL_COMMAND='pacman -Rsc'
 		######################
-	elif grep -Eq "gentoo|funtoo" "/etc/os-release"; then
+	elif egrep -q "gentoo|funtoo" "/etc/os-release"; then
 		LINUX_DISTRO='gentoo'
 		TMOE_INSTALLATON_COMMAND='emerge -avk'
 		TMOE_REMOVAL_COMMAND='emerge -C'
@@ -323,20 +327,20 @@ check_linux_distro() {
 		TMOE_INSTALLATON_COMMAND='zypper in -y'
 		TMOE_REMOVAL_COMMAND='zypper rm'
 		########################
-	elif [ "$(cat /etc/issue 2>/dev/null | cut -c 1-4)" = "Void" ]; then
+	elif [ "$(sed -n p /etc/issue 2>/dev/null | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
 		export LANG='en_US.UTF-8'
 		TMOE_INSTALLATON_COMMAND='xbps-install -S -y'
 		TMOE_REMOVAL_COMMAND='xbps-remove -R'
 		#########################
-	elif grep -Eq "Slackware" '/etc/os-release'; then
+	elif egrep -q "Slackware" '/etc/os-release'; then
 		LINUX_DISTRO='slackware'
 		TMOE_UPDATE_COMMAND='slackpkg update'
 		TMOE_INSTALLATON_COMMAND='slackpkg install'
 		TMOE_REMOVAL_COMMAND='slackpkg remove'
 		#########################
 	elif [ "$(uname -o)" = 'Android' ]; then
-		echo "${RED}不支持${RESET}${BLUE}Android${RESET}系统！"
+		printf "%s\n" "${RED}不支持${RESET}${BLUE}Android${RESET}系统！"
 		exit 1
 	fi
 }
@@ -383,7 +387,7 @@ check_dependencies() {
 				DEBIANVERSION="10"
 			fi
 			if ((${DEBIANVERSION} <= 9)); then
-				echo "检测到您的系统版本低于debian10，跳过安装catimg"
+				printf "%s\n" "检测到您的系统版本低于debian10，跳过安装catimg"
 			else
 				DEPENDENCIES="${DEPENDENCIES} catimg"
 			fi
@@ -454,7 +458,7 @@ check_dependencies() {
 	fi
 
 	if [ ! $(command -v pkill) ] && [ ! -e ${CONFIG_FOLDER}/non-install-procps ]; then
-		echo 'OpenWRT可能无此软件包' >${CONFIG_FOLDER}/non-install-procps
+		printf '%s\n' 'OpenWRT可能无此软件包' >${CONFIG_FOLDER}/non-install-procps
 		case "${LINUX_DISTRO}" in
 		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} procps" ;;
@@ -550,7 +554,7 @@ check_dependencies() {
 	if [ ! $(command -v ar) ]; then
 		if [ "${BUSYBOX_AR}" = 'false' ]; then
 			DEPENDENCY_01='binutils'
-			echo ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+			printf "%s\n" "${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}"
 			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
 			if [ ! $(command -v ar) ]; then
 				download_busybox_deb
@@ -559,11 +563,11 @@ check_dependencies() {
 		fi
 	fi
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-		WINDOWSDISTRO='WSL'
+		WINDOWS_DISTRO='WSL'
 	fi
 	##############
 	CurrentLANG=${LANG}
-	if [ ! $(echo ${LANG} | grep -E 'UTF-8|UTF8') ]; then
+	if [ ! $(printf '%s\n' ${LANG} | egrep 'UTF-8|UTF8') ]; then
 		export LANG=C.UTF-8
 	fi
 }
@@ -576,8 +580,8 @@ git_clone_tmoe_linux_repo() {
 }
 #################
 do_you_want_to_git_clone_tmoe_linux_repo() {
-	echo "Do you want to ${GREEN}git clone${RESET} this repo to ${BLUE}${TMOE_GIT_DIR}${RESET}?"
-	echo "您需要克隆本項目倉庫方能繼續使用"
+	printf "%s\n" "Do you want to ${GREEN}git clone${RESET} this repo to ${BLUE}${TMOE_GIT_DIR}${RESET}?"
+	printf "%s\n" "您需要克隆本項目倉庫方能繼續使用"
 	#RETURN_TO_WHERE='exit 1'
 	#do_you_want_to_continue
 	press_enter_to_continue
@@ -592,7 +596,7 @@ check_tmoe_git_folder_00() {
 ####################
 check_tmoe_git_folder() {
 	if [ ! -e ${TMOE_GIT_DIR}/.git ]; then
-		echo 'https://gitee.com/mo2/linux'
+		printf "%s\n" "https://github.com/2moe/tmoe-linux"
 		case ${TMOE_PROOT} in
 		true | false) git_clone_tmoe_linux_repo ;;
 		*) do_you_want_to_git_clone_tmoe_linux_repo ;;
@@ -617,9 +621,10 @@ download_busybox_deb() {
 #######################
 tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
+	RETURN_TO_MENU='tmoe_linux_tool_menu'
 	#窗口大小20 50 7
 	TMOE_OPTION=$(
-		whiptail --title "Tmoe-linux running on ${OSRELEASE}(202009)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+		whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202009)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 			"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 			"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -660,8 +665,8 @@ tmoe_linux_tool_menu() {
 }
 #########################
 press_enter_to_return() {
-	echo "Press ${GREEN}enter${RESET} to ${BLUE}return${RESET},press ${YELLOW}Ctrl+C${RESET} to ${RED}exit.${RESET}"
-	echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET},按${YELLOW}Ctrl+C${RESET}${RED}退出${RESET}。"
+	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return${RESET},press ${YELLOW}Ctrl+C${RESET} to ${RED}exit.${RESET}"
+	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET},按${YELLOW}Ctrl+C${RESET}${RED}退出${RESET}。"
 	read
 }
 #############
@@ -707,11 +712,10 @@ tmoe_docker_menu() {
 #####################
 tmoe_linux_tool_upgrade() {
 	check_tmoe_linux_desktop_link
-	if [ "${LINUX_DISTRO}" = "alpine" ]; then
-		wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	else
-		curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-	fi
+	case "${LINUX_DISTRO}" in
+	alpine) wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
+	*) curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
+	esac
 	#chmod +x /usr/local/bin/debian-i
 	chmod 777 /usr/local/bin/debian-i
 	check_tmoe_git_folder
@@ -729,10 +733,10 @@ tmoe_linux_tool_upgrade() {
 	if [ -e "/usr/local/bin/aria2-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/aria2.sh" /usr/local/bin
 	fi
-	#echo "${TMOE_GIT_URL}"
-	echo '(o゜▽゜)o☆  Thank you for using Tmoe-linux tool.'
-	echo "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	echo "${YELLOW}更新完成，按回车键返回。${RESET}"
+	#printf "%s\n" "${TMOE_GIT_URL}"
+	printf '%s\n' '(o゜▽゜)o☆  Thank you for using Tmoe-linux tool.'
+	printf "%s\n" "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+	printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}"
 	#bash /usr/local/bin/debian-i
 	read
 	source /usr/local/bin/debian-i

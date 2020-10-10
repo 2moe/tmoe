@@ -38,11 +38,11 @@ install_anbox() {
 		download_anbox_rom
 	fi
 	service anbox-container-manager start
-	echo "service anbox-container-manager start"
+	printf "%s\n" "service anbox-container-manager start"
 	service anbox-container-manager start || systemctl start anbox-container-manager
 	service anbox-container-manager status || systemctl status anbox-container-manager
-	echo 'anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity'
-	echo 'Do you want to start it?'
+	printf '%s\n' 'anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity'
+	printf '%s\n' 'Do you want to start it?'
 	do_you_want_to_continue
 	anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity
 }
@@ -56,7 +56,7 @@ download_anbox_rom() {
 	elif [ "${ARCH_TYPE}" = "arm64" ]; then
 		THE_LATEST_ISO_LINK="https://build.anbox.io/android-images/2017/08/04/android_1_arm64.img"
 	fi
-	echo ${THE_LATEST_ISO_LINK}
+	printf "%s\n" ${THE_LATEST_ISO_LINK}
 	do_you_want_to_continue
 	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }

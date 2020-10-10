@@ -1,6 +1,6 @@
 cd ~/gitee/linux
-cp -r debian.sh install.sh tool.sh zsh.sh manager.sh Licenses .mirror tools .config ~/github/github-linux
+cp -r .gitignore debian.sh install.sh tool.sh zsh.sh manager.sh Licenses share .mirror tools .config ~/github/github-linux
 cd ~/github/github-linux/.mirror
 ./github.sh
-#echo 'git commit -am '
+#printf '%s\n' 'git commit -am '
 code ~/github/github-linux

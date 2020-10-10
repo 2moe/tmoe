@@ -28,29 +28,29 @@ frequently_asked_questions() {
         notes_of_tmoe_sudo_02
         ;;
     3)
-        echo "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4"
-        echo "若您遇到其他权限问题，还可以手动执行chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}"
+        printf "%s\n" "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4"
+        printf "%s\n" "若您遇到其他权限问题，还可以手动执行chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}"
         do_you_want_to_continue
         chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4
         ;;
     4)
-        echo "无法连接至设置服务跟dbus有关，请选择FAQ中的vnc/x11闪退选项。"
-        echo "无法监控电池信息同样与dbus有关。"
-        echo "请注意,proot容器可能无权启动dbus-daemon --system,请跳过本题。"
-        echo "仅当TMOE_CHROOT变量的值为true时，即您使用的是tmoe-manager安装的chroot/docker容器，dbus-daemon才会自动启动。"
-        echo "若您使用的非tmoe-linux容器，则需要手动启动。"
-        echo "启动命令为sudo dbus-daemon --system --fork"
-        echo "您可以输入rm /run/dbus/pid来删除pid文件。"
+        printf "%s\n" "无法连接至设置服务跟dbus有关，请选择FAQ中的vnc/x11闪退选项。"
+        printf "%s\n" "无法监控电池信息同样与dbus有关。"
+        printf "%s\n" "请注意,proot容器可能无权启动dbus-daemon --system,请跳过本题。"
+        printf "%s\n" "仅当TMOE_CHROOT变量的值为true时，即您使用的是tmoe-manager安装的chroot/docker容器，dbus-daemon才会自动启动。"
+        printf "%s\n" "若您使用的非tmoe-linux容器，则需要手动启动。"
+        printf "%s\n" "启动命令为sudo dbus-daemon --system --fork"
+        printf "%s\n" "您可以输入rm /run/dbus/pid来删除pid文件。"
         ;;
     5)
-        echo "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"
+        printf "%s\n" "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} --allow-change-held-packages ^udisks2 ^gvfs
         ;;
     6)
-        echo "如果版本更新后登录出现闪退的情况，那么您可以输rm -rf ~/.config/tencent-qq/ 后重新登录。"
-        echo "${YELLOW}按回车键自动执行上述命令${RESET}"
+        printf "%s\n" "如果版本更新后登录出现闪退的情况，那么您可以输rm -rf ~/.config/tencent-qq/ 后重新登录。"
+        printf "%s\n" "${YELLOW}按回车键自动执行上述命令${RESET}"
         RETURN_TO_WHERE='frequently_asked_questions'
         do_you_want_to_continue
         rm -rvf ~/.config/tencent-qq/
@@ -62,8 +62,8 @@ frequently_asked_questions() {
         can_not_open_baidu_netdisk
         ;;
     9)
-        echo "您是否需要卸载mlocate和catfish"
-        echo "Do you want to remove mlocate and catfish?"
+        printf "%s\n" "您是否需要卸载mlocate和catfish"
+        printf "%s\n" "Do you want to remove mlocate and catfish?"
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} mlocate catfish
         apt autopurge 2>/dev/null
@@ -81,27 +81,27 @@ frequently_asked_questions() {
 }
 ##############
 notes_of_tmoe_sudo_01() {
-    echo 'deb系创建用户的说明'
-    echo "部分软件出于安全性考虑，禁止以root权限运行。权限越大，责任越大。若root用户不慎操作，将有可能破坏系统。"
-    echo "您可以使用以下命令来新建普通用户"
-    echo "#创建一个用户名为moe的新用户"
-    echo "${YELLOW}adduser moe${RESET}"
-    echo "#输入的密码是隐藏的，根据提示创建完成后，您可以在本工具内将该用户加入sudo用户组"
-    #echo "#将moe加入到sudo用户组"
-    #echo "${YELLOW}adduser moe sudo${RESET}"
-    echo "之后，若需要提权，则只需输sudo 命令"
-    echo "例如${YELLOW}sudo apt update${RESET}"
-    echo "--------------------"
-    echo "切换用户的说明"
-    echo "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
-    echo "亦可输${YELLOW}su - moe${RESET}或${YELLOW}sudo -iu moe${RESET}切换回moe用户"
-    echo "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
-    echo '--------------------'
-    echo 'arch系创建新用户的命令为useradd -m miku'
-    echo '其中miku为用户名'
-    echo '输passwd miku修改该用户密码'
-    echo '如需将其添加至sudo用户组，那么您可以使用本工具自带的sudo用户组管理功能(位于秘密花园的系统管理选项)'
-    echo '--------------------'
+    printf '%s\n' 'deb系创建用户的说明'
+    printf "%s\n" "部分软件出于安全性考虑，禁止以root权限运行。权限越大，责任越大。若root用户不慎操作，将有可能破坏系统。"
+    printf "%s\n" "您可以使用以下命令来新建普通用户"
+    printf "%s\n" "#创建一个用户名为moe的新用户"
+    printf "%s\n" "${YELLOW}adduser moe${RESET}"
+    printf "%s\n" "#输入的密码是隐藏的，根据提示创建完成后，您可以在本工具内将该用户加入sudo用户组"
+    #printf "%s\n" "#将moe加入到sudo用户组"
+    #printf "%s\n" "${YELLOW}adduser moe sudo${RESET}"
+    printf "%s\n" "之后，若需要提权，则只需输sudo 命令"
+    printf "%s\n" "例如${YELLOW}sudo apt update${RESET}"
+    printf "%s\n" "--------------------"
+    printf "%s\n" "切换用户的说明"
+    printf "%s\n" "您可以输${YELLOW}su - ${RESET}或${YELLOW}sudo su - ${RESET}亦或者是${YELLOW}sudo -i ${RESET}切换至root用户"
+    printf "%s\n" "亦可输${YELLOW}su - moe${RESET}或${YELLOW}sudo -iu moe${RESET}切换回moe用户"
+    printf "%s\n" "若需要以普通用户身份启动VNC，请先切换至普通用户，再输${YELLOW}startvnc${RESET}"
+    printf '%s\n' '--------------------'
+    printf '%s\n' 'arch系创建新用户的命令为useradd -m miku'
+    printf '%s\n' '其中miku为用户名'
+    printf '%s\n' '输passwd miku修改该用户密码'
+    printf '%s\n' '如需将其添加至sudo用户组，那么您可以使用本工具自带的sudo用户组管理功能(位于秘密花园的系统管理选项)'
+    printf '%s\n' '--------------------'
 }
 ##############
 notes_of_tmoe_sudo_02() {
@@ -120,9 +120,9 @@ EOF
 }
 ###########
 can_not_open_baidu_netdisk() {
-    #echo "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
-    echo "若无法打开，则请手动输rm -rf ~/baidunetdisk"
-    echo "按回车键自动执行${YELLOW}rm -vf ~/baidunetdisk/baidunetdiskdata.db${RESET}"
+    #printf "%s\n" "若无法打开，则请手动输rm -f ~/baidunetdisk/baidunetdiskdata.db"
+    printf "%s\n" "若无法打开，则请手动输rm -rf ~/baidunetdisk"
+    printf "%s\n" "按回车键自动执行${YELLOW}rm -vf ~/baidunetdisk/baidunetdiskdata.db${RESET}"
     RETURN_TO_WHERE='frequently_asked_questions'
     do_you_want_to_continue
     rm -vf ~/baidunetdisk/baidunetdiskdata.db
@@ -130,8 +130,8 @@ can_not_open_baidu_netdisk() {
 ##############
 fix_linux_utc_timezone() {
     timedatectl status
-    echo "是否需要将硬件时钟设置为本地时区,并开启NTP时间同步？"
-    echo "${GREEN}timedatectl set-local-rtc 1 --adjust-system-clock${RESET}"
+    printf "%s\n" "是否需要将硬件时钟设置为本地时区,并开启NTP时间同步？"
+    printf "%s\n" "${GREEN}timedatectl set-local-rtc 1 --adjust-system-clock${RESET}"
     do_you_want_to_continue
     #timedatectl set-local-rtc true
     #hwclock --localtime --systohc
@@ -143,17 +143,17 @@ fix_linux_utc_timezone() {
         DEPENDENCY_02='chrony'
         beta_features_quick_install
     fi
-    echo "正在与microsoft ntp时间同步服务器进行同步..."
-    echo "${GREEN}ntpdate time.windows.com${RESET}"
+    printf "%s\n" "正在与microsoft ntp时间同步服务器进行同步..."
+    printf "%s\n" "${GREEN}ntpdate time.windows.com${RESET}"
     ntpdate time.windows.com
-    echo "${GREEN}timedatectl set-ntp true${RESET}"
-    echo "If you want to close it,then enter ${GREEN}timedatectl set-ntp false${RESET}"
-    echo "正在配置时间自动同步服务..."
+    printf "%s\n" "${GREEN}timedatectl set-ntp true${RESET}"
+    printf "%s\n" "If you want to close it,then enter ${GREEN}timedatectl set-ntp false${RESET}"
+    printf "%s\n" "正在配置时间自动同步服务..."
     timedatectl set-ntp true
-    echo "${GREEN}systemctl enable chrony${RESET}"
+    printf "%s\n" "${GREEN}systemctl enable chrony${RESET}"
     systemctl enable chrony 2>/dev/null || systemctl enable chronyd 2>/dev/null || rc-update add chrony
-    echo "If you want to disable it,then enter ${GREEN}systemctl disable chrony${RESET}"
-    echo "${GREEN}chronyc sourcestats -v${RESET}"
+    printf "%s\n" "If you want to disable it,then enter ${GREEN}systemctl disable chrony${RESET}"
+    printf "%s\n" "${GREEN}chronyc sourcestats -v${RESET}"
     chronyc sourcestats -v
 }
 ##############
@@ -163,11 +163,11 @@ tty_chinese_code() {
             DEPENDENCY_01='fbterm'
             ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
         fi
-        echo '若启动失败，则请手动执行fbterm'
+        printf '%s\n' '若启动失败，则请手动执行fbterm'
         fbterm
     else
         export LANG='C.UTF-8'
-        echo "请手动执行${GREEN}export LANG=C.UTF-8${RESET}"
+        printf "%s\n" "请手动执行${GREEN}export LANG=C.UTF-8${RESET}"
     fi
 }
 ################

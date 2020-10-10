@@ -124,7 +124,7 @@ switch_scrcpy_device() {
     adb devices -l 2>&1 | sed '1d;$d' | awk '{print $5,$4,$3}' | sed 's@model:@@g' | sed 's@-@_@g' | sed 's@product:@-@g' | sed 's@:@-@g' | sed 's@ @-@g' >.tmoe-linux_cache.02
     TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
     cat .tmoe-linux_cache.0*
-    echo ${TMOE_ADB_DEVICE_LIST}
+    printf "%s\n" ${TMOE_ADB_DEVICE_LIST}
     TMOE_ADB_DEVICE_ITEM=$(whiptail --title "SCRCPY DEVICES" --menu \
         "您想要切换至哪个设备？\nWhich device do you want to switch?" 0 0 0 \
         ${TMOE_ADB_DEVICE_LIST} \
@@ -133,7 +133,7 @@ switch_scrcpy_device() {
     case ${TMOE_ADB_DEVICE_ITEM} in
     0 | "") configure_scrcpy ;;
     esac
-    echo "scrcpy -s ${TMOE_ADB_DEVICE_ITEM}"
+    printf "%s\n" "scrcpy -s ${TMOE_ADB_DEVICE_ITEM}"
     scrcpy -s ${TMOE_ADB_DEVICE_ITEM}
 }
 #############
@@ -174,22 +174,22 @@ scrcpy_connect_to_android_device() {
     if [ "$?" != "0" ]; then
         ${RETURN_TO_WHERE}
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
-        echo "检测到您未输入有效的adb地址，已自动调整为localhost:5555"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
+        printf "%s\n" "检测到您未输入有效的adb地址，已自动调整为localhost:5555"
     else
-        if [ ! $(echo ${TARGET} | grep ':') ]; then
+        if [ ! $(printf '%s\n' ${TARGET} | grep ':') ]; then
             TARGET=${TARGET}:5555
-            echo "检测到您未添加端口，已将端口修改为5555"
+            printf "%s\n" "检测到您未添加端口，已将端口修改为5555"
         fi
     fi
-    echo "正在通过ADB连接至Android设备..."
-    echo "${BLUE}adb connect ${TARGET}${RESET}"
-    echo "Connecting to adb device..."
+    printf "%s\n" "正在通过ADB连接至Android设备..."
+    printf "%s\n" "${BLUE}adb connect ${TARGET}${RESET}"
+    printf "%s\n" "Connecting to adb device..."
     adb connect ${TARGET}
     adb devices -l
-    echo "您可以在x11VNC下使用scrcpy来启动本应用"
-    echo "您是否需要立刻启动scrcpy?"
+    printf "%s\n" "您可以在x11VNC下使用scrcpy来启动本应用"
+    printf "%s\n" "您是否需要立刻启动scrcpy?"
     do_you_want_to_continue
     scrcpy
 }
@@ -310,7 +310,7 @@ install_bauh_store() {
 }
 #############
 install_snap_store() {
-    echo 'web store url:https://snapcraft.io/store'
+    printf '%s\n' 'web store url:https://snapcraft.io/store'
     DEPENDENCY_01="snapd"
     DEPENDENCY_02="gnome-software-plugin-snap"
     if [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -318,25 +318,25 @@ install_snap_store() {
         DEPENDENCY_02="snapd-xdg-open-git"
     fi
     beta_features_quick_install
-    echo '前往在线商店,获取更多应用'
-    echo 'https://snapcraft.io/store'
+    printf '%s\n' '前往在线商店,获取更多应用'
+    printf '%s\n' 'https://snapcraft.io/store'
     snap install snap-store
 }
 #############
 install_flatpak_store() {
     DEPENDENCY_01="flatpak"
     DEPENDENCY_02="gnome-software-plugin-flatpak"
-    echo 'web store url:https://flathub.org/'
+    printf '%s\n' 'web store url:https://flathub.org/'
     if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        echo 'gentoo用户请前往此处阅读详细说明'
-        echo 'https://github.com/fosero/flatpak-overlay'
+        printf '%s\n' 'gentoo用户请前往此处阅读详细说明'
+        printf '%s\n' 'https://github.com/fosero/flatpak-overlay'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_02="gnome-software-packagekit-plugin"
     fi
     beta_features_quick_install
     flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    echo '前往在线商店,获取更多应用'
-    echo 'https://flathub.org/apps'
+    printf '%s\n' '前往在线商店,获取更多应用'
+    printf '%s\n' 'https://flathub.org/apps'
 }
 #############
 tmoe_paint_app_menu() {
@@ -420,7 +420,7 @@ tmoe_r_language_menu() {
 #############
 check_rstudio_version() {
     THE_LATEST_ISO_LINK="$(curl -L ${REPO_URL} | grep ${GREP_NAME} | grep 'http' | sed -n 2p | cut -d '=' -f 2 | cut -d '"' -f 2)"
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_ISO_LINK} | sed 's@/@ @g' | awk -F ' ' '$0=$NF')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_ISO_LINK} | sed 's@/@ @g' | awk -F ' ' '$0=$NF')
     aria2c_download_file
 }
 ##############
@@ -497,7 +497,7 @@ install_mc_fm() {
     if [ ! $(command -v mc) ]; then
         DEPENDENCY_02="mc"
         beta_features_quick_install
-        echo "安装完成，您之后可以输mc启动"
+        printf "%s\n" "安装完成，您之后可以输mc启动"
     fi
     mc
 }
@@ -506,7 +506,7 @@ install_ranger_fm() {
     if [ ! $(command -v ranger) ]; then
         DEPENDENCY_02="ranger"
         beta_features_quick_install
-        echo "安装完成，您之后可以输ranger启动"
+        printf "%s\n" "安装完成，您之后可以输ranger启动"
     fi
     ranger
 }
@@ -635,7 +635,7 @@ download_ubuntu_ppa_deb_model_01() {
     cd /tmp/
     THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | head -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)"
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-    echo ${THE_LATEST_DEB_LINK}
+    printf "%s\n" ${THE_LATEST_DEB_LINK}
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
     apt install ./${THE_LATEST_DEB_VERSION}
     rm -fv ${THE_LATEST_DEB_VERSION}
@@ -644,11 +644,11 @@ download_ubuntu_ppa_deb_model_01() {
 install_catfish() {
     case "${TMOE_PROOT}" in
     true | no)
-        echo "检测到您处于proot环境下，可能无法成功创建索引数据库"
-        echo "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${TMOE_REMOVAL_COMMAND} mlocate catfish"
+        printf "%s\n" "检测到您处于proot环境下，可能无法成功创建索引数据库"
+        printf "%s\n" "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${TMOE_REMOVAL_COMMAND} mlocate catfish"
         do_you_want_to_continue
         if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-            echo "检测到您使用的ubuntu，您真的要继续安装吗？"
+            printf "%s\n" "检测到您使用的ubuntu，您真的要继续安装吗？"
             press_enter_to_continue
         fi
         ;;
@@ -667,15 +667,15 @@ install_gnome_logs() {
 thunar_nautilus_dolphion() {
     case "${TMOE_PROOT}" in
     true | no)
-        echo "检测到您当前使用的是${BLUE}proot容器${RESET}，不建议您安装${RED}dolphion${RESET}"
-        echo "dolphion在当前环境下可能无法正常启动"
-        echo "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"
+        printf "%s\n" "检测到您当前使用的是${BLUE}proot容器${RESET}，不建议您安装${RED}dolphion${RESET}"
+        printf "%s\n" "dolphion在当前环境下可能无法正常启动"
+        printf "%s\n" "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"
         ;;
     esac
     DEPENDENCY_02=""
-    echo "${YELLOW}Which file manager do you want to install?[t/n/d/r]${RESET}"
-    echo "请选择您需要安装的${BLUE}文件管理器${RESET}，输${YELLOW}t${RESET}安装${GREEN}thunar${RESET},输${YELLOW}n${RESET}安装${GREEN}nautilus${RESET}，输${YELLOW}d${RESET}安装${GREEN}dolphion${RESET}，输${YELLOW}r${RESET}${BLUE}返回${RESET}。"
-    echo "Type t to install thunar,type n to install nautils,type d to install dolphin,type r to return."
+    printf "%s\n" "${YELLOW}Which file manager do you want to install?[t/n/d/r]${RESET}"
+    printf "%s\n" "请选择您需要安装的${BLUE}文件管理器${RESET}，输${YELLOW}t${RESET}安装${GREEN}thunar${RESET},输${YELLOW}n${RESET}安装${GREEN}nautilus${RESET}，输${YELLOW}d${RESET}安装${GREEN}dolphion${RESET}，输${YELLOW}r${RESET}${BLUE}返回${RESET}。"
+    printf "%s\n" "Type t to install thunar,type n to install nautils,type d to install dolphin,type r to return."
     read opt
     case $opt in
     t* | T* | "")
@@ -691,7 +691,7 @@ thunar_nautilus_dolphion() {
         tmoe_file_browser_app_menu
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         beta_features
         #beta_features
         ;;
@@ -726,8 +726,8 @@ install_obs_studio() {
         fi
         #dnf install xorg-x11-drv-nvidia-cuda
     fi
-    echo "若安装失败，则请前往官网阅读安装说明。"
-    echo "url: https://obsproject.com/wiki/install-instructions#linux"
+    printf "%s\n" "若安装失败，则请前往官网阅读安装说明。"
+    printf "%s\n" "url: https://obsproject.com/wiki/install-instructions#linux"
     press_enter_to_return
     tmoe_other_app_menu
 }

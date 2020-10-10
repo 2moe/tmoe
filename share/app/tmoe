@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+#############################################
+tmoe_main() {
+	source_tmoe_env
+	case "$1" in
+	p* | proot) TMOE_CHROOT='false' ;;
+	c* | chroot) TMOE_CHROOT='true' ;;
+	zsh)
+		zsh-i
+		exit 0
+		;;
+	theme)
+		zshtheme
+		exit 0
+		;;
+	aria2)
+		aria2-i
+		exit 0
+		;;
+	i | -i)
+		debian-i
+		exit 0
+		;;
+	esac
+	case "$2" in
+	a | arch) DISTRO_NAME='arch' ;;
+	al | ap | alpine) DISTRO_NAME='alpine' ;;
+	alt) DISTRO_NAME='alt' ;;
+	apertis) DISTRO_NAME='apertis' ;;
+	arm | armbian) DISTRO_NAME='armbian' ;;
+	c | ce | cent | centos) DISTRO_NAME='centos' ;;
+	d | deb | debian) DISTRO_NAME='debian' ;;
+	devuan) DISTRO_NAME='devuan' ;;
+	f | fe | fedora) DISTRO_NAME='fedora' ;;
+	ft | funtoo) DISTRO_NAME='funtoo' ;;
+	g | gt | gentoo) DISTRO_NAME='gentoo' ;;
+	k | kali) DISTRO_NAME='kali' ;;
+	mi | mint) DISTRO_NAME='mint' ;;
+	m | mj | mjr | manjaro) DISTRO_NAME='manjaro' ;;
+	o | suse | opensuse) DISTRO_NAME='opensuse' ;;
+	ow | wrt | openwrt) DISTRO_NAME='openwrt' ;;
+	r | rasp | raspios) DISTRO_NAME='raspios' ;;
+	raspbian) DISTRO_NAME='raspbian' ;;
+	s | sl | slackware) DISTRO_NAME='slackware' ;;
+	u | ub* | ubuntu) DISTRO_NAME='ubuntu' ;;
+	v | void) DISTRO_NAME='void' ;;
+	esac
+	case "$3" in
+	20.10) DISTRO_CODE='groovy' ;;
+	20.04) DISTRO_CODE='focal' ;;
+	18.04) DISTRO_CODE='bionic' ;;
+	ro) DISTRO_CODE='rolling' ;;
+	s) DISTRO_CODE='sid' ;;
+	r) DISTRO_CODE='rolling' ;;
+	n | none) DISTRO_CODE='' ;;
+	x | amd64 | x64) ARCH_TYPE='amd64' ;;
+	a | aarch64 | arm64) ARCH_TYPE='arm64' ;;
+	h | arm | armhf) ARCH_TYPE='armhf' ;;
+	armel) ARCH_TYPE='armel' ;;
+	i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
+	p | ppc) ARCH_TYPE='ppc64el' ;;
+	s390x) ARCH_TYPE='s390x' ;;
+	m | mips) ARCH_TYPE='mipsel' ;;
+	risc*) ARCH_TYPE='riscv64' ;;
+	v | vnc) EXEC_PROGRAM='tigervnc' ;;
+	xs | xsdl | xserver) EXEC_PROGRAM='xserver' ;;
+	x11 | x11vnc) EXEC_PROGRAM='x11vnc' ;;
+	bash) TMOE_SHELL='/bin/bash' ;;
+	zsh) TMOE_SHELL='/bin/zsh' ;;
+	ash) TMOE_SHELL='/bin/ash' ;;
+	*) DISTRO_CODE="$3" ;;
+	esac
+
+	case "$4" in
+	x | amd64 | x64) ARCH_TYPE='amd64' ;;
+	a | aarch* | arm64) ARCH_TYPE='arm64' ;;
+	h | arm | armhf) ARCH_TYPE='armhf' ;;
+	armel) ARCH_TYPE='armel' ;;
+	i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
+	p | ppc*) ARCH_TYPE='ppc64el' ;;
+	s390*) ARCH_TYPE='s390x' ;;
+	m | mips*) ARCH_TYPE='mipsel' ;;
+	risc*) ARCH_TYPE='riscv64' ;;
+	v*) EXEC_PROGRAM='startvnc' ;;
+	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	bash) TMOE_SHELL='/bin/bash' ;;
+	zsh) TMOE_SHELL='/bin/zsh' ;;
+	ash) TMOE_SHELL='/bin/ash' ;;
+	esac
+	case "$5" in
+	v*) EXEC_PROGRAM='startvnc' ;;
+	x | xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	bash) TMOE_SHELL='/bin/bash' ;;
+	zsh) TMOE_SHELL='/bin/zsh' ;;
+	ash) TMOE_SHELL='/bin/ash' ;;
+	esac
+	case "${#}" in
+	0)
+		debian-i
+		exit 0
+		;;
+	esac
+	start_tmoe_container
+}
+#############
+source_tmoe_env() {
+	TMOE_CONTAINER_FORTUNE=true
+	TMOE_CONTAINER_HITOKOTO=true
+	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
+	source ${CONFIG_FOLDER}/hitokoto.conf
+	case ${TMOE_CONTAINER_FORTUNE} in
+	true)
+		if [ $(command -v fortune) ]; then
+			fortune
+		elif [ -e /usr/games/fortune ]; then
+			/usr/games/fortune
+		fi
+		;;
+	esac
+	case $(uname -o) in
+	Android)
+		TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
+		[[ ! $(command -v termux-wake-lock) ]] || termux-wake-lock
+		;;
+	*) TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux" ;;
+	esac
+	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
+	ENV_FILE="${TMOE_SHARE_DIR}/environment/manager_environment"
+	source ${ENV_FILE}
+	check_arch
+	ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
+	[[ ! -s "${ACROSS_ARCH_FILE}" ]] || ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
+}
+########
+start_tmoe_container() {
+	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
+	case ${TMOE_SHELL} in
+	"") rm -f ${DEFAULT_SHELL_CONF} 2>/dev/null ;;
+	*) printf "%s\n" "TMOE_SHELL=${TMOE_SHELL}" >${DEFAULT_SHELL_CONF} ;;
+	esac
+	pulseaudio --start 2>/dev/null &
+	case "${DISTRO_NAME}" in
+	"") ;;
+	*)
+		case ${DISTRO_CODE} in
+		"") DEBIAN_FOLDER=${DISTRO_NAME}_${ARCH_TYPE} ;;
+		*) DEBIAN_FOLDER=${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE} ;;
+		esac
+		;;
+	esac
+	tmoe_env_02 #source DEBIAN_CHROOT以及其它变量
+	if [ -e ${DEBIAN_CHROOT}/etc/os-release ]; then
+		sed -n p ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | awk -F '"' '{print $2}'
+	else
+		sed -n p ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
+	fi
+	case ${TMOE_CONTAINER_HITOKOTO} in
+	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
+	esac
+	[[ -z ${EXEC_PROGRAM} ]] || ${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+	${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+##########
+tmoe_main "$@"

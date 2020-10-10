@@ -38,8 +38,8 @@ stopx11vnc() {
 tmoe_vnc_env() {
     export USER="$(whoami)"
     export HOME="${HOME}"
-    #CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-    CURRENT_PORT=$(cat /usr/local/bin/startvnc | grep 'TMOE_VNC_DISPLAY_NUMBER=' | cut -d '=' -f 2 | head -n 1)
+    #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+    CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep 'TMOE_VNC_DISPLAY_NUMBER=' | cut -d '=' -f 2 | head -n 1)
 }
 ###########
 rm_vnc_lock() {
@@ -76,8 +76,8 @@ pkill_vnc() {
 #############
 vnc_server_has_been_stopped() {
     if [ ! "$(pgrep Xvnc)" ]; then
-        echo "已停止VNC服务！"
-        echo "VNC server has been terminated."
+        printf "%s\n" "已停止VNC服务！"
+        printf "%s\n" "VNC server has been terminated."
     fi
 }
 #################

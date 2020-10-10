@@ -79,11 +79,11 @@ tui_deb_batch_installer() {
     IMPORTANT_TIPS='任意选择一个deb包,该文件夹内的所有deb包都将被安装'
     tmoe_file_manager
     if [ -z ${SELECTION} ]; then
-        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+        printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
     else
         cd ${FILE_PATH}
         file ${SELECTION}
-        echo "${FILE_PATH}内的${RED}所有deb包${RESET}（不包含子目录) 都将被安装"
+        printf "%s\n" "${FILE_PATH}内的${RED}所有deb包${RESET}（不包含子目录) 都将被安装"
         do_you_want_to_continue
         tmoe_deb_batch_installer_02
     fi
@@ -97,13 +97,13 @@ deb_file_installer() {
         file ./${SELECTION} 2>/dev/null
         apt show ./${SELECTION}
         PACKAGE_NAME=$(apt show ./${SELECTION} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
-        echo "您是否需要安装此软件包？"
-        echo "Do you want to install it?"
+        printf "%s\n" "您是否需要安装此软件包？"
+        printf "%s\n" "Do you want to install it?"
         if [ $(command -v ${PACKAGE_NAME}) ]; then
-            echo "检测到您${RED}已安装${RESET}${BLUE}${PACKAGE_NAME}${RESET}"
-            echo "如需卸载,请输${RED}apt purge${RESET} ${BLUE}${PACKAGE_NAME}${RESET}"
-            echo "按${GREEN}回车键${RESET}${RED}重新安装${RESET}。"
-            echo "输${YELLOW}n${RESET}返回并进入${BLUE}卸载菜单${RESET}"
+            printf "%s\n" "检测到您${RED}已安装${RESET}${BLUE}${PACKAGE_NAME}${RESET}"
+            printf "%s\n" "如需卸载,请输${RED}apt purge${RESET} ${BLUE}${PACKAGE_NAME}${RESET}"
+            printf "%s\n" "按${GREEN}回车键${RESET}${RED}重新安装${RESET}。"
+            printf "%s\n" "输${YELLOW}n${RESET}返回并进入${BLUE}卸载菜单${RESET}"
         fi
         RETURN_TO_WHERE='remove_deb_package'
         do_you_want_to_continue
@@ -116,7 +116,7 @@ deb_file_installer() {
         if [ ! $(command -v dpkg) ]; then
             DEPENDENCY_01='dpkg'
             DEPENDENCY_02=''
-            echo ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+            printf "%s\n" "${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}"
             ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
             beta_features_install_completed
         fi
@@ -150,9 +150,9 @@ uncompress_deb_file() {
 }
 ########################
 delete_tmoe_deb_file() {
-    echo "请问是否需要${RED}删除${RESET}安装包文件"
+    printf "%s\n" "请问是否需要${RED}删除${RESET}安装包文件"
     ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
-    echo "Do you want to ${RED}delete${RESET} it?"
+    printf "%s\n" "Do you want to ${RED}delete${RESET} it?"
     do_you_want_to_continue
     rm -fv ${TMOE_FILE_ABSOLUTE_PATH}
 }
@@ -174,9 +174,9 @@ tmoe_deb_file_installer() {
     IMPORTANT_TIPS='若您选中的是已安装的软件包，则将自动检测卸载命令'
     tmoe_file_manager
     if [ -z ${SELECTION} ]; then
-        echo "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+        printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
     else
-        echo "您选择的deb文件为${TMOE_FILE_ABSOLUTE_PATH}"
+        printf "%s\n" "您选择的deb文件为${TMOE_FILE_ABSOLUTE_PATH}"
         ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
         deb_file_installer
     fi

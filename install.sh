@@ -28,16 +28,16 @@ mips*)
 	;;
 risc*)
 	#ARCH_TYPE="riscv"
-	echo "检测到您当前的架构为risc-v，将为您安装arm64版的容器。"
+	printf "%s\n" "检测到您当前的架构为risc-v，将为您安装arm64版的容器。"
 	ARCH_TYPE="arm64"
 	#此处改为arm64，
 	#2020-03-23加入riscv+qemu跨架构运行的测试版功能
-	#echo '暂不支持risc-v'
-	#echo 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
+	#printf "%s\n" '暂不支持risc-v'
+	#printf "%s\n" 'The RISC-V architecture you are using is too advanced and we do not support it yet.'
 	#exit 1
 	;;
 *)
-	echo "未知的架构 $(uname -m) unknown architecture"
+	printf "%s\n" "未知的架构 $(uname -m) unknown architecture"
 	exit 1
 	;;
 esac
@@ -95,7 +95,7 @@ if [ "$(uname -o)" = "Android" ]; then
 	TF_CARD_PATH="${HOME}/storage/external-1"
 	if [ -h "${TF_CARD_PATH}" ]; then
 		if [ ! -e "${TF_CARD_PATH}/path.txt" ]; then
-			echo "$(readlink ${TF_CARD_PATH})" >${TF_CARD_PATH}/path.txt
+			printf "%s\n" "$(readlink ${TF_CARD_PATH})" >${TF_CARD_PATH}/path.txt
 		fi
 	fi
 
@@ -120,13 +120,13 @@ if [ "$(uname -o)" = "Android" ]; then
 	fi
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
-		echo "正在安装相关依赖..."
+		printf "%s\n" "正在安装相关依赖..."
 		apt install -y ${DEPENDENCIES}
 	fi
 	cd ${HOME}/.termux || mkdir -p ~/.termux && cd ${HOME}/.termux
 	if [ ! -e "colors.properties" ]; then
-		echo "检测到termux配色文件不存在，正在自动生成..."
-		echo "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/colors.properties${RESET}"
+		printf "%s\n" "检测到termux配色文件不存在，正在自动生成..."
+		printf "%s\n" "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/colors.properties${RESET}"
 		# aria2c --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/colors.properties'
 		cat >colors.properties <<-'EndofMonokai'
 			# monokai.dark.colors
@@ -155,7 +155,7 @@ if [ "$(uname -o)" = "Android" ]; then
 
 	if [ ! -e "termux.properties" ]; then
 		echo -e "Detected that the termux.properties file does not exist.\n检测到termux属性文件不存在，正在为您下载..."
-		echo "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/termux.properties${RESET}"
+		printf "%s\n" "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/termux.properties${RESET}"
 		aria2c --allow-overwrite=true -o "termux.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/.termux/termux.properties'
 	fi
 	#REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
@@ -164,8 +164,8 @@ if [ "$(uname -o)" = "Android" ]; then
 		#if [ "${REMOTEP10KFONT}" != "${LOCALFONT}" ]; then
 		echo -e 'Detected that the font file does not exist.\n检测到字体文件不存在，正在自动配置字体...'
 		aria2c --allow-overwrite=true -o Iosevka.tar.xz 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
-		echo "只有少部分字体能显示powerlevel10k的特殊字符，例如Iosevka和MesloLGS"
-		echo "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/font.ttf${RESET}"
+		printf "%s\n" "只有少部分字体能显示powerlevel10k的特殊字符，例如Iosevka和MesloLGS"
+		printf "%s\n" "如需還原，則請輸${RED}rm${RESET} ${BLUE}${HOME}/.termux/font.ttf${RESET}"
 		#仓库为Termux-zsh/raw/p10k，批量重命名的时候要小心一点。
 		#mv -f font.ttf font.ttf.bak
 		tar -Jxvf Iosevka.tar.xz
@@ -208,7 +208,7 @@ fi
 
 if [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
 	LINUX_DISTRO='iSH'
-	echo "检测到您使用的是iOS系统"
+	printf "%s\n" "检测到您使用的是iOS系统"
 elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release' 2>/dev/null; then
 	LINUX_DISTRO='redhat'
 	if [ "$(cat /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
@@ -217,41 +217,41 @@ elif grep -Eqi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release' 2>/dev/null; the
 		REDHAT_DISTRO='fedora'
 	fi
 fi
-echo "                                        "
-echo "                 .::::..                "
-echo "      ::::rrr7QQJi::i:iirijQBBBQB.      "
-echo "      BBQBBBQBP. ......:::..1BBBB       "
-echo "      .BuPBBBX  .........r.  vBQL  :Y.  "
-echo "       rd:iQQ  ..........7L   MB    rr  "
-echo "        7biLX .::.:....:.:q.  ri    .   "
-echo "         JX1: .r:.r....i.r::...:.  gi5  "
-echo "         ..vr .7: 7:. :ii:  v.:iv :BQg  "
-echo "         : r:  7r:i7i::ri:DBr..2S       "
-echo "      i.:r:. .i:XBBK...  :BP ::jr   .7. "
-echo "      r  i....ir r7.         r.J:   u.  "
-echo "     :..X: .. .v:           .:.Ji       "
-echo "    i. ..i .. .u:.     .   77: si   1Q  "
-echo "   ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  "
-echo "  7  iK::r  . ii7r LJLrL1r7DPi iJ     r "
-echo "    .  ::.:   .  ri 5DZDBg7JR7.:r:   i. "
-echo "   .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  "
-echo "   QB rJ.:rvDE: .. ri uv . iir.7j r7.   "
-echo "  iBg ::.7251QZ. . :.      irr:Iu: r.   "
-echo "   QB  .:5.71Si..........  .sr7ivi:U    "
-echo "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
-echo "    jBBdD. :. ........:r... YB  Bi      "
-echo "       :7j1.                 :  :       "
+printf "%s\n" "                                        "
+printf "%s\n" "                 .::::..                "
+printf "%s\n" "      ::::rrr7QQJi::i:iirijQBBBQB.      "
+printf "%s\n" "      BBQBBBQBP. ......:::..1BBBB       "
+printf "%s\n" "      .BuPBBBX  .........r.  vBQL  :Y.  "
+printf "%s\n" "       rd:iQQ  ..........7L   MB    rr  "
+printf "%s\n" "        7biLX .::.:....:.:q.  ri    .   "
+printf "%s\n" "         JX1: .r:.r....i.r::...:.  gi5  "
+printf "%s\n" "         ..vr .7: 7:. :ii:  v.:iv :BQg  "
+printf "%s\n" "         : r:  7r:i7i::ri:DBr..2S       "
+printf "%s\n" "      i.:r:. .i:XBBK...  :BP ::jr   .7. "
+printf "%s\n" "      r  i....ir r7.         r.J:   u.  "
+printf "%s\n" "     :..X: .. .v:           .:.Ji       "
+printf "%s\n" "    i. ..i .. .u:.     .   77: si   1Q  "
+printf "%s\n" "   ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  "
+printf "%s\n" "  7  iK::r  . ii7r LJLrL1r7DPi iJ     r "
+printf "%s\n" "    .  ::.:   .  ri 5DZDBg7JR7.:r:   i. "
+printf "%s\n" "   .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  "
+printf "%s\n" "   QB rJ.:rvDE: .. ri uv . iir.7j r7.   "
+printf "%s\n" "  iBg ::.7251QZ. . :.      irr:Iu: r.   "
+printf "%s\n" "   QB  .:5.71Si..........  .sr7ivi:U    "
+printf "%s\n" "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
+printf "%s\n" "    jBBdD. :. ........:r... YB  Bi      "
+printf "%s\n" "       :7j1.                 :  :       "
 if [ -f "${HOME}/.RASPBIANARMHFDetectionFILE" ]; then
-	echo "检测到您选择的是树莓派系统"
-	echo "已将您的架构临时识别为armhf"
-	echo "若您需要安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${HOME}${RESET}"
+	printf "%s\n" "检测到您选择的是树莓派系统"
+	printf "%s\n" "已将您的架构临时识别为armhf"
+	printf "%s\n" "若您需要安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${HOME}${RESET}"
 	#将通过debian buster来间接安装raspbian buster
 	rm -f "${HOME}/.RASPBIANARMHFDetectionFILE"
 fi
 ###############
 cd ${HOME}
 if [ -d "${DEBIAN_FOLDER}" ]; then
-	echo "Detected that you have debian installed 检测到您已安装debian"
+	printf "%s\n" "Detected that you have debian installed 检测到您已安装debian"
 fi
 mkdir -p ~/${DEBIAN_FOLDER}
 ############
@@ -282,13 +282,13 @@ cat <<-EOF
 			-------------------
 EOF
 ############################
-echo "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
-echo "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
+printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
+printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}~/${DEBIAN_FOLDER}${RESET}"
 ##################
 if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
 	if [ "${ARCH_TYPE}" != 'mipsel' ]; then
-		echo "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
-		echo "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
+		printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+		printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
 		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 		if [ "${LINUX_DISTRO}" != 'iSH' ]; then
 			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
@@ -422,8 +422,8 @@ check_tar_xz_pv() {
 }
 #############
 uncompress_tar_xz_file() {
-	echo "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
-	echo "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
+	printf "%s\n" "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
+	printf "%s\n" "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
 	if [ "${ARCH_TYPE}" = "mipsel" ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
 		mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
@@ -586,7 +586,7 @@ cat_tmoe_chroot_script() {
 		    ##########
 			#arch-linux挂载自身
 			if ! detect_mount "${DEBIAN_CHROOT}/"; then
-			   #echo ''
+			   #printf "%s\n" ''
 		       ##arch-chroot#
 			   su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
 			   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
@@ -753,8 +753,8 @@ creat_chroot_startup_script() {
 			;;
 		esac
 	fi
-	echo "Creating chroot startup script"
-	echo "正在创建chroot容器启动脚本${PREFIX}/bin/debian "
+	printf "%s\n" "Creating chroot startup script"
+	printf "%s\n" "正在创建chroot容器启动脚本${PREFIX}/bin/debian "
 	#if [ -e "/storage/self/primary" ] || [ -e "/sdcard" ]; then
 	#mkdir -p /sdcard/Download ${DEBIAN_CHROOT}/root/sd ||
 	mkdir -p /sdcard
@@ -832,8 +832,8 @@ check_tmoe_proot_container_proc() {
 	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
 		TMOE_PROC_FILE=$(cat /proc/${i} 2>/dev/null)
 		if [ -z "${TMOE_PROC_FILE}" ]; then
-			echo "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
-			echo "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
+			printf "%s\n" "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
+			printf "%s\n" "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
 			sed -i "s@##${i}#@@" ${PREFIX}/bin/debian
 		fi
 	done
@@ -842,9 +842,9 @@ check_tmoe_proot_container_proc() {
 	FILE_01=version
 	TMOE_PROC_FILE=$(cat /proc/${FILE_01} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
-		echo "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
-		echo "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
-		echo "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+		printf "%s\n" "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
+		printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
+		printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
 		sed -i "s@#test01@@" ${PREFIX}/bin/debian
 	fi
 }
@@ -860,8 +860,8 @@ creat_proot_startup_script() {
 	#DEBIAN_CHROOT=~/debian-sid_arm64
 	#DEBIAN_FOLDER=debian-sid_arm64
 	#需要注释掉
-	echo "Creating proot startup script"
-	echo "正在创建proot容器启动脚本${PREFIX}/bin/debian "
+	printf "%s\n" "Creating proot startup script"
+	printf "%s\n" "正在创建proot容器启动脚本${PREFIX}/bin/debian "
 	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	#此处ENDOFPROOT不要加单引号
@@ -980,7 +980,7 @@ creat_proot_startup_script() {
 		        #test01set -- "--mount=${TMOE_PROC_PREFIX}.stat:/proc/stat" "\$@"
 		        #test02set -- "--mount=${TMOE_PROC_PREFIX}.version:/proc/version" "\$@"
 		        if [ -e "${TMOE_PROC_PATH}/uptime" ]; then
-					echo ""
+					printf "%s\n" ""
 		            #test04set -- "--mount=${TMOE_PROC_PATH}/bus:/proc/bus"  "\$@"
 		            ##buddyinfo#set -- "--mount=${TMOE_PROC_PATH}/buddyinfo:/proc/buddyinfo"  "\$@"
 		            ##cgroups#set -- "--mount=${TMOE_PROC_PATH}/cgroups:/proc/cgroups"  "\$@"
@@ -1044,7 +1044,7 @@ creat_proot_startup_script() {
 		}
 		main "\$@"
 	ENDOFPROOT
-	#echo "" 空行不是多余的
+	#printf "%s\n" "" 空行不是多余的
 }
 #########
 arch_mount_self() {
@@ -1126,28 +1126,28 @@ creat_linux_container_remove_script() {
 							EOF
 					##################
 		  cat /proc/mounts | grep ${DEBIAN_FOLDER}
-		  echo "移除容器前，请先确保您已停止容器的进程。"
+		  printf "%s\n" "移除容器前，请先确保您已停止容器的进程。"
 		  pkill -9 proot 2>/dev/null
 		  ps -e | grep proot
 		  ps -e | grep startvnc
 		  pgrep proot &> /dev/null
 			if [ "\$?" = "0" ]; then
-			    echo '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行,亦或者是重启设备'
+			    printf "%s\n" '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行,亦或者是重启设备'
 			fi
 			##########
 			ls -l ${DEBIAN_CHROOT}/root/termux/* 2>/dev/null
 			if [ "\$?" = "0" ]; then
-				echo 'WARNING！检测到/root/termux 无法强制卸载，您当前使用的可能是chroot容器'
-				echo "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
-				echo '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+				printf "%s\n" 'WARNING！检测到/root/termux 无法强制卸载，您当前使用的可能是chroot容器'
+				printf "%s\n" "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
+				printf "%s\n" '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 			fi
 			#############
 			for i in root/sd root/tf proc sys media/sd media/tf; do
 				if [ "$(ls ${DEBIAN_CHROOT}/\${i} 2>/dev/null)" ]; then
-					echo "检测到~/${DEBIAN_FOLDER}/\${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
-					echo "Please restart the device to unmount the chroot directory."
-					echo "Press enter to exit."
-					echo "\${YELLOW}按回车键退出。\${RESET} "
+					printf "%s\n" "检测到~/${DEBIAN_FOLDER}/\${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
+					printf "%s\n" "Please restart the device to unmount the chroot directory."
+					printf "%s\n" "Press enter to exit."
+					printf "%s\n" "\${YELLOW}按回车键退出。\${RESET} "
 					read
 					exit 1
 				fi
@@ -1155,12 +1155,12 @@ creat_linux_container_remove_script() {
 			unset i
 			##########
 			cd ${HOME}
-		    #echo '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
-		    #echo "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
-			echo 'Detecting debian system size... 正在检测debian system占用空间大小'
+		    #printf "%s\n" '检测到chroot容器正在运行，您可以输pkill -u $(whoami) 来终止所有进程'    
+		    #printf "%s\n" "若容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+			printf "%s\n" 'Detecting debian system size... 正在检测debian system占用空间大小'
 		    ${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
-			echo "Do you want to remove it?[Y/n]"
-			echo "\${YELLOW}按回车键确认移除 Press enter to remove.\${RESET} "
+			printf "%s\n" "Do you want to remove it?[Y/n]"
+			printf "%s\n" "\${YELLOW}按回车键确认移除 Press enter to remove.\${RESET} "
 		    pkill -9 proot 2>/dev/null
 			read opt
 			case \$opt in
@@ -1170,33 +1170,33 @@ creat_linux_container_remove_script() {
 		    sed -i '/alias debian=/d' ${PREFIX}/etc/profile
 			sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile
 			source profile >/dev/null 2>&1
-			echo 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
-		   echo '移除完成，如需卸载aria2,请手动输apt remove aria2'
-		   echo "Deleted已删除" ;;
-				n*|N*) echo "skipped."
+			printf "%s\n" 'The debian system has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
+		   printf "%s\n" '移除完成，如需卸载aria2,请手动输apt remove aria2'
+		   printf "%s\n" "Deleted已删除" ;;
+				n*|N*) printf "%s\n" "skipped."
 				exit 1
 				 ;;
 				*) 
-				echo "Invalid choice. skipped." 
+				printf "%s\n" "Invalid choice. skipped." 
 				exit 1
 				;;
 			esac
-			echo 'If you want to reinstall, it is not recommended to remove the image file.'
-			echo '若需要重装，则不建议移除镜像文件。'
-			#echo '若需要跨架构运行,则建议移除该文件,以便重新下载相应架构的镜像文件'
+			printf "%s\n" 'If you want to reinstall, it is not recommended to remove the image file.'
+			printf "%s\n" '若需要重装，则不建议移除镜像文件。'
+			#printf "%s\n" '若需要跨架构运行,则建议移除该文件,以便重新下载相应架构的镜像文件'
 			ls -lah ~/*rootfs.tar.xz
-			echo "\${YELLOW}是否需要删除容器镜像文件？[Y/n]\${RESET} "
+			printf "%s\n" "\${YELLOW}是否需要删除容器镜像文件？[Y/n]\${RESET} "
 			ROOTFS_NAME=$(echo ${DEBIAN_FOLDER} | cut -d '_' -f 1)
-			echo "rm -fv ~/\${ROOTFS_NAME}*rootfs.tar.xz"
-			echo "Do you need to delete the image file (${DEBIAN_NAME}*rootfs.tar.xz)?[Y/n]"
+			printf "%s\n" "rm -fv ~/\${ROOTFS_NAME}*rootfs.tar.xz"
+			printf "%s\n" "Do you need to delete the image file (${DEBIAN_NAME}*rootfs.tar.xz)?[Y/n]"
 
 		    read opt
 			case \$opt in
 				y*|Y*|"") 
 			rm -fv ~/\${ROOTFS_NAME}*-rootfs.tar.xz
-		    echo "Deleted已删除" ;;
-				n*|N*) echo "skipped." ;;
-				*) echo "Invalid choice. skipped." ;;
+		    printf "%s\n" "Deleted已删除" ;;
+				n*|N*) printf "%s\n" "skipped." ;;
+				*) printf "%s\n" "Invalid choice. skipped." ;;
 			esac
 	EndOfFile
 }
@@ -1210,8 +1210,8 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	fi
 
 	vnc_warning() {
-		echo "Sorry,VNC server启动失败，请输debian-i重新配置GUI。"
-		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		printf "%s\n" "Sorry,VNC server启动失败，请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
@@ -1234,8 +1234,8 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	fi
 
 	vnc_warning() {
-		echo "Sorry,x11vnc server启动失败，请输debian-i重新配置GUI。"
-		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		printf "%s\n" "Sorry,x11vnc server启动失败，请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
@@ -1263,8 +1263,8 @@ cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 	    termux-wake-lock 2>/dev/null
 	vnc_warning() {
-		echo "Sorry,x11启动失败，请输debian-i重新配置GUI。"
-		echo "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		printf "%s\n" "Sorry,x11启动失败，请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
@@ -1285,8 +1285,8 @@ if [ ! -L '/data/data/com.termux/files/home/storage/external-1' ]; then
 	sed -i 's@^command+=" --mount=/data/data/com.termux/files/home/storage/external-1@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 	#sed -i 's@^mount -o bind /mnt/media_rw/@#&@g' ${PREFIX}/bin/debian 2>/dev/null
 fi
-echo 'Giving startup script execution permission'
-echo "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
+printf "%s\n" 'Giving startup script execution permission'
+printf "%s\n" "正在赋予启动脚本(${PREFIX}/bin/debian)执行权限"
 #termux-fix-shebang ${PREFIX}/bin/debian
 cd ${PREFIX}/bin
 
@@ -1295,8 +1295,8 @@ chmod +x debian startvnc stopvnc debian-rm debian-i startxsdl startx11vnc 2>/dev
 alias debian="${PREFIX}/bin/debian"
 alias debian-rm="${PREFIX}/bin/debian-rm"
 ################
-echo "You can type rm ~/${TMOE_ROOTFS_TAR_XZ} to delete the image file"
-echo "您可以输${RED}rm ~/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像文件"
+printf "%s\n" "You can type rm ~/${TMOE_ROOTFS_TAR_XZ} to delete the image file"
+printf "%s\n" "您可以输${RED}rm ~/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像文件"
 ls -lh ~/${TMOE_ROOTFS_TAR_XZ}
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
@@ -1306,7 +1306,7 @@ fi
 #cd ${DEBIAN_CHROOT}/usr/local/bin
 cd ${CONFIG_FOLDER}
 if [ ! -e "neofetch" ]; then
-	curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	curl -Lo "neofetch" 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 fi
 if [ ! -e "debian-i" ]; then
 	curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
@@ -1367,7 +1367,7 @@ true)
 		mv -f .bash_login .bash_login.bak 2>/dev/null
 	fi
 	if [ ! -f ".profile" ]; then
-		echo '' >>.profile
+		printf "%s\n" '' >>.profile
 	else
 		mv -f .profile .profile.bak
 	fi
@@ -1386,7 +1386,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 			fi
 			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
-				echo '' >>locale.gen
+				printf "%s\n" '' >>locale.gen
 				sed -i 's@^@#@g' locale.gen 2>/dev/null
 				sed -i 's@##@#@g' locale.gen 2>/dev/null
 				sed -i "$ a ${TMOE_LANG}" locale.gen
@@ -1406,8 +1406,8 @@ cat >vnc-autostartup <<-'EndOfFile'
 	}
 	#############
 	vnc_warning() {
-		echo "Sorry,VNC server启动失败，请输debian-i重新安装并配置桌面环境。"
-		echo "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
+		printf "%s\n" "Sorry,VNC server启动失败，请输debian-i重新安装并配置桌面环境。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
 	}
 	###########
 	LOCAL_BIN_DIR='/usr/local/bin'
@@ -1447,7 +1447,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	            if [ -f ${LOCAL_BIN_DIR}/${i} ]; then
 					cd ${HOME}
 	                ${LOCAL_BIN_DIR}/${i}
-					echo "已为您启动vnc服务 Vnc server has been started, enjoy it ！"
+					printf "%s\n" "已为您启动vnc服务 Vnc server has been started, enjoy it ！"
 	            else
 	                vnc_warning
 	            fi
@@ -1473,7 +1473,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	############
 	systemctl() {
 		case ${TMOE_PROOT} in
-		true) echo "Running in proot, ignoring request." ;;
+		true) printf "%s\n" "Running in proot, ignoring request." ;;
 		esac
 		case "${#}" in
 		0) /bin/systemctl ;;
@@ -1640,7 +1640,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	##############################
 	kali_sources_list() {
-	    echo "检测到您使用的是Kali系统"
+	    printf "%s\n" "检测到您使用的是Kali系统"
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 				deb http://mirrors.tuna.tsinghua.edu.cn/kali/ kali-rolling main contrib non-free
@@ -1668,7 +1668,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#########################
 	mint_sources_list() {
-	    echo "检测到您使用的是Linux Mint"
+	    printf "%s\n" "检测到您使用的是Linux Mint"
 		CHINA_MIRROR='mirrors.huaweicloud.com'
 		SOURCE_LIST=/etc/apt/sources.list
 		cp ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
@@ -1740,13 +1740,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		sed -i 's@downloads.openwrt.org@mirrors.tuna.tsinghua.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
 	fi
 	#################
-	 sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
+	###tmoe-github sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
 
 	#配置dns解析
 	rm -f /etc/resolv.conf
 	cat >/etc/resolv.conf <<-'EndOfFile'
-			nameserver 1.0.0.1
-			nameserver 2606:4700:4700::1111
+			nameserver 114.114.114.114
+			nameserver 240c::6666
 		EndOfFile
 	######################
 	###################
@@ -1788,7 +1788,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	arch_linux_yay() {
-	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || echo 'LANG=en_US.UTF-8' >>/etc/locale.conf
+	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || printf "%s\n" 'LANG=en_US.UTF-8' >>/etc/locale.conf
 	    pacman -Syyu --noconfirm
 	    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
@@ -1836,7 +1836,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	##############
 	alpine_linux_configure() {
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
-		    echo "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
+		    printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
 	        sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 	        apk update
 	        apk add bash
@@ -1850,7 +1850,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
 	    fi
-		echo "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+		printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
 		bash /usr/local/bin/neofetch
 	    exec bash zsh.sh
 		exit 0
@@ -1906,20 +1906,21 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
 
-	echo "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
-	echo "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
-	echo '正在执行优化步骤，请勿退出!'
-	echo 'Optimization steps are in progress. Do not exit!'
+	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
+	printf "%s\n" '正在执行优化步骤，请勿退出!'
+	printf "%s\n" 'Optimization steps are in progress. Do not exit!'
 
 	#配置时区
-	echo 'Asia/Shanghai' >/etc/timezone
+	printf "%s\n" 'Asia/Shanghai' >/etc/timezone
 	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
 	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
 	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
-	    echo "Tmoe-locale file not detected."
+	    printf "%s\n" "Tmoe-locale file not detected."
+		printf "%s\n" "正在配置中文环境..."
 	fi
-	echo "Configuring ${TMOE_LANG_HALF} environment..."
+	printf "%s\n" "Configuring ${TMOE_LANG_HALF} environment..."
 	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen 2>/dev/null
 	cat >>/etc/default/locale <<-EOF
 			LANG=${TMOE_LANG}
@@ -1929,7 +1930,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
 	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
-	    echo '' >>/etc/locale.gen
+	    printf "%s\n" '' >>/etc/locale.gen
 	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
 	fi
 	locale-gen ${TMOE_LANG} 2>/dev/null
@@ -1972,8 +1973,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	     apt install -y apt-transport-https 2>/dev/null
 	fi
 	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
-	    echo "Replacing http software source list with https."
-	    echo "正在将http源替换为https..."
+	    printf "%s\n" "Replacing http software source list with https."
+	    printf "%s\n" "正在将http源替换为https..."
 	    sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list 2>/dev/null
 	fi
@@ -1990,7 +1991,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    cat >/etc/portage/make.conf <<-'Endofmakeconf'
 				#语言设定
 				L10N="zh-CN en-US"
-				LINGUAS="en_US zh_CN"
+				LINGUAS="en_US en_US"
 
 				#FEATURES="${FEATURES} -userpriv -usersandbox -sandbox"
 				ACCEPT_LICENSE="*"
@@ -2068,10 +2069,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    emerge -uvDN --with-bdeps=y @world
 		emerge -avk sys-devel/binutils
 	    emerge eix 2>/dev/null
-	    echo '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+	    printf "%s\n" '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	    mv -f .profile.bak .profile 2>/dev/null
-	    #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	    #wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 	    chmod +x /usr/local/bin/neofetch
 	    neofetch
 	    #bash
@@ -2091,14 +2092,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    xbps-install -S
 	    xbps-install -uy xbps
 	    xbps-install -y wget curl
-	    #wget -qO- 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' | bash -
+	    #wget -qO- 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' | bash -
 	    neofetch
 	    #rm -f vnc* zsh* .profile
 	    #mv -f .profile.bak .profile 2>/dev/null
 	    #wget -qO zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 	    #sed -i '1 c\#!/usr/bin/env bash' zsh.sh
 	    #chmod +x zsh.sh
-	    echo '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
+	    printf "%s\n" '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
 		xbps-reconfigure -f glibc-locales
 	    #zsh 2>/dev/null || bash
 	    #exit 0
@@ -2116,13 +2117,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	####################
 	apt update 2>/dev/null
 	apt list --upgradable 2>/dev/null
-	echo "正在升级所有软件包..."
+	printf "%s\n" "正在升级所有软件包..."
 	apt dist-upgrade -y 2>/dev/null
 	apt install -y procps 2>/dev/null
 	apt clean 2>/dev/null
 	#############################
-	#grep -q 'export DISPLAY' /etc/profile || echo "export DISPLAY=":1"" >>/etc/profile
-	echo "Welcome to Debian GNU/Linux."
+	#grep -q 'export DISPLAY' /etc/profile || printf "%s\n" "export DISPLAY=":1"" >>/etc/profile
+	printf "%s\n" "Welcome to Debian GNU/Linux."
 	cat /etc/issue 2>/dev/null || cat /etc/os-release
 	uname -a
 	rm -f vnc-autostartup .profile
@@ -2132,12 +2133,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#################
 	####################
 	if [ ! "$(command -v lolcat)" ];then
-		echo "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
+		printf "%s\n" "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
 		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
 	fi
-	echo "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
-	echo "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
-	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
+	printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
+	#wget -qcO /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 	chmod +x /usr/local/bin/neofetch
 	if [ -e /usr/games/lolcat ]; then
 		neofetch | /usr/games/lolcat
@@ -2217,7 +2218,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				skip_if_unavailable=False
 			EndOfYumRepo
 	    #dnf install -y glibc-langpack-zh
-	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
+	    #localedef -c -f UTF-8 -i en_US en_US.utf8
 	    #dnf clean packages
 		TMOE_LANG_HALF=$(echo $LANG | cut -d '.' -f 1 |cut -d '_' -f 1)
 		dnf install -y "glibc-langpack-${TMOE_LANG_HALF}*"
@@ -2253,8 +2254,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	############################
 	note_of_non_debian() {
-	    #echo "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
-	    echo "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
+	    #printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
+	    printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
 	    bash zsh.sh
 	    #debian-i
 	}

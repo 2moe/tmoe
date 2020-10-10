@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#########################
+main() {
+    check_chroot_file
+    source_env_file
+    check_tmoe_container_chroot
+    start_menu
+}
+################
+source_env_file() {
+    case $(uname -o) in
+    Android) TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux" ;;
+    *)
+        TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
+        TMPDIR=/tmp
+        ;;
+    esac
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+    TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
+    ENV_FILE="${TMOE_SHARE_DIR}/environment/manager_environment"
+    source ${ENV_FILE}
+}
+###########
+check_chroot_file() {
+    CONFIG_FOLDER=${HOME}/.config/tmoe-linux
+    TMOE_CHROOT='false'
+    [[ ! -e "${CONFIG_FOLDER}/chroot_container" ]] || TMOE_CHROOT='true'
+}
+###########
+start_menu() {
+    source ${TMOE_SHARE_DIR}/container/list
+    check_proot_or_chroot
+    RETURN_TO_WHERE_02='exit'
+    list_installed_tmoe_containers
+}
+main "$@"

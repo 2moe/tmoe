@@ -134,7 +134,7 @@ tmoe_golden_dict_menu() {
 }
 #############
 check_tmoe_study_materials() {
-	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
+	if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
 		DOWNLOAD_FOLDER='/mnt/c/Users/Public/Documents'
 	else
 		DOWNLOAD_FOLDER="${HOME}/sd/Download/Documents"
@@ -157,9 +157,9 @@ check_tmoe_study_materials() {
 ###############
 unzip_tmoe_study_file() {
 	tar -Jxvf ${DOWNLOAD_FILE_NAME}
-	echo "文件已保存至${BLUE}${DOWNLOAD_FOLDER}${RESET}"
-	if [ "${WINDOWSDISTRO}" = 'WSL' ]; then
-		echo "您可以使用windows10资源管理器打开${BLUE}C:\Users\Public\Documents${RESET}"
+	printf "%s\n" "文件已保存至${BLUE}${DOWNLOAD_FOLDER}${RESET}"
+	if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
+		printf "%s\n" "您可以使用windows10资源管理器打开${BLUE}C:\Users\Public\Documents${RESET}"
 	fi
 }
 ##############

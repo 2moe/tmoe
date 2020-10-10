@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_STARTUP_DIR}
+TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
+cat >${TMP_FILE} <<-ENDOFTMOECHROOT
+	#!/usr/bin/env bash
+	get_tmoe_linux_help_info() {
+	    cat <<-'ENDOFHELP'
+											-i     --启动tmoe-linux manager
+											-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
+											-vnc   --启动VNC
+											-n     --启动novnc
+											-x     --启动x11
+											-h     --get help info
+										ENDOFHELP
+	}
+	############
+	main() {
+	    case "\$1" in
+	    i* | -i* | -I*)
+	        debian-i
+	        exit 0
+	        ;;
+	    -h* | --h*)
+	        get_tmoe_linux_help_info
+	        ;;
+	    -m* | m*)
+	        debian-i -m
+	        ;;
+	    -vnc* | vnc*)
+	        startx11vnc
+	        ;;
+	    -n* | novnc*)
+	        debian-i novnc
+	        ;;
+	    -x)
+	        startxsdl
+	        ;;
+	    *) start_tmoe_gnu_linux_chroot_container ;;
+	    esac
+	}
+	##############
+	start_tmoe_gnu_linux_chroot_container() {
+	    case \$(uname -o) in
+	    Android) ;;
+	    *)
+	        case \$(id -u) in
+	        0) ;;
+	        *)
+	            if [ \$(command -v sudo) ]; then
+	                sudo su -c "bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+	            else
+	                su -c "bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+	            fi
+	            exit 1
+	            ;;
+	        esac
+	        ;;
+	    esac
+	    ########
+	    TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+		DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
+	    PROC_FD_PATH="/proc/self/fd"
+	    #########
+	    detect_mount() {
+	        MOUNT_DIR="\$1"
+	        if \$(grep -q " \${MOUNT_DIR%/} " /proc/mounts); then
+	            return 0
+	        else
+	            return 1
+	        fi
+	    }
+	    ##########
+		#arch-linux挂载自身
+		if ! detect_mount "${DEBIAN_CHROOT}/"; then
+		   su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
+		   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
+		 fi
+		 #########
+		 [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
+		if [[ -z \${TMOE_SHELL} ]]; then
+			for i in su ash bash zsh; do
+				[[ ! -f ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
+			done
+		fi
+	    set -- "\${TMOE_SHELL}" "-l" "\$@"
+	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
+	        set -- "LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)" "\$@"
+	    else
+	        set -- "LANG=en_US.UTF-8" "\$@"
+	    fi
+	    ############
+	    mount_01() {
+	        su -c "mount -o bind /\${i} ${DEBIAN_CHROOT}/\${i}"
+	    }
+	    #########
+	    mkdir_01() {
+	        [[ -e "/\${i}" ]] || su -c "mkdir -p /\${i}"
+	    }
+	    ########
+	    #PS1='\u:\w$ '
+	    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "TERM=xterm-256color" "\$@"
+	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
+	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
+	            case \${i} in
+	            dev) mount_01 ;;
+	            proc) su -c "mount -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}" ;;
+	            sys) su -c "mount -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
+	            dev/pts)
+	                if ! detect_mount "/\${i}"; then
+	                    mkdir_01
+	                    su -c "mount -o rw,nosuid,noexec,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
+	                fi
+	                su -c "mount -t devpts devpts ${DEBIAN_CHROOT}/\${i}"
+	                ;;
+	            dev/shm)
+	                if ! detect_mount "/\${i}"; then
+	                    mkdir_01
+	                    su -c "mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /\${i}"
+	                fi
+	                mount_01
+	                ;;
+				etc/gitstatus) su -c "mount -o bind ${CONFIG_FOLDER}/gitstatus ${DEBIAN_CHROOT}/\${i}" ;;
+	            esac
+	        fi
+	    done
+	    unset i
+	    #dev/random) su -c "mount -o bind /dev/urandom ${DEBIAN_CHROOT}/\${i}" ;;
+	    ########
+	    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
+	        if [ ! -e \${i} ] && [ ! -h \${i} ]; then
+	            case \${i} in
+	            /dev/fd) su -c "ln -s \${PROC_FD_PATH} \${i} &>/dev/null" ;;
+	            /dev/stdin) su -c "ln -s \${PROC_FD}/0 \${i} &>/dev/null" ;;
+	            /dev/stdout) su -c "ln -s \${PROC_FD}/1 \${i} &>/dev/null" ;;
+	            /dev/stderr) su -c "ln -s \${PROC_FD}/2 \${i} &>/dev/null" ;;
+	            /dev/tty0)
+	                #if [ -e "/dev/ttyGS0" ]; then
+	                # su -c "ln -s /dev/ttyGS0 /\${i} &>/dev/null"
+	                #else
+	                su -c "ln -s /dev/null \${i} &>/dev/null"
+	                #fi
+	                ;;
+	            esac
+	        fi
+	    done
+	    unset i
+	    ###############
+	    mount_read_only_sd() {
+	        ANDROID_EMULATED_0_DIR='/storage/emulated/0'
+	        if [ -e "\${ANDROID_EMULATED_0_DIR}" ]; then
+	            [[ -e "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}" ]] || mkdir -p "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}"
+	            su -c "mount -o ro /storage/emulated/0 ${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR} &>/dev/null"
+	        fi
+	    }
+	    ############
+	    for i in tf termux sd; do
+	        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then
+	            case \${i} in
+	            tf)
+	                TF_CARD_LINK="${HOME}/storage/external-1"
+	                if [ -h "\${TF_CARD_LINK}" ]; then
+	                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
+	                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
+	                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                    else
+	                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                    fi
+	                fi
+	                ;;
+	            #######
+	            termux)
+	                [[ ! -d "/data/data/com.termux/files/home" ]] || su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                ;;
+	            ###########
+	            sd)
+	                if [ "\$(su -c "ls /data/media/0" 2>/dev/null)" ]; then
+	                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                elif [ -e "/storage/self/primary" ]; then
+	                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
+	                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                else
+	                    mount_read_only_sd
+	                fi
+	                ;;
+	            esac
+	        fi
+	    done
+	    unset i
+		 ###########
+	     set -- "${DEBIAN_CHROOT}" "\$@"
+	     set -- "chroot" "\$@"
+	     unset LD_PRELOAD
+		 TMOE_CHROOT_EXEC="exec \$@"
+		 su -c "\${TMOE_CHROOT_EXEC}"
+	    }
+	    main "\$@"
+ENDOFTMOECHROOT
+case $(uname -o) in
+Android) termux-fix-shebang ${TMP_FILE} ;;
+esac
+chmod a+x ${TMP_FILE}
+${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
+#${TMOE_CHROOT_PREFIX} chmod a+x ${TMOE_STARTUP_SCRIPT}
+ln -sf ${TMOE_SHARE_DIR}/container/debian/debian ${PREFIX}/bin

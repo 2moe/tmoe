@@ -2,7 +2,7 @@
 #####################
 which_vscode_edition() {
     RETURN_TO_WHERE='which_vscode_edition'
-    ps -e >/dev/null 2>&1 || VSCODEtips=$(echo "检测到您无权读取/proc的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
+    ps -e >/dev/null 2>&1 || VSCODEtips=$(printf "%s\n" "检测到您无权读取/proc的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
     #15 60 5
     VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
         "${VSCODEtips} Which edition do you want to install" 0 50 0 \
@@ -59,8 +59,8 @@ check_vscode_server_arch() {
     case ${ARCH_TYPE} in
     arm64 | amd64) install_vscode_server ;;
     *)
-        echo "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
-        echo "请选择其它版本"
+        printf "%s\n" "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
+        printf "%s\n" "请选择其它版本"
         arch_does_not_support
         ;;
     esac
@@ -117,8 +117,8 @@ configure_vscode_server() {
     2) vscode_server_password ;;
     3) edit_code_server_config_manually ;;
     4)
-        echo "正在停止服务进程..."
-        echo "Stopping..."
+        printf "%s\n" "正在停止服务进程..."
+        printf "%s\n" "Stopping..."
         pkill node
         ;;
     5) vscode_server_remove ;;
@@ -134,7 +134,7 @@ edit_code_server_config_manually() {
 ####################
 vscode_server_upgrade() {
     random_neko
-    echo "正在检测版本信息..."
+    printf "%s\n" "正在检测版本信息..."
     if [ -e "/usr/local/bin/code-server-data/bin/code-server" ]; then
         LOCAL_VSCODE_VERSION=$(code-server --version | grep -v info | head -n 1 | awk '{print $1}')
     else
@@ -157,15 +157,15 @@ vscode_server_upgrade() {
     if [ ! -e "/tmp/sed-vscode.tmp" ]; then
         cat >"/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
-				echo "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
-				echo "The VSCode service(server) is starting, please copy the password and paste it in your browser."
+				printf "%s\n" "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
+				printf "%s\n" "The VSCode service(server) is starting, please copy the password and paste it in your browser."
 
 				rm -f /tmp/startcode.tmp
 				code-server &
-				echo "已为您启动VS Code Server!"
-				echo "VS Code Server has been started,enjoy it !"
-				echo "您可以输pkill node来停止服务(器)。"
-				echo 'You can type "pkill node" to stop vscode service(server).'
+				printf "%s\n" "已为您启动VS Code Server!"
+				printf "%s\n" "VS Code Server has been started,enjoy it !"
+				printf "%s\n" "您可以输pkill node来停止服务(器)。"
+				printf '%s\n' 'You can type "pkill node" to stop vscode service(server).'
 			fi
 		EOF
     fi
@@ -173,7 +173,6 @@ vscode_server_upgrade() {
     grep '/tmp/startcode.tmp' ${HOME}/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.zshrc
     if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
         chmod +x /usr/local/bin/code-server-data/code-server 2>/dev/null
-        #echo -e "检测到您未安装vscode server\nDetected that you do not have vscode server installed."
     fi
 
     cd /tmp
@@ -199,7 +198,7 @@ vscode_server_upgrade() {
     fi
     vscode_server_restart
     vscode_server_password
-    echo "若您是初次安装，则请重启code-server"
+    printf "%s\n" "若您是初次安装，则请重启code-server"
     if grep -q '127.0.0.1:8080' "${HOME}/.config/code-server/config.yaml"; then
         sed -i 's@bind-addr:.*@bind-addr: 0.0.0.0:18080@' "${HOME}/.config/code-server/config.yaml"
     fi
@@ -210,18 +209,18 @@ vscode_server_upgrade() {
 }
 ############
 vscode_server_restart() {
-    echo "即将为您启动code-server"
-    echo "The VSCode server is starting"
-    echo "您之后可以输code-server来启动Code Server."
-    echo 'You can type "code-server" to start Code Server.'
+    printf "%s\n" "即将为您启动code-server"
+    printf "%s\n" "The VSCode server is starting"
+    printf "%s\n" "您之后可以输code-server来启动Code Server."
+    printf '%s\n' 'You can type "code-server" to start Code Server.'
     /usr/local/bin/code-server-data/bin/code-server &
-    SERVER_PORT=$(cat ${HOME}/.config/code-server/config.yaml | grep bind-addr | cut -d ':' -f 3)
+    SERVER_PORT=$(sed -n p ${HOME}/.config/code-server/config.yaml | grep bind-addr | cut -d ':' -f 3)
     if [ -z "${SERVER_PORT}" ]; then
         SERVER_PORT='18080'
     fi
-    echo "正在为您启动code-server，本机默认访问地址为localhost:${SERVER_PORT}"
+    printf "%s\n" "正在为您启动code-server，本机默认访问地址为localhost:${SERVER_PORT}"
     echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${SERVER_PORT}
-    echo "您可以输${YELLOW}pkill node${RESET}来停止进程"
+    printf "%s\n" "您可以输${YELLOW}pkill node${RESET}来停止进程"
 }
 #############
 vscode_server_password() {
@@ -229,8 +228,8 @@ vscode_server_password() {
     if [ "$?" != "0" ]; then
         configure_vscode_server
     elif [ -z "${TARGET_USERPASSWD}" ]; then
-        echo "请输入有效的数值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
     else
         sed -i "s@^password:.*@password: ${TARGET_USERPASSWD}@" ~/.config/code-server/config.yaml
     fi
@@ -239,18 +238,18 @@ vscode_server_password() {
 vscode_server_remove() {
     pkill node
     #service code-server stop 2>/dev/null
-    echo "正在停止code-server进程..."
-    echo "Stopping code-server..."
+    printf "%s\n" "正在停止code-server进程..."
+    printf "%s\n" "Stopping code-server..."
     #service vscode-server stop 2>/dev/null
-    echo "按回车键确认移除"
-    echo "${YELLOW}Press enter to remove VSCode Server. ${RESET}"
+    printf "%s\n" "按回车键确认移除"
+    printf "%s\n" "${YELLOW}Press enter to remove VSCode Server. ${RESET}"
     RETURN_TO_WHERE='configure_vscode_server'
     do_you_want_to_continue
     #sed -i '/export PASSWORD=/d' ~/.profile
     #sed -i '/export PASSWORD=/d' ~/.zshrc
     rm -rvf /usr/local/bin/code-server-data/ /usr/local/bin/code-server /tmp/sed-vscode.tmp
-    echo "${YELLOW}移除成功${RESET}"
-    echo "Remove successfully"
+    printf "%s\n" "${YELLOW}移除成功${RESET}"
+    printf "%s\n" "Remove successfully"
 }
 ##########################
 install_vscodium() {
@@ -263,18 +262,18 @@ install_vscodium() {
     elif [ "${ARCH_TYPE}" = 'amd64' ]; then
         CodiumARCH=x64
     elif [ "${ARCH_TYPE}" = 'i386' ]; then
-        echo "暂不支持i386 linux"
+        printf "%s\n" "暂不支持i386 linux"
         arch_does_not_support
         which_vscode_edition
     fi
 
     if [ -e "/usr/bin/codium" ]; then
-        echo '检测到您已安装VSCodium,请手动输以下命令启动'
-        echo "codium --user-data-dir=${HOME}/.codium"
-        echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} codium"
+        printf '%s\n' '检测到您已安装VSCodium,请手动输以下命令启动'
+        printf "%s\n" "codium --user-data-dir=${HOME}/.codium"
+        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} codium"
     elif [ -e "/opt/vscodium-data/codium" ]; then
-        echo "检测到您已安装VSCodium,请输codium启动"
-        echo "如需卸载，请手动输rm -rv /opt/vscodium-data /usr/local/bin/codium ${APPS_LNK_DIR}/codium.desktop"
+        printf "%s\n" "检测到您已安装VSCodium,请输codium启动"
+        printf "%s\n" "如需卸载，请手动输rm -rv /opt/vscodium-data /usr/local/bin/codium ${APPS_LNK_DIR}/codium.desktop"
     fi
 
     if [ $(command -v codium) ]; then
@@ -285,18 +284,18 @@ install_vscodium() {
     if [ "${LINUX_DISTRO}" = 'debian' ]; then
         LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         CODIUM_FILE_URL="https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
-        echo "${YELLOW}${CODIUM_FILE_URL}${RESET}"
+        printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' ${CODIUM_FILE_URL}
         apt show ./VSCodium.deb
         apt install -y ./VSCodium.deb
         rm -vf VSCodium.deb
         copy_gnu_lib_xcb_so
         fix_tightvnc_vscode_lnk
-        echo "安装完成,您可以输codium --user-data-dir=${HOME}/.codium启动"
+        printf "%s\n" "安装完成,您可以输codium --user-data-dir=${HOME}/.codium启动"
     else
         LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         CODIUM_FILE_URL="https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
-        echo "${YELLOW}${CODIUM_FILE_URL}${RESET}"
+        printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.tar.gz' ${CODIUM_FILE_URL}
         mkdir -p /opt/vscodium-data
         tar -zxvf VSCodium.tar.gz -C /opt/vscodium-data
@@ -307,16 +306,16 @@ install_vscodium() {
             aria2c -d '/usr/share/icons' -o 'vscodium.png' 'https://gitee.com/ak2/icons/raw/master/vscodium.png'
         fi
         #ln -sf /opt/vscodium-data/codium /usr/local/bin/codium
-        echo "安装完成，您可以输codium启动"
+        printf "%s\n" "安装完成，您可以输codium启动"
     fi
 }
 ########################
 install_vscode_oss() {
     if [ -e "/usr/bin/code-oss" ]; then
-        echo "检测到您已安装VSCode OSS,请手动输以下命令启动"
-        #echo 'code-oss --user-data-dir=${HOME}/.config/Code\ -\ OSS\ \(headmelted\)'
-        echo "code-oss --user-data-dir=${HOME}/.codeoss"
-        echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code-oss"
+        printf "%s\n" "检测到您已安装VSCode OSS,请手动输以下命令启动"
+        #printf '%s\n' 'code-oss --user-data-dir=${HOME}/.config/Code\ -\ OSS\ \(headmelted\)'
+        printf "%s\n" "code-oss --user-data-dir=${HOME}/.codeoss"
+        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code-oss"
         press_enter_to_return
         which_vscode_edition
     fi
@@ -329,13 +328,13 @@ install_vscode_oss() {
     elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
         . <(wget -O- https://code.headmelted.com/installers/yum.sh)
     else
-        echo "检测到您当前使用的可能不是deb系或红帽系发行版，跳过安装"
+        printf "%s\n" "检测到您当前使用的可能不是deb系或红帽系发行版，跳过安装"
         press_enter_to_return
         which_vscode_edition
     fi
-    echo "安装完成,请手动输以下命令启动"
-    echo "code-oss --user-data-dir=${HOME}/.codeoss"
-    echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code-oss"
+    printf "%s\n" "安装完成,请手动输以下命令启动"
+    printf "%s\n" "code-oss --user-data-dir=${HOME}/.codeoss"
+    printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code-oss"
 }
 #######################
 download_vscode_x64_deb() {
@@ -348,43 +347,43 @@ download_vscode_x64_deb() {
 install_vscode_official() {
     cd /tmp
     if [ "${ARCH_TYPE}" != 'amd64' ]; then
-        echo "当前仅支持x86_64架构"
+        printf "%s\n" "当前仅支持x86_64架构"
         arch_does_not_support
         which_vscode_edition
     fi
 
     if [ -e "/usr/bin/code" ]; then
-        echo '检测到您已安装VSCode,请手动输以下命令启动'
-        #echo 'code --user-data-dir=${HOME}/.vscode'
-        echo 'code --user-data-dir=${HOME}/.vscode'
-        echo "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
-        #echo "${YELLOW}按回车键返回。${RESET}"
-        #echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+        printf '%s\n' '检测到您已安装VSCode,请手动输以下命令启动'
+        #printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
+        printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
+        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
+        #printf "%s\n" "${YELLOW}按回车键返回。${RESET}"
+        #printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
         #read
         code --version
-        echo "请问您是否需要下载最新版安装包？"
-        echo "Do you want to download the latest vscode?"
+        printf "%s\n" "请问您是否需要下载最新版安装包？"
+        printf "%s\n" "Do you want to download the latest vscode?"
         do_you_want_to_continue
         #download_vscode_x64_deb
         #which_vscode_edition
     elif [ -e "/usr/local/bin/vscode-data/code" ]; then
-        echo "检测到您已安装VSCode,请输code --no-sandbox启动"
-        echo "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
-        echo "${YELLOW}按回车键返回。${RESET}"
-        echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+        printf "%s\n" "检测到您已安装VSCode,请输code --no-sandbox启动"
+        printf "%s\n" "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
+        printf "%s\n" "${YELLOW}按回车键返回。${RESET}"
+        printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
         read
         which_vscode_edition
     fi
 
     if [ "${LINUX_DISTRO}" = 'debian' ]; then
         download_vscode_x64_deb
-        echo "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
+        printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
 
     elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
         rpm -ivh ./VSCODE.rpm
         rm -vf VSCODE.rpm
-        echo "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
+        printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
     else
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
         #mkdir -p /usr/local/bin/vscode-data
@@ -392,7 +391,7 @@ install_vscode_official() {
 
         rm -vf VSCode.tar.gz
         ln -sf /usr/local/bin/VSCode-linux-x64/code /usr/local/bin/code
-        echo "安装完成，输code --no-sandbox启动"
+        printf "%s\n" "安装完成，输code --no-sandbox启动"
     fi
 }
 ###############################

@@ -1,0 +1,384 @@
+#!/usr/bin/env bash
+###################
+check_arch() {
+	case $(uname -m) in
+	armv7* | armv8l) ARCH_TYPE="armhf" ;;
+	armv6* | armv5*) ARCH_TYPE="armel" ;;
+	aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+	x86_64 | amd64) ARCH_TYPE="amd64" ;;
+	i*86 | x86) ARCH_TYPE="i386" ;;
+	s390*)
+		ARCH_TYPE="s390x" #经测试uname -m输出的结果为s390x
+		;;
+	ppc*)
+		ARCH_TYPE="ppc64el" #经测试uname -m输出的结果为ppc64le，而不是ppc64el
+		;;
+	mips*)
+		ARCH_TYPE="mipsel" #经测试uname -m输出的结果为mips，而不是mipsel
+		;;
+	risc*) ARCH_TYPE="riscv" ;;
+	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
+	esac
+	TRUE_ARCH_TYPE=${ARCH_TYPE}
+}
+###############
+check_tmoe_menu_locale_file() {
+	#此处重复出现2次
+	[[ -s ${TMOE_LOCALE_FILE} ]] || choose_tmoe_locale_env
+	TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+	TMOE_MENU_LANG=${TMOE_LANG}
+}
+##########
+set_terminal_color() {
+	RED=$(printf '\033[31m')
+	GREEN=$(printf '\033[32m')
+	YELLOW=$(printf '\033[33m')
+	BLUE=$(printf '\033[34m')
+	BOLD=$(printf '\033[1m')
+	PURPLE=$(printf '\033[0;35m')
+	RESET=$(printf '\033[m')
+}
+#######
+tmoe_global_env() {
+	#不包含DISTRO_NAME
+	set_terminal_color
+	check_arch
+	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
+	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+	check_tmoe_menu_locale_file
+	if [ ! -e "${CONFIG_FOLDER}" ]; then
+		mkdir -p ${CONFIG_FOLDER}
+	fi
+	ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
+	if [ -e "${ACROSS_ARCH_FILE}" ]; then
+		ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
+		QEMU_ARCH="$(sed -n 2p ${ACROSS_ARCH_FILE})"
+	fi
+	LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
+	DEBIAN_FOLDER=debian_${ARCH_TYPE}
+	if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
+		LINUX_CONTAINER_DISTRO=$(sed -n p ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+		[[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
+	fi
+	ROOTFS_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | cut -d '_' -f 1)
+	CURRENT_DIR=$(pwd)
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		WINDOWS_DISTRO='WSL'
+	elif [[ $(uname -o) = 'Android' ]]; then
+		LINUX_DISTRO='Android'
+	fi
+}
+##############
+tmoe_env_02() {
+	check_tmoe_container_chroot
+	check_debian_chroot_dir
+	TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+	TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
+}
+###########
+get_hitokito_cn() {
+	ORIGIN_HITOKOTO=$(curl -s --connect-timeout 2 "https://v1.hitokoto.cn")
+	HITOKOTO_ONE=$(printf "%s" ${ORIGIN_HITOKOTO} | sed 's@,@\n@g' | grep 'hitokoto.*:' | awk -F '"' '{print $4}' | sed 's@^@“@' | sed 's@$@”@')
+	HITOKOTO_AUTHOR=$(printf "%s" ${ORIGIN_HITOKOTO} | sed 's@,@\n@g' | grep -v 'commit_from' | grep 'from.*:' | awk -F '"' '{print $4}' | sed '/null,/d' | tr '\n' ' ' | sed 's@$@:@')
+	printf "${YELLOW}%s${RESET} ${BLUE}%s${RESET}\n" "${HITOKOTO_AUTHOR}" "${HITOKOTO_ONE}"
+}
+##########
+check_debian_chroot_dir() {
+	case ${TMOE_CHROOT} in
+	false) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/proot/${DEBIAN_FOLDER} ;;
+	*) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER} ;;
+	esac
+}
+############
+creat_container_edition_txt() {
+	printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} >${LINUX_CONTAINER_DISTRO_FILE}
+	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE} 2>/dev/null
+	DEBIAN_FOLDER="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
+	DEBIAN_FOLDER_CAPITAL=$(printf "%s\n" ${DEBIAN_FOLDER} | tr '[a-z]' '[A-Z]')
+	check_debian_chroot_dir
+	DEBIAN_CHROOT_MIN=$(printf '%s\n' ${DEBIAN_CHROOT} | sed "s@${HOME}@~@g")
+	ROOTFS_NAME=$(printf '%s\n' ${DEBIAN_FOLDER} | cut -d '_' -f 1)
+}
+#######
+copy_tmoe_locale_file_to_container() {
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+		mkdir -p ${TMOE_LOCALE_NEW_PATH}
+		cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+	fi
+}
+############
+check_sudo() {
+	if [ $(command -v sudo) ]; then
+		TMOE_PREFIX='sudo'
+	elif [ $(command -v tsudo) ]; then
+		TMOE_PREFIX='tsudo'
+	fi
+}
+##########
+check_tmoe_container_chroot() {
+	case ${TMOE_CHROOT} in
+	true) check_sudo ;;
+	*) TMOE_PREFIX='' ;;
+	esac
+}
+##############
+check_rootfs_dir() {
+	if [ -h "${HOME}/storage/external-1" ]; then
+		ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
+	else
+		for i in ${HOME} ${HOME}/sd /sdcard; do
+			if [ -d "${i}" ]; then
+				ROOTFS_DIR="${i}/Download/backup/rootfs"
+			fi
+		done
+	fi
+}
+########
+case_backup_path_proot_or_chroot() {
+	case ${TMOE_CHROOT} in
+	true) CONTAINER_BACKUP_PATH="${BACKUP_PATH}/chroot" ;;
+	*) CONTAINER_BACKUP_PATH="${BACKUP_PATH}/proot" ;;
+	esac
+}
+########
+check_container_backup_path() {
+	for i in ${HOME} ${HOME}/sd /sdcard; do
+		if [ -d "${i}" ]; then
+			BACKUP_PATH="${i}/Download/backup/containers"
+		fi
+	done
+	case_backup_path_proot_or_chroot
+}
+check_container_external_backup_path() {
+	if [ -h "${HOME}/storage/external-1" ]; then
+		BACKUP_PATH="$(readlink ${HOME}/storage/external-1)/Download/backup/containers"
+		#mkdir -p ${ROOTFS_DIR}
+		case_backup_path_proot_or_chroot
+	else
+		check_container_backup_path
+	fi
+}
+########
+go_to_proot_management() {
+	source ${TMOE_SHARE_DIR}/container/proot/management
+}
+############
+check_proot_or_chroot() {
+	case ${TMOE_CHROOT} in
+	true) CONTAINER_TYPE="chroot" ;;
+	*) CONTAINER_TYPE="proot" ;;
+	esac
+}
+###############################
+check_proot_proc_permissions() {
+	tmoe_env_02
+	CONTAINER_STARTUP_FILE=${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	TMOE_LINUX_ETC_DIR=$(sed -n p ${CONTAINER_STARTUP_FILE} | grep 'set.*mount.*proot_proc/' | head -n 1 | awk '{print $3}' | cut -d '=' -f 2 | cut -d '"' -f 1 | cut -d ':' -f 1 | sed 's@/proot_proc.*@@g')
+	TMOE_PROC_PATH="${TMOE_LINUX_ETC_DIR}/proot_proc"
+	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
+	#######
+	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
+		TMOE_PROC_FILE=$(sed -n p /proc/${i} 2>/dev/null)
+		case "${TMOE_PROC_FILE}" in
+		"")
+			printf "%s\n" "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
+			printf "%s\n" "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
+			sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/${i}@set -- \"--mount=${TMOE_PROC_PATH}/${i}@" ${CONTAINER_STARTUP_FILE}
+			;;
+		*) sed -i "s@set.*tmoe-linux/proot_proc/${i}@#&@g" ${CONTAINER_STARTUP_FILE} ;;
+		esac
+	done
+	unset i
+	#####
+	FILE_03='/proc/bus/pci/devices'
+	TMOE_PROC_FILE=$(sed -n p ${FILE_03} 2>/dev/null)
+	if [ ! -z "${TMOE_PROC_FILE}" ]; then
+		sed -i "s@set.*tmoe-linux/proot_proc/bus@#&@g" ${CONTAINER_STARTUP_FILE}
+	else
+		sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/bus@set -- \"--mount=${TMOE_PROC_PATH}/bus@" ${CONTAINER_STARTUP_FILE}
+	fi
+	#######
+	FILE_02=stat
+	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_02} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PREFIX}.${FILE_02}@set -- \"--mount=${TMOE_PROC_PREFIX}.${FILE_02}@" ${CONTAINER_STARTUP_FILE}
+	else
+		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_02}@#&@g" ${CONTAINER_STARTUP_FILE}
+	fi
+	#####
+	FILE_01=version
+	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_01} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		printf "%s\n" "检测到您无权读取${BLUE}/proc/version${RESET},正在自动伪造新文件..."
+		printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
+		printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+	else
+		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_01}@#&@g" ${CONTAINER_STARTUP_FILE}
+	fi
+}
+################
+list_installed_tmoe_containers() {
+	if [ ! "$(ls ${TMOE_CONTAINER_DIR}/${CONTAINER_TYPE} 2>/dev/null)" ]; then
+		printf "%s\n" "You ${RED}don't have${RESET} ${YELLOW}any containers${RESET} installed."
+		press_enter_to_continue
+		across_architectures_container
+	fi
+	RETURN_TO_MENU='list_installed_tmoe_containers'
+	rm -f ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null
+	cd ${TMOE_CONTAINER_DIR}/${CONTAINER_TYPE}
+	let i=01
+	for CLIST in $(ls .); do
+		[[ ! -d ${CLIST} ]] || printf "%s %s " "${CLIST}" "_$((i++))--${CONTAINER_TYPE}" >>${TMPDIR}/.tmoe-linux_cache.01
+	done
+	#%s后有空格
+
+	list_installed_tmoe_containers_menu_ja() {
+		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
+			"コンテナを選択する必要があります" 0 0 0 \
+			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
+			"Back" "🌚 返回" \
+			3>&1 1>&2 2>&3)
+	}
+	list_installed_tmoe_containers_menu_en() {
+		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
+			"Please select a container." 0 0 0 \
+			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
+			"Back" "🌚 返回" \
+			3>&1 1>&2 2>&3)
+	}
+	list_installed_tmoe_containers_menu_zh() {
+		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
+			"您想要选择哪个容器？" 0 0 0 \
+			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
+			"Back" "🌚 返回" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) list_installed_tmoe_containers_menu_zh ;;
+	ja_JP.UTF-8) list_installed_tmoe_containers_menu_ja ;;
+	*) list_installed_tmoe_containers_menu_en ;;
+	esac
+	rm -f ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null
+	case ${TMOE_CONTAINER_LIST} in
+	Back | 0 | "")
+		case ${RETURN_TO_WHERE_02} in
+		"") proot_container_menu ;;
+		*) ${RETURN_TO_WHERE_02} ;;
+		esac
+		;;
+	*) go_to_container_menu ;;
+	esac
+}
+############
+creat_tmoe_arch_file() {
+	cat >${ACROSS_ARCH_FILE} <<-EOF
+		${NEW_TMOE_ARCH}
+		${TMOE_QEMU_ARCH}
+	EOF
+	chmod 666 ${ACROSS_ARCH_FILE} 2>/dev/null
+}
+#############
+go_to_container_menu() {
+	TMOE_LINUX_CONTAINER_DISTRO=$(printf '%s\n' ${TMOE_CONTAINER_LIST} | awk -F '_' '{print $1}' | head -n 1)
+	ARCH_TYPE=$(printf '%s\n' ${TMOE_CONTAINER_LIST} | awk -F '_' '{print $2}' | head -n 1)
+	creat_container_edition_txt
+	#[[ -z ${NEW_TMOE_ARCH} ]] || creat_tmoe_arch_file
+	rm -f ${ACROSS_ARCH_FILE} 2>/dev/null
+	printf "%s\n" "${ARCH_TYPE}" >${ACROSS_ARCH_FILE}
+	chmod 666 ${ACROSS_ARCH_FILE} 2>/dev/null
+	go_to_proot_management
+}
+###########
+cat_release_file() {
+	if [ -e ${DEBIAN_CHROOT}/etc/os-release ]; then
+		sed -n p ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | awk -F '"' '{print $2}'
+	else
+		sed -n p ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
+	fi
+}
+############
+if_return_to_where_no_empty() {
+	case ${RETURN_TO_WHERE} in
+	"") tmoe_manager_main_menu ;;
+	*) ${RETURN_TO_WHERE} ;;
+	esac
+}
+do_you_want_to_continue() {
+	printf "%s\n" "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
+	read opt
+	case $opt in
+	y* | Y* | "") ;;
+	n* | N*)
+		printf "%s\n" "skipped."
+		if_return_to_where_no_empty
+		;;
+	*)
+		printf "%s\n" "Invalid choice. skipped."
+		if_return_to_where_no_empty
+		;;
+	esac
+}
+press_enter_to_return() {
+	printf "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}\n"
+	printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n"
+	read
+}
+press_enter_to_continue() {
+	printf "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}\n"
+	printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n"
+	read
+}
+##############
+check_tmoe_completion_version() {
+	UPDATE_TMOE_COMPLETION=false
+	TMOE_COMPLETION_VERSION_TXT="${TMOE_SHARE_DIR}/completion/version.txt"
+	if [ ! -e "${TMOE_COMPLETION_VERSION_TXT}" ]; then
+		UPDATE_TMOE_COMPLETION=true
+	else
+		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl -sL ${TMOE_GIT_URL}/raw/master/share/completion/version.txt)
+		CURRENT_TMOE_COMPLETTION_VERSION="$(head -n 1 ${TMOE_COMPLETION_VERSION_TXT})"
+		if ((${CURRENT_TMOE_COMPLETTION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION})); then
+			UPDATE_TMOE_COMPLETION=true
+		fi
+	fi
+}
+update_tmoe_completion() {
+	printf "%s\n" "${CURRENT_TMOE_COMPLETTION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION}"
+	ZINIT_DIR="${HOME}/.zinit"
+	printf "%s\n" "rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" ${TMOE_COMPLETION_FILE} | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe"
+	rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" ${TMOE_COMPLETION_FILE} | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe
+}
+#############
+check_tmoe_completion() {
+	TMOE_COMPLETION_FILE="${TMOE_SHARE_DIR}/completion/_tmoe"
+	if [ -e "${HOME}/.zshrc" ]; then
+		if grep -q 'zinit ice' ${HOME}/.zshrc; then
+			if ! egrep -q '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc; then
+				printf "%s\n" "zinit ice lucid wait="1" as"completion" && zinit snippet ${TMOE_COMPLETION_FILE}" >>${HOME}/.zshrc
+				update_tmoe_completion
+			fi
+			case ${UPDATE_TMOE_COMPLETION} in
+			true) update_tmoe_completion ;;
+			esac
+		fi
+	fi
+}
+################
+link_debootstrap_script() {
+	case ${LINUX_DISTRO} in
+	Android) DEBOOT_STRAP_SCRIPT_DIR="${PREFIX}/share/debootstrap/scripts" ;;
+	*) DEBOOT_STRAP_SCRIPT_DIR="/usr/share/debootstrap/scripts" ;;
+	esac
+	if [ ! -e "${DEBOOT_STRAP_SCRIPT_DIR}/${DISTRO_CODE}" ]; then
+		cd ${DEBOOT_STRAP_SCRIPT_DIR}
+		case ${DISTRO_NAME} in
+		debian) ln -sv sid ${DISTRO_CODE} ;;
+		ubuntu) ln -sv gutsy ${DISTRO_CODE} ;;
+		esac
+	fi
+}
+###################################
+tmoe_global_env

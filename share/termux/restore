@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#######################################
+TMOE_PREFIX=''
+source ${TMOE_SHARE_DIR}/compression/restore
+if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
+	#RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
+	cd /sdcard/Download/backup
+	RESTORE=$(ls -lth ./*-termux*_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
+	restore_the_latest_backup_file
+else
+	BACKUP_FILE_NAME="*-termux*_bak.tar*"
+	where_is_start_dir
+fi

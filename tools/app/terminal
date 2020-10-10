@@ -30,15 +30,15 @@ tmoe_terminal_main_menu() {
     0 | "") beta_features ;;
     01)
         DEPENDENCY_02="cool-retro-term"
-        echo "${YELLOW}https://github.com/Swordfish90/cool-retro-term${RESET}"
+        printf "%s\n" "${YELLOW}https://github.com/Swordfish90/cool-retro-term${RESET}"
         ;;
     02)
         DEPENDENCY_02="terminology"
-        echo "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
+        printf "%s\n" "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
         ;;
     03)
         DEPENDENCY_02="terminator"
-        echo "按Ctrl+Shift+O或E进行切割"
+        printf "%s\n" "按Ctrl+Shift+O或E进行切割"
         ;;
     04) DEPENDENCY_02="yakuake" ;;
     05) DEPENDENCY_02="guake" ;;
@@ -53,11 +53,11 @@ tmoe_terminal_main_menu() {
     14) DEPENDENCY_02="rxvt" ;;
     15)
         DEPENDENCY_02="stterm"
-        echo "You can type st to start it.输st或stterm启动"
+        printf "%s\n" "You can type st to start it.输st或stterm启动"
         ;;
     16)
         DEPENDENCY_02="atem"
-        echo "You can type aterm to start it.输aterm启动"
+        printf "%s\n" "You can type aterm to start it.输aterm启动"
         ;;
     17) DEPENDENCY_02="xterm" ;;
     esac
@@ -67,18 +67,18 @@ tmoe_terminal_main_menu() {
     cool-retro-term)
         case ${LINUX_DISTRO} in
         debian)
-            echo "若安装失败，则请手动添加ppa源，${GREEN}sudo add-apt-repository${RESET} ${BLUE}ppa:noobslab/apps${RESET}"
+            printf "%s\n" "若安装失败，则请手动添加ppa源，${GREEN}sudo add-apt-repository${RESET} ${BLUE}ppa:noobslab/apps${RESET}"
             ;;
         esac
         ;;
     terminology)
-        echo "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
+        printf "%s\n" "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
         ;;
     stterm)
-        echo "You can type st to start it.输st或stterm启动"
+        printf "%s\n" "You can type st to start it.输st或stterm启动"
         ;;
     aterm)
-        echo "You can type aterm to start it.输aterm启动"
+        printf "%s\n" "You can type aterm to start it.输aterm启动"
         ;;
     esac
     press_enter_to_return

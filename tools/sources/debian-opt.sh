@@ -2,16 +2,16 @@
 ##################
 add_debian_opt_repo() {
     notes_of_debian_opt_repo
-    echo "检测到您未添加debian_opt软件源，是否添加？"
+    printf "%s\n" "检测到您未添加debian_opt软件源，是否添加？"
     do_you_want_to_continue
     add_debian_opt_gpg_key
 }
 ##############
 notes_of_debian_opt_repo() {
-    echo "debian_opt_repo列表的所有软件均来自于开源项目"
-    echo "感谢https://github.com/coslyk/debianopt-repo 仓库的维护者coslyk，以及各个项目的原开发者。"
-    echo "非deb系发行版软件由2moe进行适配,并制作补丁。"
-    echo "截至2020年8月中旬，在proot容器环境下,部分软件(例如cocomusic)必须打补丁,否则将有可能出现白屏现象。"
+    printf "%s\n" "debian_opt_repo列表的所有软件均来自于开源项目"
+    printf "%s\n" "感谢https://github.com/coslyk/debianopt-repo 仓库的维护者coslyk，以及各个项目的原开发者。"
+    printf "%s\n" "非deb系发行版软件由2moe进行适配,并制作补丁。"
+    printf "%s\n" "截至2020年8月中旬，在proot容器环境下,部分软件(例如cocomusic)必须打补丁,否则将有可能出现白屏现象。"
 }
 #############
 switch_debian_opt_repo_sources() {
@@ -22,9 +22,9 @@ switch_debian_opt_repo_sources() {
         OPT_REPO_NAME='bintray'
     fi
     if (whiptail --title "您想要对这个小可爱做什么呢" --yes-button "USTC" --no-button "bintray" --yesno "检测到您当前的软件源为${OPT_REPO_NAME}\n您想要切换为哪个软件源?♪(^∇^*) " 0 0); then
-        echo -e "deb ${OPT_URL_01} buster main\n#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+        printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
     else
-        echo -e "#deb ${OPT_URL_01} buster main\ndeb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+        printf "%s\n%s\n" "#deb ${OPT_URL_01} buster main" "deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
     fi
     apt update
 }
@@ -141,9 +141,9 @@ debian_opt_install_or_remove_02() {
 }
 ################
 fix_debian_opt_app_sandbox_mode() {
-    echo "${GREEN}chmod 4755${RESET} ${BLUE}/opt/electron/chrome-sandbox${RESET}"
+    printf "%s\n" "${GREEN}chmod 4755${RESET} ${BLUE}/opt/electron/chrome-sandbox${RESET}"
     chmod 4755 /opt/electron/chrome-sandbox
-    echo "正在修复您当前已安装的electron应用..."
+    printf "%s\n" "正在修复您当前已安装的electron应用..."
     for i in chord cocomusic electron-netease-cloud-music hmcl iease-music listen1 lossless-cut lx-music-desktop marktext netron petal picgo simplenote zy-player; do
         if [ -f "/usr/bin/${i}" ]; then
             cp -pfv ${TMOE_OPT_BIN_DIR}/usr/bin/${i} /usr/bin
@@ -159,18 +159,18 @@ fix_debian_opt_app_sandbox_mode() {
     if [ -e "/opt/Listen1/app.asar" ]; then
         sed -i "s@/app'@/app.asar'@g" /usr/bin/listen1
     fi
-    echo "修复完成"
+    printf "%s\n" "修复完成"
 }
 ###########
 check_debian_opt_app_version() {
     DEBIAN_OPT_REPO_POOL_URL="${OPT_URL_02}/pool/main/"
-    APP_NAME_PREFIX="$(echo ${DEPENDENCY_01} | cut -c 1)"
+    APP_NAME_PREFIX="$(printf '%s\n' ${DEPENDENCY_01} | cut -c 1)"
     DEBIAN_OPT_APP_PATH_URL="${DEBIAN_OPT_REPO_POOL_URL}${APP_NAME_PREFIX}/${DEPENDENCY_01}"
     THE_LATEST_DEB_FILE=$(curl -Lv "${DEBIAN_OPT_APP_PATH_URL}" | grep '.deb' | grep -v '.asc' | grep "${ARCH_TYPE}" | tail -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)
 }
 ###############
 download_debian_opt_app() {
-    echo "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
+    printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
     DEBIAN_OPT_APP_URL="${DEBIAN_OPT_APP_PATH_URL}/${THE_LATEST_DEB_FILE}"
     DOWNLOAD_PATH='/tmp/.DEB_OPT_TEMP_FOLDER'
     ELECTRON_FILE_URL="${DEBIAN_OPT_APP_URL}"
@@ -189,9 +189,9 @@ copy_debian_opt_usr_bin_file() {
     *) cp -pf ${TMOE_OPT_BIN_DIR}/usr/bin/${DEPENDENCY_01} /usr/bin 2>/dev/null ;;
     esac
     case ${NOTICE_OF_REPAIR} in
-    true) echo "修复完成" ;;
+    true) printf "%s\n" "修复完成" ;;
     *)
-        echo "${BOLD}${DEPENDENCY_01}${RESET}在启动时，将根据您的用户权限来自动判断${BLUE}沙盒模式${RESET}的关闭与否。"
+        printf "%s\n" "${BOLD}${DEPENDENCY_01}${RESET}在启动时，将根据您的用户权限来自动判断${BLUE}沙盒模式${RESET}的关闭与否。"
         case "${LINUX_DISTRO}" in
         debian)
             cat <<-ENDOFOPT
@@ -207,7 +207,7 @@ ENDOFOPT
 remove_opt_app_01() {
     case "${LINUX_DISTRO}" in
     debian)
-        echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
+        printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}
         ;;
@@ -219,7 +219,7 @@ remove_opt_app_01() {
         hmcl) DEBIAN_OPT_APP_DIR='/opt/HMCL' ;;
         *) DEBIAN_OPT_APP_DIR="/opt/${DEPENDENCY_01}" ;;
         esac
-        echo "${RED}rm -rv${RESET} ${BLUE}${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
+        printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
         do_you_want_to_continue
         rm -rv ${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
         ;;
@@ -227,7 +227,7 @@ remove_opt_app_01() {
 }
 ################
 remove_opt_app_02() {
-    echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
+    printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
     case ${DEPENDENCY_01} in
     cocomusic) DEBIAN_OPT_APP_DIR='/opt/CocoMusic' ;;
     gridea) DEBIAN_OPT_APP_DIR='/opt/Gridea' ;;
@@ -235,7 +235,7 @@ remove_opt_app_02() {
     hmcl) DEBIAN_OPT_APP_DIR='/opt/HMCL' ;;
     *) DEBIAN_OPT_APP_DIR="/opt/${DEPENDENCY_01}" ;;
     esac
-    echo "${RED}rm -rv${RESET} ${BLUE}${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
+    printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
     do_you_want_to_continue
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}
     rm -rv ${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
@@ -289,14 +289,14 @@ git_clone_electron_virtual_machine() {
 }
 #############
 install_electron_macintosh_8() {
-    echo "下载大小约131.09MiB,解压后约占658M"
+    printf "%s\n" "下载大小约131.09MiB,解压后约占658M"
     do_you_want_to_continue
     GIT_REPO_URL='https://gitee.com/ak2/electron_macos8.git'
     git_clone_electron_virtual_machine
 }
 #############
 install_electron_windows_95() {
-    echo "下载大小约166.19MiB,解压后约占1.2G"
+    printf "%s\n" "下载大小约166.19MiB,解压后约占1.2G"
     do_you_want_to_continue
     GIT_REPO_URL='https://gitee.com/ak2/electron_win95.git'
     git_clone_electron_virtual_machine
@@ -318,7 +318,7 @@ install_opt_app_02() {
     cocomusic)
         GIT_PATCH_URL='https://gitee.com/ak2/cocomusic-patch.git'
         patch_opt_music_app
-        #echo "在${YELLOW}tightvnc服务${RESET}下，cocomusic可能仍存在${RED}白屏${RESET}现象。对于deb系发行版，您可以换用${BLUE}x11vnc服务${RESET};对于arch系发行版，您可以换用${BLUE}tigervnc服务${RESET}来运行本app。"
+        #printf "%s\n" "在${YELLOW}tightvnc服务${RESET}下，cocomusic可能仍存在${RED}白屏${RESET}现象。对于deb系发行版，您可以换用${BLUE}x11vnc服务${RESET};对于arch系发行版，您可以换用${BLUE}tigervnc服务${RESET}来运行本app。"
         #202008注：已经修复了tightvnc无法启动cocomusic的问题
         ;;
     iease-music)
@@ -332,9 +332,9 @@ install_opt_app_02() {
 }
 ################
 display_debian_opt_app_version() {
-    echo "正在检测版本信息..."
+    printf "%s\n" "正在检测版本信息..."
     if [ -e "${OPT_APP_VERSION_TXT}" ]; then
-        LOCAL_OPT_APP_VERSION=$(cat ${OPT_APP_VERSION_TXT} | head -n 1)
+        LOCAL_OPT_APP_VERSION=$(sed -n p ${OPT_APP_VERSION_TXT} | head -n 1)
     else
         LOCAL_OPT_APP_VERSION="您尚未安装${DEPENDENCY_01}"
     fi
@@ -348,7 +348,7 @@ display_debian_opt_app_version() {
 		║   ║${THE_LATEST_DEB_FILE} 
 
 	ENDofTable
-    echo "Do you want to upgrade it?"
+    printf "%s\n" "Do you want to upgrade it?"
     do_you_want_to_continue
 }
 #################
@@ -378,15 +378,15 @@ upgrade_opt_app_01() {
 }
 ###############
 remove_electron_stable() {
-    echo "卸载后将导致依赖electron的应用无法正常运行。"
+    printf "%s\n" "卸载后将导致依赖electron的应用无法正常运行。"
     case "${LINUX_DISTRO}" in
     debian)
-        echo "${RED}apt remove -y${RESET} ${BLUE}${DEPENDENCY_01} ; rm -v ${OPT_APP_VERSION_TXT}${RESET}"
+        printf "%s\n" "${RED}apt remove -y${RESET} ${BLUE}${DEPENDENCY_01} ; rm -v ${OPT_APP_VERSION_TXT}${RESET}"
         do_you_want_to_continue
         apt remove -y ${DEPENDENCY_01}
         ;;
     *)
-        echo "${RED}rm -rv${RESET} ${BLUE}/opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}${RESET}"
+        printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}/opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}${RESET}"
         do_you_want_to_continue
         rm -rv /opt/electron
         ;;
@@ -434,8 +434,8 @@ electron_manager() {
     1) check_electron_version ;;
     2) remove_electron_stable ;;
     3)
-        echo "部分软件依赖于旧版electron,卸载后将导致这些软件无法正常运行。"
-        echo "${RED}rm -rv${RESET} ${BLUE}/opt/electron-v8${RESET}"
+        printf "%s\n" "部分软件依赖于旧版electron,卸载后将导致这些软件无法正常运行。"
+        printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}/opt/electron-v8${RESET}"
         do_you_want_to_continue
         rm -rv /opt/electron-v8
         ;;
@@ -462,15 +462,15 @@ debian_opt_game_app() {
     1)
         DEPENDENCY_01='hmcl'
         ORIGINAL_URL='https://github.com/huanghongxun/HMCL'
-        echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+        printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
         case ${ARCH_TYPE} in
         amd64 | i386) ;;
         *)
             this_app_may_non_support_running_on_proot
-            echo "hmcl依赖于openjfx,如需安装，则请自行解决依赖问题。"
+            printf "%s\n" "hmcl依赖于openjfx,如需安装，则请自行解决依赖问题。"
             non_debian_function
             add_debian_old_source
-            #echo "${GREEN}apt install -y${RESET} ${BLUE}hmcl${RESET}"
+            #printf "%s\n" "${GREEN}apt install -y${RESET} ${BLUE}hmcl${RESET}"
             #apt install -y hmcl
             beta_features_quick_install
             del_debian_old_source
@@ -481,7 +481,7 @@ debian_opt_game_app() {
         esac
         ;;
     2)
-        echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+        printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
         DEPENDENCY_01='gamehub'
         ORIGINAL_URL='https://tkashkin.tk/projects/gamehub'
         ;;
@@ -523,7 +523,7 @@ debian_opt_development_app() {
         ;;
     esac
     ##########################
-    echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     case ${DEBIAN_INSTALLATION_MENU} in
     01) debian_opt_install_or_remove_01 ;;
     esac
@@ -556,7 +556,7 @@ debian_opt_virtual_machine_app() {
         ;;
     esac
     ##########################
-    echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     case ${DEBIAN_INSTALLATION_MENU} in
     02) debian_opt_install_or_remove_02 ;;
     esac
@@ -596,7 +596,7 @@ debian_opt_video_app() {
         ;;
     esac
     ##########################
-    echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     case ${DEBIAN_INSTALLATION_MENU} in
     00)
         non_debian_function
@@ -633,7 +633,7 @@ debian_opt_reader_app() {
         ;;
     esac
     ##########################
-    echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     case ${DEBIAN_INSTALLATION_MENU} in
     00)
         non_debian_function
@@ -681,7 +681,7 @@ debian_opt_picture_app() {
         ;;
     esac
     ##########################
-    echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     case ${DEBIAN_INSTALLATION_MENU} in
     00)
         non_debian_function
@@ -766,7 +766,7 @@ debian_opt_note_app() {
         ;;
     esac
     ##########################
-    echo "${YELLOW}${ORIGINAL_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     case ${DEBIAN_INSTALLATION_MENU} in
     00)
         non_debian_function
@@ -834,13 +834,13 @@ debian_opt_music_app() {
 ################
 install_electron_chord() {
     DEPENDENCY_01='chord'
-    echo "${DEPENDENCY_01}"
-    echo "github url：${YELLOW}https://github.com/PeterDing/chord${RESET}"
+    printf "%s\n" "${DEPENDENCY_01}"
+    printf "%s\n" "github url：${YELLOW}https://github.com/PeterDing/chord${RESET}"
 }
 ##############
 install_electron_petal() {
     DEPENDENCY_01='petal'
-    echo "github url：${YELLOW}https://ilime.github.io/Petal${RESET}"
+    printf "%s\n" "github url：${YELLOW}https://ilime.github.io/Petal${RESET}"
 }
 ############
 remove_debian_opt_repo() {
@@ -872,19 +872,19 @@ install_opt_flacon() {
 apt_list_debian_opt() {
     non_debian_function
     apt list | grep '~buster' | sed 's@~buster@@g'
-    echo "请使用${YELLOW}apt install${RESET}软件包名称 来安装"
+    printf "%s\n" "请使用${YELLOW}apt install${RESET}软件包名称 来安装"
 }
 #############
 install_coco_music() {
     DEBIAN_INSTALLATION_MENU='02'
     DEPENDENCY_01='cocomusic'
-    echo "github url：${YELLOW}https://github.com/xtuJSer/CoCoMusic${RESET}"
+    printf "%s\n" "github url：${YELLOW}https://github.com/xtuJSer/CoCoMusic${RESET}"
 }
 #####################
 install_iease_music() {
     DEBIAN_INSTALLATION_MENU='02'
     DEPENDENCY_01='iease-music'
-    echo "github url：${YELLOW}https://github.com/trazyn/ieaseMusic${RESET}"
+    printf "%s\n" "github url：${YELLOW}https://github.com/trazyn/ieaseMusic${RESET}"
 }
 ############
 patch_electron_netease_cloud_music() {
@@ -923,17 +923,17 @@ check_electron_netease_cloud_music() {
 ############
 install_electron_netease_cloud_music() {
     DEPENDENCY_01='electron-netease-cloud-music'
-    echo "github url：${YELLOW}https://github.com/Rocket1184/electron-netease-cloud-music${RESET}"
+    printf "%s\n" "github url：${YELLOW}https://github.com/Rocket1184/electron-netease-cloud-music${RESET}"
 }
 ########################
 install_listen1() {
     DEPENDENCY_01='listen1'
-    echo "github url：${YELLOW}http://listen1.github.io/listen1${RESET}"
+    printf "%s\n" "github url：${YELLOW}http://listen1.github.io/listen1${RESET}"
 }
 ################
 install_lx_music_desktop() {
     DEPENDENCY_01='lx-music-desktop'
-    echo "github url：${YELLOW}https://github.com/lyswhut/lx-music-desktop${RESET}"
+    printf "%s\n" "github url：${YELLOW}https://github.com/lyswhut/lx-music-desktop${RESET}"
 }
 ####################
 install_opt_deb_file() {
@@ -976,7 +976,7 @@ install_debian_buster_or_sid_netease_cloud_music() {
     else
         case "${DEBIAN_DISTRO}" in
         ubuntu)
-            if ! grep -Eq 'Bionic Beaver|Eoan Ermine|Xenial' "/etc/os-release"; then
+            if ! egrep -q 'Bionic Beaver|Eoan Ermine|Xenial' "/etc/os-release"; then
                 OPT_BRANCH_NAME='ubuntu_arm64'
             else
                 OPT_BRANCH_NAME='arm64'
@@ -990,13 +990,13 @@ install_debian_buster_or_sid_netease_cloud_music() {
 ################
 install_netease_cloud_music_gtk() {
     DEPENDENCY_01='netease-cloud-music-gtk'
-    echo "github url：${YELLOW}https://github.com/gmg137/netease-cloud-music-gtk${RESET}"
-    echo "本版本仅兼容debian sid,ubuntu 20.04/20.10及kali rooling,20200827已经修复了播放格式错误的问题。"
-    echo ${DEBIAN_DISTRO}
+    printf "%s\n" "github url：${YELLOW}https://github.com/gmg137/netease-cloud-music-gtk${RESET}"
+    printf "%s\n" "本版本仅兼容debian sid,ubuntu 20.04/20.10及kali rooling,20200827已经修复了播放格式错误的问题。"
+    printf "%s\n" ${DEBIAN_DISTRO}
     non_debian_function
     if [ $(command -v ${DEPENDENCY_01}) ]; then
         beta_features_install_completed
-        echo "是否需要重装？"
+        printf "%s\n" "是否需要重装？"
         do_you_want_to_continue
     fi
     case ${ARCH_TYPE} in
@@ -1014,7 +1014,7 @@ install_netease_cloud_music_gtk() {
 ###############
 install_pic_go() {
     DEPENDENCY_01='picgo'
-    echo "github url：${YELLOW}https://github.com/Molunerfinn/PicGo${RESET}"
+    printf "%s\n" "github url：${YELLOW}https://github.com/Molunerfinn/PicGo${RESET}"
 }
 ############################################
 explore_debian_opt_repo

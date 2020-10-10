@@ -1,0 +1,1564 @@
+#!/usr/bin/env bash
+##############
+case $(uname -m) in
+armv7* | armv8l) ARCH_TYPE="armhf" ;;
+armv6* | armv5*) ARCH_TYPE="armel" ;;
+aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+x86_64 | amd64) ARCH_TYPE="amd64" ;;
+i*86 | x86) ARCH_TYPE="i386" ;;
+s390*)
+	ARCH_TYPE="s390x" #经测试uname -m输出的结果为s390x
+	;;
+ppc*)
+	ARCH_TYPE="ppc64el" #经测试uname -m输出的结果为ppc64le，而不是ppc64el
+	;;
+mips*)
+	ARCH_TYPE="mipsel" #经测试uname -m输出的结果为mips，而不是mipsel
+	;;
+risc*) ARCH_TYPE="riscv" ;;
+*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
+esac
+######################
+TRUE_ARCH_TYPE=${ARCH_TYPE}
+QEMU_ARCH=''
+CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
+ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
+if [ -e "${ACROSS_ARCH_FILE}" ]; then
+	ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
+	QEMU_ARCH="$(sed -n 2p ${ACROSS_ARCH_FILE})"
+fi
+LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
+DEBIAN_FOLDER=debian_${ARCH_TYPE}
+if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
+	LINUX_CONTAINER_DISTRO=$(sed -n p ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+	[[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
+fi
+
+if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+	TMOE_CHROOT='true'
+	if [ $(command -v sudo) ]; then
+		TMOE_CHROOT_PREFIX=sudo
+	elif [ $(command -v tsudo) ]; then
+		TMOE_CHROOT_PREFIX=tsudo
+	fi
+else
+	TMOE_CHROOT='false'
+	TMOE_CHROOT_PREFIX=''
+fi
+#DEBIAN_FOLDER=debian_arm64
+RED=$(printf '\033[31m')
+PURPLE=$(printf '\033[0;35m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
+
+tmoe_manager_env() {
+	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
+	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	mkdir -p ${TMOE_CONTAINER_DIR}
+	case ${TMOE_CHROOT} in
+	true) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER} ;;
+	*) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/proot/${DEBIAN_FOLDER} ;;
+	esac
+	TMOE_STARTUP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container"
+	TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}
+	#mkdir -p ${TMOE_CONTAINER_DIR}
+	[[ -n ${TMPDIR} ]] || TMPDIR=/tmp
+}
+#############
+if [ "$(uname -o)" = "Android" ]; then
+	LINUX_DISTRO='Android'
+	TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
+	tmoe_manager_env
+	[[ -L "/data/data/com.termux/files/home/storage/shared" ]] || termux-setup-storage
+	TF_CARD_PATH="${HOME}/storage/external-1"
+	[ ! -h "${TF_CARD_PATH}" ] || printf "%s\n" "$(readlink ${TF_CARD_PATH})" >${TF_CARD_PATH}/path.txt
+else
+	TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
+	tmoe_manager_env
+	if egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
+		LINUX_DISTRO='openwrt'
+		if [ -d "/opt/bin" ]; then
+			PREFIX="/opt"
+		else
+			PREFIX=${HOME}
+		fi
+	else
+		PREFIX='/usr/local'
+	fi
+	mkdir -p ${PREFIX}/bin
+fi
+####################
+printf "${YELLOW}"
+printf "%s\n" "                                        "
+printf "%s\n" "                 .::::..                "
+printf "%s\n" "      ::::rrr7QQJi::i:iirijQBBBQB.      "
+printf "%s\n" "      BBQBBBQBP. ......:::..1BBBB       "
+printf "%s\n" "      .BuPBBBX  .........r.  vBQL  :Y.  "
+printf "%s\n" "       rd:iQQ  ..........7L   MB    rr  "
+printf "%s\n" "        7biLX .::.:....:.:q.  ri    .   "
+printf "%s\n" "         JX1: .r:.r....i.r::...:.  gi5  "
+printf "%s\n" "         ..vr .7: 7:. :ii:  v.:iv :BQg  "
+printf "%s\n" "         : r:  7r:i7i::ri:DBr..2S       "
+printf "%s\n" "      i.:r:. .i:XBBK...  :BP ::jr   .7. "
+printf "%s\n" "      r  i....ir r7.         r.J:   u.  "
+printf "%s\n" "     :..X: .. .v:           .:.Ji       "
+printf "%s\n" "    i. ..i .. .u:.     .   77: si   1Q  "
+printf "%s\n" "   ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  "
+printf "%s\n" "  7  iK::r  . ii7r LJLrL1r7DPi iJ     r "
+printf "%s\n" "    .  ::.:   .  ri 5DZDBg7JR7.:r:   i. "
+printf "%s\n" "   .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  "
+printf "%s\n" "   QB rJ.:rvDE: .. ri uv . iir.7j r7.   "
+printf "%s\n" "  iBg ::.7251QZ. . :.      irr:Iu: r.   "
+printf "%s\n" "   QB  .:5.71Si..........  .sr7ivi:U    "
+printf "%s\n" "   7BJ .7: i2. ........:..  sJ7Lvr7s    "
+printf "%s\n" "    jBBdD. :. ........:r... YB  Bi      "
+printf "%s\n" "       :7j1.                 :  :       "
+printf "${RESET}"
+###########################
+TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
+TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
+TMOE_MIPSEL_ROOTFS_URL='https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
+TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
+###########
+cat <<-EOF
+	現在可公開的情報:
+	${BOLD}Tmoe-linux 小提示${RESET}:
+			01:不同远程桌面的体验有可能是不同的呢！ヽ(✿ﾟ▽ﾟ)ノ
+			-------------------
+			Different remote desktops may have different experiences.
+			-------------------
+			02:在某种环境下执行某条命令，将同时调用宿主机的VNC viewer和容器的vnc server。
+			-------------------
+			Executing a certain command in a certain environment will call the processes of the host and the container almost simultaneously.
+			---------------
+			03:只有最近使用的容器的启动命令才是一样的哦！o( =•ω•= )m
+			但是呢！输那条启动命令仅支持启动${BLUE}${DEBIAN_FOLDER}容器${RESET}，不会自动启动远程桌面服务。
+			-------------------
+			The start command of the container supports starting and attaching the ${DEBIAN_FOLDER} container.
+			-------------------
+			04:并非所有${YELLOW}字体${RESET}都支持${BLUE}powerlevel 10k${RESET}的特殊字符哦！🍥
+			-------------------
+			Some fonts do not support powerlevel10k special characters.
+			-------------------
+EOF
+############################
+printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
+printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}"
+##################
+if [ -h "${HOME}/storage/external-1" ]; then
+	ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
+	mkdir -p ${ROOTFS_DIR}
+else
+	for i in ${HOME} ${HOME}/sd /sdcard; do
+		if [ -d "${i}" ]; then
+			ROOTFS_DIR="${i}/Download/backup/rootfs"
+			mkdir -p ${ROOTFS_DIR}
+		fi
+	done
+fi
+cd ${ROOTFS_DIR}
+download_rootfs_file() {
+	printf "${PURPLE}${BOLD}%s${RESET} ${YELLOW}%s${RESET}\n" "ROOTFS_FILE:" "${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}"
+	if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
+		case "${ARCH_TYPE}" in
+		mipsel) aria2c -x 6 -k 1M --split 6 -o ${TMOE_ROOTFS_TAR_XZ} "${TMOE_MIPSEL_ROOTFS_URL}" ;;
+		*)
+			printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+			printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
+			TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+			#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
+			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
+			;;
+		esac
+	fi
+}
+DEBOOTSTRAP_DIR=''
+[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || source ${CONFIG_FOLDER}/debootstrap_dir.txt
+case ${DEBOOTSTRAP_DIR} in
+${DEBIAN_CHROOT}) ;;
+*) download_rootfs_file ;;
+esac
+##################
+CURRENT_TMOE_DIR=$(pwd)
+if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
+	if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
+		aria2c -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
+	fi
+	cd ${DEBIAN_CHROOT}
+	if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
+		tar -Jxf ${CONFIG_FOLDER}/proc.tar.xz 2>/dev/null
+	fi
+else
+	cd ${DEBIAN_CHROOT}
+fi
+####################
+printf "$BLUE"
+cat <<-'EndOFneko'
+	       DL.                           
+	       QBBBBBKv:rr77ri:.             
+	       gBBQdY7::::..::i7vv.          
+	       UBd. . .:.........rBBBQBBBB5  
+	       Pu  :..r......i:....BBBQBBB:  
+	       ri.i:.j:...:. i7... uBBZrd:   
+	 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
+	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
+	 .27. :r.r:L7i::.7r:vri:...rr  .     
+	  v   ::.Yrviri:7v7v: ::...i.   i    
+	      r:ir: r.iiiir..:7r...r   :P.2Y 
+	      v:vi::.      :  ::. .qI7U1U :1 
+	Qr    7.7.         :.i::. :Di:. i .v:
+	v7..  s.r7.   ...   .:7i: rDi...r .. 
+	 vi: .7.iDBBr  .r   .:.7. rPr:..r    
+	 i   :virZBgi  :vrYJ1vYY .ruY:..i    
+	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+	    .1r:q.   rB52SKrj.:i i5isi.:i :.r
+	    YvrY7    r.  . ru :: PIrj7.:r..v 
+	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
+	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
+	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
+	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
+	         .            i   7          
+EndOFneko
+printf "$RESET"
+cat <<-EOF
+	少女祈禱中...
+	現在可公開的情報:
+	${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
+
+			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}VNC服务端${RESET}。
+			------------------
+			输${GREEN}startxsdl${RESET}将${RED}启动${RESET}安卓版${YELLOW}XSDL${RESET}，并于9秒后自动启动${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}x11${RESET}。
+			-------------------
+			您也可以在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}startvnc${RESET}来单独启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
+			-------------------
+			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
+			-------------------
+			输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
+			-------------------
+			You can also type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
+			------------------
+	${BOLD}小提示06${RESET}:
+
+			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
+			-------------------
+	${BOLD}小提示07${RESET}:
+
+			在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
+			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}
+			-------------------
+EOF
+################
+uncompress_other_format_file() {
+	if [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
+	else
+		if [ $(command -v pv) ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -px
+		else
+			tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+	fi
+}
+##############
+uncompress_tar_lz4_file() {
+	TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
+	TMOE_ROOTFS_TAR=$(printf '%s\n' ${TMOE_ROOTFS_TAR_XZ} | sed 's@.tar.lz4@.tar@')
+	cd ${CURRENT_TMOE_DIR}
+	rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
+	lz4 -d ${TMOE_ROOTFS_TAR_XZ}
+	cd ${DEBIAN_CHROOT}
+
+	TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR}
+	uncompress_other_format_file
+	TMOE_ROOTFS_TAR_XZ=${TRUE_TMOE_ROOTFS_TAR_XZ}
+	rm -fv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR}
+}
+###########
+uncompress_tar_gz_file() {
+	if [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
+	else
+		if [ $(command -v pv) ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pzx
+		else
+			tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+	fi
+}
+#####################
+check_tar_xz_pv() {
+	if [ $(command -v pv) ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
+	else
+		tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	fi
+}
+#############
+uncompress_tar_xz_file() {
+	printf "%s\n" "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
+	printf "%s\n" "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
+	if [ "${ARCH_TYPE}" = "mipsel" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
+		mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
+	elif [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
+	else
+		check_tar_xz_pv
+	fi
+}
+#############
+#解压前已进入$DEBIAN_CHROOT目录
+uncompress_tar_file() {
+	case "${TMOE_ROOTFS_TAR_XZ:0-6:6}" in
+	tar.xz) uncompress_tar_xz_file ;;
+	tar.gz) uncompress_tar_gz_file ;;
+	ar.lz4)
+		#此处不为tar.lz4
+		uncompress_tar_lz4_file
+		;;
+	*) uncompress_other_format_file ;;
+	esac
+}
+#######################
+case ${DEBOOTSTRAP_DIR} in
+${DEBIAN_CHROOT}) ;;
+*) uncompress_tar_file ;;
+esac
+#################
+REMOTEP10KFONT='8597c76c4d2978f4ba022dfcbd5727a1efd7b34a81d768362a83a63b798f70e5'
+IOSEVKA_FONT='2b41066b8faea10f7f4356a280b011c2fa3cd007000e6eca25f2f9aaf8b44713'
+MESLO_FONT='4ac3012945f484496c899dce3b6ff6ec1a7395a444e9bf5acdf004867334cd17'
+MESLO_BOLD_FONT='43f8115a8432c29662cec5028cf39a1576cc312db115fe12f2b839d4345d42a9'
+LOCALFONT="$(sha256sum ~/.termux/font.ttf 2>/dev/null | cut -c 1-64)" || LOCALFONT="0"
+mkdir -p ${DEBIAN_CHROOT}/tmp
+case ${LOCALFONT} in
+${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT}) cp -f ~/.termux/font.ttf ${DEBIAN_CHROOT}/tmp 2>/dev/null ;;
+*)
+	MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/MesloLGS-NF-Bold"
+	if [ -e "${MESLO_FONT_DIR}" ]; then
+		cd ${MESLO_FONT_DIR}
+		${TMOE_CHROOT_PREFIX} cp -f 'MesloLGS NF Bold.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
+	fi
+	;;
+esac
+if [ -s "${CONFIG_FOLDER}/default-dns.conf" ]; then
+	cp ${CONFIG_FOLDER}/default-dns.conf ${DEBIAN_CHROOT}/tmp/resolv.conf
+fi
+
+if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
+	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/tmp/.openwrtcheckfile
+fi
+#proot --link2symlink tar -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
+cd "${CURRENT_TMOE_DIR}"
+printf "${YELLOW}"
+cat <<-'EndOFneko'
+	                                        
+	                            .:7E        
+	            .iv7vrrrrr7uQBBBBBBB:       
+	           v17::.........:SBBBUg        
+	        vKLi.........:. .  vBQrQ        
+	   sqMBBBr.......... :i. .  SQIX        
+	   BBQBBr.:...:....:. 1:.....v. ..      
+	    UBBB..:..:i.....i YK:: ..:   i:     
+	     7Bg.... iv.....r.ijL7...i. .Lu     
+	  IB: rb...i iui....rir :Si..:::ibr     
+	  J7.  :r.is..vrL:..i7i  7U...Z7i..     
+	  ...   7..I:.: 7v.ri.755P1. .S  ::     
+	    :   r:.i5KEv:.:.  :.  ::..X..::     
+	   7is. :v .sr::.         :: :2. ::     
+	   2:.  .u: r.     ::::   r: ij: .r  :  
+	   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
+	   :u   .iq: :PBEPjvviII5P7::5Du: .v    
+	    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
+	    :v. iiSrr   :..   s i.  vPrvsr. r.  
+	     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
+	      i7LUJv.   . .     .:   YI7bIr :ur 
+	     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
+	    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
+	         :   r. ..      .. .:i  ...     
+EndOFneko
+printf "${RESET}"
+####################
+cat_tmoe_chroot_script() {
+	source ${TMOE_SHARE_DIR}/container/chroot/startup
+}
+##############
+creat_chroot_startup_script() {
+	case ${LINUX_DISTRO} in
+	Android)
+		ANDROID_EMULATED_DIR='/storage/emulated'
+		if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
+			${TMOE_CHROOT_PREFIX} mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			#cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			#ln -s ../../root/sd ./0
+			${TMOE_CHROOT_PREFIX} ln -s ../../sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
+		fi
+		;;
+	esac
+	cd ${CONFIG_FOLDER}
+	if [ -e "/system/bin/wm" ]; then
+		TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+		${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_CHROOT_ETC}
+		WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
+		printf "%s\n" ${WM_SIZE} >wm_size.txt
+		${TMOE_CHROOT_PREFIX} mv wm_size.txt ${TMOE_CHROOT_ETC}
+	fi
+	if [ $(command -v getprop) ]; then
+		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @@g')
+		printf "%s\n" ${ANDROID_HOST_NAME} >hostname
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc/
+		case $(hostname) in
+		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} ;;
+		esac
+	fi
+	printf "%s\n" "Creating chroot startup script"
+	printf "%s\n" "正在创建chroot容器启动脚本"
+	#mkdir -p /sdcard
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/media/sd
+	${TMOE_CHROOT_PREFIX} ln -sf ../media/sd ${DEBIAN_CHROOT}/root/sd
+	[[ -e ${DEBIAN_CHROOT}/sd ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/sd ${DEBIAN_CHROOT}/sd
+	#fi
+	if [ -d "/data/data/com.termux/files/home" ]; then
+		#mkdir -p ${DEBIAN_CHROOT}/root/termux ||
+		${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/media/termux
+		${TMOE_CHROOT_PREFIX} ln -sf ../media/termux ${DEBIAN_CHROOT}/root/termux
+		if [ -h "${HOME}/storage/external-1" ]; then
+			#mkdir -p ${DEBIAN_CHROOT}/root/tf ||
+			${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/media/tf
+			${TMOE_CHROOT_PREFIX} ln -sf ../media/tf ${DEBIAN_CHROOT}/root/tf
+			[[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
+		fi
+	fi
+	##################
+	#此处若不创建，将有可能导致chromium无法启动。
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus
+	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
+	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+	${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_STARTUP_DIR}
+	cat_tmoe_chroot_script
+}
+###################
+creat_tmoe_proot_stat_file() {
+	cat >${TMOE_PROC_PREFIX}.${FILE_02} <<-'ENDOFSTAT'
+		cpu  13543674 2263150 11590764 15571271 210309 1343827 851885 0 0 0
+		cpu0 3629787 489276 3129188 15571051 210302 802654 516635 0 0 0
+		cpu1 3221514 563397 2565534 19 0 168835 110203 0 0 0
+		cpu2 2884314 491225 2361364 18 1 161981 92821 0 0 0
+		cpu3 2664267 457057 2282166 21 0 166631 88732 0 0 0
+		cpu4 365877 83980 417984 25 6 15600 10165 0 0 0
+		cpu5 296831 71203 325638 39 0 9363 14383 0 0 0
+		cpu6 262541 59844 288038 49 0 10350 10848 0 0 0
+		cpu7 218543 47168 220852 49 0 8413 8098 0 0 0
+		intr 1168051864 0 0 0 276005458 0 24952856 5 4 5 0 0 958 302 0 0 0 543988 116 0 1 0 92 184 0 0 0 0 0 0 0 2 0 145446 16538 11 11 358496 0 1779 0 0 0 0 0 1761 106944 0 221398 21826498 15065436 42829013 0 361294 4515 66197491 0 0 82 0 0 0 95 11438 0 0 0 0 0 0 0 0 0 0 288050 6 5498890 688446 388694 0 0 0 0 0 1674782 2042455 0 0 0 0 0 90 120387 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 7 190 0 1434 3096 2536 13 13822 11167 0 0 485674 0 4 3244478 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9327 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 18 0 0 0 0 30003 0 0 0 1471954 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3975713 62570 292 1841582 5903677 88 1324421 35786 38 0 95 601 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77575 30048 0 680 0 106 0 0 0 0 0 0 0 38 0 0 0 0 0 0 116 111 112 0 113 80 17256 201 0 0 0 0 0 0 0 0 1071 0 12984 5 151277 20 171 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6969 0 45 0 0 4309 20 0 10 4 0 0 0 0 618 0 0 587152 46371 1206 0 493 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		ctxt 1941467212
+		btime 1597149124
+		processes 1324243
+		procs_running 9
+		procs_blocked 1
+		softirq 268005113 132391 49905524 287215 24847758 108137456 132391 1472849 45583820 0 37505709
+	ENDOFSTAT
+}
+###############
+check_tmoe_proot_container_proc() {
+	if [ ! -e "${TMOE_PROC_PATH}" ]; then
+		mkdir -p ${TMOE_PROC_PATH}
+	fi
+	#######
+	FILE_02=stat
+	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_02} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		creat_tmoe_proot_stat_file
+		sed -i "s@#test02@@" ${TMOE_STARTUP_SCRIPT}
+	fi
+	#######
+	FILE_03='/proc/bus/pci/devices'
+	TMOE_PROC_FILE=$(sed -n p ${FILE_03} 2>/dev/null)
+	[[ -n "${TMOE_PROC_FILE}" ]] || sed -i "s@#test04@@" ${TMOE_STARTUP_SCRIPT}
+	######
+	#不要读取kmsg
+	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
+		TMOE_PROC_FILE=$(sed -n p /proc/${i} 2>/dev/null)
+		if [ -z "${TMOE_PROC_FILE}" ]; then
+			printf "%s\n" "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
+			printf "%s\n" "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
+			sed -i "s@##${i}#@@" ${TMOE_STARTUP_SCRIPT}
+		fi
+	done
+	unset i
+	#######
+	FILE_01=version
+	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_01} 2>/dev/null)
+	if [ -z "${TMOE_PROC_FILE}" ]; then
+		printf "%s\n" "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
+		printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
+		printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+		sed -i "s@#test01@@" ${TMOE_STARTUP_SCRIPT}
+	fi
+}
+###########
+creat_proot_startup_script() {
+	printf "%s\n" "Creating proot startup script"
+	printf "%s\n" "正在创建proot容器启动脚本${TMOE_STARTUP_SCRIPT} "
+	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
+	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
+	mkdir -p ${TMOE_STARTUP_DIR}
+	source ${TMOE_SHARE_DIR}/container/proot/startup
+}
+#########
+if [ ! -e "${CONFIG_FOLDER}/gitstatus" ]; then
+	mkdir -p ${CONFIG_FOLDER}/gitstatus
+fi
+case ${TMOE_CHROOT} in
+true)
+	creat_chroot_startup_script
+	;;
+*)
+	creat_proot_startup_script
+	check_tmoe_proot_container_proc
+	;;
+esac
+#######################################################
+cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
+	#!/usr/bin/env bash
+	[[ ! \$(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+	if [ ! "\$(pgrep pulseaudio)" ];then
+		pulseaudio --start 2>/dev/null &
+	fi
+	vnc_warning() {
+		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		${PREFIX}/bin/tmoe pr
+	}
+	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
+		${PREFIX}/bin/tmoe ch
+	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
+		${PREFIX}/bin/tmoe pr
+	else
+		vnc_warning
+	fi 
+ENDOFVNC
+#ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
+cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
+	#!/usr/bin/env bash
+	[[ ! \$(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+	if [ ! "\$(pgrep pulseaudio)" ];then
+		pulseaudio --start 2>/dev/null &
+	fi
+
+	vnc_warning() {
+		printf "%s\n" "Sorry,x11vnc server启动失败，请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		${PREFIX}/bin/tmoe pr
+	}
+	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
+		${PREFIX}/bin/tmoe ch
+	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
+		${PREFIX}/bin/tmoe pr
+	else
+		vnc_warning
+	fi
+ENDOFX11VNC
+#ln -s ${PREFIX}/bin/startx11vnc ${HOME}/vnc 2>/dev/null
+###############
+#此處僅適配Android,故shebang爲termux目錄
+cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
+	#!/data/data/com.termux/files/usr/bin/env bash
+	termux-wake-unlock 2>/dev/null
+	pulseaudio --kill 2>/dev/null &
+	sh -c "$(ps -e | egrep -v "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
+ENDOFSTOPVNC
+#################
+#不要单引号
+cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
+	#!/usr/bin/env bash
+	[[ ! \$(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+	vnc_warning() {
+		printf "%s\n" "Sorry,x11启动失败，请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		${PREFIX}/bin/tmoe pr
+	}
+	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
+		${PREFIX}/bin/tmoe ch
+	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
+		${PREFIX}/bin/tmoe pr
+	else
+		vnc_warning
+	fi
+ENDOFXSDL
+################
+aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
+#############
+printf '%s\n' 'Giving startup script execution permission'
+printf "%s\n" "正在赋予启动脚本执行权限"
+cd ${PREFIX}/bin
+ln -sf ${TMOE_SHARE_DIR}/app/tmoe ./
+for i in debian startvnc stopvnc debian-i startxsdl startx11vnc tmoe; do
+	chmod -v a+x ${i}
+	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
+done
+################
+printf "%s\n" "You can type rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ} to delete the image file"
+printf "%s\n" "您可以输${RED}rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像文件"
+ls -lh ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}
+########################
+if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
+	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
+fi
+#cd ${DEBIAN_CHROOT}/usr/local/bin
+cd ${CONFIG_FOLDER}
+[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+[[ -e "debian-i" ]] || curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+chmod a+x neofetch debian-i
+
+${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin
+
+${TMOE_CHROOT_PREFIX} chmod u+w "${DEBIAN_CHROOT}/root"
+
+curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
+#sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
+curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
+chmod +x zsh.sh zsh-i.sh
+${TMOE_CHROOT_PREFIX} mv zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
+#chmod u+x ./*
+###########
+if [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
+	${TMOE_CHROOT_PREFIX} mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
+elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
+	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
+	${TMOE_CHROOT_PREFIX} sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
+fi
+########
+TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+if [ -f "${TMOE_LOCALE_FILE}" ]; then
+	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+	${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_LOCALE_NEW_PATH}
+	${TMOE_CHROOT_PREFIX} cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+	PROOT_LANG=$(sed -n p $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	#sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
+fi
+case ${TMOE_LANG} in
+zh_*UTF-8) LNK_MENU_FILE="${HOME}/容器选择菜单.sh" ;;
+ja_*UTF-8) LNK_MENU_FILE="${HOME}/天萌-コンテナ-メニュー.sh" ;;
+*) LNK_MENU_FILE="${HOME}/TMOE-CONTAINER-MENU.sh" ;;
+esac
+ln -sf ${TMOE_SHARE_DIR}/container/debian/lnk-menu ${LNK_MENU_FILE}
+[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${LNK_MENU_FILE}
+########################
+#cd ${DEBIAN_CHROOT}/root
+#无权限进入chroot容器的root目录
+case ${TMOE_CHROOT} in
+true)
+	cd ${CONFIG_FOLDER}
+	;;
+*)
+	cd ${DEBIAN_CHROOT}/root
+	############
+	if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
+		mv -f .bash_profile .bash_profile.bak 2>/dev/null
+		mv -f .bash_login .bash_login.bak 2>/dev/null
+	fi
+	if [ ! -f ".profile" ]; then
+		printf "\n" >>.profile
+	else
+		mv -f .profile .profile.bak
+	fi
+	;;
+esac
+##################
+#vnc自动启动
+cat >vnc-autostartup <<-'EndOfFile'
+	locale_gen_tmoe_language() {
+		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+			cd /etc
+			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
+			if grep -q ubuntu '/etc/os-release'; then
+				apt update
+				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+			fi
+			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
+				printf "%s\n" "" >>locale.gen
+				sed -i "s@^@#@g;s@##@#@g;$ a ${TMOE_LANG}" locale.gen 2>/dev/null
+			fi
+			locale-gen ${TMOE_LANG}
+		fi
+	}
+	############
+	check_tmoe_locale_file() {
+		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+		if [ -e "${TMOE_LOCALE_FILE}" ]; then
+			TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+			TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
+			TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+			locale_gen_tmoe_language
+		fi
+	}
+	#############
+	vnc_warning() {
+		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输debian-i重新配置GUI。"
+		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
+	}
+	###########
+	LOCAL_BIN_DIR='/usr/local/bin'
+	if [ -e "/etc/X11/xinit/Xsession" ] && [ ! -e "${HOME}/.vnc/passwd" ]; then
+		check_tmoe_locale_file
+		cd /usr/local/etc/tmoe-linux/git
+		git fetch --depth=1
+		git reset --hard origin/master
+		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+		chmod +x ${LOCAL_BIN_DIR}/debian-i
+		${LOCAL_BIN_DIR}/debian-i passwd
+	fi
+	#########
+	notes_of_android_xsdl() {
+	    cat <<-'ENDOFSTARTXSDL'
+		检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app
+		Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.
+		9s后将为您启动xsdl
+		xsdl will start in 9 seconds
+	ENDOFSTARTXSDL
+	    sleep 9
+	}
+	#########
+	notes_of_startvnc(){ 
+	printf "%s\n" "Starting vnc server..."
+	}
+	#######
+	CURRENT_TMOE_DIR=$(pwd)
+	cd ${HOME}/.vnc 2>/dev/null
+	case "$?" in
+	0)
+	    for i in startvnc startx11vnc startxsdl; do
+	        if [ -f ${i} ]; then
+	            rm ${i}
+	            case ${i} in
+	            startxsdl) notes_of_android_xsdl ;;
+				*) notes_of_startvnc ;;
+	            esac
+	            if [ -f ${LOCAL_BIN_DIR}/${i} ]; then
+					cd ${HOME}
+	                ${LOCAL_BIN_DIR}/${i}
+					printf "%s\n" "已为您启动vnc服务 Vnc server has been started, enjoy it ！"
+	            else
+	                vnc_warning
+	            fi
+	        fi
+	    done
+	    unset i
+	    ;;
+	esac
+	##########
+	case ${CURRENT_TMOE_DIR} in
+	/) cd ${HOME};;
+	*) cd ${CURRENT_TMOE_DIR} ;;
+	esac
+	###########
+	ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
+	############
+		case ${TMOE_CHROOT} in
+	    true)
+	        rm -f /run/dbus/pid 2>/dev/null
+	        dbus-daemon --system --fork 2>/dev/null
+	        ;;
+		esac
+	############
+	systemctl() {
+		case ${TMOE_PROOT} in
+		true) printf "%s\n" "Running in proot, ignoring request." ;;
+		esac
+		case "${#}" in
+		0) /bin/systemctl ;;
+		2)
+			printf "%s\n" "service $2 $1"
+			if [ -e "/usr/sbin/service" ]; then
+				/usr/sbin/service $2 $1
+			elif [ -e "/sbin/service" ]; then
+				/sbin/service $2 $1
+			else
+				/bin/systemctl $1 $2
+			fi
+			;;
+		*)
+			set -- "/bin/systemctl" "${@}"
+			"${@}"
+			;;
+		esac
+	}
+	[[ ! -s ~/.profile ]] || . ~/.profile
+EndOfFile
+#curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
+#chmod u+x .profile
+#不要将profile转换为外部脚本，否则将影响sed
+cat >'.profile' <<-'ENDOFbashPROFILE'
+	YELLOW=$(printf '\033[33m')
+	RESET=$(printf '\033[m')
+	cd ${HOME}
+	###############
+	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
+	cp -f vnc-autostartup .bash_login
+	if [ -e "/etc/hostname" ]; then
+		NEW_HOST_NAME=$(sed -n p /etc/hostname | head -n 1)
+		hostname ${NEW_HOST_NAME} 2>/dev/null
+		sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
+	fi
+	if [ "${TMOE_CHROOT}" = 'true' ]; then
+		groupadd aid_system -g 1000 || groupadd aid_system -g 1074
+		groupadd aid_radio -g 1001
+		groupadd aid_bluetooth -g 1002
+		groupadd aid_graphics -g 1003
+		groupadd aid_input -g 1004
+		groupadd aid_audio -g 1005
+		groupadd aid_camera -g 1006
+		groupadd aid_log -g 1007
+		groupadd aid_compass -g 1008
+		groupadd aid_mount -g 1009
+		groupadd aid_wifi -g 1010
+		groupadd aid_adb -g 1011
+		groupadd aid_install -g 1012
+		groupadd aid_media -g 1013
+		groupadd aid_dhcp -g 1014
+		groupadd aid_sdcard_rw -g 1015
+		groupadd aid_vpn -g 1016
+		groupadd aid_keystore -g 1017
+		groupadd aid_usb -g 1018
+		groupadd aid_drm -g 1019
+		groupadd aid_mdnsr -g 1020
+		groupadd aid_gps -g 1021
+		groupadd aid_media_rw -g 1023
+		groupadd aid_mtp -g 1024
+		groupadd aid_drmrpc -g 1026
+		groupadd aid_nfc -g 1027
+		groupadd aid_sdcard_r -g 1028
+		groupadd aid_clat -g 1029
+		groupadd aid_loop_radio -g 1030
+		groupadd aid_media_drm -g 1031
+		groupadd aid_package_info -g 1032
+		groupadd aid_sdcard_pics -g 1033
+		groupadd aid_sdcard_av -g 1034
+		groupadd aid_sdcard_all -g 1035
+		groupadd aid_logd -g 1036
+		groupadd aid_shared_relro -g 1037
+		groupadd aid_dbus -g 1038
+		groupadd aid_tlsdate -g 1039
+		groupadd aid_media_ex -g 1040
+		groupadd aid_audioserver -g 1041
+		groupadd aid_metrics_coll -g 1042
+		groupadd aid_metricsd -g 1043
+		groupadd aid_webserv -g 1044
+		groupadd aid_debuggerd -g 1045
+		groupadd aid_media_codec -g 1046
+		groupadd aid_cameraserver -g 1047
+		groupadd aid_firewall -g 1048
+		groupadd aid_trunks -g 1049
+		groupadd aid_nvram -g 1050
+		groupadd aid_dns -g 1051
+		groupadd aid_dns_tether -g 1052
+		groupadd aid_webview_zygote -g 1053
+		groupadd aid_vehicle_network -g 1054
+		groupadd aid_media_audio -g 1055
+		groupadd aid_media_video -g 1056
+		groupadd aid_media_image -g 1057
+		groupadd aid_tombstoned -g 1058
+		groupadd aid_media_obb -g 1059
+		groupadd aid_ese -g 1060
+		groupadd aid_ota_update -g 1061
+		groupadd aid_automotive_evs -g 1062
+		groupadd aid_lowpan -g 1063
+		groupadd aid_hsm -g 1064
+		groupadd aid_reserved_disk -g 1065
+		groupadd aid_statsd -g 1066
+		groupadd aid_incidentd -g 1067
+		groupadd aid_secure_element -g 1068
+		groupadd aid_lmkd -g 1069
+		groupadd aid_llkd -g 1070
+		groupadd aid_iorapd -g 1071
+		groupadd aid_gpu_service -g 1072
+		groupadd aid_network_stack -g 1073
+		groupadd aid_shell -g 2000
+		groupadd aid_cache -g 2001
+		groupadd aid_diag -g 2002
+		groupadd aid_oem_reserved_start -g 2900
+		groupadd aid_oem_reserved_end -g 2999
+		groupadd aid_net_bt_admin -g 3001
+		groupadd aid_net_bt -g 3002
+		groupadd aid_inet -g 3003
+		groupadd aid_net_raw -g 3004
+		groupadd aid_net_admin -g 3005
+		groupadd aid_net_bw_stats -g 3006
+		groupadd aid_net_bw_acct -g 3007
+		groupadd aid_readproc -g 3009
+		groupadd aid_wakelock -g 3010
+		groupadd aid_uhid -g 3011
+		groupadd aid_everybody -g 9997
+		groupadd aid_misc -g 9998
+		groupadd aid_nobody -g 9999
+		groupadd aid_app_start -g 10000
+		groupadd aid_app_end -g 19999
+		groupadd aid_cache_gid_start -g 20000
+		groupadd aid_cache_gid_end -g 29999
+		groupadd aid_ext_gid_start -g 30000
+		groupadd aid_ext_gid_end -g 39999
+		groupadd aid_ext_cache_gid_start -g 40000
+		groupadd aid_ext_cache_gid_end -g 49999
+		groupadd aid_shared_gid_start -g 50000
+		groupadd aid_shared_gid_end -g 59999
+		groupadd aid_overflowuid -g 65534 2>/dev/null || groupadd aid_overflowuid -g 65535
+		groupadd aid_isolated_start -g 99000
+		groupadd aid_isolated_end -g 99999
+		groupadd aid_user_offset -g 100000
+		#usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin root
+		usermod -a -G aid_system,aid_radio,aid_bluetooth,aid_graphics,aid_input,aid_audio,aid_camera,aid_log,aid_compass,aid_mount,aid_wifi,aid_adb,aid_install,aid_media,aid_dhcp,aid_sdcard_rw,aid_vpn,aid_keystore,aid_usb,aid_drm,aid_mdnsr,aid_gps,aid_media_rw,aid_mtp,aid_drmrpc,aid_nfc,aid_sdcard_r,aid_clat,aid_loop_radio,aid_media_drm,aid_package_info,aid_sdcard_pics,aid_sdcard_av,aid_sdcard_all,aid_logd,aid_shared_relro,aid_dbus,aid_tlsdate,aid_media_ex,aid_audioserver,aid_metrics_coll,aid_metricsd,aid_webserv,aid_debuggerd,aid_media_codec,aid_cameraserver,aid_firewall,aid_trunks,aid_nvram,aid_dns,aid_dns_tether,aid_webview_zygote,aid_vehicle_network,aid_media_audio,aid_media_video,aid_media_image,aid_tombstoned,aid_media_obb,aid_ese,aid_ota_update,aid_automotive_evs,aid_lowpan,aid_hsm,aid_reserved_disk,aid_statsd,aid_incidentd,aid_secure_element,aid_lmkd,aid_llkd,aid_iorapd,aid_gpu_service,aid_network_stack,aid_shell,aid_cache,aid_diag,aid_oem_reserved_start,aid_oem_reserved_end,aid_net_bt_admin,aid_net_bt,aid_inet,aid_net_raw,aid_net_admin,aid_net_bw_stats,aid_net_bw_acct,aid_readproc,aid_wakelock,aid_uhid,aid_everybody,aid_misc,aid_nobody,aid_app_start,aid_app_end,aid_cache_gid_start,aid_cache_gid_end,aid_ext_gid_start,aid_ext_gid_end,aid_ext_cache_gid_start,aid_ext_cache_gid_end,aid_shared_gid_start,aid_shared_gid_end,aid_overflowuid,aid_isolated_start,aid_isolated_end,aid_user_offset root
+		usermod -g aid_inet _apt 2>/dev/null
+		usermod -a -G aid_inet,aid_net_raw portage 2>/dev/null
+		printf "%s" "" #空行
+	fi
+	#函数放在前面
+	debian_sources_list() {
+	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+	    #stable-backports会出错，需改为buster-backports
+	    cat >>/etc/apt/sources.list <<-'EndOfFile'
+				#deb http://opentuna.cn/debian/ stable main contrib non-free
+				#deb http://opentuna.cn/debian/ stable-updates main contrib non-free
+				#deb http://opentuna.cn/debian/ buster-backports main contrib non-free
+				#deb http://opentuna.cn/debian-security/ stable/updates main contrib non-free
+				deb http://opentuna.cn/debian/ sid main contrib non-free
+			EndOfFile
+	}
+	##############################
+	kali_sources_list() {
+	    printf "%s\n" "检测到您使用的是Kali系统"
+	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
+				deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
+				deb http://opentuna.cn/debian/ stable main contrib non-free
+				# deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
+			EndOfSourcesList
+	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
+	}
+	######################
+	ubuntu_sources_list() {
+	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+	    cat >>/etc/apt/sources.list <<-'EndOfFile'
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-security main restricted universe multiverse
+				# proposed为预发布软件源，不建议启用
+				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
+			EndOfFile
+	    touch ~/.hushlogin
+		touch /home/ubuntu/.hushlogin 2>/dev/null
+	    if grep -q 'Bionic Beaver' "/etc/os-release"; then
+	        sed -i 's/focal/bionic/g' /etc/apt/sources.list
+	    fi
+	}
+	#########################
+	mint_sources_list() {
+	    printf "%s\n" "检测到您使用的是Linux Mint"
+		CHINA_MIRROR='mirrors.huaweicloud.com'
+		SOURCE_LIST=/etc/apt/sources.list
+		cp ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
+		sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null
+		sed -i "s@packages.linuxmint.com@${CHINA_MIRROR}/linuxmint@g" ${SOURCE_LIST} 2>/dev/null
+		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
+		sed -n p ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
+	}
+	#################################
+	#配置国内镜像源
+	if [ "$(uname -m)" = "mips" ]; then
+	    chattr +i /etc/apt/sources.list
+	    sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen 2>/dev/null
+	fi
+	##################
+	if ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
+	    chattr +i /etc/apt/sources.list 2>/dev/null
+	fi
+	####################
+	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+		if grep -q 'Debian' "/etc/issue"; then
+	     debian_sources_list
+			case $(uname -m) in
+			arm*|mips*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
+			esac
+		fi
+	fi
+	###############
+	TUNA_MIRROR_URL='mirrors.bfsu.edu.cn'
+	if [ -e /etc/apt/sources.list.d/armbian.list ]; then
+			case $(uname -m) in
+				aarch64) dpkg  --remove-architecture armhf ;;
+			esac 
+		cd /etc/apt/sources.list.d
+		cp armbian.list armbian.list.bak
+		sed -i 's/^/#&/g' armbian.list.bak
+		sed -i 's@apt.armbian.com@mirrors.bfsu.edu.cn/armbian@g' armbian.list
+		#sed -i '$ a\deb http://mirrors.bfsu.edu.cn/armbian/ bullseye main bullseye-utils bullseye-desktop' /etc/apt/sources.list.d/armbian.list
+		cat armbian.list.bak >>armbian.list
+		rm -f armbian.list.bak
+		cd ~
+	elif [ -e /etc/apt/sources.list.d/raspi.list ]; then
+		cd /etc/apt/sources.list.d
+		cp raspi.list raspi.list.bak
+		sed -i 's/^/#&/g' raspi.list.bak
+		#http://archive.raspberrypi.org/debian/ buster main
+		#deb http://mirrors.bfsu.edu.cn/raspbian/raspbian/ buster main non-free contrib rpi
+		#mirrors.bfsu.edu.cn/raspberrypi/
+
+		sed -i "s@archive.raspberrypi.org/debian@${TUNA_MIRROR_URL}/raspberrypi@g" raspi.list
+		cat raspi.list.bak >>raspi.list
+		rm -f raspi.list.bak
+		cd ..
+		cp sources.list sources.list.bak
+		sed -i "s@raspbian.raspberrypi.org/raspbian@${TUNA_MIRROR_URL}/raspbian/raspbian@g" sources.list
+		sed -i 's/^/#&/g' sources.list.bak
+		cat sources.list.bak >> sources.list
+		cd ~
+	fi
+	###############
+	if grep -q 'Kali' "/etc/issue"; then
+	    kali_sources_list
+	elif [ "$(sed -n p /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
+	    ubuntu_sources_list
+	elif grep -q 'Mint' "/etc/issue"; then
+	    mint_sources_list
+	elif grep -q 'OpenWrt' "/etc/os-release"; then
+	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
+		sed -i 's@downloads.openwrt.org@mirrors.bfsu.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
+	fi
+	#################
+	 sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
+	##dns
+	rm -f /etc/resolv.conf
+	cat >/etc/resolv.conf <<-'EndOfFile'
+	nameserver 1.0.0.1
+	nameserver 114.114.115.115
+	nameserver 2606:4700:4700::1111
+	nameserver 240c::6644
+	EndOfFile
+	[[ ! -s /tmp/resolv.conf ]] || cp -f /tmp/resolv.conf /etc
+	######################
+	###################
+	arch_linux_mirror_list() {
+	    sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
+	    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
+	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+					#Server = https://mirror.archlinuxarm.org/$arch/$repo
+					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
+					Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
+				EndOfArchMirrors
+	    else
+	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+					#Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
+					#Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
+					Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
+				EndOfArchMirrors
+	    fi
+	}
+	#############################
+	manjaro_mirror_list() {
+	    if [ "$(uname -m)" = "aarch64" ]; then
+	        #sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
+	        #TUNA镜像站的manjaro rootfs容器竟然没grep、awk和sed
+	        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+					#Server = https://mirror.archlinuxarm.org/$arch/$repo
+					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
+					#Server = https://mirrors.bfsu.edu.cn/manjaro/arm-stable/$repo/$arch
+		            Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
+				EndOfArchMirrors
+	        #curl -Lo 'archlinuxarm-keyring.pkg.tar.xz' https://mirrors.bfsu.edu.cn/manjaro/arm-stable/core/aarch64/archlinuxarm-keyring-20140119-1-any.pkg.tar.xz
+	        #pacman -U --noconfirm ./archlinuxarm-keyring.pkg.tar.xz
+	        #rm -fv ./archlinuxarm-keyring.pkg.tar.xz
+	        #pacman-key --populate archlinux manjaro
+	        #pacman -Sy --noconfirm archlinux-keyring
+	        #pacman -S --noconfirm iputils
+	    fi
+	}
+	#################
+	arch_linux_yay() {
+	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || printf '%s\n' 'LANG=en_US.UTF-8' >>/etc/locale.conf
+	    pacman -Syyu --noconfirm
+	    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
+	        cat >>/etc/pacman.conf <<-'Endofpacman'
+					[archlinuxcn]
+					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+				Endofpacman
+	    fi
+	    pacman -Syu --noconfirm archlinux-keyring
+	    pacman -Sy --noconfirm archlinuxcn-keyring
+	    pacman -S --noconfirm yay
+	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
+	    pacman -S --noconfirm diffutils iproute gawk
+	}
+	#################
+	#################
+	if [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Arch" ]; then
+	    arch_linux_mirror_list
+		pacman-key --init
+	    pacman-key --populate
+		if [ -e "/etc/mkinitcpio.d/linux-armv7.preset" ]; then
+			pacman -Rsc --noconfirm linux-armv7
+		fi
+	elif [ "$(sed -n p /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
+	    manjaro_mirror_list
+			pacman-key --init
+	        pacman-key --populate
+	    #pacman -Sy --noconfirm grep sed awk
+		pacman -Syu --noconfirm base base-devel
+	fi
+
+	if [ -e "/etc/pacman.conf" ] && [ $(command -v grep) ]; then
+	    arch_linux_yay
+	fi
+	#######################
+	case ${TMOE_PROOT} in
+	true)
+		for i in sd tf; do
+			if [ -e "/root/${i}" ] && [ ! -e "/${i}" ]; then
+				ln -s ./root/${i} /${i}
+			fi
+		done
+		unset i
+		;;
+	esac
+	##############
+	alpine_linux_configure() {
+	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
+		    printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
+	        sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
+	        apk update
+	        apk add bash
+	    fi
+	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
+	    rm -f ~/.profile vnc-autostartup
+	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
+	    if grep -q 'OpenWrt' "/etc/os-release"; then
+	        mkdir -p /var/lock/
+	        touch /var/lock/opkg.lock
+	        opkg update
+	        opkg install libustream-openssl ca-bundle ca-certificates bash
+	    fi
+		printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+		bash /usr/local/bin/neofetch
+	    exec bash zsh.sh
+		exit 0
+	}
+	########################
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+	else
+		TMOE_LANG="en_US.UTF-8"
+	fi
+	TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	############################
+	opensuse_linux_repo() {
+	    LINUX_DISTRO='suse'
+		if [ "$(uname -m)" = 'aarch64' ];then
+			zypper mr -da
+	        zypper addrepo -fcg  https://mirrors.bfsu.edu.cn/opensuse/ports/aarch64/tumbleweed/repo/oss bfsu-mirror-oss
+	        zypper --gpg-auto-import-keys refresh
+		elif [ "$(uname -m)" != 'armv7l' ] ;then
+	        zypper mr -da
+	        zypper addrepo -fcg https://mirrors.bfsu.edu.cn/opensuse/tumbleweed/repo/oss/ bfsu-mirror-oss
+	        zypper addrepo -fcg https://mirrors.bfsu.edu.cn/opensuse/tumbleweed/repo/non-oss/ bfsu-mirror-non-oss
+	        zypper addrepo -fcg https://mirrors.bfsu.edu.cn/packman/suse/openSUSE_Tumbleweed/ bfsu-mirror_Tumbleweed
+	        zypper --gpg-auto-import-keys refresh
+	        #zypper dup --no-allow-vendor-change -y
+		fi
+	    zypper in -y wget curl
+	    sed -i "s@RC_LANG=.*@RC_LANG=${TMOE_LANG}@" /etc/sysconfig/language
+	    sed -i "s@RC_LC_ALL=.*@RC_LC_ALL=${TMOE_LANG}@" /etc/sysconfig/language
+	    sed -i "s@INSTALLED_LANGUAGES=@INSTALLED_LANGUAGES=${TMOE_LANG_HALF}@" /etc/sysconfig/language
+	    zypper in -y glibc-locale glibc-i18ndata 
+		zypper in -y translation-update-${TMOE_LANG_HALF}
+	}
+	################################
+	if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
+	    alpine_linux_configure
+	elif grep -q 'openSUSE' "/etc/os-release"; then
+	    opensuse_linux_repo
+	fi
+	##############################
+	apt update 2>/dev/null
+	#apt reinstall -y perl-base
+	if [ ! -e /usr/lib/locale/en_US ];then
+		apt install -y locales-all 2>/dev/null
+	fi 
+	if [ ! $(command -v locale-gen) ]; then
+	    apt install -y locales 2>/dev/null
+	fi
+
+	if grep -q 'ubuntu' /etc/os-release; then
+	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+	fi
+
+	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
+	printf '%s\n' '正在执行优化步骤，请勿退出!'
+	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
+
+	#配置时区
+	printf '%s\n' 'Asia/Shanghai' >/etc/timezone
+	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
+	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
+	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
+	    printf "%s\n" "Tmoe-locale file not detected."
+	fi
+	printf "%s\n" "Configuring ${TMOE_LANG_HALF} environment..."
+	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen 2>/dev/null
+	cat >>/etc/default/locale <<-EOF
+			LANG=${TMOE_LANG}
+			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
+			LC_ALL=${TMOE_LANG}
+		EOF
+	if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
+	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
+	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
+	    printf "\n" >>/etc/locale.gen
+	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
+	fi
+	locale-gen ${TMOE_LANG} 2>/dev/null
+	source /etc/default/locale 2>/dev/null
+	#################
+	printf "$YELLOW"
+	cat <<-'EndOFneko'
+			                                     
+			       DL.                           
+			       QBBBBBKv:rr77ri:.             
+			       gBBQdY7::::..::i7vv.          
+			       UBd. . .:.........rBBBQBBBB5  
+			       Pu  :..r......i:....BBBQBBB:  
+			       ri.i:.j:...:. i7... uBBZrd:   
+			 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
+			.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
+			 .27. :r.r:L7i::.7r:vri:...rr  .     
+			  v   ::.Yrviri:7v7v: ::...i.   i    
+			      r:ir: r.iiiir..:7r...r   :P.2Y 
+			      v:vi::.      :  ::. .qI7U1U :1 
+			Qr    7.7.         :.i::. :Di:. i .v:
+			v7..  s.r7.   ...   .:7i: rDi...r .. 
+			 vi: .7.iDBBr  .r   .:.7. rPr:..r    
+			 i   :virZBgi  :vrYJ1vYY .ruY:..i    
+			     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+			    .1r:q.   rB52SKrj.:i i5isi.:i :.r
+			    YvrY7    r.  . ru :: PIrj7.:r..v 
+			   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
+			  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
+			  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
+			  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
+			         .            i   7          
+
+		EndOFneko
+	printf "$RESET"
+	####################
+	apt install -y apt-utils 2>/dev/null
+	apt install -y ca-certificates wget curl 2>/dev/null
+	if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
+	     apt install -y apt-transport-https 2>/dev/null
+	fi
+	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+	    printf "%s\n" "Replacing http software source list with https."
+	    printf "%s\n" "正在将http源替换为https..."
+	    sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
+	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list 2>/dev/null
+	fi
+	##########################
+	gentoo_gnu_linux_make_conf() {
+	    LINUX_DISTRO=gentoo
+	    grep -q 'en_US' /etc/locale.gen || printf "%s\n%s\n" "en_US.UTF-8 UTF-8" "en_US.UTF-8 UTF-8" >>/etc/locale.gen
+	    locale-gen
+	    GENTOOLOCALE="$(eselect locale list | grep 'en_US' | head -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
+	    eselect locale set "${GENTOOLOCALE}"
+	    #bash /etc/profile
+	    mkdir -p '/usr/portage'
+	    #下面生成的文件不要留空格
+	    #cat >/etc/portage/make.conf <<-'Endofmakeconf'
+	    source /etc/portage/make.conf 2>/dev/null
+	    mkdir -p /etc/portage/repos.conf/
+	    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
+				[gentoo]
+				location = /usr/portage
+				sync-type = rsync
+				#sync-uri = rsync://rsync.mirrors.ustc.edu.cn/gentoo-portage/
+				sync-uri = rsync://mirrors.bfsu.edu.cn/gentoo-portage/
+				auto-sync = yes
+			EndofgentooConf
+	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
+		if grep -q 'Funtoo' /etc/os-release;then
+		   #同步过于耗时
+	       emerge --sync
+		   emerge emerge-webrsync
+		fi 
+	    emerge-webrsync
+	    emerge --config sys-libs/timezone-data 2>/dev/null
+	    #eselect profile list
+	    GENTOOnosystemdStable="$(eselect profile list | egrep -v 'desktop|hardened|developer|systemd|selinux|multilib' | grep stable | tail -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
+	    eselect profile set "${GENTOOnosystemdStable}"
+	    etc-update --automode -3
+	    etc-update
+	    #dispatch-conf
+	    emerge -uvDN --with-bdeps=y @world
+		emerge -avk sys-devel/binutils
+	    emerge eix 2>/dev/null
+	    printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+	    #rm -f vnc* zsh* .profile
+	    mv -f .profile.bak .profile 2>/dev/null
+	    #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	    chmod +x /usr/local/bin/neofetch
+	    neofetch
+	    #bash
+	    # exit 0
+	}
+	#############################
+	void_linux_repository() {
+	    LINUX_DISTRO='void'
+	    cat >/etc/locale.conf <<-'EOF'
+				LANG=en_US.UTF-8
+				LANGUAGE=en_US:zh
+				LC_COLLATE=C
+			EOF
+	    mkdir -p /etc/xbps.d
+	    cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+	    sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.bfsu.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
+	    xbps-install -S
+	    xbps-install -uy xbps
+	    xbps-install -y wget curl
+	    #wget -qO- 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' | bash -
+	    neofetch
+	    #rm -f vnc* zsh* .profile
+	    #mv -f .profile.bak .profile 2>/dev/null
+	    #wget -qO zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
+	    #sed -i '1 c\#!/usr/bin/env bash' zsh.sh
+	    #chmod +x zsh.sh
+	    printf '%s\n' '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
+		xbps-reconfigure -f glibc-locales
+	    #zsh 2>/dev/null || bash
+	    #exit 0
+	}
+	##########################
+	if egrep -q 'Funtoo|Gentoo' '/etc/os-release'; then
+	    gentoo_gnu_linux_make_conf
+	elif grep -qi 'Void' '/etc/issue'; then
+	    void_linux_repository
+	elif [ "$(uname -m)" = "mips" ]; then
+	    chattr -i /etc/apt/sources.list
+	elif ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
+	    chattr -i /etc/apt/sources.list 2>/dev/null
+	fi
+	####################
+	apt update 2>/dev/null
+	apt list --upgradable 2>/dev/null
+	printf "%s\n" "正在升级所有软件包..."
+	apt dist-upgrade -y 2>/dev/null
+	apt install -y procps 2>/dev/null
+	apt clean 2>/dev/null
+	#############################
+	#grep -q 'export DISPLAY' /etc/profile || printf "%s\n" "export DISPLAY=":1"" >>/etc/profile
+	printf "%s\n" "Welcome to Debian GNU/Linux."
+	sed -n p /etc/issue 2>/dev/null || sed -n p /etc/os-release
+	uname -a
+	rm -f vnc-autostartup .profile
+	if [ -f ".profile.bak" ]; then
+	    mv -f .profile.bak .profile
+	fi
+	####################
+	if [ ! "$(command -v lolcat)" ];then
+		printf "%s\n" "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
+		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
+	fi
+	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
+	printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
+	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	chmod +x /usr/local/bin/neofetch
+	if [ -e /usr/games/lolcat ]; then
+		neofetch | /usr/games/lolcat
+	elif [ "$(command -v lolcat)" ]; then
+		neofetch | lolcat
+	else
+		neofetch
+	fi
+	################
+	################
+	slackware_mirror_list() {
+	    LINUX_DISTRO='slackware'
+	    sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
+	    sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
+	    sed -i '$ a\https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
+	    slackpkg update gpg
+	    slackpkg update
+	}
+	###################
+	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
+	    slackware_mirror_list
+	fi
+	#############################################
+	fedora_31_repos() {
+	    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
+	    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
+	}
+	###########
+	#fedora清华源mirrors.bfsu.edu.cn/fedora/releases/
+	fedora_32_repos() {
+	    cat >/etc/yum.repos.d/fedora.repo <<-'EndOfYumRepo'
+				[fedora]
+				name=Fedora $releasever - $basearch
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/releases/$releasever/Everything/$basearch/os/
+				metadata_expire=28d
+				gpgcheck=1
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
+
+	    cat >/etc/yum.repos.d/fedora-updates.repo <<-'EndOfYumRepo'
+				[updates]
+				name=Fedora $releasever - $basearch - Updates
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/updates/$releasever/Everything/$basearch/
+				enabled=1
+				gpgcheck=1
+				metadata_expire=6h
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
+	}
+	#########################
+	fedora_3x_repos() {
+	    cat >/etc/yum.repos.d/fedora-modular.repo <<-'EndOfYumRepo'
+				[fedora-modular]
+				name=Fedora Modular $releasever - $basearch
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/releases/$releasever/Modular/$basearch/os/
+				enabled=1
+				metadata_expire=7d
+				gpgcheck=1
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
+
+	    cat >/etc/yum.repos.d/fedora-updates-modular.repo <<-'EndOfYumRepo'
+				[updates-modular]
+				name=Fedora Modular $releasever - $basearch - Updates
+				failovermethod=priority
+				baseurl=https://mirrors.huaweicloud.com/fedora/updates/$releasever/Modular/$basearch/
+				enabled=1
+				gpgcheck=1
+				metadata_expire=6h
+				gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+				skip_if_unavailable=False
+			EndOfYumRepo
+	    #dnf install -y glibc-langpack-zh
+	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
+	    #dnf clean packages
+		TMOE_LANG_HALF=$(printf '%s\n' $LANG | cut -d '.' -f 1 |cut -d '_' -f 1)
+		dnf install -y "glibc-langpack-${TMOE_LANG_HALF}*"
+	}
+	######################
+	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 |cut -d '"' -f 2)" = "fedora" ]; then
+	    tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
+	    mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
+	    FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
+	    if ((${FEDORA_VERSION} >= 30)); then
+	        if ((${FEDORA_VERSION} >= 32)); then
+	            fedora_32_repos
+	        else
+	            fedora_31_repos
+	        fi
+	        fedora_3x_repos
+	    fi
+
+	elif grep -q 'CentOS' /etc/os-release; then
+	    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+	    #curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
+		#curl -Lo /etc/yum.repos.d/CentOS-Base.repo https://mirrors.huaweicloud.com/repository/conf/CentOS-8-anon.repo
+		[[ $(command -v dnf) ]] || yum install -y dnf
+		dnf install -y epel-release || yum install -y epel-release
+		#dnf update
+		cp -a /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
+	    cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
+	   sed -e 's!^metalink=!#metalink=!g' \
+	    -e 's!^#baseurl=!baseurl=!g' \
+	    -e 's!//download\.fedoraproject\.org/pub!//mirrors.bfsu.edu.cn!g' \
+	    -e 's!http://mirrors\.tuna!https://mirrors.tuna!g' \
+	    -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
+	fi
+	############################
+	note_of_non_debian() {
+	    #printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
+	    printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
+	    bash zsh.sh
+	    #debian-i
+	}
+	################
+	if ! egrep -q 'debian|ubuntu' '/etc/os-release'; then
+	    note_of_non_debian
+	else
+	    bash zsh.sh
+	fi
+ENDOFbashPROFILE
+#####################
+case ${TMOE_CHROOT} in
+true)
+	${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/root/.bash_profile ${DEBIAN_CHROOT}/root/.bash_login
+	${TMOE_CHROOT_PREFIX} mv ${DEBIAN_CHROOT}/root/.profile ${DEBIAN_CHROOT}/root/.profile.bak 2>/dev/null
+	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile ${DEBIAN_CHROOT}/root
+	;;
+esac
+#sed -i '1 r vnc-autostartup' ./.bash_login
+#####################
+check_current_user_name_and_group() {
+	CURRENT_USER_NAME=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}')
+	CURRENT_USER_GROUP=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
+	if [ -z "${CURRENT_USER_GROUP}" ]; then
+		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+	fi
+}
+#################
+#if [ "${LINUX_DISTRO}" != 'Android' ]; then
+#	sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
+#sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
+#fi
+case ${TMOE_CHROOT} in
+true) ;;
+#su -c "chown -Rv root:root ${DEBIAN_CHROOT}"
+*)
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*)
+		check_current_user_name_and_group
+		case ${HOME} in
+		/root) ;;
+		*)
+			chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${DEBIAN_CHROOT}
+			su - ${CURRENT_USER_NAME} -c "bash ${PREFIX}/bin/debian"
+			exit 0
+			;;
+		esac
+		;;
+	esac
+	;;
+esac
+bash ${PREFIX}/bin/debian #此处不应以sudo权限执行

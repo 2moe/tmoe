@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+#######################################
+remove_old_version_gnu_linux_container() {
+	cd ${HOME}
+	DEBIAN_CHROOT=${HOME}/${DEBIAN_FOLDER}
+	#旧版存储于HOME
+	source ${TMOE_SHARE_DIR}/removal/umount
+	for i in dev dev/shm dev/pts proc sys storage/emulated/0/* media/sd media/tf; do
+		if [ -e "${DEBIAN_CHROOT}/${i}" ]; then
+			ls -lAh "${DEBIAN_CHROOT}/${i}" 2>/dev/null
+		fi
+	done
+	unset i
+	cat <<-EOF
+		移除系统前，请先确保您已卸载容器挂载目录。
+		建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者${RED}概不负责${RESET}！！！
+		Before removing the system, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd media/sd media/tf${RESET} and other directories.
+		It is recommended that you backup the entire system before removal. 
+		If the data is lost due to improper operation, the developer is not responsible! 
+	EOF
+	#case ${TMOE_CHROOT} in
+	#true)
+	#	for i in dev proc sys root/sd tmp root/termux root/tf; do
+	#		if [ -e "${DEBIAN_CHROOT}/${i}" ]; then
+	#			su -c "chattr -i ${i}"
+	#		fi
+	#	done
+	#	unset i
+	#	;;
+	#esac
+	sed -n p /proc/mounts | grep ${DEBIAN_FOLDER}
+	ps -e | grep proot
+	ps -e | grep startvnc
+	printf "%s\n" "移除系统前，请先确保您已停止GNU/Linux容器。"
+	pkill -9 proot 2>/dev/null
+	pgrep proot &>/dev/null
+	if [ "$?" = "0" ]; then
+		printf '%s\n' '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
+	fi
+	ls -l ${DEBIAN_CHROOT}/root/termux/* 2>/dev/null
+	if [ "$?" = "0" ]; then
+		printf '%s\n' 'WARNING！检测到/root/termux无法强制卸载，您当前使用的可能是chroot容器'
+		printf "%s\n" "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
+		printf '%s\n' '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
+		#printf '%s\n' '为防止数据丢失，建议您重启设备后再重试。'
+		#printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+		#printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+		#read
+		#tmoe_manager_main_menu
+	fi
+	printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+	printf "%s\n" "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
+	${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+	if [ ! -d ${DEBIAN_CHROOT} ]; then
+		printf "%s\n" "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
+	fi
+	printf "%s\n" "Do you want to remove it?[Y/n]"
+	printf "%s\n" "${YELLOW}按回车键确认移除 Press enter to remove.${RESET} "
+	read opt
+	case $opt in
+	y* | Y* | "")
+		chmod 777 -R ${DEBIAN_FOLDER} || sudo chmod 777 -R ${DEBIAN_FOLDER}
+		rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc "${CONFIG_FOLDER}/chroot_container" 2>/dev/null || sudo rm -rfv "${DEBIAN_FOLDER}" ${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt ${PREFIX}/bin/startx11vnc "${CONFIG_FOLDER}/chroot_container" 2>/dev/null
+		if [ -d "${HOME}/debian_arm64" ]; then
+			printf "%s\n" "检测到残留文件夹，正在移除..."
+			chmod 777 -R "${HOME}/debian_arm64"
+			rm -rf "${HOME}/debian_arm64" 2>/dev/null || sudo rm -rfv "${HOME}/debian_arm64"
+		fi
+		sed -i '/alias debian=/d' ${PREFIX}/etc/profile 2>/dev/null
+		sed -i '/alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
+		source profile >/dev/null 2>&1
+		printf '%s\n' 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
+		printf '%s\n' '移除完成，如需卸载aria2,请手动输apt remove aria2'
+		printf "%s\n" "Deleted已删除"
+		;;
+	n* | N*) printf "%s\n" "skipped." ;;
+	*) printf "%s\n" "Invalid choice. skipped." ;;
+	esac
+	printf "%s\n" "若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i"
+	printf '%s\n' 'If you want to reinstall, it is not recommended to remove the image file.'
+	printf "%s\n" "${YELLOW}若您需要重装容器，则不建议删除镜像文件。${RESET} "
+	cd ${HOME}
+	ls -lh ${ROOTFS_NAME}*-rootfs.tar.* 2>/dev/null
+	printf "%s\n" "${YELLOW}请问您是否需要删除容器镜像文件？[Y/n]${RESET} "
+	printf "%s\n" "${RED}rm -fv ~/${ROOTFS_NAME}*-rootfs.tar.*${RESET}"
+	printf "%s\n" "Do you need to delete the image file (${ROOTFS_NAME}*-rootfs.tar.*)?[Y/n]"
+	read opt
+	case $opt in
+	y* | Y* | "")
+		#rm -fv ${DEBIAN_CHROOT}*-rootfs.tar.*
+		#此处应删除ROOTFS_NAME而非DEBIAN_FOLDER开头的rootfs文件
+		rm -fv ~/${ROOTFS_NAME}*-rootfs.tar.*
+		printf "%s\n" "Deleted已删除"
+		;;
+	n* | N*) printf "%s\n" "${YELLOW}Skipped,已跳过，按回车键返回。${RESET} " ;;
+	*) printf "%s\n" "${YELLOW}Invalid choice，skipped.已跳过，按回车键返回。${RESET} " ;;
+	esac
+	#tmoe_manager_main_menu
+}
+###################

@@ -1,0 +1,160 @@
+#compdef tmoe
+
+#zstyle ':completion::complete:tmoe:*:descriptions' format '%B%d%b'
+zstyle ':completion::complete:tmoe:*:descriptions' format '[%d]'
+zstyle ':completion::complete:tmoe:*:container_type' group-name "container type"
+zstyle ':completion::complete:tmoe:*:distro_name' group-name "distro name"
+zstyle ':completion::complete:tmoe:*:distro_code' group-name distro_code
+zstyle ':completion::complete:tmoe:*:architecture' group-name "architecture"
+zstyle ':completion::complete:tmoe:*:execute_program' group-name "execute program"
+zstyle ':completion::complete:tmoe::' list-grouped
+###########
+PURPLE=$(printf '\033[0;35m')
+RED=$(printf '\033[31m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
+
+function _tmoe() {
+    local RET=1
+    local -a container_type
+    local -a distro_name
+    local -a distro_code
+    local -a architecture
+    local -a execute_program
+
+    container_type=(
+        "c:chroot"
+        "chroot"
+        "proot"
+        "p:proot"
+    )
+
+    distro_name=(
+        "a:arch"
+        "arch:simplicity,modernity,pragmatism,user centrality and versatility"
+        "al:alpine"
+        "ap:alpine"
+        "alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox"
+        "alt"
+        "apertis"
+        "arm:armbian"
+        "armbian:香蕉派,香橙派,nanopi"
+        "c:centos"
+        "centos:CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform"
+        "d:debian"
+        "debian:Debian is a distro composed of free and open-source software"
+        "devuan:Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
+        "f:fedora"
+        "fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
+        "ft:funtoo"
+        "funtoo"
+        "g:gentoo"
+        "gentoo:追求极限配置和极高自由"
+        "k:kali"
+        "kali:Kali is a Debian-derived distro designed for digital forensics and penetration testing"
+        "m:manjaro"
+        "manjaro:Free fast and secure Linux based operating system for everyone"
+        "mi:mint"
+        "mint:Elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution."
+        "o:opensuse"
+        "suse:opensuse"
+        "opensuse"
+        "ow:openwrt"
+        "openwrt:OpenWRT is a Linux OS targeting embedded devices"
+        "r:raspios"
+        "raspios:Raspberry Pi OS"
+        "raspbian"
+        "s:slackware"
+        "slackware:Slackware is a distro created by Patrick Volkerding in 1993"
+        "u:ubuntu"
+        "ub:ubuntu"
+        "ubuntu:Ubuntu is the modern, open source OS."
+        "v:void"
+        "void:Void is a general purpose operating system, based on the monolithic Linux kernel"
+    )
+
+    distro_code=(
+        "20.10:ubuntu groovy"
+        "20.04:ubuntu focal"
+        "s:debian sid"
+        "sid"
+        "buster:debian10"
+        "bullseye:debian11"
+        "bookworm:debian12"
+        "n:none(Rolling releases like archlinux do not have a version code)"
+        "none:諸如arch之類的發行版無代號"
+        "r:kali rolling"
+        "18.04:ubuntu bionic"
+        "31:fedora 31"
+        "32:fedora 32"
+        "33:fedora 33"
+        "8-Stream:CentOS 8-Stream"
+        "7"
+        "tumbleweed:OpenSUSE tumbleweed"
+    )
+
+    architecture=(
+        "x:x64/amd64"
+        "amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations.It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations."
+        "a:aarch64/arm64"
+        "arm64:64-bit extension of the ARM architecture"
+        "h:armhf/arm"
+        "armhf:32-bit arm hard float"
+        "armel:32-bit arm soft float"
+        "i:i386/x86/x32"
+        "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant"
+        "p:ppc64el"
+        "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target"
+        "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers"
+        "m:mipsel:Microprocessor without Interlocked Pipelined Stages little-endian"
+        "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principlesRISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles"
+    )
+    execute_program=(
+        "v:vnc(startvnc)"
+        "vnc:tight/tiger vnc server"
+        "x11:x11 vnc server"
+        "xs:xserver"
+        "xsdl:xserver"
+        "bash:GNU Bourne-Again SHell"
+        "zsh:z shell(Default)"
+        "ash:command interpreter (shell)"
+    )
+
+    _arguments -C \
+        '1: :->first_arg' \
+        '2: :->second_arg' \
+        '3: :->third_arg' \
+        '4: :->fourth_arg' \
+        '5: :->fifth_arg' \
+        '6: :->sixth_arg' && RET=0
+
+    local target=$words[3]
+
+    case $state in
+    first_arg) _describe -t container_type "container type" container_type && RET=0 ;;
+    second_arg) _describe -t distro_name "distro name" distro_name && RET=0 ;;
+    third_arg)
+        _describe -t distro_code "distro_code" distro_code && RET=0
+        _describe -t distro_name "architecture" architecture && RET=0
+        ;;
+    fourth_arg)
+        _describe -t architecture "architecture" architecture && RET=0
+        _describe -t execute_program "execute program" execute_program && RET=0
+        ;;
+    fifth_arg) _describe -t execute_program "execute program" execute_program && RET=0 ;;
+    sixth_arg)
+        case $target in
+        *)
+            _message "Press ${BOLD}${YELLOW}enter${RESET}${RESET} to start ${BLUE}${target}${RESET}."
+            _message "按${BOLD}${YELLOW}回车键${RESET}${RESET}启动${BLUE}${target}${RESET}容器。" && RET=0
+            ;;
+        esac
+        ;;
+    esac
+    return $RET
+}
+
+_tmoe "$@"

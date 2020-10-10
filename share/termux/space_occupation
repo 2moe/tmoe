@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#######################################
+space_occupation_menu() {
+	cd ${HOME}/..
+	#15 60 4
+	OPTION=$(whiptail --title "Query space occupation ranking" --menu "查询空间占用排行" 0 0 0 \
+		"0" "🌚 Back返回" \
+		"1" "termux各目录" \
+		"2" "termux文件" \
+		"3" "sdcard" \
+		"4" "总存储空间用量Disk usage" \
+		3>&1 1>&2 2>&3)
+	###########################################################################
+	case ${OPTION} in
+	0 | "") ${RETURN_TO_MENU} ;;
+	1)
+		printf '%s\n' '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
+		printf '%s\n' 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
+		printf "%s\n" "${YELLOW}主目录 TOP15${RESET}"
+		du -hsx ./home/* ./home/.* 2>/dev/null | sort -rh | head -n 15
+		printf '%s\n' '-------------------'
+		printf "%s\n" "${YELLOW}usr 目录 TOP6${RESET}"
+		du -hsx ./usr/* 2>/dev/null | sort -rh | head -n 6
+		printf '%s\n' '-------------------'
+		printf "%s\n" "${YELLOW}usr/lib 目录 TOP8${RESET}"
+		du -hsx ./usr/lib/* 2>/dev/null | sort -rh | head -n 8
+		printf '%s\n' '-------------------'
+		printf "%s\n" "${YELLOW}usr/share 目录 TOP8${RESET}"
+		du -hsx ./usr/share/* 2>/dev/null | sort -rh | head -n 8
+		printf '%s\n' '-------------------'
+		;;
+	2)
+		printf '%s\n' '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
+		printf '%s\n' 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
+		printf "%s\n" "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
+		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
+		;;
+	3)
+		cd /sdcard
+		printf '%s\n' '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
+		printf '%s\n' 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
+		printf "%s\n" "${YELLOW}sdcard 目录 TOP15${RESET}"
+		du -hsx ./* ./.* 2>/dev/null | sort -rh | head -n 15
+		printf "%s\n" "${YELLOW}sdcard文件大小排行榜(30名)${RESET}"
+		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
+		;;
+	4)
+		printf "%s\n" "${YELLOW}Disk usage${RESET}"
+		df -h | grep G | grep -v tmpfs
+		press_enter_to_return
+		space_occupation_menu
+		;;
+	esac
+	#####################################
+	press_enter_to_return
+	space_occupation_menu
+}
+########################################################################
+space_occupation_menu $@

@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+############################################
+case $(uname -m) in
+armv7* | armv8l)
+	TRUE_ARCH_TYPE="armhf"
+	;;
+armv6* | armv5*)
+	TRUE_ARCH_TYPE="armel"
+	;;
+aarch64 | armv8* | arm64)
+	TRUE_ARCH_TYPE="arm64"
+	;;
+x86_64 | amd64)
+	TRUE_ARCH_TYPE="amd64"
+	;;
+i*86 | x86)
+	TRUE_ARCH_TYPE="i386"
+	;;
+s390*)
+	TRUE_ARCH_TYPE="s390x"
+	;;
+ppc*)
+	TRUE_ARCH_TYPE="ppc64el"
+	;;
+mips*)
+	TRUE_ARCH_TYPE="mipsel"
+	;;
+risc*)
+	TRUE_ARCH_TYPE="riscv"
+	;;
+esac
+######################
+TMOE_QEMU="true"
+case "${CONTAINER_ARCH}" in
+i386)
+	NEW_TMOE_ARCH='i386'
+	case ${TRUE_ARCH_TYPE} in
+	amd64 | i386) TMOE_QEMU="false" ;;
+	*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
+	esac
+	;;
+amd64)
+	NEW_TMOE_ARCH='amd64'
+	TMOE_QEMU_ARCH="x86_64"
+	;;
+arm64)
+	NEW_TMOE_ARCH='arm64'
+	TMOE_QEMU_ARCH="aarch64"
+	;;
+armhf)
+	NEW_TMOE_ARCH='armhf'
+	case ${TRUE_ARCH_TYPE} in
+	arm64 | armhf) TMOE_QEMU="false" ;;
+	*) TMOE_QEMU_ARCH="arm" ;;
+	esac
+	;;
+armel)
+	NEW_TMOE_ARCH='armel'
+	case ${TRUE_ARCH_TYPE} in
+	arm64 | armhf | armel) TMOE_QEMU="false" ;;
+	*) TMOE_QEMU_ARCH="armeb" ;;
+	esac
+	;;
+ppc64el)
+	NEW_TMOE_ARCH='ppc64el'
+	TMOE_QEMU_ARCH="ppc64le"
+	;;
+s390x)
+	NEW_TMOE_ARCH='s390x'
+	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+	;;
+mipsel)
+	NEW_TMOE_ARCH='mipsel'
+	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+	;;
+riscv)
+	NEW_TMOE_ARCH='riscv'
+	TMOE_QEMU_ARCH="riscv64"
+	;;
+esac
+#检测两次
+case "${CONTAINER_ARCH}" in
+"${TRUE_ARCH_TYPE}") TMOE_QEMU="false" ;;
+esac

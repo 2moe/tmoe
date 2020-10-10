@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+###############
+if [ $(command -v fortune) ]; then
+	fortune
+elif [ -e /usr/games/fortune ]; then
+	/usr/games/fortune
+fi
+get_hitokito_cn 2>/dev/null
+check_tmoe_completion_version
+check_tmoe_completion
+aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh" || curl -Lo ${PREFIX}/bin/debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh" || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh"
+#if [ "${LINUX_DISTRO}" != "Android" ]; then
+#	sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i
+#fi
+chmod a+x ${PREFIX}/bin/debian-i
+if [ -e "${TMOE_GIT_DIR}/.git" ]; then
+	cd ${TMOE_GIT_DIR}
+	git reset --hard origin/master
+	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+	if [ "$?" != '0' ]; then
+		git fetch --all
+		git reset --hard origin/master
+		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+	fi
+fi
+[[ $(command -v tmoe) ]] || ln -sf ${TMOE_SHARE_DIR}/app/tmoe ${PREFIX}/bin
+for i in ${PREFIX}/bin/tmoe ${TMOE_SHARE_DIR}/container/debian/lnk-menu ${TMOE_SHARE_DIR}/container/debian/debian; do
+	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
+done
+printf "%s\n" '(o゜▽゜)o☆  Thank you for using Tmoe-linux manager.'
+printf "${YELLOW}%s\n${RESET}" "更新完成，按回车键返回。"
+printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+read
+source ${PREFIX}/bin/debian-i

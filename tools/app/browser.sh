@@ -23,9 +23,9 @@ fix_chromium_root_no_sandbox() {
 }
 #################
 install_chromium_browser() {
-    echo "${YELLOW}妾身就知道你没有看走眼！${RESET}"
-    echo '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
-    echo "1s后将自动开始安装"
+    printf "%s\n" "${YELLOW}妾身就知道你没有看走眼！${RESET}"
+    printf '%s\n' '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
+    printf "%s\n" "1s后将自动开始安装"
     sleep 1
 
     DEPENDENCY_01="chromium"
@@ -72,18 +72,18 @@ install_chromium_browser() {
         esac
         ;;
     n* | N*)
-        echo "skipped."
+        printf "%s\n" "skipped."
         ;;
     *)
-        echo "Invalid choice. skipped."
+        printf "%s\n" "Invalid choice. skipped."
         ;;
     esac
 }
 ############
 install_firefox_esr_browser() {
-    echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
-    echo "${YELLOW} “谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。 ${RESET}"
-    echo "1s后将自动开始安装"
+    printf '%s\n' 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
+    printf "%s\n" "${YELLOW} “谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。 ${RESET}"
+    printf "%s\n" "1s后将自动开始安装"
     sleep 1
 
     DEPENDENCY_01="firefox-esr"
@@ -109,17 +109,17 @@ install_firefox_esr_browser() {
     beta_features_quick_install
     #################
     if [ ! $(command -v firefox) ] && [ ! $(command -v firefox-esr) ]; then
-        echo "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫姐姐来代替了。${RESET}"
-        echo 'Press Enter to install firefox.'
+        printf "%s\n" "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫姐姐来代替了。${RESET}"
+        printf '%s\n' 'Press Enter to install firefox.'
         do_you_want_to_continue
         install_firefox_browser
     fi
 }
 #####################
 install_firefox_browser() {
-    echo 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
-    echo " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET}"
-    echo "1s后将自动开始安装"
+    printf '%s\n' 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
+    printf "%s\n" " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET}"
+    printf "%s\n" "1s后将自动开始安装"
     sleep 1
 
     DEPENDENCY_01="firefox"
@@ -144,7 +144,7 @@ install_firefox_browser() {
     beta_features_quick_install
     ################
     if [ ! $(command -v firefox) ]; then
-        echo "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫妹妹ESR来代替了。${RESET}"
+        printf "%s\n" "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫妹妹ESR来代替了。${RESET}"
         do_you_want_to_continue
         install_firefox_esr_browser
     fi
@@ -154,17 +154,17 @@ firefox_or_chromium() {
     if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓\nI am Firefox, choose me.\n我是火狐娘，选我啦！♪(^∇^*) \nI'm chrome's elder sister chromium, be sure to choose me.\n妾身是chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
 
         if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "Firefox-ESR" --yesno "I am Firefox,I have a younger sister called ESR.\n我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 12 53); then
-            #echo 'esr可怜巴巴地说道:“我也想要得到更多的爱。”  '
+            #printf '%s\n' 'esr可怜巴巴地说道:“我也想要得到更多的爱。”  '
             #什么乱七八糟的，2333333戏份真多。
             install_firefox_browser
         else
             install_firefox_esr_browser
         fi
-        #echo "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
+        #printf "%s\n" "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
         #firefox将自动安装视频解码器
     else
         install_chromium_browser
-        echo "如需拖拽安装插件，则请在启动命令后加上 --enable-easy-off-store-extension-install"
+        printf "%s\n" "如需拖拽安装插件，则请在启动命令后加上 --enable-easy-off-store-extension-install"
     fi
 }
 ##############
@@ -173,7 +173,7 @@ install_vivaldi_browser() {
     THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep deb | sed 's@ @\n@g' | grep 'deb' | grep 'amd64' | cut -d '"' -f 2 | head -n 1)"
     case ${ARCH_TYPE} in
     amd64) ;;
-    i386 | arm64 | armhf) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
+    i386 | arm64 | armhf) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
     *) arch_does_not_support ;;
     esac
 
@@ -183,18 +183,18 @@ install_vivaldi_browser() {
         case ${ARCH_TYPE} in
         amd64)
             #THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | head -n 1)"
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         i386)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.i386.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.i386.rpm@")
             ;;
         *) arch_does_not_support ;;
         esac
         ;;
     esac
     #) non_debian_function ;;
-    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${DEPENDENCY_01}-@@" | sed "s@vivaldi-stable_@@")
+    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${DEPENDENCY_01}-@@" | sed "s@vivaldi-stable_@@")
     check_deb_version
     download_and_install_deb
     rm -v /etc/apt/sources.list.d/vivaldi.list 2>/dev/null
@@ -212,7 +212,7 @@ install_360_browser() {
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${ARCH_TYPE} in
     amd64) ;;
-    arm64) THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
+    arm64) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
     *) arch_does_not_support ;;
     esac
     #https://down.360safe.com/gc/browser360-cn-stable_12.2.1070.0-1_amd64.deb
@@ -223,17 +223,17 @@ install_360_browser() {
     redhat)
         case ${ARCH_TYPE} in
         amd64)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         arm64)
-            THE_LATEST_DEB_URL=$(echo ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
             ;;
         esac
         ;;
     esac
     #) non_debian_function ;;
-    THE_LATEST_DEB_FILE=$(echo ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(echo ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
+    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
     check_deb_version
     download_and_install_deb
 }

@@ -87,7 +87,7 @@ development_programming_tools() {
         ;;
     12) install_sublime_text_stable ;;
     esac
-    #) echo "新版即将集成本开发工具的安装，敬请期待" ;;
+    #) printf "%s\n" "新版即将集成本开发工具的安装，敬请期待" ;;
     ############################################
     case ${GREP_NAME} in
     "") ;;
@@ -141,11 +141,11 @@ delete_ide_pkg_02() {
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.tar.gz 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
-    "") echo "检测到安装包${RED}不存在${RESET}" ;;
+    "") printf "%s\n" "检测到安装包${RED}不存在${RESET}" ;;
     *)
-        echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_ARCH_PKG_VERSION}${RESET}"
+        printf "%s\n" "${RED}rm -v${RESET} ${BLUE}${LOCAL_ARCH_PKG_VERSION}${RESET}"
         ls -lh ${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}
-        echo "Do you want to delete it?"
+        printf "%s\n" "Do you want to delete it?"
         do_you_want_to_continue
         rm -v ${LOCAL_ARCH_PKG_VERSION}
         ;;
@@ -186,11 +186,11 @@ delete_ide_pkg() {
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.pkg.tar.zst 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
-    "") echo "检测到安装包${RED}不存在${RESET}" ;;
+    "") printf "%s\n" "检测到安装包${RED}不存在${RESET}" ;;
     *)
-        echo "${RED}rm -v${RESET} ${BLUE}${LOCAL_ARCH_PKG_VERSION}${RESET}"
+        printf "%s\n" "${RED}rm -v${RESET} ${BLUE}${LOCAL_ARCH_PKG_VERSION}${RESET}"
         ls -lh ${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}
-        echo "Do you want to delete it?"
+        printf "%s\n" "Do you want to delete it?"
         do_you_want_to_continue
         rm -v ${LOCAL_ARCH_PKG_VERSION}
         ;;
@@ -199,7 +199,7 @@ delete_ide_pkg() {
 ###########
 remove_ide_01() {
     cd ${APPS_LNK_DIR}
-    echo "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    printf "%s\n" "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
     github-desktop-bin)
@@ -212,7 +212,7 @@ remove_ide_01() {
 ############
 remove_ide_02() {
     cd ${APPS_LNK_DIR}
-    echo "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    printf "%s\n" "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
     *) rm -rv ${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT} ;;
@@ -227,18 +227,14 @@ check_ide_version() {
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
 		║ 1 ║${GREP_NAME}                    ${LOCAL_OPT_APP_VERSION} 
-		║   ║          ║$(echo ${THE_LATEST_APP_VERSION_CODE} | sed 's@-x86_64@@')
+		║   ║          ║$(printf '%s\n' ${THE_LATEST_APP_VERSION_CODE} | sed 's@-x86_64@@')
 
 	ENDofTable
 }
 #########
 uncompress_arch_pkg_tar_zst() {
-    #mkdir -p ${APP_OPT_DIR}
-    #cd ${APP_OPT_DIR}
-    #tar --zstd -xvf ${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION} &>/dev/null || zstdcat "${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION}" | tar xvf -
     cd /
     tar --zstd -Ppxvf ${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION} --exclude=.*
-    #cp -pf ${TMOE_TOOL_DIR}/code/lnk/${GREP_NAME}.desktop ${APPS_LNK_DIR}
 }
 ###########
 install_ide_01() {
@@ -251,32 +247,32 @@ install_ide_01() {
     *) ICON_FILE="/usr/share/pixmaps/${ICON_NAME}" ;;
     esac
     cat_icon_img
-    echo "正在检测版本更新信息..."
+    printf "%s\n" "正在检测版本更新信息..."
     check_archlinux_cn_html_date
     ############
-    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
+    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
     check_ide_version
     case ${GREP_NAME} in
     intellij-idea-ultimate-edition)
-        echo "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-        echo "${BLUE}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
+        printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
+        printf "%s\n" "${BLUE}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
         ;;
     pycharm-professional)
-        echo "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-        echo "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+        printf "%s\n" "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
+        printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
     android-studio)
         THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
-        echo "若安装失败，则请前往官网手动下载安装。"
-        echo "${BLUE}https://developer.android.google.cn/studio${RESET}"
+        printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+        printf "%s\n" "${BLUE}https://developer.android.google.cn/studio${RESET}"
         ;;
     github-desktop-bin)
         case ${ARCH_TYPE} in
         amd64) ;;
         *)
-            echo "本版本仅支持x86_64架构"
-            echo "${ARCH_TYPE}请${RED}自行编译${RESET}"
-            echo "Github url: ${YELLOW}https://github.com/shiftkey/desktop${RESET}"
+            printf "%s\n" "本版本仅支持x86_64架构"
+            printf "%s\n" "${ARCH_TYPE}请${RED}自行编译${RESET}"
+            printf "%s\n" "Github url: ${YELLOW}https://github.com/shiftkey/desktop${RESET}"
             arch_does_not_support
             ;;
         esac
@@ -285,9 +281,9 @@ install_ide_01() {
         case ${ARCH_TYPE} in
         amd64) ;;
         *)
-            echo "本版本仅支持x86_64架构"
-            echo "${ARCH_TYPE}请${RED}自行编译${RESET}"
-            echo "Github url: ${YELLOW}https://github.com/atom/atom${RESET}"
+            printf "%s\n" "本版本仅支持x86_64架构"
+            printf "%s\n" "${ARCH_TYPE}请${RED}自行编译${RESET}"
+            printf "%s\n" "Github url: ${YELLOW}https://github.com/atom/atom${RESET}"
             arch_does_not_support
             ;;
         esac
@@ -306,17 +302,17 @@ install_ide_01() {
 install_ide_02() {
     ICON_FILE='/opt/android-studio/bin/studio.png'
     cat_icon_img
-    echo "正在检测版本更新信息..."
+    printf "%s\n" "正在检测版本更新信息..."
     #check_archlinux_cn_html_date
     ############
-    #THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '.pkg.tar.zst' | grep -Ev '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
+    #THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
     case ${GREP_NAME} in
     android-studio)
         THE_LATEST_DEB_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
-        THE_LATEST_APP_VERSION_CODE="$(echo ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
-        DOWNLOAD_FILE_NAME=$(echo ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}')
-        echo "若安装失败，则请前往官网手动下载安装。"
-        echo "${BLUE}https://developer.android.com/studio${RESET}"
+        THE_LATEST_APP_VERSION_CODE="$(printf '%s\n' ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
+        DOWNLOAD_FILE_NAME=$(printf '%s\n' ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}')
+        printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
+        printf "%s\n" "${BLUE}https://developer.android.com/studio${RESET}"
         ;;
     esac
     check_ide_version
@@ -355,12 +351,12 @@ download_android_studio() {
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.tar.gz 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
-    ${DOWNLOAD_FILE_NAME}) echo "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
+    ${DOWNLOAD_FILE_NAME}) printf "%s\n" "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
     *) aria2c --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${DOWNLOAD_FILE_NAME} -x 10 -s 10 -k 1M ${THE_LATEST_DEB_LINK} ;;
     esac
-    echo ${THE_LATEST_APP_VERSION_CODE} >"${LOCAL_APP_VERSION_TXT}"
-    #echo ${THE_LATEST_DEB_LINK}
-    #echo "Do you want to download and install it?"
+    printf "%s\n" ${THE_LATEST_APP_VERSION_CODE} >"${LOCAL_APP_VERSION_TXT}"
+    #printf "%s\n" ${THE_LATEST_DEB_LINK}
+    #printf "%s\n" "Do you want to download and install it?"
     #do_you_want_to_continue
     #aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
 }
@@ -369,10 +365,10 @@ check_android_studio() {
     mkdir -p ${HOME}/sd/Download
     cd ${HOME}/sd/Download
     if [ -e "/opt/android-studio" ]; then
-        echo '您已安装Android studio'
-        echo "若您需要卸载，则请输${RED}rm -rv${RESET} ${HOME}/sd/Download/android_studio_linux_64bit.tar.gz ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
-        echo "是否需要重新安装？"
-        echo "Do you want to reinstall it?"
+        printf '%s\n' '您已安装Android studio'
+        printf "%s\n" "若您需要卸载，则请输${RED}rm -rv${RESET} ${HOME}/sd/Download/android_studio_linux_64bit.tar.gz ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+        printf "%s\n" "是否需要重新安装？"
+        printf "%s\n" "Do you want to reinstall it?"
         do_you_want_to_continue
     fi
     if [ ! -e "android_studio_linux_64bit.tar.gz" ]; then
@@ -385,8 +381,8 @@ install_android_studio() {
     #check_android_studio
     tar -pzxvf ${DOWNLOAD_PATH}/${DOWNLOAD_FILE_NAME} -C /opt
     creat_android_studio_application_link
-    #echo "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
-    #echo "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
+    #printf "%s\n" "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
+    #printf "%s\n" "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 }
 ##################
 install_sublime_text_stable() {
@@ -401,12 +397,12 @@ install_sublime_text_stable() {
         GPG_FILE_NAME='sublimehq-pub.asc'
         cd /etc/apt/trusted.gpg.d
         if [ ! -e "${GPG_FILE_NAME}" ]; then
-            echo "${YELLOW}${GPG_URL}${RESET}"
+            printf "%s\n" "${YELLOW}${GPG_URL}${RESET}"
             aria2c --allow-overwrite=true -o ${GPG_FILE_NAME} ${GPG_URL}
             chmod a+r ${GPG_FILE_NAME}
         fi
         apt-key add ${GPG_FILE_NAME}
-        echo "deb https://download.sublimetext.com/ apt/stable/" >/etc/apt/sources.list.d/sublime-text.list
+        printf "%s\n" "deb https://download.sublimetext.com/ apt/stable/" >/etc/apt/sources.list.d/sublime-text.list
         ;;
     arch)
         curl -O https://download.sublimetext.com/sublimehq-pub.gpg

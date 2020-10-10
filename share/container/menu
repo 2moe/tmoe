@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+##############################
+proot_container_main_menu() {
+	case "$1" in
+	restore | --restore) restore_tmoe_container ;;
+	*) proot_container_menu ;;
+	esac
+}
+################################
+list_tmoe_containers() {
+	ARCH_TYPE=${TRUE_ARCH_TYPE}
+	rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
+	choose_which_gnu_linux_distro
+}
+##############
+across_architectures_container() {
+	case ${TMOE_CHROOT} in
+	true)
+		case ${LINUX_DISTRO} in
+		Android)
+			getprop ro.product.model 2>/dev/null
+			printf "%s %s\n" "部分Android系统无${BLUE}/proc/sys/fs/binfmt_misc${RESET}, 故本工具未对Android开放此功能。" "如需跨架构运行chroot容器,则请换用GNU/Linux系统，或自行加载${YELLOW}内核模块${RESET}。"
+			printf "%s\n" "Sorry, you are using Android system, please modprobe binfmt_misc kernel module by yourself."
+			press_enter_to_return
+			list_tmoe_containers
+			;;
+		esac
+		;;
+	esac
+	source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
+	tmoe_qemu_user_manager
+}
+#############
+proot_container_menu() {
+	source ${TMOE_SHARE_DIR}/container/list
+	check_proot_or_chroot
+	RETURN_TO_WHERE='proot_container_menu'
+	RETURN_TO_WHERE_02=${RETURN_TO_WHERE}
+	proot_container_menu_en() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?" 0 50 0 \
+			"1" "${TRUE_ARCH_TYPE} distros list" \
+			"2" "📑 List installed" \
+			"3" "⚔️ Across architectures" \
+			"4" "🔯 Restore ${CONTAINER_TYPE} container" \
+			"5" "📕 Configuration & manual" \
+			"0" "🌚 Back to the main menu" \
+			3>&1 1>&2 2>&3)
+	}
+	proot_container_menu_cn() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要同架构运行,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
+			"1" "${TRUE_ARCH_TYPE}发行版列表" \
+			"2" "📑 List installed 当前已安装容器列表" \
+			"3" "⚔️ Across architectures 跨CPU架构" \
+			"4" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
+			"5" "📕 配置与手册" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) proot_container_menu_cn ;;
+	*) proot_container_menu_en ;;
+	esac
+	##############################
+	case "${SELECTED_GNU_LINUX}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) list_tmoe_containers ;;
+	2) list_installed_tmoe_containers ;;
+	3) across_architectures_container ;;
+	4) restore_tmoe_container ;;
+	5) configure_tmoe_container ;;
+	esac
+	####################
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+##################
+restore_tmoe_container() {
+	source ${TMOE_SHARE_DIR}/compression/restore
+}
+configure_tmoe_container() {
+	source ${TMOE_SHARE_DIR}/configuration/menu
+	configure_tmoe_container
+}
+####################
+proot_container_main_menu

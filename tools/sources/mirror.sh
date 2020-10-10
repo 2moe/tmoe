@@ -64,7 +64,7 @@ check_tmoe_sources_list_backup_file() {
 }
 ##########
 modify_alpine_mirror_repositories() {
-    ALPINE_VERSION=$(cat /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF')
+    ALPINE_VERSION=$(sed -n p /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF')
     cd /etc/apk/
     if [ ! -z ${ALPINE_VERSION} ]; then
         sed -i 's@http@#&@g' repositories
@@ -90,7 +90,7 @@ auto_check_distro_and_modify_sources_list() {
         elif [ "${REDHAT_DISTRO}" = "fedora" ]; then
             check_fedora_version
         else
-            echo "Sorry,本功能不支持${LINUX_DISTRO}"
+            printf "%s\n" "Sorry,本功能不支持${LINUX_DISTRO}"
         fi
     fi
     ################
@@ -319,12 +319,17 @@ tmoe_sources_list_manager() {
             "11" "http/https" \
             "12" "delete invalid rows(去除无效行)" \
             "13" "trust(强制信任软件源)" \
-            "0" "Back to the main menu 返回主菜单" \
+            "0" "Back 返回" \
             3>&1 1>&2 2>&3
     )
     ########################
     case "${SOURCES_LIST}" in
-    0 | "") tmoe_linux_tool_menu ;;
+    0 | "")
+        case ${RETURN_TO_MENU} in
+        "") tmoe_linux_tool_menu ;;
+        *) ${RETURN_TO_MENU} ;;
+        esac
+        ;;
     1) china_bussiness_mirror_station ;;
     2) china_university_mirror_station ;;
     3) worldwide_mirror_station ;;
@@ -364,7 +369,7 @@ untrust_sources_list() {
 }
 #######################
 trust_sources_list() {
-    echo "执行此操作可能会有未知风险"
+    printf "%s\n" "执行此操作可能会有未知风险"
     do_you_want_to_continue
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         sed -i 's@^deb.*http@deb [trusted=yes] http@g' /etc/apt/sources.list
@@ -376,7 +381,7 @@ trust_sources_list() {
 }
 #####################
 delete_sources_list_invalid_rows() {
-    echo "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
+    printf "%s\n" "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
     do_you_want_to_continue
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         sed -i '/^#/d' ${SOURCES_LIST_FILE}
@@ -392,11 +397,11 @@ delete_sources_list_invalid_rows() {
 }
 ###################
 sources_list_faq() {
-    echo "若换源后更新软件数据库失败，则请切换为http源"
+    printf "%s\n" "若换源后更新软件数据库失败，则请切换为http源"
     if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
-        echo "然后选择强制信任软件源的功能。"
+        printf "%s\n" "然后选择强制信任软件源的功能。"
     fi
-    echo "若再次出错，则请更换为其它镜像源。"
+    printf "%s\n" "若再次出错，则请更换为其它镜像源。"
 }
 ################
 switch_sources_list_to_http() {
@@ -425,7 +430,7 @@ switch_sources_http_and_https() {
 }
 ###################
 check_fedora_version() {
-    FEDORA_VERSION="$(cat /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
+    FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
     if ((${FEDORA_VERSION} >= 30)); then
         if ((${FEDORA_VERSION} >= 32)); then
             fedora_32_repos
@@ -436,7 +441,7 @@ check_fedora_version() {
         #${TMOE_UPDATE_COMMAND}
         dnf makecache
     else
-        echo "Sorry,不支持fedora29及其以下的版本"
+        printf "%s\n" "Sorry,不支持fedora29及其以下的版本"
     fi
 }
 ######################
@@ -472,7 +477,7 @@ add_arch_linux_cn_mirror_list() {
         pacman -Syu --noconfirm archlinux-keyring
         pacman -Sy --noconfirm archlinuxcn-keyring
     else
-        echo "检测到您已添加archlinux_cn源"
+        printf "%s\n" "检测到您已添加archlinux_cn源"
     fi
 
     if [ ! $(command -v yay) ]; then
@@ -494,9 +499,9 @@ check_debian_distro_and_modify_sources_list() {
 ##############
 check_arch_distro_and_modify_mirror_list() {
     sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
-    if [ "$(cat /etc/issue | cut -c 1-4)" = "Arch" ]; then
+    if [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Arch" ]; then
         modify_archlinux_mirror_list
-    elif [ "$(cat /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
+    elif [ "$(sed -n p /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
         modify_manjaro_mirror_list
     fi
     #${TMOE_UPDATE_COMMAND}
@@ -548,19 +553,19 @@ edit_sources_list_manually() {
 }
 ##########
 download_debian_ls_lr() {
-    echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+    printf "%s\n" ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
     DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/debian/ls-lR.gz"
-    echo "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
+    printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
     aria2c --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
     rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
-    echo "---------------------------"
+    printf "%s\n" "---------------------------"
 }
 ################
 mirror_sources_station_download_speed_test() {
-    echo "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
+    printf "%s\n" "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
     do_you_want_to_continue
     cd /tmp
-    echo "---------------------------"
+    printf "%s\n" "---------------------------"
     SOURCE_MIRROR_STATION_NAME='清华镜像站'
     SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
     download_debian_ls_lr
@@ -585,21 +590,21 @@ mirror_sources_station_download_speed_test() {
     ###此处一定要将SOURCE_MIRROR_STATION赋值为空
     SOURCE_MIRROR_STATION=""
     rm -f .tmoe_netspeed_test_*_temp_file
-    echo "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
-    echo "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高。${RESET}"
-    echo "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
+    printf "%s\n" "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
+    printf "%s\n" "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高。${RESET}"
+    printf "%s\n" "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
 }
 ######################
 ping_mirror_sources_list_count_3() {
-    echo ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
-    echo ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
-    ping -c 3 ${SOURCE_MIRROR_STATION} | grep -E 'avg|time.*ms' --color=auto
-    echo "---------------------------"
+    printf "%s\n" ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
+    printf "%s\n" ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+    ping -c 3 ${SOURCE_MIRROR_STATION} | egrep 'avg|time.*ms' --color=auto
+    printf "%s\n" "---------------------------"
 }
 ##############
 ping_mirror_sources_list() {
-    echo "时间越短，延迟越低"
-    echo "---------------------------"
+    printf "%s\n" "时间越短，延迟越低"
+    printf "%s\n" "---------------------------"
     SOURCE_MIRROR_STATION_NAME='清华镜像站'
     SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
     ping_mirror_sources_list_count_3
@@ -620,13 +625,13 @@ ping_mirror_sources_list() {
     ping_mirror_sources_list_count_3
     ###此处一定要将SOURCE_MIRROR_STATION赋值为空
     SOURCE_MIRROR_STATION=""
-    echo "测试${YELLOW}完成${RESET}"
-    echo "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快。${RESET}"
-    echo "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
+    printf "%s\n" "测试${YELLOW}完成${RESET}"
+    printf "%s\n" "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快。${RESET}"
+    printf "%s\n" "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
 }
 ##############
 modify_kali_mirror_sources_list() {
-    echo "检测到您使用的是Kali系统"
+    printf "%s\n" "检测到您使用的是Kali系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
     cat >>/etc/apt/sources.list <<-EndOfSourcesList
 		deb http://${SOURCE_MIRROR_STATION}/kali/ kali-rolling main contrib non-free
@@ -639,9 +644,9 @@ modify_kali_mirror_sources_list() {
 check_ca_certificates_and_apt_update() {
     if [ "${DEBIAN_SECURITY_SOURCE}" != "true" ]; then
         if [ -e "/usr/sbin/update-ca-certificates" ]; then
-            echo "检测到您已安装ca-certificates"
-            echo "Replacing http software source list with https."
-            echo "正在将http源替换为https..."
+            printf "%s\n" "检测到您已安装ca-certificates"
+            printf "%s\n" "Replacing http software source list with https."
+            printf "%s\n" "正在将http源替换为https..."
             #update-ca-certificates
             sed -i 's@http:@https:@g' /etc/apt/sources.list
             sed -i 's@https://security@http://security@g' /etc/apt/sources.list
@@ -649,36 +654,36 @@ check_ca_certificates_and_apt_update() {
     fi
     apt update
     apt dist-upgrade
-    echo "修改完成，您当前的${BLUE}软件源列表${RESET}如下所示。"
-    cat /etc/apt/sources.list
-    cat /etc/apt/sources.list.d/* 2>/dev/null
-    echo "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑软件源列表"
+    printf "%s\n" "修改完成，您当前的${BLUE}软件源列表${RESET}如下所示。"
+    sed -n p /etc/apt/sources.list
+    sed -n p /etc/apt/sources.list.d/* 2>/dev/null
+    printf "%s\n" "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑软件源列表"
 }
 #############
 modify_ubuntu_mirror_sources_list() {
     if grep -q 'Bionic Beaver' "/etc/os-release"; then
         SOURCELISTCODE='bionic'
-        echo '18.04 LTS'
+        printf '%s\n' '18.04 LTS'
     elif grep -q 'Focal Fossa' "/etc/os-release"; then
         SOURCELISTCODE='focal'
-        echo '20.04 LTS'
+        printf '%s\n' '20.04 LTS'
     elif grep -q 'Xenial' "/etc/os-release"; then
         SOURCELISTCODE='xenial'
-        echo '16.04 LTS'
+        printf '%s\n' '16.04 LTS'
     elif grep -q 'Cosmic' "/etc/os-release"; then
         SOURCELISTCODE='cosmic'
-        echo '18.10'
+        printf '%s\n' '18.10'
     elif grep -q 'Disco' "/etc/os-release"; then
         SOURCELISTCODE='disco'
-        echo '19.04'
+        printf '%s\n' '19.04'
     elif grep -q 'Eoan' "/etc/os-release"; then
         SOURCELISTCODE='eoan'
-        echo '19.10'
+        printf '%s\n' '19.10'
     else
-        SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-        echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+        SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" $(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     fi
-    echo "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
+    printf "%s\n" "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
     #下面那行EndOfSourcesList不能有单引号
     cat >>/etc/apt/sources.list <<-EndOfSourcesList
@@ -704,18 +709,18 @@ modify_debian_mirror_sources_list() {
             else
                 NEW_DEBIAN_SOURCES_LIST='true'
                 SOURCELISTCODE='testing'
-                BACKPORTCODE=$(cat /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+                BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
             fi
         else
             SOURCELISTCODE='sid'
         fi
 
-    elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
+    elif ! egrep -q 'buster|stretch|jessie' "/etc/os-release"; then
         NEW_DEBIAN_SOURCES_LIST='true'
         if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
-            SOURCELISTCODE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+            SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
         else
-            echo "不支持您的系统！"
+            printf "%s\n" "不支持您的系统！"
             press_enter_to_return
             tmoe_sources_list_manager
         fi
@@ -724,20 +729,20 @@ modify_debian_mirror_sources_list() {
     elif grep -q 'buster' "/etc/os-release"; then
         SOURCELISTCODE='buster'
         BACKPORTCODE='buster'
-        #echo "Debian 10 buster"
+        #printf "%s\n" "Debian 10 buster"
 
     elif grep -q 'stretch' "/etc/os-release"; then
         SOURCELISTCODE='stretch'
         BACKPORTCODE='stretch'
-        #echo "Debian 9 stretch"
+        #printf "%s\n" "Debian 9 stretch"
 
     elif grep -q 'jessie' "/etc/os-release"; then
         SOURCELISTCODE='jessie'
         BACKPORTCODE='jessie'
-        #echo "Debian 8 jessie"
+        #printf "%s\n" "Debian 8 jessie"
     fi
-    echo $(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
-    echo "检测到您使用的是Debian ${SOURCELISTCODE}系统"
+    printf "%s\n" $(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+    printf "%s\n" "检测到您使用的是Debian ${SOURCELISTCODE}系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
     if [ "${SOURCELISTCODE}" = "sid" ]; then
         cat >>/etc/apt/sources.list <<-EndOfSourcesList
@@ -782,11 +787,11 @@ restore_normal_default_sources_list() {
         cp -pvf ${SOURCES_LIST_FILE_NAME} ${SOURCES_LIST_BACKUP_FILE_NAME}
         cp -pf ${SOURCES_LIST_BACKUP_FILE} ${SOURCES_LIST_FILE}
         ${TMOE_UPDATE_COMMAND}
-        echo "您当前的软件源列表已经备份至${YELLOW}$(pwd)/${SOURCES_LIST_BACKUP_FILE_NAME}${RESET}"
+        printf "%s\n" "您当前的软件源列表已经备份至${YELLOW}$(pwd)/${SOURCES_LIST_BACKUP_FILE_NAME}${RESET}"
         diff ${SOURCES_LIST_BACKUP_FILE_NAME} ${SOURCES_LIST_FILE_NAME} -y --color
-        echo "${YELLOW}左侧${RESET}显示的是${RED}旧源${RESET}，${YELLOW}右侧${RESET}为${GREEN}当前的${RESET}${BLUE}软件源${RESET}"
+        printf "%s\n" "${YELLOW}左侧${RESET}显示的是${RED}旧源${RESET}，${YELLOW}右侧${RESET}为${GREEN}当前的${RESET}${BLUE}软件源${RESET}"
     else
-        echo "检测到备份文件不存在，还原失败。"
+        printf "%s\n" "检测到备份文件不存在，还原失败。"
     fi
     ###################
     if [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -870,28 +875,28 @@ fedora_3x_repos() {
 ###############
 modify_to_kali_sources_list() {
     if [ "${LINUX_DISTRO}" != "debian" ]; then
-        echo "${YELLOW}非常抱歉，检测到您使用的不是deb系linux，按回车键返回。${RESET}"
-        echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+        printf "%s\n" "${YELLOW}非常抱歉，检测到您使用的不是deb系linux，按回车键返回。${RESET}"
+        printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
         read
         tmoe_linux_tool_menu
     fi
 
     if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-        echo "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
-        echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+        printf "%s\n" "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
+        printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
         read
         tmoe_linux_tool_menu
     fi
 
     if ! grep -q "^deb.*kali" /etc/apt/sources.list; then
-        echo "检测到您当前为debian源，是否修改为kali源？"
-        echo "Detected that your current software sources list is debian, do you need to modify it to kali source?"
+        printf "%s\n" "检测到您当前为debian源，是否修改为kali源？"
+        printf "%s\n" "Detected that your current software sources list is debian, do you need to modify it to kali source?"
         RETURN_TO_WHERE='tmoe_linux_tool_menu'
         do_you_want_to_continue
         kali_sources_list
     else
-        echo "检测到您当前为kali源，是否修改为debian源？"
-        echo "Detected that your current software sources list is kali, do you need to modify it to debian source?"
+        printf "%s\n" "检测到您当前为kali源，是否修改为debian源？"
+        printf "%s\n" "Detected that your current software sources list is kali, do you need to modify it to debian source?"
         RETURN_TO_WHERE='tmoe_linux_tool_menu'
         do_you_want_to_continue
         debian_sources_list
@@ -919,9 +924,9 @@ kali_sources_list() {
     apt list --upgradable
     apt dist-upgrade -y
     apt search kali-linux
-    echo 'You have successfully replaced your debian source with a kali source.'
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf '%s\n' 'You have successfully replaced your debian source with a kali source.'
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
     tmoe_linux_tool_menu
 }
@@ -933,10 +938,10 @@ debian_sources_list() {
 	EOF
     apt update
     apt list --upgradable
-    echo '您已换回debian源'
+    printf '%s\n' '您已换回debian源'
     apt dist-upgrade -y
-    echo "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-    echo "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+    printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET}"
     read
     tmoe_linux_tool_menu
 }

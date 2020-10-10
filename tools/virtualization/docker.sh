@@ -21,7 +21,7 @@ tmoe_docker_init() {
 }
 ################
 run_docker_container_with_same_architecture() {
-    echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+    printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
     docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
 }
 ##########
@@ -39,16 +39,16 @@ run_special_tag_docker_container() {
         #    QEMU_USER_PATH="${QEMU_USER_STATIC_PATH_02}"
         #fi
 
-        echo "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+        printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
         docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
         ;;
     esac
 
-    echo "已将宿主机的${YELLOW}${MOUNT_DOCKER_FOLDER}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}${MOUNT_DOCKER_FOLDER}${RESET}"
-    echo "You can type ${GREEN}sudo docker exec -it ${CONTAINER_NAME} sh${RESET} to connect ${CONTAINER_NAME} container."
-    echo "您可以输${GREEN}docker attach ${CONTAINER_NAME}${RESET}来连接${CONTAINER_NAME}容器"
-    echo "Do you want to start and configure this container?"
-    echo "您是否想要启动并配置本容器？"
+    printf "%s\n" "已将宿主机的${YELLOW}${MOUNT_DOCKER_FOLDER}${RESET}目录${RED}挂载至${RESET}容器内的${BLUE}${MOUNT_DOCKER_FOLDER}${RESET}"
+    printf "%s\n" "You can type ${GREEN}sudo docker exec -it ${CONTAINER_NAME} sh${RESET} to connect ${CONTAINER_NAME} container."
+    printf "%s\n" "您可以输${GREEN}docker attach ${CONTAINER_NAME}${RESET}来连接${CONTAINER_NAME}容器"
+    printf "%s\n" "Do you want to start and configure this container?"
+    printf "%s\n" "您是否想要启动并配置本容器？"
     do_you_want_to_continue
     docker start ${CONTAINER_NAME}
     docker exec -it ${CONTAINER_NAME} /bin/sh ${TMOE_LINUX_DOCKER_SHELL_FILE}
@@ -86,7 +86,7 @@ delete_docker_container_and_image() {
 ##################
 reset_docker_container() {
     delete_docker_container_and_image
-    echo "${BLUE}docker pull ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+    printf "%s\n" "${BLUE}docker pull ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
     docker pull ${DOCKER_NAME}:${DOCKER_TAG}
     run_special_tag_docker_container
 }
@@ -107,7 +107,7 @@ ENDOFDOCKER
 }
 #############
 custom_docker_container_tag() {
-    if [ "$(echo ${DOCKER_NAME} | grep '/')" ]; then
+    if [ "$(printf '%s\n' ${DOCKER_NAME} | grep '/')" ]; then
         #https://hub.docker.com/r/kalilinux/kali-rolling/tags
         DOCKER_URL="https://hub.docker.com/r/${DOCKER_NAME}/tags"
     else
@@ -117,8 +117,8 @@ custom_docker_container_tag() {
     if [ "$?" != "0" ]; then
         ${RETURN_TO_WHERE}
     elif [ -z "${TARGET}" ]; then
-        echo "请输入有效的值"
-        echo "Please enter a valid value"
+        printf "%s\n" "请输入有效的值"
+        printf "%s\n" "Please enter a valid value"
     else
         DOCKER_TAG=${TARGET}
         run_special_tag_docker_container
@@ -133,9 +133,9 @@ docker_attch_container() {
         docker start ${CONTAINER_NAME}
         docker exec -it ${CONTAINER_NAME} /bin/bash || docker attach ${CONTAINER_NAME}
     else
-        echo "The ${CONTAINER_NAME} container was not found."
-        echo "Do you want to pull ${DOCKER_NAME}?"
-        echo "因未找到${CONTAINER_NAME}容器，故容器连接失败，请问您是否需要拉取${DOCKER_NAME}镜像并新建容器？"
+        printf "%s\n" "The ${CONTAINER_NAME} container was not found."
+        printf "%s\n" "Do you want to pull ${DOCKER_NAME}?"
+        printf "%s\n" "因未找到${CONTAINER_NAME}容器，故容器连接失败，请问您是否需要拉取${DOCKER_NAME}镜像并新建容器？"
         do_you_want_to_continue
         run_special_tag_docker_container
     fi
@@ -257,7 +257,7 @@ not_adapted_across_architecture() {
     if [ ! -z "${TMOE_QEMU_ARCH}" ]; then
         #TMOE_QEMU_ARCH=''
         #此处不要清除变量
-        echo "${RED}WARNING！${RESET}本脚本未适配${CONTAINER_NAME}容器的跨架构运行。"
+        printf "%s\n" "${RED}WARNING！${RESET}本脚本未适配${CONTAINER_NAME}容器的跨架构运行。"
         press_enter_to_continue
     fi
 }
@@ -537,13 +537,13 @@ choose_gnu_linux_docker_images() {
 install_docker_ce_or_io() {
     case "${TMOE_PROOT}" in
     true | no)
-        echo "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
-        echo "若您处于容器环境下,且宿主机为${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
-        echo "否则请通过qemu-system来运行GNU/Linux虚拟机，再安装docker。"
-        echo "If your host is android, it is recommended that you use the qemu-system virtual machine to run docker."
+        printf "%s\n" "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
+        printf "%s\n" "若您处于容器环境下,且宿主机为${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
+        printf "%s\n" "否则请通过qemu-system来运行GNU/Linux虚拟机，再安装docker。"
+        printf "%s\n" "If your host is android, it is recommended that you use the qemu-system virtual machine to run docker."
         do_you_want_to_continue
         ;;
-    false) echo "检测到您当前处于chroot容器环境下" ;;
+    false) printf "%s\n" "检测到您当前处于chroot容器环境下" ;;
     esac
     if (whiptail --title "DOCKER本体" --yes-button 'docker-ce' --no-button 'docker.io' --yesno "Which software do you want to install?\n为避免冲突,请只选择其中一个" 0 50); then
         install_docker_ce
@@ -554,16 +554,16 @@ install_docker_ce_or_io() {
 }
 ##############
 add_current_user_to_docker_group() {
-    echo "Do you want to add ${CURRENT_USER_NAME} to docker group?"
-    echo "${YELLOW}gpasswd -a ${CURRENT_USER_NAME} docker${RESE}"
+    printf "%s\n" "Do you want to add ${CURRENT_USER_NAME} to docker group?"
+    printf "%s\n" "${YELLOW}gpasswd -a ${CURRENT_USER_NAME} docker${RESE}"
     do_you_want_to_continue
     if [ ! "$(groups | grep docker)" ]; then
         groupadd docker
     fi
     gpasswd -a ${CURRENT_USER_NAME} docker
-    echo "您可以手动执行${GREEN}newgrp docker${RESET}来刷新docker用户组"
-    echo "If you want to remove it,then type ${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
-    echo "若您需要将当前用户移出docker用户组，则请输${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
+    printf "%s\n" "您可以手动执行${GREEN}newgrp docker${RESET}来刷新docker用户组"
+    printf "%s\n" "If you want to remove it,then type ${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
+    printf "%s\n" "若您需要将当前用户移出docker用户组，则请输${RED}gpasswd -d ${CURRENT_USER_NAME} docker${RESET}"
 }
 ##########
 docker_163_mirror() {
@@ -572,7 +572,7 @@ docker_163_mirror() {
     fi
     cd /etc/docker
     if [ ! -e daemon.json ]; then
-        echo '' >daemon.json
+        printf "\n" >daemon.json
     fi
     if ! grep -q 'registry-mirrors' "daemon.json"; then
         cat >>daemon.json <<-'EOF'
@@ -721,7 +721,7 @@ tmoe_qemu_user_chart() {
 }
 ###############
 install_qemu_user_static() {
-    echo "正在检测版本信息..."
+    printf "%s\n" "正在检测版本信息..."
     LOCAL_QEMU_USER_FILE=''
     #if [ -e "/usr/local/bin/qemu-aarch64-static" ]; then
     #   LOCAL_QEMU_USER_FILE='/usr/local/bin/qemu-aarch64-static'
@@ -748,13 +748,13 @@ install_qemu_user_static() {
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
 		║ 1 ║qemu-user ║                    ${LOCAL_QEMU_USER_VERSION} 
-		║   ║ static   ║$(echo ${THE_LATEST_DEB_VERSION_CODE} | sed 's@%2B@+@')
+		║   ║ static   ║$(printf '%s\n' ${THE_LATEST_DEB_VERSION_CODE} | sed 's@%2B@+@')
 
 	ENDofTable
     do_you_want_to_continue
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-    echo ${THE_LATEST_DEB_LINK}
-    #echo "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
+    printf "%s\n" ${THE_LATEST_DEB_LINK}
+    #printf "%s\n" "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
     download_qemu_user
     unxz_deb_file
 }
@@ -762,7 +762,7 @@ install_qemu_user_static() {
 check_qemu_user_version() {
     REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/q/qemu/'
     THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-    THE_LATEST_DEB_VERSION_CODE=$(echo ${THE_LATEST_DEB_VERSION} | cut -d '_' -f 2)
+    THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' ${THE_LATEST_DEB_VERSION} | cut -d '_' -f 2)
 }
 ###############
 unxz_deb_file() {
@@ -792,8 +792,8 @@ download_qemu_user() {
 ##############
 remove_qemu_user_static() {
     ls -lah /usr/bin/qemu-*-static 2>/dev/null
-    echo "${RED}rm -rv${RESET} ${BLUE}/usr/bin/qemu-*-static${RESET}"
-    echo "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
+    printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}/usr/bin/qemu-*-static${RESET}"
+    printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
     do_you_want_to_continue
     rm -rv /usr/bin/qemu-*-static
     ${TMOE_REMOVAL_COMMAND} qemu-user-static
@@ -905,15 +905,15 @@ debian_add_docker_gpg() {
     #sid) DOCKER_CODE="buster" ;;
     #esac
     if (whiptail --title "请选择软件源" --yes-button "tuna" --no-button "docker.com" --yesno "Please select docker software source." 0 50); then
-        echo "deb https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+        printf "%s\n" "deb https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
     else
-        echo "deb https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+        printf "%s\n" "deb https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
     fi
 }
 #################
 check_docker_installation() {
     if [ ! "$(command -v docker)" ]; then
-        echo "检测到您尚未安装docker，请先安装docker"
+        printf "%s\n" "检测到您尚未安装docker，请先安装docker"
         install_docker_ce_or_io
     fi
 }
@@ -922,7 +922,7 @@ install_docker_portainer() {
     check_docker_installation
     TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please enter the port." 0 50 --title "PORT" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ] || [ -z "${TARGET_PORT}" ]; then
-        echo "端口无效，请重新输入"
+        printf "%s\n" "端口无效，请重新输入"
         press_enter_to_return
         tmoe_docker_menu
     fi
@@ -970,7 +970,7 @@ install_docker_ce() {
     esac
     beta_features_quick_install
     if [ ! $(command -v docker) ]; then
-        echo "安装失败，请执行${TMOE_INSTALLATON_COMMAND} docker.io"
+        printf "%s\n" "安装失败，请执行${TMOE_INSTALLATON_COMMAND} docker.io"
     fi
 }
 #################

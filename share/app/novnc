@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+#################
+install_python_web_novnc() {
+	case $(uname -o) in
+	Android)
+		if [ ! -e "${PREFIX}/bin/python" ]; then
+			apt update
+			apt install -y python
+		fi
+		;;
+	esac
+	case "${LINUX_DISTRO}" in
+	debian)
+		if [ ! -e "/usr/bin/python3" ]; then
+			sudo apt install -y python3 || su -c 'apt install -y python3'
+			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
+		fi
+
+		if [ ! -e "/usr/bin/python" ]; then
+			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
+		fi
+		;;
+	*) [[ $(command -v python3) ]] || ${TMOE_INSTALLATON_COMMAND} python3 ;;
+	esac
+
+	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
+		[[ -e ${HOME}/.vnc ]] || mkdir -p ${HOME}/.vnc
+		cd ${HOME}/.vnc
+		DEB_REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/n/novnc/'
+		THE_LATEST_FILE_VERSION=$(curl -L ${DEB_REPO_URL} | grep -v python | grep novnc | grep '\.deb' | grep all | awk -F '=' '{print $3}' | cut -d '"' -f 2 | tail -n 1)
+		THE_LATEST_DEB_LINK="${DEB_REPO_URL}${THE_LATEST_FILE_VERSION}"
+		aria2c -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' "${THE_LATEST_DEB_LINK}"
+		if [ $(command -v dpkg-deb) ]; then
+			dpkg-deb -X novnc.deb ./ || sudo dpkg-deb -X novnc.deb ./
+		else
+			ar xv novnc.deb
+			tar -Jxvf novnc.deb
+		fi
+		cp -prf ./usr/share/novnc/* ./ || sudo cp -prf ./usr/share/novnc/* ./
+		cp -rf ./usr/share/doc ./ || sudo cp -rf ./usr/share/doc ./
+		rm -rf ./usr || sudo rm -rf ./usr
+	fi
+	start_web_novnc
+}
+#######################
+start_web_novnc() {
+	cd ${HOME}/.vnc/utils/
+	if [ ! -d "websockify" ]; then
+		git clone git://github.com/novnc/websockify.git --depth=1 ./websockify || sudo git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
+		#printf "%s\n" "克隆失败，请在退出脚本后，输sudo debian-i以root身份重新运行本脚本"
+	fi
+	cat <<-EOF
+		Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.
+		在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。
+		如需启动vnc app，而非web端，那么您下次可以输startvnc
+		若无声音，则请输stopvnc并重启终端。
+		正在为您启动novnc
+		Starting novnc service,please be patient.
+	EOF
+	bash launch.sh --vnc localhost:5901 --listen 6080 &
+	if [ "$(uname -o)" = 'Android' ]; then
+		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
+	elif [ "${WINDOWS_DISTRO}" = "WSL" ]; then
+		/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start http://localhost:6080/vnc.html"
+	else
+		su "${CURRENT_USER_NAME}" -c "xdg-open http://localhost:6080/vnc.html 2>/dev/null"
+	fi
+	TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1' | sed "s@\$@:6080/vnc.html@")
+	cat <<-EOF
+		本机默认novnc地址${YELLOW}http://localhost:6080/vnc.html${RESET}
+		The LAN VNC address 局域网地址${TMOE_IP_ADDR}
+		注意：novnc地址和vnc地址是${YELLOW}不同${RESET}的，请在${YELLOW}浏览器${RESET}中输入novnc地址。
+		Do not forget /vnc.html after the port number.
+		非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html
+	EOF
+	if [ -d "${DEBIAN_CHROOT}" ]; then
+		${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
+		${PREFIX}/bin/debian
+	else
+		startx11vnc
+	fi
+	#注：必须要先启动novnc后，才能接着启动VNC。
+	#否则将导致安卓proot容器提前启动。
+}
+#################
+install_python_web_novnc $@
