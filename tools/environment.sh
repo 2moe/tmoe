@@ -12,7 +12,7 @@ gnu_linux_env_02() {
     OPT_URL_01='https://bintray.proxy.ustclug.org/debianopt/debianopt'
     OPT_URL_02='https://dl.bintray.com/debianopt/debianopt'
     OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt.list'
-    ELECTRON_MIRROR_STATION='https://mirrors.huaweicloud.com/electron'
+    ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
     XSESSION_FILE='/etc/X11/xinit/Xsession'
 }
@@ -1156,7 +1156,7 @@ extract_electron() {
 }
 #########
 latest_electron() {
-    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | cut -d '=' -f 3 | cut -d '"' -f 2 | egrep '^1|^2^|^3|^4|^5|^6|^7|^8|^9' | egrep -v '^v|^1\.|^2\.|^3\.|^4\.|^5\.|^6\.|^7\.|^8\.' | tail -n 1 | cut -d '/' -f 1)
+    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 10 | sort -n -k 4 -t . | tail -n 1)
     DOWNLOAD_PATH="/opt/electron"
 }
 ###########
