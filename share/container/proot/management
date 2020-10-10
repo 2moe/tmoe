@@ -191,14 +191,18 @@ normally_start_gnu_linux_distro() {
 	${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
 }
 start_gnu_linux_distro_tigervnc() {
+	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
 	normally_start_gnu_linux_distro
 }
 start_gnu_linux_distro_x11vnc() {
+	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
 	normally_start_gnu_linux_distro
 }
 start_gnu_linux_distro_x() {
+	[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+	sleep 3
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
 	normally_start_gnu_linux_distro
 }

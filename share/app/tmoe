@@ -161,7 +161,17 @@ start_tmoe_container() {
 	case ${TMOE_CONTAINER_HITOKOTO} in
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
-	[[ -z ${EXEC_PROGRAM} ]] || ${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+	if [[ -n ${EXEC_PROGRAM} ]]; then
+		case ${EXEC_PROGRAM} in
+		startx11vnc | startvvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
+		startxsdl)
+			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+			printf "%s\n" "Please wait 5s."
+			sleep 5
+			;;
+		esac
+		${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+	fi
 	${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 ##########

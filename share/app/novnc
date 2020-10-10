@@ -19,9 +19,15 @@ install_python_web_novnc() {
 		if [ ! -e "/usr/bin/python" ]; then
 			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
 		fi
+		[[ $(command -v netstat) ]] || sudo apt install net-tools
 		;;
-	*) [[ $(command -v python3) ]] || ${TMOE_INSTALLATON_COMMAND} python3 ;;
+	*)
+		[[ $(command -v python3) ]] || ${TMOE_INSTALLATON_COMMAND} python3
+		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATON_COMMAND} net-tools
+		;;
 	esac
+
+	[[ $(pip3 list | grep numpy) ]] || pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple numpy
 
 	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
 		[[ -e ${HOME}/.vnc ]] || mkdir -p ${HOME}/.vnc
@@ -50,12 +56,13 @@ start_web_novnc() {
 		#printf "%s\n" "克隆失败，请在退出脚本后，输sudo debian-i以root身份重新运行本脚本"
 	fi
 	cat <<-EOF
+		vncserver的默认端口为5901,novnc 的默认端口为6080
 		Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.
 		在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。
 		如需启动vnc app，而非web端，那么您下次可以输startvnc
 		若无声音，则请输stopvnc并重启终端。
 		正在为您启动novnc
-		Starting novnc service,please be patient.
+		Starting novnc server,please be patient.
 	EOF
 	bash launch.sh --vnc localhost:5901 --listen 6080 &
 	if [ "$(uname -o)" = 'Android' ]; then
@@ -74,10 +81,10 @@ start_web_novnc() {
 		非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html
 	EOF
 	if [ -d "${DEBIAN_CHROOT}" ]; then
-		${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
+		${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
 		${PREFIX}/bin/debian
 	else
-		startx11vnc
+		startvnc
 	fi
 	#注：必须要先启动novnc后，才能接着启动VNC。
 	#否则将导致安卓proot容器提前启动。
