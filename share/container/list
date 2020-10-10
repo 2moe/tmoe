@@ -643,7 +643,7 @@ install_centos_linux_distro() {
 		go_to_proot_management
 		linux_distro_common_model_04
 	else
-		OLD_STABLE_VERSION='7'
+		OLD_STABLE_VERSION='8'
 		check_the_latest_distro_version
 		#DISTRO_CODE='8'
 		#linux_distro_common_model_01

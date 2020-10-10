@@ -92,7 +92,6 @@ function _tmoe() {
         "32:fedora 32"
         "33:fedora 33"
         "8-Stream:CentOS 8-Stream"
-        "7"
         "tumbleweed:OpenSUSE tumbleweed"
     )
 
