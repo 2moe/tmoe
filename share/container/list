@@ -288,7 +288,7 @@ install_ubuntu_gnu_linux_distro() {
 	COMPATIBILITY_MODE='false'
 	install_ubuntu_gnu_linux_distro_zh() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设当前年份=x,若x>=2022,则请手动输入版本代号" 0 50 0 \
+			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2022,则请手动输入版本代号" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
 				"2" "🐱 20.04(LTS)Focal Fossa 焦點馬島長尾狸貓" \
 				"3" "使用debootstrap手动构建" \
@@ -303,7 +303,7 @@ install_ubuntu_gnu_linux_distro() {
 	}
 	install_ubuntu_gnu_linux_distro_ja() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "現在のyear = xと仮定し、x> = 2022の場合は、コードをカスタマイズしてください" 0 50 0 \
+			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2022の場合は、コードをカスタマイズしてください" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
 				"3" "debootstrapを使用して手動でビルドする" \
@@ -318,7 +318,7 @@ install_ubuntu_gnu_linux_distro() {
 	}
 	install_ubuntu_gnu_linux_distro_en() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nAssuming the year = x, if x>=2022,then customize the version code" 0 50 0 \
+			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2022,then customize the version code" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa" \
 				"3" "Manually build using debootstrap" \
