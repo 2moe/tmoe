@@ -178,7 +178,7 @@ scrcpy_connect_to_android_device() {
         printf "%s\n" "Please enter a valid value"
         printf "%s\n" "检测到您未输入有效的adb地址，已自动调整为localhost:5555"
     else
-        if [ ! $(printf '%s\n' ${TARGET} | grep ':') ]; then
+        if [ ! $(printf '%s\n' "${TARGET}" | grep ':') ]; then
             TARGET=${TARGET}:5555
             printf "%s\n" "检测到您未添加端口，已将端口修改为5555"
         fi
@@ -420,7 +420,7 @@ tmoe_r_language_menu() {
 #############
 check_rstudio_version() {
     THE_LATEST_ISO_LINK="$(curl -L ${REPO_URL} | grep ${GREP_NAME} | grep 'http' | sed -n 2p | cut -d '=' -f 2 | cut -d '"' -f 2)"
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_ISO_LINK} | sed 's@/@ @g' | awk -F ' ' '$0=$NF')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_ISO_LINK}" | sed 's@/@ @g' | awk -F ' ' '$0=$NF')
     aria2c_download_file
 }
 ##############

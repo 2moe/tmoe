@@ -2062,21 +2062,21 @@ local_theme_installer() {
 }
 #################
 check_theme_url() {
-    if [ "$(printf '%s\n' ${THEME_TMOE_URL} | grep -v 'xfce-look.org')" ]; then
+    if [ "$(printf '%s\n' "${THEME_TMOE_URL}" | grep -v 'xfce-look.org')" ]; then
         printf "%s\n" "原始链接中不包含xfce-look，可能会出现错误。"
     fi
 
-    if [ "$(printf '%s\n' ${THEME_TMOE_URL} | grep 'XFCE/p')" ]; then
+    if [ "$(printf '%s\n' "${THEME_TMOE_URL}" | grep 'XFCE/p')" ]; then
         TMOE_THEME_STATUS='检测到当前文件可能是图标包'
-    elif [ "$(printf '%s\n' ${THEME_TMOE_URL} | grep 'Gnome/p')" ]; then
+    elif [ "$(printf '%s\n' "${THEME_TMOE_URL}" | grep 'Gnome/p')" ]; then
         TMOE_THEME_STATUS='检测到当前文件可能是Gnome图标包'
     else
         TMOE_THEME_STATUS='主题和图标包的解压路径不同，请手动判断'
     fi
 
     #当未添加http时，将自动修复。
-    if [ "$(printf '%s\n' ${THEME_TMOE_URL} | egrep 'www')" ] && [ ! "$(printf '%s\n' ${THEME_TMOE_URL} | grep 'http')" ]; then
-        THEME_TMOE_URL=$(printf '%s\n' ${THEME_TMOE_URL} | sed 's@www@https://&@')
+    if [ "$(printf '%s\n' "${THEME_TMOE_URL}" | egrep 'www')" ] && [ ! "$(printf '%s\n' "${THEME_TMOE_URL}" | grep 'http')" ]; then
+        THEME_TMOE_URL=$(printf '%s\n' "${THEME_TMOE_URL}" | sed 's@www@https://&@')
     fi
 }
 ###############

@@ -244,12 +244,12 @@ tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
-		TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	else
 		TMOE_LANG="en_US.UTF-8"
-		TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	fi
 
 	case "${LINUX_DISTRO}" in
@@ -567,7 +567,7 @@ check_dependencies() {
 	fi
 	##############
 	CurrentLANG=${LANG}
-	if [ ! $(printf '%s\n' ${LANG} | egrep 'UTF-8|UTF8') ]; then
+	if [ ! $(printf '%s\n' "${LANG}" | egrep 'UTF-8|UTF8') ]; then
 		export LANG=C.UTF-8
 	fi
 }

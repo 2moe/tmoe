@@ -91,13 +91,13 @@ check_debian_chroot_dir() {
 }
 ############
 creat_container_edition_txt() {
-	printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} >${LINUX_CONTAINER_DISTRO_FILE}
+	printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" >${LINUX_CONTAINER_DISTRO_FILE}
 	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE} 2>/dev/null
 	DEBIAN_FOLDER="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 	DEBIAN_FOLDER_CAPITAL=$(printf "%s\n" "${DEBIAN_FOLDER}" | tr '[a-z]' '[A-Z]')
 	check_debian_chroot_dir
-	DEBIAN_CHROOT_MIN=$(printf '%s\n' ${DEBIAN_CHROOT} | sed "s@${HOME}@~@g")
-	ROOTFS_NAME=$(printf '%s\n' ${DEBIAN_FOLDER} | cut -d '_' -f 1)
+	DEBIAN_CHROOT_MIN=$(printf '%s\n' "${DEBIAN_CHROOT}" | sed "s@${HOME}@~@g")
+	ROOTFS_NAME=$(printf '%s\n' "${DEBIAN_FOLDER}"| cut -d '_' -f 1)
 }
 #######
 copy_tmoe_locale_file_to_container() {
@@ -280,8 +280,8 @@ creat_tmoe_arch_file() {
 }
 #############
 go_to_container_menu() {
-	TMOE_LINUX_CONTAINER_DISTRO=$(printf '%s\n' ${TMOE_CONTAINER_LIST} | awk -F '_' '{print $1}' | head -n 1)
-	ARCH_TYPE=$(printf '%s\n' ${TMOE_CONTAINER_LIST} | awk -F '_' '{print $2}' | head -n 1)
+	TMOE_LINUX_CONTAINER_DISTRO=$(printf '%s\n' "${TMOE_CONTAINER_LIST}" | awk -F '_' '{print $1}' | head -n 1)
+	ARCH_TYPE=$(printf '%s\n' "${TMOE_CONTAINER_LIST}" | awk -F '_' '{print $2}' | head -n 1)
 	creat_container_edition_txt
 	#[[ -z ${NEW_TMOE_ARCH} ]] || creat_tmoe_arch_file
 	rm -f ${ACROSS_ARCH_FILE} 2>/dev/null

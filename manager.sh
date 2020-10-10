@@ -298,7 +298,7 @@ check_gnu_linux_distro() {
 	check_gnu_linux_git_and_whiptail
 	#############
 	CurrentLANG=${LANG}
-	if [ ! $(printf '%s\n' ${LANG} | egrep 'UTF-8|UTF8') ]; then
+	if [ ! $(printf '%s\n' "${LANG}" | egrep 'UTF-8|UTF8') ]; then
 		export LANG=C.UTF-8
 	fi
 	########################

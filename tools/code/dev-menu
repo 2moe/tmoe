@@ -227,7 +227,7 @@ check_ide_version() {
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
 		║ 1 ║${GREP_NAME}                    ${LOCAL_OPT_APP_VERSION} 
-		║   ║          ║$(printf '%s\n' ${THE_LATEST_APP_VERSION_CODE} | sed 's@-x86_64@@')
+		║   ║          ║$(printf '%s\n' "${THE_LATEST_APP_VERSION_CODE}" | sed 's@-x86_64@@')
 
 	ENDofTable
 }
@@ -309,8 +309,8 @@ install_ide_02() {
     case ${GREP_NAME} in
     android-studio)
         THE_LATEST_DEB_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
-        THE_LATEST_APP_VERSION_CODE="$(printf '%s\n' ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
-        DOWNLOAD_FILE_NAME=$(printf '%s\n' ${THE_LATEST_DEB_LINK} | awk -F '/' '{print $NF}')
+        THE_LATEST_APP_VERSION_CODE="$(printf '%s\n' "${THE_LATEST_DEB_LINK}" | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
+        DOWNLOAD_FILE_NAME=$(printf '%s\n' "${THE_LATEST_DEB_LINK}" | awk -F '/' '{print $NF}')
         printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
         printf "%s\n" "${BLUE}https://developer.android.com/studio${RESET}"
         ;;

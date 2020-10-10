@@ -59,7 +59,7 @@ qemu_system_menu() {
 #############
 install_container_and_virtual_machine() {
 	RETURN_TO_WHERE='install_container_and_virtual_machine'
-	
+
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
@@ -2782,7 +2782,7 @@ delete_the_disk_file_of_the_specified_qemu_vm() {
 select_file_manually() {
 	count=0
 	for restore_file in "${START_DIR}"/${BACKUP_FILE_NAME}; do
-		restore_file_name[count]=$(printf '%s\n' $restore_file | awk -F'/' '{print $NF}')
+		restore_file_name[count]=$(printf '%s\n' "${restore_file}" | awk -F'/' '{print $NF}')
 		echo -e "($count) ${restore_file_name[count]}"
 		count=$(($count + 1))
 	done
@@ -3082,7 +3082,7 @@ compress_qcow2_img_file() {
 ################
 download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
-	
+
 	DOWNLOAD_PATH="${HOME}/sd/Download"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
@@ -3307,7 +3307,7 @@ download_ubuntu_iso_file() {
 			printf "%s\n" "检测到您取消了操作"
 			UBUNTU_VERSION='20.04'
 		else
-			UBUNTU_VERSION="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+			UBUNTU_VERSION="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
 		fi
 	fi
 	download_ubuntu_latest_iso_file

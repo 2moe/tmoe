@@ -39,7 +39,7 @@ start_windows_xserver() {
 		export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
 		printf "%s\n" "已将您的显示和音频服务ip修改为${WSL2IP}"
 	else
-		export DISPLAY="$(printf '%s\n' ${DISPLAY} | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
+		export DISPLAY="$(printf '%s\n' "${DISPLAY}" | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
 	fi
 	sleep 2
 }

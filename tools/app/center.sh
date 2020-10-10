@@ -202,10 +202,10 @@ install_mitalk() {
     #https://s1.zb.mi.com/miliao/apk/miliao/8.8/MiTalk_4.0.100.AppImage
     case ${LINUX_DISTRO} in
     debian | arch) ;;
-    *) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@.deb@.AppImage@") ;;
+    *) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@.deb@.AppImage@") ;;
     esac
-    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@MiTalk_@@")
+    THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@MiTalk_@@")
     ICON_FILE='/usr/share/icons/hicolor/128x128/apps/mitalk.png'
     if [ -e "${ICON_FILE}" ]; then
         catimg "${ICON_FILE}" 2>/dev/null
@@ -270,7 +270,7 @@ install_skype() {
         press_enter_to_reinstall
     fi
     case ${LINUX_DISTRO} in
-    redhat) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed 's@64.deb@64.rpm@') ;;
+    redhat) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed 's@64.deb@64.rpm@') ;;
     debian) ;;
     arch) DEPENDENCY_01='skypeforlinux-stable-bin' ;;
     *) non_debian_function ;;
@@ -282,7 +282,7 @@ install_skype() {
     esac
     do_you_want_to_continue
     cd /tmp
-    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
 
     case ${LINUX_DISTRO} in
     redhat | debian) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
@@ -663,7 +663,7 @@ install_linux_qq() {
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://im.qq.com/linuxqq/download.html${RESET}"
     THE_LATEST_PACMAN_URL=$(curl -L https://aur.tuna.tsinghua.edu.cn/packages/linuxqq/ | grep x86_64 | grep qq | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
     case ${THE_LATEST_DEB_VERSION} in
     linuxqq_2.0.0-b2-1082)
         THE_LATEST_DEB_VERSION='linuxqq_2.0.0-b2-1084'
@@ -671,16 +671,16 @@ install_linux_qq() {
         ;;
     esac
 
-    THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${ARCH_TYPE}.deb@")
+    THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | sed "s@x86_64.pkg.*@${ARCH_TYPE}.deb@")
     case ${ARCH_TYPE} in
     amd64) TMP_ARCH_TYPE=x86_64 ;;
     arm64) TMP_ARCH_TYPE=arm64 ;;
     mips*) TMP_ARCH_TYPE=mips64el ;;
     esac
 
-    THE_LATEST_SH_URL=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | sed "s@x86_64.pkg.*@${TMP_ARCH_TYPE}.sh@")
+    THE_LATEST_SH_URL=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | sed "s@x86_64.pkg.*@${TMP_ARCH_TYPE}.sh@")
     #重复检测版本号
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_PACMAN_URL} | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
 
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
@@ -887,10 +887,10 @@ install_baidu_netdisk() {
     printf "%s\n" "url：${YELLOW}https://pan.baidu.com/download${RESET}"
     printf "%s\n" "正在检测版本更新..."
     THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' $THE_LATEST_DEB_URL | awk -F '/' '{print $NF}' | sed 's@.deb@@')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}' | sed 's@.deb@@')
     case ${LINUX_DISTRO} in
     redhat)
-        THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed 's@_amd64.deb@.x86_64.rpm@')
+        THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed 's@_amd64.deb@.x86_64.rpm@')
         ;;
     esac
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"

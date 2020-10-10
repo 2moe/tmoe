@@ -271,7 +271,7 @@ uncompress_other_format_file() {
 ##############
 uncompress_tar_lz4_file() {
 	TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
-	TMOE_ROOTFS_TAR=$(printf '%s\n' ${TMOE_ROOTFS_TAR_XZ} | sed 's@.tar.lz4@.tar@')
+	TMOE_ROOTFS_TAR=$(printf '%s\n' "${TMOE_ROOTFS_TAR_XZ}" | sed 's@.tar.lz4@.tar@')
 	cd ${CURRENT_TMOE_DIR}
 	rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
 	lz4 -d ${TMOE_ROOTFS_TAR_XZ}
@@ -707,8 +707,8 @@ cat >vnc-autostartup <<-'EndOfFile'
 		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 		if [ -e "${TMOE_LOCALE_FILE}" ]; then
 			TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
-			TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
-			TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+			TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+			TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 			locale_gen_tmoe_language
 		fi
 	}
@@ -1170,8 +1170,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	else
 		TMOE_LANG="en_US.UTF-8"
 	fi
-	TMOE_LANG_HALF=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(printf '%s\n' ${TMOE_LANG} | cut -d '.' -f 1 | cut -d '_' -f 1)
+	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	############################
 	opensuse_linux_repo() {
 	    LINUX_DISTRO='suse'
@@ -1444,7 +1444,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dnf install -y glibc-langpack-zh
 	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
 	    #dnf clean packages
-		TMOE_LANG_HALF=$(printf '%s\n' $LANG | cut -d '.' -f 1 |cut -d '_' -f 1)
+		TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
 		dnf install -y "glibc-langpack-${TMOE_LANG_HALF}*"
 	}
 	######################

@@ -69,8 +69,8 @@ proot_management_menu() {
 }
 ##############################
 readme_of_gnu_linux_distro() {
-	LONG_DISTRO_NAME=$(printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} | awk -F '-' '{print $1}')
-	LONG_DISTRO_CODE=$(printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} | awk -F '-' '{print $2}')
+	LONG_DISTRO_NAME=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
+	LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
 	case ${LONG_DISTRO_NAME} in
 	arch) SHORT_DISTRO_NAME='a' ;;
 	alpine) SHORT_DISTRO_NAME='ap' ;;

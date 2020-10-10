@@ -68,7 +68,7 @@ network_manager_tui() {
 	6)
 		ip a
 		ip -br -c a
-		if [ ! -z $(printf '%s\n' ${LANG} | grep zh) ]; then
+		if [ ! -z $(printf '%s\n' "${LANG}" | grep zh) ]; then
 			curl -L myip.ipip.net
 		else
 			curl -L ip.cip.cc

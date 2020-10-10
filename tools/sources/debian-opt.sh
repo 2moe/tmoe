@@ -164,7 +164,7 @@ fix_debian_opt_app_sandbox_mode() {
 ###########
 check_debian_opt_app_version() {
     DEBIAN_OPT_REPO_POOL_URL="${OPT_URL_02}/pool/main/"
-    APP_NAME_PREFIX="$(printf '%s\n' ${DEPENDENCY_01} | cut -c 1)"
+    APP_NAME_PREFIX="$(printf '%s\n' "${DEPENDENCY_01}" | cut -c 1)"
     DEBIAN_OPT_APP_PATH_URL="${DEBIAN_OPT_REPO_POOL_URL}${APP_NAME_PREFIX}/${DEPENDENCY_01}"
     THE_LATEST_DEB_FILE=$(curl -Lv "${DEBIAN_OPT_APP_PATH_URL}" | grep '.deb' | grep -v '.asc' | grep "${ARCH_TYPE}" | tail -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)
 }

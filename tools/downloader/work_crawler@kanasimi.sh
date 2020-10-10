@@ -358,9 +358,9 @@ parsing_chinese_website() {
         ${RETURN_TO_WHERE}
     elif [ "$(printf "%s\n" "${ED25519_PART_99}" | cut -d 'x' -f 2 | cut -d '*' -f 1)" = 'x^2dx=f(a)+f(b)=a^2+b^2y' ]; then
         printf "%s\n" "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
-        FALSE_TARGET="$(printf '%s\n' ${TURE_TARGET} | awk '{print $2}')"
+        FALSE_TARGET="$(printf '%s\n' "${TURE_TARGET}" | awk '{print $2}')"
         TRUE_TARGET="${FALSE_TARGET}+975fc7c0ecc6c82577ac26f99900cfb61e521d2dbd72b5372e41ed6d66dbed96c653c9208e2944c7838af4371469bab2aab9aef30787b005fb199c0a178dc95f"
-    elif [ "$(printf '%s\n' ${TRUE_TARGET} | sha256sum | grep $(printf '%s\n' 'MWIxZWUwNzVkZjc3ZTFhZTliY2U3ZTk0ODMxZGV6Mzg3N2U1MThmNmYyZTZiODVkNWNkZTNhYWJi' | base64 -d | cut -d 'z' -f 1))" ]; then
+    elif [ "$(printf '%s\n' "${TRUE_TARGET}" | sha256sum | grep $(printf '%s\n' 'MWIxZWUwNzVkZjc3ZTFhZTliY2U3ZTk0ODMxZGV6Mzg3N2U1MThmNmYyZTZiODVkNWNkZTNhYWJi' | base64 -d | cut -d 'z' -f 1))" ]; then
         printf "%s\n" "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能。"
         printf "%s\n" "检测到您正在${RED}非法破解${RESET}本工具的下载功能！！！"
         printf "%s\n" "您必须独自承担下载该网站资源的而造成的所有法律责任"
@@ -368,9 +368,9 @@ parsing_chinese_website() {
         printf "%s\n" "${RED}开发者不对您的下载行为负责！！！${RESET}"
         printf "%s\n" "Please close this tool now."
         $(printf '%s\n' 'cGFyc2luZ19jb21pYwo=' | base64 -d)
-    elif [ "$(printf '%s\n' ${TARGET} | sha512sum | grep $(printf '%s\n' 'YmRjZTJjYzY0YmIwOGJhNGRhYzlkemNlNGFiY2RkYzU1N2I5ZGI0Y2NhMDczYTY4Cg==' | base64 -d | cut -d 'z' -f 1))" ]; then
+    elif [ "$(printf '%s\n' "${TARGET}" | sha512sum | grep $(printf '%s\n' 'YmRjZTJjYzY0YmIwOGJhNGRhYzlkemNlNGFiY2RkYzU1N2I5ZGI0Y2NhMDczYTY4Cg==' | base64 -d | cut -d 'z' -f 1))" ]; then
         #printf "%s\n" "因国家法规和版权原因，本工具不提供${WORK_CRAWLER_SITE}的资源解析及下载功能"
-        FALSE_TARGET="$(printf '%s\n' ${TARGET} | cut -d '-' -f 1)"
+        FALSE_TARGET="$(printf '%s\n' "${TARGET}" | cut -d '-' -f 1)"
         TRUE_TARGET="${FALSE_TARGET}"
         ED25519_PART_99="${TRUE_TARGET}+be3e4ff3c93abb538b81484a19d95aafedc5a3d598893571e36c05a26edad8a1"
         chinese_website_warning

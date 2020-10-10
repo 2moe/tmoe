@@ -80,7 +80,7 @@ select_file_manually() {
 	count=0
 	printf '%s\n' '您可以在此列表中选择需要恢复的压缩包'
 	for restore_file in "${START_DIR}"/${BACKUP_FILE_NAME}; do
-		restore_file_name[count]=$(printf '%s\n' $restore_file | awk -F'/' '{print $NF}')
+		restore_file_name[count]=$(printf '%s\n' "${restore_file}" | awk -F'/' '{print $NF}')
 		echo -e "($count) ${restore_file_name[count]}"
 		count=$(($count + 1))
 	done
@@ -134,7 +134,7 @@ file_directory_selection() {
 ###################
 manually_select_the_file_directory() {
 	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为${CONTAINER_BACKUP_PATH}\nPlease type the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
-	START_DIR="$(printf '%s\n' ${TARGET_BACKUP_FILE_PATH} | head -n 1 | cut -d ' ' -f 1)"
+	START_DIR="$(printf '%s\n' "${TARGET_BACKUP_FILE_PATH}" | head -n 1 | cut -d ' ' -f 1)"
 	printf "%s\n" "${START_DIR}"
 	if [ -z ${START_DIR} ]; then
 		printf "%s\n" "文件目录不能为空"

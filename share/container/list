@@ -379,7 +379,7 @@ custom_ubuntu_version() {
 	#12 50
 	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease type the ubuntu version code." 9 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
 	#[[ "$?" = 0 ]] || ${RETURN_TO_WHERE} #此處不要判斷退出狀態
-	DISTRO_CODE="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		printf "%s\n" "检测到您取消了操作"
 		printf "%s\n" "已自动切换为ubuntu20.04(代号focal)"
@@ -1032,7 +1032,7 @@ install_armbian_testing_via_tuna() {
 ###########
 custom_armbian_version() {
 	TARGET=$(whiptail --inputbox "请输入armbian版本代号，例如bullseye(英文小写)\nPlease type the armbian version code." 9 50 --title "ARMBIAN CODE" 3>&1 1>&2 2>&3)
-	DISTRO_CODE="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		printf "%s\n" "检测到您取消了操作"
 		printf "%s\n" "已自动切换为armbian bullseye"
@@ -1086,7 +1086,7 @@ which_linux_mint_distro() {
 #########################
 custom_mint_version() {
 	TARGET=$(whiptail --inputbox "请输入mint版本代号，例如ulyana(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
-	DISTRO_CODE="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		printf "%s\n" "检测到您取消了操作"
 		printf "%s\n" "已自动切换为ulyana"

@@ -41,21 +41,21 @@ golang_annie() {
     AnnieVideoURL=$(whiptail --inputbox "Please enter a url.请输入视频链接,例如https://www.bilibili.com/video/av号,或者直接输入avxxx(av号或BV号)。您可以在url前加-f参数来指定清晰度，-p来下载整个播放列表。Press Enter after the input is completed." 12 50 --title "请在地址栏内输入 视频链接" 3>&1 1>&2 2>&3)
 
     # printf "%s\n" "${AnnieVideoURL}" >> ${HOME}/.video_history
-    if [ "$(printf '%s\n' ${AnnieVideoURL} | grep 'b23.tv')" ]; then
-        AnnieVideoURL="$(printf '%s\n' ${AnnieVideoURL} | sed 's@b23.tv@www.bilibili.com/video@')"
-    elif [ "$(printf '%s\n' ${AnnieVideoURL} | grep '^BV')" ]; then
-        AnnieVideoURL="$(printf '%s\n' ${AnnieVideoURL} | sed 's@^BV@https://www.bilibili.com/video/&@')"
+    if [ "$(printf '%s\n' "${AnnieVideoURL}" | grep 'b23.tv')" ]; then
+        AnnieVideoURL="$(printf '%s\n' "${AnnieVideoURL}" | sed 's@b23.tv@www.bilibili.com/video@')"
+    elif [ "$(printf '%s\n' "${AnnieVideoURL}" | grep '^BV')" ]; then
+        AnnieVideoURL="$(printf '%s\n' "${AnnieVideoURL}" | sed 's@^BV@https://www.bilibili.com/video/&@')"
     fi
     #当未添加http时，将自动修复。
-    if [ "$(printf '%s\n' ${AnnieVideoURL} | egrep 'www|com')" ] && [ ! "$(printf '%s\n' ${AnnieVideoURL} | grep 'http')" ]; then
+    if [ "$(printf '%s\n' "${AnnieVideoURL}" | egrep 'www|com')" ] && [ ! "$(printf '%s\n' "${AnnieVideoURL}" | grep 'http')" ]; then
         ls
-        AnnieVideoURL=$(printf '%s\n' ${AnnieVideoURL} | sed 's@www@http://&@')
+        AnnieVideoURL=$(printf '%s\n' "${AnnieVideoURL}" | sed 's@www@http://&@')
     fi
     printf "%s\n" "${AnnieVideoURL}"
     printf "%s\n" "正在解析中..."
     printf "%s\n" "Parsing ..."
-    #if [ ! $(printf '%s\n' ${AnnieVideoURL} | egrep '^BV|^av|^http') ]; then
-    #	AnnieVideoURL=$(printf '%s\n' ${AnnieVideoURL} | sed 's@^@http://&@')
+    #if [ ! $(printf '%s\n' "${AnnieVideoURL}" | egrep '^BV|^av|^http') ]; then
+    #	AnnieVideoURL=$(printf '%s\n' "${AnnieVideoURL}" | sed 's@^@http://&@')
     #fi
 
     annie -i ${AnnieVideoURL}

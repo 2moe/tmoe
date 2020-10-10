@@ -201,7 +201,7 @@ debootstrap_debian_distro() {
 custom_debian_version() {
 	TARGET=$(whiptail --inputbox "请输入debian版本代号，例如sid(英文小写)\n Please type the debian version code." 10 50 --title "DEBIAN CODE" 3>&1 1>&2 2>&3)
 	#[[ "$?" = 0 ]] || ${RETURN_TO_WHERE}
-	DISTRO_CODE="$(printf '%s\n' ${TARGET} | head -n 1 | cut -d ' ' -f 1)"
+	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
 	if [ -z "${DISTRO_CODE}" ]; then
 		printf "%s\n" "检测到您取消了操作"
 		printf "%s\n" "已自动切换为debian11(代号bullseye)"

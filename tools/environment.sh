@@ -43,7 +43,7 @@ check_tar_ext_format() {
         EXTRACT_FILE_FOLDER=$(tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
         ;;
     esac
-    EXTRACT_FILE_FOLDER_HEAD_01=$(printf '%s\n' ${EXTRACT_FILE_FOLDER} | awk '{print $1}')
+    EXTRACT_FILE_FOLDER_HEAD_01=$(printf '%s\n' "${EXTRACT_FILE_FOLDER}" | awk '{print $1}')
     check_theme_folder_exists_status
 }
 ################
@@ -493,7 +493,7 @@ beta_features_quick_install() {
     #fi
     #############
     if [ ! -z "${DEPENDENCY_01}" ]; then
-        DEPENDENCY_01_COMMAND=$(printf '%s\n' ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
+        DEPENDENCY_01_COMMAND=$(printf '%s\n' "${DEPENDENCY_01}" | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
             printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
@@ -502,7 +502,7 @@ beta_features_quick_install() {
     fi
     #############
     if [ ! -z "${DEPENDENCY_02}" ]; then
-        DEPENDENCY_02_COMMAND=$(printf '%s\n' ${DEPENDENCY_02} | awk -F ' ' '$0=$NF')
+        DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
             printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_02}${RESET}"
@@ -875,9 +875,9 @@ tmoe_system_app_menu() {
 }
 ##########
 where_is_tmoe_file_dir() {
-    CURRENT_QEMU_ISO_FILENAME="$(printf '%s\n' ${CURRENT_QEMU_ISO} | awk -F '/' '{print $NF}')"
+    CURRENT_QEMU_ISO_FILENAME="$(printf '%s\n' "${CURRENT_QEMU_ISO}" | awk -F '/' '{print $NF}')"
     if [ ! -z "${CURRENT_QEMU_ISO}" ]; then
-        CURRENT_QEMU_ISO_FILEPATH="$(printf '%s\n' ${CURRENT_QEMU_ISO} | sed "s@${CURRENT_QEMU_ISO_FILENAME}@@")"
+        CURRENT_QEMU_ISO_FILEPATH="$(printf '%s\n' "${CURRENT_QEMU_ISO}" | sed "s@${CURRENT_QEMU_ISO_FILENAME}@@")"
     fi
 
     if [ -d "${CURRENT_QEMU_ISO_FILEPATH}" ]; then
@@ -935,17 +935,17 @@ tmoe_debian_add_ubuntu_ppa_source() {
 }
 ####################
 add_ubuntu_ppa_source() {
-    if [ "$(printf '%s\n' ${TARGET} | grep 'sudo add-apt-repository')" ]; then
-        TARGET="$(printf '%s\n' ${TARGET} | sed 's@sudo add-apt-repository@@')"
-    elif [ "$(printf '%s\n' ${TARGET} | grep 'add-apt-repository ')" ]; then
-        TARGET="$(printf '%s\n' ${TARGET} | sed 's@add-apt-repository @@')"
+    if [ "$(printf '%s\n' "${TARGET}" | grep 'sudo add-apt-repository')" ]; then
+        TARGET="$(printf '%s\n' "${TARGET}" | sed 's@sudo add-apt-repository@@')"
+    elif [ "$(printf '%s\n' "${TARGET}" | grep 'add-apt-repository ')" ]; then
+        TARGET="$(printf '%s\n' "${TARGET}" | sed 's@add-apt-repository @@')"
     fi
     add-apt-repository ${TARGET}
     if [ "$?" != "0" ]; then
         tmoe_sources_list_manager
     fi
-    DEV_TEAM_NAME=$(printf '%s\n' ${TARGET} | cut -d '/' -f 1 | cut -d ':' -f 2)
-    PPA_SOFTWARE_NAME=$(printf '%s\n' ${TARGET} | cut -d ':' -f 2 | cut -d '/' -f 2)
+    DEV_TEAM_NAME=$(printf '%s\n' "${TARGET}" | cut -d '/' -f 1 | cut -d ':' -f 2)
+    PPA_SOFTWARE_NAME=$(printf '%s\n' "${TARGET}" | cut -d ':' -f 2 | cut -d '/' -f 2)
     if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
         get_ubuntu_ppa_gpg_key
     fi

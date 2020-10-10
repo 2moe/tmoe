@@ -173,7 +173,7 @@ install_vivaldi_browser() {
     THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep deb | sed 's@ @\n@g' | grep 'deb' | grep 'amd64' | cut -d '"' -f 2 | head -n 1)"
     case ${ARCH_TYPE} in
     amd64) ;;
-    i386 | arm64 | armhf) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
+    i386 | arm64 | armhf) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
     *) arch_does_not_support ;;
     esac
 
@@ -183,18 +183,18 @@ install_vivaldi_browser() {
         case ${ARCH_TYPE} in
         amd64)
             #THE_LATEST_DEB_URL="$(curl -L ${REPO_URL} | grep rpm | sed 's@ @\n@g' | grep 'rpm' | grep 'x86_64' | cut -d '"' -f 2 | head -n 1)"
-            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         i386)
-            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.i386.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed "s@_amd64.deb@.i386.rpm@")
             ;;
         *) arch_does_not_support ;;
         esac
         ;;
     esac
     #) non_debian_function ;;
-    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${DEPENDENCY_01}-@@" | sed "s@vivaldi-stable_@@")
+    THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${DEPENDENCY_01}-@@" | sed "s@vivaldi-stable_@@")
     check_deb_version
     download_and_install_deb
     rm -v /etc/apt/sources.list.d/vivaldi.list 2>/dev/null
@@ -212,7 +212,7 @@ install_360_browser() {
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${ARCH_TYPE} in
     amd64) ;;
-    arm64) THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed "s@amd64.deb@arm64.deb@") ;;
+    arm64) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@amd64.deb@arm64.deb@") ;;
     *) arch_does_not_support ;;
     esac
     #https://down.360safe.com/gc/browser360-cn-stable_12.2.1070.0-1_amd64.deb
@@ -223,17 +223,17 @@ install_360_browser() {
     redhat)
         case ${ARCH_TYPE} in
         amd64)
-            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_amd64.deb@.x86_64.rpm@")
             ;;
         arm64)
-            THE_LATEST_DEB_URL=$(printf '%s\n' ${THE_LATEST_DEB_URL} | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
+            THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed 's@stable_@stable-@' | sed 's@12.2.1070.0-1@10.2.1005.3-1@' | sed "s@_arm64.deb@.aarch64.rpm@")
             ;;
         esac
         ;;
     esac
     #) non_debian_function ;;
-    THE_LATEST_DEB_FILE=$(printf '%s\n' ${THE_LATEST_DEB_URL} | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' ${THE_LATEST_DEB_FILE} | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
+    THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
+    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
     check_deb_version
     download_and_install_deb
 }
