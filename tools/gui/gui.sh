@@ -256,7 +256,7 @@ preconfigure_gui_dependecies_02() {
         case "${TMOE_PROOT}" in
         true | no) NON_DBUS='true' ;;
         esac
-        DEPENDENCY_02="dbus-x11 fonts-noto-cjk fonts-noto-color-emoji tightvncserver"
+        DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
         #if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
         #	DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
         #else
@@ -376,7 +376,6 @@ tmoe_container_desktop() {
 }
 ####################
 tmoe_display_manager_install() {
-
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_display_manager_install'
     INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
@@ -488,7 +487,6 @@ will_be_installed_for_you() {
     printf "%s\n" "即将为您安装思源黑体(中文字体)、${REMOTE_DESKTOP_SESSION_01}、tightvncserver等软件包"
 }
 ########################
-#####################
 window_manager_install() {
     #NON_DBUS='true'
     REMOTE_DESKTOP_SESSION_02='x-window-manager'
@@ -842,6 +840,9 @@ configure_vnc_xstartup() {
         printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
         mkdir -p /run/dbus /var/run/dbus
     fi
+    case ${LINUX_DISTRO} in
+    debian) [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji ;;
+    esac
     mkdir -p ~/.vnc
     cd ${HOME}/.vnc
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
