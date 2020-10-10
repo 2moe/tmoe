@@ -556,11 +556,11 @@ arch_does_not_support() {
 do_you_want_to_continue() {
     TMOE_TIPS_01="Do you want to continue?${YELLOW}[Y/n]${RESET}"
     if [ -e /usr/games/lolcat ]; then
-        printf "%s\n" ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 8
+        printf "%s\n" "${TMOE_TIPS_01}" | /usr/games/lolcat -a -d 8
     elif [ "$(command -v lolcat)" ]; then
-        printf "%s\n" ${TMOE_TIPS_01} | lolcat
+        printf "%s\n" "${TMOE_TIPS_01}" | lolcat
     else
-        printf "%s\n" ${TMOE_TIPS_01}
+        printf "%s\n" "${TMOE_TIPS_01}"
     fi
     printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
     printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
@@ -1408,11 +1408,11 @@ tmoe_app_menu_01() {
 ###########
 lolcat_tmoe_tips_01() {
     if [ -e /usr/games/lolcat ]; then
-        printf "%s\n" ${TMOE_TIPS_01} | /usr/games/lolcat -a -d 9
+        printf "%s\n" "${TMOE_TIPS_01}" | /usr/games/lolcat -a -d 9
     elif [ "$(command -v lolcat)" ]; then
-        printf "%s\n" ${TMOE_TIPS_01} | lolcat
+        printf "%s\n" "${TMOE_TIPS_01}" | lolcat
     else
-        printf "%s\n" ${TMOE_TIPS_01}
+        printf "%s\n" "${TMOE_TIPS_01}"
     fi
     case ${LINUX_DISTRO} in
     debian) ;;
