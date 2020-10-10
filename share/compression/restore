@@ -135,7 +135,7 @@ file_directory_selection() {
 manually_select_the_file_directory() {
 	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为${CONTAINER_BACKUP_PATH}\nPlease type the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
 	START_DIR="$(printf '%s\n' ${TARGET_BACKUP_FILE_PATH} | head -n 1 | cut -d ' ' -f 1)"
-	printf "%s\n" ${START_DIR}
+	printf "%s\n" "${START_DIR}"
 	if [ -z ${START_DIR} ]; then
 		printf "%s\n" "文件目录不能为空"
 		printf "%s\n" "The file path is empty."

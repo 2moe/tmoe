@@ -397,7 +397,7 @@ debootstrap_ubuntu_distro() {
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		#此处重复创建并非多余
 		creat_container_edition_txt
-		printf "%s\n" ${DEBIAN_CHROOT}
+		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
 		mkdir -p ${DEBIAN_CHROOT}
 		case ${ARCH_TYPE} in

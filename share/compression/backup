@@ -3,7 +3,7 @@
 backup_filename() {
 	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称\n Please type the filename." 9 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	TARGET_BACKUP_FILE_NAME="$(printf '%s\n' ${TARGET_BACKUP_FILE_NAME} | head -n 1 | cut -d ' ' -f 1)"
-	printf "%s\n" ${TARGET_BACKUP_FILE_NAME}
+	printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
 	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
 		printf "%s\n" "文件名称不能为空！"
 		printf "%s\n" "The file name is ${RED}empty${RESET}."

@@ -117,7 +117,7 @@ grep_theme_model_01() {
 ###############
 aria2c_download_theme_file() {
     THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
-    printf "%s\n" ${THE_LATEST_THEME_LINK}
+    printf "%s\n" "${THE_LATEST_THEME_LINK}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
 }
 ##########
@@ -232,7 +232,7 @@ grep_arch_linux_pkg_04() {
         aria2c --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${ARCH_WALLPAPER_VERSION} -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
         ;;
     esac
-    printf "%s\n" ${ARCH_WALLPAPER_VERSION} | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
+    printf "%s\n" "${ARCH_WALLPAPER_VERSION}" | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
 }
 #################
 check_opt_app_version() {
@@ -375,7 +375,7 @@ tmoe_file() {
 ################
 install_deb_file_common_model_02() {
     cd /tmp
-    printf "%s\n" ${LATEST_DEB_URL}
+    printf "%s\n" "${LATEST_DEB_URL}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
     apt show ./${LATEST_DEB_VERSION}
     apt install -y ./${LATEST_DEB_VERSION}
@@ -405,7 +405,7 @@ download_tuna_repo_deb_file_model_03() {
 download_tuna_repo_deb_file_all_arch() {
     LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "all" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
-    printf "%s\n" ${LATEST_DEB_URL}
+    printf "%s\n" "${LATEST_DEB_URL}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
     apt show ./${LATEST_DEB_VERSION} 2>/dev/null
 }
@@ -900,7 +900,7 @@ uncompress_tar_gz_file() {
 download_deb_comman_model_02() {
     cd /tmp/
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-    printf "%s\n" ${THE_LATEST_DEB_LINK}
+    printf "%s\n" "${THE_LATEST_DEB_LINK}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
     apt show ./${THE_LATEST_DEB_VERSION}
     apt install -y ./${THE_LATEST_DEB_VERSION}
@@ -1115,7 +1115,7 @@ tenvideo_env() {
 }
 ########
 aria2c_download_normal_file_s3() {
-    printf "%s\n" ${YELLOW}${DOWNLOAD_FILE_URL}${RESET}
+    printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
     cd ${DOWNLOAD_PATH}
     #aria2c --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
     #此处用wget会自动转义url
@@ -1323,11 +1323,11 @@ cat_icon_img() {
 do_you_want_to_upgrade_it() {
     UPGRADE_TIPS="您是否需要更新${GREP_NAME}?"
     if [ -e /usr/games/lolcat ]; then
-        printf "%s\n" ${UPGRADE_TIPS} | /usr/games/lolcat -a -d 7
+        printf "%s\n" "${UPGRADE_TIPS}" | /usr/games/lolcat -a -d 7
     elif [ "$(command -v lolcat)" ]; then
-        printf "%s\n" ${UPGRADE_TIPS} | lolcat
+        printf "%s\n" "${UPGRADE_TIPS}" | lolcat
     else
-        printf "%s\n" ${UPGRADE_TIPS}
+        printf "%s\n" "${UPGRADE_TIPS}"
     fi
     do_you_want_to_continue
 }
@@ -1335,11 +1335,11 @@ do_you_want_to_upgrade_it() {
 do_you_want_to_upgrade_it_02() {
     UPGRADE_TIPS="您是否需要更新${DEPENDENCY_01}?"
     if [ -e /usr/games/lolcat ]; then
-        printf "%s\n" ${UPGRADE_TIPS} | /usr/games/lolcat
+        printf "%s\n" "${UPGRADE_TIPS}" | /usr/games/lolcat
     elif [ "$(command -v lolcat)" ]; then
-        printf "%s\n" ${UPGRADE_TIPS} | lolcat
+        printf "%s\n" "${UPGRADE_TIPS}" | lolcat
     else
-        printf "%s\n" ${UPGRADE_TIPS}
+        printf "%s\n" "${UPGRADE_TIPS}"
     fi
 }
 ##################
@@ -1439,7 +1439,7 @@ download_and_install_deb() {
     arch | *) beta_features_quick_install ;;
     esac
     rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null
-    printf "%s\n" ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
+    printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${LOCAL_APP_VERSION_TXT}
     case ${LINUX_DISTRO} in
     arch) ;;
     *) beta_features_install_completed ;;

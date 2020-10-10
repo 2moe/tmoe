@@ -753,7 +753,7 @@ install_qemu_user_static() {
 	ENDofTable
     do_you_want_to_continue
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-    printf "%s\n" ${THE_LATEST_DEB_LINK}
+    printf "%s\n" "${THE_LATEST_DEB_LINK}"
     #printf "%s\n" "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
     download_qemu_user
     unxz_deb_file

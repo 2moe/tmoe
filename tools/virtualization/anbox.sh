@@ -56,7 +56,7 @@ download_anbox_rom() {
 	elif [ "${ARCH_TYPE}" = "arm64" ]; then
 		THE_LATEST_ISO_LINK="https://build.anbox.io/android-images/2017/08/04/android_1_arm64.img"
 	fi
-	printf "%s\n" ${THE_LATEST_ISO_LINK}
+	printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	do_you_want_to_continue
 	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }

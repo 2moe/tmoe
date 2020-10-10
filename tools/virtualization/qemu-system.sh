@@ -984,7 +984,7 @@ modify_qemu_vnc_display_port() {
 	printf '%s\n' 'Your current VNC port has been modified.'
 	check_qemu_vnc_port
 	printf '%s\n' '您当前VNC端口已修改为'
-	printf "%s\n" ${CURRENT_VNC_PORT}
+	printf "%s\n" "${CURRENT_VNC_PORT}"
 }
 ###############
 choose_qemu_iso_file() {
@@ -3397,7 +3397,7 @@ download_android_x86_file() {
 		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 	fi
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
-	#printf "%s\n" ${THE_LATEST_ISO_LINK}
+	#printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
 	aria2c_download_file
 }
@@ -3742,19 +3742,19 @@ download_debian_nonfree_iso() {
 download_debian_weekly_builds_iso() {
 	#https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-netinst.iso"
-	printf "%s\n" ${THE_LATEST_ISO_LINK}
+	printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
 }
 ##################
 download_debian_free_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso"
-	printf "%s\n" ${THE_LATEST_ISO_LINK}
+	printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
 }
 ############
 download_debian_nonfree_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}%2Bnonfree.iso"
-	printf "%s\n" ${THE_LATEST_ISO_LINK}
+	printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
 }
 ####################

@@ -56,7 +56,7 @@ install_thunder_bin() {
     sed -i 's@Icon=.*@Icon=/usr/share/icons/hicolor/scalable/apps/com.thunder.download.svg@' applications/com.xunlei.download.desktop
     cp -rvf ./applications ./icons /usr/share
     rm -rv ${TEMP_FOLDER} 2>/dev/null
-    printf "%s\n" ${THE_LATEST_DEB_VERSION} >${LOCAL_APP_VERSION_TXT}
+    printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${LOCAL_APP_VERSION_TXT}
 }
 ################
 remove_thunder_opt_app() {

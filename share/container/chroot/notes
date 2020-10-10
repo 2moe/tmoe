@@ -14,7 +14,7 @@ check_root_permissions() {
 			fi
 			;;
 		*)
-			printf "%s\n" Android :${ANDROID_VERSION}
+			printf "%s\n" "Android :${ANDROID_VERSION}"
 			printf "%s\n" "$(getprop ro.product.model)" 2>/dev/null
 			printf "%s\n" '检测到root权限授予失败，您无法安装chroot容器'
 			press_enter_to_return

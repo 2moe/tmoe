@@ -189,8 +189,8 @@ restore_default_sources_list() {
 }
 ######################
 ping_mirror_sources_list_count_3() {
-	printf "%s\n" ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
-	printf "%s\n" ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+	printf "%s\n" "${YELLOW}${SOURCE_MIRROR_STATION}${RESET}"
+	printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
 	ping -c 3 ${SOURCE_MIRROR_STATION} | egrep 'avg|time.*ms' --color=auto
 	printf "%s\n" "---------------------------"
 }
@@ -227,7 +227,7 @@ ping_mirror_sources_list() {
 }
 ##############
 download_termux_clang() {
-	printf "%s\n" ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+	printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
 	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/termux-packages-24/aarch64/${CLANG_FILE}"
 	printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
 	aria2c --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"

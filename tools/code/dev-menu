@@ -354,11 +354,7 @@ download_android_studio() {
     ${DOWNLOAD_FILE_NAME}) printf "%s\n" "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
     *) aria2c --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${DOWNLOAD_FILE_NAME} -x 10 -s 10 -k 1M ${THE_LATEST_DEB_LINK} ;;
     esac
-    printf "%s\n" ${THE_LATEST_APP_VERSION_CODE} >"${LOCAL_APP_VERSION_TXT}"
-    #printf "%s\n" ${THE_LATEST_DEB_LINK}
-    #printf "%s\n" "Do you want to download and install it?"
-    #do_you_want_to_continue
-    #aria2c --allow-overwrite=true -s 10 -x 10 -k 1M -o android_studio_linux_64bit.tar.gz ${THE_LATEST_DEB_LINK}
+    printf "%s\n" "${THE_LATEST_APP_VERSION_CODE}" >"${LOCAL_APP_VERSION_TXT}"
 }
 ###############
 check_android_studio() {

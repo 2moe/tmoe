@@ -553,7 +553,7 @@ edit_sources_list_manually() {
 }
 ##########
 download_debian_ls_lr() {
-    printf "%s\n" ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+    printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
     DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/debian/ls-lR.gz"
     printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
     aria2c --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
@@ -596,8 +596,8 @@ mirror_sources_station_download_speed_test() {
 }
 ######################
 ping_mirror_sources_list_count_3() {
-    printf "%s\n" ${YELLOW}${SOURCE_MIRROR_STATION}${RESET}
-    printf "%s\n" ${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}
+    printf "%s\n" "${YELLOW}${SOURCE_MIRROR_STATION}${RESET}"
+    printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
     ping -c 3 ${SOURCE_MIRROR_STATION} | egrep 'avg|time.*ms' --color=auto
     printf "%s\n" "---------------------------"
 }
@@ -681,7 +681,7 @@ modify_ubuntu_mirror_sources_list() {
         printf '%s\n' '19.10'
     else
         SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-        printf "%s\n" $(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+        printf "%s\n" "$(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)"
     fi
     printf "%s\n" "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
@@ -741,7 +741,7 @@ modify_debian_mirror_sources_list() {
         BACKPORTCODE='jessie'
         #printf "%s\n" "Debian 8 jessie"
     fi
-    printf "%s\n" $(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+    printf "%s\n" "$(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)"
     printf "%s\n" "检测到您使用的是Debian ${SOURCELISTCODE}系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
     if [ "${SOURCELISTCODE}" = "sid" ]; then

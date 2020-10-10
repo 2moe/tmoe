@@ -124,7 +124,7 @@ switch_scrcpy_device() {
     adb devices -l 2>&1 | sed '1d;$d' | awk '{print $5,$4,$3}' | sed 's@model:@@g' | sed 's@-@_@g' | sed 's@product:@-@g' | sed 's@:@-@g' | sed 's@ @-@g' >.tmoe-linux_cache.02
     TMOE_ADB_DEVICE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
     cat .tmoe-linux_cache.0*
-    printf "%s\n" ${TMOE_ADB_DEVICE_LIST}
+    printf "%s\n" "${TMOE_ADB_DEVICE_LIST}"
     TMOE_ADB_DEVICE_ITEM=$(whiptail --title "SCRCPY DEVICES" --menu \
         "您想要切换至哪个设备？\nWhich device do you want to switch?" 0 0 0 \
         ${TMOE_ADB_DEVICE_LIST} \
@@ -635,7 +635,7 @@ download_ubuntu_ppa_deb_model_01() {
     cd /tmp/
     THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | head -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)"
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-    printf "%s\n" ${THE_LATEST_DEB_LINK}
+    printf "%s\n" "${THE_LATEST_DEB_LINK}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
     apt install ./${THE_LATEST_DEB_VERSION}
     rm -fv ${THE_LATEST_DEB_VERSION}

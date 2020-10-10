@@ -1522,7 +1522,7 @@ aria2_bt_tracker() {
 EOF
     update_aria2_bt_tracker
     check_tmoe_aria2_config_value
-    printf "%s\n" ${TMOE_ARIA2_CONFIG_STATUS}
+    printf "%s\n" "${TMOE_ARIA2_CONFIG_STATUS}"
     printf "%s\n" "更新完成，您可能需要重启aria2c进程才能生效"
     printf "%s\n" "如需自动更新，则请手动将${GREEN}aria2-i bt${RESET}添加至定时任务"
     press_enter_to_return
@@ -1536,7 +1536,7 @@ update_aria2_bt_tracker() {
     BT_TRACKER_URL='https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt'
     BT_TRACKER_REPO='https://github.com/ngosang/trackerslist'
     cd ${TMOE_ARIA2_PATH}
-    printf "%s\n" ${BT_TRACKER_REPO}
+    printf "%s\n" "${BT_TRACKER_REPO}"
     if [ ! -d "trackerslist" ]; then
         git clone --depth=1 ${BT_TRACKER_REPO} trackerslist
         cd trackerslist
@@ -1680,7 +1680,7 @@ modify_aria2_config_value() {
     check_tmoe_aria2_config_value
     printf "%s\n" "${TMOE_ARIA2_GREP_NAME} has been modified."
     #printf "%s\n" "${TMOE_ARIA2_GREP_NAME}的值已修改为${TMOE_ARIA2_CONFIG_VALUE}"
-    printf "%s\n" ${TMOE_ARIA2_CONFIG_STATUS}
+    printf "%s\n" "${TMOE_ARIA2_CONFIG_STATUS}"
 }
 ###################
 custom_aria2_config() {

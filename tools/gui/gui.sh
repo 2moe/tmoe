@@ -109,7 +109,7 @@ modify_tightvnc_display_port() {
         printf '%s\n' 'Your current VNC port has been modified.'
         check_tightvnc_port
         printf '%s\n' '您当前的VNC端口已修改为'
-        printf "%s\n" ${CURRENT_VNC_PORT}
+        printf "%s\n" "${CURRENT_VNC_PORT}"
     fi
 }
 ######################
@@ -158,7 +158,7 @@ modify_vnc_pulse_audio() {
         fi
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
-        printf "%s\n" $(grep 'PULSE_SERVER' $(command -v startvnc) | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" "$(grep 'PULSE_SERVER' $(command -v startvnc) | cut -d '=' -f 2 | head -n 1)"
         printf "%s\n" "请输startvnc重启vnc服务，以使配置生效"
     fi
 }
@@ -839,7 +839,7 @@ tmoe_virtual_machine_desktop() {
 ################
 configure_vnc_xstartup() {
     if [ -e "/etc/machine-id" ]; then
-        printf "%s\n" $(dbus-uuidgen) >"/etc/machine-id" 2>/dev/null
+        printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
         mkdir -p /run/dbus /var/run/dbus
     fi
     mkdir -p ~/.vnc
@@ -2686,7 +2686,7 @@ download_win10x_theme() {
     GITHUB_URL=$(cat url.txt)
     tar -Jxvf We10X.tar.xz -C /usr/share/icons 2>/dev/null
     update-icon-caches /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null &
-    printf "%s\n" ${GITHUB_URL}
+    printf "%s\n" "${GITHUB_URL}"
     rm -rf /tmp/McWe10X
     printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
     XFCE_ICON_NAME='We10X'
@@ -2714,7 +2714,7 @@ download_uos_icon_theme() {
     GITHUB_URL=$(cat url.txt)
     tar -Jxvf Uos.tar.xz -C /usr/share/icons 2>/dev/null
     update-icon-caches /usr/share/icons/Uos 2>/dev/null &
-    printf "%s\n" ${GITHUB_URL}
+    printf "%s\n" "${GITHUB_URL}"
     rm -rf /tmp/UosICONS
     printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/icons/Uos ; ${TMOE_REMOVAL_COMMAND} deepin-icon-theme"
     XFCE_ICON_NAME='Uos'
@@ -2738,7 +2738,7 @@ download_macos_mojave_theme() {
     tar -Jxvf 01-Mojave-dark.tar.xz -C /usr/share/themes 2>/dev/null
     tar -Jxvf 01-McMojave-circle.tar.xz -C /usr/share/icons 2>/dev/null
     update-icon-caches /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle 2>/dev/null &
-    printf "%s\n" ${GITHUB_URL}
+    printf "%s\n" "${GITHUB_URL}"
     rm -rf /tmp/McMojave
     printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/themes/Mojave-dark /usr/share/icons/McMojave-circle-dark /usr/share/icons/McMojave-circle"
     XFCE_ICON_NAME='McMojave-circle'
@@ -3034,7 +3034,7 @@ x11vnc_pulse_server() {
         fi
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
-        printf "%s\n" $(grep 'PULSE_SERVER' startx11vnc | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" "$(grep 'PULSE_SERVER' startx11vnc | grep -v '^#' | cut -d '=' -f 2 | head -n 1)"
     fi
 }
 ##################
@@ -3084,8 +3084,6 @@ modify_vnc_conf() {
             printf '%s\n' 'Your current resolution has been modified.'
             check_vnc_resolution
             printf "%s\n" "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
-            #printf "%s\n" $(sed -n \$p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
-            #$p表示最后一行，必须用反斜杠转义。
             stopvnc 2>/dev/null
             press_enter_to_return
             modify_remote_desktop_config
@@ -3135,7 +3133,7 @@ modify_xsdl_conf() {
 disable_tmoe_qemu_remote_display() {
     if grep -q '^export.*DISPLAY' "${TMOE_XSDL_SCRIPT_PATH}"; then
         XSDL_DISPLAY_STATUS='检测到您已经启用了转发X显示画面的功能，打开qemu时，画面将转发至远程XServer'
-        printf "%s\n" ${XSDL_DISPLAY_STATUS}
+        printf "%s\n" "${XSDL_DISPLAY_STATUS}"
         printf "%s\n" "是否需要禁用?"
         printf "%s\n" "Do you want to disable it"
         do_you_want_to_continue
@@ -3143,7 +3141,7 @@ disable_tmoe_qemu_remote_display() {
         printf "%s\n" "禁用完成"
     else
         XSDL_DISPLAY_STATUS='检测到您尚未启用转发X显示画面的功能，打开qemu时，将直接调用当前显示器的窗口。'
-        printf "%s\n" ${XSDL_DISPLAY_STATUS}
+        printf "%s\n" "${XSDL_DISPLAY_STATUS}"
         printf "%s\n" "是否需要启用？"
         printf "%s\n" "Do you want to enable it"
         do_you_want_to_continue
@@ -3159,15 +3157,11 @@ modify_startxsdl_manually() {
     check_tmoe_xsdl_display_ip
     printf "%s\n" "您当前的显示服务的ip地址为${CURRENT_DISPLAY_IP}"
 
-    #printf "%s\n" $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 1)
-
     check_tmoe_xsdl_display_port
     printf "%s\n" "您当前的显示端口为${CURRENT_DISPLAY_PORT}"
-    #printf "%s\n" $(sed -n 3p $(command -v startxsdl) | cut -d '=' -f 2 | cut -d ':' -f 2)
 
     check_tmoe_xsdl_pulse_audio_port
     printf "%s\n" "您当前的音频(ip/端口)为${CURRENT_PULSE_AUDIO_PORT}"
-    #printf "%s\n" $(sed -n 4p $(command -v startxsdl) | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
 }
 ######################
 check_tmoe_xsdl_display_ip() {
@@ -3349,7 +3343,7 @@ xwayland_pulse_server() {
         fi
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
-        printf "%s\n" $(grep 'PULSE_SERVER' startw | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" "$(grep 'PULSE_SERVER' startw | grep -v '^#' | cut -d '=' -f 2 | head -n 1)"
         press_enter_to_return_configure_xwayland
     fi
 }
@@ -3687,7 +3681,7 @@ configure_xwayland_remote_desktop_session() {
 		export DISPLAY=:0
 		${REMOTE_DESKTOP_SESSION}
 	EndOFwayland
-    printf "%s\n" ${REMOTE_DESKTOP_SESSION}
+    printf "%s\n" "${REMOTE_DESKTOP_SESSION}"
     chmod +x startw
     printf "%s\n" "配置完成，请先打开sparkle app，点击Start"
     printf "%s\n" "然后在GNU/Linux容器里输startw启动xwayland"
@@ -3725,7 +3719,7 @@ xrdp_pulse_server() {
         sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startwm.sh
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
-        printf "%s\n" $(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" "$(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2 | head -n 1)"
         press_enter_to_return_configure_xrdp
     fi
 }
@@ -4192,13 +4186,13 @@ set_vnc_passwd() {
 check_vnc_passsword_length() {
     PASSWORD_LENGTH=$(printf '%s' ${TARGET_VNC_PASSWD} | wc -L)
     if ((${PASSWORD_LENGTH} > 8)); then
-        printf "%s\n" ${PASSWORD_LENGTH}
+        printf "%s\n" "${PASSWORD_LENGTH}"
         printf "%s\n" "密码超过${RED}8个字符${RESET}，请${BLUE}重新输入${RESET}"
         printf "%s\n" "${RED}WARNING！${RESET}The maximum password length is ${RED}8 digits.${RESET}"
         press_enter_to_return
         set_vnc_passwd
     elif ((${PASSWORD_LENGTH} < 6)); then
-        printf "%s\n" ${PASSWORD_LENGTH}
+        printf "%s\n" "${PASSWORD_LENGTH}"
         printf "%s\n" "密码少于${RED}6个字符${RESET}，请${BLUE}重新输入${RESET}"
         printf "%s\n" "${RED}WARNING！${RESET}The minimum password length is ${RED}6 digits.${RESET}"
         press_enter_to_return

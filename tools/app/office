@@ -170,7 +170,7 @@ install_wps_office() {
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
         rpm -ivh ./WPSoffice.rpm
     fi
-    printf "%s\n" ${THE_LATEST_DEB_VERSION} >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
+    printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
     rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
     beta_features_install_completed
 }

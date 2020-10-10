@@ -275,7 +275,7 @@ install_skype() {
     arch) DEPENDENCY_01='skypeforlinux-stable-bin' ;;
     *) non_debian_function ;;
     esac
-    printf "%s\n" ${THE_LATEST_DEB_URL}
+    printf "%s\n" "${THE_LATEST_DEB_URL}"
     case ${ARCH_TYPE} in
     amd64) ;;
     *) arch_does_not_support ;;

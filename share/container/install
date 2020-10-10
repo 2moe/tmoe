@@ -413,12 +413,12 @@ creat_chroot_startup_script() {
 		TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
 		${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_CHROOT_ETC}
 		WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
-		printf "%s\n" ${WM_SIZE} >wm_size.txt
+		printf "%s\n" "${WM_SIZE}" >wm_size.txt
 		${TMOE_CHROOT_PREFIX} mv wm_size.txt ${TMOE_CHROOT_ETC}
 	fi
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @@g')
-		printf "%s\n" ${ANDROID_HOST_NAME} >hostname
+		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc/
 		case $(hostname) in
 		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} ;;

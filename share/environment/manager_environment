@@ -60,7 +60,7 @@ tmoe_global_env() {
 		LINUX_CONTAINER_DISTRO=$(sed -n p ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
 		[[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 	fi
-	ROOTFS_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | cut -d '_' -f 1)
+	ROOTFS_NAME=$(printf "%s\n" "${DEBIAN_FOLDER}" | cut -d '_' -f 1)
 	CURRENT_DIR=$(pwd)
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WINDOWS_DISTRO='WSL'
@@ -94,7 +94,7 @@ creat_container_edition_txt() {
 	printf '%s\n' ${TMOE_LINUX_CONTAINER_DISTRO} >${LINUX_CONTAINER_DISTRO_FILE}
 	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE} 2>/dev/null
 	DEBIAN_FOLDER="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
-	DEBIAN_FOLDER_CAPITAL=$(printf "%s\n" ${DEBIAN_FOLDER} | tr '[a-z]' '[A-Z]')
+	DEBIAN_FOLDER_CAPITAL=$(printf "%s\n" "${DEBIAN_FOLDER}" | tr '[a-z]' '[A-Z]')
 	check_debian_chroot_dir
 	DEBIAN_CHROOT_MIN=$(printf '%s\n' ${DEBIAN_CHROOT} | sed "s@${HOME}@~@g")
 	ROOTFS_NAME=$(printf '%s\n' ${DEBIAN_FOLDER} | cut -d '_' -f 1)
@@ -348,8 +348,8 @@ check_tmoe_completion_version() {
 update_tmoe_completion() {
 	printf "%s\n" "${CURRENT_TMOE_COMPLETTION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION}"
 	ZINIT_DIR="${HOME}/.zinit"
-	printf "%s\n" "rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" ${TMOE_COMPLETION_FILE} | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe"
-	rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" ${TMOE_COMPLETION_FILE} | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe
+	printf "%s\n" "rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" "${TMOE_COMPLETION_FILE}" | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe"
+	rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" "${TMOE_COMPLETION_FILE}" | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe
 }
 #############
 check_tmoe_completion() {

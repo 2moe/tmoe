@@ -12,7 +12,7 @@ vnc_can_not_call_pulse_audio() {
 ###############
 creat_start_linux_deploy_sh() {
 	cd $PREFIX/bin
-	printf "%s\n" ${CUT_TARGET}
+	printf "%s\n" "${CUT_TARGET}"
 	cat >"${CUT_TARGET}" <<-'EndofFile'
 		#!/usr/bin/env bash
 		pulseaudio --start 2>/dev/null &
