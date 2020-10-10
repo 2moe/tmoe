@@ -1385,42 +1385,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    mv -f .profile.bak .profile
 	fi
 	####################
-	if [ ! "$(command -v lolcat)" ];then
-		printf "%s\n" "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
-		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
-	fi
-	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
-	printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
-	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-	chmod +x /usr/local/bin/neofetch
-	if [ -e /usr/games/lolcat ]; then
-		neofetch | /usr/games/lolcat
-	elif [ "$(command -v lolcat)" ]; then
-		neofetch | lolcat
-	else
-		neofetch
-	fi
-	################
-	################
-	slackware_mirror_list() {
-	    LINUX_DISTRO='slackware'
-	    sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
-	    sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
-	    sed -i '$ a\https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
-	    slackpkg update gpg
-	    slackpkg update
-	}
-	###################
-	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
-	    slackware_mirror_list
-	fi
-	#############################################
+		#############################################
 	fedora_31_repos() {
 	    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
 	    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
 	}
 	###########
-	#fedora清华源mirrors.bfsu.edu.cn/fedora/releases/
+	#fedora mirrors.bfsu.edu.cn/fedora/releases/
 	fedora_32_repos() {
 	    cat >/etc/yum.repos.d/fedora.repo <<-'EndOfYumRepo'
 				[fedora]
@@ -1481,6 +1452,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 	    mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 	    FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
+		case ${LANG} in
+		zh_*UTF-8)
 	    if ((${FEDORA_VERSION} >= 30)); then
 	        if ((${FEDORA_VERSION} >= 32)); then
 	            fedora_32_repos
@@ -1489,6 +1462,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        fi
 	        fedora_3x_repos
 	    fi
+		;;
+		esac
 
 	elif grep -q 'CentOS' /etc/os-release; then
 	    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
@@ -1502,10 +1477,39 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	   sed -e 's!^metalink=!#metalink=!g' \
 	    -e 's!^#baseurl=!baseurl=!g' \
 	    -e 's!//download\.fedoraproject\.org/pub!//mirrors.bfsu.edu.cn!g' \
-	    -e 's!http://mirrors\.tuna!https://mirrors.tuna!g' \
+	    -e 's!http://mirrors\.bfsu!https://mirrors.bfsu!g' \
 	    -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 	fi
 	############################
+	if [ ! "$(command -v lolcat)" ];then
+		printf "%s\n" "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
+		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
+	fi
+	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
+	printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
+	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+	chmod +x /usr/local/bin/neofetch
+	if [ -e /usr/games/lolcat ]; then
+		neofetch | /usr/games/lolcat
+	elif [ "$(command -v lolcat)" ]; then
+		neofetch | lolcat
+	else
+		neofetch
+	fi
+	################
+	################
+	slackware_mirror_list() {
+	    LINUX_DISTRO='slackware'
+	    sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
+	    sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
+	    sed -i '$ a\https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
+	    slackpkg update gpg
+	    slackpkg update
+	}
+	###################
+	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
+	    slackware_mirror_list
+	fi
 	note_of_non_debian() {
 	    #printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
 	    printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
