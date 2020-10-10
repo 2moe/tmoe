@@ -60,7 +60,7 @@ remove_gnu_linux_container() {
 		printf "%s\n" "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		printf '%s\n' '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 	fi
-	printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
+	printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在容器中执行stopvnc，再进行移除操作。"
 	printf "%s\n" "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
 	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux
 	if [ ! -d ${DEBIAN_CHROOT} ]; then
@@ -74,7 +74,7 @@ remove_gnu_linux_container() {
 		chmod 777 -R ${DEBIAN_CHROOT} || sudo chmod 777 -R ${DEBIAN_CHROOT}
 		#non-rm "${CONFIG_FOLDER}/chroot_container"
 		rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null || sudo rm -rfv "${DEBIAN_CHROOT}" ${PREFIX}/bin/debian-rm ${PREFIX}/bin/code ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
-		printf "%s\n" "如需删除（通用的）启动脚本，则请手动输${RED}rm -f${RESET} ${BLUE}${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startx11vnc${RESET}"
+		printf "%s\n" "如需删除（通用的）启动脚本，则请手动输${RED}rm -f${RESET} ${BLUE}${PREFIX}/bin/debian ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl${RESET}"
 		sed -i '/alias debian=/d ; /alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 		source profile >/dev/null 2>&1
 		printf '%s\n' 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
