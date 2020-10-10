@@ -5,12 +5,12 @@ remove_gnu_linux_container() {
 	true) source ${TMOE_SHARE_DIR}/removal/umount ;;
 	esac
 	cat <<-EOF
-		Q:为什么卸载chroot容器需要如何谨慎？
+		${YELLOW}Q:为什么卸载chroot容器需要如此谨慎？${RESET}
 		A:此处引用umount的用户手册。
-		Note that a filesystem cannot be unmounted when it is 'busy' - for example, when there are open files on it, or when some process
+		${GREEN}Note that a filesystem cannot be unmounted when it is 'busy' - for example, when there are open files on it, or when some process
 		       has its working directory there, or when a swap file on it is in use.  The offending process could even be  umount  itself  -  it
 		       opens  libc,  and  libc  in its turn may open for example locale files.  A lazy unmount avoids this problem, but it may introduce
-		       other issues.
+		       other issues.${RESET}
 		在上文中介绍到了${BLUE}--lazy${RESET}参数，然而这并不是重点。
 		重点是mount后的目录，在umount时可能会遇到一些问题。
 		当设备处于繁忙状态时，将无法卸载。即便使用强制卸载，也依旧（可能）存在一些问题。 
