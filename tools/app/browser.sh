@@ -16,6 +16,10 @@ fix_chromium_root_ubuntu_no_sandbox() {
     sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium-browser.desktop
     grep 'chromium-browser' /root/.zshrc || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /root/.zshrc
 }
+fix_chromium_root_alpine_no_sandbox() {
+    sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium.desktop
+    grep 'chromium-browser' /root/.zshrc || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /root/.zshrc
+}
 #####################
 fix_chromium_root_no_sandbox() {
     sed -i 's/chromium %U/chromium --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium.desktop
@@ -67,7 +71,8 @@ install_chromium_browser() {
             *) fix_chromium_root_no_sandbox ;;
             esac
             ;;
-        alpine | redhat) fix_chromium_root_ubuntu_no_sandbox ;;
+        redhat) fix_chromium_root_ubuntu_no_sandbox ;;
+        alpine) fix_chromium_root_alpine_no_sandbox ;;
         *) fix_chromium_root_no_sandbox ;;
         esac
         ;;
