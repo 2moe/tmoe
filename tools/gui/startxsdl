@@ -7,9 +7,9 @@ TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
+TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 ###############
 check_tmoe_locale() {
-	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
 		export LANG="${TMOE_LANG}"
