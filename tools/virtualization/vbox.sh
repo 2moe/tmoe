@@ -26,7 +26,7 @@ get_debian_vbox_latest_url() {
 	do_you_want_to_continue
 	cd /tmp
 	curl -Lo .Oracle_VIRTUAL_BOX.deb "${VBOX_DEB_FILE_URL}"
-	apt show ./.Oracle_VIRTUAL_BOX.deb
+	apt-cache show ./.Oracle_VIRTUAL_BOX.deb
 	apt install -y ./.Oracle_VIRTUAL_BOX.deb
 	rm -fv ./.Oracle_VIRTUAL_BOX.deb
 }

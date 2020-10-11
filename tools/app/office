@@ -160,7 +160,7 @@ install_wps_office() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
-        apt show ./WPSoffice.deb
+        apt-cache show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb
 
     elif [ "${LINUX_DISTRO}" = "arch" ]; then

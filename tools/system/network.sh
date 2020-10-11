@@ -260,7 +260,7 @@ download_network_card_driver() {
 	cd ${HOME}/sd/Download
 	printf "%s\n" "即将为您下载至${HOME}/sd/Download"
 	if [ $(command -v apt-get) ]; then
-		apt show ${DEPENDENCY_02}
+		apt-cache show ${DEPENDENCY_02}
 		apt download ${DEPENDENCY_02}
 		THE_LATEST_DEB_VERSION="$(ls | grep "${DEPENDENCY_02}.*deb" | head -n 1)"
 	else

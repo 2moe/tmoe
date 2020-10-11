@@ -292,7 +292,7 @@ install_skype() {
     case ${LINUX_DISTRO} in
     redhat) rpm -ivh "${THE_LATEST_DEB_FILE}" ;;
     debian)
-        apt show ./${THE_LATEST_DEB_FILE}
+        apt-cache show ./${THE_LATEST_DEB_FILE}
         apt install -y ./${THE_LATEST_DEB_FILE}
         ;;
     esac
@@ -708,7 +708,7 @@ install_linux_qq() {
         case ${LINUX_DISTRO} in
         debian)
             aria2c --allow-overwrite=true -k 1M -o LINUXQQ.deb ${THE_LATEST_DEB_URL}
-            apt show ./LINUXQQ.deb
+            apt-cache show ./LINUXQQ.deb
             apt install -y ./LINUXQQ.deb
             ;;
         *)
@@ -924,7 +924,7 @@ install_baidu_netdisk() {
         #LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
         #download_ubuntu_kylin_deb_file_model_02
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
-        #apt show ./baidunetdisk.deb
+        #apt-cache show ./baidunetdisk.deb
         #apt install -y ./baidunetdisk.deb
     fi
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"

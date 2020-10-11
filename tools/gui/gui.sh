@@ -1436,7 +1436,7 @@ install_lxqt_desktop() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
-        DEPENDENCY_01="lxqt-core lxqt-config qterminal"
+        DEPENDENCY_01="lxqt-core lxqt-config qterminal openbox"
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='@lxqt'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -2851,7 +2851,7 @@ install_kali_undercover() {
         cd /tmp/.kali-undercover-win10-theme
         UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
-        apt show ./kali-undercover.deb
+        apt-cache show ./kali-undercover.deb
         apt install -y ./kali-undercover.deb
         if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
             THE_LATEST_DEB_FILE='kali-undercover.deb'

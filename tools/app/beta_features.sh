@@ -432,7 +432,7 @@ install_r_studio() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         GREP_NAME='amd64.deb'
         check_rstudio_version
-        apt show ./${THE_LATEST_DEB_VERSION}
+        apt-cache show ./${THE_LATEST_DEB_VERSION}
         apt install -y ./${THE_LATEST_DEB_VERSION}
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         GREP_NAME='x86_64.rpm'

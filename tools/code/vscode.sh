@@ -286,7 +286,7 @@ install_vscodium() {
         CODIUM_FILE_URL="https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' ${CODIUM_FILE_URL}
-        apt show ./VSCodium.deb
+        apt-cache show ./VSCodium.deb
         apt install -y ./VSCodium.deb
         rm -vf VSCodium.deb
         copy_gnu_lib_xcb_so
@@ -339,7 +339,7 @@ install_vscode_oss() {
 #######################
 download_vscode_x64_deb() {
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
-    apt show ./VSCODE.deb
+    apt-cache show ./VSCODE.deb
     apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
 }

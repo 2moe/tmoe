@@ -533,7 +533,7 @@ install_debian_baidu_pinyin() {
         printf "%s\n" "架构不支持，跳过安装百度输入法。"
         arch_does_not_support
     fi
-    apt show ./fcitx-baidupinyin.deb
+    apt-cache show ./fcitx-baidupinyin.deb
     apt install -y ./fcitx-baidupinyin.deb
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf '%s\n' 'url: https://srf.baidu.com/site/guanwang_linux/index.html'

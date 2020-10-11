@@ -31,8 +31,8 @@ deb_installer_menu() {
 tmoe_deb_batch_installer_01() {
     DEPENDENCY_02=""
     for TMOE_DEB_FILE in *deb; do
-        apt show ./${TMOE_DEB_FILE}
-        PACKAGE_NAME=$(apt show ./${TMOE_DEB_FILE} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
+        apt-cache show ./${TMOE_DEB_FILE}
+        PACKAGE_NAME=$(apt-cache show ./${TMOE_DEB_FILE} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
         DEPENDENCY_01=${PACKAGE_NAME}
         apt install -y ./${TMOE_DEB_FILE}
         beta_features_install_completed
@@ -42,8 +42,8 @@ tmoe_deb_batch_installer_01() {
 tmoe_deb_batch_installer_02() {
     DEPENDENCY_02=""
     for TMOE_DEB_FILE in *deb; do
-        apt show ./${TMOE_DEB_FILE}
-        PACKAGE_NAME=$(apt show ./${TMOE_DEB_FILE} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
+        apt-cache show ./${TMOE_DEB_FILE}
+        PACKAGE_NAME=$(apt-cache show ./${TMOE_DEB_FILE} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
         DEPENDENCY_01=${PACKAGE_NAME}
         apt install ./${TMOE_DEB_FILE}
         beta_features_install_completed
@@ -95,8 +95,8 @@ deb_file_installer() {
     #./${SELECTION}
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         file ./${SELECTION} 2>/dev/null
-        apt show ./${SELECTION}
-        PACKAGE_NAME=$(apt show ./${SELECTION} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
+        apt-cache show ./${SELECTION}
+        PACKAGE_NAME=$(apt-cache show ./${SELECTION} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
         printf "%s\n" "您是否需要安装此软件包？"
         printf "%s\n" "Do you want to install it?"
         if [ $(command -v ${PACKAGE_NAME}) ]; then

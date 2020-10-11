@@ -377,7 +377,7 @@ install_deb_file_common_model_02() {
     cd /tmp
     printf "%s\n" "${LATEST_DEB_URL}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
-    apt show ./${LATEST_DEB_VERSION}
+    apt-cache show ./${LATEST_DEB_VERSION}
     apt install -y ./${LATEST_DEB_VERSION}
     rm -fv ./${LATEST_DEB_VERSION}
 }
@@ -407,7 +407,7 @@ download_tuna_repo_deb_file_all_arch() {
     LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
     printf "%s\n" "${LATEST_DEB_URL}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
-    apt show ./${LATEST_DEB_VERSION} 2>/dev/null
+    apt-cache show ./${LATEST_DEB_VERSION} 2>/dev/null
 }
 ##此处不要自动安装deb包
 ######################
@@ -902,7 +902,7 @@ download_deb_comman_model_02() {
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
     printf "%s\n" "${THE_LATEST_DEB_LINK}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
-    apt show ./${THE_LATEST_DEB_VERSION}
+    apt-cache show ./${THE_LATEST_DEB_VERSION}
     apt install -y ./${THE_LATEST_DEB_VERSION}
     rm -fv ${THE_LATEST_DEB_VERSION}
 }
@@ -1037,7 +1037,7 @@ install_typora() {
     else
         arch_does_not_support
     fi
-    #apt show ./typora.deb
+    #apt-cache show ./typora.deb
     #apt install -y ./typora.deb
     #rm -vf ./typora.deb
     beta_features_install_completed
@@ -1433,7 +1433,7 @@ download_and_install_deb() {
     esac
     case ${LINUX_DISTRO} in
     debian)
-        apt show ./${THE_LATEST_DEB_FILE}
+        apt-cache show ./${THE_LATEST_DEB_FILE}
         apt install -y ./${THE_LATEST_DEB_FILE}
         ;;
     redhat) rpm -ivh ./${THE_LATEST_DEB_FILE} ;;

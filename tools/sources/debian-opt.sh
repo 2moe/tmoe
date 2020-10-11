@@ -938,7 +938,7 @@ install_lx_music_desktop() {
 ####################
 install_opt_deb_file() {
     cd ".${OPT_APP_NAME}"
-    apt show ./${OPT_DEB_NAME}
+    apt-cache show ./${OPT_DEB_NAME}
     apt install -y ./${OPT_DEB_NAME}
     cd /tmp
     rm -rv "${DOWNLOAD_PATH}/.${OPT_APP_NAME}"
