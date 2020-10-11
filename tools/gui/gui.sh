@@ -2757,11 +2757,7 @@ download_ukui_theme() {
         cd /tmp/.ukui-gtk-themes
         UKUITHEME="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
-        if [ "${BUSYBOX_AR}" = 'true' ]; then
-            busybox ar xv 'ukui-themes.deb'
-        else
-            ar xv 'ukui-themes.deb'
-        fi
+        ar xv 'ukui-themes.deb'
         cd /
         tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
         #if which update-icon-caches >/dev/null 2>&1; then
@@ -2855,11 +2851,7 @@ install_kali_undercover() {
         apt install -y ./kali-undercover.deb
         if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
             THE_LATEST_DEB_FILE='kali-undercover.deb'
-            if [ "${BUSYBOX_AR}" = 'true' ]; then
-                busybox ar xv ${THE_LATEST_DEB_FILE}
-            else
-                ar xv ${THE_LATEST_DEB_FILE}
-            fi
+            ar xv ${THE_LATEST_DEB_FILE}
             cd /
             tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
             #if which gtk-update-icon-cache >/dev/null 2>&1; then

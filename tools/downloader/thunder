@@ -41,10 +41,7 @@ install_thunder_bin() {
     mkdir -p ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}"
-    case "${BUSYBOX_AR}" in
-    true) busybox ar xv ${THE_LATEST_DEB_FILE} ;;
-    *) ar xv ${THE_LATEST_DEB_FILE} ;;
-    esac
+    ar xv ${THE_LATEST_DEB_FILE}
     if [ -e "data.tar.gz" ]; then
         tar -zxvf data.tar.gz -C /
     elif [ -e data.tar.xz ]; then

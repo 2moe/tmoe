@@ -133,11 +133,7 @@ uncompress_deb_file() {
     mkdir -p .DEB_TEMP_FOLDER
     mv ${SELECTION} .DEB_TEMP_FOLDER
     cd ./.DEB_TEMP_FOLDER
-    if [ "${BUSYBOX_AR}" = 'true' ]; then
-        busybox ar xv ${SELECTION}
-    else
-        ar xv ${SELECTION}
-    fi
+    ar xv ${SELECTION}
     mv ${SELECTION} ../
     if [ -e "data.tar.xz" ]; then
         cd /

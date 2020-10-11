@@ -123,11 +123,7 @@ aria2c_download_theme_file() {
 ##########
 download_theme_deb_and_extract_01() {
     aria2c_download_theme_file
-    if [ "${BUSYBOX_AR}" = 'true' ]; then
-        busybox ar xv ${THE_LATEST_THEME_VERSION}
-    else
-        ar xv ${THE_LATEST_THEME_VERSION}
-    fi
+    ar xv ${THE_LATEST_THEME_VERSION}
 }
 ###############
 #多GREP
@@ -1181,10 +1177,7 @@ electron_v8_env() {
 }
 #########
 extract_deb_file_01() {
-    case "${BUSYBOX_AR}" in
-    true) busybox ar xv ${THE_LATEST_DEB_FILE} ;;
-    *) ar xv ${THE_LATEST_DEB_FILE} ;;
-    esac
+    ar xv ${THE_LATEST_DEB_FILE}
     if [ -e "data.tar.xz" ]; then
         DEB_FILE_TYPE='tar.xz'
     elif [ -e "data.tar.gz" ]; then

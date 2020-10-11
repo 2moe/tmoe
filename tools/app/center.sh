@@ -850,11 +850,7 @@ install_chinese_manpages() {
         download_tuna_repo_deb_file_all_arch
         #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
         THE_LATEST_DEB_FILE='kali-undercover.deb'
-        if [ "${BUSYBOX_AR}" = 'true' ]; then
-            busybox ar xv ${LATEST_DEB_VERSION}
-        else
-            ar xv ${LATEST_DEB_VERSION}
-        fi
+        ar xv ${LATEST_DEB_VERSION}
         tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
         ls | grep -v usr | xargs rm -rf
         ln -sf ./usr/share/doc/debian-handbook/html/zh-CN/index.html ./

@@ -366,15 +366,10 @@ check_dependencies() {
 		DEPENDENCIES="${DEPENDENCIES} bash"
 	fi
 
-	if [ ! $(command -v busybox) ]; then
+	if [ ! $(command -v ar) ]; then
 		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/busybox" ;;
-		redhat)
-			if [ "${REDHAT_DISTRO}" = "fedora" ]; then
-				DEPENDENCIES="${DEPENDENCIES} busybox"
-			fi
-			;;
-		*) DEPENDENCIES="${DEPENDENCIES} busybox" ;;
+		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-devel/binutils" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} binutils" ;;
 		esac
 	fi
 	#####################
@@ -506,7 +501,7 @@ check_dependencies() {
 		case "${LINUX_DISTRO}" in
 		debian)
 			${TMOE_UPDATE_COMMAND}
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATON_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less
+			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATON_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils
 			#创建文件夹防止aptitude报错
 			mkdir -p /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
@@ -538,30 +533,6 @@ check_dependencies() {
 		esac
 	fi
 	################
-	busybox --help 2>&1 | grep -q ', ar,'
-	if [ "$?" != "0" ]; then
-		/usr/local/bin/busybox --help 2>&1 | grep -q ', ar,'
-		if [ "$?" != "0" ]; then
-			#chmod +x /usr/local/bin/busybox 2>/dev/null
-			BUSYBOX_AR='false'
-		else
-			BUSYBOX_AR='true'
-		fi
-	else
-		BUSYBOX_AR='true'
-	fi
-
-	if [ ! $(command -v ar) ]; then
-		if [ "${BUSYBOX_AR}" = 'false' ]; then
-			DEPENDENCY_01='binutils'
-			printf "%s\n" "${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}"
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
-			if [ ! $(command -v ar) ]; then
-				download_busybox_deb
-				BUSYBOX_AR='true'
-			fi
-		fi
-	fi
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WINDOWS_DISTRO='WSL'
 	fi
@@ -604,19 +575,6 @@ check_tmoe_git_folder() {
 		source ${TMOE_TOOL_DIR}/environment.sh
 		check_current_user_name_and_group
 	fi
-}
-###########################
-download_busybox_deb() {
-	cd /tmp
-	wget --no-check-certificate -O "busybox" "https://gitee.com/mo2/busybox/raw/master/busybox-$(uname -m)"
-	chmod +x busybox
-	LatestBusyboxDEB="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/ | grep static | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-	wget --no-check-certificate -O 'busybox.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/busybox/${LatestBusyboxDEB}"
-	mkdir -p busybox-static
-	./busybox dpkg-deb -X busybox.deb ./busybox-static
-	mv -f ./busybox-static/bin/busybox /usr/local/bin/
-	chmod +x /usr/local/bin/busybox
-	rm -rvf busybox busybox-static busybox.deb
 }
 #######################
 tmoe_linux_tool_menu() {

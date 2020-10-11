@@ -1,7 +1,7 @@
 network_manager_tui() {
-	
+
 	DEPENDENCY_01=''
-	
+
 	if [ ! $(command -v nmtui) ]; then
 		if [ "${LINUX_DISTRO}" = "debian" ]; then
 			DEPENDENCY_02='network-manager'
@@ -274,11 +274,7 @@ download_network_card_driver() {
 
 	mkdir -p "${DEPENDENCY_02}"
 	cd "${DEPENDENCY_02}"
-	if [ "${BUSYBOX_AR}" = 'true' ]; then
-		busybox ar xv ../${THE_LATEST_DEB_VERSION}
-	else
-		ar xv ../${THE_LATEST_DEB_VERSION}
-	fi
+	ar xv ../${THE_LATEST_DEB_VERSION}
 	tar -Jxvf ./data.tar.*
 	rm *.tar.* debian-binary
 	cd ..
