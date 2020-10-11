@@ -1536,7 +1536,7 @@ install_kde_plasma5_desktop() {
     elif [ "${LINUX_DISTRO}" = "suse" ]; then
         DEPENDENCY_01="patterns-kde-kde_plasma konsole"
     elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-        DEPENDENCY_01="plasma-desktop"
+        DEPENDENCY_01="plasma-desktop breeze breeze-icons"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
     fi
     ####################
