@@ -330,19 +330,17 @@ tmoe_desktop_faq() {
 tmoe_docker_and_chroot_container_desktop() {
     INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
         "您可以在docker或chroot容器中运行这些桌面\nYou can run these DEs on docker or chroot container." 0 0 0 \
-        "1" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
-        "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
-        "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
-        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
+        "1" "🦖 kde plasma5(风格华丽的桌面环境)" \
+        "2" "dde(深度deepin桌面,崭新视界,创无止境)" \
+        "3" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") standand_desktop_installation ;;
-    1) install_lxqt_desktop ;;
-    2) install_kde_plasma5_desktop ;;
-    3) install_deepin_desktop ;;
-    4) install_ukui_desktop ;;
+    1) install_kde_plasma5_desktop ;;
+    2) install_deepin_desktop ;;
+    3) install_ukui_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -355,6 +353,7 @@ tmoe_container_desktop() {
         "1" "🐭 xfce(兼容性高,简单优雅)" \
         "2" "🕊️ lxde(轻量化桌面,资源占用低)" \
         "3" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
+        "4" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -369,6 +368,10 @@ tmoe_container_desktop() {
         install_lxde_desktop
         ;;
     3) install_mate_desktop ;;
+    4)
+        REMOVE_UDISK2='true'
+        install_lxqt_desktop
+        ;;
     esac
     ##########################
     press_enter_to_return
