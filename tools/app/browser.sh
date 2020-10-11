@@ -34,24 +34,26 @@ install_chromium_browser() {
 
     DEPENDENCY_01="chromium"
     DEPENDENCY_02="chromium-l10n"
+    #chromium-chromedriver
 
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    debian)
         #新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
         if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
             ubuntu_install_chromium_browser
         fi
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        ;;
+    gentoo)
         dispatch-conf
         DEPENDENCY_01="www-client/chromium"
         DEPENDENCY_02=""
-    #emerge -avk www-client/google-chrome-unstable
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02=""
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_02="chromium-plugin-widevinecdm chromium-ffmpeg-extra"
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_02="fedora-chromium-config"
-    fi
+        #emerge -avk www-client/google-chrome-unstable
+        ;;
+    arch) DEPENDENCY_02="" ;;
+    suse) DEPENDENCY_02="chromium-plugin-widevinecdm chromium-ffmpeg-extra" ;;
+    redhat) DEPENDENCY_02="fedora-chromium-config" ;;
+    alpine) DEPENDENCY_02="" ;;
+    esac
     beta_features_quick_install
     #####################
     if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
