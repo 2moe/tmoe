@@ -62,7 +62,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    else
 	        set -- "LANG=en_US.UTF-8" "\$@"
 	    fi
-	    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TERM=xterm-256color" "\$@"
+	    set -- "/usr/bin/env" "-i" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "TERM=xterm-256color" "\$@"
 		#set -- "--mount=/sys" "\$@"
 	    set -- "--mount=/dev" "\$@"
 	    set -- "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm" "\$@"

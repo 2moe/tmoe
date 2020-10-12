@@ -626,7 +626,11 @@ fi
 #cd ${DEBIAN_CHROOT}/usr/local/bin
 cd ${CONFIG_FOLDER}
 [[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-[[ -e "debian-i" ]] || curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+if [[ -e "debian-i" ]]; then
+	chmod 666 debian-i
+	rm -f debian-i
+fi
+curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 chmod a+x neofetch debian-i
 
 ${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin

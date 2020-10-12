@@ -91,6 +91,9 @@ function _tmoe() {
         "31:fedora 31"
         "32:fedora 32"
         "33:fedora 33"
+        "3.12:alpine 3.12"
+        "3.13:alpine 3.13"
+        "edge:alpine edge"
         "8-Stream:CentOS 8-Stream"
         "tumbleweed:OpenSUSE tumbleweed"
     )
