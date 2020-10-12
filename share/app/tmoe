@@ -98,7 +98,7 @@ tmoe_main() {
 	esac
 	case "${#}" in
 	0)
-		debian-i
+		bash ${TMOE_GIT_DIR}/manager.sh
 		exit 0
 		;;
 	esac
@@ -109,7 +109,7 @@ source_tmoe_env() {
 	TMOE_CONTAINER_FORTUNE=true
 	TMOE_CONTAINER_HITOKOTO=true
 	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
-	source ${CONFIG_FOLDER}/hitokoto.conf
+	source ${CONFIG_FOLDER}/hitokoto.conf 2>/dev/null
 	case ${TMOE_CONTAINER_FORTUNE} in
 	true)
 		if [ $(command -v fortune) ]; then
