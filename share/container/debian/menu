@@ -98,7 +98,7 @@ install_debian_gnu_linux_distro_menu() {
 	}
 	install_debian_gnu_linux_distro_menu_ja() {
 		BETA_SYSTEM=$(
-			whiptail --title "Debian version" --menu "Stable has fewer bugs,\nbut the packages inside the software source are older." 0 50 0 \
+			whiptail --title "Debian version" --menu "Stable has fewer bugs,but the packages inside the \nsoftware source are older.Sid is relatively new." 0 50 0 \
 				"1" "👦Sid不安定版:これは、開発者向けの版である" \
 				"2" "debootstrapを使用して手動でビルドする" \
 				"3" "🐶10-buster(2019~2022)" \
@@ -113,7 +113,7 @@ install_debian_gnu_linux_distro_menu() {
 	}
 	install_debian_gnu_linux_distro_menu_en() {
 		BETA_SYSTEM=$(
-			whiptail --title "Debian version" --menu "Stable has fewer bugs,\nbut the packages inside the software source are older." 0 50 0 \
+			whiptail --title "Debian version" --menu "Stable has fewer bugs,but the packages inside the \nsoftware source are older.Sid is relatively new." 0 50 0 \
 				"1" "👦Sid (Unstable,a rolling development version)" \
 				"2" "Manually build using debootstrap" \
 				"3" "🐶10-buster(2019~2022)" \
