@@ -399,6 +399,7 @@ choose_tmoe_locale_env() {
 	*)
 		mkdir -p ${CONFIG_FOLDER} "${TMOE_LINUX_DIR}"
 		printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
+		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
 		printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
 		;;
 	esac

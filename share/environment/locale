@@ -180,7 +180,9 @@ tmoe_locale_menu() {
 	case $(uname -o) in
 	Android) ;;
 	*)
-		mkdir -p /usr/local/etc/tmoe-linux
+		[[ -n ${TMOE_LINUX_DIR} ]] || TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
+		mkdir -p ${TMOE_LINUX_DIR}
+		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
 		printf "%s\n" "${TMOE_LANG}" >/usr/local/etc/tmoe-linux/locale.txt
 		;;
 	esac
