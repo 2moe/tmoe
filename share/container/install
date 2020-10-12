@@ -942,11 +942,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    #stable-backports会出错，需改为buster-backports
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-				#deb http://opentuna.cn/debian/ stable main contrib non-free
-				#deb http://opentuna.cn/debian/ stable-updates main contrib non-free
-				#deb http://opentuna.cn/debian/ buster-backports main contrib non-free
-				#deb http://opentuna.cn/debian-security/ stable/updates main contrib non-free
-				deb http://opentuna.cn/debian/ sid main contrib non-free
+				#deb http://mirrors.bfsu.edu.cn/debian/ stable main contrib non-free
+				#deb http://mirrors.bfsu.edu.cn/debian/ stable-updates main contrib non-free
+				#deb http://mirrors.bfsu.edu.cn/debian/ buster-backports main contrib non-free
+				#deb http://mirrors.bfsu.edu.cn/debian-security/ stable/updates main contrib non-free
+				deb http://mirrors.bfsu.edu.cn/debian/ sid main contrib non-free
 			EndOfFile
 	}
 	##############################
@@ -955,7 +955,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 				deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
-				deb http://opentuna.cn/debian/ stable main contrib non-free
+				deb http://mirrors.bfsu.edu.cn/debian/ stable main contrib non-free
 				# deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 			EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
@@ -1068,7 +1068,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo
-					#Server = https://opentuna.cn/archlinuxarm/$arch/$repo
+					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 					Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 				EndOfArchMirrors
 	    else
