@@ -581,30 +581,69 @@ tmoe_linux_tool_menu() {
 	IMPORTANT_TIPS=""
 	RETURN_TO_MENU='tmoe_linux_tool_menu'
 	#窗口大小20 50 7
-	TMOE_OPTION=$(
-		whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202009)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
-			"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
-			"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
-			"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
-			"4" "🌈 Desktop beautification:桌面美化(主题)" \
-			"5" "🌌 vnc/x/rdp:远程桌面" \
-			"6" "📺 Download video:解析视频链接(bili,Y2B)" \
-			"7" "🍥 Software sources:软件镜像源管理" \
-			"8" "🐳 Docker:开源的应用容器引擎" \
-			"9" "💻 Qemu:x86_64虚拟机管理" \
-			"10" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
-			"11" "🍩 FAQ:常见问题" \
-			"0" "🌚 Exit 退出" \
-			3>&1 1>&2 2>&3
-	)
+	tmoe_linux_tool_menu_zh() {
+		TMOE_OPTION=$(
+			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
+				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
+				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
+				"4" "🌈 Desktop beautification:桌面美化(主题)" \
+				"5" "🌌 vnc/x/rdp:远程桌面" \
+				"6" "📺 Download video:解析视频链接(bili,Y2B)" \
+				"7" "🍥 Software sources:软件镜像源管理" \
+				"8" "🐳 Docker:开源的应用容器引擎" \
+				"9" "💻 Qemu:x86_64虚拟机管理" \
+				"10" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
+				"11" "🍩 FAQ:常见问题" \
+				"0" "🌚 Exit 退出" \
+				3>&1 1>&2 2>&3
+		)
+	}
+	tmoe_linux_tool_menu_ja() {
+		TMOE_OPTION=$(
+			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "'debian-i'と入力して、このツールを起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
+				"1" "🍭 GUI:グラフィカル・ユーザ・インターフェース(DE,WM,LM)" \
+				"2" "🥝 アプリストア(ブラウザ、ゲーム、メディアアプリ)" \
+				"3" "🌺 秘密の花園(教育、システム、beta機能)" \
+				"4" "🌈 デスクトップ環境の美化(テーマとアイコンパック)" \
+				"5" "🌌 vnc/x/rdp:リモートデスクトップサーバー" \
+				"6" "📺 ニコニコ動画ダウンローダー" \
+				"7" "🍥 ソフトウェアミラーソース(日本地球流体電脳倶楽部)" \
+				"8" "🐳 Docker:コンテナ仮想化を用いたOSレベルの仮想化" \
+				"9" "💻 Qemu:x86_64 仮想マシン" \
+				"10" "🍧 *°▽°*更新" \
+				"11" "🍩 よくある質問" \
+				"0" "🌚 終了する" \
+				3>&1 1>&2 2>&3
+		)
+	}
+	tmoe_linux_tool_menu_en() {
+		TMOE_OPTION=$(
+			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
+				"2" "🥝 App center(browsers,games,media apps)" \
+				"3" "🌺 Secret Garden(education,system,beta feature)" \
+				"4" "🌈 Desktop beautification(theme and icon-pack)" \
+				"5" "🌌 vnc/x/rdp:remote desktop server" \
+				"6" "📺 Download video:Y2B" \
+				"7" "🍥 Software sources:Worldwide mirror sites" \
+				"8" "🐳 Docker：use OS-level virtualization to deliver software" \
+				"9" "💻 Qemu:x86_64 virtual machine" \
+				"10" "🍧 *°▽°*Update tmoe-linux tool" \
+				"11" "🍩 Frequently Asked Questions" \
+				"0" "🌚 Exit" \
+				3>&1 1>&2 2>&3
+		)
+	}
 	########
-	#faq的emoji为🏫学校，原意是希望大家能从中学到东西。后来觉得太丑了，就删掉了。。。
-	#🌡️
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) tmoe_linux_tool_menu_zh ;;
+	ja_JP.UTF-8) tmoe_linux_tool_menu_ja ;;
+	*) tmoe_linux_tool_menu_en ;;
+	esac
+	##########
 	case "${TMOE_OPTION}" in
-	0 | "")
-		#export LANG=${CurrentLANG}
-		exit 0
-		;;
+	0 | "") exit 0 ;;
 	1) install_gui ;;
 	2) software_center ;;
 	3) beta_features ;;

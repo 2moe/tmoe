@@ -313,6 +313,7 @@ check_gnu_linux_distro() {
 	*) PREFIX='/usr/local' ;;
 	esac
 	################
+	check_tmoe_menu_locale_file
 	if [ ! -z "${LINUX_DISTRO}" ]; then
 		if grep -q 'PRETTY_NAME=' /etc/os-release; then
 			OSRELEASE="$(sed -n p /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2)"
@@ -398,6 +399,13 @@ choose_tmoe_locale_env() {
 	*)
 		mkdir -p ${CONFIG_FOLDER}
 		printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
+		case $(uname -o) in
+		Android) ;;
+		*)
+			mkdir -p "${TMOE_LINUX_DIR}"
+			printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
+			;;
+		esac
 		;;
 	esac
 }

@@ -15,6 +15,11 @@ gnu_linux_env_02() {
     ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
     XSESSION_FILE='/etc/X11/xinit/Xsession'
+    TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+        TMOE_MENU_LANG=${TMOE_LANG}
+    fi
 }
 ########################
 uncompress_theme_file() {

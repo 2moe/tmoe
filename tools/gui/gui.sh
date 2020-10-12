@@ -298,16 +298,34 @@ standand_desktop_installation() {
     REMOVE_UDISK2='false'
     RETURN_TO_WHERE='standand_desktop_installation'
     preconfigure_gui_dependecies_02
-    INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-        "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using container,then choose proot_DE or WM.\nWhich GUI do you want to install?\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
-        "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
-        "2" "🍔 chroot/docker_DE(chroot容器可运行:kde,dde)" \
-        "3" "🍙 window manager窗口管理器:ice,fvwm" \
-        "4" "🍱 VM_DE(虚拟机可运行:gnome,cinnamon,budgie)" \
-        "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
-        "6" "🍤 FAQ:vnc和gui的常见问题" \
-        "0" "🌚 none我一个都不要 =￣ω￣=" \
-        3>&1 1>&2 2>&3)
+    standand_desktop_installation_zh() {
+        INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
+            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using a container,then choose proot_DE or WM.\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
+            "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
+            "2" "🍔 chroot/docker_DE(kde,dde)" \
+            "3" "🍙 window manager窗口管理器(ice,fvwm)" \
+            "4" "🍱 VM_DE(虚拟机可运行:gnome,cinnamon,budgie)" \
+            "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
+            "6" "🍤 FAQ:vnc和gui的常见问题" \
+            "0" "🌚 none我一个都不要 =￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    standand_desktop_installation_en() {
+        INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
+            "If you are using a container,then choose proot_DE or WM.\nIf you are using a virtual machine,you can choose any one" 0 0 0 \
+            "1" "🍰 proot_DE(xfce,mate,lxde)" \
+            "2" "🍔 chroot/docker_DE(kde,dde)" \
+            "3" "🍙 window manager(ice,fvwm)" \
+            "4" "🍱 VM_DE(gnome,cinnamon,budgie)" \
+            "5" "🍣 display manager(lightdm,sddm)" \
+            "6" "🍤 FAQ" \
+            "0" "🌚 none=￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) standand_desktop_installation_zh ;;
+    *) standand_desktop_installation_en ;;
+    esac
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") tmoe_linux_tool_menu ;;
@@ -1439,7 +1457,7 @@ install_lxqt_desktop() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
-        DEPENDENCY_01="lxqt-core lxqt-config qterminal openbox"
+        DEPENDENCY_01="lxqt-core qterminal openbox lxqt-config"
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='@lxqt'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
