@@ -131,7 +131,8 @@ _**如果你在国内,那么请输**_
     . <(curl -L l.tmoe.me)
 ```
 
-> 3.When you are using the manager, you can use the touch screen to click; when you are using the tool, you can use the touch screen to slide and press the Enter to confirm.  
+> 3.When you are using the manager, you can use the touch screen to click.  
+> When you are using the tool, you can use the touch screen to slide and press the Enter to confirm.  
 > 4-EN.Goto Google Play,then install [VNC client](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) or [X server](https://play.google.com/store/apps/details?id=x.org.server)
 >
 > 4-CN.如需使用 gui,可能还需要安装 VNC apk,您可以前往 Google play 或使用 Tmoe-linux 的 debian-i 来下载。  
