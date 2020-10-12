@@ -526,13 +526,13 @@ zinit 插件管理器**手动**配置补全插件：
 If you are using Android system,then type the following command.
 
 ```zsh
-[[ $(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 ascompletion && zinit snippet ${HOME}/.local/share/tmoe-linux/git/share/completion/_tmoe' ${HOME}/.zshrc
+[[ $(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 as"completion" && zinit snippet ${HOME}/.local/share/tmoe-linux/git/share/completion/_tmoe' ${HOME}/.zshrc
 ```
 
 If you are using GNU/Linux system,then type the following command.
 
 ```zsh
-[[ $(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 ascompletion && zinit snippet /usr/local/etc/tmoe-linux/git/share/completion/_tmoe' ${HOME}/.zshrc
+[[ $(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 as"completion" && zinit snippet /usr/local/etc/tmoe-linux/git/share/completion/_tmoe' ${HOME}/.zshrc
 ```
 
 至于其他插件管理器，例如*oh-my-zsh*，因开发者并未进行测试，故请自行加载插件。

@@ -143,7 +143,7 @@ readme_of_gnu_linux_distro() {
 
 		tmoe-zsh会自动加载tmoe补全插件，其他插件管理器需要手动加载。
 		zinit插件管理器配置补全插件：${GREEN}
-		[[ \$(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 ascompletion && zinit snippet ${TMOE_SHARE_DIR}/completion/_tmoe' ${HOME}/.zshrc
+		[[ \$(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 as"completion" && zinit snippet ${TMOE_SHARE_DIR}/completion/_tmoe' ${HOME}/.zshrc
 		${RESET}
 		至于其他插件管理器，例如oh-my-zsh，因开发者并未进行测试，故请自行加载插件。
 		${BOLD}${YELLOW}TIPS OF TMOE COMPLETION PLUGIN${RESET}${RESET}
