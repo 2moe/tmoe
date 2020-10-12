@@ -314,30 +314,57 @@ check_gnu_linux_distro() {
 	esac
 	################
 	check_tmoe_menu_locale_file
+	############
+	curl_tmoe_linux_tool_sh() {
+		if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
+			if [ $(command -v sudo) ]; then
+				sudo -E bash ${TMOE_GIT_DIR}/tool.sh
+			else
+				su -c "bash ${TMOE_GIT_DIR}/tool.sh"
+			fi
+		else
+			if [ ! $(command -v curl) ]; then
+				wget -O /tmp/.tmoe-linux-tool.sh "https://${TMOE_GIT_URL}/raw/master/tool.sh"
+			else
+				curl -Lv -o /tmp/.tmoe-linux-tool.sh "https://${TMOE_GIT_URL}/raw/master/tool.sh"
+			fi
+			source /tmp/.tmoe-linux-tool.sh
+		fi
+	}
+	##########
+	choose_manager_or_tool_zh() {
+		if (whiptail --title "您想要对这个小可爱做什么" --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+			curl_tmoe_linux_tool_sh
+			exit 0
+		fi
+	}
+	choose_manager_or_tool_ja() {
+		if (whiptail --title "どちらを選びますか" --yes-button "Tool" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
+			curl_tmoe_linux_tool_sh
+			exit 0
+		fi
+	}
+	choose_manager_or_tool_en() {
+		if (whiptail --title "Which do you want to choose?" --yes-button "Tool" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+			curl_tmoe_linux_tool_sh
+			exit 0
+		fi
+	}
+	###########
+	choose_manager_or_tool() {
+		case ${TMOE_MENU_LANG} in
+		zh_*UTF-8) tmoe_manager_main_menu_zh ;;
+		ja_JP.UTF-8) choose_manager_or_tool_ja ;;
+		*) choose_manager_or_tool_en ;;
+		esac
+	}
 	if [ ! -z "${LINUX_DISTRO}" ]; then
 		if grep -q 'PRETTY_NAME=' /etc/os-release; then
 			OSRELEASE="$(sed -n p /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2)"
 		else
 			OSRELEASE="$(sed -n p /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)"
 		fi
-
-		if (whiptail --title "您想要对这个小可爱做什么 " --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tool \nor the system manager? ♪(^∇^*) " 0 50); then
-			if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
-				if [ $(command -v sudo) ]; then
-					sudo -E bash ${TMOE_GIT_DIR}/tool.sh
-				else
-					su -c "bash ${TMOE_GIT_DIR}/tool.sh"
-				fi
-			else
-				if [ ! $(command -v curl) ]; then
-					wget -O /tmp/.tmoe-linux-tool.sh "https://${TMOE_GIT_URL}/raw/master/tool.sh"
-				else
-					curl -Lv -o /tmp/.tmoe-linux-tool.sh "https://${TMOE_GIT_URL}/raw/master/tool.sh"
-				fi
-				source /tmp/.tmoe-linux-tool.sh
-			fi
-			exit 0
-		fi
+		choose_manager_or_tool
 	fi
 }
 ########################################
