@@ -353,7 +353,7 @@ check_gnu_linux_distro() {
 	###########
 	choose_manager_or_tool() {
 		case ${TMOE_MENU_LANG} in
-		zh_*UTF-8) tmoe_manager_main_menu_zh ;;
+		zh_*UTF-8) choose_manager_or_tool_zh ;;
 		ja_JP.UTF-8) choose_manager_or_tool_ja ;;
 		*) choose_manager_or_tool_en ;;
 		esac
