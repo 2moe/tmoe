@@ -869,7 +869,7 @@ apt install -y nano
 nano $(command -v startvnc)
 ```
 
-> 将 **1440x720**（竖屏）改成你需要的分辨率，例如 **1920x10780**（横屏)
+> 将 **1440x720**（竖屏）改成你需要的分辨率，例如 **1920x1080**（横屏)
 > 修改完成后，按`Ctrl+S` 保存，`Ctrl+X`退出。
 
 ---
@@ -888,8 +888,8 @@ nano $(command -v startvnc)
 
 ##### 11、12 月
 
-旧版脚本部分命令借鉴了 [atilo-cn](https://github.com/YadominJinta/atilo) 和 [AnLinux](https://github.com/EXALAB/Anlinux-Resources)，除此之外，大部分都是本人手打的。
-可能会有出错的地方，欢迎指正。
+~~旧版脚本部分命令借鉴了 [atilo-cn](https://github.com/YadominJinta/atilo) 和 [AnLinux](https://github.com/EXALAB/Anlinux-Resources)，除此之外，大部分都是本人手打的。
+可能会有出错的地方，欢迎指正。~~
 
 #### 2020 年
 
