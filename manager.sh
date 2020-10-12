@@ -397,15 +397,9 @@ choose_tmoe_locale_env() {
 	case ${TMOE_LANG} in
 	"") ;;
 	*)
-		mkdir -p ${CONFIG_FOLDER}
+		mkdir -p ${CONFIG_FOLDER} "${TMOE_LINUX_DIR}"
 		printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
-		case $(uname -o) in
-		Android) ;;
-		*)
-			mkdir -p "${TMOE_LINUX_DIR}"
-			printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
-			;;
-		esac
+		printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
 		;;
 	esac
 }

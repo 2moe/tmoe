@@ -177,6 +177,13 @@ tmoe_locale_menu() {
 	mkdir -p ${HOME}/.config/tmoe-linux
 	cd ${HOME}/.config/tmoe-linux
 	printf "%s\n" "${TMOE_LANG}" >locale.txt
+	case $(uname -o) in
+	Android) ;;
+	*)
+		mkdir -p /usr/local/etc/tmoe-linux
+		printf "%s\n" "${TMOE_LANG}" >/usr/local/etc/tmoe-linux/locale.txt
+		;;
+	esac
 
 	if [ -e "${DEBIAN_CHROOT}" ]; then
 		TMOE_SCRIPT_PATH=${DEBIAN_CHROOT}
@@ -197,7 +204,7 @@ tmoe_locale_menu() {
 
 	if [ -e "${DEBIAN_CHROOT}" ]; then
 		mkdir -p ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
-		cp -fv ${HOME}/.config/tmoe-linux/locale.txt ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+		${TMOE_PREFIX} cp -fv ${HOME}/.config/tmoe-linux/locale.txt ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
 		#chmod +r locale.txt
 	fi
 	case ${TMOE_LOCALE_GEN} in
