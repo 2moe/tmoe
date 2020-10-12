@@ -121,6 +121,9 @@ git_clone_tmoe_linux() {
 	mkdir -p /usr/share/applications
 	cp ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &
+	if [ ! $(command -v tmoe) ]; then
+		ln -sf ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
+	fi
 	bash /usr/local/bin/debian-i
 	exec zsh -l
 }
