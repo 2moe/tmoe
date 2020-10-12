@@ -419,7 +419,7 @@ creat_chroot_startup_script() {
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
-		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc/
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/tmp
 		case $(hostname) in
 		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} ;;
 		esac
@@ -821,10 +821,17 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	###############
 	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
 	cp -f vnc-autostartup .bash_login
-	if [ -e "/etc/hostname" ]; then
-		NEW_HOST_NAME=$(sed -n p /etc/hostname | head -n 1)
+	if [ -s "/tmp/hostname" ]; then
+		NEW_HOST_NAME=$(head -n 1 /tmp/hostname)
+		cp -f /tmp/hostname /etc
 		hostname ${NEW_HOST_NAME} 2>/dev/null
-		sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
+		#sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
+		if ! grep -q "${NEW_HOST_NAME}" /etc/hosts 2>/dev/null;then
+			printf "%s\n" "127.0.0.1 ${NEW_HOST_NAME}" >>/etc/hosts
+		fi
+	fi
+	if ! grep -q "$(hostname)" /etc/hosts 2>/dev/null;then
+		printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
 	fi
 	if [ "${TMOE_CHROOT}" = 'true' ]; then
 		groupadd aid_system -g 1000 || groupadd aid_system -g 1074
