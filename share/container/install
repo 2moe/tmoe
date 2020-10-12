@@ -404,7 +404,7 @@ creat_chroot_startup_script() {
 			${TMOE_CHROOT_PREFIX} mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 			#cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 			#ln -s ../../root/sd ./0
-			${TMOE_CHROOT_PREFIX} ln -s ../../sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
+			${TMOE_CHROOT_PREFIX} ln -s ../../media/sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
 		fi
 		;;
 	esac
@@ -1147,7 +1147,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	true)
 		for i in sd tf; do
 			if [ -e "/root/${i}" ] && [ ! -e "/${i}" ]; then
-				ln -s ./root/${i} /${i}
+				ln -s root/${i} /${i}
 			fi
 		done
 		unset i
