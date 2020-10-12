@@ -955,7 +955,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
 				deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
-				deb http://mirrors.bfsu.edu.cn/debian/ stable main contrib non-free
+				deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 				# deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 			EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
@@ -1239,9 +1239,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 			LC_ALL=${TMOE_LANG}
 		EOF
-	if ! grep -q "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-	    sed -i 's@^@#@g' /etc/locale.gen 2>/dev/null
-	    sed -i 's@##@#@g' /etc/locale.gen 2>/dev/null
+	if ! egrep -q "^[^#]*${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
+	    sed -i 's@^@#&@g;s@##@#@g' /etc/locale.gen 2>/dev/null
 	    printf "\n" >>/etc/locale.gen
 	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
 	fi
