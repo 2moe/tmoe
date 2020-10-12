@@ -730,6 +730,9 @@ tmoe_linux_tool_upgrade() {
 	if [ -e "/usr/local/bin/aria2-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/aria2.sh" /usr/local/bin
 	fi
+	if [ ! $(command -v tmoe) ]; then
+		ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
+	fi
 	#printf "%s\n" "${TMOE_GIT_URL}"
 	printf '%s\n' '(o゜▽゜)o☆  Thank you for using Tmoe-linux tool.'
 	printf "%s\n" "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
