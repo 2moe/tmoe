@@ -703,13 +703,13 @@ modify_ubuntu_mirror_sources_list() {
 modify_debian_mirror_sources_list() {
     NEW_DEBIAN_SOURCES_LIST='false'
     if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
-        if [ "$(lsb_release -cs)" = 'testing' ]; then
-            if (whiptail --title "DEBIAN VERSION" --yes-button "sid" --no-button "testing" --yesno "Are you using debian sid or testing?\n汝今方用何本？♪(^∇^*) " 0 0); then
-                SOURCELISTCODE='sid'
-            else
+        if [ "$(lsb_release -r | awk '{print $2}' | awk -F '/' '{print $1}')" = 'testing' ]; then
+            if (whiptail --title "DEBIAN VERSION" --yes-button "testing" --no-button "sid" --yesno "Are you using debian testing or sid?\n汝今方用何本？♪(^∇^*) " 0 0); then
                 NEW_DEBIAN_SOURCES_LIST='true'
                 SOURCELISTCODE='testing'
                 BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+            else
+                SOURCELISTCODE='sid'
             fi
         else
             SOURCELISTCODE='sid'
