@@ -1214,7 +1214,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	##############################
 	apt update 2>/dev/null
-	#apt reinstall -y perl-base
+	apt-get install --reinstall -y perl-base 2>/dev/null
 	if [ ! -e /usr/lib/locale/en_US ];then
 		apt install -y locales-all 2>/dev/null
 	fi 
