@@ -40,8 +40,8 @@ software_center() {
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
             "1" "🦊 Browser:浏览器(firefox,chromium,vivaldi)" \
             "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
-            "3" "🎵 Multimedia:图像与影音(哔哩哔哩,gimp,mpv)" \
-            "4" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
+            "3" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
+            "4" "🎵 Multimedia:图像与影音(哔哩哔哩,gimp,mpv)" \
             "5" "📚 Documents:文档(libreoffice,wps)" \
             "6" "🔯 Packages&system:软件包与系统管理" \
             "7" "🎮 Games:游戏(steam,wesnoth)" \
@@ -58,8 +58,8 @@ software_center() {
     0 | "") tmoe_linux_tool_menu ;;
     1) install_browser ;;
     2) explore_debian_opt_repo ;;
-    3) tmoe_multimedia_menu ;;
-    4) dev_menu ;;
+    3) dev_menu ;;
+    4) tmoe_multimedia_menu ;;
     5) source_tmoe_document_app ;;
     6) tmoe_software_package_menu ;;
     7) tmoe_games_menu ;;
