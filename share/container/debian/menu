@@ -192,9 +192,9 @@ debootstrap_debian_distro() {
 		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}
 		#debootstrap --no-check-gpg --foreign --arch ${ARCH_TYPE} ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.huaweicloud.com/debian
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all
-		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=minbase ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.huaweicloud.com/debian
+		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=buildd --include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.bfsu.edu.cn/debian
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
-	#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C && chroot ${DEBIAN_CHROOT} /debootstrap/debootstrap --second-stage
+		#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C && chroot ${DEBIAN_CHROOT} /debootstrap/debootstrap --second-stage
 	fi
 }
 ###########
