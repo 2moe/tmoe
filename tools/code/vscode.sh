@@ -287,7 +287,8 @@ install_vscodium() {
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' ${CODIUM_FILE_URL}
         apt-cache show ./VSCodium.deb
-        apt install -y ./VSCodium.deb
+        #apt install -y ./VSCodium.deb
+        dpkg -i ./VSCodium.deb
         rm -vf VSCodium.deb
         copy_gnu_lib_xcb_so
         fix_tightvnc_vscode_lnk
@@ -340,7 +341,8 @@ install_vscode_oss() {
 download_vscode_x64_deb() {
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "${CODE_BIN_URL}"
     apt-cache show ./VSCODE.deb
-    apt install -y ./VSCODE.deb
+    dpkg -i ./VSCODE.deb
+    #apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
 }
 ##########
