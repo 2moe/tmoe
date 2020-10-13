@@ -341,8 +341,7 @@ install_vscode_oss() {
 download_vscode_x64_deb() {
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "${CODE_BIN_URL}"
     apt-cache show ./VSCODE.deb
-    dpkg -i ./VSCODE.deb
-    #apt install -y ./VSCODE.deb
+    dpkg -i ./VSCODE.deb || apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
 }
 ##########
