@@ -303,7 +303,7 @@ install_vscodium() {
         rm -vf VSCodium.tar.gz
         cp -f ${TMOE_TOOL_DIR}/code/bin/codium /usr/local/bin
         cp -f ${TMOE_TOOL_DIR}/code/lnk/codium.desktop ${APPS_LNK_DIR}
-        if [ -e "/usr/share/icons/vscodium.png" ]; then
+        if [ ! -e "/usr/share/icons/vscodium.png" ]; then
             aria2c -d '/usr/share/icons' -o 'vscodium.png' 'https://gitee.com/ak2/icons/raw/master/vscodium.png'
         fi
         #ln -sf /opt/vscodium-data/codium /usr/local/bin/codium
