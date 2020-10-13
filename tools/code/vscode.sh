@@ -275,11 +275,10 @@ install_vscodium() {
         printf "%s\n" "检测到您已安装VSCodium,请输codium启动"
         printf "%s\n" "如需卸载，请手动输rm -rv /opt/vscodium-data /usr/local/bin/codium ${APPS_LNK_DIR}/codium.desktop"
     fi
-
-    if [ $(command -v codium) ]; then
-        press_enter_to_return
-        which_vscode_edition
-    fi
+    [[ ! $(command -v codium) ]] || codium --no-sandbox
+    printf "%s\n" "请问您是否需要下载最新版安装包？"
+    printf "%s\n" "Do you want to download the latest codium?"
+    do_you_want_to_continue
 
     if [ "${LINUX_DISTRO}" = 'debian' ]; then
         LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
