@@ -1083,7 +1083,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo
-					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
+					#Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
 					Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 				EndOfArchMirrors
 	    else
@@ -1143,7 +1143,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    manjaro_mirror_list
 			pacman-key --init
 	        pacman-key --populate
-	    #pacman -Sy --noconfirm grep sed awk
 		pacman -Syu --noconfirm base base-devel
 	fi
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 TMOE_BIN='/opt/lx-music-desktop'
+cd ${TMOE_BIN}
 export ELECTRON_IS_DEV=0
 case "$(id -u)" in
 0) electron ${TMOE_BIN} --no-sandbox "$@" ;;
