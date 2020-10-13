@@ -182,11 +182,11 @@ debootstrap_debian_distro() {
 	custom_debian_version
 	printf "%s\n" "${DISTRO_CODE}"
 	do_you_want_to_continue
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#此处重复创建并非多余
+	creat_container_edition_txt
 	if [ ! -e "${DEBIAN_CHROOT}" ]; then
 		DEB_BOOT_STRAP='true'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		#此处重复创建并非多余
-		creat_container_edition_txt
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
 		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}

@@ -8,8 +8,8 @@ choose_which_gnu_linux_distro() {
 	DEB_BOOT_STRAP='false'
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	check_rootfs_dir
-	rm -f ~/.ALPINELINUXDetectionFILE 2>/dev/null
 	[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
+	rm -f ~/.ALPINELINUXDetectionFILE 2>/dev/null
 	choose_which_gnu_linux_distro_ja() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "GNU/Linuxディストリビューションを選択してください" 0 50 0 \
 			"1" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
@@ -393,11 +393,11 @@ debootstrap_ubuntu_distro() {
 	custom_ubuntu_version
 	printf "%s\n" "${DISTRO_CODE}"
 	do_you_want_to_continue
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#此处重复创建并非多余
+	creat_container_edition_txt
 	if [ ! -e "${DEBIAN_CHROOT}" ]; then
 		DEB_BOOT_STRAP='true'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		#此处重复创建并非多余
-		creat_container_edition_txt
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
 		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}
