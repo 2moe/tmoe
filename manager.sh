@@ -160,7 +160,7 @@ check_gnu_linux_git_and_whiptail() {
 		export PATH="${PATH}:/mnt/c/WINDOWS/system32/:/mnt/c/WINDOWS/system32/WindowsPowerShell/v1.0/"
 		#此处必须设定环境变量，因为sudo的环境变量会发生改变。
 		#不能使用这条alias：alias sudo='sudo env PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH'
-		printf "%s\n" "检测到您使用的是WSL"
+		#printf "%s\n" "检测到您使用的是WSL"
 		WSL="[WSL(win10的linux子系统)]"
 		WINDOWS_DISTRO='WSL'
 	else
