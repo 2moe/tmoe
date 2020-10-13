@@ -833,6 +833,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if ! grep -q "$(hostname)" /etc/hosts 2>/dev/null;then
 		printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
 	fi
+
+	if ! grep -q "localhost" /etc/hosts 2>/dev/null; then
+	cat >>/etc/hosts <<-EOF
+		127.0.0.1       localhost
+		::1     localhost ip6-localhost ip6-loopback
+		ff02::1 ip6-allnodes
+		ff02::2 ip6-allrouters
+	EOF
+	fi
+
 	if [ "${TMOE_CHROOT}" = 'true' ]; then
 		groupadd aid_system -g 1000 || groupadd aid_system -g 1074
 		groupadd aid_radio -g 1001
