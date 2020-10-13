@@ -387,7 +387,7 @@ install_vscode_official() {
     esac
 
     if [ -e "/usr/share/code/.electron" ]; then
-        printf "%s\n" "检测到您已安装VSCode,请输${GREEN}code --user-data-dir=${HOME}/.vscode${RESE}启动"
+        printf "%s\n" "检测到您已安装VSCode,请输${GREEN}code --user-data-dir=${HOME}/.vscode${RESET}启动"
         printf "%s\n" "如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}/usr/share/zsh/vendor-completions /usr/share/zsh/vendor-completions/_code /usr/share/applications/code.desktop /usr/share/applications/code-url-handler.desktop /usr/share/code /usr/share/appdata/code.appdata.xml /usr/share/mime/packages/code-workspace.xml /usr/share/bash-completion/completions/code /usr/share/pixmaps/com.visualstudio.code.png${RESET}"
     elif [ -e "/usr/bin/code" ]; then
         printf '%s\n' '检测到您已安装VSCode,请手动输以下命令启动'
