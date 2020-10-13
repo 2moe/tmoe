@@ -9,7 +9,7 @@ which_vscode_edition() {
         "1" "VS Code Server:web版,含配置选项" \
         "2" "VS Codium(不跟踪你的使用数据)" \
         "3" "VS Code OSS(headmelted编译版)" \
-        "4" "Microsoft Official(x64,官方版)" \
+        "4" "Microsoft Official(x64,arm64,armhf官方版)" \
         "5" "修复tightvnc无法打开codeoss/codium" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
@@ -338,7 +338,7 @@ install_vscode_oss() {
 }
 #######################
 download_vscode_x64_deb() {
-    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "https://go.microsoft.com/fwlink/?LinkID=760868"
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "${CODE_BIN_URL}"
     apt-cache show ./VSCODE.deb
     apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
@@ -346,53 +346,88 @@ download_vscode_x64_deb() {
 ##########
 install_vscode_official() {
     cd /tmp
-    if [ "${ARCH_TYPE}" != 'amd64' ]; then
-        printf "%s\n" "当前仅支持x86_64架构"
+    case "${ARCH_TYPE}" in
+    amd64)
+        case ${LINUX_DISTRO} in
+        debian) CODE_BIN_URL="https://go.microsoft.com/fwlink/?LinkID=760868" ;;
+        redhat) CODE_BIN_URL="https://go.microsoft.com/fwlink/?LinkID=760867" ;;
+        *)
+            CODE_BIN_URL="https://go.microsoft.com/fwlink/?LinkID=620884"
+            CODE_BIN_FOLDER='VSCode-linux-x64'
+            ;;
+        esac
+        ;;
+    arm64)
+        case ${LINUX_DISTRO} in
+        debian) CODE_BIN_URL="https://aka.ms/linux-arm64-deb" ;;
+        redhat) CODE_BIN_URL="https://aka.ms/linux-arm64-rpm" ;;
+        *)
+            CODE_BIN_URL="https://aka.ms/linux-arm64"
+            CODE_BIN_FOLDER='VSCode-linux-arm64'
+            ;;
+        esac
+        ;;
+    armhf)
+        case ${LINUX_DISTRO} in
+        debian) CODE_BIN_URL="https://aka.ms/linux-armhf-deb" ;;
+        redhat) CODE_BIN_URL="https://aka.ms/linux-armhf-rpm" ;;
+        *)
+            CODE_BIN_URL="https://aka.ms/linux-armhf"
+            CODE_BIN_FOLDER='VSCode-linux-armhf'
+            ;;
+        esac
+        ;;
+    *)
         arch_does_not_support
         which_vscode_edition
-    fi
+        ;;
+    esac
 
-    if [ -e "/usr/bin/code" ]; then
-        printf '%s\n' '检测到您已安装VSCode,请手动输以下命令启动'
-        #printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
-        printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
-        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
-        #printf "%s\n" "${YELLOW}按回车键返回。${RESET}"
-        #printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-        #read
-        code --version
-        printf "%s\n" "请问您是否需要下载最新版安装包？"
-        printf "%s\n" "Do you want to download the latest vscode?"
-        do_you_want_to_continue
-        #download_vscode_x64_deb
-        #which_vscode_edition
-    elif [ -e "/usr/local/bin/vscode-data/code" ]; then
+    if [ -e "/usr/share/code/.electron" ]; then
         printf "%s\n" "检测到您已安装VSCode,请输code --no-sandbox启动"
         printf "%s\n" "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
         printf "%s\n" "${YELLOW}按回车键返回。${RESET}"
         printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
         read
         which_vscode_edition
+    elif [ -e "/usr/bin/code" ]; then
+        printf '%s\n' '检测到您已安装VSCode,请手动输以下命令启动'
+        printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
+        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
+        code --version
+        printf "%s\n" "请问您是否需要下载最新版安装包？"
+        printf "%s\n" "Do you want to download the latest vscode?"
+        do_you_want_to_continue
     fi
 
-    if [ "${LINUX_DISTRO}" = 'debian' ]; then
+    case ${LINUX_DISTRO} in
+    debian)
         download_vscode_x64_deb
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
-
-    elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "https://go.microsoft.com/fwlink/?LinkID=760867"
+        ;;
+    redhat)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "${CODE_BIN_URL}"
         rpm -ivh ./VSCODE.rpm
         rm -vf VSCODE.rpm
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
-    else
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "https://go.microsoft.com/fwlink/?LinkID=620884"
-        #mkdir -p /usr/local/bin/vscode-data
-        tar -zxvf VSCODE.tar.gz -C /usr/local/bin/
-
+        ;;
+    *)
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "${CODE_BIN_URL}"
+        tar -zxvf VSCODE.tar.gz -C /usr/share
+        rm -rv /usr/share/code 2>/dev/null
+        mv /usr/share/${CODE_BIN_FOLDER} /usr/share/code
         rm -vf VSCode.tar.gz
-        ln -sf /usr/local/bin/VSCode-linux-x64/code /usr/local/bin/code
-        printf "%s\n" "安装完成，输code --no-sandbox启动"
-    fi
+        #if [ ! -e "/usr/share/code/.electron" ]; then
+        printf "%s\n" "${CODE_BIN_FOLDER}" >/usr/share/code/.electron
+        CODE_SHARE_FILE='.VSCODE_USR_SHARE.tar.gz'
+        aria2c --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
+        tar -Jxvf ${CODE_SHARE_FILE} -C /
+        rm -vf ${CODE_SHARE_FILE}
+        #fi
+        ln -sfv /usr/share/code/bin/code /usr/bin
+        printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
+        ;;
+    esac
 }
 ###############################
 which_vscode_edition
