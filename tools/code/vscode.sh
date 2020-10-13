@@ -422,6 +422,8 @@ install_vscode_official() {
         CODE_SHARE_FILE='.VSCODE_USR_SHARE.tar.gz'
         aria2c --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
         tar -Jxvf ${CODE_SHARE_FILE} -C /
+        #此处解压会影响zsh补全文件的权限
+        chown 0:0 /usr/share/zsh /usr/share/mine /usr/share/applications /usr/share/appdata /usr/share/bash-completion /usr/share/pixmaps
         rm -vf ${CODE_SHARE_FILE}
         #fi
         ln -sfv /usr/share/code/bin/code /usr/bin
