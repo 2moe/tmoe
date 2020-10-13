@@ -44,7 +44,7 @@ fix_tightvnc_vscode_lnk() {
 #########
 fix_tightvnc_oss() {
     cat <<-EOF
-    deb系发行版在安装时会自动修复。
+    本功能仅支持deb系发行版。
     若无法自动修复，则请手动使用以下命令来启动。
     env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib codium --user-data-dir=${HOME}/.codium
     env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code-oss --user-data-dir=${HOME}/.codeoss
@@ -343,6 +343,8 @@ download_vscode_x64_deb() {
     apt-cache show ./VSCODE.deb
     dpkg -i ./VSCODE.deb || apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
+    copy_gnu_lib_xcb_so
+    fix_tightvnc_vscode_lnk
 }
 ##########
 install_vscode_official() {
