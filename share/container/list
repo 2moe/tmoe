@@ -399,13 +399,13 @@ debootstrap_ubuntu_distro() {
 		creat_container_edition_txt
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
-		mkdir -p ${DEBIAN_CHROOT}
+		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}
 		case ${ARCH_TYPE} in
 		amd64 | i386) UBUNTU_MIRROR_URL='http://mirrors.huaweicloud.com/ubuntu' ;;
 		*) UBUNTU_MIRROR_URL='http://mirrors.huaweicloud.com/ubuntu-ports' ;;
 		esac
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail
-		debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=minbase ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
+		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=minbase ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
 	fi
 }
