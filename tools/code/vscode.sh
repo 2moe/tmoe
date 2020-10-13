@@ -6,20 +6,20 @@ which_vscode_edition() {
     #15 60 5
     VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
         "${VSCODEtips} Which edition do you want to install" 0 50 0 \
-        "1" "VS Code Server:web版,含配置选项" \
-        "2" "VS Codium(不跟踪你的使用数据)" \
-        "3" "VS Code OSS(headmelted编译版)" \
-        "4" "Microsoft Official(x64,arm64,armhf官方版)" \
+        "1" "Microsoft Official(x64,arm64,armhf官方版)" \
+        "2" "VS Code Server:web版,含配置选项" \
+        "3" "VS Codium(不跟踪你的使用数据)" \
+        "4" "VS Code OSS(headmelted编译版)" \
         "5" "修复tightvnc无法打开codeoss/codium" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
     case "${VSCODE_EDITION}" in
     0 | "") development_programming_tools ;;
-    1) check_vscode_server_arch ;;
-    2) install_vscodium ;;
-    3) install_vscode_oss ;;
-    4) install_vscode_official ;;
+    1) install_vscode_official ;;
+    2) check_vscode_server_arch ;;
+    3) install_vscodium ;;
+    4) install_vscode_oss ;;
     5) fix_tightvnc_oss ;;
     esac
     #########################
@@ -384,21 +384,18 @@ install_vscode_official() {
     esac
 
     if [ -e "/usr/share/code/.electron" ]; then
-        printf "%s\n" "检测到您已安装VSCode,请输code --no-sandbox启动"
-        printf "%s\n" "如需卸载，请手动输rm -rvf /usr/local/bin/VSCode-linux-x64/ /usr/local/bin/code"
-        printf "%s\n" "${YELLOW}按回车键返回。${RESET}"
-        printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-        read
-        which_vscode_edition
+        printf "%s\n" "检测到您已安装VSCode,请输${GREEN}code --user-data-dir=${HOME}/.vscode${RESE}启动"
+        printf "%s\n" "如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}/usr/share/zsh/vendor-completions /usr/share/zsh/vendor-completions/_code /usr/share/applications/code.desktop /usr/share/applications/code-url-handler.desktop /usr/share/code /usr/share/appdata/code.appdata.xml /usr/share/mime/packages/code-workspace.xml /usr/share/bash-completion/completions/code /usr/share/pixmaps/com.visualstudio.code.png${RESET}"
     elif [ -e "/usr/bin/code" ]; then
         printf '%s\n' '检测到您已安装VSCode,请手动输以下命令启动'
         printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
         printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
-        code --version
-        printf "%s\n" "请问您是否需要下载最新版安装包？"
-        printf "%s\n" "Do you want to download the latest vscode?"
-        do_you_want_to_continue
     fi
+    code --version
+    printf "%s\n" "请问您是否需要下载最新版安装包？"
+    printf "%s\n" "Do you want to download the latest vscode?"
+    printf "${YELLOW}%s${RESET}\n" "${CODE_BIN_URL}"
+    do_you_want_to_continue
 
     case ${LINUX_DISTRO} in
     debian)
