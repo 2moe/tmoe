@@ -274,7 +274,7 @@ You can type `startxsdl` to start **X** client & server.
 #### 2.tmoe command
 
 ![command](https://images.gitee.com/uploads/images/2020/1012/141624_eb90039d_5617340.png "截图_2020-10-12_14-13-04.png")  
-For different releases and different architectures, the startup commands of the container are different.  
+For different distros and different architectures, the startup commands of the container are different.  
 The complete command is similar to `tmoe chroot kali rolling arm64 x11`  
 完整的启动命令类似于 `tmoe proot debian sid i386 vnc`  
 Next, I will introduce the meaning of each parameter.
