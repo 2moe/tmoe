@@ -292,12 +292,12 @@ install_ubuntu_gnu_linux_distro() {
 			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2022,则请手动输入版本代号" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
 				"2" "🐱 20.04(LTS)Focal Fossa 焦點馬島長尾狸貓" \
-				"3" "使用debootstrap手动构建" \
+				"3" "Compatibility mode 兼容模式(仅安装)" \
 				"4" "Custom code手动输入版本代号" \
-				"5" "18.04(LTS)Bionic Beaver 仿生海狸" \
-				"6" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
-				"7" "Latest(自動檢測21.04)" \
-				"8" "Compatibility mode 兼容模式(仅安装)" \
+				"5" "使用debootstrap手动构建" \
+				"6" "18.04(LTS)Bionic Beaver 仿生海狸" \
+				"7" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
+				"8" "Latest(自動檢測21.04)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -307,12 +307,12 @@ install_ubuntu_gnu_linux_distro() {
 			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2022の場合は、コードをカスタマイズしてください" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
-				"3" "debootstrapを使用して手動でビルドする" \
+				"3" "互換モード" \
 				"4" "カスタムコード" \
-				"5" "18.04(LTS)Bionic Beaver" \
-				"6" "🐿️ 16.04(LTS)Xenial Xerus" \
-				"7" "Latest(最新バージョンを自動的に検出)" \
-				"8" "互換モード" \
+				"5" "debootstrapを使用して手動でビルドする" \
+				"6" "18.04(LTS)Bionic Beaver" \
+				"7" "🐿️ 16.04(LTS)Xenial Xerus" \
+				"8" "Latest(最新バージョンを自動的に検出)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -322,12 +322,12 @@ install_ubuntu_gnu_linux_distro() {
 			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2022,then customize the version code" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa" \
-				"3" "Manually build using debootstrap" \
+				"3" "Compatibility mode" \
 				"4" "Custom code" \
-				"5" "18.04(LTS)Bionic Beaver" \
-				"6" "🐿️ 16.04(LTS)Xenial Xerus" \
-				"7" "Latest" \
-				"8" "Compatibility mode" \
+				"5" "Manually build using debootstrap" \
+				"6" "18.04(LTS)Bionic Beaver" \
+				"7" "🐿️ 16.04(LTS)Xenial Xerus" \
+				"8" "Latest" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -343,15 +343,15 @@ install_ubuntu_gnu_linux_distro() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='groovy' ;;
 	2) DISTRO_CODE='focal' ;;
-	3) debootstrap_ubuntu_distro ;;
-	4) custom_ubuntu_version ;;
-	5) DISTRO_CODE='bionic' ;;
-	6) DISTRO_CODE='xenial' ;;
-	7) check_the_latest_ubuntu_version ;;
-	8)
+	3)
 		COMPATIBILITY_MODE='true'
 		custom_ubuntu_version
 		;;
+	4) custom_ubuntu_version ;;
+	5) debootstrap_ubuntu_distro ;;
+	6) DISTRO_CODE='bionic' ;;
+	7) DISTRO_CODE='xenial' ;;
+	8) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -406,7 +406,7 @@ debootstrap_ubuntu_distro() {
 		*) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
 		esac
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail
-		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=buildd --include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
+		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=buildd --include=init,locales,ca-certificates,openssl,whiptail ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
 	fi
 	#debootstrap --no-check-gpg --arch arm64 --include=gawk,libblkid1,libbz2-1.0,libc6,libcom-err2,libcrypt1,libdebconfclient0,libext2fs2,libgcc-s1,libgmp10,liblzma5,libnss-nis,libnss-nisplus,libpam-modules-bin,libpam0g,libpcre3,libselinux1,libss2,libtinfo6,libuuid1,tar,zlib1g --variant=buildd sid ./sid ${UBUNTU_MIRROR_URL}

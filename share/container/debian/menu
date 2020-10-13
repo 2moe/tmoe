@@ -85,10 +85,10 @@ install_debian_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
 			whiptail --title "请选择您需要安装的debian version" --menu "Buster为2019~2021年的stable版,sid永远都为unstable,sid的软件包较新" 0 50 0 \
 				"1" "👦Sid(滚动更新,隔壁的男孩席德,玩具终结者)" \
-				"2" "使用debootstrap手动构建" \
+				"2" "🐎11-bullseye(2021~2024,胡迪骑的马)" \
 				"3" "🐶10-buster(2019~2022,安弟一家养的小狗)" \
 				"4" "Custom code手动输入版本代号" \
-				"5" "🐎11-bullseye(2021~2024,胡迪骑的马)" \
+				"5" "使用debootstrap手动构建" \
 				"6" "📕🐛12-bookworm(2023~2026,书虫--熊抱哥的手下)" \
 				"7" "自动检测debian-13 (2025~2028)" \
 				"8" "🐙9-stretch(2017~2020,玩具总动员3中的章鱼)" \
@@ -100,10 +100,10 @@ install_debian_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
 			whiptail --title "Debian version" --menu "Stable has fewer bugs,but the packages inside the \nsoftware source are older.Sid is relatively new." 0 50 0 \
 				"1" "👦Sid不安定版:これは、開発者向けの版である" \
-				"2" "debootstrapを使用して手動でビルドする" \
+				"2" "🐎11-bullseye(2021~2024)" \
 				"3" "🐶10-buster(2019~2022)" \
 				"4" "カスタムコード" \
-				"5" "🐎11-bullseye(2021~2024)" \
+				"5" "debootstrapを使用して手動でビルドする" \
 				"6" "📕🐛12-bookworm(2023~2026)" \
 				"7" "debian-13 (2025~2028)" \
 				"8" "🐙9-stretch(2017~2020)" \
@@ -115,10 +115,10 @@ install_debian_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
 			whiptail --title "Debian version" --menu "Stable has fewer bugs,but the packages inside the \nsoftware source are older.Sid is relatively new." 0 50 0 \
 				"1" "👦Sid (Unstable,a rolling development version)" \
-				"2" "Manually build using debootstrap" \
+				"2" "🐎11-bullseye(2021~2024)" \
 				"3" "🐶10-buster(2019~2022)" \
 				"4" "Custom code" \
-				"5" "🐎11-bullseye(2021~2024)" \
+				"5" "Manually build using debootstrap" \
 				"6" "📕🐛12-bookworm(2023~2026)" \
 				"7" "debian-13 (2025~2028)" \
 				"8" "🐙9-stretch(2017~2020)" \
@@ -137,10 +137,10 @@ install_debian_gnu_linux_distro_menu() {
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='sid' ;;
-	2) debootstrap_debian_distro ;;
+	2) DISTRO_CODE='bullseye' ;;
 	3) DISTRO_CODE='buster' ;;
 	4) custom_debian_version ;;
-	5) DISTRO_CODE='bullseye' ;;
+	5) debootstrap_debian_distro ;;
 	6) check_debian_12 ;;
 	7) check_debian_new_version ;;
 	8) DISTRO_CODE='stretch' ;;
@@ -192,7 +192,8 @@ debootstrap_debian_distro() {
 		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}
 		#debootstrap --no-check-gpg --foreign --arch ${ARCH_TYPE} ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.huaweicloud.com/debian
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all
-		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=buildd --include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.bfsu.edu.cn/debian
+		#--include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail
+		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=buildd --include=init,locales,ca-certificates,openssl,whiptail ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.bfsu.edu.cn/debian
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
 		#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C && chroot ${DEBIAN_CHROOT} /debootstrap/debootstrap --second-stage
 	fi
