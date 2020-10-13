@@ -394,7 +394,7 @@ install_vscode_official() {
         printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
         printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
     fi
-    [[ ! $(command -v code) ]] || code --version
+    [[ ! $(command -v code) ]] || code --version --user-data-dir=/tmp/.code
     printf "%s\n" "请问您是否需要下载最新版安装包？"
     printf "%s\n" "Do you want to download the latest vscode?"
     printf "${YELLOW}%s${RESET}\n" "${CODE_BIN_URL}"
