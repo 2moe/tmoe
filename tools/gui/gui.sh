@@ -950,6 +950,7 @@ apt_purge_libfprint() {
 ###################
 debian_xfce4_extras() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
+        [[ $(command -v compton-conf) ]] || apt install -y compton-conf 2>/dev/null
         if [ "${DEBIAN_DISTRO}" = "kali" ]; then
             kali_xfce4_extras
         fi
