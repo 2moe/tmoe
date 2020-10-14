@@ -14,8 +14,8 @@ proot_management_menu() {
 			"1" "start ${DEBIAN_FOLDER}" \
 			"2" "startvnc(tiger/tight)" \
 			"3" "startx11vnc" \
-			"4" "startnovnc" \
-			"5" "startxsdl" \
+			"4" "startxsdl" \
+			"5" "novnc(HTML5 VNC client)" \
 			"6" "backup proot container" \
 			"7" "readme" \
 			"8" "install" \
@@ -29,8 +29,8 @@ proot_management_menu() {
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "🐯 startvnc:启动tiger/tightvnc" \
 			"3" "⚔️ startx11vnc:启动x11vnc" \
-			"4" "🍬 启动novnc:在浏览器里连接vnc" \
-			"5" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+			"4" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+			"5" "🍬 启动novnc:在浏览器里连接vnc" \
 			"6" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"7" "📡 commands 命令说明" \
 			"8" "🥤 install 安装" \
@@ -49,8 +49,8 @@ proot_management_menu() {
 	1) normally_start_gnu_linux_distro ;;
 	2) start_gnu_linux_distro_tigervnc ;;
 	3) start_gnu_linux_distro_x11vnc ;;
-	4) install_web_novnc ;;
-	5) start_gnu_linux_distro_x ;;
+	4) start_gnu_linux_distro_x ;;
+	5) install_web_novnc ;;
 	6) backup_tmoe_gnu_linux_distro ;;
 	7) readme_of_gnu_linux_distro ;;
 	8) install_new_tmoe_gnu_linux_distro ;;
