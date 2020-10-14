@@ -9,11 +9,11 @@ debian_add_virtual_box_gpg() {
 	curl -Lv https://www.virtualbox.org/download/oracle_vbox_2016.asc | apt-key add -
 	cd /etc/apt/sources.list.d/
 	sed -i 's/^deb/# &/g' virtualbox.list
-	printf "%s\n" "deb http://mirrors.tuna.tsinghua.edu.cn/virtualbox/apt/ ${VBOX_RELEASE} contrib" >>virtualbox.list
+	printf "%s\n" "deb http://mirrors.bfsu.edu.cn/virtualbox/apt/ ${VBOX_RELEASE} contrib" >>virtualbox.list
 }
 ###############
 get_debian_vbox_latest_url() {
-	TUNA_VBOX_LINK='https://mirrors.tuna.tsinghua.edu.cn/virtualbox/apt/pool/contrib/v/'
+	TUNA_VBOX_LINK='https://mirrors.bfsu.edu.cn/virtualbox/apt/pool/contrib/v/'
 	LATEST_VBOX_VERSION=$(curl -L ${TUNA_VBOX_LINK} | grep 'virtualbox-' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
 		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep "Ubuntu" | head -n 1 | cut -d '"' -f 4)
@@ -60,7 +60,7 @@ redhat_add_virtual_box_repo() {
 	cat >/etc/yum.repos.d/virtualbox.repo <<-'EndOFrepo'
 		[virtualbox]
 		name=Virtualbox Repository
-		baseurl=https://mirrors.tuna.tsinghua.edu.cn/virtualbox/rpm/el$releasever/
+		baseurl=https://mirrors.bfsu.edu.cn/virtualbox/rpm/el$releasever/
 		gpgcheck=0
 		enabled=1
 	EndOFrepo

@@ -825,7 +825,7 @@ install_fvwm() {
         if egrep -q 'buster|bullseye|bookworm' /etc/os-release; then
             DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
         else
-            REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/f/fvwm-crystal/'
+            REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fvwm-crystal/'
             GREP_NAME='all'
             grep_deb_comman_model_01
             if [ $(command -v fvwm-crystal) ]; then
@@ -967,7 +967,7 @@ debian_xfce4_extras() {
                 apt install -y ${GREP_NAME}
                 ;;
             *)
-                REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
+                REPO_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
                 GREP_NAME="xfce4-panel-profiles"
                 THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
                 download_deb_comman_model_02
@@ -1339,7 +1339,7 @@ debian_download_ubuntu_mate_wallpaper() {
 }
 #####################
 debian_download_xubuntu_xenial_wallpaper() {
-    REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
+    REPO_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
     GREP_NAME_01='xubuntu-community-wallpapers-xenial'
     GREP_NAME_02='all.deb'
     grep_deb_comman_model_02
@@ -1842,11 +1842,11 @@ dde_old_version() {
         if ! grep -q '^deb.*deepin' sources.list.d/deepin.list 2>/dev/null; then
             cat >/etc/apt/sources.list.d/deepin.list <<-'EOF'
 				   #如需使用apt upgrade命令，请禁用deepin软件源,否则将有可能导致系统崩溃。
-					deb [by-hash=force] https://mirrors.tuna.tsinghua.edu.cn/deepin unstable main contrib non-free
+					deb [by-hash=force] https://mirrors.bfsu.edu.cn/deepin unstable main contrib non-free
 			EOF
         fi
     fi
-    wget https://mirrors.tuna.tsinghua.edu.cn/deepin/project/deepin-keyring.gpg
+    wget https://mirrors.bfsu.edu.cn/deepin/project/deepin-keyring.gpg
     gpg --import deepin-keyring.gpg
     gpg --export --armor 209088E7 | apt-key add -
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
@@ -2320,7 +2320,7 @@ download_xubuntu_wallpaper() {
     THEME_NAME='xubuntu_wallpaper'
     WALLPAPER_NAME='xfce4/backdrops'
     GREP_NAME_01='all.deb'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
     grep_theme_model_03
     move_wallpaper_model_01
 }
@@ -2395,7 +2395,7 @@ download_ubuntu_wallpaper() {
     THEME_NAME='ubuntu_wallpaper'
     WALLPAPER_NAME='backgrounds'
     GREP_NAME_01='all.deb'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntu-wallpapers/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/u/ubuntu-wallpapers/'
     grep_theme_model_03
     move_wallpaper_model_01
 }
@@ -2430,7 +2430,7 @@ download_ubuntu_kylin_walllpaper() {
     CUSTOM_WALLPAPER_NAME='ubuntukylin-wallpapers'
     GREP_NAME_01='.tar.xz'
     GREP_NAME_02='ubuntukylin-wallpapers_'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
     grep_theme_model_04
     move_wallpaper_model_02
 }
@@ -2440,7 +2440,7 @@ download_ubuntu-mate_wallpaper() {
     THEME_NAME='ubuntu_wallpapers_and_photos'
     WALLPAPER_NAME='backgrounds/ubuntu-mate-photos'
     GREP_NAME_01='all.deb'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/universe/u/ubuntu-mate-artwork/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/u/ubuntu-mate-artwork/'
     if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ]; then
         CUSTOM_WALLPAPER_NAME="backgrounds"
     else
@@ -2532,7 +2532,7 @@ download_mint_backgrounds() {
     fi
     THEME_NAME="mint_backgrounds_${MINT_CODE}"
     GREP_NAME_01='all.deb'
-    THEME_URL="https://mirrors.tuna.tsinghua.edu.cn/linuxmint/pool/main/m/mint-backgrounds-${MINT_CODE}/"
+    THEME_URL="https://mirrors.bfsu.edu.cn/linuxmint/pool/main/m/mint-backgrounds-${MINT_CODE}/"
     grep_theme_model_03
     move_wallpaper_model_01
 }
@@ -2584,7 +2584,7 @@ download_paper_icon_theme() {
     THEME_NAME='paper_icon_theme'
     ICON_NAME='Paper /usr/share/icons/Paper-Mono-Dark'
     GREP_NAME='paper-icon-theme'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/manjaro/pool/overlay/'
     grep_theme_model_02
     update_icon_caches_model_02
     XFCE_ICON_NAME='Paper'
@@ -2595,7 +2595,7 @@ download_papirus_icon_theme() {
     THEME_NAME='papirus_icon_theme'
     ICON_NAME='Papirus /usr/share/icons/Papirus-Dark /usr/share/icons/Papirus-Light /usr/share/icons/ePapirus'
     GREP_NAME='papirus-icon-theme'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/p/papirus-icon-theme/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/p/papirus-icon-theme/'
     grep_theme_model_01
     update_icon_caches_model_01
     XFCE_ICON_NAME='Papirus'
@@ -2607,7 +2607,7 @@ download_raspbian_pixel_wallpaper() {
     WALLPAPER_NAME='pixel-wallpaper'
     CUSTOM_WALLPAPER_NAME='raspberrypi-pixel-wallpapers'
     GREP_NAME='pixel-wallpaper'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
     grep_theme_model_01
     move_wallpaper_model_01
 }
@@ -2617,7 +2617,7 @@ download_debian_gnome_wallpaper() {
     WALLPAPER_NAME='backgrounds/gnome'
     CUSTOM_WALLPAPER_NAME='gnome-backgrounds'
     GREP_NAME='gnome-backgrounds'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/g/gnome-backgrounds/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/g/gnome-backgrounds/'
     grep_theme_model_01
     move_wallpaper_model_01
 }
@@ -2627,7 +2627,7 @@ download_deepin_wallpaper() {
     WALLPAPER_NAME='wallpapers/deepin'
     GREP_NAME='deepin-community-wallpapers'
     CUSTOM_WALLPAPER_NAME='deepin-community'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
     grep_theme_model_01
     move_wallpaper_model_01
     GREP_NAME='deepin-wallpapers_'
@@ -2674,14 +2674,14 @@ link_to_debian_wallpaper() {
 #########
 download_manjaro_wallpaper() {
     THEME_NAME='manjaro-2018'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
+    THEME_URL='https://mirrors.bfsu.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
     WALLPAPER_NAME='backgrounds/wallpapers-2018'
     CUSTOM_WALLPAPER_NAME='manjaro-2018'
     download_manjaro_pkg
     move_wallpaper_model_01
     ##############
     THEME_NAME='manjaro-2017'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/manjaro/pool/overlay/manjaro-sx-wallpapers-20171023-1-any.pkg.tar.xz'
+    THEME_URL='https://mirrors.bfsu.edu.cn/manjaro/pool/overlay/manjaro-sx-wallpapers-20171023-1-any.pkg.tar.xz'
     WALLPAPER_NAME='backgrounds'
     CUSTOM_WALLPAPER_NAME='manjaro-2017'
     download_manjaro_pkg
@@ -2692,10 +2692,10 @@ download_manjaro_wallpaper() {
 download_arch_wallpaper() {
     link_to_debian_wallpaper
     GREP_NAME='archlinux-wallpaper'
-    #https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
+    #https://mirrors.bfsu.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
     WALLPAPER_NAME='backgrounds/archlinux'
     CUSTOM_WALLPAPER_NAME='archlinux'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/pool/community/'
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg
@@ -2705,10 +2705,10 @@ download_arch_wallpaper() {
 download_arch_xfce_artwork() {
     check_zstd
     GREP_NAME='xfce4-artwork'
-    #https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
+    #https://mirrors.bfsu.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
     WALLPAPER_NAME='backgrounds/xfce'
     CUSTOM_WALLPAPER_NAME='xfce-artwork'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinux/extra/os/x86_64/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/extra/os/x86_64/'
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg_02
@@ -2716,11 +2716,11 @@ download_arch_xfce_artwork() {
 }
 ########################
 download_elementary_wallpaper() {
-    #https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
+    #https://mirrors.bfsu.edu.cn/archlinux/pool/community/elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
     GREP_NAME='elementary-wallpapers'
     WALLPAPER_NAME='wallpapers/elementary'
     CUSTOM_WALLPAPER_NAME='elementary'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinux/pool/community/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/pool/community/'
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg
@@ -2733,7 +2733,7 @@ download_kali_themes_common() {
     THEME_NAME='kali-themes-common'
     GREP_NAME='kali-themes-common'
     ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-themes/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-themes/'
     grep_theme_model_01
     update_icon_caches_model_01
 }
@@ -2835,8 +2835,8 @@ download_ukui_theme() {
     if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
         mkdir -p /tmp/.ukui-gtk-themes
         cd /tmp/.ukui-gtk-themes
-        UKUITHEME="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
+        UKUITHEME="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
         ar xv 'ukui-themes.deb'
         cd /
         tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
@@ -2860,7 +2860,7 @@ download_ukui_theme() {
 download_arch_breeze_adapta_cursor_theme() {
     mkdir -p /tmp/.breeze_theme
     cd /tmp/.breeze_theme
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/any/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/any/'
     curl -Lo index.html ${THEME_URL}
     GREP_NAME='breeze-adapta-cursor-theme-git'
     grep_arch_linux_pkg
@@ -2888,18 +2888,18 @@ download_chameleon_cursor_theme() {
     CUSTOM_WALLPAPER_NAME='breeze-cursor-theme'
     THEME_NAME='breeze-cursor-theme'
     GREP_NAME="${THEME_NAME}"
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/b/breeze/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/b/breeze/'
     grep_theme_model_01
     upcompress_deb_file
     #############
     GREP_NAME='all'
     THEME_NAME='chameleon-cursor-theme'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/chameleon-cursor-theme/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/c/chameleon-cursor-theme/'
     grep_theme_model_01
     upcompress_deb_file
     ##############
     THEME_NAME='moblin-cursor-theme'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/m/moblin-cursor-theme/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/m/moblin-cursor-theme/'
     grep_theme_model_01
     upcompress_deb_file
     ##########
@@ -2925,8 +2925,8 @@ install_kali_undercover() {
     else
         mkdir -p /tmp/.kali-undercover-win10-theme
         cd /tmp/.kali-undercover-win10-theme
-        UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.tuna.tsinghua.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
+        UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
         apt-cache show ./kali-undercover.deb
         apt install -y ./kali-undercover.deb
         if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then

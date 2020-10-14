@@ -223,7 +223,7 @@ check_latest_video_download_tool_version() {
         YOTUBEdlVersion='您尚未安装youtube-dl'
     fi
     #LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://github.com/ytdl-org/youtube-dl/releases | grep 'muted-link css-truncate' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | cut -d '/' -f 5)
-    LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://pypi.tuna.tsinghua.edu.cn/simple/youtube-dl/ | grep .whl | tail -n 1 | cut -d '=' -f 3 | cut -d '>' -f 2 | cut -d '<' -f 1 | cut -d '-' -f 2)
+    LATEST_YOUTUBE_DL_VERSION=$(curl -LfsS https://mirrors.bfsu.edu.cn/pypi/web/simple/youtube-dl/ | grep .whl | tail -n 1 | cut -d '=' -f 3 | cut -d '>' -f 2 | cut -d '<' -f 1 | cut -d '-' -f 2)
     ##################
     cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
@@ -351,7 +351,7 @@ upgrade_video_download_tool() {
         curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.01
         cat .get-pip.tar.gz.* >.get-pip.tar.gz
         tar -zxvf .get-pip.tar.gz
-        python3 get-pip.py -i https://pypi.tuna.tsinghua.edu.cn/simple
+        python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple
         rm -f .get-pip.tar.gz* get-pip.py
     fi
     #检测两次
@@ -378,7 +378,7 @@ upgrade_video_download_tool() {
         else
             curl -LO https://bootstrap.pypa.io/get-pip.py
         fi
-        python3 get-pip.py -i https://pypi.tuna.tsinghua.edu.cn/simple
+        python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple
         rm -f get-pip.py
     fi
 
@@ -394,20 +394,20 @@ upgrade_video_download_tool() {
     cd ..
     rm -rf ./.ANNIETEMPFOLDER
     #mkdir -p ${HOME}/.config
-    #pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-    pip3 install pip -U -i https://pypi.tuna.tsinghua.edu.cn/simple 2>/dev/null
-    pip3 install you-get -U -i https://pypi.tuna.tsinghua.edu.cn/simple
+    #pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
+    pip3 install pip -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple 2>/dev/null
+    pip3 install you-get -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple
     you-get -V
-    pip3 install youtube-dl -U -i https://pypi.tuna.tsinghua.edu.cn/simple
+    pip3 install youtube-dl -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple
     youtube-dl -v 2>&1 | grep version
     printf "%s\n" "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
     printf "%s\n" "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
     printf "%s\n" "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
-    printf "%s\n" "请问您是否需要将pip源切换为清华源[Y/n]?"
+    printf "%s\n" "请问您是否需要将pip源切换为BFSU源[Y/n]?"
     printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
-    pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+    pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
 
     printf '%s\n' 'Press Enter to start annie'
     printf "%s\n" "${YELLOW}按回车键启动annie。${RESET}"

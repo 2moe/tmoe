@@ -45,7 +45,7 @@ main() {
 			-ppa     --添加ppa软件源(add ppa source)   
 			-u       --更新(update tmoe-linux tool)
 			-m       --切换镜像源
-			-tuna    --切换为tuna源
+			-tuna    --切换为bfsu源
 			file     --运行文件浏览器(run filebrowser)
 			qemu     --x64 qemu虚拟机管理
 			docker  --tmoe docker tool
@@ -56,7 +56,7 @@ main() {
 		source ${TMOE_TOOL_DIR}/filebrowser.sh -r
 		;;
 	tuna | -tuna | --tuna | t | -t)
-		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
+		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
 		if [ -e "${TMOE_TOOL_DIR}/sources/mirror.sh" ]; then
 			source ${TMOE_TOOL_DIR}/sources/mirror.sh --autoswitch
 		elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
@@ -524,9 +524,9 @@ check_dependencies() {
 		touch ${TMOE_LINUX_DIR}/not_install_catimg
 		case "${LINUX_DISTRO}" in
 		debian)
-			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/' | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
+			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/debian/pool/main/c/catimg/' | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			cd /tmp
-			wget --no-check-certificate -O 'catimg.deb' "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
+			wget --no-check-certificate -O 'catimg.deb' "https://mirrors.bfsu.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
 			apt install -y ./catimg.deb
 			rm -f catimg.deb
 			;;

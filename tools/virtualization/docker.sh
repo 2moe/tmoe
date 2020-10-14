@@ -760,7 +760,7 @@ install_qemu_user_static() {
 }
 ##############
 check_qemu_user_version() {
-    REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/q/qemu/'
+    REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/q/qemu/'
     THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' "${THE_LATEST_DEB_VERSION}" | cut -d '_' -f 2)
 }
@@ -883,7 +883,7 @@ debian_add_docker_gpg() {
         DOCKER_RELEASE='debian'
     fi
     cd /tmp
-    curl -Lv -o '.docker-tuna.html' "https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/dists/"
+    curl -Lv -o '.docker-tuna.html' "https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/dists/"
     DOCKER_TUNA_FIRST_CODE=$(cat .docker-tuna.html | grep link | sed -n 2p | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
     #curl -Lv https://download.docker.com/linux/${DOCKER_RELEASE}/gpg | apt-key add -
     if [ ! $(command -v lsb_release) ]; then
@@ -898,14 +898,14 @@ debian_add_docker_gpg() {
         DOCKER_CODE="$(lsb_release -cs)"
     fi
     rm .docker-tuna.html
-    curl -Lv https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/gpg | apt-key add -
+    curl -Lv https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/gpg | apt-key add -
     cd /etc/apt/sources.list.d/
     sed -i 's/^deb/# &/g' docker.list 2>/dev/null
     #case "$(lsb_release -cs)" in
     #sid) DOCKER_CODE="buster" ;;
     #esac
-    if (whiptail --title "请选择软件源" --yes-button "tuna" --no-button "docker.com" --yesno "Please select docker software source." 0 50); then
-        printf "%s\n" "deb https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+    if (whiptail --title "请选择软件源" --yes-button "bfsu" --no-button "docker.com" --yesno "Please select docker software source." 0 50); then
+        printf "%s\n" "deb https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
     else
         printf "%s\n" "deb https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
     fi
@@ -958,7 +958,7 @@ install_docker_ce() {
         ;;
     redhat)
         curl -Lv -o /etc/yum.repos.d/docker-ce.repo "https://download.docker.com/linux/${REDHAT_DISTRO}/docker-ce.repo"
-        sed -i 's@download.docker.com@mirrors.tuna.tsinghua.edu.cn/docker-ce@g' /etc/yum.repos.d/docker-ce.repo
+        sed -i 's@download.docker.com@mirrors.bfsu.edu.cn/docker-ce@g' /etc/yum.repos.d/docker-ce.repo
         ;;
     arch)
         DEPENDENCY_01="docker"

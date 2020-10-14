@@ -281,8 +281,8 @@ install_vscodium() {
     do_you_want_to_continue
 
     if [ "${LINUX_DISTRO}" = 'debian' ]; then
-        LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        CODIUM_FILE_URL="https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+        LatestVSCodiumLink="$(curl -L https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+        CODIUM_FILE_URL="https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' ${CODIUM_FILE_URL}
         apt-cache show ./VSCodium.deb
@@ -293,8 +293,8 @@ install_vscodium() {
         fix_tightvnc_vscode_lnk
         printf "%s\n" "安装完成,您可以输codium --user-data-dir=${HOME}/.codium启动"
     else
-        LatestVSCodiumLink="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        CODIUM_FILE_URL="https://mirrors.tuna.tsinghua.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
+        LatestVSCodiumLink="$(curl -L https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+        CODIUM_FILE_URL="https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.tar.gz' ${CODIUM_FILE_URL}
         mkdir -p /opt/vscodium-data

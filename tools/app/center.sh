@@ -556,7 +556,7 @@ remove_steam_app() {
 }
 ###############
 install_debian_steam_app() {
-    LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/steamos/steam/pool/steam/s/steam/'
+    LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/steamos/steam/pool/steam/s/steam/'
     GREP_NAME='steam-launcher'
     cd /tmp
     download_tuna_repo_deb_file_all_arch
@@ -846,9 +846,9 @@ install_chinese_manpages() {
         mkdir -p ${HOME}/文档/debian-handbook
         cd ${HOME}/文档/debian-handbook
         GREP_NAME='debian-handbook'
-        LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/'
+        LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/d/debian-handbook/'
         download_tuna_repo_deb_file_all_arch
-        #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
+        #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.bfsu.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
         THE_LATEST_DEB_FILE='kali-undercover.deb'
         ar xv ${LATEST_DEB_VERSION}
         tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html

@@ -183,7 +183,7 @@ check_gnu_linux_git_and_whiptail() {
 				press_enter_to_continue
 			fi
 			if ! egrep -q '^[^#]*http.*community' "/etc/apk/repositories"; then
-				sed -i '$ a\http://mirrors.tuna.tsinghua.edu.cn/alpine/latest-stable/community' "/etc/apk/repositories"
+				sed -i '$ a\http://mirrors.bfsu.edu.cn/alpine/latest-stable/community' "/etc/apk/repositories"
 			fi
 			tmoe_install_depenencies
 			;;

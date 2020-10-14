@@ -190,7 +190,7 @@ download_raspbian_pixel_icon_theme() {
     THEME_NAME='raspbian_pixel_icon_theme'
     ICON_NAME='PiX'
     GREP_NAME='all.deb'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pix-icons/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/raspberrypi/pool/ui/p/pix-icons/'
     grep_theme_model_01
     update_icon_caches_model_01
     XFCE_ICON_NAME='PiX'
@@ -1032,9 +1032,9 @@ install_typora() {
         download_debian_cn_repo_deb_file_model_01
         #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
     elif [ "${ARCH_TYPE}" = "i386" ]; then
-        LATEST_DEB_REPO='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/'
+        LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/'
         download_tuna_repo_deb_file_model_03
-        #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+        #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
     else
         arch_does_not_support
     fi

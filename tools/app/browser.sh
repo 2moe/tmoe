@@ -3,9 +3,9 @@
 ubuntu_install_chromium_browser() {
     if ! grep -q '^deb.*bionic-update' "/etc/apt/sources.list"; then
         if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
-            sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
+            sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
         else
-            sed -i '$ a\deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
+            sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
         fi
     fi
     DEPENDENCY_01="chromium-browser/bionic-updates"

@@ -279,7 +279,7 @@ move_dict_model_01() {
 ###################
 download_dict_model_01() {
     GREP_NAME_V='rime'
-    THEME_URL='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/aarch64/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/aarch64/'
     THEME_NAME="${GREP_NAME}"
     FCITX5_DIICT_PATH='/usr/share/fcitx5/pinyin/dictionaries'
     check_fcitx5_dict
@@ -693,7 +693,7 @@ install_debian_iflyime_pinyin() {
     beta_features_quick_install
     case "${ARCH_TYPE}" in
     amd64)
-        REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/non-free/i/iflyime/'
+        REPO_URL='https://mirrors.bfsu.edu.cn/deepin/pool/non-free/i/iflyime/'
         GREP_NAME="${ARCH_TYPE}"
         grep_deb_comman_model_01
         ;;

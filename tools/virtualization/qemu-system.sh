@@ -3290,7 +3290,7 @@ download_alpine_virtual_iso() {
 }
 ###############
 download_the_latest_alpine_iso_file() {
-	ALPINE_ISO_REPO="https://mirrors.tuna.tsinghua.edu.cn/alpine/latest-stable/releases/${ALPINE_ARCH}/"
+	ALPINE_ISO_REPO="https://mirrors.bfsu.edu.cn/alpine/latest-stable/releases/${ALPINE_ARCH}/"
 	RELEASE_FILE="${ALPINE_ISO_REPO}latest-releases.yaml"
 	ALPINE_VERSION=$(curl -L ${RELEASE_FILE} | grep ${ALPINE_EDITION} | grep '.iso' | head -n 1 | awk -F ' ' '$0=$NF')
 	THE_LATEST_ISO_LINK="${ALPINE_ISO_REPO}${ALPINE_VERSION}"
@@ -3363,19 +3363,19 @@ download_ubuntu_huawei_mirror_iso() {
 ####################
 get_ubuntu_server_iso_url() {
 	if [ "${ARCH_TYPE}" = "amd64" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-legacy-server-${ARCH_TYPE}.iso"
+		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-legacy-server-${ARCH_TYPE}.iso"
 	elif [ "${ARCH_TYPE}" = "i386" ]; then
 		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-server-i386.iso"
 	else
-		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/ubuntu/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-live-server-${ARCH_TYPE}.iso"
+		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/ubuntu/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-live-server-${ARCH_TYPE}.iso"
 	fi
 }
 ##############
 get_other_ubuntu_distros_url() {
 	if [ "${ARCH_TYPE}" = "i386" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/18.04.4/release/${UBUNTU_DISTRO}-18.04.4-desktop-i386.iso"
+		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/18.04.4/release/${UBUNTU_DISTRO}-18.04.4-desktop-i386.iso"
 	else
-		THE_LATEST_ISO_LINK="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso"
+		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso"
 	fi
 }
 ################
@@ -3389,7 +3389,7 @@ download_ubuntu_tuna_mirror_iso() {
 }
 #######################
 download_android_x86_file() {
-	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/osdn/android-x86/'
+	REPO_URL='https://mirrors.bfsu.edu.cn/osdn/android-x86/'
 	REPO_FOLDER=$(curl -L ${REPO_URL} | grep -v incoming | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
 	if [ "${ARCH_TYPE}" = 'i386' ]; then
 		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep -v 'x86_64' | grep date | grep '.iso' | tail -n 1 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
