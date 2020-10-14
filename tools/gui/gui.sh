@@ -1090,7 +1090,7 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、xfce4、xfce4-terminal、xfce4-goodies、compton-conf、mugshot和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、compton-conf、mugshot和tightvncserver等软件包。'
     do_you_want_to_continue
 }
 ##########
