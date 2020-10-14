@@ -8,7 +8,13 @@ fi
 get_hitokito_cn 2>/dev/null
 check_tmoe_completion_version
 check_tmoe_completion
-aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh" || curl -Lo ${PREFIX}/bin/debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh" || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh"
+#aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh" || curl -Lo ${PREFIX}/bin/debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh" || sudo -E aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://${TMOE_GIT_URL}/raw/master/manager.sh"
+if [ ! -h "${PREFIX}/bin/debian-i" ]; then
+	rm -fv /usr/local/bin/debian-i 2>/dev/null
+	ln -sfv ${TMOE_GIT_DIR}/manager.sh ${PREFIX}/bin/debian-i
+else
+	ln -sf ${TMOE_GIT_DIR}/manager.sh ${PREFIX}/bin/debian-i
+fi
 #if [ "${LINUX_DISTRO}" != "Android" ]; then
 #	sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i
 #fi
@@ -24,7 +30,7 @@ if [ -e "${TMOE_GIT_DIR}/.git" ]; then
 	fi
 fi
 [[ $(command -v tmoe) ]] || ln -sf ${TMOE_SHARE_DIR}/app/tmoe ${PREFIX}/bin
-for i in ${PREFIX}/bin/tmoe ${TMOE_SHARE_DIR}/container/debian/lnk-menu ${TMOE_SHARE_DIR}/container/debian/debian; do
+for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/debian-i ${TMOE_SHARE_DIR}/container/debian/lnk-menu ${TMOE_SHARE_DIR}/container/debian/debian; do
 	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
 done
 printf "%s\n" '(o゜▽゜)o☆  Thank you for using Tmoe-linux manager.'

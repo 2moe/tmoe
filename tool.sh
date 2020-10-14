@@ -120,6 +120,7 @@ gnu_linux_env() {
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
 		mkdir -p ${CONFIG_FOLDER}
 	fi
+	DEBIAN_I_FILE="/usr/local/bin/debian-i"
 }
 ############
 set_terminal_color() {
@@ -583,7 +584,7 @@ tmoe_linux_tool_menu() {
 	#窗口大小20 50 7
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
-			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "Type 'tmoe t' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -601,7 +602,7 @@ tmoe_linux_tool_menu() {
 	}
 	tmoe_linux_tool_menu_ja() {
 		TMOE_OPTION=$(
-			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "'debian-i'と入力して、このツールを起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
+			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "'tmoe t'と入力して、このツールを起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
 				"1" "🍭 GUI:グラフィカル・ユーザ・インターフェース(DE,WM,LM)" \
 				"2" "🥝 アプリストア(ブラウザ、ゲーム、メディアアプリ)" \
 				"3" "🌺 秘密の花園(教育、システム、beta機能)" \
@@ -619,7 +620,7 @@ tmoe_linux_tool_menu() {
 	}
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
-			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "Type 'debian-i' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" --menu "Type 'tmoe t' to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
 				"3" "🌺 Secret Garden(education,system,beta feature)" \
@@ -709,12 +710,17 @@ tmoe_docker_menu() {
 #####################
 tmoe_linux_tool_upgrade() {
 	check_tmoe_linux_desktop_link
-	case "${LINUX_DISTRO}" in
-	alpine) wget -O /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
-	*) curl -Lv -o /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
-	esac
-	#chmod +x /usr/local/bin/debian-i
-	chmod 777 /usr/local/bin/debian-i
+	if [ ! -h "${DEBIAN_I_FILE}" ]; then
+		#	case "${LINUX_DISTRO}" in
+		#	alpine) wget -O ${DEBIAN_I_FILE} 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
+		#	*) curl -Lv -o ${DEBIAN_I_FILE} 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
+		#	esac
+		#	chmod 777 ${DEBIAN_I_FILE}
+		rm -fv ${DEBIAN_I_FILE} 2>/dev/null
+		ln -sfv ${TMOE_GIT_DIR}/tool.sh ${DEBIAN_I_FILE}
+	else
+		ln -sf ${TMOE_GIT_DIR}/tool.sh ${DEBIAN_I_FILE}
+	fi
 	check_tmoe_git_folder
 	cd ${TMOE_GIT_DIR}
 	git reset --hard origin/master
@@ -737,9 +743,9 @@ tmoe_linux_tool_upgrade() {
 	printf '%s\n' '(o゜▽゜)o☆  Thank you for using Tmoe-linux tool.'
 	printf "%s\n" "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 	printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}"
-	#bash /usr/local/bin/debian-i
+	#bash ${DEBIAN_I_FILE}
 	read
-	source /usr/local/bin/debian-i
+	source ${DEBIAN_I_FILE}
 }
 #############################################
 main "$@"

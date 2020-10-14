@@ -101,9 +101,9 @@ fix_sudo() {
 	cat <<-ENDOFTTMOEZSH
 		All optimization steps have been completed, enjoy it!
 		zsh配置完成，即将为您启动Tmoe-linux工具
-		您也可以手动输${YELLOW}debian-i${RESET}进入
+		您也可以手动输${YELLOW}tmoe t${RESET}进入
 		Tmoe-linux tool will be launched.
-		You can also type ${GREEN}debian-i${RESET} to start it.
+		You can also type ${GREEN}tmoe t${RESET} to start it.
 	ENDOFTTMOEZSH
 }
 ########################

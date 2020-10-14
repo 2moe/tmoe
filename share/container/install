@@ -245,8 +245,8 @@ cat <<-EOF
 			------------------
 	${BOLD}小提示06${RESET}:
 
-			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
-			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
+			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}tmoe t${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+			You can type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
 			-------------------
 	${BOLD}小提示07${RESET}:
 
@@ -537,8 +537,8 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 		pulseaudio --start 2>/dev/null &
 	fi
 	vnc_warning() {
-		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输debian-i重新配置GUI。"
-		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输tmoe重新配置GUI。"
+		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure GUI environment."
 		${PREFIX}/bin/tmoe pr
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -556,8 +556,8 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 		pulseaudio --start 2>/dev/null &
 	fi
 	vnc_warning() {
-		printf "%s\n" "Sorry,x11vnc server启动失败，请输debian-i重新配置GUI。"
-		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		printf "%s\n" "Sorry,x11vnc server启动失败，请输tmoe重新配置GUI。"
+		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure GUI environment."
 		${PREFIX}/bin/tmoe pr
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -582,8 +582,8 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/usr/bin/env bash
 	vnc_warning() {
-		printf "%s\n" "Sorry,X启动失败，请输debian-i重新配置GUI。"
-		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
+		printf "%s\n" "Sorry,X启动失败，请输tmoe重新配置GUI。"
+		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure GUI environment."
 		${PREFIX}/bin/tmoe pr
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -595,7 +595,7 @@ cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	fi
 ENDOFXSDL
 ################
-aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
+#aria2c --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 #############
 printf '%s\n' 'Giving startup script execution permission'
 printf "%s\n" "正在赋予启动脚本执行权限"
@@ -708,8 +708,8 @@ cat >vnc-autostartup <<-'EndOfFile'
 	}
 	#############
 	vnc_warning() {
-		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输debian-i重新配置GUI。"
-		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure desktop environment."
+		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输tmoe t重新配置GUI。"
+		printf "%s\n" "Please type tmoe t to start tmoe-linux tool and reconfigure desktop environment."
 	}
 	###########
 	LOCAL_BIN_DIR='/usr/local/bin'
@@ -719,8 +719,6 @@ cat >vnc-autostartup <<-'EndOfFile'
 		git fetch --depth=1
 		git reset --hard origin/master
 		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-		curl -Lv -o ${LOCAL_BIN_DIR}/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-		chmod +x ${LOCAL_BIN_DIR}/debian-i
 		${LOCAL_BIN_DIR}/debian-i passwd
 	fi
 	#########
@@ -1153,7 +1151,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	##############
 	alpine_linux_configure() {
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
-		    printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}debian-i${RESET}来启动软件安装工具。"
+		    printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}tmoe t${RESET}来启动软件安装工具。"
 	        sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
 	        apk update
 	        apk add bash
@@ -1363,7 +1361,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #wget -qO zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 	    #sed -i '1 c\#!/usr/bin/env bash' zsh.sh
 	    #chmod +x zsh.sh
-	    printf '%s\n' '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输debian-i'
+	    printf '%s\n' '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输tmoe t'
 		xbps-reconfigure -f glibc-locales
 	    #zsh 2>/dev/null || bash
 	    #exit 0
@@ -1522,9 +1520,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	note_of_non_debian() {
 	    #printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
-	    printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}debian-i${RESET}打开软件安装工具"
+	    printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}tmoe t${RESET}打开软件安装工具"
 	    bash zsh.sh
-	    #debian-i
 	}
 	################
 	if ! egrep -q 'debian|ubuntu' '/etc/os-release'; then

@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 #############################################
 tmoe_main() {
-	source_tmoe_env
 	case "$1" in
-	p* | proot) TMOE_CHROOT='false' ;;
-	c* | chroot) TMOE_CHROOT='true' ;;
+	p* | proot)
+		source_tmoe_env
+		TMOE_CHROOT='false'
+		;;
+	c* | chroot)
+		source_tmoe_env
+		TMOE_CHROOT='true'
+		;;
 	zsh)
 		zsh-i
 		exit 0
