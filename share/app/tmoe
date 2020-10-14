@@ -125,7 +125,8 @@ tmoe_main() {
 	esac
 	case "${#}" in
 	0)
-		bash ${TMOE_GIT_DIR}/manager.sh
+		check_manager_dir
+		bash ${MANAGER_DIR}/manager.sh
 		exit 0
 		;;
 	esac
