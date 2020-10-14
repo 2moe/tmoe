@@ -22,7 +22,19 @@ tmoe_main() {
 		exit 0
 		;;
 	-h* | --h*)
+		cat <<-EOF
+			m      --tmoe manager
+			t      --tmoe tool
+		EOF
 		printf "%s\n" "请前往git仓库获取帮助信息"
+		exit 0
+		;;
+	m | manager)
+		bash ${TMOE_GIT_DIR}/manager.sh
+		exit 0
+		;;
+	t | tool)
+		bash ${TMOE_GIT_DIR}/tool.sh
 		exit 0
 		;;
 	esac
