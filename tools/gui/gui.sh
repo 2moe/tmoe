@@ -949,11 +949,13 @@ apt_purge_libfprint() {
 }
 ###################
 debian_xfce4_extras() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case ${LINUX_DISTRO} in
+    debian)
         [[ $(command -v compton-conf) ]] || apt install -y compton-conf 2>/dev/null
-        if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-            kali_xfce4_extras
-        fi
+        [[ $(command -v mugshot) ]] || apt install -y mugshot 2>/dev/null
+        case ${DEBIAN_DISTRO} in
+        kali) kali_xfce4_extras ;;
+        esac
         if [ ! $(command -v xfce4-panel-profiles) ]; then
             case ${DEBIAN_DISTRO} in
             ubuntu)
@@ -972,7 +974,12 @@ debian_xfce4_extras() {
                 ;;
             esac
         fi
-    fi
+        ;;
+    arch)
+        [[ $(command -v compton-conf) ]] || pacman -S --noconfirm compton-conf 2>/dev/null
+        [[ $(command -v mugshot) ]] || pacman -S --noconfirm mugshot 2>/dev/null
+        ;;
+    esac
     apt_purge_libfprint
 }
 #############
