@@ -1097,8 +1097,6 @@ install_xfce4_desktop() {
     DEPENDENCY_01="xfce4"
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
-        dpkg --configure -a
-        auto_select_keyboard_layout
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "Xfce or Xubuntu-desktop" --yes-button "xfce" --no-button "xubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of xubuntu.\n前者为普通xfce,后者为xubuntu' 0 0); then
@@ -1108,6 +1106,8 @@ install_xfce4_desktop() {
             fi
             ;;
         esac
+        dpkg --configure -a
+        auto_select_keyboard_layout
         ##############
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='@xfce'
@@ -1422,8 +1422,6 @@ install_mate_desktop() {
     printf '%s\n' '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
     DEPENDENCY_01='mate'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
-        dpkg --configure -a
-        auto_select_keyboard_layout
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
         #apt autopurge -y ^libfprint
         #apt autoclean
@@ -1436,7 +1434,10 @@ install_mate_desktop() {
             fi
             ;;
         esac
+        dpkg --configure -a
+        auto_select_keyboard_layout
         apt clean
+        apt autoclean
         #apt-mark hold gvfs
         #apt update
         #apt install -y udisks2 2>/dev/null
@@ -1474,8 +1475,6 @@ install_lxqt_desktop() {
     DEPENDENCY_01="lxqt"
     printf '%s\n' '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
-        dpkg --configure -a
-        auto_select_keyboard_layout
         DEPENDENCY_01="lxqt-core qterminal openbox lxqt-config"
         case ${DEBIAN_DISTRO} in
         ubuntu)
@@ -1486,6 +1485,8 @@ install_lxqt_desktop() {
             fi
             ;;
         esac
+        dpkg --configure -a
+        auto_select_keyboard_layout
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='@lxqt'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
@@ -1559,8 +1560,6 @@ install_kde_plasma5_desktop() {
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
-        dpkg --configure -a
-        auto_select_keyboard_layout
         DEPENDENCY_01="kde-plasma-desktop"
         case ${DEBIAN_DISTRO} in
         ubuntu)
@@ -1578,6 +1577,9 @@ install_kde_plasma5_desktop() {
             fi
             ;;
         esac
+        dpkg --configure -a
+        auto_select_keyboard_layout
+        apt clean
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         #yum groupinstall kde-desktop
         #dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
@@ -4050,14 +4052,6 @@ first_configure_startvnc() {
         cd ${HOME}
         sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config/xfce4" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc" ".config/xfce4"
     fi
-    #仅针对WSL修改语言设定
-    #/etc/default/locale
-    #if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
-    #	if [ "${LANG}" != 'en_US.UTF-8' ]; then
-    #grep -q 'LANG=\"en_US' "/etc/profile" || sed -i '$ a\export LANG="en_US.UTF-8"' "/etc/profile"
-    #grep -q 'LANG=\"en_US' "${HOME}/.zlogin" || printf '%s\n' 'export LANG="en_US.UTF-8"' >>"${HOME}/.zlogin"
-    #	fi
-    #fi
     if [ ! -e "${HOME}/.vnc/passwd" ]; then
         set_vnc_passwd
     fi
