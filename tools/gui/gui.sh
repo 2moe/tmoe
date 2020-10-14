@@ -369,9 +369,9 @@ tmoe_container_desktop() {
     INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
         "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
         "1" "🐭 xfce(兼容性高,简单优雅)" \
-        "2" "🕊️ lxde(轻量化桌面,资源占用低)" \
-        "3" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
-        "4" "🐦 lxqt(lxde原作者基于QT开发的桌面)" \
+        "2" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
+        "3" "🕊️ lxde(轻量化桌面,资源占用低)" \
+        "4" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -383,13 +383,13 @@ tmoe_container_desktop() {
         ;;
     2)
         REMOVE_UDISK2='true'
-        install_lxde_desktop
-        ;;
-    3) install_mate_desktop ;;
-    4)
-        REMOVE_UDISK2='true'
         install_lxqt_desktop
         ;;
+    3)
+        REMOVE_UDISK2='true'
+        install_lxde_desktop
+        ;;
+    4) install_mate_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -1099,6 +1099,15 @@ install_xfce4_desktop() {
         DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
         dpkg --configure -a
         auto_select_keyboard_layout
+        case ${DEBIAN_DISTRO} in
+        ubuntu)
+            if (whiptail --title "Xfce or Xubuntu-desktop" --yes-button "xfce" --no-button "xubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of xubuntu.\n前者为普通xfce,后者为xubuntu' 0 0); then
+                printf ""
+            else
+                DEPENDENCY_01="xubuntu-desktop"
+            fi
+            ;;
+        esac
         ##############
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='@xfce'
@@ -1458,6 +1467,15 @@ install_lxqt_desktop() {
         dpkg --configure -a
         auto_select_keyboard_layout
         DEPENDENCY_01="lxqt-core qterminal openbox lxqt-config"
+        case ${DEBIAN_DISTRO} in
+        ubuntu)
+            if (whiptail --title "lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
+                printf ""
+            else
+                DEPENDENCY_01="lubuntu-desktop"
+            fi
+            ;;
+        esac
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='@lxqt'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
