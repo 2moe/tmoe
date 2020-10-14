@@ -533,7 +533,6 @@ esac
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
-	[[ ! \$(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	if [ ! "\$(pgrep pulseaudio)" ];then
 		pulseaudio --start 2>/dev/null &
 	fi
@@ -543,11 +542,9 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 		${PREFIX}/bin/tmoe pr
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
-		${PREFIX}/bin/tmoe ch
+		${PREFIX}/bin/tmoe ch vnc
 	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
-		touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
-		${PREFIX}/bin/tmoe pr
+		${PREFIX}/bin/tmoe pr vnc
 	else
 		vnc_warning
 	fi 
@@ -555,22 +552,18 @@ ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/usr/bin/env bash
-	[[ ! \$(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	if [ ! "\$(pgrep pulseaudio)" ];then
 		pulseaudio --start 2>/dev/null &
 	fi
-
 	vnc_warning() {
 		printf "%s\n" "Sorry,x11vnc server启动失败，请输debian-i重新配置GUI。"
 		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
 		${PREFIX}/bin/tmoe pr
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
-		${PREFIX}/bin/tmoe ch
+		${PREFIX}/bin/tmoe ch x11
 	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
-		touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
-		${PREFIX}/bin/tmoe pr
+		${PREFIX}/bin/tmoe pr x11
 	else
 		vnc_warning
 	fi
@@ -588,18 +581,15 @@ ENDOFSTOPVNC
 #不要单引号
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/usr/bin/env bash
-	[[ ! \$(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 	vnc_warning() {
-		printf "%s\n" "Sorry,x11启动失败，请输debian-i重新配置GUI。"
+		printf "%s\n" "Sorry,X启动失败，请输debian-i重新配置GUI。"
 		printf "%s\n" "Please type debian-i to start tmoe-linux tool and reconfigure GUI environment."
 		${PREFIX}/bin/tmoe pr
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-		sudo touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
-		${PREFIX}/bin/tmoe ch
+		${PREFIX}/bin/tmoe ch xs
 	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
-		touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
-		${PREFIX}/bin/tmoe pr
+		${PREFIX}/bin/tmoe pr xs
 	else
 		vnc_warning
 	fi

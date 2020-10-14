@@ -44,6 +44,10 @@ tmoe_main() {
 	s | sl | slackware) DISTRO_NAME='slackware' ;;
 	u | ub* | ubuntu) DISTRO_NAME='ubuntu' ;;
 	v | void) DISTRO_NAME='void' ;;
+	vnc) EXEC_PROGRAM='startvnc' ;;
+	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	*) DISTRO_NAME="$2" ;;
 	esac
 	case "$3" in
 	20.10) DISTRO_CODE='groovy' ;;
@@ -166,8 +170,8 @@ start_tmoe_container() {
 		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
 		startxsdl)
 			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-			printf "%s\n" "Please wait 5s."
-			sleep 5
+			printf "%s\n" "Please wait 7s."
+			sleep 7
 			;;
 		esac
 		${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}

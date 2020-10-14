@@ -1529,9 +1529,27 @@ install_kde_plasma5_desktop() {
     DEPENDENCY_01="plasma-desktop"
     printf '%s\n' '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
+        #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
+        #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
         dpkg --configure -a
         auto_select_keyboard_layout
-        DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
+        DEPENDENCY_01="kde-plasma-desktop"
+        case ${DEBIAN_DISTRO} in
+        ubuntu)
+            if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
+                DEPENDENCY_01="kde-plasma-desktop"
+            else
+                DEPENDENCY_01="kubuntu-desktop"
+            fi
+            ;;
+        *)
+            if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
+                DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
+            else
+                DEPENDENCY_01="tigervnc-standalone-server kde-standard"
+            fi
+            ;;
+        esac
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         #yum groupinstall kde-desktop
         #dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
