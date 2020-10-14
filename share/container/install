@@ -709,7 +709,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	#############
 	vnc_warning() {
 		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输tmoe t重新配置GUI。"
-		printf "%s\n" "Please type tmoe t to start tmoe-linux tool and reconfigure desktop environment."
+		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure desktop environment."
 	}
 	###########
 	LOCAL_BIN_DIR='/usr/local/bin'
