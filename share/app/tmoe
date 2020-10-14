@@ -21,6 +21,10 @@ tmoe_main() {
 		debian-i
 		exit 0
 		;;
+	-h* | --h*)
+		printf "" "请前往git仓库获取帮助信息"
+		exit 0
+		;;
 	esac
 	case "$2" in
 	a | arch) DISTRO_NAME='arch' ;;
