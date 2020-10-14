@@ -22,7 +22,7 @@ tmoe_main() {
 		exit 0
 		;;
 	-h* | --h*)
-		printf "" "请前往git仓库获取帮助信息"
+		printf "%s\n" "请前往git仓库获取帮助信息"
 		exit 0
 		;;
 	esac
