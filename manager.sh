@@ -39,9 +39,21 @@ manager_main() {
 		;;
 	esac
 }
+check_tmoe_command() {
+	if [ $(command -v zsh) ]; then
+		if egrep '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
+			TMOE_TIPS_02="t"
+		else
+			TMOE_TIPS_02="tmoe"
+		fi
+	else
+		TMOE_TIPS_02="tmoe"
+	fi
+}
 #########################
 tmoe_manager_env() {
 	check_release_version
+	check_tmoe_command
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 	TMOE_LOCALE_FILE=${CONFIG_FOLDER}/locale.txt
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
@@ -553,7 +565,7 @@ tmoe_manager_main_menu() {
 	tmoe_manager_main_menu_ja() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
-				--menu "You can type tmoe to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
+				--menu "You can type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
 				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot コンテナ" \
 				"3" "💔 削除する 天萌マネージャー" \
@@ -570,7 +582,7 @@ tmoe_manager_main_menu() {
 	tmoe_manager_main_menu_en() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
-				--menu "You can type tmoe to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
+				--menu "You can type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot container" \
 				"3" "💔 remove tmoe-manager" \
@@ -589,11 +601,10 @@ tmoe_manager_main_menu() {
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "$(
 					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						6L6TZGViaWFuLWnlkK/liqjmnKznqIvluo8sVHlwZSBkZWJpYW4taSB0byBzdGFydCB0aGUgdG9v
-						bCzokIzns7vnlJ/niannoJTnqbblkZgK
+						VHlwZSB0bW9lIG0gdG8gc3RhcnQgdGhlIG1hbmFnZXIs6JCM57O755Sf54mp56CU56m25ZGYCg==
 					DoYouWantToSeeWhatIsInside
 				)" \
-				--menu "Welcome to tmoe-manager v1.12,type tmoe to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+				--menu "Welcome to tmoe-manager v1.12,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
 				"3" "💔 remove 移除" \

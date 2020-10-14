@@ -87,6 +87,18 @@ check_ps_command() {
 	fi
 }
 ################
+check_tmoe_command() {
+	if [ $(command -v zsh) ]; then
+		if egrep '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
+			TMOE_TIPS_02="t"
+		else
+			TMOE_TIPS_02="tmoe"
+		fi
+	else
+		TMOE_TIPS_02="tmoe"
+	fi
+}
+#########
 gnu_linux_env() {
 	if [ -z "${TMOE_PROOT}" ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
@@ -102,6 +114,7 @@ gnu_linux_env() {
 		mkdir -p ${TMPDIR}
 	fi
 	check_release_version
+	check_tmoe_command
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	if [ ! -e "/usr/local/bin" ]; then
 		mkdir -p /usr/local/bin
