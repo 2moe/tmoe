@@ -26,7 +26,7 @@ tmoe_main() {
 		debian-i
 		exit 0
 		;;
-	m | manager)
+	m | manager | "")
 		check_manager_dir
 		bash ${MANAGER_DIR}/manager.sh
 		exit 0
@@ -127,13 +127,6 @@ tmoe_main() {
 	bash) TMOE_SHELL='/bin/bash' ;;
 	zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
-	esac
-	case "${#}" in
-	0)
-		check_manager_dir
-		bash ${MANAGER_DIR}/manager.sh
-		exit 0
-		;;
 	esac
 	start_tmoe_container
 }
