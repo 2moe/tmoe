@@ -975,10 +975,6 @@ debian_xfce4_extras() {
             esac
         fi
         ;;
-    arch)
-        [[ $(command -v compton-conf) ]] || pacman -S --noconfirm compton-conf 2>/dev/null
-        [[ $(command -v mugshot) ]] || pacman -S --noconfirm mugshot 2>/dev/null
-        ;;
     esac
     apt_purge_libfprint
 }
@@ -1094,7 +1090,7 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、xfce4、xfce4-terminal、xfce4-goodies和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、xfce4、xfce4-terminal、xfce4-goodies、compton-conf、mugshot和tightvncserver等软件包。'
     do_you_want_to_continue
 }
 ##########
