@@ -177,7 +177,14 @@ press_enter_to_continue() {
 }
 #############################################
 check_root() {
-	if [ "$(id -u)" != "0" ]; then
+	case $(id -u) in
+	0) ;;
+	*)
+		if [ $(command -v fortune) ]; then
+			fortune
+		elif [ -e /usr/games/fortune ]; then
+			/usr/games/fortune
+		fi
 		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
 			sudo -E bash ${TMOE_GIT_DIR}/tool.sh || su -c "bash ${TMOE_GIT_DIR}/tool.sh"
@@ -192,7 +199,8 @@ check_root() {
 			fi
 		fi
 		exit 0
-	fi
+		;;
+	esac
 }
 #####################
 check_architecture() {

@@ -208,6 +208,11 @@ check_gnu_linux_distro() {
 	*)
 		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ -e "${TMOE_GIT_DIR}/manager.sh" ]; then
+			if [ $(command -v fortune) ]; then
+				fortune
+			elif [ -e /usr/games/fortune ]; then
+				/usr/games/fortune
+			fi
 			if [ $(command -v sudo) ]; then
 				sudo -E bash ${TMOE_GIT_DIR}/manager.sh
 			else
