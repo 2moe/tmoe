@@ -20,7 +20,7 @@ startvnc_or_enter_the_container() {
 install_gnu_linux_container() {
 	#此处不能用变量debian_chroot
 	source ${TMOE_SHARE_DIR}/deprecated/remove
-	if [ -d ${DEBIAN_CHROOT} ] && [ ! -e ${TMOE_CONTAINER_DIR} ]; then
+	if [ -d ${HOME}/${DEBIAN_FOLDER} ] && [ ! -e ${TMOE_CONTAINER_DIR} ]; then
 		if (whiptail --title "检测到您已安装${ROOTFS_NAME}容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "${ROOTFS_NAME} has been installed, please choose what you need to do" 0 0); then
 			#debian
 			startvnc_or_enter_the_container
