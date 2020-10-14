@@ -26,14 +26,6 @@ tmoe_main() {
 		debian-i
 		exit 0
 		;;
-	-h* | --h*)
-		cat <<-EOF
-			m      --tmoe manager
-			t      --tmoe tool
-		EOF
-		printf "%s\n" "请前往git仓库获取帮助信息"
-		exit 0
-		;;
 	m | manager)
 		check_manager_dir
 		bash ${MANAGER_DIR}/manager.sh
@@ -42,6 +34,19 @@ tmoe_main() {
 	t | tool)
 		check_manager_dir
 		bash ${MANAGER_DIR}/tool.sh
+		exit 0
+		;;
+	-h* | --h* | *)
+		cat <<-EOF
+			m          --tmoe manager
+			t          --tmoe tool
+			p          --proot
+			c          --chroot
+			aria2      --aria2 manager
+			theme      --zshtheme
+			zsh        --zsh manager
+		EOF
+		printf "%s\n" "请前往git仓库获取帮助信息"
 		exit 0
 		;;
 	esac
