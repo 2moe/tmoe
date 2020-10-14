@@ -35,11 +35,13 @@ tmoe_main() {
 		exit 0
 		;;
 	m | manager)
-		bash ${TMOE_GIT_DIR}/manager.sh
+		check_manager_dir
+		bash ${MANAGER_DIR}/manager.sh
 		exit 0
 		;;
 	t | tool)
-		bash ${TMOE_GIT_DIR}/tool.sh
+		check_manager_dir
+		bash ${MANAGER_DIR}/tool.sh
 		exit 0
 		;;
 	esac
@@ -130,6 +132,15 @@ tmoe_main() {
 	start_tmoe_container
 }
 #############
+check_manager_dir() {
+	MANAGER_DIR_01="${HOME}/.local/share/tmoe-linux/git"
+	MANAGER_DIR_02="/usr/local/etc/tmoe-linux/git"
+	if [ -e "${MANAGER_DIR_01}" ]; then
+		MANAGER_DIR=${MANAGER_DIR_01}
+	else
+		MANAGER_DIR=${MANAGER_DIR_02}
+	fi
+}
 source_tmoe_env() {
 	TMOE_CONTAINER_FORTUNE=true
 	TMOE_CONTAINER_HITOKOTO=true
