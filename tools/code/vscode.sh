@@ -342,8 +342,12 @@ download_vscode_x64_deb() {
     apt-cache show ./VSCODE.deb
     dpkg -i ./VSCODE.deb || apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
-    copy_gnu_lib_xcb_so
-    fix_tightvnc_vscode_lnk
+    case ${TMOE_PROOT} in
+    true | false)
+        copy_gnu_lib_xcb_so
+        fix_tightvnc_vscode_lnk
+        ;;
+    esac
 }
 ##########
 install_vscode_official() {

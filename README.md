@@ -265,6 +265,7 @@ You can type `stopvnc` to stop **VNC** server
 
 在容器环境下，输`stopvnc`来停止启动 **VNC** server  
 如需了解更多参数，例如`-non-stop-dbus`(不停止 dbus-daemon)，请输`stopvnc --help`
+如果您遇到了退出容器的情况，则请将 `stopvnc` 添加至 **~/.zlogout**
 
 You can type `startxsdl` to start **X** client & server.
 
@@ -396,7 +397,7 @@ Next, I will introduce the meaning of each parameter.
         例如，启动chroot ubuntu-focal_arm64 tiger vncserver:
         "tmoe c u focal arm64 vnc"
         可以简化为"tmoe c u focal a v"
-        若该参数为空，则将启动zsh作为默认登陆shell,并且不会启动远程服务。
+        若该参数为空，则将启动zsh作为默认登录shell,并且不会启动远程服务。
 
     "$5":
         "v:vnc(startvnc)"
@@ -496,14 +497,14 @@ t p d s i x11
 t p d s i x
 ```
 
-容器的默认登陆 SHELL 为 zsh,若您需要使用其它 shell，则请使用以下命令  
-临时使用 bash 作为登陆 SHELL：
+容器的默认登录 SHELL 为 zsh,若您需要使用其它 shell，则请使用以下命令  
+临时使用 bash 作为登录 SHELL：
 
 ```shell
 t p d s i bash
 ```
 
-临时使用 ash 作为登陆 SHELL：
+临时使用 ash 作为登录 SHELL：
 
 ```shell
 t p d s i ash
