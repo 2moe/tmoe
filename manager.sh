@@ -41,7 +41,7 @@ manager_main() {
 }
 check_tmoe_command() {
 	if [ $(command -v zsh) ]; then
-		if egrep '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
+		if egrep -q '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
 			TMOE_TIPS_02="t"
 		else
 			TMOE_TIPS_02="tmoe"
