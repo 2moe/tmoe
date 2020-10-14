@@ -588,7 +588,7 @@ tmoe_manager_main_menu() {
 						bCzokIzns7vnlJ/niannoJTnqbblkZgK
 					DoYouWantToSeeWhatIsInside
 				)" \
-				--menu "Welcome to tmoe-manager v1.10 beta(公测版)\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+				--menu "Welcome to tmoe-manager v1.11\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
 				"3" "💔 remove 移除" \

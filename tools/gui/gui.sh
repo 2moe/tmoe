@@ -1469,7 +1469,7 @@ install_lxqt_desktop() {
         DEPENDENCY_01="lxqt-core qterminal openbox lxqt-config"
         case ${DEBIAN_DISTRO} in
         ubuntu)
-            if (whiptail --title "lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
+            if (whiptail --title "Lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
                 printf ""
             else
                 DEPENDENCY_01="lubuntu-desktop"
