@@ -606,11 +606,6 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--backtitle "$(
-					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						VHlwZSB0bW9lIHQgdG8gc3RhcnQgdGhlIHRvb2wK
-					DoYouWantToSeeWhatIsInside
-				)" \
 				--menu "Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
@@ -630,11 +625,6 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_ja() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--backtitle "$(
-					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						VHlwZSB0bW9lIHQgdG8gc3RhcnQgdGhlIHRvb2wK
-					DoYouWantToSeeWhatIsInside
-				)" \
 				--menu "${TMOE_TIPS_02}と入力して、このツールを起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
 				"1" "🍭 GUI:グラフィカル・ユーザ・インターフェース(DE,WM,LM)" \
 				"2" "🥝 アプリストア(ブラウザ、ゲーム、メディアアプリ)" \
@@ -654,11 +644,6 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--backtitle "$(
-					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						VHlwZSB0bW9lIHQgdG8gc3RhcnQgdGhlIHRvb2wK
-					DoYouWantToSeeWhatIsInside
-				)" \
 				--menu "Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
