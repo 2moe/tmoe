@@ -154,8 +154,10 @@ vscode_server_upgrade() {
 	ENDofTable
     RETURN_TO_WHERE='configure_vscode_server'
     do_you_want_to_continue
-    if [ ! -e "/tmp/sed-vscode.tmp" ]; then
-        cat >"/tmp/sed-vscode.tmp" <<-'EOF'
+    #与原系统的联动功能已经废弃，故startup函数将不会被加载。
+    code_server_auto_startup() {
+        if [ ! -e "/tmp/sed-vscode.tmp" ]; then
+            cat >"/tmp/sed-vscode.tmp" <<-'EOF'
 			if [ -e "/tmp/startcode.tmp" ]; then
 				printf "%s\n" "正在为您启动VSCode服务(器),请复制密码，并在浏览器的密码框中粘贴。"
 				printf "%s\n" "The VSCode service(server) is starting, please copy the password and paste it in your browser."
@@ -168,9 +170,10 @@ vscode_server_upgrade() {
 				printf '%s\n' 'You can type "pkill node" to stop vscode service(server).'
 			fi
 		EOF
-    fi
-    grep '/tmp/startcode.tmp' ${HOME}/.bashrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.bashrc
-    grep '/tmp/startcode.tmp' ${HOME}/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.zshrc
+        fi
+        grep '/tmp/startcode.tmp' ${HOME}/.bashrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.bashrc
+        grep '/tmp/startcode.tmp' ${HOME}/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.zshrc
+    }
     if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
         chmod +x /usr/local/bin/code-server-data/code-server 2>/dev/null
     fi
