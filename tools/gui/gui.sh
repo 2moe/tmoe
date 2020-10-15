@@ -1090,7 +1090,7 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、compton-conf、mugshot和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、compton-conf、mugshot和tightvncserver等软件包。'
     do_you_want_to_continue
 }
 ##########
@@ -1353,7 +1353,7 @@ auto_configure_xfce4_panel() {
 install_lxde_desktop() {
     REMOTE_DESKTOP_SESSION_01='lxsession'
     REMOTE_DESKTOP_SESSION_02='startlxde'
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、lxde-core、lxterminal、tightvncserver。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxde-core、lxterminal、tightvncserver。'
     DEPENDENCY_01='lxde'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
@@ -1423,7 +1423,7 @@ arch_linux_mate_warning() {
 install_mate_desktop() {
     REMOTE_DESKTOP_SESSION_01='mate-session'
     REMOTE_DESKTOP_SESSION_02='mate-panel'
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
     DEPENDENCY_01='mate'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
@@ -1477,7 +1477,7 @@ install_lxqt_desktop() {
     REMOTE_DESKTOP_SESSION_01='startlxqt'
     REMOTE_DESKTOP_SESSION_02='lxqt-session'
     DEPENDENCY_01="lxqt"
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01="lxqt-core qterminal openbox lxqt-config"
         case ${DEBIAN_DISTRO} in
@@ -1560,7 +1560,7 @@ install_kde_plasma5_desktop() {
     REMOTE_DESKTOP_SESSION_01='startkde'
     REMOTE_DESKTOP_SESSION_02='startplasma-x11'
     DEPENDENCY_01="plasma-desktop"
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
@@ -1646,7 +1646,7 @@ install_ukui_desktop() {
     esac
 
     DEPENDENCY_01="ukui-session-manager"
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
         dpkg --configure -a
@@ -1678,7 +1678,7 @@ install_budgie_desktop() {
     esac
 
     DEPENDENCY_01="budgie-desktop"
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
     case ${LINUX_DISTRO} in
     debian)
         dpkg --configure -a
@@ -1724,7 +1724,7 @@ install_gnome3_desktop() {
         ;;
     esac
     DEPENDENCY_01="gnome"
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1785,7 +1785,7 @@ install_cinnamon_desktop() {
         ;;
     esac
     DEPENDENCY_01="cinnamon"
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、cinnamon和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、cinnamon和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -1846,7 +1846,7 @@ dde_old_version() {
     gpg --import deepin-keyring.gpg
     gpg --export --armor 209088E7 | apt-key add -
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
-    printf '%s\n' '即将为您安装思源黑体(中文字体)、dde和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、dde和tightvncserver等软件包。'
     dpkg --configure -a
     apt update
     auto_select_keyboard_layout

@@ -426,7 +426,7 @@ install_vscode_official() {
         aria2c --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
         tar -Jxvf ${CODE_SHARE_FILE} -C /
         #此处解压会影响zsh补全文件的权限
-        chown 0:0 /usr/share/zsh /usr/share/mime /usr/share/applications /usr/share/appdata /usr/share/bash-completion /usr/share/pixmaps
+        chown 0:0 /usr/share/zsh /usr/share/mime /usr/share/applications /usr/share/appdata /usr/share/bash-completion /usr/share/pixmaps /usr/share/zsh/vendor-completions /usr/share/zsh/vendor-completions/_code /usr/share/applications/code.desktop /usr/share/applications/code-url-handler.desktop /usr/share/code /usr/share/appdata/code.appdata.xml /usr/share/mime/packages/code-workspace.xml /usr/share/bash-completion/completions/code /usr/share/pixmaps/com.visualstudio.code.png
         rm -vf ${CODE_SHARE_FILE}
         #fi
         ln -sfv /usr/share/code/bin/code /usr/bin
