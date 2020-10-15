@@ -306,8 +306,6 @@ Next, I will introduce the meaning of each parameter.
         "al:alpine"
         "ap:alpine"
         "alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox"
-        "alt"
-        "apertis"
         "arm:armbian"
         "armbian:香蕉派,香橙派,nanopi"
         "c:centos"

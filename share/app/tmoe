@@ -53,8 +53,6 @@ tmoe_main() {
 	case "$2" in
 	a | arch) DISTRO_NAME='arch' ;;
 	al | ap | alpine) DISTRO_NAME='alpine' ;;
-	alt) DISTRO_NAME='alt' ;;
-	apertis) DISTRO_NAME='apertis' ;;
 	arm | armbian) DISTRO_NAME='armbian' ;;
 	c | ce | cent | centos) DISTRO_NAME='centos' ;;
 	d | deb | debian) DISTRO_NAME='debian' ;;

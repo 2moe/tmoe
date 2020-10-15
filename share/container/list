@@ -134,8 +134,6 @@ install_alpha_containers() {
 				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
 				"4" "Slackware(armhf,x64)" \
 				"5" "OpenWRT:ゲートウェイなどの組み込みシステム用ファームウェアとして開発されている" \
-				"6" "apertis" \
-				"7" "alt" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -148,8 +146,6 @@ install_alpha_containers() {
 				"3" "Devuan (不使用systemd,基于debian)" \
 				"4" "Slackware is a Linux distro created by Patrick Volkerding in 1993(armhf,x64)" \
 				"5" "OpenWRT(常见于路由器等嵌入式设备,arm64,x64)" \
-				"6" "Apertis" \
-				"7" "Alt" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -162,8 +158,6 @@ install_alpha_containers() {
 				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
 				"4" "Slackware is a distro created by Patrick Volkerding in 1993(armhf,x64)" \
 				"5" "OpenWRT is a Linux OS targeting embedded devices" \
-				"6" "Apertis" \
-				"7" "Alt" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -201,8 +195,6 @@ install_alpha_containers() {
 		go_to_proot_management
 		install_openwrt_linux_distro
 		;;
-	6) install_apertis_linux_distro ;;
-	7) install_alt_linux_distro ;;
 	esac
 	###########################
 	exit 0
@@ -883,35 +875,6 @@ install_devuan_linux_distro() {
 	check_the_latest_distro_version
 }
 ######################
-install_apertis_linux_distro() {
-	case "${ARCH_TYPE}" in
-	'i386')
-		printf "%s\n" "检测到apertis不支持您当前的架构"
-		distro_does_not_support
-		;;
-	*)
-		touch ~/.ALPINELINUXDetectionFILE
-		DISTRO_NAME='apertis'
-		OLD_STABLE_VERSION='v2019.2'
-		check_the_latest_distro_version
-		;;
-	esac
-}
-################################
-install_alt_linux_distro() {
-	case "${ARCH_TYPE}" in
-	armhf)
-		printf "%s\n" "检测到apertis不支持您当前的架构"
-		distro_does_not_support
-		;;
-	*)
-		DISTRO_NAME='alt'
-		OLD_STABLE_VERSION='Sisyphus'
-		check_the_latest_distro_version
-		;;
-	esac
-}
-##################
 install_slackware_linux_distro() {
 	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
