@@ -1164,6 +1164,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        touch /var/lock/opkg.lock
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash
+			printf "%s\n" "export PATH=\${PATH}:/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >> ~/.zshenv
 	    fi
 		printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
 		bash /usr/local/bin/neofetch
