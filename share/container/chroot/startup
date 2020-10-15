@@ -81,6 +81,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 			for i in su ash bash zsh; do
 				[[ ! -f ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
 			done
+			[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
 		fi
 	    set -- "\${TMOE_SHELL}" "-l" "\$@"
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then

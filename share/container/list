@@ -851,7 +851,7 @@ install_manjaro_linux_distro() {
 #		sed 's@tar -pJxvf@tar -pzxvf@g'
 ############################
 install_openwrt_linux_distro() {
-	#touch ~/.ALPINELINUXDetectionFILE
+	touch ~/.ALPINELINUXDetectionFILE
 	CONTAINER_REPO='https://mirrors.bfsu.edu.cn/openwrt/releases/'
 	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | egrep -v 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
 	THE_LATEST_ROOTFS_REPO="${CONTAINER_REPO}${THE_LATEST_VERSION}/targets/"
@@ -890,7 +890,7 @@ install_apertis_linux_distro() {
 		distro_does_not_support
 		;;
 	*)
-		#touch ~/.ALPINELINUXDetectionFILE
+		touch ~/.ALPINELINUXDetectionFILE
 		DISTRO_NAME='apertis'
 		OLD_STABLE_VERSION='v2019.2'
 		check_the_latest_distro_version

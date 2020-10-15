@@ -1229,6 +1229,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#配置时区
 	printf '%s\n' 'Asia/Shanghai' >/etc/timezone
 	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	mkdir -p /etc/default
 	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
 	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
 	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then

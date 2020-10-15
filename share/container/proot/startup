@@ -51,6 +51,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 			for i in su ash bash zsh; do
 				[[ ! -f ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
 			done
+			[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
 		fi
 	    #考虑到alpine兼容性，此处应为-l,而非--login
 	    set -- "\${TMOE_SHELL}" "-l" "\$@"
