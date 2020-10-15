@@ -1619,7 +1619,8 @@ install_kde_plasma5_desktop() {
 }
 ##################
 tips_of_tiger_vnc_server() {
-    printf "%s\n" "在您使用虚拟机安装本桌面的过程中，当提示tiger/tightvnc时,请选择前者。若未弹出提示内容，则您可以前往本工具的tightvnc配置选项手动切换服务端，或使用x11vnc"
+    printf "%s\n" "在您使用虚拟机安装本桌面的过程中，当提示tiger/tightvnc时,请选择前者。若未弹出提示内容，则您可以前往本工具的vnc配置选项手动切换服务端，或使用x11vnc"
+    printf "%s\n" "Since tightvnc may not be able to connect to this desktop normally, please choose tiger or x11vnc server."
 }
 ##################
 tmoe_desktop_warning() {
@@ -1846,7 +1847,6 @@ dde_old_version() {
     gpg --import deepin-keyring.gpg
     gpg --export --armor 209088E7 | apt-key add -
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、dde和tightvncserver等软件包。'
     dpkg --configure -a
     apt update
     auto_select_keyboard_layout
@@ -1926,6 +1926,8 @@ ENDofTable
     若您需要在arm64容器环境中运行,则建议您使用ubuntu LTS或最新版fedora。
     若您需要在x64容器环境中运行，则建议您使用arch。
 EOF
+    printf '%s\n' "即将为您安装dde、fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji软件包。"
+    tips_of_tiger_vnc_server
 
     case "${TMOE_PROOT}" in
     true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用fedora chroot容器进行安装。" ;;
