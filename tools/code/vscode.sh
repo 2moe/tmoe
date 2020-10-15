@@ -293,6 +293,7 @@ install_vscodium() {
         fix_tightvnc_vscode_lnk
         printf "%s\n" "安装完成,您可以输codium --user-data-dir=${HOME}/.codium启动"
     else
+        fix_fedora_electron_libxssl
         LatestVSCodiumLink="$(curl -L https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         CODIUM_FILE_URL="https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
@@ -415,6 +416,7 @@ install_vscode_official() {
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
         ;;
     *)
+        fix_fedora_electron_libxssl
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "${CODE_BIN_URL}"
         tar -zxvf VSCODE.tar.gz -C /usr/share
         rm -rv /usr/share/code 2>/dev/null
