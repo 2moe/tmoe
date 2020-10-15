@@ -1648,9 +1648,9 @@ install_ukui_desktop() {
     DEPENDENCY_01="ukui-session-manager"
     printf '%s\n' '即将为您安装思源黑体(中文字体)、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
+        DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
         dpkg --configure -a
         auto_select_keyboard_layout
-        DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01='ukui'
     else
@@ -1956,7 +1956,9 @@ install_deepin_desktop() {
             DEPENDENCY_01="ubuntudde-dde deepin-terminal"
             ;;
         esac
-
+        dpkg --configure -a
+        auto_select_keyboard_layout
+        apt clean
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='deepin-desktop'
 
