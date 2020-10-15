@@ -56,6 +56,7 @@ tmoe_main() {
 	arm | armbian) DISTRO_NAME='armbian' ;;
 	c | ce | cent | centos) DISTRO_NAME='centos' ;;
 	d | deb | debian) DISTRO_NAME='debian' ;;
+	dde | deepin) DISTRO_NAME='deepin' ;;
 	devuan) DISTRO_NAME='devuan' ;;
 	f | fe | fedora) DISTRO_NAME='fedora' ;;
 	ft | funtoo) DISTRO_NAME='funtoo' ;;

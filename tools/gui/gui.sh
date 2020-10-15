@@ -1918,7 +1918,7 @@ dde_warning() {
 ENDofTable
 
     cat <<-EOF
-    对于deb系的发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。
+    对于除deepin外的其他debian系发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。
     您可以使用新版的Ubuntu LTS系统来安装DDE，旧版系统可能存在依赖关系问题。
     过新的系统亦存在此问题,例如debian sid。
     而对于其他系发行版，请尽量选择最新的发行版。
@@ -1949,9 +1949,13 @@ install_deepin_desktop() {
     REMOTE_DESKTOP_SESSION_02='dde-launcher'
     DEPENDENCY_01="deepin-desktop"
     if [ "${LINUX_DISTRO}" = "debian" ]; then
-        deepin_desktop_debian
-        #DEPENDENCY_01="dde"
-        DEPENDENCY_01="ubuntudde-dde deepin-terminal"
+        case ${DEBIAN_DISTRO} in
+        deepin | uos) DEPENDENCY_01="dde" ;;
+        *)
+            deepin_desktop_debian
+            DEPENDENCY_01="ubuntudde-dde deepin-terminal"
+            ;;
+        esac
 
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
         DEPENDENCY_01='deepin-desktop'

@@ -61,6 +61,7 @@ tmoe_manager_env() {
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
+	AK2_GIT_URL="https://gitee.com/ak2"
 	TMOE_LINUX_ISSUE_URL="https://${TMOE_GIT_URL}/issues"
 	if [[ -e ${TMOE_GIT_DIR}/.git ]]; then
 		source ${TMOE_SHARE_DIR}/environment/manager_environment
@@ -245,7 +246,7 @@ check_gnu_linux_distro() {
 	esac
 	##############
 	SWITCH_MIRROR='false'
-	if egrep -q 'debian|ubuntu|deepin' "/etc/os-release"; then
+	if egrep -q 'debian|ubuntu|deepin|uos\.com' "/etc/os-release"; then
 		SWITCH_MIRROR='true'
 		LINUX_DISTRO='debian'
 		TMOE_UPDATE_COMMAND='apt update'

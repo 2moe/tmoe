@@ -18,8 +18,8 @@ choose_which_gnu_linux_distro() {
 			"4" "🍱 beta版:manjaro,centos,alpine" \
 			"5" "🌉 arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
 			"6" "👒 fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
-			"7" "🦎 chroot専属する:armbian,opensuse,gentoo" \
-			"8" "🍓 体験版,サポートされなくなりました:RaspiOS" \
+			"7" "🦎 chroot専属する:deepin20,armbian,opensuse" \
+			"8" "🍓 体験版,サポートされなくなりました:Gentoo,RaspiOS" \
 			"0" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
 	}
@@ -31,8 +31,8 @@ choose_which_gnu_linux_distro() {
 			"4" "🍱 beta公测版:manjaro,centos,alpine" \
 			"5" "🌉 arch:系统设计以KISS为总体指导原则" \
 			"6" "👒 fedora:红帽社区版,新技术试验场" \
-			"7" "🦎 chroot专属:armbian,opensuse,gentoo" \
-			"8" "🍓 experimental(体验版,不再维护):RaspiOS" \
+			"7" "🦎 chroot专属:deepin20,armbian,opensuse" \
+			"8" "🍓 experimental(体验版,不再维护):Gentoo,RaspiOS" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -44,8 +44,8 @@ choose_which_gnu_linux_distro() {
 			"4" "🍱 beta version:manjaro,centos,alpine" \
 			"5" "🌉 arch:simplicity,modernity,pragmatism,user centrality and versatility" \
 			"6" "👒 fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
-			"7" "🦎 chroot exclusive:armbian,opensuse,gentoo" \
-			"8" "🍓 experimental,no longer maintained:RaspiOS" \
+			"7" "🦎 chroot exclusive:deepin20,armbian,opensuse" \
+			"8" "🍓 experimental,no longer maintained:Gentoo,RaspiOS" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -98,9 +98,8 @@ install_chroot_exclusive_containers() {
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
 			"1" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
+			"2" "deepin深度操作系统(arm64,x86,x64)" \
 			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
-			"3" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
-			"4" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -108,21 +107,84 @@ install_chroot_exclusive_containers() {
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) install_armbian_linux_distro ;;
-	2)
+	2) install_deepin_linux_distro ;;
+	3)
 		CLOUD_ROOTFS='true'
 		install_opensuse_linux_distro
-		;;
-	3) install_gentoo_linux_distro ;;
-	4)
-		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
-		creat_container_edition_txt
-		install_funtoo_linux_distro
 		;;
 	esac
 	###########################
 	exit 0
 }
 ###############
+install_deepin_apricot_amd64_and_i386() {
+	case "${ARCH_TYPE}" in
+	amd64 | i386) ;;
+	*) distro_does_not_support ;;
+	esac
+	DISTRO_CODE='apricot'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	git_clone_deepin_distro
+}
+##############
+install_deepin_camel_arm64() {
+	case "${ARCH_TYPE}" in
+	arm64) ;;
+	*) distro_does_not_support ;;
+	esac
+	DISTRO_CODE='camel'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	git_clone_deepin_distro
+}
+##########
+git_clone_deepin_distro() {
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+	cd ${ROOTFS_DIR}
+	case "${ARCH_TYPE}" in
+	amd64 | i386 | arm64)
+		go_to_proot_management
+		DEEPIN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
+		if [ ! -e "${DEEPIN_ROOTFS_FILE_NAME}" ]; then
+			TEMP_DIR=".DEEPIN_${ARCH_TYPE}-TEMP_FOLDER"
+			[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
+			git clone --depth=1 ${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git ${TEMP_DIR}
+			cd ${TEMP_DIR}
+			cat .container_linux_* >${DEEPIN_ROOTFS_FILE_NAME}
+			mv -fv ${DEEPIN_ROOTFS_FILE_NAME} ../
+			cd ..
+			rm -rvf ${TEMP_DIR}
+		fi
+		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+			sed "s/debian system/deepin system/g" |
+			sed "s:debian-sid:deepin-${DISTRO_CODE}:g" |
+			sed "s:Debian GNU/Linux:Deepin GNU/Linux:g")"
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+###############
+install_deepin_linux_distro() {
+	RETURN_TO_WHERE='install_deepin_linux_distro'
+	DISTRO_NAME='deepin'
+	ALPHA_SYSTEM=$(
+		whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
+			"1" "20 apricot(amd64,i386) 大小90MiB" \
+			"2" "15.2 camel(arm64) 大小103MiB" \
+			"0" "🌚 Back 返回" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${ALPHA_SYSTEM}" in
+	0 | "") install_chroot_exclusive_containers ;;
+	1) install_deepin_apricot_amd64_and_i386 ;;
+	2) install_deepin_camel_arm64 ;;
+	esac
+	###########################
+	exit 0
+}
+##############
 install_alpha_containers() {
 	CLOUD_ROOTFS='false'
 	RETURN_TO_WHERE='install_alpha_containers'
@@ -133,6 +195,8 @@ install_alpha_containers() {
 				"2" "ラズベリーパイ OS buster" \
 				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
 				"4" "Slackware(armhf,x64)" \
+				"5" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -144,6 +208,8 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS樹莓派 buster" \
 				"3" "Devuan (不使用systemd,基于debian)" \
 				"4" "Slackware is a Linux distro created by Patrick Volkerding in 1993(armhf,x64)" \
+				"5" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -155,6 +221,8 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS buster" \
 				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
 				"4" "Slackware is a distro created by Patrick Volkerding in 1993(armhf,x64)" \
+				"5" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -185,6 +253,12 @@ install_alpha_containers() {
 		TMOE_LINUX_CONTAINER_DISTRO='slackware'
 		creat_container_edition_txt
 		install_slackware_linux_distro
+		;;
+	5) install_gentoo_linux_distro ;;
+	6)
+		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
+		creat_container_edition_txt
+		install_funtoo_linux_distro
 		;;
 	esac
 	###########################
@@ -580,7 +654,7 @@ install_fedora_gnu_linux_distro() {
 
 		if [ ! -s "${FEDORA_ROOTFS_FILE}" ]; then
 			rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
-			git clone --depth=1 https://gitee.com/ak2/fedora-31_armhf ${FEDORA_TEMP_FOLDER}
+			git clone --depth=1 ${AK2_GIT_URL}/fedora-31_armhf ${FEDORA_TEMP_FOLDER}
 			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${HOME}
 			rm -rvf ${FEDORA_TEMP_FOLDER}
 		fi
@@ -826,7 +900,7 @@ install_slackware_linux_distro() {
 	amd64)
 		go_to_proot_management
 		if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
-			git clone -b x64 --depth=1 https://gitee.com/ak2/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
+			git clone -b x64 --depth=1 ${AK2_GIT_URL}/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
 			#aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
 			cd .SLACKWARE_AMD64_TEMP_FOLDER
 			mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
