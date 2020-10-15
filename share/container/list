@@ -129,11 +129,10 @@ install_alpha_containers() {
 	install_alpha_containers_ja() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました" 0 55 0 \
-				"1" "ラズベリーパイ OS(新版) buster" \
-				"2" "raspbian (古いバージョン) buster(armhf)" \
+				"1" "OpenWRT:ゲートウェイなどの組み込みシステム用ファームウェアとして開発されている" \
+				"2" "ラズベリーパイ OS buster" \
 				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
 				"4" "Slackware(armhf,x64)" \
-				"5" "OpenWRT:ゲートウェイなどの組み込みシステム用ファームウェアとして開発されている" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -141,11 +140,10 @@ install_alpha_containers() {
 	install_alpha_containers_zh() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
-				"1" "Raspberry Pi OS樹莓派新系统 buster" \
-				"2" "Raspbian樹莓派旧系统 buster(armhf)" \
+				"1" "OpenWRT(常见于路由器等嵌入式设备)" \
+				"2" "Raspberry Pi OS樹莓派 buster" \
 				"3" "Devuan (不使用systemd,基于debian)" \
 				"4" "Slackware is a Linux distro created by Patrick Volkerding in 1993(armhf,x64)" \
-				"5" "OpenWRT(常见于路由器等嵌入式设备,arm64,x64)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -153,11 +151,10 @@ install_alpha_containers() {
 	install_alpha_containers_en() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "The developer of Tmoe-linux no longer maintain the following containers." 0 55 0 \
-				"1" "Raspberry Pi OS buster" \
-				"2" "Raspbian buster(armhf)" \
+				"1" "OpenWRT is a Linux OS targeting embedded devices" \
+				"2" "Raspberry Pi OS buster" \
 				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
 				"4" "Slackware is a distro created by Patrick Volkerding in 1993(armhf,x64)" \
-				"5" "OpenWRT is a Linux OS targeting embedded devices" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -171,16 +168,16 @@ install_alpha_containers() {
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
+		TMOE_LINUX_CONTAINER_DISTRO='openwrt'
+		creat_container_edition_txt
+		go_to_proot_management
+		install_openwrt_linux_distro
+		;;
+	2)
 		DISTRO_NAME='raspios'
 		DISTRO_CODE='buster'
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		install_raspios_linux_distro
-		;;
-	2)
-		DISTRO_NAME='raspbian'
-		DISTRO_CODE='buster'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		install_raspbian_linux_distro
 		;;
 	3) install_devuan_linux_distro ;;
 	4)
@@ -188,12 +185,6 @@ install_alpha_containers() {
 		TMOE_LINUX_CONTAINER_DISTRO='slackware'
 		creat_container_edition_txt
 		install_slackware_linux_distro
-		;;
-	5)
-		TMOE_LINUX_CONTAINER_DISTRO='openwrt'
-		creat_container_edition_txt
-		go_to_proot_management
-		install_openwrt_linux_distro
 		;;
 	esac
 	###########################
@@ -748,30 +739,6 @@ install_raspios_linux_distro() {
 	fi
 }
 ###################
-install_raspbian_linux_distro() {
-	case "${ARCH_TYPE}" in
-	arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
-	*) distro_does_not_support ;;
-	esac
-
-	case "${TRUE_ARCH_TYPE}" in
-	arm64 | armhf)
-		TMOE_QEMU_ARCH=""
-		creat_tmoe_arch_file
-		;;
-	esac
-	ARCH_TYPE="${NEW_TMOE_ARCH}"
-	creat_container_edition_txt
-	go_to_proot_management
-
-	#touch ~/.RASPBIANARMHFDetectionFILE
-	if (whiptail --title "RASPBIAN" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspbian？Full版约1.9G,lite版约260M" 9 50); then
-		install_raspbian_linux_distro_type01
-	else
-		install_raspbian_linux_distro_type02
-	fi
-}
-############################
 install_raspios_lite_armhf_rootfs() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
@@ -794,30 +761,6 @@ install_raspios_full_armhf_rootfs() {
 		sed 's/debian system/raspios system/g' |
 		sed 's:debian-sid:raspios-buster:g' |
 		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
-}
-##################
-install_raspbian_linux_distro_type01() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspbian_full/archive@' |
-		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
-		sed 's@#deb http@deb http@g' |
-		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
-		sed 's/.*sid main/#&/' |
-		sed 's/debian system/raspbian system/g' |
-		sed 's:debian-sid:raspbian-buster:g' |
-		sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
-}
-##################
-install_raspbian_linux_distro_type02() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspbian_lite/archive@' |
-		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
-		sed 's@#deb http@deb http@g' |
-		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
-		sed 's/.*sid main/#&/' |
-		sed 's/debian system/raspbian system/g' |
-		sed 's:debian-sid:raspbian-buster:g' |
-		sed 's:Debian GNU/Linux:Raspbian GNU/Linux:g')"
 }
 ##################
 install_manjaro_linux_distro() {

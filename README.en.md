@@ -16,7 +16,7 @@ The following containers are now **supported**:
 - [x] **Alpine edge**
 - [x] **OpenSUSE tumbleweed**
 - [x] **Void**
-- [x] **Raspbian**
+- [x] **Raspios**
 - [x] **Mint**
 - [x] **Devuan**
 - [x] **Slackware**

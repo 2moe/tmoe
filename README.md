@@ -332,7 +332,6 @@ Next, I will introduce the meaning of each parameter.
         "openwrt:OpenWRT is a Linux OS targeting embedded devices"
         "r:raspios"
         "raspios:Raspberry Pi OS"
-        "raspbian"
         "s:slackware"
         "slackware:Slackware is a distro created by Patrick Volkerding in 1993"
         "u:ubuntu"
@@ -594,7 +593,7 @@ You can also use scrcpy+adb to cast screen.
 - [x] **Alpine edge**
 - [x] **OpenSUSE tumbleweed**
 - [x] **Void**
-- [x] **Raspbian**
+- [x] **Raspios**
 - [x] **Mint**
 - [x] **Devuan**
 - [x] **Slackware**

@@ -66,7 +66,7 @@ tmoe_main() {
 	o | suse | opensuse) DISTRO_NAME='opensuse' ;;
 	ow | wrt | openwrt) DISTRO_NAME='openwrt' ;;
 	r | rasp | raspios) DISTRO_NAME='raspios' ;;
-	raspbian) DISTRO_NAME='raspbian' ;;
+	raspbian) DISTRO_NAME='raspios' ;;
 	s | sl | slackware) DISTRO_NAME='slackware' ;;
 	u | ub* | ubuntu) DISTRO_NAME='ubuntu' ;;
 	v | void) DISTRO_NAME='void' ;;
