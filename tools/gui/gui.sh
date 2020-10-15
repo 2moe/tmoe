@@ -4049,7 +4049,7 @@ first_configure_startvnc() {
     #else
     case ${LINUX_DISTRO} in
     debian)
-        if ! egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+        if ! egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|stretch|jessie' "/etc/os-release"; then
             which_vnc_server_do_you_prefer
         fi
         ;;
