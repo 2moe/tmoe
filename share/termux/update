@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 ###############
 if [ $(command -v fortune) ]; then
-	fortune
+	fortune 2>/dev/null
 elif [ -e /usr/games/fortune ]; then
-	/usr/games/fortune
+	/usr/games/fortune 2>/dev/null
 fi
 get_hitokito_cn 2>/dev/null
 check_tmoe_completion_version

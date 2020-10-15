@@ -194,9 +194,9 @@ check_root() {
 	0) ;;
 	*)
 		if [ $(command -v fortune) ]; then
-			fortune
+			fortune 2>/dev/null
 		elif [ -e /usr/games/fortune ]; then
-			/usr/games/fortune
+			/usr/games/fortune 2>/dev/null
 		fi
 		export PATH=${PATH}:/usr/sbin:/sbin
 		if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
