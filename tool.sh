@@ -306,7 +306,7 @@ check_linux_distro() {
 			DEBIAN_DISTRO='ubuntu'
 		elif [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Kali" ]; then
 			DEBIAN_DISTRO='kali'
-		elif grep -q 'deepin' /etc/os-release; then
+		elif egrep -q 'deepin|uos' /etc/os-release; then
 			DEBIAN_DISTRO='deepin'
 		fi
 		###################
@@ -541,16 +541,25 @@ check_dependencies() {
 		esac
 	fi
 	################
+	install_cat_img_deb() {
+		cd /tmp
+		wget --no-check-certificate -O 'catimg.deb' "${CATIMG_REPO}catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
+		apt install -y ./catimg.deb
+		rm -f catimg.deb
+	}
+	#############
 	if [ ! $(command -v catimg) ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
 		mkdir -p ${TMOE_LINUX_DIR}
 		touch ${TMOE_LINUX_DIR}/not_install_catimg
 		case "${LINUX_DISTRO}" in
 		debian)
-			CATIMGlatestVersion="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/debian/pool/main/c/catimg/' | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
-			cd /tmp
-			wget --no-check-certificate -O 'catimg.deb' "https://mirrors.bfsu.edu.cn/debian/pool/main/c/catimg/catimg_${CATIMGlatestVersion}_${ARCH_TYPE}.deb"
-			apt install -y ./catimg.deb
-			rm -f catimg.deb
+			CATIMG_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/c/catimg/"
+			CATIMGlatestVersion="$(curl -LfsS "${CATIMG_REPO}" | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
+			install_cat_img_deb
+			if [ $(command -v catimg) ]; then
+				CATIMGlatestVersion="$(curl -LfsS "${CATIMG_REPO}" | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
+				install_cat_img_deb
+			fi
 			;;
 		esac
 	fi

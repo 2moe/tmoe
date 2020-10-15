@@ -256,7 +256,7 @@ check_gnu_linux_distro() {
 			DEBIAN_DISTRO='ubuntu'
 		elif [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Kali" ]; then
 			DEBIAN_DISTRO='kali'
-		elif grep -q 'deepin' /etc/os-release; then
+		elif egrep -q 'deepin|uos' /etc/os-release; then
 			SWITCH_MIRROR='false'
 			DEBIAN_DISTRO='deepin'
 		fi

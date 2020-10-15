@@ -1950,7 +1950,7 @@ install_deepin_desktop() {
     DEPENDENCY_01="deepin-desktop"
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         case ${DEBIAN_DISTRO} in
-        deepin | uos) DEPENDENCY_01="dde" ;;
+        deepin) DEPENDENCY_01="dde" ;;
         *)
             deepin_desktop_debian
             DEPENDENCY_01="ubuntudde-dde deepin-terminal"
