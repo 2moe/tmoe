@@ -67,6 +67,7 @@ configure_tmoe_zsh() {
 creat_zlogin_file() {
 	cd ${HOME}
 	cp .bash_login .zlogin
+	sed -i '/source ~\/\.profile/d' .zlogin
 }
 #########################
 fix_sudo() {

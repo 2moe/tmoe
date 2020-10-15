@@ -796,7 +796,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 			;;
 		esac
 	}
-	[[ ! -s ~/.profile ]] || . ~/.profile
+	[[ ! -s ~/.profile ]] || source ~/.profile
 	typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 EndOfFile
 #curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
