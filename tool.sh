@@ -556,7 +556,7 @@ check_dependencies() {
 			CATIMG_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/c/catimg/"
 			CATIMGlatestVersion="$(curl -LfsS "${CATIMG_REPO}" | grep ${ARCH_TYPE} | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 			install_cat_img_deb
-			if [ $(command -v catimg) ]; then
+			if [ ! $(command -v catimg) ]; then
 				CATIMGlatestVersion="$(curl -LfsS "${CATIMG_REPO}" | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '_' -f 2)"
 				install_cat_img_deb
 			fi
