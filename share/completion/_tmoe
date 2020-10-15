@@ -79,7 +79,7 @@ function _tmoe() {
         "20.10:ubuntu groovy"
         "20.04:ubuntu focal"
         "apricot:deepin 20"
-        "camel:deepin 15.2"
+        "camel:deepin 15.5"
         "s:debian sid"
         "sid"
         "buster:debian 10"

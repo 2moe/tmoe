@@ -1896,8 +1896,9 @@ dde_warning() {
     1.因proot无权启动dbus-daemon --system,故不支持proot容器。
     2.已测试过的系统：
     ubuntu 20.04和fedora32 arm64 chroot容器(宿主Android)
+    deepin 15.5 arm64 chroot容器(宿主Android)
     archlinux amd64 qemu虚拟机(宿主Debian)+chroot容器(宿主WSL)
-    3.本表格有效期截至2020年9月中旬,仅供参考，后期会发生变更。
+    3.本表格有效期截至2020年10月中旬,仅供参考，后期会发生变更。
     4.以下数据仅代表tmoe-linux tool所安装的dde，您可自行编译源代码，并修复bug。
   ╔═══╦════════════╦════════╦════════╦═════════╦
   ║   ║vnc/xserver ║        ║        ║         ║
@@ -1915,22 +1916,26 @@ dde_warning() {
   ║---║------------║--------║--------║---------║
   ║   ║ArchLinux   ║        ║        ║         ║ 
   ║ 4 ║ amd64      ║  ✓     ║   ✓    ║   ？    ║ 
+  ║---║------------║--------║--------║---------║
+  ║   ║Deepin      ║        ║        ║         ║ 
+  ║ 5 ║ arm64      ║  ✓     ║   ✓    ║   ✓     ║ 
 ENDofTable
 
     cat <<-EOF
+    若您使用的是deepin，则可直接从软件源安装。
     对于除deepin外的其他debian系发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。
     您可以使用新版的Ubuntu LTS系统来安装DDE，旧版系统可能存在依赖关系问题。
     过新的系统亦存在此问题,例如debian sid。
     而对于其他系发行版，请尽量选择最新的发行版。
     例如红帽系,请选fedora,勿选centos。
-    若您需要在arm64容器环境中运行,则建议您使用ubuntu LTS或最新版fedora。
-    若您需要在x64容器环境中运行，则建议您使用arch。
+    若您需要在arm64容器环境中运行,则建议您使用deepin、ubuntu LTS或最新版fedora。
+    若您需要在x64容器环境中运行，则建议您使用deepin和arch。
 EOF
     printf '%s\n' "即将为您安装dde、fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji软件包。"
     tips_of_tiger_vnc_server
 
     case "${TMOE_PROOT}" in
-    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用fedora chroot容器进行安装。" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用deepin或fedora chroot容器进行安装。" ;;
     false)
         printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境"
         case ${LINUX_DISTRO} in
