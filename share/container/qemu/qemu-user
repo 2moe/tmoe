@@ -186,12 +186,12 @@ tmoe_qemu_user_manager() {
 				"02" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
 				"03" "arm64/aarch64(2020年移动平台主流cpu架构)" \
 				"04" "armhf/armv7(32位arm架构,支持硬浮点运算)" \
-				"05" "armel(支持软浮点运算,常见于旧设备）" \
+				"05" "riscv64(开源架构,精简指令集)" \
 				"06" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
 				"07" "s390x(常见于IBM大型机)" \
-				"08" "riscv64(开源架构,精简指令集)" \
-				"09" "mipsel(常见于嵌入式设备)" \
-				"10" "mips64el(常见于龙芯cpu)" \
+				"08" "mipsel(常见于嵌入式设备)" \
+				"09" "mips64el(常见于龙芯cpu)" \
+				"10" "armel(支持软浮点运算,常见于旧设备）" \
 				3>&1 1>&2 2>&3
 		)
 	}
@@ -204,12 +204,12 @@ tmoe_qemu_user_manager() {
 				"02" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
 				"03" "arm64/aarch64:64-bit extension of the ARM architecture" \
 				"04" "armhf/armv7:32-bit arm hard float" \
-				"05" "armel:32-bit arm soft float" \
+				"05" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
 				"06" "ppc64el:64ビットビッグエンディアンPowerPCおよびPower ISAプロセッサ用に最適化されたアプリケーションのターゲットアーキテクチャを参照するために" \
 				"07" "s390x:IBMメインフレームコンピューターで一般的に見られる" \
-				"08" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
-				"09" "mipsel:MIPSアーキテクチャは、ミップス・コンピュータシステムズが開発したRISCマイクロプロセッサの命令セット・アーキテクチャ である" \
-				"10" "mips64el" \
+				"08" "mipsel:MIPSアーキテクチャは、ミップス・コンピュータシステムズが開発したRISCマイクロプロセッサの命令セット・アーキテクチャ である" \
+				"09" "mips64el" \
+				"10" "armel:32-bit arm soft float" \
 				3>&1 1>&2 2>&3
 		)
 	}
@@ -222,12 +222,12 @@ tmoe_qemu_user_manager() {
 				"02" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
 				"03" "arm64:64-bit extension of the ARM architecture" \
 				"04" "armhf:32-bit arm hard float" \
-				"05" "armel:32-bit arm soft float" \
+				"05" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
 				"06" "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target" \
 				"07" "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers" \
-				"08" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
-				"09" "mipsel:Microprocessor without Interlocked Pipelined Stages little-endian" \
-				"10" "mips64el" \
+				"08" "mipsel:Microprocessor without Interlocked Pipelined Stages little-endian" \
+				"09" "mips64el" \
+				"10" "armel:32-bit arm soft float" \
 				3>&1 1>&2 2>&3
 		)
 	}
@@ -264,11 +264,8 @@ tmoe_qemu_user_manager() {
 		esac
 		;;
 	05)
-		NEW_TMOE_ARCH='armel'
-		case ${TRUE_ARCH_TYPE} in
-		arm64 | armhf | armel) TMOE_QEMU_ARCH="" ;;
-		*) TMOE_QEMU_ARCH="armeb" ;;
-		esac
+		NEW_TMOE_ARCH='riscv64'
+		TMOE_QEMU_ARCH="riscv64"
 		;;
 	06)
 		NEW_TMOE_ARCH='ppc64el'
@@ -279,16 +276,19 @@ tmoe_qemu_user_manager() {
 		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
 		;;
 	08)
-		NEW_TMOE_ARCH='riscv64'
-		TMOE_QEMU_ARCH="riscv64"
-		;;
-	09)
 		NEW_TMOE_ARCH='mipsel'
 		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
 		;;
-	10)
+	09)
 		NEW_TMOE_ARCH='mips64el'
 		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+		;;
+	10)
+		NEW_TMOE_ARCH='armel'
+		case ${TRUE_ARCH_TYPE} in
+		arm64 | armhf | armel) TMOE_QEMU_ARCH="" ;;
+		*) TMOE_QEMU_ARCH="armeb" ;;
+		esac
 		;;
 	esac
 	######################

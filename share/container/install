@@ -539,9 +539,8 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 		pulseaudio --start 2>/dev/null &
 	fi
 	vnc_warning() {
-		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输tmoe重新配置GUI。"
-		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure GUI environment."
-		${PREFIX}/bin/tmoe pr
+		printf "\033[33m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输tmoe t"
+		${PREFIX}/bin/tmoe pr vnc
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		${PREFIX}/bin/tmoe ch vnc
@@ -558,9 +557,8 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 		pulseaudio --start 2>/dev/null &
 	fi
 	vnc_warning() {
-		printf "%s\n" "Sorry,x11vnc server启动失败，请输tmoe重新配置GUI。"
-		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure GUI environment."
-		${PREFIX}/bin/tmoe pr
+		printf "\033[33m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输tmoe t"
+		${PREFIX}/bin/tmoe pr x11
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		${PREFIX}/bin/tmoe ch x11
@@ -584,9 +582,8 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/usr/bin/env bash
 	vnc_warning() {
-		printf "%s\n" "Sorry,X启动失败，请输tmoe重新配置GUI。"
-		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure GUI environment."
-		${PREFIX}/bin/tmoe pr
+		printf "\033[33m%s\033[m\n" "正在启动X，若启动失败，则请输tmoe t"
+		${PREFIX}/bin/tmoe pr xs
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		${PREFIX}/bin/tmoe ch xs
