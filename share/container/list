@@ -960,7 +960,7 @@ install_armbian_linux_distro() {
 	)
 	##############################
 	case "${BETA_SYSTEM}" in
-	0 | "") install_chroot_exclusive_containers ;;
+	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='bullseye' ;;
 	2) DISTRO_CODE='focal' ;;
 	3) custom_armbian_version ;;
