@@ -13,10 +13,11 @@ check_arch() {
 	ppc*)
 		ARCH_TYPE="ppc64el" #经测试uname -m输出的结果为ppc64le，而不是ppc64el
 		;;
+	mips64*) ARCH_TYPE="mips64el" ;;
 	mips*)
 		ARCH_TYPE="mipsel" #经测试uname -m输出的结果为mips，而不是mipsel
 		;;
-	risc*) ARCH_TYPE="riscv" ;;
+	risc*) ARCH_TYPE="riscv64" ;;
 	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
 	esac
 	TRUE_ARCH_TYPE=${ARCH_TYPE}
@@ -97,7 +98,7 @@ creat_container_edition_txt() {
 	DEBIAN_FOLDER_CAPITAL=$(printf "%s\n" "${DEBIAN_FOLDER}" | tr '[a-z]' '[A-Z]')
 	check_debian_chroot_dir
 	DEBIAN_CHROOT_MIN=$(printf '%s\n' "${DEBIAN_CHROOT}" | sed "s@${HOME}@~@g")
-	ROOTFS_NAME=$(printf '%s\n' "${DEBIAN_FOLDER}"| cut -d '_' -f 1)
+	ROOTFS_NAME=$(printf '%s\n' "${DEBIAN_FOLDER}" | cut -d '_' -f 1)
 }
 #######
 copy_tmoe_locale_file_to_container() {

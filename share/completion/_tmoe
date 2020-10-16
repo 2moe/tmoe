@@ -113,6 +113,7 @@ function _tmoe() {
         "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target"
         "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers"
         "m:mipsel:Microprocessor without Interlocked Pipelined Stages little-endian"
+        "m64:mips64el"
         "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principlesRISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles"
     )
     execute_program=(

@@ -675,7 +675,7 @@ install_linux_qq() {
     case ${ARCH_TYPE} in
     amd64) TMP_ARCH_TYPE=x86_64 ;;
     arm64) TMP_ARCH_TYPE=arm64 ;;
-    mips*) TMP_ARCH_TYPE=mips64el ;;
+    mips64el) TMP_ARCH_TYPE=mips64el ;;
     esac
 
     THE_LATEST_SH_URL=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | sed "s@x86_64.pkg.*@${TMP_ARCH_TYPE}.sh@")

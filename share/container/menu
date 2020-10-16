@@ -10,7 +10,13 @@ proot_container_main_menu() {
 list_tmoe_containers() {
 	ARCH_TYPE=${TRUE_ARCH_TYPE}
 	rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
-	choose_which_gnu_linux_distro
+	case ${ARCH_TYPE} in
+	mips* | riscv64)
+		source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
+		git_clone_debian_ports_distro
+		;;
+	*) choose_which_gnu_linux_distro ;;
+	esac
 }
 ##############
 across_architectures_container() {

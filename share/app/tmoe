@@ -91,7 +91,8 @@ tmoe_main() {
 	i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
 	p | ppc) ARCH_TYPE='ppc64el' ;;
 	s390x) ARCH_TYPE='s390x' ;;
-	m | mips) ARCH_TYPE='mipsel' ;;
+	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
+	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
 	risc*) ARCH_TYPE='riscv64' ;;
 	v | vnc) EXEC_PROGRAM='tigervnc' ;;
 	xs | xsdl | xserver) EXEC_PROGRAM='xserver' ;;
@@ -110,7 +111,8 @@ tmoe_main() {
 	i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
 	p | ppc*) ARCH_TYPE='ppc64el' ;;
 	s390*) ARCH_TYPE='s390x' ;;
-	m | mips*) ARCH_TYPE='mipsel' ;;
+	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
+	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
 	risc*) ARCH_TYPE='riscv64' ;;
 	v*) EXEC_PROGRAM='startvnc' ;;
 	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;

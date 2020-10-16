@@ -218,33 +218,16 @@ check_root() {
 #####################
 check_architecture() {
 	case $(uname -m) in
-	armv7* | armv8l)
-		ARCH_TYPE="armhf"
-		;;
-	armv6* | armv5*)
-		ARCH_TYPE="armel"
-		;;
-	aarch64 | armv8* | arm64)
-		ARCH_TYPE="arm64"
-		;;
-	x86_64 | amd64)
-		ARCH_TYPE="amd64"
-		;;
-	i*86 | x86)
-		ARCH_TYPE="i386"
-		;;
-	s390*)
-		ARCH_TYPE="s390x"
-		;;
-	ppc*)
-		ARCH_TYPE="ppc64el"
-		;;
-	mips*)
-		ARCH_TYPE="mipsel"
-		;;
-	risc*)
-		ARCH_TYPE="riscv"
-		;;
+	armv7* | armv8l) ARCH_TYPE="armhf" ;;
+	armv6* | armv5*) ARCH_TYPE="armel" ;;
+	aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+	x86_64 | amd64) ARCH_TYPE="amd64" ;;
+	i*86 | x86) ARCH_TYPE="i386" ;;
+	s390*) ARCH_TYPE="s390x" ;;
+	ppc*) ARCH_TYPE="ppc64el" ;;
+	mips64) ARCH_TYPE="mips64el" ;;
+	mips*) ARCH_TYPE="mipsel" ;;
+	risc*) ARCH_TYPE="riscv64" ;;
 	esac
 	TRUE_ARCH_TYPE=${ARCH_TYPE}
 }

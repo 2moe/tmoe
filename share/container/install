@@ -12,10 +12,11 @@ s390*)
 ppc*)
 	ARCH_TYPE="ppc64el" #经测试uname -m输出的结果为ppc64le，而不是ppc64el
 	;;
+mips64*) ARCH_TYPE="mips64el" ;;
 mips*)
 	ARCH_TYPE="mipsel" #经测试uname -m输出的结果为mips，而不是mipsel
 	;;
-risc*) ARCH_TYPE="riscv" ;;
+risc*) ARCH_TYPE="riscv64" ;;
 *) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
 esac
 ######################
@@ -123,7 +124,6 @@ printf "${RESET}"
 ###########################
 TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
-TMOE_MIPSEL_ROOTFS_URL='https://webdav.tmoe.me/down/share/Tmoe-linux/chroot/debian_mipsel.tar.xz'
 TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
 ###########
 cat <<-EOF
@@ -166,16 +166,11 @@ cd ${ROOTFS_DIR}
 download_rootfs_file() {
 	printf "${PURPLE}${BOLD}%s${RESET} ${YELLOW}%s${RESET}\n" "ROOTFS_FILE:" "${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}"
 	if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
-		case "${ARCH_TYPE}" in
-		mipsel) aria2c -x 6 -k 1M --split 6 -o ${TMOE_ROOTFS_TAR_XZ} "${TMOE_MIPSEL_ROOTFS_URL}" ;;
-		*)
-			printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
-			printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
-			TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
-			#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
-			aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
-			;;
-		esac
+		printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+		printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
+		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+		#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
+		aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 	fi
 }
 DEBOOTSTRAP_DIR=''
@@ -308,10 +303,7 @@ check_tar_xz_pv() {
 uncompress_tar_xz_file() {
 	printf "%s\n" "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
 	printf "%s\n" "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
-	if [ "${ARCH_TYPE}" = "mipsel" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
-		mv -b ${DEBIAN_CHROOT}/debian_mipsel/* ${DEBIAN_CHROOT}
-	elif [ "${TMOE_CHROOT}" = "true" ]; then
+	if [ "${TMOE_CHROOT}" = "true" ]; then
 		${TMOE_CHROOT_PREFIX} tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
 		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
@@ -992,23 +984,22 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		sed -n p ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
 	}
 	#################################
-	#配置国内镜像源
-	if [ "$(uname -m)" = "mips" ]; then
-	    chattr +i /etc/apt/sources.list
-	    sed -i 's:# en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:' /etc/locale.gen 2>/dev/null
-	fi
-	##################
 	if ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
 	    chattr +i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
 	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+	case $(uname -m) in
+	mips* | risc*) ;;
+	*)
 		if grep -q 'Debian' "/etc/issue"; then
-	     debian_sources_list
+			debian_sources_list
 			case $(uname -m) in
-			arm*|mips*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
+			arm* | mips*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
 			esac
 		fi
+		;;
+	esac
 	fi
 	###############
 	TUNA_MIRROR_URL='mirrors.bfsu.edu.cn'
@@ -1054,7 +1045,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		sed -i 's@downloads.openwrt.org@mirrors.bfsu.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
 	fi
 	#################
-	 sed -i 's/^deb/# &/g' /etc/apt/sources.list && sed -i 's/^##deb/deb/g' /etc/apt/sources.list
+	 sed -i 's/^deb/# &/g;s/^##deb/deb/g' /etc/apt/sources.list
+	#勿删上面那条注释
 	##dns
 	rm -f /etc/resolv.conf
 	cat >/etc/resolv.conf <<-'EndOfFile'
@@ -1288,11 +1280,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	     apt install -y apt-transport-https 2>/dev/null
 	fi
 	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+		case $(uname -m) in
+		mips* | riscv*);;
+		*)
 		if egrep -q '^deb.*(huawei|tuna|bfsu)' /etc/apt/sources.list 2>/dev/null;then
 	     printf "%s\n" "Replacing http software source list with https."
 	     printf "%s\n" "正在将http源替换为https..."
 	     sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 		fi
+		;;
+		esac
 	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list 2>/dev/null
 	fi
 	##########################
@@ -1373,8 +1370,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    gentoo_gnu_linux_make_conf
 	elif grep -qi 'Void' '/etc/issue'; then
 	    void_linux_repository
-	elif [ "$(uname -m)" = "mips" ]; then
-	    chattr -i /etc/apt/sources.list
 	elif ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
 	    chattr -i /etc/apt/sources.list 2>/dev/null
 	fi

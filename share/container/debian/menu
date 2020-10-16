@@ -154,7 +154,7 @@ install_debian_gnu_linux_distro_menu() {
 }
 #########################
 check_debian_distro_code() {
-	printf "%s\n" "即将为您安装Debian ${DISTRO_CODE} GNU/Linux container"
+	printf "%s\n" "即将为您安装Debian ${DISTRO_CODE} ${ARCH_TYPE} GNU/Linux container"
 	do_you_want_to_continue
 	case "${DISTRO_CODE}" in
 	squeeze | wheezy | jessie | stretch | buster) install_debian_buster_via_tuna ;;

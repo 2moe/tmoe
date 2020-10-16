@@ -22,11 +22,14 @@ s390*)
 ppc*)
 	TRUE_ARCH_TYPE="ppc64el"
 	;;
+mips64*)
+	TRUE_ARCH_TYPE="mips64el"
+	;;
 mips*)
 	TRUE_ARCH_TYPE="mipsel"
 	;;
 risc*)
-	TRUE_ARCH_TYPE="riscv"
+	TRUE_ARCH_TYPE="riscv64"
 	;;
 esac
 ######################
@@ -73,8 +76,12 @@ mipsel)
 	NEW_TMOE_ARCH='mipsel'
 	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
 	;;
-riscv)
-	NEW_TMOE_ARCH='riscv'
+mips64el)
+	NEW_TMOE_ARCH='mips64el'
+	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+	;;
+riscv64)
+	NEW_TMOE_ARCH='riscv64'
 	TMOE_QEMU_ARCH="riscv64"
 	;;
 esac

@@ -112,7 +112,8 @@ readme_of_gnu_linux_distro() {
 	i386) SHORT_ARCH='i' ;;
 	ppc*) SHORT_ARCH='p' ;;
 	s390*) SHORT_ARCH='s390' ;;
-	mips*) SHORT_ARCH='m' ;;
+	mips64el) SHORT_ARCH='m64' ;;
+	mipsel) SHORT_ARCH='m' ;;
 	risc*) SHORT_ARCH='risc' ;;
 	esac
 	cat <<-EOF
@@ -210,11 +211,16 @@ install_new_tmoe_gnu_linux_distro() {
 	check_tmoe_completion_version
 	check_tmoe_completion
 	git_pull_tmoe_linux
-	case ${DISTRO_NAME} in
-	debian) check_debian_distro_code ;;
-	ubuntu) check_ubuntu_distro_code ;;
-	kali) install_kali_rolling_gnu_linux_distro ;;
-	arch) install_arch_linux_distro ;;
+	case ${ARCH_TYPE} in
+	mips* | risc*) ;;
+	*)
+		case ${DISTRO_NAME} in
+		debian) check_debian_distro_code ;;
+		ubuntu) check_ubuntu_distro_code ;;
+		kali) install_kali_rolling_gnu_linux_distro ;;
+		arch) install_arch_linux_distro ;;
+		esac
+		;;
 	esac
 }
 umount_and_remove_gnu_linux_distro() {
