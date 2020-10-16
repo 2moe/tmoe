@@ -78,6 +78,7 @@ tmoe_manager_android_env() {
 			TERMUX_STORAGE='false'
 		fi
 	fi
+	[[ -z ${TMPDIR} ]] || export TMPDIR=${PREFIX}/tmp
 	TMOE_INSTALLATON_COMMAND='apt install -y'
 	TMOE_REMOVAL_COMMAND='apt purge -y'
 	SWITCH_MIRROR='true'
@@ -452,7 +453,7 @@ choose_tmoe_locale_env() {
 ###############
 source_locale_setting() {
 	TMOE_LOCALE_TMP_FILE=${TMPDIR}/.tmoe-locale
-	[[ ! -s ${TMOE_LOCALE_TMP_FILE} ]] || rm ${TMOE_LOCALE_TMP_FILE}
+	[[ ! -e ${TMOE_LOCALE_TMP_FILE} ]] || rm ${TMOE_LOCALE_TMP_FILE}
 	if [ $(command -v curl) ]; then
 		curl -Lo ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
 	elif [ $(command -v wget) ]; then

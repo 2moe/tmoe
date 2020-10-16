@@ -474,7 +474,7 @@ debootstrap_ubuntu_distro() {
 		*) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
 		esac
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail
-		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --variant=buildd --include=init,locales,ca-certificates,openssl,whiptail,wget ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
+		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,restricted,universe,multiverse --variant=buildd --include=init,locales,ca-certificates,openssl,whiptail,wget,dialog,apt-transport-https ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
 	fi
 	#debootstrap --no-check-gpg --arch arm64 --include=gawk,libblkid1,libbz2-1.0,libc6,libcom-err2,libcrypt1,libdebconfclient0,libext2fs2,libgcc-s1,libgmp10,liblzma5,libnss-nis,libnss-nisplus,libpam-modules-bin,libpam0g,libpcre3,libselinux1,libss2,libtinfo6,libuuid1,tar,zlib1g --variant=buildd sid ./sid ${UBUNTU_MIRROR_URL}
