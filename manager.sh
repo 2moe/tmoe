@@ -567,11 +567,7 @@ tmoe_manager_main_menu() {
 	tmoe_manager_main_menu_ja() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
-				--backtitle "$(
-					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						VHlwZSB0bW9lIG0gdG8gc3RhcnQgdGhlIG1hbmFnZXIK
-					DoYouWantToSeeWhatIsInside
-				)" \
+				--backtitle "Type tmoe m to start the manager" \
 				--menu "You can type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
 				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot コンテナ" \
@@ -589,11 +585,7 @@ tmoe_manager_main_menu() {
 	tmoe_manager_main_menu_en() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
-				--backtitle "$(
-					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						VHlwZSB0bW9lIG0gdG8gc3RhcnQgdGhlIG1hbmFnZXIK
-					DoYouWantToSeeWhatIsInside
-				)" \
+				--backtitle "Type tmoe m to start the manager" \
 				--menu "You can type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot container" \
@@ -611,11 +603,7 @@ tmoe_manager_main_menu() {
 	tmoe_manager_main_menu_zh() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
-				--backtitle "$(
-					base64 -d <<-'DoYouWantToSeeWhatIsInside'
-						VHlwZSB0bW9lIG0gdG8gc3RhcnQgdGhlIG1hbmFnZXIs6JCM57O755Sf54mp56CU56m25ZGYCg==
-					DoYouWantToSeeWhatIsInside
-				)" \
+				--backtitle "Type tmoe m to start the manager" \
 				--menu "Welcome to tmoe-manager v1.13,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
