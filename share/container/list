@@ -18,8 +18,9 @@ choose_which_gnu_linux_distro() {
 			"4" "🍱 beta版:manjaro,centos,alpine" \
 			"5" "🌉 arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
 			"6" "👒 fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
-			"7" "🦎 chroot専属する:deepin20,armbian,opensuse" \
-			"8" "🍓 体験版,サポートされなくなりました:Gentoo,RaspiOS" \
+			"7" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
+			"8" "🦎 chroot専属する:deepin20,opensuse" \
+			"9" "🍓 体験版,サポートされなくなりました:Gentoo,RaspiOS" \
 			"0" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
 	}
@@ -31,8 +32,9 @@ choose_which_gnu_linux_distro() {
 			"4" "🍱 beta公测版:manjaro,centos,alpine" \
 			"5" "🌉 arch:系统设计以KISS为总体指导原则" \
 			"6" "👒 fedora:红帽社区版,新技术试验场" \
-			"7" "🦎 chroot专属:deepin20,armbian,opensuse" \
-			"8" "🍓 experimental(体验版,不再维护):Gentoo,RaspiOS" \
+			"7" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
+			"8" "🦎 chroot专属:deepin20,opensuse" \
+			"9" "🍓 experimental(体验版,不再维护):Gentoo,RaspiOS" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -44,8 +46,9 @@ choose_which_gnu_linux_distro() {
 			"4" "🍱 beta version:manjaro,centos,alpine" \
 			"5" "🌉 arch:simplicity,modernity,pragmatism,user centrality and versatility" \
 			"6" "👒 fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
-			"7" "🦎 chroot exclusive:deepin20,armbian,opensuse" \
-			"8" "🍓 experimental,no longer maintained:Gentoo,RaspiOS" \
+			"7" "🍊 Armbian:ARM development boards OS" \
+			"8" "🦎 chroot exclusive:deepin20,opensuse" \
+			"9" "🍓 experimental,no longer maintained:Gentoo,RaspiOS" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -80,8 +83,9 @@ choose_which_gnu_linux_distro() {
 		CLOUD_ROOTFS='true'
 		install_fedora_gnu_linux_distro
 		;;
-	7) install_chroot_exclusive_containers ;;
-	8) install_alpha_containers ;;
+	7) install_armbian_linux_distro ;;
+	8) install_chroot_exclusive_containers ;;
+	9) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
@@ -97,8 +101,7 @@ install_chroot_exclusive_containers() {
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
-			"1" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
-			"2" "deepin深度操作系统(arm64,x86,x64)" \
+			"1" "deepin深度操作系统(arm64,x86,x64)" \
 			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -106,9 +109,8 @@ install_chroot_exclusive_containers() {
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_armbian_linux_distro ;;
-	2) install_deepin_linux_distro ;;
-	3)
+	1) install_deepin_linux_distro ;;
+	2)
 		CLOUD_ROOTFS='true'
 		install_opensuse_linux_distro
 		;;
