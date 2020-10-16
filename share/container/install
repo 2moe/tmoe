@@ -732,7 +732,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 		9s后将为您启动xsdl
 		xsdl will start in 9 seconds
 	ENDOFSTARTXSDL
-	    sleep 9
+	    sleep 7
 	}
 	#########
 	notes_of_startvnc(){ 

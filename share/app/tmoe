@@ -203,7 +203,8 @@ start_tmoe_container() {
 		startxsdl)
 			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 			printf "%s\n" "Please wait 9s."
-			sleep 9
+			#sleep 9
+			#此处不要sleep
 			;;
 		esac
 		${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
