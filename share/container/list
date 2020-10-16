@@ -951,10 +951,10 @@ install_armbian_linux_distro() {
 	BETA_SYSTEM=$(
 		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统。\n以下系统已预装桌面,每个镜像大小约为1G" 0 50 0 \
 			"1" "🐎 Bullseye(debian 11)" \
-			"2" "🐱 Focal Fossa 焦點馬島長尾狸貓(ubuntu 20.04)" \
+			"2" "🐱 Focal Fossa(ubuntu 20.04)" \
 			"3" "Custom code手动输入版本代号" \
 			"4" "🐶 Buster(debian 10)" \
-			"5" "Bionic Beaver 仿生海狸(ubuntu 18.04)" \
+			"5" "Bionic Beaver仿生海狸(ubuntu 18.04)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
