@@ -1607,7 +1607,7 @@ install_kde_plasma5_desktop() {
         #emerge -auvDN --with-bdeps=y @world
         DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
     elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01="patterns-kde-kde_plasma konsole"
+        DEPENDENCY_01="-t pattern kde kde_plasma"
     elif [ "${LINUX_DISTRO}" = "alpine" ]; then
         DEPENDENCY_01="plasma-desktop breeze breeze-icons"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
@@ -3054,7 +3054,7 @@ x11vnc_warning() {
         if [ "${LINUX_DISTRO}" = "gentoo" ]; then
             DEPENDENCY_01='x11-misc/x11vnc'
         else
-            DEPENDENCY_01="${DEPENDENCY_01} x11vnc"
+            DEPENDENCY_01="x11vnc"
         fi
     fi
     #注意下面那处的大小写

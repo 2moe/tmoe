@@ -106,6 +106,11 @@ fix_sudo() {
 		Tmoe-linux tool will be launched.
 		You can also type ${GREEN}tmoe t${RESET} to start it.
 	ENDOFTTMOEZSH
+	###########
+	if grep -q 'SUSE' /etc/os-release; then
+		printf "%s\n" "zypper in -y yast2 yast2-packager"
+		zypper in -y yast2 yast2-packager
+	fi
 }
 ########################
 git_clone_tmoe_linux() {
