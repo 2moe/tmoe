@@ -4184,7 +4184,7 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}${BLUE}同时启动${RESET}vnc服务端和客户端。"
     printf "%s\n" "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-    printf "%s\n" "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，按${YELLOW}Ctrl+C${RESET}或在termux原系统里输${GREEN}stopvnc${RESET}来${RED}停止${RESET}进程"
+    printf "%s\n" "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
     printf "%s\n" "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
     printf '%s\n' '------------------------'
     printf '%s\n' '------------------------'
@@ -4222,7 +4222,7 @@ first_configure_startvnc() {
         printf "%s\n" "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
         printf "%s\n" "${YELLOW}按回车键启动X${RESET}"
         printf "%s\n" "${YELLOW}Press enter to startx${RESET}"
-        printf '%s\n' '运行过程中，您可以按Ctrl+C终止前台进程，输pkill -u $(whoami)终止当前用户所有进程'
+        printf '%s\n' '运行过程中，您可以按Ctrl+C终止前台进程，输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程'
         #上面那行必须要单引号
         read
         cd "/mnt/c/Users/Public/Downloads"

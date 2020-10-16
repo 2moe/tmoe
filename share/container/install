@@ -423,7 +423,7 @@ creat_chroot_startup_script() {
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/tmp
 		case $(hostname) in
-		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} ;;
+		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} 2>/dev/null ;;
 		esac
 	fi
 	printf "%s\n" "Creating chroot startup script"

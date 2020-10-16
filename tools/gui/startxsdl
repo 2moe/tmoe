@@ -21,8 +21,8 @@ check_tmoe_locale() {
 notes_of_xserver() {
 	printf '%s\n' '正在为您启动x11,请将display number改为0'
 	printf '%s\n' 'Starting x11, please change display number to 0'
-	printf '%s\n' '默认为前台运行，您可以按Ctrl+C终止，或者在termux原系统内输stopvnc'
-	printf '%s\n' 'The default is to run in the foreground, you can press Ctrl + C to terminate, or type "stopvnc" in the original termux system.'
+	printf '%s\033[32m%s\033[m%s\n' "您可以输" "stopvnc" "停止"
+	printf '%s \033[32m%s\033[m %s\n' "You can type" "stopvnc" "to stop it."
 }
 ####################
 start_windows_xserver() {
@@ -59,4 +59,4 @@ notes_of_xserver
 check_wsl
 source_tmoe_dbus_daemon
 ###########
-. ${XSESSION_FILE}
+. ${XSESSION_FILE} &
