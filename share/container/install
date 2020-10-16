@@ -539,7 +539,7 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 		pulseaudio --start 2>/dev/null &
 	fi
 	vnc_warning() {
-		printf "\033[33m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输tmoe t"
+		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr vnc
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -557,7 +557,7 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 		pulseaudio --start 2>/dev/null &
 	fi
 	vnc_warning() {
-		printf "\033[33m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输tmoe t"
+		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr x11
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -582,7 +582,7 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/usr/bin/env bash
 	vnc_warning() {
-		printf "\033[33m%s\033[m\n" "正在启动X，若启动失败，则请输tmoe t"
+		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动X，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr xs
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
