@@ -202,8 +202,8 @@ start_tmoe_container() {
 		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
 		startxsdl)
 			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-			printf "%s\n" "Please wait 7s."
-			sleep 7
+			printf "%s\n" "Please wait 9s."
+			sleep 9
 			;;
 		esac
 		${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}

@@ -616,7 +616,7 @@ tmoe_manager_main_menu() {
 						VHlwZSB0bW9lIG0gdG8gc3RhcnQgdGhlIG1hbmFnZXIs6JCM57O755Sf54mp56CU56m25ZGYCg==
 					DoYouWantToSeeWhatIsInside
 				)" \
-				--menu "Welcome to tmoe-manager v1.12,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+				--menu "Welcome to tmoe-manager v1.13,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
 				"3" "💔 remove 移除" \

@@ -37,12 +37,14 @@ fi
 
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	TMOE_CHROOT='true'
+	CONTAINER_TYPE='chroot'
 	if [ $(command -v sudo) ]; then
 		TMOE_CHROOT_PREFIX=sudo
 	elif [ $(command -v tsudo) ]; then
 		TMOE_CHROOT_PREFIX=tsudo
 	fi
 else
+	CONTAINER_TYPE='proot'
 	TMOE_CHROOT='false'
 	TMOE_CHROOT_PREFIX=''
 fi
@@ -221,6 +223,10 @@ cat <<-'EndOFneko'
 	         .            i   7          
 EndOFneko
 printf "$RESET"
+#${DEBIAN_FOLDER}
+LONG_DISTRO_NAME=$(printf '%s\n' "${DEBIAN_FOLDER}" | awk -F '-' '{print $1}')
+LONG_DISTRO_CODE=$(printf '%s\n' "${DEBIAN_FOLDER}" | awk -F '-' '{print $2}' | awk -F '_' '{print $1}')
+LONG_DISTRO_ARCH=$(printf '%s\n' "${DEBIAN_FOLDER}" | awk -F '-' '{print $2}' | awk -F '_' '{print $2}')
 cat <<-EOF
 	少女祈禱中...
 	現在可公開的情報:
@@ -247,6 +253,10 @@ cat <<-EOF
 
 			在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
 			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}
+			在v1.10beta及其之后的版本中，${GREEN}debian${RESET}命令实际上调用了${GREEN}tmoe${RESET}。
+			例如启动${BLUE}${CONTAINER_TYPE}${RESET} ${PURPLE}${DEBIAN_FOLDER}${RESET}容器的完整命令为${BOLD}${GREEN}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${LONG_DISTRO_ARCH}${RESET}
+			Although you can use the full command, we recommend that you use the simplified command.
+			For example, chroot can be simplified to c, ubuntu can be simplified to u, and arch can be simplified to a
 			-------------------
 EOF
 ################
