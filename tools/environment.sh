@@ -83,6 +83,9 @@ move_wallpaper_model_01() {
         tar -xvf data.* 2>/dev/null
     fi
     if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ]; then
+        if [ ! -e "/usr/share/backgrounds" ]; then
+            mkdir -p /usr/share/backgrounds
+        fi
         mv ./usr/share/${WALLPAPER_NAME}/* /usr/share/${CUSTOM_WALLPAPER_NAME}
         rm -rf /tmp/.${THEME_NAME}
         printf "%s\n" "${BLUE}壁纸包${RESET}已经保存至/usr/share/${CUSTOM_WALLPAPER_NAME}${RESET}"
