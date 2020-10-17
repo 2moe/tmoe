@@ -3048,14 +3048,18 @@ x11vnc_warning() {
     do_you_want_to_continue
     #stopvnc 2>/dev/null
 
+    #suse的x11vnc默认由tigervnc提供，此处remove掉
+    case ${LINUX_DISTRO} in
+    suse) zypper rm -y tigervnc-x11vnc ;;
+    esac
+
     DEPENDENCY_01=''
     DEPENDENCY_02=''
     if [ ! $(command -v x11vnc) ]; then
-        if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-            DEPENDENCY_01='x11-misc/x11vnc'
-        else
-            DEPENDENCY_01="x11vnc"
-        fi
+        case ${LINUX_DISTRO} in
+        gentoo) DEPENDENCY_01='x11-misc/x11vnc' ;;
+        *) DEPENDENCY_01="x11vnc" ;;
+        esac
     fi
     #注意下面那处的大小写
     if [ ! $(command -v xvfb) ] && [ ! $(command -v Xvfb) ]; then
