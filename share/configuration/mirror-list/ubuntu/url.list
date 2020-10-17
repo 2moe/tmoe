@@ -1,0 +1,1677 @@
+##Official Archive Mirrors for Ubuntu
+##https://launchpad.net/ubuntu/+archivemirrors
+
+#Albania
+##Kumi Systems e.U.##
+###deb http://al.mirror.kumi.systems/ubuntu/
+
+#Argentina
+##Sysarmy##
+###deb http://mirrors.eze.sysarmy.com/ubuntu/
+
+##Universidad Nacional de Córdoba##
+###deb http://ubuntu.unc.edu.ar/ubuntu/
+
+#Armenia
+##ASNET-AM##
+###deb http://mirrors.asnet.am/ubuntu/
+
+#Australia
+##Internet Association of Australia Inc.##
+###deb http://mirror.internet.asn.au/pub/ubuntu/archive/
+
+##Digital Pacific / Hostopia Australia##
+###deb http://ubuntu.mirror.digitalpacific.com.au/archive/
+
+##AARNet Pty Ltd##
+###deb http://mirror.aarnet.edu.au/pub/ubuntu/archive/
+
+##DataMossa##
+###deb http://ubuntu.mirror.datamossa.io/ubuntu/
+
+##iiNet##
+###deb http://ftp.iinet.net.au/pub/ubuntu/
+
+##Hostcentral##
+###deb http://mirror.as24220.net/pub/ubuntu-archive/
+
+##Hostcentral##
+###deb http://mirror.as24220.net/pub/ubuntu/
+
+##Intergrid##
+###deb http://mirror.intergrid.com.au/ubuntu/
+
+##Internode##
+###deb http://mirror.internode.on.net/pub/ubuntu/ubuntu/
+
+##Launtel##
+###deb http://mirror.launtel.net.au/ubuntu/
+
+##Netspace Online Systems##
+###deb http://mirror.netspace.net.au/pub/ubuntu/
+
+##Over The Wire##
+###deb http://mirror.overthewire.com.au/ubuntu/
+
+##RackCentral##
+###deb http://mirror.rackcentral.com.au/ubuntu-archive/
+
+##Real World Group##
+###deb http://mirror.realcompute.io/ubuntu/
+
+##Servers Australia##
+###deb http://ubuntu.mirror.serversaustralia.com.au/ubuntu/
+
+##SolNode Pty Ltd##
+###deb http://mirror.solnode.io/ubuntu/releases/
+
+#Austria
+##Easyname GmbH##
+###deb http://mirror.easyname.at/ubuntu-archive/
+
+##ANEXIA Internetdienstleistungs GmbH##
+###deb http://ubuntu.anexia.at/ubuntu/
+
+##Kumi Systems e.U.##
+###deb http://mirror.kumi.systems/ubuntu/
+
+##Kumi Systems e.U. (Ports)##
+###deb http://mirror.kumi.systems/ubuntu-ports/
+
+##UPC Austria##
+###deb http://ubuntu.inode.at/ubuntu/
+
+##lagis Internet Serviceprovider GmbH##
+###deb http://ubuntu.lagis.at/ubuntu/
+
+##University of Klagenfurt##
+###deb http://ubuntu.uni-klu.ac.at/ubuntu/
+
+#Azerbaijan
+##Delta Telecom##
+###deb http://mirror.datacenter.az/ubuntu/
+
+##Azertelecom##
+###deb http://aze.archive.ubuntu.com/ubuntu/
+
+##YER Hosting##
+###deb http://mirror.yer.az/ubuntu/
+
+#Bangladesh
+##dhakaCom Limited##
+###deb http://mirror.dhakacom.com/ubuntu/
+
+##dhakaCom Limited##
+###deb http://mirror.dhakacom.com/ubuntu-archive/
+
+##XeonBD##
+###deb http://mirror.xeonbd.com/ubuntu-archive/
+
+#Belarus
+##RUE Beltelecom, MGTS##
+###deb http://ftp.byfly.by/ubuntu/
+
+##Rue Beltelecom, Datacenter##
+###deb http://mirror.datacenter.by/ubuntu/
+
+#Belgium
+##Belnet##
+###deb http://ftp.belnet.be/ubuntu/
+
+##Unix-Solutions BVBA##
+###deb http://mirror.unix-solutions.be/ubuntu/
+
+#Bosnia and Herzegovina
+##Mirror.ba##
+###deb http://archive.ubuntu.mirror.ba/ubuntu/
+
+#Botswana
+##RETENTION RANGE (PTY) LTD##
+###deb http://mirror.retentionrange.co.bw/ubuntu/
+
+#Brazil
+##C3SL/UFPR##
+###deb http://ubuntu.c3sl.ufpr.br/ubuntu/
+
+##Universidade Federal do Amazonas##
+###deb http://mirror.ufam.edu.br/ubuntu/
+
+##Federal University of Alagoas##
+###deb http://repositorio.nti.ufal.br/ubuntu/
+
+##UFSCar - Federal University of Sao Carlos##
+###deb http://mirror.ufscar.br/ubuntu/
+
+##Universidade Federal do Cariri - UFCA##
+###deb http://mirror.ufca.edu.br/mirror/ubuntu-archive/
+
+##University of Sao Paulo##
+###deb http://sft.if.usp.br/ubuntu/
+
+##Locaweb##
+###deb http://ubuntu-archive.locaweb.com.br/ubuntu/
+
+##ITS Telecomunicacoes##
+###deb http://ubuntu.itsbrasil.net/ubuntu/
+
+##Globo.com##
+###deb http://mirror.globo.com/ubuntu/archive/
+
+#Bulgaria
+##IPACCT##
+###deb http://ubuntu.ipacct.com/ubuntu/
+
+##Neterra LTD##
+###deb http://mirrors.neterra.net/ubuntu/
+
+##Telepoint##
+###deb http://mirror.telepoint.bg/ubuntu/
+
+##Daticum##
+###deb http://mirrors.daticum.com/ubuntu/archive/
+
+##Sofia University St. Kliment Ohridski##
+###deb http://ubuntu.uni-sofia.bg/ubuntu/
+
+#Cambodia
+##TELCOTECH##
+###deb http://mirror.telcotech.com.kh/Linux/ubuntu-releases/
+
+#Canada
+##LayerOnline##
+###deb http://mirrors.layeronline.com/ubuntu/
+
+##Computer Science Club of the University of Waterloo##
+###deb http://mirror.csclub.uwaterloo.ca/ubuntu/
+
+##FullHost##
+###deb http://ubuntu.ca-west.mirror.fullhost.io/ubuntu/
+
+##Switch Inc##
+###deb https://mirrors.switch.ca/ubuntu/
+
+##iWeb Technologies Inc.##
+###deb http://ubuntu.mirror.iweb.ca/
+
+##Rafał Rzeczkowski##
+###deb http://archive.ubuntu.mirror.rafal.ca/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.ca-tr.kamatera.com/ubuntu/
+
+##Université du Québec à Montréal - clibre##
+###deb http://mirror.clibre.uqam.ca/ubuntu/
+
+##The University of British Columbia##
+###deb http://mirror.it.ubc.ca/ubuntu/
+
+##Simon Fraser University - Research Computing Group##
+###deb http://mirror.rcg.sfu.ca/mirror/ubuntu/
+
+##Manitoba Unix User Group##
+###deb http://muug.ca/mirror/ubuntu/
+
+##OVH.COM##
+###deb http://ubuntu.bhs.mirrors.ovh.net/ubuntu/
+
+##GloboTech Communications##
+###deb http://ubuntu.mirror.globo.tech/
+
+##Savoir-faire Linux##
+###deb http://gpl.savoirfairelinux.net/pub/mirrors/ubuntu/
+
+##Club CEDILLE##
+###deb http://mirror.cedille.club/ubuntu/
+
+##Dalhousie University##
+###deb http://mirror.its.dal.ca/ubuntu/
+
+##Memorial University of Newfoundland##
+###deb ftp://ftp.cs.mun.ca/pub/mirror/ubuntu/
+
+##Ubuntu-mirror-rafal-ca##
+###deb http://ubuntu.mirror.rafal.ca/ubuntu/
+
+#Chile
+##NetActuate##
+###deb http://mirror1.cl.netactuate.com/ubuntu/
+
+##Universidad de Chile - Direccion de Tecnologias de la Informacion##
+###deb http://mirror.uchile.cl/ubuntu/
+
+##TECNOERA##
+###deb http://ftp.tecnoera.com/ubuntu/
+
+##Universidad de La Frontera##
+###deb http://mirror.ufro.cl/ubuntu/
+
+##Linets##
+###deb http://mirrors.cloud.linets.cl/ubuntu/
+
+#China
+## Alibaba Cloud Computing 阿里云##
+###deb http://mirrors.aliyun.com/ubuntu/
+
+##Shanghai Jiaotong University 上海交通大学##
+###deb http://ftp.sjtu.edu.cn/ubuntu/
+
+##BJTU 北京交通大学##
+###deb http://mirror.bjtu.edu.cn/ubuntu/
+
+##Beijing Foreign Studies University 北京外国语大学##
+###deb http://mirrors.bfsu.edu.cn/ubuntu/
+
+##CN99##
+###deb http://mirrors.cn99.com/ubuntu/
+
+##Harbin Institute of Technology 哈尔滨工业大学##
+###deb http://mirrors.hit.edu.cn/ubuntu/
+
+##DevCloud 华为云##
+###deb http://mirrors.huaweicloud.com/repository/ubuntu/
+
+##Nanjing University 南京大学##
+###deb http://mirrors.nju.edu.cn/ubuntu/
+
+##NjuptmirrorsGroup 南京邮电大学##
+###deb http://mirrors.njupt.edu.cn/ubuntu/
+
+##Sohu 搜狐##
+###deb http://mirrors.sohu.com/ubuntu/
+
+##Tsinghua University 清华大学##
+###deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/
+
+##USTC Linux User Group 中国科学技术大学##
+###deb http://mirrors.ustc.edu.cn/ubuntu/
+
+##Capital Online Data Service 首都在线##
+###deb http://mirrors.yun-idc.com/ubuntu/
+
+##Xi'an Jiaotong University 西安交通大学##
+###deb http://linux.xjtuns.cn/ubuntu/
+
+##Lanzhou University Open Source Society 兰州大学##
+###deb http://mirror.lzu.edu.cn/ubuntu/
+
+##Chongqing University 重庆大学##
+###deb http://mirrors.cqu.edu.cn/ubuntu/
+
+##Dongguan University of Technology GNU/Linux Association 东莞理工学院##
+###deb http://mirrors.dgut.edu.cn/ubuntu/
+
+#Colombia
+##Universidad del Magdalena##
+###deb http://mirror.unimagdalena.edu.co/ubuntu/
+
+#Costa Rica
+##Universidad de Costa Rica##
+###deb http://ubuntu.ucr.ac.cr/ubuntu/
+
+#Croatia
+##Faculty of civil engineering, Zagreb##
+###deb http://hr.archive.ubuntu.com/ubuntu/
+
+##Kumi Systems e.U.##
+###deb http://hr.mirror.kumi.systems/ubuntu/
+
+#Cyprus
+##University of Cyprus, Library##
+###deb http://mirror.library.ucy.ac.cy/linux/ubuntu/archive/
+
+#Czech Republic
+##CZ.NIC, z.s.p.o.##
+###deb http://cz.archive.ubuntu.com/ubuntu/
+
+##Masaryk University##
+###deb http://ftp.linux.cz/pub/linux/ubuntu/
+
+##UPC Česká republika, s.r.o.##
+###deb http://mirror.dkm.cz/ubuntu/
+
+##Czech Technical University Prague##
+###deb http://ftp.cvut.cz/ubuntu/
+
+##Silicon Hill##
+###deb http://ftp.sh.cvut.cz/ubuntu/
+
+##Ignum, s.r.o.##
+###deb http://ucho.ignum.cz/ubuntu/
+
+#Denmark
+##ASERGO##
+###deb http://mirror.asergo.com/ubuntu/
+
+##dotsrc.org##
+###deb http://mirrors.dotsrc.org/ubuntu/
+
+##One.com##
+###deb http://mirror.one.com/ubuntu/
+
+##KLID##
+###deb http://ftp.klid.dk/ftp/ubuntu/
+
+##Netsite##
+###deb http://mirror.netsite.dk/ubuntu/archive/
+
+#Ecuador
+##Escuela Superior Politécnica del Litoral (ESPOL)##
+###deb http://mirror.espol.edu.ec/ubuntu/
+
+##Consorcio Ecuatoriano para el Desarrollo de Internet Avanzado - CEDIA##
+###deb http://mirror.cedia.org.ec/ubuntu/
+
+#Estonia
+##Elion Enterprises Ltd##
+###deb http://ftp.estpak.ee/ubuntu/
+
+##Information System Authority##
+###deb http://ftp.aso.ee/ubuntu/
+
+#Finland
+##Hosthink##
+###deb http://mirror.hosthink.net/ubuntu/
+
+##CSC / Funet##
+###deb http://mirrors.nic.funet.fi/ubuntu/
+
+#France
+##Bouygues Telecom##
+###deb http://fr.archive.ubuntu.com/ubuntu/
+
+##Ikoula NET##
+###deb http://mirror.ubuntu.ikoula.com/
+
+##OVH##
+###deb http://ubuntu.mirrors.ovh.net/ubuntu/
+
+##PlusServer GmbH##
+###deb http://mirror.plusserver.com/ubuntu/ubuntu/
+
+##ServerLoft##
+###deb http://ubuntu.mirror.serverloft.de/ubuntu/
+
+##Orange Business Services##
+###deb http://ftp.oleane.net/ubuntu/
+
+##Rezopole A.D.##
+###deb http://ftp.rezopole.net/ubuntu/
+
+##Université de Lorraine##
+###deb http://miroir.univ-lorraine.fr/ubuntu/
+
+##Ircam##
+###deb http://mirrors.ircam.fr/pub/ubuntu/archive/
+
+##Université de Nantes##
+###deb http://ubuntu.univ-nantes.fr/ubuntu/
+
+##LIP6/UPMC##
+###deb http://www-ftp.lip6.fr/pub/linux/distributions/Ubuntu/archive/
+
+##Université de Picardie##
+###deb http://ftp.u-picardie.fr/mirror/ubuntu/ubuntu/
+
+##CNRS/IPSL##
+###deb http://distrib-coffee.ipsl.jussieu.fr/pub/linux/ubuntu/
+
+##Universite Reims Champagne-Ardenne##
+###deb http://ubuntu.univ-reims.fr/ubuntu/
+
+#Georgia
+##GRENA##
+###deb http://ubuntu.grena.ge/ubuntu/
+
+#Germany
+##RWTH Aachen University##
+###deb http://ftp.halifax.rwth-aachen.de/ubuntu/
+
+##Uni Stuttgart##
+###deb http://ftp.uni-stuttgart.de/ubuntu/
+
+##dogado GmbH##
+###deb http://mirror.dogado.de/ubuntu/
+
+##LRZ##
+###deb http://ubuntu.mirror.lrz.de/ubuntu/
+
+##Charite Berlin##
+###deb http://debian.charite.de/ubuntu/
+
+##StudNet Bonn##
+###deb http://ftp.stw-bonn.de/ubuntu/
+
+##23media##
+###deb http://mirror.23media.com/ubuntu/
+
+##LeaseWeb Germany GmbH##
+###deb http://mirror.de.leaseweb.net/ubuntu/
+
+##IPB Internet Provider in Berlin GmbH##
+###deb http://mirror.ipb.de/ubuntu/
+
+##wilhelm.tel GmbH##
+###deb http://mirror.wtnet.de/ubuntu/
+
+##Technische Universität Dresden##
+###deb http://ubuntu.mirror.tudos.de/ubuntu/
+
+##Friedrich-Alexander-Universität Erlangen-Nürnberg##
+###deb http://ftp.fau.de/ubuntu/
+
+##Esslingen University of Applied Sciences##
+###deb http://ftp-stud.hs-esslingen.de/ubuntu/
+
+##University of Kaiserslautern##
+###deb http://ftp.uni-kl.de/pub/linux/ubuntu/
+
+##NetCologne##
+###deb http://mirror.netcologne.de/ubuntu/
+
+##serverloft - SERVER4YOU##
+###deb http://mirror.serverloft.eu/ubuntu/ubuntu/
+
+##Artfiles New Media GmbH##
+###deb http://artfiles.org/ubuntu.com/
+
+##Freie Universität Berlin##
+###deb ftp://ftp.fu-berlin.de/linux/ubuntu/
+##RRZN, Leibniz Universität Hannover##
+###deb ftp://ftp.rrzn.uni-hannover.de/pub/mirror/linux/ubuntu
+##RRZN##
+###deb http://ftp.rrzn.uni-hannover.de/pub/mirror/linux/ubuntu/
+
+##Technical University of Braunschweig##
+###deb http://ftp.rz.tu-bs.de/pub/mirror/ubuntu-packages/
+
+##TU Chemnitz##
+###deb http://ftp.tu-chemnitz.de/pub/linux/ubuntu-ports/
+
+##TU-Ilmenau##
+###deb http://ftp.tu-ilmenau.de/mirror/ubuntu/
+
+##Universität Bayreuth##
+###deb http://ftp.uni-bayreuth.de/linux/ubuntu/ubuntu/
+
+##Johannes Gutenberg-University Mainz##
+###deb http://ftp.uni-mainz.de/ubuntu/
+
+##GWDG##
+###deb http://ftp5.gwdg.de/pub/linux/debian/ubuntu/
+
+##Dark Penguin Network##
+###deb http://linux.darkpenguin.net/distros/ubuntu-archive/
+
+##FH-Aachen##
+###deb http://mirror.stw-aachen.de/ubuntu/
+
+##Daniel Jost - Freelance Web Professional##
+###deb http://mirror.daniel-jost.net/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.eu-fr.kamatera.com/ubuntu/
+
+##KAMP Netzwerkdienste GmbH##
+###deb http://mirror.kamp.de/ubuntu/
+
+##PLUSTECH GmbH##
+###deb http://mirror.plustech.de/ubuntu/
+
+##ratiokontakt GmbH##
+###deb http://mirror.ratiokontakt.de/mirror/ubuntu/
+
+##ScaleUp Technologies GmbH &amp; Co. KG##
+###deb http://mirror.scaleuptech.com/ubuntu/
+
+##Tuxinator##
+###deb http://mirror2.tuxinator.org/ubuntu/
+
+##OTH Regensburg##
+###deb http://packages.oth-regensburg.de/ubuntu/
+
+##University of Leipzig##
+###deb http://suse.uni-leipzig.de/pub/releases.ubuntu.com/ubuntu/
+
+##TuxUsers##
+###deb http://files.tux-users.net/ubuntu/
+
+##Ubuntu.cybertips.info-archive##
+###deb http://ubuntu.cybertips.info/ubuntu/
+
+##UNITED COLO GmbH##
+###deb http://ubuntu.unitedcolo.de/ubuntu/
+
+##Host Europe##
+###deb http://ftp.hosteurope.de/mirror/archive.ubuntu.com/
+
+##Funkfreunde Landshut e.V.##
+###deb http://mirror.funkfreundelandshut.de/ubuntu/
+
+##Technische Universität Chemnitz##
+###deb http://ftp.tu-chemnitz.de/pub/linux/ubuntu/
+
+#Greece
+##University of Crete##
+###deb http://ftp.cc.uoc.gr/mirrors/linux/ubuntu/packages/
+
+##NTUA##
+###deb http://ftp.ntua.gr/ubuntu/
+
+##OTENET##
+###deb http://ubuntu.otenet.gr/
+
+#Greenland
+##Tele Greenland A/S##
+###deb http://mirror.greennet.gl/ubuntu/
+
+#Hong Kong
+##xTom Hong Kong Limited##
+###deb http://mirror.xtom.com.hk/ubuntu/
+
+##The Chinese University of Hong Kong##
+###deb http://ftp.cuhk.edu.hk/pub/Linux/ubuntu/
+
+##Gigabit Hosting##
+###deb http://hk.mirrors.thegigabit.com/ubuntu/
+
+##KoDDoS##
+###deb http://mirror-hk.koddos.net/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.as.kamatera.com/ubuntu/
+
+##PPlam##
+###deb http://www.ubuntu.org.tw/
+
+#Hungary
+##JZT Informatikai Kft##
+###deb http://repo.jztkft.hu/ubuntu/
+
+##Governmental Agency for IT Development, Hungary##
+###deb http://mirror.niif.hu/ubuntu/
+
+##FSN.hu Foundation ##
+###deb http://ftp.fsn.hu/ubuntu/
+
+##Quantum Mirror##
+###deb http://quantum-mirror.hu/mirrors/pub/ubuntu/
+
+##Szechenyi Istvan University##
+###deb http://mirrors.sth.sze.hu/ubuntu/
+
+#Iceland
+##Advania##
+###deb http://ubuntu.hysing.is/ubuntu/
+
+##Siminn hf##
+###deb http://speglar.simnet.is/ubuntu/
+
+#India
+##PicoNets WebWerks##
+###deb http://mirrors.piconets.webwerks.in/ubuntu-mirror/ubuntu/
+
+##Extreme IX##
+###deb http://repos.del.extreme-ix.org/ubuntu/
+
+##Esto Internet##
+###deb http://ubuntu-archive.mirrors.estointernet.in/
+
+##Indian Institute of Technology, Kanpur##
+###deb http://mirror.cse.iitk.ac.in/ubuntu/
+
+##Homi Bhabha Centre for Science Education,TIFR##
+###deb http://ubuntu.hbcse.tifr.res.in/ubuntu/
+
+##Shiv Nadar University##
+###deb http://ubuntu.mirror.snu.edu.in/ubuntu/
+
+##Indian Institute of Technology Madras##
+###deb http://ftp.iitm.ac.in/ubuntu/
+
+#Indonesia
+##Kelompok Linux Arek Suroboyo##
+###deb http://buaya.klas.or.id/ubuntu/
+
+##Deace Mirror##
+###deb http://mirror.deace.id/ubuntu/
+
+##University of Indonesia##
+###deb http://kambing.ui.ac.id/ubuntu/
+
+##Datautama-Net-ID##
+###deb http://kartolo.sby.datautama.net.id/ubuntu/
+
+##Politeknik Elektronika Negeri Surabaya##
+###deb http://kebo.pens.ac.id/ubuntu/
+
+##EEPIS-ITS##
+###deb http://kebo.vlsm.org/ubuntu/
+
+##PT. Biznet Gio Nusantara##
+###deb http://mirror.biznetgio.com/ubuntu/
+
+##PT Global Intermedia Nusantara##
+###deb http://mirror.gi.co.id/ubuntu/
+
+##Laboratorium Komputer ID##
+###deb http://mirror.labkom.id/ubuntu/
+
+##Pemerintah Provinsi Papua##
+###deb http://mirror.papua.go.id/ubuntu/
+
+##Universitas Jember##
+###deb http://mirror.unej.ac.id/ubuntu/
+
+##DOSCOM##
+###deb http://repo.doscom.org/ubuntu/repo/
+
+##Politeknik Negeri Banyuwangi##
+###deb http://mirror.poliwangi.ac.id/ubuntu/
+
+##Telkom University##
+###deb http://mirror.telkomuniversity.ac.id/ubuntu/
+
+##Universitas Surabaya##
+###deb http://suro.ubaya.ac.id/ubuntu/
+
+#Iran, Islamic Republic of
+##Sindad LLC##
+###deb http://ir.ubuntu.sindad.cloud/ubuntu/
+
+##Amin IDC##
+###deb http://mirror.aminidc.com/ubuntu/
+
+##Iranserver##
+###deb http://mirror.iranserver.com/ubuntu/
+
+##Petiak##
+###deb http://archive.ubuntu.petiak.ir/ubuntu/
+
+##Armaghan##
+###deb http://mirror.armaghan.net/ubuntu/
+
+##Majidiof##
+###deb http://mirror.googel.life/ubuntu/archive/
+
+##Rasanegar Smart Solutions##
+###deb http://mirror.rasanegar.com/ubuntu/archive/
+
+##Shatel##
+###deb http://ubuntu.shatel.ir/ubuntu/
+
+##ParsDev##
+###deb http://ubuntu-mirror.parsdev.net/ubuntu-archive/
+
+##Isfahan University of Technology##
+###deb http://repo.iut.ac.ir/repo/Ubuntu/
+
+#Ireland
+##HEAnet##
+###deb http://ftp.heanet.ie/pub/ubuntu/
+
+#Israel
+##Kamatera Inc.##
+###deb http://mirror.il-jr.kamatera.com/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.il-pt.kamatera.com/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.il-rh.kamatera.com/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.il-ta.kamatera.com/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.il.kamatera.com/ubuntu/
+
+##uPress Inc##
+###deb http://rep-ubuntu-il.upress.io/ubuntu/
+
+##Israel Internet Association##
+###deb http://mirror.isoc.org.il/pub/ubuntu/
+
+#Italy
+##Evowise.com##
+###deb http://it-mirrors.evowise.com/ubuntu/
+
+##Connesi s.p.a.##
+###deb http://ubuntu.connesi.it/ubuntu/
+
+##GARR Mirror service##
+###deb http://ubuntu.mirror.garr.it/ubuntu/
+
+##University of Genoa##
+###deb http://giano.com.dist.unige.it/ubuntu/
+
+#Japan
+##Yamagata University##
+###deb http://linux.yz.yamagata-u.ac.jp/ubuntu/
+
+##JAIST##
+###deb http://ftp.jaist.ac.jp/pub/Linux/ubuntu/
+
+##RIKEN##
+###deb http://ftp.riken.jp/Linux/ubuntu/
+
+##Tsukuba WIDE##
+###deb http://ftp.tsukuba.wide.ad.jp/Linux/ubuntu/
+
+##FAIRWAY Corportaion##
+###deb http://mirror.fairway.ne.jp/ubuntu/
+
+##UNIVERSITY OF TOYAMA with Ubuntu Japanese LoCo##
+###deb http://ubuntutym.u-toyama.ac.jp/ubuntu/
+
+##K.K. Ashisuto with Ubuntu Japanese LoCo##
+###deb http://ubuntu-ashisuto.ubuntulinux.jp/ubuntu/
+
+##KDDI R&amp;D Laboratories Inc.##
+###deb http://www.ftp.ne.jp/Linux/packages/ubuntu/archive/
+
+#Kazakhstan
+##LLP Kompaniya Hoster.KZ##
+###deb http://mirror.hoster.kz/ubuntu/
+
+##Neolabs LLP##
+###deb http://mirror.neolabs.kz/ubuntu/
+
+##PS Internet Company LLC##
+###deb http://mirror.ps.kz/ubuntu/
+
+#Kenya
+##Kenya Education Network (KENET)##
+###deb http://ubuntu.mirror.ac.ke/ubuntu/
+
+#Korea, Republic of
+##Kakao Corp.##
+###deb http://mirror.kakao.com/ubuntu/
+
+##TwitchDarkBot##
+###deb http://twitchdarkbot.com/ubuntu/
+
+##TwitchDarkBot-ports##
+###deb http://twitchdarkbot.com/ubuntu-ports/
+
+##Daum Communications Corp.##
+###deb http://ftp.daum.net/ubuntu/
+
+##Harukasan (Pukyong National University)##
+###deb http://ftp.harukasan.org/ubuntu/
+
+##Harukasan (Pukyong National University) - Ubuntu Ports##
+###deb http://ftp.harukasan.org/ubuntu-ports/
+
+##Yongbok.net##
+###deb http://mirror.yongbok.net/ubuntu/
+
+##Misaka Mikoto Network##
+###deb http://mirror.misakamikoto.network/ubuntu/
+
+##Misaka Mikoto Network - Ubuntu Ports##
+###deb http://mirror.misakamikoto.network/ubuntu-ports/
+
+##LANET##
+###deb http://ftp.lanet.kr/ubuntu/
+
+#Latvia
+##University of Latvia##
+###deb http://ubuntu-arch.linux.edu.lv/ubuntu/
+
+##koyanet.lv##
+###deb http://ubuntu.koyanet.lv/ubuntu/
+
+#Lithuania
+##VPSnet.com##
+###deb http://mirror.vpsnet.com/ubuntu/
+
+##Interneto Vizija##
+###deb http://ubuntu-archive.mirror.serveriai.lt/
+
+##Vilnius University##
+###deb http://ubuntu.mirror.vu.lt/ubuntu/
+
+##LitNET##
+###deb http://ftp.litnet.lt/ubuntu/
+
+#Luxembourg
+##root S.A.##
+###deb http://ubuntu.mirror.root.lu/ubuntu/
+
+#Macedonia, Republic of
+##one.Vip##
+###deb http://mirror.onevip.mk/ubuntu/
+
+##Macedonian Telecom##
+###deb http://mirror.t-home.mk/ubuntu/
+
+#Madagascar
+##Telma##
+###deb http://ubuntu.dts.mg/ubuntu/
+
+#Malaysia
+##Gigabit Hosting##
+###deb http://my.mirrors.thegigabit.com/ubuntu/
+
+##IPServerone Solutions Sdn Bhd##
+###deb http://ubuntu.ipserverone.com/ubuntu/
+
+##myduniahosting.com##
+###deb http://ubuntu.mirror.myduniahost.com/ubuntu/
+
+##Tuxuri##
+###deb http://ubuntu.tuxuri.com/ubuntu/
+
+#Moldova, Republic of
+##Trabia-Network##
+###deb http://mirror.as43289.net/ubuntu/
+
+##MivoCloud##
+###deb http://mirrors.mivocloud.com/ubuntu/
+
+##iHost##
+###deb http://mirror.ihost.md/ubuntu/
+
+#Mongolia
+##Mongolian National Data Center##
+###deb http://mirror.datacenter.mn/ubuntu/
+
+#Morocco
+##MARWAN##
+###deb http://mirror.marwan.ma/ubuntu/
+
+#Namibia
+##Namibia University of Science and Technology##
+###deb http://download.nust.na/pub/ubuntu/ubuntu/
+
+#Nepal
+##Nepal Telecom##
+###deb http://ubuntu.ntc.net.np/ubuntu/
+
+##Nepal Telecom##
+###deb http://ntc.net.np/ubuntu/
+
+#Netherlands
+##datapacket.com##
+###deb http://mirror.nl.datapacket.com/ubuntu/
+
+##BIT B.V.##
+###deb http://nl.archive.ubuntu.com/ubuntu/
+
+##NLUUG##
+###deb http://ftp.nluug.nl/os/Linux/distr/ubuntu/
+
+##University of Twente, The Netherlands##
+###deb http://ftp.snt.utwente.nl/pub/os/linux/ubuntu/
+
+##1000Mbps.com##
+###deb http://mirror.1000mbps.com/ubuntu/
+
+##NFOrce Entertainment B.V.##
+###deb http://mirror.nforce.com/pub/linux/ubuntu/
+
+##LeaseWeb Global B.V.##
+###deb http://mirror.nl.leaseweb.net/ubuntu/
+
+##Serverion##
+###deb http://mirror.serverion.com/ubuntu/
+
+##Serverius##
+###deb http://mirror.serverius.net/ubuntu/
+
+##Vente-Privée##
+###deb http://mirror.vpgrp.io/ubuntu/
+
+##xTom##
+###deb http://mirrors.xtom.nl/ubuntu/
+
+##Cambrium BV.##
+###deb http://ubuntu.mirror.cambrium.nl/ubuntu/
+
+##True BV##
+###deb http://ubuntu.mirror.true.nl/ubuntu/
+
+##Dataone Datacenters##
+###deb http://mirror.dataone.nl/ubuntu-archive/
+
+##TransIP B.V.##
+###deb http://mirror.transip.net/ubuntu/ubuntu/
+
+##Amsio B.V.##
+###deb http://mirror.amsiohosting.net/archive.ubuntu.com/
+
+##PCextreme B.V.##
+###deb http://nl3.archive.ubuntu.com/ubuntu/
+
+##Technische Universiteit Delft##
+###deb http://ftp.tudelft.nl/archive.ubuntu.com/
+
+##Kamatera Inc.##
+###deb http://mirror.eu.kamatera.com/ubuntu/
+
+##Hostnet bv##
+###deb http://mirror.hostnet.nl/ubuntu/archive/
+
+##Previder B.V.##
+###deb http://mirror.previder.nl/ubuntu/
+
+##Rijksuniversiteit Groningen##
+###deb http://osmirror.rug.nl/ubuntu/
+
+##Ftpserv-tudelft-nl##
+###deb ftp://ftpserv.tudelft.nl/pub/Linux/archive.ubuntu.com/
+#New Caledonia
+##Nautile##
+###deb http://archive.ubuntu.nautile.nc/ubuntu/
+
+##Offratel##
+###deb http://ubuntu.lagoon.nc/ubuntu/
+
+##OFFRATEL LAGOON##
+###deb http://mirror.lagoon.nc/ubuntu/
+
+#New Zealand
+##Free Software Mirror Group (FSMG)##
+###deb http://mirror.fsmg.org.nz/ubuntu/
+
+##Theo M's Mirror Service##
+###deb http://ubuntu.mirrors.theom.nz/
+
+##University of Canterbury##
+###deb http://ucmirror.canterbury.ac.nz/ubuntu/
+
+#Norway
+##Blix Solutions AS##
+###deb http://no.mirrors.blix.com/ubuntu/
+
+##The Student Society in Trondhjem, Norway##
+###deb http://no.archive.ubuntu.com/ubuntu/
+
+##UNINETT/University of Oslo##
+###deb http://ftp.uninett.no/ubuntu/
+
+##University of Bergen##
+###deb http://ubuntu.uib.no/archive/
+
+#Pakistan
+##Nayatel (Pvt) Ltd##
+###deb http://mirrors.nayatel.com/ubuntu/
+
+##Inara Technologies##
+###deb http://repo.inara.pk/ubuntu/
+
+##Isra University Hyderabad##
+###deb http://repo.isra.edu.pk/ubuntu/
+
+#Philippines
+##DOST-ASTI##
+###deb http://mirror.pregi.net/ubuntu/
+
+##Rise##
+###deb http://mirror.rise.ph/ubuntu/
+
+#Poland
+##ICM - Interdisciplinary Centre for Mathematical and Computational Modelling##
+###deb http://ftp.icm.edu.pl/pub/Linux/ubuntu/
+
+##West Pomeranian University of Technology##
+###deb http://ftp.ps.pl/pub/Linux/ubuntu/archive/
+
+##AGH University of Science and Technology##
+###deb http://ftp.agh.edu.pl/ubuntu/
+
+##Chmuri.net##
+###deb http://mirror.chmuri.net/ubuntu/
+
+##Piotrkosoft.net - Data Storage Center##
+###deb http://piotrkosoft.net/pub/mirrors/ubuntu/
+
+##Miejska Sieć Komputerowa LODMAN / Politechnika Łódzka CK##
+###deb http://ubuntu.man.lodz.pl/ubuntu/
+
+##Politechnika Gdanska  / CI TASK##
+###deb http://ubuntu.task.gda.pl/ubuntu/
+
+##Vectra##
+###deb http://ftp.vectranet.pl/ubuntu/
+
+##Ftp-man-szczecin-pl##
+###deb ftp://ftp.man.szczecin.pl/pub/Linux/ubuntu/
+#Portugal
+##PTISP##
+###deb http://mirrors.ptisp.pt/ubuntu/
+
+##Universidade do Porto##
+###deb http://mirrors.up.pt/ubuntu/
+
+##CeSIUM##
+###deb http://cesium.di.uminho.pt/pub/ubuntu-archive/
+
+##University of Coimbra, Dep. Informatics Engineering##
+###deb http://archive.ubuntumirror.dei.uc.pt/ubuntu/
+
+##Rede das Novas Licenciaturas - Instituto Superior Técnico##
+###deb http://ftp.rnl.tecnico.ulisboa.pt/pub/ubuntu/archive/
+
+##Grupo de Linux da Universidade de Aveiro##
+###deb http://glua.ua.pt/pub/ubuntu/
+
+#Puerto Rico
+##University of Puerto Rico##
+###deb http://mirrors.upr.edu/ubuntu/
+
+#Romania
+##efectRO##
+###deb http://mirror.efect.ro/ubuntu/archive/
+
+##NAV Communications##
+###deb http://mirrors.nav.ro/ubuntu/
+
+##Evowise.com##
+###deb http://ro-mirrors.evowise.com/ubuntu/
+
+##UPC Romania##
+###deb http://ftp.upcnet.ro/mirrors/ubuntu.com/ubuntu/
+
+##Chroot##
+###deb http://mirrors.chroot.ro/ubuntu/
+
+##NXTHOST.COM##
+###deb http://mirrors.nxthost.com/ubuntu/
+
+##Pidgin Host##
+###deb http://mirrors.pidginhost.com/ubuntu/
+
+##RCS &amp; RDS##
+###deb http://ubuntu.mirrors.linux.ro/archive/
+
+##xServers##
+###deb http://mirrors.xservers.ro/ubuntu/
+
+#Russian Federation
+##Truenetwork##
+###deb http://mirror.truenetwork.ru/ubuntu/
+
+##docker.ru##
+###deb http://mirror.docker.ru/ubuntu/
+
+##Beeline##
+###deb http://mirror.corbina.net/ubuntu/
+
+##TIMEWEB##
+###deb http://mirror.timeweb.ru/ubuntu/
+
+##Yandex##
+###deb http://mirror.yandex.ru/ubuntu/
+
+##POWERNET##
+###deb http://mirrors.powernet.com.ru/ubuntu/
+
+##Logol Hosting##
+###deb http://mirror.logol.ru/ubuntu/
+
+#Saudi Arabia
+##KACST/ISU##
+###deb http://mirrors.isu.net.sa/pub/ubuntu-releases/
+
+#Serbia
+##Kumi Systems e.U.##
+###deb http://rs.mirror.kumi.systems/ubuntu/
+
+##Faculty of Technical Sciences, University of Novi Sad##
+###deb http://ubuntu.mirror.ftn.uns.ac.rs/archive/
+
+#Singapore
+##Andrew Yong##
+###deb http://mirror.0x.sg/ubuntu/
+
+##National University of Singapore##
+###deb http://download.nus.edu.sg/mirror/ubuntu/
+
+##Kenny Lim##
+###deb http://mirror.aktkn.sg/ubuntu/
+
+#Slovakia
+##VNET,a.s.##
+###deb http://mirror.vnet.sk/ubuntu/
+
+##Energotel, a.s.##
+###deb http://ftp.energotel.sk/pub/linux/ubuntu/
+
+##Rainside##
+###deb http://tux.rainside.sk/ubuntu/
+
+#Slovenia
+##Kumi Systems e.U.##
+###deb http://si.mirror.kumi.systems/ubuntu/
+
+##Arnes##
+###deb http://ftp.arnes.si/pub/mirrors/ubuntu/
+
+#South Africa
+##LNX Solutions##
+###deb http://mirror.lnx-solutions.com/ubuntu/
+
+##WIRUlink##
+###deb http://mirror.wiru.co.za/ubuntu/
+
+##TENET##
+###deb http://ubuntu.mirror.ac.za/
+
+##UCT LEG##
+###deb http://ftp.leg.uct.ac.za/ubuntu/
+
+##Rain##
+###deb http://ubuntu.mirror.rain.co.za/ubuntu/
+
+#Spain
+##Evowise.com##
+###deb http://es-mirrors.evowise.com/ubuntu/
+
+##Oficina de Software Libre - CIXUG##
+###deb http://ftp.udc.es/ubuntu/
+
+##CICA##
+###deb http://ubuntu.cica.es/ubuntu/
+
+##Caliu##
+###deb http://ftp.caliu.cat/pub/distribucions/ubuntu/archive/
+
+##CSUC##
+###deb http://ftp.csuc.cat/ubuntu/archieve/
+
+##TEDRA GROUP##
+###deb http://mirror.tedra.es/ubuntu/
+
+##Universidad Carlos III de Madrid - Oficina de Software Libre##
+###deb http://ubuntu.uc3m.es/ubuntu/
+
+##DAFI de la Universidad de Murcia##
+###deb http://dafi.inf.um.es/ubuntu/
+
+##GRN Serveis telemàtics##
+###deb http://ubuntu.grn.cat/ubuntu/
+
+#Sweden
+##Academic Computer Club, Umeå University##
+###deb http://ftp.acc.umu.se/ubuntu/
+
+##Stockholm University##
+###deb http://ubuntu.mirror.su.se/ubuntu/
+
+##Lysator##
+###deb http://ftp.lysator.liu.se/ubuntu/
+
+##Duvaliden##
+###deb http://mirror.duvaliden.com/ubuntu/
+
+##LinuxPizza##
+###deb http://mirror.linux.pizza/ubuntu/
+
+##OperationTulip##
+###deb http://mirror.operationtulip.com/ubuntu/
+
+##Zetup AB##
+###deb http://mirror.zetup.net/ubuntu/
+
+##c0urier.net##
+###deb http://mirrors.c0urier.net/linux/ubuntu/
+
+##Infania Networks##
+###deb http://ftpmirror1.infania.net/ubuntu/
+
+#Switzerland
+##Init7 (Schweiz) AG##
+###deb http://mirror.init7.net/ubuntu/
+
+##Communication Systems Group (CSG@UZH)##
+###deb http://archive.ubuntu.csg.uzh.ch/ubuntu/
+
+##ETH Zürich, ISG D-PHYS##
+###deb http://ubuntu.ethz.ch/ubuntu/
+
+##Adfinis SyGroup AG##
+###deb http://pkg.adfinis-sygroup.ch/ubuntu/
+
+#Taiwan
+##NCHC, Taiwan##
+###deb http://free.nchc.org.tw/ubuntu/
+
+##Ubuntu-TW##
+###deb http://ftp.ubuntu-tw.net/ubuntu/
+
+##TKU-TamKangUniversity##
+###deb http://ftp.tku.edu.tw/ubuntu/
+
+##National Central University, Mobile Broadband Network Lab##
+###deb http://mirror.nwlab.tk/ubuntu/
+
+##Institute of Network Development, National Taiwan Ocean University##
+###deb http://ftp.ntou.edu.tw/ubuntu/
+
+##NCTUCSCC##
+###deb http://ubuntu.cs.nctu.edu.tw/ubuntu/
+
+##Shu-Te University##
+###deb http://ubuntu.stu.edu.tw/ubuntu/
+
+##Taiwan Mirror##
+###deb http://ftp.mirror.tw/pub/ubuntu/ubuntu/
+
+##Chunghwa Telecom##
+###deb http://mirror01.idc.hinet.net/ubuntu/
+
+#Tanzania, United Republic of
+##Aptus Solutions##
+###deb http://mirror.aptus.co.tz/pub/ubuntuarchive/
+
+##Habari Node Ltd.##
+###deb http://deb-mirror.habari.co.tz/ubuntu/
+
+#Thailand
+##Khon Kaen University##
+###deb http://mirror.kku.ac.th/ubuntu/
+
+##TOT Internet Data Center##
+###deb http://mirror1.totbb.net/ubuntu/
+
+##Bangmod Enterprise Co., Ltd. ##
+###deb http://mirrors.bangmod.cloud/ubuntu/
+
+##NIPA.CLOUD 1st Cloud Thailand##
+###deb http://mirrors.nipa.cloud/ubuntu/
+
+##Office of Computer Services, Kasetsart University##
+###deb http://mirror1.ku.ac.th/ubuntu/
+
+##Prince of Songkla University##
+###deb http://mirrors.psu.ac.th/ubuntu/
+
+#Turkey
+##PremierDC Veri Merkezi A.S##
+###deb http://mirror.sh.com.tr/ubuntu/
+
+##Linux Kullanicilari Dernegi##
+###deb http://ftp.linux.org.tr/ubuntu/
+
+##MUVHost - MUV Bilisim ve Telekomunikasyon Hiz. Ltd.##
+###deb http://mirror.muvhost.com/ubuntu/
+
+##PROVIDER DATA CENTER SERVICES##
+###deb http://mirror.provider.com.tr/ubuntu/
+
+##Netinternet##
+###deb http://mirror.ni.net.tr/ubuntu/
+
+##SAGLAYICI Bilisim##
+###deb http://ubuntu.saglayici.com/ubuntu/
+
+##Turhost Hosting &amp; Server##
+###deb http://ubuntu.turhost.com/ubuntu/
+
+##Vargonen##
+###deb http://ubuntu.vargonen.com/ubuntu/
+
+#Uganda
+##Research &amp; Education Network for Uganda##
+###deb http://mirror.renu.ac.ug/ubuntu/
+
+#Ukraine
+##IP-Connect LLC##
+###deb http://ubuntu.ip-connect.vn.ua/
+
+##Colocall Datacenter##
+###deb http://ubuntu.colocall.net/ubuntu/
+
+##Volia Broadband##
+###deb http://ubuntu.volia.net/ubuntu-archive/
+
+##Omnilance Ltd.##
+###deb http://ubuntu.mirrors.omnilance.com/ubuntu/
+
+##mirohost.net##
+###deb http://mirror.mirohost.net/ubuntu/
+
+##NetForce Ukraine LLC##
+###deb http://ubuntu.netforce.hosting/ubuntu/
+
+#United Kingdom
+##UK Dedicated Servers Ltd##
+###deb http://mirror.cov.ukservers.com/ubuntu/
+
+##Vorboss Ltd##
+###deb http://mirror.vorboss.net/ubuntu-archive/
+
+##UKFast##
+###deb http://mirrors.ukfast.co.uk/sites/archive.ubuntu.com/
+
+##University Of Kent UK Mirror Service##
+###deb http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/
+
+##Evowise.com##
+###deb http://uk-mirrors.evowise.com/ubuntu/
+
+##XILO Communications Ltd.##
+###deb http://mirror.as29550.net/archive.ubuntu.com/
+
+##Bytemark Hosting##
+###deb http://mirror.bytemark.co.uk/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.eu-lo.kamatera.com/ubuntu/
+
+##Freethought Internet##
+###deb http://mirror.freethought-internet.co.uk/ubuntu/
+
+##Mythic Beasts Ltd##
+###deb http://mirror.mythic-beasts.com/ubuntu/
+
+##IT Services, University of Oxford##
+###deb http://mirror.ox.ac.uk/sites/archive.ubuntu.com/ubuntu/
+
+##Goscomb Technologies Limited##
+###deb http://mirror.sov.uk.goscomb.net/ubuntu/
+
+##Coreix LTD##
+###deb http://mirrors.coreix.net/ubuntu/
+
+##Get Hosted Online##
+###deb http://mirrors.gethosted.online/ubuntu/
+
+##Melbourne Server Hosting Ltd.##
+###deb http://mirrors.melbourne.co.uk/ubuntu/
+
+##UK2##
+###deb http://ubuntu.mirrors.uk2.net/ubuntu/
+
+##WORLDBUS##
+###deb http://uk.mirror.worldbus.ge/ubuntu/
+
+##Canonical Ltd.##
+###deb http://archive.ubuntu.com/ubuntu/
+
+##The Positive Internet Company##
+###deb http://ubuntu.positive-internet.com/ubuntu/
+
+#United States
+##mirror.enzu.com.ubuntu##
+###deb http://mirror.enzu.com/ubuntu/
+
+##Genesis Adaptive Hosting, Inc.##
+###deb http://mirror.genesisadaptive.com/ubuntu/
+
+##Princeton Mathematics##
+###deb http://mirror.math.princeton.edu/pub/ubuntu/
+
+##TeraSwitch Inc.##
+###deb http://mirror.pit.teraswitch.com/ubuntu/
+
+##xTom##
+###deb http://mirrors.xtom.com/ubuntu/
+
+##Evowise.com##
+###deb http://la-mirrors.evowise.com/ubuntu/
+
+##University of Arizona##
+###deb http://mirror.arizona.edu/ubuntu/
+
+##BrightRidge##
+###deb http://mirror.brightridge.com/ubuntuarchive/
+
+##University of New Mexico Computer Science Department##
+###deb http://mirror.cs.unm.edu/archive/
+
+##Nodes Direct##
+###deb http://mirror.nodesdirect.com/ubuntu/
+
+##Pacific NorthWest National Lab##
+###deb http://mirror.pnl.gov/ubuntu/
+
+##LeaseWeb USA, Inc##
+###deb http://mirror.us.leaseweb.net/ubuntu/
+
+##Bloomsburg University of Pennsylvania##
+###deb http://mirrors.bloomu.edu/ubuntu/
+
+##Rochester Institute of Technology##
+###deb http://mirrors.rit.edu/ubuntu/
+
+##Syringa Networks##
+###deb http://mirrors.syringanetworks.net/ubuntu-archive/
+
+##Evowise.com##
+###deb http://ny-mirrors.evowise.com/ubuntu/
+
+##Purdue Linux Users Group##
+###deb http://plug-mirror.rcac.purdue.edu/ubuntu/
+
+##FORETHOUGHT.net##
+###deb http://repos.forethought.net/ubuntu/
+
+##University of Utah##
+###deb http://ubuntu.cs.utah.edu/ubuntu/
+
+##Constant.com##
+###deb http://ubuntu.mirror.constant.com/
+
+##Vapor IO##
+###deb http://ubuntu.mirror.vio.sh/ubuntu/
+
+##Wikimedia Foundation##
+###deb http://mirrors.wikimedia.org/ubuntu/
+
+##Columbia University##
+###deb http://mirror.cc.columbia.edu/pub/linux/ubuntu/archive/
+
+##Limestone Networks##
+###deb http://mirror.lstn.net/ubuntu/
+
+##Siena College##
+###deb http://mirror.siena.edu/ubuntu/
+
+##AdvancedHosters##
+###deb http://mirrors.advancedhosters.com/ubuntu/
+
+##Kernel.org##
+###deb http://mirrors.us.kernel.org/ubuntu/
+
+##Dakota State University##
+###deb http://repo.ialab.dsu.edu/ubuntu/
+
+##OSU Open Source Lab##
+###deb http://ubuntu.osuosl.org/ubuntu/
+
+##University of South Florida##
+###deb http://ftp.usf.edu/pub/ubuntu/
+
+##Michigan Tech Linux Users' Group##
+###deb http://lug.mtu.edu/ubuntu/
+
+##Virginia Tech##
+###deb http://mirror.cc.vt.edu/pub2/ubuntu/
+
+##Clarkson University##
+###deb http://mirror.clarkson.edu/ubuntu/
+
+##Cogent Communications##
+###deb http://mirror.cogentco.com/pub/linux/ubuntu/
+
+##James Madison University Department of Computer Science##
+###deb http://mirror.cs.jmu.edu/pub/ubuntu/
+
+##University of Pittsburgh##
+###deb http://mirror.cs.pitt.edu/ubuntu/archive/
+
+##Conduit Implementations, LLC##
+###deb http://mirror.hodgepodge.dev/ubuntu/
+
+##University of California at Davis##
+###deb http://mirror.math.ucdavis.edu/ubuntu/
+
+##MetroCast Cablevision##
+###deb http://mirror.metrocast.net/ubuntu/
+
+##MrJester##
+###deb http://mirror.mrjester.net/ubuntu/archive/
+
+##NSEC##
+###deb http://us.mirror.nsec.pt/ubuntu/
+
+##os6.org##
+###deb http://mirror.os6.org/ubuntu/
+
+##Silicon Valley Web Hosting LLC##
+###deb http://mirror.sjc02.svwh.net/ubuntu/
+
+##Steadfast Networks##
+###deb http://mirror.steadfastnet.com/ubuntu/
+
+##Team Cymru##
+###deb http://mirror.team-cymru.com/ubuntu/
+
+##Team Cymru, Inc.##
+###deb http://mirror.team-cymru.org/ubuntu/
+
+##ServerForge##
+###deb http://mirror.ubuntu.serverforge.org/
+
+##University of Maryland##
+###deb http://mirror.umd.edu/ubuntu/
+
+##University of Oregon##
+###deb http://mirror.uoregon.edu/ubuntu/
+
+##Nexcess.net##
+###deb http://mirror.us-midwest-1.nexcess.net/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.us-ny2.kamatera.com/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.us-sc.kamatera.com/ubuntu/
+
+##Kamatera Inc.##
+###deb http://mirror.us-tx.kamatera.com/ubuntu/
+
+##Accretive Networks##
+###deb http://mirrors.accretive-networks.net/ubuntu/
+
+##ARP Networks, Inc.##
+###deb http://mirrors.arpnetworks.com/Ubuntu/
+
+##Portland State University##
+###deb http://mirrors.cat.pdx.edu/ubuntu/
+
+##Easynews##
+###deb http://mirrors.easynews.com/linux/ubuntu/
+
+##GigeNet##
+###deb http://mirrors.gigenet.com/ubuntuarchive/
+
+##LiquidWeb##
+###deb http://mirrors.liquidweb.com/ubuntu/
+
+##MTU Linux Users Group##
+###deb http://mirrors.lug.mtu.edu/ubuntu/
+
+##University of Maine System##
+###deb http://mirrors.maine.edu/ubuntu/
+
+##MIT SIPB##
+###deb http://mirrors.mit.edu/ubuntu/
+
+##NameCheap.com##
+###deb http://mirrors.namecheap.com/ubuntu/
+
+##Open Computing Facility at UC Berkeley##
+###deb http://mirrors.ocf.berkeley.edu/ubuntu/
+
+##Sonic.net, Inc.##
+###deb http://mirrors.sonic.net/ubuntu/
+
+##TripAdvisor##
+###deb http://mirrors.tripadvisor.com/ubuntu/
+
+##US Internet##
+###deb http://mirrors.usinternet.com/ubuntu/archive/
+
+##Xmission##
+###deb http://mirrors.xmission.com/ubuntu/
+
+##Corespace ##
+###deb http://pubmirrors.dal.corespace.com/ubuntu/
+
+##MBNI, University of Michigan##
+###deb http://repo.miserver.it.umich.edu/ubuntu/
+
+##TDS Internet Services##
+###deb http://ubuntu.mirrors.tds.net/pub/ubuntu/
+
+##Frontier Communications##
+###deb http://ubuntu.mirror.frontiernet.net/ubuntu/
+
+##pair Networks##
+###deb http://ubuntu.mirrors.pair.com/archive/
+
+##Carnegie Mellon Computer Club##
+###deb http://www.club.cc.cmu.edu/pub/ubuntu/
+
+##Georgia Tech. Software Library##
+###deb http://www.gtlib.gatech.edu/pub/ubuntu/
+
+##Duke University##
+###deb http://archive.linux.duke.edu/ubuntu/
+
+##Thomas Ward Consulting, LLC##
+###deb http://archive.ubuntu.thomas-ward-consulting.llc/ubuntu/
+
+##Advanced Network Computing Lab Hawaii##
+###deb http://mirror.ancl.hawaii.edu/linux/ubuntu/
+
+##Washington State University##
+###deb http://mirrors.vcea.wsu.edu/ubuntu/
+
+##Secured Servers LLC##
+###deb http://ubuntu.securedservers.com/
+
+##WVU LCSEE##
+###deb http://mirror.lcsee.wvu.edu/ubuntu/
+
+##University of West Georgia##
+###deb http://reflector.westga.edu/repos/Ubuntu/archive/
+
+##Indiana University##
+###deb http://ftp.ussg.iu.edu/linux/ubuntu/
+
+##Virginia Commonwealth University##
+###deb http://mirror.vcu.edu/pub/gnu+linux/ubuntu/
+
+#Uruguay
+##Universidad de la República##
+###deb http://repos.interior.edu.uy/ubuntu/
+
+##UDELAR-CURE##
+###deb http://ubuntu.repo.cure.edu.uy/mirror/
+
+#Uzbekistan
+##ISP Sarkor Telecom##
+###deb http://ubuntu.snet.uz/ubuntu/
+
+#Viet Nam
+##BKNS.VN##
+###deb http://mirrors.bkns.vn/ubuntu/
+
+##clearsky.vn##
+###deb http://mirror.clearsky.vn/ubuntu/
+
+##EHOST Software##
+###deb http://mirror.ehost.vn/ubuntu/
+
+##Nhan Hoa##
+###deb http://mirrors.nhanhoa.com/ubuntu/
+
+##vHost##
+###deb http://mirrors.vhost.vn/ubuntu/
+
+##XTDV Group##
+###deb http://opensource.xtdv.net/ubuntu/

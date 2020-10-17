@@ -208,7 +208,7 @@ worldwide_mirror_station() {
             "21" "香港:ftp.hk.debian.org" \
             "22" "Hungary:ftp.hu.debian.org" \
             "23" "Italy:ftp.it.debian.org" \
-            "24" "地球流体電脳倶楽部:ftp.jp.debian.org" \
+            "24" "日本:ftp.jp.debian.org" \
             "25" "한국:ftp.kr.debian.org" \
             "26" "Lithuania:ftp.lt.debian.org" \
             "27" "Mexico:ftp.mx.debian.org" \

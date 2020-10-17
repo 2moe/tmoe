@@ -951,10 +951,11 @@ install_armbian_linux_distro() {
 	BETA_SYSTEM=$(
 		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统。\n以下系统已预装桌面,每个镜像大小约为1G" 0 50 0 \
 			"1" "🐎 Bullseye(debian 11)" \
-			"2" "🐱 Focal Fossa(ubuntu 20.04)" \
-			"3" "Custom code手动输入版本代号" \
-			"4" "🐶 Buster(debian 10)" \
-			"5" "Bionic Beaver仿生海狸(ubuntu 18.04)" \
+			"2" "🦍 Groovy Gorilla(ubuntu 20.10)" \
+			"3" "🐱 Focal Fossa(ubuntu 20.04)" \
+			"4" "Custom code手动输入版本代号" \
+			"5" "🐶 Buster(debian 10)" \
+			"6" "Bionic Beaver仿生海狸(ubuntu 18.04)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -962,10 +963,11 @@ install_armbian_linux_distro() {
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='bullseye' ;;
-	2) DISTRO_CODE='focal' ;;
-	3) custom_armbian_version ;;
-	4) DISTRO_CODE='buster' ;;
-	5) DISTRO_CODE='bionic' ;;
+	2) DISTRO_CODE='groovy' ;;
+	3) DISTRO_CODE='focal' ;;
+	4) custom_armbian_version ;;
+	5) DISTRO_CODE='buster' ;;
+	6) DISTRO_CODE='bionic' ;;
 	esac
 	######################
 	case "${ARCH_TYPE}" in
@@ -988,7 +990,7 @@ install_different_armbian_gnu_linux_distros() {
 		apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
 	fi
 	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
-	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | egrep "${DISTRO_CODE}-desktop" | egrep -v '.tar.lz4.asc|.torrent|.lz4.list' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_CODE}-xfce-desktop" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
 	case "${DISTRO_CODE}" in
 	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;

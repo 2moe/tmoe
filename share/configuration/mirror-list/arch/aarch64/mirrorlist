@@ -1,0 +1,56 @@
+## Arch Linux ARM repository mirrorlist
+##https://archlinuxarm.org/about/mirrors
+##
+
+## Worldwide
+#Server = https://mirror.archlinuxarm.org/$arch/$repo
+#
+#Australia	Sydney	
+#Server = http://au.mirror.archlinuxarm.org/$arch/$repo
+
+#Brazil	Sao Paulo	
+#Server = http://br.mirror.archlinuxarm.org/$arch/$repo	
+
+#China
+#Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
+#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
+
+#Denmark	Aalborg	
+#Server = http://dk.mirror.archlinuxarm.org/$arch/$repo
+
+#Germany	Aachen	
+#Server = http://de3.mirror.archlinuxarm.org/$arch/$repo
+#Germany	Berlin	
+#Server = http://de.mirror.archlinuxarm.org/$arch/$repo	
+#Germany	Coburg	
+#Server = http://de4.mirror.archlinuxarm.org/$arch/$repo	
+#Germany	Falkenstein	
+#Server = http://eu.mirror.archlinuxarm.org/$arch/$repo
+#Server = http://de5.mirror.archlinuxarm.org/$arch/$repo	
+
+#Greece	Athens	
+#Server = http://gr.mirror.archlinuxarm.org/$arch/$repo
+
+#Hungary	Budapest	
+#Server = http://hu.mirror.archlinuxarm.org/$arch/$repo
+
+#Portugal	Aveiro	
+#Server = http://pt.mirror.archlinuxarm.org/$arch/$repo	
+
+#Singapore	Singapore	
+#Server = http://sg.mirror.archlinuxarm.org/$arch/$repo	
+
+#South Africa	Johannesburg	
+#Server = http://za.mirror.archlinuxarm.org/$arch/$repo	
+
+#Taiwan	New Taipei City	
+#Server = http://tw.mirror.archlinuxarm.org/$arch/$repo
+
+#USA	Chicago, IL	
+#Server = http://il.us.mirror.archlinuxarm.org/$arch/$repo	
+#USA	Los Angeles, CA	
+#Server = http://ca.us.mirror.archlinuxarm.org/$arch/$repo	
+#USA	Matawan, NJ	
+#Server = http://nj.us.mirror.archlinuxarm.org/$arch/$repo	
+#USA	Miami, FL	
+#Server = http://fl.us.mirror.archlinuxarm.org/$arch/$repo	
