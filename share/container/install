@@ -933,7 +933,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		groupadd aid_ext_cache_gid_end -g 49999
 		groupadd aid_shared_gid_start -g 50000
 		groupadd aid_shared_gid_end -g 59999
-		groupadd aid_overflowuid -g 65534 2>/dev/null || groupadd aid_overflowuid -g 65535
+		#groupadd aid_overflowuid -g 65534 2>/dev/null || groupadd aid_overflowuid -g 65535
+		#添加65534 group将导致opensuse的system-user-nobody配置失败。
 		groupadd aid_isolated_start -g 99000
 		groupadd aid_isolated_end -g 99999
 		groupadd aid_user_offset -g 100000
@@ -1088,8 +1089,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#############################
 	manjaro_mirror_list() {
 	    if [ "$(uname -m)" = "aarch64" ]; then
-	        #sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
-	        #TUNA镜像站的manjaro rootfs容器竟然没grep、awk和sed
+	        [[ ! $(command -v sed) ]] || sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist 2>/dev/null
 	        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo

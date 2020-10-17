@@ -77,7 +77,7 @@ fix_sudo() {
 			${BOLD}Tmoe-linux 小提示06${RESET}:
 
 			在${YELLOW}Android-termux${RESET}上运行的GNU/Linux的Tmoe-linux tool支持使用${BLUE}触摸屏${RESET}上下滑动。
-			运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager则支持使用${GREEN}数字键${RESET}快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
+			运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager支持使用${BLUE}触摸屏${RESET}进行点击，还支持使用${GREEN}数字键${RESET}进行快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
 			-------------------
 			You can use the ${BLUE}touch screen${RESET} on ${YELLOW}Android-termux${RESET} to slide the menu options of the tmoe-linux tool.
 			-------------------
