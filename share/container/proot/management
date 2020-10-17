@@ -228,7 +228,7 @@ umount_and_remove_gnu_linux_distro() {
 }
 du_sh_gnu_linux_distro() {
 	printf "%s\n" "正在检测${BLUE}${DEBIAN_FOLDER}${RESET}占用空间大小..."
-	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT}
+	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} 2>/dev/null
 	printf "%s\n" "${YELLOW}正在列出TOP30...${RESET}"
 	if [ -e "${DEBIAN_CHROOT}" ]; then
 		cd ${DEBIAN_CHROOT}
@@ -245,11 +245,11 @@ du_sh_gnu_linux_distro() {
 			-o -path="./sys" \
 			-o -path="./system" \) -prune \
 			-type f -print0 2>/dev/null |
-			xargs -0 du |
+			xargs -0 du 2>/dev/null |
 			sort -n |
 			tail -30 |
-			cut -f2 |
-			xargs -I{} du -sh {}
+			cut -f 2 |
+			xargs -I{} du -sh {} 2>/dev/null
 	else
 		printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
 	fi

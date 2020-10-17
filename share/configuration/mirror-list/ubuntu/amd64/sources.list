@@ -1,3 +1,7 @@
+#This list is from https://launchpad.net/ubuntu/+archivemirrors,
+#github/2moe organizes it.
+#Since all URLs have not been tested, there may be failures.
+
 #Albania
 ##Kumi Systems e.U.##
 ###deb http://al.mirror.kumi.systems/ubuntu/ focal main restricted universe multiverse
