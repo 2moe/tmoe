@@ -4398,9 +4398,14 @@ check_vnc_passsword_length() {
 tmoe_gui_dpi_01() {
     printf "%s\n" "默认分辨率为${RESOLUTION}，窗口缩放大小为1x"
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 1 2>/dev/null
-    if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
-        dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
-    fi
+    case ${VNC_SERVER_BIN} in
+    tigervnc) ;;
+    *)
+        if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+            dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
+        fi
+        ;;
+    esac
 }
 ##########
 tmoe_gui_dpi_02() {
