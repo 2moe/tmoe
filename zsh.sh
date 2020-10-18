@@ -122,26 +122,34 @@ sed_a_source_list() {
 		SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
 		BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
 		if grep -q 'Debian' /etc/issue 2>/dev/null; then
-			sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sources.list;s@testing@${BACKPORTCODE}@g" ${SOURCE_LIST}
+			#sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sources.list;s@testing@${BACKPORTCODE}@g" ${SOURCE_LIST}
+			cp -f ${TMOE_MIRROR_DIR}/debian/sources.list /tmp
+			sed -i "s@testing@${BACKPORTCODE}@g" /tmp/sources.list
+			sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
 		elif grep -q "ubuntu" /etc/os-release; then
 			case $(uname -m) in
-			i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list;s@focal@${SOURCELISTCODE}@g" ${SOURCE_LIST} ;;
-			esac
-		elif grep -q 'Arch' /etc/issue 2>/dev/null; then
-			case $(uname -m) in
-			i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/x86_64/mirrorlist" ${MIRROR_LIST} ;;
-			*) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
+			i*86 | x86_64)
+				#sed -i "$ r ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list;s@focal@${SOURCELISTCODE}@g" ${SOURCE_LIST}
+				cp -f ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list /tmp
+				sed -i "s@focal@${SOURCELISTCODE}@g" /tmp/sources.list
+				sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
+				;;
 			esac
 		fi
+	elif grep -q 'Arch' /etc/issue 2>/dev/null; then
+		case $(uname -m) in
+		i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/x86_64/mirrorlist" ${MIRROR_LIST} ;;
+		*) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
+		esac
 	fi
 }
 ###############
 git_clone_tmoe_linux() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-	mkdir -p ${TMOE_LINUX_DIR}
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
+	mkdir -p ${TMOE_LINUX_DIR}
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
 	printf "%s\n" "github.com/2moe/tmoe-linux"
 	if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
