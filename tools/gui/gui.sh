@@ -4081,7 +4081,7 @@ ubuntu_install_tiger_vnc_server() {
 ###########
 which_vnc_server_do_you_prefer() {
     case ${REMOTE_DESKTOP_SESSION_01} in
-    startplasma* | gnome* | cinnamon* | startdde | ukui* | budgie*)
+    startplasma* | startlxqt | gnome* | cinnamon* | startdde | ukui* | budgie*)
         if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n检测到您安装的是${REMOTE_DESKTOP_SESSION_01},请选择tiger！\nPlease select tiger vncserver！" 0 50); then
             tiger_vnc_variable
         else
