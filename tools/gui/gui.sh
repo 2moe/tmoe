@@ -1567,7 +1567,7 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01="kde-plasma-desktop"
         case ${DEBIAN_DISTRO} in
         ubuntu)
-            if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
+            if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
                 DEPENDENCY_01="kde-plasma-desktop"
             else
                 DEPENDENCY_01="kubuntu-desktop"
@@ -1591,7 +1591,12 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01='@KDE'
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="plasma-desktop xorg konsole sddm sddm-kcm"
-        printf "%s\n" "如需安装额外软件包，请手动输pacman -S plasma plasma-wayland-session kde-applications"
+        if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde-applications' 0 0); then
+            DEPENDENCY_01="plasma-desktop xorg konsole discover"
+        else
+            DEPENDENCY_01="plasma-meta plasma-wayland-session kde-applications-meta sddm sddm-kcm"
+        fi
+        #printf "%s\n" "如需安装额外软件包，请手动输pacman -S plasma plasma-wayland-session kde-applications"
         #kdebase
         #phonon-qt5
         #pacman -S --noconfirm sddm sddm-kcm
