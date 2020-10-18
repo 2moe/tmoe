@@ -176,6 +176,59 @@ china_bussiness_mirror_station() {
     china_bussiness_mirror_station
 }
 ###########
+sed_a_source_list() {
+    TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+    TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
+    SOURCE_LIST='/etc/apt/sources.list'
+    MIRROR_LIST='/etc/pacman.d/mirrorlist'
+    SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+    BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+    if egrep -q 'debian|ubuntu' /etc/os-release; then
+        SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+        BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+        if ! grep -q '#Official' ${SOURCE_LIST}; then
+            if grep -q 'Debian' /etc/issue 2>/dev/null; then
+                if [ "$(lsb_release -r | awk '{print $2}' | awk -F '/' '{print $1}')" = 'unstable' ]; then
+                    #sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sources.list;s@testing@${BACKPORTCODE}@g" ${SOURCE_LIST}
+                    sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sid.list" ${SOURCE_LIST}
+                else
+                    cp -f ${TMOE_MIRROR_DIR}/debian/sources.list /tmp
+                    sed -i "s@testing@${BACKPORTCODE}@g" /tmp/sources.list
+                    sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
+                fi
+            elif grep -q "ubuntu" /etc/os-release; then
+                case $(uname -m) in
+                i*86 | x86_64)
+                    #sed -i "$ r ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list;s@focal@${SOURCELISTCODE}@g" ${SOURCE_LIST}
+                    cp -f ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list /tmp
+                    sed -i "s@focal@${SOURCELISTCODE}@g" /tmp/sources.list
+                    sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
+                    ;;
+                esac
+            fi
+        fi
+        if [ $(command -v editor) ]; then
+            editor ${SOURCE_LIST}
+        else
+            nano ${SOURCE_LIST}
+        fi
+    elif grep -q 'Arch' /etc/issue 2>/dev/null; then
+        if ! grep -q '## Worldwide' ${MIRROR_LIST}; then
+            case $(uname -m) in
+            i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/x86_64/mirrorlist" ${MIRROR_LIST} ;;
+            *) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
+            esac
+        fi
+        if [ $(command -v vim) ]; then
+            vim ${MIRROR_LIST}
+        else
+            nano ${MIRROR_LIST}
+        fi
+    fi
+}
+###############
 worldwide_mirror_station() {
     SOURCE_MIRROR_STATION=""
     RETURN_TO_WHERE='worldwide_mirror_station'
@@ -184,7 +237,8 @@ worldwide_mirror_station() {
         whiptail --title "www.debian.org/mirror/list.html" --menu \
             "Not only debian,but also ubuntu." 0 50 0 \
             "0" "🌚 Return to previous menu 返回上级菜单" \
-            "00" "official官方:deb.debian.org+archive.ubuntu.com" \
+            "000" "Generate worldwide source(arch,ubuntu,debian)" \
+            "00" "official官方:(debian,ubuntu,kali)" \
             "01" "Armenia:ftp.am.debian.org" \
             "02" "Australia:ftp.au.debian.org" \
             "03" "Austria:ftp.at.debian.org" \
@@ -237,13 +291,24 @@ worldwide_mirror_station() {
     ########################
     case "${SOURCES_LIST}" in
     0 | "") tmoe_sources_list_manager ;;
+    000)
+        case ${LINUX_DISTRO} in
+        debian | arch) sed_a_source_list ;;
+        *) printf "%s\n" "This tool does not support your current distro." ;;
+        esac
+        press_enter_to_return
+        worldwide_mirror_station
+        ;;
     00)
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
+        case ${LINUX_DISTRO} in
+        debian)
             SOURCE_MIRROR_STATION='deb.debian.org'
-            if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-                SOURCE_MIRROR_STATION='archive.ubuntu.com'
-            fi
-        fi
+            case "${DEBIAN_DISTRO}" in
+            ubuntu) SOURCE_MIRROR_STATION='archive.ubuntu.com' ;;
+            kali) SOURCE_MIRROR_STATION='http.kali.org' ;;
+            esac
+            ;;
+        esac
         ;;
     01) SOURCE_MIRROR_STATION='ftp.am.debian.org' ;;
     02) SOURCE_MIRROR_STATION='ftp.au.debian.org' ;;
@@ -638,6 +703,9 @@ modify_kali_mirror_sources_list() {
 		deb http://${SOURCE_MIRROR_STATION}/debian/ stable main contrib non-free
 		# deb http://${SOURCE_MIRROR_STATION}/kali/ kali-last-snapshot main contrib non-free
 	EndOfSourcesList
+    case ${SOURCE_MIRROR_STATION} in
+    "http.kali.org") sed -i "s@http.kali.org/debian@deb.debian.org/debian@g" /etc/apt/sources.list ;;
+    esac
     #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
 }
 #############
