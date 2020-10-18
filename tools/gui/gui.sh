@@ -4401,8 +4401,11 @@ tmoe_gui_dpi_01() {
     case ${VNC_SERVER_BIN} in
     tigervnc) ;;
     *)
-        if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+        #|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie
+        if egrep -q 'Focal Fossa' "/etc/os-release"; then
             dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
+        else
+            modify_to_xfwm4_breeze_theme
         fi
         ;;
     esac
@@ -4438,7 +4441,8 @@ xfce4_tightvnc_hidpi_settings() {
     printf "%s\n" "已将默认分辨率修改为${RESOLUTION}，窗口缩放大小调整为2x"
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
     #-n创建一个新属性，类型为int
-    if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+    #|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie
+    if egrep -q 'Focal Fossa' "/etc/os-release"; then
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
     else
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
