@@ -8,6 +8,7 @@ install_python_web_novnc() {
 			press_enter_to_continue
 			apt update
 			apt install -y python
+			python3 -m pip install -i https://mirrors.bfsu.edu.cn/pypi/web/simple --upgrade -vvv pip
 		fi
 		;;
 	esac
