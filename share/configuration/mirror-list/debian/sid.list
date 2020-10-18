@@ -1,0 +1,1189 @@
+#This list is from https://www.debian.org/mirror/list.html
+#github/2moe organizes it.
+#Since all URLs have not been tested, there may be failures.
+#######
+
+#Official
+#deb http://deb.debian.org sid main contrib non-free
+
+#Argentina#
+## debian.unnoba.edu.ar
+###deb http://debian.unnoba.edu.ar/debian/ sid main contrib non-free
+
+## mirror.sitsa.com.ar
+###deb http://mirror.sitsa.com.ar/debian/ sid main contrib non-free
+
+#Armenia#
+## ftp.am.debian.org
+###deb http://ftp.am.debian.org/debian/ sid main contrib non-free
+
+## mirrors.asnet.am
+###deb http://mirrors.asnet.am/debian/ sid main contrib non-free
+
+#Australia#
+## ftp.au.debian.org
+###deb http://ftp.au.debian.org/debian/ sid main contrib non-free
+
+## debian.mirror.digitalpacific.com.au
+###deb http://debian.mirror.digitalpacific.com.au/debian/ sid main contrib non-free
+
+## debian.mirror.serversaustralia.com.au
+###deb http://debian.mirror.serversaustralia.com.au/debian/ sid main contrib non-free
+
+## mirror.aarnet.edu.au
+###deb http://mirror.aarnet.edu.au/debian/ sid main contrib non-free
+
+## mirror.amaze.com.au
+###deb http://mirror.amaze.com.au/debian/ sid main contrib non-free
+
+## mirror.datamossa.io
+###deb http://mirror.datamossa.io/debian/ sid main contrib non-free
+
+## mirror.intergrid.com.au
+###deb http://mirror.intergrid.com.au/debian/ sid main contrib non-free
+
+## mirror.launtel.net.au
+###deb http://mirror.launtel.net.au/debian/ sid main contrib non-free
+
+## mirror.linux.org.au
+###deb http://mirror.linux.org.au/debian/ sid main contrib non-free
+
+## mirror.overthewire.com.au
+###deb http://mirror.overthewire.com.au/debian/ sid main contrib non-free
+
+## mirror.realcompute.io
+###deb http://mirror.realcompute.io/debian/ sid main contrib non-free
+
+## mirror.waia.asn.au
+###deb http://mirror.waia.asn.au/debian/ sid main contrib non-free
+
+#Austria#
+## ftp.at.debian.org
+###deb http://ftp.at.debian.org/debian/ sid main contrib non-free
+
+## debian.anexia.at
+###deb http://debian.anexia.at/debian/ sid main contrib non-free
+
+## debian.inode.at
+###deb http://debian.inode.at/debian/ sid main contrib non-free
+
+## debian.lagis.at
+###deb http://debian.lagis.at/debian/ sid main contrib non-free
+
+## debian.mur.at
+###deb http://debian.mur.at/debian/ sid main contrib non-free
+
+## debian.sil.at
+###deb http://debian.sil.at/debian/ sid main contrib non-free
+
+## ftp.tu-graz.ac.at
+###deb http://ftp.tu-graz.ac.at/mirror/debian/ sid main contrib non-free
+
+#Belarus#
+## ftp.by.debian.org
+###deb http://ftp.by.debian.org/debian/ sid main contrib non-free
+
+## ftp.byfly.by
+###deb http://ftp.byfly.by/debian/ sid main contrib non-free
+
+## mirror.datacenter.by
+###deb http://mirror.datacenter.by/debian/ sid main contrib non-free
+
+#Belgium#
+## ftp.be.debian.org
+###deb http://ftp.be.debian.org/debian/ sid main contrib non-free
+
+## ftp.belnet.be
+###deb http://ftp.belnet.be/debian/ sid main contrib non-free
+
+## mirror.as35701.net
+###deb http://mirror.as35701.net/debian/ sid main contrib non-free
+
+#Brazil#
+## ftp.br.debian.org
+###deb http://ftp.br.debian.org/debian/ sid main contrib non-free
+
+## alcateia.ufscar.br
+###deb http://alcateia.ufscar.br/debian/ sid main contrib non-free
+
+## debian.c3sl.ufpr.br
+###deb http://debian.c3sl.ufpr.br/debian/ sid main contrib non-free
+
+## debian.itsbrasil.net
+###deb http://debian.itsbrasil.net/debian/ sid main contrib non-free
+
+## debian.pop-sc.rnp.br
+###deb http://debian.pop-sc.rnp.br/debian/ sid main contrib non-free
+
+## mirror.unesp.br
+###deb http://mirror.unesp.br/debian/ sid main contrib non-free
+
+## repositorio.nti.ufal.br
+###deb http://repositorio.nti.ufal.br/debian/ sid main contrib non-free
+
+#Bulgaria#
+## ftp.bg.debian.org
+###deb http://ftp.bg.debian.org/debian/ sid main contrib non-free
+
+## debian.ipacct.com
+###deb http://debian.ipacct.com/debian/ sid main contrib non-free
+
+## debian.ludost.net
+###deb http://debian.ludost.net/debian/ sid main contrib non-free
+
+## debian.mnet.bg
+###deb http://debian.mnet.bg/debian/ sid main contrib non-free
+
+## debian.mobiltel.bg
+###deb http://debian.mobiltel.bg/debian/ sid main contrib non-free
+
+## debian.telecoms.bg
+###deb http://debian.telecoms.bg/debian/ sid main contrib non-free
+
+## ftp.uni-sofia.bg
+###deb http://ftp.uni-sofia.bg/debian/ sid main contrib non-free
+
+## mirrors.netix.net
+###deb http://mirrors.netix.net/debian/ sid main contrib non-free
+
+#Canada#
+## ftp.ca.debian.org
+###deb http://ftp.ca.debian.org/debian/ sid main contrib non-free
+
+## debian.ca-west.mirror.fullhost.com
+###deb http://debian.ca-west.mirror.fullhost.com/debian/ sid main contrib non-free
+
+## debian.mirror.estruxture.net
+###deb http://debian.mirror.estruxture.net/debian/ sid main contrib non-free
+
+## debian.mirror.globo.tech
+###deb http://debian.mirror.globo.tech/debian/ sid main contrib non-free
+
+## debian.mirror.iweb.ca
+###deb http://debian.mirror.iweb.ca/debian/ sid main contrib non-free
+
+## debian.mirror.rafal.ca
+###deb http://debian.mirror.rafal.ca/debian/ sid main contrib non-free
+
+## mirror.csclub.uwaterloo.ca
+###deb http://mirror.csclub.uwaterloo.ca/debian/ sid main contrib non-free
+
+## mirror.it.ubc.ca
+###deb http://mirror.it.ubc.ca/debian/ sid main contrib non-free
+
+#Chile#
+## ftp.cl.debian.org
+###deb http://ftp.cl.debian.org/debian/ sid main contrib non-free
+
+## debian.netlinux.cl
+###deb http://debian.netlinux.cl/debian/ sid main contrib non-free
+
+## debian.redlibre.cl
+###deb http://debian.redlibre.cl/debian/ sid main contrib non-free
+
+## debian.utalca.cl
+###deb http://debian.utalca.cl/debian/ sid main contrib non-free
+
+## mirror.insacom.cl
+###deb http://mirror.insacom.cl/debian/ sid main contrib non-free
+
+## mirror.ufro.cl
+###deb http://mirror.ufro.cl/debian/ sid main contrib non-free
+
+#China#
+## ftp2.cn.debian.org
+###deb http://ftp2.cn.debian.org/debian/ sid main contrib non-free
+
+## ftp.cn.debian.org
+###deb http://ftp.cn.debian.org/debian/ sid main contrib non-free
+
+## mirror.lzu.edu.cn
+###deb http://mirror.lzu.edu.cn/debian/ sid main contrib non-free
+
+## mirrors.163.com
+###deb http://mirrors.163.com/debian/ sid main contrib non-free
+
+## mirrors.bfsu.edu.cn
+###deb http://mirrors.bfsu.edu.cn/debian/ sid main contrib non-free
+
+## mirrors.huaweicloud.com
+###deb http://mirrors.huaweicloud.com/debian/ sid main contrib non-free
+
+## mirrors.tuna.tsinghua.edu.cn
+###deb http://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
+
+## mirrors.ustc.edu.cn
+###deb http://mirrors.ustc.edu.cn/debian/ sid main contrib non-free
+
+#Costa Rica#
+## debianmirror.una.ac.cr
+###deb http://debianmirror.una.ac.cr/debian/ sid main contrib non-free
+
+## mirrors.ucr.ac.cr
+###deb http://mirrors.ucr.ac.cr/debian/ sid main contrib non-free
+
+#Croatia#
+## ftp.hr.debian.org
+###deb http://ftp.hr.debian.org/debian/ sid main contrib non-free
+
+## debian.carnet.hr
+###deb http://debian.carnet.hr/debian/ sid main contrib non-free
+
+## debian.iskon.hr
+###deb http://debian.iskon.hr/debian/ sid main contrib non-free
+
+#Czech Republic#
+## ftp.cz.debian.org
+###deb http://ftp.cz.debian.org/debian/ sid main contrib non-free
+
+## debian.ignum.cz
+###deb http://debian.ignum.cz/debian/ sid main contrib non-free
+
+## debian.mirror.web4u.cz
+###deb http://debian.mirror.web4u.cz/ sid main contrib non-free
+
+## debian.superhosting.cz
+###deb http://debian.superhosting.cz/debian/ sid main contrib non-free
+
+## ftp.cvut.cz
+###deb http://ftp.cvut.cz/debian/ sid main contrib non-free
+
+## ftp.debian.cz
+###deb http://ftp.debian.cz/debian/ sid main contrib non-free
+
+## ftp.sh.cvut.cz
+###deb http://ftp.sh.cvut.cz/debian/ sid main contrib non-free
+
+## ftp.zcu.cz
+###deb http://ftp.zcu.cz/debian/ sid main contrib non-free
+
+## merlin.fit.vutbr.cz
+###deb http://merlin.fit.vutbr.cz/debian/ sid main contrib non-free
+
+## mirror.dkm.cz
+###deb http://mirror.dkm.cz/debian/ sid main contrib non-free
+
+#Denmark#
+## ftp.dk.debian.org
+###deb http://ftp.dk.debian.org/debian/ sid main contrib non-free
+
+## mirror.asergo.com
+###deb http://mirror.asergo.com/debian/ sid main contrib non-free
+
+## mirror.one.com
+###deb http://mirror.one.com/debian/ sid main contrib non-free
+
+## mirrors.dotsrc.org
+###deb http://mirrors.dotsrc.org/debian/ sid main contrib non-free
+
+## mirrors.rackhosting.com
+###deb http://mirrors.rackhosting.com/debian/ sid main contrib non-free
+
+#El Salvador#
+## ftp.sv.debian.org
+###deb http://ftp.sv.debian.org/debian/ sid main contrib non-free
+
+## debian.salud.gob.sv
+###deb http://debian.salud.gob.sv/debian/ sid main contrib non-free
+
+#Estonia#
+## ftp.ee.debian.org
+###deb http://ftp.ee.debian.org/debian/ sid main contrib non-free
+
+## ftp.eenet.ee
+###deb http://ftp.eenet.ee/debian/ sid main contrib non-free
+
+#Finland#
+## www.nic.funet.fi
+###deb http://www.nic.funet.fi/debian/ sid main contrib non-free
+
+#France#
+## ftp.fr.debian.org
+###deb http://ftp.fr.debian.org/debian/ sid main contrib non-free
+
+## debian.apt-mirror.de
+###deb http://debian.apt-mirror.de/debian/ sid main contrib non-free
+
+## debian.mirror.ate.info
+###deb http://debian.mirror.ate.info/ sid main contrib non-free
+
+## debian.mirrors.ovh.net
+###deb http://debian.mirrors.ovh.net/debian/ sid main contrib non-free
+
+## debian.polytech-lille.fr
+###deb http://debian.polytech-lille.fr/debian/ sid main contrib non-free
+
+## debian.proxad.net
+###deb http://debian.proxad.net/debian/ sid main contrib non-free
+
+## debian.univ-lorraine.fr
+###deb http://debian.univ-lorraine.fr/debian/ sid main contrib non-free
+
+## debian.univ-reims.fr
+###deb http://debian.univ-reims.fr/debian/ sid main contrib non-free
+
+## debian.univ-tlse2.fr
+###deb http://debian.univ-tlse2.fr/debian/ sid main contrib non-free
+
+## deb-mir1.naitways.net
+###deb http://deb-mir1.naitways.net/debian/ sid main contrib non-free
+
+## ftp.ec-m.fr
+###deb http://ftp.ec-m.fr/debian/ sid main contrib non-free
+
+## ftp.iut-bm.univ-fcomte.fr
+###deb http://ftp.iut-bm.univ-fcomte.fr/debian/ sid main contrib non-free
+
+## ftp.lip6.fr
+###deb http://ftp.lip6.fr/pub/linux/distributions/debian/ sid main contrib non-free
+
+## ftp.rezopole.net
+###deb http://ftp.rezopole.net/debian/ sid main contrib non-free
+
+## ftp.univ-pau.fr
+###deb http://ftp.univ-pau.fr/linux/mirrors/debian/ sid main contrib non-free
+
+## ftp.u-picardie.fr
+###deb http://ftp.u-picardie.fr/debian/ sid main contrib non-free
+
+## ftp.u-strasbg.fr
+###deb http://ftp.u-strasbg.fr/debian/ sid main contrib non-free
+
+## mirror.plusserver.com
+###deb http://mirror.plusserver.com/debian/debian/ sid main contrib non-free
+
+## mirrors.ircam.fr
+###deb http://mirrors.ircam.fr/pub/debian/ sid main contrib non-free
+
+#Georgia#
+## debian.grena.ge
+###deb http://debian.grena.ge/debian/ sid main contrib non-free
+
+#Germany#
+## ftp2.de.debian.org
+###deb http://ftp2.de.debian.org/debian/ sid main contrib non-free
+
+## ftp.de.debian.org
+###deb http://ftp.de.debian.org/debian/ sid main contrib non-free
+
+## artfiles.org
+###deb http://artfiles.org/debian/ sid main contrib non-free
+
+## debian.charite.de
+###deb http://debian.charite.de/debian/ sid main contrib non-free
+
+## debian.inf.tu-dresden.de
+###deb http://debian.inf.tu-dresden.de/debian/ sid main contrib non-free
+
+## debian.intergenia.de
+###deb http://debian.intergenia.de/debian/ sid main contrib non-free
+
+## debian.mirror.iphh.net
+###deb http://debian.mirror.iphh.net/debian/ sid main contrib non-free
+
+## debian.mirror.lrz.de
+###deb http://debian.mirror.lrz.de/debian/ sid main contrib non-free
+
+## debian.mirror.net-d-sign.de
+###deb http://debian.mirror.net-d-sign.de/debian/ sid main contrib non-free
+
+## debian.tu-bs.de
+###deb http://debian.tu-bs.de/debian/ sid main contrib non-free
+
+## debian.uni-duisburg-essen.de
+###deb http://debian.uni-duisburg-essen.de/debian/ sid main contrib non-free
+
+## ftp.fau.de
+###deb http://ftp.fau.de/debian/ sid main contrib non-free
+
+## ftp.gwdg.de
+###deb http://ftp.gwdg.de/debian/ sid main contrib non-free
+
+## ftp.halifax.rwth-aachen.de
+###deb http://ftp.halifax.rwth-aachen.de/debian/ sid main contrib non-free
+
+## ftp.hosteurope.de
+###deb http://ftp.hosteurope.de/mirror/ftp.debian.org/debian/ sid main contrib non-free
+
+## ftp.mpi-sb.mpg.de
+###deb http://ftp.mpi-sb.mpg.de/pub/linux/debian/ sid main contrib non-free
+
+## ftp.plusline.net
+###deb http://ftp.plusline.net/debian/ sid main contrib non-free
+
+## ftp-stud.hs-esslingen.de
+###deb http://ftp-stud.hs-esslingen.de/debian/ sid main contrib non-free
+
+## ftp.stw-bonn.de
+###deb http://ftp.stw-bonn.de/debian/ sid main contrib non-free
+
+## ftp.tu-chemnitz.de
+###deb http://ftp.tu-chemnitz.de/debian/ sid main contrib non-free
+
+## ftp.tu-clausthal.de
+###deb http://ftp.tu-clausthal.de/debian/ sid main contrib non-free
+
+## ftp.uni-bayreuth.de
+###deb http://ftp.uni-bayreuth.de/debian/ sid main contrib non-free
+
+## ftp.uni-hannover.de
+###deb http://ftp.uni-hannover.de/debian/debian/ sid main contrib non-free
+
+## ftp.uni-kl.de
+###deb http://ftp.uni-kl.de/debian/ sid main contrib non-free
+
+## ftp.uni-mainz.de
+###deb http://ftp.uni-mainz.de/debian/ sid main contrib non-free
+
+## ftp.uni-stuttgart.de
+###deb http://ftp.uni-stuttgart.de/debian/ sid main contrib non-free
+
+## mirror.23media.de
+###deb http://mirror.23media.de/debian/ sid main contrib non-free
+
+## mirror.de.leaseweb.net
+###deb http://mirror.de.leaseweb.net/debian/ sid main contrib non-free
+
+## mirror.eu.oneandone.net
+###deb http://mirror.eu.oneandone.net/debian/ sid main contrib non-free
+
+## mirror.ipb.de
+###deb http://mirror.ipb.de/debian/ sid main contrib non-free
+
+## mirror.netcologne.de
+###deb http://mirror.netcologne.de/debian/ sid main contrib non-free
+
+## mirror.netzwerge.de
+###deb http://mirror.netzwerge.de/debian/ sid main contrib non-free
+
+## mirror.united-gameserver.de
+###deb http://mirror.united-gameserver.de/debian/ sid main contrib non-free
+
+## mirror.wtnet.de
+###deb http://mirror.wtnet.de/debian/ sid main contrib non-free
+
+## packages.hs-regensburg.de
+###deb http://packages.hs-regensburg.de/debian/ sid main contrib non-free
+
+## pubmirror.plutex.de
+###deb http://pubmirror.plutex.de/debian/ sid main contrib non-free
+
+#Greece#
+## ftp.gr.debian.org
+###deb http://ftp.gr.debian.org/debian/ sid main contrib non-free
+
+## debian.noc.ntua.gr
+###deb http://debian.noc.ntua.gr/debian/ sid main contrib non-free
+
+## debian.otenet.gr
+###deb http://debian.otenet.gr/debian/ sid main contrib non-free
+
+#Hong Kong#
+## ftp.hk.debian.org
+###deb http://ftp.hk.debian.org/debian/ sid main contrib non-free
+
+## mirror.xtom.com.hk
+###deb http://mirror.xtom.com.hk/debian/ sid main contrib non-free
+
+## openbsd.hk
+###deb http://openbsd.hk/debian/ sid main contrib non-free
+
+#Hungary#
+## ftp.hu.debian.org
+###deb http://ftp.hu.debian.org/debian/ sid main contrib non-free
+
+## ftp.bme.hu
+###deb http://ftp.bme.hu/debian/ sid main contrib non-free
+
+## ftp.fsn.hu
+###deb http://ftp.fsn.hu/debian/ sid main contrib non-free
+
+## ftp.kfki.hu
+###deb http://ftp.kfki.hu/linux/debian/ sid main contrib non-free
+
+## repo.jztkft.hu
+###deb http://repo.jztkft.hu/debian/ sid main contrib non-free
+
+#India#
+## debianmirror.nkn.in
+###deb http://debianmirror.nkn.in/debian/ sid main contrib non-free
+
+## debmirror.hbcse.tifr.res.in
+###deb http://debmirror.hbcse.tifr.res.in/debian/ sid main contrib non-free
+
+## mirror.cse.iitk.ac.in
+###deb http://mirror.cse.iitk.ac.in/debian/ sid main contrib non-free
+
+#Indonesia#
+## kartolo.sby.datautama.net.id
+###deb http://kartolo.sby.datautama.net.id/debian/ sid main contrib non-free
+
+## kebo.pens.ac.id
+###deb http://kebo.pens.ac.id/debian/ sid main contrib non-free
+
+## mirror.poliwangi.ac.id
+###deb http://mirror.poliwangi.ac.id/debian/ sid main contrib non-free
+
+#Iran#
+## debian.asis.ai
+###deb http://debian.asis.ai/debian/ sid main contrib non-free
+
+## debian.parspack.com
+###deb http://debian.parspack.com/debian/ sid main contrib non-free
+
+## mirror.aminidc.com
+###deb http://mirror.aminidc.com/debian/ sid main contrib non-free
+
+#Israel#
+## debian.co.il
+###deb http://debian.co.il/debian/ sid main contrib non-free
+
+## mirror.isoc.org.il
+###deb http://mirror.isoc.org.il/pub/debian/ sid main contrib non-free
+
+#Italy#
+## ftp.it.debian.org
+###deb http://ftp.it.debian.org/debian/ sid main contrib non-free
+
+## debian.connesi.it
+###deb http://debian.connesi.it/debian/ sid main contrib non-free
+
+## debian.dynamica.it
+###deb http://debian.dynamica.it/debian/ sid main contrib non-free
+
+## debian.mirror.garr.it
+###deb http://debian.mirror.garr.it/debian/ sid main contrib non-free
+
+## ftp.linux.it
+###deb http://ftp.linux.it/debian/ sid main contrib non-free
+
+## giano.com.dist.unige.it
+###deb http://giano.com.dist.unige.it/debian/ sid main contrib non-free
+
+## mirror.units.it
+###deb http://mirror.units.it/debian/ sid main contrib non-free
+
+#Japan#
+## ftp.jp.debian.org
+###deb http://ftp.jp.debian.org/debian/ sid main contrib non-free
+
+## debian-mirror.sakura.ne.jp
+###deb http://debian-mirror.sakura.ne.jp/debian/ sid main contrib non-free
+
+## dennou-k.gfd-dennou.org
+###deb http://dennou-k.gfd-dennou.org/debian/ sid main contrib non-free
+
+## dennou-q.gfd-dennou.org
+###deb http://dennou-q.gfd-dennou.org/debian/ sid main contrib non-free
+
+## ftp.jaist.ac.jp
+###deb http://ftp.jaist.ac.jp/debian/ sid main contrib non-free
+
+## ftp.kddilabs.jp
+###deb http://ftp.kddilabs.jp/pub/debian/ sid main contrib non-free
+
+## ftp.nara.wide.ad.jp
+###deb http://ftp.nara.wide.ad.jp/debian/ sid main contrib non-free
+
+## ftp.riken.jp
+###deb http://ftp.riken.jp/Linux/debian/debian/ sid main contrib non-free
+
+## ftp.yz.yamagata-u.ac.jp
+###deb http://ftp.yz.yamagata-u.ac.jp/debian/ sid main contrib non-free
+
+## hanzubon.jp
+###deb http://hanzubon.jp/debian/ sid main contrib non-free
+
+#Kazakhstan#
+## mirror.hoster.kz
+###deb http://mirror.hoster.kz/debian/ sid main contrib non-free
+
+## mirror.ps.kz
+###deb http://mirror.ps.kz/debian/ sid main contrib non-free
+
+#Kenya#
+## debian.mirror.ac.ke
+###deb http://debian.mirror.ac.ke/debian/ sid main contrib non-free
+
+## debian.mirror.liquidtelecom.com
+###deb http://debian.mirror.liquidtelecom.com/debian/ sid main contrib non-free
+
+#Korea#
+## ftp.kr.debian.org
+###deb http://ftp.kr.debian.org/debian/ sid main contrib non-free
+
+## ftp.harukasan.org
+###deb http://ftp.harukasan.org/debian/ sid main contrib non-free
+
+## ftp.kaist.ac.kr
+###deb http://ftp.kaist.ac.kr/debian/ sid main contrib non-free
+
+## ftp.lanet.kr
+###deb http://ftp.lanet.kr/debian/ sid main contrib non-free
+
+#Kyrgyzstan#
+## mir.linux.kg
+###deb http://mir.linux.kg/debian/ sid main contrib non-free
+
+#Latvia#
+## debian.koyanet.lv
+###deb http://debian.koyanet.lv/debian/ sid main contrib non-free
+
+## debian.linux.edu.lv
+###deb http://debian.linux.edu.lv/debian/ sid main contrib non-free
+
+#Lithuania#
+## ftp.lt.debian.org
+###deb http://ftp.lt.debian.org/debian/ sid main contrib non-free
+
+## debian.balt.net
+###deb http://debian.balt.net/debian/ sid main contrib non-free
+
+## debian.mirror.vu.lt
+###deb http://debian.mirror.vu.lt/debian/ sid main contrib non-free
+
+## mirror.litnet.lt
+###deb http://mirror.litnet.lt/debian/ sid main contrib non-free
+
+## mirror.vpsnet.com
+###deb http://mirror.vpsnet.com/debian/ sid main contrib non-free
+
+#Luxembourg#
+## debian.mirror.root.lu
+###deb http://debian.mirror.root.lu/debian/ sid main contrib non-free
+
+#Macedonia, Republic of#
+## mirror.onevip.mk
+###deb http://mirror.onevip.mk/debian/ sid main contrib non-free
+
+#Mexico#
+## ftp.mx.debian.org
+###deb http://ftp.mx.debian.org/debian/ sid main contrib non-free
+
+## mmc.geofisica.unam.mx
+###deb http://mmc.geofisica.unam.mx/debian/ sid main contrib non-free
+
+#Moldova#
+## ftp.md.debian.org
+###deb http://ftp.md.debian.org/debian/ sid main contrib non-free
+
+## mirror.as43289.net
+###deb http://mirror.as43289.net/debian/ sid main contrib non-free
+
+## mirrors.mivocloud.com
+###deb http://mirrors.mivocloud.com/debian/ sid main contrib non-free
+
+#Netherlands#
+## ftp.nl.debian.org
+###deb http://ftp.nl.debian.org/debian/ sid main contrib non-free
+
+## debian.mirror.cambrium.nl
+###deb http://debian.mirror.cambrium.nl/debian/ sid main contrib non-free
+
+## debian.snt.utwente.nl
+###deb http://debian.snt.utwente.nl/debian/ sid main contrib non-free
+
+## debian.voipgrow.com
+###deb http://debian.voipgrow.com/debian/ sid main contrib non-free
+
+## debmirror.tuxis.nl
+###deb http://debmirror.tuxis.nl/debian/ sid main contrib non-free
+
+## ftp.debian.xs4all.net
+###deb http://ftp.debian.xs4all.net/debian/ sid main contrib non-free
+
+## ftp.nluug.nl
+###deb http://ftp.nluug.nl/debian/ sid main contrib non-free
+
+## mirror.dataone.nl
+###deb http://mirror.dataone.nl/debian/ sid main contrib non-free
+
+## mirror.duocast.net
+###deb http://mirror.duocast.net/debian/ sid main contrib non-free
+
+## mirror.i3d.net
+###deb http://mirror.i3d.net/debian/ sid main contrib non-free
+
+## mirror.neostrada.nl
+###deb http://mirror.neostrada.nl/debian/ sid main contrib non-free
+
+## mirror.nforce.com
+###deb http://mirror.nforce.com/debian/ sid main contrib non-free
+
+## mirror.nl.datapacket.com
+###deb http://mirror.nl.datapacket.com/debian/ sid main contrib non-free
+
+## mirror.nl.leaseweb.net
+###deb http://mirror.nl.leaseweb.net/debian/ sid main contrib non-free
+
+## mirror.novg.net
+###deb http://mirror.novg.net/debian/ sid main contrib non-free
+
+## mirror.proserve.nl
+###deb http://mirror.proserve.nl/debian/ sid main contrib non-free
+
+## mirror.schoemaker.systems
+###deb http://mirror.schoemaker.systems/debian/ sid main contrib non-free
+
+## mirror.seedvps.com
+###deb http://mirror.seedvps.com/debian/ sid main contrib non-free
+
+## mirror.serverius.net
+###deb http://mirror.serverius.net/debian/ sid main contrib non-free
+
+## mirrors.xtom.nl
+###deb http://mirrors.xtom.nl/debian/ sid main contrib non-free
+
+## mirror.vpgrp.io
+###deb http://mirror.vpgrp.io/debian/ sid main contrib non-free
+
+#New Caledonia#
+## ftp.nc.debian.org
+###deb http://ftp.nc.debian.org/debian/ sid main contrib non-free
+
+## debian.nautile.nc
+###deb http://debian.nautile.nc/debian/ sid main contrib non-free
+
+#New Zealand#
+## ftp.nz.debian.org
+###deb http://ftp.nz.debian.org/debian/ sid main contrib non-free
+
+## ftp.citylink.co.nz
+###deb http://ftp.citylink.co.nz/debian/ sid main contrib non-free
+
+## mirror.fsmg.org.nz
+###deb http://mirror.fsmg.org.nz/debian/ sid main contrib non-free
+
+#Norway#
+## ftp.no.debian.org
+###deb http://ftp.no.debian.org/debian/ sid main contrib non-free
+
+## ftp.uio.no
+###deb http://ftp.uio.no/debian/ sid main contrib non-free
+
+#Philippines#
+## mirror.pregi.net
+###deb http://mirror.pregi.net/debian/ sid main contrib non-free
+
+## mirror.rise.ph
+###deb http://mirror.rise.ph/debian/ sid main contrib non-free
+
+#Poland#
+## ftp.pl.debian.org
+###deb http://ftp.pl.debian.org/debian/ sid main contrib non-free
+
+## debian.inhost.pro
+###deb http://debian.inhost.pro/debian/ sid main contrib non-free
+
+## ftp.agh.edu.pl
+###deb http://ftp.agh.edu.pl/debian/ sid main contrib non-free
+
+## ftp.icm.edu.pl
+###deb http://ftp.icm.edu.pl/pub/Linux/debian/ sid main contrib non-free
+
+## ftp.task.gda.pl
+###deb http://ftp.task.gda.pl/debian/ sid main contrib non-free
+
+#Portugal#
+## ftp.pt.debian.org
+###deb http://ftp.pt.debian.org/debian/ sid main contrib non-free
+
+## debian.uevora.pt
+###deb http://debian.uevora.pt/debian/ sid main contrib non-free
+
+## ftp.eq.uc.pt
+###deb http://ftp.eq.uc.pt/software/Linux/debian/ sid main contrib non-free
+
+## ftp.rnl.tecnico.ulisboa.pt
+###deb http://ftp.rnl.tecnico.ulisboa.pt/pub/debian/ sid main contrib non-free
+
+## mirrors.ptisp.pt
+###deb http://mirrors.ptisp.pt/debian/ sid main contrib non-free
+
+## mirrors.up.pt
+###deb http://mirrors.up.pt/debian/ sid main contrib non-free
+
+#Réunion#
+## depot-debian.univ-reunion.fr
+###deb http://depot-debian.univ-reunion.fr/debian/ sid main contrib non-free
+
+#Romania#
+## ftp.ro.debian.org
+###deb http://ftp.ro.debian.org/debian/ sid main contrib non-free
+
+## ftp.upcnet.ro
+###deb http://ftp.upcnet.ro/debian/ sid main contrib non-free
+
+## mirrors.nav.ro
+###deb http://mirrors.nav.ro/debian/ sid main contrib non-free
+
+## mirrors.nxthost.com
+###deb http://mirrors.nxthost.com/debian/ sid main contrib non-free
+
+## mirrors.pidginhost.com
+###deb http://mirrors.pidginhost.com/debian/ sid main contrib non-free
+
+## mirrors.xservers.ro
+###deb http://mirrors.xservers.ro/debian/ sid main contrib non-free
+
+#Russia#
+## ftp.ru.debian.org
+###deb http://ftp.ru.debian.org/debian/ sid main contrib non-free
+
+## ftp.psn.ru
+###deb http://ftp.psn.ru/debian/ sid main contrib non-free
+
+## mirror.corbina.net
+###deb http://mirror.corbina.net/debian/ sid main contrib non-free
+
+## mirror.docker.ru
+###deb http://mirror.docker.ru/debian/ sid main contrib non-free
+
+## mirror.mephi.ru
+###deb http://mirror.mephi.ru/debian/ sid main contrib non-free
+
+## mirrors.powernet.com.ru
+###deb http://mirrors.powernet.com.ru/debian/ sid main contrib non-free
+
+## mirror.truenetwork.ru
+###deb http://mirror.truenetwork.ru/debian/ sid main contrib non-free
+
+#Serbia#
+## debian.petarmaric.com
+###deb http://debian.petarmaric.com/debian/ sid main contrib non-free
+
+## mirror.pmf.kg.ac.rs
+###deb http://mirror.pmf.kg.ac.rs/debian/ sid main contrib non-free
+
+#Singapore#
+## mirror.0x.sg
+###deb http://mirror.0x.sg/debian/ sid main contrib non-free
+
+#Slovakia#
+## ftp.sk.debian.org
+###deb http://ftp.sk.debian.org/debian/ sid main contrib non-free
+
+## ftp.antik.sk
+###deb http://ftp.antik.sk/debian/ sid main contrib non-free
+
+## ftp.debian.sk
+###deb http://ftp.debian.sk/debian/ sid main contrib non-free
+
+#Slovenia#
+## ftp.si.debian.org
+###deb http://ftp.si.debian.org/debian/ sid main contrib non-free
+
+## ftp.arnes.si
+###deb http://ftp.arnes.si/debian/ sid main contrib non-free
+
+#South Africa#
+## debian.mirror.ac.za
+###deb http://debian.mirror.ac.za/debian/ sid main contrib non-free
+
+## debian.saix.net
+###deb http://debian.saix.net/ sid main contrib non-free
+
+## ftp.is.co.za
+###deb http://ftp.is.co.za/debian/ sid main contrib non-free
+
+#Spain#
+## ftp.es.debian.org
+###deb http://ftp.es.debian.org/debian/ sid main contrib non-free
+
+## debian.grn.cat
+###deb http://debian.grn.cat/debian/ sid main contrib non-free
+
+## debian.redimadrid.es
+###deb http://debian.redimadrid.es/debian/ sid main contrib non-free
+
+## debian.redparra.com
+###deb http://debian.redparra.com/debian/ sid main contrib non-free
+
+## debian.uvigo.es
+###deb http://debian.uvigo.es/debian/ sid main contrib non-free
+
+## ftp.caliu.cat
+###deb http://ftp.caliu.cat/debian/ sid main contrib non-free
+
+## ftp.cica.es
+###deb http://ftp.cica.es/debian/ sid main contrib non-free
+
+## ftp.udc.es
+###deb http://ftp.udc.es/debian/ sid main contrib non-free
+
+## mirror.librelabucm.org
+###deb http://mirror.librelabucm.org/debian/ sid main contrib non-free
+
+## softlibre.unizar.es
+###deb http://softlibre.unizar.es/debian/ sid main contrib non-free
+
+## ulises.hostalia.com
+###deb http://ulises.hostalia.com/debian/ sid main contrib non-free
+
+#Sweden#
+## ftp.fi.debian.org
+###deb http://ftp.fi.debian.org/debian/ sid main contrib non-free
+
+## ftp.se.debian.org
+###deb http://ftp.se.debian.org/debian/ sid main contrib non-free
+
+## debian.lth.se
+###deb http://debian.lth.se/debian/ sid main contrib non-free
+
+## debian.mirror.su.se
+###deb http://debian.mirror.su.se/debian/ sid main contrib non-free
+
+## ftp.acc.umu.se
+###deb http://ftp.acc.umu.se/debian/ sid main contrib non-free
+
+## ftpmirror1.infania.net
+###deb http://ftpmirror1.infania.net/debian/ sid main contrib non-free
+
+## mirror.linux.pizza
+###deb http://mirror.linux.pizza/debian/ sid main contrib non-free
+
+## mirrors.glesys.net
+###deb http://mirrors.glesys.net/debian/ sid main contrib non-free
+
+## mirror.zetup.net
+###deb http://mirror.zetup.net/debian/ sid main contrib non-free
+
+#Switzerland#
+## ftp.ch.debian.org
+###deb http://ftp.ch.debian.org/debian/ sid main contrib non-free
+
+## debian.ethz.ch
+###deb http://debian.ethz.ch/debian/ sid main contrib non-free
+
+## mirror.init7.net
+###deb http://mirror.init7.net/debian/ sid main contrib non-free
+
+## mirror.iway.ch
+###deb http://mirror.iway.ch/debian/ sid main contrib non-free
+
+## mirror.sinavps.ch
+###deb http://mirror.sinavps.ch/debian/ sid main contrib non-free
+
+## pkg.adfinis-sygroup.ch
+###deb http://pkg.adfinis-sygroup.ch/debian/ sid main contrib non-free
+
+#Taiwan#
+## ftp.tw.debian.org
+###deb http://ftp.tw.debian.org/debian/ sid main contrib non-free
+
+## debian.csie.ntu.edu.tw
+###deb http://debian.csie.ntu.edu.tw/debian/ sid main contrib non-free
+
+## debian.cs.nctu.edu.tw
+###deb http://debian.cs.nctu.edu.tw/debian/ sid main contrib non-free
+
+## ftp.ntou.edu.tw
+###deb http://ftp.ntou.edu.tw/debian/ sid main contrib non-free
+
+## ftp.tku.edu.tw
+###deb http://ftp.tku.edu.tw/debian/ sid main contrib non-free
+
+## opensource.nchc.org.tw
+###deb http://opensource.nchc.org.tw/debian/ sid main contrib non-free
+
+#Thailand#
+## ftp.debianclub.org
+###deb http://ftp.debianclub.org/debian/ sid main contrib non-free
+
+## mirror.applebred.net
+###deb http://mirror.applebred.net/debian/ sid main contrib non-free
+
+## mirror.kku.ac.th
+###deb http://mirror.kku.ac.th/debian/ sid main contrib non-free
+
+#Turkey#
+## ftp.tr.debian.org
+###deb http://ftp.tr.debian.org/debian/ sid main contrib non-free
+
+## debian.gnu.gen.tr
+###deb http://debian.gnu.gen.tr/debian/ sid main contrib non-free
+
+## ftp.linux.org.tr
+###deb http://ftp.linux.org.tr/debian/ sid main contrib non-free
+
+#Ukraine#
+## debian.org.ua
+###deb http://debian.org.ua/debian/ sid main contrib non-free
+
+## debian.volia.net
+###deb http://debian.volia.net/debian/ sid main contrib non-free
+
+## mirror.mirohost.net
+###deb http://mirror.mirohost.net/debian/ sid main contrib non-free
+
+#United Kingdom#
+## ftp.is.debian.org
+###deb http://ftp.is.debian.org/debian/ sid main contrib non-free
+
+## ftp.uk.debian.org
+###deb http://ftp.uk.debian.org/debian/ sid main contrib non-free
+
+## debian.mirrors.uk2.net
+###deb http://debian.mirrors.uk2.net/debian/ sid main contrib non-free
+
+## debian.mirror.uk.sargasso.net
+###deb http://debian.mirror.uk.sargasso.net/debian/ sid main contrib non-free
+
+## debian.serverspace.co.uk
+###deb http://debian.serverspace.co.uk/debian/ sid main contrib non-free
+
+## free.hands.com
+###deb http://free.hands.com/debian/ sid main contrib non-free
+
+## ftp.ticklers.org
+###deb http://ftp.ticklers.org/debian/ sid main contrib non-free
+
+## mirror.bytemark.co.uk
+###deb http://mirror.bytemark.co.uk/debian/ sid main contrib non-free
+
+## mirror.lchost.net
+###deb http://mirror.lchost.net/debian/ sid main contrib non-free
+
+## mirror.mythic-beasts.com
+###deb http://mirror.mythic-beasts.com/debian/ sid main contrib non-free
+
+## mirror.ox.ac.uk
+###deb http://mirror.ox.ac.uk/debian/ sid main contrib non-free
+
+## mirror.positive-internet.com
+###deb http://mirror.positive-internet.com/debian/ sid main contrib non-free
+
+## mirrors.coreix.net
+###deb http://mirrors.coreix.net/debian/ sid main contrib non-free
+
+## mirrorservice.org
+###deb http://mirrorservice.org/sites/ftp.debian.org/debian/ sid main contrib non-free
+
+## mirrors.m247.com
+###deb http://mirrors.m247.com/debian/ sid main contrib non-free
+
+## mirrors.melbourne.co.uk
+###deb http://mirrors.melbourne.co.uk/debian/ sid main contrib non-free
+
+## mirror.sov.uk.goscomb.net
+###deb http://mirror.sov.uk.goscomb.net/debian/ sid main contrib non-free
+
+## mirror.sucs.swan.ac.uk
+###deb http://mirror.sucs.swan.ac.uk/pub/linux/debian/ sid main contrib non-free
+
+## mirror.vorboss.net
+###deb http://mirror.vorboss.net/debian/ sid main contrib non-free
+
+## ukdebian.mirror.anlx.net
+###deb http://ukdebian.mirror.anlx.net/debian/ sid main contrib non-free
+
+#United States#
+## ftp.us.debian.org
+###deb http://ftp.us.debian.org/debian/ sid main contrib non-free
+
+## debian-archive.trafficmanager.net
+###deb http://debian-archive.trafficmanager.net/debian/ sid main contrib non-free
+
+## debian.cc.lehigh.edu
+###deb http://debian.cc.lehigh.edu/debian/ sid main contrib non-free
+
+## debian.csail.mit.edu
+###deb http://debian.csail.mit.edu/debian/ sid main contrib non-free
+
+## debian.cs.binghamton.edu
+###deb http://debian.cs.binghamton.edu/debian/ sid main contrib non-free
+
+## debian.ec.as6453.net
+###deb http://debian.ec.as6453.net/debian/ sid main contrib non-free
+
+## debian.gtisc.gatech.edu
+###deb http://debian.gtisc.gatech.edu/debian/ sid main contrib non-free
+
+## debian.mirror.constant.com
+###deb http://debian.mirror.constant.com/debian/ sid main contrib non-free
+
+## debian.mirrors.pair.com
+###deb http://debian.mirrors.pair.com/debian/ sid main contrib non-free
+
+## debian.osuosl.org
+###deb http://debian.osuosl.org/debian/ sid main contrib non-free
+
+## debian.uchicago.edu
+###deb http://debian.uchicago.edu/debian/ sid main contrib non-free
+
+## mirror.cc.columbia.edu
+###deb http://mirror.cc.columbia.edu/debian/ sid main contrib non-free
+
+## mirror.cogentco.com
+###deb http://mirror.cogentco.com/debian/ sid main contrib non-free
+
+## mirror.keystealth.org
+###deb http://mirror.keystealth.org/debian/ sid main contrib non-free
+
+## mirror.pit.teraswitch.com
+###deb http://mirror.pit.teraswitch.com/debian/ sid main contrib non-free
+
+## mirrors.accretive-networks.net
+###deb http://mirrors.accretive-networks.net/debian/ sid main contrib non-free
+
+## mirrors.advancedhosters.com
+###deb http://mirrors.advancedhosters.com/debian/ sid main contrib non-free
+
+## mirrors.bloomu.edu
+###deb http://mirrors.bloomu.edu/debian/ sid main contrib non-free
+
+## mirrors.edge.kernel.org
+###deb http://mirrors.edge.kernel.org/debian/ sid main contrib non-free
+
+## mirrors.gigenet.com
+###deb http://mirrors.gigenet.com/debian/ sid main contrib non-free
+
+## mirror.siena.edu
+###deb http://mirror.siena.edu/debian/ sid main contrib non-free
+
+## mirror.sjc02.svwh.net
+###deb http://mirror.sjc02.svwh.net/debian/ sid main contrib non-free
+
+## mirrors.lug.mtu.edu
+###deb http://mirrors.lug.mtu.edu/debian/ sid main contrib non-free
+
+## mirrors.namecheap.com
+###deb http://mirrors.namecheap.com/debian/ sid main contrib non-free
+
+## mirrors.ocf.berkeley.edu
+###deb http://mirrors.ocf.berkeley.edu/debian/ sid main contrib non-free
+
+## mirrors.syringanetworks.net
+###deb http://mirrors.syringanetworks.net/debian/ sid main contrib non-free
+
+## mirror.steadfast.net
+###deb http://mirror.steadfast.net/debian/ sid main contrib non-free
+
+## mirrors.wikimedia.org
+###deb http://mirrors.wikimedia.org/debian/ sid main contrib non-free
+
+## mirrors.xtom.com
+###deb http://mirrors.xtom.com/debian/ sid main contrib non-free
+
+## mirror.us.leaseweb.net
+###deb http://mirror.us.leaseweb.net/debian/ sid main contrib non-free
+
+## mirror.us.oneandone.net
+###deb http://mirror.us.oneandone.net/debian/ sid main contrib non-free
+
+## plug-mirror.rcac.purdue.edu
+###deb http://plug-mirror.rcac.purdue.edu/debian/ sid main contrib non-free
+
+## repo.ialab.dsu.edu
+###deb http://repo.ialab.dsu.edu/debian/ sid main contrib non-free
+
+## us.mirror.nsec.pt
+###deb http://us.mirror.nsec.pt/debian/ sid main contrib non-free
+
+#Uruguay#
+## debian.repo.cure.edu.uy
+###deb http://debian.repo.cure.edu.uy/debian/ sid main contrib non-free
+
+#Vietnam#
+## debian.xtdv.net
+###deb http://debian.xtdv.net/debian/ sid main contrib non-free

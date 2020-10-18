@@ -33,7 +33,12 @@ space_occupation_menu() {
 		printf '%s\n' '正在加载中，可能需要几秒钟时间，加载时间取决于文件数量和闪存读写速度。'
 		printf '%s\n' 'Loading may take several seconds, depending on the number of files and the UFS or emmc flash read and write speed.'
 		printf "%s\n" "${YELLOW}termux 文件大小排行榜(30名)${RESET}"
-		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
+		find ./ -type f -print0 2>/dev/null |
+			xargs -0 du 2>/dev/null |
+			sort -n |
+			tail -30 |
+			cut -f2 |
+			xargs -I{} du -sh {} 2>/dev/null
 		;;
 	3)
 		cd /sdcard
@@ -42,7 +47,12 @@ space_occupation_menu() {
 		printf "%s\n" "${YELLOW}sdcard 目录 TOP15${RESET}"
 		du -hsx ./* ./.* 2>/dev/null | sort -rh | head -n 15
 		printf "%s\n" "${YELLOW}sdcard文件大小排行榜(30名)${RESET}"
-		find ./ -type f -print0 2>/dev/null | xargs -0 du | sort -n | tail -30 | cut -f2 | xargs -I{} du -sh {}
+		find ./ -type f -print0 2>/dev/null |
+			xargs -0 du 2>/dev/null |
+			sort -n |
+			tail -30 |
+			cut -f2 |
+			xargs -I{} du -sh {} 2>/dev/null
 		;;
 	4)
 		printf "%s\n" "${YELLOW}Disk usage${RESET}"

@@ -227,6 +227,15 @@ umount_and_remove_gnu_linux_distro() {
 	source ${TMOE_SHARE_DIR}/container/remove
 }
 du_sh_gnu_linux_distro() {
+	case ${TMOE_CHROOT} in
+	true)
+		printf "Unmounting dirs ..."
+		su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+		su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+		su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+		;;
+	esac
+	printf "%s\n" "Detecting the space occupied by ${BLUE}${DEBIAN_FOLDER}${RESET} ..."
 	printf "%s\n" "正在检测${BLUE}${DEBIAN_FOLDER}${RESET}占用空间大小..."
 	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} 2>/dev/null
 	printf "%s\n" "${YELLOW}正在列出TOP30...${RESET}"
@@ -245,11 +254,11 @@ du_sh_gnu_linux_distro() {
 			-o -path="./sys" \
 			-o -path="./system" \) -prune \
 			-type f -print0 2>/dev/null |
-			xargs -0 du 2>/dev/null |
+			${TMOE_PREFIX} xargs -0 du |
 			sort -n |
 			tail -30 |
 			cut -f 2 |
-			xargs -I{} du -sh {} 2>/dev/null
+			${TMOE_PREFIX} xargs -I{} du -sh {}
 	else
 		printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
 	fi

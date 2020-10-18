@@ -62,7 +62,7 @@ remove_gnu_linux_container() {
 	fi
 	printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在容器中执行stopvnc，再进行移除操作。"
 	printf "%s\n" "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
-	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux
+	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux 2>/dev/null
 	if [ ! -d ${DEBIAN_CHROOT} ]; then
 		printf "%s\n" "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
