@@ -256,7 +256,11 @@ preconfigure_gui_dependecies_02() {
         case "${TMOE_PROOT}" in
         true | no) NON_DBUS='true' ;;
         esac
-        DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
+        if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+            DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
+        else
+            DEPENDENCY_02="dbus-x11 fonts-noto-cjk"
+        fi
         #if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
         #	DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
         #else
@@ -1560,7 +1564,7 @@ install_kde_plasma5_desktop() {
     REMOTE_DESKTOP_SESSION_01='startplasma-x11'
     REMOTE_DESKTOP_SESSION_02='startkde'
     DEPENDENCY_01="plasma-desktop"
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
+    printf '%s\n' '即将为您安装kde-plasma-desktop、tigervnc-standalone-server、fonts-noto-cjk（思源黑体）和fonts-noto-color-emoji等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
