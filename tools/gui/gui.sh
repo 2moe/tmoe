@@ -4029,6 +4029,7 @@ fix_non_root_permissions() {
 tiger_vnc_variable() {
     VNC_SERVER_BIN="tigervnc"
     VNC_SERVER_BIN_NOW="tightvncserver"
+    #无需安装tigervnc-xorg-extension
     DEPENDENCY_01="tigervnc-viewer"
     DEPENDENCY_02="tigervnc-standalone-server"
 }
@@ -4062,8 +4063,8 @@ which_vnc_server_do_you_prefer() {
     printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
     #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
     apt remove -y ${VNC_SERVER_BIN_NOW}
-    printf "%s\n" "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
-    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
+    printf "%s\n" "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
+    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}
 }
 ###################
 first_configure_startvnc() {
