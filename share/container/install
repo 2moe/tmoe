@@ -742,10 +742,9 @@ cat >vnc-autostartup <<-'EndOfFile'
 	}
 	#######
 	CURRENT_TMOE_DIR=$(pwd)
-	cd ${HOME}/.vnc 2>/dev/null
-	case "$?" in
-	0)
-	    for i in startvnc startx11vnc startxsdl; do
+	check_vnc_file(){
+			cd ${HOME}/.vnc
+		    for i in startvnc startx11vnc startxsdl; do
 	        if [ -f ${i} ]; then
 	            rm ${i}
 	            case ${i} in
@@ -762,8 +761,10 @@ cat >vnc-autostartup <<-'EndOfFile'
 	        fi
 	    done
 	    unset i
-	    ;;
-	esac
+	}
+	if [ -e ${HOME}/.vnc ];then
+		check_vnc_file
+	fi
 	##########
 	case ${CURRENT_TMOE_DIR} in
 	/) cd ${HOME};;
