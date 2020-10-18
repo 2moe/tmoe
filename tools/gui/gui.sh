@@ -954,6 +954,10 @@ debian_xfce4_extras() {
     debian)
         [[ $(command -v compton-conf) ]] || apt install -y compton-conf 2>/dev/null
         [[ $(command -v mugshot) ]] || apt install -y mugshot 2>/dev/null
+        if [ ! -e "/usr/share/themes/Breeze/xfwm4/themerc" ]; then
+            printf "${BLUE}%s${RESET}\n" "apt install -y xfwm4-theme-breeze"
+            apt install -y xfwm4-theme-breeze
+        fi
         case ${DEBIAN_DISTRO} in
         kali) kali_xfce4_extras ;;
         esac
@@ -1091,7 +1095,7 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、compton-conf、mugshot和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、compton-conf、xfwm4-theme-breeze、mugshot和tightvncserver等软件包。'
     do_you_want_to_continue
 }
 ##########
@@ -4079,11 +4083,23 @@ ubuntu_install_tiger_vnc_server() {
     rm -rv ${TEMP_FOLCER}
 }
 ###########
+modify_to_xfwm4_breeze_theme() {
+    case ${TMOE_HIGH_DPI} in
+    true) ;;
+    *)
+        if [ -e "/usr/share/themes/Breeze/xfwm4/themerc" ]; then
+            dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Breeze 2>/dev/null
+        fi
+        ;;
+    esac
+}
+##########
 which_vnc_server_do_you_prefer() {
     case ${REMOTE_DESKTOP_SESSION_01} in
     startplasma* | startlxqt | gnome* | cinnamon* | startdde | ukui* | budgie*)
         if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n检测到桌面的session/startup文件为${REMOTE_DESKTOP_SESSION_01},请选择tiger！\nPlease select tiger vncserver！" 0 50); then
             tiger_vnc_variable
+            modify_to_xfwm4_breeze_theme
         else
             tight_vnc_variable
         fi
@@ -4093,6 +4109,7 @@ which_vnc_server_do_you_prefer() {
             tight_vnc_variable
         else
             tiger_vnc_variable
+            modify_to_xfwm4_breeze_theme
         fi
         ;;
     esac
