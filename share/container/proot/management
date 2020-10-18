@@ -229,7 +229,7 @@ umount_and_remove_gnu_linux_distro() {
 du_sh_gnu_linux_distro() {
 	case ${TMOE_CHROOT} in
 	true)
-		printf "Unmounting dirs ..."
+		printf "%s\n" "Unmounting dirs ..."
 		su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
 		su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
 		su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
@@ -254,11 +254,11 @@ du_sh_gnu_linux_distro() {
 			-o -path="./sys" \
 			-o -path="./system" \) -prune \
 			-type f -print0 2>/dev/null |
-			${TMOE_PREFIX} xargs -0 du |
+			xargs -0 ${TMOE_PREFIX} du |
 			sort -n |
 			tail -30 |
 			cut -f 2 |
-			${TMOE_PREFIX} xargs -I{} du -sh {}
+			xargs -I{} ${TMOE_PREFIX} du -sh {}
 	else
 		printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
 	fi
