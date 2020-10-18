@@ -1480,7 +1480,7 @@ install_lxqt_desktop() {
     DEPENDENCY_01="lxqt"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_01="lxqt-core qterminal openbox lxqt-config"
+        DEPENDENCY_01="lxqt-core qterminal xfwm4 xfwm4-theme-breeze lxqt-config"
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "Lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
