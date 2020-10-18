@@ -2,6 +2,12 @@
 #github/2moe organizes it.
 #Since all URLs have not been tested, there may be failures.
 
+#Official
+###deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+###deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+###deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+###deb http://archive.ubuntu.com/ubuntu/ focal-proposed main restricted universe multiverse
+
 #Albania
 ##Kumi Systems e.U.##
 ###deb http://al.mirror.kumi.systems/ubuntu/ focal main restricted universe multiverse

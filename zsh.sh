@@ -113,10 +113,35 @@ fix_sudo() {
 	fi
 }
 ########################
+sed_a_source_list() {
+	SOURCE_LIST='/etc/apt/sources.list'
+	MIRROR_LIST='/etc/pacman.d/mirrorlist'
+	SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+	BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+	if egrep -q 'debian|ubuntu' /etc/os-release; then
+		SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+		BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+		if grep -q 'Debian' /etc/issue 2>/dev/null; then
+			sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sources.list;s@testing@${BACKPORTCODE}@g" ${SOURCE_LIST}
+		elif grep -q "ubuntu" /etc/os-release; then
+			case $(uname -m) in
+			i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list;s@focal@${SOURCELISTCODE}@g" ${SOURCE_LIST} ;;
+			esac
+		elif grep -q 'Arch' /etc/issue 2>/dev/null; then
+			case $(uname -m) in
+			i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/x86_64/mirrorlist" ${MIRROR_LIST} ;;
+			*) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
+			esac
+		fi
+	fi
+}
+###############
 git_clone_tmoe_linux() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	mkdir -p ${TMOE_LINUX_DIR}
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
 	printf "%s\n" "github.com/2moe/tmoe-linux"
 	if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
@@ -124,6 +149,10 @@ git_clone_tmoe_linux() {
 		git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 	fi
 	######################
+	#TMOE_LANG=$(head -n 1 ${TMOE_LINUX_DIR}/locale.txt)
+	if [ -e "/etc/os-release" ]; then
+		sed_a_source_list
+	fi
 	mkdir -p /usr/share/applications
 	cp ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &
