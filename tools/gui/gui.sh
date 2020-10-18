@@ -4037,7 +4037,7 @@ tiger_vnc_variable() {
 tight_vnc_variable() {
     VNC_SERVER_BIN="tightvnc"
     VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
-    DEPENDENCY_01="tigervnc-viewer"
+    DEPENDENCY_01="tigervnc-viewer xfonts-100dpi xfonts-75dpi"
     DEPENDENCY_02="tightvncserver"
 }
 ######
