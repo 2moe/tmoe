@@ -1557,8 +1557,8 @@ ENDofTable
 ###############
 install_kde_plasma5_desktop() {
     kde_warning
-    REMOTE_DESKTOP_SESSION_01='startkde'
-    REMOTE_DESKTOP_SESSION_02='startplasma-x11'
+    REMOTE_DESKTOP_SESSION_01='startplasma-x11'
+    REMOTE_DESKTOP_SESSION_02='startkde'
     DEPENDENCY_01="plasma-desktop"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、kde-plasma-desktop和tigervnc-standalone-server等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
@@ -1624,7 +1624,7 @@ install_kde_plasma5_desktop() {
 }
 ##################
 tips_of_tiger_vnc_server() {
-    printf "%s\n" "在您使用虚拟机安装本桌面的过程中，当提示tight/tiger vnc时,请选择后者。若未弹出提示内容，则您可以前往本工具的vnc配置选项手动切换服务端，或使用x11vnc"
+    printf "%s\n" "在您使用虚拟机安装本桌面的过程中，当提示tight/tiger vnc时,请选择tiger。若未弹出提示内容，则您可以前往本工具的vnc配置选项手动切换服务端，或使用x11vnc"
     printf "%s\n" "Since tightvnc may not be able to connect to this desktop normally, please choose tiger or x11vnc server."
 }
 ##################
@@ -3679,8 +3679,8 @@ configure_remote_desktop_enviroment() {
     if [ "${BETA_DESKTOP}" == '5' ]; then
         #REMOTE_DESKTOP_SESSION='plasma-x11-session'
         #configure_remote_kde_plasma5_desktop
-        REMOTE_DESKTOP_SESSION_01='startkde'
-        REMOTE_DESKTOP_SESSION_02='startplasma-x11'
+        REMOTE_DESKTOP_SESSION_01='startplasma-x11'
+        REMOTE_DESKTOP_SESSION_02='startkde'
     fi
     ##############################
     if [ "${BETA_DESKTOP}" == '6' ]; then
@@ -4022,16 +4022,36 @@ fix_non_root_permissions() {
     fi
 }
 ################
+tiger_vnc_variable() {
+    VNC_SERVER_BIN="tigervnc"
+    VNC_SERVER_BIN_NOW="tightvncserver"
+    DEPENDENCY_02="tigervnc-standalone-server"
+}
+#######
+tight_vnc_variable() {
+    VNC_SERVER_BIN="tightvnc"
+    VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
+    DEPENDENCY_02="tightvncserver"
+}
+######
 which_vnc_server_do_you_prefer() {
-    if (whiptail --title "Which vnc server do you prefer" --yes-button 'tight' --no-button 'tiger' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因后者的流畅度可能不如前者,故默认情况下为前者。\nTiger can show more special effects." 0 50); then
-        VNC_SERVER_BIN="tightvnc"
-        VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
-        DEPENDENCY_02="tightvncserver"
-    else
-        VNC_SERVER_BIN="tigervnc"
-        VNC_SERVER_BIN_NOW="tightvncserver"
-        DEPENDENCY_02="tigervnc-standalone-server"
-    fi
+    case ${REMOTE_DESKTOP_SESSION_01} in
+    startplasma* | gnome* | cinnamon* | startdde | ukui* | budgie*)
+        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n检测到您安装的是${REMOTE_DESKTOP_SESSION_01},请选择tiger！\nPlease select tiger vncserver！" 0 50); then
+            tiger_vnc_variable
+        else
+            tight_vnc_variable
+        fi
+        ;;
+    *)
+        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tight' --no-button 'tiger' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因tiger的流畅度可能不如tight,故默认情况下为tight。\nTiger can show more special effects." 0 50); then
+            tight_vnc_variable
+        else
+            tiger_vnc_variable
+        fi
+        ;;
+    esac
+
     #printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
     printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
     #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
@@ -4065,7 +4085,8 @@ first_configure_startvnc() {
     #else
     case ${LINUX_DISTRO} in
     debian)
-        if ! egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|stretch|jessie' "/etc/os-release"; then
+        #|stretch|jessie
+        if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
             which_vnc_server_do_you_prefer
         fi
         ;;
@@ -4424,8 +4445,8 @@ fix_vnc_dbus_launch() {
             REMOTE_DESKTOP_SESSION_02='mate-panel'
         elif grep 'startplasma' ${XSESSION_FILE}; then
             printf "%s\n" "检测您当前的VNC配置为KDE Plasma5，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='startkde'
-            REMOTE_DESKTOP_SESSION_02='startplasma-x11'
+            REMOTE_DESKTOP_SESSION_01='startplasma-x11'
+            REMOTE_DESKTOP_SESSION_02='startkde'
         elif grep 'gnome-session' ${XSESSION_FILE}; then
             printf "%s\n" "检测您当前的VNC配置为GNOME3，正在将dbus-launch加入至启动脚本中..."
             REMOTE_DESKTOP_SESSION_01='gnome-session'
