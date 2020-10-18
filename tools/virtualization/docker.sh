@@ -761,7 +761,7 @@ install_qemu_user_static() {
 ##############
 check_qemu_user_version() {
     REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/q/qemu/'
-    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' "${THE_LATEST_DEB_VERSION}" | cut -d '_' -f 2)
 }
 ###############

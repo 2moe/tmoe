@@ -119,7 +119,7 @@ grep_theme_model_01() {
     check_theme_folder
     mkdir -p /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
-    THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_theme_deb_and_extract_01
 }
 ###############
@@ -392,22 +392,22 @@ install_deb_file_common_model_01() {
 }
 ###################
 download_ubuntu_kylin_deb_file_model_02() {
-    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
+    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)
     install_deb_file_common_model_01
 }
 ################
 download_debian_cn_repo_deb_file_model_01() {
-    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     install_deb_file_common_model_01
 }
 ######################
 download_tuna_repo_deb_file_model_03() {
-    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     install_deb_file_common_model_01
 }
 ################
 download_tuna_repo_deb_file_all_arch() {
-    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '.deb' | grep "all" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "all" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
     printf "%s\n" "${LATEST_DEB_URL}"
     aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
@@ -912,12 +912,12 @@ download_deb_comman_model_02() {
 }
 #########################
 grep_deb_comman_model_02() {
-    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_deb_comman_model_02
 }
 ###################
 grep_deb_comman_model_01() {
-    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_deb_comman_model_02
 }
 ###################

@@ -266,7 +266,7 @@ download_network_card_driver() {
 	else
 		GREP_NAME=${DEPENDENCY_02}
 		REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/non-free/f/firmware-nonfree/'
-		THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+		THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 		printf "%s\n" "${THE_LATEST_DEB_LINK}"
 		aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"

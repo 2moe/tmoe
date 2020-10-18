@@ -69,24 +69,21 @@ switch_tight_or_tiger_vncserver() {
     #NON_DEBIAN='true'
     non_debian_function
     if [ $(command -v Xtightvnc) ]; then
-        VNC_SERVER_BIN_NOW="tightvncserver"
-        VNC_SERVER_BIN="tigervnc"
-        DEPENDENCY_02="tigervnc-standalone-server"
+        tiger_vnc_variable
+        #检测到tight,询问是否需要切换为tiger
     elif [ $(command -v Xtigervnc) ]; then
-        VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
-        VNC_SERVER_BIN="tightvnc"
-        DEPENDENCY_02="tightvncserver"
+        tight_vnc_variable
     fi
     VNC_SERVER_BIN_STATUS="检测到您当前使用的是${VNC_SERVER_BIN_NOW}"
     if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "Back返回" --no-button "${VNC_SERVER_BIN}" --yesno "${VNC_SERVER_BIN_STATUS}\n请问您是否需要切换为${VNC_SERVER_BIN}♪(^∇^*)\nDo you want to switch to ${VNC_SERVER_BIN}?" 0 0); then
         modify_other_vnc_conf
     else
         non_debian_function
-        #printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
-        printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
-        #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
-        apt remove -y ${VNC_SERVER_BIN_NOW}
-        beta_features_quick_install
+        #printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
+        #apt remove -y ${VNC_SERVER_BIN_NOW}
+        #beta_features_quick_install
+        apt update
+        case_debian_distro_and_install_vnc
     fi
 }
 #################
@@ -256,11 +253,11 @@ preconfigure_gui_dependecies_02() {
         case "${TMOE_PROOT}" in
         true | no) NON_DBUS='true' ;;
         esac
-        if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
-            DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
-        else
-            DEPENDENCY_02="dbus-x11 fonts-noto-cjk"
-        fi
+        #if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+        #    DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
+        #else
+        DEPENDENCY_02="dbus-x11 fonts-noto-cjk"
+        #fi
         #if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
         #	DEPENDENCY_02="${DEPENDENCY_02} tigervnc-standalone-server"
         #else
@@ -973,7 +970,7 @@ debian_xfce4_extras() {
             *)
                 REPO_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
                 GREP_NAME="xfce4-panel-profiles"
-                THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+                THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME}" | grep -v '1.0.9' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
                 download_deb_comman_model_02
                 ;;
             esac
@@ -1914,7 +1911,7 @@ dde_warning() {
   ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
   ║   ║System      ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
-  ║ 1 ║ Ubuntu     ║  ✓     ║    X   ║   ✓     ║ 
+  ║ 1 ║ Ubuntu     ║  ✓     ║    ？  ║   ✓     ║ 
   ║   ║ 20.04 LTS  ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
   ║   ║Fedora      ║        ║        ║         ║ 
@@ -1927,7 +1924,7 @@ dde_warning() {
   ║ 4 ║ amd64      ║  ✓     ║   ✓    ║   ？    ║ 
   ║---║------------║--------║--------║---------║
   ║   ║Deepin      ║        ║        ║         ║ 
-  ║ 5 ║ arm64      ║  ✓     ║   ✓    ║   ✓     ║ 
+  ║ 5 ║ arm64      ║  ✓     ║   ✓    ║   ？    ║ 
 ENDofTable
 
     cat <<-EOF
@@ -4037,10 +4034,47 @@ tiger_vnc_variable() {
 tight_vnc_variable() {
     VNC_SERVER_BIN="tightvnc"
     VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
-    DEPENDENCY_01="tigervnc-viewer xfonts-100dpi xfonts-75dpi"
+    DEPENDENCY_01="tigervnc-viewer xfonts-100dpi xfonts-75dpi xfonts-scalable"
     DEPENDENCY_02="tightvncserver"
 }
 ######
+debian_install_vnc_server() {
+    printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
+    apt remove -y ${VNC_SERVER_BIN_NOW}
+    printf "%s\n" "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
+    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
+    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+}
+#######
+grep_tiger_vnc_deb_file() {
+    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
+}
+#######
+ubuntu_install_tiger_vnc_server() {
+    apt-mark unhold tigervnc-common tigervnc-standalone-server
+    debian_install_vnc_server
+    LATEST_DEB_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/t/tigervnc/"
+    GREP_NAME_01='tigervnc-common'
+    GREP_NAME_02='deb10'
+    TEMP_FOLCER='/tmp/.TIGER_VNC_TEMP_FOLDER'
+    mkdir ${TEMP_FOLCER}
+    cd ${TEMP_FOLCER}
+    grep_tiger_vnc_deb_file
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    GREP_NAME_01='tigervnc-standalone-server'
+    grep_tiger_vnc_deb_file
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-standalone-server_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    GREP_NAME_01='libjpeg62-turbo_'
+    GREP_NAME_02='deb'
+    grep_tiger_vnc_deb_file
+    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "libjpeg62-turbo_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    dpkg -i ./libjpeg62-turbo_ubuntu-focal.deb ./tigervnc-common_ubuntu-focal.deb ./tigervnc-standalone-server_ubuntu-focal.deb
+    apt-mark hold tigervnc-common tigervnc-standalone-server
+    cd ~
+    rm -rv ${TEMP_FOLCER}
+}
+###########
 which_vnc_server_do_you_prefer() {
     case ${REMOTE_DESKTOP_SESSION_01} in
     startplasma* | gnome* | cinnamon* | startdde | ukui* | budgie*)
@@ -4058,15 +4092,33 @@ which_vnc_server_do_you_prefer() {
         fi
         ;;
     esac
-
-    #printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}${RESET}"
-    printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
-    #${TMOE_REMOVAL_COMMAND} ${VNC_SERVER_BIN_NOW}
-    apt remove -y ${VNC_SERVER_BIN_NOW}
-    printf "%s\n" "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
-    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}
+    case_debian_distro_and_install_vnc
 }
 ###################
+case_debian_distro_and_install_vnc() {
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+            case ${VNC_SERVER_BIN} in
+            tigervnc)
+                case $(apt list --installed 2>&1 | grep 'tigervnc-standalone-server' | awk '{print $2}') in
+                1.9.*) ;;
+                *) ubuntu_install_tiger_vnc_server ;;
+                esac
+                ;;
+            *)
+                apt-mark unhold tigervnc-common tigervnc-standalone-server
+                debian_install_vnc_server
+                ;;
+            esac
+        else
+            debian_install_vnc_server
+        fi
+        ;;
+    *) debian_install_vnc_server ;;
+    esac
+}
+#########
 first_configure_startvnc() {
     #卸载udisks2，会破坏mate和plasma的依赖关系。
     case "${TMOE_PROOT}" in
@@ -4092,10 +4144,8 @@ first_configure_startvnc() {
     #else
     case ${LINUX_DISTRO} in
     debian)
-        #|stretch|jessie
-        if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
-            which_vnc_server_do_you_prefer
-        fi
+        #|stretch|jessie    #if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+        which_vnc_server_do_you_prefer
         ;;
     esac
     #fi

@@ -882,7 +882,7 @@ install_baidu_netdisk() {
     printf "%s\n" "若安装失败，则请前往官网手动下载安装"
     printf "%s\n" "url：${YELLOW}https://pan.baidu.com/download${RESET}"
     printf "%s\n" "正在检测版本更新..."
-    THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '\.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}' | sed 's@.deb@@')
     case ${LINUX_DISTRO} in
     redhat)
