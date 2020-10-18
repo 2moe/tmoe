@@ -623,7 +623,8 @@ if [[ -e "debian-i" ]]; then
 	chmod 666 debian-i
 	rm -f debian-i
 fi
-curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+#curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+cp -f ${TMOE_GIT_DIR}/tool.sh ./debian-i
 chmod a+x neofetch debian-i
 
 ${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin
