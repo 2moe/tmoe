@@ -978,6 +978,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	######################
 	ubuntu_sources_list() {
+		#默认为ports源，armbian无需使用sed进行替换。
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
 				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse

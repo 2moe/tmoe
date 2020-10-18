@@ -4,6 +4,8 @@ install_python_web_novnc() {
 	case $(uname -o) in
 	Android)
 		if [ ! -e "${PREFIX}/bin/python" ]; then
+			printf "%s\n" "Press enter to install python and numpy."
+			press_enter_to_continue
 			apt update
 			apt install -y python
 		fi
@@ -27,7 +29,20 @@ install_python_web_novnc() {
 		;;
 	esac
 
-	[[ $(pip3 list | grep numpy) ]] || pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple numpy
+	if [[ ! $(pip3 list | grep numpy) ]]; then
+		case $(uname -o) in
+		Android)
+			cd ${TMPDIR}
+			curl -LO https://its-pointless.github.io/setup-pointless-repo.sh
+			bash setup-pointless-repo.sh
+			apt install -y numpy
+			;;
+		*)
+			python3 -m pip install --upgrade pip
+			pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy
+			;;
+		esac
+	fi
 
 	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
 		[[ -e ${HOME}/.vnc ]] || mkdir -p ${HOME}/.vnc
