@@ -632,7 +632,8 @@ ${TMOE_CHROOT_PREFIX} chmod u+w "${DEBIAN_CHROOT}/root"
 
 curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
-curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
+#curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
+cp -f ${TMOE_GIT_DIR}/zsh.sh ./
 chmod +x zsh.sh zsh-i.sh
 ${TMOE_CHROOT_PREFIX} mv zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
 #chmod u+x ./*
