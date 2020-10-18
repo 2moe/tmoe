@@ -741,7 +741,6 @@ cat >vnc-autostartup <<-'EndOfFile'
 	printf "%s\n" "Starting vnc server..."
 	}
 	#######
-	CURRENT_TMOE_DIR=$(pwd)
 	check_vnc_file(){
 			cd ${HOME}/.vnc
 		    for i in startvnc startx11vnc startxsdl; do
@@ -766,19 +765,9 @@ cat >vnc-autostartup <<-'EndOfFile'
 		check_vnc_file
 	fi
 	##########
-	case ${CURRENT_TMOE_DIR} in
-	/) cd ${HOME};;
-	*) cd ${CURRENT_TMOE_DIR} ;;
-	esac
+	cd ${HOME}
 	###########
 	ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
-	############
-		case ${TMOE_CHROOT} in
-	    true)
-	        rm -f /run/dbus/pid 2>/dev/null
-	        dbus-daemon --system --fork 2>/dev/null
-	        ;;
-		esac
 	############
 	systemctl() {
 		case ${TMOE_PROOT} in
@@ -805,6 +794,12 @@ cat >vnc-autostartup <<-'EndOfFile'
 	[[ ! -s ~/.profile ]] || source ~/.profile
 	typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 EndOfFile
+#case ${TMOE_CHROOT} in
+#true)
+#rm -f /run/dbus/pid 2>/dev/null
+#dbus-daemon --system --fork 2>/dev/null;;
+#esac
+############
 #curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
 #chmod u+x .profile
 #不要将profile转换为外部脚本，否则将影响sed
