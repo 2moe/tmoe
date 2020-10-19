@@ -990,7 +990,8 @@ kali_sources_list() {
 	EOF
     apt update
     apt list --upgradable
-    apt dist-upgrade -y
+    apt full-upgrade -y
+    apt install -y kali-menu
     apt search kali-linux
     printf '%s\n' 'You have successfully replaced your debian source with a kali source.'
     printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
