@@ -1309,38 +1309,75 @@ if_exists_other_debian_distro_wallpaper() {
     fi
 }
 ###############
+linuxmint_serena_wallpaper_var() {
+    MINT_CODE='serena'
+    WALLPAPER_FILE='/usr/share/backgrounds/rlukeman_skye.jpg'
+}
+linuxmint_sonya_wallpaper_var() {
+    MINT_CODE='sonya'
+    WALLPAPER_FILE='/usr/share/backgrounds/shontz_valley.jpg'
+}
+linuxmint_sylvia_wallpaper_var() {
+    MINT_CODE='sylvia'
+    WALLPAPER_FILE='/usr/share/backgrounds/jdonovan_yosemite.jpg'
+}
+linuxmint_tara_wallpaper_var() {
+    MINT_CODE='tara'
+    WALLPAPER_FILE='/usr/share/backgrounds/jplenio_lake.jpg'
+}
+linuxmint_tessa_wallpaper_var() {
+    MINT_CODE='tessa'
+    WALLPAPER_FILE="/usr/share/backgrounds/dking_autumn_in_japan.jpg"
+}
+linuxmint_tina_wallpaper_var() {
+    MINT_CODE="tina"
+    WALLPAPER_FILE='/usr/share/backgrounds/adeole_yosemite.jpg'
+}
+linuxmint_tricia_wallpaper_var() {
+    MINT_CODE="tricia"
+    WALLPAPER_FILE='/usr/share/backgrounds/amarttinen_argentina.jpg'
+}
+linuxmint_ulyana_wallpaper_var() {
+    MINT_CODE="ulyana"
+    WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
+}
+###########
+random_wallpaper_pack_01() {
+    case "$(($RANDOM % 5 + 1))" in
+    1) linuxmint_tara_wallpaper_var ;;
+    2) linuxmint_tessa_wallpaper_var ;;
+    3) linuxmint_tina_wallpaper_var ;;
+    4) linuxmint_tricia_wallpaper_var ;;
+    5 | *) linuxmint_ulyana_wallpaper_var ;;
+    esac
+}
+############
+random_wallpaper_pack_02() {
+    case "$(($RANDOM % 5 + 1))" in
+    1) linuxmint_serena_wallpaper_var ;;
+    2) linuxmint_sonya_wallpaper_var ;;
+    3) linuxmint_sylvia_wallpaper_var ;;
+    4) linuxmint_tara_wallpaper_var ;;
+    5 | *) linuxmint_tessa_wallpaper_var ;;
+    esac
+}
+############
 modify_the_default_xfce_wallpaper() {
     FORCIBLY_DOWNLOAD='true'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
-        MINT_CODE="tina"
-        WALLPAPER_FILE='/usr/share/backgrounds/adeole_yosemite.jpg'
         if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-            #WALLPAPER_FILE='/usr/share/backgrounds/kali/kali/kali-mesh-16x9.png'
-            #if_exists_other_debian_distro_wallpaper
-            MINT_CODE="ulyana"
-            WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
-            #mv /usr/share/backgrounds/kali/* /usr/share/backgrounds/
             cp -sv /usr/share/backgrounds/kali-16x9/* /usr/share/backgrounds/ 2>/dev/null
-        elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-            MINT_CODE="tricia"
-            #WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
-            WALLPAPER_FILE='/usr/share/backgrounds/amarttinen_argentina.jpg'
         fi
+        random_wallpaper_pack_01
         debian_xfce_wallpaper
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
         #WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
-        MINT_CODE='tessa'
-        WALLPAPER_FILE="/usr/share/backgrounds/fhaller_surreal_sunset.jpg"
-        mv /usr/share/backgrounds/xfce/* /usr/share/backgrounds/
-        #if [ -e "${WALLPAPER_FILE}" ]; then
-        #	modify_xfce_vnc0_wallpaper
-        #else
-        #	WALLPAPER_FILE='/usr/share/backgrounds/nasa-53884.jpg'
+        mv -f /usr/share/backgrounds/xfce/* /usr/share/backgrounds/
+        mv -f /usr/share/backgrounds/xfce-* /usr/share/backgrounds/xfce/ 2>/dev/null
+        random_wallpaper_pack_02
         debian_xfce_wallpaper
-        #fi
     elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        MINT_CODE='tara'
-        WALLPAPER_FILE='/usr/share/backgrounds/jplenio_lake.jpg'
+        random_wallpaper_pack_02
         debian_xfce_wallpaper
     else
         WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
