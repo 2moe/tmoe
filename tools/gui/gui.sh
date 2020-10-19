@@ -129,9 +129,9 @@ modify_xfce_window_scaling_factor() {
         dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
         if ((${TARGET} > 1)); then
             if grep -q 'Focal Fossa' "/etc/os-release"; then
-                dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Kali-Light-xHiDPI 2>/dev/null
+                dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
             else
-                dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Default-xhdpi 2>/dev/null
+                dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
             fi
         fi
         printf "%s\n" "修改完成，请输${GREEN}startvnc${RESET}重启进程"
@@ -4104,11 +4104,7 @@ ubuntu_install_tiger_vnc_server() {
 modify_to_xfwm4_breeze_theme() {
     case ${TMOE_HIGH_DPI} in
     true) ;;
-    *)
-        if [ -e "/usr/share/themes/Breeze/xfwm4/themerc" ]; then
-            dbus-launch xfconf-query -c xfwm4 -p /general/theme -s Breeze 2>/dev/null
-        fi
-        ;;
+    *) [[ ! -e "/usr/share/themes/Breeze/xfwm4/themerc" ]] || dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Breeze 2>/dev/null ;;
     esac
 }
 ##########
@@ -4181,11 +4177,9 @@ first_configure_startvnc() {
     #sed -i 's@--exit-with-session@@' ${XSESSION_FILE}
     #/usr/local/bin/startxsdl
     #else
+    #|stretch|jessie    #if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
     case ${LINUX_DISTRO} in
-    debian)
-        #|stretch|jessie    #if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
-        which_vnc_server_do_you_prefer
-        ;;
+    debian) which_vnc_server_do_you_prefer ;;
     esac
     #fi
     ######################
@@ -4279,10 +4273,6 @@ first_configure_startvnc() {
     if [ -z "${RESOLUTION}" ]; then
         RESOLUTION='1440x720'
         TMOE_HIGH_DPI='default'
-    fi
-
-    if ! grep -q 'Focal Fossa' "/etc/os-release"; then
-        modify_to_xfwm4_breeze_theme
     fi
     case ${TMOE_HIGH_DPI} in
     true) xfce4_tightvnc_hidpi_settings ;;
@@ -4426,6 +4416,8 @@ tmoe_gui_dpi_01() {
         #|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie
         if grep -q 'Focal Fossa' "/etc/os-release"; then
             dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
+        else
+            [[ ! -e "/usr/share/themes/Breeze/xfwm4/themerc" ]] || dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Breeze 2>/dev/null
         fi
         ;;
     esac
