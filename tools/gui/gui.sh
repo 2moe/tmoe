@@ -1319,7 +1319,8 @@ modify_the_default_xfce_wallpaper() {
             #if_exists_other_debian_distro_wallpaper
             MINT_CODE="ulyana"
             WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
-            mv /usr/share/backgrounds/kali/* /usr/share/backgrounds/
+            #mv /usr/share/backgrounds/kali/* /usr/share/backgrounds/
+            cp -Lv /usr/share/backgrounds/kali-16x9 /usr/share/backgrounds/
         elif [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
             MINT_CODE="tricia"
             #WALLPAPER_FILE='/usr/share/xfce4/backdrops/Campos_de_Castilla_by_David_Arias_Gutierrez.jpg'
@@ -4251,7 +4252,7 @@ first_configure_startvnc() {
     case ${REMOTE_DESKTOP_SESSION_01} in
     xfce4-session)
         if [ -z "${RESOLUTION}" ]; then
-            if (whiptail --title "Are you using a 720P/1080P monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用720P/1080P分辨率的屏幕?(っ °Д °)\n设屏幕分辨率为x,若720P<=x<=1080p,则选择YES;若2K<=x<=4K,则选择NO\nIf you are using a high-dpi monitor, then select NO" 0 50); then
+            if (whiptail --title "Are you using a 720P/1080P monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用720P/1080P分辨率的屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若720P<=x<=1080p,则选择YES;若2K<=x<=4K,则选择NO\nIf you are using a high-dpi monitor, then select NO" 0 50); then
                 RESOLUTION='1440x720'
                 TMOE_HIGH_DPI='default'
             else
