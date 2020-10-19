@@ -1099,6 +1099,16 @@ ENDofTable
     do_you_want_to_continue
 }
 ##########
+git_clone_kali_themes_common() {
+    if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
+        TEMP_FOLDER="/tmp/.KALI_THEME_COMMON_TEMP_FOLDER"
+        git clone --depth=1 https://gitee.com/ak2/kali-theme.git ${TEMP_FOLDER}
+        tar -pJxvf ${TEMP_FOLDER}/kali-theme.tar.xz -C /
+        rm -rvf ${TEMP_FOLDER}
+        dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
+    fi
+}
+##########
 install_xfce4_desktop() {
     xfce_warning
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
@@ -1143,10 +1153,10 @@ install_xfce4_desktop() {
     ##################
     beta_features_quick_install
     ####################
+    git_clone_kali_themes_common
     debian_xfce4_extras
     if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
         download_arch_breeze_adapta_cursor_theme
-        dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
     fi
     mkdir -p ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
@@ -1165,9 +1175,9 @@ install_xfce4_desktop() {
     if [ "${LINUX_DISTRO}" = "alpine" ]; then
         dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
     else
-        if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
-            download_kali_themes_common
-        fi
+        #if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
+        #    download_kali_themes_common
+        #fi
         if [ "${DEBIAN_DISTRO}" != "kali" ]; then
             dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Flat-Remix-Blue-Light
         fi
@@ -4265,6 +4275,10 @@ first_configure_startvnc() {
         RESOLUTION='1440x720'
         TMOE_HIGH_DPI='default'
     fi
+
+    if ! egrep -q 'Focal Fossa' "/etc/os-release"; then
+        modify_to_xfwm4_breeze_theme
+    fi
     case ${TMOE_HIGH_DPI} in
     true) xfce4_tightvnc_hidpi_settings ;;
     false) tmoe_gui_normal_dpi ;;
@@ -4407,8 +4421,6 @@ tmoe_gui_dpi_01() {
         #|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie
         if egrep -q 'Focal Fossa' "/etc/os-release"; then
             dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
-        else
-            modify_to_xfwm4_breeze_theme
         fi
         ;;
     esac
