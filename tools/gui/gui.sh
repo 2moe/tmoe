@@ -1161,6 +1161,7 @@ install_xfce4_desktop() {
     if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
         download_arch_breeze_adapta_cursor_theme
     fi
+    dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
     mkdir -p ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     if [ ! -e "xfce4-desktop.xml" ]; then
