@@ -1100,12 +1100,15 @@ ENDofTable
 }
 ##########
 git_clone_kali_themes_common() {
+    check_update_icon_caches_sh
     if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
         TEMP_FOLDER="/tmp/.KALI_THEME_COMMON_TEMP_FOLDER"
         git clone --depth=1 https://gitee.com/ak2/kali-theme.git ${TEMP_FOLDER}
         tar -pJxvf ${TEMP_FOLDER}/kali-theme.tar.xz -C /
         rm -rvf ${TEMP_FOLDER}
         dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
+        ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
+        update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
     fi
 }
 ##########
