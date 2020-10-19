@@ -4251,12 +4251,12 @@ first_configure_startvnc() {
     case ${REMOTE_DESKTOP_SESSION_01} in
     xfce4-session)
         if [ -z "${RESOLUTION}" ]; then
-            if (whiptail --title "Are you using a high-resolution monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用高分辨率屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若x>=2K,则选择YES;\n若x<=1080p,则选择NO。" 0 50); then
-                RESOLUTION='2880x1440'
-                TMOE_HIGH_DPI='true'
-            else
+            if (whiptail --title "Are you using a 720P/1080P monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用720P/1080P分辨率的屏幕?(っ °Д °)\n设屏幕分辨率为x,若720P<=x<=1080p,则选择YES;若2K<=x<=4K,则选择NO\nIf you are using a high-dpi monitor, then select NO" 0 50); then
                 RESOLUTION='1440x720'
                 TMOE_HIGH_DPI='default'
+            else
+                RESOLUTION='2880x1440'
+                TMOE_HIGH_DPI='true'
             fi
         fi
         ;;
@@ -4280,7 +4280,6 @@ first_configure_startvnc() {
     default) tmoe_gui_default_dpi ;;
     esac
     ######
-
     cat <<-EOF
 		------------------------
 		一：
