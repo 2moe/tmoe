@@ -2365,22 +2365,23 @@ ubuntu_gnome_walllpapers() {
         "03" "cosmic" \
         "04" "disco" \
         "05" "eoan" \
-        "06" "karmic" \
-        "07" "lucid" \
-        "08" "maverick" \
-        "09" "natty" \
-        "10" "oneiric" \
-        "11" "precise" \
-        "12" "quantal" \
-        "13" "raring" \
-        "14" "saucy" \
-        "15" "trusty" \
-        "16" "utopic" \
-        "17" "vivid" \
-        "18" "wily" \
-        "19" "xenial" \
-        "20" "yakkety" \
-        "21" "zesty" \
+        "06" "focal" \
+        "07" "karmic" \
+        "08" "lucid" \
+        "09" "maverick" \
+        "10" "natty" \
+        "11" "oneiric" \
+        "12" "precise" \
+        "13" "quantal" \
+        "14" "raring" \
+        "15" "saucy" \
+        "16" "trusty" \
+        "17" "utopic" \
+        "18" "vivid" \
+        "19" "wily" \
+        "20" "xenial" \
+        "21" "yakkety" \
+        "22" "zesty" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
@@ -2390,22 +2391,23 @@ ubuntu_gnome_walllpapers() {
     03) UBUNTU_CODE="cosmic" ;;
     04) UBUNTU_CODE="disco" ;;
     05) UBUNTU_CODE="eoan" ;;
-    06) UBUNTU_CODE="karmic" ;;
-    07) UBUNTU_CODE="lucid" ;;
-    08) UBUNTU_CODE="maverick" ;;
-    09) UBUNTU_CODE="natty" ;;
-    10) UBUNTU_CODE="oneiric" ;;
-    11) UBUNTU_CODE="precise" ;;
-    12) UBUNTU_CODE="quantal" ;;
-    13) UBUNTU_CODE="raring" ;;
-    14) UBUNTU_CODE="saucy" ;;
-    15) UBUNTU_CODE="trusty" ;;
-    16) UBUNTU_CODE="utopic" ;;
-    17) UBUNTU_CODE="vivid" ;;
-    18) UBUNTU_CODE="wily" ;;
-    19) UBUNTU_CODE="xenial" ;;
-    20) UBUNTU_CODE="yakkety" ;;
-    21) UBUNTU_CODE="zesty" ;;
+    06) UBUNTU_CODE="focal" ;;
+    07) UBUNTU_CODE="karmic" ;;
+    08) UBUNTU_CODE="lucid" ;;
+    09) UBUNTU_CODE="maverick" ;;
+    10) UBUNTU_CODE="natty" ;;
+    11) UBUNTU_CODE="oneiric" ;;
+    12) UBUNTU_CODE="precise" ;;
+    13) UBUNTU_CODE="quantal" ;;
+    14) UBUNTU_CODE="raring" ;;
+    15) UBUNTU_CODE="saucy" ;;
+    16) UBUNTU_CODE="trusty" ;;
+    17) UBUNTU_CODE="utopic" ;;
+    18) UBUNTU_CODE="vivid" ;;
+    19) UBUNTU_CODE="wily" ;;
+    20) UBUNTU_CODE="xenial" ;;
+    21) UBUNTU_CODE="yakkety" ;;
+    22) UBUNTU_CODE="zesty" ;;
     esac
     ######################################
     GREP_NAME_02="ubuntu-wallpapers-${UBUNTU_CODE}"
@@ -2487,51 +2489,51 @@ linux_mint_backgrounds() {
     INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
         "Download Mint wallpaper-packs" 0 50 0 \
         "00" "Back返回" \
-        "01" "katya-extra" \
-        "02" "lisa-extra" \
-        "03" "maya" \
-        "04" "nadia" \
-        "05" "olivia" \
-        "06" "petra" \
-        "07" "qiana" \
-        "08" "rafaela" \
-        "09" "rebecca" \
-        "10" "retro" \
-        "11" "rosa" \
-        "12" "sarah" \
-        "13" "serena" \
-        "14" "sonya" \
-        "15" "sylvia" \
-        "16" "tara" \
-        "17" "tessa" \
-        "18" "tina" \
-        "19" "tricia" \
-        "20" "ulyana" \
+        "01" "ulyana" \
+        "02" "tricia" \
+        "03" "tina" \
+        "04" "tessa" \
+        "05" "tara" \
+        "06" "sylvia" \
+        "07" "sonya" \
+        "08" "serena" \
+        "09" "sarah" \
+        "10" "rosa" \
+        "11" "retro" \
+        "12" "rebecca" \
+        "13" "rafaela" \
+        "14" "qiana" \
+        "15" "petra" \
+        "16" "olivia" \
+        "17" "nadia" \
+        "18" "maya" \
+        "19" "lisa-extra" \
+        "20" "katya-extra" \
         "21" "xfce-2014" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
     00 | "") download_wallpapers ;;
-    01) MINT_CODE="katya-extra" ;;
-    02) MINT_CODE="lisa-extra" ;;
-    03) MINT_CODE="maya" ;;
-    04) MINT_CODE="nadia" ;;
-    05) MINT_CODE="olivia" ;;
-    06) MINT_CODE="petra" ;;
-    07) MINT_CODE="qiana" ;;
-    08) MINT_CODE="rafaela" ;;
-    09) MINT_CODE="rebecca" ;;
-    10) MINT_CODE="retro" ;;
-    11) MINT_CODE="rosa" ;;
-    12) MINT_CODE="sarah" ;;
-    13) MINT_CODE="serena" ;;
-    14) MINT_CODE="sonya" ;;
-    15) MINT_CODE="sylvia" ;;
-    16) MINT_CODE="tara" ;;
-    17) MINT_CODE="tessa" ;;
-    18) MINT_CODE="tina" ;;
-    19) MINT_CODE="tricia" ;;
-    20) MINT_CODE="ulyana" ;;
+    01) MINT_CODE="ulyana" ;;
+    02) MINT_CODE="tricia" ;;
+    03) MINT_CODE="tina" ;;
+    04) MINT_CODE="tessa" ;;
+    05) MINT_CODE="tara" ;;
+    06) MINT_CODE="sylvia" ;;
+    07) MINT_CODE="sonya" ;;
+    08) MINT_CODE="serena" ;;
+    09) MINT_CODE="sarah" ;;
+    10) MINT_CODE="rosa" ;;
+    11) MINT_CODE="retro" ;;
+    12) MINT_CODE="rebecca" ;;
+    13) MINT_CODE="rafaela" ;;
+    14) MINT_CODE="qiana" ;;
+    15) MINT_CODE="petra" ;;
+    16) MINT_CODE="olivia" ;;
+    17) MINT_CODE="nadia" ;;
+    18) MINT_CODE="maya" ;;
+    19) MINT_CODE="lisa-extra" ;;
+    20) MINT_CODE="katya-extra" ;;
     21)
         MINT_CODE="xfce"
         GREP_NAME_02="_2014.06.09"
@@ -4276,7 +4278,7 @@ first_configure_startvnc() {
         TMOE_HIGH_DPI='default'
     fi
 
-    if ! egrep -q 'Focal Fossa' "/etc/os-release"; then
+    if ! grep -q 'Focal Fossa' "/etc/os-release"; then
         modify_to_xfwm4_breeze_theme
     fi
     case ${TMOE_HIGH_DPI} in
@@ -4419,7 +4421,7 @@ tmoe_gui_dpi_01() {
     tigervnc) ;;
     *)
         #|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie
-        if egrep -q 'Focal Fossa' "/etc/os-release"; then
+        if grep -q 'Focal Fossa' "/etc/os-release"; then
             dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-HiDPI 2>/dev/null
         fi
         ;;
@@ -4457,7 +4459,7 @@ xfce4_tightvnc_hidpi_settings() {
     dbus-launch xfconf-query -c xsettings -t int -np /Gdk/WindowScalingFactor -s 2 2>/dev/null
     #-n创建一个新属性，类型为int
     #|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie
-    if egrep -q 'Focal Fossa' "/etc/os-release"; then
+    if grep -q 'Focal Fossa' "/etc/os-release"; then
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
     else
         dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Default-xhdpi 2>/dev/null
