@@ -1161,12 +1161,12 @@ install_xfce4_desktop() {
     if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
         download_arch_breeze_adapta_cursor_theme
     fi
-    dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
     mkdir -p ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     if [ ! -e "xfce4-desktop.xml" ]; then
         modify_the_default_xfce_wallpaper
     fi
+    dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 
     #XFCE_WORK_SPACE_01=$(cat xfce4-desktop.xml | grep -n workspace1 | awk '{print $1}' | cut -d ':' -f 1)
     #if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | egrep 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
