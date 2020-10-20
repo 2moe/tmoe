@@ -789,10 +789,10 @@ debian_opt_music_app() {
         "您想要安装哪个软件?\n Which software do you want to install? " 0 0 0 \
         "1" "lx-music-desktop(洛雪音乐助手)" \
         "2" "electron-netease-cloud-music(云音乐)" \
-        "3" "#netease-cloud-music-gtk(云音乐)" \
+        "3" "listen1(免费音乐聚合)" \
         "4" "cocomusic(第三方QQ音乐+白屏修复补丁)" \
-        "5" "listen1(免费音乐聚合)" \
-        "6" "iease-music(界面华丽的云音乐客户端)" \
+        "5" "iease-music(界面华丽的云音乐客户端)" \
+        "6" "#netease-cloud-music-gtk(云音乐)" \
         "7" "petal(第三方豆瓣FM客户端)" \
         "8" "chord(支持虾米、云音乐、qq音乐多平台)" \
         "9" "#vocal(强大美观的播客app)" \
@@ -804,10 +804,10 @@ debian_opt_music_app() {
     0 | "") debian_opt_menu ;;
     1) install_lx_music_desktop ;;
     2) install_electron_netease_cloud_music ;;
-    3) install_netease_cloud_music_gtk ;;
+    3) install_listen1 ;;
     4) install_coco_music ;;
-    5) install_listen1 ;;
-    6) install_iease_music ;;
+    5) install_iease_music ;;
+    5) install_netease_cloud_music_gtk ;;
     7) install_electron_petal ;;
     8) install_electron_chord ;;
     9)
