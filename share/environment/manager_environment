@@ -243,7 +243,7 @@ list_installed_tmoe_containers() {
 	}
 	list_installed_tmoe_containers_menu_en() {
 		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
-			"Please select a container." 0 0 0 \
+			"Please choose a container." 0 0 0 \
 			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
 			"Back" "🌚 返回" \
 			3>&1 1>&2 2>&3)
