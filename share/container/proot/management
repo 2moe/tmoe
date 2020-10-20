@@ -237,31 +237,62 @@ du_sh_gnu_linux_distro() {
 	esac
 	printf "%s\n" "Detecting the space occupied by ${BLUE}${DEBIAN_FOLDER}${RESET} ..."
 	printf "%s\n" "正在检测${BLUE}${DEBIAN_FOLDER}${RESET}占用空间大小..."
-	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} 2>/dev/null
-	printf "%s\n" "${YELLOW}正在列出TOP30...${RESET}"
-	if [ -e "${DEBIAN_CHROOT}" ]; then
-		cd ${DEBIAN_CHROOT}
-		${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
-			-o -path="./root/sd" \
-			-o -path="./root/tf" \
-			-o -path="./root/termux" \
-			-o -path="./media/sd" \
-			-o -path="./media/termux" \
-			-o -path="./media/tf" \
-			-o -path="./sd" \
-			-o -path="./tf" \
-			-o -path="./dev" \
-			-o -path="./sys" \
-			-o -path="./system" \) -prune \
-			-type f -print0 2>/dev/null |
-			xargs -0 ${TMOE_PREFIX} du |
-			sort -n |
-			tail -30 |
-			cut -f 2 |
-			xargs -I{} ${TMOE_PREFIX} du -sh {}
-	else
-		printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
-	fi
+	case ${TMOE_CHROOT} in
+	true)
+		if [ -e "${DEBIAN_CHROOT}" ]; then
+			cd ${DEBIAN_CHROOT}
+			${TMOE_PREFIX} du -sh * 2>/dev/null
+			printf "%s\n" "${YELLOW}正在列出TOP10...${RESET}"
+			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
+				-o -path="./root/sd" \
+				-o -path="./root/tf" \
+				-o -path="./root/termux" \
+				-o -path="./media/sd" \
+				-o -path="./media/termux" \
+				-o -path="./media/tf" \
+				-o -path="./sd" \
+				-o -path="./tf" \
+				-o -path="./dev" \
+				-o -path="./sys" \
+				-o -path="./system" \) -prune \
+				-type f -print0 2>/dev/null |
+				xargs -0 ${TMOE_PREFIX} du |
+				sort -n |
+				tail -10 |
+				cut -f 2 |
+				xargs -I{} ${TMOE_PREFIX} du -sh {}
+		else
+			printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
+		fi
+		;;
+	*)
+		${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT}
+		printf "%s\n" "${YELLOW}正在列出TOP30...${RESET}"
+		if [ -e "${DEBIAN_CHROOT}" ]; then
+			cd ${DEBIAN_CHROOT}
+			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
+				-o -path="./root/sd" \
+				-o -path="./root/tf" \
+				-o -path="./root/termux" \
+				-o -path="./media/sd" \
+				-o -path="./media/termux" \
+				-o -path="./media/tf" \
+				-o -path="./sd" \
+				-o -path="./tf" \
+				-o -path="./dev" \
+				-o -path="./sys" \
+				-o -path="./system" \) -prune \
+				-type f -print0 2>/dev/null |
+				xargs -0 ${TMOE_PREFIX} du |
+				sort -n |
+				tail -30 |
+				cut -f 2 |
+				xargs -I{} ${TMOE_PREFIX} du -sh {}
+		else
+			printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
+		fi
+		;;
+	esac
 }
 ######################
 backup_tmoe_gnu_linux_distro() {
