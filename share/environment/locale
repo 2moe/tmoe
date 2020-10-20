@@ -214,11 +214,11 @@ tmoe_locale_menu() {
 		case "$(uname -o)" in
 		Android) ;;
 		*)
-			if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
-				TMOE_SCRIPT_PATH=''
-				set_debian_default_locale
-				source /etc/default/locale 2>/dev/null
-			fi
+			#if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
+			TMOE_SCRIPT_PATH=''
+			set_debian_default_locale
+			source /etc/default/locale 2>/dev/null
+			#fi
 			mkdir -p /usr/local/etc/tmoe-linux/
 			cd /usr/local/etc/tmoe-linux/
 			cp -f ${HOME}/.config/tmoe-linux/locale.txt ./ || ${TMOE_PREFIX} cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
@@ -231,7 +231,7 @@ tmoe_locale_menu() {
 				sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
 			fi
 			mv -f locale.gen locale.gen.bak
-			sort -um locale.gen.bak >locale.gen
+			sort -u locale.gen.bak >locale.gen
 			if [ -z "${TMOE_SCRIPT_PATH}" ]; then
 				locale-gen ${TMOE_LANG} 2>/dev/null
 			fi
@@ -253,24 +253,21 @@ tmoe_locale_menu() {
 #####################
 set_debian_default_locale() {
 	cd ${TMOE_SCRIPT_PATH}/etc/default
-	if grep -q 'LANG=' locale; then
-		DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
-		DEFAULT_LANG_QUATER=$(printf '%s\n' "${DEFAULT_LANG}" | cut -d '_' -f 1)
-		sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g" locale
-		sed -i "s@${TMOE_LANG_HALF}:${DEFAULT_LANG_QUATER}@${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}@g" locale
-		source ./locale
-	else
-		if [ "$(pwd)" != "${HOME}" ]; then
-			cp locale locale.bak 2>/dev/null
-			sed -i 's@^@#&@g' locale
-			sed -i 's@##@#@g' locale
-			cat >>locale <<-EOF
-				LANG=${TMOE_LANG_HALF}.UTF-8
-				LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
-				LC_ALL=${TMOE_LANG_HALF}.UTF-8
-			EOF
-		fi
-	fi
+	#if grep -q '^LANG=' locale; then
+	#	DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
+	#	DEFAULT_LANG_QUATER=$(printf '%s\n' "${DEFAULT_LANG}" | cut -d '_' -f 1)
+	#	sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g;s@${TMOE_LANG_HALF}:${DEFAULT_LANG_QUATER}@${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}@g" locale
+	#	source ./locale 2>/dev/null
+	#else
+	mv -vf locale locale.bak 2>/dev/null
+	#sed -i 's@^@#&@g' locale
+	#sed -i 's@##@#@g' locale
+	cat >>locale <<-EOF
+		LANG=${TMOE_LANG_HALF}.UTF-8
+		LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
+		LC_ALL=${TMOE_LANG_HALF}.UTF-8
+	EOF
+	#fi
 }
 ##########
 install_ubuntu_language_pack() {
@@ -320,13 +317,6 @@ edit_tmoe_locale_file_manually() {
 		else
 			nano /etc/default/locale
 			nano /etc/locale.gen
-		fi
-	fi
-	if [ $(command -v debian) ]; then
-		if [ $(command -v editor) ]; then
-			editor $(command -v debian)
-		else
-			nano $(command -v debian)
 		fi
 	fi
 	if [ -e "${DEBIAN_CHROOT}/etc" ]; then
