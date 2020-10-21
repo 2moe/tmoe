@@ -245,19 +245,104 @@ install_360_browser() {
     download_and_install_deb
 }
 ##############
+install_microsoft_edge_debian() {
+    cd /tmp
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
+    sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+    sudo su -c 'printf "%s\n" "deb https://packages.microsoft.com/repos/edge stable main" >/etc/apt/sources.list.d/microsoft-edge-dev.list'
+    sudo rm microsoft.gpg
+    sudo apt update
+    sudo apt install microsoft-edge-dev
+}
+install_microsoft_edge_redhat() {
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/edge
+    sudo mv /etc/yum.repos.d/packages.microsoft.com_yumrepos_edge.repo /etc/yum.repos.d/microsoft-edge-dev.repo
+    sudo dnf install microsoft-edge-dev
+}
+install_microsoft_edge_suse() {
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo zypper ar https://packages.microsoft.com/yumrepos/edge microsoft-edge-dev
+    sudo zypper refresh
+    sudo zypper install microsoft-edge-dev
+}
+install_microsoft_edge_arch() {
+    beta_features_quick_install
+}
+install_microsoft_edge() {
+    cat <<-'EOF'
+Package: microsoft-edge-dev
+Priority: optional
+Section: web
+Installed-Size: 301311
+Maintainer: Microsoft Edge for Linux Team
+Architecture: amd64
+Provides: www-browser
+Depends: ca-certificates, fonts-liberation, libasound2 (>= 1.0.16), libatk-bridge2.0-0 (>= 2.5.3), libatk1.0-0 (>= 2.2.0), libatomic1 (>= 4.8), libatspi2.0-0 (>= 2.9.90), libc6 (>= 2.16), libcairo2 (>= 1.6.0), libcups2 (>= 1.4.0), libdbus-1-3 (>= 1.5.12), libdrm2 (>= 2.4.38), libexpat1 (>= 2.0.1), libgbm1 (>= 8.1~0), libgcc1 (>= 1:3.0), libgdk-pixbuf2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.39.4), libgtk-3-0 (>= 3.9.10), libnspr4 (>= 2:4.9-2~), libnss3 (>= 2:3.22), libpango-1.0-0 (>= 1.14.0), libuuid1 (>= 2.16), libx11-6 (>= 2:1.4.99.1), libx11-xcb1, libxcb1 (>= 1.9.2), libxcomposite1 (>= 1:0.3-1), libxdamage1 (>= 1:1.1), libxext6, libxfixes3, libxkbcommon0 (>= 0.4.1), libxrandr2, wget, xdg-utils (>= 1.0.2)
+Pre-Depends: dpkg (>= 1.14.0)
+Recommends: libu2f-udev, libvulkan1
+Description: The web browser from Microsoft
+ Microsoft Edge is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.
+EOF
+
+    printf "%s\n" "If you can not download edge browser,then go to microsoft official website."
+    printf "${YELLOW}%s${RESET}\n" "https://www.microsoftedgeinsider.com/download"
+    case ${LINUX_DISTRO} in
+    debian) install_microsoft_edge_debian ;;
+    redhat) install_microsoft_edge_redhat ;;
+    arch) install_microsoft_edge_arch ;;
+    suse) install_microsoft_edge_suse ;;
+    *)
+        beta_features_quick_install
+        printf "%s\n" "Sorry, it does not s-
+        upport your system."
+        ;;
+    esac
+}
+############
+remove_microsoft_edge() {
+    printf "${RED}%s ${BLUE}%s${RESET}\n" "${TMOE_REMOVAL_COMMAND}" "${DEPENDENCY_02}"
+    do_you_want_to_continue
+    ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_02}
+    case ${LINUX_DISTRO} in
+    debian)
+        rm -vf /etc/apt/sources.list.d/microsoft-edge-dev.list
+        apt update
+        ;;
+    redhat) rm -vf /etc/yum.repos.d/microsoft-edge-dev.repo ;;
+    suse) zypper removerepo microsoft-edge-dev ;;
+    *) ;;
+    esac
+}
+##########
+microsoft_edge_menu() {
+    DEPENDENCY_01=''
+    DEPENDENCY_02='microsoft-edge-dev'
+    case ${ARCH_TYPE} in
+    amd64) TMOE_TIPS_02="You are using amd64 architecture,enjoy the fun experience brought by edge." ;;
+    *) TMOE_TIPS_02="You are using ${ARCH_TYPE} architecture, please switch to amd64." ;;
+    esac
+
+    if (whiptail --title "Do you want to install or remove edge?" --yes-button "install安装" --no-button "remove移除" --yesno "Microsoft Edge is a cross-platform web browser developed by Microsoft.\n${TMOE_TIPS_02}" 10 50); then
+        install_microsoft_edge
+    else
+        remove_microsoft_edge
+    fi
+}
+##############
 tmoe_browser_menu() {
     RETURN_TO_WHERE='tmoe_browser_menu'
     RETURN_TO_MENU='tmoe_browser_menu'
-
     DEPENDENCY_02=""
     TMOE_APP=$(whiptail --title "Browsers" --menu \
         "Which browser do you want to install?" 0 50 0 \
-        "1" "Firefox & Chromium" \
-        "2" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine)" \
-        "3" "vivaldi(一切皆可定制)" \
-        "4" "360安全浏览器" \
-        "5" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko)" \
-        "6" "midori(轻量级,开源浏览器)" \
+        "1" "Mozilla Firefox & Google Chromium" \
+        "2" "Microsoft Edge(x64,享受出色的浏览性能)" \
+        "3" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine)" \
+        "4" "Vivaldi(一切皆可定制)" \
+        "5" "360安全浏览器(arm64,x64)" \
+        "6" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko)" \
+        "7" "Midori(轻量级,开源浏览器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -267,11 +352,12 @@ tmoe_browser_menu() {
         firefox_or_chromium
         DEPENDENCY_01=""
         ;;
-    2)
+    2) microsoft_edge_menu ;;
+    3)
         DEPENDENCY_01="falkon"
         restore_debian_gnu_libxcb_so
         ;;
-    3)
+    4)
         DEPENDENCY_01='vivaldi-stable'
         case ${LINUX_DISTRO} in
         arch)
@@ -286,7 +372,7 @@ tmoe_browser_menu() {
         tmoe_app_menu_01
         DEPENDENCY_01=""
         ;;
-    4)
+    5)
         case ${LINUX_DISTRO} in
         arch) DEPENDENCY_01='browser360' ;;
         *) DEPENDENCY_01='browser360-cn-stable' ;;
@@ -296,8 +382,8 @@ tmoe_browser_menu() {
         tmoe_app_menu_01
         DEPENDENCY_01=""
         ;;
-    5) DEPENDENCY_01="epiphany-browser" ;;
-    6) DEPENDENCY_01="midori" ;;
+    6) DEPENDENCY_01="epiphany-browser" ;;
+    7) DEPENDENCY_01="midori" ;;
     esac
     #    5) DEPENDENCY_01="konqueror" ;;
     #    "5" "konqueror(KDE默认浏览器,支持文件管理)" \
