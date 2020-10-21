@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 #######################################
-remove_gnu_linux_container() {
-	case ${TMOE_CHROOT} in
-	true) source ${TMOE_SHARE_DIR}/removal/umount ;;
-	esac
+tips_of_umount_chroot_container_02() {
 	cat <<-EOF
 		${YELLOW}Q:为什么卸载chroot容器需要如此谨慎？${RESET}
 		A:此处引用umount的用户手册。
@@ -21,6 +18,28 @@ remove_gnu_linux_container() {
 		但也存在特例，当您使用套娃循环挂载，不断地挂载自身时，将有可能导致异常现象。
 		欲了解更多关于mount和umount的内容，请阅览相关手册。
 	EOF
+}
+##############
+tips_of_umount_chroot_container_01() {
+	cat <<-EOF
+		移除系统前，请先确保您已卸载容器挂载目录。
+		建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者${RED}概不负责${RESET}！！！
+		Before removing the system, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd media/sd media/tf${RESET} and other directories.
+		It is recommended that you backup the entire system before removal. 
+		If the data is lost due to improper operation, the developer is not responsible! 
+	EOF
+}
+###########
+remove_gnu_linux_container() {
+	case ${TMOE_CHROOT} in
+	true)
+		tips_of_umount_chroot_container_01
+		printf "%s\n" "Umounting..."
+		printf "%s\n" "正在自动umount..."
+		source ${TMOE_SHARE_DIR}/removal/umount
+		tips_of_umount_chroot_container_02
+		;;
+	esac
 	if [ "$(ls ${DEBIAN_CHROOT}/proc 2>/dev/null)" ]; then
 		printf "%s\n" "检测到proc目录不为空，无法继续卸载"
 		printf "%s\n" "Please restart the device to unmount the ${DEBIAN_CHROOT}/${i} directory."
@@ -37,22 +56,17 @@ remove_gnu_linux_container() {
 	done
 	unset i
 	check_rootfs_dir
-	cat <<-EOF
-		移除系统前，请先确保您已卸载容器挂载目录。
-		建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者${RED}概不负责${RESET}！！！
-		Before removing the system, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd media/sd media/tf${RESET} and other directories.
-		It is recommended that you backup the entire system before removal. 
-		If the data is lost due to improper operation, the developer is not responsible! 
-	EOF
 	sed -n p /proc/mounts | grep ${DEBIAN_CHROOT}
 	pkill -9 proot 2>/dev/null
 	pkill -9 chroot 2>/dev/null
 	ps -e | grep proot
 	ps -e | grep startvnc
-	printf "%s\n" "移除系统前，请先确保您已停止GNU/Linux容器。"
+	printf "%s\n" "移除容器前，本工具将${RED}自动停止${RESET}${BLUE}${DEBIAN_FOLDER}${RESET}容器所运行的${GREEN}所有进程${RESET}。"
+	printf "%s\n" "Tmoe-linux manager will ${RED}automatically stop${RESET} ${GREEN}all processes${RESET} running in the ${BLUE}${DEBIAN_FOLDER}${RESET} container, and unmount the container directory."
 	pgrep proot &>/dev/null
 	if [ "$?" = "0" ]; then
 		printf '%s\n' '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
+		#printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在容器中执行stopvnc，再进行移除操作。"
 	fi
 	ls -l ${DEBIAN_CHROOT}/root/termux/* 2>/dev/null
 	if [ "$?" = "0" ]; then
@@ -60,14 +74,14 @@ remove_gnu_linux_container() {
 		printf "%s\n" "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
 		printf '%s\n' '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 	fi
-	printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在容器中执行stopvnc，再进行移除操作。"
 	printf "%s\n" "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
 	${TMOE_PREFIX} du -sh ${DEBIAN_CHROOT} --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux 2>/dev/null
 	if [ ! -d ${DEBIAN_CHROOT} ]; then
 		printf "%s\n" "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
-	printf "%s\n" "Do you want to remove it?[Y/n]"
-	printf "%s\n" "${YELLOW}按回车键确认移除 Press enter to remove.${RESET} "
+	printf "%s\n" "Do you want to remove it?${PURPLE}[Y/n]${RESET}"
+	printf "%s\n" "按${GREEN}回车键${RESET}确认${RED}移除${RESET}"
+	printf "%s\n" "Press ${GREEN}enter${RESET} to ${RED}remove${RESET}."
 	read opt
 	case $opt in
 	y* | Y* | "")
