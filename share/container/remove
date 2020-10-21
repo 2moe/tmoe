@@ -16,15 +16,20 @@ tips_of_umount_chroot_container_02() {
 		本工具提供了检测功能，当检测到挂载目录为空时将会出现${GREEN}total 0${RESET}。
 		在这种情况下，一般能正常卸载。
 		但也存在特例，当您使用套娃循环挂载，不断地挂载自身时，将有可能导致异常现象。
+		为防止异常状况，本工具提供了多次检测的功能。
+		当检测到mounted的目录不为空时,将无法继续执行操作。
+		因此在一般情况下，您都可以安心卸载容器。
 		欲了解更多关于mount和umount的内容，请阅览相关手册。
+		In order to prevent accidental deletion of directories, tmoe-linux developer have done additional detection steps.
+		So you can safely remove the ${BLUE}${DEBIAN_FOLDER}${RESET} container.
 	EOF
 }
 ##############
 tips_of_umount_chroot_container_01() {
 	cat <<-EOF
-		移除系统前，请先确保您已卸载容器挂载目录。
+		移除容器前，请先确保您unmounted了容器mounted目录。
 		建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者${RED}概不负责${RESET}！！！
-		Before removing the system, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd media/sd media/tf${RESET} and other directories.
+		Before removing the container, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd media/sd media/tf${RESET} and other directories.
 		It is recommended that you backup the entire system before removal. 
 		If the data is lost due to improper operation, the developer is not responsible! 
 	EOF
