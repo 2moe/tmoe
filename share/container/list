@@ -69,12 +69,7 @@ choose_which_gnu_linux_distro() {
 		creat_container_edition_txt
 		go_to_proot_management
 		;;
-	4)
-		DISTRO_NAME='fedora'
-		TMOE_LINUX_CONTAINER_DISTRO='fedora'
-		CLOUD_ROOTFS='true'
-		install_fedora_gnu_linux_distro
-		;;
+	4) install_fedora_gnu_linux_distro ;;
 	5) install_beta_containers ;;
 	6)
 		DISTRO_NAME='kali'
@@ -532,9 +527,9 @@ linux_distro_common_model_01() {
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "/usermod -a/d" |
-		sed "/groupadd /d" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	#sed "/usermod -a/d" |
+	#sed "/groupadd /d" |
 }
 ####################
 #02为kali-rolling
@@ -641,13 +636,87 @@ which_version_do_you_want_to_install() {
 	fi
 }
 ######################
+fedora_distro_menu() {
+	RETURN_TO_WHERE='fedora_distro_menu'
+	BETA_SYSTEM=$(
+		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
+			"1" "Auto check 自动检测版本" \
+			"2" "Fedora 33(仅test)" \
+			"3" "Fedora 34 rawhide(For testing only)" \
+			"0" "🌚 Return to previous menu 返回上级菜单" \
+			3>&1 1>&2 2>&3
+	)
+	##############################
+	case "${BETA_SYSTEM}" in
+	0 | "") choose_which_gnu_linux_distro ;;
+	1)
+		OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+		check_the_latest_distro_version
+		;;
+	2)
+		DISTRO_CODE=33
+		case ${ARCH_TYPE} in
+		amd64) CORRENT_SHA256SUM='7c7c49d2b7e203e4c88d2c36108d3901a0e2713231c834a83cf3a8c5c97a0e6d' ;;
+		arm64) CORRENT_SHA256SUM='3c41dba2bb466e9eda6c09f169be792909ab36742b9a61fb6575010825320712' ;;
+		esac
+		git_clone_fedora_rootfs
+		;;
+	3)
+		DISTRO_CODE=34
+		case ${ARCH_TYPE} in
+		amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
+		arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;
+		esac
+		git_clone_fedora_rootfs
+		;;
+	esac
+	######################
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+#########################
+git_clone_fedora_rootfs() {
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	go_to_proot_management
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+	cd ${ROOTFS_DIR}
+	FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
+	FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
+	if [ ! -s "${FEDORA_ROOTFS_FILE}" ]; then
+		rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
+		git clone --depth=1 ${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE} ${FEDORA_TEMP_FOLDER}
+		mv -f ${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz ${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}
+		rm -rvf ${FEDORA_TEMP_FOLDER}
+	fi
+	printf "%s\n" 'Verifying sha256hash...'
+	printf "%s\n" '正在校验sha256哈希值...'
+	printf "%s\n" "${CORRENT_SHA256SUM}"
+	LOCAL_SHA256SUM=$(sha256sum ${FEDORA_ROOTFS_FILE} | cut -c 1-64)
+	case ${LOCAL_SHA256SUM} in
+	"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
+	*) printf "%s\n" "Sorry,SHA256哈希值与源文件不一致，文件可能已破损。" ;;
+	esac
+	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "s@\(FEDORA_VERSION=\).*@\129@g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	#当版本低于30时不会自动换源
+}
+###################
 install_fedora_gnu_linux_distro() {
 	#touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='fedora'
+	TMOE_LINUX_CONTAINER_DISTRO='fedora'
+	CLOUD_ROOTFS='true'
 	case "${ARCH_TYPE}" in
 	armel | i386) distro_does_not_support ;;
 	armhf)
 		DISTRO_CODE=31
+		go_to_proot_management
+		[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
 		CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
 		[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
 		cd ${ROOTFS_DIR}
@@ -657,7 +726,7 @@ install_fedora_gnu_linux_distro() {
 		if [ ! -s "${FEDORA_ROOTFS_FILE}" ]; then
 			rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
 			git clone --depth=1 ${AK2_GIT_URL}/fedora-31_armhf ${FEDORA_TEMP_FOLDER}
-			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${HOME}
+			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${ROOTFS_DIR}
 			rm -rvf ${FEDORA_TEMP_FOLDER}
 		fi
 		printf "%s\n" 'Verifying sha256hash...'
@@ -665,14 +734,13 @@ install_fedora_gnu_linux_distro() {
 		printf "%s\n" "${CORRENT_SHA256SUM}"
 		LOCAL_SHA256SUM=$(sha256sum ${FEDORA_ROOTFS_FILE} | cut -c 1-64)
 		case ${LOCAL_SHA256SUM} in
-		"${LOCAL_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
+		"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
 		esac
 		linux_distro_common_model_01
 		;;
 	*)
 		#OLD_STABLE_VERSION='31'
-		OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-		check_the_latest_distro_version
+		fedora_distro_menu
 		;;
 	esac
 }
@@ -1063,7 +1131,7 @@ which_linux_mint_distro() {
 	DISTRO_NAME='mint'
 	BETA_SYSTEM=$(
 		whiptail --title "mint" --menu "您想要安装哪个Mint版本？\nWhich version do you want to install?" 0 0 0 \
-			"1" "Automatic check 自动检测版本" \
+			"1" "Auto check 自动检测版本" \
 			"2" "Custom code手动输入版本代号" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3

@@ -107,7 +107,7 @@ ENDOFDOCKER
 }
 #############
 custom_docker_container_tag() {
-    if [ "$(printf '%s\n' "${DOCKER_NAME}"| grep '/')" ]; then
+    if [ "$(printf '%s\n' "${DOCKER_NAME}" | grep '/')" ]; then
         #https://hub.docker.com/r/kalilinux/kali-rolling/tags
         DOCKER_URL="https://hub.docker.com/r/${DOCKER_NAME}/tags"
     else
@@ -931,7 +931,8 @@ install_docker_portainer() {
     docker rm portainer 2>/dev/null
     #docker rmi portainer/portainer:latest 2>/dev/null
     docker pull portainer/portainer:latest
-    docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
+    printf "%s\n" "docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest"
+    docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
 }
 #####################
 install_docker_io() {
@@ -941,7 +942,6 @@ install_docker_io() {
 }
 ###########
 install_docker_ce() {
-
     if [ ! $(command -v gpg) ]; then
         DEPENDENCY_01=""
         DEPENDENCY_02="gpg"
