@@ -112,6 +112,16 @@ tips_of_kill_pid() {
 }
 ##########
 kill_chroot_container_process() {
+	#if [ -e "${DEBIAN_CHROOT}/run/dbus/pid" ]; then
+	#	DBUS_PID="$(sed -n p ${DEBIAN_CHROOT}/run/dbus/pid)"
+	#	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
+	#fi
+
+	#for i in /run/dbus/pid /tmp/.X1-lock /tmp/.X11-unix/X1; do
+	#	if [ -e "${DEBIAN_CHROOT}${i}" ]; then
+	#		sudo rm -vf ${DEBIAN_CHROOT}${i}
+	#	fi
+	#done
 	tips_of_check_pid
 	su -c "lsof" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")

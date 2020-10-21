@@ -14,10 +14,10 @@ choose_which_gnu_linux_distro() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "GNU/Linuxディストリビューションを選択してください" 0 50 0 \
 			"1" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
 			"2" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
-			"3" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
-			"4" "🍱 beta版:manjaro,centos,alpine" \
-			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
-			"6" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
+			"3" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
+			"4" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
+			"5" "🍱 beta版:manjaro,centos,alpine" \
+			"6" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
 			"7" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
 			"8" "🦎 chroot専属する:deepin20,opensuse" \
 			"9" "🍓 体験版,サポートされなくなりました:Gentoo,RaspiOS" \
@@ -28,10 +28,10 @@ choose_which_gnu_linux_distro() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "您想要安装哪个GNU/Linux发行版?" 0 50 0 \
 			"1" "🍥 Debian:致力于自由" \
 			"2" "🍛 Ubuntu:我的存在是因為大家的存在" \
-			"3" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-			"4" "🍱 beta公测版:manjaro,centos,alpine" \
-			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
-			"6" "👒 Fedora:红帽社区版,新技术试验场" \
+			"3" "🌉 Arch:系统设计以KISS为总体指导原则" \
+			"4" "👒 Fedora:红帽社区版,新技术试验场" \
+			"5" "🍱 beta公测版:manjaro,centos,alpine" \
+			"6" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
 			"7" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
 			"8" "🦎 chroot专属:deepin20,opensuse" \
 			"9" "🍓 experimental(体验版,不再维护):Gentoo,RaspiOS" \
@@ -42,10 +42,10 @@ choose_which_gnu_linux_distro() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install?" 0 50 0 \
 			"1" "🍥 Debian is a distro composed of free and open-source software" \
 			"2" "🍛 Ubuntu is the modern, open source OS." \
-			"3" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
-			"4" "🍱 beta version:manjaro,centos,alpine" \
-			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
-			"6" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
+			"3" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
+			"4" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
+			"5" "🍱 beta version:manjaro,centos,alpine" \
+			"6" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
 			"7" "🍊 Armbian:ARM development boards OS" \
 			"8" "🦎 chroot exclusive:deepin20,opensuse" \
 			"9" "🍓 experimental,no longer maintained:Gentoo,RaspiOS" \
@@ -64,24 +64,24 @@ choose_which_gnu_linux_distro() {
 	1) install_debian_gnu_linux_distro ;;
 	2) install_ubuntu_gnu_linux_distro ;;
 	3)
-		DISTRO_NAME='kali'
-		DISTRO_CODE='rolling'
-		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
-		creat_container_edition_txt
-		go_to_proot_management
-		;;
-	4) install_beta_containers ;;
-	5)
 		DISTRO_NAME='arch'
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		creat_container_edition_txt
 		go_to_proot_management
 		;;
-	6)
+	4)
 		DISTRO_NAME='fedora'
 		TMOE_LINUX_CONTAINER_DISTRO='fedora'
 		CLOUD_ROOTFS='true'
 		install_fedora_gnu_linux_distro
+		;;
+	5) install_beta_containers ;;
+	6)
+		DISTRO_NAME='kali'
+		DISTRO_CODE='rolling'
+		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
+		creat_container_edition_txt
+		go_to_proot_management
 		;;
 	7) install_armbian_linux_distro ;;
 	8) install_chroot_exclusive_containers ;;
