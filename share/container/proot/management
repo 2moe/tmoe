@@ -71,8 +71,8 @@ proot_management_menu() {
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
+#EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
 check_tmoe_container_pid() {
-	#EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
 	LIST_OPEN_FILES_COUNTS=$(sed -n p ${LSOF_TEMP_FILE} | awk '{print $1}' | grep -c '^lsof')
 	case ${LIST_OPEN_FILES_COUNTS} in
 	0)
@@ -112,13 +112,14 @@ tips_of_kill_pid() {
 }
 ##########
 kill_chroot_container_process() {
-	source ${TMOE_SHARE_DIR}/removal/umount
 	tips_of_check_pid
 	su -c "lsof" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
 	tips_of_kill_pid
+	#必须在kill掉进程后再umount
+	source ${TMOE_SHARE_DIR}/removal/umount
 }
 kill_proot_container_process() {
 	tips_of_check_pid
