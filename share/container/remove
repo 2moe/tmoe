@@ -20,8 +20,9 @@ tips_of_umount_chroot_container_02() {
 		当检测到mounted的目录不为空时,将无法继续执行操作。
 		因此在一般情况下，您都可以安心卸载容器。
 		欲了解更多关于mount和umount的内容，请阅览相关手册。
-		In order to prevent accidental deletion of directories, tmoe-linux developer have done additional detection steps.
-		So you can safely remove the ${BLUE}${DEBIAN_FOLDER}${RESET} container.
+		In order to prevent accidental deletion of directories, tmoe-linux manager have done additional detection steps.
+		So you can safely remove the ${BLUE}${DEBIAN_FOLDER}${RESET} container under normal circumstances.
+		If you find that some directories cannot be unmounted, you can solve it by restarting the device.
 	EOF
 }
 ##############
