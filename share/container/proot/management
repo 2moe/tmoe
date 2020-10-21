@@ -11,24 +11,24 @@ proot_management_menu() {
 	TMOE_CONTAINER_HITOKOTO=true
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
-			"1" "start ${DEBIAN_FOLDER}" \
-			"2" "kill process" \
-			"3" "startvnc(tiger/tight)" \
-			"4" "startx11vnc" \
-			"5" "startxsdl" \
-			"6" "novnc(HTML5 VNC client)" \
-			"7" "backup proot container" \
-			"8" "readme" \
-			"9" "install" \
-			"10" "umount & remove" \
-			"11" "space occupation" \
+			"1" "🌱 start ${DEBIAN_FOLDER}" \
+			"2" "⏹️ kill process" \
+			"3" "🐯 startvnc(tiger/tight)" \
+			"4" "⚔️ startx11vnc" \
+			"5" "⚒️ startxsdl" \
+			"6" "🍬 novnc(HTML5 VNC client)" \
+			"7" "🍹 backup proot container" \
+			"8" "📡 readme" \
+			"9" "🥤 install" \
+			"10" "😏 umount & remove" \
+			"11" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
 	proot_management_menu_cn() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
-			"2" "停止容器进程" \
+			"2" "⏹️ 停止容器进程" \
 			"3" "🐯 startvnc:启动tiger/tightvnc" \
 			"4" "⚔️ startx11vnc:启动x11vnc" \
 			"5" "⚒️ startxsdl:启动xsdl/VcXsrv" \
@@ -62,7 +62,7 @@ proot_management_menu() {
 	esac
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	7 | 8 | 11)
+	2 | 7 | 8 | 11)
 		press_enter_to_return
 		proot_management_menu
 		;;
