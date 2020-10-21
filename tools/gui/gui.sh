@@ -4228,7 +4228,7 @@ first_configure_startvnc() {
         cd ${HOME}
         sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config/xfce4" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc" ".config/xfce4"
     fi
-    if [ ! -e "${HOME}/.vnc/passwd" ]; then
+    if [ ! -s "${HOME}/.vnc/passwd" ]; then
         set_vnc_passwd
     fi
     printf "$BLUE"
