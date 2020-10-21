@@ -12,30 +12,32 @@ proot_management_menu() {
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "start ${DEBIAN_FOLDER}" \
-			"2" "startvnc(tiger/tight)" \
-			"3" "startx11vnc" \
-			"4" "startxsdl" \
-			"5" "novnc(HTML5 VNC client)" \
-			"6" "backup proot container" \
-			"7" "readme" \
-			"8" "install" \
-			"9" "umount & remove" \
-			"10" "space occupation" \
+			"2" "kill process" \
+			"3" "startvnc(tiger/tight)" \
+			"4" "startx11vnc" \
+			"5" "startxsdl" \
+			"6" "novnc(HTML5 VNC client)" \
+			"7" "backup proot container" \
+			"8" "readme" \
+			"9" "install" \
+			"10" "umount & remove" \
+			"11" "space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
 	proot_management_menu_cn() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
-			"2" "🐯 startvnc:启动tiger/tightvnc" \
-			"3" "⚔️ startx11vnc:启动x11vnc" \
-			"4" "⚒️ startxsdl:启动xsdl/VcXsrv" \
-			"5" "🍬 启动novnc:在浏览器里连接vnc" \
-			"6" "🍹 backup 备份${CONTAINER_TYPE}容器" \
-			"7" "📡 commands 命令说明" \
-			"8" "🥤 install 安装" \
-			"9" "😏 umount & remove 卸载并移除" \
-			"10" "🍅 space occupation 空间占用大小" \
+			"2" "停止容器进程" \
+			"3" "🐯 startvnc:启动tiger/tightvnc" \
+			"4" "⚔️ startx11vnc:启动x11vnc" \
+			"5" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+			"6" "🍬 启动novnc:在浏览器里连接vnc" \
+			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
+			"8" "📡 commands 命令说明" \
+			"9" "🥤 install 安装" \
+			"10" "😏 umount & remove 卸载并移除" \
+			"11" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -47,27 +49,81 @@ proot_management_menu() {
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) normally_start_gnu_linux_distro ;;
-	2) start_gnu_linux_distro_tigervnc ;;
-	3) start_gnu_linux_distro_x11vnc ;;
-	4) start_gnu_linux_distro_x ;;
-	5) install_web_novnc ;;
-	6) backup_tmoe_gnu_linux_distro ;;
-	7) readme_of_gnu_linux_distro ;;
-	8) install_new_tmoe_gnu_linux_distro ;;
-	9) umount_and_remove_gnu_linux_distro ;;
-	10) du_sh_gnu_linux_distro ;;
+	2) kill_container_process ;;
+	3) start_gnu_linux_distro_tigervnc ;;
+	4) start_gnu_linux_distro_x11vnc ;;
+	5) start_gnu_linux_distro_x ;;
+	6) install_web_novnc ;;
+	7) backup_tmoe_gnu_linux_distro ;;
+	8) readme_of_gnu_linux_distro ;;
+	9) install_new_tmoe_gnu_linux_distro ;;
+	10) umount_and_remove_gnu_linux_distro ;;
+	11) du_sh_gnu_linux_distro ;;
 	esac
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	6 | 7 | 10)
+	7 | 8 | 11)
 		press_enter_to_return
 		proot_management_menu
 		;;
-	9) ${RETURN_TO_MENU} ;;
+	10) ${RETURN_TO_MENU} ;;
 	esac
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
+check_tmoe_container_pid() {
+	LIST_OPEN_FILES_COUNTS=$(printf "${EXEC_LSOF}\n" | awk '{print $1}' | grep -c '^lsof')
+
+	case ${LIST_OPEN_FILES_COUNTS} in
+	0)
+		LIST_OPEN_FILES=$(printf "${EXEC_LSOF}\n" | grep "${DEBIAN_CHROOT%/}" | awk '{print $1}' | uniq)
+		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@pkill -9 @g")
+		;;
+	*)
+		LIST_OPEN_FILES=$(printf "${EXEC_LSOF}\n" | grep "${DEBIAN_CHROOT%/}" | awk '{print $2}' | uniq)
+		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
+		;;
+	esac
+	printf "${PURPLE}"
+	printf "${EXEC_LSOF}\n" | grep "${DEBIAN_CHROOT%/}" | awk '{print $1}' | uniq
+	printf "\n${RESET}"
+	printf '%s\n' '--------------------'
+	printf "${RED}%s ${BLUE}%s${RESET}\n" "${LIST_OPEN_FILES}" | sed "s@^@Killed @g"
+}
+##################
+tips_of_check_pid() {
+	printf "${GREEN}%s ${YELLOW}%s${RESET}\n" "Checking" "process id ..."
+	printf "${BLOD}${YELLOW}%s${RESET}" "正在检测${DEBIAN_FOLDER}运行中的进程："
+}
+##########
+tips_of_kill_pid() {
+	printf "${BOLD}${YELLOW}%s\n" "All processes have been killed."
+	printf "%s\n" "已${RED}终止${BLUE}${DEBIAN_FOLDER}${RESET}容器进程"
+}
+##########
+kill_chroot_container_process() {
+	source ${TMOE_SHARE_DIR}/removal/umount
+	tips_of_check_pid
+	EXEC_LSOF=$(su -c "lsof")
+	check_tmoe_container_pid
+	su -c "${KILL_PID}"
+	tips_of_kill_pid
+}
+kill_proot_container_process() {
+	tips_of_check_pid
+	EXEC_LSOF=$(lsof 2>/dev/null)
+	check_tmoe_container_pid
+	${KILL_PID}
+	tips_of_kill_pid
+}
+################
+kill_container_process() {
+	case ${TMOE_CHROOT} in
+	true) kill_chroot_container_process ;;
+	*) kill_proot_container_process ;;
+	esac
+}
+##############
 readme_of_gnu_linux_distro() {
 	LONG_DISTRO_NAME=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
 	LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
@@ -224,6 +280,7 @@ install_new_tmoe_gnu_linux_distro() {
 	esac
 }
 umount_and_remove_gnu_linux_distro() {
+	kill_container_process
 	source ${TMOE_SHARE_DIR}/container/remove
 }
 du_sh_gnu_linux_distro() {
