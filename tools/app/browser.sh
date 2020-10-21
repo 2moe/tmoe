@@ -287,7 +287,7 @@ EOF
 
     printf "%s\n" "If you can not download edge browser,then go to microsoft official website."
     printf "${YELLOW}%s${RESET}\n" "https://www.microsoftedgeinsider.com/download"
-    printf "%s\n" "If you are a ${RED}root user${RESET},try to run ${GREEN}microsoft-edge-dev --no-sandbox${RESET} to launch it."
+    printf "%s\n" "If you are a ${RED}root user${RESET},try to run ${GREEN}microsoft-edge-dev ${PURPLE}--no-sandbox${RESET} to launch it."
     printf "${PURPLE}%s${RESET}\n" "Do you want to install microsoft-edge-dev?"
     do_you_want_to_continue
     case ${LINUX_DISTRO} in
