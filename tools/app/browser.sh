@@ -287,6 +287,8 @@ EOF
 
     printf "%s\n" "If you can not download edge browser,then go to microsoft official website."
     printf "${YELLOW}%s${RESET}\n" "https://www.microsoftedgeinsider.com/download"
+    printf "${PURPLE}%s${RESET}\n" "Do you want to install microsoft-edge-dev?"
+    do_you_want_to_continue
     case ${LINUX_DISTRO} in
     debian) install_microsoft_edge_debian ;;
     redhat) install_microsoft_edge_redhat ;;
