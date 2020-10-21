@@ -527,9 +527,9 @@ linux_distro_common_model_01() {
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "/usermod -a/d" |
+		sed "/groupadd /d" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-	#sed "/usermod -a/d" |
-	#sed "/groupadd /d" |
 }
 ####################
 #02为kali-rolling
@@ -715,10 +715,11 @@ install_fedora_gnu_linux_distro() {
 	armel | i386) distro_does_not_support ;;
 	armhf)
 		DISTRO_CODE=31
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+		creat_container_edition_txt
 		go_to_proot_management
 		[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
 		CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
-		[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
 		cd ${ROOTFS_DIR}
 		FEDORA_ROOTFS_FILE='fedora-31_armhf-rootfs.tar.xz'
 		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
