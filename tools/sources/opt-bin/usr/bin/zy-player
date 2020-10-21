@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 TMOE_BIN='/opt/zy-player/app.asar'
+ELECTRON_BIN='/opt/electron-v8/electron'
 export ELECTRON_IS_DEV=0
 case "$(id -u)" in
-0) electron ${TMOE_BIN} --no-sandbox "$@" ;;
+0) ${ELECTRON_BIN} ${TMOE_BIN} --no-sandbox "$@" ;;
 *)
-    electron ${TMOE_BIN} "$@"
+    ${ELECTRON_BIN} ${TMOE_BIN} "$@"
     case "$?" in
     0) ;;
-    *) electron ${TMOE_BIN} --no-sandbox "$@" ;;
+    *) ${ELECTRON_BIN} ${TMOE_BIN} --no-sandbox "$@" ;;
     esac
     ;;
 esac

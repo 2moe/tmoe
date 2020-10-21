@@ -257,6 +257,7 @@ install_opt_app_01() {
         check_163_music_icon
         ;;
     listen1) check_listen1 ;;
+    zy-player) install_electron_v8 ;;
     esac
 }
 ################
@@ -807,7 +808,7 @@ debian_opt_music_app() {
     3) install_listen1 ;;
     4) install_coco_music ;;
     5) install_iease_music ;;
-    5) install_netease_cloud_music_gtk ;;
+    6) install_netease_cloud_music_gtk ;;
     7) install_electron_petal ;;
     8) install_electron_chord ;;
     9)
