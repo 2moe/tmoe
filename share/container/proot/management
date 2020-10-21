@@ -84,15 +84,17 @@ check_tmoe_container_pid() {
 		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
 		;;
 	esac
+	PROCESS_ID_AND_NAME=$(sed -n p ${LSOF_TEMP_FILE} | grep "${DEBIAN_CHROOT%/}" | awk '{print $2,$1}' | uniq)
 	printf "${PURPLE}"
-	sed -n p ${LSOF_TEMP_FILE} | grep "${DEBIAN_CHROOT%/}" | awk '{print $2,$1}' | uniq
-	printf "\n${RESET}"
+	cat <<-EOF
+		${PROCESS_ID_AND_NAME}
+	EOF
+	printf "${RESET}"
 	printf '%s\n' '--------------------'
 	case ${LIST_OPEN_FILES} in
 	"") ;;
 	*) printf "%s\n" "${KILL_PID}" ;;
 	esac
-	printf "${RED}%s ${BLUE}%s${RESET}\n" "${LIST_OPEN_FILES}" | sed "s@^@Killed @g"
 }
 ##################
 tips_of_check_pid() {
@@ -103,6 +105,7 @@ tips_of_check_pid() {
 }
 ##########
 tips_of_kill_pid() {
+	printf "${RED}%s ${BLUE}%s${RESET}\n" "${PROCESS_ID_AND_NAME}" | sed "s@^@Killed @g"
 	printf "${BOLD}${YELLOW}%s\n" "All processes have been killed."
 	printf "%s\n" "已${RED}终止${BLUE}${DEBIAN_FOLDER}${RESET}容器进程"
 	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
@@ -127,8 +130,8 @@ kill_proot_container_process() {
 }
 ################
 kill_container_process() {
-	printf "%s\n" "Sorry,由于本功能在调试中出现bug，因次无法准确地检测容器进程。"
-	printf "%s\n" "Please look forward to the stable version tomorrow."
+	#printf "%s\n" "Sorry,由于本功能在调试中出现bug，因次无法准确地检测容器进程。"
+	#printf "%s\n" "Please look forward to the stable version tomorrow."
 	case ${TMOE_CHROOT} in
 	true) kill_chroot_container_process ;;
 	*) kill_proot_container_process ;;
