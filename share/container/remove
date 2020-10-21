@@ -34,8 +34,8 @@ remove_gnu_linux_container() {
 	case ${TMOE_CHROOT} in
 	true)
 		tips_of_umount_chroot_container_01
-		printf "%s\n" "Umounting..."
-		printf "%s\n" "正在自动umount..."
+		printf "${PURPLE}%s\n" "Unmounting..."
+		printf "%s${RESET}\n" "正在自动unmount..."
 		source ${TMOE_SHARE_DIR}/removal/umount
 		tips_of_umount_chroot_container_02
 		;;
