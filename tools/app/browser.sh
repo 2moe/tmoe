@@ -339,7 +339,7 @@ tmoe_browser_menu() {
     TMOE_APP=$(whiptail --title "Browsers" --menu \
         "Which browser do you want to install?" 0 50 0 \
         "1" "Mozilla Firefox & Google Chromium" \
-        "2" "Microsoft Edge(x64,享受出色的浏览性能)" \
+        "2" "Microsoft Edge(x64,享受出色的浏览体验)" \
         "3" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine)" \
         "4" "Vivaldi(一切皆可定制)" \
         "5" "360安全浏览器(arm64,x64)" \
