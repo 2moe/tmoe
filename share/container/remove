@@ -79,9 +79,9 @@ remove_gnu_linux_container() {
 	if [ ! -d ${DEBIAN_CHROOT} ]; then
 		printf "%s\n" "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
-	printf "%s\n" "Do you want to remove it?${PURPLE}[Y/n]${RESET}"
-	printf "%s\n" "按${GREEN}回车键${RESET}确认${RED}移除${RESET}"
 	printf "%s\n" "Press ${GREEN}enter${RESET} to ${RED}remove${RESET}."
+	printf "%s\n" "按${GREEN}回车键${RESET}确认${RED}移除${RESET}"
+	printf "%s\n" "Do you want to remove it?${PURPLE}[Y/n]${RESET}"
 	read opt
 	case $opt in
 	y* | Y* | "")
