@@ -118,6 +118,8 @@ kill_proot_container_process() {
 }
 ################
 kill_container_process() {
+	printf "%s\n" "Sorry,由于本功能在调试中出现bug，因次无法准确到检测容器进程。"
+	printf "%s\n" "Please look forward to the stable version tomorrow."
 	case ${TMOE_CHROOT} in
 	true) kill_chroot_container_process ;;
 	*) kill_proot_container_process ;;
