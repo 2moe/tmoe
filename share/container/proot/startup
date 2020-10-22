@@ -53,6 +53,12 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 			done
 			[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
 		fi
+		if [[ -z \${TMOE_SHELL} ]]; then
+			#ALPINE ash shell is a link.
+			for i in su ash bash zsh; do
+				[[ ! -L ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
+			done
+		fi
 	    #考虑到alpine兼容性，此处应为-l,而非--login
 	    set -- "\${TMOE_SHELL}" "-l" "\$@"
 	    if [ -e "/data/data/com.termux" ]; then
