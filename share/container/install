@@ -1462,8 +1462,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dnf install -y glibc-langpack-zh
 	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
 	    #dnf clean packages
-		TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
-		dnf install -y "glibc-langpack-${TMOE_LANG_HALF}*"
 	}
 	######################
 	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 |cut -d '"' -f 2)" = "fedora" ]; then
@@ -1482,6 +1480,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 		;;
 		esac
+		#TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
+		#glibc-all-langpacks
+		#dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
+		dnf install -y --skip-broken glibc-all-langpacks
 
 	elif grep -q 'CentOS' /etc/os-release; then
 	    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
