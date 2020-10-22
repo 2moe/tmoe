@@ -297,8 +297,7 @@ EOF
     suse) install_microsoft_edge_suse ;;
     *)
         beta_features_quick_install
-        printf "%s\n" "Sorry, it does not s-
-        upport your system."
+        printf "%s\n" "Sorry, it does not support your system."
         ;;
     esac
 }
