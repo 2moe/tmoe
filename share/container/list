@@ -234,6 +234,7 @@ install_alpha_containers() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
 		TMOE_LINUX_CONTAINER_DISTRO='openwrt'
+		DISTRO_NAME='openwrt'
 		creat_container_edition_txt
 		go_to_proot_management
 		install_openwrt_linux_distro
