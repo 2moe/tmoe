@@ -176,6 +176,35 @@ nano_startvnc_manually() {
     modify_other_vnc_conf
 }
 #############################################
+catimg_preview_lxde_mate_xfce_01() {
+    printf '%s\n' 'lxde预览截图'
+    #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
+    if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
+        curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' ${LXDE_ICON_URL}
+    fi
+    catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
+
+    printf '%s\n' 'mate预览截图'
+    #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
+    if [ ! -f 'MATE_1frRp1lpOXLPz6mO.jpg' ]; then
+        curl -sLo 'MATE_1frRp1lpOXLPz6mO.jpg' ${MATE_ICON_URL}
+    fi
+    catimg 'MATE_1frRp1lpOXLPz6mO.jpg'
+    printf '%s\n' 'xfce预览截图'
+}
+catimg_preview_lxde_mate_xfce_02() {
+    if [ ! -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' ]; then
+        curl -sLo 'XFCE_a7IQ9NnfgPckuqRt.jpg' ${XFCE_ICON_URL}
+    fi
+    catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg' 2>/dev/null
+    if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
+        if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv/XFCE_a7IQ9NnfgPckuqRt.jpg" ]; then
+            cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads/VcXsrv"
+        fi
+        cd "/mnt/c/Users/Public/Downloads/VcXsrv"
+        /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+    fi
+}
 install_gui() {
     [[ "${WINDOWS_DISTRO}" != 'WSL' ]] || source ${TMOE_TOOL_DIR}/gui/wsl
     [[ ! -s '/usr/share/fonts/Iosevka.ttf' ]] || standand_desktop_installation #该字体检测两次
@@ -193,32 +222,11 @@ install_gui() {
         XFCE_ICON_URL='https://gitee.com/ak2/icons/raw/master/debian-xfce.jpg'
         ;;
     esac
-
-    printf '%s\n' 'lxde预览截图'
-    #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
-    if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
-        curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' ${LXDE_ICON_URL}
-    fi
-    catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
-
-    printf '%s\n' 'mate预览截图'
-    #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/1frRp1lpOXLPz6mO.jpg' | catimg -
-    if [ ! -f 'MATE_1frRp1lpOXLPz6mO.jpg' ]; then
-        curl -sLo 'MATE_1frRp1lpOXLPz6mO.jpg' ${MATE_ICON_URL}
-    fi
-    catimg 'MATE_1frRp1lpOXLPz6mO.jpg'
-    printf '%s\n' 'xfce预览截图'
-
-    if [ ! -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' ]; then
-        curl -sLo 'XFCE_a7IQ9NnfgPckuqRt.jpg' ${XFCE_ICON_URL}
-    fi
-    catimg 'XFCE_a7IQ9NnfgPckuqRt.jpg'
-    if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
-        if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv/XFCE_a7IQ9NnfgPckuqRt.jpg" ]; then
-            cp -f 'XFCE_a7IQ9NnfgPckuqRt.jpg' "/mnt/c/Users/Public/Downloads/VcXsrv"
-        fi
-        cd "/mnt/c/Users/Public/Downloads/VcXsrv"
-        /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XFCE_a7IQ9NnfgPckuqRt.jpg" 2>/dev/null
+    if [ $(command -v catimg) ]; then
+        catimg_preview_lxde_mate_xfce_01
+        catimg_preview_lxde_mate_xfce_02
+    elif [ ${WINDOWS_DISTRO} = 'WSL' ]; then
+        catimg_preview_lxde_mate_xfce_02
     fi
 
     if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
