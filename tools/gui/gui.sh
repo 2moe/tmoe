@@ -225,7 +225,7 @@ install_gui() {
     if [ $(command -v catimg) ]; then
         catimg_preview_lxde_mate_xfce_01
         catimg_preview_lxde_mate_xfce_02
-    elif [ ${WINDOWS_DISTRO} = 'WSL' ]; then
+    elif [[ ${WINDOWS_DISTRO} = 'WSL' ]]; then
         catimg_preview_lxde_mate_xfce_02
     fi
 
