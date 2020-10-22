@@ -79,7 +79,7 @@ uncompress_tar_file() {
 select_file_manually() {
 	count=0
 	printf '%s\n' '您可以在此列表中选择需要恢复的压缩包'
-	for restore_file in "${START_DIR}"/${BACKUP_FILE_NAME}; do
+	for restore_file in ${START_DIR}/${BACKUP_FILE_NAME}; do
 		restore_file_name[count]=$(printf '%s\n' "${restore_file}" | awk -F'/' '{print $NF}')
 		echo -e "($count) ${restore_file_name[count]}"
 		count=$(($count + 1))
@@ -147,7 +147,6 @@ manually_select_the_file_directory() {
 }
 ###############
 normally_restore_tmoe_container() {
-	cd ${CONTAINER_BACKUP_PATH}
 	if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
 		#RESTORE=$(ls -lth ./*debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
 		RESTORE=$(ls -lth ./*-rootfs_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
@@ -177,9 +176,14 @@ restore_gnu_linux_container() {
 	case ${TMOE_OPTION} in
 	1)
 		check_container_backup_path
+		START_DIR=${CONTAINER_BACKUP_PATH}
+		cd ${CONTAINER_BACKUP_PATH}
 		normally_restore_tmoe_container
 		;;
-	2) normally_restore_tmoe_container ;;
+	2)
+		cd ${CONTAINER_BACKUP_PATH}
+		normally_restore_tmoe_container
+		;;
 	3)
 		BACKUP_FILE_NAME="*tar*"
 		file_directory_selection

@@ -144,7 +144,7 @@ case_backup_path_proot_or_chroot() {
 }
 ########
 check_container_backup_path() {
-	for i in ${HOME} ${HOME}/sd /sdcard; do
+	for i in ${HOME} ${HOME}/sd /sd /sdcard; do
 		if [ -d "${i}" ]; then
 			BACKUP_PATH="${i}/Download/backup/containers"
 		fi
