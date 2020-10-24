@@ -3803,7 +3803,7 @@ configure_xrdp_remote_desktop_session() {
     #printf "%s\n" "${REMOTE_DESKTOP_SESSION}" >~/.xsession
     #touch ~/.session
     cd /etc/xrdp
-    sed -i '/session/d' startwm.sh
+    sed -i '/Xsession/d' startwm.sh
     #sed -i '/start/d' startwm.sh
     if grep 'exec' startwm.sh; then
         sed -i '$ d' startwm.sh
@@ -3937,6 +3937,7 @@ xrdp_onekey() {
         cp -p startwm.sh xrdp.ini ${HOME}/.config/tmoe-linux/
     fi
     ####################
+    : <<\EOF
     if [ -e "/usr/bin/xfce4-session" ]; then
         if [ ! -e " ~/.xsession" ]; then
             #printf '%s\n' 'xfce4-session' >~/.xsession
@@ -3944,7 +3945,7 @@ xrdp_onekey() {
             sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session:g' /etc/xrdp/startwm.sh
         fi
     fi
-
+EOF
     if ! grep -q '^export PULSE_SERVER' /etc/xrdp/startwm.sh; then
         sed -i '/test -x \/etc\/X11/i\export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
     fi
