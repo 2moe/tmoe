@@ -3902,6 +3902,7 @@ xrdp_onekey() {
             DEPENDENCY_02='xrdp'
             ;;
         esac
+        printf "Do you want to install xrdp?"
         beta_features_quick_install
     fi
     ##############
