@@ -1423,7 +1423,6 @@ modify_the_default_xfce_wallpaper() {
             random_wallpaper_pack_04
             ;;
         esac
-        random_wallpaper_pack_01
         debian_xfce_wallpaper
         ;;
     "arch")
