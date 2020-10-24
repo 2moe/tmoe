@@ -83,6 +83,7 @@ start_tmoe_xvnc() {
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" "-a" "5"
+    set -- "${@}" "-wm"
     set -- "${@}" "-alwaysshared"
     set -- "${@}" "-geometry" "${geometry}"
     set -- "${@}" "-once"
