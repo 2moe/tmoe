@@ -101,7 +101,7 @@ modify_tightvnc_display_port() {
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
     else
-        sed -i "s@tmoe-linux.*:.*@tmoe-linux :$TARGET@" "$(command -v startvnc)"
+        sed -i "s@tmoe-linux.*:.*@tmoe-linux :${TARGET}@" "$(command -v startvnc)"
         sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" "$(command -v startvnc)"
         printf '%s\n' 'Your current VNC port has been modified.'
         check_tightvnc_port
@@ -147,11 +147,11 @@ modify_vnc_pulse_audio() {
         printf "%s\n" "Please enter a valid value"
     else
         #sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
-        #sed -i "2 a\export PULSE_SERVER=$TARGET" ~/.vnc/xstartup
+        #sed -i "2 a\export PULSE_SERVER=${TARGET}" ~/.vnc/xstartup
         if grep '^export.*PULSE_SERVER' "$(command -v startvnc)"; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" $(command -v startvnc)
+            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" $(command -v startvnc)
         else
-            sed -i "4 a\export PULSE_SERVER=$TARGET" $(command -v startvnc)
+            sed -i "4 a\export PULSE_SERVER=${TARGET}" $(command -v startvnc)
         fi
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
@@ -2298,7 +2298,7 @@ tmoe_theme_installer() {
     fi
     printf "%s\n" "解压完成，如需删除该主题，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
     printf "%s\n" "是否${RED}删除${RESET}主题压缩包${BLUE}原文件？${RESET}"
-    printf "%s\n" "Do you want to delete the original compressed file？[Y/n]"
+    printf "%s\n" "Do you want to delete the original compressed file？${PURPLE}[Y/n]${RESET}"
     do_you_want_to_continue
     rm -fv ${TMOE_THEME_ITEM} .theme_index_cache_tmoe.html
 }
@@ -2871,7 +2871,7 @@ download_uos_icon_theme() {
     beta_features_quick_install
 
     if [ -d "/usr/share/icons/Uos" ]; then
-        printf "%s\n" "检测到Uos图标包已下载,是否继续？[Y/n]"
+        printf "%s\n" "检测到Uos图标包已下载,是否继续？${PURPLE}[Y/n]${RESET}"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
@@ -3195,9 +3195,9 @@ x11vnc_pulse_server() {
         printf "%s\n" "Please enter a valid value"
     else
         if grep -q '^export.*PULSE_SERVER' startx11vnc; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startx11vnc
+            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" startx11vnc
         else
-            sed -i "3 a\export PULSE_SERVER=$TARGET" startx11vnc
+            sed -i "3 a\export PULSE_SERVER=${TARGET}" startx11vnc
         fi
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
@@ -3246,7 +3246,7 @@ modify_vnc_conf() {
             printf "%s\n" "Please enter a valid value"
         else
             sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
-            sed -i "$ a\vncserver -geometry $TARGET -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
+            sed -i "$ a\vncserver -geometry ${TARGET} -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
             sed -i "s@geometry=.*@geometry=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
             printf '%s\n' 'Your current resolution has been modified.'
             check_vnc_resolution
@@ -3356,7 +3356,7 @@ modify_pulse_server_port() {
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
     else
-        #sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:$TARGET" "$(command -v startxsdl)"
+        #sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:${TARGET}" "$(command -v startxsdl)"
         PULSE_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export PULSE_SERVER' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
         CURRENT_PULSE_IP=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
         sed -i "${PULSE_LINE} c\export PULSE_SERVER=tcp:${CURRENT_PULSE_IP}:${TARGET}" ${TMOE_XSDL_SCRIPT_PATH}
@@ -3504,9 +3504,9 @@ xwayland_pulse_server() {
         printf "%s\n" "Please enter a valid value"
     else
         if grep '^export.*PULSE_SERVER' startw; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startw
+            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" startw
         else
-            sed -i "3 a\export PULSE_SERVER=$TARGET" startw
+            sed -i "3 a\export PULSE_SERVER=${TARGET}" startw
         fi
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
@@ -3800,11 +3800,11 @@ configure_remote_desktop_enviroment() {
 }
 ##############
 configure_xrdp_remote_desktop_session() {
-    printf "%s\n" "${REMOTE_DESKTOP_SESSION}" >~/.xsession
+    #printf "%s\n" "${REMOTE_DESKTOP_SESSION}" >~/.xsession
     #touch ~/.session
     cd /etc/xrdp
     sed -i '/session/d' startwm.sh
-    sed -i '/start/d' startwm.sh
+    #sed -i '/start/d' startwm.sh
     if grep 'exec' startwm.sh; then
         sed -i '$ d' startwm.sh
         sed -i '$ d' startwm.sh
@@ -3812,10 +3812,10 @@ configure_xrdp_remote_desktop_session() {
     #sed -i '/X11\/Xsession/d' startwm.sh
     cat >>startwm.sh <<-'EnfOfStartWM'
 		test -x /etc/X11/Xsession && exec /etc/X11/Xsession
-		exec /bin/sh /etc/X11/Xsession
+		exec /etc/X11/xinit/Xsession
 	EnfOfStartWM
     sed -i "s@exec /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
-    sed -i "s@exec /bin/sh /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
+    #sed -i "s@exec /bin/sh /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
     printf "%s\n" "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
     printf "%s\n" "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
     printf "%s\n" "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
@@ -3879,11 +3879,10 @@ xrdp_pulse_server() {
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
     else
-        if grep ! '^export.*PULSE_SERVER' startwm.sh; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startwm.sh
-            #sed -i "4 a\export PULSE_SERVER=$TARGET" startwm.sh
+        if ! grep -q '^export.*PULSE_SERVER' startwm.sh; then
+            sed -i "1 a\export PULSE_SERVER=${TARGET}" startwm.sh
         fi
-        sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=$TARGET@" startwm.sh
+        sed -i -E "s@(export.*PULSE_SERVER=).*@\1${TARGET}@" startwm.sh
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
         printf "%s\n" "$(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2 | head -n 1)"
@@ -3940,9 +3939,9 @@ xrdp_onekey() {
     ####################
     if [ -e "/usr/bin/xfce4-session" ]; then
         if [ ! -e " ~/.xsession" ]; then
-            printf '%s\n' 'xfce4-session' >~/.xsession
-            touch ~/.session
-            sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session /etc/X11/Xsession:g' /etc/xrdp/startwm.sh
+            #printf '%s\n' 'xfce4-session' >~/.xsession
+            #touch ~/.session
+            sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session:g' /etc/xrdp/startwm.sh
         fi
     fi
 

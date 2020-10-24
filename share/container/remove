@@ -111,7 +111,7 @@ remove_gnu_linux_container() {
 	ls -lh ${ROOTFS_NAME}*-rootfs.tar.* 2>/dev/null
 	printf "%s\n" "${YELLOW}请问您是否需要删除容器镜像文件？[Y/n]${RESET} "
 	printf "%s\n" "${RED}rm -fv ${ROOTFS_DIR}/${ROOTFS_NAME}*-rootfs.tar.*${RESET}"
-	printf "%s\n" "Do you need to delete the image file (${ROOTFS_NAME}*-rootfs.tar.*)?[Y/n]"
+	printf "%s\n" "Do you need to delete the image file (${ROOTFS_NAME}*-rootfs.tar.*)?${PURPLE}[Y/n]${RESET}"
 	read opt
 	case $opt in
 	y* | Y* | "")

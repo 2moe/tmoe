@@ -404,7 +404,7 @@ upgrade_video_download_tool() {
     printf "%s\n" "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
     printf "%s\n" "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
     printf "%s\n" "请问您是否需要将pip源切换为BFSU源[Y/n]?"
-    printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+    printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
     pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple

@@ -329,7 +329,7 @@ install_nodejs() {
 		EOF
         printf "%s\n" "${YELLOW}是否需要将npm官方源更换为淘宝源[Y/n]${RESET} "
         printf "%s\n" "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
-        printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]"
+        printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
         do_you_want_to_continue
         npm config set registry https://registry.npm.taobao.org
         npm config set disturl https://npm.taobao.org/dist

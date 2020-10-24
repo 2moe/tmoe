@@ -81,9 +81,9 @@ start_tmoe_xvnc() {
         set -- "${@}" "-ZlibLevel=1"
     fi
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
+    set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" "-alwaysshared"
     set -- "${@}" "-geometry" "${geometry}"
-    set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" "-once"
     set -- "${@}" "-depth" "16"
     set -- "${@}" "-deferglyphs" "16"

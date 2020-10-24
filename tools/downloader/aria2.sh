@@ -38,6 +38,7 @@ check_current_user_name_and_group() {
 ##########
 check_dependencies() {
     RED=$(printf '\033[31m')
+    PURPLE=$(printf '\033[0;35m')
     GREEN=$(printf '\033[32m')
     YELLOW=$(printf '\033[33m')
     BLUE=$(printf '\033[34m')

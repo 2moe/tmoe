@@ -3209,7 +3209,7 @@ download_windows_tmoe_iso_model() {
 	else
 		download_tmoe_iso_file_again
 	fi
-	printf "%s\n" "下载完成，是否将其设置为qemu启动光盘？[Y/n]"
+	printf "%s\n" "下载完成，是否将其设置为qemu启动光盘？${PURPLE}[Y/n]${RESET}"
 	do_you_want_to_continue
 	set_it_as_the_tmoe_qemu_iso
 }
