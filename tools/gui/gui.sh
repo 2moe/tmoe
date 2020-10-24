@@ -3810,31 +3810,14 @@ configure_xrdp_remote_desktop_session() {
 		test -x /etc/X11/Xsession && exec /etc/X11/Xsession
 		exec /etc/X11/xinit/Xsession
 	EnfOfStartWM
-    sed -i "s@exec /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
+    sed -i "s@exec /etc/X11/Xsession@exec dbus-launch ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
     if [ $(command -v bat) ]; then
         bat startwm.sh
     else
         sed -n p startwm.sh
     fi
     #sed -i "s@exec /bin/sh /etc/X11/Xsession@exec ${REMOTE_DESKTOP_SESSION}@g" /etc/xrdp/startwm.sh
-    printf "%s\n" "修改完成，若无法生效，则请使用强制配置功能[Y/f]"
-    printf "%s\n" "输f启用，一般情况下无需启用，因为这可能会造成一些问题。"
-    printf "%s\n" "若root用户无法连接，则请使用${GREEN}adduser${RESET}命令新建一个普通用户"
-    printf '%s\n' 'If the configuration fails, please use the mandatory configuration function！'
-    printf "%s\n" "Press enter to return,type f to force congigure."
-    printf "%s\n" "按${GREEN}回车键${RESET}${RED}返回${RESET}，输${YELLOW}f${RESET}启用${BLUE}强制配置功能${RESET}"
-    read opt
-    case $opt in
-    y* | Y* | "") ;;
-    f* | F*)
-        sed -i "s@/etc/X11/Xsession@${REMOTE_DESKTOP_SESSION}@g" startwm.sh
-        ;;
-    *)
-        printf "%s\n" "Invalid choice. skipped."
-        ${RETURN_TO_WHERE}
-        #beta_features
-        ;;
-    esac
+    press_enter_to_return
     systemctl restart xrdp || service xrdp restart
     check_xrdp_status
 }
@@ -3943,23 +3926,16 @@ xrdp_onekey() {
         cp -p startwm.sh xrdp.ini ${HOME}/.config/tmoe-linux/
     fi
     ####################
-    : <<\EOF
-    if [ -e "/usr/bin/xfce4-session" ]; then
-        if [ ! -e " ~/.xsession" ]; then
-            #printf '%s\n' 'xfce4-session' >~/.xsession
-            #touch ~/.session
-            sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /bin/sh xfce4-session:g' /etc/xrdp/startwm.sh
-        fi
-    fi
-EOF
+    #printf '%s\n' 'xfce4-session' >~/.xsession
+    #touch ~/.session
     sed -i 's@exec /etc/X11/Xsession@exec /etc/X11/xinit/Xsession@g;s:exec /bin/sh /etc/X11/Xsession:exec /etc/X11/xinit/Xsession:g' /etc/xrdp/startwm.sh
+    if ! grep -q '^export PULSE_SERVER' /etc/xrdp/startwm.sh; then
+        sed -i '/test -x \/etc\/X11/i\export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
+    fi
     if [ $(command -v bat) ]; then
         bat /etc/xrdp/startwm.sh
     else
         sed -n p /etc/xrdp/startwm.sh
-    fi
-    if ! grep -q '^export PULSE_SERVER' /etc/xrdp/startwm.sh; then
-        sed -i '/test -x \/etc\/X11/i\export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
     fi
     ###########################
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
