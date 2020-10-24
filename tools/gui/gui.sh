@@ -3946,7 +3946,7 @@ xrdp_onekey() {
         fi
     fi
 EOF
-    sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /etc/X11/xinit/Xsession:g' /etc/xrdp/startwm.sh
+    sed -i 's@exec /etc/X11/Xsession@exec /etc/X11/xinit/Xsession@g;s:exec /bin/sh /etc/X11/Xsession:exec /etc/X11/xinit/Xsession:g' /etc/xrdp/startwm.sh
     if [ $(command -v bat) ]; then
         bat /etc/xrdp/startwm.sh
     else
