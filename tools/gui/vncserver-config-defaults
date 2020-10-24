@@ -13,8 +13,8 @@ alwaysshared
 geometry=1440x720
 desktop=tmoe-linux
 verbose
-depth=24
-ZlibLevel=9
+depth=16
+ZlibLevel=1
 ImprovedHextile
 CompareFB=1
 br

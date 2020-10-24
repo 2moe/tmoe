@@ -77,12 +77,15 @@ EOF
 ############
 start_tmoe_xvnc() {
     . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
+    if [ -e "/usr/bin/tigervncserver" ]; then
+        set -- "${@}" "-ZlibLevel=1"
+    fi
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "${@}" "-alwaysshared"
     set -- "${@}" "-geometry" "${geometry}"
     set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" "-once"
-    set -- "${@}" "-depth" "24"
+    set -- "${@}" "-depth" "16"
     set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${HOME}/.vnc/passwd"
     set -- "Xvnc" "${@}"
@@ -90,7 +93,6 @@ start_tmoe_xvnc() {
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     . ${XSESSION_FILE} &>/dev/null &
     exit 0
-    #set -- "${@}" "-ZlibLevel=9"
 }
 ##############
 source_tmoe_dbus_daemon() {

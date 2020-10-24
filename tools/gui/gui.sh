@@ -1720,6 +1720,15 @@ install_ukui_desktop() {
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     if [ "${LINUX_DISTRO}" = "debian" ]; then
         DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
+        case ${DEBIAN_DISTRO} in
+        ubuntu)
+            if (whiptail --title "ukui or ubuntukylin-desktop" --yes-button "ukui" --no-button "kylin" --yesno 'The former is more streamlined, and the latter\n includes some extra software of  ubuntu-kylin.\n前者为普通ukui,后者为ubuntukylin-desktop' 0 0); then
+                printf "%s" ""
+            else
+                DEPENDENCY_01="ubuntukylin-desktop"
+            fi
+            ;;
+        esac
         dpkg --configure -a
         auto_select_keyboard_layout
     elif [ "${LINUX_DISTRO}" = "arch" ]; then
