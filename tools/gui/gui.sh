@@ -3626,7 +3626,7 @@ modify_xrdp_conf() {
     fi
 
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${FILEBROWSER_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？${FILEBROWSER_STATUS}" 9 50); then
-        if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
+        if [[ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" && ! -e /usr/sbin/xrdp ]]; then
             printf "%s\n" "未检测到已备份的xrdp配置文件，请重新配置"
             printf "%s\n" "Please reconfigure xrdp"
             sleep 2s
