@@ -1350,48 +1350,98 @@ linuxmint_ulyana_wallpaper_var() {
     MINT_CODE="ulyana"
     WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
 }
+linuxmint_sarah_wallpaper_var() {
+    MINT_CODE="sarah"
+    WALLPAPER_FILE='/usr/share/backgrounds/bartosova_aurora.jpg'
+}
 ###########
 random_wallpaper_pack_01() {
-    case "$(($RANDOM % 5 + 1))" in
-    1) linuxmint_tara_wallpaper_var ;;
-    2) linuxmint_tessa_wallpaper_var ;;
-    3) linuxmint_tina_wallpaper_var ;;
-    4) linuxmint_tricia_wallpaper_var ;;
-    5 | *) linuxmint_ulyana_wallpaper_var ;;
+    case "$(($RANDOM % 20 + 1))" in
+    [6-9]) linuxmint_tina_wallpaper_var ;;
+    [10-12]) linuxmint_tricia_wallpaper_var ;;
+    13 | 14) linuxmint_tessa_wallpaper_var ;;
+    15 | 16) linuxmint_tara_wallpaper_var ;;
+    17) linuxmint_serena_wallpaper_var ;;
+    18) linuxmint_sonya_wallpaper_var ;;
+    19) linuxmint_sylvia_wallpaper_var ;;
+    20) linuxmint_sarah_wallpaper_var ;;
+    [1-5] | *) linuxmint_ulyana_wallpaper_var ;;
     esac
 }
 ############
 random_wallpaper_pack_02() {
-    case "$(($RANDOM % 5 + 1))" in
-    1) linuxmint_serena_wallpaper_var ;;
-    2) linuxmint_sonya_wallpaper_var ;;
-    3) linuxmint_sylvia_wallpaper_var ;;
-    4) linuxmint_tara_wallpaper_var ;;
-    5 | *) linuxmint_tessa_wallpaper_var ;;
+    case "$(($RANDOM % 22 + 1))" in
+    [6-9]) linuxmint_tara_wallpaper_var ;;
+    [10-12]) linuxmint_tricia_wallpaper_var ;;
+    13 | 14) linuxmint_sylvia_wallpaper_var ;;
+    15 | 16) linuxmint_serena_wallpaper_var ;;
+    17 | 18) linuxmint_sonya_wallpaper_var ;;
+    19) linuxmint_tina_wallpaper_var ;;
+    20) linuxmint_ulyana_wallpaper_var ;;
+    21 | 22) linuxmint_sarah_wallpaper_var ;;
+    [1-5] | *) linuxmint_tessa_wallpaper_var ;;
+    esac
+}
+############
+random_wallpaper_pack_03() {
+    case "$(($RANDOM % 20 + 1))" in
+    [6-9]) linuxmint_ulyana_wallpaper_var ;;
+    [10-12]) linuxmint_tina_wallpaper_var ;;
+    13 | 14) linuxmint_tessa_wallpaper_var ;;
+    15 | 16) linuxmint_tara_wallpaper_var ;;
+    17) linuxmint_serena_wallpaper_var ;;
+    18) linuxmint_sonya_wallpaper_var ;;
+    19) linuxmint_sylvia_wallpaper_var ;;
+    20) linuxmint_sarah_wallpaper_var ;;
+    [1-5] | *) linuxmint_tricia_wallpaper_var ;;
+    esac
+}
+############
+random_wallpaper_pack_04() {
+    case "$(($RANDOM % 20 + 1))" in
+    [7-9]) linuxmint_tina_wallpaper_var ;;
+    [10-12]) linuxmint_tricia_wallpaper_var ;;
+    13 | 14) linuxmint_tessa_wallpaper_var ;;
+    15 | 16) linuxmint_tara_wallpaper_var ;;
+    17) linuxmint_serena_wallpaper_var ;;
+    18) linuxmint_sonya_wallpaper_var ;;
+    19) linuxmint_sylvia_wallpaper_var ;;
+    20) linuxmint_sarah_wallpaper_var ;;
+    [1-6] | *) linuxmint_ulyana_wallpaper_var ;;
     esac
 }
 ############
 modify_the_default_xfce_wallpaper() {
     FORCIBLY_DOWNLOAD='true'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        if [ "${DEBIAN_DISTRO}" = "kali" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
+        random_wallpaper_pack_01
+        case "${DEBIAN_DISTRO}" in
+        ubuntu) random_wallpaper_pack_03 ;;
+        "kali")
             cp -sv /usr/share/backgrounds/kali-16x9/* /usr/share/backgrounds/ 2>/dev/null
-        fi
+            random_wallpaper_pack_04
+            ;;
+        esac
         random_wallpaper_pack_01
         debian_xfce_wallpaper
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         #WALLPAPER_FILE="/usr/share/backgrounds/xfce/Violet.jpg"
         mv -f /usr/share/backgrounds/xfce/* /usr/share/backgrounds/
         mv -f /usr/share/backgrounds/xfce-* /usr/share/backgrounds/xfce/ 2>/dev/null
         random_wallpaper_pack_02
         debian_xfce_wallpaper
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         random_wallpaper_pack_02
         debian_xfce_wallpaper
-    else
+        ;;
+    *)
         WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
         check_mate_wallpaper_pack
-    fi
+        ;;
+    esac
 }
 #################
 debian_download_ubuntu_mate_wallpaper() {
