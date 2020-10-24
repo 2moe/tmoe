@@ -3830,7 +3830,7 @@ configure_xrdp_remote_desktop_session() {
         #beta_features
         ;;
     esac
-    systemctl stop xrdp || service xrdp restart
+    systemctl restart xrdp || service xrdp restart
     check_xrdp_status
 }
 ##############
