@@ -3715,72 +3715,67 @@ remove_xrdp() {
 }
 ################
 configure_remote_desktop_enviroment() {
+    #15 60 5
     BETA_DESKTOP=$(whiptail --title "REMOTE_DESKTOP" --menu \
-        "您想要配置哪个桌面？按方向键选择，回车键确认！\n Which desktop environment do you want to configure? " 15 60 5 \
-        "1" "xfce：兼容性高" \
-        "2" "lxde：轻量化桌面" \
-        "3" "mate：基于GNOME 2" \
-        "4" "lxqt" \
-        "5" "kde plasma 5" \
-        "6" "gnome 3" \
-        "7" "cinnamon" \
-        "8" "dde (deepin desktop)" \
+        "您想要配置哪个桌面？按方向键选择，回车键确认！\n Which desktop environment do you want to configure? " 0 0 0 \
+        "1" "auto 自动选择" \
+        "2" "xfce：兼容性高" \
+        "3" "lxde：轻量化桌面" \
+        "4" "mate：基于GNOME 2" \
+        "5" "lxqt" \
+        "6" "kde plasma 5" \
+        "7" "gnome 3" \
+        "8" "cinnamon" \
+        "9" "dde (deepin desktop)" \
         "0" "我一个都不选 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
-    if [ "${BETA_DESKTOP}" == '1' ]; then
+    case "${BETA_DESKTOP}" in
+    0 | "") modify_remote_desktop_config ;;
+    1)
+        REMOTE_DESKTOP_SESSION_01='/etc/X11/xinit/Xsession'
+        REMOTE_DESKTOP_SESSION_02='/etc/X11/xinit/Xsession'
+        ;;
+    2)
         REMOTE_DESKTOP_SESSION_01='xfce4-session'
         REMOTE_DESKTOP_SESSION_02='startxfce4'
-        #configure_remote_xfce4_desktop
-    fi
-    ##########################
-    if [ "${BETA_DESKTOP}" == '2' ]; then
+        ;;
+    3)
         REMOTE_DESKTOP_SESSION_01='lxsession'
         REMOTE_DESKTOP_SESSION_02='startlxde'
         #configure_remote_lxde_desktop
-    fi
-    ##########################
-    if [ "${BETA_DESKTOP}" == '3' ]; then
+        ;;
+    4)
         REMOTE_DESKTOP_SESSION_01='mate-session'
         REMOTE_DESKTOP_SESSION_02='mate-panel'
         #configure_remote_mate_desktop
-    fi
-    ##############################
-    if [ "${BETA_DESKTOP}" == '4' ]; then
+        ;;
+    5)
         REMOTE_DESKTOP_SESSION_01='startlxqt'
         REMOTE_DESKTOP_SESSION_02='lxqt-session'
         #configure_remote_lxqt_desktop
-    fi
-    ##############################
-    if [ "${BETA_DESKTOP}" == '5' ]; then
+        ;;
+    6)
         #REMOTE_DESKTOP_SESSION='plasma-x11-session'
         #configure_remote_kde_plasma5_desktop
         REMOTE_DESKTOP_SESSION_01='startplasma-x11'
         REMOTE_DESKTOP_SESSION_02='startkde'
-    fi
-    ##############################
-    if [ "${BETA_DESKTOP}" == '6' ]; then
+        ;;
+    7)
         REMOTE_DESKTOP_SESSION_01='gnome-session'
         REMOTE_DESKTOP_SESSION_02='gnome-panel'
         #configure_remote_gnome3_desktop
-    fi
-    ##############################
-    if [ "${BETA_DESKTOP}" == '7' ]; then
-        #configure_remote_cinnamon_desktop
+        ;;
+    8)
         REMOTE_DESKTOP_SESSION_01='cinnamon-session'
         REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
-    fi
-    ##############################
-    if [ "${BETA_DESKTOP}" == '8' ]; then
+        ;;
+    9)
         REMOTE_DESKTOP_SESSION_01='startdde'
         REMOTE_DESKTOP_SESSION_02='dde-launcher'
         #configure_remote_deepin_desktop
-    fi
-    ##########################
-    if [ "${BETA_DESKTOP}" == '0' ] || [ -z ${BETA_DESKTOP} ]; then
-        modify_remote_desktop_config
-    fi
-    ##########################
+        ;;
+    esac
     case "${TMOE_PROOT}" in
     true | no)
         if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
@@ -3893,17 +3888,21 @@ xrdp_pulse_server() {
 xrdp_onekey() {
     RETURN_TO_WHERE='configure_xrdp'
     do_you_want_to_continue
-
-    DEPENDENCY_01=''
-    DEPENDENCY_02='xrdp'
-
-    if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        emerge -avk layman
-        layman -a bleeding-edge
-        layman -S
-        #ACCEPT_KEYWORDS="~amd64" USE="server" emerge -a xrdp
+    if [ $(command -v xrdp-keygen) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo)
+            emerge -avk layman
+            layman -a bleeding-edge
+            layman -S
+            #ACCEPT_KEYWORDS="~amd64" USE="server" emerge -a xrdp
+            ;;
+        *)
+            DEPENDENCY_01=''
+            DEPENDENCY_02='xrdp'
+            ;;
+        esac
+        beta_features_quick_install
     fi
-    beta_features_quick_install
     ##############
     mkdir -p /etc/polkit-1/localauthority.conf.d /etc/polkit-1/localauthority/50-local.d/
     cat >/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf <<-'EndOfxrdp'
@@ -4614,7 +4613,7 @@ fix_vnc_dbus_launch() {
             REMOTE_DESKTOP_SESSION_01='startdde'
             REMOTE_DESKTOP_SESSION_02='dde-launcher'
         else
-            printf "%s\n" "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新debian-i后再覆盖安装gui"
+            printf "%s\n" "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新tmoe linux tool后再覆盖安装gui"
         fi
         enable_dbus_launch
     fi
