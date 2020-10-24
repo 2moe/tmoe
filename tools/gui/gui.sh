@@ -3946,6 +3946,12 @@ xrdp_onekey() {
         fi
     fi
 EOF
+    sed -i 's:exec /bin/sh /etc/X11/Xsession:exec /etc/X11/xinit/Xsession:g' /etc/xrdp/startwm.sh
+    if [ $(command -v bat) ]; then
+        bat /etc/xrdp/startwm.sh
+    else
+        sed -n p /etc/xrdp/startwm.sh
+    fi
     if ! grep -q '^export PULSE_SERVER' /etc/xrdp/startwm.sh; then
         sed -i '/test -x \/etc\/X11/i\export PULSE_SERVER=127.0.0.1' /etc/xrdp/startwm.sh
     fi
@@ -4066,7 +4072,7 @@ xrdp_reset() {
     do_you_want_to_continue
     rm -f /etc/polkit-1/localauthority/50-local.d/45-allow.colord.pkla /etc/polkit-1/localauthority.conf.d/02-allow-colord.conf
     cd ${HOME}/.config/tmoe-linux
-    cp -pf xrdp.ini startwm.sh /etc/xrdp/
+    cp -pvf xrdp.ini startwm.sh /etc/xrdp/
 }
 #################################
 #################################
