@@ -3647,6 +3647,7 @@ configure_xrdp() {
     #16 50 7
     #进入xrdp配置文件目录
     RETURN_TO_WHERE='configure_xrdp'
+    [[ -e /etc/xrdp/ ]] || mkdir -p /etc/xrdp
     cd /etc/xrdp/
     TMOE_OPTION=$(
         whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？\nWhich configuration do you want to modify?" 0 0 0 \
@@ -3888,7 +3889,7 @@ xrdp_pulse_server() {
 xrdp_onekey() {
     RETURN_TO_WHERE='configure_xrdp'
     do_you_want_to_continue
-    if [ $(command -v xrdp-keygen) ]; then
+    if [[ ! $(command -v xrdp-keygen) && ! -e /usr/sbin/xrdp ]]; then
         case "${LINUX_DISTRO}" in
         gentoo)
             emerge -avk layman
