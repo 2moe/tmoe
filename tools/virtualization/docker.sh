@@ -614,7 +614,7 @@ install_docker_ce_or_io() {
         ;;
     false) printf "%s\n" "检测到您当前处于chroot容器环境下" ;;
     esac
-    if (whiptail --title "DOCKER本体" --yes-button 'docker-ce' --no-button 'docker.io' --yesno "Please make sure your linux kernel supports docker.\n安装DOCKER需要linux内核支持。为避免冲突,请只选择其中一个。" 0 50); then
+    if (whiptail --title "DOCKER本体" --yes-button 'docker-ce' --no-button 'docker.io' --yesno "Please make sure your linux kernel supports docker.\n安装前请先确保您的linux内核支持docker。为避免冲突,请只选择其中一个。" 0 50); then
         install_docker_ce
     else
         install_docker_io
