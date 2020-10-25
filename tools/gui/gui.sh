@@ -1955,9 +1955,9 @@ dde_old_version() {
     if [ ! $(command -v gpg) ]; then
         DEPENDENCY_01="gpg"
         DEPENDENCY_02=""
-        printf "%s\n" "${GREEN} ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "${GREEN} ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
         printf "%s\n" "即将为您安装gpg..."
-        ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
     fi
     DEPENDENCY_01="deepin-desktop"
 
@@ -3212,7 +3212,7 @@ x11vnc_warning() {
     fi
     #音频控制器单独检测
     if [ ! $(command -v pavucontrol) ]; then
-        ${TMOE_INSTALLATON_COMMAND} pavucontrol
+        ${TMOE_INSTALLATION_COMMAND} pavucontrol
     fi
 }
 ############
@@ -4157,9 +4157,9 @@ debian_remove_vnc_server() {
 }
 debian_install_vnc_server() {
     debian_remove_vnc_server
-    printf "%s\n" "${BLUE}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
-    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
-    ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+    printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
+    ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
+    ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
     if [ -e "/usr/share/fonts/X11/Type1" ] && [ ! -e /usr/share/fonts/X11/Speedo ]; then
         ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
     fi

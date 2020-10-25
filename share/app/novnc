@@ -25,8 +25,8 @@ install_python_web_novnc() {
 		[[ $(command -v netstat) ]] || sudo apt install net-tools
 		;;
 	*)
-		[[ $(command -v python3) ]] || ${TMOE_INSTALLATON_COMMAND} python3
-		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATON_COMMAND} net-tools
+		[[ $(command -v python3) ]] || ${TMOE_INSTALLATION_COMMAND} python3
+		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATION_COMMAND} net-tools
 		;;
 	esac
 

@@ -2918,7 +2918,7 @@ download_alpine_and_docker_x64_img_file() {
 		默认root密码为空
 		您可以直接使用vnc客户端连接，访问地址为localhost:5902
 		如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入apt update ;apt install -y openssh
-		您也可以直接在linux容器里使用ssh客户端，输入${TMOE_INSTALLATON_COMMAND} openssh-client
+		您也可以直接在linux容器里使用ssh客户端，输入${TMOE_INSTALLATION_COMMAND} openssh-client
 		在安装完ssh客户端后，使用${GREEN}ssh -p 2888 test@localhost${RESET}连接
 		由于root密码为空，故请使用普通用户连接，用户test,密码test
 		在登录完普通用户后，您可以输${GREEN}su -${RESET}来切换至root用户

@@ -320,7 +320,7 @@ install_nodejs() {
     if [ ! $(command -v npm) ]; then
         bash -c "$(curl -Lv https://npmjs.org/install.sh | sed 's@registry.npmjs.org@registry.npm.taobao.org@g')"
         if [ ! $(command -v npm) ]; then
-            ${TMOE_INSTALLATON_COMMAND} npm
+            ${TMOE_INSTALLATION_COMMAND} npm
         fi
         cat <<-'EOF'
 			npm config set registry https://registry.npm.taobao.org

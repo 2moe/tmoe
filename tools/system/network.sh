@@ -15,8 +15,8 @@ network_manager_tui() {
 
 	if [ ! $(command -v ip) ]; then
 		DEPENDENCY_02='iproute2'
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}${RESET}"
-		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_02}
+		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}${RESET}"
+		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
 	fi
 
 	if grep -q 'managed=false' /etc/NetworkManager/NetworkManager.conf; then

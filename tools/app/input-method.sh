@@ -517,7 +517,7 @@ install_google_pinyin() {
 install_debian_baidu_pinyin() {
     DEPENDENCY_02="fcitx-baidupinyin"
     if [ ! $(command -v unzip) ]; then
-        ${TMOE_INSTALLATON_COMMAND} unzip
+        ${TMOE_INSTALLATION_COMMAND} unzip
     fi
     ###################
     if [ "${ARCH_TYPE}" = "amd64" ]; then

@@ -116,8 +116,8 @@ deb_file_installer() {
         if [ ! $(command -v dpkg) ]; then
             DEPENDENCY_01='dpkg'
             DEPENDENCY_02=''
-            printf "%s\n" "${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}"
-            ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+            printf "%s\n" "${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}"
+            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
             beta_features_install_completed
         fi
         if [ $(command -v dpkg) ]; then

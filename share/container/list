@@ -455,7 +455,7 @@ debootstrap_ubuntu_distro() {
 		fi
 		;;
 	esac
-	[[ $(command -v debootstrap) ]] || ${TMOE_INSTALLATON_COMMAND} debootstrap
+	[[ $(command -v debootstrap) ]] || ${TMOE_INSTALLATION_COMMAND} debootstrap
 	custom_ubuntu_version
 	printf "%s\n" "${DISTRO_CODE}"
 	do_you_want_to_continue

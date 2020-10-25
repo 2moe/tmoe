@@ -282,7 +282,7 @@ check_linux_distro() {
 	set_terminal_color
 	if egrep -q 'debian|ubuntu|deepin|uos\.com' "/etc/os-release"; then
 		LINUX_DISTRO='debian'
-		TMOE_INSTALLATON_COMMAND='apt install -y'
+		TMOE_INSTALLATION_COMMAND='apt install -y'
 		TMOE_REMOVAL_COMMAND='apt purge -y'
 		TMOE_UPDATE_COMMAND='apt update'
 		if grep -q 'ubuntu' /etc/os-release; then
@@ -296,13 +296,13 @@ check_linux_distro() {
 	elif egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		TMOE_UPDATE_COMMAND='opkg update'
-		TMOE_INSTALLATON_COMMAND='opkg install'
+		TMOE_INSTALLATION_COMMAND='opkg install'
 		TMOE_REMOVAL_COMMAND='opkg remove'
 		##################
 	elif egrep -qi "Fedora|CentOS|Red Hat|redhat" "/etc/os-release"; then
 		LINUX_DISTRO='redhat'
 		TMOE_UPDATE_COMMAND='dnf update'
-		TMOE_INSTALLATON_COMMAND='dnf install -y --skip-broken'
+		TMOE_INSTALLATION_COMMAND='dnf install -y --skip-broken'
 		TMOE_REMOVAL_COMMAND='dnf remove -y'
 		if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
@@ -313,35 +313,35 @@ check_linux_distro() {
 	elif grep -q "Alpine" '/etc/issue' 2>/dev/null || grep -q "Alpine" "/etc/os-release"; then
 		LINUX_DISTRO='alpine'
 		TMOE_UPDATE_COMMAND='apk update'
-		TMOE_INSTALLATON_COMMAND='apk add'
+		TMOE_INSTALLATION_COMMAND='apk add'
 		TMOE_REMOVAL_COMMAND='apk del'
 		######################
 	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
 		LINUX_DISTRO='arch'
 		TMOE_UPDATE_COMMAND='pacman -Syy'
-		TMOE_INSTALLATON_COMMAND='pacman -Syu --noconfirm'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm'
 		TMOE_REMOVAL_COMMAND='pacman -Rsc'
 		######################
 	elif egrep -q "gentoo|funtoo" "/etc/os-release"; then
 		LINUX_DISTRO='gentoo'
-		TMOE_INSTALLATON_COMMAND='emerge -avk'
+		TMOE_INSTALLATION_COMMAND='emerge -avk'
 		TMOE_REMOVAL_COMMAND='emerge -C'
 		########################
 	elif grep -qi 'suse' '/etc/os-release'; then
 		LINUX_DISTRO='suse'
-		TMOE_INSTALLATON_COMMAND='zypper in -y'
+		TMOE_INSTALLATION_COMMAND='zypper in -y'
 		TMOE_REMOVAL_COMMAND='zypper rm'
 		########################
 	elif [ "$(sed -n p /etc/issue 2>/dev/null | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
 		export LANG='en_US.UTF-8'
-		TMOE_INSTALLATON_COMMAND='xbps-install -S -y'
+		TMOE_INSTALLATION_COMMAND='xbps-install -S -y'
 		TMOE_REMOVAL_COMMAND='xbps-remove -R'
 		#########################
 	elif egrep -q "Slackware" '/etc/os-release'; then
 		LINUX_DISTRO='slackware'
 		TMOE_UPDATE_COMMAND='slackpkg update'
-		TMOE_INSTALLATON_COMMAND='slackpkg install'
+		TMOE_INSTALLATION_COMMAND='slackpkg install'
 		TMOE_REMOVAL_COMMAND='slackpkg remove'
 		#########################
 	elif [ "$(uname -o)" = 'Android' ]; then
@@ -500,25 +500,25 @@ check_dependencies() {
 	if [ ! -z "${DEPENDENCIES}" ]; then
 		cat <<-EOF
 			正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}
-			${GREEN}${TMOE_INSTALLATON_COMMAND}${BLUE}${DEPENDENCIES}${RESET}
+			${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}
 			如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}
 		EOF
 		case "${LINUX_DISTRO}" in
 		debian)
 			${TMOE_UPDATE_COMMAND}
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATON_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils
 			#创建文件夹防止aptitude报错
 			mkdir -p /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
 			;;
 		alpine | openwrt | slackware)
 			${TMOE_UPDATE_COMMAND}
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			;;
-		arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} ;;
+		arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
 		*)
 			apt update
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
 			;;
 		esac
@@ -598,7 +598,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3312,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3313,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -636,7 +636,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3312,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3313,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
 				"3" "🌺 Secret Garden(education,system,beta feature)" \

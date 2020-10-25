@@ -79,7 +79,7 @@ tmoe_manager_android_env() {
 		fi
 	fi
 	[[ -z ${TMPDIR} ]] || export TMPDIR=${PREFIX}/tmp
-	TMOE_INSTALLATON_COMMAND='apt install -y'
+	TMOE_INSTALLATION_COMMAND='apt install -y'
 	TMOE_REMOVAL_COMMAND='apt purge -y'
 	SWITCH_MIRROR='true'
 	TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
@@ -182,7 +182,7 @@ check_gnu_linux_git_and_whiptail() {
 	fi
 	tmoe_install_depenencies() {
 		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 		return 0
 	}
 	case ${DEPENDENCIES} in
@@ -203,12 +203,12 @@ check_gnu_linux_git_and_whiptail() {
 			;;
 		void)
 			export LANG='en_US.UTF-8'
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			;;
-		arch | gentoo | redhat | suse) ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} ;;
+		arch | gentoo | redhat | suse) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
 		*)
 			apt update 2>/dev/null
-			${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
 			;;
 		esac
@@ -251,7 +251,7 @@ check_gnu_linux_distro() {
 		SWITCH_MIRROR='true'
 		LINUX_DISTRO='debian'
 		TMOE_UPDATE_COMMAND='apt update'
-		TMOE_INSTALLATON_COMMAND='apt install -y'
+		TMOE_INSTALLATION_COMMAND='apt install -y'
 		TMOE_REMOVAL_COMMAND='apt purge -y'
 		if grep -q 'ubuntu' /etc/os-release; then
 			DEBIAN_DISTRO='ubuntu'
@@ -265,7 +265,7 @@ check_gnu_linux_distro() {
 	elif egrep -qi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUX_DISTRO='redhat'
 		TMOE_REMOVAL_COMMAND='dnf remove -y'
-		TMOE_INSTALLATON_COMMAND='dnf install -y --skip-broken'
+		TMOE_INSTALLATION_COMMAND='dnf install -y --skip-broken'
 		if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
 		elif grep -q 'Sliverblue' "/etc/os-release"; then
@@ -278,34 +278,34 @@ check_gnu_linux_distro() {
 		SWITCH_MIRROR='true'
 		LINUX_DISTRO='alpine'
 		TMOE_UPDATE_COMMAND='apk update'
-		TMOE_INSTALLATON_COMMAND='apk add'
+		TMOE_INSTALLATION_COMMAND='apk add'
 		TMOE_REMOVAL_COMMAND='apk del'
 
 	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
 		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATON_COMMAND='pacman -Syu --noconfirm'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm'
 
 	elif egrep -q "gentoo|funtoo" '/etc/os-release'; then
 		LINUX_DISTRO='gentoo'
-		TMOE_INSTALLATON_COMMAND='emerge -avk'
+		TMOE_INSTALLATION_COMMAND='emerge -avk'
 		TMOE_REMOVAL_COMMAND='emerge -C'
 
 	elif grep -qi 'suse' '/etc/os-release'; then
 		LINUX_DISTRO='suse'
-		TMOE_INSTALLATON_COMMAND='zypper in -y'
+		TMOE_INSTALLATION_COMMAND='zypper in -y'
 		TMOE_REMOVAL_COMMAND='zypper rm'
 
 	elif [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Void" ]; then
 		LINUX_DISTRO='void'
-		TMOE_INSTALLATON_COMMAND='xbps-install -Sy'
+		TMOE_INSTALLATION_COMMAND='xbps-install -Sy'
 		TMOE_REMOVAL_COMMAND='xbps-remove -R'
 
 	elif egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		printf "${RED}%s${RESET}\n" "本工具已不再支持OpenWRT"
 		do_you_want_to_continue
 		LINUX_DISTRO='openwrt'
-		TMOE_INSTALLATON_COMMAND='opkg install'
+		TMOE_INSTALLATION_COMMAND='opkg install'
 		TMOE_REMOVAL_COMMAND='opkg remove'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://${TMOE_GIT_URL}/raw/master/manager.sh
@@ -389,7 +389,7 @@ check_gnu_linux_distro() {
 ########################################
 notes_of_tmoe_package_installation() {
 	printf "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}\n"
-	printf "${GREEN}${TMOE_INSTALLATON_COMMAND}${BLUE}${DEPENDENCIES}${RESET}\n"
+	printf "${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}\n"
 	printf "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}\n"
 }
 #####################
@@ -568,7 +568,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3312,type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3313,type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
 				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot コンテナ" \
 				"3" "💔 削除する 天萌マネージャー" \
@@ -586,7 +586,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3312,type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3313,type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot container" \
 				"3" "💔 remove tmoe-manager" \
@@ -604,7 +604,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3312,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3313,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
 				"3" "💔 remove 移除" \

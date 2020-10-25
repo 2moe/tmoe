@@ -178,7 +178,7 @@ check_debian_12() {
 }
 #############
 debootstrap_debian_distro() {
-	[[ $(command -v debootstrap) ]] || ${TMOE_INSTALLATON_COMMAND} debootstrap
+	[[ $(command -v debootstrap) ]] || ${TMOE_INSTALLATION_COMMAND} debootstrap
 	custom_debian_version
 	printf "%s\n" "${DISTRO_CODE}"
 	do_you_want_to_continue

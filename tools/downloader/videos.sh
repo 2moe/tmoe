@@ -344,7 +344,7 @@ upgrade_video_download_tool() {
             apt update 2>/dev/null
             apt install -y python3 python3-distutils 2>/dev/null
         else
-            ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
+            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
         fi
         cd /tmp
         curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.00

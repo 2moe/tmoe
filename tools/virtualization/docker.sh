@@ -970,7 +970,7 @@ install_docker_ce() {
     esac
     beta_features_quick_install
     if [ ! $(command -v docker) ]; then
-        printf "%s\n" "安装失败，请执行${TMOE_INSTALLATON_COMMAND} docker.io"
+        printf "%s\n" "安装失败，请执行${TMOE_INSTALLATION_COMMAND} docker.io"
     fi
 }
 #################

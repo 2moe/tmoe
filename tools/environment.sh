@@ -427,7 +427,7 @@ press_enter_to_return_configure_xwayland() {
 #######################
 beta_features_management_menu() {
     if (whiptail --title "您想要对这个小可爱做什么呢 " --yes-button "reinstall重装" --no-button "remove移除" --yesno "检测到您已安装${DEPENDENCY_01} ${DEPENDENCY_02} \nDo you want to reinstall or remove it? ♪(^∇^*) " 0 50); then
-        printf "%s\n" "${GREEN} ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "${GREEN} ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
         printf "%s\n" "即将为您重装..."
     else
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
@@ -515,7 +515,7 @@ beta_features_quick_install() {
     fi
     ###############
     printf "%s\n" "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
-    printf "%s\n" "${GREEN}${TMOE_INSTALLATON_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET} ${YELLOW}${DEPENDENCY_02}${RESET}"
+    printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET} ${YELLOW}${DEPENDENCY_02}${RESET}"
     printf "%s\n" "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you."
     ############
     if [ "${EXISTS_COMMAND}" = "true" ]; then
@@ -1158,7 +1158,7 @@ aria2c_download_file_no_confirm() {
 ############
 extract_electron() {
     if [ ! $(command -v unzip) ]; then
-        ${TMOE_INSTALLATON_COMMAND} unzip
+        ${TMOE_INSTALLATION_COMMAND} unzip
     fi
     unzip ${ELECTRON_ZIP_FILE}
     rm -fv ${ELECTRON_ZIP_FILE}
@@ -1308,9 +1308,9 @@ tmoe_apt_update() {
 check_zstd() {
     if [ ! $(command -v unzstd) ]; then
         printf "%s\n" "正在安装相关依赖..."
-        printf "%s\n" "${GREEN}${TMOE_INSTALLATON_COMMAND}${RESET} ${BLUE}zstd${RESET}"
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
         tmoe_apt_update
-        ${TMOE_INSTALLATON_COMMAND} zstd
+        ${TMOE_INSTALLATION_COMMAND} zstd
         printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
     fi
 }

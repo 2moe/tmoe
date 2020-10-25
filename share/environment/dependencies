@@ -90,16 +90,16 @@ install_gnu_linux_manager_dependencies_02() {
 			;;
 		esac
 		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATON_COMMAND} git wget curl whiptail aria2 xz-utils nano sudo less procps
+		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano sudo less procps
 		;;
 	alpine | openwrt | slackware)
 		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 		;;
-	arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES} ;;
+	arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
 	*)
 		apt update
-		${TMOE_INSTALLATON_COMMAND} ${DEPENDENCIES}
+		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 		apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
 		;;
 	esac

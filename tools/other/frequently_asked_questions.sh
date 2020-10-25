@@ -161,7 +161,7 @@ tty_chinese_code() {
     if (whiptail --title "您想要对这个小可爱执行哪项方案?" --yes-button 'fbterm' --no-button '修改$LANG' --yesno "目前有两种简单的解决方法(っ °Д °)\n前者提供了一个快速的终端仿真器，它直接运行在你的系统中的帧缓冲 (framebuffer) 之上；而后者则是修改语言变量。" 11 45); then
         if [ ! $(command -v fbterm) ]; then
             DEPENDENCY_01='fbterm'
-            ${TMOE_INSTALLATON_COMMAND} ${DEPENDENCY_01}
+            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
         fi
         printf '%s\n' '若启动失败，则请手动执行fbterm'
         fbterm

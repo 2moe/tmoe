@@ -33,8 +33,8 @@ configure_tmoe_container() {
 }
 ##########
 check_man_db() {
-    [[ $(command -v man) ]] || ${TMOE_INSTALLATON_COMMAND} man
-    [[ $(command -v man) ]] || ${TMOE_INSTALLATON_COMMAND} man-db
+    [[ $(command -v man) ]] || ${TMOE_INSTALLATION_COMMAND} man
+    [[ $(command -v man) ]] || ${TMOE_INSTALLATION_COMMAND} man-db
     [[ ! $(command -v man) ]] || check_x11vnc_git_manual
 }
 #########
@@ -102,13 +102,13 @@ tmoe_container_dns() {
 ##############
 install_fortunes() {
     if [[ ! $(command -v fortune) ]] && [ ! -e /usr/games/fortune ]; then
-        printf "${GREEN}%s ${PURPLE}%s${RESET}\n" "${TMOE_INSTALLATON_COMMAND}" "fortune"
-        ${TMOE_INSTALLATON_COMMAND} fortunes 2>/dev/null
-        ${TMOE_INSTALLATON_COMMAND} fortune-mod 2>/dev/null
-        ${TMOE_INSTALLATON_COMMAND} fortune 2>/dev/null
+        printf "${GREEN}%s ${PURPLE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "fortune"
+        ${TMOE_INSTALLATION_COMMAND} fortunes 2>/dev/null
+        ${TMOE_INSTALLATION_COMMAND} fortune-mod 2>/dev/null
+        ${TMOE_INSTALLATION_COMMAND} fortune 2>/dev/null
         case ${TMOE_LANG} in
         zh_*UTF-8)
-            ${TMOE_INSTALLATON_COMMAND} fortunes-zh 2>/dev/null
+            ${TMOE_INSTALLATION_COMMAND} fortunes-zh 2>/dev/null
             install_fortunes_cn
             ;;
         esac
