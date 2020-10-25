@@ -18,7 +18,7 @@ unmount_chroot_proc_dev() {
 			#[[ ! -e ${TMPDIR}/.umount-tmoe-container ]] || rm -vf ${TMPDIR}/.umount-tmoe-container
 			# sed 's@^@su -c "umount -lvf @g;s@$@"@g'
 			UMOUNT_EXTRA_DIR=$(${TMOE_PREFIX} sed -n p /proc/mounts | grep ${DEBIAN_CHROOT} | awk '{print $2}' | sed 's@^@umount -lvf @g')
-			printf "${YELLOW}${UMOUNT_EXTRA_DIR}\n"
+			printf "${PURPLE}${UMOUNT_EXTRA_DIR}\n"
 			su -c "${UMOUNT_EXTRA_DIR}"
 			printf "${BOLD}%s\n" "${YELLOW}CONGRATULATIONS！${BLUE}TMOE-LINUX-MANAGER${RESET}已经${PURPLE}UNMOUNTED${RESET}掉所有的挂载点"
 		fi
