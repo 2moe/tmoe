@@ -10,6 +10,11 @@ tmoe_main() {
 		source_tmoe_env
 		TMOE_CHROOT='true'
 		;;
+	systemd | sd | systemctl | ns | nspawn)
+		source_tmoe_env
+		SYSTEMD_NSPAWN='true'
+		TMOE_CHROOT='true'
+		;;
 	zsh)
 		zsh-i
 		exit 0
@@ -209,7 +214,19 @@ start_tmoe_container() {
 		esac
 		${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
 	fi
-	${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	case ${SYSTEMD_NSPAWN} in
+	true)
+		case $(uname -o) in
+		Android)
+			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
+			printf "如需运行systemd容器，请换用GNU/Linux系统。"
+			;;
+		esac
+		source ${TMOE_SHARE_DIR}/removal/umount
+		source ${TMOE_SHARE_DIR}/container/nspawn/startup
+		;;
+	*) ${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ;;
+	esac
 }
 ##########
 tmoe_main "$@"
