@@ -146,7 +146,9 @@ systemd_nspawn_env() {
 	if [ ! $(command -v dbus-uuidgen) ]; then
 		printf "${RED}%s${RESET}\n" "EORROR！YOU DID NOT INSTALL DBUS."
 		printf "${GREEN}%s ${BLUE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "dbus"
-		${TMOE_INSTALLATION_COMMAND} dbus
+		press_enter_to_return
+		chroot_container_menu_multi_langs
+		#${TMOE_INSTALLATION_COMMAND} dbus
 	fi
 	SYSTEMD_NSPAWN='true'
 	list_installed_tmoe_containers
