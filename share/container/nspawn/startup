@@ -4,7 +4,7 @@ if egrep -q '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
     sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
 fi
 case $(cat ${DEBIAN_CHROOT}/etc/hostname) in
-localhost | LXC_NAME)
+localhost | LXC_NAME | "")
     ${TMOE_PREFIX} printf "%s\n" "${MACHINE_NAME}" >${DEBIAN_CHROOT}/etc/hostname
     ${TMOE_PREFIX} printf "%s\n" "127.0.0.1       ${MACHINE_NAME}" >>${DEBIAN_CHROOT}/etc/hosts
     ;;
