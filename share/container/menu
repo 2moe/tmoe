@@ -150,6 +150,12 @@ systemd_nspawn_env() {
 		chroot_container_menu_multi_langs
 		#${TMOE_INSTALLATION_COMMAND} dbus
 	fi
+	case ${LINUX_DISTRO} in
+	Android)
+		press_enter_to_return
+		chroot_container_menu_multi_langs
+		;;
+	esac
 	SYSTEMD_NSPAWN='true'
 	list_installed_tmoe_containers
 }
