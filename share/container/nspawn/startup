@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g') #此处并非重复操作
 if egrep -q '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
     sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
 fi
