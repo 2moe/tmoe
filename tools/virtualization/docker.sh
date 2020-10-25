@@ -696,7 +696,7 @@ tmoe_docker_menu() {
     VIRTUAL_TECH=$(
         whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
             "1" "🌁 across architectures(跨CPU架构运行docker容器)" \
-            "2" "🔘 systemd-docker(支持systemctl的docker容器)" \
+            "2" "🥛 systemd-docker(支持systemctl的docker容器)" \
             "3" "🍭 pull distro images(拉取alpine,debian和ubuntu镜像)" \
             "4" "🌉 portainer(web端图形化docker容器管理)" \
             "5" "🍥 mirror source镜像源" \

@@ -568,7 +568,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3324,type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3326,type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
 				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot コンテナ" \
 				"3" "💔 削除する 天萌マネージャー" \
@@ -586,7 +586,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3324,type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3326,type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot container" \
 				"3" "💔 remove tmoe-manager" \
@@ -604,7 +604,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3324,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3326,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
 				"3" "💔 remove 移除" \
