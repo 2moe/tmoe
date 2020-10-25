@@ -9,6 +9,7 @@ proot_management_menu() {
 	CURRENT_DIR="$(pwd)"
 	TMOE_CONTAINER_FORTUNE=true
 	TMOE_CONTAINER_HITOKOTO=true
+	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
@@ -112,6 +113,9 @@ tips_of_kill_pid() {
 }
 ##########
 kill_chroot_container_process() {
+	case ${SYSTEMD_NSPAWN} in
+	true) machinectl terminate ${MACHINE_NAME} ;;
+	esac
 	#if [ -e "${DEBIAN_CHROOT}/run/dbus/pid" ]; then
 	#	DBUS_PID="$(sed -n p ${DEBIAN_CHROOT}/run/dbus/pid)"
 	#	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
@@ -233,6 +237,17 @@ readme_of_gnu_linux_distro() {
 		  2.在其他插件管理器配置的环境下，输入${YELLOW}tmoe${RESET},不按回车,按下TAB键${BLUE}⇄${RESET}进行补全.
 		  Type ${GREEN}tmoe${RESET}, then don't press ${RED}enter${RESET}, press Tab${BLUE}⇄${RESET} key to complete.
 	EOF
+	case ${SYSTEMD_NSPAWN} in
+	true)
+		cat <<-EOF
+			检测到您选择的systemd-nspawn容器，在进入容器后，按下${GREEN}Ctrl${RESET}+三次${YELLOW}]]]${RED}退出${RESET}。
+			您可以使用${GREEN}machinectl${RESET}来管理nspawn容器。
+			${GREEN}machinectl -h${RESET} 获取帮助信息 get help info
+			${GREEN}machinectl list${RESET} 列出容器
+			${GREEN}machinectl terminate ${DEBIAN_FOLDER}-${ARCH_TYPE}${RESET} 终止容器
+		EOF
+		;;
+	esac
 }
 ######
 install_web_novnc() {
@@ -270,7 +285,10 @@ normally_start_gnu_linux_distro() {
 	case $(uname -o) in
 	Android) termux-wake-lock 2>/dev/null ;;
 	esac
-	${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	case ${SYSTEMD_NSPAWN} in
+	true) source ${TMOE_SHARE_DIR}/container/nspawn/startup ;;
+	*) ${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container ;;
+	esac
 }
 start_gnu_linux_distro_tigervnc() {
 	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null

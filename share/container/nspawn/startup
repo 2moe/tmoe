@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+if egrep -q '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
+    sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
+fi
+if [ -s "${DEBIAN_CHROOT}/etc/machine-id" ]; then
+    rm -f ${DEBIAN_CHROOT}/etc/machine-id
+fi
+set -- "${@}" "--boot"
+set -- "${@}" "--directory" "${DEBIAN_CHROOT}"
+set -- "${@}" "--uuid" "$(dbus-uuidgen)"
+set -- "${@}" "--private-users=pick"
+set -- "${@}" "--machine" "${MACHINE_NAME}"
+set -- "${@}" "--link-journal" "auto"
+set -- "${@}" "--resolv-conf" "auto"
+set -- "${@}" "--timezone" "auto"
+set -- "${@}" "--setenv" "TMOE_CHROOT=true"
+set -- "${@}" "--setenv" "TMOE_PROOT=false"
+set -- "${@}" "--register" "yes"
+set -- "${@}" "--notify-ready" "yes"
+for i in /sdcard /media/sd; do
+    if [ -e "${i}" ]; then
+        set -- "${@}" "--bind" "${i}:/media/sd"
+    fi
+done
+set -- "systemd-nspawn" "${@}"
+"${@}"

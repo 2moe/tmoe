@@ -37,11 +37,7 @@ across_architectures_container() {
 	tmoe_qemu_user_manager
 }
 #############
-proot_container_menu() {
-	source ${TMOE_SHARE_DIR}/container/list
-	check_proot_or_chroot
-	RETURN_TO_WHERE='proot_container_menu'
-	RETURN_TO_WHERE_02=${RETURN_TO_WHERE}
+proot_container_menu_multi_langs() {
 	proot_container_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?" 0 50 0 \
 			"1" "${TRUE_ARCH_TYPE} distros list" \
@@ -79,7 +75,83 @@ proot_container_menu() {
 	press_enter_to_return
 	tmoe_manager_main_menu
 }
+############
+chroot_container_menu_multi_langs() {
+	chroot_container_menu_en() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?" 0 50 0 \
+			"1" "${TRUE_ARCH_TYPE} distros list" \
+			"2" "📑 List installed" \
+			"3" "nspawn(systemd-container,supports systemctl)" \
+			"4" "⚔️ Across architectures" \
+			"5" "🔯 Restore ${CONTAINER_TYPE} container" \
+			"6" "📕 Configuration & manual" \
+			"0" "🌚 Back to the main menu" \
+			3>&1 1>&2 2>&3)
+	}
+	chroot_container_menu_cn() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要同架构运行,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
+			"1" "${TRUE_ARCH_TYPE}发行版列表" \
+			"2" "📑 List installed 当前已安装容器列表" \
+			"3" "nspawn(systemd容器,支持systemctl)" \
+			"4" "⚔️ Across architectures 跨CPU架构" \
+			"5" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
+			"6" "📕 配置与手册" \
+			"0" "🌚 Back to the main menu 返回主菜单" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) chroot_container_menu_cn ;;
+	*) chroot_container_menu_en ;;
+	esac
+	##############################
+	case "${SELECTED_GNU_LINUX}" in
+	0 | "") tmoe_manager_main_menu ;;
+	1) list_tmoe_containers ;;
+	2) list_installed_tmoe_containers ;;
+	3) systemd_nspawn_env ;;
+	4) across_architectures_container ;;
+	5) restore_tmoe_container ;;
+	6) configure_tmoe_container ;;
+	esac
+	####################
+	press_enter_to_return
+	tmoe_manager_main_menu
+}
+############
+proot_container_menu() {
+	source ${TMOE_SHARE_DIR}/container/list
+	check_proot_or_chroot
+	SYSTEMD_NSPAWN='false'
+	RETURN_TO_WHERE='proot_container_menu'
+	RETURN_TO_WHERE_02=${RETURN_TO_WHERE}
+	case ${TMOE_CHROOT} in
+	true) chroot_container_menu_multi_langs ;;
+	*) proot_container_menu_multi_langs ;;
+	esac
+}
 ##################
+systemd_nspawn_env() {
+	if [ ! $(command -v systemd-nspawn) ]; then
+		printf "${YELLOW}%s${RESET}\n" "Do you want to install systemd-container?${PURPLE}[Y/n]"
+		printf "${GREEN}%s ${BLUE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "systemd-container"
+		do_you_want_to_continue
+		case ${LINUX_DISTRO} in
+		Android)
+			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
+			printf "%s\n" "请换用${GREEN}GNU/Linux${RESET}系统！！！"
+			;;
+		*) ${TMOE_INSTALLATION_COMMAND} systemd-container ;;
+		esac
+	fi
+	if [ ! $(command -v dbus-uuidgen) ]; then
+		printf "${RED}%s${RESET}\n" "EORROR！YOU DID NOT INSTALL DBUS."
+		printf "${GREEN}%s ${BLUE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "dbus"
+		${TMOE_INSTALLATION_COMMAND} dbus
+	fi
+	SYSTEMD_NSPAWN='true'
+	list_installed_tmoe_containers
+}
+###############
 restore_tmoe_container() {
 	source ${TMOE_SHARE_DIR}/compression/restore
 }

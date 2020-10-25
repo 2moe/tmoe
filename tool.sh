@@ -598,7 +598,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3308,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3310,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -607,7 +607,7 @@ tmoe_linux_tool_menu() {
 				"6" "📺 Download video:解析视频链接(bili,Y2B)" \
 				"7" "🍥 Software sources:软件镜像源管理" \
 				"8" "🐳 Docker:开源的应用容器引擎" \
-				"9" "💻 Qemu:x86_64虚拟机管理" \
+				"9" "💻 Qemu:x64虚拟机管理" \
 				"10" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
 				"11" "🍩 FAQ:常见问题" \
 				"0" "🌚 Exit 退出" \
@@ -617,7 +617,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_ja() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3292.${TMOE_TIPS_02}と入力して起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3309.${TMOE_TIPS_02}と入力して起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
 				"1" "🍭 GUI:グラフィカル・ユーザ・インターフェース(DE,WM,LM)" \
 				"2" "🥝 アプリストア(ブラウザ、ゲーム、メディアアプリ)" \
 				"3" "🌺 秘密の花園(教育、システム、beta機能)" \
@@ -626,7 +626,7 @@ tmoe_linux_tool_menu() {
 				"6" "📺 ニコニコ動画ダウンローダー" \
 				"7" "🍥 ソフトウェアミラーソース" \
 				"8" "🐳 Docker:コンテナ仮想化を用いたOSレベルの仮想化" \
-				"9" "💻 Qemu:x86_64 仮想マシン" \
+				"9" "💻 Qemu:x64 仮想マシン" \
 				"10" "🍧 *°▽°*更新" \
 				"11" "🍩 よくある質問" \
 				"0" "🌚 終了する" \
@@ -636,7 +636,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3308,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3310,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
 				"3" "🌺 Secret Garden(education,system,beta feature)" \
@@ -645,7 +645,7 @@ tmoe_linux_tool_menu() {
 				"6" "📺 Download video:Y2B" \
 				"7" "🍥 Software sources:Worldwide mirror sites" \
 				"8" "🐳 Docker：use OS-level virtualization to deliver software" \
-				"9" "💻 Qemu:x86_64 virtual machine" \
+				"9" "💻 Qemu:x64 virtual machine" \
 				"10" "🍧 *°▽°*Update tmoe-linux tool" \
 				"11" "🍩 Frequently Asked Questions" \
 				"0" "🌚 Exit" \

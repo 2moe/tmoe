@@ -79,9 +79,7 @@ start_tmoe_xvnc() {
     if [[ $(readlink /etc/alternatives/vncserver) = "/usr/bin/tigervncserver" || -n $(command -v vncsession) ]]; then
         set -- "${@}" "-ZlibLevel=1"
     fi
-    #tightvnc专有参数set -- "${@}" "bc" #enable bug compatibility
-    set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
-    set -- "${@}" "-desktop" "${desktop}"
+    #tightvnc专有参数bc #enable bug compatibility #set -- "${@}" "bc"
     set -- "${@}" "-a" "5"
     set -- "${@}" "-wm"
     set -- "${@}" "-alwaysshared"
@@ -90,6 +88,8 @@ start_tmoe_xvnc() {
     set -- "${@}" "-depth" "16"
     set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${HOME}/.vnc/passwd"
+    set -- "${@}" "-desktop" "${desktop}"
+    set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "Xvnc" "${@}"
     "${@}" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}

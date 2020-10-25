@@ -131,7 +131,6 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        fi
 	    done
 	    unset i
-	    #dev/random) su -c "mount -o bind /dev/urandom ${DEBIAN_CHROOT}/\${i}" ;;
 	    ########
 	    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
 	        if [ ! -e \${i} ] && [ ! -h \${i} ]; then

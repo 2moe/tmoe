@@ -4,16 +4,32 @@ unmount_chroot_proc_dev() {
 	#case ${TMOE_CHROOT} in
 	#true)
 	if [ $(command -v su) ]; then
-		su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
-		su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
-		su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+		for i in proc sys dev/pts dev/shm etc/gitstatus dev/fd dev/stdin dev/stout dev/sterr dev/tty0 dev media/tf media/termux media/sd; do
+			#su -c "umount -lvf ${DEBIAN_CHROOT}/${i}  2>/dev/null"
+			printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${i}" "..."
+			printf "${GREEN}%s${RESET}\n" "umount -lvf ${DEBIAN_CHROOT}/${i}"
+			su -c "umount -lvf ${DEBIAN_CHROOT}/${i} 2>/dev/null"
+		done
+		#su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+		#su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+		printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${DEBIAN_FOLDER}" "..."
+		printf "${GREEN}%s${RESET}\n" "umount -lvf ${DEBIAN_CHROOT}"
+		if grep -q "${DEBIAN_CHROOT}" /proc/mounts; then
+			#[[ ! -e ${TMPDIR}/.umount-tmoe-container ]] || rm -vf ${TMPDIR}/.umount-tmoe-container
+			# sed 's@^@su -c "umount -lvf @g;s@$@"@g'
+			UMOUNT_EXTRA_DIR=$(${TMOE_PREFIX} sed -n p /proc/mounts | grep ${DEBIAN_CHROOT} | awk '{print $2}' | sed 's@^@umount -lvf @g')
+			printf "${PURPLE}${UMOUNT_EXTRA_DIR}\n"
+			su -c "${UMOUNT_EXTRA_DIR}"
+			printf "${YELLOW}%s${RESET}\n" "CONGRATULATIONS！TMOE-LINUX-MANAGER已经UNMOUNTED掉所有的挂载点"
+		fi
+		su -c "umount -lvf ${DEBIAN_CHROOT} 2>/dev/null"
 		su -c "ls -lAh  ${DEBIAN_CHROOT}/media/sd 2>/dev/null"
 	fi
 	#	;;
 	#esac
 	#/dev内自带null
-	for i in root/sd root/tf media/sd media/tf proc sys; do
-		if [ "$(ls ${DEBIAN_CHROOT}/${i} 2>/dev/null)" ]; then
+	for i in media/sd media/tf proc sys; do
+		if [[ $(su -c "ls ${DEBIAN_CHROOT}/${i} 2>/dev/null") ]]; then
 			printf "%s\n" "检测到${DEBIAN_CHROOT}/${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
 			press_enter_to_return
 			#${RETURN_TO_WHERE}

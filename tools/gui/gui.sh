@@ -866,6 +866,7 @@ tmoe_virtual_machine_desktop() {
 }
 ################
 configure_vnc_xstartup() {
+    [[ -d "/var/run/dbus" ]] || mkdir -p /var/run/dbus
     if [ ! -s "/etc/machine-id" ]; then
         printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
         mkdir -p /run/dbus /var/run/dbus
