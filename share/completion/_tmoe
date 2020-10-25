@@ -29,7 +29,7 @@ function _tmoe() {
         "c:chroot:A chroot is an operation that changes the apparent root directory for the current running process and their children."
         "chroot:与宿主机共享相同的内核,硬件,进程空间和网络子系统"
         "p:proot - mount --bind and binfmt_misc without privilege/setupmount"
-        "proot:在用户空间内运行的程序,IO性能弱于chroot"
+        "proot:在用户空间内运行的程序,I/O性能弱于chroot"
         "ns:systemd-nspawn:It supports executing systemctl commands in the container."
         "nspawn:systemd容器,支持执行systemctl"
     )

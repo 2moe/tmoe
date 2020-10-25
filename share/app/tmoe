@@ -134,6 +134,7 @@ tmoe_main() {
 	zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
 	esac
+	TMOE_PARAMETERS="$*"
 	start_tmoe_container
 }
 #############
@@ -223,6 +224,7 @@ start_tmoe_container() {
 			exit 1
 			;;
 		esac
+		[[ $(id -u) = 0 ]] || sudo tmoe ${TMOE_PARAMETERS}
 		source ${TMOE_SHARE_DIR}/removal/umount
 		source ${TMOE_SHARE_DIR}/container/nspawn/startup
 		;;
