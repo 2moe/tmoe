@@ -224,9 +224,16 @@ start_tmoe_container() {
 			exit 1
 			;;
 		esac
-		[[ $(id -u) = 0 ]] || sudo tmoe ${TMOE_PARAMETERS}
-		source ${TMOE_SHARE_DIR}/removal/umount
-		source ${TMOE_SHARE_DIR}/container/nspawn/startup
+		case $(id -u) in
+		0)
+			source ${TMOE_SHARE_DIR}/removal/umount
+			source ${TMOE_SHARE_DIR}/container/nspawn/startup
+			;;
+		*)
+			sudo tmoe ${TMOE_PARAMETERS}
+			exit 1
+			;;
+		esac
 		;;
 	*) ${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ;;
 	esac
