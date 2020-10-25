@@ -622,15 +622,17 @@ docker_mirror_source() {
 ##########
 tmoe_docker_menu() {
     RETURN_TO_WHERE='tmoe_docker_menu'
+    SYSTEMD_DOCKER='false'
     TMOE_QEMU_ARCH=""
     VIRTUAL_TECH=$(
         whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
             "1" "🌁 across architectures(跨CPU架构运行docker容器)" \
-            "2" "🍭 pull distro images(拉取alpine,debian和ubuntu镜像)" \
-            "3" "🌉 portainer(web端图形化docker容器管理)" \
-            "4" "🍥 mirror source镜像源" \
-            "5" "🐋 install docker-ce(安装docker社区版引擎)" \
-            "6" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
+            "2" "🔘 systemd-docker(支持systemctl的docker容器)" \
+            "3" "🍭 pull distro images(拉取alpine,debian和ubuntu镜像)" \
+            "4" "🌉 portainer(web端图形化docker容器管理)" \
+            "5" "🍥 mirror source镜像源" \
+            "6" "🐋 install docker-ce(安装docker社区版引擎)" \
+            "7" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -638,17 +640,24 @@ tmoe_docker_menu() {
     case ${VIRTUAL_TECH} in
     0 | "") install_container_and_virtual_machine ;;
     1) run_docker_across_architectures ;;
-    2) choose_gnu_linux_docker_images ;;
-    3) install_docker_portainer ;;
-    4) docker_mirror_source ;;
-    5) install_docker_ce_or_io ;;
-    6) add_current_user_to_docker_group ;;
+    2) systemd_docker_env ;;
+    3) choose_gnu_linux_docker_images ;;
+    4) install_docker_portainer ;;
+    5) docker_mirror_source ;;
+    6) install_docker_ce_or_io ;;
+    7) add_current_user_to_docker_group ;;
     esac
     ###############
     press_enter_to_return
     tmoe_docker_menu
 }
 ############
+systemd_docker_env() {
+    printf "%s\n" 本功能正在开发中...
+    press_enter_to_return
+    SYSTEMD_DOCKER='true'
+    run_docker_across_architectures
+}
 apt_install_qemu_user_static() {
     DEPENDENCY_01='qemu-user-static'
     DEPENDENCY_02=''
@@ -664,7 +673,6 @@ EOF
 }
 ############
 tmoe_qemu_user_static() {
-
     RETURN_TO_WHERE='tmoe_qemu_user_static'
     BETA_SYSTEM=$(
         whiptail --title "qemu_user_static" --menu "You can use qemu-user-static to run docker containers across architectures." 0 50 0 \

@@ -286,7 +286,10 @@ normally_start_gnu_linux_distro() {
 	Android) termux-wake-lock 2>/dev/null ;;
 	esac
 	case ${SYSTEMD_NSPAWN} in
-	true) source ${TMOE_SHARE_DIR}/container/nspawn/startup ;;
+	true)
+		source ${TMOE_SHARE_DIR}/removal/umount
+		source ${TMOE_SHARE_DIR}/container/nspawn/startup
+		;;
 	*) ${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container ;;
 	esac
 }

@@ -40,9 +40,7 @@ remove_gnu_linux_container() {
 	case ${TMOE_CHROOT} in
 	true)
 		tips_of_umount_chroot_container_01
-		printf "${PURPLE}%s\n" "Unmounting..."
-		printf "%s${RESET}\n" "正在自动unmount..."
-		source ${TMOE_SHARE_DIR}/removal/umount &>/dev/null
+		#source ${TMOE_SHARE_DIR}/removal/umount &>/dev/null
 		tips_of_umount_chroot_container_02
 		;;
 	esac
