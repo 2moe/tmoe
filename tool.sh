@@ -598,7 +598,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3333,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3334,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -636,7 +636,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3333,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3334,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
 				"3" "🌺 Secret Garden(education,system,beta feature)" \

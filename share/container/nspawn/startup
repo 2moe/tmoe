@@ -31,3 +31,4 @@ for i in /sdcard /media/sd; do
 done
 set -- "systemd-nspawn" "${@}"
 "${@}"
+exit 0
