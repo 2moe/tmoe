@@ -21,8 +21,16 @@ tmoe_docker_init() {
 }
 ################
 run_docker_container_with_same_architecture() {
-    printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
-    docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+    case ${SYSTEMD_DOCKER} in
+    true)
+        printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --privileged=true --env LANG=${TMOE_LANG} --env CONTAINER_SYSTEMD=true --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG} /sbin/init${RESET}"
+        docker run -itd --name ${CONTAINER_NAME} --privileged=true --env LANG=${TMOE_LANG} --env CONTAINER_SYSTEMD=true --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG} /sbin/init
+        ;;
+    *)
+        printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+        docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+        ;;
+    esac
 }
 ##########
 run_special_tag_docker_container() {
@@ -38,9 +46,16 @@ run_special_tag_docker_container() {
         #else
         #    QEMU_USER_PATH="${QEMU_USER_STATIC_PATH_02}"
         #fi
-
-        printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
-        docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+        case ${SYSTEMD_DOCKER} in
+        true)
+            printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --privileged=true --env LANG=${TMOE_LANG} --env CONTAINER_SYSTEMD=true --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG} /sbin/init${RESET}"
+            docker run -itd --name ${CONTAINER_NAME} --privileged=true --env LANG=${TMOE_LANG} --env CONTAINER_SYSTEMD=true --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG} /sbin/init
+            ;;
+        *)
+            printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}${RESET}"
+            docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --env TMOE_CHROOT=true --env TMOE_DOCKER=true --env TMOE_PROOT=false --restart on-failure -v ${QEMU_USER_PATH}/qemu-${TMOE_QEMU_ARCH}-static:${QEMU_USER_STATIC_PATH_02}/qemu-${TMOE_QEMU_ARCH}-static -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG}
+            ;;
+        esac
         ;;
     esac
 
@@ -339,6 +354,60 @@ kali_docker_arm64() {
     DOCKER_NAME_02='heywoodlh/kali-linux'
 }
 ###############
+sbin_init_systemd_docker_list() {
+    check_docker_installation
+    RETURN_TO_WHERE='sbin_init_systemd_docker_list'
+    DOCKER_TAG_01='latest'
+    CONTAINER_NAME=''
+    DOCKER_MANAGEMENT_MENU='01'
+    SELECTED_GNU_LINUX=$(whiptail --title "DOCKER IMAGES" --menu "Which distribution image do you want to pull? \n您想要拉取哪个GNU/Linux发行版的镜像?" 0 50 0 \
+        "00" "Return to previous menu 返回上级菜单" \
+        "01" "👒 fedora:红帽社区版,新技术试验场" \
+        "02" "centos(基于红帽的社区企业操作系统)" \
+        3>&1 1>&2 2>&3)
+    #############
+    case ${SELECTED_GNU_LINUX} in
+    00 | "") tmoe_docker_menu ;;
+    01)
+        DOCKER_TAG_02='rawhide'
+        DOCKER_NAME='fedora'
+        ;;
+    02)
+        DOCKER_TAG_01='latest'
+        DOCKER_TAG_02='7'
+        DOCKER_NAME='centos'
+        CONTAINER_NAME='cent-systemd'
+        ;;
+    esac
+    ###############
+    if [ -z "${CONTAINER_NAME}" ]; then
+        CONTAINER_NAME=${DOCKER_NAME}-systemd
+    fi
+    case "${TMOE_QEMU_ARCH}" in
+    "") ;;
+    *)
+        case ${DOCKER_MANAGEMENT_MENU} in
+        01 | 03)
+            DOCKER_NAME="${NEW_TMOE_ARCH}/${DOCKER_NAME}"
+            CONTAINER_NAME="${CONTAINER_NAME}_${CONTAINER_EXT_NAME}"
+            ;;
+        02)
+            CONTAINER_NAME="${CONTAINER_NAME}_${CONTAINER_EXT_NAME}"
+            ;;
+        esac
+        ;;
+    esac
+    #########
+    case ${DOCKER_MANAGEMENT_MENU} in
+    01) tmoe_docker_management_menu_01 ;;
+    02) tmoe_docker_management_menu_02 ;;
+    03) tmoe_docker_management_menu_03 ;;
+    esac
+    ###########
+    press_enter_to_return
+    sbin_init_systemd_docker_list
+}
+#############
 choose_gnu_linux_docker_images() {
     check_docker_installation
     RETURN_TO_WHERE='choose_gnu_linux_docker_images'
@@ -653,8 +722,8 @@ tmoe_docker_menu() {
 }
 ############
 systemd_docker_env() {
-    printf "%s\n" 本功能正在开发中...
-    press_enter_to_return
+    #printf "%s\n" 本功能正在开发中...
+    #press_enter_to_return
     SYSTEMD_DOCKER='true'
     run_docker_across_architectures
 }
@@ -669,7 +738,6 @@ apt_install_qemu_user_static() {
         docker run --rm --privileged multiarch/qemu-user-static:register
 EOF
     fi
-
 }
 ############
 tmoe_qemu_user_static() {
@@ -814,9 +882,9 @@ run_docker_across_architectures() {
         whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             "00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
-            "01" "i386(常见于32位cpu的旧式传统pc)" \
-            "02" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
-            "03" "arm64v8/aarch64(2020年移动平台主流cpu架构）" \
+            "01" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
+            "02" "arm64v8/aarch64(2020年移动平台主流cpu架构）" \
+            "03" "i386(常见于32位cpu的旧式传统pc)" \
             "04" "arm32v7/armhf(32位arm架构,支持硬浮点运算)" \
             "05" "ppc64le(PowerPC,常用于通信、工控、航天国防等领域)" \
             "06" "s390x(常见于IBM大型机)" \
@@ -827,14 +895,6 @@ run_docker_across_architectures() {
     0 | "") tmoe_docker_menu ;;
     00) tmoe_qemu_user_static ;;
     01)
-        NEW_TMOE_ARCH='i386'
-        CONTAINER_EXT_NAME='x86'
-        case ${TRUE_ARCH_TYPE} in
-        i386) ;;
-        *) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
-        esac
-        ;;
-    02)
         NEW_TMOE_ARCH='amd64'
         CONTAINER_EXT_NAME='x64'
         case ${TRUE_ARCH_TYPE} in
@@ -842,12 +902,20 @@ run_docker_across_architectures() {
         *) TMOE_QEMU_ARCH="x86_64" ;;
         esac
         ;;
-    03)
+    02)
         NEW_TMOE_ARCH='arm64v8'
         CONTAINER_EXT_NAME='arm64'
         case ${TRUE_ARCH_TYPE} in
         arm64) ;;
         *) TMOE_QEMU_ARCH="aarch64" ;;
+        esac
+        ;;
+    03)
+        NEW_TMOE_ARCH='i386'
+        CONTAINER_EXT_NAME='x86'
+        case ${TRUE_ARCH_TYPE} in
+        i386) ;;
+        *) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
         esac
         ;;
     04)
@@ -879,7 +947,10 @@ run_docker_across_architectures() {
     if [ ! -e "/usr/bin/qemu-x86_64-static" ]; then
         install_qemu_user_static
     fi
-    choose_gnu_linux_docker_images
+    case ${SYSTEMD_DOCKER} in
+    true) sbin_init_systemd_docker_list ;;
+    *) choose_gnu_linux_docker_images ;;
+    esac
     press_enter_to_return
     run_docker_across_architectures
 }
