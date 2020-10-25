@@ -15,7 +15,8 @@ fi
 set -- "${@}" "--boot"
 set -- "${@}" "--directory" "${DEBIAN_CHROOT}"
 set -- "${@}" "--uuid" "$(dbus-uuidgen)"
-set -- "${@}" "--private-users=pick"
+#arch不要设置将其设置为pick
+set -- "${@}" "--private-users=no"
 set -- "${@}" "--machine" "${MACHINE_NAME}"
 set -- "${@}" "--link-journal" "auto"
 set -- "${@}" "--resolv-conf" "auto"
