@@ -393,10 +393,12 @@ check_dependencies() {
 			fi
 			;;
 		arch | void) DEPENDENCIES="${DEPENDENCIES} catimg" ;;
+		redhat)
+			case "${REDHAT_DISTRO}" in
+			"fedora") DEPENDENCIES="${DEPENDENCIES} catimg" ;;
+			esac
+			;;
 		esac
-		if [ "${REDHAT_DISTRO}" = "fedora" ]; then
-			DEPENDENCIES="${DEPENDENCIES} catimg"
-		fi
 	fi
 
 	if [ ! $(command -v curl) ]; then
@@ -531,6 +533,35 @@ check_dependencies() {
 		rm -f catimg.deb
 	}
 	#############
+	case ${LINUX_DISTRO} in
+	redhat)
+		case "${REDHAT_DISTRO}" in
+		"fedora") ;;
+		*)
+			if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
+				yum install -y epel-release
+				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为北外源${PURPLE}[Y/n]${RESET}"
+				printf "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}\n"
+				printf "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]\n"
+				read opt
+				case $opt in
+				y* | Y* | "")
+					cp -pvf /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
+					cp -pvf /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
+					sed -e 's!^metalink=!#metalink=!g' \
+						-e 's!^#baseurl=!baseurl=!g' \
+						-e 's!//download\.fedoraproject\.org/pub!//mirrors.bfsu.edu.cn!g' \
+						-e 's!http://mirrors\.bfsu!https://mirrors.bfsu!g' \
+						-i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
+					;;
+				n* | N*) echo "skipped." ;;
+				*) echo "Invalid choice. skipped." ;;
+				esac
+			fi
+			;;
+		esac
+		;;
+	esac
 	if [ ! $(command -v catimg) ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
 		mkdir -p ${TMOE_LINUX_DIR}
 		touch ${TMOE_LINUX_DIR}/not_install_catimg
@@ -598,7 +629,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3337,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3338,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -636,7 +667,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3337,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux tool v1.3338,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
 				"3" "🌺 Secret Garden(education,system,beta feature)" \
