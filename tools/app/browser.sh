@@ -3,6 +3,7 @@
 ubuntu_bionic_chromium() {
     BIONIC_CHROMIUM_LIST_FILE="/etc/apt/sources.list.d/bionic-chromium.list"
     if ! grep -q '^deb.*bionic-update' "/etc/apt/sources.list"; then
+        unhold_ubuntu_chromium
         case "${ARCH_TYPE}" in
         "amd64" | "i386") printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' >${BIONIC_CHROMIUM_LIST_FILE} ;;
         *) printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' >${BIONIC_CHROMIUM_LIST_FILE} ;;
@@ -12,7 +13,55 @@ ubuntu_bionic_chromium() {
     DEPENDENCY_02="chromium-browser-l10n/bionic-updates"
 }
 ###########
+unhold_ubuntu_chromium() {
+    apt-mark unhold chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg chromium-codecs-ffmpeg-extra
+}
+#########
+hold_ubuntu_chromium() {
+    apt-mark hold chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg chromium-codecs-ffmpeg-extra
+}
+#########
+ubuntu_ppa_chromium() {
+    PPA_REPO_URL="http://ppa.launchpad.net/xalt7x/chromium-deb-vaapi/ubuntu/pool/main/c/chromium-browser/"
+    case ${ARCH_TYPE} in
+    "amd64" | "arm64")
+        if [ ! -e "/usr/share/doc/libva2/copyright" ]; then
+            apt update
+            apt install -y libva2
+        fi
+        TEMP_FOLDER="/tmp/.CHROMIUM_DEB_VAAPI_TEMP_FOLDER"
+        mkdir -p ${TEMP_FOLDER}
+        cd ${TEMP_FOLDER}
+        CHROMIUM_DEB_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | sed 's@=@\n@g' | grep -v 'chromium-chromedriver' | egrep "${ARCH_TYPE}|all\.deb" | awk -F '"' '{print $2}')
+        DOWNLOAD_PPA=$(printf "%s\n" "${CHROMIUM_DEB_LIST}" | sed -E "s@(chromium.*deb)@aria2c --allow-overwrite=true -x 5 -s 5 -k 1M -o \1 ${PPA_REPO_URL}\1@")
+        printf "${GREEN}%s${RESET}\n" "${DOWNLOAD_PPA}"
+        sh -c "${DOWNLOAD_PPA}"
+        DEB_LIST_02="$(printf "%s\n" ${CHROMIUM_DEB_LIST} | sed "s@^@\"@g;s@\$@\"@g" | sed ":a;N;s/\n/ /g;ta")"
+        unhold_ubuntu_chromium
+        dpkg -i ${DEB_LIST_02}
+        cd ..
+        rm -rvf ${TEMP_FOLDER}
+        hold_ubuntu_chromium
+        ;;
+    *)
+        printf "%s\n" "对于arm64和amd64架构的系统，本工具将下载deb包，而非从snap商店下载。您当前使用的是${ARCH_TYPE}架构！由于新版Ubuntu调用了snap商店的软件源来安装chromium,故请自行执行apt install chromium-browser"
+        ;;
+    esac
+    press_enter_to_return
+    tmoe_browser_menu
+}
+###############
 ubuntu_install_chromium_browser() {
+    if [ $(command -v chromium-browser) ]; then
+        if (whiptail --title "CHROMIUM升级与卸载" --yes-button "upgrade" --no-button "remove" --yesno "Do you want to upgrade the chromium or remove it?" 8 50); then
+            printf ""
+        else
+            unhold_ubuntu_chromium
+            apt remove chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg chromium-codecs-ffmpeg-extra
+            press_enter_to_return
+            tmoe_browser_menu
+        fi
+    fi
     if egrep -q 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
         ubuntu_bionic_chromium
     else
@@ -66,10 +115,12 @@ install_chromium_browser() {
     #####################
     case "${DEBIAN_DISTRO}" in
     "ubuntu")
-        [[ ! -e ${BIONIC_CHROMIUM_LIST_FILE} ]] || rm -f ${BIONIC_CHROMIUM_LIST_FILE}
-        #sed -i '$ d' "/etc/apt/sources.list"
-        apt-mark hold chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
-        apt update
+        if [[ -e ${BIONIC_CHROMIUM_LIST_FILE} ]]; then
+            rm -f ${BIONIC_CHROMIUM_LIST_FILE}
+            #sed -i '$ d' "/etc/apt/sources.list"
+            hold_ubuntu_chromium
+            apt update
+        fi
         ;;
     esac
     ####################
