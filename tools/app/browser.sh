@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 ####################
-ubuntu_install_chromium_browser() {
+ubuntu_bionic_chromium() {
+    BIONIC_CHROMIUM_LIST_FILE="/etc/apt/sources.list.d/bionic-chromium.list"
     if ! grep -q '^deb.*bionic-update' "/etc/apt/sources.list"; then
         case "${ARCH_TYPE}" in
-        "amd64" | "i386") sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list" ;;
-        *) sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list" ;;
+        "amd64" | "i386") printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' >${BIONIC_CHROMIUM_LIST_FILE} ;;
+        *) printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' >${BIONIC_CHROMIUM_LIST_FILE} ;;
         esac
     fi
     DEPENDENCY_01="chromium-browser/bionic-updates"
     DEPENDENCY_02="chromium-browser-l10n/bionic-updates"
+}
+###########
+ubuntu_install_chromium_browser() {
+    if egrep -q 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
+        ubuntu_bionic_chromium
+    else
+        ubuntu_ppa_chromium
+    fi
 }
 #########
 fix_chromium_root_ubuntu_no_sandbox() {
@@ -57,7 +66,8 @@ install_chromium_browser() {
     #####################
     case "${DEBIAN_DISTRO}" in
     "ubuntu")
-        sed -i '$ d' "/etc/apt/sources.list"
+        [[ ! -e ${BIONIC_CHROMIUM_LIST_FILE} ]] || rm -f ${BIONIC_CHROMIUM_LIST_FILE}
+        #sed -i '$ d' "/etc/apt/sources.list"
         apt-mark hold chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
         apt update
         ;;
