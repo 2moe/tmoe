@@ -32,7 +32,7 @@ ubuntu_ppa_chromium() {
         TEMP_FOLDER="/tmp/.CHROMIUM_DEB_VAAPI_TEMP_FOLDER"
         mkdir -p ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
-        CHROMIUM_DEB_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | sed 's@=@\n@g' | egrep -v 'chromium-chromedriver|codecs-ffmpeg-extra' | egrep "${ARCH_TYPE}|all\.deb" | awk -F '"' '{print $2}')
+        CHROMIUM_DEB_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | sed 's@=@\n@g' | egrep -v 'chromium-chromedriver|codecs-ffmpeg_' | egrep "${ARCH_TYPE}|all\.deb" | awk -F '"' '{print $2}')
         DOWNLOAD_PPA=$(printf "%s\n" "${CHROMIUM_DEB_LIST}" | sed -E "s@(chromium.*deb)@aria2c --allow-overwrite=true -x 5 -s 5 -k 1M -o \1 ${PPA_REPO_URL}\1@")
         printf "${GREEN}%s${RESET}\n" "${DOWNLOAD_PPA}"
         sh -c "${DOWNLOAD_PPA}"
