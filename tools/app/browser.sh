@@ -9,8 +9,8 @@ ubuntu_bionic_chromium() {
         *) printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' >${BIONIC_CHROMIUM_LIST_FILE} ;;
         esac
     fi
-    DEPENDENCY_01="chromium-browser/bionic-updates"
-    DEPENDENCY_02="chromium-browser-l10n/bionic-updates chromium-codecs-ffmpeg-extra/bionic-updates"
+    DEPENDENCY_01="chromium-browser/bionic-updates chromium-browser-l10n/bionic-updates chromium-codecs-ffmpeg-extra/bionic-updates"
+    DEPENDENCY_02=""
 }
 ###########
 unhold_ubuntu_chromium() {
