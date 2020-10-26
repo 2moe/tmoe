@@ -3353,11 +3353,10 @@ ubuntu_arm_warning() {
 }
 ################
 download_ubuntu_huawei_mirror_iso() {
-	if [ "${ARCH_TYPE}" = "i386" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-desktop-i386.iso"
-	else
-		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/${UBUNTU_VERSION}/ubuntu-${UBUNTU_VERSION}-desktop-amd64.iso"
-	fi
+	case "${ARCH_TYPE}" in
+	"i386") THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-desktop-i386.iso" ;;
+	*) THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/${UBUNTU_VERSION}/ubuntu-${UBUNTU_VERSION}-desktop-amd64.iso" ;;
+	esac
 	aria2c_download_file
 }
 ####################
@@ -3370,11 +3369,10 @@ get_ubuntu_server_iso_url() {
 }
 ##############
 get_other_ubuntu_distros_url() {
-	if [ "${ARCH_TYPE}" = "i386" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/18.04.4/release/${UBUNTU_DISTRO}-18.04.4-desktop-i386.iso"
-	else
-		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso"
-	fi
+	case "${ARCH_TYPE}" in
+	"i386") THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/18.04.4/release/${UBUNTU_DISTRO}-18.04.4-desktop-i386.iso" ;;
+	*) THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/${UBUNTU_DISTRO}-${UBUNTU_VERSION}-desktop-amd64.iso" ;;
+	esac
 }
 ################
 download_ubuntu_tuna_mirror_iso() {
@@ -3389,11 +3387,10 @@ download_ubuntu_tuna_mirror_iso() {
 download_android_x86_file() {
 	REPO_URL='https://mirrors.bfsu.edu.cn/osdn/android-x86/'
 	REPO_FOLDER=$(curl -L ${REPO_URL} | grep -v incoming | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
-	if [ "${ARCH_TYPE}" = 'i386' ]; then
-		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep -v 'x86_64' | grep date | grep '.iso' | tail -n 1 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-	else
-		THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-	fi
+	case "${ARCH_TYPE}" in
+	"i386") THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep -v 'x86_64' | grep date | grep '.iso' | tail -n 1 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2) ;;
+	*) THE_LATEST_ISO_VERSION=$(curl -L ${REPO_URL}${REPO_FOLDER} | grep date | grep '.iso' | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2) ;;
+	esac
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
 	#printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"

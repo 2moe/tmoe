@@ -261,18 +261,16 @@ vscode_server_remove() {
 ##########################
 install_vscodium() {
     cd /tmp
-    if [ "${ARCH_TYPE}" = 'arm64' ]; then
-        CodiumARCH=arm64
-    elif [ "${ARCH_TYPE}" = 'armhf' ]; then
-        CodiumARCH=arm
-        #CodiumDebArch=armhf
-    elif [ "${ARCH_TYPE}" = 'amd64' ]; then
-        CodiumARCH=x64
-    elif [ "${ARCH_TYPE}" = 'i386' ]; then
-        printf "%s\n" "暂不支持i386 linux"
+    case "${ARCH_TYPE}" in
+    "arm64") CodiumARCH=arm64 ;;
+    "armhf") CodiumARCH=arm ;;
+    "amd64") CodiumARCH=x64 ;;
+    "i386")
+        printf "%s\n" "暂不支持${RED}i386${RESET}架构"
         arch_does_not_support
         which_vscode_edition
-    fi
+        ;;
+    esac
 
     if [ -e "/usr/bin/codium" ]; then
         printf '%s\n' '检测到您已安装VSCodium,请手动输以下命令启动'

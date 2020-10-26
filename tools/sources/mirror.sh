@@ -566,31 +566,37 @@ check_arch_distro_and_modify_mirror_list() {
 }
 ##############
 modify_manjaro_mirror_list() {
-    if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "armhf" ]; then
+    case "${ARCH_TYPE}" in
+    "arm64" | "armhf")
         cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
 			#Server = https://${SOURCE_MIRROR_STATION}/archlinuxarm/\$arch/\$repo
 			Server = https://${SOURCE_MIRROR_STATION}/manjaro/arm-stable/\$repo/\$arch
 		EndOfArchMirrors
-    else
+        ;;
+    *)
         cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
 			#Server = https://${SOURCE_MIRROR_STATION}/archlinux/\$repo/os/\$arch
 			Server = https://${SOURCE_MIRROR_STATION}/manjaro/stable/\$repo/\$arch
 		EndOfArchMirrors
-    fi
+        ;;
+    esac
 }
 ###############
 modify_archlinux_mirror_list() {
-    if [ "${ARCH_TYPE}" = "arm64" ] || [ "${ARCH_TYPE}" = "armhf" ]; then
+    case "${ARCH_TYPE}" in
+    "arm64" | "armhf")
         cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
 			#Server = https://mirror.archlinuxarm.org/\$arch/\$repo
 			Server = https://${SOURCE_MIRROR_STATION}/archlinuxarm/\$arch/\$repo
 		EndOfArchMirrors
-    else
+        ;;
+    *)
         cat >>/etc/pacman.d/mirrorlist <<-EndOfArchMirrors
 			#Server = http://mirrors.kernel.org/archlinux/\$repo/os/\$arch
 			Server = https://${SOURCE_MIRROR_STATION}/archlinux/\$repo/os/\$arch
 		EndOfArchMirrors
-    fi
+        ;;
+    esac
 }
 ###############
 edit_sources_list_manually() {

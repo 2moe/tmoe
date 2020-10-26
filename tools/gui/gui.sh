@@ -1964,13 +1964,16 @@ install_cinnamon_desktop() {
 }
 ####################
 deepin_desktop_warning() {
-    if [ "${ARCH_TYPE}" != "i386" ] && [ "${ARCH_TYPE}" != "amd64" ]; then
+    case "${ARCH_TYPE}" in
+    "i386" | "amd64") ;;
+    *)
         printf "%s\n" "非常抱歉，深度桌面不支持您当前的架构。"
         printf "%s\n" "建议您在换用x86_64或i386架构的设备后，再来尝试。"
         printf "%s\n" "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
         arch_does_not_support
         tmoe_virtual_machine_desktop
-    fi
+        ;;
+    esac
 }
 #################
 dde_old_version() {

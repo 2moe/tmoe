@@ -67,45 +67,46 @@ redhat_add_virtual_box_repo() {
 }
 ################
 install_virtual_box() {
-    if [ "${ARCH_TYPE}" != "amd64" ]; then
-        arch_does_not_support
-    fi
-    
-    if [ ! $(command -v gpg) ]; then
-        DEPENDENCY_01=""
-        DEPENDENCY_02="gpg"
-        beta_features_quick_insta
-        #linux-headers
-    fi
-    DEPENDENCY_02="virtualbox-qt"
-    DEPENDENCY_01="virtualbox"
-    #apt remove docker docker-engine docker.io
-    if [ "${LINUX_DISTRO}" = 'debian' ]; then
-        debian_download_latest_vbox_deb
-    #$(#lsb_release -cs)
-    elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
-        redhat_add_virtual_box_repo
-    elif [ "${LINUX_DISTRO}" = 'arch' ]; then
-        DEPENDENCY_01="virtualbox virtualbox-guest-iso"
-        DEPENDENCY_02="virtualbox-ext-oracle"
-        printf "%s\n" "您可以在安装完成后，输usermod -G vboxusers -a 当前用户名称"
-        printf "%s\n" "将当前用户添加至vboxusers用户组"
-    fi
-    printf "%s\n" "您可以输modprobe vboxdrv vboxnetadp vboxnetflt来加载内核模块"
-    beta_features_quick_install
-    if [ "${LINUX_DISTRO}" = 'arch' ]; then
-        printf "%s\n" "usermod -G vboxusers -a ${CURRENT_USER_NAME}"
-        do_you_want_to_continue
-        usermod -G vboxusers -a ${CURRENT_USER_NAME}
-    fi
-    ####################
-    if [ ! $(command -v virtualbox) ]; then
-        printf "%s\n" "检测到virtual box安装失败，是否将其添加到软件源？"
-        RETURN_TO_WHERE='beta_features'
-        do_you_want_to_continue
-        debian_add_virtual_box_gpg
-        beta_features_quick_install
-    fi
+	case "${ARCH_TYPE}" in
+	"amd64") ;;
+	*) arch_does_not_support ;;
+	esac
+
+	if [ ! $(command -v gpg) ]; then
+		DEPENDENCY_01=""
+		DEPENDENCY_02="gpg"
+		beta_features_quick_insta
+		#linux-headers
+	fi
+	DEPENDENCY_02="virtualbox-qt"
+	DEPENDENCY_01="virtualbox"
+	#apt remove docker docker-engine docker.io
+	if [ "${LINUX_DISTRO}" = 'debian' ]; then
+		debian_download_latest_vbox_deb
+	#$(#lsb_release -cs)
+	elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
+		redhat_add_virtual_box_repo
+	elif [ "${LINUX_DISTRO}" = 'arch' ]; then
+		DEPENDENCY_01="virtualbox virtualbox-guest-iso"
+		DEPENDENCY_02="virtualbox-ext-oracle"
+		printf "%s\n" "您可以在安装完成后，输usermod -G vboxusers -a 当前用户名称"
+		printf "%s\n" "将当前用户添加至vboxusers用户组"
+	fi
+	printf "%s\n" "您可以输modprobe vboxdrv vboxnetadp vboxnetflt来加载内核模块"
+	beta_features_quick_install
+	if [ "${LINUX_DISTRO}" = 'arch' ]; then
+		printf "%s\n" "usermod -G vboxusers -a ${CURRENT_USER_NAME}"
+		do_you_want_to_continue
+		usermod -G vboxusers -a ${CURRENT_USER_NAME}
+	fi
+	####################
+	if [ ! $(command -v virtualbox) ]; then
+		printf "%s\n" "检测到virtual box安装失败，是否将其添加到软件源？"
+		RETURN_TO_WHERE='beta_features'
+		do_you_want_to_continue
+		debian_add_virtual_box_gpg
+		beta_features_quick_install
+	fi
 }
 ###################
 install_virtual_box

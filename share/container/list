@@ -752,13 +752,15 @@ install_fedora_gnu_linux_distro() {
 install_funtoo_linux_distro() {
 	DISTRO_NAME='funtoo'
 	OLD_STABLE_VERSION='1.3'
-	if [ "${ARCH_TYPE}" = 'arm64' ]; then
+	case "${ARCH_TYPE}" in
+	"arm64")
 		printf "%s\n" "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
 		NEW_TMOE_ARCH='armhf'
 		TMOE_QEMU_ARCH=""
 		ARCH_TYPE='armhf'
 		creat_tmoe_arch_file
-	fi
+		;;
+	esac
 	check_the_latest_distro_version
 }
 #######################
@@ -780,19 +782,22 @@ install_void_linux_distro() {
 install_centos_linux_distro() {
 	#touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='centos'
-	if [ "${ARCH_TYPE}" = 'armhf' ] || [ "${ARCH_TYPE}" = 'i386' ]; then
+	case "${ARCH_TYPE}" in
+	"armhf" | "i386")
 		printf "%s\n" "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
 		DISTRO_CODE='7'
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		go_to_proot_management
 		linux_distro_common_model_04
-	else
+		;;
+	*)
 		OLD_STABLE_VERSION='8'
 		check_the_latest_distro_version
 		#DISTRO_CODE='8'
 		#linux_distro_common_model_01
-	fi
+		;;
+	esac
 }
 ######################
 install_gentoo_linux_distro() {
@@ -938,16 +943,12 @@ install_openwrt_linux_distro() {
 	CONTAINER_REPO='https://mirrors.bfsu.edu.cn/openwrt/releases/'
 	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | egrep -v 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
 	THE_LATEST_ROOTFS_REPO="${CONTAINER_REPO}${THE_LATEST_VERSION}/targets/"
-
-	if [ "${ARCH_TYPE}" = 'amd64' ]; then
-		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/64/openwrt-${THE_LATEST_VERSION}-x86-64-generic-rootfs.tar.gz"
-	elif [ "${ARCH_TYPE}" = 'i386' ]; then
-		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/generic/openwrt-${THE_LATEST_VERSION}-x86-generic-generic-rootfs.tar.gz"
-	elif [ "${ARCH_TYPE}" = 'arm64' ]; then
-		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/64/openwrt-${THE_LATEST_VERSION}-armvirt-64-default-rootfs.tar.gz"
-	elif [ "${ARCH_TYPE}" = 'armhf' ]; then
-		THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/32/openwrt-${THE_LATEST_VERSION}-armvirt-32-default-rootfs.tar.gz"
-	fi
+	case "${ARCH_TYPE}" in
+	"amd64") THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/64/openwrt-${THE_LATEST_VERSION}-x86-64-generic-rootfs.tar.gz" ;;
+	'i386') THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/generic/openwrt-${THE_LATEST_VERSION}-x86-generic-generic-rootfs.tar.gz" ;;
+	"arm64") THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/64/openwrt-${THE_LATEST_VERSION}-armvirt-64-default-rootfs.tar.gz" ;;
+	"armhf") THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/32/openwrt-${THE_LATEST_VERSION}-armvirt-32-default-rootfs.tar.gz" ;;
+	esac
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_ISO_LINK}@g" |
 		sed 's/debian system/openwrt system/g' |

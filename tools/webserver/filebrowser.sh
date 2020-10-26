@@ -24,11 +24,10 @@ install_filebrowser() {
         *)
             #https://github.com/filebrowser/filebrowser/releases
             #curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
-            if [ "${ARCH_TYPE}" = "armhf" ]; then
-                aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-armv7-filebrowser.tar.gz'
-            elif [ "${ARCH_TYPE}" = "i386" ]; then
-                aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-386-filebrowser.tar.gz'
-            fi
+            case "${ARCH_TYPE}" in
+            "armhf") aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-armv7-filebrowser.tar.gz' ;;
+            "i386") aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .filebrowser.tar.gz 'https://github.com/filebrowser/filebrowser/releases/download/v2.1.0/linux-386-filebrowser.tar.gz' ;;
+            esac
             cd /usr/local/bin
             tar -zxvf /tmp/.filebrowser.tar.gz filebrowser
             chmod +x filebrowser

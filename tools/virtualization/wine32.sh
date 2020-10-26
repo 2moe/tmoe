@@ -35,14 +35,17 @@ install_wine64() {
     INSTALL_WINE='true'
     wine_dependencies
     beta_features_quick_install
-    if [ "${ARCH_TYPE}" != "i386" ]; then
+    case "${ARCH_TYPE}" in
+    "i386") ;;
+    *)
         cat <<-'EOF'
 			如需完全卸载wine，那么您还需要移除i386架构的软件包。
 			aptitude remove ~i~ri386
 			dpkg  --remove-architecture i386
 			apt update
 		EOF
-    fi
+        ;;
+    esac
 }
 #########
 wine_menu() {
@@ -71,14 +74,17 @@ wine_menu() {
 }
 ##########
 remove_wine_bin() {
-    if [ "${ARCH_TYPE}" != "i386" ]; then
+    case "${ARCH_TYPE}" in
+    "i386") ;;
+    *)
         printf '%s\n' 'dpkg  --remove-architecture i386'
         printf '%s\n' '正在移除对i386软件包的支持'
         #apt purge ".*:i386"
         aptitude remove ~i~ri386
         dpkg --remove-architecture i386
         apt update
-    fi
+        ;;
+    esac
     INSTALL_WINE='false'
     wine_dependencies
     printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}"

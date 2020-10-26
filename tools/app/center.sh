@@ -527,14 +527,17 @@ install_dolphin-emu() {
 }
 ################
 remove_debian_steam_app() {
-    if [ "${ARCH_TYPE}" != "i386" ]; then
+    case "${ARCH_TYPE}" in
+    "i386") ;;
+    *)
         printf '%s\n' 'dpkg  --remove-architecture i386'
         printf '%s\n' '正在移除对i386软件包的支持'
         #apt purge ".*:i386"
         aptitude remove ~i~ri386
         dpkg --remove-architecture i386
         apt update
-    fi
+        ;;
+    esac
 }
 ###############
 remove_steam_app() {
@@ -893,9 +896,10 @@ install_baidu_netdisk() {
     else
         printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
-    if [ "${ARCH_TYPE}" != "amd64" ]; then
-        arch_does_not_support
-    fi
+    case "${ARCH_TYPE}" in
+    "amd64") ;;
+    *) arch_does_not_support ;;
+    esac
 
     #if [ -e "${APPS_LNK_DIR}/baidunetdisk.desktop" ]; then
     #    press_enter_to_reinstall
