@@ -62,13 +62,13 @@ download_vnc_or_xsdl_apk() {
 			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
 		fi
 
-		git clone -b xsdl --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
-		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/XSERVERXSDLANDROID.tar.xz ./
+		git clone -b xsdl --depth=1 https://gitee.com/ak2/xsdl.git .GITCLONEVNCCLIENT
+		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/XSDL.tar.xz ./
 		printf '%s\n' '正在解压...'
-		tar -Jxvf XSERVERXSDLANDROID.tar.xz
+		tar -Jxvf XSDL.tar.xz
 		#tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
 		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
-		rm -f /sdcard/Download/XSERVERXSDLANDROID.tar.xz
+		rm -f /sdcard/Download/XSDL.tar.xz
 		printf '%s\n' '正在删除压缩包...'
 		printf '%s\n' 'Deleting ...'
 		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
