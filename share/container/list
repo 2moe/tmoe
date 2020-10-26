@@ -420,10 +420,12 @@ check_ubuntu_distro_code() {
 	case ${DISTRO_CODE} in
 	bionic | xenial | eoan) ;;
 	*)
-		if [ "${ARCH_TYPE}" = 'i386' ]; then
+		case "${ARCH_TYPE}" in
+		"i386")
 			printf "%s\n" "已不再提供${DISTRO_CODE}的i386镜像,将为您降级到18.04-bionic"
 			DISTRO_CODE='bionic'
-		fi
+			;;
+		esac
 		;;
 	esac
 	printf "%s\n" "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"

@@ -111,11 +111,10 @@ nginx_onekey() {
 
 	DEPENDENCY_01='nginx'
 	DEPENDENCY_02='apache2-utils'
-	
 
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		DEPENDENCY_01="${DEPENDENCY_01} nginx-extras"
-	fi
+	case "${LINUX_DISTRO}" in
+	"debian") DEPENDENCY_01="${DEPENDENCY_01} nginx-extras" ;;
+	esac
 	beta_features_quick_install
 	##############
 	mkdir -p /media

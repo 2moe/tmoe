@@ -2,11 +2,10 @@
 ####################
 ubuntu_install_chromium_browser() {
     if ! grep -q '^deb.*bionic-update' "/etc/apt/sources.list"; then
-        if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
-            sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
-        else
-            sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list"
-        fi
+        case "${ARCH_TYPE}" in
+        "amd64" | "i386") sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list" ;;
+        *) sed -i '$ a\deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ bionic-updates main restricted universe multiverse' "/etc/apt/sources.list" ;;
+        esac
     fi
     DEPENDENCY_01="chromium-browser/bionic-updates"
     DEPENDENCY_02="chromium-browser-l10n/bionic-updates"
@@ -39,9 +38,9 @@ install_chromium_browser() {
     case "${LINUX_DISTRO}" in
     debian)
         #新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
-        if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-            ubuntu_install_chromium_browser
-        fi
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu") ubuntu_install_chromium_browser ;;
+        esac
         ;;
     gentoo)
         dispatch-conf
@@ -56,11 +55,13 @@ install_chromium_browser() {
     esac
     beta_features_quick_install
     #####################
-    if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+    case "${DEBIAN_DISTRO}" in
+    "ubuntu")
         sed -i '$ d' "/etc/apt/sources.list"
         apt-mark hold chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
         apt update
-    fi
+        ;;
+    esac
     ####################
     do_you_want_to_close_the_sandbox_mode
     read opt
@@ -96,23 +97,28 @@ install_firefox_esr_browser() {
     DEPENDENCY_01="firefox-esr"
     DEPENDENCY_02="firefox-esr-l10n-zh-cn"
 
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu")
             add-apt-repository -y ppa:mozillateam/ppa
             DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
             #libavcodec58
-        fi
+            ;;
+        esac
+        ;;
         #################
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02="firefox-esr-i18n-zh-cn"
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+    "arch") DEPENDENCY_02="firefox-esr-i18n-zh-cn" ;;
+    "gentoo")
         dispatch-conf
         DEPENDENCY_01='www-client/firefox'
         DEPENDENCY_02=""
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
+        ;;
+    "suse")
         DEPENDENCY_01="MozillaFirefox-esr"
         DEPENDENCY_02="MozillaFirefox-esr-translations-common"
-    fi
+        ;;
+    esac
     beta_features_quick_install
     #################
     if [ ! $(command -v firefox) ] && [ ! $(command -v firefox-esr) ]; then
@@ -131,23 +137,24 @@ install_firefox_browser() {
 
     DEPENDENCY_01="firefox"
     DEPENDENCY_02="firefox-l10n-zh-cn"
-
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-            DEPENDENCY_02="firefox-locale-zh-hans ffmpeg"
-        fi
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02="firefox-i18n-zh-cn"
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_02="firefox-x11"
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu") DEPENDENCY_02="firefox-locale-zh-hans ffmpeg" ;;
+        esac
+        ;;
+    "arch") DEPENDENCY_02="firefox-i18n-zh-cn" ;;
+    "redhat") DEPENDENCY_02="firefox-x11" ;;
+    "gentoo")
         dispatch-conf
         DEPENDENCY_01="www-client/firefox-bin"
         DEPENDENCY_02=""
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
+        ;;
+    "suse")
         DEPENDENCY_01="MozillaFirefox"
         DEPENDENCY_02="MozillaFirefox-translations-common"
-    fi
+        ;;
+    esac
     beta_features_quick_install
     ################
     if [ ! $(command -v firefox) ]; then

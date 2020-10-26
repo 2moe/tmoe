@@ -320,7 +320,8 @@ upgrade_video_download_tool() {
     fi
 
     if [ ! $(command -v ffmpeg) ]; then
-        if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "arm64" ]; then
+        case "${ARCH_TYPE}" in
+        "amd64" | "arm64")
             cd /tmp
             rm -rf .FFMPEGTEMPFOLDER
             git clone -b linux_$(uname -m) --depth=1 https://gitee.com/mo2/ffmpeg.git ./.FFMPEGTEMPFOLDER
@@ -328,15 +329,15 @@ upgrade_video_download_tool() {
             tar -Jxvf /tmp/.FFMPEGTEMPFOLDER/ffmpeg.tar.xz ffmpeg
             chmod +x ffmpeg
             rm -rf /tmp/.FFMPEGTEMPFOLDER
-        else
-            DEPENDENCY_01="${DEPENDENCY_01} ffmpeg"
-        fi
+            ;;
+        *) DEPENDENCY_01="${DEPENDENCY_01} ffmpeg" ;;
+        esac
     fi
     #检测两次
     if [ ! $(command -v ffmpeg) ]; then
-        if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "arm64" ]; then
-            DEPENDENCY_01="${DEPENDENCY_01} ffmpeg"
-        fi
+        case "${ARCH_TYPE}" in
+        "amd64" | "arm64") DEPENDENCY_01="${DEPENDENCY_01} ffmpeg" ;;
+        esac
     fi
 
     if [ ! $(command -v pip3) ]; then

@@ -425,25 +425,26 @@ check_rstudio_version() {
 }
 ##############
 install_r_studio() {
-    if [ "${ARCH_TYPE}" != 'amd64' ]; then
-        arch_does_not_support
-    fi
+    [[ "${ARCH_TYPE}" = 'amd64' ]] || arch_does_not_support
     REPO_URL='https://rstudio.com/products/rstudio/download/#download'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         GREP_NAME='amd64.deb'
         check_rstudio_version
         apt-cache show ./${THE_LATEST_DEB_VERSION}
         apt install -y ./${THE_LATEST_DEB_VERSION}
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         GREP_NAME='x86_64.rpm'
         check_rstudio_version
         rpm -ivh ./${THE_LATEST_DEB_VERSION}
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         DEPENDENCY_02="rstudio-desktop-git"
         beta_features_quick_install
-    else
-        non_debian_function
-    fi
+        ;;
+    *) non_debian_function ;;
+    esac
 }
 #####################
 install_r_base() {
@@ -647,10 +648,12 @@ install_catfish() {
         printf "%s\n" "检测到您处于proot环境下，可能无法成功创建索引数据库"
         printf "%s\n" "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${TMOE_REMOVAL_COMMAND} mlocate catfish"
         do_you_want_to_continue
-        if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu")
             printf "%s\n" "检测到您使用的ubuntu，您真的要继续安装吗？"
             press_enter_to_continue
-        fi
+            ;;
+        esac
         ;;
     esac
     DEPENDENCY_01=''

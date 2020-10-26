@@ -107,13 +107,14 @@ install_qemu_user_static() {
 	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 	printf "%s\n" "${YELLOW}${THE_LATEST_DEB_LINK}${RESET}"
 	printf "%s\n" "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
+	case "${LINUX_DISTRO}" in
+	"debian")
 		apt update
 		printf '%s\n' 'apt install -y qemu-user-static'
 		apt install -y qemu-user-static
-	else
-		download_qemu_user
-	fi
+		;;
+	*) download_qemu_user ;;
+	esac
 }
 ##############
 check_qemu_user_version() {

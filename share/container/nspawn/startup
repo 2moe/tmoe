@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g') #此处并非重复操作
+unset TMOE_SD_DIR
+TMOE_DOCKER_DIR="/media/docker"
 if egrep -q '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
     sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
 fi
@@ -23,13 +25,17 @@ set -- "${@}" "--resolv-conf" "auto"
 set -- "${@}" "--timezone" "auto"
 set -- "${@}" "--setenv" "TMOE_CHROOT=true"
 set -- "${@}" "--setenv" "TMOE_PROOT=false"
+set -- "${@}" "--setenv" "TMOE_DOCKER=false"
+set -- "${@}" "--setenv" "CONTAINER_SYSTEMD=true"
 set -- "${@}" "--register" "yes"
 set -- "${@}" "--notify-ready" "yes"
-for i in /sdcard /media/sd; do
-    if [ -e "${i}" ]; then
-        set -- "${@}" "--bind" "${i}:/media/sd"
-    fi
+for i in /root/sd /sdcard /media/sd; do
+    [[ ! -d "${i}" ]] || TMOE_SD_DIR=${i}
 done
+[[ -z ${TMOE_SD_DIR} ]] || set -- "${@}" "--bind" "${TMOE_SD_DIR}:/media/sd"
+[[ ! -e "${TMOE_DOCKER_DIR}" ]] || set -- "${@}" "--bind" "${TMOE_DOCKER_DIR}"
 set -- "systemd-nspawn" "${@}"
-"${@}"
-exit 0
+unset LD_PRELOAD
+TMOE_NSPAWN_EXEC="exec ${@}"
+su -c "${TMOE_NSPAWN_EXEC}"
+#exit 0

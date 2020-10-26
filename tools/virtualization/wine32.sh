@@ -11,10 +11,11 @@ install_dxvk() {
 wine_dependencies() {
     DEPENDENCY_01='wine winetricks q4wine'
     DEPENDENCY_02='playonlinux wine32'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-            DEPENDENCY_01='wine winetricks q4wine'
-        fi
+    case "${LINUX_DISTRO}" in
+    "debian")
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu") DEPENDENCY_01='wine winetricks q4wine' ;;
+        esac
         if [ "${INSTALL_WINE}" = "true" ]; then
             dpkg --add-architecture i386
             apt update
@@ -22,10 +23,12 @@ wine_dependencies() {
         else
             apt purge winetricks-zh
         fi
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         DEPENDENCY_01='winetricks-zh'
         DEPENDENCY_02='playonlinux5-git q4wine'
-    fi
+        ;;
+    esac
 }
 ##########
 install_wine64() {
@@ -44,7 +47,7 @@ install_wine64() {
 #########
 wine_menu() {
     RETURN_TO_WHERE='wine_menu'
-    
+
     VIRTUAL_TECH=$(
         whiptail --title "WINE" --menu "Wine is not an emulator" 0 50 0 \
             "1" "install安装" \

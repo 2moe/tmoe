@@ -12,14 +12,16 @@ filebrowser_main() {
 install_filebrowser() {
     if [ ! $(command -v filebrowser) ]; then
         cd /tmp
-        if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "arm64" ]; then
+        case "${ARCH_TYPE}" in
+        "amd64" | "arm64")
             rm -rf .FileBrowserTEMPFOLDER
             git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/filebrowser.git ./.FileBrowserTEMPFOLDER
             cd /usr/local/bin
             tar -Jxvf /tmp/.FileBrowserTEMPFOLDER/filebrowser.tar.xz filebrowser
             chmod +x filebrowser
             rm -rf /tmp/.FileBrowserTEMPFOLDER
-        else
+            ;;
+        *)
             #https://github.com/filebrowser/filebrowser/releases
             #curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
             if [ "${ARCH_TYPE}" = "armhf" ]; then
@@ -31,7 +33,8 @@ install_filebrowser() {
             tar -zxvf /tmp/.filebrowser.tar.gz filebrowser
             chmod +x filebrowser
             rm -rf /tmp/.filebrowser.tar.gz
-        fi
+            ;;
+        esac
     fi
     pgrep filebrowser &>/dev/null
     if [ "$?" = "0" ]; then

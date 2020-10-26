@@ -585,7 +585,8 @@ do_you_want_to_continue() {
 }
 ######################
 different_distro_software_install() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         apt update
         if [ ! -z "${DEPENDENCY_01}" ]; then
             apt install -y ${DEPENDENCY_01} || aptitude install ${DEPENDENCY_01}
@@ -593,54 +594,64 @@ different_distro_software_install() {
         if [ ! -z "${DEPENDENCY_02}" ]; then
             apt install -y ${DEPENDENCY_02} || aptitude install ${DEPENDENCY_02}
         fi
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+    "alpine")
         apk update
         apk add ${DEPENDENCY_01}
         apk add ${DEPENDENCY_02}
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+    "arch")
         if [ ! -z "${DEPENDENCY_01}" ]; then
             pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
             pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行"
         fi
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+    "redhat")
         if [ ! -z "${DEPENDENCY_01}" ]; then
             dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
             dnf install -y --skip-broken ${DEPENDENCY_02} || yum install -y --skip-broken ${DEPENDENCY_02}
         fi
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "openwrt" ]; then
+    "openwrt")
         #opkg update
         opkg install ${DEPENDENCY_01}
         opkg install ${DEPENDENCY_02}
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+    "gentoo")
         emerge -vk ${DEPENDENCY_01}
         emerge -vk ${DEPENDENCY_02}
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
+    "suse")
         zypper in -y ${DEPENDENCY_01}
         zypper in -y ${DEPENDENCY_02}
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "void" ]; then
+    "void")
         xbps-install -S -y ${DEPENDENCY_01}
         xbps-install -S -y ${DEPENDENCY_02}
+        ;;
         ################
-    elif [ "${LINUX_DISTRO}" = "slackware" ]; then
+    "slackware")
         slackpkg update
         slackpkg install ${DEPENDENCY_01}
         slackpkg install ${DEPENDENCY_02}
+        ;;
         #########################
-    else
+    *)
         apt update
         apt install -y ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01}
-    fi
+        ;;
+    esac
 }
 ######################
 tmoe_file_manager() {
@@ -1030,17 +1041,19 @@ install_typora() {
     beta_features_quick_install
     cd /tmp
     GREP_NAME='typora'
-    if [ "${ARCH_TYPE}" = "amd64" ]; then
+    case "${ARCH_TYPE}" in
+    "amd64")
         LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/'
         download_debian_cn_repo_deb_file_model_01
         #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
-    elif [ "${ARCH_TYPE}" = "i386" ]; then
+        ;;
+    "i386")
         LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/'
         download_tuna_repo_deb_file_model_03
         #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
-    else
-        arch_does_not_support
-    fi
+        ;;
+    *) arch_does_not_support ;;
+    esac
     #apt-cache show ./typora.deb
     #apt install -y ./typora.deb
     #rm -vf ./typora.deb

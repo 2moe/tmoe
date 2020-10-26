@@ -216,11 +216,12 @@ tmoe_linux_sudo_user_group_management() {
 }
 ##################
 del_tmoe_sudo() {
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
+	case "${LINUX_DISTRO}" in
+	"debian")
 		deluser ${TMOE_USER_NAME} sudo || remove_him_from_sudoers
-	else
-		remove_him_from_sudoers
-	fi
+		;;
+	*) remove_him_from_sudoers ;;
+	esac
 
 	if [ "$?" = '0' ]; then
 		printf "%s\n" "${YELLOW}${TMOE_USER_NAME}${RESET}小可爱非常伤心（；´д｀）ゞ，因为您将其移出了${BLUE}sudo${RESET}用户组"

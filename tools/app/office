@@ -3,7 +3,6 @@
 tmoe_documents_menu() {
     RETURN_TO_WHERE='tmoe_documents_menu'
     RETURN_TO_MENU='tmoe_documents_menu'
-    
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     TMOE_APP=$(
@@ -130,7 +129,6 @@ install_wps_office() {
     random_neko
     DEPENDENCY_01="wps-office"
     DEPENDENCY_02=""
-    
     printf "%s\n" "正在检测版本更新..."
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://linux.wps.cn${RESET}"
@@ -157,19 +155,22 @@ install_wps_office() {
     fi
     do_you_want_to_continue
     cd /tmp
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         dpkg --configure -a
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         DEPENDENCY_01="wps-office-cn"
         beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
         rpm -ivh ./WPSoffice.rpm
-    fi
+        ;;
+    esac
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
     rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
     beta_features_install_completed
@@ -185,13 +186,12 @@ install_libre_office() {
     esac
     #RETURN_TO_WHERE='software_center'
     #do_you_want_to_continue
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_01='--no-install-recommends libreoffice'
-    else
-        DEPENDENCY_01="libreoffice"
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") DEPENDENCY_01='--no-install-recommends libreoffice' ;;
+    *) DEPENDENCY_01="libreoffice" ;;
+    esac
     DEPENDENCY_02="libreoffice-l10n-zh-cn libreoffice-gtk3"
-    
+
     beta_features_quick_install
     case "${TMOE_PROOT}" in
     no)

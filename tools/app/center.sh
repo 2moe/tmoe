@@ -304,24 +304,21 @@ install_nodejs() {
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     if [ ! $(command -v 7za) ]; then
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01="p7zip-full"
-        else
-            DEPENDENCY_01="p7zip"
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01="p7zip-full" ;;
+        *) DEPENDENCY_01="p7zip" ;;
+        esac
     fi
     if [ ! $(command -v node) ]; then
         DEPENDENCY_02="nodejs"
     fi
-    if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
+    if [[ ! -z "${DEPENDENCY_01}" || ! -z "${DEPENDENCY_02}" ]]; then
         beta_features_quick_install
     fi
 
     if [ ! $(command -v npm) ]; then
         bash -c "$(curl -Lv https://npmjs.org/install.sh | sed 's@registry.npmjs.org@registry.npm.taobao.org@g')"
-        if [ ! $(command -v npm) ]; then
-            ${TMOE_INSTALLATION_COMMAND} npm
-        fi
+        [[ $(command -v npm) ]] || ${TMOE_INSTALLATION_COMMAND} npm
         cat <<-'EOF'
 			npm config set registry https://registry.npm.taobao.org
 			npm config set disturl https://npm.taobao.org/dist
@@ -512,22 +509,20 @@ tmoe_games_menu() {
 #############
 install_retroarch() {
     DEPENDENCY_01='retroarch'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_02='^libretro'
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02='retroarch-assets-xmb'
-    else
-        DEPENDENCY_02=''
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") DEPENDENCY_02='^libretro' ;;
+    "arch") DEPENDENCY_02='retroarch-assets-xmb' ;;
+    *) DEPENDENCY_02='' ;;
+    esac
     beta_features_quick_install
 }
 ############
 install_dolphin-emu() {
     DEPENDENCY_01='dolphin-emu'
     DEPENDENCY_02='dolphin-emu-git'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_02=''
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") DEPENDENCY_02='' ;;
+    esac
     beta_features_quick_install
 }
 ################
@@ -545,14 +540,14 @@ remove_debian_steam_app() {
 remove_steam_app() {
     printf "%s\n" "${TMOE_REMOVAL_COMMAND} steam-launcher steam"
     ${TMOE_REMOVAL_COMMAND} steam-launcher steam
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        remove_debian_steam_app
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian") remove_debian_steam_app ;;
+    "redhat")
         #remove_fedora_steam_app
         rm -fv /etc/yum.repos.d/steam.repo
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        remove_arch_steam_app
-    fi
+        ;;
+    "arch") remove_arch_steam_app ;;
+    esac
 }
 ###############
 install_debian_steam_app() {
@@ -610,20 +605,23 @@ install_steam_app() {
     esac
     DEPENDENCY_01='steam-launcher'
     DEPENDENCY_02="steam"
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        install_debian_steam_app
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian") install_debian_steam_app ;;
+    "redhat")
         install_fedora_steam_app
         beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         DEPENDENCY_01='steam-native-runtime'
         install_arch_steam_app
         #此处需要选择显卡驱动，故不要使用quick_install_function
         printf "%s\n" "pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}"
         pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}
-    else
+        ;;
+    *)
         beta_features_quick_install
-    fi
+        ;;
+    esac
 }
 ####################
 install_supertuxkart_game() {
@@ -770,15 +768,17 @@ install_game_cataclysm() {
 }
 ##############################################################
 install_package_manager_gui() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        install_synaptic
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian") install_synaptic ;;
+    "arch")
         printf "%s\n" "检测到您使用的是arch系发行版，将为您安装pamac"
         install_pamac_gtk
-    else
+        ;;
+    *)
         printf "%s\n" "检测到您使用的不是deb系发行版，将为您安装gnome_software"
         install_gnome_software
-    fi
+        ;;
+    esac
 }
 ######################
 install_gimp() {
@@ -827,18 +827,11 @@ install_synaptic() {
 ##########################################
 install_chinese_manpages() {
     printf '%s\n' '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
-
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_01="manpages manpages-zh man-db"
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="man-pages-zh_cn"
-
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_01="man-pages-zh-CN"
-    else
-        DEPENDENCY_01="man-pages-zh-CN"
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") DEPENDENCY_01="manpages manpages-zh man-db" ;;
+    "arch") DEPENDENCY_01="man-pages-zh_cn" ;;
+    "redhat" | *) DEPENDENCY_01="man-pages-zh-CN" ;;
+    esac
     DEPENDENCY_02="debian-reference-zh-cn"
 
     beta_features_quick_install
@@ -909,20 +902,24 @@ install_baidu_netdisk() {
     #fi
     do_you_want_to_continue
     cd /tmp
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="baidunetdisk-bin"
-        beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "${THE_LATEST_RPM_URL}"
-        rpm -ivh 'baidunetdisk.rpm'
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         #GREP_NAME='baidunetdisk'
         #LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
         #download_ubuntu_kylin_deb_file_model_02
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
         #apt-cache show ./baidunetdisk.deb
         #apt install -y ./baidunetdisk.deb
-    fi
+        ;;
+    "arch")
+        DEPENDENCY_01="baidunetdisk-bin"
+        beta_features_quick_install
+        ;;
+    "redhat")
+        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "${THE_LATEST_RPM_URL}"
+        rpm -ivh 'baidunetdisk.rpm'
+        ;;
+    esac
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     #rm -fv ./baidunetdisk.deb
     beta_features_install_completed
@@ -959,16 +956,19 @@ install_netease_163_cloud_music() {
     esac
     do_you_want_to_continue
     cd /tmp
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
+    case "${LINUX_DISTRO}" in
+    "arch")
         DEPENDENCY_01="netease-cloud-music"
         beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         curl -Lv https://dl.senorsen.com/pub/package/linux/add_repo.sh | sh -
         dnf install http://dl-http.senorsen.com/pub/package/linux/rpm/senorsen-repo-0.0.1-1.noarch.rpm
         dnf install -y netease-cloud-music
         #https://github.com/ZetaoYang/netease-cloud-music-appimage/releases
         #appimage格式
-    else
+        ;;
+    *)
         non_debian_function
         GREP_NAME='netease-cloud-music'
         case $(date +%Y%m) in
@@ -977,16 +977,20 @@ install_netease_163_cloud_music() {
             do_you_want_to_continue
             ;;
         esac
-        if [ "${ARCH_TYPE}" = "amd64" ]; then
+        case "${ARCH_TYPE}" in
+        "amd64")
             LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
             download_ubuntu_kylin_deb_file_model_02
             #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
-        else
+            ;;
+        *)
             LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/'
             download_debian_cn_repo_deb_file_model_01
-        fi
+            ;;
+        esac
         beta_features_install_completed
-    fi
+        ;;
+    esac
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"
     press_enter_to_return
     tmoe_linux_tool_menu
@@ -994,11 +998,10 @@ install_netease_163_cloud_music() {
 ############################
 install_android_debug_bridge() {
     if [ ! $(command -v adb) ]; then
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01="adb"
-        else
-            DEPENDENCY_01="android-tools"
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01="adb" ;;
+        *) DEPENDENCY_01="android-tools" ;;
+        esac
     fi
     DEPENDENCY_02=""
 
@@ -1067,7 +1070,8 @@ remove_gui() {
     printf '%s\n' 'Press enter to remove,press Ctrl + C to cancel'
     RETURN_TO_WHERE='tmoe_linux_tool_menu'
     do_you_want_to_continue
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         apt purge -y xfce4 xfce4-terminal tightvncserver xfce4-goodies
         apt purge -y dbus-x11
         apt purge -y ^xfce
@@ -1084,7 +1088,8 @@ remove_gui() {
         apt purge -y ^cinnamon
         apt purge -y dde
         apt autopurge || apt autoremove
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         pacman -Rsc xfce4 xfce4-goodies
         pacman -Rsc mate mate-extra
         pacman -Rsc lxde lxqt
@@ -1092,16 +1097,19 @@ remove_gui() {
         pacman -Rsc gnome gnome-extra
         pacman -Rsc cinnamon
         pacman -Rsc deepin deepin-extra
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         dnf groupremove -y xfce
         dnf groupremove -y mate-desktop
         dnf groupremove -y lxde-desktop
         dnf groupremove -y lxqt
         dnf groupremove -y "KDE" "GNOME" "Cinnamon Desktop"
         dnf remove -y deepin-desktop
-    else
+        ;;
+    *)
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
-    fi
+        ;;
+    esac
 }
 ##########################
 remove_tmoe_linux_tool() {

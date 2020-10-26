@@ -15,14 +15,16 @@ mirror_main() {
 }
 ############################################
 check_tmoe_sources_list_backup_file() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         SOURCES_LIST_PATH="/etc/apt/"
         SOURCES_LIST_FILE="/etc/apt/sources.list"
         SOURCES_LIST_FILE_NAME="sources.list"
         SOURCES_LIST_BACKUP_FILE="${HOME}/.config/tmoe-linux/sources.list.bak"
         SOURCES_LIST_BACKUP_FILE_NAME="sources.list.bak"
         EXTRA_SOURCE='🐉debian更换为kali源'
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         SOURCES_LIST_PATH="/etc/pacman.d/"
         SOURCES_LIST_FILE="/etc/pacman.d/mirrorlist"
         SOURCES_LIST_FILE_NAME="mirrorlist"
@@ -31,21 +33,23 @@ check_tmoe_sources_list_backup_file() {
         EXTRA_SOURCE='archlinux_cn源'
         SOURCES_LIST_FILE_02="/etc/pacman.conf"
         SOURCES_LIST_BACKUP_FILE_02="${HOME}/.config/tmoe-linux/pacman.conf.bak"
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        ;;
+    "alpine")
         SOURCES_LIST_PATH="/etc/apk/"
         SOURCES_LIST_FILE="/etc/apk/repositories"
         SOURCES_LIST_FILE_NAME="repositories"
         SOURCES_LIST_BACKUP_FILE="${HOME}/.config/tmoe-linux/alpine_repositories.bak"
         SOURCES_LIST_BACKUP_FILE_NAME="alpine_repositories.bak"
         EXTRA_SOURCE='alpine额外源'
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         SOURCES_LIST_PATH="/etc/yum.repos.d"
         SOURCES_LIST_BACKUP_FILE="${HOME}/.config/tmoe-linux/yum.repos.d-backup.tar.gz"
         SOURCES_LIST_BACKUP_FILE_NAME="yum.repos.d-backup.tar.gz"
         EXTRA_SOURCE='epel源'
-    else
-        EXTRA_SOURCE="不支持修改${LINUX_DISTRO}源"
-    fi
+        ;;
+    *) EXTRA_SOURCE="不支持修改${LINUX_DISTRO}源" ;;
+    esac
 
     if [ ! -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
         mkdir -p "${HOME}/.config/tmoe-linux"
@@ -81,17 +85,17 @@ modify_alpine_mirror_repositories() {
 ############################################
 auto_check_distro_and_modify_sources_list() {
     if [ ! -z "${SOURCE_MIRROR_STATION}" ]; then
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            check_debian_distro_and_modify_sources_list
-        elif [ "${LINUX_DISTRO}" = "arch" ]; then
-            check_arch_distro_and_modify_mirror_list
-        elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-            modify_alpine_mirror_repositories
-        elif [ "${REDHAT_DISTRO}" = "fedora" ]; then
-            check_fedora_version
-        else
-            printf "%s\n" "Sorry,本功能不支持${LINUX_DISTRO}"
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") check_debian_distro_and_modify_sources_list ;;
+        "arch") check_arch_distro_and_modify_mirror_list ;;
+        "alpine") modify_alpine_mirror_repositories ;;
+        "redhat")
+            case "${REDHAT_DISTRO}" in
+            "fedora") check_fedora_versio ;;
+            *) printf "%s\n" "Sorry,本功能不支持${LINUX_DISTRO}" ;;
+            esac
+            ;;
+        esac
     fi
     ################
     press_enter_to_return
@@ -424,48 +428,41 @@ mandatory_trust_software_sources() {
 }
 ##############
 untrust_sources_list() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        sed -i 's@^deb.*http@deb http@g' /etc/apt/sources.list
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        sed -i 's@SigLevel = Never@#SigLevel = Optional TrustAll@' "/etc/pacman.conf"
-    else
-        EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源'
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") sed -i 's@^deb.*http@deb http@g' /etc/apt/sources.list ;;
+    "arch") sed -i 's@SigLevel = Never@#SigLevel = Optional TrustAll@' "/etc/pacman.conf" ;;
+    *) EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源' ;;
+    esac
 }
 #######################
 trust_sources_list() {
     printf "%s\n" "执行此操作可能会有未知风险"
     do_you_want_to_continue
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        sed -i 's@^deb.*http@deb [trusted=yes] http@g' /etc/apt/sources.list
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        sed -i 's@^#SigLevel.*@SigLevel = Never@' "/etc/pacman.conf"
-    else
-        EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源'
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") sed -i 's@^deb.*http@deb [trusted=yes] http@g' /etc/apt/sources.list ;;
+    "arch") sed -i 's@^#SigLevel.*@SigLevel = Never@' "/etc/pacman.conf" ;;
+    *) EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源' ;;
+    esac
 }
 #####################
 delete_sources_list_invalid_rows() {
     printf "%s\n" "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
     do_you_want_to_continue
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        sed -i '/^#/d' ${SOURCES_LIST_FILE}
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        sed -i '/^#Server.*=/d' ${SOURCES_LIST_FILE}
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-        sed -i '/^#.*http/d' ${SOURCES_LIST_FILE}
-    else
-        EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源'
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") sed -i '/^#/d' ${SOURCES_LIST_FILE} ;;
+    "arch") sed -i '/^#Server.*=/d' ${SOURCES_LIST_FILE} ;;
+    "alpine") sed -i '/^#.*http/d' ${SOURCES_LIST_FILE} ;;
+    *) EXTRA_SOURCE='不支持修改${LINUX_DISTRO}源' ;;
+    esac
     sort -u ${SOURCES_LIST_FILE} -o ${SOURCES_LIST_FILE}
     ${TMOE_UPDATE_COMMAND}
 }
 ###################
 sources_list_faq() {
     printf "%s\n" "若换源后更新软件数据库失败，则请切换为http源"
-    if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "arch" ]; then
-        printf "%s\n" "然后选择强制信任软件源的功能。"
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian" | "arch") printf "%s\n" "然后选择强制信任软件源的功能。" ;;
+    esac
     printf "%s\n" "若再次出错，则请更换为其它镜像源。"
 }
 ################
@@ -511,15 +508,12 @@ check_fedora_version() {
 }
 ######################
 add_extra_source_list() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        modify_to_kali_sources_list
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        add_arch_linux_cn_mirror_list
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        add_fedora_epel_yum_repo
-    else
-        non_debian_function
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") modify_to_kali_sources_list ;;
+    "arch") add_arch_linux_cn_mirror_list ;;
+    "redhat") add_fedora_epel_yum_repo ;;
+    *) non_debian_function ;;
+    esac
 }
 ################
 add_fedora_epel_yum_repo() {
@@ -552,13 +546,11 @@ add_arch_linux_cn_mirror_list() {
 }
 ###############
 check_debian_distro_and_modify_sources_list() {
-    if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-        modify_ubuntu_mirror_sources_list
-    elif [ "${DEBIAN_DISTRO}" = "kali" ]; then
-        modify_kali_mirror_sources_list
-    else
-        modify_debian_mirror_sources_list
-    fi
+    case "${DEBIAN_DISTRO}" in
+    "ubuntu") modify_ubuntu_mirror_sources_list ;;
+    "kali") modify_kali_mirror_sources_list ;;
+    *) modify_debian_mirror_sources_list ;;
+    esac
     check_ca_certificates_and_apt_update
 }
 ##############
@@ -602,19 +594,18 @@ modify_archlinux_mirror_list() {
 }
 ###############
 edit_sources_list_manually() {
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         apt edit-sources || nano ${SOURCES_LIST_FILE}
         #SOURCES_LIST_FILE="/etc/apt/sources.list"
         if [ ! -z "$(ls /etc/apt/sources.list.d/)" ]; then
             nano /etc/apt/sources.list.d/*.list
         fi
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        nano ${SOURCES_LIST_PATH}/*repo
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        nano ${SOURCES_LIST_FILE} /etc/pacman.conf
-    else
-        nano ${SOURCES_LIST_FILE}
-    fi
+        ;;
+    "redhat") nano ${SOURCES_LIST_PATH}/*repo ;;
+    "arch") nano ${SOURCES_LIST_FILE} /etc/pacman.conf ;;
+    *) nano ${SOURCES_LIST_FILE} ;;
+    esac
 }
 ##########
 download_debian_ls_lr() {
@@ -942,19 +933,24 @@ fedora_3x_repos() {
 }
 ###############
 modify_to_kali_sources_list() {
-    if [ "${LINUX_DISTRO}" != "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu")
+            printf "%s\n" "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
+            printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
+            read
+            tmoe_linux_tool_menu
+            ;;
+        esac
+        ;;
+    *)
         printf "%s\n" "${YELLOW}非常抱歉，检测到您使用的不是deb系linux，按回车键返回。${RESET}"
         printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
         read
         tmoe_linux_tool_menu
-    fi
-
-    if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-        printf "%s\n" "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
-        printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-        read
-        tmoe_linux_tool_menu
-    fi
+        ;;
+    esac
 
     if ! grep -q "^deb.*kali" /etc/apt/sources.list; then
         printf "%s\n" "检测到您当前为debian源，是否修改为kali源？"

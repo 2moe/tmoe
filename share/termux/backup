@@ -36,21 +36,21 @@ install_timeshift() {
 		press_enter_to_return
 		tmoe_manager_main_menu
 	fi
-
 	if [ ! -e "/usr/bin/timeshift" ]; then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
+		case "${LINUX_DISTRO}" in
+		"debian")
 			apt update
 			apt install -y timeshift
-		elif [ "${LINUX_DISTRO}" = "arch" ]; then
-			pacman -Syu --noconfirm timeshift
-		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			dnf install timeshift
-		fi
+			;;
+		"arch") pacman -Syu --noconfirm timeshift ;;
+		"redhat") dnf install timeshift ;;
+		*) ${TMOE_INSTALLATION_COMMAND} timeshift ;;
+		esac
 	fi
 
 	if [ -e "/usr/bin/timeshift" ]; then
 		timeshift-launcher &
-		printf "%s\n" "安装完成，如需卸载，请手动输apt purge -y timeshift"
+		printf "%s\n" "安装完成，如需卸载，请手动输${TMOE_REMOVAL_COMMAND} timeshift"
 	fi
 }
 ######################

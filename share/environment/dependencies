@@ -2,20 +2,19 @@
 gnu_linux_manager_dependencies() {
 	DEPENDENCIES=''
 	if [ ! $(command -v aria2c) ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} net-misc/aria2"
-		else
-			DEPENDENCIES="${DEPENDENCIES} aria2"
-		fi
+		case "${LINUX_DISTRO}" in
+		gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/aria2" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} aria2" ;;
+		esac
 	fi
 
 	if [ ! $(command -v curl) ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} net-misc/curl"
-		else
-			DEPENDENCIES="${DEPENDENCIES} curl"
-		fi
+		case "${LINUX_DISTRO}" in
+		gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/curl" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} curl" ;;
+		esac
 	fi
+
 	if [ ! $(command -v git) ]; then
 		case "${LINUX_DISTRO}" in
 		openwrt) DEPENDENCIES="${DEPENDENCIES} git git-http" ;;
@@ -23,56 +22,53 @@ gnu_linux_manager_dependencies() {
 		*) DEPENDENCIES="${DEPENDENCIES} git" ;;
 		esac
 	fi
+
 	if [ ! $(command -v grep) ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} sys-apps/grep"
-		else
-			DEPENDENCIES="${DEPENDENCIES} grep"
-		fi
+		case "${LINUX_DISTRO}" in
+		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/grep" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} grep" ;;
+		esac
 	fi
 
 	if [ ! $(command -v pv) ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} sys-apps/pv"
-		elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
-			if [ "${REDHAT_DISTRO}" = 'fedora' ]; then
-				DEPENDENCIES="${DEPENDENCIES} pv"
-			fi
-		else
-			DEPENDENCIES="${DEPENDENCIES} pv"
-		fi
+		case "${LINUX_DISTRO}" in
+		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/pv" ;;
+		redhat)
+			case "${REDHAT_DISTRO}" in
+			fedora) DEPENDENCIES="${DEPENDENCIES} pv" ;;
+			esac
+			;;
+		*) DEPENDENCIES="${DEPENDENCIES} pv" ;;
+		esac
 	fi
 
 	if [ ! $(command -v proot) ]; then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCIES="${DEPENDENCIES} proot"
-		fi
+		case "${LINUX_DISTRO}" in
+		"debian") DEPENDENCIES="${DEPENDENCIES} proot" ;;
+		esac
 	fi
 	#####################
 	if [ ! $(command -v xz) ]; then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCIES="${DEPENDENCIES} xz-utils"
-		elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} app-arch/xz-utils"
-		else
-			DEPENDENCIES="${DEPENDENCIES} xz"
-		fi
+		case "${LINUX_DISTRO}" in
+		"debian") DEPENDENCIES="${DEPENDENCIES} xz-utils" ;;
+		"gentoo") DEPENDENCIES="${DEPENDENCIES} app-arch/xz-utils" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} xz" ;;
+		esac
 	fi
 
 	if [ ! $(command -v pkill) ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} sys-process/procps"
-		elif [ "${LINUX_DISTRO}" != "openwrt" ]; then
-			DEPENDENCIES="${DEPENDENCIES} procps"
-		fi
+		case "${LINUX_DISTRO}" in
+		"gentoo") DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
+		"openwrt") ;;
+		*) DEPENDENCIES="${DEPENDENCIES} procps" ;;
+		esac
 	fi
 	#####################
 	if [ ! $(command -v tar) ]; then
-		if [ "${LINUX_DISTRO}" = "gentoo" ]; then
-			DEPENDENCIES="${DEPENDENCIES} app-arch/tar"
-		else
-			DEPENDENCIES="${DEPENDENCIES} tar"
-		fi
+		case "${LINUX_DISTRO}" in
+		gentoo) DEPENDENCIES="${DEPENDENCIES} app-arch/tar" ;;
+		*) DEPENDENCIES="${DEPENDENCIES} tar" ;;
+		esac
 	fi
 	[[ -z ${DEPENDENCIES} ]] || install_gnu_linux_manager_dependencies_02
 }

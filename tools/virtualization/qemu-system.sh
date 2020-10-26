@@ -3362,13 +3362,11 @@ download_ubuntu_huawei_mirror_iso() {
 }
 ####################
 get_ubuntu_server_iso_url() {
-	if [ "${ARCH_TYPE}" = "amd64" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-legacy-server-${ARCH_TYPE}.iso"
-	elif [ "${ARCH_TYPE}" = "i386" ]; then
-		THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-server-i386.iso"
-	else
-		THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/ubuntu/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-live-server-${ARCH_TYPE}.iso"
-	fi
+	case "${ARCH_TYPE}" in
+	"amd64") THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/${UBUNTU_DISTRO}/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-legacy-server-${ARCH_TYPE}.iso" ;;
+	"i386") THE_LATEST_ISO_LINK="https://mirrors.huaweicloud.com/ubuntu-releases/16.04.6/ubuntu-16.04.6-server-i386.iso" ;;
+	*) THE_LATEST_ISO_LINK="https://mirrors.bfsu.edu.cn/ubuntu-cdimage/ubuntu/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-live-server-${ARCH_TYPE}.iso" ;;
+	esac
 }
 ##############
 get_other_ubuntu_distros_url() {

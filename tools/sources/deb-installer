@@ -93,7 +93,8 @@ deb_file_installer() {
     #进入deb文件目录
     cd ${CURRENT_DIR}
     #./${SELECTION}
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         file ./${SELECTION} 2>/dev/null
         apt-cache show ./${SELECTION}
         PACKAGE_NAME=$(apt-cache show ./${SELECTION} 2>&1 | grep Package | head -n 1 | awk -F ' ' '$0=$NF')
@@ -112,7 +113,8 @@ deb_file_installer() {
         DEPENDENCY_01=${PACKAGE_NAME}
         DEPENDENCY_02=""
         beta_features_install_completed
-    else
+        ;;
+    *)
         if [ ! $(command -v dpkg) ]; then
             DEPENDENCY_01='dpkg'
             DEPENDENCY_02=''
@@ -125,7 +127,8 @@ deb_file_installer() {
         else
             uncompress_deb_file
         fi
-    fi
+        ;;
+    esac
     delete_tmoe_deb_file
 }
 ######################

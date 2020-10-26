@@ -587,9 +587,9 @@ window_manager_install() {
         DEPENDENCY_01='openbox'
         REMOTE_DESKTOP_SESSION_01='openbox-session'
         REMOTE_DESKTOP_SESSION_02='openbox'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='openbox openbox-menu'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='openbox openbox-menu' ;;
+        esac
         ;;
     03)
         install_fvwm
@@ -597,9 +597,9 @@ window_manager_install() {
     04)
         DEPENDENCY_01='awesome'
         REMOTE_DESKTOP_SESSION_01='awesome'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='awesome awesome-extra'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='awesome awesome-extra' ;;
+        esac
         ;;
     05)
         DEPENDENCY_01='enlightenment'
@@ -608,23 +608,23 @@ window_manager_install() {
     06)
         DEPENDENCY_01='fluxbox'
         REMOTE_DESKTOP_SESSION_01='fluxbox'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='bbmail bbpager bbtime fbpager fluxbox'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='bbmail bbpager bbtime fbpager fluxbox' ;;
+        esac
         ;;
     07)
         DEPENDENCY_01='i3'
         REMOTE_DESKTOP_SESSION_01='i3'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='i3 i3-wm i3blocks'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='i3 i3-wm i3blocks' ;;
+        esac
         ;;
     08)
         DEPENDENCY_01='xmonad'
         REMOTE_DESKTOP_SESSION_01='xmonad'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='xmobar dmenu xmonad'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='xmobar dmenu xmonad' ;;
+        esac
         ;;
     09)
         DEPENDENCY_01='9wm'
@@ -653,9 +653,9 @@ window_manager_install() {
     15)
         DEPENDENCY_01='blackbox'
         REMOTE_DESKTOP_SESSION_01='blackbox'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='bbmail bbpager bbtime blackbox'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='bbmail bbpager bbtime blackbox' ;;
+        esac
         ;;
     16)
         DEPENDENCY_01='dwm'
@@ -719,9 +719,9 @@ window_manager_install() {
     28)
         DEPENDENCY_01='matchbox-window-manager'
         REMOTE_DESKTOP_SESSION_01='matchbox-window-manager'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='matchbox-themes-extra matchbox-window-manager'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='matchbox-themes-extra matchbox-window-manager' ;;
+        esac
         ;;
     29)
         DEPENDENCY_01='miwm'
@@ -730,9 +730,9 @@ window_manager_install() {
     30)
         DEPENDENCY_01='muffin'
         REMOTE_DESKTOP_SESSION_01='muffin'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='murrine-themes muffin'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='murrine-themes muffin' ;;
+        esac
         ;;
     31)
         DEPENDENCY_01='mwm'
@@ -745,9 +745,9 @@ window_manager_install() {
     33)
         DEPENDENCY_01='pekwm'
         REMOTE_DESKTOP_SESSION_01='pekwm'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='pekwm-themes pekwm'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='pekwm-themes pekwm' ;;
+        esac
         ;;
     34)
         DEPENDENCY_01='ratpoison'
@@ -760,9 +760,9 @@ window_manager_install() {
     36)
         DEPENDENCY_01='sawfish'
         REMOTE_DESKTOP_SESSION_01='sawfish'
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
-            DEPENDENCY_01='sawfish-themes sawfish'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_01='sawfish-themes sawfish' ;;
+        esac
         ;;
     37)
         DEPENDENCY_01='spectrwm'
@@ -828,7 +828,8 @@ window_manager_install() {
 install_fvwm() {
     DEPENDENCY_01='fvwm'
     REMOTE_DESKTOP_SESSION_01='fvwm'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_01='fvwm fvwm-icons'
         #REMOTE_DESKTOP_SESSION_01='fvwm'
         if egrep -q 'buster|bullseye|bookworm' /etc/os-release; then
@@ -841,7 +842,8 @@ install_fvwm() {
                 REMOTE_DESKTOP_SESSION_01='fvwm-crystal'
             fi
         fi
-    fi
+        ;;
+    esac
 }
 #################
 tmoe_virtual_machine_desktop() {
@@ -949,11 +951,13 @@ kali_xfce4_extras() {
 apt_purge_libfprint() {
     case ${TMOE_PROOT} in
     true | no)
-        if [ "${LINUX_DISTRO}" = "debian" ]; then
+        case "${LINUX_DISTRO}" in
+        "debian")
             apt purge -y ^libfprint
             apt clean
             apt autoclean
-        fi
+            ;;
+        esac
         ;;
     esac
 }
@@ -1126,7 +1130,8 @@ install_xfce4_desktop() {
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
     DEPENDENCY_01="xfce4"
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
         case ${DEBIAN_DISTRO} in
         ubuntu)
@@ -1139,29 +1144,27 @@ install_xfce4_desktop() {
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
+        ;;
         ##############
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+    "redhat")
         DEPENDENCY_01='@xfce'
         rm -v /etc/xdg/autostart/xfce-polkit.desktop 2>/dev/null
+        ;;
         ##################
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="xfce4 xfce4-terminal xfce4-goodies"
+    "arch") DEPENDENCY_01="xfce4 xfce4-terminal xfce4-goodies" ;;
         ##################
-    elif [ "${LINUX_DISTRO}" = "void" ]; then
-        DEPENDENCY_01="xfce4"
+    "void") DEPENDENCY_01="xfce4" ;;
         #################
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+    "gentoo")
         dispatch-conf
         etc-update
         DEPENDENCY_01="xfce4-meta x11-terms/xfce4-terminal"
+        ;;
         #################
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal"
+    "suse") DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal" ;;
         ###############
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-        DEPENDENCY_01="faenza-icon-theme xfce4-whiskermenu-plugin xfce4 xfce4-terminal"
-        ##############
-    fi
+    "alpine") DEPENDENCY_01="faenza-icon-theme xfce4-whiskermenu-plugin xfce4 xfce4-terminal" ;;
+    esac
     ##################
     beta_features_quick_install
     ####################
@@ -1400,16 +1403,41 @@ random_wallpaper_pack_03() {
 ############
 random_wallpaper_pack_04() {
     case "$(($RANDOM % 20 + 1))" in
-    [7-9]) linuxmint_tina_wallpaper_var ;;
-    [10-12]) linuxmint_tricia_wallpaper_var ;;
-    13 | 14) linuxmint_tessa_wallpaper_var ;;
-    15 | 16) linuxmint_tara_wallpaper_var ;;
-    17) linuxmint_serena_wallpaper_var ;;
+    [4-6]) linuxmint_tina_wallpaper_var ;;
+    [7-9]) linuxmint_tricia_wallpaper_var ;;
+    [10-12]) linuxmint_tessa_wallpaper_var ;;
+    [13-15]) linuxmint_tara_wallpaper_var ;;
+    [16-17]) linuxmint_serena_wallpaper_var ;;
     18) linuxmint_sonya_wallpaper_var ;;
     19) linuxmint_sylvia_wallpaper_var ;;
     20) linuxmint_sarah_wallpaper_var ;;
-    [1-6] | *) linuxmint_ulyana_wallpaper_var ;;
+    [1-3] | *) linuxmint_ulyana_wallpaper_var ;;
     esac
+}
+############
+random_wallpaper_pack_05() {
+    RANDOM_WALLPAPER_PACK="$(($RANDOM % 27 + 1))"
+    case ${RANDOM_WALLPAPER_PACK} in
+    [6-9]) linuxmint_sonya_wallpaper_var ;;
+    [10-12]) linuxmint_sarah_wallpaper_var ;;
+    13 | 14) linuxmint_sylvia_wallpaper_var ;;
+    15 | 16) linuxmint_tessa_wallpaper_var ;;
+    17 | 18) linuxmint_tara_wallpaper_var ;;
+    19) linuxmint_tina_wallpaper_var ;;
+    20) linuxmint_ulyana_wallpaper_var ;;
+    21 | 22) linuxmint_tricia_wallpaper_var ;;
+    [23-27]) ubuntu_mate_wallpaper_var ;;
+    [1-5] | *) linuxmint_serena_wallpaper_var ;;
+    esac
+    case ${RANDOM_WALLPAPER_PACK} in
+    [23-27]) ;;
+    *) debian_xfce_wallpaper ;;
+    esac
+}
+############
+ubuntu_mate_wallpaper_var() {
+    WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
+    check_mate_wallpaper_pack
 }
 ############
 modify_the_default_xfce_wallpaper() {
@@ -1437,10 +1465,7 @@ modify_the_default_xfce_wallpaper() {
         random_wallpaper_pack_02
         debian_xfce_wallpaper
         ;;
-    *)
-        WALLPAPER_FILE='/usr/share/backgrounds/johann-siemens-591.jpg'
-        check_mate_wallpaper_pack
-        ;;
+    *) random_wallpaper_pack_05 ;;
     esac
 }
 #################
@@ -1470,31 +1495,28 @@ install_lxde_desktop() {
     REMOTE_DESKTOP_SESSION_02='startlxde'
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxde-core、lxterminal、tightvncserver。'
     DEPENDENCY_01='lxde'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         dpkg --configure -a
         auto_select_keyboard_layout
         DEPENDENCY_01="lxde-core lxterminal"
+        ;;
         #############
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_01='lxde-desktop'
+    "redhat") DEPENDENCY_01='lxde-desktop' ;;
         #############
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01='lxde'
+    "arch") DEPENDENCY_01='lxde' ;;
         ############
-    elif [ "${LINUX_DISTRO}" = "void" ]; then
-        DEPENDENCY_01='lxde'
+    "void") DEPENDENCY_01='lxde' ;;
         #############
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        DEPENDENCY_01='media-fonts/wqy-bitmapfont lxde-base/lxde-meta'
+    "gentoo") DEPENDENCY_01='media-fonts/wqy-bitmapfont lxde-base/lxde-meta' ;;
         ##################
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01='patterns-lxde-lxde'
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+    "suse") DEPENDENCY_01='patterns-lxde-lxde' ;;
+    "alpine")
         DEPENDENCY_01="lxsession"
         REMOTE_DESKTOP_SESSION='lxsession'
+        ;;
+    esac
     ###################
-    fi
-    ############
     beta_features_quick_install
     apt_purge_libfprint
     configure_vnc_xstartup
@@ -1540,7 +1562,8 @@ install_mate_desktop() {
     REMOTE_DESKTOP_SESSION_02='mate-panel'
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
     DEPENDENCY_01='mate'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
         #apt autopurge -y ^libfprint
         #apt autoclean
@@ -1564,22 +1587,22 @@ install_mate_desktop() {
         #    printf "%s\n" "" >/var/lib/dpkg/info/udisks2.postinst
         #fi
         #apt-mark hold udisks2
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_01='@mate-desktop'
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "redhat") DEPENDENCY_01='@mate-desktop' ;;
+    "arch")
         #if [ "${TMOE_PROOT}" = 'true' ]; then
         #    arch_linux_mate_warning
         #else
         DEPENDENCY_01='mate mate-extra'
         #fi
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        DEPENDENCY_01='mate-base/mate-desktop mate-base/mate'
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01='patterns-mate-mate'
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        ;;
+    "gentoo") DEPENDENCY_01='mate-base/mate-desktop mate-base/mate' ;;
+    "suse") DEPENDENCY_01='patterns-mate-mate' ;;
+    "alpine")
         DEPENDENCY_01="mate-desktop-environment"
         REMOTE_DESKTOP_SESSION='mate-session'
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -1593,7 +1616,8 @@ install_lxqt_desktop() {
     REMOTE_DESKTOP_SESSION_02='lxqt-session'
     DEPENDENCY_01="lxqt"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_01="lxqt-core qterminal xfwm4 xfwm4-theme-breeze lxqt-config"
         case ${DEBIAN_DISTRO} in
         ubuntu)
@@ -1606,18 +1630,16 @@ install_lxqt_desktop() {
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_01='@lxqt'
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="lxqt xorg"
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        DEPENDENCY_01="lxqt-base/lxqt-meta"
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01="patterns-lxqt-lxqt"
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        ;;
+    "redhat") DEPENDENCY_01='@lxqt' ;;
+    "arch") DEPENDENCY_01="lxqt xorg" ;;
+    "gentoo") DEPENDENCY_01="lxqt-base/lxqt-meta" ;;
+    "suse") DEPENDENCY_01="patterns-lxqt-lxqt" ;;
+    "alpine")
         DEPENDENCY_01="openbox pcmfm rxvt-unicode tint2"
         REMOTE_DESKTOP_SESSION='openbox'
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -1676,7 +1698,8 @@ install_kde_plasma5_desktop() {
     REMOTE_DESKTOP_SESSION_02='startkde'
     DEPENDENCY_01="plasma-desktop"
     printf '%s\n' '即将为您安装kde-plasma-desktop、tigervnc-standalone-server、fonts-noto-cjk（思源黑体）和fonts-noto-color-emoji等软件包。'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
         DEPENDENCY_01="kde-plasma-desktop"
@@ -1699,12 +1722,14 @@ install_kde_plasma5_desktop() {
         dpkg --configure -a
         auto_select_keyboard_layout
         apt clean
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         #yum groupinstall kde-desktop
         #dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
         #dnf install -y sddm || yum install -y sddm
         DEPENDENCY_01='@KDE'
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "arch")
         DEPENDENCY_01="plasma-desktop xorg konsole sddm sddm-kcm"
         if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde-applications' 0 0); then
             DEPENDENCY_01="plasma-desktop xorg konsole discover"
@@ -1717,21 +1742,22 @@ install_kde_plasma5_desktop() {
         #pacman -S --noconfirm sddm sddm-kcm
         #中文输入法
         #pacman -S fcitx fcitx-rime fcitx-im kcm-fcitx fcitx-sogoupinyin
-    elif [ "${LINUX_DISTRO}" = "void" ]; then
-        DEPENDENCY_01="kde"
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        ;;
+    "void") DEPENDENCY_01="kde" ;;
+    "gentoo")
         PLASMAnoSystemd=$(eselect profile list | grep plasma | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
         eselect profile set ${PLASMAnoSystemd}
         dispatch-conf
         etc-update
         #emerge -auvDN --with-bdeps=y @world
         DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01="-t pattern kde kde_plasma"
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        ;;
+    "suse") DEPENDENCY_01="-t pattern kde kde_plasma" ;;
+    "alpine")
         DEPENDENCY_01="plasma-desktop breeze breeze-icons"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -1768,7 +1794,8 @@ install_ukui_desktop() {
 
     DEPENDENCY_01="ukui-session-manager"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
         case ${DEBIAN_DISTRO} in
         ubuntu)
@@ -1781,13 +1808,14 @@ install_ukui_desktop() {
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01='ukui'
-    else
+        ;;
+    "arch") DEPENDENCY_01='ukui' ;;
+    *)
         printf "%s\n" "Sorry,未适配${LINUX_DISTRO}"
         press_enter_to_return
         ${RETURN_TO_WHERE}
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -1855,7 +1883,8 @@ install_gnome3_desktop() {
     esac
     DEPENDENCY_01="gnome"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         dpkg --configure -a
         auto_select_keyboard_layout
         #aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
@@ -1865,27 +1894,27 @@ install_gnome3_desktop() {
         *) DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell' ;;
         esac
         #若不包含gnome-core，则为最简化安装
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
+        ;;
+    "redhat")
         #yum groupinstall "GNOME Desktop Environment"
         #dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
         DEPENDENCY_01='@GNOME'
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01='gnome-extra gnome'
-
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
+        ;;
+    "arch") DEPENDENCY_01='gnome-extra gnome' ;;
+    "gentoo")
         GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
         eselect profile set ${GNOMEnoSystemd}
         #emerge -auvDN --with-bdeps=y @world
         dispatch-conf
         etc-update
         DEPENDENCY_01='gnome-shell gdm gnome-terminal'
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01='patterns-gnome-gnome_x11'
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
+        ;;
+    "suse") DEPENDENCY_01='patterns-gnome-gnome_x11' ;;
+    "alpine")
         DEPENDENCY_01="gnome"
         REMOTE_DESKTOP_SESSION='gnome-session'
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -1916,25 +1945,18 @@ install_cinnamon_desktop() {
     esac
     DEPENDENCY_01="cinnamon"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、cinnamon和tightvncserver等软件包。'
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         dpkg --configure -a
         auto_select_keyboard_layout
         DEPENDENCY_01="--no-install-recommends cinnamon cinnamon-desktop-environment"
-
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_01='@Cinnamon Desktop'
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01="sddm cinnamon xorg"
-
-    elif [ "${LINUX_DISTRO}" = "gentoo" ]; then
-        DEPENDENCY_01="gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations"
-
-    elif [ "${LINUX_DISTRO}" = "suse" ]; then
-        DEPENDENCY_01="cinnamon cinnamon-control-center"
-    elif [ "${LINUX_DISTRO}" = "alpine" ]; then
-        DEPENDENCY_01="adapta-cinnamon"
-    fi
+        ;;
+    "redhat") DEPENDENCY_01='@Cinnamon Desktop' ;;
+    "arch") DEPENDENCY_01="sddm cinnamon xorg" ;;
+    "gentoo") DEPENDENCY_01="gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations" ;;
+    "suse") DEPENDENCY_01="cinnamon cinnamon-control-center" ;;
+    "alpine") DEPENDENCY_01="adapta-cinnamon" ;;
+    esac
     ##############
     beta_features_quick_install
     apt_purge_libfprint
@@ -1961,9 +1983,9 @@ dde_old_version() {
     fi
     DEPENDENCY_01="deepin-desktop"
 
-    if [ "${DEBIAN_DISTRO}" = "ubuntu" ]; then
-        add-apt-repository ppa:leaeasy/dde
-    else
+    case "${DEBIAN_DISTRO}" in
+    "ubuntu") add-apt-repository ppa:leaeasy/dde ;;
+    *)
         cd /etc/apt/
         if ! grep -q '^deb.*deepin' sources.list.d/deepin.list 2>/dev/null; then
             cat >/etc/apt/sources.list.d/deepin.list <<-'EOF'
@@ -1971,7 +1993,8 @@ dde_old_version() {
 					deb [by-hash=force] https://mirrors.bfsu.edu.cn/deepin unstable main contrib non-free
 			EOF
         fi
-    fi
+        ;;
+    esac
     wget https://mirrors.bfsu.edu.cn/deepin/project/deepin-keyring.gpg
     gpg --import deepin-keyring.gpg
     gpg --export --armor 209088E7 | apt-key add -
@@ -2084,7 +2107,8 @@ install_deepin_desktop() {
     #REMOTE_DESKTOP_SESSION_02='/usr/sbin/deepin-session'
     REMOTE_DESKTOP_SESSION_02='dde-launcher'
     DEPENDENCY_01="deepin-desktop"
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         case ${DEBIAN_DISTRO} in
         deepin) DEPENDENCY_01="dde" ;;
         *)
@@ -2095,10 +2119,9 @@ install_deepin_desktop() {
         dpkg --configure -a
         auto_select_keyboard_layout
         apt clean
-    elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-        DEPENDENCY_01='deepin-desktop'
-
-    elif [ "${LINUX_DISTRO}" = "arch" ]; then
+        ;;
+    "redhat") DEPENDENCY_01='deepin-desktop' ;;
+    "arch")
         #pacman -S --noconfirm deepin-kwin
         #pacman -S --noconfirm file-roller evince
         #rm -v ~/.pam_environment 2>/dev/null
@@ -2113,7 +2136,8 @@ install_deepin_desktop() {
             do_you_want_to_continue
             ;;
         esac
-    fi
+        ;;
+    esac
     ####################
     beta_features_quick_install
     apt_purge_libfprint
@@ -3056,9 +3080,9 @@ install_kali_undercover() {
     DEPENDENCY_01="kali-undercover"
     DEPENDENCY_02=""
 
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        beta_features_quick_install
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") beta_features_quick_install ;;
+    esac
     #此处需做两次判断
     if [ "${DEBIAN_DISTRO}" = "kali" ]; then
         beta_features_quick_install
@@ -3572,14 +3596,14 @@ xwayland_onekey() {
     DEPENDENCY_01='weston'
     DEPENDENCY_02='xwayland'
 
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         if [ $(command -v startplasma-x11) ]; then
             DEPENDENCY_02='xwayland plasma-workspace-wayland'
         fi
-    fi
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02='xorg-server-xwayland'
-    fi
+        ;;
+    "arch") DEPENDENCY_02='xorg-server-xwayland' ;;
+    esac
     beta_features_quick_install
     ###################
     cat >${HOME}/.config/weston.ini <<-'EndOFweston'
@@ -3829,9 +3853,9 @@ configure_remote_desktop_enviroment() {
     esac
     case "${TMOE_PROOT}" in
     true | no)
-        if [ "${LINUX_DISTRO}" = "debian" ] || [ "${LINUX_DISTRO}" = "redhat" ]; then
-            NON_DBUS='true'
-        fi
+        case "${LINUX_DISTRO}" in
+        "debian" | "redhat""redhat") NON_DBUS='true' ;;
+        esac
         ;;
     esac
 

@@ -3,20 +3,23 @@
 kde_config_module_for_fcitx() {
     DEPENDENCY_01=""
     DEPENDENCY_02='kcm-fcitx'
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02='kcm-fcitx'
-        #kcm-fcitx
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_02='kde-config-fcitx'
         #kde-config-fcitx
-    fi
+        ;;
+    "arch")
+        DEPENDENCY_02='kcm-fcitx'
+        #kcm-fcitx
+        ;;
+    esac
     beta_features_quick_install
 }
 ############
 tmoe_fcitx5_menu() {
     check_zstd
     RETURN_TO_WHERE='tmoe_fcitx5_menu'
-    
+
     INPUT_METHOD=$(
         whiptail --title "Fcitx5" --menu "Fcitx5 是继 Fcitx 后的新一代输入法框架。\n词库是输入法保存的一些流行词语、常用词语或专业术语等的信息,\n添加流行词库能增加流行候选词的命中率" 0 55 0 \
             "1" "fcitx5安装与卸载" \
@@ -44,7 +47,7 @@ tmoe_fcitx5_menu() {
 input_method_beautification() {
     RETURN_TO_WHERE='input_method_beautification'
     DEPENDENCY_01=''
-    
+
     FCIITX5_CLASSUI_CONF_PATH="${HOME}/.config/fcitx5/conf"
     FCIITX5_CLASSUI_CONF_FILE="${FCIITX5_CLASSUI_CONF_PATH}/classicui.conf"
     INPUT_METHOD=$(
@@ -187,7 +190,7 @@ install_fcitx5_material_color_theme() {
         git clone --depth=1 https://github.com/hosxy/Fcitx5-Material-Color.git ${MATERIAL_COLOR_FOLDER}
     else
         cd ${MATERIAL_COLOR_FOLDER}
-        git pull --rebase --stat  --allow-unrelated-histories || git rebase --skip
+        git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
     fi
 
     mkdir -p ${FCIITX5_CLASSUI_CONF_PATH}
@@ -305,14 +308,14 @@ felixonmars_fcitx5_wiki_dict() {
 install_fcitx5() {
     DEPENDENCY_01="fcitx5-chinese-addons fcitx5"
     DEPENDENCY_02=""
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_02='fcitx5-qt fcitx5-gtk kcm-fcitx5'
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_02='kde-config-fcitx5'
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") DEPENDENCY_02='kde-config-fcitx5' ;;
+    "arch") DEPENDENCY_02='fcitx5-qt fcitx5-gtk kcm-fcitx5' ;;
+    esac
     configure_system_fcitx5
     beta_features_quick_install
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         if [ ! $(command -v fcitx5-config-qt) ]; then
             DEPENDENCY_01=""
             printf '%s\n' '检测到您的软件源中不包含kde-config-fcitx5,您可以添加第三方ppa源来安装'
@@ -321,7 +324,8 @@ install_fcitx5() {
             add-apt-repository ppa:hosxy/test
             beta_features_quick_install
         fi
-    fi
+        ;;
+    esac
 }
 ##############
 install_fcitx5_rime() {
@@ -336,15 +340,17 @@ install_fcitx5_rime() {
 #################
 install_pinyin_input_method() {
     RETURN_TO_WHERE='install_pinyin_input_method'
-    
     DEPENDENCY_01="fcitx"
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
-        DEPENDENCY_01='fcitx-im fcitx-configtool'
-        #kcm-fcitx
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian")
         DEPENDENCY_01='fcitx fcitx-tools fcitx-config-gtk'
         #kde-config-fcitx
-    fi
+        ;;
+    "arch")
+        DEPENDENCY_01='fcitx-im fcitx-configtool'
+        #kcm-fcitx
+        ;;
+    esac
     INPUT_METHOD=$(
         whiptail --title "输入法" --menu "您想要安装哪个输入法呢？\nWhich input method do you want to install?" 17 55 8 \
             "1" "🍁 fcitx-FAQ:常见问题与疑难诊断" \
@@ -390,7 +396,6 @@ install_onboard() {
 }
 ##################
 tmoe_fcitx_faq() {
-    
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_fcitx_faq'
     TMOE_APP=$(whiptail --title "Fcitx FAQ" --menu \
@@ -443,9 +448,9 @@ edit_fcitx_env_file() {
 ###########
 remove_ibus_im() {
     ${TMOE_REMOVAL_COMMAND} ibus
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        apt autoremove
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") apt autoremove ;;
+    esac
 }
 ##########
 input_method_config() {
@@ -486,11 +491,10 @@ install_uim_pinyin() {
 ###########
 install_fcitx_module_cloud_pinyin() {
     DEPENDENCY_01=''
-    if [ "${LINUX_DISTRO}" = "debian" ]; then
-        DEPENDENCY_02='fcitx-module-cloudpinyin'
-    else
-        DEPENDENCY_02='fcitx-cloudpinyin'
-    fi
+    case "${LINUX_DISTRO}" in
+    "debian") DEPENDENCY_02='fcitx-module-cloudpinyin' ;;
+    *) DEPENDENCY_02='fcitx-cloudpinyin' ;;
+    esac
     beta_features_quick_install
 }
 ######################
@@ -520,7 +524,8 @@ install_debian_baidu_pinyin() {
         ${TMOE_INSTALLATION_COMMAND} unzip
     fi
     ###################
-    if [ "${ARCH_TYPE}" = "amd64" ]; then
+    case "${ARCH_TYPE}" in
+    "amd64")
         mkdir /tmp/.BAIDU_IME
         cd /tmp/.BAIDU_IME
         THE_Latest_Link='https://imeres.baidu.com/imeres/ime-res/guanwang/img/Ubuntu_Deepin-fcitx-baidupinyin-64.zip'
@@ -529,10 +534,12 @@ install_debian_baidu_pinyin() {
         unzip 'fcitx-baidupinyin.zip'
         DEB_FILE_NAME="$(ls -l ./*deb | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')"
         apt install ${DEB_FILE_NAME}
-    else
+        ;;
+    *)
         printf "%s\n" "架构不支持，跳过安装百度输入法。"
         arch_does_not_support
-    fi
+        ;;
+    esac
     apt-cache show ./fcitx-baidupinyin.deb
     apt install -y ./fcitx-baidupinyin.deb
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
@@ -553,27 +560,31 @@ install_baidu_pinyin() {
     if [ -e "/opt/apps/com.baidu.fcitx-baidupinyin/" ]; then
         install_pkg_warning
     fi
-
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian") install_debian_baidu_pinyin ;;
+    "arch")
         DEPENDENCY_02="fcitx-baidupinyin"
         beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
-        install_debian_baidu_pinyin
-    else
+        ;;
+    *)
         non_debian_function
-    fi
+        ;;
+    esac
 }
 ##########
 #已废弃！
 sougou_pinyin_amd64() {
-    if [ "${ARCH_TYPE}" = "amd64" ] || [ "${ARCH_TYPE}" = "i386" ]; then
+    case "${ARCH_TYPE}" in
+    "arm64" | "i386")
         LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
         printf "%s\n" "${LatestSogouPinyinLink}"
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
-    else
+        ;;
+    *)
         printf "%s\n" "架构不支持，跳过安装搜狗输入法。"
         arch_does_not_support
-    fi
+        ;;
+    esac
 }
 ###################
 install_debian_sogou_pinyin() {
@@ -601,14 +612,14 @@ install_debian_sogou_pinyin() {
 }
 ########
 install_sogou_pinyin() {
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian") install_debian_sogou_pinyin ;;
+    "arch")
         DEPENDENCY_02="fcitx-sogouimebs"
         beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
-        install_debian_sogou_pinyin
-    else
-        non_debian_function
-    fi
+        ;;
+    *) non_debian_function ;;
+    esac
 }
 ############
 fcitx5_config_file() {
@@ -705,14 +716,16 @@ install_debian_iflyime_pinyin() {
 }
 #############
 install_iflyime_pinyin() {
-    if [ "${LINUX_DISTRO}" = "arch" ]; then
+    case "${LINUX_DISTRO}" in
+    "debian") install_debian_iflyime_pinyin ;;
+    "arch")
         DEPENDENCY_02="iflyime"
         beta_features_quick_install
-    elif [ "${LINUX_DISTRO}" = "debian" ]; then
-        install_debian_iflyime_pinyin
-    else
+        ;;
+    *)
         non_debian_function
-    fi
+        ;;
+    esac
 }
 ################
 ####################

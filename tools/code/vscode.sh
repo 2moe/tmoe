@@ -182,14 +182,15 @@ After the update is complete, you can type ${GREEN}code-server${RESET} to start 
 
     cd /tmp
     rm -rvf .VSCODE_SERVER_TEMP_FOLDER
-
-    if [ "${ARCH_TYPE}" = "arm64" ]; then
+    case "${ARCH_TYPE}" in
+    "arm64")
         git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
         tar -PpJxvf code.tar.xz
         cd ..
         rm -rf /tmp/.VSCODE_SERVER_TEMP_FOLDER
-    elif [ "${ARCH_TYPE}" = "amd64" ]; then
+        ;;
+    "amd64")
         mkdir -p .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
         LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'x86_64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
@@ -200,7 +201,8 @@ After the update is complete, you can type ${GREEN}code-server${RESET} to start 
         rm -rvf /usr/local/bin/code-server-data /usr/local/bin/code-server
         mv code-server-data /usr/local/bin/
         ln -sf /usr/local/bin/code-server-data/bin/code-server /usr/local/bin/code-server
-    fi
+        ;;
+    esac
     vscode_server_restart
     vscode_server_password
     printf "%s\n" "若您是初次安装，则请重启code-server"

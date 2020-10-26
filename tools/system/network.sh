@@ -3,13 +3,11 @@ network_manager_tui() {
 	DEPENDENCY_01=''
 
 	if [ ! $(command -v nmtui) ]; then
-		if [ "${LINUX_DISTRO}" = "debian" ]; then
-			DEPENDENCY_02='network-manager'
-		elif [ "${LINUX_DISTRO}" = "redhat" ]; then
-			DEPENDENCY_02='NetworkManager-tui'
-		else
-			DEPENDENCY_02='networkmanager'
-		fi
+		case "${LINUX_DISTRO}" in
+		"debian") DEPENDENCY_02='network-manager' ;;
+		"redhat") DEPENDENCY_02='NetworkManager-tui' ;;
+		*) DEPENDENCY_02='networkmanager' ;;
+		esac
 		beta_features_quick_install
 	fi
 
@@ -114,11 +112,10 @@ network_manager_tui() {
 ################
 install_gnome_net_manager() {
 	DEPENDENCY_01="gnome-nettool"
-	if [ "${LINUX_DISTRO}" = "debian" ]; then
-		DEPENDENCY_02="network-manager-gnome"
-	else
-		DEPENDENCY_02="gnome-network-manager"
-	fi
+	case "${LINUX_DISTRO}" in
+	"debian") DEPENDENCY_02="network-manager-gnome" ;;
+	*) DEPENDENCY_02="gnome-network-manager" ;;
+	esac
 
 	beta_features_quick_install
 }
