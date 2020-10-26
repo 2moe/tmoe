@@ -10,7 +10,7 @@ ubuntu_bionic_chromium() {
         esac
     fi
     DEPENDENCY_01="chromium-browser/bionic-updates"
-    DEPENDENCY_02="chromium-browser-l10n/bionic-updates"
+    DEPENDENCY_02="chromium-browser-l10n/bionic-updates chromium-codecs-ffmpeg-extra/bionic-updates"
 }
 ###########
 unhold_ubuntu_chromium() {
