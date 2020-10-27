@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 set -e
 cd ..
 SHELL_FILE=$(find ./* | grep sh | tr '\n' ' ' | cut -d '%' -f 1)

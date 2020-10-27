@@ -82,15 +82,37 @@ dev_menu() {
     source ${TMOE_TOOL_DIR}/code/dev-menu
 }
 ###########
-start_tmoe_zsh_manager() {
-    TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
-    if [ -e /usr/local/bin/zsh-i ]; then
-        bash /usr/local/bin/zsh-i
+normally_start_zsh() {
+    if [ $(command -v zsh-i) ]; then
+        zsh-i
     elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
         bash ${TMOE_ZSH_SCRIPT}
     else
-        bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
+        bash -c "$(curl -LfsS ${ZSH_TOOL_URL})"
     fi
+}
+start_zsh_tool_as_current_user() {
+    if [ $(command -v zsh-i) ]; then
+        su - ${CURRENT_USER_NAME} -c zsh-i
+    elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
+        su - ${CURRENT_USER_NAME} -c "bash ${TMOE_ZSH_SCRIPT}"
+    else
+        curl -Lo /tmp/.zsh-i.sh ${ZSH_TOOL_URL}
+        su - ${CURRENT_USER_NAME} -c "bash /tmp/.zsh-i.sh"
+    fi
+}
+start_tmoe_zsh_manager() {
+    TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
+    ZSH_TOOL_URL="https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh"
+    case $(id -u) in
+    0) normally_start_zsh ;;
+    *)
+        case ${LINUX_DISTRO} in
+        Android) normally_start_zsh ;;
+        *) start_zsh_tool_as_current_user ;;
+        esac
+        ;;
+    esac
 }
 ##########
 tmoe_software_package_menu() {

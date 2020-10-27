@@ -961,22 +961,19 @@ debian_add_docker_gpg() {
     else
         DOCKER_RELEASE='debian'
     fi
-    cd /tmp
-    curl -Lv -o '.docker-tuna.html' "https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/dists/"
-    DOCKER_TUNA_FIRST_CODE=$(cat .docker-tuna.html | grep link | sed -n 2p | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
+    DOCKER_TUNA_CODE_LIST=$(curl -L "https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/dists/" | grep link | awk -F 'title=' '{print $2}' | cut -d '"' -f 2)
     #curl -Lv https://download.docker.com/linux/${DOCKER_RELEASE}/gpg | apt-key add -
-    if [ ! $(command -v lsb_release) ]; then
-        apt update
-        apt install lsb-release
-    fi
-
-    CURRENT_DOCKER_CODE=$(cat .docker-tuna.html | grep link | grep $(lsb_release -cs))
-    if [ -z "${CURRENT_DOCKER_CODE}" ]; then
-        DOCKER_CODE=${DOCKER_TUNA_FIRST_CODE}
-    else
-        DOCKER_CODE="$(lsb_release -cs)"
-    fi
-    rm .docker-tuna.html
+    #if [ ! $(command -v lsb_release) ]; then
+    #   apt update
+    #  apt install lsb-release
+    #fi
+    DOCKER_LIST=$(printf "%s\n" $DOCKER_TUNA_CODE_LIST | sed "s@\$@ .deb@g" | tr '\n' ' ')
+    DOCKER_CODE=$(
+        whiptail --title "DISTRO CODE & DOCKER VERSION" --menu \
+            "Which version do you want to choose?" 0 0 0 \
+            ${DOCKER_LIST} \
+            3>&1 1>&2 2>&3
+    )
     curl -Lv https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/gpg | apt-key add -
     cd /etc/apt/sources.list.d/
     sed -i 's/^deb/# &/g' docker.list 2>/dev/null

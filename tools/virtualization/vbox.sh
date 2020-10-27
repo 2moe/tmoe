@@ -15,12 +15,23 @@ debian_add_virtual_box_gpg() {
 get_debian_vbox_latest_url() {
 	TUNA_VBOX_LINK='https://mirrors.bfsu.edu.cn/virtualbox/apt/pool/contrib/v/'
 	LATEST_VBOX_VERSION=$(curl -L ${TUNA_VBOX_LINK} | grep 'virtualbox-' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+
 	if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
-		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep "Ubuntu" | head -n 1 | cut -d '"' -f 4)
+		DOCKER_RELEASE='Ubuntu'
 	else
-		LATEST_VBOX_FILE=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep "Debian" | head -n 1 | cut -d '"' -f 4)
+		DOCKER_RELEASE='Debian'
 	fi
-	VBOX_DEB_FILE_URL="${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION}${LATEST_VBOX_FILE}"
+
+	DOCKER_TUNA_CODE_LIST=$(curl -L ${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION} | grep ${DOCKER_RELEASE} | grep link | awk -F 'title=' '{print $2}' | cut -d '"' -f 2 | sed 's@\.deb@@')
+	DOCKER_LIST=$(printf "%s\n" $DOCKER_TUNA_CODE_LIST | sed "s@\$@ .deb@g" | tr '\n' ' ')
+	LATEST_VBOX_FILE=$(
+		whiptail --title "DISTRO CODE & VBOX VERSION" --menu \
+			"Which version do you want to choose?" 0 0 0 \
+			${DOCKER_LIST} \
+			"Back" "🌚 返回" \
+			3>&1 1>&2 2>&3
+	)
+	VBOX_DEB_FILE_URL="${TUNA_VBOX_LINK}${LATEST_VBOX_VERSION}${LATEST_VBOX_FILE}.deb"
 	printf "%s\n" "获取到vbox的最新链接为${VBOX_DEB_FILE_URL},是否下载并安装？"
 	RETURN_TO_WHERE='beta_features'
 	do_you_want_to_continue

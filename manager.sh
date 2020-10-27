@@ -568,7 +568,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3354,type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3355,type ${TMOE_TIPS_02} to start it.\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
 				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot コンテナ" \
 				"3" "💔 削除する 天萌マネージャー" \
@@ -586,7 +586,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3354,type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3355,type ${TMOE_TIPS_02} to start it.\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot container" \
 				"3" "💔 remove tmoe-manager" \
@@ -604,7 +604,7 @@ tmoe_manager_main_menu() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
 				--backtitle "Type tmoe m to start the manager" \
-				--menu "Welcome to tmoe linux manager v1.3354,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+				--menu "Welcome to tmoe linux manager v1.3355,type ${TMOE_TIPS_02} to start it.\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
 				"2" "🌸 chroot容器${CHROOT_NOTE}" \
 				"3" "💔 remove 移除" \
@@ -674,15 +674,37 @@ tmoe_locale_settings() {
 android_termux_tmoe_area() {
 	source ${TMOE_SHARE_DIR}/termux/menu
 }
-start_tmoe_zsh_manager() {
-	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
+normally_start_zsh() {
 	if [ $(command -v zsh-i) ]; then
 		zsh-i
 	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
 		bash ${TMOE_ZSH_SCRIPT}
 	else
-		bash -c "$(curl -LfsS 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh')"
+		bash -c "$(curl -LfsS ${ZSH_TOOL_URL})"
 	fi
+}
+start_zsh_tool_as_current_user() {
+	if [ $(command -v zsh-i) ]; then
+		su - ${CURRENT_USER_NAME} -c zsh-i
+	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
+		su - ${CURRENT_USER_NAME} -c "bash ${TMOE_ZSH_SCRIPT}"
+	else
+		curl -Lo /tmp/.zsh-i.sh ${ZSH_TOOL_URL}
+		su - ${CURRENT_USER_NAME} -c "bash /tmp/.zsh-i.sh"
+	fi
+}
+start_tmoe_zsh_manager() {
+	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
+	ZSH_TOOL_URL="https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh"
+	case $(id -u) in
+	0) normally_start_zsh ;;
+	*)
+		case ${LINUX_DISTRO} in
+		Android) normally_start_zsh ;;
+		*) start_zsh_tool_as_current_user ;;
+		esac
+		;;
+	esac
 }
 update_tmoe_linux_manager() {
 	source ${TMOE_SHARE_DIR}/termux/update
