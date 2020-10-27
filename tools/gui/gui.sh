@@ -965,7 +965,7 @@ apt_purge_libfprint() {
 debian_xfce4_extras() {
     case ${LINUX_DISTRO} in
     debian)
-        [[ $(command -v compton-conf) ]] || apt install -y compton-conf 2>/dev/null
+        [[ $(command -v qt5ct) ]] || apt install -y qt5ct 2>/dev/null
         [[ $(command -v mugshot) ]] || apt install -y mugshot 2>/dev/null
         if [ ! -e "/usr/share/themes/Breeze/xfwm4/themerc" ]; then
             printf "${BLUE}%s${RESET}\n" "apt install -y xfwm4-theme-breeze"
@@ -1108,7 +1108,7 @@ xfce_warning() {
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
 
 ENDofTable
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、compton-conf、xfwm4-theme-breeze、mugshot和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、xfce4、xfce4-terminal、xfce4-goodies、xfce4-panel-profiles、qt5ct、xfwm4-theme-breeze、mugshot和tightvncserver等软件包。'
     do_you_want_to_continue
 }
 ##########
