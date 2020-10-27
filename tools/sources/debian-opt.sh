@@ -10,8 +10,6 @@ add_debian_opt_repo() {
 notes_of_debian_opt_repo() {
     printf "%s\n" "debian_opt_repo列表的所有软件均来自于开源项目"
     printf "%s\n" "感谢https://github.com/coslyk/debianopt-repo 仓库的维护者coslyk，以及各个项目的原开发者。"
-    printf "%s\n" "非deb系发行版软件由2moe进行适配,并制作补丁。"
-    printf "%s\n" "截至2020年8月中旬，在proot容器环境下,部分软件(例如cocomusic)必须打补丁,否则将有可能出现白屏现象。"
 }
 #############
 switch_debian_opt_repo_sources() {
@@ -317,8 +315,13 @@ install_opt_app_02() {
 
     case ${DEPENDENCY_01} in
     cocomusic)
-        GIT_PATCH_URL='https://gitee.com/ak2/cocomusic-patch.git'
-        patch_opt_music_app
+        case ${ARCH_TYPE} in
+        amd64 | i386) ;;
+        *)
+            GIT_PATCH_URL='https://gitee.com/ak2/cocomusic-patch.git'
+            patch_opt_music_app
+            ;;
+        esac
         #printf "%s\n" "在${YELLOW}tightvnc服务${RESET}下，cocomusic可能仍存在${RED}白屏${RESET}现象。对于deb系发行版，您可以换用${BLUE}x11vnc服务${RESET};对于arch系发行版，您可以换用${BLUE}tigervnc服务${RESET}来运行本app。"
         #202008注：已经修复了tightvnc无法启动cocomusic的问题
         ;;
@@ -791,7 +794,7 @@ debian_opt_music_app() {
         "1" "lx-music-desktop(洛雪音乐助手)" \
         "2" "electron-netease-cloud-music(云音乐)" \
         "3" "listen1(免费音乐聚合)" \
-        "4" "cocomusic(第三方QQ音乐+白屏修复补丁)" \
+        "4" "cocomusic(第三方QQ音乐)" \
         "5" "iease-music(界面华丽的云音乐客户端)" \
         "6" "#netease-cloud-music-gtk(云音乐)" \
         "7" "petal(第三方豆瓣FM客户端)" \
