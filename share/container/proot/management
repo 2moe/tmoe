@@ -292,6 +292,10 @@ normally_start_gnu_linux_distro() {
 		;;
 	*) ${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container ;;
 	esac
+	if [[ -e ${DEBIAN_CHROOT} ]]; then
+		press_enter_to_return
+		proot_management_menu
+	fi
 }
 start_gnu_linux_distro_tigervnc() {
 	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
