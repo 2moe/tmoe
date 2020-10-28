@@ -207,7 +207,7 @@ catimg_preview_lxde_mate_xfce_02() {
 }
 install_gui() {
     [[ "${WINDOWS_DISTRO}" != 'WSL' ]] || source ${TMOE_TOOL_DIR}/gui/wsl
-    [[ ! -s '/usr/share/fonts/Iosevka.ttf' ]] || standand_desktop_installation #该字体检测两次
+    [[ ! -s '/usr/share/fonts/truetype/iosevka/Iosevka.ttf' ]] || standand_desktop_installation #该字体检测两次
     random_neko
     cd /tmp
     case ${WINDOWS_DISTRO} in
@@ -229,19 +229,19 @@ install_gui() {
         catimg_preview_lxde_mate_xfce_02
     fi
 
-    if [ ! -f '/usr/share/fonts/Iosevka.ttf' ]; then
+    if [ ! -f '/usr/share/fonts/truetype/iosevka/Iosevka.ttf' ]; then
         printf '%s\n' '正在刷新字体缓存...'
-        mkdir -p /usr/share/fonts/
+        mkdir -p /usr/share/fonts/truetype/iosevka/
         cd /tmp
         if [ -e "font.ttf" ]; then
-            mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
+            mv -f font.ttf '/usr/share/fonts/truetype/iosevka/Iosevka.ttf'
         else
             curl -Lo 'Iosevka.tar.xz' 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
             tar -xvf 'Iosevka.tar.xz'
             rm -f 'Iosevka.tar.xz'
-            mv -f font.ttf '/usr/share/fonts/Iosevka.ttf'
+            mv -f font.ttf '/usr/share/fonts/truetype/iosevka/Iosevka.ttf'
         fi
-        cd /usr/share/fonts/
+        cd /usr/share/fonts/truetype/iosevka/
         mkfontscale 2>/dev/null
         mkfontdir 2>/dev/null
         fc-cache 2>/dev/null
