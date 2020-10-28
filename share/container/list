@@ -644,8 +644,8 @@ fedora_distro_menu() {
 	BETA_SYSTEM=$(
 		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
 			"1" "Auto check 自动检测版本" \
-			"2" "Fedora 33(仅test)" \
-			"3" "Fedora 34 rawhide(For testing only)" \
+			"2" "33(仅test)" \
+			"3" "34 rawhide(For testing only)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -700,13 +700,24 @@ git_clone_fedora_rootfs() {
 	"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
 	*) printf "%s\n" "Sorry,SHA256哈希值与源文件不一致，文件可能已破损。" ;;
 	esac
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s@\(FEDORA_VERSION=\).*@\129@g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-	#当版本低于30时不会自动换源
+	case ${DISTRO_CODE} in
+	33)
+		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		;;
+	34)
+		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
+			sed "s@\(FEDORA_VERSION=\).*@\129@g" |
+			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		#当版本低于30时不会自动换源
+		;;
+	esac
 }
 ###################
 install_fedora_gnu_linux_distro() {
