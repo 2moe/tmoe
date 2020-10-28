@@ -86,6 +86,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        set -- "--mount=/storage/self/primary:/root/sd" "\$@"
 	    elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
 	        set -- "--mount=/sdcard:/root/sd" "\$@"
+		elif [ -e "${HOME}/Download" ]; then
+			set -- "--mount=${HOME}/Download:/root/sd" "\$@"
 	    elif [ -e "/storage/emulated/0" ]; then
 	        set -- "--mount=/storage/emulated/0:/root/sd" "\$@"
 	    fi

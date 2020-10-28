@@ -185,6 +185,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 	                elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
 	                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+					elif [ -e "${HOME}/Download" ]; then
+	                    su -c "mount -o bind ${HOME}/Download ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 	                else
 	                    mount_read_only_sd
 	                fi
