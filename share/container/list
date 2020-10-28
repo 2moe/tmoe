@@ -644,7 +644,7 @@ fedora_distro_menu() {
 	BETA_SYSTEM=$(
 		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
 			"1" "Auto check 自动检测版本" \
-			"2" "33(仅test)" \
+			"2" "33(2020_10--2021_11)" \
 			"3" "34 rawhide(For testing only)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
