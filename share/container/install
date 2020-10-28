@@ -1483,11 +1483,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cp -f /etc/resolv.conf /tmp
 		fi
 		dnf update -y
-		[[ $(command -v ip) ]] || dnf install -y iproute
 		[[ $(command -v systemctl) ]] || dnf install -y systemd
 		rm -f /etc/resolv.conf
 		#更新系统后，dns解析文件会被systemd的配置所覆盖
 		cp -f  /tmp/resolv.conf /etc
+		[[ $(command -v ip) ]] || dnf install -y iproute
 		;;
 		esac
 		#TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
