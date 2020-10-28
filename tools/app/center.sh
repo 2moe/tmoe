@@ -504,23 +504,24 @@ tmoe_games_menu() {
         "Which game do you want to install?" 0 50 0 \
         "1" "install Steam-x86_64(安装蒸汽游戏平台)" \
         "2" "remove Steam(卸载)" \
-        "3" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
-        "4" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
-        "5" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
-        "6" "SuperTuxKart(3D卡丁车)" \
+        "3" "KDE-games(包含各种小游戏)" \
+        "4" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
+        "5" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
+        "6" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
         "7" "retroarch(全能复古游戏模拟器)" \
         "8" "dolphin-emu(任天堂wii模拟器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
+    #"6" "SuperTuxKart(3D卡丁车)" \    6) install_supertuxkart_game ;;
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_steam_app ;;
     2) remove_steam_app ;;
-    3) install_game_cataclysm ;;
-    4) install_nds_game_mayomonogatari ;;
-    5) install_wesnoth_game ;;
-    6) install_supertuxkart_game ;;
+    3) install_kde_games ;;
+    4) install_game_cataclysm ;;
+    5) install_nds_game_mayomonogatari ;;
+    6) install_wesnoth_game ;;
     7) install_retroarch ;;
     8) install_dolphin-emu ;;
     esac
@@ -649,6 +650,17 @@ install_steam_app() {
     esac
 }
 ####################
+install_kde_games() {
+    DEPENDENCY_01="kdegames"
+    DEPENDENCY_02="libkdegames"
+    case ${LINUX_DISTRO} in
+    debian) DEPENDENCY_02="" ;;
+    arch) DEPENDENCY_01="" ;;
+    redhat) DEPENDENCY_01="libkdegames4 kdegames3" ;;
+    esac
+    beta_features_quick_install
+}
+########
 install_supertuxkart_game() {
     DEPENDENCY_02="supertuxkart"
     beta_features_quick_install
