@@ -1484,6 +1484,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 		dnf update -y
 		[[ $(command -v ip) ]] || dnf install -y iproute
+		[[ $(command -v systemctl) ]] || dnf install -y systemd
 		rm -f /etc/resolv.conf
 		#更新系统后，dns解析文件会被systemd的配置所覆盖
 		cp -f  /tmp/resolv.conf /etc
