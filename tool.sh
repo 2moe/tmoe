@@ -97,8 +97,8 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3360,Type ${TMOE_TIPS_01} to start this tool."
-	#00变量不可变
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3361,Type ${TMOE_TIPS_01} to start this tool."
+	#勿改00变量
 }
 #########
 gnu_linux_env() {
