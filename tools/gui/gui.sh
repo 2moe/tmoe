@@ -230,7 +230,7 @@ install_gui() {
         catimg_preview_lxde_mate_xfce_02
     fi
     if [ ! -f "${IOSEVKA_TTF_FILE}" ]; then
-        printf "${BLUE}%s${RESET}" "${IOSEVKA_TTF_FILE}"
+        printf "${BLUE}%s${RESET}\n" "${IOSEVKA_TTF_FILE}"
         printf "${YELLOW}%s${RESET}\n" '正在刷新字体缓存...'
         mkdir -p /usr/share/fonts/truetype/iosevka/
         cd /tmp
