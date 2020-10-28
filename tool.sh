@@ -90,13 +90,14 @@ check_ps_command() {
 check_tmoe_command() {
 	if [ $(command -v zsh) ]; then
 		if egrep -q '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
-			TMOE_TIPS_02="t t"
+			TMOE_TIPS_01="t t"
 		else
-			TMOE_TIPS_02="tmoe t"
+			TMOE_TIPS_01="tmoe t"
 		fi
 	else
-		TMOE_TIPS_02="tmoe t"
+		TMOE_TIPS_01="tmoe t"
 	fi
+	TMOE_TIPS_02="Welcome to tmoe linux tool v1.3359,Type ${TMOE_TIPS_01} to start this tool."
 }
 #########
 gnu_linux_env() {
@@ -629,7 +630,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3358,Type ${TMOE_TIPS_02} to start this tool.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "${TMOE_TIPS_02}\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
 				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
@@ -648,7 +649,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_ja() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3309.${TMOE_TIPS_02}と入力して起動します.\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
+				--menu "${TMOE_TIPS_02}\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
 				"1" "🍭 GUI:グラフィカル・ユーザ・インターフェース(DE,WM,LM)" \
 				"2" "🥝 アプリストア(ブラウザ、ゲーム、メディアアプリ)" \
 				"3" "🌺 秘密の花園(教育、システム、beta機能)" \
@@ -667,7 +668,7 @@ tmoe_linux_tool_menu() {
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
 			whiptail --title "Tmoe-Tool running on ${OSRELEASE}(202010)" \
-				--menu "Welcome to tmoe linux tool v1.3358,Type ${TMOE_TIPS_02} to start it.\nPlease use the enter and arrow keys to operate." 0 50 0 \
+				--menu "${TMOE_TIPS_02}\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
 				"3" "🌺 Secret Garden(education,system,beta feature)" \
