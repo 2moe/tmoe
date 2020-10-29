@@ -1707,7 +1707,7 @@ install_kde_plasma5_desktop() {
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
-                if (whiptail --title "kde-plasma or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
+                if (whiptail --title "kde-plasma or kde-full" --yes-button "minimal" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
                     DEPENDENCY_01="kde-plasma-desktop"
                 else
                     DEPENDENCY_01="kde-full"
