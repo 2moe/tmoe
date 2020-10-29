@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3397,Type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3398,Type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -594,7 +594,7 @@ git_clone_tmoe_linux_repo() {
 	if [ ! -e "${TMOE_LINUX_DIR}" ]; then
 		mkdir -p ${TMOE_LINUX_DIR}
 	fi
-	git clone -b master --depth=1 https://github.com/2moe/tmoe-linux.git ${TMOE_GIT_DIR}
+	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 }
 #################
 do_you_want_to_git_clone_tmoe_linux_repo() {
@@ -615,7 +615,7 @@ check_tmoe_git_folder_00() {
 check_tmoe_git_folder() {
 	if [ ! -e ${TMOE_GIT_DIR}/.git ]; then
 		rm -rfv ${TMOE_GIT_DIR}
-		printf "%s\n" "https://github.com/2moe/tmoe-linux"
+		printf "%s\n" "https://${TMOE_GIT_URL}"
 		case ${TMOE_PROOT} in
 		true | false) git_clone_tmoe_linux_repo ;;
 		*) do_you_want_to_git_clone_tmoe_linux_repo ;;
@@ -761,11 +761,6 @@ tmoe_docker_menu() {
 tmoe_linux_tool_upgrade() {
 	check_tmoe_linux_desktop_link
 	if [ ! -h "${DEBIAN_I_FILE}" ]; then
-		#	case "${LINUX_DISTRO}" in
-		#	alpine) wget -O ${DEBIAN_I_FILE} 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
-		#	*) curl -Lv -o ${DEBIAN_I_FILE} 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh' ;;
-		#	esac
-		#	chmod 777 ${DEBIAN_I_FILE}
 		rm -fv ${DEBIAN_I_FILE} 2>/dev/null
 		ln -sfv ${TMOE_GIT_DIR}/tool.sh ${DEBIAN_I_FILE}
 	else
