@@ -230,7 +230,7 @@ start_tmoe_container() {
 			source ${TMOE_SHARE_DIR}/container/nspawn/startup
 			;;
 		*)
-			sudo tmoe ${TMOE_PARAMETERS}
+			sudo -E tmoe ${TMOE_PARAMETERS}
 			exit 1
 			;;
 		esac
