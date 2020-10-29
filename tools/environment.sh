@@ -1097,6 +1097,8 @@ fix_fedora_electron_libxssl() {
             zypper in -y mozilla-nss
         fi
         ;;
+    *) [[ -e /usr/lib/libnss3.so ]] || ${TMOE_INSTALLATION_COMMAND} nss ;;
+        #void的nss3.so的pkg name为nss
     esac
 }
 ##########

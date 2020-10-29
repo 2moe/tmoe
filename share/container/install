@@ -1350,11 +1350,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	    mv -f .profile.bak .profile 2>/dev/null
-	    #wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
 	    chmod +x /usr/local/bin/neofetch
 	    neofetch
-	    #bash
-	    # exit 0
 	}
 	#############################
 	void_linux_repository() {
@@ -1377,17 +1374,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    xbps-install -S
 	    xbps-install -uy xbps
 	    xbps-install -y wget curl
-	    #wget -qO- 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' | bash -
 	    neofetch
 	    #rm -f vnc* zsh* .profile
 	    #mv -f .profile.bak .profile 2>/dev/null
-	    #wget -qO zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
-	    #sed -i '1 c\#!/usr/bin/env bash' zsh.sh
-	    #chmod +x zsh.sh
 	    printf '%s\n' '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输tmoe t'
 		xbps-reconfigure -f glibc-locales
-	    #zsh 2>/dev/null || bash
-	    #exit 0
 	}
 	##########################
 	if egrep -q 'Funtoo|Gentoo' '/etc/os-release'; then
