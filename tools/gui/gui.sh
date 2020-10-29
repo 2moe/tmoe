@@ -2110,8 +2110,8 @@ ENDofTable
     过新的系统亦存在此问题,例如debian sid。
     而对于其他系发行版，请尽量选择最新的发行版。
     例如红帽系,请选fedora,勿选centos。
-    若您需要在arm64容器环境中运行,则建议您使用最新版fedora或ubuntu LTS。
-    若您需要在x64容器环境中运行，则建议您使用arch或deepin。
+    若您需要在arm64容器环境中运行,则建议您使用fedora或ubuntu LTS。
+    若您需要在x64容器环境中运行，则建议您使用arch。
 EOF
 
     case "${TMOE_PROOT}" in

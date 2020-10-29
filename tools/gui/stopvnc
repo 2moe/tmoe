@@ -60,11 +60,12 @@ stop_dbus_daemon() {
     case ${TMOE_CHROOT} in
     true)
         if [ -e "/run/dbus/pid" ]; then
+            kill -9 $(sed -n p /run/dbus/pid)
             rm_dbus_pid_file
         fi
         ;;
     esac
-    pkill dbus
+    #pkill dbus
 }
 ##########
 pkill_vnc() {
