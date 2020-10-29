@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3398,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3399,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -206,7 +206,14 @@ check_gnu_linux_git_and_whiptail() {
 			export LANG='en_US.UTF-8'
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			;;
-		arch | gentoo | redhat | suse) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+		arch | gentoo | suse) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+		redhat)
+			if [ $(command -v dnf) ]; then
+				${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+			else
+				yum install -y --skip-broken ${DEPENDENCIES}
+			fi
+			;;
 		*)
 			apt update 2>/dev/null
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}

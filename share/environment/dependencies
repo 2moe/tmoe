@@ -92,7 +92,14 @@ install_gnu_linux_manager_dependencies_02() {
 		${TMOE_UPDATE_COMMAND}
 		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 		;;
-	arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+	arch | gentoo | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+	redhat)
+		if [ $(command -v dnf) ]; then
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+		else
+			yum install -y --skip-broken ${DEPENDENCIES}
+		fi
+		;;
 	*)
 		apt update
 		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
