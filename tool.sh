@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3401,Type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3402,Type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -361,6 +361,21 @@ check_linux_distro() {
 check_dependencies() {
 	DEPENDENCIES=""
 	case "${LINUX_DISTRO}" in
+	redhat)
+		if [ $(command -v dnf) ]; then
+			if [ ! -e "${TMOE_LINUX_DIR}/not_install_dnf_plugins_core" ]; then
+				dnf config-manager --help &>/dev/null
+				case "${?}" in
+				0) ;;
+				*) dnf install -y dnf-plugins-core ;;
+				esac
+				printf "%s\n" "If you want to use dnf config-manager,you should install dnf-plugins-core." >"${TMOE_LINUX_DIR}/not_install_dnf_plugins_core"
+			fi
+		fi
+		;;
+	esac
+
+	case "${LINUX_DISTRO}" in
 	debian)
 		if [ ! $(command -v aptitude) ]; then
 			DEPENDENCIES="${DEPENDENCIES} aptitude"
@@ -562,6 +577,10 @@ check_dependencies() {
 						RHEL_VERSION='8'
 					fi
 					yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL_VERSION}.noarch.rpm
+				fi
+				if [ ! $(command -v dnf) ]; then
+					yum install -y dnf
+					yum update
 				fi
 				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为北外源${PURPLE}[Y/n]${RESET}"
 				printf "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}\n"
