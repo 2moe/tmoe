@@ -60,7 +60,9 @@ stop_dbus_daemon() {
     case ${TMOE_CHROOT} in
     true)
         if [ -e "/run/dbus/pid" ]; then
-            kill -9 $(sed -n p /run/dbus/pid)
+            DBUS_PID=$(sed -n p /run/dbus/pid)
+            printf "%s\n" "kill -9 ${DBUS_PID}"
+            kill -9 ${DBUS_PID}
             rm_dbus_pid_file
         fi
         ;;
