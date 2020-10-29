@@ -1359,14 +1359,21 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#############################
 	void_linux_repository() {
 	    LINUX_DISTRO='void'
+		LOCALE_FILE="/etc/default/libc-locales"
+		sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" ${LOCALE_FILE} 2>/dev/null
+		if ! egrep -q "^[^#]*${TMOE_LANG_HALF}" "${LOCALE_FILE}" 2>/dev/null; then
+	     #sed -i 's@^@#&@g;s@##@#@g' ${LOCALE_FILE} 2>/dev/null
+	     printf "\n" >>${LOCALE_FILE}
+	     sed -i "$ a${TMOE_LANG} UTF-8" ${LOCALE_FILE}
+		fi
 	    cat >/etc/locale.conf <<-'EOF'
-				LANG=en_US.UTF-8
-				LANGUAGE=en_US:zh
-				LC_COLLATE=C
-			EOF
+			LANG=${TMOE_LANG}
+			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
+			LC_ALL=${TMOE_LANG}
+		EOF
 	    mkdir -p /etc/xbps.d
 	    cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
-	    sed -i 's|https://alpha.de.repo.voidlinux.org|https://mirrors.bfsu.edu.cn/voidlinux|g' /etc/xbps.d/*-repository-*.conf
+	    sed -i 's@https://alpha.de.repo.voidlinux.org@https://mirrors.bfsu.edu.cn/voidlinux@g' /etc/xbps.d/*-repository-*.conf
 	    xbps-install -S
 	    xbps-install -uy xbps
 	    xbps-install -y wget curl
