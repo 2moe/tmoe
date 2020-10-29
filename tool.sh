@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3396,Type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3397,Type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -614,6 +614,7 @@ check_tmoe_git_folder_00() {
 ####################
 check_tmoe_git_folder() {
 	if [ ! -e ${TMOE_GIT_DIR}/.git ]; then
+		rm -rfv ${TMOE_GIT_DIR}
 		printf "%s\n" "https://github.com/2moe/tmoe-linux"
 		case ${TMOE_PROOT} in
 		true | false) git_clone_tmoe_linux_repo ;;
