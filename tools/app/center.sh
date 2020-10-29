@@ -502,28 +502,30 @@ tmoe_games_menu() {
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "GAMES" --menu \
         "Which game do you want to install?" 0 50 0 \
-        "1" "install Steam-x86_64(安装蒸汽游戏平台)" \
-        "2" "remove Steam(卸载)" \
-        "3" "KDE-games(包含各种小游戏)" \
-        "4" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
-        "5" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
-        "6" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
-        "7" "retroarch(全能复古游戏模拟器)" \
-        "8" "dolphin-emu(任天堂wii模拟器)" \
+        "1" "KDE-games(包含各种小游戏)" \
+        "2" "GNOME-games" \
+        "3" "install Steam-x86_64(安装蒸汽游戏平台)" \
+        "4" "remove Steam(卸载)" \
+        "5" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
+        "6" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
+        "7" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
+        "8" "retroarch(全能复古游戏模拟器)" \
+        "9" "dolphin-emu(任天堂wii模拟器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     #"6" "SuperTuxKart(3D卡丁车)" \    6) install_supertuxkart_game ;;
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
-    1) install_steam_app ;;
-    2) remove_steam_app ;;
-    3) install_kde_games ;;
-    4) install_game_cataclysm ;;
-    5) install_nds_game_mayomonogatari ;;
-    6) install_wesnoth_game ;;
-    7) install_retroarch ;;
-    8) install_dolphin-emu ;;
+    1) install_kde_games ;;
+    2) install_gnome_games ;;
+    3) install_steam_app ;;
+    4) remove_steam_app ;;
+    5) install_game_cataclysm ;;
+    6) install_nds_game_mayomonogatari ;;
+    7) install_wesnoth_game ;;
+    8) install_retroarch ;;
+    9) install_dolphin-emu ;;
     esac
     ##########################
     press_enter_to_return
@@ -650,6 +652,16 @@ install_steam_app() {
     esac
 }
 ####################
+install_gnome_games() {
+    DEPENDENCY_01="gnome-games"
+    DEPENDENCY_02="phosh-games gnustep-games"
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    *) DEPENDENCY_02="five-or-more four-in-a-row gnome-chess gnome-klotski gnome-mahjongg gnome-mines gnome-nibbles gnome-robots gnome-sudoku gnome-taquin gnome-tetravex hitori iagno lightsoff quadrapassel swell-foop tali" ;;
+    esac
+    beta_features_quick_install
+}
+########
 install_kde_games() {
     DEPENDENCY_01="kdegames"
     DEPENDENCY_02="libkdegames"
