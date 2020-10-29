@@ -314,7 +314,7 @@ standand_desktop_installation() {
             "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
             "2" "🍔 chroot/docker_DE(kde,dde)" \
             "3" "🍙 window manager窗口管理器(ice,fvwm)" \
-            "4" "🍱 VM_DE(虚拟机可运行:gnome,cinnamon,budgie)" \
+            "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome,cinnamon)" \
             "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
             "6" "🍤 FAQ:vnc和gui的常见问题" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
@@ -326,7 +326,7 @@ standand_desktop_installation() {
             "1" "🍰 proot_DE(xfce,mate,lxde)" \
             "2" "🍔 chroot/docker_DE(kde,dde)" \
             "3" "🍙 window manager(ice,fvwm)" \
-            "4" "🍱 VM_DE(gnome,cinnamon,budgie)" \
+            "4" "🍱 VM/nspawn_DE(gnome,cinnamon,budgie)" \
             "5" "🍣 display manager(lightdm,sddm)" \
             "6" "🍤 FAQ" \
             "0" "🌚 none=￣ω￣=" \

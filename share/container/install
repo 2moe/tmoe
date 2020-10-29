@@ -765,6 +765,8 @@ cat >vnc-autostartup <<-'EndOfFile'
 	###########
 	ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
 	############
+	case ${TMOE_PROOT} in
+	true)
 	systemctl() {
 		case ${TMOE_PROOT} in
 		true) printf "%s\n" "Running in proot, ignoring request." ;;
@@ -787,6 +789,8 @@ cat >vnc-autostartup <<-'EndOfFile'
 			;;
 		esac
 	}
+	;;
+	esac
 	[[ ! -s ~/.profile ]] || source ~/.profile
 	typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 EndOfFile
