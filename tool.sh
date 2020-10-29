@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3399,Type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3400,Type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -519,7 +519,14 @@ check_dependencies() {
 			${TMOE_UPDATE_COMMAND}
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			;;
-		arch | gentoo | redhat | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+		arch | gentoo | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+		redhat)
+			if [ $(command -v dnf) ]; then
+				${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+			else
+				yum install -y --skip-broken ${DEPENDENCIES}
+			fi
+			;;
 		*)
 			apt update
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
