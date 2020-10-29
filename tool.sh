@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3400,Type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3401,Type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -555,6 +555,14 @@ check_dependencies() {
 		*)
 			if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
 				yum install -y epel-release
+				if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
+					if (whiptail --title "Please choose RHEL version" --yes-button "7" --no-button "8" --yesno "You should import the epel source." 0 50); then
+						RHEL_VERSION='7'
+					else
+						RHEL_VERSION='8'
+					fi
+					yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL_VERSION}.noarch.rpm
+				fi
 				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为北外源${PURPLE}[Y/n]${RESET}"
 				printf "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}\n"
 				printf "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]\n"
