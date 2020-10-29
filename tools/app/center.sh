@@ -780,8 +780,14 @@ install_linux_qq() {
 ###################
 install_nds_game_mayomonogatari() {
     DEPENDENCY_01="desmume"
-    DEPENDENCY_02="p7zip-full"
-
+    if [ ! $(command -v 7za) ]; then
+        case ${LINUX_DISTRO} in
+        debian) DEPENDENCY_02="p7zip-full" ;;
+        *) DEPENDENCY_02="p7zip" ;;
+        esac
+    else
+        DEPENDENCY_02=""
+    fi
     beta_features_quick_install
     if [ -e "斯隆与马克贝尔的谜之物语/3782.nds" ]; then
         printf "%s\n" "检测到您已下载游戏文件，路径为${HOME}/斯隆与马克贝尔的谜之物语"
@@ -800,7 +806,7 @@ install_nds_game_mayomonogatari() {
     rm -rf 迷之物语 斯隆与马克贝尔的谜之物语k73
     rm -f slymkbr1.zip* mayomonogatari2.zip*
 
-    printf "%s\n" "安装完成，您需要手动执行${GREEN}/usr/games/desmume${RESER}，并进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
+    printf "%s\n" "安装完成，您需要手动执行${GREEN}/usr/games/desmume${RESER}或${GREEN}desmume${RESER}，并进入'${HOME}/斯隆与马克贝尔的谜之物语'目录加载游戏"
     printf "%s\n" "如需卸载,则请手动输${TMOE_REMOVAL_COMMAND} desmume ; rm -rf ~/斯隆与马克贝尔的谜之物语"
     printf '%s\n' 'Press enter to start the nds emulator.'
     printf "%s\n" "${YELLOW}按回车键启动游戏。${RESET}"
