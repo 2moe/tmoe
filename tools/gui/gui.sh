@@ -2110,7 +2110,7 @@ ENDofTable
     过新的系统亦存在此问题,例如debian sid。
     而对于其他系发行版，请尽量选择最新的发行版。
     例如红帽系,请选fedora,勿选centos。
-    若您需要在arm64容器环境中运行,则建议您使用fedora或ubuntu LTS。
+    若您需要在arm64容器环境中运行,则建议您使用fedora。
     若您需要在x64容器环境中运行，则建议您使用arch。
 EOF
 
@@ -2157,7 +2157,11 @@ install_deepin_desktop() {
         #rm -v ~/.pam_environment 2>/dev/null
         DEPENDENCY_01="deepin xorg deepin-extra lightdm lightdm-deepin-greeter"
         case ${ARCH_TYPE} in
-        amd64) ;;
+        amd64)
+            printf "%s\n" "clutter 与 deepin-clutter 有冲突 ; cogl 与 deepin-cogl 有冲突。"
+            printf "%s\n" "您可以使用${GREEN}pacman -Rs ${BLUE}clutter cogl${RESET}来解决"
+            printf "%s\n" "若已解决，则请忽略上述提示。"
+            ;;
         *)
             #DEPENDENCY_01="deepin xorg"
             #printf "%s\n" "如需安装额外组件，请手动输${GREEN}pacman -Syu${RESET} ${BLUE}deepin-extra lightdm lightdm-deepin-greeter${RESET}"
