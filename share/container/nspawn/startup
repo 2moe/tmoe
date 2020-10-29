@@ -32,7 +32,7 @@ set -- "${@}" "--setenv" "DISPLAY=:0.0"
 set -- "${@}" "--setenv" "CONTAINER_SYSTEMD=true"
 set -- "${@}" "--register" "yes"
 set -- "${@}" "--notify-ready" "yes"
-for i in /root/sd /sdcard /media/sd; do
+for i in ${HOME}/Download /root/sd /sdcard /media/sd; do
     [[ ! -d "${i}" ]] || TMOE_SD_DIR=${i}
 done
 [[ -z ${TMOE_SD_DIR} ]] || set -- "${@}" "--bind" "${TMOE_SD_DIR}:/media/sd"
