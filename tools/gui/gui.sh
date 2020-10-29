@@ -1707,7 +1707,11 @@ install_kde_plasma5_desktop() {
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
-                DEPENDENCY_01="kde-plasma-desktop"
+                if (whiptail --title "kde-plasma or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
+                     DEPENDENCY_01="kde-plasma-desktop"
+                else
+                    DEPENDENCY_01="kde-full"
+                fi
             else
                 DEPENDENCY_01="kubuntu-desktop"
             fi
@@ -1716,7 +1720,11 @@ install_kde_plasma5_desktop() {
             if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
                 DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
             else
-                DEPENDENCY_01="tigervnc-standalone-server kde-standard"
+                if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件，后者为KDE全家桶' 0 0); then
+                    DEPENDENCY_01="tigervnc-standalone-server kde-standard"
+                else
+                    DEPENDENCY_01="tigervnc-standalone-server kde-full"
+                fi
             fi
             ;;
         esac
@@ -1732,7 +1740,7 @@ install_kde_plasma5_desktop() {
         ;;
     "arch")
         DEPENDENCY_01="plasma-desktop xorg konsole sddm sddm-kcm"
-        if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde-applications' 0 0); then
+        if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde全家桶' 0 0); then
             DEPENDENCY_01="plasma-desktop xorg konsole discover"
         else
             DEPENDENCY_01="plasma-meta plasma-wayland-session kde-applications-meta sddm sddm-kcm"
@@ -1886,14 +1894,26 @@ install_gnome3_desktop() {
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     case "${LINUX_DISTRO}" in
     "debian")
-        dpkg --configure -a
-        auto_select_keyboard_layout
         #aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
         #apt install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
         case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell' ;;
-        *) DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell' ;;
+        ubuntu)
+            if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
+                DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell'
+            else
+                DEPENDENCY_01='ubuntu-desktop'
+            fi
+            ;;
+        *)
+            if (whiptail --title "gnome-core or gnome-extra" --yes-button "gnome-core" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome软件包套件' 0 0); then
+                DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell'
+            else
+                DEPENDENCY_01='task-gnome-desktop'
+            fi
+            ;;
         esac
+        dpkg --configure -a
+        auto_select_keyboard_layout
         #若不包含gnome-core，则为最简化安装
         ;;
     "redhat")
@@ -1901,7 +1921,13 @@ install_gnome3_desktop() {
         #dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
         DEPENDENCY_01='@GNOME'
         ;;
-    "arch") DEPENDENCY_01='gnome-extra gnome' ;;
+    "arch")
+        if (whiptail --title "gnome or gnome-extra" --yes-button "gnome" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome全家桶' 0 0); then
+            DEPENDENCY_01='gnome'
+        else
+            DEPENDENCY_01='gnome-extra gnome'
+        fi
+        ;;
     "gentoo")
         GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
         eselect profile set ${GNOMEnoSystemd}
