@@ -1708,7 +1708,7 @@ install_kde_plasma5_desktop() {
         ubuntu)
             if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
                 if (whiptail --title "kde-plasma or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
-                     DEPENDENCY_01="kde-plasma-desktop"
+                    DEPENDENCY_01="kde-plasma-desktop"
                 else
                     DEPENDENCY_01="kde-full"
                 fi
@@ -1899,14 +1899,14 @@ install_gnome3_desktop() {
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell'
+                DEPENDENCY_01='--no-install-recommends xorg gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
             else
                 DEPENDENCY_01='ubuntu-desktop'
             fi
             ;;
         *)
             if (whiptail --title "gnome-core or gnome-extra" --yes-button "gnome-core" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome软件包套件' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell'
+                DEPENDENCY_01='--no-install-recommends xorg gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session'
             else
                 DEPENDENCY_01='task-gnome-desktop'
             fi
