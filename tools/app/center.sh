@@ -659,10 +659,9 @@ install_steam_app() {
 ####################
 install_gnome_games() {
     DEPENDENCY_01="gnome-games"
-    DEPENDENCY_02="phosh-games gnustep-games"
+    DEPENDENCY_02="five-or-more four-in-a-row gnome-chess gnome-klotski gnome-mahjongg gnome-mines gnome-nibbles gnome-robots gnome-sudoku gnome-taquin gnome-tetravex hitori iagno lightsoff quadrapassel swell-foop tali"
     case ${LINUX_DISTRO} in
-    debian) ;;
-    *) DEPENDENCY_02="five-or-more four-in-a-row gnome-chess gnome-klotski gnome-mahjongg gnome-mines gnome-nibbles gnome-robots gnome-sudoku gnome-taquin gnome-tetravex hitori iagno lightsoff quadrapassel swell-foop tali" ;;
+    debian) DEPENDENCY_01="gnome-games phosh-games gnustep-games" ;;
     esac
     beta_features_quick_install
 }
