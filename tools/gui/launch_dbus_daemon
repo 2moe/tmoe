@@ -12,13 +12,18 @@ check_dbus_daemon() {
     true)
         case $(id -u) in
         0)
-            rm -vf /run/dbus/pid
+            rm -vf /run/dbus/pid 2>/dev/null
             dbus_daemon_fork
             ;;
         *)
-            if [ ! -e "/run/dbus/pid" ]; then
-                dbus_daemon_fork
+            if [ -e "/run/dbus/pid" ]; then
+                if [ $(command -v sudo) ]; then
+                    sudo rm -vf /run/dbus/pid 2>/dev/null
+                else
+                    su -c "rm -vf /run/dbus/pid 2>/dev/null"
+                fi
             fi
+            dbus_daemon_fork
             ;;
         esac
         ;;
