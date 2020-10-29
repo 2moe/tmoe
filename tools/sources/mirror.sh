@@ -886,7 +886,7 @@ fedora_31_repos() {
     curl -o /etc/yum.repos.d/fedora-updates.repo http://${SOURCE_MIRROR_STATION}/repo/fedora-updates.repo
 }
 ###########
-#fedora清华源mirrors.tuna.tsinghua.edu.cn/fedora/releases/
+#fedora-bfsu:SOURCE_MIRROR_STATION=mirrors.bfsu.edu.cn
 fedora_32_repos() {
     cat >/etc/yum.repos.d/fedora.repo <<-EndOfYumRepo
 		[fedora]

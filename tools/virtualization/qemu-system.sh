@@ -130,7 +130,7 @@ creat_qemu_aarch64_startup_script() {
 			-vga std \
 			-m 2048 \
 			-hda ${HOME}/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
-			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
+			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic \
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
@@ -675,7 +675,7 @@ creat_qemu_startup_script() {
 			--accel tcg \
 			-m 2048 \
 			-hda ${HOME}/sd/Download/backup/alpine_v3.11_x64.qcow2 \
-			-virtfs local,id=shared_folder_dev_0,path=${HOME}/sd,security_model=none,mount_tag=shared0 \
+			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic,model=e1000 \
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \

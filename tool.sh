@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3402,Type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3403,Type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -578,10 +578,6 @@ check_dependencies() {
 					fi
 					yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL_VERSION}.noarch.rpm
 				fi
-				if [ ! $(command -v dnf) ]; then
-					yum install -y dnf
-					yum update
-				fi
 				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为北外源${PURPLE}[Y/n]${RESET}"
 				printf "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}\n"
 				printf "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]\n"
@@ -599,6 +595,10 @@ check_dependencies() {
 				n* | N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
 				esac
+				if [ ! $(command -v dnf) ]; then
+					yum install -y dnf
+					yum update
+				fi
 			fi
 			;;
 		esac
