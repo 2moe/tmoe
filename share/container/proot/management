@@ -99,7 +99,7 @@ check_tmoe_container_pid() {
 }
 ##################
 tips_of_check_pid() {
-	printf "${GREEN}%s ${YELLOW}%s${RESET}\n" "Checking" "process id ..."
+	printf "${GREEN}%s ${YELLOW}%s${RESET}\n" "DETECTING" "PROCESS ID ..."
 	printf "${BLOD}${YELLOW}%s${RESET}" "正在检测${DEBIAN_FOLDER}运行中的进程："
 	LSOF_TEMP_FILE="${TMPDIR}/.lsof.tmp"
 	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
