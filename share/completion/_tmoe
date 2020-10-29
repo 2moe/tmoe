@@ -94,6 +94,7 @@ function _tmoe() {
         "31:fedora 31"
         "32:fedora 32"
         "33:fedora 33"
+        "34:fedora 34"
         "3.12:alpine 3.12"
         "3.13:alpine 3.13"
         "edge:alpine edge"

@@ -42,11 +42,11 @@ software_center() {
             "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
             "3" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
             "4" "🎵 Multimedia:图像与影音(哔哩哔哩,gimp,mpv)" \
-            "5" "📚 Documents:文档(libreoffice,wps)" \
-            "6" "🔯 Packages&system:软件包与系统管理" \
-            "7" "🎮 Games:游戏(steam,wesnoth)" \
-            "8" "🐧 SNS:社交类(qq,skype)" \
-            "9" "🎁 Download:下载类(aria2,baidu,迅雷)" \
+            "5" "🎮 Games:游戏(steam,kdegames)" \
+            "6" "🐧 SNS:社交类(qq,skype)" \
+            "7" "📚 Documents:文档(libreoffice,wps)" \
+            "8" "🎁 Download:下载类(aria2,baidu,迅雷)" \
+            "9" "🔯 Packages&system:软件包与系统管理" \
             "10" "🥙 Start zsh tool:启动zsh管理工具" \
             "11" "🥗 File shared:文件共享与网盘(Webdav)" \
             "12" "💔 remove:卸载管理" \
@@ -60,11 +60,11 @@ software_center() {
     2) explore_debian_opt_repo ;;
     3) dev_menu ;;
     4) tmoe_multimedia_menu ;;
-    5) source_tmoe_document_app ;;
-    6) tmoe_software_package_menu ;;
-    7) tmoe_games_menu ;;
-    8) tmoe_social_network_service ;;
-    9) tmoe_download_class ;;
+    5) tmoe_games_menu ;;
+    6) tmoe_social_network_service ;;
+    7) source_tmoe_document_app ;;
+    8) tmoe_download_class ;;
+    9) tmoe_software_package_menu ;;
     10) start_tmoe_zsh_manager ;;
     11) personal_netdisk ;;
     12) tmoe_other_options_menu ;;
@@ -502,15 +502,14 @@ tmoe_games_menu() {
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "GAMES" --menu \
         "Which game do you want to install?" 0 50 0 \
-        "1" "KDE-games(包含各种小游戏)" \
-        "2" "GNOME-games" \
-        "3" "install Steam-x86_64(安装蒸汽游戏平台)" \
-        "4" "remove Steam(卸载)" \
-        "5" "cataclysm大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
-        "6" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
-        "7" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
-        "8" "retroarch(全能复古游戏模拟器)" \
-        "9" "dolphin-emu(任天堂wii模拟器)" \
+        "1" "🎮 KDE-games(KDE项目小游戏的集合)" \
+        "2" "👣 GNOME-games" \
+        "3" "🤓 Steam-x86_64(蒸汽游戏平台)" \
+        "4" "cataclysm-大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
+        "5" "wesnoth韦诺之战(奇幻背景的回合制策略战棋游戏)" \
+        "6" "retroarch(全能复古游戏模拟器)" \
+        "7" "mayomonogatari斯隆与马克贝尔的谜之物语(nds解谜游戏)" \
+        "8" "dolphin-emu(任天堂wii模拟器)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     #"6" "SuperTuxKart(3D卡丁车)" \    6) install_supertuxkart_game ;;
@@ -519,19 +518,25 @@ tmoe_games_menu() {
     0 | "") software_center ;;
     1) install_kde_games ;;
     2) install_gnome_games ;;
-    3) install_steam_app ;;
-    4) remove_steam_app ;;
-    5) install_game_cataclysm ;;
-    6) install_nds_game_mayomonogatari ;;
-    7) install_wesnoth_game ;;
-    8) install_retroarch ;;
-    9) install_dolphin-emu ;;
+    3) install_or_remove_steam_app ;;
+    4) install_game_cataclysm ;;
+    5) install_wesnoth_game ;;
+    6) install_retroarch ;;
+    7) install_nds_game_mayomonogatari ;;
+    8) install_dolphin-emu ;;
     esac
     ##########################
     press_enter_to_return
     tmoe_games_menu
 }
 #############
+install_or_remove_steam_app() {
+    if (whiptail --title "安装或卸载STEAM" --yes-button "install" --no-button "remove" --yesno 'Do you want to install or remove steam?' 0 0); then
+        install_steam_app
+    else
+        remove_steam_app
+    fi
+}
 install_retroarch() {
     DEPENDENCY_01='retroarch'
     case "${LINUX_DISTRO}" in
@@ -625,8 +630,8 @@ install_steam_app() {
     case "${ARCH_TYPE}" in
     amd64 | i386) ;;
     *)
-        printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构，请勿在该架构上安装steam"
-        printf "%s\n" "Do not install steam on this architecture."
+        printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构，${RED}请勿${RESET}在该架构上安装steam！！！建议您换用${GREEN}amd64${RESET}架构的设备。"
+        printf "%s\n" "Do not install steam on ${BLUE}${ARCH_TYPE}${RESET} architecture."
         printf "%s\n" "是否需要继续安装？"
         do_you_want_to_continue
         ;;
@@ -663,11 +668,11 @@ install_gnome_games() {
 }
 ########
 install_kde_games() {
-    DEPENDENCY_01="kdegames"
-    DEPENDENCY_02="libkdegames"
+    DEPENDENCY_01="libkdegames"
+    #arch linux :libkdegames
+    DEPENDENCY_02="bomber bovo granatier kapman katomic kblackbox kblocks kbounce kbreakout kdiamond kfourinline kgoldrunner kigo killbots kiriki kjumpingcube klickety klines kmahjongg kmines knavalbattle knetwalk knights kolf kollision konquest kpat kreversi kshisen ksirk ksnakeduel kspaceduel ksquares ksudoku ktuberling kubrick lskat palapeli picmi kajongg"
     case ${LINUX_DISTRO} in
-    debian) DEPENDENCY_02="" ;;
-    arch) DEPENDENCY_01="" ;;
+    debian) DEPENDENCY_01="kdegames" ;;
     redhat) DEPENDENCY_01="libkdegames4 kdegames3" ;;
     esac
     beta_features_quick_install

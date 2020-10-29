@@ -170,7 +170,7 @@ download_rootfs_file() {
 	if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
 		printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
 		printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
-		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 		#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 		aria2c -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 	fi

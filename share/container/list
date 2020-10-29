@@ -644,11 +644,11 @@ fedora_distro_menu() {
 	BETA_SYSTEM=$(
 		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
 			"1" "Auto check 自动检测版本" \
-			"2" "33(2020_10--2021_11)" \
-			"3" "34 rawhide(For testing only)" \
+			"2" "34 rawhide(For testing only)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+	#"2" "33(2020_10--2021_11)" \
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
@@ -656,7 +656,7 @@ fedora_distro_menu() {
 		OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 		check_the_latest_distro_version
 		;;
-	2)
+	20000)
 		DISTRO_CODE=33
 		case ${ARCH_TYPE} in
 		amd64) CORRENT_SHA256SUM='7c7c49d2b7e203e4c88d2c36108d3901a0e2713231c834a83cf3a8c5c97a0e6d' ;;
@@ -664,7 +664,7 @@ fedora_distro_menu() {
 		esac
 		git_clone_fedora_rootfs
 		;;
-	3)
+	2)
 		DISTRO_CODE=34
 		case ${ARCH_TYPE} in
 		amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
