@@ -42,7 +42,7 @@ software_center() {
             "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
             "3" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
             "4" "🎵 Multimedia:图像与影音(哔哩哔哩,gimp,mpv)" \
-            "5" "🎮 Games:游戏(steam,kdegames)" \
+            "5" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
             "6" "🐧 SNS:社交类(qq,skype)" \
             "7" "📚 Documents:文档(libreoffice,wps)" \
             "8" "🎁 Download:下载类(aria2,baidu,迅雷)" \
@@ -502,7 +502,7 @@ tmoe_games_menu() {
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "GAMES" --menu \
         "Which game do you want to install?" 0 50 0 \
-        "1" "🎮 KDE-games(KDE项目小游戏的集合)" \
+        "1" "🎮 KDE-games(KDE项目的小游戏合集)" \
         "2" "👣 GNOME-games" \
         "3" "🤓 Steam-x86_64(蒸汽游戏平台)" \
         "4" "cataclysm-大灾变-劫后余生(末日幻想背景的探索生存游戏)" \
