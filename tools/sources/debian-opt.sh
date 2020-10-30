@@ -252,7 +252,7 @@ install_opt_app_01() {
     case ${DEPENDENCY_01} in
     electron-netease-cloud-music)
         check_electron_netease_cloud_music
-        #check_163_music_icon
+        check_163_music_icon
         ;;
     listen1) check_listen1 ;;
     zy-player) install_electron_v8 ;;
