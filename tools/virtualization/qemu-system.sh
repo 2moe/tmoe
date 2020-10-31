@@ -127,7 +127,7 @@ creat_qemu_aarch64_startup_script() {
 			-cpu max \
 			-machine virt \
 			--accel tcg \
-			-vga std \
+			-vga virtio \
 			-m 2048 \
 			-hda ${HOME}/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
@@ -671,7 +671,7 @@ creat_qemu_startup_script() {
 			-monitor stdio \
 			-smp 4 \
 			-cpu max \
-			-vga std \
+			-vga virtio \
 			--accel tcg \
 			-m 2048 \
 			-hda ${HOME}/sd/Download/backup/alpine_v3.11_x64.qcow2 \
@@ -990,7 +990,7 @@ modify_qemu_vnc_display_port() {
 choose_qemu_iso_file() {
 	cd /usr/local/bin/
 	FILE_EXT_01='iso'
-	FILE_EXT_02='img'
+	FILE_EXT_02='ISO'
 	if grep -q '\--cdrom' startqemu; then
 		CURRENT_QEMU_ISO=$(cat startqemu | grep '\--cdrom' | tail -n 1 | awk '{print $2}')
 		IMPORTANT_TIPS="您当前已加载的iso文件为${CURRENT_QEMU_ISO}"
