@@ -4261,7 +4261,7 @@ modify_to_xfwm4_breeze_theme() {
 }
 ##########
 which_vnc_server_do_you_prefer() {
-    case ${REMOTE_DESKTOP_SESSION_01} in
+    case "${REMOTE_DESKTOP_SESSION_01}" in
     startplasma* | startlxqt | gnome* | cinnamon* | startdde | ukui* | budgie*)
         if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n检测到桌面的session/startup文件为${REMOTE_DESKTOP_SESSION_01},请选择tiger！\nPlease choose tiger vncserver！" 0 50); then
             tiger_vnc_variable
@@ -4400,7 +4400,7 @@ first_configure_startvnc() {
         fi
     fi
     ###########
-    case ${REMOTE_DESKTOP_SESSION_01} in
+    case "${REMOTE_DESKTOP_SESSION_01}" in
     xfce4-session)
         if [ -z "${RESOLUTION}" ]; then
             if (whiptail --title "Are you using a 720P/1080P monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用720P/1080P分辨率的屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若720P<=x<=1080p,则选择YES;若2K<=x<=4K,则选择NO\nIf you are using a high-dpi monitor, then select NO" 0 50); then
@@ -4629,9 +4629,13 @@ xfce4_x11vnc_hidpi_settings() {
 }
 ####################
 enable_dbus_launch() {
-    XSTARTUP_LINE=$(cat -n ${XSESSION_FILE} | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
+    XSTARTUP_LINE=$(cat -n ${XSESSION_FILE} | grep -v 'command' | grep "${REMOTE_DESKTOP_SESSION_01}" | awk -F ' ' '{print $1}' | head -n 1)
     #sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
     sed -i "${XSTARTUP_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
+    XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
+    sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
+    XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
+    sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
     #################
     #START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
     #sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
@@ -4641,7 +4645,7 @@ enable_dbus_launch() {
     #sed -i "${START_XSDL_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
     #################
     #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02} \&/" "/usr/local/bin/startx11vnc"
-    sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/  dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" ${XSESSION_FILE}
+    #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/  dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" ${XSESSION_FILE}
     #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
     #if [ "${LINUX_DISTRO}" != "debian" ]; then
     #    sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
