@@ -92,8 +92,12 @@ install_container_and_virtual_machine() {
 #####################
 check_qemu_aarch64_install() {
 	if [ ! $(command -v qemu-system-aarch64) ]; then
-		DEPENDENCY_01='qemu'
-		DEPENDENCY_02='qemu-system-arm'
+		if grep -q 'VERSION_CODENAME=buster' /etc/os-release; then
+			DEPENDENCY_01='-t buster-backports qemu-system-arm'
+		else
+			DEPENDENCY_01='qemu-system-arm'
+		fi
+		DEPENDENCY_02='qemu'
 		printf "%s\n" "请按回车键安装qemu-system-arm,否则您将无法使用本功能"
 		beta_features_quick_install
 	fi
@@ -633,6 +637,11 @@ check_qemu_install() {
 	DEPENDENCY_02=''
 	if [ ! $(command -v qemu-system-x86_64) ]; then
 		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+			if grep -q 'VERSION_CODENAME=buster' /etc/os-release; then
+				DEPENDENCY_01='-t buster-backports qemu qemu-system-x86'
+			else
+				DEPENDENCY_01='qemu qemu-system-x86'
+			fi
 			DEPENDENCY_01='qemu qemu-system-x86'
 			DEPENDENCY_02='qemu-system-gui'
 		elif [ "${LINUX_DISTRO}" = 'alpine' ]; then
