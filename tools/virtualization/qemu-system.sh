@@ -636,20 +636,23 @@ check_qemu_install() {
 	DEPENDENCY_01='qemu'
 	DEPENDENCY_02=''
 	if [ ! $(command -v qemu-system-x86_64) ]; then
-		if [ "${LINUX_DISTRO}" = 'debian' ]; then
+		case "${LINUX_DISTRO}" in
+		"debian")
 			if grep -q 'VERSION_CODENAME=buster' /etc/os-release; then
 				DEPENDENCY_01='-t buster-backports qemu qemu-system-x86'
 			else
 				DEPENDENCY_01='qemu qemu-system-x86'
 			fi
-			DEPENDENCY_01='qemu qemu-system-x86'
 			DEPENDENCY_02='qemu-system-gui'
-		elif [ "${LINUX_DISTRO}" = 'alpine' ]; then
+			;;
+		"alpine")
 			DEPENDENCY_01='qemu qemu-system-x86_64 qemu-system-i386'
 			DEPENDENCY_02='qemu-system-aarch64'
-		elif [ "${LINUX_DISTRO}" = 'arch' ]; then
+			;;
+		"arch")
 			DEPENDENCY_02='qemu-arch-extra'
-		fi
+			;;
+		esac
 		beta_features_quick_install
 	fi
 }
