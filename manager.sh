@@ -579,7 +579,7 @@ tmoe_manager_main_menu() {
 	RETURN_TO_MENU="${RETURN_TO_WHERE}"
 	tmoe_manager_main_menu_ja() {
 		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
+			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
 				--backtitle "Type tmoe m to start the manager" \
 				--menu "${TMOE_TIPS_00}\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
 				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
@@ -597,7 +597,7 @@ tmoe_manager_main_menu() {
 	}
 	tmoe_manager_main_menu_en() {
 		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
+			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
 				--backtitle "Type tmoe m to start the manager" \
 				--menu "${TMOE_TIPS_00}\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
@@ -615,7 +615,7 @@ tmoe_manager_main_menu() {
 	}
 	tmoe_manager_main_menu_zh() {
 		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}(2020-10)" \
+			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
 				--backtitle "Type tmoe m to start the manager" \
 				--menu "${TMOE_TIPS_00}\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \

@@ -237,10 +237,10 @@ install_gui() {
         if [ -e "font.ttf" ]; then
             mv -f font.ttf "${IOSEVKA_TTF_FILE}"
         else
-            curl -Lo 'Iosevka.tar.xz' 'https://gitee.com/mo2/Termux-zsh/raw/p10k/Iosevka.tar.xz'
-            tar -xvf 'Iosevka.tar.xz'
+            curl -Lo 'Iosevka.tar.xz' "https://gitee.com/ak2/iosevka-bold/raw/master/Iosevka.tar.xz"
+            tar -Jxvf 'Iosevka.tar.xz'
             rm -f 'Iosevka.tar.xz'
-            mv -f font.ttf "${IOSEVKA_TTF_FILE}"
+            mv -f Iosevka.ttf "${IOSEVKA_TTF_FILE}"
         fi
         cd /usr/share/fonts/truetype/iosevka/
         mkfontscale 2>/dev/null
