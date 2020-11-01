@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3412,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3413,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -460,6 +460,10 @@ choose_tmoe_locale_env() {
 		printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
 		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
 		printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
+		case ${LINUX_DISTRO} in
+		Android) ;;
+		*) sudo cp -fv ${TMOE_LOCALE_FILE} "${TMOE_LINUX_DIR}/locale.txt" ;;
+		esac
 		;;
 	esac
 }
