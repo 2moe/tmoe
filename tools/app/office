@@ -158,6 +158,10 @@ install_wps_office() {
     case "${LINUX_DISTRO}" in
     "debian")
         dpkg --configure -a
+        if [ ! -e "/usr/share/doc/ttf-mscorefonts-installer/copyright" ]; then
+            printf "%s\n" "apt install -y ttf-mscorefonts-installer"
+            apt install -y ttf-mscorefonts-installer
+        fi
         aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb
