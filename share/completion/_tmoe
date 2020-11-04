@@ -80,6 +80,7 @@ function _tmoe() {
     distro_code=(
         "20.10:ubuntu groovy"
         "20.04:ubuntu focal"
+        "21.04:ubuntu hirsute"
         "apricot:deepin 20"
         "camel:deepin 15.5"
         "s:debian sid"

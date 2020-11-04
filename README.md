@@ -346,7 +346,7 @@ Next, I will introduce the meaning of each parameter.
    在第三个参数中，"sid"可以简化为"s";"无版本代号"既可以简化为"n"，也可以忽略，直接使用第四个参数。
    Note: The following list does not include all codes. If there is no version code, you can skip it.
     如果版本代号不为空，且参数列表中没有出现其具体代号名称，那么请手动输入完整代号。
-    例如ubuntu 20.10,您可以用"20.10"来代替"groovy"，至于其他版本，例如"21.04"却不一定可以，故建议第三个参数使用完整的代号。
+    例如ubuntu 21.04,您可以用"21.04"来代替"hirsute"，至于其他版本却不一定可以，故建议第三个参数使用完整的代号。
     If the linux distro you choose has a version code, then we recommend that you type the complete code.
     For example, for Debian 12, you should use "tmoe c d bookworm" or "tmoe p d bookworm" instead of "tmoe c d 12".
 
@@ -356,6 +356,7 @@ Next, I will introduce the meaning of each parameter.
         "n:none(Rolling releases like archlinux do not have a version code)"
         "none:諸如arch之類的發行版無代號"
         "r:kali rolling"
+        "21.04:ubuntu hirsute"
         "20.10:ubuntu groovy"
         "20.04:ubuntu focal"
         "buster:debian10"
@@ -365,6 +366,7 @@ Next, I will introduce the meaning of each parameter.
         "31:fedora 31"
         "32:fedora 32"
         "33:fedora 33"
+        "34:fedora 34"
         "3.12:alpine 3.12"
         "3.13:alpine 3.13"
         "edge:alpine edge"
