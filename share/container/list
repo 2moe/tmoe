@@ -345,14 +345,15 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2022,则请手动输入版本代号" 0 50 0 \
-				"1" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
-				"2" "🐱 20.04(LTS)Focal Fossa 焦點馬島長尾狸貓" \
-				"3" "Compatibility mode 兼容模式(仅安装)" \
-				"4" "Custom code手动输入版本代号" \
-				"5" "使用debootstrap手动构建" \
-				"6" "18.04(LTS)Bionic Beaver 仿生海狸" \
-				"7" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
-				"8" "Latest(自動檢測21.04)" \
+				"1" "🦛 21.04 Hirsute Hippo 多毛河馬" \
+				"2" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
+				"3" "🐱 20.04(LTS)Focal Fossa 焦點馬島長尾狸貓" \
+				"4" "Compatibility mode 兼容模式(仅安装)" \
+				"5" "Custom code手动输入版本代号" \
+				"6" "使用debootstrap手动构建" \
+				"7" "18.04(LTS)Bionic Beaver 仿生海狸" \
+				"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
+				"9" "Latest(自動檢測21.10)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -360,14 +361,15 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_ja() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2022の場合は、コードをカスタマイズしてください" 0 50 0 \
-				"1" "🦍 20.10 Groovy Gorilla" \
-				"2" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
-				"3" "互換モード" \
-				"4" "カスタムコード" \
-				"5" "debootstrapを使用して手動でビルドする" \
-				"6" "18.04(LTS)Bionic Beaver" \
-				"7" "🐿️ 16.04(LTS)Xenial Xerus" \
-				"8" "Latest(最新バージョンを自動的に検出)" \
+				"1" "🦛 21.04 Hirsute Hippo" \
+				"2" "🦍 20.10 Groovy Gorilla" \
+				"3" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
+				"4" "互換モード" \
+				"5" "カスタムコード" \
+				"6" "debootstrapを使用して手動でビルドする" \
+				"7" "18.04(LTS)Bionic Beaver" \
+				"8" "🐿️ 16.04(LTS)Xenial Xerus" \
+				"9" "Latest(最新バージョンを自動的に検出)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -375,14 +377,15 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_en() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2022,then customize the version code" 0 50 0 \
-				"1" "🦍 20.10 Groovy Gorilla" \
-				"2" "🐱 20.04(LTS)Focal Fossa" \
-				"3" "Compatibility mode" \
-				"4" "Custom code" \
-				"5" "Manually build using debootstrap" \
-				"6" "18.04(LTS)Bionic Beaver" \
-				"7" "🐿️ 16.04(LTS)Xenial Xerus" \
-				"8" "Latest" \
+				"1" "🦛 21.04 Hirsute Hippo" \
+				"2" "🦍 20.10 Groovy Gorilla" \
+				"3" "🐱 20.04(LTS)Focal Fossa" \
+				"4" "Compatibility mode" \
+				"5" "Custom code" \
+				"6" "Manually build using debootstrap" \
+				"7" "18.04(LTS)Bionic Beaver" \
+				"8" "🐿️ 16.04(LTS)Xenial Xerus" \
+				"9" "Latest" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -396,17 +399,18 @@ install_ubuntu_gnu_linux_distro() {
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) DISTRO_CODE='groovy' ;;
-	2) DISTRO_CODE='focal' ;;
-	3)
+	1) DISTRO_CODE='hirsute' ;;
+	2) DISTRO_CODE='groovy' ;;
+	3) DISTRO_CODE='focal' ;;
+	4)
 		COMPATIBILITY_MODE='true'
 		custom_ubuntu_version
 		;;
-	4) custom_ubuntu_version ;;
-	5) debootstrap_ubuntu_distro ;;
-	6) DISTRO_CODE='bionic' ;;
-	7) DISTRO_CODE='xenial' ;;
-	8) check_the_latest_ubuntu_version ;;
+	5) custom_ubuntu_version ;;
+	6) debootstrap_ubuntu_distro ;;
+	7) DISTRO_CODE='bionic' ;;
+	8) DISTRO_CODE='xenial' ;;
+	9) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -577,10 +581,10 @@ install_different_ubuntu_gnu_linux_distros() {
 ############
 check_the_latest_ubuntu_version() {
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy' | tail -n 1)
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute' | tail -n 1)
 	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "未检测到最新版本，将自动获取ubuntu 20.10 groovy"
-		DISTRO_CODE='groovy'
+		printf "%s\n" "未检测到最新版本，将自动获取ubuntu 21.04 hirsute"
+		DISTRO_CODE='hirsute'
 		do_you_want_to_continue
 	fi
 }

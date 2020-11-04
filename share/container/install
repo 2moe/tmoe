@@ -977,10 +977,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#默认为ports源，armbian无需使用sed进行替换。
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal main restricted universe multiverse
-				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-updates main restricted universe multiverse
-				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-backports main restricted universe multiverse
-				deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-security main restricted universe multiverse
+				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
+				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
 				# proposed为预发布软件源，不建议启用
 				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 			EndOfFile
