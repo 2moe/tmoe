@@ -176,6 +176,10 @@ git_clone_tmoe_linux() {
 	if [ -e "/etc/os-release" ]; then
 		sed_a_source_list
 	fi
+	if [ ! -e "${HOME}/.face" ]; then
+		cp -v ${TMOE_GIT_DIR}/.mirror/icon.png ${HOME}/.face
+		ln -svf ${HOME}/.face ${HOME}/.face.icon
+	fi
 	mkdir -p /usr/share/applications
 	cp ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &

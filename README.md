@@ -415,10 +415,13 @@ Next, I will introduce the meaning of each parameter.
         "ash:command interpreter (shell)"
 -------------
 ```
-According to the description of the above parameters, it can be deduced that the startup command of the _debian-sid_amd64_ systemd-nspawn container is  
-```bash  
+
+According to the description of the above parameters, it can be deduced that the startup command of the _debian-sid_amd64_ systemd-nspawn container is
+
+```bash
 tmoe ns d s x
 ```
+
 ---
 
 #### SUMMARY
