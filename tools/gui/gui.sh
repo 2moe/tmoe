@@ -1169,7 +1169,10 @@ install_xfce4_desktop() {
     ##################
     beta_features_quick_install
     ####################
-    git_clone_kali_themes_common
+    case ${LINUX_DISTRO} in
+    alpine) ;;
+    *) git_clone_kali_themes_common ;;
+    esac
     debian_xfce4_extras
     if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
         download_arch_breeze_adapta_cursor_theme

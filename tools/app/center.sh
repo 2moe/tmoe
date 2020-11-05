@@ -824,7 +824,6 @@ install_game_cataclysm() {
         DEPENDENCY_02="cataclysm-dda cataclysm-dda-tiles"
         ;;
     esac
-
     beta_features_quick_install
     printf "%s\n" "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
     printf "%s\n" "在gui下，您需要输cataclysm-tiles来启动画面更为华丽的图形界面版游戏。"
