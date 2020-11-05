@@ -1165,6 +1165,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        apk update
 	        apk add bash
 			apk add tzdata
+			ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	    fi
 	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
 	    rm -f ~/.profile vnc-autostartup
