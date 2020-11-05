@@ -745,7 +745,7 @@ install_linux_qq() {
         printf "%s\n" "未检测到本地版本，您可能尚未安装腾讯QQ linux版客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
         printf "%s\n" "本地版本可能为${YELLOW}$(sed -n p ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version | head -n 1)${RESET}"
-        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02};rm -rv /usr/local/bin/crashpad_handler /usr/share/applications/qq.desktop /usr/local/share/tencent-qq /usr/local/bin/qq${RESET}"
     else
         printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
