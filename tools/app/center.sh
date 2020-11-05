@@ -814,8 +814,16 @@ install_nds_game_mayomonogatari() {
 }
 ##################
 install_game_cataclysm() {
-    DEPENDENCY_01="cataclysm-dda-curses"
-    DEPENDENCY_02="cataclysm-dda-sdl"
+    case ${LINUX_DISTRO} in
+    debian)
+        DEPENDENCY_01="cataclysm-dda-curses"
+        DEPENDENCY_02="cataclysm-dda-sdl"
+        ;;
+    *)
+        DEPENDENCY_01="cataclysm-dda-curses"
+        DEPENDENCY_02="cataclysm-dda cataclysm-dda-tiles"
+        ;;
+    esac
 
     beta_features_quick_install
     printf "%s\n" "在终端环境下，您需要缩小显示比例，并输入cataclysm来启动字符版游戏。"
