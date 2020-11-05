@@ -40,7 +40,7 @@ start_tmoe_x11vnc() {
 }
 ###################
 tmoe_x11vnc_preconfigure() {
-    if [ ! -e "${TMOE_X11_PASSWD_FILE}" ]; then
+    if [ ! -s "${TMOE_X11_PASSWD_FILE}" ]; then
         x11vncpasswd
     fi
 
