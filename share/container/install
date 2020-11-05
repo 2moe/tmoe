@@ -1164,6 +1164,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
 	        apk update
 	        apk add bash
+			apk add tzdata
 	    fi
 	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
 	    rm -f ~/.profile vnc-autostartup

@@ -668,11 +668,11 @@ install_gnome_games() {
 ########
 install_kde_games() {
     DEPENDENCY_01="libkdegames"
-    #arch linux :libkdegames
-    DEPENDENCY_02="bomber bovo granatier kapman katomic kblackbox kblocks kbounce kbreakout kdiamond kfourinline kgoldrunner kigo killbots kiriki kjumpingcube klickety klines kmahjongg kmines knavalbattle knetwalk knights kolf kollision konquest kpat kreversi kshisen ksirk ksnakeduel kspaceduel ksquares ksudoku ktuberling kubrick lskat palapeli picmi kajongg"
+    DEPENDENCY_02="bomber bovo granatier kapman katomic kblackbox kblocks kbounce kbreakout kdiamond kfourinline kgoldrunner kigo killbots kiriki kjumpingcube klickety klines kmahjongg kmines knavalbattle knetwalk knights kolf kollision konquest kreversi kshisen ksirk ksnakeduel kspaceduel ksquares ksudoku ktuberling kubrick lskat palapeli picmi kajongg"
     case ${LINUX_DISTRO} in
     debian) DEPENDENCY_01="kdegames" ;;
     redhat) DEPENDENCY_01="libkdegames4 kdegames3 libkdegames" ;;
+    arch) DEPENDENCY_01="kde-games" ;;
     esac
     beta_features_quick_install
 }
