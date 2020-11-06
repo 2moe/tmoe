@@ -132,7 +132,7 @@ creat_qemu_aarch64_startup_script() {
 			-machine virt \
 			--accel tcg \
 			-vga virtio \
-			-m 2048 \
+			-m 1024 \
 			-hda ${HOME}/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
@@ -685,7 +685,7 @@ creat_qemu_startup_script() {
 			-cpu max \
 			-vga virtio \
 			--accel tcg \
-			-m 2048 \
+			-m 1024 \
 			-hda ${HOME}/sd/Download/backup/alpine_v3.11_x64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
@@ -2747,10 +2747,10 @@ multi_qemu_vm_management() {
 save_current_qemu_conf_as_a_new_script() {
 	mkdir -p ${TMOE_QEMU_SCRIPT_FILE_PATH}
 	cd ${TMOE_QEMU_SCRIPT_FILE_PATH}
-	TARGET_FILE_NAME=$(whiptail --inputbox "请自定义启动脚本名称,当前虚拟机的命令始终为startqemu\nPlease enter the script name." 10 50 --title "SCRIPT NAME" 3>&1 1>&2 2>&3)
+	TARGET_FILE_NAME=$(whiptail --inputbox "请自定义启动脚本命令,不含空格和特殊符号,修改qemu配置后请选择保存虚拟机配置的选项,否则请使用默认命令startqemu\nPlease enter the script name，the default command is startqemu" 12 50 --title "SCRIPT NAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		multi_qemu_vm_management
-	elif [ "${TARGET_FILE_NAME}" = "startqemu" ] || [ "${TARGET_FILE_NAME}" = "debian-i" ] || [ "${TARGET_FILE_NAME}" = "startvnc" ]; then
+	elif [ $(command -v ${TARGET_FILE_NAME}) ]; then
 		printf "%s\n" "文件已被占用，请重新输入"
 		printf "%s\n" "Please re-enter."
 		press_enter_to_return
@@ -2907,7 +2907,7 @@ modify_qemu_cpu_cores_number() {
 ###########
 modify_qemu_ram_size() {
 	CURRENT_VALUE=$(cat startqemu | grep '\-m ' | head -n 1 | awk '{print $2}')
-	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为2048(单位M),当前为${CURRENT_VALUE}\nPlease enter the RAM size, the default is 2048" 10 53 --title "RAM" 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为1024(单位M),当前为${CURRENT_VALUE}\nPlease enter the RAM size, the default is 1024" 10 53 --title "RAM" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		#printf "%s\n" "检测到您取消了操作"
 		${RETURN_TO_WHERE}
