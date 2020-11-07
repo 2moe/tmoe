@@ -1489,13 +1489,23 @@ download_and_cat_icon_img() {
     fi
 }
 ###########
+where_is_gnu_libxcb() {
+    if [ $(command -v whereis) ]; then
+        GNU_LIBXCB="$(whereis libxcb.so.1.1.0)"
+    else
+        case $(uname -m) in
+        armv7* | armv6*) GNU_LIBXCB="/usr/lib/arm-linux-gnueabihf/libxcb.so.1.1.0" ;;
+        *) GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0" ;;
+        esac
+    fi
+}
+###########
 restore_debian_gnu_libxcb_so() {
     case ${TMOE_PROOT} in
     true | false)
         case ${LINUX_DISTRO} in
         debian)
-            GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0"
-            ORIGINAL_LIBXCB_FILE="${TMOE_LINUX_DIR}/libxcb.so.1.1.0"
+            where_is_gnu_libxcb
             if [ -e "${ORIGINAL_LIBXCB_FILE}" ]; then
                 mv -f ${ORIGINAL_LIBXCB_FILE} ${GNU_LIBXCB}
             fi

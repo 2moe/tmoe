@@ -28,7 +28,7 @@ which_vscode_edition() {
 }
 #################################
 copy_gnu_lib_xcb_so() {
-    GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0"
+    where_is_gnu_libxcb
     if [ ! -e "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]; then
         mkdir -p ${TMOE_LINUX_DIR}/lib
         cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}/lib/libxcb.so.1
@@ -37,9 +37,13 @@ copy_gnu_lib_xcb_so() {
 }
 ###########
 fix_tightvnc_vscode_lnk() {
-    sed -i "s@Exec=/usr/share/code-oss/code-oss@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code-oss/code-oss@g" ${APPS_LNK_DIR}/code-oss.desktop 2>/dev/null
-    sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
-    sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
+    if [ ! -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]; then
+        sed -i "s@Exec=/usr/share/code-oss/code-oss@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code-oss/code-oss@g" ${APPS_LNK_DIR}/code-oss.desktop 2>/dev/null
+        sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
+        sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
+    else
+        printf "${RED}%s${RESET}\n" "ERROR！无法修复。"
+    fi
 }
 #########
 fix_tightvnc_oss() {
