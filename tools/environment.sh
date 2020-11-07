@@ -1489,14 +1489,20 @@ download_and_cat_icon_img() {
     fi
 }
 ###########
+where_is_arm_gnu_libxcb() {
+    case $(uname -m) in
+    armv7* | armv6*) GNU_LIBXCB="/usr/lib/arm-linux-gnueabihf/libxcb.so.1.1.0" ;;
+    *) GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0" ;;
+    esac
+}
 where_is_gnu_libxcb() {
     if [ $(command -v whereis) ]; then
-        GNU_LIBXCB="$(whereis libxcb.so.1.1.0)"
-    else
-        case $(uname -m) in
-        armv7* | armv6*) GNU_LIBXCB="/usr/lib/arm-linux-gnueabihf/libxcb.so.1.1.0" ;;
-        *) GNU_LIBXCB="/usr/lib/$(uname -m)-linux-gnu/libxcb.so.1.1.0" ;;
+        GNU_LIBXCB="$(whereis libxcb.so.1.1.0 | awk '{print $2}')"
+        case ${GNU_LIBXCB} in
+        "") where_is_arm_gnu_libxcb ;;
         esac
+    else
+        where_is_arm_gnu_libxcb
     fi
 }
 ###########

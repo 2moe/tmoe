@@ -939,7 +939,7 @@ kali_xfce4_extras() {
     apt install -y zenmap
     apt install -y kali-themes-common
     case ${ARCH_TYPE} in
-    arm64 | armhf | armel) apt install -y kali-linux-arm ;;
+    arm64 | armhf | armel) apt install -y kali-linux-arm || aptitude install -y kali-linux-arm ;;
     esac
     if [ $(command -v chromium) ]; then
         apt install -y chromium-l10n
