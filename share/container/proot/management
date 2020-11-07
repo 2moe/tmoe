@@ -411,6 +411,9 @@ backup_tmoe_gnu_linux_distro() {
 		do_you_want_to_continue
 		source ${TMOE_SHARE_DIR}/compression/restore
 	else
+		case ${TMOE_CHROOT} in
+		true) source ${TMOE_SHARE_DIR}/removal/umount ;;
+		esac
 		source ${TMOE_SHARE_DIR}/compression/backup
 	fi
 }
