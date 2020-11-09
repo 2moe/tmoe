@@ -52,7 +52,7 @@ fix_tightvnc_oss() {
     若无法自动修复，则请手动使用以下命令来启动。
     env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib codium --user-data-dir=${HOME}/.codium
     env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code-oss --user-data-dir=${HOME}/.codeoss
-    env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code --user-data-dir=${HOME}/.code
+    env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code --user-data-dir=${HOME}/.vscode
 EOF
     non_debian_function
     copy_gnu_lib_xcb_so

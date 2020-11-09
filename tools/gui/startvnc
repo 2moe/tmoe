@@ -125,7 +125,8 @@ check_xvnc() {
 tmoe_vnc_preconfigure
 source_tmoe_dbus_daemon
 display_vnc_ip_addr
-check_vncsession
+#check_vncsession
+check_xvnc
 ##########
 #最后一行命令已废弃，仅作兼容性测试，直接修改其参数值可能不会生效。
 #20200912注:tigervnc-1.11.0-2及其之后的版本，可能无法使用旧版命令。
