@@ -307,7 +307,7 @@ install_skype() {
     THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
 
     case ${LINUX_DISTRO} in
-    redhat | debian) aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
+    redhat | debian) aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
     arch) beta_features_quick_install ;;
     esac
 
@@ -758,12 +758,12 @@ install_linux_qq() {
     arm64 | amd64)
         case ${LINUX_DISTRO} in
         debian)
-            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.deb ${THE_LATEST_DEB_URL}
+            aria2c --no-conf --allow-overwrite=true -k 1M -o LINUXQQ.deb ${THE_LATEST_DEB_URL}
             apt-cache show ./LINUXQQ.deb
             apt install -y ./LINUXQQ.deb
             ;;
         *)
-            aria2c --allow-overwrite=true -k 1M -o LINUXQQ.sh ${THE_LATEST_SH_URL}
+            aria2c --no-conf --allow-overwrite=true -k 1M -o LINUXQQ.sh ${THE_LATEST_SH_URL}
             chmod +x LINUXQQ.sh
             sudo ./LINUXQQ.sh
             #即使是root用户也需要加sudo
@@ -795,8 +795,8 @@ install_nds_game_mayomonogatari() {
     cd ${HOME}
     mkdir -p '斯隆与马克贝尔的谜之物语'
     cd '斯隆与马克贝尔的谜之物语'
-    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
-    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
+    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
+    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
     7za x slymkbr1.zip
     7za x mayomonogatari2.zip
     mv -f 斯隆与马克贝尔的谜之物语k73/* ./
@@ -907,7 +907,7 @@ install_chinese_manpages() {
         GREP_NAME='debian-handbook'
         LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/d/debian-handbook/'
         download_tuna_repo_deb_file_all_arch
-        #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.bfsu.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
+        #aria2c  --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'debian-handbook.deb' 'https://mirrors.bfsu.edu.cn/debian/pool/main/d/debian-handbook/debian-handbook_8.20180830_all.deb'
         THE_LATEST_DEB_FILE='kali-undercover.deb'
         ar xv ${LATEST_DEB_VERSION}
         tar -Jxvf data.tar.xz ./usr/share/doc/debian-handbook/html
@@ -933,7 +933,7 @@ install_baidu_netdisk() {
         printf ""
     else
         mkdir -p ${TMOE_ICON_DIR}
-        aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o ${DEPENDENCY_01}.png "https://gitee.com/ak2/icons/raw/master/${DEPENDENCY_01}.png"
+        aria2c --no-conf --allow-overwrite=true -d ${TMOE_ICON_DIR} -o ${DEPENDENCY_01}.png "https://gitee.com/ak2/icons/raw/master/${DEPENDENCY_01}.png"
     fi
 
     cat_icon_img
@@ -974,7 +974,7 @@ install_baidu_netdisk() {
         #GREP_NAME='baidunetdisk'
         #LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
         #download_ubuntu_kylin_deb_file_model_02
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
         #apt-cache show ./baidunetdisk.deb
         #apt install -y ./baidunetdisk.deb
         ;;
@@ -983,7 +983,7 @@ install_baidu_netdisk() {
         beta_features_quick_install
         ;;
     "redhat")
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "${THE_LATEST_RPM_URL}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "${THE_LATEST_RPM_URL}"
         rpm -ivh 'baidunetdisk.rpm'
         ;;
     esac
@@ -997,7 +997,7 @@ install_netease_163_cloud_music() {
     ICON_FILE="${TMOE_ICON_DIR}/netease-cloud-music.jpg"
     if [ ! -e "${ICON_FILE}" ]; then
         mkdir -p ${TMOE_ICON_DIR}
-        aria2c --allow-overwrite=true -d ${TMOE_ICON_DIR} -o netease-cloud-music.jpg "https://gitee.com/ak2/icons/raw/master/netease-cloud-music.jpg"
+        aria2c --no-conf --allow-overwrite=true -d ${TMOE_ICON_DIR} -o netease-cloud-music.jpg "https://gitee.com/ak2/icons/raw/master/netease-cloud-music.jpg"
     fi
 
     cat_icon_img
@@ -1048,7 +1048,7 @@ install_netease_163_cloud_music() {
         "amd64")
             LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
             download_ubuntu_kylin_deb_file_model_02
-            #aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
+            #aria2c  --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
             ;;
         *)
             LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/pool/main/n/netease-cloud-music/'

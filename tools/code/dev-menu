@@ -352,7 +352,7 @@ download_android_studio() {
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.tar.gz 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
     ${DOWNLOAD_FILE_NAME}) printf "%s\n" "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
-    *) aria2c --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${DOWNLOAD_FILE_NAME} -x 10 -s 10 -k 1M ${THE_LATEST_DEB_LINK} ;;
+    *) aria2c --no-conf --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${DOWNLOAD_FILE_NAME} -x 10 -s 10 -k 1M ${THE_LATEST_DEB_LINK} ;;
     esac
     printf "%s\n" "${THE_LATEST_APP_VERSION_CODE}" >"${LOCAL_APP_VERSION_TXT}"
 }
@@ -394,7 +394,7 @@ install_sublime_text_stable() {
         cd /etc/apt/trusted.gpg.d
         if [ ! -e "${GPG_FILE_NAME}" ]; then
             printf "%s\n" "${YELLOW}${GPG_URL}${RESET}"
-            aria2c --allow-overwrite=true -o ${GPG_FILE_NAME} ${GPG_URL}
+            aria2c --no-conf --allow-overwrite=true -o ${GPG_FILE_NAME} ${GPG_URL}
             chmod a+r ${GPG_FILE_NAME}
         fi
         apt-key add ${GPG_FILE_NAME}

@@ -637,7 +637,7 @@ download_ubuntu_ppa_deb_model_01() {
     THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME}" | head -n 1 | cut -d '=' -f 5 | cut -d '"' -f 2)"
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
     printf "%s\n" "${THE_LATEST_DEB_LINK}"
-    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
     apt install ./${THE_LATEST_DEB_VERSION}
     rm -fv ${THE_LATEST_DEB_VERSION}
 }

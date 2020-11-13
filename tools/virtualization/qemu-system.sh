@@ -2971,7 +2971,7 @@ alpine_qemu_old() {
 ###########
 download_alpine_and_docker_x64_img_file_again() {
 	#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
-	#aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	#aria2c  --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 	cd /tmp
 	git clone --depth=1 -b x64 https://gitee.com/ak2/alpine_qemu .ALPINE_QEMU_TEMP_FOLDER
 	cd .ALPINE_QEMU_TEMP_FOLDER
@@ -3169,13 +3169,6 @@ dd_flash_iso_to_udisk() {
 	dd <${TMOE_FILE_ABSOLUTE_PATH} >${DD_OF_TARGET}
 }
 ############
-download_win10_19041_x64_iso() {
-	ISO_FILE_NAME='19041.172.200320-0621.VB_RELEASE_SVC_PROD3_CLIENTMULTI_X64FRE_ZH-CN.iso'
-	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
-	download_windows_tmoe_iso_model
-}
-##########
 set_it_as_the_tmoe_qemu_iso() {
 	cd /usr/local/bin
 	sed -i '/--cdrom /d' startqemu
@@ -3185,22 +3178,22 @@ set_it_as_the_tmoe_qemu_iso() {
 }
 ########
 download_tmoe_iso_file_again() {
-	printf "%s\n" "即将为您下载win10 19041 iso镜像文件..."
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "${ISO_FILE_NAME}" "${TMOE_ISO_URL}"
+	printf "%s\n" "即将为您下载win10 iso镜像文件..."
+	aria2c --no-conf -x 6 -k 1M --split=6 --allow-overwrite=true -o "${ISO_FILE_NAME}" "${TMOE_ISO_URL}"
 	qemu-img info ${ISO_FILE_NAME}
 }
 ################
 download_win10_2004_x64_iso() {
-	ISO_FILE_NAME='win10_2004_x64_tmoe.iso'
+	ISO_FILE_NAME='win10-19042_tmoe_x64.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	TMOE_ISO_URL="https://m.tmoe.me/win10_x64-latest-iso"
 	download_windows_tmoe_iso_model
 }
 #############################
 download_win10_19041_arm64_iso() {
-	ISO_FILE_NAME='win10_2004_arm64_tmoe.iso'
+	ISO_FILE_NAME='win10-19042_tmoe_arm64.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://webdav.tmoe.me/down/share/windows/20H1/${ISO_FILE_NAME}"
+	TMOE_ISO_URL="https://m.tmoe.me/win10_arm64-latest-iso"
 	cat <<-'EOF'
 		本文件为uupdump转换的原版iso
 		若您需要在qemu虚拟机里使用，那么请手动制作Windows to Go启动盘
@@ -3229,8 +3222,8 @@ download_windows_tmoe_iso_model() {
 download_windows_10_iso() {
 	RETURN_TO_WHERE='download_windows_10_iso'
 	VIRTUAL_TECH=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
-		"1" "win10_2004_x64(多合一版)" \
-		"2" "win10_2004_arm64" \
+		"1" "win10_20h2_x64(uup多合一版)" \
+		"2" "win10_20h2_arm64(uup)" \
 		"3" "other" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
@@ -3405,7 +3398,7 @@ download_android_x86_file() {
 	esac
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
 	#printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	#aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
+	#aria2c  --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
 	aria2c_download_file
 }
 ################
@@ -3651,7 +3644,7 @@ check_tmoe_qemu_qcow2_file_and_git() {
 }
 ##############################
 download_debian_tmoe_arm64_img_file_again() {
-	aria2c --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	aria2c --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ##########
 download_debian_iso_file() {
@@ -3750,19 +3743,19 @@ download_debian_weekly_builds_iso() {
 	#https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-netinst.iso"
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
 }
 ##################
 download_debian_free_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso"
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
 }
 ############
 download_debian_nonfree_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}%2Bnonfree.iso"
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
 }
 ####################
 qemu_main "$@"

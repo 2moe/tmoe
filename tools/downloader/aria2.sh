@@ -1554,7 +1554,7 @@ update_aria2_bt_tracker() {
         sed -i '$a bt-tracker='${list} ${TMOE_ARIA2_FILE}
         printf "%s\n" "添加中......"
     fi
-    # pkill aria2c && systemctl start aria2
+    # pkill aria2c  --no-conf && systemctl start aria2
 }
 #######################
 check_tmoe_aria2_config_value() {
@@ -2003,7 +2003,7 @@ tmoe_aria2_onekey() {
     fi
 
     #cp -pvf ${HOME}/gitee/linux-gitee/.config/aria2.conf ./
-    aria2c --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
+    aria2c --no-conf --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
     case ${TMOE_PROOT} in
     true) printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下" ;;
     false) printf "%s\n" "检测到您处于${BLUE}chroot容器${RESET}环境下" ;;
@@ -2017,7 +2017,7 @@ After=network.target
 
 [Service]
 PIDFile=/run/aria2.pid
-ExecStart=su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 &&aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf"
+ExecStart=su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 &&aria2c  --no-conf --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf"
 ExecStop=/bin/kill \$MAINPID ;su - ${CURRENT_USER_NAME} -c "pkill aria2c"
 RestartSec=always
 
@@ -2053,7 +2053,7 @@ DAEMON_OPTS=""
 case "\$1" in
   start)
     printf "%s\n" "Starting aria2c... "
-    su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 && aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf & "
+    su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 && aria2c  --no-conf --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf & "
     ;;
   stop)
     printf "%s\n" "Stopping aria2c... "
@@ -2088,11 +2088,11 @@ exit 0
     ########################################
     cd ${TMOE_ARIA2_PATH}
     if [ ! -e "dht.dat" ]; then
-        aria2c --allow-overwrite=true -o dht.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht.dat
+        aria2c --no-conf --allow-overwrite=true -o dht.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht.dat
         chmod 666 dht.dat
     fi
     if [ ! -e "dht6.dat" ]; then
-        aria2c --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht6.dat
+        aria2c --no-conf --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht6.dat
         chmod 666 dht6.dat
     fi
     creat_aria2_hook_script
@@ -2106,7 +2106,7 @@ exit 0
 aria2_restart() {
     pkill aria2c
     printf '%s\n' '正在启动aria2 rpc服务...'
-    su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
+    su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c  --no-conf --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
     if [ ! "$(pgrep aria2c)" ]; then
         service aria2 start
     fi
@@ -2245,7 +2245,7 @@ creat_ariang_script() {
     TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
     if [ ! $(pgrep aria2c) ]; then
         cd ${TMOE_ARIA2_PATH}
-        aria2c --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
+        aria2c  --no-conf --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
     fi
 
     ARIANG_DARK_INDEX_FILE='/usr/local/etc/tmoe-linux/aria2/ariang_dark.html'
@@ -2262,7 +2262,7 @@ creat_aria_ng_desktop_link() {
         if [ -e "${ARIA_NG_ICON}" ]; then
             cp ${ARIA_NG_ICON} /usr/share/icons
         else
-            aria2c --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
+            aria2c --no-conf --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
         fi
     fi
     catimg "/usr/share/icons/ariang.png" 2>/dev/null

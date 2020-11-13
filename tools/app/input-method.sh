@@ -530,7 +530,7 @@ install_debian_baidu_pinyin() {
         cd /tmp/.BAIDU_IME
         THE_Latest_Link='https://imeres.baidu.com/imeres/ime-res/guanwang/img/Ubuntu_Deepin-fcitx-baidupinyin-64.zip'
         printf "%s\n" "${THE_Latest_Link}"
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'fcitx-baidupinyin.zip' "${THE_Latest_Link}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'fcitx-baidupinyin.zip' "${THE_Latest_Link}"
         unzip 'fcitx-baidupinyin.zip'
         DEB_FILE_NAME="$(ls -l ./*deb | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')"
         apt install ${DEB_FILE_NAME}
@@ -578,7 +578,7 @@ sougou_pinyin_amd64() {
     "arm64" | "i386")
         LatestSogouPinyinLink=$(curl -L 'https://pinyin.sogou.com/linux' | grep ${ARCH_TYPE} | grep 'deb' | head -n 1 | cut -d '=' -f 3 | cut -d '?' -f 1 | cut -d '"' -f 2)
         printf "%s\n" "${LatestSogouPinyinLink}"
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'sogou_pinyin.deb' "${LatestSogouPinyinLink}"
         ;;
     *)
         printf "%s\n" "架构不支持，跳过安装搜狗输入法。"

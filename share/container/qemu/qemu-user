@@ -151,7 +151,7 @@ download_qemu_user() {
 	TEMP_FOLDER='.QEMU_USER_BIN'
 	mkdir -p ${TEMP_FOLDER}
 	cd ${TEMP_FOLDER}
-	aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	unxz_deb_file
 	copy_qemu_user_bin_files
 }

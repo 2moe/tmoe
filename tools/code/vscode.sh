@@ -198,7 +198,7 @@ After the update is complete, you can type ${GREEN}code-server${RESET} to start 
         mkdir -p .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
         LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'x86_64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
         tar -zxvf .VSCODE_SERVER.tar.gz
         VSCODE_FOLDER_NAME=$(ls -l ./ | grep '^d' | awk -F ' ' '$0=$NF')
         mv ${VSCODE_FOLDER_NAME} code-server-data
@@ -293,7 +293,7 @@ install_vscodium() {
         LatestVSCodiumLink="$(curl -L https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${ARCH_TYPE} | grep -v '.sha256' | grep '\.deb' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         CODIUM_FILE_URL="https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' ${CODIUM_FILE_URL}
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.deb' ${CODIUM_FILE_URL}
         apt-cache show ./VSCodium.deb
         #apt install -y ./VSCodium.deb
         dpkg -i ./VSCodium.deb
@@ -306,14 +306,14 @@ install_vscodium() {
         LatestVSCodiumLink="$(curl -L https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/ | grep ${CodiumARCH} | grep -v '.sha256' | grep '.tar' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         CODIUM_FILE_URL="https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.tar.gz' ${CODIUM_FILE_URL}
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.tar.gz' ${CODIUM_FILE_URL}
         mkdir -p /opt/vscodium-data
         tar -zxvf VSCodium.tar.gz -C /opt/vscodium-data
         rm -vf VSCodium.tar.gz
         cp -f ${TMOE_TOOL_DIR}/code/bin/codium /usr/local/bin
         cp -f ${TMOE_TOOL_DIR}/code/lnk/codium.desktop ${APPS_LNK_DIR}
         if [ ! -e "/usr/share/icons/vscodium.png" ]; then
-            aria2c -d '/usr/share/icons' -o 'vscodium.png' 'https://gitee.com/ak2/icons/raw/master/vscodium.png'
+            aria2c --no-conf -d '/usr/share/icons' -o 'vscodium.png' 'https://gitee.com/ak2/icons/raw/master/vscodium.png'
         fi
         #ln -sf /opt/vscodium-data/codium /usr/local/bin/codium
         printf "%s\n" "安装完成，您可以输codium启动"
@@ -348,7 +348,7 @@ install_vscode_oss() {
 }
 #######################
 download_vscode_x64_deb() {
-    aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "${CODE_BIN_URL}"
+    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.deb' "${CODE_BIN_URL}"
     apt-cache show ./VSCODE.deb
     dpkg -i ./VSCODE.deb || apt install -y ./VSCODE.deb
     rm -vf VSCODE.deb
@@ -419,14 +419,14 @@ install_vscode_official() {
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
         ;;
     redhat)
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "${CODE_BIN_URL}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "${CODE_BIN_URL}"
         rpm -ivh ./VSCODE.rpm
         rm -vf VSCODE.rpm
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
         ;;
     *)
         fix_fedora_electron_libxssl
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "${CODE_BIN_URL}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "${CODE_BIN_URL}"
         tar -zxvf VSCODE.tar.gz -C /usr/share
         rm -rv /usr/share/code 2>/dev/null
         mv /usr/share/${CODE_BIN_FOLDER} /usr/share/code
@@ -434,7 +434,7 @@ install_vscode_official() {
         #if [ ! -e "/usr/share/code/.electron" ]; then
         printf "%s\n" "${CODE_BIN_FOLDER}" >/usr/share/code/.electron
         CODE_SHARE_FILE='.VSCODE_USR_SHARE.tar.gz'
-        aria2c --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
+        aria2c --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
         tar -Jxvf ${CODE_SHARE_FILE} -C /
         #chown 0:0 /usr/share/zsh /usr/share/mime /usr/share/applications /usr/share/appdata /usr/share/bash-completion /usr/share/pixmaps /usr/share/zsh/vendor-completions /usr/share/zsh/vendor-completions/_code /usr/share/applications/code.desktop /usr/share/applications/code-url-handler.desktop /usr/share/code /usr/share/appdata/code.appdata.xml /usr/share/mime/packages/code-workspace.xml /usr/share/bash-completion/completions/code /usr/share/pixmaps/com.visualstudio.code.png
         rm -vf ${CODE_SHARE_FILE}

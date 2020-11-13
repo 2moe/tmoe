@@ -76,7 +76,7 @@ tmoe_locale_gen() {
 if [ $(command -v curl) ]; then
 	curl -Lvo .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 elif [ $(command -v aria2c) ]; then
-	aria2c --allow-overwrite=true -o .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
+	aria2c --no-conf --allow-overwrite=true -o .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 elif [ $(command -v wget) ]; then
 	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
 else

@@ -344,7 +344,7 @@ modify_rc_local_script() {
 start_neofetch() {
 	if [ ! $(command -v neofetch) ]; then
 		cd /usr/local/bin
-		aria2c --allow-overwrite=true -o neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
+		aria2c --no-conf --allow-overwrite=true -o neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
 		chmod +x neofetch
 	fi
 	if [ -e /usr/games/lolcat ]; then

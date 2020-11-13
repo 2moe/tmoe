@@ -162,7 +162,7 @@ install_wps_office() {
             printf "%s\n" "apt install -y ttf-mscorefonts-installer"
             apt install -y ttf-mscorefonts-installer
         fi
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb
         ;;
@@ -171,7 +171,7 @@ install_wps_office() {
         beta_features_quick_install
         ;;
     "redhat")
-        aria2c --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
         rpm -ivh ./WPSoffice.rpm
         ;;
     esac

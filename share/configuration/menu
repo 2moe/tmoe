@@ -124,7 +124,7 @@ install_fortunes_cn() {
         TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP
         mkdir -p ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
-        aria2c --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
+        aria2c --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
         dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./
         cd usr/share/games/fortunes
         for i in $(readlink ./*); do

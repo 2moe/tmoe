@@ -20,7 +20,7 @@ download_termux_apk_again() {
 	printf '%s\n' 'Downloading termux apk...'
 	printf '%s\n' '正在为您下载至/sdcard/Download目录...'
 	printf '%s\n' '下载完成后，需要您手动安装。'
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://apk.tmoe.me/termux' || aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://apk.tmoe.me/termux'
+	aria2c --no-conf -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://apk.tmoe.me/termux' || aria2c --no-conf -x 16 -k 1M --split=16 --allow-overwrite=true -o "com.termux_Fdroid.apk" 'https://apk.tmoe.me/termux'
 	install_termux_apk
 }
 install_termux_apk() {

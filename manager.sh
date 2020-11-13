@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3436,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3437,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -557,22 +557,22 @@ choose_termux_color_scheme() {
 	[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
 
 	if (whiptail --title "colors.properties" --yes-button "neon" --no-button "monokai" --yesno "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色。" 9 50); then
-		aria2c -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/neon'
+		aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/neon'
 	else
-		aria2c -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/monokai.dark'
+		aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/monokai.dark'
 	fi
 	if [ ! -s "${HOME}/.termux/font.ttf" ]; then
 		if (whiptail --title "FONT" --yes-button "MesloLGS-NF-Bold(粗)" --no-button "Iosevka(细)" --yesno "Your font file does not exist,please choose termux font.\n请选择终端字体。" 9 50); then
-			aria2c -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/iosevka_and_meslo-lgs-nf/raw/main/meslo-lgs-nf.tar.xz'
+			aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/iosevka_and_meslo-lgs-nf/raw/main/meslo-lgs-nf.tar.xz'
 		else
-			aria2c -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/iosevka_and_meslo-lgs-nf/raw/main/iosevka.tar.xz'
+			aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/iosevka_and_meslo-lgs-nf/raw/main/iosevka.tar.xz'
 		fi
 		tar -Jxvf font.tar.xz
 	fi
 	printf "%s\n" "set-default-termux-color-scheme-and-font" >${CONFIG_FOLDER}/v1.1beta
 	if [ ! -s "termux.properties" ]; then
 		if (whiptail --title "termux.properties" --yes-button "yes" --no-button "no" --yesno "Your termux.properties is empty,do you want to creat it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
-			aria2c --allow-overwrite=true -o "termux.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/termux.properties'
+			aria2c --no-conf --allow-overwrite=true -o "termux.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/termux.properties'
 		fi
 	fi
 	termux-reload-settings

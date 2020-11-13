@@ -14,7 +14,11 @@ download_old_version_video_tutorial() {
 }
 ##########################
 download_old_version_video_tutorial() {
-	aria2c -x 16 -k 1M --split=16 --allow-overwrite=true -o "20200229vnc教程06.mp4" 'https://webdav.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4' || curl -Lo "20200229vnc教程06.mp4" 'https://webdav.tmoe.me/down/share/videos/20200229vnc%E6%95%99%E7%A8%8B06.mp4'
+	if [ $(command -v aria2c) ]; then
+		aria2c --no-conf -x 6 -k 1M --split=6 --allow-overwrite=true -o "20200229vnc教程06.mp4" "https://m.tmoe.me/tmoe-vnc_video-tutorial_06"
+	else
+		curl -Lo "20200229vnc教程06.mp4" "https://m.tmoe.me/tmoe-vnc_video-tutorial_06"
+	fi
 	play_video_tutorial
 }
 #######################
