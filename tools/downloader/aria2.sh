@@ -1554,7 +1554,7 @@ update_aria2_bt_tracker() {
         sed -i '$a bt-tracker='${list} ${TMOE_ARIA2_FILE}
         printf "%s\n" "添加中......"
     fi
-    # pkill aria2c  --no-conf && systemctl start aria2
+    # pkill aria2c&& systemctl start aria2
 }
 #######################
 check_tmoe_aria2_config_value() {
@@ -2017,7 +2017,7 @@ After=network.target
 
 [Service]
 PIDFile=/run/aria2.pid
-ExecStart=su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 &&aria2c  --no-conf --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf"
+ExecStart=su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 &&aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf"
 ExecStop=/bin/kill \$MAINPID ;su - ${CURRENT_USER_NAME} -c "pkill aria2c"
 RestartSec=always
 
@@ -2053,7 +2053,7 @@ DAEMON_OPTS=""
 case "\$1" in
   start)
     printf "%s\n" "Starting aria2c... "
-    su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 && aria2c  --no-conf --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf & "
+    su - ${CURRENT_USER_NAME} -c  "cd /usr/local/etc/tmoe-linux/aria2 && aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf & "
     ;;
   stop)
     printf "%s\n" "Stopping aria2c... "
@@ -2106,7 +2106,7 @@ exit 0
 aria2_restart() {
     pkill aria2c
     printf '%s\n' '正在启动aria2 rpc服务...'
-    su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c  --no-conf --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
+    su - ${CURRENT_USER_NAME} -c "cd /usr/local/etc/tmoe-linux/aria2 && nohup aria2c --conf-path=/usr/local/etc/tmoe-linux/aria2/aria2.conf &>/dev/null &"
     if [ ! "$(pgrep aria2c)" ]; then
         service aria2 start
     fi
@@ -2245,7 +2245,7 @@ creat_ariang_script() {
     TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
     if [ ! $(pgrep aria2c) ]; then
         cd ${TMOE_ARIA2_PATH}
-        aria2c  --no-conf --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
+        aria2c --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
     fi
 
     ARIANG_DARK_INDEX_FILE='/usr/local/etc/tmoe-linux/aria2/ariang_dark.html'
