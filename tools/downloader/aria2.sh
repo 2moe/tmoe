@@ -2058,13 +2058,13 @@ case "\$1" in
   stop)
     printf "%s\n" "Stopping aria2c... "
     pkill aria2c
-     log_daemon_msg "Stopping $DESC" "$NAME"
-     start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --remove-pidfile --exec $DAEMON
+     log_daemon_msg "Stopping \$DESC" "\$NAME"
+     start-stop-daemon --stop --quiet --oknodo --pidfile \$PIDFILE --remove-pidfile --exec \$DAEMON
      log_end_msg $?
 
     ;;
   status)
-  status_of_proc -p $PIDFILE "\$DAEMON" "\$NAME" && exit 0 || exit \$?
+  status_of_proc -p \$PIDFILE "\$DAEMON" "\$NAME" && exit 0 || exit \$?
     ;;
   *)
     printf "%s\n" "Usage: /etc/init.d/aria2 {start|stop|status}"
@@ -2240,18 +2240,18 @@ creat_ariang_script() {
     fi
     cd /usr/local/bin
     cat >startariang <<-'EOF'
-    #!/bin/sh
-    set -e
-    TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
-    if [ ! $(pgrep aria2c) ]; then
-        cd ${TMOE_ARIA2_PATH}
-        aria2c --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
-    fi
+#!/usr/bin/env bash
+set -e
+TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
+if [ ! $(pgrep aria2c) ]; then
+    cd ${TMOE_ARIA2_PATH}
+    aria2c --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
+fi
 
-    ARIANG_DARK_INDEX_FILE='/usr/local/etc/tmoe-linux/aria2/ariang_dark.html'
-    if [ -r ${ARIANG_DARK_INDEX_FILE} ]; then
-        /usr/bin/sensible-browser ${ARIANG_DARK_INDEX_FILE}
-    fi
+ARIANG_DARK_INDEX_FILE='/usr/local/etc/tmoe-linux/aria2/ariang_dark.html'
+if [ -r ${ARIANG_DARK_INDEX_FILE} ]; then
+    /usr/bin/sensible-browser ${ARIANG_DARK_INDEX_FILE}
+fi
 EOF
     chmod +x startariang
 }
@@ -2275,7 +2275,7 @@ Comment=AriaNg, a modern web frontend making aria2 easier to use.
 Keywords=aria2;web-frontend;index;html;download;webgui;javascript;ui;ariang;web
 Exec=/usr/local/bin/startariang
 Icon=/usr/share/icons/ariang.png
-Terminal=false
+Terminal=true
 Categories=Network;
 EOF
     chmod +r ariang.desktop
