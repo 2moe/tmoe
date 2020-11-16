@@ -2030,8 +2030,8 @@ WantedBy=multi-user.target
 #!/usr/bin/env bash
 ### BEGIN INIT INFO
 # Provides:          aria2
-# Required-Start:    $network $local_fs $remote_fs
-# Required-Stop:     $remote_fs
+# Required-Start:    \$network \$local_fs \$remote_fs
+# Required-Stop:     \$remote_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: High speed download utility
