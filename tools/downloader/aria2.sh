@@ -2243,10 +2243,12 @@ creat_ariang_script() {
 set -e
 TMOE_ARIA2_PATH='/usr/local/etc/tmoe-linux/aria2'
 if [ ! $(pgrep aria2c) ]; then
-    cd ${TMOE_ARIA2_PATH}
-    aria2c --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
+    systemctl start aria2 || sudo service aria2 start
+    if [ ! $(pgrep aria2c) ]; then
+        cd ${TMOE_ARIA2_PATH}
+        aria2c --conf-path=${TMOE_ARIA2_PATH}/aria2.conf &
+    fi    
 fi
-
 ARIANG_DARK_INDEX_FILE='/usr/local/etc/tmoe-linux/aria2/ariang_dark.html'
 if [ -r ${ARIANG_DARK_INDEX_FILE} ]; then
     /usr/bin/sensible-browser ${ARIANG_DARK_INDEX_FILE}
