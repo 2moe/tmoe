@@ -2060,8 +2060,7 @@ case "\$1" in
     pkill aria2c
      log_daemon_msg "Stopping \$DESC" "\$NAME"
      start-stop-daemon --stop --quiet --oknodo --pidfile \$PIDFILE --remove-pidfile --exec \$DAEMON
-     log_end_msg $?
-
+     log_end_msg \$?
     ;;
   status)
   status_of_proc -p \$PIDFILE "\$DAEMON" "\$NAME" && exit 0 || exit \$?
