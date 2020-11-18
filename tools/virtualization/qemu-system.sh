@@ -3000,7 +3000,7 @@ download_alpine_and_docker_x64_img_file_again() {
 	#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine-3.12_amd64-tmoe_20201118.tar.xz'
 	#aria2c  --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 	cd /tmp
-	git clone --depth=1 -b x64 https://gitee.com/ak2/alpine-3.12_amd64-qemu .ALPINE_QEMU_TEMP_FOLDER
+	git clone --depth=1 https://gitee.com/ak2/alpine-3.12_amd64-qemu .ALPINE_QEMU_TEMP_FOLDER
 	cd .ALPINE_QEMU_TEMP_FOLDER
 	cat .qemu_image* >alpine-3.12_amd64-tmoe_20201118.tar.xz
 	mv alpine-3.12_amd64-tmoe_20201118.tar.xz ${DOWNLOAD_PATH}
