@@ -1006,7 +1006,7 @@ install_docker_portainer() {
     docker stop portainer 2>/dev/null
     docker rm portainer 2>/dev/null
     #docker rmi portainer/portainer:latest 2>/dev/null
-    docker pull portainer/portainer:latest
+    docker pull portainer/portainer-ce:latest
     printf "%s\n" "docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest"
     docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
 }

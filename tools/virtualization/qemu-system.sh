@@ -136,7 +136,7 @@ creat_qemu_aarch64_startup_script() {
 			-hda ${HOME}/sd/Download/backup/debian-10.4.1-20200515-tmoe_arm64.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
-			-net nic \
+			-net nic,model=e1000 \
 			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
@@ -236,14 +236,14 @@ modify_qemu_tmoe_network_card() {
 	cd /usr/local/bin/
 	RETURN_TO_WHERE='modify_qemu_tmoe_network_card'
 	if grep -q '\-net nic,model' startqemu; then
-		CURRENT_VALUE=$(cat startqemu | grep '\-net nic,model' | tail -n 1 | awk '{print $2}' | cut -d '=' -f 2)
+		CURRENT_VALUE=$(cat startqemu | grep '\-net nic,model' | head -n 1 | awk '{print $2}' | cut -d '=' -f 2)
 	else
 		CURRENT_VALUE='未指定'
 	fi
 	VIRTUAL_TECH=$(
 		whiptail --title "网卡型号" --menu "Please select the network card model.\n当前为${CURRENT_VALUE}" 16 50 7 \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
-			"00" "未指定" \
+			"00" "virtio" \
 			"01" "e1000:alias e1000-82540em" \
 			"02" "e1000-82544gc:Intel Gigabit Ethernet" \
 			"03" "e1000-82545em" \
@@ -275,7 +275,7 @@ modify_qemu_tmoe_network_card() {
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") modify_tmoe_qemu_network_settings ;;
-	00) switch_tmoe_qemu_network_card_to_default ;;
+	00) TMOE_QEMU_NETWORK_CARD="virtio" ;;
 	01) TMOE_QEMU_NETWORK_CARD="e1000" ;;
 	02) TMOE_QEMU_NETWORK_CARD="e1000-82544gc" ;;
 	03) TMOE_QEMU_NETWORK_CARD="e1000-82545em" ;;
@@ -304,7 +304,9 @@ modify_qemu_tmoe_network_card() {
 	26) TMOE_QEMU_NETWORK_CARD="rocker" ;;
 	esac
 	###############
-	sed -i "s/-net nic.*/-net nic,model=${TMOE_QEMU_NETWORK_CARD} \\\/" startqemu
+	NET_CARD_LINE=$(sed -n p startqemu | grep -n '\-net nic.*model=' | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+	#sed -i "s/-net nic.*/-net nic,model=${TMOE_QEMU_NETWORK_CARD} \\\/" startqemu
+	sed -i "${NET_CARD_LINE}c\-net nic,model=${TMOE_QEMU_NETWORK_CARD} \\" startqemu
 	printf "%s\n" "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
@@ -660,7 +662,7 @@ check_qemu_install() {
 creat_qemu_startup_script() {
 	mkdir -p ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
-	cat >startqemu_amd64_2020060314 <<-'EndOFqemu'
+	cat >startqemu_amd64_20201118 <<-'EndOFqemu'
 		#!/usr/bin/env bash
 		export DISPLAY=127.0.0.1:0
 		export PULSE_SERVER=127.0.0.1
@@ -683,22 +685,24 @@ creat_qemu_startup_script() {
 			-monitor stdio \
 			-smp 4 \
 			-cpu max \
-			-vga virtio \
 			--accel tcg \
+			-vga virtio \
+			-soundhw ac97 \
 			-m 1024 \
-			-hda ${HOME}/sd/Download/backup/alpine_v3.11_x64.qcow2 \
+			-hda ${HOME}/sd/Download/backup/alpine-3.12_amd64-tmoe_20201118.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
 			-boot order=cd,menu=on \
 			-net nic,model=e1000 \
-			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::49080-0.0.0.0:80 \
+			-net nic,model=virtio \
+			-net user,hostfwd=tcp::2888-0.0.0.0:22,hostfwd=tcp::5903-0.0.0.0:5901,hostfwd=tcp::39081-0.0.0.0:39080,hostfwd=tcp::49080-0.0.0.0:80 \
 			-rtc base=localtime \
 			-vnc :2 \
 			-usb \
 			-device usb-tablet \
 			-name "tmoe-linux-qemu"
 	EndOFqemu
-	chmod +x startqemu_amd64_2020060314
-	cp -pf startqemu_amd64_2020060314 /usr/local/bin/startqemu
+	chmod +x startqemu_amd64_20201118
+	cp -pf startqemu_amd64_20201118 /usr/local/bin/startqemu
 }
 ###########
 modify_qemu_machine_accel() {
@@ -1045,7 +1049,7 @@ choose_qemu_qcow2_or_img_file() {
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
-		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
+		#-hda /root/.aqemu/alpine-3.12_amd64-tmoe_20201118.qcow2 \
 		sed -i '/-hda /d' startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -hda tmoe_hda_config_test \\\n/' startqemu
 		sed -i "s@-hda tmoe_hda_config_test@-hda ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
@@ -1857,7 +1861,7 @@ set_it_as_the_default_qemu_iso() {
 	printf "%s\n" "是否将其设置为默认的qemu光盘？"
 	do_you_want_to_continue
 	cd /usr/local/bin
-	sed -i '/--cdrom /d' startqemu
+	sed -i '/-cdrom /d' startqemu
 	sed -i '$!N;$!P;$!D;s/\(\n\)/\n    --cdrom tmoe_hda_config_test \\\n/' startqemu
 	sed -i "s@--cdrom tmoe_hda_config_test@--cdrom ${TMOE_FILE_ABSOLUTE_PATH}@" startqemu
 	#printf "%s\n" "设置完成，您之后可以输startqemu启动"
@@ -1898,23 +1902,37 @@ download_virtio_drivers() {
 		printf "%s\n" "即将为您下载至${DOWNLOAD_PATH}"
 		BRANCH_NAME='win'
 		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/virtio'
-		DOWNLOAD_FILE_NAME='virtio-win.tar.gz'
+		DOWNLOAD_FILE_NAME='virtio-win-0.1.189.iso'
 		QEMU_QCOW2_FILE_PREFIX='.virtio_'
-		QEMU_DISK_FILE_NAME='virtio-win.iso'
+		QEMU_DISK_FILE_NAME='virtio-win-0.1.189.iso'
 		TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
-		check_tmoe_qemu_iso_file_and_git
-		uncompress_tar_gz_file
+		#check_tmoe_qemu_iso_file_and_git
+		#uncompress_tar_gz_file
+		THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
+		#check_arch_linux_qemu_qcow2_file
+		TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+		if [ -f "${TMOE_FILE_ABSOLUTE_PATH}" ]; then
+			if (whiptail --title "检测到virtio.iso已下载,请选择您需要执行的操作！" --yes-button '设为默认iso' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to set it as the default iso, or download it again?" 0 0); then
+				do_you_want_to_continue
+			else
+				aria2c_download_file
+			fi
+		else
+			aria2c_download_file
+		fi
 		set_it_as_the_default_qemu_iso
 		;;
 	2)
-		#https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
 		THE_LATEST_ISO_LINK='https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso'
 		aria2c_download_file
+		#TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
+		#set_it_as_the_default_qemu_iso
 		;;
 	3)
 		FEDORA_VIRTIO_URL='https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html'
 		printf "%s\n" "url: ${FEDORA_VIRTIO_URL}"
 		su "${CURRENT_USER_NAME}" -c "xdg-open ${FEDORA_VIRTIO_URL}"
+		printf "%s\n" "请将默认iso光盘文件设置为${DOWNLOAD_PATH}目录下的virtio-win.iso,进入win虚拟机后，再安装virtio驱动。"
 		#xdg-open 'https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html' 2>/dev/null
 		;;
 	4)
@@ -1948,7 +1966,7 @@ choose_drive_virtio_disk_01() {
 		qemu-img check ${TMOE_FILE_ABSOLUTE_PATH}
 		ls -lah ${TMOE_FILE_ABSOLUTE_PATH}
 		cd /usr/local/bin
-		#-hda /root/.aqemu/alpine_v3.11_x64.qcow2 \
+		#-hda /root/.aqemu/alpine-3.12_amd64-tmoe_20201118.qcow2 \
 		sed -i '/=drive-virtio-disk/d' startqemu
 		sed -i '$!N;$!P;$!D;s/\(\n\)/\n    -virtio_disk tmoe_virtio_disk_config_test \\\n/' startqemu
 		sed -i "s@-virtio_disk tmoe_virtio_disk_config_test@-drive file=${TMOE_FILE_ABSOLUTE_PATH},format=qcow2,if=virtio,id=drive-virtio-disk0@" startqemu
@@ -1964,7 +1982,7 @@ start_tmoe_qemu_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_manager'
 	RETURN_TO_MENU='start_tmoe_qemu_manager'
 	check_qemu_install
-	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_2020060314" ]; then
+	if [ ! -e "${HOME}/.config/tmoe-linux/startqemu_amd64_20201118" ]; then
 		printf "%s\n" "启用x86_64虚拟机将重置startqemu为x86_64的配置"
 		rm -fv ${HOME}/.config/tmoe-linux/startqemu*
 		creat_qemu_startup_script
@@ -2331,32 +2349,37 @@ tmoe_qemu_templates_repo() {
 	CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 	LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
 	VIRTUAL_TECH=$(
-		whiptail --title "QEMU TEMPLATES" --menu "Welcome to 施工现场(ﾟДﾟ*)ﾉ\nUEFI与legacy bios为开机引导类型" 0 50 0 \
-			"1" "alpine_x64(含docker,217M,legacy)" \
-			"2" "Debian buster_arm64/x64(300M,UEFI)" \
-			"3" "Arch_x64(678M,legacy)" \
-			"4" "FreeBSD_x64(500M,legacy)" \
-			"5" "Winserver2008R2数据中心版_x64(2.2G,legacy)" \
-			"6" "Ubuntu kylin优麒麟20.04_x64(1.8G,uefi)" \
-			"7" "LMDE4_x64(linux mint,2.7G,legacy)" \
-			"8" "Explore templates探索共享模板(未开放)" \
-			"9" "share 分享你的qemu配置(未开放)" \
+		whiptail --title "QEMU TEMPLATES" --menu "本仓库仅含镜像，不含配置文件，以下所有镜像均内置docker" 0 50 0 \
+			"1" "Alpine-3.12_x64(244M,legacy)" \
+			"2" "Debian-bullseye_x64(766M,legacy+UEFI)" \
+			"3" "Arch_x64(1G,legacy)" \
+			"4" "Ubuntu-focal_x64(1.37G,legacy)" \
+			"5" "Kali_x64(xfce4,3.26G,legacy)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+	#
+	#"4" "FreeBSD_x64(500M,legacy)" \
+	#"5" "Winserver2008R2数据中心版_x64(2.2G,legacy)" \
+	#	"6" "Ubuntu kylin优麒麟20.04_x64(1.8G,uefi)" \
+	#	"7" "LMDE4_x64(linux mint,2.7G,legacy)" \
+	#	"8" "Explore templates探索共享模板(未开放)" \
+	#	"9" "share 分享你的qemu配置(未开放)"
 	#Explore configuration templates
+	#4) download_freebsd_qcow2_file ;;
+	#5) download_windows_server_2008_data_center_qcow2_file ;;
+	#6) download_ubuntu_kylin_20_04_qcow2_file ;;
+	#7) download_lmde_4_qcow2_file ;;
+	#8) explore_qemu_configuration_templates ;;
+	#9) share_qemu_conf_to_git_branch_qemu ;;
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) download_alpine_and_docker_x64_img_file ;;
 	2) download_debian_qcow2_file ;;
 	3) download_arch_linux_qcow2_file ;;
-	4) download_freebsd_qcow2_file ;;
-	5) download_windows_server_2008_data_center_qcow2_file ;;
-	6) download_ubuntu_kylin_20_04_qcow2_file ;;
-	7) download_lmde_4_qcow2_file ;;
-	8) explore_qemu_configuration_templates ;;
-	9) share_qemu_conf_to_git_branch_qemu ;;
+	4) download_ubuntu_linux_qcow2_file ;;
+	5) download_kali_linux_qcow2_file ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_templates_repo
@@ -2922,30 +2945,34 @@ modify_qemu_ram_size() {
 }
 #################
 download_alpine_and_docker_x64_img_file() {
+	#User: test, password: test
+	#由于root密码为空，故请使用普通用户连接，用户test,密码test
+	#在登录完普通用户后，您可以输${GREEN}su -${RESET}来切换至root用户
+	#为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码
 	cat <<-EOF
 		You can use this image to run docker on Android system.
-		The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5902. If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, enter ${GREEN}ssh -p 2888 test@localhost${RESET}
-		User: test, password: test
+		The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5902. 
+		The default root passwd is empty.
+		After entering the system,you should type ${GREEN}passwd${RESET} to change your password.
+		If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, you can type ${GREEN}ssh -p 2888 root@localhost${RESET}
+
 		您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker
-		默认root密码为空
 		您可以直接使用vnc客户端连接，访问地址为localhost:5902
-		如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入apt update ;apt install -y openssh
+		默认root密码为空。
+		请在登录完成后，输入${GREEN}passwd${RESET}修改root密码。
+		如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入${GREEN}apt update ;apt install -y openssh${RESET}
 		您也可以直接在linux容器里使用ssh客户端，输入${TMOE_INSTALLATION_COMMAND} openssh-client
-		在安装完ssh客户端后，使用${GREEN}ssh -p 2888 test@localhost${RESET}连接
-		由于root密码为空，故请使用普通用户连接，用户test,密码test
-		在登录完普通用户后，您可以输${GREEN}su -${RESET}来切换至root用户
-		为了您的安全着想，请在虚拟机启动完成后，输入${GREEN}passwd${RESET}来修改密码
-		Download size(下载大小)约217MB，解压后约为1.2GB
+		在安装完ssh客户端后，使用${GREEN}ssh -p 2888 root@localhost${RESET}连接
+		Download size(下载大小)约244MiB，解压后约为1GiB
 	EOF
 	do_you_want_to_continue
-	DOWNLOAD_FILE_NAME='alpine_v3.11_x64-qemu.tar.xz'
+	DOWNLOAD_FILE_NAME='alpine-3.12_amd64-tmoe_20201118.tar.xz'
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
-	QEMU_DISK_FILE_NAME='alpine_v3.11_x64.qcow2'
+	QEMU_DISK_FILE_NAME='alpine-3.12_amd64-tmoe_20201118.qcow2'
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
 			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
@@ -2970,15 +2997,15 @@ alpine_qemu_old() {
 }
 ###########
 download_alpine_and_docker_x64_img_file_again() {
-	#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine_v3.11_x64-qemu.tar.xz'
+	#THE_LATEST_ISO_LINK='https://m.tmoe.me/down/share/Tmoe-linux/qemu/alpine-3.12_amd64-tmoe_20201118.tar.xz'
 	#aria2c  --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 	cd /tmp
-	git clone --depth=1 -b x64 https://gitee.com/ak2/alpine_qemu .ALPINE_QEMU_TEMP_FOLDER
+	git clone --depth=1 -b x64 https://gitee.com/ak2/alpine-3.12_amd64-qemu .ALPINE_QEMU_TEMP_FOLDER
 	cd .ALPINE_QEMU_TEMP_FOLDER
-	cat alpine_v3.11_* >alpine_v3.11_x64-qemu.tar.xz
-	mv alpine_v3.11_x64-qemu.tar.xz ${DOWNLOAD_PATH}
+	cat .qemu_image* >alpine-3.12_amd64-tmoe_20201118.tar.xz
+	mv alpine-3.12_amd64-tmoe_20201118.tar.xz ${DOWNLOAD_PATH}
 	cd ../
-	rm -rf .ALPINE_QEMU_TEMP_FOLDER
+	rm -rvf .ALPINE_QEMU_TEMP_FOLDER
 	cd ${DOWNLOAD_PATH}
 }
 ###########
@@ -3042,6 +3069,7 @@ expand_qemu_qcow2_img_file() {
 	printf '%s\n' '建议您在调整容量前对磁盘文件进行备份。'
 	printf '%s\n' '调整完成之后，您可以在虚拟机内部使用resize2fs命令对磁盘空间进行重新识别，例如resize2fs /dev/sda1'
 	printf '%s\n' '在扩容之后，您必须在虚拟机系统内对该镜像进行分区并格式化后才能真正开始使用新空间。 在收缩磁盘映像前，必须先使用虚拟机内部系统的分区工具减少该分区的大小，然后相应地收缩磁盘映像，否则收缩磁盘映像将导致数据丢失'
+	printf "%s\n" "If you want to check /dev/sda1,you can type: e2fsck -f /dev/sda1;resize2fs -f /dev/sda1 ;fdisk -l /dev/sda1"
 	printf '%s\n' 'Arch wiki:After enlarging the disk image, you must use file system and partitioning tools inside the virtual machine to actually begin using the new space. When shrinking a disk image, you must first reduce the allocated file systems and partition sizes using the file system and partitioning tools inside the virtual machine and then shrink the disk image accordingly, otherwise shrinking the disk image will result in data loss! For a Windows guest, open the "create and format hard disk partitions" control panel.'
 	do_you_want_to_continue
 	choose_tmoe_qemu_qcow2_model
@@ -3406,10 +3434,10 @@ download_debian_qcow2_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
-	if (whiptail --title "Edition" --yes-button "tmoe" --no-button 'openstack_arm64' --yesno "您想要下载哪个版本的磁盘镜像文件？\nWhich edition do you want to download?" 0 50); then
+	if (whiptail --title "Edition" --yes-button "bullseye-tmoe" --no-button 'buster-openstack' --yesno "您想要下载哪个版本的磁盘镜像文件?\nWhich edition do you want to download?" 0 50); then
 		download_tmoe_debian_x64_or_arm64_qcow2_file
 	else
-		GREP_ARCH='arm64'
+		GREP_ARCH='amd64'
 		QCOW2_REPO='https://mirrors.ustc.edu.cn/debian-cdimage/openstack/current/'
 		THE_LATEST_FILE_VERSION=$(curl -L ${QCOW2_REPO} | grep "${GREP_ARCH}" | grep qcow2 | grep -v '.index' | cut -d '=' -f 2 | cut -d '"' -f 2 | tail -n 1)
 		THE_LATEST_ISO_LINK="${QCOW2_REPO}${THE_LATEST_FILE_VERSION}"
@@ -3480,27 +3508,53 @@ download_ubuntu_kylin_20_04_qcow2_file() {
 ###################
 download_arch_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
-	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20200605.tar.xz'
-	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20200605.qcow2'
-	printf '%s\n' 'Download size(下载大小)约678MiB，解压后约为‪1.755GiB'
-	#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/arch_linux_x64_tmoe_20200605.tar.xz'
+	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20201117.tar.xz'
+	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20201117.qcow2'
+	printf '%s\n' 'Download size(下载大小)约1018MiB，解压后约为‪2.86GiB'
+	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
 	note_of_qemu_boot_legacy_bios
 	note_of_empty_root_password
 	do_you_want_to_continue
 	check_arch_linux_qemu_qcow2_file
 }
 ################
+download_ubuntu_linux_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
+	DOWNLOAD_FILE_NAME='ubuntu-focal_amd64-tmoe_20201118.tar.xz'
+	QEMU_DISK_FILE_NAME='ubuntu-focal_amd64-tmoe_20201118.qcow2'
+	printf '%s\n' 'Download size(下载大小)约1.4GiB，解压后约为‪5.14GiB'
+	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
+	note_of_qemu_boot_legacy_bios
+	note_of_empty_root_password
+	do_you_want_to_continue
+	check_arch_linux_qemu_qcow2_file
+}
+####################
+download_kali_linux_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
+	DOWNLOAD_FILE_NAME='kali_linux_x64_tmoe_20201117.tar.xz'
+	QEMU_DISK_FILE_NAME='kali_linux_x64_tmoe_20201117.qcow2'
+	printf '%s\n' 'Download size(下载大小)约3.3GiB，解压后约为‪11.64GiB'
+	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
+	note_of_qemu_boot_legacy_bios
+	note_of_empty_root_password
+	do_you_want_to_continue
+	check_arch_linux_qemu_qcow2_file
+}
+####################
 check_arch_linux_qemu_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?" 0 0); then
-			printf "%s\n" "解压后将重置虚拟机的所有数据"
+			printf "%s\n" "解压后将重置磁盘文件的所有数据"
 			do_you_want_to_continue
 		else
-			git_clone_arch_linux_qemu_qcow2_file
+			#git_clone_arch_linux_qemu_qcow2_file
+			aria2c_download_file
 		fi
 	else
-		git_clone_arch_linux_qemu_qcow2_file
+		aria2c_download_file
+		#git_clone_arch_linux_qemu_qcow2_file
 	fi
 	uncompress_alpine_and_docker_x64_img_file
 	set_it_as_default_qemu_disk
@@ -3539,28 +3593,25 @@ git_clone_tmoe_linux_qemu_qcow2_file() {
 download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	QEMU_ARCH=$(
-		whiptail --title "Debian qcow2 tmoe edition" --menu "Which version do you want to download？\n您想要下载哪个版本的磁盘文件?${QEMU_ARCH_STATUS}" 0 0 0 \
-			"1" "Buster x86_64" \
-			"2" "Buster arm64" \
-			"3" "关于ssh-server的说明" \
+		whiptail --title "Debian qcow2 tmoe edition" --menu "${QEMU_ARCH_STATUS}" 0 0 0 \
+			"1" "Bullseye amd64" \
+			"2" "关于ssh-server的说明" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+	#"2" "Buster arm64" \
 	####################
 	case ${QEMU_ARCH} in
 	0 | "") tmoe_qemu_templates_repo ;;
 	1)
-		DOWNLOAD_FILE_NAME='debian-10.4-generic-20200604_tmoe_x64.tar.xz'
-		QEMU_DISK_FILE_NAME='debian-10-generic-20200604_tmoe_x64.qcow2'
+		DOWNLOAD_FILE_NAME='debian-bullseye_amd64-20201117_tmoe.tar.xz'
+		QEMU_DISK_FILE_NAME='debian-bullseye_amd64-20201117_tmoe.qcow2'
 		CURRENT_TMOE_QEMU_BIN='/usr/bin/qemu-system-aarch64'
 		LATER_TMOE_QEMU_BIN='/usr/bin/qemu-system-x86_64'
-		printf '%s\n' 'Download size(下载大小)约282MiB，解压后约为‪1.257GiB'
-		#THE_LATEST_ISO_LINK='https://webdav.tmoe.me/down/share/Tmoe-linux/qemu/debian-10.4-generic-20200604_tmoe_x64.tar.xz'
-		TMOE_LINUX_QEMU_REPO='https://gitee.com/ak2/debian_qemu'
-		BRANCH_NAME='x64'
-		QEMU_QCOW2_FILE_PREFIX='debian_linux_'
+		printf '%s\n' 'Download size(下载大小)约766.6MiB，解压后约为‪3.5GiB'
+		THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
 		;;
-	2)
+	99999)
 		DOWNLOAD_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.tar.xz'
 		QEMU_DISK_FILE_NAME='debian-10.4.1-20200515-tmoe_arm64.qcow2'
 		printf '%s\n' 'Download size(下载大小)约339MiB，解压后约为‪1.6779GiB'
@@ -3570,7 +3621,7 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 		BRANCH_NAME='arm64'
 		QEMU_QCOW2_FILE_PREFIX='debian_linux_'
 		;;
-	3)
+	2)
 		cat <<-'EOF'
 			       若sshd启动失败，则请执行dpkg-reconfigure openssh-server
 				   如需使用密码登录ssh，则您需要手动修改sshd配置文件
@@ -3584,13 +3635,12 @@ download_tmoe_debian_x64_or_arm64_qcow2_file() {
 	esac
 	###############
 	do_you_want_to_continue
-	#download_debian_tmoe_qemu_qcow2_file
-	check_tmoe_qemu_qcow2_file_and_git
+	download_debian_tmoe_qemu_qcow2_file
+	#check_tmoe_qemu_qcow2_file_and_git
 	press_enter_to_return
 	download_tmoe_debian_x64_or_arm64_qcow2_file
 }
 #####################
-#################
 set_it_as_default_qemu_disk() {
 	printf "%s\n" "文件已解压至${DOWNLOAD_PATH}"
 	cd ${DOWNLOAD_PATH}
@@ -3618,10 +3668,10 @@ download_debian_tmoe_qemu_qcow2_file() {
 			printf "%s\n" "解压后将重置虚拟机的所有数据"
 			do_you_want_to_continue
 		else
-			download_debian_tmoe_arm64_img_file_again
+			aria2c_download_file
 		fi
 	else
-		download_debian_tmoe_arm64_img_file_again
+		aria2c_download_file
 	fi
 	uncompress_alpine_and_docker_x64_img_file
 	set_it_as_default_qemu_disk
@@ -3644,7 +3694,7 @@ check_tmoe_qemu_qcow2_file_and_git() {
 }
 ##############################
 download_debian_tmoe_arm64_img_file_again() {
-	aria2c --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	aria2c --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ##########
 download_debian_iso_file() {
