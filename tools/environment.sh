@@ -1200,7 +1200,7 @@ download_electron() {
 }
 ###########
 electron_v8_env() {
-    ELECTRON_VERSION='8.5.2'
+    ELECTRON_VERSION='8.5.4'
     DOWNLOAD_PATH="/opt/electron-v8"
 }
 #########
