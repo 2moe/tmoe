@@ -687,7 +687,7 @@ creat_qemu_startup_script() {
 			-cpu max \
 			--accel tcg \
 			-vga virtio \
-			-soundhw ac97 \
+			-soundhw es1370 \
 			-m 1024 \
 			-hda ${HOME}/sd/Download/backup/alpine-3.12_amd64-tmoe_20201118.qcow2 \
 			-virtfs local,id=shared_folder_dev_0,path=${HOME},security_model=none,mount_tag=shared0 \
