@@ -859,11 +859,10 @@ install_nginx_webdav() {
 ##########
 add_debian_opt_gpg_key() {
     cd /etc/apt/trusted.gpg.d
-    if [ ! -e "bintray-public.key.asc" ]; then
-        aria2c --no-conf --allow-overwrite=true -o bintray-public.key.asc 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray'
-        chmod a+r bintray-public.key.asc
+    if [ ! -e "debian-opt.gpg" ]; then
+        curl -L 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray' | gpg --dearmor >/tmp/debian-opt.gpg
+        install -o root -g root -m 644 /tmp/debian-opt.gpg /etc/apt/trusted.gpg.d/
     fi
-    apt-key add bintray-public.key.asc
     printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
     apt update
 }

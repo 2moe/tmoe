@@ -334,6 +334,11 @@ install_vscode_oss() {
         install_gpg
         copy_gnu_lib_xcb_so
         fix_tightvnc_vscode_lnk
+        if [ ! -s "/etc/apt/trusted.gpg.d/code-oss.gpg" ]; then
+            curl -L https://packagecloud.io/headmelted/codebuilds/gpgkey | gpg --dearmor >/tmp/code-oss.gpg
+            install -o root -g root -m 644 /tmp/code-oss.gpg /etc/apt/trusted.gpg.d/
+            apt update
+        fi
         bash -c "$(wget -O- https://code.headmelted.com/installers/apt.sh)"
     elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
         . <(wget -O- https://code.headmelted.com/installers/yum.sh)
