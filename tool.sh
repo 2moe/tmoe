@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3449,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3450,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -519,6 +519,11 @@ check_dependencies() {
 		case "${LINUX_DISTRO}" in
 		gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/wget" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} wget" ;;
+		esac
+	fi
+	if [ ! $(command -v whereis) ]; then
+		case "${LINUX_DISTRO}" in
+		debian) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
 		esac
 	fi
 	##############
