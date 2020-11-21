@@ -37,8 +37,8 @@ qemu_system_menu() {
 		whiptail --title "qemu-system" --menu "您想要选择哪一项呢？" 0 0 0 \
 			"1" "tmoe-qemu:x86_64虚拟机管理" \
 			"2" "tmoe-qemu:arm64虚拟机管理" \
-			"3" "aqemu(QEMU和KVM的Qt5前端)" \
-			"4" "virt-manager(红帽共享的GUI虚拟机管理器)" \
+			"3" "virt-manager(GUI虚拟机管理器)" \
+			"4" "aqemu(QEMU和KVM的Qt5前端)" \
 			"5" "gnome-boxes(简单地管理远程和本地虚拟系统)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -48,8 +48,8 @@ qemu_system_menu() {
 	0 | "") install_container_and_virtual_machine ;;
 	1) start_tmoe_qemu_manager ;;
 	2) start_tmoe_qemu_aarch64_manager ;;
-	3) install_aqemu ;;
-	4) install_virt_manager ;;
+	3) install_virt_manager ;;
+	4) install_aqemu ;;
 	5) install_gnome_boxes ;;
 	esac
 	###############
@@ -156,7 +156,7 @@ tmoe_qemu_aarch64_cpu_manager() {
 			"2" "cpu model/type(型号/类型)" \
 			"3" "multithreading多线程" \
 			"4" "machine机器类型" \
-			"5" "kvm/tcg/xen加速类型" \
+			"5" "kvm/tcg加速类型" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -686,7 +686,7 @@ creat_qemu_startup_script() {
 			-smp 4 \
 			-cpu max \
 			--accel tcg \
-			-vga virtio \
+			-vga qxl \
 			-soundhw es1370 \
 			-m 1024 \
 			-hda ${HOME}/sd/Download/backup/alpine-3.12_amd64-tmoe_20201118.qcow2 \
@@ -716,23 +716,22 @@ modify_qemu_machine_accel() {
 		KVM_STATUS='检测到您的CPU可能不支持硬件虚拟化'
 	fi
 	cd /usr/local/bin/
+	#17 50 5
 	CURRENT_VALUE=$(cat startqemu | grep '\--accel ' | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)
 	VIRTUAL_TECH=$(
-		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,进行同架构模拟运行时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。${KVM_STATUS}\n检测到当前为${CURRENT_VALUE}" 17 50 5 \
+		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,进行同架构模拟运行时能得到比tcg更快的速度,若您的CPU不支持KVM加速,则请勿修改为此项。${KVM_STATUS}\n检测到当前为${CURRENT_VALUE}" 0 50 0 \
 			"1" "tcg(default)" \
 			"2" "kvm(Intel VT-d/AMD-V)" \
-			"3" "xen" \
-			"4" "hax(Intel VT-x)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+	#"3" "xen" \
+	#"4" "hax(Intel VT-x)" \
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") ${RETURN_TO_WHERE} ;;
 	1) MACHINE_ACCEL=tcg ;;
 	2) MACHINE_ACCEL=kvm ;;
-	3) MACHINE_ACCEL=xen ;;
-	4) MACHINE_ACCEL=hax ;;
 	esac
 	###############
 	if grep -q '\,thread=multi' startqemu; then
