@@ -49,7 +49,7 @@ proot_container_menu_multi_langs() {
 			3>&1 1>&2 2>&3)
 	}
 	proot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要同架构运行,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要运行${TRUE_ARCH_TYPE}架构的容器,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "⚔️ Across architectures 跨CPU架构" \
@@ -89,7 +89,7 @@ chroot_container_menu_multi_langs() {
 			3>&1 1>&2 2>&3)
 	}
 	chroot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要同架构运行,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要运行${TRUE_ARCH_TYPE}架构的容器,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "🥛 nspawn(systemd容器,支持systemctl)" \

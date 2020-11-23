@@ -67,7 +67,7 @@ display_vnc_ip_addr() {
     #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
     cat <<-EOF
 正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}
 The LAN VNC address 局域网地址${TMOE_IP_ADDR}

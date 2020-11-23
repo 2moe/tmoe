@@ -1,0 +1,1052 @@
+#!/usr/bin/env bash
+########################
+#00.目录大纲
+: <<\TMOE_QEMU_INDEX
+01.Machine attributes 机器属性
+02.CPU 中央处理器
+03.CPU cores 核心数
+04.RAM 运行内存
+05.Boot drives/order 开机引导设备/顺序
+06.Storage Devices 磁盘/光盘/软盘等存储设备
+07.Sound Devices 音频设备（声卡）
+08.Network devices 网络设备(网卡与端口转发规则)
+09.DISPLAY devices 显示设备(显卡)
+10.REMOTE AND LOCAL DESKTOP : qemu界面,远程与本地桌面(vnc,spice,x11,wayland)
+11.Program architecture : qemu主程序架构，切换x86_64/i386 
+
+注:搜索'-2.'快速跳转到各个参数/变量的修改区域。
+用法示例:
+在nano编辑器下，先按下Ctrl+W,再输入"06-2."，即可跳转到存储设备变量修改区域。
+在vim编辑器下，先输 "/"，再输入"01-2.",最后按回车即可跳转到机器类型修改区域。
+TMOE_QEMU_INDEX
+
+#01-1.Machine
+: <<\EOF
+USAGE:
+参数用法说明：
+-machine [type=]name[,prop=value[,...]]
+Select the emulated machine by name. Use -machine help to list available machines.
+For architectures which aim to support live migration compatibility across releases, each release will introduce a new versioned machine type. For example, the 5.1.0 release introduced machine types “pc-i440fx-5.1” and “pc-q35-5.1” for the x86_64/i686 architectures.
+To allow live migration of guests from QEMU version 5.1.0, to QEMU version 5.2.0, the 5.2.0 version must support the “pc-i440fx-5.1” and “pc-q35-5.1” machines too. To allow users live migrating VMs to skip multiple intermediate releases when upgrading, new releases of QEMU will support machine types from many previous versions.
+本脚本暂仅支持pc-q35-*机器，如需修改为其他机器，则请自行修改pci设备,总线及地址。
+pc为Standard PC (i440FX + PIIX, 1996)
+q35为 Standard PC (Q35 + ICH9, 2009)
+使用命令`qemu-system-x86_64 -machine help`获取当前可用的机器型号。
+______
+vmport=on|off|auto
+Enables emulation of VMWare IO port, for vmmouse etc. auto says to select the value based on accel. For accel=xen the default is off otherwise the default is on.
+______
+dump-guest-core=on|off
+Include guest memory in a core dump. The default is on.
+______
+accel=accels1[:accels2[:...]]
+This is used to enable an accelerator. Depending on the target architecture, kvm, xen, hax, hvf, whpx or tcg can be available. By default, tcg is used. If there is more than one accelerator specified, the next one is used if the previous one fails to initialize.
+supported accelerators are kvm, xen, hax, hvf, whpx or tcg (default: tcg)
+The default is to enable multi-threading where both the back-end and front-ends support it and no incompatible TCG features have been enabled (e.g. icount/replay).
+accel为加速类型，若您的cpu启用了硬件虚拟化,并且宿主系统内核加载了KVM模块，则建议使用kvm,否则请使用tcg。
+tmoe-qemu默认情况下的加速器为kvm:tcg:xen，即优先使用kvm，当kvm调用失败时，将调用tcg。对于qemu5.0及其以上版本，您无需单独使用thread=multi来启用tcg多线程加速。在未启用不兼容的功能（例如icount/replay）时，将默认启用多线程加速功能。
+EOF
+#______
+#01-2.MACHINE参数值/变量值修改区域
+#You can modify the variable value here.ここで変数値を変更できます
+## 请在指定区域内修改参数，请不要修改“MACHINE”右边，“=”左边的变量名称，请修改“=”右边的变量值。
+MACHINE_ACCEL='kvm:tcg:xen'
+#默认值'kvm:tcg:xen',您可以修改为'tcg:kvm:xen'
+#MACHINE_TYPE='q35'
+
+ENABLE_KVM='true'
+#可选true/false
+
+QEMU_NAME='tmoe-qemu'
+#自定义qemu名称
+
+#01-3.UEFI开关
+UEFI_ENABLED='false'
+
+#UEFI固件位置
+UEFI_CODE_PFLASH="/usr/share/OVMF/OVMF_CODE.fd"
+#TianoCore UEFI默认位置"/usr/share/OVMF/OVMF_CODE.fd"
+
+UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/${QEMU_NAME}-NVRAM.fd"
+###########
+###########
+if [[ ${UEFI_ENABLED} = true && ! -s "${UEFI_VARS_PFLASH}" ]]; then
+    mkdir -pv "${UEFI_VARS_PFLASH%/*}"
+    cp -fv "/usr/share/OVMF/OVMF_VARS.fd" "${UEFI_VARS_PFLASH}"
+fi
+###########
+#02-1.CPU
+: <<\EOF
+USAGE:
+-cpu model
+Select CPU model (-cpu help for list and additional feature selection)
+
+推荐使用max。
+host                  KVM processor with all supported host features
+max                   Enables all features supported by the accelerator in the current host
+使用命令`qemu-system-x86_64 -cpu help` 获取CPU型号和CPUID flags。
+以下介绍部分cpu id flags：
+fpu –板载FPU，vme –虚拟模式扩展，de –调试扩展，pse –页面大小扩展，tsc –时间戳计数器，msr –特定于模型的寄存器，pae –物理地址扩展，cx8 – CMPXCHG8指令，apic–板载APIC，sep– SYSENTER/SYSEXIT，mtrr –存储器类型范围寄存器，pge – Page Global Enable，mca –Machine Check Architecture，cmov – CMOV instructions（附加FCMOVcc，带有FPU的FCOMI），pat –页面属性表，pse36 – 36位PSE，clflush – CLFLUSH指令，dts –调试存储，acpi –ACPI via MSR，mmx –多媒体扩展，fxsr – FXSAVE/FXRSTOR, CR4.OSFXSR，sse – SSE，sse2 – SSE2，ss – CPU自侦听，ht –超线程，tm –自动时钟控制，ia64 – IA-64处理器，pbe –等待中断启用，mmxext – AMD MMX扩展，fxsr_opt – FXSAVE / FXRSTOR优化，rdtscp – RDTSCP，lm –长模式（x86-64），3dnowext – AMD 3DNow扩展，k8 –皓龙，速龙64，k7 –速龙，pebs –基于精确事件的采样，bts –分支跟踪存储，nonstop_tsc – TSC不会在C状态下停止，PNI – SSE-3，pclmulqdq – PCLMULQDQ指令，dtes64 – 64位调试存储，监控器–监控/等待支持，ds_cpl – CPL Qual.调试存储，vmx –英特尔虚拟化技术(VT技术)，smx –更安全的模式，est –增强的SpeedStep，tm2 –温度监控器2，ssse3 –补充SSE-3，cid –上下文ID，cx16 – CMPXCHG16B，xptr –发送任务优先级消息，dca –直接缓存访问，sse4_1 – SSE-4.1，sse4_2 – SSE-4.2，x2apic – x2APIC，aes – AES指令集，xsave – XSAVE / XRSTOR / XSETBV / XGETBV，avx –高级矢量扩展，hypervisor–在hypervisor上运行，svm –AMD的虚拟化技术(AMD-V)，extapic –扩展的APIC空间，cr8legacy – 32位模式下的CR8，abm –高级bit操作，ibs –基于Sampling的采样，sse5 – SSE-5，wdt –看门狗定时器
+
+CPUID FLAGS示例01(Openstack):'erms=on,smep=on,fsgsbase=on,pdpe1gb=on,rdrand=on,f16c=on,osxsave=on,dca=on,pcid=on,pdcm=on,xtpr=on,tm2=on,est=on,smx=on,vmx=on,ds_cpl=on,monitor=on,dtes64=on,pbe=on,tm=on,ht=on,ss=on,acpi=on,ds=on,vme=on'
+CPUID FLAGS示例02:'ss=on,vmx=on,pdcm=on,hypervisor=on,tsc-adjust=on,clflushopt=on,umip=on,md-clear=on,stibp=on,arch-capabilities=on,ssbd=on,xsaves=on,pdpe1gb=on,ibpb=on,amd-stibp=on,amd-ssbd=on,skip-l1dfl-vmentry=on,pschange-mc-no=on,hle=off,rtm=off'
+EOF
+#02-2.CPU变量值修改区域
+CPU_MODEL='max'
+CPU_ID_FLAGS='hle=off,rtm=off'
+#CPU_MODEL为CPU型号，例如'Icelake-Client'和'Skylake-Client-IBRS'。默认为'max',即启用加速器支持的所有可用功能。
+#CPU_ID_FLAGS为cpu的属性和功能，可以留空。默认为'hle=off,rtm=off'
+###########
+#03-1.CPU核心数
+: <<\EOF
+USAGE:
+-smp [cpus=]n[,cores=cores][,threads=threads][,dies=dies][,sockets=sockets][,maxcpus=maxcpus]
+Simulate an SMP system with n CPUs. On the PC target, up to 255 CPUs are supported. On Sparc32 target, Linux limits the number of usable CPUs to 4. For the PC target, the number of cores per die, the number of threads per cores, the number of dies per packages and the total number of sockets can be specified. Missing values will be computed. If any on the three values is given, the total number of CPUs n can be omitted. maxcpus specifies the maximum number of hotpluggable CPUs.
+EOF
+#03-2:CPU核心数的修改区域
+CPUS_NUM='2'
+SOCKETS_NUM='2'
+CORES_NUM='1'
+THREADS_NUM='1'
+#默认为CPUS_NUM='2'，SOCKETS_NUM='2'，CORES_NUM='1'，THREADS_NUM='1'，即2个虚拟CPU ,2个CPU插槽 ,单核 ,单线程。
+###########
+###########
+#04-1.RAM运行内存
+: <<\EOF
+-m [size=]megs[,slots=n,maxmem=size]
+Sets guest startup RAM size to megs megabytes. Default is 128 MiB. Optionally, a suffix of “M” or “G” can be used to signify a value in megabytes or gigabytes respectively. Optional pair slots, maxmem could be used to set amount of hotpluggable memory slots and maximum amount of memory. Note that maxmem must be aligned to the page size.
+For example, the following command-line sets the guest startup RAM size to 1GB, creates 3 slots to hotplug additional memory and sets the maximum memory the guest can reach to 4GB:    qemu-system-x86_64 -m 1G,slots=3,maxmem=4G
+If slots and maxmem are not specified, memory hotplug won’t be enabled and the guest startup RAM will never increase.
+本脚本默认情况下加载了virtio balloon，故建议在guest (windows虚拟机）中安装virtio驱动，以支持guest动态调节内存的功能。
+注：virtio driver已集成于新版的linux内核中，故大部分Linux发行版无需单独安装virtio驱动。
+
+默认单位M。
+请不要让此参数值超过宿主机的总运存大小!!!
+若您的宿主机RAM为4GiB,则请不要让该值超过'4096',考虑到宿主系统会占用一部分RAM,故建议将其调整为'3072'或更低。
+如果您不知道如何分配内存大小，请将MEMORY_ALLOCATION的值设为'auto'
+EOF
+#04-2.RAM变量值修改区域
+
+MEMORY_SIZE='1024'
+#您需要把MEMORY_ALLOCATION的变量值从auto修改为num才能启用本选项。
+#MEMORY_SIZE的变量值为纯数字，例如1024
+
+MEMORY_ALLOCATION='auto'
+: <<\EOF
+默认为'auto'，可选值'num'或者为空。
+自动根据宿主机$((可用内存-512M))来分配。举个例子,宿主机内存(不包含swap)为7844M,可用2185M，此时自动分配给QEMU虚拟机的内存为1673M
+The default is auto', which automatically allocates qemu virtual machine memory based on the host's $((${available-memory} - 512M)).
+For example,the host's RAM is 7844M,the available RAM is 1663M.At this time, the memory automatically allocated to qemu is 1673M.
+本选项为tmoe-qemu所独有，2020年11月之前的原版qemu-system-x86_64不包含此选项。
+EOF
+
+MEMORY_REDUCED='512'
+#默认为512,本选项并非实际内存大小，而是自动分配时需要减少的内存大小，详见MEMORY_ALLOCATION的说明。
+#仅当MEMORY_ALLOCATION的变量值为true时,此选项才会生效。
+###############
+###############
+#05-1. boot drives/order 开机引导设备/顺序
+: <<\EOF
+-boot [order=drives][,once=drives][,menu=on|off][,splash=sp_name][,splash-time=sp_time][,reboot-timeout=rb_timeout][,strict=on|off]
+Specify boot order drives as a string of drive letters. Valid drive letters depend on the target architecture. The x86 PC uses: a, b (floppy 1 and 2), c (first hard disk), d (first CD-ROM), n-p (Etherboot from network adapter 1-4), hard disk boot is the default. To apply a particular boot order only on the first startup, specify it via once. Note that the order or once parameter should not be used together with the bootindex property of devices, since the firmware implementations normally do not support both at the same time.
+Interactive boot menus/prompts can be enabled via menu=on as far as firmware/BIOS supports them. The default is non-interactive boot.
+A splash picture could be passed to bios, enabling user to show it as logo, when option splash=sp_name is given and menu=on, If firmware/BIOS supports them. Currently Seabios for X86 system support it. limitation: The splash file could be a jpeg file or a BMP file in 24 BPP format(true color). The resolution should be supported by the SVGA mode, so the recommended is 320x240, 640x480, 800x640.
+A timeout could be passed to bios, guest will pause for rb_timeout ms when boot failed, then reboot. If rb_timeout is ‘-1’, guest will not reboot, qemu passes ‘-1’ to bios by default. Currently Seabios for X86 system support it.
+Do strict boot via strict=on as far as firmware/BIOS supports it. This only effects when boot priority is changed by bootindex options. The default is non-strict boot.
+# try to boot from network first, then from hard disk
+qemu_system-x86_64 -boot order=nc
+# boot from CD-ROM first, switch back to default order after reboot
+qemu_system-x86_64 -boot once=d
+# boot with a splash picture for 5 seconds.
+qemu_system-x86_64 -boot menu=on,splash=/root/boot.bmp,splash-time=5000
+Note: The legacy format ‘-boot drives’ is still supported but its use is discouraged as it may be removed from future versions.
+引导设备的标识：a，b（软盘1和2），c（第一块硬盘），d（第一张光盘CD-ROM），np（网络适配器1-4）。
+默认附加参数menu=on，在启动qemu后的几秒内，在虚拟机界面按下ESC键，可以手动选择引导设备。
+EOF
+#05-2. boot drives/order变量值修改区域
+BOOT_ORDER='cd'
+#默认为cd,即优先从第一块硬盘启动，若失败，则从光盘启动。
+#如需调整具体磁盘的启动顺序，请修改Storage devices区域的"BOOTINDEX"配置选项。
+
+BOOT_MENU='on'
+#可选on或off
+
+#05-3.Kernel 内核引导选项
+CUSTOM_KERNEL='false'
+#默认为'false'，禁用手动指定内核
+
+KERNEL_FILE=""
+#内核文件路径，可留空
+#示例："/vmlinuz.old"
+
+INITRD_FILE=""
+#initrd文件路径，可留空
+#示例："/initrd.img.old"
+
+KERNEL_APPEND=""
+#内核参数，可留空
+#示例："root=/dev/vda"
+################
+################
+#06-1. Storage devices
+: <<\EOF
+请直接搜索“关于block device的说明”。
+注：qemu5.0及其以上版本，建议使用"-device"或"-blockdev"来配置“块设备”，而不是使用旧版的"-hda","-hdb"参数来配置IDE磁盘。
+若您的guest（虚拟机）为linux，则建议使用virtio磁盘(virtio-blk-pci或virtio-scsi-pci)。若guest为win,则您可以在安装完virtio驱动后,禁用SATA或IDE磁盘,并换用virtio磁盘。
+您可以使用命令"qemu-img convert -O qcow2 原文件.img 输出的文件.qcow2"来将img磁盘文件转换为qcow2格式。
+使用"qemu-img creat -f qcow2 新磁盘.qcow2"来新建一个qcow2磁盘。
+EOF
+
+#06-2. Storage devices 存储设备配置区域
+VIRTIO_DISK_01_BOOTINDEX=''
+VIRTIO_DISK_01_ENABLED=false
+#当ENABLE='true'时，表示启用这块磁盘;为'false'时，禁用。
+VIRTIO_DISK_01_FORMAT=qcow2
+#默认格式为qcow2
+
+VIRTIO_DISK_01="${HOME}/sd/Download/virtio-disk01.qcow2"
+#"_01="或”_02="后接磁盘文件路径，例如"${HOME}/sd/Download/virtio-disk02.qcow2"
+#___________________________
+VIRTIO_DISK_02_ENABLED=false
+VIRTIO_DISK_02_BOOTINDEX=''
+: <<\EOF
+指定磁盘设备的引导顺序，当其值为3时，表示该磁盘的启动顺序位于第3位。
+注意：不要重复不同磁盘的启动序号。
+#若virtio磁盘01的bootindex为3,即VIRTIO_DISK_01_BOOTINDEX='3'
+#则virtio磁盘02只能选择3以外的数字，例如'1' 或 '2'
+如需禁用此选项，则请将VIRTIO_DISK_02_BOOTINDEX变量值设为空。
+
+若无法调整启动顺序，则请将BOOT_ORDER变量的值设为空。
+EOF
+VIRTIO_DISK_02_FORMAT=qcow2
+VIRTIO_DISK_02="${HOME}/sd/Download/virtio-disk02.qcow2"
+#___________________________
+SATA_DISK_01_ENABLED=false
+SATA_DISK_01_BOOTINDEX=''
+SATA_DISK_01_FORMAT=qcow2
+SATA_DISK_01="${HOME}/sd/Download/sata-disk01.qcow2"
+#___________________________
+SATA_DISK_02_ENABLED=false
+SATA_DISK_02_BOOTINDEX=''
+SATA_DISK_02_FORMAT=qcow2
+SATA_DISK_02="${HOME}/sd/Download/sata-disk02.qcow2"
+#___________________________
+USB_DISK_01_ENABLED=false
+USB_DISK_01_BOOTINDEX=''
+USB_DISK_01_FORMAT=qcow2
+USB_DISK_01="${HOME}/sd/Download/usb-disk01.qcow2"
+#___________________________
+USB_DISK_02_ENABLED=false
+USB_DISK_02_BOOTINDEX=''
+USB_DISK_02_FORMAT=raw
+USB_DISK_02="${HOME}/sd/Download/usb-disk02.qcow2"
+#___________________________
+FLOPPY_DISK_01_ENABLED=false
+FLOPPY_DISK_01_BOOTINDEX=''
+FLOPPY_DISK_01_FORMAT=raw
+FLOPPY_DISK_01="${HOME}/sd/Download/floppy-disk01.fd"
+#___________________________
+FLOPPY_DISK_02_ENABLED=false
+FLOPPY_DISK_02_BOOTINDEX=''
+FLOPPY_DISK_02_FORMAT=raw
+FLOPPY_DISK_02="${HOME}/sd/Download/floppy-disk02.fd"
+#___________________________
+CD_ROM_DISK_01_ENABLED=false
+CD_ROM_DISK_01_BOOTINDEX=''
+CD_ROM_DISK_01_FORMAT=raw
+#默认格式为raw
+CD_ROM_DISK_01="${HOME}/sd/Download/cd-rom01.iso"
+#___________________________
+CD_ROM_DISK_02_ENABLED=false
+CD_ROM_DISK_02_BOOTINDEX=''
+CD_ROM_DISK_02_FORMAT=raw
+CD_ROM_DISK_02="${HOME}/sd/Download/cd-rom02.iso"
+#___________________________
+#06-3.SHARED DEVICES virtio-9p-pci共享存储设备.
+VIRTIO_9P_PCI_01_ENABLED='true'
+VIRTIO_9P_PCI_01=""
+
+: <<\EOF
+VIRTIO_9P_PCI_01的参数值为宿主机的目录，默认为${HOME}/sd。若您的qemu-system host(宿主)运行在tmoe-linux安装的proot容器里，则建议修改为"/root/sd" ;若为chroot,则建议修改为"/media/sd" ;若为docker或nspawn容器,则建议修改为"/media/docker"。
+本功能暂仅适配Linux发行版。
+你需要在guest中挂载9p file system，才能以此方式共享host的目录。
+精简命令:
+mkdir -p ~/sd
+mount -t 9p -o trans=virtio shared0 ~/sd -o version=9p2000.L,posixacl,cache=mmap
+完整命令:
+		MOUNT_FOLDER="${HOME}/sd"
+		MOUNT_NAME="shared0"
+		mount_tmoe_linux_9p() {
+		    [[ -e "${MOUNT_FOLDER}" ]] || mkdir -p "${MOUNT_FOLDER}"
+            unset TMOE_MOUNT_PREFIX
+		    [[ $(id -u) = "0" ]] || TMOE_MOUNT_PREFIX='sudo'
+            ${TMOE_MOUNT_PREFIX} mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap
+		}
+		df | grep "${MOUNT_FOLDER}" &>/dev/null || mount_tmoe_linux_9p
+注：您可以将完整命令另存为脚本文件，并赋予执行权限，便于自动挂载。        
+EOF
+##########
+#06-4.关于在guest中压缩磁盘的说明。
+: <<\EOF
+本操作将填充磁盘所有空白扇区
+dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M
+ls -lh /tmp/tmoe_qemu
+rm -fv /tmp/tmoe_qemu
+EOF
+#########
+#07-1.Sound Devices
+: <<\EOF
+Sound card devices should be created using -device instead of -soundhw. The names are the same for most devices. The exceptions are hda which needs two devices (-device intel-hda -device hda-duplex) and pcspk which can be activated using -machine pcspk-audiodev=<name>.
+qemu5.1及其以上版本的系统建议使用"-device"来配置声卡,而不是使用"-soundhw"。
+目前本脚本仅支持配置ich9-intel-hda，intel-hda,AC97和ES1370。
+EOF
+#07-2.Sound card devices声卡
+SOUND_CARD_ENABLED='true'
+#当为'true'时，启用声卡;为false时，则禁用。
+
+SOUND_CARD='ich9-intel-hda'
+#默认为ich9-intel-hda
+
+#07-3.Pulseaudio server address音频服务地址
+WAYLAND_REMOTE_PULSE='false'
+#默认值为'false',当使用的是wayland或本地x11时，默认不转发音频。
+
+AUDIO_ADDR='127.0.0.1:4713'
+#默认值'127.0.0.1:4713'
+#############
+#############
+#08-1.Network devices
+#本脚本目前仅支持配置user网络，暂不支持bridge,tap和socket network。
+#请直接搜索“关于user network的说明”。
+###########
+#08-2.Network devices
+NET_CARD_01_ENABLED='true'
+#当为'true'时，启用网卡;为false时，则禁用。
+NET_CARD_01='virtio-net-pci'
+#网卡01默认为virtio-net-pci
+#注意：当guest的kernel为linux cloud 内核时，请保持该网卡为virtio-net-pci
+NET_CARD_01_MAC=''
+#网卡01的mac地址,例如'52:54:00:f3:15:21',此参数值可留空。
+
+NET_CARD_02_ENABLED='true'
+NET_CARD_02='e1000e'
+#网卡02默认为e1000e
+#若guest已安装了virtio驱动，则可禁用网卡02。
+#name "e1000", bus PCI, alias "e1000-82540em", desc "Intel Gigabit Ethernet"
+#name "e1000e", bus PCI, desc "Intel 82574L GbE Controller"
+#name "rtl8139", bus PCI
+
+NET_CARD_02_MAC=''
+#网卡02的mac地址
+
+#08-3.tcp端口转发规则
+: <<\EOF
+网卡01的tcp端口转发规则
+当HOST_PORT为2888,GUEST_PORT为22时，2888:22表示将虚拟机的22端口（SSH tcp port）转发至宿主机的2888端口。
+用半角逗号分隔不同的规则。
+5903:5901表示将guest的5901转发至host的5903端口。
+EOF
+TCP_PORT_HOST_FWD_01_ENABLED='true'
+TCP_PORT_HOST_FWD_01="2888:22,5903:5901,39081:39080"
+
+#网卡01的udp端口转发规则
+UDP_PORT_HOST_FWD_01_ENABLED='false'
+UDP_PORT_HOST_FWD_01=""
+
+#网卡02的tcp端口转发规则
+TCP_PORT_HOST_FWD_02_ENABLED='false'
+TCP_PORT_HOST_FWD_02=""
+
+#网卡02的udp端口转发规则
+UDP_PORT_HOST_FWD_02_ENABLED='false'
+UDP_PORT_HOST_FWD_02=""
+#############
+#############
+#09-1.DISPLAY devices
+: <<\EOF
+"virtio-vga", bus PCI ;
+"qxl-vga", bus PCI, desc "Spice QXL GPU (primary, vga compatible)"
+QXL paravirtual graphic card. It is VGA compatible (including VESA 2.0 VBE support). Works best with qxl guest drivers installed though. Recommended choice when using the spice protocol;
+"VGA", bus PCI ;
+"bochs-display", bus PCI
+若您的宿主机（host）插入了双显卡,则推荐使用硬件直通功能，直接调用GPU,而非使用虚拟化技术来模拟。由于本脚本并未包含检测宿主pci显卡设备的功能，也未使用libvirt api去调控qemu,故请自行配置此功能。
+若您的host不满足显卡硬件直通的条件，则推荐您使用半虚拟化显卡virtio-vga或qxl-vga。
+若guest为win system，则您可能需要安装virtio驱动。
+EOF
+############
+#09-2.GPU
+GPU_MODEL='qxl-vga'
+#默认为qxl-vga。可选值virtio-vga,VGA,bochs-display,cirrus-vga,ati-vga,vmware-svga
+VIRTIO_3D_ACCEL='false'
+#默认为'false',virtio显卡3d加速。
+
+#配置qxl显卡的显存
+GPU_RAM_SIZE='67108864'
+GPU_VRAM_SIZE='67108864'
+GPU_VGAMEM_MB='16'
+#GPU_RAM_SIZE默认为67108864，GPU_VRAM_SIZE默认为67108864,GPU_VGAMEM_MB默认为16
+#############
+############
+#10-1.REMOTE DESKTOP
+: <<\EOF
+-vnc display[,option[,option[,...]]]
+
+to=L
+With this option, QEMU will try next available VNC displays, until the number L, if the origianlly defined “-vnc display” is not available, e.g. port 5900+display is already used by another application. By default, to=0.
+
+host:d
+TCP connections will only be allowed from host on display d. By convention the TCP port is 5900+d. Optionally, host can be omitted in which case the server will accept connections from any host.
+
+none
+VNC is initialized but not started. The monitor change command can be used to later start the VNC server.
+
+password
+Require that password based authentication is used for client connections.
+
+The password must be set separately using the set_password command in the QEMU Monitor. The syntax to change your password is: set_password <protocol> <password> where <protocol> could be either “vnc” or “spice”.
+
+If you would like to change <protocol> password expiration, you should use expire_password <protocol> <expiration-time> where expiration time could be one of the following options: now, never, +seconds or UNIX time of expiration, e.g. +60 to make password expire in 60 seconds, or 1335196800 to make password expire on “Mon Apr 23 12:00:00 EDT 2012” (UNIX time for this date and time).
+
+You can also use keywords “now” or “never” for the expiration time to allow <protocol> password to expire immediately or never expire.
+若您的宿主（host）为Android,且未开启GUI,则推荐使用vnc或spice
+若您的host为Linux发行版,且开启了GUI,则推荐直接使用x11。
+若您的host为win10(WSL),则可以转发x11。等等，为什么你会在WSL里套娃使用qemu-system？若您的host为win10,则推荐您换用HyperV之类的虚拟机。
+EOF
+#10-2.REMOTE DESKTOP 远程桌面
+CONNECTION_TYPE='x11'
+#可选值vnc,x11,spice,remote-x11
+#若您使用的是wayland,则请将其修改为空或x11。
+
+REMOTE_X11_ADDR='127.0.0.1:0'
+#仅当连接类型为remote-x11时，远程转发才会生效。
+
+VNC_PORT='5902'
+#默认为5902
+
+VNC_STARTUP_PROMPT='true'
+#显示VNC启动提示，默认为'true'。若连接类型为vnc或spice,则建议开启本选项。
+
+VNC_PASSWORD='false'
+#可true或false
+#当为true时，您可以在qemu monotor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
+############
+############
+#11-1.Architecture
+: <<\EOF
+This script only supports x86_64 and i386.
+由于arm和x86的cpu以及机器类型有所区别，故请勿修改为aarch64或arm64。
+EOF
+#11-2.QEMU-SYSTEM二进制文件目录与架构
+###########
+QEMU_BIN_PATH="/usr/bin"
+#默认为"/usr/bin",若您手动编译的qemu-system-x86_64位于"/usr/local/bin/"，则将其修改为"/usr/local/bin"
+
+QEMU_BIN_ARCH='x86_64'
+#默认为x86_64，如需模拟32位system,则请将其修改为i386，否则请保持默认值。
+###########
+run_tmoe_qemu_command() {
+    case ${UEFI_ENABLED} in
+    true)
+        MACHINE_ATTACH=',pflash0=libvirt-pflash0-format,pflash1=libvirt-pflash1-format'
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${UEFI_CODE_PFLASH}","node-name"="libvirt-pflash0-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-pflash0-format","read-only"=on,"driver"="raw","file"="libvirt-pflash0-storage""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${UEFI_VARS_PFLASH}","node-name"="libvirt-pflash1-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-pflash1-format","read-only"=off,"driver"="raw","file"="libvirt-pflash1-storage""
+        ;;
+    *) MACHINE_ATTACH='' ;;
+    esac
+    set -- "${@}" "-machine" "q35,accel=${MACHINE_ACCEL},usb=off,vmport=off,dump-guest-core=off${MACHINE_ATTACH}"
+    # case ${MACHINE_TYPE} in
+    # q35 | pc-q35-*) #set_tmoe_qemu_q35_pc_machine
+    set -- "${@}" "-global" "ICH9-LPC.disable_s3=1"
+    set -- "${@}" "-global" "ICH9-LPC.disable_s4=1"
+    set -- "${@}" "-device" "pcie-root-port,port=0x10,chassis=1,id=pci.1,bus=pcie.0,multifunction=on,addr=0x2"
+    set -- "${@}" "-device" "pcie-root-port,port=0x11,chassis=2,id=pci.2,bus=pcie.0,addr=0x2.0x1"
+    set -- "${@}" "-device" "pcie-root-port,port=0x12,chassis=3,id=pci.3,bus=pcie.0,addr=0x2.0x2"
+    set -- "${@}" "-device" "pcie-root-port,port=0x13,chassis=4,id=pci.4,bus=pcie.0,addr=0x2.0x3"
+    set -- "${@}" "-device" "pcie-root-port,port=0x14,chassis=5,id=pci.5,bus=pcie.0,addr=0x2.0x4"
+    set -- "${@}" "-device" "pcie-root-port,port=0x15,chassis=6,id=pci.6,bus=pcie.0,addr=0x2.0x5"
+    set -- "${@}" "-device" "pcie-root-port,port=0x16,chassis=7,id=pci.7,bus=pcie.0,addr=0x2.0x6"
+    set -- "${@}" "-device" "pcie-root-port,port=0x17,chassis=8,id=pci.8,bus=pcie.0,addr=0x2.0x7"
+    set -- "${@}" "-device" "pcie-root-port,port=0x18,chassis=9,id=pci.9,bus=pcie.0,addr=0x3"
+    set -- "${@}" "-device" "qemu-xhci,p2=15,p3=15,id=usb,bus=pci.2,addr=0x0"
+    set -- "${@}" "-device" "virtio-scsi-pci,id=scsi0,bus=pci.3,addr=0x0"
+    set -- "${@}" "-device" "virtio-serial-pci,id=virtio-serial0,bus=pci.4,addr=0x0"
+    set -- "${@}" "-device" "pcie-pci-bridge,id=pci.10,bus=pci.9,addr=0x0"
+    set -- "${@}" "-device" "ahci,id=sata1,bus=pci.10,addr=0x1"
+    #    ;;
+    # ) printf "%s\n%s\n" "本脚本暂时不支持配置该机器类型，请将MACHINE_TYPE变量修改为q35" "Please modify -machine vaule to q35." ;;
+    #esac
+    case ${ENABLE_KVM} in
+    true) set -- "${@}" "-global" "kvm-pit.lost_tick_policy=delay" ;;
+    esac
+    ############################
+    set -- "${@}" "-cpu" "${CPU_MODEL},${CPU_ID_FLAGS}"
+    set -- "${@}" "-smp" "${CPUS_NUM},sockets=${SOCKETS_NUM},cores=${CORES_NUM},threads=${THREADS_NUM}"
+    ############################
+    set_tmoe_qemu_memory_size() {
+        FREE_MEMORY="$(free -m | awk '{print $NF}' | sed -n 2p)"
+        if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
+            if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
+                MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
+            else
+                MEMORY_SIZE=$((${FREE_MEMORY} - 512))
+            fi
+        fi
+        if ((${MEMORY_SIZE} <= 256)); then
+            MEMORY_SIZE=256
+        elif [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
+            MEMORY_SIZE=1024
+        fi
+    }
+    case ${MEMORY_ALLOCATION} in
+    auto) set_tmoe_qemu_memory_size ;;
+    *)
+        if [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
+            set_tmoe_qemu_memory_size
+        fi
+        ;;
+    esac
+    set -- "${@}" "-m" "${MEMORY_SIZE}"
+    set -- "${@}" "-overcommit" "mem-lock=off"
+    ############################
+    set -- "${@}" "-monitor" "stdio"
+    set -- "${@}" "-no-user-config"
+    set -- "${@}" "-nodefaults"
+    set -- "${@}" "-rtc" "base=utc,driftfix=slew"
+    set -- "${@}" "-no-hpet"
+    set -- "${@}" "-name" "guest=${QEMU_NAME},debug-threads=on"
+    ############
+    case ${BOOT_ORDER} in
+    "") set -- "${@}" "-boot" "menu=${BOOT_MENU},strict=off" ;;
+    *) set -- "${@}" "-boot" "order=${BOOT_ORDER},menu=${BOOT_MENU},strict=off" ;;
+    esac
+    ###########
+    case ${VIRTIO_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_01}","node-name"="libvirt-1-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-1-format","read-only"=off,"driver"="${VIRTIO_DISK_01_FORMAT}","file"="libvirt-1-storage""
+        case ${VIRTIO_DISK_01_BOOTINDEX} in
+        "") VIRTIO_DISK_01_ATTACH='' ;;
+        *) VIRTIO_DISK_01_ATTACH=",bootindex=${VIRTIO_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "virtio-blk-pci,bus=pci.5,addr=0x0,drive=libvirt-1-format,id=virtio-disk1${VIRTIO_DISK_01_ATTACH}"
+        #,bootindex=2
+        ;;
+    esac
+    case ${VIRTIO_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_02}","node-name"="libvirt-2-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-2-format","read-only"=off,"driver"="${VIRTIO_DISK_02_FORMAT}","file"="libvirt-2-storage""
+        case ${VIRTIO_DISK_02_BOOTINDEX} in
+        "") VIRTIO_DISK_02_ATTACH='' ;;
+        *) VIRTIO_DISK_02_ATTACH=",bootindex=${VIRTIO_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-2-format,id=virtio-disk2${VIRTIO_DISK_02_ATTACH}"
+        ;;
+    esac
+    case ${CD_ROM_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_01}","node-name"="libvirt-3-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-3-format","read-only"=on,"driver"="${CD_ROM_DISK_01_FORMAT}","file"="libvirt-3-storage""
+        case ${CD_ROM_DISK_01_BOOTINDEX} in
+        "") CD_ROM_DISK_01_ATTACH='' ;;
+        *) CD_ROM_DISK_01_ATTACH=",bootindex=${CD_ROM_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-cd,bus=ide.0,drive=libvirt-3-format,id=sata0-0-1${CD_ROM_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${CD_ROM_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_02}","node-name"="libvirt-4-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-4-format","read-only"=on,"driver"="${CD_ROM_DISK_02_FORMAT}","file"="libvirt-4-storage""
+        case ${CD_ROM_DISK_02_BOOTINDEX} in
+        "") CD_ROM_DISK_02_ATTACH='' ;;
+        *) CD_ROM_DISK_02_ATTACH=",bootindex=${CD_ROM_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-cd,bus=ide.5,drive=libvirt-4-format,id=sata0-0-2${CD_ROM_DISK_02_ATTACH}"
+        ;;
+    esac
+    case ${SATA_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_01}","node-name"="libvirt-5-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-5-format","read-only"=off,"driver"="${SATA_DISK_01_FORMAT}","file"="libvirt-5-storage""
+        case ${SATA_DISK_01_BOOTINDEX} in
+        "") SATA_DISK_01_ATTACH='' ;;
+        *) SATA_DISK_01_ATTACH=",bootindex=${SATA_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-hd,bus=ide.3,drive=libvirt-5-format,id=sata0-0-3${SATA_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${SATA_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_02}","node-name"="libvirt-6-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-6-format","read-only"=off,"driver"="${SATA_DISK_02_FORMAT}","file"="libvirt-6-storage""
+        case ${SATA_DISK_02_BOOTINDEX} in
+        "") SATA_DISK_02_ATTACH='' ;;
+        *) SATA_DISK_02_ATTACH=",bootindex=${SATA_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-hd,bus=ide.4,drive=libvirt-6-format,id=sata0-0-4${SATA_DISK_02_ATTACH}"
+        ;;
+    esac
+    case ${USB_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_01}","node-name"="libvirt-7-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-7-format","read-only"=off,"driver"="${USB_DISK_01_FORMAT}","file"="libvirt-7-storage""
+        case ${USB_DISK_01_BOOTINDEX} in
+        "") USB_DISK_01_ATTACH='' ;;
+        *) USB_DISK_01_ATTACH=",bootindex=${USB_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "usb-storage,bus=usb.0,port=1,drive=libvirt-7-format,id=usb-disk1,removable=on${USB_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${USB_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_02}","node-name"="libvirt-8-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-8-format","read-only"=off,"driver"="${USB_DISK_02_FORMAT}","file"="libvirt-8-storage""
+        case ${USB_DISK_02_BOOTINDEX} in
+        "") USB_DISK_02_ATTACH='' ;;
+        *) USB_DISK_02_ATTACH=",bootindex=${USB_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "usb-storage,bus=usb.0,port=2,drive=libvirt-8-format,id=usb-disk2,removable=on${USB_DISK_02_ATTACH}"
+        ;;
+    esac
+    FLOPPY_ENABLED=false
+    [[ -n ${FLOPPY_DISK_01_ENABLED} || -n ${FLOPPY_DISK_02_ENABLED} ]] && FLOPPY_ENABLED=true
+    case ${FLOPPY_ENABLED} in
+    true) set -- "${@}" "-device" "isa-fdc" ;;
+    esac
+    case ${FLOPPY_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="/media/master/tmoe_ext4/master/win10.qcow2","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-9-format","read-only"=off,"driver"="${FLOPPY_DISK_01_FORMAT}","file"="libvirt-9-storage""
+        case ${FLOPPY_DISK_01_BOOTINDEX} in
+        "") FLOPPY_DISK_01_ATTACH='' ;;
+        *) FLOPPY_DISK_01_ATTACH=",bootindex=${FLOPPY_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "floppy,unit=0,drive=libvirt-9-format,id=fdc0-0-0${FLOPPY_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${FLOPPY_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="/media/master/4T/system/win10/virtio-win.iso","node-name"="libvirt-10-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-10-format","read-only"=off,"driver"="${FLOPPY_DISK_02_FORMAT}","file"="libvirt-10-storage""
+        case ${FLOPPY_DISK_02_BOOTINDEX} in
+        "") FLOPPY_DISK_02_ATTACH='' ;;
+        *) FLOPPY_DISK_02_ATTACH=",bootindex=${FLOPPY_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "floppy,unit=1,drive=libvirt-10-format,id=fdc0-0-1${FLOPPY_DISK_02_ATTACH}"
+        ;;
+    esac
+    ############
+    case ${VIRTIO_9P_PCI_01_ENABLED} in
+    true)
+        case ${VIRTIO_9P_PCI_01} in
+        "")
+            for i in ${HOME} ${HOME}/sd /sd /media/docker /media/sd; do
+                [[ ! -e ${i} ]] || VIRTIO_9P_PCI_01=${i}
+            done
+            ;;
+        *) ;;
+        esac
+        #-virtfs local,id=shared_folder_dev_0,path=${VIRTIO_9P_PCI_01},security_model=none,mount_tag=shared0
+        set -- "${@}" "-fsdev" "local,security_model=none,id=fsdev-fs0,path=${VIRTIO_9P_PCI_01}"
+        set -- "${@}" "-device" "virtio-9p-pci,id=fs0,fsdev=fsdev-fs0,mount_tag=shared0,bus=pcie.0,addr=0x1c"
+        ;;
+    esac
+    : <<\EOF
+    配置virtio-fs，要求linux内核>=v5.4-rc2
+    [[ -n ${TMPDIR} ]] || TMPDIR=/tmp
+    virtiofsd --socket-path=${TMPDIR}/vhost-fs.socket –o source=${VIRTIO_9P_PCI_01}
+    set -- "${@}" "–chardev" "socket,id=char0,path=${TMPDIR}/vhost-fs.socket"
+    set -- "${@}" "–device" "vhost-user-fs-pci,chardev=char0,tag=shared1"
+    set -- "${@}" "-object" "memory-backend-memfd,id=mem,size=4G,share=on"
+    set -- "${@}" "-numa" "node,memdev=mem"
+    #在GUEST内输入:mount virtio-fs mount –t virtiofs shared1 /mnt/
+EOF
+    #############
+    #声卡
+    case ${SOUND_CARD_ENABLED} in
+    false) ;;
+    *)
+        case ${SOUND_CARD} in
+        'ich9-intel-hda')
+            set -- "${@}" "-device" "ich9-intel-hda,id=sound0,bus=pcie.0,addr=0x1b"
+            set -- "${@}" "-device" "hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0"
+            ;;
+        'intel-hda')
+            set -- "${@}" "-device" "intel-hda,id=sound0,bus=pci.10,addr=0x2"
+            set -- "${@}" "-device" "hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0"
+            ;;
+        DISABLED) ;; #禁用声卡
+        'AC97' | 'ES1370')
+            set -- "${@}" "-device ${SOUND_CARD},id=sound0,bus=pci.10,addr=0x2"
+            ;;
+        esac
+        ;;
+    esac
+
+    case ${CONNECTION_TYPE} in
+    x11* | wayland*)
+        case ${WAYLAND_REMOTE_PULSE} in
+        true) export PULSE_SERVER="${AUDIO_ADDR}" ;;
+        esac
+        ;;
+    *) export PULSE_SERVER="${AUDIO_ADDR}" ;;
+    esac
+    ##########
+    set -- "${@}" "-k" "en-us"
+    ##########
+    #网卡
+    case ${TCP_PORT_HOST_FWD_01_ENABLED} in
+    true)
+        case ${TCP_PORT_HOST_FWD_01} in
+        "") TCP_PORT_HOST_FWD_FORMAT_01="" ;;
+        *) TCP_PORT_HOST_FWD_FORMAT_01="$(printf "%s\n" ${TCP_PORT_HOST_FWD_01} | sed 's@:@-:@g;s@,@,hostfwd=tcp::@g;s@^@,hostfwd=tcp::@g')" ;;
+        esac
+        ;;
+    esac
+    case ${UDP_PORT_HOST_FWD_01_ENABLED} in
+    true)
+        case ${UDP_PORT_HOST_FWD_01} in
+        "") UDP_PORT_HOST_FWD_FORMAT_01="" ;;
+        *) UDP_PORT_HOST_FWD_FORMAT_01="$(printf "%s\n" ${UDP_PORT_HOST_FWD_01} | sed 's@:@-:@g;s@,@,hostfwd=udp::@g;s@^@,hostfwd=udp::@g')" ;;
+        esac
+        ;;
+    esac
+    case ${TCP_PORT_HOST_FWD_02_ENABLED} in
+    true)
+        case ${TCP_PORT_HOST_FWD_02} in
+        "") TCP_PORT_HOST_FWD_FORMAT_02="" ;;
+        *) TCP_PORT_HOST_FWD_FORMAT_02="$(printf "%s\n" ${TCP_PORT_HOST_FWD_02} | sed 's@:@-:@g;s@,@,hostfwd=tcp::@g;s@^@,hostfwd=tcp::@g')" ;;
+        esac
+        ;;
+    esac
+    case ${UDP_PORT_HOST_FWD_02_ENABLED} in
+    true)
+        case ${UDP_PORT_HOST_FWD_02} in
+        "") UDP_PORT_HOST_FWD_FORMAT_02="" ;;
+        *) UDP_PORT_HOST_FWD_FORMAT_02="$(printf "%s\n" ${UDP_PORT_HOST_FWD_02} | sed 's@:@-:@g;s@,@,hostfwd=udp::@g;s@^@,hostfwd=udp::@g')" ;;
+        esac
+        ;;
+    esac
+
+    set -- "${@}" "-netdev" "user,id=hostnet0${TCP_PORT_HOST_FWD_FORMAT_01}${UDP_PORT_HOST_FWD_FORMAT_01}"
+    case ${NET_CARD_01_MAC} in
+    "") set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.1,addr=0x0" ;;
+    *) set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.1,addr=0x0,mac=${NET_CARD_01_MAC}" ;;
+    esac
+    set -- "${@}" "-netdev" "user,id=hostnet1${TCP_PORT_HOST_FWD_FORMAT_02}${UDP_PORT_HOST_FWD_FORMAT_02}"
+    case ${NET_CARD_02_MAC} in
+    "") set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.1,addr=0x1" ;;
+    *) set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.1,addr=0x1,mac=${NET_CARD_02_MAC}" ;;
+    esac
+    ##########
+    set -- "${@}" "-chardev" "spicevmc,id=charchannel1,name=vdagent"
+    set -- "${@}" "-device" "virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=com.redhat.spice.0"
+    set -- "${@}" "-device" "usb-tablet,id=input0,bus=usb.0,port=3"
+    #########
+    case ${GPU_MODEL} in
+    virtio* | vhost-user*)
+        case ${VIRTIO_3D_ACCEL} in
+        true) VIRGL='on' ;;
+        *) VIRGL='off' ;;
+        esac
+        set -- "${@}" "-device" "virtio-vga,id=video0,virgl=${VIRGL},max_outputs=1,bus=pcie.0,addr=0x1"
+        ;;
+    qxl*) set -- "${@}" "-device" "qxl-vga,id=video0,ram_size=${GPU_RAM_SIZE},vram_size=${GPU_VRAM_SIZE},vram64_size_mb=0,vgamem_mb=${GPU_VGAMEM_MB},max_outputs=1,bus=pci.0,addr=0x2" ;;
+    vga | VGA) set -- "${@}" "-device" "VGA,id=video0,vgamem_mb=${GPU_VGAMEM_MB},bus=pcie.0,addr=0x1" ;;
+    bochs*) set -- "${@}" "-device" "bochs-display,id=video0,vgamem=16384k,bus=pcie.0,addr=0x1" ;;
+    *) set -- "${@}" "-device" "${GPU_MODEL},id=video0,bus=pcie.0,addr=0x1" ;;
+    esac
+    ##########
+    case ${CUSTOM_KERNEL} in
+    true)
+        case ${KERNEL_FILE} in
+        "") ;;
+        *) set -- "${@}" "-kernel" "${KERNEL_FILE}" ;;
+        esac
+        case ${INITRD_FILE} in
+        "") ;;
+        *) set -- "${@}" "-initrd" "${INITRD_FILE}" ;;
+        esac
+        case ${INITRD_FILE} in
+        "") ;;
+        *) set -- "${@}" "-append" "${KERNEL_APPEND}" ;;
+        esac
+        ;;
+    esac
+    #用于重定向USB设备,已禁用
+    #set -- "${@}" "-chardev" "spicevmc,id=charredir0,name=usbredir"
+    #set -- "${@}" "-device" "usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=4"
+    #set -- "${@}" "-chardev" "spicevmc,id=charredir1,name=usbredir"
+    #set -- "${@}" "-device" "usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=5"
+    set -- "${@}" "-device" "virtio-balloon-pci,id=balloon0,bus=pci.7,addr=0x0"
+    set -- "${@}" "-object" "rng-random,id=objrng0,filename=/dev/urandom"
+    set -- "${@}" "-device" "virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.8,addr=0x0"
+    set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
+    set -- "${@}" "-msg" "timestamp=on"
+    ###############
+    case ${VNC_STARTUP_PROMPT} in
+    'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
+    esac
+    case ${CONNECTION_TYPE} in
+    vnc)
+        case ${VNC_STARTUP_PROMPT} in
+        'true')
+            cat <<-EOF
+正在启动vnc服务,本机vnc地址localhost:${VNC_PORT}
+The LAN VNC address 局域网地址${TMOE_IP_ADDR}
+EOF
+            ;;
+        esac
+        TRUE_VNC_PORT=$((${VNC_PORT} - 5900))
+        case ${VNC_PASSWORD} in
+        true) VNC_ATTACH=',password=on' ;;
+        *) VNC_ATTACH="" ;;
+        esac
+        set -- "${@}" "-vnc" "127.0.0.1:${TRUE_VNC_PORT}${VNC_ATTACH}"
+        ;;
+    spice)
+        case ${VNC_STARTUP_PROMPT} in
+        'true')
+            cat <<-EOF
+正在启动spice服务,本机spice地址localhost:${VNC_PORT}
+The LAN SPICE address 局域网地址${TMOE_IP_ADDR}
+EOF
+            ;;
+        esac
+        case ${VNC_PASSWORD} in
+        true) VNC_ATTACH=',password=on' ;;
+        *) VNC_ATTACH="" ;;
+        esac
+        set -- "${@}" "-spice" "port=${VNC_PORT},addr=127.0.0.1,image-compression=off,seamless-migration=on${VNC_ATTACH}"
+        ;;
+    remote-x11) export DISPLAY="${REMOTE_X11_ADDR}" ;;
+    *) ;;
+    esac
+    case ${QEMU_BIN_ARCH} in
+    i386) set -- "${QEMU_BIN_PATH}/qemu-system-i386" "${@}" ;;
+    *) set -- "${QEMU_BIN_PATH}/qemu-system-x86_64" "${@}" ;;
+    esac
+    echo $@
+    "${@}"
+}
+##############
+#关于block device的说明
+: <<\EOF
+-blockdev option[,option[,option[,...]]]
+Define a new block driver node. Some of the options apply to all block drivers, other options are only accepted for a specific block driver. See below for a list of generic options and options for the most common block drivers.
+
+Options that expect a reference to another node (e.g. file) can be given in two ways. Either you specify the node name of an already existing node (file=node-name), or you define a new node inline, adding options for the referenced node after a dot (file.filename=path,file.aio=native).
+
+A block driver node created with -blockdev can be used for a guest device by specifying its node name for the drive property in a -device argument that defines a block device.
+
+Valid options for any block driver node:
+driver
+Specifies the block driver to use for the given node.
+
+node-name
+This defines the name of the block driver node by which it will be referenced later. The name must be unique, i.e. it must not match the name of a different block driver node, or (if you use -drive as well) the ID of a drive.
+
+If no node name is specified, it is automatically generated. The generated node name is not intended to be predictable and changes between QEMU invocations. For the top level, an explicit node name must be specified.
+
+read-only
+Open the node read-only. Guest write attempts will fail.
+
+Note that some block drivers support only read-only access, either generally or in certain configurations. In this case, the default value read-only=off does not work and the option must be specified explicitly.
+
+auto-read-only
+If auto-read-only=on is set, QEMU may fall back to read-only usage even when read-only=off is requested, or even switch between modes as needed, e.g. depending on whether the image file is writable or whether a writing user is attached to the node.
+
+force-share
+Override the image locking system of QEMU by forcing the node to utilize weaker shared access for permissions where it would normally request exclusive access. When there is the potential for multiple instances to have the same file open (whether this invocation of QEMU is the first or the second instance), both instances must permit shared access for the second instance to succeed at opening the file.
+
+Enabling force-share=on requires read-only=on.
+
+cache.direct
+The host page cache can be avoided with cache.direct=on. This will attempt to do disk IO directly to the guest’s memory. QEMU may still perform an internal copy of the data.
+
+cache.no-flush
+In case you don’t care about data integrity over host failures, you can use cache.no-flush=on. This option tells QEMU that it never needs to write any data to the disk but can instead keep things in cache. If anything goes wrong, like your host losing power, the disk storage getting disconnected accidentally, etc. your image will most probably be rendered unusable.
+
+discard=discard
+discard is one of “ignore” (or “off”) or “unmap” (or “on”) and controls whether discard (also known as trim or unmap) requests are ignored or passed to the filesystem. Some machine types may not support discard requests.
+
+detect-zeroes=detect-zeroes
+detect-zeroes is “off”, “on” or “unmap” and enables the automatic conversion of plain zero writes by the OS to driver specific optimized zero write commands. You may even choose “unmap” if discard is set to “unmap” to allow a zero write to be converted to an unmap operation.
+
+Driver-specific options for file
+This is the protocol-level block driver for accessing regular files.
+
+filename
+The path to the image file in the local filesystem
+
+aio
+Specifies the AIO backend (threads/native, default: threads)
+
+locking
+Specifies whether the image file is protected with Linux OFD / POSIX locks. The default is to use the Linux Open File Descriptor API if available, otherwise no lock is applied. (auto/on/off, default: auto)
+
+Example:
+
+-blockdev driver=file,node-name=disk,filename=disk.img
+Driver-specific options for raw
+This is the image format block driver for raw images. It is usually stacked on top of a protocol level block driver such as file.
+
+file
+Reference to or definition of the data source block driver node (e.g. a file driver node)
+
+Example 1:
+
+-blockdev driver=file,node-name=disk_file,filename=disk.img
+-blockdev driver=raw,node-name=disk,file=disk_file
+Example 2:
+
+-blockdev driver=raw,node-name=disk,file.driver=file,file.filename=disk.img
+Driver-specific options for qcow2
+This is the image format block driver for qcow2 images. It is usually stacked on top of a protocol level block driver such as file.
+
+file
+Reference to or definition of the data source block driver node (e.g. a file driver node)
+
+backing
+Reference to or definition of the backing file block device (default is taken from the image file). It is allowed to pass null here in order to disable the default backing file.
+
+lazy-refcounts
+Whether to enable the lazy refcounts feature (on/off; default is taken from the image file)
+
+cache-size
+The maximum total size of the L2 table and refcount block caches in bytes (default: the sum of l2-cache-size and refcount-cache-size)
+
+l2-cache-size
+The maximum size of the L2 table cache in bytes (default: if cache-size is not specified - 32M on Linux platforms, and 8M on non-Linux platforms; otherwise, as large as possible within the cache-size, while permitting the requested or the minimal refcount cache size)
+
+refcount-cache-size
+The maximum size of the refcount block cache in bytes (default: 4 times the cluster size; or if cache-size is specified, the part of it which is not used for the L2 cache)
+
+cache-clean-interval
+Clean unused entries in the L2 and refcount caches. The interval is in seconds. The default value is 600 on supporting platforms, and 0 on other platforms. Setting it to 0 disables this feature.
+
+pass-discard-request
+Whether discard requests to the qcow2 device should be forwarded to the data source (on/off; default: on if discard=unmap is specified, off otherwise)
+
+pass-discard-snapshot
+Whether discard requests for the data source should be issued when a snapshot operation (e.g. deleting a snapshot) frees clusters in the qcow2 file (on/off; default: on)
+
+pass-discard-other
+Whether discard requests for the data source should be issued on other occasions where a cluster gets freed (on/off; default: off)
+
+overlap-check
+Which overlap checks to perform for writes to the image (none/constant/cached/all; default: cached). For details or finer granularity control refer to the QAPI documentation of blockdev-add.
+
+Example 1:
+
+-blockdev driver=file,node-name=my_file,filename=/tmp/disk.qcow2
+-blockdev driver=qcow2,node-name=hda,file=my_file,overlap-check=none,cache-size=16777216
+Example 2:
+
+-blockdev driver=qcow2,node-name=disk,file.driver=http,file.filename=http://example.com/image.qcow2
+Driver-specific options for other drivers
+Please refer to the QAPI documentation of the blockdev-add QMP command.
+EOF
+#关于user network的说明
+: <<\EOF
+Configure user mode host network backend which requires no administrator privilege to run. Valid options are:
+id=id
+Assign symbolic name for use in monitor commands.
+
+ipv4=on|off and ipv6=on|off
+Specify that either IPv4 or IPv6 must be enabled. If neither is specified both protocols are enabled.
+
+net=addr[/mask]
+Set IP network address the guest will see. Optionally specify the netmask, either in the form a.b.c.d or as number of valid top-most bits. Default is 10.0.2.0/24.
+
+host=addr
+Specify the guest-visible address of the host. Default is the 2nd IP in the guest network, i.e. x.x.x.2.
+
+ipv6-net=addr[/int]
+Set IPv6 network address the guest will see (default is fec0::/64). The network prefix is given in the usual hexadecimal IPv6 address notation. The prefix size is optional, and is given as the number of valid top-most bits (default is 64).
+
+ipv6-host=addr
+Specify the guest-visible IPv6 address of the host. Default is the 2nd IPv6 in the guest network, i.e. xxxx::2.
+
+restrict=on|off
+If this option is enabled, the guest will be isolated, i.e. it will not be able to contact the host and no guest IP packets will be routed over the host to the outside. This option does not affect any explicitly set forwarding rules.
+
+hostname=name
+Specifies the client hostname reported by the built-in DHCP server.
+
+dhcpstart=addr
+Specify the first of the 16 IPs the built-in DHCP server can assign. Default is the 15th to 31st IP in the guest network, i.e. x.x.x.15 to x.x.x.31.
+
+dns=addr
+Specify the guest-visible address of the virtual nameserver. The address must be different from the host address. Default is the 3rd IP in the guest network, i.e. x.x.x.3.
+
+ipv6-dns=addr
+Specify the guest-visible address of the IPv6 virtual nameserver. The address must be different from the host address. Default is the 3rd IP in the guest network, i.e. xxxx::3.
+
+dnssearch=domain
+Provides an entry for the domain-search list sent by the built-in DHCP server. More than one domain suffix can be transmitted by specifying this option multiple times. If supported, this will cause the guest to automatically try to append the given domain suffix(es) in case a domain name can not be resolved.
+
+Example:
+
+qemu-system-x86_64 -nic user,dnssearch=mgmt.example.org,dnssearch=example.org
+domainname=domain
+Specifies the client domain name reported by the built-in DHCP server.
+
+tftp=dir
+When using the user mode network stack, activate a built-in TFTP server. The files in dir will be exposed as the root of a TFTP server. The TFTP client on the guest must be configured in binary mode (use the command bin of the Unix TFTP client).
+
+tftp-server-name=name
+In BOOTP reply, broadcast name as the “TFTP server name” (RFC2132 option 66). This can be used to advise the guest to load boot files or configurations from a different server than the host address.
+
+bootfile=file
+When using the user mode network stack, broadcast file as the BOOTP filename. In conjunction with tftp, this can be used to network boot a guest from a local directory.
+
+Example (using pxelinux):
+
+qemu-system-x86_64 -hda linux.img -boot n -device e1000,netdev=n1     -netdev user,id=n1,tftp=/path/to/tftp/files,bootfile=/pxelinux.0
+smb=dir[,smbserver=addr]
+When using the user mode network stack, activate a built-in SMB server so that Windows OSes can access to the host files in dir transparently. The IP address of the SMB server can be set to addr. By default the 4th IP in the guest network is used, i.e. x.x.x.4.
+
+In the guest Windows OS, the line:
+
+10.0.2.4 smbserver
+must be added in the file C:\WINDOWS\LMHOSTS (for windows 9x/Me) or C:\WINNT\SYSTEM32\DRIVERS\ETC\LMHOSTS (Windows NT/2000).
+
+Then dir can be accessed in \\smbserver\qemu.
+
+Note that a SAMBA server must be installed on the host OS.
+
+hostfwd=[tcp|udp]:[hostaddr]:hostport-[guestaddr]:guestport
+Redirect incoming TCP or UDP connections to the host port hostport to the guest IP address guestaddr on guest port guestport. If guestaddr is not specified, its value is x.x.x.15 (default first address given by the built-in DHCP server). By specifying hostaddr, the rule can be bound to a specific host interface. If no connection type is set, TCP is used. This option can be given multiple times.
+
+For example, to redirect host X11 connection from screen 1 to guest screen 0, use the following:
+
+# on the host
+qemu-system-x86_64 -nic user,hostfwd=tcp:127.0.0.1:6001-:6000
+# this host xterm should open in the guest X11 server
+xterm -display :1
+To redirect telnet connections from host port 5555 to telnet port on the guest, use the following:
+
+# on the host
+qemu-system-x86_64 -nic user,hostfwd=tcp::5555-:23
+telnet localhost 5555
+Then when you use on the host telnet localhost 5555, you connect to the guest telnet server.
+
+guestfwd=[tcp]:server:port-dev; guestfwd=[tcp]:server:port-cmd:command
+Forward guest TCP connections to the IP address server on port port to the character device dev or to a program executed by cmd:command which gets spawned for each connection. This option can be given multiple times.
+
+You can either use a chardev directly and have that one used throughout QEMU’s lifetime, like in the following example:
+
+# open 10.10.1.1:4321 on bootup, connect 10.0.2.100:1234 to it whenever
+# the guest accesses it
+qemu-system-x86_64 -nic user,guestfwd=tcp:10.0.2.100:1234-tcp:10.10.1.1:4321
+Or you can execute a command on every TCP connection established by the guest, so that QEMU behaves similar to an inetd process for that virtual server:
+
+# call "netcat 10.10.1.1 4321" on every TCP connection to 10.0.2.100:1234
+# and connect the TCP stream to its stdin/stdout
+qemu-system-x86_64 -nic  'user,id=n1,guestfwd=tcp:10.0.2.100:1234-cmd:netcat 10.10.1.1 4321'
+EOF
+run_tmoe_qemu_command "$@"

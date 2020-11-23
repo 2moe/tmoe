@@ -4082,7 +4082,7 @@ xrdp_restart() {
     ip -4 -br -c a | cut -d '/' -f 1
     printf "%s\n" "端口号为${RDP_PORT}"
     printf "%s\n" "正在为您启动xrdp服务，本机默认访问地址为localhost:${RDP_PORT}"
-    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1')
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1')
     echo The LAN VNC address 局域网地址 ${TMOE_IP_ADDR} | sed "s@\$@:${RDP_PORT}@"
     #echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${RDP_PORT}
     printf "%s\n" "如需停止xrdp服务，请输service xrdp stop或systemctl stop xrdp"

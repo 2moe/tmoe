@@ -868,9 +868,9 @@ add_debian_opt_gpg_key() {
 }
 ###########
 install_container_and_virtual_machine() {
-    #source ${TMOE_TOOL_DIR}/virtualization/qemu-system.sh -m
-    printf "%s\n" "本功能正在重构中,暂时无法使用。"
-    printf "%s\n" "新版可能不再兼容qemu5.0以下版本，同时弃用-hda等旧参数。"
+    source ${TMOE_TOOL_DIR}/virtualization/virt-menu -m
+    #printf "%s\n" "本功能正在重构中,暂时无法使用。"
+    #printf "%s\n" "新版可能不再兼容qemu5.0以下版本，同时弃用-hda等旧参数。"
 }
 #############
 tmoe_education_app_menu() {

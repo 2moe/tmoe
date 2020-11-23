@@ -86,7 +86,7 @@ start_x_session
 start_tmoe_x11vnc
 ###########
 sleep 2s
-TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127.0.0.1' | sed "s@\$@:5901@")
+TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:5901@")
 cat <<-ENFOFX11VNCTIPS
 正在启动x11vnc服务,本机默认vnc地址localhost:5901
 本机IPv6 vnc地址[::]:5900或::
