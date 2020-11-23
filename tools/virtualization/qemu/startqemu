@@ -134,14 +134,14 @@ MEMORY_SIZE='1024'
 MEMORY_ALLOCATION='auto'
 : <<\EOF
 默认为'auto'，可选值'num'或者为空。
-自动根据宿主机$((可用内存-512M))来分配。举个例子,宿主机内存(不包含swap)为7844M,可用2185M，此时自动分配给QEMU虚拟机的内存为1673M
-The default is auto', which automatically allocates qemu virtual machine memory based on the host's $((${available-memory} - 512M)).
-For example,the host's RAM is 7844M,the available RAM is 1663M.At this time, the memory automatically allocated to qemu is 1673M.
+自动根据宿主机$((可用内存-256M))来分配。举个例子,宿主机内存(不包含swap)为7844M,可用2185M，此时自动分配给QEMU虚拟机的内存为1929M
+The default is auto', which automatically allocates qemu virtual machine memory based on the host's $((${available-memory} - 256M)).
+For example,the host's RAM is 7844M,the available RAM is 1663M.At this time, the memory automatically allocated to qemu is 1929M.
 本选项为tmoe-qemu所独有，2020年11月之前的原版qemu-system-x86_64不包含此选项。
 EOF
 
-MEMORY_REDUCED='512'
-#默认为512,本选项并非实际内存大小，而是自动分配时需要减少的内存大小，详见MEMORY_ALLOCATION的说明。
+MEMORY_REDUCED='256'
+#默认为256,本选项并非实际内存大小，而是自动分配时需要减少的内存大小，详见MEMORY_ALLOCATION的说明。
 #仅当MEMORY_ALLOCATION的变量值为true时,此选项才会生效。
 ###############
 ###############
@@ -490,7 +490,7 @@ run_tmoe_qemu_command() {
             if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
                 MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
             else
-                MEMORY_SIZE=$((${FREE_MEMORY} - 512))
+                MEMORY_SIZE=$((${FREE_MEMORY} - 256))
             fi
         fi
         if ((${MEMORY_SIZE} <= 256)); then

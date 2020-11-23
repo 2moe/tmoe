@@ -1006,7 +1006,7 @@ modify_qemu_machine_accel() {
 #############
 choose_memory_allocation_type() {
 	CURRENT_VALUE=$(grep '^MEMORY_REDUCED=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	[[ -n ${CURRENT_VALUE} ]] || CURRENT_VALUE=512
+	[[ -n ${CURRENT_VALUE} ]] || CURRENT_VALUE=256
 	if grep -q '^MEMORY_ALLOCATION=.*auto' ${QEMU_FILE}; then
 		IMPORTANT_TIPS='当前已启用auto分配模式。'
 	else
@@ -1016,7 +1016,7 @@ choose_memory_allocation_type() {
 	if (whiptail --title "MEMORY ALLOCATION TYPE" --yes-button 'auto' --no-button 'manually' --yesno "If you choose auto, the guest's RAM will be allocated automatically according to the host's available RAM.\n若选择auto,则将自动分配内存,分配规则为当前宿主机可用内存(不含swap)减去${CURRENT_VALUE}M\n若选manually,则将指定虚拟机内存大小。\n${IMPORTANT_TIPS}" 13 50); then
 		sed -E -i "s@^(MEMORY_ALLOCATION=).*@\1auto@g" ${QEMU_FILE}
 		cat ${QEMU_FILE} | grep --color=auto "^MEMORY_ALLOCATION="
-		TARGET=$(whiptail --inputbox "已启用auto-mode,请输入自动分配时需要减少的内存大小(非实际内存大小),详见配置脚本中MEMORY_ALLOCATION的说明\n默认为512,当前为${CURRENT_VALUE}\nPlease type size to be reduced during auto allocation" 13 50 --title "MEMORY_REDUCED" 3>&1 1>&2 2>&3)
+		TARGET=$(whiptail --inputbox "已启用auto-mode,请输入自动分配时需要减少的内存大小(非实际内存大小),详见配置脚本中MEMORY_ALLOCATION的说明\n默认为256,当前为${CURRENT_VALUE}\nPlease type size to be reduced during auto allocation" 13 50 --title "MEMORY_REDUCED" 3>&1 1>&2 2>&3)
 		if [ "$?" != "0" ]; then
 			#printf "%s\n" "检测到您取消了操作"
 			${RETURN_TO_WHERE}
