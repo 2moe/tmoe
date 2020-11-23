@@ -107,6 +107,7 @@ creat_a_new_tmoe_qemu_vm() {
 	else
 		choose_qemu_qcow2_or_img_file
 	fi
+	press_enter_to_continue
 	SELECTION=""
 	RETURN_TO_WHERE='choose_your_qemu_arch'
 	if (whiptail --title "是否需要选择启动光盘" --yes-button 'yes' --no-button 'skip跳过' --yesno "Do you want to choose a iso?\n启动光盘用于安装系统,若您无此文件,则请先下载iso;\n若磁盘内已安装了系统,则可跳过此选项。" 10 50); then
@@ -114,6 +115,7 @@ creat_a_new_tmoe_qemu_vm() {
 		FILE_EXT_01='iso'
 		FILE_EXT_02='ISO'
 		choose_qemu_qcow2_or_img_file
+		press_enter_to_continue
 	fi
 	choose_your_qemu_arch
 	choose_uefi_or_bios
@@ -246,7 +248,7 @@ choose_qemu_vnc_port() {
 	##############🧺
 	case ${TMOE_OPTION} in
 	"" | 0) choose_qemu_connection_type ;;
-	[1-5]) VNC_PORT=$((5900 + ${TMOE_OPTION})) ;;
+	[1-5]) VNC_PORT=$((5899 + ${TMOE_OPTION})) ;;
 	6) type_the_vnc_port_target ;;
 	esac
 	###############
@@ -1301,6 +1303,8 @@ delete_current_qemu_vm_conf() {
 	printf "%s\n" "${RED}rm -fv ${BLUE}${QEMU_FILE} ${HOME}/${QEMU_VM_NAME}${RESET}"
 	do_you_want_to_continue
 	rm -fv ${QEMU_FILE} ${HOME}/${QEMU_VM_NAME}
+	press_enter_to_return
+	tmoe_qemu_main_menu
 }
 ###############
 modify_qemu_bin_path() {
