@@ -754,7 +754,7 @@ EOF
         esac
         set -- "${@}" "-device" "virtio-vga,id=video0,virgl=${VIRGL},max_outputs=1,bus=pcie.0,addr=0x1"
         ;;
-    qxl*) set -- "${@}" "-device" "qxl-vga,id=video0,ram_size=${GPU_RAM_SIZE},vram_size=${GPU_VRAM_SIZE},vram64_size_mb=0,vgamem_mb=${GPU_VGAMEM_MB},max_outputs=1,bus=pcie.0,addr=0x2" ;;
+    qxl*) set -- "${@}" "-device" "qxl-vga,id=video0,ram_size=${GPU_RAM_SIZE},vram_size=${GPU_VRAM_SIZE},vram64_size_mb=0,vgamem_mb=${GPU_VGAMEM_MB},max_outputs=1,bus=pcie.0,addr=0x1" ;;
     vga | VGA) set -- "${@}" "-device" "VGA,id=video0,vgamem_mb=${GPU_VGAMEM_MB},bus=pcie.0,addr=0x1" ;;
     bochs*) set -- "${@}" "-device" "bochs-display,id=video0,vgamem=16384k,bus=pcie.0,addr=0x1" ;;
     *) set -- "${@}" "-device" "${GPU_MODEL},id=video0,bus=pcie.0,addr=0x1" ;;
