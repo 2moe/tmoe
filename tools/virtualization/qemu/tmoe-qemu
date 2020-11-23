@@ -286,11 +286,6 @@ save_current_qemu_conf_as_a_new_script() {
 	QEMU_VM_NAME=$(whiptail --inputbox "请输入虚拟机名称,不含空格和特殊字符,\n若留空则将自动命名为gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)。Please type the VM name." 10 50 --title "VM NAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_MENU}
-	elif [[ ! ${QEMU_VM_NAME} =~ ^[0-9A-Za-z_-]+$ ]]; then
-		printf "%s\n" "虚拟机名称仅包含英文、数字和_-,请勿输入特殊字符。"
-		printf "%s\n" "Please re-enter."
-		press_enter_to_return
-		save_current_qemu_conf_as_a_new_script
 	elif [[ -e ${QEMU_DIR}/${QEMU_VM_NAME} ]]; then
 		printf "%s\n" "文件已被占用，请重新输入"
 		printf "%s\n" "Please re-enter."
@@ -300,6 +295,11 @@ save_current_qemu_conf_as_a_new_script() {
 		QEMU_VM_NAME="gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)"
 		printf "%s\n" "Your qemu vm name is empty."
 		printf "%s\n" "名称为空，将自动生成虚拟机名称:${GREEN}${QEMU_VM_NAME}${RESET}"
+	elif [[ ! ${QEMU_VM_NAME} =~ ^[0-9A-Za-z_-]+$ ]]; then
+		printf "%s\n" "虚拟机名称仅包含英文、数字和_-,请勿输入特殊字符。"
+		printf "%s\n" "Please re-enter."
+		press_enter_to_return
+		save_current_qemu_conf_as_a_new_script
 	fi
 	QEMU_FILE="${QEMU_DIR}/${QEMU_VM_NAME}"
 	cp -vf ${TMOE_TOOL_DIR}/virtualization/qemu/startqemu ${QEMU_FILE}
@@ -1305,6 +1305,7 @@ delete_current_qemu_vm_conf() {
 	rm -fv ${QEMU_FILE} ${HOME}/${QEMU_VM_NAME}
 	press_enter_to_return
 	tmoe_qemu_main_menu
+	#此处需返回qemu主菜单
 }
 ###############
 modify_qemu_bin_path() {
