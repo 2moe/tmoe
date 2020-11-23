@@ -286,12 +286,18 @@ mount -t 9p -o trans=virtio shared0 ~/sd -o version=9p2000.L,posixacl,cache=mmap
 注：您可以将完整命令另存为脚本文件，并赋予执行权限，便于自动挂载。        
 EOF
 ##########
-#06-4.关于在guest中压缩磁盘的说明。
+#06-4.关于压缩磁盘的说明。
 : <<\EOF
-本操作将填充磁盘所有空白扇区
+首先在guest中填充磁盘所有空白扇区
 dd if=/dev/zero of=/tmp/tmoe_qemu bs=1M
 ls -lh /tmp/tmoe_qemu
 rm -fv /tmp/tmoe_qemu
+接着回到host，使用qemu-img进行压缩。
+有两种压缩方式。
+1.常规压缩
+qemu-img convert -c -O qcow2 原磁盘.qcow2 压缩后的磁盘.qcow2
+2.转换压缩
+qemu-img convert -O qcow2 原磁盘.qcow2 压缩后的磁盘.qcow2
 EOF
 #########
 #07-1.Sound Devices
