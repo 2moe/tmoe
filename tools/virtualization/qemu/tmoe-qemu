@@ -272,7 +272,7 @@ type_the_vnc_port_target() {
 }
 do_you_want_to_link_this_script() {
 	[[ ! -e $(command -v startqemu) ]] || rm -fv $(command -v startqemu)
-	ln -svf ${QEMU_FILE} /usr/local/bin/
+	ln -svf ${QEMU_FILE} /usr/local/bin/startqemu
 	if (whiptail --title "Do you want to link this script to your HOME dir" --yes-button 'yes' --no-button 'no' --yesno "是否需要在${HOME}目录下生成启动脚本(软链接),若选yes,则可通过~/${QEMU_VM_NAME}来启动虚拟机" 9 50); then
 		ln -svf ${QEMU_FILE} ${HOME}
 		printf "%s\n" "您可以输${GREEN}~/${QEMU_VM_NAME}${RESET}来启动当前虚拟机。"
