@@ -286,15 +286,15 @@ save_current_qemu_conf_as_a_new_script() {
 	QEMU_VM_NAME=$(whiptail --inputbox "请输入虚拟机名称,不含空格和特殊字符,\n若留空则将自动命名为gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)。Please type the VM name." 10 50 --title "VM NAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_MENU}
+	elif [ -z "${QEMU_VM_NAME}" ]; then
+		QEMU_VM_NAME="gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)"
+		printf "%s\n" "Your qemu vm name is empty."
+		printf "%s\n" "名称为空，将自动生成虚拟机名称:${GREEN}${QEMU_VM_NAME}${RESET}"
 	elif [[ -e ${QEMU_DIR}/${QEMU_VM_NAME} ]]; then
 		printf "%s\n" "文件已被占用，请重新输入"
 		printf "%s\n" "Please re-enter."
 		press_enter_to_return
 		save_current_qemu_conf_as_a_new_script
-	elif [ -z "${QEMU_VM_NAME}" ]; then
-		QEMU_VM_NAME="gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)"
-		printf "%s\n" "Your qemu vm name is empty."
-		printf "%s\n" "名称为空，将自动生成虚拟机名称:${GREEN}${QEMU_VM_NAME}${RESET}"
 	elif [[ ! ${QEMU_VM_NAME} =~ ^[0-9A-Za-z_-]+$ ]]; then
 		printf "%s\n" "虚拟机名称仅包含英文、数字和_-,请勿输入特殊字符。"
 		printf "%s\n" "Please re-enter."
@@ -328,6 +328,13 @@ creat_blank_virtual_disk_image() {
 	TARGET_FILE_NAME=$(whiptail --inputbox "请输入磁盘文件名称,若留空,则将自动创建${QEMU_VM_NAME}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
+	elif [ -z "${TARGET_FILE_NAME}" ]; then
+		TARGET_FILE_NAME="${QEMU_VM_NAME}.qcow2"
+		if [[ -e ${DISK_FILE_PATH}/${QEMU_VM_NAME} ]]; then
+			printf "%s\n" "文件已存在，新文件将被重命名为${QEMU_VM_NAME}_02"
+			press_enter_to_continue
+			TARGET_FILE_NAME="${QEMU_VM_NAME}_02.qcow2"
+		fi
 	elif [[ ! ${TARGET_FILE_NAME} =~ ^[0-9A-Za-z_-]+$ ]]; then
 		printf "%s\n" "磁盘名称仅包含英文、数字和_-,请勿输入特殊字符。"
 		printf "%s\n" "Please re-enter."
@@ -337,14 +344,6 @@ creat_blank_virtual_disk_image() {
 		printf "%s\n" "文件已存在，新文件将被重命名为${TARGET_FILE_NAME}_02"
 		press_enter_to_continue
 		TARGET_FILE_NAME="${TARGET_FILE_NAME}_02.qcow2"
-	elif [ -z "${TARGET_FILE_NAME}" ]; then
-		if [[ -e ${DISK_FILE_PATH}/${QEMU_VM_NAME} ]]; then
-			printf "%s\n" "文件已存在，新文件将被重命名为${QEMU_VM_NAME}_02"
-			press_enter_to_continue
-			TARGET_FILE_NAME="${QEMU_VM_NAME}_02.qcow2"
-		else
-			TARGET_FILE_NAME="${QEMU_VM_NAME}.qcow2"
-		fi
 	else
 		TARGET_FILE_NAME="${TARGET_FILE_NAME}.qcow2"
 	fi
