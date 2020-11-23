@@ -2,7 +2,7 @@
 #######################
 tmoe_qemu_main() {
 	case "$1" in
-	-m | *)
+	-m | * | -x64qemu)
 		tmoe_qemu_main_menu
 		;;
 	esac
@@ -13,12 +13,11 @@ tmoe_qemu_main_menu() {
 	RETURN_TO_MENU='tmoe_qemu_main_menu'
 	QEMU_DIR="${TMOE_LINUX_DIR}/qemu/list"
 	[[ -e ${QEMU_DIR} ]] || mkdir -p ${QEMU_DIR}
-	cd ${TMOE_LINUX_DIR}/qemu
+	cd ${QEMU_DIR}
 	let i=03
 	for CLIST in $(ls .); do
 		[[ ! -s ${CLIST} ]] || printf "%s %s " "${CLIST}" "$((i++))" >>${TMPDIR}/.tmoe-linux_cache.01
 	done
-	cd list
 	#%s后有空格
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "qemu-system vm" --menu "qemu-system virtual machine" 0 50 0 \
