@@ -16,7 +16,9 @@ tmoe_qemu_main_menu() {
 	cd ${QEMU_DIR}
 	let i=03
 	for CLIST in $(ls .); do
-		[[ ! -s ${CLIST} ]] || printf "%s %s " "${CLIST}" "$((i++))" >>${TMPDIR}/.tmoe-linux_cache.01
+		if [[ -s ${CLIST} && ! -d ${CLIST} ]]; then
+			printf "%s %s " "${CLIST}" "$((i++))" >>${TMPDIR}/.tmoe-linux_cache.01
+		fi
 	done
 	#%s后有空格
 	TMOE_VIRTUALIZATION=$(
@@ -35,6 +37,7 @@ tmoe_qemu_main_menu() {
 	*新建虚拟机) creat_a_new_tmoe_qemu_vm ;;
 	*升级qemu*) upgrade_qemu_bin ;;
 	*)
+		#echo $TMOE_VIRTUALIZATION
 		QEMU_VM_NAME="${TMOE_VIRTUALIZATION}"
 		QEMU_FILE="${QEMU_DIR}/${QEMU_VM_NAME}"
 		start_tmoe_qemu_manager
@@ -42,7 +45,8 @@ tmoe_qemu_main_menu() {
 	esac
 	###############
 	press_enter_to_return
-	${RETURN_TO_WHERE}
+	#${RETURN_TO_WHERE}
+	tmoe_qemu_main_menu
 }
 start_tmoe_qemu_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_manager'
@@ -66,7 +70,7 @@ start_tmoe_qemu_manager() {
 	#"8" "🔌 Del 删除" \
 	##############🧺
 	case ${TMOE_VIRTUALIZATION} in
-	0 | "") install_container_and_virtual_machine ;;
+	0 | "") tmoe_qemu_main_menu ;;
 	1) start_qemu_vm ;;
 	2) edit_qemu_script ;;
 	3) tmoe_qemu_disk_manager ;;

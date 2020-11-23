@@ -3,7 +3,7 @@
 qemu_main() {
 	case "$1" in
 	-x64qemu)
-		start_tmoe_qemu_manager
+		start_tmoe_qemu_tool
 		;;
 	-arm64qemu)
 		start_tmoe_qemu_aarch64_manager
@@ -29,7 +29,7 @@ qemu_system_menu() {
 	#############
 	case ${VIRTUAL_TECH} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) start_tmoe_qemu_manager ;;
+	1) start_tmoe_qemu_tool ;;
 	2) DEPENDENCY_02='virt-manager' ;;
 	3) DEPENDENCY_02='aqemu' ;;
 	4) DEPENDENCY_02='gnome-boxes' ;;
@@ -44,6 +44,9 @@ qemu_system_menu() {
 	qemu_system_menu
 }
 #############
+start_tmoe_qemu_tool() {
+	source ${TMOE_TOOL_DIR}/virtualization/qemu/tmoe-qemu
+}
 virtual_machine_iso_file() {
 	source ${TMOE_TOOL_DIR}/virtualization/iso.sh
 }
@@ -54,7 +57,7 @@ install_container_and_virtual_machine() {
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
 			"2" "📀 iso/qcow2:下载镜像(linux,win10)" \
 			"3" "🐳 docker:开源的应用容器引擎" \
-			"4" "🖥️ VirtualBox(甲骨文开源虚拟机{x64})" \
+			"4" "🖥️ VirtualBox(甲骨文开源虚拟机x64)" \
 			"5" "🍷 wine:调用win api并即时转换" \
 			"6" "🥡 anbox(Android in a box)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
