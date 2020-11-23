@@ -284,8 +284,8 @@ save_current_qemu_conf_as_a_new_script() {
 	QEMU_VM_NAME=$(whiptail --inputbox "请输入虚拟机名称,不含空格和特殊字符,\n若留空则将自动命名为gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)。Please type the VM name." 10 50 --title "VM NAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_MENU}
-	elif [[ ! ${QEMU_VM_NAME} =~ ^[0-9A-Za-z]+$ ]]; then
-		printf "%s\n" "虚拟机名称仅包含英文和数字,请勿输入特殊字符。"
+	elif [[ ! ${QEMU_VM_NAME} =~ ^[0-9A-Za-z_-]+$ ]]; then
+		printf "%s\n" "虚拟机名称仅包含英文、数字和_-,请勿输入特殊字符。"
 		printf "%s\n" "Please re-enter."
 		press_enter_to_return
 		save_current_qemu_conf_as_a_new_script
@@ -326,8 +326,8 @@ creat_blank_virtual_disk_image() {
 	TARGET_FILE_NAME=$(whiptail --inputbox "请输入磁盘文件名称,若留空,则将自动创建${QEMU_VM_NAME}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
-	elif [[ ! ${TARGET_FILE_NAME} =~ ^[0-9A-Za-z]+$ ]]; then
-		printf "%s\n" "磁盘名称仅包含英文和数字,请勿输入特殊字符。"
+	elif [[ ! ${TARGET_FILE_NAME} =~ ^[0-9A-Za-z_-]+$ ]]; then
+		printf "%s\n" "磁盘名称仅包含英文、数字和_-,请勿输入特殊字符。"
 		printf "%s\n" "Please re-enter."
 		press_enter_to_return
 		creat_blank_virtual_disk_image
