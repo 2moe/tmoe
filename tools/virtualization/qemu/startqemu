@@ -427,7 +427,7 @@ VNC_STARTUP_PROMPT='true'
 #显示VNC启动提示，默认为'true'。若连接类型为vnc或spice,则建议开启本选项。
 
 VNC_PASSWORD='false'
-#可true或false
+#可选true或false
 #当为true时，您可以在qemu monotor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
 ############
 ############
@@ -817,7 +817,7 @@ EOF
             ;;
         esac
         case ${VNC_PASSWORD} in
-        true) VNC_ATTACH=',password=on' ;;
+        true) VNC_ATTACH=',password' ;;
         *) VNC_ATTACH="" ;;
         esac
         set -- "${@}" "-spice" "port=${VNC_PORT},addr=127.0.0.1,image-compression=off,seamless-migration=on${VNC_ATTACH}"
