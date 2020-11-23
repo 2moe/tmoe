@@ -185,7 +185,7 @@ start_tmoe_container() {
 	"") rm -f ${DEFAULT_SHELL_CONF} 2>/dev/null ;;
 	*) printf "%s\n" "TMOE_SHELL=${TMOE_SHELL}" >${DEFAULT_SHELL_CONF} ;;
 	esac
-	pulseaudio --start 2>/dev/null &
+	pulseaudio --start &>/dev/null
 	case "${DISTRO_NAME}" in
 	"") ;;
 	*)

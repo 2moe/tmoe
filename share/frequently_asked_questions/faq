@@ -15,7 +15,7 @@ creat_start_linux_deploy_sh() {
 	printf "%s\n" "${CUT_TARGET}"
 	cat >"${CUT_TARGET}" <<-'EndofFile'
 		#!/usr/bin/env bash
-		pulseaudio --start 2>/dev/null &
+		pulseaudio --start &>/dev/null
 		printf "%s\n" "pulseaudio服务启动完成，将为您自动打开LinuxDeploy,请点击“启动”。"
 		am start -n ru.meefik.linuxdeploy/ru.meefik.linuxdeploy.Launcher
 		sleep 6

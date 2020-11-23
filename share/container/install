@@ -535,7 +535,7 @@ esac
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
-	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start 2>/dev/null &
+	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start &>/dev/null
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr vnc
@@ -551,7 +551,7 @@ ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/usr/bin/env bash
-	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start 2>/dev/null &
+	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start &>/dev/null
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr x11
