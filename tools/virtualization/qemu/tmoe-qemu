@@ -163,6 +163,7 @@ choose_uefi_or_bios() {
 }
 choose_qemu_connection_type() {
 	#此处不包含RETURN_TO_WHERE变量
+	unset CONNECTION_TYPE
 	TMOE_OPTION=$(whiptail --title "请选择连接类型" --menu "The default connection type is VNC.\n通过远程或本地桌面来显示qemu的界面\n若取消操作，则将自动选择vnc" 0 50 0 \
 		"1" "vnc" \
 		"2" "x11/wayland(本地显示GUI)" \
@@ -188,11 +189,17 @@ choose_qemu_connection_type() {
 		;;
 	esac
 	###############
-	sed -E -i "s@^(CONNECTION_TYPE=).*@\1${CONNECTION_TYPE}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^CONNECTION_TYPE="
+	case ${CONNECTION_TYPE} in
+	"") ;;
+	*)
+		sed -E -i "s@^(CONNECTION_TYPE=).*@\1${CONNECTION_TYPE}@g" ${QEMU_FILE}
+		cat ${QEMU_FILE} | grep --color=auto "^CONNECTION_TYPE="
+		;;
+	esac
 }
 ##################
 choose_qemu_x11_addr() {
+	unset REMOTE_X11_ADDR
 	CURRENT_IP=$(ip -4 -br a | awk '{print $NF}' | grep '192\.168\.' | cut -d '/' -f 1 | head -n 1)
 	[[ -n ${CURRENT_IP} ]] || CURRENT_IP=$(ip -4 -br -c a | awk '{print $NF}' | grep -v '127\.0\.0\.1' | grep '172\.' | cut -d '/' -f 1 | head -n 1)
 	[[ -n ${CURRENT_IP} ]] || CURRENT_IP="192.168.1.2"
@@ -212,8 +219,13 @@ choose_qemu_x11_addr() {
 	4) type_the_remote_x11_addr ;;
 	esac
 	###############
-	sed -E -i "s@^(REMOTE_X11_ADDR=).*@\1${REMOTE_X11_ADDR}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^REMOTE_X11_ADDR="
+	case ${REMOTE_X11_ADDR} in
+	"") ;;
+	*)
+		sed -E -i "s@^(REMOTE_X11_ADDR=).*@\1${REMOTE_X11_ADDR}@g" ${QEMU_FILE}
+		cat ${QEMU_FILE} | grep --color=auto "^REMOTE_X11_ADDR="
+		;;
+	esac
 }
 #################
 type_the_remote_x11_addr() {
@@ -236,6 +248,7 @@ type_the_remote_x11_addr() {
 #################
 choose_qemu_vnc_port() {
 	CURRENT_VNC_PORT=$(grep "^VNC_PORT=" ${QEMU_FILE} | cut -d '=' -f 2)
+	unset VNC_PORT
 	TMOE_OPTION=$(whiptail --title "请选择${CONNECTION_TYPE}端口" --menu "The current ${CONNECTION_TYPE} port is ${CURRENT_VNC_PORT}.\n默认端口5902,当前为${CURRENT_VNC_PORT}" 0 50 0 \
 		"1" "5900" \
 		"2" "5901" \
@@ -252,8 +265,13 @@ choose_qemu_vnc_port() {
 	6) type_the_vnc_port_target ;;
 	esac
 	###############
-	sed -E -i "s@^(VNC_PORT=).*@\1${VNC_PORT}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^VNC_PORT="
+	case ${VNC_PORT} in
+	"") ;;
+	*)
+		sed -E -i "s@^(VNC_PORT=).*@\1${VNC_PORT}@g" ${QEMU_FILE}
+		cat ${QEMU_FILE} | grep --color=auto "^VNC_PORT="
+		;;
+	esac
 }
 #################
 type_the_vnc_port_target() {

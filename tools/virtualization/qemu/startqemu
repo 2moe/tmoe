@@ -796,6 +796,7 @@ EOF
     case ${VNC_STARTUP_PROMPT} in
     'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
     esac
+    [[ -n ${VNC_PORT} ]] || VNC_PORT="5902"
     case ${CONNECTION_TYPE} in
     vnc)
         case ${VNC_STARTUP_PROMPT} in
