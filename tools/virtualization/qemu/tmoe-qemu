@@ -193,7 +193,7 @@ choose_qemu_connection_type() {
 }
 ##################
 choose_qemu_x11_addr() {
-	CURRENT_IP=$(ip -4 -br -c a | awk '{print $NF}' | grep '192\.168\.' | cut -d '/' -f 1 | head -n 1)
+	CURRENT_IP=$(ip -4 -br a | awk '{print $NF}' | grep '192\.168\.' | cut -d '/' -f 1 | head -n 1)
 	[[ -n ${CURRENT_IP} ]] || CURRENT_IP=$(ip -4 -br -c a | awk '{print $NF}' | grep -v '127\.0\.0\.1' | grep '172\.' | cut -d '/' -f 1 | head -n 1)
 	[[ -n ${CURRENT_IP} ]] || CURRENT_IP="192.168.1.2"
 	TMOE_OPTION=$(whiptail --title "请选择x11转发地址" --menu "The default addr is 127.0.0.1:0" 0 50 0 \
