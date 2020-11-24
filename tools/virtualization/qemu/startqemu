@@ -419,7 +419,7 @@ You can also use keywords “now” or “never” for the expiration time to al
 若您的host为win10(WSL),则可以转发x11。等等，为什么你会在WSL里套娃使用qemu-system？若您的host为win10,则推荐您换用HyperV之类的虚拟机。
 EOF
 #10-2.REMOTE DESKTOP 远程桌面
-CONNECTION_TYPE='x11'
+CONNECTION_TYPE='vnc'
 #可选值vnc,x11,spice,remote-x11
 #若您使用的是wayland,则请将其修改为空或x11。
 
