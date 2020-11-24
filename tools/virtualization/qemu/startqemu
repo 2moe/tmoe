@@ -812,7 +812,7 @@ EOF
         true) VNC_ATTACH=',password=on' ;;
         *) VNC_ATTACH="" ;;
         esac
-        set -- "${@}" "-vnc" "127.0.0.1:${TRUE_VNC_PORT}${VNC_ATTACH}"
+        set -- "${@}" "-vnc" "127.0.0.1:${TRUE_VNC_PORT},to=5000${VNC_ATTACH}"
         ;;
     spice)
         case ${VNC_STARTUP_PROMPT} in
@@ -823,7 +823,7 @@ The LAN SPICE address 局域网地址${TMOE_IP_ADDR}
 EOF
             ;;
         esac
-        case ${SPICE_PASSWORD} in
+        case ${VNC_PASSWORD} in
         true) VNC_ATTACH=',password' ;;
         *) VNC_ATTACH=",disable-ticketing" ;;
         esac
