@@ -43,7 +43,7 @@ accel=accels1[:accels2[:...]]
 This is used to enable an accelerator. Depending on the target architecture, kvm, xen, hax, hvf, whpx or tcg can be available. By default, tcg is used. If there is more than one accelerator specified, the next one is used if the previous one fails to initialize.
 supported accelerators are kvm, xen, hax, hvf, whpx or tcg (default: tcg)
 The default is to enable multi-threading where both the back-end and front-ends support it and no incompatible TCG features have been enabled (e.g. icount/replay).
-accel为加速类型，若您的cpu启用了硬件虚拟化,并且宿主系统内核加载了KVM模块，则建议使用kvm,否则请使用tcg。
+accel为加速类型，若您的cpu支持且启用了硬件虚拟化,并且宿主系统内核加载了KVM模块，则建议使用kvm,否则请使用tcg。
 tmoe-qemu默认情况下的加速器为kvm:tcg:xen，即优先使用kvm，当kvm调用失败时，将调用tcg。对于qemu5.0及其以上版本，您无需单独使用thread=multi来启用tcg多线程加速。在未启用不兼容的功能（例如icount/replay）时，将默认启用多线程加速功能。
 EOF
 #______
@@ -67,7 +67,7 @@ UEFI_ENABLED='false'
 UEFI_CODE_PFLASH="/usr/share/OVMF/OVMF_CODE.fd"
 #TianoCore UEFI默认位置"/usr/share/OVMF/OVMF_CODE.fd"
 
-UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/${QEMU_NAME}-NVRAM.fd"
+UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/qemu/${QEMU_NAME}-NVRAM.fd"
 ###########
 ###########
 if [[ ${UEFI_ENABLED} = true && ! -s "${UEFI_VARS_PFLASH}" ]]; then

@@ -956,7 +956,7 @@ tmoe_qemu_x64_cpu_manager() {
 	#############
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
-	1) modify_qemu_cpu_number ;;
+	1) modify_number_of_qemu_cpus ;;
 	2) modify_qemu_amd64_tmoe_cpu_type ;;
 	3) choose_memory_allocation_type ;;
 	4) modify_qemu_machine_accel ;;
@@ -1053,7 +1053,7 @@ modify_qemu_ram_size() {
 		printf "%s\n" "您已将MEMORY_SIZE的值修改为${BLUE}${TARGET}${RESET}"
 	fi
 }
-modify_qemu_cpu_cores_number() {
+modify_number_of_qemu_cpus() {
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "CPU CORES NUM" --menu "Please choose the num of cpu cores.\n默认为2个vcpu,2个sockets,1个core,1个thread\n即2个CPU插槽 x 单核 x 单线程" 0 0 0 \
 			"1" "1x1x1" \
