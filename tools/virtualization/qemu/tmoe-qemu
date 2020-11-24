@@ -1276,7 +1276,7 @@ disable_qemu_tcp_port_fwd() {
 #################
 modify_qemu_host_and_guest_port() {
 	CURRENT_VALUE=$(grep "^${PORT_FWD_VAR}=" ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	TCP_PORT_FWD_RULES=$(whiptail --inputbox "请输入端口转发规则,例如2888:22,5903:5901\n22为guest的ssh端口,2888为host的端口,用逗号分隔不同的规则\nThe current port fwd rules are ${CURRENT_VALUE}" 13 50 --title "TCP PORT FWD RULES" 3>&1 1>&2 2>&3)
+	TCP_PORT_FWD_RULES=$(whiptail --inputbox "请输入端口转发规则,例如2888:22,39081:39080\n22为guest的ssh端口,2888为host的端口,用逗号分隔不同的规则\nThe current port fwd rules are ${CURRENT_VALUE}" 13 50 --title "TCP PORT FWD RULES" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${TCP_PORT_FWD_RULES}" ]; then
