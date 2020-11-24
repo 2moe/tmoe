@@ -375,7 +375,7 @@ creat_blank_virtual_disk_image() {
 }
 ################
 choose_qemu_qcow2_or_img_file() {
-	if grep -q "^${BLK_DEVICE}=.*true" ${QEMU_FILE}; then
+	if grep -q "^${BLK_DEVICE}_ENABLED=.*true" ${QEMU_FILE}; then
 		CURRENT_QEMU_ISO=$(cat ${QEMU_FILE} | grep "^${BLK_DEVICE}=" | head -n 1 | awk -F '=' '{print $2}')
 		IMPORTANT_TIPS="您当前已加载的虚拟磁盘为${CURRENT_QEMU_ISO}"
 	else
