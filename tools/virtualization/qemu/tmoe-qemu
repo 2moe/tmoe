@@ -545,7 +545,7 @@ tmoe_qemu_disk_manager_05() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) download_virtio_driver ;;
-	2) choose_drive_virtio_disk_01 ;;
+	2) choose_qemu_qcow2_or_img_file ;;
 	3) printf '%s\n' '请先以常规挂载方式(IDE或SATA磁盘)运行虚拟机系统，接着在虚拟机内安装virtio驱动，然后退出虚拟机，最后禁用IDE或SATA磁盘，并选择virtio磁盘。您亦可修改BOOTINDEX开机引导顺序,将Virtio磁盘-01的引导顺序改为1，将其他磁盘修改为2或3或4。' ;;
 	esac
 	press_enter_to_return
