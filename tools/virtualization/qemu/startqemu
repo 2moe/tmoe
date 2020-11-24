@@ -451,6 +451,13 @@ QEMU_BIN_ARCH='x86_64'
 #默认为x86_64，如需模拟32位system,则请将其修改为i386，否则请保持默认值。
 ###########
 run_tmoe_qemu_command() {
+    PURPLE=$(printf '\033[0;35m')
+    RED=$(printf '\033[31m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    BOLD=$(printf '\033[1m')
+    RESET=$(printf '\033[m')
     case ${UEFI_ENABLED} in
     true)
         MACHINE_ATTACH=',pflash0=libvirt-pflash0-format,pflash1=libvirt-pflash1-format'
@@ -491,7 +498,10 @@ run_tmoe_qemu_command() {
     set -- "${@}" "-smp" "${CPUS_NUM},sockets=${SOCKETS_NUM},cores=${CORES_NUM},threads=${THREADS_NUM}"
     ############################
     set_tmoe_qemu_memory_size() {
+        printf "%s\n" "检测到您启用了${YELLOW}自动分配内存${RESET}模式。"
         FREE_MEMORY="$(free -m | awk '{print $NF}' | sed -n 2p)"
+        TOTAL_MEMORY="$(free -m | awk '{print $2}' | sed -n 2p)"
+        printf "%s\n" "当前宿主机${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
         if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
             if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
                 MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
@@ -504,6 +514,7 @@ run_tmoe_qemu_command() {
         elif [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
             MEMORY_SIZE=1024
         fi
+        printf "%s\n" "自动allocated给${YELLOW}${QEMU_NAME}${RESET}的RAM为${BLUE}${MEMORY_SIZE}M${RESET}"
     }
     case ${MEMORY_ALLOCATION} in
     auto) set_tmoe_qemu_memory_size ;;
@@ -793,10 +804,10 @@ EOF
     set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
     set -- "${@}" "-msg" "timestamp=on"
     ###############
+    [[ -n ${VNC_PORT} ]] || VNC_PORT="5902"
     case ${VNC_STARTUP_PROMPT} in
     'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
     esac
-    [[ -n ${VNC_PORT} ]] || VNC_PORT="5902"
     case ${CONNECTION_TYPE} in
     vnc)
         case ${VNC_STARTUP_PROMPT} in
