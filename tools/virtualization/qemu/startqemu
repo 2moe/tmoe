@@ -822,9 +822,9 @@ The LAN SPICE address 局域网地址${TMOE_IP_ADDR}
 EOF
             ;;
         esac
-        case ${VNC_PASSWORD} in
+        case ${SPICE_PASSWORD} in
         true) VNC_ATTACH=',password' ;;
-        *) VNC_ATTACH="" ;;
+        *) VNC_ATTACH=",disable-ticketing" ;;
         esac
         set -- "${@}" "-spice" "port=${VNC_PORT},addr=127.0.0.1,image-compression=off,seamless-migration=on${VNC_ATTACH}"
         ;;
