@@ -310,8 +310,9 @@ save_current_qemu_conf_as_a_new_script() {
 ################
 fix_qemu_vdisk_file_perssions() {
 	if [ ${HOME} != '/root' ]; then
-		printf "%s\n" "正在将${TARGET_FILE_NAME}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-		chown -v ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TARGET_FILE_NAME}
+		printf "%s\n" "正在将${TMOE_FILE_ABSOLUTE_PATH%/*}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+		#chown -v ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${TARGET_FILE_NAME}
+		chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "${TMOE_FILE_ABSOLUTE_PATH%/*}"
 	fi
 }
 choose_qemu_qcow2_disk_type() {
@@ -545,7 +546,7 @@ tmoe_qemu_disk_manager_05() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) download_virtio_driver ;;
 	2) choose_drive_virtio_disk_01 ;;
-	3) printf '%s\n' '请先以常规挂载方式(IDE磁盘)运行虚拟机系统，接着在虚拟机内安装virtio驱动，然后退出虚拟机，最后禁用IDE磁盘，并选择virtio磁盘' ;;
+	3) printf '%s\n' '请先以常规挂载方式(IDE或SATA磁盘)运行虚拟机系统，接着在虚拟机内安装virtio驱动，然后退出虚拟机，最后禁用IDE或SATA磁盘，并选择virtio磁盘。您亦可修改BOOTINDEX开机引导顺序,将Virtio磁盘-01的引导顺序改为1，将其他磁盘修改为2或3或4。' ;;
 	esac
 	press_enter_to_return
 	${RETURN_TO_WHERE}
