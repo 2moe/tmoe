@@ -14,7 +14,7 @@ tmoe_qemu_main_menu() {
 	QEMU_DIR="${TMOE_LINUX_DIR}/qemu/list"
 	[[ -e ${QEMU_DIR} ]] || mkdir -p ${QEMU_DIR}
 	cd ${QEMU_DIR}
-	let i=03
+	let i=02
 	for CLIST in $(ls .); do
 		if [[ -s ${CLIST} && ! -d ${CLIST} ]]; then
 			printf "%s %s " "${CLIST}" "$((i++))" >>${TMPDIR}/.tmoe-linux_cache.01
@@ -24,18 +24,17 @@ tmoe_qemu_main_menu() {
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "qemu-system vm" --menu "qemu-system virtual machine" 0 50 0 \
 			"🍹 Creat a new VM 新建虚拟机" "1" \
-			"🏭 Upgrade 升级qemu bin" "2" \
 			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
 			"Back" "🌚 返回" \
 			3>&1 1>&2 2>&3
 	)
 	rm -f ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null
 	#"10" "🖱 Input devices输入设备" \
+	#"🏭 Upgrade 升级qemu bin" "2" \	*升级qemu*) upgrade_qemu_bin ;;
 	##############🧺
 	case ${TMOE_VIRTUALIZATION} in
 	Back | "") install_container_and_virtual_machine ;;
 	*新建虚拟机) creat_a_new_tmoe_qemu_vm ;;
-	*升级qemu*) upgrade_qemu_bin ;;
 	*)
 		#echo $TMOE_VIRTUALIZATION
 		QEMU_VM_NAME="${TMOE_VIRTUALIZATION}"
@@ -415,6 +414,7 @@ choose_qemu_qcow2_or_img_file() {
 ##########
 tmoe_qemu_disk_manager() {
 	RETURN_TO_WHERE='tmoe_qemu_disk_manager'
+	RETURN_TO_MENU='tmoe_qemu_disk_manager'
 	#15 50 7
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='img'
@@ -438,7 +438,7 @@ tmoe_qemu_disk_manager() {
 	#############
 	#"12" "virtio-fs(共享文件夹)" \
 	case ${TMOE_VIRTUALIZATION} in
-	0 | "") ${RETURN_TO_MENU} ;;
+	0 | "") start_tmoe_qemu_manager ;;
 	1) BLK_DEVICE='SATA_DISK_01' ;;
 	2) BLK_DEVICE='CD_ROM_DISK_01' ;;
 	3) BLK_DEVICE='CD_ROM_DISK_02' ;;
@@ -1174,7 +1174,7 @@ modify_tmoe_qemu_network_settings() {
 	2) modify_qemu_exposed_ports ;;
 	3)
 		NET_DEVICE='NET_CARD_02'
-		IMPORTANT_TIPS='网卡02默认为e1000e,'
+		IMPORTANT_TIPS='网卡02默认为e1000,'
 		modify_qemu_tmoe_network_card
 		;;
 	4)
@@ -1261,7 +1261,9 @@ modify_qemu_exposed_ports() {
 	NET_CARD_02) PORT_FWD_VAR='TCP_PORT_HOST_FWD_02' ;;
 	*) PORT_FWD_VAR='TCP_PORT_HOST_FWD_01' ;;
 	esac
-	if (whiptail --title "TCP PORT FWD" --yes-button 'modify rules' --no-button 'disable' --yesno "您是想要修改tcp端口转发规则，还是禁用此功能呢？\n如需修改udp端口转发规则，则请手动编辑配置脚本\nDo you want to modify the tcp port fwd rules,or disable it." 12 50); then
+	CURRENT_VALUE=$(grep "^${PORT_FWD_VAR}_ENABLED=" ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
+	#IMPORTANT_TIPS
+	if (whiptail --title "TCP PORT FWD" --yes-button 'modify rules' --no-button 'disable' --yesno "您是想要修改tcp端口转发规则，还是禁用此功能呢？\n如需修改udp端口转发规则，则请手动编辑配置脚本\n检测到${PORT_FWD_VAR}的状态为${CURRENT_VALUE}\nDo you want to modify the tcp port fwd rules,or disable it." 13 50); then
 		modify_qemu_host_and_guest_port
 	else
 		disable_qemu_tcp_port_fwd
@@ -1402,11 +1404,6 @@ tmoe_choose_a_qemu_bios_file() {
 }
 ########
 ########
-########
-upgrade_qemu_bin() {
-	printf "%s\n" "待开发"
-}
-#############
 how_to_creat_a_new_tmoe_qemu_vm() {
 	cat <<-'EOF'
 		   1.下载iso镜像文件 Download a iso file.

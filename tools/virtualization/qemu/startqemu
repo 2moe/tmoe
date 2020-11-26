@@ -335,8 +335,8 @@ NET_CARD_01_MAC=''
 #网卡01的mac地址,例如'52:54:00:f3:15:21',此参数值可留空。
 
 NET_CARD_02_ENABLED='true'
-NET_CARD_02='e1000e'
-#网卡02默认为e1000e
+NET_CARD_02='e1000'
+#网卡02默认为e1000
 #若guest已安装了virtio驱动，则可禁用网卡02。
 #name "e1000", bus PCI, alias "e1000-82540em", desc "Intel Gigabit Ethernet"
 #name "e1000e", bus PCI, desc "Intel 82574L GbE Controller"
@@ -682,7 +682,7 @@ run_tmoe_qemu_command() {
     #在GUEST内输入:mount virtio-fs mount –t virtiofs shared1 /mnt/
 EOF
     #############
-    #声卡
+    #ich9声卡,总线=pice.0; 其他pci声卡,总线=pci.10
     case ${SOUND_CARD_ENABLED} in
     false) ;;
     *)
@@ -714,7 +714,7 @@ EOF
     ##########
     set -- "${@}" "-k" "en-us"
     ##########
-    #网卡
+    #网卡,总线=pci.1
     case ${TCP_PORT_HOST_FWD_01_ENABLED} in
     true)
         case ${TCP_PORT_HOST_FWD_01} in
@@ -763,6 +763,7 @@ EOF
     set -- "${@}" "-device" "virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=com.redhat.spice.0"
     set -- "${@}" "-device" "usb-tablet,id=input0,bus=usb.0,port=3"
     #########
+    #GPU,总线=pice.0,而非pci.0
     case ${GPU_MODEL} in
     virtio* | vhost-user*)
         case ${VIRTIO_3D_ACCEL} in
@@ -793,14 +794,17 @@ EOF
         esac
         ;;
     esac
-    #用于重定向USB设备,已禁用
-    #set -- "${@}" "-chardev" "spicevmc,id=charredir0,name=usbredir"
-    #set -- "${@}" "-device" "usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=4"
-    #set -- "${@}" "-chardev" "spicevmc,id=charredir1,name=usbredir"
-    #set -- "${@}" "-device" "usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=5"
-    set -- "${@}" "-device" "virtio-balloon-pci,id=balloon0,bus=pci.7,addr=0x0"
+    : <<\EOF
+    重定向USB设备
+    set -- "${@}" "-chardev" "spicevmc,id=charredir0,name=usbredir"
+    set -- "${@}" "-device" "usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=4"
+    set -- "${@}" "-chardev" "spicevmc,id=charredir1,name=usbredir"
+    set -- "${@}" "-device" "usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=5"
+    伪随机数生成器
     set -- "${@}" "-object" "rng-random,id=objrng0,filename=/dev/urandom"
     set -- "${@}" "-device" "virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.8,addr=0x0"
+EOF
+    set -- "${@}" "-device" "virtio-balloon-pci,id=balloon0,bus=pci.7,addr=0x0"
     set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
     set -- "${@}" "-msg" "timestamp=on"
     ###############

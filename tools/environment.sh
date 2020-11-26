@@ -889,7 +889,7 @@ tmoe_system_app_menu() {
 ##########
 where_is_tmoe_file_dir() {
     CURRENT_QEMU_ISO_FILENAME="$(printf '%s\n' "${CURRENT_QEMU_ISO}" | awk -F '/' '{print $NF}')"
-    if [ ! -z "${CURRENT_QEMU_ISO}" ]; then
+    if [ -n "${CURRENT_QEMU_ISO}" ]; then
         CURRENT_QEMU_ISO_FILEPATH="$(printf '%s\n' "${CURRENT_QEMU_ISO}" | sed "s@${CURRENT_QEMU_ISO_FILENAME}@@")"
     fi
 
