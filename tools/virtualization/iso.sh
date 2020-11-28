@@ -378,9 +378,9 @@ note_of_empty_root_password() {
 download_arch_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	QEMU_NAME="arch_x64-tmoe-202011"
-	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20201117.tar.xz'
-	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20201117.qcow2'
-	printf '%s\n' 'Download size(下载大小)约1018MiB，解压后约为‪2.86GiB'
+	QEMU_DISK_FILE_NAME="${QEMU_NAME}.qcow2"
+	DOWNLOAD_FILE_NAME="${QEMU_NAME}.qcow2.tar.xz"
+	printf '%s\n' 'Download size(下载大小)约995.2MiB，解压后约为‪2.7GiB'
 	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
 	note_of_empty_root_password
 	do_you_want_to_continue
@@ -527,7 +527,18 @@ tmoe_qemu_templates_repo() {
 	tmoe_qemu_templates_repo
 }
 ##########
-download_alpine_and_docker_x64_img_file_again() {
+#old已废弃
+download_alpine_and_docker_x64_img_file_again_old() {
+	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
+		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
+			printf "%s\n" "解压后将重置虚拟机的所有数据"
+			do_you_want_to_continue
+		else
+			download_alpine_and_docker_x64_img_file_again
+		fi
+	else
+		download_alpine_and_docker_x64_img_file_again
+	fi
 	cd /tmp
 	git clone --depth=1 https://gitee.com/ak2/alpine-3.12_amd64-qemu .ALPINE_QEMU_TEMP_FOLDER
 	cd .ALPINE_QEMU_TEMP_FOLDER
@@ -557,6 +568,7 @@ uncompress_alpine_and_docker_x64_img_file() {
 	ln -svf ${QEMU_FILE} /usr/local/bin/startqemu
 	printf "%s\n" "You can type ${GREEN}startqemu${RESET} to start ${BLUE}${QEMU_NAME}${RESET}."
 	#TMOE_FILE_ABSOLUTE_PATH
+	printf "%s\n" "您之后可以输${GREEN}startqemu${RESET}来启动${BLUE}${QEMU_NAME}${RESET}."
 }
 ##############
 download_alpine_and_docker_x64_img_file() {
@@ -577,27 +589,19 @@ download_alpine_and_docker_x64_img_file() {
 		Download size(下载大小)约244MiB，解压后约为1GiB
 	EOF
 	do_you_want_to_continue
-	QEMU_NAME='alpine_x64-tmoe-202011'
-	DOWNLOAD_FILE_NAME='alpine-3.12_amd64-tmoe_20201118.tar.xz'
+	QEMU_NAME='alpine_x64-tmoe_202011'
+	QEMU_DISK_FILE_NAME="${QEMU_NAME}.qcow2"
+	DOWNLOAD_FILE_NAME="${QEMU_NAME}.qcow2.tar.xz"
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
-	QEMU_DISK_FILE_NAME='alpine-3.12_amd64-tmoe_20201118.qcow2'
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
-	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded\n Do you want to unzip it, or download it again?" 0 0); then
-			printf "%s\n" "解压后将重置虚拟机的所有数据"
-			do_you_want_to_continue
-		else
-			download_alpine_and_docker_x64_img_file_again
-		fi
-	else
-		download_alpine_and_docker_x64_img_file_again
-	fi
-	uncompress_alpine_and_docker_x64_img_file
-	printf "%s\n" "您之后可以输startqemu来启动"
-	printf "%s\n" "默认VNC访问地址为localhost:5902"
-	#startqemu
+	printf '%s\n' 'Download size(下载大小)约213.1MiB，解压后约为1.1GiB'
+	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
+	note_of_empty_root_password
+	do_you_want_to_continue
+	check_arch_linux_qemu_qcow2_file
+	#printf "%s\n" "默认VNC访问地址为localhost:5902"
 }
 #############
 choose_qcow2_or_iso

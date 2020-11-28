@@ -272,17 +272,17 @@ VIRTIO_9P_PCI_01的参数值为宿主机的目录，默认为${HOME}/sd。若您
 你需要在guest中挂载9p file system，才能以此方式共享host的目录。
 精简命令:
 mkdir -p ~/sd
-mount -t 9p -o trans=virtio shared0 ~/sd -o version=9p2000.L,posixacl,cache=mmap
+mount -t 9p -o trans=virtio virtio9p01 ~/sd -o version=9p2000.L,posixacl,cache=mmap
 完整命令:
-		MOUNT_FOLDER="${HOME}/sd"
-		MOUNT_NAME="shared0"
-		mount_tmoe_linux_9p() {
-		    [[ -e "${MOUNT_FOLDER}" ]] || mkdir -p "${MOUNT_FOLDER}"
-            unset TMOE_MOUNT_PREFIX
-		    [[ $(id -u) = "0" ]] || TMOE_MOUNT_PREFIX='sudo'
-            ${TMOE_MOUNT_PREFIX} mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap
-		}
-		df | grep "${MOUNT_FOLDER}" &>/dev/null || mount_tmoe_linux_9p
+MOUNT_FOLDER="/media/sd"
+MOUNT_NAME="virtio9p01"
+mount_tmoe_linux_9p() {
+	[[ -e "${MOUNT_FOLDER}" ]] || mkdir -p "${MOUNT_FOLDER}"
+    unset TMOE_MOUNT_PREFIX
+	[[ $(id -u) = "0" ]] || TMOE_MOUNT_PREFIX='sudo'
+    ${TMOE_MOUNT_PREFIX} mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap
+}
+df | grep "${MOUNT_FOLDER}" &>/dev/null || mount_tmoe_linux_9p
 注：您可以将完整命令另存为脚本文件，并赋予执行权限，便于自动挂载。        
 EOF
 ##########
@@ -666,9 +666,9 @@ run_tmoe_qemu_command() {
             ;;
         *) ;;
         esac
-        #-virtfs local,id=shared_folder_dev_0,path=${VIRTIO_9P_PCI_01},security_model=none,mount_tag=shared0
+        #-virtfs local,id=shared_folder_dev_0,path=${VIRTIO_9P_PCI_01},security_model=none,mount_tag=virtio9p01
         set -- "${@}" "-fsdev" "local,security_model=none,id=fsdev-fs0,path=${VIRTIO_9P_PCI_01}"
-        set -- "${@}" "-device" "virtio-9p-pci,id=fs0,fsdev=fsdev-fs0,mount_tag=shared0,bus=pcie.0,addr=0x1c"
+        set -- "${@}" "-device" "virtio-9p-pci,id=fs0,fsdev=fsdev-fs0,mount_tag=virtio9p01,bus=pcie.0,addr=0x1c"
         ;;
     esac
     : <<\EOF
