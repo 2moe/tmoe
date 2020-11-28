@@ -397,12 +397,13 @@ tmoe_multimedia_menu() {
         "5" "🇵 Peek(简单易用的Gif录制软件)" \
         "6" "🎬 腾讯视频(Linux在线视频软件)" \
         "7" "🖼 GIMP(GNU 图像处理程序)" \
-        "8" "🍊 Clementine(小柑橘音乐播放器)" \
-        "9" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
-        "10" "🎧 网易云音乐(x64,专注于发现与分享的音乐产品)" \
-        "11" "🎼 Audacity(类似于cooledit的音频处理软件)" \
-        "12" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
-        "13" "Spotify(x64,声破天是一个正版流媒体音乐服务平台)" \
+        "8" "kolourpaint(KDE图像编辑)" \
+        "9" "🍊 Clementine(小柑橘音乐播放器)" \
+        "10" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
+        "11" "🎧 网易云音乐(x64,专注于发现与分享的音乐产品)" \
+        "12" "🎼 Audacity(类似于cooledit的音频处理软件)" \
+        "13" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
+        "14" "Spotify(x64,声破天是一个正版流媒体音乐服务平台)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -415,12 +416,13 @@ tmoe_multimedia_menu() {
     5) install_peek ;;
     6) install_tencent_video ;;
     7) install_gimp ;;
-    8) install_clementine ;;
-    9) install_parole ;;
-    10) install_netease_163_cloud_music ;;
-    11) install_audacity ;;
-    12) install_ardour ;;
-    13) install_spotify ;;
+    8) install_kolourpaint ;;
+    9) install_clementine ;;
+    10) install_parole ;;
+    11) install_netease_163_cloud_music ;;
+    12) install_audacity ;;
+    13) install_ardour ;;
+    14) install_spotify ;;
     esac
     ##########################
     press_enter_to_return
@@ -849,6 +851,11 @@ install_package_manager_gui() {
 ######################
 install_gimp() {
     DEPENDENCY_01="gimp"
+    DEPENDENCY_02=""
+    beta_features_quick_install
+}
+install_kolourpaint() {
+    DEPENDENCY_01="kolourpaint"
     DEPENDENCY_02=""
     beta_features_quick_install
 }

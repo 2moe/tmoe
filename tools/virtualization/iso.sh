@@ -377,6 +377,7 @@ note_of_empty_root_password() {
 ###################
 download_arch_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
+	QEMU_NAME="arch_x64-tmoe-202011"
 	DOWNLOAD_FILE_NAME='arch_linux_x64_tmoe_20201117.tar.xz'
 	QEMU_DISK_FILE_NAME='arch_linux_x64_tmoe_20201117.qcow2'
 	printf '%s\n' 'Download size(下载大小)约1018MiB，解压后约为‪2.86GiB'
@@ -388,6 +389,7 @@ download_arch_linux_qcow2_file() {
 ################
 download_ubuntu_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
+	QEMU_NAME="ubuntu_x64-tmoe-202011"
 	DOWNLOAD_FILE_NAME='ubuntu-focal_amd64-tmoe_20201118.tar.xz'
 	QEMU_DISK_FILE_NAME='ubuntu-focal_amd64-tmoe_20201118.qcow2'
 	printf '%s\n' 'Download size(下载大小)约1.4GiB，解压后约为‪5.14GiB'
@@ -399,6 +401,7 @@ download_ubuntu_linux_qcow2_file() {
 ####################
 download_kali_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
+	QEMU_NAME="kali_x64-tmoe-202011"
 	DOWNLOAD_FILE_NAME='kali_linux_x64_tmoe_20201117.tar.xz'
 	QEMU_DISK_FILE_NAME='kali_linux_x64_tmoe_20201117.qcow2'
 	printf '%s\n' 'Download size(下载大小)约3.3GiB，解压后约为‪11.64GiB'
@@ -425,6 +428,7 @@ check_arch_linux_qemu_qcow2_file() {
 ################
 download_debian_qcow2_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	QEMU_NAME="debian_x64-tmoe-202011"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if (whiptail --title "Edition" --yes-button "bullseye-tmoe" --no-button 'buster-openstack' --yesno "您想要下载哪个版本的磁盘镜像文件?\nWhich edition do you want to download?" 0 50); then
@@ -498,11 +502,12 @@ tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	mkdir -p ${DOWNLOAD_PATH}
+	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "QEMU TEMPLATES" --menu "本仓库仅含镜像，不含配置文件，以下所有镜像均内置docker" 0 50 0 \
+		whiptail --title "QEMU TEMPLATES" --menu "本仓库仅含镜像,以下所有镜像均内置docker" 0 50 0 \
 			"1" "Alpine-3.12_x64(244M,legacy)" \
-			"2" "Debian-bullseye_x64(766M,legacy+UEFI)" \
+			"2" "Debian-bullseye_x64(766M,legacy)" \
 			"3" "Arch_x64(1G,legacy)" \
 			"4" "Ubuntu-focal_x64(1.37G,legacy)" \
 			"5" "Kali_x64(xfce4,3.26G,legacy)" \
@@ -541,6 +546,15 @@ uncompress_alpine_and_docker_x64_img_file() {
 	else
 		tar -Jpxvf ${DOWNLOAD_FILE_NAME}
 	fi
+	QEMU_DIR="${TMOE_LINUX_DIR}/qemu/list"
+	[[ -e ${QEMU_DIR} ]] || mkdir -p ${QEMU_DIR}
+	QEMU_FILE="${QEMU_DIR}/${QEMU_NAME}"
+	cp -vf ${TMOE_TOOL_DIR}/virtualization/qemu/startqemu ${QEMU_FILE}
+	chmod -v 777 ${QEMU_FILE}
+	sed -E -i "s@^(QEMU_NAME=).*@\1${QEMU_NAME}@g" ${QEMU_FILE}
+	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
+	sed -n p ${QEMU_FILE} | egrep --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+	#TMOE_FILE_ABSOLUTE_PATH
 }
 ##############
 download_alpine_and_docker_x64_img_file() {
@@ -561,6 +575,7 @@ download_alpine_and_docker_x64_img_file() {
 		Download size(下载大小)约244MiB，解压后约为1GiB
 	EOF
 	do_you_want_to_continue
+	QEMU_NAME='alpine_x64-tmoe-202011'
 	DOWNLOAD_FILE_NAME='alpine-3.12_amd64-tmoe_20201118.tar.xz'
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	QEMU_DISK_FILE_NAME='alpine-3.12_amd64-tmoe_20201118.qcow2'
