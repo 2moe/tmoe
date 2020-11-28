@@ -505,7 +505,7 @@ tmoe_qemu_templates_repo() {
 	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "QEMU TEMPLATES" --menu "本仓库仅含镜像,以下所有镜像均内置docker" 0 50 0 \
+		whiptail --title "QEMU TEMPLATES" --menu "以下所有linux image均内置docker" 0 50 0 \
 			"1" "Alpine-3.12_x64(244M,legacy)" \
 			"2" "Debian-bullseye_x64(766M,legacy)" \
 			"3" "Arch_x64(1G,legacy)" \
@@ -554,6 +554,8 @@ uncompress_alpine_and_docker_x64_img_file() {
 	sed -E -i "s@^(QEMU_NAME=).*@\1${QEMU_NAME}@g" ${QEMU_FILE}
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
 	sed -n p ${QEMU_FILE} | egrep --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+	ln -svf ${QEMU_FILE} /usr/local/bin/
+	printf "%s\n" "You can type ${GREEN}startqemu${RESET} to start ${BLUE}${QEMU_NAME}${RESET}."
 	#TMOE_FILE_ABSOLUTE_PATH
 }
 ##############
