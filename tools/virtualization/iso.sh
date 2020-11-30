@@ -525,25 +525,25 @@ tmoe_qemu_templates_repo() {
 	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "QEMU TEMPLATES" --menu "以下所有镜像均支持virtio-blk-device;\n除win10外,以下所有linux image均内置docker容器引擎;\n默认未开启端口转发功能.TCP port is not exposed by default." 0 50 0 \
+		whiptail --title "QEMU TEMPLATES" --menu "以下所有linux image均内置docker容器引擎;\n默认未开启端口转发功能.TCP port is not exposed by default." 0 50 0 \
 			"1" "Alpine-3.12_x64(213M->1.1G,legacy)" \
-			"2" "Win10-20h2_x64 RD-server(5.4G->15G,legacy)" \
-			"3" "Arch_x64(1G->3G,legacy)" \
-			"4" "Debian-bullseye_x64(766M->3G,legacy)" \
-			"5" "Ubuntu-focal_x64(1.4G->5G,legacy)" \
-			"6" "Kali_x64(xfce4,3.3G->11.6G,legacy)" \
+			"2" "Arch_x64(1G->3G,legacy)" \
+			"3" "Debian-bullseye_x64(766M->3G,legacy)" \
+			"4" "Ubuntu-focal_x64(1.4G->5G,legacy)" \
+			"5" "Kali_x64(xfce4,3.3G->11.6G,legacy)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	#############
+	#以下所有镜像均支持virtio-blk-device;\n
+	#"2" "Win10-20h2_x64 RD-server(5.4G->15G,legacy)" \	9999) download_win10_qcow2_file ;;
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) download_alpine_and_docker_x64_img_file ;;
-	2) download_win10_qcow2_file ;;
-	3) download_arch_linux_qcow2_file ;;
-	4) download_debian_qcow2_file ;;
-	5) download_ubuntu_linux_qcow2_file ;;
-	6) download_kali_linux_qcow2_file ;;
+	2) download_arch_linux_qcow2_file ;;
+	3) download_debian_qcow2_file ;;
+	4) download_ubuntu_linux_qcow2_file ;;
+	5) download_kali_linux_qcow2_file ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_templates_repo
