@@ -429,6 +429,9 @@ REMOTE_X11_ADDR='127.0.0.1:0'
 VNC_PORT='5902'
 #默认为5902
 
+VNC_LOCALHOST='true'
+#默认为true,仅本机可连接。
+
 VNC_STARTUP_PROMPT='true'
 #显示VNC启动提示，默认为'true'。若连接类型为vnc或spice,则建议开启本选项。
 
@@ -812,6 +815,10 @@ EOF
     case ${VNC_STARTUP_PROMPT} in
     'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
     esac
+    case ${VNC_LOCALHOST} in
+    true) VNC_IP_ADDR='127.0.0.1' ;;
+    *) VNC_IP_ADDR='0.0.0.0' ;;
+    esac
     case ${CONNECTION_TYPE} in
     vnc)
         case ${VNC_STARTUP_PROMPT} in
@@ -827,7 +834,7 @@ EOF
         true) VNC_ATTACH=',password=on' ;;
         *) VNC_ATTACH="" ;;
         esac
-        set -- "${@}" "-vnc" "127.0.0.1:${TRUE_VNC_PORT},to=5000${VNC_ATTACH}"
+        set -- "${@}" "-vnc" "${VNC_IP_ADDR}:${TRUE_VNC_PORT},to=5000${VNC_ATTACH}"
         ;;
     spice)
         case ${VNC_STARTUP_PROMPT} in
@@ -842,7 +849,7 @@ EOF
         true) VNC_ATTACH=',password' ;;
         *) VNC_ATTACH=",disable-ticketing" ;;
         esac
-        set -- "${@}" "-spice" "port=${VNC_PORT},addr=127.0.0.1,image-compression=off,seamless-migration=on${VNC_ATTACH}"
+        set -- "${@}" "-spice" "port=${VNC_PORT},addr=${VNC_IP_ADDR},image-compression=off,seamless-migration=on${VNC_ATTACH}"
         ;;
     remote-x11) export DISPLAY="${REMOTE_X11_ADDR}" ;;
     *) ;;
