@@ -375,6 +375,20 @@ note_of_empty_root_password() {
 	printf '%s\n' '用户名root，密码为空'
 }
 ###################
+download_win10_qcow2_file() {
+	cd ${DOWNLOAD_PATH}
+	QEMU_NAME="win10-20h2_x64-tmoe_202011"
+	QEMU_DISK_FILE_NAME="${QEMU_NAME}.qcow2"
+	DOWNLOAD_FILE_NAME="${QEMU_NAME}.qcow2.tar.xz"
+	printf '%s\n' 'Download size(下载大小)约5.4GiB，解压后约为‪15GiB。若宿主磁盘空间不足，或不支持单文件大于4G,则将下载/解压失败。'
+	printf "%s\n" "为增强virtio-blk-device的兼容性，故关闭了win10的快速启动。若您使用的是KVM加速，则预计开机时间为2-3分钟;若为跨cpu架构+TCG，则开机时间可能长达数小时。当开机时出现磁盘检查的提示时，请按任意键跳过。"
+	printf "%s\n" "本镜像为${PURPLE}完整${RESET}win10系统，并且内置了${BLUE}VC++ 2015-2019,Net3.5,DirectX${RESET}等组件。"
+	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
+	note_of_empty_root_password
+	do_you_want_to_continue
+	check_arch_linux_qemu_qcow2_file
+}
+##################
 download_arch_linux_qcow2_file() {
 	cd ${DOWNLOAD_PATH}
 	QEMU_NAME="arch_x64-tmoe-202011"
@@ -418,14 +432,20 @@ check_arch_linux_qemu_qcow2_file() {
 			printf "%s\n" "解压后将重置磁盘文件的所有数据"
 			do_you_want_to_continue
 		else
-			aria2c_download_file
+			aria2c_download_tmoe_qemu_file
 		fi
 	else
-		aria2c_download_file
+		aria2c_download_tmoe_qemu_file
 	fi
 	uncompress_alpine_and_docker_x64_img_file
 }
 ################
+aria2c_download_tmoe_qemu_file() {
+	printf "%s\n" "The file is ${YELLOW}${TMOE_FILE_ABSOLUTE_PATH}${RESET}"
+	do_you_want_to_continue
+	aria2c_download_file_00
+	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
+}
 download_debian_qcow2_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
 	QEMU_NAME="debian_x64-tmoe-202011"
@@ -505,12 +525,13 @@ tmoe_qemu_templates_repo() {
 	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "QEMU TEMPLATES" --menu "以下所有linux image均内置docker" 0 50 0 \
-			"1" "Alpine-3.12_x64(244M,legacy)" \
-			"2" "Debian-bullseye_x64(766M,legacy)" \
-			"3" "Arch_x64(1G,legacy)" \
-			"4" "Ubuntu-focal_x64(1.37G,legacy)" \
-			"5" "Kali_x64(xfce4,3.26G,legacy)" \
+		whiptail --title "QEMU TEMPLATES" --menu "以下所有镜像均支持virtio-blk-device;\n除win10外,以下所有linux image均内置docker容器引擎;\n默认未开启端口转发功能.TCP port is not exposed by default." 0 50 0 \
+			"1" "Alpine-3.12_x64(213M->1.1G,legacy)" \
+			"2" "Win10-20h2_x64 RD-server(5.4G->15G,legacy)" \
+			"3" "Arch_x64(1G->3G,legacy)" \
+			"4" "Debian-bullseye_x64(766M->3G,legacy)" \
+			"5" "Ubuntu-focal_x64(1.4G->5G,legacy)" \
+			"6" "Kali_x64(xfce4,3.3G->11.6G,legacy)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -518,10 +539,11 @@ tmoe_qemu_templates_repo() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) download_alpine_and_docker_x64_img_file ;;
-	2) download_debian_qcow2_file ;;
+	2) download_win10_qcow2_file ;;
 	3) download_arch_linux_qcow2_file ;;
-	4) download_ubuntu_linux_qcow2_file ;;
-	5) download_kali_linux_qcow2_file ;;
+	4) download_debian_qcow2_file ;;
+	5) download_ubuntu_linux_qcow2_file ;;
+	6) download_kali_linux_qcow2_file ;;
 	esac
 	press_enter_to_return
 	tmoe_qemu_templates_repo
