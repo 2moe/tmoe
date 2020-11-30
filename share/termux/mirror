@@ -442,7 +442,7 @@ apt_dist_upgrade() {
 }
 ######################
 gnu_linux_mirror_source_manager() {
-	TMOE_LOCALE_URL="${TMOE_GIT_URL}/raw/master/tool.sh"
+	TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/tool.sh"
 	TMOE_LOCALE_TMP_FILE=/tmp/.tmoe-linux-tool.sh
 	if [ $(command -v aria2c) ]; then
 		aria2c --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' "${TMOE_LOCALE_URL}"
