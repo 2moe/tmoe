@@ -1,5 +1,5 @@
 cd ~/gitee/linux
-COUNT=$(curl -L gitee.com/mo2/linux.git | grep 次提交 | awk '{print $1}')
+COUNT=$(curl -L https://gitee.com/mo2/linux | grep 次提交 | awk '{print $1}')
 case ${COUNT} in
 "") ;;
 *)
