@@ -638,7 +638,7 @@ run_tmoe_qemu_command() {
     esac
     case ${FLOPPY_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="/media/master/tmoe_ext4/master/win10.qcow2","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-9-format","read-only"=off,"driver"="${FLOPPY_DISK_01_FORMAT}","file"="libvirt-9-storage""
         case ${FLOPPY_DISK_01_BOOTINDEX} in
         "") FLOPPY_DISK_01_ATTACH='' ;;
@@ -649,7 +649,7 @@ run_tmoe_qemu_command() {
     esac
     case ${FLOPPY_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="/media/master/4T/system/win10/virtio-win.iso","node-name"="libvirt-10-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_02}","node-name"="libvirt-10-storage","auto-read-only"=on,"discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-10-format","read-only"=off,"driver"="${FLOPPY_DISK_02_FORMAT}","file"="libvirt-10-storage""
         case ${FLOPPY_DISK_02_BOOTINDEX} in
         "") FLOPPY_DISK_02_ATTACH='' ;;
