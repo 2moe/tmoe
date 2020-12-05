@@ -195,7 +195,7 @@ KERNEL_APPEND=""
 若您的guest（虚拟机）为linux，则建议使用virtio磁盘(virtio-blk-pci或virtio-scsi-pci)。若guest为win,则您可以在安装完virtio驱动后,禁用SATA或IDE磁盘,并换用virtio磁盘。
 
 若您使用了iso进行全新安装，则可使用以下方案。VIRTIO_DISK_01为空白qcow2磁盘，CD_ROM_DISK_01为win10光盘镜像，CD_ROM_DISK_02为virtio驱动光盘。
-启动虚拟机后，在安装前，请选择virtio驱动盘的amd64/i386目录下的w10目录，即可加载win10的virtio磁盘驱动。
+启动虚拟机后，在安装前，请选择virtio驱动盘的amd64/i386下的w10目录，最后选择win10的virtio磁盘驱动。
 
 您可以使用命令"qemu-img convert -O qcow2 原文件.img 输出的文件.qcow2"来将img磁盘文件转换为qcow2格式。
 使用"qemu-img creat -f qcow2 新磁盘.qcow2"来新建一个qcow2磁盘。
