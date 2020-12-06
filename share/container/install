@@ -1408,7 +1408,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    mv -f .profile.bak .profile
 	fi
 	####################
-		#############################################
+	#############################################
 	fedora_31_repos() {
 	    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
 	    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo

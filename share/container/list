@@ -168,7 +168,6 @@ install_deepin_linux_distro() {
 	ALPHA_SYSTEM=$(
 		whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
 			"1" "20 apricot(amd64,i386) 大小90MiB" \
-			"2" "15.5 camel(arm64) 大小103MiB" \
 			"0" "🌚 Back 返回" \
 			3>&1 1>&2 2>&3
 	)
@@ -176,9 +175,9 @@ install_deepin_linux_distro() {
 	case "${ALPHA_SYSTEM}" in
 	0 | "") install_chroot_exclusive_containers ;;
 	1) install_deepin_apricot_amd64_and_i386 ;;
-	2) install_deepin_camel_arm64 ;;
 	esac
 	###########################
+	#"2" "15.5 camel(arm64) 大小103MiB" \	2) install_deepin_camel_arm64 ;;
 	exit 0
 }
 ##############

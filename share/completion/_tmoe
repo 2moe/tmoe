@@ -82,7 +82,7 @@ function _tmoe() {
         "20.04:ubuntu focal"
         "21.04:ubuntu hirsute"
         "apricot:deepin 20"
-        "camel:deepin 15.5"
+        "eagle:uos 20"
         "s:debian sid"
         "sid"
         "buster:debian 10"
