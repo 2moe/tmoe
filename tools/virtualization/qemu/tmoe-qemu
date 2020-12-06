@@ -163,7 +163,7 @@ choose_uefi_or_bios() {
 choose_qemu_connection_type() {
 	#此处不包含RETURN_TO_WHERE变量
 	unset CONNECTION_TYPE
-	TMOE_OPTION=$(whiptail --title "请选择连接类型" --menu "The default connection type is VNC.\n通过远程或本地桌面来显示qemu的界面\n若取消操作，则将自动选择vnc" 0 50 0 \
+	TMOE_OPTION=$(whiptail --title "请选择连接类型" --menu "The default connection type is VNC.\n通过远程或本地桌面来显示qemu的界面" 0 50 0 \
 		"1" "vnc" \
 		"2" "x11/wayland(本地显示GUI)" \
 		"3" "remote-x11(远程x11,转发x)" \
