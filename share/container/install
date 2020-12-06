@@ -1400,6 +1400,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	####################
 	apt update 2>/dev/null
+	if egrep -q 'deepin|uos\.com' "/etc/os-release";then
+		apt install -y dialog
+	fi
 	apt list --upgradable 2>/dev/null
 	printf "%s\n" "正在升级所有软件包..."
 	apt dist-upgrade -y 2>/dev/null
