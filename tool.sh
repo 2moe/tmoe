@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3507,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3510,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -404,8 +404,8 @@ check_dependencies() {
 	if [ ! $(command -v catimg) ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
 		case "${LINUX_DISTRO}" in
 		debian)
-			if grep -q 'VERSION_ID' "/etc/os-release"; then
-				DEBIANVERSION="$(grep 'VERSION_ID' "/etc/os-release" | cut -d '"' -f 2 | cut -d '.' -f 1 | awk '{print $1}')"
+			if grep -q 'VERSION_ID=' "/etc/os-release"; then
+				DEBIANVERSION="$(grep 'VERSION_ID=' "/etc/os-release" | cut -d '"' -f 2 | cut -d '.' -f 1 | awk '{print $1}')"
 			else
 				DEBIANVERSION="10"
 			fi

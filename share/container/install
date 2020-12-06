@@ -1015,7 +1015,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			debian_sources_list
 			case $(uname -m) in
 			arm* | mips*) sed -i 's@163.com@huaweicloud.com@g' /etc/apt/sources.list ;;
-			esac
+			esac 
 		fi
 		;;
 	esac
@@ -1059,6 +1059,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    ubuntu_sources_list
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
+	elif egrep -q 'deepin|uos\.com' "/etc/os-release";then
+		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ stable main" > /etc/apt/sources.list.d/debian-stable.list
 	elif grep -q 'OpenWrt' "/etc/os-release"; then
 	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
 		sed -i 's@downloads.openwrt.org@mirrors.bfsu.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
