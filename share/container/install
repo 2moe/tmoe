@@ -1060,14 +1060,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
 	elif egrep -q 'deepin|uos\.com' "/etc/os-release";then
-		sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 		if grep -q '20' /etc/issue;then
 			DEBIAN_VERSION='buster'
-		elif grep -q '15.5 SP2' /etc/issue;then
+		elif grep -q '15\.5 SP2' /etc/issue;then
 			DEBIAN_VERSION='stretch'
+			apt update
+			apt install -y apt-transport-https 2>/dev/null
 		else
 			DEBIAN_VERSION='stable'
 		fi
+		sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" > /etc/apt/sources.list.d/debian-stable.list
 	elif grep -q 'OpenWrt' "/etc/os-release"; then
 	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
