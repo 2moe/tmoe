@@ -175,7 +175,7 @@ choose_qemu_connection_type() {
 	"" | 0) ${RETURN_TO_WHERE} ;;
 	1)
 		CONNECTION_TYPE='vnc'
-		choose_qemu_vnc_port
+		tmoe_qemu_vnc_menu
 		;;
 	2) CONNECTION_TYPE='x11' ;;
 	3)
@@ -197,6 +197,30 @@ choose_qemu_connection_type() {
 	esac
 }
 ##################
+tmoe_qemu_vnc_menu() {
+	TMOE_OPTION=$(whiptail --title "请选择连接类型" --menu "The default connection type is VNC.\n通过远程或本地桌面来显示qemu的界面\n若取消操作，则将自动选择vnc" 0 50 0 \
+		"1" "port端口" \
+		"2" "LAN/localhost(局域网访问)" \
+		"0" "🌚 back 返回" \
+		3>&1 1>&2 2>&3)
+	##############🧺
+	case ${TMOE_OPTION} in
+	"" | 0) choose_qemu_connection_type ;;
+	1) choose_qemu_vnc_port ;;
+	2) tmoe_qemu_vnc_localhost ;;
+	esac
+}
+###################
+tmoe_qemu_vnc_localhost() {
+	if (whiptail --title "请选择引导类型" --yes-button 'YES' --no-button 'NO' --yesno "是否允许局域网访问?默认为no.\nDo you allow vnc LAN access?" 8 50); then
+		VNC_LOCALHOST='true'
+	else
+		VNC_LOCALHOST='false'
+	fi
+	sed -E -i "s@^(VNC_LOCALHOST=).*@\1${VNC_LOCALHOST}@g" ${QEMU_FILE}
+	cat ${QEMU_FILE} | grep --color=auto "^VNC_LOCALHOST="
+}
+###################
 choose_qemu_x11_addr() {
 	unset REMOTE_X11_ADDR
 	CURRENT_IP=$(ip -4 -br a | awk '{print $NF}' | grep '192\.168\.' | cut -d '/' -f 1 | head -n 1)
