@@ -156,6 +156,7 @@ kill_container_process() {
 readme_of_gnu_linux_distro() {
 	LONG_DISTRO_NAME=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
 	LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
+	[[ ! $(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $3}') = Stream ]] || LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2"-"$3}')
 	case ${LONG_DISTRO_NAME} in
 	arch) SHORT_DISTRO_NAME='a' ;;
 	alpine) SHORT_DISTRO_NAME='ap' ;;
@@ -186,6 +187,8 @@ readme_of_gnu_linux_distro() {
 	sid) SHORT_DISTRO_CODE='s' ;;
 	bionic) SHORT_DISTRO_CODE='18.04' ;;
 	rolling) SHORT_DISTRO_CODE='r' ;;
+	8-Stream) SHORT_DISTRO_CODE='8s' ;;
+	9-Stream) SHORT_DISTRO_CODE='9s' ;;
 	"") SHORT_DISTRO_CODE="" ;;
 	*) SHORT_DISTRO_CODE=${LONG_DISTRO_CODE} ;;
 	esac

@@ -88,7 +88,7 @@ function _tmoe() {
         "buster:debian 10"
         "bullseye:debian 11"
         "bookworm:debian 12"
-        "trixie:debian13"
+        "trixie:debian 13"
         "n:none(Rolling releases like archlinux do not have a version code)"
         "none:諸如arch之類的發行版無代號"
         "r:kali rolling"
@@ -101,6 +101,7 @@ function _tmoe() {
         "3.13:alpine 3.13"
         "edge:alpine edge"
         "8-Stream:CentOS 8-Stream"
+        "8s:CentOS 8-Stream"
         "tumbleweed:OpenSUSE tumbleweed"
     )
 

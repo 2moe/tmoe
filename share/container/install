@@ -225,6 +225,7 @@ EndOFneko
 printf "$RESET"
 LONG_DISTRO_NAME=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}' | cut -d '_' -f 1)
 LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
+[[ ! $(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $3}') = Stream ]] || LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2"-"$3}')
 LONG_DISTRO_ARCH=${ARCH_TYPE}
 cat <<-EOF
 	少女祈禱中...
