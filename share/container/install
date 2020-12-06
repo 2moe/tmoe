@@ -1063,6 +1063,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 		if grep -q '20' /etc/issue;then
 			DEBIAN_VERSION='buster'
+		elif grep -q '15.5 SP2' /etc/issue;then
+			DEBIAN_VERSION='stretch'
 		else
 			DEBIAN_VERSION='stable'
 		fi

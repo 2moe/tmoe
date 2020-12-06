@@ -2008,7 +2008,7 @@ deepin_desktop_warning() {
 #################
 dde_old_version() {
     if [ ! $(command -v gpg) ]; then
-        DEPENDENCY_01="gpg"
+        DEPENDENCY_01="gnupg"
         DEPENDENCY_02=""
         printf "%s\n" "${GREEN} ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
         printf "%s\n" "即将为您安装gpg..."
