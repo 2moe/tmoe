@@ -96,7 +96,7 @@ install_chroot_exclusive_containers() {
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
-			"1" "deepin深度操作系统(arm64,x86,x64)" \
+			"1" "deepin深度/uos统信(arm64,x86,x64)" \
 			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -114,6 +114,17 @@ install_chroot_exclusive_containers() {
 	exit 0
 }
 ###############
+install_uos_eagle() {
+	case "${ARCH_TYPE}" in
+	amd64 | i386 | arm64) ;;
+	*) distro_does_not_support ;;
+	esac
+	DISTRO_CODE='eagle'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	git_clone_deepin_distro
+}
+###########
 install_deepin_apricot_amd64_and_i386() {
 	case "${ARCH_TYPE}" in
 	amd64 | i386) ;;
@@ -154,9 +165,9 @@ git_clone_deepin_distro() {
 			rm -rvf ${TEMP_DIR}
 		fi
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian system/deepin system/g" |
-			sed "s:debian-sid:deepin-${DISTRO_CODE}:g" |
-			sed "s:Debian GNU/Linux:Deepin GNU/Linux:g")"
+			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 		;;
 	*) distro_does_not_support ;;
 	esac
@@ -164,17 +175,24 @@ git_clone_deepin_distro() {
 ###############
 install_deepin_linux_distro() {
 	RETURN_TO_WHERE='install_deepin_linux_distro'
-	DISTRO_NAME='deepin'
 	ALPHA_SYSTEM=$(
 		whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
-			"1" "20 apricot(amd64,i386) 大小90MiB" \
+			"1" "deepin20 apricot(amd64,i386) 大小40M" \
+			"2" "uos20 eagle(arm64,amd64,i386) 大小38M" \
 			"0" "🌚 Back 返回" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") install_chroot_exclusive_containers ;;
-	1) install_deepin_apricot_amd64_and_i386 ;;
+	1)
+		DISTRO_NAME='deepin'
+		install_deepin_apricot_amd64_and_i386
+		;;
+	2)
+		DISTRO_NAME='uos'
+		install_uos_eagle
+		;;
 	esac
 	###########################
 	#"2" "15.5 camel(arm64) 大小103MiB" \	2) install_deepin_camel_arm64 ;;
