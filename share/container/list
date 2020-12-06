@@ -33,7 +33,7 @@ choose_which_gnu_linux_distro() {
 			"5" "🍱 beta公测版:manjaro,centos,alpine" \
 			"6" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
 			"7" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
-			"8" "🦎 chroot专属:deepin20,opensuse" \
+			"8" "🦎 chroot专属:deepin20,uos,opensuse" \
 			"9" "🍓 experimental(体验版,不再维护):Gentoo,RaspiOS" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)

@@ -1180,7 +1180,7 @@ extract_electron() {
 }
 #########
 latest_electron() {
-    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 10 | sort -n -k 4 -t . | tail -n 1)
+    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1)
     DOWNLOAD_PATH="/opt/electron"
 }
 ###########
