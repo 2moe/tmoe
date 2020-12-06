@@ -1060,7 +1060,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
 	elif egrep -q 'deepin|uos\.com' "/etc/os-release";then
-		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ stable main" > /etc/apt/sources.list.d/debian-stable.list
+		if grep -q '20' /etc/issue;then
+			DEBIAN_VERSION='buster'
+		else
+			DEBIAN_VERSION='stable'
+		fi
+		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" > /etc/apt/sources.list.d/debian-stable.list
 	elif grep -q 'OpenWrt' "/etc/os-release"; then
 	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
 		sed -i 's@downloads.openwrt.org@mirrors.bfsu.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
