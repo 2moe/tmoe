@@ -215,7 +215,7 @@ tmoe_qemu_vnc_menu() {
 ###################
 tmoe_qemu_vnc_localhost() {
 	CURRENT_VALUE=$(grep '^VNC_LOCALHOST=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	if (whiptail --title "VNC LAN access" --yes-button 'true' --no-button 'false' --yesno "是否允许局域网访问?默认为false,当前为${CURRENT_VALUE}\nDo you allow VNC LAN access?" 8 50); then
+	if (whiptail --title "VNC LAN access" --yes-button 'true' --no-button 'false' --yesno "是否仅允许本机访问?默认为true,当前为${CURRENT_VALUE}\nDo you only allow localhost to access vnc?" 8 50); then
 		VNC_LOCALHOST='true'
 	else
 		VNC_LOCALHOST='false'
