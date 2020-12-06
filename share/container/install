@@ -1060,6 +1060,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
 	elif egrep -q 'deepin|uos\.com' "/etc/os-release";then
+		sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 		if grep -q '20' /etc/issue;then
 			DEBIAN_VERSION='buster'
 		else
