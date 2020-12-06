@@ -113,7 +113,7 @@ install_fortunes() {
             ;;
         esac
     fi
-    printf "${YELLOW}%s${RESET}\n" "Enable complete"
+    printf "${YELLOW}%s${RESET}\n" "Enable completed."
 }
 install_fortunes_cn() {
     case ${LINUX_DISTRO} in

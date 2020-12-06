@@ -198,7 +198,7 @@ choose_qemu_connection_type() {
 }
 ##################
 tmoe_qemu_vnc_menu() {
-	TMOE_OPTION=$(whiptail --title "请选择连接类型" --menu "The default connection type is VNC.\n通过远程或本地桌面来显示qemu的界面\n若取消操作，则将自动选择vnc" 0 50 0 \
+	TMOE_OPTION=$(whiptail --title "CONFIGURE VNC" --menu "You can modify the VNC configuration here" 0 50 0 \
 		"1" "port端口" \
 		"2" "LAN/localhost(局域网访问)" \
 		"0" "🌚 back 返回" \
