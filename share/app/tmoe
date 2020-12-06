@@ -165,7 +165,7 @@ source_tmoe_env() {
 	case $(uname -o) in
 	Android)
 		TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
-		[[ ! $(command -v termux-wake-lock) ]] || termux-wake-lock
+		[[ ! $(command -v termux-wake-lock) ]] || termux-wake-lock 2>/dev/null
 		;;
 	*) TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux" ;;
 	esac
