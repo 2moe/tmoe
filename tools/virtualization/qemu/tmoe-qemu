@@ -60,6 +60,7 @@ start_tmoe_qemu_manager() {
 			"5" "🍭 CPU & RAM 中央处理器与内存管理" \
 			"6" "🥅 Network 网络设定" \
 			"7" "😋 Extra options额外选项" \
+			"8" "del conf 删除${QEMU_VM_NAME}配置" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -77,6 +78,7 @@ start_tmoe_qemu_manager() {
 	5) tmoe_qemu_x64_cpu_manager ;;
 	6) modify_tmoe_qemu_network_settings ;;
 	7) modify_tmoe_qemu_extra_options ;;
+	8) delete_current_qemu_vm_conf ;;
 	esac
 	###############
 	press_enter_to_return
@@ -1325,8 +1327,7 @@ modify_tmoe_qemu_extra_options() {
 			"1" "legacy bios or uefi" \
 			"2" "uefi file" \
 			"3" "修改qemu bin路径" \
-			"4" "del conf 删除${QEMU_VM_NAME}配置" \
-			"5" "🍤 FAQ常见问题" \
+			"4" "🍤 FAQ常见问题" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1336,8 +1337,7 @@ modify_tmoe_qemu_extra_options() {
 	1) choose_uefi_or_bios ;;
 	2) choose_qemu_bios_or_uefi_file ;;
 	3) modify_qemu_bin_path ;;
-	4) delete_current_qemu_vm_conf ;;
-	5) tmoe_qemu_faq ;;
+	4) tmoe_qemu_faq ;;
 	esac
 	###############
 	press_enter_to_return
@@ -1345,9 +1345,11 @@ modify_tmoe_qemu_extra_options() {
 }
 #################
 delete_current_qemu_vm_conf() {
-	printf "%s\n" "${RED}rm -fv ${BLUE}${QEMU_FILE} ${HOME}/${QEMU_VM_NAME}${RESET}"
+	UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/qemu/${QEMU_VM_NAME}-NVRAM.fd"
+	printf "%s\n" "${RED}rm -fv ${BLUE}${QEMU_FILE} ${HOME}/${QEMU_VM_NAME} ${UEFI_VARS_PFLASH}${RESET}"
 	do_you_want_to_continue
 	rm -fv ${QEMU_FILE} ${HOME}/${QEMU_VM_NAME}
+	[[ ! -e ${UEFI_VARS_PFLASH} ]] || rm -fv ${UEFI_VARS_PFLASH}
 	press_enter_to_return
 	tmoe_qemu_main_menu
 	#此处需返回qemu主菜单
