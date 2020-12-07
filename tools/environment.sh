@@ -864,6 +864,7 @@ add_debian_opt_gpg_key() {
         install -o root -g root -m 644 /tmp/debian-opt.gpg /etc/apt/trusted.gpg.d/
     fi
     printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+    chmod a+r -v ${OPT_REPO_LIST}
     apt update
 }
 ###########

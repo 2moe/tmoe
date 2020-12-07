@@ -1070,9 +1070,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		else
 			DEBIAN_VERSION='stable'
 		fi
+		DEBIAN_STABLE_LIST='/etc/apt/sources.list.d/debian-stable.list'
 		sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
 		sed -n p /etc/apt/sources.list
-		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" > /etc/apt/sources.list.d/debian-stable.list
+		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" > ${DEBIAN_STABLE_LIST}
+		chmod a+r -v ${DEBIAN_STABLE_LIST}
 	elif grep -q 'OpenWrt' "/etc/os-release"; then
 	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
 		sed -i 's@downloads.openwrt.org@mirrors.bfsu.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
