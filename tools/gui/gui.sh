@@ -2298,10 +2298,11 @@ configure_theme() {
         "2" "⚡ local-theme-installer本地主题安装器" \
         "3" "🎭 win10:kali卧底模式主题" \
         "4" "🚥 MacOS:Mojave" \
-        "5" "🎋 breeze:plasma桌面微风gtk+版主题" \
-        "6" "Kali:Flat-Remix-Blue主题" \
-        "7" "ukui:国产优麒麟ukui桌面主题" \
-        "8" "arc:融合透明元素的平面主题" \
+        "5" "🍎 MacOS:Big Sur" \
+        "6" "🎋 breeze:plasma桌面微风gtk+版主题" \
+        "7" "Kali:Flat-Remix-Blue主题" \
+        "8" "ukui:国产优麒麟ukui桌面主题" \
+        "9" "arc:融合透明元素的平面主题" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ########################
@@ -2311,10 +2312,11 @@ configure_theme() {
     2) local_theme_installer ;;
     3) install_kali_undercover ;;
     4) download_macos_mojave_theme ;;
-    5) install_breeze_theme ;;
-    6) download_kali_theme ;;
-    7) download_ukui_theme ;;
-    8) install_arc_gtk_theme ;;
+    5) download_macos_bigsur_theme ;;
+    6) install_breeze_theme ;;
+    7) download_kali_theme ;;
+    8) download_ukui_theme ;;
+    9) install_arc_gtk_theme ;;
     esac
     ######################################
     press_enter_to_return
@@ -3004,6 +3006,30 @@ download_uos_icon_theme() {
 }
 #####################
 download_macos_mojave_theme() {
+    if [ -d "/usr/share/icons/WhiteSur-dark" ]; then
+        printf "%s\n" "检测到主题已下载，是否重新下载？"
+        RETURN_TO_WHERE='configure_theme'
+        do_you_want_to_continue
+    fi
+    TEMP_FOLDER='/tmp/BIGSUR_TEMP_FOLDER'
+    if [ -e "${TEMP_FOLDER}" ]; then
+        rm -rvf ${TEMP_FOLDER}
+    fi
+    git clone -b master --depth=1 https://gitee.com/ak2/bigsur-gtk-theme.git ${TEMP_FOLDER}
+    cd ${TEMP_FOLDER}
+    GITHUB_URL=$(cat url.txt)
+    tar -Jxvf WhiteSur.tar.xz -C /usr/share/icons 2>/dev/null
+    tar -Jxvf WhiteSur-light-alt.tar.xz -C /usr/share/themes 2>/dev/null
+    tar -Jxvf WhiteSur-dark.tar.xz -C /usr/share/themes 2>/dev/null
+    update-icon-caches /usr/share/icons/WhiteSur /usr/share/icons/WhiteSur-dark 2>/dev/null &
+    rm -rvf ${TEMP_FOLDER}
+    printf "%s\n" "${GITHUB_URL}"
+    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/themes/WhiteSur-dark /usr/share/themes/WhiteSur-light-alt /usr/share/icons/WhiteSur /usr/share/icons/WhiteSur-dark"
+    XFCE_ICON_NAME='WhiteSur'
+    set_default_xfce_icon_theme
+}
+#######################
+download_macos_bigsur_theme() {
     if [ -d "/usr/share/themes/Mojave-dark" ]; then
         printf "%s\n" "检测到主题已下载，是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
@@ -3026,7 +3052,7 @@ download_macos_mojave_theme() {
     XFCE_ICON_NAME='McMojave-circle'
     set_default_xfce_icon_theme
 }
-#######################
+########################
 download_ukui_theme() {
     DEPENDENCY_01="ukui-themes"
     DEPENDENCY_02="ukui-greeter"
@@ -4237,9 +4263,9 @@ ubuntu_install_tiger_vnc_server() {
     LATEST_DEB_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/t/tigervnc/"
     GREP_NAME_01='tigervnc-common'
     GREP_NAME_02='deb10'
-    TEMP_FOLCER='/tmp/.TIGER_VNC_TEMP_FOLDER'
-    mkdir ${TEMP_FOLCER}
-    cd ${TEMP_FOLCER}
+    TEMP_FOLDER='/tmp/.TIGER_VNC_TEMP_FOLDER'
+    mkdir ${TEMP_FOLDER}
+    cd ${TEMP_FOLDER}
     grep_tiger_vnc_deb_file
     aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL}"
     GREP_NAME_01='tigervnc-standalone-server'
@@ -4253,7 +4279,7 @@ ubuntu_install_tiger_vnc_server() {
     dpkg -i ./libjpeg62-turbo_ubuntu-focal.deb ./tigervnc-common_ubuntu-focal.deb ./tigervnc-standalone-server_ubuntu-focal.deb
     apt-mark hold tigervnc-common tigervnc-standalone-server
     cd ~
-    rm -rv ${TEMP_FOLCER}
+    rm -rv ${TEMP_FOLDER}
 }
 ###########
 modify_to_xfwm4_breeze_theme() {
