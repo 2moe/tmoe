@@ -3005,7 +3005,7 @@ download_uos_icon_theme() {
     set_default_xfce_icon_theme
 }
 #####################
-download_macos_mojave_theme() {
+download_macos_bigsur_theme() {
     if [ -d "/usr/share/icons/WhiteSur-dark" ]; then
         printf "%s\n" "检测到主题已下载，是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
@@ -3029,7 +3029,7 @@ download_macos_mojave_theme() {
     set_default_xfce_icon_theme
 }
 #######################
-download_macos_bigsur_theme() {
+download_macos_mojave_theme() {
     if [ -d "/usr/share/themes/Mojave-dark" ]; then
         printf "%s\n" "检测到主题已下载，是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
