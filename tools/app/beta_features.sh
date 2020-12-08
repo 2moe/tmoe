@@ -437,7 +437,7 @@ install_r_studio() {
     "redhat")
         GREP_NAME='x86_64.rpm'
         check_rstudio_version
-        rpm -ivh ./${THE_LATEST_DEB_VERSION}
+        yum install ./${THE_LATEST_DEB_VERSION}
         ;;
     "arch")
         DEPENDENCY_02="rstudio-desktop-git"

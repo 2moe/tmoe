@@ -312,7 +312,7 @@ install_skype() {
     esac
 
     case ${LINUX_DISTRO} in
-    redhat) rpm -ivh "${THE_LATEST_DEB_FILE}" ;;
+    redhat) yum install "${THE_LATEST_DEB_FILE}" ;;
     debian)
         apt-cache show ./${THE_LATEST_DEB_FILE}
         apt install -y ./${THE_LATEST_DEB_FILE}
@@ -991,7 +991,7 @@ install_baidu_netdisk() {
         ;;
     "redhat")
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'baidunetdisk.rpm' "${THE_LATEST_RPM_URL}"
-        rpm -ivh 'baidunetdisk.rpm'
+        yum install 'baidunetdisk.rpm'
         ;;
     esac
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >"${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version"

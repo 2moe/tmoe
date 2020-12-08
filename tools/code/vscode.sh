@@ -425,7 +425,7 @@ install_vscode_official() {
         ;;
     redhat)
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.rpm' "${CODE_BIN_URL}"
-        rpm -ivh ./VSCODE.rpm
+        yum install ./VSCODE.rpm
         rm -vf VSCODE.rpm
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
         ;;
