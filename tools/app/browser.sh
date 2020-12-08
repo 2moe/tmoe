@@ -209,15 +209,13 @@ install_firefox_browser() {
     printf "%s\n" " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET}"
     printf "%s\n" "1s后将自动开始安装"
     sleep 1
-
     DEPENDENCY_01="firefox"
     DEPENDENCY_02="firefox-l10n-zh-cn"
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
-            DEPENDENCY_01="firefox"
-            add-apt-repository -y ppa:mozillateam/firefox-next
+            #add-apt-repository -y ppa:mozillateam/firefox-next
             DEPENDENCY_02="firefox-locale-zh-hans ffmpeg"
             ;;
         esac
@@ -246,12 +244,12 @@ install_firefox_browser() {
 firefox_or_chromium() {
     if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓\nI am Firefox, choose me.\n我是火狐娘，选我啦！♪(^∇^*) \nI'm chrome's elder sister chromium, be sure to choose me.\n妾身乃chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
 
-        if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "Firefox-ESR" --yesno "I am Firefox,I have a younger sister called ESR.\n我是firefox，其实我还有个妹妹叫firefox-esr，您是选我还是选esr?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 12 53); then
+        if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox-ESR" --no-button "Firefox" --yesno "I am Firefox,I have a younger sister called ESR.\n我是firefox，其实我还有个妹妹叫firefox-esr，您是选她还是选我?\n “(＃°Д°)姐姐，我可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 12 53); then
             #printf '%s\n' 'esr可怜巴巴地说道:“我也想要得到更多的爱。”  '
             #什么乱七八糟的，2333333戏份真多。
-            install_firefox_browser
-        else
             install_firefox_esr_browser
+        else
+            install_firefox_browser
         fi
         #printf "%s\n" "若无法正常加载HTML5视频，则您可能需要安装火狐扩展${YELLOW}User-Agent Switcher and Manager${RESET}，并将浏览器UA修改为windows版chrome"
         #firefox将自动安装视频解码器
