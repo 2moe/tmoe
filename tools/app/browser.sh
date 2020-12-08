@@ -215,7 +215,11 @@ install_firefox_browser() {
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
-        "ubuntu") DEPENDENCY_02="firefox-locale-zh-hans ffmpeg" ;;
+        "ubuntu")
+            DEPENDENCY_01="firefox-dev"
+            add-apt-repository -y ppa:mozillateam/firefox-next
+            DEPENDENCY_02="firefox-locale-zh-hans ffmpeg"
+            ;;
         esac
         ;;
     "arch") DEPENDENCY_02="firefox-i18n-zh-cn" ;;
