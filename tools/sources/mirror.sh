@@ -46,7 +46,10 @@ check_tmoe_sources_list_backup_file() {
         SOURCES_LIST_PATH="/etc/yum.repos.d"
         SOURCES_LIST_BACKUP_FILE="${HOME}/.config/tmoe-linux/yum.repos.d-backup.tar.gz"
         SOURCES_LIST_BACKUP_FILE_NAME="yum.repos.d-backup.tar.gz"
-        EXTRA_SOURCE='epel源'
+        case ${REDHAT_DISTRO} in
+        fedora) EXTRA_SOURCE='fedora rpmfusion源' ;;
+        *) EXTRA_SOURCE='epel源' ;;
+        esac
         ;;
     *) EXTRA_SOURCE="不支持修改${LINUX_DISTRO}源" ;;
     esac
@@ -511,9 +514,26 @@ add_extra_source_list() {
     case "${LINUX_DISTRO}" in
     "debian") modify_to_kali_sources_list ;;
     "arch") add_arch_linux_cn_mirror_list ;;
-    "redhat") add_fedora_epel_yum_repo ;;
+    "redhat")
+        case ${REDHAT_DISTRO} in
+        fedora) add_fedora_rpmfusion_yum_repo ;;
+        *) add_fedora_epel_yum_repo ;;
+        esac
+        ;;
     *) non_debian_function ;;
     esac
+}
+################
+add_fedora_rpmfusion_yum_repo() {
+    yum install -y --nogpgcheck https://mirrors.bfsu.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.bfsu.edu.cn/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    for i in $(ls /etc/yum.repos.d/rpmfusion*repo | grep -v rawhide); do
+        cp -vf ${i} ${i}.backup
+        sed -e 's!^metalink=!#metalink=!g' \
+            -e 's!^#baseurl=!baseurl=!g' \
+            -e 's!//download1\.rpmfusion\.org/!//mirrors.bfsu.edu.cn/rpmfusion/!g' \
+            -e 's!http://mirrors\.bfsu!https://mirrors.bfsu!g' \
+            -i ${i}
+    done
 }
 ################
 add_fedora_epel_yum_repo() {
