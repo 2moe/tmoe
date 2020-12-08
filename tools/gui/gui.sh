@@ -886,13 +886,20 @@ configure_vnc_xstartup() {
 		#!/usr/bin/env bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
-		if [ \$(command -v x-terminal-emulator) ]; then
-			x-terminal-emulator &
-		fi
+        for i in x-terminal-emulator xfce4-terminal konsole lxterm gnome-terminal xterm;do
+            if [[ \$(command -v \${i}) ]];then
+                \${i} &
+                break
+            fi
+        done
+		unset i
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
 			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
-		else
+		elif [ \$(command -v ${REMOTE_DESKTOP_SESSION_02}) ]; then
 			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
+        else
+            printf "\033[0;35m%s\033[m%s\n"  "ERROR！" "Xsession start failed."
+            printf "\033[34m%s\033[0;35m%s\033[m%s\n"  "Xsession" "启动失败！" "您可以向开发者反馈。"
 		fi
 	EndOfFile
     #--exit-with-session
@@ -994,7 +1001,10 @@ debian_xfce4_extras() {
             esac
         fi
         ;;
-    redhat) yum install --skip-broken -y xfce*-plugin xfce4-panel-profiles qt5ct ;;
+    redhat)
+        yum install --skip-broken -y xfce*-plugin xfce4-panel-profiles qt5ct
+        [[ $(command -v startxfce4) ]] || yum install --skip-broken -y @xfce
+        ;;
     esac
     apt_purge_libfprint
 }
@@ -4664,8 +4674,8 @@ enable_dbus_launch() {
     sed -i "${XSTARTUP_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
     XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
     sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
-    XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
-    sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
+    #XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
+    #sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
     #################
     #START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
     #sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
