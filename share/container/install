@@ -1537,7 +1537,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		dnf install -y --skip-broken glibc-all-langpacks
 
 	elif grep -q 'CentOS' /etc/os-release; then
-	    cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+	    [[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 	    #curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
 		#curl -Lo /etc/yum.repos.d/CentOS-Base.repo https://mirrors.huaweicloud.com/repository/conf/CentOS-8-anon.repo
 		[[ $(command -v dnf) ]] || yum install -y dnf
