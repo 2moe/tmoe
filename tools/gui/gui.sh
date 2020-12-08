@@ -994,6 +994,7 @@ debian_xfce4_extras() {
             esac
         fi
         ;;
+    redhat) yum install --skip-broken -y xfce*-plugin xfce4-panel-profiles qt5ct ;;
     esac
     apt_purge_libfprint
 }
