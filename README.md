@@ -743,15 +743,15 @@ Containers other than debian may only support mainstream architectures, not s390
 > All systems in the table below support x64 and arm64  
 > \*表示仅旧版支持
 
-| Distro |    x86    | armhf  | ppc64el |
-| ------ | :-------: | :----: | :-----: |
-| Debian |     ✓     |   ✓    |    ✓    |
-| Ubuntu | \*<=19.10 |   ✓    |    ✓    |
-| Kali   |     ✓     |   ✓    |    X    |
-| Arch   |     X     |   ✓    |    X    |
-| Fedora |  \*<=29   | \*<=31 |    ✓    |
-| Alpine |     ✓     |   ✓    |    ✓    |
-| CentOS |   \*<=7   | \*<=7  |    ✓    |
+| Distro |    x86    | armhf | ppc64el |
+| ------ | :-------: | :---: | :-----: |
+| Debian |     ✓     |   ✓   |    ✓    |
+| Ubuntu | \*<=19.10 |   ✓   |    ✓    |
+| Kali   |     ✓     |   ✓   |    X    |
+| Arch   |     X     |   ✓   |    X    |
+| Fedora |  \*<=29   |   ✓   |    ✓    |
+| Alpine |     ✓     |   ✓   |    ✓    |
+| CentOS |   \*<=7   | \*<=7 |    ✓    |
 
 ### 七.其他说明（旧版）
 
