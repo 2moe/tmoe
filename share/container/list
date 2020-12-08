@@ -673,7 +673,6 @@ fedora_distro_menu() {
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
-	#"2" "33(2020_10--2021_11)" \
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
@@ -681,20 +680,12 @@ fedora_distro_menu() {
 		OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 		check_the_latest_distro_version
 		;;
-	20000)
-		DISTRO_CODE=33
-		case ${ARCH_TYPE} in
-		amd64) CORRENT_SHA256SUM='7c7c49d2b7e203e4c88d2c36108d3901a0e2713231c834a83cf3a8c5c97a0e6d' ;;
-		arm64) CORRENT_SHA256SUM='3c41dba2bb466e9eda6c09f169be792909ab36742b9a61fb6575010825320712' ;;
-		esac
-		git_clone_fedora_rootfs
-		;;
 	2)
 		DISTRO_CODE=34
-		case ${ARCH_TYPE} in
-		amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
-		arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;
-		esac
+		#case ${ARCH_TYPE} in
+		#amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
+		#arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;
+		#esac
 		git_clone_fedora_rootfs
 		;;
 	esac
@@ -717,14 +708,6 @@ git_clone_fedora_rootfs() {
 		mv -f ${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz ${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}
 		rm -rvf ${FEDORA_TEMP_FOLDER}
 	fi
-	printf "%s\n" 'Verifying sha256hash...'
-	printf "%s\n" '正在校验sha256哈希值...'
-	printf "%s\n" "${CORRENT_SHA256SUM}"
-	LOCAL_SHA256SUM=$(sha256sum ${FEDORA_ROOTFS_FILE} | cut -c 1-64)
-	case ${LOCAL_SHA256SUM} in
-	"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
-	*) printf "%s\n" "Sorry,SHA256哈希值与源文件不一致，文件可能已破损。" ;;
-	esac
 	case ${DISTRO_CODE} in
 	33)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
@@ -740,7 +723,7 @@ git_clone_fedora_rootfs() {
 			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 			sed "s@\(FEDORA_VERSION=\).*@\129@g" |
 			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-		#当版本低于30时不会自动换源
+		#当版本低于30，或为rawhide时不会自动换源
 		;;
 	esac
 }
@@ -753,22 +736,22 @@ install_fedora_gnu_linux_distro() {
 	case "${ARCH_TYPE}" in
 	armel | i386) distro_does_not_support ;;
 	armhf)
-		DISTRO_CODE=31
+		DISTRO_CODE=33
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		go_to_proot_management
 		[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
-		CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
 		cd ${ROOTFS_DIR}
-		FEDORA_ROOTFS_FILE='fedora-31_armhf-rootfs.tar.xz'
+		FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
 		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
-
 		if [ ! -s "${FEDORA_ROOTFS_FILE}" ]; then
 			rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
-			git clone --depth=1 ${AK2_GIT_URL}/fedora-31_armhf ${FEDORA_TEMP_FOLDER}
+			git clone --depth=1 ${AK2_GIT_URL}/fedora-33_armhf ${FEDORA_TEMP_FOLDER}
 			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${ROOTFS_DIR}
 			rm -rvf ${FEDORA_TEMP_FOLDER}
 		fi
+		: <<\EOF
+		#CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
 		printf "%s\n" 'Verifying sha256hash...'
 		printf "%s\n" '正在校验sha256哈希值...'
 		printf "%s\n" "${CORRENT_SHA256SUM}"
@@ -776,6 +759,7 @@ install_fedora_gnu_linux_distro() {
 		case ${LOCAL_SHA256SUM} in
 		"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
 		esac
+EOF
 		linux_distro_common_model_01
 		;;
 	*)
