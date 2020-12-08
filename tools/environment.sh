@@ -1457,7 +1457,7 @@ download_and_install_deb() {
         apt-cache show ./${THE_LATEST_DEB_FILE}
         apt install -y ./${THE_LATEST_DEB_FILE}
         ;;
-    redhat) yum install ./${THE_LATEST_DEB_FILE} ;;
+    redhat) yum install -y ./${THE_LATEST_DEB_FILE} ;;
     arch | *) beta_features_quick_install ;;
     esac
     rm -v ./${THE_LATEST_DEB_FILE} 2>/dev/null

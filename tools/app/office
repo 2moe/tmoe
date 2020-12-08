@@ -172,7 +172,7 @@ install_wps_office() {
         ;;
     "redhat")
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
-        yum install ./WPSoffice.rpm
+        yum install -y ./WPSoffice.rpm
         ;;
     esac
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
