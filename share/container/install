@@ -1315,14 +1315,15 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
 	     apt install -y apt-transport-https 2>/dev/null
 	fi
-	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+
+	if [[ ! -e /etc/apt/sources.list.d/raspi.list && -e /etc/apt/sources.list ]]; then
 		case $(uname -m) in
 		riscv*);;
 		*)
 		if egrep -q '^deb.*(huawei|tuna|bfsu)' /etc/apt/sources.list 2>/dev/null;then
-	     printf "%s\n" "Replacing http software source list with https."
-	     printf "%s\n" "正在将http源替换为https..."
-	     sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
+	      printf "%s\n" "Replacing http software source list with https."
+	      printf "%s\n" "正在将http源替换为https..."
+	      sed -i 's@http:@https:@g' /etc/apt/sources.list
 		fi
 		;;
 		esac

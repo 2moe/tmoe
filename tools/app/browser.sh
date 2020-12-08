@@ -168,7 +168,6 @@ install_firefox_esr_browser() {
     printf "%s\n" "${YELLOW} “谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。 ${RESET}"
     printf "%s\n" "1s后将自动开始安装"
     sleep 1
-
     DEPENDENCY_01="firefox-esr"
     DEPENDENCY_02="firefox-esr-l10n-zh-cn"
 
