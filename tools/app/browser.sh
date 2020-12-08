@@ -216,7 +216,7 @@ install_firefox_browser() {
     "debian")
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
-            DEPENDENCY_01="firefox-dev"
+            DEPENDENCY_01="firefox"
             add-apt-repository -y ppa:mozillateam/firefox-next
             DEPENDENCY_02="firefox-locale-zh-hans ffmpeg"
             ;;
