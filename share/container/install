@@ -1487,11 +1487,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
 	    #dnf clean packages
 	}
-	######################
-	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 |cut -d '"' -f 2)" = "fedora" ]; then
+	fedora_rpmfusion_repo(){
 		yum install -y --nogpgcheck https://mirrors.bfsu.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.bfsu.edu.cn/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-	    tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
-	    mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 		for i in $(ls /etc/yum.repos.d/rpmfusion*repo | grep -v rawhide); do
 	        #cp -vf ${i} ${i}.backup
 	        sed -e 's!^metalink=!#metalink=!g' \
@@ -1500,6 +1497,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	            -e 's!http://mirrors\.bfsu!https://mirrors.bfsu!g' \
 	            -i ${i}
 	    done
+	}
+	######################
+	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 |cut -d '"' -f 2)" = "fedora" ]; then
+	    tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
+	    mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 	    FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
 		sed -i -E "s@(enabled)=1@\1=0@" /etc/yum.repos.d/fedora-updates-testing-modular.repo /etc/yum.repos.d/fedora-updates-testing.repo
 		case ${LANG} in
@@ -1510,10 +1512,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        else
 	            fedora_31_repos
 	        fi
-	        fedora_3x_repos
+			fedora_3x_repos
 	    fi
+
 			if [[ ! -e /tmp/resolv.conf ]];then
 				cp -f /etc/resolv.conf /tmp
+			fi
+			if ((${FEDORA_VERSION} >= 32)); then
+				fedora_rpmfusion_repo
 			fi
 			dnf update -y
 			[[ $(command -v systemctl) ]] || dnf install -y systemd
@@ -1521,8 +1527,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			#更新系统后，dns解析文件会被systemd的配置所覆盖
 			cp -f  /tmp/resolv.conf /etc
 			[[ $(command -v ip) ]] || dnf install -y iproute
-			printf "%s\n" "dnf install -y dnf-utils passwd findutils"
-			dnf install -y dnf-utils passwd findutils
+			printf "%s\n" "dnf install -y dnf-utils passwd findutils man-db"
+			dnf install -y dnf-utils passwd findutils man-db
 		;;
 		esac
 		#TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
