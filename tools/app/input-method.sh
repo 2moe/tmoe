@@ -604,7 +604,10 @@ install_debian_sogou_pinyin() {
         LATEST_DEB_VERSION="sogouimebs_${ARCH_TYPE}.deb"
         install_deb_file_common_model_02
         ;;
-    arm64) printf "%s\n" "请手动前往优麒麟软件仓库手动下载安装arm64版sogouimebs" ;;
+    arm64)
+        printf '%s\n' 'http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
+        printf "%s\n" "请前往优麒麟软件仓库,手动下载安装arm64版sogouimebs"
+        ;;
     esac
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://pinyin.sogou.com/linux/${RESET}"

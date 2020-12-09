@@ -1320,14 +1320,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		case $(uname -m) in
 		riscv*);;
 		*)
-		if egrep -q '^deb.*(huawei|tuna|bfsu)' /etc/apt/sources.list 2>/dev/null;then
+		if egrep -q '^deb.*(huawei|tuna|bfsu)' /etc/apt/sources.list;then
 	      printf "%s\n" "Replacing http software source list with https."
 	      printf "%s\n" "正在将http源替换为https..."
 	      sed -i 's@http:@https:@g' /etc/apt/sources.list
 		fi
 		;;
 		esac
-	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list 2>/dev/null
+	    sed -i 's@https://security@http://security@g' /etc/apt/sources.list
 	fi
 	##########################
 	gentoo_gnu_linux_make_conf() {
