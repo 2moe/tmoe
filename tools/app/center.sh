@@ -982,8 +982,8 @@ install_baidu_netdisk() {
         #LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
         #download_ubuntu_kylin_deb_file_model_02
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
-        #apt-cache show ./baidunetdisk.deb
-        #apt install -y ./baidunetdisk.deb
+        apt-cache show ./baidunetdisk.deb
+        apt install -y ./baidunetdisk.deb
         ;;
     "arch")
         DEPENDENCY_01="baidunetdisk-bin"

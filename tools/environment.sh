@@ -1053,8 +1053,8 @@ install_typora() {
         ;;
     *) arch_does_not_support ;;
     esac
-    #apt-cache show ./typora.deb
-    #apt install -y ./typora.deb
+    apt-cache show ./typora.deb
+    apt install -y ./typora.deb
     #rm -vf ./typora.deb
     beta_features_install_completed
 }
