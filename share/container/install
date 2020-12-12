@@ -1134,8 +1134,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	build_fakeroot() {
 	for i in make automake autoconf gcc libtool po4a; do
 		if [[ ! $(command -v ${i}) ]];then
-			pacman -Sy --noconfirm ${i}
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+			pacman -Sy --noconfirm ${i}
 		fi
 	done
 	[[ $(command -v whereis) ]] || pacman -Sy --noconfirm util-linux
