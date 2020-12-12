@@ -806,6 +806,8 @@ EndOfFile
 #不要将profile转换为外部脚本，否则将影响sed
 cat >'.profile' <<-'ENDOFbashPROFILE'
 	YELLOW=$(printf '\033[33m')
+	GREEN=$(printf '\033[32m')
+	BLUE=$(printf '\033[34m')
 	RESET=$(printf '\033[m')
 	cd ${HOME}
 	###############
@@ -1131,7 +1133,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#################
 	build_fakeroot() {
 	for i in automake autoconf gcc libtool po4a make; do
-		[[ $(command -v ${i}) ]] || pacman -Sy --noconfirm ${i}
+		if [[ $(command -v ${i}) ]];then
+			pacman -Sy --noconfirm ${i}
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+		fi
 	done
 	[[ $(command -v whereis) ]] || pacman -Sy --noconfirm util-linux
 	FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
@@ -1164,8 +1169,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					SigLevel = Never
 				Endofpacman
 	    fi
+		printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}archlinux-keyring${RESET}"
 	    pacman -Syu --noconfirm archlinux-keyring
-	    pacman -Sy --noconfirm archlinuxcn-keyring
+		printf "%s\n" "${GREEN}pacman ${YELLOW}-S --noconfirm ${BLUE}archlinuxcn-keyring${RESET}"
+	    pacman -S --noconfirm archlinuxcn-keyring
+		printf "%s\n" "${GREEN}pacman ${YELLOW}-S --noconfirm ${BLUE}yay${RESET}"
 	    pacman -S --noconfirm yay
 	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 	    pacman -S --noconfirm diffutils iproute gawk
