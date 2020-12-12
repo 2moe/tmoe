@@ -979,6 +979,30 @@ apt_purge_libfprint() {
     esac
 }
 ###################
+build_xfce4_panel_profiles() {
+    CURRENT_DIR=$(pwd)
+    for i in make automake python-gobject; do
+        if [[ ! $(command -v ${i}) ]]; then
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+            pacman -Sy --noconfirm ${i}
+        fi
+    done
+    FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
+    FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+    FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
+    FAKEROOT_SRC_FILE=$(printf "%s\n" ${FAKEROOT_SRC_VERSION} | sed 's@profiles_@profiles-@g')
+    cd /tmp
+    curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL}
+    tar -xvf ${FAKEROOT_SRC_FILE}
+    cd ${FAKEROOT_SRC_FILE%.*.*.*}
+    ./configure --prefix=/usr --python=python
+    make -j2
+    make install
+    cd /tmp
+    rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
+    cd ${CURRENT_DIR}
+}
+###################
 debian_xfce4_extras() {
     case ${LINUX_DISTRO} in
     debian)
@@ -1013,6 +1037,10 @@ debian_xfce4_extras() {
     redhat)
         yum install --skip-broken -y xfce*-plugin xfce4-panel-profiles qt5ct
         [[ $(command -v startxfce4) ]] || yum install --skip-broken -y @xfce
+        ;;
+    arch)
+        [[ $(command -v qt5ct) ]] || pacman -Sy --noconfirm qt5ct 2>/dev/null
+        [[ $(command -v xfce4-panel-profiles) ]] || build_xfce4_panel_profiles
         ;;
     esac
     apt_purge_libfprint
