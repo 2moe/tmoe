@@ -833,7 +833,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		ff02::2 ip6-allrouters
 	EOF
 	fi
-	if [ "${TMOE_CHROOT}" = 'true' ]; then
+	if [[ "${TMOE_CHROOT}" = 'true' && $(command -v groupadd) ]]; then
 		groupadd aid_system -g 1000 || groupadd aid_system -g 1074
 		groupadd aid_radio -g 1001
 		groupadd aid_bluetooth -g 1002
