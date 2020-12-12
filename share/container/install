@@ -1132,8 +1132,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	build_fakeroot() {
-	for i in automake autoconf gcc libtool po4a make; do
-		if [[ $(command -v ${i}) ]];then
+	for i in make automake autoconf gcc libtool po4a; do
+		if [[ ! $(command -v ${i}) ]];then
 			pacman -Sy --noconfirm ${i}
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 		fi
@@ -1169,12 +1169,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				Endofpacman
 	    fi
 		pacman -Syyu --noconfirm
+		#reinstall gawk
 		for i in archlinux-keyring archlinuxcn-keyring yay gawk;do
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
 		done
 		[[ $(command -v diff) ]] || pacman -S --noconfirm diffutils
 		[[ $(command -v ip) ]] || pacman -S --noconfirm iproute
+		#检测两遍yay是否安装
 		[[ $(command -v yay) ]] || pacman -S --noconfirm yay
 		[[ $(command -v curl) ]] || pacman -S --noconfirm curl
 		yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
