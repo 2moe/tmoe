@@ -156,6 +156,10 @@ sed_a_source_list() {
 			*) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
 			esac
 		fi
+	elif egrep -q 'redhat|Alpine|centos' /etc/os-release; then
+		if [ -e /bin/zsh ]; then
+			sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
+		fi
 	fi
 }
 ###############
