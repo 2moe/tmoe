@@ -1136,6 +1136,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
 					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+					SigLevel = Never
 				Endofpacman
 	    fi
 	    pacman -Syu --noconfirm archlinux-keyring

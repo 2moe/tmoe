@@ -552,6 +552,7 @@ add_arch_linux_cn_mirror_list() {
         cat >>/etc/pacman.conf <<-'Endofpacman'
 			[archlinuxcn]
 			Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+            SigLevel = Never
 		Endofpacman
         pacman -Syu --noconfirm archlinux-keyring
         pacman -Sy --noconfirm archlinuxcn-keyring
