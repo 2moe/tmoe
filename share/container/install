@@ -1161,7 +1161,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	############
 	arch_linux_yay() {
 	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || printf '%s\n' 'LANG=en_US.UTF-8' >>/etc/locale.conf
-	    pacman -Syyu --noconfirm
 	    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
@@ -1169,16 +1168,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					SigLevel = Never
 				Endofpacman
 	    fi
-		printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}archlinux-keyring${RESET}"
-	    pacman -Syu --noconfirm archlinux-keyring
-		printf "%s\n" "${GREEN}pacman ${YELLOW}-S --noconfirm ${BLUE}archlinuxcn-keyring${RESET}"
-	    pacman -S --noconfirm archlinuxcn-keyring
-		printf "%s\n" "${GREEN}pacman ${YELLOW}-S --noconfirm ${BLUE}yay${RESET}"
-	    pacman -S --noconfirm yay
-	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
-	    pacman -S --noconfirm diffutils iproute gawk
+		pacman -Syyu --noconfirm
+		for i in archlinux-keyring archlinuxcn-keyring yay gawk;do
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+			pacman -Sy --noconfirm ${i}
+		done
+		[[ $(command -v diff) ]] || pacman -S --noconfirm diffutils
+		[[ $(command -v ip) ]] || pacman -S --noconfirm iproute
 		[[ $(command -v yay) ]] || pacman -S --noconfirm yay
 		[[ $(command -v curl) ]] || pacman -S --noconfirm curl
+		yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 	}
 	#################
 	#################
