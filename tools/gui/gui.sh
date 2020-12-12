@@ -982,7 +982,7 @@ apt_purge_libfprint() {
 build_xfce4_panel_profiles() {
     CURRENT_DIR=$(pwd)
     #intltool-merge命令依赖于intltool
-    for i in make automake python-gobject intltool; do
+    for i in make automake python-gobject intltool pamac; do
         if [[ ! $(command -v ${i}) ]]; then
             printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
             pacman -Sy --noconfirm ${i}
