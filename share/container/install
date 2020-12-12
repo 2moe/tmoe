@@ -1275,8 +1275,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 
 	if grep -q 'ubuntu' /etc/os-release; then
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
-		build_fakeroot
 	fi
 
 	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
@@ -1308,6 +1306,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	locale-gen ${TMOE_LANG} 2>/dev/null
 	source /etc/default/locale 2>/dev/null
 	#################
+	if egrep -q "Arch|Manjaro" '/etc/os-release' 2>/dev/null || egrep -q "Arch|Manjaro" '/etc/issue'; then
+		build_fakeroot
+	fi
 	printf "$YELLOW"
 	cat <<-'EndOFneko'
 			                                     
