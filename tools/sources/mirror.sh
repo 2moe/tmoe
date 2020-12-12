@@ -564,6 +564,9 @@ add_arch_linux_cn_mirror_list() {
         pacman -S --noconfirm yay
         yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
     fi
+    if [ ! $(command -v fakeroot) ]; then
+        pacman -S --noconfirm fakeroot
+    fi
 }
 ###############
 check_debian_distro_and_modify_sources_list() {

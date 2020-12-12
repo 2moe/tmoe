@@ -1130,7 +1130,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	build_fakeroot() {
-	for i in automake autoconf gcc libtool po4a; do
+	for i in automake autoconf gcc libtool po4a make; do
 		[[ $(comand -v ${i}) ]] || pacman -Sy --noconfirm ${i}
 	done
 	[[ $(comand -v whereis) ]] || pacman -Sy --noconfirm util-linux
@@ -1168,7 +1168,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    pacman -S --noconfirm diffutils iproute gawk
 		[[ $(command -v yay) ]] || pacman -S --noconfirm yay
 		[[ $(command -v curl) ]] || pacman -S --noconfirm curl
-		build_fakeroot
 	}
 	#################
 	#################
@@ -1274,6 +1273,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 
 	if grep -q 'ubuntu' /etc/os-release; then
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
+		build_fakeroot
 	fi
 
 	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
