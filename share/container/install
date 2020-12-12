@@ -1149,6 +1149,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	po4a -k 0 --rm-backups --variable "srcdir=../doc/" po4a/po4a.cfg
 	cd ..
 	make install
+	cd /tmp
+	rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_VERSION}
 	}
 	############
 	arch_linux_yay() {
