@@ -1139,11 +1139,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					SigLevel = Never
 				Endofpacman
 	    fi
-	    pacman -Syu --noconfirm archlinux-keyring
+	    pacman -Syu --noconfirm archlinux-keyring fakeroot
 	    pacman -Sy --noconfirm archlinuxcn-keyring
 	    pacman -S --noconfirm yay
 	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 	    pacman -S --noconfirm diffutils iproute gawk
+		[[ $(command -v yay) ]] || pacman -S --noconfirm yay
 	}
 	#################
 	#################
