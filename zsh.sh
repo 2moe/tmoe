@@ -157,9 +157,7 @@ sed_a_source_list() {
 			esac
 		fi
 	elif egrep -q 'redhat|Alpine|centos' /etc/os-release; then
-		if [ -e /bin/zsh ]; then
-			sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
-		fi
+		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
 	fi
 }
 ###############
