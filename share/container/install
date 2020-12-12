@@ -1131,9 +1131,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#################
 	build_fakeroot() {
 	for i in automake autoconf gcc libtool po4a make; do
-		[[ $(comand -v ${i}) ]] || pacman -Sy --noconfirm ${i}
+		[[ $(command -v ${i}) ]] || pacman -Sy --noconfirm ${i}
 	done
-	[[ $(comand -v whereis) ]] || pacman -Sy --noconfirm util-linux
+	[[ $(command -v whereis) ]] || pacman -Sy --noconfirm util-linux
 	FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
 	FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
 	FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
@@ -1150,7 +1150,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	cd ..
 	make install
 	cd /tmp
-	rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_VERSION}
+	rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
 	}
 	############
 	arch_linux_yay() {
