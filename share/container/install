@@ -1151,6 +1151,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	make install
 	cd /tmp
 	rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
+	cd ${HOME}
 	}
 	############
 	arch_linux_yay() {
