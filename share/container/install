@@ -1183,17 +1183,17 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	#################
-	if [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Arch" ]; then
+	if [ "$(cut -c 1-4 /etc/issue)" = "Arch" ]; then
 	    arch_linux_mirror_list
 		pacman-key --init
 	    pacman-key --populate
 		if [ -e "/etc/mkinitcpio.d/linux-armv7.preset" ]; then
 			pacman -Rsc --noconfirm linux-armv7
 		fi
-	elif [ "$(sed -n p /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
+	elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
 	    manjaro_mirror_list
-			pacman-key --init
-	        pacman-key --populate
+		pacman-key --init
+	    pacman-key --populate
 		pacman -Syu --noconfirm base base-devel
 	fi
 
