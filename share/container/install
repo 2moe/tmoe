@@ -1129,6 +1129,28 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	}
 	#################
+	build_fakeroot() {
+	for i in automake autoconf gcc libtool po4a; do
+		[[ $(comand -v ${i}) ]] || pacman -Sy --noconfirm ${i}
+	done
+	[[ $(comand -v whereis) ]] || pacman -Sy --noconfirm util-linux
+	FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
+	FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+	FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
+	FAKEROOT_SRC_FILE=$(printf "%s\n" ${FAKEROOT_SRC_VERSION} | sed 's@fakeroot_@fakeroot-@g')
+	cd /tmp
+	curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL}
+	tar -xvf ${FAKEROOT_SRC_FILE}
+	cd ${FAKEROOT_SRC_FILE%.*.*.*}
+	./bootstrap
+	./configure --prefix=/usr --libdir=/usr/lib/libfakeroot --with-ipc=tcp --disable-static
+	make -j2
+	cd doc
+	po4a -k 0 --rm-backups --variable "srcdir=../doc/" po4a/po4a.cfg
+	cd ..
+	make install
+	}
+	############
 	arch_linux_yay() {
 	    grep -q '^LANG=' /etc/locale.conf 2>/dev/null || printf '%s\n' 'LANG=en_US.UTF-8' >>/etc/locale.conf
 	    pacman -Syyu --noconfirm
@@ -1139,12 +1161,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					SigLevel = Never
 				Endofpacman
 	    fi
-	    pacman -Syu --noconfirm archlinux-keyring fakeroot
+	    pacman -Syu --noconfirm archlinux-keyring
 	    pacman -Sy --noconfirm archlinuxcn-keyring
 	    pacman -S --noconfirm yay
 	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 	    pacman -S --noconfirm diffutils iproute gawk
 		[[ $(command -v yay) ]] || pacman -S --noconfirm yay
+		[[ $(command -v curl) ]] || pacman -S --noconfirm curl
+		build_fakeroot
 	}
 	#################
 	#################
