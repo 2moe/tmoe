@@ -917,6 +917,10 @@ configure_vnc_xstartup() {
 congigure_xvnc() {
     #cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
     cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc
+    if [ -e "/etc/os-release" ]; then
+        VNC_DESKTOP_NAME="$(grep 'PRETTY_NAME=' /etc/os-release | awk -F '=' '{print $2}' | cut -d '"' -f 2 | sed 's@ @-@g;s@$@\_tmoe-linux-vnc@g')"
+        [[ -z $(VNC_DESKTOP_NAME) ]] || sed -i -E "s@(desktop=)tmoe-linux@\1${VNC_DESKTOP_NAME}@" /etc/tigervnc/vncserver-config-defaults
+    fi
 }
 ############
 configure_x11vnc_remote_desktop_session() {
