@@ -40,12 +40,10 @@ start_tmoe_x11vnc() {
 }
 ###################
 tmoe_x11vnc_preconfigure() {
-    if [ ! -s "${TMOE_X11_PASSWD_FILE}" ]; then
-        x11vncpasswd
-    fi
+    [[ -s "${TMOE_X11_PASSWD_FILE}" ]] || x11vncpasswd
 
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
-        TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
         export LANG="${TMOE_LANG}"
     else
         export LANG="en_US.UTF-8"

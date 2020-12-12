@@ -77,7 +77,7 @@ EOF
 start_tmoe_xvnc() {
     . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
     if [[ $(readlink /etc/alternatives/vncserver) = "/usr/bin/tigervncserver" || -n $(command -v vncsession) ]]; then
-        set -- "${@}" "-ZlibLevel=1"
+        set -- "${@}" "-ZlibLevel=0"
     fi
     #tightvnc专有参数bc #enable bug compatibility #set -- "${@}" "bc"
     set -- "${@}" "-a" "5"

@@ -43,7 +43,7 @@ tmoe_vnc_env() {
 }
 ###########
 rm_vnc_lock() {
-    vncserver -kill :${CURRENT_PORT} 2>/dev/null
+    [[ $(command -v vncsession) ]] || vncserver -kill :${CURRENT_PORT} 2>/dev/null
     rm -vf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
     rm -vf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
 }
