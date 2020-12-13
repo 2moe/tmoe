@@ -9,6 +9,7 @@ TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
+TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
 ########################
 check_tmoe_locale() {
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -75,7 +76,7 @@ EOF
 }
 ############
 start_tmoe_xvnc() {
-    . /etc/tigervnc/vncserver-config-defaults 2>/dev/null
+    . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
     if [[ $(readlink /etc/alternatives/vncserver) = "/usr/bin/tigervncserver" || -n $(command -v vncsession) ]]; then
         set -- "${@}" "-ZlibLevel=0"
     fi

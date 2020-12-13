@@ -11,12 +11,14 @@ TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
+TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
 #################
 start_windows_10_pulse_audio_server() {
     . ${TMOE_LINUX_DIR}/wsl_pulse_audio
 }
 #####################
 start_tmoe_x11vnc() {
+    [[ ! -e ${TIGERVNC_CONFIG_FILE} ]] || . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
     set -- "${@}" "-ncache_cr"
     set -- "${@}" "-xkb"
     set -- "${@}" "-noxrecord"
@@ -29,7 +31,7 @@ start_tmoe_x11vnc() {
     set -- "${@}" "-users" "$(whoami)"
     set -- "${@}" "-rfbport" "${TCP_PORT_FOR_RFB_PROTOCOL}"
     set -- "${@}" "-noshm"
-    set -- "${@}" "-desktop" "tmoe-linux"
+    set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" "-shared"
     set -- "${@}" "-verbose"
     set -- "${@}" "-cursor" "arrow"
