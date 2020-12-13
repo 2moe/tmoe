@@ -30,6 +30,12 @@ gnu_linux_manager_dependencies() {
 		esac
 	fi
 
+	if [ ! $(command -v lsof) ]; then
+		case "${LINUX_DISTRO}" in
+		debian) DEPENDENCIES="${DEPENDENCIES} lsof" ;;
+		esac
+	fi
+
 	if [ ! $(command -v pv) ]; then
 		case "${LINUX_DISTRO}" in
 		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/pv" ;;
