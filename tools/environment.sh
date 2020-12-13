@@ -1092,9 +1092,9 @@ fix_fedora_electron_libxssl() {
     redhat) dnf install -y libXScrnSaver || yum install -y libXScrnSaver ;;
     arch) [[ -e /usr/lib/libnss3.so ]] || pacman -Syu --noconfirm nss ;;
     suse)
-        if [[ ! -e /usr/lib/libnss3.so && ! -e /usr/lib64/libnss3.so ]]; then
-            zypper in -y mozilla-nss
-        fi
+        #if [[ ! -e /usr/lib/libnss3.so && ! -e /usr/lib64/libnss3.so ]]; then
+        zypper in -y mozilla-nss
+        #fi
         ;;
     debian) [[ -n $(whereis libnss3.so) ]] || apt install -y libnss3 ;;
     *) [[ -e /usr/lib/libnss3.so ]] || ${TMOE_INSTALLATION_COMMAND} nss ;;
