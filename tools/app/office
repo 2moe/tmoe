@@ -125,6 +125,12 @@ install_yozo_office() {
     download_and_install_deb
 }
 ###################
+make_font_cache() {
+    for i in mkfontscale mkfontdir fc-cache; do
+        [[ ! $(command -v ${i}) ]] || ${i}
+    done
+}
+###############
 install_wps_office() {
     random_neko
     DEPENDENCY_01="wps-office"
@@ -155,20 +161,28 @@ install_wps_office() {
     fi
     do_you_want_to_continue
     cd /tmp
+    if [ ! -e "/usr/share/fonts/truetype/wps-fonts/wingding.ttf" ]; then
+        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -d /tmp -o ttf-wps-fonts.tar.xz https://gitee.com/ak2/ttf-wps-fonts/raw/master/ttf-wps-fonts.tar.xz
+        tar -Jxvf /tmp/ttf-wps-fonts.tar.xz -C /
+        rm -fv /tmp/ttf-wps-fonts.tar.xz
+        cd /usr/share/fonts/truetype/wps-fonts
+        make_font_cache
+        cd /tmp
+    fi
+
+    if [ ! -e "/usr/share/fonts/truetype/msttcorefonts/Impact.ttf" ]; then
+        git clone --depth=1 https://gitee.com/ak2/msttcorefonts.git /tmp/.MS_FONTS_TEMP_FOLDER
+        cd /tmp/.MS_FONTS_TEMP_FOLDER
+        tar -JPxvf msttcorefonts.tar.xz
+        cd /usr/share/fonts/truetype/msttcorefonts
+        make_font_cache
+        cd /tmp
+        rm -rvf .MS_FONTS_TEMP_FOLDER 2>/dev/null
+    fi
+
     case "${LINUX_DISTRO}" in
     "debian")
         dpkg --configure -a
-        if [ ! -e "/usr/share/fonts/truetype/wps-fonts/wingding.ttf" ]; then
-            aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -d /tmp -o ttf-wps-fonts.tar.xz https://gitee.com/ak2/ttf-wps-fonts/raw/master/ttf-wps-fonts.tar.xz
-            tar -Jxvf /tmp/ttf-wps-fonts.tar.xz -C /
-            rm -fv /tmp/ttf-wps-fonts.tar.xz
-            cd /usr/share/fonts/truetype/wps-fonts
-            mkfontscale 2>/dev/null
-            mkfontdir 2>/dev/null
-            fc-cache 2>/dev/null
-            cd /tmp
-        fi
-
         if [ ! -e "/usr/share/doc/ttf-mscorefonts-installer/copyright" ]; then
             printf "%s\n" "apt install -y ttf-mscorefonts-installer"
             apt install -y ttf-mscorefonts-installer

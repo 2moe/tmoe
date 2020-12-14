@@ -219,7 +219,7 @@ write_to_fcitx_classui_conf() {
 		PerScreenDPI=True
 
 		# 字体
-		Font="思源黑体 CN Medium 13"
+		Font="Noto Sans CJK SC Medium Medium 13"
 
 		# 主题
 		Theme=Material-Color-Pink
