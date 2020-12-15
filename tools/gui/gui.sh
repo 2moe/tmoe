@@ -1191,8 +1191,6 @@ install_xfce4_desktop() {
                 DEPENDENCY_01="xubuntu-desktop"
                 case ${TMOE_PROOT} in
                 true)
-                    #cp -vf ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
-                    #chmod a+x -v /var/lib/dpkg/info/mlocate.postinst
                     #mkdir -pv /var/lib/mlocate/
                     #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
                     if [ ! $(command -v mlocate) ]; then
@@ -1204,12 +1202,13 @@ install_xfce4_desktop() {
                         dpkg --unpack ./mlocate*.deb
                         cd ${CUR}
                         rm -rvf ${TEMP_DIR}
+                        cp -f ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
+                        chmod a+x -v /var/lib/dpkg/info/mlocate.postinst
                         apt-mark hold mlocate
-                        sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
+                        #sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
                     fi
                     ;;
                 esac
-
             fi
             ;;
         esac

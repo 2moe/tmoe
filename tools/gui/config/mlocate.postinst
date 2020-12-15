@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -e
+
+GROUP="mlocate"
+
+if [ "$1" = "configure" ]; then
+    update-alternatives --install /usr/bin/locate locate /usr/bin/mlocate 80 \
+        --slave /usr/share/man/man1/locate.1.gz locate.1.gz /usr/share/man/man1/mlocate.1.gz \
+        --slave /usr/bin/updatedb updatedb /usr/bin/updatedb.mlocate \
+        --slave /usr/share/man/man8/updatedb.8.gz updatedb.8.gz /usr/share/man/man8/updatedb.mlocate.8.gz
+
+    if ! getent group "$GROUP" > /dev/null 2>&1 ; then
+        addgroup --system "$GROUP"
+    fi
+
+    if ! dpkg-statoverride --list /usr/bin/mlocate >/dev/null 2>&1; then
+        dpkg-statoverride --update --add root "$GROUP" 2755 /usr/bin/mlocate 
+    fi
+fi
+
+# Obsolete file, this can be dropped post-jessie.
+rm -f /var/lib/mlocate/daily.lock
+
+if [ -z "$2" ]; then
+        echo -n "Initializing mlocate database; this may take some time... "
+        NOCACHE=
+        if [ -x /usr/bin/nocache ]; then
+                NOCACHE="/usr/bin/nocache"
+        fi
+        #flock --nonblock /run/mlocate.daily.lock $NOCACHE /usr/bin/updatedb.mlocate || true
+        echo "done"
+fi
