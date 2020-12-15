@@ -1974,7 +1974,7 @@ install_gnome3_desktop() {
             if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
                 DEPENDENCY_01='--no-install-recommends xorg gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
             else
-                DEPENDENCY_01='ubuntu-desktop $(check-language-support)'
+                DEPENDENCY_01="ubuntu-desktop $(check-language-support)"
             fi
             ;;
         *)
