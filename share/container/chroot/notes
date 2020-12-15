@@ -3,6 +3,10 @@
 check_root_permissions() {
 	case ${LINUX_DISTRO} in
 	Android)
+		if ((${ANDROID_VERSION} <= 7)); then
+			printf "%s\n" "您的系统版本低于${BLUE}Android8${RESET},${PURPLE}可能无法${RESET}使用${YELLOW}tmoe-linux的chroot容器${RESET}配置功能。"
+			printf "%s\n" "Your android system version is lower then 8."
+		fi
 		su -c "ls ${HOME} >/dev/null"
 		case "$?" in
 		0)
@@ -11,6 +15,9 @@ check_root_permissions() {
 				printf "%s\n" "You can type ${RED}apt purge${RESET} ${BLUE}tsu${RESET} to remove it."
 				apt update
 				apt install -y tsu
+			fi
+			if [[ ! -e ${PREFIX}/bin/sudo && -e ${PREFIX}/bin/tsudo ]]; then
+				ln -svf ${PREFIX}/bin/tsudo ${PREFIX}/bin/sudo
 			fi
 			;;
 		*)

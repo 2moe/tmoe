@@ -998,7 +998,7 @@ build_xfce4_panel_profiles() {
     tar -xvf ${FAKEROOT_SRC_FILE}
     cd ${FAKEROOT_SRC_FILE%.*.*.*}
     ./configure --prefix=/usr --python=python
-    make -j2
+    make -j4
     make install
     cd /tmp
     rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
