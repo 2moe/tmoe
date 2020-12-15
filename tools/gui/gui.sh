@@ -1189,7 +1189,7 @@ install_xfce4_desktop() {
             if (whiptail --title "Xfce or Xubuntu-desktop" --yes-button "xfce" --no-button "xubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of xubuntu.\n前者为普通xfce,后者为xubuntu' 0 0); then
                 printf ""
             else
-                DEPENDENCY_01="xubuntu-desktop"
+                DEPENDENCY_01="xubuntu-desktop $(check-language-support)"
                 case ${TMOE_PROOT} in
                 true)
                     #mkdir -pv /var/lib/mlocate/
@@ -1646,7 +1646,7 @@ install_mate_desktop() {
             if (whiptail --title "Mate or Ubuntu-MATE-full-desktop" --yes-button "mate" --no-button "ubuntu-mate" --yesno 'The former is more streamlined, and the latter includes some extra software of ubuntu-mate.\n前者为普通mate,后者为ubuntu-mate' 0 0); then
                 printf ""
             else
-                DEPENDENCY_01="ubuntu-mate-desktop"
+                DEPENDENCY_01="ubuntu-mate-desktop $(check-language-support)"
             fi
             ;;
         esac
@@ -1698,7 +1698,7 @@ install_lxqt_desktop() {
             if (whiptail --title "Lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
                 printf ""
             else
-                DEPENDENCY_01="lubuntu-desktop"
+                DEPENDENCY_01="lubuntu-desktop $(check-language-support)"
             fi
             ;;
         esac
@@ -1786,7 +1786,7 @@ install_kde_plasma5_desktop() {
                     DEPENDENCY_01="kde-full"
                 fi
             else
-                DEPENDENCY_01="kubuntu-desktop"
+                DEPENDENCY_01="kubuntu-desktop $(check-language-support)"
             fi
             ;;
         *)
@@ -1974,7 +1974,7 @@ install_gnome3_desktop() {
             if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
                 DEPENDENCY_01='--no-install-recommends xorg gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
             else
-                DEPENDENCY_01='ubuntu-desktop'
+                DEPENDENCY_01='ubuntu-desktop $(check-language-support)'
             fi
             ;;
         *)
