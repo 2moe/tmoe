@@ -871,7 +871,7 @@ tmoe_virtual_machine_desktop() {
 configure_vnc_xstartup() {
     [[ -d "/var/run/dbus" ]] || mkdir -p /var/run/dbus
     if [ ! -s "/etc/machine-id" ]; then
-        [[ ! -n $(dbus-uuidgen) ]] || printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
+        [[ ! -n $(command -v dbus-uuidgen) ]] || printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
         mkdir -p /run/dbus /var/run/dbus
     fi
     case ${LINUX_DISTRO} in
@@ -1189,6 +1189,15 @@ install_xfce4_desktop() {
                 printf ""
             else
                 DEPENDENCY_01="xubuntu-desktop"
+                case ${TMOE_PROOT} in
+                true)
+                    #cp -vf ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
+                    #chmod a+x -v /var/lib/dpkg/info/mlocate.postinst
+                    apt-mark hold mlocate
+                    touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
+                    ;;
+                esac
+
             fi
             ;;
         esac
