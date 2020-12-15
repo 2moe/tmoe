@@ -944,8 +944,9 @@ configure_x11vnc_remote_desktop_session() {
     else
         x11vncpasswd
     fi
-    printf "%s\n" "x11vnc配置完成，您可以输${GREEN}startx11vnc${RESET}来重启服务"
-    printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to restart it."
+    printf "%s\n" "${BLUE}x11vnc${RESET}配置完成，您可以输${GREEN}startx11vnc${RESET}来重启${BLUE}x11vnc服务${RESET},输${RED}stopvnc${RESET}停止。"
+    printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to restart it,type ${RED}stopvnc${RESET} to stop it."
+    printf "%s\n" "输${GREEN}startvnc${RESET}切换到${BLUE}tight/tigervnc服务${RESET}。"
     #startx11vnc
 }
 ##########################

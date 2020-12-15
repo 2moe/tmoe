@@ -2,6 +2,8 @@
 
 set -e
 
+#DIR=/var/lib/dpkg/info/
+#UBUNTU mlocate postinst
 GROUP="mlocate"
 
 if [ "$1" = "configure" ]; then
