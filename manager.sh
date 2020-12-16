@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3589,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3590,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -229,6 +229,7 @@ check_gnu_linux_distro() {
 	0) ;;
 	*)
 		export PATH=${PATH}:/usr/sbin:/sbin
+		[[ -e ${CONFIG_FOLDER} ]] || mkdir -p ${CONFIG_FOLDER}
 		if [ -e "${TMOE_GIT_DIR}/manager.sh" ]; then
 			if [ $(command -v fortune) ]; then
 				fortune 2>/dev/null
