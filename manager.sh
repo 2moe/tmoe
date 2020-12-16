@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3584,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3585,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -554,13 +554,16 @@ git_clone_tmoe_manager() {
 choose_termux_color_scheme() {
 	mkdir -p ${HOME}/.termux
 	cd ${HOME}/.termux
-	[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
+	#[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
 
-	if (whiptail --title "colors.properties" --yes-button "neon" --no-button "monokai" --yesno "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色。" 9 50); then
-		aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/neon'
-	else
-		aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/monokai.dark'
+	if [[ ! -s colors.properties ]]; then
+		if (whiptail --title "colors.properties" --yes-button "neon" --no-button "monokai" --yesno "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色。" 9 50); then
+			aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/neon'
+		else
+			aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/monokai.dark'
+		fi
 	fi
+
 	if [ ! -s "${HOME}/.termux/font.ttf" ]; then
 		if (whiptail --title "FONT" --yes-button "MesloLGS-NF-Bold(粗)" --no-button "Iosevka(细)" --yesno "Your font file does not exist,please choose termux font.\n请选择终端字体。" 9 50); then
 			aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/iosevka_and_meslo-lgs-nf/raw/main/meslo-lgs-nf.tar.xz'
