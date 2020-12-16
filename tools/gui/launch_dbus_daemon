@@ -7,27 +7,37 @@ dbus_daemon_fork() {
     fi
 }
 ###########
-check_dbus_daemon() {
-    case ${TMOE_CHROOT} in
-    true)
-        case $(id -u) in
-        0)
-            rm -vf /run/dbus/pid 2>/dev/null
-            dbus_daemon_fork
-            ;;
-        *)
-            if [ -e "/run/dbus/pid" ]; then
-                if [ $(command -v sudo) ]; then
-                    sudo rm -vf /run/dbus/pid 2>/dev/null
-                else
-                    su -c "rm -vf /run/dbus/pid 2>/dev/null"
-                fi
+check_user_id_and_rm_dbus_pid() {
+    case $(id -u) in
+    0)
+        rm -vf /run/dbus/pid 2>/dev/null
+        dbus_daemon_fork
+        ;;
+    *)
+        if [ -e "/run/dbus/pid" ]; then
+            if [ $(command -v sudo) ]; then
+                sudo rm -vf /run/dbus/pid 2>/dev/null
+            else
+                su -c "rm -vf /run/dbus/pid 2>/dev/null"
             fi
-            dbus_daemon_fork
-            ;;
-        esac
+        fi
+        dbus_daemon_fork
         ;;
     esac
 }
+###########
+check_dbus_daemon() {
+    case ${TMOE_CHROOT} in
+    true) check_user_id_and_rm_dbus_pid ;;
+    false) ;;
+    *)
+        if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
+            export TMOE_CHROOT='true'
+        fi
+        check_user_id_and_rm_dbus_pid
+        ;;
+    esac
+}
+################
 ###########
 check_dbus_daemon

@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3586,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3587,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -110,6 +110,9 @@ gnu_linux_env() {
 		else
 			check_ps_command
 		fi
+	fi
+	if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
+		export TMOE_CHROOT='true'
 	fi
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
