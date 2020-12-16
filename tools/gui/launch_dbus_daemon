@@ -32,7 +32,6 @@ check_dbus_daemon() {
     false) ;;
     *)
         if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
-            export TMOE_CHROOT='true'
             check_user_id_and_rm_dbus_pid
         fi
         ;;
