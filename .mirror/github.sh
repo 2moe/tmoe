@@ -56,7 +56,7 @@ sed -i 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe-linux.git@g' ${SHARE_FILE
 sed -i 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe-linux.git@g' ${ALL_SHELL_FILE}
 
 sed -i '/正在配置中文环境/d' ${INSTALL_FILE}
-sed -i 's@###tmoe-github@@' ${INSTALL_FILE} zsh.sh
+sed -i 's@###tmoe-github@@g' ${INSTALL_FILE} zsh.sh
 #sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh ./tool/*sh tools/*/* tools/environment.sh
 
 sed -i 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' ${ALL_SHELL_FILE}

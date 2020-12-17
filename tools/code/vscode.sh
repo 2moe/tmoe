@@ -155,7 +155,7 @@ vscode_server_upgrade() {
 		║ 1 ║ vscode   ║                      ${LOCAL_VSCODE_VERSION} 
 		║   ║ server   ║${LATEST_VSCODE_VERSION} 
 
-After the update is complete, you can type ${GREEN}code-server${RESET} to start it.
+After the upgrade is complete, you can type ${GREEN}code-server${RESET} to start it.
 您可以输入${GREEN}code-server${RESET}来启动vscode web服务器。
 	ENDofTable
     RETURN_TO_WHERE='configure_vscode_server'
