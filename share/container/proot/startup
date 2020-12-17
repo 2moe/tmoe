@@ -69,7 +69,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    else
 	        set -- "LANG=en_US.UTF-8" "\$@"
 	    fi
-	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "INPUT_METHOD=fcitx" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "\$@"
+	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "\$@"
 		#set -- "--mount=/sys" "\$@"
 	    set -- "--mount=/dev" "\$@"
 	    set -- "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm" "\$@"

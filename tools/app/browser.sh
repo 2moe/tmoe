@@ -98,7 +98,7 @@ install_chromium_browser() {
     printf '%s\n' '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
     printf "%s\n" "1s后将自动开始安装"
     sleep 1
-
+    [[ -d /run/shm ]] || mkdir -pv /run/shm
     DEPENDENCY_01="chromium"
     DEPENDENCY_02="chromium-l10n"
     #chromium-chromedriver

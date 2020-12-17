@@ -445,6 +445,7 @@ creat_chroot_startup_script() {
 			[[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
 		fi
 	fi
+	sudo su -c "printf '%s\n' 'TMOE_CHROOT=true' >> ${DEBIAN_CHROOT}/etc/environment"
 	##################
 	#此处若不创建，将有可能导致chromium无法启动。
 	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus
