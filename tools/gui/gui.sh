@@ -376,14 +376,30 @@ tmoe_docker_and_chroot_container_desktop() {
 }
 ####################
 tmoe_container_desktop() {
-    INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-        "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
-        "1" "🐭 xfce(兼容性高,简单优雅)" \
-        "2" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
-        "3" "🕊️ lxde(轻量化桌面,资源占用低)" \
-        "4" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
-        "0" "🌚 none我一个都不要 =￣ω￣=" \
-        3>&1 1>&2 2>&3)
+    tmoe_container_desktop_zh() {
+        INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
+            "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
+            "1" "🐭 xfce(兼容性高,简单优雅)" \
+            "2" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
+            "3" "🕊️ lxde(轻量化桌面,资源占用低)" \
+            "4" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
+            "0" "🌚 none我一个都不要 =￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    tmoe_container_desktop_en() {
+        INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
+            "Which desktop environment do you want to install? " 0 0 0 \
+            "1" "🐭 xfce(elegant, high compatibility)" \
+            "2" "🐦 lxqt" \
+            "3" "🕊️ lxde(lightweight)" \
+            "4" "🌿 mate(the continuation of GNOME 2)" \
+            "0" "🌚 none =￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) tmoe_container_desktop_zh ;;
+    *) tmoe_container_desktop_en ;;
+    esac
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") standand_desktop_installation ;;
