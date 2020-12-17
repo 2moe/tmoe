@@ -125,7 +125,7 @@ configure_tmoe_input_method() {
 			export GTK_IM_MODULE=fcitx
 			export QT_IM_MODULE=fcitx
 			export XMODIFIERS="@im=fcitx"
-            export SDL_IM_MODULE=fcitx
+			export SDL_IM_MODULE=fcitx
 		EOF
     fi
     chmod a+r /etc/environment
