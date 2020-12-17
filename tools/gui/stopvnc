@@ -6,6 +6,7 @@ stop_vnc_main() {
     pkill_vnc
     case "$1" in
     -non-stop-dbus)
+        [[ ! -s /etc/environment ]] || . /etc/environment
         stopx11vnc
         ;;
     -non-stop-x11vnc) ;;

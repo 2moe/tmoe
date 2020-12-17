@@ -414,7 +414,12 @@ tmoe_fcitx_faq() {
     0 | "") install_pinyin_input_method ;;
     1)
         printf '%s\n' '若您无法使用fcitx,则请根据以下诊断信息自行解决'
-        fcitx-diagnose
+        for i in fcitx5-diagnoses fcitx-diagnoses; do
+            if [ $(command -v ${i}) ]; then
+                ${i}
+                break
+            fi
+        done
         ;;
     2) kde_config_module_for_fcitx ;;
     3) remove_ibus_im ;;
@@ -465,7 +470,7 @@ input_method_config() {
     #NON_DEBIAN='true'
     non_debian_function
     if [ ! $(command -v im-config) ]; then
-        DEPENDENCY_01=''
+        DEPENDENCY_01='zenity'
         DEPENDENCY_02='im-config'
         beta_features_quick_install
     fi
@@ -473,6 +478,7 @@ input_method_config() {
     if [ ! $(command -v im-config) ]; then
         printf '%s\n' 'Sorry，本功能只支持deb系发行版'
     fi
+    unset DISPLAY
     im-config
     chmod 755 -R .config/fcitx .xprofile
     if [ ${HOME} != '/root' ]; then
