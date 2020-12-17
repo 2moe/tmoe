@@ -1554,18 +1554,20 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 		FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
 		sed -i -E "s@(enabled)=1@\1=0@" /etc/yum.repos.d/fedora-updates-testing-modular.repo /etc/yum.repos.d/fedora-updates-testing.repo
-		case ${LANG} in
-		zh_*UTF-8)
-			if ((${FEDORA_VERSION} >= 30)); then
-				if ((${FEDORA_VERSION} >= 32)); then
-					fedora_32_repos
-				else
-					fedora_31_repos
+		if [[ ${TMOE_GITHUB} != true ]]; then
+			case ${LANG} in
+			zh_*UTF-8)
+				if ((${FEDORA_VERSION} >= 30)); then
+					if ((${FEDORA_VERSION} >= 32)); then
+						fedora_32_repos
+					else
+						fedora_31_repos
+					fi
+					fedora_3x_repos
 				fi
-				fedora_3x_repos
-			fi
-			;;
-		esac
+				;;
+			esac
+		fi
 
 		if [[ ! -e /tmp/resolv.conf ]]; then
 			cp -f /etc/resolv.conf /tmp
