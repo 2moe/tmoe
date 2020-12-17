@@ -197,7 +197,7 @@ After the update is complete, you can type ${GREEN}code-server${RESET} to start 
     "amd64")
         mkdir -p .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
-        LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'x86_64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
+        LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'amd64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
         tar -zxvf .VSCODE_SERVER.tar.gz
         VSCODE_FOLDER_NAME=$(ls -l ./ | grep '^d' | awk -F ' ' '$0=$NF')
