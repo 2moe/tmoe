@@ -3,9 +3,9 @@
 tmoe_pinyin_input_method_main() {
     case "$1" in
     --auto-install-fcitx4)
+        set_input_method_env
         case_fcitx4_depends_01
-        DEPENDENCY_02='fcitx-googlepinyin'
-        DEPENDENCY_03='fcitx-libpinyin'
+        DEPENDENCY_02='fcitx-googlepinyin fcitx-libpinyin'
         beta_features_quick_install
         configure_tmoe_input_method
         ;;
