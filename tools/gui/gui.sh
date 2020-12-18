@@ -1620,7 +1620,7 @@ install_lxde_desktop() {
         DEPENDENCY_01="lxde-core lxterminal"
         ;;
         #############
-    "redhat") DEPENDENCY_01='lxde-desktop' ;;
+    "redhat") DEPENDENCY_01='@lxde lxde-desktop' ;;
         #############
     "arch") DEPENDENCY_01='lxde' ;;
         ############
