@@ -189,7 +189,8 @@ install_wps_office() {
         fi
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./WPSoffice.deb
-        apt install -y ./WPSoffice.deb
+        apt install -y ./WPSoffice.deb || dpkg -i ./WPSoffice.deb
+        printf "%s\n" "You can type ${RED}rm -fv ${BLUE}/tmp/WPSoffice.deb${RESET} to delete the deb file."
         ;;
     "arch")
         DEPENDENCY_01="wps-office-cn"
@@ -198,10 +199,11 @@ install_wps_office() {
     "redhat")
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
         yum install -y ./WPSoffice.rpm
+        printf "%s\n" "You can type ${RED}rm -fv ${BLUE}/tmp/WPSoffice.rpm${RESET} to delete the rpm file."
         ;;
     esac
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version
-    rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
+    #rm -fv ./WPSoffice.deb ./WPSoffice.rpm 2>/dev/null
     beta_features_install_completed
 }
 ###################
