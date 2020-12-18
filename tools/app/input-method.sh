@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 ##################################
+tmoe_pinyin_input_method_main() {
+    case "$1" in
+    --auto-install-fcitx4)
+        case_fcitx4_depends_01
+        DEPENDENCY_02='fcitx-googlepinyin'
+        DEPENDENCY_03='fcitx-libpinyin'
+        beta_features_quick_install
+        configure_tmoe_input_method
+        ;;
+    *) install_pinyin_input_method ;;
+    esac
+}
+#################
 install_pinyin_input_method() {
     RETURN_TO_WHERE='install_pinyin_input_method'
     LNK_NAME_FCITX4='fcitx'
@@ -70,9 +83,9 @@ kde_config_module_for_fcitx() {
     beta_features_quick_install
 }
 #################
-fcitx4_input_method_menu() {
-    DEPENDENCY_01="fcitx"
+case_fcitx4_depends_01() {
     TMOE_INPUT_METHOD_FRAMEWORK="fcitx"
+    DEPENDENCY_01="fcitx"
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01='fcitx fcitx-tools fcitx-config-gtk' #kde-config-fcitx
@@ -81,6 +94,10 @@ fcitx4_input_method_menu() {
         DEPENDENCY_01='fcitx-im fcitx-configtool' #kcm-fcitx
         ;;
     esac
+}
+###########
+fcitx4_input_method_menu() {
+    case_fcitx4_depends_01
     DEPENDENCY_02=""
     #17 55 8
     INPUT_METHOD=$(
@@ -200,12 +217,14 @@ tmoe_fcitx5_menu() {
     esac
     #"5" "Material Design质感主题@hosxy" \
     ###############
+    case ${INPUT_METHOD} in
+    1 | 6) configure_tmoe_input_method ;;
+    esac
     press_enter_to_return
     tmoe_fcitx5_menu
 }
 ############
 install_fcitx5() {
-    configure_tmoe_input_method
     beta_features_quick_install
     case "${LINUX_DISTRO}" in
     "debian")
@@ -228,7 +247,6 @@ install_fcitx5_rime() {
     debian | arch) ;;
     *) printf '%s\n' '截至2020年末，本功能暂仅适配Arch系和Debian系发行版' ;;
     esac
-    configure_tmoe_input_method
     beta_features_quick_install
 }
 #############
@@ -784,4 +802,4 @@ install_iflyime_pinyin() {
 }
 ################
 ####################
-install_pinyin_input_method
+tmoe_pinyin_input_method_main "$@"

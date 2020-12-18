@@ -256,6 +256,7 @@ install_gui() {
 }
 ########################
 preconfigure_gui_dependecies_02() {
+    unset AUTO_INSTALL_FCITX4
     DEPENDENCY_02="tigervnc"
     case "${LINUX_DISTRO}" in
     debian)
@@ -885,6 +886,7 @@ tmoe_virtual_machine_desktop() {
 }
 ################
 configure_vnc_xstartup() {
+    auto_install_and_configure_fcitx4
     #[[ -d "/var/run/dbus" ]] || mkdir -p /var/run/dbus
     mkdir -p /run/dbus /var/run/dbus
     if [ ! -s "/etc/machine-id" ]; then
@@ -1192,8 +1194,31 @@ git_clone_kali_themes_common() {
     fi
 }
 ##########
+do_you_want_to_install_fcitx4() {
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        case "${LINUX_DISTRO}" in
+        "debian" | "arch" | "redhat")
+            if [[ ! -n $(command -v fcitx) && ! -n $(command -v fcitx5) ]]; then
+                if (whiptail --title "input method" --yes-button "YES" --no-button "NO" --yesno '檢測到您當前的語言環境爲中文，是否需要安裝中文輸入法?\nDo you want to install fcitx4?\n安裝完成後,在桌面環境下按Ctrl+空格切換輸入法\n你亦可以選擇NO跳過,之後可以單獨安裝fcitx5' 0 0); then
+                    AUTO_INSTALL_FCITX4='true'
+                fi
+            fi
+            ;;
+        esac
+        ;;
+    *) ;;
+    esac
+}
+#########
+auto_install_and_configure_fcitx4() {
+    #在安裝完桌面後再配置輸入法
+    [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
+}
+#######
 install_xfce4_desktop() {
     xfce_warning
+    do_you_want_to_install_fcitx4
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
     DEPENDENCY_01="xfce4"
@@ -1584,6 +1609,8 @@ install_lxde_desktop() {
     REMOTE_DESKTOP_SESSION_01='lxsession'
     REMOTE_DESKTOP_SESSION_02='startlxde'
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxde-core、lxterminal、tightvncserver。'
+    do_you_want_to_continue
+    do_you_want_to_install_fcitx4
     DEPENDENCY_01='lxde'
     case "${LINUX_DISTRO}" in
     "debian")
@@ -1651,6 +1678,8 @@ install_mate_desktop() {
     REMOTE_DESKTOP_SESSION_01='mate-session'
     REMOTE_DESKTOP_SESSION_02='mate-panel'
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
+    do_you_want_to_continue
+    do_you_want_to_install_fcitx4
     DEPENDENCY_01='mate'
     case "${LINUX_DISTRO}" in
     "debian")
@@ -1706,6 +1735,8 @@ install_lxqt_desktop() {
     REMOTE_DESKTOP_SESSION_02='lxqt-session'
     DEPENDENCY_01="lxqt"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
+    do_you_want_to_continue
+    do_you_want_to_install_fcitx4
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01="lxqt-core qterminal xfwm4 xfwm4-theme-breeze lxqt-config"
@@ -1784,6 +1815,7 @@ ENDofTable
 ###############
 install_kde_plasma5_desktop() {
     kde_warning
+    do_you_want_to_install_fcitx4
     REMOTE_DESKTOP_SESSION_01='startplasma-x11'
     REMOTE_DESKTOP_SESSION_02='startkde'
     DEPENDENCY_01="plasma-desktop"
@@ -4386,11 +4418,11 @@ which_vnc_server_do_you_prefer() {
         fi
         ;;
     *)
-        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tight' --no-button 'tiger' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\ntiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等。\n因tiger的流畅度可能不如tight,故默认情况下为tight。\nAlthough tiger can show more special effects,tight may be smoother" 0 50); then
-            tight_vnc_variable
-        else
+        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n尽管tight可能更加流畅,但是tiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等\nAlthough tiger can show more special effects,tight may be smoother.\nIt is recommended that you use tiger." 0 50); then
             tiger_vnc_variable
             modify_to_xfwm4_breeze_theme
+        else
+            tight_vnc_variable
         fi
         ;;
     esac
@@ -4627,7 +4659,7 @@ first_configure_startvnc() {
 ########################
 ########################
 set_vnc_passwd() {
-    TARGET_VNC_PASSWD=$(whiptail --inputbox "请设定6至8位VNC访问密码\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         printf "%s\n" "请重新输入密码"
         printf "%s\n" "Please enter the password again."
