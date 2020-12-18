@@ -1199,7 +1199,8 @@ do_you_want_to_install_fcitx4() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         case "${LINUX_DISTRO}" in
-        "debian" | "arch" | "redhat")
+        "debian" | "arch")
+            #fedora proot不要自动配置fcitx
             if [[ ! -n $(command -v fcitx) && ! -n $(command -v fcitx5) ]]; then
                 if (whiptail --title "input method" --yes-button "YES" --no-button "NO" --yesno '檢測到您當前的語言環境爲中文，是否需要安裝中文輸入法?\nDo you want to install fcitx4?\n安裝完成後,在桌面環境下按Ctrl+空格切換輸入法\n你亦可以選擇NO跳過,之後可以單獨安裝fcitx5' 0 0); then
                     AUTO_INSTALL_FCITX4='true'
