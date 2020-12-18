@@ -8,6 +8,11 @@ tmoe_pinyin_input_method_main() {
         DEPENDENCY_02='fcitx-googlepinyin fcitx-libpinyin'
         beta_features_quick_install
         configure_tmoe_input_method
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCY_02='fcitx-module-cloudpinyin' ;;
+        *) DEPENDENCY_02='fcitx-cloudpinyin' ;;
+        esac
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
         ;;
     *) install_pinyin_input_method ;;
     esac
