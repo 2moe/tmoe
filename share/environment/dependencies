@@ -31,9 +31,13 @@ gnu_linux_manager_dependencies() {
 	fi
 
 	if [ ! $(command -v lsof) ]; then
-		case "${LINUX_DISTRO}" in
-		debian) DEPENDENCIES="${DEPENDENCIES} lsof" ;;
-		esac
+		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}lsof${RESET}"
+		${TMOE_INSTALLATION_COMMAND} lsof
+		if [ ! $(command -v lsof) ]; then
+			case "${LINUX_DISTRO}" in
+			debian | arch) DEPENDENCIES="${DEPENDENCIES} lsof" ;;
+			esac
+		fi
 	fi
 
 	if [ ! $(command -v pv) ]; then
