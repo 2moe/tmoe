@@ -904,6 +904,7 @@ configure_vnc_xstartup() {
 		#!/usr/bin/env bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
+        [[ ! -s /etc/environment ]] || . /etc/environment
         for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm;do
             if [[ \$(command -v \${i}) ]];then
                 \${i} &
