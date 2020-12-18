@@ -18,7 +18,6 @@ install_pinyin_input_method() {
     LNK_NAME_FCITX4='fcitx'
     LNK_NAME_FCITX5='org.fcitx.Fcitx5 fcitx5'
     LNK_NAME_IBUS='ibus-setup'
-    XDG_AUTOSTART_DIR='/etc/xdg/autostart'
     INPUT_METHOD=$(
         whiptail --title "键盘与输入法" --menu "arch & debian-sid等新版系统可用fcitx5\nubuntu18.04 & debian10等旧版系统可用fcitx4\n为避免冲突,不建议同时安装fcitx和ibus\n若您使用的是容器,则推荐fcitx4;若为虚拟机,则推荐fcitx5" 0 0 0 \
             "1" "🍁 fcitx4 小企鹅输入法框架" \
@@ -573,7 +572,6 @@ tmoe_fcitx_faq() {
 }
 #################
 disable_fcitx_xdg_autostart() {
-    XDG_AUTOSTART_DIR='/etc/xdg/autostart'
     unset AUTO_STARTUP_LNK AUTO_STARTUP_LNK_02
     unset i
     if [ -d "${XDG_AUTOSTART_DIR}" ]; then
