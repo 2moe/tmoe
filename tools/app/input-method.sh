@@ -12,7 +12,7 @@ tmoe_pinyin_input_method_main() {
         "debian") DEPENDENCY_02='fcitx-module-cloudpinyin' ;;
         *) DEPENDENCY_02='fcitx-cloudpinyin' ;;
         esac
-        DEPENDENCY_03='fcitx-rime'
+        DEPENDENCY_03='fcitx-libpinyin'
         ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_03}
         ;;
     *) install_pinyin_input_method ;;
