@@ -8,21 +8,35 @@ TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
+RED=$(printf '\033[31m')
+PURPLE=$(printf '\033[0;35m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
 ###############
 check_tmoe_locale() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
-		export LANG="${TMOE_LANG}"
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	else
-		export LANG="en_US.UTF-8"
+		TMOE_LANG="en_US.UTF-8"
 	fi
+	export LANG="${TMOE_LANG}"
 }
 ###########
 notes_of_xserver() {
-	printf '%s\n' '正在为您启动x11,请将display number改为0'
-	printf '%s\n' 'Starting x11, please change display number to 0'
-	printf '%s\033[32m%s\033[m%s\n' "您可以输" "stopvnc" "停止"
-	printf '%s \033[32m%s\033[m %s\n' "You can type" "stopvnc" "to stop it."
+	case ${TMOE_LANG} in
+	zh_*UTF-8)
+		printf '%s\n' '正在为您启动x11,请将display number改为0'
+		printf '%s\n' 'Starting x11, please change display number to 0'
+		;;
+	*)
+		printf '%s\n' 'Starting x11, please change display number to 0'
+		;;
+	esac
+	#printf '%s\033[32m%s\033[m%s\n' "您可以输" "stopvnc" "停止"
+	#printf '%s \033[32m%s\033[m %s\n' "You can type" "stopvnc" "to stop it."
 }
 ####################
 start_windows_xserver() {

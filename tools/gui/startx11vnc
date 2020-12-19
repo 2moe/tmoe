@@ -12,6 +12,13 @@ TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
+RED=$(printf '\033[31m')
+PURPLE=$(printf '\033[0;35m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
 #################
 start_windows_10_pulse_audio_server() {
     . ${TMOE_LINUX_DIR}/wsl_pulse_audio
@@ -43,13 +50,12 @@ start_tmoe_x11vnc() {
 ###################
 tmoe_x11vnc_preconfigure() {
     [[ -s "${TMOE_X11_PASSWD_FILE}" ]] || x11vncpasswd
-
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
         TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-        export LANG="${TMOE_LANG}"
     else
-        export LANG="en_US.UTF-8"
+        TMOE_LANG="en_US.UTF-8"
     fi
+    export LANG="${TMOE_LANG}"
 }
 #################
 source_tmoe_dbus_daemon() {
@@ -86,9 +92,11 @@ start_x_session
 start_tmoe_x11vnc
 ###########
 sleep 2s
-TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:5901@")
-cat <<-ENFOFX11VNCTIPS
-正在启动x11vnc服务,本机默认vnc地址localhost:5901
+TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${TCP_PORT_FOR_RFB_PROTOCOL}@")
+case ${TMOE_LANG} in
+zh_*UTF-8)
+    cat <<-ENFOFX11VNCTIPS
+正在启动x11vnc服务,本机默认vnc地址localhost:${TCP_PORT_FOR_RFB_PROTOCOL}
 本机IPv6 vnc地址[::]:5900或::
 The LAN VNC address 局域网地址${TMOE_IP_ADDR}
 您可能会经历长达10多秒的黑屏
@@ -96,3 +104,14 @@ You may experience a black screen for up to 10 seconds.
 您之后可以输startx11vnc启动，输stopvnc停止
 You can type startx11vnc to start x11vnc,type stopvnc to stop it.
 ENFOFX11VNCTIPS
+    ;;
+*)
+    cat <<-EOF
+Staring x11vnc server...
+The ${YELLOW}local${RESET} x11vnc address is ${BLUE}localhost${GREEN}:${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}
+The ${YELLOW}LAN${RESET} x11vnc address is ${TMOE_IP_ADDR}
+You may experience a black screen for up to 10 seconds.
+You can type startx11vnc to start x11vnc,type stopvnc to stop it.
+EOF
+    ;;
+esac

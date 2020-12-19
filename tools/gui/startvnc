@@ -10,14 +10,21 @@ TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
+RED=$(printf '\033[31m')
+PURPLE=$(printf '\033[0;35m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
 ########################
 check_tmoe_locale() {
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
-        TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
-        export LANG="${TMOE_LANG}"
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
     else
-        export LANG="en_US.UTF-8"
+        TMOE_LANG="en_US.UTF-8"
     fi
+    export LANG="${TMOE_LANG}"
 }
 ###########
 check_current_user_name_and_group() {
@@ -69,10 +76,21 @@ display_vnc_ip_addr() {
     CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
     TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
-    cat <<-EOF
-正在启动vnc服务,本机默认vnc地址localhost:${CURRENT_VNC_PORT}
-The LAN VNC address 局域网地址${TMOE_IP_ADDR}
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        cat <<-EOF
+正在启动vnc服务,${YELLOW}本机${RESET}vnc地址 ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
+The LAN VNC address ${YELLOW}局域网${RESET}地址${TMOE_IP_ADDR}
 EOF
+        ;;
+    *)
+        cat <<-EOF
+The ${YELLOW}local${RESET} vnc address is ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
+The ${YELLOW}LAN${RESET} vnc address is ${TMOE_IP_ADDR}
+EOF
+        ;;
+    esac
+
 }
 ############
 start_tmoe_xvnc() {
