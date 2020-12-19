@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+RED=$(printf '\033[31m')
+PURPLE=$(printf '\033[0;35m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
+printf "%s\n" "${GREEN}Starting ${YELLOW}x11vnc server${RESET} ..."
 stopvnc -non-stop-dbus 2>/dev/null
 export PULSE_SERVER=127.0.0.1
 export DISPLAY=:233
@@ -12,13 +20,6 @@ TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
-RED=$(printf '\033[31m')
-PURPLE=$(printf '\033[0;35m')
-GREEN=$(printf '\033[32m')
-YELLOW=$(printf '\033[33m')
-BLUE=$(printf '\033[34m')
-BOLD=$(printf '\033[1m')
-RESET=$(printf '\033[m')
 #################
 start_windows_10_pulse_audio_server() {
     . ${TMOE_LINUX_DIR}/wsl_pulse_audio
