@@ -40,6 +40,13 @@ tmoe_vnc_env() {
     export HOME="${HOME}"
     #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep 'TMOE_VNC_DISPLAY_NUMBER=' | cut -d '=' -f 2 | head -n 1)
+    RED=$(printf '\033[31m')
+    PURPLE=$(printf '\033[0;35m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    BOLD=$(printf '\033[1m')
+    RESET=$(printf '\033[m')
 }
 ###########
 rm_vnc_lock() {
@@ -79,8 +86,13 @@ pkill_vnc() {
 #############
 vnc_server_has_been_stopped() {
     if [ ! "$(pgrep Xvnc)" ]; then
-        printf "%s\n" "已停止VNC服务！"
-        printf "%s\n" "VNC server has been terminated."
+        case ${LANG} in
+        zh_*UTF-8)
+            printf "%s\n" "已${PURPLE}停止${RESET}${YELLOW}VNC服务${RESET}！"
+            printf "%s\n" "${YELLOW}VNC server${RESET} has been ${PURPLE}terminated${RESET}."
+            ;;
+        *) printf "%s\n" "${YELLOW}VNC server${RESET} has been ${PURPLE}terminated${RESET}." ;;
+        esac
     fi
 }
 #################
