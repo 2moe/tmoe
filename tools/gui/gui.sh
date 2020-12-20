@@ -971,17 +971,27 @@ configure_x11vnc_remote_desktop_session() {
     #startx11vnc
 }
 ##########################
+install_kali_linux_tools() {
+    if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
+        printf "%s\n" "apt install -y zenmap"
+        apt install -y zenmap
+        case ${ARCH_TYPE} in
+        arm64 | armhf | armel)
+            printf "%s\n" "apt install -y kali-linux-arm"
+            apt install -y kali-linux-arm || aptitude install -y kali-linux-arm
+            ;;
+        *)
+            printf "%s\n" "apt install -y kali-linux-default"
+            apt install -y kali-linux-default || aptitude install -y kali-linux-default
+            ;;
+        esac
+    fi
+}
+###########################
 kali_xfce4_extras() {
     apt install -y kali-menu
     apt install -y kali-undercover
     apt install -y kali-themes-common
-    if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
-        apt install -y zenmap
-        case ${ARCH_TYPE} in
-        arm64 | armhf | armel) apt install -y kali-linux-arm || aptitude install -y kali-linux-arm ;;
-        *) apt install -y kali-linux-default || aptitude install -y kali-linux-default ;;
-        esac
-    fi
     if [ $(command -v chromium) ]; then
         apt install -y chromium-l10n
         fix_chromium_root_no_sandbox
@@ -1236,6 +1246,7 @@ do_you_want_to_install_kali_tools() {
 auto_install_and_configure_fcitx4() {
     #在安裝完桌面後再配置輸入法
     [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
+    install_kali_linux_tools
 }
 #######
 install_xfce4_desktop() {

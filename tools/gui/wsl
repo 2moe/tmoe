@@ -54,7 +54,7 @@ if ! grep -q '172..*1' "/etc/resolv.conf"; then
 			dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 			wsl --set-default-version 2
 		EOF
-		/mnt/c/WINDOWS/system32/control.exe /name Microsoft.WindowsUpdate
 		printf "%s\n" "-------------------------------"
+		/mnt/c/WINDOWS/system32/control.exe /name Microsoft.WindowsUpdate
 	fi
 fi
