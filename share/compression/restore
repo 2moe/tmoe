@@ -60,11 +60,11 @@ uncompress_tar_gz_file() {
 }
 #####################
 uncompress_tar_file() {
-	if [ ! -e "${DEBIAN_CHROOT}" ]; then
-		if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-			rm -fv ${CONFIG_FOLDER}/chroot_container
-		fi
+	#if [ ! -e "${DEBIAN_CHROOT}" ]; then
+	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+		rm -fv ${CONFIG_FOLDER}/chroot_container
 	fi
+	#fi
 
 	case ${RESTORE} in
 	*chroot-rootfs_bak.*)
@@ -107,6 +107,7 @@ select_file_manually() {
 			eval RESTORE=${restore_file_name[number]}
 			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
 			RETURN_TO_WHERE='restore_gnu_linux_container'
+			ls -lh ${RESTORE}
 			do_you_want_to_continue
 			uncompress_tar_file
 			break

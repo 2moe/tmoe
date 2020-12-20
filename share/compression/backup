@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 #######################################
 backup_filename() {
-	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称\n Please type the filename." 9 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${DEBIAN_FOLDER}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	TARGET_BACKUP_FILE_NAME="$(printf '%s\n' "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)"
 	printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
 	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
-		printf "%s\n" "文件名称不能为空！"
+		#printf "%s\n" "文件名称不能为空！"
 		printf "%s\n" "The file name is ${RED}empty${RESET}."
-		return 1
-		press_enter_to_return
-		backup_system
+		#return 1
+		#press_enter_to_return
+		#backup_system
+		TARGET_BACKUP_FILE_NAME="${DEBIAN_FOLDER}"
 	fi
 }
 ######################
@@ -82,7 +83,6 @@ clean_up_container_garbage() {
 	fi
 	CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.cache root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
 	CONTAINER_GARBAGE_FILES_02='var/cache/apt/archives/* \
-root/.bash_history \
 var/cache/apt/* \
 var/mail/* \
 var/log/* \
@@ -104,19 +104,15 @@ var/lib/apt/lists/*'
 		If you want to share the container with others, you can delete the above files, otherwise, please type n to return.
 	EOF
 	do_you_want_to_continue
-	rm -rvf ${CONTAINER_GARBAGE_FILES}
-	rm -fv ${CONTAINER_GARBAGE_FILES_02}
+	${TMOE_PREFIX} rm -rvf ${CONTAINER_GARBAGE_FILES}
+	${TMOE_PREFIX} rm -fv ${CONTAINER_GARBAGE_FILES_02}
 }
 #############
 backup_gnu_linux_container() {
 	backup_tmoe_container_preconfigure
 	case ${TMOE_CHROOT} in
-	true)
-		CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}_chroot-rootfs_bak"
-		;;
-	*)
-		CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}-rootfs_bak"
-		;;
+	true) CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}_chroot-rootfs_bak" ;;
+	*) CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}-rootfs_bak" ;;
 	esac
 	BACKUP_FOLDER="${DEBIAN_CHROOT}"
 	#絕對路徑。且不包含tmoe,debian-i和GIT_DIR
