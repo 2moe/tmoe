@@ -198,7 +198,7 @@ tmoe_qemu_user_manager() {
 	}
 	tmoe_qemu_user_manager_ja() {
 		BETA_SYSTEM=$(
-			whiptail --title "cross-architecture" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
+			whiptail --title "Across architectures" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
 				"0" "🌚 戻る" \
 				"00" "qemu-user-static(基本的な依存関係)" \
 				"1" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
@@ -216,7 +216,7 @@ tmoe_qemu_user_manager() {
 	}
 	tmoe_qemu_user_manager_en() {
 		BETA_SYSTEM=$(
-			whiptail --title "cross-architecture" --menu "Which architecture do you want to simulate?" 0 50 0 \
+			whiptail --title "Across architectures" --menu "Which architecture do you want to simulate?" 0 50 0 \
 				"0" "🌚 Return to previous menu" \
 				"00" "qemu-user-static(Basic dependence)" \
 				"1" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
