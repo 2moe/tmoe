@@ -10,7 +10,6 @@ if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'sel
 	restore_the_latest_backup_file
 else
 	BACKUP_FILE_NAME="*-termux*bak.tar*"
-	manually_select_the_file_directory
 	select_file_manually
 fi
 android_termux_tmoe_menu_en
