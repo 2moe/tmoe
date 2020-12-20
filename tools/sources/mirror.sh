@@ -783,8 +783,8 @@ modify_ubuntu_mirror_sources_list() {
 		# proposed为预发布软件源，不建议启用
 		# deb https://${SOURCE_MIRROR_STATION}/ubuntu/ ${SOURCELISTCODE}-proposed main restricted universe multiverse
 	EndOfSourcesList
-    case "${ARCH_TYPE}" in
-    amd64 | i386) ;;
+    case "$(uname -m)" in
+    amd64 | i386 | x86* | i*86) ;;
     *) sed -i 's:/ubuntu:/ubuntu-ports:g' /etc/apt/sources.list ;;
     esac
 }
