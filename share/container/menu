@@ -161,7 +161,8 @@ systemd_nspawn_env() {
 }
 ###############
 restore_tmoe_container() {
-	source ${TMOE_SHARE_DIR}/compression/restore --menu
+	source ${TMOE_SHARE_DIR}/compression/restore
+	restore_gnu_linux_container
 }
 configure_tmoe_container() {
 	source ${TMOE_SHARE_DIR}/configuration/menu
