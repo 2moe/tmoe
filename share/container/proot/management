@@ -415,7 +415,8 @@ backup_tmoe_gnu_linux_distro() {
 			是否使用恢复容器的选项？
 		EOF
 		do_you_want_to_continue
-		source ${TMOE_SHARE_DIR}/compression/restore --menu
+		source ${TMOE_SHARE_DIR}/compression/restore
+		restore_gnu_linux_container
 	else
 		case ${TMOE_CHROOT} in
 		true) source ${TMOE_SHARE_DIR}/removal/umount ;;
