@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+####################
+check_zstd() {
+	if [ ! $(command -v zstd) ]; then
+		printf "正在${YELLOW}安装${GREEN}zstd${RESET}及其${BLUE}依赖...${RESET}\n"
+		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
+		${TMOE_INSTALLATION_COMMAND} zstd
+		printf "%s\n" "如需卸载，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}zstd${RESET}"
+	fi
+}
+###################
 gnu_linux_manager_dependencies() {
 	DEPENDENCIES=''
 	if [ ! $(command -v aria2c) ]; then
@@ -116,6 +126,7 @@ install_gnu_linux_manager_dependencies_02() {
 		apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
 		;;
 	esac
+	check_zstd
 }
 #################
 gnu_linux_manager_dependencies

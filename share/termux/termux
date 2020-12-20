@@ -76,7 +76,7 @@ switch_android_termux_mirror_to_bfsu() {
 ################
 android_termux() {
 	DEPENDENCIES=""
-	for i in curl git pv grep pulseaudio proot tar; do
+	for i in curl git pv grep pulseaudio proot tar zstd lsof; do
 		if [ ! -e "${PREFIX}/bin/${i}" ]; then
 			DEPENDENCIES="${DEPENDENCIES} ${i}"
 		fi

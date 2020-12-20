@@ -76,16 +76,6 @@ tmoe_env_02() {
 	TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
 	TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
 }
-###########
-check_zstd() {
-	if [ ! $(command -v zstd) ]; then
-		printf "%s\n" "正在安装相关依赖..."
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
-		tmoe_apt_update
-		${TMOE_INSTALLATION_COMMAND} zstd
-		printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
-	fi
-}
 ############
 get_hitokito_cn() {
 	ORIGIN_HITOKOTO=$(curl -s --connect-timeout 2 "https://v1.hitokoto.cn")
