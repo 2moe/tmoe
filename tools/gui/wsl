@@ -35,7 +35,7 @@ if ! grep -q '172..*1' "/etc/resolv.conf"; then
 	printf "%s\n" "您当前使用的可能不是WSL2,部分功能无法正常运行。"
 	CURRENTwinVersion=$(/mnt/c/WINDOWS/system32/cmd.exe /c "VER" 2>/dev/null | cut -d '.' -f 3 | tail -n 1)
 	printf "%s\n" "您当前的系统版本为${CURRENTwinVersion}"
-	if (("${CURRENTwinVersion}" >= '19041')); then
+	if ((${CURRENTwinVersion} >= 19041)); then
 		cat <<-EOF
 			您需要以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 			重启PC，然后输入以下命令
