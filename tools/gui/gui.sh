@@ -258,6 +258,7 @@ install_gui() {
 ########################
 preconfigure_gui_dependecies_02() {
     unset AUTO_INSTALL_FCITX4
+    unset AUTO_INSTALL_KALI_TOOLS
     DEPENDENCY_02="tigervnc"
     case "${LINUX_DISTRO}" in
     debian)
@@ -973,11 +974,14 @@ configure_x11vnc_remote_desktop_session() {
 kali_xfce4_extras() {
     apt install -y kali-menu
     apt install -y kali-undercover
-    apt install -y zenmap
     apt install -y kali-themes-common
-    case ${ARCH_TYPE} in
-    arm64 | armhf | armel) apt install -y kali-linux-arm || aptitude install -y kali-linux-arm ;;
-    esac
+    if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
+        apt install -y zenmap
+        case ${ARCH_TYPE} in
+        arm64 | armhf | armel) apt install -y kali-linux-arm || aptitude install -y kali-linux-arm ;;
+        *) apt install -y kali-linux-default || aptitude install -y kali-linux-default ;;
+        esac
+    fi
     if [ $(command -v chromium) ]; then
         apt install -y chromium-l10n
         fix_chromium_root_no_sandbox
@@ -1214,6 +1218,20 @@ do_you_want_to_install_fcitx4() {
     esac
 }
 #########
+do_you_want_to_install_kali_arm() {
+    case "${LINUX_DISTRO}" in
+    "debian")
+        case "${DEBIAN_DISTRO}" in
+        "kali")
+            if (whiptail --title "KALI LINUX TOOLS" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install kali-linux tools?' 0 0); then
+                AUTO_INSTALL_KALI_TOOLS='true'
+            fi
+            ;;
+        esac
+
+        ;;
+    esac
+}
 auto_install_and_configure_fcitx4() {
     #在安裝完桌面後再配置輸入法
     [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
@@ -1222,6 +1240,7 @@ auto_install_and_configure_fcitx4() {
 install_xfce4_desktop() {
     xfce_warning
     do_you_want_to_install_fcitx4
+    do_you_want_to_install_kali_arm
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
     DEPENDENCY_01="xfce4"
