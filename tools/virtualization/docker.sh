@@ -695,7 +695,7 @@ tmoe_docker_menu() {
     TMOE_QEMU_ARCH=""
     VIRTUAL_TECH=$(
         whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
-            "1" "🌁 across architectures(跨CPU架构运行docker容器)" \
+            "1" "🌁 cross architecture(跨CPU架构运行docker容器)" \
             "2" "🥛 systemd-docker(支持systemctl的docker容器)" \
             "3" "🍭 pull distro images(拉取alpine,debian和ubuntu镜像)" \
             "4" "🌉 portainer(web端图形化docker容器管理)" \
@@ -743,7 +743,7 @@ EOF
 tmoe_qemu_user_static() {
     RETURN_TO_WHERE='tmoe_qemu_user_static'
     BETA_SYSTEM=$(
-        whiptail --title "qemu_user_static" --menu "You can use qemu-user-static to run docker containers across architectures." 0 50 0 \
+        whiptail --title "qemu_user_static" --menu "You can use qemu-user-static to run docker containers cross architecture." 0 50 0 \
             "1" "chart架构支持表格" \
             "2" "install via software source(通过软件源安装)" \
             "3" "install/upgrade(通过安装包来安装/更新)" \

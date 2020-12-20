@@ -39,7 +39,7 @@ across_architectures_container() {
 #############
 proot_container_menu_multi_langs() {
 	proot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or cross-architecture?" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "⚔️ Across architectures" \
@@ -78,7 +78,7 @@ proot_container_menu_multi_langs() {
 ############
 chroot_container_menu_multi_langs() {
 	chroot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or across architectures?" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or cross-architecture?" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "🥛 nspawn(systemd-container,supports systemctl)" \
