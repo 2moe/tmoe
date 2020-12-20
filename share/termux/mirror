@@ -21,7 +21,7 @@ linux_distro_sources_list() {
 }
 ##########
 ustc_termux() {
-	if (("${ANDROID_VERSION}" < '7')); then
+	if (("${ANDROID_VERSION}" < 7)); then
 		SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn'
 		modify_android_termux_old_mirror_sources_list
 		press_enter_to_return
@@ -79,7 +79,7 @@ china_university_mirror_station() {
 	0 | "") tmoe_sources_list_manager ;;
 	1)
 		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			standard_termux_mirror_source_format
@@ -87,7 +87,7 @@ china_university_mirror_station() {
 		;;
 	2)
 		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			standard_termux_mirror_source_format
@@ -95,7 +95,7 @@ china_university_mirror_station() {
 		;;
 	3)
 		SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			standard_termux_mirror_source_format
@@ -128,7 +128,7 @@ worldwide_mirror_station() {
 	0 | "") tmoe_sources_list_manager ;;
 	1)
 		SOURCE_MIRROR_STATION='dl.bintray.com'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			official_termux_mirror_source_format
@@ -136,7 +136,7 @@ worldwide_mirror_station() {
 		;;
 	2)
 		SOURCE_MIRROR_STATION='termux.mentality.rip'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			standard_termux_mirror_source_format
@@ -144,7 +144,7 @@ worldwide_mirror_station() {
 		;;
 	3)
 		SOURCE_MIRROR_STATION='grimler.se'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			standard_termux_mirror_source_format
@@ -152,7 +152,7 @@ worldwide_mirror_station() {
 		;;
 	4)
 		SOURCE_MIRROR_STATION='termux-mirror.ml'
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			xeffyr_termux_mirror_source_format
@@ -373,7 +373,7 @@ edit_sources_list_manually() {
 check_android_version() {
 	ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
 	if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
-		if (("${ANDROID_VERSION}" < '7')); then
+		if (("${ANDROID_VERSION}" < 7)); then
 			printf "%s\n" "检测到您当前的安卓系统版本低于7,如需换源,则请选择USTC。" >${ANDROID_6_FILE}
 			sed -n p ${ANDROID_6_FILE}
 			printf "%s\n" "Your current Android system version is lower than 7."
