@@ -183,15 +183,15 @@ tmoe_qemu_user_manager() {
 			whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				"00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
-				"01" "x86/i386(常见于32位cpu的旧式传统pc)" \
-				"02" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
-				"03" "arm64/aarch64(2020年移动平台主流cpu架构)" \
-				"04" "armhf/armv7(32位arm架构,支持硬浮点运算)" \
-				"05" "riscv64(开源架构,精简指令集)" \
-				"06" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
-				"07" "s390x(常见于IBM大型机)" \
-				"08" "mipsel(常见于嵌入式设备)" \
-				"09" "mips64el(常见于龙芯cpu)" \
+				"1" "x86/i386(常见于32位cpu的旧式传统pc)" \
+				"2" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
+				"3" "arm64/aarch64(2020年移动平台主流cpu架构)" \
+				"4" "armhf/armv7(32位arm架构,支持硬浮点运算)" \
+				"5" "riscv64(开源架构,精简指令集)" \
+				"6" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
+				"7" "s390x(常见于IBM大型机)" \
+				"8" "mipsel(常见于嵌入式设备)" \
+				"9" "mips64el(常见于龙芯cpu)" \
 				"10" "armel(支持软浮点运算,常见于旧设备）" \
 				3>&1 1>&2 2>&3
 		)
@@ -201,15 +201,15 @@ tmoe_qemu_user_manager() {
 			whiptail --title "across architectures" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
 				"0" "🌚 戻る" \
 				"00" "qemu-user-static(基本的な依存関係)" \
-				"01" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
-				"02" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
-				"03" "arm64/aarch64:64-bit extension of the ARM architecture" \
-				"04" "armhf/armv7:32-bit arm hard float" \
-				"05" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
-				"06" "ppc64el:64ビットビッグエンディアンPowerPCおよびPower ISAプロセッサ用に最適化されたアプリケーションのターゲットアーキテクチャを参照するために" \
-				"07" "s390x:IBMメインフレームコンピューターで一般的に見られる" \
-				"08" "mipsel:MIPSアーキテクチャは、ミップス・コンピュータシステムズが開発したRISCマイクロプロセッサの命令セット・アーキテクチャ である" \
-				"09" "mips64el" \
+				"1" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
+				"2" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
+				"3" "arm64/aarch64:64-bit extension of the ARM architecture" \
+				"4" "armhf/armv7:32-bit arm hard float" \
+				"5" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
+				"6" "ppc64el:64ビットビッグエンディアンPowerPCおよびPower ISAプロセッサ用に最適化されたアプリケーションのターゲットアーキテクチャを参照するために" \
+				"7" "s390x:IBMメインフレームコンピューターで一般的に見られる" \
+				"8" "mipsel:MIPSアーキテクチャは、ミップス・コンピュータシステムズが開発したRISCマイクロプロセッサの命令セット・アーキテクチャ である" \
+				"9" "mips64el" \
 				"10" "armel:32-bit arm soft float" \
 				3>&1 1>&2 2>&3
 		)
@@ -219,15 +219,15 @@ tmoe_qemu_user_manager() {
 			whiptail --title "across architectures" --menu "Which architecture do you want to simulate?" 0 50 0 \
 				"0" "🌚 Return to previous menu" \
 				"00" "qemu-user-static(Basic dependence)" \
-				"01" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
-				"02" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
-				"03" "arm64:64-bit extension of the ARM architecture" \
-				"04" "armhf:32-bit arm hard float" \
-				"05" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
-				"06" "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target" \
-				"07" "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers" \
-				"08" "mipsel:Microprocessor without Interlocked Pipelined Stages little-endian" \
-				"09" "mips64el" \
+				"1" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
+				"2" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
+				"3" "arm64:64-bit extension of the ARM architecture" \
+				"4" "armhf:32-bit arm hard float" \
+				"5" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
+				"6" "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target" \
+				"7" "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers" \
+				"8" "mipsel:Microprocessor without Interlocked Pipelined Stages little-endian" \
+				"9" "mips64el" \
 				"10" "armel:32-bit arm soft float" \
 				3>&1 1>&2 2>&3
 		)
@@ -242,45 +242,45 @@ tmoe_qemu_user_manager() {
 	case "${BETA_SYSTEM}" in
 	0 | "") proot_container_menu ;;
 	00) tmoe_qemu_user_static ;;
-	01)
+	1)
 		NEW_TMOE_ARCH='i386'
 		case ${TRUE_ARCH_TYPE} in
 		amd64 | i386) TMOE_QEMU_ARCH="" ;;
 		*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
 		esac
 		;;
-	02)
+	2)
 		NEW_TMOE_ARCH='amd64'
 		TMOE_QEMU_ARCH="x86_64"
 		;;
-	03)
+	3)
 		NEW_TMOE_ARCH='arm64'
 		TMOE_QEMU_ARCH="aarch64"
 		;;
-	04)
+	4)
 		NEW_TMOE_ARCH='armhf'
 		case ${TRUE_ARCH_TYPE} in
 		arm64 | armhf) TMOE_QEMU_ARCH="" ;;
 		*) TMOE_QEMU_ARCH="arm" ;;
 		esac
 		;;
-	05)
+	5)
 		NEW_TMOE_ARCH='riscv64'
 		TMOE_QEMU_ARCH="riscv64"
 		;;
-	06)
+	6)
 		NEW_TMOE_ARCH='ppc64el'
 		TMOE_QEMU_ARCH="ppc64le"
 		;;
-	07)
+	7)
 		NEW_TMOE_ARCH='s390x'
 		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
 		;;
-	08)
+	8)
 		NEW_TMOE_ARCH='mipsel'
 		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
 		;;
-	09)
+	9)
 		NEW_TMOE_ARCH='mips64el'
 		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
 		;;
