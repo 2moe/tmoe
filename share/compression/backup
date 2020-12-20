@@ -22,7 +22,7 @@ backup_filename() {
 	printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
 	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
 		#printf "%s\n" "文件名称不能为空！"
-		printf "%s\n" "The file name is ${RED}empty${RESET}."
+		#printf "%s\n" "The file name is ${RED}empty${RESET}."
 		#press_enter_to_return
 		#backup_system
 		TARGET_BACKUP_FILE_NAME="${BAK_FILE_PREFIX_03}"
