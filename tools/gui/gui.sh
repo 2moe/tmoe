@@ -1216,9 +1216,10 @@ do_you_want_to_install_fcitx4() {
         ;;
     *) ;;
     esac
+    do_you_want_to_install_kali_tools
 }
 #########
-do_you_want_to_install_kali_arm() {
+do_you_want_to_install_kali_tools() {
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
@@ -1240,7 +1241,6 @@ auto_install_and_configure_fcitx4() {
 install_xfce4_desktop() {
     xfce_warning
     do_you_want_to_install_fcitx4
-    do_you_want_to_install_kali_arm
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
     DEPENDENCY_01="xfce4"
