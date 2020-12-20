@@ -1,16 +1,31 @@
 #!/usr/bin/env bash
 #######################################
 backup_filename() {
-	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${DEBIAN_FOLDER}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+	for i in startplasma-x11 startkde mate-session xfce4-session startlxqt startdde startlxde gnome-session; do
+		if [[ -e ${DEBIAN_CHROOT}/usr/bin/${i} ]]; then
+			BAK_FILE_PREFIX_01=${i}
+			break
+		fi
+	done
+	case ${BAK_FILE_PREFIX_01} in
+	startplasma-x11 | startkde) BAK_FILE_PREFIX_02='kde' ;;
+	mate-session) BAK_FILE_PREFIX_02='mate' ;;
+	xfce4-session) BAK_FILE_PREFIX_02='xfce' ;;
+	startdde) BAK_FILE_PREFIX_02='deepin' ;;
+	startlxqt) BAK_FILE_PREFIX_02='lxqt' ;;
+	startlxde) BAK_FILE_PREFIX_02='lxde' ;;
+	gnome-session) BAK_FILE_PREFIX_02='gnome' ;;
+	esac
+	BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}+${BAK_FILE_PREFIX_02}"
+	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${BAK_FILE_PREFIX_03}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	TARGET_BACKUP_FILE_NAME="$(printf '%s\n' "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)"
 	printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
 	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
 		#printf "%s\n" "文件名称不能为空！"
 		printf "%s\n" "The file name is ${RED}empty${RESET}."
-		#return 1
 		#press_enter_to_return
 		#backup_system
-		TARGET_BACKUP_FILE_NAME="${DEBIAN_FOLDER}"
+		TARGET_BACKUP_FILE_NAME="${BAK_FILE_PREFIX_03}"
 	fi
 }
 ######################
