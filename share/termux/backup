@@ -12,6 +12,7 @@ backup_filename() {
 }
 ######################
 backup_termux_system() {
+	check_zstd
 	source ${TMOE_SHARE_DIR}/removal/umount
 	RETURN_TO_WHERE='backup_termux_system'
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \
@@ -55,10 +56,10 @@ install_timeshift() {
 }
 ######################
 termux_backup_pre() {
-	if [ ! -d /sdcard/Download/backup ]; then
-		mkdir -p /sdcard/Download/backup
+	if [ ! -d /sdcard/Download/backup/termux/ ]; then
+		mkdir -pv /sdcard/Download/backup/termux/
 	fi
-	cd /sdcard/Download/backup
+	cd /sdcard/Download/backup/termux/
 	backup_filename
 	BACKUP_TIME=$(date +%Y-%m-%d_%H-%M)
 }
@@ -93,39 +94,34 @@ backup_termux() {
 	########################
 	termux_backup_pre
 	TERMUX_TAR_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME}-termux_bak"
-	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio.\n 压缩过程中，进度条倒着跑是正常现象。" 10 60); then
-		cat <<-EOF
-			您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TERMUX_TAR_FILE_NAME}.tar.gz
-			以下目录将被备份:
-			${BLUE}${TERMUX_BACKUP_DIR}
-			${YELLOW}按回车键开始备份,press Enter to start the backup.${RESET}
-		EOF
-		do_you_want_to_continue
+	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
+		BACKUP_TYPE='tar.zst'
+	else
+		BACKUP_TYPE='tar.xz'
+	fi
+
+	cat <<-EOF
+		您选择了${BACKUP_TYPE},即将为您备份至/sdcard/Download/backup/termux/${TERMUX_TAR_FILE_NAME}.${BACKUP_TYPE}
+		以下目录将被备份:
+		${BLUE}${TERMUX_BACKUP_DIR}
+		${YELLOW}按回车键开始备份,press Enter to start the backup.${RESET}
+	EOF
+	do_you_want_to_continue
+	case ${BACKUP_TYPE} in
+	tar.zst) tar -I zstd -Ppvcf ${TERMUX_TAR_FILE_NAME}.tar.zst --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR} ;;
+	tar.xz)
 		tar -PJpvcf ${TERMUX_TAR_FILE_NAME}.tar.xz --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR}
 		#xz -z -T0 -e -9 -v ${TERMUX_TAR_FILE_NAME}.tar
 		#${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux --exclude=${DEBIAN_CHROOT}/root/tf
-		printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
-		printf "%s\n" "部分目录无权限备份是正常现象。"
-		pwd
-		ls -lth ./*termux_home*tar* | grep ^- | head -n 1
-		printf "%s ${GREEN}%s${RESET}\n" Backup complete.
-	else
-		cat <<-EOF
-			您选择了tar.gz,即将为您备份至/sdcard/Download/backup/${TERMUX_TAR_FILE_NAME}.tar.gz
-			以下目录将被备份:
-			${BLUE}${TERMUX_BACKUP_DIR}
-			${YELLOW}按回车键开始备份,press Enter to start the backup.${RESET}
-		EOF
-		do_you_want_to_continue
-
-		tar -Ppvczf ${TERMUX_TAR_FILE_NAME}.tar.gz --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR}
-
-		printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
-		printf "%s\n" "部分目录无权限备份是正常现象。"
-		pwd
-		ls -lth ./*termux_bak*tar* | grep ^- | head -n 1
-		printf "%s ${GREEN}%s${RESET}\n" Backup complete.
-	fi
+		;;
+	esac
+	printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
+	printf "%s\n" "部分目录无权限备份是正常现象。"
+	#ls -lth ./*termux_home*tar* | grep ^- | head -n 1
+	pwd
+	ls -lth ./*termux_bak*tar* | grep ^- | head -n 1
+	printf "%s ${GREEN}%s${RESET}\n" Backup complete.
 }
+
 ##################################
 backup_termux_system

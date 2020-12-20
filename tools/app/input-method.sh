@@ -471,7 +471,7 @@ check_fcitx5_dict() {
 #############
 move_dict_model_01() {
     if [ -e "data.tar.zst" ]; then
-        tar --zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
+        tar -I zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
     elif [ -e "data.tar.xz" ]; then
         tar -Jxvf data.tar.xz 2>/dev/null
     elif [ -e "data.tar.gz" ]; then

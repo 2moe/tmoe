@@ -34,6 +34,7 @@ backup_gnu_linux_container_to_external_tf() {
 }
 #####################
 backup_system() {
+	check_zstd
 	RETURN_TO_WHERE='backup_system'
 	backup_system_menu_en() {
 		OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to backup the container?(๑´ڡ\`๑)" 0 50 0 \
@@ -120,36 +121,29 @@ backup_gnu_linux_container() {
 		[[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
 	done
 
-	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.xz" --no-button "tar.gz" --yesno "Which do yo like better? \n tar.xz压缩率高，但速度慢。tar.xz has a higher compression ration, but is slower.\n tar.gz速度快,但压缩率低。tar.gz compresses faster, but with a lower compression ratio." 12 50); then
+	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
+		printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
+		printf "%s\n" "您选择了tar.zst,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.zst"
+		printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
+		do_you_want_to_continue
+		case ${TMOE_CHROOT} in
+		true) ${TMOE_PREFIX} tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER} ;;
+		*)
+			if [ "$(command -v pv)" ]; then
+				tar -I zstd -Ppcf - --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${CONTAINER_BACKUP_FILE_NAME}.tar.zst)
+			else
+				tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER}
+			fi
+			;;
+		esac
+	else
+		#Which do yo like better? \n
 		printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
 		printf "%s\n" "您选择了tar.xz,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.xz"
 		printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
 		do_you_want_to_continue
 		#stopvnc（pkill all）在linux不会自动生成
 		${TMOE_PREFIX} tar -PJpcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.xz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER}
-	else
-		if (whiptail --title "Choose the type of backup选择备份类型" --yes-button "tar.gz" --no-button "tar" --yesno "Which do yo like better? \n tar只进行打包，不压缩，速度快。\ntar.gz在打包的基础上进行压缩。" 9 50); then
-			printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
-			printf "%s\n" "您选择了tar.gz,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.gz"
-			printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
-			do_you_want_to_continue
-			case ${TMOE_CHROOT} in
-			true) ${TMOE_PREFIX} tar -Ppczvf ${CONTAINER_BACKUP_FILE_NAME}.tar.gz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER} ;;
-			*)
-				if [ "$(command -v pv)" ]; then
-					tar -Ppczf - --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${CONTAINER_BACKUP_FILE_NAME}.tar.gz)
-				else
-					tar -Ppczvf ${CONTAINER_BACKUP_FILE_NAME}.tar.gz --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER}
-				fi
-				;;
-			esac
-		else
-			printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
-			printf "%s\n" "您选择了tar,只进行打包,不进行压缩，即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar"
-			printf "%s\n" "${YELLOW}按回车键开始备份,按Ctrl+C取消。${RESET} "
-			press_enter_to_continue
-			${TMOE_PREFIX} tar -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar --exclude=${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/tf --exclude=${DEBIAN_CHROOT}/root/termux ${BACKUP_FOLDER}
-		fi
 	fi
 	printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
 	printf "%s\n" "部分目录无权限备份是正常现象。"

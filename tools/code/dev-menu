@@ -234,7 +234,7 @@ check_ide_version() {
 #########
 uncompress_arch_pkg_tar_zst() {
     cd /
-    tar --zstd -Ppxvf ${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION} --exclude=.*
+    tar -I zstd -Ppxvf ${DOWNLOAD_PATH}/${ARCH_WALLPAPER_VERSION} --exclude=.*
 }
 ###########
 install_ide_01() {

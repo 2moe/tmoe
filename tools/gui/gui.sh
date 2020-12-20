@@ -210,6 +210,7 @@ install_gui() {
     IOSEVKA_TTF_FILE="/usr/share/fonts/truetype/iosevka/Iosevka.ttf"
     [[ "${WINDOWS_DISTRO}" != 'WSL' ]] || source ${TMOE_TOOL_DIR}/gui/wsl
     [[ ! -s "${IOSEVKA_TTF_FILE}" ]] || standand_desktop_installation #该字体检测两次
+    check_zstd
     random_neko
     cd /tmp
     case ${WINDOWS_DISTRO} in
@@ -2389,9 +2390,9 @@ check_update_icon_caches_sh() {
 }
 ##############
 tmoe_desktop_beautification() {
-
     DEPENDENCY_01=''
     RETURN_TO_WHERE='tmoe_desktop_beautification'
+    check_zstd
     BEAUTIFICATION=$(whiptail --title "beautification" --menu \
         "你想要如何美化桌面？\nHow do you want to beautify the DE? " 0 50 0 \
         "1" "🍨 themes:主题(你有一双善于发现美的眼睛)" \
@@ -3065,7 +3066,7 @@ download_arch_wallpaper() {
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/pool/community/'
     check_theme_folder
     download_arch_community_repo_html
-    grep_arch_linux_pkg
+    grep_arch_linux_pkg_02
     move_wallpaper_model_01
 }
 ##############
@@ -3091,6 +3092,7 @@ download_elementary_wallpaper() {
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg
+    #该包无zst格式
     move_wallpaper_model_01
     #elementary-wallpapers-5.5.0-1-any.pkg.tar.xz
 }
@@ -3254,8 +3256,9 @@ download_arch_breeze_adapta_cursor_theme() {
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/any/'
     curl -Lo index.html ${THEME_URL}
     GREP_NAME='breeze-adapta-cursor-theme-git'
-    grep_arch_linux_pkg
-    tar -Jxvf data.tar.xz 2>/dev/null
+    grep_arch_linux_pkg_02
+    #tar -Jxvf data.tar.xz 2>/dev/null
+    tar -I zstd -xvf data.tar.zst
     cp -rf usr /
     rm -rf /tmp/.breeze_theme
 }
@@ -3263,7 +3266,6 @@ download_arch_breeze_adapta_cursor_theme() {
 install_breeze_theme() {
     DEPENDENCY_01="breeze-icon-theme"
     DEPENDENCY_02="breeze-cursor-theme breeze-gtk-theme xfwm4-theme-breeze"
-
     download_arch_breeze_adapta_cursor_theme
     if [ "${LINUX_DISTRO}" = "arch" ]; then
         DEPENDENCY_01="breeze-icons breeze-gtk"

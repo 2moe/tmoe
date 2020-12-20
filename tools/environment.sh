@@ -25,29 +25,19 @@ gnu_linux_env_02() {
 ########################
 uncompress_theme_file() {
     case "${TMOE_THEME_ITEM:0-6:6}" in
-    tar.xz)
-        tar -Jxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null
-        ;;
-    tar.gz)
-        tar -zxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null
-        ;;
-    *)
-        tar -xvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null
-        ;;
+    tar.xz) tar -Jxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
+    tar.gz) tar -zxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
+    ar.zst) tar -I zstd -xvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
+    *) tar -xvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
     esac
 }
 ############
 check_tar_ext_format() {
     case "${TMOE_THEME_ITEM:0-6:6}" in
-    tar.xz)
-        EXTRACT_FILE_FOLDER=$(tar -Jtf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
-        ;;
-    tar.gz)
-        EXTRACT_FILE_FOLDER=$(tar -ztf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
-        ;;
-    *)
-        EXTRACT_FILE_FOLDER=$(tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta")
-        ;;
+    tar.xz) EXTRACT_FILE_FOLDER=$(tar -Jtf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    tar.gz) EXTRACT_FILE_FOLDER=$(tar -ztf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    ar.zst) EXTRACT_FILE_FOLDER=$(tar -I zstd -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    *) EXTRACT_FILE_FOLDER=$(tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
     esac
     EXTRACT_FILE_FOLDER_HEAD_01=$(printf '%s\n' "${EXTRACT_FILE_FOLDER}" | awk '{print $1}')
     check_theme_folder_exists_status
@@ -79,7 +69,7 @@ move_wallpaper_model_01() {
     elif [ -e "data.tar.gz" ]; then
         tar -zxvf data.tar.gz 2>/dev/null
     elif [ -e "data.tar.zst" ]; then
-        tar --zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
+        tar -I zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
     else
         tar -xvf data.* 2>/dev/null
     fi
@@ -1221,6 +1211,7 @@ extract_deb_file_02() {
     case "${DEB_FILE_TYPE}" in
     tar.xz) tar -PpJxvf ${DOWNLOAD_PATH}/data.tar.xz ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     tar.gz) tar -Ppzxvf ${DOWNLOAD_PATH}/data.tar.gz ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
+    ar.zst) tar -I zstd -Ppxvf ${DOWNLOAD_PATH}/data.tar.zst ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     *) tar -Ppxvf ${DOWNLOAD_PATH}/data.* ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     esac
     cd /tmp
@@ -1322,7 +1313,7 @@ tmoe_apt_update() {
 }
 ############
 check_zstd() {
-    if [ ! $(command -v unzstd) ]; then
+    if [ ! $(command -v zstd) ]; then
         printf "%s\n" "正在安装相关依赖..."
         printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
         tmoe_apt_update
