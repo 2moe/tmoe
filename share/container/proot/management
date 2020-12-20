@@ -286,7 +286,10 @@ normally_start_gnu_linux_distro() {
 	if_container_is_not_installed
 	cat_release_file
 	case $(uname -o) in
-	Android) termux-wake-lock 2>/dev/null ;;
+	Android)
+		termux-wake-lock 2>/dev/null
+		pulseaudio --start
+		;;
 	esac
 	case ${SYSTEMD_NSPAWN} in
 	true)
