@@ -23,8 +23,9 @@ backup_tmoe_container_preconfigure() {
 backup_gnu_linux_container_to_external_tf() {
 	if [ -h "${HOME}/storage/external-1" ]; then
 		BACKUP_PATH="$(readlink ${HOME}/storage/external-1)/Download/backup/containers"
-		printf "%s\n" "${RED}卸载或清除${RESET}termux将同时清空${BLUE}${CONTAINER_BACKUP_PATH}${RESET}"
-		printf "%s\n" "${RED}Uninstalling${RESET} TERMUX will also clear the ${BLUE}backup data${RESET}."
+		printf "%s\n" "${RED}卸载或清除${RESET}termux将有可能同时清空${BLUE}${CONTAINER_BACKUP_PATH}${RESET}"
+		printf "%s\n" "${RED}Uninstalling${RESET} TERMUX will also clear the ${BLUE}${CONTAINER_BACKUP_PATH}${RESET}."
+		press_enter_to_continue
 	else
 		printf "%s\n" "${HOME}/storage/external-1非软链接，无法保存至该目录,将自动切换为内置存储设备。"
 		check_container_backup_path
