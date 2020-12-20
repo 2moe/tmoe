@@ -12,7 +12,7 @@ backup_filename() {
 }
 ######################
 backup_termux_system() {
-	check_zstd
+	#check_zstd
 	source ${TMOE_SHARE_DIR}/removal/umount
 	RETURN_TO_WHERE='backup_termux_system'
 	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \

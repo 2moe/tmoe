@@ -3071,7 +3071,7 @@ download_arch_wallpaper() {
 }
 ##############
 download_arch_xfce_artwork() {
-    check_zstd
+    #check_zstd
     GREP_NAME='xfce4-artwork'
     #https://mirrors.bfsu.edu.cn/archlinux/pool/community/archlinux-wallpaper-1.4-6-any.pkg.tar.xz
     WALLPAPER_NAME='backgrounds/xfce'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #######################################
 restore_main() {
-	check_zstd
+	#check_zstd
 	case "$1" in
 	--menu | *) restore_gnu_linux_container ;;
 	esac

@@ -34,7 +34,7 @@ backup_gnu_linux_container_to_external_tf() {
 }
 #####################
 backup_system() {
-	check_zstd
+	#check_zstd
 	RETURN_TO_WHERE='backup_system'
 	backup_system_menu_en() {
 		OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to backup the container?(๑´ڡ\`๑)" 0 50 0 \
