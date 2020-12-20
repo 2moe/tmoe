@@ -3,8 +3,9 @@
 restore_main() {
 	#check_zstd
 	case "$1" in
-	--menu | *) restore_gnu_linux_container ;;
+	--menu) restore_gnu_linux_container ;;
 	esac
+	#此处不包含*
 }
 ###############
 uncompress_other_format_file() {
