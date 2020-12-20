@@ -973,8 +973,12 @@ configure_x11vnc_remote_desktop_session() {
 ##########################
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
-        printf "%s\n" "apt install -y zenmap"
-        apt install -y zenmap
+        if [[ ! -n $(command -v zenmap) ]]; then
+            printf "%s\n" "apt install -y zenmap"
+            apt install -y zenmap
+        fi
+        printf "%s\n" "apt install -y kali-menu"
+        apt install -y kali-menu || aptitude install -y kali-menu
         case ${ARCH_TYPE} in
         arm64 | armhf | armel)
             printf "%s\n" "apt install -y kali-linux-arm"
@@ -989,7 +993,6 @@ install_kali_linux_tools() {
 }
 ###########################
 kali_xfce4_extras() {
-    apt install -y kali-menu
     apt install -y kali-undercover
     apt install -y kali-themes-common
     if [ $(command -v chromium) ]; then
@@ -2043,6 +2046,7 @@ install_gnome3_desktop() {
         neofetch --logo --ascii_distro GNOME
     fi
     gnome3_warning
+    do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
     true | no)
         REMOTE_DESKTOP_SESSION_01='gnome-panel'
@@ -3458,7 +3462,7 @@ x11vnc_warning() {
         beta_features_quick_install
     fi
     #音频控制器单独检测
-    if [ ! $(command -v pavucontrol) ]; then
+    if [[ ! $(command -v pavucontrol) && ! $(command -v pavucontrol-qt) ]]; then
         ${TMOE_INSTALLATION_COMMAND} pavucontrol
     fi
 }
