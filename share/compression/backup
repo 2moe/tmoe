@@ -80,11 +80,23 @@ clean_up_container_garbage() {
 		backup_system
 	fi
 	CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.cache root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
+	CONTAINER_GARBAGE_FILES_02='var/cache/apt/archives/* \
+var/cache/apt/* \
+var/mail/* \
+var/log/* \
+var/log/apt/* \
+var/log/journal/* \
+var/lib/apt/lists/* \
+root/.bash_history
+rm -rfv dev/* \
+tmp/*'
+
 	if [ -e "root/.vnc/passwd" ]; then
-		tree ${CONTAINER_GARBAGE_FILES} 2>/dev/null
+		ls -lah ${CONTAINER_GARBAGE_FILES} 2>/dev/null
 	fi
 	printf "${BOLD}${YELLOW}%s${RESET}${RESET}\n" "${DEBIAN_CHROOT}"
 	printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES}${RESET}"
+	printf "%s\n" "${RED}rm -fv${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES_02}${RESET}"
 	cat <<-EOF
 		若您需要将容器分享给他人，则可以删除以上文件，否则请勿执行清理操作。
 		若您使用的是deb系列发行版，则在清理前，可以在容器内以sudo或root权限执行${GREEN}apt clean;apt autoclean;apt autopurge || apt autoremove${RESET}
@@ -93,6 +105,7 @@ clean_up_container_garbage() {
 	EOF
 	do_you_want_to_continue
 	rm -rv ${CONTAINER_GARBAGE_FILES}
+	rm -fv ${CONTAINER_GARBAGE_FILES_02}
 }
 #############
 backup_gnu_linux_container() {
