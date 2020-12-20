@@ -2,12 +2,15 @@
 #######################################
 TMOE_PREFIX=''
 source ${TMOE_SHARE_DIR}/compression/restore
+cd /sdcard/Download/backup/termux
 if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
 	#RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
-	cd /sdcard/Download/backup/termux
 	RESTORE=$(ls -lth ./*-termux*bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
+	ls -lh ${RESTORE}
 	restore_the_latest_backup_file
 else
 	BACKUP_FILE_NAME="*-termux*bak.tar*"
-	where_is_start_dir
+	manually_select_the_file_directory
+	select_file_manually
 fi
+android_termux_tmoe_menu_en
