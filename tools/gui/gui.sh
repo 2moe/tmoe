@@ -4696,7 +4696,7 @@ first_configure_startvnc() {
         printf '%s\n' '运行过程中，您可以按Ctrl+C终止前台进程，输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程'
         printf '%s\n' 'You can type pkill -u $(whoami) to kill all processes.'
         #上面那行必须要单引号
-        read
+        #read
         cd "/mnt/c/Users/Public/Downloads"
         /mnt/c/WINDOWS/system32/cmd.exe /c "start ."
         #startxsdl &
