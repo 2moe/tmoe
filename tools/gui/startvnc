@@ -68,6 +68,7 @@ tmoe_vnc_preconfigure() {
     fi
     fix_vnc_permissions
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        export TMOE_CHROOT='true'
         . ${TMOE_LINUX_DIR}/wsl_pulse_audio
     fi
 }
