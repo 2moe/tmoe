@@ -536,6 +536,9 @@ creat_proot_startup_script() {
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	mkdir -p ${TMOE_STARTUP_DIR}
 	source ${TMOE_SHARE_DIR}/container/proot/startup
+	if ! egrep -q '^[^#]*export.*MOZ_FAKE_NO_SANDBOX.*1' /etc/environment; then
+		printf "%s\n%s\n" "export TMOE_PROOT=true" "export MOZ_FAKE_NO_SANDBOX=1" >>/etc/environment
+	fi
 }
 #########
 if [ ! -e "${CONFIG_FOLDER}/gitstatus" ]; then
