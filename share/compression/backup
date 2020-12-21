@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #######################################
 backup_filename() {
+	unset BAK_FILE_PREFIX_02
 	for i in startplasma-x11 startkde mate-session xfce4-session startlxqt startdde startlxde gnome-session; do
 		if [[ -e ${DEBIAN_CHROOT}/usr/bin/${i} ]]; then
 			BAK_FILE_PREFIX_01=${i}
@@ -16,7 +17,11 @@ backup_filename() {
 	startlxde) BAK_FILE_PREFIX_02='lxde' ;;
 	gnome-session) BAK_FILE_PREFIX_02='gnome' ;;
 	esac
-	BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}+${BAK_FILE_PREFIX_02}"
+	if [ -z "${BAK_FILE_PREFIX_02}" ]; then
+		BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}"
+	else
+		BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}+${BAK_FILE_PREFIX_02}"
+	fi
 	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${BAK_FILE_PREFIX_03}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
 	TARGET_BACKUP_FILE_NAME="$(printf '%s\n' "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)"
 	printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
