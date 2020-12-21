@@ -4507,7 +4507,7 @@ first_configure_startvnc() {
     true | no)
         if [ ${REMOVE_UDISK2} = 'true' ]; then
             if [ "${LINUX_DISTRO}" = 'debian' ]; then
-                if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie' "/etc/os-release"; then
+                if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie|Deepin 20|Uos 20' "/etc/os-release"; then
                     printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
                     #umount .gvfs
                     apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
