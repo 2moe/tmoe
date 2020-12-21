@@ -47,9 +47,11 @@ start_windows_xserver() {
 	/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
 	/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac"
 	printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-	if grep -q '172..*1' "/etc/resolv.conf"; then
+	#if grep -q '172..*1' "/etc/resolv.conf"; then
+	if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-		WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+		#WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+		WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
 		export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
 		printf "%s\n" "已将您的显示和音频服务ip修改为${WSL2IP}"
 	else

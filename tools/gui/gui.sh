@@ -3346,7 +3346,7 @@ modify_remote_desktop_config() {
         "1" "🐯 tightvnc/tigervnc:应用广泛" \
         "2" "⚔️ x11vnc:通过VNC来连接真实X桌面" \
         "3" "⚒️ X服务:(XSDL/VcXsrv)" \
-        "4" "⚛️ XRDP:使用microsoft微软开发的rdp协议" \
+        "4" "⚛️ XRDP:基于microsoft开发的rdp协议" \
         "0" "Back to the main menu 返回主菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -4242,12 +4242,15 @@ xrdp_onekey() {
     fi
     ###########################
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
-        if grep -q '172..*1' "/etc/resolv.conf"; then
+        #if grep -q '172..*1' "/etc/resolv.conf"; then
+        if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" "检测到您当前使用的可能是WSL2"
-            WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-            sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" /etc/xrdp/startwm.sh
-            printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
+            #WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+            #sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=${WSL2IP}/g" /etc/xrdp/startwm.sh
+            sed -i "s/^export PULSE_SERVER=.*/export PULSE_SERVER=\$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print \$2}' |awk '{print \$1}')/g" /etc/xrdp/startwm.sh
         fi
+        #printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
+        #fi
         printf '%s\n' '检测到您使用的是WSL,为防止与windows自带的远程桌面的3389端口冲突，请您设定一个新的端口'
         sleep 2s
     fi
@@ -4285,12 +4288,13 @@ xrdp_restart() {
     fi
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         printf '%s\n' '检测到您使用的是WSL，正在为您打开音频服务'
-        export PULSE_SERVER=tcp:127.0.0.1
-        if grep -q '172..*1' "/etc/resolv.conf"; then
+        export PULSE_SERVER=127.0.0.1
+        #if grep -q '172..*1' "/etc/resolv.conf"; then
+        if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" "检测到您当前使用的可能是WSL2"
-            WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-            export PULSE_SERVER=tcp:${WSL2IP}
-            printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
+            #WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+            export PULSE_SERVER=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
+            printf "%s\n" "已将您的音频服务ip修改为${PULSE_SERVER}"
         fi
         cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
@@ -4531,13 +4535,13 @@ first_configure_startvnc() {
     #fi
     ######################
     dpkg --configure -a 2>/dev/null
-    if [ ${HOME} != '/root' ]; then
-        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority、.Xauthority、.config/xfce4以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-        cd ${HOME}
-        sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config/xfce4" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc" ".config/xfce4"
-    fi
     if [ ! -s "${HOME}/.vnc/passwd" ]; then
         set_vnc_passwd
+    fi
+    if [ ${HOME} != '/root' ]; then
+        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority, .Xauthority, .config, .cache, .dbus以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        cd ${HOME}
+        sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config" ".cache" ".dbus" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc .config .cache .dbus"
     fi
     printf "$BLUE"
     cat <<-'EndOFneko'
@@ -4661,7 +4665,8 @@ first_configure_startvnc() {
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
         cd "/mnt/c/Users/Public/Downloads"
-        if grep -q '172..*1' "/etc/resolv.conf"; then
+        #if grep -q '172..*1' "/etc/resolv.conf"; then
+        if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
             WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
             export PULSE_SERVER=${WSL2IP}
@@ -4686,14 +4691,15 @@ first_configure_startvnc() {
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverhighDPI.png" 2>/dev/null
         printf "%s\n" "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
         printf "%s\n" "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-        printf "%s\n" "${YELLOW}按回车键启动X${RESET}"
-        printf "%s\n" "${YELLOW}Press enter to startx${RESET}"
+        #printf "%s\n" "${YELLOW}按回车键启动X${RESET}"
+        #printf "%s\n" "${YELLOW}Press enter to startx${RESET}"
         printf '%s\n' '运行过程中，您可以按Ctrl+C终止前台进程，输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程'
+        printf '%s\n' 'You can type pkill -u $(whoami) to kill all processes.'
         #上面那行必须要单引号
         read
         cd "/mnt/c/Users/Public/Downloads"
         /mnt/c/WINDOWS/system32/cmd.exe /c "start ."
-        startxsdl &
+        #startxsdl &
     fi
     printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
@@ -4740,7 +4746,11 @@ check_vnc_passsword_length() {
     else
         mkdir -p ${HOME}/.vnc
         cd ${HOME}/.vnc
-        printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
+        if [ $(command -v vncpasswd) ]; then
+            printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
+        else
+            x11vnc -storepasswd ${TARGET_VNC_PASSWD} ${HOME}/.vnc/vncpasswd
+        fi
         chmod 600 passwd
         if [ $? = 0 ]; then
             printf "%s\n" "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
