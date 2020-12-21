@@ -4,6 +4,7 @@ stop_vnc_main() {
     tmoe_vnc_env
     rm_vnc_lock
     pkill_vnc
+    check_wsl
     case "$1" in
     -non-stop-dbus)
         stopx11vnc
@@ -31,6 +32,12 @@ stop_vnc_main() {
     esac
 }
 ############
+check_wsl() {
+    if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        export TMOE_CHROOT='true'
+    fi
+}
+###########
 stopx11vnc() {
     pkill Xvfb
     rm -fv /tmp/.X233-lock /tmp/.X11-unix/X233 2>/dev/null
@@ -70,7 +77,7 @@ stop_dbus_daemon() {
         if [ -e "/run/dbus/pid" ]; then
             DBUS_PID=$(sed -n p /run/dbus/pid)
             printf "%s\n" "kill -9 ${DBUS_PID}"
-            kill -9 ${DBUS_PID}
+            sudo kill -9 ${DBUS_PID} || su -c "kill -9 ${DBUS_PID}"
             rm_dbus_pid_file
         fi
         ;;
