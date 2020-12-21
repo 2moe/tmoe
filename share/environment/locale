@@ -319,6 +319,16 @@ edit_tmoe_locale_file_manually() {
 			nano /etc/locale.gen
 		fi
 	fi
+	for i in ${HOME}/.config/tmoe-linux/locale.txt /usr/local/etc/tmoe-linux/locale.txt; do
+		if [ -e "${i}" ]; then
+			if [ $(command -v editor) ]; then
+				editor ${i}
+			else
+				nano ${i}
+			fi
+		fi
+	done
+
 	if [ -e "${DEBIAN_CHROOT}/etc" ]; then
 		if [ $(command -v editor) ]; then
 			editor ${DEBIAN_CHROOT}/etc/default/locale
