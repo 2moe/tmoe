@@ -35,6 +35,8 @@ stop_vnc_main() {
 check_wsl() {
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         export TMOE_CHROOT='true'
+    elif egrep -q '^[^#]*TMOE_CHROOT=.*true' /etc/environment 2>/dev/null; then
+        export TMOE_CHROOT='true'
     fi
 }
 ###########
@@ -77,7 +79,8 @@ stop_dbus_daemon() {
         if [ -e "/run/dbus/pid" ]; then
             DBUS_PID=$(sed -n p /run/dbus/pid)
             printf "%s\n" "kill -9 ${DBUS_PID}"
-            sudo kill -9 ${DBUS_PID} || su -c "kill -9 ${DBUS_PID}"
+            sudo kill -9 ${DBUS_PID} || kill -9 ${DBUS_PID}
+            #此处不要用su -c "kill xxx"
             rm_dbus_pid_file
         fi
         ;;
