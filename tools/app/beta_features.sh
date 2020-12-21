@@ -256,15 +256,15 @@ install_deepin_software_menu() {
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "deepin store" --menu \
         "Which software do you want to install？" 0 50 0 \
-        "01" "dde-calendar(深度日历)" \
-        "02" "dde-qt5integration(Qt5 theme integration)" \
-        "03" "deepin-calculator(计算器)" \
-        "04" "deepin-deb-installer(软件包安装器)" \
-        "05" "deepin-gettext-tools(Deepin国际化工具)" \
-        "06" "deepin-image-viewer(图像查看器)" \
-        "07" "deepin-menu(Deepin 菜单服务)" \
-        "08" "deepin-movie(电影播放器)" \
-        "09" "deepin-music(音乐播放器 with brilliant and tweakful UI)" \
+        "1" "dde-calendar(深度日历)" \
+        "2" "dde-qt5integration(Qt5 theme integration)" \
+        "3" "deepin-calculator(计算器)" \
+        "4" "deepin-deb-installer(软件包安装器)" \
+        "5" "deepin-gettext-tools(Deepin国际化工具)" \
+        "6" "deepin-image-viewer(图像查看器)" \
+        "7" "deepin-menu(Deepin 菜单服务)" \
+        "8" "deepin-movie(电影播放器)" \
+        "9" "deepin-music(音乐播放器 with brilliant and tweakful UI)" \
         "10" "deepin-notifications(系统通知)" \
         "11" "deepin-picker(深度取色器)" \
         "12" "deepin-screen-recorder(简单录屏工具)" \
@@ -277,15 +277,15 @@ install_deepin_software_menu() {
     ##########################
     case "${TMOE_APP}" in
     0 | "") tmoe_store_app_menu ;;
-    01) DEPENDENCY_02="dde-calendar" ;;
-    02) DEPENDENCY_02="dde-qt5integration" ;;
-    03) DEPENDENCY_02="deepin-calculator" ;;
-    04) DEPENDENCY_02="deepin-deb-installer" ;;
-    05) DEPENDENCY_02="deepin-gettext-tools" ;;
-    06) DEPENDENCY_02="deepin-image-viewer" ;;
-    07) DEPENDENCY_02="deepin-menu" ;;
-    08) DEPENDENCY_02="deepin-movie" ;;
-    09) DEPENDENCY_02="deepin-music" ;;
+    1) DEPENDENCY_02="dde-calendar" ;;
+    2) DEPENDENCY_02="dde-qt5integration" ;;
+    3) DEPENDENCY_02="deepin-calculator" ;;
+    4) DEPENDENCY_02="deepin-deb-installer" ;;
+    5) DEPENDENCY_02="deepin-gettext-tools" ;;
+    6) DEPENDENCY_02="deepin-image-viewer" ;;
+    7) DEPENDENCY_02="deepin-menu" ;;
+    8) DEPENDENCY_02="deepin-movie" ;;
+    9) DEPENDENCY_02="deepin-music" ;;
     10) DEPENDENCY_02="deepin-notifications" ;;
     11) DEPENDENCY_02="deepin-picker" ;;
     12) DEPENDENCY_02="deepin-screen-recorder" ;;

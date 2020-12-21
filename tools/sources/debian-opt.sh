@@ -705,58 +705,58 @@ debian_opt_note_app() {
     DEBIAN_INSTALLATION_MENU='00'
     INSTALL_APP=$(whiptail --title "NOTE APP" --menu \
         "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
-        "01" "gridea:静态博客写作app,你可以用它来记录你的生活、心情、知识和创意" \
-        "02" "marktext:界面直观、功能出众、操作轻松的markdown编辑器" \
-        "03" "simplenote:简单、轻量级的开源跨平台云笔记工具" \
-        "04" "#vnote:一款更了解程序员和Markdown的笔记软件" \
-        "05" "#go-for-it:简洁的备忘软件，借助定时提醒帮助您专注于工作" \
-        "06" "#wiznote:为知笔记是一款基于云存储的笔记app" \
-        "07" "#xournalpp:支持PDF手写注释的笔记软件" \
-        "08" "#notes-up:Markdown编辑和管理器" \
-        "09" "#qownnotes:开源Markdown笔记和待办事项软件,支持与owncloud云服务集成" \
+        "1" "gridea:静态博客写作app,你可以用它来记录你的生活、心情、知识和创意" \
+        "2" "marktext:界面直观、功能出众、操作轻松的markdown编辑器" \
+        "3" "simplenote:简单、轻量级的开源跨平台云笔记工具" \
+        "4" "#vnote:一款更了解程序员和Markdown的笔记软件" \
+        "5" "#go-for-it:简洁的备忘软件，借助定时提醒帮助您专注于工作" \
+        "6" "#wiznote:为知笔记是一款基于云存储的笔记app" \
+        "7" "#xournalpp:支持PDF手写注释的笔记软件" \
+        "8" "#notes-up:Markdown编辑和管理器" \
+        "9" "#qownnotes:开源Markdown笔记和待办事项软件,支持与owncloud云服务集成" \
         "10" "#quilter:轻量级markdown编辑器" \
         "11" "#textadept:极简、快速和可扩展的跨平台文本编辑器" \
-        "00" "🌚 Return to previous menu 返回上级菜单" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
     case "${INSTALL_APP}" in
-    00 | "") debian_opt_menu ;;
-    01)
+    0 | "") debian_opt_menu ;;
+    1)
         DEBIAN_INSTALLATION_MENU='01'
         DEPENDENCY_01='gridea'
         ORIGINAL_URL='https://github.com/getgridea/gridea'
         ;;
-    02)
+    2)
         DEBIAN_INSTALLATION_MENU='01'
         DEPENDENCY_01='marktext'
         ORIGINAL_URL='https://marktext.app/'
         ;;
-    03)
+    3)
         DEBIAN_INSTALLATION_MENU='01'
         DEPENDENCY_01='simplenote'
         ORIGINAL_URL='https://simplenote.com/'
         ;;
-    04)
+    4)
         DEPENDENCY_01='vnote'
         ORIGINAL_URL='https://tamlok.gitee.io/vnote'
         ;;
-    05)
+    5)
         DEPENDENCY_01='go-for-it'
         ORIGINAL_URL='https://github.com/mank319/Go-For-It'
         ;;
-    06)
+    6)
         DEPENDENCY_01='wiznote'
         ORIGINAL_URL='https://www.wiz.cn/wiznote-linux.html'
         ;;
-    07)
+    7)
         DEPENDENCY_01='xournalpp'
         ORIGINAL_URL='https://xournalpp.github.io/'
         ;;
-    08)
+    8)
         DEPENDENCY_01='notes-up'
         ORIGINAL_URL='https://github.com/Philip-Scott/Notes-up'
         ;;
-    09)
+    9)
         DEPENDENCY_01='qownnotes'
         ORIGINAL_URL='https://www.qownnotes.org/'
         ;;

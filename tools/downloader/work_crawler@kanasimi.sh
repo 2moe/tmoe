@@ -427,31 +427,31 @@ comic_ja_jp_tmoe_tui() {
     COMIC_WEBSITE=$(
         whiptail --title "COMIC WEBSITES" --menu \
             "日本語のウェブコミック" 0 50 0 \
-            "00" "Return to previous menu 戻る" \
-            "01" "AlphaPolis_manga:アルファポリス- 電網浮遊都市" \
-            "02" "comico_jp:comico（コミコ）" \
-            "03" "comico_jp_plus:comico（コミコ） オトナ限定" \
-            "04" "ComicWalker:KADOKAWAの無料漫画（マンガ） コミックウォーカー" \
-            "05" "cycomi:サイコミ 漫画" \
-            "06" "moae:講談社モーニング・アフタヌーン・イブニング合同Webコミックサイト" \
-            "07" "nico_seiga:ニコニコ静画" \
-            "08" "pixivcomic:pixivコミック(ぴくしぶこみっく)" \
-            "09" "tmca:TYPE-MOONコミックエース" \
+            "0" "Return to previous menu 戻る" \
+            "1" "AlphaPolis_manga:アルファポリス- 電網浮遊都市" \
+            "2" "comico_jp:comico（コミコ）" \
+            "3" "comico_jp_plus:comico（コミコ） オトナ限定" \
+            "4" "ComicWalker:KADOKAWAの無料漫画（マンガ） コミックウォーカー" \
+            "5" "cycomi:サイコミ 漫画" \
+            "6" "moae:講談社モーニング・アフタヌーン・イブニング合同Webコミックサイト" \
+            "7" "nico_seiga:ニコニコ静画" \
+            "8" "pixivcomic:pixivコミック(ぴくしぶこみっく)" \
+            "9" "tmca:TYPE-MOONコミックエース" \
             "10" "youngaceup:ヤングエースUP（アップ） Webコミック" \
             3>&1 1>&2 2>&3
     )
     ##########################
     case "${COMIC_WEBSITE}" in
-    00 | "") kanasimi_work_crawler_tmoe_tui ;;
-    01) WORK_CRAWLER_SITE='AlphaPolis_official_manga' ;;
-    02) WORK_CRAWLER_SITE='comico_jp' ;;
-    03) WORK_CRAWLER_SITE='comico_jp_plus' ;;
-    04) WORK_CRAWLER_SITE='ComicWalker' ;;
-    05) WORK_CRAWLER_SITE='cycomi' ;;
-    06) WORK_CRAWLER_SITE='moae' ;;
-    07) WORK_CRAWLER_SITE='nico_seiga' ;;
-    08) WORK_CRAWLER_SITE='pixivcomic' ;;
-    09) WORK_CRAWLER_SITE='tmca' ;;
+    0 | "") kanasimi_work_crawler_tmoe_tui ;;
+    1) WORK_CRAWLER_SITE='AlphaPolis_official_manga' ;;
+    2) WORK_CRAWLER_SITE='comico_jp' ;;
+    3) WORK_CRAWLER_SITE='comico_jp_plus' ;;
+    4) WORK_CRAWLER_SITE='ComicWalker' ;;
+    5) WORK_CRAWLER_SITE='cycomi' ;;
+    6) WORK_CRAWLER_SITE='moae' ;;
+    7) WORK_CRAWLER_SITE='nico_seiga' ;;
+    8) WORK_CRAWLER_SITE='pixivcomic' ;;
+    9) WORK_CRAWLER_SITE='tmca' ;;
     10) WORK_CRAWLER_SITE='youngaceup' ;;
     esac
     ##########################
@@ -466,20 +466,20 @@ comic_en_us_tmoe_tui() {
     COMIC_WEBSITE=$(
         whiptail --title "COMIC WEBSITES" --menu \
             "英語網路漫畫,English comics" 0 50 0 \
-            "00" "Return to previous menu 返回" \
-            "01" "bookcube:e북포털 북큐브" \
-            "02" "mrblue:미스터블루 (Mr.Blue)" \
-            "03" "toomics_en:Toomics - Free comics" \
-            "04" "webtoon_en:LINE WEBTOON" \
+            "0" "Return to previous menu 返回" \
+            "1" "bookcube:e북포털 북큐브" \
+            "2" "mrblue:미스터블루 (Mr.Blue)" \
+            "3" "toomics_en:Toomics - Free comics" \
+            "4" "webtoon_en:LINE WEBTOON" \
             3>&1 1>&2 2>&3
     )
     ##########################
     case "${COMIC_WEBSITE}" in
-    00 | "") kanasimi_work_crawler_tmoe_tui ;;
-    01) WORK_CRAWLER_SITE='bookcube' ;;
-    02) WORK_CRAWLER_SITE='mrblue' ;;
-    03) WORK_CRAWLER_SITE='toomics_en' ;;
-    04) WORK_CRAWLER_SITE='webtoon_en' ;;
+    0 | "") kanasimi_work_crawler_tmoe_tui ;;
+    1) WORK_CRAWLER_SITE='bookcube' ;;
+    2) WORK_CRAWLER_SITE='mrblue' ;;
+    3) WORK_CRAWLER_SITE='toomics_en' ;;
+    4) WORK_CRAWLER_SITE='webtoon_en' ;;
     esac
     ##########################
     parsing_website

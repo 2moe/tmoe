@@ -544,16 +544,16 @@ window_manager_install() {
     BETA_DESKTOP=$(
         whiptail --title "WINDOW MANAGER" --menu \
             "Window manager窗口管理器(简称WM)\n是一种比桌面环境更轻量化的图形界面.\n您想要安装哪个WM呢?您可以同时安装多个\nWhich WM do you want to install?" 0 0 0 \
-            "00" "Return to previous menu 返回上级菜单" \
-            "01" "ice(意在提升感观和体验,兼顾轻量和可定制性)" \
-            "02" "openbox(快速,轻巧,可扩展)" \
-            "03" "fvwm(强大的、与ICCCM2兼容的WM)" \
-            "04" "awesome(平铺式WM)" \
-            "05" "enlightenment(X11 WM based on EFL)" \
-            "06" "fluxbox(高度可配置,低资源占用)" \
-            "07" "i3(改进的动态平铺WM)" \
-            "08" "xmonad(基于Haskell开发的平铺式WM)" \
-            "09" "9wm(X11 WM inspired by Plan 9's rio)" \
+            "0" "Return to previous menu 返回上级菜单" \
+            "1" "ice(意在提升感观和体验,兼顾轻量和可定制性)" \
+            "2" "openbox(快速,轻巧,可扩展)" \
+            "3" "fvwm(强大的、与ICCCM2兼容的WM)" \
+            "4" "awesome(平铺式WM)" \
+            "5" "enlightenment(X11 WM based on EFL)" \
+            "6" "fluxbox(高度可配置,低资源占用)" \
+            "7" "i3(改进的动态平铺WM)" \
+            "8" "xmonad(基于Haskell开发的平铺式WM)" \
+            "9" "9wm(X11 WM inspired by Plan 9's rio)" \
             "10" "metacity(轻量的GTK+ WM)" \
             "11" "twm(Tab WM)" \
             "12" "aewm(极简主义WM for X11)" \
@@ -598,13 +598,13 @@ window_manager_install() {
     )
     ##################
     case "${BETA_DESKTOP}" in
-    00 | "") standand_desktop_installation ;;
-    01)
+    0 | "") standand_desktop_installation ;;
+    1)
         DEPENDENCY_01='icewm'
         REMOTE_DESKTOP_SESSION_01='icewm-session'
         REMOTE_DESKTOP_SESSION_02='icewm'
         ;;
-    02)
+    2)
         DEPENDENCY_01='openbox'
         REMOTE_DESKTOP_SESSION_01='openbox-session'
         REMOTE_DESKTOP_SESSION_02='openbox'
@@ -612,42 +612,42 @@ window_manager_install() {
         "debian") DEPENDENCY_01='openbox openbox-menu' ;;
         esac
         ;;
-    03)
+    3)
         install_fvwm
         ;;
-    04)
+    4)
         DEPENDENCY_01='awesome'
         REMOTE_DESKTOP_SESSION_01='awesome'
         case "${LINUX_DISTRO}" in
         "debian") DEPENDENCY_01='awesome awesome-extra' ;;
         esac
         ;;
-    05)
+    5)
         DEPENDENCY_01='enlightenment'
         REMOTE_DESKTOP_SESSION_01='enlightenment'
         ;;
-    06)
+    6)
         DEPENDENCY_01='fluxbox'
         REMOTE_DESKTOP_SESSION_01='fluxbox'
         case "${LINUX_DISTRO}" in
         "debian") DEPENDENCY_01='bbmail bbpager bbtime fbpager fluxbox' ;;
         esac
         ;;
-    07)
+    7)
         DEPENDENCY_01='i3'
         REMOTE_DESKTOP_SESSION_01='i3'
         case "${LINUX_DISTRO}" in
         "debian") DEPENDENCY_01='i3 i3-wm i3blocks' ;;
         esac
         ;;
-    08)
+    8)
         DEPENDENCY_01='xmonad'
         REMOTE_DESKTOP_SESSION_01='xmonad'
         case "${LINUX_DISTRO}" in
         "debian") DEPENDENCY_01='xmobar dmenu xmonad' ;;
         esac
         ;;
-    09)
+    9)
         DEPENDENCY_01='9wm'
         REMOTE_DESKTOP_SESSION_01='9wm'
         ;;
@@ -2696,16 +2696,16 @@ ubuntu_gnome_walllpapers() {
     #cat index.html | sort -u | grep 20.04 | grep all.deb | cut -d '=' -f 4 | cut -d '"' -f 2 |cut -d '_' -f 1 | cut -d '-' -f 3
     INSTALL_THEME=$(whiptail --title "UBUNTU壁纸" --menu \
         "Download ubuntu wallpaper-packs" 0 50 0 \
-        "00" "Back返回" \
-        "01" "artful" \
-        "02" "bionic" \
-        "03" "cosmic" \
-        "04" "disco" \
-        "05" "eoan" \
-        "06" "focal" \
-        "07" "karmic" \
-        "08" "lucid" \
-        "09" "maverick" \
+        "0" "Back返回" \
+        "1" "artful" \
+        "2" "bionic" \
+        "3" "cosmic" \
+        "4" "disco" \
+        "5" "eoan" \
+        "6" "focal" \
+        "7" "karmic" \
+        "8" "lucid" \
+        "9" "maverick" \
         "10" "natty" \
         "11" "oneiric" \
         "12" "precise" \
@@ -2722,16 +2722,16 @@ ubuntu_gnome_walllpapers() {
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
-    00 | "") ubuntu_wallpapers_and_photos ;;
-    01) UBUNTU_CODE="artful" ;;
-    02) UBUNTU_CODE="bionic" ;;
-    03) UBUNTU_CODE="cosmic" ;;
-    04) UBUNTU_CODE="disco" ;;
-    05) UBUNTU_CODE="eoan" ;;
-    06) UBUNTU_CODE="focal" ;;
-    07) UBUNTU_CODE="karmic" ;;
-    08) UBUNTU_CODE="lucid" ;;
-    09) UBUNTU_CODE="maverick" ;;
+    0 | "") ubuntu_wallpapers_and_photos ;;
+    1) UBUNTU_CODE="artful" ;;
+    2) UBUNTU_CODE="bionic" ;;
+    3) UBUNTU_CODE="cosmic" ;;
+    4) UBUNTU_CODE="disco" ;;
+    5) UBUNTU_CODE="eoan" ;;
+    6) UBUNTU_CODE="focal" ;;
+    7) UBUNTU_CODE="karmic" ;;
+    8) UBUNTU_CODE="lucid" ;;
+    9) UBUNTU_CODE="maverick" ;;
     10) UBUNTU_CODE="natty" ;;
     11) UBUNTU_CODE="oneiric" ;;
     12) UBUNTU_CODE="precise" ;;
@@ -2825,16 +2825,16 @@ linux_mint_backgrounds() {
     GREP_NAME_02="mint-backgrounds"
     INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
         "Download Mint wallpaper-packs" 0 50 0 \
-        "00" "Back返回" \
-        "01" "ulyana" \
-        "02" "tricia" \
-        "03" "tina" \
-        "04" "tessa" \
-        "05" "tara" \
-        "06" "sylvia" \
-        "07" "sonya" \
-        "08" "serena" \
-        "09" "sarah" \
+        "0" "Back返回" \
+        "1" "ulyana" \
+        "2" "tricia" \
+        "3" "tina" \
+        "4" "tessa" \
+        "5" "tara" \
+        "6" "sylvia" \
+        "7" "sonya" \
+        "8" "serena" \
+        "9" "sarah" \
         "10" "rosa" \
         "11" "retro" \
         "12" "rebecca" \
@@ -2850,16 +2850,16 @@ linux_mint_backgrounds() {
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
-    00 | "") download_wallpapers ;;
-    01) MINT_CODE="ulyana" ;;
-    02) MINT_CODE="tricia" ;;
-    03) MINT_CODE="tina" ;;
-    04) MINT_CODE="tessa" ;;
-    05) MINT_CODE="tara" ;;
-    06) MINT_CODE="sylvia" ;;
-    07) MINT_CODE="sonya" ;;
-    08) MINT_CODE="serena" ;;
-    09) MINT_CODE="sarah" ;;
+    0 | "") download_wallpapers ;;
+    1) MINT_CODE="ulyana" ;;
+    2) MINT_CODE="tricia" ;;
+    3) MINT_CODE="tina" ;;
+    4) MINT_CODE="tessa" ;;
+    5) MINT_CODE="tara" ;;
+    6) MINT_CODE="sylvia" ;;
+    7) MINT_CODE="sonya" ;;
+    8) MINT_CODE="serena" ;;
+    9) MINT_CODE="sarah" ;;
     10) MINT_CODE="rosa" ;;
     11) MINT_CODE="retro" ;;
     12) MINT_CODE="rebecca" ;;

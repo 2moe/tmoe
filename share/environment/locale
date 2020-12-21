@@ -30,18 +30,18 @@ tmoe_locale_menu() {
 			--menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
 			"0" "🌚 Back 返回" \
 			"00" "Edit manually手动编辑" \
-			"01" "af_ZA.UTF-8 Afrikaans_South Africa" \
-			"02" "sq_AL.UTF-8 Albanian_Albania" \
-			"03" "ar_SA.UTF-8 Arabic_Saudi Arabia" \
-			"04" "eu_ES.UTF-8 Basque_Spain" \
-			"05" "be_BY.UTF-8 Belarusian_Belarus" \
-			"06" "bs_BA.UTF-8 Bosnian (Latin)" \
-			"07" "bg_BG.UTF-8 Bulgarian_Bulgaria" \
-			"08" "ca_ES.UTF-8 Catalan_Spain" \
-			"09" "hr_HR.UTF-8 Croatian_Croatia" \
-			"10" "$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d) Chinese_China中国" \
-			"11" "zh_TW.UTF-8 Chinese_Taiwan臺灣" \
-			"12" "cs_CZ.UTF-8 Czech_Czech Republic" \
+			"1" "af_ZA.UTF-8 Afrikaans_South Africa" \
+			"2" "sq_AL.UTF-8 Albanian_Albania" \
+			"3" "ar_SA.UTF-8 Arabic_Saudi Arabia" \
+			"4" "eu_ES.UTF-8 Basque_Spain" \
+			"5" "be_BY.UTF-8 Belarusian_Belarus" \
+			"6" "bs_BA.UTF-8 Bosnian (Latin)" \
+			"7" "bg_BG.UTF-8 Bulgarian_Bulgaria" \
+			"8" "ca_ES.UTF-8 Catalan_Spain" \
+			"9" "cs_CZ.UTF-8 Czech_Czech Republic" \
+			"10" "hr_HR.UTF-8 Croatian_Croatia" \
+			"11" "$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d) Chinese_China中国" \
+			"12" "zh_TW.UTF-8 Chinese_Taiwan臺灣" \
 			"13" "da_DK.UTF-8 Danish_Denmark" \
 			"14" "nl_NL.UTF-8 Dutch_Netherlands" \
 			"15" "en_US.UTF-8 English_America" \
@@ -100,18 +100,18 @@ tmoe_locale_menu() {
 	case "${CONTAINER_LOCALE}" in
 	0 | "") tmoe_manager_main_menu ;;
 	00) edit_tmoe_locale_file_manually ;;
-	01) TMOE_LANG='af_ZA.UTF-8' ;;
-	02) TMOE_LANG='sq_AL.UTF-8' ;;
-	03) TMOE_LANG='ar_SA.UTF-8' ;;
-	04) TMOE_LANG='eu_ES.UTF-8' ;;
-	05) TMOE_LANG='be_BY.UTF-8' ;;
-	06) TMOE_LANG='bs_BA.UTF-8' ;;
-	07) TMOE_LANG='bg_BG.UTF-8' ;;
-	08) TMOE_LANG='ca_ES.UTF-8' ;;
-	09) TMOE_LANG='hr_HR.UTF-8' ;;
-	10) TMOE_LANG="$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d)" ;;
-	11) TMOE_LANG='zh_TW.UTF-8' ;;
-	12) TMOE_LANG='cs_CZ.UTF-8' ;;
+	1) TMOE_LANG='af_ZA.UTF-8' ;;
+	2) TMOE_LANG='sq_AL.UTF-8' ;;
+	3) TMOE_LANG='ar_SA.UTF-8' ;;
+	4) TMOE_LANG='eu_ES.UTF-8' ;;
+	5) TMOE_LANG='be_BY.UTF-8' ;;
+	6) TMOE_LANG='bs_BA.UTF-8' ;;
+	7) TMOE_LANG='bg_BG.UTF-8' ;;
+	8) TMOE_LANG='ca_ES.UTF-8' ;;
+	9) TMOE_LANG='cs_CZ.UTF-8' ;;
+	10) TMOE_LANG='hr_HR.UTF-8' ;;
+	11) TMOE_LANG="$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d)" ;;
+	12) TMOE_LANG='zh_TW.UTF-8' ;;
 	13) TMOE_LANG='da_DK.UTF-8' ;;
 	14) TMOE_LANG='nl_NL.UTF-8' ;;
 	15) TMOE_LANG='en_US.UTF-8' ;;

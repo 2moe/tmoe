@@ -361,18 +361,18 @@ sbin_init_systemd_docker_list() {
     CONTAINER_NAME=''
     DOCKER_MANAGEMENT_MENU='01'
     SELECTED_GNU_LINUX=$(whiptail --title "DOCKER IMAGES" --menu "Which distribution image do you want to pull? \n您想要拉取哪个GNU/Linux发行版的镜像?" 0 50 0 \
-        "00" "Return to previous menu 返回上级菜单" \
-        "01" "👒 fedora:红帽社区版,新技术试验场" \
-        "02" "centos(基于红帽的社区企业操作系统)" \
+        "0" "Return to previous menu 返回上级菜单" \
+        "1" "👒 fedora:红帽社区版,新技术试验场" \
+        "2" "centos(基于红帽的社区企业操作系统)" \
         3>&1 1>&2 2>&3)
     #############
     case ${SELECTED_GNU_LINUX} in
-    00 | "") tmoe_docker_menu ;;
-    01)
+    0 | "") tmoe_docker_menu ;;
+    1)
         DOCKER_TAG_02='rawhide'
         DOCKER_NAME='fedora'
         ;;
-    02)
+    2)
         DOCKER_TAG_01='latest'
         DOCKER_TAG_02='7'
         DOCKER_NAME='centos'
@@ -415,16 +415,16 @@ choose_gnu_linux_docker_images() {
     CONTAINER_NAME=''
     DOCKER_MANAGEMENT_MENU='01'
     SELECTED_GNU_LINUX=$(whiptail --title "DOCKER IMAGES" --menu "Which distribution image do you want to pull? \n您想要拉取哪个GNU/Linux发行版的镜像?" 0 50 0 \
-        "00" "Return to previous menu 返回上级菜单" \
-        "01" "🏔️ alpine:非glibc的精简系统" \
-        "02" "🍥 Debian:最早的发行版之一" \
-        "03" "🍛 Ubuntu:我的存在是因為大家的存在" \
-        "04" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-        "05" "arch:系统设计以KISS为总体指导原则" \
-        "06" "👒 fedora:红帽社区版,新技术试验场" \
-        "07" "centos(基于红帽的社区企业操作系统)" \
-        "08" "opensuse tumbleweed(小蜥蜴风滚草)" \
-        "09" "gentoo(追求极限配置和极高自由,stage3-amd64)" \
+        "0" "Return to previous menu 返回上级菜单" \
+        "1" "🏔️ alpine:非glibc的精简系统" \
+        "2" "🍥 Debian:最早的发行版之一" \
+        "3" "🍛 Ubuntu:我的存在是因為大家的存在" \
+        "4" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
+        "5" "arch:系统设计以KISS为总体指导原则" \
+        "6" "👒 fedora:红帽社区版,新技术试验场" \
+        "7" "centos(基于红帽的社区企业操作系统)" \
+        "8" "opensuse tumbleweed(小蜥蜴风滚草)" \
+        "9" "gentoo(追求极限配置和极高自由,stage3-amd64)" \
         "10" "clearlinux(intel发行的系统)" \
         "11" "Void(基于xbps包管理器的独立发行版)" \
         "12" "oracle(甲骨文基于红帽发行的系统)" \
@@ -436,21 +436,21 @@ choose_gnu_linux_docker_images() {
         3>&1 1>&2 2>&3)
     #############
     case ${SELECTED_GNU_LINUX} in
-    00 | "") tmoe_docker_menu ;;
-    01)
+    0 | "") tmoe_docker_menu ;;
+    1)
         DOCKER_TAG_02='edge'
         DOCKER_NAME='alpine'
         ;;
-    02)
+    2)
         DOCKER_TAG_01='unstable'
         DOCKER_TAG_02='stable'
         DOCKER_NAME='debian'
         ;;
-    03)
+    3)
         DOCKER_TAG_02='devel'
         DOCKER_NAME='ubuntu'
         ;;
-    04)
+    4)
         CONTAINER_NAME='kali'
         case ${TMOE_QEMU_ARCH} in
         x86_64) kali_docker_amd64 ;;
@@ -468,7 +468,7 @@ choose_gnu_linux_docker_images() {
         esac
         DOCKER_MANAGEMENT_MENU='02'
         ;;
-    05)
+    5)
         CONTAINER_NAME='arch'
         case ${TMOE_QEMU_ARCH} in
         x86_64) arch_docker_amd64 ;;
@@ -483,24 +483,24 @@ choose_gnu_linux_docker_images() {
         *) arch_does_not_support ;;
         esac
         ;;
-    06)
+    6)
         DOCKER_TAG_02='rawhide'
         DOCKER_NAME='fedora'
         ;;
-    07)
+    7)
         DOCKER_TAG_01='latest'
         DOCKER_TAG_02='7'
         DOCKER_NAME='centos'
         CONTAINER_NAME='cent'
         ;;
-    08)
+    8)
         CONTAINER_NAME='suse'
         not_adapted_across_architecture
         DOCKER_NAME='opensuse/tumbleweed'
         DOCKER_NAME_02='opensuse/leap'
         DOCKER_MANAGEMENT_MENU='02'
         ;;
-    09)
+    9)
         CONTAINER_NAME='gentoo'
         case ${TMOE_QEMU_ARCH} in
         x86_64) gentoo_stage3_amd64 ;;
@@ -882,19 +882,19 @@ run_docker_across_architectures() {
         whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             "00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
-            "01" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
-            "02" "arm64v8/aarch64(2020年移动平台主流cpu架构）" \
-            "03" "i386(常见于32位cpu的旧式传统pc)" \
-            "04" "arm32v7/armhf(32位arm架构,支持硬浮点运算)" \
-            "05" "ppc64le(PowerPC,常用于通信、工控、航天国防等领域)" \
-            "06" "s390x(常见于IBM大型机)" \
+            "1" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
+            "2" "arm64v8/aarch64(2020年移动平台主流cpu架构）" \
+            "3" "i386(常见于32位cpu的旧式传统pc)" \
+            "4" "arm32v7/armhf(32位arm架构,支持硬浮点运算)" \
+            "5" "ppc64le(PowerPC,常用于通信、工控、航天国防等领域)" \
+            "6" "s390x(常见于IBM大型机)" \
             3>&1 1>&2 2>&3
     )
     ##############################
     case "${BETA_SYSTEM}" in
     0 | "") tmoe_docker_menu ;;
     00) tmoe_qemu_user_static ;;
-    01)
+    1)
         NEW_TMOE_ARCH='amd64'
         CONTAINER_EXT_NAME='x64'
         case ${TRUE_ARCH_TYPE} in
@@ -902,7 +902,7 @@ run_docker_across_architectures() {
         *) TMOE_QEMU_ARCH="x86_64" ;;
         esac
         ;;
-    02)
+    2)
         NEW_TMOE_ARCH='arm64v8'
         CONTAINER_EXT_NAME='arm64'
         case ${TRUE_ARCH_TYPE} in
@@ -910,7 +910,7 @@ run_docker_across_architectures() {
         *) TMOE_QEMU_ARCH="aarch64" ;;
         esac
         ;;
-    03)
+    3)
         NEW_TMOE_ARCH='i386'
         CONTAINER_EXT_NAME='x86'
         case ${TRUE_ARCH_TYPE} in
@@ -918,7 +918,7 @@ run_docker_across_architectures() {
         *) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
         esac
         ;;
-    04)
+    4)
         NEW_TMOE_ARCH='arm32v7'
         CONTAINER_EXT_NAME='arm'
         case ${TRUE_ARCH_TYPE} in
@@ -926,7 +926,7 @@ run_docker_across_architectures() {
         *) TMOE_QEMU_ARCH="arm" ;;
         esac
         ;;
-    05)
+    5)
         NEW_TMOE_ARCH='ppc64le'
         CONTAINER_EXT_NAME='ppc'
         case ${TRUE_ARCH_TYPE} in
@@ -934,7 +934,7 @@ run_docker_across_architectures() {
         *) TMOE_QEMU_ARCH="ppc64le" ;;
         esac
         ;;
-    06)
+    6)
         NEW_TMOE_ARCH='s390x'
         CONTAINER_EXT_NAME='s390'
         case ${TRUE_ARCH_TYPE} in

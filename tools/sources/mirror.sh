@@ -246,15 +246,15 @@ worldwide_mirror_station() {
             "0" "🌚 Return to previous menu 返回上级菜单" \
             "000" "Generate worldwide source(arch,ubuntu,debian)" \
             "00" "official官方:(debian,ubuntu,kali)" \
-            "01" "Armenia:ftp.am.debian.org" \
-            "02" "Australia:ftp.au.debian.org" \
-            "03" "Austria:ftp.at.debian.org" \
-            "04" "Belarus:ftp.by.debian.org" \
-            "05" "Belgium:ftp.be.debian.org" \
-            "06" "Brazil:ftp.br.debian.org" \
-            "07" "Bulgaria:ftp.bg.debian.org" \
-            "08" "Canada:ftp.ca.debian.org" \
-            "09" "Chile:ftp.cl.debian.org" \
+            "1" "Armenia:ftp.am.debian.org" \
+            "2" "Australia:ftp.au.debian.org" \
+            "3" "Austria:ftp.at.debian.org" \
+            "4" "Belarus:ftp.by.debian.org" \
+            "5" "Belgium:ftp.be.debian.org" \
+            "6" "Brazil:ftp.br.debian.org" \
+            "7" "Bulgaria:ftp.bg.debian.org" \
+            "8" "Canada:ftp.ca.debian.org" \
+            "9" "Chile:ftp.cl.debian.org" \
             "10" "清华:ftp2.cn.debian.org" \
             "11" "中科大:ftp.cn.debian.org" \
             "12" "Croatia:ftp.hr.debian.org" \
@@ -317,15 +317,15 @@ worldwide_mirror_station() {
             ;;
         esac
         ;;
-    01) SOURCE_MIRROR_STATION='ftp.am.debian.org' ;;
-    02) SOURCE_MIRROR_STATION='ftp.au.debian.org' ;;
-    03) SOURCE_MIRROR_STATION='ftp.at.debian.org' ;;
-    04) SOURCE_MIRROR_STATION='ftp.by.debian.org' ;;
-    05) SOURCE_MIRROR_STATION='ftp.be.debian.org' ;;
-    06) SOURCE_MIRROR_STATION='ftp.br.debian.org' ;;
-    07) SOURCE_MIRROR_STATION='ftp.bg.debian.org' ;;
-    08) SOURCE_MIRROR_STATION='ftp.ca.debian.org' ;;
-    09) SOURCE_MIRROR_STATION='ftp.cl.debian.org' ;;
+    1) SOURCE_MIRROR_STATION='ftp.am.debian.org' ;;
+    2) SOURCE_MIRROR_STATION='ftp.au.debian.org' ;;
+    3) SOURCE_MIRROR_STATION='ftp.at.debian.org' ;;
+    4) SOURCE_MIRROR_STATION='ftp.by.debian.org' ;;
+    5) SOURCE_MIRROR_STATION='ftp.be.debian.org' ;;
+    6) SOURCE_MIRROR_STATION='ftp.br.debian.org' ;;
+    7) SOURCE_MIRROR_STATION='ftp.bg.debian.org' ;;
+    8) SOURCE_MIRROR_STATION='ftp.ca.debian.org' ;;
+    9) SOURCE_MIRROR_STATION='ftp.cl.debian.org' ;;
     10) SOURCE_MIRROR_STATION='ftp2.cn.debian.org' ;;
     11) SOURCE_MIRROR_STATION='ftp.cn.debian.org' ;;
     12) SOURCE_MIRROR_STATION='ftp.hr.debian.org' ;;

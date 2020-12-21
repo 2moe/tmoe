@@ -6,15 +6,15 @@ tmoe_terminal_main_menu() {
     TMOE_APP=$(whiptail --title "TERMINAL APP" --menu \
         "Which software do you want to install？" 0 50 0 \
         "0" "🌚 Return to previous menu 返回上级菜单" \
-        "01" "cool-retro-term(穿梭时光,感受复古风,领略CRT的魅力)" \
-        "02" "Terminology(酷炫终端,支持预览图片和视频)" \
-        "03" "Terminator(支持分屏的终端)" \
-        "04" "Yakuake(基于KDE Konsole技术的下拉式终端)" \
-        "05" "Guake(GNOME下拉式终端)" \
-        "06" "Tilda(雷神之锤风格的下拉式终端)" \
-        "07" "Konsole(KDE默认终端)" \
-        "08" "Xfce4-Terminal(xfce默认终端)" \
-        "09" "Gnome-Terminal(gnome默认终端)" \
+        "1" "cool-retro-term(穿梭时光,感受复古风,领略CRT的魅力)" \
+        "2" "Terminology(酷炫终端,支持预览图片和视频)" \
+        "3" "Terminator(支持分屏的终端)" \
+        "4" "Yakuake(基于KDE Konsole技术的下拉式终端)" \
+        "5" "Guake(GNOME下拉式终端)" \
+        "6" "Tilda(雷神之锤风格的下拉式终端)" \
+        "7" "Konsole(KDE默认终端)" \
+        "8" "Xfce4-Terminal(xfce默认终端)" \
+        "9" "Gnome-Terminal(gnome默认终端)" \
         "10" "LXTerminal(lxde默认终端)" \
         "11" "Mate-Terminal(mate默认终端)" \
         "12" "LilyTerm(基于libvte,追求轻量和快速)" \
@@ -28,24 +28,24 @@ tmoe_terminal_main_menu() {
     #Terminus (x64,超唯美现代化终端)
     case "${TMOE_APP}" in
     0 | "") beta_features ;;
-    01)
+    1)
         DEPENDENCY_02="cool-retro-term"
         printf "%s\n" "${YELLOW}https://github.com/Swordfish90/cool-retro-term${RESET}"
         ;;
-    02)
+    2)
         DEPENDENCY_02="terminology"
         printf "%s\n" "tycat命令预览图片和视频,tysend复制文件,tyls显示文件列表"
         ;;
-    03)
+    3)
         DEPENDENCY_02="terminator"
         printf "%s\n" "按Ctrl+Shift+O或E进行切割"
         ;;
-    04) DEPENDENCY_02="yakuake" ;;
-    05) DEPENDENCY_02="guake" ;;
-    06) DEPENDENCY_02="tilda" ;;
-    07) DEPENDENCY_02="konsole" ;;
-    08) DEPENDENCY_02="xfce4-terminal" ;;
-    09) DEPENDENCY_02="gnome-terminal" ;;
+    4) DEPENDENCY_02="yakuake" ;;
+    5) DEPENDENCY_02="guake" ;;
+    6) DEPENDENCY_02="tilda" ;;
+    7) DEPENDENCY_02="konsole" ;;
+    8) DEPENDENCY_02="xfce4-terminal" ;;
+    9) DEPENDENCY_02="gnome-terminal" ;;
     10) DEPENDENCY_02="lxterminal" ;;
     11) DEPENDENCY_02="mate-terminal" ;;
     12) DEPENDENCY_02="lilyterm" ;;
