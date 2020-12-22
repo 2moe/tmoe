@@ -4668,12 +4668,12 @@ first_configure_startvnc() {
         #if grep -q '172..*1' "/etc/resolv.conf"; then
         if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-            WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+            WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
             export PULSE_SERVER=${WSL2IP}
             export DISPLAY=${WSL2IP}:0
             printf "%s\n" "已将您的X和音频服务ip修改为${WSL2IP}"
         else
-            printf "%s\n" "${YELLOW}检测到您使用的是WSL1(第一代win10的Linux子系统)${RESET}"
+            printf "%s\n" "${YELLOW}检测到您使用的是WSL1(初代win10的Linux子系统)${RESET}"
             printf "%s\n" "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
             printf "%s\n" "您也可以手动输startvnc来启动vnc服务"
         fi
