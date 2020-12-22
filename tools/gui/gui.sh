@@ -4693,14 +4693,18 @@ first_configure_startvnc() {
             WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
             export PULSE_SERVER=${WSL2IP}
             export DISPLAY=${WSL2IP}:0
-            printf "%s\n" "已将您的X和音频服务ip修改为${WSL2IP}"
+            printf "%s\n" "已将您的X和音频服务ip修改为${YELLOW}${WSL2IP}${RESET}"
+            printf "%s\n" "You are using WSL2,and your host ip is ${YELLOW}${WSL2IP}${RESET}"
         else
             printf "%s\n" "${YELLOW}检测到您使用的是WSL1(初代win10的Linux子系统)${RESET}"
             printf "%s\n" "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
             printf "%s\n" "您也可以手动输startvnc来启动vnc服务"
+            printf "%s\n" "You are using${YELLOW}WSL1${RESET}."
+            printf "%s\n" "You can type ${GREEN}startxsdl${RESET} to start windows xserver and linux xclient."
         fi
         cd ./VcXsrv
         printf "%s\n" "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
+        printf "%s\n" "You need to allow pulseaudio to pass through the defender firewall, otherwise you will not be able to use the local audio service."
         if [ ! -e "Firewall-pulseaudio.png" ]; then
             aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
         fi
@@ -4713,9 +4717,10 @@ first_configure_startvnc() {
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverhighDPI.png" 2>/dev/null
         printf "%s\n" "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
         printf "%s\n" "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+        printf "%s\n" "You can right-click vcxsrv.exe and modify the high-dpi setting."
         #printf "%s\n" "${YELLOW}按回车键启动X${RESET}"
         #printf "%s\n" "${YELLOW}Press enter to startx${RESET}"
-        printf '%s\n' '运行过程中，您可以按Ctrl+C终止前台进程，输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程'
+        printf '%s\n' '运行过程中，您可以输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程'
         printf '%s\n' 'You can type pkill -u $(whoami) to kill all processes.'
         #上面那行必须要单引号
         #read
@@ -4729,6 +4734,7 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
+    printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc, ${PURPLE}stopvnc${RESET}"
     press_enter_to_continue
     printf '%s\n' '------------------------'
     printf '%s\n' '三：'

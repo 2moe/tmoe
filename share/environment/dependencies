@@ -5,7 +5,7 @@ check_zstd() {
 		printf "正在${YELLOW}安装${GREEN}zstd${RESET}及其${BLUE}依赖...${RESET}\n"
 		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
 		${TMOE_INSTALLATION_COMMAND} zstd
-		printf "%s\n" "如需卸载，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}zstd${RESET}"
+		printf "%s\n" "如需卸载，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}zstd${RESET}"
 	fi
 }
 ###################
