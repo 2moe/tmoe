@@ -4796,6 +4796,7 @@ do_you_want_to_configure_novnc() {
     printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
     printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01
     printf "%s\n" "${YELLOW}*°▽°* ${RESET}You are a ${BOLD}${BLUE}VNC Master${RESET}！"
+    printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
 }
 ################
 set_vnc_passwd() {
