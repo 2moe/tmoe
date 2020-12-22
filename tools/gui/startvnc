@@ -70,10 +70,19 @@ tmoe_vnc_preconfigure() {
     if [ ! -s "${TMOE_VNC_PASSWD_FILE}" ]; then
         sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
-            cd ${TMOE_TOOL_DIR}
-            git reset --hard origin/master
-            git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-            ./tool.sh -passwd
+            cd ${TMOE_GIT_DIR}
+            case $(id -u) in
+            0)
+                git reset --hard origin/master
+                git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+                ./tool.sh -passwd
+                ;;
+            *)
+                sudo git reset --hard origin/master
+                sudo git pull --rebase --stat origin master --allow-unrelated-histories || sudo git rebase --skip
+                sudo -E bash ./tool.sh -passwd
+                ;;
+            esac
         fi
     fi
     fix_vnc_permissions
