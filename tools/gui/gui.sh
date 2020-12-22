@@ -4660,7 +4660,7 @@ first_configure_startvnc() {
 		若您的音频服务端为${BLUE}Android系统${RESET}，请在图形界面启动完成后，新建一个termux会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
 		------------------------
 		若您的音频服务端为${BLUE}windows10系统${RESET}，则请手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'。
-        注：您无需修改PULSE_SERVER变量,WSL2的音频服务地址将根据NAT网关自动生成。
+		注：您无需修改PULSE_SERVER变量,WSL2的音频服务地址将根据NAT网关自动生成。
 		------------------------
 		若您使用的是${BLUE}Android版${RESET}${YELLOW}Linux Deploy${RESET}或${YELLOW}Userland${RESET}，则您可以使用本脚本${RED}覆盖安装${RESET}图形界面。之后,您可以在${BLUE}Termux${RESET}上输${GREEN}debian-i${RESET}运行Tmoe-linux manager,查看${YELLOW}FAQ${RESET}并配置Linux Deploy的${BLUE}音频服务启动脚本。${RESET}
 		------------------------
@@ -4724,6 +4724,7 @@ first_configure_startvnc() {
         #startxsdl &
     fi
     printf "%s\n" "若您的宿主机为${YELLOW}Android${RESET},则在${PURPLE}termux原系统${RESET}下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Realvnc viewer${RESET}客户端和容器的VNC服务端。注：需手动连接。"
+
     printf "%s\n" "若您的宿主机为${YELLOW}Win10${RESET},则在${PURPLE}WSL2${RESET}(非容器环境)下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Tigervnc viewer(win_x64)${RESET}客户端和tigervnc服务端，并自动连接。此外，还将启动windows版powershell,并调用pulseaudio(win_x86)音频服务+进程守护脚本。"
     printf '%s\n' '------------------------'
     printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
