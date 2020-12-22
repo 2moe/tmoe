@@ -148,6 +148,10 @@ cat <<-EOF
 			-------------------
 			Some fonts do not support powerlevel10k special characters.
 			-------------------
+			输${GREEN}novnc${RESET}启动${BLUE}novnc${RESET},novnc需要使用浏览器来连接。(o゜▽゜)o☆
+			-------------------
+			You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
+			------------------   
 EOF
 ############################
 printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
@@ -232,18 +236,20 @@ cat <<-EOF
 	現在可公開的情報:
 	${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
 
+			输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
+			-------------------
+			You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
+			------------------
 			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}VNC服务端${RESET}。
 			------------------
 			输${GREEN}startxsdl${RESET}将${RED}启动${RESET}安卓版${YELLOW}XSDL${RESET}，并于9秒后自动启动${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}x11${RESET}。
+			You can also type ${GREEN}startxsdl${RESET} to ${YELLOW}start ${BLUE}xclient & server${RESET}.
 			-------------------
 			您也可以在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}startvnc${RESET}来单独启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
 			-------------------
 			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 			-------------------
-			输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
-			-------------------
-			You can also type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server.${RESET}
-			------------------
+
 	${BOLD}小提示06${RESET}:
 
 			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}tmoe t${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。

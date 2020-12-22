@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3727,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3728,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -544,7 +544,7 @@ check_dependencies() {
 	if [ ! $(command -v zstd) ]; then
 		#arch无需额外安装zstd
 		case "${LINUX_DISTRO}" in
-		debian | redhat) DEPENDENCIES="${DEPENDENCIES} zstd" ;;
+		debian | redhat | alpine) DEPENDENCIES="${DEPENDENCIES} zstd" ;;
 		esac
 	fi
 	##############
