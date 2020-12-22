@@ -15,11 +15,11 @@ NOVNC_STARTUP_SCRIPT="${NOVNC_UTILS_DIR}/launch.sh"
 NOVNC_PORT="36080"
 if [[ -n $(command -v Xvnc) || -n $(command -v vncsession) ]]; then
 	STARTVNC_COMMAND='startvnc'
-	CURRENT_PORT=$(cat $(command -v ${STARTVNC_COMMAND}) | grep '^TMOE_VNC_DISPLAY_NUMBER=' | head -n 1 | awk -F '=' '{print $2}')
+	CURRENT_PORT=$(grep '^TMOE_VNC_DISPLAY_NUMBER=' $(command -v ${STARTVNC_COMMAND}) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 	CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 else
 	STARTVNC_COMMAND='startx11vnc'
-	CURRENT_VNC_PORT=$(cat $(command -v ${TCP_PORT_FOR_RFB_PROTOCOL}) | grep '^TMOE_VNC_DISPLAY_NUMBER=' | head -n 1 | awk -F '=' '{print $2}')
+	CURRENT_VNC_PORT=$(grep '^TCP_PORT_FOR_RFB_PROTOCOL=' $(command -v ${STARTVNC_COMMAND}) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 fi
 NOVNC_ADDR="localhost:${CURRENT_VNC_PORT}"
 NOVNC_WEB_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"

@@ -31,7 +31,7 @@ if [ -e "${TMOE_GIT_DIR}/.git" ]; then
 fi
 [[ $(command -v tmoe) ]] || ln -sf ${TMOE_SHARE_DIR}/app/tmoe ${PREFIX}/bin
 for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/debian-i ${TMOE_SHARE_DIR}/container/debian/lnk-menu ${TMOE_SHARE_DIR}/container/debian/debian; do
-	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
+	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i} 2>/dev/null
 done
 printf "%s\n" '(o゜▽゜)o☆  Thank you for using Tmoe-linux manager.'
 printf "${YELLOW}%s\n${RESET}" "更新完成，按回车键返回。"

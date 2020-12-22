@@ -79,6 +79,7 @@ tmoe_main() {
 	vnc) EXEC_PROGRAM='startvnc' ;;
 	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	no | novnc) EXEC_PROGRAM='novnc' ;;
 	*) DISTRO_NAME="$2" ;;
 	esac
 	case "$3" in
@@ -105,6 +106,7 @@ tmoe_main() {
 	v | vnc) EXEC_PROGRAM='tigervnc' ;;
 	xs | xsdl | xserver) EXEC_PROGRAM='xserver' ;;
 	x11 | x11vnc) EXEC_PROGRAM='x11vnc' ;;
+	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
@@ -125,6 +127,7 @@ tmoe_main() {
 	v*) EXEC_PROGRAM='startvnc' ;;
 	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
@@ -133,6 +136,7 @@ tmoe_main() {
 	v*) EXEC_PROGRAM='startvnc' ;;
 	x | xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
@@ -209,6 +213,18 @@ start_tmoe_container() {
 	if [[ -n ${EXEC_PROGRAM} ]]; then
 		case ${EXEC_PROGRAM} in
 		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
+		no | novnc)
+			NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+			NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
+			printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
+			if [[ $(command -v am) ]]; then
+				am start -a android.intent.action.VIEW -d "${NOVNC_ADDR}" 2>/dev/null
+			elif [[ $(command -v xdg-open) ]]; then
+				xdg-open ${NOVNC_ADDR} 2>/dev/null
+			elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
+				/mnt/c/WINDOWS/system32/cmd.exe "start ${NOVNC_ADDR}"
+			fi
+			;;
 		startxsdl)
 			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 			printf "%s\n" "Please wait 9s."

@@ -24,7 +24,7 @@ gui_main() {
 #############################
 modify_other_vnc_conf() {
     #15 60 7
-    MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Which configuration do you want to modify?" 0 0 0 \
+    MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Type startvnc to start vncserver,输入startvnc启动vnc服务" 0 0 0 \
         "1" "Pulseaudio server address音频地址" \
         "2" "VNC password密码" \
         "3" "switch tiger/tightvnc切换服务端" \
@@ -3341,12 +3341,13 @@ modify_remote_desktop_config() {
     RETURN_TO_WHERE='modify_remote_desktop_config'
     RETURN_TO_TMOE_MENU_01='modify_remote_desktop_config'
     ##################
-    REMOTE_DESKTOP=$(whiptail --title "远程桌面" --menu \
+    REMOTE_DESKTOP=$(whiptail --title "REMOTE DESKTOP" --menu \
         "您想要修改哪个远程桌面的配置？\nWhich remote desktop config do you want to modify?" 0 50 0 \
         "1" "🐯 tightvnc/tigervnc:应用广泛" \
         "2" "⚔️ x11vnc:通过VNC来连接真实X桌面" \
-        "3" "⚒️ X服务:(XSDL/VcXsrv)" \
-        "4" "⚛️ XRDP:基于microsoft开发的rdp协议" \
+        "3" "⚒️ Xserver:(XSDL/VcXsrv)" \
+        "4" "novnc(HTML5 vnc client)" \
+        "5" "⚛️ XRDP:基于microsoft开发的rdp协议" \
         "0" "Back to the main menu 返回主菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -3355,7 +3356,8 @@ modify_remote_desktop_config() {
     1) modify_vnc_conf ;;
     2) configure_x11vnc ;;
     3) modify_xsdl_conf ;;
-    4) modify_xrdp_conf ;;
+    4) modify_novnc_conf ;;
+    5) modify_xrdp_conf ;;
     esac
     #######################
     #  "5" "Wayland:(测试版,取代X Window)" \    5) modify_xwayland_conf ;;
@@ -3363,17 +3365,23 @@ modify_remote_desktop_config() {
     modify_remote_desktop_config
 }
 #########################
+modify_novnc_conf() {
+    source ${TMOE_TOOL_DIR}/gui/configure_novnc
+}
+#################
 configure_x11vnc() {
+    #17 50 8
     TMOE_OPTION=$(
-        whiptail --title "CONFIGURE x11vnc" --menu "您想要修改哪项配置？Which configuration do you want to modify?" 17 50 8 \
+        whiptail --title "CONFIGURE x11vnc" --menu "Type startx11vnc to start vncserver,输入startx11vnc启动x11vnc服务" 0 0 0 \
             "1" "one-key configure初始化一键配置" \
             "2" "pulse_server音频服务" \
             "3" "resolution分辨率" \
-            "4" "修改startx11vnc启动脚本" \
-            "5" "remove 卸载/移除" \
-            "6" "readme 进程管理说明" \
-            "7" "password 密码" \
-            "8" "read doc阅读文档" \
+            "4" "port端口" \
+            "5" "修改startx11vnc启动脚本" \
+            "6" "remove 卸载/移除" \
+            "7" "readme 进程管理说明" \
+            "8" "password 密码" \
+            "9" "read doc阅读文档" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -3383,11 +3391,12 @@ configure_x11vnc() {
     1) x11vnc_onekey ;;
     2) x11vnc_pulse_server ;;
     3) x11vnc_resolution ;;
-    4) nano /usr/local/bin/startx11vnc ;;
-    5) remove_X11vnc ;;
-    6) x11vnc_process_readme ;;
-    7) x11vncpasswd ;;
-    8) x11vnc_doc ;;
+    4) x11vnc_port ;;
+    5) nano /usr/local/bin/startx11vnc ;;
+    6) remove_X11vnc ;;
+    7) x11vnc_process_readme ;;
+    8) x11vncpasswd ;;
+    9) x11vnc_doc ;;
     esac
     ########################################
     press_enter_to_return
@@ -3445,7 +3454,6 @@ x11vnc_warning() {
 			Do you want to configure x11vnc? 
 			您是否需要配置${BLUE}X11VNC${RESET}服务？
 	EOF
-
     RETURN_TO_WHERE='configure_x11vnc'
     do_you_want_to_continue
     #stopvnc 2>/dev/null
@@ -3526,6 +3534,30 @@ x11vnc_pulse_server() {
     fi
 }
 ##################
+check_x11vnc_port() {
+    CURRENT_VAULE=$(grep '^TCP_PORT_FOR_RFB_PROTOCOL=' $(command -v startx11vnc) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+}
+#############
+x11vnc_port() {
+    check_x11vnc_port
+    TARGET=$(whiptail --inputbox "Please type the x11vnc tcp port,the default is 5901,current port is ${CURRENT_VAULE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
+    if [ "$?" != "0" ]; then
+        configure_x11vnc
+    elif [ -z "${TARGET}" ]; then
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
+        check_x11vnc_port
+        printf "%s\n" "Current port is ${BLUE}${CURRENT_VAULE}${RESET}"
+    else
+        sed -i -E "s@^(TCP_PORT_FOR_RFB_PROTOCOL)=.*@\1=${TARGET}@" "$(command -v startx11vnc)"
+        printf '%s\n' 'Your current port has been modified.'
+        #printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        check_x11vnc_port
+        printf "%s\n" "Current port is ${BLUE}${CURRENT_VAULE}${RESET}"
+        printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to restart it."
+    fi
+}
+#################
 x11vnc_resolution() {
     TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
@@ -3558,7 +3590,7 @@ modify_vnc_conf() {
         do_you_want_to_continue
     fi
     check_vnc_resolution
-    if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
+    if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "Which configuration do you want to modify?" 9 50); then
         TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为${CURRENT_VNC_RESOLUTION}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
         if [ "$?" != "0" ]; then
             modify_other_vnc_conf
@@ -3594,7 +3626,7 @@ modify_xsdl_conf() {
     else
         TMOE_XSDL_SCRIPT_PATH='/usr/local/bin/startqemu'
     fi
-    XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Which configuration do you want to modify?" 0 50 0 \
+    XSDL_XSERVER=$(whiptail --title "Modify x server conf" --menu "Type startxsdl to start x11.输startxsdl启动x11" 0 50 0 \
         "1" "Pulse server port音频端口" \
         "2" "Display number显示编号" \
         "3" "ip address" \
@@ -3971,7 +4003,7 @@ configure_xrdp() {
     [[ -e /etc/xrdp/ ]] || mkdir -p /etc/xrdp
     cd /etc/xrdp/
     TMOE_OPTION=$(
-        whiptail --title "CONFIGURE XRDP" --menu "您想要修改哪项配置？\nWhich configuration do you want to modify?" 0 0 0 \
+        whiptail --title "CONFIGURE XRDP" --menu "Type service xrdp start to start it" 0 0 0 \
             "1" "One-key conf 初始化一键配置" \
             "2" "指定xrdp桌面环境" \
             "3" "xrdp port 修改xrdp端口" \
@@ -4735,6 +4767,7 @@ first_configure_startvnc() {
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
     printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc${RESET} & ${PURPLE}stopvnc${RESET}"
     press_enter_to_continue
+    printf '%s\n' "注：${GREEN}配置完${RESET}本工具所支持的所有VNC,将${BLUE}解锁成就*°▽°*${RESET}"
     printf '%s\n' '------------------------'
     printf '%s\n' '三：'
     x11vnc_warning
@@ -4759,11 +4792,14 @@ do_you_want_to_configure_novnc() {
     [[ ! -e novnc ]] || rm -f novnc 2>/dev/null
     cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
     printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
-    printf "%s\n" "Congratulations！恭喜您解锁新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
+    printf "%s\n" "Congratulations！恭喜您获得新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
+    printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
+    printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01
+    printf "%s\n" "${YELLOW}*°▽°* ${RESET}You are a ${BOLD}${BLUE}VNC Master${RESET}！"
 }
 ################
 set_vnc_passwd() {
-    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\nPlease enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         printf "%s\n" "请重新输入密码"
         printf "%s\n" "Please enter the password again."

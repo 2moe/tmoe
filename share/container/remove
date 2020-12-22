@@ -104,17 +104,17 @@ remove_gnu_linux_container() {
 			;;
 		esac
 		rm -rfv "${DEBIAN_CHROOT}" || sudo rm -rfv "${DEBIAN_CHROOT}"
-		printf "%s\n" "如需删除（通用的）启动脚本，则请手动输${RED}rm -f${RESET} ${BLUE}${PREFIX}/bin/debian ${BLUE}${PREFIX}/bin/debian-i ${BLUE}${PREFIX}/bin/tmoe ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl${RESET}"
+		printf "%s\n" "如需删除（通用的）启动脚本，则请手动输${RED}rm -fv ${BLUE}${PREFIX}/bin/debian ${PREFIX}/bin/novnc ${PREFIX}/bin/debian-i ${PREFIX}/bin/tmoe ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startxsdl${RESET}"
 		sed -i '/alias debian=/d ; /alias debian-rm=/d' ${PREFIX}/etc/profile 2>/dev/null
 		source profile >/dev/null 2>&1
-		printf '%s\n' 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
-		printf '%s\n' '移除完成，如需卸载aria2,请手动输apt remove aria2'
+		#printf '%s\n' 'The container has been removed. If you want to uninstall aria2, enter "apt remove aria2" or "apt purge aria2"'
+		#printf '%s\n' '移除完成，如需卸载aria2,请手动输apt remove aria2'
 		printf "%s\n" "Deleted已删除"
 		;;
 	n* | N*) printf "%s\n" "skipped." ;;
 	*) printf "%s\n" "Invalid choice. skipped." ;;
 	esac
-	printf "%s\n" "若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i"
+	#printf "%s\n" "若需删除tmoe-linux管理器，则请输rm -f ${PREFIX}/bin/debian-i"
 	printf '%s\n' 'If you want to reinstall, it is not recommended to remove the image file.'
 	printf "%s\n" "${YELLOW}若您需要重装容器，则不建议删除镜像文件。${RESET} "
 	cd ${ROOTFS_DIR}

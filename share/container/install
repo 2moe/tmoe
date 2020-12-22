@@ -587,6 +587,22 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 ENDOFX11VNC
 #ln -s ${PREFIX}/bin/startx11vnc ${HOME}/vnc 2>/dev/null
 ###############
+cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
+	#!/usr/bin/env bash
+	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start &>/dev/null
+	vnc_warning() {
+		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动novnc，若启动失败，则请输" "tmoe t"
+		${PREFIX}/bin/tmoe pr novnc
+	}
+	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+		${PREFIX}/bin/tmoe ch novnc
+	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+		${PREFIX}/bin/tmoe pr novnc
+	else
+		vnc_warning
+	fi
+ENDOFNOVNC
+###############
 #此處僅適配Android,故shebang爲termux目錄
 cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
 	#!/data/data/com.termux/files/usr/bin/env bash
@@ -615,13 +631,12 @@ ENDOFXSDL
 #############
 printf '%s\n' 'Giving startup script execution permission'
 printf "%s\n" "正在赋予启动脚本执行权限"
-
 cd ${PREFIX}/bin
 ln -sf ${TMOE_SHARE_DIR}/app/tmoe ./
 if [ ! $(command -v debian-i) ]; then
 	ln -sf ${TMOE_SHARE_DIR}/manager.sh ./debian-i
 fi
-for i in debian startvnc stopvnc debian-i startxsdl startx11vnc tmoe; do
+for i in debian startvnc stopvnc debian-i startxsdl startx11vnc tmoe novnc; do
 	chmod -v a+x ${i}
 	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
 done
@@ -741,7 +756,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 		git fetch --depth=1
 		git reset --hard origin/master
 		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-		${LOCAL_BIN_DIR}/debian-i passwd
+		./tool.sh -passwd
 	fi
 	#########
 	notes_of_android_xsdl() {
@@ -760,7 +775,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	#######
 	check_vnc_file(){
 			cd ${HOME}/.vnc
-		    for i in startvnc startx11vnc startxsdl; do
+		    for i in novnc startvnc startx11vnc startxsdl; do
 	        if [ -f ${i} ]; then
 	            rm ${i}
 	            case ${i} in
@@ -770,7 +785,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	            if [ -f ${LOCAL_BIN_DIR}/${i} ]; then
 					cd ${HOME}
 	                ${LOCAL_BIN_DIR}/${i}
-					printf "%s\n" "已为您启动vnc服务 Vnc server has been started, enjoy it ！"
+					printf "%s\n" "Remote desktop server has been started, enjoy it ！"
 	            else
 	                vnc_warning
 	            fi

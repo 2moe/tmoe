@@ -137,7 +137,7 @@ backup_gnu_linux_container() {
 	BACKUP_FOLDER="${DEBIAN_CHROOT}"
 	#絕對路徑。且不包含tmoe,debian-i和GIT_DIR
 	#${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
-	for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/debian ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startx11vnc ${CONFIG_FOLDER} ${HOME}/容器选择菜单.sh ${HOME}/天萌-コンテナ-メニュー.sh ${HOME}/TMOE-CONTAINER-MENU.sh; do
+	for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/novnc ${PREFIX}/bin/debian ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startx11vnc ${CONFIG_FOLDER} ${HOME}/容器选择菜单.sh ${HOME}/天萌-コンテナ-メニュー.sh ${HOME}/TMOE-CONTAINER-MENU.sh; do
 		[[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
 	done
 

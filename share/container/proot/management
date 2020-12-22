@@ -253,9 +253,6 @@ readme_of_gnu_linux_distro() {
 	esac
 }
 ######
-install_web_novnc() {
-	source ${TMOE_SHARE_DIR}/app/novnc
-}
 if_container_is_not_installed() {
 	[[ -e ${DEBIAN_CHROOT} ]] || install_new_tmoe_gnu_linux_distro
 	case ${DEB_BOOT_STRAP} in
@@ -317,6 +314,21 @@ start_gnu_linux_distro_x() {
 	[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 	sleep 3
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
+	normally_start_gnu_linux_distro
+}
+install_web_novnc() {
+	#source ${TMOE_SHARE_DIR}/app/novnc
+	NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+	NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
+	printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
+	if [[ $(command -v am) ]]; then
+		am start -a android.intent.action.VIEW -d "${NOVNC_ADDR}" 2>/dev/null
+	elif [[ $(command -v xdg-open) ]]; then
+		xdg-open ${NOVNC_ADDR} 2>/dev/null
+	elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
+		/mnt/c/WINDOWS/system32/cmd.exe "start ${NOVNC_ADDR}"
+	fi
+	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/novnc
 	normally_start_gnu_linux_distro
 }
 install_new_tmoe_gnu_linux_distro() {
