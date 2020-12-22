@@ -4834,10 +4834,12 @@ check_vnc_passsword_length() {
     else
         mkdir -p ${HOME}/.vnc
         cd ${HOME}/.vnc
+        #case ${LINUX_DISTRO} in
         if [ $(command -v vncpasswd) ]; then
             printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
         else
-            x11vnc -storepasswd ${TARGET_VNC_PASSWD} ${HOME}/.vnc/vncpasswd
+            x11vnc -storepasswd ${TARGET_VNC_PASSWD} passwd
+            cp passwd x11passwd
         fi
         chmod 600 passwd
         if [ $? = 0 ]; then

@@ -7,7 +7,7 @@ YELLOW=$(printf '\033[33m')
 BLUE=$(printf '\033[34m')
 BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
-printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "tigerserver + novnc" "..."
+printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "tigervncserver + novnc" "..."
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 NOVNC_MAIN_DIR="${TMOE_LINUX_DIR}/novnc"
 NOVNC_UTILS_DIR="${NOVNC_MAIN_DIR}/utils"
