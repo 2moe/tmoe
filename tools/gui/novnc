@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#######################
+RED=$(printf '\033[31m')
+PURPLE=$(printf '\033[0;35m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
+printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "tigerserver + novnc" "..."
+TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+NOVNC_MAIN_DIR="${TMOE_LINUX_DIR}/novnc"
+NOVNC_UTILS_DIR="${NOVNC_MAIN_DIR}/utils"
+NOVNC_STARTUP_SCRIPT="${NOVNC_UTILS_DIR}/launch.sh"
+NOVNC_PORT="36080"
+if [[ -n $(command -v Xvnc) || -n $(command -v vncsession) ]]; then
+	STARTVNC_COMMAND='startvnc'
+	CURRENT_PORT=$(cat $(command -v ${STARTVNC_COMMAND}) | grep '^TMOE_VNC_DISPLAY_NUMBER=' | head -n 1 | awk -F '=' '{print $2}')
+	CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+else
+	STARTVNC_COMMAND='startx11vnc'
+	CURRENT_VNC_PORT=$(cat $(command -v ${TCP_PORT_FOR_RFB_PROTOCOL}) | grep '^TMOE_VNC_DISPLAY_NUMBER=' | head -n 1 | awk -F '=' '{print $2}')
+fi
+NOVNC_ADDR="localhost:${CURRENT_VNC_PORT}"
+NOVNC_WEB_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
+#######################
+show_novnc_addr() {
+	TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@^@http://@g;s@\$@:${NOVNC_PORT}/vnc.html@g")
+	cat <<-EOF
+		${YELLOW}本机${RESET}novnc,${GREEN}浏览器${RESET}访问地址 ${BLUE}${NOVNC_WEB_ADDR}${RESET}
+		The LAN novnc address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
+	EOF
+}
+###############
+start_tmoe_novnc() {
+	${STARTVNC_COMMAND}
+	printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "novnc" "..."
+	set -- "${@}" "--vnc" "${NOVNC_ADDR}"
+	set -- "${@}" "--listen" "${NOVNC_PORT}"
+	set -- "bash" "${NOVNC_STARTUP_SCRIPT}" "${@}"
+	"${@}" &
+}
+###############
+start_win10_edge_novnc_addr() {
+	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+		#/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start ${NOVNC_WEB_ADDR}"
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_WEB_ADDR}"
+	else
+		xdg-open ${NOVNC_WEB_ADDR} 2>/dev/null
+	fi
+}
+################
+start_web_novnc() {
+	cat <<-EOF
+		vncserver的端口为${CURRENT_VNC_PORT},novnc 的端口为${NOVNC_PORT}
+		Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.
+		在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。
+		注意：novnc地址和vnc地址是${PURPLE}不同${RESET}的，请在${YELLOW}浏览器${RESET}中输入novnc地址。
+	EOF
+	#Do not forget /vnc.html after the port number.
+	#非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html
+	start_tmoe_novnc
+	show_novnc_addr
+	start_win10_edge_novnc_addr
+}
+#################
+start_web_novnc $@

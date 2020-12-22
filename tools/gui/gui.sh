@@ -4669,14 +4669,12 @@ first_configure_startvnc() {
     printf "%s\n" "二："
     printf "%s\n" "${YELLOW}关于VNC和X的启动说明${RESET}"
     printf '%s\n' '------------------------'
-    printf "%s\n" "You can type ${GREEN}startvnc${RESET} to ${BLUE}start${RESET} vncserver,type stopvnc to ${RED}stop${RESET} it."
-    printf "%s\n" "You can also type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and server."
+    printf "%s\n" "You can type ${GREEN}startvnc${RESET} to ${YELLOW}start ${BLUE}vncserver${RESET},type ${GREEN}stopvnc${RESET} to ${RED}stop${RESET} it."
+    printf "%s\n" "You can also type ${GREEN}startxsdl${RESET} to ${YELLOW}start ${BLUE}X client and server${RESET}."
     printf '%s\n' '------------------------'
-    printf "%s\n" "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}${BLUE}同时启动${RESET}vnc服务端和客户端。"
-    printf "%s\n" "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-    printf "%s\n" "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端"
-    #输${GREEN}stopvnc${RESET}${RED}停止${RESET}
-    #printf "%s\n" "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
+    printf "%s\n" "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${YELLOW}同时启动${BLUE}vnc服务端和客户端${RESET}。"
+    printf "%s\n" "在容器里输${BOLD}${GREEN}startvnc${RESET}${PURPLE}(仅支持)${YELLOW}启动${BLUE}vnc服务端${RESET}，输${GREEN}stopvnc${RED}停止${RESET}"
+    printf "%s\n" "在原系统里输${BOLD}${GREEN}startxsdl${RESET}同时启动X客户端与服务端"
     printf '%s\n' '------------------------'
     printf '%s\n' '------------------------'
     if [ "${HOME}" != "/root" ]; then
@@ -4735,16 +4733,35 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
-    printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc, ${PURPLE}stopvnc${RESET}"
+    printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc${RESET} & ${PURPLE}stopvnc${RESET}"
     press_enter_to_continue
     printf '%s\n' '------------------------'
     printf '%s\n' '三：'
     x11vnc_warning
     configure_x11vnc_remote_desktop_session
     xfce4_x11vnc_hidpi_settings
+    printf '%s\n' '------------------------'
+    printf '%s\n' '四：'
+    do_you_want_to_configure_novnc
 }
 ########################
 ########################
+do_you_want_to_configure_novnc() {
+    printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
+    printf "%s\n" "配置完成后，您可以输${BOLD}${GREEN}novnc${RESET}来${YELLOW}启动${BLUE}novnc${RESET},在浏览器里输入novnc访问地址进行连接。"
+    printf '%s\n' '------------------------'
+    printf "%s\n" "Do you want to configure novnc?"
+    printf "%s\n" "您是否需要配置${BLUE}novnc${RESET}？"
+    RETURN_TO_WHERE='software_center'
+    do_you_want_to_continue
+    source ${TMOE_TOOL_DIR}/gui/install_novnc
+    cd /usr/local/bin/
+    [[ ! -e novnc ]] || rm -f novnc 2>/dev/null
+    cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
+    printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
+    printf "%s\n" "Congratulations！恭喜您解锁新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
+}
+################
 set_vnc_passwd() {
     TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\n Please enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then

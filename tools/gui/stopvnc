@@ -93,6 +93,7 @@ pkill_vnc() {
     pkill -9 Xtigertvnc
     pkill -9 Xvnc
     pkill -9 vncsession
+    pkill websockify
 }
 #############
 vnc_server_has_been_stopped() {
