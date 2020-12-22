@@ -215,6 +215,7 @@ start_tmoe_container() {
 		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
 		no | novnc)
 			NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+			[[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080
 			NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
 			printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
 			if [[ $(command -v am) ]]; then
