@@ -3426,13 +3426,13 @@ x11vnc_warning() {
 			${BOLD}${YELLOW}vnc服务端推荐程度：${RESET}
 			${BLUE}tiger > x11vnc > tight${RESET}
 
-			${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且无法进行加速渲染时）:${RESET}
+			${BOLD}${YELLOW}流畅程度（Zlib compression level为最低,且无法进行加速渲染时）:${RESET}
 			${BLUE}tight > tiger > x11vnc${RESET}
 			
-			${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且支持加速渲染时）:${RESET}
+			${BOLD}${YELLOW}流畅程度（Zlib compression level为最低,且支持加速渲染时）:${RESET}
 			${BLUE}tiger > x11vnc ? tight${RESET}
 
-			${BOLD}${YELLOW}流畅程度（Zlib  compression level为最高时）:${RESET}
+			${BOLD}${YELLOW}流畅程度（Zlib compression level为最高时）:${RESET}
 			${BLUE}tight > x11vnc > tiger${RESET}
 
 			注：${GREEN}过高${RESET}的压缩级别将增大CPU负担，并${PURPLE}严重拖慢${RESET}渲染速度。
