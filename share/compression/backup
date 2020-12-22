@@ -69,7 +69,7 @@ backup_system() {
 	backup_system_menu_cn() {
 		OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "您想要备份${DEBIAN_FOLDER}容器数据么？(๑´ڡ\`๑)" 0 50 0 \
 			"1" "清理${DEBIAN_FOLDER}容器垃圾和隐私数据" \
-			"2" "备份${DEBIAN_FOLDER} proot容器" \
+			"2" "备份${DEBIAN_FOLDER} ${CONTAINER_TYPE}容器" \
 			"3" "备份容器至外置sd/tf(仅限termux)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
