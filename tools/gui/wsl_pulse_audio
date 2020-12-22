@@ -13,4 +13,10 @@ if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
     export PULSE_SERVER=${WSL2IP}
     printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
 fi
-sleep 2
+for i in /mnt/d /mnt/c/Users/ /mnt/e /mnt/c; do
+    if [ -d "${i}" ]; then
+        cd ${i}
+        break
+    fi
+done
+sleep 1

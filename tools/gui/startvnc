@@ -73,7 +73,7 @@ tmoe_vnc_preconfigure() {
             cd ${TMOE_TOOL_DIR}
             git reset --hard origin/master
             git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-            debian-i -passwd
+            ./tool.sh -passwd
         fi
     fi
     fix_vnc_permissions

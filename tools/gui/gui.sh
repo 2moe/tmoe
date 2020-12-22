@@ -4556,11 +4556,6 @@ first_configure_startvnc() {
     if [ ! -s "${HOME}/.vnc/passwd" ]; then
         set_vnc_passwd
     fi
-    if [ ${HOME} != '/root' ]; then
-        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority, .Xauthority, .config, .cache, .dbus以及.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-        cd ${HOME}
-        sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config" ".cache" ".dbus" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc .config .cache .dbus"
-    fi
     printf "$BLUE"
     cat <<-'EndOFneko'
 		               .::::..                
@@ -4648,6 +4643,12 @@ first_configure_startvnc() {
     false) tmoe_gui_normal_dpi ;;
     default) tmoe_gui_default_dpi ;;
     esac
+    ######
+    if [ ${HOME} != '/root' ]; then
+        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority, .Xauthority, .config, .cache, .dbus以及.vnc的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        cd ${HOME}
+        sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config" ".cache" ".dbus" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc .config .cache .dbus"
+    fi
     ######
     cat <<-EOF
 		------------------------
