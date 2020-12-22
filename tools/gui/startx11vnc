@@ -20,9 +20,21 @@ TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
+TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
+unset TMOE_WSL
 #################
 start_windows_10_pulse_audio_server() {
     . ${TMOE_LINUX_DIR}/wsl_pulse_audio
+}
+#################
+start_win10_tigervnc() {
+    case ${TMOE_WSL} in
+    true)
+        cd ${HOME}
+        nohup ${TIGERVNC_VIEWER_WIN10} -PasswordFile ${TMOE_X11_PASSWD_FILE} localhost:${TCP_PORT_FOR_RFB_PROTOCOL} &>/dev/null &
+        cd - &>/dev/null
+        ;;
+    esac
 }
 #####################
 start_tmoe_x11vnc() {
@@ -47,6 +59,7 @@ start_tmoe_x11vnc() {
     set -- "${@}" "-nothreads"
     set -- "x11vnc" "${@}"
     "${@}" &
+    start_win10_tigervnc
 }
 ###################
 tmoe_x11vnc_preconfigure() {

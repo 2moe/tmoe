@@ -19,11 +19,24 @@ if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
 	printf "%s\n" "目录C:\Users\Public\Downloads\VcXsrv"
 	mkdir -p /mnt/c/Users/Public/Downloads
 	cd /mnt/c/Users/Public/Downloads
-	rm -rf ./.WSLXSERVERTEMPFILE 2>/dev/null
+	[[ ! -d ./.WSLXSERVERTEMPFILE ]] || rm -rfv ./.WSLXSERVERTEMPFILE 2>/dev/null
 	git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./.WSLXSERVERTEMPFILE
 	mv ./.WSLXSERVERTEMPFILE/VcXsrv.tar.xz ./
 	tar -Jxvf VcXsrv.tar.xz
 	rm -rf ./.WSLXSERVERTEMPFILE VcXsrv.tar.xz
+fi
+
+if [ ! -e "/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe" ]; then
+	printf "%s\n" "Downloading tigervnc viewer for windows10_x64 ..."
+	printf "%s\n" "目录C:\Users\Public\Downloads\tigervnc"
+	mkdir -p /mnt/c/Users/Public/Downloads
+	cd /mnt/c/Users/Public/Downloads
+	#rm -rfv ./.WSLXSERVERTEMPFILE 2>/dev/null
+	[[ ! -d tigervnc ]] || rm -rfv ./tigervnc 2>/dev/null
+	git clone -b master --depth=1 https://gitee.com/ak2/tigervnc-viewer.git ./tigervnc
+	cd tigervnc
+	tar -Jxvf vncviewer64.exe.tar.xz
+	rm -rf .git README.md
 fi
 #######此处download iso
 if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ]; then

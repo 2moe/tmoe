@@ -35,6 +35,7 @@ stop_vnc_main() {
 check_wsl() {
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         export TMOE_CHROOT='true'
+        export TMOE_WSL='true'
     elif egrep -q '^[^#]*TMOE_CHROOT=.*true' /etc/environment 2>/dev/null; then
         export TMOE_CHROOT='true'
     fi
@@ -47,7 +48,6 @@ stopx11vnc() {
 ##########
 tmoe_vnc_env() {
     export USER="$(whoami)"
-    export HOME="${HOME}"
     #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep 'TMOE_VNC_DISPLAY_NUMBER=' | cut -d '=' -f 2 | head -n 1)
     RED=$(printf '\033[31m')

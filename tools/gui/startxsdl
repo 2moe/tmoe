@@ -28,13 +28,13 @@ check_tmoe_locale() {
 notes_of_xserver() {
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		printf '%s\n' '正在为您启动x11,请将display number改为0'
-		printf '%s\n' 'Starting x11, please change display number to 0'
+		printf '%s\n' '正在为您启动x11...'
 		;;
 	*)
-		printf '%s\n' 'Starting x11, please change display number to 0'
+		printf '%s\n' 'Starting x11...'
 		;;
 	esac
+	printf "%s\n" "The display is ${DISPLAY}"
 	#printf '%s\033[32m%s\033[m%s\n' "您可以输" "stopvnc" "停止"
 	#printf '%s \033[32m%s\033[m %s\n' "You can type" "stopvnc" "to stop it."
 }
