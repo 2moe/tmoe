@@ -3418,11 +3418,28 @@ x11vnc_warning() {
 			After configuring x11vnc, you can type ${GREEN}startx11vnc${RESET} to ${BLUE}start${RESET} it.
 			------------------------
 			注：x11vnc和tightvnc是有${RED}区别${RESET}的！
-			x11vnc可以运行tightvnc无法打开的某些应用，在WSL2/Linux虚拟机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
+			x11vnc可以运行tightvnc无法打开的某些应用，在WSL2/Linux实体机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
+            
+            若您已安装了${GREEN}tight${RESET},但未安装${PURPLE}tiger${RESET},则可使用${BLUE}x11vnc${RESET};
+            若您已安装了${GREEN}tiger${RESET},则建议使用${YELLOW}tiger${RESET},而不是${PURPLE}x11vnc${RESET}。
+
+            ${BOLD}${YELLOW}vnc服务端推荐程度：${RESET}
+            ${BLUE}tiger > x11vnc > tight${RESET}
+
+            ${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且无法进行加速渲染时）:${RESET}
+            ${BLUE}tight > tiger > x11vnc${RESET}
+            
+            ${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且支持加速渲染时）:${RESET}
+            ${BLUE}tiger > x11vnc ? tight${RESET}
+
+            ${BOLD}${YELLOW}流畅程度（Zlib  compression level为最高时）:${RESET}
+            ${BLUE}tight > x11vnc > tiger${RESET}
+
+            以上为${PURPLE}主观数据${RESET}，影响流畅度的因素不止压缩级别和硬件加速，请以${GREEN}实际体验${RESET}为准。
 			------------------------
 			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
 			若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务。
-            您若觉得x11vnc体验不佳，则可随时输${GREEN}startvnc${RESET}重启并切换到tight/tigervnc服务。
+			您若觉得x11vnc体验不佳，则可随时输${GREEN}startvnc${RESET}重启并切换到tight/tigervnc服务。
 			------------------------
 			Do you want to configure x11vnc? 
 			您是否需要配置${BLUE}X11VNC${RESET}服务？
@@ -4641,7 +4658,8 @@ first_configure_startvnc() {
 		------------------------
 		若您的音频服务端为${BLUE}Android系统${RESET}，请在图形界面启动完成后，新建一个termux会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程。若您无法记住该命令，则只需输${GREEN}debian${RESET}。
 		------------------------
-		若您的音频服务端为${BLUE}windows10系统${RESET}，则请手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'，并修改音频服务地址。
+		若您的音频服务端为${BLUE}windows10系统${RESET}，则请手动打开'C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat'。
+        注：您无需修改PULSE_SERVER变量,WSL2的音频服务地址将根据NAT网关自动生成。
 		------------------------
 		若您使用的是${BLUE}Android版${RESET}${YELLOW}Linux Deploy${RESET}或${YELLOW}Userland${RESET}，则您可以使用本脚本${RED}覆盖安装${RESET}图形界面。之后,您可以在${BLUE}Termux${RESET}上输${GREEN}debian-i${RESET}运行Tmoe-linux manager,查看${YELLOW}FAQ${RESET}并配置Linux Deploy的${BLUE}音频服务启动脚本。${RESET}
 		------------------------
@@ -4654,8 +4672,9 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${RESET}${BLUE}同时启动${RESET}vnc服务端和客户端。"
     printf "%s\n" "在容器里输${BOLD}${GREEN}startvnc${RESET}${RESET}(仅支持)${BLUE}启动${RESET}vnc服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-    printf "%s\n" "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端，输${GREEN}stopvnc${RESET}${RED}停止${RESET}"
-    printf "%s\n" "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
+    printf "%s\n" "在原系统里输${GREEN}startxsdl${RESET}同时启动X客户端与服务端"
+    #输${GREEN}stopvnc${RESET}${RED}停止${RESET}
+    #printf "%s\n" "注：同时启动tight/tigervnc服务端和realvnc客户端仅适配Termux,同时启动X客户端和服务端还适配了win10的linux子系统"
     printf '%s\n' '------------------------'
     printf '%s\n' '------------------------'
     if [ "${HOME}" != "/root" ]; then
@@ -4663,11 +4682,13 @@ first_configure_startvnc() {
         chown -R root:root /root/.vnc
     fi
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
-        printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+        #printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+        printf "%s\n" "Win10 ${YELLOW}xserver bin file${RESET}: ${BLUE}C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe${RESET}"
         cd "/mnt/c/Users/Public/Downloads"
         #if grep -q '172..*1' "/etc/resolv.conf"; then
         if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+            printf "%s\n" "You can type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and win10 xserver(VcXsrv)."
             WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
             export PULSE_SERVER=${WSL2IP}
             export DISPLAY=${WSL2IP}:0
@@ -4701,6 +4722,9 @@ first_configure_startvnc() {
         /mnt/c/WINDOWS/system32/cmd.exe /c "start ."
         #startxsdl &
     fi
+    printf "%s\n" "若您的宿主机为${YELLOW}Android${RESET},则在${PURPLE}termux原系统${RESET}下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Realvnc viewer${RESET}(客户端)和容器的VNC服务端。注：需手动连接。"
+    printf "%s\n" "若您的宿主机为${YELLOW}Win10${RESET},则在${PURPLE}WSL${RESET}下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Tigervnc viewer win-x64${RESET}(客户端)和tigervnc服务端，并自动连接。"
+    printf '%s\n' '------------------------'
     printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
     press_enter_to_continue
