@@ -3419,23 +3419,24 @@ x11vnc_warning() {
 			------------------------
 			注：x11vnc和tightvnc是有${RED}区别${RESET}的！
 			x11vnc可以运行tightvnc无法打开的某些应用，在WSL2/Linux实体机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
-            
-            若您已安装了${GREEN}tight${RESET},但未安装${PURPLE}tiger${RESET},则可使用${BLUE}x11vnc${RESET};
-            若您已安装了${GREEN}tiger${RESET},则建议使用${YELLOW}tiger${RESET},而不是${PURPLE}x11vnc${RESET}。
+			
+			若您已安装了${GREEN}tight${RESET},但未安装${PURPLE}tiger${RESET},则可使用${BLUE}x11vnc${RESET};
+			若您已安装了${GREEN}tiger${RESET},则建议使用${YELLOW}tiger${RESET},而不是${PURPLE}x11vnc${RESET}。
 
-            ${BOLD}${YELLOW}vnc服务端推荐程度：${RESET}
-            ${BLUE}tiger > x11vnc > tight${RESET}
+			${BOLD}${YELLOW}vnc服务端推荐程度：${RESET}
+			${BLUE}tiger > x11vnc > tight${RESET}
 
-            ${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且无法进行加速渲染时）:${RESET}
-            ${BLUE}tight > tiger > x11vnc${RESET}
-            
-            ${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且支持加速渲染时）:${RESET}
-            ${BLUE}tiger > x11vnc ? tight${RESET}
+			${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且无法进行加速渲染时）:${RESET}
+			${BLUE}tight > tiger > x11vnc${RESET}
+			
+			${BOLD}${YELLOW}流畅程度（Zlib  compression level为最低,且支持加速渲染时）:${RESET}
+			${BLUE}tiger > x11vnc ? tight${RESET}
 
-            ${BOLD}${YELLOW}流畅程度（Zlib  compression level为最高时）:${RESET}
-            ${BLUE}tight > x11vnc > tiger${RESET}
+			${BOLD}${YELLOW}流畅程度（Zlib  compression level为最高时）:${RESET}
+			${BLUE}tight > x11vnc > tiger${RESET}
 
-            以上为${PURPLE}主观数据${RESET}，影响流畅度的因素不止压缩级别和硬件加速，请以${GREEN}实际体验${RESET}为准。
+			注：${GREEN}过高${RESET}的压缩级别将增大CPU负担，并${PURPLE}严重拖慢${RESET}渲染速度。
+			以上为${PURPLE}主观数据${RESET}，影响流畅度的因素不止压缩算法、级别和硬件加速，请以${GREEN}实际体验${RESET}为准。
 			------------------------
 			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
 			若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务。
