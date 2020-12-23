@@ -97,7 +97,7 @@ CPUID FLAGS示例02:'ss=on,vmx=on,pdcm=on,hypervisor=on,tsc-adjust=on,clflushopt
 EOF
 #02-2.CPU变量值修改区域
 CPU_MODEL='max'
-CPU_ID_FLAGS='hle=off,rtm=off'
+CPU_ID_FLAGS='hle=off,rtm=off,acpi=off'
 #CPU_MODEL为CPU型号，例如'Icelake-Client'和'Skylake-Client-IBRS'。默认为'max',即启用加速器支持的所有可用功能。
 #CPU_ID_FLAGS为cpu的属性和功能，可以留空。默认为'hle=off,rtm=off'
 ###########
@@ -616,13 +616,10 @@ run_tmoe_qemu_i440fx_machine() {
         set -- "${@}" "-device" "usb-storage,bus=usb.0,port=5,drive=libvirt-8-format,id=usb-disk2,removable=on${USB_DISK_02_ATTACH}"
         ;;
     esac
-    FLOPPY_ENABLED=false
-    [[ -n ${FLOPPY_DISK_01_ENABLED} || -n ${FLOPPY_DISK_02_ENABLED} ]] && FLOPPY_ENABLED=true
-    case ${FLOPPY_ENABLED} in
-    true) set -- "${@}" "-device" "isa-fdc" ;;
-    esac
+    #FLOPPY_ENABLED=false
     case ${FLOPPY_DISK_01_ENABLED} in
     true)
+        # set -- "${@}" "-device" "isa-fdc"
         set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-9-format","read-only"=off,"driver"="${FLOPPY_DISK_01_FORMAT}","file"="libvirt-9-storage""
         case ${FLOPPY_DISK_01_BOOTINDEX} in
@@ -1019,7 +1016,7 @@ run_tmoe_qemu_command() {
         ;;
     esac
     FLOPPY_ENABLED=false
-    [[ -n ${FLOPPY_DISK_01_ENABLED} || -n ${FLOPPY_DISK_02_ENABLED} ]] && FLOPPY_ENABLED=true
+    [[ ${FLOPPY_DISK_01_ENABLED} = true || ${FLOPPY_DISK_02_ENABLED} = true ]] && FLOPPY_ENABLED=true
     case ${FLOPPY_ENABLED} in
     true) set -- "${@}" "-device" "isa-fdc" ;;
     esac
