@@ -38,7 +38,7 @@ check_python_novnc() {
 		else
 			curl -Lv -O https://bootstrap.pypa.io/get-pip.py
 		fi
-		sduo python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple
+		python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple
 		rm -fv get-pip.py
 	fi
 
