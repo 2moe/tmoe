@@ -3439,7 +3439,7 @@ x11vnc_warning() {
 			${BLUE}tight > tiger > x11vnc${RESET}
 			
 			${BOLD}${YELLOW}流畅程度（Zlib compression level为最低,且支持加速渲染时）:${RESET}
-			${BLUE}tiger > x11vnc ? tight${RESET}
+			${BLUE}tiger > tight ? x11vnc${RESET}
 
 			${BOLD}${YELLOW}流畅程度（Zlib compression level为最高时）:${RESET}
 			${BLUE}tight > x11vnc > tiger${RESET}
