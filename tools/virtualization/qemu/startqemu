@@ -319,8 +319,8 @@ EOF
 SOUND_CARD_ENABLED='true'
 #当为'true'时，启用声卡;为false时，则禁用。
 
-SOUND_CARD='ich9-intel-hda'
-#默认为ich9-intel-hda
+SOUND_CARD='AC97'
+#默认为AC97
 
 #07-3.Pulseaudio server address音频服务地址
 WAYLAND_REMOTE_PULSE='false'

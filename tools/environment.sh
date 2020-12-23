@@ -270,10 +270,12 @@ check_opt_dir_01() {
 }
 ###########
 check_download_path() {
-    if [ -e "${HOME}/sd" ]; then
+    if [ -d "${HOME}/sd" ]; then
         DOWNLOAD_PATH=${HOME}/sd/Download
-    elif [ -e "/sdcard" ]; then
+    elif [ -d "/sdcard" ]; then
         DOWNLOAD_PATH=/sdcard/Download
+    elif [ -d "/sd" ]; then
+        DOWNLOAD_PATH=/sd/Download
     else
         DOWNLOAD_PATH=${HOME}/sd/Download
     fi
@@ -678,13 +680,10 @@ tmoe_file_manager() {
 }
 ###########
 where_is_start_dir() {
-    if [ -d "${HOME}/sd" ]; then
-        START_DIR="${HOME}/sd/Download"
-    elif [ -d "/sdcard" ]; then
-        START_DIR='/sdcard/'
-    else
-        START_DIR="$(pwd)"
-    fi
+    for i in /media/sd ${HOME}/sd/Download ${HOME}/sd /sd /sdcard /media/docker ${HOME}; do
+        [[ ! -d ${i} ]] || START_DIR=${i}
+        break
+    done
     tmoe_file_manager
 }
 ###################################
