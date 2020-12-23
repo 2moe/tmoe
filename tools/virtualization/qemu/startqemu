@@ -28,10 +28,11 @@ USAGE:
 Select the emulated machine by name. Use -machine help to list available machines.
 For architectures which aim to support live migration compatibility across releases, each release will introduce a new versioned machine type. For example, the 5.1.0 release introduced machine types “pc-i440fx-5.1” and “pc-q35-5.1” for the x86_64/i686 architectures.
 To allow live migration of guests from QEMU version 5.1.0, to QEMU version 5.2.0, the 5.2.0 version must support the “pc-i440fx-5.1” and “pc-q35-5.1” machines too. To allow users live migrating VMs to skip multiple intermediate releases when upgrading, new releases of QEMU will support machine types from many previous versions.
-本脚本暂仅支持pc-q35-*机器，如需修改为其他机器，则请自行修改pci设备,总线及地址。
 pc为Standard PC (i440FX + PIIX, 1996)
 q35为 Standard PC (Q35 + ICH9, 2009)
 使用命令`qemu-system-x86_64 -machine help`获取当前可用的机器型号。
+#本脚本暂仅支持pc-q35-*机器，如需修改为其他机器，则请自行修改pci设备,总线及地址。
+#新版已支持pc
 ______
 vmport=on|off|auto
 Enables emulation of VMWare IO port, for vmmouse etc. auto says to select the value based on accel. For accel=xen the default is off otherwise the default is on.
@@ -51,8 +52,11 @@ EOF
 #You can modify the variable value here.ここで変数値を変更できます
 ## 请在指定区域内修改参数，请不要修改“MACHINE”右边，“=”左边的变量名称，请修改“=”右边的变量值。
 MACHINE_ACCEL='kvm:tcg:xen'
-#默认值'kvm:tcg:xen',您可以修改为'tcg:kvm:xen'
-#MACHINE_TYPE='q35'
+#默认值'kvm:tcg:xen',您可以修改为'tcg:kvm:xen'，如需禁用kvm,则可修改为tcg
+
+MACHINE_TYPE='q35'
+#tmoe-qemu默认机器类型为q35,qemu官方默认为pc
+#可选值'q35','pc'
 
 ENABLE_KVM='true'
 #可选true/false
@@ -225,6 +229,7 @@ EOF
 VIRTIO_DISK_02_FORMAT=qcow2
 VIRTIO_DISK_02="${HOME}/sd/Download/virtio-disk02.qcow2"
 #___________________________
+#若您的机器类型为pc-i440fx-*，则自动将SATA修改为IDE磁盘
 SATA_DISK_01_ENABLED=false
 SATA_DISK_01_BOOTINDEX=''
 SATA_DISK_01_FORMAT=qcow2
@@ -315,8 +320,8 @@ EOF
 SOUND_CARD_ENABLED='true'
 #当为'true'时，启用声卡;为false时，则禁用。
 
-SOUND_CARD='ich9-intel-hda'
-#默认为ich9-intel-hda
+SOUND_CARD='AC97'
+#默认为AC97
 
 #07-3.Pulseaudio server address音频服务地址
 WAYLAND_REMOTE_PULSE='false'
@@ -458,6 +463,378 @@ QEMU_BIN_PATH="/usr/bin"
 QEMU_BIN_ARCH='x86_64'
 #默认为x86_64，如需模拟32位system,则请将其修改为i386，否则请保持默认值。
 ###########
+run_tmoe_qemu_i440fx_machine() {
+    case ${UEFI_ENABLED} in
+    *) MACHINE_ATTACH='' ;;
+    esac
+    #本工具不支持给i440fx(1996)配置uefi，请将机器类型修改为q35。
+    set -- "${@}" "-machine" "pc,accel=${MACHINE_ACCEL},usb=off,vmport=off,dump-guest-core=off${MACHINE_ATTACH}"
+    #MACHINE_ATTACH=',memory-backend=pc.ram' #set -- "${@}" "-object" "memory-backend-ram,id=pc.ram,size=1073741824"
+    set -- "${@}" "-global" "PIIX4_PM.disable_s3=1"
+    set -- "${@}" "-global" "PIIX4_PM.disable_s4=1"
+    set -- "${@}" "-device" "ich9-usb-ehci1,id=usb,bus=pci.0,addr=0x5.0x7"
+    set -- "${@}" "-device" "ich9-usb-uhci1,masterbus=usb.0,firstport=0,bus=pci.0,multifunction=on,addr=0x5"
+    set -- "${@}" "-device" "ich9-usb-uhci2,masterbus=usb.0,firstport=2,bus=pci.0,addr=0x5.0x1"
+    set -- "${@}" "-device" "ich9-usb-uhci3,masterbus=usb.0,firstport=4,bus=pci.0,addr=0x5.0x2"
+    set -- "${@}" "-device" "virtio-serial-pci,id=virtio-serial0,bus=pci.0,addr=0x6"
+    #####################
+    case ${ENABLE_KVM} in
+    true) set -- "${@}" "-global" "kvm-pit.lost_tick_policy=delay" ;;
+    esac
+    ############################
+    set -- "${@}" "-cpu" "${CPU_MODEL},${CPU_ID_FLAGS}"
+    set -- "${@}" "-smp" "${CPUS_NUM},sockets=${SOCKETS_NUM},cores=${CORES_NUM},threads=${THREADS_NUM}"
+    ############################
+    set_tmoe_qemu_memory_size() {
+        printf "%s\n" "检测到您启用了${YELLOW}自动分配内存${RESET}模式。"
+        FREE_MEMORY="$(free -m | awk '{print $NF}' | sed -n 2p)"
+        TOTAL_MEMORY="$(free -m | awk '{print $2}' | sed -n 2p)"
+        printf "%s\n" "当前宿主机${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
+        if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
+            if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
+                MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
+            else
+                MEMORY_SIZE=$((${FREE_MEMORY} - 256))
+            fi
+        fi
+        if ((${MEMORY_SIZE} <= 256)); then
+            MEMORY_SIZE=256
+        elif [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
+            MEMORY_SIZE=1024
+        fi
+        printf "%s\n" "自动allocated给${YELLOW}${QEMU_NAME}${RESET}的RAM为${BLUE}${MEMORY_SIZE}M${RESET}"
+    }
+    case ${MEMORY_ALLOCATION} in
+    auto) set_tmoe_qemu_memory_size ;;
+    *)
+        if [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
+            set_tmoe_qemu_memory_size
+        fi
+        ;;
+    esac
+    set -- "${@}" "-m" "${MEMORY_SIZE}"
+    set -- "${@}" "-overcommit" "mem-lock=off"
+    ############################
+    set -- "${@}" "-monitor" "stdio"
+    set -- "${@}" "-no-user-config"
+    set -- "${@}" "-nodefaults"
+    set -- "${@}" "-rtc" "base=utc,driftfix=slew"
+    set -- "${@}" "-no-hpet"
+    set -- "${@}" "-name" "guest=${QEMU_NAME},debug-threads=on"
+    ############
+    case ${BOOT_ORDER} in
+    "") set -- "${@}" "-boot" "menu=${BOOT_MENU},strict=off" ;;
+    *) set -- "${@}" "-boot" "order=${BOOT_ORDER},menu=${BOOT_MENU},strict=off" ;;
+    esac
+    #####################
+    case ${VIRTIO_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_01}","node-name"="libvirt-1-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-1-format","read-only"=off,"driver"="${VIRTIO_DISK_01_FORMAT}","file"="libvirt-1-storage""
+        case ${VIRTIO_DISK_01_BOOTINDEX} in
+        "") VIRTIO_DISK_01_ATTACH='' ;;
+        *) VIRTIO_DISK_01_ATTACH=",bootindex=${VIRTIO_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "virtio-blk-pci,bus=pci.0,addr=0x8,drive=libvirt-1-format,id=virtio-disk1${VIRTIO_DISK_01_ATTACH}"
+        #,bootindex=2
+        ;;
+    esac
+    case ${VIRTIO_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_02}","node-name"="libvirt-2-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-2-format","read-only"=off,"driver"="${VIRTIO_DISK_02_FORMAT}","file"="libvirt-2-storage""
+        case ${VIRTIO_DISK_02_BOOTINDEX} in
+        "") VIRTIO_DISK_02_ATTACH='' ;;
+        *) VIRTIO_DISK_02_ATTACH=",bootindex=${VIRTIO_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "virtio-blk-pci,bus=pci.0,addr=0x9,drive=libvirt-2-format,id=virtio-disk2${VIRTIO_DISK_02_ATTACH}"
+        ;;
+    esac
+    case ${CD_ROM_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_01}","node-name"="libvirt-3-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-3-format","read-only"=on,"driver"="${CD_ROM_DISK_01_FORMAT}","file"="libvirt-3-storage""
+        case ${CD_ROM_DISK_01_BOOTINDEX} in
+        "") CD_ROM_DISK_01_ATTACH='' ;;
+        *) CD_ROM_DISK_01_ATTACH=",bootindex=${CD_ROM_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-cd,bus=ide.1,unit=0,drive=libvirt-3-format,id=ide0-1-0${CD_ROM_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${CD_ROM_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_02}","node-name"="libvirt-4-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-4-format","read-only"=on,"driver"="${CD_ROM_DISK_02_FORMAT}","file"="libvirt-4-storage""
+        case ${CD_ROM_DISK_02_BOOTINDEX} in
+        "") CD_ROM_DISK_02_ATTACH='' ;;
+        *) CD_ROM_DISK_02_ATTACH=",bootindex=${CD_ROM_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-cd,bus=ide.1,unit=1,drive=libvirt-4-format,id=sata0-1-1${CD_ROM_DISK_02_ATTACH}"
+        ;;
+    esac
+    case ${SATA_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_01}","node-name"="libvirt-5-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-5-format","read-only"=off,"driver"="${SATA_DISK_01_FORMAT}","file"="libvirt-5-storage""
+        case ${SATA_DISK_01_BOOTINDEX} in
+        "") SATA_DISK_01_ATTACH='' ;;
+        *) SATA_DISK_01_ATTACH=",bootindex=${SATA_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-hd,bus=ide.0,unit=0,drive=libvirt-5-format,id=ide0-0-0${SATA_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${SATA_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_02}","node-name"="libvirt-6-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-6-format","read-only"=off,"driver"="${SATA_DISK_02_FORMAT}","file"="libvirt-6-storage""
+        case ${SATA_DISK_02_BOOTINDEX} in
+        "") SATA_DISK_02_ATTACH='' ;;
+        *) SATA_DISK_02_ATTACH=",bootindex=${SATA_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "ide-hd,bus=ide.0,,unit=1,drive=libvirt-6-format,id=ide0-0-1${SATA_DISK_02_ATTACH}"
+        ;;
+    esac
+    case ${USB_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_01}","node-name"="libvirt-7-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-7-format","read-only"=off,"driver"="${USB_DISK_01_FORMAT}","file"="libvirt-7-storage""
+        case ${USB_DISK_01_BOOTINDEX} in
+        "") USB_DISK_01_ATTACH='' ;;
+        *) USB_DISK_01_ATTACH=",bootindex=${USB_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "usb-storage,bus=usb.0,port=4,drive=libvirt-7-format,id=usb-disk1,removable=on${USB_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${USB_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_02}","node-name"="libvirt-8-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-8-format","read-only"=off,"driver"="${USB_DISK_02_FORMAT}","file"="libvirt-8-storage""
+        case ${USB_DISK_02_BOOTINDEX} in
+        "") USB_DISK_02_ATTACH='' ;;
+        *) USB_DISK_02_ATTACH=",bootindex=${USB_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "usb-storage,bus=usb.0,port=5,drive=libvirt-8-format,id=usb-disk2,removable=on${USB_DISK_02_ATTACH}"
+        ;;
+    esac
+    FLOPPY_ENABLED=false
+    [[ -n ${FLOPPY_DISK_01_ENABLED} || -n ${FLOPPY_DISK_02_ENABLED} ]] && FLOPPY_ENABLED=true
+    case ${FLOPPY_ENABLED} in
+    true) set -- "${@}" "-device" "isa-fdc" ;;
+    esac
+    case ${FLOPPY_DISK_01_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-9-format","read-only"=off,"driver"="${FLOPPY_DISK_01_FORMAT}","file"="libvirt-9-storage""
+        case ${FLOPPY_DISK_01_BOOTINDEX} in
+        "") FLOPPY_DISK_01_ATTACH='' ;;
+        *) FLOPPY_DISK_01_ATTACH=",bootindex=${FLOPPY_DISK_01_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "floppy,unit=0,drive=libvirt-9-format,id=fdc0-0-0${FLOPPY_DISK_01_ATTACH}"
+        ;;
+    esac
+    case ${FLOPPY_DISK_02_ENABLED} in
+    true)
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_02}","node-name"="libvirt-10-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""node-name"="libvirt-10-format","read-only"=off,"driver"="${FLOPPY_DISK_02_FORMAT}","file"="libvirt-10-storage""
+        case ${FLOPPY_DISK_02_BOOTINDEX} in
+        "") FLOPPY_DISK_02_ATTACH='' ;;
+        *) FLOPPY_DISK_02_ATTACH=",bootindex=${FLOPPY_DISK_02_BOOTINDEX}" ;;
+        esac
+        set -- "${@}" "-device" "floppy,unit=1,drive=libvirt-10-format,id=fdc0-0-1${FLOPPY_DISK_02_ATTACH}"
+        ;;
+    esac
+    ############
+    case ${VIRTIO_9P_PCI_01_ENABLED} in
+    true)
+        case ${VIRTIO_9P_PCI_01} in
+        "")
+            for i in ${HOME} ${HOME}/sd /sd /media/docker /media/sd; do
+                [[ ! -e ${i} ]] || VIRTIO_9P_PCI_01=${i}
+            done
+            ;;
+        *) ;;
+        esac
+        #-virtfs local,id=xxx
+        set -- "${@}" "-fsdev" "local,security_model=none,id=fsdev-fs0,path=${VIRTIO_9P_PCI_01}"
+        set -- "${@}" "-device" "virtio-9p-pci,id=fs0,fsdev=fsdev-fs0,mount_tag=virtio9p01,bus=pci.0,addr=0x1d"
+        ;;
+    esac
+    ############
+    case ${SOUND_CARD_ENABLED} in
+    false) ;;
+    *)
+        case ${SOUND_CARD} in
+        'ich9-intel-hda')
+            set -- "${@}" "-device" "ich9-intel-hda,id=sound0,bus=pci.0,addr=0x4"
+            set -- "${@}" "-device" "hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0"
+            ;;
+        'intel-hda')
+            set -- "${@}" "-device" "intel-hda,id=sound0,bus=pci.0,addr=0x4"
+            set -- "${@}" "-device" "hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0"
+            ;;
+        DISABLED) ;; #禁用声卡
+        'AC97' | 'ES1370')
+            set -- "${@}" "-device" "${SOUND_CARD},id=sound0,bus=pci.0,addr=0x4"
+            ;;
+        esac
+        ;;
+    esac
+    : <<\EOF
+            若需要双声卡，则取消注释。
+            set -- "${@}" "-device" "ich9-intel-hda,id=sound1,bus=pci.0,addr=0xb"
+            set -- "${@}" "-device" "hda-duplex,id=sound1-codec0,bus=sound1.0,cad=0"
+EOF
+
+    case ${CONNECTION_TYPE} in
+    x11* | wayland*)
+        case ${WAYLAND_REMOTE_PULSE} in
+        true) export PULSE_SERVER="${AUDIO_ADDR}" ;;
+        esac
+        ;;
+    *) export PULSE_SERVER="${AUDIO_ADDR}" ;;
+    esac
+    ##########
+    set -- "${@}" "-k" "en-us"
+    ##########
+    #网卡,总线=pci.1
+    case ${TCP_PORT_HOST_FWD_01_ENABLED} in
+    true)
+        case ${TCP_PORT_HOST_FWD_01} in
+        "") TCP_PORT_HOST_FWD_FORMAT_01="" ;;
+        *) TCP_PORT_HOST_FWD_FORMAT_01="$(printf "%s\n" ${TCP_PORT_HOST_FWD_01} | sed 's@:@-:@g;s@,@,hostfwd=tcp::@g;s@^@,hostfwd=tcp::@g')" ;;
+        esac
+        ;;
+    esac
+    case ${UDP_PORT_HOST_FWD_01_ENABLED} in
+    true)
+        case ${UDP_PORT_HOST_FWD_01} in
+        "") UDP_PORT_HOST_FWD_FORMAT_01="" ;;
+        *) UDP_PORT_HOST_FWD_FORMAT_01="$(printf "%s\n" ${UDP_PORT_HOST_FWD_01} | sed 's@:@-:@g;s@,@,hostfwd=udp::@g;s@^@,hostfwd=udp::@g')" ;;
+        esac
+        ;;
+    esac
+    case ${TCP_PORT_HOST_FWD_02_ENABLED} in
+    true)
+        case ${TCP_PORT_HOST_FWD_02} in
+        "") TCP_PORT_HOST_FWD_FORMAT_02="" ;;
+        *) TCP_PORT_HOST_FWD_FORMAT_02="$(printf "%s\n" ${TCP_PORT_HOST_FWD_02} | sed 's@:@-:@g;s@,@,hostfwd=tcp::@g;s@^@,hostfwd=tcp::@g')" ;;
+        esac
+        ;;
+    esac
+    case ${UDP_PORT_HOST_FWD_02_ENABLED} in
+    true)
+        case ${UDP_PORT_HOST_FWD_02} in
+        "") UDP_PORT_HOST_FWD_FORMAT_02="" ;;
+        *) UDP_PORT_HOST_FWD_FORMAT_02="$(printf "%s\n" ${UDP_PORT_HOST_FWD_02} | sed 's@:@-:@g;s@,@,hostfwd=udp::@g;s@^@,hostfwd=udp::@g')" ;;
+        esac
+        ;;
+    esac
+    ##########
+    set -- "${@}" "-netdev" "user,id=hostnet0${TCP_PORT_HOST_FWD_FORMAT_01}${UDP_PORT_HOST_FWD_FORMAT_01}"
+    case ${NET_CARD_01_MAC} in
+    "") set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.0,addr=0x3" ;;
+    *) set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.0,addr=0x3,mac=${NET_CARD_01_MAC}" ;;
+    esac
+    set -- "${@}" "-netdev" "user,id=hostnet1${TCP_PORT_HOST_FWD_FORMAT_02}${UDP_PORT_HOST_FWD_FORMAT_02}"
+    case ${NET_CARD_02_MAC} in
+    "") set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.0,addr=0xa" ;;
+    *) set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.0,addr=0xa,mac=${NET_CARD_02_MAC}" ;;
+    esac
+    ##########
+    set -- "${@}" "-device" "usb-tablet,id=input0,bus=usb.0,port=1"
+    #############
+    #GPU
+    case ${GPU_MODEL} in
+    virtio* | vhost-user*)
+        case ${VIRTIO_3D_ACCEL} in
+        true) VIRGL='on' ;;
+        *) VIRGL='off' ;;
+        esac
+        set -- "${@}" "-device" "virtio-vga,id=video0,virgl=${VIRGL},max_outputs=1,bus=pci.0,addr=0x2"
+        ;;
+    qxl*) set -- "${@}" "-device" "qxl-vga,id=video0,ram_size=${GPU_RAM_SIZE},vram_size=${GPU_VRAM_SIZE},vram64_size_mb=0,vgamem_mb=${GPU_VGAMEM_MB},max_outputs=1,bus=pci.0,addr=0x2" ;;
+    vga | VGA) set -- "${@}" "-device" "VGA,id=video0,vgamem_mb=${GPU_VGAMEM_MB},bus=pci.0,addr=0x2" ;;
+    bochs*) set -- "${@}" "-device" "bochs-display,id=video0,vgamem=16384k,bus=pci.0,addr=0x2" ;;
+    *) set -- "${@}" "-device" "${GPU_MODEL},id=video0,bus=pci.0,addr=0x2" ;;
+    esac
+    ##########
+    case ${CUSTOM_KERNEL} in
+    true)
+        case ${KERNEL_FILE} in
+        "") ;;
+        *) set -- "${@}" "-kernel" "${KERNEL_FILE}" ;;
+        esac
+        case ${INITRD_FILE} in
+        "") ;;
+        *) set -- "${@}" "-initrd" "${INITRD_FILE}" ;;
+        esac
+        case ${INITRD_FILE} in
+        "") ;;
+        *) set -- "${@}" "-append" "${KERNEL_APPEND}" ;;
+        esac
+        ;;
+    esac
+    set -- "${@}" "-device" "virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x7"
+    set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
+    set -- "${@}" "-msg" "timestamp=on"
+    ###############
+    [[ -n ${VNC_PORT} ]] || VNC_PORT="5902"
+    case ${VNC_STARTUP_PROMPT} in
+    'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
+    esac
+    case ${VNC_LOCALHOST} in
+    true) VNC_IP_ADDR='127.0.0.1' ;;
+    *) VNC_IP_ADDR='0.0.0.0' ;;
+    esac
+    case ${CONNECTION_TYPE} in
+    vnc)
+        case ${VNC_STARTUP_PROMPT} in
+        'true')
+            cat <<-EOF
+正在启动vnc服务,本机vnc地址 localhost:${VNC_PORT}
+The LAN VNC address 局域网地址 ${TMOE_IP_ADDR}
+EOF
+            ;;
+        esac
+        TRUE_VNC_PORT=$((${VNC_PORT} - 5900))
+        case ${VNC_PASSWORD} in
+        true) VNC_ATTACH=',password=on' ;;
+        *) VNC_ATTACH="" ;;
+        esac
+        set -- "${@}" "-vnc" "${VNC_IP_ADDR}:${TRUE_VNC_PORT},to=5000${VNC_ATTACH}"
+        ;;
+    spice)
+        case ${VNC_STARTUP_PROMPT} in
+        'true')
+            cat <<-EOF
+正在启动spice服务,本机spice地址localhost:${VNC_PORT}
+The LAN SPICE address 局域网地址${TMOE_IP_ADDR}
+EOF
+            ;;
+        esac
+        case ${VNC_PASSWORD} in
+        true) VNC_ATTACH=',password' ;;
+        *) VNC_ATTACH=",disable-ticketing" ;;
+        esac
+        set -- "${@}" "-spice" "port=${VNC_PORT},addr=${VNC_IP_ADDR},image-compression=off,seamless-migration=on${VNC_ATTACH}"
+        ;;
+    remote-x11) export DISPLAY="${REMOTE_X11_ADDR}" ;;
+    *) ;;
+    esac
+    case ${QEMU_BIN_ARCH} in
+    i386) set -- "${QEMU_BIN_PATH}/qemu-system-i386" "${@}" ;;
+    *) set -- "${QEMU_BIN_PATH}/qemu-system-x86_64" "${@}" ;;
+    esac
+    exec "${@}"
+    : <<\EOF
+    USB重定向
+    set -- "${@}" "-chardev" "spicevmc,id=charredir0,name=usbredir"
+    set -- "${@}" "-device" "usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=2"
+    set -- "${@}" "-chardev" "spicevmc,id=charredir1,name=usbredir"
+    set -- "${@}" "-device" "usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=3"
+EOF
+}
+##########
 run_tmoe_qemu_command() {
     PURPLE=$(printf '\033[0;35m')
     RED=$(printf '\033[31m')
@@ -466,6 +843,13 @@ run_tmoe_qemu_command() {
     BLUE=$(printf '\033[34m')
     BOLD=$(printf '\033[1m')
     RESET=$(printf '\033[m')
+    case ${MACHINE_TYPE} in
+    q35 | pc-q35-*) ;;
+    *)
+        run_tmoe_qemu_i440fx_machine
+        exit 0
+        ;;
+    esac
     case ${UEFI_ENABLED} in
     true)
         MACHINE_ATTACH=',pflash0=libvirt-pflash0-format,pflash1=libvirt-pflash1-format'
@@ -477,8 +861,6 @@ run_tmoe_qemu_command() {
     *) MACHINE_ATTACH='' ;;
     esac
     set -- "${@}" "-machine" "q35,accel=${MACHINE_ACCEL},usb=off,vmport=off,dump-guest-core=off${MACHINE_ATTACH}"
-    # case ${MACHINE_TYPE} in
-    # q35 | pc-q35-*) #set_tmoe_qemu_q35_pc_machine
     set -- "${@}" "-global" "ICH9-LPC.disable_s3=1"
     set -- "${@}" "-global" "ICH9-LPC.disable_s4=1"
     set -- "${@}" "-device" "pcie-root-port,port=0x10,chassis=1,id=pci.1,bus=pcie.0,multifunction=on,addr=0x2"
@@ -705,7 +1087,7 @@ EOF
             ;;
         DISABLED) ;; #禁用声卡
         'AC97' | 'ES1370')
-            set -- "${@}" "-device ${SOUND_CARD},id=sound0,bus=pci.10,addr=0x2"
+            set -- "${@}" "-device" "${SOUND_CARD},id=sound0,bus=pci.10,addr=0x2"
             ;;
         esac
         ;;
@@ -829,8 +1211,8 @@ EOF
         case ${VNC_STARTUP_PROMPT} in
         'true')
             cat <<-EOF
-正在启动vnc服务,本机vnc地址localhost:${VNC_PORT}
-The LAN VNC address 局域网地址${TMOE_IP_ADDR}
+正在启动vnc服务,本机vnc地址 localhost:${VNC_PORT}
+The LAN VNC address 局域网地址 ${TMOE_IP_ADDR}
 EOF
             ;;
         esac
@@ -863,7 +1245,7 @@ EOF
     i386) set -- "${QEMU_BIN_PATH}/qemu-system-i386" "${@}" ;;
     *) set -- "${QEMU_BIN_PATH}/qemu-system-x86_64" "${@}" ;;
     esac
-    "${@}"
+    exec "${@}"
 }
 ##############
 #关于block device的说明

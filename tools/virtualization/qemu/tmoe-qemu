@@ -3,6 +3,7 @@
 tmoe_qemu_main() {
 	case "$1" in
 	-m | * | -x64qemu)
+		check_qemu_installation
 		tmoe_qemu_main_menu
 		;;
 	esac
@@ -50,7 +51,6 @@ tmoe_qemu_main_menu() {
 start_tmoe_qemu_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_manager'
 	RETURN_TO_MENU='start_tmoe_qemu_manager'
-	check_qemu_installation
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "输startqemu启动${QEMU_VM_NAME}" --menu "${QEMU_VM_NAME} virtual machine tmoe manager" 0 50 0 \
 			"1" "🍹 Start 启动${QEMU_VM_NAME}" \
@@ -119,6 +119,7 @@ creat_a_new_tmoe_qemu_vm() {
 		press_enter_to_continue
 	fi
 	choose_your_qemu_arch
+	choose_qemu_machine_type
 	choose_uefi_or_bios
 	RETURN_TO_WHERE='do_you_want_to_enable_tcp_port_fwd'
 	choose_qemu_connection_type
@@ -152,6 +153,15 @@ choose_your_qemu_arch() {
 	fi
 	sed -E -i "s@^(QEMU_BIN_ARCH=).*@\1${QEMU_BIN_ARCH}@g" ${QEMU_FILE}
 	cat ${QEMU_FILE} | grep --color=auto "^QEMU_BIN_ARCH="
+}
+choose_qemu_machine_type() {
+	if (whiptail --title "请选择qemu机器类型" --yes-button 'i440fx(1996)' --no-button 'q35(2009)' --yesno "If you are using arch/debian-sid/win8.1/win10,then choose q35.\n若您使用的是旧系统,则选择i440fx;否则请选择q35" 10 50); then
+		MACHINE_TYPE='pc'
+	else
+		MACHINE_TYPE='q35'
+	fi
+	sed -E -i "s@^(MACHINE_TYPE=).*@\1${MACHINE_TYPE}@g" ${QEMU_FILE}
+	cat ${QEMU_FILE} | grep --color=auto "^MACHINE_TYPE="
 }
 choose_uefi_or_bios() {
 	if (whiptail --title "请选择引导类型" --yes-button 'legacy bios' --no-button 'uefi' --yesno "If your guest is win95/winxp,then choose legacy bios.\n默认为legacy bios,若您的虚拟机非老旧系统,\n例如debian sid或win10,则可选择uefi\n若TianoCore UEFI无法引导系统，则请切换回bios" 11 50); then
@@ -202,7 +212,7 @@ choose_qemu_connection_type() {
 tmoe_qemu_vnc_menu() {
 	TMOE_OPTION=$(whiptail --title "CONFIGURE VNC" --menu "You can modify the VNC configuration here" 0 50 0 \
 		"1" "port端口" \
-		"2" "LAN/localhost(局域网访问)" \
+		"2" "localhost/LAN(本机/局域网访问)" \
 		"0" "🌚 back 返回" \
 		3>&1 1>&2 2>&3)
 	##############🧺
@@ -215,7 +225,7 @@ tmoe_qemu_vnc_menu() {
 ###################
 tmoe_qemu_vnc_localhost() {
 	CURRENT_VALUE=$(grep '^VNC_LOCALHOST=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	if (whiptail --title "VNC LAN access" --yes-button 'true' --no-button 'false' --yesno "是否仅允许本机访问?默认为true,当前为${CURRENT_VALUE}\nDo you only allow localhost to access vnc?" 9 50); then
+	if (whiptail --title "localhost vnc" --yes-button 'true' --no-button 'false' --yesno "是否仅允许本机访问?默认为true,当前为${CURRENT_VALUE}\nDo you only allow localhost to access vnc?" 9 50); then
 		VNC_LOCALHOST='true'
 	else
 		VNC_LOCALHOST='false'
@@ -1029,6 +1039,7 @@ modify_qemu_machine_accel() {
 		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,进行同架构模拟运行时能得到比tcg更快的速度。\n${KVM_STATUS}\n当前为${CURRENT_VALUE}" 0 50 0 \
 			"1" "kvm:tcg:xen(default)" \
 			"2" "tcg:kvm:xen" \
+			"3" "tcg" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1041,6 +1052,10 @@ modify_qemu_machine_accel() {
 		;;
 	2)
 		MACHINE_ACCEL="tcg:kvm:xen"
+		ENABLE_KVM='false'
+		;;
+	3)
+		MACHINE_ACCEL="tcg"
 		ENABLE_KVM='false'
 		;;
 	esac
@@ -1328,6 +1343,8 @@ modify_tmoe_qemu_extra_options() {
 			"2" "uefi file" \
 			"3" "修改qemu bin路径" \
 			"4" "🍤 FAQ常见问题" \
+			"5" "architecture架构(x86/x64)" \
+			"6" "machine 机器类型(1996/2009)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1338,6 +1355,8 @@ modify_tmoe_qemu_extra_options() {
 	2) choose_qemu_bios_or_uefi_file ;;
 	3) modify_qemu_bin_path ;;
 	4) tmoe_qemu_faq ;;
+	5) choose_your_qemu_arch ;;
+	6) choose_qemu_machine_type ;;
 	esac
 	###############
 	press_enter_to_return
