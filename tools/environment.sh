@@ -681,8 +681,10 @@ tmoe_file_manager() {
 ###########
 where_is_start_dir() {
     for i in /media/sd ${HOME}/sd/Download ${HOME}/sd /sd /sdcard /media/docker ${HOME}; do
-        [[ ! -d ${i} ]] || START_DIR=${i}
-        break
+        if [[ -d ${i} ]]; then
+            START_DIR=${i}
+            break
+        fi
     done
     tmoe_file_manager
 }

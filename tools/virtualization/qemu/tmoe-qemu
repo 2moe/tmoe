@@ -893,18 +893,18 @@ tmoe_qemu_display_settings() {
 modify_tmoe_qemu_vnc_pulse_audio_address() {
 	CURRENT_VALUE=$(grep '^AUDIO_ADDR=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	#10 60
-	AUDIO_ADDR=$(whiptail --inputbox "请输入音频服务地址，默认为127.0.0.1:4713\nPlease type the pulseaudio server addr." 10 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
+	AUDIO_ADDR=$(whiptail --inputbox "请输入音频服务地址，默认为127.0.0.1:4713,当前为${CURRENT_VALUE}\nPlease type the pulseaudio server addr." 10 50 --title "MODIFY PULSE SERVER ADDRESS" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		${RETURN_TO_WHERE}
 	elif [ -z "${AUDIO_ADDR}" ]; then
 		printf "%s\n" "请输入有效的数值"
 		printf "%s\n" "Please enter a valid value"
-	elif [[ ! ${AUDIO_ADDR} =~ ^([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5]):[0-9]{1,5}$ ]]; then
-		printf "${PURPLE}%s${RESET}\n" "${AUDIO_ADDR}"
-		printf "%s\n" "您输入的地址无效,请重新输入"
-		printf "%s\n" "Please re-enter."
-		press_enter_to_return
-		modify_tmoe_qemu_vnc_pulse_audio_address
+		#elif [[ ! ${AUDIO_ADDR} =~ ^([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5]):[0-9]{1,5}$ ]]; then
+		#	printf "${PURPLE}%s${RESET}\n" "${AUDIO_ADDR}"
+		#		printf "%s\n" "您输入的地址无效,请重新输入"
+		#printf "%s\n" "Please re-enter."
+		#press_enter_to_return
+		#modify_tmoe_qemu_vnc_pulse_audio_address
 	else
 		sed -E -i "s@^(AUDIO_ADDR=).*@\1${AUDIO_ADDR}@g" ${QEMU_FILE}
 		egrep --color=auto "^AUDIO_ADDR=" ${QEMU_FILE}
