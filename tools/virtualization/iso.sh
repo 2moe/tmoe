@@ -447,7 +447,7 @@ aria2c_download_tmoe_qemu_file() {
 	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 download_debian_qcow2_file() {
-	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
 	QEMU_NAME="debian_x64-tmoe-202011"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
@@ -520,7 +520,7 @@ download_debian_tmoe_qemu_qcow2_file() {
 #############
 tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
-	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
 	mkdir -p ${DOWNLOAD_PATH}
 	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
@@ -614,7 +614,7 @@ download_alpine_and_docker_x64_img_file() {
 	QEMU_NAME='alpine_x64-tmoe_202011'
 	QEMU_DISK_FILE_NAME="${QEMU_NAME}.qcow2"
 	DOWNLOAD_FILE_NAME="${QEMU_NAME}.qcow2.tar.xz"
-	DOWNLOAD_PATH="${HOME}/sd/Download/backup"
+	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
 	mkdir -p ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
