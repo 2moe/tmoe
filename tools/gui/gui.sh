@@ -3451,8 +3451,8 @@ x11vnc_warning() {
 			若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务。
 			您若觉得x11vnc体验不佳，则可随时输${GREEN}startvnc${RESET}重启并切换到tight/tigervnc服务。
 			------------------------
-            建议您配置多个VNC服务，已备不时之需。
-            您是否需要配置${BLUE}X11VNC${RESET}服务？
+			建议您配置${YELLOW}多个${RESET}VNC服务，以备${PURPLE}不时之需${RESET}。
+			您是否需要配置${BLUE}X11VNC${RESET}服务？
 			Do you want to configure x11vnc? 
 	EOF
     RETURN_TO_WHERE='configure_x11vnc'
