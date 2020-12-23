@@ -31,7 +31,6 @@ To allow live migration of guests from QEMU version 5.1.0, to QEMU version 5.2.0
 pc为Standard PC (i440FX + PIIX, 1996)
 q35为 Standard PC (Q35 + ICH9, 2009)
 使用命令`qemu-system-x86_64 -machine help`获取当前可用的机器型号。
-#本脚本暂仅支持pc-q35-*机器，如需修改为其他机器，则请自行修改pci设备,总线及地址。
 #新版已支持pc
 ______
 vmport=on|off|auto
@@ -649,7 +648,7 @@ run_tmoe_qemu_i440fx_machine() {
     true)
         case ${VIRTIO_9P_PCI_01} in
         "")
-            for i in ${HOME} ${HOME}/sd /sd /media/docker /media/sd; do
+            for i in ${HOME} ${HOME}/sd /sd /sdcard /media/docker /media/sd; do
                 [[ ! -e ${i} ]] || VIRTIO_9P_PCI_01=${i}
             done
             ;;
@@ -1072,7 +1071,7 @@ run_tmoe_qemu_command() {
     true)
         case ${VIRTIO_9P_PCI_01} in
         "")
-            for i in ${HOME} ${HOME}/sd /sd /media/docker /media/sd; do
+            for i in ${HOME} ${HOME}/sd /sd /sdcard /media/docker /media/sd; do
                 [[ ! -e ${i} ]] || VIRTIO_9P_PCI_01=${i}
             done
             ;;

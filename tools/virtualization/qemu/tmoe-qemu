@@ -142,26 +142,28 @@ do_you_want_to_enable_tcp_port_fwd() {
 		TCP_PORT_HOST_FWD_01_ENABLED='false'
 	fi
 	sed -E -i "s@^(TCP_PORT_HOST_FWD_01_ENABLED=).*@\1${TCP_PORT_HOST_FWD_01_ENABLED}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^TCP_PORT_HOST_FWD_01_ENABLED="
+	grep --color=auto "^TCP_PORT_HOST_FWD_01_ENABLED=" ${QEMU_FILE}
 }
 ###########################
 choose_your_qemu_arch() {
-	if (whiptail --title "请选择qemu虚拟机架构" --yes-button 'x86_64' --no-button 'i386' --yesno "If your guest is 64bit,then choose x86_64\n若您需要运行x64系统,则请选择x86_64;\n若需运行32位x86 OS,则请选择i386。" 10 50); then
+	CURRENT_VALUE=$(grep '^QEMU_BIN_ARCH=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
+	if (whiptail --title "请选择qemu虚拟机架构" --yes-button 'x86_64' --no-button 'i386' --yesno "If your guest is 64bit,then choose x86_64\n若您需要运行x64系统,则请选择x86_64;\n若需运行32位x86 OS,则请选择i386.当前为${CURRENT_VALUE}" 10 50); then
 		QEMU_BIN_ARCH='x86_64'
 	else
 		QEMU_BIN_ARCH='i386'
 	fi
 	sed -E -i "s@^(QEMU_BIN_ARCH=).*@\1${QEMU_BIN_ARCH}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^QEMU_BIN_ARCH="
+	grep --color=auto "^QEMU_BIN_ARCH=" ${QEMU_FILE}
 }
 choose_qemu_machine_type() {
-	if (whiptail --title "请选择qemu机器类型" --yes-button 'i440fx(1996)' --no-button 'q35(2009)' --yesno "If you are using arch/debian-sid/win8.1/win10,then choose q35.\n若您使用的是旧系统,则选择i440fx;否则请选择q35" 10 50); then
+	CURRENT_VALUE=$(grep '^MACHINE_TYPE=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
+	if (whiptail --title "请选择qemu机器类型" --yes-button 'i440fx(1996)' --no-button 'q35(2009)' --yesno "If you are using arch/debian-sid/win8.1/win10,then choose q35.\n若您使用的是旧系统,则选择i440fx;否则请选择q35.当前为${CURRENT_VALUE}" 10 50); then
 		MACHINE_TYPE='pc'
 	else
 		MACHINE_TYPE='q35'
 	fi
 	sed -E -i "s@^(MACHINE_TYPE=).*@\1${MACHINE_TYPE}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^MACHINE_TYPE="
+	grep --color=auto "^MACHINE_TYPE=" ${QEMU_FILE}
 }
 choose_uefi_or_bios() {
 	if (whiptail --title "请选择引导类型" --yes-button 'legacy bios' --no-button 'uefi' --yesno "If your guest is win95/winxp,then choose legacy bios.\n默认为legacy bios,若您的虚拟机非老旧系统,\n例如debian sid或win10,则可选择uefi\n若TianoCore UEFI无法引导系统，则请切换回bios" 11 50); then
@@ -170,7 +172,7 @@ choose_uefi_or_bios() {
 		UEFI_ENABLED='true'
 	fi
 	sed -E -i "s@^(UEFI_ENABLED=).*@\1${UEFI_ENABLED}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^UEFI_ENABLED="
+	grep --color=auto "^UEFI_ENABLED=" ${QEMU_FILE}
 }
 choose_qemu_connection_type() {
 	#此处不包含RETURN_TO_WHERE变量
@@ -204,7 +206,7 @@ choose_qemu_connection_type() {
 	"") ;;
 	*)
 		sed -E -i "s@^(CONNECTION_TYPE=).*@\1${CONNECTION_TYPE}@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | grep --color=auto "^CONNECTION_TYPE="
+		grep --color=auto "^CONNECTION_TYPE=" ${QEMU_FILE}
 		;;
 	esac
 }
@@ -231,7 +233,7 @@ tmoe_qemu_vnc_localhost() {
 		VNC_LOCALHOST='false'
 	fi
 	sed -E -i "s@^(VNC_LOCALHOST=).*@\1${VNC_LOCALHOST}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^VNC_LOCALHOST="
+	grep --color=auto "^VNC_LOCALHOST=" ${QEMU_FILE}
 }
 ###################
 choose_qemu_x11_addr() {
@@ -259,7 +261,7 @@ choose_qemu_x11_addr() {
 	"") ;;
 	*)
 		sed -E -i "s@^(REMOTE_X11_ADDR=).*@\1${REMOTE_X11_ADDR}@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | grep --color=auto "^REMOTE_X11_ADDR="
+		grep --color=auto "^REMOTE_X11_ADDR=" ${QEMU_FILE}
 		;;
 	esac
 }
@@ -305,7 +307,7 @@ choose_qemu_vnc_port() {
 	"") ;;
 	*)
 		sed -E -i "s@^(VNC_PORT=).*@\1${VNC_PORT}@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | grep --color=auto "^VNC_PORT="
+		grep --color=auto "^VNC_PORT=" ${QEMU_FILE}
 		;;
 	esac
 }
@@ -359,7 +361,7 @@ save_current_qemu_conf_as_a_new_script() {
 	cp -vf ${TMOE_TOOL_DIR}/virtualization/qemu/startqemu ${QEMU_FILE}
 	chmod -v 777 ${QEMU_FILE}
 	sed -E -i "s@^(QEMU_NAME=).*@\1${QEMU_VM_NAME}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^QEMU_NAME="
+	grep --color=auto "^QEMU_NAME=" ${QEMU_FILE}
 }
 ################
 fix_qemu_vdisk_file_perssions() {
@@ -425,12 +427,12 @@ creat_blank_virtual_disk_image() {
 	#printf "%s\n" "Do you need to set it as the default disk?"
 	#do_you_want_to_continue
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 ################
 choose_qemu_qcow2_or_img_file() {
 	if grep -q "^${BLK_DEVICE}_ENABLED=.*true" ${QEMU_FILE}; then
-		CURRENT_QEMU_ISO=$(cat ${QEMU_FILE} | grep "^${BLK_DEVICE}=" | head -n 1 | awk -F '=' '{print $2}')
+		CURRENT_QEMU_ISO=$(grep "^${BLK_DEVICE}=" ${QEMU_FILE} | head -n 1 | awk -F '=' '{print $2}')
 		IMPORTANT_TIPS="您当前已加载的虚拟磁盘为${CURRENT_QEMU_ISO}"
 	else
 		IMPORTANT_TIPS="磁盘文件路径请不要包含空格,您当前未加载虚拟磁盘"
@@ -445,7 +447,7 @@ choose_qemu_qcow2_or_img_file() {
 		qemu-img check "${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah "${TMOE_FILE_ABSOLUTE_PATH}"
 		sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+		egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 	fi
 }
 ##########
@@ -620,7 +622,7 @@ delete_current_qemu_vm_disk_file() {
 ################
 set_it_as_the_default_qemu_iso() {
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 download_virtio_driver() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
@@ -737,7 +739,7 @@ modify_qemu_shared_folder() {
 	6) modify_qemu_9p_dir_01 ;;
 	esac
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${CURRENT_9P_DIR}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 ################
 modify_qemu_9p_dir_01() {
@@ -757,7 +759,7 @@ modify_qemu_disk_format() {
 		QEMU_IMG_FORMAT='raw'
 	fi
 	sed -E -i "s@^(${BLK_DEVICE}_FORMAT=).*@\1${QEMU_IMG_FORMAT}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^${BLK_DEVICE}_FORMAT="
+	grep --color=auto "^${BLK_DEVICE}_FORMAT=" ${QEMU_FILE}
 }
 modify_qemu_disk_bootindex() {
 	CURRENT_BOOTINDEX=$(grep "^${BLK_DEVICE}_BOOTINDEX=" ${QEMU_FILE} | cut -d '=' -f 2)
@@ -785,7 +787,7 @@ modify_qemu_disk_bootindex() {
 	0 | "") ${RETURN_TO_WHERE} ;;
 	*)
 		sed -E -i "s@^(${BLK_DEVICE}_BOOTINDEX=).*@\1${BOOTINDEX}@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | grep --color=auto "^${BLK_DEVICE}_BOOTINDEX="
+		grep --color=auto "^${BLK_DEVICE}_BOOTINDEX=" ${QEMU_FILE}
 		;;
 	esac
 	press_enter_to_return
@@ -793,7 +795,7 @@ modify_qemu_disk_bootindex() {
 }
 disable_qemu_disk() {
 	sed -E -i "s@^(${BLK_DEVICE}_ENABLED=).*@\1false@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}="
+	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 	printf "%s\n" "已${PURPLE}禁用${RESET}${BLUE}${BLK_DEVICE}${RESET}"
 }
 #################
@@ -905,7 +907,7 @@ modify_tmoe_qemu_vnc_pulse_audio_address() {
 		modify_tmoe_qemu_vnc_pulse_audio_address
 	else
 		sed -E -i "s@^(AUDIO_ADDR=).*@\1${AUDIO_ADDR}@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | egrep --color=auto "^AUDIO_ADDR="
+		egrep --color=auto "^AUDIO_ADDR=" ${QEMU_FILE}
 		printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
 		printf "%s\n" "您当前的音频地址已修改为$(grep '^AUDIO_ADDR=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)"
 	fi
@@ -941,7 +943,7 @@ modify_qemu_sound_card() {
 	esac
 	###############
 	sed -E -i "s@^(SOUND_CARD=).*@\1${SOUND_CARD}@g;s@^(SOUND_CARD_ENABLED=).*@\1${SOUND_CARD_ENABLED}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^SOUND_CARD=|^SOUND_CARD_ENABLED="
+	egrep --color=auto "^SOUND_CARD=|^SOUND_CARD_ENABLED=" ${QEMU_FILE}
 	printf "%s\n" "您已将sound_card修改为${BLUE}${SOUND_CARD}${RESET}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
@@ -989,7 +991,7 @@ modify_qemu_graphics_card() {
 	esac
 	###############
 	sed -E -i "s@^(GPU_MODEL=).*@\1${GPU_MODEL}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^GPU_MODEL="
+	grep --color=auto "^GPU_MODEL=" ${QEMU_FILE}
 	printf "%s\n" "您已将graphics_card修改为${BLUE}${GPU_MODEL}${RESET}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
@@ -1061,7 +1063,7 @@ modify_qemu_machine_accel() {
 	esac
 	###############
 	sed -E -i "s@^(MACHINE_ACCEL=).*@\1${MACHINE_ACCEL}@g;s@^(ENABLE_KVM=).*@\1${ENABLE_KVM}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | grep --color=auto "^MACHINE_ACCEL="
+	grep --color=auto "^MACHINE_ACCEL=" ${QEMU_FILE}
 	printf "%s\n" "您已将MACHINE_ACCEL修改为${BLUE}${MACHINE_ACCEL}${RESET}"
 }
 #############
@@ -1076,7 +1078,7 @@ choose_memory_allocation_type() {
 
 	if (whiptail --title "MEMORY ALLOCATION TYPE" --yes-button 'auto' --no-button 'manually' --yesno "If you choose auto, the guest's RAM will be allocated automatically according to the host's available RAM.\n若选择auto,则将自动分配内存,分配规则为当前宿主机可用内存(不含swap)减去${CURRENT_VALUE}M\n若选manually,则将指定虚拟机内存大小。\n${IMPORTANT_TIPS}" 13 50); then
 		sed -E -i "s@^(MEMORY_ALLOCATION=).*@\1auto@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | grep --color=auto "^MEMORY_ALLOCATION="
+		grep --color=auto "^MEMORY_ALLOCATION=" ${QEMU_FILE}
 		TARGET=$(whiptail --inputbox "已启用auto-mode,请输入自动分配时需要减少的内存大小(非实际内存大小),详见配置脚本中MEMORY_ALLOCATION的说明\n默认为256,当前为${CURRENT_VALUE}\nPlease type size to be reduced during auto allocation" 13 50 --title "MEMORY_REDUCED" 3>&1 1>&2 2>&3)
 		if [ "$?" != "0" ]; then
 			#printf "%s\n" "检测到您取消了操作"
@@ -1088,7 +1090,7 @@ choose_memory_allocation_type() {
 			printf "%s\n" "Please type the pure number"
 		else
 			sed -E -i "s@^(MEMORY_REDUCED=).*@\1${TARGET}@g" ${QEMU_FILE}
-			cat ${QEMU_FILE} | grep --color=auto "^MEMORY_REDUCED="
+			grep --color=auto "^MEMORY_REDUCED=" ${QEMU_FILE}
 			printf "%s\n" "您已将MEMORY_REDUCED的值修改为${BLUE}${TARGET}${RESET}"
 		fi
 	else
@@ -1110,7 +1112,7 @@ modify_qemu_ram_size() {
 		printf "%s\n" "Please type the pure number"
 	else
 		sed -E -i "s@^(MEMORY_SIZE=).*@\1${TARGET}@g;s@^(MEMORY_ALLOCATION=).*@\1num@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | grep --color=auto "^MEMORY_SIZE=|^MEMORY_ALLOCATION="
+		grep --color=auto "^MEMORY_SIZE=|^MEMORY_ALLOCATION=" ${QEMU_FILE}
 		printf "%s\n" "您已将MEMORY_SIZE的值修改为${BLUE}${TARGET}${RESET}"
 	fi
 }
@@ -1189,7 +1191,7 @@ modify_number_of_qemu_cpus() {
 	esac
 	###############
 	sed -E -i "s@^(CPUS_NUM=).*@\1${CPUS_NUM}@g;s@^(SOCKETS_NUM=).*@\1${SOCKETS_NUM}@g;s@^(CORES_NUM=).*@\1${CORES_NUM}@g;s@^(THREADS_NUM=).*@\1${THREADS_NUM}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^CPUS_NUM=|^SOCKETS_NUM=|^CORES_NUM=|^THREADS_NUM="
+	egrep --color=auto "^CPUS_NUM=|^SOCKETS_NUM=|^CORES_NUM=|^THREADS_NUM=" ${QEMU_FILE}
 }
 ###############
 ###############
@@ -1294,7 +1296,7 @@ modify_qemu_tmoe_network_card() {
 	esac
 	###############
 	sed -E -i "s@^(${NET_DEVICE}=).*@\1"${TMOE_QEMU_NETWORK_CARD}"@g;s@^(${NET_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^${NET_DEVICE}_ENABLED=|^${NET_DEVICE}="
+	egrep --color=auto "^${NET_DEVICE}_ENABLED=|^${NET_DEVICE}=" ${QEMU_FILE}
 	printf "%s\n" "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
 }
 ###########
@@ -1314,7 +1316,7 @@ modify_qemu_exposed_ports() {
 #################
 disable_qemu_tcp_port_fwd() {
 	sed -E -i "s@^(${PORT_FWD_VAR}_ENABLED=).*@\1false@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^${PORT_FWD_VAR}_ENABLED="
+	egrep --color=auto "^${PORT_FWD_VAR}_ENABLED=" ${QEMU_FILE}
 	printf "%s\n" "您${PURPLE}已禁用${BLUE}${PORT_FWD_VAR}${RESET}"
 }
 #################
@@ -1328,7 +1330,7 @@ modify_qemu_host_and_guest_port() {
 		printf "%s\n" "Please enter a valid value"
 	else
 		sed -E -i "s@^(${PORT_FWD_VAR}=).*@\1"${TCP_PORT_FWD_RULES}"@g;s@^(${PORT_FWD_VAR}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | egrep --color=auto "^${PORT_FWD_VAR}_ENABLED=|^${PORT_FWD_VAR}="
+		egrep --color=auto "^${PORT_FWD_VAR}_ENABLED=|^${PORT_FWD_VAR}=" ${QEMU_FILE}
 		printf "%s\n" "您已将${PORT_FWD_VAR}转发规则修改为${TCP_PORT_FWD_RULES}"
 	fi
 }
@@ -1386,7 +1388,7 @@ modify_qemu_bin_path() {
 		printf "${RED}%s${RESET}%s\n" "ERROR！" "目标路径下的qemu-system-x86_64无执行权限。"
 	else
 		sed -E -i "s@^(QEMU_BIN_PATH=).*@\1${QEMU_BIN_PATH}@g" ${QEMU_FILE}
-		cat ${QEMU_FILE} | egrep --color=auto "^QEMU_BIN_PATH="
+		egrep --color=auto "^QEMU_BIN_PATH=" ${QEMU_FILE}
 		printf "%s\n" "您已将QEMU_BIN_PATH修改为${QEMU_BIN_PATH}"
 	fi
 }
@@ -1425,7 +1427,7 @@ choose_qemu_bios_or_uefi_file() {
 	esac
 	###############
 	sed -E -i "s@^(UEFI_CODE_PFLASH=).*@\1"${TMOE_QEMU_BIOS_FILE_PATH}"@g;s@^(UEFI_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^UEFI_CODE_PFLASH=|^UEFI_ENABLED="
+	egrep --color=auto "^UEFI_CODE_PFLASH=|^UEFI_ENABLED=" ${QEMU_FILE}
 	printf "%s\n" "您已将UEFI文件修改为${TMOE_QEMU_BIOS_FILE_PATH}"
 }
 ##########
@@ -1798,7 +1800,7 @@ modify_qemu_amd64_tmoe_cpu_type() {
 	esac
 	###############
 	sed -E -i "s@^(CPU_MODEL=).*@\1${TMOE_AMD64_QEMU_CPU_TYPE}@g" ${QEMU_FILE}
-	cat ${QEMU_FILE} | egrep --color=auto "^CPU_MODEL="
+	egrep --color=auto "^CPU_MODEL=" ${QEMU_FILE}
 	printf "%s\n" "您已将cpu修改为${TMOE_AMD64_QEMU_CPU_TYPE}"
 	printf "%s\n" "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return
