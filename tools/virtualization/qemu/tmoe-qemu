@@ -1205,6 +1205,7 @@ modify_tmoe_qemu_network_settings() {
 			"2" "net-01 port forward端口转发01" \
 			"3" "network card 02(第二块网卡)" \
 			"4" "net-02 port forward端口转发02" \
+			"5" "network card 03(第三块网卡)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1212,10 +1213,14 @@ modify_tmoe_qemu_network_settings() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1)
+		NET_DEVICE='NET_CARD_01'
 		IMPORTANT_TIPS='网卡01默认为virtio-net-pci,'
 		modify_qemu_tmoe_network_card
 		;;
-	2) modify_qemu_exposed_ports ;;
+	2)
+		NET_DEVICE='NET_CARD_01'
+		modify_qemu_exposed_ports
+		;;
 	3)
 		NET_DEVICE='NET_CARD_02'
 		IMPORTANT_TIPS='网卡02默认为e1000,'
@@ -1224,6 +1229,11 @@ modify_tmoe_qemu_network_settings() {
 	4)
 		NET_DEVICE='NET_CARD_02'
 		modify_qemu_exposed_ports
+		;;
+	5)
+		NET_DEVICE='NET_CARD_03'
+		IMPORTANT_TIPS='网卡03默认为rtl8139,'
+		modify_qemu_tmoe_network_card
 		;;
 	esac
 	###############
@@ -1238,72 +1248,81 @@ modify_qemu_tmoe_network_card() {
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "网卡型号" --menu "Please select the network card model.\n${IMPORTANT_TIPS}当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
-			"00" "virtio-net-pci" \
-			"01" "e1000:alias e1000-82540em" \
-			"02" "e1000-82544gc:Intel Gigabit Ethernet" \
-			"03" "e1000-82545em" \
-			"04" "e1000e:Intel 82574L GbE Controller" \
-			"05" "Realtek rtl8139" \
-			"06" "vmxnet3:VMWare Paravirtualized Eth v3" \
-			"07" "i82550:Intel i82550 Ethernet" \
-			"08" "i82551" \
-			"09" "i82557a" \
-			"10" "i82557b" \
-			"11" "i82557c" \
-			"12" "i82558a" \
-			"13" "i82558b" \
-			"14" "i82559a" \
-			"15" "i82559b" \
-			"16" "i82559er" \
-			"17" "i82562" \
-			"18" "i82801" \
-			"19" "ne2k_pci" \
-			"20" "pcnet" \
-			"21" "pcnet" \
-			"22" "pvrdma" \
-			"23" "rocker" \
-			"24" "tulip" \
+			"1" "disable 禁用" \
+			"2" "virtio-net-pci" \
+			"3" "e1000:alias e1000-82540em" \
+			"4" "e1000-82544gc:Intel Gigabit Ethernet" \
+			"5" "e1000-82545em" \
+			"6" "e1000e:Intel 82574L GbE Controller" \
+			"7" "Realtek rtl8139" \
+			"8" "vmxnet3:VMWare Paravirtualized Eth v3" \
+			"9" "i82550:Intel i82550 Ethernet" \
+			"10" "i82551" \
+			"11" "i82557a" \
+			"12" "i82557b" \
+			"13" "i82557c" \
+			"14" "i82558a" \
+			"15" "i82558b" \
+			"16" "i82559a" \
+			"17" "i82559b" \
+			"18" "i82559er" \
+			"19" "i82562" \
+			"20" "i82801" \
+			"21" "ne2k_pci" \
+			"22" "pcnet" \
+			"23" "pcnet" \
+			"24" "pvrdma" \
+			"25" "rocker" \
+			"26" "tulip" \
 			3>&1 1>&2 2>&3
 	)
 	#############
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") modify_tmoe_qemu_network_settings ;;
-	00) TMOE_QEMU_NETWORK_CARD="virtio-net-pci" ;;
-	01) TMOE_QEMU_NETWORK_CARD="e1000" ;;
-	02) TMOE_QEMU_NETWORK_CARD="e1000-82544gc" ;;
-	03) TMOE_QEMU_NETWORK_CARD="e1000-82545em" ;;
-	04) TMOE_QEMU_NETWORK_CARD="e1000e" ;;
-	05) TMOE_QEMU_NETWORK_CARD="rtl8139" ;;
-	06) TMOE_QEMU_NETWORK_CARD="vmxnet3" ;;
-	07) TMOE_QEMU_NETWORK_CARD="i82550" ;;
-	08) TMOE_QEMU_NETWORK_CARD="i82551" ;;
-	09) TMOE_QEMU_NETWORK_CARD="i82557a" ;;
-	10) TMOE_QEMU_NETWORK_CARD="i82557b" ;;
-	11) TMOE_QEMU_NETWORK_CARD="i82557c" ;;
-	12) TMOE_QEMU_NETWORK_CARD="i82558a" ;;
-	13) TMOE_QEMU_NETWORK_CARD="i82558b" ;;
-	14) TMOE_QEMU_NETWORK_CARD="i82559a" ;;
-	15) TMOE_QEMU_NETWORK_CARD="i82559b" ;;
-	16) TMOE_QEMU_NETWORK_CARD="i82559er" ;;
-	17) TMOE_QEMU_NETWORK_CARD="i82562" ;;
-	18) TMOE_QEMU_NETWORK_CARD="i82801" ;;
-	19) TMOE_QEMU_NETWORK_CARD="ne2k_pci" ;;
-	20) TMOE_QEMU_NETWORK_CARD="pcnet" ;;
-	21) TMOE_QEMU_NETWORK_CARD="pcnet" ;;
-	22) TMOE_QEMU_NETWORK_CARD="pvrdma" ;;
-	23) TMOE_QEMU_NETWORK_CARD="rocker" ;;
-	24) TMOE_QEMU_NETWORK_CARD="tulip" ;;
+	2) TMOE_QEMU_NETWORK_CARD="virtio-net-pci" ;;
+	3) TMOE_QEMU_NETWORK_CARD="e1000" ;;
+	4) TMOE_QEMU_NETWORK_CARD="e1000-82544gc" ;;
+	5) TMOE_QEMU_NETWORK_CARD="e1000-82545em" ;;
+	6) TMOE_QEMU_NETWORK_CARD="e1000e" ;;
+	7) TMOE_QEMU_NETWORK_CARD="rtl8139" ;;
+	8) TMOE_QEMU_NETWORK_CARD="vmxnet3" ;;
+	9) TMOE_QEMU_NETWORK_CARD="i82550" ;;
+	10) TMOE_QEMU_NETWORK_CARD="i82551" ;;
+	11) TMOE_QEMU_NETWORK_CARD="i82557a" ;;
+	12) TMOE_QEMU_NETWORK_CARD="i82557b" ;;
+	13) TMOE_QEMU_NETWORK_CARD="i82557c" ;;
+	14) TMOE_QEMU_NETWORK_CARD="i82558a" ;;
+	15) TMOE_QEMU_NETWORK_CARD="i82558b" ;;
+	16) TMOE_QEMU_NETWORK_CARD="i82559a" ;;
+	17) TMOE_QEMU_NETWORK_CARD="i82559b" ;;
+	18) TMOE_QEMU_NETWORK_CARD="i82559er" ;;
+	19) TMOE_QEMU_NETWORK_CARD="i82562" ;;
+	20) TMOE_QEMU_NETWORK_CARD="i82801" ;;
+	21) TMOE_QEMU_NETWORK_CARD="ne2k_pci" ;;
+	22) TMOE_QEMU_NETWORK_CARD="pcnet" ;;
+	23) TMOE_QEMU_NETWORK_CARD="pcnet" ;;
+	24) TMOE_QEMU_NETWORK_CARD="pvrdma" ;;
+	25) TMOE_QEMU_NETWORK_CARD="rocker" ;;
+	26) TMOE_QEMU_NETWORK_CARD="tulip" ;;
 	esac
 	###############
-	sed -E -i "s@^(${NET_DEVICE}=).*@\1"${TMOE_QEMU_NETWORK_CARD}"@g;s@^(${NET_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
+	case ${TMOE_VIRTUALIZATION} in
+	1)
+		sed -E -i "s@^(${NET_DEVICE}_ENABLED=).*@\1false@g" ${QEMU_FILE}
+		printf "%s\n" "您已将禁用${NET_DEVICE}"
+		;;
+	*)
+		sed -E -i "s@^(${NET_DEVICE}=).*@\1"${TMOE_QEMU_NETWORK_CARD}"@g;s@^(${NET_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
+		printf "%s\n" "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
+		;;
+	esac
 	egrep --color=auto "^${NET_DEVICE}_ENABLED=|^${NET_DEVICE}=" ${QEMU_FILE}
-	printf "%s\n" "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
 }
 ###########
 modify_qemu_exposed_ports() {
 	case ${NET_DEVICE} in
 	NET_CARD_02) PORT_FWD_VAR='TCP_PORT_HOST_FWD_02' ;;
-	*) PORT_FWD_VAR='TCP_PORT_HOST_FWD_01' ;;
+	NET_CARD_01) PORT_FWD_VAR='TCP_PORT_HOST_FWD_01' ;;
 	esac
 	CURRENT_VALUE=$(grep "^${PORT_FWD_VAR}_ENABLED=" ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	#IMPORTANT_TIPS
