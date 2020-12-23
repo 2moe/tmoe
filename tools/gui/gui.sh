@@ -1356,7 +1356,12 @@ install_xfce4_desktop() {
     case ${TMOE_PROOT} in
     true)
         case "${LINUX_DISTRO}" in
-        "debian") apt autoremove --purge -y ^xfce4-power-manager ;;
+        "debian")
+            case "${DEBIAN_DISTRO}" in
+            "kali") ;;
+            *) apt autoremove --purge -y ^xfce4-power-manager ;;
+            esac
+            ;;
         arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
         redhat) dnf remove -y xfce4-power-manager ;;
         esac
