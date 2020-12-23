@@ -63,11 +63,15 @@ proot_management_menu() {
 	esac
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 8 | 11)
+	2 | 7 | 10 | 11)
+		#回到本菜单： 停止进程,备份，命令，空间
 		press_enter_to_return
 		proot_management_menu
 		;;
-	10) ${RETURN_TO_MENU} ;;
+	8)
+		#unmount & remove
+		${RETURN_TO_MENU}
+		;;
 	esac
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
