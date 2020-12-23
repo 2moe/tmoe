@@ -3449,7 +3449,7 @@ x11vnc_warning() {
 			------------------------
 			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
 			若超过一分钟黑屏，则请输${GREEN}startx11vnc${RESET}重启该服务。
-			您若觉得x11vnc体验不佳，则可随时输${GREEN}startvnc${RESET}重启并切换到tight/tigervnc服务。
+			您若觉得x11vnc体验不佳，则可随时输${GREEN}startvnc${RESET}重启并切换到${BLUE}tight/tigervnc${RESET}服务。
 			------------------------
 			建议您配置${YELLOW}多个${RESET}VNC服务，以备${PURPLE}不时之需${RESET}。
 			您是否需要配置${BLUE}X11VNC${RESET}服务？

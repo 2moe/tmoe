@@ -306,7 +306,7 @@ install_bauh_store() {
         DEPENDENCY_02="python-pip"
         beta_features_quick_install
     fi
-    pip3 install bauh
+    sudo -H pip3 install bauh || su -c "pip3 install bauh"
 }
 #############
 install_snap_store() {

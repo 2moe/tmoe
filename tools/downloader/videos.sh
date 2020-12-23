@@ -396,10 +396,10 @@ upgrade_video_download_tool() {
     rm -rf ./.ANNIETEMPFOLDER
     #mkdir -p ${HOME}/.config
     #pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
-    pip3 install pip -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple 2>/dev/null
-    pip3 install you-get -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple
+    sudo -H pip3 install pip -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple 2>/dev/null || su -c "pip3 install pip -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
+    sudo -H pip3 install you-get -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple || su -c "pip3 install you-get -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
     you-get -V
-    pip3 install youtube-dl -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple
+    sudo -H pip3 install youtube-dl -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple || su -c "pip3 install youtube-dl -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
     youtube-dl -v 2>&1 | grep version
     printf "%s\n" "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
     printf "%s\n" "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
