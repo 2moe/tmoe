@@ -1359,7 +1359,11 @@ install_xfce4_desktop() {
         "debian")
             case "${DEBIAN_DISTRO}" in
             "kali") ;;
-            *) apt autoremove --purge -y ^xfce4-power-manager ;;
+            *)
+                if [ ! -e "/usr/share/icons/Windows-10-Icons/128x128/mimetypes/" ]; then
+                    apt autoremove --purge -y ^xfce4-power-manager
+                fi
+                ;;
             esac
             ;;
         arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
@@ -3325,8 +3329,8 @@ install_kali_undercover() {
         cd /tmp/.kali-undercover-win10-theme
         UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
-        apt-cache show ./kali-undercover.deb
-        apt install -y ./kali-undercover.deb
+        #apt-cache show ./kali-undercover.deb
+        #apt install -y ./kali-undercover.deb
         if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
             THE_LATEST_DEB_FILE='kali-undercover.deb'
             ar xv ${THE_LATEST_DEB_FILE}
@@ -3336,7 +3340,7 @@ install_kali_undercover() {
             update-icon-caches /usr/share/icons/Windows-10-Icons 2>/dev/null &
             #fi
         fi
-        rm -rf /tmp/.kali-undercover-win10-theme
+        rm -rfv /tmp/.kali-undercover-win10-theme
         #rm -f ./kali-undercover.deb
     fi
     #XFCE_ICON_NAME='Windows 10'
