@@ -4803,9 +4803,11 @@ do_you_want_to_configure_novnc() {
     cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
     ln -sf novnc startnovnc
     printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
-    printf "%s\n" "Congratulations！恭喜您获得新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
-    printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
-    printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01
+    if [ ! -s "${TMOE_LINUX_DIR}/achievement01" ]; then
+        printf "%s\n" "Congratulations！恭喜您获得新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
+        printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
+        printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01
+    fi
     printf "%s\n" "${YELLOW}*°▽°* ${RESET}You are a ${BOLD}${BLUE}VNC Master${RESET}！"
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
 }
