@@ -97,7 +97,7 @@ CPUID FLAGS示例02:'ss=on,vmx=on,pdcm=on,hypervisor=on,tsc-adjust=on,clflushopt
 EOF
 #02-2.CPU变量值修改区域
 CPU_MODEL='max'
-CPU_ID_FLAGS='hle=off,rtm=off,acpi=off'
+CPU_ID_FLAGS='hle=off,rtm=off'
 #CPU_MODEL为CPU型号，例如'Icelake-Client'和'Skylake-Client-IBRS'。默认为'max',即启用加速器支持的所有可用功能。
 #CPU_ID_FLAGS为cpu的属性和功能，可以留空。默认为'hle=off,rtm=off'
 ###########
@@ -354,6 +354,9 @@ NET_CARD_02='e1000'
 
 NET_CARD_02_MAC=''
 #网卡02的mac地址
+
+NET_CARD_03_ENABLED='true'
+NET_CARD_03='rtl8139'
 
 #08-3.tcp端口转发规则
 : <<\EOF
@@ -727,15 +730,32 @@ EOF
         ;;
     esac
     ##########
-    set -- "${@}" "-netdev" "user,id=hostnet0${TCP_PORT_HOST_FWD_FORMAT_01}${UDP_PORT_HOST_FWD_FORMAT_01}"
-    case ${NET_CARD_01_MAC} in
-    "") set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.0,addr=0x3" ;;
-    *) set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.0,addr=0x3,mac=${NET_CARD_01_MAC}" ;;
+    case ${NET_CARD_01_ENABLED} in
+    false) ;;
+    *)
+        set -- "${@}" "-netdev" "user,id=hostnet0${TCP_PORT_HOST_FWD_FORMAT_01}${UDP_PORT_HOST_FWD_FORMAT_01}"
+        case ${NET_CARD_01_MAC} in
+        "") set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.0,addr=0x3" ;;
+        *) set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.0,addr=0x3,mac=${NET_CARD_01_MAC}" ;;
+        esac
+        ;;
     esac
-    set -- "${@}" "-netdev" "user,id=hostnet1${TCP_PORT_HOST_FWD_FORMAT_02}${UDP_PORT_HOST_FWD_FORMAT_02}"
-    case ${NET_CARD_02_MAC} in
-    "") set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.0,addr=0xa" ;;
-    *) set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.0,addr=0xa,mac=${NET_CARD_02_MAC}" ;;
+    case ${NET_CARD_02_ENABLED} in
+    false) ;;
+    *)
+        set -- "${@}" "-netdev" "user,id=hostnet1${TCP_PORT_HOST_FWD_FORMAT_02}${UDP_PORT_HOST_FWD_FORMAT_02}"
+        case ${NET_CARD_02_MAC} in
+        "") set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.0,addr=0xa" ;;
+        *) set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.0,addr=0xa,mac=${NET_CARD_02_MAC}" ;;
+        esac
+        ;;
+    esac
+    case ${NET_CARD_03_ENABLED} in
+    false) ;;
+    *)
+        set -- "${@}" "-netdev" "user,id=hostnet2"
+        set -- "${@}" "-device" "${NET_CARD_03},netdev=hostnet2,id=net2,bus=pci.0,addr=0xc"
+        ;;
     esac
     ##########
     set -- "${@}" "-device" "usb-tablet,id=input0,bus=usb.0,port=1"
@@ -1134,16 +1154,32 @@ EOF
         esac
         ;;
     esac
-
-    set -- "${@}" "-netdev" "user,id=hostnet0${TCP_PORT_HOST_FWD_FORMAT_01}${UDP_PORT_HOST_FWD_FORMAT_01}"
-    case ${NET_CARD_01_MAC} in
-    "") set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.1,addr=0x0" ;;
-    *) set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.1,addr=0x0,mac=${NET_CARD_01_MAC}" ;;
+    case ${NET_CARD_01_ENABLED} in
+    false) ;;
+    *)
+        set -- "${@}" "-netdev" "user,id=hostnet0${TCP_PORT_HOST_FWD_FORMAT_01}${UDP_PORT_HOST_FWD_FORMAT_01}"
+        case ${NET_CARD_01_MAC} in
+        "") set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.1,addr=0x0" ;;
+        *) set -- "${@}" "-device" "${NET_CARD_01},netdev=hostnet0,id=net0,bus=pci.1,addr=0x0,mac=${NET_CARD_01_MAC}" ;;
+        esac
+        ;;
     esac
-    set -- "${@}" "-netdev" "user,id=hostnet1${TCP_PORT_HOST_FWD_FORMAT_02}${UDP_PORT_HOST_FWD_FORMAT_02}"
-    case ${NET_CARD_02_MAC} in
-    "") set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.1,addr=0x1" ;;
-    *) set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.1,addr=0x1,mac=${NET_CARD_02_MAC}" ;;
+    case ${NET_CARD_02_ENABLED} in
+    false) ;;
+    *)
+        set -- "${@}" "-netdev" "user,id=hostnet1${TCP_PORT_HOST_FWD_FORMAT_02}${UDP_PORT_HOST_FWD_FORMAT_02}"
+        case ${NET_CARD_02_MAC} in
+        "") set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.1,addr=0x1" ;;
+        *) set -- "${@}" "-device" "${NET_CARD_02},netdev=hostnet1,id=net1,bus=pci.1,addr=0x1,mac=${NET_CARD_02_MAC}" ;;
+        esac
+        ;;
+    esac
+    case ${NET_CARD_03_ENABLED} in
+    false) ;;
+    *)
+        set -- "${@}" "-netdev" "user,id=hostnet2"
+        set -- "${@}" "-device" "${NET_CARD_03},netdev=hostnet2,id=net2,bus=pci.1,addr=0x2"
+        ;;
     esac
     ##########
     set -- "${@}" "-chardev" "spicevmc,id=charchannel1,name=vdagent"
