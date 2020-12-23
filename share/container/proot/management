@@ -19,9 +19,9 @@ proot_management_menu() {
 			"5" "🍬 novnc(HTML5 VNC client)" \
 			"6" "⚔️ startx11vnc" \
 			"7" "🍹 backup proot container" \
-			"8" "📡 readme" \
+			"8" "😏 unmount & remove" \
 			"9" "🥤 install" \
-			"10" "😏 unmount & remove" \
+			"10" "📡 readme" \
 			"11" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
@@ -35,9 +35,9 @@ proot_management_menu() {
 			"5" "🍬 novnc:在浏览器里连接vnc" \
 			"6" "⚔️ startx11vnc:启动x11vnc" \
 			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
-			"8" "📡 commands 命令说明" \
+			"8" "😏 unmount & remove 卸载并移除" \
 			"9" "🥤 install 安装" \
-			"10" "😏 unmount & remove 卸载并移除" \
+			"10" "📡 commands 命令说明" \
 			"11" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
@@ -56,9 +56,9 @@ proot_management_menu() {
 	5) install_web_novnc ;;
 	6) start_gnu_linux_distro_x11vnc ;;
 	7) backup_tmoe_gnu_linux_distro ;;
-	8) readme_of_gnu_linux_distro ;;
+	8) umount_and_remove_gnu_linux_distro ;;
 	9) install_new_tmoe_gnu_linux_distro ;;
-	10) umount_and_remove_gnu_linux_distro ;;
+	10) readme_of_gnu_linux_distro ;;
 	11) du_sh_gnu_linux_distro ;;
 	esac
 	####################
