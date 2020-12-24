@@ -525,7 +525,7 @@ tmoe_qemu_templates_repo() {
 	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "QEMU TEMPLATES" --menu "以下所有linux image均内置docker容器引擎;\n默认未开启端口转发功能.TCP port is not exposed by default." 0 50 0 \
+		whiptail --title "QEMU TEMPLATES" --menu "除win外,以下所有linux image均内置docker容器引擎" 0 50 0 \
 			"1" "Alpine-3.12_x64(213M->1.1G,legacy)" \
 			"2" "Arch_x64(1G->3G,legacy)" \
 			"3" "Debian-bullseye_x64(766M->3G,legacy)" \
@@ -535,6 +535,7 @@ tmoe_qemu_templates_repo() {
 			3>&1 1>&2 2>&3
 	)
 	#############
+	#	"2" "Server2012r2转win8.1_x64" \
 	#以下所有镜像均支持virtio-blk-device;\n
 	#"2" "Win10-20h2_x64 RD-server(5.4G->15G,legacy)" \	9999) download_win10_qcow2_file ;;
 	case ${TMOE_VIRTUALIZATION} in
@@ -549,6 +550,7 @@ tmoe_qemu_templates_repo() {
 	tmoe_qemu_templates_repo
 }
 ##########
+#zstd -z -22 -T0 -v --ultra
 #old已废弃
 download_alpine_and_docker_x64_img_file_again_old() {
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then

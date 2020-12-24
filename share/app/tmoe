@@ -38,7 +38,11 @@ tmoe_main() {
 		;;
 	t | tool)
 		check_manager_dir
-		bash ${MANAGER_DIR}/tool.sh
+		if [[ $(uname -o) = Android ]]; then
+			bash ${MANAGER_DIR}/manager.sh
+		else
+			bash ${MANAGER_DIR}/tool.sh
+		fi
 		exit 0
 		;;
 	-h* | --h* | *)
