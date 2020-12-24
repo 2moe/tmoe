@@ -562,7 +562,9 @@ esac
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
-	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start &>/dev/null
+	pulseaudio --kill
+	#[[ -n \$(pgrep pulseaudio) ]]
+	pulseaudio --start
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr vnc
@@ -578,7 +580,9 @@ ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/usr/bin/env bash
-	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start &>/dev/null
+	pulseaudio --kill
+	#[[ -n \$(pgrep pulseaudio) ]] 
+	pulseaudio --start
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr x11
@@ -595,7 +599,8 @@ ENDOFX11VNC
 ###############
 cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
 	#!/usr/bin/env bash
-	[[ -n \$(pgrep pulseaudio) ]] || pulseaudio --start &>/dev/null
+	pulseaudio --kill
+	pulseaudio --start
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动novnc，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr novnc
@@ -612,7 +617,7 @@ ENDOFNOVNC
 #此處僅適配Android,故shebang爲termux目錄
 cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
 	#!/data/data/com.termux/files/usr/bin/env bash
-	termux-wake-unlock 2>/dev/null
+	[[ ! -n $(command -v termux-wake-unlock) ]] || termux-wake-unlock 2>/dev/null
 	pulseaudio --kill 2>/dev/null &
 	sh -c "$(ps -e | egrep -v "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
 ENDOFSTOPVNC

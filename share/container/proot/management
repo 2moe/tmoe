@@ -288,7 +288,7 @@ normally_start_gnu_linux_distro() {
 	cat_release_file
 	case $(uname -o) in
 	Android)
-		termux-wake-lock 2>/dev/null
+		[[ ! -n $(command -v termux-wake-unlock) ]] || termux-wake-lock 2>/dev/null
 		pulseaudio --start
 		;;
 	esac
