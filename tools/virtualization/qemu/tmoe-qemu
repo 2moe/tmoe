@@ -1369,6 +1369,7 @@ modify_tmoe_qemu_extra_options() {
 			"4" "🍤 FAQ常见问题" \
 			"5" "architecture架构(x86/x64)" \
 			"6" "machine 机器类型(1996/2009)" \
+			"7" "RTC(localtime/UTC)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1381,12 +1382,23 @@ modify_tmoe_qemu_extra_options() {
 	4) tmoe_qemu_faq ;;
 	5) choose_your_qemu_arch ;;
 	6) choose_qemu_machine_type ;;
+	7) choose_qemu_rtc_base ;;
 	esac
 	###############
 	press_enter_to_return
 	modify_tmoe_qemu_extra_options
 }
 #################
+choose_qemu_rtc_base() {
+	CURRENT_VALUE=$(grep '^RTC_BASE=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
+	if (whiptail --title "RTC BASE" --yes-button 'rtc' --no-button 'localtime' --yesno "Current rtc-base is ${CURRENT_VAULE}.\n若guest为linux,则选择rtc,若为win,则选localtime" 10 50); then
+		RTC_BASE='utc'
+	else
+		RTC_BASE='localtime'
+	fi
+	sed -E -i "s@^(RTC_BASE=).*@\1${RTC_BASE}@g" ${QEMU_FILE}
+	grep --color=auto "^RTC_BASE=" ${QEMU_FILE}
+}
 delete_current_qemu_vm_conf() {
 	UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/qemu/${QEMU_VM_NAME}-NVRAM.fd"
 	printf "%s\n" "${RED}rm -fv ${BLUE}${QEMU_FILE} ${HOME}/${QEMU_VM_NAME} ${UEFI_VARS_PFLASH}${RESET}"
