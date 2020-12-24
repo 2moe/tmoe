@@ -102,7 +102,7 @@ creat_a_new_tmoe_qemu_vm() {
 	choose_qemu_qcow2_disk_type
 	RETURN_TO_WHERE='choose_qemu_qcow2_or_img_file'
 	FILE_EXT_01='qcow2'
-	FILE_EXT_02='img'
+	FILE_EXT_02='*'
 	if (whiptail --title "是否需要创建虚拟磁盘" --yes-button 'creat新建' --no-button 'choose选择' --yesno "Do you want to creat a new disk?若您无虚拟磁盘，那就新建一个吧" 8 50); then
 		creat_blank_virtual_disk_image
 	else
@@ -427,7 +427,7 @@ creat_blank_virtual_disk_image() {
 	#printf "%s\n" "Do you need to set it as the default disk?"
 	#do_you_want_to_continue
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
+	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 ################
 choose_qemu_qcow2_or_img_file() {
@@ -447,7 +447,9 @@ choose_qemu_qcow2_or_img_file() {
 		qemu-img check "${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah "${TMOE_FILE_ABSOLUTE_PATH}"
 		sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-		egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
+		QEMU_DISK_FOEMAT=$(qemu-img info ${TARGET_FILE_NAME} | grep format | head -n 1 | awk '{print $NF}')
+		[[ -n ${QEMU_DISK_FOEMAT} ]] || sed -E -i "s@^(${BLK_DEVICE}_FORMAT=).*@\1${QEMU_DISK_FOEMAT}@g" ${QEMU_FILE}
+		egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
 	fi
 }
 ##########
@@ -456,7 +458,7 @@ tmoe_qemu_disk_manager() {
 	RETURN_TO_MENU='tmoe_qemu_disk_manager'
 	#15 50 7
 	FILE_EXT_01='qcow2'
-	FILE_EXT_02='img'
+	FILE_EXT_02='*'
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "DISK MANAGER" --menu "您想要选择哪块磁盘呢?" 0 0 0 \
 			"1" "sata-01(第一块sata磁盘)" \
@@ -505,7 +507,7 @@ tmoe_qemu_disk_manager() {
 		;;
 	6 | 12)
 		FILE_EXT_01='fd'
-		FILE_EXT_02='FD'
+		FILE_EXT_02='*'
 		tmoe_qemu_disk_manager_02
 		;;
 	7) tmoe_qemu_disk_manager_04 ;;
