@@ -447,8 +447,8 @@ choose_qemu_qcow2_or_img_file() {
 		qemu-img check "${TMOE_FILE_ABSOLUTE_PATH}"
 		ls -lah "${TMOE_FILE_ABSOLUTE_PATH}"
 		sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-		QEMU_DISK_FOEMAT=$(qemu-img info ${TARGET_FILE_NAME} | grep format | head -n 1 | awk '{print $NF}')
-		[[ -n ${QEMU_DISK_FOEMAT} ]] || sed -E -i "s@^(${BLK_DEVICE}_FORMAT=).*@\1${QEMU_DISK_FOEMAT}@g" ${QEMU_FILE}
+		QEMU_DISK_FOEMAT=$(qemu-img info "${TMOE_FILE_ABSOLUTE_PATH}" 2>&1 | grep format | head -n 1 | awk '{print $NF}')
+		[[ -z ${QEMU_DISK_FOEMAT} ]] || sed -E -i "s@^(${BLK_DEVICE}_FORMAT=).*@\1${QEMU_DISK_FOEMAT}@g" ${QEMU_FILE}
 		egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
 	fi
 }
