@@ -50,15 +50,15 @@ EOF
 #01-2.MACHINE参数值/变量值修改区域
 #You can modify the variable value here.ここで変数値を変更できます
 ## 请在指定区域内修改参数，请不要修改“MACHINE”右边，“=”左边的变量名称，请修改“=”右边的变量值。
-MACHINE_ACCEL='kvm:tcg:xen'
-#默认值'kvm:tcg:xen',您可以修改为'tcg:kvm:xen'，如需禁用kvm,则可修改为tcg
+MACHINE_ACCEL='kvm:tcg'
+#默认值'kvm:tcg',您可以修改为'tcg:kvm:xen'，如需禁用kvm,则可修改为tcg
+
+ENABLE_KVM='true'
+#可选true/false
 
 MACHINE_TYPE='q35'
 #tmoe-qemu默认机器类型为q35,qemu官方默认为pc
 #可选值'q35','pc'
-
-ENABLE_KVM='true'
-#可选true/false
 
 QEMU_NAME='tmoe-qemu'
 #自定义qemu名称
@@ -452,7 +452,7 @@ VNC_STARTUP_PROMPT='true'
 
 VNC_PASSWORD='false'
 #可选true或false
-#当为true时，您可以在qemu monotor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
+#当为true时，您可以在qemu monitor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
 ############
 ############
 #11-1.Architecture
@@ -1255,16 +1255,6 @@ EOF
         esac
         ;;
     esac
-    : <<\EOF
-    重定向USB设备
-    set -- "${@}" "-chardev" "spicevmc,id=charredir0,name=usbredir"
-    set -- "${@}" "-device" "usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=4"
-    set -- "${@}" "-chardev" "spicevmc,id=charredir1,name=usbredir"
-    set -- "${@}" "-device" "usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=5"
-    伪随机数生成器
-    set -- "${@}" "-object" "rng-random,id=objrng0,filename=/dev/urandom"
-    set -- "${@}" "-device" "virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.8,addr=0x0"
-EOF
     set -- "${@}" "-device" "virtio-balloon-pci,id=balloon0,bus=pci.7,addr=0x0"
     set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
     set -- "${@}" "-msg" "timestamp=on"
@@ -1322,6 +1312,16 @@ EOF
     *) set -- "${QEMU_BIN_PATH}/qemu-system-x86_64" "${@}" ;;
     esac
     exec "${@}"
+    : <<\EOF
+    重定向USB设备
+    set -- "${@}" "-chardev" "spicevmc,id=charredir0,name=usbredir"
+    set -- "${@}" "-device" "usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=4"
+    set -- "${@}" "-chardev" "spicevmc,id=charredir1,name=usbredir"
+    set -- "${@}" "-device" "usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=5"
+    伪随机数生成器
+    set -- "${@}" "-object" "rng-random,id=objrng0,filename=/dev/urandom"
+    set -- "${@}" "-device" "virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.8,addr=0x0"
+EOF
 }
 ##############
 #关于block device的说明

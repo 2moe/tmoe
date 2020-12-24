@@ -157,7 +157,7 @@ choose_your_qemu_arch() {
 }
 choose_qemu_machine_type() {
 	CURRENT_VALUE=$(grep '^MACHINE_TYPE=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	if (whiptail --title "请选择qemu机器类型" --yes-button 'i440fx(1996)' --no-button 'q35(2009)' --yesno "If you are using arch/debian-sid/win8.1/win10,then choose q35.\n若您使用的是旧系统,则选择i440fx;否则请选择q35.当前为${CURRENT_VALUE}" 10 50); then
+	if (whiptail --title "请选择qemu机器类型" --yes-button 'i440fx(1996)' --no-button 'q35(2009)' --yesno "If you are using arch/debian-sid/win8.1/win10,then choose q35.\n若您使用的是旧系统,则选择pc-i440fx;否则请选择q35.当前为${CURRENT_VALUE}" 10 50); then
 		MACHINE_TYPE='pc'
 	else
 		MACHINE_TYPE='q35'
@@ -920,7 +920,7 @@ modify_qemu_sound_card() {
 	#ich9-intel-hda，intel-hda,AC97和ES1370。
 	SOUND_CARD_ENABLED=true
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "声卡型号" --menu "Please select the sound card model.\n声卡1默认为intel-hda,声卡2默认为ac97,声卡1当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "声卡型号" --menu "Current sound-dev is ${CURRENT_VALUE},the default is intel-hda.\n声卡1默认为intel-hda,声卡2默认为ac97,声卡1当前为${CURRENT_VALUE}" 0 0 0 \
 			"1" "ich9-intel-hda" \
 			"2" "ich6(Intel HD Audio)" \
 			"3" "ac97(Intel 82801AA AC97)" \
@@ -953,7 +953,7 @@ modify_qemu_graphics_card() {
 	CURRENT_VALUE=$(grep '^GPU_MODEL=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	#16 50 7
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "GPU/VGA" --menu "Please select the graphics card model.\n默认为qxl-vga,当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "GPU/VGA" --menu "Current display-dev is ${CURRENT_VALUE},the default is qxl-vga.\n默认为qxl-vga,当前为${CURRENT_VALUE}" 0 0 0 \
 			"1" "virtio-vga:bus PCI,半虚拟化" \
 			"2" "qxl-vga:bus PCI,Spice QXL GPU,半虚拟化" \
 			"3" "VGA:bus PCI" \
@@ -1039,8 +1039,8 @@ modify_qemu_machine_accel() {
 	CURRENT_VALUE=$(grep '^MACHINE_ACCEL=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "加速类型" --menu "KVM要求cpu支持硬件虚拟化,进行同架构模拟运行时能得到比tcg更快的速度。\n${KVM_STATUS}\n当前为${CURRENT_VALUE}" 0 50 0 \
-			"1" "kvm:tcg:xen(default)" \
-			"2" "tcg:kvm:xen" \
+			"1" "kvm:tcg(default)" \
+			"2" "tcg:kvm" \
 			"3" "tcg" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -1049,11 +1049,11 @@ modify_qemu_machine_accel() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_WHERE} ;;
 	1)
-		MACHINE_ACCEL="kvm:tcg:xen"
+		MACHINE_ACCEL="kvm:tcg"
 		ENABLE_KVM='true'
 		;;
 	2)
-		MACHINE_ACCEL="tcg:kvm:xen"
+		MACHINE_ACCEL="tcg:kvm"
 		ENABLE_KVM='false'
 		;;
 	3)
@@ -1214,7 +1214,8 @@ modify_tmoe_qemu_network_settings() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1)
 		NET_DEVICE='NET_CARD_01'
-		IMPORTANT_TIPS='网卡01默认为virtio-net-pci,'
+		DEFAULT_VAULE='virtio-net-pci'
+		IMPORTANT_TIPS="网卡01默认为${DEFAULT_VAULE},"
 		modify_qemu_tmoe_network_card
 		;;
 	2)
@@ -1223,7 +1224,8 @@ modify_tmoe_qemu_network_settings() {
 		;;
 	3)
 		NET_DEVICE='NET_CARD_02'
-		IMPORTANT_TIPS='网卡02默认为e1000,'
+		DEFAULT_VAULE="e1000"
+		IMPORTANT_TIPS="网卡02默认为${DEFAULT_VAULE},"
 		modify_qemu_tmoe_network_card
 		;;
 	4)
@@ -1232,7 +1234,8 @@ modify_tmoe_qemu_network_settings() {
 		;;
 	5)
 		NET_DEVICE='NET_CARD_03'
-		IMPORTANT_TIPS='网卡03默认为rtl8139,'
+		DEFAULT_VAULE="rtl8139"
+		IMPORTANT_TIPS="网卡03默认为${DEFAULT_VAULE},"
 		modify_qemu_tmoe_network_card
 		;;
 	esac
@@ -1246,7 +1249,7 @@ modify_qemu_tmoe_network_card() {
 	#16 50 7
 	CURRENT_VALUE=$(grep "^${NET_DEVICE}=" ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "网卡型号" --menu "Please select the network card model.\n${IMPORTANT_TIPS}当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "网卡型号" --menu "Current netdev is ${CURRENT_VALUE},the default is ${DEFAULT_VAULE}.\n${IMPORTANT_TIPS}当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"1" "disable 禁用" \
 			"2" "virtio-net-pci" \
