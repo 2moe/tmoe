@@ -920,7 +920,7 @@ modify_qemu_sound_card() {
 	#ich9-intel-hda，intel-hda,AC97和ES1370。
 	SOUND_CARD_ENABLED=true
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "声卡型号" --menu "Please select the sound card model.\n默认为AC97,当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "声卡型号" --menu "Please select the sound card model.\n默认为intel-hda,当前为${CURRENT_VALUE}" 0 0 0 \
 			"1" "ich9-intel-hda" \
 			"2" "ich6(Intel HD Audio)" \
 			"3" "ac97(Intel 82801AA AC97)" \
