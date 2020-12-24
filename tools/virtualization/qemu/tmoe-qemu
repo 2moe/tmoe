@@ -103,10 +103,10 @@ creat_a_new_tmoe_qemu_vm() {
 	RETURN_TO_WHERE='choose_qemu_qcow2_or_img_file'
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='*'
-	if (whiptail --title "是否需要创建虚拟磁盘" --yes-button 'creat新建' --no-button 'choose选择' --yesno "Do you want to creat a new disk?若您无虚拟磁盘，那就新建一个吧" 8 50); then
-		creat_blank_virtual_disk_image
-	else
+	if (whiptail --title "选择或新建虚拟磁盘" --yes-button 'choose选择' --no-button 'creat新建' --yesno "Choose a qcow2 file or creat a new disk?\n若您无虚拟磁盘，那就新建一个吧" 8 50); then
 		choose_qemu_qcow2_or_img_file
+	else
+		creat_blank_virtual_disk_image
 	fi
 	press_enter_to_continue
 	SELECTION=""

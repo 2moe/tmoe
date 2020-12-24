@@ -487,7 +487,10 @@ debian_opt_game_app() {
         ;;
     2)
         DEPENDENCY_01='minetest'
-        DEPENDENCY_02='^minetest-mod minetest-server'
+        case ${LINUX_DISTRO} in
+        debian) DEPENDENCY_02='^minetest-mod minetest-server' ;;
+        *) DEPENDENCY_02='minetest-server' ;;
+        esac
         beta_features_quick_install
         ;;
     3)
