@@ -457,7 +457,8 @@ debian_opt_game_app() {
     INSTALL_APP=$(whiptail --title "GAMES" --menu \
         "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
         "1" "#hmcl:跨平台且广受欢迎的Minecraft(我的世界)启动器" \
-        "2" "#gamehub:管理Steam,GOG,Humble Bundle等平台的游戏" \
+        "2" "minetest(免费开源沙盒建造游戏)" \
+        "3" "#gamehub:管理Steam,GOG,Humble Bundle等平台的游戏" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -485,6 +486,11 @@ debian_opt_game_app() {
         esac
         ;;
     2)
+        DEPENDENCY_01='minetest'
+        DEPENDENCY_02='^minetest-mod minetest-server'
+        beta_features_quick_install
+        ;;
+    3)
         printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
         DEPENDENCY_01='gamehub'
         ORIGINAL_URL='https://tkashkin.tk/projects/gamehub'
