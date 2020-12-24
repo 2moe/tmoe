@@ -755,10 +755,13 @@ modify_qemu_9p_dir_01() {
 ################
 modify_qemu_disk_format() {
 	CURRENT_DISK_FORMAT=$(grep "^${BLK_DEVICE}_FORMAT=" ${QEMU_FILE} | cut -d '=' -f 2)
-	if (whiptail --title "${BLK_DEVICE} FORMAT" --yes-button 'qcow2' --no-button 'raw' --yesno "Current format is ${CURRENT_DISK_FORMAT}\n暂仅支持切换qcow2和raw,如需指定其他格式,\n请手动修改配置脚本" 0 0); then
-		QEMU_IMG_FORMAT='qcow2'
-	else
+	TMOE_FILE_ABSOLUTE_PATH=$(grep "^${BLK_DEVICE}=" ${QEMU_FILE} | cut -d '=' -f 2)
+	QEMU_IMG_FOEMAT=$(qemu-img info "${TMOE_FILE_ABSOLUTE_PATH}" 2>&1 | grep format | head -n 1 | awk '{print $NF}')
+	if [[ -z ${QEMU_IMG_FOEMAT} || ${QEMU_IMG_FOEMAT} = qcow2 ]]; then
 		QEMU_IMG_FORMAT='raw'
+	fi
+	if (whiptail --title "${BLK_DEVICE} FORMAT" --yes-button "qcow2" --no-button "${QEMU_IMG_FORMAT}" --yesno "Current format is ${CURRENT_DISK_FORMAT}\n如需指定其他格式,请手动修改配置脚本" 0 0); then
+		QEMU_IMG_FORMAT='qcow2'
 	fi
 	sed -E -i "s@^(${BLK_DEVICE}_FORMAT=).*@\1${QEMU_IMG_FORMAT}@g" ${QEMU_FILE}
 	grep --color=auto "^${BLK_DEVICE}_FORMAT=" ${QEMU_FILE}
