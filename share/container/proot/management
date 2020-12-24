@@ -289,9 +289,12 @@ normally_start_gnu_linux_distro() {
 	case $(uname -o) in
 	Android)
 		[[ ! -n $(command -v termux-wake-unlock) ]] || termux-wake-lock 2>/dev/null
-		pulseaudio --start
 		;;
 	esac
+
+	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+		pulseaudio --start
+	fi
 	case ${SYSTEMD_NSPAWN} in
 	true)
 		source ${TMOE_SHARE_DIR}/removal/umount

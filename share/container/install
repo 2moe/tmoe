@@ -562,27 +562,29 @@ esac
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
-	pulseaudio --kill
-	#[[ -n \$(pgrep pulseaudio) ]]
-	pulseaudio --start
+	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+		pulseaudio --kill
+		pulseaudio --start
+	fi
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr vnc
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		${PREFIX}/bin/tmoe ch vnc
-	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ];then
+	elif [ -d "${DEBIAN_CHROOT}/root/.vnc" ]; then
 		${PREFIX}/bin/tmoe pr vnc
 	else
 		vnc_warning
-	fi 
+	fi
 ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/usr/bin/env bash
-	pulseaudio --kill
-	#[[ -n \$(pgrep pulseaudio) ]] 
-	pulseaudio --start
+	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+		pulseaudio --kill
+		pulseaudio --start
+	fi
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr x11
@@ -599,8 +601,10 @@ ENDOFX11VNC
 ###############
 cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
 	#!/usr/bin/env bash
-	pulseaudio --kill
-	pulseaudio --start
+	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+		pulseaudio --kill
+		pulseaudio --start
+	fi
 	vnc_warning() {
 		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动novnc，若启动失败，则请输" "tmoe t"
 		${PREFIX}/bin/tmoe pr novnc
@@ -1712,7 +1716,7 @@ check_current_user_name_and_group() {
 }
 #################
 #if [ "${LINUX_DISTRO}" != 'Android' ]; then
-#	sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
+# sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 #fi
 case ${TMOE_CHROOT} in
