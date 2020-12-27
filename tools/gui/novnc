@@ -52,13 +52,10 @@ start_win10_edge_novnc_addr() {
 ################
 start_web_novnc() {
 	cat <<-EOF
-		vncserver的端口为${CURRENT_VNC_PORT},novnc 的端口为${NOVNC_PORT}
-		Before starting novnc, you must know the following: 1. NOVNC can connect without installing a client. 2. You can use the Bluetooth mouse to operate on the local browser, or you can use the browser of other devices to open the local novnc address.
-		在启动novnc之前，您必须知悉novnc无需安装客户端，您可以使用蓝牙鼠标在本机浏览器上进行操作，亦可使用其它设备的浏览器打开本机的novnc地址。
-		注意：novnc地址和vnc地址是${PURPLE}不同${RESET}的，请在${YELLOW}浏览器${RESET}中输入novnc地址。
+		Before starting novnc, you should know the following: 
+		1. Novnc can connect without vncviewer.
+		2. You can use the bluetooth mouse to operate on the browser.
 	EOF
-	#Do not forget /vnc.html after the port number.
-	#非本机（如局域网内的pc）需要输局域网novnc地址，不要忘记端口号后的/vnc.html
 	start_tmoe_novnc
 	show_novnc_addr
 	start_win10_edge_novnc_addr
