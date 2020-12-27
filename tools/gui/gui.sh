@@ -1269,7 +1269,8 @@ install_xfce4_desktop() {
             else
                 DEPENDENCY_01="xubuntu-desktop $(check-language-support)"
                 case ${TMOE_PROOT} in
-                true)
+                false) ;;
+                true | no)
                     #mkdir -pv /var/lib/mlocate/
                     #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
                     if [ ! $(command -v mlocate) ]; then
