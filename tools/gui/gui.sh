@@ -1365,6 +1365,7 @@ install_xfce4_desktop() {
     fi
     ##############
     xfce4_color_scheme
+    dbus-launch xfconf-query -c xfwm4 -t int -np /general/workspace_count -s 2
     #########
     case ${TMOE_PROOT} in
     true)

@@ -10,7 +10,7 @@
 			<property name="background-style" type="uint" value="0"/>
 			<property name="disable-struts" type="bool" value="false"/>
 			<property name="enter-opacity" type="uint" value="88"/>
-			<property name="leave-opacity" type="uint" value="52"/>
+			<property name="leave-opacity" type="uint" value="61"/>
 			<property name="length" type="uint" value="100"/>
 			<property name="mode" type="uint" value="0"/>
 			<property name="nrows" type="uint" value="1"/>
