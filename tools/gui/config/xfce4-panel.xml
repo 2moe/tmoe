@@ -26,6 +26,7 @@
 				<value type="int" value="6"/>
 				<value type="int" value="8"/>
 				<value type="int" value="10"/>
+				<value type="int" value="9"/>
 				<value type="int" value="11"/>
 				<value type="int" value="12"/>
 				<value type="int" value="13"/>
@@ -123,12 +124,12 @@
 			<property name="enable-keyboard-shortcuts" type="bool" value="true"/>
 			<property name="show-notifications" type="bool" value="true"/>
 		</property>
-		<property name="plugin-9" type="string" value="power-manager-plugin"/>
 		<property name="plugin-7" type="string" value="whiskermenu"/>
 		<property name="plugin-1" type="string" value="applicationsmenu">
 			<property name="button-icon" type="string" value="org.xfce.settings.default-applications"/>
 		</property>
 		<property name="plugin-24" type="string" value="xfce4-clipman-plugin"/>
 		<property name="plugin-17" type="string" value="screenshooter"/>
+		<property name="plugin-9" type="string" value="power-manager-plugin"/>
 	</property>
 </channel>
