@@ -53,7 +53,7 @@ start_win10_edge_novnc_addr() {
 start_web_novnc() {
 	cat <<-EOF
 		Before starting novnc, you should know the following tips: 
-		1. Novnc can connect without vncviewer.
+		1. Novnc without vncviewer.
 		2. You can use the bluetooth mouse to operate on the browser.
 	EOF
 	start_tmoe_novnc
