@@ -260,6 +260,7 @@ install_gui() {
 preconfigure_gui_dependecies_02() {
     unset AUTO_INSTALL_FCITX4
     unset AUTO_INSTALL_KALI_TOOLS
+    unset UBUNTU_DESKTOP
     DEPENDENCY_02="tigervnc"
     case "${LINUX_DISTRO}" in
     debian)
@@ -1243,11 +1244,21 @@ do_you_want_to_install_kali_tools() {
             fi
             ;;
         esac
-
         ;;
     esac
 }
 auto_install_and_configure_fcitx4() {
+    case ${LINUX_DISTRO} in
+    debian)
+        case ${UBUNTU_DESKTOP} in
+        true)
+            printf "%s\n" "apt install -y \$(check-language-support)"
+            [[ -e ${TMOE_LINUX_DIR}/check-ubuntu-language-support.txt ]] || printf "%s\n" $(check-language-support) >${TMOE_LINUX_DIR}/check-ubuntu-language-support.txt
+            apt install -y $(check-language-support) || aptitude install -y $(check-language-support)
+            ;;
+        esac
+        ;;
+    esac
     #在安裝完桌面後再配置輸入法
     [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
     install_kali_linux_tools
@@ -1267,7 +1278,8 @@ install_xfce4_desktop() {
             if (whiptail --title "Xfce or Xubuntu-desktop" --yes-button "xfce" --no-button "xubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of xubuntu.\n前者为普通xfce,后者为xubuntu' 0 0); then
                 printf ""
             else
-                DEPENDENCY_01="xubuntu-desktop $(check-language-support)"
+                UBUNTU_DESKTOP=true
+                DEPENDENCY_01="xubuntu-desktop"
                 case ${TMOE_PROOT} in
                 false) ;;
                 true | no)
@@ -1747,7 +1759,8 @@ install_mate_desktop() {
             if (whiptail --title "Mate or Ubuntu-MATE-full-desktop" --yes-button "mate" --no-button "ubuntu-mate" --yesno 'The former is more streamlined, and the latter includes some extra software of ubuntu-mate.\n前者为普通mate,后者为ubuntu-mate' 0 0); then
                 printf ""
             else
-                DEPENDENCY_01="ubuntu-mate-desktop $(check-language-support)"
+                UBUNTU_DESKTOP=true
+                DEPENDENCY_01="ubuntu-mate-desktop"
             fi
             ;;
         esac
@@ -1801,7 +1814,8 @@ install_lxqt_desktop() {
             if (whiptail --title "Lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
                 printf ""
             else
-                DEPENDENCY_01="lubuntu-desktop $(check-language-support)"
+                UBUNTU_DESKTOP=true
+                DEPENDENCY_01="lubuntu-desktop"
             fi
             ;;
         esac
@@ -1890,7 +1904,8 @@ install_kde_plasma5_desktop() {
                     DEPENDENCY_01="kde-full"
                 fi
             else
-                DEPENDENCY_01="kubuntu-desktop $(check-language-support)"
+                UBUNTU_DESKTOP=true
+                DEPENDENCY_01="kubuntu-desktop"
             fi
             ;;
         *)
@@ -2079,7 +2094,8 @@ install_gnome3_desktop() {
             if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
                 DEPENDENCY_01='--no-install-recommends xorg gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
             else
-                DEPENDENCY_01="ubuntu-desktop $(check-language-support)"
+                UBUNTU_DESKTOP=true
+                DEPENDENCY_01="ubuntu-desktop"
             fi
             ;;
         *)
