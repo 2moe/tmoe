@@ -26,10 +26,20 @@ NOVNC_WEB_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
 #######################
 show_novnc_addr() {
 	TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@^@http://@g;s@\$@:${NOVNC_PORT}/vnc.html@g")
-	cat <<-EOF
-		${YELLOW}本机${RESET}novnc,${GREEN}浏览器${RESET}访问地址 ${BLUE}${NOVNC_WEB_ADDR}${RESET}
-		The LAN novnc address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
-	EOF
+	case ${LANG} in
+	zh_*UTF-8)
+		cat <<-EOF
+			${YELLOW}本机${RESET}novnc,${GREEN}浏览器${RESET}访问地址 ${BLUE}${NOVNC_WEB_ADDR}${RESET}
+			The LAN novnc address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
+		EOF
+		;;
+	*)
+		cat <<-EOF
+			The ${YELLOW}local${RESET} novnc address is ${BLUE}${NOVNC_WEB_ADDR}${RESET}
+			The ${YELLOW}LAN${RESET} novnc address is ${TMOE_IP_ADDR}
+		EOF
+		;;
+	esac
 }
 ###############
 start_tmoe_novnc() {
