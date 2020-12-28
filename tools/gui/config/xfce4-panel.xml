@@ -95,7 +95,6 @@
 		<property name="plugin-22" type="string" value="directorymenu">
 			<property name="expand" type="bool" value="true"/>
 			<property name="style" type="uint" value="0"/>
-			<property name="base-directory" type="string" value="/root"/>
 		</property>
 		<property name="plugin-3" type="string" value="separator">
 			<property name="expand" type="bool" value="true"/>
