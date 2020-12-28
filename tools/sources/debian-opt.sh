@@ -46,7 +46,6 @@ explore_debian_opt_repo() {
 }
 #################
 debian_opt_menu() {
-
     RETURN_TO_WHERE='debian_opt_menu'
     RETURN_TO_MENU='debian_opt_menu'
     DEPENDENCY_02=""
@@ -241,7 +240,10 @@ remove_opt_app_02() {
 ################
 install_opt_app_01() {
     case "${LINUX_DISTRO}" in
-    debian) beta_features_quick_install ;;
+    debian)
+        check_electron
+        beta_features_quick_install
+        ;;
     *)
         check_electron
         check_debian_opt_app_version
@@ -307,7 +309,10 @@ install_opt_app_02() {
     windows95) ;;
     *)
         case "${LINUX_DISTRO}" in
-        debian) beta_features_quick_install ;;
+        debian)
+            check_electron
+            beta_features_quick_install
+            ;;
         *) ;;
         esac
         ;;
@@ -800,8 +805,8 @@ debian_opt_music_app() {
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "MUSIC APP" --menu \
         "您想要安装哪个软件?\n Which software do you want to install? " 0 0 0 \
-        "1" "lx-music-desktop(洛雪音乐助手)" \
-        "2" "electron-netease-cloud-music(云音乐)" \
+        "1" "electron-netease-cloud-music(云音乐)" \
+        "2" "lx-music-desktop(洛雪音乐助手)" \
         "3" "listen1(免费音乐聚合)" \
         "4" "cocomusic(第三方QQ音乐)" \
         "5" "iease-music(界面华丽的云音乐客户端)" \
@@ -815,8 +820,8 @@ debian_opt_music_app() {
     ##############
     case "${INSTALL_APP}" in
     0 | "") debian_opt_menu ;;
-    1) install_lx_music_desktop ;;
-    2) install_electron_netease_cloud_music ;;
+    1) install_electron_netease_cloud_music ;;
+    2) install_lx_music_desktop ;;
     3) install_listen1 ;;
     4) install_coco_music ;;
     5) install_iease_music ;;

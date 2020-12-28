@@ -1066,12 +1066,17 @@ download_the_latest_electron() {
         DEPENDENCY_01=''
         DEPENDENCY_02='electron'
         beta_features_quick_install
+        if [ ! $(command -v electron) ]; then
+            latest_electron
+            download_electron
+            ln -svf /opt/electron/electron /usr/bin/
+        fi
         ;;
     *)
         latest_electron
         download_electron
         if [ ! -e "/usr/bin/electron" ]; then
-            ln -sf /opt/electron/electron /usr/bin/
+            ln -svf /opt/electron/electron /usr/bin/
         fi
         ;;
     esac

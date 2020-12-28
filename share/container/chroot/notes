@@ -3,9 +3,13 @@
 check_root_permissions() {
 	case ${LINUX_DISTRO} in
 	Android)
+		printf "%s\n" "If you can not use this function,try using magisk manager."
+		printf "%s\n" "您使用的是${YELLOW}Android${RESET}系统，ROOT环境${PURPLE}要求${RESET}：${BLUE}magisk(面具)${RESET}"
+		sleep 1
 		if ((${ANDROID_VERSION} <= 7)); then
 			printf "%s\n" "您的系统版本低于${BLUE}Android8${RESET},${PURPLE}可能无法${RESET}使用${YELLOW}tmoe-linux的chroot容器${RESET}配置功能。"
-			printf "%s\n" "Your android system version is lower then 8."
+			printf "%s\n" "Your android system version is lower than 8."
+			sleep 3
 		fi
 		su -c "ls ${HOME} >/dev/null"
 		case "$?" in
@@ -21,9 +25,9 @@ check_root_permissions() {
 			fi
 			;;
 		*)
-			printf "%s\n" "Android :${ANDROID_VERSION}"
+			printf "%s\n" "Android :${BLUE}${ANDROID_VERSION}${RESET}"
 			printf "%s\n" "$(getprop ro.product.model)" 2>/dev/null
-			printf "%s\n" '检测到root权限授予失败，您无法安装chroot容器'
+			printf "%s\n" '检测到root权限授予失败，您无法通过tmoe linux manager安装chroot容器'
 			press_enter_to_return
 			tmoe_manager_main_menu
 			;;
