@@ -1084,6 +1084,12 @@ debian_xfce4_extras() {
         [[ $(command -v xfce4-panel-profiles) ]] || build_xfce4_panel_profiles
         ;;
     esac
+    if [ $(command -v qt5ct) ]; then
+        if ! egrep -q '^[^#]*QT_QPA_PLATFORMTHEME=' /etc/environment; then
+            printf "%s\n" "export QT_QPA_PLATFORMTHEME=qt5ct" >>/etc/environment
+            printf "%s\n" "/etc/environment :export QT_QPA_PLATFORMTHEME=qt5ct"
+        fi
+    fi
     apt_purge_libfprint
 }
 #############
@@ -1352,6 +1358,7 @@ install_xfce4_desktop() {
     if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
         auto_configure_xfce4_panel
     fi
+    #xml配置不包含base-directory
     #################
     if [ "${LINUX_DISTRO}" = "alpine" ]; then
         dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
