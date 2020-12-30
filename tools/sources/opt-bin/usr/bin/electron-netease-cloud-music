@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 TMOE_BIN='/opt/electron-netease-cloud-music/app.asar'
+ELECTRON_BIN='/opt/electron/electron'
 export ELECTRON_IS_DEV=0
 case "$(id -u)" in
-0) exec electron ${TMOE_BIN} --no-sandbox "$@" ;;
+0) exec ${ELECTRON_BIN} ${TMOE_BIN} --no-sandbox "$@" ;;
 *)
-    exec electron ${TMOE_BIN} "$@"
+    exec ${ELECTRON_BIN} ${TMOE_BIN} "$@"
     case "$?" in
     0) ;;
-    *) exec electron ${TMOE_BIN} --no-sandbox "$@" ;;
+    *) exec ${ELECTRON_BIN} ${TMOE_BIN} --no-sandbox "$@" ;;
     esac
     ;;
 esac
