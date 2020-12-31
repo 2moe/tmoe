@@ -1419,7 +1419,7 @@ lolcat_tmoe_tips_01() {
     fi
     case ${LINUX_DISTRO} in
     debian) ;;
-    arch) printf "%s\n" "检测到您使用的是arch系发行版，将通过AUR来安装软件包" ;;
+    arch) printf "%s\n" "检测到您使用的是arch系发行版，若安装失败，则请通过AUR来安装软件包" ;;
     redhat) printf "%s\n" "检测到您使用的是红帽系发行版，将为您下载rpm软件包" ;;
     esac
     #do_you_want_to_upgrade_it_02
