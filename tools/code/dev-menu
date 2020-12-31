@@ -18,12 +18,12 @@ development_programming_tools() {
             "8" "GNU Emacs(可扩展,可定制,支持自文档化)" \
             "9" "Code::Blocks(C，C++和Fortran的IDE)" \
             "10" "github-desktop(x64,github官方桌面客户端)" \
-            "11" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
-            "12" "Sublime Text(x64,漂亮的UI,非凡的功能)" \
+            "11" "Sublime Text(x64,漂亮的UI,非凡的功能)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
     #"8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
+    #"11" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
     case "${SOFTWARE}" in
     0 | "") software_center ;;
     1) which_vscode_edition ;;
@@ -78,14 +78,14 @@ development_programming_tools() {
         ICON_NAME="github-desktop.png"
         APP_OPT_DIR="/opt/github-desktop"
         ;;
-    11)
+    999)
         GREP_NAME='atom-editor-bin'
         LNK_FILE='atom.desktop'
         BIN_FILE="/usr/bin/atom"
         ICON_NAME="atom.png"
         APP_OPT_DIR="/opt/${GREP_NAME}"
         ;;
-    12) install_sublime_text_stable ;;
+    11) install_sublime_text_stable ;;
     esac
     #) printf "%s\n" "新版即将集成本开发工具的安装，敬请期待" ;;
     ############################################
