@@ -1,0 +1,464 @@
+#!/usr/bin/env bash
+##################
+electron_apps_main_menu() {
+    RETURN_TO_WHERE='electron_apps_main_menu'
+    RETURN_TO_MENU='electron_apps_main_menu'
+    DEPENDENCY_02=""
+    cd ${APPS_LNK_DIR}
+    #16 50 7
+    INSTALL_APP=$(whiptail --title "ELECTRON APPS" --menu \
+        "electron:Build cross-platform desktop apps with JavaScript,HTML,and CSS" 0 0 0 \
+        "1" "🎶 music:以雅以南,以龠不僭" \
+        "2" "📺 videos视频:全网影视搜索,无损切割视频" \
+        "3" "📝 notes笔记:记录灵感,撰写文档,整理材料,回顾日记" \
+        "4" "🍎 virtual machine虚拟机:win95,macos8" \
+        "5" "👾 development程序开发:神经网络,深度学习" \
+        "6" "⚛️ electron manager" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") software_center ;;
+    1) tmoe_electron_music_app ;;
+    2) tmoe_electron_video_app ;;
+    3) tmoe_electron_note_app ;;
+    4) tmoe_electron_virtual_machine_app ;;
+    5) tmoe_electron_development_app ;;
+    6) electron_manager ;;
+    esac
+    ##########################
+    press_enter_to_return
+    electron_apps_main_menu
+}
+################
+tmoe_electron_install_or_remove_01() {
+    RETURN_TO_WHERE='tmoe_electron_install_or_remove_01'
+    NOTICE_OF_REPAIR='false'
+    OPT_APP_VERSION_TXT="/opt/${DEPENDENCY_01}/version.txt"
+    INSTALL_APP=$(whiptail --title "${DEPENDENCY_01} manager" --menu \
+        "您要对${DEPENDENCY_01}小可爱做什么?\nWhat do you want to do with ${DEPENDENCY_01}?" 0 0 0 \
+        "1" "install/upgrade 安装/更新" \
+        "2" "remove 卸载" \
+        "0" "🌚 Back 返回" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1) upgrade_electron_app_01 ;;
+    2) remove_electron_app_01 ;;
+    esac
+    ##########################
+    press_enter_to_return
+    ${RETURN_TO_MENU}
+}
+################
+tmoe_electron_install_or_remove_02() {
+    RETURN_TO_WHERE='tmoe_electron_install_or_remove_02'
+    NOTICE_OF_REPAIR='false'
+    INSTALL_APP=$(whiptail --title "${DEPENDENCY_01} manager" --menu \
+        "您要对${DEPENDENCY_01}小可爱做什么?\nWhat do you want to do with the software?" 0 0 0 \
+        "1" "install 安装" \
+        "2" "remove 卸载" \
+        "0" "🌚 Back 返回" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1) install_electron_app_02 ;;
+    2) remove_electron_app_01 ;;
+    esac
+    ##########################
+    press_enter_to_return
+    ${RETURN_TO_MENU}
+}
+################
+check_tmoe_electron_app_version() {
+    THE_LATEST_DEB_FILE=$(curl -Lv "${GIT_AK2}/${DEPENDENCY_01}_build/raw/build/version.txt")
+}
+###############
+download_tmoe_electron_app() {
+    DOWNLOAD_PATH="/tmp/.${DEPENDENCY_01}_TEMP_FOLDER"
+    [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rv ${DOWNLOAD_PATH}
+    [[ -e /opt ]] || mkdir -pv /opt
+    git clone --depth=1 ${GIT_AK2}/${DEPENDENCY_01}_build ${DOWNLOAD_PATH}
+    cd ${DOWNLOAD_PATH}
+    tar -Jxvf app.tar.xz -C /opt
+    [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
+    cd /opt/${DEPENDENCY_01}
+    rm -rfv ${DOWNLOAD_PATH}
+    pwd
+    cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
+}
+###################
+remove_electron_app_01() {
+    TMOE_ELECTRON_APP_DIR="/opt/${DEPENDENCY_01}"
+    printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${TMOE_ELECTRON_APP_DIR} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
+    do_you_want_to_continue
+    rm -rv ${TMOE_ELECTRON_APP_DIR} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
+}
+################
+install_electron_app_01() {
+    check_electron
+    install_electron_v8
+    #check_tmoe_electron_app_version
+    download_tmoe_electron_app
+}
+################
+git_clone_electron_virtual_machine() {
+    cd /tmp
+    TEMP_FOLDER=".${DEPENDENCY_01}_TEMP_FOLDER"
+    [[ ! -e ${TEMP_FOLDER} ]] || rm -rv ${TEMP_FOLDER} 2>/dev/null
+    git clone --depth=1 ${GIT_REPO_URL} ${TEMP_FOLDER}
+    cd ${TEMP_FOLDER}
+    cat .vm_* >vm.tar.xz
+    tar -PpJxvf vm.tar.xz
+    cd ..
+    rm -rv ${TEMP_FOLDER}
+}
+#############
+install_electron_macintosh_8() {
+    printf "%s\n" "下载大小约131.09MiB,解压后约占658M"
+    do_you_want_to_continue
+    GIT_REPO_URL="${GIT_AK2}/electron_macos8.git"
+    git_clone_electron_virtual_machine
+}
+#############
+install_electron_windows_95() {
+    printf "%s\n" "下载大小约166.19MiB,解压后约占1.2G"
+    do_you_want_to_continue
+    GIT_REPO_URL="${GIT_AK2}/electron_win95.git"
+    git_clone_electron_virtual_machine
+}
+##############
+install_electron_app_02() {
+    case ${DEPENDENCY_01} in
+    macintosh.js) install_electron_macintosh_8 ;;
+    windows95) install_electron_windows_95 ;;
+    *) install_electron_app_01 ;;
+    esac
+}
+################
+show_tmoe_electron_app_version() {
+    printf "%s\n" "正在检测版本信息..."
+    if [ -e "${OPT_APP_VERSION_TXT}" ]; then
+        LOCAL_OPT_APP_VERSION=$(head -n 1 ${OPT_APP_VERSION_TXT})
+    else
+        LOCAL_OPT_APP_VERSION="您尚未安装${DEPENDENCY_01}"
+    fi
+    cat <<-ENDofTable
+		╔═══╦═══════════════════╦════════════════
+		║   ║                   ║                    
+		║   ║    ✨最新版本     ║   本地版本 🎪
+		║   ║  Latest version   ║  Local version     
+		║---║-------------------║--------------------
+		║ 1 ║                     ${LOCAL_OPT_APP_VERSION} 
+		║   ║${THE_LATEST_DEB_FILE} 
+
+	ENDofTable
+    printf "%s\n" "Do you want to upgrade ${BLUE}${DEPENDENCY_01}${RESET}?"
+    do_you_want_to_continue
+}
+#################
+upgrade_electron_app_01() {
+    PNG_DIR="/opt/${DEPENDENCY_01}/usr/share/icons/hicolor/0x0/apps"
+    case ${DEPENDENCY_01} in
+    bilibili-web) PNG_FILE="${PNG_DIR}/bili.png" ;;
+    zy-player) PNG_FILE="${PNG_DIR}/zy.png" ;;
+    *) PNG_FILE="${PNG_DIR}/${DEPENDENCY_01}.png" ;;
+    esac
+    if [ -e "${PNG_FILE}" ]; then
+        if [ $(command -v catimg) ]; then
+            catimg ${PNG_FILE}
+        else
+            random_neko
+        fi
+    else
+        random_neko
+    fi
+    check_tmoe_electron_app_version
+    show_tmoe_electron_app_version
+    install_electron_app_01
+}
+###############
+remove_electron_stable() {
+    printf "%s\n" "卸载后将导致依赖electron的应用无法正常运行。"
+    printf "%s\n" "${RED}rm -rv ${BLUE}/opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}${RESET}"
+    do_you_want_to_continue
+    rm -rv /opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}
+}
+############
+check_electron_version() {
+    electron -v --no-sandbox | head -n 1 >${OPT_APP_VERSION_TXT}
+    latest_electron
+    THE_LATEST_DEB_FILE=${ELECTRON_VERSION}
+    show_tmoe_electron_app_version
+    download_the_latest_electron
+}
+########
+electron_manager() {
+    RETURN_TO_WHERE='electron_manager'
+    DEPENDENCY_01='electron'
+    OPT_APP_VERSION_TXT="${TMOE_LINUX_DIR}/${DEPENDENCY_01}_version.txt"
+    INSTALL_APP=$(whiptail --title "${DEPENDENCY_01} manager" --menu \
+        "您要对${DEPENDENCY_01}小可爱做什么?\nWhat do you want to do with the software?" 0 0 0 \
+        "1" "install/upgrade 安装/更新" \
+        "2" "remove electron" \
+        "3" "remove electron-v8.x" \
+        "0" "🌚 Back 返回" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1) check_electron_version ;;
+    2) remove_electron_stable ;;
+    3)
+        printf "%s\n" "部分软件依赖于旧版electron,卸载后将导致这些软件无法正常运行。"
+        printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}/opt/electron-v8${RESET}"
+        do_you_want_to_continue
+        rm -rv /opt/electron-v8
+        ;;
+    esac
+    ##########################
+    press_enter_to_return
+    ${RETURN_TO_MENU}
+}
+#############
+tmoe_electron_development_app() {
+    DEPENDENCY_02=''
+    RETURN_TO_WHERE='tmoe_electron_development_app'
+    RETURN_TO_MENU='tmoe_electron_development_app'
+    DEBIAN_INSTALLATION_MENU='01'
+    INSTALL_APP=$(whiptail --title "DEVELOPMENT" --menu \
+        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "1" "netron:用于神经网络,深度学习和机器学习模型的可视化工具" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") electron_apps_main_menu ;;
+    1)
+        DEPENDENCY_01='netron'
+        ORIGINAL_URL='https://github.com/lutzroeder/netron'
+        ;;
+    esac
+    ##########################
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+    case ${DEBIAN_INSTALLATION_MENU} in
+    01) tmoe_electron_install_or_remove_01 ;;
+    esac
+    ########################
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
+}
+###############
+tmoe_electron_virtual_machine_app() {
+    DEPENDENCY_02=''
+    RETURN_TO_WHERE='tmoe_electron_virtual_machine_app'
+    RETURN_TO_MENU='tmoe_electron_virtual_machine_app'
+    DEBIAN_INSTALLATION_MENU='02'
+    INSTALL_APP=$(whiptail --title "VIRTUAL MACHINE APP" --menu \
+        "Javascript vm is not qemu" 0 0 0 \
+        "1" "MacOS8:上古时期苹果Macintosh系统" \
+        "2" "Win95:微软windows操作系统" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") electron_apps_main_menu ;;
+    1)
+        DEPENDENCY_01='macintosh.js'
+        ORIGINAL_URL='https://github.com/felixrieseberg/macintosh.js'
+        ;;
+    2)
+        DEPENDENCY_01='windows95'
+        ORIGINAL_URL='https://github.com/felixrieseberg/windows95'
+        ;;
+    esac
+    ##########################
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+    case ${DEBIAN_INSTALLATION_MENU} in
+    02) tmoe_electron_install_or_remove_02 ;;
+    esac
+    ########################
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
+}
+##################
+tmoe_electron_video_app() {
+    DEPENDENCY_02=''
+    unset ORIGINAL_URL
+    RETURN_TO_WHERE='tmoe_electron_video_app'
+    RETURN_TO_MENU='tmoe_electron_video_app'
+    DEBIAN_INSTALLATION_MENU='01'
+    INSTALL_APP=$(whiptail --title "VIDEO APP" --menu \
+        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "1" "zy-player:搜索全网影视" \
+        "2" "📺 bilibili-web" \
+        "3" "🎬 腾讯视频(Linux在线视频软件)" \
+        "4" "lossless-cut:无损剪切音视频工具" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") electron_apps_main_menu ;;
+    1)
+        DEPENDENCY_01='zy-player'
+        ORIGINAL_URL='https://github.com/Hunlongyu/ZY-Player'
+        ;;
+    2) DEPENDENCY_01='bilibili-web' ;;
+    3)
+        DEBIAN_INSTALLATION_MENU='02'
+        DEPENDENCY_01='tenvideo_universal'
+        ;;
+    4)
+        DEBIAN_INSTALLATION_MENU='02'
+        DEPENDENCY_01='lossless-cut'
+        DEPENDENCY_02="ffmpeg"
+        ORIGINAL_URL='https://github.com/mifi/lossless-cut'
+        ;;
+    esac
+    ##########################
+    [[ -z ${DEPENDENCY_02} ]] || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
+    unset DEPENDENCY_02
+    [[ -z ${ORIGINAL_URL} ]] || printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+    case ${DEBIAN_INSTALLATION_MENU} in
+    00)
+        non_debian_function
+        beta_features_quick_install
+        ;;
+    01) tmoe_electron_install_or_remove_01 ;;
+    02) tmoe_electron_install_or_remove_02 ;;
+    esac
+    ########################
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
+}
+#############
+tmoe_electron_note_app() {
+    DEPENDENCY_02=''
+    RETURN_TO_WHERE='tmoe_electron_note_app'
+    RETURN_TO_MENU='tmoe_electron_note_app'
+    DEBIAN_INSTALLATION_MENU='01'
+    INSTALL_APP=$(whiptail --title "NOTE APP" --menu \
+        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "1" "gridea:静态博客写作app,你可以用它来记录你的生活、心情、知识和创意" \
+        "2" "marktext:界面直观、功能出众、操作轻松的markdown编辑器" \
+        "3" "simplenote:简单、轻量级的开源跨平台云笔记工具" \
+        "4" "draw.io:思维导图绘制工具" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") electron_apps_main_menu ;;
+    1)
+        DEPENDENCY_01='gridea'
+        ORIGINAL_URL='https://github.com/getgridea/gridea'
+        ;;
+    2)
+        DEPENDENCY_01='marktext'
+        DEPENDENCY_02="ripgrep"
+        ORIGINAL_URL='https://github.com/marktext/marktext'
+        ;;
+    3)
+        DEPENDENCY_01='simplenote'
+        ORIGINAL_URL='https://github.com/Automattic/simplenote-electron'
+        ;;
+    4)
+        DEPENDENCY_01='draw.io'
+        DEPENDENCY_02="libindicator3-7 libappindicator3-1"
+        ORIGINAL_URL='https://github.com/jgraph/drawio-desktop'
+        ;;
+    esac
+    ##########################
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+    [[ -z ${DEPENDENCY_02} ]] || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
+    unset DEPENDENCY_02
+    case ${DEBIAN_INSTALLATION_MENU} in
+    00) ;;
+    01) tmoe_electron_install_or_remove_01 ;;
+    esac
+    ########################
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
+}
+################
+tmoe_electron_music_app() {
+    #16 50 7
+    DEPENDENCY_02=''
+    RETURN_TO_WHERE='tmoe_electron_music_app'
+    RETURN_TO_MENU='tmoe_electron_music_app'
+    DEBIAN_INSTALLATION_MENU='01'
+    INSTALL_APP=$(whiptail --title "MUSIC APP" --menu \
+        "您想要安装哪个软件?\n Which software do you want to install? " 0 0 0 \
+        "1" "electron-netease-cloud-music(云音乐)" \
+        "2" "lx-music-desktop(洛雪音乐助手)" \
+        "3" "listen1(免费音乐聚合)" \
+        "4" "cocomusic(第三方QQ音乐)" \
+        "5" "iease-music(界面华丽的云音乐客户端)" \
+        "6" "petal(第三方豆瓣FM客户端)" \
+        "7" "chord(支持虾米、云音乐、qq音乐多平台)" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") electron_apps_main_menu ;;
+    1) install_electron_netease_cloud_music ;;
+    2) install_lx_music_desktop ;;
+    3) install_listen1 ;;
+    4) install_coco_music ;;
+    5) install_iease_music ;;
+    6) install_electron_petal ;;
+    7) install_electron_chord ;;
+    esac
+    ##########################
+    #"7" "feeluown(x64,支持网易云、虾米)" \
+    case ${DEBIAN_INSTALLATION_MENU} in
+    00) ;;
+    01) tmoe_electron_install_or_remove_01 ;;
+    02) tmoe_electron_install_or_remove_02 ;;
+    esac
+    #此处00菜单不要跳转到beta_features_quick_install
+    ########################
+    press_enter_to_return
+    tmoe_electron_music_app
+}
+################
+install_electron_chord() {
+    DEBIAN_INSTALLATION_MENU='02'
+    DEPENDENCY_01='chord'
+    printf "%s\n" "github url：${YELLOW}https://github.com/PeterDing/chord${RESET}"
+}
+##############
+install_electron_petal() {
+    DEPENDENCY_01='petal'
+    printf "%s\n" "github url：${YELLOW}https://github.com/ilime/Petal${RESET}"
+}
+############
+install_coco_music() {
+    DEBIAN_INSTALLATION_MENU='02'
+    DEPENDENCY_01='cocomusic'
+    printf "%s\n" "github url：${YELLOW}https://github.com/xtuJSer/CoCoMusic${RESET}"
+}
+#####################
+install_iease_music() {
+    DEBIAN_INSTALLATION_MENU='02'
+    DEPENDENCY_01='iease-music'
+    printf "%s\n" "github url：${YELLOW}https://github.com/trazyn/ieaseMusic${RESET}"
+}
+############
+install_electron_netease_cloud_music() {
+    DEPENDENCY_01='electron-netease-cloud-music'
+    printf "%s\n" "github url：${YELLOW}https://github.com/Rocket1184/electron-netease-cloud-music${RESET}"
+}
+########################
+install_listen1() {
+    DEPENDENCY_01='listen1'
+    printf "%s\n" "github url：${YELLOW}https://github.com/listen1/listen1_desktop${RESET}"
+}
+################
+install_lx_music_desktop() {
+    DEPENDENCY_01='lx-music-desktop'
+    printf "%s\n" "github url：${YELLOW}https://github.com/lyswhut/lx-music-desktop${RESET}"
+}
+####################
+electron_apps_main_menu "$@"

@@ -15,6 +15,7 @@ gnu_linux_env_02() {
     ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
     XSESSION_FILE='/etc/X11/xinit/Xsession'
+    GIT_AK2='https://gitee.com/ak2'
     TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
     XDG_AUTOSTART_DIR='/etc/xdg/autostart'
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -1057,29 +1058,11 @@ chmod_4755_chrome_sandbox() {
 }
 ##############
 download_the_latest_electron() {
-    case ${LINUX_DISTRO} in
-    debian)
-        install_gpg
-        if [ ! -e "${OPT_REPO_LIST}" ]; then
-            add_debian_opt_gpg_key
-        fi
-        DEPENDENCY_01=''
-        DEPENDENCY_02='electron'
-        beta_features_quick_install
-        if [ ! $(command -v electron) ]; then
-            latest_electron
-            download_electron
-            ln -svf /opt/electron/electron /usr/bin/
-        fi
-        ;;
-    *)
-        latest_electron
-        download_electron
-        if [ ! -e "/usr/bin/electron" ]; then
-            ln -svf /opt/electron/electron /usr/bin/
-        fi
-        ;;
-    esac
+    latest_electron
+    download_electron
+    if [ ! -e "/usr/bin/electron" ]; then
+        ln -svf /opt/electron/electron /usr/bin/
+    fi
     chmod_4755_chrome_sandbox
     electron -v --no-sandbox | head -n 1 >${TMOE_LINUX_DIR}/electron_version.txt
 }
@@ -1121,21 +1104,6 @@ install_electron_v8() {
     fi
 }
 ##############
-tenvideo_env() {
-    DEPENDENCY_02='tenvideo-universal'
-    TENTVIDEO_OPT='/opt/Tenvideo_universal'
-    TENVIDEO_LNK="${APPS_LNK_DIR}/TencentVideo.desktop"
-    TENVIDEO_GIT='https://gitee.com/ak2/tenvideo.git'
-    TENVIDEO_FOLDER='.TENCENT_VIDEO_TMOE_TMEP_FOLDER'
-    if [ -e "${TENTVIDEO_OPT}" ]; then
-        printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN}${DEPENDENCY_02} ${RESET}"
-        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
-        printf "%s\n" "请问您是否需要重装？"
-        printf "%s\n" "Do you want to reinstall it?"
-        do_you_want_to_continue
-    fi
-}
-########
 aria2c_download_normal_file_s3() {
     printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
     cd ${DOWNLOAD_PATH}
@@ -1178,7 +1146,8 @@ extract_electron() {
 }
 #########
 latest_electron() {
-    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1)
+    ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
+    ELECTRON_VERSION=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
     DOWNLOAD_PATH="/opt/electron"
 }
 ###########

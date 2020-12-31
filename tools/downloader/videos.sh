@@ -325,9 +325,9 @@ upgrade_video_download_tool() {
             cd /tmp
             rm -rf .FFMPEGTEMPFOLDER
             git clone -b linux_$(uname -m) --depth=1 https://gitee.com/mo2/ffmpeg.git ./.FFMPEGTEMPFOLDER
-            cd /usr/local/bin
+            cd /usr/bin
             tar -Jxvf /tmp/.FFMPEGTEMPFOLDER/ffmpeg.tar.xz ffmpeg
-            chmod +x ffmpeg
+            chmod a+x ffmpeg
             rm -rf /tmp/.FFMPEGTEMPFOLDER
             ;;
         *) DEPENDENCY_01="${DEPENDENCY_01} ffmpeg" ;;

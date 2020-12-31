@@ -39,41 +39,49 @@ software_center() {
         whiptail --title "Software center-01" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
             "1" "🦊 Browser:浏览器(edge,firefox,chromium)" \
-            "2" "🏤 debian-opt:qq音乐,云音乐(支持arch和fedora)" \
+            "2" "⚛️ electron-apps(云音乐,哔哩哔哩,cocomusic)" \
             "3" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
-            "4" "🎵 Multimedia:图像与影音(哔哩哔哩,gimp,mpv)" \
+            "4" "🎵 Multimedia:图像与影音(gimp,mpv)" \
             "5" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
             "6" "🐧 SNS:社交类(qq,skype)" \
             "7" "📚 Documents:文档(libreoffice,wps)" \
             "8" "🎁 Download:下载类(aria2,baidu,迅雷)" \
-            "9" "🔯 Packages&system:软件包与系统管理" \
-            "10" "🥙 Start zsh tool:启动zsh管理工具" \
-            "11" "🥗 File shared:文件共享与网盘(Webdav)" \
-            "12" "💔 remove:卸载管理" \
+            "9" "🏤 debian-opt仓库" \
+            "10" "🔯 Packages&system:软件包与系统管理" \
+            "11" "🥙 Start zsh tool:启动zsh管理工具" \
+            "12" "🥗 File shared:文件共享与网盘(Webdav)" \
+            "13" "💔 remove:卸载管理" \
             "0" "🌚 Back to the main menu 返回主菜单" \
             3>&1 1>&2 2>&3
     )
-    #(已移除)"12" "Tasksel:轻松,快速地安装组软件" \
     case "${SOFTWARE}" in
     0 | "") tmoe_linux_tool_menu ;;
     1) install_browser ;;
-    2) explore_debian_opt_repo ;;
+    2) tmoe_electron_repo ;;
     3) dev_menu ;;
     4) tmoe_multimedia_menu ;;
     5) tmoe_games_menu ;;
     6) tmoe_social_network_service ;;
     7) source_tmoe_document_app ;;
     8) tmoe_download_class ;;
-    9) tmoe_software_package_menu ;;
-    10) start_tmoe_zsh_manager ;;
-    11) personal_netdisk ;;
-    12) tmoe_other_options_menu ;;
+    9) explore_debian_opt_repo ;;
+    10) tmoe_software_package_menu ;;
+    11) start_tmoe_zsh_manager ;;
+    12) personal_netdisk ;;
+    13) tmoe_other_options_menu ;;
     esac
     ############################################
+    #install_bilibili_electron
+    #"5" "🎬 腾讯视频(Linux在线视频软件)" \
+    # 6) install_tencent_video ;;
+    ###########
     press_enter_to_return
     software_center
 }
 ###########
+tmoe_electron_repo() {
+    source ${TMOE_TOOL_DIR}/sources/electron-apps
+}
 source_tmoe_document_app() {
     source ${TMOE_TOOL_DIR}/app/office
 }
@@ -117,7 +125,6 @@ start_tmoe_zsh_manager() {
 ##########
 tmoe_software_package_menu() {
     RETURN_TO_WHERE='tmoe_software_package_menu'
-
     DEPENDENCY_01=""
     TMOE_APP=$(
         whiptail --title "PACKAGES MANAGER" --menu \
@@ -391,38 +398,34 @@ tmoe_multimedia_menu() {
     TMOE_APP=$(whiptail --title "Picture&Video&Music" --menu \
         "Which software do you want to install?" 0 50 0 \
         "1" "🗜️ Batch compression of pics批量压缩图片" \
-        "2" "📺 bilibili-web-electron(知名视频弹幕网站)" \
-        "3" "📽️ MPV(开源、跨平台的音视频播放器)" \
-        "4" "🎥 SMPlayer(MPlayer的前端)" \
-        "5" "🇵 Peek(简单易用的Gif录制软件)" \
-        "6" "🎬 腾讯视频(Linux在线视频软件)" \
-        "7" "🖼 GIMP(GNU 图像处理程序)" \
-        "8" "kolourpaint(KDE图像编辑)" \
-        "9" "🍊 Clementine(小柑橘音乐播放器)" \
-        "10" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
-        "11" "🎧 网易云音乐(x64,专注于发现与分享的音乐产品)" \
-        "12" "🎼 Audacity(类似于cooledit的音频处理软件)" \
-        "13" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
-        "14" "Spotify(x64,声破天是一个正版流媒体音乐服务平台)" \
+        "2" "📽️ MPV(开源、跨平台的音视频播放器)" \
+        "3" "🎥 SMPlayer(MPlayer的前端)" \
+        "4" "🇵 Peek(简单易用的Gif录制软件)" \
+        "5" "🖼 GIMP(GNU 图像处理程序)" \
+        "6" "kolourpaint(KDE图像编辑)" \
+        "7" "🍊 Clementine(小柑橘音乐播放器)" \
+        "8" "🎞️ Parole(xfce默认媒体播放器,风格简洁)" \
+        "9" "🎧 网易云音乐(x64,专注于发现与分享的音乐产品)" \
+        "10" "🎼 Audacity(类似于cooledit的音频处理软件)" \
+        "11" "🎶 Ardour(数字音频工作站,用于录制,编辑和混合多轨音频)" \
+        "12" "Spotify(x64,声破天是一个正版流媒体音乐服务平台)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) batch_compression_of_pictures ;;
-    2) install_bilibili_electron ;;
-    3) install_mpv ;;
-    4) install_smplayer ;;
-    5) install_peek ;;
-    6) install_tencent_video ;;
-    7) install_gimp ;;
-    8) install_kolourpaint ;;
-    9) install_clementine ;;
-    10) install_parole ;;
-    11) install_netease_163_cloud_music ;;
-    12) install_audacity ;;
-    13) install_ardour ;;
-    14) install_spotify ;;
+    2) install_mpv ;;
+    3) install_smplayer ;;
+    4) install_peek ;;
+    5) install_gimp ;;
+    6) install_kolourpaint ;;
+    7) install_clementine ;;
+    8) install_parole ;;
+    9) install_netease_163_cloud_music ;;
+    10) install_audacity ;;
+    11) install_ardour ;;
+    12) install_spotify ;;
     esac
     ##########################
     press_enter_to_return
@@ -461,44 +464,6 @@ EOF
     esac
 }
 #############
-install_tencent_video() {
-    printf "%s\n" "本文件提取自官方v1.0.10_amd64.deb,开发者分离了amd64的electron环境并对其进行重新打包,以适应arm64架构。"
-    printf "%s\n" "本版本仅适配deb系和arch系发行版，红帽系用户请自行测试。"
-    printf "%s\n" "若安装失败，则请手动前往官网下载安装"
-    printf "%s\n" "URL: ${YELLOW}https://v.qq.com/download.html#Linux${RESET}"
-    tenvideo_env
-    check_electron
-    git_clone_tenvideo
-}
-#############
-git_clone_tenvideo() {
-    cd /tmp
-    rm -rv ${TENVIDEO_FOLDER} 2>/dev/null
-    git clone --depth=1 ${TENVIDEO_GIT} ${TENVIDEO_FOLDER}
-    tar -PpJxvf ${TENVIDEO_FOLDER}/app.tar.xz
-    rm -rv ${TENVIDEO_FOLDER}
-    printf "%s\n" "安装完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TENTVIDEO_OPT} ${TENVIDEO_LNK}${RESET}"
-}
-############
-install_bilibili_electron() {
-    check_electron
-    TMOE_BILI_DIR='/opt/bilibili-web'
-    if [ -e "${TMOE_BILI_DIR}/.git" ]; then
-        cd ${TMOE_BILI_DIR}
-        #git fetch --depth=1 origin build
-        git reset --hard origin/build
-        git pull --rebase --stat origin build --allow-unrelated-histories || git rebase --skip
-    else
-        rm -rv ${TMOE_BILI_DIR} 2>/dev/null
-        mkdir -p /opt
-        cd /opt
-        git clone --depth=1 -b build https://gitee.com/ak2/bilibili-web ./bilibili-web
-    fi
-    cd ${TMOE_BILI_DIR}
-    cp -f bilibili-web.desktop ${APPS_LNK_DIR}
-    printf "%s\n" "更新完成，如需卸载，请手动输${RED}rm -rv${RESET} ${BLUE}${TMOE_BILI_DIR} ${APPS_LNK_DIR}/bilibili-web.desktop ${TENVIDEO_LNK}${RESET}"
-}
-###########
 tmoe_games_menu() {
     RETURN_TO_WHERE='tmoe_games_menu'
     DEPENDENCY_01=""

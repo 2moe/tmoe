@@ -39,7 +39,7 @@ notes_of_chroot() {
 		if ((${ANDROID_VERSION} <= 7)); then
 			printf "%s\n" "您的系统版本低于${BLUE}Android8${RESET},${PURPLE}可能无法${RESET}使用${YELLOW}tmoe-linux的chroot容器${RESET}配置功能。"
 			printf "%s\n" "Your android system version is lower than 8."
-			sleep 1
+			sleep 3
 		fi
 		;;
 	*)
