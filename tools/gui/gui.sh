@@ -1550,7 +1550,7 @@ linuxmint_sonya_wallpaper_var() {
 }
 linuxmint_sylvia_wallpaper_var() {
     MINT_CODE='sylvia'
-    WALLPAPER_FILE='/usr/share/backgrounds/jdonovan_yosemite.jpg'
+    WALLPAPER_FILE='/usr/share/backgrounds/thomasb_glass_ball.jpg'
 }
 linuxmint_tara_wallpaper_var() {
     MINT_CODE='tara'
