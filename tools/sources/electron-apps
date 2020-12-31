@@ -357,6 +357,7 @@ tmoe_electron_note_app() {
         ORIGINAL_URL='https://github.com/Automattic/simplenote-electron'
         ;;
     4)
+        DEBIAN_INSTALLATION_MENU='02'
         DEPENDENCY_01='marktext'
         DEPENDENCY_02="ripgrep"
         ORIGINAL_URL='https://github.com/marktext/marktext'
@@ -369,6 +370,7 @@ tmoe_electron_note_app() {
     case ${DEBIAN_INSTALLATION_MENU} in
     00) ;;
     01) tmoe_electron_install_or_remove_01 ;;
+    02) tmoe_electron_install_or_remove_02 ;;
     esac
     ########################
     press_enter_to_return
