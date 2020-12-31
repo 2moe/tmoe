@@ -1425,7 +1425,15 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if egrep -q '^deb.*(huawei|tuna|bfsu)' /etc/apt/sources.list;then
 	      printf "%s\n" "Replacing http software source list with https."
 	      printf "%s\n" "正在将http源替换为https..."
-	      sed -i 's@http:@https:@g' /etc/apt/sources.list
+		  case $(dpkg --print-architecture) in
+		armhf)
+	     case $(uname -m) in
+	     aarch64) ;;
+	     *) sed -i 's@http:@https:@g' /etc/apt/sources.list ;;
+	     esac
+	     ;;
+		*) sed -i 's@http:@https:@g' /etc/apt/sources.list ;;
+		esac
 		fi
 		;;
 		esac
