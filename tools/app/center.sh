@@ -676,7 +676,7 @@ install_linux_qq() {
     ICON_FILE='/usr/local/share/tencent-qq/qq.png'
     cat_icon_img
     DEPENDENCY_01="linuxqq"
-    DEPENDENCY_02=""
+    DEPENDENCY_02="gtk2"
     printf "%s\n" "正在检测版本更新..."
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://im.qq.com/linuxqq/download.html${RESET}"
@@ -733,6 +733,7 @@ install_linux_qq() {
             aria2c --no-conf --allow-overwrite=true -k 1M -o LINUXQQ.sh ${THE_LATEST_SH_URL}
             chmod +x LINUXQQ.sh
             sudo ./LINUXQQ.sh
+            ${TMOE_INSTALLATION_COMMAND} gtk2
             #即使是root用户也需要加sudo
             ;;
         esac
