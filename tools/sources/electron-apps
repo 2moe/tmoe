@@ -4,6 +4,13 @@ electron_apps_main_menu() {
     RETURN_TO_WHERE='electron_apps_main_menu'
     RETURN_TO_MENU='electron_apps_main_menu'
     DEPENDENCY_02=""
+    if [ ! -e /opt/electron/electron ]; then
+        printf "%s\n" "本electron仓库由2moe进行维护，感谢各个项目的原开发者。"
+        printf "%s\n" "您可以通过本脚本${PURPLE}手动检测${RESET}更新。"
+        printf "%s\n" "要求:${YELLOW}gnu libc${RESET}, 支持${BLUE}arch/manjaro,debian/ubuntu,fedora,opensuse,void(非musl版)等${RESET}"
+        printf "%s\n" "暂不支持alpine(musl libc)"
+        press_enter_to_continue
+    fi
     cd ${APPS_LNK_DIR}
     #16 50 7
     INSTALL_APP=$(whiptail --title "ELECTRON APPS" --menu \
@@ -76,20 +83,6 @@ check_tmoe_electron_app_version() {
     THE_LATEST_DEB_FILE=$(curl -L "${GIT_AK2}/${DEPENDENCY_01}_build/raw/build/version.txt")
 }
 ###############
-download_tmoe_electron_app() {
-    DOWNLOAD_PATH="/tmp/.${DEPENDENCY_01}_TEMP_FOLDER"
-    [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rv ${DOWNLOAD_PATH}
-    [[ -e /opt ]] || mkdir -pv /opt
-    git clone --depth=1 ${GIT_AK2}/${DEPENDENCY_01}_build ${DOWNLOAD_PATH}
-    cd ${DOWNLOAD_PATH}
-    tar -Jxvf app.tar.xz -C /opt
-    [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
-    cd /opt/${DEPENDENCY_01}
-    rm -rfv ${DOWNLOAD_PATH}
-    pwd
-    cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
-}
-###################
 remove_electron_app_01() {
     TMOE_ELECTRON_APP_DIR="/opt/${DEPENDENCY_01}"
     printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${TMOE_ELECTRON_APP_DIR} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"

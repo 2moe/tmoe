@@ -1104,6 +1104,20 @@ install_electron_v8() {
     fi
 }
 ##############
+download_tmoe_electron_app() {
+    DOWNLOAD_PATH="/tmp/.${DEPENDENCY_01}_TEMP_FOLDER"
+    [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rv ${DOWNLOAD_PATH}
+    [[ -e /opt ]] || mkdir -pv /opt
+    git clone --depth=1 ${GIT_AK2}/${DEPENDENCY_01}_build ${DOWNLOAD_PATH}
+    cd ${DOWNLOAD_PATH}
+    tar -Jxvf app.tar.xz -C /opt
+    [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
+    cd /opt/${DEPENDENCY_01}
+    rm -rfv ${DOWNLOAD_PATH}
+    pwd
+    cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
+}
+###################
 aria2c_download_normal_file_s3() {
     printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
     cd ${DOWNLOAD_PATH}

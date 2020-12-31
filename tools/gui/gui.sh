@@ -260,6 +260,7 @@ install_gui() {
 preconfigure_gui_dependecies_02() {
     unset AUTO_INSTALL_FCITX4
     unset AUTO_INSTALL_KALI_TOOLS
+    unset AUTO_INSTALL_ELECTRON_APPS
     unset UBUNTU_DESKTOP
     DEPENDENCY_02="tigervnc"
     case "${LINUX_DISTRO}" in
@@ -973,6 +974,17 @@ configure_x11vnc_remote_desktop_session() {
     #startx11vnc
 }
 ##########################
+install_tmoe_electron_app_pack() {
+    if [[ "${AUTO_INSTALL_ELECTRON_APPS}" = true ]]; then
+        check_electron
+        install_electron_v8
+        DEPENDENCY_01=''
+        for DEPENDENCY_01 in electron-netease-cloud-music bilibili-web listen1 lx-music-desktop cocomusic petal zy-player; do
+            download_tmoe_electron_app
+        done
+    fi
+}
+##########################
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
         if [[ ! -n $(command -v zenmap) ]]; then
@@ -1221,6 +1233,19 @@ git_clone_kali_themes_common() {
     fi
 }
 ##########
+do_you_want_to_install_electron_apps() {
+    case ${LINUX_DISTRO} in
+    alpine) ;;
+    *)
+        if [[ ! -n $(command -v electron) ]]; then
+            if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nlx-music-desktop,cocomusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
+                AUTO_INSTALL_ELECTRON_APPS='true'
+            fi
+        fi
+        ;;
+    esac
+}
+#########
 do_you_want_to_install_fcitx4() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
@@ -1234,6 +1259,7 @@ do_you_want_to_install_fcitx4() {
             fi
             ;;
         esac
+        do_you_want_to_install_electron_apps
         ;;
     *) ;;
     esac
@@ -1267,6 +1293,7 @@ auto_install_and_configure_fcitx4() {
     esac
     #在安裝完桌面後再配置輸入法
     [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
+    install_tmoe_electron_app_pack
     install_kali_linux_tools
 }
 #######
