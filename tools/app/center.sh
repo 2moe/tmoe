@@ -155,7 +155,6 @@ tmoe_deb_batch_installer() {
 tmoe_social_network_service() {
     RETURN_TO_WHERE='tmoe_social_network_service'
     RETURN_TO_MENU='tmoe_social_network_service'
-
     DEPENDENCY_01=""
     DEPENDENCY_02=""
     TMOE_APP=$(
@@ -236,16 +235,19 @@ EOF
         tmoe_social_network_service
         ;;
     esac
+
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    *) non_debian_function ;;
+    esac
+
     DEPENDENCY_01='com.qq.weixin'
     download_tmoe_electron_app
     unset DEPENDENCY_01
     if [ ! $(command -v bwrap) ]; then
         DEPENDENCY_01='bubblewrap'
     fi
-    case ${LINUX_DISTRO} in
-    debian) DEPENDENCY_02='libgtk2.0-0 libgconf-2-4' ;;
-    *) DEPENDENCY_02='gconf gtk2 libxss' ;;
-    esac
+    DEPENDENCY_02='libgtk2.0-0 libgconf-2-4'
     beta_features_quick_install
 }
 ####################
