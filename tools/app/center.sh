@@ -205,6 +205,7 @@ tmoe_social_network_service() {
 ###################
 install_wechat_arm64() {
     printf "%s\n" "若安装失败，则请前往uos商店在线安装。"
+    printf "%s\n" "注：当前版本v2.0.0-2不支持proot容器。"
     printf "%s\n" "如需卸载，请手动执行${RED}rm -rv ${BLUE}/opt/com.qq.weixin ${APPS_LNK_DIR}/com.qq.weixin.desktop${RESET}"
     cat <<-EOF
 Package: com.qq.weixin
@@ -219,7 +220,7 @@ Section: net
 Priority: optional
 Description: 微信
 EOF
-    case ${TMOE_POOT} in
+    case ${TMOE_PROOT} in
     false) ;;
     true | no)
         printf "%s\n" "Sorry,检测到您使用的是${YELLOW}proot容器,${PURPLE}无法安装${RESET}本应用。若您使用是Android设备，则建议您换用${GREEN}chroot容器${RESET}。"
