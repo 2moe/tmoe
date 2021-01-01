@@ -243,6 +243,7 @@ EOF
 
     DEPENDENCY_01='com.qq.weixin'
     download_tmoe_electron_app
+    cp -rfv /opt/com.qq.weixin/usr/lib/license /usr/lib
     unset DEPENDENCY_01
     if [ ! $(command -v bwrap) ]; then
         DEPENDENCY_01='bubblewrap'
