@@ -1111,7 +1111,9 @@ download_tmoe_electron_app() {
     git clone --depth=1 ${GIT_AK2}/${DEPENDENCY_01}_build ${DOWNLOAD_PATH}
     cd ${DOWNLOAD_PATH}
     tar -Jxvf app.tar.xz -C /opt
-    [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
+    if [ -n "${OPT_APP_VERSION_TXT}" ]; then
+        [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
+    fi
     cd /opt/${DEPENDENCY_01}
     rm -rfv ${DOWNLOAD_PATH}
     pwd

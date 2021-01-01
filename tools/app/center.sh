@@ -32,7 +32,6 @@ remove_browser() {
 }
 ############################################
 software_center() {
-
     RETURN_TO_WHERE='software_center'
     RETURN_TO_MENU='software_center'
     SOFTWARE=$(
@@ -43,7 +42,7 @@ software_center() {
             "3" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
             "4" "🎵 Multimedia:图像与影音(gimp,mpv)" \
             "5" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
-            "6" "🐧 SNS:社交类(qq,skype)" \
+            "6" "🐧 SNS:社交类(qq,wechat,skype)" \
             "7" "📚 Documents:文档(libreoffice,wps)" \
             "8" "🎁 Download:下载类(aria2,baidu,迅雷)" \
             "9" "🏤 debian-opt仓库" \
@@ -163,14 +162,15 @@ tmoe_social_network_service() {
         whiptail --title "SNS" --menu \
             "Which software do you want to install?" 0 50 0 \
             "1" "LinuxQQ(腾讯开发的IM软件,从心出发,趣无止境)" \
-            "2" "Thunderbird(雷鸟是Mozilla开发的email客户端)" \
-            "3" "Kmail(KDE邮件客户端)" \
-            "4" "Evolution(GNOME邮件客户端)" \
-            "5" "Empathy(GNOME多协议语音、视频聊天软件)" \
-            "6" "Pidgin(IM即时通讯软件)" \
-            "7" "Xchat(IRC客户端,类似于Amiga的AmIRC)" \
-            "8" "Skype(x64,微软出品的IM软件)" \
-            "9" "米聊(x64,小米科技出品的即时通讯工具)" \
+            "2" "Wechat(arm64)" \
+            "3" "Thunderbird(雷鸟是Mozilla开发的email客户端)" \
+            "4" "Kmail(KDE邮件客户端)" \
+            "5" "Evolution(GNOME邮件客户端)" \
+            "6" "Empathy(GNOME多协议语音、视频聊天软件)" \
+            "7" "Pidgin(IM即时通讯软件)" \
+            "8" "Xchat(IRC客户端,类似于Amiga的AmIRC)" \
+            "9" "Skype(x64,微软出品的IM软件)" \
+            "10" "米聊(x64,小米科技出品的即时通讯工具)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -181,17 +181,18 @@ tmoe_social_network_service() {
         install_linux_qq
         DEPENDENCY_01=""
         ;;
-    2) install_thunder_bird ;;
-    3) DEPENDENCY_01="kmail" ;;
-    4) DEPENDENCY_01="evolution" ;;
-    5) DEPENDENCY_01="empathy" ;;
-    6) DEPENDENCY_01="pidgin" ;;
-    7) DEPENDENCY_01="xchat" ;;
-    8)
+    2) install_wechat_arm64 ;;
+    3) install_thunder_bird ;;
+    4) DEPENDENCY_01="kmail" ;;
+    5) DEPENDENCY_01="evolution" ;;
+    6) DEPENDENCY_01="empathy" ;;
+    7) DEPENDENCY_01="pidgin" ;;
+    8) DEPENDENCY_01="xchat" ;;
+    9)
         install_skype
         DEPENDENCY_01=""
         ;;
-    9) mitalk_env ;;
+    10) mitalk_env ;;
     esac
     ##########################
     case ${DEPENDENCY_01} in
@@ -202,6 +203,51 @@ tmoe_social_network_service() {
     tmoe_social_network_service
 }
 ###################
+install_wechat_arm64() {
+    printf "%s\n" "若安装失败，则请前往uos商店在线安装。"
+    printf "%s\n" "如需卸载，请手动执行${RED}rm -rv ${BLUE}/opt/com.qq.weixin ${APPS_LNK_DIR}/com.qq.weixin.desktop${RESET}"
+    cat <<-EOF
+Package: com.qq.weixin
+Version: 2.0.0-2
+Architecture: arm64
+Maintainer: arminchen
+Installed-Size: 118814
+Depends: libgtk2.0-0, libnotify4, libnss3, libxss1, libxtst6, xdg-utils, libgconf-2-4 | libgconf2-4, kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs-bin
+Recommends: pulseaudio | libasound2
+Suggests: gir1.2-gnomekeyring-1.0, libgnome-keyring0, lsb-release
+Section: net
+Priority: optional
+Description: 微信
+EOF
+    case ${TMOE_POOT} in
+    false) ;;
+    true | no)
+        printf "%s\n" "Sorry,检测到您使用的是${YELLOW}proot容器,${PURPLE}无法安装${RESET}本应用。若您使用是Android设备，则建议您换用${GREEN}chroot容器${RESET}。"
+        press_enter_to_return
+        tmoe_social_network_service
+        ;;
+    esac
+    case ${ARCH_TYPE} in
+    arm64) ;;
+    *)
+        printf "%s\n" "Sorry,暂仅适配arm64架构。如需安装其他架构的版本，请前往uos或其他商店在线安装。"
+        press_enter_to_return
+        tmoe_social_network_service
+        ;;
+    esac
+    DEPENDENCY_01='com.qq.weixin'
+    download_tmoe_electron_app
+    unset DEPENDENCY_01
+    if [ ! $(command -v bwrap) ]; then
+        DEPENDENCY_01='bubblewrap'
+    fi
+    case ${LINUX_DISTRO} in
+    debian) DEPENDENCY_02='libgtk2.0-0 libgconf-2-4' ;;
+    *) DEPENDENCY_02='gconf gtk2 libxss' ;;
+    esac
+    beta_features_quick_install
+}
+####################
 install_thunder_bird() {
     DEPENDENCY_01="thunderbird"
     case ${LINUX_DISTRO} in
