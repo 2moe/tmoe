@@ -825,16 +825,20 @@ install_gentoo_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO='gentoo'
 	case "${ARCH_TYPE}" in
 	'arm64')
-		printf "%s\n" "检测到您当前使用的是arm64架构，将临时识别为armhf"
-		NEW_TMOE_ARCH='armhf'
-		TMOE_QEMU_ARCH=""
-		ARCH_TYPE='armhf'
-		creat_tmoe_arch_file
+		#printf "%s\n" "检测到您当前使用的是arm64架构，将临时识别为armhf"
+		#NEW_TMOE_ARCH='armhf'
+		#TMOE_QEMU_ARCH=""
+		#ARCH_TYPE='armhf'
+		#creat_tmoe_arch_file
 		creat_container_edition_txt
 		go_to_proot_management
+		DISTRO_CODE='current'
 		#sed '45 a\ARCH_TYPE="armhf"' |
+		TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
+		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | egrep -v 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed 's/debian system/gentoo system/g' |
+			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" |
+			sed 's/debian system/Gentoo system/g' |
 			sed 's:debian-sid:gentoo-current:g' |
 			sed 's:debian/sid:gentoo/current:g' |
 			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"

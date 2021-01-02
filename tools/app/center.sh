@@ -264,6 +264,7 @@ EOF
     fi
     DEPENDENCY_02='libgtk2.0-0 libgconf-2-4'
     beta_features_quick_install
+    printf "%s\n" "您可以在终端内输入${GREEN}nohup wechat${RESET}命令来启动com.qq.weixin"
 }
 ####################
 install_thunder_bird() {
