@@ -1110,6 +1110,8 @@ debian_xfce4_extras() {
         if ! egrep -q '^[^#]*QT_QPA_PLATFORMTHEME=' /etc/environment; then
             printf "%s\n" "export QT_QPA_PLATFORMTHEME=qt5ct" >>/etc/environment
             printf "%s\n" "/etc/environment :export QT_QPA_PLATFORMTHEME=qt5ct"
+            printf "${GREEN}%s${RESET}\n" "/etc/environment:"
+            grep -n --color=auto "QT_QPA_PLATFORMTHEME=" /etc/environment
         fi
     fi
     apt_purge_libfprint
