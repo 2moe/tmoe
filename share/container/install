@@ -1268,6 +1268,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			fi
 		done
 		unset i
+		if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
+			ln -sv $(command -v apt) /usr/bin/pkg
+		fi
 		;;
 	esac
 	##############
