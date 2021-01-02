@@ -1469,6 +1469,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			EndofgentooConf
 	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
 		mv -f .profile.bak .profile 2>/dev/null
+		chmod +x /usr/local/bin/neofetch
+	    neofetch
 		if grep -q 'Funtoo' /etc/os-release;then
 		   #同步过于耗时
 	       emerge --sync
@@ -1488,7 +1490,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    emerge eix 2>/dev/null
 	    printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
-	    chmod +x /usr/local/bin/neofetch
 	    neofetch
 	}
 	#############################
