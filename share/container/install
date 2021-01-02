@@ -1451,10 +1451,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #下面生成的文件不要留空格
 	   case ${LANG} in
 	   zh_*UTF-8)
-	   printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n' 'ACCEPT_LICENSE="*"' 'MAKEOPTS="-j8"' 'L10N="zh-CN en-US"' 'LINGUAS="en_US zh_CN"' 'PORTDIR="/usr/portage"' 'DISTDIR="${PORTDIR}/distfiles"' 'PKGDIR="${PORTDIR}/packages"' 'GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"' 'EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"' 'EMERGE_DEFAULT_OPTS="--ask --verbose=y --keep-going --with-bdeps=y --load-average"' >> make.conf
+	   printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n' 'ACCEPT_LICENSE="*"' 'MAKEOPTS="-j8"' 'L10N="zh-CN en-US"' 'LINGUAS="en_US zh_CN"' 'PORTDIR="/usr/portage"' 'DISTDIR="${PORTDIR}/distfiles"' 'PKGDIR="${PORTDIR}/packages"' 'GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"' 'EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"' 'EMERGE_DEFAULT_OPTS="--ask --verbose=y --keep-going --with-bdeps=y --load-average"' >> /etc/portage/make.conf
 	   ;;
 	   *)
-	       printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n' 'ACCEPT_LICENSE="*"' 'MAKEOPTS="-j8"' 'PORTDIR="/usr/portage"' 'DISTDIR="${PORTDIR}/distfiles"' 'PKGDIR="${PORTDIR}/packages"' 'EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"' 'EMERGE_DEFAULT_OPTS="--ask --verbose=y --keep-going --with-bdeps=y --load-average"' >> make.conf
+	       printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n' 'ACCEPT_LICENSE="*"' 'MAKEOPTS="-j8"' 'PORTDIR="/usr/portage"' 'DISTDIR="${PORTDIR}/distfiles"' 'PKGDIR="${PORTDIR}/packages"' 'EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"' 'EMERGE_DEFAULT_OPTS="--ask --verbose=y --keep-going --with-bdeps=y --load-average"' >> /etc/portage/make.conf
 	   ;;
 	   esac
 	    source /etc/portage/make.conf 2>/dev/null
