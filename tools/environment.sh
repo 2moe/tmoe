@@ -1114,10 +1114,14 @@ download_tmoe_electron_app() {
     if [ -n "${OPT_APP_VERSION_TXT}" ]; then
         [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
     fi
-    cd /opt/${DEPENDENCY_01}
+    if [ -e "/opt/${DEPENDENCY_01}" ]; then
+        cd /opt/${DEPENDENCY_01}
+        pwd
+        cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
+    else
+        cd /tmp
+    fi
     rm -rfv ${DOWNLOAD_PATH}
-    pwd
-    cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
 }
 ###################
 aria2c_download_normal_file_s3() {

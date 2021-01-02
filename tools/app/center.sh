@@ -161,7 +161,7 @@ tmoe_social_network_service() {
         whiptail --title "SNS" --menu \
             "Which software do you want to install?" 0 50 0 \
             "1" "LinuxQQ(腾讯开发的IM软件,从心出发,趣无止境)" \
-            "2" "Wechat(arm64)" \
+            "2" "Wechat(arm64,x64)" \
             "3" "Thunderbird(雷鸟是Mozilla开发的email客户端)" \
             "4" "Kmail(KDE邮件客户端)" \
             "5" "Evolution(GNOME邮件客户端)" \
@@ -205,11 +205,12 @@ tmoe_social_network_service() {
 install_wechat_arm64() {
     printf "%s\n" "若安装失败，则请前往uos商店在线安装。"
     printf "%s\n" "注：当前版本v2.0.0-2不支持proot容器。"
-    printf "%s\n" "如需卸载，请手动执行${RED}rm -rv ${BLUE}/opt/com.qq.weixin ${APPS_LNK_DIR}/com.qq.weixin.desktop /usr/lib/license/libuosdevicea.so${RESET}"
+    printf "%s\n" "执行${GREEN}wechat${RESET}命令启动com.qq.weixin"
+    printf "%s\n" "如需卸载，请手动执行${RED}rm -rv ${BLUE}/opt/com.qq.weixin ${APPS_LNK_DIR}/com.qq.weixin.desktop /usr/lib/license/libuosdevicea.so /usr/local/bin/wechat${RESET}"
     cat <<-EOF
 Package: com.qq.weixin
 Version: 2.0.0-2
-Architecture: arm64
+Architecture: arm64,amd64
 Maintainer: arminchen
 Installed-Size: 118814
 Depends: libgtk2.0-0, libnotify4, libnss3, libxss1, libxtst6, xdg-utils, libgconf-2-4 | libgconf2-4, kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs-bin
@@ -219,6 +220,7 @@ Section: net
 Priority: optional
 Description: 微信
 EOF
+    do_you_want_to_continue
     case ${TMOE_PROOT} in
     false) ;;
     true | no)
@@ -227,23 +229,35 @@ EOF
         tmoe_social_network_service
         ;;
     esac
+
+    case ${LINUX_DISTRO} in
+    debian) ;;
+    arch)
+        printf "%s\n" "Sorry,自动安装wechat的功能仅支持deb系发行版。"
+        printf "%s\n" "您可以用普通用户身份来手动执行${GREEN}yay -S ${BLUE}wechat-uos${RESET}"
+        non_debian_function
+        ;;
+    *) non_debian_function ;;
+    esac
+    DEPENDENCY_01='com.qq.weixin'
     case ${ARCH_TYPE} in
-    arm64) ;;
+    arm64) download_tmoe_electron_app ;;
+    amd64)
+        DEPENDENCY_01='wechat-electron'
+        download_tmoe_electron_app
+        DEPENDENCY_01='com.qq.weixin'
+        cd /opt/${DEPENDENCY_01}
+        pwd
+        cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
+        ;;
     *)
-        printf "%s\n" "Sorry,暂仅适配arm64架构。如需安装其他架构的版本，请前往uos或其他商店在线安装。"
+        printf "%s\n" "Sorry,暂仅支持arm64和amd64架构。如需安装其他架构的版本，请前往uos商店或其他商店在线安装。"
         press_enter_to_return
         tmoe_social_network_service
         ;;
     esac
-
-    case ${LINUX_DISTRO} in
-    debian) ;;
-    *) non_debian_function ;;
-    esac
-
-    DEPENDENCY_01='com.qq.weixin'
-    download_tmoe_electron_app
-    cp -rfv /opt/com.qq.weixin/usr/lib/license /usr/lib
+    cp -rfv /opt/${DEPENDENCY_01}/usr/lib/license /usr/lib
+    ln -svf /opt/${DEPENDENCY_01}/usr/bin/${DEPENDENCY_01} /usr/local/bin/wechat
     unset DEPENDENCY_01
     if [ ! $(command -v bwrap) ]; then
         DEPENDENCY_01='bubblewrap'
