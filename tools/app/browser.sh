@@ -102,7 +102,6 @@ install_chromium_browser() {
     DEPENDENCY_01="chromium"
     DEPENDENCY_02="chromium-l10n"
     #chromium-chromedriver
-
     case "${LINUX_DISTRO}" in
     debian)
         #新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
@@ -169,20 +168,39 @@ install_firefox_esr_browser() {
     printf "%s\n" "1s后将自动开始安装"
     sleep 1
     DEPENDENCY_01="firefox-esr"
-    DEPENDENCY_02="firefox-esr-l10n-zh-cn"
-
+    #DEPENDENCY_02="firefox-esr-l10n-zh-cn"
+    case ${TMOE_MENU_LANG} in
+    en_US.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-cn" ;;
+    zh_*.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-tw" ;;
+    ja_JP.UTF-8) DEPENDENCY_02="firefox-esr-l10n-ja" ;;
+    en_*.UTF-8) DEPENDENCY_02="^firefox-esr-l10n-en" ;;
+    *) DEPENDENCY_02="^firefox-esr-l10n" ;;
+    esac
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
             add-apt-repository -y ppa:mozillateam/ppa
-            DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
+            #DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
+            case ${TMOE_MENU_LANG} in
+            en_US.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hans" ;;
+            zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hant" ;;
+            ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-ja" ;;
+            en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-esr-locale-en" ;;
+            *) DEPENDENCY_02="ffmpeg ^firefox-esr-locale-" ;;
+            esac
             #libavcodec58
             ;;
         esac
         ;;
         #################
-    "arch") DEPENDENCY_02="firefox-esr-i18n-zh-cn" ;;
+    "arch")
+        #DEPENDENCY_02="firefox-esr-i18n-zh-cn"
+        case ${TMOE_MENU_LANG} in
+        zh_*.UTF-8) DEPENDENCY_02="firefox-i18n-zh-cn firefox-i18n-zh-tw" ;;
+        *) unset DEPENDENCY_02 ;;
+        esac
+        ;;
     "gentoo")
         dispatch-conf
         DEPENDENCY_01='www-client/firefox'
@@ -209,17 +227,35 @@ install_firefox_browser() {
     printf "%s\n" "1s后将自动开始安装"
     sleep 1
     DEPENDENCY_01="firefox"
-    DEPENDENCY_02="firefox-l10n-zh-cn"
+    #DEPENDENCY_02="firefox-l10n-zh-cn"
+    case ${TMOE_MENU_LANG} in
+    en_US.UTF-8) DEPENDENCY_02="firefox-l10n-zh-cn" ;;
+    zh_*.UTF-8) DEPENDENCY_02="firefox-l10n-zh-tw" ;;
+    ja_JP.UTF-8) DEPENDENCY_02="firefox-l10n-ja" ;;
+    en_*.UTF-8) DEPENDENCY_02="^firefox-l10n-en" ;;
+    *) DEPENDENCY_02="^firefox-l10n" ;;
+    esac
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
             #add-apt-repository -y ppa:mozillateam/firefox-next
-            DEPENDENCY_02="firefox-locale-zh-hans ffmpeg"
+            case ${TMOE_MENU_LANG} in
+            en_US.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hans" ;;
+            zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hant" ;;
+            ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-ja" ;;
+            en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-locale-en" ;;
+            *) DEPENDENCY_02="ffmpeg ^firefox-locale-" ;;
+            esac
             ;;
         esac
         ;;
-    "arch") DEPENDENCY_02="firefox-i18n-zh-cn" ;;
+    "arch")
+        case ${TMOE_MENU_LANG} in
+        zh_*.UTF-8) DEPENDENCY_02="firefox-i18n-zh-cn firefox-i18n-zh-tw" ;;
+        *) unset DEPENDENCY_02 ;;
+        esac
+        ;;
     "redhat") DEPENDENCY_02="firefox-x11" ;;
     "gentoo")
         dispatch-conf
