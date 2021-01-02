@@ -1468,6 +1468,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				auto-sync = yes
 			EndofgentooConf
 	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
+		rm -fv .profile
 		mv -f .profile.bak .profile 2>/dev/null
 		chmod +x /usr/local/bin/neofetch
 	    neofetch
