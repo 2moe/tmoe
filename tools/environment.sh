@@ -1509,12 +1509,17 @@ restore_debian_gnu_libxcb_so() {
 }
 ###########
 check_mozilla_fake_no_sandbox() {
-    case ${TMOE_CHROOT} in
-    true) ;;
-    *)
-        if ! egrep -q '^[^#]*export.*MOZ_FAKE_NO_SANDBOX.*1' /etc/environment; then
-            printf "%s\n" "export MOZ_FAKE_NO_SANDBOX=1" >>/etc/environment
+    case ${TMOE_PROOT} in
+    false) ;;
+    true | no)
+        if (whiptail --title "MOZ_FAKE_NO_SANDBOX ENV" --yes-button "YES" --no-button "NO" --yesno "Do you want to add MOZ_FAKE_NO_SANDBOX=1 to /etc/environment" 8 50); then
+            if ! egrep -q '^[^#]*export.*MOZ_FAKE_NO_SANDBOX.*1' /etc/environment; then
+                printf "%s\n" "export MOZ_FAKE_NO_SANDBOX=1" >>/etc/environment
+            fi
+        else
+            sed -i '/MOZ_FAKE_NO_SANDBOX=/d' /etc/environment
         fi
+        sed -n p /etc/environment
         ;;
     esac
 }

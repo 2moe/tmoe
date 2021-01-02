@@ -1059,10 +1059,15 @@ build_xfce4_panel_profiles() {
 debian_xfce4_extras() {
     case ${LINUX_DISTRO} in
     debian)
-        [[ $(command -v qt5ct) ]] || apt install -y qt5ct 2>/dev/null
-        [[ $(command -v mugshot) ]] || apt install -y mugshot 2>/dev/null
+        for i in qt5ct mugshot; do
+            if [ ! $(command -v ${i}) ]; then
+                printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}${i}${RESET}"
+                apt install -y ${i}
+            fi
+        done
         if [ ! -e "/usr/share/themes/Breeze/xfwm4/themerc" ]; then
             printf "${BLUE}%s${RESET}\n" "apt install -y xfwm4-theme-breeze"
+            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}xfwm4-theme-breeze${RESET}"
             apt install -y xfwm4-theme-breeze
         fi
         case ${DEBIAN_DISTRO} in
@@ -1088,11 +1093,16 @@ debian_xfce4_extras() {
         fi
         ;;
     redhat)
+        printf "%s\n" "${GREEN}dnf install ${YELLOW}--skip-broken -y ${BLUE}xfce*-plugin xfce4-panel-profiles qt5ct${RESET}"
         yum install --skip-broken -y xfce*-plugin xfce4-panel-profiles qt5ct
         [[ $(command -v startxfce4) ]] || yum install --skip-broken -y @xfce
         ;;
     arch)
-        [[ $(command -v qt5ct) ]] || pacman -Sy --noconfirm qt5ct 2>/dev/null
+        i=qt5ct
+        if [ ! $(command -v ${i}) ]; then
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+            pacman -Sy --noconfirm qt5ct 2>/dev/null
+        fi
         [[ $(command -v xfce4-panel-profiles) ]] || build_xfce4_panel_profiles
         ;;
     esac
