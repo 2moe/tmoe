@@ -213,7 +213,7 @@ install_alpha_containers() {
 				"2" "ラズベリーパイ OS buster" \
 				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
 				"4" "Slackware(armhf,x64)" \
-				"5" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+				"5" "gentoo(arm64,armhf,x86,x64)" \
 				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
@@ -226,7 +226,7 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS樹莓派 buster" \
 				"3" "Devuan (不使用systemd,基于debian)" \
 				"4" "Slackware is a Linux distro created by Patrick Volkerding in 1993(armhf,x64)" \
-				"5" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+				"5" "gentoo(追求极限配置和极高自由,arm64,armhf,x86,x64)" \
 				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
@@ -239,7 +239,7 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS buster" \
 				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
 				"4" "Slackware is a distro created by Patrick Volkerding in 1993(armhf,x64)" \
-				"5" "gentoo(追求极限配置和极高自由,armhf,x86,x64)" \
+				"5" "gentoo(arm64,armhf,x86,x64)" \
 				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
