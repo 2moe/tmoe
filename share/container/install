@@ -1449,9 +1449,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #bash /etc/profile
 	    mkdir -p '/usr/portage'
 	    #下面生成的文件不要留空格
-	    #cat >/etc/portage/make.conf <<-'Endofmakeconf'
+	   case ${LANG} in
+	   zh_*UTF-8)
+	   printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n' 'ACCEPT_LICENSE="*"' 'MAKEOPTS="-j8"' 'L10N="zh-CN en-US"' 'LINGUAS="en_US zh_CN"' 'PORTDIR="/usr/portage"' 'DISTDIR="${PORTDIR}/distfiles"' 'PKGDIR="${PORTDIR}/packages"' 'GENTOO_MIRRORS="https://mirrors.tuna.tsinghua.edu.cn/gentoo"' >> make.conf
+	   ;;
+	   esac
 	    source /etc/portage/make.conf 2>/dev/null
-	    mkdir -p /etc/portage/repos.conf/
+	    mkdir -pv /etc/portage/repos.conf/
 	    cat >/etc/portage/repos.conf/gentoo.conf <<-'EndofgentooConf'
 				[gentoo]
 				location = /usr/portage
