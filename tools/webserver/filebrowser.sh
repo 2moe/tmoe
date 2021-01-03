@@ -386,12 +386,13 @@ filebrowser_systemd() {
 			输service filebrowser stop停止
 			输service filebrowser status查看进程状态
 		        
-		    其它命令(适用于service和systemctl都无法使用的情况)
-			启动命令1
-            filebrowser -d /etc/filebrowser.db
-            2：
-            debian-i file
-			pkill filebrowser停止
+			其它命令(适用于service和systemctl都无法使用的情况)
+			1:
+			filebrowser -d /etc/filebrowser.db
+			2：
+			debian-i file
+			3(停止):
+			pkill filebrowser 
 	EOF
 }
 ###############
