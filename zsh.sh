@@ -42,6 +42,7 @@ do_you_want_to_delete_the_zsh_script_file() {
 	fi
 }
 do_you_want_to_configure_tmoe_zsh() {
+	cd ${HOME}
 	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
 	for i in "/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/storage/emulated/0/Pictures/Telegram" "/storage/emulated/0/DCIM/Camera" "/sd" "/sd/Pictures" "/storage/emulated/0/DCIM/.thumbnails"; do
 		if [[ -e ${i} ]]; then
