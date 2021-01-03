@@ -1278,13 +1278,18 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "${GREEN}pacman ${PURPLE}-Rsc ${YELLOW}--noconfirm ${BLUE}linux-armv7${RESET}"
 			pacman -Rsc --noconfirm linux-armv7
 		fi
+		printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}base-devel${RESET}"
+		pacman -Syu --noconfirm base-devel
 	elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || manjaro_mirror_list
 		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
 		pacman-key --init
 	    pacman-key --populate
+		printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}base base-devel${RESET}"
 		pacman -Syu --noconfirm base base-devel
 	fi
+	printf "%s\n" "${GREEN}pacman ${PURPLE}-R ${YELLOW}--noconfirm ${BLUE}fakeroot${RESET}"
+	pacman -R --noconfirm fakeroot
 	if [[ -e "/etc/pacman.conf" && -n $(command -v grep) ]]; then
 	    arch_linux_yay
 		cat /etc/pacman.conf
