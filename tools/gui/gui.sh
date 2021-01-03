@@ -988,18 +988,18 @@ install_tmoe_electron_app_pack() {
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
         if [[ ! -n $(command -v zenmap) ]]; then
-            printf "%s\n" "apt install -y zenmap"
+            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}zenmap${RESET}"
             apt install -y zenmap
         fi
-        printf "%s\n" "apt install -y kali-menu"
+        printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-menu${RESET}"
         apt install -y kali-menu || aptitude install -y kali-menu
         case ${ARCH_TYPE} in
         arm64 | armhf | armel)
-            printf "%s\n" "apt install -y kali-linux-arm"
+            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-linux-arm${RESET}"
             apt install -y kali-linux-arm || aptitude install -y kali-linux-arm
             ;;
         *)
-            printf "%s\n" "apt install -y kali-linux-default"
+            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-linux-default${RESET}"
             apt install -y kali-linux-default || aptitude install -y kali-linux-default
             ;;
         esac
@@ -1007,7 +1007,7 @@ install_kali_linux_tools() {
 }
 ###########################
 kali_xfce4_extras() {
-    apt install -y kali-undercover
+    printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-undercover${RESET}"
     apt install -y kali-themes-common
     if [ $(command -v chromium) ]; then
         apt install -y chromium-l10n
@@ -1019,9 +1019,11 @@ kali_xfce4_extras() {
 ###################
 apt_purge_libfprint() {
     case ${TMOE_PROOT} in
+    false) ;;
     true | no)
         case "${LINUX_DISTRO}" in
         "debian")
+            printf "%s\n" "${PURPLE}apt purge ${YELLOW}-y ${BLUE}^libfprint${RESET}"
             apt purge -y ^libfprint
             apt clean
             apt autoclean
@@ -1066,7 +1068,7 @@ debian_xfce4_extras() {
             fi
         done
         if [ ! -e "/usr/share/themes/Breeze/xfwm4/themerc" ]; then
-            printf "${BLUE}%s${RESET}\n" "apt install -y xfwm4-theme-breeze"
+            #printf "${BLUE}%s${RESET}\n" "apt install -y xfwm4-theme-breeze"
             printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}xfwm4-theme-breeze${RESET}"
             apt install -y xfwm4-theme-breeze
         fi
