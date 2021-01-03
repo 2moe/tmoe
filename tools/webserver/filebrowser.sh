@@ -163,7 +163,7 @@ filebrowser_onekey() {
     #设置语言环境为中文简体
     filebrowser config set --locale zh-cn
     #修改日志文件路径
-    #filebrowser config set --log /var/log/filebrowser.log
+    filebrowser config set --log /var/log/filebrowser.log
     TARGET_USERNAME=$(whiptail --inputbox "请输入自定义用户名,例如root,admin,kawaii,moe,neko等 \n Please enter the username.Press Enter after the input is completed." 15 50 --title "USERNAME" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -225,7 +225,7 @@ DAEMON_OPTS=""
 case "\$1" in
   start)
     printf "%s\n" "Starting filebrowser... "
-   /usr/local/bin/filebrowser -d /etc/filebrowser.db
+   /usr/local/bin/filebrowser -d /etc/filebrowser.db &
     ;;
   stop)
     printf "%s\n" "Stopping filebrowser... "
