@@ -1771,9 +1771,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	note_of_non_debian() {
 		case ${LANG} in
-		zh*UTF-8) printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${GREEN}debian-i${RESET}或${YELLOW}tmoe t${RESET}打开软件安装工具" ;;
-		*) printf "You can type ${GREEN}debian-i${RESET} or ${YELLOW}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}";;
+		zh*UTF-8) printf "%s\n" "您可以输${GREEN}debian-i${RESET}或${YELLOW}tmoe t${RESET}来打开软件安装工具" ;;
+		*) ;;
 		esac
+		printf "%s\n" "You can type ${GREEN}debian-i${RESET} or ${YELLOW}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}"
 	    bash zsh.sh
 	}
 	################
