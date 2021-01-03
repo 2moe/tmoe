@@ -870,6 +870,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	BOLD=$(printf '\033[1m')
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	cd ${HOME}
 	if [[ -n $(command -v bash) ]];then
 		if [[ -e /usr/local/bin/neofetch ]];then
@@ -1308,7 +1309,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt${RESET}"
 	        apk update
 	        apk add bash tzdata newt
-			case ${LANG} in
+			case $(head -n 1 ${TMOE_LOCALE_FILE}) in
 			zh_*UTF-8) ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;;
 			*) ln -svf /usr/share/zoneinfo/UTC /etc/localtime ;;
 			esac
@@ -1329,7 +1330,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		exit 0
 	}
 	########################
-	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	else
@@ -1389,8 +1389,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	   printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}^language-pack-${TMOE_LANG_QUATER}${RESET}"
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
-	case ${LANG} in
-	zh*UTF-8)
+	case ${TMOE_LANG} in
+	zh_*UTF-8)
 	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
 	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container."
 	printf '%s\n' '正在执行优化步骤，请勿退出!'
@@ -1498,7 +1498,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #bash /etc/profile
 	    mkdir -pv '/usr/portage'
 	    #下面生成的文件不要留空格
-	   case ${LANG} in
+	   case ${TMOE_LANG} in
 	   zh_*UTF-8)
 	    grep -q 'en_US' /etc/locale.gen || printf "%s\n%s\n" "en_US.UTF-8 UTF-8" "en_US.UTF-8 UTF-8" >>/etc/locale.gen
 	    locale-gen
@@ -1697,7 +1697,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
 		sed -i -E "s@(enabled)=1@\1=0@" /etc/yum.repos.d/fedora-updates-testing-modular.repo /etc/yum.repos.d/fedora-updates-testing.repo
 		if [[ ${TMOE_GITHUB} != true ]]; then
-			case ${LANG} in
+			case ${TMOE_LANG} in
 			zh_*UTF-8)
 				if ((${FEDORA_VERSION} >= 30)); then
 					if ((${FEDORA_VERSION} >= 32)); then
@@ -1742,8 +1742,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#dnf update
 		cp -a /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
 		cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
-		case ${LANG} in
-		zh*UTF-8)
+		case ${TMOE_LANG} in
+		zh_*UTF-8)
 		sed -e 's!^metalink=!#metalink=!g' \
 			-e 's!^#baseurl=!baseurl=!g' \
 			-e 's!//download\.fedoraproject\.org/pub!//mirrors.bfsu.edu.cn!g' \
@@ -1782,8 +1782,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		slackpkg install newt
 	fi
 	note_of_non_debian() {
-		case ${LANG} in
-		zh*UTF-8) printf "%s\n" "您可以输${GREEN}debian-i${RESET}或${YELLOW}tmoe t${RESET}来打开软件安装工具" ;;
+		case ${TMOE_LANG} in
+		zh_*UTF-8) printf "%s\n" "您可以输${GREEN}debian-i${RESET}或${YELLOW}tmoe t${RESET}来打开软件安装工具" ;;
 		*) ;;
 		esac
 		printf "%s\n" "You can type ${GREEN}debian-i${RESET} or ${YELLOW}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}"
