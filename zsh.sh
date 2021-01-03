@@ -15,13 +15,19 @@ tmoe_container_zsh_main() {
 	esac
 }
 ############
+do_you_want_to_delete_the_zsh_script_file() {
+	if (whiptail --title "zsh.sh & zsh-i.sh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
+		DELETE_ZSH_SCRIPT=true
+	fi
+}
 do_you_want_to_configure_tmoe_zsh() {
-	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON
+	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT
 	FACE_ICON_DIR="/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd"
 	case ${LANG} in
 	zh_*UTF-8)
 		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you want to configure zsh?' 0 0); then
 			CONFIGURE_ZSH=true
+			do_you_want_to_delete_the_zsh_script_file
 		fi
 		if [ -e "${FACE_ICON_DIR}" ]; then
 			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件，并自动生成头像?\n若选NO,则将不会读取该目录,并使用tmoe-linux默认头像" 0 0); then
@@ -37,6 +43,7 @@ do_you_want_to_configure_tmoe_zsh() {
 	*)
 		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
 			CONFIGURE_ZSH=true
+			do_you_want_to_delete_the_zsh_script_file
 		fi
 		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno 'Do you want to start tmoe-linux tool?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
@@ -53,6 +60,7 @@ do_you_want_to_configure_tmoe_zsh() {
 auto_configure_tmoe_tools() {
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
+	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
 }
 ################
 auto_configure_tmoe_tool_02() {
