@@ -227,6 +227,11 @@ case "\$1" in
     printf "%s\n" "Starting filebrowser... "
    /usr/local/bin/filebrowser -d /etc/filebrowser.db &
     ;;
+restart)
+printf "%s\n" "Restarting filebrowser... "
+ pkill filebrowser
+ /usr/local/bin/filebrowser -d /etc/filebrowser.db &
+ ;;
   stop)
     printf "%s\n" "Stopping filebrowser... "
     pkill filebrowser
