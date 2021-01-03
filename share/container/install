@@ -883,7 +883,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "127.0.0.1 ${NEW_HOST_NAME}" >>/etc/hosts
 		fi
 	fi
-	if ! grep -q "$(hostname)" /etc/hosts 2>/dev/null;then
+	if [[ -n $(command -v hostname) ]];then
+		HOSTNAME=$(hostname)
+	else
+	    HOSTNAME=localhost 
+	fi
+	if ! grep -q "${HOSTNAME}" /etc/hosts 2>/dev/null;then
 		printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
 	fi
 	if ! grep -q "localhost" /etc/hosts 2>/dev/null; then
@@ -1718,8 +1723,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#glibc-all-langpacks
 		#dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
 		dnf install -y --skip-broken glibc-all-langpacks
-		[[ $(command -v whiptail) ]] || dnf install --skip-broken newt
-		[[ $(command -v lolcat) ]] || dnf install --skip-broken lolcat
+		[[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
+		[[ $(command -v lolcat) ]] || dnf install --skip-broken -y lolcat
 	elif grep -q 'CentOS' /etc/os-release; then
 		[[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 		#curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
@@ -1739,7 +1744,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			-i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 			;;
 		esac
-		[[ $(command -v whiptail) ]] || yum install --skip-broken newt
+		[[ $(command -v whiptail) ]] || yum install --skip-broken -y newt
 	fi
 	############################
 	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
