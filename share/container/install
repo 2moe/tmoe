@@ -1199,13 +1199,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	build_fakeroot() {
-	for i in make automake autoconf gcc libtool po4a patch; do
+	for i in make automake autoconf gcc libtool po4a patch lolcat; do
 		if [[ ! $(command -v ${i}) ]];then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
 		fi
 	done
-	[[ $(command -v whereis) ]] || pacman -Sy --noconfirm util-linux
+	[[ $(command -v whereis) ]] || pacman -S --noconfirm util-linux
+	[[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
 	FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
 	FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
 	FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
@@ -1290,10 +1291,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		    printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}tmoe t${RESET}来启动软件安装工具。"
 	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
 			cat /etc/apk/repositories
-			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata${RESET}"
+			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt${RESET}"
 	        apk update
-	        apk add bash tzdata
-			ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	        apk add bash tzdata newt
+			case ${LANG} in
+			zh_*UTF-8) ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;;
+			*) ln -svf /usr/share/zoneinfo/UTC /etc/localtime ;;
+			esac
 	    fi
 	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
 	    rm -f ~/.profile vnc-autostartup
@@ -1302,7 +1306,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        mkdir -p /var/lock/
 	        touch /var/lock/opkg.lock
 	        opkg update
-	        opkg install libustream-openssl ca-bundle ca-certificates bash
+	        opkg install libustream-openssl ca-bundle ca-certificates bash dialog whiptail
 			printf "%s\n" "export PATH=\${PATH}:/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >> ~/.zshenv
 	    fi
 		printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
@@ -1313,7 +1317,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	########################
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	else
 		TMOE_LANG="en_US.UTF-8"
 	fi
@@ -1349,6 +1353,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    alpine_linux_configure
 	elif grep -q 'openSUSE' "/etc/os-release"; then
 	    opensuse_linux_repo
+		zypper in -y newt
 	fi
 	##############################
 	if [[ -n $(command -v apt) ]];then
@@ -1372,7 +1377,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	case ${LANG} in
 	zh*UTF-8)
 	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
-	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container."
 	printf '%s\n' '正在执行优化步骤，请勿退出!'
 	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
 	#配置时区
@@ -1380,7 +1385,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	;;
 	*)
-	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container. "
 	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
 	printf '%s\n' 'UTC' >/etc/timezone
 	ln -svf /usr/share/zoneinfo/UTC /etc/localtime
@@ -1441,8 +1446,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		EndOFneko
 	printf "$RESET"
 	####################
-	apt install -y apt-utils 2>/dev/null
-	apt install -y ca-certificates wget curl 2>/dev/null
+	if [[ -n $(command -v apt) ]];then
+		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates wget curl${RESET}"
+		apt install -y apt-utils 2>/dev/null
+		apt install -y ca-certificates wget curl 2>/dev/null
+	fi 
 	if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
 	     apt install -y apt-transport-https 2>/dev/null
 	fi
@@ -1511,16 +1519,17 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi 
 	    emerge-webrsync
 	    emerge --config sys-libs/timezone-data 2>/dev/null
-	    eselect profile list
 	    GENTOO_NON_SYSTEMD_PROFILE="$(eselect profile list | egrep -v 'desktop|hardened|developer|systemd|selinux|multilib' | grep stable | tail -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
 		[[ -n ${GENTOO_NON_SYSTEMD_PROFILE} ]] || GENTOO_NON_SYSTEMD_PROFILE=1
 	    eselect profile set "${GENTOO_NON_SYSTEMD_PROFILE}"
+		eselect profile list
 	    etc-update --automode -3
 	    etc-update
 	    #dispatch-conf
 	    emerge -uvDN --with-bdeps=y @world
 		emerge -avk sys-devel/binutils
 	    emerge eix 2>/dev/null
+		[[ $(command -v whiptail) ]] || emerge -av dev-libs/newt
 	    #printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	    neofetch
@@ -1545,7 +1554,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's@https://alpha.de.repo.voidlinux.org@https://mirrors.bfsu.edu.cn/voidlinux@g' /etc/xbps.d/*-repository-*.conf
 	    xbps-install -S
 	    xbps-install -uy xbps
-	    xbps-install -y wget curl
+	    xbps-install -y wget curl newt
 	    neofetch
 	    #rm -f vnc* zsh* .profile
 	    #mv -f .profile.bak .profile 2>/dev/null
@@ -1561,11 +1570,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    chattr -i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
-	if [[ $(command -v apt) ]];then
+	if [[ -n $(command -v apt) ]];then
 		apt update 2>/dev/null
-		if egrep -q 'deepin|uos\.com' "/etc/os-release";then
-			apt install -y dialog
-		fi
 		apt list --upgradable 2>/dev/null
 		printf "%s\n" "Upgrading all packages ..."
 		printf "%s\n" "${GREEN}apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
@@ -1578,6 +1584,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}whiptail${RESET}"
 			apt install -y whiptail 2>/dev/null
 		fi 
+		if egrep -q 'deepin|uos\.com' "/etc/os-release";then
+			apt install -y dialog
+		fi
 		apt clean 2>/dev/null
 	fi
 	#############################
@@ -1687,7 +1696,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				;;
 			esac
 		fi
-
 		if [[ ! -e /tmp/resolv.conf ]]; then
 			cp -f /etc/resolv.conf /tmp
 		fi
@@ -1708,32 +1716,33 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#glibc-all-langpacks
 		#dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
 		dnf install -y --skip-broken glibc-all-langpacks
-
+		[[ $(command -v whiptail) ]] || dnf install --skip-broken newt
+		[[ $(command -v lolcat) ]] || dnf install --skip-broken lolcat
 	elif grep -q 'CentOS' /etc/os-release; then
 		[[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 		#curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
 		#curl -Lo /etc/yum.repos.d/CentOS-Base.repo https://mirrors.huaweicloud.com/repository/conf/CentOS-8-anon.repo
 		[[ $(command -v dnf) ]] || yum install -y dnf
-		dnf install -y epel-release || yum install -y epel-release
+		[[ $(command -v dnf) ]] || ln -sv $(command -v yum) /usr/bin/dnf
+		dnf install -y epel-release 
 		#dnf update
 		cp -a /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
 		cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
+		case ${LANG} in
+		zh*UTF-8)
 		sed -e 's!^metalink=!#metalink=!g' \
 			-e 's!^#baseurl=!baseurl=!g' \
 			-e 's!//download\.fedoraproject\.org/pub!//mirrors.bfsu.edu.cn!g' \
 			-e 's!http://mirrors\.bfsu!https://mirrors.bfsu!g' \
 			-i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
+			;;
+		esac
+		[[ $(command -v whiptail) ]] || yum install --skip-broken newt
+		[[ $(command -v lolcat) ]] || yum install --skip-broken lolcat
 	fi
 	############################
-	if [ ! "$(command -v lolcat)" ];then
-		printf "%s\n" "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
-		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
-	fi
-	if [ ! "$(command -v whiptail)" ];then
-		apt install whiptail
-	fi
 	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
-	printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
+	#printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
 	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
 	chmod +x /usr/local/bin/neofetch
 	if [ -e /usr/games/lolcat ]; then
@@ -1750,16 +1759,20 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^ftp/#&/g' /etc/slackpkg/mirrors
 	    sed -i 's/^http/#&/g' /etc/slackpkg/mirrors
 	    sed -i '$ a\https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-current/' /etc/slackpkg/mirrors
+		cat /etc/slackpkg/mirrors
 	    slackpkg update gpg
 	    slackpkg update
 	}
 	###################
 	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
 	    slackware_mirror_list
+		slackpkg install newt
 	fi
 	note_of_non_debian() {
-	    #printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出现错误"
-	    printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${YELLOW}tmoe t${RESET}打开软件安装工具"
+		case ${LANG} in
+		zh*UTF-8) printf "%s\n" "在脚本执行完成后，您可以手动输./zsh-i.sh来配置zsh，输 ${GREEN}debian-i${RESET}或${YELLOW}tmoe t${RESET}打开软件安装工具" ;;
+		*) printf "You can type ${GREEN}debian-i${RESET} or ${YELLOW}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}";;
+		esac
 	    bash zsh.sh
 	}
 	################
