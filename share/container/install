@@ -871,6 +871,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
 	cd ${HOME}
+	if [[ -e /usr/local/bin/neofetch ]];then
+		printf "%s\n" "${GREEN}neofetch${RESET}"
+		chmod +x /usr/local/bin/neofetch
+		/usr/local/bin/neofetch
+	fi
 	###############
 	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
 	cp -f vnc-autostartup .bash_login
@@ -1540,7 +1545,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		[[ $(command -v whiptail) ]] || emerge -av dev-libs/newt
 	    #printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
-	    neofetch
 	}
 	#############################
 	void_linux_repository() {
