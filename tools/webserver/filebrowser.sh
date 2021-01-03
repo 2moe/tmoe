@@ -197,6 +197,55 @@ filebrowser_onekey() {
 		WantedBy=multi-user.target
 	EndOFsystemd
     chmod +x /etc/systemd/system/filebrowser.service
+    mkdir -pv /etc/init.d
+    cd /etc/init.d
+    cat >filebrowser <<-EndOFaria
+#!/usr/bin/env bash
+### BEGIN INIT INFO
+# Provides:          filebrowser
+# Required-Start:    \$network \$local_fs \$remote_fs
+# Required-Stop:     \$remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: filebrowser
+### END INIT INFO
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+DAEMON=/usr/local/bin/filebrowser
+NAME="filebrowser"
+DESC="filebrowser"
+PIDFILE=/var/run/filebrowser.pid
+
+
+[ -x "\$DAEMON" ] || exit 0
+
+. /lib/lsb/init-functions
+
+DAEMON_OPTS=""
+
+case "\$1" in
+  start)
+    printf "%s\n" "Starting filebrowser... "
+   /usr/local/bin/filebrowser -d /etc/filebrowser.db
+    ;;
+  stop)
+    printf "%s\n" "Stopping filebrowser... "
+    pkill filebrowser
+     log_daemon_msg "Stopping \$DESC" "\$NAME"
+     start-stop-daemon --stop --quiet --oknodo --pidfile \$PIDFILE --remove-pidfile --exec \$DAEMON
+     log_end_msg \$?
+    ;;
+  status)
+  status_of_proc -p \$PIDFILE "\$DAEMON" "\$NAME" && exit 0 || exit \$?
+    ;;
+  *)
+    printf "%s\n" "Usage: /etc/init.d/filebrowser {start|stop|status}"
+    exit 1
+    ;;
+esac
+exit 0
+EndOFaria
+    chmod a+x filebrowser
+
     systemctl daemon-reload 2>/dev/null
     #systemctl start filebrowser
     #service filebrowser start
@@ -333,7 +382,10 @@ filebrowser_systemd() {
 			输service filebrowser status查看进程状态
 		        
 		    其它命令(适用于service和systemctl都无法使用的情况)
-			输debian-i file启动
+			启动命令1
+            filebrowser -d /etc/filebrowser.db
+            2：
+            debian-i file
 			pkill filebrowser停止
 	EOF
 }
