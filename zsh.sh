@@ -3,7 +3,6 @@
 tmoe_container_zsh_main() {
 	case "$1" in
 	*)
-		set_tmoe_tmp_env
 		do_you_want_to_configure_tmoe_zsh
 		check_tmoe_linux_tool
 		copy_git_status
