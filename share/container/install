@@ -863,9 +863,12 @@ EndOfFile
 #chmod u+x .profile
 #不要将profile转换为外部脚本，否则将影响sed
 cat >'.profile' <<-'ENDOFbashPROFILE'
-	YELLOW=$(printf '\033[33m')
+	RED=$(printf '\033[31m')
 	GREEN=$(printf '\033[32m')
+	YELLOW=$(printf '\033[33m')
 	BLUE=$(printf '\033[34m')
+	BOLD=$(printf '\033[1m')
+	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
 	cd ${HOME}
 	###############
@@ -874,7 +877,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ -s "/tmp/hostname" ]; then
 		NEW_HOST_NAME=$(head -n 1 /tmp/hostname)
 		cp -f /tmp/hostname /etc
-		hostname ${NEW_HOST_NAME} 2>/dev/null
+		[[ ! -n $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
 		#sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
 		if ! grep -q "${NEW_HOST_NAME}" /etc/hosts 2>/dev/null;then
 			printf "%s\n" "127.0.0.1 ${NEW_HOST_NAME}" >>/etc/hosts
@@ -891,6 +894,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		ff02::2 ip6-allrouters
 	EOF
 	fi
+	[[ -e /etc/hostname ]] || cat /etc/hostname
+	[[ -e /etc/hosts ]] || cat /etc/hosts
 	if [[ "${TMOE_CHROOT}" = 'true' && $(command -v groupadd) ]]; then
 		groupadd aid_system -g 1000 || groupadd aid_system -g 1074
 		groupadd aid_radio -g 1001
@@ -1063,11 +1068,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		sed -n p ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
 	}
 	#################################
-	if ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
-	    chattr +i /etc/apt/sources.list 2>/dev/null
+	if [[ -e /etc/apt/sources.list ]];then
+		if ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
+		    chattr +i /etc/apt/sources.list 2>/dev/null
+		fi
 	fi
 	####################
-	if [ ! -e /etc/apt/sources.list.d/raspi.list ]; then
+	if [[ ! -e /etc/apt/sources.list.d/raspi.list ]]; then
 	case $(uname -m) in
 	mips* | risc*) ;;
 	*)
@@ -1101,7 +1108,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#http://archive.raspberrypi.org/debian/ buster main
 		#deb http://mirrors.bfsu.edu.cn/raspbian/raspbian/ buster main non-free contrib rpi
 		#mirrors.bfsu.edu.cn/raspberrypi/
-
 		sed -i "s@archive.raspberrypi.org/debian@${TUNA_MIRROR_URL}/raspberrypi@g" raspi.list
 		cat raspi.list.bak >>raspi.list
 		rm -f raspi.list.bak
@@ -1144,6 +1150,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	 TMOE_GITHUB='true'
 	#勿删上面那条注释
 	##dns
+	[[ ! -e /etc/apt/sources.list ]] || cat /etc/apt/sources.list
 	rm -f /etc/resolv.conf
 	cat >/etc/resolv.conf <<-'EndOfFile'
 	nameserver 1.0.0.1
@@ -1152,6 +1159,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	nameserver 240c::6644
 	EndOfFile
 	[[ ! -s /tmp/resolv.conf ]] || cp -f /tmp/resolv.conf /etc
+	cat /etc/resolv.conf
 	######################
 	###################
 	arch_linux_mirror_list() {
@@ -1244,27 +1252,30 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#################
 	if [ "$(cut -c 1-4 /etc/issue)" = "Arch" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || arch_linux_mirror_list
+		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
 		pacman-key --init
 	    pacman-key --populate
 		if [ -e "/etc/mkinitcpio.d/linux-armv7.preset" ]; then
+			printf "%s\n" "${GREEN}pacman ${PURPLE}-Rsc ${YELLOW}--noconfirm ${BLUE}linux-armv7${RESET}"
 			pacman -Rsc --noconfirm linux-armv7
 		fi
 	elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || manjaro_mirror_list
+		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
 		pacman-key --init
 	    pacman-key --populate
 		pacman -Syu --noconfirm base base-devel
 	fi
-
-	if [ -e "/etc/pacman.conf" ] && [ $(command -v grep) ]; then
+	if [[ -e "/etc/pacman.conf" && -n $(command -v grep) ]]; then
 	    arch_linux_yay
+		cat /etc/pacman.conf
 	fi
 	#######################
 	case ${TMOE_PROOT} in
 	true)
 		for i in sd tf; do
-			if [ -e "/root/${i}" ] && [ ! -e "/${i}" ]; then
-				ln -s root/${i} /${i}
+			if [[ -e "/root/${i}" && ! -e "/${i}" ]]; then
+				ln -sv root/${i} /${i}
 			fi
 		done
 		unset i
@@ -1278,9 +1289,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
 		    printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}tmoe t${RESET}来启动软件安装工具。"
 	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
+			cat /etc/apk/repositories
+			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata${RESET}"
 	        apk update
-	        apk add bash
-			apk add tzdata
+	        apk add bash tzdata
 			ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	    fi
 	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
@@ -1339,28 +1351,42 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    opensuse_linux_repo
 	fi
 	##############################
-	apt update 2>/dev/null
-	apt-get install --reinstall -y perl-base 2>/dev/null
-	if [ ! -e /usr/lib/locale/en_US ];then
-		apt install -y locales-all 2>/dev/null
-	fi 
-	if [ ! $(command -v locale-gen) ]; then
-	    apt install -y locales 2>/dev/null
+	if [[ -n $(command -v apt) ]];then
+		printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
+		apt update 2>/dev/null
+		apt-get install --reinstall -y perl-base 2>/dev/null
+		if [ ! -e /usr/lib/locale/en_US ];then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}locales-all${RESET}"
+			apt install -y locales-all 2>/dev/null
+		fi 
+		if [ ! $(command -v locale-gen) ]; then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}locales${RESET}"
+	        apt install -y locales 2>/dev/null
+		fi
 	fi
 
 	if grep -q 'ubuntu' /etc/os-release; then
+	   printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}^language-pack-${TMOE_LANG_QUATER}${RESET}"
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
-
+	case ${LANG} in
+	zh*UTF-8)
 	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
 	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
 	printf '%s\n' '正在执行优化步骤，请勿退出!'
 	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
-
 	#配置时区
 	printf '%s\n' 'Asia/Shanghai' >/etc/timezone
-	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-	mkdir -p /etc/default
+	ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	;;
+	*)
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian in termux to enter the container. "
+	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
+	printf '%s\n' 'UTC' >/etc/timezone
+	ln -svf /usr/share/zoneinfo/UTC /etc/localtime
+	;;
+	esac
+	mkdir -pv /etc/default
 	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
 	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
 	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
@@ -1495,7 +1521,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    emerge -uvDN --with-bdeps=y @world
 		emerge -avk sys-devel/binutils
 	    emerge eix 2>/dev/null
-	    printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
+	    #printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	    neofetch
 	}
@@ -1535,15 +1561,25 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    chattr -i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
-	apt update 2>/dev/null
-	if egrep -q 'deepin|uos\.com' "/etc/os-release";then
-		apt install -y dialog
+	if [[ $(command -v apt) ]];then
+		apt update 2>/dev/null
+		if egrep -q 'deepin|uos\.com' "/etc/os-release";then
+			apt install -y dialog
+		fi
+		apt list --upgradable 2>/dev/null
+		printf "%s\n" "Upgrading all packages ..."
+		printf "%s\n" "${GREEN}apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
+		apt dist-upgrade -y 2>/dev/null
+		if [[ ! -n $(command -v pkill) ]];then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}procps${RESET}"
+			apt install -y procps 2>/dev/null
+		fi 
+		if [[ ! -n $(command -v whiptail) ]];then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}whiptail${RESET}"
+			apt install -y whiptail 2>/dev/null
+		fi 
+		apt clean 2>/dev/null
 	fi
-	apt list --upgradable 2>/dev/null
-	printf "%s\n" "正在升级所有软件包..."
-	apt dist-upgrade -y 2>/dev/null
-	apt install -y procps 2>/dev/null
-	apt clean 2>/dev/null
 	#############################
 	#grep -q 'export DISPLAY' /etc/profile || printf "%s\n" "export DISPLAY=":1"" >>/etc/profile
 	printf "%s\n" "Welcome to Debian GNU/Linux."
@@ -1692,6 +1728,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ ! "$(command -v lolcat)" ];then
 		printf "%s\n" "apt install -y lolcat || pacman -S --noconfirm lolcat || dnf install -y --skip-broken lolcat"
 		apt install -y lolcat 2>/dev/null || pacman -S --noconfirm lolcat 2>/dev/null || yum install -y --skip-broken lolcat 2>/dev/null
+	fi
+	if [ ! "$(command -v whiptail)" ];then
+		apt install whiptail
 	fi
 	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 	printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"

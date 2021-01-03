@@ -149,14 +149,6 @@ fix_sudo() {
 		rm -f /tmp/.openwrtcheckfile
 	fi
 	########################
-	cat <<-ENDOFTTMOEZSH
-		All optimization steps have been completed, enjoy it!
-		zsh配置完成，即将为您启动Tmoe-linux工具
-		您也可以手动输${YELLOW}tmoe t${RESET}进入
-		Tmoe-linux tool will be launched.
-		You can also type ${GREEN}tmoe t${RESET} to start it.
-	ENDOFTTMOEZSH
-	###########
 	if grep -q 'SUSE' /etc/os-release; then
 		printf "%s\n" "zypper in -y yast2 yast2-packager"
 		zypper in -y yast2 yast2-packager
@@ -243,6 +235,24 @@ git_clone_tmoe_linux() {
 		printf "%s\n" "${TMOE_GIT_DIR}/tool.sh --install-gui" >/usr/local/bin/startvnc
 		chmod +x /usr/local/bin/startvnc
 	fi
+	case ${LANG} in
+	zh_*UTF-8)
+		cat <<-ENDOFTTMOEZSH
+			All optimization steps have been completed, enjoy it!
+			zsh配置完成，即将为您启动Tmoe-linux工具
+			您也可以手动输${YELLOW}tmoe t${RESET}进入
+			Tmoe-linux tool will be launched.
+			You can also type ${GREEN}tmoe t${RESET} to start it.
+		ENDOFTTMOEZSH
+		;;
+	*)
+		cat <<-ENDOFTTMOEZSH
+			All optimization steps have been completed, enjoy it!
+			Tmoe-linux tool will be launched.
+			You can also type ${GREEN}tmoe t${RESET} to start it.
+		ENDOFTTMOEZSH
+		;;
+	esac
 	bash /usr/local/bin/debian-i
 	exec zsh -l
 }
