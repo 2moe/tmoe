@@ -4,6 +4,7 @@ tmoe_container_zsh_main() {
 	case "$1" in
 	*)
 		set_terminal_color
+		check_tmoe_locale_file
 		do_you_want_to_configure_tmoe_zsh
 		check_tmoe_linux_tool
 		copy_git_status
@@ -26,22 +27,38 @@ set_terminal_color() {
 	RESET=$(printf '\033[m')
 }
 #######
+check_tmoe_locale_file() {
+	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+	else
+		TMOE_LANG=${LANG}
+	fi
+}
+#######
 do_you_want_to_delete_the_zsh_script_file() {
 	if (whiptail --title "zsh.sh & zsh-i.sh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
 		DELETE_ZSH_SCRIPT=true
 	fi
 }
 do_you_want_to_configure_tmoe_zsh() {
-	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT
-	FACE_ICON_DIR="/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd"
-	case ${LANG} in
+	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
+	for i in "/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/storage/emulated/0/Pictures/Telegram" "/storage/emulated/0/DCIM/Camera" "/sd" "/sd/Pictures" "/storage/emulated/0/DCIM/.thumbnails"; do
+		if [[ -e ${i} ]]; then
+			if [[ -n $(ls -l ${i} | grep '^-' | egrep '\.png|\.jpg') ]]; then
+				FACE_ICON_DIR="${i}"
+				break
+			fi
+		fi
+	done
+	case ${TMOE_LANG} in
 	zh_*UTF-8)
 		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
 			CONFIGURE_ZSH=true
 			do_you_want_to_delete_the_zsh_script_file
 		fi
-		if [ -e "${FACE_ICON_DIR}" ]; then
-			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件，并自动生成头像?\n若选NO,则将不会读取该目录,并使用tmoe-linux默认头像" 0 0); then
+		if [ -n "${FACE_ICON_DIR}" ]; then
+			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
 				CONFIGURE_FACE_ICON=true
 			else
 				CONFIGURE_FACE_ICON=false
@@ -55,6 +72,11 @@ do_you_want_to_configure_tmoe_zsh() {
 		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
 			CONFIGURE_ZSH=true
 			do_you_want_to_delete_the_zsh_script_file
+		fi
+		if [ -n "${FACE_ICON_DIR}" ]; then
+			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
+				CONFIGURE_FACE_ICON=true
+			fi
 		fi
 		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno 'Do you want to start tmoe-linux tool?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
@@ -80,7 +102,7 @@ auto_configure_tmoe_tool_02() {
 	else
 		for i in zsh bash ash; do
 			if [ $(command -v ${i}) ]; then
-				exec ${i} -l
+				exec ${i}
 				break
 			fi
 		done
@@ -266,7 +288,7 @@ git_clone_tmoe_linux() {
 		printf "%s\n" "${TMOE_GIT_DIR}/tool.sh --install-gui" >/usr/local/bin/startvnc
 		chmod +x /usr/local/bin/startvnc
 	fi
-	case ${LANG} in
+	case ${TMOE_LANG} in
 	zh_*UTF-8)
 		cat <<-ENDOFTTMOEZSH
 			All optimization steps have been completed, enjoy it!
