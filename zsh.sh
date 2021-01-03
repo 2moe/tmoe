@@ -162,6 +162,9 @@ configure_tmoe_zsh() {
 		chmod 777 ${TMOE_ZSH_TOOL_BIN}
 		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
 	fi
+	if egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
+		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
+	fi
 }
 ############
 creat_zlogin_file() {
@@ -251,8 +254,6 @@ sed_a_source_list() {
 			*) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
 			esac
 		fi
-	elif egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
-		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
 	fi
 }
 ###############
