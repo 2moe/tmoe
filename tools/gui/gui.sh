@@ -893,10 +893,15 @@ tmoe_virtual_machine_desktop() {
 configure_vnc_xstartup() {
     auto_install_and_configure_fcitx4
     #[[ -d "/var/run/dbus" ]] || mkdir -p /var/run/dbus
-    mkdir -p /run/dbus /var/run/dbus
-    if [ ! -s "/etc/machine-id" ]; then
-        [[ ! -n $(command -v dbus-uuidgen) ]] || printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
+    mkdir -pv /run/dbus /var/run/dbus /var/lib/dbus/
+    #if [ ! -s "/etc/machine-id" ]; then
+    if [[ -n $(command -v dbus-uuidgen) ]]; then
+        printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
+    else
+        printf "%s\n" "0ecb780817003d3342d16adb5ff1dfa9" >"/etc/machine-id"
     fi
+    cp -pv "/etc/machine-id" /var/lib/dbus/
+    #fi
     case ${LINUX_DISTRO} in
     debian) [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji ;;
     esac
