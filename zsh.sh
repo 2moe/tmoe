@@ -3,17 +3,68 @@
 tmoe_container_zsh_main() {
 	case "$1" in
 	*)
+		set_tmoe_tmp_env
+		do_you_want_to_configure_tmoe_zsh
 		check_tmoe_linux_tool
 		copy_git_status
-		configure_tmoe_zsh
+		auto_configure_tmoe_tools
 		check_ps_command
 		creat_zlogin_file
 		fix_sudo
-		git_clone_tmoe_linux
+		auto_configure_tmoe_tool_02
 		;;
 	esac
 }
 ############
+do_you_want_to_configure_tmoe_zsh() {
+	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON
+	FACE_ICON_DIR="/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd"
+	case ${LANG} in
+	zh_*UTF-8)
+		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you want to configure zsh?' 0 0); then
+			CONFIGURE_ZSH=true
+		fi
+		if [ -e "${FACE_ICON_DIR}" ]; then
+			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件，并自动生成头像?\n若选NO,则将不会读取该目录,并使用tmoe-linux默认头像" 0 0); then
+				CONFIGURE_FACE_ICON=true
+			else
+				CONFIGURE_FACE_ICON=false
+			fi
+		fi
+		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno '是否需要启动tmoe-linux tool?\nDo you want to start tmoe-linux tool?' 0 0); then
+			CONFIGURE_TMOE_LINUX_TOOL=true
+		fi
+		;;
+	*)
+		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
+			CONFIGURE_ZSH=true
+		fi
+		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno 'Do you want to start tmoe-linux tool?' 0 0); then
+			CONFIGURE_TMOE_LINUX_TOOL=true
+		fi
+		;;
+	esac
+	if [[ -z ${CONFIGURE_FACE_ICON} && ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+		if (whiptail --title "\${HOME}/.face.icon" --yes-button "YES" --no-button "NO" --yesno 'Do you want to use the default face.icon?' 0 0); then
+			DEFAULT_FACE_ICON=true
+		fi
+	fi
+}
+##################
+auto_configure_tmoe_tools() {
+	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
+	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
+}
+################
+auto_configure_tmoe_tool_02() {
+	[[ ${CONFIGURE_TMOE_LINUX_TOOL} != true ]] || git_clone_tmoe_linux
+}
+auto_check_face_icon() {
+	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | egrep 'jpg|png' | head -n 1)
+	cp -v ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
+	ln -svf ${HOME}/.face ${HOME}/.face.icon
+}
+################
 check_tmoe_linux_tool() {
 	if [ ! $(command -v debian-i) ]; then
 		if [ -e "/usr/bin/curl" ]; then
@@ -23,12 +74,12 @@ check_tmoe_linux_tool() {
 		fi
 	fi
 	chmod 777 /usr/local/bin/debian-i
-	mkdir -p /run/dbus
+	mkdir -pv /run/dbus
 }
 ##############
 copy_git_status() {
 	if [ -e "/etc/gitstatus" ]; then
-		mkdir -p ${HOME}/.cache
+		mkdir -pv ${HOME}/.cache
 		cp -rf /etc/gitstatus ${HOME}/.cache
 	fi
 }
@@ -38,8 +89,8 @@ check_ps_command() {
 	if [ "$?" != '0' ]; then
 		TERMUX_BIN_PATH='/data/data/com.termux/files/usr/bin/'
 		if [ -e "${TERMUX_BIN_PATH}/ps" ]; then
-			ln -s ${TERMUX_BIN_PATH}/ps /usr/local/bin/ps 2>/dev/null
-			ln -s ${TERMUX_BIN_PATH}/pstree /usr/local/bin/pstree 2>/dev/null
+			ln -sv ${TERMUX_BIN_PATH}/ps /usr/local/bin/ps 2>/dev/null
+			ln -sv ${TERMUX_BIN_PATH}/pstree /usr/local/bin/pstree 2>/dev/null
 		fi
 	fi
 }
@@ -88,9 +139,9 @@ fix_sudo() {
 	EOF
 	##################
 	if [ -e "/usr/bin/sudo" ]; then
-		chmod 4755 /usr/bin/sudo
+		chmod 4755 -v /usr/bin/sudo
 	elif [ -e "/bin/sudo" ]; then
-		chmod 4755 /bin/sudo
+		chmod 4755 -v /bin/sudo
 	fi
 	##################
 	if [ -f "/tmp/.openwrtcheckfile" ]; then
@@ -166,7 +217,7 @@ git_clone_tmoe_linux() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
-	mkdir -p ${TMOE_LINUX_DIR}
+	mkdir -pv ${TMOE_LINUX_DIR}
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
 	printf "%s\n" "github.com/2moe/tmoe-linux"
 	if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
@@ -178,15 +229,20 @@ git_clone_tmoe_linux() {
 	if [ -e "/etc/os-release" ]; then
 		sed_a_source_list
 	fi
-	if [ ! -e "${HOME}/.face" ]; then
+	if [[ ! -e "${HOME}/.face" && ${DEFAULT_FACE_ICON} = true ]]; then
 		cp -v ${TMOE_GIT_DIR}/.mirror/icon.png ${HOME}/.face
 		ln -svf ${HOME}/.face ${HOME}/.face.icon
+		printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
 	fi
-	mkdir -p /usr/share/applications
-	cp ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
+	mkdir -pv /usr/share/applications
+	cp -v ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &
 	if [ ! $(command -v tmoe) ]; then
-		ln -sf ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
+		ln -svf ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
+	fi
+	if [ ! $(command -v startvnc) ]; then
+		printf "%s\n" "${TMOE_GIT_DIR}/tool.sh --install-gui" >/usr/local/bin/startvnc
+		chmod +x /usr/local/bin/startvnc
 	fi
 	bash /usr/local/bin/debian-i
 	exec zsh -l

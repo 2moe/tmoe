@@ -1702,7 +1702,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif [ "$(command -v lolcat)" ]; then
 		neofetch | lolcat
 	else
-		neofetch
+		/usr/local/bin/neofetch
 	fi
 	################
 	################
