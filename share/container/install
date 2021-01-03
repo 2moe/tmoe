@@ -1368,6 +1368,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'openSUSE' "/etc/os-release"; then
 	    opensuse_linux_repo
 		zypper in -y newt
+		zypper in -y ruby2.7-rubygem-lolcat
 	fi
 	##############################
 	if [[ -n $(command -v apt) ]];then
