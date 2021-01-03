@@ -207,7 +207,7 @@ debootstrap_debian_distro() {
 		#debootstrap --no-check-gpg --foreign --arch ${ARCH_TYPE} ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.huaweicloud.com/debian
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all
 		#--include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail
-		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,contrib,non-free --variant=minbase --include=init,locales,ca-certificates,openssl,whiptail,wget,dialog,apt-transport-https ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.bfsu.edu.cn/debian
+		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,contrib,non-free --variant=buildd --include=init,locales,ca-certificates,openssl,whiptail,wget,dialog,apt-transport-https ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.bfsu.edu.cn/debian
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
 		#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C && chroot ${DEBIAN_CHROOT} /debootstrap/debootstrap --second-stage
 	fi
