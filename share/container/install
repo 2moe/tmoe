@@ -349,6 +349,7 @@ uncompress_tar_file() {
 	tar.xz) uncompress_tar_xz_file ;;
 	tar.gz) uncompress_tar_gz_file ;;
 	ar.zst) uncompress_tar_zst_file ;;
+	r.zstd) uncompress_tar_zst_file ;;
 	ar.lz4)
 		#此处不为tar.lz4
 		uncompress_tar_lz4_file

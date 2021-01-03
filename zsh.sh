@@ -36,7 +36,7 @@ do_you_want_to_configure_tmoe_zsh() {
 	FACE_ICON_DIR="/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd"
 	case ${LANG} in
 	zh_*UTF-8)
-		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you want to configure zsh?' 0 0); then
+		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
 			CONFIGURE_ZSH=true
 			do_you_want_to_delete_the_zsh_script_file
 		fi
@@ -47,7 +47,7 @@ do_you_want_to_configure_tmoe_zsh() {
 				CONFIGURE_FACE_ICON=false
 			fi
 		fi
-		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno '是否需要启动tmoe-linux tool?\nDo you want to start tmoe-linux tool?' 0 0); then
+		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno '是否需要启动tmoe-linux tool?\nDo you need to start tmoe-linux tool?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
 		fi
 		;;
@@ -75,7 +75,16 @@ auto_configure_tmoe_tools() {
 }
 ################
 auto_configure_tmoe_tool_02() {
-	[[ ${CONFIGURE_TMOE_LINUX_TOOL} != true ]] || git_clone_tmoe_linux
+	if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+		git_clone_tmoe_linux
+	else
+		for i in zsh bash ash; do
+			if [ $(command -v ${i}) ]; then
+				exec ${i} -l
+				break
+			fi
+		done
+	fi
 }
 auto_check_face_icon() {
 	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | egrep 'jpg|png' | head -n 1)
