@@ -1261,6 +1261,7 @@ do_you_want_to_install_electron_apps() {
 }
 #########
 do_you_want_to_install_fcitx4() {
+    unset AUTO_INSTALL_HARD_INFO
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         case "${LINUX_DISTRO}" in
@@ -1276,6 +1277,15 @@ do_you_want_to_install_fcitx4() {
         do_you_want_to_install_electron_apps
         ;;
     *) ;;
+    esac
+    case "${LINUX_DISTRO}" in
+    "debian" | "arch")
+        if [[ ! -n $(command -v hardinfo) ]]; then
+            if (whiptail --title "HARDINFO" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install hardinfo?\nIt can display system information.' 0 0); then
+                AUTO_INSTALL_HARD_INFO='true'
+            fi
+        fi
+        ;;
     esac
     do_you_want_to_install_kali_tools
 }
@@ -1309,6 +1319,11 @@ auto_install_and_configure_fcitx4() {
     [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
     install_tmoe_electron_app_pack
     install_kali_linux_tools
+    if [[ ${AUTO_INSTALL_HARD_INFO} = true ]]; then
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}hardinfo${RESET}"
+        ${TMOE_INSTALLATION_COMMAND} hardinfo
+        printf "%s\n" "You can type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}hardinfo${RESET} to remove it."
+    fi
 }
 #######
 install_xfce4_desktop() {
