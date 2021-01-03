@@ -1203,15 +1203,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo
 					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
-		            #Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
+					#Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
 					Server = https://mirrors.bfsu.edu.cn/manjaro/arm-stable/$repo/$arch
 				EndOfArchMirrors
-	        #curl -Lo 'archlinuxarm-keyring.pkg.tar.xz' https://mirrors.bfsu.edu.cn/manjaro/arm-stable/core/aarch64/archlinuxarm-keyring-20140119-1-any.pkg.tar.xz
-	        #pacman -U --noconfirm ./archlinuxarm-keyring.pkg.tar.xz
-	        #rm -fv ./archlinuxarm-keyring.pkg.tar.xz
-	        #pacman-key --populate archlinux manjaro
-	        #pacman -Sy --noconfirm archlinux-keyring
-	        #pacman -S --noconfirm iputils
+		elif [[ "$(uname -m)" = "x86_64" ]]; then
+	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+					#Server = https://manjaro.mirrors.lavatech.top/stable/$repo/$arch
+					#Server = https://manjaro.grena.ge/stable/$repo/$arch
+					#Server = https://mirror.oldsql.cc/manjaro/stable/$repo/$arch
+					Server = https://mirrors.bfsu.edu.cn/manjaro/stable/$repo/$arch
+				EndOfArchMirrors
 	    fi
 	}
 	#################

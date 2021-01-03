@@ -289,7 +289,7 @@ install_beta_containers() {
 	install_beta_containers_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
-				"1" "Manjaro(让arch更方便用户使用,arm64)" \
+				"1" "Manjaro(让arch更方便用户使用,arm64,x64)" \
 				"2" "CentOS (基于红帽的社区企业操作系统)" \
 				"3" "Void:基于xbps包管理器的独立发行版" \
 				"4" "🏔️ Alpine(非glibc的精简系统)" \
@@ -942,23 +942,41 @@ install_raspios_full_armhf_rootfs() {
 ##################
 install_manjaro_linux_distro() {
 	case ${ARCH_TYPE} in
-	arm64) ;;
+	arm64)
+		touch ~/.MANJARO_ARM_DETECTION_FILE
+		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
+			sed 's/debian system/manjaro system/g' |
+			sed 's:debian-sid:manjaro-stable:g' |
+			sed 's:debian/sid:manjaro/stable:g' |
+			sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
+			sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
+		;;
+	amd64)
+		cd ${ROOTFS_DIR}
+		MANJARO_ROOTFS_FILE_NAME="${DISTRO_NAME}-stable_${ARCH_TYPE}-rootfs.tar.xz"
+		if [ ! -e "${MANJARO_ROOTFS_FILE_NAME}" ]; then
+			TEMP_DIR=".MANJARO_AMD64-TEMP_FOLDER"
+			[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
+			pwd
+			git clone --depth=1 ${AK2_GIT_URL}/${DISTRO_NAME}-stable_${ARCH_TYPE}.git ${TEMP_DIR}
+			cd ${TEMP_DIR}
+			cat .container_linux_* >${MANJARO_ROOTFS_FILE_NAME}
+			mv -fv ${MANJARO_ROOTFS_FILE_NAME} ../
+			cd ..
+			rm -rvf ${TEMP_DIR}
+		fi
+		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s:debian-sid:${DISTRO_NAME}-stable:g" |
+			sed "s:Debian GNU/Linux:Manjaro GNU/Linux:g")"
+		;;
 	*)
 		printf "%s\n" "SORRY，Tmoe-linux的开发者未对您的架构进行适配"
 		press_enter_to_return
 		install_beta_containers
 		;;
 	esac
-
-	touch ~/.MANJARO_ARM_DETECTION_FILE
-	#printf "%s\n" "检测到您选择的是manajro,即将从第三方网盘下载容器镜像。"
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
-		sed 's/debian system/manjaro system/g' |
-		sed 's:debian-sid:manjaro-stable:g' |
-		sed 's:debian/sid:manjaro/stable:g' |
-		sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
-		sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
 }
 #		sed 's@tar -pJxvf@tar -pzxvf@g'
 ############################
