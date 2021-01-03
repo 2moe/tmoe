@@ -1160,7 +1160,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	EndOfFile
 	[[ ! -s /tmp/resolv.conf ]] || cp -f /tmp/resolv.conf /etc
 	cat /etc/resolv.conf
-	printf ""
+	printf "%s\n" ""
 	######################
 	###################
 	arch_linux_mirror_list() {
@@ -1461,9 +1461,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		case $(uname -m) in
 		riscv*);;
 		*)
-		if egrep -q '^deb.*(huawei|tuna|bfsu)' /etc/apt/sources.list;then
-	      printf "%s\n" "Replacing http software source list with https."
-	      printf "%s\n" "正在将http源替换为https..."
+		if egrep -q '^deb.*(huawei|tuna|bfsu|163|mirror)' /etc/apt/sources.list;then
+	      printf "%s\n" "Replacing http software source list with https ..."
+	      printf "%s\n" "正在将${PURPLE}http源${RESET}替换为${GREEN}https${RESET} ..."
 		  case $(dpkg --print-architecture) in
 		armhf)
 	     case $(uname -m) in

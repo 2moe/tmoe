@@ -143,6 +143,9 @@ fix_sudo() {
 			-------------------
 			You can type ${GREEN}debian${RESET} to start and attach the ${BLUE}container${RESET}.
 			-------------------
+			08.输入${GREEN}debian-i${RESET}启动${BLUE}tmoe-linux tool${RESET}.
+
+			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool${RESET}.
 	EOF
 	##################
 	if [ -e "/usr/bin/sudo" ]; then
