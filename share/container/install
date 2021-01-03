@@ -871,10 +871,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
 	cd ${HOME}
-	if [[ -e /usr/local/bin/neofetch ]];then
-		printf "%s\n" "${GREEN}neofetch${RESET}"
-		chmod +x /usr/local/bin/neofetch
-		/usr/local/bin/neofetch
+	if [[ -n $(command -v bash) ]];then
+		if [[ -e /usr/local/bin/neofetch ]];then
+			printf "%s\n" "${GREEN}neofetch${RESET}"
+			chmod +x /usr/local/bin/neofetch
+			/usr/local/bin/neofetch
+		fi
 	fi
 	###############
 	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
