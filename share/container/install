@@ -1448,13 +1448,21 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	printf "$RESET"
 	####################
 	if [[ -n $(command -v apt) ]];then
-		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates wget curl${RESET}"
+		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates${RESET}"
 		apt install -y apt-utils 2>/dev/null
-		apt install -y ca-certificates wget curl 2>/dev/null
+		apt install -y ca-certificates 2>/dev/null
+		if [[ -n $(command -v apt) ]];then
+			for i in curl wget;do
+				if [[ ! -n $(command -v ${i}) ]];then
+					printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+					apt install -y ${i} 2>/dev/null
+				fi 
+			done   
+		fi  
+		if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
+	      apt install -y apt-transport-https 2>/dev/null
+		fi
 	fi 
-	if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
-	     apt install -y apt-transport-https 2>/dev/null
-	fi
 
 	if [[ ! -e /etc/apt/sources.list.d/raspi.list && -e /etc/apt/sources.list ]]; then
 		case $(uname -m) in
@@ -1580,14 +1588,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if [[ ! -n $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}procps${RESET}"
 			apt install -y procps 2>/dev/null
-		fi 
-		if [[ ! -n $(command -v whiptail) ]];then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}whiptail${RESET}"
-			apt install -y whiptail 2>/dev/null
-		fi 
-		if egrep -q 'deepin|uos\.com' "/etc/os-release";then
-			apt install -y dialog
 		fi
+		for i in whiptail dialog lolcat;do
+			if [[ ! -n $(command -v ${i}) ]];then
+				printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+				apt install -y ${i} 2>/dev/null
+			fi 
+		done   
 		apt clean 2>/dev/null
 	fi
 	#############################
@@ -1739,7 +1746,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			;;
 		esac
 		[[ $(command -v whiptail) ]] || yum install --skip-broken newt
-		[[ $(command -v lolcat) ]] || yum install --skip-broken lolcat
 	fi
 	############################
 	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
