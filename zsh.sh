@@ -3,6 +3,7 @@
 tmoe_container_zsh_main() {
 	case "$1" in
 	*)
+		set_terminal_color
 		do_you_want_to_configure_tmoe_zsh
 		check_tmoe_linux_tool
 		copy_git_status
@@ -15,6 +16,16 @@ tmoe_container_zsh_main() {
 	esac
 }
 ############
+set_terminal_color() {
+	RED=$(printf '\033[31m')
+	GREEN=$(printf '\033[32m')
+	YELLOW=$(printf '\033[33m')
+	BLUE=$(printf '\033[34m')
+	BOLD=$(printf '\033[1m')
+	PURPLE=$(printf '\033[0;35m')
+	RESET=$(printf '\033[m')
+}
+#######
 do_you_want_to_delete_the_zsh_script_file() {
 	if (whiptail --title "zsh.sh & zsh-i.sh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
 		DELETE_ZSH_SCRIPT=true
