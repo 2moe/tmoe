@@ -95,7 +95,7 @@ check_tightvnc_port() {
 #########################
 modify_tightvnc_display_port() {
     check_tightvnc_port
-    TARGET=$(whiptail --inputbox "默认显示编号为1，默认VNC服务端口为5901，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为1,则端口为5901，请输入显示编号.Please enter the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "默认显示编号为1，默认VNC服务端口为5901，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为1,则端口为5901，请输入显示编号.Please type the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
@@ -1252,7 +1252,7 @@ git_clone_kali_themes_common() {
     fi
 }
 ##########
-do_you_want_to_install_electron_apps() {
+do_you_want_to_install_electron_apps_zh() {
     case ${LINUX_DISTRO} in
     alpine) ;;
     *)
@@ -1265,6 +1265,19 @@ do_you_want_to_install_electron_apps() {
     esac
 }
 #########
+do_you_want_to_install_electron_apps_en() {
+    case ${LINUX_DISTRO} in
+    alpine) ;;
+    *)
+        if [[ ! -n $(command -v electron) ]]; then
+            if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nlx-music-desktop,cocomusic,petal & zy-player.' 0 0); then
+                AUTO_INSTALL_ELECTRON_APPS='true'
+            fi
+        fi
+        ;;
+    esac
+}
+##########
 do_you_want_to_install_fcitx4() {
     unset AUTO_INSTALL_HARD_INFO
     case ${TMOE_MENU_LANG} in
@@ -1279,9 +1292,9 @@ do_you_want_to_install_fcitx4() {
             fi
             ;;
         esac
-        do_you_want_to_install_electron_apps
+        do_you_want_to_install_electron_apps_zh
         ;;
-    *) ;;
+    *) do_you_want_to_install_electron_apps_en ;;
     esac
     case "${LINUX_DISTRO}" in
     "debian" | "arch")
@@ -4451,7 +4464,7 @@ xrdp_restart() {
 xrdp_port() {
     cd /etc/xrdp/
     RDP_PORT=$(cat xrdp.ini | grep 'port=' | head -n 1 | cut -d '=' -f 2)
-    TARGET=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,不建议您将其设置为22、80、443或3389,检测到您当前的端口为${RDP_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,不建议您将其设置为22、80、443或3389,检测到您当前的端口为${RDP_PORT}\n Please type the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         #printf "%s\n" "检测到您取消了操作"
         ${RETURN_TO_WHERE}
@@ -4899,10 +4912,10 @@ do_you_want_to_configure_novnc() {
 }
 ################
 set_vnc_passwd() {
-    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\nPlease enter the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\nPlease type the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         printf "%s\n" "请重新输入密码"
-        printf "%s\n" "Please enter the password again."
+        printf "%s\n" "Please type the password again."
         press_enter_to_return
         set_vnc_passwd
     elif [ -z "${TARGET_VNC_PASSWD}" ]; then

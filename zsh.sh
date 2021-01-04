@@ -92,8 +92,8 @@ do_you_want_to_configure_tmoe_zsh() {
 }
 ##################
 auto_configure_tmoe_tools() {
-	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
+	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
 }
 ################
@@ -111,7 +111,7 @@ auto_configure_tmoe_tool_02() {
 }
 auto_check_face_icon() {
 	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | egrep '\.jpg|\.png' | head -n 1)
-	cp -v ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
+	cp -vf ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
 	ln -svf ${HOME}/.face ${HOME}/.face.icon
 }
 ################
