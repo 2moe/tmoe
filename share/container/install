@@ -1320,6 +1320,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        mkdir -p ${HOME}/.vnc
 	        cd ${HOME}/.vnc
 			printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
+			chmod 600 -v passwd
 	    fi
 	}
 	if grep -q 'puppy_linux' /etc/os-release;then
