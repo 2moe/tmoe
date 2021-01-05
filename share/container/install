@@ -1321,6 +1321,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        cd ${HOME}/.vnc
 			printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
 			chmod 600 -v passwd
+			[[ ! -e /usr/bin/startvnc ]] || ln -sf /usr/bin/startvnc /usr/local/bin/startvnc
+			mkdir -pv /etc/X11/xinit
+			cp -vf /root/.vnc/xstartup /etc/X11/xinit/Xsession
+			printf "%s\n%s\n%s\n" '#!/bin/sh' "export DISPLAY=127.0.0.1:0" "/etc/X11/xinit/Xsession" > /usr/local/bin/startxsdl
+			chmod a+x /usr/local/bin/startxsdl
 	    fi
 	}
 	if grep -q 'puppy_linux' /etc/os-release;then
