@@ -64,6 +64,7 @@ function _tmoe() {
         "opensuse"
         "ow:openwrt"
         "openwrt:OpenWRT is a Linux OS targeting embedded devices"
+        "puppy:Puppy Linux is a lightweight Linux distribution that focuses on ease of use."
         "r:raspios"
         "raspios:Raspberry Pi OS"
         "s:slackware"
@@ -100,6 +101,7 @@ function _tmoe() {
         "edge:alpine edge"
         "8-Stream:CentOS 8-Stream"
         "8s:CentOS 8-Stream"
+        "fossa:puppy fossa"
         "tumbleweed:OpenSUSE tumbleweed"
     )
 

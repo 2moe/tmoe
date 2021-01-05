@@ -213,14 +213,13 @@ install_alpha_containers() {
 				"2" "ラズベリーパイ OS buster" \
 				"3" "Gentoo(arm64,armhf,x86,x64)" \
 				"4" "DevuanはDebian から派生したLinuxディストリビューションである" \
-				"5" "Puppy linux(x64)" \
-				"6" "Huawei euler OS(arm64,x64)" \
-				"7" "Amazon(arm64,x64)" \
-				"8" "Oracle(arm64,x64)" \
-				"9" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"10" "Intel clear linux(x64)" \
-				"11" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"12" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
+				"5" "Huawei euler OS(arm64,x64)" \
+				"6" "Amazon(arm64,x64)" \
+				"7" "Oracle(arm64,x64)" \
+				"8" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"9" "Intel clear linux(x64)" \
+				"10" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"11" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -232,14 +231,13 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS 樹莓派 buster" \
 				"3" "Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)" \
 				"4" "Devuan(不使用systemd,基于debian)" \
-				"5" "Puppy linux(x64)" \
-				"6" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
-				"7" "Amazon(arm64,x64,亚马逊云服务器系统)" \
-				"8" "Oracle(arm64,x64,甲骨文云服务器系统)" \
-				"9" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"10" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
-				"11" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"12" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
+				"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
+				"6" "Amazon(arm64,x64,亚马逊云服务器系统)" \
+				"7" "Oracle(arm64,x64,甲骨文云服务器系统)" \
+				"8" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"9" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
+				"10" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"11" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -251,14 +249,13 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS buster" \
 				"3" "Gentoo(arm64,armhf,x86,x64)" \
 				"4" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
-				"5" "Puppy linux(arm64,x64)" \
-				"6" "Huawei euler OS(arm64,x64)" \
-				"7" "Amazon(arm64,x64)" \
-				"8" "Oracle(arm64,x64)" \
-				"9" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"10" "Intel clear linux(x64)" \
-				"11" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"12" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
+				"5" "Huawei euler OS(arm64,x64)" \
+				"6" "Amazon(arm64,x64)" \
+				"7" "Oracle(arm64,x64)" \
+				"8" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"9" "Intel clear linux(x64)" \
+				"10" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"11" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -278,14 +275,13 @@ install_alpha_containers() {
 	2) install_raspios_linux_distro ;;
 	3) install_gentoo_linux_distro ;;
 	4) install_devuan_linux_distro ;;
-	5) install_puppy_linux_distro ;;
-	6) install_euler_linux_distro ;;
-	7) install_amazon_linux_distro ;;
-	8) install_oracle_linux_distro ;;
-	9) install_photon_linux_distro ;;
-	10) install_clear_linux_distro ;;
-	11) install_slackware_linux_distro ;;
-	12) install_steam_linux_distro ;;
+	5) install_euler_linux_distro ;;
+	6) install_amazon_linux_distro ;;
+	7) install_oracle_linux_distro ;;
+	8) install_photon_linux_distro ;;
+	9) install_clear_linux_distro ;;
+	10) install_slackware_linux_distro ;;
+	11) install_steam_linux_distro ;;
 	esac
 	###########################
 	exit 0
@@ -414,11 +410,12 @@ install_beta_containers() {
 	install_beta_containers_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
-				"1" "Manjaro(让arch更方便用户使用,arm64,x64)" \
-				"2" "CentOS (基于红帽的社区企业操作系统)" \
-				"3" "Void:基于xbps包管理器的独立发行版" \
-				"4" "🏔️ Alpine(非glibc的精简系统)" \
-				"5" "🌿 Mint(简单易用的系统,x86,x64)" \
+				"1" "Manjaro(arm64,x64,让arch更方便用户使用)" \
+				"2" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
+				"3" "CentOS(基于红帽的社区企业操作系统)" \
+				"4" "Void(基于xbps包管理器的独立发行版)" \
+				"5" "🐶 Puppy(x64,小巧且易用,速度快)" \
+				"6" "🌿 Mint(,x86,x64,简单易用的系统)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -427,10 +424,11 @@ install_beta_containers() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
 				"1" "Manjaro:Archをベースとした、ユーザーフレンドリーなディストリビューションを目指している" \
-				"2" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
-				"3" "Void:ゼロから設計および実装されたX Binary Package System" \
-				"4" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
-				"5" "🌿 Mint:洗練され、最新で快適なLinuxデスクトップを提供すること" \
+				"2" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
+				"3" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
+				"4" "Void:ゼロから設計および実装されたX Binary Package System" \
+				"5" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+				"6" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -439,10 +437,11 @@ install_beta_containers() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
 				"1" "Manjaro:Free fast and secure Linux based operating system for everyone" \
-				"2" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
-				"3" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
-				"4" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
-				"5" "🌿 Mint:Elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution" \
+				"2" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
+				"3" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
+				"4" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
+				"5" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+				"6" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -463,6 +462,10 @@ install_beta_containers() {
 		go_to_proot_management
 		install_manjaro_linux_distro
 		;;
+	4)
+		TMOE_LINUX_CONTAINER_DISTRO='alpine'
+		install_alpine_linux_distro
+		;;
 	2)
 		CLOUD_ROOTFS='true'
 		install_centos_linux_distro
@@ -472,11 +475,8 @@ install_beta_containers() {
 		creat_container_edition_txt
 		install_void_linux_distro
 		;;
-	4)
-		TMOE_LINUX_CONTAINER_DISTRO='alpine'
-		install_alpine_linux_distro
-		;;
-	5) install_mint_linux_distro ;;
+	5) install_puppy_linux_distro ;;
+	6) install_mint_linux_distro ;;
 	esac
 	######################
 	exit 0

@@ -1302,6 +1302,31 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 		;;
 	esac
+	set_vnc_passwd() {
+	    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\nPlease type the password, the length is 6 to 8 digits" 0 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	    if [ "$?" != "0" ]; then
+	        printf "%s\n" "请重新输入密码"
+	        printf "%s\n" "Please type the password again."
+			printf "%s\n" "Press enter to return."
+			read
+	        set_vnc_passwd
+	    elif [ -z "${TARGET_VNC_PASSWD}" ]; then
+	        printf "%s\n" "请输入有效的数值"
+	        printf "%s\n" "Please type a valid value"
+			printf "%s\n" "Press enter to return."
+			read
+	        set_vnc_passwd
+	    else
+	        mkdir -p ${HOME}/.vnc
+	        cd ${HOME}/.vnc
+			printf "%s\n" "${TARGET_VNC_PASSWD}" | vncpasswd -f >passwd
+	    fi
+	}
+	if grep -q 'puppy_linux' /etc/os-release;then
+		set_vnc_passwd
+		printf "%s\n" "You can type ${GREEN}startvnc${RESET} to start ${BLUE}tightvnc server${RESET},type ${RED}stopvnc${RESET} to stop it."
+		printf "%s\n" "当前系统已经了预装窗口管理器和tightvnc服务端,您可以输${GREEN}startvnc${RESET}来启动vnc服务端。"
+	fi
 	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null;then
 		cd ~
 		rm -f ~/.profile vnc-autostartup zsh.sh zsh-i.sh 2>/dev/null
