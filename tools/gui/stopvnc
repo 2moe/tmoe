@@ -49,7 +49,7 @@ stopx11vnc() {
 tmoe_vnc_env() {
     export USER="$(whoami)"
     #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-    CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep 'TMOE_VNC_DISPLAY_NUMBER=' | cut -d '=' -f 2 | head -n 1)
+    CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' /usr/local/bin/startvnc | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
     RED=$(printf '\033[31m')
     PURPLE=$(printf '\033[0;35m')
     GREEN=$(printf '\033[32m')
