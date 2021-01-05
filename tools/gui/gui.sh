@@ -4951,6 +4951,7 @@ check_vnc_passsword_length() {
         else
             x11vnc -storepasswd ${TARGET_VNC_PASSWD} passwd
             cp passwd x11passwd
+            chmod 600 x11passwd
         fi
         chmod 600 passwd
         if [ $? = 0 ]; then
