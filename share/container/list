@@ -148,7 +148,7 @@ install_deepin_camel_arm64() {
 }
 ##########
 git_clone_deepin_distro() {
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	case "${ARCH_TYPE}" in
 	amd64 | i386 | arm64)
@@ -389,6 +389,7 @@ install_oracle_linux_distro() {
 }
 ####################
 git_clone_linux_distro_rootfs_01() {
+	mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	ROOTFS_FILE_NAME="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}-rootfs.tar.xz"
 	if [ ! -e "${ROOTFS_FILE_NAME}" ]; then
@@ -822,7 +823,7 @@ git_clone_fedora_rootfs() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	creat_container_edition_txt
 	go_to_proot_management
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
 	FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
@@ -864,7 +865,7 @@ install_fedora_gnu_linux_distro() {
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		go_to_proot_management
-		[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+		[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 		cd ${ROOTFS_DIR}
 		FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
 		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
@@ -1065,6 +1066,7 @@ install_manjaro_linux_distro() {
 			sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
 		;;
 	amd64)
+		mkdir -pv ${ROOTFS_DIR}
 		cd ${ROOTFS_DIR}
 		MANJARO_ROOTFS_FILE_NAME="${DISTRO_NAME}-stable_${ARCH_TYPE}-rootfs.tar.xz"
 		if [ ! -e "${MANJARO_ROOTFS_FILE_NAME}" ]; then
@@ -1130,7 +1132,7 @@ install_slackware_linux_distro() {
 	DISTRO_NAME='slackware'
 	TMOE_LINUX_CONTAINER_DISTRO='slackware'
 	creat_container_edition_txt
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	#touch .SLACKDetectionFILE
 	case "${ARCH_TYPE}" in
