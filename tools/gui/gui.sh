@@ -89,7 +89,7 @@ switch_tight_or_tiger_vncserver() {
 }
 #################
 check_tightvnc_port() {
-    CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' startvnc | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
+    CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' $(command -v startvnc) | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 }
 #########################
