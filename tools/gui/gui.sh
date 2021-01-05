@@ -4697,6 +4697,7 @@ first_configure_startvnc() {
     if [ ! -s "${HOME}/.vnc/passwd" ]; then
         set_vnc_passwd
     fi
+    choose_vnc_port_5901_or_5902
     printf "$BLUE"
     cat <<-'EndOFneko'
 		               .::::..                
@@ -4882,6 +4883,7 @@ first_configure_startvnc() {
     x11vnc_warning
     configure_x11vnc_remote_desktop_session
     xfce4_x11vnc_hidpi_settings
+    [[ ! ${X11VNC_PORT} =~ ^[0-9]+$ ]] || sed -i -E "s@^(TCP_PORT_FOR_RFB_PROTOCOL)=.*@\1=${X11VNC_PORT}@" "$(command -v startx11vnc)"
     printf '%s\n' '------------------------'
     printf '%s\n' '四：'
     do_you_want_to_configure_novnc
@@ -4928,6 +4930,17 @@ set_vnc_passwd() {
     fi
 }
 ###########
+choose_vnc_port_5901_or_5902() {
+    if (whiptail --title "VNC PORT" --yes-button "5901" --no-button "5902" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
+        X11VNC_PORT=5901
+        DISPLAY_PORT=1
+    else
+        X11VNC_PORT=5902
+        DISPLAY_PORT=2
+    fi
+    sed -i "s@tmoe-linux.*:.*@tmoe-linux :${DISPLAY_PORT}@" "$(command -v startvnc)"
+    sed -i -E "s@(TMOE_VNC_DISPLAY_NUMBER)=.*@\1=${DISPLAY_PORT}@" "$(command -v startvnc)"
+}
 check_vnc_passsword_length() {
     PASSWORD_LENGTH=$(printf '%s' ${TARGET_VNC_PASSWD} | wc -L)
     if ((${PASSWORD_LENGTH} > 8)); then

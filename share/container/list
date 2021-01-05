@@ -1178,7 +1178,7 @@ install_slackware_linux_distro() {
 #########################
 distro_does_not_support() {
 	printf "%s\n" "${PURPLE}Sorry${RESET},your architecture is ${BLUE}${ARCH_TYPE}${RESET}."
-	printf "%s\n" "检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构，请换用其他发行版"
+	printf "%s\n" "检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构,请尝试${YELLOW}跨架构${RESET}运行,或换用其他发行版"
 	press_enter_to_return
 	choose_which_gnu_linux_distro
 }
