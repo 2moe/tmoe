@@ -317,8 +317,6 @@ Next, I will introduce the meaning of each parameter.
         "devuan:Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
         "f:fedora"
         "fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-        "ft:funtoo"
-        "funtoo"
         "g:gentoo"
         "gentoo:追求极限配置和极高自由"
         "k:kali"
@@ -599,14 +597,11 @@ You can also use scrcpy+adb to cast screen.
 - [x] **Fedora**
 - [x] **CentOS**
 - [x] **Gentoo**
-- [x] **Funtoo**
 - [x] **Alpine edge**
 - [x] **OpenSUSE tumbleweed**
 - [x] **Void**
 - [x] **Raspios**
 - [x] **Mint**
-- [x] **Devuan**
-- [x] **Slackware**
 - [x] **Armbian**
 
 ![gentoo](https://images.gitee.com/uploads/images/2020/0725/023040_88655e91_7793225.png "Capture+_2020-07-22-13-20-47.png")  

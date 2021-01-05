@@ -4920,7 +4920,7 @@ set_vnc_passwd() {
         set_vnc_passwd
     elif [ -z "${TARGET_VNC_PASSWD}" ]; then
         printf "%s\n" "请输入有效的数值"
-        printf "%s\n" "Please enter a valid value"
+        printf "%s\n" "Please type a valid value"
         press_enter_to_return
         set_vnc_passwd
     else

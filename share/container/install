@@ -249,14 +249,11 @@ cat <<-EOF
 			-------------------
 			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 			-------------------
-
 	${BOLD}小提示06${RESET}:
-
 			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}tmoe t${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
 			You can type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
 			-------------------
 	${BOLD}小提示07${RESET}:
-
 			在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
 			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}
 			在v1.10beta及其之后的版本中，${GREEN}debian${RESET}命令实际上调用了${GREEN}tmoe${RESET}。
@@ -908,8 +905,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		ff02::2 ip6-allrouters
 	EOF
 	fi
-	[[ -e /etc/hostname ]] || cat /etc/hostname
-	[[ -e /etc/hosts ]] || cat /etc/hosts
+	[[ ! -e /etc/hostname ]] || cat /etc/hostname
+	[[ ! -e /etc/hosts ]] || cat /etc/hosts
 	if [[ "${TMOE_CHROOT}" = 'true' && $(command -v groupadd) ]]; then
 		groupadd aid_system -g 1000 || groupadd aid_system -g 1074
 		groupadd aid_radio -g 1001
@@ -1152,7 +1149,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 		DEBIAN_STABLE_LIST='/etc/apt/sources.list.d/debian-stable.list'
 		sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
-		sed -n p /etc/apt/sources.list
 		printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" > ${DEBIAN_STABLE_LIST}
 		chmod a+r -v ${DEBIAN_STABLE_LIST}
 	elif grep -q 'OpenWrt' "/etc/os-release"; then
@@ -1165,7 +1161,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	 TMOE_GITHUB='true'
 	#勿删上面那条注释
 	##dns
-	[[ ! -e /etc/apt/sources.list ]] || cat /etc/apt/sources.list
+	[[ ! -e /etc/apt/sources.list ]] || grep -v proposed /etc/apt/sources.list
 	rm -f /etc/resolv.conf
 	cat >/etc/resolv.conf <<-'EndOfFile'
 	nameserver 1.0.0.1
@@ -1306,6 +1302,18 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 		;;
 	esac
+	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null;then
+		cd ~
+		rm -f ~/.profile vnc-autostartup zsh.sh zsh-i.sh 2>/dev/null
+		[[ ! -e ~/.profile.bak ]] || mv -f ~/.profile.bak ~/.profile 2>/dev/null
+		for i in zsh bash sh su;do
+			if [[ -n $(command -v ${i}) ]];then
+				exec ${i}
+				break
+			fi
+		done
+		exit 0
+	fi
 	##############
 	alpine_linux_configure() {
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then

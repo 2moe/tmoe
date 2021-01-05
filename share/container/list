@@ -211,10 +211,16 @@ install_alpha_containers() {
 			whiptail --title "Maintenance has ceased" --menu "天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました" 0 55 0 \
 				"1" "OpenWRT:ゲートウェイなどの組み込みシステム用ファームウェアとして開発されている" \
 				"2" "ラズベリーパイ OS buster" \
-				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
-				"4" "Slackware(armhf,x64)" \
-				"5" "gentoo(arm64,armhf,x86,x64)" \
-				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
+				"3" "Gentoo(arm64,armhf,x86,x64)" \
+				"4" "DevuanはDebian から派生したLinuxディストリビューションである" \
+				"5" "Puppy linux(x64)" \
+				"6" "Huawei euler OS(arm64,x64)" \
+				"7" "Amazon(arm64,x64)" \
+				"8" "Oracle(arm64,x64)" \
+				"9" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"10" "Intel clear linux(x64)" \
+				"11" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"12" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -223,11 +229,17 @@ install_alpha_containers() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
 				"1" "OpenWRT(常见于路由器等嵌入式设备)" \
-				"2" "Raspberry Pi OS樹莓派 buster" \
-				"3" "Devuan (不使用systemd,基于debian)" \
-				"4" "Slackware is a Linux distro created by Patrick Volkerding in 1993(armhf,x64)" \
-				"5" "gentoo(追求极限配置和极高自由,arm64,armhf,x86,x64)" \
-				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
+				"2" "Raspberry Pi OS 樹莓派 buster" \
+				"3" "Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)" \
+				"4" "Devuan(不使用systemd,基于debian)" \
+				"5" "Puppy linux(x64)" \
+				"6" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
+				"7" "Amazon(arm64,x64,亚马逊云服务器系统)" \
+				"8" "Oracle(arm64,x64,甲骨文云服务器系统)" \
+				"9" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"10" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
+				"11" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"12" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -237,14 +249,23 @@ install_alpha_containers() {
 			whiptail --title "Maintenance has ceased" --menu "The developer of Tmoe-linux no longer maintain the following containers." 0 55 0 \
 				"1" "OpenWRT is a Linux OS targeting embedded devices" \
 				"2" "Raspberry Pi OS buster" \
-				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
-				"4" "Slackware is a distro created by Patrick Volkerding in 1993(armhf,x64)" \
-				"5" "gentoo(arm64,armhf,x86,x64)" \
-				"6" "Funtoo:专注于改进Gentoo(armhf,x86,x64)" \
+				"3" "Gentoo(arm64,armhf,x86,x64)" \
+				"4" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
+				"5" "Puppy linux(arm64,x64)" \
+				"6" "Huawei euler OS(arm64,x64)" \
+				"7" "Amazon(arm64,x64)" \
+				"8" "Oracle(arm64,x64)" \
+				"9" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"10" "Intel clear linux(x64)" \
+				"11" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"12" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
 	}
+	#SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
+	#"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
+	#				"12" "Solus(x64)" \
 	##############################
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) install_alpha_containers_zh ;;
@@ -253,37 +274,140 @@ install_alpha_containers() {
 	esac
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		TMOE_LINUX_CONTAINER_DISTRO='openwrt'
-		DISTRO_NAME='openwrt'
-		creat_container_edition_txt
-		go_to_proot_management
-		install_openwrt_linux_distro
-		;;
-	2)
-		DISTRO_NAME='raspios'
-		DISTRO_CODE='buster'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		install_raspios_linux_distro
-		;;
-	3) install_devuan_linux_distro ;;
-	4)
-		DISTRO_NAME='slackware'
-		TMOE_LINUX_CONTAINER_DISTRO='slackware'
-		creat_container_edition_txt
-		install_slackware_linux_distro
-		;;
-	5) install_gentoo_linux_distro ;;
-	6)
-		TMOE_LINUX_CONTAINER_DISTRO='funtoo'
-		creat_container_edition_txt
-		install_funtoo_linux_distro
-		;;
+	1) install_openwrt_linux_distro ;;
+	2) install_raspios_linux_distro ;;
+	3) install_gentoo_linux_distro ;;
+	4) install_devuan_linux_distro ;;
+	5) install_puppy_linux_distro ;;
+	6) install_euler_linux_distro ;;
+	7) install_amazon_linux_distro ;;
+	8) install_oracle_linux_distro ;;
+	9) install_photon_linux_distro ;;
+	10) install_clear_linux_distro ;;
+	11) install_slackware_linux_distro ;;
+	12) install_steam_linux_distro ;;
 	esac
 	###########################
 	exit 0
 }
 #########################
+install_clear_linux_distro() {
+	DISTRO_NAME='clear'
+	TMOE_LINUX_CONTAINER_DISTRO='clear'
+	case "${ARCH_TYPE}" in
+	'amd64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+install_steam_linux_distro() {
+	DISTRO_NAME='steamos'
+	DISTRO_CODE='brewmaster'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	case "${ARCH_TYPE}" in
+	'amd64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+install_puppy_linux_distro() {
+	DISTRO_NAME='puppy'
+	DISTRO_CODE='fossa'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	case "${ARCH_TYPE}" in
+	'amd64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+install_euler_linux_distro() {
+	DISTRO_NAME='euler'
+	TMOE_LINUX_CONTAINER_DISTRO='euler'
+	case "${ARCH_TYPE}" in
+	'amd64' | 'arm64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+install_photon_linux_distro() {
+	DISTRO_NAME='photon'
+	TMOE_LINUX_CONTAINER_DISTRO='photon'
+	case "${ARCH_TYPE}" in
+	'amd64' | 'arm64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+install_amazon_linux_distro() {
+	DISTRO_NAME='amazon'
+	DISTRO_CODE='2'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	case "${ARCH_TYPE}" in
+	'amd64' | 'arm64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+install_oracle_linux_distro() {
+	DISTRO_NAME='oracle'
+	DISTRO_CODE=8
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	case "${ARCH_TYPE}" in
+	'arm64')
+		creat_container_edition_txt
+		go_to_proot_management
+		git_clone_linux_distro_rootfs_01
+		;;
+	amd64)
+		CLOUD_ROOTFS=true
+		DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
+		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+		creat_container_edition_txt
+		go_to_proot_management
+		linux_distro_common_model_04
+		;;
+	*) distro_does_not_support ;;
+	esac
+}
+####################
+git_clone_linux_distro_rootfs_01() {
+	cd ${ROOTFS_DIR}
+	ROOTFS_FILE_NAME="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}-rootfs.tar.xz"
+	if [ ! -e "${ROOTFS_FILE_NAME}" ]; then
+		TEMP_DIR=".${TMOE_LINUX_CONTAINER_DISTRO}-TEMP_FOLDER"
+		[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
+		pwd
+		git clone --depth=1 ${AK2_GIT_URL}/${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}.git ${TEMP_DIR}
+		cd ${TEMP_DIR}
+		cat .container_linux_* >${ROOTFS_FILE_NAME}
+		mv -fv ${ROOTFS_FILE_NAME} ../
+		cd ..
+		rm -rvf ${TEMP_DIR}
+	fi
+	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s:debian-sid:${TMOE_LINUX_CONTAINER_DISTRO}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+#######################
 install_beta_containers() {
 	CLOUD_ROOTFS='false'
 	install_beta_containers_zh() {
@@ -768,21 +892,6 @@ EOF
 		;;
 	esac
 }
-################
-install_funtoo_linux_distro() {
-	DISTRO_NAME='funtoo'
-	OLD_STABLE_VERSION='1.3'
-	case "${ARCH_TYPE}" in
-	"arm64")
-		printf "%s\n" "检测到您当前使用的是arm64架构，将为您下载armhf版容器"
-		NEW_TMOE_ARCH='armhf'
-		TMOE_QEMU_ARCH=""
-		ARCH_TYPE='armhf'
-		creat_tmoe_arch_file
-		;;
-	esac
-	check_the_latest_distro_version
-}
 #######################
 linux_distro_common_model_03() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
@@ -891,6 +1000,9 @@ install_opensuse_linux_distro() {
 }
 ####################
 install_raspios_linux_distro() {
+	DISTRO_NAME='raspios'
+	DISTRO_CODE='buster'
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case "${ARCH_TYPE}" in
 	arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
 	*) distro_does_not_support ;;
@@ -972,15 +1084,20 @@ install_manjaro_linux_distro() {
 			sed "s:Debian GNU/Linux:Manjaro GNU/Linux:g")"
 		;;
 	*)
-		printf "%s\n" "SORRY，Tmoe-linux的开发者未对您的架构进行适配"
-		press_enter_to_return
-		install_beta_containers
+		printf "%s\n" "SORRY,Tmoe-linux的开发者未对您的架构进行适配"
+		distro_does_not_support
+		#press_enter_to_return
+		#install_beta_containers
 		;;
 	esac
 }
 #		sed 's@tar -pJxvf@tar -pzxvf@g'
 ############################
 install_openwrt_linux_distro() {
+	TMOE_LINUX_CONTAINER_DISTRO='openwrt'
+	DISTRO_NAME='openwrt'
+	creat_container_edition_txt
+	go_to_proot_management
 	touch ~/.ALPINELINUXDetectionFILE
 	CONTAINER_REPO='https://mirrors.bfsu.edu.cn/openwrt/releases/'
 	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | egrep -v 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
@@ -1010,6 +1127,9 @@ install_devuan_linux_distro() {
 }
 ######################
 install_slackware_linux_distro() {
+	DISTRO_NAME='slackware'
+	TMOE_LINUX_CONTAINER_DISTRO='slackware'
+	creat_container_edition_txt
 	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	#touch .SLACKDetectionFILE
@@ -1055,6 +1175,7 @@ install_slackware_linux_distro() {
 }
 #########################
 distro_does_not_support() {
+	printf "%s\n" "You can use other distros."
 	printf "%s\n" "检测到您使用的是${ARCH_TYPE}架构，请换用其他发行版"
 	press_enter_to_return
 	choose_which_gnu_linux_distro

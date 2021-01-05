@@ -264,7 +264,11 @@ EOF
     fi
     DEPENDENCY_02='libgtk2.0-0 libgconf-2-4'
     beta_features_quick_install
-    apt install -y libgconf2-4 #ubuntu-21.04
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        apt install -y libgconf2-4 libgtk2.0-0 #ubuntu-21.04
+        ;;
+    esac
     printf "%s\n" "您可以在终端内输入${GREEN}nohup wechat${RESET}命令来启动com.qq.weixin"
 }
 ####################

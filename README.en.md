@@ -12,14 +12,12 @@ The following containers are now **supported**:
 - [x] **Fedora**
 - [x] **CentOS**
 - [x] **Gentoo**
-- [x] **Funtoo**
 - [x] **Alpine edge**
 - [x] **OpenSUSE tumbleweed**
 - [x] **Void**
 - [x] **Raspios**
 - [x] **Mint**
 - [x] **Devuan**
-- [x] **Slackware**
 - [x] **Armbian**
 
 ## Installation

@@ -51,8 +51,6 @@ function _tmoe() {
         "devuan:Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
         "f:fedora"
         "fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-        "ft:funtoo"
-        "funtoo"
         "g:gentoo"
         "gentoo:追求极限配置和极高自由"
         "k:kali"
