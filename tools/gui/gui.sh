@@ -89,13 +89,13 @@ switch_tight_or_tiger_vncserver() {
 }
 #################
 check_tightvnc_port() {
-    CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
+    CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' startvnc | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 }
 #########################
 modify_tightvnc_display_port() {
     check_tightvnc_port
-    TARGET=$(whiptail --inputbox "默认显示编号为1，默认VNC服务端口为5901，当前为${CURRENT_VNC_PORT} \nVNC服务以5900端口为起始，若显示编号为1,则端口为5901，请输入显示编号.Please type the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "默认显示编号为1,当前为${CURRENT_PORT}\nVNC服务以5900端口为起始,若显示编号为1,则端口为5901，请输入显示编号.Please type the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
@@ -106,6 +106,7 @@ modify_tightvnc_display_port() {
         sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" "$(command -v startvnc)"
         printf '%s\n' 'Your current VNC port has been modified.'
         check_tightvnc_port
+        printf "%s\n" "Current display number is ${BLUE}${CURRENT_PORT}${RESET}"
         printf '%s\n' '您当前的VNC端口已修改为'
         printf "%s\n" "${CURRENT_VNC_PORT}"
     fi
@@ -4938,7 +4939,7 @@ choose_vnc_port_5901_or_5902() {
         X11VNC_PORT=5902
         DISPLAY_PORT=2
     fi
-    sed -i "s@tmoe-linux.*:.*@tmoe-linux :${DISPLAY_PORT}@" "$(command -v startvnc)"
+    sed -i -E "s@(tmoe-linux) :.*@\1 :${DISPLAY_PORT}@" "$(command -v startvnc)"
     sed -i -E "s@(TMOE_VNC_DISPLAY_NUMBER)=.*@\1=${DISPLAY_PORT}@" "$(command -v startvnc)"
 }
 check_vnc_passsword_length() {
