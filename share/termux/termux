@@ -106,6 +106,7 @@ android_termux() {
 
 	if [ ! -z "${DEPENDENCIES}" ]; then
 		[[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
+		[[ -s ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt
 		case ${TMOE_LANG} in
 		zh_*UTF-8) switch_android_termux_mirror_to_bfsu ;;
 		*) ;;

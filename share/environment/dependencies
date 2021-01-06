@@ -95,6 +95,7 @@ gnu_linux_manager_dependencies() {
 ######################
 install_gnu_linux_manager_dependencies_02() {
 	[[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
+	[[ -s ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt
 	notes_of_tmoe_package_installation
 	case "${LINUX_DISTRO}" in
 	debian)
