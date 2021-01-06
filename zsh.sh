@@ -95,8 +95,39 @@ auto_configure_tmoe_tools() {
 	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
+	if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+		install_lolcat_and_neofetch
+	fi
 }
 ################
+install_lolcat_and_neofetch() {
+	for i in lolcat neofecth; do
+		if [[ -n $(command -v apt) ]]; then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+			apt install -y ${i} 2>/dev/null
+		elif [[ -n $(command -v pacman) ]]; then
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+			pacman -Sy --noconfirm ${i}
+		elif [[ -n $(command -v dnf) ]]; then
+			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}${i}${RESET}"
+			dnf install -y ${i} 2>/dev/null
+		elif [[ -n $(command -v zypper) ]]; then
+			printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat neofetch${RESET}"
+			zypper in -y ruby2.7-rubygem-lolcat
+			zypper in -y neofetch
+		fi
+	done
+	i=neofetch
+	[[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
+	printf "%s\n" "${GREEN}neofetch${RESET}"
+	if [ -e /usr/games/lolcat ]; then
+		neofetch | /usr/games/lolcat
+	elif [ "$(command -v lolcat)" ]; then
+		neofetch | lolcat
+	else
+		neofetch
+	fi
+}
 auto_configure_tmoe_tool_02() {
 	if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
 		git_clone_tmoe_linux

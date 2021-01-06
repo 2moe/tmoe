@@ -886,11 +886,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	RESET=$(printf '\033[m')
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	cd ${HOME}
-	if [[ -n $(command -v bash) ]];then
-		if [[ -e /usr/local/bin/neofetch ]];then
+	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
+	if [[ -e ${NEOFETCH_BIN_FILE} ]]; then
+		chmod a+x ${NEOFETCH_BIN_FILE}
+		if [[ -n $(command -v bash) ]]; then
 			printf "%s\n" "${GREEN}neofetch${RESET}"
-			chmod +x /usr/local/bin/neofetch
-			/usr/local/bin/neofetch
+			${NEOFETCH_BIN_FILE}
 		fi
 	fi
 	###############
@@ -1226,7 +1227,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	build_fakeroot() {
-	for i in make automake autoconf gcc libtool po4a patch lolcat; do
+	for i in make automake autoconf gcc libtool po4a patch; do
 		if [[ ! $(command -v ${i}) ]];then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
@@ -1383,7 +1384,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "export PATH=\${PATH}:/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >> ~/.zshenv
 	    fi
 		printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
-		bash /usr/local/bin/neofetch
+		neofetch
 	    exec bash zsh.sh
 		exit 0
 	}
@@ -1426,7 +1427,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'openSUSE' "/etc/os-release"; then
 	    opensuse_linux_repo
 		zypper in -y newt
-		zypper in -y ruby2.7-rubygem-lolcat
 	fi
 	##############################
 	if [[ -n $(command -v apt) ]];then
@@ -1586,8 +1586,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
 		rm -fv .profile
 		mv -f .profile.bak .profile 2>/dev/null
-		chmod +x /usr/local/bin/neofetch
-	    neofetch
 		if grep -q 'Funtoo' /etc/os-release;then
 		   #同步过于耗时
 	       emerge --sync
@@ -1655,18 +1653,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}procps${RESET}"
 			apt install -y procps 2>/dev/null
 		fi
-		for i in whiptail dialog lolcat;do
+		for i in whiptail dialog;do
 			if [[ ! -n $(command -v ${i}) ]];then
 				printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 				apt install -y ${i} 2>/dev/null
 			fi 
 		done
-		i=neofetch
-		if [[ ! -e /usr/bin/${i} ]];then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
-			apt install -y ${i} 2>/dev/null
-		fi
-		[[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
 		apt clean 2>/dev/null
 	fi
 	#############################
@@ -1797,7 +1789,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
 		dnf install -y --skip-broken glibc-all-langpacks
 		[[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
-		[[ $(command -v lolcat) ]] || dnf install --skip-broken -y lolcat
 	elif grep -q 'CentOS' /etc/os-release; then
 		[[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 		#curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
@@ -1822,15 +1813,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	############################
 	printf "%s\n" "Automatically configure zsh after 2 seconds,you can press Ctrl + C to cancel."
 	#printf "%s\n" "2s后将自动开始配置zsh，您可以按Ctrl+C取消，这将不会继续配置其它步骤，同时也不会启动Tmoe-linux工具。"
-	#wget -qcO /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' || curl -sLo /usr/local/bin/neofetch 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
-	chmod +x /usr/local/bin/neofetch
-	if [ -e /usr/games/lolcat ]; then
-		neofetch | /usr/games/lolcat
-	elif [ "$(command -v lolcat)" ]; then
-		neofetch | lolcat
-	else
-		/usr/local/bin/neofetch
-	fi
 	################
 	################
 	slackware_mirror_list() {
