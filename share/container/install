@@ -1219,6 +1219,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo
 					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 					#Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
+					## Manjaro linux arm
 					## Country : Netherlands
 					#Server = https://manjaro.mirrors.lavatech.top/arm-stable/$repo/$arch
 					## Country : France
@@ -1760,7 +1761,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	fedora_rpmfusion_repo(){
 		printf "%s\n" "You are using fedora system. Adding rpmfusion repo ..."
-		yum install -y --nogpgcheck https://mirrors.bfsu.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.bfsu.edu.cn/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --nogpgcheck ${BLUE}https://mirrors.bfsu.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.bfsu.edu.cn/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm${RESET}"
+		dnf install -y --nogpgcheck https://mirrors.bfsu.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.bfsu.edu.cn/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 		case ${TMOE_GITHUB} in
 		true) ;;
 		*)
