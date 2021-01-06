@@ -101,16 +101,16 @@ auto_configure_tmoe_tools() {
 }
 ################
 install_lolcat_and_neofetch() {
-	for i in lolcat neofecth; do
+	for i in lolcat neofetch; do
 		if [[ -n $(command -v apt) ]]; then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
-			apt install -y ${i} 2>/dev/null
+			apt install -y ${i}
 		elif [[ -n $(command -v pacman) ]]; then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
 		elif [[ -n $(command -v dnf) ]]; then
 			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}${i}${RESET}"
-			dnf install -y ${i} 2>/dev/null
+			dnf install -y ${i}
 		fi
 	done
 	if [[ -n $(command -v zypper) ]]; then
