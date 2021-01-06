@@ -910,12 +910,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#[[ ! -n $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
 		#sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
 		if ! grep -q "${NEW_HOST_NAME}" /etc/hosts 2>/dev/null;then
-			printf "%s\n" "127.0.0.1 ${NEW_HOST_NAME}" >>/etc/hosts
+			printf "%s\n%s\n" "127.0.0.1 ${NEW_HOST_NAME}" "::1 ${NEW_HOST_NAME}" >>/etc/hosts
 		fi
 	fi
 	if [[ -n $(command -v hostname) ]];then
 		if ! grep -q "$(hostname)" /etc/hosts 2>/dev/null;then
-			printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
+			printf "%s\n%s\n" "127.0.0.1 $(hostname) $(hostname -f)" "::1 $(hostname) $(hostname -f)" >>/etc/hosts
 		fi
 	fi
 	[[ ! -e /etc/hostname ]] || cat /etc/hostname
