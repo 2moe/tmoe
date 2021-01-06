@@ -1665,7 +1665,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if [[ ! -e /usr/bin/${i} ]];then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 			apt install -y ${i} 2>/dev/null
-		fi  
+		fi
+		[[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
 		apt clean 2>/dev/null
 	fi
 	#############################
