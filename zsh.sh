@@ -108,12 +108,13 @@ install_lolcat_and_neofetch() {
 		elif [[ -n $(command -v pacman) ]]; then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
-		#elif [[ -n $(command -v dnf) ]]; then
-		#	printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}${i}${RESET}"
-		#	dnf install -y ${i}
 		fi
 	done
 	#fedora neofetch (X)
+	if [[ -n $(command -v dnf) && ! -n $(command -v lolcat) ]]; then
+		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}lolcat${RESET}"
+		dnf install -y lolcat
+	fi
 	if [[ -n $(command -v zypper) ]]; then
 		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat neofetch${RESET}"
 		zypper in -y ruby2.7-rubygem-lolcat
