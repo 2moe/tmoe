@@ -1224,8 +1224,10 @@ remove_gui() {
 ##########################
 remove_tmoe_linux_tool() {
     cd /usr/local/bin
+    unset DEPENDENCIES
+    DEPENDENCIES=$(sed -n p ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt)
+    [[ ! -n ${DEPENDENCIES} ]] || DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
     printf "%s\n" "${RED}rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop ${HOME}/.config/tmoe-linux tmoe startvnc stopvnc novnc debian debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu ${TMOE_GIT_DIR}${RESET}"
-    DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
     printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
     printf "%s\n" "${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。"
     do_you_want_to_continue

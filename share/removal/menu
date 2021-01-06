@@ -2,7 +2,9 @@
 ###############
 remove_termux_linux_manager() {
 	cd ${PREFIX}/bin
-	DEPENDENCIES='git aria2 pv wget xz newt whiptail dialog'
+	unset DEPENDENCIES
+	DEPENDENCIES=$(sed -n p ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt)
+	[[ ! -n ${DEPENDENCIES} ]] || DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
 	cat <<-EOF
 		${RED}rm -rv ${YELLOW}tmoe novnc debian debian-i startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux${RESET}
 		${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。

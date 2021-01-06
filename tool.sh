@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3913,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3914,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -462,11 +462,15 @@ check_dependencies() {
 		arch | redhat) DEPENDENCIES="${DEPENDENCIES} iproute" ;;
 		esac
 	fi
-	if [ ! $(command -v ctstat) ]; then
-		case "${LINUX_DISTRO}" in
-		alpine) DEPENDENCIES="${DEPENDENCIES} iproute2" ;;
-		esac
-	fi
+
+	case "${LINUX_DISTRO}" in
+	alpine)
+		if [ ! $(command -v ctstat) ]; then
+			DEPENDENCIES="${DEPENDENCIES} iproute2"
+		fi
+		;;
+	esac
+
 	if [ ! $(command -v hostname) ]; then
 		case "${LINUX_DISTRO}" in
 		arch) DEPENDENCIES="${DEPENDENCIES} inetutils" ;;
@@ -554,6 +558,7 @@ check_dependencies() {
 	fi
 	##############
 	if [ ! -z "${DEPENDENCIES}" ]; then
+		[[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
 		cat <<-EOF
 			正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}
 			${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}
@@ -630,6 +635,7 @@ check_dependencies() {
 					yum install -y dnf
 					yum update
 				fi
+				check_dependencies
 			fi
 			;;
 		esac
