@@ -1101,8 +1101,10 @@ debian_xfce4_extras() {
         fi
         ;;
     redhat)
-        printf "%s\n" "${GREEN}dnf install ${YELLOW}--skip-broken -y ${BLUE}xfce*-plugin xfce4-panel-profiles qt5ct${RESET}"
-        yum install --skip-broken -y xfce*-plugin xfce4-panel-profiles qt5ct
+        if [ ! $(command -v qt5ct) ]; then
+            printf "%s\n" "${GREEN}dnf install ${YELLOW}--skip-broken -y ${BLUE}qt5ct${RESET}"
+            yum install --skip-broken -y qt5ct
+        fi
         [[ $(command -v startxfce4) ]] || yum install --skip-broken -y @xfce
         ;;
     arch)
@@ -1390,7 +1392,7 @@ install_xfce4_desktop() {
         ;;
         ##############
     "redhat")
-        DEPENDENCY_01='@xfce'
+        DEPENDENCY_01='@xfce xfce*-plugin xfce4-panel-profiles'
         rm -v /etc/xdg/autostart/xfce-polkit.desktop 2>/dev/null
         ;;
         ##################
@@ -1770,7 +1772,7 @@ install_lxde_desktop() {
         DEPENDENCY_01="lxde-core lxterminal"
         ;;
         #############
-    "redhat") DEPENDENCY_01='@lxde lxde-desktop' ;;
+    "redhat") DEPENDENCY_01='@lxde-desktop' ;;
         #############
     "arch") DEPENDENCY_01='lxde' ;;
         ############
