@@ -1215,9 +1215,21 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        [[ ! $(command -v sed) ]] || sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist 2>/dev/null
 	        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
+					## Archlinux arm
 					#Server = https://mirror.archlinuxarm.org/$arch/$repo
 					#Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 					#Server = https://mirrors.huaweicloud.com/manjaro/arm-stable/$repo/$arch
+					## Country : Netherlands
+					#Server = https://manjaro.mirrors.lavatech.top/arm-stable/$repo/$arch
+					## Country : France
+					#Server = http://kibo.remi.lu/arm-stable/$repo/$arch
+					## Country : Germany
+					#Server = https://mirror.alpix.eu/manjaro/arm-stable/$repo/$arch
+					## Country : Poland
+					#Server = https://mirror.tuchola-dc.pl/manjaro/arm-stable/$repo/$arch
+					## Country : New_Zealand
+					#Server = http://manjaro.mirrors.theom.nz/arm-stable/$repo/$arch
+					## Country : China
 					Server = https://mirrors.bfsu.edu.cn/manjaro/arm-stable/$repo/$arch
 				EndOfArchMirrors
 		elif [[ "$(uname -m)" = "x86_64" ]]; then
