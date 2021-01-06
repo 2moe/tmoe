@@ -156,12 +156,14 @@ _**如果你在国内,那么请输**_
      bash -c "$(curl -L l.tmoe.me)"
 ```
 
-#### 4.RedHat/Fedora/CentOS
+#### 4.Fedora/CentOS Stream
 
 ```shell
     sudo dnf install -y curl || sudo yum install -y curl
     bash -c "$(curl -L https://git.io/linux.sh)"
 ```
+
+It is not compatible with CentOS 7/RHEL 7 and lower versions.
 
 #### 5.Arch/Manjaro
 
