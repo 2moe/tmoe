@@ -441,7 +441,8 @@ creat_chroot_startup_script() {
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
-		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/tmp
+		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc
 		case $(hostname) in
 		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} 2>/dev/null ;;
 		esac
@@ -555,7 +556,8 @@ creat_proot_startup_script() {
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
-		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/tmp
+		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc
 	fi
 }
 #########
