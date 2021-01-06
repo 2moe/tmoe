@@ -343,7 +343,12 @@ git_clone_tmoe_linux() {
 		;;
 	esac
 	bash /usr/local/bin/debian-i
-	exec zsh -l
+	for i in zsh bash ash; do
+		if [ $(command -v ${i}) ]; then
+			exec ${i} -l
+			break
+		fi
+	done
 }
 ###################
 tmoe_container_zsh_main "$@"
