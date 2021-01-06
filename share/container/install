@@ -439,7 +439,7 @@ creat_chroot_startup_script() {
 		${TMOE_CHROOT_PREFIX} mv wm_size.txt ${TMOE_CHROOT_ETC}
 	fi
 	if [ $(command -v getprop) ]; then
-		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @@g')
+		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/tmp
 		case $(hostname) in
@@ -550,6 +550,11 @@ creat_proot_startup_script() {
 		fi
 	else
 		set_proot_container_env
+	fi
+	if [ $(command -v getprop) ]; then
+		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
+		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/tmp
 	fi
 }
 #########
@@ -891,11 +896,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	if [[ -n $(command -v hostname) ]];then
 		HOSTNAME=$(hostname)
-	else
-	    HOSTNAME=localhost 
-	fi
-	if ! grep -q "${HOSTNAME}" /etc/hosts 2>/dev/null;then
-		printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
+		if ! grep -q "${HOSTNAME}" /etc/hosts 2>/dev/null;then
+			printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
+		fi
 	fi
 	if ! grep -q "localhost" /etc/hosts 2>/dev/null; then
 	cat >>/etc/hosts <<-EOF
