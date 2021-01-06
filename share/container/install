@@ -441,11 +441,15 @@ creat_chroot_startup_script() {
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
-		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
-		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc
 		case $(hostname) in
 		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} 2>/dev/null ;;
 		esac
+	else
+		[[ ! -n $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
+	fi
+	if [[ -s hostname ]]; then
+		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
+		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc
 	fi
 	printf "%s\n" "Creating chroot startup script"
 	printf "%s\n" "正在创建chroot容器启动脚本"
@@ -556,6 +560,10 @@ creat_proot_startup_script() {
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
+	else
+		[[ ! -n $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
+	fi
+	if [[ -s hostname ]]; then
 		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
 		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc
 	fi
@@ -891,15 +899,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ -s "/tmp/hostname" ]; then
 		NEW_HOST_NAME=$(head -n 1 /tmp/hostname)
 		cp -f /tmp/hostname /etc
-		[[ ! -n $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
+		#[[ ! -n $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
 		#sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
 		if ! grep -q "${NEW_HOST_NAME}" /etc/hosts 2>/dev/null;then
 			printf "%s\n" "127.0.0.1 ${NEW_HOST_NAME}" >>/etc/hosts
 		fi
 	fi
 	if [[ -n $(command -v hostname) ]];then
-		HOSTNAME=$(hostname)
-		if ! grep -q "${HOSTNAME}" /etc/hosts 2>/dev/null;then
+		if ! grep -q "$(hostname)" /etc/hosts 2>/dev/null;then
 			printf "%s\n" "127.0.0.1 $(hostname)" >>/etc/hosts
 		fi
 	fi
