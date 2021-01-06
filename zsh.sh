@@ -111,15 +111,16 @@ install_lolcat_and_neofetch() {
 		elif [[ -n $(command -v dnf) ]]; then
 			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}${i}${RESET}"
 			dnf install -y ${i} 2>/dev/null
-		elif [[ -n $(command -v zypper) ]]; then
-			printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat neofetch${RESET}"
-			zypper in -y ruby2.7-rubygem-lolcat
-			zypper in -y neofetch
 		fi
 	done
+	if [[ -n $(command -v zypper) ]]; then
+		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat neofetch${RESET}"
+		zypper in -y ruby2.7-rubygem-lolcat
+		zypper in -y neofetch
+	fi
 	i=neofetch
 	[[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
-	printf "%s\n" "${GREEN}neofetch${RESET}"
+	printf "%s\n" "${GREEN}neofetch | lolcat${RESET}"
 	if [ -e /usr/games/lolcat ]; then
 		neofetch | /usr/games/lolcat
 	elif [ "$(command -v lolcat)" ]; then
