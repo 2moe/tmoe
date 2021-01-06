@@ -1225,7 +1225,7 @@ remove_gui() {
 remove_tmoe_linux_tool() {
     cd /usr/local/bin
     unset DEPENDENCIES
-    DEPENDENCIES=$(sed -n p ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt)
+    DEPENDENCIES=$(sed ":a;N;s/\n/ /g;ta" ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt)
     [[ -n ${DEPENDENCIES} ]] || DEPENDENCIES='git aria2 pv wget curl less xz-utils newt whiptail'
     printf "%s\n" "${RED}rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop ${HOME}/.config/tmoe-linux tmoe startvnc stopvnc novnc debian debian-i startx11vnc startxsdl x11vncpasswd .tmoe-linux-qemu startqemu ${TMOE_GIT_DIR}${RESET}"
     printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"

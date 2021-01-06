@@ -3,7 +3,7 @@
 remove_termux_linux_manager() {
 	cd ${PREFIX}/bin
 	unset DEPENDENCIES DEPENDENCIES_02
-	DEPENDENCIES=$(sed -n p ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt)
+	DEPENDENCIES=$(sed ":a;N;s/\n/ /g;ta" ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt)
 	[[ -n ${DEPENDENCIES} ]] || DEPENDENCIES='git aria2 pv wget xz-utils whiptail'
 	#newt  less curl
 	cat <<-EOF
@@ -12,7 +12,7 @@ remove_termux_linux_manager() {
 		${BLUE}${TMOE_CONTAINER_DIR}${RESET}为容器数据路径，您需要在容器管理菜单中进行单独卸载。
 		${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}
 	EOF
-	DEPENDENCIES_02=$(sed -n p ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt)
+	DEPENDENCIES_02=$(sed ":a;N;s/\n/ /g;ta" ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt)
 	if [[ ${DEPENDENCIES_02} != ${DEPENDENCIES} ]]; then
 		printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES_02}${RESET}"
 	fi
