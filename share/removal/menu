@@ -13,7 +13,10 @@ remove_termux_linux_manager() {
 		${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}
 	EOF
 	DEPENDENCIES_02=$(sed -n p ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt)
-	[[ ! -n ${DEPENDENCIES_02} ]] || printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES_02}${RESET}"
+	if [[ ${DEPENDENCIES_02} != ${DEPENDENCIES} ]]; then
+		printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES_02}${RESET}"
+	fi
+	#[[ ! -n ${DEPENDENCIES_02} ]] ||
 	do_you_want_to_continue
 	rm -rv novnc debian debian-i tmoe startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux
 	${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}
