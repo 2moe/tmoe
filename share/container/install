@@ -1660,7 +1660,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 				apt install -y ${i} 2>/dev/null
 			fi 
-		done   
+		done
+		i=neofetch
+		if [[ ! -e /usr/bin/${i} ]];then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+			apt install -y ${i} 2>/dev/null
+		fi  
 		apt clean 2>/dev/null
 	fi
 	#############################
