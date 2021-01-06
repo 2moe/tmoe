@@ -551,6 +551,7 @@ creat_proot_startup_script() {
 	else
 		set_proot_container_env
 	fi
+	cd ${CONFIG_FOLDER}
 	if [ $(command -v getprop) ]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
