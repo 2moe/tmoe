@@ -1801,7 +1801,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cp -f /etc/resolv.conf /tmp
 		fi
 		if ((${FEDORA_VERSION} >= 32)); then
-			fedora_rpmfusion_repo
+			[[ ${TMOE_CHROOT} != true ]] || fedora_rpmfusion_repo
 		fi
 		dnf update -y
 		[[ $(command -v systemctl) ]] || dnf install -y systemd
