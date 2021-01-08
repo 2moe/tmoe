@@ -71,7 +71,7 @@ check_tmoe_sources_list_backup_file() {
 }
 ##########
 modify_alpine_mirror_repositories() {
-    ALPINE_VERSION=$(sed -n p /etc/os-release | grep 'PRETTY_NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF')
+    ALPINE_VERSION=$(grep 'PRETTY_NAME=' /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF')
     cd /etc/apk/
     if [ ! -z ${ALPINE_VERSION} ]; then
         sed -i 's@http@#&@g' repositories
@@ -190,11 +190,11 @@ sed_a_source_list() {
     TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
     SOURCE_LIST='/etc/apt/sources.list'
     MIRROR_LIST='/etc/pacman.d/mirrorlist'
-    SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-    BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
+    SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+    BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
     if egrep -q 'debian|ubuntu' /etc/os-release; then
-        SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-        BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
+        SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+        BACKPORTCODE=$(grep VERSION_CODENAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
         if ! grep -q '#Official' ${SOURCE_LIST}; then
             if grep -q 'Debian' /etc/issue 2>/dev/null; then
                 if [ "$(lsb_release -r | awk '{print $2}' | awk -F '/' '{print $1}')" = 'unstable' ]; then
@@ -580,7 +580,7 @@ check_debian_distro_and_modify_sources_list() {
 ##############
 check_arch_distro_and_modify_mirror_list() {
     sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
-    if [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Arch" ]; then
+    if [ "$(cut -c 1-4 /etc/issue)" = "Arch" ]; then
         modify_archlinux_mirror_list
     elif [ "$(sed -n p /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
         modify_manjaro_mirror_list

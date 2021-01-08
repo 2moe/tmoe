@@ -210,8 +210,8 @@ nginx_restart() {
 	else
 		printf "%s\n" "您可以输${YELLOW}/etc/init.d/nginx stop${RESET}来停止进程"
 	fi
-	sed -n p /var/log/nginx/webdav.error.log | tail -n 10
-	sed -n p /var/log/nginx/webdav.access.log | tail -n 10
+	tail -n 10 /var/log/nginx/webdav.error.log
+	tail -n 10 /var/log/nginx/webdav.access.log
 	printf "%s\n" "正在为您启动nginx服务，本机默认访问地址为localhost:${NGINX_WEBDAV_PORT}"
 	echo The LAN address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):${NGINX_WEBDAV_PORT}
 	echo The WAN address 外网地址 $(curl -sL ip.cip.cc | head -n 1):${NGINX_WEBDAV_PORT}
@@ -272,11 +272,11 @@ nginx_port() {
 }
 ############
 nginx_logs() {
-	sed -n p /var/log/nginx/webdav.error.log | tail -n 10
+	tail -n 10 /var/log/nginx/webdav.error.log
 	if [ $(command -v less) ]; then
-		sed -n p /var/log/nginx/webdav.access.log | less -meQ
+		less -meQ /var/log/nginx/webdav.access.log
 	else
-		sed -n p /var/log/nginx/webdav.access.log | tail -n 10
+		tail -n 10 /var/log/nginx/webdav.access.log
 	fi
 	ls -lh /var/log/nginx/webdav.error.log
 	ls -lh /var/log/nginx/webdav.access.log

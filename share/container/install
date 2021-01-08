@@ -31,7 +31,7 @@ fi
 LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
 DEBIAN_FOLDER=debian_${ARCH_TYPE}
 if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
-	LINUX_CONTAINER_DISTRO=$(sed -n p ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+	LINUX_CONTAINER_DISTRO=$(head -n 1 ${LINUX_CONTAINER_DISTRO_FILE})
 	[[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 fi
 
@@ -1822,10 +1822,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		esac
 	}
 	######################
-		if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)" = "fedora" ]; then
+		if [ "$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)" = "fedora" ]; then
 		tar -Ppzcf ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
 		mv -f ~/yum.repos.d-backup.tar.gz /etc/yum.repos.d
-		FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
+		FEDORA_VERSION="$(grep 'VERSION_ID' /etc/os-release | cut -d '=' -f 2)"
 		sed -i -E "s@(enabled)=1@\1=0@" /etc/yum.repos.d/fedora-updates-testing-modular.repo /etc/yum.repos.d/fedora-updates-testing.repo
 		if [[ ${TMOE_GITHUB} != true ]]; then
 			case ${TMOE_LANG} in

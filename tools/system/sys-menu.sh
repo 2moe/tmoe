@@ -176,8 +176,8 @@ tmoe_system_app_menu() {
 tmoe_linux_sudo_user_group_management() {
 	RETURN_TO_WHERE='tmoe_linux_sudo_user_group_management'
 	cd /tmp/
-	sed -n p /etc/passwd | egrep -v 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
-	sed -n p /etc/passwd | egrep -v 'nologin|halt|shutdown|0:0' | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
+	egrep -v 'nologin|halt|shutdown|0:0' /etc/passwd | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
+	egrep -v 'nologin|halt|shutdown|0:0' /etc/passwd | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
 	TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
 	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \

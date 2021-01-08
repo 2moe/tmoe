@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3968,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3969,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -164,9 +164,9 @@ check_release_version() {
 	Android) OSRELEASE="Android" ;;
 	*)
 		if grep -q 'NAME=' /etc/os-release; then
-			OSRELEASE=$(sed -n p /etc/os-release | grep -v 'PRETTY' | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+			OSRELEASE=$(grep -v 'PRETTY' /etc/os-release | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
 		elif grep -q 'ID=' /etc/os-release; then
-			OSRELEASE=$(sed -n p /etc/os-release | grep -v 'VERSION' | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+			OSRELEASE=$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
 		else
 			OSRELEASE=LINUX
 		fi
@@ -253,7 +253,7 @@ ubuntu_ppa_and_locale_gen() {
 tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
 		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	else
@@ -292,7 +292,7 @@ check_linux_distro() {
 		TMOE_UPDATE_COMMAND='apt update'
 		if grep -q 'ubuntu' /etc/os-release; then
 			DEBIAN_DISTRO='ubuntu'
-		elif [ "$(sed -n p /etc/issue | cut -c 1-4)" = "Kali" ]; then
+		elif [ "$(cut -c 1-4 /etc/issue)" = "Kali" ]; then
 			DEBIAN_DISTRO='kali'
 		elif egrep -q 'deepin|uos' /etc/os-release; then
 			DEBIAN_DISTRO='deepin'
@@ -315,7 +315,7 @@ check_linux_distro() {
 			TMOE_INSTALLATION_COMMAND='yum install -y --skip-broken'
 			TMOE_REMOVAL_COMMAND='yum remove -y'
 		fi
-		if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
+		if [ "$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
 			REDHAT_DISTRO='centos'
 		elif grep -q 'Fedora' "/etc/os-release"; then
 			REDHAT_DISTRO='fedora'
@@ -343,7 +343,7 @@ check_linux_distro() {
 		TMOE_INSTALLATION_COMMAND='zypper in -y'
 		TMOE_REMOVAL_COMMAND='zypper rm'
 		########################
-	elif [ "$(sed -n p /etc/issue 2>/dev/null | cut -c 1-4)" = "Void" ]; then
+	elif [ "$(cut -c 1-4 /etc/issue 2>/dev/null)" = "Void" ]; then
 		LINUX_DISTRO='void'
 		export LANG='en_US.UTF-8'
 		TMOE_INSTALLATION_COMMAND='xbps-install -S -y'
