@@ -461,7 +461,7 @@ gnu_linux_sources_list() {
 		if [ ! $(command -v curl) ]; then
 			wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 		else
-			curl -sLo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			curl -Lo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 		fi
 		bash /tmp/.tmoe-linux-tool.sh -tuna
 	else

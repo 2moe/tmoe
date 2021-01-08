@@ -686,6 +686,7 @@ printf "%s\n" "You can type rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ} to delete the
 printf "%s\n" "您可以输${RED}rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像文件"
 ls -lh ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}
 ########################
+${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
 	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
 fi
@@ -702,9 +703,9 @@ chmod a+x neofetch debian-i
 
 ${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin
 
-${TMOE_CHROOT_PREFIX} chmod u+w "${DEBIAN_CHROOT}/root"
+${TMOE_CHROOT_PREFIX} chmod u+w -v "${DEBIAN_CHROOT}/root"
 
-curl -sLo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
+curl -Lo zsh-i.sh 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
 #curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
 cp -f ${TMOE_GIT_DIR}/zsh.sh ./
@@ -1895,7 +1896,6 @@ check_current_user_name_and_group() {
 # sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 #fi
-${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
 case ${TMOE_CHROOT} in
 true) ;;
 #su -c "chown -Rv root:root ${DEBIAN_CHROOT}"

@@ -182,7 +182,7 @@ catimg_preview_lxde_mate_xfce_01() {
     printf '%s\n' 'lxde预览截图'
     #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/BUSYeSLZRqq3i3oM.png' | catimg -
     if [ ! -f 'LXDE_BUSYeSLZRqq3i3oM.png' ]; then
-        curl -sLo 'LXDE_BUSYeSLZRqq3i3oM.png' ${LXDE_ICON_URL}
+        curl -Lo 'LXDE_BUSYeSLZRqq3i3oM.png' ${LXDE_ICON_URL}
     fi
     catimg 'LXDE_BUSYeSLZRqq3i3oM.png'
 
