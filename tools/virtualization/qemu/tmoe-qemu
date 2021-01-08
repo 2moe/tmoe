@@ -1105,8 +1105,8 @@ choose_memory_allocation_type() {
 #################
 modify_qemu_ram_size() {
 	CURRENT_VALUE_02=$(grep '^MEMORY_SIZE=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	CURRENT_VAULE_03=$(free -m | awk '{print $NF}' | sed -n 2p)
-	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为1024,当前为${CURRENT_VALUE_02}\n欲改为2G,则输2048;欲改为4G,则输4096\n当前宿主机可用内存${CURRENT_VAULE_03}\nPlease type the RAM size, the default is 1024" 11 50 --title "RAM" 3>&1 1>&2 2>&3)
+	CURRENT_VALUE_03=$(free -m | awk '{print $NF}' | sed -n 2p)
+	TARGET=$(whiptail --inputbox "请输入运行内存大小,默认为1024,当前为${CURRENT_VALUE_02}\n欲改为2G,则输2048;欲改为4G,则输4096\n当前宿主机可用内存${CURRENT_VALUE_03}\nPlease type the RAM size, the default is 1024" 11 50 --title "RAM" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		#printf "%s\n" "检测到您取消了操作"
 		${RETURN_TO_WHERE}
@@ -1219,8 +1219,8 @@ modify_tmoe_qemu_network_settings() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1)
 		NET_DEVICE='NET_CARD_01'
-		DEFAULT_VAULE='virtio-net-pci'
-		IMPORTANT_TIPS="网卡01默认为${DEFAULT_VAULE},"
+		DEFAULT_VALUE='virtio-net-pci'
+		IMPORTANT_TIPS="网卡01默认为${DEFAULT_VALUE},"
 		modify_qemu_tmoe_network_card
 		;;
 	2)
@@ -1229,8 +1229,8 @@ modify_tmoe_qemu_network_settings() {
 		;;
 	3)
 		NET_DEVICE='NET_CARD_02'
-		DEFAULT_VAULE="e1000"
-		IMPORTANT_TIPS="网卡02默认为${DEFAULT_VAULE},"
+		DEFAULT_VALUE="e1000"
+		IMPORTANT_TIPS="网卡02默认为${DEFAULT_VALUE},"
 		modify_qemu_tmoe_network_card
 		;;
 	4)
@@ -1239,8 +1239,8 @@ modify_tmoe_qemu_network_settings() {
 		;;
 	5)
 		NET_DEVICE='NET_CARD_03'
-		DEFAULT_VAULE="rtl8139"
-		IMPORTANT_TIPS="网卡03默认为${DEFAULT_VAULE},"
+		DEFAULT_VALUE="rtl8139"
+		IMPORTANT_TIPS="网卡03默认为${DEFAULT_VALUE},"
 		modify_qemu_tmoe_network_card
 		;;
 	esac
@@ -1254,7 +1254,7 @@ modify_qemu_tmoe_network_card() {
 	#16 50 7
 	CURRENT_VALUE=$(grep "^${NET_DEVICE}=" ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "网卡型号" --menu "Current netdev is ${CURRENT_VALUE},the default is ${DEFAULT_VAULE}.\n${IMPORTANT_TIPS}当前为${CURRENT_VALUE}" 0 0 0 \
+		whiptail --title "网卡型号" --menu "Current netdev is ${CURRENT_VALUE},the default is ${DEFAULT_VALUE}.\n${IMPORTANT_TIPS}当前为${CURRENT_VALUE}" 0 0 0 \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"1" "disable 禁用" \
 			"2" "virtio-net-pci" \
@@ -1396,7 +1396,7 @@ modify_tmoe_qemu_extra_options() {
 #################
 choose_qemu_rtc_base() {
 	CURRENT_VALUE=$(grep '^RTC_BASE=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	if (whiptail --title "RTC BASE" --yes-button 'rtc' --no-button 'localtime' --yesno "Current rtc-base is ${CURRENT_VAULE}.\n若guest为linux,则选择rtc,若为win,则选localtime" 10 50); then
+	if (whiptail --title "RTC BASE" --yes-button 'utc' --no-button 'localtime' --yesno "Current rtc-base is ${CURRENT_VALUE}.\n若guest为linux,则选择rtc,若为win,则选localtime" 10 50); then
 		RTC_BASE='utc'
 	else
 		RTC_BASE='localtime'
