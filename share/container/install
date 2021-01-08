@@ -69,7 +69,9 @@ tmoe_manager_env() {
 	esac
 	TMOE_STARTUP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container"
 	TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
-	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}
+	#${TMOE_CHROOT_PREFIX}
+	mkdir -pv ${DEBIAN_CHROOT}
+	chmod 755 -v ${DEBIAN_CHROOT}
 	#mkdir -p ${TMOE_CONTAINER_DIR}
 	[[ -n ${TMPDIR} ]] || TMPDIR=/tmp
 }
@@ -276,6 +278,15 @@ uncompress_other_format_file() {
 			tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 	fi
+
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
+		else
+			tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+	fi
 }
 ##############
 uncompress_tar_lz4_file() {
@@ -304,6 +315,15 @@ uncompress_tar_gz_file() {
 			tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 	fi
+
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
+		else
+			tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+	fi
 }
 #####################
 check_tar_xz_pv() {
@@ -324,6 +344,15 @@ uncompress_tar_xz_file() {
 	else
 		check_tar_xz_pv
 	fi
+
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
+		else
+			tar -Jpxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+	fi
 }
 #############
 uncompress_tar_zst_file() {
@@ -337,6 +366,15 @@ uncompress_tar_zst_file() {
 		else
 			tar -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
+	fi
+
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I zstd -px
+		else
+			tar -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
 	fi
 }
 #####################
@@ -365,7 +403,7 @@ IOSEVKA_FONT='2b41066b8faea10f7f4356a280b011c2fa3cd007000e6eca25f2f9aaf8b44713'
 MESLO_FONT='4ac3012945f484496c899dce3b6ff6ec1a7395a444e9bf5acdf004867334cd17'
 MESLO_BOLD_FONT='43f8115a8432c29662cec5028cf39a1576cc312db115fe12f2b839d4345d42a9'
 LOCALFONT="$(sha256sum ~/.termux/font.ttf 2>/dev/null | cut -c 1-64)" || LOCALFONT="0"
-mkdir -p ${DEBIAN_CHROOT}/tmp
+mkdir -pv ${DEBIAN_CHROOT}/tmp
 case ${LOCALFONT} in
 ${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT}) cp -f ~/.termux/font.ttf ${DEBIAN_CHROOT}/tmp 2>/dev/null ;;
 *)
@@ -454,17 +492,17 @@ creat_chroot_startup_script() {
 	printf "%s\n" "Creating chroot startup script"
 	printf "%s\n" "正在创建chroot容器启动脚本"
 	#mkdir -p /sdcard
-	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/media/sd
+	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/sd
 	${TMOE_CHROOT_PREFIX} ln -sf ../media/sd ${DEBIAN_CHROOT}/root/sd
 	[[ -e ${DEBIAN_CHROOT}/sd ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/sd ${DEBIAN_CHROOT}/sd
 	#fi
 	if [ -d "/data/data/com.termux/files/home" ]; then
-		#mkdir -p ${DEBIAN_CHROOT}/root/termux ||
-		${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/media/termux
+		#mkdir -pv ${DEBIAN_CHROOT}/root/termux ||
+		${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/termux
 		${TMOE_CHROOT_PREFIX} ln -sf ../media/termux ${DEBIAN_CHROOT}/root/termux
 		if [ -h "${HOME}/storage/external-1" ]; then
-			#mkdir -p ${DEBIAN_CHROOT}/root/tf ||
-			${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/media/tf
+			#mkdir -pv ${DEBIAN_CHROOT}/root/tf ||
+			${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/tf
 			${TMOE_CHROOT_PREFIX} ln -sf ../media/tf ${DEBIAN_CHROOT}/root/tf
 			[[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
 		fi
@@ -473,7 +511,7 @@ creat_chroot_startup_script() {
 	sudo mv ${TMPDIR}/environment ${DEBIAN_CHROOT}/etc/
 	##################
 	#此处若不创建，将有可能导致chromium无法启动。
-	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus
+	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus
 	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
 	${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_STARTUP_DIR}
@@ -686,9 +724,8 @@ printf "%s\n" "You can type rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ} to delete the
 printf "%s\n" "您可以输${RED}rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}${RESET}来删除容器镜像文件"
 ls -lh ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}
 ########################
-${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
-	${TMOE_CHROOT_PREFIX} mkdir -p ${DEBIAN_CHROOT}/usr/local/bin
+	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/usr/local/bin
 fi
 #cd ${DEBIAN_CHROOT}/usr/local/bin
 cd ${CONFIG_FOLDER}
