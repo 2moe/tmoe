@@ -391,6 +391,9 @@ uncompress_tar_file() {
 		;;
 	*) uncompress_other_format_file ;;
 	esac
+	case ${TMOE_CHROOT} in
+	true) ${TMOE_CHROOT_PREFIX} chown -v 0:0 ${DEBIAN_CHROOT} ;;
+	esac
 }
 #######################
 case ${DEBOOTSTRAP_DIR} in
