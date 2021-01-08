@@ -592,7 +592,7 @@ uncompress_alpine_and_docker_x64_img_file() {
 	sed -E -i "s@^(RTC_BASE=).*@\1${RTC_BASE}@g" ${QEMU_FILE}
 	sed -E -i "s@^(GPU_MODEL=).*@\1${GPU_MODEL}@g" ${QEMU_FILE}
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	egrep --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
+	egrep --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=|^RTC_BASE=|^GPU_MODEL=" ${QEMU_FILE}
 	ln -svf ${QEMU_FILE} /usr/local/bin/startqemu
 	printf "%s\n" "You can type ${GREEN}startqemu${RESET} to start ${BLUE}${QEMU_NAME}${RESET}."
 	#TMOE_FILE_ABSOLUTE_PATH
