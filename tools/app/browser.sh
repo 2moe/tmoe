@@ -548,6 +548,7 @@ tmoe_browser_menu() {
 falkon_browser_menu() {
     if (whiptail --title "FALKON安装与卸载" --yes-button "install" --no-button "remove" --yesno "Do you want to install falkon or remove it?" 8 50); then
         beta_features_quick_install
+        if_you_can_not_start_chromium
     else
         printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
         printf "%s\n" "${PURPLE}rm -vf ${BLUE}${APPS_LNK_DIR}/org.kde.falkon-no-sandbox.desktop  /usr/local/bin/falkon--no-sandbox${RESET}"
