@@ -34,8 +34,12 @@ check_tmoe_locale_file() {
 	else
 		TMOE_LANG=${LANG}
 	fi
-	if [ $(command -v debian-i) ]; then
-		ln -svf $(command -v debian-i) /usr/local/bin/tmoe
+	if [[ $(command -v debian-i) ]]; then
+		for i in tmoe startvnc; do
+			if [[ ! -n $(command -v ${i}) ]]; then
+				printf "%s\n" "debian-i --install-gui" >/usr/local/bin/${i}
+			fi
+		done
 	fi
 }
 #######

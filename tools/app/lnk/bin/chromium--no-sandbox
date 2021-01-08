@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+###############
+unset ADDITIONAL
+if [[ $(command -v chromium) ]]; then
+    CHROMIUM_BIN='chromium'
+elif [[ $(command -v chromium-browser) ]]; then
+    CHROMIUM_BIN='chromium-browser'
+fi
+
+if [[ -n "${ALSADEV}" ]]; then
+    ADDITIONAL="--alsa-output-device=${ALSADEV}"
+fi
+
+case "$(id -u)" in
+0) exec ${CHROMIUM_BIN} --no-sandbox ${ADDITIONAL} "$@" ;;
+*)
+    ${CHROMIUM_BIN} ${ADDITIONAL} "$@"
+    case "$?" in
+    0) ;;
+    *) exec ${CHROMIUM_BIN} --no-sandbox ${ADDITIONAL} "$@" ;;
+    esac
+    ;;
+esac

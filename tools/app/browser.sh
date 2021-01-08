@@ -80,17 +80,17 @@ ubuntu_install_chromium_browser() {
 }
 #########
 fix_chromium_root_ubuntu_no_sandbox() {
-    sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium-browser.desktop
-    grep 'chromium-browser' /root/.zshrc || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /root/.zshrc
+    sed -E -i 's/(chromium-browser) %U/\1 --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium-browser.desktop
+    #grep 'chromium-browser' /root/.zshrc || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /root/.zshrc
 }
 fix_chromium_root_alpine_no_sandbox() {
-    sed -i 's/chromium-browser %U/chromium-browser --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium.desktop
-    grep 'chromium-browser' /root/.zshrc || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /root/.zshrc
+    sed -E -i 's/(chromium-browser) %U/\1 --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium.desktop
+    #grep 'chromium-browser' /root/.zshrc || sed -i '$ a\alias chromium="chromium-browser --no-sandbox"' /root/.zshrc
 }
 #####################
 fix_chromium_root_no_sandbox() {
-    sed -i 's/chromium %U/chromium --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium.desktop
-    grep 'chromium' /root/.zshrc || sed -i '$ a\alias chromium="chromium --no-sandbox"' /root/.zshrc
+    sed -E -i 's/(chromium) %U/\1 --no-sandbox %U/g' ${APPS_LNK_DIR}/chromium.desktop
+    #grep 'chromium' /root/.zshrc || sed -i '$ a\alias chromium="chromium --no-sandbox"' /root/.zshrc
 }
 #################
 install_chromium_browser() {
@@ -133,7 +133,11 @@ install_chromium_browser() {
         ;;
     esac
     ####################
+    cp -f ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
+    cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
     do_you_want_to_close_the_sandbox_mode
+    cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
+    chmod a+x -v /usr/local/bin/chromium--no-sandbox
     read_chromium_sandbox_opt
 }
 ############
@@ -288,10 +292,23 @@ firefox_or_firefoxesr() {
 }
 firefox_or_chromium() {
     if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "chromium" --no-button "Firefox" --yesno "建议在安装完图形界面后，再来选择哦！(　o=^•ェ•)o　┏━┓\nI am Firefox, choose me.\n我是火狐娘，选我啦！♪(^∇^*) \nI'm chrome's elder sister chromium, be sure to choose me.\n妾身乃chrome娘的姐姐chromium娘，妾身和那些妖艳的货色不一样，选择妾身就没错呢！(✿◕‿◕✿)✨\n请做出您的选择！ " 15 50); then
-        install_chromium_browser
+        chromium_browser_menu
         #printf "%s\n" "如需拖拽安装插件，则请在启动命令后加上 --enable-easy-off-store-extension-install"
     else
         firefox_or_firefoxesr
+    fi
+}
+##############
+chromium_browser_menu() {
+    if (whiptail --title "CHROMIUM安装与卸载" --yes-button "install" --no-button "remove" --yesno "Do you want to install chromium or remove it?" 8 50); then
+        install_chromium_browser
+    else
+        printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}chromium chromium-l10n chromium-browser chromium-browser-10n${RESET}"
+        printf "%s\n" "${PURPLE}rm -vf ${BLUE}${APPS_LNK_DIR}/chromium-browser-no-sandbox.desktop  /usr/local/bin/chromium--no-sandbox${RESET}"
+        for i in chromium chromium-browser chromium-l10n chromium-browser-l10n; do
+            printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${i}${RESET}"
+            ${TMOE_REMOVAL_COMMAND} ${i}
+        done
     fi
 }
 ##############
