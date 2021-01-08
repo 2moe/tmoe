@@ -50,8 +50,9 @@ ubuntu_ppa_chromium() {
         cd ..
         rm -rvf ${TEMP_FOLDER}
         hold_ubuntu_chromium
-        do_you_want_to_close_the_sandbox_mode
-        read_chromium_sandbox_opt
+        #do_you_want_to_close_the_sandbox_mode
+        #read_chromium_sandbox_opt
+        if_you_can_not_start_chromium
         ;;
     *)
         printf "%s\n" "对于arm64和amd64架构的系统，本工具将下载deb包，而非从snap商店下载。您当前使用的是${ARCH_TYPE}架构！由于新版Ubuntu调用了snap商店的软件源来安装chromium,故请自行执行apt install chromium-browser"
@@ -133,14 +134,20 @@ install_chromium_browser() {
         ;;
     esac
     ####################
-    cp -f ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
-    cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
-    do_you_want_to_close_the_sandbox_mode
-    cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
-    chmod a+x -v /usr/local/bin/chromium--no-sandbox
-    read_chromium_sandbox_opt
+    if_you_can_not_start_chromium
+    #read_chromium_sandbox_opt
 }
 ############
+if_you_can_not_start_chromium() {
+    if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using chromium--no-sandbox" 8 50); then
+        printf ""
+    fi
+    cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
+    #do_you_want_to_close_the_sandbox_mode
+    cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
+    chmod a+x -v /usr/local/bin/chromium--no-sandbox
+}
+##########
 read_chromium_sandbox_opt() {
     read opt
     case $opt in

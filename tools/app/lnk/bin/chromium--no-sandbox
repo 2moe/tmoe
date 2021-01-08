@@ -2,9 +2,9 @@
 ###############
 unset ADDITIONAL
 if [[ $(command -v chromium) ]]; then
-    CHROMIUM_BIN='chromium'
+    TMOE_BIN='chromium'
 elif [[ $(command -v chromium-browser) ]]; then
-    CHROMIUM_BIN='chromium-browser'
+    TMOE_BIN='chromium-browser'
 fi
 
 if [[ -n "${ALSADEV}" ]]; then
@@ -12,12 +12,12 @@ if [[ -n "${ALSADEV}" ]]; then
 fi
 
 case "$(id -u)" in
-0) exec ${CHROMIUM_BIN} --no-sandbox ${ADDITIONAL} "$@" ;;
+0) exec ${TMOE_BIN} --no-sandbox ${ADDITIONAL} "$@" ;;
 *)
-    ${CHROMIUM_BIN} ${ADDITIONAL} "$@"
+    ${TMOE_BIN} ${ADDITIONAL} "$@"
     case "$?" in
     0) ;;
-    *) exec ${CHROMIUM_BIN} --no-sandbox ${ADDITIONAL} "$@" ;;
+    *) exec ${TMOE_BIN} --no-sandbox ${ADDITIONAL} "$@" ;;
     esac
     ;;
 esac
