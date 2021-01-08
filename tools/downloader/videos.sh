@@ -60,7 +60,7 @@ golang_annie() {
 
     annie -i ${AnnieVideoURL}
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        VideoCookies=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        VideoCookies=$(head -n 1 ${HOME}/.config/tmoe-linux/videos.cookiepath)
         annie -c ${VideoCookies} -d ${AnnieVideoURL}
     else
         annie -d ${AnnieVideoURL}
@@ -96,7 +96,7 @@ python_you_get() {
     printf "%s\n" "Parsing ..."
     you-get -i ${AnnieVideoURL}
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        VideoCookies=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        VideoCookies=$(head -n 1 ${HOME}/.config/tmoe-linux/videos.cookiepath)
         you-get -c ${VideoCookies} -d ${AnnieVideoURL}
     else
         you-get -d ${AnnieVideoURL}
@@ -132,7 +132,7 @@ python_youtube_dl() {
     printf "%s\n" "Parsing ..."
     youtube-dl -e --get-description --get-duration ${AnnieVideoURL}
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        VideoCookies=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        VideoCookies=$(head -n 1 ${HOME}/.config/tmoe-linux/videos.cookiepath)
         youtube-dl --merge-output-format mp4 --all-subs --cookies ${VideoCookies} -v ${AnnieVideoURL}
     else
         youtube-dl --merge-output-format mp4 --all-subs -v ${AnnieVideoURL}
@@ -163,13 +163,13 @@ cookies_readme() {
 		请妥善保管好该文件及相关数据！
 	EndOFcookies
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
-        printf "%s\n" "您当前的cookie路径为$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)"
+        printf "%s\n" "您当前的cookie路径为$(head -n 1 ${HOME}/.config/tmoe-linux/videos.cookiepath)"
     fi
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
     if [ -e "${HOME}/.config/tmoe-linux/videos.cookiepath" ]; then
         COOKIESTATUS="检测到您已启用加载cookie功能"
-        CURRENT_COOKIE_PATH=$(sed -n p ${HOME}/.config/tmoe-linux/videos.cookiepath | head -n 1)
+        CURRENT_COOKIE_PATH=$(head -n 1 ${HOME}/.config/tmoe-linux/videos.cookiepath)
         CurrentCOOKIESpath="您当前的cookie路径为${CURRENT_COOKIE_PATH}"
     else
         COOKIESTATUS="检测到cookie处于禁用状态"

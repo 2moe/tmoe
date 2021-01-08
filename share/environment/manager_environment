@@ -26,7 +26,7 @@ check_arch() {
 check_tmoe_menu_locale_file() {
 	#此处重复出现2次
 	[[ -s ${TMOE_LOCALE_FILE} ]] || choose_tmoe_locale_env
-	TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	TMOE_MENU_LANG=${TMOE_LANG}
 }
 ##########
@@ -58,7 +58,7 @@ tmoe_global_env() {
 	LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
 	DEBIAN_FOLDER=debian_${ARCH_TYPE}
 	if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
-		LINUX_CONTAINER_DISTRO=$(sed -n p ${LINUX_CONTAINER_DISTRO_FILE} | head -n 1)
+		LINUX_CONTAINER_DISTRO=$(head -n 1 ${LINUX_CONTAINER_DISTRO_FILE})
 		[[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 	fi
 	ROOTFS_NAME=$(printf "%s\n" "${DEBIAN_FOLDER}" | cut -d '_' -f 1)
@@ -175,7 +175,7 @@ check_proot_or_chroot() {
 check_proot_proc_permissions() {
 	tmoe_env_02
 	CONTAINER_STARTUP_FILE=${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	TMOE_LINUX_ETC_DIR=$(sed -n p ${CONTAINER_STARTUP_FILE} | grep 'set.*mount.*proot_proc/' | head -n 1 | awk '{print $3}' | cut -d '=' -f 2 | cut -d '"' -f 1 | cut -d ':' -f 1 | sed 's@/proot_proc.*@@g')
+	TMOE_LINUX_ETC_DIR=$(grep 'set.*mount.*proot_proc/' ${CONTAINER_STARTUP_FILE} | head -n 1 | awk '{print $3}' | cut -d '=' -f 2 | cut -d '"' -f 1 | cut -d ':' -f 1 | sed 's@/proot_proc.*@@g')
 	TMOE_PROC_PATH="${TMOE_LINUX_ETC_DIR}/proot_proc"
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	#######
@@ -293,7 +293,7 @@ go_to_container_menu() {
 ###########
 cat_release_file() {
 	if [ -e ${DEBIAN_CHROOT}/etc/os-release ]; then
-		sed -n p ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | grep PRETTY_NAME | awk -F '"' '{print $2}'
+		grep PRETTY_NAME ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null | awk -F '"' '{print $2}'
 	else
 		sed -n p ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 	fi

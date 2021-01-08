@@ -192,7 +192,7 @@ kanasimi_work_crawler_electron_gui() {
 install_tmoe_work_crawler_electron() {
     printf "%s\n" "正在检测版本信息..."
     if [ -e "/opt/work_crawler" ]; then
-        LOCAL_VSCODE_VERSION=$(sed -n p /opt/work_crawler/work_crawler-version.txt | head -n 1)
+        LOCAL_VSCODE_VERSION=$(head -n 1 /opt/work_crawler/work_crawler-version.txt)
     else
         LOCAL_VSCODE_VERSION='您尚未安装work_crawler gui模块'
     fi

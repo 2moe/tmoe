@@ -28,7 +28,7 @@ remove_old_version_gnu_linux_container() {
 	#	unset i
 	#	;;
 	#esac
-	sed -n p /proc/mounts | grep ${DEBIAN_FOLDER}
+	grep ${DEBIAN_FOLDER} /proc/mounts
 	ps -e | grep proot
 	ps -e | grep startvnc
 	printf "%s\n" "移除系统前，请先确保您已停止GNU/Linux容器。"

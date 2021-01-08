@@ -263,10 +263,10 @@ sed_a_debian_testing_source() {
 sed_a_source_list() {
 	SOURCE_LIST='/etc/apt/sources.list'
 	MIRROR_LIST='/etc/pacman.d/mirrorlist'
-	SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+	SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
 	if egrep -q 'debian|ubuntu' /etc/os-release; then
-		SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-		BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
+		SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+		BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
 		if grep -q 'Debian' /etc/issue 2>/dev/null; then
 			if ! grep -q '#Official' ${SOURCE_LIST}; then
 				if [ $(command -v lsb_release) ]; then

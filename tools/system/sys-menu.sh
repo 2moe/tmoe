@@ -191,9 +191,9 @@ tmoe_linux_sudo_user_group_management() {
 
 	SUDO_YES='back返回'
 	SUDO_RETURN='true'
-	if [ $(sed -n p /etc/sudoers | awk '{print $1}' | grep ${TMOE_USER_NAME}) ]; then
+	if [ $(awk '{print $1}' /etc/sudoers | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/sudoers文件中"
-	elif [ $(sed -n p /etc/group | grep sudo | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
+	elif [ $(grep sudo /etc/group | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/group文件中"
 	else
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}可能不在sudo用户组里"
@@ -255,7 +255,7 @@ remove_him_from_sudoers() {
 }
 ############
 add_him_to_sudoers() {
-	TMOE_ROOT_SUDO_LINE=$(sed -n p /etc/sudoers | grep 'root.*ALL' -n | tail -n 1 | cut -d ':' -f 1)
+	TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
 	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
 	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
 		sed -i "$ a ${TMOE_USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers

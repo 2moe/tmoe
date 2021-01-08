@@ -78,18 +78,18 @@ proot_management_menu() {
 ##############################
 #EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
 check_tmoe_container_pid() {
-	LIST_OPEN_FILES_COUNTS=$(sed -n p ${LSOF_TEMP_FILE} | awk '{print $1}' | grep -c '^lsof')
+	LIST_OPEN_FILES_COUNTS=$(awk '{print $1}' ${LSOF_TEMP_FILE} | grep -c '^lsof')
 	case ${LIST_OPEN_FILES_COUNTS} in
 	0)
-		LIST_OPEN_FILES=$(sed -n p ${LSOF_TEMP_FILE} | grep "${DEBIAN_CHROOT%/}" | awk '{print $1}' | uniq)
+		LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $1}' | uniq)
 		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@pkill -9 @g")
 		;;
 	*)
-		LIST_OPEN_FILES=$(sed -n p ${LSOF_TEMP_FILE} | grep "${DEBIAN_CHROOT%/}" | awk '{print $2}' | uniq)
+		LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2}' | uniq)
 		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
 		;;
 	esac
-	PROCESS_ID_AND_NAME=$(sed -n p ${LSOF_TEMP_FILE} | grep "${DEBIAN_CHROOT%/}" | awk '{print $2,$1}' | uniq)
+	PROCESS_ID_AND_NAME=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2,$1}' | uniq)
 	printf "${PURPLE}"
 	cat <<-EOF
 		${PROCESS_ID_AND_NAME}

@@ -1558,8 +1558,8 @@ update_aria2_bt_tracker() {
 }
 #######################
 check_tmoe_aria2_config_value() {
-    TMOE_ARIA2_CONFIG_VALUE=$(sed -n p ${TMOE_ARIA2_FILE} | grep ${TMOE_ARIA2_GREP_NAME}= | head -n 1 | cut -d '=' -f 2)
-    TMOE_ARIA2_CONFIG_LINE=$(sed -n p ${TMOE_ARIA2_FILE} | grep -n ${TMOE_ARIA2_GREP_NAME}= | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+    TMOE_ARIA2_CONFIG_VALUE=$(grep ${TMOE_ARIA2_GREP_NAME}= ${TMOE_ARIA2_FILE} | head -n 1 | cut -d '=' -f 2)
+    TMOE_ARIA2_CONFIG_LINE=$(grep -n ${TMOE_ARIA2_GREP_NAME}= ${TMOE_ARIA2_FILE} | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
     if grep -q "^${TMOE_ARIA2_GREP_NAME}=" ${TMOE_ARIA2_FILE}; then
         TMOE_ARIA2_CONFIG_STATUS="检测到${TMOE_ARIA2_GREP_NAME}的值为${TMOE_ARIA2_CONFIG_VALUE}"
         TMOE_ARIA2_CONFIG_ENABLED='true'
@@ -1818,7 +1818,7 @@ EOF
     printf '%s\n' '若您为初次配置，则建议您前往“RPC服务器与TLS加密”-->“rpc-secret RPC 令牌密钥” 选项处，设定一个访问密码。'
     printf '%s\n' '在公网环境下，无密码是一件非常危险的事。'
     printf "%s\n" "-------------------------------"
-    ARIA2_RPC_PORT=$(sed -n p ${TMOE_ARIA2_FILE} | grep 'rpc-listen-port=' | cut -d '=' -f 2)
+    ARIA2_RPC_PORT=$(grep 'rpc-listen-port=' ${TMOE_ARIA2_FILE} | cut -d '=' -f 2)
     printf "%s\n" "本机默认RPC服务地址为ws://localhost:${ARIA2_RPC_PORT}/jsonrpc"
     echo The LAN RPC address 局域网RPC服务地址 ws://$(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2 | awk '{print $1}'):${ARIA2_RPC_PORT}/jsonrpc
     echo The WAN RPC address 外网RPC服务地址 ws://$(curl -sL ip.cip.cc | head -n 1):${ARIA2_RPC_PORT}/jsonrpc

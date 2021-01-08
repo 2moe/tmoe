@@ -769,7 +769,7 @@ if [ -f "${TMOE_LOCALE_FILE}" ]; then
 	${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_LOCALE_NEW_PATH}
 	${TMOE_CHROOT_PREFIX} cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
 	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	PROOT_LANG=$(sed -n p $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
+	PROOT_LANG=$(grep LANG= $(command -v debian) | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
 	#sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi
 case ${TMOE_LANG} in
@@ -1194,7 +1194,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	###############
 	if grep -q 'Kali' "/etc/issue"; then
 	    kali_sources_list
-	elif [ "$(sed -n p /etc/issue | cut -c 1-6)" = "Ubuntu" ]; then
+	elif [ "$(cut -c 1-6 /etc/issue)" = "Ubuntu" ]; then
 	    ubuntu_sources_list
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
@@ -1898,7 +1898,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    slackpkg update
 	}
 	###################
-	if [ "$(sed -n p /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
+	if [ "$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '=' -f 2)" = "slackware" ]; then
 	    slackware_mirror_list
 		slackpkg install newt
 	fi

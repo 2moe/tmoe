@@ -60,7 +60,7 @@ remove_gnu_linux_container() {
 	done
 	unset i
 	check_rootfs_dir
-	sed -n p /proc/mounts | grep ${DEBIAN_CHROOT}
+	grep ${DEBIAN_CHROOT} /proc/mounts
 	pkill -9 proot 2>/dev/null
 	pkill -9 chroot 2>/dev/null
 	ps -e | grep proot

@@ -149,7 +149,7 @@ install_opt_app_01() {
 display_debian_opt_app_version() {
     printf "%s\n" "正在检测版本信息..."
     if [ -e "${OPT_APP_VERSION_TXT}" ]; then
-        LOCAL_OPT_APP_VERSION=$(sed -n p ${OPT_APP_VERSION_TXT} | head -n 1)
+        LOCAL_OPT_APP_VERSION=$(head -n 1 ${OPT_APP_VERSION_TXT})
     else
         LOCAL_OPT_APP_VERSION="您尚未安装${DEPENDENCY_01}"
     fi

@@ -16,7 +16,7 @@ locale_gen_or_choose_container_locale() {
 tmoe_locale_menu() {
 	locale_gen_or_choose_container_locale
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(sed -n p ${TMOE_LOCALE_FILE} | head -n 1)
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
 	elif [ $(uname -o) != 'Android' ]; then
 		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2 | cut -d '"' -f 2)

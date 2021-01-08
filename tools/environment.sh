@@ -235,7 +235,7 @@ grep_arch_linux_pkg_04() {
 check_opt_app_version() {
     LOCAL_APP_VERSION_TXT="${TMOE_LINUX_DIR}/${GREP_NAME}-version"
     if [ -e "${LOCAL_APP_VERSION_TXT}" ]; then
-        LOCAL_OPT_APP_VERSION=$(sed -n p ${LOCAL_APP_VERSION_TXT} | head -n 1)
+        LOCAL_OPT_APP_VERSION=$(head -n 1 ${LOCAL_APP_VERSION_TXT})
     else
         LOCAL_OPT_APP_VERSION="NOT-INSTALLED未安装"
     fi
@@ -981,7 +981,7 @@ check_ubuntu_ppa_list() {
     cd /etc/apt/sources.list.d
     GREP_NAME="${DEV_TEAM_NAME}-ubuntu-${PPA_SOFTWARE_NAME}"
     PPA_LIST_FILE=$(ls ${GREP_NAME}-* | head -n 1)
-    CURRENT_UBUNTU_CODE=$(sed -n p ${PPA_LIST_FILE} | grep -v '^#' | awk '{print $3}' | head -n 1)
+    CURRENT_UBUNTU_CODE=$(grep -v '^#' ${PPA_LIST_FILE} | awk '{print $3}' | head -n 1)
 }
 #################
 modify_ubuntu_sources_list_d_code() {

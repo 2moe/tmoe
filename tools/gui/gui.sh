@@ -115,7 +115,7 @@ modify_tightvnc_display_port() {
 modify_xfce_window_scaling_factor() {
     XFCE_CONFIG_FILE="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
     if grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE}; then
-        CURRENT_VALUE=$(sed -n p ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value=' | awk '{print $4}' | cut -d '"' -f 2)
+        CURRENT_VALUE=$(grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE} | grep 'value=' | awk '{print $4}' | cut -d '"' -f 2)
     else
         CURRENT_VALUE='1'
     fi
@@ -126,7 +126,7 @@ modify_xfce_window_scaling_factor() {
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
         printf '%s\n' '检测到您取消了操作'
-        sed -n p ${XFCE_CONFIG_FILE} | grep 'WindowScalingFactor' | grep 'value='
+        grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE} | grep 'value='
     else
         dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
         if ((${TARGET} > 1)); then
@@ -2339,7 +2339,7 @@ deepin_desktop_debian() {
     if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
         get_ubuntu_ppa_gpg_key
     else
-        SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+        SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
     fi
     ubuntu_dde_distro_code
     check_ubuntu_ppa_list
@@ -3663,7 +3663,6 @@ x11vnc_port() {
     else
         sed -i -E "s@^(TCP_PORT_FOR_RFB_PROTOCOL)=.*@\1=${TARGET}@" "$(command -v startx11vnc)"
         printf '%s\n' 'Your current port has been modified.'
-        #printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
         check_x11vnc_port
         printf "%s\n" "Current port is ${BLUE}${CURRENT_VALUE}${RESET}"
         printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to restart it."
@@ -3671,20 +3670,20 @@ x11vnc_port() {
 }
 #################
 x11vnc_resolution() {
-    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(grep 'TMOE_X11_RESOLUTION=' $(command -v startx11vnc) | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
         #printf "%s\n" "您当前的分辨率为$(sed -n p $(command -v startx11vnc) | grep '/usr/bin/Xvfb' | head -n 1 | cut -d ':' -f 2 | cut -d '+' -f 1 | cut -d '-' -f 2 | cut -d 'x' -f -2 | awk -F ' ' '$0=$NF')"
-        printf "%s\n" "您当前的分辨率为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        printf "%s\n" "您当前的分辨率为$(grep 'TMOE_X11_RESOLUTION=' $(command -v startx11vnc) | head -n 1 | cut -d '=' -f 2)"
     else
         #/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset &
         #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
         sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${TARGET}@" "$(command -v startx11vnc)"
         printf '%s\n' 'Your current resolution has been modified.'
-        printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startx11vnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        printf "%s\n" "您当前的分辨率已经修改为$(grep 'TMOE_X11_RESOLUTION=' $(command -v startx11vnc) | head -n 1 | cut -d '=' -f 2)"
         printf "%s\n" "You can type startx11vnc to restart it."
     fi
 }
@@ -3797,19 +3796,19 @@ modify_startxsdl_manually() {
 }
 ######################
 check_tmoe_xsdl_display_ip() {
-    CURRENT_DISPLAY_IP=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 1)
+    CURRENT_DISPLAY_IP=$(grep 'export DISPLAY' ${TMOE_XSDL_SCRIPT_PATH} | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 1)
 }
 ######
 check_tmoe_vcxsrv_display_port() {
-    CURRENT_VSCSRV_DISPLAY_PORT=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'VCXSRV_DISPLAY_PORT=' | head -n 1 | cut -d '=' -f 2)
+    CURRENT_VSCSRV_DISPLAY_PORT=$(grep 'VCXSRV_DISPLAY_PORT=' ${TMOE_XSDL_SCRIPT_PATH} | head -n 1 | cut -d '=' -f 2)
 }
 ######
 check_tmoe_xsdl_display_port() {
-    CURRENT_DISPLAY_PORT=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export DISPLAY' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
+    CURRENT_DISPLAY_PORT=$(grep 'export DISPLAY' ${TMOE_XSDL_SCRIPT_PATH} | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
 }
 #######
 check_tmoe_xsdl_pulse_audio_port() {
-    CURRENT_PULSE_AUDIO_PORT=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
+    CURRENT_PULSE_AUDIO_PORT=$(grep 'export PULSE_SERVER' ${TMOE_XSDL_SCRIPT_PATH} | head -n 1 | cut -d 'c' -f 2 | cut -c 1-2 --complement | cut -d ':' -f 2)
 }
 #################
 modify_pulse_server_port() {
@@ -3822,8 +3821,8 @@ modify_pulse_server_port() {
         printf "%s\n" "Please enter a valid value"
     else
         #sed -i "4 c export PULSE_SERVER=tcp:127.0.0.1:${TARGET}" "$(command -v startxsdl)"
-        PULSE_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export PULSE_SERVER' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
-        CURRENT_PULSE_IP=$(sed -n p ${TMOE_XSDL_SCRIPT_PATH} | grep 'export PULSE_SERVER' | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
+        PULSE_LINE=$(grep 'export PULSE_SERVER' -n "${TMOE_XSDL_SCRIPT_PATH}" | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+        CURRENT_PULSE_IP=$(grep 'export PULSE_SERVER' ${TMOE_XSDL_SCRIPT_PATH} | head -n 1 | cut -d '=' -f 2 | cut -d ':' -f 2)
         sed -i "${PULSE_LINE} c\export PULSE_SERVER=tcp:${CURRENT_PULSE_IP}:${TARGET}" ${TMOE_XSDL_SCRIPT_PATH}
         printf '%s\n' 'Your current PULSE SERVER port has been modified.'
         check_tmoe_xsdl_pulse_audio_port
@@ -3840,7 +3839,7 @@ modify_vcxsrv_display_port() {
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
     else
-        DISPLAY_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'VCXSRV_DISPLAY_PORT=' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+        DISPLAY_LINE=$(grep 'VCXSRV_DISPLAY_PORT=' -n "${TMOE_XSDL_SCRIPT_PATH}" | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
         sed -i "${DISPLAY_LINE} c\VCXSRV_DISPLAY_PORT=${TARGET}" "${TMOE_XSDL_SCRIPT_PATH}"
         printf '%s\n' 'Your current DISPLAY port has been modified.'
         check_tmoe_vcxsrv_display_port
@@ -3860,7 +3859,7 @@ modify_display_port() {
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
     else
-        DISPLAY_LINE=$(sed -n p "${TMOE_XSDL_SCRIPT_PATH}" | grep 'export DISPLAY' -n | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
+        DISPLAY_LINE=$(grep 'export DISPLAY' -n "${TMOE_XSDL_SCRIPT_PATH}" | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
         sed -i "${DISPLAY_LINE} c\export DISPLAY=${CURRENT_DISPLAY_IP}:${TARGET}" "${TMOE_XSDL_SCRIPT_PATH}"
         printf '%s\n' 'Your current DISPLAY port has been modified.'
         check_tmoe_xsdl_display_port
@@ -4732,8 +4731,8 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     TMOE_HIGH_DPI='default'
     if [ -e "${TMOE_LINUX_DIR}/wm_size.txt" ]; then
-        RESOLUTION=$(sed -n p ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2,$1}' | sed 's@ @x@')
-        HORIZONTAL_PIXELS=$(sed -n p ${TMOE_LINUX_DIR}/wm_size.txt | awk -F 'x' '{print $2}' | head -n 1)
+        RESOLUTION=$(awk -F 'x' '{print $2,$1}' ${TMOE_LINUX_DIR}/wm_size.txt | sed 's@ @x@')
+        HORIZONTAL_PIXELS=$(awk -F 'x' '{print $2}' ${TMOE_LINUX_DIR}/wm_size.txt | head -n 1)
         if ((${HORIZONTAL_PIXELS} >= 2340)); then
             TMOE_HIGH_DPI='true'
         else

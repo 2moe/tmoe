@@ -265,12 +265,12 @@ EndOFaria
 }
 ############
 filebrowser_restart() {
-    FILEBROWSER_PORT=$(sed -n p /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
+    FILEBROWSER_PORT=$(grep -a port /etc/filebrowser.db | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
     service filebrowser restart 2>/dev/null || systemctl restart filebrowser
     if [ "$?" != "0" ]; then
         pkill filebrowser
         nohup /usr/local/bin/filebrowser -d /etc/filebrowser.db 2>&1 >/var/log/filebrowser.log &
-        sed -n p /var/log/filebrowser.log | tail -n 20
+        tail -n 20 /var/log/filebrowser.log
     fi
     service filebrowser status 2>/dev/null || systemctl status filebrowser
     if [ "$?" = "0" ]; then
@@ -315,7 +315,7 @@ filebrowser_add_admin() {
 }
 #################
 filebrowser_port() {
-    FILEBROWSER_PORT=$(sed -n p /etc/filebrowser.db | grep -a port | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
+    FILEBROWSER_PORT=$(grep -a port /etc/filebrowser.db | sed 's@,@\n@g' | grep -a port | head -n 1 | cut -d ':' -f 2 | cut -d '"' -f 2)
     TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的端口为${FILEBROWSER_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then

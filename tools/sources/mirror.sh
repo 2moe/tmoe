@@ -495,7 +495,7 @@ switch_sources_http_and_https() {
 }
 ###################
 check_fedora_version() {
-    FEDORA_VERSION="$(sed -n p /etc/os-release | grep 'VERSION_ID' | cut -d '=' -f 2)"
+    FEDORA_VERSION="$(grep 'VERSION_ID' /etc/os-release | cut -d '=' -f 2)"
     if ((${FEDORA_VERSION} >= 30)); then
         if ((${FEDORA_VERSION} >= 32)); then
             fedora_32_repos
@@ -582,7 +582,7 @@ check_arch_distro_and_modify_mirror_list() {
     sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
     if [ "$(cut -c 1-4 /etc/issue)" = "Arch" ]; then
         modify_archlinux_mirror_list
-    elif [ "$(sed -n p /etc/issue | cut -c 1-7)" = "Manjaro" ]; then
+    elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
         modify_manjaro_mirror_list
     fi
     #${TMOE_UPDATE_COMMAND}
@@ -769,8 +769,8 @@ modify_ubuntu_mirror_sources_list() {
         SOURCELISTCODE='eoan'
         printf '%s\n' '19.10'
     else
-        SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
-        printf "%s\n" "$(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)"
+        SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+        printf "%s\n" "$(grep PRETTY_NAME /etc/os-release | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)"
     fi
     printf "%s\n" "检测到您使用的是Ubuntu ${SOURCELISTCODE}系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
@@ -796,7 +796,7 @@ modify_debian_mirror_sources_list() {
             if (whiptail --title "DEBIAN VERSION" --yes-button "testing" --no-button "sid" --yesno "Are you using debian testing or sid?\n汝今方用何本？♪(^∇^*) " 0 0); then
                 NEW_DEBIAN_SOURCES_LIST='true'
                 SOURCELISTCODE='testing'
-                BACKPORTCODE=$(sed -n p /etc/os-release | grep PRETTY_NAME | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
+                BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
             else
                 SOURCELISTCODE='sid'
             fi
@@ -807,7 +807,7 @@ modify_debian_mirror_sources_list() {
     elif ! egrep -q 'buster|stretch|jessie' "/etc/os-release"; then
         NEW_DEBIAN_SOURCES_LIST='true'
         if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
-            SOURCELISTCODE=$(sed -n p /etc/os-release | grep VERSION_CODENAME | cut -d '=' -f 2 | head -n 1)
+            SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
         else
             printf "%s\n" "不支持您的系统！"
             press_enter_to_return
@@ -830,7 +830,7 @@ modify_debian_mirror_sources_list() {
         BACKPORTCODE='jessie'
         #printf "%s\n" "Debian 8 jessie"
     fi
-    printf "%s\n" "$(sed -n p /etc/os-release | grep PRETTY_NAME | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)"
+    printf "%s\n" "$(grep PRETTY_NAME /etc/os-release | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)"
     printf "%s\n" "检测到您使用的是Debian ${SOURCELISTCODE}系统"
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
     if [ "${SOURCELISTCODE}" = "sid" ]; then

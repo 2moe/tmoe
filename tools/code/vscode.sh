@@ -225,7 +225,7 @@ vscode_server_restart() {
     printf "%s\n" "您之后可以输code-server来启动Code Server."
     printf '%s\n' 'You can type "code-server" to start Code Server.'
     /usr/local/bin/code-server-data/bin/code-server &
-    SERVER_PORT=$(sed -n p ${HOME}/.config/code-server/config.yaml | grep bind-addr | cut -d ':' -f 3)
+    SERVER_PORT=$(grep bind-addr ${HOME}/.config/code-server/config.yaml | cut -d ':' -f 3)
     if [ -z "${SERVER_PORT}" ]; then
         SERVER_PORT='18080'
     fi
