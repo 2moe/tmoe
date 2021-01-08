@@ -1230,7 +1230,7 @@ EOF
     #########
     #GPU,总线=pice.0,而非pci.0
     case ${GPU_MODEL} in
-    virtio* | vhost-user*)
+    virtio* | vhost-user* | "")
         case ${VIRTIO_3D_ACCEL} in
         true) VIRGL='on' ;;
         *) VIRGL='off' ;;
