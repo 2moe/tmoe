@@ -204,13 +204,15 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    unset i
 		 ###########
 	     set -- "${DEBIAN_CHROOT}" "\$@"
-	     set -- "chroot" "\$@"
 	     unset LD_PRELOAD
-		 TMOE_CHROOT_EXEC="exec \$@"
-		 su -c "\${TMOE_CHROOT_EXEC}"
+		 su -c "chroot \${@}"
 	    }
 	    main "\$@"
 ENDOFTMOECHROOT
+#set -- "chroot" "\$@"
+#TMOE_CHROOT_EXEC="exec \$@"
+#su -c "\${TMOE_CHROOT_EXEC}"
+#############
 case $(uname -o) in
 Android) termux-fix-shebang ${TMP_FILE} ;;
 esac
