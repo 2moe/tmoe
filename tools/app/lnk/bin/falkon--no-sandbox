@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+###############
+if [[ $(command -v falkon) ]]; then
+    TMOE_BIN='falkon'
+elif [[ $(command -v falkon-browser) ]]; then
+    TMOE_BIN='falkon-browser'
+elif [[ $(command -v org.kde.falkon) ]]; then
+    TMOE_BIN='org.kde.falkon'
+fi
+
+case "$(id -u)" in
+0) exec ${TMOE_BIN} --no-sandbox "$@" ;;
+*)
+    ${TMOE_BIN} ${ADDITIONAL} "$@"
+    case "$?" in
+    0) ;;
+    *) exec ${TMOE_BIN} --no-sandbox "$@" ;;
+    esac
+    ;;
+esac

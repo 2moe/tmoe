@@ -312,10 +312,12 @@ chromium_browser_menu() {
     else
         printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}chromium chromium-l10n chromium-browser chromium-browser-10n${RESET}"
         printf "%s\n" "${PURPLE}rm -vf ${BLUE}${APPS_LNK_DIR}/chromium-browser-no-sandbox.desktop  /usr/local/bin/chromium--no-sandbox${RESET}"
+        do_you_want_to_continue
         for i in chromium chromium-browser chromium-l10n chromium-browser-l10n; do
             printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${i}${RESET}"
             ${TMOE_REMOVAL_COMMAND} ${i}
         done
+        rm -vf ${APPS_LNK_DIR}/chromium-browser-no-sandbox.desktop /usr/local/bin/chromium--no-sandbox
     fi
 }
 ##############
@@ -327,7 +329,6 @@ install_vivaldi_browser() {
     i386 | arm64 | armhf) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@amd64.deb@${ARCH_TYPE}.deb@") ;;
     *) arch_does_not_support ;;
     esac
-
     case ${LINUX_DISTRO} in
     debian | arch) ;;
     redhat)
@@ -486,9 +487,9 @@ tmoe_browser_menu() {
         "2" "Microsoft Edge(x64,享受出色的浏览体验)" \
         "3" "Falkon(Qupzilla的前身,来自KDE,使用QtWebEngine)" \
         "4" "Vivaldi(一切皆可定制)" \
-        "5" "360安全浏览器(arm64,x64)" \
-        "6" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko)" \
-        "7" "Midori(轻量级,开源浏览器)" \
+        "5" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko)" \
+        "6" "Midori(轻量级,开源浏览器)" \
+        "7" "360安全浏览器(arm64,x64)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -501,7 +502,7 @@ tmoe_browser_menu() {
     2) microsoft_edge_menu ;;
     3)
         DEPENDENCY_01="falkon"
-        restore_debian_gnu_libxcb_so
+        #restore_debian_gnu_libxcb_so
         ;;
     4)
         DEPENDENCY_01='vivaldi-stable'
@@ -518,7 +519,9 @@ tmoe_browser_menu() {
         tmoe_app_menu_01
         DEPENDENCY_01=""
         ;;
-    5)
+    5) DEPENDENCY_01="epiphany-browser" ;;
+    6) DEPENDENCY_01="midori" ;;
+    7)
         case ${LINUX_DISTRO} in
         arch) DEPENDENCY_01='browser360' ;;
         *) DEPENDENCY_01='browser360-cn-stable' ;;
@@ -528,24 +531,13 @@ tmoe_browser_menu() {
         tmoe_app_menu_01
         DEPENDENCY_01=""
         ;;
-    6) DEPENDENCY_01="epiphany-browser" ;;
-    7) DEPENDENCY_01="midori" ;;
     esac
     #    5) DEPENDENCY_01="konqueror" ;;
     #    "5" "konqueror(KDE默认浏览器,支持文件管理)" \
     ##########################
     case ${DEPENDENCY_01} in
     "") ;;
-    falkon)
-        beta_features_quick_install
-        cd ${APPS_LNK_DIR}
-        if ! grep -q 'falkon --no-sandbox' org.kde.falkon.desktop; then
-            do_you_want_to_close_the_sandbox_mode
-            do_you_want_to_continue
-            sed -i 's@Exec=falkon@& --no-sandbox@g' org.kde.falkon.desktop
-            cat org.kde.falkon.desktop | grep --color=auto 'no-sandbox'
-        fi
-        ;;
+    falkon) falkon_browser_menu ;;
     *) beta_features_quick_install ;;
     esac
     ##############
@@ -553,4 +545,26 @@ tmoe_browser_menu() {
     tmoe_browser_menu
 }
 #############
+falkon_browser_menu() {
+    if (whiptail --title "FALKON安装与卸载" --yes-button "install" --no-button "remove" --yesno "Do you want to install falkon or remove it?" 8 50); then
+        beta_features_quick_install
+    else
+        printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
+        printf "%s\n" "${PURPLE}rm -vf ${BLUE}${APPS_LNK_DIR}/org.kde.falkon-no-sandbox.desktop  /usr/local/bin/falkon--no-sandbox${RESET}"
+        do_you_want_to_continue
+        ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}
+        rm -vf ${APPS_LNK_DIR}/org.kde.falkon-no-sandbox.desktop /usr/local/bin/falkon--no-sandbox
+    fi
+}
+###############
+if_you_can_not_start_chromium() {
+    if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using falkon--no-sandbox" 8 50); then
+        printf ""
+    fi
+    cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/falkon--no-sandbox /usr/local/bin
+    #do_you_want_to_close_the_sandbox_mode
+    cp -vf ${TMOE_TOOL_DIR}/app/lnk/org.kde.falkon-no-sandbox.desktop ${APPS_LNK_DIR}
+    chmod a+x -v /usr/local/bin/falkon--no-sandbox
+}
+###############
 tmoe_browser_menu
