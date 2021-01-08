@@ -35,7 +35,7 @@ backup_filename() {
 }
 ######################
 backup_tmoe_container_preconfigure() {
-	[[ -d ${CONTAINER_BACKUP_PATH} ]] || mkdir -p ${CONTAINER_BACKUP_PATH}
+	[[ -d ${CONTAINER_BACKUP_PATH} ]] || mkdir -pv ${CONTAINER_BACKUP_PATH}
 	cd ${CONTAINER_BACKUP_PATH}
 	backup_filename
 	BACKUP_TIME_TMP=$(date +%Y-%m-%d_%H-%M)

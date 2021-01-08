@@ -77,7 +77,7 @@ tui_image_compression_tool() {
 compress_pics() {
     cd ${FILE_PATH}
     if [ ! -e "${TMOE_COMPRESSION_FOLDER}" ]; then
-        mkdir -p ${TMOE_COMPRESSION_FOLDER}
+        mkdir -pv ${TMOE_COMPRESSION_FOLDER}
     fi
     for TMOE_PICS in *; do
         convert +profile "*" -strip -quality ${TARGET} ${TMOE_PICS} ${TMOE_COMPRESSION_FOLDER}/${TMOE_PICS%%.*}.jpg
@@ -128,7 +128,7 @@ gui_image_compression_tool() {
     0)
         TMOE_COMPRESSION_FOLDER="tmoe_compression_quality_${TARGET}"
         if [ ! -e "${TMOE_COMPRESSION_FOLDER}" ]; then
-            mkdir -p ${TMOE_COMPRESSION_FOLDER}
+            mkdir -pv ${TMOE_COMPRESSION_FOLDER}
         fi
         xdg-open ${TMOE_COMPRESSION_FOLDER}
         (

@@ -253,7 +253,7 @@ install_linux_firmware_nonfree() {
 }
 ###############
 download_network_card_driver() {
-	mkdir -p cd ${HOME}/sd/Download
+	mkdir -pv cd ${HOME}/sd/Download
 	cd ${HOME}/sd/Download
 	printf "%s\n" "即将为您下载至${HOME}/sd/Download"
 	if [ $(command -v apt-get) ]; then
@@ -269,7 +269,7 @@ download_network_card_driver() {
 		aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	fi
 
-	mkdir -p "${DEPENDENCY_02}"
+	mkdir -pv "${DEPENDENCY_02}"
 	cd "${DEPENDENCY_02}"
 	ar xv ../${THE_LATEST_DEB_VERSION}
 	tar -Jxvf ./data.tar.*

@@ -13,7 +13,7 @@ tmoe_qemu_main_menu() {
 	RETURN_TO_WHERE='tmoe_qemu_main_menu'
 	RETURN_TO_MENU='tmoe_qemu_main_menu'
 	QEMU_DIR="${TMOE_LINUX_DIR}/qemu/list"
-	[[ -e ${QEMU_DIR} ]] || mkdir -p ${QEMU_DIR}
+	[[ -e ${QEMU_DIR} ]] || mkdir -pv ${QEMU_DIR}
 	cd ${QEMU_DIR}
 	let i=02
 	for CLIST in $(ls .); do
@@ -404,7 +404,7 @@ creat_blank_virtual_disk_image() {
 	else
 		TARGET_FILE_NAME="${TARGET_FILE_NAME}.qcow2"
 	fi
-	[[ -e ${DISK_FILE_PATH} ]] || mkdir -p ${DISK_FILE_PATH}
+	[[ -e ${DISK_FILE_PATH} ]] || mkdir -pv ${DISK_FILE_PATH}
 	cd ${DISK_FILE_PATH}
 	TMOE_FILE_ABSOLUTE_PATH="${DISK_FILE_PATH}/${TARGET_FILE_NAME}"
 	TARGET_FILE_SIZE=$(whiptail --inputbox "请设定磁盘空间大小,例如512M,16G,128G或1T\n若留空则将自动创建16G的磁盘,Please type the disk size." 10 50 --title "SIZE" 3>&1 1>&2 2>&3)
@@ -677,7 +677,7 @@ check_virtio_driver_iso() {
 	fi
 }
 aria2c_download_virtio_iso() {
-	[[ -e ${DOWNLOAD_PATH} ]] || mkdir -p ${DOWNLOAD_PATH}
+	[[ -e ${DOWNLOAD_PATH} ]] || mkdir -pv ${DOWNLOAD_PATH}
 	printf "%s\n" "即将为您下载至${DOWNLOAD_PATH}"
 	aria2c --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -d "${DOWNLOAD_PATH}" -o "${DOWNLOAD_FILE_NAME}" "${THE_LATEST_ISO_LINK}"
 }
@@ -688,13 +688,13 @@ readme_of_9p_file_system() {
 		本功能暂仅适配Linux发行版。
 		你需要在guest中挂载9p file system，才能以此方式共享host的目录。
 		精简命令:
-		mkdir -p ~/sd
+		mkdir -pv ~/sd
 		mount -t 9p -o trans=virtio shared0 ~/sd -o version=9p2000.L,posixacl,cache=mmap
 		完整命令:
 				MOUNT_FOLDER="${HOME}/sd"
 				MOUNT_NAME="shared0"
 				mount_tmoe_linux_9p() {
-				    [[ -e "${MOUNT_FOLDER}" ]] || mkdir -p "${MOUNT_FOLDER}"
+				    [[ -e "${MOUNT_FOLDER}" ]] || mkdir -pv "${MOUNT_FOLDER}"
 		            unset TMOE_MOUNT_PREFIX
 				    [[ $(id -u) = "0" ]] || TMOE_MOUNT_PREFIX='sudo'
 		            ${TMOE_MOUNT_PREFIX} mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap

@@ -116,7 +116,7 @@ EndOfFile
     #export LANG=${CurrentLANG}
     #fi
     do_you_want_to_continue
-    mkdir -p ${HOME}/.config/tmoe-linux
+    mkdir -pv ${HOME}/.config/tmoe-linux
     printf "\n" >${HOME}/.config/tmoe-linux/work_crawler_eula
 }
 ##########################
@@ -274,7 +274,7 @@ parsing_comic() {
 }
 #############
 git_clone_kanasimi_work_crawler() {
-    mkdir -p ${HOME}/github
+    mkdir -pv ${HOME}/github
     cd ${HOME}/github
     cat <<-'EOF'
     https://github.com/kanasimi/work_crawler

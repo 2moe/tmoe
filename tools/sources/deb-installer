@@ -133,7 +133,7 @@ deb_file_installer() {
 }
 ######################
 uncompress_deb_file() {
-    mkdir -p .DEB_TEMP_FOLDER
+    mkdir -pv .DEB_TEMP_FOLDER
     mv ${SELECTION} .DEB_TEMP_FOLDER
     cd ./.DEB_TEMP_FOLDER
     ar xv ${SELECTION}

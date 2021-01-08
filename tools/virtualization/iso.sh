@@ -11,7 +11,7 @@ choose_qcow2_or_iso() {
 download_virtual_machine_iso_file() {
 	RETURN_TO_WHERE='download_virtual_machine_iso_file'
 	DOWNLOAD_PATH="${HOME}/sd/Download"
-	mkdir -p ${DOWNLOAD_PATH}
+	mkdir -pv ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	TMOE_VIRTUALIZATION=$(whiptail --title "IMAGE FILE" --menu "Which image file do you want to download?" 0 50 0 \
 		"1" "alpine(latest-stable)" \
@@ -449,7 +449,7 @@ aria2c_download_tmoe_qemu_file() {
 download_debian_qcow2_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
 	QEMU_NAME="debian_x64-tmoe-202011"
-	mkdir -p ${DOWNLOAD_PATH}
+	mkdir -pv ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if (whiptail --title "Edition" --yes-button "bullseye-tmoe" --no-button 'buster-openstack' --yesno "您想要下载哪个版本的磁盘镜像文件?\nWhich edition do you want to download?" 0 50); then
 		tmoe_qemu_debian_qcow2
@@ -521,7 +521,7 @@ download_debian_tmoe_qemu_qcow2_file() {
 tmoe_qemu_templates_repo() {
 	RETURN_TO_WHERE='tmoe_qemu_templates_repo'
 	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
-	mkdir -p ${DOWNLOAD_PATH}
+	mkdir -pv ${DOWNLOAD_PATH}
 	BLK_DEVICE="VIRTIO_DISK_01"
 	cd ${DOWNLOAD_PATH}
 	RTC_BASE=utc
@@ -584,7 +584,7 @@ uncompress_alpine_and_docker_x64_img_file() {
 		tar -Jpxvf ${DOWNLOAD_FILE_NAME}
 	fi
 	QEMU_DIR="${TMOE_LINUX_DIR}/qemu/list"
-	[[ -e ${QEMU_DIR} ]] || mkdir -p ${QEMU_DIR}
+	[[ -e ${QEMU_DIR} ]] || mkdir -pv ${QEMU_DIR}
 	QEMU_FILE="${QEMU_DIR}/${QEMU_NAME}"
 	cp -vf ${TMOE_TOOL_DIR}/virtualization/qemu/startqemu ${QEMU_FILE}
 	chmod -v 777 ${QEMU_FILE}
@@ -622,7 +622,7 @@ download_alpine_and_docker_x64_img_file() {
 	DOWNLOAD_FILE_NAME="${QEMU_NAME}.qcow2.tar.xz"
 	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
 	TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${QEMU_DISK_FILE_NAME}"
-	mkdir -p ${DOWNLOAD_PATH}
+	mkdir -pv ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	printf '%s\n' 'Download size(下载大小)约213.1MiB，解压后约为1.1GiB'
 	THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"

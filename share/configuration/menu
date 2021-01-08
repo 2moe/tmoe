@@ -40,7 +40,7 @@ check_man_db() {
 #########
 check_x11vnc_git_manual() {
     if [[ ! -e ${TMOE_LINUX_DIR}/docs/.git ]]; then
-        mkdir -p ${TMOE_LINUX_DIR}
+        mkdir -pv ${TMOE_LINUX_DIR}
         git clone --depth=1 -b main https://gitee.com/ak2/manual ${TMOE_LINUX_DIR}/docs
     fi
 }
@@ -122,7 +122,7 @@ install_fortunes_cn() {
         THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | tail -n 1 | awk -F '=' '{print $3}' | cut -d '"' -f 2)"
         THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
         TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP
-        mkdir -p ${TEMP_FOLDER}
+        mkdir -pv ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
         aria2c --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
         dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./

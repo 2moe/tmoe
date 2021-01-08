@@ -30,7 +30,7 @@ which_vscode_edition() {
 copy_gnu_lib_xcb_so() {
     where_is_gnu_libxcb
     if [ ! -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]; then
-        mkdir -p ${TMOE_LINUX_DIR}/lib
+        mkdir -pv ${TMOE_LINUX_DIR}/lib
         cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}/lib/libxcb.so.1
         sed -i 's@BIG-REQUESTS@_IG-REQUESTS@' ${TMOE_LINUX_DIR}/lib/libxcb.so.1
     fi
@@ -195,7 +195,7 @@ After the upgrade is complete, you can type ${GREEN}code-server${RESET} to start
         rm -rf /tmp/.VSCODE_SERVER_TEMP_FOLDER
         ;;
     "amd64")
-        mkdir -p .VSCODE_SERVER_TEMP_FOLDER
+        mkdir -pv .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
         LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'amd64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
@@ -307,7 +307,7 @@ install_vscodium() {
         CODIUM_FILE_URL="https://mirrors.bfsu.edu.cn/github-release/VSCodium/vscodium/LatestRelease/${LatestVSCodiumLink}"
         printf "%s\n" "${YELLOW}${CODIUM_FILE_URL}${RESET}"
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCodium.tar.gz' ${CODIUM_FILE_URL}
-        mkdir -p /opt/vscodium-data
+        mkdir -pv /opt/vscodium-data
         tar -zxvf VSCodium.tar.gz -C /opt/vscodium-data
         rm -vf VSCodium.tar.gz
         cp -f ${TMOE_TOOL_DIR}/code/bin/codium /usr/local/bin

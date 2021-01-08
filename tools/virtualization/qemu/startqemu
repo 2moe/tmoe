@@ -283,13 +283,13 @@ VIRTIO_9P_PCI_01的参数值为宿主机的目录，默认为${HOME}/sd。若您
 
 你需要在guest中挂载9p file system，才能以此方式共享host的目录。
 精简命令:
-mkdir -p ~/sd
+mkdir -pv ~/sd
 mount -t 9p -o trans=virtio virtio9p01 ~/sd -o version=9p2000.L,posixacl,cache=mmap
 完整命令:
 MOUNT_FOLDER="/media/sd"
 MOUNT_NAME="virtio9p01"
 mount_tmoe_linux_9p() {
-	[[ -e "${MOUNT_FOLDER}" ]] || mkdir -p "${MOUNT_FOLDER}"
+	[[ -e "${MOUNT_FOLDER}" ]] || mkdir -pv "${MOUNT_FOLDER}"
     unset TMOE_MOUNT_PREFIX
 	[[ $(id -u) = "0" ]] || TMOE_MOUNT_PREFIX='sudo'
     ${TMOE_MOUNT_PREFIX} mount -t 9p -o trans=virtio ${MOUNT_NAME} "${MOUNT_FOLDER}" -o version=9p2000.L,posixacl,cache=mmap

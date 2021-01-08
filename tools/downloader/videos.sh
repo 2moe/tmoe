@@ -33,7 +33,7 @@ golang_annie() {
     fi
 
     if [ ! -e "${HOME}/sd/Download/Videos" ]; then
-        mkdir -p ${HOME}/sd/Download/Videos
+        mkdir -pv ${HOME}/sd/Download/Videos
     fi
 
     cd ${HOME}/sd/Download/Videos
@@ -81,7 +81,7 @@ python_you_get() {
     fi
 
     if [ ! -e "${HOME}/sd/Download/Videos" ]; then
-        mkdir -p ${HOME}/sd/Download/Videos
+        mkdir -pv ${HOME}/sd/Download/Videos
     fi
 
     cd ${HOME}/sd/Download/Videos
@@ -117,7 +117,7 @@ python_youtube_dl() {
     fi
 
     if [ ! -e "${HOME}/sd/Download/Videos" ]; then
-        mkdir -p ${HOME}/sd/Download/Videos
+        mkdir -pv ${HOME}/sd/Download/Videos
     fi
 
     cd ${HOME}/sd/Download/Videos
@@ -176,7 +176,7 @@ cookies_readme() {
         CurrentCOOKIESpath="${COOKIESTATUS}"
     fi
 
-    mkdir -p "${HOME}/.config/tmoe-linux"
+    mkdir -pv "${HOME}/.config/tmoe-linux"
     if (whiptail --title "modify cookie path and status" --yes-button '指定cookie file' --no-button 'disable禁用cookie' --yesno "您想要修改哪些配置信息？${COOKIESTATUS} Which configuration do you want to modify?" 9 50); then
         IMPORTANT_TIPS="${CurrentCOOKIESpath}"
         CURRENT_QEMU_ISO="${CURRENT_COOKIE_PATH}"
@@ -388,13 +388,13 @@ upgrade_video_download_tool() {
     cd ./.ANNIETEMPFOLDER
     tar -Jxvf annie.tar.xz
     chmod +x annie
-    mkdir -p ~/.config/tmoe-linux/
+    mkdir -pv ~/.config/tmoe-linux/
     mv -f annie_version.txt ~/.config/tmoe-linux/
     mv -f annie /usr/local/bin/
     annie -v
     cd ..
     rm -rf ./.ANNIETEMPFOLDER
-    #mkdir -p ${HOME}/.config
+    #mkdir -pv ${HOME}/.config
     #pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
     sudo -H pip3 install pip -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple 2>/dev/null || su -c "pip3 install pip -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
     sudo -H pip3 install you-get -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple || su -c "pip3 install you-get -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple"

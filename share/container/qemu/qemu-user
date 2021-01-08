@@ -144,12 +144,12 @@ copy_qemu_user_bin_files() {
 download_qemu_user() {
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
-		#mkdir -p ${TMPDIR}
+		#mkdir -pv ${TMPDIR}
 		#chmod 777 /tmp
 	fi
 	cd ${TMPDIR}
 	TEMP_FOLDER='.QEMU_USER_BIN'
-	mkdir -p ${TEMP_FOLDER}
+	mkdir -pv ${TEMP_FOLDER}
 	cd ${TEMP_FOLDER}
 	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	unxz_deb_file
@@ -314,7 +314,7 @@ tmoe_qemu_user_manager() {
 #####################
 git_clone_debian_ports_distro() {
 	check_rootfs_dir
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -p ${ROOTFS_DIR}
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	DISTRO_NAME='debian'
 	case ${ARCH_TYPE} in

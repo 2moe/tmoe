@@ -38,7 +38,7 @@ install_thunder_bin() {
     do_you_want_to_upgrade_it_02
     do_you_want_to_continue
     TEMP_FOLDER="/tmp/.${GREP_NAME}"
-    mkdir -p ${TEMP_FOLDER}
+    mkdir -pv ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
     aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}"
     ar xv ${THE_LATEST_DEB_FILE}

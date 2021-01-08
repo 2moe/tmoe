@@ -77,7 +77,7 @@ move_wallpaper_model_01() {
     fi
     if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ]; then
         if [ ! -e "/usr/share/backgrounds" ]; then
-            mkdir -p /usr/share/backgrounds
+            mkdir -pv /usr/share/backgrounds
         fi
         mv ./usr/share/${WALLPAPER_NAME}/* /usr/share/${CUSTOM_WALLPAPER_NAME}
         rm -rf /tmp/.${THEME_NAME}
@@ -87,7 +87,7 @@ move_wallpaper_model_01() {
         if [ -d "${HOME}/图片" ]; then
             mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
         else
-            mkdir -p ${HOME}/Pictures/
+            mkdir -pv ${HOME}/Pictures/
             mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
         fi
         rm -rf /tmp/.${THEME_NAME}
@@ -100,7 +100,7 @@ move_wallpaper_model_02() {
     if [ -d "${HOME}/图片" ]; then
         tar -Jxvf data.tar.xz -C ${HOME}/图片
     else
-        mkdir -p ${HOME}/Pictures/
+        mkdir -pv ${HOME}/Pictures/
         tar -Jxvf data.tar.xz -C ${HOME}/Pictures/
     fi
     rm -rf /tmp/.${THEME_NAME}
@@ -110,7 +110,7 @@ move_wallpaper_model_02() {
 #################
 grep_theme_model_01() {
     check_theme_folder
-    mkdir -p /tmp/.${THEME_NAME}
+    mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_theme_deb_and_extract_01
@@ -132,7 +132,7 @@ grep_theme_model_03() {
     if [ ${FORCIBLY_DOWNLOAD} != 'true' ]; then
         check_theme_folder
     fi
-    mkdir -p /tmp/.${THEME_NAME}
+    mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_theme_deb_and_extract_01
@@ -140,7 +140,7 @@ grep_theme_model_03() {
 ############################
 grep_theme_model_04() {
     check_theme_folder
-    mkdir -p /tmp/.${THEME_NAME}
+    mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     aria2c_download_theme_file
@@ -151,7 +151,7 @@ grep_theme_model_04() {
 #manjaro仓库
 grep_theme_model_02() {
     check_theme_folder
-    mkdir -p /tmp/.${THEME_NAME}
+    mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep -v '.xz.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     aria2c_download_theme_file
@@ -246,7 +246,7 @@ check_archlinux_cn_html_date() {
     ARCH_LINUX_CN_REPO_DIR='/tmp/.ARCH_LINUX_CN_REPO'
     ARCH_LINUX_CN_REPO_HTML="${ARCH_LINUX_CN_REPO_DIR}/index.html"
     if [ ! -e "${ARCH_LINUX_CN_REPO_DIR}" ]; then
-        mkdir -p ${ARCH_LINUX_CN_REPO_DIR}
+        mkdir -pv ${ARCH_LINUX_CN_REPO_DIR}
     fi
     cd ${ARCH_LINUX_CN_REPO_DIR}
 
@@ -281,7 +281,7 @@ check_download_path() {
     else
         DOWNLOAD_PATH=${HOME}/sd/Download
     fi
-    mkdir -p ${DOWNLOAD_PATH}
+    mkdir -pv ${DOWNLOAD_PATH}
 }
 ###########
 download_arch_linux_cn_repo_html() {
@@ -290,7 +290,7 @@ download_arch_linux_cn_repo_html() {
 ############
 download_arch_community_repo_html() {
     THEME_NAME=${GREP_NAME}
-    mkdir -p /tmp/.${THEME_NAME}
+    mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     aria2c --no-conf --allow-overwrite=true -o index.html "${THEME_URL}"
 }
@@ -525,7 +525,7 @@ beta_features_quick_install() {
 ################
 check_tmoe_linux_desktop_link() {
     if [ ! -e "${APPS_LNK_DIR}/tmoe-linux.desktop" ]; then
-        mkdir -p ${APPS_LNK_DIR}
+        mkdir -pv ${APPS_LNK_DIR}
         creat_tmoe_linux_desktop_icon
     fi
     TMOE_ICON_FILE='/usr/share/icons/tmoe-linux.png'
@@ -1085,7 +1085,7 @@ fix_fedora_electron_libxssl() {
 ##########
 check_electron() {
     if [ ! -e "/opt/electron/electron" ]; then
-        mkdir -p /opt
+        mkdir -pv /opt
         fix_fedora_electron_libxssl
         download_the_latest_electron
     fi
@@ -1138,7 +1138,7 @@ aria2c_download_file_00() {
         cd ~
     else
         if [ ! -e "${DOWNLOAD_PATH}" ]; then
-            mkdir -p ${DOWNLOAD_PATH}
+            mkdir -pv ${DOWNLOAD_PATH}
         fi
         cd ${DOWNLOAD_PATH}
     fi
@@ -1471,7 +1471,7 @@ this_app_may_non_support_running_on_proot() {
 #############
 download_and_cat_icon_img() {
     if [ ! -e "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" ]; then
-        mkdir -p ${TMOE_ICON_DIR}
+        mkdir -pv ${TMOE_ICON_DIR}
         aria2c --no-conf -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
     fi
     if [ $(command -v catimg) ]; then

@@ -831,7 +831,7 @@ install_nds_game_mayomonogatari() {
         press_enter_to_reinstall
     fi
     cd ${HOME}
-    mkdir -p '斯隆与马克贝尔的谜之物语'
+    mkdir -pv '斯隆与马克贝尔的谜之物语'
     cd '斯隆与马克贝尔的谜之物语'
     aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o slymkbr1.zip http://k73dx1.zxclqw.com/slymkbr1.zip
     aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o mayomonogatari2.zip http://k73dx1.zxclqw.com/mayomonogatari2.zip
@@ -945,7 +945,7 @@ install_chinese_manpages() {
 
     beta_features_quick_install
     if [ ! -e "${HOME}/文档/debian-handbook/usr/share/doc/debian-handbook/html" ]; then
-        mkdir -p ${HOME}/文档/debian-handbook
+        mkdir -pv ${HOME}/文档/debian-handbook
         cd ${HOME}/文档/debian-handbook
         GREP_NAME='debian-handbook'
         LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/d/debian-handbook/'
@@ -975,7 +975,7 @@ install_baidu_netdisk() {
     elif [ -e "${ICON_FILE_02}" ]; then
         printf ""
     else
-        mkdir -p ${TMOE_ICON_DIR}
+        mkdir -pv ${TMOE_ICON_DIR}
         aria2c --no-conf --allow-overwrite=true -d ${TMOE_ICON_DIR} -o ${DEPENDENCY_01}.png "https://gitee.com/ak2/icons/raw/master/${DEPENDENCY_01}.png"
     fi
 
@@ -1039,7 +1039,7 @@ install_netease_163_cloud_music() {
     #ICON_FILE_02='/usr/share/icons/hicolor/scalable/apps/netease-cloud-music.svg'
     ICON_FILE="${TMOE_ICON_DIR}/netease-cloud-music.jpg"
     if [ ! -e "${ICON_FILE}" ]; then
-        mkdir -p ${TMOE_ICON_DIR}
+        mkdir -pv ${TMOE_ICON_DIR}
         aria2c --no-conf --allow-overwrite=true -d ${TMOE_ICON_DIR} -o netease-cloud-music.jpg "https://gitee.com/ak2/icons/raw/master/netease-cloud-music.jpg"
     fi
 

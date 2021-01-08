@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3961,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3962,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -229,7 +229,7 @@ check_gnu_linux_distro() {
 	0) ;;
 	*)
 		export PATH=${PATH}:/usr/sbin:/sbin
-		[[ -e ${CONFIG_FOLDER} ]] || mkdir -p ${CONFIG_FOLDER}
+		[[ -e ${CONFIG_FOLDER} ]] || mkdir -pv ${CONFIG_FOLDER}
 		if [ -e "${TMOE_GIT_DIR}/manager.sh" ]; then
 			if [ $(command -v fortune) ]; then
 				fortune 2>/dev/null
@@ -457,7 +457,7 @@ choose_tmoe_locale_env() {
 	case ${TMOE_LANG} in
 	"") ;;
 	*)
-		mkdir -p ${CONFIG_FOLDER} "${TMOE_LINUX_DIR}"
+		mkdir -pv ${CONFIG_FOLDER} "${TMOE_LINUX_DIR}"
 		printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
 		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
 		printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
@@ -547,13 +547,13 @@ check_tmoe_manager_git() {
 	esac
 }
 git_clone_tmoe_manager() {
-	[[ -e ${TMOE_LINUX_DIR} ]] || mkdir -p ${TMOE_LINUX_DIR}
+	[[ -e ${TMOE_LINUX_DIR} ]] || mkdir -pv ${TMOE_LINUX_DIR}
 	git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 	source ${TMOE_SHARE_DIR}/environment/manager_environment
 	tmoe_manager_main_menu
 }
 choose_termux_color_scheme() {
-	mkdir -p ${HOME}/.termux
+	mkdir -pv ${HOME}/.termux
 	cd ${HOME}/.termux
 	#[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
 

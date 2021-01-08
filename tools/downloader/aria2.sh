@@ -204,7 +204,7 @@ tmoe_aria2_manager() {
         fi
     fi
     if [ ! -e "${TMOE_ARIA2_FILE}" ]; then
-        mkdir -p ${TMOE_ARIA2_PATH}
+        mkdir -pv ${TMOE_ARIA2_PATH}
     fi
     if (whiptail --title "你想要对这个小可爱做什么" --yes-button "${TMOE_ARIA2_PROCESS}" --no-button 'Configure配置' --yesno "您是想要启动服务还是配置服务？\n${TMOE_ARIA2_STATUS}\n${TMOE_ARIA2_WARNING}" 0 50); then
         if [ ! -e "${TMOE_ARIA2_FILE}" ]; then
@@ -2208,7 +2208,7 @@ craet_aria2_auto_move_sh() {
         *.tar.gz | *.tgz) tar -zxvf "$FILE_PATH" -C "$FILE_NAME" ;;
         *.tar.xz | *.txz) tar -Jxvf "$FILE_PATH" -C "$FILE_NAME" ;;
         *.bz2) bunzip2 -c "$FILE_PATH" >"$FILE_NAME" ;;
-        *.rar) mkdir -p "$FILE_NAME" && cd "$FILE_NAME" && unrar x "$FILE_PATH" && cd .. ;;
+        *.rar) mkdir -pv "$FILE_NAME" && cd "$FILE_NAME" && unrar x "$FILE_PATH" && cd .. ;;
         *.gz) gunzip -c "$FILE_PATH" >"$FILE_NAME" ;;
         *.zip) unzip -d "$FILE_NAME" "$FILE_PATH" ;;
         *.7z) 7z x -o"$FILE_NAME" "$FILE_PATH" ;;

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_STARTUP_DIR}
+${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
 cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
@@ -101,7 +101,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    }
 	    #########
 	    mkdir_01() {
-	        [[ -e "/\${i}" ]] || su -c "mkdir -p /\${i}"
+	        [[ -e "/\${i}" ]] || su -c "mkdir -pv /\${i}"
 	    }
 	    ########
 	    #PS1='\u:\w$ '
@@ -161,7 +161,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    mount_read_only_sd() {
 	        ANDROID_EMULATED_0_DIR='/storage/emulated/0'
 	        if [ -e "\${ANDROID_EMULATED_0_DIR}" ]; then
-	            [[ -e "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}" ]] || mkdir -p "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}"
+	            [[ -e "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}" ]] || mkdir -pv "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}"
 	            su -c "mount -o ro /storage/emulated/0 ${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR} &>/dev/null"
 	        fi
 	    }

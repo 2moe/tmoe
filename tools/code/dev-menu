@@ -358,7 +358,7 @@ download_android_studio() {
 }
 ###############
 check_android_studio() {
-    mkdir -p ${HOME}/sd/Download
+    mkdir -pv ${HOME}/sd/Download
     cd ${HOME}/sd/Download
     if [ -e "/opt/android-studio" ]; then
         printf '%s\n' '您已安装Android studio'

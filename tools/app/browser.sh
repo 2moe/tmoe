@@ -30,7 +30,7 @@ ubuntu_ppa_chromium() {
             apt install -y libva2
         fi
         TEMP_FOLDER="/tmp/.CHROMIUM_DEB_VAAPI_TEMP_FOLDER"
-        mkdir -p ${TEMP_FOLDER}
+        mkdir -pv ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
         CHROMIUM_DEB_RAW_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | sed 's@=@\n@g' | egrep -v 'chromium-chromedriver|codecs-ffmpeg_' | egrep "${ARCH_TYPE}|all\.deb" | awk -F '"' '{print $2}')
         CHROMIUM_BROWSER_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | tail -n 1)

@@ -48,7 +48,7 @@ tmoe_global_env() {
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	check_tmoe_menu_locale_file
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
-		mkdir -p ${CONFIG_FOLDER}
+		mkdir -pv ${CONFIG_FOLDER}
 	fi
 	ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
 	if [ -e "${ACROSS_ARCH_FILE}" ]; then
@@ -104,7 +104,7 @@ creat_container_edition_txt() {
 copy_tmoe_locale_file_to_container() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-		mkdir -p ${TMOE_LOCALE_NEW_PATH}
+		mkdir -pv ${TMOE_LOCALE_NEW_PATH}
 		cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
 	fi
 }
@@ -154,7 +154,7 @@ check_container_backup_path() {
 check_container_external_backup_path() {
 	if [ -h "${HOME}/storage/external-1" ]; then
 		BACKUP_PATH="$(readlink ${HOME}/storage/external-1)/Download/backup/containers"
-		#mkdir -p ${ROOTFS_DIR}
+		#mkdir -pv ${ROOTFS_DIR}
 		case_backup_path_proot_or_chroot
 	else
 		check_container_backup_path

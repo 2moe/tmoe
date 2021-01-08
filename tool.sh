@@ -97,7 +97,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3961,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3962,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -116,13 +116,13 @@ gnu_linux_env() {
 	fi
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
-		mkdir -p ${TMPDIR}
+		mkdir -pv ${TMPDIR}
 	fi
 	check_release_version
 	check_tmoe_command
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	if [ ! -e "/usr/local/bin" ]; then
-		mkdir -p /usr/local/bin
+		mkdir -pv /usr/local/bin
 	fi
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_ICON_DIR="${TMOE_LINUX_DIR}/icons"
@@ -131,12 +131,12 @@ gnu_linux_env() {
 	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
 	APPS_LNK_DIR='/usr/share/applications'
 	if [ ! -e "${APPS_LNK_DIR}" ]; then
-		mkdir -p ${APPS_LNK_DIR}
+		mkdir -pv ${APPS_LNK_DIR}
 	fi
 
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
-		mkdir -p ${CONFIG_FOLDER}
+		mkdir -pv ${CONFIG_FOLDER}
 	fi
 	DEBIAN_I_FILE="/usr/local/bin/debian-i"
 }
@@ -569,7 +569,7 @@ check_dependencies() {
 			${TMOE_UPDATE_COMMAND}
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils
 			#创建文件夹防止aptitude报错
-			mkdir -p /run/lock /var/lib/aptitude
+			mkdir -pv /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
 			;;
 		alpine | openwrt | slackware)
@@ -642,7 +642,7 @@ check_dependencies() {
 		;;
 	esac
 	if [ ! $(command -v catimg) ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
-		mkdir -p ${TMOE_LINUX_DIR}
+		mkdir -pv ${TMOE_LINUX_DIR}
 		touch ${TMOE_LINUX_DIR}/not_install_catimg
 		case "${LINUX_DISTRO}" in
 		debian)
@@ -669,7 +669,7 @@ check_dependencies() {
 ####################################################
 git_clone_tmoe_linux_repo() {
 	if [ ! -e "${TMOE_LINUX_DIR}" ]; then
-		mkdir -p ${TMOE_LINUX_DIR}
+		mkdir -pv ${TMOE_LINUX_DIR}
 	fi
 	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 }

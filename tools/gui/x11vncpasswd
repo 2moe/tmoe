@@ -3,6 +3,6 @@ printf "%s\n" "Configuring x11vnc..."
 printf "%s\n" "正在配置x11vnc server..."
 read -sp "请输入6至8位密码，please type the new VNC password: " TMOE_X11_PASSWD
 if [ ! -e "${HOME}/.vnc" ]; then
-	mkdir -p ${HOME}/.vnc
+	mkdir -pv ${HOME}/.vnc
 fi
 x11vnc -storepasswd ${TMOE_X11_PASSWD} ${HOME}/.vnc/x11passwd

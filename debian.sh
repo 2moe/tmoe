@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 if [ -z ${TMPDIR} ]; then
 	TMPDIR=/tmp
-	mkdir -p ${TMPDIR}
+	mkdir -pv ${TMPDIR}
 fi
 cd ${TMPDIR}
 #############

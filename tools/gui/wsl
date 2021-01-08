@@ -3,7 +3,7 @@
 if [ ! -e "/mnt/c/Users/Public/Downloads/pulseaudio/pulseaudio.bat" ]; then
 	printf "%s\n" "正在为您下载windows版pulseaudio"
 	printf "%s\n" "目录C:\Users\Public\Downloads\pulseaudio"
-	mkdir -p /mnt/c/Users/Public/Downloads
+	mkdir -pv /mnt/c/Users/Public/Downloads
 	cd /mnt/c/Users/Public/Downloads
 	rm -rf ./pulseaudio 2>/dev/null
 	git clone -b pulseaudio --depth=1 https://gitee.com/mo2/wsl.git ./pulseaudio
@@ -17,7 +17,7 @@ if [ ! -e "/mnt/c/Users/Public/Downloads/VcXsrv" ]; then
 	#fi
 	printf "%s\n" "检测到您当前使用的是WSL，正在为您下载windows版VcXsrv"
 	printf "%s\n" "目录C:\Users\Public\Downloads\VcXsrv"
-	mkdir -p /mnt/c/Users/Public/Downloads
+	mkdir -pv /mnt/c/Users/Public/Downloads
 	cd /mnt/c/Users/Public/Downloads
 	[[ ! -d ./.WSLXSERVERTEMPFILE ]] || rm -rfv ./.WSLXSERVERTEMPFILE 2>/dev/null
 	git clone -b VcXsrv --depth=1 https://gitee.com/mo2/wsl.git ./.WSLXSERVERTEMPFILE
@@ -29,7 +29,7 @@ fi
 if [ ! -e "/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe" ]; then
 	printf "%s\n" "Downloading tigervnc viewer for windows10_x64 ..."
 	printf "%s\n" "目录C:\Users\Public\Downloads\tigervnc"
-	mkdir -p /mnt/c/Users/Public/Downloads
+	mkdir -pv /mnt/c/Users/Public/Downloads
 	cd /mnt/c/Users/Public/Downloads
 	#rm -rfv ./.WSLXSERVERTEMPFILE 2>/dev/null
 	[[ ! -d tigervnc ]] || rm -rfv ./tigervnc 2>/dev/null

@@ -174,14 +174,14 @@ tmoe_locale_menu() {
 	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
 	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 
-	mkdir -p ${HOME}/.config/tmoe-linux
+	mkdir -pv ${HOME}/.config/tmoe-linux
 	cd ${HOME}/.config/tmoe-linux
 	printf "%s\n" "${TMOE_LANG}" >locale.txt
 	case $(uname -o) in
 	Android) ;;
 	*)
 		[[ -n ${TMOE_LINUX_DIR} ]] || TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
-		mkdir -p ${TMOE_LINUX_DIR}
+		mkdir -pv ${TMOE_LINUX_DIR}
 		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
 		printf "%s\n" "${TMOE_LANG}" >/usr/local/etc/tmoe-linux/locale.txt
 		;;
@@ -205,7 +205,7 @@ tmoe_locale_menu() {
 	#cd ${TMOE_SCRIPT_PATH}/usr/local/bin
 
 	if [ -e "${DEBIAN_CHROOT}" ]; then
-		mkdir -p ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+		mkdir -pv ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
 		${TMOE_PREFIX} cp -fv ${HOME}/.config/tmoe-linux/locale.txt ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
 		#chmod +r locale.txt
 	fi
@@ -219,7 +219,7 @@ tmoe_locale_menu() {
 			set_debian_default_locale
 			source /etc/default/locale 2>/dev/null
 			#fi
-			mkdir -p /usr/local/etc/tmoe-linux/
+			mkdir -pv /usr/local/etc/tmoe-linux/
 			cd /usr/local/etc/tmoe-linux/
 			cp -f ${HOME}/.config/tmoe-linux/locale.txt ./ || ${TMOE_PREFIX} cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
 			chmod +r locale.txt

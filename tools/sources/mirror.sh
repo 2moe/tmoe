@@ -55,7 +55,7 @@ check_tmoe_sources_list_backup_file() {
     esac
 
     if [ ! -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
-        mkdir -p "${HOME}/.config/tmoe-linux"
+        mkdir -pv "${HOME}/.config/tmoe-linux"
         if [ "${LINUX_DISTRO}" = "redhat" ]; then
             tar -Ppzcvf ${SOURCES_LIST_BACKUP_FILE} ${SOURCES_LIST_PATH}
         else

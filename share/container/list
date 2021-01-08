@@ -618,7 +618,7 @@ debootstrap_ubuntu_distro() {
 		DEB_BOOT_STRAP='true'
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
-		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}
+		${TMOE_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
 		case ${ARCH_TYPE} in
 		amd64 | i386) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu" ;;
 		*) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;

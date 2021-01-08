@@ -203,7 +203,7 @@ debootstrap_debian_distro() {
 		DEB_BOOT_STRAP='true'
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
-		${TMOE_PREFIX} mkdir -p ${DEBIAN_CHROOT}
+		${TMOE_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
 		#debootstrap --no-check-gpg --foreign --arch ${ARCH_TYPE} ${DISTRO_CODE} ${DEBIAN_CHROOT} http://mirrors.huaweicloud.com/debian
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all
 		#--include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail
@@ -297,7 +297,7 @@ git_clone_tmoe_linux_container_file() {
 		chmod +x ${PREFIX}/bin/debian-i
 	fi
 	TMOE_TRUE_TEMP_FOLDER='.TMOE_LINUX_CONTAINER_TEMP_FOLDER'
-	mkdir -p ${TMOE_TRUE_TEMP_FOLDER}
+	mkdir -pv ${TMOE_TRUE_TEMP_FOLDER}
 	cd ${TMOE_TRUE_TEMP_FOLDER}
 
 	TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_01"
@@ -327,7 +327,7 @@ git_clone_tmoe_linux_container_file() {
 }
 #################
 check_tmoe_linux_container_rec_pkg_file_and_git() {
-	mkdir -p ${DOWNLOAD_PATH}
+	mkdir -pv ${DOWNLOAD_PATH}
 	cd ${DOWNLOAD_PATH}
 	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
 		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?\n检测到恢复包已经下载,\n您想要直接解压还是重新下载？" 0 0); then

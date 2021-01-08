@@ -2,7 +2,7 @@
 ############################################
 tmoe_mathematics_menu() {
 	RETURN_TO_WHERE='tmoe_mathematics_menu'
-	
+
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "mathematics" --menu \
 		"Which software do you want to install？" 0 50 0 \
@@ -39,7 +39,7 @@ tmoe_mathematics_menu() {
 ####################
 tmoe_chemistry_menu() {
 	RETURN_TO_WHERE='tmoe_chemistry_menu'
-	
+
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "chemistry" --menu \
 		"化学是研究物质的组成、结构、性质及其变化规律的一门自然学科\nWhich software do you want to install？" 0 50 0 \
@@ -71,7 +71,7 @@ tmoe_chemistry_menu() {
 ####################
 tmoe_physics_menu() {
 	RETURN_TO_WHERE='tmoe_physics_menu'
-	
+
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "physics" --menu \
 		"物理学是一门研究自然现象背后的物质和能量法则的自然科学。\nWARNING！本功能仍处于内测阶段,可能无法正常运行。\nAlpha features may not work properly." 0 50 0 \
@@ -110,7 +110,7 @@ tips_of_dict() {
 install_golden_dict() {
 	DEPENDENCY_01="goldendict"
 	DEPENDENCY_02="goldendict-wordnet"
-	
+
 	beta_features_quick_install
 }
 ############
@@ -141,7 +141,7 @@ check_tmoe_study_materials() {
 	fi
 
 	if [ ! -d "${DOWNLOAD_FOLDER}" ]; then
-		mkdir -p ${DOWNLOAD_FOLDER}
+		mkdir -pv ${DOWNLOAD_FOLDER}
 	fi
 	cd ${DOWNLOAD_FOLDER}
 	if [ -e ${DOWNLOAD_FILE_NAME} ]; then
@@ -166,7 +166,7 @@ unzip_tmoe_study_file() {
 git_clone_tmoe_study_file() {
 	cd /tmp
 	TMOE_TRUE_TEMP_FOLDER='.TMOE_STUDY_MATERIALS_TEMP_FOLDER'
-	mkdir -p ${TMOE_TRUE_TEMP_FOLDER}
+	mkdir -pv ${TMOE_TRUE_TEMP_FOLDER}
 	cd ${TMOE_TRUE_TEMP_FOLDER}
 
 	TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_TEMP_FOLDER_01"
@@ -357,7 +357,7 @@ tmoe_postgraduate_entrance_examination() {
 #############
 tmoe_education_app_menu() {
 	RETURN_TO_WHERE='tmoe_education_app_menu'
-	
+
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "education" --menu \
 		"Play玩Linux X\nStudy学习  ✓" 0 50 0 \

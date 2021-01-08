@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #######################################
 download_vnc_apk_menu() {
-	cd /sdcard/Download || mkdir -p /sdcard/Download && cd /sdcard/Download
+	cd /sdcard/Download || mkdir -pv /sdcard/Download && cd /sdcard/Download
 	RETURN_TO_WHERE='download_vnc_apk_menu'
 	#15 60 4
 	OPTION=$(whiptail --title "remote desktop apk" --menu "Which remote desktop software do you want to install?" 0 50 0 \

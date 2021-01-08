@@ -117,7 +117,7 @@ nginx_onekey() {
 	esac
 	beta_features_quick_install
 	##############
-	mkdir -p /media
+	mkdir -pv /media
 	touch "/media/欢迎使用tmoe-linux-webdav_你可以将文件复制至根目录下的media文件夹"
 	if [ -e "${HOME}/sd" ]; then
 		ln -sf ${HOME}/sd /media/

@@ -62,7 +62,7 @@ tmoe_manager_env() {
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	mkdir -p ${TMOE_CONTAINER_DIR}
+	mkdir -pv ${TMOE_CONTAINER_DIR}
 	case ${TMOE_CHROOT} in
 	true) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER} ;;
 	*) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/proot/${DEBIAN_FOLDER} ;;
@@ -72,7 +72,7 @@ tmoe_manager_env() {
 	#${TMOE_CHROOT_PREFIX}
 	mkdir -pv ${DEBIAN_CHROOT} || ${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
 	chmod 755 -v ${DEBIAN_CHROOT} || ${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
-	#mkdir -p ${TMOE_CONTAINER_DIR}
+	#mkdir -pv ${TMOE_CONTAINER_DIR}
 	[[ -n ${TMPDIR} ]] || TMPDIR=/tmp
 }
 #############
@@ -96,7 +96,7 @@ else
 	else
 		PREFIX='/usr/local'
 	fi
-	mkdir -p ${PREFIX}/bin
+	mkdir -pv ${PREFIX}/bin
 fi
 ####################
 printf "${YELLOW}"
@@ -161,12 +161,12 @@ printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${G
 ##################
 if [ -h "${HOME}/storage/external-1" ]; then
 	ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
-	mkdir -p ${ROOTFS_DIR}
+	mkdir -pv ${ROOTFS_DIR}
 else
 	for i in ${HOME} ${HOME}/sd /sdcard; do
 		if [ -d "${i}" ]; then
 			ROOTFS_DIR="${i}/Download/backup/rootfs"
-			mkdir -p ${ROOTFS_DIR}
+			mkdir -pv ${ROOTFS_DIR}
 		fi
 	done
 fi
@@ -464,7 +464,7 @@ creat_chroot_startup_script() {
 	Android)
 		ANDROID_EMULATED_DIR='/storage/emulated'
 		if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
-			${TMOE_CHROOT_PREFIX} mkdir -p "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+			${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 			#cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 			#ln -s ../../root/sd ./0
 			${TMOE_CHROOT_PREFIX} ln -s ../../media/sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
@@ -474,7 +474,7 @@ creat_chroot_startup_script() {
 	cd ${CONFIG_FOLDER}
 	if [ -e "/system/bin/wm" ]; then
 		TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-		${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_CHROOT_ETC}
+		${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_CHROOT_ETC}
 		WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
 		printf "%s\n" "${WM_SIZE}" >wm_size.txt
 		${TMOE_CHROOT_PREFIX} mv wm_size.txt ${TMOE_CHROOT_ETC}
@@ -494,7 +494,7 @@ creat_chroot_startup_script() {
 	fi
 	printf "%s\n" "Creating chroot startup script"
 	printf "%s\n" "正在创建chroot容器启动脚本"
-	#mkdir -p /sdcard
+	#mkdir -pv /sdcard
 	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/sd
 	${TMOE_CHROOT_PREFIX} ln -sf ../media/sd ${DEBIAN_CHROOT}/root/sd
 	[[ -e ${DEBIAN_CHROOT}/sd ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/sd ${DEBIAN_CHROOT}/sd
@@ -517,7 +517,7 @@ creat_chroot_startup_script() {
 	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus
 	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-	${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_STARTUP_DIR}
+	${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 	cat_tmoe_chroot_script
 }
 ###################
@@ -544,7 +544,7 @@ creat_tmoe_proot_stat_file() {
 ###############
 check_tmoe_proot_container_proc() {
 	if [ ! -e "${TMOE_PROC_PATH}" ]; then
-		mkdir -p ${TMOE_PROC_PATH}
+		mkdir -pv ${TMOE_PROC_PATH}
 	fi
 	#######
 	FILE_02=stat
@@ -588,7 +588,7 @@ creat_proot_startup_script() {
 	printf "%s\n" "正在创建proot容器启动脚本${TMOE_STARTUP_SCRIPT} "
 	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
-	mkdir -p ${TMOE_STARTUP_DIR}
+	mkdir -pv ${TMOE_STARTUP_DIR}
 	source ${TMOE_SHARE_DIR}/container/proot/startup
 	if [ -e "${DEBIAN_CHROOT}/etc/environment" ]; then
 		if ! egrep -q '^[^#]*export.*MOZ_FAKE_NO_SANDBOX=' ${DEBIAN_CHROOT}/etc/environment; then
@@ -611,7 +611,7 @@ creat_proot_startup_script() {
 }
 #########
 if [ ! -e "${CONFIG_FOLDER}/gitstatus" ]; then
-	mkdir -p ${CONFIG_FOLDER}/gitstatus
+	mkdir -pv ${CONFIG_FOLDER}/gitstatus
 fi
 if grep -q 'Ubuntu' ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null; then
 	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/root/.hushlogin
@@ -763,7 +763,7 @@ fi
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 if [ -f "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-	${TMOE_CHROOT_PREFIX} mkdir -p ${TMOE_LOCALE_NEW_PATH}
+	${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_LOCALE_NEW_PATH}
 	${TMOE_CHROOT_PREFIX} cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
 	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	PROOT_LANG=$(sed -n p $(command -v debian) | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
@@ -1446,7 +1446,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    rm -f ~/.profile vnc-autostartup
 	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
 	    if grep -q 'OpenWrt' "/etc/os-release"; then
-	        mkdir -p /var/lock/
+	        mkdir -pv /var/lock/
 	        touch /var/lock/opkg.lock
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash dialog whiptail
@@ -1691,7 +1691,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 			LC_ALL=${TMOE_LANG}
 		EOF
-	    mkdir -p /etc/xbps.d
+	    mkdir -pv /etc/xbps.d
 	    cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
 	    sed -i 's@https://alpha.de.repo.voidlinux.org@https://mirrors.bfsu.edu.cn/voidlinux@g' /etc/xbps.d/*-repository-*.conf
 	    xbps-install -S

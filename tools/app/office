@@ -237,7 +237,7 @@ install_libre_office() {
 }
 ###################
 patch_libreoffice() {
-    mkdir -p /prod/version
+    mkdir -pv /prod/version
     cd /usr/lib/libreoffice/program
     rm -f oosplash
     curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash

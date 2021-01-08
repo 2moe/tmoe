@@ -399,14 +399,14 @@ install_fcitx5_material_color_theme() {
     #printf '%s\n' '请前往github阅读使用说明'
     #printf '%s\n' 'https://github.com/hosxy/Fcitx5-Material-Color'
     if [ ! -e ${MATERIAL_COLOR_FOLDER} ]; then
-        mkdir -p ${MATERIAL_COLOR_FOLDER}
+        mkdir -pv ${MATERIAL_COLOR_FOLDER}
         git clone --depth=1 https://github.com/hosxy/Fcitx5-Material-Color.git ${MATERIAL_COLOR_FOLDER}
     else
         cd ${MATERIAL_COLOR_FOLDER}
         git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
     fi
 
-    mkdir -p ${FCITX5_CLASSUI_CONF_PATH}
+    mkdir -pv ${FCITX5_CLASSUI_CONF_PATH}
     cd ${FCITX5_CLASSUI_CONF_PATH}
     if ! grep -q 'Theme=Material-Color' 'classicui.conf'; then
         write_to_fcitx_classui_conf
@@ -451,7 +451,7 @@ install_gnome_shell_extension_kimpanel() {
 ############
 check_fcitx5_dict() {
     if [ ! -d ${FCITX5_DIICT_PATH} ]; then
-        mkdir -p ${FCITX5_DIICT_PATH}
+        mkdir -pv ${FCITX5_DIICT_PATH}
     fi
     DICT_FILE="${FCITX5_DIICT_PATH}/${DICT_NAME}"
     DICT_SHARE_FILE=".${FCITX5_DIICT_PATH}/${DICT_NAME}"

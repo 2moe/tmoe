@@ -46,7 +46,7 @@ install_python_web_novnc() {
 	fi
 
 	if [ ! -e "${HOME}/.vnc/utils/launch.sh" ]; then
-		[[ -e ${HOME}/.vnc ]] || mkdir -p ${HOME}/.vnc
+		[[ -e ${HOME}/.vnc ]] || mkdir -pv ${HOME}/.vnc
 		cd ${HOME}/.vnc
 		DEB_REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/n/novnc/'
 		THE_LATEST_FILE_VERSION=$(curl -L ${DEB_REPO_URL} | grep -v python | grep novnc | grep '\.deb' | grep all | awk -F '=' '{print $3}' | cut -d '"' -f 2 | tail -n 1)

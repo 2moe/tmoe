@@ -235,7 +235,7 @@ install_gui() {
     if [ ! -f "${IOSEVKA_TTF_FILE}" ]; then
         printf "${BLUE}%s${RESET}\n" "${IOSEVKA_TTF_FILE}"
         printf "${YELLOW}%s${RESET}\n" '正在刷新字体缓存...'
-        mkdir -p /usr/share/fonts/truetype/iosevka/
+        mkdir -pv /usr/share/fonts/truetype/iosevka/
         cd /tmp
         if [ -e "font.ttf" ]; then
             mv -f font.ttf "${IOSEVKA_TTF_FILE}"
@@ -893,7 +893,7 @@ tmoe_virtual_machine_desktop() {
 ################
 configure_vnc_xstartup() {
     auto_install_and_configure_fcitx4
-    #[[ -d "/var/run/dbus" ]] || mkdir -p /var/run/dbus
+    #[[ -d "/var/run/dbus" ]] || mkdir -pv /var/run/dbus
     mkdir -pv /run/dbus /var/run/dbus /var/lib/dbus/
     #if [ ! -s "/etc/machine-id" ]; then
     if [[ -n $(command -v dbus-uuidgen) ]]; then
@@ -906,10 +906,10 @@ configure_vnc_xstartup() {
     case ${LINUX_DISTRO} in
     debian) [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji ;;
     esac
-    mkdir -p ~/.vnc
+    mkdir -pv ~/.vnc
     cd ${HOME}/.vnc
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
-    mkdir -p /etc/X11/xinit /etc/tigervnc
+    mkdir -pv /etc/X11/xinit /etc/tigervnc
     rm -f ${XSESSION_FILE} 2>/dev/null
     cat >${XSESSION_FILE} <<-EndOfFile
 		#!/usr/bin/env bash
@@ -1175,7 +1175,7 @@ xfce4_color_scheme() {
 
     XFCE_TERMINAL_PATH="${HOME}/.config/xfce4/terminal/"
     if [ ! -e "${XFCE_TERMINAL_PATH}/terminalrc" ]; then
-        mkdir -p ${XFCE_TERMINAL_PATH}
+        mkdir -pv ${XFCE_TERMINAL_PATH}
         cd ${XFCE_TERMINAL_PATH}
         touch_xfce4_terminal_rc
     fi
@@ -1371,7 +1371,7 @@ install_xfce4_desktop() {
                     if [ ! $(command -v mlocate) ]; then
                         CUR=$(pwd)
                         TEMP_DIR='/tmp/.MLOCATE_TEMP_FOLDER'
-                        mkdir -p ${TEMP_DIR}
+                        mkdir -pv ${TEMP_DIR}
                         cd ${TEMP_DIR}
                         apt-get download mlocate
                         dpkg --unpack ./mlocate*.deb
@@ -1421,7 +1421,7 @@ install_xfce4_desktop() {
     if [ ! -e "/usr/share/icons/Breeze-Adapta-Cursor" ]; then
         download_arch_breeze_adapta_cursor_theme
     fi
-    mkdir -p ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
+    mkdir -pv ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/
     if [ ! -e "xfce4-desktop.xml" ]; then
         modify_the_default_xfce_wallpaper
@@ -1751,7 +1751,7 @@ debian_download_xubuntu_xenial_wallpaper() {
 ###############
 auto_configure_xfce4_panel() {
     XFCE_CONFIG_FOLDER="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml"
-    mkdir -p ${XFCE_CONFIG_FOLDER}
+    mkdir -pv ${XFCE_CONFIG_FOLDER}
     cd ${XFCE_CONFIG_FOLDER}
     cp -f ${TMOE_TOOL_DIR}/gui/config/xfce4-panel.xml ./
     CURRENT_USER_FILE=$(pwd)
@@ -2532,7 +2532,7 @@ tmoe_desktop_beautification() {
 ###########
 configure_conky() {
     cd ${HOME}
-    mkdir -p github
+    mkdir -pv github
     cd github
     git clone --depth=1 https://github.com/zagortenay333/Harmattan.git || git clone --depth=1 git://github.com/zagortenay333/Harmattan.git
     printf "%s\n" "进入${HOME}/github/Harmattan"
@@ -2790,9 +2790,9 @@ xubuntu_wallpapers() {
 ###############
 download_xubuntu_wallpaper() {
     if [ -d "${HOME}/图片" ]; then
-        mkdir -p ${HOME}/图片/xubuntu-community-artwork
+        mkdir -pv ${HOME}/图片/xubuntu-community-artwork
     else
-        mkdir -p ${HOME}/Pictures/xubuntu-community-artwork
+        mkdir -pv ${HOME}/Pictures/xubuntu-community-artwork
     fi
     THEME_NAME='xubuntu_wallpaper'
     WALLPAPER_NAME='xfce4/backdrops'
@@ -2867,9 +2867,9 @@ ubuntu_gnome_walllpapers() {
 ###############
 download_ubuntu_wallpaper() {
     if [ -d "${HOME}/图片" ]; then
-        mkdir -p ${HOME}/图片/ubuntu-wallpapers
+        mkdir -pv ${HOME}/图片/ubuntu-wallpapers
     else
-        mkdir -p ${HOME}/Pictures/ubuntu-wallpapers
+        mkdir -pv ${HOME}/Pictures/ubuntu-wallpapers
     fi
     THEME_NAME='ubuntu_wallpaper'
     WALLPAPER_NAME='backgrounds'
@@ -3004,9 +3004,9 @@ download_mint_backgrounds() {
     else
         CUSTOM_WALLPAPER_NAME="mint-backgrounds/linuxmint-${MINT_CODE}"
         if [ -d "${HOME}/图片" ]; then
-            mkdir -p ${HOME}/图片/mint-backgrounds
+            mkdir -pv ${HOME}/图片/mint-backgrounds
         else
-            mkdir -p ${HOME}/Pictures/mint-backgrounds
+            mkdir -pv ${HOME}/Pictures/mint-backgrounds
         fi
     fi
     THEME_NAME="mint_backgrounds_${MINT_CODE}"
@@ -3117,7 +3117,7 @@ download_deepin_wallpaper() {
 ##########
 download_manjaro_pkg() {
     check_theme_folder
-    mkdir -p /tmp/.${THEME_NAME}
+    mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     printf "%s\n" "${THEME_URL}"
     aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
@@ -3128,7 +3128,7 @@ link_to_debian_wallpaper() {
         if [ -d "${HOME}/图片" ]; then
             ln -sf /usr/share/backgrounds/kali/ ${HOME}/图片/kali
         else
-            mkdir -p ${HOME}/Pictures
+            mkdir -pv ${HOME}/Pictures
             ln -sf /usr/share/backgrounds/kali/ ${HOME}/Pictures/kali
         fi
     fi
@@ -3337,7 +3337,7 @@ download_ukui_theme() {
     beta_features_quick_install
 
     if [ ! -e '/usr/share/icons/ukui-icon-theme-default' ] && [ ! -e '/usr/share/icons/ukui-icon-theme' ]; then
-        mkdir -p /tmp/.ukui-gtk-themes
+        mkdir -pv /tmp/.ukui-gtk-themes
         cd /tmp/.ukui-gtk-themes
         UKUITHEME="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
@@ -3362,7 +3362,7 @@ download_ukui_theme() {
 }
 #################################
 download_arch_breeze_adapta_cursor_theme() {
-    mkdir -p /tmp/.breeze_theme
+    mkdir -pv /tmp/.breeze_theme
     cd /tmp/.breeze_theme
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/any/'
     curl -Lo index.html ${THEME_URL}
@@ -3427,7 +3427,7 @@ install_kali_undercover() {
     if [ "${DEBIAN_DISTRO}" = "kali" ]; then
         beta_features_quick_install
     else
-        mkdir -p /tmp/.kali-undercover-win10-theme
+        mkdir -pv /tmp/.kali-undercover-win10-theme
         cd /tmp/.kali-undercover-win10-theme
         UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
         aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
@@ -4112,7 +4112,7 @@ configure_xrdp() {
     #16 50 7
     #进入xrdp配置文件目录
     RETURN_TO_WHERE='configure_xrdp'
-    [[ -e /etc/xrdp/ ]] || mkdir -p /etc/xrdp
+    [[ -e /etc/xrdp/ ]] || mkdir -pv /etc/xrdp
     cd /etc/xrdp/
     TMOE_OPTION=$(
         whiptail --title "CONFIGURE XRDP" --menu "Type service xrdp start to start it" 0 0 0 \
@@ -4359,7 +4359,7 @@ xrdp_onekey() {
         beta_features_quick_install
     fi
     ##############
-    mkdir -p /etc/polkit-1/localauthority.conf.d /etc/polkit-1/localauthority/50-local.d/
+    mkdir -pv /etc/polkit-1/localauthority.conf.d /etc/polkit-1/localauthority/50-local.d/
     cat >/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf <<-'EndOfxrdp'
 		polkit.addRule(function(action, subject) {
 		if ((action.id == “org.freedesktop.color-manager.create-device” || action.id == “org.freedesktop.color-manager.create-profile” || action.id == “org.freedesktop.color-manager.delete-device” || action.id == “org.freedesktop.color-manager.delete-profile” || action.id == “org.freedesktop.color-manager.modify-device” || action.id == “org.freedesktop.color-manager.modify-profile”) && subject.isInGroup(“{group}”))
@@ -4386,7 +4386,7 @@ xrdp_onekey() {
 	ENDofpolkit
     ###################
     if [ ! -e "${HOME}/.config/tmoe-linux/xrdp.ini" ]; then
-        mkdir -p ${HOME}/.config/tmoe-linux/
+        mkdir -pv ${HOME}/.config/tmoe-linux/
         cd /etc/xrdp/
         cp -p startwm.sh xrdp.ini ${HOME}/.config/tmoe-linux/
     fi
@@ -4959,7 +4959,7 @@ check_vnc_passsword_length() {
         press_enter_to_return
         set_vnc_passwd
     else
-        mkdir -p ${HOME}/.vnc
+        mkdir -pv ${HOME}/.vnc
         cd ${HOME}/.vnc
         #case ${LINUX_DISTRO} in
         if [ $(command -v vncpasswd) ]; then

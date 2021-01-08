@@ -35,7 +35,7 @@ tmoe_uefi_boot_manager() {
 }
 ###########
 tmoe_backup_efi() {
-	mkdir -p ${CONFIG_FOLDER}
+	mkdir -pv ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
 	CURRENT_EFI_DISK=$(df -h | grep '/boot/efi' | awk '{print $1}')
 	EFI_BACKUP_NAME='efi_backup.img'

@@ -8,7 +8,7 @@ tmoe_docker_init() {
     fi
     MOUNT_DOCKER_FOLDER=/media/docker
     if [ ! -d "${MOUNT_DOCKER_FOLDER}" ]; then
-        mkdir -p ${MOUNT_DOCKER_FOLDER}
+        mkdir -pv ${MOUNT_DOCKER_FOLDER}
         chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${MOUNT_DOCKER_FOLDER}
     fi
     TMOE_LINUX_DOCKER_SHELL_FILE="${MOUNT_DOCKER_FOLDER}/.tmoe-linux-docker.sh"
@@ -637,7 +637,7 @@ add_current_user_to_docker_group() {
 ##########
 docker_163_mirror() {
     if [ ! -d /etc/docker ]; then
-        mkdir -p /etc/docker
+        mkdir -pv /etc/docker
     fi
     cd /etc/docker
     if [ ! -e daemon.json ]; then
@@ -861,7 +861,7 @@ unxz_deb_file() {
 download_qemu_user() {
     cd ${TMPDIR}
     TEMP_FOLDER='.QEMU_USER_BIN'
-    mkdir -p ${TEMP_FOLDER}
+    mkdir -pv ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
     aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 }
