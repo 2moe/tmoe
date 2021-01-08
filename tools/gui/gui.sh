@@ -4824,7 +4824,7 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     if [ "${HOME}" != "/root" ]; then
         cp -rpf ~/.vnc /root/
-        chown -R root:root /root/.vnc
+        chown -R 0:0 /root/.vnc
     fi
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         #printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"

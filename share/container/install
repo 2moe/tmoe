@@ -1938,7 +1938,7 @@ check_current_user_name_and_group() {
 #fi
 case ${TMOE_CHROOT} in
 true) ;;
-#su -c "chown -Rv root:root ${DEBIAN_CHROOT}"
+#su -c "chown -Rv 0:0 ${DEBIAN_CHROOT}"
 *)
 	case ${LINUX_DISTRO} in
 	Android) ;;

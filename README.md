@@ -233,7 +233,7 @@ Android) TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux" ;;
 esac
 TMOE_GIT_URL="https://github.com/2moe/tmoe-linux"
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-[[ -e ${TMOE_GIT_DIR}/.git ]] || mkdir -p ${TMOE_LINUX_DIR}
+[[ -e ${TMOE_GIT_DIR}/.git ]] || mkdir -pv ${TMOE_LINUX_DIR}
 git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 ```
 
