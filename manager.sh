@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3966,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3968,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -106,8 +106,8 @@ set_terminal_color() {
 }
 #######
 check_current_user_name_and_group() {
-	CURRENT_USER_NAME=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $1}' | head -n 1)
-	CURRENT_USER_GROUP=$(sed -n p /etc/passwd | grep "${HOME}" | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
+	CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}' | head -n 1)
+	CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $5}' | cut -d ',' -f 1 | head -n 1)
 	if [ -z "${CURRENT_USER_GROUP}" ]; then
 		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
 	fi
