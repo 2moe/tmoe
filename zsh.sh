@@ -34,6 +34,9 @@ check_tmoe_locale_file() {
 	else
 		TMOE_LANG=${LANG}
 	fi
+	if [ $(command -v debian-i) ]; then
+		ln -svf $(command -v debian-i) /usr/local/bin/tmoe
+	fi
 }
 #######
 do_you_want_to_delete_the_zsh_script_file() {
