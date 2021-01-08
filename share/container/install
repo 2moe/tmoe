@@ -612,7 +612,10 @@ creat_proot_startup_script() {
 #########
 if [ ! -e "${CONFIG_FOLDER}/gitstatus" ]; then
 	mkdir -pv ${CONFIG_FOLDER}/gitstatus
+else
+	${TMOE_CHROOT_PREFIX} chmod 777 -Rv ${CONFIG_FOLDER}/gitstatus
 fi
+
 if grep -q 'Ubuntu' ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null; then
 	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/root/.hushlogin
 	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/home/ubuntu/.hushlogin 2>/dev/null
