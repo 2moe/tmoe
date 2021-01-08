@@ -71,7 +71,7 @@ tmoe_manager_env() {
 	TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
 	#${TMOE_CHROOT_PREFIX}
 	mkdir -pv ${DEBIAN_CHROOT}
-	chmod 755 -v ${DEBIAN_CHROOT}
+	chmod 755 -v ${DEBIAN_CHROOT} || ${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
 	#mkdir -p ${TMOE_CONTAINER_DIR}
 	[[ -n ${TMPDIR} ]] || TMPDIR=/tmp
 }
