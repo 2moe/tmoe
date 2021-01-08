@@ -1895,6 +1895,7 @@ check_current_user_name_and_group() {
 # sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' "${PREFIX}/bin")
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
 #fi
+${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
 case ${TMOE_CHROOT} in
 true) ;;
 #su -c "chown -Rv root:root ${DEBIAN_CHROOT}"
