@@ -901,7 +901,7 @@ configure_vnc_xstartup() {
     else
         printf "%s\n" "0ecb780817003d3342d16adb5ff1dfa9" >"/etc/machine-id"
     fi
-    cp -pv "/etc/machine-id" /var/lib/dbus/
+    ln -svf "/etc/machine-id" /var/lib/dbus/
     #fi
     case ${LINUX_DISTRO} in
     debian) [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji ;;

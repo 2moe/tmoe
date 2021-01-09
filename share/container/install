@@ -279,7 +279,7 @@ uncompress_other_format_file() {
 		fi
 	fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
 		else
@@ -316,7 +316,7 @@ uncompress_tar_gz_file() {
 		fi
 	fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
 		else
@@ -345,7 +345,7 @@ uncompress_tar_xz_file() {
 		check_tar_xz_pv
 	fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
 		else
@@ -368,7 +368,7 @@ uncompress_tar_zst_file() {
 		fi
 	fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" ]]; then
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
 			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I zstd -px
 		else
