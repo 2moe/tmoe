@@ -937,7 +937,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
 	if [[ -e ${NEOFETCH_BIN_FILE} ]]; then
 		chmod a+x ${NEOFETCH_BIN_FILE}
-		if [[ -n $(command -v bash) ]]; then
+		if [[ -e /usr/bin/bash || -e /bin/bash ]]; then
 			printf "%s\n" "${GREEN}neofetch${RESET}"
 			${NEOFETCH_BIN_FILE}
 		fi
