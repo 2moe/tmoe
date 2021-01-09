@@ -1314,6 +1314,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	cd /tmp
 	rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
 	cd ${HOME}
+	#检测两次
+	[[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
 	}
 	############
 	arch_linux_yay() {
