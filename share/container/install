@@ -1343,6 +1343,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ "$(cut -c 1-4 /etc/issue)" = "Arch" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || arch_linux_mirror_list
 		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
+		printf "%s\n" "${GREEN}pacman-key ${YELLOW}--init${RESET}"
+		printf "%s\n" "${GREEN}pacman-key ${YELLOW}--populate${RESET}"
 		pacman-key --init
 	    pacman-key --populate
 		if [ -e "/etc/mkinitcpio.d/linux-armv7.preset" ]; then
@@ -1354,6 +1356,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || manjaro_mirror_list
 		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
+		printf "%s\n" "${GREEN}pacman-key ${YELLOW}--init${RESET}"
+		printf "%s\n" "${GREEN}pacman-key ${YELLOW}--populate${RESET}"
 		pacman-key --init
 	    pacman-key --populate
 		printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}base base-devel${RESET}"
