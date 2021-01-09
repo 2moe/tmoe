@@ -206,7 +206,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	     set -- "${DEBIAN_CHROOT}" "\$@"
 	     set -- "chroot" "\$@"
 	     unset LD_PRELOAD
-		 TMOE_CHROOT_EXEC="exec \$@"
+		 TMOE_CHROOT_EXEC="\$@"
 		 su -c "\${TMOE_CHROOT_EXEC}"
 	    }
 	    main "\$@"
