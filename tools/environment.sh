@@ -1055,12 +1055,19 @@ install_typora() {
 ################
 chmod_4755_chrome_sandbox() {
     SANDBOX_FILE='/opt/electron/chrome-sandbox'
-    chmod 4755 ${SANDBOX_FILE}
+    chmod 4755 -v ${SANDBOX_FILE}
 }
 ##############
 download_the_latest_electron() {
     latest_electron
     download_electron
+    #twice
+    if [ ! -e "/opt/electron/electron" ]; then
+        ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
+        latest_electron_ali
+        download_electron
+    fi
+
     if [ ! -e "/usr/bin/electron" ]; then
         ln -svf /opt/electron/electron /usr/bin/
     fi
@@ -1101,8 +1108,13 @@ install_electron_v8() {
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
         fix_fedora_electron_libxssl
         download_electron
-        chmod 4755 ${DOWNLOAD_PATH}/chrome-sandbox
     fi
+    #检测twice
+    if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
+        ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
+        download_electron
+    fi
+    chmod 4755 -v ${DOWNLOAD_PATH}/chrome-sandbox
 }
 ##############
 download_tmoe_electron_app() {
@@ -1174,6 +1186,13 @@ latest_electron() {
     DOWNLOAD_PATH="/opt/electron"
 }
 ###########
+latest_electron_ali() {
+    ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
+    #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
+    #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
+    ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^11\." | sort -n | tail -n 1)
+    DOWNLOAD_PATH="/opt/electron"
+}
 download_electron() {
     case ${ARCH_TYPE} in
     amd64) ARCH_TYPE_02='x64' ;;

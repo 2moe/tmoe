@@ -326,7 +326,7 @@ git_clone_tmoe_linux() {
 	cp -v ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &
 	if [ -e ${TMOE_GIT_DIR}/share/app/tmoe ]; then
-		rm -f /usr/local/bin/tmoe
+		rm -vf /usr/local/bin/tmoe 2>/dev/null
 		ln -svf ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
 	fi
 	if [ ! $(command -v startvnc) ]; then
