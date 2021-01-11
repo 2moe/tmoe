@@ -936,6 +936,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
+		ln -s $(command -v apt) /usr/bin/pkg
+	fi
 	cd ${HOME}
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
 	if [[ -e ${NEOFETCH_BIN_FILE} ]]; then
@@ -1381,9 +1384,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			fi
 		done
 		unset i
-		if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
-			ln -sv $(command -v apt) /usr/bin/pkg
-		fi
 		;;
 	esac
 	choose_vnc_port_5901_or_5902() {
