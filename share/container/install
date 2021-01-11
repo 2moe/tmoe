@@ -413,10 +413,10 @@ mkdir -pv ${DEBIAN_CHROOT}/tmp
 case ${LOCALFONT} in
 ${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT} | ${IOSEVKA_FONT_02} | ${INVONSOLATA_FONT}) cp -f ~/.termux/font.ttf ${DEBIAN_CHROOT}/tmp 2>/dev/null ;;
 *)
-	MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/MesloLGS-NF-Bold"
+	MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/Iosevka"
 	if [ -e "${MESLO_FONT_DIR}" ]; then
 		cd ${MESLO_FONT_DIR}
-		${TMOE_CHROOT_PREFIX} cp -f 'MesloLGS NF Bold.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
+		${TMOE_CHROOT_PREFIX} cp -f 'Iosevka Term Bold Italic Nerd Font Complete Mono Windows Compatible.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
 	fi
 	;;
 esac
