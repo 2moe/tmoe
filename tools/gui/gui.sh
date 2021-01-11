@@ -300,7 +300,10 @@ download_iosevka_ttf_font() {
             fi
         done
 
-        if [[ -z ${FONT_DIR} ]]; then
+        if [[ -e "/etc/gitstatus" ]]; then
+            [[ ! -e /root/.gitstatus ]] || cp -rfv /root/.gitstatus/* /etc/gitstatus
+            FONT_DIR=/etc/gitstatus
+        else
             FONT_DIR="/root/.cache/gitstatus"
             mkdir -pv ${FONT_DIR}
         fi
@@ -308,14 +311,17 @@ download_iosevka_ttf_font() {
         if [[ -e ${FONT_DIR}/Iosevka-Term-Mono.tar.xz ]]; then
             tar -Jxvf ${FONT_DIR}/Iosevka-Term-Mono.tar.xz
             mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
-            break
         fi
 
         if [[ ! -e "${IOSEVKA_TTF_FILE}" ]]; then
             cd ${FONT_DIR}
-            curl -Lo 'Iosevka.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
-            tar -Jxvf 'Iosevka.tar.xz'
+            curl -Lo 'Iosevka-Term-Mono.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
+            tar -Jxvf 'Iosevka-Term-Mono.tar.xz'
             mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
+        fi
+        #twice
+        if [[ ! -e "${IOSEVKA_TTF_FILE}" ]]; then
+            rm -fv ${FONT_DIR}/Iosevka-Term-Mono.tar.xz
         fi
         cd /usr/share/fonts/truetype/iosevka/
         mkfontscale 2>/dev/null
