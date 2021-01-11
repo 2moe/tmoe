@@ -1,7 +1,28 @@
 #!/usr/bin/env bash
 ############################################
 gui_main() {
+    unset AUTO_INSTALL_GUI
     case "$1" in
+    --auto-install-gui-xfce)
+        docker_auto_install_gui_env
+        install_xfce4_desktop
+        ;;
+    --auto-install-gui-lxde)
+        docker_auto_install_gui_env
+        install_lxde_desktop
+        ;;
+    --auto-install-gui-lxqt)
+        docker_auto_install_gui_env
+        install_lxqt_desktop
+        ;;
+    --auto-install-gui-mate)
+        docker_auto_install_gui_env
+        install_mate_desktop
+        ;;
+    --auto-install-gui-kde)
+        docker_auto_install_gui_env
+        install_kde_plasma5_desktop
+        ;;
     --install-gui | install-gui)
         install_gui
         ;;
@@ -16,12 +37,31 @@ gui_main() {
         ;;
     --vncpasswd) set_vnc_passwd ;;
     --fix-dbus) fix_vnc_dbus_launch ;;
-    *)
-        install_gui
-        ;;
+    *) install_gui ;;
     esac
 }
 #############################
+docker_auto_install_gui_env() {
+    : <<\EOF
+    check_linux_distro
+    check_architecture
+    gnu_linux_env
+    source ${TMOE_TOOL_DIR}/environment.sh 2>/dev/null
+    check_current_user_name_and_group 2>/dev/null
+EOF
+    AUTO_INSTALL_GUI=true
+    download_iosevka_ttf_font
+    preconfigure_gui_dependecies_02
+    REMOVE_UDISK2=false
+    AUTO_INSTALL_FCITX4=true
+    AUTO_INSTALL_KALI_TOOLS=false
+    AUTO_INSTALL_ELECTRON_APPS=true
+    UBUNTU_DESKTOP=true
+    mkdir -p ~/.vnc
+    printf "please delete the invalid passwd file" >passwd
+    source ${TMOE_TOOL_DIR}/app/browser.sh --auto-install-chromium
+}
+############################
 modify_other_vnc_conf() {
     #15 60 7
     MODIFYOTHERVNCCONF=$(whiptail --title "Modify vnc server conf" --menu "Type startvnc to start vncserver,输入startvnc启动vnc服务" 0 0 0 \
@@ -208,7 +248,7 @@ catimg_preview_lxde_mate_xfce_02() {
     fi
 }
 install_gui() {
-    IOSEVKA_TTF_FILE="/usr/share/fonts/truetype/iosevka/Iosevka.ttf"
+    IOSEVKA_TTF_FILE="/usr/share/fonts/truetype/iosevka/Iosevka-Term-Mono.ttf"
     [[ "${WINDOWS_DISTRO}" != 'WSL' ]] || source ${TMOE_TOOL_DIR}/gui/wsl
     [[ ! -s "${IOSEVKA_TTF_FILE}" ]] || standand_desktop_installation #该字体检测两次
     check_zstd
@@ -232,6 +272,15 @@ install_gui() {
     elif [[ ${WINDOWS_DISTRO} = 'WSL' ]]; then
         catimg_preview_lxde_mate_xfce_02
     fi
+    download_iosevka_ttf_font
+    #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
+    #printf "%s\n" "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
+    printf "%s\n" "按${GREEN}回车键${RESET}${RED}选择${RESET}您需要${YELLOW}安装${RESET}的${BLUE}图形桌面环境${RESET}"
+    RETURN_TO_WHERE="tmoe_linux_tool_menu"
+    do_you_want_to_continue
+    standand_desktop_installation
+}
+download_iosevka_ttf_font() {
     if [ ! -f "${IOSEVKA_TTF_FILE}" ]; then
         printf "${BLUE}%s${RESET}\n" "${IOSEVKA_TTF_FILE}"
         printf "${YELLOW}%s${RESET}\n" '正在刷新字体缓存...'
@@ -240,22 +289,16 @@ install_gui() {
         if [ -e "font.ttf" ]; then
             mv -f font.ttf "${IOSEVKA_TTF_FILE}"
         else
-            curl -Lo 'Iosevka.tar.xz' "https://gitee.com/ak2/iosevka-bold/raw/master/Iosevka.tar.xz"
+            curl -Lo 'Iosevka.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
             tar -Jxvf 'Iosevka.tar.xz'
-            rm -f 'Iosevka.tar.xz'
-            mv -f Iosevka.ttf "${IOSEVKA_TTF_FILE}"
+            rm -vf 'Iosevka.tar.xz'
+            mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
         fi
         cd /usr/share/fonts/truetype/iosevka/
         mkfontscale 2>/dev/null
         mkfontdir 2>/dev/null
         fc-cache 2>/dev/null
     fi
-    #curl -LfsS 'https://gitee.com/mo2/pic_api/raw/test/2020/03/15/a7IQ9NnfgPckuqRt.jpg' | catimg -
-    #printf "%s\n" "建议缩小屏幕字体，并重新加载图片，以获得更优的显示效果。"
-    printf "%s\n" "按${GREEN}回车键${RESET}${RED}选择${RESET}您需要${YELLOW}安装${RESET}的${BLUE}图形桌面环境${RESET}"
-    RETURN_TO_WHERE="tmoe_linux_tool_menu"
-    do_you_want_to_continue
-    standand_desktop_installation
 }
 ########################
 preconfigure_gui_dependecies_02() {
@@ -1065,6 +1108,8 @@ build_xfce4_panel_profiles() {
 }
 ###################
 debian_xfce4_extras() {
+    apt_purge_libfprint
+    remove_udisk_and_gvfs
     case ${LINUX_DISTRO} in
     debian)
         for i in qt5ct mugshot; do
@@ -1347,46 +1392,53 @@ auto_install_and_configure_fcitx4() {
     fi
 }
 #######
+choose_xfce_or_xubuntu() {
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        if (whiptail --title "Xfce or Xubuntu-desktop" --yes-button "xfce" --no-button "xubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of xubuntu.\n前者为普通xfce,后者为xubuntu' 0 0); then
+            printf ""
+        else
+            UBUNTU_DESKTOP=true
+            DEPENDENCY_01="xubuntu-desktop"
+            case ${TMOE_PROOT} in
+            false) ;;
+            true | no)
+                #mkdir -pv /var/lib/mlocate/
+                #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
+                if [ ! $(command -v mlocate) ]; then
+                    CUR=$(pwd)
+                    TEMP_DIR='/tmp/.MLOCATE_TEMP_FOLDER'
+                    mkdir -pv ${TEMP_DIR}
+                    cd ${TEMP_DIR}
+                    apt-get download mlocate
+                    dpkg --unpack ./mlocate*.deb
+                    cd ${CUR}
+                    rm -rvf ${TEMP_DIR}
+                    cp -f ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
+                    chmod a+x -v /var/lib/dpkg/info/mlocate.postinst
+                    apt-mark hold mlocate
+                    #sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
+                fi
+                ;;
+            esac
+        fi
+        ;;
+    esac
+}
 install_xfce4_desktop() {
-    xfce_warning
-    do_you_want_to_install_fcitx4
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        xfce_warning
+        do_you_want_to_install_fcitx4
+    fi
     REMOTE_DESKTOP_SESSION_01='xfce4-session'
     REMOTE_DESKTOP_SESSION_02='startxfce4'
     DEPENDENCY_01="xfce4"
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
-        case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "Xfce or Xubuntu-desktop" --yes-button "xfce" --no-button "xubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of xubuntu.\n前者为普通xfce,后者为xubuntu' 0 0); then
-                printf ""
-            else
-                UBUNTU_DESKTOP=true
-                DEPENDENCY_01="xubuntu-desktop"
-                case ${TMOE_PROOT} in
-                false) ;;
-                true | no)
-                    #mkdir -pv /var/lib/mlocate/
-                    #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
-                    if [ ! $(command -v mlocate) ]; then
-                        CUR=$(pwd)
-                        TEMP_DIR='/tmp/.MLOCATE_TEMP_FOLDER'
-                        mkdir -pv ${TEMP_DIR}
-                        cd ${TEMP_DIR}
-                        apt-get download mlocate
-                        dpkg --unpack ./mlocate*.deb
-                        cd ${CUR}
-                        rm -rvf ${TEMP_DIR}
-                        cp -f ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
-                        chmod a+x -v /var/lib/dpkg/info/mlocate.postinst
-                        apt-mark hold mlocate
-                        #sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
-                    fi
-                    ;;
-                esac
-            fi
-            ;;
-        esac
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            choose_xfce_or_xubuntu
+        fi
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
@@ -1411,7 +1463,11 @@ install_xfce4_desktop() {
     "alpine") DEPENDENCY_01="faenza-icon-theme xfce4-whiskermenu-plugin xfce4 xfce4-terminal" ;;
     esac
     ##################
-    beta_features_quick_install
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
     ####################
     case ${LINUX_DISTRO} in
     alpine) ;;
@@ -1762,8 +1818,10 @@ install_lxde_desktop() {
     REMOTE_DESKTOP_SESSION_01='lxsession'
     REMOTE_DESKTOP_SESSION_02='startlxde'
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxde-core、lxterminal、tightvncserver。'
-    do_you_want_to_continue
-    do_you_want_to_install_fcitx4
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        do_you_want_to_continue
+        do_you_want_to_install_fcitx4
+    fi
     DEPENDENCY_01='lxde'
     case "${LINUX_DISTRO}" in
     "debian")
@@ -1787,7 +1845,11 @@ install_lxde_desktop() {
         ;;
     esac
     ###################
-    beta_features_quick_install
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
     apt_purge_libfprint
     configure_vnc_xstartup
 }
@@ -1827,28 +1889,33 @@ arch_linux_mate_warning() {
     DEPENDENCY_01='mate mate-extra'
 }
 ###############
+choose_mate_or_ubuntu_mate() {
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        if (whiptail --title "Mate or Ubuntu-MATE-full-desktop" --yes-button "mate" --no-button "ubuntu-mate" --yesno 'The former is more streamlined, and the latter includes some extra software of ubuntu-mate.\n前者为普通mate,后者为ubuntu-mate' 0 0); then
+            printf ""
+        else
+            UBUNTU_DESKTOP=true
+            DEPENDENCY_01="ubuntu-mate-desktop"
+        fi
+        ;;
+    esac
+}
 install_mate_desktop() {
     REMOTE_DESKTOP_SESSION_01='mate-session'
     REMOTE_DESKTOP_SESSION_02='mate-panel'
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、tightvncserver、mate-desktop-environment和mate-terminal等软件包'
-    do_you_want_to_continue
-    do_you_want_to_install_fcitx4
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        do_you_want_to_continue
+        do_you_want_to_install_fcitx4
+    fi
     DEPENDENCY_01='mate'
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
         #apt autopurge -y ^libfprint
         #apt autoclean
-        case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "Mate or Ubuntu-MATE-full-desktop" --yes-button "mate" --no-button "ubuntu-mate" --yesno 'The former is more streamlined, and the latter includes some extra software of ubuntu-mate.\n前者为普通mate,后者为ubuntu-mate' 0 0); then
-                printf ""
-            else
-                UBUNTU_DESKTOP=true
-                DEPENDENCY_01="ubuntu-mate-desktop"
-            fi
-            ;;
-        esac
+        choose_mate_or_ubuntu_mate
         dpkg --configure -a
         auto_select_keyboard_layout
         apt clean
@@ -1877,11 +1944,27 @@ install_mate_desktop() {
         ;;
     esac
     ####################
-    beta_features_quick_install
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
     apt_purge_libfprint
     configure_vnc_xstartup
 }
 #############
+choose_lxqt_or_lubuntu() {
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        if (whiptail --title "Lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
+            printf ""
+        else
+            UBUNTU_DESKTOP=true
+            DEPENDENCY_01="lubuntu-desktop"
+        fi
+        ;;
+    esac
+}
 ######################
 #DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
 install_lxqt_desktop() {
@@ -1889,21 +1972,16 @@ install_lxqt_desktop() {
     REMOTE_DESKTOP_SESSION_02='lxqt-session'
     DEPENDENCY_01="lxqt"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、lxqt-core、lxqt-config、qterminal和tightvncserver等软件包。'
-    do_you_want_to_continue
-    do_you_want_to_install_fcitx4
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        do_you_want_to_continue
+        do_you_want_to_install_fcitx4
+    fi
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01="lxqt-core qterminal xfwm4 xfwm4-theme-breeze lxqt-config"
-        case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "Lxqt or Lubuntu-desktop" --yes-button "lxqt" --no-button "lubuntu" --yesno 'The former is more streamlined, and the latter includes some extra software of lubuntu.\n前者为普通lxqt,后者为lubuntu' 0 0); then
-                printf ""
-            else
-                UBUNTU_DESKTOP=true
-                DEPENDENCY_01="lubuntu-desktop"
-            fi
-            ;;
-        esac
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            choose_lxqt_or_lubuntu
+        fi
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
@@ -1917,7 +1995,11 @@ install_lxqt_desktop() {
         ;;
     esac
     ####################
-    beta_features_quick_install
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
     apt_purge_libfprint
     configure_vnc_xstartup
 }
@@ -1968,9 +2050,45 @@ ENDofTable
     do_you_want_to_continue
 }
 ###############
+choose_kde_or_kubuntu() {
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
+            if (whiptail --title "kde-plasma or kde-full" --yes-button "minimal" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
+                DEPENDENCY_01="kde-plasma-desktop"
+            else
+                DEPENDENCY_01="kde-full"
+            fi
+        else
+            UBUNTU_DESKTOP=true
+            DEPENDENCY_01="kubuntu-desktop"
+        fi
+        ;;
+    *)
+        if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
+            DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
+        else
+            if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件，后者为KDE全家桶' 0 0); then
+                DEPENDENCY_01="tigervnc-standalone-server kde-standard"
+            else
+                DEPENDENCY_01="tigervnc-standalone-server kde-full"
+            fi
+        fi
+        ;;
+    esac
+}
+choose_arch_kde_lite_or_full() {
+    if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde全家桶' 0 0); then
+        DEPENDENCY_01="plasma-desktop xorg konsole discover"
+    else
+        DEPENDENCY_01="plasma-meta plasma-wayland-session kde-applications-meta sddm sddm-kcm"
+    fi
+}
 install_kde_plasma5_desktop() {
-    kde_warning
-    do_you_want_to_install_fcitx4
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        kde_warning
+        do_you_want_to_install_fcitx4
+    fi
     REMOTE_DESKTOP_SESSION_01='startplasma-x11'
     REMOTE_DESKTOP_SESSION_02='startkde'
     DEPENDENCY_01="plasma-desktop"
@@ -1980,31 +2098,9 @@ install_kde_plasma5_desktop() {
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
         DEPENDENCY_01="kde-plasma-desktop"
-        case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
-                if (whiptail --title "kde-plasma or kde-full" --yes-button "minimal" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
-                    DEPENDENCY_01="kde-plasma-desktop"
-                else
-                    DEPENDENCY_01="kde-full"
-                fi
-            else
-                UBUNTU_DESKTOP=true
-                DEPENDENCY_01="kubuntu-desktop"
-            fi
-            ;;
-        *)
-            if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
-                DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
-            else
-                if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件，后者为KDE全家桶' 0 0); then
-                    DEPENDENCY_01="tigervnc-standalone-server kde-standard"
-                else
-                    DEPENDENCY_01="tigervnc-standalone-server kde-full"
-                fi
-            fi
-            ;;
-        esac
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            choose_kde_or_kubuntu
+        fi
         dpkg --configure -a
         auto_select_keyboard_layout
         apt clean
@@ -2016,18 +2112,11 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01='@KDE'
         ;;
     "arch")
-        DEPENDENCY_01="plasma-desktop xorg konsole sddm sddm-kcm"
-        if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde全家桶' 0 0); then
-            DEPENDENCY_01="plasma-desktop xorg konsole discover"
-        else
-            DEPENDENCY_01="plasma-meta plasma-wayland-session kde-applications-meta sddm sddm-kcm"
+        # sddm sddm-kcm
+        DEPENDENCY_01="plasma-desktop xorg konsole discover"
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            choose_arch_kde_lite_or_full
         fi
-        #printf "%s\n" "如需安装额外软件包，请手动输pacman -S plasma plasma-wayland-session kde-applications"
-        #kdebase
-        #phonon-qt5
-        #pacman -S --noconfirm sddm sddm-kcm
-        #中文输入法
-        #pacman -S fcitx fcitx-rime fcitx-im kcm-fcitx fcitx-sogoupinyin
         ;;
     "void") DEPENDENCY_01="kde" ;;
     "gentoo")
@@ -2045,7 +2134,11 @@ install_kde_plasma5_desktop() {
         ;;
     esac
     ####################
-    beta_features_quick_install
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
     apt_purge_libfprint
     configure_vnc_xstartup
 }
@@ -3567,7 +3660,9 @@ x11vnc_warning() {
 			Do you want to configure x11vnc? 
 	EOF
     RETURN_TO_WHERE='configure_x11vnc'
-    do_you_want_to_continue
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        do_you_want_to_continue
+    fi
     #stopvnc 2>/dev/null
 
     #suse的x11vnc默认由tigervnc提供，此处remove掉
@@ -3599,7 +3694,11 @@ x11vnc_warning() {
     fi
 
     if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
-        beta_features_quick_install
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            beta_features_quick_install
+        else
+            different_distro_software_install
+        fi
     fi
     #音频控制器单独检测
     if [[ ! $(command -v pavucontrol) && ! $(command -v pavucontrol-qt) ]]; then
@@ -4666,8 +4765,7 @@ case_debian_distro_and_install_vnc() {
     esac
 }
 #########
-first_configure_startvnc() {
-    #卸载udisks2，会破坏mate和plasma的依赖关系。
+remove_udisk_and_gvfs() {
     case "${TMOE_PROOT}" in
     true | no)
         if [ ${REMOVE_UDISK2} = 'true' ]; then
@@ -4681,7 +4779,11 @@ first_configure_startvnc() {
         fi
         ;;
     esac
-
+}
+##########
+first_configure_startvnc() {
+    #卸载udisks2，会破坏mate和plasma的依赖关系。
+    remove_udisk_and_gvfs
     configure_startvnc
     configure_startxsdl
     chmod +x startvnc stopvnc startxsdl
@@ -4690,9 +4792,14 @@ first_configure_startvnc() {
     #/usr/local/bin/startxsdl
     #else
     #|stretch|jessie    #if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
-    case ${LINUX_DISTRO} in
-    debian) which_vnc_server_do_you_prefer ;;
-    esac
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        case ${LINUX_DISTRO} in
+        debian) which_vnc_server_do_you_prefer ;;
+        esac
+    else
+        VNC_SERVER_BIN=tigervnc
+        case_debian_distro_and_install_vnc
+    fi
     #fi
     ######################
     dpkg --configure -a 2>/dev/null
@@ -4747,13 +4854,18 @@ first_configure_startvnc() {
         RESOLUTION=''
     fi
     ##########
-    if [ ! -z "${RESOLUTION}" ]; then
-        if (whiptail --title "Is your resolution ${RESOLUTION}?" --yes-button 'YES' --no-button 'NO' --yesno "检测到您的宿主机为Android系统,且分辨率为${RESOLUTION}" 0 50); then
-            printf "%s\n" "Your resolution is ${RESOLUTION}"
-        else
-            RESOLUTION='1440x720'
-            TMOE_HIGH_DPI='default'
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        if [ ! -z "${RESOLUTION}" ]; then
+            if (whiptail --title "Is your resolution ${RESOLUTION}?" --yes-button 'YES' --no-button 'NO' --yesno "检测到您的宿主机为Android系统,且分辨率为${RESOLUTION}" 0 50); then
+                printf "%s\n" "Your resolution is ${RESOLUTION}"
+            else
+                RESOLUTION='1440x720'
+                TMOE_HIGH_DPI='default'
+            fi
         fi
+    else
+        RESOLUTION='1440x720'
+        TMOE_HIGH_DPI='default'
     fi
     ###########
     case "${REMOTE_DESKTOP_SESSION_01}" in
@@ -4878,7 +4990,9 @@ first_configure_startvnc() {
     printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
     printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc${RESET} & ${PURPLE}stopvnc${RESET}"
-    press_enter_to_continue
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        press_enter_to_continue
+    fi
     printf '%s\n' "注：${GREEN}配置完${RESET}本工具所支持的所有VNC,将${BLUE}解锁成就*°▽°*${RESET}"
     printf '%s\n' '------------------------'
     printf '%s\n' '三：'
@@ -4899,7 +5013,9 @@ do_you_want_to_configure_novnc() {
     printf "%s\n" "Do you want to configure novnc?"
     printf "%s\n" "您是否需要配置${BLUE}novnc${RESET}？"
     RETURN_TO_WHERE='software_center'
-    do_you_want_to_continue
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        do_you_want_to_continue
+    fi
     source ${TMOE_TOOL_DIR}/gui/install_novnc
     cd /usr/local/bin/
     [[ ! -e novnc ]] || rm -f novnc 2>/dev/null

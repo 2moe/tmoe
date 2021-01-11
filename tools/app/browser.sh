@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 ####################
+tmoe_browser_main() {
+    case "${1}" in
+    --auto-install-chromium)
+        AUTO_INSTALL_CHROMIUM=true
+        ;;
+    *)
+        unset AUTO_INSTALL_CHROMIUM
+        tmoe_browser_menu
+        ;;
+    esac
+}
+####################
 ubuntu_bionic_chromium() {
     BIONIC_CHROMIUM_LIST_FILE="/etc/apt/sources.list.d/bionic-chromium.list"
     if ! grep -q '^deb.*bionic-update' "/etc/apt/sources.list"; then
@@ -58,10 +70,19 @@ ubuntu_ppa_chromium() {
         printf "%s\n" "对于arm64和amd64架构的系统，本工具将下载deb包，而非从snap商店下载。您当前使用的是${ARCH_TYPE}架构！由于新版Ubuntu调用了snap商店的软件源来安装chromium,故请自行执行apt install chromium-browser"
         ;;
     esac
-    press_enter_to_return
-    tmoe_browser_menu
+    if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
+        press_enter_to_return
+        tmoe_browser_menu
+    fi
 }
 ###############
+check_ubuntu_version_and_install_chromium() {
+    if egrep -q 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
+        ubuntu_bionic_chromium
+    else
+        ubuntu_ppa_chromium
+    fi
+}
 ubuntu_install_chromium_browser() {
     if [ $(command -v chromium-browser) ]; then
         if (whiptail --title "CHROMIUM升级与卸载" --yes-button "upgrade" --no-button "remove" --yesno "Do you want to upgrade the chromium or remove it?" 8 50); then
@@ -73,11 +94,7 @@ ubuntu_install_chromium_browser() {
             tmoe_browser_menu
         fi
     fi
-    if egrep -q 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
-        ubuntu_bionic_chromium
-    else
-        ubuntu_ppa_chromium
-    fi
+    check_ubuntu_version_and_install_chromium
 }
 #########
 fix_chromium_root_ubuntu_no_sandbox() {
@@ -107,7 +124,13 @@ install_chromium_browser() {
     debian)
         #新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
         case "${DEBIAN_DISTRO}" in
-        "ubuntu") ubuntu_install_chromium_browser ;;
+        "ubuntu")
+            if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
+                ubuntu_install_chromium_browser
+            else
+                check_ubuntu_version_and_install_chromium
+            fi
+            ;;
         esac
         ;;
     gentoo)
@@ -121,7 +144,11 @@ install_chromium_browser() {
     redhat) DEPENDENCY_02="fedora-chromium-config" ;;
     alpine) DEPENDENCY_02="" ;;
     esac
-    beta_features_quick_install
+    if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
     #####################
     case "${DEBIAN_DISTRO}" in
     "ubuntu")
@@ -139,8 +166,10 @@ install_chromium_browser() {
 }
 ############
 if_you_can_not_start_chromium() {
-    if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using chromium--no-sandbox" 8 50); then
-        printf ""
+    if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
+        if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using chromium--no-sandbox" 8 50); then
+            printf ""
+        fi
     fi
     cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
     #do_you_want_to_close_the_sandbox_mode
@@ -568,4 +597,4 @@ if_you_can_not_start_chromium() {
     chmod a+x -v /usr/local/bin/falkon--no-sandbox
 }
 ###############
-tmoe_browser_menu
+tmoe_browser_main "${@}"

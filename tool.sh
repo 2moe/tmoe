@@ -10,18 +10,10 @@ main() {
 	i | -i) tmoe_linux_tool_menu ;;
 	aria2) tmoe_aria2_manager ;;
 	docker) tmoe_docker_menu ;;
-	--install-gui | install-gui)
-		install_gui
-		;;
-	--modify_remote_desktop_config)
-		modify_remote_desktop_config
-		;;
-	qemu)
-		start_tmoe_qemu_manager
-		;;
-	--remove_gui)
-		remove_gui
-		;;
+	--install-gui | install-gui) install_gui ;;
+	--modify_remote_desktop_config) modify_remote_desktop_config ;;
+	qemu) start_tmoe_qemu_manager ;;
+	--remove_gui) remove_gui ;;
 	--mirror-list | -m* | m*)
 		if [ -e "${TMOE_TOOL_DIR}/sources/mirror.sh" ]; then
 			source ${TMOE_TOOL_DIR}/sources/mirror.sh
@@ -67,10 +59,12 @@ main() {
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		fi
 		;;
-	ppa* | -ppa*)
-		source ${TMOE_TOOL_DIR}/sources/mirror.sh -p
+	ppa* | -ppa*) source ${TMOE_TOOL_DIR}/sources/mirror.sh -p ;;
+	-install-deps)
+		check_dependencies
 		;;
-	*)
+	*) #main #勿删此注释
+		#sed -i 's@*) #main@2333)@g' /tmp/tool.sh
 		check_root
 		check_dependencies
 		tmoe_locale_settings
@@ -97,7 +91,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3977,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.3981,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########

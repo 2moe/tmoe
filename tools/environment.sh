@@ -584,10 +584,10 @@ different_distro_software_install() {
     "debian")
         apt update
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            apt install -y ${DEPENDENCY_01} || aptitude install ${DEPENDENCY_01}
+            apt install -y ${DEPENDENCY_01} || aptitude install -y ${DEPENDENCY_01}
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            apt install -y ${DEPENDENCY_02} || aptitude install ${DEPENDENCY_02}
+            apt install -y ${DEPENDENCY_02} || aptitude install -y ${DEPENDENCY_02}
         fi
         ;;
         ################
