@@ -113,7 +113,7 @@ fix_chromium_root_no_sandbox() {
 #################
 install_chromium_browser() {
     printf "%s\n" "${YELLOW}妾身就知道你没有看走眼！${RESET}"
-    printf '%s\n' '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium --no-sandbox"'
+    printf '%s\n' '要是下次见不到妾身，就关掉那个小沙盒吧！"chromium--no-sandbox"'
     printf "%s\n" "1s后将自动开始安装"
     sleep 1
     [[ -d /run/shm ]] || mkdir -pv /run/shm
@@ -577,7 +577,7 @@ tmoe_browser_menu() {
 falkon_browser_menu() {
     if (whiptail --title "FALKON安装与卸载" --yes-button "install" --no-button "remove" --yesno "Do you want to install falkon or remove it?" 8 50); then
         beta_features_quick_install
-        if_you_can_not_start_chromium
+        if_you_can_not_start_falkon
     else
         printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
         printf "%s\n" "${PURPLE}rm -vf ${BLUE}${APPS_LNK_DIR}/org.kde.falkon-no-sandbox.desktop  /usr/local/bin/falkon--no-sandbox${RESET}"
@@ -587,7 +587,7 @@ falkon_browser_menu() {
     fi
 }
 ###############
-if_you_can_not_start_chromium() {
+if_you_can_not_start_falkon() {
     if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using falkon--no-sandbox" 8 50); then
         printf ""
     fi
