@@ -35,12 +35,7 @@ check_tmoe_locale_file() {
 		TMOE_LANG=${LANG}
 	fi
 	if [[ $(command -v debian-i) ]]; then
-		for i in tmoe startvnc; do
-			if [[ ! -n $(command -v ${i}) ]]; then
-				printf "%s\n" "debian-i --install-gui" >/usr/local/bin/${i}
-				chmod a+x /usr/local/bin/${i}
-			fi
-		done
+		ln -sf debian-i /usr/local/bin/tmoe
 	fi
 }
 #######
@@ -330,7 +325,7 @@ git_clone_tmoe_linux() {
 	mkdir -pv /usr/share/applications
 	cp -v ${TMOE_GIT_DIR}/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &
-	if [ ! $(command -v tmoe) ]; then
+	if [ -e ${TMOE_GIT_DIR}/share/app/tmoe ]; then
 		ln -svf ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
 	fi
 	if [ ! $(command -v startvnc) ]; then
