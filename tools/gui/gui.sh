@@ -289,10 +289,10 @@ download_iosevka_ttf_font() {
         if [ -e "font.ttf" ]; then
             if [[ $(sha256sum font.ttf) = 'cb4f09f9ec1b0d21021dce6c6dbe4f7ecb4930cbea0c766da1fe478111a5844e' ]]; then
                 cp -fv font.ttf "${IOSEVKA_TTF_FILE}"
+            else
+                mv -vf font.ttf /usr/share/fonts/truetype/iosevka/Iosevka.ttf
             fi
-            mv -f font.ttf /usr/share/fonts/truetype/iosevka/Iosevka.ttf
         fi
-
         unset FONT_DIR
         for i in "/root/.cache/gitstatus" "/etc/gitstatus"; do
             if [[ -e ${i} ]]; then
