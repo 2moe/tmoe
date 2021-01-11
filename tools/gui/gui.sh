@@ -301,7 +301,7 @@ download_iosevka_ttf_font() {
         done
 
         if [[ -e "/etc/gitstatus" ]]; then
-            [[ ! -e /root/.gitstatus ]] || cp -rfv /root/.gitstatus/* /etc/gitstatus
+            [[ ! -e /root/.cache/gitstatus ]] || cp -rfv /root/.cache/gitstatus/* /etc/gitstatus
             FONT_DIR=/etc/gitstatus
         else
             FONT_DIR="/root/.cache/gitstatus"
