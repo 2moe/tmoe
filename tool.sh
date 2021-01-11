@@ -91,7 +91,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4000,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4001,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -504,6 +504,7 @@ check_dependencies() {
 		printf '%s\n' 'OpenWRT可能无此软件包' >${CONFIG_FOLDER}/non-install-procps
 		case "${LINUX_DISTRO}" in
 		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
+		redhat) DEPENDENCIES="${DEPENDENCIES} procps procps-ng procps-ng-i18n" ;;
 		*) DEPENDENCIES="${DEPENDENCIES} procps" ;;
 		esac
 	fi

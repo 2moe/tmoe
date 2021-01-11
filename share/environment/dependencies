@@ -79,6 +79,7 @@ gnu_linux_manager_dependencies() {
 	if [ ! $(command -v pkill) ]; then
 		case "${LINUX_DISTRO}" in
 		"gentoo") DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
+		"redhat") DEPENDENCIES="${DEPENDENCIES} procps procps-ng procps-ng-i18n" ;;
 		"openwrt") ;;
 		*) DEPENDENCIES="${DEPENDENCIES} procps" ;;
 		esac
