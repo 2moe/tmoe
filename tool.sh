@@ -91,7 +91,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4004,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4005,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -461,6 +461,9 @@ check_dependencies() {
 	alpine)
 		if [ ! $(command -v ctstat) ]; then
 			DEPENDENCIES="${DEPENDENCIES} iproute2"
+		fi
+		if [[ $(readlink /bin/tar) = /bin/busybox ]]; then
+			DEPENDENCIES="${DEPENDENCIES} tar"
 		fi
 		;;
 	esac

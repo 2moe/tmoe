@@ -91,6 +91,13 @@ gnu_linux_manager_dependencies() {
 		*) DEPENDENCIES="${DEPENDENCIES} tar" ;;
 		esac
 	fi
+	case "${LINUX_DISTRO}" in
+	alpine)
+		if [[ $(readlink /bin/tar) = /bin/busybox ]]; then
+			DEPENDENCIES="${DEPENDENCIES} tar"
+		fi
+		;;
+	esac
 	[[ -z ${DEPENDENCIES} ]] || install_gnu_linux_manager_dependencies_02
 }
 ######################
