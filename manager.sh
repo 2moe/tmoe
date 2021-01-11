@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3982,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.3983,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -576,6 +576,7 @@ choose_termux_color_scheme() {
 	printf "%s\n" "set-default-termux-color-scheme-and-font" >${CONFIG_FOLDER}/v1.1beta
 	if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
 		if (whiptail --title "termux.properties" --yes-button "yes" --no-button "no" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
+			cp -vf termux.properties termux.properties.bak
 			aria2c --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/termux.properties'
 			sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
 		fi
