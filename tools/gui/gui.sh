@@ -59,7 +59,6 @@ EOF
     UBUNTU_DESKTOP=true
     mkdir -p ~/.vnc
     printf "please delete the invalid passwd file" >passwd
-    source ${TMOE_TOOL_DIR}/app/browser.sh --auto-install-chromium
 }
 ############################
 modify_other_vnc_conf() {
@@ -338,6 +337,7 @@ preconfigure_gui_dependecies_02() {
     unset AUTO_INSTALL_KALI_TOOLS
     unset AUTO_INSTALL_ELECTRON_APPS
     unset UBUNTU_DESKTOP
+    unset AUTO_INSTALL_CHROMIUM
     DEPENDENCY_02="tigervnc"
     case "${LINUX_DISTRO}" in
     debian)
@@ -1382,6 +1382,7 @@ do_you_want_to_install_fcitx4() {
         ;;
     *) do_you_want_to_install_electron_apps_en ;;
     esac
+    do_you_want_to_install_chromium
     case "${LINUX_DISTRO}" in
     "debian" | "arch")
         if [[ ! -n $(command -v hardinfo) ]]; then
@@ -1394,6 +1395,19 @@ do_you_want_to_install_fcitx4() {
     do_you_want_to_install_kali_tools
 }
 #########
+do_you_want_to_install_chromium() {
+    if [[ ! -n $(command -v chromium) && ! -n $(command -v chromium-browser) && ! -n $(command -v google-chrome) ]]; then
+        case "${DEBIAN_DISTRO}" in
+        ubuntu) ;;
+        *)
+            if (whiptail --title "CHROMIUM-BROWSER" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install Google Chromium browser?' 0 0); then
+                AUTO_INSTALL_CHROMIUM=true
+            fi
+            ;;
+        esac
+    fi
+}
+########
 do_you_want_to_install_kali_tools() {
     case "${LINUX_DISTRO}" in
     "debian")
@@ -1428,6 +1442,7 @@ auto_install_and_configure_fcitx4() {
         ${TMOE_INSTALLATION_COMMAND} hardinfo
         printf "%s\n" "You can type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}hardinfo${RESET} to remove it."
     fi
+    [[ ${AUTO_INSTALL_CHROMIUM} != true ]] || source ${TMOE_TOOL_DIR}/app/browser.sh --auto-install-chromium
 }
 #######
 choose_xfce_or_xubuntu() {

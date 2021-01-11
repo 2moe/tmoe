@@ -4,6 +4,7 @@ tmoe_browser_main() {
     case "${1}" in
     --auto-install-chromium)
         AUTO_INSTALL_CHROMIUM=true
+        install_chromium_browser
         ;;
     *)
         unset AUTO_INSTALL_CHROMIUM
