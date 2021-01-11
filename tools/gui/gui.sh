@@ -287,11 +287,34 @@ download_iosevka_ttf_font() {
         mkdir -pv /usr/share/fonts/truetype/iosevka/
         cd /tmp
         if [ -e "font.ttf" ]; then
-            mv -f font.ttf "${IOSEVKA_TTF_FILE}"
-        else
+            if [[ $(sha256sum font.ttf) = 'cb4f09f9ec1b0d21021dce6c6dbe4f7ecb4930cbea0c766da1fe478111a5844e' ]]; then
+                cp -fv font.ttf "${IOSEVKA_TTF_FILE}"
+            fi
+            mv -f font.ttf /usr/share/fonts/truetype/iosevka/Iosevka.ttf
+        fi
+
+        unset FONT_DIR
+        for i in "/root/.cache/gitstatus" "/etc/gitstatus"; do
+            if [[ -e ${i} ]]; then
+                FONT_DIR=${i}
+            fi
+        done
+
+        if [[ -z ${FONT_DIR} ]]; then
+            FONT_DIR="/root/.cache/gitstatus"
+            mkdir -pv ${FONT_DIR}
+        fi
+
+        if [[ -e ${FONT_DIR}/Iosevka-Term-Mono.tar.xz ]]; then
+            tar -Jxvf ${FONT_DIR}/Iosevka-Term-Mono.tar.xz
+            mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
+            break
+        fi
+
+        if [[ ! -e "${IOSEVKA_TTF_FILE}" ]]; then
+            cd ${FONT_DIR}
             curl -Lo 'Iosevka.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
             tar -Jxvf 'Iosevka.tar.xz'
-            rm -vf 'Iosevka.tar.xz'
             mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
         fi
         cd /usr/share/fonts/truetype/iosevka/
@@ -1239,7 +1262,7 @@ xfce4_color_scheme() {
 			ColorBackground=#0f1419
 		EndofAyu
     fi
-
+    : <<\EOF
     if ! grep -q '^FontName' terminalrc; then
         sed -i '/FontName=/d' terminalrc
         if [ -e "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc" ]; then
@@ -1248,6 +1271,12 @@ xfce4_color_scheme() {
             sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 12' terminalrc
         elif [ -e "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc" ]; then
             sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 13' terminalrc
+        fi
+    fi
+EOF
+    if ! grep -q '^FontName' terminalrc; then
+        if [[ -e /usr/share/fonts/truetype/iosevka/Iosevka-Term-Mono.ttf ]]; then
+            sed -i '$ a\FontName=Iosevka Term Bold 12' terminalrc
         fi
     fi
 }

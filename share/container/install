@@ -71,7 +71,7 @@ tmoe_manager_env() {
 	TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
 	#${TMOE_CHROOT_PREFIX}
 	mkdir -pv ${DEBIAN_CHROOT} || ${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
-	chmod 755 -v ${DEBIAN_CHROOT} || ${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
+	${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
 	#mkdir -pv ${TMOE_CONTAINER_DIR}
 	[[ -n ${TMPDIR} ]] || TMPDIR=/tmp
 }
@@ -394,6 +394,7 @@ uncompress_tar_file() {
 	case ${TMOE_CHROOT} in
 	true) ${TMOE_CHROOT_PREFIX} chown -v 0:0 ${DEBIAN_CHROOT} ;;
 	esac
+	${TMOE_CHROOT_PREFIX} chmod 755 ${DEBIAN_CHROOT}
 }
 #######################
 case ${DEBOOTSTRAP_DIR} in
