@@ -852,7 +852,7 @@ tmoe_linux_tool_upgrade() {
 	if [ -e "/usr/local/bin/aria2-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/aria2.sh" /usr/local/bin
 	fi
-	if [ ! $(command -v tmoe) ]; then
+	if [ ! -h $(command -v tmoe) ]; then
 		ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
 	fi
 	#printf "%s\n" "${TMOE_GIT_URL}"
