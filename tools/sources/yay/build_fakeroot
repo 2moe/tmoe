@@ -9,6 +9,7 @@ build_fakeroot() {
             pacman -Sy --noconfirm ${i}
         fi
     done
+    [[ ! -n $(command -v fakeroot) ]] || pacman -R --noconfirm fakeroot
     [[ $(command -v whereis) ]] || pacman -S --noconfirm util-linux
     [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
     FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
