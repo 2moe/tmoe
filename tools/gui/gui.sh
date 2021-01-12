@@ -5082,7 +5082,13 @@ first_configure_startvnc() {
     [[ ! ${X11VNC_PORT} =~ ^[0-9]+$ ]] || sed -i -E "s@^(TCP_PORT_FOR_RFB_PROTOCOL)=.*@\1=${X11VNC_PORT}@" "$(command -v startx11vnc)"
     printf '%s\n' '------------------------'
     printf '%s\n' '四：'
-    do_you_want_to_configure_novnc
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        do_you_want_to_configure_novnc
+    else
+        case ${LINUX_DISTRO} in
+        debian) do_you_want_to_configure_novnc ;;
+        esac
+    fi
 }
 ########################
 ########################
