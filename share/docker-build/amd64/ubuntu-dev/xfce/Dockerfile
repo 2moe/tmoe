@@ -1,6 +1,5 @@
 FROM amd64/ubuntu:devel
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
-SHELL [ "/bin/bash" ]
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \

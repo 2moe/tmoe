@@ -1,7 +1,6 @@
 FROM archlinux:base-devel
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
-SHELL [ "/bin/bash" ]
 ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
@@ -25,5 +24,9 @@ RUN pacman-key --init \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
-    ; bash build_fakeroot --install-yay
+    ; bash build_fakeroot --install-yay \
+    ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \
+    ; sed -i -E "s@^#*(${LANG} UTF-8)@\1@g" /etc/locale.gen \
+    ; locale-gen \
+    ; locale-gen ${LANG}
 CMD [ "/bin/bash" ]
