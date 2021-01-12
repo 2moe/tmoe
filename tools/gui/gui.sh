@@ -53,9 +53,21 @@ EOF
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
     REMOVE_UDISK2=false
-    AUTO_INSTALL_FCITX4=true
     AUTO_INSTALL_KALI_TOOLS=false
-    AUTO_INSTALL_ELECTRON_APPS=true
+    case ${LINUX_DISTRO} in
+    alpine)
+        AUTO_INSTALL_FCITX4=false
+        AUTO_INSTALL_ELECTRON_APPS=false
+        ;;
+    fedora)
+        AUTO_INSTALL_FCITX4=false
+        AUTO_INSTALL_ELECTRON_APPS=true
+        ;;
+    debian | arch)
+        AUTO_INSTALL_FCITX4=true
+        AUTO_INSTALL_ELECTRON_APPS=true
+        ;;
+    esac
     AUTO_INSTALL_CHROMIUM=true
     UBUNTU_DESKTOP=true
     mkdir -p ~/.vnc

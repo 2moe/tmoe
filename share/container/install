@@ -1448,6 +1448,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cat /etc/apk/repositories
 			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt${RESET}"
 	        apk update
+			apk upgrade
 	        apk add bash tzdata newt
 			case $(head -n 1 ${TMOE_LOCALE_FILE}) in
 			zh_*UTF-8) ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;;

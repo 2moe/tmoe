@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+for i in arm64 armhf i386; do
+    cp -rfv $(ls . | grep -v cp_docker) ../${i}
+done
+cd ../arm64
+ARM64_DOCKERFILE=$(find . | grep Dockerfile)
+sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g' ${ARM64_DOCKERFILE}
+
+cd ../armhf
+ARMHF_DOCKERFILE=$(find . | grep Dockerfile)
+sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1arm\2:\1arm\2@g' ${ARMHF_DOCKERFILE}
+
+cd ../i386
+I386_DOCKERFILE=$(find . | grep Dockerfile)
+#i386保留#
+sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@#VOLUME \1i386\2:\1i386\2@g' ${I386_DOCKERFILE}
