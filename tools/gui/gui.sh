@@ -4749,13 +4749,17 @@ debian_remove_vnc_server() {
     apt remove -y ${VNC_SERVER_BIN_NOW}
 }
 debian_install_vnc_server() {
-    debian_remove_vnc_server
-    printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
-    ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
-    ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
-    if [ -e "/usr/share/fonts/X11/Type1" ] && [ ! -e /usr/share/fonts/X11/Speedo ]; then
-        ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
-    fi
+    case ${LINUX_DISTRO} in
+    debian)
+        debian_remove_vnc_server
+        printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
+        if [ -e "/usr/share/fonts/X11/Type1" ] && [ ! -e /usr/share/fonts/X11/Speedo ]; then
+            ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
+        fi
+        ;;
+    esac
 }
 #######
 grep_tiger_vnc_deb_file() {
