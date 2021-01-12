@@ -5135,12 +5135,16 @@ set_vnc_passwd() {
 }
 ###########
 choose_vnc_port_5901_or_5902() {
-    if (whiptail --title "VNC PORT" --yes-button "5901" --no-button "5902" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
-        X11VNC_PORT=5901
-        DISPLAY_PORT=1
-    else
-        X11VNC_PORT=5902
-        DISPLAY_PORT=2
+    X11VNC_PORT=5901
+    DISPLAY_PORT=1
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        if (whiptail --title "VNC PORT" --yes-button "5901" --no-button "5902" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
+            X11VNC_PORT=5901
+            DISPLAY_PORT=1
+        else
+            X11VNC_PORT=5902
+            DISPLAY_PORT=2
+        fi
     fi
     sed -i -E "s@(tmoe-linux) :.*@\1 :${DISPLAY_PORT}@" "$(command -v startvnc)"
     sed -i -E "s@(TMOE_VNC_DISPLAY_NUMBER)=.*@\1=${DISPLAY_PORT}@" "$(command -v startvnc)"
