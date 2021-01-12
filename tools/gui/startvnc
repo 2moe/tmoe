@@ -67,7 +67,7 @@ check_vnc_port() {
 ############
 tmoe_vnc_preconfigure() {
     check_tmoe_locale
-    if [ ! -s "${TMOE_VNC_PASSWD_FILE}" ]; then
+    if [[ ! -s "${TMOE_VNC_PASSWD_FILE}" ]]; then
         sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
             cd ${TMOE_GIT_DIR}

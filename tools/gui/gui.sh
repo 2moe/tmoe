@@ -71,7 +71,7 @@ EOF
     AUTO_INSTALL_CHROMIUM=true
     UBUNTU_DESKTOP=true
     mkdir -p ~/.vnc
-    printf "please delete the invalid passwd file" >~/.vnc/passwd
+    printf "please delete the invalid passwd file\n" >~/.vnc/passwd
 }
 ############################
 modify_other_vnc_conf() {
@@ -1035,7 +1035,7 @@ configure_vnc_xstartup() {
 congigure_xvnc() {
     #cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
     cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc
-    if [ -s "/etc/os-release" ]; then
+    if [[ -s "/etc/os-release" ]]; then
         if grep -q '^PRETTY_NAME=' /etc/os-release; then
             GREP_NAME='PRETTY_NAME'
         else
@@ -4882,8 +4882,8 @@ first_configure_startvnc() {
     fi
     #fi
     ######################
-    dpkg --configure -a 2>/dev/null
-    if [ ! -s "${HOME}/.vnc/passwd" ]; then
+    [[ ! -n $(command -v apt-get) ]] || dpkg --configure -a 2>/dev/null
+    if [[ ! -s "${HOME}/.vnc/passwd" ]]; then
         set_vnc_passwd
     fi
     choose_vnc_port_5901_or_5902
@@ -5102,7 +5102,7 @@ do_you_want_to_configure_novnc() {
     cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
     ln -sf novnc startnovnc
     printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
-    if [ ! -s "${TMOE_LINUX_DIR}/achievement01" ]; then
+    if [[ ! -s "${TMOE_LINUX_DIR}/achievement01" ]]; then
         printf "%s\n" "Congratulations！恭喜您获得新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
         printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
         printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01

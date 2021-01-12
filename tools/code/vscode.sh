@@ -29,7 +29,7 @@ which_vscode_edition() {
 #################################
 copy_gnu_lib_xcb_so() {
     where_is_gnu_libxcb
-    if [ ! -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]; then
+    if [[ ! -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]]; then
         mkdir -pv ${TMOE_LINUX_DIR}/lib
         cp ${GNU_LIBXCB} ${TMOE_LINUX_DIR}/lib/libxcb.so.1
         sed -i 's@BIG-REQUESTS@_IG-REQUESTS@' ${TMOE_LINUX_DIR}/lib/libxcb.so.1
@@ -37,7 +37,7 @@ copy_gnu_lib_xcb_so() {
 }
 ###########
 fix_tightvnc_vscode_lnk() {
-    if [ -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]; then
+    if [[ -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]]; then
         sed -i "s@Exec=/usr/share/code-oss/code-oss@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code-oss/code-oss@g" ${APPS_LNK_DIR}/code-oss.desktop 2>/dev/null
         sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
         sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
@@ -334,7 +334,7 @@ install_vscode_oss() {
         install_gpg
         copy_gnu_lib_xcb_so
         fix_tightvnc_vscode_lnk
-        if [ ! -s "/etc/apt/trusted.gpg.d/code-oss.gpg" ]; then
+        if [[ ! -s "/etc/apt/trusted.gpg.d/code-oss.gpg" ]]; then
             curl -L https://packagecloud.io/headmelted/codebuilds/gpgkey | gpg --dearmor >/tmp/code-oss.gpg
             install -o root -g root -m 644 /tmp/code-oss.gpg /etc/apt/trusted.gpg.d/
             apt update

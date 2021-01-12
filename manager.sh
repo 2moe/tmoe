@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4008,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4009,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -513,7 +513,7 @@ choose_your_mirror() {
 		*)
 			case ${SWITCH_MIRROR} in
 			true)
-				if [ -s "${TMOE_TOOL_DIR}/sources/mirror.sh" ]; then
+				if [[ -s "${TMOE_TOOL_DIR}/sources/mirror.sh" ]]; then
 					source "${TMOE_TOOL_DIR}/sources/mirror.sh"
 				else
 					TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/tools/sources/mirror.sh"
@@ -565,7 +565,7 @@ choose_termux_color_scheme() {
 		fi
 	fi
 
-	if [ ! -s "${HOME}/.termux/font.ttf" ]; then
+	if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
 		if (whiptail --title "FONT" --yes-button "Inconsolata-go(粗)" --no-button "Iosevka(细)" --yesno "Your font file does not exist,please choose termux font.\n请选择终端字体。" 9 50); then
 			aria2c --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/inconsolata-go-font/raw/master/inconsolatago.tar.xz'
 		else

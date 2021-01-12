@@ -420,7 +420,7 @@ ${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT} | ${IOS
 	fi
 	;;
 esac
-if [ -s "${CONFIG_FOLDER}/default-dns.conf" ]; then
+if [[ -s "${CONFIG_FOLDER}/default-dns.conf" ]]; then
 	cp ${CONFIG_FOLDER}/default-dns.conf ${DEBIAN_CHROOT}/tmp/resolv.conf
 fi
 
@@ -959,7 +959,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		ff02::2 ip6-allrouters
 	EOF
 	fi
-	if [ -s "/tmp/hostname" ]; then
+	if [[ -s "/tmp/hostname" ]]; then
 		NEW_HOST_NAME=$(head -n 1 /tmp/hostname)
 		cp -f /tmp/hostname /etc
 		#[[ ! -n $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
@@ -1859,7 +1859,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 		dnf update -y
 		[[ $(command -v systemctl) ]] || dnf install -y systemd
-		if [ -s /tmp/resolv.conf ];then
+		if [[ -s /tmp/resolv.conf ]];then
 			rm -f /etc/resolv.conf
 			#更新系统后，dns解析文件会被systemd的配置所覆盖
 			cp -f /tmp/resolv.conf /etc

@@ -853,7 +853,7 @@ install_nginx_webdav() {
 ##########
 add_debian_opt_gpg_key() {
     cd /etc/apt/trusted.gpg.d
-    if [ ! -s "debian-opt.gpg" ]; then
+    if [[ ! -s "debian-opt.gpg" ]]; then
         curl -L 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray' | gpg --dearmor >/tmp/debian-opt.gpg
         install -o root -g root -m 644 /tmp/debian-opt.gpg /etc/apt/trusted.gpg.d/
     fi

@@ -11,7 +11,7 @@ localhost | LXC_NAME | "")
     ${TMOE_PREFIX} printf "%s\n" "127.0.0.1       ${MACHINE_NAME}" >>${DEBIAN_CHROOT}/etc/hosts
     ;;
 esac
-if [ -s "${DEBIAN_CHROOT}/etc/machine-id" ]; then
+if [[ -s "${DEBIAN_CHROOT}/etc/machine-id" ]]; then
     rm -f ${DEBIAN_CHROOT}/etc/machine-id
 fi
 set -- "${@}" "--boot"
