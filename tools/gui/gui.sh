@@ -71,7 +71,7 @@ EOF
     AUTO_INSTALL_CHROMIUM=true
     UBUNTU_DESKTOP=true
     mkdir -p ~/.vnc
-    printf "please delete the invalid passwd file" >passwd
+    printf "please delete the invalid passwd file" >~/.vnc/passwd
 }
 ############################
 modify_other_vnc_conf() {
