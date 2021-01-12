@@ -1,6 +1,11 @@
+#!/usr/bin/env bash
+#####################
 install_yay_main() {
-    build_fakeroot
-    install_yay
+    case $1 in
+    -bf | --build-fakeroot) build_fakeroot ;;
+    --add-archlinuxcn-repo) add_archlinuxcn_repo ;;
+    -yay | --install-yay) install_yay ;;
+    esac
 }
 build_fakeroot() {
     for i in make automake autoconf gcc libtool po4a patch; do
@@ -32,7 +37,7 @@ build_fakeroot() {
     cd ${HOME}
     [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
 }
-install_yay() {
+add_archlinuxcn_repo() {
     if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
@@ -40,9 +45,16 @@ install_yay() {
 					SigLevel = Never
 				Endofpacman
     fi
-    for i in archlinux-keyring archlinuxcn-keyring yay gawk; do
+    for i in archlinux-keyring archlinuxcn-keyring; do
         printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
         pacman -Sy --noconfirm ${i}
     done
 }
+install_yay() {
+    for i in yay gawk; do
+        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+        pacman -Sy --noconfirm ${i}
+    done
+}
+###################
 install_yay_main $@
