@@ -1,0 +1,47 @@
+install_yay_main() {
+    build_fakeroot
+    install_yay
+}
+build_fakeroot() {
+    for i in make automake autoconf gcc libtool po4a patch; do
+        if [[ ! $(command -v ${i}) ]]; then
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+            pacman -Sy --noconfirm ${i}
+        fi
+    done
+    [[ $(command -v whereis) ]] || pacman -S --noconfirm util-linux
+    [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
+    FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
+    FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+    FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
+    FAKEROOT_SRC_FILE=$(printf "%s\n" ${FAKEROOT_SRC_VERSION} | sed 's@fakeroot_@fakeroot-@g')
+    cd /tmp
+    curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL}
+    tar -xvf ${FAKEROOT_SRC_FILE}
+    cd ${FAKEROOT_SRC_FILE%.*.*.*}
+    ./bootstrap
+    ./configure --prefix=/usr --libdir=/usr/lib/libfakeroot --with-ipc=tcp --disable-static
+    make -j4
+    cd doc
+    po4a -k 0 --rm-backups --variable "srcdir=../doc/" po4a/po4a.cfg
+    cd ..
+    make install
+    cd /tmp
+    rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
+    cd ${HOME}
+    [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
+}
+install_yay() {
+    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
+        cat >>/etc/pacman.conf <<-'Endofpacman'
+					[archlinuxcn]
+					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+					SigLevel = Never
+				Endofpacman
+    fi
+    for i in archlinux-keyring archlinuxcn-keyring yay gawk; do
+        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+        pacman -Sy --noconfirm ${i}
+    done
+}
+install_yay_main $@

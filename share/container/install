@@ -792,10 +792,8 @@ true)
 *)
 	cd ${DEBIAN_CHROOT}/root
 	############
-	if [ -f ".bash_profile" ] || [ -f ".bash_login" ]; then
-		mv -f .bash_profile .bash_profile.bak 2>/dev/null
-		mv -f .bash_login .bash_login.bak 2>/dev/null
-	fi
+	[[ ! -e .bash_profile ]] || mv -f .bash_profile .bash_profile.bak 2>/dev/null
+	[[ ! -e .bash_login ]] || mv -f .bash_login .bash_login.bak 2>/dev/null
 	if [ ! -f ".profile" ]; then
 		printf "\n" >>.profile
 	else
