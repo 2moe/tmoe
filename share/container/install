@@ -1544,6 +1544,18 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	ln -svf /usr/share/zoneinfo/UTC /etc/localtime
 	;;
 	esac
+
+	for i in /etc/gitstatus/timezone.txt /root/.cache/gitstatus/timezone.txt;do
+		if [[ -e ${i} ]];then
+			TIMEZONE=$(head -n 1 ${i})
+			ln -svf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+			cp -f ${i} /etc/timezone
+			chmod 644 -v /etc/timezone
+			cat /etc/timezone
+			break
+		fi
+	done
+
 	mkdir -pv /etc/default
 	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
 	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
