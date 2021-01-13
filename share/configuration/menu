@@ -175,10 +175,11 @@ tmoe_container_timezone() {
     esac
     mkdir -pv ${CONFIG_FOLDER}/gitstatus
     [[ -z ${TIMEZONE} ]] || printf "%s\n" "Etc/${TIMEZONE}" >${CONFIG_FOLDER}/gitstatus/timezone.txt
+    sed -n p ${CONFIG_FOLDER}/gitstatus/timezone.txt
     ####################
     press_enter_to_return
     case ${RETURN_TO_MENU} in
-    "") tmoe_container_dns ;;
+    "") tmoe_container_timezone ;;
     *) ${RETURN_TO_MENU} ;;
     esac
 }
