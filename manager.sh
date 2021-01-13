@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4027,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4028,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -672,6 +672,7 @@ check_termux_color_scheme_file() {
 	source ${TMOE_SHARE_DIR}/configuration/menu
 	[[ -e ${CONFIG_FOLDER}/default-dns.conf ]] || tmoe_container_dns
 	[[ -e ${CONFIG_FOLDER}/hitokoto.conf ]] || do_you_want_to_enable_hitokoto
+	[[ -e ${CONFIG_FOLDER}/gitstatus/timezone.txt ]] || what_is_your_timezone
 }
 ###################
 install_proot_container() {
