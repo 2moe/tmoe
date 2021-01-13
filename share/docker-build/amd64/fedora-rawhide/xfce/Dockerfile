@@ -23,4 +23,4 @@ RUN dnf update -y \
     ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
     ; dnf clean all
 
-CMD [ "/bin/bash" ]
+CMD [ "/usr/local/bin/startvnc" ]

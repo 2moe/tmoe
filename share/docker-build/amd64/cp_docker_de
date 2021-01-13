@@ -2,8 +2,8 @@
 for i in $(ls . | grep -v cp_docker); do
     for DE in lxde lxqt kde mate; do
         if [[ -e ${i}/${DE} ]]; then
-            cp -fv ${i}/xfce/Dockerfile ${i}/${DE}
-            sed -i -E 's@(auto-install-gui)-xfce@\1-${i}@g' ${i}/${DE}/Dockerfile
+            cp -pfv ${i}/xfce/Dockerfile ${i}/${DE}
+            sed -i -E "s@(auto-install-gui)-xfce@\1-${DE}@g" ${i}/${DE}/Dockerfile
             cat ${i}/${DE}/Dockerfile
         fi
     done

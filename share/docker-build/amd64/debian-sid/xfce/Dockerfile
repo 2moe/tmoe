@@ -29,4 +29,4 @@ RUN apt update \
     ; apt autoclean \
     ; apt autopurge -y 
 
-CMD [ "/bin/bash" ]
+CMD [ "/usr/local/bin/startvnc" ]

@@ -21,4 +21,4 @@ RUN apk update \
     ; bash install-gui.sh \
     ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd
 
-CMD [ "/bin/ash" ]
+CMD [ "/usr/local/bin/startx11vnc" ]

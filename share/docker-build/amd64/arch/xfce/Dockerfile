@@ -5,8 +5,8 @@ ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
-#RUN sed -i '1a Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist \
-RUN pacman-key --init \
+RUN mkdir -pv /var/cache/pacman/pkg \
+    ; pacman-key --init \
     ; pacman-key --populate \
     ; pacman -Syu --noconfirm \
     ; pacman -S --noconfirm wget curl git \
@@ -33,4 +33,5 @@ RUN pacman-key --init \
     ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
     ; pacman -R --noconfirm $(pacman -Qdtq) \
     ; pacman -Scc --noconfirm 
-CMD [ "/bin/bash" ]
+
+CMD [ "/usr/local/bin/startvnc" ]

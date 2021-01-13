@@ -2205,7 +2205,7 @@ install_kde_plasma5_desktop() {
         ;;
     "suse") DEPENDENCY_01="-t pattern kde kde_plasma" ;;
     "alpine")
-        DEPENDENCY_01="plasma-desktop breeze breeze-icons"
+        DEPENDENCY_01="plasma-desktop breeze breeze-icons konsole discover"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
         ;;
     esac
