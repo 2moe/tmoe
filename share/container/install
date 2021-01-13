@@ -1439,19 +1439,55 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		exit 0
 	fi
 	##############
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+	else
+		TMOE_LANG="en_US.UTF-8"
+	fi
+	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
+
+	case ${TMOE_LANG} in
+	zh_*UTF-8)
+	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container."
+	printf '%s\n' '正在执行优化步骤，请勿退出!'
+	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
+	#配置时区
+	printf '%s\n' 'Asia/Shanghai' >/etc/timezone
+	ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	;;
+	*)
+	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container. "
+	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
+	printf '%s\n' 'UTC' >/etc/timezone
+	ln -svf /usr/share/zoneinfo/UTC /etc/localtime
+	;;
+	esac
+
+	for i in /etc/gitstatus/timezone.txt /root/.cache/gitstatus/timezone.txt;do
+		if [[ -e ${i} ]];then
+			TIMEZONE=$(head -n 1 ${i})
+			ln -svf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+			cp -f ${i} /etc/timezone
+			chmod 644 -v /etc/timezone
+			cat /etc/timezone
+			break
+		fi
+	done
+	########################
 	alpine_linux_configure() {
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
-		    #printf "%s\n" "检测到您使用的不是deb系linux，优化步骤可能会出错，您可以单独输${YELLOW}tmoe t${RESET}来启动软件安装工具。"
 	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
 			cat /etc/apk/repositories
 			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt${RESET}"
 	        apk update
 			apk upgrade
 	        apk add bash tzdata newt
-			case $(head -n 1 ${TMOE_LOCALE_FILE}) in
-			zh_*UTF-8) ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;;
-			*) ln -svf /usr/share/zoneinfo/UTC /etc/localtime ;;
-			esac
+			#case $(head -n 1 ${TMOE_LOCALE_FILE}) in
+			#zh_*UTF-8) ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;;
+			#*) ln -svf /usr/share/zoneinfo/UTC /etc/localtime ;;
+			#esac
 	    fi
 	    rm -f "/tmp/.ALPINELINUXDetectionFILE"
 	    rm -f ~/.profile vnc-autostartup
@@ -1468,14 +1504,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    exec bash zsh.sh
 		exit 0
 	}
-	########################
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	else
-		TMOE_LANG="en_US.UTF-8"
-	fi
-	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	############################
 	opensuse_mirrors(){ 
 		if [ "$(uname -m)" = 'aarch64' ];then
@@ -1527,34 +1555,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	   printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}^language-pack-${TMOE_LANG_QUATER}${RESET}"
 	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
-	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container."
-	printf '%s\n' '正在执行优化步骤，请勿退出!'
-	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
-	#配置时区
-	printf '%s\n' 'Asia/Shanghai' >/etc/timezone
-	ln -svf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-	;;
-	*)
-	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container. "
-	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
-	printf '%s\n' 'UTC' >/etc/timezone
-	ln -svf /usr/share/zoneinfo/UTC /etc/localtime
-	;;
-	esac
-
-	for i in /etc/gitstatus/timezone.txt /root/.cache/gitstatus/timezone.txt;do
-		if [[ -e ${i} ]];then
-			TIMEZONE=$(head -n 1 ${i})
-			ln -svf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
-			cp -f ${i} /etc/timezone
-			chmod 644 -v /etc/timezone
-			cat /etc/timezone
-			break
-		fi
-	done
 
 	mkdir -pv /etc/default
 	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
