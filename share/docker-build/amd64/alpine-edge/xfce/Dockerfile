@@ -1,6 +1,7 @@
 FROM amd64/alpine:edge
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 ENV HOME=/root \
+    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true

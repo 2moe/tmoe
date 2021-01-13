@@ -2,6 +2,7 @@ FROM --platform=linux/arm/v7 lopsided/archlinux:devel
 VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
 WORKDIR /root
 ENV HOME=/root \
+    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true

@@ -3,6 +3,7 @@ FROM i386/debian:unstable
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \
+    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true

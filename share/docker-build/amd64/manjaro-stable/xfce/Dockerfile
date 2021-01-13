@@ -1,5 +1,5 @@
-FROM --platform=linux/arm64/v8 lopsided/archlinux:devel
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+FROM manjarolinux/base:latest
+#VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ENV HOME=/root \
     PULSE_SERVER=172.17.0.1 \
@@ -9,7 +9,7 @@ ENV HOME=/root \
 RUN mkdir -pv /var/cache/pacman/pkg \
     ; pacman-key --init \
     ; pacman-key --populate \
-    ; pacman -Syu --noconfirm \
+    ; pacman -Syu --noconfirm base base-devel \
     ; pacman -S --noconfirm wget curl git \
     ; pacman -S --noconfirm unzip neofetch \
     ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \
@@ -27,7 +27,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; bash zsh.sh --tmoe_container_automatic_configure \
     ; cd /tmp \
     ; sed -i 's@*) #main@2333)@g' tool.sh \
-    ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-kde" > install-gui.sh \
+    ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
     ; bash build_fakeroot --install-yay \
