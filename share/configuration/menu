@@ -110,7 +110,7 @@ is_your_timezone_gmt8() {
     fi
 }
 is_your_timezone_gmt9() {
-    if (whiptail --title "Is your timezone GMT+9" --yes-button "YES" --no-button "NO" --yesno "あなたのタイムゾーンは GMT +9 ですか" 6 50); then
+    if (whiptail --title "Is your timezone GMT+9" --yes-button "YES" --no-button "NO" --yesno "GMT+9 = 東9區\nあなたのタイムゾーンは GMT +9 ですか" 7 50); then
         TIMEZONE="GMT-9"
     else
         tmoe_container_timezone
