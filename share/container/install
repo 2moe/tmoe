@@ -1471,7 +1471,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			ln -svf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 			cp -f ${i} /etc/timezone
 			chmod 644 -v /etc/timezone
-			cat /etc/timezone
 			break
 		fi
 	done

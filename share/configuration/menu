@@ -105,7 +105,7 @@ tmoe_container_dns() {
 tmoe_container_timezone() {
     RETURN_TO_WHERE='tmoe_container_timezone'
     unset TIMEZONE IMPORTANT_TIPS_03
-    TIMEZONE=$(head -n 1 ${CONFIG_FOLDER}/gitstatus/timezone.txt)
+    TIMEZONE=$(tr '[+\-]' '[\-+]' ${CONFIG_FOLDER}/gitstatus/timezone.txt)
     [[ -z ${TIMEZONE} ]] || IMPORTANT_TIPS_03="Current timzone of container is ${TIMEZONE}"
     TMOE_OPTION=$(whiptail --title "Please choose TIMEZONE" --menu "GMT is Greenwich Mean Time.\nGMT+8 = 東8區\n${IMPORTANT_TIPS_03}" 0 50 0 \
         "0" "🌚 Back" \
@@ -121,22 +121,23 @@ tmoe_container_timezone() {
         "10" "GMT+10" \
         "11" "GMT+11" \
         "12" "GMT+12" \
-        "13" "UTC" \
-        "14" "GMT-1" \
-        "15" "GMT-2" \
-        "16" "GMT-3" \
-        "17" "GMT-4" \
-        "18" "GMT-5" \
-        "19" "GMT-6" \
-        "20" "GMT-7" \
-        "21" "GMT-8" \
-        "22" "GMT-9" \
-        "23" "GMT-10" \
-        "24" "GMT-11" \
-        "25" "GMT-12" \
-        "26" "GMT-13" \
-        "27" "GMT-14" \
+        "13" "GMT+13" \
+        "14" "GMT+14" \
+        "15" "UTC" \
+        "16" "GMT-1" \
+        "17" "GMT-2" \
+        "18" "GMT-3" \
+        "19" "GMT-4" \
+        "20" "GMT-5" \
+        "21" "GMT-6" \
+        "22" "GMT-7" \
+        "23" "GMT-8" \
+        "24" "GMT-9" \
+        "25" "GMT-10" \
+        "26" "GMT-11" \
+        "27" "GMT-12" \
         3>&1 1>&2 2>&3)
+    #LINUX Etc/GMT-8为GMT--8,即为GMT+8
     ##############################
     case "${TMOE_OPTION}" in
     0 | "")
@@ -145,33 +146,33 @@ tmoe_container_timezone() {
         *) ${RETURN_TO_MENU} ;;
         esac
         ;;
-    1) TIMEZONE='GMT+1' ;;
-    2) TIMEZONE='GMT+2' ;;
-    3) TIMEZONE='GMT+3' ;;
-    4) TIMEZONE='GMT+4' ;;
-    5) TIMEZONE='GMT+5' ;;
-    6) TIMEZONE='GMT+6' ;;
-    7) TIMEZONE='GMT+7' ;;
-    8) TIMEZONE='GMT+8' ;;
-    9) TIMEZONE='GMT+9' ;;
-    10) TIMEZONE='GMT+10' ;;
-    11) TIMEZONE='GMT+11' ;;
-    12) TIMEZONE='GMT+12' ;;
-    13) TIMEZONE='UTC' ;;
-    14) TIMEZONE='GMT-1' ;;
-    15) TIMEZONE='GMT-2' ;;
-    16) TIMEZONE='GMT-3' ;;
-    17) TIMEZONE='GMT-4' ;;
-    18) TIMEZONE='GMT-5' ;;
-    19) TIMEZONE='GMT-6' ;;
-    20) TIMEZONE='GMT-7' ;;
-    21) TIMEZONE='GMT-8' ;;
-    22) TIMEZONE='GMT-9' ;;
-    23) TIMEZONE='GMT-10' ;;
-    24) TIMEZONE='GMT-11' ;;
-    25) TIMEZONE='GMT-12' ;;
-    26) TIMEZONE='GMT-13' ;;
-    27) TIMEZONE='GMT-14' ;;
+    1) TIMEZONE='GMT-1' ;;
+    2) TIMEZONE='GMT-2' ;;
+    3) TIMEZONE='GMT-3' ;;
+    4) TIMEZONE='GMT-4' ;;
+    5) TIMEZONE='GMT-5' ;;
+    6) TIMEZONE='GMT-6' ;;
+    7) TIMEZONE='GMT-7' ;;
+    8) TIMEZONE='GMT-8' ;;
+    9) TIMEZONE='GMT-9' ;;
+    10) TIMEZONE='GMT-10' ;;
+    11) TIMEZONE='GMT-11' ;;
+    12) TIMEZONE='GMT-12' ;;
+    13) TIMEZONE='GMT-13' ;;
+    14) TIMEZONE='GMT-14' ;;
+    15) TIMEZONE='UTC' ;;
+    16) TIMEZONE='GMT+1' ;;
+    17) TIMEZONE='GMT+2' ;;
+    18) TIMEZONE='GMT+3' ;;
+    19) TIMEZONE='GMT+4' ;;
+    20) TIMEZONE='GMT+5' ;;
+    21) TIMEZONE='GMT+6' ;;
+    22) TIMEZONE='GMT+7' ;;
+    23) TIMEZONE='GMT+8' ;;
+    24) TIMEZONE='GMT+9' ;;
+    25) TIMEZONE='GMT+10' ;;
+    26) TIMEZONE='GMT+11' ;;
+    27) TIMEZONE='GMT+12' ;;
     esac
     mkdir -pv ${CONFIG_FOLDER}/gitstatus
     [[ -z ${TIMEZONE} ]] || printf "%s\n" "Etc/${TIMEZONE}" >${CONFIG_FOLDER}/gitstatus/timezone.txt
