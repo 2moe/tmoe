@@ -10,7 +10,11 @@ RUN pacman-key --init \
     ; pacman-key --populate \
     ; pacman -Syu --noconfirm \
     ; pacman -S --noconfirm wget curl git \
-    ; pacman -S --noconfirm unzip \
+    ; pacman -S --noconfirm unzip neofetch \
+    ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \
+    ; sed -i -E "s@^#*(${LANG} UTF-8)@\1@g" /etc/locale.gen \
+    ; grep "^[^#]*${LANG}" /etc/locale.gen || printf "%s\n" "${LANG} UTF-8" >> /etc/locale.gen \
+    ; locale-gen \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
@@ -26,9 +30,7 @@ RUN pacman-key --init \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
     ; bash build_fakeroot --install-yay \
-    ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \
-    ; sed -i -E "s@^#*(${LANG} UTF-8)@\1@g" /etc/locale.gen \
-    ; grep "^[^#]*${LANG}" /etc/locale.gen || printf "%s\n" "${LANG} UTF-8" >> /etc/locale.gen \
-    ; locale-gen \
-    ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd 
+    ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
+    ; pacman -R --noconfirm $(pacman -Qdtq) \
+    ; pacman -Scc --noconfirm 
 CMD [ "/bin/bash" ]

@@ -1855,7 +1855,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if ((${FEDORA_VERSION} >= 32)); then
 			[[ ${TMOE_CHROOT} != true ]] || fedora_rpmfusion_repo
 		fi
+		printf "%s\n" "${GREEN}dnf ${YELLOW}update -y${RESET}"
 		dnf update -y
+		[[ $(command -v hostname) ]] || dnf install -y hostname
 		[[ $(command -v systemctl) ]] || dnf install -y systemd
 		if [[ -s /tmp/resolv.conf ]];then
 			rm -f /etc/resolv.conf

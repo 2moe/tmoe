@@ -4,13 +4,13 @@ for i in arm64 armhf i386; do
 done
 cd ../arm64
 ARM64_DOCKERFILE=$(find . | grep Dockerfile)
-sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g' ${ARM64_DOCKERFILE}
+sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8@g' ${ARM64_DOCKERFILE}
 
 cd ../armhf
 ARMHF_DOCKERFILE=$(find . | grep Dockerfile)
-sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1arm\2:\1arm\2@g' ${ARMHF_DOCKERFILE}
+sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1arm\2:\1arm\2@g;s@(FROM) amd64/@\1 arm32v7@g' ${ARMHF_DOCKERFILE}
 
 cd ../i386
 I386_DOCKERFILE=$(find . | grep Dockerfile)
 #i386保留#
-sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@#VOLUME \1i386\2:\1i386\2@g' ${I386_DOCKERFILE}
+sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@#VOLUME \1i386\2:\1i386\2@g;s@(FROM) amd64/@\1 i386@g' ${I386_DOCKERFILE}

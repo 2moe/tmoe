@@ -5085,9 +5085,11 @@ first_configure_startvnc() {
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         do_you_want_to_configure_novnc
     else
-        case ${LINUX_DISTRO} in
-        debian) do_you_want_to_configure_novnc ;;
-        esac
+        #case ${LINUX_DISTRO} in
+        #debian)
+        do_you_want_to_configure_novnc
+        #   ;;
+        #esac
     fi
 }
 ########################

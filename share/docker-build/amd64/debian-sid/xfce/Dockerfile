@@ -1,4 +1,4 @@
-FROM amd64/ubuntu:devel
+FROM amd64/debian:unstable
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
@@ -6,7 +6,7 @@ ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
-#RUN sed -i "s@archive.ubuntu.com@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list \
+#RUN sed -i "s@deb.debian.org@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list \
 #    ; apt update \
 RUN apt update \
     ; apt dist-upgrade -y \
@@ -26,6 +26,7 @@ RUN apt update \
     ; bash install-gui.sh \
     ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
     ; apt clean \
+    ; apt autoclean \
     ; apt autopurge -y 
 
 CMD [ "/bin/bash" ]

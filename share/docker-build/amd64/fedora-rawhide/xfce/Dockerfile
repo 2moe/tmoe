@@ -1,18 +1,14 @@
-FROM amd64/ubuntu:devel
+FROM amd64/fedora:rawhide
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
-ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
-#RUN sed -i "s@archive.ubuntu.com@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list \
-#    ; apt update \
-RUN apt update \
-    ; apt dist-upgrade -y \
-    ; apt install -y locales-all locales \
-    ; apt install -y whiptail dialog aria2 zstd curl wget \
-    ; apt install -y neofetch lolcat \
+
+RUN dnf update -y \
+    ; dnf install -y --skip-broken glibc-all-langpacks glibc-minimal-langpack iproute lolcat newt systemd dnf-utils passwd findutils man-db procps-ng procps-ng-i18n tar hostname neofetch \
+    ; dnf install -y newt aria2 zstd curl wget \
     ; cd /tmp \
     ; curl -LO 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_automatic_configure \
@@ -25,7 +21,6 @@ RUN apt update \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \
     ; bash install-gui.sh \
     ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
-    ; apt clean \
-    ; apt autopurge -y 
+    ; dnf clean all
 
 CMD [ "/bin/bash" ]
