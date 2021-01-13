@@ -105,7 +105,7 @@ tmoe_container_dns() {
 tmoe_container_timezone() {
     RETURN_TO_WHERE='tmoe_container_timezone'
     unset TIMEZONE IMPORTANT_TIPS_03
-    TIMEZONE=$(tr '[+\-]' '[\-+]' ${CONFIG_FOLDER}/gitstatus/timezone.txt)
+    TIMEZONE=$(cat ${CONFIG_FOLDER}/gitstatus/timezone.txt | tr '[+\-]' '[\-+]') #管道
     [[ -z ${TIMEZONE} ]] || IMPORTANT_TIPS_03="Current timzone of container is ${TIMEZONE}"
     TMOE_OPTION=$(whiptail --title "Please choose TIMEZONE" --menu "GMT is Greenwich Mean Time.\nGMT+8 = 東8區\n${IMPORTANT_TIPS_03}" 0 50 0 \
         "0" "🌚 Back" \
