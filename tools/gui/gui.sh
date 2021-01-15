@@ -1590,7 +1590,8 @@ install_xfce4_desktop() {
     true)
         case "${LINUX_DISTRO}" in
         "debian")
-            if [[ ! -n "$(command -v kali-undercover)" ]]; then
+            #此处不能是commmand -v kali-undercover
+            if [[ ! -e /usr/bin/kali-undercover ]]; then
                 printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
                 apt autoremove --purge -y ^xfce4-power-manager
             fi
@@ -3580,7 +3581,7 @@ download_chameleon_cursor_theme() {
 install_kali_undercover() {
     if [ -e "/usr/share/icons/Windows-10-Icons" ]; then
         printf "%s\n" "检测到您已安装win10主题"
-        printf "%s\n" "如需移除，请手动输${TMOE_REMOVAL_COMMAND} kali-undercover;rm -rf /usr/share/icons/Windows-10-Icons /usr/share/themes/Windows-10"
+        printf "%s\n" "如需移除，请手动输${TMOE_REMOVAL_COMMAND} kali-undercover;rm -rf /usr/share/icons/Windows-10-Icons /usr/share/themes/Windows-10 /usr/local/bin/kali-undercover"
         printf "%s\n" "是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
@@ -3606,6 +3607,7 @@ install_kali_undercover() {
     ar xv ${THE_LATEST_DEB_FILE}
     cd /
     tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
+    mv -f /usr/bin/kali-undercover /usr/local/bin/
     #if which gtk-update-icon-cache >/dev/null 2>&1; then
     update-icon-caches /usr/share/icons/Windows-10-Icons 2>/dev/null &
     #fi
