@@ -13,10 +13,10 @@ configure_tmoe_container() {
     TMOE_OPTION=$(whiptail --title "CONF AND MANUAL" --menu "You can view the manual or modify the container configuration here." 0 50 0 \
         "1" "DNS 域名解析系统" \
         "2" "Timezone 时区" \
-        "2" "hitokoto 一言" \
-        "3" "man mount" \
-        "4" "man umount" \
-        "5" "man x11vnc" \
+        "3" "hitokoto 一言" \
+        "4" "man mount" \
+        "5" "man umount" \
+        "6" "man x11vnc" \
         "0" "🌚 Back 返回" \
         3>&1 1>&2 2>&3)
     ##############################
