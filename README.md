@@ -346,8 +346,10 @@ Next, I will introduce the meaning of each parameter.
    在第三个参数中，"sid"可以简化为"s";"无版本代号"既可以简化为"n"，也可以忽略，直接使用第四个参数。
    Note: The following list does not include all codes. If there is no version code, you can skip it.
     如果版本代号不为空，且参数列表中没有出现其具体代号名称，那么请手动输入完整代号。
+    如果存在简化版代号，则可使用简化版代号来替代完整代号。
     例如ubuntu 21.04,您可以用"21.04"来代替"hirsute"，至于其他版本却不一定可以，故建议第三个参数使用完整的代号。
-    If the linux distro you choose has a version code, then we recommend that you type the complete code.
+
+    We recommend that you type the complete code.
     For example, for Debian 12, you should use "tmoe c d bookworm" or "tmoe p d bookworm" instead of "tmoe c d 12".
 
    "$3":
@@ -362,15 +364,15 @@ Next, I will introduce the meaning of each parameter.
         "buster:debian10"
         "bullseye:debian11"
         "bookworm:debian12"
+        "trixie:debian13"
         "18.04:ubuntu bionic"
-        "31:fedora 31"
         "32:fedora 32"
         "33:fedora 33"
         "34:fedora 34"
         "3.12:alpine 3.12"
         "3.13:alpine 3.13"
         "edge:alpine edge"
-        "8-Stream:CentOS 8-Stream"
+        "8s:CentOS 8-Stream"
         "tumbleweed:OpenSUSE tumbleweed"
 -------------
     The 4th parameter is the architecture.
@@ -398,11 +400,11 @@ Next, I will introduce the meaning of each parameter.
         The 5th parameter can start a specific program of the container, such as vnc.
         If it is empty, then zsh will be started.
         在第五个参数中，"vnc"可简化为"v"。
-        虽然"xsdl"可以简化为"x"，但是在第四个参数中只能简化为"xs"。
-        例如，启动chroot ubuntu-focal_arm64 tiger vncserver:
+        启动chroot ubuntu-focal_arm64 tiger vncserver的命令:
         "tmoe c u focal arm64 vnc"
         可以简化为"tmoe c u focal a v"
-        若该参数为空，则将启动zsh作为默认登录shell,并且不会启动远程服务。
+        虽然"xsdl"在第五个参数中可以简化为"x"，但是在第四个参数中只能简化为"xs"。
+        若第五个参数为空，则将启动zsh作为默认登录shell,并且不会启动远程服务。
 
     "$5":
         "v:vnc(startvnc)"
@@ -854,7 +856,7 @@ debian-i
 
 输`startvnc`启动 vnc 服务，
 输`stopvnc`停止 vnc 服务。
-完成后，打开 vnc viewer 客户端，输 `localhost:5901`
+完成后，打开 vnc viewer 客户端，输 `localhost:5902`
 
 #### 其它说明
 
@@ -940,7 +942,7 @@ nano $(command -v startvnc)
 
 - ​ 13.简化启动流程，你可以在 termux 原系统里输 startvnc 来启动 debian+vnc 客户端
 
-- ​ 14.vnc 支持自动获取本机局域网 ip，地址格式类似于 `192.168.123.3:5901`
+- ​ 14.vnc 支持自动获取本机局域网 ip，地址格式类似于 `192.168.123.3:5902`
 
 ---
 

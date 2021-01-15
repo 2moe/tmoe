@@ -17,21 +17,24 @@ tmoe_install_xfce() {
 	apt install -y x11-repo
 	apt update
 	apt dist-upgrade -y
-
-	apt install -y xfce tigervnc aterm
+	for i in xfce xfce aterm; do
+		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+		apt install -y ${i}
+	done
 	cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
 		#!/usr/bin/env bash
 		pkill Xvnc 2>/dev/null 
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
-		printf "%s\n" "正在启动vnc服务,本机默认vnc地址localhost:5901"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5901
-		export DISPLAY=:1
+		printf "%s\n" "正在启动vnc服务,本机默认vnc地址localhost:5902"
+		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5902
+		export DISPLAY=:2
 		Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
 		export PULSE_SERVER=127.0.0.1
 		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 		sleep 1s
 		thunar &
+		aterm &
 		printf "%s\n" "已为您启动vnc服务 Vnc server has been started, enjoy it!"
 		printf "%s\n" "默认为前台运行，您可以按Ctrl+C终止当前进程。"
 		startxfce4

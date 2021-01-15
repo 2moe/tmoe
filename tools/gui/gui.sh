@@ -147,7 +147,7 @@ check_tightvnc_port() {
 #########################
 modify_tightvnc_display_port() {
     check_tightvnc_port
-    TARGET=$(whiptail --inputbox "默认显示编号为1,当前为${CURRENT_PORT}\nVNC服务以5900端口为起始,若显示编号为1,则端口为5901，请输入显示编号.Please type the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "默认显示编号为1,当前为${CURRENT_PORT}\nVNC服务以5900端口为起始,若显示编号为2,则端口为5902,请输入显示编号.Please type the display number." 13 50 --title "MODIFY DISPLAY PORT " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         modify_other_vnc_conf
     elif [ -z "${TARGET}" ]; then
@@ -3826,7 +3826,7 @@ check_x11vnc_port() {
 #############
 x11vnc_port() {
     check_x11vnc_port
-    TARGET=$(whiptail --inputbox "Please type the x11vnc tcp port,the default is 5901,current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "Please type the x11vnc tcp port,the default is 5902,current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
@@ -4885,7 +4885,7 @@ first_configure_startvnc() {
     if [[ ! -s "${HOME}/.vnc/passwd" ]]; then
         set_vnc_passwd
     fi
-    choose_vnc_port_5901_or_5902
+    choose_vnc_port_5902_or_5903
     printf "$BLUE"
     cat <<-'EndOFneko'
 		               .::::..                
@@ -5135,16 +5135,16 @@ set_vnc_passwd() {
     fi
 }
 ###########
-choose_vnc_port_5901_or_5902() {
-    X11VNC_PORT=5901
-    DISPLAY_PORT=1
+choose_vnc_port_5902_or_5903() {
+    X11VNC_PORT=5902
+    DISPLAY_PORT=2
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-        if (whiptail --title "VNC PORT" --yes-button "5901" --no-button "5902" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
-            X11VNC_PORT=5901
-            DISPLAY_PORT=1
-        else
+        if (whiptail --title "VNC PORT" --yes-button "5902" --no-button "5903" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
             X11VNC_PORT=5902
             DISPLAY_PORT=2
+        else
+            X11VNC_PORT=5903
+            DISPLAY_PORT=3
         fi
     fi
     sed -i -E "s@(tmoe-linux) :.*@\1 :${DISPLAY_PORT}@" "$(command -v startvnc)"

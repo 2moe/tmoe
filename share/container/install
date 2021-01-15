@@ -1384,13 +1384,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		unset i
 		;;
 	esac
-	choose_vnc_port_5901_or_5902() {
-	    if (whiptail --title "VNC PORT" --yes-button "5901" --no-button "5902" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
-	        X11VNC_PORT=5901
-	        DISPLAY_PORT=1
-	    else
+	choose_vnc_port_5902_or_5903() {
+	    if (whiptail --title "VNC PORT" --yes-button "5902" --no-button "5903" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
 	        X11VNC_PORT=5902
 	        DISPLAY_PORT=2
+	    else
+	        X11VNC_PORT=5903
+	        DISPLAY_PORT=3
 	    fi
 	    sed -i -E "s@(DISPLAY)=.*@\1=:${DISPLAY_PORT}@" "$(command -v startvnc)"
 	}
@@ -1421,7 +1421,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	}
 	if grep -q 'puppy_linux' /etc/os-release;then
-		choose_vnc_port_5901_or_5902
+		choose_vnc_port_5902_or_5903
 		set_vnc_passwd
 		printf "%s\n" "You can type ${GREEN}startvnc${RESET} to start ${BLUE}tightvnc server${RESET},type ${RED}stopvnc${RESET} to stop it."
 		printf "%s\n" "当前系统已经了预装窗口管理器和tightvnc服务端,您可以输${GREEN}startvnc${RESET}来启动vnc服务端。"
