@@ -602,13 +602,13 @@ uncompress_alpine_and_docker_x64_img_file() {
 download_alpine_and_docker_x64_img_file() {
 	cat <<-EOF
 		You can use this image to run docker on Android system.
-		The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5902. 
+		The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and enter localhost:5905. 
 		The default root passwd is empty.
 		After entering the system,you should type ${GREEN}passwd${RESET} to change your password.
 		If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, you can type ${GREEN}ssh -p 2888 root@localhost${RESET}
 
 		您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker
-		您可以直接使用vnc客户端连接，访问地址为localhost:5902
+		您可以直接使用vnc客户端连接，访问地址为localhost:5905
 		默认root密码为空。
 		请在登录完成后，输入${GREEN}passwd${RESET}修改root密码。
 		如果您想要使用ssh连接，那么请新建一个termux会话窗口，并输入${GREEN}apt update ;apt install -y openssh${RESET}
@@ -629,7 +629,7 @@ download_alpine_and_docker_x64_img_file() {
 	note_of_empty_root_password
 	do_you_want_to_continue
 	check_arch_linux_qemu_qcow2_file
-	#printf "%s\n" "默认VNC访问地址为localhost:5902"
+	#printf "%s\n" "默认VNC访问地址为localhost:5905"
 }
 #############
 choose_qcow2_or_iso

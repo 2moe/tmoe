@@ -445,8 +445,8 @@ CONNECTION_TYPE='vnc'
 REMOTE_X11_ADDR='127.0.0.1:0'
 #仅当连接类型为remote-x11时，远程转发才会生效。
 
-VNC_PORT='5902'
-#默认为5902
+VNC_PORT='5905'
+#默认为5905
 
 VNC_LOCALHOST='true'
 #默认为true,仅本机可连接。
@@ -814,7 +814,7 @@ run_tmoe_qemu_i440fx_machine() {
     set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
     set -- "${@}" "-msg" "timestamp=on"
     ###############
-    [[ -n ${VNC_PORT} ]] || VNC_PORT="5902"
+    [[ -n ${VNC_PORT} ]] || VNC_PORT="5905"
     case ${VNC_STARTUP_PROMPT} in
     'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
     esac
@@ -1263,7 +1263,7 @@ EOF
     set -- "${@}" "-sandbox" "on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny"
     set -- "${@}" "-msg" "timestamp=on"
     ###############
-    [[ -n ${VNC_PORT} ]] || VNC_PORT="5902"
+    [[ -n ${VNC_PORT} ]] || VNC_PORT="5905"
     case ${VNC_STARTUP_PROMPT} in
     'true') TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${VNC_PORT}@") ;;
     esac

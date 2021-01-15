@@ -287,7 +287,7 @@ type_the_remote_x11_addr() {
 choose_qemu_vnc_port() {
 	CURRENT_VNC_PORT=$(grep "^VNC_PORT=" ${QEMU_FILE} | cut -d '=' -f 2)
 	unset VNC_PORT
-	TMOE_OPTION=$(whiptail --title "请选择${CONNECTION_TYPE}端口" --menu "The current ${CONNECTION_TYPE} port is ${CURRENT_VNC_PORT}.\n默认端口5902,当前为${CURRENT_VNC_PORT}" 0 50 0 \
+	TMOE_OPTION=$(whiptail --title "请选择${CONNECTION_TYPE}端口" --menu "The current ${CONNECTION_TYPE} port is ${CURRENT_VNC_PORT}.\n默认端口5905,当前为${CURRENT_VNC_PORT}" 0 50 0 \
 		"1" "5900" \
 		"2" "5901" \
 		"3" "5902" \
@@ -313,7 +313,7 @@ choose_qemu_vnc_port() {
 }
 #################
 type_the_vnc_port_target() {
-	VNC_PORT=$(whiptail --inputbox "请输入端口号(纯数字),默认为5902\nPlease type the port" 9 50 --title "PORT" 3>&1 1>&2 2>&3)
+	VNC_PORT=$(whiptail --inputbox "请输入端口号(纯数字),默认为5905\nPlease type the port" 9 50 --title "PORT" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		#${RETURN_TO_WHERE}
 		choose_qemu_vnc_port
@@ -324,8 +324,8 @@ type_the_vnc_port_target() {
 		type_the_vnc_port_target
 	elif [ -z "${VNC_PORT}" ]; then
 		printf "%s\n" "The vnc port is empty."
-		printf "%s\n" "端口为空，将自动切换至${GREEN}5902${RESET}端口"
-		VNC_PORT='5902'
+		printf "%s\n" "端口为空，将自动切换至${GREEN}5905${RESET}端口"
+		VNC_PORT='5905'
 	fi
 }
 do_you_want_to_link_this_script() {
