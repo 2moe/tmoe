@@ -1101,7 +1101,10 @@ install_kali_linux_tools() {
 }
 ###########################
 kali_xfce4_extras() {
-    printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-undercover${RESET}"
+    if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
+        printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-undercover${RESET}"
+        install_kali_undercover
+    fi
     apt install -y kali-themes-common
     if [ $(command -v chromium) ]; then
         apt install -y chromium-l10n
@@ -1587,14 +1590,10 @@ install_xfce4_desktop() {
     true)
         case "${LINUX_DISTRO}" in
         "debian")
-            case "${DEBIAN_DISTRO}" in
-            "kali") ;;
-            *)
-                if [ ! -e "/usr/share/icons/Windows-10-Icons/128x128/mimetypes/" ]; then
-                    apt autoremove --purge -y ^xfce4-power-manager
-                fi
-                ;;
-            esac
+            if [[ ! -n "$(command -v kali-undercover)" ]]; then
+                printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
+                apt autoremove --purge -y ^xfce4-power-manager
+            fi
             ;;
         arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
         redhat) dnf remove -y xfce4-power-manager ;;
@@ -3581,39 +3580,39 @@ download_chameleon_cursor_theme() {
 install_kali_undercover() {
     if [ -e "/usr/share/icons/Windows-10-Icons" ]; then
         printf "%s\n" "检测到您已安装win10主题"
-        printf "%s\n" "如需移除，请手动输${TMOE_REMOVAL_COMMAND} kali-undercover;rm -rf /usr/share/icons/Windows-10-Icons"
+        printf "%s\n" "如需移除，请手动输${TMOE_REMOVAL_COMMAND} kali-undercover;rm -rf /usr/share/icons/Windows-10-Icons /usr/share/themes/Windows-10"
         printf "%s\n" "是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
     DEPENDENCY_01="kali-undercover"
     DEPENDENCY_02=""
-
-    case "${LINUX_DISTRO}" in
-    "debian") beta_features_quick_install ;;
-    esac
+    #case "${LINUX_DISTRO}" in
+    #"debian") beta_features_quick_install ;;
+    #esac
     #此处需做两次判断
-    if [ "${DEBIAN_DISTRO}" = "kali" ]; then
-        beta_features_quick_install
-    else
-        mkdir -pv /tmp/.kali-undercover-win10-theme
-        cd /tmp/.kali-undercover-win10-theme
-        UNDERCOVERlatestLINK="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover/${UNDERCOVERlatestLINK}"
-        #apt-cache show ./kali-undercover.deb
-        #apt install -y ./kali-undercover.deb
-        if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
-            THE_LATEST_DEB_FILE='kali-undercover.deb'
-            ar xv ${THE_LATEST_DEB_FILE}
-            cd /
-            tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
-            #if which gtk-update-icon-cache >/dev/null 2>&1; then
-            update-icon-caches /usr/share/icons/Windows-10-Icons 2>/dev/null &
-            #fi
-        fi
-        rm -rfv /tmp/.kali-undercover-win10-theme
-        #rm -f ./kali-undercover.deb
-    fi
+    #if [ "${DEBIAN_DISTRO}" = "kali" ]; then
+    #    beta_features_quick_install
+    #else
+    mkdir -pv /tmp/.kali-undercover-win10-theme
+    cd /tmp/.kali-undercover-win10-theme
+    UNDERCOVER_REPO="https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover"
+    UNDERCOVERlatestLINK="$(curl -L "${UNDERCOVER_REPO}/" | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "${UNDERCOVER_REPO}/${UNDERCOVERlatestLINK}"
+    #apt-cache show ./kali-undercover.deb
+    #apt install -y ./kali-undercover.deb
+    #if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
+    THE_LATEST_DEB_FILE='kali-undercover.deb'
+    ar xv ${THE_LATEST_DEB_FILE}
+    cd /
+    tar -Jxvf /tmp/.kali-undercover-win10-theme/data.tar.xz ./usr
+    #if which gtk-update-icon-cache >/dev/null 2>&1; then
+    update-icon-caches /usr/share/icons/Windows-10-Icons 2>/dev/null &
+    #fi
+    #fi
+    rm -rfv /tmp/.kali-undercover-win10-theme
+    #rm -f ./kali-undercover.deb
+    #fi
     #XFCE_ICON_NAME='Windows 10'
 }
 #################
