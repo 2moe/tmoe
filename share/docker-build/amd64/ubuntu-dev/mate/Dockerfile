@@ -13,7 +13,7 @@ RUN apt update \
     ; apt dist-upgrade -y \
     ; apt install -y locales-all locales \
     ; apt install -y whiptail dialog aria2 zstd curl wget \
-    ; apt install -y neofetch lolcat \
+    ; apt install -y neofetch lolcat apt-utils \
     ; cd /tmp \
     ; curl -LO 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_automatic_configure \
