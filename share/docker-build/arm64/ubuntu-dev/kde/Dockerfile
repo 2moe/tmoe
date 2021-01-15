@@ -15,7 +15,7 @@ RUN apt update \
     ; apt install -y whiptail dialog aria2 zstd curl wget \
     ; apt install -y neofetch lolcat apt-utils \
     ; cd /tmp \
-    ; curl -LO 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh' \
+    ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_automatic_configure \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
