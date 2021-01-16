@@ -930,7 +930,8 @@ modify_qemu_sound_card() {
 			"2" "ich6(Intel HD Audio)" \
 			"3" "ac97(Intel 82801AA AC97)" \
 			"4" "es1370(ENSONIQ AudioPCI ES1370)" \
-			"5" "disable 禁用" \
+			"5" "disable 01 禁用第一块声卡" \
+			"6" "disable 02 禁用第二块声卡" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -945,11 +946,23 @@ modify_qemu_sound_card() {
 		SOUND_CARD='DISABLED'
 		SOUND_CARD_ENABLED=false
 		;;
+	6)
+		SOUND_CARD_02='DISABLED'
+		SOUND_CARD_02_ENABLED=false
+		;;
 	esac
-	###############
-	sed -E -i "s@^(SOUND_CARD=).*@\1${SOUND_CARD}@g;s@^(SOUND_CARD_ENABLED=).*@\1${SOUND_CARD_ENABLED}@g" ${QEMU_FILE}
-	egrep --color=auto "^SOUND_CARD=|^SOUND_CARD_ENABLED=" ${QEMU_FILE}
-	printf "%s\n" "您已将sound_card修改为${BLUE}${SOUND_CARD}${RESET}"
+	case ${TMOE_VIRTUALIZATION} in
+	6)
+		sed -E -i "s@^(SOUND_CARD_02=).*@\1${SOUND_CARD_02}@g;s@^(SOUND_CARD_02_ENABLED=).*@\1${SOUND_CARD_02_ENABLED}@g" ${QEMU_FILE}
+		egrep --color=auto "^SOUND_CARD_02=|^SOUND_CARD_02_ENABLED=" ${QEMU_FILE}
+		printf "%s\n" "您已将sound_card_02修改为${BLUE}${SOUND_CARD_02}${RESET}"
+		;;
+	*)
+		sed -E -i "s@^(SOUND_CARD=).*@\1${SOUND_CARD}@g;s@^(SOUND_CARD_ENABLED=).*@\1${SOUND_CARD_ENABLED}@g" ${QEMU_FILE}
+		egrep --color=auto "^SOUND_CARD=|^SOUND_CARD_ENABLED=" ${QEMU_FILE}
+		printf "%s\n" "您已将sound_card修改为${BLUE}${SOUND_CARD}${RESET}"
+		;;
+	esac
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -1313,11 +1326,11 @@ modify_qemu_tmoe_network_card() {
 	25) TMOE_QEMU_NETWORK_CARD="rocker" ;;
 	26) TMOE_QEMU_NETWORK_CARD="tulip" ;;
 	esac
-	###############
 	case ${TMOE_VIRTUALIZATION} in
 	1)
 		sed -E -i "s@^(${NET_DEVICE}_ENABLED=).*@\1false@g" ${QEMU_FILE}
-		printf "%s\n" "您已将禁用${NET_DEVICE}"
+		sed -E -i "s@^(${NET_DEVICE}=).*@\1DISABLED@g" ${QEMU_FILE}
+		printf "%s\n" "您已禁用${NET_DEVICE}"
 		;;
 	*)
 		sed -E -i "s@^(${NET_DEVICE}=).*@\1"${TMOE_QEMU_NETWORK_CARD}"@g;s@^(${NET_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
