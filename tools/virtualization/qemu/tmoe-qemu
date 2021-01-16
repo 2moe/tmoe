@@ -166,7 +166,7 @@ choose_qemu_machine_type() {
 	grep --color=auto "^MACHINE_TYPE=" ${QEMU_FILE}
 }
 choose_uefi_or_bios() {
-	if (whiptail --title "请选择引导类型" --yes-button 'legacy bios' --no-button 'uefi' --yesno "If your guest is win95/winxp,then choose legacy bios.\n默认为legacy bios,若您的虚拟机非老旧系统,\n例如debian sid或win10,则可选择uefi\n若TianoCore UEFI无法引导系统，则请切换回bios" 11 50); then
+	if (whiptail --title "请选择引导类型" --yes-button 'legacy bios' --no-button 'uefi' --yesno "If your guest is win95/winxp,then choose legacy bios.\n默认为legacy bios,若您的虚拟机非老旧系统,\n例如debian sid或win10,则可选择uefi\n若TianoCore UEFI无法引导系统,则请切换回bios\n若你使用的是未包含efi引导的镜像,则请使用legacy" 14 50); then
 		UEFI_ENABLED='false'
 	else
 		UEFI_ENABLED='true'
@@ -1409,7 +1409,7 @@ modify_tmoe_qemu_extra_options() {
 #################
 choose_qemu_rtc_base() {
 	CURRENT_VALUE=$(grep '^RTC_BASE=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
-	if (whiptail --title "RTC BASE" --yes-button 'utc' --no-button 'localtime' --yesno "Current rtc-base is ${CURRENT_VALUE}.\n若guest为linux,则选择rtc,若为win,则选localtime" 10 50); then
+	if (whiptail --title "RTC BASE" --yes-button 'utc' --no-button 'localtime' --yesno "Current rtc-base is ${CURRENT_VALUE}.\n若guest为linux,则选择utc,若为win,则选localtime" 10 50); then
 		RTC_BASE='utc'
 	else
 		RTC_BASE='localtime'
