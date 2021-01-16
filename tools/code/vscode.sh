@@ -5,7 +5,7 @@ which_vscode_edition() {
     ps -e >/dev/null 2>&1 || VSCODEtips=$(printf "%s\n" "检测到您无权读取/proc的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
     #15 60 5
     VSCODE_EDITION=$(whiptail --title "Visual Studio Code" --menu \
-        "${VSCODEtips} Which edition do you want to install" 0 50 0 \
+        "${VSCODEtips} If you can not use the backspace key,try using tigervnc server\n若退格键无法使用,则请换用tiger/x11vnc server" 0 50 0 \
         "1" "Microsoft Official(x64,arm64,armhf官方版)" \
         "2" "VS Code Server:web版,含配置选项" \
         "3" "VS Codium(不跟踪你的使用数据)" \
