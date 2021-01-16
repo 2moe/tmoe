@@ -96,16 +96,19 @@ tmoe_vnc_preconfigure() {
 display_vnc_ip_addr() {
     check_vnc_port
     TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
+    TMOE_IPV6_ADDR=$(ip -6 -c a | grep '/' | egrep -v 'fe80::.*/64' | awk '{print $2}' | cut -d '/' -f 1 | sed "s@^@[@g;s@\$@]:${CURRENT_VNC_PORT}@g")
     case ${TMOE_LANG} in
     zh_*UTF-8)
         cat <<-EOF
 正在启动vnc服务,${YELLOW}本机${RESET}vnc地址 ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
+${YELLOW}IPv6${YELLOW}地址 ${TMOE_IPV6_ADDR}
 The LAN VNC address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
 EOF
         ;;
     *)
         cat <<-EOF
 The ${YELLOW}local${RESET} vnc address is ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
+The ${YELLOW}IPv6${YELLOW} address is ${TMOE_IPV6_ADDR}
 The ${YELLOW}LAN${RESET} vnc address is ${TMOE_IP_ADDR}
 EOF
         ;;
