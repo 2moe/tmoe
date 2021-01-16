@@ -101,7 +101,7 @@ display_vnc_ip_addr() {
     zh_*UTF-8)
         cat <<-EOF
 正在启动vnc服务,${YELLOW}本机${RESET}vnc地址 ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
-${YELLOW}IPv6${YELLOW}地址 ${TMOE_IPV6_ADDR}
+${YELLOW}IPv6${RESET}地址 ${TMOE_IPV6_ADDR}
 The LAN VNC address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
 EOF
         ;;
