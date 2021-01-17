@@ -51,7 +51,7 @@ docker_auto_install_gui_env() {
     check_current_user_name_and_group 2>/dev/null
 EOF
     AUTO_INSTALL_GUI=true
-    check_zstd
+    #check_zstd
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
     REMOVE_UDISK2=false
