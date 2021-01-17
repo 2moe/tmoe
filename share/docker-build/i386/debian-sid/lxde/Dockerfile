@@ -25,7 +25,7 @@ RUN apt update \
     ; sed -i 's@*) #main@2333)@g' tool.sh \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-lxde" > install-gui.sh \
     ; bash install-gui.sh \
-    ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
+    ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; apt clean \
     ; apt autoclean \
     ; apt autopurge -y 

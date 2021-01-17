@@ -32,7 +32,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
     ; bash build_fakeroot --install-yay \
-    ; rm -rfv /tmp/* /tmp/.* ~/.vnc/x11passwd ~/.vnc/passwd \
+    ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; pacman -R --noconfirm $(pacman -Qdtq) \
     ; pacman -Scc --noconfirm 
 
