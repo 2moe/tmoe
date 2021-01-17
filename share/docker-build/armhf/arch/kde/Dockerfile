@@ -12,6 +12,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; pacman -Syu --noconfirm \
     ; pacman -S --noconfirm wget curl git \
     ; pacman -S --noconfirm unzip neofetch \
+    ; pacman -S --noconfirm systemd \
     ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \
     ; sed -i -E "s@^#*(${LANG} UTF-8)@\1@g" /etc/locale.gen \
     ; grep "^[^#]*${LANG}" /etc/locale.gen || printf "%s\n" "${LANG} UTF-8" >> /etc/locale.gen \

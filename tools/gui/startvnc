@@ -96,7 +96,7 @@ tmoe_vnc_preconfigure() {
 display_vnc_ip_addr() {
     check_vnc_port
     TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
-    TMOE_IPV6_ADDR=$(ip -6 -c a | grep '/' | egrep -v 'fe80::.*/64' | awk '{print $2}' | cut -d '/' -f 1 | sed "s@^@[@g;s@\$@]:${CURRENT_VNC_PORT}@g")
+    TMOE_IPV6_ADDR=$(ip -6 -c a | grep '/' | grep -v 'fe80::.*/64' | awk '{print $2}' | cut -d '/' -f 1 | sed "s@^@[@g;s@\$@]:${CURRENT_VNC_PORT}@g")
     case ${TMOE_LANG} in
     zh_*UTF-8)
         cat <<-EOF
