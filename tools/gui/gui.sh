@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 ############################################
 gui_main() {
+    IOSEVKA_TTF_FILE="/usr/share/fonts/truetype/iosevka/Iosevka-Term-Mono.ttf"
     unset AUTO_INSTALL_GUI
     case "$1" in
     --auto-install-gui-xfce)
@@ -50,6 +51,7 @@ docker_auto_install_gui_env() {
     check_current_user_name_and_group 2>/dev/null
 EOF
     AUTO_INSTALL_GUI=true
+    check_zstd
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
     REMOVE_UDISK2=false
@@ -260,7 +262,6 @@ catimg_preview_lxde_mate_xfce_02() {
     fi
 }
 install_gui() {
-    IOSEVKA_TTF_FILE="/usr/share/fonts/truetype/iosevka/Iosevka-Term-Mono.ttf"
     [[ "${WINDOWS_DISTRO}" != 'WSL' ]] || source ${TMOE_TOOL_DIR}/gui/wsl
     [[ ! -s "${IOSEVKA_TTF_FILE}" ]] || standand_desktop_installation #该字体检测两次
     check_zstd
