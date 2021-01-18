@@ -439,6 +439,7 @@ install_weekly_build_container() {
 		sed "1a\NODE02_USER=${NODE02_USER}" |
 		sed "1a\NODE02_PW=${NODE02_PW}" |
 		sed "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" |
+		sed "1a\NODE_NAME=${NODE_NAME}" |
 		sed "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" |
 		sed "s/debian system/${DISTRO_NAME} system/g" |
 		sed "s@BFSU Open Source Mirror Station@${NODE_NAME}@" |
