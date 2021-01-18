@@ -1390,8 +1390,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		    arch_linux_yay
 			cat /etc/pacman.conf
 		else
-			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-			pacman -Sy --noconfirm ${i}
+			if [[ ${TMOE_CHROOT} = true ]];then
+				i=gawk
+				printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+				pacman -Sy --noconfirm ${i}
+			fi 
 		fi 
 	fi
 	#######################
