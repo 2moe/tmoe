@@ -54,6 +54,7 @@ do_you_want_to_delete_the_zsh_script_file() {
 }
 set_your_vnc_passwd() {
 	${TMOE_GIT_DIR}/tool.sh -passwd
+	whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: startvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 10 50
 }
 do_you_want_to_configure_tmoe_zsh() {
 	cd ${HOME}
