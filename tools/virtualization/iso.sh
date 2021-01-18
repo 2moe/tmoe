@@ -39,7 +39,7 @@ download_virtual_machine_iso_file() {
 ###########
 download_tmoe_iso_file_again() {
 	printf "%s\n" "即将为您下载win10 iso镜像文件..."
-	aria2c --no-conf -x 6 -k 1M --split=6 --allow-overwrite=true -o "${ISO_FILE_NAME}" "${TMOE_ISO_URL}"
+	aria2c --console-log-level=warn --no-conf -x 6 -k 1M --split=6 --allow-overwrite=true -o "${ISO_FILE_NAME}" "${TMOE_ISO_URL}"
 	qemu-img info ${ISO_FILE_NAME}
 }
 ##########
@@ -253,7 +253,7 @@ download_android_x86_file() {
 	esac
 	THE_LATEST_ISO_LINK="${REPO_URL}${REPO_FOLDER}${THE_LATEST_ISO_VERSION}"
 	#printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	#aria2c  --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
+	#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_ISO_VERSION}" "${THE_LATEST_ISO_LINK}"
 	aria2c_download_file
 }
 download_debian_iso_file() {
@@ -352,19 +352,19 @@ download_debian_weekly_builds_iso() {
 	#https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-builds/${GREP_ARCH}/iso-cd/debian-testing-${GREP_ARCH}-netinst.iso"
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-testing-${GREP_ARCH}-netinst.iso" "${THE_LATEST_ISO_LINK}"
 }
 ##################
 download_debian_free_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso"
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}.iso" "${THE_LATEST_ISO_LINK}"
 }
 ############
 download_debian_nonfree_live_iso() {
 	THE_LATEST_ISO_LINK="https://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/weekly-live-builds/${GREP_ARCH}/iso-hybrid/debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}%2Bnonfree.iso"
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
-	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
+	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "debian-live-testing-${GREP_ARCH}-${DEBIAN_DE}-nonfree.iso" "${THE_LATEST_ISO_LINK}"
 }
 ####################
 ################
@@ -444,7 +444,7 @@ aria2c_download_tmoe_qemu_file() {
 	printf "%s\n" "The file is ${YELLOW}${TMOE_FILE_ABSOLUTE_PATH}${RESET}"
 	do_you_want_to_continue
 	aria2c_download_file_00
-	aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
+	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 download_debian_qcow2_file() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"

@@ -2003,7 +2003,7 @@ tmoe_aria2_onekey() {
     fi
 
     #cp -pvf ${HOME}/gitee/linux-gitee/.config/aria2.conf ./
-    aria2c --no-conf --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/aria2.conf'
     case ${TMOE_PROOT} in
     true) printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下" ;;
     false) printf "%s\n" "检测到您处于${BLUE}chroot容器${RESET}环境下" ;;
@@ -2087,11 +2087,11 @@ exit 0
     ########################################
     cd ${TMOE_ARIA2_PATH}
     if [ ! -e "dht.dat" ]; then
-        aria2c --no-conf --allow-overwrite=true -o dht.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht.dat
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht.dat
         chmod 666 dht.dat
     fi
     if [ ! -e "dht6.dat" ]; then
-        aria2c --no-conf --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht6.dat
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht6.dat
         chmod 666 dht6.dat
     fi
     creat_aria2_hook_script
@@ -2263,7 +2263,7 @@ creat_aria_ng_desktop_link() {
         if [ -e "${ARIA_NG_ICON}" ]; then
             cp ${ARIA_NG_ICON} /usr/share/icons
         else
-            aria2c --no-conf --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/ariang.png
         fi
     fi
     catimg "/usr/share/icons/ariang.png" 2>/dev/null

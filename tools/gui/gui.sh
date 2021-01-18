@@ -2487,7 +2487,7 @@ dde_old_version() {
 }
 ################
 ubuntu_dde_distro_code() {
-    aria2c --no-conf --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache 'http://ppa.launchpad.net/ubuntudde-dev/stable/ubuntu/dists/'
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache 'http://ppa.launchpad.net/ubuntudde-dev/stable/ubuntu/dists/'
     TARGET_CODE=$(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | tail -n 1 | cut -d '=' -f 5 | cut -d '/' -f 1 | cut -d '"' -f 2)
     if [ "${DEBIAN_DISTRO}" = 'ubuntu' ]; then
         if [ "$(cat .ubuntu_ppa_tmoe_cache | grep '\[DIR' | grep "${SOURCELISTCODE}")" ]; then
@@ -2822,7 +2822,7 @@ xfce_theme_parsing() {
     cd /tmp/
     printf "%s\n" "正在下载网页文件.."
     printf "%s\n" "Downloading index.html..."
-    aria2c --no-conf --allow-overwrite=true -o .theme_index_cache_tmoe.html ${THEME_TMOE_URL}
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .theme_index_cache_tmoe.html ${THEME_TMOE_URL}
 
     cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | egrep 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
     THEME_LINE=$(cat .tmoe-linux_cache.01 | wc -l)
@@ -3290,7 +3290,7 @@ download_manjaro_pkg() {
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     printf "%s\n" "${THEME_URL}"
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
 }
 ############
 link_to_debian_wallpaper() {
@@ -3510,7 +3510,7 @@ download_ukui_theme() {
         mkdir -pv /tmp/.ukui-gtk-themes
         cd /tmp/.ukui-gtk-themes
         UKUITHEME="$(curl -LfsS 'https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/' | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'ukui-themes.deb' "https://mirrors.bfsu.edu.cn/debian/pool/main/u/ukui-themes/${UKUITHEME}"
         ar xv 'ukui-themes.deb'
         cd /
         tar -Jxvf /tmp/.ukui-gtk-themes/data.tar.xz ./usr
@@ -3600,7 +3600,7 @@ install_kali_undercover() {
     cd /tmp/.kali-undercover-win10-theme
     UNDERCOVER_REPO="https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover"
     UNDERCOVERlatestLINK="$(curl -L "${UNDERCOVER_REPO}/" | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "${UNDERCOVER_REPO}/${UNDERCOVERlatestLINK}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "${UNDERCOVER_REPO}/${UNDERCOVERlatestLINK}"
     #apt-cache show ./kali-undercover.deb
     #apt install -y ./kali-undercover.deb
     #if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then
@@ -4779,15 +4779,15 @@ ubuntu_install_tiger_vnc_server() {
     mkdir ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
     grep_tiger_vnc_deb_file
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL}"
     GREP_NAME_01='tigervnc-standalone-server'
     grep_tiger_vnc_deb_file
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-standalone-server_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-standalone-server_ubuntu-focal.deb" "${LATEST_DEB_URL}"
     LATEST_DEB_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/libj/libjpeg-turbo/"
     GREP_NAME_01='libjpeg62-turbo_'
     GREP_NAME_02='deb'
     grep_tiger_vnc_deb_file
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "libjpeg62-turbo_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "libjpeg62-turbo_ubuntu-focal.deb" "${LATEST_DEB_URL}"
     dpkg -i ./libjpeg62-turbo_ubuntu-focal.deb ./tigervnc-common_ubuntu-focal.deb ./tigervnc-standalone-server_ubuntu-focal.deb
     apt-mark hold tigervnc-common tigervnc-standalone-server
     cd ~
@@ -5043,13 +5043,13 @@ first_configure_startvnc() {
         printf "%s\n" "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
         printf "%s\n" "You need to allow pulseaudio to pass through the defender firewall, otherwise you will not be able to use the local audio service."
         if [ ! -e "Firewall-pulseaudio.png" ]; then
-            aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
         fi
         /mnt/c/WINDOWS/system32/cmd.exe /c "start Firewall.cpl"
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\Firewall-pulseaudio.png" 2>/dev/null
         ############
         if [ ! -e 'XserverhighDPI.png' ]; then
-            aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverhighDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverhighDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
         fi
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverhighDPI.png" 2>/dev/null
         printf "%s\n" "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"

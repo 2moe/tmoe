@@ -119,7 +119,7 @@ grep_theme_model_01() {
 aria2c_download_theme_file() {
     THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
     printf "%s\n" "${THE_LATEST_THEME_LINK}"
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
 }
 ##########
 download_theme_deb_and_extract_01() {
@@ -198,7 +198,7 @@ grep_arch_linux_pkg() {
     ARCH_WALLPAPER_VERSION=$(cat index.html | egrep -v '.xz.sig|.zst.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"
-    aria2c --no-conf --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 ################
 #grep zst
@@ -206,14 +206,14 @@ grep_arch_linux_pkg_02() {
     ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"
-    aria2c --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 ###################
 grep_arch_linux_pkg_03() {
     ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
-    aria2c --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
 }
 #################
 grep_arch_linux_pkg_04() {
@@ -226,7 +226,7 @@ grep_arch_linux_pkg_04() {
     *)
         ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
         #printf "%s\n" "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
-        aria2c --no-conf --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${ARCH_WALLPAPER_VERSION} -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${ARCH_WALLPAPER_VERSION} -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
         ;;
     esac
     printf "%s\n" "${ARCH_WALLPAPER_VERSION}" | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
@@ -285,14 +285,14 @@ check_download_path() {
 }
 ###########
 download_arch_linux_cn_repo_html() {
-    aria2c --no-conf -o index.html --allow-overwrite=true ${THEME_URL}
+    aria2c --console-log-level=warn --no-conf -o index.html --allow-overwrite=true ${THEME_URL}
 }
 ############
 download_arch_community_repo_html() {
     THEME_NAME=${GREP_NAME}
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
-    aria2c --no-conf --allow-overwrite=true -o index.html "${THEME_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o index.html "${THEME_URL}"
 }
 ##############
 upcompress_deb_file() {
@@ -375,7 +375,7 @@ tmoe_file() {
 install_deb_file_common_model_02() {
     cd /tmp
     printf "%s\n" "${LATEST_DEB_URL}"
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
     apt-cache show ./${LATEST_DEB_VERSION}
     apt install -y ./${LATEST_DEB_VERSION}
     rm -fv ./${LATEST_DEB_VERSION}
@@ -405,7 +405,7 @@ download_tuna_repo_deb_file_all_arch() {
     LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "all" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
     printf "%s\n" "${LATEST_DEB_URL}"
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${LATEST_DEB_VERSION}" "${LATEST_DEB_URL}"
     apt-cache show ./${LATEST_DEB_VERSION} 2>/dev/null
 }
 ##此处不要自动安装deb包
@@ -909,7 +909,7 @@ download_deb_comman_model_02() {
     cd /tmp/
     THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
     printf "%s\n" "${THE_LATEST_DEB_LINK}"
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
     apt-cache show ./${THE_LATEST_DEB_VERSION}
     apt install -y ./${THE_LATEST_DEB_VERSION}
     rm -fv ${THE_LATEST_DEB_VERSION}
@@ -967,7 +967,7 @@ add_ubuntu_ppa_source() {
 get_ubuntu_ppa_gpg_key() {
     DESCRIPTION_PAGE="https://launchpad.net/~${DEV_TEAM_NAME}/+archive/ubuntu/${PPA_SOFTWARE_NAME}"
     cd /tmp
-    aria2c --no-conf --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache ${DESCRIPTION_PAGE}
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache ${DESCRIPTION_PAGE}
     FALSE_FINGERPRINT_LINE=$(cat .ubuntu_ppa_tmoe_cache | grep -n 'Fingerprint:' | awk '{print $1}' | cut -d ':' -f 1)
     TRUE_FINGERPRINT_LINE=$((${FALSE_FINGERPRINT_LINE} + 1))
     PPA_GPG_KEY=$(cat .ubuntu_ppa_tmoe_cache | sed -n ${TRUE_FINGERPRINT_LINE}p | cut -d '<' -f 2 | cut -d '>' -f 2)
@@ -1038,12 +1038,12 @@ install_typora() {
     "amd64")
         LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/'
         download_debian_cn_repo_deb_file_model_01
-        #aria2c  --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
+        #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
         ;;
     "i386")
         LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/'
         download_tuna_repo_deb_file_model_03
-        #aria2c  --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+        #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
         ;;
     *) arch_does_not_support ;;
     esac
@@ -1140,7 +1140,7 @@ download_tmoe_electron_app() {
 aria2c_download_normal_file_s3() {
     printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
     cd ${DOWNLOAD_PATH}
-    #aria2c  --no-conf --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
+    #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 3 -x 3 -k 1M "${DOWNLOAD_FILE_URL}"
     #此处用wget会自动转义url
     wget "${DOWNLOAD_FILE_URL}"
 }
@@ -1160,13 +1160,13 @@ aria2c_download_file() {
     printf "%s\n" "${YELLOW}${THE_LATEST_ISO_LINK}${RESET}"
     do_you_want_to_continue
     aria2c_download_file_00
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 ############
 aria2c_download_file_no_confirm() {
     printf "%s\n" "${YELLOW}${ELECTRON_FILE_URL}${RESET}"
     aria2c_download_file_00
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}"
 }
 ############
 extract_electron() {
@@ -1459,7 +1459,7 @@ download_and_install_deb() {
     do_you_want_to_continue
     cd /tmp
     case ${LINUX_DISTRO} in
-    debian | redhat) aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
+    debian | redhat) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
     esac
     case ${LINUX_DISTRO} in
     debian)
@@ -1491,7 +1491,7 @@ this_app_may_non_support_running_on_proot() {
 download_and_cat_icon_img() {
     if [ ! -e "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" ]; then
         mkdir -pv ${TMOE_ICON_DIR}
-        aria2c --no-conf -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
+        aria2c --console-log-level=warn --no-conf -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
     fi
     if [ $(command -v catimg) ]; then
         catimg "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" 2>/dev/null

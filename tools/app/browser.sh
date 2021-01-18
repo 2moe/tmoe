@@ -54,7 +54,7 @@ ubuntu_ppa_chromium() {
             CHROMIUM_L10N_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser-l10n_' | tail -n 1)
         fi
         CHROMIUM_DEB_LIST="$(printf "%s\n%s\n%s\n" "${CHROMIUM_BROWSER_DEB}" "${CHROMIUM_FFMPEG_DEB}" "${CHROMIUM_L10N_DEB}")"
-        DOWNLOAD_PPA=$(printf "%s\n" "${CHROMIUM_DEB_LIST}" | sed -E "s@(chromium.*deb)@aria2c  --no-conf --allow-overwrite=true -x 5 -s 5 -k 1M -o \1 ${PPA_REPO_URL}\1@")
+        DOWNLOAD_PPA=$(printf "%s\n" "${CHROMIUM_DEB_LIST}" | sed -E "s@(chromium.*deb)@aria2c --console-log-level=warn --no-conf --allow-overwrite=true -x 5 -s 5 -k 1M -o \1 ${PPA_REPO_URL}\1@")
         printf "${GREEN}%s${RESET}\n" "${DOWNLOAD_PPA}"
         sh -c "${DOWNLOAD_PPA}"
         DEB_LIST_02="$(printf "%s\n" ${CHROMIUM_DEB_LIST} | sed "s@^@./@g" | sed ":a;N;s/\n/ /g;ta")"

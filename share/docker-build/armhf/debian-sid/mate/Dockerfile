@@ -26,8 +26,6 @@ RUN apt update \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-mate" > install-gui.sh \
     ; bash install-gui.sh \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
-    ; apt clean \
-    ; apt autoclean \
-    ; apt autopurge -y 
+    ; apt clean
 
 CMD [ "/usr/local/bin/startvnc" ]

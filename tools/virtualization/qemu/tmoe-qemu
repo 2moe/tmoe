@@ -679,7 +679,7 @@ check_virtio_driver_iso() {
 aria2c_download_virtio_iso() {
 	[[ -e ${DOWNLOAD_PATH} ]] || mkdir -pv ${DOWNLOAD_PATH}
 	printf "%s\n" "即将为您下载至${DOWNLOAD_PATH}"
-	aria2c --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -d "${DOWNLOAD_PATH}" -o "${DOWNLOAD_FILE_NAME}" "${THE_LATEST_ISO_LINK}"
+	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -d "${DOWNLOAD_PATH}" -o "${DOWNLOAD_FILE_NAME}" "${THE_LATEST_ISO_LINK}"
 }
 ##############
 readme_of_9p_file_system() {

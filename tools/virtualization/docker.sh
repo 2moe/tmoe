@@ -13,7 +13,7 @@ tmoe_docker_init() {
     fi
     TMOE_LINUX_DOCKER_SHELL_FILE="${MOUNT_DOCKER_FOLDER}/.tmoe-linux-docker.sh"
     #if [ ! -e "${TMOE_LINUX_DOCKER_SHELL_FILE}" ]; then
-    #aria2c  --no-conf --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
+    #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
     cp ${TMOE_GIT_DIR}/debian.sh ${TMOE_LINUX_DOCKER_SHELL_FILE}
     sed -i 's@###tmoe_locale_gen@tmoe_locale_gen@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
     sed -i 's@###tuna_mirror@tuna_mirror@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
@@ -863,7 +863,7 @@ download_qemu_user() {
     TEMP_FOLDER='.QEMU_USER_BIN'
     mkdir -pv ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
-    aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 }
 ##############
 remove_qemu_user_static() {

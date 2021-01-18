@@ -266,7 +266,7 @@ download_network_card_driver() {
 		THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 		printf "%s\n" "${THE_LATEST_DEB_LINK}"
-		aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	fi
 
 	mkdir -pv "${DEPENDENCY_02}"

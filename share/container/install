@@ -178,7 +178,7 @@ download_rootfs_file() {
 		printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
 		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 		#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
-		aria2c --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
+		aria2c --console-log-level=warn --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 	fi
 }
 DEBOOTSTRAP_DIR=''
@@ -191,7 +191,7 @@ esac
 CURRENT_TMOE_DIR=$(pwd)
 if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
-		aria2c --no-conf -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
+		aria2c --console-log-level=warn --no-conf -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
 	fi
 	cd ${DEBIAN_CHROOT}
 	if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
@@ -715,7 +715,7 @@ cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	fi
 ENDOFXSDL
 ################
-#aria2c  --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
+#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
 #############
 printf '%s\n' 'Giving startup script execution permission'
 printf "%s\n" "正在赋予启动脚本执行权限"

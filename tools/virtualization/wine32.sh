@@ -100,7 +100,7 @@ install_wine_wechat() {
 	EOF
     cd /tmp
     if [ ! -e "WeChatSetup.exe" ]; then
-        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WeChatSetup.exe 'https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe'
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WeChatSetup.exe 'https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe'
     fi
     sudo -iu master wine /tmp/WeChatSetup.exe
     sudo -iu ${CURRENT_USER_NAME} winetricks riched20

@@ -64,7 +64,7 @@ download_anbox_rom() {
 	esac
 	printf "%s\n" "${THE_LATEST_ISO_LINK}"
 	do_you_want_to_continue
-	aria2c --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
+	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 16 -x 16 -k 1M "${THE_LATEST_ISO_LINK}"
 }
 #############
 install_anbox

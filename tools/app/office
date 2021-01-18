@@ -162,7 +162,7 @@ install_wps_office() {
     do_you_want_to_continue
     cd /tmp
     if [ ! -e "/usr/share/fonts/truetype/wps-fonts/wingding.ttf" ]; then
-        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -d /tmp -o ttf-wps-fonts.tar.xz https://gitee.com/ak2/ttf-wps-fonts/raw/master/ttf-wps-fonts.tar.xz
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -d /tmp -o ttf-wps-fonts.tar.xz https://gitee.com/ak2/ttf-wps-fonts/raw/master/ttf-wps-fonts.tar.xz
         tar -Jxvf /tmp/ttf-wps-fonts.tar.xz -C /
         rm -fv /tmp/ttf-wps-fonts.tar.xz
         cd /usr/share/fonts/truetype/wps-fonts
@@ -191,7 +191,7 @@ install_wps_office() {
             printf "%s\n" "apt install -y ttf-mscorefonts-installer"
             apt install -y ttf-mscorefonts-installer
         fi
-        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./WPSoffice.deb
         apt install -y ./WPSoffice.deb || dpkg -i ./WPSoffice.deb
         printf "%s\n" "You can type ${RED}rm -fv ${BLUE}${DEB_DIR}/WPSoffice.deb${RESET} to delete the deb file."
@@ -201,7 +201,7 @@ install_wps_office() {
         beta_features_quick_install
         ;;
     "redhat")
-        aria2c --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WPSoffice.rpm "${THE_LATEST_DEB_URL}"
         yum install -y ./WPSoffice.rpm
         printf "%s\n" "You can type ${RED}rm -fv ${BLUE}${DEB_DIR}/WPSoffice.rpm${RESET} to delete the rpm file."
         ;;

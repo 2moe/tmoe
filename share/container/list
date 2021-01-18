@@ -1140,7 +1140,7 @@ install_slackware_linux_distro() {
 		go_to_proot_management
 		if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
 			git clone -b x64 --depth=1 ${AK2_GIT_URL}/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
-			#aria2c  --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c  --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
+			#aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
 			cd .SLACKWARE_AMD64_TEMP_FOLDER
 			mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
 			cd ..
@@ -1162,7 +1162,7 @@ install_slackware_linux_distro() {
 		printf "%s\n" "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
 		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
 		LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		#aria2c  --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
+		#aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
 		#fi
 		THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |

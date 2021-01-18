@@ -74,7 +74,7 @@ check_python_novnc() {
 			DEB_REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/n/novnc/'
 			THE_LATEST_FILE_VERSION=$(curl -L ${DEB_REPO_URL} | grep -v python | grep novnc | grep '\.deb' | grep all | awk -F '=' '{print $3}' | cut -d '"' -f 2 | tail -n 1)
 			THE_LATEST_DEB_LINK="${DEB_REPO_URL}${THE_LATEST_FILE_VERSION}"
-			aria2c --no-conf -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' "${THE_LATEST_DEB_LINK}"
+			aria2c --console-log-level=warn --no-conf -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' "${THE_LATEST_DEB_LINK}"
 			if [ $(command -v dpkg-deb) ]; then
 				dpkg-deb -X novnc.deb ./
 			else

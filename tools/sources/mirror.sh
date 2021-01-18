@@ -642,7 +642,7 @@ download_debian_ls_lr() {
     printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
     DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/debian/ls-lR.gz"
     printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
-    aria2c --no-conf --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
     rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
     printf "%s\n" "---------------------------"
 }
