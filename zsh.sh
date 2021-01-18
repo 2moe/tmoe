@@ -22,6 +22,11 @@ set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	if [[ -e /.dockerenv && -n $(command -v startxfce4) ]]; then
+		auto_remove_proot_xfce4_power_manager
+	fi
+}
+auto_remove_proot_xfce4_power_manager() {
 	case ${TMOE_PROOT} in
 	true)
 		case "${LINUX_DISTRO}" in
