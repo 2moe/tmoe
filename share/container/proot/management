@@ -431,7 +431,7 @@ install_weekly_build_container() {
 	for i in ${CONFIG_FOLDER}/build-latest02.txt ${CONFIG_FOLDER}/build-latest01.txt; do
 		if [[ -e ${i} ]]; then
 			if [ $(command -v bat) ]; then
-				bat -l sh ${i}
+				bat -ppn -l sh ${i}
 			else
 				cat ${i}
 			fi

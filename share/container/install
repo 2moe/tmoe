@@ -947,6 +947,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ -e /.dockerenv ];then
 		export WEEKLY_BUILD_CONTAINER=true
 	fi
+	if [ -e ~/.zlogin ];then
+		rm -f ~/.zlogin
+	fi
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
 		ln -s $(command -v apt) /usr/bin/pkg
@@ -1352,7 +1355,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			pacman -Sy --noconfirm ${i}
 		done
 		[[ $(command -v diff) ]] || pacman -S --noconfirm diffutils
-		[[ $(command -v ip) ]] || pacman -S --noconfirm iproute
 		#检测两遍yay是否安装
 		[[ $(command -v yay) ]] || pacman -S --noconfirm yay
 		[[ $(command -v curl) ]] || pacman -S --noconfirm curl
@@ -1389,6 +1391,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 
 	if [[ -e "/etc/pacman.conf" && -n $(command -v grep) ]]; then
+		[[ $(command -v ip) ]] || pacman -S --noconfirm iproute
 		if [[ ${WEEKLY_BUILD_CONTAINER} ! =true ]];then
 		    arch_linux_yay
 			cat /etc/pacman.conf
@@ -1969,12 +1972,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    bash zsh.sh
 	fi
 ENDOFbashPROFILE
+cp -f .profile .zlogin
 #####################
 case ${TMOE_CHROOT} in
 true)
 	${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/root/.bash_profile ${DEBIAN_CHROOT}/root/.bash_login
 	${TMOE_CHROOT_PREFIX} mv ${DEBIAN_CHROOT}/root/.profile ${DEBIAN_CHROOT}/root/.profile.bak 2>/dev/null
-	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile ${DEBIAN_CHROOT}/root
+	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile .zlogin ${DEBIAN_CHROOT}/root
 	;;
 esac
 #sed -i '1 r vnc-autostartup' ./.bash_login
