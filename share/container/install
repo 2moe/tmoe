@@ -179,7 +179,7 @@ download_rootfs_file() {
 		true)
 			ROOTFS_URL="${NODE_URL}/${ROOTFS_VERSION}/${ARCH_TYPE}/${LINUX_CONTAINER_DISTRO}/${DESKTOP}/${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}-rootfs.tar.zst"
 			case ${NODE_NAME} in
-			node02-tmoe) aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user=${NODE02_USER} --http-passwd=${NODE02_PW} -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+			node02-tmoe) aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
 			*) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
 			esac
 			;;
@@ -947,9 +947,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ -e /.dockerenv ];then
 		export WEEKLY_BUILD_CONTAINER=true
 	fi
-	if [ -e ~/.zlogin ];then
-		rm -f ~/.zlogin
-	fi
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
 		ln -s $(command -v apt) /usr/bin/pkg
@@ -1458,7 +1455,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null;then
 		cd ~
-		rm -f ~/.profile vnc-autostartup zsh.sh zsh-i.sh 2>/dev/null
+		rm -f ~/.zlogin ~/.profile vnc-autostartup zsh.sh zsh-i.sh 2>/dev/null
 		[[ ! -e ~/.profile.bak ]] || mv -f ~/.profile.bak ~/.profile 2>/dev/null
 		for i in zsh bash sh su;do
 			if [[ -n $(command -v ${i}) ]];then
@@ -1515,7 +1512,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			apk upgrade
 	        apk add bash tzdata newt
 	    fi
-	    rm -f ~/.profile vnc-autostartup
+	    rm -f ~/.profile vnc-autostartup ~/.zlogin
 	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
 	    if grep -q 'OpenWrt' "/etc/os-release"; then
 	        mkdir -pv /var/lock/
@@ -1705,7 +1702,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				auto-sync = yes
 			EndofgentooConf
 	    source /etc/portage/repos.conf/gentoo.conf 2>/dev/null
-		rm -fv .profile
+		rm -fv .profile ~/.zlogin
 		mv -f .profile.bak .profile 2>/dev/null
 		if grep -q 'Funtoo' /etc/os-release;then
 		   #同步过于耗时
@@ -1787,7 +1784,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	printf "%s\n" "Welcome to Debian GNU/Linux."
 	sed -n p /etc/issue 2>/dev/null || sed -n p /etc/os-release
 	uname -a
-	rm -f vnc-autostartup .profile
+	rm -f vnc-autostartup .profile ~/.zlogin
 	if [ -f ".profile.bak" ]; then
 	    mv -f .profile.bak .profile
 	fi
