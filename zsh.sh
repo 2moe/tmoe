@@ -285,6 +285,7 @@ fix_sudo() {
 	elif [ -e "/bin/sudo" ]; then
 		chmod 4755 -v /bin/sudo
 	fi
+	chmod 0440 -v /etc/sudoers 2>/dev/null
 	##################
 	if [ -f "/tmp/.openwrtcheckfile" ]; then
 		ADMINACCOUNT="$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
