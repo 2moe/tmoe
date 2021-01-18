@@ -387,7 +387,7 @@ install_weekly_build_container() {
 	DOCKERFILE="${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${TMOE_LINUX_CONTAINER_DISTRO}/${DESKTOP}/Dockerfile"
 	printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
 	if [ $(command -v bat) ]; then
-		bat "${DOCKERFILE}"
+		bat -ppn "${DOCKERFILE}"
 	else
 		cat "${DOCKERFILE}"
 	fi
