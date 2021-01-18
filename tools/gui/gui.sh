@@ -50,6 +50,8 @@ docker_auto_install_gui_env() {
     source ${TMOE_TOOL_DIR}/environment.sh 2>/dev/null
     check_current_user_name_and_group 2>/dev/null
 EOF
+    check_tmoe_linux_desktop_link
+    ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
     AUTO_INSTALL_GUI=true
     #check_zstd
     download_iosevka_ttf_font
