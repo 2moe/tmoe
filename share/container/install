@@ -1969,13 +1969,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    bash zsh.sh
 	fi
 ENDOFbashPROFILE
-cp .profile .zlogin
+#cp .profile .zlogin
+echo "bash ~/.profile" >.zlogin
+#${TMOE_CHROOT_PREFIX} mv -vf ${DEBIAN_CHROOT}/usr/bin/zsh ${DEBIAN_CHROOT}/usr/bin/zsh-01
+#${TMOE_CHROOT_PREFIX} mv -vf ${DEBIAN_CHROOT}/bin/zsh ${DEBIAN_CHROOT}/usr/bin/zsh-01
 #####################
 case ${TMOE_CHROOT} in
 true)
 	${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/root/.bash_profile ${DEBIAN_CHROOT}/root/.bash_login
 	${TMOE_CHROOT_PREFIX} mv ${DEBIAN_CHROOT}/root/.profile ${DEBIAN_CHROOT}/root/.profile.bak 2>/dev/null
-	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile ${DEBIAN_CHROOT}/root
+	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile .zlogin ${DEBIAN_CHROOT}/root
 	;;
 esac
 #sed -i '1 r vnc-autostartup' ./.bash_login
