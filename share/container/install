@@ -944,6 +944,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	BOLD=$(printf '\033[1m')
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
+	if [ -e /.dockerenv ];then
+		export WEEKLY_BUILD_CONTAINER=true
+	fi
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
 		ln -s $(command -v apt) /usr/bin/pkg
