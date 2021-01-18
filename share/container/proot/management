@@ -342,19 +342,118 @@ install_web_novnc() {
 install_new_tmoe_gnu_linux_distro() {
 	check_tmoe_completion_version
 	check_tmoe_completion
-	git_pull_tmoe_linux
-	case ${ARCH_TYPE} in
-	mips* | risc*) ;;
+	#git_pull_tmoe_linux
+	#
+	#
+	#
+
+	#
+	#
+	#
+	#
+	###
+	case ${WEEKLY_BUILD_CONTAINER} in
+	true) install_weekly_build_container ;;
 	*)
-		case ${DISTRO_NAME} in
-		debian) check_debian_distro_code ;;
-		ubuntu) check_ubuntu_distro_code ;;
-		kali) install_kali_rolling_gnu_linux_distro ;;
-		arch) install_arch_linux_distro ;;
+		case ${ARCH_TYPE} in
+		mips* | risc*) ;;
+		*)
+			case ${DISTRO_NAME} in
+			debian) check_debian_distro_code ;;
+			ubuntu) check_ubuntu_distro_code ;;
+			kali) install_kali_rolling_gnu_linux_distro ;;
+			arch) install_arch_linux_distro ;;
+			esac
+			;;
 		esac
 		;;
 	esac
 }
+##########
+install_weekly_build_container() {
+	NODE_NAME='node01-azure'
+	case ${NODE02_ENABLED} in
+	true)
+		if (whiptail --title "NETWORK NODE" --yes-button 'node01-azure' --no-button 'node02-tmoe' --yesno "Please choose a network node\n请选择网络节点" 8 50); then
+			NODE_URL="${NODE01_URL}"
+		else
+			NODE_NAME='node02-tmoe'
+			NODE_URL="${NODE02_URL}"
+		fi
+		;;
+	*) NODE_URL="${NODE01_URL}" ;;
+	esac
+	printf "%s\n" "本容器使用以下Dockerfile进行构建。"
+	DOCKERFILE="${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${TMOE_LINUX_CONTAINER_DISTRO}/${DESKTOP}/Dockerfile"
+	printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
+	if [ $(command -v bat) ]; then
+		bat "${DOCKERFILE}"
+	else
+		cat "${DOCKERFILE}"
+	fi
+	for i in ${CONFIG_FOLDER}/build-latest02.txt ${CONFIG_FOLDER}/build-latest01.txt; do
+		if [[ -e ${i} ]]; then
+			rm -f ${i}
+		fi
+	done
+	BUILD_TXT="${ARCH_TYPE}/${TMOE_LINUX_CONTAINER_DISTRO}/${DESKTOP}/build.txt"
+	printf "%s\n" "正在获取版本信息..."
+	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
+	ROOTFS_VERSION='latest02'
+
+	case ${NODE_NAME} in
+	node02-tmoe) aria2c --console-log-level=error --no-conf --allow-overwrite=true --http-user=${NODE02_USER} --http-passwd=${NODE02_PW} -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT} ;;
+	*)
+		aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT}
+		aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT}
+		if grep -q 'DOCTYPE html' ${CONFIG_FOLDER}/build-latest01.txt; then
+			rm -f ${CONFIG_FOLDER}/build-latest01.txt
+		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt; then
+			ROOTFS_VERSION='latest02'
+		else
+			LATEST_01_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}')"
+			LATEST_02_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}')"
+			LATEST_01_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}') +%s)"
+			LATEST_02_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}') +%s)"
+			if ((${LATEST_02_DATE} < ${LATEST_01_DATE})); then
+				ROOTFS_VERSION='latest01'
+			elif ((${LATEST_02_DATE} > ${LATEST_01_DATE})); then
+				ROOTFS_VERSION='latest02'
+			elif ((${LATEST_02_TIME} < ${LATEST_01_TIME})); then
+				ROOTFS_VERSION='latest01'
+			else
+				ROOTFS_VERSION='latest02'
+			fi
+		fi
+		;;
+	esac
+
+	for i in ${CONFIG_FOLDER}/build-latest02.txt ${CONFIG_FOLDER}/build-latest01.txt; do
+		if [[ -e ${i} ]]; then
+			if [ $(command -v bat) ]; then
+				bat -l sh ${i}
+			else
+				cat ${i}
+			fi
+		fi
+	done
+	ROOTFS_FILE="$(grep 'ROOTFS_FILE=' ${CONFIG_FOLDER}/build-${ROOTFS_VERSION}.txt | awk -F'=' '{print $2}')"
+	printf "%s\n" "Do you want to download ${BLUE}${ROOTFS_FILE}${RESET}(${YELLOW}${ROOTFS_VERSION}${RESET})?"
+	do_you_want_to_continue
+	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+		sed "1a\WEEKLY_BUILD_CONTAINER=true" |
+		sed "1a\DESKTOP=${DESKTOP}" |
+		sed "1a\NODE_URL=${NODE_URL}" |
+		sed "1a\NODE02_USER=${NODE02_USER}" |
+		sed "1a\NODE02_PW=${NODE02_PW}" |
+		sed "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" |
+		sed "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" |
+		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s@BFSU Open Source Mirror Station@${NODE_NAME}@" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	#--http-user=${NODE02_USER} --http-passwd=${NODE02_PW}
+}
+#############
 umount_and_remove_gnu_linux_distro() {
 	kill_container_process
 	source ${TMOE_SHARE_DIR}/container/remove

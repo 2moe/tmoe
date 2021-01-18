@@ -3,6 +3,7 @@
 tmoe_container_zsh_main() {
 	case "$1" in
 	*)
+		set_tmoe_zsh_env
 		set_terminal_color
 		check_tmoe_locale_file
 		do_you_want_to_configure_tmoe_zsh
@@ -17,6 +18,11 @@ tmoe_container_zsh_main() {
 	esac
 }
 ############
+set_tmoe_zsh_env() {
+	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+}
 set_terminal_color() {
 	RED=$(printf '\033[31m')
 	GREEN=$(printf '\033[32m')
@@ -34,15 +40,20 @@ check_tmoe_locale_file() {
 	else
 		TMOE_LANG=${LANG}
 	fi
-	if [[ $(command -v debian-i) ]]; then
+	if [[ -n $(command -v debian-i) && ! -n $(command -v tmoe) ]]; then
 		cp -pf $(command -v debian-i) /usr/local/bin/tmoe
 	fi
 }
 #######
 do_you_want_to_delete_the_zsh_script_file() {
-	if (whiptail --title "zsh.sh & zsh-i.sh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
-		DELETE_ZSH_SCRIPT=true
+	if [[ -e ~/zsh.sh || -e ~/zsh-i.sh ]]; then
+		if (whiptail --title "zsh.sh & zsh-i.sh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
+			DELETE_ZSH_SCRIPT=true
+		fi
 	fi
+}
+set_your_vnc_passwd() {
+	${TMOE_GIT_DIR}/tool.sh -passwd
 }
 do_you_want_to_configure_tmoe_zsh() {
 	cd ${HOME}
@@ -57,10 +68,12 @@ do_you_want_to_configure_tmoe_zsh() {
 	done
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
-			CONFIGURE_ZSH=true
-			do_you_want_to_delete_the_zsh_script_file
+		if [[ ! -e /.dockerenv ]]; then
+			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
+				CONFIGURE_ZSH=true
+			fi
 		fi
+		do_you_want_to_delete_the_zsh_script_file
 		if [ -n "${FACE_ICON_DIR}" ]; then
 			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
 				CONFIGURE_FACE_ICON=true
@@ -73,10 +86,12 @@ do_you_want_to_configure_tmoe_zsh() {
 		fi
 		;;
 	*)
-		if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
-			CONFIGURE_ZSH=true
-			do_you_want_to_delete_the_zsh_script_file
+		if [[ ! -e /.dockerenv ]]; then
+			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
+				CONFIGURE_ZSH=true
+			fi
 		fi
+		do_you_want_to_delete_the_zsh_script_file
 		if [ -n "${FACE_ICON_DIR}" ]; then
 			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
 				CONFIGURE_FACE_ICON=true
@@ -98,8 +113,12 @@ auto_configure_tmoe_tools() {
 	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
-	if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-		install_lolcat_and_neofetch
+	if [[ -e /.dockerenv ]]; then
+		set_your_vnc_passwd
+	else
+		if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+			install_lolcat_and_neofetch
+		fi
 	fi
 }
 ################
@@ -301,9 +320,6 @@ sed_a_source_list() {
 }
 ###############
 git_clone_tmoe_linux() {
-	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
 	mkdir -pv ${TMOE_LINUX_DIR}
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
