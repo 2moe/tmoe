@@ -342,15 +342,7 @@ install_web_novnc() {
 install_new_tmoe_gnu_linux_distro() {
 	check_tmoe_completion_version
 	check_tmoe_completion
-	#git_pull_tmoe_linux
-	#
-	#
-	#
-
-	#
-	#
-	#
-	#
+	git_pull_tmoe_linux
 	###
 	case ${WEEKLY_BUILD_CONTAINER} in
 	true) install_weekly_build_container ;;
