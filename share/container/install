@@ -1365,7 +1365,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [ "$(cut -c 1-4 /etc/issue)" = "Arch" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || arch_linux_mirror_list
 		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
-		if [[ ${WEEKLY_BUILD_CONTAINER} ! = true ]];then
+		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			printf "%s\n" "${GREEN}pacman-key ${YELLOW}--init${RESET}"
 			printf "%s\n" "${GREEN}pacman-key ${YELLOW}--populate${RESET}"
 			pacman-key --init
@@ -1380,7 +1380,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || manjaro_mirror_list
 		[[ ! -e /etc/pacman.d/mirrorlist ]] || cat /etc/pacman.d/mirrorlist
-		if [[ ${WEEKLY_BUILD_CONTAINER} ! = true ]];then
+		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			printf "%s\n" "${GREEN}pacman-key ${YELLOW}--init${RESET}"
 			printf "%s\n" "${GREEN}pacman-key ${YELLOW}--populate${RESET}"
 			pacman-key --init
@@ -1392,7 +1392,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 
 	if [[ -e "/etc/pacman.conf" && -n $(command -v grep) ]]; then
 		[[ $(command -v ip) ]] || pacman -S --noconfirm iproute
-		if [[ ${WEEKLY_BUILD_CONTAINER} ! = true ]];then
+		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 		    arch_linux_yay
 			cat /etc/pacman.conf
 		else
@@ -1605,7 +1605,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	source /etc/default/locale 2>/dev/null
 	#################
 	if egrep -q "Arch|Manjaro" '/etc/os-release' 2>/dev/null || egrep -q "Arch|Manjaro" '/etc/issue'; then
-		if [[ ${WEEKLY_BUILD_CONTAINER} ! = true ]];then
+		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			printf "%s\n" "${GREEN}pacman ${PURPLE}-R ${YELLOW}--noconfirm ${BLUE}fakeroot${RESET}"
 			pacman -R --noconfirm fakeroot
 			build_fakeroot
