@@ -117,6 +117,7 @@ auto_configure_tmoe_tools() {
 	if [[ -e /.dockerenv ]]; then
 		for i in /opt/electron/electron /opt/electron-v8/electron; do
 			[[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe-linux tool重新安装electron"
+			sleep 2
 		done
 		set_your_vnc_passwd
 	else

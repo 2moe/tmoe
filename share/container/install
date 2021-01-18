@@ -179,9 +179,10 @@ download_rootfs_file() {
 		true)
 			ROOTFS_URL="${NODE_URL}/${ROOTFS_VERSION}/${ARCH_TYPE}/${LINUX_CONTAINER_DISTRO}/${DESKTOP}/${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}-rootfs.tar.zst"
 			case ${NODE_NAME} in
-			"node02-tmoe") aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
-			*) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+			"node02-tmoe") aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=error --no-conf -x3 -s3 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+			*) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=error --no-conf -x4 -s4 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
 			esac
+			#若下载失败，则重复尝试。
 			;;
 		*)
 			printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
