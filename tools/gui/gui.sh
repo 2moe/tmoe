@@ -5119,7 +5119,9 @@ do_you_want_to_configure_novnc() {
         printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
         printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01
     fi
-    whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: startvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: startvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+    fi
     printf "%s\n" "${YELLOW}*°▽°* ${RESET}You are a ${BOLD}${BLUE}VNC Master${RESET}！"
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
 }
