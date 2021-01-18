@@ -22,6 +22,21 @@ set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	case ${TMOE_PROOT} in
+	true)
+		case "${LINUX_DISTRO}" in
+		"debian")
+			#此处不能是commmand -v kali-undercover
+			if [[ ! -e /usr/bin/kali-undercover ]]; then
+				printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
+				apt autoremove --purge -y ^xfce4-power-manager
+			fi
+			;;
+		arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
+		redhat) dnf remove -y xfce4-power-manager ;;
+		esac
+		;;
+	esac
 }
 set_terminal_color() {
 	RED=$(printf '\033[31m')
