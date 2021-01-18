@@ -1881,6 +1881,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if [[ ${TMOE_GITHUB} != true ]]; then
 			case ${TMOE_LANG} in
 			zh_*UTF-8)
+			if ! grep -q '=rawhide' /etc/os-release;then
 				if ((${FEDORA_VERSION} >= 30)); then
 					if ((${FEDORA_VERSION} >= 32)); then
 						fedora_32_repos
@@ -1889,6 +1890,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					fi
 					fedora_3x_repos
 				fi
+			fi
 				;;
 			esac
 		fi
