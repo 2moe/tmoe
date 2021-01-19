@@ -347,7 +347,12 @@ download_iosevka_ttf_font() {
 
         if [[ ! -e "${IOSEVKA_TTF_FILE}" ]]; then
             cd ${FONT_DIR}
-            curl -Lo 'Iosevka-Term-Mono.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz" || curl -Lo 'Iosevka-Term-Mono.tar.xz' "https://github.com/cu233/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
+            FONT_URL_01="https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
+            FONT_URL_02="https://github.com/cu233/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
+            case ${AUTO_INSTALL_GUI} in
+            true) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o Iosevka-Term-Mono.tar.xz ${FONT_URL_02} || curl -Lo 'Iosevka-Term-Mono.tar.xz' ${FONT_URL_01} ;;
+            *) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o Iosevka-Term-Mono.tar.xz ${FONT_URL_01} || curl -Lo 'Iosevka-Term-Mono.tar.xz' ${FONT_URL_02} ;;
+            esac
             tar -Jxvf 'Iosevka-Term-Mono.tar.xz'
             mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
         fi
