@@ -1246,7 +1246,7 @@ download_electron() {
     ELECTRON_FILE_URL="${ELECTRON_MIRROR_STATION}/${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
     ELECTRON_GIT_RELEASE_URL="https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
     #aria2c_download_file_no_confirm
-    printf "%s\n" "${YELLOW}${ELECTRON_FILE_URL}\n${ELECTRON_GIT_RELEASE_URL}${RESET}"
+    printf "${YELLOW}%s\n%s${RESET}\n" "${ELECTRON_FILE_URL}" "${ELECTRON_GIT_RELEASE_URL}"
     aria2c_download_file_00
     case ${AUTO_INSTALL_GUI} in
     true) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 3 -x 3 -k 1M "${ELECTRON_GIT_RELEASE_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}" ;;
