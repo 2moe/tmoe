@@ -86,11 +86,14 @@ move_wallpaper_model_01() {
     else
         if [ -d "${HOME}/图片" ]; then
             mv ./usr/share/${WALLPAPER_NAME} ${HOME}/图片/${CUSTOM_WALLPAPER_NAME}
+            WALLPAPER_DIR="${HOME}/图片/${CUSTOM_WALLPAPER_NAME}"
         else
             mkdir -pv ${HOME}/Pictures/
             mv ./usr/share/${WALLPAPER_NAME} ${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}
+            WALLPAPER_DIR="${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}"
         fi
-        rm -rf /tmp/.${THEME_NAME}
+        [[ ${HOME} = /root ]] || chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${WALLPAPER_DIR}
+        rm -rfv /tmp/.${THEME_NAME}
         printf "%s\n" "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
         printf "%s\n" "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
     fi
@@ -99,11 +102,14 @@ move_wallpaper_model_01() {
 move_wallpaper_model_02() {
     if [ -d "${HOME}/图片" ]; then
         tar -Jxvf data.tar.xz -C ${HOME}/图片
+        WALLPAPER_DIR="${HOME}/图片"
     else
         mkdir -pv ${HOME}/Pictures/
         tar -Jxvf data.tar.xz -C ${HOME}/Pictures/
+        WALLPAPER_DIR="${HOME}/Pictures/"
     fi
-    rm -rf /tmp/.${THEME_NAME}
+    [[ ${HOME} = /root ]] || chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${WALLPAPER_DIR}
+    rm -rfv /tmp/.${THEME_NAME}
     printf "%s\n" "${BLUE}壁纸包${RESET}已经保存至${YELLOW}${HOME}/图片/${CUSTOM_WALLPAPER_NAME}${RESET}"
     printf "%s\n" "${BLUE}The wallpaper-pack${RESET} have been saved to ${YELLOW}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}"
 }
