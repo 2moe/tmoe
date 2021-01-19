@@ -18,6 +18,23 @@ tmoe_container_zsh_main() {
 	esac
 }
 ############
+auto_remove_proot_xfce4_power_manager() {
+	case ${TMOE_PROOT} in
+	true)
+		#此处不能是commmand -v kali-undercover
+		if [[ ! -e /usr/bin/kali-undercover && -n $(command -v apt-get) ]]; then
+			printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
+			apt autoremove --purge -y ^xfce4-power-manager
+		fi
+		if [[ -n $(command -v pacman) ]]; then
+			pacman -Rsc --noconfirm xfce4-power-manager
+		fi
+		if [[ -n $(command -v dnf) ]]; then
+			dnf remove -y xfce4-power-manager
+		fi
+		;;
+	esac
+}
 set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
@@ -25,23 +42,6 @@ set_tmoe_zsh_env() {
 	if [[ -e /.dockerenv && -n $(command -v startxfce4) ]]; then
 		auto_remove_proot_xfce4_power_manager
 	fi
-}
-auto_remove_proot_xfce4_power_manager() {
-	case ${TMOE_PROOT} in
-	true)
-		case "${LINUX_DISTRO}" in
-		"debian")
-			#此处不能是commmand -v kali-undercover
-			if [[ ! -e /usr/bin/kali-undercover ]]; then
-				printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
-				apt autoremove --purge -y ^xfce4-power-manager
-			fi
-			;;
-		arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
-		redhat) dnf remove -y xfce4-power-manager ;;
-		esac
-		;;
-	esac
 }
 set_terminal_color() {
 	RED=$(printf '\033[31m')
