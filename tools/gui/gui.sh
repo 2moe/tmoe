@@ -5127,6 +5127,7 @@ first_configure_startvnc() {
     printf '%s\n' "注：${GREEN}配置完${RESET}本工具所支持的所有VNC,将${BLUE}解锁成就*°▽°*${RESET}"
     printf '%s\n' '------------------------'
     printf '%s\n' '三：'
+    check_xvnc_command
     x11vnc_warning
     configure_x11vnc_remote_desktop_session
     xfce4_x11vnc_hidpi_settings
@@ -5144,6 +5145,18 @@ first_configure_startvnc() {
     fi
 }
 ########################
+check_xvnc_command() {
+    if [[ ! -n $(command -v Xvnc) ]]; then
+        case "${LINUX_DISTRO}" in
+        debian) DEPENDENCY_03="tigervnc-standalone-server" ;;
+        redhat) DEPENDENCY_03="tigervnc-server" ;;
+        arch) DEPENDENCY_03="tigervnc" ;;
+        void) DEPENDENCY_03="tigervnc" ;;
+        suse) DEPENDENCY_03="tigervnc-x11vnc" ;;
+        esac
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03}
+    fi
+}
 ########################
 do_you_want_to_configure_novnc() {
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"

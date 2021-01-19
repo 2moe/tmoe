@@ -145,6 +145,17 @@ auto_configure_tmoe_tools() {
 				sleep 2
 			done
 		fi
+		if [[ ! -n $(command -v Xvnc) ]]; then
+			if [[ $(command -v apt-get) ]]; then
+				apt install -y tigervnc-standalone-server
+			elif [[ $(command -v pacman) ]]; then
+				pacman -Syu --noconfirm tigervnc
+			elif [[ $(command -v dnf) ]]; then
+				dnf install -y tigervnc-server
+			elif [[ $(command -v zypper) ]]; then
+				zypper in -y tigervnc-x11vnc
+			fi
+		fi
 		set_your_vnc_passwd
 	else
 		if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then

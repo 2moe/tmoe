@@ -938,7 +938,7 @@ install_chinese_manpages() {
     printf '%s\n' '即将为您安装 debian-reference-zh-cn、manpages、manpages-zh和man-db'
     case "${LINUX_DISTRO}" in
     "debian") DEPENDENCY_01="manpages manpages-zh man-db" ;;
-    "arch") DEPENDENCY_01="man-pages-zh_cn" ;;
+    "arch") DEPENDENCY_01="man-pages-zh_cn man-pages-zh_tw" ;;
     "redhat" | *) DEPENDENCY_01="man-pages-zh-CN" ;;
     esac
     DEPENDENCY_02="debian-reference-zh-cn"
