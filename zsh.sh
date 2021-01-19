@@ -25,11 +25,9 @@ auto_remove_proot_xfce4_power_manager() {
 		if [[ ! -e /usr/bin/kali-undercover && -n $(command -v apt-get) ]]; then
 			printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
 			apt autoremove --purge -y ^xfce4-power-manager
-		fi
-		if [[ -n $(command -v pacman) ]]; then
+		elif [[ -n $(command -v pacman) ]]; then
 			pacman -Rsc --noconfirm xfce4-power-manager
-		fi
-		if [[ -n $(command -v dnf) ]]; then
+		elif [[ -n $(command -v dnf) ]]; then
 			dnf remove -y xfce4-power-manager
 		fi
 		;;
