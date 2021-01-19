@@ -427,6 +427,7 @@ install_weekly_build_container() {
 			else
 				cat ${i}
 			fi
+			printf "${BLUE}-----------------------------------------${RESET}\n"
 		fi
 	done
 	ROOTFS_FILE="$(grep 'ROOTFS_FILE=' ${CONFIG_FOLDER}/build-${ROOTFS_VERSION}.txt | awk -F'=' '{print $2}')"
