@@ -76,12 +76,15 @@ switch_android_termux_mirror_to_bfsu() {
 ################
 android_termux() {
 	DEPENDENCIES=""
-	for i in curl git pv grep pulseaudio proot tar zstd bat; do
+	for i in curl git pv grep pulseaudio proot tar zstd; do
 		#if [ ! -e "${PREFIX}/bin/${i}" ]; then
 		if [ ! $(command -v ${i}) ]; then
 			DEPENDENCIES="${DEPENDENCIES} ${i}"
 		fi
 	done
+	if [[ ! -n $(command -v bat) && ! -n $(command -v batcat) ]]; then
+		DEPENDENCIES="${DEPENDENCIES} bat"
+	fi
 	if [ ! $(command -v lsof) ]; then
 		if ((${ANDROID_VERSION} < 7)); then
 			DEPENDENCIES="${DEPENDENCIES} busybox"
