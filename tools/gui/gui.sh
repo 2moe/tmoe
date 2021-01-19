@@ -53,6 +53,9 @@ EOF
     check_tmoe_linux_desktop_link
     ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
     AUTO_INSTALL_GUI=true
+    if [[ ! -n $(command -v add-apt-repository) && -n $(command -v apt-get) ]]; then
+        apt install -y software-properties-common
+    fi
     #check_zstd
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
