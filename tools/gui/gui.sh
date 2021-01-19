@@ -1006,7 +1006,11 @@ configure_vnc_xstartup() {
     ln -svf "/etc/machine-id" /var/lib/dbus/
     #fi
     case ${LINUX_DISTRO} in
-    debian) [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji ;;
+    debian)
+        [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji
+        #重复检测
+        [[ -e /usr/share/doc/fonts-noto-color-emoji ]] || apt install -y fonts-noto-color-emoji
+        ;;
     esac
     mkdir -pv ~/.vnc
     cd ${HOME}/.vnc
@@ -5166,7 +5170,8 @@ check_xvnc_command() {
             DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
         fi
         if [[ -n ${DEPENDENCY_03} ]]; then
-            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03}
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}${DEPENDENCY_03}${RESET}"
+            pacman -Syu --noconfirm ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
         fi
         ;;
     esac

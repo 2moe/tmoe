@@ -157,8 +157,16 @@ auto_configure_tmoe_tools() {
 			fi
 		fi
 		if [[ $(command -v pacman) ]]; then
+			unset DEPENDENCY_03
 			if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
-				pacman -Syu --noconfirm noto-fonts-cjk
+				DEPENDENCY_03="noto-fonts-cjk ${DEPENDENCY_03}"
+			fi
+			if [ ! -e "/usr/share/fonts/noto/NotoColorEmoji.ttf" ]; then
+				DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
+			fi
+			if [[ -n ${DEPENDENCY_03} ]]; then
+				printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}${DEPENDENCY_03}${RESET}"
+				pacman -Syu --noconfirm ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
 			fi
 		fi
 		set_your_vnc_passwd
