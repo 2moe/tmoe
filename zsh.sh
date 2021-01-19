@@ -10,6 +10,7 @@ tmoe_container_zsh_main() {
 		check_tmoe_linux_tool
 		copy_git_status
 		auto_configure_tmoe_tools
+		lnk_startvnc
 		check_ps_command
 		creat_zlogin_file
 		fix_sudo
@@ -18,6 +19,16 @@ tmoe_container_zsh_main() {
 	esac
 }
 ############
+lnk_startvnc() {
+	if [[ ! -L ~/startvnc ]]; then
+		if [[ -n $(command -v startvnc) ]]; then
+			ln -svf /usr/local/bin/startvnc ~/startvnc
+		else
+			ln -svf $(command -v debian-i) ~/startvnc
+		fi
+	fi
+}
+##########
 auto_remove_proot_xfce4_power_manager() {
 	case ${TMOE_PROOT} in
 	true)
@@ -404,7 +415,8 @@ git_clone_tmoe_linux() {
 	fi
 	if [ ! $(command -v startvnc) ]; then
 		printf "%s\n" "${TMOE_GIT_DIR}/tool.sh --install-gui" >/usr/local/bin/startvnc
-		chmod +x /usr/local/bin/startvnc
+		chmod a+x -v /usr/local/bin/startvnc
+		ln -svf /usr/local/bin/startvnc ~/startvnc
 	fi
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
