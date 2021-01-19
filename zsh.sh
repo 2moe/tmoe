@@ -3,8 +3,8 @@
 tmoe_container_zsh_main() {
 	case "$1" in
 	*)
-		set_tmoe_zsh_env
 		set_terminal_color
+		set_tmoe_zsh_env
 		check_tmoe_locale_file
 		do_you_want_to_configure_tmoe_zsh
 		check_tmoe_linux_tool
