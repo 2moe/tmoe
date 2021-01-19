@@ -18,12 +18,16 @@ build_fakeroot() {
     [[ ! -n $(command -v fakeroot) ]] || pacman -R --noconfirm fakeroot
     [[ $(command -v whereis) ]] || pacman -S --noconfirm util-linux
     [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
-    FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
+    unset FAKEROOT_SRC_VERSION
+    FAKEROOT_SRC_REPO='https://ftp.debian.org/debian/pool/main/f/fakeroot/'
+    FAKEROOT_SRC_REPO_02='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
     FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+    [[ -n ${FAKEROOT_SRC_VERSION} ]] || FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO_02} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
     FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
+    FAKEROOT_SRC_URL_02="${FAKEROOT_SRC_REPO_02}${FAKEROOT_SRC_VERSION}"
     FAKEROOT_SRC_FILE=$(printf "%s\n" ${FAKEROOT_SRC_VERSION} | sed 's@fakeroot_@fakeroot-@g')
     cd /tmp
-    curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL}
+    aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL} || curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL_02}
     tar -xvf ${FAKEROOT_SRC_FILE}
     cd ${FAKEROOT_SRC_FILE%.*.*.*}
     ./bootstrap
