@@ -91,7 +91,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4119,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4120,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -565,8 +565,8 @@ check_dependencies() {
 		EOF
 		case "${LINUX_DISTRO}" in
 		debian)
-			${TMOE_UPDATE_COMMAND}
-			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils
+			${TMOE_UPDATE_COMMAND} || ${TMOE_UPDATE_COMMAND}
+			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			#创建文件夹防止aptitude报错
 			mkdir -pv /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
@@ -575,12 +575,12 @@ check_dependencies() {
 			${TMOE_UPDATE_COMMAND}
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			;;
-		arch | gentoo | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+		arch | gentoo | suse | void) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
 		redhat)
 			if [ $(command -v dnf) ]; then
 				${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
 			else
-				yum install -y --skip-broken ${DEPENDENCIES}
+				yum install -y --skip-broken ${DEPENDENCIES} || yum install -y --skip-broken ${DEPENDENCIES}
 			fi
 			;;
 		*)
