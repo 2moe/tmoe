@@ -39,8 +39,8 @@ install_python_web_novnc() {
 			apt install -y numpy
 			;;
 		*)
-			python3 -m pip install --upgrade pip
-			pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy
+			python3 -m pip install -i https://mirrors.bfsu.edu.cn/pypi/web/simple --upgrade -vvv pip || python3 -m pip install --upgrade pip
+			pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy || pip3 install -vvv numpy
 			;;
 		esac
 	fi

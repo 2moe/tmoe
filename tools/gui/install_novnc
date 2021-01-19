@@ -61,7 +61,7 @@ check_python_novnc() {
 	printf "%s\n" "${GREEN}pip3 install ${BLUE}numpy${RESET}"
 	if [[ ! $(sudo -H pip3 list | grep numpy) ]]; then
 		#python3 -m pip install --upgrade pip
-		sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy || su -c "pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy"
+		sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy || su -c "pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy" || pip3 install -vvv numpy
 	fi
 
 	if [ ! -e "${TMOE_LINUX_DIR}/novnc/utils/launch.sh" ]; then
@@ -92,7 +92,7 @@ check_python_novnc() {
 
 		printf "%s\n" "${GREEN}pip3 install ${BLUE}websockify${RESET}"
 		if [ ! $(command -v websockify) ]; then
-			sudo pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify || su -c "pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify"
+			sudo pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify || su -c "pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify" || pip3 install -vvv websockify
 		fi
 		if [ ! $(command -v websockify) ]; then
 			cd ${TMOE_LINUX_DIR}/novnc/utils/
