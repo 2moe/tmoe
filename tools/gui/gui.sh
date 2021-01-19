@@ -56,6 +56,11 @@ EOF
     if [[ ! -n $(command -v add-apt-repository) && -n $(command -v apt-get) ]]; then
         apt install -y software-properties-common
     fi
+    case ${DEBIAN_DISTRO} in
+    ubuntu)
+        apt install -y ^language-pack-zh
+        ;;
+    esac
     #check_zstd
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
