@@ -1768,13 +1768,17 @@ linuxmint_ulyana_wallpaper_var() {
     MINT_CODE="ulyana"
     WALLPAPER_FILE='/usr/share/backgrounds/dmcquade_whitsundays.jpg'
 }
+linuxmint_ulyssa_wallpaper_var() {
+    MINT_CODE="ulyana"
+    WALLPAPER_FILE='/usr/share/backgrounds/sumstattd_machu_picchu.jpg'
+}
 linuxmint_sarah_wallpaper_var() {
     MINT_CODE="sarah"
     WALLPAPER_FILE='/usr/share/backgrounds/bartosova_aurora.jpg'
 }
 ###########
 random_wallpaper_pack_01() {
-    case "$(($RANDOM % 20 + 1))" in
+    case "$(($RANDOM % 24 + 1))" in
     [6-9]) linuxmint_tina_wallpaper_var ;;
     [10-12]) linuxmint_tricia_wallpaper_var ;;
     13 | 14) linuxmint_tessa_wallpaper_var ;;
@@ -1783,12 +1787,13 @@ random_wallpaper_pack_01() {
     18) linuxmint_sonya_wallpaper_var ;;
     19) linuxmint_sylvia_wallpaper_var ;;
     20) linuxmint_sarah_wallpaper_var ;;
+    [21-24]) linuxmint_ulyssa_wallpaper_var ;;
     [1-5] | *) linuxmint_ulyana_wallpaper_var ;;
     esac
 }
 ############
 random_wallpaper_pack_02() {
-    case "$(($RANDOM % 22 + 1))" in
+    case "$(($RANDOM % 26 + 1))" in
     [6-9]) linuxmint_tara_wallpaper_var ;;
     [10-12]) linuxmint_tricia_wallpaper_var ;;
     13 | 14) linuxmint_sylvia_wallpaper_var ;;
@@ -1797,12 +1802,13 @@ random_wallpaper_pack_02() {
     19) linuxmint_tina_wallpaper_var ;;
     20) linuxmint_ulyana_wallpaper_var ;;
     21 | 22) linuxmint_sarah_wallpaper_var ;;
+    [23-26]) linuxmint_ulyssa_wallpaper_var ;;
     [1-5] | *) linuxmint_tessa_wallpaper_var ;;
     esac
 }
 ############
 random_wallpaper_pack_03() {
-    case "$(($RANDOM % 20 + 1))" in
+    case "$(($RANDOM % 24 + 1))" in
     [6-9]) linuxmint_ulyana_wallpaper_var ;;
     [10-12]) linuxmint_tina_wallpaper_var ;;
     13 | 14) linuxmint_tessa_wallpaper_var ;;
@@ -1811,12 +1817,13 @@ random_wallpaper_pack_03() {
     18) linuxmint_sonya_wallpaper_var ;;
     19) linuxmint_sylvia_wallpaper_var ;;
     20) linuxmint_sarah_wallpaper_var ;;
+    [21-24]) linuxmint_ulyssa_wallpaper_var ;;
     [1-5] | *) linuxmint_tricia_wallpaper_var ;;
     esac
 }
 ############
 random_wallpaper_pack_04() {
-    case "$(($RANDOM % 20 + 1))" in
+    case "$(($RANDOM % 24 + 1))" in
     [4-6]) linuxmint_tina_wallpaper_var ;;
     [7-9]) linuxmint_tricia_wallpaper_var ;;
     [10-12]) linuxmint_tessa_wallpaper_var ;;
@@ -1825,12 +1832,13 @@ random_wallpaper_pack_04() {
     18) linuxmint_sonya_wallpaper_var ;;
     19) linuxmint_sylvia_wallpaper_var ;;
     20) linuxmint_sarah_wallpaper_var ;;
+    [21-24]) linuxmint_ulyssa_wallpaper_var ;;
     [1-3] | *) linuxmint_ulyana_wallpaper_var ;;
     esac
 }
 ############
 random_wallpaper_pack_05() {
-    RANDOM_WALLPAPER_PACK="$(($RANDOM % 27 + 1))"
+    RANDOM_WALLPAPER_PACK="$(($RANDOM % 31 + 1))"
     case ${RANDOM_WALLPAPER_PACK} in
     [6-9]) linuxmint_sonya_wallpaper_var ;;
     [10-12]) linuxmint_sarah_wallpaper_var ;;
@@ -1841,6 +1849,7 @@ random_wallpaper_pack_05() {
     20) linuxmint_ulyana_wallpaper_var ;;
     21 | 22) linuxmint_tricia_wallpaper_var ;;
     [23-27]) ubuntu_mate_wallpaper_var ;;
+    [27-31]) linuxmint_ulyssa_wallpaper_var ;;
     [1-5] | *) linuxmint_serena_wallpaper_var ;;
     esac
     case ${RANDOM_WALLPAPER_PACK} in
@@ -2981,6 +2990,7 @@ download_xubuntu_wallpaper() {
     WALLPAPER_NAME='xfce4/backdrops'
     GREP_NAME_01='all.deb'
     THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xubuntu-community-artwork/'
+    THEME_URL_02='http://azure.archive.ubuntu.com/ubuntu/pool/universe/x/xubuntu-community-artwork/'
     grep_theme_model_03
     move_wallpaper_model_01
 }
@@ -3058,6 +3068,7 @@ download_ubuntu_wallpaper() {
     WALLPAPER_NAME='backgrounds'
     GREP_NAME_01='all.deb'
     THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/u/ubuntu-wallpapers/'
+    THEME_URL_02='http://azure.archive.ubuntu.com/ubuntu/pool/universe/u/ubuntu-wallpapers/'
     grep_theme_model_03
     move_wallpaper_model_01
 }
@@ -3093,6 +3104,7 @@ download_ubuntu_kylin_walllpaper() {
     GREP_NAME_01='.tar.xz'
     GREP_NAME_02='ubuntukylin-wallpapers_'
     THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
+    THEME_URL_02='http://azure.archive.ubuntu.com/ubuntu/pool/universe/u/ubuntukylin-wallpapers/'
     grep_theme_model_04
     move_wallpaper_model_02
 }
@@ -3103,6 +3115,7 @@ download_ubuntu-mate_wallpaper() {
     WALLPAPER_NAME='backgrounds/ubuntu-mate-photos'
     GREP_NAME_01='all.deb'
     THEME_URL='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/u/ubuntu-mate-artwork/'
+    THEME_URL_02="http://azure.archive.ubuntu.com/ubuntu/pool/universe/u/ubuntu-mate-artwork/"
     if [ "${SET_MINT_AS_WALLPAPER}" = 'true' ]; then
         CUSTOM_WALLPAPER_NAME="backgrounds"
     else
@@ -3120,52 +3133,54 @@ linux_mint_backgrounds() {
     INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
         "Download Mint wallpaper-packs" 0 50 0 \
         "0" "Back返回" \
-        "1" "ulyana" \
-        "2" "tricia" \
-        "3" "tina" \
-        "4" "tessa" \
-        "5" "tara" \
-        "6" "sylvia" \
-        "7" "sonya" \
-        "8" "serena" \
-        "9" "sarah" \
-        "10" "rosa" \
-        "11" "retro" \
-        "12" "rebecca" \
-        "13" "rafaela" \
-        "14" "qiana" \
-        "15" "petra" \
-        "16" "olivia" \
-        "17" "nadia" \
-        "18" "maya" \
-        "19" "lisa-extra" \
-        "20" "katya-extra" \
-        "21" "xfce-2014" \
+        "1" "ulyssa" \
+        "2" "ulyana" \
+        "3" "tricia" \
+        "4" "tina" \
+        "5" "tessa" \
+        "6" "tara" \
+        "7" "sylvia" \
+        "8" "sonya" \
+        "9" "serena" \
+        "10" "sarah" \
+        "11" "rosa" \
+        "12" "retro" \
+        "13" "rebecca" \
+        "14" "rafaela" \
+        "15" "qiana" \
+        "16" "petra" \
+        "17" "olivia" \
+        "18" "nadia" \
+        "19" "maya" \
+        "20" "lisa-extra" \
+        "21" "katya-extra" \
+        "22" "xfce-2014" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
     0 | "") download_wallpapers ;;
-    1) MINT_CODE="ulyana" ;;
-    2) MINT_CODE="tricia" ;;
-    3) MINT_CODE="tina" ;;
-    4) MINT_CODE="tessa" ;;
-    5) MINT_CODE="tara" ;;
-    6) MINT_CODE="sylvia" ;;
-    7) MINT_CODE="sonya" ;;
-    8) MINT_CODE="serena" ;;
-    9) MINT_CODE="sarah" ;;
-    10) MINT_CODE="rosa" ;;
-    11) MINT_CODE="retro" ;;
-    12) MINT_CODE="rebecca" ;;
-    13) MINT_CODE="rafaela" ;;
-    14) MINT_CODE="qiana" ;;
-    15) MINT_CODE="petra" ;;
-    16) MINT_CODE="olivia" ;;
-    17) MINT_CODE="nadia" ;;
-    18) MINT_CODE="maya" ;;
-    19) MINT_CODE="lisa-extra" ;;
-    20) MINT_CODE="katya-extra" ;;
-    21)
+    1) MINT_CODE="ulyssa" ;;
+    2) MINT_CODE="ulyana" ;;
+    3) MINT_CODE="tricia" ;;
+    4) MINT_CODE="tina" ;;
+    5) MINT_CODE="tessa" ;;
+    6) MINT_CODE="tara" ;;
+    7) MINT_CODE="sylvia" ;;
+    8) MINT_CODE="sonya" ;;
+    9) MINT_CODE="serena" ;;
+    10) MINT_CODE="sarah" ;;
+    11) MINT_CODE="rosa" ;;
+    12) MINT_CODE="retro" ;;
+    13) MINT_CODE="rebecca" ;;
+    14) MINT_CODE="rafaela" ;;
+    15) MINT_CODE="qiana" ;;
+    16) MINT_CODE="petra" ;;
+    17) MINT_CODE="olivia" ;;
+    18) MINT_CODE="nadia" ;;
+    19) MINT_CODE="maya" ;;
+    20) MINT_CODE="lisa-extra" ;;
+    21) MINT_CODE="katya-extra" ;;
+    22)
         MINT_CODE="xfce"
         GREP_NAME_02="_2014.06.09"
         ;;
@@ -3195,12 +3210,14 @@ download_mint_backgrounds() {
     THEME_NAME="mint_backgrounds_${MINT_CODE}"
     GREP_NAME_01='all.deb'
     THEME_URL="https://mirrors.bfsu.edu.cn/linuxmint/pool/main/m/mint-backgrounds-${MINT_CODE}/"
+    THEME_URL_02="http://packages.linuxmint.com/pool/main/m/" #无tls
     grep_theme_model_03
     move_wallpaper_model_01
 }
 ###############
 download_wallpapers() {
     cd /tmp
+    unset THE_LATEST_THEME_VERSION_02 THEME_URL_02
     SET_MINT_AS_WALLPAPER='false'
     FORCIBLY_DOWNLOAD='false'
     RETURN_TO_WHERE='download_wallpapers'
@@ -3247,6 +3264,7 @@ download_paper_icon_theme() {
     ICON_NAME='Paper /usr/share/icons/Paper-Mono-Dark'
     GREP_NAME='paper-icon-theme'
     THEME_URL='https://mirrors.bfsu.edu.cn/manjaro/pool/overlay/'
+    THEME_URL_02="https://repo.ialab.dsu.edu/manjaro/pool/overlay/"
     grep_theme_model_02
     update_icon_caches_model_02
     XFCE_ICON_NAME='Paper'
@@ -3258,6 +3276,7 @@ download_papirus_icon_theme() {
     ICON_NAME='Papirus /usr/share/icons/Papirus-Dark /usr/share/icons/Papirus-Light /usr/share/icons/ePapirus'
     GREP_NAME='papirus-icon-theme'
     THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/p/papirus-icon-theme/'
+    THEME_URL_02='https://ftp.debian.org/debian/pool/main/p/papirus-icon-theme/'
     grep_theme_model_01
     update_icon_caches_model_01
     XFCE_ICON_NAME='Papirus'
@@ -3270,6 +3289,7 @@ download_raspbian_pixel_wallpaper() {
     CUSTOM_WALLPAPER_NAME='raspberrypi-pixel-wallpapers'
     GREP_NAME='pixel-wallpaper'
     THEME_URL='https://mirrors.bfsu.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/pool/ui/p/pixel-wallpaper/'
     grep_theme_model_01
     move_wallpaper_model_01
 }
@@ -3280,6 +3300,7 @@ download_debian_gnome_wallpaper() {
     CUSTOM_WALLPAPER_NAME='gnome-backgrounds'
     GREP_NAME='gnome-backgrounds'
     THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/g/gnome-backgrounds/'
+    THEME_URL_02='https://ftp.debian.org/debian/pool/main/g/gnome-backgrounds/'
     grep_theme_model_01
     move_wallpaper_model_01
 }
@@ -3290,6 +3311,7 @@ download_deepin_wallpaper() {
     GREP_NAME='deepin-community-wallpapers'
     CUSTOM_WALLPAPER_NAME='deepin-community'
     THEME_URL='https://mirrors.bfsu.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/deepin/pool/main/d/deepin-wallpapers/'
     grep_theme_model_01
     move_wallpaper_model_01
     GREP_NAME='deepin-wallpapers_'
@@ -3397,6 +3419,7 @@ download_kali_themes_common() {
     GREP_NAME='kali-themes-common'
     ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
     THEME_URL='https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-themes/'
+    THEME_URL_02='http://http.kali.org/kali/pool/main/k/kali-themes/'
     grep_theme_model_01
     update_icon_caches_model_01
 }
@@ -3576,17 +3599,20 @@ download_chameleon_cursor_theme() {
     THEME_NAME='breeze-cursor-theme'
     GREP_NAME="${THEME_NAME}"
     THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/b/breeze/'
+    THEME_URL_02='https://ftp.debian.org/debian/pool/main/b/breeze/'
     grep_theme_model_01
     upcompress_deb_file
     #############
     GREP_NAME='all'
     THEME_NAME='chameleon-cursor-theme'
     THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/c/chameleon-cursor-theme/'
+    THEME_URL_02='https://ftp.debian.org/debian/pool/main/c/chameleon-cursor-theme/'
     grep_theme_model_01
     upcompress_deb_file
     ##############
     THEME_NAME='moblin-cursor-theme'
     THEME_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/m/moblin-cursor-theme/'
+    THEME_URL_02='https://ftp.debian.org/debian/pool/main/m/moblin-cursor-theme/'
     grep_theme_model_01
     upcompress_deb_file
     ##########
