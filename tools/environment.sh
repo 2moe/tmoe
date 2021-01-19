@@ -632,14 +632,14 @@ different_distro_software_install() {
                 pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
             else
                 #自动构建时pacman可能执行失败
-                pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S --noconfirm ${DEPENDENCY_01}
+                pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S --noconfirm ${DEPENDENCY_01}
             fi
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
             if [[ ${AUTO_INSTALL_GUI} != true ]]; then
                 pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行"
             else
-                pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || yay -S --noconfirm ${DEPENDENCY_02}
+                pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || yay -S --noconfirm ${DEPENDENCY_02}
             fi
         fi
         ;;
