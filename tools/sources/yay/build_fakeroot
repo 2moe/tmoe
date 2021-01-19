@@ -4,6 +4,7 @@ install_yay_main() {
     case $1 in
     -bf | --build-fakeroot) build_fakeroot ;;
     --add-archlinuxcn-repo) add_archlinuxcn_repo ;;
+    --archlinux-repo-mirror) add_archlinuxcn_repo_mirror ;;
     -yay | --install-yay) install_yay ;;
     esac
 }
@@ -38,11 +39,16 @@ build_fakeroot() {
     [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
 }
 add_archlinuxcn_repo() {
+    cp -fv /etc/pacman.conf /etc/pacman.conf.bak
     if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
 					Server = https://repo.archlinuxcn.org/$arch
-					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch                
+					Server = https://mirror.xtom.com/archlinuxcn/$arch
+					Server = https://mirrors.ocf.berkeley.edu/archlinuxcn/$arch
+					Server = https://mirror.xtom.nl/archlinuxcn/$arch
+					Server = https://opentuna.cn/archlinuxcn/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
 					SigLevel = Never
 				Endofpacman
@@ -52,10 +58,26 @@ add_archlinuxcn_repo() {
         pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
     done
 }
+add_archlinuxcn_repo_mirror() {
+    if [[ -s /etc/pacman.conf.bak ]]; then
+        cp -fv /etc/pacman.conf.bak /etc/pacman.conf
+        cat >>/etc/pacman.conf <<-'Endofpacman'
+					[archlinuxcn]
+					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch                    
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+					Server = https://opentuna.cn/archlinuxcn/$arch
+					Server = https://repo.archlinuxcn.org/$arch
+					Server = https://mirror.xtom.com/archlinuxcn/$arch
+					Server = https://mirrors.ocf.berkeley.edu/archlinuxcn/$arch
+					Server = https://mirror.xtom.nl/archlinuxcn/$arch                                        
+					SigLevel = Never
+				Endofpacman
+    fi
+}
 install_yay() {
     for i in yay gawk; do
         printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-        pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
+        pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i} || pacman -Sy --noconfirm ${i}
     done
 }
 ###################
