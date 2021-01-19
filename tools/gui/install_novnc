@@ -17,7 +17,7 @@ check_python_novnc() {
 			update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 		fi
 
-		[[ $(command -v netstat) ]] || apt install net-tools
+		[[ $(command -v netstat) ]] || apt install -y net-tools
 		;;
 	redhat)
 		if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
