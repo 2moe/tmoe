@@ -3614,6 +3614,10 @@ install_kali_undercover() {
     UNDERCOVER_REPO="https://mirrors.bfsu.edu.cn/kali/pool/main/k/kali-undercover"
     UNDERCOVERlatestLINK="$(curl -L "${UNDERCOVER_REPO}/" | grep all.deb | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o kali-undercover.deb "${UNDERCOVER_REPO}/${UNDERCOVERlatestLINK}"
+    if [[ ! -s kali-undercover.deb ]]; then
+        apt download kali-undercover
+        mv *deb kali-undercover.deb
+    fi
     #apt-cache show ./kali-undercover.deb
     #apt install -y ./kali-undercover.deb
     #if [ ! -e "/usr/share/icons/Windows-10-Icons" ]; then

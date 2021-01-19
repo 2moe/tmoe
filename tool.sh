@@ -63,7 +63,7 @@ main() {
 	-install-deps)
 		check_dependencies
 		;;
-	*) #main #勿删此注释
+	*) #main #勿删此注释 #export AUTO_INSTALL_GUI=true;
 		#sed -i 's@*) #main@2333)@g' /tmp/tool.sh
 		check_root
 		check_dependencies
@@ -91,7 +91,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4095,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4096,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########

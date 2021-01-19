@@ -17,6 +17,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; sed -i -E "s@^#*(${LANG} UTF-8)@\1@g" /etc/locale.gen \
     ; grep "^[^#]*${LANG}" /etc/locale.gen || printf "%s\n" "${LANG} UTF-8" >> /etc/locale.gen \
     ; locale-gen \
+    ; export LANG=en_US.UTF-8 \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
@@ -29,6 +30,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; cd /tmp \
     ; sed -i 's@*) #main@2333)@g' tool.sh \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-lxde" > install-gui.sh \
+    ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
     ; bash build_fakeroot --install-yay \
