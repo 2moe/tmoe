@@ -1,4 +1,4 @@
-FROM archlinux:base-devel
+FROM --platform=linux/amd64 lopsided/archlinux:devel
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ENV HOME=/root \

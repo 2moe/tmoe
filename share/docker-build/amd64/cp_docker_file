@@ -6,7 +6,8 @@ cd ../arm64
 ARM64_DOCKERFILE=$(find . | grep Dockerfile)
 sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8/@g' ${ARM64_DOCKERFILE}
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | grep arch)
-sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm64/v8 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
+#sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm64/v8 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
+sed -i -E 's@--platform=linux/amd64@--platform=linux/arm64/v8@g' ${ARCH_DOCKERFILE}
 MANJARO_DOCKERFILE=$(find . | grep Dockerfile | grep manjaro)
 sed -i -E 's@^(FROM) manjarolinux/base.*@\1 abyo/manjaro_aarch64:latest@g' ${MANJARO_DOCKERFILE}
 
@@ -15,8 +16,8 @@ rm -rfv $(ls . | egrep -v 'debian-sid|ubuntu-bionic|alpine-edge|fedora-rawhide|a
 ARMHF_DOCKERFILE=$(find . | grep Dockerfile)
 sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1arm\2:\1arm\2@g;s@(FROM) amd64/@\1 arm32v7/@g' ${ARMHF_DOCKERFILE}
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | grep arch)
-sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm/v7 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
-
+#sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm/v7 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
+sed -i -E 's@--platform=linux/amd64@--platform=linux/arm/v7@g' ${ARCH_DOCKERFILE}
 cd ../i386
 rm -rfv $(ls . | grep -v debian-sid)
 I386_DOCKERFILE=$(find . | grep Dockerfile)
