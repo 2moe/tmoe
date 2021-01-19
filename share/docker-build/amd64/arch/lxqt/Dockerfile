@@ -24,13 +24,13 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; cp -fv git/tool.sh /tmp \
     ; cp -fv git/tools/sources/yay/build_fakeroot /tmp \
     ; cd /tmp \
-    ; bash build_fakeroot --add-archlinuxcn-repo \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_automatic_configure \
     ; cd /tmp \
     ; sed -i 's@*) #main@2333)@g' tool.sh \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-lxqt" > install-gui.sh \
     ; export AUTO_INSTALL_GUI=true \
+    ; bash build_fakeroot --add-archlinuxcn-repo \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
     ; bash build_fakeroot --install-yay \

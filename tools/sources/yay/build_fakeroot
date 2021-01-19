@@ -11,7 +11,7 @@ build_fakeroot() {
     for i in make automake autoconf gcc libtool po4a patch; do
         if [[ ! $(command -v ${i}) ]]; then
             printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-            pacman -Sy --noconfirm ${i}
+            pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
         fi
     done
     [[ ! -n $(command -v fakeroot) ]] || pacman -R --noconfirm fakeroot
