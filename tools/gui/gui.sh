@@ -70,14 +70,17 @@ EOF
     alpine)
         AUTO_INSTALL_FCITX4=false
         AUTO_INSTALL_ELECTRON_APPS=false
+        AUTO_INSTALL_HARD_INFO=false
         ;;
-    fedora)
+    redhat)
         AUTO_INSTALL_FCITX4=false
         AUTO_INSTALL_ELECTRON_APPS=true
+        AUTO_INSTALL_HARD_INFO=false
         ;;
     debian | arch)
         AUTO_INSTALL_FCITX4=true
         AUTO_INSTALL_ELECTRON_APPS=true
+        AUTO_INSTALL_HARD_INFO=true
         ;;
     esac
     AUTO_INSTALL_CHROMIUM=true

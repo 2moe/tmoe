@@ -139,10 +139,12 @@ auto_configure_tmoe_tools() {
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
 	if [[ -e /.dockerenv ]]; then
-		for i in /opt/electron/electron /opt/electron-v8/electron; do
-			[[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe-linux tool重新安装electron"
-			sleep 2
-		done
+		if egrep -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
+			for i in /opt/electron/electron /opt/electron-v8/electron; do
+				[[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe-linux tool重新安装electron"
+				sleep 2
+			done
+		fi
 		set_your_vnc_passwd
 	else
 		if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
