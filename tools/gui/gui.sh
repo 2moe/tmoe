@@ -3210,7 +3210,7 @@ download_mint_backgrounds() {
     THEME_NAME="mint_backgrounds_${MINT_CODE}"
     GREP_NAME_01='all.deb'
     THEME_URL="https://mirrors.bfsu.edu.cn/linuxmint/pool/main/m/mint-backgrounds-${MINT_CODE}/"
-    THEME_URL_02="http://packages.linuxmint.com/pool/main/m/" #无tls
+    THEME_URL_02="http://packages.linuxmint.com/pool/main/m/mint-backgrounds-${MINT_CODE}/" #无tls
     grep_theme_model_03
     move_wallpaper_model_01
 }
@@ -3325,7 +3325,7 @@ download_manjaro_pkg() {
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     printf "%s\n" "${THEME_URL}"
-    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'data.tar.xz' "${THEME_URL_02}"
 }
 ############
 link_to_debian_wallpaper() {
@@ -3359,6 +3359,7 @@ link_to_debian_wallpaper() {
 download_manjaro_wallpaper() {
     THEME_NAME='manjaro-2018'
     THEME_URL='https://mirrors.bfsu.edu.cn/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
+    THEME_URL_02='https://repo.ialab.dsu.edu/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
     WALLPAPER_NAME='backgrounds/wallpapers-2018'
     CUSTOM_WALLPAPER_NAME='manjaro-2018'
     download_manjaro_pkg
@@ -3366,6 +3367,7 @@ download_manjaro_wallpaper() {
     ##############
     THEME_NAME='manjaro-2017'
     THEME_URL='https://mirrors.bfsu.edu.cn/manjaro/pool/overlay/manjaro-sx-wallpapers-20171023-1-any.pkg.tar.xz'
+    THEME_URL_02='https://repo.ialab.dsu.edu/manjaro/pool/overlay/wallpapers-2018-1.2-1-any.pkg.tar.xz'
     WALLPAPER_NAME='backgrounds'
     CUSTOM_WALLPAPER_NAME='manjaro-2017'
     download_manjaro_pkg
@@ -3380,6 +3382,7 @@ download_arch_wallpaper() {
     WALLPAPER_NAME='backgrounds/archlinux'
     CUSTOM_WALLPAPER_NAME='archlinux'
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/pool/community/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu/archlinux/pool/community/'
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg_02
@@ -3393,6 +3396,7 @@ download_arch_xfce_artwork() {
     WALLPAPER_NAME='backgrounds/xfce'
     CUSTOM_WALLPAPER_NAME='xfce-artwork'
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/extra/os/x86_64/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu/archlinux/extra/os/x86_64/'
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg_02
@@ -3405,6 +3409,7 @@ download_elementary_wallpaper() {
     WALLPAPER_NAME='wallpapers/elementary'
     CUSTOM_WALLPAPER_NAME='elementary'
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/pool/community/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/pool/community/'
     check_theme_folder
     download_arch_community_repo_html
     grep_arch_linux_pkg
@@ -3571,6 +3576,7 @@ download_arch_breeze_adapta_cursor_theme() {
     mkdir -pv /tmp/.breeze_theme
     cd /tmp/.breeze_theme
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/any/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/any/'
     curl -Lo index.html ${THEME_URL}
     GREP_NAME='breeze-adapta-cursor-theme-git'
     grep_arch_linux_pkg_02

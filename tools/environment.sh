@@ -119,17 +119,21 @@ grep_theme_model_01() {
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '\.deb' | grep "${GREP_NAME}" | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
-    THE_LATEST_THEME_VERSION_02="$(curl -L ${THEME_URL_02} | grep '\.deb' | grep "${GREP_NAME}" | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+    if [[ -z ${THE_LATEST_THEME_VERSION} ]]; then
+        THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | grep '\.deb' | grep "${GREP_NAME}" | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+    fi
     download_theme_deb_and_extract_01
 }
 ###############
 aria2c_download_theme_file() {
     THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
-    [[ -z ${THE_LATEST_THEME_VERSION_02} ]] || THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION_02}"
-    printf "%s\n" "${THE_LATEST_THEME_LINK}"
+    [[ -z ${THE_LATEST_THEME_VERSION_02} ]] || THE_LATEST_THEME_LINK_02="${THEME_URL_02}${THE_LATEST_THEME_VERSION}"
+
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        printf "${YELLOW}%s${RESET}\n" "${THE_LATEST_THEME_LINK}"
         aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}" || aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK_02}"
     else
+        printf "${YELLOW}%s${RESET}\n" "${THE_LATEST_THEME_LINK_02}"
         aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK_02}" || aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
     fi
 }
@@ -147,7 +151,9 @@ grep_theme_model_03() {
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | awk -F '<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
-    THE_LATEST_THEME_VERSION_02="$(curl -L ${THEME_URL_02} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | awk -F '<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
+    if [[ -z ${THE_LATEST_THEME_VERSION} ]]; then
+        THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | awk -F '<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
+    fi
     download_theme_deb_and_extract_01
 }
 ############################
@@ -156,7 +162,9 @@ grep_theme_model_04() {
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | awk -F '<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
-    THE_LATEST_THEME_VERSION_02="$(curl -L ${THEME_URL_02} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | awk -F '<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
+    if [[ -z ${THE_LATEST_THEME_VERSION} ]]; then
+        THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | awk -F '<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
+    fi
     aria2c_download_theme_file
     mv ${THE_LATEST_THEME_VERSION} data.tar.xz
 }
@@ -168,7 +176,9 @@ grep_theme_model_02() {
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
     THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | awk -F'<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
-    THE_LATEST_THEME_VERSION_02="$(curl -L ${THEME_URL_02} | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | awk -F'<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
+    if [[ -z ${THE_LATEST_THEME_VERSION} ]]; then
+        THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | awk -F'<a href=' '{print $2}' | tail -n 1 | cut -d '"' -f 2)"
+    fi
     aria2c_download_theme_file
 }
 ###########
@@ -211,7 +221,7 @@ download_raspbian_pixel_icon_theme() {
 ################
 #non-zst
 grep_arch_linux_pkg() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | egrep -v '.xz.sig|.zst.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | egrep -v '\.xz\.sig|\.zst\.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"
     aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
@@ -219,22 +229,24 @@ grep_arch_linux_pkg() {
 ################
 #grep zst
 grep_arch_linux_pkg_02() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
+    ARCH_WALLPAPER_URL_02="${THEME_URL_02}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"
-    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL} || aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.zst -x 6 -s 6 -k 1M ${ARCH_WALLPAPER_URL_02}
 }
 ###################
 grep_arch_linux_pkg_03() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
+    ARCH_WALLPAPER_URL_02="${THEME_URL_02}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
-    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.zst -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL} || aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.zst -x 6 -s 6 -k 1M ${ARCH_WALLPAPER_URL_02}
 }
 #################
 grep_arch_linux_pkg_04() {
     #JetBrains IDE
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '.pkg.tar.zst' | egrep -v '.xz.sig|.zst.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.pkg.tar.zst 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
@@ -259,6 +271,7 @@ check_opt_app_version() {
 ##############
 check_archlinux_cn_html_date() {
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/x86_64/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/x86_64/'
     ARCH_LINUX_CN_REPO_DIR='/tmp/.ARCH_LINUX_CN_REPO'
     ARCH_LINUX_CN_REPO_HTML="${ARCH_LINUX_CN_REPO_DIR}/index.html"
     if [ ! -e "${ARCH_LINUX_CN_REPO_DIR}" ]; then

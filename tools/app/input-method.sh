@@ -494,6 +494,7 @@ move_dict_model_01() {
 download_dict_model_01() {
     GREP_NAME_V='rime'
     THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/aarch64/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/aarch64/'
     THEME_NAME="${GREP_NAME}"
     FCITX5_DIICT_PATH='/usr/share/fcitx5/pinyin/dictionaries'
     check_fcitx5_dict
