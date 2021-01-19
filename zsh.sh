@@ -39,8 +39,14 @@ set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	if [[ -e /.dockerenv && -n $(command -v startxfce4) ]]; then
-		auto_remove_proot_xfce4_power_manager
+	if [[ -e /.dockerenv ]]; then
+		if [[ ! -n $(command -v Xvnc) && -n $(command -v apt-get) ]]; then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install ${YELLOW}-y ${BLUE}tigervnc-standalone-server${RESET}"
+			apt install -y tigervnc-standalone-server
+		fi
+		if [[ -n $(command -v startxfce4) ]]; then
+			auto_remove_proot_xfce4_power_manager
+		fi
 	fi
 }
 set_terminal_color() {
