@@ -344,7 +344,7 @@ download_iosevka_ttf_font() {
 
         if [[ ! -e "${IOSEVKA_TTF_FILE}" ]]; then
             cd ${FONT_DIR}
-            curl -Lo 'Iosevka-Term-Mono.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
+            curl -Lo 'Iosevka-Term-Mono.tar.xz' "https://gitee.com/ak2/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz" || curl -Lo 'Iosevka-Term-Mono.tar.xz' "https://github.com/cu233/inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz"
             tar -Jxvf 'Iosevka-Term-Mono.tar.xz'
             mv -vf Iosevka.ttf "${IOSEVKA_TTF_FILE}"
         fi
