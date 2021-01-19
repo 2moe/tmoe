@@ -128,14 +128,16 @@ grep_theme_model_01() {
 aria2c_download_theme_file() {
     THE_LATEST_THEME_LINK="${THEME_URL}${THE_LATEST_THEME_VERSION}"
     [[ -z ${THE_LATEST_THEME_VERSION_02} ]] || THE_LATEST_THEME_LINK_02="${THEME_URL_02}${THE_LATEST_THEME_VERSION}"
-
-    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-        printf "${YELLOW}%s${RESET}\n" "${THE_LATEST_THEME_LINK}"
-        aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}" || aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK_02}"
-    else
+    case ${AUTO_INSTALL_GUI} in
+    true)
         printf "${YELLOW}%s${RESET}\n" "${THE_LATEST_THEME_LINK_02}"
         aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK_02}" || aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}"
-    fi
+        ;;
+    *)
+        printf "${YELLOW}%s${RESET}\n" "${THE_LATEST_THEME_LINK}"
+        aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK}" || aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_THEME_VERSION}" "${THE_LATEST_THEME_LINK_02}"
+        ;;
+    esac
 }
 ##########
 download_theme_deb_and_extract_01() {
@@ -628,19 +630,17 @@ different_distro_software_install() {
         ################
     "arch")
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-                pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
-            else
-                #自动构建时pacman可能执行失败
-                pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S --noconfirm ${DEPENDENCY_01}
-            fi
+            case ${AUTO_INSTALL_GUI} in
+            true) #自动构建时pacman可能执行失败
+                pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S --noconfirm ${DEPENDENCY_01} ;;
+            *) pacman -Syu --noconfirm ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}" ;;
+            esac
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-                pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行"
-            else
-                pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || yay -S --noconfirm ${DEPENDENCY_02}
-            fi
+            case ${AUTO_INSTALL_GUI} in
+            true) pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || yay -S --noconfirm ${DEPENDENCY_02} ;;
+            *) pacman -S --noconfirm ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行" ;;
+            esac
         fi
         ;;
         ################
@@ -1251,7 +1251,10 @@ download_electron() {
     printf "${YELLOW}%s\n%s${RESET}\n" "${ELECTRON_FILE_URL}" "${ELECTRON_GIT_RELEASE_URL}"
     aria2c_download_file_00
     case ${AUTO_INSTALL_GUI} in
-    true) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 3 -x 3 -k 1M "${ELECTRON_GIT_RELEASE_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}" ;;
+    true)
+        printf "%s\n" "${BLUE}${ELECTRON_GIT_RELEASE_URL}${RESET}"
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 3 -x 3 -k 1M "${ELECTRON_GIT_RELEASE_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}"
+        ;;
     *) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 10 -x 10 -k 1M "${ELECTRON_GIT_RELEASE_URL}" ;;
     esac
     extract_electron
