@@ -613,17 +613,17 @@ different_distro_software_install() {
     "debian")
         apt update
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            apt install -y ${DEPENDENCY_01} || aptitude install -y ${DEPENDENCY_01}
+            apt install -y ${DEPENDENCY_01} || aptitude install -y ${DEPENDENCY_01} || apt-get install -f -y ${DEPENDENCY_01}
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            apt install -y ${DEPENDENCY_02} || aptitude install -y ${DEPENDENCY_02}
+            apt install -y ${DEPENDENCY_02} || aptitude install -y ${DEPENDENCY_02} || apt-get install -f -y ${DEPENDENCY_02}
         fi
         ;;
         ################
     "alpine")
         apk update
-        apk add ${DEPENDENCY_01}
-        apk add ${DEPENDENCY_02}
+        apk add ${DEPENDENCY_01} || apk add ${DEPENDENCY_01}
+        apk add ${DEPENDENCY_02} || apk add ${DEPENDENCY_02}
         ;;
         ################
     "arch")
@@ -665,13 +665,13 @@ different_distro_software_install() {
         ;;
         ################
     "suse")
-        zypper in -y ${DEPENDENCY_01}
-        zypper in -y ${DEPENDENCY_02}
+        zypper in -y ${DEPENDENCY_01} || zypper in -y ${DEPENDENCY_01}
+        zypper in -y ${DEPENDENCY_02} || zypper in -y ${DEPENDENCY_02}
         ;;
         ################
     "void")
-        xbps-install -S -y ${DEPENDENCY_01}
-        xbps-install -S -y ${DEPENDENCY_02}
+        xbps-install -S -y ${DEPENDENCY_01} || xbps-install -Sy ${DEPENDENCY_01}
+        xbps-install -S -y ${DEPENDENCY_02} || xbps-install -Sy ${DEPENDENCY_02}
         ;;
         ################
     "slackware")
