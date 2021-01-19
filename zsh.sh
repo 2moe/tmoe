@@ -156,6 +156,11 @@ auto_configure_tmoe_tools() {
 				zypper in -y tigervnc-x11vnc
 			fi
 		fi
+		if [[ $(command -v pacman) ]]; then
+			if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
+				pacman -Syu --noconfirm noto-fonts-cjk
+			fi
+		fi
 		set_your_vnc_passwd
 	else
 		if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
@@ -243,6 +248,15 @@ check_ps_command() {
 	fi
 }
 ##########
+curl_tmoe_zsh() {
+	if [[ $(command -v curl) ]]; then
+		curl -Lo ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
+	elif [[ $(command -v wget) ]]; then
+		wget -O ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
+	fi
+	chmod 777 ${TMOE_ZSH_TOOL_BIN}
+	bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
+}
 configure_tmoe_zsh() {
 	#此处不要source脚本
 	TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
@@ -251,19 +265,11 @@ configure_tmoe_zsh() {
 		chmod a+x -v ${TMOE_ZSH_TOOL_BIN}
 		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
 	else
-		if [[ $(command -v curl) ]]; then
-			curl -Lo ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
-		elif [[ $(command -v wget) ]]; then
-			wget -O ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
-		fi
-		chmod 777 ${TMOE_ZSH_TOOL_BIN}
-		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
+		curl_tmoe_zsh
 	fi
 
 	if [[ ! $(command -v zsh) ]]; then
-		if [[ -e "${HOME}/zsh-i.sh" ]]; then
-			bash ${HOME}/zsh-i.sh --tmoe_container_automatic_configure
-		fi
+		curl_tmoe_zsh
 	fi
 
 	if egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then

@@ -5154,8 +5154,22 @@ check_xvnc_command() {
         void) DEPENDENCY_03="tigervnc" ;;
         suse) DEPENDENCY_03="tigervnc-x11vnc" ;;
         esac
-        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03}
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03}
     fi
+    case "${LINUX_DISTRO}" in
+    arch)
+        unset DEPENDENCY_03
+        if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
+            DEPENDENCY_03="noto-fonts-cjk ${DEPENDENCY_03}"
+        fi
+        if [ ! -e "/usr/share/fonts/noto/NotoColorEmoji.ttf" ]; then
+            DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
+        fi
+        if [[ -n ${DEPENDENCY_03} ]]; then
+            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03} || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_03}
+        fi
+        ;;
+    esac
 }
 ########################
 do_you_want_to_configure_novnc() {
