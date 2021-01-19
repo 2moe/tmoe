@@ -5035,6 +5035,9 @@ first_configure_startvnc() {
     default) tmoe_gui_default_dpi ;;
     esac
     ######
+    if [[ -L ~/startvnc ]]; then
+        ln -svf $(command -v startvnc) ~/startvnc
+    fi
     if [ ${HOME} != '/root' ]; then
         printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority, .Xauthority, .config, .cache, .dbus以及.vnc的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
