@@ -4881,7 +4881,7 @@ first_configure_startvnc() {
         debian) which_vnc_server_do_you_prefer ;;
         esac
     else
-        VNC_SERVER_BIN=tigervnc
+        tiger_vnc_variable
         case_debian_distro_and_install_vnc
     fi
     #fi
