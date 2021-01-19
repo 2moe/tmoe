@@ -12,8 +12,8 @@ gnu_linux_env_02() {
     OPT_URL_01='https://bintray.proxy.ustclug.org/debianopt/debianopt'
     OPT_URL_02='https://dl.bintray.com/debianopt/debianopt'
     OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt.list'
-    #ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
     ELECTRON_MIRROR_STATION='https://mirrors.huaweicloud.com/electron'
+    #ELECTRON_MIRROR_STATION_02='https://npm.taobao.org/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
     XSESSION_FILE='/etc/X11/xinit/Xsession'
     GIT_AK2='https://gitee.com/ak2'
@@ -1218,13 +1218,15 @@ extract_electron() {
 }
 #########
 latest_electron() {
+    unset ELECTRON_VERSION
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
     #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
-    ELECTRON_VERSION="$(curl -Lv "${ELECTRON_MIRROR_STATION}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | grep -v '^0' | grep '^[0-9]' | sort -n | cut -d '/' -f 1 | grep '^11\.' | tail -n 1)"
+    ELECTRON_VERSION="$(curl -L "${ELECTRON_MIRROR_STATION}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | grep -v '^0' | grep '^[0-9]' | sort -n | cut -d '/' -f 1 | grep '^11\.' | tail -n 1)"
     #ELECTRON_VERSION=11.1.1
     DOWNLOAD_PATH="/opt/electron"
+    [[ -n ${ELECTRON_VERSION} ]] || latest_electron_ali
 }
-###########
+########
 latest_electron_ali() {
     ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')

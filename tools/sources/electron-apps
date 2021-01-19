@@ -95,6 +95,15 @@ install_electron_app_01() {
     install_electron_v8
     #check_tmoe_electron_app_version
     download_tmoe_electron_app
+    [[ -e "/opt/${DEPENDENCY_01}" ]] || download_tmoe_electron_app
+    #重复多次，防止自动构建时下载失败。
+    if [[ ! -e "/opt/${DEPENDENCY_01}/usr" ]]; then
+        printf "%s\n" "Install ${RED}failed${RESET}.Auto retry after ${YELLOW}30s${RESET}."
+        printf "%s\n" "安装失败，将于30s后自动尝试。"
+        sleep 30
+        download_tmoe_electron_app
+    fi
+    [[ -e "/opt/${DEPENDENCY_01}" ]] || download_tmoe_electron_app
 }
 ################
 git_clone_electron_virtual_machine() {
