@@ -23,13 +23,13 @@ check_python_novnc() {
 		if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
 			printf "%s\n" "${GREEN}dnf install -y ${BLUE}novnc${RESET}"
 			printf "%s\n" "You can type ${PURPLE}dnf remove -y${RESET} ${BLUE}novnc${RESET} to remove it."
-			dnf install -y novnc
+			dnf install -y novnc || yum install -y novnc
 		fi
 		;;
 	*)
 		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}python3 net-tools${RESET}"
-		[[ $(command -v python3) ]] || ${TMOE_INSTALLATION_COMMAND} python3
-		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATION_COMMAND} net-tools
+		[[ $(command -v python3) ]] || ${TMOE_INSTALLATION_COMMAND} python3 || ${TMOE_INSTALLATION_COMMAND} python3
+		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATION_COMMAND} net-tools || ${TMOE_INSTALLATION_COMMAND} net-tools
 		#[[ $(command -v websockify) ]] || ${TMOE_INSTALLATION_COMMAND} websockify
 		;;
 	esac
