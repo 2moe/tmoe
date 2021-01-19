@@ -1354,6 +1354,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
 					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+					Server = https://repo.archlinuxcn.org/$arch
 					SigLevel = Never
 				Endofpacman
 	    fi
@@ -1405,6 +1406,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		    arch_linux_yay
 			cat /etc/pacman.conf
 		else
+			if [[ ! -n $(command -v yay) ]];then
+					printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}yay${RESET}"
+					pacman -Sy --noconfirm yay || pacman -Syu --noconfirm yay
+			fi
 			if [[ ${TMOE_CHROOT} = true ]];then
 				i=gawk
 				printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
