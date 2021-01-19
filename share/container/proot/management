@@ -364,8 +364,10 @@ install_new_tmoe_gnu_linux_distro() {
 ##########
 bat_build_latest_txt() {
 	if [[ -e ${BUILD_LATEST_TXT} ]]; then
-		if [ $(command -v bat) ]; then
+		if [[ $(command -v bat) ]]; then
 			bat -ppn -l sh ${BUILD_LATEST_TXT}
+		elif [[ $(command -v batcat) ]]; then
+			batcat -ppn -l sh ${BUILD_LATEST_TXT}
 		else
 			cat ${BUILD_LATEST_TXT}
 		fi

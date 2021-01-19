@@ -335,7 +335,7 @@ choose_kde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "If you are using proot,try using ubuntu-bionic.\nIf you are using chroot,you can choose anyone." 0 50 0 \
 		"1" "🍛 Ubuntu bionic" \
 		"2" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
-		"3" "Ubuntu dev" \
+		"3" "🦛 Ubuntu dev" \
 		"4" "🍥 Debian is a distro composed of free and open-source software" \
 		"5" "👒 Fedora:developed by the community-supported Fedora Project" \
 		"6" "🏔️ Alpine:Small. Simple. Secure." \
