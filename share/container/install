@@ -1271,15 +1271,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i 's/^Server/#&/g' /etc/pacman.d/mirrorlist
 	    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ]; then
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-					#Server = https://mirror.archlinuxarm.org/$arch/$repo
-					#Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
 					Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
+					Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
+					Server = https://mirror.archlinuxarm.org/$arch/$repo
 				EndOfArchMirrors
 	    else
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
-					#Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
-					#Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
 					Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
+					Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
+					Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
 				EndOfArchMirrors
 	    fi
 	}
@@ -1306,6 +1307,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					#Server = http://manjaro.mirrors.theom.nz/arm-stable/$repo/$arch
 					## Country : China
 					Server = https://mirrors.bfsu.edu.cn/manjaro/arm-stable/$repo/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/arm-stable/$repo/$arch
+					Server = https://mirrors.ustc.edu.cn/manjaro/arm-stable/$repo/$arch
 				EndOfArchMirrors
 		elif [[ "$(uname -m)" = "x86_64" ]]; then
 	        cat >/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
@@ -1313,6 +1316,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					#Server = https://manjaro.grena.ge/stable/$repo/$arch
 					#Server = https://mirror.oldsql.cc/manjaro/stable/$repo/$arch
 					Server = https://mirrors.bfsu.edu.cn/manjaro/stable/$repo/$arch
+					Server = https://mirrors.ustc.edu.cn/manjaro/stable/$repo/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch     
 				EndOfArchMirrors
 	    fi
 	}
@@ -1354,6 +1359,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
 					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 					Server = https://repo.archlinuxcn.org/$arch
 					SigLevel = Never
 				Endofpacman

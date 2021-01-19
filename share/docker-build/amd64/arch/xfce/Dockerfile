@@ -28,12 +28,12 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_automatic_configure \
     ; cd /tmp \
-    ; bash build_fakeroot --install-yay \
     ; sed -i 's@*) #main@2333)@g' tool.sh \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
     ; bash build_fakeroot --build-fakeroot \
+    ; bash build_fakeroot --install-yay \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; pacman -R --noconfirm $(pacman -Qdtq) \
     ; pacman -Scc --noconfirm 

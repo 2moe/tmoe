@@ -42,6 +42,7 @@ add_archlinuxcn_repo() {
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
 					Server = https://repo.archlinuxcn.org/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch                
 					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
 					SigLevel = Never
 				Endofpacman

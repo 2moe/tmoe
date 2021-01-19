@@ -56,6 +56,9 @@ EOF
     if [[ ! -n $(command -v add-apt-repository) && -n $(command -v apt-get) ]]; then
         apt install -y software-properties-common
     fi
+    if [[ ! -n $(command -v aria2c) ]]; then
+        ${TMOE_INSTALLATION_COMMAND} aria2 || ${TMOE_INSTALLATION_COMMAND} aria2
+    fi
     case ${DEBIAN_DISTRO} in
     ubuntu)
         apt install -y ^language-pack-zh
