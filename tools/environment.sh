@@ -1127,13 +1127,14 @@ install_electron_v8() {
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
         fix_fedora_electron_libxssl
         download_electron
+        chmod 4755 -v ${DOWNLOAD_PATH}/chrome-sandbox
     fi
     #检测twice
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
         ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
         download_electron
     fi
-    chmod 4755 -v ${DOWNLOAD_PATH}/chrome-sandbox
+    chmod 4755 ${DOWNLOAD_PATH}/chrome-sandbox
 }
 ##############
 download_tmoe_electron_app() {
@@ -1194,7 +1195,7 @@ extract_electron() {
     fi
     unzip ${ELECTRON_ZIP_FILE}
     rm -fv ${ELECTRON_ZIP_FILE}
-    chmod +x electron
+    chmod a+x -v electron
 }
 #########
 latest_electron() {
@@ -1220,14 +1221,23 @@ download_electron() {
     i386) ARCH_TYPE_02='ia32' ;;
     *) arch_does_not_support ;;
     esac
+    [[ -n ${ELECTRON_VERSION} ]] || ELECTRON_VERSION="11.2.0"
+    #https://github.com/electron/electron/releases/download/v11.2.0/electron-v11.2.0-linux-arm64.zip
     ELECTRON_ZIP_FILE="electron-v${ELECTRON_VERSION}-linux-${ARCH_TYPE_02}.zip"
     ELECTRON_FILE_URL="${ELECTRON_MIRROR_STATION}/${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
-    aria2c_download_file_no_confirm
+    ELECTRON_GIT_RELEASE_URL="https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
+    #aria2c_download_file_no_confirm
+    printf "%s\n" "${YELLOW}${ELECTRON_FILE_URL}\n${ELECTRON_GIT_RELEASE_URL}${RESET}"
+    aria2c_download_file_00
+    case ${AUTO_INSTALL_GUI} in
+    true) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 3 -x 3 -k 1M "${ELECTRON_GIT_RELEASE_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}" ;;
+    *) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M "${ELECTRON_FILE_URL}" || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 10 -x 10 -k 1M "${ELECTRON_GIT_RELEASE_URL}" ;;
+    esac
     extract_electron
 }
 ###########
 electron_v8_env() {
-    ELECTRON_VERSION='8.5.5'
+    ELECTRON_VERSION="8.5.5"
     DOWNLOAD_PATH="/opt/electron-v8"
 }
 #########
