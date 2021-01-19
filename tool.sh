@@ -91,7 +91,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4080,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4081,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -170,7 +170,7 @@ check_release_version() {
 ##############
 check_win10x_icon() {
 	if [ -e "/usr/share/icons/We10X" ]; then
-		dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s We10X
+		dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s We10X
 	fi
 }
 ##########

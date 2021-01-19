@@ -184,7 +184,7 @@ modify_xfce_window_scaling_factor() {
         printf '%s\n' '检测到您取消了操作'
         grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE} | grep 'value='
     else
-        dbus-launch xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
+        dbus-launch xfconf-query -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
         if ((${TARGET} > 1)); then
             if grep -q 'Focal Fossa' "/etc/os-release"; then
                 dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
@@ -1114,7 +1114,7 @@ kali_xfce4_extras() {
         fix_chromium_root_no_sandbox
     fi
     apt search kali-linux
-    dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Windows-10-Icons
+    dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s Windows-10-Icons
 }
 ###################
 apt_purge_libfprint() {
@@ -1576,13 +1576,13 @@ install_xfce4_desktop() {
     #xml配置不包含base-directory
     #################
     if [ "${LINUX_DISTRO}" = "alpine" ]; then
-        dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Faenza
+        dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s Faenza
     else
         #if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
         #    download_kali_themes_common
         #fi
         if [ "${DEBIAN_DISTRO}" != "kali" ]; then
-            dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Flat-Remix-Blue-Light
+            dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s Flat-Remix-Blue-Light
         fi
     fi
     ##############
@@ -1611,7 +1611,7 @@ xfce_papirus_icon_theme() {
     if [ ! -e "/usr/share/icons/Papirus" ]; then
         download_papirus_icon_theme
         if [ "${DEBIAN_DISTRO}" != "kali" ]; then
-            dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s Papirus
+            dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s Papirus
         fi
     fi
 }
@@ -2630,7 +2630,7 @@ install_deepin_desktop() {
 }
 ############################
 set_default_xfce_icon_theme() {
-    dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s ${XFCE_ICON_NAME} 2>/dev/null
+    dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s ${XFCE_ICON_NAME} 2>/dev/null
     case ${HOME} in
     /root) ;;
     *) chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4 ;;
