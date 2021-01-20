@@ -184,7 +184,6 @@ start_tmoe_xvnc() {
     fi
     start_win10_tigervnc
     exit 0
-    #/bin/Xtigervnc :2 -desktop moe-nuc:2 -auth /root/.Xauthority -geometry 1900x1200 -depth 24 -rfbwait 30000 -rfbauth /root/.vnc/passwd -rfbport 5902 -pn -localhost -SecurityTypes VncAuth
 }
 ##############
 source_tmoe_dbus_daemon() {
