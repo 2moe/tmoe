@@ -4874,13 +4874,19 @@ debian_install_vnc_server() {
         fi
 
         if [[ ! -n $(command -v Xtightvnc) ]]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
-            for i in tightvncserver xfonts-100dpi xfonts-75dpi xfonts-scalable; do
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver${RESET}"
+            for i in tightvncserver; do
+                apt install -y ${i} || aptitude install -y ${i}
+            done
+        fi
+        if [ ! -e "/usr/share/fonts/X11/Type1" ]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
+            for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
 
-        if [ -e "/usr/share/fonts/X11/Type1" ] && [ ! -e /usr/share/fonts/X11/Speedo ]; then
+        if [[ -e "/usr/share/fonts/X11/Type1" && ! -e /usr/share/fonts/X11/Speedo ]]; then
             ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
         fi
         sed -i -E "s@^(VNC_SERVER)=.*@\1=${VNC_SERVER}@" $(command -v startvnc)
