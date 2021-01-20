@@ -8,9 +8,6 @@ TMOE_VNC_DISPLAY_NUMBER=2
 #若显示编号为2,则vnc端口为$((5900+2))=5902。 If the display number=2,then vnc port=5902.
 VNC_SERVER=tiger
 #服务端可选tiger或tight。 you can choose tiger or tight.
-KDE_PLASMA_WAYLAND=false
-#你需要先安装plasma-wayland，然后才能将此选项值修改为true。Arch/Manjaro: pacman -Syu plasma-wayland-session;debian/ubuntu: apt install plasma-workspace-wayland
-export USER="$(whoami)"
 ########################
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
@@ -21,6 +18,7 @@ BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "Current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
+export USER="$(whoami)"
 stopvnc -non-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
@@ -31,6 +29,8 @@ TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 TIGERVNC_BIN='/usr/bin/tigervncserver'
+KDE_PLASMA_WAYLAND=false
+#你需要先安装plasma-wayland，然后才能将此选项值修改为true。Arch/Manjaro: pacman -Syu plasma-wayland-session;debian/ubuntu: apt install plasma-workspace-wayland
 unset TMOE_WSL
 ########################
 check_tmoe_locale() {
