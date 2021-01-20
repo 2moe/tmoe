@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 ########################
 export PULSE_SERVER=127.0.0.1
+#默认音频服务地址为127.0.0.1,默认端口为4713。The default pulseaudio server address is 127.0.0.1
+VNC_RESOLUTION=1440x720
+#默认分辨率为1440x720
 TMOE_VNC_DISPLAY_NUMBER=2
+#若显示编号为2,则vnc端口为$((5900+2))=5902。 If the display number=2,then vnc port=5902.
+VNC_SERVER=tiger
+#服务端可选tiger或tight。 you can choose tiger or tight.
 export USER="$(whoami)"
 ########################
 RED=$(printf '\033[31m')
@@ -129,24 +135,39 @@ start_win10_tigervnc() {
 }
 ##########
 start_tmoe_xvnc() {
+    case ${VNC_SERVER} in
+    tight* | Tight*)
+        XVNC_BIN='Xtightvnc'
+        if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver${RESET}"
+            sudo apt install tightvncserver || su -c "apt install -y tightvncserver"
+        fi
+        ;;
+    tiger* | Tiger* | *)
+        XVNC_BIN='Xtigervnc'
+        if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common${RESET}"
+            sudo apt install tigervnc-standalone-server tigervnc-common || su -c "apt install -y tigervnc-standalone-server"
+            [[ -n $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
+            set -- "${@}" "-ZlibLevel=0"
+            set -- "${@}" "-rfbwait" "30000"
+            set -- "${@}" "-pn"
+        fi
+        ;;
+    esac
     . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
-    if [[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]; then
-        set -- "${@}" "-ZlibLevel=0"
-        set -- "${@}" "-rfbwait" "30000"
-        set -- "${@}" "-pn"
-    fi
-    #tightvnc专有参数bc #enable bug compatibility #set -- "${@}" "bc"
+    #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]
     set -- "${@}" "-a" "5"
     set -- "${@}" "-wm"
     set -- "${@}" "-alwaysshared"
-    set -- "${@}" "-geometry" "${geometry}"
+    set -- "${@}" "-geometry" "${VNC_RESOLUTION}"
     set -- "${@}" "-once"
     set -- "${@}" "-depth" "24"
     #set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${TMOE_VNC_PASSWD_FILE}"
     set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
-    set -- "Xvnc" "${@}"
+    set -- "${XVNC_BIN}" "${@}"
     "${@}" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     . ${XSESSION_FILE} &>/dev/null &

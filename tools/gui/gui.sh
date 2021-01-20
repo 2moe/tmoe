@@ -237,13 +237,12 @@ nano_startvnc_manually() {
     printf '%s\n' '您可以手动修改vnc的配置信息'
     printf '%s\n' 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution, such as 1920x1080 (vertical screen).'
     printf '%s\n' '若您想要修改分辨率，请将默认的1440x720（横屏）改为其它您想要的分辨率，例如720x1440（竖屏）。'
-    printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
+    #printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
     printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
     RETURN_TO_WHERE='modify_other_vnc_conf'
     do_you_want_to_continue
-    nano /usr/local/bin/startvnc || nano $(command -v startvnc)
-    printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
-
+    nano $(command -v startvnc)
+    #printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
     stopvnc 2>/dev/null
     press_enter_to_return
     modify_other_vnc_conf
@@ -3921,7 +3920,7 @@ x11vnc_resolution() {
     else
         #/usr/bin/Xvfb :1 -screen 0 1440x720x24 -ac +extension GLX +render -noreset &
         #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${TARGET}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
-        sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${TARGET}@" "$(command -v startx11vnc)"
+        sed -i -E "s@^(TMOE_X11_RESOLUTION)=.*@\1=${TARGET}@" "$(command -v startx11vnc)"
         printf '%s\n' 'Your current resolution has been modified.'
         printf "%s\n" "您当前的分辨率已经修改为$(grep 'TMOE_X11_RESOLUTION=' $(command -v startx11vnc) | head -n 1 | cut -d '=' -f 2)"
         printf "%s\n" "You can type startx11vnc to restart it."
@@ -3930,7 +3929,7 @@ x11vnc_resolution() {
 ############################
 ######################
 check_vnc_resolution() {
-    CURRENT_VNC_RESOLUTION=$(grep '\-geometry' "$(command -v startvnc)" | tail -n 1 | cut -d 'y' -f 2 | cut -d '-' -f 1)
+    CURRENT_VNC_RESOLUTION=$(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}' | head -n 1)
 }
 modify_vnc_conf() {
     if [ ! -e /usr/local/bin/startvnc ]; then
@@ -3949,9 +3948,8 @@ modify_vnc_conf() {
             printf "%s\n" "请输入有效的数值"
             printf "%s\n" "Please enter a valid value"
         else
-            sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
-            sed -i "$ a\vncserver -geometry ${TARGET} -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
-            sed -i "s@geometry=.*@geometry=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
+            sed -i -E "s@(geometry)=.*@\1=${TARGET}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
+            sed -i -E "s@^(VNC_RESOLUTION)=.*@\1=${TARGET}@" $(command -v startvnc)
             printf '%s\n' 'Your current resolution has been modified.'
             check_vnc_resolution
             printf "%s\n" "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
@@ -4795,6 +4793,7 @@ fix_non_root_permissions() {
 }
 ################
 tiger_vnc_variable() {
+    VNC_SERVER=tiger
     VNC_SERVER_BIN="tigervnc"
     VNC_SERVER_BIN_NOW="tightvncserver"
     #无需安装tigervnc-xorg-extension
@@ -4803,6 +4802,7 @@ tiger_vnc_variable() {
 }
 #######
 tight_vnc_variable() {
+    VNC_SERVER=tight
     VNC_SERVER_BIN="tightvnc"
     VNC_SERVER_BIN_NOW="tigervnc-standalone-server"
     DEPENDENCY_01="tigervnc-viewer xfonts-100dpi xfonts-75dpi xfonts-scalable"
@@ -4816,13 +4816,26 @@ debian_remove_vnc_server() {
 debian_install_vnc_server() {
     case ${LINUX_DISTRO} in
     debian)
-        debian_remove_vnc_server
-        printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
-        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02}
-        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
+        #debian_remove_vnc_server
+        #printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
+        if [[ ! -n $(command -v Xtigervnc) ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
+            for i in tigervnc-standalone-server tigervnc-viewer; do
+                apt install -y ${i} || aptitude install -y ${i}
+            done
+        fi
+
+        if [[ ! -n $(command -v Xtightvnc) ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
+            for i in tightvncserver xfonts-100dpi xfonts-75dpi xfonts-scalable; do
+                apt install -y ${i} || aptitude install -y ${i}
+            done
+        fi
+
         if [ -e "/usr/share/fonts/X11/Type1" ] && [ ! -e /usr/share/fonts/X11/Speedo ]; then
             ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
         fi
+        sed -i -E "s@^(VNC_SERVER)=.*@\1=${VNC_SERVER}@" $(command -v startvnc)
         ;;
     esac
 }
@@ -4830,27 +4843,29 @@ debian_install_vnc_server() {
 grep_tiger_vnc_deb_file() {
     LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     LATEST_DEB_URL="${LATEST_DEB_REPO}${LATEST_DEB_VERSION}"
+    LATEST_DEB_URL_02="${LATEST_DEB_REPO_02}${LATEST_DEB_VERSION}"
 }
 #######
 ubuntu_install_tiger_vnc_server() {
     apt-mark unhold tigervnc-common tigervnc-standalone-server
     debian_install_vnc_server
     LATEST_DEB_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/t/tigervnc/"
+    LATEST_DEB_REPO_02="https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/t/tigervnc/"
     GREP_NAME_01='tigervnc-common'
     GREP_NAME_02='deb10'
     TEMP_FOLDER='/tmp/.TIGER_VNC_TEMP_FOLDER'
     mkdir ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
     grep_tiger_vnc_deb_file
-    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL}" || curl -L -o "tigervnc-common_ubuntu-focal.deb" "${LATEST_DEB_URL_02}"
     GREP_NAME_01='tigervnc-standalone-server'
     grep_tiger_vnc_deb_file
-    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-standalone-server_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "tigervnc-standalone-server_ubuntu-focal.deb" "${LATEST_DEB_URL}" || curl -L -o -o "tigervnc-standalone-server_ubuntu-focal.deb" "${LATEST_DEB_URL_02}"
     LATEST_DEB_REPO="https://mirrors.bfsu.edu.cn/debian/pool/main/libj/libjpeg-turbo/"
     GREP_NAME_01='libjpeg62-turbo_'
     GREP_NAME_02='deb'
     grep_tiger_vnc_deb_file
-    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "libjpeg62-turbo_ubuntu-focal.deb" "${LATEST_DEB_URL}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "libjpeg62-turbo_ubuntu-focal.deb" "${LATEST_DEB_URL}" || curl -L -o "libjpeg62-turbo_ubuntu-focal.deb" "${LATEST_DEB_URL_02}"
     dpkg -i ./libjpeg62-turbo_ubuntu-focal.deb ./tigervnc-common_ubuntu-focal.deb ./tigervnc-standalone-server_ubuntu-focal.deb
     apt-mark hold tigervnc-common tigervnc-standalone-server
     cd ~
@@ -5304,11 +5319,9 @@ tmoe_gui_dpi_01() {
 }
 ##########
 tmoe_gui_dpi_02() {
-    sed -i '/vncserver -geometry/d' "$(command -v startvnc)"
-    sed -i "$ a\vncserver -geometry ${RESOLUTION} -depth 24 -name tmoe-linux :1" "$(command -v startvnc)"
-    sed -i "s@geometry=.*@geometry=${RESOLUTION}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
-    #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)" 2>/dev/null
-    sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null
+    sed -i -E "s@(geometry)=.*@\1=${RESOLUTION}@" ${TIGER_VNC_DEFAULT_CONFIG_FILE}
+    sed -i -E "s@^(VNC_RESOLUTION)=.*@\1=${RESOLUTION}@" $(command -v startvnc)
+    sed -i -E "s@^(TMOE_X11_RESOLUTION)=.*@\1=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null
 }
 ##########
 tmoe_gui_dpi_03() {
@@ -5349,7 +5362,7 @@ xfce4_x11vnc_hidpi_settings() {
         #sed -i "s@^/usr/bin/Xvfb.*@/usr/bin/Xvfb :233 -screen 0 ${RESOLUTION}x24 -ac +extension GLX +render -noreset \&@" "$(command -v startx11vnc)"
         case ${RESOLUTION} in
         "") ;;
-        *) sed -i "s@TMOE_X11_RESOLUTION=.*@TMOE_X11_RESOLUTION=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null ;;
+        *) sed -i -E "s@^(TMOE_X11_RESOLUTION)=.*@\1=${RESOLUTION}@" "$(command -v startx11vnc)" 2>/dev/null ;;
         esac
         #startx11vnc >/dev/null 2>&1
         #fi
