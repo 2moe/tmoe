@@ -4866,30 +4866,28 @@ debian_install_vnc_server() {
     debian)
         #debian_remove_vnc_server
         #printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
-        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
         if [[ ! -n $(command -v Xtigervnc) ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
             for i in tigervnc-standalone-server tigervnc-viewer; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
-
-        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
         if [[ ! -n $(command -v Xtightvnc) ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
             for i in tightvncserver; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
-        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
         if [ ! -e "/usr/share/fonts/X11/Type1" ]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
             for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
-
         if [[ -e "/usr/share/fonts/X11/Type1" && ! -e /usr/share/fonts/X11/Speedo ]]; then
             ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
         fi
-        sed -i -E "s@^(VNC_SERVER)=.*@\1=${VNC_SERVER}@" $(command -v startvnc)
+        [[ -z ${VNC_SERVER} ]] || sed -i -E "s@^(VNC_SERVER)=.*@\1=${VNC_SERVER}@" $(command -v startvnc)
         ;;
     esac
 }
@@ -4962,7 +4960,7 @@ case_debian_distro_and_install_vnc() {
             case ${VNC_SERVER_BIN} in
             tigervnc)
                 case $(apt list --installed 2>&1 | grep 'tigervnc-standalone-server' | awk '{print $2}') in
-                1.9.*) debian_remove_vnc_server ;;
+                1.9.*) ;;
                 *) ubuntu_install_tiger_vnc_server ;;
                 esac
                 ;;
@@ -4977,6 +4975,7 @@ case_debian_distro_and_install_vnc() {
         ;;
     *) debian_install_vnc_server ;;
     esac
+    [[ -z ${VNC_SERVER} ]] || sed -i -E "s@^(VNC_SERVER)=.*@\1=${VNC_SERVER}@" $(command -v startvnc)
 }
 #########
 remove_udisk_and_gvfs() {
@@ -4998,9 +4997,10 @@ remove_udisk_and_gvfs() {
 first_configure_startvnc() {
     #卸载udisks2，会破坏mate和plasma的依赖关系。
     remove_udisk_and_gvfs
+    [[ ${LINUX_DISTRO} != debian ]] || case_debian_distro_and_install_vnc
     configure_startvnc
     configure_startxsdl
-    chmod +x startvnc stopvnc startxsdl
+    chmod a+x -v startvnc stopvnc startxsdl
     #if [ "${LINUX_DISTRO}" != "debian" ]; then
     #sed -i 's@--exit-with-session@@' ${XSESSION_FILE}
     #/usr/local/bin/startxsdl
