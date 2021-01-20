@@ -2283,7 +2283,7 @@ install_kde_plasma5_desktop() {
         ;;
     esac
     ####################
-    [[ ${PLASMA_WAYLAND_DEPENDENCIES} != true ]] || plasma_wayland_env
+    [[ ${KDE_PLASMA_WAYLAND} != true ]] || plasma_wayland_env
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         beta_features_quick_install
     else
