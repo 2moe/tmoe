@@ -1,4 +1,6 @@
-FROM arm64v8/ubuntu:devel
+FROM scratch
+ADD ubuntu.tar /
+#FROM arm64v8/ubuntu:devel 
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
