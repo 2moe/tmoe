@@ -132,6 +132,8 @@ start_tmoe_xvnc() {
     . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
     if [[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]; then
         set -- "${@}" "-ZlibLevel=0"
+        set -- "${@}" "-rfbwait" "30000"
+        set -- "${@}" "-pn"
     fi
     #tightvnc专有参数bc #enable bug compatibility #set -- "${@}" "bc"
     set -- "${@}" "-a" "5"
@@ -139,8 +141,8 @@ start_tmoe_xvnc() {
     set -- "${@}" "-alwaysshared"
     set -- "${@}" "-geometry" "${geometry}"
     set -- "${@}" "-once"
-    set -- "${@}" "-depth" "16"
-    set -- "${@}" "-deferglyphs" "16"
+    set -- "${@}" "-depth" "24"
+    #set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${TMOE_VNC_PASSWD_FILE}"
     set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
@@ -150,6 +152,7 @@ start_tmoe_xvnc() {
     . ${XSESSION_FILE} &>/dev/null &
     start_win10_tigervnc
     exit 0
+    #/bin/Xtigervnc :2 -desktop moe-nuc:2 -auth /root/.Xauthority -geometry 1900x1200 -depth 24 -rfbwait 30000 -rfbauth /root/.vnc/passwd -rfbport 5902 -pn -localhost -SecurityTypes VncAuth
 }
 ##############
 source_tmoe_dbus_daemon() {
