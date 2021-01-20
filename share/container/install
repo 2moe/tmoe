@@ -129,6 +129,7 @@ printf "${RESET}"
 TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
+TMOE_PROOT_PROC_GIT="https://gitee.com/ak2/proot_proc"
 ###########
 cat <<-EOF
 	現在可公開的情報:
@@ -202,8 +203,14 @@ esac
 ##################
 CURRENT_TMOE_DIR=$(pwd)
 if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
-	if [ ! -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
-		aria2c --console-log-level=warn --no-conf -d ${CONFIG_FOLDER} -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
+	if [ ! -s "${CONFIG_FOLDER}/proot_proc/proc.tar.xz" ]; then
+		cd ${CONFIG_FOLDER}
+		[[ ! -e proot_proc ]] || rm -rfv proot_proc
+		git clone --depth=1 ${TMOE_PROOT_PROC_GIT} proot_proc
+	fi
+	if [ ! -s "proot_proc/proc.tar.xz" ]; then
+		mkdir -pv proot_proc
+		aria2c --console-log-level=warn --no-conf -d proot_proc -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
 	fi
 	cd ${DEBIAN_CHROOT}
 	if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
