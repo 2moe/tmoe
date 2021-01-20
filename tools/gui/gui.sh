@@ -37,6 +37,7 @@ gui_main() {
         modify_xsdl_conf
         ;;
     --vncpasswd) set_vnc_passwd ;;
+    --choose-vnc-port) choose_vnc_port_5902_or_5903 ;;
     --fix-dbus) fix_vnc_dbus_launch ;;
     *) install_gui ;;
     esac

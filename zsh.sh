@@ -92,7 +92,8 @@ set_your_vnc_passwd() {
 	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-	./tool.sh -passwd
+	${TMOE_GIT_DIR}/tool.sh -passwd
+	${TMOE_GIT_DIR}/tool.sh --choose-vnc-port
 	whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
 }
 do_you_want_to_configure_tmoe_zsh() {

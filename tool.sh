@@ -32,6 +32,7 @@ main() {
 		source ${TMOE_TOOL_DIR}/gui/gui.sh --vncpasswd
 		check_win10x_icon
 		;;
+	--choose-vnc-port) source ${TMOE_TOOL_DIR}/gui/gui.sh --choose-vnc-port ;;
 	h | -h | --help)
 		cat <<-'EOF'
 			-ppa     --添加ppa软件源(add ppa source)   
@@ -91,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4143,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4144,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
