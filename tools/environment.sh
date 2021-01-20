@@ -118,9 +118,9 @@ grep_theme_model_01() {
     check_theme_folder
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
-    THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '\.deb' | grep "${GREP_NAME}" | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+    THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL} | grep '\.deb' | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
     if [[ -z ${THE_LATEST_THEME_VERSION} ]]; then
-        THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | grep '\.deb' | grep "${GREP_NAME}" | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+        THE_LATEST_THEME_VERSION="$(curl -L ${THEME_URL_02} | grep '\.deb' | grep "${GREP_NAME}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
     fi
     download_theme_deb_and_extract_01
 }
