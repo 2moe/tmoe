@@ -258,8 +258,8 @@ choose_lxde_distro() {
 choose_lxqt_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
 		"1" "🌉 Archlinux-latest" \
-		"2" "🍥 Debian-sid" \
-		"3" "🍛 Ubuntu-dev" \
+		"2" "🍛 Ubuntu-dev" \
+		"3" "🍥 Debian-sid" \
 		"4" "👒 Fedora-rawhide" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
@@ -276,7 +276,7 @@ choose_lxqt_distro() {
 		;;
 	2)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_debian_sid_env ;;
+		amd64 | arm64) set_ubuntu_dev_env ;;
 		*)
 			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXQT桌面的自动构建任务。"
 			distro_does_not_support
@@ -285,7 +285,7 @@ choose_lxqt_distro() {
 		;;
 	3)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
+		amd64 | arm64) set_debian_sid_env ;;
 		*)
 			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXQT桌面的自动构建任务。"
 			distro_does_not_support
@@ -298,9 +298,9 @@ choose_lxqt_distro() {
 choose_xfce_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
 		"1" "🌉 Archlinux-latest" \
-		"2" "🍥 Debian-sid" \
+		"2" "🍛 Ubuntu-dev" \
 		"3" "Manjaro-stable" \
-		"4" "🍛 Ubuntu-dev" \
+		"4" "🍥 Debian-sid" \
 		"5" "👒 Fedora-rawhide" \
 		"6" "🏔️ Alpine-edge" \
 		"0" "🌚 Return to previous menu" \
@@ -308,7 +308,15 @@ choose_xfce_distro() {
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1) set_arch_latest_env ;;
-	2) set_debian_sid_env ;;
+	2)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_ubuntu_dev_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
 	3)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_manjaro_stable_env ;;
@@ -318,15 +326,7 @@ choose_xfce_distro() {
 			;;
 		esac
 		;;
-	4)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
-		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
-			distro_does_not_support
-			;;
-		esac
-		;;
+	4) set_debian_sid_env ;;
 	5) set_fedora_rawhide_env ;;
 	6) set_alpine_edge_env ;;
 	esac
