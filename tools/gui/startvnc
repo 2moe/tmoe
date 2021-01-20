@@ -8,6 +8,8 @@ TMOE_VNC_DISPLAY_NUMBER=2
 #若显示编号为2,则vnc端口为$((5900+2))=5902。 If the display number=2,then vnc port=5902.
 VNC_SERVER=tiger
 #服务端可选tiger或tight。 you can choose tiger or tight.
+KDE_PLASMA_WAYLAND=false
+#你需要先安装plasma-wayland，然后才能将此选项值修改为true。Arch/Manjaro: pacman -Syu plasma-wayland-session;debian/ubuntu: apt install plasma-workspace-wayland
 export USER="$(whoami)"
 ########################
 RED=$(printf '\033[31m')
@@ -174,7 +176,12 @@ start_tmoe_xvnc() {
     set -- "${XVNC_BIN}" "${@}"
     "${@}" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
-    . ${XSESSION_FILE} &>/dev/null &
+    if [[ KDE_PLASMA_WAYLAND = true && -n $(command -v startplasma-wayland) ]]; then
+        konsole
+        startplasma-wayland &
+    else
+        . ${XSESSION_FILE} &>/dev/null &
+    fi
     start_win10_tigervnc
     exit 0
     #/bin/Xtigervnc :2 -desktop moe-nuc:2 -auth /root/.Xauthority -geometry 1900x1200 -depth 24 -rfbwait 30000 -rfbauth /root/.vnc/passwd -rfbport 5902 -pn -localhost -SecurityTypes VncAuth
