@@ -204,8 +204,8 @@ esac
 ##################
 CURRENT_TMOE_DIR=$(pwd)
 if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
-	if [ ! -s "${CONFIG_FOLDER}/proot_proc/proc.tar.xz" ]; then
-		cd ${CONFIG_FOLDER}
+	cd ${CONFIG_FOLDER}
+	if [ ! -s "proot_proc/proc.tar.xz" ]; then
 		[[ ! -e proot_proc ]] || rm -rfv proot_proc
 		git clone --depth=1 ${TMOE_PROOT_PROC_GIT} proot_proc || git clone --depth=1 ${TMOE_PROOT_PROC_GIT_02} proot_proc
 	fi
