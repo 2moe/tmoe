@@ -1131,9 +1131,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #printf "%s\n" "检测到您使用的是Kali系统"
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-"EndOfSourcesList"
-				deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
-				deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
-
 				#​Kali has various different branches to choose from (please take the time to read which one would be the best option for your setup), and you may be able to switch or include additional repositories.​kali-rolling (Default & frequently updated)​.
 				#deb http://http.kali.org/kali kali-rolling main non-free contrib
 				#​kali-last-snapshot (Point release so more “stable” & the “safest”)​
@@ -1141,6 +1138,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				#deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 				#kali-experimental (Packages which are under testing - often used with the rolling repository)​
 				#deb http://http.kali.org/kali kali-experimental main non-free contrib
+				deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
+				deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 			EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
 	}
@@ -1149,12 +1148,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#默认为ports源，armbian无需使用sed进行替换。
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
+				# proposed为预发布软件源，不建议启用
+				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
 				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
 				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
 				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
-				# proposed为预发布软件源，不建议启用
-				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 			EndOfFile
 	    touch ~/.hushlogin
 		touch /home/ubuntu/.hushlogin 2>/dev/null
