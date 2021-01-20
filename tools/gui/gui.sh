@@ -2283,6 +2283,7 @@ install_kde_plasma5_desktop() {
         ;;
     esac
     ####################
+    [[ ${PLASMA_WAYLAND_DEPENDENCIES} != true ]] || plasma_wayland_env
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         beta_features_quick_install
     else
@@ -2290,10 +2291,10 @@ install_kde_plasma5_desktop() {
     fi
 
     if [[ ${PLASMA_WAYLAND_DEPENDENCIES} = true ]]; then
-        plasma_wayland_env
         printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${PLASMA_WAYLAND_DEPENDENCIES}${RESET}"
         ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES}
     fi
+
     apt_purge_libfprint
     configure_vnc_xstartup
 }
