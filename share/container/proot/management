@@ -427,6 +427,8 @@ install_weekly_build_container() {
 			rm -f ${CONFIG_FOLDER}/build-latest01.txt
 		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt; then
 			ROOTFS_VERSION='latest02'
+		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest02.txt; then
+			ROOTFS_VERSION='latest01'
 		else
 			LATEST_01_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}')"
 			LATEST_02_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}')"
