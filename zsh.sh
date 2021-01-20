@@ -96,8 +96,8 @@ set_your_vnc_passwd() {
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	mkdir -pv /usr/local/bin
-	cp -fv tools/gui/startvnc tools/gui/startx11vnc tools/gui/startxsdl tools/gui/tigervnc tools/gui/tightvnc /usr/local/bin
-	chmod a+x -v start*
+	cp -fv tools/gui/startvnc tools/gui/stopvnc tools/gui/startx11vnc tools/gui/startxsdl tools/gui/tigervnc tools/gui/tightvnc /usr/local/bin
+	chmod a+x /usr/local/bin/start*
 	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
 		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
 	fi
