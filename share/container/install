@@ -1672,9 +1672,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	####################
 	if [[ -n $(command -v apt) ]];then
 		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
-		apt install -y apt-utils 2>/dev/null
-		apt install -y curl wget
-		apt install -y ca-certificates 2>/dev/null
+		[[ -n $(command -v apt-extracttemplates) ]] || apt install -y apt-utils 2>/dev/null
+		for i in curl wget;do
+			[[ -n $(command -v ${i}) ]] || apt install -y ${i}
+		done 
+		[[ -e /usr/sbin/update-ca-certificates ]] || apt install -y ca-certificates 2>/dev/null
 		if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
 	      apt install -y apt-transport-https 2>/dev/null
 		fi
