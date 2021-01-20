@@ -1,4 +1,6 @@
-FROM amd64/ubuntu:devel
+FROM scratch
+ADD ubuntu.tar /
+#FROM amd64/ubuntu:devel 
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
