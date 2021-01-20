@@ -5238,7 +5238,7 @@ choose_vnc_port_5902_or_5903() {
     X11VNC_PORT=5902
     DISPLAY_PORT=2
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-        if (whiptail --title "VNC PORT" --yes-button "5902" --no-button "5903" --yesno "請選擇VNC端口✨\nPlease choose the vnc port" 0 50); then
+        if (whiptail --title "VNC PORT" --yes-button "5902" --no-button "5903" --yesno "請選擇VNC端口✨\nPlease choose a vnc port" 0 50); then
             X11VNC_PORT=5902
             DISPLAY_PORT=2
         else
