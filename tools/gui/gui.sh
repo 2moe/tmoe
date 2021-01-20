@@ -4782,7 +4782,9 @@ configure_startxsdl() {
 configure_startvnc() {
     cd /usr/local/bin
     #rm -f startvnc
-    cp -f ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ./
+    cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ./
+    cp -fv ${TMOE_TOOL_DIR}/gui/tightvnc ${TMOE_TOOL_DIR}/gui/tigervnc ./
+    chmod a+x ./*vnc
 }
 ###############
 fix_non_root_permissions() {
@@ -4882,7 +4884,7 @@ modify_to_xfwm4_breeze_theme() {
 which_vnc_server_do_you_prefer() {
     case "${REMOTE_DESKTOP_SESSION_01}" in
     startplasma* | startlxqt | gnome* | cinnamon* | startdde | ukui* | budgie*)
-        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n检测到桌面的session/startup文件为${REMOTE_DESKTOP_SESSION_01},请选择tiger！\nPlease choose tiger vncserver！" 0 50); then
+        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "检测到桌面的session/startup文件为${REMOTE_DESKTOP_SESSION_01},请选择tiger！\nPlease choose tiger vncserver！" 0 50); then
             tiger_vnc_variable
             modify_to_xfwm4_breeze_theme
         else
@@ -4890,7 +4892,7 @@ which_vnc_server_do_you_prefer() {
         fi
         ;;
     *)
-        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "您想要选择哪个VNC服务端?(っ °Д °)\n尽管tight可能更加流畅,但是tiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等\nAlthough tiger can show more special effects,tight may be smoother.\nIt is recommended that you use tiger." 0 50); then
+        if (whiptail --title "Which vnc server do you prefer" --yes-button 'tiger' --no-button 'tight' --yesno "请选择startvnc命令所启动的VNC服务端?(っ °Д °)\n尽管tight可能更加流畅,但是tiger比tight支持更多的特效和选项,例如鼠标指针和背景透明等\nAlthough tiger can show more special effects,tight may be smoother.\nIt is recommended that you use tiger." 0 50); then
             tiger_vnc_variable
             modify_to_xfwm4_breeze_theme
         else
@@ -5150,7 +5152,11 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" "若您的宿主机为${YELLOW}Win10${RESET},则在${PURPLE}WSL2${RESET}(非容器环境)下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Tigervnc viewer(win_x64)${RESET}客户端和tigervnc服务端，并自动连接。此外，还将启动windows版powershell,并调用pulseaudio(win_x86)音频服务+进程守护脚本。"
     printf '%s\n' '------------------------'
-    printf "%s\n" "${GREEN}tightvnc/tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
+    if [[ $(command -v apt-get) ]]; then
+        printf "%s\n" "You can type ${GREEN}tightvnc${RESET} to ${YELLOW}start ${BLUE}tightvncserver${RESET},type ${GREEN}tigervnc${RESET} to ${BLUE}tigervncserver${RESET} it."
+        printf "%s\n" "输入${GREEN}tightvnc${RESET}${YELLOW}启动${BLUE}tightvnc服务端${RESET}，输入${GREEN}tigervnc${RESET}${YELLOW}启动${BLUE}tigervnc服务端${RESET}。"
+    fi
+    printf "%s\n" "${GREEN}tightvnc+tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
     printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc${RESET} & ${PURPLE}stopvnc${RESET}"
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
@@ -5220,14 +5226,22 @@ do_you_want_to_configure_novnc() {
     [[ ! -e novnc ]] || rm -f novnc 2>/dev/null
     cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
     ln -sf novnc startnovnc
-    printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
+    if [[ $(command -v apt-get) ]]; then
+        printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, tightvnc, tigervnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
+    else
+        printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
+    fi
     if [[ ! -s "${TMOE_LINUX_DIR}/achievement01" ]]; then
         printf "%s\n" "Congratulations！恭喜您获得新成就: ${BOLD}${YELLOW}vnc大师${RESET}"
         printf "%s\n" "由于您获得了该成就，故解锁了本工具的vnc(所有可配置)选项。"
         printf "%s\n" "vnc master" >${TMOE_LINUX_DIR}/achievement01
     fi
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-        whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: startvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+        if [[ $(command -v apt-get) ]]; then
+            whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,tightvnc,tigervnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 12 55
+        else
+            whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+        fi
     fi
     printf "%s\n" "${YELLOW}*°▽°* ${RESET}You are a ${BOLD}${BLUE}VNC Master${RESET}！"
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"

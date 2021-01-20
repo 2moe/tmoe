@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+########################
+bash -c "$(sed -E 's@^(VNC_SERVER=)@\1tiger@' $(command -v startvnc))"

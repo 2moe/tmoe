@@ -138,6 +138,7 @@ start_tmoe_xvnc() {
     case ${VNC_SERVER} in
     tight* | Tight*)
         XVNC_BIN='Xtightvnc'
+        TMOE_VNC_BIN='tight'
         if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver${RESET}"
             sudo apt install tightvncserver || su -c "apt install -y tightvncserver"
@@ -145,18 +146,21 @@ start_tmoe_xvnc() {
         ;;
     tiger* | Tiger* | *)
         XVNC_BIN='Xtigervnc'
+        TMOE_VNC_BIN='tiger'
         if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common${RESET}"
             sudo apt install tigervnc-standalone-server tigervnc-common || su -c "apt install -y tigervnc-standalone-server"
             [[ -n $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
-            set -- "${@}" "-ZlibLevel=0"
-            set -- "${@}" "-rfbwait" "30000"
-            set -- "${@}" "-pn"
         fi
         ;;
     esac
     . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
     #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]
+    if [[ ${TMOE_VNC_BIN} = tiger ]]; then
+        set -- "${@}" "-ZlibLevel=0"
+        set -- "${@}" "-rfbwait" "30000"
+        set -- "${@}" "-pn"
+    fi
     set -- "${@}" "-a" "5"
     set -- "${@}" "-wm"
     set -- "${@}" "-alwaysshared"

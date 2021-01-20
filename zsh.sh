@@ -96,14 +96,18 @@ set_your_vnc_passwd() {
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	mkdir -pv /usr/local/bin
-	cp -fv tools/gui/startvnc tools/gui/startx11vnc tools/gui/startxsdl /usr/local/bin
+	cp -fv tools/gui/startvnc tools/gui/startx11vnc tools/gui/startxsdl tools/gui/tigervnc tools/gui/tightvnc /usr/local/bin
 	chmod a+x -v start*
 	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
 		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
 	fi
 	${TMOE_GIT_DIR}/tool.sh -passwd
 	${TMOE_GIT_DIR}/tool.sh --choose-vnc-port
-	whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+	if [[ $(command -v apt-get) ]]; then
+		whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,tightvnc,tigervnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 12 55
+	else
+		whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+	fi
 }
 do_you_want_to_configure_tmoe_zsh() {
 	cd ${HOME}
