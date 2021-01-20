@@ -2193,14 +2193,32 @@ choose_arch_kde_lite_or_full() {
     if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde全家桶' 0 0); then
         DEPENDENCY_01="plasma-desktop xorg konsole discover"
     else
-        DEPENDENCY_01="plasma-meta plasma-wayland-session kde-applications-meta sddm sddm-kcm"
+        DEPENDENCY_01="plasma-meta kde-applications-meta sddm sddm-kcm"
+    fi
+    choose_plasma_wayland_or_x11
+}
+choose_plasma_wayland_or_x11() {
+    if (whiptail --title "wayland or x11" --yes-button "wayland" --no-button "x11" --yesno 'Do you want to choose plasma-wayland or x11?' 0 0); then
+        KDE_PLASMA_WAYLAND=true
     fi
 }
+plasma_wayland_env() {
+    REMOTE_DESKTOP_SESSION_01='startplasma-wayland'
+    REMOTE_DESKTOP_SESSION_02='startplasma-x11'
+    case ${LINUX_DISTRO} in
+    arch) PLASMA_WAYLAND_DEPENDENCIES="plasma-wayland-session" ;;
+    debian) PLASMA_WAYLAND_DEPENDENCIES="plasma-workspace-wayland" ;;
+    redhat) PLASMA_WAYLAND_DEPENDENCIES="plasma-workspace-wayland" ;;
+    esac
+    printf "%s\n" "${YELLOW}${LINUX_DISTRO}：${BLUE}${PLASMA_WAYLAND_DEPENDENCIES}${RESET}"
+}
+################
 install_kde_plasma5_desktop() {
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         kde_warning
         do_you_want_to_install_fcitx4
     fi
+    KDE_PLASMA_WAYLAND=false
     REMOTE_DESKTOP_SESSION_01='startplasma-x11'
     REMOTE_DESKTOP_SESSION_02='startkde'
     DEPENDENCY_01="plasma-desktop"
@@ -2212,6 +2230,14 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01="kde-plasma-desktop"
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_kde_or_kubuntu
+            if ! grep -qi 'Bionic|Buster|deepin|uos\.com|jessie|stretch' /etc/os-release; then
+                choose_plasma_wayland_or_x11
+            fi
+        else
+            KDE_PLASMA_WAYLAND=true
+        fi
+        if grep -qi 'Bionic|Buster' /etc/os-release; then
+            KDE_PLASMA_WAYLAND=false
         fi
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -2222,12 +2248,23 @@ install_kde_plasma5_desktop() {
         #dnf groupinstall -y "KDE" || yum groupinstall -y "KDE"
         #dnf install -y sddm || yum install -y sddm
         DEPENDENCY_01='@KDE'
+        case ${REDHAT_DISTRO} in
+        fedora)
+            if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+                choose_plasma_wayland_or_x11
+            else
+                KDE_PLASMA_WAYLAND=true
+            fi
+            ;;
+        esac
         ;;
     "arch")
         # sddm sddm-kcm
         DEPENDENCY_01="plasma-desktop xorg konsole discover"
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_arch_kde_lite_or_full
+        else
+            KDE_PLASMA_WAYLAND=true
         fi
         ;;
     "void") DEPENDENCY_01="kde" ;;
@@ -2250,6 +2287,12 @@ install_kde_plasma5_desktop() {
         beta_features_quick_install
     else
         different_distro_software_install
+    fi
+
+    if [[ ${PLASMA_WAYLAND_DEPENDENCIES} = true ]]; then
+        plasma_wayland_env
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${PLASMA_WAYLAND_DEPENDENCIES}${RESET}"
+        ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES}
     fi
     apt_purge_libfprint
     configure_vnc_xstartup

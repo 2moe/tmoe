@@ -177,7 +177,7 @@ start_tmoe_xvnc() {
     "${@}" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     if [[ KDE_PLASMA_WAYLAND = true && -n $(command -v startplasma-wayland) ]]; then
-        konsole
+        konsole &>/dev/null &
         startplasma-wayland &
     else
         . ${XSESSION_FILE} &>/dev/null &
