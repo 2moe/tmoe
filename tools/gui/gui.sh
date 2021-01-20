@@ -4997,14 +4997,14 @@ remove_udisk_and_gvfs() {
 first_configure_startvnc() {
     #卸载udisks2，会破坏mate和plasma的依赖关系。
     remove_udisk_and_gvfs
+    configure_startvnc
+    configure_startxsdl
+    chmod a+x -v startvnc stopvnc startxsdl
     if [[ ${LINUX_DISTRO} = debian ]]; then
         VNC_SERVER=tigervnc
         tiger_vnc_variable
         case_debian_distro_and_install_vnc
     fi
-    configure_startvnc
-    configure_startxsdl
-    chmod a+x -v startvnc stopvnc startxsdl
     #if [ "${LINUX_DISTRO}" != "debian" ]; then
     #sed -i 's@--exit-with-session@@' ${XSESSION_FILE}
     #/usr/local/bin/startxsdl
