@@ -4828,8 +4828,8 @@ configure_startxsdl() {
 configure_startvnc() {
     cd /usr/local/bin
     #rm -f startvnc
-    cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ./
-    cp -fv ${TMOE_TOOL_DIR}/gui/tightvnc ${TMOE_TOOL_DIR}/gui/tigervnc ./
+    cp -f ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ./
+    cp -f ${TMOE_TOOL_DIR}/gui/tightvnc ${TMOE_TOOL_DIR}/gui/tigervnc ./
     chmod a+x ./*vnc
 }
 ###############
@@ -4866,21 +4866,21 @@ debian_install_vnc_server() {
     debian)
         #debian_remove_vnc_server
         #printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
+        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
         if [[ ! -n $(command -v Xtigervnc) ]]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
             for i in tigervnc-standalone-server tigervnc-viewer; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
 
+        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
         if [[ ! -n $(command -v Xtightvnc) ]]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver${RESET}"
             for i in tightvncserver; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
+        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
         if [ ! -e "/usr/share/fonts/X11/Type1" ]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
             for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
