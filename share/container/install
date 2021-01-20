@@ -214,8 +214,8 @@ if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
 		aria2c --console-log-level=warn --no-conf -d proot_proc -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
 	fi
 	cd ${DEBIAN_CHROOT}
-	if [ -e "${CONFIG_FOLDER}/proc.tar.xz" ]; then
-		tar -Jxf ${CONFIG_FOLDER}/proc.tar.xz 2>/dev/null
+	if [ -e "${CONFIG_FOLDER}/proot_proc/proc.tar.xz" ]; then
+		tar -Jxf ${CONFIG_FOLDER}/proot_proc/proc.tar.xz 2>/dev/null
 	fi
 else
 	cd ${DEBIAN_CHROOT}
