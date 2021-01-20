@@ -1938,8 +1938,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cp -f /tmp/resolv.conf /etc
 		fi
 		[[ $(command -v ip) ]] || dnf install -y iproute
-			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils passwd findutils man-db${RESET}"
-			dnf install -y --skip-broken dnf-utils passwd findutils man-db
+			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils passwd findutils man-db glibc-all-langpacks${RESET}"
+			dnf install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks
 		if [[ ! -n $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}procps-ng procps-ng-i18n${RESET}"
 			dnf install -y --skip-broken procps-ng procps-ng-i18n
@@ -1947,7 +1947,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
 		#glibc-all-langpacks
 		#dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
-		dnf install -y --skip-broken glibc-all-langpacks
 		[[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
 	elif grep -q 'CentOS' /etc/os-release; then
 		[[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
@@ -2005,7 +2004,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 ENDOFbashPROFILE
 #cp .profile .zlogin
-echo "bash ~/.profile" >.zlogin
+printf "%s\n" "bash ~/.profile" >.zlogin
 #${TMOE_CHROOT_PREFIX} mv -vf ${DEBIAN_CHROOT}/usr/bin/zsh ${DEBIAN_CHROOT}/usr/bin/zsh-01
 #${TMOE_CHROOT_PREFIX} mv -vf ${DEBIAN_CHROOT}/bin/zsh ${DEBIAN_CHROOT}/usr/bin/zsh-01
 #####################

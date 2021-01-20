@@ -40,6 +40,8 @@ auto_remove_proot_xfce4_power_manager() {
 			pacman -Rsc --noconfirm xfce4-power-manager
 		elif [[ -n $(command -v dnf) ]]; then
 			dnf remove -y xfce4-power-manager
+		elif [[ -n $(command -v apk) ]]; then
+			apk del xfce4-power-manager
 		fi
 		;;
 	esac
@@ -49,6 +51,7 @@ set_tmoe_zsh_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	if [[ -e /.dockerenv ]]; then
+		change_shell_to_bin_zsh
 		if [[ ! -n $(command -v Xvnc) && -n $(command -v apt-get) ]]; then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install ${YELLOW}-y ${BLUE}tigervnc-standalone-server${RESET}"
 			apt install -y tigervnc-standalone-server
@@ -281,6 +284,11 @@ curl_tmoe_zsh() {
 	chmod 777 ${TMOE_ZSH_TOOL_BIN}
 	bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
 }
+change_shell_to_bin_zsh() {
+	if egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
+		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
+	fi
+}
 configure_tmoe_zsh() {
 	#此处不要source脚本
 	TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
@@ -291,14 +299,10 @@ configure_tmoe_zsh() {
 	else
 		curl_tmoe_zsh
 	fi
-
 	if [[ ! $(command -v zsh) ]]; then
 		curl_tmoe_zsh
 	fi
-
-	if egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
-		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
-	fi
+	change_shell_to_bin_zsh
 }
 ############
 creat_zlogin_file() {

@@ -1625,6 +1625,7 @@ install_xfce4_desktop() {
             ;;
         arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
         redhat) dnf remove -y xfce4-power-manager ;;
+        alpine) apk del xfce4-power-manager ;;
         esac
         ;;
     esac
