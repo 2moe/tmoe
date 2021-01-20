@@ -2198,7 +2198,9 @@ choose_arch_kde_lite_or_full() {
     choose_plasma_wayland_or_x11
 }
 choose_plasma_wayland_or_x11() {
-    if (whiptail --title "wayland or x11" --yes-button "wayland" --no-button "x11" --yesno 'Do you want to choose plasma-wayland or x11?' 0 0); then
+    if (whiptail --title "x11 or wayland" --yes-button "x11" --no-button "wayland" --yesno 'Do you want to choose x11 or plasma-wayland?' 0 0); then
+        KDE_PLASMA_WAYLAND=false
+    else
         KDE_PLASMA_WAYLAND=true
     fi
 }
@@ -2234,7 +2236,7 @@ install_kde_plasma5_desktop() {
                 choose_plasma_wayland_or_x11
             fi
         else
-            KDE_PLASMA_WAYLAND=true
+            KDE_PLASMA_WAYLAND=false
         fi
         if grep -qi 'Bionic|Buster' /etc/os-release; then
             KDE_PLASMA_WAYLAND=false
@@ -2253,7 +2255,7 @@ install_kde_plasma5_desktop() {
             if [[ ${AUTO_INSTALL_GUI} != true ]]; then
                 choose_plasma_wayland_or_x11
             else
-                KDE_PLASMA_WAYLAND=true
+                KDE_PLASMA_WAYLAND=false
             fi
             ;;
         esac
@@ -2264,7 +2266,7 @@ install_kde_plasma5_desktop() {
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_arch_kde_lite_or_full
         else
-            KDE_PLASMA_WAYLAND=true
+            KDE_PLASMA_WAYLAND=false
         fi
         ;;
     "void") DEPENDENCY_01="kde" ;;
