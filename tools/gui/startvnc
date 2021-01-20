@@ -12,6 +12,7 @@ BLUE=$(printf '\033[34m')
 BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
+printf "%s\n" "Current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
 stopvnc -non-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"

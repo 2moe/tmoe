@@ -16,7 +16,7 @@ BLUE=$(printf '\033[34m')
 BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "x11" "..."
-printf "%s\n" "The pulseaudio server is ${BLUE}${DISPLAY}${RESET}"
+printf "%s\n" "The pulseaudio server is ${BLUE}${PULSE_SERVER}${RESET}"
 printf "%s\n" "The display is ${BLUE}${DISPLAY}${RESET}"
 stopvnc -non-stop-dbus 2>/dev/null
 ###############
