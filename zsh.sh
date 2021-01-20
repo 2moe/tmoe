@@ -92,6 +92,9 @@ do_you_want_to_delete_the_zsh_script_file() {
 }
 set_your_vnc_passwd() {
 	cd ${TMOE_GIT_DIR}
+	mkdir -pv /usr/local/bin
+	cp -fv tools/gui/startvnc tools/gui/startx11vnc tools/gui/startxsdl /usr/local/bin
+	chmod a+x -v start*
 	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
 	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
 		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
