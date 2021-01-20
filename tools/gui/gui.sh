@@ -2292,7 +2292,9 @@ install_kde_plasma5_desktop() {
 
     if [[ ${PLASMA_WAYLAND_DEPENDENCIES} = true ]]; then
         printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${PLASMA_WAYLAND_DEPENDENCIES}${RESET}"
-        ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES}
+        if [[ ! -n $(command -v startplasma-wayland) ]]; then
+            ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES}
+        fi
     fi
 
     apt_purge_libfprint
