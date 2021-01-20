@@ -4950,7 +4950,7 @@ which_vnc_server_do_you_prefer() {
         fi
         ;;
     esac
-    case_debian_distro_and_install_vnc
+    [[ -z ${VNC_SERVER} ]] || sed -i -E "s@^(VNC_SERVER)=.*@\1=${VNC_SERVER}@" $(command -v startvnc)
 }
 ###################
 case_debian_distro_and_install_vnc() {
@@ -4997,7 +4997,11 @@ remove_udisk_and_gvfs() {
 first_configure_startvnc() {
     #卸载udisks2，会破坏mate和plasma的依赖关系。
     remove_udisk_and_gvfs
-    [[ ${LINUX_DISTRO} != debian ]] || case_debian_distro_and_install_vnc
+    if [[ ${LINUX_DISTRO} = debian ]]; then
+        VNC_SERVER=tigervnc
+        tiger_vnc_variable
+        case_debian_distro_and_install_vnc
+    fi
     configure_startvnc
     configure_startxsdl
     chmod a+x -v startvnc stopvnc startxsdl
@@ -5010,9 +5014,6 @@ first_configure_startvnc() {
         case ${LINUX_DISTRO} in
         debian) which_vnc_server_do_you_prefer ;;
         esac
-    else
-        tiger_vnc_variable
-        case_debian_distro_and_install_vnc
     fi
     #fi
     ######################
