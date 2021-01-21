@@ -96,6 +96,7 @@ tmoe_main() {
 	ro) DISTRO_CODE='rolling' ;;
 	s) DISTRO_CODE='sid' ;;
 	r) DISTRO_CODE='rolling' ;;
+	raw) DISTRO_CODE='rawhide' ;;
 	n | none) DISTRO_CODE='' ;;
 	x | amd64 | x64) ARCH_TYPE='amd64' ;;
 	a | aarch64 | arm64) ARCH_TYPE='arm64' ;;
