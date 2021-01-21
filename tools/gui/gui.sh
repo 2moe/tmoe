@@ -4866,11 +4866,10 @@ debian_install_vnc_server() {
             done
         fi
         printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
-        if [ ! -e "/usr/share/fonts/X11/Type1" ]; then
-            for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
-                apt install -y ${i} || aptitude install -y ${i}
-            done
-        fi
+        for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
+            apt install -y ${i} || aptitude install -y ${i}
+        done
+
         if [[ -e "/usr/share/fonts/X11/Type1" && ! -e /usr/share/fonts/X11/Speedo ]]; then
             ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
         fi
