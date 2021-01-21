@@ -10,6 +10,8 @@ ENV HOME=/root \
 RUN dnf update -y \
     ; dnf install -y --skip-broken glibc-all-langpacks glibc-minimal-langpack iproute lolcat newt systemd dnf-utils passwd findutils man-db procps-ng procps-ng-i18n tar hostname neofetch \
     ; dnf install -y --skip-broken newt aria2 zstd curl wget systemd \
+    ; mkdir -p /run/systemd \
+    ; printf "%s\n" "docker" > /run/systemd/container \
     ; cd /tmp \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_automatic_configure \

@@ -257,24 +257,15 @@ choose_lxde_distro() {
 }
 choose_lxqt_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🌉 Archlinux-latest" \
-		"2" "🍛 Ubuntu-dev" \
-		"3" "🍥 Debian-sid" \
-		"4" "👒 Fedora-rawhide" \
+		"1" "🍛 Ubuntu-dev" \
+		"2" "🍥 Debian-sid" \
+		"3" "👒 Fedora-rawhide" \
+		"4" "🌉 Archlinux-latest" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_arch_latest_env ;;
-		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXQT桌面的自动构建任务。"
-			distro_does_not_support
-			;;
-		esac
-		;;
-	2)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_ubuntu_dev_env ;;
 		*)
@@ -283,7 +274,7 @@ choose_lxqt_distro() {
 			;;
 		esac
 		;;
-	3)
+	2)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_debian_sid_env ;;
 		*)
@@ -292,7 +283,16 @@ choose_lxqt_distro() {
 			;;
 		esac
 		;;
-	4) set_fedora_rawhide_env ;;
+	3) set_fedora_rawhide_env ;;
+	4)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_arch_latest_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXQT桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
 	esac
 }
 choose_xfce_distro() {
