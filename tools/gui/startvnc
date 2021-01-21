@@ -149,11 +149,11 @@ start_tmoe_xvnc() {
     tiger* | Tiger* | *)
         XVNC_BIN='Xtigervnc'
         TMOE_VNC_BIN='tiger'
-        if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common${RESET}"
-            sudo apt install tigervnc-standalone-server tigervnc-common || su -c "apt install -y tigervnc-standalone-server"
-            [[ -n $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
-        fi
+        #if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
+        #    printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common${RESET}"
+        #    sudo apt install tigervnc-standalone-server tigervnc-common || su -c "apt install -y tigervnc-standalone-server"
+        [[ -n $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
+        # fi
         ;;
     esac
     . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
