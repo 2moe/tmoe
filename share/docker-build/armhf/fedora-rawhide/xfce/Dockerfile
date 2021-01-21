@@ -24,6 +24,7 @@ RUN dnf update -y \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
+    ; dnf update -y \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; dnf clean all
 
