@@ -66,3 +66,4 @@ sed -i 's@gitee.com/romkatv/powerlevel10k@github.com/romkatv/powerlevel10k@g' ${
 sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' ${INSTALL_FILE} zsh.sh
 sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' ${INSTALL_FILE} zsh.sh
 #sed -i 's@gitee.com/mo2/linux@github.com/2moe/tmoe-linux@g' ./*sh ./tool/*sh tools/*/*
+sed -i "s@https://gitee.com/mo2/linux/issues/I2EAVQ@https://github.com/2moe/tmoe-linux/issues/22@" share/container/list

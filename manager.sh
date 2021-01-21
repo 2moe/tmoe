@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4179,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4180,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -741,6 +741,7 @@ tmoe_linux_remove_function() {
 }
 report_tmoe_linux_problem() {
 	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_ISSUE_URL}"
+	[[ ! -e /mnt/c/WINDOWS/system32/cmd.exe ]] || /mnt/c/WINDOWS/system32/cmd.exe "start ${TMOE_LINUX_ISSUE_URL}"
 	case ${LINUX_DISTRO} in
 	Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_ISSUE_URL}" ;;
 	*) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_ISSUE_URL}" ;;

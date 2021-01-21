@@ -105,6 +105,7 @@ install_tmoe_weekly_build_edition() {
 			"4" "🌿 mate(the continuation of GNOME 2)" \
 			"5" "🕊️ lxde(lightweight)" \
 			"6" "Weekly schedule" \
+			"7" "Request specific version" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -117,6 +118,7 @@ install_tmoe_weekly_build_edition() {
 			"4" "🌿 mate(the continuation of GNOME 2)" \
 			"5" "🕊️ lxde(轻量级)" \
 			"6" "schedule 自动构建计划日程表" \
+			"7" "request 请求更新/增加版本" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -147,9 +149,19 @@ install_tmoe_weekly_build_edition() {
 		choose_lxde_distro
 		;;
 	6) view_the_schedule ;;
+	7) request_weekly_build_version ;;
 	esac
 	press_enter_to_return
 	install_tmoe_weekly_build_edition
+}
+request_weekly_build_version() {
+	TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues/22"
+	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}"
+	[[ ! -e /mnt/c/WINDOWS/system32/cmd.exe ]] || /mnt/c/WINDOWS/system32/cmd.exe "start ${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}"
+	case ${LINUX_DISTRO} in
+	Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}" ;;
+	*) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}" ;;
+	esac
 }
 set_debian_sid_env() {
 	DISTRO_NAME='debian'
