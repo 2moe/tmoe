@@ -8,6 +8,10 @@ TMOE_VNC_DISPLAY_NUMBER=2
 #若显示编号为2,则vnc端口为$((5900+2))=5902。 If the display number=2,then vnc port=5902.
 VNC_SERVER=tiger
 #服务端可选tiger或tight。 you can choose tiger or tight.
+PIXEL_DEPTH=24
+#像素深度，可选8,16,24和32,默认为24,建议选用24。Specify  the  pixel  depth in bits of the desktop to be created. Default is 24
+ZLIB_LEVEL=0
+#压缩级别,可选0至9,默认为0。Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
 ########################
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
@@ -157,9 +161,11 @@ start_tmoe_xvnc() {
         ;;
     esac
     . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
+    [[ ${ZLIB_LEVEL} =~ ^[0-9]+$ ]] || ZLIB_LEVEL=0
+    [[ ${PIXEL_DEPTH} =~ ^[0-9]+$ ]] || ZLIB_LEVEL=24
     #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
-        set -- "${@}" "-ZlibLevel=0"
+        set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
         set -- "${@}" "-rfbwait" "30000"
         set -- "${@}" "-pn"
     fi
@@ -168,7 +174,7 @@ start_tmoe_xvnc() {
     set -- "${@}" "-alwaysshared"
     set -- "${@}" "-geometry" "${VNC_RESOLUTION}"
     set -- "${@}" "-once"
-    set -- "${@}" "-depth" "24"
+    set -- "${@}" "-depth" "${PIXEL_DEPTH}"
     #set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${TMOE_VNC_PASSWD_FILE}"
     set -- "${@}" "-desktop" "${desktop}"
