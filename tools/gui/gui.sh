@@ -63,6 +63,7 @@ EOF
     case ${DEBIAN_DISTRO} in
     ubuntu)
         apt install -y ^language-pack-zh
+        UBUNTU_DESKTOP=true
         ;;
     esac
     #check_zstd
@@ -88,7 +89,6 @@ EOF
         ;;
     esac
     AUTO_INSTALL_CHROMIUM=true
-    UBUNTU_DESKTOP=true
     mkdir -p ~/.vnc
     printf "please delete the invalid passwd file\n" >~/.vnc/passwd
 }
