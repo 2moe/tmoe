@@ -1236,6 +1236,7 @@ debian_xfce4_extras() {
         ;;
     esac
     if [ $(command -v qt5ct) ]; then
+        [[ -e /etc/environment ]] || touch /etc/environment
         if ! egrep -q '^[^#]*QT_QPA_PLATFORMTHEME=' /etc/environment; then
             printf "%s\n" "export QT_QPA_PLATFORMTHEME=qt5ct" >>/etc/environment
             printf "%s\n" "/etc/environment :export QT_QPA_PLATFORMTHEME=qt5ct"
