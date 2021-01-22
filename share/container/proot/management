@@ -108,6 +108,7 @@ tips_of_check_pid() {
 	printf "${BLOD}${YELLOW}%s${RESET}" "正在检测${DEBIAN_FOLDER}运行中的进程："
 	LSOF_TEMP_FILE="${TMPDIR}/.lsof.tmp"
 	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
+	[[ ! -e ${LSOF_TEMP_FILE}.02 ]] || rm -f ${LSOF_TEMP_FILE}.02
 }
 ##########
 tips_of_kill_pid() {
@@ -134,7 +135,16 @@ kill_chroot_container_process() {
 	tips_of_check_pid
 	su -c "lsof" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")
-	su -c "lsof ${DEBIAN_CHROOT%/}"
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*)
+		su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
+		LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
+		KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@kill -9 @g")
+		printf "%s\n" "If you can not kill these process,try running the following commands."
+		printf "%s\n" "${YELLOW}${KILL_PID_02}${RESET}"
+		;;
+	esac
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
 	#必须在kill掉进程后再umount
