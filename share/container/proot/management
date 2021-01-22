@@ -134,7 +134,7 @@ kill_chroot_container_process() {
 	tips_of_check_pid
 	su -c "lsof" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")
-	sudo su -c "lsof ${DEBIAN_CHROOT%/} 2>/dev/null | egrep -v 'lsof|zsh'"
+	sudo su -c "lsof ${DEBIAN_CHROOT%/}"
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
 	#必须在kill掉进程后再umount
