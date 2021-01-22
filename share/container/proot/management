@@ -131,7 +131,7 @@ kill_chroot_container_process() {
 	#	fi
 	#done
 	tips_of_check_pid
-	su -c "lsof" >${LSOF_TEMP_FILE}
+	su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
@@ -142,7 +142,7 @@ kill_chroot_container_process() {
 kill_proot_container_process() {
 	tips_of_check_pid
 	#EXEC_LSOF=$(lsof 2>/dev/null)
-	lsof 2>/dev/null >${LSOF_TEMP_FILE}
+	lsof ${DEBIAN_CHROOT%/} 2>/dev/null >${LSOF_TEMP_FILE}
 	check_tmoe_container_pid
 	bash -c "${KILL_PID}"
 	tips_of_kill_pid
