@@ -340,7 +340,7 @@ upcompress_deb_file() {
 do_you_want_to_close_the_sandbox_mode() {
     printf "%s\n" "请问您是否需要关闭沙盒模式？"
     printf "%s\n" "若您需要以root权限运行该应用，则需要关闭，否则请保持开启状态。"
-    printf "%s\n" "${YELLOW}Do you need to turn off the sandbox mode?[Y/n]${RESET}"
+    printf "%s\n" "${YELLOW}Do you need to turn off the sandbox mode?${PURPLE}[Y/n]${RESET}"
     printf "%s\n" "Press enter to turn off this mode,type n to cancel."
     printf "%s\n" "按${YELLOW}回车${RESET}键${RED}关闭${RESET}该模式，输${YELLOW}n${RESET}取消"
 }

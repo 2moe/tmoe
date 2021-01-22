@@ -56,7 +56,7 @@ check_current_user_name_and_group() {
 }
 ##########################
 do_you_want_to_continue() {
-    printf "%s\n" "${YELLOW}Do you want to continue?[Y/n]${RESET}"
+    printf "%s\n" "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}"
     printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
     printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     read opt
