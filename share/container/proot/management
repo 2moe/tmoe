@@ -78,18 +78,19 @@ proot_management_menu() {
 ##############################
 #EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
 check_tmoe_container_pid() {
-	#LIST_OPEN_FILES_COUNTS=$(awk '{print $1}' ${LSOF_TEMP_FILE} | grep -c '^lsof')
-	#case ${LIST_OPEN_FILES_COUNTS} in
-	#0)
-	#	LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $1}' | uniq)
-	#	KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@pkill -9 @g")
-	#	;;
-	#*)
-	LIST_OPEN_FILES=$(awk '{print $2}' ${LSOF_TEMP_FILE} | uniq)
-	KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
-	#	;;
-	#esac
-	PROCESS_ID_AND_NAME=$(awk '{print $2,$1}' ${LSOF_TEMP_FILE} | uniq)
+	LIST_OPEN_FILES_COUNTS=$(awk '{print $1}' ${LSOF_TEMP_FILE} | grep -c '^lsof')
+	case ${LIST_OPEN_FILES_COUNTS} in
+	0)
+		LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $1}' | uniq)
+		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@pkill -9 @g")
+		;;
+	*)
+		LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2}' | uniq)
+		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
+		;;
+	esac
+	PROCESS_ID_AND_NAME=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2,$1}' | uniq)
+
 	printf "${PURPLE}"
 	cat <<-EOF
 		${PROCESS_ID_AND_NAME}
@@ -131,8 +132,9 @@ kill_chroot_container_process() {
 	#	fi
 	#done
 	tips_of_check_pid
-	su -c "lsof ${DEBIAN_CHROOT%/}" | sed '1d' >${LSOF_TEMP_FILE}
+	su -c "lsof" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")
+	sudo su -c "lsof ${DEBIAN_CHROOT%/} 2>/dev/null | egrep -v 'lsof|zsh'"
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
 	#必须在kill掉进程后再umount
@@ -142,7 +144,7 @@ kill_chroot_container_process() {
 kill_proot_container_process() {
 	tips_of_check_pid
 	#EXEC_LSOF=$(lsof 2>/dev/null)
-	lsof ${DEBIAN_CHROOT%/} 2>/dev/null | sed '1d' >${LSOF_TEMP_FILE}
+	lsof 2>/dev/null >${LSOF_TEMP_FILE}
 	check_tmoe_container_pid
 	bash -c "${KILL_PID}"
 	tips_of_kill_pid
