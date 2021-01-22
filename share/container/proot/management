@@ -105,7 +105,7 @@ check_tmoe_container_pid() {
 ##################
 tips_of_check_pid() {
 	printf "${GREEN}%s ${YELLOW}%s${RESET}\n" "DETECTING" "PROCESS ID ..."
-	printf "${BLOD}${YELLOW}%s${RESET}" "正在检测${DEBIAN_FOLDER}运行中的进程："
+	printf "${BLOD}${YELLOW}%s${RESET}\n" "正在检测${DEBIAN_FOLDER}运行中的进程："
 	LSOF_TEMP_FILE="${TMPDIR}/.lsof.tmp"
 	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
 	[[ ! -e ${LSOF_TEMP_FILE}.02 ]] || rm -f ${LSOF_TEMP_FILE}.02
@@ -137,9 +137,9 @@ kill_chroot_container_process() {
 
 	su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
 	if [[ $(command -v batcat) ]]; then
-		batcat -ppn -l c ${LSOF_TEMP_FILE}.02
+		batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
 	elif [[ $(command -v bat) ]]; then
-		bat -ppn -l c ${LSOF_TEMP_FILE}.02
+		bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
 	else
 		cat ${LSOF_TEMP_FILE}.02
 	fi
