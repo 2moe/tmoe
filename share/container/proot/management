@@ -133,18 +133,26 @@ kill_chroot_container_process() {
 	#	fi
 	#done
 	tips_of_check_pid
-	su -c "lsof" >${LSOF_TEMP_FILE}
 	#EXEC_LSOF=$(su -c "lsof")
-	case ${LINUX_DISTRO} in
-	Android) ;;
-	*)
-		su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
-		LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
-		KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@kill -9 @g")
+
+	su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
+	if [[ $(command -v batcat) ]]; then
+		batcat -ppn -l c ${LSOF_TEMP_FILE}.02
+	elif [[ $(command -v bat) ]]; then
+		bat -ppn -l c ${LSOF_TEMP_FILE}.02
+	else
+		cat ${LSOF_TEMP_FILE}.02
+	fi
+
+	LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
+	KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@kill -9 @g")
+	if [[ -n ${LIST_OPEN_FILES_02} ]]; then
 		printf "%s\n" "If you can not kill these process,try running the following commands."
-		printf "%s\n" "${YELLOW}${KILL_PID_02}${RESET}"
-		;;
-	esac
+		printf "%s\n" "${GREEN}${KILL_PID_02}${RESET}"
+	fi
+	#此处执行bash -c "${KILL_PID_02}"会导致tmoe-manager退出。
+
+	su -c "lsof" >${LSOF_TEMP_FILE}
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
 	#必须在kill掉进程后再umount
