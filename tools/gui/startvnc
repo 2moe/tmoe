@@ -7,9 +7,9 @@ VNC_RESOLUTION=1440x720
 TMOE_VNC_DISPLAY_NUMBER=2
 #若显示编号为2,则vnc端口为$((5900+2))=5902。 If the display number=2,then vnc port=5902.
 VNC_SERVER=tiger
-#服务端可选tiger或tight。 you can choose tiger or tight.
+#服务端可选tiger或tight。You can choose tiger or tight.
 PIXEL_DEPTH=24
-#像素深度，可选8,16,24和32,默认为24,建议选用24。Specify  the  pixel  depth in bits of the desktop to be created. Default is 24
+#像素深度，可选8,16,24和32,默认为24,建议选用24。Specify  the  pixel  depth in bits of the desktop to be created. Default is 24.
 ZLIB_LEVEL=0
 #压缩级别,可选0至9,默认为0。Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
 ########################
