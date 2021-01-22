@@ -145,7 +145,7 @@ kill_chroot_container_process() {
 	fi
 
 	LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
-	KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@kill -9 @g")
+	KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@${GREEN}sudo ${RED}kill -9${BLUE} @g")
 	if [[ -n ${LIST_OPEN_FILES_02} ]]; then
 		printf "%s\n" "If you can not kill these process,try running the following commands."
 		printf "%s\n" "${GREEN}${KILL_PID_02}${RESET}"
