@@ -161,8 +161,17 @@ start_tmoe_xvnc() {
         ;;
     esac
     . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
-    [[ ${ZLIB_LEVEL} =~ ^[0-9]+$ ]] || ZLIB_LEVEL=0
-    [[ ${PIXEL_DEPTH} =~ ^[0-9]+$ ]] || ZLIB_LEVEL=24
+
+    if [[ ! ${ZLIB_LEVEL} =~ ^[0-9]+$ ]]; then
+        ZLIB_LEVEL=0
+    elif ((${ZLIB_LEVEL} >= 10)); then
+        ZLIB_LEVEL=9
+    fi
+    if [[ ! ${PIXEL_DEPTH} =~ ^[0-9]+$ ]]; then
+        ZLIB_LEVEL=24
+    elif ((${PIXEL_DEPTH} > 32)); then
+        PIXEL_DEPTH=32
+    fi
     #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
