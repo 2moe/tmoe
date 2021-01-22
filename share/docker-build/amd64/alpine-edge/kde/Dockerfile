@@ -11,7 +11,7 @@ RUN apk update \
     ; ln -svf /usr/share/zoneinfo/UTC /etc/localtime \
     ; cd /tmp \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
-    ; bash zsh.sh --tmoe_container_automatic_configure \
+    ; bash zsh.sh --tmoe_container_auto_configure \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \

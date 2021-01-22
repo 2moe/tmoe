@@ -27,7 +27,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; cp -fv git/tools/sources/yay/build_fakeroot /tmp \
     ; cd /tmp \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
-    ; bash zsh.sh --tmoe_container_automatic_configure \
+    ; bash zsh.sh --tmoe_container_auto_configure \
     ; cd /tmp \
     ; sed -i 's@*) #main@2333)@g' tool.sh \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \

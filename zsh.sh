@@ -292,7 +292,7 @@ curl_tmoe_zsh() {
 		wget -O ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
 	fi
 	chmod 777 ${TMOE_ZSH_TOOL_BIN}
-	bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
+	bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
 }
 change_shell_to_bin_zsh() {
 	if egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
@@ -305,7 +305,7 @@ configure_tmoe_zsh() {
 	TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 	if [[ -e "${TMOE_ZSH_TOOL_BIN}" ]]; then
 		chmod a+x -v ${TMOE_ZSH_TOOL_BIN}
-		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_automatic_configure
+		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
 	else
 		curl_tmoe_zsh
 	fi
