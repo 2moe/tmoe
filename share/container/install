@@ -536,6 +536,7 @@ creat_chroot_startup_script() {
 	cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR} 2>/dev/null || sudo cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR}
 	sudo chmod 666 -v ${TMPDIR}/environment
 	printf '%s\n' 'export TMOE_CHROOT=true' >>${TMPDIR}/environment
+	sudo chmod 600 ${TMPDIR}/environment
 	sudo mv ${TMPDIR}/environment ${DEBIAN_CHROOT}/etc/
 	##################
 	#此处若不创建，将有可能导致chromium无法启动。
