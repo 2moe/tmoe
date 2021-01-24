@@ -127,10 +127,15 @@ install_chromium_browser() {
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
             DEPENDENCY_01="chromium-browser/bionic-updates chromium-browser-l10n/bionic-updates chromium-codecs-ffmpeg-extra/bionic-updates"
-            if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
-                ubuntu_install_chromium_browser
+            if grep -q 'Linux Mint' /etc/issue; then
+                DEPENDENCY_01="chromium-browser chromium-codecs-ffmpeg-extra"
+                DEPENDENCY_02="chromium-browser-l10n"
             else
-                check_ubuntu_version_and_install_chromium
+                if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
+                    ubuntu_install_chromium_browser
+                else
+                    check_ubuntu_version_and_install_chromium
+                fi
             fi
             ;;
         esac
