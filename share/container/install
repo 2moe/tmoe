@@ -978,6 +978,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 	fi
 	###############
+	unset TMOE_GITHUB
+	 TMOE_GITHUB='true'
 	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
 	cp -f vnc-autostartup .bash_login
 	if ! grep -q "localhost" /etc/hosts 2>/dev/null; then
@@ -1170,15 +1172,28 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		[[ -z ${VERSION_CODENAME} ]] || sed -i "s@focal@${VERSION_CODENAME}@g" /etc/apt/sources.list
 	}
 	#########################
-	mint_sources_list() {
-	    printf "%s\n" "检测到您使用的是Linux Mint"
-		CHINA_MIRROR='mirrors.huaweicloud.com'
-		SOURCE_LIST=/etc/apt/sources.list
-		cp ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
+	modify_mint_source_list(){
 		sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null
 		sed -i "s@packages.linuxmint.com@${CHINA_MIRROR}/linuxmint@g" ${SOURCE_LIST} 2>/dev/null
 		sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
 		sed -n p ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
+	}
+	mint_sources_list() {
+	    printf "%s\n" "检测到您使用的是Linux Mint"
+		CHINA_MIRROR='mirrors.huaweicloud.com'
+		SOURCE_LIST=/etc/apt/sources.list
+		SOURCE_LIST_02="${SOURCE_LIST}.d/official-package-repositories.list"
+		cp -fv ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
+		if [[ ${TMOE_GITHUB} != true ]]; then
+			modify_mint_source_list
+		fi
+		cp -fv ${SOURCE_LIST_02} ${SOURCE_LIST_02}.bak
+		if [[ ${TMOE_GITHUB} != true ]]; then
+			if [[ -e ${SOURCE_LIST_02} ]];then
+				SOURCE_LIST=${SOURCE_LIST_02}
+				modify_mint_source_list
+			fi
+		fi 
 	}
 	#################################
 	if [[ -e /etc/apt/sources.list ]];then
@@ -1259,9 +1274,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	#################
 	unset TMOE_GITHUB
-	 sed -i 's/^deb/# &/g;s/^##deb/deb/g' /etc/apt/sources.list
 	 TMOE_GITHUB='true'
 	#勿删上面那条注释
+	 sed -i 's/^deb/# &/g;s/^##deb/deb/g' /etc/apt/sources.list
 	##dns
 	[[ ! -e /etc/apt/sources.list ]] || grep -v proposed /etc/apt/sources.list
 	rm -f /etc/resolv.conf
