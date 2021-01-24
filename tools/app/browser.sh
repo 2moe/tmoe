@@ -78,7 +78,7 @@ ubuntu_ppa_chromium() {
 }
 ###############
 check_ubuntu_version_and_install_chromium() {
-    if egrep -q 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
+    if egrep -q 'Focal|Bionic|Eoan Ermine|=tricia|=tina' /etc/os-release; then
         ubuntu_bionic_chromium
     else
         ubuntu_ppa_chromium
@@ -126,6 +126,7 @@ install_chromium_browser() {
         #新版Ubuntu是从snap商店下载chromium的，为解决这一问题，将临时换源成ubuntu 18.04LTS.
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
+            DEPENDENCY_01="chromium-browser/bionic-updates chromium-browser-l10n/bionic-updates chromium-codecs-ffmpeg-extra/bionic-updates"
             if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
                 ubuntu_install_chromium_browser
             else
