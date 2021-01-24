@@ -179,6 +179,22 @@ set_ubuntu_dev_env() {
 	creat_container_edition_txt
 	go_to_proot_management
 }
+set_mint_tricia_env() {
+	DISTRO_NAME='mint'
+	DISTRO_CODE='tricia'
+	NODE02_ENABLED=true
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	go_to_proot_management
+}
+set_mint_ulyssa_env() {
+	DISTRO_NAME='mint'
+	DISTRO_CODE='ulyssa'
+	NODE02_ENABLED=true
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	go_to_proot_management
+}
 set_alpine_edge_env() {
 	DISTRO_NAME='alpine'
 	DISTRO_CODE='edge'
@@ -224,6 +240,8 @@ choose_mate_distro() {
 		"1" "🏔️ Alpine-edge" \
 		"2" "👒 Fedora-rawhide" \
 		"3" "🍛 Ubuntu-dev" \
+		"4" "mint-tricia(amd64)" \
+		"5" "mint-ulyssa(amd64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -241,6 +259,24 @@ choose_mate_distro() {
 	3)
 		case ${ARCH_TYPE} in
 		amd64) set_ubuntu_dev_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	4)
+		case ${ARCH_TYPE} in
+		amd64) set_mint_tricia_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	5)
+		case ${ARCH_TYPE} in
+		amd64) set_mint_ulyssa_env ;;
 		*)
 			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
 			distro_does_not_support
@@ -406,12 +442,11 @@ choose_kde_distro() {
 ##############################
 view_the_schedule() {
 	cat <<-EOF
+		${BOLD}${PURPLE}Weekly build${RESET}：
 		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
 			${GREEN}ubuntu-dev ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt${RESET}
 			${GREEN}ubuntu-dev ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
-			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
-			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}
 
 		TIME："UTC 06:01 / CST 14:01"
 			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
@@ -437,6 +472,15 @@ view_the_schedule() {
 			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
 			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
 			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}kde+xfce+mate${RESET}
+
+		${BOLD}${PURPLE}Monthly build${RESET}：
+		${BOLD}${YELLOW}24号/24th of every month${RESET}：
+		TIME："UTC 01:01 / CST 09:01"
+			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
+			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}
+			${GREEN}linux mint-tricia ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
+			${GREEN}linux mint-ulyssa ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
+
 	EOF
 }
 install_debian_gnu_linux_distro() {
