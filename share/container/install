@@ -967,6 +967,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	cd ${HOME}
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
 	if [ -e /usr/bin/neofetch ];then
+		printf "%s\n" "${GREEN}neofetch${RESET}"
 		rm -f ${NEOFETCH_BIN_FILE}
 		/usr/bin/neofetch
 	fi
