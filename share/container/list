@@ -1641,9 +1641,9 @@ install_mint_linux_distro() {
 ################
 check_mint_version_code() {
 	DISTRO_NAME='mint'
-	OLD_STABLE_VERSION='tina'
+	OLD_STABLE_VERSION='ulyana'
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|sarah|serena|sonya|sylvia|tara|tessa|tina' | tail -n 1)
+	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|sarah|serena|sonya|sylvia|tara|tessa|tina|tricia|ulyana' | tail -n 1)
 }
 ###########
 which_linux_mint_distro() {

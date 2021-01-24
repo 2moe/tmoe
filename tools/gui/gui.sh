@@ -1542,6 +1542,9 @@ install_xfce4_desktop() {
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01="xfce4 xfce4-goodies xfce4-terminal"
+        if grep -q 'Linux Mint' '/etc/issue'; then
+            DEPENDENCY_01="mint-meta-xfce"
+        fi
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_xfce_or_xubuntu
         fi
@@ -2028,6 +2031,9 @@ install_mate_desktop() {
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
         #apt autopurge -y ^libfprint
         #apt autoclean
+        if grep -q 'Linux Mint' '/etc/issue'; then
+            DEPENDENCY_01="mint-meta-mate"
+        fi
         choose_mate_or_ubuntu_mate
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -2493,6 +2499,9 @@ install_cinnamon_desktop() {
     case "${LINUX_DISTRO}" in
     "debian")
         dpkg --configure -a
+        if grep -q 'Linux Mint' '/etc/issue'; then
+            DEPENDENCY_01="mint-meta-cinnamon"
+        fi
         auto_select_keyboard_layout
         DEPENDENCY_01="--no-install-recommends cinnamon cinnamon-desktop-environment"
         ;;
