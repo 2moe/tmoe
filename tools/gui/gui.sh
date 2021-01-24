@@ -2031,11 +2031,11 @@ install_mate_desktop() {
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
         #apt autopurge -y ^libfprint
         #apt autoclean
-        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-            choose_mate_or_ubuntu_mate
-        fi
         if grep -q 'Linux Mint' '/etc/issue'; then
             DEPENDENCY_01="mint-meta-mate mint-meta-core mint-artwork"
+        fi
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            choose_mate_or_ubuntu_mate
         fi
         dpkg --configure -a
         auto_select_keyboard_layout
