@@ -128,8 +128,9 @@ install_chromium_browser() {
         "ubuntu")
             DEPENDENCY_01="chromium-browser/bionic-updates chromium-browser-l10n/bionic-updates chromium-codecs-ffmpeg-extra/bionic-updates"
             if grep -q 'Linux Mint' /etc/issue; then
-                DEPENDENCY_01="chromium-browser chromium-codecs-ffmpeg-extra"
-                DEPENDENCY_02="chromium-browser-l10n"
+                DEPENDENCY_01="chromium-browser"
+                DEPENDENCY_02=""
+                #chromium-browser-l10n chromium-codecs-ffmpeg-extra
             else
                 if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
                     ubuntu_install_chromium_browser
