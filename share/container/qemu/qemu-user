@@ -300,7 +300,7 @@ tmoe_qemu_user_manager() {
 		creat_tmoe_arch_file
 		ARCH_TYPE=${NEW_TMOE_ARCH}
 
-		if [ ! -e "$PREFIX/bin/qemu-x86_64-static" ] && [ ! -e "/usr/bin/qemu-x86_64-static" ]; then
+		if [[ ! -e "${PREFIX}/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
 			install_qemu_user_static
 		fi
 		case ${ARCH_TYPE} in
