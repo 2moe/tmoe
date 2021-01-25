@@ -15,7 +15,7 @@ build_fakeroot() {
             pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
         fi
     done
-    [[ ! -n $(command -v fakeroot) ]] || pacman -R --noconfirm fakeroot
+    [[ ! $(command -v fakeroot) ]] || pacman -R --noconfirm fakeroot
     [[ $(command -v whereis) ]] || pacman -S --noconfirm util-linux
     [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
     unset FAKEROOT_SRC_VERSION

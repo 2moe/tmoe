@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 ########################
-[[ -n $(command -v apt-get) ]] || printf "\033[0;35m%s\033[m%s%s\033[;32m%s\033[;m\n" "暂不支持" "非deb系发行版," "请换用" "tigervnc"
+[[ $(command -v apt-get) ]] || printf "\033[0;35m%s\033[m%s%s\033[;32m%s\033[;m\n" "暂不支持" "非deb系发行版," "请换用" "tigervnc"
 bash -c "$(sed -E 's@^(VNC_SERVER=)@\1tight@' $(command -v startvnc))"

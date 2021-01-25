@@ -82,7 +82,7 @@ android_termux() {
 			DEPENDENCIES="${DEPENDENCIES} ${i}"
 		fi
 	done
-	if [[ ! -n $(command -v bat) && ! -n $(command -v batcat) ]]; then
+	if [[ ! $(command -v bat) && ! $(command -v batcat) ]]; then
 		DEPENDENCIES="${DEPENDENCIES} bat"
 	fi
 	if [ ! $(command -v lsof) ]; then

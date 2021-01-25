@@ -54,10 +54,10 @@ EOF
     check_tmoe_linux_desktop_link
     ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
     export AUTO_INSTALL_GUI=true
-    if [[ ! -n $(command -v add-apt-repository) && -n $(command -v apt-get) ]]; then
+    if [[ ! $(command -v add-apt-repository) && $(command -v apt-get) ]]; then
         apt install -y software-properties-common
     fi
-    if [[ ! -n $(command -v aria2c) ]]; then
+    if [[ ! $(command -v aria2c) ]]; then
         ${TMOE_INSTALLATION_COMMAND} aria2 || ${TMOE_INSTALLATION_COMMAND} aria2
     fi
     case ${DEBIAN_DISTRO} in
@@ -1006,7 +1006,7 @@ configure_vnc_xstartup() {
     #[[ -d "/var/run/dbus" ]] || mkdir -pv /var/run/dbus
     mkdir -pv /run/dbus /var/run/dbus /var/lib/dbus/
     #if [ ! -s "/etc/machine-id" ]; then
-    if [[ -n $(command -v dbus-uuidgen) ]]; then
+    if [[ $(command -v dbus-uuidgen) ]]; then
         printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
     else
         printf "%s\n" "0ecb780817003d3342d16adb5ff1dfa9" >"/etc/machine-id"
@@ -1107,7 +1107,7 @@ install_tmoe_electron_app_pack() {
 ##########################
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
-        if [[ ! -n $(command -v zenmap) ]]; then
+        if [[ ! $(command -v zenmap) ]]; then
             printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}zenmap${RESET}"
             apt install -y zenmap
         fi
@@ -1385,7 +1385,7 @@ do_you_want_to_install_electron_apps_zh() {
     case ${LINUX_DISTRO} in
     alpine) ;;
     *)
-        if [[ ! -n $(command -v electron) ]]; then
+        if [[ ! $(command -v electron) ]]; then
             if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nlx-music-desktop,cocomusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
                 AUTO_INSTALL_ELECTRON_APPS='true'
             fi
@@ -1398,7 +1398,7 @@ do_you_want_to_install_electron_apps_en() {
     case ${LINUX_DISTRO} in
     alpine) ;;
     *)
-        if [[ ! -n $(command -v electron) ]]; then
+        if [[ ! $(command -v electron) ]]; then
             if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nlx-music-desktop,cocomusic,petal & zy-player.' 0 0); then
                 AUTO_INSTALL_ELECTRON_APPS='true'
             fi
@@ -1414,7 +1414,7 @@ do_you_want_to_install_fcitx4() {
         case "${LINUX_DISTRO}" in
         "debian" | "arch")
             #fedora proot不要自动配置fcitx
-            if [[ ! -n $(command -v fcitx) && ! -n $(command -v fcitx5) ]]; then
+            if [[ ! $(command -v fcitx) && ! $(command -v fcitx5) ]]; then
                 if (whiptail --title "input method" --yes-button "YES" --no-button "NO" --yesno '檢測到您當前的語言環境爲中文，是否需要安裝中文輸入法?\nDo you want to install fcitx4?\n安裝完成後,在桌面環境下按Ctrl+空格切換輸入法\n你亦可以選擇NO跳過,之後可以單獨安裝fcitx5' 0 0); then
                     AUTO_INSTALL_FCITX4='true'
                 fi
@@ -1428,7 +1428,7 @@ do_you_want_to_install_fcitx4() {
     do_you_want_to_install_chromium
     case "${LINUX_DISTRO}" in
     "debian" | "arch")
-        if [[ ! -n $(command -v hardinfo) ]]; then
+        if [[ ! $(command -v hardinfo) ]]; then
             if (whiptail --title "HARDINFO" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install hardinfo?\nIt can display system information.' 0 0); then
                 AUTO_INSTALL_HARD_INFO='true'
             fi
@@ -1444,7 +1444,7 @@ do_you_want_to_install_chromium_00() {
     fi
 }
 do_you_want_to_install_chromium() {
-    if [[ ! -n $(command -v chromium) && ! -n $(command -v chromium-browser) && ! -n $(command -v google-chrome) ]]; then
+    if [[ ! $(command -v chromium) && ! $(command -v chromium-browser) && ! $(command -v google-chrome) ]]; then
         case "${DEBIAN_DISTRO}" in
         ubuntu)
             case ${TMOE_MENU_LANG} in
@@ -2289,7 +2289,7 @@ install_kde_plasma5_desktop() {
     fi
     #if [[ ${PLASMA_WAYLAND_DEPENDENCIES} = true ]]; then
     #    printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${PLASMA_WAYLAND_DEPENDENCIES}${RESET}"
-    #    if [[ ! -n $(command -v startplasma-wayland) ]]; then
+    #    if [[ ! $(command -v startplasma-wayland) ]]; then
     #        ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} ${PLASMA_WAYLAND_DEPENDENCIES}
     #    fi
     #fi
@@ -4866,13 +4866,13 @@ debian_install_vnc_server() {
         #debian_remove_vnc_server
         #printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
         printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
-        if [[ ! -n $(command -v Xtigervnc) ]]; then
+        if [[ ! $(command -v Xtigervnc) ]]; then
             for i in tigervnc-standalone-server tigervnc-viewer; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
         fi
         printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
-        if [[ ! -n $(command -v Xtightvnc) ]]; then
+        if [[ ! $(command -v Xtightvnc) ]]; then
             for i in tightvncserver; do
                 apt install -y ${i} || aptitude install -y ${i}
             done
@@ -5015,7 +5015,7 @@ first_configure_startvnc() {
     fi
     #fi
     ######################
-    [[ ! -n $(command -v apt-get) ]] || dpkg --configure -a 2>/dev/null
+    [[ ! $(command -v apt-get) ]] || dpkg --configure -a 2>/dev/null
     if [[ ! -s "${HOME}/.vnc/passwd" ]]; then
         set_vnc_passwd
     fi
@@ -5235,7 +5235,7 @@ first_configure_startvnc() {
 }
 ########################
 check_xvnc_command() {
-    if [[ ! -n $(command -v Xvnc) ]]; then
+    if [[ ! $(command -v Xvnc) ]]; then
         case "${LINUX_DISTRO}" in
         debian) DEPENDENCY_03="tigervnc-standalone-server" ;;
         redhat) DEPENDENCY_03="tigervnc-server" ;;

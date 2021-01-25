@@ -21,7 +21,7 @@ tmoe_container_zsh_main() {
 ############
 lnk_startvnc() {
 	if [[ ! -L ~/startvnc ]]; then
-		if [[ -n $(command -v startvnc) ]]; then
+		if [[ $(command -v startvnc) ]]; then
 			ln -svf /usr/local/bin/startvnc ~/startvnc
 		else
 			ln -svf $(command -v debian-i) ~/startvnc
@@ -33,14 +33,14 @@ auto_remove_proot_xfce4_power_manager() {
 	case ${TMOE_PROOT} in
 	true)
 		#此处不能是commmand -v kali-undercover
-		if [[ ! -e /usr/bin/kali-undercover && -n $(command -v apt-get) ]]; then
+		if [[ ! -e /usr/bin/kali-undercover && $(command -v apt-get) ]]; then
 			printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
 			apt autoremove --purge -y ^xfce4-power-manager
-		elif [[ -n $(command -v pacman) ]]; then
+		elif [[ $(command -v pacman) ]]; then
 			pacman -Rsc --noconfirm xfce4-power-manager
-		elif [[ -n $(command -v dnf) ]]; then
+		elif [[ $(command -v dnf) ]]; then
 			dnf remove -y xfce4-power-manager
-		elif [[ -n $(command -v apk) ]]; then
+		elif [[ $(command -v apk) ]]; then
 			apk del xfce4-power-manager
 		fi
 		;;
@@ -52,11 +52,11 @@ set_tmoe_zsh_env() {
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	if [[ -e /.dockerenv ]]; then
 		change_shell_to_bin_zsh
-		if [[ ! -n $(command -v Xvnc) && -n $(command -v apt-get) ]]; then
+		if [[ ! $(command -v Xvnc) && $(command -v apt-get) ]]; then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install ${YELLOW}-y ${BLUE}tigervnc-standalone-server${RESET}"
 			apt install -y tigervnc-standalone-server
 		fi
-		if [[ -n $(command -v startxfce4) ]]; then
+		if [[ $(command -v startxfce4) ]]; then
 			auto_remove_proot_xfce4_power_manager
 		fi
 	fi
@@ -78,7 +78,7 @@ check_tmoe_locale_file() {
 	else
 		TMOE_LANG=${LANG}
 	fi
-	if [[ -n $(command -v debian-i) && ! -n $(command -v tmoe) ]]; then
+	if [[ $(command -v debian-i) && ! $(command -v tmoe) ]]; then
 		cp -pf $(command -v debian-i) /usr/local/bin/tmoe
 	fi
 }
@@ -174,7 +174,7 @@ auto_configure_tmoe_tools() {
 				sleep 2
 			done
 		fi
-		if [[ ! -n $(command -v Xvnc) ]]; then
+		if [[ ! $(command -v Xvnc) ]]; then
 			if [[ $(command -v apt-get) ]]; then
 				apt install -y tigervnc-standalone-server
 			elif [[ $(command -v pacman) ]]; then
@@ -208,20 +208,20 @@ auto_configure_tmoe_tools() {
 ################
 install_lolcat_and_neofetch() {
 	for i in lolcat neofetch; do
-		if [[ -n $(command -v apt) ]]; then
+		if [[ $(command -v apt) ]]; then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 			apt install -y ${i}
-		elif [[ -n $(command -v pacman) ]]; then
+		elif [[ $(command -v pacman) ]]; then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
 		fi
 	done
 	#fedora neofetch (X)
-	if [[ -n $(command -v dnf) && ! -n $(command -v lolcat) ]]; then
+	if [[ $(command -v dnf) && ! $(command -v lolcat) ]]; then
 		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}lolcat${RESET}"
 		dnf install -y lolcat
 	fi
-	if [[ -n $(command -v zypper) ]]; then
+	if [[ $(command -v zypper) ]]; then
 		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat neofetch${RESET}"
 		zypper in -y ruby2.7-rubygem-lolcat
 		zypper in -y neofetch

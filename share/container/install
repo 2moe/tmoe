@@ -509,7 +509,7 @@ creat_chroot_startup_script() {
 		localhost | "") ${TMOE_CHROOT_PREFIX} hostname ${ANDROID_HOST_NAME} 2>/dev/null ;;
 		esac
 	else
-		[[ ! -n $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
+		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
 	fi
 	if [[ -s hostname ]]; then
 		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
@@ -628,7 +628,7 @@ creat_proot_startup_script() {
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 	else
-		[[ ! -n $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
+		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
 	fi
 	if [[ -s hostname ]]; then
 		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
@@ -717,7 +717,7 @@ ENDOFNOVNC
 #此處僅適配Android,故shebang爲termux目錄
 cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
 	#!/data/data/com.termux/files/usr/bin/env bash
-	[[ ! -n $(command -v termux-wake-unlock) ]] || termux-wake-unlock 2>/dev/null
+	[[ ! $(command -v termux-wake-unlock) ]] || termux-wake-unlock 2>/dev/null
 	pulseaudio --kill 2>/dev/null
 	sh -c "$(ps -e | egrep -v "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
 ENDOFSTOPVNC
@@ -961,7 +961,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		export WEEKLY_BUILD_CONTAINER=true
 	fi
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! -n $(command -v pkg) ]];then
+	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! $(command -v pkg) ]];then
 		ln -s $(command -v apt) /usr/bin/pkg
 	fi
 	cd ${HOME}
@@ -994,13 +994,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [[ -s "/tmp/hostname" ]]; then
 		NEW_HOST_NAME=$(head -n 1 /tmp/hostname)
 		cp -f /tmp/hostname /etc
-		#[[ ! -n $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
+		#[[ ! $(command -v hostname) ]] || hostname ${NEW_HOST_NAME} 2>/dev/null
 		#sed -i "1s@LXC_NAME@${NEW_HOST_NAME}@" /etc/hosts 2>/dev/null
 		if ! grep -q "${NEW_HOST_NAME}" /etc/hosts 2>/dev/null;then
 			printf "%s\n%s\n" "127.0.0.1 ${NEW_HOST_NAME}" "::1 ${NEW_HOST_NAME}" >>/etc/hosts
 		fi
 	fi
-	if [[ -n $(command -v hostname) ]];then
+	if [[ $(command -v hostname) ]];then
 		if ! grep -q "$(hostname)" /etc/hosts 2>/dev/null;then
 			printf "%s\n%s\n" "127.0.0.1 $(hostname) $(hostname -f)" "::1 $(hostname) $(hostname -f)" >>/etc/hosts
 		fi
@@ -1435,13 +1435,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi 
 	fi
 
-	if [[ -e "/etc/pacman.conf" && -n $(command -v grep) ]]; then
+	if [[ -e "/etc/pacman.conf" && $(command -v grep) ]]; then
 		[[ $(command -v ip) ]] || pacman -S --noconfirm iproute
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 		    arch_linux_yay
 			cat /etc/pacman.conf
 		else
-			if [[ ! -n $(command -v yay) ]];then
+			if [[ ! $(command -v yay) ]];then
 					printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}yay${RESET}"
 					pacman -Sy --noconfirm yay || pacman -Syu --noconfirm yay
 			fi
@@ -1495,7 +1495,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			[[ ! -e /usr/bin/startvnc ]] || ln -sf /usr/bin/startvnc /usr/local/bin/startvnc
 			mkdir -pv /etc/X11/xinit
 			[[ -e /etc/X11/xinit/Xsession ]] || cp -vf /root/.vnc/xstartup /etc/X11/xinit/Xsession
-			[[ -n $(command -v startxsd) ]] || printf "%s\n%s\n%s\n" '#!/bin/sh' "export DISPLAY=127.0.0.1:0" "/etc/X11/xinit/Xsession" > /usr/local/bin/startxsdl
+			[[ $(command -v startxsd) ]] || printf "%s\n%s\n%s\n" '#!/bin/sh' "export DISPLAY=127.0.0.1:0" "/etc/X11/xinit/Xsession" > /usr/local/bin/startxsdl
 			chmod a+x /usr/local/bin/startxsdl
 	    fi
 	}
@@ -1510,7 +1510,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		rm -f ~/.zlogin ~/.profile vnc-autostartup zsh.sh zsh-i.sh 2>/dev/null
 		[[ ! -e ~/.profile.bak ]] || mv -f ~/.profile.bak ~/.profile 2>/dev/null
 		for i in zsh bash sh su;do
-			if [[ -n $(command -v ${i}) ]];then
+			if [[ $(command -v ${i}) ]];then
 				exec ${i}
 				break
 			fi
@@ -1611,7 +1611,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		zypper in -y newt
 	fi
 	##############################
-	if [[ -n $(command -v apt) ]];then
+	if [[ $(command -v apt) ]];then
 		apt update 2>/dev/null
 		if [[ ${TMOE_CHROOT} = true ]];then
 			printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
@@ -1691,11 +1691,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		EndOFneko
 	printf "$RESET"
 	####################
-	if [[ -n $(command -v apt) ]];then
+	if [[ $(command -v apt) ]];then
 		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
-		[[ -n $(command -v apt-extracttemplates) ]] || apt install -y apt-utils 2>/dev/null
+		[[ $(command -v apt-extracttemplates) ]] || apt install -y apt-utils 2>/dev/null
 		for i in curl wget;do
-			[[ -n $(command -v ${i}) ]] || apt install -y ${i}
+			[[ $(command -v ${i}) ]] || apt install -y ${i}
 		done 
 		[[ -e /usr/sbin/update-ca-certificates ]] || apt install -y ca-certificates 2>/dev/null
 		if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
@@ -1815,18 +1815,18 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    chattr -i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
-	if [[ -n $(command -v apt) ]];then
+	if [[ $(command -v apt) ]];then
 		apt update 2>/dev/null
 		apt list --upgradable 2>/dev/null
 		printf "%s\n" "Upgrading all packages ..."
 		printf "%s\n" "${GREEN}apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
 		apt dist-upgrade -y 2>/dev/null
-		if [[ ! -n $(command -v pkill) ]];then
+		if [[ ! $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}procps${RESET}"
 			apt install -y procps 2>/dev/null
 		fi
 		for i in whiptail dialog;do
-			if [[ ! -n $(command -v ${i}) ]];then
+			if [[ ! $(command -v ${i}) ]];then
 				printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 				apt install -y ${i} 2>/dev/null
 			fi 
@@ -1961,7 +1961,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		[[ $(command -v ip) ]] || dnf install -y iproute
 			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils passwd findutils man-db glibc-all-langpacks${RESET}"
 			dnf install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks
-		if [[ ! -n $(command -v pkill) ]];then
+		if [[ ! $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}procps-ng procps-ng-i18n${RESET}"
 			dnf install -y --skip-broken procps-ng procps-ng-i18n
 		fi

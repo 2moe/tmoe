@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4215,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4216,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -863,7 +863,7 @@ tmoe_linux_tool_upgrade() {
 	if [ ! -h $(command -v tmoe) ]; then
 		ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
 	fi
-	#if [ -n $(command -v startvnc) ]; then
+	#if [ $(command -v startvnc) ]; then
 	#	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
 	#		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
 	#	fi

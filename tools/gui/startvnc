@@ -145,7 +145,7 @@ start_tmoe_xvnc() {
     tight* | Tight*)
         XVNC_BIN='Xtightvnc'
         TMOE_VNC_BIN='tight'
-        if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
+        if [[ ! $(command -v ${XVNC_BIN}) ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tightvncserver${RESET}"
             sudo apt install tightvncserver || su -c "apt install -y tightvncserver"
         fi
@@ -153,10 +153,10 @@ start_tmoe_xvnc() {
     tiger* | Tiger* | *)
         XVNC_BIN='Xtigervnc'
         TMOE_VNC_BIN='tiger'
-        #if [[ ! -n $(command -v ${XVNC_BIN}) ]]; then
+        #if [[ ! $(command -v ${XVNC_BIN}) ]]; then
         #    printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common${RESET}"
         #    sudo apt install tigervnc-standalone-server tigervnc-common || su -c "apt install -y tigervnc-standalone-server"
-        [[ -n $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
+        [[ $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
         # fi
         ;;
     esac
@@ -172,7 +172,7 @@ start_tmoe_xvnc() {
     elif ((${PIXEL_DEPTH} > 32)); then
         PIXEL_DEPTH=32
     fi
-    #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || -n $(command -v vncsession) ]]
+    #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || $(command -v vncsession) ]]
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
         set -- "${@}" "-rfbwait" "30000"
@@ -191,7 +191,7 @@ start_tmoe_xvnc() {
     set -- "${XVNC_BIN}" "${@}"
     "${@}" &
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
-    if [[ KDE_PLASMA_WAYLAND = true && -n $(command -v startplasma-wayland) ]]; then
+    if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
         konsole &>/dev/null &
         startplasma-wayland &
     else

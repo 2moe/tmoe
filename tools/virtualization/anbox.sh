@@ -41,7 +41,7 @@ install_anbox() {
 		non_debian_function
 		;;
 	esac
-	if [[ -n $(command -v anbox) && ! -f "/var/lib/anbox/android.img" ]]; then
+	if [[ $(command -v anbox) && ! -f "/var/lib/anbox/android.img" ]]; then
 		download_anbox_rom
 	fi
 	service anbox-container-manager start
