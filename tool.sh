@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4213,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4215,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -845,13 +845,15 @@ tmoe_linux_tool_upgrade() {
 	fi
 	check_tmoe_git_folder
 	cd ${TMOE_GIT_DIR}
+	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	if [ "$?" != '0' ]; then
-		git fetch --all
+		#git fetch --all
 		git reset --hard
 		git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
 	fi
+
 	if [ -e "/usr/local/bin/work-i" ]; then
 		cp "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh" /usr/local/bin
 	fi
@@ -861,11 +863,11 @@ tmoe_linux_tool_upgrade() {
 	if [ ! -h $(command -v tmoe) ]; then
 		ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
 	fi
-	if [ -n $(command -v startvnc) ]; then
-		if grep -q 'set.*-depth.*16' $(command -v startvnc); then
-			sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
-		fi
-	fi
+	#if [ -n $(command -v startvnc) ]; then
+	#	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
+	#		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
+	#	fi
+	#fi
 	#printf "%s\n" "${TMOE_GIT_URL}"
 	printf '%s\n' '(o゜▽゜)o☆  Thank you for using Tmoe-linux tool.'
 	printf "%s\n" "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
