@@ -129,10 +129,10 @@ modify_android_termux_vnc_config() {
 		#下面那条变量TRUETARGETTARGET前加空格
 		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(command -v startvnc)"
 		#sed -i "8 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
-		sed -i -E "s@^(VNC_RESOLUTION)=@\1${TRUETARGET}" $(command -v startvnc)
+		sed -i -E "1s@^(VNC_RESOLUTION)=@\1${TRUETARGET}@" $(command -v startvnc)
 		printf '%s\n' 'Your current resolution has been modified.'
-		#printf '%s\n' '您当前的分辨率已经修改为'
-		#printf "%s\n" "$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		printf '%s\n' '您当前的分辨率已经修改为'
+		printf "%s\n" $(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
 	else
 		printf '%s\n' '您可以手动修改vnc的配置信息'
 		printf '%s\n' 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
