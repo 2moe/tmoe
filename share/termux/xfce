@@ -17,27 +17,34 @@ tmoe_install_xfce() {
 	apt install -y x11-repo
 	apt update
 	apt dist-upgrade -y
-	for i in xfce xfce aterm; do
+	for i in xfce xfce aterm tigervnc; do
 		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 		apt install -y ${i}
 	done
 	cat >${PREFIX}/bin/startvnc <<-'EndOfFile'
 		#!/usr/bin/env bash
+		export PULSE_SERVER=127.0.0.1
+		VNC_RESOLUTION=720x1440
+		export DISPLAY=:2
 		pkill Xvnc 2>/dev/null 
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
 		printf "%s\n" "正在启动vnc服务,本机默认vnc地址localhost:5902"
 		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5902
-		export DISPLAY=:2
-		Xvnc -geometry 720x1440 -depth 24 --SecurityTypes=None $DISPLAY &
-		export PULSE_SERVER=127.0.0.1
+		TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:5902@")
+		cat <<-EOF
+		本机默认vnc地址 localhost:5902
+		The LAN VNC address 局域网地址 ${TMOE_IP_ADDR}
+		EOF
+		[[ -n ${VNC_RESOLUTION} ]] || VNC_RESOLUTION=720x1440
+		Xvnc -geometry ${VNC_RESOLUTION} -depth 24 --SecurityTypes=None $DISPLAY &
 		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 		sleep 1s
 		thunar &
 		aterm &
 		printf "%s\n" "已为您启动vnc服务 Vnc server has been started, enjoy it!"
 		printf "%s\n" "默认为前台运行，您可以按Ctrl+C终止当前进程。"
-		startxfce4
+		startxfce4 || xfce4-session
 
 	EndOfFile
 	termux-fix-shebang ${PREFIX}/bin/startvnc
@@ -106,7 +113,8 @@ modify_android_termux_vnc_config() {
 		printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 	fi
-	CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+	CURRENTTERMUXVNCRES=$(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
+	#CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
 	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
 		if grep -q 'debian_' "$(command -v startvnc)"; then
 			printf "%s\n" "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输tmoe t修改"
@@ -120,21 +128,22 @@ modify_android_termux_vnc_config() {
 		TRUETARGET="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
 		#下面那条变量TRUETARGETTARGET前加空格
 		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(command -v startvnc)"
-		sed -i "7 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
+		#sed -i "8 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
+		sed -i -E "s@^(VNC_RESOLUTION)=@\1${TRUETARGET}" $(command -v startvnc)
 		printf '%s\n' 'Your current resolution has been modified.'
-		printf '%s\n' '您当前的分辨率已经修改为'
-		printf "%s\n" "$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		#printf '%s\n' '您当前的分辨率已经修改为'
+		#printf "%s\n" "$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 	else
 		printf '%s\n' '您可以手动修改vnc的配置信息'
 		printf '%s\n' 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution, such as 1920x1080 (landscape).'
 		printf '%s\n' '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
-		printf "%s\n" "您当前分辨率为${CURRENTTERMUXVNCRES}"
+		#printf "%s\n" "您当前分辨率为${CURRENTTERMUXVNCRES}"
 		printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
 		printf "%s\n" "Press Enter to confirm."
 		printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
 		read
 		nano ${PREFIX}/bin/startvnc || nano $(command -v startvnc)
-		printf "%s\n" "您当前分辨率为$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+		#printf "%s\n" "您当前分辨率为$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
 	fi
 	press_enter_to_return
 	tmoe_manager_main_menu
