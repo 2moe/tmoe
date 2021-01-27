@@ -1612,11 +1612,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	##############################
 	if [[ $(command -v apt) ]];then
-		printf "%s\n" "${GREEN}apt ${BLUE}update${RESET}"
-		apt update 2>/dev/null
 		if [[ ! $(command -v eatmydata) ]];then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}eatmydata${RESET}"
+			apt update 2>/dev/null
 			apt install -y eatmydata
+		else
+			printf "%s\n" "${GREEN}eatmydata apt ${BLUE}update${RESET}"
+			eatmydata apt update
 		fi
 		if [[ ${TMOE_CHROOT} = true ]];then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
@@ -1697,7 +1699,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	printf "$RESET"
 	####################
 	if [[ $(command -v apt) ]];then
-		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
+		#printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
 		if [[ ! $(command -v apt-extracttemplates) ]];then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils${RESET}"
 			eatmydata apt install -y apt-utils 2>/dev/null || apt install -y apt-utils 2>/dev/null
