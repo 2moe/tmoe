@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4233,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4234,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -471,6 +471,9 @@ check_dependencies() {
 		fi
 		if [[ $(readlink /bin/tar) = /bin/busybox ]]; then
 			DEPENDENCIES="${DEPENDENCIES} tar"
+		fi
+		if [[ $(readlink /bin/ps) = /bin/busybox ]]; then
+			DEPENDENCIES="${DEPENDENCIES} procps"
 		fi
 		;;
 	esac
