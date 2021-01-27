@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4230,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4231,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -856,7 +856,7 @@ tmoe_linux_tool_upgrade() {
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	if [ "$?" != '0' ]; then
-		#git fetch --all
+		git fetch --all
 		git reset --hard
 		git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
 	fi

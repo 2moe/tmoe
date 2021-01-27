@@ -20,6 +20,7 @@ fi
 #fi
 chmod a+x ${PREFIX}/bin/debian-i
 if [ -e "${TMOE_GIT_DIR}/.git" ]; then
+	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
 	cd ${TMOE_GIT_DIR}
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
