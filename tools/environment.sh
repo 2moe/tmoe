@@ -1212,7 +1212,7 @@ extract_electron() {
     if [ ! $(command -v unzip) ]; then
         ${TMOE_INSTALLATION_COMMAND} unzip
     fi
-    unzip ${ELECTRON_ZIP_FILE}
+    unzip -o ${ELECTRON_ZIP_FILE} || unzip ${ELECTRON_ZIP_FILE}
     rm -fv ${ELECTRON_ZIP_FILE}
     chmod a+x -v electron
 }

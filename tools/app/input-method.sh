@@ -680,7 +680,7 @@ install_debian_baidu_pinyin() {
         THE_Latest_Link='https://imeres.baidu.com/imeres/ime-res/guanwang/img/Ubuntu_Deepin-fcitx-baidupinyin-64.zip'
         printf "%s\n" "${THE_Latest_Link}"
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'fcitx-baidupinyin.zip' "${THE_Latest_Link}"
-        unzip 'fcitx-baidupinyin.zip'
+        unzip -o 'fcitx-baidupinyin.zip' || unzip 'fcitx-baidupinyin.zip'
         DEB_FILE_NAME="$(ls -l ./*deb | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')"
         apt install ${DEB_FILE_NAME}
         ;;
