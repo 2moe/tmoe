@@ -780,7 +780,7 @@ fi
 #curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
 cp -f ${TMOE_GIT_DIR}/zsh.sh ./
 chmod a+x zsh.sh zsh-i.sh
-${TMOE_CHROOT_PREFIX} mv zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
+${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
 #chmod u+x ./*
 ###########
 if [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
