@@ -1629,6 +1629,12 @@ install_xfce4_desktop() {
         arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
         redhat) dnf remove -y xfce4-power-manager ;;
         alpine) apk del xfce4-power-manager ;;
+        suse) zypper rm -y xfce4-power-manager ;;
+        void) xbps-remove -R -y xfce4-power-manager ;;
+        *)
+            printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}xfce4-power-manager${RESET}"
+            ${TMOE_REMOVAL_COMMAND} xfce4-power-manager
+            ;;
         esac
         ;;
     esac
