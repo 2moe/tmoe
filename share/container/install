@@ -1699,14 +1699,17 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [[ $(command -v apt) ]];then
 		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
 		if [[ ! $(command -v apt-extracttemplates) ]];then
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils${RESET}"
 			eatmydata apt install -y apt-utils 2>/dev/null || apt install -y apt-utils 2>/dev/null
 		fi
 		for i in curl wget;do
 			if [[ ! $(command -v ${i}) ]];then
+				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 				eatmydata apt install -y ${i} || apt install -y ${i}
 			fi
 		done
 		if [[ ! -e /usr/sbin/update-ca-certificates ]];then
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}ca-certificates${RESET}"
 			eatmydata apt install -y ca-certificates 2>/dev/null || apt install -y ca-certificates 2>/dev/null
 		fi
 		if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
@@ -1830,8 +1833,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		apt update 2>/dev/null
 		apt list --upgradable 2>/dev/null
 		printf "%s\n" "Upgrading all packages ..."
-		printf "%s\n" "${GREEN}apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
-		apt dist-upgrade -y 2>/dev/null
+		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
+		eatmydata apt dist-upgrade -y 2>/dev/null || apt dist-upgrade -y 2>/dev/null
 		if [[ ! $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}procps${RESET}"
 			eatmydata apt install -y procps 2>/dev/null || apt install -y procps 2>/dev/null
