@@ -172,7 +172,7 @@ auto_configure_tmoe_tools() {
 		fi
 		if [[ ! $(command -v Xvnc) ]]; then
 			if [[ $(command -v apt-get) ]]; then
-				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install ${YELLOW}-y ${BLUE}tigervnc-standalone-server${RESET}"
+				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server${RESET}"
 				eatmydata apt install -y tigervnc-standalone-server || apt install -y tigervnc-standalone-server
 			elif [[ $(command -v pacman) ]]; then
 				pacman -Syu --noconfirm tigervnc
@@ -404,6 +404,24 @@ sed_a_source_list() {
 }
 ###############
 git_clone_tmoe_linux() {
+	if [[ ! $(command -v git) ]]; then
+		if [[ $(command -v apt-get) ]]; then
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}git${RESET}"
+			eatmydata apt install -y git || apt install -y git
+		elif [[ $(command -v pacman) ]]; then
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}git${RESET}"
+			pacman -Sy --noconfirm git
+		elif [[ $(command -v yum) ]]; then
+			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}git${RESET}"
+			dnf install -y git || yum install -y git
+		elif [[ $(command -v zypper) ]]; then
+			printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}git${RESET}"
+			zypper in -y git
+		elif [[ $(command -v apk) ]]; then
+			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}git${RESET}"
+			apk add git
+		fi
+	fi
 	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
 	mkdir -pv ${TMOE_LINUX_DIR}
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
