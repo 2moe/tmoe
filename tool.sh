@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4232,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4233,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -381,7 +381,7 @@ check_dependencies() {
 		if [ ! $(command -v eatmydata) ]; then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}eatmydata${RESET}"
 			apt update 2>/dev/null
-			apt install -y eatmydata
+			apt install -y eatmydata || apt install -y -f eatmydata
 			DEPENDENCIES="${DEPENDENCIES} eatmydata"
 		fi
 		;;

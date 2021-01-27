@@ -1614,11 +1614,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [[ $(command -v apt) ]];then
 		if [[ ! $(command -v eatmydata) ]];then
 			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}eatmydata${RESET}"
-			apt update 2>/dev/null
-			apt install -y eatmydata
+			apt update 2>/dev/null || apt update 2>/dev/null
+			apt install -y eatmydata || apt install -y -f eatmydata
 		else
 			printf "%s\n" "${GREEN}eatmydata apt ${BLUE}update${RESET}"
-			eatmydata apt update
+			eatmydata apt update || apt update
 		fi
 		if [[ ${TMOE_CHROOT} = true ]];then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"

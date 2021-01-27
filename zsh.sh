@@ -210,7 +210,7 @@ install_lolcat_and_neofetch() {
 			eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
 		elif [[ $(command -v pacman) ]]; then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-			pacman -Sy --noconfirm ${i}
+			pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
 		fi
 	done
 	#fedora neofetch (X)
