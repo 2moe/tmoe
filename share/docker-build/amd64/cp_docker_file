@@ -3,6 +3,7 @@ for i in arm64 armhf i386; do
     cp -prfv $(ls . | grep -v cp_docker) ../${i}
 done
 cd ../arm64
+rm -rfv $(ls . | grep 'mint-')
 ARM64_DOCKERFILE=$(find . | grep Dockerfile)
 sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8/@g' ${ARM64_DOCKERFILE}
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | grep arch)
