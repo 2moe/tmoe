@@ -39,6 +39,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; bash build_fakeroot --archlinux-repo-mirror \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; pacman -R --noconfirm $(pacman -Qdtq) \
+    ; rm -rfv /var/cache/pacman/pkg/* \
     ; pacman -Scc --noconfirm 
 
 CMD [ "/usr/local/bin/startvnc" ]
