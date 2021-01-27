@@ -204,7 +204,7 @@ auto_configure_tmoe_tools() {
 }
 ################
 install_lolcat_and_neofetch() {
-	for i in lolcat neofetch; do
+	for i in lolcat neofetch unzip; do
 		if [[ $(command -v apt) ]]; then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
 			eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
