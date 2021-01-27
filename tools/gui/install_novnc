@@ -60,7 +60,7 @@ check_python_novnc() {
 	fi
 
 	if [ ! $(command -v pip3) ]; then
-		DEPENDENCY_01=""
+		unset DEPENDENCY_01 DEPENDENCY_02
 		case "${LINUX_DISTRO}" in
 		debian) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
 		*) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
