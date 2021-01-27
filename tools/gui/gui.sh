@@ -1108,19 +1108,19 @@ install_tmoe_electron_app_pack() {
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
         if [[ ! $(command -v zenmap) ]]; then
-            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}zenmap${RESET}"
-            apt install -y zenmap
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}zenmap${RESET}"
+            eatmydata apt install -y zenmap || apt install -y zenmap
         fi
-        printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-menu${RESET}"
-        apt install -y kali-menu || aptitude install -y kali-menu
+        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-menu${RESET}"
+        eatmydata apt install -y kali-menu || aptitude install -y kali-menu || apt install -y kali-menu
         case ${ARCH_TYPE} in
         arm64 | armhf | armel)
-            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-linux-arm${RESET}"
-            apt install -y kali-linux-arm || aptitude install -y kali-linux-arm
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-arm${RESET}"
+            eatmydata apt install -y kali-linux-arm || aptitude install -y kali-linux-arm || apt install -y kali-linux-arm
             ;;
         *)
-            printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-linux-default${RESET}"
-            apt install -y kali-linux-default || aptitude install -y kali-linux-default
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-default${RESET}"
+            eatmydata apt install -y kali-linux-default || aptitude install -y kali-linux-default || apt install -y kali-linux-default
             ;;
         esac
     fi
@@ -1131,9 +1131,9 @@ kali_xfce4_extras() {
         printf "%s\n" "${GREEN}apt install ${YELLOW}-y ${BLUE}kali-undercover${RESET}"
         install_kali_undercover
     fi
-    apt install -y kali-themes-common
+    eatmydata apt install -y kali-themes-common || apt install -y kali-themes-common
     if [ $(command -v chromium) ]; then
-        apt install -y chromium-l10n
+        eatmydata apt install -y chromium-l10n || apt install -y chromium-l10n
         fix_chromium_root_no_sandbox
     fi
     apt search kali-linux
@@ -4865,21 +4865,21 @@ debian_install_vnc_server() {
     debian)
         #debian_remove_vnc_server
         #printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
-        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
+        printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
         if [[ ! $(command -v Xtigervnc) ]]; then
             for i in tigervnc-standalone-server tigervnc-viewer; do
-                apt install -y ${i} || aptitude install -y ${i}
+                eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
             done
         fi
-        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
+        printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
         if [[ ! $(command -v Xtightvnc) ]]; then
             for i in tightvncserver; do
-                apt install -y ${i} || aptitude install -y ${i}
+                eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
             done
         fi
-        printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
+        printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
         for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
-            apt install -y ${i} || aptitude install -y ${i}
+            eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
         done
 
         if [[ -e "/usr/share/fonts/X11/Type1" && ! -e /usr/share/fonts/X11/Speedo ]]; then

@@ -1612,24 +1612,29 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	##############################
 	if [[ $(command -v apt) ]];then
+		printf "%s\n" "${GREEN}apt ${BLUE}update${RESET}"
 		apt update 2>/dev/null
+		if [[ ! $(command -v eatmydata) ]];then
+			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}eatmydata${RESET}"
+			apt install -y eatmydata
+		fi
 		if [[ ${TMOE_CHROOT} = true ]];then
-			printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
-			apt-get install --reinstall -y perl-base 2>/dev/null
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
+			eatmydata apt-get install --reinstall -y perl-base 2>/dev/null || apt-get install --reinstall -y perl-base 2>/dev/null
 		fi 
 		if [ ! -e /usr/lib/locale/en_US ];then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}locales-all${RESET}"
-			apt install -y locales-all 2>/dev/null
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}locales-all${RESET}"
+			eatmydata apt install -y locales-all 2>/dev/null || apt install -y locales-all 2>/dev/null
 		fi 
 		if [ ! $(command -v locale-gen) ]; then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}locales${RESET}"
-	        apt install -y locales 2>/dev/null
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}locales${RESET}"
+	        eatmydata apt install -y locales 2>/dev/null || apt install -y locales 2>/dev/null
 		fi
 	fi
 
 	if grep -q 'ubuntu' /etc/os-release; then
-	   printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}^language-pack-${TMOE_LANG_QUATER}${RESET}"
-	   apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+	   printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}^language-pack-${TMOE_LANG_QUATER}${RESET}"
+	   eatmydata apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null || apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 	fi
 
 	mkdir -pv /etc/default
@@ -1692,14 +1697,20 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	printf "$RESET"
 	####################
 	if [[ $(command -v apt) ]];then
-		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
-		[[ $(command -v apt-extracttemplates) ]] || apt install -y apt-utils 2>/dev/null
+		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils ca-certificates curl wget${RESET}"
+		if [[ ! $(command -v apt-extracttemplates) ]];then
+			eatmydata apt install -y apt-utils 2>/dev/null || apt install -y apt-utils 2>/dev/null
+		fi
 		for i in curl wget;do
-			[[ $(command -v ${i}) ]] || apt install -y ${i}
-		done 
-		[[ -e /usr/sbin/update-ca-certificates ]] || apt install -y ca-certificates 2>/dev/null
+			if [[ ! $(command -v ${i}) ]];then
+				eatmydata apt install -y ${i} || apt install -y ${i}
+			fi
+		done
+		if [[ ! -e /usr/sbin/update-ca-certificates ]];then
+			eatmydata apt install -y ca-certificates 2>/dev/null || apt install -y ca-certificates 2>/dev/null
+		fi
 		if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
-	      apt install -y apt-transport-https 2>/dev/null
+	       eatmydata apt install -y apt-transport-https 2>/dev/null || apt install -y apt-transport-https 2>/dev/null
 		fi
 	fi 
 
@@ -1822,13 +1833,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		printf "%s\n" "${GREEN}apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
 		apt dist-upgrade -y 2>/dev/null
 		if [[ ! $(command -v pkill) ]];then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}procps${RESET}"
-			apt install -y procps 2>/dev/null
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}procps${RESET}"
+			eatmydata apt install -y procps 2>/dev/null || apt install -y procps 2>/dev/null
 		fi
 		for i in whiptail dialog;do
 			if [[ ! $(command -v ${i}) ]];then
-				printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
-				apt install -y ${i} 2>/dev/null
+				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+				eatmydata apt install -y ${i} 2>/dev/null || apt install -y ${i} 2>/dev/null
 			fi 
 		done
 		apt clean 2>/dev/null

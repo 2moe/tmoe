@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4223,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4224,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -282,7 +282,7 @@ check_linux_distro() {
 	set_terminal_color
 	if egrep -q 'debian|ubuntu|deepin|uos\.com' "/etc/os-release"; then
 		LINUX_DISTRO='debian'
-		TMOE_INSTALLATION_COMMAND='apt install -y'
+		TMOE_INSTALLATION_COMMAND='eatmydata apt install -y'
 		TMOE_REMOVAL_COMMAND='apt purge -y'
 		TMOE_UPDATE_COMMAND='apt update'
 		if grep -q 'ubuntu' /etc/os-release; then
@@ -377,6 +377,9 @@ check_dependencies() {
 	debian)
 		if [ ! $(command -v aptitude) ]; then
 			DEPENDENCIES="${DEPENDENCIES} aptitude"
+		fi
+		if [ ! $(command -v eatmydata) ]; then
+			DEPENDENCIES="${DEPENDENCIES} eatmydata"
 		fi
 		;;
 	esac
@@ -571,6 +574,7 @@ check_dependencies() {
 			#创建文件夹防止aptitude报错
 			mkdir -pv /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
+			[[ -L /usr/local/bin/aptitude ]] || ln -svf $(command -v eatmydata) /usr/local/bin/aptitude
 			;;
 		alpine | openwrt | slackware)
 			${TMOE_UPDATE_COMMAND}

@@ -52,10 +52,6 @@ set_tmoe_zsh_env() {
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	if [[ -e /.dockerenv ]]; then
 		change_shell_to_bin_zsh
-		if [[ ! $(command -v Xvnc) && $(command -v apt-get) ]]; then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install ${YELLOW}-y ${BLUE}tigervnc-standalone-server${RESET}"
-			apt install -y tigervnc-standalone-server
-		fi
 		if [[ $(command -v startxfce4) ]]; then
 			auto_remove_proot_xfce4_power_manager
 		fi
@@ -176,7 +172,8 @@ auto_configure_tmoe_tools() {
 		fi
 		if [[ ! $(command -v Xvnc) ]]; then
 			if [[ $(command -v apt-get) ]]; then
-				apt install -y tigervnc-standalone-server
+				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install ${YELLOW}-y ${BLUE}tigervnc-standalone-server${RESET}"
+				eatmydata apt install -y tigervnc-standalone-server || apt install -y tigervnc-standalone-server
 			elif [[ $(command -v pacman) ]]; then
 				pacman -Syu --noconfirm tigervnc
 			elif [[ $(command -v dnf) ]]; then
@@ -209,8 +206,8 @@ auto_configure_tmoe_tools() {
 install_lolcat_and_neofetch() {
 	for i in lolcat neofetch; do
 		if [[ $(command -v apt) ]]; then
-			printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
-			apt install -y ${i}
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+			eatmydata apt install -y ${i} || apt install -y ${i}
 		elif [[ $(command -v pacman) ]]; then
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
