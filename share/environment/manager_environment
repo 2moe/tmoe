@@ -129,6 +129,10 @@ check_tmoe_container_chroot() {
 }
 ##############
 check_rootfs_dir() {
+	if [[ -L "${HOME}/storage/external-1" ]]; then
+		mkdir -p ${HOME}/storage/external-1/Download
+	fi
+
 	if [[ -L "${HOME}/storage/external-1" && -e ${HOME}/storage/external-1/Download ]]; then
 		ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
 	else
