@@ -162,6 +162,7 @@ printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}$
 printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}"
 ##################
 check_rootfs_dir() {
+	unset ROOTFS_DIR
 	for i in /sdcard ${HOME}/sd; do
 		if [ -d "${i}" ]; then
 			ROOTFS_DIR="${i}/Download/backup/rootfs"
@@ -183,6 +184,7 @@ fi
 [[ -n ${ROOTFS_DIR} ]] || ROOTFS_DIR="${HOME}/sd/Download/backup/rootfs"
 
 if [[ ! -e ${ROOTFS_DIR} ]]; then
+	ROOTFS_DIR="${HOME}/sd/Download/backup/rootfs"
 	mkdir -pv ${ROOTFS_DIR}
 fi
 cd ${ROOTFS_DIR}
