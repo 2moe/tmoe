@@ -129,7 +129,7 @@ check_tmoe_container_chroot() {
 }
 ##############
 check_rootfs_dir() {
-	if [ -h "${HOME}/storage/external-1" ]; then
+	if [[ -L "${HOME}/storage/external-1" && -e ${HOME}/storage/external-1/Download ]]; then
 		ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
 	else
 		for i in ${HOME} ${HOME}/sd /sdcard; do

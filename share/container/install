@@ -161,18 +161,32 @@ EOF
 printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
 printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}"
 ##################
-if [ -h "${HOME}/storage/external-1" ]; then
-	ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
-	mkdir -pv ${ROOTFS_DIR}
-else
-	for i in ${HOME} ${HOME}/sd /sdcard; do
+check_rootfs_dir() {
+	for i in /sdcard ${HOME}/sd; do
 		if [ -d "${i}" ]; then
 			ROOTFS_DIR="${i}/Download/backup/rootfs"
 			mkdir -pv ${ROOTFS_DIR}
 		fi
+		break
 	done
+}
+if [ -h "${HOME}/storage/external-1" ]; then
+	ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
+	mkdir -pv ${ROOTFS_DIR}
+	if [[ ! -e ${ROOTFS_DIR} ]]; then
+		check_rootfs_dir
+	fi
+else
+	check_rootfs_dir
+fi
+
+if [[ ! -e ${ROOTFS_DIR} ]]; then
+	i=${HOME}/sd
+	ROOTFS_DIR="${i}/Download/backup/rootfs"
+	mkdir -pv ${ROOTFS_DIR}
 fi
 cd ${ROOTFS_DIR}
+CURRENT_TMOE_DIR=$(pwd)
 download_rootfs_file() {
 	printf "${PURPLE}${BOLD}%s${RESET} ${YELLOW}%s${RESET}\n" "ROOTFS_FILE:" "${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}"
 	if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
@@ -202,7 +216,6 @@ ${DEBIAN_CHROOT}) ;;
 *) download_rootfs_file ;;
 esac
 ##################
-CURRENT_TMOE_DIR=$(pwd)
 if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	cd ${CONFIG_FOLDER}
 	if [ ! -s "proot_proc/proc.tar.xz" ]; then
