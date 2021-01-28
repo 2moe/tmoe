@@ -658,7 +658,7 @@ esac
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
-	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+	if [[ \$(command -v pulseaudio) && \$(id -u) != 0 ]]; then
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
 	fi
@@ -677,7 +677,7 @@ ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/usr/bin/env bash
-	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+	if [[ \$(command -v pulseaudio) && \$(id -u) != 0 ]]; then
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
 	fi
@@ -697,7 +697,7 @@ ENDOFX11VNC
 ###############
 cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
 	#!/usr/bin/env bash
-	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+	if [[ \$(command -v pulseaudio) && \$(id -u) != 0 ]]; then
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
 	fi
