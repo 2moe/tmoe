@@ -180,9 +180,9 @@ else
 	check_rootfs_dir
 fi
 
+[[ -n ${ROOTFS_DIR} ]] || ROOTFS_DIR="${HOME}/sd/Download/backup/rootfs"
+
 if [[ ! -e ${ROOTFS_DIR} ]]; then
-	i=${HOME}/sd
-	ROOTFS_DIR="${i}/Download/backup/rootfs"
 	mkdir -pv ${ROOTFS_DIR}
 fi
 cd ${ROOTFS_DIR}
