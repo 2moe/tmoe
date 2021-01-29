@@ -1159,8 +1159,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				#deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 				#kali-experimental (Packages which are under testing - often used with the rolling repository)​
 				#deb http://http.kali.org/kali kali-experimental main non-free contrib
+				#deb http://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
 				deb http://mirrors.huaweicloud.com/kali/ kali-rolling main contrib non-free
-				deb http://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
 				deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 			EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
