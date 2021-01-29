@@ -174,16 +174,16 @@ install_chromium_browser() {
 }
 ############
 if_you_can_not_start_chromium() {
-    if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
-        if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using chromium--no-sandbox" 8 50); then
-            printf ""
-        fi
-    fi
-    cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
-    #do_you_want_to_close_the_sandbox_mode
-    cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
-    chmod a+x -v /usr/local/bin/chromium--no-sandbox
     if [[ $(command -v chromium) || $(command -v chromium-browser) ]]; then
+        if [[ ${AUTO_INSTALL_CHROMIUM} != true ]]; then
+            if (whiptail --title "SANDBOX" --yes-button "OK" --no-button "YES" --yesno "If you can not start this app,try using chromium--no-sandbox" 8 50); then
+                printf ""
+            fi
+        fi
+        cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
+        #do_you_want_to_close_the_sandbox_mode
+        cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
+        chmod a+x -v /usr/local/bin/chromium--no-sandbox
         if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
             update-alternatives --auto x-www-browser
             printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
