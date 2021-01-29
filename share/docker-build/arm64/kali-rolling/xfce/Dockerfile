@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64/v8 donaldrich/kali-linux:wifi-pass
+FROM --platform=linux/arm64/v8 donaldrich/kali-linux:wifi
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
@@ -26,6 +26,9 @@ RUN apt update \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
+    ; cd /tmp \
+    ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
+    ; bash zsh.sh --tmoe_container_auto_configure \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; apt clean
 

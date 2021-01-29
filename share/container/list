@@ -374,6 +374,15 @@ choose_xfce_distro() {
 			;;
 		esac
 		;;
+	3)
+		case ${ARCH_TYPE} in
+		amd64 | arm64 | armhf) set_kali_rolling_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
 	4)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_manjaro_stable_env ;;
@@ -387,7 +396,6 @@ choose_xfce_distro() {
 	6) set_fedora_rawhide_env ;;
 	7) set_alpine_edge_env ;;
 	esac
-	#3)set_kali_rolling_env;; #amd64,armhf,arm64
 }
 choose_kde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "If you are using proot,try using ubuntu-bionic.\nIf you are using chroot,you can choose anyone." 0 50 0 \
@@ -491,8 +499,8 @@ view_the_schedule() {
 			${GREEN}linux mint-tricia ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
 			${GREEN}linux mint-ulyssa ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
 
-		${BOLD}${YELLOW}28号/28th of every month${RESET}：
-		TIME："UTC 01:01 / CST 09:01"
+		${BOLD}${YELLOW}14号+28号，14th and 28th of every month${RESET}：
+		TIME："UTC 02:01 / CST 10:01"
 			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce${RESET}
 			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce${RESET}
 			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce${RESET}
