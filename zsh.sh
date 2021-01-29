@@ -195,6 +195,11 @@ auto_configure_tmoe_tools() {
 			update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
 		fi
 
+		if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop ]]; then
+			xdg-settings get default-web-browser
+			xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
+		fi
+
 		if [[ $(command -v pacman) ]]; then
 			unset DEPENDENCY_03
 			if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
