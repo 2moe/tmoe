@@ -184,8 +184,8 @@ auto_configure_tmoe_tools() {
 		fi
 		if [[ $(cut -c 1-4 /etc/issue) = Kali ]]; then
 			if [[ ! $(command -v xhydra) ]]; then
-				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xhydra${RESET}"
-				eatmydata apt install -y xhydra || apt install -y xhydra
+				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}hydra-gtk${RESET}"
+				eatmydata apt install -y hydra-gtk || apt install -y hydra-gtk || apt install -y xhydra
 			fi
 		fi
 		if [[ $(command -v pacman) ]]; then
