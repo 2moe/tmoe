@@ -189,7 +189,8 @@ if_you_can_not_start_chromium() {
         update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
         update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
     fi
-    if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox ]]; then
+    if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox && $(command -v xdg-settings) ]]; then
+        printf "%s\n" "${GREEN}xdg-settings ${YELLOW}get ${BLUE}default-web-browser${RESET}"
         xdg-settings get default-web-browser
         printf "%s\n" "${GREEN}xdg-settings ${YELLOW}set default-web-browser ${BLUE}chromium-browser-no-sandbox.desktop${RESET}"
         xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
