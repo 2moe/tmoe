@@ -185,11 +185,13 @@ if_you_can_not_start_chromium() {
     chmod a+x -v /usr/local/bin/chromium--no-sandbox
     if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
         update-alternatives --auto x-www-browser
+        printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
         update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
         update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
     fi
-    if [[ -r ${APPS_LNK_DIR}/chromium-browser-no-sandbox.desktop ]]; then
+    if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox ]]; then
         xdg-settings get default-web-browser
+        printf "%s\n" "${GREEN}xdg-settings ${YELLOW}set default-web-browser ${BLUE}chromium-browser-no-sandbox.desktop${RESET}"
         xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
     fi
 }
