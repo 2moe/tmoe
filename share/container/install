@@ -1854,6 +1854,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			eatmydata apt dist-upgrade -y 2>/dev/null || apt dist-upgrade -y 2>/dev/null
+		else
+			printf "%s\n" "You are using weekly/moothly build container,${PURPLE}skipping automatic upgrade${RESET}..." 
 		fi
 		if [[ ! $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}procps${RESET}"
@@ -1986,6 +1988,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		printf "%s\n" "${GREEN}dnf ${YELLOW}update -y${RESET}"
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			dnf update -y
+		else
+			printf "%s\n" "You are using weekly/moothly build container,${PURPLE}skipping automatic upgrade${RESET}..." 
 		fi
 		[[ $(command -v hostname) ]] || dnf install -y hostname
 		[[ $(command -v systemctl) ]] || dnf install -y systemd
