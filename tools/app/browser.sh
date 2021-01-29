@@ -183,17 +183,19 @@ if_you_can_not_start_chromium() {
     #do_you_want_to_close_the_sandbox_mode
     cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
     chmod a+x -v /usr/local/bin/chromium--no-sandbox
-    if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
-        update-alternatives --auto x-www-browser
-        printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
-        update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
-        update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
-    fi
-    if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox && $(command -v xdg-settings) ]]; then
-        printf "%s\n" "${GREEN}xdg-settings ${YELLOW}get ${BLUE}default-web-browser${RESET}"
-        xdg-settings get default-web-browser
-        printf "%s\n" "${GREEN}xdg-settings ${YELLOW}set default-web-browser ${BLUE}chromium-browser-no-sandbox.desktop${RESET}"
-        xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
+    if [[ $(command -v chromium) || $(command -v chromium-browser) ]]; then
+        if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
+            update-alternatives --auto x-www-browser
+            printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
+            update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
+            update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
+        fi
+        if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox && $(command -v xdg-settings) ]]; then
+            printf "%s\n" "${GREEN}xdg-settings ${YELLOW}get ${BLUE}default-web-browser${RESET}"
+            xdg-settings get default-web-browser
+            printf "%s\n" "${GREEN}xdg-settings ${YELLOW}set default-web-browser ${BLUE}chromium-browser-no-sandbox.desktop${RESET}"
+            xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
+        fi
     fi
 }
 ##########
