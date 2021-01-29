@@ -1116,6 +1116,10 @@ install_kali_linux_tools() {
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}zenmap${RESET}"
             eatmydata apt install -y zenmap || apt install -y zenmap
         fi
+        if [[ ! $(command -v xhydra) ]]; then
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xhydra${RESET}"
+            eatmydata apt install -y xhydra || apt install -y xhydra
+        fi
         printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-menu${RESET}"
         eatmydata apt install -y kali-menu || aptitude install -y kali-menu || apt install -y kali-menu
         case ${ARCH_TYPE} in

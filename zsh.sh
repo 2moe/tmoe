@@ -182,6 +182,12 @@ auto_configure_tmoe_tools() {
 				zypper in -y tigervnc-x11vnc
 			fi
 		fi
+		if [[ $(cut -c 1-4 /etc/issue) = Kali ]]; then
+			if [[ ! $(command -v xhydra) ]]; then
+				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xhydra${RESET}"
+				eatmydata apt install -y xhydra || apt install -y xhydra
+			fi
+		fi
 		if [[ $(command -v pacman) ]]; then
 			unset DEPENDENCY_03
 			if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
