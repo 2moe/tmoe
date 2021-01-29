@@ -188,6 +188,12 @@ auto_configure_tmoe_tools() {
 				eatmydata apt install -y hydra-gtk || apt install -y hydra-gtk || apt install -y xhydra
 			fi
 		fi
+
+		if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
+			update-alternatives --auto x-www-browser
+			update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 400
+		fi
+
 		if [[ $(command -v pacman) ]]; then
 			unset DEPENDENCY_03
 			if [ ! -e "/usr/share/fonts/noto-cjk" ]; then

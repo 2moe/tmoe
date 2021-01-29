@@ -16,11 +16,11 @@ install_python_web_novnc() {
 	debian)
 		if [ ! -e "/usr/bin/python3" ]; then
 			sudo apt install -y python3 || su -c 'apt install -y python3'
-			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
+			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 50 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
 		fi
 
 		if [ ! -e "/usr/bin/python" ]; then
-			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
+			sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 50 || su -c "update-alternatives --install /usr/bin/python python /usr/bin/python3 1"
 		fi
 		[[ $(command -v netstat) ]] || sudo apt install net-tools
 		;;
