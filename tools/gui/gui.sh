@@ -65,6 +65,11 @@ EOF
         apt install -y ^language-pack-zh
         UBUNTU_DESKTOP=true
         ;;
+    kali)
+        apt install -y debian-archive-keyring
+        printf "\n%s\n" "deb http://deb.debian.org/debian/ stable main contrib non-free" >>/etc/apt/sources.list
+        apt update
+        ;;
     esac
     #check_zstd
     download_iosevka_ttf_font
