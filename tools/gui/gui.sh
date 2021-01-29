@@ -70,7 +70,7 @@ EOF
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
     REMOVE_UDISK2=false
-    AUTO_INSTALL_KALI_TOOLS=false
+    AUTO_INSTALL_KALI_TOOLS=true
     case ${LINUX_DISTRO} in
     alpine)
         AUTO_INSTALL_FCITX4=false

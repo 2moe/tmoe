@@ -171,6 +171,14 @@ set_debian_sid_env() {
 	creat_container_edition_txt
 	go_to_proot_management
 }
+set_kali_rolling_env() {
+	DISTRO_NAME='kali'
+	DISTRO_CODE='rolling'
+	NODE02_ENABLED=true
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	creat_container_edition_txt
+	go_to_proot_management
+}
 set_ubuntu_dev_env() {
 	DISTRO_NAME='ubuntu'
 	DISTRO_CODE='dev'
@@ -347,12 +355,13 @@ choose_xfce_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
 		"1" "🌉 Archlinux-latest" \
 		"2" "🍛 Ubuntu-dev" \
-		"3" "Manjaro-stable" \
-		"4" "🍥 Debian-sid" \
-		"5" "👒 Fedora-rawhide" \
-		"6" "🏔️ Alpine-edge" \
+		"4" "Manjaro-stable" \
+		"5" "🍥 Debian-sid" \
+		"6" "👒 Fedora-rawhide" \
+		"7" "🏔️ Alpine-edge" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
+	#"3" "🐉 Kali-rolling" \
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1) set_arch_latest_env ;;
@@ -365,7 +374,7 @@ choose_xfce_distro() {
 			;;
 		esac
 		;;
-	3)
+	4)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_manjaro_stable_env ;;
 		*)
@@ -374,10 +383,11 @@ choose_xfce_distro() {
 			;;
 		esac
 		;;
-	4) set_debian_sid_env ;;
-	5) set_fedora_rawhide_env ;;
-	6) set_alpine_edge_env ;;
+	5) set_debian_sid_env ;;
+	6) set_fedora_rawhide_env ;;
+	7) set_alpine_edge_env ;;
 	esac
+	#3)set_kali_rolling_env;; #amd64,armhf,arm64
 }
 choose_kde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "If you are using proot,try using ubuntu-bionic.\nIf you are using chroot,you can choose anyone." 0 50 0 \
@@ -480,6 +490,12 @@ view_the_schedule() {
 			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}linux mint-tricia ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
 			${GREEN}linux mint-ulyssa ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
+
+		${BOLD}${YELLOW}28号/28th of every month${RESET}：
+		TIME："UTC 01:01 / CST 09:01"
+			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce${RESET}
+			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce${RESET}
+			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce${RESET}
 
 	EOF
 }
