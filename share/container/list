@@ -355,13 +355,13 @@ choose_xfce_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
 		"1" "🌉 Archlinux-latest" \
 		"2" "🍛 Ubuntu-dev" \
+		"3" "🐉 Kali-rolling" \
 		"4" "Manjaro-stable" \
 		"5" "🍥 Debian-sid" \
 		"6" "👒 Fedora-rawhide" \
 		"7" "🏔️ Alpine-edge" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
-	#"3" "🐉 Kali-rolling" \
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1) set_arch_latest_env ;;

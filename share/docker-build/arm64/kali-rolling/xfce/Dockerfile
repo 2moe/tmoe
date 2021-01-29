@@ -27,6 +27,7 @@ RUN apt update \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
     ; cd /tmp \
+    ; rm -fv /tmp/* \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_auto_configure \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
