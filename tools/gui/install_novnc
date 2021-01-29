@@ -14,7 +14,8 @@ check_python_novnc() {
 			eatmydata apt install -y python3 || apt install -y python3
 		fi
 		if [ ! -e "/usr/bin/python" ]; then
-			update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+			update-alternatives --install /usr/bin/python python /usr/bin/python3 50
+			update-alternatives --set python /usr/bin/python3
 		fi
 
 		if [[ ! $(command -v netstat) ]]; then

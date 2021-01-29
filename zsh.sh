@@ -192,6 +192,7 @@ auto_configure_tmoe_tools() {
 		if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
 			update-alternatives --auto x-www-browser
 			update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
+			update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
 		fi
 
 		if [[ $(command -v pacman) ]]; then
