@@ -84,7 +84,7 @@ start_web_novnc() {
 	if [ "$(uname -o)" = 'Android' ]; then
 		am start -a android.intent.action.VIEW -d "http://localhost:6080/vnc.html"
 	elif [ "${WINDOWS_DISTRO}" = "WSL" ]; then
-		/mnt/c/WINDOWS/system32/cmd.exe "start http://localhost:6080/vnc.html"
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start http://localhost:6080/vnc.html"
 	else
 		su "${CURRENT_USER_NAME}" -c "xdg-open http://localhost:6080/vnc.html 2>/dev/null"
 	fi

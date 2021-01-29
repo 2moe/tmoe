@@ -743,7 +743,7 @@ report_tmoe_linux_problem() {
 	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_ISSUE_URL}"
 	if [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
 		cd /mnt/c/Users
-		/mnt/c/WINDOWS/system32/cmd.exe "start ${TMOE_LINUX_ISSUE_URL}"
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${TMOE_LINUX_ISSUE_URL}"
 		cd -
 	fi
 	case ${LINUX_DISTRO} in

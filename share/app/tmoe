@@ -231,7 +231,7 @@ start_tmoe_container() {
 				xdg-open ${NOVNC_ADDR} 2>/dev/null
 			elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
 				cd /mnt/c/Users
-				/mnt/c/WINDOWS/system32/cmd.exe "start ${NOVNC_ADDR}"
+				/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
 				cd -
 			fi
 			;;

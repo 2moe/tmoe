@@ -357,7 +357,7 @@ install_web_novnc() {
 	elif [[ $(command -v xdg-open) ]]; then
 		xdg-open ${NOVNC_ADDR} 2>/dev/null
 	elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
-		/mnt/c/WINDOWS/system32/cmd.exe "start ${NOVNC_ADDR}"
+		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
 	fi
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/novnc
 	normally_start_gnu_linux_distro
