@@ -73,7 +73,7 @@ check_python_novnc() {
 	if [[ ! $(sudo -H pip3 list | grep numpy) && ! $(ls /usr/lib/python3*/site-packages/numpy/version.py) ]]; then
 		#python3 -m pip install --upgrade pip
 		case ${AUTO_INSTALL_GUI} in
-		true) pip3 install numpy ;;
+		true) sudo -H pip3 install -vvv numpy ;;
 		*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy || su -c "pip3 install -vvv numpy" ;;
 		esac
 	fi
@@ -107,8 +107,8 @@ check_python_novnc() {
 		printf "%s\n" "${GREEN}pip3 install ${BLUE}websockify${RESET}"
 		if [ ! $(command -v websockify) ]; then
 			case ${AUTO_INSTALL_GUI} in
-			true) pip3 install websockify ;;
-			*) sudo pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify || su -c "pip3 install -vvv websockify" ;;
+			true) sudo -H pip3 install -vvv websockify ;;
+			*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify || su -c "pip3 install -vvv websockify" ;;
 			esac
 		fi
 		if [ ! $(command -v websockify) ]; then
