@@ -320,6 +320,7 @@ choose_mate_distro() {
 choose_lxde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "LXDE DISTROS" --menu "对于LXDE桌面,开发者仅配置了i386和armhf的自动构建任务" 0 50 0 \
 		"1" "🍥 Debian-sid(i386,armhf)" \
+		"2" "🏔️ Alpine(i386,armhf)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -327,6 +328,15 @@ choose_lxde_distro() {
 	1)
 		case ${ARCH_TYPE} in
 		armhf | i386) set_debian_sid_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXDE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	2)
+		case ${ARCH_TYPE} in
+		armhf | i386) set_alpine_edge_env ;;
 		*)
 			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXDE桌面的自动构建任务。"
 			distro_does_not_support
@@ -408,7 +418,7 @@ choose_kde_distro() {
 		"3" "🦛 Ubuntu devel(arm64,amd64)" \
 		"4" "🍥 Debian sid(arm64,amd64)" \
 		"5" "👒 Fedora rawhide(arm64,amd64)" \
-		"6" "🏔️ Alpine(arm64,armhf,amd64):small,simple,secure." \
+		"6" "🏔️ Alpine(arm64,amd64):small,simple,secure." \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -458,7 +468,15 @@ choose_kde_distro() {
 			;;
 		esac
 		;;
-	6) set_alpine_edge_env ;;
+	6)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_alpine_edge_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
 	esac
 }
 ##############################
@@ -491,7 +509,8 @@ view_the_schedule() {
 		TIME："UTC 00:01 / CST 08:01"
 			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
 			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}kde+xfce+mate${RESET}
+			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}lxde+xfce+mate${RESET}
+			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}lxde${RESET}   
 
 		${BOLD}${PURPLE}Monthly build${RESET}：
 		${BOLD}${YELLOW}24号/24th of every month${RESET}：
