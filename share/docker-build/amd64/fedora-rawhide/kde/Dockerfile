@@ -25,7 +25,7 @@ RUN dnf update -y \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
     ; dnf update -y \
-    ; rm -rfv /tmp/* ~/.vnc/*passwd \
+    ; rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null \
     ; dnf clean all
 
 CMD [ "/usr/local/bin/startvnc" ]

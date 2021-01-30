@@ -30,7 +30,7 @@ RUN apt update \
     ; rm -fv /tmp/* \
     ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
     ; bash zsh.sh --tmoe_container_auto_configure \
-    ; rm -rfv /tmp/* ~/.vnc/*passwd \
+    ; rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null \
     ; apt clean
 
 CMD [ "/usr/local/bin/startvnc" ]

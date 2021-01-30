@@ -21,6 +21,7 @@ RUN apk update \
     ; printf "%s\n%s\n%s\n" "source /tmp/tool.sh -install-deps"  "cd /usr/local/etc/tmoe-linux/git/tools/gui/" "source gui.sh --auto-install-gui-kde" > install-gui.sh \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
+    ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null \
     ; rm -rfv /tmp/* ~/.vnc/*passwd
 
 CMD [ "/usr/local/bin/startx11vnc" ]
