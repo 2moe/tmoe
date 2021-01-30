@@ -29,8 +29,7 @@ install_python_web_novnc() {
 		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATION_COMMAND} net-tools
 		;;
 	esac
-
-	if [[ ! $(pip3 list | grep numpy) ]]; then
+	if [[ ! $(pip3 list | grep numpy) && ! $(ls /usr/lib/python3*/site-packages/numpy/version.py) ]]; then
 		case $(uname -o) in
 		Android)
 			cd ${TMPDIR}
