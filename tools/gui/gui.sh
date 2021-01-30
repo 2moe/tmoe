@@ -75,7 +75,6 @@ EOF
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
     REMOVE_UDISK2=false
-    AUTO_INSTALL_KALI_TOOLS=true
     case ${LINUX_DISTRO} in
     alpine)
         AUTO_INSTALL_FCITX4=false
@@ -92,6 +91,9 @@ EOF
         AUTO_INSTALL_ELECTRON_APPS=true
         AUTO_INSTALL_HARD_INFO=true
         ;;
+    esac
+    case "${DEBIAN_DISTRO}" in
+    "kali") AUTO_INSTALL_KALI_TOOLS=true ;;
     esac
     AUTO_INSTALL_CHROMIUM=true
     mkdir -p ~/.vnc
