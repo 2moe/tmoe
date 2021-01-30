@@ -18,11 +18,10 @@ proot_management_menu() {
 			"4" "⚒️ startxsdl" \
 			"5" "🍬 novnc(HTML5 VNC client)" \
 			"6" "⚔️ startx11vnc" \
-			"7" "🍹 backup proot container" \
+			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "😏 unmount & remove" \
-			"9" "🥤 install" \
-			"10" "📡 readme" \
-			"11" "🍅 space occupation" \
+			"9" "📡 readme" \
+			"10" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -36,9 +35,8 @@ proot_management_menu() {
 			"6" "⚔️ startx11vnc:启动x11vnc" \
 			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"8" "😏 unmount & remove 卸载并移除" \
-			"9" "🥤 install 安装" \
-			"10" "📡 commands 命令说明" \
-			"11" "🍅 space occupation 空间占用大小" \
+			"9" "📡 commands 命令说明" \
+			"10" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -57,13 +55,13 @@ proot_management_menu() {
 	6) start_gnu_linux_distro_x11vnc ;;
 	7) backup_tmoe_gnu_linux_distro ;;
 	8) umount_and_remove_gnu_linux_distro ;;
-	9) install_new_tmoe_gnu_linux_distro ;;
-	10) readme_of_gnu_linux_distro ;;
-	11) du_sh_gnu_linux_distro ;;
+	9) readme_of_gnu_linux_distro ;;
+	10) du_sh_gnu_linux_distro ;;
 	esac
+	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 10 | 11)
+	2 | 7 | 9 | 10)
 		#回到本菜单： 停止进程,备份，命令，空间
 		press_enter_to_return
 		proot_management_menu
