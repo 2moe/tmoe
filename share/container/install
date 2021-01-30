@@ -1999,8 +1999,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cp -f /tmp/resolv.conf /etc
 		fi
 		[[ $(command -v ip) ]] || dnf install -y iproute
-			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils passwd findutils man-db glibc-all-langpacks${RESET}"
-			dnf install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks
+
+		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils passwd findutils man-db glibc-all-langpacks${RESET}"
+		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
+			dnf install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks || yum install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks
+		fi
 		if [[ ! $(command -v pkill) ]];then
 			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}procps-ng procps-ng-i18n${RESET}"
 			dnf install -y --skip-broken procps-ng procps-ng-i18n
