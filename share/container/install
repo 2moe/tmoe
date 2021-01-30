@@ -1983,7 +1983,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cp -f /etc/resolv.conf /tmp
 		fi
 		if ((${FEDORA_VERSION} >= 32)); then
-			[[ ${TMOE_CHROOT} != true ]] || fedora_rpmfusion_repo
+			if ! grep -q '=rawhide' /etc/os-release;then
+				[[ ${TMOE_CHROOT} != true ]] || fedora_rpmfusion_repo
+			fi
 		fi
 		printf "%s\n" "${GREEN}dnf ${YELLOW}update -y${RESET}"
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
