@@ -90,6 +90,8 @@ EOF
         AUTO_INSTALL_FCITX4=true
         AUTO_INSTALL_ELECTRON_APPS=true
         AUTO_INSTALL_HARD_INFO=true
+        ${TMOE_INSTALLATION_COMMAND} baobab
+        ${TMOE_INSTALLATION_COMMAND} bleachbit
         ;;
     esac
     case "${DEBIAN_DISTRO}" in
@@ -1340,6 +1342,13 @@ EOF
     if ! grep -q '^FontName' terminalrc; then
         if [[ -e /usr/share/fonts/truetype/iosevka/Iosevka-Term-Mono.ttf ]]; then
             sed -i '$ a\FontName=Iosevka Term Bold 12' terminalrc
+        fi
+        if [ -e "/usr/share/fonts/noto-cjk/NotoSansCJK-Bold.ttc" ]; then
+            sed -i '/FontName=/d' terminalrc
+            sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 12' terminalrc
+        elif [ -e "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc" ]; then
+            sed -i '/FontName=/d' terminalrc
+            sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 13' terminalrc
         fi
     fi
 }
@@ -4995,6 +5004,7 @@ case_debian_distro_and_install_vnc() {
 #########
 remove_udisk_and_gvfs() {
     case "${TMOE_PROOT}" in
+    false) ;;
     true | no)
         if [ ${REMOVE_UDISK2} = 'true' ]; then
             if [ "${LINUX_DISTRO}" = 'debian' ]; then
