@@ -81,8 +81,8 @@ proot_management_menu() {
 	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 9 | 11)
-		#回到本菜单： 停止进程,备份，命令，空间
+	2 | 7 | 9 | 10 | 11)
+		#回到本菜单： 停止进程,备份，命令，空间 ,编辑
 		press_enter_to_return
 		proot_management_menu
 		;;
