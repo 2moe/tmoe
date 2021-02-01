@@ -65,7 +65,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        set -- "PREFIX=/data/data/com.termux/files/usr" "\$@"
 	    fi
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
-	        set -- "LANG=\$(cat \${TMOE_LOCALE_FILE} | head -n 1)" "\$@"
+	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\$@"
 	    else
 	        set -- "LANG=en_US.UTF-8" "\$@"
 	    fi
