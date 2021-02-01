@@ -39,8 +39,9 @@ ubuntu_ppa_chromium() {
     case ${ARCH_TYPE} in
     "amd64" | "arm64")
         if [ ! -e "/usr/share/doc/libva2/copyright" ]; then
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}libva2${RESET}"
             apt update
-            apt install -y libva2
+            eatmydata apt install -y libva2 || apt install -y libva2
         fi
         TEMP_FOLDER="/tmp/.CHROMIUM_DEB_VAAPI_TEMP_FOLDER"
         mkdir -pv ${TEMP_FOLDER}
@@ -69,6 +70,7 @@ ubuntu_ppa_chromium() {
         cd ..
         rm -rvf ${TEMP_FOLDER}
         hold_ubuntu_chromium
+        aptitude install -f -y
         #do_you_want_to_close_the_sandbox_mode
         #read_chromium_sandbox_opt
         if_you_can_not_start_chromium

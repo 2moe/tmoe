@@ -203,7 +203,7 @@ download_rootfs_file() {
 			#若下载失败，则重复尝试。
 			;;
 		*)
-			printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+			#printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
 			TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 			#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
 			aria2c --console-log-level=warn --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
