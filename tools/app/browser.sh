@@ -61,9 +61,9 @@ ubuntu_ppa_chromium() {
         DEB_LIST_03=$(printf "%s\n" ${CHROMIUM_DEB_LIST} | sed -E "s@(chromium-browser)@\1-dev@g" | sed "s@^@${GREEN}Downloading ${BLUE}@g;s@\$@${RESET} ...@g")
         printf "%s\n" "${DEB_LIST_03}"
         sh -c "${DOWNLOAD_PPA}"
-
-        echo ${CHROMIUM_BROWSER_VERSION} >${TMOE_LINUX_DIR}/chromium-dev_version.txt
-
+        case "${?}" in
+        0) printf "%s\n" ${CHROMIUM_BROWSER_VERSION} >${TMOE_LINUX_DIR}/chromium-dev_version.txt ;;
+        esac
         unhold_ubuntu_chromium
         dpkg -i ${DEB_LIST_02}
         cd ..
@@ -164,14 +164,23 @@ install_chromium_browser() {
         different_distro_software_install
     fi
     #####################
-    case "${DEBIAN_DISTRO}" in
-    "ubuntu")
-        if [[ -e ${BIONIC_CHROMIUM_LIST_FILE} ]]; then
-            rm -f ${BIONIC_CHROMIUM_LIST_FILE}
-            #sed -i '$ d' "/etc/apt/sources.list"
-            hold_ubuntu_chromium
-            apt update
-        fi
+    case ${LINUX_DISTRO} in
+    debian)
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu")
+            if [[ -e ${BIONIC_CHROMIUM_LIST_FILE} ]]; then
+                rm -f ${BIONIC_CHROMIUM_LIST_FILE}
+                #sed -i '$ d' "/etc/apt/sources.list"
+                hold_ubuntu_chromium
+                apt update
+            fi
+            ;;
+        *)
+            if [[ ! $(command -v chromium) && ! $(command -v chromium-browser) ]]; then
+                ubuntu_ppa_chromium
+            fi
+            ;;
+        esac
         ;;
     esac
     ####################
