@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4285,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4286,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -176,7 +176,7 @@ check_gnu_linux_git_and_whiptail() {
 		#此处必须设定环境变量，因为sudo的环境变量会发生改变。
 		#不能使用这条alias：alias sudo='sudo env PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH'
 		#printf "%s\n" "检测到您使用的是WSL"
-		WSL="[WSL(win10的linux子系统)]"
+		WSL="[WSL(Windows Subsystem for Linux)]"
 		WINDOWS_DISTRO='WSL'
 	else
 		WSL=""
@@ -378,7 +378,13 @@ check_gnu_linux_distro() {
 		fi
 	}
 	choose_manager_or_tool_en() {
-		if (whiptail --title "Which do you want to choose?" --yes-button "Tool" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+		if (whiptail --title "Which one do you want to choose?" --yes-button "Tool" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+			curl_tmoe_linux_tool_sh
+			exit 0
+		fi
+	}
+	choose_manager_or_tool_de() {
+		if (whiptail --title "Welches möchten Sie wählen?" --yes-button "Tool" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstool \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
 			curl_tmoe_linux_tool_sh
 			exit 0
 		fi
@@ -388,6 +394,7 @@ check_gnu_linux_distro() {
 		case ${TMOE_MENU_LANG} in
 		zh_*UTF-8) choose_manager_or_tool_zh ;;
 		ja_JP.UTF-8) choose_manager_or_tool_ja ;;
+		de_DE.UTF-8) choose_manager_or_tool_de ;; #Deutsche
 		*) choose_manager_or_tool_en ;;
 		esac
 	}
@@ -641,9 +648,28 @@ tmoe_manager_main_menu() {
 				3>&1 1>&2 2>&3
 		)
 	}
+	tmoe_manager_main_menu_de() {
+		TMOE_MANAGER_MAIN_OPTION=$(
+			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+				--backtitle "Geben Sie tmoe m ein, um den Manager zu starten." \
+				--menu "${TMOE_TIPS_00}\nBitte benutzen Sie die Pfeiltasten, um zu bedienen." 0 50 0 \
+				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
+				"2" "🌸 chroot container" \
+				"3" "💔 tmoe-manager entfernen" \
+				"4" "🌏 Gebietsschema/\$LANG" \
+				"5" "📱 Zusätzliche Optionen für Termux" \
+				"6" "🌈 Konfigurieren Sie zsh" \
+				"7" "🍧 *°▽°*aktualisieren" \
+				"8" "🍩 FAQ" \
+				"9" "🐞 ein Problem melden" \
+				"0" "🌚 Ausfahrt" \
+				3>&1 1>&2 2>&3
+		)
+	}
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) tmoe_manager_main_menu_zh ;;
 	ja_JP.UTF-8) tmoe_manager_main_menu_ja ;;
+	de_DE.UTF-8) tmoe_manager_main_menu_de ;; #Deutsche
 	*) tmoe_manager_main_menu_en ;;
 	esac
 	[[ -e ${TMOE_GIT_DIR}/.git ]] || check_tmoe_manager_git

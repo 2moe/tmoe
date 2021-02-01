@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4285,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4286,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -772,11 +772,31 @@ tmoe_linux_tool_menu() {
 				"0" "🌚 Exit" \
 				3>&1 1>&2 2>&3
 		)
+		tmoe_linux_tool_menu_de() {
+			TMOE_OPTION=$(
+				whiptail --title "Tmoe-Tool running on ${OSRELEASE}" \
+					--menu "${TMOE_TIPS_00}\nPlease use the enter and arrow keys to operate." 0 50 0 \
+					"1" "🍭 Grafische Benutzeroberfläche(DE,WM,LM)" \
+					"2" "🥝 App Center(Browser,Spiele,Medien-Apps)" \
+					"3" "🌺 Secret Garden (Bildung,System,Beta-Funktion)" \
+					"4" "🌈 Desktop-Verschönerung (Thema und Icon-Pack)" \
+					"5" "🌌 vnc/x/rdp:remote desktop server" \
+					"6" "📺 Video herunterladen: Y2B" \
+					"7" "🍥 Softwarequellen: Weltweite Spiegelseiten" \
+					"8" "🐳 Docker: Verwenden Sie Virtualisierung auf Betriebssystemebene" \
+					"9" "💻 Qemu: x64 virtuelle Maschine" \
+					"10" "🍧 *°▽°*Aktualisieren Sie das Tome-Linux-Tool" \
+					"11" "🍩 Häufig gestellte Fragen" \
+					"0" "🌚 Ausfahrt" \
+					3>&1 1>&2 2>&3
+			)
+		}
 	}
 	########
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) tmoe_linux_tool_menu_zh ;;
 	ja_JP.UTF-8) tmoe_linux_tool_menu_ja ;;
+	de_DE.UTF-8) tmoe_linux_tool_menu_de ;; #Deutsche
 	*) tmoe_linux_tool_menu_en ;;
 	esac
 	##########

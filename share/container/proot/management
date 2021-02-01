@@ -40,8 +40,24 @@ proot_management_menu() {
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
+	proot_management_menu_de() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
+			"1" "🌱 start ${DEBIAN_FOLDER}" \
+			"2" "⏹️ Tötungsprozess" \
+			"3" "🐯 startvnc(tiger/tight)" \
+			"4" "⚒️ startxsdl" \
+			"5" "🍬 novnc(HTML5 VNC client)" \
+			"6" "⚔️ startx11vnc" \
+			"7" "🍹 backup ${CONTAINER_TYPE} container" \
+			"8" "😏 aushängen und entfernen" \
+			"9" "📡 Liesmich" \
+			"10" "🍅 Raumbesetzung" \
+			"0" "🌚 zurück" \
+			3>&1 1>&2 2>&3)
+	}
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) proot_management_menu_cn ;;
+	de_DE.UTF-8) proot_management_menu_de ;; #Deutsche
 	*) proot_management_menu_en ;;
 	esac
 	##############################
