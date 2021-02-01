@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4289,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4290,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -570,8 +570,8 @@ check_dependencies() {
 		[[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
 		cat <<-EOF
 			正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}
-			${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}
-			如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}
+			${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}
+			If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}
 		EOF
 		case "${LINUX_DISTRO}" in
 		debian)

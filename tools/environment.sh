@@ -196,6 +196,7 @@ update_icon_caches_model_01() {
 ############
 tips_of_delete_icon_theme() {
     printf "%s\n" "解压${BLUE}完成${RESET}，如需${RED}删除${RESET}，请手动输${YELLOW}rm -rf /usr/share/icons/${ICON_NAME} ${RESET}"
+    printf "%s\n" "If you want to ${RED}delete it${RESET}，please ${YELLOW}manually type ${PURPLE}rm -rf ${BLUE}/usr/share/icons/${ICON_NAME} ${RESET}"
 }
 ###################
 update_icon_caches_model_02() {
@@ -478,7 +479,7 @@ non_debian_function() {
 ############
 press_enter_to_reinstall() {
     printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-    printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
+    printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     press_enter_to_reinstall_yes_or_no
 }
 ################
@@ -526,7 +527,7 @@ beta_features_quick_install() {
         DEPENDENCY_01_COMMAND=$(printf '%s\n' "${DEPENDENCY_01}" | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
-            printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET}"
+            printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
@@ -535,7 +536,7 @@ beta_features_quick_install() {
         DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
-            printf "%s\n" "如需${RED}卸载${RESET}，请手动输${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}${DEPENDENCY_02}${RESET}"
+            printf "%s\n" "If you want to ${RED}remove it${RESET}，please type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
@@ -1392,7 +1393,7 @@ check_zstd() {
         printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
         tmoe_apt_update
         ${TMOE_INSTALLATION_COMMAND} zstd
-        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} zstd"
+        printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}zstd${RESET}"
     fi
 }
 ##############
