@@ -748,9 +748,13 @@ neko_ascii_env() {
     if [ ! $(command -v lolcat) ] && [ ! -e /usr/games/lolcat ]; then
         case ${LINUX_DISTRO} in
         debian)
-            apt install -y lolcat
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}lolcat${RESET}"
+            eatmydata apt install -y --no-install-recommends lolcat || apt install -y lolcat
             ;;
-        arch) pacman -Syu lolcat ;;
+        arch)
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}lolcat${RESET}"
+            pacman -Sy --noconfirm lolcat
+            ;;
         esac
     fi
     if [ -e /usr/games/lolcat ]; then

@@ -1346,9 +1346,6 @@ EOF
         if [ -e "/usr/share/fonts/noto-cjk/NotoSansCJK-Bold.ttc" ]; then
             sed -i '/FontName=/d' terminalrc
             sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 12' terminalrc
-        elif [ -e "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc" ]; then
-            sed -i '/FontName=/d' terminalrc
-            sed -i '$ a\FontName=Noto Sans Mono CJK SC Bold 13' terminalrc
         fi
     fi
 }

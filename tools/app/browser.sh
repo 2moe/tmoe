@@ -35,7 +35,7 @@ hold_ubuntu_chromium() {
 }
 #########
 ubuntu_ppa_chromium() {
-    PPA_REPO_URL="http://ppa.launchpad.net/xalt7x/chromium-deb-vaapi/ubuntu/pool/main/c/chromium-browser/"
+    PPA_REPO_URL="https://packages.tmoe.me/chromium-dev/ubuntu/pool/main/c/chromium-browser/"
     case ${ARCH_TYPE} in
     "amd64" | "arm64")
         if [ ! -e "/usr/share/doc/libva2/copyright" ]; then
@@ -45,19 +45,25 @@ ubuntu_ppa_chromium() {
         TEMP_FOLDER="/tmp/.CHROMIUM_DEB_VAAPI_TEMP_FOLDER"
         mkdir -pv ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
-        CHROMIUM_DEB_RAW_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | sed 's@=@\n@g' | egrep -v 'chromium-chromedriver|codecs-ffmpeg_' | egrep "${ARCH_TYPE}|all\.deb" | awk -F '"' '{print $2}')
-        CHROMIUM_BROWSER_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | tail -n 1)
-        CHROMIUM_FFMPEG_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-codecs-ffmpeg-extra_' | tail -n 1)
-        if [[ -n $(printf "%s\n" ${CHROMIUM_BROWSER_DEB} | grep '18\.04') ]]; then
-            CHROMIUM_L10N_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser-l10n_' | grep '18\.04' | tail -n 1)
-        else
-            CHROMIUM_L10N_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser-l10n_' | tail -n 1)
-        fi
+        CHROMIUM_DEB_RAW_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | egrep -v 'chromium-chromedriver|codecs-ffmpeg_|dbgsym_' | egrep -v "~18\.04\.1_|~16\.04\.1_|\.debian\.tar" | egrep "${ARCH_TYPE}|all\.deb" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+
+        CHROMIUM_BROWSER_VERSION="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | tail -n 1 | cut -d '_' -f 2 | cut -d '-' -f 1)"
+        CHROMIUM_BROWSER_VERSION_02="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep "${CHROMIUM_BROWSER_VERSION}" | awk -F '~' '{print $NF}' | cut -d '_' -f 1 | head -n 1)"
+
+        CHROMIUM_BROWSER_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep ${CHROMIUM_BROWSER_VERSION} | grep ${CHROMIUM_BROWSER_VERSION_02} | head -n 1)
+
+        CHROMIUM_FFMPEG_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-codecs-ffmpeg-extra_' | grep ${CHROMIUM_BROWSER_VERSION} | grep ${CHROMIUM_BROWSER_VERSION_02} | head -n 1)
+        CHROMIUM_L10N_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser-l10n_' | grep ${CHROMIUM_BROWSER_VERSION} | grep ${CHROMIUM_BROWSER_VERSION_02} | head -n 1)
         CHROMIUM_DEB_LIST="$(printf "%s\n%s\n%s\n" "${CHROMIUM_BROWSER_DEB}" "${CHROMIUM_FFMPEG_DEB}" "${CHROMIUM_L10N_DEB}")"
+
         DOWNLOAD_PPA=$(printf "%s\n" "${CHROMIUM_DEB_LIST}" | sed -E "s@(chromium.*deb)@aria2c --console-log-level=warn --no-conf --allow-overwrite=true -x 5 -s 5 -k 1M -o \1 ${PPA_REPO_URL}\1@")
-        printf "${GREEN}%s${RESET}\n" "${DOWNLOAD_PPA}"
-        sh -c "${DOWNLOAD_PPA}"
         DEB_LIST_02="$(printf "%s\n" ${CHROMIUM_DEB_LIST} | sed "s@^@./@g" | sed ":a;N;s/\n/ /g;ta")"
+        DEB_LIST_03=$(printf "%s\n" ${CHROMIUM_DEB_LIST} | sed -E "s@(chromium-browser)@\1-dev@g" | sed "s@^@${GREEN}Downloading ${BLUE}@g;s@\$@${RESET} ...@g")
+        printf "%s\n" "${DEB_LIST_03}"
+        sh -c "${DOWNLOAD_PPA}"
+
+        echo ${CHROMIUM_BROWSER_VERSION} >${TMOE_LINUX_DIR}/chromium-dev_version.txt
+
         unhold_ubuntu_chromium
         dpkg -i ${DEB_LIST_02}
         cd ..
