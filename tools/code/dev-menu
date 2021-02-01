@@ -26,7 +26,7 @@ development_programming_tools() {
     #"11" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
     case "${SOFTWARE}" in
     0 | "") software_center ;;
-    1) which_vscode_edition ;;
+    1) source_vscode_script ;;
     2) #install_android_studio
         GREP_NAME='android-studio'
         LNK_FILE="${GREP_NAME}.desktop"

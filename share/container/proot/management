@@ -21,7 +21,8 @@ proot_management_menu() {
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "😏 unmount & remove" \
 			"9" "📡 readme" \
-			"10" "🍅 space occupation" \
+			"10" "🥤 edit script" \
+			"11" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -35,8 +36,9 @@ proot_management_menu() {
 			"6" "⚔️ startx11vnc:启动x11vnc" \
 			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"8" "😏 unmount & remove 卸载并移除" \
-			"9" "📡 commands 命令说明" \
-			"10" "🍅 space occupation 空间占用大小" \
+			"9" "📡 readme 自述/说明" \
+			"10" "🥤 edit script 编辑脚本" \
+			"11" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -51,7 +53,8 @@ proot_management_menu() {
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "😏 aushängen und entfernen" \
 			"9" "📡 Liesmich" \
-			"10" "🍅 Raumbesetzung" \
+			"10" "🥤 Skript bearbeiten" \
+			"11" "🍅 Raumbesetzung" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
 	}
@@ -72,12 +75,13 @@ proot_management_menu() {
 	7) backup_tmoe_gnu_linux_distro ;;
 	8) umount_and_remove_gnu_linux_distro ;;
 	9) readme_of_gnu_linux_distro ;;
-	10) du_sh_gnu_linux_distro ;;
+	10) edit_container_startup_script ;;
+	11) du_sh_gnu_linux_distro ;;
 	esac
 	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 9 | 10)
+	2 | 7 | 9 | 11)
 		#回到本菜单： 停止进程,备份，命令，空间
 		press_enter_to_return
 		proot_management_menu
@@ -90,6 +94,15 @@ proot_management_menu() {
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
+edit_container_startup_script() {
+	for i in editor vim nano vi; do
+		if [ $(command -v ${i}) ]; then
+			${TMOE_PREFIX} ${i} ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+			break
+		fi
+	done
+}
+#####################
 #EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
 check_tmoe_container_pid() {
 	LIST_OPEN_FILES_COUNTS=$(awk '{print $1}' ${LSOF_TEMP_FILE} | grep -c '^lsof')

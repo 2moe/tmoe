@@ -1053,7 +1053,7 @@ fix_vnc_dbus_launch() {
     source ${TMOE_TOOL_DIR}/gui/gui.sh --fix-dbus
 }
 #################
-which_vscode_edition() {
+source_vscode_script() {
     source ${TMOE_TOOL_DIR}/code/vscode.sh
 }
 #################

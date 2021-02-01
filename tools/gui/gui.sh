@@ -2,7 +2,7 @@
 ############################################
 gui_main() {
     IOSEVKA_TTF_FILE="/usr/share/fonts/truetype/iosevka/Iosevka-Term-Mono.ttf"
-    unset AUTO_INSTALL_GUI
+    unset AUTO_INSTALL_GUI AUTO_INSTALL_VSCODE
     case "$1" in
     --auto-install-gui-xfce)
         docker_auto_install_gui_env
@@ -75,6 +75,7 @@ EOF
     download_iosevka_ttf_font
     preconfigure_gui_dependecies_02
     REMOVE_UDISK2=false
+    AUTO_INSTALL_VSCODE=false
     case ${LINUX_DISTRO} in
     alpine)
         AUTO_INSTALL_FCITX4=false
@@ -85,6 +86,7 @@ EOF
         AUTO_INSTALL_FCITX4=false
         AUTO_INSTALL_ELECTRON_APPS=true
         AUTO_INSTALL_HARD_INFO=false
+        AUTO_INSTALL_VSCODE=true
         ;;
     debian | arch)
         AUTO_INSTALL_FCITX4=true
@@ -92,6 +94,7 @@ EOF
         AUTO_INSTALL_HARD_INFO=true
         ${TMOE_INSTALLATION_COMMAND} baobab
         ${TMOE_INSTALLATION_COMMAND} bleachbit
+        AUTO_INSTALL_VSCODE=true
         ;;
     esac
     case "${DEBIAN_DISTRO}" in
@@ -1511,6 +1514,9 @@ auto_install_and_configure_fcitx4() {
         printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}hardinfo${RESET}"
         ${TMOE_INSTALLATION_COMMAND} hardinfo
         printf "%s\n" "You can type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}hardinfo${RESET} to remove it."
+    fi
+    if [[ ${AUTO_INSTALL_VSCODE} = true ]]; then
+        source ${TMOE_TOOL_DIR}/code/vscode.sh --auto-install-vscode
     fi
     [[ ${AUTO_INSTALL_CHROMIUM} != true ]] || source ${TMOE_TOOL_DIR}/app/browser.sh --auto-install-chromium
 }

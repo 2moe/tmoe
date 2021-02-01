@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 #####################
+vscode_main() {
+    AUTO_INSTALL_VSCODE=false
+    case "${1}" in
+    --auto-install-vscode)
+        AUTO_INSTALL_VSCODE=true
+        case "${ARCH_TYPE}" in
+        amd64 | arm64) install_vscode_official ;;
+        esac
+        ;;
+    "" | *) which_vscode_edition ;;
+    esac
+}
+##################
 which_vscode_edition() {
     RETURN_TO_WHERE='which_vscode_edition'
     ps -e >/dev/null 2>&1 || VSCODEtips=$(printf "%s\n" "检测到您无权读取/proc的部分内容，请选择Server版，或使用x11vnc打开VSCode本地版")
@@ -416,7 +429,9 @@ install_vscode_official() {
     printf "%s\n" "请问您是否需要下载最新版安装包？"
     printf "%s\n" "Do you want to download the latest vscode?"
     printf "${YELLOW}%s${RESET}\n" "${CODE_BIN_URL}"
-    do_you_want_to_continue
+    if [[ ${AUTO_INSTALL_VSCODE} != true ]]; then
+        do_you_want_to_continue
+    fi
 
     case ${LINUX_DISTRO} in
     debian)
@@ -438,8 +453,12 @@ install_vscode_official() {
         rm -vf VSCode.tar.gz
         #if [ ! -e "/usr/share/code/.electron" ]; then
         printf "%s\n" "${CODE_BIN_FOLDER}" >/usr/share/code/.electron
-        CODE_SHARE_FILE='.VSCODE_USR_SHARE.tar.gz'
-        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
+        CODE_SHARE_FILE='.VSCODE_USR_SHARE.tar.xz'
+        if [[ ${AUTO_INSTALL_VSCODE} != true ]]; then
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://github.com/2moe/vscode-share/raw/master/code.tar.xz
+        else
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://github.com/2moe/vscode-share/raw/master/code.tar.xz || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
+        fi
         tar -Jxvf ${CODE_SHARE_FILE} -C /
         #chown 0:0 /usr/share/zsh /usr/share/mime /usr/share/applications /usr/share/appdata /usr/share/bash-completion /usr/share/pixmaps /usr/share/zsh/vendor-completions /usr/share/zsh/vendor-completions/_code /usr/share/applications/code.desktop /usr/share/applications/code-url-handler.desktop /usr/share/code /usr/share/appdata/code.appdata.xml /usr/share/mime/packages/code-workspace.xml /usr/share/bash-completion/completions/code /usr/share/pixmaps/com.visualstudio.code.png
         rm -vf ${CODE_SHARE_FILE}
@@ -450,4 +469,4 @@ install_vscode_official() {
     esac
 }
 ###############################
-which_vscode_edition
+vscode_main "${@}"

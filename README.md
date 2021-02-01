@@ -116,7 +116,7 @@ Finally, press Enter and arrow keys to operate.
 > 1.Go to google play, then install [Termux](https://play.google.com/store/apps/details?id=com.termux) and [Termux:api](https://play.google.com/store/apps/details?id=com.termux.api)  
 > 2.Open termux and enter the following command.
 >
-> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://mirrors.tuna.tsinghua.edu.cn/fdroid/repo/com.termux.api_44.apk)  
+> 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://apk.tmoe.me/termux-api)  
 > 2.打开 termux，输入下面 bash 开头的命令
 
 _**If you do not live in China, please enter**_
