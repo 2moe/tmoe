@@ -28,7 +28,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        startx11vnc
 	        ;;
 		-n | novnc*)
-	        debian-i novnc
+	        novnc
 	        ;;
 		-x)
 			startxsdl

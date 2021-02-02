@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4292,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4294,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -411,7 +411,8 @@ check_gnu_linux_distro() {
 notes_of_tmoe_package_installation() {
 	printf "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}\n"
 	printf "${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}\n"
-	printf "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${RED}${TMOE_REMOVAL_COMMAND}${RESET}${BLUE}${DEPENDENCIES}${RESET}\n"
+	printf "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}\n"
+	printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manaully type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}"
 }
 #####################
 check_release_version() {

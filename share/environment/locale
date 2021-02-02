@@ -50,15 +50,15 @@ tmoe_locale_menu() {
 			"18" "fil_PH.UTF-8 Filipino_Philippines" \
 			"19" "fi_FI.UTF-8 Finnish_Finland" \
 			"20" "fr_FR.UTF-8 French_France" \
-			"21" "ga.UTF-8 Gaelic;Scottish" \
+			"21" "ga_IE.UTF-8 Gaelic;Scottish" \
 			"22" "gl_ES.UTF-8 Galician_Spain" \
 			"23" "ka_GE.UTF-8 Georgian_Georgia" \
 			"24" "de_DE.UTF-8 German_Germany" \
 			"25" "el_GR.UTF-8 Greek_Greece" \
-			"26" "gu.UTF-8 Gujarati_India" \
+			"26" "gu_IN UTF-8 Gujarati_India" \
 			"27" "he_IL.UTF-8 Hebrew_Israel" \
 			"28" "hi_IN.UTF-8 Hindi" \
-			"29" "hu.UTF-8 Hungarian_Hungary" \
+			"29" "hu_HU.UTF-8 Hungarian_Hungary" \
 			"30" "is_IS.UTF-8 Icelandic_Iceland" \
 			"31" "id_ID.UTF-8 Indonesian_indonesia" \
 			"32" "it_IT.UTF-8 Italian_Italy" \
@@ -68,15 +68,15 @@ tmoe_locale_menu() {
 			"36" "ko_KR.UTF-8 Korean_Korea한국" \
 			"37" "lo_LA.UTF-8 Lao_Laos" \
 			"38" "lt_LT.UTF-8 Lithuanian_Lithuania" \
-			"39" "lat.UTF-8 Latvian_Latvia" \
-			"40" "ml_IN.UTF-8 Malayalam_India.x-iscii-ma" \
+			"39" "lv_LV.UTF-8 Latvian_Latvia" \
+			"40" "ml_IN UTF-8 Malayalam_India.x-iscii-ma" \
 			"41" "ms_MY.UTF-8 Malay_malaysia" \
 			"42" "mi_NZ.UTF-8 Ngai_Tahu" \
 			"43" "mi_NZ.UTF-8 Waikoto_Uni" \
-			"44" "mn.UTF-8 Cyrillic_Mongolian" \
+			"44" "mn_MN UTF-8 Cyrillic_Mongolian" \
 			"45" "no_NO.UTF-8 Norwegian_Norway" \
 			"46" "nn_NO.UTF-8 Norwegian-Nynorsk_Norway" \
-			"47" "pl.UTF-8 Polish_Poland" \
+			"47" "pl_PL.UTF-8 Polish_Poland" \
 			"48" "pt_PT.UTF-8 Portuguese_Portugal" \
 			"49" "pt_BR.UTF-8 Portuguese_Brazil(Brazil) " \
 			"50" "ro_RO.UTF-8 Romanian_Romania" \
@@ -88,8 +88,8 @@ tmoe_locale_menu() {
 			"56" "so_SO.UTF-8 Somali Somali" \
 			"57" "es_ES.UTF-8 Spanish_Spain(International)" \
 			"58" "sv_SE.UTF-8 Swedish_Sweden" \
-			"59" "tl.UTF-8 Philippines" \
-			"60" "ta_IN.UTF-8 English_Australia" \
+			"59" "tl_PH.UTF-8 Philippines" \
+			"60" "ta_IN.UTF-8 Tamil_India" \
 			"61" "th_TH.UTF-8 Thai_Thailand" \
 			"62" "tr_TR.UTF-8 Turkish_Turkey" \
 			"63" "uk_UA.UTF-8 Ukrainian_Ukraine" \
@@ -120,15 +120,15 @@ tmoe_locale_menu() {
 	18) TMOE_LANG='fil_PH.UTF-8' ;;
 	19) TMOE_LANG='fi_FI.UTF-8' ;;
 	20) TMOE_LANG='fr_FR.UTF-8' ;;
-	21) TMOE_LANG='ga.UTF-8' ;;
+	21) TMOE_LANG='ga_IE.UTF-8' ;;
 	22) TMOE_LANG='gl_ES.UTF-8' ;;
 	23) TMOE_LANG='ka_GE.UTF-8' ;;
 	24) TMOE_LANG='de_DE.UTF-8' ;;
 	25) TMOE_LANG='el_GR.UTF-8' ;;
-	26) TMOE_LANG='gu.UTF-8' ;;
+	26) TMOE_LANG='gu_IN UTF-8' ;;
 	27) TMOE_LANG='he_IL.UTF-8' ;;
 	28) TMOE_LANG='hi_IN.UTF-8' ;;
-	29) TMOE_LANG='hu.UTF-8' ;;
+	29) TMOE_LANG='hu_HU.UTF-8' ;;
 	30) TMOE_LANG='is_IS.UTF-8' ;;
 	31) TMOE_LANG='id_ID.UTF-8' ;;
 	32) TMOE_LANG='it_IT.UTF-8' ;;
@@ -138,15 +138,15 @@ tmoe_locale_menu() {
 	36) TMOE_LANG='ko_KR.UTF-8' ;;
 	37) TMOE_LANG='lo_LA.UTF-8' ;;
 	38) TMOE_LANG='lt_LT.UTF-8' ;;
-	39) TMOE_LANG='lat.UTF-8' ;;
-	40) TMOE_LANG='ml_IN.UTF-8' ;;
+	39) TMOE_LANG='lv_LV.UTF-8' ;;
+	40) TMOE_LANG='ml_IN UTF-8' ;;
 	41) TMOE_LANG='ms_MY.UTF-8' ;;
 	42) TMOE_LANG='mi_NZ.UTF-8' ;;
 	43) TMOE_LANG='mi_NZ.UTF-8' ;;
-	44) TMOE_LANG='mn.UTF-8' ;;
+	44) TMOE_LANG='mn_MN UTF-8' ;;
 	45) TMOE_LANG='no_NO.UTF-8' ;;
 	46) TMOE_LANG='nn_NO.UTF-8' ;;
-	47) TMOE_LANG='pl.UTF-8' ;;
+	47) TMOE_LANG='pl_PL.UTF-8' ;;
 	48) TMOE_LANG='pt_PT.UTF-8' ;;
 	49) TMOE_LANG='pt_BR.UTF-8' ;;
 	50) TMOE_LANG='ro_RO.UTF-8' ;;
@@ -158,7 +158,7 @@ tmoe_locale_menu() {
 	56) TMOE_LANG='so_SO.UTF-8' ;;
 	57) TMOE_LANG='es_ES.UTF-8' ;;
 	58) TMOE_LANG='sv_SE.UTF-8' ;;
-	59) TMOE_LANG='tl.UTF-8' ;;
+	59) TMOE_LANG='tl_PH.UTF-8' ;;
 	60) TMOE_LANG='ta_IN.UTF-8' ;;
 	61) TMOE_LANG='th_TH.UTF-8' ;;
 	62) TMOE_LANG='tr_TR.UTF-8' ;;

@@ -536,7 +536,7 @@ beta_features_quick_install() {
         DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
-            printf "%s\n" "If you want to ${RED}remove it${RESET}，please type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
+            printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manaully type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
             EXISTS_COMMAND='true'
         fi
     fi
