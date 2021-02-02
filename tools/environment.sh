@@ -1549,7 +1549,7 @@ this_app_may_non_support_running_on_proot() {
 download_and_cat_icon_img() {
     if [ ! -e "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" ]; then
         mkdir -pv ${TMOE_ICON_DIR}
-        aria2c --console-log-level=info --no-conf -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
+        aria2c --console-log-level=error --no-conf -d ${TMOE_ICON_DIR} -o ${ICON_FILE_NAME} ${ICON_URL}
     fi
     if [ $(command -v catimg) ]; then
         catimg "${TMOE_ICON_DIR}/${ICON_FILE_NAME}" 2>/dev/null
