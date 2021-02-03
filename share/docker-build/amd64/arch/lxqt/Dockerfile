@@ -1,4 +1,6 @@
-FROM --platform=linux/amd64 lopsided/archlinux:devel
+#FROM --platform=linux/amd64 lopsided/archlinux:devel
+FROM scratch
+ADD arch.tar /
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ENV HOME=/root \
@@ -9,7 +11,7 @@ ENV HOME=/root \
 RUN mkdir -pv /var/cache/pacman/pkg \
     ; pacman-key --init \
     ; pacman-key --populate \
-    ; pacman -Syu --noconfirm \
+    ; pacman -Syu --noconfirm base base-devel \
     ; pacman -S --noconfirm wget curl git \
     ; pacman -S --noconfirm unzip neofetch iproute \
     ; pacman -S --noconfirm systemd \
@@ -17,6 +19,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \
     ; sed -i -E "s@^#*(${LANG} UTF-8)@\1@g" /etc/locale.gen \
+    ; sed -i -E "s@^#*(en_US.UTF-8 UTF-8)@\1@g" /etc/locale.gen \
     ; grep "^[^#]*${LANG}" /etc/locale.gen || printf "%s\n" "${LANG} UTF-8" >> /etc/locale.gen \
     ; locale-gen \
     ; export LANG=en_US.UTF-8 \

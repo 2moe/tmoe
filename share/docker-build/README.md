@@ -4,6 +4,7 @@
 
 ```bash
 cd amd64/arch/kde
+[[ ! -s ../bootstrap.sh ]] || bash ../bootstrap.sh
 docker build -t arch-kde .
 ```
 

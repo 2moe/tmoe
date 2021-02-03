@@ -1,0 +1,4 @@
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security main restricted universe multiverse
