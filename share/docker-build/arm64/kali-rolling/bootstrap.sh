@@ -27,7 +27,7 @@ else
     cd ${HOME}/.cache/tmp
 fi
 
-sudo debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,non-free,contrib --variant=minbase --include=init,locales,ca-certificates,openssl,curl ${DISTRO_CODE} ${DEBIAN_CHROOT} ${KALI_URL} || sudo debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,non-free,contrib --variant=minbase --include=init,locales,ca-certificates,openssl,curl ${DISTRO_CODE} ${DEBIAN_CHROOT} ${KALI_URL_02}
+sudo debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,non-free,contrib --variant=minbase --include=init,locales,ca-certificates,openssl,curl,kali-archive-keyring ${DISTRO_CODE} ${DEBIAN_CHROOT} ${KALI_URL} || sudo debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,non-free,contrib --variant=minbase --include=init,locales,ca-certificates,openssl,curl,kali-archive-keyring ${DISTRO_CODE} ${DEBIAN_CHROOT} ${KALI_URL_02}
 
 sudo mkdir -pv ${DEBIAN_CHROOT}/run/systemd
 sudo su -c "echo 'docker' >${DEBIAN_CHROOT}/run/systemd/container"
