@@ -468,6 +468,7 @@ EOF
 ###########
 QEMU_BIN_PATH="/usr/bin"
 #默认为"/usr/bin",若您手动编译的qemu-system-x86_64位于"/usr/local/bin/"，则将其修改为"/usr/local/bin"
+[[ -d ${QEMU_BIN_PATH} ]] || QEMU_BIN_PATH="${PREFIX}/bin"
 
 QEMU_BIN_ARCH='x86_64'
 #默认为x86_64，如需模拟32位system,则请将其修改为i386，否则请保持默认值。
