@@ -7,8 +7,7 @@ ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
-#RUN sed -i "s@deb.debian.org@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list \
-#    ; apt update \
+
 RUN apt update \
     ; apt dist-upgrade -y \
     ; apt install -y locales-all locales \
