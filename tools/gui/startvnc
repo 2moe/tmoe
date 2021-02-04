@@ -18,7 +18,7 @@ TMOE_VNC_DISPLAY_NUMBER=2
 VNC_SERVER=tiger
 #You can choose tiger or tight.
 #服务端可选tiger或tight。
-#Sie können Tiger oder eng wählen.
+#Sie können "tiger" oder "tight" wählen.
 
 PIXEL_DEPTH=24
 #Specify  the  pixel  depth in bits of the desktop to be created. Default is 24.
