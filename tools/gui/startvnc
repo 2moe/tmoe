@@ -3,7 +3,7 @@
 export PULSE_SERVER=127.0.0.1
 #The default pulseaudio server address is 127.0.0.1
 #本机默认音频服务地址为127.0.0.1,默认端口为4713。
-#Die Audiodienstadresse dieses Geräts lautet 127.0.0.1
+#Die Standard-Audiodienst Adresse dieses Geräts lautet 127.0.0.1
 
 VNC_RESOLUTION=1440x720
 #The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
