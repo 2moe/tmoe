@@ -7,8 +7,8 @@ export PULSE_SERVER=127.0.0.1
 
 VNC_RESOLUTION=1440x720
 #The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
-#默认分辨率为1440x720,你可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
-#Die Standardauflösung ist 1440 x 720
+#默认分辨率为1440x720,您可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
+#Die Standardauflösung ist 1440x720
 
 TMOE_VNC_DISPLAY_NUMBER=2
 #If the display number=2,then vnc port=5902.
@@ -21,7 +21,7 @@ VNC_SERVER=tiger
 #Sie können "tiger" oder "tight" wählen.
 
 PIXEL_DEPTH=24
-#Specify  the  pixel  depth in bits of the desktop to be created. Default is 24.
+#Specify the pixel depth in bits of the desktop to be created. Default is 24.
 #像素深度，可选16,24或32,默认为24,建议选用24。
 #Die Standardpixeltiefe beträgt 24
 
