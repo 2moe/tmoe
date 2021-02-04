@@ -1,17 +1,34 @@
 #!/usr/bin/env bash
 ########################
 export PULSE_SERVER=127.0.0.1
-#默认音频服务地址为127.0.0.1,默认端口为4713。The default pulseaudio server address is 127.0.0.1
+#The default pulseaudio server address is 127.0.0.1
+#本机默认音频服务地址为127.0.0.1,默认端口为4713。
+#Die Audiodienstadresse dieses Geräts lautet 127.0.0.1
+
 VNC_RESOLUTION=1440x720
-#默认分辨率为1440x720
+#The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
+#默认分辨率为1440x720,你可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
+#Die Standardauflösung ist 1440 x 720
+
 TMOE_VNC_DISPLAY_NUMBER=2
-#若显示编号为2,则vnc端口为$((5900+2))=5902。 If the display number=2,then vnc port=5902.
+#If the display number=2,then vnc port=5902.
+#若显示编号为2,则vnc端口为$((5900+2))=5902。
+#Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
+
 VNC_SERVER=tiger
-#服务端可选tiger或tight。You can choose tiger or tight.
+#You can choose tiger or tight.
+#服务端可选tiger或tight。
+#Sie können Tiger oder eng wählen.
+
 PIXEL_DEPTH=24
-#像素深度，可选8,16,24和32,默认为24,建议选用24。Specify  the  pixel  depth in bits of the desktop to be created. Default is 24.
+#Specify  the  pixel  depth in bits of the desktop to be created. Default is 24.
+#像素深度，可选16,24或32,默认为24,建议选用24。
+#Die Standardpixeltiefe beträgt 24
+
 ZLIB_LEVEL=0
-#压缩级别,可选0至9,默认为0。Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
+#Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
+#压缩级别,可选0至9,默认为0。
+#Die Standardkomprimierungsstufe für zlib ist 0
 ########################
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
@@ -34,7 +51,6 @@ TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 TIGERVNC_BIN='/usr/bin/tigervncserver'
 KDE_PLASMA_WAYLAND=false
-#你需要先安装plasma-wayland，然后才能将此选项值修改为true。Arch/Manjaro: pacman -Syu plasma-wayland-session;debian/ubuntu: apt install plasma-workspace-wayland
 unset TMOE_WSL
 ########################
 check_tmoe_locale() {
