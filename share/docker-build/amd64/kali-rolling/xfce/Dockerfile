@@ -1,4 +1,6 @@
-FROM --platform=linux/amd64 donaldrich/kali-linux:wifi
+#FROM --platform=linux/amd64 donaldrich/kali-linux:wifi
+FROM scratch
+ADD kali.tar /
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive

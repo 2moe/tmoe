@@ -11,7 +11,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; pacman-key --populate \
     ; pacman -Syu --noconfirm base base-devel \
     ; pacman -S --noconfirm wget curl git \
-    ; pacman -S --noconfirm unzip neofetch \
+    ; pacman -S --noconfirm unzip neofetch man-db man-pages \
     ; pacman -S --noconfirm systemd \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \

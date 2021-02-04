@@ -15,8 +15,8 @@ MANJARO_DOCKERFILE=$(find . | grep Dockerfile | grep manjaro)
 sed -i -E 's@^(FROM) manjarolinux/base.*@\1 abyo/manjaro_aarch64:latest@g' ${MANJARO_DOCKERFILE}
 sed -E -e 's@-a x86_64@-a aarch64@' \
     -e 's@=amd64@=arm64@' \
-    -e 's@^(UBUNTU_URL=).*@\1"http://ports.ubuntu.com/ubuntu-ports/"@' \
-    -e 's@^(UBUNTU_URL_02=).*@\1"https://mirrors.bfsu.edu.cn/ubuntu-ports/"@' \
+    -e 's@^(UBUNTU_URL=).*ubuntu.*@\1"http://ports.ubuntu.com/ubuntu-ports/"@' \
+    -e 's@^(UBUNTU_URL_02=).*ubuntu.*@\1"https://mirrors.bfsu.edu.cn/ubuntu-ports/"@' \
     -i ${BOOTSTRAP_SCRIPT}
 
 sed -i -E 's@http.*ubuntu/ @http://ports.ubuntu.com/ubuntu-ports/ @g' ${SOURCE_LIST}
@@ -27,7 +27,7 @@ ARMHF_DOCKERFILE=$(find . | grep Dockerfile)
 BOOTSTRAP_SCRIPT=$(find . | grep bootstrap\.sh)
 sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1arm\2:\1arm\2@g;s@(FROM) amd64/@\1 arm32v7/@g' ${ARMHF_DOCKERFILE}
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | egrep "arch|kali")
-sed -i -E 's@-a x86_64@-a armv7h@' ${BOOTSTRAP_SCRIPT}
+sed -i -E 's@-a x86_64@-a armv7h@;s@=amd64@=armhf@g' ${BOOTSTRAP_SCRIPT}
 
 #sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm/v7 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
 sed -i -E 's@--platform=linux/amd64@--platform=linux/arm/v7@g' ${ARCH_DOCKERFILE}
