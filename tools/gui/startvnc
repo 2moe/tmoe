@@ -22,13 +22,24 @@ VNC_SERVER=tiger
 
 PIXEL_DEPTH=24
 #Specify the pixel depth in bits of the desktop to be created. Default is 24.
-#像素深度，可选16,24或32,默认为24,建议选用24。
+#像素深度，可选16、24或32,默认为24，建议选用16或者24。
 #Die Standardpixeltiefe beträgt 24
 
 ZLIB_LEVEL=0
 #Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
 #压缩级别,可选0至9,默认为0。
 #Die Standardkomprimierungsstufe für zlib ist 0
+
+VNC_LOCALHOST=false
+#Only allow connections from localhost.Default is false.
+#当此参数的值为true时，仅允许本机连接 ; 为false时，允许局域网连接。默认为false
+
+X509_VNC_ENABLED=false
+#Default is false.
+X509_KEY=${HOME}/.vnc/x509-key.pem
+#Path to the key of the X509 certificate in PEM format
+X509_CERTIFICATE=${HOME}/.vnc/x509-cet.pem
+#Path to the X509 certificate in PEM format
 ########################
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
@@ -193,6 +204,14 @@ start_tmoe_xvnc() {
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
         set -- "${@}" "-rfbwait" "30000"
         set -- "${@}" "-pn"
+    fi
+    if [[ ${VNC_LOCALHOST} = true ]]; then
+        set -- "${@}" "-localhost"
+    fi
+    if [[ ${X509_VNC_ENABLED} = true && -e ${X509_KEY} && -e ${X509_CERTIFICATE} ]]; then
+        set -- "${@}" "-SecurityTypes" "X509Vnc,X509Plain,X509None,VncAuth,TLSVnc"
+        set -- "${@}" "-X509Key" "${X509_KEY}"
+        set -- "${@}" "-X509Cert" "${X509_CERTIFICATE}"
     fi
     set -- "${@}" "-a" "5"
     set -- "${@}" "-wm"

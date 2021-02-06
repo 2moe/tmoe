@@ -3,6 +3,7 @@
 export PULSE_SERVER=127.0.0.1
 TMOE_X11_RESOLUTION=1440x720
 TCP_PORT_FOR_RFB_PROTOCOL=5902
+VNC_LOCALHOST=false
 #################
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
@@ -42,6 +43,9 @@ start_win10_tigervnc() {
 #####################
 start_tmoe_x11vnc() {
     [[ ! -e ${TIGERVNC_CONFIG_FILE} ]] || . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
+    if [[ ${VNC_LOCALHOST} = true ]]; then
+        set -- "${@}" "-localhost"
+    fi
     set -- "${@}" "-ncache_cr"
     set -- "${@}" "-xkb"
     set -- "${@}" "-noxrecord"
