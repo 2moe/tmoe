@@ -31,7 +31,7 @@ ZLIB_LEVEL=0
 #Die Standardkomprimierungsstufe für zlib ist 0
 
 VNC_USER=$(whoami)
-#You can specify a VNC user.Default is current user.
+#You can specify a VNC user. Default is current user.
 #您可以指定VNC用户
 
 VNC_LOCALHOST=false
@@ -40,14 +40,19 @@ VNC_LOCALHOST=false
 
 ALWAYS_SHARED=true
 #Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
-
+####################
+if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
+    CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
+    HOME=${CURRENT_HOME}
+fi
+###################
 X509_VNC_ENABLED=false
 #Default is false.
 X509_KEY=${HOME}/.vnc/x509-key.pem
 #Path to the key of the X509 certificate in PEM format
 X509_CERTIFICATE=${HOME}/.vnc/x509-cert.pem
 #Path to the X509 certificate in PEM format
-########################
+####################
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
 GREEN=$(printf '\033[32m')
@@ -236,7 +241,8 @@ start_tmoe_xvnc() {
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
         "${@}" &
     else
-        sudo su - ${VNC_USER} -c "${@} &"
+        XVNC_COMMAND="${@}"
+        sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &"
     fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
