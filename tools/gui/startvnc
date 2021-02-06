@@ -103,7 +103,7 @@ fix_vnc_permissions() {
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
     ${CURRENT_USER_NAME}) ;;
     *)
-        printf "%s\n" "检测到${TMOE_VNC_PASSWD_FILE}文件所属非当前用户（${CURRENT_USER_NAME}），为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        #printf "%s\n" "检测到${TMOE_VNC_PASSWD_FILE}文件所属非当前用户（${CURRENT_USER_NAME}），为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
         sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc"
         for i in ".ICEauthority" ".Xauthority"; do
