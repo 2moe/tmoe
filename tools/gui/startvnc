@@ -244,7 +244,7 @@ start_tmoe_xvnc() {
         "${@}" &
     else
         XVNC_COMMAND="${@}"
-        sudo -E su ${VNC_USER} -c "${XVNC_COMMAND} &"
+        sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
     fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
@@ -254,13 +254,14 @@ start_tmoe_xvnc() {
         if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
             . ${XSESSION_FILE} &>/dev/null &
         else
-            if [[ ${VNC_USER} != root ]]; then
-                sudo -E su ${VNC_USER} -c "export PATH=$(echo ${PATH} | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
-                #su - (X)
-                #preserve environment in container
-            else
-                sudo -E su ${VNC_USER} -c "source ${XSESSION_FILE} &"
-            fi
+            # if [[ ${VNC_USER} != root ]]; then
+            #     sudo -E su ${VNC_USER} -c "export PATH=$(echo ${PATH} | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
+            #su - (X)
+            #preserve environment in container
+            #else
+            #    sudo -E su ${VNC_USER} -c "source ${XSESSION_FILE} &" || su ${VNC_USER} -c "source ${XSESSION_FILE} &"
+            #fi
+            sudo su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};source ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};source ${XSESSION_FILE} &"
         fi
     fi
     start_win10_tigervnc
