@@ -32,7 +32,7 @@ ZLIB_LEVEL=0
 
 VNC_LOCALHOST=false
 #Only allow connections from localhost.Default is false.
-#当此参数的值为true时，仅允许本机连接 ; 为false时，允许局域网连接。默认为false
+#当此参数的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
 
 ALWAYS_SHARED=true
 #Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
@@ -41,7 +41,7 @@ X509_VNC_ENABLED=false
 #Default is false.
 X509_KEY=${HOME}/.vnc/x509-key.pem
 #Path to the key of the X509 certificate in PEM format
-X509_CERTIFICATE=${HOME}/.vnc/x509-cet.pem
+X509_CERTIFICATE=${HOME}/.vnc/x509-cert.pem
 #Path to the X509 certificate in PEM format
 ########################
 RED=$(printf '\033[31m')

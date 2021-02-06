@@ -1049,11 +1049,18 @@ debootstrap_ubuntu_distro() {
 		DEB_BOOT_STRAP='true'
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
+		if (whiptail --title "UBUNTU URL" --yes-button "BFSU MIRROR" --no-button "UBUNTU OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
+			case ${ARCH_TYPE} in
+			amd64 | i386) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu" ;;
+			*) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
+			esac
+		else
+			case ${ARCH_TYPE} in
+			amd64 | i386) UBUNTU_MIRROR_URL="http://archive.ubuntu.com/ubuntu" ;;
+			*) UBUNTU_MIRROR_URL="http://ports.ubuntu.com/ubuntu-ports" ;;
+			esac
+		fi
 		${TMOE_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
-		case ${ARCH_TYPE} in
-		amd64 | i386) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu" ;;
-		*) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
-		esac
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail,apt-transport-https
 		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,restricted,universe,multiverse --variant=minbase --include=init,locales,ca-certificates,openssl ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt

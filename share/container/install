@@ -1730,7 +1730,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}ca-certificates${RESET}"
 			eatmydata apt install -y ca-certificates 2>/dev/null || apt install -y ca-certificates 2>/dev/null
 		fi
-		if egrep -q 'squeeze|wheezy|stretch|jessie' "/etc/os-release"; then
+		if egrep -q 'squeeze|wheezy|stretch|jessie|CODENAME=xenial' "/etc/os-release"; then
 	       eatmydata apt install -y apt-transport-https 2>/dev/null || apt install -y apt-transport-https 2>/dev/null
 		fi
 	fi 
