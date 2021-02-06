@@ -30,6 +30,10 @@ ZLIB_LEVEL=0
 #压缩级别,可选0至9,默认为0。
 #Die Standardkomprimierungsstufe für zlib ist 0
 
+VNC_USER=$(whoami)
+#You can specify a VNC user.Default is current user.
+#您可以指定VNC用户
+
 VNC_LOCALHOST=false
 #Only allow connections from localhost.Default is false.
 #当此参数的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
@@ -229,13 +233,21 @@ start_tmoe_xvnc() {
     set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "${XVNC_BIN}" "${@}"
-    "${@}" &
+    if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
+        "${@}" &
+    else
+        sudo su - ${VNC_USER} -c "${@} &"
+    fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
         konsole &>/dev/null &
         startplasma-wayland &
     else
-        . ${XSESSION_FILE} &>/dev/null &
+        if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
+            . ${XSESSION_FILE} &>/dev/null &
+        else
+            sudo su - ${VNC_USER} -c ". ${XSESSION_FILE} &>/dev/null &"
+        fi
     fi
     start_win10_tigervnc
     exit 0
