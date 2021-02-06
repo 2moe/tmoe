@@ -62,7 +62,7 @@ BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "Current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
-export USER="$(whoami)"
+export USER=${VNC_USER}
 stopvnc -non-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
@@ -252,7 +252,8 @@ start_tmoe_xvnc() {
         if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
             . ${XSESSION_FILE} &>/dev/null &
         else
-            sudo su - ${VNC_USER} -c ". ${XSESSION_FILE} &>/dev/null &"
+            sudo -E su ${VNC_USER} -c "source ${XSESSION_FILE} &"
+            #su - (X)
         fi
     fi
     start_win10_tigervnc
