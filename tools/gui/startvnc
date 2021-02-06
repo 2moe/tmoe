@@ -15,28 +15,30 @@ TMOE_VNC_DISPLAY_NUMBER=2
 #若显示编号为2,则vnc端口为$((5900+2))=5902。
 #Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
 
+VNC_USER=$(whoami)
+#You can specify a VNC user. Default is current user.
+#您可以指定VNC用户,例如root或ubuntu
+#Sie können einen VNC-Benutzer angeben
+
+VNC_LOCALHOST=false
+#Only allow connections from localhost.Default is false.
+#当此参数的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
+#Wenn dieser Parameterwert "true" ist, lassen Sie nur Verbindungen von localhost zu
+
 VNC_SERVER=tiger
 #You can choose tiger or tight.
 #服务端可选tiger或tight。
 #Sie können "tiger" oder "tight" wählen.
-
-PIXEL_DEPTH=24
-#Specify the pixel depth in bits of the desktop to be created. Default is 24.
-#像素深度，可选16、24或32,默认为24，建议选用16或者24。
-#Die Standardpixeltiefe beträgt 24
 
 ZLIB_LEVEL=0
 #Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
 #压缩级别,可选0至9,默认为0。
 #Die Standardkomprimierungsstufe für zlib ist 0
 
-VNC_USER=$(whoami)
-#You can specify a VNC user. Default is current user.
-#您可以指定VNC用户
-
-VNC_LOCALHOST=false
-#Only allow connections from localhost.Default is false.
-#当此参数的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
+PIXEL_DEPTH=24
+#Specify the pixel depth in bits of the desktop to be created. Default is 24.
+#像素深度，可选16、24或32,默认为24，建议选用16或者24。
+#Die Standardpixeltiefe beträgt 24
 
 ALWAYS_SHARED=true
 #Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
@@ -45,7 +47,7 @@ if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
     HOME=${CURRENT_HOME}
     #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
-    #exit 0
+    #return 0
 fi
 ###################
 X509_VNC_ENABLED=false
@@ -255,7 +257,7 @@ start_tmoe_xvnc() {
             . ${XSESSION_FILE} &>/dev/null &
         else
             # if [[ ${VNC_USER} != root ]]; then
-            #     sudo -E su ${VNC_USER} -c "export PATH=$(echo ${PATH} | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
+            #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
             #su - (X)
             #preserve environment in container
             #else
