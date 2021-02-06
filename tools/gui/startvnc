@@ -44,6 +44,8 @@ ALWAYS_SHARED=true
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
     HOME=${CURRENT_HOME}
+    #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
+    #exit 0
 fi
 ###################
 X509_VNC_ENABLED=false
@@ -253,7 +255,7 @@ start_tmoe_xvnc() {
             . ${XSESSION_FILE} &>/dev/null &
         else
             if [[ ${VNC_USER} != root ]]; then
-                sudo -E su ${VNC_USER} -c "export PATH=$(echo ${PATH} | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@');source ${XSESSION_FILE} &"
+                sudo -E su ${VNC_USER} -c "export PATH=$(echo ${PATH} | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
                 #su - (X)
                 #preserve environment in container
             else
