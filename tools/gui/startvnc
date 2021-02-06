@@ -242,7 +242,7 @@ start_tmoe_xvnc() {
         "${@}" &
     else
         XVNC_COMMAND="${@}"
-        sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &"
+        sudo -E su ${VNC_USER} -c "${XVNC_COMMAND} &"
     fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
