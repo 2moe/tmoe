@@ -215,6 +215,9 @@ debootstrap_debian_distro() {
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all
 		#--include=ifupdown,init,iproute2,iputils-ping,isc-dhcp-client,locales,netbase,net-tools,procps,curl,ca-certificates,openssl,whiptail
 		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,contrib,non-free --variant=minbase --include=init,locales,ca-certificates,openssl ${DISTRO_CODE} ${DEBIAN_CHROOT} ${DEBIAN_MIRROR_URL}
+		if [[ ${DEBIAN_CHROOT} != / && -n ${DEBIAN_CHROOT} ]]; then
+			${TMOE_PREFIX} rm -fv ${DEBIAN_CHROOT}/dev/*
+		fi
 		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
 		#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C && chroot ${DEBIAN_CHROOT} /debootstrap/debootstrap --second-stage
 	fi
