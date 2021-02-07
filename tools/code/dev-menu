@@ -292,31 +292,31 @@ install_ide_01() {
     intellij-idea-*)
         #printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
         if_you_want_to_install_manually
-        printf "%s\n" "${BLUE}https://www.jetbrains.com/idea/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/idea/download/#section=linux${RESET}"
         ;;
     pycharm*)
         if_you_want_to_install_manually
-        printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
     goland*)
         if_you_want_to_install_manually
-        printf "%s\n" "${BLUE}https://www.jetbrains.com/goland/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/goland/download/#section=linux${RESET}"
         ;;
     webstorm*)
         if_you_want_to_install_manually
-        printf "%s\n" "${BLUE}https://www.jetbrains.com/webstorm/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/webstorm/download/#section=linux${RESET}"
         ;;
     clion*)
         if_you_want_to_install_manually
-        printf "%s\n" "${BLUE}https://www.jetbrains.com/clion/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/clion/download/#section=linux${RESET}"
         ;;
     #pycharm-professional)
     #   printf "%s\n" "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-    #   printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+    #   printf "%s\n" "${YELLOW}https://wwwjetbrains.com/pycharm/download/#section=linux${RESET}"
     #  ;;
     android-studio)
         if_you_want_to_install_manually
-        printf "%s\n" "${BLUE}https://developer.android.google.cn/studio${RESET}"
+        printf "%s\n" "${YELLOW}https://developer.android.google.cn/studio${RESET}"
         THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         ;;
     github-desktop-bin)
