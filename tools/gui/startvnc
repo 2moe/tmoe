@@ -48,7 +48,7 @@ if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
         CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
         HOME=${CURRENT_HOME}
     else
-        printf "%s\n" "You should type useradd -m ${VNC_USER} to creat it."
+        printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING\!" "You should type" "useradd -m ${VNC_USER}" "to creat it."
         unset VNC_USER
     fi
     #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
