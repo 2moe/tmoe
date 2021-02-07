@@ -9,11 +9,11 @@ development_programming_tools() {
         whiptail --title "Development" --menu \
             "If you find the idea interface is a red screen,try using tightvnc server.\n若idea出现红屏,则请换用tightvnc服务" 0 50 0 \
             "1" "🇻 🇸 Visual Studio Code 现代化代码编辑器" \
-            "2" "🇦 🇸 Android Studio(安卓开发工具IDE)" \
-            "3" "🇮 🇯 IntelliJ IDEA(java编程语言集成开发环境)" \
+            "2" "🇦 🇸 Android Studio(安卓IDE)" \
+            "3" "🇮 🇯 IntelliJ IDEA(java集成开发环境)" \
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
-            "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
-            "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
+            "6" "🇨 🇱 CLion(C/C++ IDE)" \
+            "7" "🇬 🇴 GoLand(Golang IDE)" \
             "8" "GNU Emacs(可扩展,可定制,支持自文档化)" \
             "9" "Code::Blocks(C，C++和Fortran的IDE)" \
             "10" "github-desktop(x64,github官方桌面客户端)" \
