@@ -44,8 +44,13 @@ ALWAYS_SHARED=true
 #Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
 ####################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
-    CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
-    HOME=${CURRENT_HOME}
+    if grep -q "^${VNC_USER}:" /etc/passwd; then
+        CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
+        HOME=${CURRENT_HOME}
+    else
+        printf "%s\n" "You should type useradd -m ${VNC_USER} to creat it."
+        unset VNC_USER
+    fi
     #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
     #return 0
 fi
