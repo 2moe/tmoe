@@ -1,6 +1,34 @@
 #!/usr/bin/env bash
 ########################
+choose_idea_ultimate_edition_or_community_edition() {
+    if (whiptail --title "ultimate_edition_or_community_edition" --yes-button 'ultimate' --no-button 'community' --yesno "Do you want to choose ultimate edition or community edition?\nultimate为付费旗舰版本,community为免费社区版" 0 0); then
+        GREP_NAME='intellij-idea-ultimate-edition'
+        LNK_FILE='jetbrains-idea.desktop'
+        BIN_FILE="/usr/bin/${GREP_NAME}"
+        ICON_NAME="${GREP_NAME}.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+    else
+        COMMUNITY_EDITION=true
+        GREP_NAME='intellij-idea-community-edition'
+        LNK_FILE='idea.desktop'
+        BIN_FILE="/usr/bin/idea"
+        ICON_NAME="idea.png"
+        APP_OPT_DIR="/usr/share/idea"
+    fi
+}
+########################
+choose_pycharm_professional_edition_or_community_edition() {
+    #已移除专业版，此函数无效
+    if (whiptail --title "professional_edition_or_community_edition" --yes-button 'pro' --no-button 'community' --yesno "Do you want to choose professional edition or community edition?\nprofessional为付费专业版,community为免费社区版" 0 0); then
+        GREP_NAME='pycharm-professional'
+        LNK_FILE='charm.desktop pycharm-professional.desktop'
+        BIN_FILE="/usr/bin/charm /usr/bin/pycharm"
+        ICON_NAME="pycharm.png"
+        APP_OPT_DIR="/opt/${GREP_NAME}"
+    fi
+}
 development_programming_tools() {
+    COMMUNITY_EDITION=false
     RETURN_TO_WHERE='development_programming_tools'
     GREP_NAME=''
     DEPENDENCY_02=""
@@ -9,8 +37,9 @@ development_programming_tools() {
         whiptail --title "Development" --menu \
             "If you find the idea interface is a red screen,try using tightvnc server.\n若idea出现红屏,则请换用tightvnc服务" 0 50 0 \
             "1" "🇻 🇸 Visual Studio Code 现代化代码编辑器" \
-            "2" "🇦 🇸 Android Studio(安卓IDE)" \
+            "2" "🇦 🇸 Android Studio(Google推出的安卓IDE)" \
             "3" "🇮 🇯 IntelliJ IDEA(java集成开发环境)" \
+            "4" "🇵 🇨 PyCharm(python集成开发环境)" \
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++ IDE)" \
             "7" "🇬 🇴 GoLand(Golang IDE)" \
@@ -21,7 +50,6 @@ development_programming_tools() {
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
-    #"4" "🇵 🇨 PyCharm(python集成开发环境)" \
     #"8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
     #"11" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
     case "${SOFTWARE}" in
@@ -34,19 +62,15 @@ development_programming_tools() {
         APP_OPT_DIR="/opt/${GREP_NAME}"
         DEV_MENU=02
         ;;
-    3)
-        GREP_NAME='intellij-idea-ultimate-edition'
-        LNK_FILE='jetbrains-idea.desktop'
-        BIN_FILE="/usr/bin/${GREP_NAME}"
-        ICON_NAME="${GREP_NAME}.png"
-        APP_OPT_DIR="/opt/${GREP_NAME}"
-        ;;
+    3) choose_idea_ultimate_edition_or_community_edition ;;
     4)
-        GREP_NAME='pycharm-professional'
-        LNK_FILE='charm.desktop pycharm-professional.desktop'
-        BIN_FILE="/usr/bin/charm /usr/bin/pycharm"
+        COMMUNITY_EDITION=true
+        #choose_pycharm_professional_edition_or_community_edition
+        GREP_NAME='pycharm-community-edition'
+        LNK_FILE='pycharm.desktop'
+        BIN_FILE="/usr/bin/pycharm"
         ICON_NAME="pycharm.png"
-        APP_OPT_DIR="/opt/${GREP_NAME}"
+        APP_OPT_DIR="/usr/share/pycharm"
         ;;
     5)
         GREP_NAME='webstorm'
@@ -159,7 +183,7 @@ dev_menu_01() {
     SOFTWARE=$(
         whiptail --title "${GREP_NAME}" --menu \
             "您想要对${GREP_NAME}小可爱做什么？" 0 50 0 \
-            "1" "install/upgrade(安装/更新)" \
+            "1" "install/upgrade(安装/升级)" \
             "2" "del pkg(删除安装包)" \
             "3" "remove(卸载${GREP_NAME})" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
@@ -201,6 +225,11 @@ remove_ide_01() {
     cd ${APPS_LNK_DIR}
     printf "%s\n" "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
+    case ${GREP_NAME} in
+    intellij-idea-community-*) rm -rv /usr/share/licenses/idea /usr/share/icons/hicolor/scalable/apps/idea.svg ;;
+    pycharm-community-*) rm -rv /usr/share/licenses/pycharm /usr/share/icons/hicolor/scalable/apps/pycharm.svg ;;
+    esac
+    #删除两次
     case ${GREP_NAME} in
     github-desktop-bin)
         rm -rv /usr/share/lintian/overrides/github-desktop /usr/share/doc/github-desktop ${APP_OPT_DIR} ${LNK_FILE} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} /usr/share/icons/hicolor/256x256/apps/github-desktop.png /usr/share/icons/hicolor/512x512/apps/github-desktop.png /usr/share/icons/hicolor/1024x1024/apps/github-desktop.png
@@ -248,19 +277,27 @@ install_ide_01() {
     esac
     cat_icon_img
     printf "%s\n" "正在检测版本更新信息..."
-    check_archlinux_cn_html_date
+    case ${COMMUNITY_EDITION} in
+    true) check_archlinux_community_html_date ;;
+    *) check_archlinux_cn_html_date ;;
+    esac
     ############
     THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
     check_ide_version
     case ${GREP_NAME} in
-    intellij-idea-ultimate-edition)
-        printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-        printf "%s\n" "${BLUE}https://www.jetbrains.com/idea/download/download-thanks.html?platform=linux&code=IIC${RESET}"
+    intellij-idea-*)
+        #printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
+        printf "If you want to ${YELLOW}manually${RESET} download it,please go to official website."
+        printf "%s\n" "${BLUE}https://www.jetbrains.com/idea/download/#section=linux${RESET}"
         ;;
-    pycharm-professional)
-        printf "%s\n" "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
+    pycharm-*)
+        printf "If you want to ${YELLOW}manually${RESET} download it,please go to official website."
         printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
+        #pycharm-professional)
+        #   printf "%s\n" "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
+        #   printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
+        #  ;;
     android-studio)
         THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         printf "%s\n" "若安装失败，则请前往官网手动下载安装。"

@@ -22,7 +22,7 @@ VNC_USER=$(whoami)
 
 VNC_LOCALHOST=false
 #Only allow connections from localhost.Default is false.
-#当此参数的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
+#当此变量的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
 #Wenn dieser Parameterwert "true" ist, lassen Sie nur Verbindungen von localhost zu
 
 VNC_SERVER=tiger

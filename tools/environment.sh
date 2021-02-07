@@ -224,15 +224,16 @@ download_raspbian_pixel_icon_theme() {
 ################
 #non-zst
 grep_arch_linux_pkg() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | egrep -v '\.xz\.sig|\.zst\.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | egrep -v '\.xz\.sig|\.zst\.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
+    ARCH_WALLPAPER_URL_02="${THEME_URL_02}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"
-    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
+    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL} || aria2c --console-log-level=info --no-conf --allow-overwrite=true -o data.tar.xz -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL_02}
 }
 ################
 #grep zst
 grep_arch_linux_pkg_02() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     ARCH_WALLPAPER_URL_02="${THEME_URL_02}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"
@@ -240,7 +241,7 @@ grep_arch_linux_pkg_02() {
 }
 ###################
 grep_arch_linux_pkg_03() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep "${GREP_NAME}" | grep -v "${GREP_NAME_V}" | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     ARCH_WALLPAPER_URL_02="${THEME_URL_02}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${YELLOW}${ARCH_WALLPAPER_URL}${RESET}"
@@ -249,7 +250,7 @@ grep_arch_linux_pkg_03() {
 #################
 grep_arch_linux_pkg_04() {
     #JetBrains IDE
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.pkg.tar.zst 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
@@ -292,6 +293,26 @@ check_archlinux_cn_html_date() {
         download_arch_linux_cn_repo_html
     fi
 }
+check_archlinux_community_html_date() {
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinux/community/os/x86_64/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/archlinux/community/os/x86_64/'
+    ARCH_LINUX_CN_REPO_DIR='/tmp/.ARCH_LINUX_COMMUNITY_REPO'
+    ARCH_LINUX_CN_REPO_HTML="${ARCH_LINUX_CN_REPO_DIR}/index.html"
+    if [ ! -e "${ARCH_LINUX_CN_REPO_DIR}" ]; then
+        mkdir -pv ${ARCH_LINUX_CN_REPO_DIR}
+    fi
+    cd ${ARCH_LINUX_CN_REPO_DIR}
+
+    if [ -e "${ARCH_LINUX_CN_REPO_HTML}" ]; then
+        FILE_TIME=$(date -d "$(stat -c '%y' ${ARCH_LINUX_CN_REPO_HTML})" +"%Y%m%d")
+        case ${FILE_TIME} in
+        "$(date +%Y%m%d)") ;;
+        *) download_arch_linux_cn_repo_html ;;
+        esac
+    else
+        download_arch_linux_cn_repo_html
+    fi
+}
 ##########
 check_opt_dir_01() {
     APP_OPT_DIR="/opt/${GREP_NAME}"
@@ -317,14 +338,14 @@ check_download_path() {
 }
 ###########
 download_arch_linux_cn_repo_html() {
-    aria2c --console-log-level=info --no-conf -o index.html --allow-overwrite=true ${THEME_URL}
+    aria2c --console-log-level=info --no-conf -o index.html --allow-overwrite=true ${THEME_URL} || aria2c --console-log-level=info --no-conf -o index.html --allow-overwrite=true ${THEME_URL_02}
 }
 ############
 download_arch_community_repo_html() {
     THEME_NAME=${GREP_NAME}
     mkdir -pv /tmp/.${THEME_NAME}
     cd /tmp/.${THEME_NAME}
-    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o index.html "${THEME_URL}"
+    aria2c --console-log-level=info --no-conf --allow-overwrite=true -o index.html "${THEME_URL}" || aria2c --console-log-level=info --no-conf --allow-overwrite=true -o index.html "${THEME_URL_02}"
 }
 ##############
 upcompress_deb_file() {
