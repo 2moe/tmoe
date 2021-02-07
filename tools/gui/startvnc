@@ -48,7 +48,7 @@ if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
         CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
         HOME=${CURRENT_HOME}
     else
-        printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING\!" "You should type" "useradd -m ${VNC_USER}" "to creat it."
+        printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING！" "You should type" "useradd -m ${VNC_USER}" "to creat it."
         unset VNC_USER
     fi
     #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
@@ -250,8 +250,9 @@ start_tmoe_xvnc() {
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
         "${@}" &
     else
-        XVNC_COMMAND="${@}"
-        sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
+        #XVNC_COMMAND="${@}"
+        #sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
+        sudo su - ${VNC_USER} -c '"$0" "$@" &' -- "$@" || su - ${VNC_USER} -c '"$0" "$@" &' -- "$@"
     fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
     if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
