@@ -36,10 +36,10 @@ development_programming_tools() {
     SOFTWARE=$(
         whiptail --title "Development" --menu \
             "If you find the idea interface is a red screen,try using tightvnc server.\n若idea出现红屏,则请换用tightvnc服务" 0 50 0 \
-            "1" "🇻 🇸 Visual Studio Code 现代化代码编辑器" \
+            "1" "🇻 🇸 Visual Studio Code(现代化代码编辑器)" \
             "2" "🇦 🇸 Android Studio(Google推出的安卓IDE)" \
-            "3" "🇮 🇯 IntelliJ IDEA(java集成开发环境)" \
-            "4" "🇵 🇨 PyCharm(python集成开发环境)" \
+            "3" "🇮 🇯 IntelliJ IDEA(Java集成开发环境)" \
+            "4" "🇵 🇨 PyCharm(Python集成开发环境)" \
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++ IDE)" \
             "7" "🇬 🇴 GoLand(Golang IDE)" \
@@ -50,8 +50,10 @@ development_programming_tools() {
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
-    #"8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
+    #"12" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
     #"11" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
+    #"8" "💎 RubyMine(Ruby IDE)" \
+    #"9" "PhpStorm(Php IDE)" \
     case "${SOFTWARE}" in
     0 | "") software_center ;;
     1) source_vscode_script ;;
@@ -292,27 +294,27 @@ install_ide_01() {
     intellij-idea-*)
         #printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/idea/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://www.jetbrains.com/idea/download/#section=linux${RESET}"
         ;;
     pycharm*)
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/pycharm/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
     goland*)
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/goland/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://www.jetbrains.com/goland/download/#section=linux${RESET}"
         ;;
     webstorm*)
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/webstorm/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://www.jetbrains.com/webstorm/download/#section=linux${RESET}"
         ;;
     clion*)
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://wwwjetbrains.com/clion/download/#section=linux${RESET}"
+        printf "%s\n" "${YELLOW}https://www.jetbrains.com/clion/download/#section=linux${RESET}"
         ;;
     #pycharm-professional)
     #   printf "%s\n" "本版本为${GREP_NAME}(专业版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-    #   printf "%s\n" "${YELLOW}https://wwwjetbrains.com/pycharm/download/#section=linux${RESET}"
+    #   printf "%s\n" "${YELLOW}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
     #  ;;
     android-studio)
         if_you_want_to_install_manually
@@ -361,11 +363,11 @@ install_ide_02() {
     #THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
     case ${GREP_NAME} in
     android-studio)
+        if_you_want_to_install_manually
+        printf "%s\n" "${YELLOW}https://developer.android.google.cn/studio${RESET}"
         THE_LATEST_DEB_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         THE_LATEST_APP_VERSION_CODE="$(printf '%s\n' "${THE_LATEST_DEB_LINK}" | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
         DOWNLOAD_FILE_NAME=$(printf '%s\n' "${THE_LATEST_DEB_LINK}" | awk -F '/' '{print $NF}')
-        printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
-        printf "%s\n" "${BLUE}https://developer.android.com/studio${RESET}"
         ;;
     esac
     check_ide_version
