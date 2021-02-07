@@ -38,8 +38,8 @@ software_center() {
         whiptail --title "Software center-01" --menu \
             "您想要安装哪个软件？\n Which software do you want to install?" 0 50 0 \
             "1" "🦊 Browser:浏览器(edge,firefox,chromium)" \
-            "2" "⚛️ electron-apps(云音乐,哔哩哔哩,cocomusic)" \
-            "3" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
+            "2" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
+            "3" "⚛️ electron-apps(云音乐,哔哩哔哩,cocomusic)" \
             "4" "🎵 Multimedia:图像与影音(gimp,mpv)" \
             "5" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
             "6" "🐧 SNS:社交类(qq,wechat,skype)" \
@@ -56,8 +56,8 @@ software_center() {
     case "${SOFTWARE}" in
     0 | "") tmoe_linux_tool_menu ;;
     1) install_browser ;;
-    2) tmoe_electron_repo ;;
-    3) dev_menu ;;
+    2) dev_menu ;;
+    3) tmoe_electron_repo ;;
     4) tmoe_multimedia_menu ;;
     5) tmoe_games_menu ;;
     6) tmoe_social_network_service ;;

@@ -287,11 +287,11 @@ install_ide_01() {
     case ${GREP_NAME} in
     intellij-idea-*)
         #printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-        printf "%s\n" "If you want to ${BLUE}install it ${YELLOW}manually${RESET},please go to the official website."
+        printf "%s\n" "If you want to ${BLUE}install it ${YELLOW}manually${RESET},please go to the ${PURPLE}official website.${RESET}"
         printf "%s\n" "${BLUE}https://www.jetbrains.com/idea/download/#section=linux${RESET}"
         ;;
     pycharm-*)
-        printf "%s\n" "If you want to ${BLUE}install it ${YELLOW}manually${RESET},please go to the official website."
+        printf "%s\n" "If you want to ${BLUE}install it ${YELLOW}manually${RESET},please go to the ${PURPLE}official website.${RESET}"
         printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
         #pycharm-professional)
