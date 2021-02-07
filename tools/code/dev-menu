@@ -146,7 +146,7 @@ dev_menu_02() {
     SOFTWARE=$(
         whiptail --title "${GREP_NAME}" --menu \
             "您想要对${GREP_NAME}小可爱做什么？" 0 50 0 \
-            "1" "install/upgrade(安装/更新)" \
+            "1" "install/upgrade(安装/升级)" \
             "2" "del pkg(删除安装包)" \
             "3" "remove(卸载${GREP_NAME})" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
@@ -318,7 +318,7 @@ install_ide_01() {
     #  ;;
     android-studio)
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://developer.android.google.cn/studio${RESET}"
+        printf "%s\n" "${BLUE}https://developer.android.com/studio${RESET}"
         THE_LATEST_AS_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         ;;
     github-desktop-bin)
@@ -364,7 +364,7 @@ install_ide_02() {
     case ${GREP_NAME} in
     android-studio)
         if_you_want_to_install_manually
-        printf "%s\n" "${YELLOW}https://developer.android.google.cn/studio${RESET}"
+        printf "%s\n" "${BLUE}https://developer.android.com/studio${RESET}"
         THE_LATEST_DEB_LINK="$(curl -L 'https://developer.android.google.cn/studio/#downloads' | grep 'linux' | grep href | grep studio | tail -n 1 | cut -d '"' -f 2)"
         THE_LATEST_APP_VERSION_CODE="$(printf '%s\n' "${THE_LATEST_DEB_LINK}" | awk -F '/' '{print $NF}' | sed 's@-linux.tar.gz@@' | sed 's@android-studio-ide-@@')"
         DOWNLOAD_FILE_NAME=$(printf '%s\n' "${THE_LATEST_DEB_LINK}" | awk -F '/' '{print $NF}')
