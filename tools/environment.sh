@@ -261,7 +261,7 @@ grep_arch_linux_pkg_04() {
         aria2c --console-log-level=info --no-conf --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${ARCH_WALLPAPER_VERSION} -x 5 -s 5 -k 1M ${ARCH_WALLPAPER_URL}
         ;;
     esac
-    printf "%s\n" "${ARCH_WALLPAPER_VERSION}" | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
+    printf "%s\n" "${ARCH_WALLPAPER_VERSION}" | sed "s@${GREP_NAME}-@@g" | sed 's@4%3A@@' | sed 's@.pkg.tar.zst@@' >"${LOCAL_APP_VERSION_TXT}"
 }
 #################
 check_opt_app_version() {

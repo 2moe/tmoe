@@ -282,16 +282,16 @@ install_ide_01() {
     *) check_archlinux_cn_html_date ;;
     esac
     ############
-    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
+    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@4%3A@@' | sed 's@.pkg.tar.zst@@')
     check_ide_version
     case ${GREP_NAME} in
     intellij-idea-*)
         #printf "%s\n" "本版本为${GREP_NAME}(旗舰版)，如需安装community edition(社区版)，则请前往官网手动下载安装。"
-        printf "If you want to ${YELLOW}manually${RESET} download it,please go to official website."
+        printf "%s\n" "If you want to ${YELLOW}manually${RESET} download it,please go to official website."
         printf "%s\n" "${BLUE}https://www.jetbrains.com/idea/download/#section=linux${RESET}"
         ;;
     pycharm-*)
-        printf "If you want to ${YELLOW}manually${RESET} download it,please go to official website."
+        printf "%s\n" "If you want to ${YELLOW}manually${RESET} download it,please go to official website."
         printf "%s\n" "${BLUE}https://www.jetbrains.com/pycharm/download/#section=linux${RESET}"
         ;;
         #pycharm-professional)
