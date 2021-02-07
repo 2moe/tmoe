@@ -17,7 +17,7 @@ TMOE_VNC_DISPLAY_NUMBER=2
 
 VNC_USER=$(whoami)
 #You can specify a VNC user. Default is current user: "$(whoami)"
-#您可以指定VNC用户,例如root或ubuntu，默认为$(whoami)
+#您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
 #Sie können einen VNC-Benutzer angeben
 
 VNC_LOCALHOST=false
@@ -176,7 +176,7 @@ EOF
 start_win10_tigervnc() {
     case ${TMOE_WSL} in
     true)
-        cd ${HOME}
+        cd ${HOME} || cd /tmp
         nohup ${TIGERVNC_VIEWER_WIN10} -PasswordFile ${TMOE_VNC_PASSWD_FILE} localhost:${CURRENT_VNC_PORT} &>/dev/null &
         cd - &>/dev/null
         ;;

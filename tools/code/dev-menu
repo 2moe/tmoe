@@ -11,7 +11,6 @@ development_programming_tools() {
             "1" "🇻 🇸 Visual Studio Code 现代化代码编辑器" \
             "2" "🇦 🇸 Android Studio(安卓开发工具IDE)" \
             "3" "🇮 🇯 IntelliJ IDEA(java编程语言集成开发环境)" \
-            "4" "🇵 🇨 PyCharm(python集成开发环境)" \
             "5" "🇼 🇸 Webstorm(JavaScript IDE,Web前端开发工具)" \
             "6" "🇨 🇱 CLion(C/C++集成开发环境)" \
             "7" "🇬 🇴 GoLand(JetBrains的Go开发工具)" \
@@ -22,6 +21,7 @@ development_programming_tools() {
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
+    #"4" "🇵 🇨 PyCharm(python集成开发环境)" \
     #"8" "🇹 🇨 teamcity(持续集成Continue Integration工具)" \
     #"11" "⚛️ atom(x64,酷炫文本编辑器,github出品)" \
     case "${SOFTWARE}" in
