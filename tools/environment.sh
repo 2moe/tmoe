@@ -1460,9 +1460,9 @@ check_deb_version() {
 		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
-		║ 1 ║${GREP_NAME}                    ${LOCAL_OPT_APP_VERSION} 
+		║ 1 ║${GREP_NAME}                    
 		║   ║          ║${THE_LATEST_DEB_VERSION}
-
+		║   ║          ║                   ${LOCAL_OPT_APP_VERSION} 
 	ENDofTable
     printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
 }

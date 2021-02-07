@@ -255,8 +255,9 @@ check_ide_version() {
 		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
 		║   ║          ║  Latest version   ║  Local version     
 		║---║----------║-------------------║--------------------
-		║ 1 ║${GREP_NAME}               $(printf '%s\n' "${LOCAL_OPT_APP_VERSION}" | sed 's@-x86_64@@')
+		║ 1 ║${GREP_NAME}                  
 		║   ║          ║$(printf '%s\n' "${THE_LATEST_APP_VERSION_CODE}" | sed 's@-x86_64@@')
+		║   ║          ║                    $(printf '%s\n' "${LOCAL_OPT_APP_VERSION}" | sed 's@-x86_64@@')
 
 	ENDofTable
 }
