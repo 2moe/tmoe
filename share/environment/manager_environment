@@ -20,6 +20,14 @@ check_arch() {
 	risc*) ARCH_TYPE="riscv64" ;;
 	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
 	esac
+	if [[ $(command -v dpkg) && $(command -v apt) ]]; then
+		case $(dpkg --print-architecture) in
+		aarch64 | arm64*) ARCH_TYPE="arm64" ;;
+		armv7* | armhf) ARCH_TYPE="armhf" ;;
+		i*86 | x86) ARCH_TYPE="i386" ;;
+		x86_64 | amd64) ARCH_TYPE="amd64" ;;
+		esac
+	fi
 	TRUE_ARCH_TYPE=${ARCH_TYPE}
 }
 ###############

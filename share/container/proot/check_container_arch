@@ -32,6 +32,14 @@ risc*)
 	TRUE_ARCH_TYPE="riscv64"
 	;;
 esac
+if [[ $(command -v dpkg) && $(command -v apt) ]]; then
+	case $(dpkg --print-architecture) in
+	aarch64 | arm64*) TRUE_ARCH_TYPE="arm64" ;;
+	armv7* | armhf) TRUE_ARCH_TYPE="armhf" ;;
+	i*86 | x86) TRUE_ARCH_TYPE="i386" ;;
+	x86_64 | amd64) TRUE_ARCH_TYPE="amd64" ;;
+	esac
+fi
 ######################
 TMOE_QEMU="true"
 case "${CONTAINER_ARCH}" in

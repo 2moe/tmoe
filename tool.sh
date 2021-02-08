@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4343,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4344,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -229,6 +229,14 @@ check_architecture() {
 	mips*) ARCH_TYPE="mipsel" ;;
 	risc*) ARCH_TYPE="riscv64" ;;
 	esac
+	if [[ $(command -v dpkg) && $(command -v apt) ]]; then
+		case $(dpkg --print-architecture) in
+		aarch64 | arm64*) ARCH_TYPE="arm64" ;;
+		armv7* | armhf) ARCH_TYPE="armhf" ;;
+		i*86 | x86) ARCH_TYPE="i386" ;;
+		x86_64 | amd64) ARCH_TYPE="amd64" ;;
+		esac
+	fi
 	TRUE_ARCH_TYPE=${ARCH_TYPE}
 }
 #####################
