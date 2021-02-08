@@ -13,7 +13,7 @@ choose_which_gnu_linux_distro() {
 	unset NODE02_ENABLED WEEKLY_BUILD_CONTAINER
 	choose_which_gnu_linux_distro_ja() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "GNU/Linuxディストリビューションを選択してください" 0 50 0 \
-			"1" "🍭 beta版:Weekly build(Includes GUI)" \
+			"1" "🍭 beta版:Weekly builds(GUI included)" \
 			"2" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
 			"3" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
 			"4" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
@@ -28,7 +28,7 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_zh() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "您想要安装哪个GNU/Linux发行版?" 0 50 0 \
-			"1" "🍭 beta公测:Weekly build(每周构建GUI版)" \
+			"1" "🍭 beta公测:Weekly builds(每周构建GUI版)" \
 			"2" "🍥 Debian:致力于自由" \
 			"3" "🍛 Ubuntu:我的存在是因為大家的存在" \
 			"4" "🌉 Arch:系统设计以KISS为总体指导原则" \
@@ -43,7 +43,7 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install?" 0 50 0 \
-			"1" "🍭 beta version:Weekly build(Includes GUI)" \
+			"1" "🍭 beta version:Weekly builds(GUI included)" \
 			"2" "🍥 Debian is a distro composed of free and open-source software" \
 			"3" "🍛 Ubuntu is the modern, open source OS." \
 			"4" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
@@ -472,7 +472,7 @@ choose_kde_distro() {
 ##############################
 view_the_schedule() {
 	cat <<-EOF
-		${BOLD}${PURPLE}Weekly build${RESET}：
+		${BOLD}${PURPLE}Weekly builds${RESET}：
 		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
 			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt${RESET}
@@ -502,7 +502,7 @@ view_the_schedule() {
 			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+mate${RESET}
 			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}mate${RESET}   
 
-		${BOLD}${PURPLE}Monthly build${RESET}：
+		${BOLD}${PURPLE}Monthly builds${RESET}：
 		${BOLD}${YELLOW}24号/24th of every month${RESET}：
 		TIME："UTC 01:01 / CST 09:01"
 			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
