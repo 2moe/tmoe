@@ -32,7 +32,7 @@ risc*)
 	TRUE_ARCH_TYPE="riscv64"
 	;;
 esac
-if [[ $(command -v dpkg) && $(command -v apt) ]]; then
+if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	case $(dpkg --print-architecture) in
 	aarch64 | arm64*) TRUE_ARCH_TYPE="arm64" ;;
 	armv7* | armhf) TRUE_ARCH_TYPE="armhf" ;;

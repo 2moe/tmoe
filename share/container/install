@@ -19,7 +19,7 @@ mips*)
 risc*) ARCH_TYPE="riscv64" ;;
 *) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
 esac
-if [[ $(command -v dpkg) && $(command -v apt) ]]; then
+if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	case $(dpkg --print-architecture) in
 	aarch64 | arm64*) ARCH_TYPE="arm64" ;;
 	armv7* | armhf) ARCH_TYPE="armhf" ;;
