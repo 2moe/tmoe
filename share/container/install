@@ -1747,13 +1747,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		case $(uname -m) in
 		riscv*);;
 		*)
-		if egrep -q '^deb.*(huawei|tuna|bfsu|163|mirror)' /etc/apt/sources.list;then
+		if egrep -q '^deb.*(huawei|tuna|bfsu|163)' /etc/apt/sources.list;then
 	      printf "%s\n" "Replacing http software source list with https ..."
 	      printf "%s\n" "正在将${PURPLE}http源${RESET}替换为${GREEN}https${RESET} ..."
 		  case $(dpkg --print-architecture) in
 		armhf)
 	     case $(uname -m) in
-	     aarch64) ;;
+	     aarch64 | armv8l) ;;
 	     *) sed -i 's@http:@https:@g' /etc/apt/sources.list ;;
 	     esac
 	     ;;
