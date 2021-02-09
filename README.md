@@ -119,10 +119,19 @@ Finally, press Enter and arrow keys to operate.
 > 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://apk.tmoe.me/termux-api)  
 > 2.打开 termux，输入下面 bash 开头的命令
 
-_**If you do not live in China, please enter**_
+_**If you do not live in China, then type the following commands.**_
 
 ```shell
     . <(curl -L git.io/linux.sh)
+```
+
+If you are using fish,then type the following commands.
+
+```bash
+  apt update
+  apt install -y curl
+  curl -LO git.io/linux.sh
+  bash linux.sh
 ```
 
 _**如果你在国内,那么请输**_
