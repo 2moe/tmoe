@@ -125,7 +125,7 @@ _**If you are using zsh/bash, then type the following commands.**_
     . <(curl -L git.io/linux.sh)
 ```
 
-_**If you are using fish,then type the following commands.**_
+_**If you are using fish, then type the following commands.**_
 
 ```bash
   apt update

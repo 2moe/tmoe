@@ -215,6 +215,7 @@ tmoe_container_timezone() {
     esac
 }
 install_fortunes() {
+    unset FORTUNES_MOD
     if [[ ! $(command -v fortune) ]] && [ ! -e /usr/games/fortune ]; then
         printf "${GREEN}%s ${PURPLE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "fortune"
         ${TMOE_INSTALLATION_COMMAND} fortunes 2>/dev/null
@@ -222,28 +223,69 @@ install_fortunes() {
         ${TMOE_INSTALLATION_COMMAND} fortune 2>/dev/null
         case ${TMOE_LANG} in
         zh_*UTF-8)
-            ${TMOE_INSTALLATION_COMMAND} fortunes-zh 2>/dev/null
-            install_fortunes_cn
+            FORTUNES_MOD=zh
+            THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
+            ;;
+        bg_*UTF-8) FORTUNES_MOD=bg ;;
+        br_*UTF-8) FORTUNES_MOD=br ;;
+        cs_*UTF-8) FORTUNES_MOD=cs ;;
+        de_*UTF-8) FORTUNES_MOD=de ;;
+        eo_*UTF-8) FORTUNES_MOD=eo ;;
+        es_*UTF-8) FORTUNES_MOD=es ;;
+        fr_*UTF-8) FORTUNES_MOD=fr ;;
+        ga_*UTF-8) FORTUNES_MOD=ga ;;
+        it_*UTF-8) FORTUNES_MOD=it ;;
+        pl_*UTF-8) FORTUNES_MOD=pl ;;
+        ru_*UTF-8) FORTUNES_MOD=ru ;;
+        esac
+        case ${FORTUNES_MOD} in
+        "") ;;
+        *)
+            FORTUNES_MOD_02="debian-hints"
+            ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD} 2>/dev/null
+            ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD_02} 2>/dev/null
+            case ${TMOE_LANG} in
+            zh_*UTF-8) THE_LATEST_DEB_REPO_HINTS='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortunes-debian-hints/' ;;
+            *)
+                THE_LATEST_DEB_REPO="https://ftp.debian.org/debian/pool/main/f/fortunes-${FORTUNES_MOD}/"
+                THE_LATEST_DEB_REPO_HINTS='https://ftp.debian.org/debian/pool/main/f/fortunes-debian-hints/'
+                ;;
+            esac
+            install_fortunes_mod
             ;;
         esac
     fi
     printf "${YELLOW}%s${RESET}\n" "Enable completed."
 }
-install_fortunes_cn() {
+install_fortunes_mod() {
     case ${LINUX_DISTRO} in
     Android)
-        THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
-        THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | tail -n 1 | awk -F '=' '{print $3}' | cut -d '"' -f 2)"
+        THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | tail -n 1 | cut -d '"' -f 2)"
+        THE_LATEST_DEB_VERSION_HINTS="$(curl -L ${THE_LATEST_DEB_REPO_HINTS} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
         THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
+        THE_LATEST_ISO_LINK_HINTS="${THE_LATEST_DEB_REPO_HINTS}${THE_LATEST_DEB_VERSION_HINTS}"
+
         TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP
         mkdir -pv ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION_HINTS} "${THE_LATEST_ISO_LINK_HINTS}"
         dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./
+        dpkg-deb -X ${THE_LATEST_DEB_VERSION_HINTS} ./
         cd usr/share/games/fortunes
+        #for i in $(readlink ./*); do
         for i in $(readlink ./*); do
             cp -vf ${i} ${PREFIX}/share/games/fortunes
         done
+        if [[ -e ${FORTUNES_MOD} ]]; then
+            cd ${FORTUNES_MOD}
+        else
+            case ${TMOE_LANG} in
+            en_US.UTF-8) cd en_US ;;
+            zh_TW.UTF-8) cd zh_TW ;;
+            esac
+        fi
+        [[ ! -e debian-hints ]] || cp -vf ${PWD}/debian-hints ${PREFIX}/share/games/fortunes
         cd ${CURRENT_DIR} || cd ${HOME}
         rm -rv ${TEMP_FOLDER}
         ;;
