@@ -85,7 +85,7 @@ If you cannot connect to _Microsoft Store_,then you can install it manually.
 Open the subsystem and upgrade the Linux kernel of WSL2.
 And then restart the subsystem.
 
-_**If you do not live in China, please enter**_
+_**If you are using zsh/bash, then type the following commands.**_
 
 ```shell
     sudo apt update
@@ -93,7 +93,7 @@ _**If you do not live in China, please enter**_
     bash -c "$(curl -L git.io/linux.sh)"
 ```
 
-_**如果你在国内,那么请输**_
+_**如果你住在中国,那么请输**_
 
 ```shell
     sudo apt update
@@ -119,13 +119,13 @@ Finally, press Enter and arrow keys to operate.
 > 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://apk.tmoe.me/termux-api)  
 > 2.打开 termux，输入下面 bash 开头的命令
 
-_**If you do not live in China, then type the following commands.**_
+_**If you are using zsh/bash, then type the following commands.**_
 
 ```shell
     . <(curl -L git.io/linux.sh)
 ```
 
-If you are using fish,then type the following commands.
+_**If you are using fish,then type the following commands.**_
 
 ```bash
   apt update
@@ -134,7 +134,7 @@ If you are using fish,then type the following commands.
   bash linux.sh
 ```
 
-_**如果你在国内,那么请输**_
+_**如果你住在中国,那么请输**_
 
 ```shell
     . <(curl -L l.tmoe.me)
@@ -149,7 +149,7 @@ _**如果你在国内,那么请输**_
 
 #### 3.Debian/Ubuntu/Mint/Kali
 
-_**If you do not live in China, please enter**_
+_**If you are using zsh/bash, then type the following commands.**_
 
 ```shell
     sudo apt update
@@ -157,7 +157,7 @@ _**If you do not live in China, please enter**_
     bash -c "$(curl -L git.io/linux.sh)"
 ```
 
-_**如果你在国内,那么请输**_
+_**如果你住在中国,那么请输**_
 
 ```shell
      sudo apt update
