@@ -1443,8 +1443,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				printf "%s\n" "${GREEN}pacman ${PURPLE}-Rsc ${YELLOW}--noconfirm ${BLUE}linux-armv7${RESET}"
 				pacman -Rsc --noconfirm linux-armv7
 			fi
-			printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}base-devel${RESET}"
-			pacman -Syu --noconfirm base-devel
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm --needed ${BLUE}base-devel${RESET}"
+			pacman -Syu --noconfirm --needed base-devel
 		fi 
 	elif [ "$(cut -c 1-7 /etc/issue)" = "Manjaro" ]; then
 	    [[ ${TMOE_GITHUB} = true ]] || manjaro_mirror_list
@@ -1467,7 +1467,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		else
 			if [[ ! $(command -v yay) ]];then
 					printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}yay${RESET}"
-					pacman -Sy --noconfirm yay || pacman -Syu --noconfirm yay
+					pacman -Sy --noconfirm yay || pacman -Syu --noconfirm --needed yay
 			fi
 			if [[ ${TMOE_CHROOT} = true ]];then
 				i=gawk

@@ -16,7 +16,7 @@ fi
 sudo bash ${CUR}/arch-bootstrap.sh -a aarch64 arch
 sudo rm -rfv arch/usr/lib/tmpfiles.d/* arch/dev/*
 cd arch
-sudo tar -pcvf ${CUR}/arch.tar ./*
+sudo tar -pcf ${CUR}/arch.tar ./*
 cd ..
 sudo rm -rf arch
 cd ${CUR}
