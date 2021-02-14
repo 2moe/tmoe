@@ -20,6 +20,7 @@ RUN apt update \
     ; bash zsh.sh --tmoe_container_auto_configure \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
+    ; printf "%s\n" "podman" > container.txt  \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
     ; cp -fv git/tool.sh /tmp \
     ; cd /tmp \
