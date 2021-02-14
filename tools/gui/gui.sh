@@ -1135,8 +1135,8 @@ install_kali_linux_tools() {
             eatmydata apt install -y kali-linux-arm || aptitude install -y kali-linux-arm || apt install -y kali-linux-arm
             ;;
         *)
-            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-default${RESET}"
-            eatmydata apt install -y kali-linux-default || aptitude install -y kali-linux-default || apt install -y kali-linux-default
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-headless${RESET}"
+            eatmydata apt install -y kali-linux-headless || aptitude install -y kali-linux-headless || apt install -y kali-linux-headless
             ;;
         esac
     fi
