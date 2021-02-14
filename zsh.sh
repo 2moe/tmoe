@@ -50,7 +50,8 @@ set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	if [[ -e /.dockerenv ]]; then
+	if [ $(command -v novnc) ]; then
+		#.dockerenv
 		change_shell_to_bin_zsh
 		if [[ $(command -v startxfce4) ]]; then
 			auto_remove_proot_xfce4_power_manager
@@ -118,7 +119,8 @@ do_you_want_to_configure_tmoe_zsh() {
 	done
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		if [[ ! -e /.dockerenv ]]; then
+		if [ ! $(command -v novnc) ]; then
+			#.dockerenv
 			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
 				CONFIGURE_ZSH=true
 			fi
@@ -136,7 +138,8 @@ do_you_want_to_configure_tmoe_zsh() {
 		fi
 		;;
 	*)
-		if [[ ! -e /.dockerenv ]]; then
+		if [ ! $(command -v novnc) ]; then
+			#.dockerenv
 			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
 				CONFIGURE_ZSH=true
 			fi
@@ -163,7 +166,8 @@ auto_configure_tmoe_tools() {
 	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
-	if [[ -e /.dockerenv ]]; then
+	if [ $(command -v novnc) ]; then
+		#.dockerenv
 		if egrep -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
 			for i in /opt/electron/electron /opt/electron-v8/electron; do
 				[[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe-linux tool重新安装electron"
