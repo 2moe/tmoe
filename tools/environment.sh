@@ -1193,6 +1193,7 @@ download_tmoe_electron_app() {
         [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
     fi
     if [ -e "/opt/${DEPENDENCY_01}" ]; then
+        chmod -R 4755 /opt/${DEPENDENCY_01}
         cd /opt/${DEPENDENCY_01}
         pwd
         cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
