@@ -1624,8 +1624,8 @@ install_xfce4_lite_desktop() {
         printf "%s\n" "${GREEN}apt ${YELLOW}depends ${BLUE}xfce4${RESET}"
         apt-cache depends xfce4
     elif [ $(command -v pacman) ]; then
-        printf "%s\n" "${GREEN}pacman ${YELLOW}-Si ${BLUE}xfce4${RESET}"
-        pacman -Si xfce4
+        printf "%s\n" "${GREEN}pacman ${YELLOW}-Si ${BLUE}xfdesktop${RESET}"
+        pacman -Si xfdesktop
     elif [ $(command -v apk) ]; then
         printf "%s\n" "${GREEN}apk ${YELLOW}info ${BLUE}xfce4${RESET}"
         apk info xfce4
