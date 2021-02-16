@@ -41,7 +41,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 			PROOT_HOME=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
 		;;
 		esac
-		if [[ -z ${PROOT_UID} ]];then
+		if [[ -z \${PROOT_UID} ]];then
 			PROOT_UID=0
 			PROOT_GID=0
 			PROOT_HOME=/root
