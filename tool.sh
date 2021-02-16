@@ -48,7 +48,7 @@ main() {
 	file | filebrowser)
 		source ${TMOE_TOOL_DIR}/webserver/filebrowser.sh -r
 		;;
-	tuna | -tuna | --tuna | t | -t)
+	tuna | -tuna | --tuna)
 		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
 		if [ -e "${TMOE_TOOL_DIR}/sources/mirror.sh" ]; then
 			source ${TMOE_TOOL_DIR}/sources/mirror.sh --autoswitch
@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4392,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4393,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
