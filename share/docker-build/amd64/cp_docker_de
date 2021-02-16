@@ -4,7 +4,13 @@ for i in $(ls . | grep -v cp_docker); do
         if [[ -e ${i}/${DE} ]]; then
             cp -pfv ${i}/xfce/Dockerfile ${i}/${DE}
             sed -i -E "s@(auto-install-gui)-xfce@\1-${DE}@g" ${i}/${DE}/Dockerfile
-            cat ${i}/${DE}/Dockerfile
+            #cat ${i}/${DE}/Dockerfile
         fi
     done
+    if [[ -e ${i}/zsh ]]; then
+        cp -pfv ${i}/xfce/Dockerfile ${i}/zsh
+        sed -i -E "s@(auto-install-gui)-xfce@\1-${DE}@g" ${i}/zsh/Dockerfile
+        sed -i '/install-gui.sh/d;/AUTO_INSTALL_GUI/d' ${i}/zsh/Dockerfile
+        #cat ${i}/${DE}/Dockerfile
+    fi
 done
