@@ -133,7 +133,7 @@ modify_other_vnc_conf() {
     4) modify_vnc_pulse_audio ;;
     5)
         nano ${XSESSION_FILE}
-        stopvnc 2>/dev/null
+        #stopvnc 2>/dev/null
         ;;
     6) nano_tigervnc_default_config_manually ;;
     7) modify_tigervnc_zlib_level ;;
@@ -304,7 +304,7 @@ nano_startvnc_manually() {
     do_you_want_to_continue
     nano $(command -v startvnc)
     #printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
-    stopvnc 2>/dev/null
+    #stopvnc 2>/dev/null
     press_enter_to_return
     modify_other_vnc_conf
 }
@@ -4081,7 +4081,7 @@ modify_vnc_conf() {
             printf '%s\n' 'Your current resolution has been modified.'
             check_vnc_resolution
             printf "%s\n" "您当前的分辨率已经修改为${CURRENT_VNC_RESOLUTION}"
-            stopvnc 2>/dev/null
+            #stopvnc 2>/dev/null
             press_enter_to_return
             modify_remote_desktop_config
         fi
