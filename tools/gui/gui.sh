@@ -4943,6 +4943,9 @@ debian_remove_vnc_server() {
     printf "%s\n" "${RED}apt remove -y ${VNC_SERVER_BIN_NOW}${RESET}"
     apt remove -y ${VNC_SERVER_BIN_NOW}
 }
+eatmydata_apt_install_i() {
+    eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
+}
 debian_install_vnc_server() {
     case ${LINUX_DISTRO} in
     debian)
@@ -4951,18 +4954,28 @@ debian_install_vnc_server() {
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
         if [[ ! $(command -v Xtigervnc) ]]; then
             for i in tigervnc-standalone-server tigervnc-viewer; do
-                eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
+                eatmydata_apt_install_i
             done
         fi
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
         if [[ ! $(command -v Xtightvnc) ]]; then
-            for i in tightvncserver; do
-                eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
-            done
+            i=tightvncserver
+            eatmydata_apt_install_i
         fi
+
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
-        i="xfonts-100dpi xfonts-75dpi xfonts-scalable"
-        eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
+        if [ ! -s "/usr/share/fonts/X11/100dpi/timR24.pcf.gz" ]; then
+            i=xfonts-100dpi
+            eatmydata_apt_install_i
+        fi
+        if [ ! -s "/usr/share/fonts/X11/75dpi/term14.pcf.gz" ]; then
+            i=xfonts-75dpi
+            eatmydata_apt_install_i
+        fi
+        if [ ! -s "/usr/share/fonts/X11/Type1/c0419bt_.afm" ]; then
+            i=xfonts-scalable
+            eatmydata_apt_install_i
+        fi
 
         if [[ -e "/usr/share/fonts/X11/Type1" && ! -e /usr/share/fonts/X11/Speedo ]]; then
             ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
