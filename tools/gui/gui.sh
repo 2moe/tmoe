@@ -558,7 +558,7 @@ tmoe_container_desktop() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
             "1" "🐭 xfce(兼容性高,简单优雅)" \
-            "2" "xfce-lite(未美化,精简化安装)" \
+            "2" "xfce-lite(精简化安装,未美化)" \
             "3" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
             "4" "🕊️ lxde(轻量化桌面,资源占用低)" \
             "5" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
@@ -1632,8 +1632,8 @@ install_xfce4_lite_desktop() {
     fi
     printf "%s\n" "Do you want to install(--no-install-recommends) xfce?"
     do_you_want_to_continue
-    REMOTE_DESKTOP_SESSION_01='xfce4-session'
-    REMOTE_DESKTOP_SESSION_02='startxfce4'
+    REMOTE_DESKTOP_SESSION_01='startxfce4'
+    REMOTE_DESKTOP_SESSION_02='xfce4-session'
     DEPENDENCY_01="xfce4"
     case "${LINUX_DISTRO}" in
     "debian")
