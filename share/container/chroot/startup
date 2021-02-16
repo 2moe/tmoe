@@ -3,38 +3,16 @@ ${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
 cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
-	get_tmoe_linux_help_info() {
-	    cat <<-'ENDOFHELP'
-											-i     --启动tmoe-linux manager
-											-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
-											-vnc   --启动VNC
-											-n     --启动novnc
-											-x     --启动x11
-											-h     --get help info
-										ENDOFHELP
-	}
 	############
 	main() {
 	    case "\$1" in
 	    i* | -i* | -I*)
-	        debian-i
+	        tmoe t
 	        exit 0
 	        ;;
-	    -h* | --h*)
-	        get_tmoe_linux_help_info
-	        ;;
-	    -m* | m*)
-	        debian-i -m
-	        ;;
-	    -vnc* | vnc*)
-	        startx11vnc
-	        ;;
-	    -n* | novnc*)
-	        debian-i novnc
-	        ;;
-	    -x)
-	        startxsdl
-	        ;;
+	    -vnc* | vnc*) startx11vnc ;;
+	    -n* | novnc*) novnc ;;
+	    -x) startxsdl ;;
 	    *) start_tmoe_gnu_linux_chroot_container ;;
 	    esac
 	}

@@ -1,38 +1,21 @@
 #!/usr/bin/env bash
 cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#!/usr/bin/env bash
-	get_tmoe_linux_help_info() {
-	    cat <<-'ENDOFHELP'
-									-i     --启动tmoe-linux manager
-									-m     --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
-									-vnc   --启动VNC
-									-n     --启动novnc
-									-x     --启动x11
-									-h     --get help info
-								ENDOFHELP
-	}
-	############
+	##################
+	PROOT_USER=root
+	#You can specify a user. Default is root
+	#您可以指定用户，例如root或ubuntu，默认为root
+	#Sie können einen Benutzer angeben
+	################
 	main() {
 	    case "\$1" in
 	    i* | -i* | -I*)
-	        debian-i
+	        tmoe t
 	        exit 0
-	        ;;
-	    -h* | --h*)
-	        get_tmoe_linux_help_info
-	        ;;
-	    -m* | m*)
-	        debian-i -m
-	        ;;
-	    -vnc* | vnc*)
-	        startx11vnc
-	        ;;
-		-n | novnc*)
-	        novnc
-	        ;;
-		-x)
-			startxsdl
-		;;
+			;;
+	    -vnc* | vnc*) startx11vnc ;;
+		-n | novnc*) novnc ;;
+		-x) startxsdl ;;
 	    *) start_tmoe_gnu_linux_container ;;
 	    esac
 	}
@@ -46,6 +29,24 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 		DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
 		CONTAINER_ARCH="${ARCH_TYPE}"
 	    PROC_FD_PATH="/proc/self/fd"
+		case \${PROOT_USER} in
+		"" | root) 
+			PROOT_UID=0
+			PROOT_GID=0
+			PROOT_HOME=/root
+		 ;;
+		*)
+			PROOT_UID=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
+			PROOT_GID=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
+			PROOT_HOME=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+		;;
+		esac
+		if [[ -z ${PROOT_UID} ]];then
+			PROOT_UID=0
+			PROOT_GID=0
+			PROOT_HOME=/root
+		fi
+
 		[[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 		if [[ -z \${TMOE_SHELL} ]]; then
 			for i in su ash bash zsh; do
@@ -59,6 +60,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 				[[ ! -L ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
 			done
 		fi
+		#It should be -l, not --login
 	    #考虑到alpine兼容性，此处应为-l,而非--login
 	    set -- "\${TMOE_SHELL}" "-l" "\$@"
 	    if [ -e "/data/data/com.termux" ]; then
@@ -76,7 +78,12 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 		else  
 			[[ ! -n \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
 		fi
-	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\$@"
+		if [ \${PROOT_USER} = root ];then
+			set -- "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\$@"
+		else
+			set -- "PATH=/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\$@"
+		fi
+	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=\${PROOT_HOME}" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\$@"
 		#set -- "--mount=/sys" "\$@"
 	    set -- "--mount=/dev" "\$@"
 	    set -- "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm" "\$@"
@@ -104,7 +111,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            set -- "--mount=/vendor" "\$@"
 	        fi
 	        if [ -e "/apex" ]; then
-	            #Android 10特性：APEX模块化
+	            #Android 10：APEX
 	            set -- "--mount=/apex" "\$@"
 	        fi
 	        if [ -e "/plat_property_contexts" ]; then
@@ -115,7 +122,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        fi
 	    }
 	    #################
-		#不同系统对文件权限的限制可能有所区别，以下文件在安装时会自动检测，仅当宿主机无权读取时,才会去除注释符号。
+		#The files in the /proc directory will be automatically detected during installation. If your host does not have permission to read them, there is no "#" before set.
+		#不同系统对文件权限的限制可能有所区别，以下文件在安装时会自动检测，仅当宿主机无权读取时，才会去除set前的注释符号。
+
 	    if [ "\${FAKE_PROOT_PROC}" = 'true' ]; then
 	        #test01set -- "--mount=${TMOE_PROC_PREFIX}.stat:/proc/stat" "\$@"
 	        #test02set -- "--mount=${TMOE_PROC_PREFIX}.version:/proc/version" "\$@"
@@ -154,7 +163,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            ##zoneinfo#set -- "--mount=${TMOE_PROC_PATH}/zoneinfo:/proc/zoneinfo"  "\$@"
 	        fi
 	    fi
-	    set -- "--pwd=/root" "\$@"
+	    set -- "--pwd=\${PROOT_HOME}" "\$@"
 	    set -- "--rootfs=${DEBIAN_CHROOT}" "\$@"
 	    if [ "\$(uname -o)" = 'Android' ]; then
 	        #set_android_mount_dir
@@ -178,7 +187,11 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        fi
 	        set -- "--link2symlink" "\$@"
 	    fi
-	    set -- "--root-id" "\$@"
+		if [ \${PROOT_USER} = root ];then
+	        set -- "--root-id" "\$@"
+		else
+			set -- "--change-id=\${PROOT_UID}:\${PROOT_GID}" "\$@"
+		fi 
 	    set -- "proot" "\$@"
 	    exec "\$@"
 	}
