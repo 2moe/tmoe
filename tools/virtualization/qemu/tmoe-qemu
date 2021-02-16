@@ -623,6 +623,7 @@ delete_current_qemu_vm_disk_file() {
 }
 ################
 set_it_as_the_default_qemu_iso() {
+	ls -lh ${TMOE_FILE_ABSOLUTE_PATH}
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
 	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
@@ -650,6 +651,7 @@ download_virtio_driver() {
 		aria2c --console-log-level=error --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -d "${DOWNLOAD_PATH}" -o "${DOWNLOAD_FILE_NAME}.tar.zst" "${THE_LATEST_ISO_LINK}"
 		printf "%s\n" "Extracting ${DOWNLOAD_FILE_NAME}.tar.zst, please wait."
 		tar -I zstd -xvf ${DOWNLOAD_FILE_NAME}.tar.zst
+		TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${DOWNLOAD_FILE_NAME}"
 		#check_virtio_driver_iso
 		set_it_as_the_default_qemu_iso
 		;;
