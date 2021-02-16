@@ -1621,13 +1621,13 @@ choose_xfce_or_xubuntu() {
 #############
 install_xfce4_lite_desktop() {
     if [ $(command -v apt-cache) ]; then
-        printf "%s\n" "${GREEN}apt ${YELLOW}depends ${YELLOW}xfce4${RESET}"
+        printf "%s\n" "${GREEN}apt ${YELLOW}depends ${BLUE}xfce4${RESET}"
         apt-cache depends xfce4
     elif [ $(command -v pacman) ]; then
-        printf "%s\n" "${GREEN}pacman ${YELLOW}-Si ${YELLOW}xfce4${RESET}"
+        printf "%s\n" "${GREEN}pacman ${YELLOW}-Si ${BLUE}xfce4${RESET}"
         pacman -Si xfce4
     elif [ $(command -v apk) ]; then
-        printf "%s\n" "${GREEN}apk ${YELLOW}info ${YELLOW}xfce4${RESET}"
+        printf "%s\n" "${GREEN}apk ${YELLOW}info ${BLUE}xfce4${RESET}"
         apk info xfce4
     fi
     printf "%s\n" "Do you want to install(--no-install-recommends) xfce?"
