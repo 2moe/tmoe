@@ -643,7 +643,7 @@ download_virtio_driver() {
 	1)
 		DOWNLOAD_FILE_NAME='virtio-win-latest.iso'
 		THE_LATEST_ISO_LINK="https://cdn.tmoe.me/virtio"
-		printf "%\n" "Do you want to download the latest virtio-iso.tar.zst from azure?"
+		printf "%s\n" "Do you want to download the latest virtio-iso.tar.zst from azure?"
 		do_you_want_to_continue
 		mkdir -pv ${DOWNLOAD_PATH}
 		cd ${DOWNLOAD_PATH}
