@@ -980,7 +980,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	BOLD=$(printf '\033[1m')
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
-	if [ $(command -v novnc) ];then
+	if [ -s /usr/local/etc/tmoe-linux/container.txt ];then
 		#.dockerenv
 		export WEEKLY_BUILD_CONTAINER=true
 	fi

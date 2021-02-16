@@ -50,7 +50,7 @@ set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	if [ $(command -v novnc) ]; then
+	if [ -s /usr/local/etc/tmoe-linux/container.txt ]; then
 		#.dockerenv
 		change_shell_to_bin_zsh
 		if [[ $(command -v startxfce4) ]]; then
@@ -119,7 +119,7 @@ do_you_want_to_configure_tmoe_zsh() {
 	done
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		if [ ! $(command -v novnc) ]; then
+		if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
 			#.dockerenv
 			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
 				CONFIGURE_ZSH=true
@@ -138,7 +138,7 @@ do_you_want_to_configure_tmoe_zsh() {
 		fi
 		;;
 	*)
-		if [ ! $(command -v novnc) ]; then
+		if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
 			#.dockerenv
 			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
 				CONFIGURE_ZSH=true
@@ -223,8 +223,10 @@ auto_configure_tmoe_tools() {
 		fi
 		set_your_vnc_passwd
 	else
-		if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-			install_lolcat_and_neofetch
+		if [ ! -s /usr/local/etc/tmoe-linux/container.txt ]; then
+			if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+				install_lolcat_and_neofetch
+			fi
 		fi
 	fi
 }

@@ -1637,7 +1637,7 @@ install_xfce4_lite_desktop() {
     DEPENDENCY_01="xfce4"
     case "${LINUX_DISTRO}" in
     "debian")
-        DEPENDENCY_01="--no-install-recommends xfce4 xterm xfce4-session"
+        DEPENDENCY_01="--no-install-recommends xfce4-panel xfwm4 xfdesktop4 thunar xterm adwaita-icon-theme xfce4-session"
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
