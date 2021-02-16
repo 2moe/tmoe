@@ -631,7 +631,7 @@ download_virtio_driver() {
 	#15 50 4
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "VIRTIO DRIVER" --menu "${VIRTIO_STATUS}" 0 0 0 \
-			"1" "virtio-win-0.1.189" \
+			"1" "virtio-win-latest.zst(每月16号更新)" \
 			"2" "virtio-win-latest(fedora官网)" \
 			"3" "readme驱动说明" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -641,9 +641,16 @@ download_virtio_driver() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") tmoe_qemu_disk_manager_05 ;;
 	1)
-		DOWNLOAD_FILE_NAME='virtio-win-0.1.189.iso'
-		THE_LATEST_ISO_LINK="https://redirect.tmoe.me/down/share/Tmoe-linux/qemu/202011/${DOWNLOAD_FILE_NAME}?download=1"
-		check_virtio_driver_iso
+		DOWNLOAD_FILE_NAME='virtio-win-latest.iso'
+		THE_LATEST_ISO_LINK="https://cdn.tmoe.me/virtio"
+		printf "%\n" "Do you want to download the latest virtio-iso.tar.zst from azure?"
+		do_you_want_to_continue
+		mkdir -pv ${DOWNLOAD_PATH}
+		cd ${DOWNLOAD_PATH}
+		aria2c --console-log-level=error --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -d "${DOWNLOAD_PATH}" -o "${DOWNLOAD_FILE_NAME}.tar.zst" "${THE_LATEST_ISO_LINK}"
+		printf "%s\n" "Extracting ${DOWNLOAD_FILE_NAME}.tar.zst, please wait."
+		tar -I zstd -xvf ${DOWNLOAD_FILE_NAME}.tar.zst
+		#check_virtio_driver_iso
 		set_it_as_the_default_qemu_iso
 		;;
 	2)

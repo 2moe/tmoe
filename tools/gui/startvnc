@@ -37,7 +37,7 @@ ZLIB_LEVEL=0
 
 PIXEL_DEPTH=24
 #Specify the pixel depth in bits of the desktop to be created. Default is 24.
-#像素深度，可选16、24或32,默认为24，建议选用16或者24。
+#色彩/位/像素深度，可选16、24或32,默认为24，建议选用16或者24。
 #Die Standardpixeltiefe beträgt 24
 
 ALWAYS_SHARED=true
