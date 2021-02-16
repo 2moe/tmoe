@@ -4054,6 +4054,11 @@ x11vnc_warning() {
     fi
     #音频控制器单独检测
     if [[ ! $(command -v pavucontrol) && ! $(command -v pavucontrol-qt) ]]; then
+        if [ $(command -v apt-cache) ]; then
+            printf "%s\n" "${GREEN}apt ${YELLOW}depends ${BLUE}pavucontrol${RESET}"
+            apt depends pavucontrol
+        fi
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}pavucontrol${RESET}"
         ${TMOE_INSTALLATION_COMMAND} pavucontrol
     fi
 }
