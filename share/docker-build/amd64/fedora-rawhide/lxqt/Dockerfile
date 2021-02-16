@@ -8,7 +8,7 @@ ENV HOME=/root \
     TMOE_DOCKER=true
 
 RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo \
-    dnf update -y \
+    ; dnf update -y \
     ; dnf install -y --skip-broken glibc-all-langpacks glibc-minimal-langpack iproute lolcat newt systemd dnf-utils passwd findutils man-db procps-ng procps-ng-i18n tar hostname neofetch \
     ; dnf install -y --skip-broken newt aria2 zstd curl wget systemd \
     ; mkdir -p /run/systemd \
