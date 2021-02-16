@@ -153,7 +153,7 @@ modify_tigervnc_zlib_level() {
     CURRENT_VALUE=$(grep '^ZLIB_LEVEL=' $(command -v startvnc) | awk -F '=' '{print $2}' | cut -d '"' -f 2)
     ZLIB_LEVEL=$(
         whiptail --title "Acceptable values are between 0 and 9" --menu "Zlib compression level for ZRLE encoding,\ncurrent value is ${CURRENT_VALUE}" 0 0 0 \
-            "0" "0" \
+            "0" "0(Default level)" \
             "1" "1" \
             "2" "2" \
             "3" "3" \
@@ -162,7 +162,7 @@ modify_tigervnc_zlib_level() {
             "6" "6" \
             "7" "7" \
             "8" "8" \
-            "9" "9" \
+            "9" "9(Highest level)" \
             "00" "🌚 Back" \
             3>&1 1>&2 2>&3
     )
@@ -216,6 +216,7 @@ switch_tight_or_tiger_vncserver() {
         non_debian_function
         #apt update
         case_debian_distro_and_install_vnc
+        grep --color=auto '^VNC_SERVER=' $(command -v startvnc)
     fi
 }
 #################
@@ -4960,9 +4961,8 @@ debian_install_vnc_server() {
             done
         fi
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
-        for i in xfonts-100dpi xfonts-75dpi xfonts-scalable; do
-            eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
-        done
+        i="xfonts-100dpi xfonts-75dpi xfonts-scalable"
+        eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
 
         if [[ -e "/usr/share/fonts/X11/Type1" && ! -e /usr/share/fonts/X11/Speedo ]]; then
             ln -svf /usr/share/fonts/X11/Type1 /usr/share/fonts/X11/Speedo
