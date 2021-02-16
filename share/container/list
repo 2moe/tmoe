@@ -470,6 +470,9 @@ choose_kde_distro() {
 	esac
 }
 ##############################
+#fedora-rawhide armhf xfce+lxqt -> mate
+#debian-sid armhf xfce+lxde -> lxde
+#alpine xfce+mate -> mate
 view_the_schedule() {
 	cat <<-EOF
 		${BOLD}${PURPLE}Weekly builds${RESET}：
@@ -481,7 +484,7 @@ view_the_schedule() {
 		TIME："UTC 06:01 / CST 14:01"
 			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
 			${GREEN}fedora-rawhide ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
-			${GREEN}fedora-rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+lxqt${RESET}
+			${GREEN}fedora-rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}mate${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
@@ -492,14 +495,14 @@ view_the_schedule() {
 		TIME："UTC 06:01 / CST 14:01"
 			${GREEN}debian-sid ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
 			${GREEN}debian-sid ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}debian-sid ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+lxde${RESET}
+			${GREEN}debian-sid ${YELLOW}armhf ${PURPLE}* ${BLUE}lxde${RESET}
 			${GREEN}debian-sid ${YELLOW}i386 ${PURPLE}* ${BLUE}lxde${RESET}
 
 		${BOLD}${YELLOW}Thursday/周四/木曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
 			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
 			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+mate${RESET}
+			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}mate${RESET}
 			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}mate${RESET}   
 
 		${BOLD}${PURPLE}Monthly builds${RESET}：

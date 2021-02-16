@@ -558,9 +558,10 @@ tmoe_container_desktop() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
             "1" "🐭 xfce(兼容性高,简单优雅)" \
-            "2" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
-            "3" "🕊️ lxde(轻量化桌面,资源占用低)" \
-            "4" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
+            "2" "xfce-lite(未美化,精简化安装)" \
+            "3" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
+            "4" "🕊️ lxde(轻量化桌面,资源占用低)" \
+            "5" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -568,9 +569,10 @@ tmoe_container_desktop() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "Which desktop environment do you want to install? " 0 0 0 \
             "1" "🐭 xfce(elegant, high compatibility)" \
-            "2" "🐦 lxqt" \
-            "3" "🕊️ lxde(lightweight)" \
-            "4" "🌿 mate(the continuation of GNOME 2)" \
+            "2" "xfce-lite(not-beautified)" \
+            "3" "🐦 lxqt" \
+            "4" "🕊️ lxde(lightweight)" \
+            "5" "🌿 mate(the continuation of GNOME 2)" \
             "0" "🌚 none =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -587,13 +589,21 @@ tmoe_container_desktop() {
         ;;
     2)
         REMOVE_UDISK2='true'
-        install_lxqt_desktop
+        install_xfce4_lite_desktop
         ;;
     3)
         REMOVE_UDISK2='true'
+        install_xfce4_desktop
+        ;;
+    4)
+        REMOVE_UDISK2='true'
+        install_lxqt_desktop
+        ;;
+    5)
+        REMOVE_UDISK2='true'
         install_lxde_desktop
         ;;
-    4) install_mate_desktop ;;
+    6) install_mate_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -1607,6 +1617,70 @@ choose_xfce_or_xubuntu() {
         fi
         ;;
     esac
+}
+#############
+install_xfce4_lite_desktop() {
+    printf "%s\n" "Do you want to install(--no-install-recommends) xfce?"
+    do_you_want_to_continue
+    REMOTE_DESKTOP_SESSION_01='xfce4-session'
+    REMOTE_DESKTOP_SESSION_02='startxfce4'
+    DEPENDENCY_01="xfce4"
+    case "${LINUX_DISTRO}" in
+    "debian")
+        DEPENDENCY_01="--no-install-recommends xfce4 xterm"
+        dpkg --configure -a
+        auto_select_keyboard_layout
+        ;;
+        ##############
+    "redhat")
+        DEPENDENCY_01='@xfce'
+        rm -v /etc/xdg/autostart/xfce-polkit.desktop 2>/dev/null
+        ;;
+        ##################
+    "arch") DEPENDENCY_01="xfce4" ;;
+        ##################
+    "void") DEPENDENCY_01="xfce4" ;;
+        #################
+    "gentoo")
+        dispatch-conf
+        etc-update
+        DEPENDENCY_01="xfce4-meta"
+        ;;
+        #################
+    "suse") DEPENDENCY_01="patterns-xfce-xfce" ;;
+        ###############
+    "alpine") DEPENDENCY_01="xfce4" ;;
+    esac
+    ##################
+    if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+        beta_features_quick_install
+    else
+        different_distro_software_install
+    fi
+    ####################
+    case ${TMOE_PROOT} in
+    true)
+        case "${LINUX_DISTRO}" in
+        "debian")
+            #此处不能是commmand -v kali-undercover
+            if [[ ! -e /usr/bin/kali-undercover ]]; then
+                printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
+                apt autoremove --purge -y ^xfce4-power-manager
+            fi
+            ;;
+        arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
+        redhat) dnf remove -y xfce4-power-manager ;;
+        alpine) apk del xfce4-power-manager ;;
+        suse) zypper rm -y xfce4-power-manager ;;
+        void) xbps-remove -R -y xfce4-power-manager ;;
+        *)
+            printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}xfce4-power-manager${RESET}"
+            ${TMOE_REMOVAL_COMMAND} xfce4-power-manager
+            ;;
+        esac
+        ;;
+    esac
+    configure_vnc_xstartup
 }
 install_xfce4_desktop() {
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
