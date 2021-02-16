@@ -150,11 +150,7 @@ install_tmoe_weekly_build_edition() {
 		choose_lxde_distro
 		;;
 	6)
-		printf "%s\n" "This feature may be available on 2020-02-17."
-		press_enter_to_return
-		install_tmoe_weekly_build_edition
-		;;
-	6debug)
+		#printf "%s\n" "This feature may be available on 2020-02-17."
 		DESKTOP="zsh"
 		choose_zsh_distro
 		;;
@@ -505,6 +501,74 @@ choose_kde_distro() {
 		amd64 | arm64) set_alpine_edge_env ;;
 		*)
 			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	esac
+}
+choose_zsh_distro() {
+	SELECTED_GNU_LINUX=$(whiptail --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
+		"1" "🌉 Arch(arm64,armhf,amd64)" \
+		"2" "🦛 Ubuntu devel(arm64,amd64)" \
+		"3" "🍥 Debian sid(arm64,armhf,amd64,i386)" \
+		"4" "👒 Fedora rawhide(arm64,armhf,amd64)" \
+		"5" "🏔️ Alpine edge(arm64,armhf,amd64,i386)" \
+		"6" "🐉 Kali-rolling(arm64,armhf,amd64)" \
+		"0" "🌚 Return to previous menu" \
+		3>&1 1>&2 2>&3)
+	case "${SELECTED_GNU_LINUX}" in
+	0 | "") install_tmoe_weekly_build_edition ;;
+	1)
+		case ${ARCH_TYPE} in
+		amd64 | armhf | arm64) set_arch_latest_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	2)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_ubuntu_dev_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	3)
+		case ${ARCH_TYPE} in
+		amd64 | arm64 | armhf | i386) set_debian_sid_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	4)
+		case ${ARCH_TYPE} in
+		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	5)
+		case ${ARCH_TYPE} in
+		amd64 | arm64 | armhf | i386) set_alpine_edge_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			distro_does_not_support
+			;;
+		esac
+		;;
+	6)
+		case ${ARCH_TYPE} in
+		amd64 | arm64 | armhf) set_kali_rolling_env ;;
+		*)
+			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
 			distro_does_not_support
 			;;
 		esac
