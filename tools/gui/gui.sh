@@ -2445,11 +2445,10 @@ plasma_wayland_env() {
 }
 ################
 install_kde_plasma5_desktop() {
-    if [ $(command -v apt-cache) ]; then
-        printf "%s\n" "${GREEN}apt ${YELLOW}depends ${BLUE}kde-plasma-desktop${RESET}"
-        apt-cache depends kde-plasma-desktop
-    fi
-
+    #if [ $(command -v apt-cache) ]; then
+    #    printf "%s\n" "${GREEN}apt ${YELLOW}depends ${BLUE}kde-plasma-desktop${RESET}"
+    #    apt-cache depends kde-plasma-desktop
+    #fi
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         kde_warning
         do_you_want_to_install_fcitx4
