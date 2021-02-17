@@ -17,7 +17,7 @@ tmoe_install_xfce() {
 	apt install -y x11-repo
 	apt update
 	apt dist-upgrade -y
-	for i in xfce xfce aterm tigervnc; do
+	for i in xfce4 aterm tigervnc; do
 		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 		apt install -y ${i}
 	done
@@ -33,7 +33,7 @@ tmoe_install_xfce() {
 		TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:5902@")
 		cat <<-EOF
 		The default vnc address is localhost:5902
-		The LAN VNC address is ${TMOE_IP_ADDR}
+		The LAN vnc address is ${TMOE_IP_ADDR}
 		EOF
 		[[ -n ${VNC_RESOLUTION} ]] || VNC_RESOLUTION=720x1440
 		Xvnc -geometry ${VNC_RESOLUTION} -depth 24 -desktop termux-xfce --SecurityTypes=None $DISPLAY &
@@ -149,10 +149,11 @@ modify_android_termux_vnc_config() {
 }
 ###############
 remove_android_termux_xfce() {
+	printf "%s\n" "apt purge -y ^xfce tigervnc aterm x11-repo"
 	do_you_want_to_continue
 	apt purge -y ^xfce tigervnc aterm
 	apt purge -y x11-repo
-	apt autoremove
+	apt autoremove --purge
 	press_enter_to_return
 	tmoe_manager_main_menu
 }
