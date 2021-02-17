@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4404,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4406,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -362,6 +362,15 @@ check_linux_distro() {
 	elif [ "$(uname -o)" = 'Android' ]; then
 		printf "%s\n" "${RED}不支持${RESET}${BLUE}Android${RESET}系统！"
 		exit 1
+	elif [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
+		LINUX_DISTRO='debian'
+		TMOE_UPDATE_COMMAND='apt update'
+		TMOE_INSTALLATION_COMMAND='apt install -y'
+		TMOE_REMOVAL_COMMAND='apt purge -y'
+	elif [[ $(command -v pacman) ]]; then
+		LINUX_DISTRO='arch'
+		TMOE_REMOVAL_COMMAND='pacman -Rsc'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm'
 	fi
 }
 #############################

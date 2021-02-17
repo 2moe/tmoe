@@ -637,10 +637,10 @@ different_distro_software_install() {
     "debian")
         apt update
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            eatmydata apt install -y ${DEPENDENCY_01} || aptitude install -y ${DEPENDENCY_01} || apt-get install -f -y ${DEPENDENCY_01}
+            eatmydata apt install -y ${DEPENDENCY_01} || apt-get install -f -y ${DEPENDENCY_01} || aptitude install -y ${DEPENDENCY_01}
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            eatmydata apt install -y ${DEPENDENCY_02} || aptitude install -y ${DEPENDENCY_02} || apt-get install -f -y ${DEPENDENCY_02}
+            eatmydata apt install -y ${DEPENDENCY_02} || apt-get install -f -y ${DEPENDENCY_02} || aptitude install -y ${DEPENDENCY_02}
         fi
         ;;
         ################
