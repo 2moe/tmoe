@@ -30,14 +30,13 @@ tmoe_install_xfce() {
 		pulseaudio --kill 2>/dev/null
 		pulseaudio --start
 		printf "%s\n" "正在启动vnc服务,本机默认vnc地址localhost:5902"
-		echo The LAN VNC address 局域网地址 $(ip -4 -br -c a | tail -n 1 | cut -d '/' -f 1 | cut -d 'P' -f 2):5902
 		TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:5902@")
 		cat <<-EOF
-		本机默认vnc地址 localhost:5902
-		The LAN VNC address 局域网地址 ${TMOE_IP_ADDR}
+		The default vnc address is localhost:5902
+		The LAN VNC address is ${TMOE_IP_ADDR}
 		EOF
 		[[ -n ${VNC_RESOLUTION} ]] || VNC_RESOLUTION=720x1440
-		Xvnc -geometry ${VNC_RESOLUTION} -depth 24 --SecurityTypes=None $DISPLAY &
+		Xvnc -geometry ${VNC_RESOLUTION} -depth 24 -desktop termux-xfce --SecurityTypes=None $DISPLAY &
 		am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity
 		sleep 1s
 		thunar &
