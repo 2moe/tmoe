@@ -593,17 +593,13 @@ tmoe_container_desktop() {
         ;;
     3)
         REMOVE_UDISK2='true'
-        install_xfce4_desktop
+        install_lxqt_desktop
         ;;
     4)
         REMOVE_UDISK2='true'
-        install_lxqt_desktop
-        ;;
-    5)
-        REMOVE_UDISK2='true'
         install_lxde_desktop
         ;;
-    6) install_mate_desktop ;;
+    5) install_mate_desktop ;;
     esac
     ##########################
     press_enter_to_return
