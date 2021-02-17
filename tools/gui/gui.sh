@@ -2195,7 +2195,7 @@ choose_debian_mate_core_or_lite() {
         do_you_want_to_install_fcitx4
     else
         UBUNTU_DESKTOP=false
-        DEPENDENCY_01="--no-install-recommends mate-session-manager mate-settings-daemon marco mate-panel"
+        DEPENDENCY_01="--no-install-recommends mate-session-manager mate-settings-daemon marco mate-terminal mate-panel"
         #caja
     fi
 }
