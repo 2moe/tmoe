@@ -2302,7 +2302,7 @@ choose_debian_lxqt_core_or_lite() {
         do_you_want_to_install_fcitx4
     else
         UBUNTU_DESKTOP=false
-        DEPENDENCY_01="--no-install-recommends pcmanfm-qt pcmanfm-qt-l10n qterminal qterminal-l10n xfwm4 xfwm4-theme-breeze breeze-icon-theme lxqt-panel lxqt-config lxqt-session-l10n lxqt-session"
+        DEPENDENCY_01="--no-install-recommends pcmanfm-qt pcmanfm-qt-l10n qterminal qterminal-l10n openbox lxqt-theme-debian lxqt-panel lxqt-config lxqt-session-l10n lxqt-session"
         #+ openbox
     fi
 }
