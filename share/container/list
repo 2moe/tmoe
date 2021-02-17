@@ -111,7 +111,7 @@ install_tmoe_weekly_build_edition() {
 	}
 	choose_de_zh() {
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"以下容器已预装桌面环境,tmoe/azure服务器每周都会自动构建并发布最新版" 0 0 0 \
+			"tmoe/azure服务器每周都会自动构建并发布最新版" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🌿 mate(the continuation of GNOME 2)" \
 			"3" "🦖 kde plasma5(风格华丽的桌面环境)" \
@@ -175,81 +175,102 @@ request_weekly_build_version() {
 }
 set_debian_sid_env() {
 	DISTRO_NAME='debian'
-	DISTRO_CODE='sid'
+	DISTRO_CODE="sid-${DESKTOP}"
+	DISTRO_NAME_02=debian-sid
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_kali_rolling_env() {
 	DISTRO_NAME='kali'
-	DISTRO_CODE='rolling'
+	DISTRO_CODE="rolling-${DESKTOP}"
+	DISTRO_NAME_02=kali-rolling
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_ubuntu_dev_env() {
 	DISTRO_NAME='ubuntu'
-	DISTRO_CODE='dev'
+	DISTRO_CODE="dev-${DESKTOP}"
+	DISTRO_NAME_02=ubuntu-dev
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_mint_tricia_env() {
 	DISTRO_NAME='mint'
-	DISTRO_CODE='tricia'
+	DISTRO_CODE="tricia-${DESKTOP}"
+	DISTRO_NAME_02=mint-tricia
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_mint_ulyssa_env() {
 	DISTRO_NAME='mint'
-	DISTRO_CODE='ulyssa'
+	DISTRO_CODE="ulyssa-${DESKTOP}"
+	DISTRO_NAME_02=mint-ulyssa
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_alpine_edge_env() {
 	DISTRO_NAME='alpine'
-	DISTRO_CODE='edge'
+	DISTRO_CODE="edge-${DESKTOP}"
+	DISTRO_NAME_02=alpine-edge
 	NODE02_ENABLED=false
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_fedora_rawhide_env() {
 	DISTRO_NAME='fedora'
-	DISTRO_CODE='rawhide'
+	DISTRO_CODE="rawhide-${DESKTOP}"
+	DISTRO_NAME_02=fedora-rawhide
 	NODE02_ENABLED=false
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_ubuntu_bionic_env() {
 	DISTRO_NAME='ubuntu'
-	DISTRO_CODE='bionic'
+	DISTRO_CODE="bionic-${DESKTOP}"
+	DISTRO_NAME_02=ubuntu-bionic
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_arch_latest_env() {
 	DISTRO_NAME='arch'
-	DISTRO_CODE=''
+	DISTRO_CODE="${DESKTOP}"
+	DISTRO_NAME_02=arch
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
 set_manjaro_stable_env() {
 	DISTRO_NAME='manjaro'
-	DISTRO_CODE='stable'
+	DISTRO_CODE="stable-${DESKTOP}"
+	DISTRO_NAME_02=manjaro-stable
 	NODE02_ENABLED=true
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
 	creat_container_edition_txt
 	go_to_proot_management
 }
@@ -584,32 +605,32 @@ view_the_schedule() {
 		${BOLD}${PURPLE}Weekly builds${RESET}：
 		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
-			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt${RESET}
-			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
+			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+zsh${RESET}
+			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate+zsh${RESET}
 
 		TIME："UTC 06:01 / CST 14:01"
-			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
-			${GREEN}fedora-rawhide ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate${RESET}
-			${GREEN}fedora-rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}mate${RESET}
+			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate+zsh${RESET}
+			${GREEN}fedora-rawhide ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate+zsh${RESET}
+			${GREEN}fedora-rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}mate+zsh${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
-			${GREEN}arch-latest ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}arch-latest ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}arch-latest ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce${RESET}
+			${GREEN}arch-latest ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
+			${GREEN}arch-latest ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
+			${GREEN}arch-latest ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+zsh${RESET}
 
 		TIME："UTC 06:01 / CST 14:01"
-			${GREEN}debian-sid ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}debian-sid ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}debian-sid ${YELLOW}armhf ${PURPLE}* ${BLUE}lxde${RESET}
-			${GREEN}debian-sid ${YELLOW}i386 ${PURPLE}* ${BLUE}lxde${RESET}
+			${GREEN}debian-sid ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
+			${GREEN}debian-sid ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
+			${GREEN}debian-sid ${YELLOW}armhf ${PURPLE}* ${BLUE}lxde+zsh${RESET}
+			${GREEN}debian-sid ${YELLOW}i386 ${PURPLE}* ${BLUE}lxde+zsh${RESET}
 
 		${BOLD}${YELLOW}Thursday/周四/木曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
-			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate${RESET}
-			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}mate${RESET}
-			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}mate${RESET}   
+			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
+			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
+			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}mate+zsh${RESET}
+			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}mate+zsh${RESET}   
 
 		${BOLD}${PURPLE}Monthly builds${RESET}：
 		${BOLD}${YELLOW}24号/24th of every month${RESET}：
@@ -623,9 +644,9 @@ view_the_schedule() {
 
 		${BOLD}${YELLOW}14号+28号，14th and 28th of every month${RESET}：
 		TIME："UTC 02:01 / CST 10:01"
-			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce${RESET}
-			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce${RESET}
-			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce${RESET}
+			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
+			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+zsh${RESET}
+			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
 
 	EOF
 }
