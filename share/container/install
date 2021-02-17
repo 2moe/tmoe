@@ -1580,7 +1580,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	done
 	########################
 	alpine_linux_configure() {
-		rm -f "/tmp/.ALPINELINUXDetectionFILE"
+		[[ ! -s "/tmp/.ALPINELINUXDetectionFILE" ]] || rm -f "/tmp/.ALPINELINUXDetectionFILE"
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
 	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
 			cat /etc/apk/repositories
@@ -1598,8 +1598,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        opkg install libustream-openssl ca-bundle ca-certificates bash dialog whiptail
 			printf "%s\n" "export PATH=\${PATH}:/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >> ~/.zshenv
 	    fi
-		printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
-		neofetch
+		#printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+		#neofetch
 	    exec bash zsh.sh
 		exit 0
 	}
@@ -1634,6 +1634,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'openSUSE' "/etc/os-release"; then
 	    opensuse_linux_repo
 		zypper in -y newt
+	elif grep -q 'Alpine Linux' "/etc/issue" 2>/dev/null; then
+		alpine_linux_configure
 	fi
 	##############################
 	if [[ $(command -v apt) ]];then
