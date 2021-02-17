@@ -2101,7 +2101,7 @@ choose_debian_lxde_core_or_lite() {
         do_you_want_to_install_fcitx4
     else
         UBUNTU_DESKTOP=false
-        DEPENDENCY_01="--no-install-recommends pcmanfm lxterminal openbox-lxde-session lxappearance lxde-icon-theme lxpanel"
+        DEPENDENCY_01="--no-install-recommends pcmanfm lxterminal openbox-lxde-session lxde-icon-theme lxpanel"
     fi
 }
 #############################
@@ -2123,12 +2123,12 @@ install_lxde_desktop() {
     DEPENDENCY_01='lxde'
     case "${LINUX_DISTRO}" in
     "debian")
-        dpkg --configure -a
-        auto_select_keyboard_layout
         DEPENDENCY_01="lxde-core lxterminal"
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_debian_lxde_core_or_lite
         fi
+        dpkg --configure -a
+        auto_select_keyboard_layout
         ;;
         #############
     "redhat") DEPENDENCY_01='@lxde-desktop' ;;
@@ -2394,31 +2394,28 @@ ENDofTable
     do_you_want_to_continue
 }
 ###############
+choose_kde_plasma_or_standard() {
+    if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
+        DEPENDENCY_01="--no-install-recommends kde-plasma-desktop"
+    else
+        if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件,后者为KDE全家桶' 0 0); then
+            DEPENDENCY_01="kde-standard"
+        else
+            DEPENDENCY_01="kde-full"
+        fi
+    fi
+}
 choose_kde_or_kubuntu() {
     case ${DEBIAN_DISTRO} in
     ubuntu)
         if (whiptail --title "KDE-plasma or Kubuntu-desktop" --yes-button "KDE" --no-button "kubuntu" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kubuntu.\n前者为普通KDE,后者为kubuntu' 0 0); then
-            if (whiptail --title "kde-plasma or kde-full" --yes-button "minimal" --no-button "full" --yesno 'The former is minimal installation.\n前者为最简安装，后者为KDE全家桶' 0 0); then
-                DEPENDENCY_01="kde-plasma-desktop"
-            else
-                DEPENDENCY_01="kde-full"
-            fi
+            choose_kde_plasma_or_standard
         else
             UBUNTU_DESKTOP=true
             DEPENDENCY_01="kubuntu-desktop"
         fi
         ;;
-    *)
-        if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
-            DEPENDENCY_01="tigervnc-standalone-server kde-plasma-desktop"
-        else
-            if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件，后者为KDE全家桶' 0 0); then
-                DEPENDENCY_01="tigervnc-standalone-server kde-standard"
-            else
-                DEPENDENCY_01="tigervnc-standalone-server kde-full"
-            fi
-        fi
-        ;;
+    *) choose_kde_plasma_or_standard ;;
     esac
 }
 choose_arch_kde_lite_or_full() {
@@ -2448,6 +2445,11 @@ plasma_wayland_env() {
 }
 ################
 install_kde_plasma5_desktop() {
+    if [ $(command -v apt-cache) ]; then
+        printf "%s\n" "${GREEN}apt ${YELLOW}depends ${BLUE}kde-plasma-desktop${RESET}"
+        apt-cache depends kde-plasma-desktop
+    fi
+
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         kde_warning
         do_you_want_to_install_fcitx4
