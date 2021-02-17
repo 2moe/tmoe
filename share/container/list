@@ -98,7 +98,7 @@ install_tmoe_weekly_build_edition() {
 	esac
 	choose_de_en() {
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"TMOE/Azure Server will automatically build and release the latest DE container every week" 0 0 0 \
+			"TMOE/Azure Server will automatically build and release the latest DE container every week/month" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🌿 mate(the continuation of GNOME 2)" \
 			"3" "🦖 kde plasma5(beautiful and modern)" \
@@ -111,7 +111,7 @@ install_tmoe_weekly_build_edition() {
 	}
 	choose_de_zh() {
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"tmoe/azure服务器每周都会自动构建并发布最新版" 0 0 0 \
+			"tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🌿 mate(the continuation of GNOME 2)" \
 			"3" "🦖 kde plasma5(风格华丽的桌面环境)" \
@@ -630,7 +630,12 @@ view_the_schedule() {
 			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
 			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+mate+zsh${RESET}
 			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}mate+zsh${RESET}
-			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}mate+zsh${RESET}   
+			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}mate+zsh${RESET}
+
+		TIME："UTC 06:01 / CST 14:01"
+			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
+			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+zsh${RESET}
+			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
 
 		${BOLD}${PURPLE}Monthly builds${RESET}：
 		${BOLD}${YELLOW}24号/24th of every month${RESET}：
@@ -641,12 +646,6 @@ view_the_schedule() {
 			${GREEN}linux mint-ulyssa ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
 			${GREEN}manjaro-stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce${RESET}   
 			${GREEN}manjaro-stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce${RESET}
-
-		${BOLD}${YELLOW}14号+28号，14th and 28th of every month${RESET}：
-		TIME："UTC 02:01 / CST 10:01"
-			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
-			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}xfce+zsh${RESET}
-			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
 
 	EOF
 }
