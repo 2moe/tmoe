@@ -2215,8 +2215,8 @@ choose_mate_or_ubuntu_mate() {
 }
 install_mate_desktop() {
     if [ $(command -v apt-cache) ]; then
-        printf "%s\n" "${GREEN}apt ${YELLOW}show ${BLUE}lxqt-core${RESET}"
-        apt-cache show lxqt-core
+        printf "%s\n" "${GREEN}apt ${YELLOW}show ${BLUE}mate-desktop-environment${RESET}"
+        apt-cache show mate-desktop-environment
     fi
     REMOTE_DESKTOP_SESSION_01='mate-session'
     REMOTE_DESKTOP_SESSION_02='mate-panel'
