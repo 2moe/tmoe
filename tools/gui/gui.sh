@@ -1633,10 +1633,10 @@ install_xfce4_lite_desktop() {
     DEPENDENCY_01="xfce4"
     case "${LINUX_DISTRO}" in
     "debian")
-        DEPENDENCY_01="--no-install-recommends xfce4-panel xfwm4 xfdesktop4 thunar xterm adwaita-icon-theme xfce4-session"
-        case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01="--no-install-recommends xfce4-panel xfwm4 xfdesktop4 thunar xterm adwaita-icon-theme-full xfce4-session" ;;
-        esac
+        DEPENDENCY_01="--no-install-recommends xfce4-panel xfwm4 xfdesktop4 thunar xfce4-terminal tango-icon-theme xfce4-session"
+        #case ${DEBIAN_DISTRO} in
+        #ubuntu) DEPENDENCY_01="--no-install-recommends xfce4-panel xfwm4 xfdesktop4 thunar xterm adwaita-icon-theme-full xfce4-session" ;;
+        #esac
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
