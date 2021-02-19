@@ -179,7 +179,7 @@ auto_configure_tmoe_tools() {
 				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server${RESET}"
 				eatmydata apt install -y tigervnc-standalone-server || apt install -y tigervnc-standalone-server
 			elif [[ $(command -v pacman) ]]; then
-				pacman -Syu --noconfirm tigervnc
+				pacman -Syu --noconfirm --needed tigervnc
 			elif [[ $(command -v dnf) ]]; then
 				dnf install -y tigervnc-server
 			elif [[ $(command -v zypper) ]]; then
@@ -217,8 +217,8 @@ auto_configure_tmoe_tools() {
 				DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
 			fi
 			if [[ -n ${DEPENDENCY_03} ]]; then
-				printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}${DEPENDENCY_03}${RESET}"
-				pacman -Syu --noconfirm ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
+				printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm --needed ${BLUE}${DEPENDENCY_03}${RESET}"
+				pacman -Syu --noconfirm --needed ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
 			fi
 		fi
 		set_your_vnc_passwd
@@ -237,8 +237,8 @@ install_lolcat_and_neofetch() {
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
 			eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
 		elif [[ $(command -v pacman) ]]; then
-			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-			pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
+			pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
 		fi
 	done
 	#fedora neofetch (X)

@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4418,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4419,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -298,7 +298,7 @@ check_gnu_linux_distro() {
 	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
 		LINUX_DISTRO='arch'
 		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
 
 	elif egrep -q "gentoo|funtoo" '/etc/os-release'; then
 		LINUX_DISTRO='gentoo'
@@ -334,7 +334,7 @@ check_gnu_linux_distro() {
 	elif [[ $(command -v pacman) ]]; then
 		LINUX_DISTRO='arch'
 		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
 	fi
 	######################################
 	check_gnu_linux_git_and_whiptail

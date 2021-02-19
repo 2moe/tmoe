@@ -43,7 +43,7 @@ install_timeshift() {
 			apt update
 			apt install -y timeshift
 			;;
-		"arch") pacman -Syu --noconfirm timeshift ;;
+		"arch") pacman -Syu --noconfirm --needed timeshift ;;
 		"redhat") dnf install timeshift ;;
 		*) ${TMOE_INSTALLATION_COMMAND} timeshift ;;
 		esac

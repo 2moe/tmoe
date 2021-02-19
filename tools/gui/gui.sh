@@ -5496,8 +5496,8 @@ check_xvnc_command() {
             DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
         fi
         if [[ -n ${DEPENDENCY_03} ]]; then
-            printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm ${BLUE}${DEPENDENCY_03}${RESET}"
-            pacman -Syu --noconfirm ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm --needed ${BLUE}${DEPENDENCY_03}${RESET}"
+            pacman -Syu --noconfirm --needed ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
         fi
         ;;
     esac

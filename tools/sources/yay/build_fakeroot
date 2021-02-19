@@ -11,8 +11,8 @@ install_yay_main() {
 build_fakeroot() {
     for i in make automake autoconf gcc libtool po4a patch; do
         if [[ ! $(command -v ${i}) ]]; then
-            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-            pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
+            pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
         fi
     done
     [[ ! $(command -v fakeroot) ]] || pacman -R --noconfirm fakeroot

@@ -1364,7 +1364,7 @@ fedora_distro_menu() {
 	BETA_SYSTEM=$(
 		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
 			"1" "Auto check 自动检测版本" \
-			"2" "34 rawhide(For testing only)" \
+			"2" "35 rawhide(For testing only)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1376,7 +1376,7 @@ fedora_distro_menu() {
 		check_the_latest_distro_version
 		;;
 	2)
-		DISTRO_CODE=34
+		DISTRO_CODE=35
 		#case ${ARCH_TYPE} in
 		#amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
 		#arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;

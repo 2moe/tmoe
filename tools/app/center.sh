@@ -685,8 +685,8 @@ install_steam_app() {
         DEPENDENCY_01='steam-native-runtime'
         install_arch_steam_app
         #此处需要选择显卡驱动，故不要使用quick_install_function
-        printf "%s\n" "pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}"
-        pacman -Syu ${DEPENDENCY_01} ${DEPENDENCY_02}
+        printf "%s\n" "pacman -Syu --needed ${DEPENDENCY_01} ${DEPENDENCY_02}"
+        pacman -Syu --needed ${DEPENDENCY_01} ${DEPENDENCY_02}
         ;;
     *)
         beta_features_quick_install
