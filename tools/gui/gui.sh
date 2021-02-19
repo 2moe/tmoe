@@ -2357,14 +2357,14 @@ kde_warning() {
     以下数据不适用于proot容器
   ╔═══╦════════════╦════════╦════════╦═════════╦
   ║   ║vnc/xserver ║        ║        ║         ║
-  ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
+  ║   ║----------- ║ x11vnc ║tigervnc║ xrdp    ║
   ║   ║System      ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
-  ║ 1 ║Debian sid  ║  ✓     ║    ✓   ║   ?     ║
+  ║ 1 ║Debian sid  ║  ✓     ║    ✓   ║   ✓     ║
   ║   ║            ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
   ║   ║            ║        ║        ║         ║
-  ║ 2 ║Ubuntu 20.10║  ✓     ║   ✓    ║   ?     ║
+  ║ 2 ║Ubuntu devel║  ✓     ║   ✓    ║   ?     ║
   ║---║------------║--------║--------║---------║
   ║   ║            ║        ║        ║         ║
   ║ 3 ║ArchLinux   ║   ✓    ║    ✓   ║   ✓     ║
@@ -2376,7 +2376,7 @@ kde_warning() {
   ║ 5 ║Fedora      ║  ✓     ║   ✓    ║   ?     ║
   ║---║------------║--------║--------║---------║
   ║   ║            ║        ║        ║         ║
-  ║ 6 ║Alpine      ║  X     ║   ✓    ║   ?     ║
+  ║ 6 ║Alpine      ║  ✓     ║   ?    ║   ?     ║
 ENDofTable
 
     case "${TMOE_PROOT}" in
@@ -2937,7 +2937,6 @@ set_default_xfce_icon_theme() {
     /root) ;;
     *) chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${HOME}/.config/xfce4 ;;
     esac
-
 }
 ###############
 creat_update_icon_caches() {
