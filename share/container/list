@@ -1411,7 +1411,7 @@ git_clone_fedora_rootfs() {
 			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 		;;
-	34)
+	*)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed "s/debian system/${DISTRO_NAME} system/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
