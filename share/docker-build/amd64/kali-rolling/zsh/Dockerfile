@@ -13,7 +13,7 @@ RUN apt update \
     ; apt dist-upgrade -y \
     ; apt install -y locales-all locales \
     ; apt install -y whiptail dialog aria2 zstd curl wget \
-    ; apt install -y neofetch lolcat apt-utils systemd aptitude \
+    ; apt install -y neofetch lolcat apt-utils systemd \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; cd /tmp \
