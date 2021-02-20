@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4424,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4425,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -598,7 +598,9 @@ check_dependencies() {
 			#创建文件夹防止aptitude报错
 			mkdir -pv /run/lock /var/lib/aptitude
 			touch /var/lib/aptitude/pkgstates
-			[[ -L /usr/local/bin/aptitude ]] || ln -svf $(command -v eatmydata) /usr/local/bin/aptitude
+			if [[ -x /usr/bin/aptitude ]]; then
+				[[ -L /usr/local/bin/aptitude ]] || ln -svf $(command -v eatmydata) /usr/local/bin/aptitude
+			fi
 			;;
 		alpine | openwrt | slackware)
 			${TMOE_UPDATE_COMMAND}
