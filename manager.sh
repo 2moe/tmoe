@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4421,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4422,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -565,7 +565,7 @@ check_tmoe_manager_git() {
 }
 git_clone_tmoe_manager() {
 	[[ -e ${TMOE_LINUX_DIR} ]] || mkdir -pv ${TMOE_LINUX_DIR}
-	git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+	git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 	source ${TMOE_SHARE_DIR}/environment/manager_environment
 	tmoe_manager_main_menu
 }
@@ -682,7 +682,9 @@ tmoe_manager_main_menu() {
 	de_DE.UTF-8) tmoe_manager_main_menu_de ;; #Deutsche
 	*) tmoe_manager_main_menu_en ;;
 	esac
-	[[ -e ${TMOE_GIT_DIR}/.git ]] || check_tmoe_manager_git
+	if [[ ! -e ${TMOE_GIT_DIR}/.git/config && ! -s ${TMOE_GIT_DIR}/README.md ]]; then
+		check_tmoe_manager_git
+	fi
 	check_dependencies_03
 	##########################
 	case "${TMOE_MANAGER_MAIN_OPTION}" in

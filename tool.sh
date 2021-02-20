@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4421,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4422,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -699,7 +699,7 @@ git_clone_tmoe_linux_repo() {
 	if [ ! -e "${TMOE_LINUX_DIR}" ]; then
 		mkdir -pv ${TMOE_LINUX_DIR}
 	fi
-	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 }
 #################
 do_you_want_to_git_clone_tmoe_linux_repo() {
@@ -718,8 +718,8 @@ check_tmoe_git_folder_00() {
 }
 ####################
 check_tmoe_git_folder() {
-	if [ ! -e ${TMOE_GIT_DIR}/.git ]; then
-		rm -rfv ${TMOE_GIT_DIR}
+	if [[ ! -e ${TMOE_GIT_DIR}/.git/config && ! -s ${TMOE_GIT_DIR}/README.md ]]; then
+		rm -rfv ${TMOE_GIT_DIR} 2>/dev/null
 		printf "%s\n" "https://${TMOE_GIT_URL}"
 		case ${TMOE_PROOT} in
 		true | false) git_clone_tmoe_linux_repo ;;
