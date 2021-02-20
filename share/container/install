@@ -932,7 +932,7 @@ cat >vnc-autostartup <<-'EndOfFile'
 	##########
 	cd ${HOME}
 	###########
-	ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux' | tail -n 20
+	ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux|tail|grep' | tail -n 10
 	############
 	case ${TMOE_PROOT} in
 	true)
