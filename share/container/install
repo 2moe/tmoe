@@ -990,10 +990,15 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	cd ${HOME}
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
-	if [ -e /usr/bin/neofetch ];then
-		printf "%s\n" "${GREEN}neofetch${RESET}"
+	if [ -x /usr/bin/neofetch ];then
 		rm -f ${NEOFETCH_BIN_FILE}
-		/usr/bin/neofetch
+		if [[ $(command -v lolcat) ]];then
+			printf "%s\n" "${GREEN}neofetch | lolcat${RESET}"
+			/usr/bin/neofetch | lolcat
+		else
+			printf "%s\n" "${GREEN}neofetch${RESET}"
+			/usr/bin/neofetch
+		fi
 	fi
 	if [[ -e ${NEOFETCH_BIN_FILE} ]]; then
 		chmod a+x ${NEOFETCH_BIN_FILE}
