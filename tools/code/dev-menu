@@ -406,6 +406,7 @@ download_android_studio() {
     cd ${DOWNLOAD_PATH}
     LOCAL_ARCH_PKG_VERSION=$(ls -t ${GREP_NAME}*.tar.gz 2>/dev/null | head -n 1)
     case ${LOCAL_ARCH_PKG_VERSION} in
+    "") printf "%s\n" "ERROR！版本检测失败，请重试。" ;;
     ${DOWNLOAD_FILE_NAME}) printf "%s\n" "检测到您已经下载最新版的${LOCAL_ARCH_PKG_VERSION},如需删除安装包，请输${RED}rm -v${RESET} ${BLUE}${DOWNLOAD_PATH}/${LOCAL_ARCH_PKG_VERSION}${RESET}" ;;
     *) aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${DOWNLOAD_PATH} -o ${DOWNLOAD_FILE_NAME} -x 10 -s 10 -k 1M ${THE_LATEST_DEB_LINK} ;;
     esac
