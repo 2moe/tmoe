@@ -1,4 +1,5 @@
 nameserver 114.114.114.114
 nameserver 114.114.115.115
+nameserver 1.2.4.8
 nameserver 240c::6666
 nameserver 240c::6644
