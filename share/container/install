@@ -1869,7 +1869,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		printf "%s\n" "Upgrading all packages ..."
 		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
+			eatmydata apt upgrade -y 2>/dev/null 
+			dpkg --configure -a
 			eatmydata apt dist-upgrade -y 2>/dev/null || apt dist-upgrade -y 2>/dev/null
+			dpkg --configure -a
 		else
 			printf "%s\n" "You are using weekly/moothly build container,${PURPLE}skipping automatic upgrade${RESET}..." 
 		fi

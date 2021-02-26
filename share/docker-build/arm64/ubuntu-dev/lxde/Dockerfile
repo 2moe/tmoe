@@ -12,6 +12,7 @@ ENV HOME=/root \
 
 RUN apt update \
     ; apt dist-upgrade -y \
+    ; dpkg --configure -a \
     ; apt install -y locales-all locales \
     ; apt install -y whiptail dialog aria2 zstd curl wget \
     ; apt install -y neofetch lolcat apt-utils software-properties-common systemd \
