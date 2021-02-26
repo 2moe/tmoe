@@ -49,6 +49,10 @@ sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' ${IN
 sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ${ALL_SHELL_FILE}
 sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ${SHARE_FILE}
 
+sed -i 's!cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/manager!raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh!g' ${ALL_SHELL_FILE} ${SHARE_FILE}
+sed -i 's!cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool!raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh!g' ${ALL_SHELL_FILE} ${SHARE_FILE}
+#cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool
+
 sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ${ALL_SHELL_FILE}
 sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ${SHARE_FILE}
 

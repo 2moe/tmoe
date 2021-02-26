@@ -61,7 +61,7 @@ tmoe_manager_env() {
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
+	TMOE_GIT_URL="gitee.com/mo2/linux"
 	AK2_GIT_URL="https://gitee.com/ak2"
 	TMOE_LINUX_ISSUE_URL="https://${TMOE_GIT_URL}/issues"
 	if [[ -e ${TMOE_GIT_DIR}/.git ]]; then
@@ -322,7 +322,7 @@ check_gnu_linux_distro() {
 		TMOE_INSTALLATION_COMMAND='opkg install'
 		TMOE_REMOVAL_COMMAND='opkg remove'
 		cd /tmp
-		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
+		wget --no-check-certificate -qO "router-debian.bash" https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/manager
 		chmod +x 'router-debian.bash'
 		sed -i 's@/usr/bin@/opt/bin@g;s@-e /bin@-e /opt/bin;@wget --no-check-certificate -qO "router-debian.bash"@#&@;s@bash router-debian.bash@#&@' 'router-debian.bash'
 		bash router-debian.bash
@@ -366,9 +366,9 @@ check_gnu_linux_distro() {
 			fi
 		else
 			if [ ! $(command -v curl) ]; then
-				wget -O /tmp/.tmoe-linux-tool.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh"
+				wget -O /tmp/.tmoe-linux-tool.sh "https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool"
 			else
-				curl -Lv -o /tmp/.tmoe-linux-tool.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh"
+				curl -Lv -o /tmp/.tmoe-linux-tool.sh "https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool"
 			fi
 			source /tmp/.tmoe-linux-tool.sh
 		fi
@@ -576,9 +576,9 @@ choose_termux_color_scheme() {
 
 	if [[ ! -s colors.properties ]]; then
 		if (whiptail --title "colors.properties" --yes-button "neon" --no-button "monokai" --yesno "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色。" 9 50); then
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/neon'
+			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/share/colors/neon'
 		else
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/monokai.dark'
+			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/share/colors/monokai.dark'
 		fi
 	fi
 
@@ -594,7 +594,7 @@ choose_termux_color_scheme() {
 	if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
 		if (whiptail --title "termux.properties" --yes-button "yes" --no-button "no" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
 			cp -vf termux.properties termux.properties.bak
-			aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/termux.properties'
+			aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://gitee.com/mo2/zsh/raw/master/share/termux.properties'
 			sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
 		fi
 	fi
@@ -757,7 +757,7 @@ start_zsh_tool_as_current_user() {
 }
 start_tmoe_zsh_manager() {
 	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
-	ZSH_TOOL_URL="https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh"
+	ZSH_TOOL_URL="https://gitee.com/mo2/zsh/raw/master/zsh.sh"
 	case $(id -u) in
 	0) normally_start_zsh ;;
 	*)
