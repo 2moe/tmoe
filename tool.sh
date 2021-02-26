@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4434,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4435,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -602,6 +602,8 @@ check_dependencies() {
 			if [[ -x /usr/bin/aptitude ]]; then
 				[[ -L /usr/local/bin/aptitude ]] || ln -svf $(command -v eatmydata) /usr/local/bin/aptitude
 			fi
+			sed -i -E 's@(configure)@pre\1@' /var/lib/dpkg/info/nano.postinst
+			dpkg --configure -a
 			;;
 		alpine | openwrt | slackware)
 			${TMOE_UPDATE_COMMAND}
