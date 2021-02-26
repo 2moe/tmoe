@@ -5106,6 +5106,8 @@ debian_install_vnc_server() {
         if [[ ! $(command -v Xtightvnc) ]]; then
             i=tightvncserver
             eatmydata_apt_install_i
+            sed -i -E 's@(configure)@pre\1@' /var/lib/dpkg/info/tightvncserver.postinst
+            dpkg --configure -a
         fi
 
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
