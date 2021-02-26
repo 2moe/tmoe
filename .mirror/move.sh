@@ -8,7 +8,8 @@ case ${COUNT} in
     sed -i -E "s@(tmoe linux tool) v1.*?,@\1 v1.${COMMIT_COUNT},@g" tool.sh
     ;;
 esac
-cp -a manager.sh tool.sh .mirror/
+cp -a manager.sh .mirror/manager
+cp -a tool.sh .mirror/tool
 cp -a .gitignore debian.sh install.sh tool.sh zsh.sh manager.sh Licenses share .mirror tools .config ~/github/github-linux
 cd ~/github/github-linux/.mirror
 ./github.sh
