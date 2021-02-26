@@ -23,7 +23,7 @@ TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
-TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
+TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 unset TMOE_WSL
 #################

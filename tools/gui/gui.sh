@@ -192,7 +192,7 @@ modify_tigervnc_pixel_depth() {
 }
 #######################
 nano_tigervnc_default_config_manually() {
-    nano /etc/tigervnc/vncserver-config-defaults
+    nano /etc/tigervnc/vncserver-config-tmoe
 }
 #############
 switch_tight_or_tiger_vncserver() {
@@ -1127,7 +1127,7 @@ configure_vnc_xstartup() {
 ####################
 congigure_xvnc() {
     #cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
-    cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc
+    cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc/vncserver-config-tmoe
     if [[ -s "/etc/os-release" ]]; then
         if grep -q '^PRETTY_NAME=' /etc/os-release; then
             GREP_NAME='PRETTY_NAME'
@@ -1135,7 +1135,7 @@ congigure_xvnc() {
             GREP_NAME='NAME'
         fi
         VNC_DESKTOP_NAME=$(grep "^${GREP_NAME}=" /etc/os-release | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2 | sed 's@ @-@g;s@$@\_tmoe-linux-vnc@g')
-        [[ -z ${VNC_DESKTOP_NAME} ]] || sed -i "s@^desktop=.*@desktop=\'${VNC_DESKTOP_NAME}\'@" /etc/tigervnc/vncserver-config-defaults
+        [[ -z ${VNC_DESKTOP_NAME} ]] || sed -i "s@^desktop=.*@desktop=\'${VNC_DESKTOP_NAME}\'@" /etc/tigervnc/vncserver-config-tmoe
     fi
 }
 ############

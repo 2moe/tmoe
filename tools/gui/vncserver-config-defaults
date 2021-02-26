@@ -8,17 +8,17 @@
 # Several common settings are shown below. Uncomment and modify to your
 # liking.
 
+#verbose
+#ImprovedHextile
+#br
+#wm
+#retro
+#once
+#alwaysshared
 securitytypes=vncauth,tlsvnc
-alwaysshared
+CompareFB=1
 geometry=1440x720
 desktop=tmoe-linux
-verbose
 depth=24
 ZlibLevel=0
-ImprovedHextile
-CompareFB=1
-br
-wm
 deferglyphs=16
-retro
-once

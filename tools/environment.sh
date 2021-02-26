@@ -14,7 +14,7 @@ gnu_linux_env_02() {
     OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt.list'
     ELECTRON_MIRROR_STATION='https://mirrors.huaweicloud.com/electron'
     #ELECTRON_MIRROR_STATION_02='https://npm.taobao.org/mirrors/electron'
-    TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-defaults'
+    TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
     XSESSION_FILE='/etc/X11/xinit/Xsession'
     GIT_AK2='https://gitee.com/ak2'
     TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
