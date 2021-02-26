@@ -230,14 +230,14 @@ tmoe_desktop_faq() {
 			A:可以哒！ヾ(≧▽≦*)o 您可以在其它主流的GNU/Linux发行版，包括但不限于容器、虚拟机和实体机上使用这个脚本。
 			注：截止2020年7月份,LinuxDeploy配置的archlinux容器存在某个问题,导致libnewt无法被正确配置，进而导致本脚本无法在上面正常运行。
 			解决方法很简单，删掉某个文件夹再重新配置就可以了。因为本工具开发者已经很久没用过LinuxDeploy了，所以忘记是哪个啦！
-			如果您在使用过程中出现问题，那么建议您在github或gitee上提交issue,开发者很乐意帮您解决问题。
+			如果您在使用过程中出现问题，那么建议您前往 https://github.com/2moe/tmoe-linux/issues 提交 issue,开发者很乐意帮您解决问题。
 
 			------------------------
 			Q:${YELLOW}我觉得tmoe-linux tool/manager的依赖有点多${RESET}
 
 			A: 对于必要依赖，在安装时会显示安装信息，并将依赖关系记录至tmoe-linux目录${BLUE}/usr/local/etc/tmoe-linux/${RESET}下的${GREEN}MANAGER_DEPENDENCIES.txt 和 TOOL_DEPENDENCIES.txt${RESET} 。对于Android系统，tmoe-linux目录为 ${BLUE}~/.local/share/tmoe-linux${RESET}。
 			对于非必要依赖，请留意安装过程中出现的提示。
-			开发者花费了大量的时间和精力去维护脚本、软件和镜像仓库，就算是您要喷开发者，也希望您能够轻喷。
+			开发者花费了大量的时间和精力去维护脚本、软件和镜像仓库，就算是您要喷开发者，也希望您能够轻喷，谢谢。
 			------------------------
 			END（完结）
 			                                                                                 2020年6月初稿，7月修订

@@ -77,9 +77,6 @@ If you cannot connect to _Microsoft Store_,then you can install it manually.
 ![008](https://gitee.com/mo2/tmoe-linux-comic/raw/master/008.png)
 ![009](https://gitee.com/mo2/tmoe-linux-comic/raw/master/009.png)
 
-**The first chapter is over. You can find more easter eggs in README.第一章 WSL 篇完结，如需阅览第二章，则请自行寻找彩蛋。**  
-**介绍：本（伪）漫画讲述的是少女们机缘巧合之下卷入了 debian 状的旋涡，最终穿梭时空拯救世界的故事。**
-
 ---
 
 Open the subsystem and upgrade the Linux kernel of WSL2.
@@ -99,6 +96,12 @@ _**如果你住在中国,那么请输**_
     sudo apt update
     sudo apt install -y curl
     bash -c "$(curl -L l.tmoe.me)"
+```
+
+如果连接失败，那么请输
+
+```shell
+bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
 ```
 
 > 注:前后两者调用的内容是不一样的，二选一即可。  
@@ -140,6 +143,12 @@ _**如果你住在中国,那么请输**_
     . <(curl -L l.tmoe.me)
 ```
 
+如果连接失败，那么请输
+
+```shell
+bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
+```
+
 > 3.When you are using the manager, you can use the touch screen to click.  
 > When you are using the tool, you can use the touch screen to slide and press the Enter to confirm.  
 > 4-EN.Goto Google Play,then install [VNC client](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) or [X server](https://play.google.com/store/apps/details?id=x.org.server)
@@ -163,6 +172,12 @@ _**如果你住在中国,那么请输**_
      sudo apt update
      sudo apt install -y curl
      bash -c "$(curl -L l.tmoe.me)"
+```
+
+如果连接失败，那么请输
+
+```shell
+bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
 ```
 
 #### 4.Fedora/CentOS Stream
@@ -920,11 +935,11 @@ nano $(command -v startvnc)
 
 本来是不想维护的，但是我发现了一个很严重的 bug,所以干脆重写一遍。
 本次更新的内容真的有点多，而且真的很强哦 ✨ ο(=•ω ＜=)ρ⌒☆，我自己都觉得太强了！
-脚本文件已经达到了 40 多 KB 了。
 
 ##### 2020-02-15 更新内容
 
-- 1.获取镜像途径依旧是清华镜像站，但把下载工具从 wget 换成了 aria2，从原本的单线程变成现在的 16 线程，加快了下载速度。
+- 1.获取镜像途径依旧是清华镜像站，但把下载工具从 wget 换成了 aria2，从原本的单线程变成现在的 16 线程，加快了下载速度。  
+  后期注：盲目调大线程最终适得其反，后期已改为 5 线程。
 
 - ​ 2.自动配置中文环境，默认就是中文，无需手动配置。
 
@@ -957,6 +972,7 @@ nano $(command -v startvnc)
 
 ​
 **之后的更新内容真的是太多了，有空的话会从酷安原帖搬过来的。其中最突出的更新内容是将安装 gui 和其它软件、管理远程桌面配置等内容整合在 GNU/Linux 容器内的 debian-i 里，以及修复了 VNC 音频传输中可能存在的一些问题。**
+2020-04-29 注：包含更新日志的帖子已被酷安删除，由于超过 2 周时间，故无法恢复。
 
 ---
 
@@ -983,11 +999,13 @@ nano $(command -v startvnc)
 
 - 1.支持 mipsel 架构，已在路由器上测试过了。
 
-![Snipaste_2020-03-24_05-36-44.png](https://s1.ax1x.com/2020/04/23/JUWsTs.png)
+![Snipaste_2020-03-24_05-36-44.png](https://gitee.com/mo2/pic_api/raw/test/2020/03/24/1dc0XmN262GBr9QG.png)
 
-- 2.尝试让 RISC-V 架构的设备能运行 debian 容器，需要宿主机原系统为 deb 系。
-  当检测到设备为 riscv 架构时，将下载 arm64 架构版的容器镜像。
+- 2.尝试让 RISC-V 架构的设备能运行 debian 容器，需要宿主机原系统为 deb 系。  
+  当检测到设备为 riscv 架构时，将下载其他架构的容器镜像。
   调用 qemu+chroot 来实现跨 CPU 架构运行容器，这是一个理论性操作，未实际测试。
+
+  2020-10 注：勿需跨架构，支持直接运行 riscv64 容器。
 
 ##### 2020-03-25 更新日志
 
@@ -1014,7 +1032,7 @@ nano $(command -v startvnc)
 > **对 WSL2 的支持已经称得上完善了!**  
 > 最关键的地方在于脚本大量调用了 win10 原系统的程序。  
 > **在 win10 2004 下同时运行 linux 和 windows 程序的预览截图**：
-> ![GlyxZ8.png](https://s1.ax1x.com/2020/04/01/GlyxZ8.png)  
+> ![GlyxZ8.png](https://images.gitee.com/uploads/images/2020/0718/103735_8403852b_5617340.png)  
 > WSL2 与宿主机原系统（win10）的交互联动要比普通虚拟机强数倍，在 linux 子系统下可以直接调用 powershell.exe 等 windows 程序。  
 > ~~如上图所示，目前已经可以接近完美地将 win10 和 GNU/Linux 融为一体。~~
 
@@ -1025,7 +1043,7 @@ nano $(command -v startvnc)
 
 ##### 2020-04-10 更新日志
 
-- 1.加入测试版容器 arch,fedora,centos.raspbian,mint 等等
+- 1.加入测试版容器 arch,fedora,centos,raspbian,mint 等等
 
 ##### 2020-04-11 更新日志
 
@@ -1103,15 +1121,15 @@ nano $(command -v startvnc)
 - 需要先在 termux 进行配置，并安装 wayland 服务端软件，再进入 GNU/Linux 容器内选择需要配置的桌面环境。
 - 其中后者只是在我之前写的 xorg+xrdp 的配置方案的基础上进行了修改而已。
 - 配置完成后，需要先打开 wayland 服务端，点击`start`,然后在容器内输`startw`启动。
-- 注：我仅测试了 xfce4。未测试的桌面可以配置，但可能存在无法连接的问题。
-- 特点：可以打开 X11VNC 无法打开的某些应用，但是 bug 超级多。
+- 特点：可以在 proot 环境下打开 kde 的某些应用（例如 plasma-discover），但是 bug 超级多。
 - 由于 bug 实在过多，故我已经不想维护了。
-  ![Screenshot_20200507-193422_1.png](https://i.loli.net/2020/05/08/JhLxPTor1GiDgtY.png)
-  ![Screenshot_20200507-222532.png](https://i.loli.net/2020/05/08/QJp8LelVakxyqA5.png)
+
   触控操作体验极差！建议使用蓝牙鼠标进行操作！  
   由于目前在 Android 手机上暂时无法使用 gpu 硬件渲染加速，故实际体验非常糟糕！
   不建议配置该服务!  
   等 wayland 完善之后，再来继续优化吧！
+
+  2020-10 注：配置 xwayland 的功能已经被我砍掉了！！！请自行研究配置步骤。
 
 ##### 2020-05-09 至 2020-05-10 更新日志
 
@@ -1121,12 +1139,15 @@ nano $(command -v startvnc)
 - 3.修复 Android-Termux 赋予 proot 容器真实 root 权限的功能，原因是 termux 更新了 tsu，将 tsudo 切换至 sudo。
 - 4.deb 系 Linux 现在也可以用 proot 容器啦！
 
+  2020-10 注：第三个功能已经被我砍掉了。请不要先输`tsu`，再输`debian`。
+  如果你要这样做的话，那么请使用`chown`来解决权限问题，再自行解决其他可能存在的问题。
+
 ##### 2020-05-11 更新日志
 
-- 1.支持配置 X11vnc 服务, 比 XSDL 强太多。
-- 输`startx11vnc`启动，输`stopx11vnc`停止。
+- 1.支持配置 X11vnc 服务。
+- 输`startx11vnc`启动，输`stopvnc`停止。
 - 2.支持安装窗口管理器
-  ![Snipaste_2020-05-11_21-36-18.png](https://i.loli.net/2020/05/11/ZIF7G9jApySEDeV.png)
+  ![Snipaste_2020-05-11_21-36-18.png](https://images.gitee.com/uploads/images/2020/0718/103736_846ae27a_5617340.png)
   在安装时会自动配置 vnc 服务，我没有为它们写单独的 rdp 配置步骤。
 
 ##### 2020-05-13 更新日志
@@ -1149,7 +1170,8 @@ nano $(command -v startvnc)
 - 2.增加 iso 镜像文件下载功能，支持自动获取 android_x86 镜像，支持下载各个架构的 debian iso 镜像(包含 non-free 固件)，以及各个 ubuntu 的衍生版
 - 3.增加烧录 iso 文件至 U 盘的功能
 - 4.支持安装 linux 版百度输入法，此前已经支持讯飞和搜狗输入法。
-- 5.增加 tmoe-deb 软件包安装器，支持在脚本内选择并安装 deb 文件。deb 系发行版使用此功能会自动解决依赖关系，但非 deb 系不会。
+- 5.增加 tmoe-deb 软件包安装器，支持在脚本内选择并安装 deb 文件。
+- 后期注：增加了 deb 批量安装功能(GUI)。
 
 ##### 2020-05-21 更新日志
 
@@ -1158,15 +1180,13 @@ nano $(command -v startvnc)
 ##### 2020-05-22 更新日志
 
 - 1.修复 Ubuntu20.10 存在的各种问题。
-- 2.修复 arm64 架构上的[Rocket1184/electron-netease-cloud-music](https://github.com/Rocket1184/electron-netease-cloud-music)
-- ![163music](https://images.gitee.com/uploads/images/2020/0522/221902_3490dfd0_5617340.png "截图_2020-05-22_21-43-28.png")
-
-- 3.镜像站支持测延迟+测速，支持强制信任软件源，去除多余行，一键切换 http/https。
+- 2.镜像站支持测延迟+测速，支持强制信任软件源，去除多余行，一键切换 http/https。
 - 除了主要源外，还支持配置额外源。对于不同的发行版，显示的额外源是不同的。对于 debian,显示的是切换为 kali 源。对于 arch，显示的是配置 archlinux-cn 源。对于 centos，显示的是 epel 源。
 
 ##### 2020-05-23 更新日志
 
 - 1.修复 code-server
+- 由于上游发生变更，因此重写了配置脚本。
 
 ##### 2020 年 05 月末 更新日志
 
@@ -1223,113 +1243,35 @@ nano $(command -v startvnc)
 - 5.08-26:支持跨 CPU 架构运行 docker 容器
 - 6.08-29:在恢复容器压缩包时，将根据系统对权限的限制自动判断特殊文件的挂载与否。(仅适用于 0816 之后的版本)
 
-### README 结尾彩蛋
+##### 10 月 更新日志
 
-#### 第二章 remote-desktop 远程桌面篇
+- 1.增加多容器管理
+- 2.移除功能：xwayland,赋予 proot 容器真实 root 权限等等。  
+  移除 vscode server 宿主机与容器的联动功能。  
+  原功能介绍：在宿主机下执行指定命令将同时启动宿主机的浏览器并打开 code server 的 web 页面+容器的 code server。  
+  此外，还有很多功能也被我砍了，此处不一一列举。  
+  有些功能维护起来太累了，我不想管了。  
+  还有的话，不再对 gentoo 和 openwrt 提供支持。
 
-![010](https://gitee.com/mo2/tmoe-linux-comic/raw/master/010.png)
-![011](https://gitee.com/mo2/tmoe-linux-comic/raw/master/011.png)
-![012](https://gitee.com/mo2/tmoe-linux-comic/raw/master/012.png)
-![013](https://gitee.com/mo2/tmoe-linux-comic/raw/master/013.png)
-![014](https://gitee.com/mo2/tmoe-linux-comic/raw/master/014.png)
-![015](https://gitee.com/mo2/tmoe-linux-comic/raw/master/015.png)
-![016](https://gitee.com/mo2/tmoe-linux-comic/raw/master/016.png)
-![017](https://gitee.com/mo2/tmoe-linux-comic/raw/master/017.png)
-![018](https://gitee.com/mo2/tmoe-linux-comic/raw/master/018.png)
-![019](https://gitee.com/mo2/tmoe-linux-comic/raw/master/019.png)
-![020](https://gitee.com/mo2/tmoe-linux-comic/raw/master/020.png)
-![021](https://gitee.com/mo2/tmoe-linux-comic/raw/master/021.png)
-![022](https://gitee.com/mo2/tmoe-linux-comic/raw/master/022.png)
-![023](https://gitee.com/mo2/tmoe-linux-comic/raw/master/023.png)
-![024](https://gitee.com/mo2/tmoe-linux-comic/raw/master/024.png)
-![025](https://gitee.com/mo2/tmoe-linux-comic/raw/master/025.png)
-![026](https://gitee.com/mo2/tmoe-linux-comic/raw/master/026.png)
+- 3.10-13:增加 vscode arm64/armhf 官方版，此前 arm 只有第三方编译版。
 
----
+- 4.移除发行版: apertis，alt 和 raspbian。
+- 5.新增 deepin v20 容器
+- 6.修复 riscv64 架构容器的配置功能，arm64 可以跨架构运行 risv64。
+- 7.新增 mips64el 架构的容器。
 
-#### 第三章 stink 恶臭篇
+##### 11 月 更新日志
 
-![027](https://gitee.com/mo2/tmoe-linux-comic/raw/master/027.png)
-![028](https://gitee.com/mo2/tmoe-linux-comic/raw/master/028.png)
-![029](https://gitee.com/mo2/tmoe-linux-comic/raw/master/029.png)
-![030](https://gitee.com/mo2/tmoe-linux-comic/raw/master/030.png)
-![031](https://gitee.com/mo2/tmoe-linux-comic/raw/master/031.png)
-![032](https://gitee.com/mo2/tmoe-linux-comic/raw/master/032.png)
-![033](https://gitee.com/mo2/tmoe-linux-comic/raw/master/033.png)
+- 1.重构 qemu-system-x86_64 配置功能。
+- 2.移除功能：qemu-system-aarch64 所有配置选项,烧录 iso 至 U 盘等。
+
+##### 12 月 更新日志
+
+- 1.修复容器环境下运行 fcitx/fcitx5/ibus 时，环境变量未正确配置的问题。
 
 ---
 
-#### 第四章 loli 篇
+##### 2021 年 1 月 更新日志
 
-![034](https://gitee.com/mo2/tmoe-linux-comic/raw/master/034.png)
-![035](https://gitee.com/mo2/tmoe-linux-comic/raw/master/035.png)
-![036](https://gitee.com/mo2/tmoe-linux-comic/raw/master/036.png)
-![037](https://gitee.com/mo2/tmoe-linux-comic/raw/master/037.png)
-![038](https://gitee.com/mo2/tmoe-linux-comic/raw/master/038.png)
-![039](https://gitee.com/mo2/tmoe-linux-comic/raw/master/039.png)
-![040](https://gitee.com/mo2/tmoe-linux-comic/raw/master/040.png)
-![041](https://gitee.com/mo2/tmoe-linux-comic/raw/master/041.png)
-
----
-
-#### 第五章 Mr.Jie 篇
-
-![042](https://gitee.com/mo2/tmoe-linux-comic/raw/master/042.png)
-![043](https://gitee.com/mo2/tmoe-linux-comic/raw/master/043.png)
-![044](https://gitee.com/mo2/tmoe-linux-comic/raw/master/044.png)
-![045](https://gitee.com/mo2/tmoe-linux-comic/raw/master/045.png)
-![046](https://gitee.com/mo2/tmoe-linux-comic/raw/master/046.png)
-
----
-
-#### 第六章 dog 狗子的死亡探究篇
-
-![047](https://gitee.com/mo2/tmoe-linux-comic/raw/master/047.png)
-![048](https://gitee.com/mo2/tmoe-linux-comic/raw/master/048.png)
-![049](https://gitee.com/mo2/tmoe-linux-comic/raw/master/049.png)
-![050](https://gitee.com/mo2/tmoe-linux-comic/raw/master/050.png)
-![051](https://gitee.com/mo2/tmoe-linux-comic/raw/master/051.png)
-![052](https://gitee.com/mo2/tmoe-linux-comic/raw/master/052.png)
-![053](https://gitee.com/mo2/tmoe-linux-comic/raw/master/053.png)
-
----
-
-#### 第七章 hat 篇
-
-![054](https://gitee.com/mo2/tmoe-linux-comic/raw/master/054.png)
-![055](https://gitee.com/mo2/tmoe-linux-comic/raw/master/055.png)
-![056](https://gitee.com/mo2/tmoe-linux-comic/raw/master/056.png)
-![057](https://gitee.com/mo2/tmoe-linux-comic/raw/master/057.png)
-![058](https://gitee.com/mo2/tmoe-linux-comic/raw/master/058.png)
-![059](https://gitee.com/mo2/tmoe-linux-comic/raw/master/059.png)
-![060](https://gitee.com/mo2/tmoe-linux-comic/raw/master/060.png)
-![061](https://gitee.com/mo2/tmoe-linux-comic/raw/master/061.png)
-![062](https://gitee.com/mo2/tmoe-linux-comic/raw/master/062.png)
-![063](https://gitee.com/mo2/tmoe-linux-comic/raw/master/063.png)
-![064](https://gitee.com/mo2/tmoe-linux-comic/raw/master/064.png)
-![065](https://gitee.com/mo2/tmoe-linux-comic/raw/master/065.png)
-![066](https://gitee.com/mo2/tmoe-linux-comic/raw/master/066.png)
-![067](https://gitee.com/mo2/tmoe-linux-comic/raw/master/067.png)
-
----
-
-#### 第八章 Ctrl+Z 篇
-
-![068](https://gitee.com/mo2/tmoe-linux-comic/raw/master/068.png)
-![069](https://gitee.com/mo2/tmoe-linux-comic/raw/master/069.png)
-![070](https://gitee.com/mo2/tmoe-linux-comic/raw/master/070.png)
-![071](https://gitee.com/mo2/tmoe-linux-comic/raw/master/071.png)
-![072](https://gitee.com/mo2/tmoe-linux-comic/raw/master/072.png)
-![073](https://gitee.com/mo2/tmoe-linux-comic/raw/master/073.png)
-![074](https://gitee.com/mo2/tmoe-linux-comic/raw/master/074.png)
-![075](https://gitee.com/mo2/tmoe-linux-comic/raw/master/075.png)
-![076](https://gitee.com/mo2/tmoe-linux-comic/raw/master/076.png)
-![077](https://gitee.com/mo2/tmoe-linux-comic/raw/master/077.png)
-![078](https://gitee.com/mo2/tmoe-linux-comic/raw/master/078.png)
-![079](https://gitee.com/mo2/tmoe-linux-comic/raw/master/079.png)
-![080](https://gitee.com/mo2/tmoe-linux-comic/raw/master/080.png)
-![081](https://gitee.com/mo2/tmoe-linux-comic/raw/master/081.png)
-![082](https://gitee.com/mo2/tmoe-linux-comic/raw/master/082.png)
-![083](https://gitee.com/mo2/tmoe-linux-comic/raw/master/083.png)
-
----
+- 1.增加 Dockerfile ,并为部分发行版+桌面提供每周自动构建镜像。
+- 您现在可以直接下载包含 GUI 的容器镜像。

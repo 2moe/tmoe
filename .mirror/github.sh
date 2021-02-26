@@ -65,7 +65,7 @@ sed -i 's@###tmoe-github@@g' ${INSTALL_FILE} zsh.sh
 
 sed -i 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' ${ALL_SHELL_FILE}
 sed -i 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' ${SHARE_FILE}
-sed -i 's@https://gitee.com/mo2/linux/issues@https://github.com/2moe/tmoe-linux/issues@g' manager.sh
+#sed -i 's@https://gitee.com/mo2/linux/issues@https://github.com/2moe/tmoe-linux/issues@g' manager.sh
 sed -i 's@gitee.com/romkatv/powerlevel10k@github.com/romkatv/powerlevel10k@g' ${INSTALL_FILE} zsh.sh
 sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' ${INSTALL_FILE} zsh.sh
 sed -i 's@gitee.com/mo2/zsh-autosuggestions@github.com/zsh-users/zsh-autosuggestions@g' ${INSTALL_FILE} zsh.sh
