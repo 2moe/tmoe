@@ -801,7 +801,6 @@ if [ ! -s "zsh-i.sh" ]; then
 	curl -Lo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/2/2'
 fi
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
-#curl -Lo zsh.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/zsh.sh'
 cp -f ${TMOE_GIT_DIR}/zsh.sh ./
 chmod a+x zsh.sh zsh-i.sh
 ${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root

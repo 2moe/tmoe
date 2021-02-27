@@ -20,10 +20,7 @@ printf "%s\n" "$SHARE_FILE"
 
 #sed -i 's/zh_CN/en_US/g' ./*sh
 INSTALL_FILE=./share/container/install
-sed -i 's/zh_CN/en_US/g' ${ALL_SHELL_FILE}
-sed -i 's/zh_CN/en_US/g' ./tools/gui/start*
-sed -i 's/zh_CN/en_US/g' ${SHARE_FILE}
-sed -i 's/zh_CN/en_US/g' ${INSTALL_FILE}
+sed -i 's/zh_CN/en_US/g' ${ALL_SHELL_FILE} ./tools/gui/start* ${SHARE_FILE} ${INSTALL_FILE}
 #sed -i 's@en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/@zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/@' ./*sh tools/*/*
 #########
 #sed -i 's@en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/@zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/@' ${ALL_SHELL_FILE}
@@ -46,25 +43,23 @@ sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.c
 sed -i 's@gitee.com/mirrors/oh-my-zsh/raw/master/templates/zshrc.zsh-template@raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template@g' ${INSTALL_FILE} zsh.sh
 sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' ${INSTALL_FILE} zsh.sh
 #sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ./*sh
-sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ${ALL_SHELL_FILE}
-sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ${SHARE_FILE}
+sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ${ALL_SHELL_FILE} ${SHARE_FILE}
+sed -i 's!cdn.jsdelivr.net/gh/2moe/tmoe-zsh@master/.mirror/zsh!raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh!g' ${ALL_SHELL_FILE} ${SHARE_FILE}
+#sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g'
 
 sed -i 's!cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/manager!raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh!g' ${ALL_SHELL_FILE} ${SHARE_FILE}
 sed -i 's!cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool!raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh!g' ${ALL_SHELL_FILE} ${SHARE_FILE}
 #cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool
 
-sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ${ALL_SHELL_FILE}
-sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ${SHARE_FILE}
+sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ${ALL_SHELL_FILE} ${SHARE_FILE}
 
-sed -i 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe-linux.git@g' ${SHARE_FILE}
-sed -i 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe-linux.git@g' ${ALL_SHELL_FILE}
+sed -i 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe-linux.git@g' ${SHARE_FILE} ${ALL_SHELL_FILE}
 
 sed -i '/正在配置中文环境/d' ${INSTALL_FILE}
 sed -i 's@###tmoe-github@@g' ${INSTALL_FILE} zsh.sh
 #sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ./*sh ./tool/*sh tools/*/* tools/environment.sh
 
-sed -i 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' ${ALL_SHELL_FILE}
-sed -i 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' ${SHARE_FILE}
+sed -i 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' ${ALL_SHELL_FILE} ${SHARE_FILE}
 #sed -i 's@https://gitee.com/mo2/linux/issues@https://github.com/2moe/tmoe-linux/issues@g' manager.sh
 sed -i 's@gitee.com/romkatv/powerlevel10k@github.com/romkatv/powerlevel10k@g' ${INSTALL_FILE} zsh.sh
 sed -i 's@gitee.com/mo2/zsh-syntax-highlighting@github.com/zsh-users/zsh-syntax-highlighting@g' ${INSTALL_FILE} zsh.sh
