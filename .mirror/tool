@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4437,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4439,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -359,6 +359,11 @@ check_linux_distro() {
 		TMOE_INSTALLATION_COMMAND='slackpkg install'
 		TMOE_REMOVAL_COMMAND='slackpkg remove'
 		#########################
+	elif grep -q 'Solus' '/etc/os-release'; then
+		LINUX_DISTRO='solus'
+		TMOE_INSTALLATION_COMMAND='eopkg install -y'
+		TMOE_REMOVAL_COMMAND='eopkg remove -y'
+		#########################
 	elif [ "$(uname -o)" = 'Android' ]; then
 		printf "%s\n" "${RED}不支持${RESET}${BLUE}Android${RESET}系统！"
 		exit 1
@@ -477,7 +482,7 @@ check_dependencies() {
 	########################
 	if [ ! $(command -v ip) ]; then
 		case "${LINUX_DISTRO}" in
-		debian) DEPENDENCIES="${DEPENDENCIES} iproute2" ;;
+		debian | solus) DEPENDENCIES="${DEPENDENCIES} iproute2" ;;
 		arch | redhat) DEPENDENCIES="${DEPENDENCIES} iproute" ;;
 		esac
 	fi
@@ -498,7 +503,7 @@ check_dependencies() {
 
 	if [ ! $(command -v hostname) ]; then
 		case "${LINUX_DISTRO}" in
-		arch) DEPENDENCIES="${DEPENDENCIES} inetutils" ;;
+		arch | solus) DEPENDENCIES="${DEPENDENCIES} inetutils" ;;
 		redhat) DEPENDENCIES="${DEPENDENCIES} hostname" ;;
 		esac
 	fi
@@ -574,7 +579,7 @@ check_dependencies() {
 	fi
 	if [ ! $(command -v whereis) ]; then
 		case "${LINUX_DISTRO}" in
-		debian) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
+		debian | solus) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
 		esac
 	fi
 	if [ ! $(command -v zstd) ]; then

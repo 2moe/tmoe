@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4437,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4439,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -326,6 +326,12 @@ check_gnu_linux_distro() {
 		chmod +x 'router-debian.bash'
 		sed -i 's@/usr/bin@/opt/bin@g;s@-e /bin@-e /opt/bin;@wget --no-check-certificate -qO "router-debian.bash"@#&@;s@bash router-debian.bash@#&@' 'router-debian.bash'
 		bash router-debian.bash
+
+	elif grep -q 'Solus' '/etc/os-release'; then
+		LINUX_DISTRO='solus'
+		TMOE_INSTALLATION_COMMAND='eopkg install -y'
+		TMOE_REMOVAL_COMMAND='eopkg remove -y'
+
 	elif [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
 		LINUX_DISTRO='debian'
 		TMOE_UPDATE_COMMAND='apt update'

@@ -85,6 +85,19 @@ modify_alpine_mirror_repositories() {
     ${TMOE_UPDATE_COMMAND}
     apk upgrade
 }
+modify_solus_mirror_repo() {
+    cat <<-ENDOFCAT
+    eopkg remove-repo mirror
+    eopkg add-repo mirror https://${SOURCE_MIRROR_STATION}/solus/packages/shannon/eopkg-index.xml.xz
+    eopkg enable-repo mirror
+    eopkg disable-repo Solus
+ENDOFCAT
+    do_you_want_to_continue
+    eopkg remove-repo mirror
+    eopkg add-repo mirror https://${SOURCE_MIRROR_STATION}/solus/packages/shannon/eopkg-index.xml.xz
+    eopkg enable-repo mirror
+    eopkg disable-repo Solus
+}
 ############################################
 auto_check_distro_and_modify_sources_list() {
     if [ ! -z "${SOURCE_MIRROR_STATION}" ]; then
@@ -92,6 +105,7 @@ auto_check_distro_and_modify_sources_list() {
         "debian") check_debian_distro_and_modify_sources_list ;;
         "arch") check_arch_distro_and_modify_mirror_list ;;
         "alpine") modify_alpine_mirror_repositories ;;
+        "solus") modify_solus_mirror_repo ;;
         "redhat")
             case "${REDHAT_DISTRO}" in
             "fedora") check_fedora_versio ;;

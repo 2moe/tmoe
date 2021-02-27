@@ -474,6 +474,7 @@ preconfigure_gui_dependecies_02() {
         DEPENDENCY_02="media-fonts/wqy-bitmapfont net-misc/tigervnc"
         ;;
     suse) DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts perl-base" ;;
+    solus) DEPENDENCY_02="dbus-launch font-noto-cjk" ;;
     alpine)
         DEPENDENCY_02="xvfb dbus-x11 font-noto-cjk x11vnc"
         #ca-certificates openssl
@@ -1658,6 +1659,7 @@ install_xfce4_lite_desktop() {
         #################
     "suse") DEPENDENCY_01="patterns-xfce-xfce" ;;
         ###############
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine") DEPENDENCY_01="xfce4" ;;
     esac
     ##################
@@ -1728,6 +1730,7 @@ install_xfce4_desktop() {
         ;;
         #################
     "suse") DEPENDENCY_01="patterns-xfce-xfce xfce4-terminal" ;;
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
         ###############
     "alpine") DEPENDENCY_01="faenza-icon-theme xfce4-whiskermenu-plugin xfce4 xfce4-terminal" ;;
     esac
@@ -2140,6 +2143,7 @@ install_lxde_desktop() {
     "gentoo") DEPENDENCY_01='media-fonts/wqy-bitmapfont lxde-base/lxde-meta' ;;
         ##################
     "suse") DEPENDENCY_01='patterns-lxde-lxde' ;;
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine")
         DEPENDENCY_01="lxsession"
         REMOTE_DESKTOP_SESSION='lxsession'
@@ -2262,6 +2266,7 @@ install_mate_desktop() {
         ;;
     "gentoo") DEPENDENCY_01='mate-base/mate-desktop mate-base/mate' ;;
     "suse") DEPENDENCY_01='patterns-mate-mate' ;;
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine")
         DEPENDENCY_01="mate-desktop-environment"
         REMOTE_DESKTOP_SESSION='mate-session'
@@ -2333,6 +2338,7 @@ install_lxqt_desktop() {
     "arch") DEPENDENCY_01="lxqt xorg" ;;
     "gentoo") DEPENDENCY_01="lxqt-base/lxqt-meta" ;;
     "suse") DEPENDENCY_01="patterns-lxqt-lxqt" ;;
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine")
         DEPENDENCY_01="openbox pcmfm rxvt-unicode tint2"
         REMOTE_DESKTOP_SESSION='openbox'
@@ -2499,6 +2505,7 @@ install_kde_plasma5_desktop() {
         DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
         ;;
     "suse") DEPENDENCY_01="-t pattern kde kde_plasma" ;;
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine")
         DEPENDENCY_01="plasma-desktop breeze breeze-icons konsole discover"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
@@ -2600,7 +2607,7 @@ install_budgie_desktop() {
         auto_select_keyboard_layout
         DEPENDENCY_01='budgie-desktop budgie-indicator-applet'
         ;;
-    arch | void) DEPENDENCY_01='budgie-desktop' ;;
+    arch | void | solus) DEPENDENCY_01='budgie-desktop' ;;
     *)
         printf "%s\n" "Sorry,暂未适配${LINUX_DISTRO}"
         press_enter_to_return
@@ -2686,6 +2693,7 @@ install_gnome3_desktop() {
         etc-update
         DEPENDENCY_01='gnome-shell gdm gnome-terminal'
         ;;
+    "solus") DEPENDENCY_01='gnome-session gnome-shell' ;;
     "suse") DEPENDENCY_01='patterns-gnome-gnome_x11' ;;
     "alpine")
         DEPENDENCY_01="gnome"
@@ -2735,6 +2743,7 @@ install_cinnamon_desktop() {
     "arch") DEPENDENCY_01="sddm cinnamon xorg" ;;
     "gentoo") DEPENDENCY_01="gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations" ;;
     "suse") DEPENDENCY_01="cinnamon cinnamon-control-center" ;;
+    "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine") DEPENDENCY_01="adapta-cinnamon" ;;
     esac
     ##############

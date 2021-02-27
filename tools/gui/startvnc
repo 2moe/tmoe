@@ -42,6 +42,8 @@ PIXEL_DEPTH=24
 
 ALWAYS_SHARED=true
 #Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
+
+DBUS_ENABLED=true
 ####################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then
@@ -277,7 +279,7 @@ start_tmoe_xvnc() {
 }
 ##############
 source_tmoe_dbus_daemon() {
-    . ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+    [[ ${DBUS_ENABLED} != true ]] || source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
 }
 ###########
 check_vncsession() {
