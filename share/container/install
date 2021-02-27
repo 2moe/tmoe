@@ -103,6 +103,7 @@ else
 		fi
 	else
 		PREFIX='/usr/local'
+		[[ -d ${PREFIX} ]] || PREFIX='/usr'
 	fi
 	mkdir -pv ${PREFIX}/bin
 fi

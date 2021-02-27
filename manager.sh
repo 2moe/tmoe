@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4440,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4442,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -358,7 +358,10 @@ check_gnu_linux_distro() {
 			PREFIX=/usr
 		fi
 		;;
-	*) PREFIX='/usr/local' ;;
+	*)
+		PREFIX='/usr/local'
+		[[ -d ${PREFIX} ]] || PREFIX='/usr'
+		;;
 	esac
 	################
 	check_tmoe_menu_locale_file
