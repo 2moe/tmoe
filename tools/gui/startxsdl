@@ -18,7 +18,7 @@ RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "x11" "..."
 printf "%s\n" "The pulseaudio server is ${BLUE}${PULSE_SERVER}${RESET}"
 printf "%s\n" "The display is ${BLUE}${DISPLAY}${RESET}"
-stopvnc -non-stop-dbus 2>/dev/null
+#stopvnc -non-stop-dbus 2>/dev/null
 ###############
 check_tmoe_locale() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -39,8 +39,6 @@ notes_of_xserver() {
 		#	printf '%s\n' 'Starting x11...'
 		#	;;
 	esac
-	#printf '%s\033[32m%s\033[m%s\n' "您可以输" "stopvnc" "停止"
-	#printf '%s \033[32m%s\033[m %s\n' "You can type" "stopvnc" "to stop it."
 }
 ####################
 start_windows_xserver() {

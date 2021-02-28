@@ -26,7 +26,7 @@ stop_vnc_main() {
         printf "%s\n" "${GREEN}Stopping ${YELLOW}vnc server${RESET} ..."
         stopx11vnc 2>/dev/null
         stop_dbus_daemon
-        stopx11vnc
+        #stopx11vnc
         vnc_server_has_been_stopped
         ;;
     esac
@@ -89,10 +89,10 @@ stop_dbus_daemon() {
 }
 ##########
 pkill_vnc() {
-    pkill -9 Xtightvnc
-    pkill -9 Xtigervnc
-    pkill -9 Xvnc
-    pkill -9 vncsession
+    pkill Xtightvnc
+    pkill Xtigervnc
+    pkill Xvnc
+    #pkill vncsession
     pkill websockify
 }
 #############
