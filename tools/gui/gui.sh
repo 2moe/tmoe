@@ -1129,6 +1129,7 @@ configure_vnc_xstartup() {
 congigure_xvnc() {
     #cp -f ~/.vnc/xstartup /etc/X11/xinit/Xsession
     cp -f ${TMOE_TOOL_DIR}/gui/vncserver-config-defaults /etc/tigervnc/vncserver-config-tmoe
+    chmod a+r -v /etc/tigervnc/vncserver-config-tmoe
     if [[ -s "/etc/os-release" ]]; then
         if grep -q '^PRETTY_NAME=' /etc/os-release; then
             GREP_NAME='PRETTY_NAME'
