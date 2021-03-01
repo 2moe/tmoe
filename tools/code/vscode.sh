@@ -22,8 +22,7 @@ which_vscode_edition() {
         "1" "Microsoft Official(x64,arm64,armhf官方版)" \
         "2" "VS Code Server:web版,含配置选项" \
         "3" "VS Codium(不跟踪你的使用数据)" \
-        "4" "VS Code OSS(headmelted编译版)" \
-        "5" "修复tightvnc无法打开codeoss/codium" \
+        "4" "修复tightvnc无法打开vscode" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -32,8 +31,7 @@ which_vscode_edition() {
     1) install_vscode_official ;;
     2) check_vscode_server_arch ;;
     3) install_vscodium ;;
-    4) install_vscode_oss ;;
-    5) fix_tightvnc_oss ;;
+    4) fix_tightvnc_vscode ;;
     esac
     #########################
     press_enter_to_return
@@ -51,7 +49,6 @@ copy_gnu_lib_xcb_so() {
 ###########
 fix_tightvnc_vscode_lnk() {
     if [[ -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]]; then
-        sed -i "s@Exec=/usr/share/code-oss/code-oss@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code-oss/code-oss@g" ${APPS_LNK_DIR}/code-oss.desktop 2>/dev/null
         sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
         sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
     else
@@ -59,12 +56,11 @@ fix_tightvnc_vscode_lnk() {
     fi
 }
 #########
-fix_tightvnc_oss() {
+fix_tightvnc_vscode() {
     cat <<-EOF
     本功能仅支持deb系发行版。
     若无法自动修复，则请手动使用以下命令来启动。
     env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib codium --user-data-dir=${HOME}/.codium
-    env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code-oss --user-data-dir=${HOME}/.codeoss
     env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib code --user-data-dir=${HOME}/.vscode
 EOF
     non_debian_function
@@ -331,38 +327,6 @@ install_vscodium() {
         #ln -sf /opt/vscodium-data/codium /usr/local/bin/codium
         printf "%s\n" "安装完成，您可以输codium启动"
     fi
-}
-########################
-install_vscode_oss() {
-    if [ -e "/usr/bin/code-oss" ]; then
-        printf "%s\n" "检测到您已安装VSCode OSS,请手动输以下命令启动"
-        #printf '%s\n' 'code-oss --user-data-dir=${HOME}/.config/Code\ -\ OSS\ \(headmelted\)'
-        printf "%s\n" "code-oss --user-data-dir=${HOME}/.codeoss"
-        printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code-oss"
-        press_enter_to_return
-        which_vscode_edition
-    fi
-
-    if [ "${LINUX_DISTRO}" = 'debian' ]; then
-        install_gpg
-        copy_gnu_lib_xcb_so
-        fix_tightvnc_vscode_lnk
-        if [[ ! -s "/etc/apt/trusted.gpg.d/code-oss.gpg" ]]; then
-            curl -L https://packagecloud.io/headmelted/codebuilds/gpgkey | gpg --dearmor >/tmp/code-oss.gpg
-            install -o root -g root -m 644 /tmp/code-oss.gpg /etc/apt/trusted.gpg.d/
-            apt update
-        fi
-        bash -c "$(wget -O- https://code.headmelted.com/installers/apt.sh)"
-    elif [ "${LINUX_DISTRO}" = 'redhat' ]; then
-        . <(wget -O- https://code.headmelted.com/installers/yum.sh)
-    else
-        printf "%s\n" "检测到您当前使用的可能不是deb系或红帽系发行版，跳过安装"
-        press_enter_to_return
-        which_vscode_edition
-    fi
-    printf "%s\n" "安装完成,请手动输以下命令启动"
-    printf "%s\n" "code-oss --user-data-dir=${HOME}/.codeoss"
-    printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code-oss"
 }
 #######################
 download_vscode_x64_deb() {

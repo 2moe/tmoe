@@ -18,6 +18,7 @@ tmoe_uefi_boot_manager() {
 			"2" "boot order自定义排序" \
 			"3" "Backup efi备份" \
 			"4" "Restore efi恢复" \
+			"5" "Install refind EFI" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -28,12 +29,19 @@ tmoe_uefi_boot_manager() {
 	2) custom_uefi_boot_order ;;
 	3) tmoe_backup_efi ;;
 	4) tmoe_restore_efi ;;
+	5) install_refind_efi ;;
 	esac
 	###############
 	press_enter_to_return
 	tmoe_uefi_boot_manager
 }
 ###########
+install_refind_efi() {
+	DEPENDENCY_01='refind-install'
+	DEPENDENCY_02='refind'
+	beta_features_quick_install
+}
+##########
 tmoe_backup_efi() {
 	mkdir -pv ${CONFIG_FOLDER}
 	cd ${CONFIG_FOLDER}
@@ -128,7 +136,6 @@ custom_uefi_boot_order() {
 ####################
 tmoe_system_app_menu() {
 	RETURN_TO_WHERE='tmoe_system_app_menu'
-
 	DEPENDENCY_01=""
 	DEPENDENCY_02=""
 	TMOE_APP=$(whiptail --title "SYSTEM" --menu \
