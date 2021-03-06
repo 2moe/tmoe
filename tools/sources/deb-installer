@@ -102,7 +102,7 @@ deb_file_installer() {
         printf "%s\n" "Do you want to install it?"
         if [ $(command -v ${PACKAGE_NAME}) ]; then
             printf "%s\n" "检测到您${RED}已安装${RESET}${BLUE}${PACKAGE_NAME}${RESET}"
-            printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manaully type ${PURPLE}apt purge ${BLUE}${PACKAGE_NAME}${RESET}"
+            printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}apt purge ${BLUE}${PACKAGE_NAME}${RESET}"
             printf "%s\n" "按${GREEN}回车键${RESET}${RED}重新安装${RESET}。"
             printf "%s\n" "输${YELLOW}n${RESET}返回并进入${BLUE}卸载菜单${RESET}"
         fi
