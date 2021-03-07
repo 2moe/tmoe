@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4450,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4451,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -595,11 +595,12 @@ choose_termux_color_scheme() {
 	fi
 
 	if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
-		if (whiptail --title "FONT" --yes-button "Inconsolata-go(粗)" --no-button "Iosevka(细)" --yesno "Your font file does not exist,please choose termux font.\n请选择终端字体。" 9 50); then
+		if (whiptail --title "FONT" --yes-button "Inconsolata-go(粗)" --no-button "Fira code(细)" --yesno "Your font file does not exist,please choose termux font.\n请选择终端字体。" 9 50); then
 			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/inconsolata-go-font/raw/master/inconsolatago.tar.xz'
 		else
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/inconsolata-go-font/raw/master/iosevka.tar.xz'
+			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/fira-code/raw/master/font.tar.xz'
 		fi
+		#Iosevka
 		tar -Jxvf font.tar.xz
 	fi
 	printf "%s\n" "set-default-termux-color-scheme-and-font" >${CONFIG_FOLDER}/v1.1beta
