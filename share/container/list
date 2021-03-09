@@ -802,7 +802,7 @@ install_alpha_containers() {
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
-		#				"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
+		#"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
 	}
 	install_alpha_containers_en() {
 		ALPHA_SYSTEM=$(
@@ -821,7 +821,7 @@ install_alpha_containers() {
 				3>&1 1>&2 2>&3
 		)
 	}
-	#"5" "Huawei euler OS(arm64,x64)"
+	#"999" "Huawei euler OS(arm64,x64)"
 	#SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
 	#"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
 	#				"12" "Solus(x64)" \

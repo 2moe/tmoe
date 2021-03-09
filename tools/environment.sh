@@ -1118,8 +1118,11 @@ install_typora() {
 }
 ################
 chmod_4755_chrome_sandbox() {
+    printf "%s\n" "${GREEN}find ${YELLOW}/opt/electron ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
+    find /opt/electron -type d -print | xargs chmod -v a+x
+    find /opt/electron -type f -print | xargs chmod a+r
     SANDBOX_FILE='/opt/electron/chrome-sandbox'
-    chmod 4755 -v ${SANDBOX_FILE}
+    chmod -v 4755 ${SANDBOX_FILE}
 }
 ##############
 download_the_latest_electron() {
@@ -1172,7 +1175,11 @@ install_electron_v8() {
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
         fix_fedora_electron_libxssl
         download_electron
-        chmod 4755 -v ${DOWNLOAD_PATH}/chrome-sandbox
+        printf "%s\n" "${GREEN}find ${YELLOW}${DOWNLOAD_PATH} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
+        find ${DOWNLOAD_PATH} -type d -print | xargs chmod -v a+x
+        find ${DOWNLOAD_PATH} -type f -print | xargs chmod a+r
+        chmod -v 755 ${DOWNLOAD_PATH}
+        chmod -v 4755 ${DOWNLOAD_PATH}/chrome-sandbox
     fi
     #检测twice
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
@@ -1193,7 +1200,14 @@ download_tmoe_electron_app() {
         [[ -e ${OPT_APP_VERSION_TXT} ]] || printf "%s\n" "${THE_LATEST_DEB_FILE}" >${OPT_APP_VERSION_TXT}
     fi
     if [ -e "/opt/${DEPENDENCY_01}" ]; then
-        chmod -R 4755 /opt/${DEPENDENCY_01}
+        #case ${DEPENDENCY_01} in
+        #zy-player | netron)
+        printf "%s\n" "${GREEN}find ${YELLOW}/opt/${DEPENDENCY_01} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
+        chmod -Rv 755 /opt/${DEPENDENCY_01}/usr/bin/ 2>/dev/null
+        find /opt/${DEPENDENCY_01} -type d -print | xargs chmod -v a+x
+        find /opt/${DEPENDENCY_01} -type f -print | xargs chmod a+r
+        #   ;;
+        #esac
         cd /opt/${DEPENDENCY_01}
         pwd
         cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
