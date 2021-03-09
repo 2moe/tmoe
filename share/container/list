@@ -21,7 +21,7 @@ choose_which_gnu_linux_distro() {
 			"6" "🍱 manjaro,centos,alpine,puppy" \
 			"7" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
 			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
-			"9" "🦎 chroot専属する:deepin20,opensuse" \
+			"9" "🦎 chroot専属する:opensuse,deepin" \
 			"10" "🍓 体験版,サポートされなくなりました:SteamOS,RaspiOS,Gentoo" \
 			"0" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
@@ -36,7 +36,7 @@ choose_which_gnu_linux_distro() {
 			"6" "🍱 manjaro,centos,alpine,puppy" \
 			"7" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
 			"8" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
-			"9" "🦎 chroot专属:deepin20,uos,opensuse" \
+			"9" "🦎 chroot专属:deepin,opensuse" \
 			"10" "🍓 experimental(体验版,不再维护):SteamOS,RaspiOS" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
@@ -51,7 +51,7 @@ choose_which_gnu_linux_distro() {
 			"6" "🍱 manjaro,centos,alpine,puppy" \
 			"7" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
 			"8" "🍊 Armbian:ARM development boards OS" \
-			"9" "🦎 chroot exclusive:deepin20,opensuse" \
+			"9" "🦎 chroot exclusive:opensuse,deepin" \
 			"10" "🍓 experimental,no longer maintained:SteamOS,RaspiOS,Gentoo" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
@@ -659,7 +659,7 @@ install_chroot_exclusive_containers() {
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
-			"1" "deepin深度/uos统信(arm64,x86,x64)" \
+			"1" "deepin深度(arm64,x86,x64)" \
 			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -741,11 +741,11 @@ install_deepin_linux_distro() {
 	ALPHA_SYSTEM=$(
 		whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
 			"1" "deepin20 apricot(amd64,i386) 大小40M" \
-			"2" "uos20 eagle(arm64,amd64,i386) 大小38M" \
-			"3" "deepin15.5 camel(arm64) 大小78M" \
+			"2" "deepin15.5 camel(arm64) 大小78M" \
 			"0" "🌚 Back 返回" \
 			3>&1 1>&2 2>&3
 	)
+	#"999" "uos20 eagle(arm64,amd64,i386) 大小38M" \
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") install_chroot_exclusive_containers ;;
@@ -753,11 +753,11 @@ install_deepin_linux_distro() {
 		DISTRO_NAME='deepin'
 		install_deepin_apricot_amd64_and_i386
 		;;
-	2)
+	999)
 		DISTRO_NAME='uos'
 		install_uos_eagle
 		;;
-	3)
+	2)
 		DISTRO_NAME='deepin'
 		install_deepin_camel_arm64
 		;;
@@ -776,13 +776,12 @@ install_alpha_containers() {
 				"2" "ラズベリーパイ OS buster" \
 				"3" "Gentoo(arm64,armhf,x86,x64)" \
 				"4" "DevuanはDebian から派生したLinuxディストリビューションである" \
-				"5" "Huawei euler OS(arm64,x64)" \
-				"6" "Amazon(arm64,x64)" \
-				"7" "Oracle(arm64,x64)" \
-				"8" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"9" "Intel clear linux(x64)" \
-				"10" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"11" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
+				"5" "Amazon(arm64,x64)" \
+				"6" "Oracle(arm64,x64)" \
+				"7" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"8" "Intel clear linux(x64)" \
+				"9" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"10" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -794,16 +793,16 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS 樹莓派 buster" \
 				"3" "Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)" \
 				"4" "Devuan(不使用systemd,基于debian)" \
-				"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
-				"6" "Amazon(arm64,x64,亚马逊云服务器系统)" \
-				"7" "Oracle(arm64,x64,甲骨文云服务器系统)" \
-				"8" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"9" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
-				"10" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"11" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
+				"5" "Amazon(arm64,x64,亚马逊云服务器系统)" \
+				"6" "Oracle(arm64,x64,甲骨文云服务器系统)" \
+				"7" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"8" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
+				"9" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"10" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
+		#				"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
 	}
 	install_alpha_containers_en() {
 		ALPHA_SYSTEM=$(
@@ -812,17 +811,17 @@ install_alpha_containers() {
 				"2" "Raspberry Pi OS buster" \
 				"3" "Gentoo(arm64,armhf,x86,x64)" \
 				"4" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
-				"5" "Huawei euler OS(arm64,x64)" \
-				"6" "Amazon(arm64,x64)" \
-				"7" "Oracle(arm64,x64)" \
-				"8" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"9" "Intel clear linux(x64)" \
-				"10" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"11" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
+				"5" "Amazon(arm64,x64)" \
+				"6" "Oracle(arm64,x64)" \
+				"7" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"8" "Intel clear linux(x64)" \
+				"9" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"10" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
 	}
+	#"5" "Huawei euler OS(arm64,x64)"
 	#SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
 	#"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
 	#				"12" "Solus(x64)" \
@@ -838,13 +837,13 @@ install_alpha_containers() {
 	2) install_raspios_linux_distro ;;
 	3) install_gentoo_linux_distro ;;
 	4) install_devuan_linux_distro ;;
-	5) install_euler_linux_distro ;;
-	6) install_amazon_linux_distro ;;
-	7) install_oracle_linux_distro ;;
-	8) install_photon_linux_distro ;;
-	9) install_clear_linux_distro ;;
-	10) install_slackware_linux_distro ;;
-	11) install_steam_linux_distro ;;
+	5) install_amazon_linux_distro ;;
+	6) install_oracle_linux_distro ;;
+	7) install_photon_linux_distro ;;
+	8) install_clear_linux_distro ;;
+	9) install_slackware_linux_distro ;;
+	10) install_steam_linux_distro ;;
+	999) install_euler_linux_distro ;;
 	esac
 	###########################
 	exit 0
