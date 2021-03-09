@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4452,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4453,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -712,6 +712,7 @@ git_clone_tmoe_linux_repo() {
 	if [ ! -e "${TMOE_LINUX_DIR}" ]; then
 		mkdir -pv ${TMOE_LINUX_DIR}
 	fi
+	printf "%s\n" "${GREEN}git clone ${BLUE}-b master --depth=1 ${YELLOW}https://${TMOE_GIT_URL} ${PURPLE}${TMOE_GIT_DIR}${RESET}"
 	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 }
 #################
