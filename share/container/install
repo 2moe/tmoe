@@ -1737,6 +1737,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils${RESET}"
 			eatmydata apt install -y apt-utils 2>/dev/null || apt install -y apt-utils 2>/dev/null
 		fi
+
 		for i in curl wget;do
 			if [[ ! $(command -v ${i}) ]];then
 				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
@@ -1867,6 +1868,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [[ $(command -v apt) ]];then
 		apt update 2>/dev/null
 		apt list --upgradable 2>/dev/null
+		apt install -y curl wget apt-utils
 		printf "%s\n" "Upgrading all packages ..."
 		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
