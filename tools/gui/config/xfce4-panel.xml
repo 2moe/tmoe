@@ -67,7 +67,7 @@
 			<property name="style" type="uint" value="0"/>
 		</property>
 		<property name="plugin-12" type="string" value="clock">
-			<property name="digital-format" type="string" value="%a,%b %d,%R:%S"/>
+			<property name="digital-format" type="string" value="%R:%S"/>
 			<property name="mode" type="uint" value="2"/>
 			<property name="show-frame" type="bool" value="true"/>
 			<property name="tooltip-format" type="string" value="%A %d %B %Y"/>
