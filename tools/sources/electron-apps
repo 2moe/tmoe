@@ -104,10 +104,6 @@ install_electron_app_01() {
         download_tmoe_electron_app
     fi
     [[ -e "/opt/${DEPENDENCY_01}" ]] || download_tmoe_electron_app
-    printf "%s\n" "${GREEN}find ${YELLOW}/opt/${DEPENDENCY_01} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
-    chmod -Rv 755 /opt/${DEPENDENCY_01}/usr/bin/ 2>/dev/null
-    find /opt/${DEPENDENCY_01} -type d -print | xargs chmod -v a+x
-    find /opt/${DEPENDENCY_01} -type f -print | xargs chmod a+r
 }
 ################
 git_clone_electron_virtual_machine() {
