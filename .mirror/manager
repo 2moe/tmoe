@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4459,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4460,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -582,6 +582,34 @@ git_clone_tmoe_manager() {
 	source ${TMOE_SHARE_DIR}/environment/manager_environment
 	tmoe_manager_main_menu
 }
+choose_termux_font() {
+	TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体" 0 50 0 \
+		"1" "Inconsolata-go(粗)" \
+		"2" "Iosevka(细)" \
+		"3" "Iosevka Term Bold Italic(斜)" \
+		"4" "Iosevka Term Mono" \
+		"5" "Fira code(细)" \
+		"6" "Fira code Medium(粗)" \
+		"0" "skip" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${TMOE_OPTION}" in
+	0 | "") unset FONT_FILE ;;
+	1) FONT_FILE="inconsolata-go-font/raw/master/inconsolatago.tar.xz" ;;
+	2) FONT_FILE="inconsolata-go-font/raw/master/iosevka.tar.xz" ;;
+	3) FONT_FILE="iosevka-italic-font/raw/master/font.tar.xz" ;;
+	4) FONT_FILE="inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz" ;;
+	5) FONT_FILE="fira-code/raw/master/font.tar.xz" ;;
+	6) FONT_FILE="fira-code-medium/raw/master/font.tar.xz" ;;
+	esac
+	case ${FONT_FILE} in
+	"") ;;
+	*)
+		aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" "https://gitee.com/ak2/${FONT_FILE}"
+		tar -Jxvf font.tar.xz
+		;;
+	esac
+}
 choose_termux_color_scheme() {
 	mkdir -pv ${HOME}/.termux
 	cd ${HOME}/.termux
@@ -596,14 +624,9 @@ choose_termux_color_scheme() {
 	fi
 
 	if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
-		if (whiptail --title "FONT" --yes-button "Inconsolata-go(粗)" --no-button "Fira code(细)" --yesno "Your font file does not exist,please choose termux font.\n请选择终端字体。" 9 50); then
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/inconsolata-go-font/raw/master/inconsolatago.tar.xz'
-		else
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" 'https://gitee.com/ak2/fira-code/raw/master/font.tar.xz'
-		fi
-		#Iosevka
-		tar -Jxvf font.tar.xz
+		choose_termux_font
 	fi
+
 	printf "%s\n" "set-default-termux-color-scheme-and-font" >${CONFIG_FOLDER}/v1.1beta
 	if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
 		if (whiptail --title "termux.properties" --yes-button "yes" --no-button "no" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
