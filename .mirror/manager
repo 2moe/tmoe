@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4463,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4464,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -640,11 +640,7 @@ choose_termux_color_scheme() {
 	cd ${HOME}/.termux
 	#[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
 	if [[ ! -s colors.properties ]]; then
-		if (whiptail --title "colors.properties" --yes-button "neon" --no-button "monokai" --yesno "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色。" 9 50); then
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/share/colors/neon'
-		else
-			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://gitee.com/mo2/zsh/raw/master/share/colors/monokai.dark'
-		fi
+		termux_color_scheme_menu
 	fi
 
 	if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
