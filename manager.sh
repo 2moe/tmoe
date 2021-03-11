@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4464,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4465,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -630,7 +630,7 @@ termux_color_scheme_menu() {
 	5) COLOR_FILE="miu" ;;
 	6) COLOR_FILE="wild.cherry" ;;
 	esac
-	case ${FONT_FILE} in
+	case ${COLOR_FILE} in
 	"") ;;
 	*) aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" "https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/${COLOR_FILE}" ;;
 	esac
