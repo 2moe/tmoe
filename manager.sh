@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4461,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4462,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -582,15 +582,15 @@ git_clone_tmoe_manager() {
 	source ${TMOE_SHARE_DIR}/environment/manager_environment
 	tmoe_manager_main_menu
 }
-choose_termux_font() {
+termux_font_menu() {
 	TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体" 0 50 0 \
 		"1" "Inconsolata-go(粗)" \
 		"2" "Iosevka(细)" \
 		"3" "Iosevka Term Bold Italic(斜)" \
-		"4" "Iosevka Term Mono" \
+		"4" "Iosevka Term Mono(粗)" \
 		"5" "Fira code(细)" \
 		"6" "Fira code Medium(粗)" \
-		"0" "skip" \
+		"0" "skip(跳过)" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_OPTION}" in
@@ -610,11 +610,35 @@ choose_termux_font() {
 		;;
 	esac
 }
+termux_color_scheme_menu() {
+	TMOE_OPTION=$(whiptail --title "COLOR SCHEMES" --menu "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色" 0 50 0 \
+		"1" "neon" \
+		"2" "monokai.dark" \
+		"3" "bright.light" \
+		"4" "materia(Orange)" \
+		"5" "miu" \
+		"6" "wild.cherry(Purple)" \
+		"0" "skip(跳过)" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${TMOE_OPTION}" in
+	0 | "") unset COLOR_FILE ;;
+	1) COLOR_FILE="neon" ;;
+	2) COLOR_FILE="monokai.dark" ;;
+	3) COLOR_FILE="bright.light" ;;
+	3) COLOR_FILE="materia" ;;
+	4) COLOR_FILE="miu" ;;
+	5) COLOR_FILE="wild.cherry" ;;
+	esac
+	case ${FONT_FILE} in
+	"") ;;
+	*) aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" "https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/${COLOR_FILE}" ;;
+	esac
+}
 choose_termux_color_scheme() {
 	mkdir -pv ${HOME}/.termux
 	cd ${HOME}/.termux
 	#[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
-
 	if [[ ! -s colors.properties ]]; then
 		if (whiptail --title "colors.properties" --yes-button "neon" --no-button "monokai" --yesno "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色。" 9 50); then
 			aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/neon'
@@ -624,7 +648,7 @@ choose_termux_color_scheme() {
 	fi
 
 	if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
-		choose_termux_font
+		termux_font_menu
 	fi
 
 	printf "%s\n" "set-default-termux-color-scheme-and-font" >${CONFIG_FOLDER}/v1.1beta
