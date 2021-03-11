@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4460,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4461,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -598,7 +598,7 @@ choose_termux_font() {
 	1) FONT_FILE="inconsolata-go-font/raw/master/inconsolatago.tar.xz" ;;
 	2) FONT_FILE="inconsolata-go-font/raw/master/iosevka.tar.xz" ;;
 	3) FONT_FILE="iosevka-italic-font/raw/master/font.tar.xz" ;;
-	4) FONT_FILE="inconsolata-go-font/raw/master/Iosevka-Term-Mono.tar.xz" ;;
+	4) FONT_FILE="iosevka-term-mono/raw/master/font.tar.xz" ;;
 	5) FONT_FILE="fira-code/raw/master/font.tar.xz" ;;
 	6) FONT_FILE="fira-code-medium/raw/master/font.tar.xz" ;;
 	esac
