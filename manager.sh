@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4462,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4463,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -626,9 +626,9 @@ termux_color_scheme_menu() {
 	1) COLOR_FILE="neon" ;;
 	2) COLOR_FILE="monokai.dark" ;;
 	3) COLOR_FILE="bright.light" ;;
-	3) COLOR_FILE="materia" ;;
-	4) COLOR_FILE="miu" ;;
-	5) COLOR_FILE="wild.cherry" ;;
+	4) COLOR_FILE="materia" ;;
+	5) COLOR_FILE="miu" ;;
+	6) COLOR_FILE="wild.cherry" ;;
 	esac
 	case ${FONT_FILE} in
 	"") ;;
