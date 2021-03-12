@@ -56,14 +56,14 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		 #########
 		 [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 		if [[ -z \${TMOE_SHELL} ]]; then
-			for i in su ash bash zsh; do
+			for i in su ash bash fish zsh; do
 				[[ ! -f ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
 			done
 			[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
 		fi
 		if [[ -z \${TMOE_SHELL} ]]; then
 		#ALPINE ash shell is a link.
-			for i in su ash bash zsh; do
+			for i in su ash bash fish zsh; do
 				[[ ! -L ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
 			done
 		fi
