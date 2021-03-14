@@ -406,17 +406,15 @@ upgrade_video_download_tool() {
     sudo -H pip3 install youtube-dl -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple || su -c "pip3 install youtube-dl -U -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
     youtube-dl -v 2>&1 | grep version
     printf "%s\n" "更新完毕，如需${YELLOW}卸载${RESET}annie,请输${YELLOW}rm /usr/local/bin/annie${RESET}"
-    printf "%s\n" "如需卸载you-get,请输${YELLOW}pip3 uninstall you-get${RESET}"
-    printf "%s\n" "如需卸载youtube-dl,请输${YELLOW}pip3 uninstall youtube-dl${RESET}"
-    printf "%s\n" "请问您是否需要将pip源切换为BFSU源[Y/n]?"
-    printf "%s\n" "pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple"
-    printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
+    printf "%s\n" "If you want to remove ${BLUE}you-get${RESET},then type ${GREEN}pip3 ${PURPLE}uninstall ${YELLOW}you-get${RESET}"
+    printf "%s\n" "If you want to remove ${BLUE}youtube-dl${RESET},then type ${GREEN}pip3 ${PURPLE}uninstall ${YELLOW}youtube-dl${RESET}"
+    #printf "%s\n" "请问您是否需要将pip源切换为BFSU源[Y/n]?"
+    #printf "%s\n" "pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple"
+    #printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
     RETURN_TO_WHERE='download_videos'
-    do_you_want_to_continue
-    pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple || sudo -H pip3 config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
     printf '%s\n' 'Press Enter to start annie'
     printf "%s\n" "${YELLOW}按回车键启动annie。${RESET}"
-    read
+    do_you_want_to_continue
     golang_annie
 }
 ##################
