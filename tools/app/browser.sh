@@ -35,6 +35,11 @@ hold_ubuntu_chromium() {
 }
 #########
 ubuntu_ppa_chromium() {
+    if ! grep -q 'development branch' /etc/os-release; then
+        VERSION_ID=$(grep 'VERSION_ID=' /etc/os-release | cut -d '"' -f 2)
+    else
+        VERSION_ID=.
+    fi
     PPA_REPO_URL="https://packages.tmoe.me/chromium-dev/ubuntu/pool/main/c/chromium-browser/"
     case ${ARCH_TYPE} in
     "amd64" | "arm64")
@@ -48,8 +53,8 @@ ubuntu_ppa_chromium() {
         cd ${TEMP_FOLDER}
         CHROMIUM_DEB_RAW_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | egrep -v 'chromium-chromedriver|codecs-ffmpeg_|dbgsym_' | egrep -v "~18\.04\.1_|~16\.04\.1_|\.debian\.tar" | egrep "${ARCH_TYPE}|all\.deb" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
 
-        CHROMIUM_BROWSER_VERSION="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | tail -n 1 | cut -d '_' -f 2 | cut -d '-' -f 1)"
-        CHROMIUM_BROWSER_VERSION_02="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep "${CHROMIUM_BROWSER_VERSION}" | awk -F '~' '{print $NF}' | cut -d '_' -f 1 | head -n 1)"
+        CHROMIUM_BROWSER_VERSION="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep ${ARCH_TYPE} | grep ${VERSION_ID} | tail -n 1 | cut -d '_' -f 2 | cut -d '-' -f 1)"
+        CHROMIUM_BROWSER_VERSION_02="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep "${CHROMIUM_BROWSER_VERSION}" | grep ${ARCH_TYPE} | grep ${VERSION_ID} | awk -F '~' '{print $NF}' | cut -d '_' -f 1 | tail -n 1)"
 
         CHROMIUM_BROWSER_DEB=$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep ${CHROMIUM_BROWSER_VERSION} | grep ${CHROMIUM_BROWSER_VERSION_02} | head -n 1)
 
