@@ -753,9 +753,9 @@ install_linux_qq() {
     THE_LATEST_PACMAN_URL=$(curl -L https://aur.tuna.tsinghua.edu.cn/packages/linuxqq/ | grep x86_64 | grep qq | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
     case ${THE_LATEST_DEB_VERSION} in
-    linuxqq_2.0.0-b2-1082)
-        THE_LATEST_DEB_VERSION='linuxqq_2.0.0-b2-1084'
-        THE_LATEST_PACMAN_URL="http://down.qq.com/qqweb/LinuxQQ/linuxqq_2.0.0-b2-1084_x86_64.pkg.tar.xz"
+    linuxqq_2.0.0-b2-1084)
+        THE_LATEST_DEB_VERSION='linuxqq_2.0.0-b2-1089'
+        THE_LATEST_PACMAN_URL="http://down.qq.com/qqweb/LinuxQQ/linuxqq_2.0.0-b2-1089_x86_64.pkg.tar.xz"
         ;;
     esac
 
