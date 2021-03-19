@@ -41,8 +41,8 @@ software_center() {
             "2" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
             "3" "⚛️ electron-apps(云音乐,哔哩哔哩,cocomusic)" \
             "4" "🎵 Multimedia:图像与影音(gimp,mpv)" \
-            "5" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
-            "6" "🐧 SNS:社交类(qq,wechat,skype)" \
+            "5" "🐧 SNS:社交类(qq,wechat,skype)" \
+            "6" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
             "7" "📚 Documents:文档(libreoffice,wps)" \
             "8" "🎁 Download:下载类(aria2,baidu,迅雷)" \
             "9" "🏤 debian-opt仓库" \
@@ -59,8 +59,8 @@ software_center() {
     2) dev_menu ;;
     3) tmoe_electron_repo ;;
     4) tmoe_multimedia_menu ;;
-    5) tmoe_games_menu ;;
-    6) tmoe_social_network_service ;;
+    5) tmoe_social_network_service ;;
+    6) tmoe_games_menu ;;
     7) source_tmoe_document_app ;;
     8) tmoe_download_class ;;
     9) explore_debian_opt_repo ;;
@@ -757,7 +757,7 @@ install_linux_qq() {
     THE_LATEST_PACMAN_URL=$(curl -L https://aur.tuna.tsinghua.edu.cn/packages/linuxqq/ | grep x86_64 | grep qq | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_PACMAN_URL}" | awk -F '/' '{print $NF}' | sed 's@_x86_64.pkg.*$@@')
     case ${THE_LATEST_DEB_VERSION} in
-    linuxqq_2.0.0-b2-1084)
+    linuxqq_2.0.0-b2-1084 | "")
         THE_LATEST_DEB_VERSION='linuxqq_2.0.0-b2-1089'
         THE_LATEST_PACMAN_URL="http://down.qq.com/qqweb/LinuxQQ/linuxqq_2.0.0-b2-1089_x86_64.pkg.tar.xz"
         ;;
