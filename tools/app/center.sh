@@ -746,7 +746,11 @@ install_linux_qq() {
     ICON_FILE='/usr/local/share/tencent-qq/qq.png'
     cat_icon_img
     DEPENDENCY_01="linuxqq"
-    DEPENDENCY_02="gtk2"
+    case ${LINUX_DISTRO} in
+    arch) DEPENDENCY_02="gtk2" ;;
+    *) unset DEPENDENCY_02 ;;
+    esac
+
     printf "%s\n" "正在检测版本更新..."
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://im.qq.com/linuxqq/download.html${RESET}"
