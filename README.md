@@ -111,7 +111,7 @@ bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
 Finally, press Enter and arrow keys to operate.
 
 > 注：WSL 请选择安装工具  
-> When it prompted Tool/Manager, please select Tool  
+> When it prompted Tool/Manager, please choose Tool  
 > 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
 
 #### 2.Android-Termux

@@ -980,7 +980,7 @@ debian_add_docker_gpg() {
     #case "$(lsb_release -cs)" in
     #sid) DOCKER_CODE="buster" ;;
     #esac
-    if (whiptail --title "请选择软件源" --yes-button "bfsu" --no-button "docker.com" --yesno "Please select docker software source." 0 50); then
+    if (whiptail --title "请选择软件源" --yes-button "bfsu" --no-button "docker.com" --yesno "Please choose docker software source." 0 50); then
         printf "%s\n" "deb https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
     else
         printf "%s\n" "deb https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
