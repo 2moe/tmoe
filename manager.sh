@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4472,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4473,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -583,7 +583,7 @@ git_clone_tmoe_manager() {
 	tmoe_manager_main_menu
 }
 termux_font_menu() {
-	TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体" 0 50 0 \
+	TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体,若您跳过选择字体,则部分字符可能无法正常显示" 0 50 0 \
 		"1" "Inconsolata-go(粗)" \
 		"2" "Iosevka(细)" \
 		"3" "Iosevka Term Bold Italic(斜)" \
@@ -653,6 +653,9 @@ choose_termux_color_scheme() {
 			cp -vf termux.properties termux.properties.bak
 			aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/termux.properties'
 			sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
+			if [[ ! -s termux.properties ]]; then
+				mv -fv termux.properties.02 termux.properties
+			fi
 		fi
 	fi
 	termux-reload-settings
