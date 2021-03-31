@@ -2216,6 +2216,7 @@ choose_mate_or_ubuntu_mate() {
             DEPENDENCY_01="ubuntu-mate-desktop"
         fi
         ;;
+    *) choose_debian_mate_core_or_lite ;;
     esac
 }
 install_mate_desktop() {

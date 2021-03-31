@@ -374,9 +374,7 @@ fix_sudo() {
 	chmod 0440 -v /etc/sudoers 2>/dev/null
 	##################
 	if [ -f "/tmp/.openwrtcheckfile" ]; then
-		ADMINACCOUNT="$(ls -l /home | grep ^d | head -n 1 | awk -F ' ' '$0=$NF')"
-		cp -rf /root/.z* /root/.oh-my-zsh /root/*sh /home/${ADMINACCOUNT}
-		rm -f /tmp/.openwrtcheckfile
+		rm -fv /tmp/.openwrtcheckfile
 	fi
 	########################
 	if grep -q 'SUSE' /etc/os-release; then
