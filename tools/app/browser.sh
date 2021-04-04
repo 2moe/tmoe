@@ -310,6 +310,14 @@ install_firefox_esr_browser() {
         printf '%s\n' 'Press Enter to install firefox.'
         do_you_want_to_continue
         install_firefox_browser
+    else
+        case ${LINUX_DISTRO} in
+        debian)
+            PACKAGE=firefox-esr
+            sed -i -E 's@(configure)@pre\1@' /var/lib/dpkg/info/${PACKAGE}.postinst
+            dpkg --configure -a
+            ;;
+        esac
     fi
 }
 #####################
@@ -365,6 +373,14 @@ install_firefox_browser() {
         printf "%s\n" "${YELLOW}对不起，我...我真的已经尽力了ヽ(*。>Д<)o゜！您的软件源仓库里容不下我，我只好叫妹妹ESR来代替了。${RESET}"
         do_you_want_to_continue
         install_firefox_esr_browser
+    else
+        case ${LINUX_DISTRO} in
+        debian)
+            PACKAGE=firefox
+            sed -i -E 's@(configure)@pre\1@' /var/lib/dpkg/info/${PACKAGE}.postinst
+            dpkg --configure -a
+            ;;
+        esac
     fi
 }
 #####################
@@ -469,6 +485,13 @@ install_360_browser() {
     THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
     check_deb_version
     download_and_install_deb
+    case ${LINUX_DISTRO} in
+    debian)
+        PACKAGE=browser360-cn-stable
+        sed -i '1 a\return 0' /var/lib/dpkg/info/${PACKAGE}.postinst
+        dpkg --configure -a
+        ;;
+    esac
 }
 ##############
 install_microsoft_edge_debian() {
