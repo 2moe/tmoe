@@ -122,7 +122,7 @@ Finally, press Enter and arrow keys to operate.
 > 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://apk.tmoe.me/termux-api)  
 > 2.打开 termux，输入下面 bash 开头的命令
 
-_**If you are using zsh/bash, then type the following commands.**_
+_**If you are using zsh/bash, then type**_
 
 ```shell
     . <(curl -L git.io/linux.sh)
