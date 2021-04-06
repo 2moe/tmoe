@@ -89,7 +89,7 @@ EOF
         AUTO_INSTALL_VSCODE=true
         ;;
     debian | arch)
-        AUTO_INSTALL_FCITX4=true
+        AUTO_INSTALL_FCITX4=false #true
         AUTO_INSTALL_ELECTRON_APPS=true
         AUTO_INSTALL_HARD_INFO=true
         ${TMOE_INSTALLATION_COMMAND} baobab
@@ -1489,8 +1489,7 @@ do_you_want_to_install_electron_apps_en() {
     esac
 }
 ##########
-do_you_want_to_install_fcitx4() {
-    unset AUTO_INSTALL_HARD_INFO
+do_you_want_to_install_fcitx_pinyin() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         case "${LINUX_DISTRO}" in
@@ -1503,8 +1502,13 @@ do_you_want_to_install_fcitx4() {
             fi
             ;;
         esac
-        do_you_want_to_install_electron_apps_zh
         ;;
+    esac
+}
+do_you_want_to_install_fcitx4() {
+    unset AUTO_INSTALL_HARD_INFO
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) do_you_want_to_install_electron_apps_zh ;;
     *) do_you_want_to_install_electron_apps_en ;;
     esac
     do_you_want_to_install_chromium
