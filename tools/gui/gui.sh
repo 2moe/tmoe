@@ -1507,6 +1507,7 @@ do_you_want_to_install_fcitx_pinyin() {
 }
 do_you_want_to_install_fcitx4() {
     unset AUTO_INSTALL_HARD_INFO
+    [[ ${WINDOWS_DISTRO} != WSL ]] || do_you_want_to_install_fcitx_pinyin
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) do_you_want_to_install_electron_apps_zh ;;
     *) do_you_want_to_install_electron_apps_en ;;
