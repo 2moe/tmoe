@@ -174,6 +174,10 @@ auto_configure_tmoe_tools() {
 				sleep 2
 			done
 		fi
+		FCITX_DESKTOP=/etc/xdg/autostart/fcitx.desktop
+		if [ -e ${FCITX_DESKTOP} ]; then
+			rm -fv ${FCITX_DESKTOP}
+		fi
 		if [[ ! $(command -v Xvnc) ]]; then
 			if [[ $(command -v apt-get) ]]; then
 				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server${RESET}"
