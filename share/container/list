@@ -936,7 +936,7 @@ install_oracle_linux_distro() {
 		;;
 	amd64)
 		CLOUD_ROOTFS=true
-		DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
+		DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		creat_container_edition_txt
 		go_to_proot_management
@@ -1330,7 +1330,7 @@ install_arch_linux_distro() {
 }
 ############
 check_the_latest_distro_version() {
-	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
 	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
 	which_version_do_you_want_to_install
 }
@@ -1518,7 +1518,7 @@ install_gentoo_linux_distro() {
 		go_to_proot_management
 		DISTRO_CODE='current'
 		#sed '45 a\ARCH_TYPE="armhf"' |
-		TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
+		TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.tuna.tsinghua.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
 		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | egrep -v 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" |
@@ -1605,7 +1605,7 @@ install_raspios_linux_distro() {
 ###################
 install_raspios_lite_armhf_rootfs() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
@@ -1617,7 +1617,7 @@ install_raspios_lite_armhf_rootfs() {
 ##################
 install_raspios_full_armhf_rootfs() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
@@ -1632,7 +1632,7 @@ install_manjaro_linux_distro() {
 	arm64)
 		touch ~/.MANJARO_ARM_DETECTION_FILE
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
+			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 			sed 's/debian system/manjaro system/g' |
 			sed 's:debian-sid:manjaro-stable:g' |
 			sed 's:debian/sid:manjaro/stable:g' |
@@ -1675,7 +1675,7 @@ install_openwrt_linux_distro() {
 	creat_container_edition_txt
 	go_to_proot_management
 	touch ~/.ALPINELINUXDetectionFILE
-	CONTAINER_REPO='https://mirrors.bfsu.edu.cn/openwrt/releases/'
+	CONTAINER_REPO='https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/'
 	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | egrep -v 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
 	THE_LATEST_ROOTFS_REPO="${CONTAINER_REPO}${THE_LATEST_VERSION}/targets/"
 	case "${ARCH_TYPE}" in
@@ -1734,7 +1734,7 @@ install_slackware_linux_distro() {
 		go_to_proot_management
 		#if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
 		printf "%s\n" "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
-		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
+		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
 		LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		#aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
 		#fi
@@ -1801,7 +1801,7 @@ install_different_armbian_gnu_linux_distros() {
 		apt update 2>/dev/null
 		apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
 	fi
-	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
+	ARMBIAN_TUNA_REPO='https://mirrors.tuna.tsinghua.edu.cn/armbian-releases/_rootfs'
 	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_CODE}-xfce-desktop" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list' | grep ${ARCH_TYPE} | head -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
 	case "${DISTRO_CODE}" in
