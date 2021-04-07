@@ -1053,13 +1053,13 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2022,则请手动输入版本代号" 0 50 0 \
-				"1" "🦍 20.10 Groovy Gorilla 時髦大猩猩" \
-				"2" "🐱 20.04(LTS)Focal Fossa 焦點馬島長尾狸貓" \
-				"3" "18.04(LTS)Bionic Beaver 仿生海狸" \
-				"4" "Compatibility mode 兼容模式(仅安装)" \
-				"5" "Custom code手动输入版本代号" \
-				"6" "使用debootstrap手动构建" \
-				"7" "🦛 21.04 Hirsute Hippo 多毛河馬" \
+				"1" "🦍 20.10 時髦大猩猩 Groovy Gorilla" \
+				"2" "🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa" \
+				"3" "18.04(LTS)仿生海狸 Bionic Beaver" \
+				"4" "🦛 21.04 多毛河馬 Hirsute Hippo" \
+				"5" "Compatibility mode 兼容模式(仅安装)" \
+				"6" "Custom code手动输入版本代号" \
+				"7" "使用debootstrap手动构建" \
 				"8" "Latest(自動檢測21.10)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
@@ -1072,10 +1072,10 @@ install_ubuntu_gnu_linux_distro() {
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
 				"3" "18.04(LTS)Bionic Beaver" \
-				"4" "互換モード" \
-				"5" "カスタムコード" \
-				"6" "debootstrapを使用して手動でビルドする" \
-				"7" "🦛 21.04 Hirsute Hippo" \
+				"4" "🦛 21.04 Hirsute Hippo" \
+				"5" "互換モード" \
+				"6" "カスタムコード" \
+				"7" "debootstrapを使用して手動でビルドする" \
 				"8" "Latest(最新バージョンを自動的に検出)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
@@ -1087,10 +1087,10 @@ install_ubuntu_gnu_linux_distro() {
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa" \
 				"3" "18.04(LTS)Bionic Beaver" \
-				"4" "Compatibility mode" \
-				"5" "Custom code" \
-				"6" "Manually build using debootstrap" \
-				"7" "🦛 21.04 Hirsute Hippo" \
+				"4" "🦛 21.04 Hirsute Hippo" \
+				"5" "Compatibility mode" \
+				"6" "Custom code" \
+				"7" "Manually build" \
 				"8" "Latest" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
@@ -1108,13 +1108,13 @@ install_ubuntu_gnu_linux_distro() {
 	1) DISTRO_CODE='groovy' ;;
 	2) DISTRO_CODE='focal' ;;
 	3) DISTRO_CODE='bionic' ;;
-	4)
+	4) DISTRO_CODE='hirsute' ;;
+	5)
 		COMPATIBILITY_MODE='true'
 		custom_ubuntu_version
 		;;
-	5) custom_ubuntu_version ;;
-	6) debootstrap_ubuntu_distro ;;
-	7) DISTRO_CODE='hirsute' ;;
+	6) custom_ubuntu_version ;;
+	7) debootstrap_ubuntu_distro ;;
 	8) check_the_latest_ubuntu_version ;;
 	esac
 	######################
