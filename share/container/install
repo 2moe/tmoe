@@ -218,7 +218,7 @@ download_rootfs_file() {
 			TTIME=$(curl --connect-timeout 10 -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 			[[ -n ${TTIME} ]] || TTIME=$(curl -Lv "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 			#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
-			aria2c --console-log-level=warn --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=warn --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/${TTIME}rootfs.tar.xz"
+			aria2c --console-log-level=warn --connect-timeout=10 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=debug --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/${TTIME}rootfs.tar.xz"
 			;;
 		esac
 	fi
