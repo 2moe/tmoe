@@ -4076,8 +4076,7 @@ x11vnc_warning() {
 			注：x11vnc和tightvnc是有${RED}区别${RESET}的！
 			x11vnc可以运行tightvnc无法打开的某些应用，在WSL2/Linux实体机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
 			
-			若您已安装了${GREEN}tight${RESET},但未安装${PURPLE}tiger${RESET},则可使用${BLUE}x11vnc${RESET};
-			若您已安装了${GREEN}tiger${RESET},则建议使用${YELLOW}tiger${RESET},而不是${PURPLE}x11vnc${RESET}。
+			若您的tiger/tightvnc服务不稳定,则可换用${BLUE}x11vnc${RESET}
 
 			${BOLD}${YELLOW}vnc服务端推荐程度：${RESET}
 			${BLUE}tiger > x11vnc > tight${RESET}
@@ -4086,12 +4085,13 @@ x11vnc_warning() {
 			${BLUE}tight > tiger > x11vnc${RESET}
 			
 			${BOLD}${YELLOW}流畅程度（Zlib compression level为最低,且支持加速渲染时）:${RESET}
-			${BLUE}tiger > tight ? x11vnc${RESET}
+			${BLUE}tiger > x11vnc ? tight ${RESET}
 
 			${BOLD}${YELLOW}流畅程度（Zlib compression level为最高时）:${RESET}
 			${BLUE}tight > x11vnc > tiger${RESET}
 
-			注：${GREEN}过高${RESET}的压缩级别将增大${BLUE}CPU负担${RESET}，并${PURPLE}严重拖慢${RESET}渲染速度。
+			注：在本地连接的情况下,${GREEN}过高${RESET}的压缩级别将增大${BLUE}CPU负担${RESET},并${PURPLE}严重拖慢${RESET}渲染速度。
+            在非本地连接的情况下,建议您适当调高压缩级别,以减少传输流量。
 			以上为${PURPLE}主观数据${RESET}，影响流畅度的因素不止压缩算法、级别和硬件加速，请以${GREEN}实际体验${RESET}为准。
 			------------------------
 			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
