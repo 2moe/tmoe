@@ -13,46 +13,49 @@ choose_which_gnu_linux_distro() {
 	unset NODE02_ENABLED WEEKLY_BUILD_CONTAINER
 	choose_which_gnu_linux_distro_ja() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "GNU/Linuxディストリビューションを選択してください" 0 50 0 \
-			"1" "🍭 beta版:Weekly builds(GUI included)" \
-			"2" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
-			"3" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
-			"4" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
-			"5" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
-			"6" "🍱 manjaro,centos,alpine,puppy" \
-			"7" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
-			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
-			"9" "🦎 chroot専属する:opensuse,deepin" \
-			"10" "🍓 体験版,サポートされなくなりました:SteamOS,RaspiOS,Gentoo" \
+			"1" "🍭 Beta版:Weekly builds(GUI included)" \
+			"2" "Alpha版:A service is a container" \
+			"3" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
+			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
+			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
+			"6" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
+			"7" "🍱 Manjaro,centos,alpine,puppy" \
+			"8" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
+			"9" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
+			"10" "🦎 Chroot専属する:opensuse,deepin" \
+			"11" "🍓 体験版,サポートされなくなりました:SteamOS,RaspiOS,Gentoo" \
 			"0" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
 	}
 	choose_which_gnu_linux_distro_zh() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "您想要安装哪个GNU/Linux发行版?" 0 50 0 \
-			"1" "🍭 beta公测:Weekly builds(每周构建GUI版)" \
-			"2" "🍥 Debian:致力于自由" \
-			"3" "🍛 Ubuntu:我的存在是因為大家的存在" \
-			"4" "🌉 Arch:系统设计以KISS为总体指导原则" \
-			"5" "👒 Fedora:红帽社区版,新技术试验场" \
-			"6" "🍱 manjaro,centos,alpine,puppy" \
-			"7" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-			"8" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
-			"9" "🦎 chroot专属:deepin,opensuse" \
-			"10" "🍓 experimental(体验版,不再维护):SteamOS,RaspiOS" \
+			"1" "🍭 Beta公测:Weekly builds(每周构建GUI版)" \
+			"2" "Alpha内测:服务即容器(go1.16,rust,ruby3.0)" \
+			"3" "🍥 Debian:致力于自由" \
+			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
+			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
+			"6" "👒 Fedora:红帽社区版,新技术试验场" \
+			"7" "🍱 Manjaro,centos,alpine,puppy" \
+			"8" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
+			"9" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
+			"10" "🦎 Chroot专属:deepin,opensuse" \
+			"11" "🍓 Experimental(体验版,不再维护):SteamOS,RaspiOS" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
 	choose_which_gnu_linux_distro_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install?" 0 50 0 \
-			"1" "🍭 beta version:Weekly builds(GUI included)" \
-			"2" "🍥 Debian is a distro composed of free and open-source software" \
-			"3" "🍛 Ubuntu is the modern, open source OS." \
-			"4" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
-			"5" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
-			"6" "🍱 manjaro,centos,alpine,puppy" \
-			"7" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
-			"8" "🍊 Armbian:ARM development boards OS" \
-			"9" "🦎 chroot exclusive:opensuse,deepin" \
-			"10" "🍓 experimental,no longer maintained:SteamOS,RaspiOS,Gentoo" \
+			"1" "🍭 Beta version:Weekly builds(GUI included)" \
+			"2" "Alpha:A service is a container" \
+			"3" "🍥 Debian is a distro composed of free and open-source software" \
+			"4" "🍛 Ubuntu is the modern, open source OS." \
+			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
+			"6" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
+			"7" "🍱 Manjaro,centos,alpine,puppy" \
+			"8" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
+			"9" "🍊 Armbian:ARM development boards OS" \
+			"10" "🦎 Chroot exclusive:opensuse,deepin" \
+			"11" "🍓 Experimental,no longer maintained:SteamOS,RaspiOS,Gentoo" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -66,31 +69,37 @@ choose_which_gnu_linux_distro() {
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") proot_container_menu ;;
 	1) install_tmoe_weekly_build_edition ;;
-	2) install_debian_gnu_linux_distro ;;
-	3) install_ubuntu_gnu_linux_distro ;;
-	4)
+	2) install_tmoe_moonthly_build_edition ;;
+	3) install_debian_gnu_linux_distro ;;
+	4) install_ubuntu_gnu_linux_distro ;;
+	5)
 		DISTRO_NAME='arch'
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		creat_container_edition_txt
 		go_to_proot_management
 		;;
-	5) install_fedora_gnu_linux_distro ;;
-	6) install_beta_containers ;;
-	7)
+	6) install_fedora_gnu_linux_distro ;;
+	7) install_beta_containers ;;
+	8)
 		DISTRO_NAME='kali'
 		DISTRO_CODE='rolling'
 		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
 		creat_container_edition_txt
 		go_to_proot_management
 		;;
-	8) install_armbian_linux_distro ;;
-	9) install_chroot_exclusive_containers ;;
-	10) install_alpha_containers ;;
+	9) install_armbian_linux_distro ;;
+	10) install_chroot_exclusive_containers ;;
+	11) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
 }
 ##############################
+install_tmoe_moonthly_build_edition() {
+	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
+	press_enter_to_return
+	choose_which_gnu_linux_distro
+}
 install_tmoe_weekly_build_edition() {
 	case ${ARCH_TYPE} in
 	amd64 | i386 | arm64 | armhf) WEEKLY_BUILD_CONTAINER=true ;;
@@ -179,8 +188,9 @@ set_debian_sid_env() {
 	DISTRO_NAME_02=debian-sid
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_kali_rolling_env() {
@@ -189,8 +199,9 @@ set_kali_rolling_env() {
 	DISTRO_NAME_02=kali-rolling
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_ubuntu_dev_env() {
@@ -199,8 +210,9 @@ set_ubuntu_dev_env() {
 	DISTRO_NAME_02=ubuntu-dev
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_mint_tricia_env() {
@@ -209,8 +221,9 @@ set_mint_tricia_env() {
 	DISTRO_NAME_02=mint-tricia
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_mint_ulyssa_env() {
@@ -219,8 +232,9 @@ set_mint_ulyssa_env() {
 	DISTRO_NAME_02=mint-ulyssa
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_alpine_edge_env() {
@@ -229,8 +243,9 @@ set_alpine_edge_env() {
 	DISTRO_NAME_02=alpine-edge
 	NODE02_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_fedora_rawhide_env() {
@@ -239,8 +254,9 @@ set_fedora_rawhide_env() {
 	DISTRO_NAME_02=fedora-rawhide
 	NODE02_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_ubuntu_bionic_env() {
@@ -249,8 +265,9 @@ set_ubuntu_bionic_env() {
 	DISTRO_NAME_02=ubuntu-bionic
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_arch_latest_env() {
@@ -260,8 +277,9 @@ set_arch_latest_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
 }
 set_manjaro_stable_env() {
@@ -270,9 +288,13 @@ set_manjaro_stable_env() {
 	DISTRO_NAME_02=manjaro-stable
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO=${DISTRO_NAME_02}
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	creat_container_edition_txt
+	creat_container_edition_txt_02
 	go_to_proot_management
+}
+desktop_does_not_support() {
+	printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置${DESKTOP}的自动构建任务。"
 }
 choose_mate_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
@@ -280,9 +302,7 @@ choose_mate_distro() {
 		"2" "🌉 Arch-latest(arm64,amd64)" \
 		"3" "🍥 Debian-sid(arm64,amd64)" \
 		"4" "🏔️ Alpine-edge(arm64,armhf,i386,amd64)" \
-		"5" "Mint-tricia(amd64)" \
-		"6" "🌿 Mint-ulyssa(amd64)" \
-		"7" "🍛 Ubuntu-dev(amd64)" \
+		"5" "🌿 Mint-tricia(amd64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -291,7 +311,7 @@ choose_mate_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -300,7 +320,7 @@ choose_mate_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_arch_latest_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -309,7 +329,7 @@ choose_mate_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_debian_sid_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -319,25 +339,16 @@ choose_mate_distro() {
 		case ${ARCH_TYPE} in
 		amd64) set_mint_tricia_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
 		;;
-	6)
-		case ${ARCH_TYPE} in
-		amd64) set_mint_ulyssa_env ;;
-		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
-			distro_does_not_support
-			;;
-		esac
-		;;
-	7)
+	999)
 		case ${ARCH_TYPE} in
 		amd64) set_ubuntu_dev_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置MATE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -355,7 +366,7 @@ choose_lxde_distro() {
 		case ${ARCH_TYPE} in
 		armhf | i386) set_debian_sid_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXDE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -374,7 +385,7 @@ choose_lxqt_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_ubuntu_dev_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXQT桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -383,7 +394,7 @@ choose_lxqt_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_fedora_rawhide_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置LXQT桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -396,9 +407,8 @@ choose_xfce_distro() {
 		"2" "🌉 Arch-latest(arm64,armhf,amd64)" \
 		"3" "🍥 Debian-sid(arm64,amd64)" \
 		"4" "👒 Fedora-rawhide(arm64,amd64)" \
-		"5" "🍛 Ubuntu-dev(arm64,amd64)" \
-		"6" "Manjaro-stable(arm64,amd64)" \
-		"7" "🏔️ Alpine-edge(arm64,amd64)" \
+		"5" "Manjaro-stable(arm64,amd64)" \
+		"6" "🏔️ Alpine-edge(arm64,amd64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -407,7 +417,7 @@ choose_xfce_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64 | armhf) set_kali_rolling_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -417,7 +427,7 @@ choose_xfce_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_debian_sid_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -426,34 +436,34 @@ choose_xfce_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_fedora_rawhide_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
+			distro_does_not_support
+			;;
+		esac
+		;;
+	999)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_ubuntu_dev_env ;;
+		*)
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
 		;;
 	5)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
+		amd64 | arm64) set_manjaro_stable_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
 		;;
 	6)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_manjaro_stable_env ;;
-		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
-			distro_does_not_support
-			;;
-		esac
-		;;
-	7)
-		case ${ARCH_TYPE} in
 		amd64 | arm64) set_alpine_edge_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -464,10 +474,9 @@ choose_kde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "If you are using proot,try using ubuntu-bionic.\nIf you are using chroot,you can choose anyone." 0 50 0 \
 		"1" "🍛 Ubuntu bionic(arm64,armhf)" \
 		"2" "🌉 Arch(arm64,amd64):simplicity,modernity,pragmatism" \
-		"3" "🦛 Ubuntu devel(arm64,amd64)" \
-		"4" "🍥 Debian sid(arm64,amd64)" \
-		"5" "👒 Fedora rawhide(arm64,amd64)" \
-		"6" "🏔️ Alpine(arm64,amd64):small,simple,secure." \
+		"3" "🍥 Debian sid(arm64,amd64)" \
+		"4" "👒 Fedora rawhide(arm64,amd64)" \
+		"5" "🏔️ Alpine(arm64,amd64):small,simple,secure." \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -476,7 +485,7 @@ choose_kde_distro() {
 		case ${ARCH_TYPE} in
 		arm64 | armhf) set_ubuntu_bionic_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置PLASMA桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -485,43 +494,43 @@ choose_kde_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_arch_latest_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
+			distro_does_not_support
+			;;
+		esac
+		;;
+	999)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_ubuntu_dev_env ;;
+		*)
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
 		;;
 	3)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
+		amd64 | arm64) set_debian_sid_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
 		;;
 	4)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_debian_sid_env ;;
+		amd64 | arm64) set_fedora_rawhide_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
 		;;
 	5)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_fedora_rawhide_env ;;
-		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
-			distro_does_not_support
-			;;
-		esac
-		;;
-	6)
-		case ${ARCH_TYPE} in
 		amd64 | arm64) set_alpine_edge_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置XFCE桌面的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -544,7 +553,7 @@ choose_zsh_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | armhf | arm64) set_arch_latest_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -553,7 +562,7 @@ choose_zsh_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_ubuntu_dev_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -562,7 +571,7 @@ choose_zsh_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64 | armhf | i386) set_debian_sid_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -571,7 +580,7 @@ choose_zsh_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -580,7 +589,7 @@ choose_zsh_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64 | armhf | i386) set_alpine_edge_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -589,7 +598,7 @@ choose_zsh_distro() {
 		case ${ARCH_TYPE} in
 		amd64 | arm64 | armhf) set_kali_rolling_env ;;
 		*)
-			printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置Zshell的自动构建任务。"
+			desktop_does_not_support
 			distro_does_not_support
 			;;
 		esac
@@ -605,8 +614,8 @@ view_the_schedule() {
 		${BOLD}${PURPLE}Weekly builds${RESET}：
 		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
 		TIME："UTC 00:01 / CST 08:01"
-			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+zsh${RESET}
-			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate+zsh${RESET}
+			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}lxqt+zsh${RESET}
+			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}lxqt+zsh${RESET}
 
 		TIME："UTC 06:01 / CST 14:01"
 			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}kde+xfce+lxqt+mate+zsh${RESET}
@@ -643,12 +652,13 @@ view_the_schedule() {
 			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}linux mint-tricia ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
-			${GREEN}linux mint-ulyssa ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
 			${GREEN}manjaro-stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce${RESET}   
 			${GREEN}manjaro-stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce${RESET}
 
 	EOF
 }
+#删除ubuntu dev * kde+xfce+mate
+#mint 20
 install_debian_gnu_linux_distro() {
 	source ${TMOE_SHARE_DIR}/container/debian/menu
 }

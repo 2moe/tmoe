@@ -112,6 +112,11 @@ creat_container_edition_txt() {
 	DEBIAN_CHROOT_MIN=$(printf '%s\n' "${DEBIAN_CHROOT}" | sed "s@${HOME}@~@g")
 	ROOTFS_NAME=$(printf '%s\n' "${DEBIAN_FOLDER}" | cut -d '_' -f 1)
 }
+creat_container_edition_txt_02() {
+	LINUX_CONTAINER_DISTRO_FILE_02="${CONFIG_FOLDER}/linux_container_distro_02.txt"
+	printf '%s\n' "${DISTRO_NAME_02}" >${LINUX_CONTAINER_DISTRO_FILE_02}
+	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE_02} 2>/dev/null
+}
 #######
 copy_tmoe_locale_file_to_container() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then

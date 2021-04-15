@@ -489,10 +489,10 @@ standand_desktop_installation() {
     preconfigure_gui_dependecies_02
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第三项。\nIf you are using a container,then choose proot_DE or WM.\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
-            "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
-            "2" "🍔 chroot/docker_DE(kde,dde)" \
-            "3" "🍙 window manager窗口管理器(ice,fvwm)" \
+            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第二项。\nIf you are using a container,then choose proot_DE or WM.\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
+            "1" "🍙 window manager窗口管理器(ice,fvwm)" \
+            "2" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
+            "3" "🍔 chroot/docker_DE(kde,dde)" \
             "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome,cinnamon)" \
             "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
             "6" "🍤 FAQ:vnc和gui的常见问题" \
@@ -511,19 +511,38 @@ standand_desktop_installation() {
             "0" "🌚 none=￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
-    case ${TMOE_MENU_LANG} in
-    zh_*UTF-8) standand_desktop_installation_zh ;;
-    *) standand_desktop_installation_en ;;
-    esac
     ##########################
-    case "${INSTALLDESKTOP}" in
-    0 | "") tmoe_linux_tool_menu ;;
-    1) tmoe_container_desktop ;;
-    2) tmoe_docker_and_chroot_container_desktop ;;
-    3) window_manager_install ;;
-    4) tmoe_virtual_machine_desktop ;;
-    5) tmoe_display_manager_install ;;
-    6) tmoe_desktop_faq ;;
+    standand_desktop_installation_menu_zh() {
+        case "${INSTALLDESKTOP}" in
+        0 | "") tmoe_linux_tool_menu ;;
+        1) window_manager_installation ;;
+        2) tmoe_container_desktop ;;
+        3) tmoe_docker_and_chroot_container_desktop ;;
+        4) tmoe_virtual_machine_desktop ;;
+        5) tmoe_display_manager_install ;;
+        6) tmoe_desktop_faq ;;
+        esac
+    }
+    standand_desktop_installation_menu_02() {
+        case "${INSTALLDESKTOP}" in
+        0 | "") tmoe_linux_tool_menu ;;
+        1) tmoe_container_desktop ;;
+        2) tmoe_docker_and_chroot_container_desktop ;;
+        3) window_manager_installation ;;
+        4) tmoe_virtual_machine_desktop ;;
+        5) tmoe_display_manager_install ;;
+        6) tmoe_desktop_faq ;;
+        esac
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        standand_desktop_installation_zh
+        standand_desktop_installation_menu_zh
+        ;;
+    *)
+        standand_desktop_installation_en
+        standand_desktop_installation_menu_02
+        ;;
     esac
     ##########################
     press_enter_to_return
@@ -719,7 +738,7 @@ will_be_installed_for_you() {
     printf "%s\n" "即将为您安装思源黑体(中文字体)、${REMOTE_DESKTOP_SESSION_01}、tightvncserver等软件包"
 }
 ########################
-window_manager_install() {
+window_manager_installation() {
     #NON_DBUS='true'
     REMOTE_DESKTOP_SESSION_02='x-window-manager'
     BETA_DESKTOP=$(
@@ -899,7 +918,7 @@ window_manager_install() {
         case "${TMOE_PROOT}" in
         true | no)
             printf "%s\n" "检测到您处于proot容器环境下，kwin可能无法正常运行"
-            RETURN_TO_WHERE="window_manager_install"
+            RETURN_TO_WHERE="window_manager_installation"
             do_you_want_to_continue
             ;;
         esac

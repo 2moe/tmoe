@@ -447,7 +447,7 @@ install_weekly_build_container() {
 	*) NODE_URL="${NODE01_URL}" ;;
 	esac
 	printf "%s\n" "本容器使用以下Dockerfile进行构建。"
-	DOCKERFILE="${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${TMOE_LINUX_CONTAINER_DISTRO}/${DESKTOP}/Dockerfile"
+	DOCKERFILE="${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
 	printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
 	if [ $(command -v bat) ]; then
 		bat -ppn "${DOCKERFILE}"
@@ -459,7 +459,7 @@ install_weekly_build_container() {
 			rm -f ${i}
 		fi
 	done
-	BUILD_TXT="${ARCH_TYPE}/${TMOE_LINUX_CONTAINER_DISTRO}/${DESKTOP}/build.txt"
+	BUILD_TXT="${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/build.txt"
 	printf "%s\n" "正在获取版本信息..."
 	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
 	ROOTFS_VERSION='latest02'
@@ -527,6 +527,7 @@ install_weekly_build_container() {
 		sed "s@BFSU Open Source Mirror Station@${NODE_NAME}@" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 	#--http-user=${NODE02_USER} --http-passwd=${NODE02_PW}
+	#		sed -E "s@(LINUX_CONTAINER_DISTRO_FILE)=.*@\1=\${CONFIG_FOLDER}/linux_container_distro_02.txt@" |
 }
 #############
 umount_and_remove_gnu_linux_distro() {
