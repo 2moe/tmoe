@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4486,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4487,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -158,10 +158,14 @@ check_release_version() {
 	case "${LINUX_DISTRO}" in
 	Android) OSRELEASE="Android" ;;
 	*)
-		if grep -q 'NAME=' /etc/os-release; then
-			OSRELEASE=$(grep -v 'PRETTY' /etc/os-release | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-		elif grep -q 'ID=' /etc/os-release; then
-			OSRELEASE=$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+		if [ -f "/etc/os-release" ]; then
+			if grep -q 'NAME=' /etc/os-release; then
+				OSRELEASE=$(grep -v 'PRETTY' /etc/os-release | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+			elif grep -q 'ID=' /etc/os-release; then
+				OSRELEASE=$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+			fi
+		elif [ -e /etc/issue ]; then
+			OSRELEASE=$(head -n 1 /etc/issue | awk '{print $1}')
 		else
 			OSRELEASE=LINUX
 		fi
@@ -302,6 +306,12 @@ check_linux_distro() {
 			DEBIAN_DISTRO='deepin'
 		fi
 		###################
+	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
+		LINUX_DISTRO='arch'
+		TMOE_UPDATE_COMMAND='pacman -Syy'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+		TMOE_REMOVAL_COMMAND='pacman -Rsc'
+		######################
 	elif egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		TMOE_UPDATE_COMMAND='opkg update'
@@ -330,12 +340,6 @@ check_linux_distro() {
 		TMOE_UPDATE_COMMAND='apk update'
 		TMOE_INSTALLATION_COMMAND='apk add'
 		TMOE_REMOVAL_COMMAND='apk del'
-		######################
-	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
-		LINUX_DISTRO='arch'
-		TMOE_UPDATE_COMMAND='pacman -Syy'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
-		TMOE_REMOVAL_COMMAND='pacman -Rsc'
 		######################
 	elif egrep -q "gentoo|funtoo" "/etc/os-release"; then
 		LINUX_DISTRO='gentoo'

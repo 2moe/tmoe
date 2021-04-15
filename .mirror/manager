@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4486,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4487,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -274,6 +274,11 @@ check_gnu_linux_distro() {
 			DEBIAN_DISTRO='deepin'
 		fi
 
+	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
+		LINUX_DISTRO='arch'
+		TMOE_REMOVAL_COMMAND='pacman -Rsc'
+		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+
 	elif egrep -qi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
 		LINUX_DISTRO='redhat'
 		if [ $(command -v dnf) ]; then
@@ -297,11 +302,6 @@ check_gnu_linux_distro() {
 		TMOE_UPDATE_COMMAND='apk update'
 		TMOE_INSTALLATION_COMMAND='apk add'
 		TMOE_REMOVAL_COMMAND='apk del'
-
-	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
-		LINUX_DISTRO='arch'
-		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
 
 	elif egrep -q "gentoo|funtoo" '/etc/os-release'; then
 		LINUX_DISTRO='gentoo'
