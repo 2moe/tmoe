@@ -96,6 +96,12 @@ choose_which_gnu_linux_distro() {
 }
 ##############################
 install_tmoe_moonthly_build_edition() {
+	printf "%s\n" "${YELLOW}PREVIEW:${RESET}"
+	printf "%s\n" "This category of containers will not automatically configure unnecessary steps."
+	printf "%s\n" "A service or an environment is a container."
+	printf "%s\n" "For example, you can type ${GREEN}tmoe p go${RESET} to start the ${BLUE}proot golang latest ${ARCH_TYPE}${RESET} container,if you are using tmoe-zsh ,just type ${GREEN}t p go${RESET}"
+	printf "%s\n" "You can ${YELLOW}creat a new container${RESET} in the menu, just type the container name.If you type ${GREEN}1.16${RESET},then it will creat a new golang container.You can type ${GREEN}tmoe p go 1.16${RESET} to start it."
+
 	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
 	press_enter_to_return
 	choose_which_gnu_linux_distro

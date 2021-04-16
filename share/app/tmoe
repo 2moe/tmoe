@@ -15,6 +15,11 @@ tmoe_main() {
 		SYSTEMD_NSPAWN=true
 		TMOE_CHROOT=true
 		;;
+	ls)
+		check_manager_dir
+		bash ${MANAGER_DIR}/share/container/debian/lnk-menu
+		exit 0
+		;;
 	zsh)
 		zsh-i
 		exit 0
@@ -47,6 +52,7 @@ tmoe_main() {
 		;;
 	-h* | --h* | *)
 		cat <<-EOF
+			ls         --list installed containers
 			m          --tmoe manager
 			t          --tmoe tool
 			p          --proot
@@ -55,7 +61,7 @@ tmoe_main() {
 			theme      --zshtheme
 			zsh        --zsh manager
 		EOF
-		printf "%s\n" "请前往git仓库获取帮助信息"
+		printf "%s\n" "You can go to the git repository for help information"
 		exit 0
 		;;
 	esac

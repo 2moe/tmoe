@@ -11,19 +11,17 @@ proot_management_menu() {
 	TMOE_CONTAINER_HITOKOTO=true
 	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
 	proot_management_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
-			"3" "🐯 startvnc(tiger/tight)" \
-			"4" "⚒️ startxsdl" \
-			"5" "🍬 novnc(HTML5 VNC client)" \
-			"6" "⚔️ startx11vnc" \
-			"7" "🍹 backup ${CONTAINER_TYPE} container" \
-			"8" "💔 unmount & remove" \
-			"9" "📘 readme" \
-			"10" "🌈 create a new container" \
-			"11" "🥤 edit script" \
-			"12" "🍅 space occupation" \
+			"3" "🐯 start gui(remote desktop)" \
+			"4" "alpha:Create a temp auto-startup script" \
+			"5" "🍹 backup ${CONTAINER_TYPE} container" \
+			"6" "💔 unmount & remove" \
+			"7" "📘 readme" \
+			"8" "🌈 beta:create a new container" \
+			"9" "🥤 edit script" \
+			"10" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -31,33 +29,29 @@ proot_management_menu() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "⏹️ 停止容器进程" \
-			"3" "🐯 startvnc:启动tiger/tightvnc" \
-			"4" "⚒️ startxsdl:启动xsdl/VcXsrv" \
-			"5" "🍬 novnc:在浏览器里连接vnc" \
-			"6" "⚔️ startx11vnc:启动x11vnc" \
-			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
-			"8" "💔 unmount & remove 卸载并移除" \
-			"9" "📘 readme 自述/说明" \
-			"10" "🌈 create a new container新建容器" \
-			"11" "🥤 edit script 编辑脚本" \
-			"12" "🍅 space occupation 空间占用大小" \
+			"3" "🐯 start gui(remote desktop)" \
+			"4" "alpha内测:创建临时自启动脚本" \
+			"5" "🍹 backup 备份${CONTAINER_TYPE}容器" \
+			"6" "💔 unmount & remove 卸载并移除" \
+			"7" "📘 readme 自述/说明" \
+			"8" "🌈 beta公测:create a new container新建容器" \
+			"9" "🥤 edit script 编辑脚本" \
+			"10" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
 	proot_management_menu_de() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ Tötungsprozess" \
-			"3" "🐯 startvnc(tiger/tight)" \
-			"4" "⚒️ startxsdl" \
-			"5" "🍬 novnc(HTML5 VNC client)" \
-			"6" "⚔️ startx11vnc" \
-			"7" "🍹 backup ${CONTAINER_TYPE} container" \
-			"8" "💔 aushängen und entfernen" \
-			"9" "📘 Liesmich" \
-			"10" "🌈Erstellen Sie einen neuen Container" \
-			"11" "🥤 Skript bearbeiten" \
-			"12" "🍅 Raumbesetzung" \
+			"3" "🐯 start gui(remote desktop)" \
+			"4" "alpha:Create a temp auto-startup script" \
+			"5" "🍹 backup ${CONTAINER_TYPE} container" \
+			"6" "💔 aushängen und entfernen" \
+			"7" "📘 Liesmich" \
+			"8" "🌈 beta:Erstellen Sie einen neuen Container" \
+			"9" "🥤 Skript bearbeiten" \
+			"10" "🍅 Raumbesetzung" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
 	}
@@ -71,17 +65,15 @@ proot_management_menu() {
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) normally_start_gnu_linux_distro ;;
 	2) kill_container_process ;;
-	3) start_gnu_linux_distro_tigervnc ;;
-	4) start_gnu_linux_distro_x ;;
-	5) install_web_novnc ;;
-	6) start_gnu_linux_distro_x11vnc ;;
-	7) backup_tmoe_gnu_linux_distro ;;
-	8) umount_and_remove_gnu_linux_distro ;;
-	9) readme_of_gnu_linux_distro ;;
-	10)
+	3) start_gui_menu ;;
+	4) create_a_temporary_automatic_startup_script ;;
+	5) backup_tmoe_gnu_linux_distro ;;
+	6) umount_and_remove_gnu_linux_distro ;;
+	7) readme_of_gnu_linux_distro ;;
+	8)
 		case ${RETURN_TO_MENU} in
 		'list_installed_tmoe_containers')
-			printf "%s\n" "${RED}Sorry${RESET}, it is not possible to create a new container in the current mode, please return to the main menu and select the architecture again"
+			printf "%s\n" "${RED}Sorry${RESET}, it is not possible to create a new container in the current mode, please return to the main menu and select the architecture again."
 			printf "%s\n" "You can press ${YELLOW}Ctrl + C${RESET} to exit the current mode, and type ${GREEN}tmoe m${RESET} to enter the ${BLUE}main menu.${RESET}"
 			press_enter_to_return
 			proot_management_menu
@@ -89,25 +81,90 @@ proot_management_menu() {
 		*) create_a_new_container ;;
 		esac
 		;;
-	11) edit_container_startup_script ;;
-	12) du_sh_gnu_linux_distro ;;
+	9) edit_container_startup_script ;;
+	10) du_sh_gnu_linux_distro ;;
 	esac
 	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 9 | 11 | 12)
+	2 | 6 | 7 | 9 | 10)
+		#kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro
 		#回到本菜单： 停止进程,备份，命令，空间 ,编辑
 		press_enter_to_return
 		proot_management_menu
 		;;
-	8)
-		#unmount & remove
+	6)
+		#unmount & remove :umount_and_remove_gnu_linux_distro
 		${RETURN_TO_MENU}
 		;;
 	esac
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
+create_a_temporary_automatic_startup_script() {
+	printf "%s\n" "${YELLOW}PREVIEW:${RESET}"
+	printf "%s\n" "You can create an automatic startup script, and when you enter the container, the container will automatically execute it."
+	printf "%s\n" "If it is a temporary script, it will only be executed once and will not take effect next time.If it is a permanent script, it will be executed every time you enter the container."
+	printf "%s\n" "For example, if you need a container to automatically execute ${GREEN}ruby -run -e httpd . -p 8080${RESET}, after you create the script, the container will automatically start the ruby httpd service."
+
+	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
+start_gui_menu() {
+	start_gui_menu_en() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
+			"1" "🐯 startvnc(tiger/tight)" \
+			"2" "⚒️ startxsdl" \
+			"3" "🍬 novnc(HTML5 VNC client)" \
+			"4" "⚔️ startx11vnc" \
+			"5" "alpha:tightvnc" \
+			"6" "alpha:tigervnc" \
+			"0" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3)
+	}
+	start_gui_menu_cn() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
+			"1" "🐯 startvnc:启动tiger/tightvnc" \
+			"2" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+			"3" "🍬 novnc:在浏览器里连接vnc" \
+			"4" "⚔️ startx11vnc:启动x11vnc" \
+			"5" "alpha内测:tightvnc" \
+			"6" "alpha内测:tigervnc" \
+			"0" "🌚 back 返回上级菜单" \
+			3>&1 1>&2 2>&3)
+	}
+	start_gui_menu_de() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
+			"1" "🐯 startvnc(tiger/tight)" \
+			"2" "⚒️ startxsdl" \
+			"3" "🍬 novnc(HTML5 VNC client)" \
+			"4" "⚔️ startx11vnc" \
+			"5" "alpha:tightvnc" \
+			"6" "alpha:tigervnc" \
+			"0" "🌚 zurück" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) start_gui_menu_cn ;;
+	de_DE.UTF-8) start_gui_menu_de ;; #Deutsche
+	*) start_gui_menu_en ;;
+	esac
+	##############################
+	case "${SELECTED_GNU_LINUX}" in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	1) start_gnu_linux_distro_tigervnc ;;
+	2) start_gnu_linux_distro_x ;;
+	3) install_web_novnc ;;
+	4) start_gnu_linux_distro_x11vnc ;;
+	5 | 6)
+		printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
+		press_enter_to_return
+		start_gui_menu
+		;;
+	esac
+}
+##################
 edit_container_startup_script() {
 	for i in editor vim nano vi; do
 		if [ $(command -v ${i}) ]; then

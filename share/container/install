@@ -2150,3 +2150,5 @@ true) ;;
 	;;
 esac
 bash ${PREFIX}/bin/debian #此处不应以sudo权限执行
+
+###########
