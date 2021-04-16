@@ -32,7 +32,7 @@ wine_dependencies() {
 }
 ##########
 install_wine64() {
-    INSTALL_WINE='true'
+    INSTALL_WINE=true
     wine_dependencies
     beta_features_quick_install
     case "${ARCH_TYPE}" in
@@ -85,7 +85,7 @@ remove_wine_bin() {
         apt update
         ;;
     esac
-    INSTALL_WINE='false'
+    INSTALL_WINE=false
     wine_dependencies
     printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}"
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}

@@ -132,7 +132,7 @@ kanasimi_work_crawler() {
         exit 1
     fi
     cd ${WORK_CRAWLER_FOLDER}
-    #NON_DEBIAN='true'
+    #NON_DEBIAN=true
     # DEPENDENCY_01=""
     TMOE_APP=$(
         whiptail --title "輸work-i啓動本工具(20200716-23)" --menu \

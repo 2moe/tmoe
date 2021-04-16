@@ -10,7 +10,7 @@ vnc_can_not_call_pulse_audio() {
 	pulseaudio --start
 }
 ###############
-creat_start_linux_deploy_sh() {
+create_start_linux_deploy_sh() {
 	cd $PREFIX/bin
 	printf "%s\n" "${CUT_TARGET}"
 	cat >"${CUT_TARGET}" <<-'EndofFile'
@@ -36,7 +36,7 @@ linux_deploy_pulse_server() {
 	if [ -z "${CUT_TARGET}" ]; then
 		printf "%s\n" "命令名称不能为空！！！"
 	else
-		creat_start_linux_deploy_sh
+		create_start_linux_deploy_sh
 	fi
 	if [ ! -z ${CUT_TARGET} ]; then
 		chmod +x ${CUT_TARGET}

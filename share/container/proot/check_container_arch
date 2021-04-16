@@ -41,12 +41,12 @@ if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	esac
 fi
 ######################
-TMOE_QEMU="true"
+TMOE_QEMU=true
 case "${CONTAINER_ARCH}" in
 i386)
 	NEW_TMOE_ARCH='i386'
 	case ${TRUE_ARCH_TYPE} in
-	amd64 | i386) TMOE_QEMU="false" ;;
+	amd64 | i386) TMOE_QEMU=false ;;
 	*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
 	esac
 	;;
@@ -61,14 +61,14 @@ arm64)
 armhf)
 	NEW_TMOE_ARCH='armhf'
 	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf) TMOE_QEMU="false" ;;
+	arm64 | armhf) TMOE_QEMU=false ;;
 	*) TMOE_QEMU_ARCH="arm" ;;
 	esac
 	;;
 armel)
 	NEW_TMOE_ARCH='armel'
 	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf | armel) TMOE_QEMU="false" ;;
+	arm64 | armhf | armel) TMOE_QEMU=false ;;
 	*) TMOE_QEMU_ARCH="armeb" ;;
 	esac
 	;;
@@ -95,5 +95,5 @@ riscv64)
 esac
 #检测两次
 case "${CONTAINER_ARCH}" in
-"${TRUE_ARCH_TYPE}") TMOE_QEMU="false" ;;
+"${TRUE_ARCH_TYPE}") TMOE_QEMU=false ;;
 esac

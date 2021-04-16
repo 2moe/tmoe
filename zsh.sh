@@ -12,7 +12,7 @@ tmoe_container_zsh_main() {
 		auto_configure_tmoe_tools
 		lnk_startvnc
 		check_ps_command
-		creat_zlogin_file
+		create_zlogin_file
 		fix_sudo
 		auto_configure_tmoe_tool_02
 		;;
@@ -344,7 +344,7 @@ configure_tmoe_zsh() {
 	change_shell_to_bin_zsh
 }
 ############
-creat_zlogin_file() {
+create_zlogin_file() {
 	cd ${HOME}
 	cp .bash_login .zlogin
 	sed -i '/source ~\/\.profile/d' .zlogin

@@ -382,7 +382,7 @@ install_ide_02() {
     esac
 }
 #############
-creat_android_studio_application_link() {
+create_android_studio_application_link() {
     cd ${APPS_LNK_DIR}
     #Icon=android-studio
     cat >android-studio.desktop <<-'EOF'
@@ -437,7 +437,7 @@ check_android_studio() {
 install_android_studio() {
     #check_android_studio
     tar -pzxvf ${DOWNLOAD_PATH}/${DOWNLOAD_FILE_NAME} -C /opt
-    creat_android_studio_application_link
+    create_android_studio_application_link
     #printf "%s\n" "安装包位于${BLUE}${HOME}/sd/Download/android_studio_linux_64bit.tar.gz${RESET}"
     #printf "%s\n" "安装完成，如需卸载，则请输${RED}rm -rv${RESET} ${BLUE}/opt/android-studio ${APPS_LNK_DIR}/android_studio.desktop${RESET};${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}default-jre${RESET}"
 }

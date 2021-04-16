@@ -77,7 +77,7 @@ install_debian_gnu_linux_distro_menu() {
 	DOWNLOAD_PATH="/sdcard/Download/backup"
 	#DISTRO_CODE=''
 	DISTRO_NAME='debian'
-	DEB_BOOT_STRAP='false'
+	DEB_BOOT_STRAP=false
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
 	#\nStable版更加稳定且bug较少,但stable的软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new.
 	DISTRO_CODE=""
@@ -151,7 +151,7 @@ install_debian_gnu_linux_distro_menu() {
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	###############
 	exit 0
@@ -198,9 +198,9 @@ debootstrap_debian_distro() {
 	do_you_want_to_continue
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	#此处重复创建并非多余
-	creat_container_edition_txt
+	create_container_edition_txt
 	if [ ! -e "${DEBIAN_CHROOT}" ]; then
-		DEB_BOOT_STRAP='true'
+		DEB_BOOT_STRAP=true
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
 		if (whiptail --title "DEBIAN URL" --yes-button "BFSU MIRROR" --no-button "DEBIAN OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
@@ -414,7 +414,7 @@ install_debian_gnu_linux_container_via_rec_pkg() {
 		;;
 	esac
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	printf "%s\n" "即将为您安装Debian ${DISTRO_CODE} GNU/Linux container"
 	do_you_want_to_continue
 	case "${DISTRO_CODE}" in

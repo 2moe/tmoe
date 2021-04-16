@@ -47,7 +47,7 @@ if [ -e "${LINUX_CONTAINER_DISTRO_FILE_02}" ]; then
 	LINUX_CONTAINER_DISTRO_02=$(head -n 1 ${LINUX_CONTAINER_DISTRO_FILE_02})
 fi
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-	TMOE_CHROOT='true'
+	TMOE_CHROOT=true
 	CONTAINER_TYPE='chroot'
 	if [ $(command -v sudo) ]; then
 		TMOE_CHROOT_PREFIX=sudo
@@ -56,7 +56,7 @@ if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	fi
 else
 	CONTAINER_TYPE='proot'
-	TMOE_CHROOT='false'
+	TMOE_CHROOT=false
 	TMOE_CHROOT_PREFIX=''
 fi
 #DEBIAN_FOLDER=debian_arm64
@@ -514,7 +514,7 @@ cat_tmoe_chroot_script() {
 	source ${TMOE_SHARE_DIR}/container/chroot/startup
 }
 ##############
-creat_chroot_startup_script() {
+create_chroot_startup_script() {
 	case ${LINUX_DISTRO} in
 	Android)
 		ANDROID_EMULATED_DIR='/storage/emulated'
@@ -579,7 +579,7 @@ creat_chroot_startup_script() {
 	cat_tmoe_chroot_script
 }
 ###################
-creat_tmoe_proot_stat_file() {
+create_tmoe_proot_stat_file() {
 	cat >${TMOE_PROC_PREFIX}.${FILE_02} <<-'ENDOFSTAT'
 		cpu  13543674 2263150 11590764 15571271 210309 1343827 851885 0 0 0
 		cpu0 3629787 489276 3129188 15571051 210302 802654 516635 0 0 0
@@ -608,7 +608,7 @@ check_tmoe_proot_container_proc() {
 	FILE_02=stat
 	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_02} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
-		creat_tmoe_proot_stat_file
+		create_tmoe_proot_stat_file
 		sed -i "s@#test02@@" ${TMOE_STARTUP_SCRIPT}
 	fi
 	#######
@@ -641,7 +641,7 @@ set_proot_container_env() {
 	touch ${DEBIAN_CHROOT}/etc/environment
 	printf "%s\n%s\n" "export TMOE_PROOT=true" "export MOZ_FAKE_NO_SANDBOX=1" >>${DEBIAN_CHROOT}/etc/environment
 }
-creat_proot_startup_script() {
+create_proot_startup_script() {
 	printf "%s\n" "Creating proot startup script"
 	printf "%s\n" "正在创建proot容器启动脚本${TMOE_STARTUP_SCRIPT} "
 	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
@@ -680,10 +680,10 @@ if grep -q 'Ubuntu' ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null; then
 fi
 case ${TMOE_CHROOT} in
 true)
-	creat_chroot_startup_script
+	create_chroot_startup_script
 	;;
 *)
-	creat_proot_startup_script
+	create_proot_startup_script
 	check_tmoe_proot_container_proc
 	;;
 esac
@@ -1017,7 +1017,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	###############
 	unset TMOE_GITHUB
-	 TMOE_GITHUB='true'
+	 TMOE_GITHUB=true
 	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
 	cp -f vnc-autostartup .bash_login
 	if ! grep -q "localhost" /etc/hosts 2>/dev/null; then
@@ -1313,7 +1313,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	#################
 	unset TMOE_GITHUB
-	 TMOE_GITHUB='true'
+	 TMOE_GITHUB=true
 	#勿删上面那条注释
 	 sed -i 's/^deb/# &/g;s/^##deb/deb/g' /etc/apt/sources.list
 	##dns

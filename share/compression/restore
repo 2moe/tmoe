@@ -68,7 +68,7 @@ uncompress_tar_file() {
 
 	case ${RESTORE} in
 	*chroot-rootfs_bak.*)
-		TMOE_CHROOT='true'
+		TMOE_CHROOT=true
 		check_sudo
 		;;
 	*) TMOE_PREFIX='' ;;
@@ -210,7 +210,7 @@ restore_gnu_linux_container() {
 		check_container_backup_path
 		cd ${CONTAINER_BACKUP_PATH}
 		BACKUP_FILE_NAME="*tar*"
-		COMPATIBILITY_MODE='true'
+		COMPATIBILITY_MODE=true
 		#file_directory_selection
 		select_file_manually
 		;;

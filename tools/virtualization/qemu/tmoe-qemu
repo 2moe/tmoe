@@ -24,7 +24,7 @@ tmoe_qemu_main_menu() {
 	#%s后有空格
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "qemu-system vm" --menu "qemu-system virtual machine" 0 50 0 \
-			"🍹 Creat a new VM 新建虚拟机" "1" \
+			"🍹 create a new VM 新建虚拟机" "1" \
 			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
 			"Back" "🌚 返回" \
 			3>&1 1>&2 2>&3
@@ -35,7 +35,7 @@ tmoe_qemu_main_menu() {
 	##############🧺
 	case ${TMOE_VIRTUALIZATION} in
 	Back | "") install_container_and_virtual_machine ;;
-	*新建虚拟机) creat_a_new_tmoe_qemu_vm ;;
+	*新建虚拟机) create_a_new_tmoe_qemu_vm ;;
 	*)
 		#echo $TMOE_VIRTUALIZATION
 		QEMU_VM_NAME="${TMOE_VIRTUALIZATION}"
@@ -97,16 +97,16 @@ edit_qemu_script() {
 }
 ##############
 #新建---选择virtio/sata----选择磁盘-----架构---UEFI/BIOS---访问方式---转发端口
-creat_a_new_tmoe_qemu_vm() {
+create_a_new_tmoe_qemu_vm() {
 	save_current_qemu_conf_as_a_new_script
 	choose_qemu_qcow2_disk_type
 	RETURN_TO_WHERE='choose_qemu_qcow2_or_img_file'
 	FILE_EXT_01='qcow2'
 	FILE_EXT_02='*'
-	if (whiptail --title "选择或新建虚拟磁盘" --yes-button 'choose选择' --no-button 'creat新建' --yesno "Choose a qcow2 file or creat a new disk?\n若您无虚拟磁盘，那就新建一个吧" 8 50); then
+	if (whiptail --title "选择或新建虚拟磁盘" --yes-button 'choose选择' --no-button 'creat新建' --yesno "Choose a qcow2 file or create a new disk?\n若您无虚拟磁盘，那就新建一个吧" 8 50); then
 		choose_qemu_qcow2_or_img_file
 	else
-		creat_blank_virtual_disk_image
+		create_blank_virtual_disk_image
 	fi
 	press_enter_to_continue
 	SELECTION=""
@@ -137,9 +137,9 @@ creat_a_new_tmoe_qemu_vm() {
 ##########################
 do_you_want_to_enable_tcp_port_fwd() {
 	if (whiptail --title "TCP PORT FORWORD" --yes-button 'yes' --no-button 'no' --yesno "Do you want to enable the tcp port fwd function?\n是否需要开启tcp端口转发功能?默认将guest的22端口转发至host的2888,将39080转发至39081\n您可以在network配置选项中手动修改转发规则。" 12 50); then
-		TCP_PORT_HOST_FWD_01_ENABLED='true'
+		TCP_PORT_HOST_FWD_01_ENABLED=true
 	else
-		TCP_PORT_HOST_FWD_01_ENABLED='false'
+		TCP_PORT_HOST_FWD_01_ENABLED=false
 	fi
 	sed -E -i "s@^(TCP_PORT_HOST_FWD_01_ENABLED=).*@\1${TCP_PORT_HOST_FWD_01_ENABLED}@g" ${QEMU_FILE}
 	grep --color=auto "^TCP_PORT_HOST_FWD_01_ENABLED=" ${QEMU_FILE}
@@ -167,9 +167,9 @@ choose_qemu_machine_type() {
 }
 choose_uefi_or_bios() {
 	if (whiptail --title "请选择引导类型" --yes-button 'legacy bios' --no-button 'uefi' --yesno "If your guest is win95/winxp,then choose legacy bios.\n默认为legacy bios,若您的虚拟机非老旧系统,\n例如debian sid或win10,则可选择uefi\n若TianoCore UEFI无法引导系统,则请切换回bios\n若你使用的是未包含efi引导的镜像,则请使用legacy" 14 50); then
-		UEFI_ENABLED='false'
+		UEFI_ENABLED=false
 	else
-		UEFI_ENABLED='true'
+		UEFI_ENABLED=true
 	fi
 	sed -E -i "s@^(UEFI_ENABLED=).*@\1${UEFI_ENABLED}@g" ${QEMU_FILE}
 	grep --color=auto "^UEFI_ENABLED=" ${QEMU_FILE}
@@ -228,9 +228,9 @@ tmoe_qemu_vnc_menu() {
 tmoe_qemu_vnc_localhost() {
 	CURRENT_VALUE=$(grep '^VNC_LOCALHOST=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)
 	if (whiptail --title "localhost vnc" --yes-button 'true' --no-button 'false' --yesno "是否仅允许本机访问?默认为true,当前为${CURRENT_VALUE}\nDo you only allow localhost to access vnc?" 9 50); then
-		VNC_LOCALHOST='true'
+		VNC_LOCALHOST=true
 	else
-		VNC_LOCALHOST='false'
+		VNC_LOCALHOST=false
 	fi
 	sed -E -i "s@^(VNC_LOCALHOST=).*@\1${VNC_LOCALHOST}@g" ${QEMU_FILE}
 	grep --color=auto "^VNC_LOCALHOST=" ${QEMU_FILE}
@@ -379,7 +379,7 @@ choose_qemu_qcow2_disk_type() {
 	fi
 }
 ################
-creat_blank_virtual_disk_image() {
+create_blank_virtual_disk_image() {
 	[[ -n ${QEMU_VM_NAME} ]] || QEMU_VM_NAME="gnu-linux_x64-$(date +%Y-%m-%d_%H-%M)"
 	DISK_FILE_PATH="${HOME}/sd/Download/qemu"
 	TARGET_FILE_NAME=$(whiptail --inputbox "请输入磁盘文件名称,若留空,则将自动创建${QEMU_VM_NAME}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
@@ -396,7 +396,7 @@ creat_blank_virtual_disk_image() {
 		printf "%s\n" "磁盘名称仅包含英文、数字和_-,请勿输入特殊字符。"
 		printf "%s\n" "Please re-enter."
 		press_enter_to_return
-		creat_blank_virtual_disk_image
+		create_blank_virtual_disk_image
 	elif [[ -e ${DISK_FILE_PATH}/${TARGET_FILE_NAME} ]]; then
 		printf "%s\n" "文件已存在，新文件将被重命名为${TARGET_FILE_NAME}_02"
 		press_enter_to_continue
@@ -521,7 +521,7 @@ tmoe_qemu_disk_manager_02() {
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "${BLK_DEVICE} MANAGER" --menu "您想要对${BLK_DEVICE}进行什么操作" 0 0 0 \
 			"1" "💽 choose a file 选择磁盘文件" \
-			"2" "creat a new disk新建空白磁盘" \
+			"2" "create a new disk新建空白磁盘" \
 			"3" "disable 禁用${BLK_DEVICE}" \
 			"4" "compress 压缩(真实大小)" \
 			"5" "expand 扩容(最大空间)" \
@@ -535,7 +535,7 @@ tmoe_qemu_disk_manager_02() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) choose_qemu_qcow2_or_img_file ;;
-	2) creat_blank_virtual_disk_image ;;
+	2) create_blank_virtual_disk_image ;;
 	3) disable_qemu_disk ;;
 	4) compress_qcow2_img_file ;;
 	5) expand_qemu_qcow2_img_file ;;
@@ -1077,15 +1077,15 @@ modify_qemu_machine_accel() {
 	0 | "") ${RETURN_TO_WHERE} ;;
 	1)
 		MACHINE_ACCEL="kvm:tcg"
-		ENABLE_KVM='true'
+		ENABLE_KVM=true
 		;;
 	2)
 		MACHINE_ACCEL="tcg:kvm"
-		ENABLE_KVM='false'
+		ENABLE_KVM=false
 		;;
 	3)
 		MACHINE_ACCEL="tcg"
-		ENABLE_KVM='false'
+		ENABLE_KVM=false
 		;;
 	esac
 	###############
@@ -1513,14 +1513,14 @@ tmoe_choose_a_qemu_bios_file() {
 }
 ########
 ########
-how_to_creat_a_new_tmoe_qemu_vm() {
+how_to_create_a_new_tmoe_qemu_vm() {
 	cat <<-'EOF'
 		   1.下载iso镜像文件 Download a iso file.
 		   若虚拟磁盘内已经安装了系统，则可跳过此步。
 		   If the qcow2 disk has a built-in system,then you can skip this step.
 		        
 			2.新建一个虚拟磁盘
-			Creat a new vitual disk (qcow2 format).
+			create a new vitual disk (qcow2 format).
 
 			3.选择启动光盘iso
 			Choose a iso file(CD-ROM)
@@ -1543,7 +1543,7 @@ tmoe_qemu_faq() {
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "FAQ(よくある質問)" --menu "您有哪些疑问？\nWhat questions do you have?" 13 55 3 \
 			"1" "process进程管理说明" \
-			"2" "creat a new vm如何新建虚拟机" \
+			"2" "create a new vm如何新建虚拟机" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -1551,7 +1551,7 @@ tmoe_qemu_faq() {
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1) qemu_process_management_instructions ;;
-	2) how_to_creat_a_new_tmoe_qemu_vm ;;
+	2) how_to_create_a_new_tmoe_qemu_vm ;;
 	esac
 	###############
 	press_enter_to_return

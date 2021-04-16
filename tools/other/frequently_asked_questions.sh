@@ -112,7 +112,7 @@ notes_of_tmoe_sudo_02() {
     输入${GREEN}newgrp aid_inet${RESET}切换到aid_inet用户组，该用户组具有安卓系统的联网权限。
     方法2：
     新建一名普通用户，再前往本工具的秘密花园的系统管理选项，将该用户添加至sudo用户组。
-    当检测到TMOE_CHROOT='true'时，将会自动把该用户加入aid_inet和aid_net_raw等用户组。
+    当检测到TMOE_CHROOT=true时，将会自动把该用户加入aid_inet和aid_net_raw等用户组。
     若您的宿主机为Android系统，则需要加入这些用户组。
     ---------------
     若部分程序无法联网，则请将相关用户加入aid_inet用户组，例如${GREEN}usermod -a -G aid_inet mysql${RESET}

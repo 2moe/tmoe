@@ -53,7 +53,7 @@ EOF
 MACHINE_ACCEL='kvm:tcg'
 #默认值'kvm:tcg',您可以修改为'tcg:kvm:xen'，如需禁用kvm,则可修改为tcg
 
-ENABLE_KVM='true'
+ENABLE_KVM=true
 #可选true/false
 
 MACHINE_TYPE='q35'
@@ -67,7 +67,7 @@ RTC_BASE=localtime
 #默认localtime,若guest为linux,则可修改为utc
 
 #01-3.UEFI开关
-UEFI_ENABLED='false'
+UEFI_ENABLED=false
 
 #UEFI固件位置
 UEFI_CODE_PFLASH="/usr/share/OVMF/OVMF_CODE.fd"
@@ -178,7 +178,7 @@ BOOT_MENU='on'
 #可选on或off
 
 #05-3.Kernel 内核引导选项
-CUSTOM_KERNEL='false'
+CUSTOM_KERNEL=false
 #默认为'false'，禁用手动指定内核
 
 KERNEL_FILE=""
@@ -204,13 +204,13 @@ KERNEL_APPEND=""
 启动虚拟机后，在安装前，请选择virtio驱动盘内amd64/i386下的w10目录，最后选择win10的virtio磁盘驱动。
 
 您可以使用命令"qemu-img convert -f raw -O qcow2 原文件.img 输出的文件.qcow2"来将raw格式的img磁盘文件转换为qcow2格式。
-使用"qemu-img creat -f qcow2 新磁盘.qcow2"来新建一个qcow2磁盘。
+使用"qemu-img create -f qcow2 新磁盘.qcow2"来新建一个qcow2磁盘。
 EOF
 
 #06-2. Storage devices 存储设备配置区域
 VIRTIO_DISK_01_BOOTINDEX=''
 VIRTIO_DISK_01_ENABLED=false
-#当ENABLE='true'时，表示启用这块磁盘;为'false'时，禁用。
+#当ENABLE=true时，表示启用这块磁盘;为'false'时，禁用。
 VIRTIO_DISK_01_FORMAT=qcow2
 #默认格式为qcow2
 
@@ -274,7 +274,7 @@ CD_ROM_DISK_02_FORMAT=raw
 CD_ROM_DISK_02="${HOME}/sd/Download/cd-rom02.iso"
 #___________________________
 #06-3.SHARED DEVICES virtio-9p-pci共享存储设备.
-VIRTIO_9P_PCI_01_ENABLED='true'
+VIRTIO_9P_PCI_01_ENABLED=true
 VIRTIO_9P_PCI_01=""
 
 : <<\EOF
@@ -319,17 +319,17 @@ qemu5.1及其以上版本的系统建议使用"-device"来配置声卡,而不是
 目前本脚本仅支持配置ich9-intel-hda，intel-hda,AC97和ES1370。
 EOF
 #07-2.Sound card devices声卡
-SOUND_CARD_ENABLED='true'
+SOUND_CARD_ENABLED=true
 #当为'true'时，启用声卡;为false时，则禁用。
 
 SOUND_CARD='intel-hda'
 #默认为intel-hda
 
-SOUND_CARD_02_ENABLED='true'
+SOUND_CARD_02_ENABLED=true
 SOUND_CARD_02='AC97'
 
 #07-3.Pulseaudio server address音频服务地址
-WAYLAND_REMOTE_PULSE='false'
+WAYLAND_REMOTE_PULSE=false
 #默认值为'false',当使用的是wayland或本地x11时，默认不转发音频。
 
 AUDIO_ADDR='127.0.0.1:4713'
@@ -341,7 +341,7 @@ AUDIO_ADDR='127.0.0.1:4713'
 #请直接搜索“关于user network的说明”。
 ###########
 #08-2.Network devices
-NET_CARD_01_ENABLED='true'
+NET_CARD_01_ENABLED=true
 #当为'true'时，启用网卡;为false时，则禁用。
 NET_CARD_01='virtio-net-pci'
 #网卡01默认为virtio-net-pci
@@ -349,7 +349,7 @@ NET_CARD_01='virtio-net-pci'
 NET_CARD_01_MAC=''
 #网卡01的mac地址,例如'52:54:00:f3:15:21',此参数值可留空。
 
-NET_CARD_02_ENABLED='true'
+NET_CARD_02_ENABLED=true
 NET_CARD_02='e1000'
 #网卡02默认为e1000
 #若guest已安装了virtio驱动，则可禁用网卡02。
@@ -361,7 +361,7 @@ NET_CARD_02_MAC=''
 #网卡02的mac地址
 
 #网卡03默认为rtl8139
-NET_CARD_03_ENABLED='true'
+NET_CARD_03_ENABLED=true
 NET_CARD_03='rtl8139'
 
 #08-3.tcp端口转发规则
@@ -371,19 +371,19 @@ NET_CARD_03='rtl8139'
 用半角逗号分隔不同的规则。
 39081:39080表示将guest的39080转发至host的39081端口。
 EOF
-TCP_PORT_HOST_FWD_01_ENABLED='true'
+TCP_PORT_HOST_FWD_01_ENABLED=true
 TCP_PORT_HOST_FWD_01="2888:22,39081:39080"
 
 #网卡01的udp端口转发规则
-UDP_PORT_HOST_FWD_01_ENABLED='false'
+UDP_PORT_HOST_FWD_01_ENABLED=false
 UDP_PORT_HOST_FWD_01=""
 
 #网卡02的tcp端口转发规则
-TCP_PORT_HOST_FWD_02_ENABLED='false'
+TCP_PORT_HOST_FWD_02_ENABLED=false
 TCP_PORT_HOST_FWD_02=""
 
 #网卡02的udp端口转发规则
-UDP_PORT_HOST_FWD_02_ENABLED='false'
+UDP_PORT_HOST_FWD_02_ENABLED=false
 UDP_PORT_HOST_FWD_02=""
 #############
 #############
@@ -402,7 +402,7 @@ EOF
 #09-2.GPU
 GPU_MODEL='qxl-vga'
 #默认为qxl-vga。可选值virtio-vga,VGA,bochs-display,cirrus-vga,ati-vga,vmware-svga
-VIRTIO_3D_ACCEL='false'
+VIRTIO_3D_ACCEL=false
 #默认为'false',virtio显卡3d加速。
 
 #配置qxl显卡的显存
@@ -448,13 +448,13 @@ REMOTE_X11_ADDR='127.0.0.1:0'
 VNC_PORT='5905'
 #默认为5905
 
-VNC_LOCALHOST='true'
+VNC_LOCALHOST=true
 #默认为true,仅本机可连接。
 
-VNC_STARTUP_PROMPT='true'
+VNC_STARTUP_PROMPT=true
 #显示VNC启动提示，默认为'true'。若连接类型为vnc或spice,则建议开启本选项。
 
-VNC_PASSWORD='false'
+VNC_PASSWORD=false
 #可选true或false
 #当为true时，您可以在qemu monitor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
 ############

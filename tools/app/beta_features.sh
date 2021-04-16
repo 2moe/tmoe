@@ -252,7 +252,7 @@ tmoe_store_app_menu() {
 #################
 install_deepin_software_menu() {
     RETURN_TO_WHERE='install_deepin_software_menu'
-    #NON_DEBIAN='true'
+    #NON_DEBIAN=true
     DEPENDENCY_01=""
     TMOE_APP=$(whiptail --title "deepin store" --menu \
         "Which software do you want to install？" 0 50 0 \

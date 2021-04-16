@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 tmoe_uefi_boot_manager() {
-
 	if [ ! $(command -v efibootmgr) ]; then
 		printf "%s\n" "本工具能对UEFI开机引导的顺序进行排序，但不支持容器和WSL"
 		printf "%s\n" "按回车键确认安装"
@@ -197,7 +196,7 @@ tmoe_linux_sudo_user_group_management() {
 	esac
 
 	SUDO_YES='back返回'
-	SUDO_RETURN='true'
+	SUDO_RETURN=true
 	if [ $(awk '{print $1}' /etc/sudoers | grep ${TMOE_USER_NAME}) ]; then
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}已经是这个家庭的成员啦,ta位于/etc/sudoers文件中"
 	elif [ $(grep sudo /etc/group | cut -d ':' -f 4 | grep ${TMOE_USER_NAME}) ]; then
@@ -205,7 +204,7 @@ tmoe_linux_sudo_user_group_management() {
 	else
 		SUDO_USER_STATUS="检测到${TMOE_USER_NAME}可能不在sudo用户组里"
 		SUDO_YES='add添加♪^∇^*'
-		SUDO_RETURN='false'
+		SUDO_RETURN=false
 	fi
 
 	if (whiptail --title "您想要对这个小可爱做什么" --yes-button "${SUDO_YES}" --no-button "del踢走っ °Д °;" --yesno "Do you want to add it to sudo group,or remove it from sudo?\n${SUDO_USER_STATUS}\n您是想要把ta加进sudo这个小家庭，还是踢走ta呢？" 0 50); then
@@ -278,7 +277,7 @@ add_him_to_sudoers() {
 	sed -n p /etc/sudoers
 }
 ###############
-creat_rc_local_startup_script() {
+create_rc_local_startup_script() {
 	cat >rc.local <<'ENDOFRCLOCAL'
 #!/bin/sh -e
 #
@@ -305,7 +304,7 @@ ENDOFRCLOCAL
 	systemctl daemon-reload 2>/dev/null
 }
 #################
-creat_rc_local_systemd_script() {
+create_rc_local_systemd_script() {
 	cat >/etc/systemd/system/rc-local.service <<-'ENDOFSYSTEMD'
 		[Unit]
 		Description=/etc/rc.local
@@ -327,7 +326,7 @@ creat_rc_local_systemd_script() {
 modify_rc_local_script() {
 	cd /etc
 	if [ ! -e "rc.local" ]; then
-		creat_rc_local_startup_script
+		create_rc_local_startup_script
 	fi
 	cat <<-EOF
 		${GREEN}systemctl enable rc-local${RESET}  ${BLUE}--开机自启${RESET}
@@ -338,7 +337,7 @@ modify_rc_local_script() {
 	EOF
 
 	if [ ! -e "/etc/systemd/system/rc-local.service" ]; then
-		creat_rc_local_systemd_script
+		create_rc_local_systemd_script
 		nano rc.local
 		printf "%s\n" "是否将其设置为开机自启？"
 		do_you_want_to_continue

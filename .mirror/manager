@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4487,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4488,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -76,13 +76,13 @@ tmoe_manager_android_env() {
 		if [ $(command -v termux-setup-storage) ]; then
 			termux-setup-storage
 		else
-			TERMUX_STORAGE='false'
+			TERMUX_STORAGE=false
 		fi
 	fi
 	[[ -z ${TMPDIR} ]] || export TMPDIR=${PREFIX}/tmp
 	TMOE_INSTALLATION_COMMAND='apt install -y'
 	TMOE_REMOVAL_COMMAND='apt purge -y'
-	SWITCH_MIRROR='true'
+	SWITCH_MIRROR=true
 	TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
 	ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1) || ANDROID_VERSION=6
 	tmoe_manager_env
@@ -129,7 +129,7 @@ auto_check() {
 	case "$(uname -o)" in
 	Android)
 		LINUX_DISTRO='Android'
-		TERMUX_STORAGE='true'
+		TERMUX_STORAGE=true
 		tmoe_manager_android_env
 		check_android_termux_whiptail
 		;;
@@ -258,9 +258,9 @@ check_gnu_linux_distro() {
 		;;
 	esac
 	##############
-	SWITCH_MIRROR='false'
+	SWITCH_MIRROR=false
 	if egrep -q 'debian|ubuntu|deepin|uos\.com' "/etc/os-release"; then
-		SWITCH_MIRROR='true'
+		SWITCH_MIRROR=true
 		LINUX_DISTRO='debian'
 		TMOE_UPDATE_COMMAND='apt update'
 		TMOE_INSTALLATION_COMMAND='apt install -y'
@@ -270,7 +270,7 @@ check_gnu_linux_distro() {
 		elif [ "$(cut -c 1-4 /etc/issue)" = "Kali" ]; then
 			DEBIAN_DISTRO='kali'
 		elif egrep -q 'deepin|uos\.com' /etc/os-release; then
-			SWITCH_MIRROR='false'
+			SWITCH_MIRROR=false
 			DEBIAN_DISTRO='deepin'
 		fi
 
@@ -297,7 +297,7 @@ check_gnu_linux_distro() {
 		fi
 
 	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
-		SWITCH_MIRROR='true'
+		SWITCH_MIRROR=true
 		LINUX_DISTRO='alpine'
 		TMOE_UPDATE_COMMAND='apk update'
 		TMOE_INSTALLATION_COMMAND='apk add'
@@ -456,7 +456,7 @@ check_release_version() {
 }
 ##################
 choose_tmoe_locale_env() {
-	SET_TMOE_LOCALE='true'
+	SET_TMOE_LOCALE=true
 	CONTAINER_LOCALE=$(whiptail --title "LOCALE SETTING" \
 		--menu "Please choose your \$LANG\n言語を選択してください" 0 0 0 \
 		"1" "Chinese traditional 中文(繁體)" \
@@ -776,7 +776,7 @@ check_termux_color_scheme_file() {
 install_proot_container() {
 	RETURN_TO_MENU="install_proot_container"
 	check_termux_color_scheme_file
-	TMOE_CHROOT='false'
+	TMOE_CHROOT=false
 	check_tmoe_container_chroot
 	source ${TMOE_SHARE_DIR}/container/common
 }
@@ -786,7 +786,7 @@ install_chroot_container() {
 	source ${TMOE_SHARE_DIR}/container/chroot/notes
 	check_root_permissions
 	[[ -e "${CONFIG_FOLDER}/chroot-prompt" ]] || notes_of_chroot
-	TMOE_CHROOT="true"
+	TMOE_CHROOT=true
 	check_tmoe_container_chroot
 	source ${TMOE_SHARE_DIR}/container/common
 }

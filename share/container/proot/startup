@@ -24,7 +24,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    unset LD_PRELOAD
 	    ############
 	    FAKE_PROOT_PROC=true
-		TMOE_QEMU="false"
+		TMOE_QEMU=false
 	    TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 		DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
 		CONTAINER_ARCH="${ARCH_TYPE}"

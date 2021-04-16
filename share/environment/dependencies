@@ -111,7 +111,7 @@ install_gnu_linux_manager_dependencies_02() {
 		deepin) ;;
 		*)
 			if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
-				MIRROR_LIST='false'
+				MIRROR_LIST=false
 			fi
 			;;
 		esac

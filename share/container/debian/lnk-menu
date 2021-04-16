@@ -24,8 +24,8 @@ source_env_file() {
 ###########
 check_chroot_file() {
     CONFIG_FOLDER=${HOME}/.config/tmoe-linux
-    TMOE_CHROOT='false'
-    [[ ! -e "${CONFIG_FOLDER}/chroot_container" ]] || TMOE_CHROOT='true'
+    TMOE_CHROOT=false
+    [[ ! -e "${CONFIG_FOLDER}/chroot_container" ]] || TMOE_CHROOT=true
 }
 ###########
 start_menu() {

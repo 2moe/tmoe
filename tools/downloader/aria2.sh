@@ -227,8 +227,8 @@ case_tmoe_aria2_settings_model() {
 }
 #############
 tmoe_aria2_file() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_file'
     TMOE_OPTION=$(whiptail --title "File allocation" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -381,8 +381,8 @@ tmoe_aria2_file() {
 }
 ############
 tmoe_aria2_connection_threads() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_connection_threads'
     TMOE_OPTION=$(whiptail --title "网络连接" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -599,8 +599,8 @@ tmoe_aria2_hook() {
 ######################
 ##################
 tmoe_aria2_port() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_port'
     TMOE_OPTION=$(whiptail --title "端口" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -720,8 +720,8 @@ tmoe_aria2_proxy() {
 ######################
 ###############
 tmoe_aria2_logs() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_logs'
     TMOE_OPTION=$(whiptail --title "日志与输出信息" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -836,8 +836,8 @@ tmoe_aria2_logs() {
 # cat http.conf| grep '^#2' | sed 's@#2@@' |sed "s@^@TMOE_ARIA2_TIPS='@" |sed "s@\$@\'\;\;@" >002
 #paste -d ' ' 001 002 | sed 's@233@\n@g' >003
 tmoe_aria2_rpc_server_and_tls() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_rpc_server_and_tls'
     TMOE_OPTION=$(whiptail --title "RPC & TLS" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -952,8 +952,8 @@ tmoe_aria2_rpc_server_and_tls() {
 }
 ######################
 tmoe_aria2_ftp_and_metalink() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_ftp_and_metalink'
     TMOE_OPTION=$(whiptail --title "FTP和metalink" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -1071,8 +1071,8 @@ tmoe_aria2_ftp_and_metalink() {
 }
 ######################
 tmoe_aria2_http() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_http'
     TMOE_OPTION=$(whiptail --title "HTTP" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -1264,8 +1264,8 @@ tmoe_aria2_http() {
 }
 ######################
 tmoe_aria2_bt_and_pt() {
-    TMOE_ARIA2_OPTION_01='true'
-    TMOE_ARIA2_OPTION_02='false'
+    TMOE_ARIA2_OPTION_01=true
+    TMOE_ARIA2_OPTION_02=false
     TMOE_ARIA2_SETTINGS_MODEL='01'
     RETURN_TO_WHERE='tmoe_aria2_bt_and_pt'
     TMOE_OPTION=$(whiptail --title "BT AND PT" --menu "您想要修改哪项配置？\nWhich conf do you want to modify?" 0 50 0 \
@@ -1562,10 +1562,10 @@ check_tmoe_aria2_config_value() {
     TMOE_ARIA2_CONFIG_LINE=$(grep -n ${TMOE_ARIA2_GREP_NAME}= ${TMOE_ARIA2_FILE} | head -n 1 | awk '{print $1}' | cut -d ':' -f 1)
     if grep -q "^${TMOE_ARIA2_GREP_NAME}=" ${TMOE_ARIA2_FILE}; then
         TMOE_ARIA2_CONFIG_STATUS="检测到${TMOE_ARIA2_GREP_NAME}的值为${TMOE_ARIA2_CONFIG_VALUE}"
-        TMOE_ARIA2_CONFIG_ENABLED='true'
+        TMOE_ARIA2_CONFIG_ENABLED=true
     elif grep -q "^#${TMOE_ARIA2_GREP_NAME}=" ${TMOE_ARIA2_FILE}; then
         TMOE_ARIA2_CONFIG_STATUS="检测到${TMOE_ARIA2_GREP_NAME}的值为默认"
-        TMOE_ARIA2_CONFIG_ENABLED='false'
+        TMOE_ARIA2_CONFIG_ENABLED=false
     else
         TMOE_ARIA2_CONFIG_STATUS="检测到您未启用${TMOE_ARIA2_GREP_NAME}"
         TMOE_ARIA2_CONFIG_ENABLED='no'
@@ -2075,14 +2075,14 @@ exit 0
     chmod +x aria2
     #############
     #if [ ! -e "/usr/local/bin/startariang" ]; then
-    # creat_ariang_script
+    # create_ariang_script
     #fi
 
     #if [ ! -e "/usr/share/applications/ariang.desktop" ]; then
-    creat_ariang_script
-    #creat_aria_ng_desktop_link
+    create_ariang_script
+    #create_aria_ng_desktop_link
     cd /usr/share/applications/
-    creat_aria_ng_desktop_link
+    create_aria_ng_desktop_link
     # fi
     ########################################
     cd ${TMOE_ARIA2_PATH}
@@ -2094,7 +2094,7 @@ exit 0
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/.config/dht6.dat
         chmod 666 dht6.dat
     fi
-    creat_aria2_hook_script
+    create_aria2_hook_script
     upgrade_tmoe_aria2_tool
     aria2_restart
     press_enter_to_return
@@ -2111,15 +2111,15 @@ aria2_restart() {
     fi
 }
 #############
-creat_aria2_hook_script() {
+create_aria2_hook_script() {
     cd ${TMOE_ARIA2_PATH}
     craet_aria2_auto_move_sh
     chmod +x auto_move_media_files.sh
-    creat_auto_upload_onedrive_sh
+    create_auto_upload_onedrive_sh
     chmod +x auto_upload_onedrive.sh
 }
 ###############
-creat_auto_upload_onedrive_sh() {
+create_auto_upload_onedrive_sh() {
     cat >auto_upload_onedrive.sh <<-'EOF'
     #!/usr/bin/env bash
     #https://github.com/MoeClub/OneList/tree/master/OneDriveUploader
@@ -2228,7 +2228,7 @@ craet_aria2_auto_move_sh() {
 EOF
 }
 ###############
-creat_ariang_script() {
+create_ariang_script() {
     ARIANG_DARK_INDEX_FILE="${TMOE_ARIA2_PATH}/ariang_dark.html"
     if [ ! -e "${ARIANG_DARK_INDEX_FILE}" ]; then
         cd /tmp
@@ -2257,7 +2257,7 @@ EOF
     chmod +x startariang
 }
 ############
-creat_aria_ng_desktop_link() {
+create_aria_ng_desktop_link() {
     ARIA_NG_ICON='/usr/local/etc/tmoe-linux/git/.mirror/ariang.png'
     if [ ! -e "/usr/share/icons/ariang.png" ]; then
         if [ -e "${ARIA_NG_ICON}" ]; then

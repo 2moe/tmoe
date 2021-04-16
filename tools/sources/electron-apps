@@ -40,7 +40,7 @@ electron_apps_main_menu() {
 ################
 tmoe_electron_install_or_remove_01() {
     RETURN_TO_WHERE='tmoe_electron_install_or_remove_01'
-    NOTICE_OF_REPAIR='false'
+    NOTICE_OF_REPAIR=false
     OPT_APP_VERSION_TXT="/opt/${DEPENDENCY_01}/version.txt"
     INSTALL_APP=$(whiptail --title "${DEPENDENCY_01} manager" --menu \
         "您要对${DEPENDENCY_01}小可爱做什么?\nWhat do you want to do with ${DEPENDENCY_01}?" 0 0 0 \
@@ -61,7 +61,7 @@ tmoe_electron_install_or_remove_01() {
 ################
 tmoe_electron_install_or_remove_02() {
     RETURN_TO_WHERE='tmoe_electron_install_or_remove_02'
-    NOTICE_OF_REPAIR='false'
+    NOTICE_OF_REPAIR=false
     INSTALL_APP=$(whiptail --title "${DEPENDENCY_01} manager" --menu \
         "您要对${DEPENDENCY_01}小可爱做什么?\nWhat do you want to do with the software?" 0 0 0 \
         "1" "install 安装" \

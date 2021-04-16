@@ -103,7 +103,7 @@ check_debian_chroot_dir() {
 	esac
 }
 ############
-creat_container_edition_txt() {
+create_container_edition_txt() {
 	printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" >${LINUX_CONTAINER_DISTRO_FILE}
 	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE} 2>/dev/null
 	DEBIAN_FOLDER="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
@@ -112,7 +112,7 @@ creat_container_edition_txt() {
 	DEBIAN_CHROOT_MIN=$(printf '%s\n' "${DEBIAN_CHROOT}" | sed "s@${HOME}@~@g")
 	ROOTFS_NAME=$(printf '%s\n' "${DEBIAN_FOLDER}" | cut -d '_' -f 1)
 }
-creat_container_edition_txt_02() {
+create_container_edition_txt_02() {
 	LINUX_CONTAINER_DISTRO_FILE_02="${CONFIG_FOLDER}/linux_container_distro_02.txt"
 	printf '%s\n' "${DISTRO_NAME_02}" >${LINUX_CONTAINER_DISTRO_FILE_02}
 	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE_02} 2>/dev/null
@@ -293,7 +293,7 @@ list_installed_tmoe_containers() {
 	esac
 }
 ############
-creat_tmoe_arch_file() {
+create_tmoe_arch_file() {
 	cat >${ACROSS_ARCH_FILE} <<-EOF
 		${NEW_TMOE_ARCH}
 		${TMOE_QEMU_ARCH}
@@ -304,8 +304,8 @@ creat_tmoe_arch_file() {
 go_to_container_menu() {
 	TMOE_LINUX_CONTAINER_DISTRO=$(printf '%s\n' "${TMOE_CONTAINER_LIST}" | awk -F '_' '{print $1}' | head -n 1)
 	ARCH_TYPE=$(printf '%s\n' "${TMOE_CONTAINER_LIST}" | awk -F '_' '{print $2}' | head -n 1)
-	creat_container_edition_txt
-	#[[ -z ${NEW_TMOE_ARCH} ]] || creat_tmoe_arch_file
+	create_container_edition_txt
+	#[[ -z ${NEW_TMOE_ARCH} ]] || create_tmoe_arch_file
 	rm -f ${ACROSS_ARCH_FILE} 2>/dev/null
 	printf "%s\n" "${ARCH_TYPE}" >${ACROSS_ARCH_FILE}
 	chmod 666 ${ACROSS_ARCH_FILE} 2>/dev/null
@@ -362,15 +362,17 @@ check_tmoe_completion_version() {
 	else
 		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl -sL https://${TMOE_GIT_URL}/raw/master/share/completion/version.txt)
 		if [ -n ${THE_LATEST_TMOE_COMPLETION_VERSION} ]; then
-			CURRENT_TMOE_COMPLETTION_VERSION="$(head -n 1 ${TMOE_COMPLETION_VERSION_TXT})"
-			if ((${CURRENT_TMOE_COMPLETTION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION})); then
-				UPDATE_TMOE_COMPLETION=true
+			if [ -e ${TMOE_COMPLETION_VERSION_TXT} ]; then
+				CURRENT_TMOE_COMPLETION_VERSION="$(head -n 1 ${TMOE_COMPLETION_VERSION_TXT})"
+				if ((${CURRENT_TMOE_COMPLETION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION})); then
+					UPDATE_TMOE_COMPLETION=true
+				fi
 			fi
 		fi
 	fi
 }
 update_tmoe_completion() {
-	printf "%s\n" "${CURRENT_TMOE_COMPLETTION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION}"
+	printf "%s\n" "${CURRENT_TMOE_COMPLETION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION}"
 	ZINIT_DIR="${HOME}/.zinit"
 	printf "%s\n" "rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" "${TMOE_COMPLETION_FILE}" | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe"
 	rm -rvf ${ZINIT_DIR}/snippets/$(printf "%s\n" "${TMOE_COMPLETION_FILE}" | sed 's@/_tmoe@@;s@^/@@g;s@/@--@g') ${ZINIT_DIR}/completions/_tmoe

@@ -121,7 +121,7 @@ chroot_container_menu_multi_langs() {
 proot_container_menu() {
 	source ${TMOE_SHARE_DIR}/container/list
 	check_proot_or_chroot
-	SYSTEMD_NSPAWN='false'
+	SYSTEMD_NSPAWN=false
 	RETURN_TO_WHERE='proot_container_menu'
 	RETURN_TO_WHERE_02=${RETURN_TO_WHERE}
 	case ${TMOE_CHROOT} in
@@ -156,7 +156,7 @@ systemd_nspawn_env() {
 		chroot_container_menu_multi_langs
 		;;
 	esac
-	SYSTEMD_NSPAWN='true'
+	SYSTEMD_NSPAWN=true
 	list_installed_tmoe_containers
 }
 ###############

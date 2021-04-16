@@ -549,7 +549,7 @@ beta_features_quick_install() {
         if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
             printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
-            EXISTS_COMMAND='true'
+            EXISTS_COMMAND=true
         fi
     fi
     #############
@@ -558,7 +558,7 @@ beta_features_quick_install() {
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
             printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
-            EXISTS_COMMAND='true'
+            EXISTS_COMMAND=true
         fi
     fi
     ###############
@@ -567,7 +567,7 @@ beta_features_quick_install() {
     printf "%s\n" "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you."
     ############
     if [ "${EXISTS_COMMAND}" = "true" ]; then
-        EXISTS_COMMAND='false'
+        EXISTS_COMMAND=false
         press_enter_to_reinstall_yes_or_no
     fi
     ############
@@ -579,16 +579,16 @@ beta_features_quick_install() {
 check_tmoe_linux_desktop_link() {
     if [ ! -e "${APPS_LNK_DIR}/tmoe-linux.desktop" ]; then
         mkdir -pv ${APPS_LNK_DIR}
-        creat_tmoe_linux_desktop_icon
+        create_tmoe_linux_desktop_icon
     fi
     TMOE_ICON_FILE='/usr/share/icons/tmoe-linux.png'
     if [ -e "${TMOE_ICON_FILE}" ]; then
         rm ${TMOE_ICON_FILE}
-        creat_tmoe_linux_desktop_icon
+        create_tmoe_linux_desktop_icon
     fi
 }
 ###################
-creat_tmoe_linux_desktop_icon() {
+create_tmoe_linux_desktop_icon() {
     if [ ! $(command -v debian-i) ]; then
         cd /usr/local/bin
         curl -Lv -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
@@ -1093,7 +1093,7 @@ install_gnome_system_monitor() {
 install_typora() {
     DEPENDENCY_01="typora"
     DEPENDENCY_02=""
-    #NON_DEBIAN='true'
+    #NON_DEBIAN=true
     non_debian_function
     beta_features_quick_install
     cd /tmp

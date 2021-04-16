@@ -4,16 +4,16 @@ tmoe_main() {
 	case "$1" in
 	p* | proot)
 		source_tmoe_env
-		TMOE_CHROOT='false'
+		TMOE_CHROOT=false
 		;;
 	c* | chroot)
 		source_tmoe_env
-		TMOE_CHROOT='true'
+		TMOE_CHROOT=true
 		;;
 	systemd | sd | systemctl | ns | nspawn)
 		source_tmoe_env
-		SYSTEMD_NSPAWN='true'
-		TMOE_CHROOT='true'
+		SYSTEMD_NSPAWN=true
+		TMOE_CHROOT=true
 		;;
 	zsh)
 		zsh-i

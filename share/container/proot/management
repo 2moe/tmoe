@@ -10,6 +10,7 @@ proot_management_menu() {
 	TMOE_CONTAINER_FORTUNE=true
 	TMOE_CONTAINER_HITOKOTO=true
 	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
+
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
@@ -21,8 +22,9 @@ proot_management_menu() {
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "😏 unmount & remove" \
 			"9" "📡 readme" \
-			"10" "🥤 edit script" \
-			"11" "🍅 space occupation" \
+			"10" "create a new container" \
+			"11" "🥤 edit script" \
+			"12" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -37,8 +39,9 @@ proot_management_menu() {
 			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"8" "😏 unmount & remove 卸载并移除" \
 			"9" "📡 readme 自述/说明" \
-			"10" "🥤 edit script 编辑脚本" \
-			"11" "🍅 space occupation 空间占用大小" \
+			"10" "create a new container新建容器" \
+			"11" "🥤 edit script 编辑脚本" \
+			"12" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -53,8 +56,9 @@ proot_management_menu() {
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "😏 aushängen und entfernen" \
 			"9" "📡 Liesmich" \
-			"10" "🥤 Skript bearbeiten" \
-			"11" "🍅 Raumbesetzung" \
+			"10" "Erstellen Sie einen neuen Container" \
+			"11" "🥤 Skript bearbeiten" \
+			"12" "🍅 Raumbesetzung" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
 	}
@@ -75,13 +79,24 @@ proot_management_menu() {
 	7) backup_tmoe_gnu_linux_distro ;;
 	8) umount_and_remove_gnu_linux_distro ;;
 	9) readme_of_gnu_linux_distro ;;
-	10) edit_container_startup_script ;;
-	11) du_sh_gnu_linux_distro ;;
+	10)
+		case ${RETURN_TO_MENU} in
+		'list_installed_tmoe_containers')
+			printf "%s\n" "${RED}Sorry${RESET}, it is not possible to create a new container in the current mode, please return to the main menu and select the architecture again"
+			printf "%s\n" "You can press ${YELLOW}Ctrl + C${RESET} to exit the current mode, and type ${GREEN}tmoe m${RESET} to enter the ${BLUE}main menu.${RESET}"
+			press_enter_to_return
+			proot_management_menu
+			;;
+		*) create_a_new_container ;;
+		esac
+		;;
+	11) edit_container_startup_script ;;
+	12) du_sh_gnu_linux_distro ;;
 	esac
 	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 9 | 10 | 11)
+	2 | 7 | 9 | 11 | 12)
 		#回到本菜单： 停止进程,备份，命令，空间 ,编辑
 		press_enter_to_return
 		proot_management_menu
@@ -101,6 +116,22 @@ edit_container_startup_script() {
 			break
 		fi
 	done
+}
+#####################
+create_a_new_container() {
+	unset NEW_DISTRO_CODE
+	TARGET=$(whiptail --inputbox "Please type the container name." 9 50 --title "CONTAINER NAME" 3>&1 1>&2 2>&3)
+	NEW_DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${NEW_DISTRO_CODE}" ]; then
+		printf "%s\n" "Sorry,the value is empty."
+		press_enter_to_return
+		proot_management_menu
+	fi
+	DISTRO_NAME_01=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
+	DISTRO_CODE_01=$(printf '%s\n' "${NEW_DISTRO_CODE}" | awk '{print $1}')
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME_01}-${DISTRO_CODE_01}"
+	create_container_edition_txt
+	normally_start_gnu_linux_distro
 }
 #####################
 #EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
@@ -161,7 +192,6 @@ kill_chroot_container_process() {
 	#done
 	tips_of_check_pid
 	#EXEC_LSOF=$(su -c "lsof")
-
 	su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
 	if [[ $(command -v batcat) ]]; then
 		batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
@@ -392,7 +422,38 @@ install_web_novnc() {
 install_new_tmoe_gnu_linux_distro() {
 	check_tmoe_completion_version
 	check_tmoe_completion
-	git_pull_tmoe_linux
+	#git_pull_tmoe_linux
+	#
+	#
+	#
+	##
+	#
+	#
+	#
+	#
+
+	#
+	#
+	#
+	#
+	#
+
+	#
+	#
+	#
+	#
+
+	#
+	#
+
+	#
+	#
+
+	#
+	#
+	#
+	#
+
 	###
 	case ${WEEKLY_BUILD_CONTAINER} in
 	true) install_weekly_build_container ;;
@@ -432,7 +493,6 @@ bat_build_latest01_txt() {
 	BUILD_LATEST_TXT=${CONFIG_FOLDER}/build-latest01.txt
 	bat_build_latest_txt
 }
-
 install_weekly_build_container() {
 	NODE_NAME='node01-azure'
 	case ${NODE02_ENABLED} in

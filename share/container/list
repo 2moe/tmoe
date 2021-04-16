@@ -4,8 +4,8 @@ choose_which_gnu_linux_distro() {
 	source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
 	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
 	RETURN_TO_MENU='choose_which_gnu_linux_distro'
-	CLOUD_ROOTFS='false'
-	DEB_BOOT_STRAP='false'
+	CLOUD_ROOTFS=false
+	DEB_BOOT_STRAP=false
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	check_rootfs_dir
 	[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
@@ -75,7 +75,7 @@ choose_which_gnu_linux_distro() {
 	5)
 		DISTRO_NAME='arch'
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		;;
 	6) install_fedora_gnu_linux_distro ;;
@@ -84,7 +84,7 @@ choose_which_gnu_linux_distro() {
 		DISTRO_NAME='kali'
 		DISTRO_CODE='rolling'
 		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		;;
 	9) install_armbian_linux_distro ;;
@@ -189,8 +189,8 @@ set_debian_sid_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_kali_rolling_env() {
@@ -200,8 +200,8 @@ set_kali_rolling_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_ubuntu_dev_env() {
@@ -211,8 +211,8 @@ set_ubuntu_dev_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_mint_tricia_env() {
@@ -222,8 +222,8 @@ set_mint_tricia_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_mint_ulyssa_env() {
@@ -233,8 +233,8 @@ set_mint_ulyssa_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_alpine_edge_env() {
@@ -244,8 +244,8 @@ set_alpine_edge_env() {
 	NODE02_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_fedora_rawhide_env() {
@@ -255,8 +255,8 @@ set_fedora_rawhide_env() {
 	NODE02_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_ubuntu_bionic_env() {
@@ -266,8 +266,8 @@ set_ubuntu_bionic_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_arch_latest_env() {
@@ -278,8 +278,8 @@ set_arch_latest_env() {
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 set_manjaro_stable_env() {
@@ -289,8 +289,8 @@ set_manjaro_stable_env() {
 	NODE02_ENABLED=true
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	creat_container_edition_txt
-	creat_container_edition_txt_02
+	create_container_edition_txt
+	create_container_edition_txt_02
 	go_to_proot_management
 }
 desktop_does_not_support() {
@@ -665,7 +665,7 @@ install_debian_gnu_linux_distro() {
 ###################
 install_chroot_exclusive_containers() {
 	RETURN_TO_WHERE='install_chroot_exclusive_containers'
-	CLOUD_ROOTFS='false'
+	CLOUD_ROOTFS=false
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
@@ -679,7 +679,7 @@ install_chroot_exclusive_containers() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) install_deepin_linux_distro ;;
 	2)
-		CLOUD_ROOTFS='true'
+		CLOUD_ROOTFS=true
 		install_opensuse_linux_distro
 		;;
 	esac
@@ -694,7 +694,7 @@ install_uos_eagle() {
 	esac
 	DISTRO_CODE='eagle'
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	git_clone_deepin_distro
 }
 ###########
@@ -705,7 +705,7 @@ install_deepin_apricot_amd64_and_i386() {
 	esac
 	DISTRO_CODE='apricot'
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	git_clone_deepin_distro
 }
 ##############
@@ -716,7 +716,7 @@ install_deepin_camel_arm64() {
 	esac
 	DISTRO_CODE='camel'
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	git_clone_deepin_distro
 }
 ##########
@@ -777,7 +777,7 @@ install_deepin_linux_distro() {
 }
 ##############
 install_alpha_containers() {
-	CLOUD_ROOTFS='false'
+	CLOUD_ROOTFS=false
 	RETURN_TO_WHERE='install_alpha_containers'
 	install_alpha_containers_ja() {
 		ALPHA_SYSTEM=$(
@@ -864,7 +864,7 @@ install_clear_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO='clear'
 	case "${ARCH_TYPE}" in
 	'amd64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -877,7 +877,7 @@ install_steam_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case "${ARCH_TYPE}" in
 	'amd64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -890,7 +890,7 @@ install_puppy_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case "${ARCH_TYPE}" in
 	'amd64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -902,7 +902,7 @@ install_euler_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO='euler'
 	case "${ARCH_TYPE}" in
 	'amd64' | 'arm64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -914,7 +914,7 @@ install_photon_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO='photon'
 	case "${ARCH_TYPE}" in
 	'amd64' | 'arm64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -927,7 +927,7 @@ install_amazon_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case "${ARCH_TYPE}" in
 	'amd64' | 'arm64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -940,7 +940,7 @@ install_oracle_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case "${ARCH_TYPE}" in
 	'arm64')
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -948,7 +948,7 @@ install_oracle_linux_distro() {
 		CLOUD_ROOTFS=true
 		DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		linux_distro_common_model_04
 		;;
@@ -978,7 +978,7 @@ git_clone_linux_distro_rootfs_01() {
 }
 #######################
 install_beta_containers() {
-	CLOUD_ROOTFS='false'
+	CLOUD_ROOTFS=false
 	install_beta_containers_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
@@ -1030,7 +1030,7 @@ install_beta_containers() {
 	1)
 		DISTRO_NAME='manjaro'
 		TMOE_LINUX_CONTAINER_DISTRO='manjaro'
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		install_manjaro_linux_distro
 		;;
@@ -1039,13 +1039,13 @@ install_beta_containers() {
 		install_alpine_linux_distro
 		;;
 	3)
-		CLOUD_ROOTFS='true'
+		CLOUD_ROOTFS=true
 		install_centos_linux_distro
 		;;
 	4) install_puppy_linux_distro ;;
 	5)
 		TMOE_LINUX_CONTAINER_DISTRO='void'
-		creat_container_edition_txt
+		create_container_edition_txt
 		install_void_linux_distro
 		;;
 	6) install_mint_linux_distro ;;
@@ -1057,9 +1057,9 @@ install_beta_containers() {
 install_ubuntu_gnu_linux_distro() {
 	DISTRO_NAME='ubuntu'
 	DISTRO_CODE='focal'
-	DEB_BOOT_STRAP='false'
+	DEB_BOOT_STRAP=false
 	RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
-	COMPATIBILITY_MODE='false'
+	COMPATIBILITY_MODE=false
 	install_ubuntu_gnu_linux_distro_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2022,则请手动输入版本代号" 0 50 0 \
@@ -1120,7 +1120,7 @@ install_ubuntu_gnu_linux_distro() {
 	3) DISTRO_CODE='bionic' ;;
 	4) DISTRO_CODE='hirsute' ;;
 	5)
-		COMPATIBILITY_MODE='true'
+		COMPATIBILITY_MODE=true
 		custom_ubuntu_version
 		;;
 	6) custom_ubuntu_version ;;
@@ -1129,7 +1129,7 @@ install_ubuntu_gnu_linux_distro() {
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	####################
 	exit 0
@@ -1182,9 +1182,9 @@ debootstrap_ubuntu_distro() {
 	do_you_want_to_continue
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	#此处重复创建并非多余
-	creat_container_edition_txt
+	create_container_edition_txt
 	if [ ! -e "${DEBIAN_CHROOT}" ]; then
-		DEB_BOOT_STRAP='true'
+		DEB_BOOT_STRAP=true
 		printf "%s\n" "${DEBIAN_CHROOT}"
 		link_debootstrap_script
 		if (whiptail --title "UBUNTU URL" --yes-button "BFSU MIRROR" --no-button "UBUNTU OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
@@ -1354,7 +1354,7 @@ case_cloud_rootfs_01_04() {
 ###########
 before_going_to_proot_menu() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 }
 which_version_do_you_want_to_install() {
@@ -1405,7 +1405,7 @@ fedora_distro_menu() {
 #########################
 git_clone_fedora_rootfs() {
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
@@ -1441,13 +1441,13 @@ install_fedora_gnu_linux_distro() {
 	#touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='fedora'
 	TMOE_LINUX_CONTAINER_DISTRO='fedora'
-	CLOUD_ROOTFS='true'
+	CLOUD_ROOTFS=true
 	case "${ARCH_TYPE}" in
 	armel | i386) distro_does_not_support ;;
 	armhf)
 		DISTRO_CODE=33
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 		cd ${ROOTFS_DIR}
@@ -1501,7 +1501,7 @@ install_centos_linux_distro() {
 		printf "%s\n" "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
 		DISTRO_CODE='7'
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		linux_distro_common_model_04
 		;;
@@ -1523,8 +1523,8 @@ install_gentoo_linux_distro() {
 		#NEW_TMOE_ARCH='armhf'
 		#TMOE_QEMU_ARCH=""
 		#ARCH_TYPE='armhf'
-		#creat_tmoe_arch_file
-		creat_container_edition_txt
+		#create_tmoe_arch_file
+		create_container_edition_txt
 		go_to_proot_management
 		DISTRO_CODE='current'
 		#sed '45 a\ARCH_TYPE="armhf"' |
@@ -1538,7 +1538,7 @@ install_gentoo_linux_distro() {
 			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
 		;;
 	*)
-		creat_container_edition_txt
+		create_container_edition_txt
 		go_to_proot_management
 		DISTRO_CODE='current'
 		linux_distro_common_model_01
@@ -1579,7 +1579,7 @@ install_opensuse_linux_distro() {
 	DISTRO_NAME='opensuse'
 	DISTRO_CODE='tumbleweed'
 	TMOE_LINUX_CONTAINER_DISTRO='opensuse-tumbleweed'
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	linux_distro_common_model_04
 }
@@ -1596,11 +1596,11 @@ install_raspios_linux_distro() {
 	case "${TRUE_ARCH_TYPE}" in
 	arm64 | armhf)
 		TMOE_QEMU_ARCH=""
-		creat_tmoe_arch_file
+		create_tmoe_arch_file
 		;;
 	esac
 	ARCH_TYPE="${NEW_TMOE_ARCH}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	#touch ~/.RASPBIANARMHFDetectionFILE
 	printf "%s\n" "检测到您选择的是树莓派系统"
@@ -1682,7 +1682,7 @@ install_manjaro_linux_distro() {
 install_openwrt_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO='openwrt'
 	DISTRO_NAME='openwrt'
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	touch ~/.ALPINELINUXDetectionFILE
 	CONTAINER_REPO='https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/'
@@ -1704,7 +1704,7 @@ install_openwrt_linux_distro() {
 }
 ######################
 install_devuan_linux_distro() {
-	CLOUD_ROOTFS='true'
+	CLOUD_ROOTFS=true
 	DISTRO_NAME='devuan'
 	#DISTRO_CODE='beowulf'
 	#OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
@@ -1715,7 +1715,7 @@ install_devuan_linux_distro() {
 install_slackware_linux_distro() {
 	DISTRO_NAME='slackware'
 	TMOE_LINUX_CONTAINER_DISTRO='slackware'
-	creat_container_edition_txt
+	create_container_edition_txt
 	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
 	#touch .SLACKDetectionFILE
@@ -1739,7 +1739,7 @@ install_slackware_linux_distro() {
 	arm64 | armhf)
 		NEW_TMOE_ARCH='armhf'
 		TMOE_QEMU_ARCH=""
-		creat_tmoe_arch_file
+		create_tmoe_arch_file
 		ARCH_TYPE='armhf'
 		go_to_proot_management
 		#if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
@@ -1797,7 +1797,7 @@ install_armbian_linux_distro() {
 	*) distro_does_not_support ;;
 	esac
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 	printf "%s\n" "即将为您安装${TMOE_LINUX_CONTAINER_DISTRO} GNU/Linux container"
 	do_you_want_to_continue

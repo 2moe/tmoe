@@ -279,22 +279,22 @@ download_debian_iso_file() {
 	0 | "") download_virtual_machine_iso_file ;;
 	1)
 		GREP_ARCH='amd64'
-		DEBIAN_FREE='false'
+		DEBIAN_FREE=false
 		download_debian_nonfree_iso
 		;;
 	2)
 		GREP_ARCH='i386'
-		DEBIAN_FREE='false'
+		DEBIAN_FREE=false
 		download_debian_nonfree_iso
 		;;
 	3)
 		GREP_ARCH='amd64'
-		DEBIAN_FREE='true'
+		DEBIAN_FREE=true
 		download_debian_nonfree_iso
 		;;
 	4)
 		GREP_ARCH='i386'
-		DEBIAN_FREE='true'
+		DEBIAN_FREE=true
 		download_debian_nonfree_iso
 		;;
 	5) GREP_ARCH='arm64' ;;

@@ -64,7 +64,7 @@ start_windows_xserver() {
 ###############
 check_wsl() {
 	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-		export TMOE_CHROOT='true'
+		export TMOE_CHROOT=true
 		start_windows_xserver
 	fi
 }

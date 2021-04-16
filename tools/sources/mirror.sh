@@ -253,7 +253,7 @@ sed_a_source_list() {
 worldwide_mirror_station() {
     SOURCE_MIRROR_STATION=""
     RETURN_TO_WHERE='worldwide_mirror_station'
-    DEBIAN_SECURITY_SOURCE='true'
+    DEBIAN_SECURITY_SOURCE=true
     SOURCES_LIST=$(
         whiptail --title "www.debian.org/mirror/list.html" --menu \
             "Not only debian,but also ubuntu." 0 50 0 \
@@ -385,7 +385,7 @@ worldwide_mirror_station() {
 }
 #####################################
 tmoe_sources_list_manager() {
-    DEBIAN_SECURITY_SOURCE='false'
+    DEBIAN_SECURITY_SOURCE=false
     check_tmoe_sources_list_backup_file
     SOURCE_MIRROR_STATION=""
     RETURN_TO_WHERE='tmoe_sources_list_manager'
@@ -804,11 +804,11 @@ modify_ubuntu_mirror_sources_list() {
 }
 #############
 modify_debian_mirror_sources_list() {
-    NEW_DEBIAN_SOURCES_LIST='false'
+    NEW_DEBIAN_SOURCES_LIST=false
     if grep -q '^PRETTY_NAME.*sid' "/etc/os-release"; then
         if [ "$(lsb_release -r | awk '{print $2}' | awk -F '/' '{print $1}')" = 'testing' ]; then
             if (whiptail --title "DEBIAN VERSION" --yes-button "testing" --no-button "sid" --yesno "Are you using debian testing or sid?\n汝今方用何本？♪(^∇^*) " 0 0); then
-                NEW_DEBIAN_SOURCES_LIST='true'
+                NEW_DEBIAN_SOURCES_LIST=true
                 SOURCELISTCODE='testing'
                 BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1)
             else
@@ -819,7 +819,7 @@ modify_debian_mirror_sources_list() {
         fi
 
     elif ! egrep -q 'buster|stretch|jessie' "/etc/os-release"; then
-        NEW_DEBIAN_SOURCES_LIST='true'
+        NEW_DEBIAN_SOURCES_LIST=true
         if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
             SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
         else

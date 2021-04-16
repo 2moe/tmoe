@@ -691,7 +691,7 @@ docker_mirror_source() {
 ##########
 tmoe_docker_menu() {
     RETURN_TO_WHERE='tmoe_docker_menu'
-    SYSTEMD_DOCKER='false'
+    SYSTEMD_DOCKER=false
     TMOE_QEMU_ARCH=""
     VIRTUAL_TECH=$(
         whiptail --title "DOCKER容器" --menu "您想要对docker小可爱做什么?" 0 0 0 \
@@ -724,7 +724,7 @@ tmoe_docker_menu() {
 systemd_docker_env() {
     #printf "%s\n" 本功能正在开发中...
     #press_enter_to_return
-    SYSTEMD_DOCKER='true'
+    SYSTEMD_DOCKER=true
     run_docker_across_architectures
 }
 apt_install_qemu_user_static() {

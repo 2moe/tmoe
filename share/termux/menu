@@ -71,11 +71,11 @@ tmoe_switch_sources_list() {
 	source ${TMOE_SHARE_DIR}/termux/mirror
 }
 backup_termux_menu() {
-	TMOE_CHROOT='false'
+	TMOE_CHROOT=false
 	source ${TMOE_SHARE_DIR}/termux/backup
 }
 restore_termux_menu() {
-	TMOE_CHROOT='false'
+	TMOE_CHROOT=false
 	source ${TMOE_SHARE_DIR}/termux/restore
 }
 space_occupation() {

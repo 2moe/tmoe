@@ -438,7 +438,7 @@ write_to_fcitx_classui_conf() {
 }
 ###########
 install_kimpanel() {
-    #NON_DEBIAN='true'
+    #NON_DEBIAN=true
     non_debian_function
     DEPENDENCY_02='fcitx5-module-kimpanel'
     beta_features_quick_install
@@ -550,10 +550,10 @@ tmoe_fcitx_faq() {
         case ${TMOE_INPUT_METHOD_FRAMEWORK} in
         fcitx) fcitx-diagnose ;;
         fcitx5)
-            FCITX_DIAGNOSES='false'
+            FCITX_DIAGNOSES=false
             for i in fcitx5-diagnose fcitx-diagnose; do
                 if [[ $(command -v ${i}) ]]; then
-                    FCITX_DIAGNOSES='true'
+                    FCITX_DIAGNOSES=true
                     ${i}
                     break
                 fi
@@ -610,7 +610,7 @@ edit_fcitx_env_file() {
 ###########
 input_method_config() {
     cd ${HOME}
-    #NON_DEBIAN='true'
+    #NON_DEBIAN=true
     #non_debian_function
     if [ ! $(command -v im-config) ]; then
         #DEPENDENCY_01=''

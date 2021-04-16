@@ -61,7 +61,7 @@ xeffyr_termux_mirror_source_format() {
 }
 ########
 china_university_mirror_station() {
-	#NEW_TERMUX_SOURCES_LIST='true'
+	#NEW_TERMUX_SOURCES_LIST=true
 	SOURCE_MIRROR_STATION=""
 	RETURN_TO_WHERE='china_university_mirror_station'
 	SOURCES_LIST=$(
@@ -110,7 +110,7 @@ china_university_mirror_station() {
 }
 #############
 worldwide_mirror_station() {
-	NEW_TERMUX_SOURCES_LIST='true'
+	NEW_TERMUX_SOURCES_LIST=true
 	SOURCE_MIRROR_STATION=""
 	RETURN_TO_WHERE='worldwide_mirror_station'
 	SOURCES_LIST=$(
@@ -328,7 +328,7 @@ termux_repo_manager() {
 }
 ########
 tmoe_sources_list_manager() {
-	#NEW_TERMUX_SOURCES_LIST='true'
+	#NEW_TERMUX_SOURCES_LIST=true
 	check_tmoe_sources_list_backup_file
 	SOURCE_MIRROR_STATION=""
 	RETURN_TO_WHERE='tmoe_sources_list_manager'

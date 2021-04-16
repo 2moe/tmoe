@@ -50,7 +50,7 @@ if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
         CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
         HOME=${CURRENT_HOME}
     else
-        printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING！" "You should type" "useradd -m ${VNC_USER}" "to creat it."
+        printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING！" "You should type" "useradd -m ${VNC_USER}" "to create it."
         unset VNC_USER
     fi
     #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
@@ -151,8 +151,8 @@ tmoe_vnc_preconfigure() {
     fi
     fix_vnc_permissions
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-        export TMOE_CHROOT='true'
-        export TMOE_WSL='true'
+        export TMOE_CHROOT=true
+        export TMOE_WSL=true
         . ${TMOE_LINUX_DIR}/wsl_pulse_audio
     fi
 }

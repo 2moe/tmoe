@@ -76,7 +76,7 @@ debian_opt_menu() {
 ################
 debian_opt_install_or_remove_01() {
     RETURN_TO_WHERE='debian_opt_install_or_remove_01'
-    NOTICE_OF_REPAIR='false'
+    NOTICE_OF_REPAIR=false
     OPT_APP_VERSION_TXT="${TMOE_LINUX_DIR}/${DEPENDENCY_01}_version.txt"
     INSTALL_APP=$(whiptail --title "${DEPENDENCY_01} manager" --menu \
         "您要对${DEPENDENCY_01}小可爱做什么?\nWhat do you want to do with the software?" 0 0 0 \

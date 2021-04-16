@@ -300,7 +300,7 @@ tmoe_qemu_user_manager() {
 		if [ "${TRUE_ARCH_TYPE}" = "${NEW_TMOE_ARCH}" ]; then
 			TMOE_QEMU_ARCH=""
 		fi
-		creat_tmoe_arch_file
+		create_tmoe_arch_file
 		ARCH_TYPE=${NEW_TMOE_ARCH}
 
 		if [[ ! -e "${PREFIX}/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
@@ -325,7 +325,7 @@ git_clone_debian_ports_distro() {
 	riscv64) DISTRO_CODE='sid' ;;
 	esac
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	creat_container_edition_txt
+	create_container_edition_txt
 	go_to_proot_management
 
 	DEBIAN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"

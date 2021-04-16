@@ -92,22 +92,22 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4487,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4488,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
 gnu_linux_env() {
 	if [ -z "${TMOE_PROOT}" ]; then
 		if [ -e "/tmp/.Tmoe-Proot-Container-Detection-File" ]; then
-			TMOE_PROOT='true'
+			TMOE_PROOT=true
 		elif [ -e "/tmp/.Chroot-Container-Detection-File" ]; then
-			TMOE_PROOT='false'
+			TMOE_PROOT=false
 		else
 			check_ps_command
 		fi
 	fi
 	if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
-		export TMOE_CHROOT='true'
+		export TMOE_CHROOT=true
 	fi
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp

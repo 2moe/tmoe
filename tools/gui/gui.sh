@@ -197,7 +197,7 @@ nano_tigervnc_default_config_manually() {
 #############
 switch_tight_or_tiger_vncserver() {
     DEPENDENCY_01=''
-    #NON_DEBIAN='true'
+    #NON_DEBIAN=true
     #non_debian_function
     if [ $(command -v startvnc) ]; then
         if grep -q '^VNC_SERVER=' $(command -v startvnc); then
@@ -438,7 +438,7 @@ preconfigure_gui_dependecies_02() {
     case "${LINUX_DISTRO}" in
     debian)
         case "${TMOE_PROOT}" in
-        true | no) NON_DBUS='true' ;;
+        true | no) NON_DBUS=true ;;
         esac
         #if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
         #    DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
@@ -454,7 +454,7 @@ preconfigure_gui_dependecies_02() {
         ;;
     redhat)
         case "${TMOE_PROOT}" in
-        true | no) NON_DBUS='true' ;;
+        true | no) NON_DBUS=true ;;
         esac
         DEPENDENCY_02="google-noto-sans-cjk-ttc-fonts google-noto-emoji-color-fonts tigervnc-server"
         ;;
@@ -483,8 +483,8 @@ preconfigure_gui_dependecies_02() {
 }
 ########################
 standand_desktop_installation() {
-    NON_DBUS='false'
-    REMOVE_UDISK2='false'
+    NON_DBUS=false
+    REMOVE_UDISK2=false
     RETURN_TO_WHERE='standand_desktop_installation'
     preconfigure_gui_dependecies_02
     standand_desktop_installation_zh() {
@@ -604,19 +604,19 @@ tmoe_container_desktop() {
     case "${INSTALLDESKTOP}" in
     0 | "") standand_desktop_installation ;;
     1)
-        REMOVE_UDISK2='true'
+        REMOVE_UDISK2=true
         install_xfce4_desktop
         ;;
     2)
-        REMOVE_UDISK2='true'
+        REMOVE_UDISK2=true
         install_xfce4_lite_desktop
         ;;
     3)
-        REMOVE_UDISK2='true'
+        REMOVE_UDISK2=true
         install_lxqt_desktop
         ;;
     4)
-        REMOVE_UDISK2='true'
+        REMOVE_UDISK2=true
         install_lxde_desktop
         ;;
     5) install_mate_desktop ;;
@@ -739,7 +739,7 @@ will_be_installed_for_you() {
 }
 ########################
 window_manager_installation() {
-    #NON_DBUS='true'
+    #NON_DBUS=true
     REMOTE_DESKTOP_SESSION_02='x-window-manager'
     BETA_DESKTOP=$(
         whiptail --title "WINDOW MANAGER" --menu \
@@ -1488,7 +1488,7 @@ do_you_want_to_install_electron_apps_zh() {
     *)
         if [[ ! $(command -v electron) ]]; then
             if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nlx-music-desktop,cocomusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
-                AUTO_INSTALL_ELECTRON_APPS='true'
+                AUTO_INSTALL_ELECTRON_APPS=true
             fi
         fi
         ;;
@@ -1501,7 +1501,7 @@ do_you_want_to_install_electron_apps_en() {
     *)
         if [[ ! $(command -v electron) ]]; then
             if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nlx-music-desktop,cocomusic,petal & zy-player.' 0 0); then
-                AUTO_INSTALL_ELECTRON_APPS='true'
+                AUTO_INSTALL_ELECTRON_APPS=true
             fi
         fi
         ;;
@@ -1516,7 +1516,7 @@ do_you_want_to_install_fcitx_pinyin() {
             #fedora proot不要自动配置fcitx
             if [[ ! $(command -v fcitx) && ! $(command -v fcitx5) ]]; then
                 if (whiptail --title "input method" --yes-button "YES" --no-button "NO" --yesno '檢測到您當前的語言環境爲中文，是否需要安裝中文輸入法?\nDo you want to install fcitx4?\n安裝完成後,在桌面環境下按Ctrl+空格切換輸入法\n你亦可以選擇NO跳過,之後可以單獨安裝fcitx5' 0 0); then
-                    AUTO_INSTALL_FCITX4='true'
+                    AUTO_INSTALL_FCITX4=true
                 fi
             fi
             ;;
@@ -1536,7 +1536,7 @@ do_you_want_to_install_fcitx4() {
     "debian" | "arch")
         if [[ ! $(command -v hardinfo) ]]; then
             if (whiptail --title "HARDINFO" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install hardinfo?\nIt can display system information.' 0 0); then
-                AUTO_INSTALL_HARD_INFO='true'
+                AUTO_INSTALL_HARD_INFO=true
             fi
         fi
         ;;
@@ -1573,7 +1573,7 @@ do_you_want_to_install_kali_tools() {
         case "${DEBIAN_DISTRO}" in
         "kali")
             if (whiptail --title "KALI LINUX TOOLS" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install kali-linux tools?' 0 0); then
-                AUTO_INSTALL_KALI_TOOLS='true'
+                AUTO_INSTALL_KALI_TOOLS=true
             fi
             ;;
         esac
@@ -1838,7 +1838,7 @@ xfce_papirus_icon_theme() {
     fi
 }
 ###########
-creat_xfce4_desktop_wallpaper_config() {
+create_xfce4_desktop_wallpaper_config() {
     cd ${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml
     cat >xfce4-desktop.xml <<-'EOF'
 		<?xml version="1.0" encoding="UTF-8"?>
@@ -1910,7 +1910,7 @@ modify_xfce_vnc0_wallpaper() {
     #else
     #	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitor0/workspace0/last-image -s "${WALLPAPER_FILE}"
     #fi
-    creat_xfce4_desktop_wallpaper_config
+    create_xfce4_desktop_wallpaper_config
     sed -i "s@/usr/share/backgrounds/xfce/xfce-stripes.png@${WALLPAPER_FILE}@" xfce4-desktop.xml
     #else
     #	dbus-launch xfconf-query -c xfce4-desktop -t string -np /backdrop/screen0/monitorVNC-0/workspace0/last-image -s "${WALLPAPER_FILE}"
@@ -1918,7 +1918,7 @@ modify_xfce_vnc0_wallpaper() {
 }
 ##################
 debian_download_mint_wallpaper() {
-    SET_MINT_AS_WALLPAPER='true'
+    SET_MINT_AS_WALLPAPER=true
     download_mint_backgrounds
 }
 #############
@@ -2075,7 +2075,7 @@ ubuntu_mate_wallpaper_var() {
 }
 ############
 modify_the_default_xfce_wallpaper() {
-    FORCIBLY_DOWNLOAD='true'
+    FORCIBLY_DOWNLOAD=true
     case "${LINUX_DISTRO}" in
     "debian")
         random_wallpaper_pack_01
@@ -2104,7 +2104,7 @@ modify_the_default_xfce_wallpaper() {
 }
 #################
 debian_download_ubuntu_mate_wallpaper() {
-    SET_MINT_AS_WALLPAPER='true'
+    SET_MINT_AS_WALLPAPER=true
     download_ubuntu-mate_wallpaper
 }
 #####################
@@ -2974,7 +2974,7 @@ set_default_xfce_icon_theme() {
     esac
 }
 ###############
-creat_update_icon_caches() {
+create_update_icon_caches() {
     cd /usr/local/bin/
     cat >update-icon-caches <<-'EndofFile'
 		#!/bin/sh
@@ -3004,7 +3004,7 @@ creat_update_icon_caches() {
 }
 check_update_icon_caches_sh() {
     if [ ! $(command -v update-icon-caches) ]; then
-        creat_update_icon_caches
+        create_update_icon_caches
     fi
 }
 ##############
@@ -3443,7 +3443,7 @@ download_ubuntu-mate_wallpaper() {
 #####################
 linux_mint_backgrounds() {
     RETURN_TO_WHERE='linux_mint_backgrounds'
-    SET_MINT_AS_WALLPAPER='false'
+    SET_MINT_AS_WALLPAPER=false
     #cat index.html | grep mint-backgrounds | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1 | cut -d '-' -f 3,4
     GREP_NAME_02="mint-backgrounds"
     INSTALL_THEME=$(whiptail --title "MINT壁纸包" --menu \
@@ -3534,8 +3534,8 @@ download_mint_backgrounds() {
 download_wallpapers() {
     cd /tmp
     unset THE_LATEST_THEME_VERSION_02 THEME_URL_02
-    SET_MINT_AS_WALLPAPER='false'
-    FORCIBLY_DOWNLOAD='false'
+    SET_MINT_AS_WALLPAPER=false
+    FORCIBLY_DOWNLOAD=false
     RETURN_TO_WHERE='download_wallpapers'
     INSTALL_THEME=$(whiptail --title "桌面壁纸" --menu \
         "您想要下载哪套壁纸包？\n Which wallpaper-pack do you want to download? " 0 50 0 \
@@ -4091,7 +4091,7 @@ x11vnc_warning() {
 			${BLUE}tight > x11vnc > tiger${RESET}
 
 			注：在本地连接的情况下,${GREEN}过高${RESET}的压缩级别将增大${BLUE}CPU负担${RESET},并${PURPLE}严重拖慢${RESET}渲染速度。
-            在非本地连接的情况下,建议您适当调高压缩级别,以减少传输流量。
+			在非本地连接的情况下,建议您适当调高压缩级别,以减少传输流量。
 			以上为${PURPLE}主观数据${RESET}，影响流畅度的因素不止压缩算法、级别和硬件加速，请以${GREEN}实际体验${RESET}为准。
 			------------------------
 			配置完x11vnc后，您可以在容器里输${GREEN}startx11vnc${RESET}${BLUE}启动${RESET},输${GREEN}stopvnc${RESET}${RED}停止${RESET}
@@ -4790,7 +4790,7 @@ configure_remote_desktop_enviroment() {
     case "${TMOE_PROOT}" in
     true | no)
         case "${LINUX_DISTRO}" in
-        "debian" | "redhat""redhat") NON_DBUS='true' ;;
+        "debian" | "redhat""redhat") NON_DBUS=true ;;
         esac
         ;;
     esac
@@ -5332,9 +5332,9 @@ first_configure_startvnc() {
         RESOLUTION=$(awk -F 'x' '{print $2,$1}' ${TMOE_LINUX_DIR}/wm_size.txt | sed 's@ @x@')
         HORIZONTAL_PIXELS=$(awk -F 'x' '{print $2}' ${TMOE_LINUX_DIR}/wm_size.txt | head -n 1)
         if ((${HORIZONTAL_PIXELS} >= 2340)); then
-            TMOE_HIGH_DPI='true'
+            TMOE_HIGH_DPI=true
         else
-            TMOE_HIGH_DPI='false'
+            TMOE_HIGH_DPI=false
         fi
         expr ${HORIZONTAL_PIXELS} + 0 &>/dev/null
         case "$?" in
@@ -5367,7 +5367,7 @@ first_configure_startvnc() {
                 TMOE_HIGH_DPI='default'
             else
                 RESOLUTION='2880x1440'
-                TMOE_HIGH_DPI='true'
+                TMOE_HIGH_DPI=true
             fi
         fi
         ;;
