@@ -10,7 +10,6 @@ proot_management_menu() {
 	TMOE_CONTAINER_FORTUNE=true
 	TMOE_CONTAINER_HITOKOTO=true
 	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
-
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
@@ -20,9 +19,9 @@ proot_management_menu() {
 			"5" "🍬 novnc(HTML5 VNC client)" \
 			"6" "⚔️ startx11vnc" \
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
-			"8" "😏 unmount & remove" \
-			"9" "📡 readme" \
-			"10" "create a new container" \
+			"8" "💔 unmount & remove" \
+			"9" "📘 readme" \
+			"10" "🌈 create a new container" \
 			"11" "🥤 edit script" \
 			"12" "🍅 space occupation" \
 			"0" "🌚 Return to previous menu" \
@@ -37,9 +36,9 @@ proot_management_menu() {
 			"5" "🍬 novnc:在浏览器里连接vnc" \
 			"6" "⚔️ startx11vnc:启动x11vnc" \
 			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
-			"8" "😏 unmount & remove 卸载并移除" \
-			"9" "📡 readme 自述/说明" \
-			"10" "create a new container新建容器" \
+			"8" "💔 unmount & remove 卸载并移除" \
+			"9" "📘 readme 自述/说明" \
+			"10" "🌈 create a new container新建容器" \
 			"11" "🥤 edit script 编辑脚本" \
 			"12" "🍅 space occupation 空间占用大小" \
 			"0" "🌚 back 返回上级菜单" \
@@ -54,9 +53,9 @@ proot_management_menu() {
 			"5" "🍬 novnc(HTML5 VNC client)" \
 			"6" "⚔️ startx11vnc" \
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
-			"8" "😏 aushängen und entfernen" \
-			"9" "📡 Liesmich" \
-			"10" "Erstellen Sie einen neuen Container" \
+			"8" "💔 aushängen und entfernen" \
+			"9" "📘 Liesmich" \
+			"10" "🌈Erstellen Sie einen neuen Container" \
 			"11" "🥤 Skript bearbeiten" \
 			"12" "🍅 Raumbesetzung" \
 			"0" "🌚 zurück" \
@@ -423,37 +422,6 @@ install_new_tmoe_gnu_linux_distro() {
 	check_tmoe_completion_version
 	check_tmoe_completion
 	#git_pull_tmoe_linux
-	#
-	#
-	#
-	##
-	#
-	#
-	#
-	#
-
-	#
-	#
-	#
-	#
-	#
-
-	#
-	#
-	#
-	#
-
-	#
-	#
-
-	#
-	#
-
-	#
-	#
-	#
-	#
-
 	###
 	case ${WEEKLY_BUILD_CONTAINER} in
 	true) install_weekly_build_container ;;
