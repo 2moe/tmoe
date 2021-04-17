@@ -14,4 +14,4 @@ RUN apk update \
     ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null \
     ; apk -v cache clean
 
-CMD [ "/usr/local/bin/startx11vnc" ]
+CMD [ "/bin/bash" ]

@@ -345,12 +345,16 @@ do_you_want_to_continue() {
 }
 press_enter_to_return() {
 	printf "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}\n"
-	printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n"
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n" ;;
+	esac
 	read
 }
 press_enter_to_continue() {
 	printf "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}\n"
-	printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n"
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n" ;;
+	esac
 	read
 }
 ##############

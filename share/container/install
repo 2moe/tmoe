@@ -60,6 +60,8 @@ else
 	TMOE_CHROOT_PREFIX=''
 fi
 #DEBIAN_FOLDER=debian_arm64
+TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+[[ ! -s "${TMOE_LOCALE_FILE}" ]] || TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 RED=$(printf '\033[31m')
 PURPLE=$(printf '\033[0;35m')
 GREEN=$(printf '\033[32m')
@@ -145,34 +147,48 @@ TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.x
 TMOE_PROOT_PROC_GIT="https://gitee.com/ak2/proot_proc"
 TMOE_PROOT_PROC_GIT_02="https://github.com/cu233/proot_proc"
 ###########
-cat <<-EOF
-	現在可公開的情報:
-	${BOLD}Tmoe-linux 小提示${RESET}:
-			01:不同远程桌面的体验有可能是不同的呢！ヽ(✿ﾟ▽ﾟ)ノ
-			-------------------
-			Different remote desktops may have different experiences.
-			-------------------
-			02:在某种环境下执行某条命令，将同时调用宿主机的VNC viewer和容器的vnc server。
-			-------------------
-			Executing a certain command in a certain environment will call the processes of the host and the container almost simultaneously.
-			---------------
-			03:只有最近使用的容器的启动命令才是一样的哦！o( =•ω•= )m
-			但是呢！输那条启动命令仅支持启动${BLUE}${DEBIAN_FOLDER}容器${RESET}，不会自动启动远程桌面服务。
-			-------------------
-			The start command of the container supports starting and attaching the ${DEBIAN_FOLDER} container.
-			-------------------
-			04:并非所有${YELLOW}字体${RESET}都支持${BLUE}powerlevel 10k${RESET}的特殊字符哦！🍥
-			-------------------
-			Some fonts do not support powerlevel10k special characters.
-			-------------------
-			输${GREEN}novnc${RESET}启动${BLUE}novnc${RESET},novnc需要使用浏览器来连接。(o゜▽゜)o☆
-			-------------------
-			You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
-			------------------   
-EOF
-############################
+tmoe_tips_1_zh() {
+	cat <<-EOF
+		少女祈禱中...
+		現在可公開的情報:
+		${BOLD}Tmoe-linux 小提示${RESET}:
+				01:不同远程桌面的体验有可能是不同的呢！ヽ(✿ﾟ▽ﾟ)ノ
+				Different remote desktops may have different experiences.
+				-------------------
+				02:在某种环境下执行某条命令，将同时调用宿主机的VNC viewer和容器的vnc server。
+				-------------------
+				03:只有最近使用的容器的启动命令才是一样的哦！o( =•ω•= )m
+				但是呢！输那条启动命令仅支持启动${BLUE}${DEBIAN_FOLDER}容器${RESET}，不会自动启动远程桌面服务。
+				-------------------
+				04:并非所有${YELLOW}字体${RESET}都支持${BLUE}powerlevel 10k${RESET}的特殊字符哦！🍥
+				Some fonts do not support powerlevel10k special characters.
+				-------------------
+				输${GREEN}novnc${RESET}启动${BLUE}novnc${RESET},novnc需要使用浏览器来连接。(o゜▽゜)o☆
+				You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
+				(o゜▽゜)o☆ Open your browser and enjoy it!
+				------------------
+				printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}"
+	EOF
+}
+tmoe_tips_1_en() {
+	cat <<-EOF
+		${BOLD}Tmoe-linux TIPS${RESET}:
+				01:Different remote desktops may have different experiences.ヽ(✿ﾟ▽ﾟ)ノ
+				-------------------
+				02:You can type ${GREEN}debian${RESET} to start ${BLUE}${DEBIAN_FOLDER}${RESET} container. o( =•ω•= )m
+				-------------------
+				03:Some fonts do not support powerlevel10k special characters.🍥
+				-------------------
+				04.You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
+				(o゜▽゜)o☆ Open your browser and enjoy it!
+				------------------   
+	EOF
+}
+case ${TMOE_LANG} in
+zh_*UTF-8) tmoe_tips_1_zh ;;
+*) tmoe_tips_1_en ;;
+esac
 printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
-printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}"
 ##################
 check_rootfs_dir() {
 	unset ROOTFS_DIR
@@ -283,38 +299,64 @@ LONG_DISTRO_NAME=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{prin
 LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
 [[ ! $(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $3}') = Stream ]] || LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2"-"$3}')
 LONG_DISTRO_ARCH=${ARCH_TYPE}
-cat <<-EOF
-	少女祈禱中...
-	現在可公開的情報:
-	${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
+tmoe_tips_2_zh() {
+	cat <<-EOF
+		少女祈禱中...
+		現在可公開的情報:
+		${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
 
-			输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
-			-------------------
-			You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
-			------------------
-			若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}VNC服务端${RESET}。
-			------------------
-			输${GREEN}startxsdl${RESET}将${RED}启动${RESET}安卓版${YELLOW}XSDL${RESET}，并于9秒后自动启动${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}x11${RESET}。
-			You can also type ${GREEN}startxsdl${RESET} to ${YELLOW}start ${BLUE}xclient & server${RESET}.
-			-------------------
-			您也可以在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}startvnc${RESET}来单独启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
-			-------------------
-			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
-			-------------------
-	${BOLD}小提示06${RESET}:
-			在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}tmoe t${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
-			You can type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
-			-------------------
-	${BOLD}小提示07${RESET}:
-			在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
-			You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}
-			在v1.10beta及其之后的版本中，${GREEN}debian${RESET}命令实际上调用了${GREEN}tmoe${RESET}。
-			例如启动${BLUE}${CONTAINER_TYPE}${RESET} ${PURPLE}${DEBIAN_FOLDER}${RESET}容器的完整命令为${BOLD}${GREEN}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${LONG_DISTRO_ARCH}${RESET}
-			如需了解简化版启动命令，则请您查看README。
-			Although you can use the full command, we recommend that you use the simplified command.
-			For example, chroot can be simplified to c, ubuntu can be simplified to u, and arch can be simplified to a.
-			-------------------
-EOF
+				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
+				-------------------
+				You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
+				------------------
+				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}安卓版Realvnc${YELLOW}客户端${RESET}和${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}VNC服务端${RESET}。
+				------------------
+				输${GREEN}startxsdl${RESET}将${RED}启动${RESET}安卓版${YELLOW}XSDL${RESET}，并于9秒后自动启动${BOLD}${DEBIAN_FOLDER}${RESET}的${BLUE}x11${RESET}。
+				You can also type ${GREEN}startxsdl${RESET} to ${YELLOW}start ${BLUE}xclient & server${RESET}.
+				-------------------
+				您也可以在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}startvnc${RESET}来单独启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
+				-------------------
+				You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
+				-------------------
+		${BOLD}小提示06${RESET}:
+				在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}tmoe t${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
+				You can type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
+				-------------------
+		${BOLD}小提示07${RESET}:
+				在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
+				You can type ${GREEN}debian${RESET} to start ${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET} container.${RESET}
+				在v1.10beta及其之后的版本中，${GREEN}debian${RESET}命令实际上调用了${GREEN}tmoe${RESET} ヽ(✿ﾟ▽ﾟ)ノ
+				例如启动${BLUE}${CONTAINER_TYPE}${RESET} ${PURPLE}${DEBIAN_FOLDER}${RESET}容器的完整命令为${BOLD}${GREEN}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${LONG_DISTRO_ARCH}${RESET}
+				如需了解简化版启动命令，则请您查看README。
+				Although you can use the full command, we recommend that you use the simplified command.
+				For example, chroot can be simplified to c, ubuntu can be simplified to u, and arch can be simplified to a.
+				-------------------
+	EOF
+}
+tmoe_tips_2_en() {
+	cat <<-EOF
+		${BOLD}少女祈禱中...${RESET}
+
+				You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
+				------------------
+				You can also type ${GREEN}startxsdl${RESET} to ${YELLOW}start ${BLUE}xclient & server${RESET}.
+				-------------------
+				Type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
+				-------------------
+				Type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
+				-------------------
+				The ${GREEN}debian${RESET} command actually calls ${GREEN}tmoe${RESET}
+				If you want to start ${BLUE}${CONTAINER_TYPE}${RESET} ${PURPLE}${DEBIAN_FOLDER}${RESET}, the ${PURPLE}FULL COMMAND${BOLD} is ${GREEN}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${LONG_DISTRO_ARCH}${RESET}
+				If you want to know the ${GREEN}simplified command${RESET}, please read the ${YELLOW}README${RESET}.
+				Although you can use the full command, we recommend that you use the simplified command.
+				For example, chroot can be simplified to c, ubuntu can be simplified to u, and arch can be simplified to a.
+				-------------------
+	EOF
+}
+case ${TMOE_LANG} in
+zh_*UTF-8) tmoe_tips_2_zh ;;
+*) tmoe_tips_2_en ;;
+esac
 ################
 uncompress_other_format_file() {
 	if [ "${TMOE_CHROOT}" = "true" ]; then
@@ -385,7 +427,9 @@ check_tar_xz_pv() {
 }
 #############
 uncompress_tar_xz_file() {
-	printf "%s\n" "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}"
+	case ${TMOE_LANG} in
+	zh_*UTF-8) printf "%s\n" "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}" ;;
+	esac
 	printf "%s\n" "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
 	if [ "${TMOE_CHROOT}" = "true" ]; then
 		${TMOE_CHROOT_PREFIX} tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
@@ -695,7 +739,7 @@ cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 		pulseaudio --start
 	fi
 	vnc_warning() {
-		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动vnc服务，若启动失败，则请输" "tmoe t"
+		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "vncserver" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."
 		${PREFIX}/bin/tmoe pr vnc
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -714,7 +758,7 @@ cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 		pulseaudio --start
 	fi
 	vnc_warning() {
-		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动x11vnc服务，若启动失败，则请输" "tmoe t"
+		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "x11vnc server" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."
 		${PREFIX}/bin/tmoe pr x11
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -734,7 +778,7 @@ cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
 		pulseaudio --start
 	fi
 	vnc_warning() {
-		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动novnc，若启动失败，则请输" "tmoe t"
+		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "novnc" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."  
 		${PREFIX}/bin/tmoe pr novnc
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -758,7 +802,7 @@ ENDOFSTOPVNC
 cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	#!/usr/bin/env bash
 	vnc_warning() {
-		printf "\033[33m%s \033[32m%s\033[m\n" "正在启动X，若启动失败，则请输" "tmoe t"
+		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "X" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."
 		${PREFIX}/bin/tmoe pr xs
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -821,14 +865,10 @@ elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
 	${TMOE_CHROOT_PREFIX} sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 fi
 ########
-TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 if [ -f "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
 	${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_LOCALE_NEW_PATH}
 	${TMOE_CHROOT_PREFIX} cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
-	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	PROOT_LANG=$(grep LANG= $(command -v debian) | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1)
-	#sed -i "s@${PROOT_LANG}@${TMOE_LANG}@" $(command -v debian)
 fi
 case ${TMOE_LANG} in
 zh_*UTF-8) LNK_MENU_FILE="${HOME}/容器选择菜单.sh" ;;

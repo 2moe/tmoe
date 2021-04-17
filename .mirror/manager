@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4491,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4493,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -115,13 +115,17 @@ check_current_user_name_and_group() {
 ##############
 press_enter_to_return() {
 	printf "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}\n"
-	printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n"
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n" ;;
+	esac
 	read
 }
 #####################
 press_enter_to_continue() {
 	printf "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}\n"
-	printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n"
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n" ;;
+	esac
 	read
 }
 ###################################

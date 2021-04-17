@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4491,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4493,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -857,7 +857,9 @@ tmoe_linux_tool_menu() {
 #########################
 press_enter_to_return() {
 	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return${RESET},press ${YELLOW}Ctrl+C${RESET} to ${RED}exit.${RESET}"
-	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET},按${YELLOW}Ctrl+C${RESET}${RED}退出${RESET}。"
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}返回${RESET},按${YELLOW}Ctrl+C${RESET}${RED}退出${RESET}。" ;;
+	esac
 	read
 }
 #############
@@ -937,7 +939,9 @@ tmoe_linux_tool_upgrade() {
 	#printf "%s\n" "${TMOE_GIT_URL}"
 	printf '%s\n' '(o゜▽゜)o☆  Thank you for using Tmoe-linux tool.'
 	printf "%s\n" "Update ${YELLOW}completed${RESET}, press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-	printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}"
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}" ;;
+	esac
 	#bash ${DEBIAN_I_FILE}
 	read
 	source ${DEBIAN_I_FILE}
