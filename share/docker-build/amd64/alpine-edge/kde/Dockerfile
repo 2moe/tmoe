@@ -14,7 +14,7 @@ RUN apk update \
     ; bash zsh.sh --tmoe_container_auto_configure \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
-    ; printf "%s\n" "podman" > container.txt  \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=alpine_gui-kde" > container.txt  \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
     ; cp -fv git/tool.sh /tmp \
     ; cd /tmp \
@@ -23,7 +23,7 @@ RUN apk update \
     ; export AUTO_INSTALL_GUI=true \
     ; bash install-gui.sh \
     ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null \
-    ; rm -rfv /tmp/* ~/.vnc/*passwd \
-    ; apk -v cache clean
+    ; rm -rfv /tmp/* ~/.vnc/*passwd
+#apk -v cache clean
 
 CMD [ "/usr/local/bin/startx11vnc" ]

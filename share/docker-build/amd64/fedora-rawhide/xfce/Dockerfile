@@ -18,7 +18,7 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo \
     ; bash zsh.sh --tmoe_container_auto_configure \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
-    ; printf "%s\n" "podman" > container.txt  \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=fedora_gui-xfce" > container.txt  \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
     ; cp -fv git/tool.sh /tmp \
     ; cd /tmp \

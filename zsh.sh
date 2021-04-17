@@ -355,7 +355,6 @@ tmoe_tips_6_zh() {
 		少女祈禱中...
 			現在可公開的情報:
 			${BOLD}Tmoe-linux 小提示06${RESET}:
-
 			在${YELLOW}Android-termux${RESET}上运行的GNU/Linux的Tmoe-linux tool支持使用${BLUE}触摸屏${RESET}上下滑动。
 			运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager支持使用${BLUE}触摸屏${RESET}进行点击，还支持使用${GREEN}数字键${RESET}进行快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
 			-------------------
@@ -366,7 +365,6 @@ tmoe_tips_6_zh() {
 			You can type ${GREEN}debian${RESET} to start and attach the ${BLUE}container${RESET}.
 			-------------------
 			08.输入${GREEN}debian-i${RESET}启动${BLUE}tmoe-linux tool${RESET}.
-
 			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool${RESET}.
 	EOF
 }

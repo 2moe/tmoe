@@ -23,7 +23,7 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; export LANG=en_US.UTF-8 \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
     ; cd /usr/local/etc/tmoe-linux \
-    ; printf "%s\n" "podman" > container.txt  \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=manjaro_nogui-zsh" > container.txt  \
     ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
     ; cp -fv git/tool.sh /tmp \
     ; cp -fv git/tools/sources/yay/build_fakeroot /tmp \

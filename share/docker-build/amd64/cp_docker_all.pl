@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w
+#!/usr/bin/env perl
 $de_file = "cp_docker_de";
 $arch_file = "cp_docker_file";
 $result = system "./$de_file";

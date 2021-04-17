@@ -167,7 +167,7 @@ tmoe_tips_1_zh() {
 				You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
 				(o゜▽゜)o☆ Open your browser and enjoy it!
 				------------------
-				printf "%s\n" "检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}"
+				检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}
 	EOF
 }
 tmoe_tips_1_en() {
@@ -428,9 +428,9 @@ check_tar_xz_pv() {
 #############
 uncompress_tar_xz_file() {
 	case ${TMOE_LANG} in
-	zh_*UTF-8) printf "%s\n" "正在${GREEN}解压${RESET}${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}" ;;
+	zh_*UTF-8) printf "%s\n" "正在${GREEN}解压${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}" ;;
 	esac
-	printf "%s\n" "Extracting ${TMOE_ROOTFS_TAR_XZ}, please wait."
+	printf "%s\n" "${GREEN}Extracting ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET}, please ${YELLOW}wait${RESET}."
 	if [ "${TMOE_CHROOT}" = "true" ]; then
 		${TMOE_CHROOT_PREFIX} tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
