@@ -301,10 +301,8 @@ LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{prin
 LONG_DISTRO_ARCH=${ARCH_TYPE}
 tmoe_tips_2_zh() {
 	cat <<-EOF
-		少女祈禱中...
 		現在可公開的情報:
 		${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
-
 				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
 				-------------------
 				You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
@@ -330,13 +328,15 @@ tmoe_tips_2_zh() {
 				如需了解简化版启动命令，则请您查看README。
 				Although you can use the full command, we recommend that you use the simplified command.
 				For example, chroot can be simplified to c, ubuntu can be simplified to u, and arch can be simplified to a.
+				${YELLOW}o( =•ω•= )m${RESET}
+				${BOLD}少女祈禱中...${RESET}
 				-------------------
 	EOF
 }
 tmoe_tips_2_en() {
 	cat <<-EOF
 		${BOLD}少女祈禱中...${RESET}
-
+		${YELLOW}o( =•ω•= )m${RESET}
 				You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
 				------------------
 				You can also type ${GREEN}startxsdl${RESET} to ${YELLOW}start ${BLUE}xclient & server${RESET}.

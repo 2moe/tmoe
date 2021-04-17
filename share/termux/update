@@ -35,7 +35,9 @@ for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/debian-i ${TMOE_SHARE_DIR}/container/d
 	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i} 2>/dev/null
 done
 printf "%s\n" '(o゜▽゜)o☆  Thank you for using Tmoe-linux manager.'
-printf "${YELLOW}%s\n${RESET}" "更新完成，按回车键返回。"
+case ${TMOE_MENU_LANG} in
+zh_*UTF-8) printf "%s\n" "更新完成，按${YELLOW}回车键${BLUE}返回${RESET}。" ;;
+esac
 printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
 read
 source ${PREFIX}/bin/debian-i

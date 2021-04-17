@@ -350,7 +350,7 @@ create_zlogin_file() {
 	sed -i '/source ~\/\.profile/d' .zlogin
 }
 #########################
-fix_sudo() {
+tmoe_tips_6_zh() {
 	cat <<-EOF
 		少女祈禱中...
 			現在可公開的情報:
@@ -369,6 +369,20 @@ fix_sudo() {
 
 			You can type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool${RESET}.
 	EOF
+}
+tmoe_tips_6_en() {
+	cat <<-EOF
+		${YELLOW}o( =•ω•= )m${RESET}
+		You can type ${GREEN}debian${RESET} to start the ${BLUE}container${RESET}.
+		-------------------
+		Type ${GREEN}debian-i${RESET} to start ${BLUE}tmoe-linux tool${RESET}.
+	EOF
+}
+fix_sudo() {
+	case ${TMOE_LANG} in
+	zh_*UTF-8) tmoe_tips_6_zh ;;
+	*) tmoe_tips_6_en ;;
+	esac
 	##################
 	if [ -e "/usr/bin/sudo" ]; then
 		chmod 4755 -v /usr/bin/sudo
