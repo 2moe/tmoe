@@ -26,4 +26,4 @@ RUN apk update \
     ; rm -rfv /tmp/* ~/.vnc/*passwd
 #apk -v cache clean
 EXPOSE 5902 36080
-CMD [ "/usr/local/bin/startx11vnc" ]
+CMD [ "/bin/zsh" ]

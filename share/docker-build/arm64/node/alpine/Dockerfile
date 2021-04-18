@@ -10,7 +10,10 @@ RUN apk update \
     ; apk add sudo tar grep curl wget bash tzdata newt \
     ; ln -svf /usr/share/zoneinfo/UTC /etc/localtime \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-alpine" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux/ \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-alpine" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n" "node" > environment/entrypoint \
     ; cd /root \
     ; printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt \
     ; printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt \

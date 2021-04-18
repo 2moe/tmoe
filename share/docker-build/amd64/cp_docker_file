@@ -5,12 +5,16 @@ done
 cd ../arm64
 rm -rfv $(ls . | grep 'mint-')
 ARM64_DOCKERFILE=$(find . | grep Dockerfile)
-sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8/@g' ${ARM64_DOCKERFILE}
+sed -E -e 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8/@g' \
+    -e 's@(ARCH_TYPE)=.*@\1=arm64@g' \
+    -i ${ARM64_DOCKERFILE}
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | egrep "arch|kali")
 BOOTSTRAP_SCRIPT=$(find . | grep bootstrap\.sh)
 SOURCE_LIST=$(find . | grep sources\.list)
 #sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm64/v8 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
-sed -i -E 's@--platform=linux/amd64@--platform=linux/arm64/v8@g' ${ARCH_DOCKERFILE}
+sed -E -e 's@--platform=linux/amd64@--platform=linux/arm64/v8@g' \
+    -i ${ARCH_DOCKERFILE}
+
 MANJARO_DOCKERFILE=$(find . | grep Dockerfile | grep manjaro)
 sed -i -E 's@^(FROM) manjarolinux/base.*@\1 abyo/manjaro_aarch64:latest@g' ${MANJARO_DOCKERFILE}
 sed -E -e 's@-a x86_64@-a aarch64@' \

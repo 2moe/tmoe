@@ -4,7 +4,7 @@
 
 ```bash
 cd amd64/arch/kde
-[[ ! -s ../bootstrap.sh ]] || bash ../bootstrap.sh
+[[ ! -r ../bootstrap.sh ]] || bash ../bootstrap.sh
 podman build -t arch-kde .
 ```
 
@@ -28,6 +28,12 @@ or
 podman attach arch-amd64-kde
 ```
 
+How to start vnc server?
+
+```
+startvnc
+```
+
 The default vnc port of container is 5902.
 Because of `-p 5903:5902`,your vnc address is **localhost:5903**
 
@@ -37,9 +43,32 @@ Because of `-p 5903:5902`,your vnc address is **localhost:5903**
 sudo apt update
 sudo apt install qemu-user-static
 cd arm64/debian-sid/xfce
+[[ ! -r ../bootstrap.sh ]] || bash ../bootstrap.sh
 podman build -t debian-xfce .
 ```
 
+How to run it?
+
 ```bash
-podman run -itd -p 5903:5902 --name debian-arm64-xfce --env LANG=en_US.UTF-8 debian-xfce
+podman run -itd -p 5903:5902 -p 36081:36080 --name debian-arm64-xfce --env LANG=en_US.UTF-8 debian-xfce /bin/bash
+```
+
+How to start novnc?
+
+```
+novnc
+```
+
+How to connect to it?
+
+```
+Open your browser, and type the address:
+localhost:36081
+```
+
+How to attach it?
+
+```bash
+podman start debian-arm64-xfce
+podman exec -it debian-arm64-xfce /bin/bash
 ```

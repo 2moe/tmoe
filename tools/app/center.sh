@@ -12,7 +12,6 @@ remove_browser() {
         ${TMOE_REMOVAL_COMMAND} firefox-locale-zh-hans
         apt autopurge 2>/dev/null
         emerge -C firefox-bin firefox 2>/dev/null
-
     else
         printf '%s\n' '小声嘀咕：“妾身不在的时候，你一定要好好照顾好自己。” '
         printf "%s\n" "${YELLOW}按回车键确认卸载chromium${RESET}"

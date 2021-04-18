@@ -123,10 +123,7 @@ configure_vscode_server() {
     ################
     case "${CODE_SERVER_OPTION}" in
     0 | "") which_vscode_edition ;;
-    1)
-        pkill node
-        vscode_server_upgrade
-        ;;
+    1) vscode_server_upgrade ;;
     2) vscode_server_password ;;
     3) edit_code_server_config_manually ;;
     4)
@@ -256,11 +253,11 @@ vscode_server_password() {
 }
 #################
 vscode_server_remove() {
-    pkill node
     #service code-server stop 2>/dev/null
     printf "%s\n" "正在停止code-server进程..."
     printf "%s\n" "Stopping code-server..."
     #service vscode-server stop 2>/dev/null
+    pkill node
     printf "%s\n" "按回车键确认移除"
     printf "%s\n" "${YELLOW}Press enter to remove VSCode Server. ${RESET}"
     RETURN_TO_WHERE='configure_vscode_server'

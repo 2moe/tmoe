@@ -16,7 +16,10 @@ RUN apt update \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-debian" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux/ \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-debian" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n" "node" > environment/entrypoint \
     ; cd /root \
     ; printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt \
     ; printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt \

@@ -36,4 +36,4 @@ RUN apt update \
     ; apt clean
 
 EXPOSE 5902 36080
-CMD [ "/usr/local/bin/startvnc" ]
+CMD [ "/bin/zsh" ]

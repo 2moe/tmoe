@@ -31,4 +31,4 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo \
     ; dnf clean all
 
 EXPOSE 5902 36080
-CMD [ "/usr/local/bin/startvnc" ]
+CMD [ "/bin/zsh" ]

@@ -47,4 +47,4 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; pacman -Scc --noconfirm
 
 EXPOSE 5902 36080
-CMD [ "/usr/local/bin/startvnc" ]
+CMD [ "/bin/zsh" ]
