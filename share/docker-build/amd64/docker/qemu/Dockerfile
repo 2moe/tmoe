@@ -16,14 +16,14 @@ ENV HOME=/root \
 RUN apt update \
     ; apt dist-upgrade -y \
     ; dpkg --configure -a \
-    ; apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git \
+    ; apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git git-lfs \
     ; apt install -y whiptail curl eatmydata apt-utils procps \
     ; apt install -y --no-install-recommends neofetch nano lolcat \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; mkdir /opt/qemu-img \
     ; cd /opt/qemu-img \
-    ; git clone --depth=1 -b master https://github.com/2moe/alpine-qemu-image.git || git clone --depth=1 git://github.com/2moe/alpine-qemu-image.git \
+    ; git lfs clone --depth=1 -b master https://github.com/2moe/alpine-qemu-image.git || git lfs clone --depth=1 git://github.com/2moe/alpine-qemu-image.git \
     ; cd alpine-qemu-image \
     ; tar -Jxvf qcow2.tar.xz \
     ; mv *.qcow2 .. \

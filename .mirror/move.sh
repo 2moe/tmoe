@@ -10,7 +10,7 @@ case ${COUNT} in
 esac
 cp -a manager.sh .mirror/manager
 cp -a tool.sh .mirror/tool
-cp -a .gitignore debian.sh install.* tool.sh zsh.sh manager.sh Licenses share .mirror tools .config ~/github/github-linux
+cp -a .gitignore debian.sh install.sh tool.sh zsh.sh manager.sh Licenses share .mirror tools .config ~/github/github-linux
 cd ~/github/github-linux/.mirror
 ./github.sh
 #printf '%s\n' 'git commit -am '
