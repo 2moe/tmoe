@@ -1,5 +1,5 @@
-FROM amd64/rust:latest
-#VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
+FROM arm64v8/rust:latest
+VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \

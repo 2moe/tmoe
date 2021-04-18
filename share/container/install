@@ -1784,12 +1784,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			eatmydata apt install -y apt-utils 2>/dev/null || apt install -y apt-utils 2>/dev/null
 		fi
 
-		for i in curl wget;do
+		#for i in curl wget;do
+		i=curl
 			if [[ ! $(command -v ${i}) ]];then
 				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 				eatmydata apt install -y ${i} || apt install -y ${i}
 			fi
-		done
+		#done
 		if [[ ! -e /usr/sbin/update-ca-certificates ]];then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}ca-certificates${RESET}"
 			eatmydata apt install -y ca-certificates 2>/dev/null || apt install -y ca-certificates 2>/dev/null
