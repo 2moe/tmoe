@@ -82,6 +82,13 @@ if [[ ${UEFI_ENABLED} = true && ! -s "${UEFI_VARS_PFLASH}" ]]; then
     cp -fv "/usr/share/OVMF/OVMF_VARS.fd" "${UEFI_VARS_PFLASH}"
 fi
 ###########
+TMOE_LOCALE_FILE="/usr/local/etc/tmoe-linux/locale.txt"
+if [ -e "${TMOE_LOCALE_FILE}" ]; then
+    TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+else
+    TMOE_LANG="zh_CN.UTF-8"
+fi
+
 #02-1.CPU
 : <<\EOF
 USAGE:
@@ -496,10 +503,13 @@ run_tmoe_qemu_i440fx_machine() {
     set -- "${@}" "-smp" "${CPUS_NUM},sockets=${SOCKETS_NUM},cores=${CORES_NUM},threads=${THREADS_NUM}"
     ############################
     set_tmoe_qemu_memory_size() {
-        printf "%s\n" "检测到您启用了${YELLOW}自动分配内存${RESET}模式。"
+        printf "%s\n" "Memory capacity will be ${YELLOW}automatically allocated${RESET}."
+        case ${TMOE_LANG} in
+        zh_*UTF-8) printf "%s\n" "检测到您启用了${YELLOW}自动分配内存${RESET}模式。" ;;
+        esac
         FREE_MEMORY="$(free -m | awk '{print $NF}' | sed -n 2p)"
         TOTAL_MEMORY="$(free -m | awk '{print $2}' | sed -n 2p)"
-        printf "%s\n" "当前宿主机${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
+        printf "%s\n" "当前宿主机(HOST) ${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
         if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
             if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
                 MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
@@ -827,9 +837,17 @@ run_tmoe_qemu_i440fx_machine() {
     vnc)
         case ${VNC_STARTUP_PROMPT} in
         'true')
-            printf "%s\n" "正在启动vnc服务,本机vnc地址 ${GREEN}localhost:${VNC_PORT}${RESET}"
+            case ${TMOE_LANG} in
+            zh_*UTF-8) printf "%s\n" "正在启动vnc服务,本机vnc地址 ${GREEN}localhost:${VNC_PORT}${RESET}" ;;
+            *) printf "%s\n" "Starting vncserver,the vnc address is ${GREEN}localhost:${VNC_PORT}${RESET}" ;;
+            esac
             case ${VNC_LOCALHOST} in
-            true) printf "%s\n" "当前仅允许本机访问,如需允许局域网访问,则建议您修改配置并设置一个vnc密码。" ;;
+            true)
+                printf "%s\n" "Currently ${GREEN}only allow${RESET} ${YELLOW}localhost access${RESET}, if you want to allow LAN access, please modify the ${BLUE}startqemu${RESET} file"
+                case ${TMOE_LANG} in
+                zh_*UTF-8) printf "%s\n" "当前仅允许本机访问,如需允许局域网访问,则建议您修改配置并设置一个vnc密码。" ;;
+                esac
+                ;;
             *)
                 cat <<-EOF
 The LAN VNC address 局域网地址 ${TMOE_IP_ADDR}
@@ -930,10 +948,13 @@ run_tmoe_qemu_command() {
     set -- "${@}" "-smp" "${CPUS_NUM},sockets=${SOCKETS_NUM},cores=${CORES_NUM},threads=${THREADS_NUM}"
     ############################
     set_tmoe_qemu_memory_size() {
-        printf "%s\n" "检测到您启用了${YELLOW}自动分配内存${RESET}模式。"
+        printf "%s\n" "Memory capacity will be ${YELLOW}automatically allocated${RESET}."
+        case ${TMOE_LANG} in
+        zh_*UTF-8) printf "%s\n" "检测到您启用了${YELLOW}自动分配内存${RESET}模式。" ;;
+        esac
         FREE_MEMORY="$(free -m | awk '{print $NF}' | sed -n 2p)"
         TOTAL_MEMORY="$(free -m | awk '{print $2}' | sed -n 2p)"
-        printf "%s\n" "当前宿主机${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
+        printf "%s\n" "当前宿主机(HOST) ${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
         if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
             if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
                 MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
@@ -1272,13 +1293,22 @@ EOF
     true) VNC_IP_ADDR='127.0.0.1' ;;
     *) VNC_IP_ADDR='0.0.0.0' ;;
     esac
+
     case ${CONNECTION_TYPE} in
     vnc)
         case ${VNC_STARTUP_PROMPT} in
         'true')
-            printf "%s\n" "正在启动vnc服务,本机vnc地址 ${GREEN}localhost:${VNC_PORT}${RESET}"
+            case ${TMOE_LANG} in
+            zh_*UTF-8) printf "%s\n" "正在启动vnc服务,本机vnc地址 ${GREEN}localhost:${VNC_PORT}${RESET}" ;;
+            *) printf "%s\n" "Starting vncserver,the vnc address is ${GREEN}localhost:${VNC_PORT}${RESET}" ;;
+            esac
             case ${VNC_LOCALHOST} in
-            true) printf "%s\n" "当前仅允许本机访问,如需允许局域网访问,建议您设置一个vnc密码。" ;;
+            true)
+                printf "%s\n" "Currently ${GREEN}only allow${RESET} ${YELLOW}localhost access${RESET}, if you want to allow LAN access, please modify the ${BLUE}startqemu${RESET} file"
+                case ${TMOE_LANG} in
+                zh_*UTF-8) printf "%s\n" "当前仅允许本机访问,如需允许局域网访问,则建议您修改配置并设置一个vnc密码。" ;;
+                esac
+                ;;
             *)
                 cat <<-EOF
 The LAN VNC address 局域网地址 ${TMOE_IP_ADDR}

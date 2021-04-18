@@ -14,6 +14,7 @@ RUN apk update \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-alpine" > container.txt  \
     ; mkdir -p environment \
     ; printf "%s\n" "node" > environment/entrypoint \
+    ; chmod a+x environment/* \
     ; cd /root \
     ; printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt \
     ; printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt \

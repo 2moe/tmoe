@@ -27,9 +27,11 @@ RUN apt update \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=code_web-debian" > container.txt  \
     ; mkdir -p environment \
     ; printf "%s\n" "/usr/local/bin/code" > environment/entrypoint \
+    ; chmod -v a+x environment/* \
     ; printf "%s\n%s\n%s\n%s\n" '#!/usr/bin/env bash' "code-server &" "bat -ppnl yaml ~/.config/code-server/config.yaml || cat ~/.config/code-server/config.yaml" 'printf "You can type \033[32m%s\033[m or \033[32m%s\033[m to start it, type \033[32m%s\033[m to \033[31m%s\033[m it.\n" "code" "code-server" "pkill node" "stop"' > /usr/local/bin/code \
     ; chmod a+x /usr/local/bin/code \
     ; cd /root \
+    ; code-server --version \
     ; printf "%s\n" "CODE_VERSION='$(code-server --version)'" > version.txt \
     ; apt clean
 EXPOSE 8080

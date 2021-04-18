@@ -19,6 +19,7 @@ podman run -itd -p 5903:5902 --name arch-amd64-kde --env LANG=en_US.UTF-8 arch-k
 How to attach it?
 
 ```bash
+podman start arch-amd64-kde
 podman exec -it arch-amd64-kde /bin/zsh
 ```
 
@@ -56,13 +57,14 @@ podman run -itd -p 5903:5902 -p 36081:36080 --name debian-arm64-xfce --env LANG=
 How to start novnc?
 
 ```
+podman exec -it debian-arm64-xfce /bin/bash
 novnc
 ```
 
 How to connect to it?
 
-```
 Open your browser, and type the address:
+```
 localhost:36081
 ```
 
@@ -70,5 +72,5 @@ How to attach it?
 
 ```bash
 podman start debian-arm64-xfce
-podman exec -it debian-arm64-xfce /bin/bash
+podman attach debian-arm64-xfce
 ```
