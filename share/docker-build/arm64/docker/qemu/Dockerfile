@@ -16,8 +16,8 @@ ENV HOME=/root \
 RUN apt update \
     ; apt dist-upgrade -y \
     ; dpkg --configure -a \
-    ; apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git \
-    ; apt install -y whiptail curl eatmydata apt-utils procps \
+    ; apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git git-lfs \
+    ; apt install -y whiptail curl eatmydata apt-utils procps iproute2 \
     ; apt install -y --no-install-recommends neofetch nano lolcat \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
@@ -44,6 +44,7 @@ RUN apt update \
     -e "s@^(GPU_MODEL=).*@\1${GPU_MODEL}@g" \
     -e "s@^(NET_CARD_02_ENABLED=).*@\1false@g" \
     -e "s@^(NET_CARD_03_ENABLED=).*@\1false@g" \
+    -e "s@^(SOUND_CARD_02_ENABLED=).*@\1false@g" \
     -e "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" \
     -i ${QEMU_FILE} \
     ; egrep --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=|^RTC_BASE=|^GPU_MODEL=" ${QEMU_FILE} \
