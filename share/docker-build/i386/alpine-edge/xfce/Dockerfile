@@ -25,5 +25,5 @@ RUN apk update \
     ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null \
     ; rm -rfv /tmp/* ~/.vnc/*passwd
 #apk -v cache clean
-
+EXPOSE 5902 36080
 CMD [ "/usr/local/bin/startx11vnc" ]

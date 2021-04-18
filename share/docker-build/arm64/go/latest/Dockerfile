@@ -17,7 +17,13 @@ RUN apt update \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=go_nogui-debian" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=go_nogui-debian" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n%s\n" 'export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"' "export GOPATH=/go" > environment/container.env \
+    ; cd /root \
+    ; printf "%s\n" "GO_VERSION='$(go version)'" > version.txt \
+    ; cat version.txt \
     ; apt clean
 # ENV PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 #     GOPATH=/go

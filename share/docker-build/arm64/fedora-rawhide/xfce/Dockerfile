@@ -30,4 +30,5 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo \
     ; rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null \
     ; dnf clean all
 
+EXPOSE 5902 36080
 CMD [ "/usr/local/bin/startvnc" ]

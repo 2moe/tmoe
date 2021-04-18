@@ -41,6 +41,6 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; rm -rfv /tmp/* ~/.vnc/*passwd \
     ; pacman -R --noconfirm $(pacman -Qdtq) \
     ; rm -rfv /var/cache/pacman/pkg/* ~/.cache/* 2>/dev/null \
-    ; pacman -Scc --noconfirm 
+    ; pacman -Scc --noconfirm
 
-CMD [ "/usr/local/bin/startvnc" ]
+CMD [ "/bin/zsh" ]

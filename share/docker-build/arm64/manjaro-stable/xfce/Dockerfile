@@ -44,4 +44,5 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; rm -rfv /var/cache/pacman/pkg/* ~/.cache/* 2>/dev/null \
     ; pacman -Scc --noconfirm 
 
+EXPOSE 5902 36080
 CMD [ "/usr/local/bin/startvnc" ]

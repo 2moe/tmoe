@@ -9,9 +9,14 @@ RUN apk update \
     ; apk add sudo tar grep curl wget bash tzdata newt \
     ; ln -svf /usr/share/zoneinfo/UTC /etc/localtime \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=ruby_nogui-alpine" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=ruby_nogui-alpine" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/bundle/bin${PATH:+:${PATH}}"' "export GEM_HOME=/usr/local/bundle" "export BUNDLE_SILENCE_ROOT_WARNING=1" "export BUNDLE_APP_CONFIG=/usr/local/bundle" > environment/container.env \
+    ; printf "%s\n" "irb" > environment/entrypoint \
     ; cd /root \
     ; printf "%s\n" "RUBY_VERSION='$(ruby --version)'" > version.txt \
+    ; cat version.txt \
     ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null
 #apk -v cache clean
 

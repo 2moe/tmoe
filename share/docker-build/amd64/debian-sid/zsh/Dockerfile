@@ -29,4 +29,4 @@ RUN apt update \
     ; rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null \
     ; apt clean
 
-CMD [ "/usr/local/bin/startvnc" ]
+CMD [ "/bin/zsh" ]

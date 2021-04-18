@@ -10,7 +10,10 @@ RUN apk update \
     ; apk add sudo tar grep curl wget bash tzdata newt \
     ; ln -svf /usr/share/zoneinfo/UTC /etc/localtime \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-alpine" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-alpine" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/cargo/bin${PATH:+:${PATH}}"' "export  RUSTUP_HOME=/usr/local/rustup" "export CARGO_HOME=/usr/local/cargo" > environment/container.env \
     ; cd /root \
     ; printf "%s\n" "RUSTUP_VERSION='$(rustup --version)'" > version.txt \
     ; printf "%s\n" "CARGO_VERSION='$(cargo --version)'" >> version.txt \

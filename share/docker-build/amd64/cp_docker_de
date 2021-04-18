@@ -12,7 +12,9 @@ for i in $(ls . | grep -v cp_docker); do
         cp -pfv ${i}/xfce/Dockerfile ${i}/zsh
         sed -i -E "s@(auto-install-gui)-xfce@\1-${DE}@g" ${i}/zsh/Dockerfile
         sed -i "s@_gui-xfce@\_nogui-zsh@g" ${i}/zsh/Dockerfile
-        sed -i '/install-gui.sh/d;/AUTO_INSTALL_GUI/d' ${i}/zsh/Dockerfile
+        sed -i '/install-gui.sh/d;/AUTO_INSTALL_GUI/d;/EXPOSE 5902/d' ${i}/zsh/Dockerfile
+        sed -i -e 's@"/usr/local/bin/startvnc"@"/bin/zsh"@' \
+            -e 's@"/usr/local/bin/startx11vnc"@"/bin/zsh"@' ${i}/zsh/Dockerfile
         #cat ${i}/${DE}/Dockerfile
     fi
 done

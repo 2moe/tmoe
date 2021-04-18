@@ -15,9 +15,14 @@ RUN apt update \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=ruby_nogui-debian" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=ruby_nogui-debian" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/bundle/bin${PATH:+:${PATH}}"' "export GEM_HOME=/usr/local/bundle" "export BUNDLE_SILENCE_ROOT_WARNING=1" "export BUNDLE_APP_CONFIG=/usr/local/bundle" > environment/container.env \
+    ; printf "%s\n" "irb" > environment/entrypoint \
     ; cd /root \
     ; printf "%s\n" "RUBY_VERSION='$(ruby --version)'" > version.txt \
+    ; cat version.txt \
     ; apt clean
 # ENV PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 #     RUBY_MAJOR=3.0 \

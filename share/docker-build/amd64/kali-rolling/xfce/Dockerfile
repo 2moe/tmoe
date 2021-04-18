@@ -35,4 +35,5 @@ RUN apt update \
     ; rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null \
     ; apt clean
 
+EXPOSE 5902 36080
 CMD [ "/usr/local/bin/startvnc" ]

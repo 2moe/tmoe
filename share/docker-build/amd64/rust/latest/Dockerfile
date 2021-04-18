@@ -16,7 +16,10 @@ RUN apt update \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-debian" > /usr/local/etc/tmoe-linux/container.txt  \
+    ; cd /usr/local/etc/tmoe-linux \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-debian" > container.txt  \
+    ; mkdir -p environment \
+    ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/cargo/bin${PATH:+:${PATH}}"' "export  RUSTUP_HOME=/usr/local/rustup" "export CARGO_HOME=/usr/local/cargo" > environment/container.env \
     ; cd /root \
     ; printf "%s\n" "RUSTUP_VERSION='$(rustup --version)'" > version.txt \
     ; printf "%s\n" "CARGO_VERSION='$(cargo --version)'" >> version.txt \
