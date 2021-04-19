@@ -14,7 +14,7 @@ RUN apk update \
     ; cd /usr/local/etc/tmoe-linux \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=go_nogui-alpine" > container.txt  \
     ; mkdir -p environment \
-    ; printf "%s\n" "export PATH=/go/bin:/usr/local/go/bin${PATH:+:${PATH}}" "export GOPATH=/go" > environment/container.env \
+    ; printf "%s\n" 'export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"' "export GOPATH=/go" > environment/container.env \
     ; chmod a+x environment/* \
     ; cd /root \
     ; printf "%s\n" "GO_VERSION='$(go version)'" > version.txt \
