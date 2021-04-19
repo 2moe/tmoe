@@ -1,1 +1,0 @@
-if [ $(command -v ps) ];then ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux|tail|grep' | tail -n 10 ;fi
