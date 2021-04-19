@@ -19,7 +19,7 @@ RUN apt update \
     ; cd /usr/local/etc/tmoe-linux \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-debian" > container.txt  \
     ; mkdir -p environment \
-    ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/cargo/bin${PATH:+:${PATH}}"' "export  RUSTUP_HOME=/usr/local/rustup" "export CARGO_HOME=/usr/local/cargo" > environment/container.env \
+    ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/cargo/bin${PATH:+:${PATH}}"' "export RUSTUP_HOME=/usr/local/rustup" "export CARGO_HOME=/usr/local/cargo" > environment/container.env \
     ; chmod a+x environment/* \
     ; cd /root \
     ; printf "%s\n" "RUSTUP_VERSION='$(rustup --version)'" > version.txt \

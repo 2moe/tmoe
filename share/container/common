@@ -64,7 +64,7 @@ install_gnu_linux_container() {
 ################################################
 check_and_view_the_eula() {
 	case ${TMOE_CHROOT} in
-	false) rm -f ~/.Chroot-Container-Detection-File ${CONFIG_FOLDER}/chroot_container 2>/dev/null ;;
+	false) rm -f ${CONFIG_FOLDER}/chroot_container 2>/dev/null ;;
 	true) touch ${CONFIG_FOLDER}/chroot_container ;;
 	esac
 

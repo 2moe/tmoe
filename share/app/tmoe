@@ -97,6 +97,7 @@ tmoe_main() {
 	21.04) DISTRO_CODE='hirsute' ;;
 	20.04) DISTRO_CODE='focal' ;;
 	18.04) DISTRO_CODE='bionic' ;;
+	al | ap) DISTRO_CODE="alpine" ;; #This is not DISTRO_NAME
 	8s) DISTRO_CODE='8-Stream' ;;
 	9s) DISTRO_CODE='9-Stream' ;;
 	s) DISTRO_CODE='sid' ;;

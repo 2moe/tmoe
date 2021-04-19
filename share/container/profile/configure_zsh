@@ -6,15 +6,22 @@ tmoe_container_zsh_main() {
 		set_terminal_color
 		set_tmoe_zsh_env
 		check_tmoe_locale_file
-		do_you_want_to_configure_tmoe_zsh
+		export_tmoe_env
+		[[ ! $(command -v chpasswd) ]] || do_you_want_to_create_a_new_user
+		[[ ${AUTO_CONFIGURE} = false ]] || do_you_want_to_configure_tmoe_zsh #
 		check_tmoe_linux_tool
 		copy_git_status
-		auto_configure_tmoe_tools
+		[[ ${AUTO_CONFIGURE} = false ]] || auto_configure_tmoe_tools #
 		lnk_startvnc
 		check_ps_command
 		create_zlogin_file
 		fix_sudo
-		auto_configure_tmoe_tool_02
+		if [[ ${AUTO_CONFIGURE} = false ]]; then
+			[[ ! -x ${ENV_DIR}/entrypoint ]] || ${ENV_DIR}/entrypoint
+			exec bash
+			exit 0
+		fi
+		[[ ${AUTO_CONFIGURE} = false ]] || auto_configure_tmoe_tool_02 #
 		;;
 	esac
 }
@@ -50,14 +57,28 @@ set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	if [ -s /usr/local/etc/tmoe-linux/container.txt ]; then
-		#.dockerenv
-		change_shell_to_bin_zsh
-		if [[ $(command -v startxfce4) ]]; then
-			auto_remove_proot_xfce4_power_manager
-		fi
+	CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
+	ENV_DIR="${TMOE_LINUX_DIR}/environment"
+}
+check_container_name() {
+	CONTAINER_NAME=$(cat ${CONTAINER_TXT} | awk -F '=' '{print $2}')
+	case ${CONTAINER_NAME} in
+	*nogui*zsh) AUTO_CONFIGURE=true ;;
+	*nogui* | code_web-*) AUTO_CONFIGURE=false ;;
+	*) AUTO_CONFIGURE=true ;;
+	esac
+}
+export_tmoe_env() {
+	mkdir -p ${ENV_DIR}
+	if [ -d /tmp/profile ]; then
+		cp /tmp/profile/login ${ENV_DIR}
+		chmod a+x -R ${ENV_DIR}
+		source /tmp/profile/export_env
+		cp -vf /tmp/profile/proot_systemctl /tmp/profile/ps /etc/profile.d/permanent/
+		rm -rfv /tmp/profile
 	fi
 }
+#####################
 set_terminal_color() {
 	RED=$(printf '\033[31m')
 	GREEN=$(printf '\033[32m')
@@ -77,6 +98,14 @@ check_tmoe_locale_file() {
 	fi
 	if [[ $(command -v debian-i) && ! $(command -v tmoe) ]]; then
 		cp -pf $(command -v debian-i) /usr/local/bin/tmoe
+	fi
+	if [ -s ${CONTAINER_TXT} ]; then
+		#.dockerenv
+		change_shell_to_bin_zsh
+		check_container_name
+		if [[ $(command -v startxfce4) ]]; then
+			auto_remove_proot_xfce4_power_manager
+		fi
 	fi
 }
 #######
@@ -227,7 +256,7 @@ auto_configure_tmoe_tools() {
 		fi
 		set_your_vnc_passwd
 	else
-		if [ ! -s /usr/local/etc/tmoe-linux/container.txt ]; then
+		if [ ! -s ${CONTAINER_TXT} ]; then
 			if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
 				install_lolcat_and_neofetch
 			fi
@@ -346,8 +375,10 @@ configure_tmoe_zsh() {
 ############
 create_zlogin_file() {
 	cd ${HOME}
-	cp .bash_login .zlogin
-	sed -i '/source ~\/\.profile/d' .zlogin
+	if [ -e .bash_login ]; then
+		cp .bash_login .zlogin
+		sed -i '/source ~\/\.profile/d' .zlogin
+	fi
 }
 #########################
 tmoe_tips_6_zh() {
@@ -467,7 +498,7 @@ git_clone_tmoe_linux() {
 	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
 	mkdir -pv ${TMOE_LINUX_DIR}
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
-	printf "%s\n" "github.com/2moe/tmoe-linux"
+	printf "%s\n" "gitee.com/mo2/linux"
 	if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
 		rm -rv ${TMOE_GIT_DIR} 2>/dev/null
 		git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
@@ -521,4 +552,102 @@ git_clone_tmoe_linux() {
 	done
 }
 ###################
+do_you_want_to_create_a_new_user() {
+	case ${TMOE_LANG} in
+	zh_*UTF-8)
+		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
+			TIPS_01="请输入用户名(可以为英文或数字,不能为特殊字符)\n please type the user name."
+			please_type_the_user_name
+		fi
+		;;
+	*)
+		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want create a new sudo user?' 0 0); then
+			TIPS_01="Please type the user name."
+			please_type_the_user_name
+		fi
+		;;
+	esac
+}
+please_type_the_user_name() {
+	USER_NAME=$(whiptail --inputbox "${TIPS_01}" 0 0 --title "USER NAME" 3>&1 1>&2 2>&3)
+	if [[ "$?" != "0" || -z "${USER_NAME}" ]]; then
+		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
+		read
+		do_you_want_to_create_a_new_user
+	elif [[ ${USER_NAME} = root ]]; then
+		printf "%s\n" "Sorry,please re-enter.Press enter to return."
+		read
+		do_you_want_to_create_a_new_user
+	elif [[ ! ${USER_NAME} =~ ^[0-9A-Za-z]+$ ]]; then
+		printf "%s\n" "检测到特殊字符,请输入英文或数字,请勿输入特殊字符。"
+		printf "%s\n" "Please re-enter.Press enter to return"
+		read
+		please_type_the_user_name
+	else
+		useradd -m "${USER_NAME}"
+		please_type_the_passwd
+	fi
+}
+###################
+please_type_the_passwd() {
+	PASSWORD_01=$(whiptail --passwordbox "Please type the password" 9 40 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	if [[ "$?" != "0" || -z "${PASSWORD_01}" ]]; then
+		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
+		read
+		please_type_the_passwd
+	else
+		please_retype_the_password
+	fi
+}
+please_retype_the_password() {
+	PASSWORD_02=$(whiptail --passwordbox "Please retype the password" 9 40 --title "PASSWORD" 3>&1 1>&2 2>&3)
+	if [[ "$?" != "0" || -z "${PASSWORD_02}" ]]; then
+		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
+		read
+		please_retype_the_passwd
+	elif [[ ${PASSWORD_01} != ${PASSWORD_02} ]]; then
+		printf "%s\n" "${RED}Sorry${RESET}, the two passwords are ${PURPLE}inconsistent${RESET}"
+		printf "%s\n" "Please re-enter.Press enter to return"
+		read
+		do_you_want_to_create_a_new_user
+	else
+		printf "%s\n" "${USER_NAME}:${PASSWORD_02}" | sudo chpasswd
+		unset PASSWORD_01 PASSWORD_02
+		TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
+		#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
+		if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
+			sed -i "$ a ${USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+		else
+			sed -i "${TMOE_ROOT_SUDO_LINE}a ${USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+		fi
+		case ${TMOE_CHROOT} in
+		true)
+			#usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin ${TMOE_USER_NAME} 2>/dev/null
+			usermod -a -G aid_system,aid_radio,aid_bluetooth,aid_graphics,aid_input,aid_audio,aid_camera,aid_log,aid_compass,aid_mount,aid_wifi,aid_adb,aid_install,aid_media,aid_dhcp,aid_sdcard_rw,aid_vpn,aid_keystore,aid_usb,aid_drm,aid_mdnsr,aid_gps,aid_media_rw,aid_mtp,aid_drmrpc,aid_nfc,aid_sdcard_r,aid_clat,aid_loop_radio,aid_media_drm,aid_package_info,aid_sdcard_pics,aid_sdcard_av,aid_sdcard_all,aid_logd,aid_shared_relro,aid_dbus,aid_tlsdate,aid_media_ex,aid_audioserver,aid_metrics_coll,aid_metricsd,aid_webserv,aid_debuggerd,aid_media_codec,aid_cameraserver,aid_firewall,aid_trunks,aid_nvram,aid_dns,aid_dns_tether,aid_webview_zygote,aid_vehicle_network,aid_media_audio,aid_media_video,aid_media_image,aid_tombstoned,aid_media_obb,aid_ese,aid_ota_update,aid_automotive_evs,aid_lowpan,aid_hsm,aid_reserved_disk,aid_statsd,aid_incidentd,aid_secure_element,aid_lmkd,aid_llkd,aid_iorapd,aid_gpu_service,aid_network_stack,aid_shell,aid_cache,aid_diag,aid_oem_reserved_start,aid_oem_reserved_end,aid_net_bt_admin,aid_net_bt,aid_inet,aid_net_raw,aid_net_admin,aid_net_bw_stats,aid_net_bw_acct,aid_readproc,aid_wakelock,aid_uhid,aid_everybody,aid_misc,aid_nobody,aid_app_start,aid_app_end,aid_cache_gid_start,aid_cache_gid_end,aid_ext_gid_start,aid_ext_gid_end,aid_ext_cache_gid_start,aid_ext_cache_gid_end,aid_shared_gid_start,aid_shared_gid_end,aid_isolated_start,aid_isolated_end,aid_user_offset ${USER_NAME}
+			;;
+		esac
+		sed -n p /etc/sudoers
+		do_you_want_to_set_it_as_the_default_user
+	fi
+}
+# Do you want to set it as the default user
+do_you_want_to_set_it_as_the_default_user() {
+	case ${TMOE_LANG} in
+	zh_*UTF-8)
+		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?本功能暂时仅适配proot容器\n重启容器后生效" 0 0); then
+			set_it_as_the_default_user
+		fi
+		;;
+	*)
+		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${USER_NAME} as the default user?\nThis feature currently only supports proot.\nTake effect after restarting the container" 0 0); then
+			set_it_as_the_default_user
+		fi
+		;;
+	esac
+}
+set_it_as_the_default_user() {
+	sed -i -E "s@^(PROOT_USER)=.*@\1=${USER_NAME}@" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	egrep --color=auto "^PROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+}
+###########################
 tmoe_container_zsh_main "$@"

@@ -31,7 +31,7 @@ RUN apt update \
     ; mkdir -pv /usr/local/etc/tmoe-linux/qemu/list \
     ; cd /usr/local/etc/tmoe-linux \
     ; git clone --depth=1 -b master https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=docker-nogui_qemu" > container.txt  \
+    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=docker_nogui-qemu" > container.txt  \
     ; mkdir -p environment \
     ; printf "%s\n" "${QEMU_FILE}" > environment/entrypoint \
     ; chmod -v a+x environment/* \

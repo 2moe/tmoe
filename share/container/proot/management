@@ -322,11 +322,13 @@ readme_of_gnu_linux_distro() {
 	*) SHORT_VIRT_TYPE='p' ;;
 	esac
 	case "${LONG_DISTRO_CODE}" in
+	alpine) SHORT_DISTRO_CODE='ap' ;;
 	focal) SHORT_DISTRO_CODE='20.04' ;;
 	groovy) SHORT_DISTRO_CODE='20.10' ;;
 	sid) SHORT_DISTRO_CODE='s' ;;
 	bionic) SHORT_DISTRO_CODE='18.04' ;;
 	rolling) SHORT_DISTRO_CODE='r' ;;
+	zsh) SHORT_DISTRO_CODE='z' ;;
 	8-Stream) SHORT_DISTRO_CODE='8s' ;;
 	9-Stream) SHORT_DISTRO_CODE='9s' ;;
 	"") SHORT_DISTRO_CODE="" ;;

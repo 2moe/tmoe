@@ -1,0 +1,51 @@
+mkdir -p /etc/zsh /etc/profile.d/permanent /etc/profile.d/temporary
+touch /usr/local/etc/tmoe-linux/environment/container.env
+
+export_to_zshenv() {
+    if [ ! -e /etc/zsh/zshenv ]; then
+        cat >/etc/zsh/zshenv <<-'EOF'
+# /etc/zsh/zshenv: system-wide .zshenv file for zsh(1).
+#
+# This file is sourced on all invocations of the shell.
+# If the -f flag is present or if the NO_RCS option is
+# set within this file, all other initialization files
+# are skipped.
+#
+# This file should contain commands to set the command
+# search path, plus other important environment variables.
+# This file should not contain commands that produce
+# output or assume the shell is attached to a tty.
+#
+# Global Order: zshenv, zprofile, zshrc, zlogin
+
+if [[ -z "$PATH" || "$PATH" == "/bin:/usr/bin" ]]; then
+    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/games"
+fi
+[[ ! -r /usr/local/etc/tmoe-linux/environment/container.env ]] || source /usr/local/etc/tmoe-linux/environment/container.env
+EOF
+    elif ! grep -q 'environment/container.env' /etc/zsh/zshenv; then
+        printf "%s\n" "[[ ! -r /usr/local/etc/tmoe-linux/environment/container.env ]] || source /usr/local/etc/tmoe-linux/environment/container.env" >>/etc/zsh/zshenv
+    fi
+}
+export_to_zlogin() {
+    if [ ! -e /etc/zsh/zlogin ]; then
+        cat >/etc/zsh/zlogin <<-'EOF'
+# /etc/zsh/zlogin: system-wide .zlogin file for zsh(1).
+#
+# This file is sourced only for login shells. It
+# should contain commands that should be executed only
+# in login shells. It should be used to set the terminal
+# type and run a series of external commands (fortune,
+# msgs, from, etc.)
+#
+# Global Order: zshenv, zprofile, zshrc, zlogin
+source /usr/local/etc/tmoe-linux/environment/login
+EOF
+    elif ! grep -q 'environment/login' /etc/zsh/zlogin; then
+        printf "%s\n" "[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login" >>/etc/zsh/zlogin
+    fi
+}
+ln -svf /usr/local/etc/tmoe-linux/environment/container.env /etc/profile.d/000_env.sh
+ln -svf /usr/local/etc/tmoe-linux/environment/login /etc/profile.d/001_login.sh
+export_to_zshenv
+export_to_zlogin

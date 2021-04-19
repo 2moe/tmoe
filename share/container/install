@@ -853,17 +853,15 @@ if [ ! -s "zsh-i.sh" ]; then
 	curl -Lo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/2/2'
 fi
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
-cp -f ${TMOE_GIT_DIR}/zsh.sh ./
+cp -f ${TMOE_SHARE_DIR}/container/profile/configure_zsh ./zsh.sh
 chmod a+x zsh.sh zsh-i.sh
 ${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
+${TMOE_CHROOT_PREFIX} cp -r ${TMOE_SHARE_DIR}/container/profile ${DEBIAN_CHROOT}/tmp
+${TMOE_CHROOT_PREFIX} chmod -R 1777 ${DEBIAN_CHROOT}/tmp/profile
 #chmod u+x ./*
 ###########
-if [ -f "${HOME}/.ALPINELINUXDetectionFILE" ]; then
-	${TMOE_CHROOT_PREFIX} mv -f "${HOME}/.ALPINELINUXDetectionFILE" ${DEBIAN_CHROOT}/tmp
-elif [ -f "${HOME}/.MANJARO_ARM_DETECTION_FILE" ]; then
-	rm -f ${HOME}/.MANJARO_ARM_DETECTION_FILE
-	${TMOE_CHROOT_PREFIX} sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
-fi
+MANJARO_LINUX=false
+[[ ${MANJARO_LINUX} = false ]] || ${TMOE_CHROOT_PREFIX} sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 ########
 if [ -f "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
@@ -897,120 +895,6 @@ true)
 	;;
 esac
 ##################
-#vnc自动启动
-cat >vnc-autostartup <<-'EndOfFile'
-	locale_gen_tmoe_language() {
-		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			cd /etc
-			sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" locale.gen
-			if grep -q ubuntu '/etc/os-release'; then
-				apt update
-				apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-			fi
-			if ! grep -qi "^${TMOE_LANG_HALF}" "locale.gen"; then
-				printf "%s\n" "" >>locale.gen
-				sed -i "s@^@#@g;s@##@#@g;$ a ${TMOE_LANG}" locale.gen 2>/dev/null
-			fi
-			locale-gen ${TMOE_LANG}
-		fi
-	}
-	############
-	check_tmoe_locale_file() {
-		TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-		if [ -e "${TMOE_LOCALE_FILE}" ]; then
-			TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-			TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-			TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
-			locale_gen_tmoe_language
-		fi
-	}
-	#############
-	vnc_warning() {
-		printf "\033[31m%s \033[34m%s\033[m\n" "Sorry,VNC server启动失败" ",请输tmoe t重新配置GUI。"
-		printf "%s\n" "Please type tmoe to start tmoe-linux tool and reconfigure desktop environment."
-	}
-	###########
-	LOCAL_BIN_DIR='/usr/local/bin'
-	if [ -e "/etc/X11/xinit/Xsession" ] && [ ! -s "${HOME}/.vnc/passwd" ]; then
-		check_tmoe_locale_file
-		cd /usr/local/etc/tmoe-linux/git
-		git fetch --depth=1
-		git reset --hard origin/master
-		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-		./tool.sh -passwd
-	fi
-	#########
-	notes_of_android_xsdl() {
-	    cat <<-'ENDOFSTARTXSDL'
-		检测到您在termux原系统中输入了startxsdl，已为您打开xsdl安卓app
-		Detected that you entered "startxsdl" from the termux original system, and the xsdl Android application has been opened.
-		9s后将为您启动xsdl
-		xsdl will start in 9 seconds
-	ENDOFSTARTXSDL
-	    sleep 7
-	}
-	#########
-	notes_of_startvnc(){ 
-	printf "%s\n" "Starting vnc server..."
-	}
-	#######
-	check_vnc_file(){
-			cd ${HOME}/.vnc
-		    for i in novnc startvnc startx11vnc startxsdl; do
-	        if [ -f ${i} ]; then
-	            rm ${i}
-	            case ${i} in
-	            startxsdl) notes_of_android_xsdl ;;
-				*) notes_of_startvnc ;;
-	            esac
-	            if [ -f ${LOCAL_BIN_DIR}/${i} ]; then
-					cd ${HOME}
-	                ${LOCAL_BIN_DIR}/${i}
-					printf "%s\n" "Remote desktop server has been started, enjoy it ！"
-	            else
-	                vnc_warning
-	            fi
-	        fi
-	    done
-	    unset i
-	}
-	if [ -e ${HOME}/.vnc ];then
-		check_vnc_file
-	fi
-	##########
-	cd ${HOME}
-	###########
-	ps -e 2>/dev/null | egrep -v 'bash|zsh|TMOE_PROOT|TMOE_CHROOT|tmoe-linux|tail|grep' | tail -n 10
-	############
-	case ${TMOE_PROOT} in
-	true)
-	systemctl() {
-		case ${TMOE_PROOT} in
-		true) printf "%s\n" "Running in proot, ignoring request." ;;
-		esac
-		case "${#}" in
-		0) /bin/systemctl ;;
-		2)
-			printf "%s\n" "service $2 $1"
-			if [ -e "/usr/sbin/service" ]; then
-				/usr/sbin/service $2 $1
-			elif [ -e "/sbin/service" ]; then
-				/sbin/service $2 $1
-			else
-				/bin/systemctl $1 $2
-			fi
-			;;
-		*)
-			set -- "/bin/systemctl" "${@}"
-			"${@}"
-			;;
-		esac
-	}
-	;;
-	esac
-	[[ ! -s ~/.profile ]] || source ~/.profile
-	typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-EndOfFile
 #case ${TMOE_CHROOT} in
 #true)
 #rm -f /run/dbus/pid 2>/dev/null
@@ -1058,8 +942,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	###############
 	unset TMOE_GITHUB
 	 TMOE_GITHUB=true
-	# sed -i '1 r ~/vnc-autostartup' ~/.bash_login
-	cp -f vnc-autostartup .bash_login
 	if ! grep -q "localhost" /etc/hosts 2>/dev/null; then
 	cat >>/etc/hosts <<-EOF
 		127.0.0.1       localhost
@@ -1585,7 +1467,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null;then
 		cd ~
-		rm -f ~/.zlogin ~/.profile vnc-autostartup zsh.sh zsh-i.sh 2>/dev/null
+		rm -f ~/.zlogin ~/.profile zsh.sh zsh-i.sh 2>/dev/null
 		[[ ! -e ~/.profile.bak ]] || mv -f ~/.profile.bak ~/.profile 2>/dev/null
 		for i in zsh bash sh su;do
 			if [[ $(command -v ${i}) ]];then
@@ -1632,25 +1514,29 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 	done
 	########################
-	alpine_linux_configure() {
-		[[ ! -s "/tmp/.ALPINELINUXDetectionFILE" ]] || rm -f "/tmp/.ALPINELINUXDetectionFILE"
-	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
-	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
-			cat /etc/apk/repositories
-			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt procps${RESET}"
-	        apk update
-			apk upgrade
-	        apk add bash tzdata newt procps
-	    fi
-	    rm -f ~/.profile vnc-autostartup ~/.zlogin
-	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
-	    if grep -q 'OpenWrt' "/etc/os-release"; then
-	        mkdir -pv /var/lock/
+	configure_openwrt(){
+			mkdir -pv /var/lock/
 	        touch /var/lock/opkg.lock
 	        opkg update
 	        opkg install libustream-openssl ca-bundle ca-certificates bash dialog whiptail
 			printf "%s\n" "export PATH=\${PATH}:/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" >> ~/.zshenv
+			rm -f ~/.profile ~/.zlogin 2>/dev/null
+		    mv -f ~/.profile.bak ~/.profile 2>/dev/null
+			exec bash zsh.sh
+			exit 0
+	}
+	alpine_linux_configure() {
+	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
+	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
+			cat /etc/apk/repositories
+			#printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt procps${RESET}"
+			printf "%s\n" "${GREEN}apk ${YELLOW}upgrade${RESET}"
+	        apk update
+			apk upgrade
+	        apk add bash tzdata newt procps sudo
 	    fi
+	    rm -f ~/.profile ~/.zlogin 2>/dev/null
+	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
 		#printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
 		#neofetch
 	    exec bash zsh.sh
@@ -1682,13 +1568,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		zypper in -y translation-update-${TMOE_LANG_HALF}
 	}
 	################################
-	if [ -f "/tmp/.ALPINELINUXDetectionFILE" ]; then
-	    alpine_linux_configure
-	elif grep -q 'openSUSE' "/etc/os-release"; then
+	if grep -q 'openSUSE' "/etc/os-release"; then
 	    opensuse_linux_repo
 		zypper in -y newt
 	elif grep -q 'Alpine Linux' "/etc/issue" 2>/dev/null; then
 		alpine_linux_configure
+	elif grep -q 'OpenWrt' "/etc/os-release"; then
+	    configure_openwrt
 	fi
 	##############################
 	if [[ $(command -v apt) ]];then
@@ -1946,7 +1832,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	printf "%s\n" "Welcome to Debian GNU/Linux."
 	sed -n p /etc/issue 2>/dev/null || sed -n p /etc/os-release
 	uname -a
-	rm -f vnc-autostartup .profile ~/.zlogin
+	rm -f .profile ~/.zlogin 2>/dev/null 
 	if [ -f ".profile.bak" ]; then
 	    mv -f .profile.bak .profile
 	fi
@@ -2153,7 +2039,7 @@ case ${TMOE_CHROOT} in
 true)
 	${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/root/.bash_profile ${DEBIAN_CHROOT}/root/.bash_login
 	${TMOE_CHROOT_PREFIX} mv ${DEBIAN_CHROOT}/root/.profile ${DEBIAN_CHROOT}/root/.profile.bak 2>/dev/null
-	${TMOE_CHROOT_PREFIX} cp vnc-autostartup .profile .zlogin ${DEBIAN_CHROOT}/root
+	${TMOE_CHROOT_PREFIX} cp .profile .zlogin ${DEBIAN_CHROOT}/root
 	;;
 esac
 #sed -i '1 r vnc-autostartup' ./.bash_login

@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4502,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4503,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -61,7 +61,7 @@ tmoe_manager_env() {
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
-	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
+	TMOE_GIT_URL="gitee.com/mo2/linux"
 	AK2_GIT_URL="https://gitee.com/ak2"
 	TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues"
 	if [[ -e ${TMOE_GIT_DIR}/.git ]]; then

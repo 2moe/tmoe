@@ -1,0 +1,24 @@
+case ${TMOE_PROOT} in
+true)
+    systemctl() {
+        printf "%s\n" "Running in proot, ignoring request."
+        case "${#}" in
+        0) /bin/systemctl ;;
+        2)
+            printf "%s\n" "service $2 $1"
+            if [ -e "/usr/sbin/service" ]; then
+                /usr/sbin/service $2 $1
+            elif [ -e "/sbin/service" ]; then
+                /sbin/service $2 $1
+            else
+                /bin/systemctl $1 $2
+            fi
+            ;;
+        *)
+            set -- "/bin/systemctl" "${@}"
+            "${@}"
+            ;;
+        esac
+    }
+    ;;
+esac

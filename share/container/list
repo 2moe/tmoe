@@ -9,7 +9,6 @@ choose_which_gnu_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	check_rootfs_dir
 	[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
-	rm -f ~/.ALPINELINUXDetectionFILE 2>/dev/null
 	unset NODE02_ENABLED WEEKLY_BUILD_CONTAINER
 	choose_which_gnu_linux_distro_ja() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "GNU/Linuxディストリビューションを選択してください" 0 50 0 \
@@ -95,7 +94,89 @@ choose_which_gnu_linux_distro() {
 	exit 0
 }
 ##############################
+set_service_container_env_01() {
+	DISTRO_CODE="${DESKTOP}"
+	DISTRO_NAME_02="${DISTRO_NAME}"
+	NODE02_ENABLED=true
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
+	create_container_edition_txt
+	create_container_edition_txt_02
+	go_to_proot_management
+}
+set_service_container_env_02() {
+	DISTRO_CODE="${DESKTOP}"
+	DISTRO_NAME_02="${DISTRO_NAME}"
+	NODE02_ENABLED=true
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+	create_container_edition_txt
+	create_container_edition_txt_02
+	go_to_proot_management
+}
+set_service_container_env() {
+	case ${DESKTOP} in
+	alpine) set_service_container_env_02 ;;
+	latest | *) set_service_container_env_01 ;;
+	esac
+}
+#####################
+choose_latest_or_alpine() {
+	if (whiptail --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine will be more streamlined" 8 50); then
+		DESKTOP="latest"
+	else
+		DESKTOP="alpine"
+	fi
+}
 install_tmoe_moonthly_build_edition() {
+	choose_service_en() {
+		INSTALLDESKTOP=$(whiptail --title "CONTAINERS" --menu \
+			"Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
+			"1" "Go (Makes it easy to build simple&reliable app)" \
+			"2" "Rust(Blazingly fast and memory-efficient)" \
+			"3" "Visual Studio Code online server" \
+			"4" "Docker(Run docker via qemu)" \
+			"5" "Ruby(An interpreted,general-purpose lang)" \
+			"0" "🌚 back =￣ω￣=" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) choose_service_en ;;
+	*) choose_service_en ;;
+	esac
+	case "${INSTALLDESKTOP}" in
+	0 | "") choose_which_gnu_linux_distro ;;
+	1)
+		DISTRO_NAME="go"
+		choose_latest_or_alpine
+		;;
+	2)
+		DISTRO_NAME="rust"
+		choose_latest_or_alpine
+		;;
+	3)
+		DISTRO_NAME="code"
+		DESKTOP="latest"
+		;;
+	4)
+		DISTRO_NAME="docker"
+		DESKTOP="qemu"
+		;;
+	5)
+		DISTRO_NAME="ruby"
+		choose_latest_or_alpine
+		;;
+	esac
+
+	case ${ARCH_TYPE} in
+	arm64) WEEKLY_BUILD_CONTAINER=true ;;
+	*)
+		printf "%s\n" "Soory,this feature only supports arm64."
+		distro_does_not_support
+		;;
+	esac
+	set_service_container_env
+	press_enter_to_return
+	install_tmoe_moonthly_build_edition
+	: <<\EOF
 	printf "%s\n" "${YELLOW}PREVIEW:${RESET}"
 	printf "%s\n" "This category of containers will not automatically configure unnecessary steps."
 	printf "%s\n" "A service or an environment is a container."
@@ -105,7 +186,9 @@ install_tmoe_moonthly_build_edition() {
 	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
 	press_enter_to_return
 	choose_which_gnu_linux_distro
+EOF
 }
+##################################
 install_tmoe_weekly_build_edition() {
 	case ${ARCH_TYPE} in
 	amd64 | i386 | arm64 | armhf) WEEKLY_BUILD_CONTAINER=true ;;
@@ -176,7 +259,7 @@ install_tmoe_weekly_build_edition() {
 	install_tmoe_weekly_build_edition
 }
 request_weekly_build_version() {
-	TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues/22"
+	TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL="https://gitee.com/mo2/linux/issues/I2EAVQ"
 	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}"
 	if [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
 		cd /mnt/c/Users
@@ -1444,7 +1527,6 @@ git_clone_fedora_rootfs() {
 }
 ###################
 install_fedora_gnu_linux_distro() {
-	#touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='fedora'
 	TMOE_LINUX_CONTAINER_DISTRO='fedora'
 	CLOUD_ROOTFS=true
@@ -1500,7 +1582,6 @@ install_void_linux_distro() {
 }
 ##########################
 install_centos_linux_distro() {
-	#touch ~/.REDHATDetectionFILE
 	DISTRO_NAME='centos'
 	case "${ARCH_TYPE}" in
 	"armhf" | "i386")
@@ -1553,7 +1634,6 @@ install_gentoo_linux_distro() {
 }
 ###########################
 install_alpine_linux_distro() {
-	touch ~/.ALPINELINUXDetectionFILE
 	DISTRO_NAME='alpine'
 	#DISTRO_CODE='3.11'
 	DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/alpine/ | egrep -v 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
@@ -1608,7 +1688,6 @@ install_raspios_linux_distro() {
 	ARCH_TYPE="${NEW_TMOE_ARCH}"
 	create_container_edition_txt
 	go_to_proot_management
-	#touch ~/.RASPBIANARMHFDetectionFILE
 	printf "%s\n" "检测到您选择的是树莓派系统"
 	printf "%s\n" "已将您的架构临时识别为armhf"
 	printf "%s\n" "若您需要安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs.tar.xz文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${ROOTFS_DIR}${RESET}"
@@ -1646,13 +1725,13 @@ install_raspios_full_armhf_rootfs() {
 install_manjaro_linux_distro() {
 	case ${ARCH_TYPE} in
 	arm64)
-		touch ~/.MANJARO_ARM_DETECTION_FILE
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 			sed 's/debian system/manjaro system/g' |
 			sed 's:debian-sid:manjaro-stable:g' |
 			sed 's:debian/sid:manjaro/stable:g' |
 			sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
+			sed -E 's@^(MANJARO_LINUX=).*@\1true@g' |
 			sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
 		;;
 	amd64)
@@ -1673,6 +1752,7 @@ install_manjaro_linux_distro() {
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed "s/debian system/${DISTRO_NAME} system/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-stable:g" |
+			sed -E 's@^(MANJARO_LINUX=).*@\1true@g' |
 			sed "s:Debian GNU/Linux:Manjaro GNU/Linux:g")"
 		;;
 	*)
@@ -1690,7 +1770,6 @@ install_openwrt_linux_distro() {
 	DISTRO_NAME='openwrt'
 	create_container_edition_txt
 	go_to_proot_management
-	touch ~/.ALPINELINUXDetectionFILE
 	CONTAINER_REPO='https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/'
 	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | egrep -v 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
 	THE_LATEST_ROOTFS_REPO="${CONTAINER_REPO}${THE_LATEST_VERSION}/targets/"
@@ -1724,7 +1803,6 @@ install_slackware_linux_distro() {
 	create_container_edition_txt
 	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
 	cd ${ROOTFS_DIR}
-	#touch .SLACKDetectionFILE
 	case "${ARCH_TYPE}" in
 	amd64)
 		go_to_proot_management
