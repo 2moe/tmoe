@@ -75,7 +75,7 @@ export_tmoe_env() {
 		mv /tmp/profile/login ${ENV_DIR}
 		chmod a+x -R ${ENV_DIR}
 		source /tmp/profile/export_env
-		cp -vf /tmp/profile/* /etc/profile.d/permanent/
+		# cp -vf /tmp/profile/* /etc/profile.d/permanent/
 		rm -rfv /tmp/profile
 	fi
 }
