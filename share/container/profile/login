@@ -1,15 +1,17 @@
-if [ -d /etc/profile.d/permanent ]; then
+if [ $(ls /etc/profile.d/permanent/) ]; then
     for i in /etc/profile.d/permanent/*; do
         if [ -r ${i} ]; then
             source ${i}
         fi
     done
+fi
+if [ $(ls /etc/profile.d/temporary/) ]; then
     for i in /etc/profile.d/temporary/*; do
         if [ -r ${i} ]; then
             source ${i}
             unlink ${i}
         fi
     done
-    unset i
 fi
+unset i
 [[ ! -x /usr/local/etc/tmoe-linux/environment/entrypoint ]] || /usr/local/etc/tmoe-linux/environment/entrypoint

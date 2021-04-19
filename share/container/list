@@ -259,7 +259,7 @@ install_tmoe_weekly_build_edition() {
 	install_tmoe_weekly_build_edition
 }
 request_weekly_build_version() {
-	TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL="https://gitee.com/mo2/linux/issues/I2EAVQ"
+	TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues/22"
 	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}"
 	if [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
 		cd /mnt/c/Users
