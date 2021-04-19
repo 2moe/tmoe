@@ -17,6 +17,7 @@ tmoe_container_zsh_main() {
 		create_zlogin_file
 		fix_sudo
 		if [[ ${AUTO_CONFIGURE} = false ]]; then
+			[[ ! -r ${ENV_DIR}/container.env ]] || source ${ENV_DIR}/container.env
 			[[ ! -x ${ENV_DIR}/entrypoint ]] || ${ENV_DIR}/entrypoint
 			exec bash
 			exit 0
@@ -584,7 +585,12 @@ please_type_the_user_name() {
 		read
 		please_type_the_user_name
 	else
-		useradd -m "${USER_NAME}"
+		if [ $(command -v useradd) ]; then
+			useradd -m "${USER_NAME}"
+		else
+			adduser -D "${USER_NAME}"
+		fi
+
 		please_type_the_passwd
 	fi
 }
