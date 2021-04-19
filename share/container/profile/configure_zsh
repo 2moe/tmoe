@@ -62,7 +62,7 @@ set_tmoe_zsh_env() {
 	ENV_DIR="${TMOE_LINUX_DIR}/environment"
 }
 check_container_name() {
-	CONTAINER_NAME=$(cat ${CONTAINER_TXT} | awk -F '=' '{print $2}')
+	CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
 	case ${CONTAINER_NAME} in
 	*nogui*zsh) AUTO_CONFIGURE=true ;;
 	*nogui* | code_web-*) AUTO_CONFIGURE=false ;;
@@ -72,10 +72,10 @@ check_container_name() {
 export_tmoe_env() {
 	mkdir -p ${ENV_DIR}
 	if [ -d /tmp/profile ]; then
-		cp /tmp/profile/login ${ENV_DIR}
+		mv /tmp/profile/login ${ENV_DIR}
 		chmod a+x -R ${ENV_DIR}
 		source /tmp/profile/export_env
-		cp -vf /tmp/profile/proot_systemctl /tmp/profile/ps /etc/profile.d/permanent/
+		cp -vf /tmp/profile/* /etc/profile.d/permanent/
 		rm -rfv /tmp/profile
 	fi
 }
