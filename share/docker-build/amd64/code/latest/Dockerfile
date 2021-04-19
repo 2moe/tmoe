@@ -10,6 +10,7 @@ ENV HOME=/root \
 
 RUN apt update \
     ; apt dist-upgrade -y \
+    ; sed -E -i 's@(configure)@pre\1@g' /var/lib/dpkg/info/libc-bin.postinst \
     ; dpkg --configure -a \
     ; apt install -y sudo locales \
     ; apt install -y whiptail curl eatmydata apt-utils procps \

@@ -317,6 +317,7 @@ Next, I will introduce the meaning of each parameter.
     For example,"tmoe chroot"="tmoe c"
 
     "$1":
+        "ls:list installed containers"    
         "c:chroot:A chroot is an operation that changes the apparent root directory for the current running process and their children."
         "chroot:与宿主机共享相同的内核,硬件,进程空间和网络子系统"
         "p:proot - mount --bind and binfmt_misc without privilege/setupmount"

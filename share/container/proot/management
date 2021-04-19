@@ -345,6 +345,7 @@ readme_of_gnu_linux_distro() {
 	risc*) SHORT_ARCH='risc' ;;
 	esac
 	cat <<-EOF
+		${BOLD}${YELLOW}LIST INSTALLED CONTAINERS:${RESET} ${BLUE}tmoe ls${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ls${RESET}
 		${BOLD}${YELLOW}Full command:${RESET} ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		${BOLD}${YELLOW}Simplified command:${RESET}  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + tigervnc server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
@@ -353,6 +354,7 @@ readme_of_gnu_linux_distro() {
 		The default ${YELLOW}login shell${RESET} is ${GREEN}zsh${RESET}, if you want to start ${BLUE}bash${RESET},then type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}
 		Start ${BLUE}ash${RESET} as a login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
 		--------------------
+		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
 		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
 		精简命令为  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}

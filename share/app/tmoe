@@ -99,9 +99,8 @@ tmoe_main() {
 	18.04) DISTRO_CODE='bionic' ;;
 	8s) DISTRO_CODE='8-Stream' ;;
 	9s) DISTRO_CODE='9-Stream' ;;
-	ro) DISTRO_CODE='rolling' ;;
 	s) DISTRO_CODE='sid' ;;
-	r) DISTRO_CODE='rolling' ;;
+	r | ro) DISTRO_CODE='rolling' ;;
 	raw) DISTRO_CODE='rawhide' ;;
 	n | none) DISTRO_CODE='' ;;
 	x | amd64 | x64) ARCH_TYPE='amd64' ;;
@@ -120,7 +119,8 @@ tmoe_main() {
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
-	zsh) DISTRO_CODE="zsh" ;;
+	zs) TMOE_SHELL='/bin/zsh' ;;
+	z | zsh) DISTRO_CODE="zsh" ;;
 	*) DISTRO_CODE="$3" ;;
 	esac
 
@@ -140,7 +140,7 @@ tmoe_main() {
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
-	zsh) TMOE_SHELL='/bin/zsh' ;;
+	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
 	esac
 	case "$5" in
@@ -149,7 +149,7 @@ tmoe_main() {
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
-	zsh) TMOE_SHELL='/bin/zsh' ;;
+	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
 	esac
 	TMOE_PARAMETERS="$*"

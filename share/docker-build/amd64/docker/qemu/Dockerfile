@@ -15,20 +15,18 @@ ENV HOME=/root \
 
 RUN apt update \
     ; apt dist-upgrade -y \
+    ; sed -E -i 's@(configure)@pre\1@g' /var/lib/dpkg/info/libc-bin.postinst \
     ; dpkg --configure -a \
-    ; apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git git-lfs \
+    ; apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git \
     ; apt install -y whiptail curl eatmydata apt-utils procps iproute2 \
     ; apt install -y --no-install-recommends neofetch nano lolcat \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; mkdir /opt/qemu-img \
     ; cd /opt/qemu-img \
-    ; git clone --depth=1 -b master https://github.com/2moe/alpine-qemu-image.git || git clone --depth=1 git://github.com/2moe/alpine-qemu-image.git \
-    ; cd alpine-qemu-image \
+    ; curl -LO https://github.com/2moe/alpine-qemu-image/releases/download/latest/qcow2.tar.xz \
     ; tar -Jxvf qcow2.tar.xz \
-    ; mv *.qcow2 .. \
-    ; cd .. \
-    ; rm -rfv alpine-qemu-image \
+    ; rm -fv qcow2.tar.xz \
     ; cd /tmp \
     ; mkdir -pv /usr/local/etc/tmoe-linux/qemu/list \
     ; cd /usr/local/etc/tmoe-linux \
