@@ -186,9 +186,9 @@ After the upgrade is complete, you can type ${GREEN}code-server${RESET} to start
         grep '/tmp/startcode.tmp' ${HOME}/.bashrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.bashrc
         grep '/tmp/startcode.tmp' ${HOME}/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.zshrc
     }
-    if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
-        chmod +x /usr/local/bin/code-server-data/code-server 2>/dev/null
-    fi
+    #if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
+    chmod a+x /usr/local/bin/code-server-data/code-server 2>/dev/null
+    #fi
 
     cd /tmp
     rm -rvf .VSCODE_SERVER_TEMP_FOLDER
@@ -241,7 +241,7 @@ vscode_server_restart() {
 }
 #############
 vscode_server_password() {
-    TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\n Please enter the password.您的密码将以明文形式保存至~/.config/code-server/config.yaml" 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
+    TARGET_USERPASSWD=$(whiptail --inputbox "请设定访问密码\nPlease enter the password.您的密码将以明文形式保存至~/.config/code-server/config.yaml" 12 50 --title "PASSWORD" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_vscode_server
     elif [ -z "${TARGET_USERPASSWD}" ]; then

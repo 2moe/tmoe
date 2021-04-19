@@ -17,7 +17,7 @@ RUN apk update \
     ; printf "%s\n" "export PATH=/go/bin:/usr/local/go/bin${PATH:+:${PATH}}" "export GOPATH=/go" > environment/container.env \
     ; chmod a+x environment/* \
     ; cd /root \
-    ; printf "%s\n" "GO_VERSION='$(go --version)'" > version.txt \
+    ; printf "%s\n" "GO_VERSION='$(go version)'" > version.txt \
     ; cat version.txt \
     ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null
 #apk -v cache clean
