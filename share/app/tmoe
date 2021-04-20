@@ -227,7 +227,7 @@ create_and_move_temporary_script_01() {
 	fi
 	cat ${TMPDIR}/.tmoe_temporary_autostartup_script
 	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/startvnc"
+	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01"
 }
 start_tmoe_container() {
 	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
@@ -260,7 +260,7 @@ start_tmoe_container() {
 	if [[ -n ${EXEC_PROGRAM} && -z ${TEMPORARY_SCRIPT_FILE} ]]; then
 		case ${EXEC_PROGRAM} in
 		startx11vnc | startvnc)
-			${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+			# ${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
 			[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 			;;
 		no | novnc)
@@ -291,7 +291,7 @@ start_tmoe_container() {
 	if [[ -n ${TEMPORARY_SCRIPT_FILE} ]]; then
 		check_container_login_file_01
 		if [[ -e ${TEMPORARY_SCRIPT_FILE} ]]; then
-			${TMOE_PREFIX} cp -vf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+			${TMOE_PREFIX} cp -vf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_02"
 		else
 			create_and_move_temporary_script_01
 		fi

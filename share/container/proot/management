@@ -387,7 +387,10 @@ readme_of_gnu_linux_distro() {
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}XSDL/VcXsrv${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
 		容器的默认${YELLOW}登录SHELL${RESET}为${GREEN}zsh${RESET},若您需要使用其它${YELLOW}shell${RESET}，则请使用以下命令
 		临时使用${GREEN}bash${RESET}作为${YELLOW}登录SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}  
-		临时使用${GREEN}ash${RESET}作为${YELLOW}登录SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
+		临时使用${GREEN}ash${RESET}作为${YELLOW}登录SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET}
+
+		注:最后一个参数可以执行容器的指定命令。若为长命令，则请使用引号将最后一个参数包围起来。
+		例如：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "ls -lah /" ${RESET}
 		--------------------
 		${BOLD}额外拓展功能${RESET}
 		${YELLOW}（补全功能）${RESET}说明${RESET}
@@ -500,7 +503,7 @@ create_and_move_temporary_script_02() {
 	fi
 	# cat ${TMPDIR}/.tmoe_temporary_autostartup_script
 	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/startvnc"
+	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01"
 }
 ########
 exec_container_program() {
