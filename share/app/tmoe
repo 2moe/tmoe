@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #############################################
+# set -x
 tmoe_main() {
 	case "$1" in
 	p* | proot)
@@ -136,23 +137,25 @@ tmoe_main() {
 	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
 	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
 	risc*) ARCH_TYPE='riscv64' ;;
-	v*) EXEC_PROGRAM='startvnc' ;;
+	v | vnc) EXEC_PROGRAM='startvnc' ;;
 	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
+	"") ;;
 	*) EXEC_PROGRAM="${4}" ;;
 	esac
 	case "$5" in
-	v*) EXEC_PROGRAM='startvnc' ;;
+	v | vnc) EXEC_PROGRAM='startvnc' ;;
 	x | xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
 	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
+	"") ;;
 	*/*) TEMPORARY_SCRIPT_FILE="${5}" ;;
 	*) EXEC_PROGRAM="${5}" ;;
 	esac
@@ -256,7 +259,10 @@ start_tmoe_container() {
 
 	if [[ -n ${EXEC_PROGRAM} && -z ${TEMPORARY_SCRIPT_FILE} ]]; then
 		case ${EXEC_PROGRAM} in
-		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
+		startx11vnc | startvnc)
+			${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+			[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+			;;
 		no | novnc)
 			NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 			[[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080

@@ -157,14 +157,21 @@ start_gui_menu() {
 	2) start_gnu_linux_distro_x ;;
 	3) install_web_novnc ;;
 	4) start_gnu_linux_distro_x11vnc ;;
-	5 | 6)
-		printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
-		press_enter_to_return
-		start_gui_menu
+	5)
+		EXEC_PROGRAM='tightvnc'
+		startvnc_and_exec_program
+		;;
+	6)
+		EXEC_PROGRAM='tigervnc'
+		startvnc_and_exec_program
 		;;
 	esac
 }
 ##################
+startvnc_and_exec_program() {
+	[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+	exec_container_program
+}
 edit_container_startup_script() {
 	for i in editor vim nano vi; do
 		if [ $(command -v ${i}) ]; then
