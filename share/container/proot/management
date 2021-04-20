@@ -346,8 +346,21 @@ readme_of_gnu_linux_distro() {
 	mipsel) SHORT_ARCH='m' ;;
 	risc*) SHORT_ARCH='risc' ;;
 	esac
+	if [ "$(ls ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.* 2>/dev/null)" ]; then
+		for i in ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.*; do
+			if [ $(command -v bat) ]; then
+				bat -ppn ${i}
+			elif [ $(command -v batcat) ]; then
+				batcat -ppn ${i}
+			else
+				cat ${i}
+			fi
+			break
+		done
+	fi
 	cat <<-EOF
 		${BOLD}${YELLOW}LIST INSTALLED CONTAINERS:${RESET} ${BLUE}tmoe ls${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ls${RESET}
+		${BOLD}${YELLOW}Start the default container:${RESET} ${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}
 		${BOLD}${YELLOW}Full command:${RESET} ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		${BOLD}${YELLOW}Simplified command:${RESET}  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + tigervnc server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
@@ -357,6 +370,7 @@ readme_of_gnu_linux_distro() {
 		Start ${BLUE}ash${RESET} as a login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
 		--------------------
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
+		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET},若您的宿主shell环境为tmoe-zsh,则可简化为${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
 		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
 		精简命令为  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
