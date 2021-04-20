@@ -143,6 +143,7 @@ tmoe_main() {
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
+	*) EXEC_PROGRAM="${4}" ;;
 	esac
 	case "$5" in
 	v*) EXEC_PROGRAM='startvnc' ;;
@@ -152,6 +153,8 @@ tmoe_main() {
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
+	*/*) TEMPORARY_SCRIPT_FILE="${5}" ;;
+	*) EXEC_PROGRAM="${5}" ;;
 	esac
 	TMOE_PARAMETERS="$*"
 	start_tmoe_container
@@ -197,6 +200,32 @@ source_tmoe_env() {
 	[[ ! -s "${ACROSS_ARCH_FILE}" ]] || ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
 }
 ########
+check_container_login_file_01() {
+	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
+		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+		${TMOE_PREFIX} chmod -Rv 755 ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+	fi
+	if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
+		${TMOE_PREFIX} mkdir -pv ${CONTAINER_ZSH_DIR}
+		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/zlogin ${CONTAINER_ZLOGIN_FILE}
+		${TMOE_PREFIX} chmod -Rv 755 ${CONTAINER_ZSH_DIR}
+	elif ! grep -q 'environment/login' ${CONTAINER_ZLOGIN_FILE}; then
+		${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
+	fi
+}
+########
+create_and_move_temporary_script_01() {
+	if [[ -n ${EXEC_PROGRAM} ]]; then
+		printf "%s\n" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	else
+		printf "%s\n" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	fi
+	cat ${TMPDIR}/.tmoe_temporary_autostartup_script
+	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
+	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/startvnc"
+}
 start_tmoe_container() {
 	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
 	case ${TMOE_SHELL} in
@@ -224,7 +253,8 @@ start_tmoe_container() {
 	case ${TMOE_CONTAINER_HITOKOTO} in
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
-	if [[ -n ${EXEC_PROGRAM} ]]; then
+
+	if [[ -n ${EXEC_PROGRAM} && -z ${TEMPORARY_SCRIPT_FILE} ]]; then
 		case ${EXEC_PROGRAM} in
 		startx11vnc | startvnc) [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null ;;
 		no | novnc)
@@ -249,7 +279,16 @@ start_tmoe_container() {
 			#此处不要sleep
 			;;
 		esac
-		${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+		check_container_login_file_01
+		create_and_move_temporary_script_01
+	fi
+	if [[ -n ${TEMPORARY_SCRIPT_FILE} ]]; then
+		check_container_login_file_01
+		if [[ -e ${TEMPORARY_SCRIPT_FILE} ]]; then
+			${TMOE_PREFIX} cp -vf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+		else
+			create_and_move_temporary_script_01
+		fi
 	fi
 	case ${SYSTEMD_NSPAWN} in
 	true)

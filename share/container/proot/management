@@ -412,7 +412,7 @@ readme_of_gnu_linux_distro() {
 }
 ######
 if_container_is_not_installed() {
-	[[ -e ${DEBIAN_CHROOT} ]] || install_new_tmoe_gnu_linux_distro
+	[[ -e ${DEBIAN_CHROOT}/dev ]] || install_new_tmoe_gnu_linux_distro
 	case ${DEB_BOOT_STRAP} in
 	true) install_new_tmoe_gnu_linux_distro ;;
 	esac
@@ -461,21 +461,64 @@ normally_start_gnu_linux_distro() {
 		proot_management_menu
 	fi
 }
+#############################
+check_container_login_file_02() {
+	#env_02
+	TMOE_GNU_LINUX_CONTAINER_ENV_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment"
+	TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+	TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
+	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/etc/profile.d/temporary"
+	CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
+	CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
+
+	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
+		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+		${TMOE_PREFIX} chmod -Rv 755 ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+	fi
+	if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
+		${TMOE_PREFIX} mkdir -pv ${CONTAINER_ZSH_DIR}
+		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/zlogin ${CONTAINER_ZLOGIN_FILE}
+		${TMOE_PREFIX} chmod -Rv 755 ${CONTAINER_ZSH_DIR}
+	elif ! grep -q 'environment/login' ${CONTAINER_ZLOGIN_FILE}; then
+		${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
+	fi
+}
+create_and_move_temporary_script_02() {
+	if [[ -n ${EXEC_PROGRAM} ]]; then
+		printf "%s\n" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	else
+		printf "%s\n" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	fi
+	# cat ${TMPDIR}/.tmoe_temporary_autostartup_script
+	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
+	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/startvnc"
+}
+########
+exec_container_program() {
+	check_container_login_file_02
+	create_and_move_temporary_script_02
+	normally_start_gnu_linux_distro
+}
 start_gnu_linux_distro_tigervnc() {
 	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
-	normally_start_gnu_linux_distro
+	EXEC_PROGRAM="startvnc"
+	exec_container_program
 }
 start_gnu_linux_distro_x11vnc() {
 	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
-	normally_start_gnu_linux_distro
+	EXEC_PROGRAM="startx11vnc"
+	exec_container_program
 }
 start_gnu_linux_distro_x() {
 	[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
 	sleep 3
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
-	normally_start_gnu_linux_distro
+	EXEC_PROGRAM="startxsdl"
+	exec_container_program
 }
 install_web_novnc() {
 	#source ${TMOE_SHARE_DIR}/app/novnc
@@ -491,7 +534,8 @@ install_web_novnc() {
 		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
 	fi
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/novnc
-	normally_start_gnu_linux_distro
+	EXEC_PROGRAM="novnc"
+	exec_container_program
 }
 install_new_tmoe_gnu_linux_distro() {
 	check_tmoe_completion_version

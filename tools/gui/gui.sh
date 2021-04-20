@@ -4158,7 +4158,7 @@ x11vnc_onekey() {
     x11vnc_warning
     ################
     X11_OR_WAYLAND_DESKTOP='x11vnc'
-    configure_remote_desktop_enviroment
+    configure_remote_desktop_environment
 }
 #############
 remove_X11vnc() {
@@ -4455,9 +4455,9 @@ modify_xwayland_conf() {
     fi
 }
 ##################
-xwayland_desktop_enviroment() {
+xwayland_desktop_environment() {
     X11_OR_WAYLAND_DESKTOP='xwayland'
-    configure_remote_desktop_enviroment
+    configure_remote_desktop_environment
 }
 #############
 configure_xwayland() {
@@ -4477,7 +4477,7 @@ configure_xwayland() {
     case "${TMOE_OPTION}" in
     0 | "") modify_remote_desktop_config ;;
     1) xwayland_onekey ;;
-    2) xwayland_desktop_enviroment ;;
+    2) xwayland_desktop_environment ;;
     3) xwayland_pulse_server ;;
     4) remove_xwayland ;;
     esac
@@ -4610,7 +4610,7 @@ xwayland_onekey() {
 		xfce4-session
 	EndOFwayland
     chmod +x startw
-    xwayland_desktop_enviroment
+    xwayland_desktop_environment
     ###########################
     press_enter_to_return_configure_xwayland
     #此处的返回步骤并非多余
@@ -4648,9 +4648,9 @@ modify_xrdp_conf() {
     fi
 }
 #############
-xrdp_desktop_enviroment() {
+xrdp_desktop_environment() {
     X11_OR_WAYLAND_DESKTOP='xrdp'
-    configure_remote_desktop_enviroment
+    configure_remote_desktop_environment
 }
 #############
 configure_xrdp() {
@@ -4684,8 +4684,8 @@ configure_xrdp() {
         ;;
     2)
         X11_OR_WAYLAND_DESKTOP='xrdp'
-        #xrdp_desktop_enviroment
-        configure_remote_desktop_enviroment
+        #xrdp_desktop_environment
+        configure_remote_desktop_environment
         ;;
     3) xrdp_port ;;
     4) nano /etc/xrdp/xrdp.ini ;;
@@ -4725,7 +4725,7 @@ remove_xrdp() {
     ${TMOE_REMOVAL_COMMAND} xrdp
 }
 ################
-configure_remote_desktop_enviroment() {
+configure_remote_desktop_environment() {
     #15 60 5
     BETA_DESKTOP=$(whiptail --title "REMOTE_DESKTOP" --menu \
         "您想要配置哪个桌面？按方向键选择，回车键确认！\n Which desktop environment do you want to configure? " 0 0 0 \
