@@ -607,7 +607,7 @@ download_alpine_and_docker_x64_img_file() {
 		After entering the system,you should type ${GREEN}passwd${RESET} to change your password.
 		If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, you can type ${GREEN}ssh -p 2888 root@localhost${RESET}
 
-		您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker
+		您可以使用本镜像在宿主机为Android系统的设备上运行alpine_x64并使用docker
 		您可以直接使用vnc客户端连接，访问地址为localhost:5905
 		默认root密码为空。
 		请在登录完成后，输入${GREEN}passwd${RESET}修改root密码。

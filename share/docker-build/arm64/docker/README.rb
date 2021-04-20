@@ -9,7 +9,7 @@ puts "
 	If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, you can type \033[32m ssh -p 2888 root@localhost \033[m
 	If you can not connect to it, please run \033[36m ssh-keygen -f ~/.ssh/known_hosts -R '[localhost]:2888'\033[m
 
-	您可以使用本镜像在宿主机为Android系统的设备上运行aline_x64并使用docker
+	您可以使用本镜像在宿主机为Android系统的设备上运行alpine_x64并使用docker
 	您可以直接使用vnc客户端连接，默认访问地址为 \033[36m localhost:5905\033[m
 	默认root密码为空。
 	请在登录完成后，输入\033[32m passwd \033[0m修改root密码。
