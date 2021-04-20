@@ -549,7 +549,23 @@ install_weekly_build_container() {
 		;;
 	*) NODE_URL="${NODE01_URL}" ;;
 	esac
-	printf "%s\n" "本容器使用以下Dockerfile进行构建。"
+
+	if [ "$(ls ${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.* 2>/dev/null)" ]; then
+		for i in ${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.*; do
+			if [ $(command -v bat) ]; then
+				bat -ppn ${i}
+			elif [ $(command -v batcat) ]; then
+				batcat -ppn ${i}
+			else
+				cat ${i}
+			fi
+			break
+		done
+	fi
+	case ${TMOE_LANG} in
+	zh_*UTF-8) printf "%s\n" "本容器使用以下Dockerfile进行构建。" ;;
+	esac
+	printf "%s\n" "${BOLD}${YELLOW}Dockerfile:${RESET}"
 	DOCKERFILE="${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
 	printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
 	if [ $(command -v bat) ]; then
@@ -563,7 +579,9 @@ install_weekly_build_container() {
 		fi
 	done
 	BUILD_TXT="${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/build.txt"
-	printf "%s\n" "正在获取版本信息..."
+	case ${TMOE_LANG} in
+	zh_*UTF-8) printf "%s\n" "正在获取版本信息..." ;;
+	esac
 	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
 	ROOTFS_VERSION='latest02'
 
