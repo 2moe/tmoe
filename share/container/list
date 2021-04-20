@@ -134,7 +134,8 @@ install_tmoe_moonthly_build_edition() {
 			"2" "Rust(Blazingly fast and memory-efficient)" \
 			"3" "Visual Studio Code online server" \
 			"4" "Docker(Run docker via qemu)" \
-			"5" "Ruby(An interpreted,general-purpose lang)" \
+			"5" "Node.js(A back-end JavaScript runtime environment)" \
+			"6" "Ruby(An interpreted,general-purpose lang)" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -161,6 +162,10 @@ install_tmoe_moonthly_build_edition() {
 		DESKTOP="qemu"
 		;;
 	5)
+		DISTRO_NAME="node"
+		choose_latest_or_alpine
+		;;
+	6)
 		DISTRO_NAME="ruby"
 		choose_latest_or_alpine
 		;;

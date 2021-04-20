@@ -1,14 +1,16 @@
-if [ $(ls /etc/profile.d/permanent/) ]; then
+if [ "$(ls /etc/profile.d/permanent/ 2>/dev/null)" ]; then
     for i in /etc/profile.d/permanent/*; do
-        if [ -r ${i} ]; then
-            source ${i}
+        if [ -f ${i} ]; then
+            chmod 4755 ${i}
+            ${i}
         fi
     done
 fi
-if [ $(ls /etc/profile.d/temporary/) ]; then
+if [ "$(ls /etc/profile.d/temporary/ 2>/dev/null)" ]; then
     for i in /etc/profile.d/temporary/*; do
-        if [ -r ${i} ]; then
-            source ${i}
+        if [ -f ${i} ]; then
+            chmod 4755 ${i}
+            ${i}
             unlink ${i}
         fi
     done

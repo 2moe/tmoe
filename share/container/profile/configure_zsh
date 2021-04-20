@@ -11,8 +11,10 @@ tmoe_container_zsh_main() {
 		[[ ${AUTO_CONFIGURE} = false ]] || do_you_want_to_configure_tmoe_zsh #
 		check_tmoe_linux_tool
 		copy_git_status
-		[[ ${AUTO_CONFIGURE} = false ]] || auto_configure_tmoe_tools #
-		lnk_startvnc
+		if [[ ${AUTO_CONFIGURE} != false ]]; then
+			auto_configure_tmoe_tools #
+			lnk_startvnc              #
+		fi
 		check_ps_command
 		create_zlogin_file
 		fix_sudo
@@ -72,11 +74,20 @@ check_container_name() {
 export_tmoe_env() {
 	mkdir -p ${ENV_DIR}
 	if [ -d /tmp/profile ]; then
+		chmod a+r -R /tmp/profile
 		mv /tmp/profile/login ${ENV_DIR}
 		chmod a+x -R ${ENV_DIR}
 		source /tmp/profile/export_env
 		# cp -vf /tmp/profile/* /etc/profile.d/permanent/
 		rm -rfv /tmp/profile
+	fi
+
+	if [ "$(ls /root/README.*)" ]; then
+		for i in /root/README.*; do
+			mkdir -p ${TMOE_LINUX_DIR}/docs
+			cp -vf ${i} ${TMOE_LINUX_DIR}/docs
+			break
+		done
 	fi
 }
 #####################
@@ -151,9 +162,18 @@ do_you_want_to_configure_tmoe_zsh() {
 	zh_*UTF-8)
 		if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
 			#.dockerenv
-			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno '是否需要配置zsh?\nDo you need to configure zsh?' 0 0); then
-				CONFIGURE_ZSH=true
-			fi
+			case $(id -u) in
+			0)
+				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "是否需要为root用户配置zsh? 注意:当前为root用户,而非普通用户\nDo you need to configure zsh for the $(whoami)?" 0 0); then
+					CONFIGURE_ZSH=true
+				fi
+				;;
+			*)
+				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "是否需要为$(whoami)用户配置zsh?\nDo you need to configure zsh for the $(whoami)?" 0 0); then
+					CONFIGURE_ZSH=true
+				fi
+				;;
+			esac
 		fi
 		do_you_want_to_delete_the_zsh_script_file
 		if [ -n "${FACE_ICON_DIR}" ]; then
@@ -170,9 +190,18 @@ do_you_want_to_configure_tmoe_zsh() {
 	*)
 		if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
 			#.dockerenv
-			if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to configure zsh?' 0 0); then
-				CONFIGURE_ZSH=true
-			fi
+			case $(id -u) in
+			0)
+				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you want to configure zsh for the $(whoami)?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
+					CONFIGURE_ZSH=true
+				fi
+				;;
+			*)
+				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you need to configure zsh for the $(whoami)?" 0 0); then
+					CONFIGURE_ZSH=true
+				fi
+				;;
+			esac
 		fi
 		do_you_want_to_delete_the_zsh_script_file
 		if [ -n "${FACE_ICON_DIR}" ]; then
