@@ -169,7 +169,7 @@ start_gui_menu() {
 }
 ##################
 startvnc_and_exec_program() {
-	[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
 	exec_container_program
 }
 edit_container_startup_script() {
