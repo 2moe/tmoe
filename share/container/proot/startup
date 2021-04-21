@@ -12,7 +12,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#退出容器时, 自动杀掉所有进程, 默认为true
 	################
 	LOAD_ENV_FILE=true
-	#Load the environment variable file when starting the container.Default is true.
+	#Load the environment variable file when starting the container. Default is true.
+	################
+	MOUNT_SD=true
+	MOUNT_TERMUX=true
+	MOUNT_TF=true
+	MOUNT_STORAGE=true
+	#If the parameter value is "false", the relevant directory will not be mounted. Default is true.
+	#挂载sd，默认为true
 	################
 	main() {
 	    case "\$1" in
@@ -117,15 +124,17 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 		[[ \${TMOE_QEMU} = false ]] || set -- "--qemu=qemu-\${TMOE_QEMU_ARCH}-static" "\${@}"
 	    set -- "--mount=/dev/urandom:/dev/random" "\${@}"
 	    set -- "--mount=/proc" "\${@}"
-	    if [ -e "/storage/self/primary" ]; then
-	        set -- "--mount=/storage/self/primary:/root/sd" "\${@}"
-	    elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
-	        set -- "--mount=/sdcard:/root/sd" "\${@}"
-		elif [ -e "${HOME}/Download" ]; then
-			set -- "--mount=${HOME}/Download:/root/sd" "\${@}"
-	    elif [ -e "/storage/emulated/0" ]; then
-	        set -- "--mount=/storage/emulated/0:/root/sd" "\${@}"
-	    fi
+		if [[ \${MOUNT_SD} = true ]]; then
+	        if [ -e "/storage/self/primary" ]; then
+	            set -- "--mount=/storage/self/primary:/root/sd" "\${@}"
+	        elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
+	            set -- "--mount=/sdcard:/root/sd" "\${@}"
+			elif [ -e "${HOME}/Download" ]; then
+				set -- "--mount=${HOME}/Download:/root/sd" "\${@}"
+	        elif [ -e "/storage/emulated/0" ]; then
+	            set -- "--mount=/storage/emulated/0:/root/sd" "\${@}"
+	        fi
+		fi
 	    #######################
 	    set_android_mount_dir() {
 	        if [ -e "/vendor" ]; then
@@ -188,26 +197,32 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    set -- "--rootfs=${DEBIAN_CHROOT}" "\${@}"
 	    if [ "\$(uname -o)" = 'Android' ]; then
 	        #set_android_mount_dir
-	        if [ "\${KILL_ON_EXIT}" = true ];then
+	        if [[ \${KILL_ON_EXIT} = true ]];then
 	            set -- "--kill-on-exit" "\${@}"
 	        fi
 	        if [ -e "/system" ]; then
 	            set -- "--mount=/system" "\${@}"
 	        fi
-			TF_CARD_LINK="${HOME}/storage/external-1"
-	        if [ -h "\${TF_CARD_LINK}" ]; then
-				TRUE_TF_CARD=\$(readlink \${TF_CARD_LINK})
-				if [ -e "\${TRUE_TF_CARD}" ];then
-	               set -- "--mount=\${TRUE_TF_CARD}:/root/tf" "\${@}"
-				fi
-	        fi
-			if [ -e "/storage" ]; then
-	            set -- "--mount=/storage" "\${@}"
-	        fi
-	        if [ -e "/data/data/com.termux/files/home" ]; then
-	            set -- "--mount=/data/data/com.termux" "\${@}"
-	            set -- "--mount=/data/data/com.termux/files/home:/root/termux" "\${@}"
-	        fi
+			if [[ \${MOUNT_TF} = true ]]; then
+				TF_CARD_LINK="${HOME}/storage/external-1"
+	            if [ -h "\${TF_CARD_LINK}" ]; then
+					TRUE_TF_CARD=\$(readlink \${TF_CARD_LINK})
+					if [ -e "\${TRUE_TF_CARD}" ];then
+	                   set -- "--mount=\${TRUE_TF_CARD}:/root/tf" "\${@}"
+					fi
+	            fi
+			fi
+			if [[ \${MOUNT_STORAGE} = true ]]; then
+				if [ -e "/storage" ]; then
+	               set -- "--mount=/storage" "\${@}"
+	            fi
+			fi
+			if [[ \${MOUNT_TERMUX} = true ]]; then
+	             if [ -e "/data/data/com.termux/files/home" ]; then
+	               set -- "--mount=/data/data/com.termux" "\${@}"
+	               set -- "--mount=/data/data/com.termux/files/home:/root/termux" "\${@}"
+	             fi
+			fi
 	        set -- "--link2symlink" "\${@}"
 	    fi
 		if [ \${PROOT_USER} = root ];then

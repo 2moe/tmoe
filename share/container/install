@@ -181,6 +181,7 @@ tmoe_tips_1_en() {
 				-------------------
 				04.You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
 				(o゜▽゜)o☆ Open your browser and enjoy it!
+				Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}, ${GREEN}debian system${RESET} will be installed to ${BLUE}${DEBIAN_CHROOT}${RESET}
 				------------------   
 	EOF
 }
@@ -188,7 +189,6 @@ case ${TMOE_LANG} in
 zh_*UTF-8) tmoe_tips_1_zh ;;
 *) tmoe_tips_1_en ;;
 esac
-printf "%s\n" "Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}"
 ##################
 check_rootfs_dir() {
 	unset ROOTFS_DIR

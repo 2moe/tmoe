@@ -497,9 +497,9 @@ check_container_login_file_02() {
 }
 create_and_move_temporary_script_02() {
 	if [[ -n ${EXEC_PROGRAM} ]]; then
-		printf "%s\n" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+		printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
 	else
-		printf "%s\n" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+		printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
 	fi
 	# cat ${TMPDIR}/.tmoe_temporary_autostartup_script
 	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
