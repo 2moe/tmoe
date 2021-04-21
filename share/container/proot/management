@@ -495,20 +495,31 @@ check_container_login_file_02() {
 		${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
 	fi
 }
-create_and_move_temporary_script_02() {
-	if [[ -n ${EXEC_PROGRAM} ]]; then
-		printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
-	else
-		printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
-	fi
+chmod_777_temporary_file_02() {
 	# cat ${TMPDIR}/.tmoe_temporary_autostartup_script
 	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01"
+	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01_${RANDOM}"
+}
+create_and_move_temporary_script_05() {
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_02
+}
+create_and_move_temporary_script_06() {
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_02
+}
+create_and_move_temporary_script_07() {
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_02
+}
+create_and_move_temporary_script_08() {
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_02
 }
 ########
 exec_container_program() {
 	check_container_login_file_02
-	create_and_move_temporary_script_02
+	create_and_move_temporary_script_07
 	normally_start_gnu_linux_distro
 }
 start_gnu_linux_distro_tigervnc() {

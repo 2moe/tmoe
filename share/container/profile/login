@@ -8,10 +8,13 @@ if [ "$(ls /etc/profile.d/permanent/ 2>/dev/null)" ]; then
 fi
 if [ "$(ls /etc/profile.d/temporary/ 2>/dev/null)" ]; then
     for i in /etc/profile.d/temporary/*; do
-        if [ -f ${i} ]; then
-            chmod 4755 ${i}
+        if [ -e ${i} ]; then
+            chmod 4755 -R ${i}
             ${i}
-            unlink ${i}
+            unlink ${i} || rm -rfv ${i}
+            if [[ ${?} != 0 ]];then
+            printf "%s\n" "ERROR, please manually type sudo chmod 777 -Rv ${i}; rm -rfv ${i}"     
+            fi
         fi
     done
 fi

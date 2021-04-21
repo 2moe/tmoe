@@ -221,15 +221,26 @@ check_container_login_file_01() {
 	fi
 }
 ########
-create_and_move_temporary_script_01() {
-	if [[ -n ${EXEC_PROGRAM} ]]; then
-		printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
-	else
-		printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
-	fi
+chmod_777_temporary_file_01() {
 	cat ${TMPDIR}/.tmoe_temporary_autostartup_script
 	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01"
+	${TMOE_PREFIX} mv -fv ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01_${RANDOM}"
+}
+create_and_move_temporary_script_01() {
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_01
+}
+create_and_move_temporary_script_02() {
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_01
+}
+create_and_move_temporary_script_03() {
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_01
+}
+create_and_move_temporary_script_04() {
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	chmod_777_temporary_file_01
 }
 start_tmoe_container() {
 	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
@@ -259,7 +270,7 @@ start_tmoe_container() {
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
 
-	if [[ -n ${EXEC_PROGRAM} && -z ${TEMPORARY_SCRIPT_FILE} ]]; then
+	if [[ -n ${EXEC_PROGRAM} ]]; then
 		case ${EXEC_PROGRAM} in
 		startx11vnc | startvnc)
 			# ${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
@@ -289,7 +300,10 @@ start_tmoe_container() {
 		esac
 		if [[ -e ${DEBIAN_CHROOT} ]]; then
 			check_container_login_file_01
-			create_and_move_temporary_script_01
+			case ${EXEC_PROGRAM} in
+			startx11vnc | startvnc | novnc | startxsdl) create_and_move_temporary_script_03 ;;
+			*) create_and_move_temporary_script_01 ;;
+			esac
 		else
 			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 			exit 1
@@ -303,9 +317,9 @@ start_tmoe_container() {
 			exit 1
 		fi
 		if [[ -e ${TEMPORARY_SCRIPT_FILE} ]]; then
-			${TMOE_PREFIX} cp -vf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_02"
+			${TMOE_PREFIX} cp -rvf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 		else
-			create_and_move_temporary_script_01
+			create_and_move_temporary_script_02
 		fi
 	fi
 	case ${SYSTEMD_NSPAWN} in
