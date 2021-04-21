@@ -19,7 +19,7 @@ RUN apt update \
     ; cd /usr/local/etc/tmoe-linux/ \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-debian" > container.txt  \
     ; mkdir -p environment \
-    ; printf "%s\n" "node" > environment/entrypoint \
+    ; printf "%s\n%s\n" '#!/usr/bin/env sh' "node" > environment/entrypoint \
     ; chmod a+x environment/* \
     ; cd /root \
     ; printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt \
