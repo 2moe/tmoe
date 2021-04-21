@@ -285,11 +285,21 @@ start_tmoe_container() {
 			#此处不要sleep
 			;;
 		esac
-		check_container_login_file_01
-		create_and_move_temporary_script_01
+		if [[ -e ${DEBIAN_CHROOT} ]]; then
+			check_container_login_file_01
+			create_and_move_temporary_script_01
+		else
+			printf "%\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first"
+			exit 1
+		fi
 	fi
 	if [[ -n ${TEMPORARY_SCRIPT_FILE} ]]; then
-		check_container_login_file_01
+		if [[ -e ${DEBIAN_CHROOT} ]]; then
+			check_container_login_file_01
+		else
+			printf "%\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first"
+			exit 1
+		fi
 		if [[ -e ${TEMPORARY_SCRIPT_FILE} ]]; then
 			${TMOE_PREFIX} cp -vf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_02"
 		else

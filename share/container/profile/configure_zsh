@@ -662,6 +662,12 @@ please_retype_the_password() {
 			;;
 		esac
 		sed -n p /etc/sudoers
+		for i in /media/sd /storage/emulated/0 /sd; do
+			if [[ -e ${i} ]]; then
+				ln -svf ${i} /home/${USER_NAME}/sd
+				break
+			fi
+		done
 		do_you_want_to_set_it_as_the_default_user
 	fi
 }
