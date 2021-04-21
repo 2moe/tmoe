@@ -145,8 +145,10 @@ tmoe_main() {
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
 	"") ;;
+	*/*) TEMPORARY_SCRIPT_FILE="${4}" ;;
 	*) EXEC_PROGRAM="${4}" ;;
 	esac
+
 	case "$5" in
 	v | vnc) EXEC_PROGRAM='startvnc' ;;
 	x | xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
@@ -221,9 +223,9 @@ check_container_login_file_01() {
 ########
 create_and_move_temporary_script_01() {
 	if [[ -n ${EXEC_PROGRAM} ]]; then
-		printf "%s\n" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+		printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
 	else
-		printf "%s\n" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+		printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
 	fi
 	cat ${TMPDIR}/.tmoe_temporary_autostartup_script
 	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
@@ -289,7 +291,7 @@ start_tmoe_container() {
 			check_container_login_file_01
 			create_and_move_temporary_script_01
 		else
-			printf "%\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first"
+			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 			exit 1
 		fi
 	fi
@@ -297,7 +299,7 @@ start_tmoe_container() {
 		if [[ -e ${DEBIAN_CHROOT} ]]; then
 			check_container_login_file_01
 		else
-			printf "%\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first"
+			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 			exit 1
 		fi
 		if [[ -e ${TEMPORARY_SCRIPT_FILE} ]]; then
