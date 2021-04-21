@@ -1078,7 +1078,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		usermod -a -G aid_inet,aid_net_raw portage 2>/dev/null
 		printf "%s" "" #空行
 	fi
-	#函数放在前面
 	debian_sources_list() {
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    #stable-backports会出错，需改为buster-backports
@@ -1090,6 +1089,21 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				deb http://mirrors.bfsu.edu.cn/debian/ sid main contrib non-free
 			EndOfFile
 	#请注意：若服务器添加了debian sid之外的自动构建任务，需要在此处修改软件源。
+		if [[ ${WEEKLY_BUILD_CONTAINER} = true ]];then
+	        if ! egrep -q 'sid|Sid' /etc/issue; then
+	            SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+	            VERSION_ID=$(grep VERSION_ID /etc/os-release | awk -F '=' '{print $2}' | head -n 1 | cut -d '"' -f 2)
+	            BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
+	            if ((${VERSION_ID} >= 11)); then
+	                sed -i "s@stable/updates@${SOURCELISTCODE}-security@g"
+	            fi
+	            sed -E -e "s@#(deb.*mirrors.)@\1@g" \
+	                -e 's@^.*debian/ sid@#&@g' \
+	                -e "s@buster(-backports)@${BACKPORTCODE}\1@g" \
+	                -e "s@stable@${SOURCELISTCODE}@g" \
+	                -i /etc/apt/sources.list
+	        fi
+		fi
 	}
 	##############################
 	kali_sources_list() {

@@ -11,6 +11,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Kill all processes on command exit. When the executed command leaves orphean or detached processes around, proot waits until all processes possibly terminate. This option forces the immediate termination of all tracee processes when the main command exits.
 	#退出容器时, 自动杀掉所有进程, 默认为true
 	################
+	LOAD_ENV_FILE=true
+	#Load the environment variable file when starting the container.Default is true.
+	################
 	main() {
 	    case "\$1" in
 	    i* | -i* | -I*)
@@ -34,7 +37,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 		CONTAINER_ARCH="${ARCH_TYPE}"
 	    PROC_FD_PATH="/proc/self/fd"
 		case \${PROOT_USER} in
-		"" | root) 
+		"" | root)
 			PROOT_UID=0
 			PROOT_GID=0
 			PROOT_HOME=/root
@@ -53,15 +56,21 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 		[[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 		if [[ -z \${TMOE_SHELL} ]]; then
-			for i in su ash bash fish zsh; do
-				[[ ! -f ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
+			for i in zsh fish bash ash su;do
+				if [[ -f ${DEBIAN_CHROOT}/bin/\${i} ]];then
+					TMOE_SHELL="/bin/\${i}"
+					break
+				fi
 			done
-			[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
+			#[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
 		fi
 		if [[ -z \${TMOE_SHELL} ]]; then
 			#ALPINE ash shell is a link.
-			for i in su ash bash fish zsh; do
-				[[ ! -L ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
+			for i in zsh fish bash ash su;do
+				if [[ -L ${DEBIAN_CHROOT}/bin/\${i} ]];then
+					TMOE_SHELL="/bin/\${i}"
+					break
+				fi
 			done
 		fi
 		#It should be -l, not --login
@@ -79,13 +88,21 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 		HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
 		if [[ -s \${HOST_NAME_FILE} ]];then
 		   HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
-		else  
-			[[ ! -n \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
-		fi
-		if [ \${PROOT_USER} = root ];then
-			set -- "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
 		else
-			set -- "PATH=/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
+			[[ ! \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
+		fi
+		CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+		unset CONTAINER_BIN_PATH
+	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
+	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
+	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
+	            set -- "\${i}" "\${@}"
+	        done
+	    fi
+		if [[ \${PROOT_USER} = root ]];then
+			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
+		else
+			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
 		fi
 	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=\${PROOT_HOME}" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
 		#set -- "--mount=/sys" "\${@}"

@@ -88,7 +88,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		if [[ -s \${HOST_NAME_FILE} ]];then
 		   HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
 		else  
-			[[ ! -n \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
+			[[ ! \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
 		fi
 	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
