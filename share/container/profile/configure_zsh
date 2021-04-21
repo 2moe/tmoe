@@ -668,6 +668,9 @@ please_retype_the_password() {
 				break
 			fi
 		done
+		touch /home/${USER_NAME}/.hushlogin
+		chmod 666 /home/${USER_NAME}/.hushlogin
+		chown -v "${USER_NAME}":"${USER_NAME}" /home/${USER_NAME}/.hushlogin
 		do_you_want_to_set_it_as_the_default_user
 	fi
 }
