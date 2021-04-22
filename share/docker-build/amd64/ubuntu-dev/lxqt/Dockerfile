@@ -15,7 +15,7 @@ RUN apt update \
     ; dpkg --configure -a \
     ; apt install -y locales-all locales \
     ; apt install -y whiptail dialog aria2 zstd curl wget \
-    ; apt install -y neofetch lolcat apt-utils software-properties-common systemd \
+    ; apt install -y neofetch lolcat apt-utils software-properties-common systemd procps \
     ; mkdir -p /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; cd /tmp \
