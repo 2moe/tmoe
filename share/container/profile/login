@@ -12,8 +12,8 @@ if [ "$(ls /etc/profile.d/temporary/ 2>/dev/null)" ]; then
             chmod 4755 -R ${i}
             ${i}
             unlink ${i} || rm -rfv ${i}
-            if [ "${?}" != 0 ];then
-                printf "%s\n" "ERROR, please manually type sudo chmod 777 -Rv ${i}; rm -rfv ${i}"     
+            if [ "${?}" != 0 ]; then
+                printf "%s\n" "ERROR, please manually type sudo chmod 777 -Rv ${i}; rm -rfv ${i}"
             fi
         fi
     done

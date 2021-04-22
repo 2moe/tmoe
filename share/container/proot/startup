@@ -21,6 +21,17 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#If the parameter value is "false", the relevant directory will not be mounted. Default is true.
 	#挂载sd，默认为true
 	################
+	DEFAULT_LOGIN_SHELL_01=zsh
+	#The default login shell is zsh.
+	#默认登录shell是zsh
+	#Die Standard-Login-Shell ist zsh.
+
+	DEFAULT_LOGIN_SHELL_02=fish
+	DEFAULT_LOGIN_SHELL_03=bash
+	DEFAULT_LOGIN_SHELL_04=ash
+	DEFAULT_LOGIN_SHELL_05=su
+	#The lower the number, the higher the priority.
+	################
 	main() {
 	    case "\$1" in
 	    i* | -i* | -I*)
@@ -63,17 +74,17 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 		[[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 		if [[ -z \${TMOE_SHELL} ]]; then
-			for i in zsh fish bash ash su;do
+			for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05};do
 				if [[ -f ${DEBIAN_CHROOT}/bin/\${i} ]];then
 					TMOE_SHELL="/bin/\${i}"
 					break
 				fi
 			done
-			#[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
+			#[[ ! -f ${DEBIAN_CHROOT}/usr/bin/\${DEFAULT_LOGIN_SHELL_01} ]] || TMOE_SHELL="/usr/bin/\${DEFAULT_LOGIN_SHELL_01}"
 		fi
 		if [[ -z \${TMOE_SHELL} ]]; then
 			#ALPINE ash shell is a link.
-			for i in zsh fish bash ash su;do
+			for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05};do
 				if [[ -L ${DEBIAN_CHROOT}/bin/\${i} ]];then
 					TMOE_SHELL="/bin/\${i}"
 					break
