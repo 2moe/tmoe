@@ -83,9 +83,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 		#It should be -l, not --login
 	    #考虑到alpine兼容性，此处应为-l,而非--login
 	    set -- "\${TMOE_SHELL}" "-l" "\${@}"
-	    if [ -e "/data/data/com.termux" ]; then
-	        set -- "PREFIX=/data/data/com.termux/files/usr" "\${@}"
-	    fi
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
 	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\${@}"
 	    else

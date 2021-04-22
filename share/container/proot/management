@@ -15,7 +15,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "alpha:Create a temp auto-startup script" \
+			"4" "alpha:Env var & auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 unmount & remove" \
 			"7" "📘 readme" \
@@ -30,7 +30,7 @@ proot_management_menu() {
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "⏹️ 停止容器进程" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "alpha内测:创建临时自启动脚本" \
+			"4" "alpha内测:环境变量与自启动管理" \
 			"5" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"6" "💔 unmount & remove 卸载并移除" \
 			"7" "📘 readme 自述/说明" \
@@ -45,7 +45,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ Tötungsprozess" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "alpha:Create a temp auto-startup script" \
+			"4" "alpha:Env var & auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 aushängen und entfernen" \
 			"7" "📘 Liesmich" \
@@ -66,7 +66,7 @@ proot_management_menu() {
 	1) normally_start_gnu_linux_distro ;;
 	2) kill_container_process ;;
 	3) start_gui_menu ;;
-	4) create_a_temporary_automatic_startup_script ;;
+	4) environment_variables_and_automatic_startup_script_management ;;
 	5) backup_tmoe_gnu_linux_distro ;;
 	6) umount_and_remove_gnu_linux_distro ;;
 	7) readme_of_gnu_linux_distro ;;
@@ -101,16 +101,65 @@ proot_management_menu() {
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
+environment_variables_and_automatic_startup_script_management() {
+	environment_variables_and_automatic_startup_script_management_menu_en() {
+		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can create an automatic startup script,\n and when you enter the container,\n the container will automatically execute it.\nSorry,this feature is still in alpha" 0 50 0 \
+			"0" "README" \
+			"1" "Temporary(ruby/python/shell, etc.)" \
+			"2" "Permanent" \
+			"3" "Entrypoint" \
+			"4" "Global environment variables" \
+			"5" "X env var" \
+			"6" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3)
+	}
+	environment_variables_and_automatic_startup_script_management_menu_zh_cn() {
+		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以创建自启动脚本，容器在启动后将自动执行。\n抱歉，目前本功能暂未正式开放，您可以先看看README" 0 50 0 \
+			"0" "README 自述/说明" \
+			"1" "Temporary(临时，ruby/python/shell, etc.)" \
+			"2" "Permanent(永久)" \
+			"3" "Entrypoint(入口点)" \
+			"4" "Global environment variables(全局环境变量)" \
+			"5" "X env var(只适用于vnc、x和wayland的环境变量)" \
+			"6" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3)
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) environment_variables_and_automatic_startup_script_management_menu_zh_cn ;;
+	*) environment_variables_and_automatic_startup_script_management_menu_en ;;
+	esac
+	##############################
+	case "${ENV_VAR_AND_SCRIPT}" in
+	0) readme_of_env_var_and_autostartup_script ;;
+	6 | "") ${RETURN_TO_WHERE} ;;
+	*)
+		printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
+		;;
+	esac
+	press_enter_to_return
+	environment_variables_and_automatic_startup_script_management
+	# 6) readme_of_env_var_and_autostartup_script ;;
+}
+##############################
+readme_of_env_var_and_autostartup_script() {
+	if [ $(command -v bat) ]; then
+		bat -ppn ${TMOE_SHARE_DIR}/container/README.md
+	elif [ $(command -v bat) ]; then
+		bat -ppn ${TMOE_SHARE_DIR}/container/README.md
+	else
+		${TMOE_SHARE_DIR}/container/README.md
+	fi
+}
 create_a_temporary_automatic_startup_script() {
 	printf "%s\n" "${YELLOW}PREVIEW:${RESET}"
 	printf "%s\n" "You can create an automatic startup script, and when you enter the container, the container will automatically execute it."
 	printf "%s\n" "If it is a temporary script, it will only be executed once and will not take effect next time.If it is a permanent script, it will be executed every time you enter the container."
 	printf "%s\n" "For example, if you need a container to automatically execute ${GREEN}ruby -run -e httpd . -p 8080${RESET}, after you create the script, the container will automatically start the ruby httpd service."
 
-	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
+##############################
 start_gui_menu() {
 	start_gui_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
@@ -366,6 +415,7 @@ readme_of_gnu_linux_distro() {
 		done
 	fi
 	cat <<-EOF
+
 		${BOLD}${YELLOW}LIST INSTALLED CONTAINERS:${RESET} ${BLUE}tmoe ls${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ls${RESET}
 		${BOLD}${YELLOW}Start the default container:${RESET} ${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}
 		${BOLD}${YELLOW}Full command:${RESET} ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
@@ -375,6 +425,9 @@ readme_of_gnu_linux_distro() {
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + X server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
 		The default ${YELLOW}login shell${RESET} is ${GREEN}zsh${RESET}, if you want to start ${BLUE}bash${RESET},then type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}
 		Start ${BLUE}ash${RESET} as a login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
+		Note: The last parameter can execute a local script in the container.
+		Assuming that there is a hello.rb file in the current directory, then you can type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
+
 		--------------------
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
 		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET},若您的宿主shell环境为tmoe-zsh,则可简化为${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
@@ -391,7 +444,11 @@ readme_of_gnu_linux_distro() {
 
 		注:最后一个参数可以执行容器的指定命令。若为长命令，则请使用引号将最后一个参数包围起来。
 		例如：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "ls -lah /" ${RESET}
+		最后一个参数也可以执行本地脚本，假设当前目录下存在hello.rb文件，那么你需要执行 ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
+		而不是  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "hello.rb" ${RESET}
+		注：本地脚本或二进制文件的优先级要高于容器内部文件，详见内测版功能的README。
 		--------------------
+
 		${BOLD}额外拓展功能${RESET}
 		${YELLOW}（补全功能）${RESET}说明${RESET}
 		${YELLOW}shell环境要求${RESET}：${GREEN}zsh${RESET}
