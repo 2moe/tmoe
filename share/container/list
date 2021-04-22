@@ -133,9 +133,10 @@ install_tmoe_moonthly_build_edition() {
 			"1" "Go (Makes it easy to build simple&reliable app)" \
 			"2" "Rust(Blazingly fast and memory-efficient)" \
 			"3" "Visual Studio Code online server" \
-			"4" "Docker(Run docker via qemu)" \
-			"5" "Node.js(A back-end JavaScript runtime environment)" \
-			"6" "Ruby(An interpreted,general-purpose lang)" \
+			"4" "OpenJDK(An open-source Java Platform)" \
+			"5" "Docker(Run docker via qemu)" \
+			"6" "Node.js(A back-end JavaScript runtime environment)" \
+			"7" "Ruby(An interpreted,general-purpose lang)" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -158,14 +159,18 @@ install_tmoe_moonthly_build_edition() {
 		DESKTOP="latest"
 		;;
 	4)
+		DISTRO_NAME="jdk"
+		DESKTOP="latest"
+		;;
+	5)
 		DISTRO_NAME="docker"
 		DESKTOP="qemu"
 		;;
-	5)
+	6)
 		DISTRO_NAME="node"
 		choose_latest_or_alpine
 		;;
-	6)
+	7)
 		DISTRO_NAME="ruby"
 		choose_latest_or_alpine
 		;;
