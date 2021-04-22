@@ -837,7 +837,7 @@ git_clone_deepin_distro() {
 			rm -rvf ${TEMP_DIR}
 		fi
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s/debian container/${DISTRO_NAME} container/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 		;;
@@ -1071,7 +1071,7 @@ git_clone_linux_distro_rootfs_01() {
 		rm -rvf ${TEMP_DIR}
 	fi
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${TMOE_LINUX_CONTAINER_DISTRO}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
@@ -1313,7 +1313,7 @@ ubuntu_distro_x64_model() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" |
@@ -1324,7 +1324,7 @@ ubuntu_distro_arm_model() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
@@ -1334,7 +1334,7 @@ ubuntu_distro_x64_model_02() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" |
@@ -1347,7 +1347,7 @@ ubuntu_distro_arm_model_02() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
@@ -1355,7 +1355,7 @@ ubuntu_distro_arm_model_02() {
 ########
 linux_distro_common_model_01() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "/usermod -a/d" |
@@ -1366,7 +1366,7 @@ linux_distro_common_model_01() {
 #02为kali-rolling
 linux_distro_common_model_02() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
@@ -1378,7 +1378,7 @@ linux_distro_common_model_02() {
 #04为fedora和centos
 linux_distro_common_model_04() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
@@ -1428,7 +1428,7 @@ install_arch_linux_distro() {
 	armhf)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/archlinuxarm/os/ArchLinuxARM-armv7-latest.tar.gz@g' |
-			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s/debian container/${DISTRO_NAME} container/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 			sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
 			sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
@@ -1519,14 +1519,14 @@ git_clone_fedora_rootfs() {
 	case ${DISTRO_CODE} in
 	33)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s/debian container/${DISTRO_NAME} container/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 		;;
 	*)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s/debian container/${DISTRO_NAME} container/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 			sed "s@\(FEDORA_VERSION=\).*@\129@g" |
@@ -1578,7 +1578,7 @@ EOF
 #######################
 linux_distro_common_model_03() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
@@ -1629,7 +1629,7 @@ install_gentoo_linux_distro() {
 		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | egrep -v 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" |
-			sed 's/debian system/Gentoo system/g' |
+			sed 's/debian container/Gentoo container/g' |
 			sed 's:debian-sid:gentoo-current:g' |
 			sed 's:debian/sid:gentoo/current:g' |
 			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
@@ -1715,7 +1715,7 @@ install_raspios_lite_armhf_rootfs() {
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
 		sed 's/.*sid main/#&/' |
-		sed 's/debian system/raspios system/g' |
+		sed 's/debian container/raspios container/g' |
 		sed 's:debian-sid:raspios-buster:g' |
 		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
 }
@@ -1727,7 +1727,7 @@ install_raspios_full_armhf_rootfs() {
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
 		sed 's/.*sid main/#&/' |
-		sed 's/debian system/raspios system/g' |
+		sed 's/debian container/raspios container/g' |
 		sed 's:debian-sid:raspios-buster:g' |
 		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
 }
@@ -1737,7 +1737,7 @@ install_manjaro_linux_distro() {
 	arm64)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
-			sed 's/debian system/manjaro system/g' |
+			sed 's/debian container/manjaro container/g' |
 			sed 's:debian-sid:manjaro-stable:g' |
 			sed 's:debian/sid:manjaro/stable:g' |
 			sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
@@ -1760,7 +1760,7 @@ install_manjaro_linux_distro() {
 			rm -rvf ${TEMP_DIR}
 		fi
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian system/${DISTRO_NAME} system/g" |
+			sed "s/debian container/${DISTRO_NAME} container/g" |
 			sed "s:debian-sid:${DISTRO_NAME}-stable:g" |
 			sed -E 's@^(MANJARO_LINUX=).*@\1true@g' |
 			sed "s:Debian GNU/Linux:Manjaro GNU/Linux:g")"
@@ -1791,7 +1791,7 @@ install_openwrt_linux_distro() {
 	esac
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_ISO_LINK}@g" |
-		sed 's/debian system/openwrt system/g' |
+		sed 's/debian container/openwrt container/g' |
 		sed 's:debian-sid:openwrt-latest:g' |
 		sed 's:debian/sid:openwrt/snapshot:g' |
 		sed 's@tar -pJx@tar -pzx@g' |
@@ -1825,7 +1825,7 @@ install_slackware_linux_distro() {
 			rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
 		fi
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed 's/debian system/slackware system/g' |
+			sed 's/debian container/slackware container/g' |
 			sed 's:debian-sid:slackware-current:g' |
 			sed 's:debian/sid:slackware/current:g' |
 			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
@@ -1845,7 +1845,7 @@ install_slackware_linux_distro() {
 		THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" |
-			sed 's/debian system/slackware system/g' |
+			sed 's/debian container/slackware container/g' |
 			sed 's:debian-sid:slackware-current:g' |
 			sed 's:debian/sid:slackware/current:g' |
 			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
@@ -1919,7 +1919,7 @@ install_armbian_buster_via_tuna() {
 		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
 		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/' |
@@ -1934,7 +1934,7 @@ install_armbian_testing_via_tuna() {
 		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
 		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
-		sed "s/debian system/${DISTRO_NAME} system/g" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed 's@#deb http@deb http@g' |
 		sed 's/.*sid main/#&/' |

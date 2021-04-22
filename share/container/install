@@ -167,7 +167,7 @@ tmoe_tips_1_zh() {
 				You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
 				(o゜▽゜)o☆ Open your browser and enjoy it!
 				------------------
-				检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian system${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}
+				检测到您当前的架构为${YELLOW}${ARCH_TYPE}${RESET}，${GREEN}debian container${RESET}将安装至${BLUE}${DEBIAN_CHROOT}${RESET}
 	EOF
 }
 tmoe_tips_1_en() {
@@ -181,7 +181,7 @@ tmoe_tips_1_en() {
 				-------------------
 				04.You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
 				(o゜▽゜)o☆ Open your browser and enjoy it!
-				Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}, ${GREEN}debian system${RESET} will be installed to ${BLUE}${DEBIAN_CHROOT}${RESET}
+				Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}, ${GREEN}debian container${RESET} will be installed to ${BLUE}${DEBIAN_CHROOT}${RESET}
 				------------------   
 	EOF
 }
@@ -1502,7 +1502,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+	printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian container."
 	printf "%s\n" "Congratulations on your successful installation of GNU/Linux container. After that, you can type debian to enter the container."
 	printf '%s\n' '正在执行优化步骤，请勿退出!'
 	printf '%s\n' 'Optimization steps are in progress. Do not exit!'
@@ -1551,7 +1551,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	    rm -f ~/.profile ~/.zlogin 2>/dev/null
 	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
-		#printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian system."
+		#printf "%s\n" "您已成功安装Container,之后可以输${YELLOW}debian${RESET}来进入debian container."
 		#neofetch
 	    exec bash zsh.sh
 		exit 0
