@@ -3,7 +3,32 @@ ${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
 cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
-	############
+	##################
+	CHROOT_USER=root
+	#You can specify a user. Default is root
+	#您可以指定用户，例如root或ubuntu，默认为root
+	#Sie können einen Benutzer angeben
+	################
+	LOAD_ENV_FILE=true
+	#Load the environment variable file when starting the container. Default is true.
+	################
+	MOUNT_SD=true
+	MOUNT_TERMUX=true
+	MOUNT_TF=true
+	#If the parameter value is "false", the relevant directory will not be mounted. Default is true.
+	#挂载sd，默认为true
+	################
+	DEFAULT_LOGIN_SHELL_01=zsh
+	#The default login shell is zsh.
+	#默认登录shell是zsh
+	#Die Standard-Login-Shell ist zsh.
+
+	DEFAULT_LOGIN_SHELL_02=fish
+	DEFAULT_LOGIN_SHELL_03=bash
+	DEFAULT_LOGIN_SHELL_04=ash
+	DEFAULT_LOGIN_SHELL_05=su
+	#The lower the number, the higher the priority.
+	################
 	main() {
 	    case "\$1" in
 	    i* | -i* | -I*)
@@ -54,20 +79,35 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
 		 fi
 		 #########
-		 [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
-		if [[ -z \${TMOE_SHELL} ]]; then
-			for i in su ash bash fish zsh; do
-				[[ ! -f ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
-			done
-			[[ ! -f ${DEBIAN_CHROOT}/usr/bin/zsh ]] || TMOE_SHELL="/usr/bin/zsh"
+		if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]];then
+			[[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
+		   if [[ -z \${TMOE_SHELL} ]]; then
+				for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05};do
+					if [[ -f ${DEBIAN_CHROOT}/bin/\${i} ]];then
+						TMOE_SHELL="/bin/\${i}"
+						break
+					fi
+				done
+				#[[ ! -f ${DEBIAN_CHROOT}/usr/bin/\${DEFAULT_LOGIN_SHELL_01} ]] || TMOE_SHELL="/usr/bin/\${DEFAULT_LOGIN_SHELL_01}"
+			fi
+			if [[ -z \${TMOE_SHELL} ]]; then
+				#ALPINE ash shell is a link.
+				for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05};do
+					if [[ -L ${DEBIAN_CHROOT}/bin/\${i} ]];then
+						TMOE_SHELL="/bin/\${i}"
+						break
+					fi
+				done
+				if [[ -z \${TMOE_SHELL} ]]; then
+					TMOE_SHELL="/bin/su"
+				fi
+			fi
+	        set -- "\${TMOE_SHELL}" "-l" "\${@}"
+			set -- "/usr/bin/sudo" "-iu" "\${CHROOT_USER}" "\${@}"
+		else
+			set -- "/bin/su" "-" "\${CHROOT_USER}" "\${@}"
 		fi
-		if [[ -z \${TMOE_SHELL} ]]; then
-		#ALPINE ash shell is a link.
-			for i in su ash bash fish zsh; do
-				[[ ! -L ${DEBIAN_CHROOT}/bin/\${i} ]] || TMOE_SHELL="/bin/\${i}"
-			done
-		fi
-	    set -- "\${TMOE_SHELL}" "-l" "\${@}"
+
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
 	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\${@}"
 	    else
@@ -90,7 +130,21 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		else  
 			[[ ! \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
 		fi
-	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=/root" "PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
+		CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+		unset CONTAINER_BIN_PATH
+	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
+	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
+	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
+	            set -- "\${i}" "\${@}"
+	        done
+	    fi
+		if [[ \${CHROOT_USER} = root ]];then
+			set -- "HOME=/root" "\${@}"
+			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
+		else
+			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
+		fi
+	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 	            case \${i} in
@@ -136,18 +190,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    done
 	    unset i
 	    ###############
-	    mount_read_only_sd() {
-	        ANDROID_EMULATED_0_DIR='/storage/emulated/0'
-	        if [ -e "\${ANDROID_EMULATED_0_DIR}" ]; then
-	            [[ -e "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}" ]] || mkdir -pv "${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR}"
-	            su -c "mount -o ro /storage/emulated/0 ${DEBIAN_CHROOT}\${ANDROID_EMULATED_0_DIR} &>/dev/null"
-	        fi
-	    }
-	    ############
 	    for i in tf termux sd; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then
 	            case \${i} in
 	            tf)
+				if [[ \${MOUNT_TF} = true ]];then
 	                TF_CARD_LINK="${HOME}/storage/external-1"
 	                if [ -h "\${TF_CARD_LINK}" ]; then
 	                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
@@ -157,13 +204,17 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 	                    fi
 	                fi
+				fi
 	                ;;
 	            #######
 	            termux)
+				if [[ \${MOUNT_TERMUX} = true ]];then
 	                [[ ! -d "/data/data/com.termux/files/home" ]] || su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+				fi
 	                ;;
 	            ###########
 	            sd)
+				if [[ \${MOUNT_SD} = true ]];then
 	                if [ "\$(su -c "ls /data/media/0" 2>/dev/null)" ]; then
 	                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 	                elif [ -e "/storage/self/primary" ]; then
@@ -172,9 +223,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 					elif [ -e "${HOME}/Download" ]; then
 	                    su -c "mount -o bind ${HOME}/Download ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
-	                else
-	                    mount_read_only_sd
 	                fi
+				fi 
 	                ;;
 	            esac
 	        fi

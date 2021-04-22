@@ -678,20 +678,22 @@ please_retype_the_password() {
 do_you_want_to_set_it_as_the_default_user() {
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?本功能暂时仅适配proot容器\n重启容器后生效" 0 0); then
+		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?\n重启容器后生效" 0 0); then
 			set_it_as_the_default_user
 		fi
 		;;
 	*)
-		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${USER_NAME} as the default user?\nThis feature currently only supports proot.\nTake effect after restarting the container" 0 0); then
+		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${USER_NAME} as the default user?\nTake effect after restarting the container" 0 0); then
 			set_it_as_the_default_user
 		fi
 		;;
 	esac
 }
 set_it_as_the_default_user() {
-	sed -i -E "s@^(PROOT_USER)=.*@\1=${USER_NAME}@" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
-	egrep --color=auto "^PROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	sed -E -e "s@^(PROOT_USER)=.*@\1=${USER_NAME}@" \
+		-e "s@^(CHROOT_USER)=.*@\1=${USER_NAME}@" \
+		-i /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	egrep --color=auto "^PROOT_USER=|^CHROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
 }
 ###########################
 tmoe_container_zsh_main "$@"
