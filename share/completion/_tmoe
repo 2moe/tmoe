@@ -82,6 +82,7 @@ function _tmoe() {
         "ruby:Ruby is an interpreted, high-level, general-purpose programming language. It was designed and developed in the mid-1990s by Yukihiro "Matz" Matsumoto in Japan."
         "code:Visual Studio Code online server"
         "go:Go is a statically typed, compiled programming language designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson. Go is syntactically similar to C, but with memory safety, garbage collection, structural typing, and CSP-style concurrency. "
+        "node:A back-end JavaScript runtime environment"
     )
 
     distro_code=(
@@ -113,6 +114,8 @@ function _tmoe() {
         "8s:CentOS 8-Stream"
         "fossa:puppy fossa"
         "tumbleweed:OpenSUSE tumbleweed"
+        "ap:alpine"
+        "al:alpine"
     )
 
     architecture=(

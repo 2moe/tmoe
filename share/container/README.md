@@ -126,7 +126,7 @@ t p u 下北澤紅茶 "ls -lah My-Rust-Project" "./My-Rust-Project"
 我原本的设想是这样子的：
 
 ```shell
-t p u 下北澤紅茶 "cd My-Rust-Project; cargo build --release" "My-Rust-Project"
+t p u 下北澤紅茶 "cd My-Rust-Project; cargo build --release" "./My-Rust-Project"
 ```
 
 由于temporary文件夹会在执行完成后自动清空，因此不适用于编译型的任务。

@@ -304,7 +304,6 @@ You can type `startxsdl` to start **X** client & server.
 
 #### 2.tmoe command
 
-![command](https://images.gitee.com/uploads/images/2020/1012/141624_eb90039d_5617340.png "截图_2020-10-12_14-13-04.png")  
 For different distros and different architectures, the startup commands of the container are different.  
 The complete command is similar to `tmoe chroot kali rolling arm64 x11`  
 完整的启动命令类似于 `tmoe proot debian sid i386 vnc`  
@@ -448,6 +447,16 @@ According to the description of the above parameters, it can be deduced that the
 ```bash
 tmoe ns d s x
 ```
+
+---
+
+If you want to install a kali-rolling container, and then type the container name : **z** .  
+When you type `t p k z`, you find that the **proot kali zsh** is started instead of **proot kali z**.  
+In this case, you should type the full code: `t p kali-z` instead of `t p k-z`  
+
+The fourth and fifth parameters of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the _share/container_ directory for details.  
+
+Note: The priority of local files is higher than that of the inside of the container.
 
 ---
 
