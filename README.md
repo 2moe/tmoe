@@ -450,7 +450,7 @@ tmoe ns d s x
 
 ---
 
-If you want to install a kali-rolling container, and then type the container name : **z** .  
+Assuming you have installed a kali-rolling container named **z** .  
 When you type `t p k z`, you find that the **proot kali zsh** is started instead of **proot kali z**.  
 In this case, you should type the full code: `t p kali-z` instead of `t p k-z`  
 
