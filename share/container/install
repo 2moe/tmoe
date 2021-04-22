@@ -1079,7 +1079,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		printf "%s" "" #空行
 	fi
 	debian_sources_list() {
-	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
+	    sed -i 's/^deb/##&/g' /etc/apt/sources.list 
 	    #stable-backports会出错，需改为buster-backports
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
 				#deb http://mirrors.bfsu.edu.cn/debian/ stable main contrib non-free
@@ -1095,7 +1095,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	            VERSION_ID=$(grep VERSION_ID /etc/os-release | awk -F '=' '{print $2}' | head -n 1 | cut -d '"' -f 2)
 	            BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
 	            if ((${VERSION_ID} >= 11)); then
-	                sed -i "s@stable/updates@${SOURCELISTCODE}-security@g"
+	                sed -i "s@stable/updates@${SOURCELISTCODE}-security@g" /etc/apt/sources.list
 	            fi
 	            sed -E -e "s@#(deb.*mirrors.)@\1@g" \
 	                -e 's@^.*debian/ sid@#&@g' \
