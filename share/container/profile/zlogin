@@ -7,4 +7,4 @@
 # msgs, from, etc.)
 #
 # Global Order: zshenv, zprofile, zshrc, zlogin
-[[ ! -e /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login #emulate sh -c ""
+[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login #emulate sh -c ""
