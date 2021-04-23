@@ -18,12 +18,13 @@ RUN apk update \
     ; gem install webrick \
     ; cd /root \
     ; printf "%s\n" "RUBY_VERSION='$(ruby --version)'" > version.txt \
+    ; printf "%s\n" "GEM_VERSION='$(gem --version)'" >> version.txt \
+    ; printf "%s\n" "BUNDLE_VERSION='$(bundle --version)'" >> version.txt \
     ; cat version.txt \
     ; rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null
 #apk -v cache clean
 
 # ENV PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-#     RUBY_MAJOR=3.0 \
 #     GEM_HOME=/usr/local/bundle \
 #     BUNDLE_SILENCE_ROOT_WARNING=1 \
 #     BUNDLE_APP_CONFIG=/usr/local/bundle
