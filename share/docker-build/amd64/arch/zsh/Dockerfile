@@ -12,8 +12,9 @@ RUN mkdir -pv /var/cache/pacman/pkg \
     ; pacman-key --init \
     ; pacman-key --populate \
     ; pacman -Syu --noconfirm --needed base base-devel \
+    ; pacman -S --noconfirm systemd \
     ; pacman -S --noconfirm --needed wget curl git \
-    ; pacman -S --noconfirm --needed unzip neofetch iproute man-db man-pages systemd 2>/dev/null \
+    ; pacman -S --noconfirm --needed unzip neofetch iproute man-db man-pages 2>/dev/null \
     ; mkdir -pv /run/systemd \
     ; printf "%s\n" "docker" > /run/systemd/container \
     ; export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d) \

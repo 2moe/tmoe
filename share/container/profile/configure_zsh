@@ -62,6 +62,9 @@ set_tmoe_zsh_env() {
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
 	ENV_DIR="${TMOE_LINUX_DIR}/environment"
+	if [[ -e /usr/lib/os-release && ! -e /etc/os-release ]]; then
+		ln -svf ../usr/lib/os-release /etc/os-release
+	fi
 }
 check_container_name() {
 	CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
