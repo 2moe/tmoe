@@ -1118,8 +1118,8 @@ install_typora() {
 }
 ################
 chmod_4755_chrome_sandbox() {
-    printf "%s\n" "${GREEN}find ${YELLOW}/opt/electron ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
-    find /opt/electron -type d -print | xargs chmod -v a+x
+    printf "%s\n" "${GREEN}find ${YELLOW}/opt/electron ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+rx${RESET}"
+    find /opt/electron -type d -print | xargs chmod -v a+rx
     find /opt/electron -type f -print | xargs chmod a+r
     SANDBOX_FILE='/opt/electron/chrome-sandbox'
     chmod -v 4755 ${SANDBOX_FILE}
@@ -1175,8 +1175,8 @@ install_electron_v8() {
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
         fix_fedora_electron_libxssl
         download_electron
-        printf "%s\n" "${GREEN}find ${YELLOW}${DOWNLOAD_PATH} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
-        find ${DOWNLOAD_PATH} -type d -print | xargs chmod -v a+x
+        printf "%s\n" "${GREEN}find ${YELLOW}${DOWNLOAD_PATH} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+rx${RESET}"
+        find ${DOWNLOAD_PATH} -type d -print | xargs chmod -v a+rx
         find ${DOWNLOAD_PATH} -type f -print | xargs chmod a+r
         chmod -v 755 ${DOWNLOAD_PATH}
         chmod -v 4755 ${DOWNLOAD_PATH}/chrome-sandbox
@@ -1202,9 +1202,9 @@ download_tmoe_electron_app() {
     if [ -e "/opt/${DEPENDENCY_01}" ]; then
         #case ${DEPENDENCY_01} in
         #zy-player | netron)
-        printf "%s\n" "${GREEN}find ${YELLOW}/opt/${DEPENDENCY_01} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+x${RESET}"
+        printf "%s\n" "${GREEN}find ${YELLOW}/opt/${DEPENDENCY_01} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+rx${RESET}"
         chmod -Rv 755 /opt/${DEPENDENCY_01}/usr/bin/ 2>/dev/null
-        find /opt/${DEPENDENCY_01} -type d -print | xargs chmod -v a+x
+        find /opt/${DEPENDENCY_01} -type d -print | xargs chmod -v a+rx
         find /opt/${DEPENDENCY_01} -type f -print | xargs chmod a+r
         #   ;;
         #esac

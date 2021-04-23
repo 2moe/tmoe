@@ -826,7 +826,7 @@ if [ ! $(command -v debian-i) ]; then
 	ln -sf ${TMOE_SHARE_DIR}/manager.sh ./debian-i
 fi
 for i in debian startvnc stopvnc debian-i startxsdl startx11vnc tmoe novnc; do
-	chmod -v a+x ${i}
+	chmod -v a+rx ${i}
 	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
 done
 ################

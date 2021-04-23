@@ -34,7 +34,7 @@ RUN apt update \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=docker_nogui-qemu" > container.txt  \
     ; mkdir -p environment \
     ; printf "%s\n%s\n" '#!/usr/bin/env bash' "${QEMU_FILE}" > environment/entrypoint \
-    ; chmod -v a+x environment/* \
+    ; chmod -v a+rx environment/* \
     ; cp -vf ${PWD}/git/tools/virtualization/qemu/startqemu ${QEMU_FILE} \
     ; chmod -v 777 ${QEMU_FILE} \
     ; sed -E -e "s@^(QEMU_NAME=).*@\1${QEMU_NAME}@g" \

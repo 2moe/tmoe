@@ -903,7 +903,7 @@ du_sh_gnu_linux_distro() {
 		if [ -e "${DEBIAN_CHROOT}" ]; then
 			cd ${DEBIAN_CHROOT}
 			${TMOE_PREFIX} du -sh * 2>/dev/null
-			printf "%s\n" "${YELLOW}正在列出排行榜...${RESET}"
+			printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
 			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
 				-o -path="./root/sd" \
 				-o -path="./root/tf" \
@@ -930,7 +930,7 @@ du_sh_gnu_linux_distro() {
 		if [ -e "${DEBIAN_CHROOT}" ]; then
 			cd ${DEBIAN_CHROOT}
 			${TMOE_PREFIX} du -sh *
-			printf "%s\n" "${YELLOW}正在列出TOP30...${RESET}"
+			printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
 			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
 				-o -path="./root/sd" \
 				-o -path="./root/tf" \
