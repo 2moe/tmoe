@@ -15,6 +15,7 @@ RUN apk update \
     ; printf "%s\n%s\n%s\n%s\n" 'export PATH="/usr/local/bundle/bin${PATH:+:${PATH}}"' "export GEM_HOME=/usr/local/bundle" "export BUNDLE_SILENCE_ROOT_WARNING=1" "export BUNDLE_APP_CONFIG=/usr/local/bundle" > environment/container.env \
     ; printf "%s\n%s\n" '#!/usr/bin/env sh' "irb" > environment/entrypoint \
     ; chmod -R a+rx environment/ \
+    ; gem install webrick \
     ; cd /root \
     ; printf "%s\n" "RUBY_VERSION='$(ruby --version)'" > version.txt \
     ; cat version.txt \
