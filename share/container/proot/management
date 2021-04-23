@@ -543,7 +543,7 @@ readme_of_gnu_linux_distro() {
 		例如：
 		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
 		软链接${DEBIAN_FOLDER}容器内部的/tmp到本地的 "container_link_随机数值"
-		当您在当前路径下执行${GREEN}cd ${YELLOW}"container_link_*"${RESET}时，将进入容器所在路径的/tmp目录。
+		当您在当前路径下执行${GREEN}cd ${YELLOW}container_link_*${RESET}时，将进入容器所在路径的/tmp目录。
 		--------------------
 
 		${BOLD}额外拓展功能${RESET}
