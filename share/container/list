@@ -13,7 +13,7 @@ choose_which_gnu_linux_distro() {
 	choose_which_gnu_linux_distro_ja() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "GNU/Linuxディストリビューションを選択してください" 0 50 0 \
 			"1" "🍭 Beta版:Weekly builds(GUI included)" \
-			"2" "Beta版:A service is a container(go,rust,nodejs,openjdk)" \
+			"2" "Beta版:A service is a container(go,rust,nodejs,jdk)" \
 			"3" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
 			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
 			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
@@ -29,7 +29,7 @@ choose_which_gnu_linux_distro() {
 	choose_which_gnu_linux_distro_zh() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "您想要安装哪个GNU/Linux发行版?" 0 50 0 \
 			"1" "🍭 Beta公测:Weekly builds(每周构建GUI版)" \
-			"2" "Beta公测:服务即容器(go,rust,nodejs,openjdk)" \
+			"2" "Beta公测:服务即容器(go,rust,nodejs,jdk)" \
 			"3" "🍥 Debian:致力于自由" \
 			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
 			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
@@ -45,7 +45,7 @@ choose_which_gnu_linux_distro() {
 	choose_which_gnu_linux_distro_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "GNU/Linux distros" --menu "Which distribution do you want to install?" 0 50 0 \
 			"1" "🍭 Beta version:Weekly builds(GUI included)" \
-			"2" "Beta:A service is a container(go,rust,nodejs,openjdk)" \
+			"2" "Beta:A service is a container(go,rust,nodejs,jdk)" \
 			"3" "🍥 Debian is a distro composed of free and open-source software" \
 			"4" "🍛 Ubuntu is the modern, open source OS." \
 			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
@@ -135,7 +135,7 @@ install_tmoe_moonthly_build_edition() {
 			"3" "Visual Studio Code online server" \
 			"4" "OpenJDK(An open-source Java Platform)" \
 			"5" "🐳 Docker(Run docker via qemu)" \
-			"6" "🟩 Node.js(A back-end JavaScript runtime environment)" \
+			"6" "Node.js(A back-end JavaScript runtime environment)" \
 			"7" "Ruby(An interpreted,general-purpose lang)" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
