@@ -148,6 +148,7 @@ environment_variables_and_automatic_startup_script_management() {
 	${RETURN_TO_WHERE}
 }
 create_a_temp_script() {
+	#It is "-f" ,not "-e".
 	if [ -f ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]; then
 		${TMOE_PREFIX} rm -fv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 	fi
@@ -250,7 +251,7 @@ start_gui_menu() {
 			"2" "⚒️ startxsdl" \
 			"3" "🍬 novnc(HTML5 VNC client)" \
 			"4" "⚔️ startx11vnc" \
-			"5" "tightvnc (only for debian/ubuntu/kali)" \
+			"5" "tightvnc (only for debian,ubuntu,kali)" \
 			"6" "tigervnc" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
@@ -261,7 +262,7 @@ start_gui_menu() {
 			"2" "⚒️ startxsdl:启动xsdl/VcXsrv" \
 			"3" "🍬 novnc:在浏览器里连接vnc" \
 			"4" "⚔️ startx11vnc:启动x11vnc" \
-			"5" "tightvnc (only for debian/ubuntu/kali)" \
+			"5" "tightvnc (only for debian,ubuntu,kali)" \
 			"6" "tigervnc" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
@@ -272,7 +273,7 @@ start_gui_menu() {
 			"2" "⚒️ startxsdl" \
 			"3" "🍬 novnc(HTML5 VNC client)" \
 			"4" "⚔️ startx11vnc" \
-			"5" "tightvnc (only for debian/ubuntu/kali)" \
+			"5" "tightvnc (only for debian,ubuntu,kali)" \
 			"6" "tigervnc" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
