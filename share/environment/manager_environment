@@ -368,7 +368,7 @@ check_tmoe_completion_version() {
 	if [ ! -e "${TMOE_COMPLETION_VERSION_TXT}" ]; then
 		UPDATE_TMOE_COMPLETION=true
 	else
-		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl --connect-timeout 2 https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/share/completion/version.txt)
+		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl --connect-timeout 1 -sL https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/share/completion/version.txt)
 		if [ -n ${THE_LATEST_TMOE_COMPLETION_VERSION} ]; then
 			if [ -e ${TMOE_COMPLETION_VERSION_TXT} ]; then
 				CURRENT_TMOE_COMPLETION_VERSION="$(head -n 1 ${TMOE_COMPLETION_VERSION_TXT})"
