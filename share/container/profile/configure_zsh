@@ -86,6 +86,7 @@ export_tmoe_env() {
 		for i in /root/README.*; do
 			mkdir -p ${TMOE_LINUX_DIR}/docs
 			cp -vf ${i} ${TMOE_LINUX_DIR}/docs
+			chmod a+rx -R ${TMOE_LINUX_DIR}/docs
 			break
 		done
 	fi
