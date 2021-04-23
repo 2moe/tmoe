@@ -148,6 +148,9 @@ environment_variables_and_automatic_startup_script_management() {
 	${RETURN_TO_WHERE}
 }
 create_a_temp_script() {
+	if [ -f ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]; then
+		${TMOE_PREFIX} rm -fv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+	fi
 	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
 	printf "%s\n" '#!/usr/bin/env bash' '#!/usr/bin/env ruby' '#!/usr/bin/env python' '#You can create a temporary automatic startup script' '#that will be automatically executed after the container is started,' '#and will be automatically deleted after the execution is complete.' '#Please remove unnecessary shebang' >${TEMP_FILE}
 	chmod 777 ${TEMP_FILE}
@@ -156,6 +159,8 @@ create_a_temp_script() {
 	else
 		nano ${TEMP_FILE}
 	fi
+	mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+	${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
 	printf "%s\n" "Do you want to start the ${BLUE}${DEBIAN_FOLDER}${RESET} container now?${PURPLE}[Y/n]${RESET}"
 	do_you_want_to_continue
