@@ -609,10 +609,12 @@ create_chroot_startup_script() {
 			[[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
 		fi
 	fi
-	cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR} 2>/dev/null || sudo cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR}
-	sudo chmod 666 -v ${TMPDIR}/environment
+	if [[ -e ${DEBIAN_CHROOT}/etc/environment ]]; then
+		cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR} 2>/dev/null || sudo cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR}
+		sudo chmod 666 -v ${TMPDIR}/environment
+	fi
 	printf '%s\n' 'export TMOE_CHROOT=true' >>${TMPDIR}/environment
-	sudo chmod 600 ${TMPDIR}/environment
+	sudo chmod a+r ${TMPDIR}/environment
 	sudo mv ${TMPDIR}/environment ${DEBIAN_CHROOT}/etc/
 	##################
 	#此处若不创建，将有可能导致chromium无法启动。
@@ -867,7 +869,7 @@ if [ -f "${TMOE_LOCALE_FILE}" ]; then
 	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
 	${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_LOCALE_NEW_PATH}
 	${TMOE_CHROOT_PREFIX} cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
-	${TMOE_CHROOT_PREFIX} chmod a+rw ${TMOE_LOCALE_NEW_PATH}/${TMOE_LOCALE_FILE}
+	${TMOE_CHROOT_PREFIX} chmod a+rw ${TMOE_LOCALE_NEW_PATH}/locale.txt
 fi
 case ${TMOE_LANG} in
 zh_*UTF-8) LNK_MENU_FILE="${HOME}/容器选择菜单.sh" ;;
