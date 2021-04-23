@@ -1,8 +1,7 @@
 # Environment variables and automatic startup scripts
 
 关于tmoe container 环境变量选项与自启动脚本的说明:  
-注：适用于v1.4539（2021-04-23）及更新的版本安装的proot容器。  
-v1.4539及更新的版本安装的chroot容器。  
+注：适用于v1.4539（2021-04-23）及更新的版本安装的proot/chroot容器。  
 
 ## Global environment variables
 

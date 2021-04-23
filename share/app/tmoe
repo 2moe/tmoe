@@ -363,6 +363,7 @@ start_tmoe_container() {
 	if [[ -n ${TEMPORARY_SCRIPT_FILE_01} || -n ${TEMPORARY_SCRIPT_FILE_02} || -n ${TEMPORARY_SCRIPT_FILE_03} ]]; then
 		if [[ -e ${DEBIAN_CHROOT} ]]; then
 			check_container_login_file_01
+			set_temp_file_env
 		else
 			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 			exit 1
