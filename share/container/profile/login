@@ -6,8 +6,8 @@ if [ "$(ls /etc/profile.d/permanent/ 2>/dev/null)" ]; then
         fi
     done
 fi
-if [ "$(ls /etc/profile.d/temporary/ 2>/dev/null)" ]; then
-    for i in /etc/profile.d/temporary/*; do
+if [ "$(ls /tmp/.tmoe_container_temporary/ 2>/dev/null)" ]; then
+    for i in /tmp/.tmoe_container_temporary/*; do
         if [ -e "${i}" ]; then
             chmod 4755 -R ${i}
             ${i}

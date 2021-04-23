@@ -1,11 +1,13 @@
 # Environment variables and automatic startup scripts
 
-关于菜单内环境变量选项与自启动脚本的说明:  
+关于tmoe container 环境变量选项与自启动脚本的说明:  
+注：适用于v1.4539（2021-04-23）及更新的版本安装的proot容器。  
+v1.4539及更新的版本安装的chroot容器。  
 
 ## Global environment variables
 
 (全局环境变量)  
-注：适用于v1.4526及更新的版本安装的proot容器。  
+
 容器在启动前，会加载环境变量文件，并将其自动生成为容器的启动参数，因此修改环境变量文件理论上对大部分login shell都能生效。  
 选择该选项，本质上是修改容器内部的 **/usr/local/etc/tmoe-linux/environment/container.env**  
 
@@ -64,6 +66,8 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 ## Temporary scripts
 
+注：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
+
 ### create  
 
 如果需要创建临时自启动脚本，那么建议您使用 `tmoe` 命令。  
@@ -104,14 +108,15 @@ t p u 下北澤紅茶 "./hello.rb"
 关于使用多参数来执行多个脚本或多命令的说明。  
 
 临时脚本可以是一个，也可以是多个。  
-当个数在两个以内，直接使用参数即可。  
+当个数在两个以内时，直接使用参数即可。  
 注：不支持数组形式。  
 当个数大于两个时，那么最后一个参数请使用文件夹。  
+请使用命令或脚本来调用文件夹。
 
 tmoe对于本地文件的优先级要高于容器内部文件。  
 若本地存在 **~/hello.rb**，而容器内部存在同名文件，则优先检测本地文件，若本地不存在才会执行容器内部的文件。  
 
-本地的脚本或者二进制文件可以没有可执行权限，但是容器内部的文件必须要有可执行权限，除非您使用了命令去调用另一个脚本。    
+本地的脚本或者二进制文件可以没有可执行权限，但是容器内部的文件必须要有可执行权限，除非您使用了命令去调用另一个脚本。  
 
 假设本地存在一个文件夹，名为“My-Rust-Project”  
 
@@ -129,11 +134,37 @@ t p u 下北澤紅茶 "ls -lah My-Rust-Project" "./My-Rust-Project"
 t p u 下北澤紅茶 "cd My-Rust-Project; cargo build --release" "./My-Rust-Project"
 ```
 
-由于temporary文件夹会在执行完成后自动清空，因此不适用于编译型的任务。  
-接下来，开发者可能会优化Permanent scripts选项。  
+由于temporary文件夹会在执行完成后自动清空，因此不适用于编译型的任务。
+请查看Permanent scripts的说明。
+
+## Permanent scripts & ln parameter
+
+注：永久性脚本的文件夹位于容器内部的 **/etc/profile.d/permanent**  
+
+建议将该功能配合ln参数使用。
+
+当ln位于最后一个参数时，后面没有接任何路径，此时将创建容器内部的 **/etc/profile.d/permanent** 的软链接到当前路径的 "container_link_随机数值"
+
+```shell
+t p u 下北澤紅茶 ln
+```
+
+将本地脚本copy到软链接里去,这时候启动容器时会自动调用 **/etc/profile.d/permanent** 里的脚本或二进制文件。  
+
+如果您需要软链接容器目录下的/tmp到当前目录,那么可以这样做。  
+
+```shell
+t p u 下北澤紅茶 ln /tmp
+```
+
+假设随机数值为**114514**，那么当前目录下就会生成一个软链接文件：**container_link_114514**  
+该链接指向容器内部的/tmp  
+  
+如需删除该文件，您可以输入`unlink container_link_114514`,或者是`rm container_link_114514`,而不要输 `rm container_link_114514/*`  
 
 ## Entrypoint
 
+选择该选项，本质上是修改容器内部的 **/usr/local/etc/tmoe-linux/environment/entrypoint**  
 （入口点）  
 
 本选项与Permanent scripts存在相似且重合的功能。

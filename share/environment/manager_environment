@@ -88,7 +88,7 @@ tmoe_env_02() {
 	TMOE_GNU_LINUX_CONTAINER_ENV_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment"
 	TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
 	TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
-	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/etc/profile.d/temporary"
+	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
 	CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
 	CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
 }

@@ -15,7 +15,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "alpha:Env var & auto-startup script" \
+			"4" "🍧 beta:User & Env var & Auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 unmount & remove" \
 			"7" "📘 readme" \
@@ -30,7 +30,7 @@ proot_management_menu() {
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "⏹️ 停止容器进程" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "alpha内测:环境变量与自启动管理" \
+			"4" "🍧 beta公测:环境变量与登录项管理" \
 			"5" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"6" "💔 unmount & remove 卸载并移除" \
 			"7" "📘 readme 自述/说明" \
@@ -45,7 +45,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ Tötungsprozess" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "alpha:Env var & auto-startup script" \
+			"4" "🍧 beta:User & Env var & Auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 aushängen und entfernen" \
 			"7" "📘 Liesmich" \
@@ -102,45 +102,123 @@ proot_management_menu() {
 }
 ##############################
 environment_variables_and_automatic_startup_script_management() {
+	RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
 	environment_variables_and_automatic_startup_script_management_menu_en() {
-		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can create an automatic startup script,\n and when you enter the container,\n the container will automatically execute it.\nSorry,this feature is still in alpha" 0 50 0 \
-			"0" "README" \
-			"1" "Temporary(ruby/python/shell, etc.)" \
-			"2" "Permanent" \
+		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
+			"1" "switch login user" \
+			"2" "Global environment variables" \
 			"3" "Entrypoint" \
-			"4" "Global environment variables" \
-			"5" "X env var" \
-			"6" "🌚 Return to previous menu" \
+			"4" "Temporary auto-startup script" \
+			"5" "/etc/environment" \
+			"6" "README" \
+			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
 	environment_variables_and_automatic_startup_script_management_menu_zh_cn() {
-		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以创建自启动脚本，容器在启动后将自动执行。\n抱歉，目前本功能暂未正式开放，您可以先看看README" 0 50 0 \
-			"0" "README 自述/说明" \
-			"1" "Temporary(临时，ruby/python/shell, etc.)" \
-			"2" "Permanent(永久)" \
+		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
+			"1" "切换登录用户" \
+			"2" "Global env var(全局环境变量)" \
 			"3" "Entrypoint(入口点)" \
-			"4" "Global environment variables(全局环境变量)" \
-			"5" "X env var(只适用于vnc、x和wayland的环境变量)" \
-			"6" "🌚 Return to previous menu" \
+			"4" "Temporary(临时自启脚本)" \
+			"5" "/etc/environment" \
+			"6" "README 自述/说明" \
+			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
+	#			"5" "Permanent(永久自启脚本)" \
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) environment_variables_and_automatic_startup_script_management_menu_zh_cn ;;
 	*) environment_variables_and_automatic_startup_script_management_menu_en ;;
 	esac
+	check_container_login_file_02
 	##############################
 	case "${ENV_VAR_AND_SCRIPT}" in
-	0) readme_of_env_var_and_autostartup_script ;;
-	6 | "") ${RETURN_TO_WHERE} ;;
+	0 | "") proot_management_menu ;;
+	1) switch_container_login_user ;;
+	2) edit_container_global_env_var_file ;;
+	3) edit_container_entrypoint ;;
+	4) create_a_temp_script ;;
+	5) edit_container_etc_environment ;;
+	6) readme_of_env_var_and_autostartup_script ;;
 	*)
 		printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
 		;;
 	esac
 	press_enter_to_return
-	environment_variables_and_automatic_startup_script_management
-	# 6) readme_of_env_var_and_autostartup_script ;;
+	${RETURN_TO_WHERE}
+}
+create_a_temp_script() {
+	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
+	printf "%s\n" '#!/usr/bin/env bash' '#!/usr/bin/env ruby' '#!/usr/bin/env python' '#You can create a temporary automatic startup script' '#that will be automatically executed after the container is started,' '#and will be automatically deleted after the execution is complete.' '#Please remove unnecessary shebang' >${TEMP_FILE}
+	chmod 777 ${TEMP_FILE}
+	if [ $(command -v editor) ]; then
+		editor ${TEMP_FILE}
+	else
+		nano ${TEMP_FILE}
+	fi
+	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+	printf "%s\n" "Do you want to start the ${BLUE}${DEBIAN_FOLDER}${RESET} container now?${PURPLE}[Y/n]${RESET}"
+	do_you_want_to_continue
+	normally_start_gnu_linux_distro
+}
+edit_container_etc_environment() {
+	if [ $(command -v editor) ]; then
+		${TMOE_PREFIX} editor ${DEBIAN_CHROOT}/etc/environment
+	else
+		${TMOE_PREFIX} nano ${DEBIAN_CHROOT}/etc/environment
+	fi
+}
+edit_container_global_env_var_file() {
+	if [ $(command -v editor) ]; then
+		${TMOE_PREFIX} editor ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/container.env
+	else
+		${TMOE_PREFIX} nano ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/container.env
+	fi
+}
+edit_container_entrypoint() {
+	if [ $(command -v editor) ]; then
+		${TMOE_PREFIX} editor ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/entrypoint
+	else
+		${TMOE_PREFIX} nano ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/entrypoint
+	fi
 }
 ##############################
+set_tmoe_user_as_the_default_user() {
+	${TMOE_PREFIX} sed -E -e "s@^(PROOT_USER)=.*@\1=${TMOE_USER_NAME}@" \
+		-e "s@^(CHROOT_USER)=.*@\1=${TMOE_USER_NAME}@" \
+		-i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+##############################
+switch_container_login_user() {
+	cd ${TMPDIR}
+	egrep -v 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
+	egrep -v 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
+	TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+	rm -f .tmoe-linux_cache.0*
+	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
+		"The login user of the current container is $(egrep '^PROOT_USER=|^CHROOT_USER=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')\nPlease choose a user." 0 0 0 \
+		${TMOE_USER_LIST} \
+		"0" "🌚 Back/zurück/返回" \
+		3>&1 1>&2 2>&3)
+	case ${TMOE_USER_NAME} in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	esac
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8)
+		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
+			set_tmoe_user_as_the_default_user
+		fi
+		;;
+	*)
+		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
+			set_tmoe_user_as_the_default_user
+		fi
+		;;
+	esac
+	egrep --color=auto "^PROOT_USER=|^CHROOT_USER=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	press_enter_to_return
+	${RETURN_TO_WHERE}
+}
 readme_of_env_var_and_autostartup_script() {
 	if [ $(command -v bat) ]; then
 		bat -ppn ${TMOE_SHARE_DIR}/container/README.md
@@ -167,8 +245,8 @@ start_gui_menu() {
 			"2" "⚒️ startxsdl" \
 			"3" "🍬 novnc(HTML5 VNC client)" \
 			"4" "⚔️ startx11vnc" \
-			"5" "alpha:tightvnc" \
-			"6" "alpha:tigervnc" \
+			"5" "tightvnc (only for debian/ubuntu/kali)" \
+			"6" "tigervnc" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -178,8 +256,8 @@ start_gui_menu() {
 			"2" "⚒️ startxsdl:启动xsdl/VcXsrv" \
 			"3" "🍬 novnc:在浏览器里连接vnc" \
 			"4" "⚔️ startx11vnc:启动x11vnc" \
-			"5" "alpha内测:tightvnc" \
-			"6" "alpha内测:tigervnc" \
+			"5" "tightvnc (only for debian/ubuntu/kali)" \
+			"6" "tigervnc" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -189,8 +267,8 @@ start_gui_menu() {
 			"2" "⚒️ startxsdl" \
 			"3" "🍬 novnc(HTML5 VNC client)" \
 			"4" "⚔️ startx11vnc" \
-			"5" "alpha:tightvnc" \
-			"6" "alpha:tigervnc" \
+			"5" "tightvnc (only for debian/ubuntu/kali)" \
+			"6" "tigervnc" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
 	}
@@ -419,25 +497,37 @@ readme_of_gnu_linux_distro() {
 		${BOLD}${YELLOW}LIST INSTALLED CONTAINERS:${RESET} ${BLUE}tmoe ls${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ls${RESET}
 		${BOLD}${YELLOW}Start the default container:${RESET} ${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}
 		${BOLD}${YELLOW}Full command:${RESET} ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
+
 		${BOLD}${YELLOW}Simplified command:${RESET}  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + tigervnc server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + x11vnc server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} x11${RESET}
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + X server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
+
 		The default ${YELLOW}login shell${RESET} is ${GREEN}zsh${RESET}, if you want to start ${BLUE}bash${RESET},then type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}
 		Start ${BLUE}ash${RESET} as a login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
-		Note: The last parameter can execute a local script in the container.
+
+		Note: The last parameter can execute a local script.
 		Assuming that there is a hello.rb file in the current directory, then you can type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
+
+		New feature:
+		You can create a symbolic link from the internal path of the container to the current dir.
+		For example:
+		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
+		The current directory will generate a "container_link_random-value" symbolic link file.
+		If the value is 114514, then when you type ${GREEN}cd ${YELLOW}container_link_114514${RESET}, you will enter the ${BLUE}/tmp${RESET} of the container dir.
 
 		--------------------
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
 		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET},若您的宿主shell环境为tmoe-zsh,则可简化为${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
 		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
+
 		精简命令为  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
 		若您使用的是tmoe-zsh配置的环境，则可以进一步简化为 ${YELLOW}t ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}tigervnc server${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}x11vnc server${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} x11${RESET}
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}XSDL/VcXsrv${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
+
 		容器的默认${YELLOW}登录SHELL${RESET}为${GREEN}zsh${RESET},若您需要使用其它${YELLOW}shell${RESET}，则请使用以下命令
 		临时使用${GREEN}bash${RESET}作为${YELLOW}登录SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}  
 		临时使用${GREEN}ash${RESET}作为${YELLOW}登录SHELL${RESET}：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET}
@@ -446,7 +536,14 @@ readme_of_gnu_linux_distro() {
 		例如：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "ls -lah /" ${RESET}
 		最后一个参数也可以执行本地脚本，假设当前目录下存在hello.rb文件，那么你需要执行 ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
 		而不是  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "hello.rb" ${RESET}
-		注：本地脚本或二进制文件的优先级要高于容器内部文件，详见内测版功能的README。
+		注：本地脚本或二进制文件的优先级要高于容器内部文件，详见“环境变量与登录项管理”选项的README。
+
+		v1.4539新版功能：
+		您现在可以使用ln参数来创建容器内部文件路径的软链接到本地路径。
+		例如：
+		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
+		软链接${DEBIAN_FOLDER}容器内部的/tmp到本地的 "container_link_随机数值"
+		当您在当前路径下执行${GREEN}cd ${YELLOW}"container_link_*"${RESET}时，将进入容器所在路径的/tmp目录。
 		--------------------
 
 		${BOLD}额外拓展功能${RESET}
@@ -534,15 +631,16 @@ check_container_login_file_02() {
 	TMOE_GNU_LINUX_CONTAINER_ENV_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment"
 	TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
 	TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
-	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/etc/profile.d/temporary"
+	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
 	CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
 	CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
 
 	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+		${TMOE_PREFIX} chmod 777 ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
 		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
-		${TMOE_PREFIX} chmod -Rv 755 ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+		${TMOE_PREFIX} chmod -Rv 755 ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary
 	fi
 	if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
 		${TMOE_PREFIX} mkdir -pv ${CONTAINER_ZSH_DIR}
@@ -554,28 +652,31 @@ check_container_login_file_02() {
 }
 chmod_777_temporary_file_02() {
 	# cat ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01_${RANDOM}"
+	${TMOE_PREFIX} chmod 777 ${TEMP_FILE}
+	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 }
 create_and_move_temporary_script_05() {
-	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /tmp/.tmoe_container_temporary" "${EXEC_PROGRAM}" >${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_06() {
-	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /tmp/.tmoe_container_temporary" "${TEMPORARY_SCRIPT_FILE}" >${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_07() {
-	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_08() {
-	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 ########
 exec_container_program() {
 	check_container_login_file_02
+	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
+	mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+	${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 	create_and_move_temporary_script_07
 	normally_start_gnu_linux_distro
 }

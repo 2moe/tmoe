@@ -1,4 +1,4 @@
-mkdir -p /etc/zsh /etc/profile.d/permanent /etc/profile.d/temporary
+mkdir -p /etc/zsh /etc/profile.d/permanent
 touch /usr/local/etc/tmoe-linux/environment/container.env
 chmod 755 /usr/local/etc/tmoe-linux/environment/container.env
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #############################################
 # set -x
+unset LINK_SOURCE_DIR TEMPORARY_SCRIPT_FILE TEMPORARY_SCRIPT_FILE_01 TEMPORARY_SCRIPT_FILE_02 TEMPORARY_SCRIPT_FILE_03
 tmoe_main() {
 	case "$1" in
 	p* | proot)
@@ -144,8 +145,12 @@ tmoe_main() {
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
+	ln)
+		CREATE_A_SOFT_LINK=true
+		LINK_SOURCE_DIR="/etc/profile.d/permanent"
+		;;
 	"") ;;
-	*/*) TEMPORARY_SCRIPT_FILE="${4}" ;;
+	./* | ../* | /*) TEMPORARY_SCRIPT_FILE_01="${4}" ;;
 	*) EXEC_PROGRAM="${4}" ;;
 	esac
 
@@ -157,10 +162,35 @@ tmoe_main() {
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
+	ln)
+		CREATE_A_SOFT_LINK=true
+		LINK_SOURCE_DIR="/etc/profile.d/permanent"
+		;;
 	"") ;;
-	*/*) TEMPORARY_SCRIPT_FILE="${5}" ;;
+	./* | ../* | /*)
+		case ${CREATE_A_SOFT_LINK} in
+		true) LINK_SOURCE_DIR="${5}" ;;
+		*) TEMPORARY_SCRIPT_FILE_02="${5}" ;;
+		esac
+		;;
 	*) EXEC_PROGRAM="${5}" ;;
 	esac
+
+	case "$6" in
+	"") ;;
+	./* | ../* | /*)
+		case ${CREATE_A_SOFT_LINK} in
+		true) LINK_SOURCE_DIR="${6}" ;;
+		*) TEMPORARY_SCRIPT_FILE_03="${6}" ;;
+		esac
+		;;
+	esac
+
+	if ((${#} >= 7)); then
+		printf "%s\n" "ERROR, number of parameters exceeded."
+		printf "%s\n" "Please retype the commands:"
+		printf "%s\n" "tmoe ${1} ${2} ${3} ${4} ${5}"
+	fi
 	TMOE_PARAMETERS="$*"
 	start_tmoe_container
 }
@@ -206,11 +236,16 @@ source_tmoe_env() {
 }
 ########
 check_container_login_file_01() {
+	if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+		if ! grep -q 'tmp/.tmoe_container_temporary' "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login"; then
+			${TMOE_PREFIX} rm -fv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+		fi
+	fi
 	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent
 		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
 		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
-		${TMOE_PREFIX} chmod -Rv 755 ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/etc/profile.d/temporary
+		${TMOE_PREFIX} chmod -Rv 755 ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent
 	fi
 	if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
 		${TMOE_PREFIX} mkdir -pv ${CONTAINER_ZSH_DIR}
@@ -222,24 +257,33 @@ check_container_login_file_01() {
 }
 ########
 chmod_777_temporary_file_01() {
-	cat ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} chmod 777 ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} mv -f ${TMPDIR}/.tmoe_temporary_autostartup_script "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/start_01_${RANDOM}"
+	cat ${TEMP_FILE}
+	${TMOE_PREFIX} chmod 777 ${TEMP_FILE}
+	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
+}
+set_temp_file_env() {
+	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
+	mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+	${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 }
 create_and_move_temporary_script_01() {
-	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	set_temp_file_env
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /tmp/.tmoe_container_temporary" "${EXEC_PROGRAM}" >${TEMP_FILE}
 	chmod_777_temporary_file_01
 }
 create_and_move_temporary_script_02() {
-	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /etc/profile.d/temporary" "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	set_temp_file_env
+	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /tmp/.tmoe_container_temporary" "${TEMPORARY_SCRIPT_FILE}" >${TEMP_FILE}
 	chmod_777_temporary_file_01
 }
 create_and_move_temporary_script_03() {
-	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	set_temp_file_env
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TEMP_FILE}
 	chmod_777_temporary_file_01
 }
 create_and_move_temporary_script_04() {
-	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TMPDIR}/.tmoe_temporary_autostartup_script
+	set_temp_file_env
+	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TEMP_FILE}
 	chmod_777_temporary_file_01
 }
 start_tmoe_container() {
@@ -266,6 +310,12 @@ start_tmoe_container() {
 	else
 		sed -n p ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 	fi
+
+	if [[ ${CREATE_A_SOFT_LINK} = true ]]; then
+		ln -svf ${DEBIAN_CHROOT}${LINK_SOURCE_DIR} ./container_link_${RANDOM}
+		exit 0
+	fi
+
 	case ${TMOE_CONTAINER_HITOKOTO} in
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
@@ -309,19 +359,25 @@ start_tmoe_container() {
 			exit 1
 		fi
 	fi
-	if [[ -n ${TEMPORARY_SCRIPT_FILE} ]]; then
+
+	if [[ -n ${TEMPORARY_SCRIPT_FILE_01} || -n ${TEMPORARY_SCRIPT_FILE_02} || -n ${TEMPORARY_SCRIPT_FILE_03} ]]; then
 		if [[ -e ${DEBIAN_CHROOT} ]]; then
 			check_container_login_file_01
 		else
 			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 			exit 1
 		fi
-		if [[ -e ${TEMPORARY_SCRIPT_FILE} ]]; then
-			${TMOE_PREFIX} cp -rvf "${TEMPORARY_SCRIPT_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
-		else
-			create_and_move_temporary_script_02
-		fi
+		for i in ${TEMPORARY_SCRIPT_FILE_01} ${TEMPORARY_SCRIPT_FILE_02} ${TEMPORARY_SCRIPT_FILE_03}; do
+			if [[ -e ${i} ]]; then
+				${TMOE_PREFIX} cp -rvf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
+				${TMOE_PREFIX} chmod a+x "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
+			else
+				TEMPORARY_SCRIPT_FILE="${i}"
+				create_and_move_temporary_script_02
+			fi
+		done
 	fi
+
 	case ${SYSTEMD_NSPAWN} in
 	true)
 		case $(uname -o) in

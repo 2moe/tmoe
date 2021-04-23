@@ -146,6 +146,7 @@ function _tmoe() {
         "bash:GNU Bourne-Again SHell"
         "zsh:z shell(Default)"
         "ash:command interpreter (shell)"
+        "ln:create a symbolic link"
     )
 
     _arguments -C \
