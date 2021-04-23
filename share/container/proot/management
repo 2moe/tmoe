@@ -232,15 +232,6 @@ readme_of_env_var_and_autostartup_script() {
 		${TMOE_SHARE_DIR}/container/README.md
 	fi
 }
-create_a_temporary_automatic_startup_script() {
-	printf "%s\n" "${YELLOW}PREVIEW:${RESET}"
-	printf "%s\n" "You can create an automatic startup script, and when you enter the container, the container will automatically execute it."
-	printf "%s\n" "If it is a temporary script, it will only be executed once and will not take effect next time.If it is a permanent script, it will be executed every time you enter the container."
-	printf "%s\n" "For example, if you need a container to automatically execute ${GREEN}ruby -run -e httpd . -p 8080${RESET}, after you create the script, the container will automatically start the ruby httpd service."
-
-	press_enter_to_return
-	${RETURN_TO_WHERE}
-}
 ##############################
 start_gui_menu() {
 	start_gui_menu_en() {

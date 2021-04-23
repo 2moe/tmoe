@@ -175,10 +175,10 @@ t p u 下北澤紅茶 ln /tmp
 这里引用我在内测期间写的几句话。  
 
 > If it is a temporary script, it will only be executed once and will not take effect next time.If it is a permanent script, it will be executed every time you enter the container.  
-> For example, if you need a container to automatically execute ruby -run -e httpd /sd/Download -p 8080, after you create the script, the container will automatically start the ruby httpd service.  
+> For example, if you need a container to automatically execute ruby -run -e httpd /sd/Download -p 8080, after you create the script, the container will automatically start the ruby webrick http server.  
 
-如果您拉了一个ruby容器，只想要让它开httpd, 那么只需要编辑 entrypoint 文件，并且输入 `ruby -run -e httpd /sd/Download -p 48080`  
-注：48080为端口，浏览器输入 **localhost:48080** 即可访问服务。  
+如果您拉了一个ruby容器，只想要让它开webrick http服务器, 那么只需要编辑 entrypoint 文件，并且输入 `ruby -run -e httpd /sd/Download -p 48080`  
+注：48080为端口，浏览器输入 **localhost:48080** 即可访问服务。  若启动失败，则执行 `gem install webrick`  
 之后每次启动这个容器，无需执行任何额外操作，都会自动自动执行这条命令。  
 这个容器有一个最主要的作用，那就是提供服务。  
 也就是说，一个服务就是一个容器，一个配置好的环境也是一个容器。  
