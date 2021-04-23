@@ -127,7 +127,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
 		if [[ -s \${HOST_NAME_FILE} ]];then
 		   HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
-		else  
+		else
 			[[ ! \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
 		fi
 		CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"

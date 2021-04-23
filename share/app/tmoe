@@ -150,7 +150,7 @@ tmoe_main() {
 		LINK_SOURCE_DIR="/etc/profile.d/permanent"
 		;;
 	"") ;;
-	./* | ../* | /*) TEMPORARY_SCRIPT_FILE_01="${4}" ;;
+	~/* | ./* | ../* | /*) TEMPORARY_SCRIPT_FILE_01="${4}" ;;
 	*) EXEC_PROGRAM="${4}" ;;
 	esac
 
@@ -167,7 +167,7 @@ tmoe_main() {
 		LINK_SOURCE_DIR="/etc/profile.d/permanent"
 		;;
 	"") ;;
-	./* | ../* | /*)
+	~/* | ./* | ../* | /*)
 		case ${CREATE_A_SOFT_LINK} in
 		true) LINK_SOURCE_DIR="${5}" ;;
 		*) TEMPORARY_SCRIPT_FILE_02="${5}" ;;
@@ -178,7 +178,7 @@ tmoe_main() {
 
 	case "$6" in
 	"") ;;
-	./* | ../* | /*)
+	~/* | ./* | ../* | /*)
 		case ${CREATE_A_SOFT_LINK} in
 		true) LINK_SOURCE_DIR="${6}" ;;
 		*) TEMPORARY_SCRIPT_FILE_03="${6}" ;;
