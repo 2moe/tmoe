@@ -844,7 +844,7 @@ if [[ -e "debian-i" ]]; then
 fi
 #curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
 cp -f ${TMOE_GIT_DIR}/tool.sh ./debian-i
-chmod a+x neofetch debian-i
+chmod a+rx neofetch debian-i
 
 ${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin
 
@@ -854,7 +854,7 @@ if [ ! -s "zsh-i.sh" ]; then
 fi
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
 cp -f ${TMOE_SHARE_DIR}/container/profile/configure_zsh ./zsh.sh
-chmod a+x zsh.sh zsh-i.sh
+chmod a+rx zsh.sh zsh-i.sh
 ${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
 ${TMOE_CHROOT_PREFIX} cp -r ${TMOE_SHARE_DIR}/container/profile ${DEBIAN_CHROOT}/tmp
 ${TMOE_CHROOT_PREFIX} chmod -R 1777 ${DEBIAN_CHROOT}/tmp/profile
@@ -933,7 +933,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 	fi
 	if [[ -e ${NEOFETCH_BIN_FILE} ]]; then
-		chmod a+x ${NEOFETCH_BIN_FILE}
+		chmod a+rx ${NEOFETCH_BIN_FILE}
 		if [[ -e /usr/bin/bash || -e /bin/bash ]]; then
 			printf "%s\n" "${GREEN}neofetch${RESET}"
 			${NEOFETCH_BIN_FILE}
@@ -1470,7 +1470,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			mkdir -pv /etc/X11/xinit
 			[[ -e /etc/X11/xinit/Xsession ]] || cp -vf /root/.vnc/xstartup /etc/X11/xinit/Xsession
 			[[ $(command -v startxsd) ]] || printf "%s\n%s\n%s\n" '#!/bin/sh' "export DISPLAY=127.0.0.1:0" "/etc/X11/xinit/Xsession" > /usr/local/bin/startxsdl
-			chmod a+x /usr/local/bin/startxsdl
+			chmod a+rx /usr/local/bin/startxsdl
 	    fi
 	}
 	if grep -q 'puppy_linux' /etc/os-release;then

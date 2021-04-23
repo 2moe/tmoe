@@ -187,7 +187,7 @@ After the upgrade is complete, you can type ${GREEN}code-server${RESET} to start
         grep '/tmp/startcode.tmp' ${HOME}/.zshrc >/dev/null || sed -i "$ r /tmp/sed-vscode.tmp" ${HOME}/.zshrc
     }
     #if [ ! -x "/usr/local/bin/code-server-data/code-server" ]; then
-    chmod a+x /usr/local/bin/code-server-data/code-server 2>/dev/null
+    chmod a+rx /usr/local/bin/code-server-data/code-server 2>/dev/null
     #fi
 
     cd /tmp

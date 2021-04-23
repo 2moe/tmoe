@@ -1137,7 +1137,7 @@ configure_vnc_xstartup() {
     chmod 777 ${XSESSION_FILE}
     #xrdb \${HOME}/.Xresources
     #dbus-launch startxfce4 &
-    #chmod +x ./xstartup
+    #chmod a+rx ./xstartup
     rm ./xstartup 2>/dev/null
     ln -svf ${XSESSION_FILE} ./xstartup
     cp -f ${TMOE_TOOL_DIR}/gui/wsl_pulse_audio ${TMOE_LINUX_DIR}
@@ -1168,7 +1168,7 @@ configure_x11vnc_remote_desktop_session() {
     if [ "${NON_DBUS}" != "true" ]; then
         enable_dbus_launch
     fi
-    chmod +x ./*
+    chmod a+rx ./*
 
     if [ -e "${HOME}/.vnc/passwd" ]; then
         cd ${HOME}/.vnc
@@ -1630,7 +1630,7 @@ choose_xfce_or_xubuntu() {
                     cd ${CUR}
                     rm -rvf ${TEMP_DIR}
                     cp -f ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
-                    chmod a+x -v /var/lib/dpkg/info/mlocate.postinst
+                    chmod a+rx -v /var/lib/dpkg/info/mlocate.postinst
                     apt-mark hold mlocate
                     #sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
                 fi
@@ -3000,7 +3000,7 @@ create_update_icon_caches() {
 		done
 		exit 0
 	EndofFile
-    chmod +x update-icon-caches
+    chmod a+rx update-icon-caches
 }
 check_update_icon_caches_sh() {
     if [ ! $(command -v update-icon-caches) ]; then
@@ -4603,13 +4603,13 @@ xwayland_onekey() {
     cd /usr/local/bin
     cat >startw <<-'EndOFwayland'
 		#!/usr/bin/env bash
-		chmod +x -R /etc/xwayland
+		chmod a+rx -R /etc/xwayland
 		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
 		export DISPLAY=:0
 		xfce4-session
 	EndOFwayland
-    chmod +x startw
+    chmod a+rx startw
     xwayland_desktop_environment
     ###########################
     press_enter_to_return_configure_xwayland
@@ -4836,14 +4836,14 @@ configure_xwayland_remote_desktop_session() {
     cd /usr/local/bin
     cat >startw <<-EndOFwayland
 		#!/usr/bin/env bash
-		chmod +x -R /etc/xwayland
+		chmod a+rx -R /etc/xwayland
 		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
 		export DISPLAY=:0
 		${REMOTE_DESKTOP_SESSION}
 	EndOFwayland
     printf "%s\n" "${REMOTE_DESKTOP_SESSION}"
-    chmod +x startw
+    chmod a+rx startw
     printf "%s\n" "配置完成，请先打开sparkle app，点击Start"
     printf "%s\n" "然后在GNU/Linux容器里输startw启动xwayland"
     printf "%s\n" "在使用过程中，您可以按音量+调出键盘"
@@ -5092,7 +5092,7 @@ configure_startvnc() {
     #rm -f startvnc
     cp -f ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ./
     cp -f ${TMOE_TOOL_DIR}/gui/tightvnc ${TMOE_TOOL_DIR}/gui/tigervnc ./
-    chmod a+x ./*vnc
+    chmod a+rx ./*vnc
 }
 ###############
 fix_non_root_permissions() {
@@ -5275,7 +5275,7 @@ first_configure_startvnc() {
     remove_udisk_and_gvfs
     configure_startvnc
     configure_startxsdl
-    chmod a+x -v startvnc stopvnc startxsdl
+    chmod a+rx -v startvnc stopvnc startxsdl
     if [[ ${LINUX_DISTRO} = debian ]]; then
         VNC_SERVER=tigervnc
         tiger_vnc_variable

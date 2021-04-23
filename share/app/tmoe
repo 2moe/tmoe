@@ -371,7 +371,7 @@ start_tmoe_container() {
 		for i in ${TEMPORARY_SCRIPT_FILE_01} ${TEMPORARY_SCRIPT_FILE_02} ${TEMPORARY_SCRIPT_FILE_03}; do
 			if [[ -e ${i} ]]; then
 				${TMOE_PREFIX} cp -rvf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
-				${TMOE_PREFIX} chmod a+x "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
+				${TMOE_PREFIX} chmod a+rx "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
 			else
 				TEMPORARY_SCRIPT_FILE="${i}"
 				create_and_move_temporary_script_02

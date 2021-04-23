@@ -592,7 +592,7 @@ create_tmoe_linux_desktop_icon() {
     if [ ! $(command -v debian-i) ]; then
         cd /usr/local/bin
         curl -Lv -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-        chmod a+x debian-i
+        chmod a+rx debian-i
     fi
     cp ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop ${APPS_LNK_DIR}/tmoe-linux.desktop
 }
@@ -1164,7 +1164,7 @@ check_electron() {
         download_the_latest_electron
     fi
     if [ ! $(command -v electron) ]; then
-        chmod +x /opt/electron/electron
+        chmod a+rx /opt/electron/electron
         ln -sf /opt/electron/electron /usr/bin
     fi
 }
@@ -1255,7 +1255,7 @@ extract_electron() {
     fi
     unzip -o ${ELECTRON_ZIP_FILE} || unzip ${ELECTRON_ZIP_FILE}
     rm -fv ${ELECTRON_ZIP_FILE}
-    chmod a+x -v electron
+    chmod a+rx -v electron
 }
 #########
 latest_electron() {

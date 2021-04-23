@@ -18,7 +18,7 @@ install_filebrowser() {
             git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/filebrowser.git ./.FileBrowserTEMPFOLDER
             cd /usr/local/bin
             tar -Jxvf /tmp/.FileBrowserTEMPFOLDER/filebrowser.tar.xz filebrowser
-            chmod +x filebrowser
+            chmod a+rx filebrowser
             rm -rf /tmp/.FileBrowserTEMPFOLDER
             ;;
         *)
@@ -30,7 +30,7 @@ install_filebrowser() {
             esac
             cd /usr/local/bin
             tar -zxvf /tmp/.filebrowser.tar.gz filebrowser
-            chmod +x filebrowser
+            chmod a+rx filebrowser
             rm -rf /tmp/.filebrowser.tar.gz
             ;;
         esac
@@ -196,7 +196,7 @@ filebrowser_onekey() {
 		[Install]
 		WantedBy=multi-user.target
 	EndOFsystemd
-    chmod +x /etc/systemd/system/filebrowser.service
+    chmod a+rx /etc/systemd/system/filebrowser.service
     mkdir -pv /etc/init.d
     cd /etc/init.d
     cat >filebrowser <<-EndOFaria
@@ -249,7 +249,7 @@ printf "%s\n" "Restarting filebrowser... "
 esac
 exit 0
 EndOFaria
-    chmod a+x filebrowser
+    chmod a+rx filebrowser
 
     systemctl daemon-reload 2>/dev/null
     #systemctl start filebrowser

@@ -213,7 +213,7 @@ if_you_can_not_start_chromium() {
         cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/chromium--no-sandbox /usr/local/bin
         #do_you_want_to_close_the_sandbox_mode
         cp -vf ${TMOE_TOOL_DIR}/app/lnk/chromium-browser-no-sandbox.desktop ${APPS_LNK_DIR}
-        chmod a+x -v /usr/local/bin/chromium--no-sandbox
+        chmod a+rx -v /usr/local/bin/chromium--no-sandbox
         if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
             update-alternatives --auto x-www-browser
             printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
@@ -669,7 +669,7 @@ if_you_can_not_start_falkon() {
     cp -f ${TMOE_TOOL_DIR}/app/lnk/bin/falkon--no-sandbox /usr/local/bin
     #do_you_want_to_close_the_sandbox_mode
     cp -vf ${TMOE_TOOL_DIR}/app/lnk/org.kde.falkon-no-sandbox.desktop ${APPS_LNK_DIR}
-    chmod a+x -v /usr/local/bin/falkon--no-sandbox
+    chmod a+rx -v /usr/local/bin/falkon--no-sandbox
 }
 ###############
 tmoe_browser_main "${@}"

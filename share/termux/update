@@ -18,7 +18,7 @@ fi
 #if [ "${LINUX_DISTRO}" != "Android" ]; then
 #	sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i
 #fi
-chmod a+x ${PREFIX}/bin/debian-i
+chmod a+rx ${PREFIX}/bin/debian-i
 if [ -e "${TMOE_GIT_DIR}/.git" ]; then
 	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
 	cd ${TMOE_GIT_DIR}

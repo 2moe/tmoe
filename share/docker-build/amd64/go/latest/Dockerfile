@@ -21,7 +21,7 @@ RUN apt update \
     ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=go_nogui-debian" > container.txt  \
     ; mkdir -p environment \
     ; printf "%s\n%s\n" 'export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"' "export GOPATH=/go" > environment/container.env \
-    ; chmod a+x environment/* \
+    ; chmod -R a+rx environment/ \
     ; cd /root \
     ; printf "%s\n" "GO_VERSION='$(go version)'" > version.txt \
     ; cat version.txt \

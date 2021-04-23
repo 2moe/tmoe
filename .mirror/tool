@@ -21,7 +21,7 @@ main() {
 			source /tmp/.tmoe-linux-mirror.sh
 		else
 			curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://gitee.com/mo2/linux/raw/master/tools/sources/mirror.sh" || wget -O /tmp/.tmoe-linux-mirror.sh "https://gitee.com/mo2/linux/raw/master/tools/sources/mirror.sh"
-			chmod +x /tmp/.tmoe-linux-mirror.sh
+			chmod a+rx /tmp/.tmoe-linux-mirror.sh
 			source /tmp/.tmoe-linux-mirror.sh
 		fi
 		;;
@@ -56,7 +56,7 @@ main() {
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		else
 			curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://gitee.com/mo2/linux/raw/master/tools/sources/mirror.sh"
-			chmod +x /tmp/.tmoe-linux-mirror.sh
+			chmod a+rx /tmp/.tmoe-linux-mirror.sh
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		fi
 		;;
@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4545,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4548,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########

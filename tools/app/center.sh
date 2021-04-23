@@ -803,7 +803,7 @@ install_linux_qq() {
             ;;
         *)
             aria2c --console-log-level=warn --no-conf --allow-overwrite=true -k 1M -o LINUXQQ.sh ${THE_LATEST_SH_URL}
-            chmod +x LINUXQQ.sh
+            chmod a+rx LINUXQQ.sh
             sudo ./LINUXQQ.sh
             #即使是root用户也需要加sudo
             printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}gtk2${RESET}"

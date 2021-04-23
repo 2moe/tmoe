@@ -47,7 +47,7 @@ tmoe_install_xfce() {
 
 	EndOfFile
 	termux-fix-shebang ${PREFIX}/bin/startvnc
-	chmod +x ${PREFIX}/bin/startvnc
+	chmod a+rx ${PREFIX}/bin/startvnc
 	source ${PREFIX}/bin/startvnc
 }
 ##########

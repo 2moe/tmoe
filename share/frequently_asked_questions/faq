@@ -39,7 +39,7 @@ linux_deploy_pulse_server() {
 		create_start_linux_deploy_sh
 	fi
 	if [ ! -z ${CUT_TARGET} ]; then
-		chmod +x ${CUT_TARGET}
+		chmod a+rx ${CUT_TARGET}
 		ls -lh ${PREFIX}/bin/${CUT_TARGET}
 		printf "%s\n" "Congratulations!配置成功，您之后可以输${CUT_TARGET}来启动"
 	else

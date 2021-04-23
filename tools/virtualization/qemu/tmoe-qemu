@@ -1445,7 +1445,7 @@ modify_qemu_bin_path() {
 		QEMU_BIN_PATH="/usr/local/bin"
 	fi
 	if [ ! -x "${QEMU_BIN_PATH}/qemu-system-x86_64" ]; then
-		chmod +x -v "${QEMU_BIN_PATH}/qemu-system-x86_64"
+		chmod a+rx -v "${QEMU_BIN_PATH}/qemu-system-x86_64"
 		printf "${RED}%s${RESET}%s\n" "ERROR！" "目标路径下的qemu-system-x86_64无执行权限。"
 	else
 		sed -E -i "s@^(QEMU_BIN_PATH=).*@\1${QEMU_BIN_PATH}@g" ${QEMU_FILE}

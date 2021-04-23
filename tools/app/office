@@ -241,7 +241,7 @@ patch_libreoffice() {
     cd /usr/lib/libreoffice/program
     rm -f oosplash
     curl -Lo 'oosplash' https://gitee.com/mo2/patch/raw/libreoffice/oosplash
-    chmod +x oosplash
+    chmod a+rx oosplash
 }
 ##################
 check_libreoffice_patch() {

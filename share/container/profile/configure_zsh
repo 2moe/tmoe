@@ -76,7 +76,7 @@ export_tmoe_env() {
 	if [ -d /tmp/profile ]; then
 		chmod a+r -R /tmp/profile
 		mv /tmp/profile/login ${ENV_DIR}
-		chmod a+x -R ${ENV_DIR}
+		chmod a+rx -R ${ENV_DIR}
 		source /tmp/profile/export_env
 		# cp -vf /tmp/profile/* /etc/profile.d/permanent/
 		rm -rfv /tmp/profile
@@ -135,7 +135,7 @@ set_your_vnc_passwd() {
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	mkdir -pv /usr/local/bin
 	cp -fv tools/gui/startvnc tools/gui/stopvnc tools/gui/startx11vnc tools/gui/startxsdl tools/gui/tigervnc tools/gui/tightvnc /usr/local/bin
-	chmod a+x /usr/local/bin/start*
+	chmod a+rx /usr/local/bin/start*
 	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
 		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
 	fi
@@ -392,7 +392,7 @@ configure_tmoe_zsh() {
 	TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
 	TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
 	if [[ -e "${TMOE_ZSH_TOOL_BIN}" ]]; then
-		chmod a+x -v ${TMOE_ZSH_TOOL_BIN}
+		chmod a+rx -v ${TMOE_ZSH_TOOL_BIN}
 		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
 	else
 		curl_tmoe_zsh
@@ -552,7 +552,7 @@ git_clone_tmoe_linux() {
 	fi
 	if [ ! $(command -v startvnc) ]; then
 		printf "%s\n" "${TMOE_GIT_DIR}/tool.sh --install-gui" >/usr/local/bin/startvnc
-		chmod a+x -v /usr/local/bin/startvnc
+		chmod a+rx -v /usr/local/bin/startvnc
 		ln -svf /usr/local/bin/startvnc ~/startvnc
 	fi
 	case ${TMOE_LANG} in

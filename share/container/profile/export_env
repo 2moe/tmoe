@@ -1,6 +1,6 @@
 mkdir -p /etc/zsh /etc/profile.d/permanent
 touch /usr/local/etc/tmoe-linux/environment/container.env
-chmod 755 /usr/local/etc/tmoe-linux/environment/container.env
+chmod a+rx /usr/local/etc/tmoe-linux/environment/container.env
 
 export_to_zshenv() {
     if [ ! -e /etc/zsh/zshenv ]; then

@@ -300,7 +300,7 @@ create_rc_local_startup_script() {
 
 exit 0
 ENDOFRCLOCAL
-	chmod +x rc.local
+	chmod a+rx rc.local
 	systemctl daemon-reload 2>/dev/null
 }
 #################
@@ -351,7 +351,7 @@ start_neofetch() {
 	if [ ! $(command -v neofetch) ]; then
 		cd /usr/local/bin
 		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
-		chmod +x neofetch
+		chmod a+rx neofetch
 	fi
 	if [ -e /usr/games/lolcat ]; then
 		neofetch | /usr/games/lolcat

@@ -327,7 +327,7 @@ upgrade_video_download_tool() {
             git clone -b linux_$(uname -m) --depth=1 https://gitee.com/mo2/ffmpeg.git ./.FFMPEGTEMPFOLDER
             cd /usr/bin
             tar -Jxvf /tmp/.FFMPEGTEMPFOLDER/ffmpeg.tar.xz ffmpeg
-            chmod a+x ffmpeg
+            chmod a+rx ffmpeg
             rm -rf /tmp/.FFMPEGTEMPFOLDER
             ;;
         *) DEPENDENCY_01="${DEPENDENCY_01} ffmpeg" ;;
@@ -391,7 +391,7 @@ upgrade_video_download_tool() {
     git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/annie ./.ANNIETEMPFOLDER
     cd ./.ANNIETEMPFOLDER
     tar -Jxvf annie.tar.xz
-    chmod +x annie
+    chmod a+rx annie
     mkdir -pv ~/.config/tmoe-linux/
     mv -f annie_version.txt ~/.config/tmoe-linux/
     mv -f annie /usr/local/bin/

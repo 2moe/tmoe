@@ -85,7 +85,7 @@ upgrade_tmoe_aria2_tool() {
     curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/aria2.sh'
     printf "%s\n" "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
     printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}"
-    chmod +x aria2-i
+    chmod a+rx aria2-i
     read
     #bash /usr/local/bin/aria2-i
     source /usr/local/bin/aria2-i
@@ -2072,7 +2072,7 @@ case "\$1" in
 esac
 exit 0
 	EndOFaria
-    chmod +x aria2
+    chmod a+rx aria2
     #############
     #if [ ! -e "/usr/local/bin/startariang" ]; then
     # create_ariang_script
@@ -2114,9 +2114,9 @@ aria2_restart() {
 create_aria2_hook_script() {
     cd ${TMOE_ARIA2_PATH}
     craet_aria2_auto_move_sh
-    chmod +x auto_move_media_files.sh
+    chmod a+rx auto_move_media_files.sh
     create_auto_upload_onedrive_sh
-    chmod +x auto_upload_onedrive.sh
+    chmod a+rx auto_upload_onedrive.sh
 }
 ###############
 create_auto_upload_onedrive_sh() {
@@ -2254,7 +2254,7 @@ if [ -r ${ARIANG_DARK_INDEX_FILE} ]; then
     /usr/bin/sensible-browser ${ARIANG_DARK_INDEX_FILE}
 fi
 EOF
-    chmod +x startariang
+    chmod a+rx startariang
 }
 ############
 create_aria_ng_desktop_link() {

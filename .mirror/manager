@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4545,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4548,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -330,7 +330,7 @@ check_gnu_linux_distro() {
 		TMOE_REMOVAL_COMMAND='opkg remove'
 		cd /tmp
 		wget --no-check-certificate -qO "router-debian.bash" https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/manager
-		chmod +x 'router-debian.bash'
+		chmod a+rx 'router-debian.bash'
 		sed -i 's@/usr/bin@/opt/bin@g;s@-e /bin@-e /opt/bin;@wget --no-check-certificate -qO "router-debian.bash"@#&@;s@bash router-debian.bash@#&@' 'router-debian.bash'
 		bash router-debian.bash
 

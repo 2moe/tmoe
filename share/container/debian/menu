@@ -304,7 +304,7 @@ verify_sha256sum() {
 git_clone_tmoe_linux_container_file() {
 	if [ ! $(command -v debian-i) ]; then
 		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh' || sudo -E aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
-		chmod +x ${PREFIX}/bin/debian-i
+		chmod a+rx ${PREFIX}/bin/debian-i
 	fi
 	TMOE_TRUE_TEMP_FOLDER='.TMOE_LINUX_CONTAINER_TEMP_FOLDER'
 	mkdir -pv ${TMOE_TRUE_TEMP_FOLDER}

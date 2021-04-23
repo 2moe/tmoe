@@ -1,7 +1,7 @@
 if [ "$(ls /etc/profile.d/permanent/ 2>/dev/null)" ]; then
     for i in /etc/profile.d/permanent/*; do
         if [ -f "${i}" ]; then
-            chmod 4755 ${i}
+            chmod a+rx ${i}
             ${i}
         fi
     done
@@ -9,7 +9,7 @@ fi
 if [ "$(ls /tmp/.tmoe_container_temporary/ 2>/dev/null)" ]; then
     for i in /tmp/.tmoe_container_temporary/*; do
         if [ -e "${i}" ]; then
-            chmod 4755 -R ${i}
+            chmod a+rx -R ${i}
             ${i}
             unlink ${i} || rm -rfv ${i}
             if [ "${?}" != 0 ]; then
