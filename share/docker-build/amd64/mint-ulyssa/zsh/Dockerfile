@@ -7,27 +7,27 @@ ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
-#RUN sed -i "s@archive.ubuntu.com@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list \
-#    ; apt update \
-RUN apt update \
-    ; apt dist-upgrade -y \
-    ; dpkg --configure -a \
-    ; apt install -y locales-all locales \
-    ; apt install -y whiptail dialog aria2 zstd curl wget \
-    ; apt install -y neofetch lolcat apt-utils systemd \
-    ; mkdir -p /run/systemd \
-    ; printf "%s\n" "docker" > /run/systemd/container \
-    ; cd /tmp \
-    ; curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh' \
-    ; bash zsh.sh --tmoe_container_auto_configure \
-    ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; cd /usr/local/etc/tmoe-linux \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=mint_nogui-zsh" > container.txt  \
-    ; git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git \
-    ; cp -fv git/tool.sh /tmp \
-    ; cd /tmp \
-    ; sed -i 's@*) #main@2333)@g' tool.sh \
-    ; rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null \
-    ; apt clean
+#RUN sed -i "s@archive.ubuntu.com@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list; \
+#     apt update; \
+RUN apt update; \
+    apt dist-upgrade -y; \
+    dpkg --configure -a; \
+    apt install -y locales-all locales; \
+    apt install -y whiptail dialog aria2 zstd curl wget; \
+    apt install -y neofetch lolcat apt-utils systemd; \
+    mkdir -p /run/systemd; \
+    printf "%s\n" "docker" > /run/systemd/container; \
+    cd /tmp; \
+    curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh'; \
+    bash zsh.sh --tmoe_container_auto_configure; \
+    mkdir -pv /usr/local/etc/tmoe-linux; \
+    cd /usr/local/etc/tmoe-linux; \
+    printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=mint_nogui-zsh" > container.txt ; \
+    git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git; \
+    cp -fv git/tool.sh /tmp; \
+    cd /tmp; \
+    sed -i 's@*) #main@2333)@g' tool.sh; \
+    rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
+    apt clean
 
 CMD [ "/bin/zsh" ]

@@ -7,24 +7,24 @@ ENV HOME=/root \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
 
-RUN apt update \
-    ; apt dist-upgrade -y \
-    ; dpkg --configure -a \
-    ; apt install -y sudo locales \
-    ; apt install -y whiptail curl eatmydata procps apt-utils \
-    ; apt install -y --no-install-recommends neofetch \
-    ; mkdir -p /run/systemd \
-    ; printf "%s\n" "docker" > /run/systemd/container \
-    ; mkdir -pv /usr/local/etc/tmoe-linux \
-    ; cd /usr/local/etc/tmoe-linux/ \
-    ; printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-debian" > container.txt  \
-    ; mkdir -p environment \
-    ; printf "%s\n%s\n" '#!/usr/bin/env sh' "node" > environment/entrypoint \
-    ; chmod -R a+rx environment/ \
-    ; cd /root \
-    ; printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt \
-    ; printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt \
-    ; printf "%s\n" "NPM_VERSION='$(npm --version)'" >> version.txt \
-    ; apt clean
+RUN apt update; \
+    apt dist-upgrade -y; \
+    dpkg --configure -a; \
+    apt install -y sudo locales; \
+    apt install -y whiptail curl eatmydata procps apt-utils; \
+    apt install -y --no-install-recommends neofetch; \
+    mkdir -p /run/systemd; \
+    printf "%s\n" "docker" > /run/systemd/container; \
+    mkdir -pv /usr/local/etc/tmoe-linux; \
+    cd /usr/local/etc/tmoe-linux/; \
+    printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=node_nogui-debian" > container.txt ; \
+    mkdir -p environment; \
+    printf "%s\n%s\n" '#!/usr/bin/env sh' "node" > environment/entrypoint; \
+    chmod -R a+rx environment/; \
+    cd /root; \
+    printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt; \
+    printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt; \
+    printf "%s\n" "NPM_VERSION='$(npm --version)'" >> version.txt; \
+    apt clean
 
 CMD [ "node" ]

@@ -1133,18 +1133,22 @@ check_docker_installation() {
 ############
 install_docker_portainer() {
     check_docker_installation
-    TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please enter the port." 0 50 --title "PORT" 3>&1 1>&2 2>&3)
-    if [ "$?" != "0" ] || [ -z "${TARGET_PORT}" ]; then
-        printf "%s\n" "端口无效，请重新输入"
-        press_enter_to_return
-        tmoe_docker_menu
+    TARGET_PORT=$(whiptail --inputbox "请设定访问端口号,例如39080,默认内部端口为9000\n Please type the port." 0 50 --title "PORT" 3>&1 1>&2 2>&3)
+    if [[ ${?} != 0 ]]; then
+        ${RETURN_TO_WHERE}
+    elif [ -z "${TARGET_PORT}" ]; then
+        printf "%s\n" "端口无效，将自动使用39080端口。"
+        printf "%s\n" "${RED}ERROR,the vaule is invalid.${RESET}"
+        TARGET_PORT=39080
     fi
+    printf "%s\n" "${GREEN}docker ${YELLOW}pull ${BLUE}portainer/portainer-ce:latest${RESET}"
+    printf "%s\n" "${GREEN}docker ${RED}rm ${BLUE}portainer${RESET}"
+    printf "%s\n" "${GREEN}docker ${BLUE}run -d -p ${YELLOW}${TARGET_PORT}:9000 ${BLUE}--name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest${RESET}"
+    do_you_want_to_continue
     service docker start 2>/dev/null || systemctl start docker
     docker stop portainer 2>/dev/null
-    docker rm portainer 2>/dev/null
-    #docker rmi portainer/portainer:latest 2>/dev/null
     docker pull portainer/portainer-ce:latest
-    printf "%s\n" "docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest"
+    docker rm portainer
     docker run -d -p ${TARGET_PORT}:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
 }
 #####################
