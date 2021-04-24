@@ -589,13 +589,13 @@ git_clone_tmoe_linux() {
 do_you_want_to_create_a_new_user() {
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
+		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want to create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
 			TIPS_01="请输入用户名(可以为英文或数字,不能为特殊字符)\n please type the user name."
 			please_type_the_user_name
 		fi
 		;;
 	*)
-		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want create a new sudo user?' 0 0); then
+		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want to create a new sudo user?' 0 0); then
 			TIPS_01="Please type the user name."
 			please_type_the_user_name
 		fi

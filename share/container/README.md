@@ -81,7 +81,7 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 ```ruby
 #!/usr/bin/env ruby
-p "hello"
+50.times{p "hello"}
 ```
 
 文件名称为hello.rb  
