@@ -699,9 +699,11 @@ tmoe_docker_menu() {
             "2" "🥛 systemd-docker(支持systemctl的docker容器)" \
             "3" "🍭 pull distro images(拉取alpine,debian和ubuntu镜像)" \
             "4" "🌉 portainer(web端图形化docker容器管理)" \
-            "5" "🍥 mirror source镜像源" \
-            "6" "🐋 install docker-ce(安装docker社区版引擎)" \
-            "7" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
+            "5" "export container 导出容器(备份)" \
+            "6" "import image 导入镜像(恢复)" \
+            "7" "🍥 mirror source镜像源" \
+            "8" "🐋 install docker-ce(安装docker社区版引擎)" \
+            "9" "add ${CURRENT_USER_NAME} to docker group(添加当前用户至docker用户组)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -712,15 +714,150 @@ tmoe_docker_menu() {
     2) systemd_docker_env ;;
     3) choose_gnu_linux_docker_images ;;
     4) install_docker_portainer ;;
-    5) docker_mirror_source ;;
-    6) install_docker_ce_or_io ;;
-    7) add_current_user_to_docker_group ;;
+    5) export_docker_image_menu ;;
+    6) import_docker_image_menu ;;
+    7) docker_mirror_source ;;
+    8) install_docker_ce_or_io ;;
+    9) add_current_user_to_docker_group ;;
     esac
     ###############
     press_enter_to_return
     tmoe_docker_menu
 }
 ############
+case_tar_file_and_extract() {
+    cd ${FILE_PATH}
+    case "${SELECTION:0-6:6}" in
+    tar.xz)
+        xz -d -k -v "${TMOE_FILE_ABSOLUTE_PATH}"
+        TMOE_TAR_ITEM="${SELECTION%???}"
+        chmod -v a+rw ${TMOE_TAR_ITEM}
+        docker_import_command
+        # rm -fv ${TMOE_TAR_ITEM}
+        ;;
+    tar.gz)
+        gzip -d -k -v "${TMOE_FILE_ABSOLUTE_PATH}"
+        TMOE_TAR_ITEM="${SELECTION%???}"
+        chmod -v a+rw ${TMOE_TAR_ITEM}
+        docker_import_command
+        # rm -fv ${TMOE_TAR_ITEM}
+        ;;
+    ar.zst)
+        zstd -dv "${TMOE_FILE_ABSOLUTE_PATH}"
+        TMOE_TAR_ITEM="${SELECTION%????}"
+        chmod -v a+rw ${TMOE_TAR_ITEM}
+        docker_import_command
+        # rm -fv ${TMOE_TAR_ITEM}
+        ;;
+    *)
+        TMOE_TAR_ITEM="${TMOE_FILE_ABSOLUTE_PATH}"
+        docker_import_command
+        ;;
+    esac
+}
+###############
+docker_import_command() {
+    ls -lah "${TMOE_TAR_ITEM}"
+    DOCKER_NAME=$(printf "%s\n" "${SELECTION}" | sed -e 's@.tar.*@@' -e 's@_bak-.*@@' -e 's@+@-@')
+    DOCKER_TAG=$(date +%Y-%m-%d_%H-%M)
+    printf "%s\n" "${GREEN}docker ${PURPLE}import - ${BLUE}${DOCKER_NAME}:${YELLOW}${DOCKER_TAG} ${RED}<${BLUE}${TMOE_TAR_ITEM}${RESET}"
+    do_you_want_to_continue
+    docker import - ${DOCKER_NAME}:${DOCKER_TAG} <${TMOE_TAR_ITEM}
+}
+###############
+import_docker_image_menu() {
+    FILE_EXT_01='tar'
+    FILE_EXT_02='tar.*'
+    #where_is_tmoe_file_dir
+    for i in "${HOME}/sd/Download/backup/rootfs" "/media/sd/Download/backup/rootfs" "${HOME}/sd" "${HOME}"; do
+        if [[ -d ${i} ]]; then
+            START_DIR="${i}"
+            break
+        fi
+    done
+    IMPORTANT_TIPS='您可以选择tmoe每周构建版镜像,也可以选择本地tar文件'
+    tmoe_file_manager
+    if [ -z ${SELECTION} ]; then
+        printf "%s\n" "没有指定${YELLOW}有效${RESET}的${BLUE}文件${GREEN}，请${GREEN}重新${RESET}选择"
+    else
+        printf "%s\n" "您选择的文件为${TMOE_FILE_ABSOLUTE_PATH}"
+        stat "${TMOE_FILE_ABSOLUTE_PATH}"
+        ls -lah "${TMOE_FILE_ABSOLUTE_PATH}"
+        do_you_want_to_continue
+        case_tar_file_and_extract
+        printf "%s\n" "${GREEN}docker ${BLUE}images${RESET}"
+        docker images
+        please_type_the_container_name
+        printf "%s\n" "Do you want to run this container now?"
+        if [[ -d /media/docker ]]; then
+            MOUNT_DOCKER_FOLDER=/media/docker
+            printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG} sh${RESET}"
+        else
+            printf "%s\n" "${BLUE}docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure ${DOCKER_NAME}:${DOCKER_TAG} sh${RESET}"
+        fi
+        do_you_want_to_continue
+
+        if [[ -d /media/docker ]]; then
+            docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure -v ${MOUNT_DOCKER_FOLDER}:${MOUNT_DOCKER_FOLDER} ${DOCKER_NAME}:${DOCKER_TAG} sh
+        else
+            docker run -itd --name ${CONTAINER_NAME} --env LANG=${TMOE_LANG} --restart on-failure ${DOCKER_NAME}:${DOCKER_TAG} sh
+        fi
+        printf "%s\n" "You can run ${GREEN}docker exec ${BLUE}-it ${YELLOW}${CONTAINER_NAME} ${RED}sh${RESET} to attach it."
+    fi
+}
+please_type_the_container_name() {
+    CONTAINER_NAME=$(whiptail --inputbox "Please type the container name\n请输入容器文件名称,若留空则将自动命名为${DOCKER_NAME}" 0 50 --title "CONTAINER NAME" 3>&1 1>&2 2>&3)
+    if [ -z "${CONTAINER_NAME}" ]; then
+        CONTAINER_NAME="${DOCKER_NAME}"
+    fi
+}
+export_docker_image_menu() {
+    RETURN_TO_WHERE='export_docker_image_menu'
+    cd /tmp/
+    docker ps -a | awk '{print $NF}' | sed '1d' >.tmoe-linux_cache.01
+    docker ps -a | awk '{print $2}' | sed '1d' >.tmoe-linux_cache.02
+    TMOE_CONTAINER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+    rm -f .tmoe-linux_cache.0*
+    DOCKER_NAME=$(whiptail --title "CONTAINER LIST" --menu \
+        "Which container do you want to backup?" 0 0 0 \
+        ${TMOE_CONTAINER_LIST} \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    case ${DOCKER_NAME} in
+    0 | "") tmoe_docker_menu ;;
+    esac
+    type_the_file_path
+    DOCKER_BAK_FILE="${TARGET}/${DOCKER_NAME}_bak-$(date +%Y-%m-%d_%H-%M).tar"
+    printf "%s\n" "${GREEN}docker export ${BLUE}${DOCKER_NAME} ${PURPLE}> ${YELLOW}${DOCKER_BAK_FILE}${RESET}"
+    do_you_want_to_continue
+    docker export ${DOCKER_NAME} >${DOCKER_BAK_FILE}
+    if [[ ${HOME} != /root ]]; then
+        chown -v ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${DOCKER_BAK_FILE}
+        chmod -v a+rw ${DOCKER_BAK_FILE}
+    fi
+    stat ${DOCKER_BAK_FILE}
+    ls -lah ${DOCKER_BAK_FILE}
+}
+##########
+type_the_file_path() {
+    for i in "${HOME}/sd/Download/backup/rootfs" "/media/sd/Download/backup/rootfs" "${HOME}/sd" "${HOME}"; do
+        if [[ -d ${i} ]]; then
+            START_DIR="${i}"
+            break
+        fi
+    done
+    TARGET=$(whiptail --inputbox "Please type the file path\n请输入文件保存路径，若留空则输出至${START_DIR}" 0 50 --title "FILE DIR" 3>&1 1>&2 2>&3)
+    if [ "${?}" != "0" ]; then
+        ${RETURN_TO_WHERE}
+    elif [ -z "${TARGET}" ]; then
+        TARGET="${START_DIR}"
+    elif [[ ! -x ${TARGET} ]]; then
+        printf "%s\n" "${RED}ERROR${RESET},please retype."
+        printf "%s\n" "文件路径不存在或无法被访问，请重新输入。"
+        press_enter_to_return
+        type_the_file_path
+    fi
+}
 systemd_docker_env() {
     #printf "%s\n" 本功能正在开发中...
     #press_enter_to_return
