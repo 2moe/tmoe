@@ -105,7 +105,13 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        set -- "\${TMOE_SHELL}" "-l" "\${@}"
 			set -- "/usr/bin/sudo" "-iu" "\${CHROOT_USER}" "\${@}"
 		else
-			set -- "/bin/su" "-" "\${CHROOT_USER}" "\${@}"
+			if [[ -e ${DEBIAN_CHROOT}/bin/su ]];then
+				set -- "/bin/su" "-" "\${CHROOT_USER}" "\${@}"
+			elif [[ -e ${DEBIAN_CHROOT}/bin/bash ]];then
+				set -- "/bin/bash" "-l" "\${@}"
+			else
+				set -- "/bin/sh" "-l" "\${@}"
+			fi
 		fi
 
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then

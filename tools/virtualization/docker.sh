@@ -691,6 +691,7 @@ docker_mirror_source() {
 ##########
 tmoe_docker_menu() {
     RETURN_TO_WHERE='tmoe_docker_menu'
+    # RETURN_TO_MENU='tmoe_docker_menu'
     SYSTEMD_DOCKER=false
     TMOE_QEMU_ARCH=""
     VIRTUAL_TECH=$(
@@ -766,6 +767,7 @@ docker_import_command() {
 }
 ###############
 import_docker_image_menu() {
+    RETURN_TO_WHERE='tmoe_docker_menu'
     FILE_EXT_01='tar'
     FILE_EXT_02='tar.*'
     #where_is_tmoe_file_dir
