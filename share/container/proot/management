@@ -15,7 +15,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 beta:User & Env var & Auto-startup script" \
+			"4" "🍧 User & Env var & Auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 unmount & remove" \
 			"7" "📘 readme" \
@@ -29,15 +29,15 @@ proot_management_menu() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "⏹️ 停止容器进程" \
-			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 beta公测:环境变量与登录项管理" \
+			"3" "🐯 启动图形界面(remote desktop)" \
+			"4" "🍧 环境变量与登录项管理" \
 			"5" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"6" "💔 unmount & remove 卸载并移除" \
 			"7" "📘 readme 自述/说明" \
 			"8" "🌈 beta公测:create a new container新建容器" \
 			"9" "🥤 edit script 编辑脚本" \
 			"10" "🍅 space occupation 空间占用大小" \
-			"0" "🌚 back 返回上级菜单" \
+			"0" "🌚 back 返回" \
 			3>&1 1>&2 2>&3)
 	}
 	proot_management_menu_de() {
@@ -45,7 +45,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ Tötungsprozess" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 beta:User & Env var & Auto-startup script" \
+			"4" "🍧 User & Env var & Auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 aushängen und entfernen" \
 			"7" "📘 Liesmich" \
