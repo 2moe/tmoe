@@ -11,7 +11,7 @@ RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
     apt install -y sudo locales; \
-    apt install -y whiptail curl eatmydata apt-utils; \
+    apt install -y whiptail curl eatmydata apt-utils procps; \
     apt install -y --no-install-recommends neofetch; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
@@ -19,7 +19,7 @@ RUN apt update; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=nginx_nogui-debian" > container.txt ; \
     mkdir -p environment; \
-    printf "%s\n%s\n" '#!/usr/bin/env sh' "nginx -g daemon off;" > environment/entrypoint; \
+    printf "%s\n%s\n" '#!/usr/bin/env sh' "nginx -g 'daemon off;'" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \
     printf "%s\n" "NGINX_VERSION='${NGINX_VERSION}'" > version.txt; \
@@ -28,4 +28,4 @@ RUN apt update; \
     cat version.txt; \
     apt clean
 
-CMD [ "nginx","-g","daemon off;" ]
+CMD ["nginx", "-g", "daemon off;"]
