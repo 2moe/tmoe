@@ -19,7 +19,7 @@ RUN apt update; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=mongo_nogui-ubuntu" > container.txt ; \
     mkdir -p environment; \
-    printf "%s\n%s\n%s\n" "export MONGO_PACKAGE=${MONGO_PACKAGE}" "export MONGO_REPO=${MONGO_REPO}" "export GPG_KEYS=${GPG_KEYS}" > environment/container.env; \
+    printf "%s\n%s\n%s\n" "export MONGO_PACKAGE=${MONGO_PACKAGE}" "export MONGO_REPO=${MONGO_REPO}" "export GPG_KEYS='${GPG_KEYS}'" > environment/container.env; \
     printf "%s\n%s\n" '#!/usr/bin/env sh' "mongod" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \

@@ -9,7 +9,7 @@ RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
     apt install -y sudo locales curl; \
-    apt install -y whiptail eatmydata procps apt-utils; \
+    apt install -y whiptail eatmydata procps apt-utils procps; \
     apt install -y --no-install-recommends neofetch; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
