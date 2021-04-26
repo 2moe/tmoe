@@ -25,8 +25,7 @@ RUN apt update; \
     cd /root; \
     printf "%s\n" "PHP_VERSION='$(php --version)'" > version.txt; \
     printf "%s\n" "PHPIZE_DEPS='${PHPIZE_DEPS}'" >> version.txt; \
-    printf "%s\n" "PHP_INI_DIR='${PHP_INI_DIR}'" >> version.txt; \
-    printf "%s\n" "PHP_EXTRA_CONFIGURE_ARGS='${PHP_EXTRA_CONFIGURE_ARGS}'" >> version.txt; \
+    printf "%s\n" "PHP_EXTRA_CONFIGURE_ARGS='--enable-embed'" >> version.txt; \
     printf "%s\n" "PHP_CFLAGS='${PHP_CFLAGS}'" >> version.txt; \
     printf "%s\n" "PHP_CPPFLAGS='${PHP_CPPFLAGS}'" >> version.txt; \
     printf "%s\n" "PHP_LDFLAGS='${PHP_LDFLAGS}'" >> version.txt; \

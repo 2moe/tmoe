@@ -26,8 +26,6 @@ RUN apt update; \
     printf "%s\n" "GOSU_VERSION='$(gosu --version)'" > version.txt; \
     printf "%s\n" "JSYAML_VERSION='${JSYAML_VERSION}'" >> version.txt; \
     printf "%s\n" "GPG_KEYS='${GPG_KEYS}'" >> version.txt; \
-    printf "%s\n" "MONGO_PACKAGE='${MONGO_PACKAGE}'" >> version.txt; \
-    printf "%s\n" "MONGO_REPO='${MONGO_REPO}'" >> version.txt; \
     printf "%s\n" "MONGO_MAJOR='${MONGO_MAJOR}'" >> version.txt; \
     printf "%s\n" "MONGO_VERSION='${MONGO_VERSION}'" >> version.txt; \
     cat version.txt; \
