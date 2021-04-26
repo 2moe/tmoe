@@ -1,4 +1,4 @@
-FROM amd64/mongo:latest
+FROM amd64/mongo:bionic
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
