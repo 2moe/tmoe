@@ -136,7 +136,10 @@ install_tmoe_moonthly_build_edition() {
 			"4" "OpenJDK(An open-source Java Platform)" \
 			"5" "🐳 Docker(Run docker via qemu)" \
 			"6" "Node.js(A back-end JavaScript runtime environment)" \
-			"7" "Ruby(An interpreted,general-purpose lang)" \
+			"7" "Nginx(A high-performance HTTP server)" \
+			"8" "PHP(A general-purpose scripting language)" \
+			"9" "MongoDB(Classified as a NoSQL database program)" \
+			"10" "Ruby(An interpreted,general-purpose lang)" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -171,6 +174,18 @@ install_tmoe_moonthly_build_edition() {
 		choose_latest_or_alpine
 		;;
 	7)
+		DISTRO_NAME="nginx"
+		choose_latest_or_alpine
+		;;
+	8)
+		DISTRO_NAME="php"
+		choose_latest_or_alpine
+		;;
+	9)
+		DISTRO_NAME="mongo"
+		DESKTOP="latest"
+		;;
+	10)
 		DISTRO_NAME="ruby"
 		choose_latest_or_alpine
 		;;
