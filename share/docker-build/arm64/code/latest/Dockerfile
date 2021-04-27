@@ -12,7 +12,7 @@ RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
     apt install -y sudo locales curl; \
-    apt install -y whiptail eatmydata apt-utils procps; \
+    apt install -y whiptail eatmydata procps apt-utils; \
     apt install -y --no-install-recommends neofetch nano bat; \
     if [ $(command -v batcat) ];then ln -svf $(command -v batcat) /usr/bin/bat;fi; \
     mkdir -p /run/systemd; \
