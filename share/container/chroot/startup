@@ -79,8 +79,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
 		 fi
 		 #########
-		if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]];then
-			[[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
+		   [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 		   if [[ -z \${TMOE_SHELL} ]]; then
 				for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05};do
 					if [[ -f ${DEBIAN_CHROOT}/bin/\${i} ]];then
@@ -103,16 +102,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 				fi
 			fi
 	        set -- "\${TMOE_SHELL}" "-l" "\${@}"
-			set -- "/usr/bin/sudo" "-iu" "\${CHROOT_USER}" "\${@}"
-		else
-			if [[ -e ${DEBIAN_CHROOT}/bin/su ]];then
-				set -- "/bin/su" "-" "\${CHROOT_USER}" "\${@}"
-			elif [[ -e ${DEBIAN_CHROOT}/bin/bash ]];then
-				set -- "/bin/bash" "-l" "\${@}"
-			else
-				set -- "/bin/sh" "-l" "\${@}"
-			fi
-		fi
+			set -- "SHELL=\${TMOE_SHELL}" "\${@}"
 
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
 	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\${@}"
