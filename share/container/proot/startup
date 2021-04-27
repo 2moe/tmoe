@@ -173,6 +173,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        if [ -e "/property_contexts" ]; then
 	            set -- "--mount=/property_contexts" "\${@}"
 	        fi
+			if [ -e "/system" ]; then
+	            set -- "--mount=/system" "\${@}"
+	        fi
 	    }
 	    #################
 		#The files in the /proc directory will be automatically detected during installation. If your host does not have permission to read them, there is no "#" before set.
@@ -223,9 +226,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        if [[ \${KILL_ON_EXIT} = true ]];then
 	            set -- "--kill-on-exit" "\${@}"
 	        fi
-	        if [ -e "/system" ]; then
-	            set -- "--mount=/system" "\${@}"
-	        fi
 			if [[ \${MOUNT_TF} = true ]]; then
 				TF_CARD_LINK="${HOME}/storage/external-1"
 	            if [ -h "\${TF_CARD_LINK}" ]; then
@@ -242,7 +242,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 			fi
 			if [[ \${MOUNT_TERMUX} = true ]]; then
 	             if [ -e "/data/data/com.termux/files/home" ]; then
-	               set -- "--mount=/data/data/com.termux" "\${@}"
 	               set -- "--mount=/data/data/com.termux/files/home:/root/termux" "\${@}"
 	             fi
 			fi

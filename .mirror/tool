@@ -78,7 +78,7 @@ main() {
 check_ps_command() {
 	ps &>/dev/null
 	if [ "$?" != '0' ]; then
-		TMOE_PROOT='no'
+		TMOE_PROOT=true
 	fi
 }
 ################
@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4581,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4582,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########

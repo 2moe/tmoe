@@ -644,7 +644,7 @@ download_ubuntu_ppa_deb_model_01() {
 ##############
 install_catfish() {
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "检测到您处于proot环境下，可能无法成功创建索引数据库"
         printf "%s\n" "若安装时卡在mlocalte，请按Ctrl+C并强制重启终端，最后输${TMOE_REMOVAL_COMMAND} mlocate catfish"
         do_you_want_to_continue
@@ -669,7 +669,7 @@ install_gnome_logs() {
 ##################
 thunar_nautilus_dolphion() {
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "检测到您当前使用的是${BLUE}proot容器${RESET}，不建议您安装${RED}dolphion${RESET}"
         printf "%s\n" "dolphion在当前环境下可能无法正常启动"
         printf "%s\n" "请选择${GREEN}thunar${RESET}或${GREEN}nautilus${RESET}"

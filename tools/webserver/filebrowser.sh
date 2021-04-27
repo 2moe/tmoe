@@ -368,7 +368,7 @@ filebrowser_listen_ip() {
 ##################
 filebrowser_systemd() {
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
         ;;
     false) printf "%s\n" "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;

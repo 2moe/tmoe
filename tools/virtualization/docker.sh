@@ -605,7 +605,7 @@ choose_gnu_linux_docker_images() {
 #############
 install_docker_ce_or_io() {
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
         printf "%s\n" "若您处于容器环境下,且宿主机为${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
         printf "%s\n" "否则请通过qemu-system来运行GNU/Linux虚拟机，再安装docker。"

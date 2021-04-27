@@ -15,7 +15,6 @@ tmoe_container_zsh_main() {
 			auto_configure_tmoe_tools #
 			lnk_startvnc              #
 		fi
-		check_ps_command
 		create_zlogin_file
 		fix_sudo
 		if [[ ${AUTO_CONFIGURE} = false ]]; then
@@ -373,17 +372,6 @@ copy_git_status() {
 	fi
 }
 ################
-check_ps_command() {
-	ps -e &>/dev/null
-	if [ "$?" != '0' ]; then
-		TERMUX_BIN_PATH='/data/data/com.termux/files/usr/bin/'
-		if [ -e "${TERMUX_BIN_PATH}/ps" ]; then
-			ln -sv ${TERMUX_BIN_PATH}/ps /usr/local/bin/ps 2>/dev/null
-			ln -sv ${TERMUX_BIN_PATH}/pstree /usr/local/bin/pstree 2>/dev/null
-		fi
-	fi
-}
-##########
 curl_tmoe_zsh() {
 	if [[ $(command -v curl) ]]; then
 		curl -Lo ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
@@ -679,6 +667,21 @@ please_retype_the_password() {
 				break
 			fi
 		done
+		for i in /media/termux /root/termux; do
+			if [[ -e ${i} ]]; then
+				ln -svf ${i} /home/${USER_NAME}/termux
+				break
+			fi
+		done
+		for i in /media/tf /root/tf; do
+			if [[ -e ${i} ]]; then
+				ln -svf ${i} /home/${USER_NAME}/tf
+				break
+			fi
+		done
+		if [[ -e /usr/local/bin/startvnc ]]; then
+			ln -svf /usr/local/bin/startvnc /home/${USER_NAME}/startvnc
+		fi
 		touch /home/${USER_NAME}/.hushlogin
 		chmod 666 /home/${USER_NAME}/.hushlogin
 		chown -v "${USER_NAME}":"${USER_NAME}" /home/${USER_NAME}/.hushlogin

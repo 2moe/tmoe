@@ -1574,7 +1574,7 @@ download_and_install_deb() {
 this_app_may_non_support_running_on_proot() {
     case ${TMOE_PROOT} in
     false) ;;
-    true | no)
+    true)
         printf "%s\n" "本软件可能不支持在proot容器环境中运行"
         printf "%s\n" "This application may not support running on a proot container."
         do_you_want_to_continue
@@ -1627,7 +1627,7 @@ restore_debian_gnu_libxcb_so() {
 check_mozilla_fake_no_sandbox() {
     case ${TMOE_PROOT} in
     false) ;;
-    true | no)
+    true)
         if (whiptail --title "MOZ_FAKE_NO_SANDBOX ENV" --yes-button "YES" --no-button "NO" --yesno "Do you want to add MOZ_FAKE_NO_SANDBOX=1 to /etc/environment" 8 50); then
             if ! egrep -q '^[^#]*export.*MOZ_FAKE_NO_SANDBOX.*1' /etc/environment; then
                 printf "%s\n" "export MOZ_FAKE_NO_SANDBOX=1" >>/etc/environment

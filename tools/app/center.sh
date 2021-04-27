@@ -222,7 +222,7 @@ EOF
     do_you_want_to_continue
     case ${TMOE_PROOT} in
     false) ;;
-    true | no)
+    true)
         printf "%s\n" "Sorry,检测到您使用的是${YELLOW}proot容器,${PURPLE}无法安装${RESET}本应用。若您使用是Android设备，则建议您换用${GREEN}chroot容器${RESET}。"
         press_enter_to_return
         tmoe_social_network_service

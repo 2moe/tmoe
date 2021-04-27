@@ -438,7 +438,7 @@ preconfigure_gui_dependecies_02() {
     case "${LINUX_DISTRO}" in
     debian)
         case "${TMOE_PROOT}" in
-        true | no) NON_DBUS=true ;;
+        true) NON_DBUS=true ;;
         esac
         #if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
         #    DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
@@ -454,7 +454,7 @@ preconfigure_gui_dependecies_02() {
         ;;
     redhat)
         case "${TMOE_PROOT}" in
-        true | no) NON_DBUS=true ;;
+        true) NON_DBUS=true ;;
         esac
         DEPENDENCY_02="google-noto-sans-cjk-ttc-fonts google-noto-emoji-color-fonts tigervnc-server"
         ;;
@@ -916,7 +916,7 @@ window_manager_installation() {
         ;;
     25)
         case "${TMOE_PROOT}" in
-        true | no)
+        true)
             printf "%s\n" "检测到您处于proot容器环境下，kwin可能无法正常运行"
             RETURN_TO_WHERE="window_manager_installation"
             do_you_want_to_continue
@@ -1240,7 +1240,7 @@ kali_xfce4_extras() {
 apt_purge_libfprint() {
     case ${TMOE_PROOT} in
     false) ;;
-    true | no)
+    true)
         case "${LINUX_DISTRO}" in
         "debian")
             printf "%s\n" "${PURPLE}apt purge ${YELLOW}-y ${BLUE}^libfprint${RESET}"
@@ -1617,7 +1617,7 @@ choose_xfce_or_xubuntu() {
             DEPENDENCY_01="xubuntu-desktop"
             case ${TMOE_PROOT} in
             false) ;;
-            true | no)
+            true)
                 #mkdir -pv /var/lib/mlocate/
                 #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
                 if [ ! $(command -v mlocate) ]; then
@@ -2412,7 +2412,7 @@ kde_warning() {
 ENDofTable
 
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！"
         if ! grep -qi 'Bionic' /etc/os-release; then
             printf "%s\n" "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
@@ -2572,7 +2572,7 @@ tmoe_desktop_warning() {
 install_ukui_desktop() {
     tmoe_desktop_warning
     case ${TMOE_PROOT} in
-    true | no)
+    true)
         REMOTE_DESKTOP_SESSION_01='ukui-panel'
         REMOTE_DESKTOP_SESSION_02='ukui-session'
         ;;
@@ -2615,7 +2615,7 @@ install_ukui_desktop() {
 install_budgie_desktop() {
     tmoe_desktop_warning
     case ${TMOE_PROOT} in
-    true | no)
+    true)
         REMOTE_DESKTOP_SESSION_01='budgie-panel'
         REMOTE_DESKTOP_SESSION_02='budgie-wm'
         ;;
@@ -2663,7 +2663,7 @@ install_gnome3_desktop() {
     gnome3_warning
     do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
-    true | no)
+    true)
         REMOTE_DESKTOP_SESSION_01='gnome-panel'
         REMOTE_DESKTOP_SESSION_02='gnome-session'
         ;;
@@ -2745,7 +2745,7 @@ cinnamon_warning() {
 install_cinnamon_desktop() {
     cinnamon_warning
     case ${TMOE_PROOT} in
-    true | no)
+    true)
         REMOTE_DESKTOP_SESSION_01='cinnamon-panel'
         REMOTE_DESKTOP_SESSION_02='cinnamon-session'
         ;;
@@ -4619,7 +4619,7 @@ xwayland_onekey() {
 ##################
 modify_xrdp_conf() {
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
         printf "%s\n" "若您的宿主机为${BOLD}Android${RESET}系统，则${RED}无法${RESET}${BLUE}保障${RESET}xrdp可以正常连接！"
         RETURN_TO_WHERE='modify_remote_desktop_config'
@@ -4788,7 +4788,7 @@ configure_remote_desktop_environment() {
         ;;
     esac
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         case "${LINUX_DISTRO}" in
         "debian" | "redhat""redhat") NON_DBUS=true ;;
         esac
@@ -5031,7 +5031,7 @@ xrdp_port() {
 #################
 xrdp_systemd() {
     case "${TMOE_PROOT}" in
-    true | no)
+    true)
         printf "%s\n" "检测到您当前处于${BLUE}proot容器${RESET}环境下，无法使用systemctl命令"
         ;;
     false) printf "%s\n" "检测到您当前处于chroot容器环境下，无法使用systemctl命令" ;;
@@ -5081,7 +5081,7 @@ configure_startxsdl() {
     #debian禁用dbus分两次，并非重复
     if [ "${NON_DBUS}" = "true" ]; then
         case "${TMOE_PROOT}" in
-        true | no) #sed -i 's:dbus-launch --exit-with-session::' startxsdl ${XSESSION_FILE} ;;
+        true) #sed -i 's:dbus-launch --exit-with-session::' startxsdl ${XSESSION_FILE} ;;
             sed -i 's:dbus-launch::' ${XSESSION_FILE} ;;
         esac
     fi
@@ -5256,7 +5256,7 @@ case_debian_distro_and_install_vnc() {
 remove_udisk_and_gvfs() {
     case "${TMOE_PROOT}" in
     false) ;;
-    true | no)
+    true)
         if [ ${REMOVE_UDISK2} = 'true' ]; then
             if [ "${LINUX_DISTRO}" = 'debian' ]; then
                 if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie|Deepin 20|Uos 20' "/etc/os-release"; then
@@ -5742,7 +5742,7 @@ fix_vnc_dbus_launch() {
     printf "%s\n" "注1：该操作在linux虚拟机及win10子系统上没有任何问题"
     printf "%s\n" "注2：2020-0412更新的版本已加入检测功能，理论上不会再出现此问题。"
     case "${TMOE_PROOT}" in
-    true | no) ;;
+    true) ;;
     *)
         printf "%s\n" "检测到您当前可能处于非proot环境下，是否继续修复？"
         printf "%s\n" "如需重新配置vnc启动脚本，请更新debian-i后再覆盖安装gui"
