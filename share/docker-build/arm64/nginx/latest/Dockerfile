@@ -1,6 +1,7 @@
 FROM arm64v8/nginx:latest
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
+ADD README.txt /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \
     TMOE_PROOT=false \

@@ -1,6 +1,7 @@
 FROM amd64/nginx:latest
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
+ADD README.txt /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \
     TMOE_PROOT=false \
