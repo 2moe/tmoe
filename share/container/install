@@ -920,8 +920,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		export WEEKLY_BUILD_CONTAINER=true
 	fi
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-	if [[ $(command -v apt) && -e /data/data/com.termux/files/usr/bin/pkg && ! $(command -v pkg) ]];then
-		ln -s $(command -v apt) /usr/bin/pkg
+	if [[ ! $(command -v pkg) ]];then
+		for i in apt dnf;then
+		if [[ $(command -v ${i}) ]];then
+			ln -s $(command -v ${i}) /usr/bin/pkg
+			break
+		fi
+		done
 	fi
 	cd ${HOME}
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
