@@ -20,7 +20,7 @@ RUN apt update; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=mongo_nogui-ubuntu" > container.txt ; \
     mkdir -p environment; \
     printf "%s\n%s\n%s\n" "export MONGO_PACKAGE=${MONGO_PACKAGE}" "export MONGO_REPO=${MONGO_REPO}" "export GPG_KEYS='${GPG_KEYS}'" > environment/container.env; \
-    printf "%s\n%s\n" '#!/usr/bin/env sh' "mongod" > environment/entrypoint; \
+    printf "%s\n%s\n" 'cd ~' "mongod" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \
     printf "%s\n" "GOSU_VERSION='$(gosu --version)'" > version.txt; \

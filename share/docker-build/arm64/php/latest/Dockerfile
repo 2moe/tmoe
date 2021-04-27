@@ -20,7 +20,7 @@ RUN apt update; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=php_nogui-debian" > container.txt ; \
     mkdir -p environment; \
     printf "%s\n" "export PHP_INI_DIR=${PHP_INI_DIR}" > environment/container.env; \
-    printf "%s\n%s\n" '#!/usr/bin/env sh' "php -a" > environment/entrypoint; \
+    printf "%s\n%s\n" 'cd ~' "php -a" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \
     printf "%s\n" "PHP_VERSION='$(php --version)'" > version.txt; \

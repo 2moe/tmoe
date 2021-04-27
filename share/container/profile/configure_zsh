@@ -79,8 +79,15 @@ export_tmoe_env() {
 	if [ -d /tmp/profile ]; then
 		chmod a+r -R /tmp/profile
 		mv /tmp/profile/login ${ENV_DIR}
-		chmod a+rx -R ${ENV_DIR}
 		source /tmp/profile/export_env
+		if [[ -e ${ENV_DIR}/entrypoint ]]; then
+			if ! grep -q 'cd ~' ${ENV_DIR}/entrypoint; then
+				printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
+			fi
+		else
+			printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
+		fi
+		chmod a+rx -R ${ENV_DIR}
 		# cp -vf /tmp/profile/* /etc/profile.d/permanent/
 		rm -rfv /tmp/profile
 	fi

@@ -20,7 +20,7 @@ RUN apt update; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=nginx_nogui-debian" > container.txt ; \
     mkdir -p environment; \
-    printf "%s\n%s\n" '#!/usr/bin/env sh' "nginx -g 'daemon off;'" > environment/entrypoint; \
+    printf "%s\n%s\n" 'cd ~' "nginx -g 'daemon off;'" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \
     printf "%s\n" "NGINX_VERSION='${NGINX_VERSION}'" > version.txt; \

@@ -20,7 +20,7 @@ RUN apt update; \
     JAVA_DIR=$(command -v java); \
     JAVA_PATH=${JAVA_DIR%/*}; \
     printf "%s\n%s\n" "export PATH=\"${JAVA_PATH}\${PATH:+:\${PATH}}\"" "export JAVA_HOME=${JAVA_HOME}" > environment/container.env; \
-    printf "%s\n%s\n" '#!/usr/bin/env sh' "jshell" > environment/entrypoint; \
+    printf "%s\n%s\n" 'cd ~' "jshell" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \
     printf "%s\n%s\n" "JAVA_VERSION='$(java --version)'" "JAVAC_VERSION='$(javac --version)'" > version.txt; \

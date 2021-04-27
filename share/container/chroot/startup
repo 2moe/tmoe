@@ -79,7 +79,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
 		 fi
 		 #########
-		   [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
+		if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]];then
+			[[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 		   if [[ -z \${TMOE_SHELL} ]]; then
 				for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05};do
 					if [[ -f ${DEBIAN_CHROOT}/bin/\${i} ]];then
@@ -102,7 +103,16 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 				fi
 			fi
 	        set -- "\${TMOE_SHELL}" "-l" "\${@}"
-			set -- "SHELL=\${TMOE_SHELL}" "\${@}"
+			set -- "/usr/bin/sudo" "-Eu" "\${CHROOT_USER}" "\${@}"
+		else
+			if [[ -e ${DEBIAN_CHROOT}/bin/zsh ]];then
+				set -- "/bin/zsh" "-l" "\${@}"
+			elif [[ -e ${DEBIAN_CHROOT}/bin/bash ]];then
+				set -- "/bin/bash" "-l" "\${@}"
+			else
+				set -- "/bin/sh" "-l" "\${@}"
+			fi
+		fi
 
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
 	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\${@}"
@@ -137,10 +147,30 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        done
 	    fi
 		if [[ \${CHROOT_USER} = root ]];then
-			set -- "HOME=/root" "\${@}"
+			CHROOT_HOME="/root"
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
 		else
+			CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+			[[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/${CHROOT_USER}"
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
+		fi
+		set -- "HOSTNAME=\${HOST_NAME}" "\${@}"
+		set -- "TERM=xterm-256color" "\${@}"
+		set -- "SDL_IM_MODULE=fcitx" "\${@}"  
+		set -- "XMODIFIERS=\@im=fcitx" "\${@}"
+		set -- "QT_IM_MODULE=fcitx" "\${@}"
+		set -- "GTK_IM_MODULE=fcitx" "\${@}"
+		set -- "TMOE_CHROOT=true" "\${@}"
+		set -- "TMOE_PROOT=false" "\${@}"
+		set -- "HOME=\${CHROOT_HOME}" "\${@}"
+		set -- "TMPDIR=/tmp" "\${@}"
+		set -- "DISPLAY=:0.0" "\${@}"
+		set -- "PULSE_SERVER=tcp:127.0.0.1:4713" "\${@}"
+	    set -- "/usr/bin/env" "-i" "\${@}"
+		if [[ -n \${TMOE_SHELL} ]];then
+			set -- "SHELL=\${TMOE_SHELL}" "\${@}"
+		else
+			set -- "SHELL=/bin/zsh" "\${@}"
 		fi
 	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
