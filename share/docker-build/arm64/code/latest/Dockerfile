@@ -18,7 +18,7 @@ RUN apt update; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
-    THE_LATEST_LINK=$(curl -L https://api.github.com/repos/cdr/code-server/releases | grep "${ARCH_TYPE}" | grep browser_download_url | grep; \.deb | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2); \
+    THE_LATEST_LINK=$(curl -L https://api.github.com/repos/cdr/code-server/releases | grep "${ARCH_TYPE}" | grep browser_download_url | grep \.deb | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2); \
     curl -Lo code.deb ${THE_LATEST_LINK} || exit 1; \
     apt install -y ./code.deb; \
     rm -fv code.deb; \
