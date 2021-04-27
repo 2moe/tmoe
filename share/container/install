@@ -1979,13 +1979,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			cp -f /tmp/resolv.conf /etc
 		fi
 		[[ $(command -v ip) ]] || dnf install -y iproute
+		[[ $(command -v sudo) ]] || dnf install -y sudo  
 
 		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils passwd findutils man-db glibc-all-langpacks${RESET}"
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			dnf install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks || yum install -y --skip-broken dnf-utils passwd findutils man-db glibc-all-langpacks
 		fi
 		if [[ ! $(command -v pkill) ]];then
-			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}procps-ng procps-ng-i18n${RESET}"
+			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${PURPLE}--skip-broken ${BLUE}procps-ng procps-ng-i18n${RESET}"
 			dnf install -y --skip-broken procps-ng procps-ng-i18n
 		fi
 		#TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
@@ -2011,6 +2012,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			-i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 			;;
 		esac
+		for i in hostname sudo;do
+			if [[ ! $(command -v ${i}) ]];then
+				printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${PURPLE}--skip-broken ${BLUE}${i}${RESET}"
+				dnf install -y --skip-broken ${i}
+			fi
+		done
 		[[ $(command -v whiptail) ]] || yum install --skip-broken -y newt
 	fi
 	############################
