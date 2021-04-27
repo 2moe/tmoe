@@ -921,7 +921,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [[ ! $(command -v pkg) ]];then
-		for i in apt dnf;then
+		for i in apt dnf zypper;do
 		if [[ $(command -v ${i}) ]];then
 			ln -s $(command -v ${i}) /usr/bin/pkg
 			break
