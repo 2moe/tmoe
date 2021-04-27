@@ -490,8 +490,8 @@ standand_desktop_installation() {
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
             "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若您使用的是容器，则只需选择第一或者第二项。\nIf you are using a container,then choose proot_DE or WM.\n若您使用的是虚拟机，则可以任意挑选项目。" 0 0 0 \
-            "1" "🍙 window manager窗口管理器(ice,fvwm)" \
-            "2" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
+            "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
+            "2" "🍙 window manager窗口管理器(ice,fvwm)" \
             "3" "🍔 chroot/docker_DE(kde,dde)" \
             "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome,cinnamon)" \
             "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
@@ -515,8 +515,8 @@ standand_desktop_installation() {
     standand_desktop_installation_menu_zh() {
         case "${INSTALLDESKTOP}" in
         0 | "") tmoe_linux_tool_menu ;;
-        1) window_manager_installation ;;
-        2) tmoe_container_desktop ;;
+        1) tmoe_container_desktop ;;
+        2) window_manager_installation ;;
         3) tmoe_docker_and_chroot_container_desktop ;;
         4) tmoe_virtual_machine_desktop ;;
         5) tmoe_display_manager_install ;;
