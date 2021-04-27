@@ -111,15 +111,17 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
 	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
 	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
-	            set -- "\${i}" "\${@}"
-	        done
+	            if [[ -n \${i} ]];then
+	               set -- "\${i}" "\${@}"
+	            fi
+			done
 	    fi
 		if [[ \${PROOT_USER} = root ]];then
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
 		else
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
 		fi
-	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=\${PROOT_HOME}" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
+	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "HOME=\${PROOT_HOME}" "TMPDIR=/tmp" "TMOE_PROOT=true" "TMOE_CHROOT=false" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "SHELL=\${TMOE_SHELL}" "\${@}"
 		#set -- "--mount=/sys" "\${@}"
 	    set -- "--mount=/dev" "\${@}"
 	    set -- "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm" "\${@}"

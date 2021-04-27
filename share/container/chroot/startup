@@ -141,7 +141,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
 	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
 	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
-	            set -- "\${i}" "\${@}"
+	            if [[ -n \${i} ]];then
+	               set -- "\${i}" "\${@}"
+	            fi
 	        done
 	    fi
 		if [[ \${CHROOT_USER} = root ]];then
@@ -150,7 +152,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		else
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
 		fi
-	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
+	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "SHELL=\${TMOE_SHELL}" "\${@}"
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 	            case \${i} in
