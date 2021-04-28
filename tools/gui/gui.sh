@@ -3223,7 +3223,7 @@ download_icon_themes() {
         "5" "papirus:优雅的图标包,基于paper" \
         "6" "numix:modern现代化" \
         "7" "moka:简约一致的美学" \
-        "0" "Back to the main menu 返回主菜单" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
@@ -3265,7 +3265,7 @@ xubuntu_wallpapers() {
         "2" "xubuntu-xenial" \
         "3" "xubuntu-bionic" \
         "4" "xubuntu-focal" \
-        "0" "Back to the main menu 返回主菜单" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
@@ -3397,7 +3397,7 @@ ubuntu_wallpapers_and_photos() {
         "2" "xubuntu-community:(bionic,focal,etc.)" \
         "3" "ubuntu-mate" \
         "4" "ubuntu-kylin 优麒麟" \
-        "0" "Back to the main menu 返回主菜单" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
@@ -3548,7 +3548,7 @@ download_wallpapers() {
         "7" "gnome-backgrounds(简单而纯粹)" \
         "8" "xfce-artwork" \
         "9" "arch(领略别样艺术)" \
-        "0" "Back to the main menu 返回主菜单" \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ########################
     case "${INSTALL_THEME}" in
