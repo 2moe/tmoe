@@ -242,7 +242,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 			fi
 			if [[ \${MOUNT_TERMUX} = true ]]; then
 	             if [ -e "/data/data/com.termux/files/home" ]; then
-	               set -- "--mount=/data/data/com.termux/files/home:/root/termux" "\${@}"
+	               set -- "--mount=/data/data/com.termux/files/:/root/termux" "\${@}"
 	             fi
 			fi
 	        set -- "--link2symlink" "\${@}"
