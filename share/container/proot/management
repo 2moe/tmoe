@@ -181,9 +181,9 @@ switch_nspawn_boot_mode() {
 			;;
 		esac
 		if (whiptail --title "BOOT MODE" --yes-button "enable" --no-button "disable" --yesno "Do you want to enable or disable it?\n${TMOE_TIPS_04}" 10 50); then
-			sed -i -E 's@^(SYSTEMD_BOOT=).*@\1true@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+			${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1true@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		else
-			sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+			${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		fi
 		egrep --color=auto '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		;;
@@ -768,7 +768,8 @@ install_web_novnc() {
 	exec_container_program
 }
 install_new_tmoe_gnu_linux_distro() {
-	check_tmoe_completion_version
+	# check_tmoe_completion_version
+	UPDATE_TMOE_COMPLETION=false
 	check_tmoe_completion
 	#git_pull_tmoe_linux
 	###
