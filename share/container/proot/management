@@ -404,7 +404,7 @@ tips_of_kill_pid() {
 	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
 }
 ##########
-kill_chroot_container_process() {
+kill_chroot_container_process_gnu_linux() {
 	#if [ -e "${DEBIAN_CHROOT}/run/dbus/pid" ]; then
 	#	DBUS_PID="$(sed -n p ${DEBIAN_CHROOT}/run/dbus/pid)"
 	#	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
@@ -425,7 +425,6 @@ kill_chroot_container_process() {
 	else
 		cat ${LSOF_TEMP_FILE}.02
 	fi
-
 	LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
 	KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@${GREEN}sudo ${RED}kill -9${BLUE} @g")
 	if [[ -n ${LIST_OPEN_FILES_02} ]]; then
@@ -436,13 +435,33 @@ kill_chroot_container_process() {
 		printf "%s\n" "${GREEN}${KILL_PID_02}${RESET}"
 	fi
 	#此处执行bash -c "${KILL_PID_02}"会导致tmoe-manager退出。
-
+}
+kill_chroot_container_process_old() {
+	case ${LINUX_DISTRO} in
+	Android) ;;
+	*) kill_chroot_container_process_gnu_linux ;;
+	esac
 	su -c "lsof" >${LSOF_TEMP_FILE}
 	check_tmoe_container_pid
 	su -c "${KILL_PID}"
 	#必须在kill掉进程后再umount
 	source ${TMOE_SHARE_DIR}/removal/umount
 	tips_of_kill_pid
+}
+kill_chroot_container_process() {
+	cd ~
+	tips_of_check_pid
+	su -c "lsof ${DEBIAN_CHROOT%/}" | awk '{print $2}' | sed 1d | uniq | sed "s@^@kill -9 @g" >${LSOF_TEMP_FILE}.02
+	chmod 777 ${LSOF_TEMP_FILE}.02
+	if [[ $(command -v batcat) ]]; then
+		batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+	elif [[ $(command -v bat) ]]; then
+		bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+	else
+		cat ${LSOF_TEMP_FILE}.02
+	fi
+	su -c "${LSOF_TEMP_FILE}.02"
+	cd -
 }
 kill_proot_container_process() {
 	tips_of_check_pid
