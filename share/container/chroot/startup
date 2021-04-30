@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
+# ${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
 cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
@@ -270,7 +270,14 @@ ENDOFTMOECHROOT
 case $(uname -o) in
 Android) termux-fix-shebang ${TMP_FILE} ;;
 esac
-chmod a+rx ${TMP_FILE}
-${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
+if [[ ${SYSTEMD_NSPAWN} = true ]]; then
+	printf "%s\n" "SYSTEMD_NSPAWN=true" >${TMPDIR}/.chroot.conf
+else
+	printf "%s\n" "SYSTEMD_NSPAWN=false" >${TMPDIR}/.chroot.conf
+fi
+chmod a+rx ${TMP_FILE} ${TMPDIR}/.chroot.conf
+${TMOE_CHROOT_PREFIX} cp -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
+${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_DIR}/chroot
+${TMOE_CHROOT_PREFIX} mv -f ${TMPDIR}/.chroot.conf ${TMOE_STARTUP_DIR}/chroot.conf
 #${TMOE_CHROOT_PREFIX} chmod a+rx ${TMOE_STARTUP_SCRIPT}
 ln -sf ${TMOE_SHARE_DIR}/container/debian/debian ${PREFIX}/bin

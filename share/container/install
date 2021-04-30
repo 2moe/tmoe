@@ -54,6 +54,7 @@ if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	elif [ $(command -v tsudo) ]; then
 		TMOE_CHROOT_PREFIX=tsudo
 	fi
+	SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
 else
 	CONTAINER_TYPE='proot'
 	TMOE_CHROOT=false
@@ -82,6 +83,7 @@ tmoe_manager_env() {
 	esac
 	TMOE_STARTUP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container"
 	TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
+	TMOE_NSPAWN_SCRIPT="${TMOE_STARTUP_DIR}/nspawn"
 	#${TMOE_CHROOT_PREFIX}
 	mkdir -pv ${DEBIAN_CHROOT} || ${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
 	${TMOE_CHROOT_PREFIX} chmod 755 -v ${DEBIAN_CHROOT}
@@ -557,6 +559,9 @@ printf "${RESET}"
 cat_tmoe_chroot_script() {
 	source ${TMOE_SHARE_DIR}/container/chroot/startup
 }
+cat_tmoe_nspawn_script() {
+	source ${TMOE_SHARE_DIR}/container/nspawn/startup
+}
 ##############
 create_chroot_startup_script() {
 	case ${LINUX_DISTRO} in
@@ -618,11 +623,13 @@ create_chroot_startup_script() {
 	sudo mv ${TMPDIR}/environment ${DEBIAN_CHROOT}/etc/
 	##################
 	#此处若不创建，将有可能导致chromium无法启动。
-	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus
+	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus ${TMOE_STARTUP_DIR}
 	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-	${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 	cat_tmoe_chroot_script
+	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
+		cat_tmoe_nspawn_script
+	fi
 }
 ###################
 create_tmoe_proot_stat_file() {
@@ -725,14 +732,13 @@ if grep -q 'Ubuntu' ${DEBIAN_CHROOT}/etc/os-release 2>/dev/null; then
 	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/home/ubuntu/.hushlogin 2>/dev/null
 fi
 case ${TMOE_CHROOT} in
-true)
-	create_chroot_startup_script
-	;;
+true) create_chroot_startup_script ;;
 *)
 	create_proot_startup_script
 	check_tmoe_proot_container_proc
 	;;
 esac
+${TMOE_CHROOT_PREFIX} chmod -R a+rx ${TMOE_STARTUP_DIR}
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
@@ -1269,8 +1275,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	nameserver 2606:4700:4700::1111
 	nameserver 240c::6644
 	EndOfFile
-	[[ ! -s /tmp/resolv.conf ]] || cp -f /tmp/resolv.conf /etc
-	chmod a+r /etc/resolv.conf /tmp/resolv.conf
+	if [[ -s /tmp/resolv.conf ]];then
+		chmod a+r /tmp/resolv.conf
+		cp -f /tmp/resolv.conf /etc
+	fi
+	chmod a+r /etc/resolv.conf
 	cat /etc/resolv.conf
 	printf "%s\n" ""
 	######################

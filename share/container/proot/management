@@ -111,6 +111,7 @@ environment_variables_and_automatic_startup_script_management() {
 			"4" "Temporary auto-startup script" \
 			"5" "/etc/environment" \
 			"6" "README" \
+			"7" "boot mode of systemd-nspawn" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -122,6 +123,7 @@ environment_variables_and_automatic_startup_script_management() {
 			"4" "Temporary(临时自启脚本)" \
 			"5" "/etc/environment" \
 			"6" "README 自述/说明" \
+			"7" "systemd容器boot模式" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -140,12 +142,38 @@ environment_variables_and_automatic_startup_script_management() {
 	4) create_a_temp_script ;;
 	5) edit_container_etc_environment ;;
 	6) readme_of_env_var_and_autostartup_script ;;
-	*)
-		printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
-		;;
+	7) switch_nspawn_boot_mode ;;
 	esac
 	press_enter_to_return
 	${RETURN_TO_WHERE}
+}
+switch_nspawn_boot_mode() {
+	case ${TMOE_CHROOT} in
+	true)
+		SYSTEMD_BOOT=$(egrep '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+		case ${SYSTEMD_BOOT} in
+		true)
+			case ${TMOE_MENU_LANG} in
+			zh_*UTF-8) TMOE_TIPS_04="当前已启用boot模式,您可以在容器内执行systemctl命令" ;;
+			*) TMOE_TIPS_04="Boot mode is enabled, you can execute systemctl in the container." ;;
+			esac
+			;;
+		false)
+			case ${TMOE_MENU_LANG} in
+			zh_*UTF-8) TMOE_TIPS_04="当前未启用boot模式" ;;
+			*) TMOE_TIPS_04="Boot mode is currently disabled." ;;
+			esac
+			;;
+		esac
+		if (whiptail --title "BOOT MODE" --yes-button "enable" --no-button "disable" --yesno "Do you want to enable or disable it?\n${TMOE_TIPS_04}" 10 50); then
+			sed -i -E 's@^(SYSTEMD_BOOT=).*@\1true@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		else
+			sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		fi
+		egrep --color=auto '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		;;
+	*) printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the systemd-nspawn container." ;;
+	esac
 }
 create_a_temp_script() {
 	#It is "-f" ,not "-e".
@@ -362,9 +390,6 @@ tips_of_kill_pid() {
 }
 ##########
 kill_chroot_container_process() {
-	case ${SYSTEMD_NSPAWN} in
-	true) machinectl terminate ${MACHINE_NAME} ;;
-	esac
 	#if [ -e "${DEBIAN_CHROOT}/run/dbus/pid" ]; then
 	#	DBUS_PID="$(sed -n p ${DEBIAN_CHROOT}/run/dbus/pid)"
 	#	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
@@ -417,7 +442,12 @@ kill_container_process() {
 	#printf "%s\n" "Sorry,由于本功能在调试中出现bug，因次无法准确地检测容器进程。"
 	#printf "%s\n" "Please look forward to the stable version tomorrow."
 	case ${TMOE_CHROOT} in
-	true) kill_chroot_container_process ;;
+	true)
+		case ${SYSTEMD_NSPAWN} in
+		true) machinectl terminate ${MACHINE_NAME} || ${TMOE_PREFIX} machinectl terminate ${MACHINE_NAME} ;;
+		*) kill_chroot_container_process ;;
+		esac
+		;;
 	*) kill_proot_container_process ;;
 	esac
 }
@@ -560,7 +590,8 @@ readme_of_gnu_linux_distro() {
 	case ${SYSTEMD_NSPAWN} in
 	true)
 		cat <<-EOF
-			检测到您选择的systemd-nspawn容器，在进入容器后，按下${GREEN}Ctrl${RESET}+三次${YELLOW}]]]${RED}退出${RESET}。
+
+			检测到您选择的${BLUE}systemd-nspawn${RESET}容器，在进入容器后，按下${GREEN}Ctrl${RESET}+三次${YELLOW}]]]${RED}退出${RESET}。
 			您可以使用${GREEN}machinectl${RESET}来管理nspawn容器。
 			${GREEN}machinectl -h${RESET} 获取帮助信息 get help info
 			${GREEN}machinectl list${RESET} 列出容器
@@ -608,13 +639,15 @@ normally_start_gnu_linux_distro() {
 	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
 		pulseaudio --start
 	fi
-	case ${SYSTEMD_NSPAWN} in
-	true)
-		source ${TMOE_SHARE_DIR}/removal/umount
-		source ${TMOE_SHARE_DIR}/container/nspawn/startup
-		;;
-	*) ${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container ;;
-	esac
+	# case ${SYSTEMD_NSPAWN} in
+	# true)
+	# 	# source ${TMOE_SHARE_DIR}/removal/umount
+	# 	source ${TMOE_SHARE_DIR}/container/nspawn/startup
+	# 	;;
+	# *)
+	${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	# ;;
+	# esac
 	if [[ -e ${DEBIAN_CHROOT} ]]; then
 		press_enter_to_return
 		proot_management_menu

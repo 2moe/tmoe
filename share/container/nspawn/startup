@@ -1,48 +1,107 @@
 #!/usr/bin/env bash
+###################
 MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g') #此处并非重复操作
 unset TMOE_SD_DIR
-TMOE_DOCKER_DIR="/media/docker"
 if egrep -q '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
-    sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
+    ${TMOE_CHROOT_PREFIX} sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
 fi
-case $(${TMOE_PREFIX} cat ${DEBIAN_CHROOT}/etc/hostname) in
-localhost | LXC_NAME | "")
-    ${TMOE_PREFIX} printf "%s\n" "${MACHINE_NAME}" >${DEBIAN_CHROOT}/etc/hostname
-    ${TMOE_PREFIX} printf "%s\n" "127.0.0.1       ${MACHINE_NAME}" >>${DEBIAN_CHROOT}/etc/hosts
-    ;;
-esac
-if [[ -s "${DEBIAN_CHROOT}/etc/machine-id" ]]; then
-    rm -f ${DEBIAN_CHROOT}/etc/machine-id
+# case $(${TMOE_CHROOT_PREFIX} cat ${DEBIAN_CHROOT}/etc/hostname) in
+# localhost | LXC_NAME | "")
+#     # ${TMOE_CHROOT_PREFIX} printf "%s\n" "${MACHINE_NAME}" >>${DEBIAN_CHROOT}/etc/hostname
+#     # ${TMOE_CHROOT_PREFIX} printf "%s\n" "127.0.0.1       ${MACHINE_NAME}" >>${DEBIAN_CHROOT}/etc/hosts
+#     ;;
+# esac
+printf "%s\n" "${MACHINE_NAME}" >${TMPDIR}/.tmp_hostname
+${TMOE_CHROOT_PREFIX} cp ${TMPDIR}/.tmp_hostname ${DEBIAN_CHROOT}/tmp
+${TMOE_CHROOT_PREFIX} mv ${TMPDIR}/.tmp_hostname ${DEBIAN_CHROOT}/etc
+
+if [[ -e "${DEBIAN_CHROOT}/etc/machine-id" ]]; then
+    ${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/etc/machine-id
 fi
-set -- "${@}" "--boot"
-set -- "${@}" "--directory" "${DEBIAN_CHROOT}"
-set -- "${@}" "--uuid" "$(dbus-uuidgen)"
+TMP_FILE="${TMPDIR}/.TMOE_NSPAWN_STARTUP"
+cat >${TMP_FILE} <<-ENDOFTMOECHROOT
+#!/usr/bin/env bash
+###################
+SYSTEMD_BOOT=false
+#If the vaule is true,then you can run systemctl command in the container.Default is false.
+#若为true,则允许在容器内执行systemctl。注：建议以非root用户进行登录。
+
+CHROOT_USER=root
+#You can spicify a user.
+
+DIR_01="\${HOME}/Download"
+DIR_02="/media/sd"
+DIR_03="/sd"
+MOUNT_SD=true
+
+TMOE_DOCKER_DIR="/media/docker"
+MOUNT_DOCKER_DIR=true
+#mount dir
+#挂载相关目录
+
+CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+LOAD_ENV_FILE=true
+
+TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+###################
+if [[ \${SYSTEMD_BOOT} = true ]]; then
+    set -- "\${@}" "--boot"
+fi
+if [[ \${CHROOT_USER} != root ]];then
+    set -- "\${@}" "--user" "\${CHROOT_USER}"
+fi
+set -- "\${@}" "--directory" "${DEBIAN_CHROOT}"
+set -- "\${@}" "--uuid" "$(dbus-uuidgen)"
 #arch不要设置将其设置为pick
-set -- "${@}" "--private-users=no"
-set -- "${@}" "--machine" "${MACHINE_NAME}"
-set -- "${@}" "--link-journal" "auto"
-set -- "${@}" "--resolv-conf" "auto"
-set -- "${@}" "--timezone" "auto"
-set -- "${@}" "--setenv" "TMOE_CHROOT=true"
-set -- "${@}" "--setenv" "TMOE_PROOT=false"
-set -- "${@}" "--setenv" "TMOE_DOCKER=false"
-#set -- "${@}" "--setenv" '"PULSE_SERVER=unix:/usr/lib/systemd/user/pulseaudio.socket"'
-set -- "${@}" "--setenv" "PULSE_SERVER=tcp:127.0.0.1:4713"
-set -- "${@}" "--setenv" "DISPLAY=:0.0"
-set -- "${@}" "--setenv" "GTK_IM_MODULE=fcitx"
-set -- "${@}" "--setenv" "QT_IM_MODULE=fcitx"
-set -- "${@}" "--setenv" "XMODIFIERS='@im=fcitx'"
-set -- "${@}" "--setenv" "SDL_IM_MODULE=fcitx"
-set -- "${@}" "--setenv" "CONTAINER_SYSTEMD=true"
-set -- "${@}" "--register" "yes"
-set -- "${@}" "--notify-ready" "yes"
-for i in ${HOME}/Download /root/sd /sdcard /media/sd; do
-    [[ ! -d "${i}" ]] || TMOE_SD_DIR=${i}
-done
-[[ -z ${TMOE_SD_DIR} ]] || set -- "${@}" "--bind" "${TMOE_SD_DIR}:/media/sd"
-[[ ! -e "${TMOE_DOCKER_DIR}" ]] || set -- "${@}" "--bind" "${TMOE_DOCKER_DIR}"
-set -- "systemd-nspawn" "${@}"
+set -- "\${@}" "--private-users=no"
+set -- "\${@}" "--machine" "${MACHINE_NAME}"
+set -- "\${@}" "--link-journal" "auto"
+set -- "\${@}" "--resolv-conf" "auto"
+set -- "\${@}" "--timezone" "auto"
+set -- "\${@}" "--setenv" "TMOE_CHROOT=true"
+set -- "\${@}" "--setenv" "TMOE_PROOT=false"
+set -- "\${@}" "--setenv" "TMOE_DOCKER=false"
+#set -- "\${@}" "--setenv" "PULSE_SERVER=unix:/usr/lib/systemd/user/pulseaudio.socket"
+set -- "\${@}" "--setenv" "PULSE_SERVER=tcp:127.0.0.1:4713"
+set -- "\${@}" "--setenv" "DISPLAY=:0.0"
+set -- "\${@}" "--setenv" "GTK_IM_MODULE=fcitx"
+set -- "\${@}" "--setenv" "QT_IM_MODULE=fcitx"
+set -- "\${@}" "--setenv" "XMODIFIERS=\@im=fcitx"
+set -- "\${@}" "--setenv" "SDL_IM_MODULE=fcitx"
+set -- "\${@}" "--setenv" "CONTAINER_SYSTEMD=true"
+set -- "\${@}" "--setenv" "TERM=xterm-256color"
+set -- "\${@}" "--register" "yes"
+set -- "\${@}" "--notify-ready" "yes"
+
+if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
+    for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
+        if [[ -n \${i} ]];then
+           set -- "\${@}" "--setenv" "\${i}"
+        fi
+    done
+fi
+if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
+    set -- "\${@}" "--setenv" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
+fi
+
+if [[ \${MOUNT_SD} = true ]]; then
+    for i in \${DIR_01} \${DIR_02} \${DIR_03}; do
+        [[ ! -d "\${i}" ]] || TMOE_SD_DIR=\${i}
+    done
+    [[ -z \${TMOE_SD_DIR} ]] || set -- "\${@}" "--bind" "\${TMOE_SD_DIR}:/media/sd"
+fi
+if [[ \${MOUNT_DOCKER_DIR} = true ]]; then
+    [[ ! -e "\${TMOE_DOCKER_DIR}" ]] || set -- "\${@}" "--bind" "\${TMOE_DOCKER_DIR}"
+fi
+set -- "systemd-nspawn" "\${@}"
 unset LD_PRELOAD
-TMOE_NSPAWN_EXEC="exec ${@}"
-su -c "${TMOE_NSPAWN_EXEC}"
+TMOE_NSPAWN_EXEC="exec \${@}"
+su -c "\${TMOE_NSPAWN_EXEC}"
 #exit 0
+ENDOFTMOECHROOT
+
+case $(uname -o) in
+Android) termux-fix-shebang ${TMP_FILE} ;;
+esac
+${TMOE_CHROOT_PREFIX} cp -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
+${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_DIR}/nspawn

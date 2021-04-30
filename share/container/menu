@@ -39,7 +39,7 @@ across_architectures_container() {
 #############
 proot_container_menu_multi_langs() {
 	proot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or cross-architecture?" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} container" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or cross-architecture?" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "⚔️ Across architectures" \
@@ -76,31 +76,93 @@ proot_container_menu_multi_langs() {
 	proot_container_menu_multi_langs
 }
 ############
+systemd_nspawn_is_false() {
+	SYSTEMD_NSPAWN=false
+	printf "%s\n" "SYSTEMD_NSPAWN=false" >${CONFIG_FOLDER}/chroot.conf
+	grep --color=auto 'false' ${CONFIG_FOLDER}/chroot.conf
+	chmod -v a+rw ${CONFIG_FOLDER}/chroot.conf
+}
+systemd_nspawn_is_true() {
+	SYSTEMD_NSPAWN=true
+	printf "%s\n" "SYSTEMD_NSPAWN=true" >${CONFIG_FOLDER}/chroot.conf
+	grep --color=auto 'true' ${CONFIG_FOLDER}/chroot.conf
+	chmod -v a+rw ${CONFIG_FOLDER}/chroot.conf
+}
+systemd_nspawn_is_true_or_false() {
+	mkdir -pv ${CONFIG_FOLDER}
+	# if [[ ${WINDOWS_DISTRO} = WSL || ${LINUX_DISTRO} = Android ]]; then
+	# 	systemd_nspawn_is_false
+	# else
+	switch_chroot_default_mode
+	# fi
+}
+switch_chroot_default_mode() {
+	if (whiptail --title "CHROOT MODE" --yes-button "systemd" --no-button "normal" --yesno "It is recommended to use the systemd mode.\nIf you want to use systemctl in the container,\nyou also need to enable the boot option of nspawn.\nIf you cannot use the systemd mode,\nthen switch it back to the normal mode." 11 50); then
+		systemd_nspawn_is_true
+	else
+		systemd_nspawn_is_false
+	fi
+	printf "%s\n" "This feature is only available for uncreated containers."
+	printf "%s\n" "For the container that has been created, if you want to change the mode, please execute the following commands in the container."
+	printf "${GREEN}%s${RESET}\n" "cd /usr/local/etc/tmoe-linux/container"
+	printf "%s\n" "If you want to use the systemd mode, you can do so."
+	printf "${GREEN}%s${RESET}\n" "ln -svf nspawn tmoe-linux-container ; sed -i -E 's@(SYSTEMD_NSPAWN=).*@\1true@' chroot.conf"
+	printf "%s\n" "If you want to use the normal mode, you can do so."
+	printf "${GREEN}%s${RESET}\n" "ln -svf chroot tmoe-linux-container ; sed -i -E 's@(SYSTEMD_NSPAWN=).*@\1false@' chroot.conf"
+}
+check_chroot_mode() {
+	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
+		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+			systemd_nspawn_is_true_or_false
+		else
+			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
+		fi
+	else
+		systemd_nspawn_is_true_or_false
+	fi
+
+	case ${SYSTEMD_NSPAWN} in
+	true)
+		case ${TMOE_MENU_LANG} in
+		zh_*UTF-8) TMOE_TIPS_04="当前为systemd模式。如需在容器内部使用systemctl,\n则还需要启用nspawn的boot模式" ;;
+		*) TMOE_TIPS_04="Currently in systemd mode. If you want to use systemctl in the container,\nenable the boot mode of nspawn." ;;
+		esac
+		;;
+	false)
+		case ${TMOE_MENU_LANG} in
+		zh_*UTF-8) TMOE_TIPS_04="当前为normal模式" ;;
+		*) TMOE_TIPS_04="Currently in normal mode." ;;
+		esac
+		;;
+	esac
+}
 chroot_container_menu_multi_langs() {
 	chroot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Chroot is not suitable for production environment,\nit is recommended to use systemd mode" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} container" --menu "Chroot in normal mode is not suitable for production environment,\nit is recommended to use the systemd mode.\n${TMOE_TIPS_04}" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
-			"3" "alpha: switch chroot mode" \
-			"4" "🥛 alpha:nspawn(systemd-container,supports systemctl)" \
-			"5" "⚔️ Across architectures" \
-			"6" "🔯 Restore ${CONTAINER_TYPE} container" \
-			"7" "📕 Configuration & manual" \
+			"3" "🥛 alpha:switch chroot mode(systemd/normal)" \
+			"4" "⚔️ Across architectures" \
+			"5" "🔯 Restore ${CONTAINER_TYPE} container" \
+			"6" "📕 Configuration & manual" \
 			"0" "🌚 Back to the main menu" \
 			3>&1 1>&2 2>&3)
 	}
 	chroot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通的chroot在umount时可能会产生bug,故只适用于恢复环境,\n不适用于生产环境,建议您将普通的chroot切换为systemd模式." 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通模式的chroot在umount时可能会产生bug,\n故只适用于恢复环境,不适用于生产环境,建议您使用systemd模式。\n${TMOE_TIPS_04}" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
-			"3" "alpha内测:切换chroot默认模式" \
-			"4" "🥛 alpha内测: nspawn(systemd容器,支持systemctl)" \
-			"5" "⚔️ Across architectures 跨CPU架构" \
-			"6" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
-			"7" "📕 配置与手册" \
+			"3" "🥛 alpha内测:切换chroot默认模式(systemd/normal)" \
+			"4" "⚔️ Across architectures 跨CPU架构" \
+			"5" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
+			"6" "📕 配置与手册" \
 			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3)
 	}
+	check_chroot_mode
+	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
+		systemd_nspawn_env
+	fi
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) chroot_container_menu_cn ;;
 	*) chroot_container_menu_en ;;
@@ -111,27 +173,15 @@ chroot_container_menu_multi_langs() {
 	1) list_tmoe_containers ;;
 	2) list_installed_tmoe_containers ;;
 	3) switch_chroot_default_mode ;;
-	4)
-		case ${LINUX_DISTRO} in
-		Android) systemd_nspawn_env ;;
-		*) switch_chroot_default_mode ;;
-		esac
-		;;
-	999)
-		systemd_nspawn_env
-		;;
-	5) across_architectures_container ;;
-	6) restore_tmoe_container ;;
-	7) configure_tmoe_container ;;
+	4) across_architectures_container ;;
+	5) restore_tmoe_container ;;
+	6) configure_tmoe_container ;;
 	esac
 	####################
 	press_enter_to_return
 	chroot_container_menu_multi_langs
 }
 ############
-switch_chroot_default_mode() {
-	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
-}
 proot_container_menu() {
 	source ${TMOE_SHARE_DIR}/container/list
 	check_proot_or_chroot
@@ -151,6 +201,7 @@ systemd_nspawn_env() {
 		do_you_want_to_continue
 		case ${LINUX_DISTRO} in
 		Android)
+			${TMOE_INSTALLATION_COMMAND} systemd-container
 			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
 			printf "%s\n" "请换用${GREEN}GNU/Linux${RESET}系统！！！"
 			;;
@@ -160,18 +211,27 @@ systemd_nspawn_env() {
 	if [ ! $(command -v dbus-uuidgen) ]; then
 		printf "${RED}%s${RESET}\n" "EORROR！YOU DID NOT INSTALL DBUS."
 		printf "${GREEN}%s ${BLUE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "dbus"
+		systemd_nspawn_is_false
 		press_enter_to_return
 		chroot_container_menu_multi_langs
-		#${TMOE_INSTALLATION_COMMAND} dbus
 	fi
-	case ${LINUX_DISTRO} in
-	Android)
+	#double check
+	if [ ! $(command -v systemd-nspawn) ]; then
+		systemd_nspawn_is_false
 		press_enter_to_return
 		chroot_container_menu_multi_langs
-		;;
-	esac
-	SYSTEMD_NSPAWN=true
-	list_installed_tmoe_containers
+	else
+		systemctl >/dev/null
+		case ${?} in
+		0) ;;
+		*)
+			printf "%s\n" "${RED}ERROR${RESET}, you can not use the systemd mode."
+			press_enter_to_return
+			chroot_container_menu_multi_langs
+			;;
+		esac
+	fi
+	# list_installed_tmoe_containers
 }
 ###############
 restore_tmoe_container() {

@@ -10,6 +10,7 @@ tmoe_main() {
 		;;
 	c* | chroot)
 		source_tmoe_env
+		check_chroot_mode
 		TMOE_CHROOT=true
 		;;
 	systemd | sd | systemctl | ns | nspawn)
@@ -19,6 +20,7 @@ tmoe_main() {
 		;;
 	ls)
 		check_manager_dir
+		check_chroot_mode
 		bash ${MANAGER_DIR}/share/container/debian/lnk-menu
 		exit 0
 		;;
@@ -196,6 +198,31 @@ tmoe_main() {
 	start_tmoe_container
 }
 #############
+check_chroot_mode() {
+	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
+	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
+		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+			export SYSTEMD_NSPAWN=false
+		else
+			export SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
+		fi
+	else
+		export SYSTEMD_NSPAWN=false
+	fi
+
+	case ${TMOE_CHROOT} in
+	true)
+		if [[ -e ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf ]]; then
+			unset SYSTEMD_NSPAWN
+			if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+				SYSTEMD_NSPAWN=false
+			else
+				SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
+			fi
+		fi
+		;;
+	esac
+}
 check_manager_dir() {
 	MANAGER_DIR_01="${HOME}/.local/share/tmoe-linux/git"
 	MANAGER_DIR_02="/usr/local/etc/tmoe-linux/git"
@@ -380,28 +407,30 @@ start_tmoe_container() {
 		done
 	fi
 
-	case ${SYSTEMD_NSPAWN} in
-	true)
-		case $(uname -o) in
-		Android)
-			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
-			printf "${YELLOW}%s\n" "如需运行systemd容器，请换用${BLUE}GNU/Linux${RESET}系统。"
-			exit 1
-			;;
-		esac
-		case $(id -u) in
-		0)
-			source ${TMOE_SHARE_DIR}/removal/umount
-			source ${TMOE_SHARE_DIR}/container/nspawn/startup
-			;;
-		*)
-			sudo -E tmoe ${TMOE_PARAMETERS}
-			exit 1
-			;;
-		esac
-		;;
-	*) ${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ;;
-	esac
+	# case ${SYSTEMD_NSPAWN} in
+	# true)
+	# 	case $(uname -o) in
+	# 	Android)
+	# 		printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
+	# 		# printf "${YELLOW}%s\n" "如需运行systemd容器，请换用${BLUE}GNU/Linux${RESET}系统。"
+	# 		exit 1
+	# 		;;
+	# 	esac
+	# 	case $(id -u) in
+	# 	0)
+	# 		# source ${TMOE_SHARE_DIR}/removal/umount
+	# 		source ${TMOE_SHARE_DIR}/container/nspawn/startup
+	# 		;;
+	# 	*)
+	# 		sudo -E tmoe ${TMOE_PARAMETERS}
+	# 		exit 1
+	# 		;;
+	# 	esac
+	# 	;;
+	# *)
+	${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	# ;;
+	# esac
 }
 ##########
 tmoe_main "$@"
