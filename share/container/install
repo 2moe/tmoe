@@ -518,8 +518,12 @@ ${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT} | ${IOS
 	fi
 	;;
 esac
+TMOE_TMP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/tmp"
+${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_TMP_DIR}
+
 if [[ -s "${CONFIG_FOLDER}/default-dns.conf" ]]; then
 	cp ${CONFIG_FOLDER}/default-dns.conf ${DEBIAN_CHROOT}/tmp/resolv.conf
+	${TMOE_CHROOT_PREFIX} cp ${CONFIG_FOLDER}/default-dns.conf ${TMOE_TMP_DIR}/resolv.conf
 fi
 
 if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
@@ -865,7 +869,8 @@ cp -f ${TMOE_SHARE_DIR}/container/profile/configure_zsh ./zsh.sh
 chmod a+rx zsh.sh zsh-i.sh
 ${TMOE_CHROOT_PREFIX} cp zsh-i.sh zsh.sh ${DEBIAN_CHROOT}/root
 ${TMOE_CHROOT_PREFIX} cp -r ${TMOE_SHARE_DIR}/container/profile ${DEBIAN_CHROOT}/tmp
-${TMOE_CHROOT_PREFIX} chmod -R 1777 ${DEBIAN_CHROOT}/tmp/profile
+${TMOE_CHROOT_PREFIX} cp -r ${TMOE_SHARE_DIR}/container/profile ${TMOE_TMP_DIR}
+${TMOE_CHROOT_PREFIX} chmod -R 1777 ${DEBIAN_CHROOT}/tmp/profile ${TMOE_TMP_DIR}
 #chmod u+x ./*
 ###########
 MANJARO_LINUX=false
@@ -921,6 +926,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	BOLD=$(printf '\033[1m')
 	PURPLE=$(printf '\033[0;35m')
 	RESET=$(printf '\033[m')
+	TMOE_TMP_DIR=/usr/local/etc/tmoe-linux/tmp
 	if [ -s /usr/local/etc/tmoe-linux/container.txt ];then
 		#.dockerenv
 		export WEEKLY_BUILD_CONTAINER=true
@@ -1276,10 +1282,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	nameserver 240c::6644
 	EndOfFile
 	if [[ -s /tmp/resolv.conf ]];then
-		chmod a+r /tmp/resolv.conf
 		cp -f /tmp/resolv.conf /etc
+	elif [[ -s ${TMOE_TMP_DIR}/resolv.conf ]];then
+		chmod 644 ${TMOE_TMP_DIR}/resolv.conf
+		cp -fv ${TMOE_TMP_DIR}/resolv.conf /etc
+		cp -f ${TMOE_TMP_DIR}/resolv.conf /tmp
 	fi
-	chmod a+r /etc/resolv.conf
+	chmod -v 644 /etc/resolv.conf
 	cat /etc/resolv.conf
 	printf "%s\n" ""
 	######################

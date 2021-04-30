@@ -57,6 +57,7 @@ auto_remove_proot_xfce4_power_manager() {
 }
 set_tmoe_zsh_env() {
 	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+	TMOE_TMP_DIR="${TMOE_LINUX_DIR}/tmp"
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
 	CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
@@ -75,6 +76,10 @@ check_container_name() {
 }
 export_tmoe_env() {
 	mkdir -p ${ENV_DIR}
+	if [[ -e ${TMOE_TMP_DIR}/profile ]]; then
+		cp -rf ${TMOE_TMP_DIR}/profile /tmp
+		rm -r ${TMOE_TMP_DIR}/profile
+	fi
 	if [ -d /tmp/profile ]; then
 		chmod a+r -R /tmp/profile
 		mv /tmp/profile/login ${ENV_DIR}
@@ -87,7 +92,6 @@ export_tmoe_env() {
 			printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
 		fi
 		chmod a+rx -R ${ENV_DIR}
-		# cp -vf /tmp/profile/* /etc/profile.d/permanent/
 		rm -rfv /tmp/profile
 	fi
 

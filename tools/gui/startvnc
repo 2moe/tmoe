@@ -16,7 +16,7 @@ TMOE_VNC_DISPLAY_NUMBER=2
 #Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
 
 VNC_USER=$(whoami)
-#You can specify a VNC user. The default is the current user: "$(whoami)"
+#You can specify a VNC user. The current user is $(whoami)
 #您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
 #Sie können einen VNC-Benutzer angeben
 

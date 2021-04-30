@@ -138,7 +138,7 @@ environment_variables_and_automatic_startup_script_management() {
 			"4" "Temporary(临时自启脚本)" \
 			"5" "/etc/environment" \
 			"6" "README 自述/说明" \
-			"7" "systemd容器boot模式" \
+			"7" "systemd-nspawn容器boot模式" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -459,7 +459,10 @@ kill_container_process() {
 	case ${TMOE_CHROOT} in
 	true)
 		case ${SYSTEMD_NSPAWN} in
-		true) machinectl terminate ${MACHINE_NAME} ;;
+		true)
+			printf "%s\n" "${GREEN}machinectl ${PURPLE}terminate ${BLUE}${MACHINE_NAME}${RESET}"
+			machinectl terminate ${MACHINE_NAME}
+			;;
 		*) kill_chroot_container_process ;;
 		esac
 		;;

@@ -23,11 +23,13 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 #!/usr/bin/env bash
 ###################
 SYSTEMD_BOOT=false
-#If the vaule is true,then you can run systemctl command in the container.Default is false.
+#If the vaule is true, then you can run systemctl command in the container. Default is false
 #若为true,则允许在容器内执行systemctl。注：建议以非root用户进行登录。
 
 CHROOT_USER=root
-#You can spicify a user.
+#You can specify a user. Default is root
+#您可以指定用户，例如root或ubuntu，默认为root
+#Sie können einen Benutzer angeben
 
 DIR_01="\${HOME}/Download"
 DIR_02="/media/sd"
