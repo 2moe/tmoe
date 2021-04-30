@@ -43,7 +43,7 @@ check_novnc_port() {
 #############
 modify_novnc_port() {
 	check_novnc_port
-	TARGET=$(whiptail --inputbox "Please type the novnc port,the default is 36080,current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
+	TARGET=$(whiptail --inputbox "Please type the novnc port,the default is 36080,the current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
 	if [ "$?" != "0" ]; then
 		configure_novnc
 	elif [ -z "${TARGET}" ]; then
@@ -56,7 +56,7 @@ modify_novnc_port() {
 		printf '%s\n' 'Your current port has been modified.'
 		#printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startnovnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
 		check_novnc_port
-		printf "%s\n" "Current port is ${BLUE}${CURRENT_VALUE}${RESET}"
+		printf "%s\n" "The current port is ${BLUE}${CURRENT_VALUE}${RESET}"
 		printf "%s\n" "You can type ${GREEN}novnc${RESET} to restart it."
 	fi
 }

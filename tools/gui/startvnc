@@ -16,7 +16,7 @@ TMOE_VNC_DISPLAY_NUMBER=2
 #Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
 
 VNC_USER=$(whoami)
-#You can specify a VNC user. Default is current user: "$(whoami)"
+#You can specify a VNC user. The default is the current user: "$(whoami)"
 #您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
 #Sie können einen VNC-Benutzer angeben
 
@@ -72,7 +72,7 @@ BLUE=$(printf '\033[34m')
 BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
-printf "%s\n" "Current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
+printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
 export USER=${VNC_USER}
 stopvnc -non-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'

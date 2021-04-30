@@ -90,7 +90,7 @@ chroot_container_menu_multi_langs() {
 			3>&1 1>&2 2>&3)
 	}
 	chroot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通的chroot在umount时可能会产生bug, 故只适用于恢复环境,\n不适用于生产环境,建议您将普通的chroot切换为systemd模式." 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通的chroot在umount时可能会产生bug,故只适用于恢复环境,\n不适用于生产环境,建议您将普通的chroot切换为systemd模式." 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "alpha内测:切换chroot默认模式" \

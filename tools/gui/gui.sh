@@ -4199,19 +4199,19 @@ check_x11vnc_port() {
 #############
 x11vnc_port() {
     check_x11vnc_port
-    TARGET=$(whiptail --inputbox "Please type the x11vnc tcp port,the default is 5902,current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "Please type the x11vnc tcp port,the default is 5902, the current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
         printf "%s\n" "请输入有效的数值"
         printf "%s\n" "Please enter a valid value"
         check_x11vnc_port
-        printf "%s\n" "Current port is ${BLUE}${CURRENT_VALUE}${RESET}"
+        printf "%s\n" "The current port is ${BLUE}${CURRENT_VALUE}${RESET}"
     else
         sed -i -E "s@^(TCP_PORT_FOR_RFB_PROTOCOL)=.*@\1=${TARGET}@" "$(command -v startx11vnc)"
         printf '%s\n' 'Your current port has been modified.'
         check_x11vnc_port
-        printf "%s\n" "Current port is ${BLUE}${CURRENT_VALUE}${RESET}"
+        printf "%s\n" "The current port is ${BLUE}${CURRENT_VALUE}${RESET}"
         printf "%s\n" "You can type ${GREEN}startx11vnc${RESET} to restart it."
     fi
 }

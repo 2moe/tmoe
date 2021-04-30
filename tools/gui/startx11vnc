@@ -13,7 +13,7 @@ BLUE=$(printf '\033[34m')
 BOLD=$(printf '\033[1m')
 RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "x11vnc server" "..."
-printf "%s\n" "Current ${BLUE}x11vnc port${RESET} is ${YELLOW}${TCP_PORT_FOR_RFB_PROTOCOL}${RESET},and x11vnc address is ${GREEN}localhost${YELLOW}:${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}"
+printf "%s\n" "The current ${BLUE}x11vnc port${RESET} is ${YELLOW}${TCP_PORT_FOR_RFB_PROTOCOL}${RESET},and x11vnc address is ${GREEN}localhost${YELLOW}:${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}"
 stopvnc -non-stop-dbus 2>/dev/null
 TMOE_X11_PASSWD_FILE=${HOME}/.vnc/x11passwd
 export DISPLAY=:233
