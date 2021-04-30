@@ -163,7 +163,7 @@ environment_variables_and_automatic_startup_script_management() {
 	${RETURN_TO_WHERE}
 }
 switch_nspawn_boot_mode() {
-	case ${TMOE_CHROOT} in
+	case ${SYSTEMD_NSPAWN} in
 	true)
 		SYSTEMD_BOOT=$(egrep '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 		case ${SYSTEMD_BOOT} in
@@ -173,7 +173,7 @@ switch_nspawn_boot_mode() {
 			*) TMOE_TIPS_04="Boot mode is enabled, you can execute systemctl in the container." ;;
 			esac
 			;;
-		false)
+		*)
 			case ${TMOE_MENU_LANG} in
 			zh_*UTF-8) TMOE_TIPS_04="当前未启用boot模式" ;;
 			*) TMOE_TIPS_04="Boot mode is currently disabled." ;;
