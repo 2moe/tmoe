@@ -1176,15 +1176,16 @@ install_ubuntu_gnu_linux_distro() {
 	COMPATIBILITY_MODE=false
 	install_ubuntu_gnu_linux_distro_zh() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2022,则请手动输入版本代号" 0 50 0 \
+			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号" 0 50 0 \
 				"1" "🦍 20.10 時髦大猩猩 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa" \
 				"3" "18.04(LTS)仿生海狸 Bionic Beaver" \
-				"4" "🦛 21.04 多毛河馬 Hirsute Hippo" \
-				"5" "Compatibility mode 兼容模式(仅安装)" \
-				"6" "Custom code手动输入版本代号" \
-				"7" "使用debootstrap手动构建" \
-				"8" "Latest(自動檢測21.10)" \
+				"4" "🐒 21.10(chroot) 頑皮大狐猴 Impish Indri" \
+				"5" "🦛 21.04(chroot) 多毛河馬 Hirsute Hippo" \
+				"6" "Compatibility mode 兼容模式(仅安装)" \
+				"7" "Custom code手动输入版本代号" \
+				"8" "使用debootstrap手动构建" \
+				"9" "Latest(自動檢測22.04)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -1192,30 +1193,32 @@ install_ubuntu_gnu_linux_distro() {
 	#	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
 	install_ubuntu_gnu_linux_distro_ja() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2022の場合は、コードをカスタマイズしてください" 0 50 0 \
+			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
 				"3" "18.04(LTS)Bionic Beaver" \
-				"4" "🦛 21.04 Hirsute Hippo" \
-				"5" "互換モード" \
-				"6" "カスタムコード" \
-				"7" "debootstrapを使用して手動でビルドする" \
-				"8" "Latest(最新バージョンを自動的に検出)" \
+				"4" "🐒 21.10(chroot) Impish Indri" \
+				"5" "🦛 21.04(chroot) Hirsute Hippo" \
+				"6" "互換モード" \
+				"7" "カスタムコード" \
+				"8" "debootstrapを使用して手動でビルドする" \
+				"9" "Latest(最新バージョンを自動的に検出)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
 	}
 	install_ubuntu_gnu_linux_distro_en() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2022,then customize the version code" 0 50 0 \
+			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2023,then customize the version code" 0 50 0 \
 				"1" "🦍 20.10 Groovy Gorilla" \
 				"2" "🐱 20.04(LTS)Focal Fossa" \
 				"3" "18.04(LTS)Bionic Beaver" \
-				"4" "🦛 21.04 Hirsute Hippo" \
-				"5" "Compatibility mode" \
-				"6" "Custom code" \
-				"7" "Manually build" \
-				"8" "Latest" \
+				"4" "🐒 21.10(chroot) Impish Indri" \
+				"5" "🦛 21.04(chroot) Hirsute Hippo" \
+				"6" "Compatibility mode" \
+				"7" "Custom code" \
+				"8" "Manually build" \
+				"9" "Latest" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -1232,14 +1235,15 @@ install_ubuntu_gnu_linux_distro() {
 	1) DISTRO_CODE='groovy' ;;
 	2) DISTRO_CODE='focal' ;;
 	3) DISTRO_CODE='bionic' ;;
-	4) DISTRO_CODE='hirsute' ;;
-	5)
+	4) DISTRO_CODE='impish' ;;
+	5) DISTRO_CODE='hirsute' ;;
+	6)
 		COMPATIBILITY_MODE=true
 		custom_ubuntu_version
 		;;
-	6) custom_ubuntu_version ;;
-	7) debootstrap_ubuntu_distro ;;
-	8) check_the_latest_ubuntu_version ;;
+	7) custom_ubuntu_version ;;
+	8) debootstrap_ubuntu_distro ;;
+	9) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -1420,10 +1424,10 @@ install_different_ubuntu_gnu_linux_distros() {
 ############
 check_the_latest_ubuntu_version() {
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute' | tail -n 1)
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
 	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "未检测到最新版本，将自动获取ubuntu 21.04 hirsute"
-		DISTRO_CODE='hirsute'
+		printf "%s\n" "未检测到最新版本，将自动获取ubuntu 21.10 impish"
+		DISTRO_CODE='impish'
 		do_you_want_to_continue
 	fi
 }

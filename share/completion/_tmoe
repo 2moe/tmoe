@@ -83,12 +83,18 @@ function _tmoe() {
         "code:Visual Studio Code online server"
         "go:Go is a statically typed, compiled programming language designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson. Go is syntactically similar to C, but with memory safety, garbage collection, structural typing, and CSP-style concurrency. "
         "node:A back-end JavaScript runtime environment"
+        "mongo:Classified as a NoSQL database program"
+        "nginx:A high-performance HTTP server"
+        "php:A general-purpose scripting language"
+        "jdk:An open-source Java Platform"
     )
 
     distro_code=(
-        "20.10:ubuntu groovy"
+        "18.04:ubuntu bionic"
         "20.04:ubuntu focal"
+        "20.10:ubuntu groovy"
         "21.04:ubuntu hirsute"
+        "21.10:ubuntu impish"
         "apricot:deepin 20"
         "s:debian sid"
         "sid"
@@ -99,14 +105,12 @@ function _tmoe() {
         "n:none(Rolling releases like archlinux do not have a version code)"
         "none:諸如arch之類的發行版無代號"
         "r:kali rolling"
-        "18.04:ubuntu bionic"
         "32:fedora 32"
         "33:fedora 33"
         "34:fedora 34"
         "35:fedora 35"
         "raw:fedora rawhide"
         "rawhide:fedora rawhide"
-        "3.12:alpine 3.12"
         "3.13:alpine 3.13"
         "3.14:alpine 3.14"
         "edge:alpine edge"
@@ -116,6 +120,7 @@ function _tmoe() {
         "tumbleweed:OpenSUSE tumbleweed"
         "ap:alpine"
         "al:alpine"
+        "latest"
     )
 
     architecture=(

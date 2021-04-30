@@ -97,6 +97,7 @@ tmoe_main() {
 	case "$3" in
 	20.10) DISTRO_CODE='groovy' ;;
 	21.04) DISTRO_CODE='hirsute' ;;
+	21.10) DISTRO_CODE='impish' ;;
 	20.04) DISTRO_CODE='focal' ;;
 	18.04) DISTRO_CODE='bionic' ;;
 	al | ap) DISTRO_CODE="alpine" ;; #This is not DISTRO_NAME
