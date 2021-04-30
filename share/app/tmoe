@@ -10,7 +10,7 @@ tmoe_main() {
 		;;
 	c* | chroot)
 		source_tmoe_env
-		check_chroot_mode
+		check_chroot_mode_01
 		TMOE_CHROOT=true
 		;;
 	systemd | sd | systemctl | ns | nspawn)
@@ -20,7 +20,7 @@ tmoe_main() {
 		;;
 	ls)
 		check_manager_dir
-		check_chroot_mode
+		check_chroot_mode_02
 		bash ${MANAGER_DIR}/share/container/debian/lnk-menu
 		exit 0
 		;;
@@ -198,7 +198,7 @@ tmoe_main() {
 	start_tmoe_container
 }
 #############
-check_chroot_mode() {
+check_chroot_mode_02() {
 	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
 	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
 		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
@@ -209,19 +209,24 @@ check_chroot_mode() {
 	else
 		export SYSTEMD_NSPAWN=false
 	fi
-
-	case ${TMOE_CHROOT} in
-	true)
-		if [[ -e ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf ]]; then
-			unset SYSTEMD_NSPAWN
-			if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
-				SYSTEMD_NSPAWN=false
-			else
-				SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
-			fi
+}
+check_chroot_mode_01() {
+	CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
+	SYSTEMD_NSPAWN=false
+	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
+		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+			SYSTEMD_NSPAWN=false
+		else
+			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
 		fi
-		;;
-	esac
+	fi
+	if [[ -e ${CHROOT_CONF} ]]; then
+		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
+			SYSTEMD_NSPAWN=false
+		else
+			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')
+		fi
+	fi
 }
 check_manager_dir() {
 	MANAGER_DIR_01="${HOME}/.local/share/tmoe-linux/git"

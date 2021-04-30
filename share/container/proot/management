@@ -10,6 +10,7 @@ proot_management_menu() {
 	TMOE_CONTAINER_FORTUNE=true
 	TMOE_CONTAINER_HITOKOTO=true
 	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
+	check_chroot_conf
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
@@ -101,6 +102,20 @@ proot_management_menu() {
 	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
+check_chroot_conf() {
+	case ${TMOE_CHROOT} in
+	true)
+		CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
+		if [[ -e ${CHROOT_CONF} ]]; then
+			if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
+				SYSTEMD_NSPAWN=false
+			else
+				SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')
+			fi
+		fi
+		;;
+	esac
+}
 environment_variables_and_automatic_startup_script_management() {
 	RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
 	environment_variables_and_automatic_startup_script_management_menu_en() {
@@ -444,7 +459,7 @@ kill_container_process() {
 	case ${TMOE_CHROOT} in
 	true)
 		case ${SYSTEMD_NSPAWN} in
-		true) machinectl terminate ${MACHINE_NAME} || ${TMOE_PREFIX} machinectl terminate ${MACHINE_NAME} ;;
+		true) machinectl terminate ${MACHINE_NAME} ;;
 		*) kill_chroot_container_process ;;
 		esac
 		;;
@@ -1010,6 +1025,9 @@ install_weekly_build_container() {
 #############
 umount_and_remove_gnu_linux_distro() {
 	kill_container_process
+	case ${SYSTEMD_NSPAWN} in
+	true) kill_chroot_container_process ;;
+	esac
 	source ${TMOE_SHARE_DIR}/container/remove
 }
 du_sh_gnu_linux_distro() {

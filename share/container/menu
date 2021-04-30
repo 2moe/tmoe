@@ -97,13 +97,14 @@ systemd_nspawn_is_true_or_false() {
 	# fi
 }
 switch_chroot_default_mode() {
-	if (whiptail --title "CHROOT MODE" --yes-button "systemd" --no-button "normal" --yesno "It is recommended to use the systemd mode.\nIf you want to use systemctl in the container,\nyou also need to enable the boot option of nspawn.\nIf you cannot use the systemd mode,\nthen switch it back to the normal mode." 11 50); then
+	if (whiptail --title "CHROOT MODE" --yes-button "systemd" --no-button "normal" --yesno "It is recommended to use the systemd mode.\nIf you want to use systemctl in the container,\nyou also need to enable the boot mode of nspawn.\nIf you cannot use the systemd mode,\nthen switch it back to the normal mode." 13 50); then
 		systemd_nspawn_is_true
 	else
 		systemd_nspawn_is_false
 	fi
 	printf "%s\n" "This feature is only available for uncreated containers."
 	printf "%s\n" "For the container that has been created, if you want to change the mode, please execute the following commands in the container."
+	printf "%s\n" ""
 	printf "${GREEN}%s${RESET}\n" "cd /usr/local/etc/tmoe-linux/container"
 	printf "%s\n" "If you want to use the systemd mode, you can do so."
 	printf "${GREEN}%s${RESET}\n" "ln -svf nspawn tmoe-linux-container ; sed -i -E 's@^(SYSTEMD_NSPAWN=).*@\1true@' chroot.conf"
@@ -141,7 +142,7 @@ chroot_container_menu_multi_langs() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} container" --menu "Chroot in normal mode is not suitable for production environment,\nit is recommended to use the systemd mode.\n${TMOE_TIPS_04}" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
-			"3" "🥛 alpha:switch chroot mode(systemd/normal)" \
+			"3" "🥛 beta:switch chroot mode(systemd/normal)" \
 			"4" "⚔️ Across architectures" \
 			"5" "🔯 Restore ${CONTAINER_TYPE} container" \
 			"6" "📕 Configuration & manual" \
@@ -152,7 +153,7 @@ chroot_container_menu_multi_langs() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通模式的chroot在umount时可能会产生bug,\n故只适用于恢复环境,不适用于生产环境,建议您使用systemd模式。\n${TMOE_TIPS_04}" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
-			"3" "🥛 alpha内测:切换chroot默认模式(systemd/normal)" \
+			"3" "🥛 beta公测:切换chroot默认模式(systemd/normal)" \
 			"4" "⚔️ Across architectures 跨CPU架构" \
 			"5" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
 			"6" "📕 配置与手册" \
@@ -217,6 +218,7 @@ systemd_nspawn_env() {
 	fi
 	#double check
 	if [ ! $(command -v systemd-nspawn) ]; then
+		printf "%s\n" "Sorry,this feature does not support your ${PURPLE}${LINUX_DISTRO}${RESET} system."
 		systemd_nspawn_is_false
 		press_enter_to_return
 		chroot_container_menu_multi_langs
