@@ -106,9 +106,9 @@ switch_chroot_default_mode() {
 	printf "%s\n" "For the container that has been created, if you want to change the mode, please execute the following commands in the container."
 	printf "${GREEN}%s${RESET}\n" "cd /usr/local/etc/tmoe-linux/container"
 	printf "%s\n" "If you want to use the systemd mode, you can do so."
-	printf "${GREEN}%s${RESET}\n" "ln -svf nspawn tmoe-linux-container ; sed -i -E 's@(SYSTEMD_NSPAWN=).*@\1true@' chroot.conf"
+	printf "${GREEN}%s${RESET}\n" "ln -svf nspawn tmoe-linux-container ; sed -i -E 's@^(SYSTEMD_NSPAWN=).*@\1true@' chroot.conf"
 	printf "%s\n" "If you want to use the normal mode, you can do so."
-	printf "${GREEN}%s${RESET}\n" "ln -svf chroot tmoe-linux-container ; sed -i -E 's@(SYSTEMD_NSPAWN=).*@\1false@' chroot.conf"
+	printf "${GREEN}%s${RESET}\n" "ln -svf chroot tmoe-linux-container ; sed -i -E 's@^(SYSTEMD_NSPAWN=).*@\1false@' chroot.conf"
 }
 check_chroot_mode() {
 	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
@@ -203,7 +203,7 @@ systemd_nspawn_env() {
 		Android)
 			${TMOE_INSTALLATION_COMMAND} systemd-container
 			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
-			printf "%s\n" "请换用${GREEN}GNU/Linux${RESET}系统！！！"
+			printf "%s\n" "Please use the ${BLUE}normal mode${RESET}."
 			;;
 		*) ${TMOE_INSTALLATION_COMMAND} systemd-container ;;
 		esac
@@ -226,6 +226,7 @@ systemd_nspawn_env() {
 		0) ;;
 		*)
 			printf "%s\n" "${RED}ERROR${RESET}, you can not use the systemd mode."
+			printf "%s\n" "Please use the ${BLUE}normal mode${RESET}."
 			press_enter_to_return
 			chroot_container_menu_multi_langs
 			;;
