@@ -22,7 +22,7 @@ proot_management_menu() {
 			"8" "🌈 beta:create a new container" \
 			"9" "🥤 edit script" \
 			"10" "🍅 space occupation" \
-			"0" "🌚 Return to previous menu" \
+			"0" "🌚 back" \
 			3>&1 1>&2 2>&3)
 	}
 	proot_management_menu_cn() {
