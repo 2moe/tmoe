@@ -460,8 +460,11 @@ kill_chroot_container_process() {
 	else
 		cat ${LSOF_TEMP_FILE}.02
 	fi
-	su -c "${LSOF_TEMP_FILE}.02"
-	cd -
+	if [[ -s ${LSOF_TEMP_FILE}.02 ]]; then
+		su -c "${LSOF_TEMP_FILE}.02"
+	fi
+	source ${TMOE_SHARE_DIR}/removal/umount
+	tips_of_kill_pid
 }
 kill_proot_container_process() {
 	tips_of_check_pid
