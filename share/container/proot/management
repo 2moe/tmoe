@@ -15,7 +15,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 User & Env var & Auto-startup script" \
+			"4" "🍧 user & env var & auto-startup script" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 unmount & remove" \
 			"7" "📘 readme" \
@@ -45,7 +45,7 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ Tötungsprozess" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 User & Env var & Auto-startup script" \
+			"4" "🍧 Benutzer & Umgebung" \
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 aushängen und entfernen" \
 			"7" "📘 Liesmich" \
@@ -490,7 +490,7 @@ readme_of_gnu_linux_distro() {
 	cat <<-EOF
 
 		${BOLD}${YELLOW}LIST INSTALLED CONTAINERS:${RESET} ${BLUE}tmoe ls${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ls${RESET}
-		${BOLD}${YELLOW}Start the default container:${RESET} ${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}
+		${BOLD}${YELLOW}Start the default ${CONTAINER_TYPE} container:${RESET} ${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}
 		${BOLD}${YELLOW}Full command:${RESET} ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 
 		${BOLD}${YELLOW}Simplified command:${RESET}  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
@@ -513,7 +513,7 @@ readme_of_gnu_linux_distro() {
 
 		--------------------
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
-		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET},若您的宿主shell环境为tmoe-zsh,则可简化为${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
+		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}, if you are using tmoe-zsh, just type${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
 		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
 
@@ -759,18 +759,104 @@ bat_build_latest01_txt() {
 	BUILD_LATEST_TXT=${CONFIG_FOLDER}/build-latest01.txt
 	bat_build_latest_txt
 }
+########################
+network_node_menu_01_cn() {
+	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
+		"1" "Azure_CN" \
+		"2" "Tmoe_US" \
+		"3" "Azure_US" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${NETWORK_NODE}" in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	1)
+		NODE_NAME='node01-azure'
+		NODE_URL="${NODE01_URL}"
+		;;
+	2)
+		NODE_NAME='node02-tmoe'
+		NODE_URL="${NODE02_URL}"
+		;;
+	3)
+		NODE_NAME='node03-azure'
+		NODE_URL="${NODE03_URL}"
+		;;
+	esac
+}
+network_node_menu_01_en() {
+	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
+		"1" "Azure" \
+		"2" "Tmoe_US" \
+		"3" "Azure_CN" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${NETWORK_NODE}" in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	1)
+		NODE_NAME='node03-azure'
+		NODE_URL="${NODE03_URL}"
+		;;
+	2)
+		NODE_NAME='node02-tmoe'
+		NODE_URL="${NODE02_URL}"
+		;;
+	3)
+		NODE_NAME='node01-azure'
+		NODE_URL="${NODE01_URL}"
+		;;
+	esac
+}
+
+network_node_menu_02_cn() {
+	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
+		"1" "Azure_CN" \
+		"2" "Azure_US" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${NETWORK_NODE}" in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	1)
+		NODE_NAME='node01-azure'
+		NODE_URL="${NODE01_URL}"
+		;;
+	2)
+		NODE_NAME='node03-azure'
+		NODE_URL="${NODE03_URL}"
+		;;
+	esac
+}
+network_node_menu_02_en() {
+	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
+		"1" "Azure" \
+		"2" "Azure_CN" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${NETWORK_NODE}" in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	1)
+		NODE_NAME='node03-azure'
+		NODE_URL="${NODE03_URL}"
+		;;
+	2)
+		NODE_NAME='node01-azure'
+		NODE_URL="${NODE01_URL}"
+		;;
+	esac
+}
 install_weekly_build_container() {
-	NODE_NAME='node01-azure'
 	case ${NODE02_ENABLED} in
 	true)
-		if (whiptail --title "NETWORK NODE" --yes-button 'node01-azure' --no-button 'node02-tmoe' --yesno "Please choose a network node\n请选择网络节点" 8 50); then
-			NODE_URL="${NODE01_URL}"
-		else
-			NODE_NAME='node02-tmoe'
-			NODE_URL="${NODE02_URL}"
-		fi
+		case ${TMOE_MENU_LANG} in
+		zh_*UTF-8) network_node_menu_01_cn ;;
+		*) network_node_menu_01_en ;;
+		esac
 		;;
-	*) NODE_URL="${NODE01_URL}" ;;
+	*)
+		case ${TMOE_MENU_LANG} in
+		zh_*UTF-8) network_node_menu_02_cn ;;
+		*) network_node_menu_02_en ;;
+		esac
+		;;
 	esac
 
 	if [ "$(ls ${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.* 2>/dev/null)" ]; then
@@ -816,17 +902,32 @@ install_weekly_build_container() {
 	*)
 		aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT}
 		bat_build_latest02_txt
-		aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT}
-		if grep -q 'DOCTYPE html' ${CONFIG_FOLDER}/build-latest01.txt; then
+		case ${NODE_NAME} in
+		node03-azure)
+			CURRENT_DATE=$(date -u +%Y%m%d)
+			if ((${CURRENT_DATE} >= 20210507)); then
+				aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT}
+			fi
+			;;
+		*) aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT} ;;
+		esac
+		if grep -q 'DOCTYPE html' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null; then
 			rm -f ${CONFIG_FOLDER}/build-latest01.txt
-		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt; then
+		elif [[ ! -e ${CONFIG_FOLDER}/build-latest01.txt ]]; then
+			ROOTFS_VERSION='latest02'
+		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null; then
 			ROOTFS_VERSION='latest02'
 		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest02.txt; then
 			ROOTFS_VERSION='latest01'
 		else
-			LATEST_01_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}')"
+			if [[ -e ${CONFIG_FOLDER}/build-latest01.txt ]]; then
+				LATEST_01_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null | awk -F'=' '{print $2}')"
+				LATEST_01_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}') +%s)"
+			else
+				LATEST_01_DATE=0
+				LATEST_01_TIME=0
+			fi
 			LATEST_02_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}')"
-			LATEST_01_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}') +%s)"
 			LATEST_02_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}') +%s)"
 			if ((${LATEST_02_DATE} < ${LATEST_01_DATE})); then
 				ROOTFS_VERSION='latest01'
