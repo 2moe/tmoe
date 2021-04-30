@@ -44,7 +44,7 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "Which container do you want to install?" 0 50 0 \
-			"1" "🍭 Recommended:(xfce,kde,mate,lxqt)" \
+			"1" "🍭 Recommended:Weekly GUI builds(xfce,kde,mate,lxqt)" \
 			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
 			"3" "🍥 Debian is a distro composed of free and open-source software" \
 			"4" "🍛 Ubuntu is the modern, open source OS." \
