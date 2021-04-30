@@ -136,7 +136,7 @@ t p u 下北澤紅茶 "cd My-Rust-Project; cargo build --release" "./My-Rust-Pro
 由于temporary文件夹会在执行完成后自动清空，因此不适用于编译型的任务。
 请查看Permanent scripts的说明。
 
-## Permanent scripts & ln parameter
+## Permanent scripts & ln argument
 
 注：永久性脚本的文件夹位于容器内部的 **/etc/profile.d/permanent**  
 

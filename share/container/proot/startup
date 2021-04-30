@@ -18,7 +18,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	MOUNT_TERMUX=true
 	MOUNT_TF=true
 	MOUNT_STORAGE=true
-	#If the parameter value is "false", the relevant directory will not be mounted. Default is true.
+	#If the value is "false", the relevant directory will not be mounted. Default is true.
 	#挂载sd，默认为true
 	################
 	DEFAULT_LOGIN_SHELL_01=zsh

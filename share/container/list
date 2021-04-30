@@ -412,9 +412,9 @@ desktop_does_not_support() {
 }
 choose_mate_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "👒 Fedora-rawhide(arm64,amd64,armhf)" \
-		"2" "🌉 Arch-latest(arm64,amd64)" \
-		"3" "🍥 Debian-sid(arm64,amd64)" \
+		"1" "🌉 Arch-latest(arm64,amd64)" \
+		"2" "🍥 Debian-sid(arm64,amd64)" \
+		"3" "👒 Fedora-rawhide(arm64,amd64,armhf)" \
 		"4" "🏔️ Alpine-edge(arm64,armhf,i386,amd64)" \
 		"5" "🌿 Mint-tricia(amd64)" \
 		"0" "🌚 Return to previous menu" \
@@ -423,7 +423,7 @@ choose_mate_distro() {
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1)
 		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
+		amd64 | arm64) set_arch_latest_env ;;
 		*)
 			desktop_does_not_support
 			distro_does_not_support
@@ -432,7 +432,7 @@ choose_mate_distro() {
 		;;
 	2)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_arch_latest_env ;;
+		amd64 | arm64) set_debian_sid_env ;;
 		*)
 			desktop_does_not_support
 			distro_does_not_support
@@ -441,7 +441,7 @@ choose_mate_distro() {
 		;;
 	3)
 		case ${ARCH_TYPE} in
-		amd64 | arm64) set_debian_sid_env ;;
+		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
 		*)
 			desktop_does_not_support
 			distro_does_not_support

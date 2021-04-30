@@ -73,29 +73,31 @@ proot_container_menu_multi_langs() {
 	esac
 	####################
 	press_enter_to_return
-	tmoe_manager_main_menu
+	proot_container_menu_multi_langs
 }
 ############
 chroot_container_menu_multi_langs() {
 	chroot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Your current architecture is ${TRUE_ARCH_TYPE}.\nDo you want to run on the same architecture or cross-architecture?" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} CONTAINER" --menu "Chroot is not suitable for production environment,\nit is recommended to use systemd mode" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
-			"3" "🥛 nspawn(systemd-container,supports systemctl)" \
-			"4" "⚔️ Across architectures" \
-			"5" "🔯 Restore ${CONTAINER_TYPE} container" \
-			"6" "📕 Configuration & manual" \
+			"3" "alpha: switch chroot mode" \
+			"4" "🥛 alpha:nspawn(systemd-container,supports systemctl)" \
+			"5" "⚔️ Across architectures" \
+			"6" "🔯 Restore ${CONTAINER_TYPE} container" \
+			"7" "📕 Configuration & manual" \
 			"0" "🌚 Back to the main menu" \
 			3>&1 1>&2 2>&3)
 	}
 	chroot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "您是想要运行${TRUE_ARCH_TYPE}架构的容器,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
+		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通的chroot在umount时可能会产生bug, 故只适用于恢复环境,\n不适用于生产环境,建议您将普通的chroot切换为systemd模式." 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
-			"3" "🥛 nspawn(systemd容器,支持systemctl)" \
-			"4" "⚔️ Across architectures 跨CPU架构" \
-			"5" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
-			"6" "📕 配置与手册" \
+			"3" "alpha内测:切换chroot默认模式" \
+			"4" "🥛 alpha内测: nspawn(systemd容器,支持systemctl)" \
+			"5" "⚔️ Across architectures 跨CPU架构" \
+			"6" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
+			"7" "📕 配置与手册" \
 			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -108,16 +110,28 @@ chroot_container_menu_multi_langs() {
 	0 | "") tmoe_manager_main_menu ;;
 	1) list_tmoe_containers ;;
 	2) list_installed_tmoe_containers ;;
-	3) systemd_nspawn_env ;;
-	4) across_architectures_container ;;
-	5) restore_tmoe_container ;;
-	6) configure_tmoe_container ;;
+	3) switch_chroot_default_mode ;;
+	4)
+		case ${LINUX_DISTRO} in
+		Android) systemd_nspawn_env ;;
+		*) switch_chroot_default_mode ;;
+		esac
+		;;
+	999)
+		systemd_nspawn_env
+		;;
+	5) across_architectures_container ;;
+	6) restore_tmoe_container ;;
+	7) configure_tmoe_container ;;
 	esac
 	####################
 	press_enter_to_return
-	tmoe_manager_main_menu
+	chroot_container_menu_multi_langs
 }
 ############
+switch_chroot_default_mode() {
+	printf "%s\n" "${RED}Sorry,${GREEN}this feature${YELLOW} is still ${BLUE}in alpha${RESET}"
+}
 proot_container_menu() {
 	source ${TMOE_SHARE_DIR}/container/list
 	check_proot_or_chroot
