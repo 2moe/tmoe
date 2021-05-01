@@ -79,7 +79,7 @@ how_to_customize_the_container_dir() {
 			If the container dir is ${BLUE}${HOME}/.local/share/tmoe-linux/containers/proot/rust_arm64${RESET},then you can type the following commands.
 
 			${GREEN}YOUR_DIR=~/.local/my_dir
-			CONTAINER_DIR=~/.local/share/tmoe-linux/proot/rust_arm64
+			CONTAINER_DIR=~/.local/share/tmoe-linux/containers/proot/rust_arm64
 			mv -v ${CONTAINER_DIR} ${YOUR_DIR}
 			ln -svf ${YOUR_DIR} ${CONTAINER_DIR}/rust_arm64
 			${RESET}
