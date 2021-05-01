@@ -23,6 +23,7 @@ proot_management_menu() {
 			"8" "🌈 beta:create a new container" \
 			"9" "🥤 edit script" \
 			"10" "🍅 space occupation" \
+			"11" " unmount & remove (Compatibility mode)" \
 			"0" "🌚 back" \
 			3>&1 1>&2 2>&3)
 	}
@@ -38,6 +39,7 @@ proot_management_menu() {
 			"8" "🌈 beta公测:create a new container新建容器" \
 			"9" "🥤 edit script 编辑脚本" \
 			"10" "🍅 space occupation 空间占用大小" \
+			"11" "卸载并移除(兼容模式)" \
 			"0" "🌚 back 返回" \
 			3>&1 1>&2 2>&3)
 	}
@@ -53,6 +55,7 @@ proot_management_menu() {
 			"8" "🌈 beta:Erstellen Sie einen neuen Container" \
 			"9" "🥤 Skript bearbeiten" \
 			"10" "🍅 Raumbesetzung" \
+			"11" "aushängen und entfernen (Compatibility mode)" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
 	}
@@ -84,12 +87,13 @@ proot_management_menu() {
 		;;
 	9) edit_container_startup_script ;;
 	10) du_sh_gnu_linux_distro ;;
+	11) umount_and_remove_gnu_linux_distro_compatibility_mode ;;
 	esac
 	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 6 | 7 | 9 | 10)
-		#kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro
+	2 | 6 | 7 | 9 | 10 | 11)
+		#kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro, umount_and_remove_gnu_linux_distro_compatibility_mode
 		#回到本菜单： 停止进程,备份，命令，空间 ,编辑
 		press_enter_to_return
 		proot_management_menu
@@ -438,7 +442,7 @@ kill_chroot_container_process_gnu_linux() {
 }
 kill_chroot_container_process_old() {
 	case ${LINUX_DISTRO} in
-	Android) ;;
+	Android) tips_of_check_pid ;;
 	*) kill_chroot_container_process_gnu_linux ;;
 	esac
 	su -c "lsof" >${LSOF_TEMP_FILE}
@@ -1049,11 +1053,18 @@ install_weekly_build_container() {
 	#		sed -E "s@(LINUX_CONTAINER_DISTRO_FILE)=.*@\1=\${CONFIG_FOLDER}/linux_container_distro_02.txt@" |
 }
 #############
+umount_and_remove_gnu_linux_distro_compatibility_mode() {
+	case ${TMOE_CHROOT} in
+	true) kill_chroot_container_process_old ;;
+	*) kill_proot_container_process ;;
+	esac
+	source ${TMOE_SHARE_DIR}/container/remove
+}
 umount_and_remove_gnu_linux_distro() {
 	kill_container_process
-	case ${SYSTEMD_NSPAWN} in
-	true) kill_chroot_container_process ;;
-	esac
+	# case ${SYSTEMD_NSPAWN} in
+	# true) kill_chroot_container_process ;;
+	# esac
 	source ${TMOE_SHARE_DIR}/container/remove
 }
 du_sh_gnu_linux_distro() {
