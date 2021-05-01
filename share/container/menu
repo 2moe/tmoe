@@ -206,6 +206,10 @@ systemd_nspawn_env() {
 			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
 			printf "%s\n" "Please use the ${BLUE}normal mode${RESET}."
 			;;
+		debian)
+			apt update
+			${TMOE_INSTALLATION_COMMAND} systemd-container
+			;;
 		*) ${TMOE_INSTALLATION_COMMAND} systemd-container ;;
 		esac
 	fi
@@ -223,12 +227,13 @@ systemd_nspawn_env() {
 		press_enter_to_return
 		chroot_container_menu_multi_langs
 	else
-		systemctl >/dev/null
+		systemctl list-units >/dev/null
 		case ${?} in
 		0) ;;
 		*)
 			printf "%s\n" "${RED}ERROR${RESET}, you can not use the systemd mode."
 			printf "%s\n" "Please use the ${BLUE}normal mode${RESET}."
+			systemd_nspawn_is_false
 			press_enter_to_return
 			chroot_container_menu_multi_langs
 			;;
