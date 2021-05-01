@@ -349,8 +349,24 @@ modify_rc_local_script() {
 ##################
 start_neofetch() {
 	if [ ! $(command -v neofetch) ]; then
-		cd /usr/local/bin
+		case ${LINUX_DISTRO} in
+		debian)
+			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}neofetch${RESET}"
+			printf "%s\n" "If you want to remove it, then type ${GREEN}apt ${RED}purge ${BLUE}neofetch${RESET}"
+			apt update
+			eatmydata apt install -y --no-install-recommends neofetch || apt install -y --no-install-recommends neofetch
+			;;
+		*)
+			DEPENDENCY_01=''
+			DEPENDENCY_02='neofetch'
+			beta_features_quick_install
+			;;
+		esac
+	fi
+	if [ ! $(command -v neofetch) ]; then
+		cd /usr/bin
 		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o neofetch 'https://gitee.com/mirrors/neofetch/raw/master/neofetch'
+		printf "%s\n" "If you want to remove it, then type ${RED}unlink ${BLUE}/usr/bin/neofetch${RESET}"
 		chmod a+rx neofetch
 	fi
 	if [ -e /usr/games/lolcat ]; then

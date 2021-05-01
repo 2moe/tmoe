@@ -31,15 +31,22 @@ CHROOT_USER=root
 #您可以指定用户，例如root或ubuntu，默认为root
 #Sie können einen Benutzer angeben
 
-DIR_01="\${HOME}/Download"
-DIR_02="/media/sd"
-DIR_03="/sd"
-MOUNT_SD=true
-
-TMOE_DOCKER_DIR="/media/docker"
-MOUNT_DOCKER_DIR=true
 #mount dir
 #挂载相关目录
+
+MOUNT_SD=true
+SD_DIR_01="\${HOME}/Download"
+SD_DIR_02="/media/sd"
+SD_DIR_03="/sd"
+SD_DIR_04="/sdcard"
+SD_DIR_05="\${HOME}/Downloads"
+SD_MOUNT_POINT="/media/sd"
+#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
+#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
+
+MOUNT_DOCKER_DIR=true
+TMOE_DOCKER_DIR="/media/docker"
+#If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is true.
 
 CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 LOAD_ENV_FILE=true
@@ -87,10 +94,13 @@ if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
 fi
 
 if [[ \${MOUNT_SD} = true ]]; then
-    for i in \${DIR_01} \${DIR_02} \${DIR_03}; do
-        [[ ! -d "\${i}" ]] || TMOE_SD_DIR=\${i}
+    for i in \${SD_DIR_01} \${SD_DIR_02} \${SD_DIR_03} \${SD_DIR_04} \${SD_DIR_05}; do
+        if [[ -d \${i} ]];then
+            TMOE_SD_DIR=\${i}
+            break
+        fi
     done
-    [[ -z \${TMOE_SD_DIR} ]] || set -- "\${@}" "--bind" "\${TMOE_SD_DIR}:/media/sd"
+    [[ -z \${TMOE_SD_DIR} ]] || set -- "\${@}" "--bind" "\${TMOE_SD_DIR}:\${SD_MOUNT_POINT}"
 fi
 if [[ \${MOUNT_DOCKER_DIR} = true ]]; then
     [[ ! -e "\${TMOE_DOCKER_DIR}" ]] || set -- "\${@}" "--bind" "\${TMOE_DOCKER_DIR}"

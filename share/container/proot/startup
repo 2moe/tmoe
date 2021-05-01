@@ -15,11 +15,28 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Load the environment variable file when starting the container. Default is true.
 	################
 	MOUNT_SD=true
+	SD_DIR_01="/storage/self/primary"
+	SD_DIR_02="/sdcard"
+	SD_DIR_03="/storage/emulated/0"
+	SD_DIR_04="\${HOME}/Downloads"
+	SD_DIR_05="\${HOME}/Download"
+	SD_MOUNT_POINT="/root/sd"
+	#The lower the number, the higher the priority. The highest priority directory will be mounted to the mount point.
+	#挂载sd，默认为true，SD_DIR为宿主机sd目录，SD_MOUNT_POINT为容器内的挂载点。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/root/sd"
+
 	MOUNT_TERMUX=true
+	TERMUX_DIR="/data/data/com.termux/files"
+	TERMUX_MOUNT_POINT="/root/termux"
+
 	MOUNT_TF=true
+	TF_CARD_LINK="${HOME}/storage/external-1"
+	TF_MOUNT_POINT="/root/tf"
+	#The value of TF_CARD_LINK is a symbolic link file.
+	#TF_CARD_LINK为软链接
+
 	MOUNT_STORAGE=true
-	#If the value is "false", the relevant directory will not be mounted. Default is true.
-	#挂载sd，默认为true
+	STORAGE_DIR='/storage'
+	#If the value of "MOUNT_STORAGE" is "false", the relevant directory will not be mounted. Default is true.
 	################
 	DEFAULT_LOGIN_SHELL_01=zsh
 	#The default login shell is zsh.
@@ -148,15 +165,12 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    set -- "--mount=/dev/urandom:/dev/random" "\${@}"
 	    set -- "--mount=/proc" "\${@}"
 		if [[ \${MOUNT_SD} = true ]]; then
-	        if [ -e "/storage/self/primary" ]; then
-	            set -- "--mount=/storage/self/primary:/root/sd" "\${@}"
-	        elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
-	            set -- "--mount=/sdcard:/root/sd" "\${@}"
-			elif [ -e "${HOME}/Download" ]; then
-				set -- "--mount=${HOME}/Download:/root/sd" "\${@}"
-	        elif [ -e "/storage/emulated/0" ]; then
-	            set -- "--mount=/storage/emulated/0:/root/sd" "\${@}"
-	        fi
+			for i in "\${SD_DIR_01}" "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}";do
+				if [[ -e \${i} ]];then
+					set -- "--mount=\${i}:\${SD_MOUNT_POINT}" "\${@}"
+					break
+				fi
+			done
 		fi
 	    #######################
 	    set_android_mount_dir() {
@@ -227,22 +241,21 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            set -- "--kill-on-exit" "\${@}"
 	        fi
 			if [[ \${MOUNT_TF} = true ]]; then
-				TF_CARD_LINK="${HOME}/storage/external-1"
 	            if [ -h "\${TF_CARD_LINK}" ]; then
 					TRUE_TF_CARD=\$(readlink \${TF_CARD_LINK})
 					if [ -e "\${TRUE_TF_CARD}" ];then
-	                   set -- "--mount=\${TRUE_TF_CARD}:/root/tf" "\${@}"
+	                   set -- "--mount=\${TRUE_TF_CARD}:${TF_MOUNT_POINT}" "\${@}"
 					fi
 	            fi
 			fi
 			if [[ \${MOUNT_STORAGE} = true ]]; then
-				if [ -e "/storage" ]; then
-	               set -- "--mount=/storage" "\${@}"
+				if [ -e "\${STORAGE_DIR}" ]; then
+	               set -- "--mount=\${STORAGE_DIR}" "\${@}"
 	            fi
 			fi
 			if [[ \${MOUNT_TERMUX} = true ]]; then
-	             if [ -e "/data/data/com.termux/files/home" ]; then
-	               set -- "--mount=/data/data/com.termux/files/:/root/termux" "\${@}"
+	             if [ -e "\${TERMUX_DIR}/home" ]; then
+	               set -- "--mount=\${TERMUX_DIR}:\${TERMUX_MOUNT_POINT}" "\${@}"
 	             fi
 			fi
 	        set -- "--link2symlink" "\${@}"

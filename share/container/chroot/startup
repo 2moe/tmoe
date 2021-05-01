@@ -13,10 +13,22 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#Load the environment variable file when starting the container. Default is true.
 	################
 	MOUNT_SD=true
+	SD_DIR_01="/data/media/0"
+	SD_DIR_02="/storage/self/primary"
+	SD_DIR_03="/sdcard"
+	SD_DIR_04="${HOME}/Downloads"
+	SD_DIR_05="${HOME}/Download"
+	#SD_MOUNT_POINT="/media/sd" #const string
+	#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
+	#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
+
 	MOUNT_TERMUX=true
+	TERMUX_DIR="/data/data/com.termux/files/home"
+	#TERMUX_MOUNT_POINT="/media/termux" #const string
+
 	MOUNT_TF=true
-	#If the parameter value is "false", the relevant directory will not be mounted. Default is true.
-	#挂载sd，默认为true
+	#TF_MOUNT_POINT="/media/tf"
+	#If the value is "false", the relevant directory will not be mounted. Default is true.
 	################
 	DEFAULT_LOGIN_SHELL_01=zsh
 	#The default login shell is zsh.
@@ -237,22 +249,24 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            #######
 	            termux)
 				if [[ \${MOUNT_TERMUX} = true ]];then
-	                [[ ! -d "/data/data/com.termux/files/home" ]] || su -c "mount -o bind /data/data/com.termux/files/home ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                [[ ! -d "\${TERMUX_DIR}" ]] || su -c "mount -o bind \${TERMUX_DIR} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
 				fi
 	                ;;
 	            ###########
 	            sd)
-				if [[ \${MOUNT_SD} = true ]];then
-	                if [ "\$(su -c "ls /data/media/0" 2>/dev/null)" ]; then
-	                    su -c "mount -o bind /data/media/0 ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
-	                elif [ -e "/storage/self/primary" ]; then
-	                    su -c "mount -o bind /storage/self/primary ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
-	                elif [ -e "/sdcard" ] || [ -h "/sdcard" ]; then
-	                    su -c "mount -o bind /sdcard ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
-					elif [ -e "${HOME}/Download" ]; then
-	                    su -c "mount -o bind ${HOME}/Download ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
-	                fi
-				fi 
+				SD_MOUNT_POINT="/media/sd"
+				if [[ \${MOUNT_SD} = true ]]; then
+				    if [ "\$(su -c "ls \${SD_DIR_01}" 2>/dev/null)" ]; then
+	                    su -c "mount -o bind \${SD_DIR_01} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
+					else
+						for i in "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}";do
+							if [[ -e \${i} ]];then
+								su -c "mount -o bind \${i} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
+								break
+						fi
+						done
+					fi
+				fi
 	                ;;
 	            esac
 	        fi
