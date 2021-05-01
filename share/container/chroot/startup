@@ -16,8 +16,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	SD_DIR_01="/data/media/0"
 	SD_DIR_02="/storage/self/primary"
 	SD_DIR_03="/sdcard"
-	SD_DIR_04="${HOME}/Downloads"
-	SD_DIR_05="${HOME}/Download"
+	SD_DIR_04="${HOME}/sd"
+	SD_DIR_05="${HOME}/Downloads"
+	SD_DIR_06="${HOME}/Download"
 	#SD_MOUNT_POINT="/media/sd" #const string
 	#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
 	#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
@@ -259,7 +260,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 				    if [ "\$(su -c "ls \${SD_DIR_01}" 2>/dev/null)" ]; then
 	                    su -c "mount -o bind \${SD_DIR_01} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
 					else
-						for i in "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}";do
+						for i in "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}" "\${SD_DIR_06}";do
 							if [[ -e \${i} ]];then
 								su -c "mount -o bind \${i} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
 								break

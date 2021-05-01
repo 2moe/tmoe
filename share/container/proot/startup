@@ -18,8 +18,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	SD_DIR_01="/storage/self/primary"
 	SD_DIR_02="/sdcard"
 	SD_DIR_03="/storage/emulated/0"
-	SD_DIR_04="\${HOME}/Downloads"
-	SD_DIR_05="\${HOME}/Download"
+	SD_DIR_04="\${HOME}/sd"
+	SD_DIR_05="\${HOME}/Downloads"
+	SD_DIR_06="\${HOME}/Download"
 	SD_MOUNT_POINT="/root/sd"
 	#The lower the number, the higher the priority. The highest priority directory will be mounted to the mount point.
 	#挂载sd，默认为true，SD_DIR为宿主机sd目录，SD_MOUNT_POINT为容器内的挂载点。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/root/sd"
@@ -165,7 +166,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    set -- "--mount=/dev/urandom:/dev/random" "\${@}"
 	    set -- "--mount=/proc" "\${@}"
 		if [[ \${MOUNT_SD} = true ]]; then
-			for i in "\${SD_DIR_01}" "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}";do
+			for i in "\${SD_DIR_01}" "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}" "\${SD_DIR_06}";do
 				if [[ -e \${i} ]];then
 					set -- "--mount=\${i}:\${SD_MOUNT_POINT}" "\${@}"
 					break
