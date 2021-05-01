@@ -244,7 +244,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            if [ -h "\${TF_CARD_LINK}" ]; then
 					TRUE_TF_CARD=\$(readlink \${TF_CARD_LINK})
 					if [ -e "\${TRUE_TF_CARD}" ];then
-	                   set -- "--mount=\${TRUE_TF_CARD}:${TF_MOUNT_POINT}" "\${@}"
+	                   set -- "--mount=\${TRUE_TF_CARD}:\${TF_MOUNT_POINT}" "\${@}"
 					fi
 	            fi
 			fi
