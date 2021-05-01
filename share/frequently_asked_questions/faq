@@ -78,18 +78,18 @@ how_to_customize_the_container_dir() {
 			A:You can create a symbolic link.
 			If the container dir is ${BLUE}${HOME}/.local/share/tmoe-linux/containers/proot/rust_arm64${RESET},then you can type the following commands.
 
-			${GREEN}YOUR_DIR=~/.local/my_dir
-			CONTAINER_DIR=~/.local/share/tmoe-linux/containers/proot/rust_arm64
-			mv -v ${CONTAINER_DIR} ${YOUR_DIR}
-			ln -svf ${YOUR_DIR} ${CONTAINER_DIR}/rust_arm64
+			${GREEN}YOUR_DIR=\${HOME}/.local/my_dir
+			CONTAINER_DIR=\${HOME}/.local/share/tmoe-linux/containers/proot/rust_arm64
+			mv -v \${CONTAINER_DIR} \${YOUR_DIR}
+			ln -svf \${YOUR_DIR} \${CONTAINER_DIR}/rust_arm64
 			${RESET}
 
 			If the container dir is ${BLUE}/usr/local/etc/tmoe-linux/containers/chroot${RESET},then you can type the following commands.
 
-			${GREEN}YOUR_DIR=~/.local/my_chroot_dir
+			${GREEN}YOUR_DIR=\${HOME}/.local/my_chroot_dir
 			CONTAINER_DIR=/usr/local/etc/tmoe-linux/containers/chroot
-			mv -v ${CONTAINER_DIR} ${YOUR_DIR}
-			ln -svf ${YOUR_DIR} ${CONTAINER_DIR}/chroot
+			mv -v \${CONTAINER_DIR} \${YOUR_DIR}
+			ln -svf \${YOUR_DIR} \${CONTAINER_DIR}/chroot
 			${RESET}
 
 			简单来说，就是创建软链接啦！
