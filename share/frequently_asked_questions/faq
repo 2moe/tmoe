@@ -52,23 +52,51 @@ manager_frequently_asked_questions() {
 	# 15 60 5
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
-		"1" "About auto conf(关于自动配置)" \
-		"2" "VNC无法调用音频" \
-		"3" "给Linux Deploy配置VNC音频" \
+		"1" "how to customize the dir如何自定义容器目录" \
+		"2" "About auto conf(关于自动配置)" \
+		"3" "VNC无法调用音频" \
+		"4" "给Linux Deploy配置VNC音频" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_FAQ}" in
 	0 | "") tmoe_manager_main_menu ;;
-	1) questions_about_tmoe_automatic_configuration ;;
-	2) vnc_can_not_call_pulse_audio ;;
-	3) linux_deploy_pulse_server ;;
+	1) how_to_customize_the_container_dir ;;
+	2) questions_about_tmoe_automatic_configuration ;;
+	3) vnc_can_not_call_pulse_audio ;;
+	4) linux_deploy_pulse_server ;;
 	esac
 	#############
 	press_enter_to_return
 	manager_frequently_asked_questions
 }
 ###########################
+how_to_customize_the_container_dir() {
+	cat <<-ENDOFFAQ
+		    Q:${YELLOW}How to customize the container dir?${RESET}
+
+			A:You can create a symbolic link.
+			If the container dir is ${BLUE}${HOME}/.local/share/tmoe-linux/containers/proot/rust_arm64${RESET},then you can type the following commands.
+
+			${GREEN}YOUR_DIR=~/.local/my_dir
+			CONTAINER_DIR=~/.local/share/tmoe-linux/proot/rust_arm64
+			mv -v ${CONTAINER_DIR} ${YOUR_DIR}
+			ln -svf ${YOUR_DIR} ${CONTAINER_DIR}/rust_arm64
+			${RESET}
+
+			If the container dir is ${BLUE}/usr/local/etc/tmoe-linux/containers/chroot${RESET},then you can type the following commands.
+
+			${GREEN}YOUR_DIR=~/.local/my_chroot_dir
+			CONTAINER_DIR=/usr/local/etc/tmoe-linux/containers/chroot
+			mv -v ${CONTAINER_DIR} ${YOUR_DIR}
+			ln -svf ${YOUR_DIR} ${CONTAINER_DIR}/chroot
+			${RESET}
+
+			简单来说，就是创建软链接啦！
+			φ(≧ω≦*)♪
+			-----------------------
+	ENDOFFAQ
+}
 questions_about_tmoe_automatic_configuration() {
 	cat <<-ENDOFFAQ
 		    Q:${YELLOW}为什么会自动修改termux的配色、字体和小键盘布局${RESET}
@@ -87,7 +115,7 @@ questions_about_tmoe_automatic_configuration() {
 			您只需要执行${GREEN}rm ${HOME}/.termux/termux.properties${RESET}即可删除配置并还原回默认布局。
 			You can type ${GREEN}rm ~/.termux/termux.properties${RESET} to delete it and restore to default.
 			-----------------------
-			Q:${YELLOW}为什么每次会自动加载EULA?${RESET}
+			Q:${YELLOW}为什么会自动加载EULA?${RESET}
 		    
 			A:添加许可协议是为了避免不必要的麻烦。
 			作为一个开源项目，您可以随时审查其中的代码，而不必过多担心恶意代码。
