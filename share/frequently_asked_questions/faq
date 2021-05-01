@@ -81,7 +81,7 @@ how_to_customize_the_container_dir() {
 			${GREEN}YOUR_DIR=\${HOME}/.local/my_dir
 			CONTAINER_DIR=\${HOME}/.local/share/tmoe-linux/containers/proot/rust_arm64
 			mv -v \${CONTAINER_DIR} \${YOUR_DIR}
-			ln -svf \${YOUR_DIR} \${CONTAINER_DIR}/rust_arm64
+			ln -svf \${YOUR_DIR}/rust_arm64 \${CONTAINER_DIR}
 			${RESET}
 
 			If the container dir is ${BLUE}/usr/local/etc/tmoe-linux/containers/chroot${RESET},then you can type the following commands.
@@ -89,7 +89,7 @@ how_to_customize_the_container_dir() {
 			${GREEN}YOUR_DIR=\${HOME}/.local/my_chroot_dir
 			CONTAINER_DIR=/usr/local/etc/tmoe-linux/containers/chroot
 			mv -v \${CONTAINER_DIR} \${YOUR_DIR}
-			ln -svf \${YOUR_DIR} \${CONTAINER_DIR}/chroot
+			ln -svf \${YOUR_DIR}/chroot \${CONTAINER_DIR}
 			${RESET}
 
 			简单来说，就是创建软链接啦！
