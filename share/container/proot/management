@@ -441,6 +441,12 @@ kill_chroot_container_process_gnu_linux() {
 	#此处执行bash -c "${KILL_PID_02}"会导致tmoe-manager退出。
 }
 kill_chroot_container_process_old() {
+	case ${SYSTEMD_NSPAWN} in
+	true)
+		printf "%s\n" "${GREEN}machinectl ${PURPLE}terminate ${BLUE}${MACHINE_NAME}${RESET}"
+		machinectl terminate ${MACHINE_NAME}
+		;;
+	esac
 	case ${LINUX_DISTRO} in
 	Android) tips_of_check_pid ;;
 	*) kill_chroot_container_process_gnu_linux ;;
