@@ -1597,7 +1597,7 @@ check_qemu_installation() {
 			DEPENDENCY_02='qemu-system-aarch64'
 			;;
 		"arch")
-			DEPENDENCY_02='qemu-arch-extra'
+			DEPENDENCY_02='qemu-arch-extra edk2-ovmf'
 			;;
 		esac
 		beta_features_quick_install
