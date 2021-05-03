@@ -1910,7 +1910,7 @@ choose_debian_xfce_or_gnome() {
 	DESKTOP_NAME=$(
 		whiptail --title "${DISTRO_NAME}" --menu "Which desktop do you want to choose?" 0 50 0 \
 			"1" "🐭 xfce" \
-			"2" "👣 gnome" \
+			"2" "👣 gnome(systemd container)" \
 			"3" "cli(nogui)" \
 			"4" "minimal(nogui)" \
 			"0" "🌚 Return to previous menu" \
@@ -1928,7 +1928,7 @@ install_armbian_linux_distro() {
 	RETURN_TO_WHERE='install_armbian_linux_distro'
 	DISTRO_NAME='armbian'
 	BETA_SYSTEM=$(
-		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian and Ubuntu based computer operating\n system for ARM development boards." 0 50 0 \
+		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
 			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
 			"2" "🦛 Hirsute Hippo(21.04,chroot) " \
 			"3" "🐎 Bullseye(debian 11)" \
