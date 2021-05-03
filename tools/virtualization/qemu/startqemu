@@ -80,6 +80,7 @@ UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/qemu/${QEMU_NAME}-NVRAM.fd"
 if [[ ${UEFI_ENABLED} = true && ! -s "${UEFI_VARS_PFLASH}" ]]; then
     mkdir -pv "${UEFI_VARS_PFLASH%/*}"
     cp -fv "/usr/share/OVMF/OVMF_VARS.fd" "${UEFI_VARS_PFLASH}"
+    chmod a+rw "${UEFI_VARS_PFLASH}"
 fi
 ###########
 TMOE_LOCALE_FILE="/usr/local/etc/tmoe-linux/locale.txt"
