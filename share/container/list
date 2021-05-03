@@ -1953,7 +1953,7 @@ install_armbian_linux_distro() {
 		choose_debian_xfce_or_gnome
 		;;
 	4)
-		DISTRO_CODE='buster'
+		DISTRO_NAME='buster'
 		choose_debian_xfce_or_gnome
 		;;
 	5)
@@ -1993,7 +1993,7 @@ install_different_armbian_gnu_linux_distros() {
 	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
 	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
-	case "${DISTRO_CODE}" in
+	case "${DISTRO_NAME}" in
 	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
 	*) install_armbian_testing_via_tuna ;;
 	esac
