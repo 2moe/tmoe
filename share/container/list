@@ -1906,6 +1906,28 @@ choose_ubuntu_deepin_budgie_or_cinnamon() {
 	8) DISTRO_CODE='minimal' ;;
 	esac
 }
+choose_ubuntu_budgie_or_gnome() {
+	DESKTOP_NAME=$(
+		whiptail --title "${DISTRO_NAME}" --menu "Which desktop do you want to choose?\n除cli和minimal版外,以下系统已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+			"1" "🐭 xfce(proot)" \
+			"2" "🌿 mate(proot)" \
+			"3" "👣 gnome(systemd container)" \
+			"4" "🦜 budgie(systemd)" \
+			"5" "cli(nogui)" \
+			"6" "minimal(nogui)" \
+			"0" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3
+	)
+	case "${DESKTOP_NAME}" in
+	0 | "") install_armbian_linux_distro ;;
+	1) DISTRO_CODE='xfce' ;;
+	2) DISTRO_CODE='mate' ;;
+	3) DISTRO_CODE='gnome' ;;
+	4) DISTRO_CODE='budgie' ;;
+	5) DISTRO_CODE='cli' ;;
+	6) DISTRO_CODE='minimal' ;;
+	esac
+}
 choose_debian_xfce_or_gnome() {
 	DESKTOP_NAME=$(
 		whiptail --title "${DISTRO_NAME}" --menu "Which desktop do you want to choose?" 0 50 0 \
@@ -1946,7 +1968,7 @@ install_armbian_linux_distro() {
 		;;
 	2)
 		DISTRO_NAME='hirsute'
-		choose_ubuntu_deepin_budgie_or_cinnamon
+		choose_ubuntu_budgie_or_gnome
 		;;
 	3)
 		DISTRO_NAME='bullseye'
