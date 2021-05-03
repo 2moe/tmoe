@@ -36,7 +36,7 @@ choose_which_gnu_linux_distro() {
 			"6" "👒 Fedora:红帽社区版,新技术试验场" \
 			"7" "🍱 Manjaro,centos,alpine,puppy" \
 			"8" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
-			"9" "🍊 Armbian:香蕉派,香橙派(预装xfce)" \
+			"9" "🍊 Armbian:香蕉派,香橙派(预装dde/gnome/cinnamon/budgie)" \
 			"10" "🦎 Chroot专属:deepin,opensuse" \
 			"11" "🍓 Experimental(体验版,不再维护):SteamOS,RaspiOS" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -44,7 +44,7 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "Which container do you want to install?" 0 50 0 \
-			"1" "🍭 Recommended:Weekly GUI builds(xfce,kde,mate,lxqt)" \
+			"1" "🍭 Recommended:Weekly builds(xfce,kde,mate,lxqt)" \
 			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
 			"3" "🍥 Debian is a distro composed of free and open-source software" \
 			"4" "🍛 Ubuntu is the modern, open source OS." \
@@ -52,7 +52,7 @@ choose_which_gnu_linux_distro() {
 			"6" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
 			"7" "🍱 Manjaro,centos,alpine,puppy" \
 			"8" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
-			"9" "🍊 Armbian:ARM development boards OS" \
+			"9" "🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)" \
 			"10" "🦎 Chroot exclusive:opensuse,deepin" \
 			"11" "🍓 Experimental,no longer maintained:SteamOS,RaspiOS,Gentoo" \
 			"0" "🌚 Return to previous menu" \
@@ -1880,29 +1880,86 @@ distro_does_not_support() {
 	choose_which_gnu_linux_distro
 }
 ##############
+choose_ubuntu_deepin_budgie_or_cinnamon() {
+	DESKTOP_NAME=$(
+		whiptail --title "${DISTRO_NAME}" --menu "Which desktop do you want to choose?\n除cli和minimal版外,以下系统已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+			"1" "🐭 xfce(proot)" \
+			"2" "🌿 mate(proot)" \
+			"3" "dde/deepin(chroot)" \
+			"4" "👣 gnome(systemd container)" \
+			"5" "🦜 budgie(systemd)" \
+			"6" "🌲 cinnamon(systemd)" \
+			"7" "cli(nogui)" \
+			"8" "minimal(nogui)" \
+			"0" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3
+	)
+	case "${DESKTOP_NAME}" in
+	0 | "") install_armbian_linux_distro ;;
+	1) DISTRO_CODE='xfce' ;;
+	2) DISTRO_CODE='mate' ;;
+	3) DISTRO_CODE='deepin' ;;
+	4) DISTRO_CODE='gnome' ;;
+	5) DISTRO_CODE='budgie' ;;
+	6) DISTRO_CODE='cinnamon' ;;
+	7) DISTRO_CODE='cli' ;;
+	8) DISTRO_CODE='minimal' ;;
+	esac
+}
+choose_debian_xfce_or_gnome() {
+	DESKTOP_NAME=$(
+		whiptail --title "${DISTRO_NAME}" --menu "Which desktop do you want to choose?" 0 50 0 \
+			"1" "🐭 xfce" \
+			"2" "👣 gnome" \
+			"3" "cli(nogui)" \
+			"4" "minimal(nogui)" \
+			"0" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3
+	)
+	case "${DESKTOP_NAME}" in
+	0 | "") install_armbian_linux_distro ;;
+	1) DISTRO_CODE='xfce' ;;
+	2) DISTRO_CODE='gnome' ;;
+	3) DISTRO_CODE='cli' ;;
+	4) DISTRO_CODE='minimal' ;;
+	esac
+}
 install_armbian_linux_distro() {
 	RETURN_TO_WHERE='install_armbian_linux_distro'
 	DISTRO_NAME='armbian'
 	BETA_SYSTEM=$(
-		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统。\n以下系统已预装桌面,每个镜像大小约为1G" 0 50 0 \
-			"1" "🐎 Bullseye(debian 11)" \
-			"2" "🦍 Groovy Gorilla(ubuntu 20.10)" \
-			"3" "🐱 Focal Fossa(ubuntu 20.04)" \
-			"4" "Custom code手动输入版本代号" \
-			"5" "🐶 Buster(debian 10)" \
-			"6" "Bionic Beaver仿生海狸(ubuntu 18.04)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
+		whiptail --title "Which version do you want to install?" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian and Ubuntu based computer operating\n system for ARM development boards." 0 50 0 \
+			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
+			"2" "🦛 Hirsute Hippo(21.04,chroot) " \
+			"3" "🐎 Bullseye(debian 11)" \
+			"4" "🐶 Buster(debian 10)" \
+			"5" "Custom code手动输入版本代号" \
+			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) DISTRO_CODE='bullseye' ;;
-	2) DISTRO_CODE='groovy' ;;
-	3) DISTRO_CODE='focal' ;;
-	4) custom_armbian_version ;;
-	5) DISTRO_CODE='buster' ;;
-	6) DISTRO_CODE='bionic' ;;
+	1)
+		DISTRO_NAME='focal'
+		choose_ubuntu_deepin_budgie_or_cinnamon
+		;;
+	2)
+		DISTRO_NAME='hirsute'
+		choose_ubuntu_deepin_budgie_or_cinnamon
+		;;
+	3)
+		DISTRO_NAME='bullseye'
+		choose_debian_xfce_or_gnome
+		;;
+	4)
+		DISTRO_CODE='buster'
+		choose_debian_xfce_or_gnome
+		;;
+	5)
+		custom_armbian_version
+		choose_debian_xfce_or_gnome
+		;;
 	esac
 	######################
 	case "${ARCH_TYPE}" in
@@ -1921,11 +1978,20 @@ install_armbian_linux_distro() {
 #########################
 install_different_armbian_gnu_linux_distros() {
 	if [ ! $(command -v lz4) ]; then
-		apt update 2>/dev/null
-		apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
+		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}lz4${RESET}"
+		printf "%s\n" "Do you want to install ${BLUE}lz4?${PURPLE}[Y/n]${RESET}"
+		do_you_want_to_continue
+		${TMOE_INSTALLATION_COMMAND} lz4
+		# apt update 2>/dev/null
+		# apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
+	fi
+	if [ ! $(command -v lz4) ]; then
+		printf "%s\n" "${RED}ERROR${RESET}, you did not install ${BLUE}lz4${RESET}"
+		press_enter_to_return
+		install_armbian_linux_distro
 	fi
 	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
-	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_CODE}-xfce" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
 	case "${DISTRO_CODE}" in
 	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
@@ -1936,7 +2002,6 @@ install_different_armbian_gnu_linux_distros() {
 install_armbian_buster_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
-		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
 		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
@@ -1951,7 +2016,6 @@ install_armbian_buster_via_tuna() {
 install_armbian_testing_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
-		sed "s/focal/${DISTRO_CODE}/g" |
 		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
 		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
@@ -1970,6 +2034,7 @@ custom_armbian_version() {
 		printf "%s\n" "检测到您取消了操作"
 		printf "%s\n" "已自动切换为armbian bullseye"
 		DISTRO_CODE='bullseye'
+		DISTRO_NAME=${DISTRO_CODE}
 	fi
 }
 ###########

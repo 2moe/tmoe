@@ -384,17 +384,37 @@ uncompress_other_format_file() {
 }
 ##############
 uncompress_tar_lz4_file() {
-	TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
-	TMOE_ROOTFS_TAR=$(printf '%s\n' "${TMOE_ROOTFS_TAR_XZ}" | sed 's@.tar.lz4@.tar@')
-	cd ${CURRENT_TMOE_DIR}
-	rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
-	lz4 -d ${TMOE_ROOTFS_TAR_XZ}
-	cd ${DEBIAN_CHROOT}
+	if [ "${TMOE_CHROOT}" = "true" ]; then
+		${TMOE_CHROOT_PREFIX} tar -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+	elif [ "${LINUX_DISTRO}" = "Android" ]; then
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I lz4 -px
+	else
+		if [ $(command -v pv) ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -I lz4 -px
+		else
+			tar -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+	fi
 
-	TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR}
-	uncompress_other_format_file
-	TMOE_ROOTFS_TAR_XZ=${TRUE_TMOE_ROOTFS_TAR_XZ}
-	rm -fv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR}
+	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
+		if [ "${LINUX_DISTRO}" = "Android" ]; then
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I lz4 -px
+		else
+			tar -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		fi
+		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+	fi
+	# TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
+	# TMOE_ROOTFS_TAR=$(printf '%s\n' "${TMOE_ROOTFS_TAR_XZ}" | sed 's@.tar.lz4@.tar@')
+	# cd ${CURRENT_TMOE_DIR}
+	# rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
+	# lz4 -d ${TMOE_ROOTFS_TAR_XZ}
+	# cd ${DEBIAN_CHROOT}
+
+	# TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR}
+	# uncompress_other_format_file
+	# TMOE_ROOTFS_TAR_XZ=${TRUE_TMOE_ROOTFS_TAR_XZ}
+	# rm -fv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR}
 }
 ###########
 uncompress_tar_gz_file() {
@@ -479,8 +499,7 @@ uncompress_tar_file() {
 	case "${TMOE_ROOTFS_TAR_XZ:0-6:6}" in
 	tar.xz) uncompress_tar_xz_file ;;
 	tar.gz) uncompress_tar_gz_file ;;
-	ar.zst) uncompress_tar_zst_file ;;
-	r.zstd) uncompress_tar_zst_file ;;
+	ar.zst | r.zstd) uncompress_tar_zst_file ;;
 	ar.lz4)
 		#此处不为tar.lz4
 		uncompress_tar_lz4_file

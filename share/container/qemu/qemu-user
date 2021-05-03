@@ -186,9 +186,9 @@ tmoe_qemu_user_manager() {
 			whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				"00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
-				"1" "x86/i386(常见于32位cpu的旧式传统pc)" \
-				"2" "x64/amd64(2020年最主流的64位架构,应用于pc和服务器）" \
-				"3" "arm64/aarch64(2020年移动平台主流cpu架构)" \
+				"1" "x64/amd64(64位架构,应用于pc和服务器）" \
+				"2" "x86/i386(常见于32位cpu的旧式传统pc)" \
+				"3" "arm64/aarch64(常见于移动平台的64位cpu架构)" \
 				"4" "armhf/armv7(32位arm架构,支持硬浮点运算)" \
 				"5" "riscv64(开源架构,精简指令集)" \
 				"6" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
@@ -204,8 +204,8 @@ tmoe_qemu_user_manager() {
 			whiptail --title "Across architectures" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
 				"0" "🌚 戻る" \
 				"00" "qemu-user-static(基本的な依存関係)" \
-				"1" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
-				"2" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
+				"1" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
+				"2" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
 				"3" "arm64/aarch64:64-bit extension of the ARM architecture" \
 				"4" "armhf/armv7:32-bit arm hard float" \
 				"5" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
@@ -222,8 +222,8 @@ tmoe_qemu_user_manager() {
 			whiptail --title "Across architectures" --menu "Which architecture do you want to simulate?" 0 50 0 \
 				"0" "🌚 Return to previous menu" \
 				"00" "qemu-user-static(Basic dependence)" \
-				"1" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
-				"2" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
+				"1" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
+				"2" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
 				"3" "arm64:64-bit extension of the ARM architecture" \
 				"4" "armhf:32-bit arm hard float" \
 				"5" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
@@ -246,15 +246,15 @@ tmoe_qemu_user_manager() {
 	0 | "") proot_container_menu ;;
 	00) tmoe_qemu_user_static ;;
 	1)
+		NEW_TMOE_ARCH='amd64'
+		TMOE_QEMU_ARCH="x86_64"
+		;;
+	2)
 		NEW_TMOE_ARCH='i386'
 		case ${TRUE_ARCH_TYPE} in
 		amd64 | i386) TMOE_QEMU_ARCH="" ;;
 		*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
 		esac
-		;;
-	2)
-		NEW_TMOE_ARCH='amd64'
-		TMOE_QEMU_ARCH="x86_64"
 		;;
 	3)
 		NEW_TMOE_ARCH='arm64'
