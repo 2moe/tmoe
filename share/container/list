@@ -1889,7 +1889,7 @@ distro_does_not_support() {
 ##############
 choose_ubuntu_deepin_budgie_or_cinnamon() {
 	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment.\n除cli和minimal版外,以下系统已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment.\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
 			"1" "🐭 xfce(proot)" \
 			"2" "🌿 mate(proot)" \
 			"3" "dde/deepin(chroot)" \
@@ -1915,7 +1915,7 @@ choose_ubuntu_deepin_budgie_or_cinnamon() {
 }
 choose_ubuntu_budgie_or_gnome() {
 	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下系统已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
 			"1" "🐭 xfce(proot)" \
 			"2" "🌿 mate(proot)" \
 			"3" "👣 gnome(systemd container)" \
@@ -2063,8 +2063,8 @@ custom_armbian_version() {
 		printf "%s\n" "检测到您取消了操作"
 		printf "%s\n" "已自动切换为armbian bullseye"
 		DISTRO_CODE='bullseye'
-		DISTRO_NAME=${DISTRO_CODE}
 	fi
+	DISTRO_NAME=${DISTRO_CODE}
 }
 ###########
 install_mint_linux_distro() {
