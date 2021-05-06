@@ -9,6 +9,7 @@ RUN apk update; \
     apk upgrade; \
     apk add sudo tar grep curl wget bash tzdata newt; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
+    rustup self update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-alpine" > container.txt ; \

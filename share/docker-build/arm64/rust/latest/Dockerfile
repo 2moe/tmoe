@@ -15,6 +15,7 @@ RUN apt update; \
     apt install -y --no-install-recommends neofetch; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
+    rustup self update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-debian" > container.txt ; \
