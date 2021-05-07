@@ -499,7 +499,7 @@ The default login shell is zsh, if you want to start bash,then type
 tmoe c k r a bash
 ```
 
-Start ash as a login shell：
+Start ash as the login shell：
 
 ```bash
 tmoe c k r a ash

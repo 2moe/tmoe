@@ -121,6 +121,12 @@ check_chroot_conf() {
 	esac
 }
 environment_variables_and_automatic_startup_script_management() {
+	if [[ ! -e ${DEBIAN_CHROOT} ]]; then
+		printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} first."
+		press_enter_to_return
+		${RETURN_TO_WHERE}
+		# proot_management_menu
+	fi
 	RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
 	environment_variables_and_automatic_startup_script_management_menu_en() {
 		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
@@ -579,7 +585,7 @@ readme_of_gnu_linux_distro() {
 		${BOLD}${YELLOW}Start ${DEBIAN_FOLDER} + X server:${RESET} ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
 
 		The default ${YELLOW}login shell${RESET} is ${GREEN}zsh${RESET}, if you want to start ${BLUE}bash${RESET},then type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} bash${RESET}
-		Start ${BLUE}ash${RESET} as a login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
+		Start ${BLUE}ash${RESET} as the login shell：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ash${RESET} 
 
 		Note: The last argument can execute a local script.
 		Assuming that there is a hello.rb file in the current directory, then you can type ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
