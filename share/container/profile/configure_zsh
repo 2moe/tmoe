@@ -312,14 +312,14 @@ auto_configure_tmoe_tools() {
 }
 ################
 install_lolcat() {
-	i=lolcat
-	if [[ $(command -v apt) ]]; then
-		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
-		eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
-	elif [[ $(command -v pacman) ]]; then
-		printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
-		pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
-	fi
+	# i=lolcat
+	# if [[ $(command -v apt) ]]; then
+	# 	printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
+	# 	eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
+	# elif [[ $(command -v pacman) ]]; then
+	# 	printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
+	# 	pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
+	# fi
 
 	if [[ $(command -v dnf) && ! $(command -v lolcat) ]]; then
 		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}lolcat${RESET}"
@@ -346,7 +346,7 @@ install_neofetch() {
 	fi
 	i=neofetch
 	[[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
-	printf "%s\n" "${GREEN}neofetch | lolcat${RESET}"
+	printf "%s\n" "${GREEN}neofetch${RESET}"
 	if [ -e /usr/games/lolcat ]; then
 		neofetch | /usr/games/lolcat
 	elif [ "$(command -v lolcat)" ]; then

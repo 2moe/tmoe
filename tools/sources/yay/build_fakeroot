@@ -42,7 +42,7 @@ install_fakeroot() {
     # cd ${HOME}
     # [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
     cp -fv /etc/pacman.conf /etc/pacman.conf.bak
-    if ! grep -q '[arch4edu]' /etc/pacman.conf; then
+    if ! grep -q 'arch4edu' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[arch4edu]
 					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
