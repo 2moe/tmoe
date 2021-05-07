@@ -868,7 +868,19 @@ if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
 fi
 #cd ${DEBIAN_CHROOT}/usr/local/bin
 cd ${CONFIG_FOLDER}
-[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
+CURRENT_MONTH=$(date -u +%Y%m)
+case ${CURRENT_MONTH} in
+2021* | 202201)
+	if [[ -e neofetch ]]; then
+		if [[ $(sha256sum neofetch | awk '{print $1}') = bd3564aa793309792687c241808f31907c0294652c50a7459b54dd0359383c20 ]]; then
+			rm -fv neofetch
+		fi
+	fi
+	[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch'
+	;;
+*) [[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' ;;
+esac
+
 if [[ -e "debian-i" ]]; then
 	chmod 666 debian-i
 	rm -f debian-i

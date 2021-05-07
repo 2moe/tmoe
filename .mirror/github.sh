@@ -39,7 +39,9 @@ sed -i 's@en_US en_US@en_US zh_CN@g' ${INSTALL_FILE}
 sed -i 's/114.114.114.114/1.0.0.1/' ${INSTALL_FILE}
 sed -i 's/240c::6666/2606:4700:4700::1111/' ${INSTALL_FILE}
 # sed -i 's@gitee.com/mo2/fzf-tab@github.com/Aloxaf/fzf-tab@g' zsh.sh
-sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' ${INSTALL_FILE}                                      #zsh.sh
+sed -i 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' ${INSTALL_FILE}
+sed -i 's@https://gitee.com/mirrors/neofetch/raw/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch@https://raw.githubusercontent.com/dylanaraps/neofetch/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch@g' ${INSTALL_FILE}
+#zsh.sh
 sed -i 's@gitee.com/mirrors/oh-my-zsh/raw/master/templates/zshrc.zsh-template@raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template@g' ${INSTALL_FILE} #zsh.sh
 sed -i 's@gitee.com/mirrors/oh-my-zsh.git@github.com/ohmyzsh/ohmyzsh.git@g' ${INSTALL_FILE}                                                                                    #zsh.sh
 #sed -i 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' ./*sh

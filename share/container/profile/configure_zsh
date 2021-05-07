@@ -301,15 +301,37 @@ auto_configure_tmoe_tools() {
 		set_your_vnc_passwd
 	else
 		if [ ! -s ${CONTAINER_TXT} ]; then
+			if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+				install_lolcat
+			fi
 			if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-				install_lolcat_and_neofetch
+				install_neofetch
 			fi
 		fi
 	fi
 }
 ################
-install_lolcat_and_neofetch() {
-	for i in lolcat neofetch unzip; do
+install_lolcat() {
+	i=lolcat
+	if [[ $(command -v apt) ]]; then
+		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
+		eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
+	elif [[ $(command -v pacman) ]]; then
+		printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
+		pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
+	fi
+
+	if [[ $(command -v dnf) && ! $(command -v lolcat) ]]; then
+		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}lolcat${RESET}"
+		dnf install -y --skip-broken lolcat
+	fi
+	if [[ $(command -v zypper) ]]; then
+		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat${RESET}"
+		zypper in -y ruby2.7-rubygem-lolcat
+	fi
+}
+install_neofetch() {
+	for i in neofetch unzip; do
 		if [[ $(command -v apt) ]]; then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
 			eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
@@ -318,14 +340,8 @@ install_lolcat_and_neofetch() {
 			pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
 		fi
 	done
-	#fedora neofetch (X)
-	if [[ $(command -v dnf) && ! $(command -v lolcat) ]]; then
-		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}lolcat${RESET}"
-		dnf install -y lolcat
-	fi
 	if [[ $(command -v zypper) ]]; then
-		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat neofetch${RESET}"
-		zypper in -y ruby2.7-rubygem-lolcat
+		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}neofetch${RESET}"
 		zypper in -y neofetch
 	fi
 	i=neofetch
