@@ -1382,35 +1382,34 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	}
 	#################
-	build_fakeroot() {
-	for i in make automake autoconf gcc libtool po4a patch; do
-		if [[ ! $(command -v ${i}) ]];then
+	install_fakeroot() {
+		if [[ ! $(command -v whiptail) ]];then
+			i=libnewt
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-S --noconfirm ${BLUE}${i}${RESET}"
+	        pacman -S --noconfirm libnewt
+		fi
+		if [[ ! $(command -v whereis) ]];then
+			i=util-linux
+			printf "%s\n" "${GREEN}pacman ${YELLOW}-S --noconfirm ${BLUE}${i}${RESET}"
+			pacman -S --noconfirm util-linux
+		fi
+	    if ! grep -q '[arch4edu]' /etc/pacman.conf; then
+	        cat >>/etc/pacman.conf <<-'Endofpacman'
+					[arch4edu]
+					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
+					Server = https://mirror.autisten.club/arch4edu/$arch
+					Server = https://arch4edu.keybase.pub/$arch
+					Server = https://mirror.lesviallon.fr/arch4edu/$arch
+					Server = https://mirrors.tencent.com/arch4edu/$arch
+					SigLevel = Never
+				Endofpacman
+	    fi
+		for i in arch4edu-keyring fakeroot-tcp;do
 			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 			pacman -Sy --noconfirm ${i}
-		fi
-	done
-	[[ $(command -v whereis) ]] || pacman -S --noconfirm util-linux
-	[[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
-	FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fakeroot/'
-	FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
-	FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
-	FAKEROOT_SRC_FILE=$(printf "%s\n" ${FAKEROOT_SRC_VERSION} | sed 's@fakeroot_@fakeroot-@g')
-	cd /tmp
-	curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL}
-	tar -xvf ${FAKEROOT_SRC_FILE}
-	cd ${FAKEROOT_SRC_FILE%.*.*.*}
-	./bootstrap
-	./configure --prefix=/usr --libdir=/usr/lib/libfakeroot --with-ipc=tcp --disable-static
-	make -j4
-	cd doc
-	po4a -k 0 --rm-backups --variable "srcdir=../doc/" po4a/po4a.cfg
-	cd ..
-	make install
-	cd /tmp
-	rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
-	cd ${HOME}
-	#检测两次
-	[[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
+		done
+		cd ${HOME}
 	}
 	############
 	arch_linux_yay() {
@@ -1700,8 +1699,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if egrep -q "Arch|Manjaro" '/etc/os-release' 2>/dev/null || egrep -q "Arch|Manjaro" '/etc/issue'; then
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
 			printf "%s\n" "${GREEN}pacman ${PURPLE}-R ${YELLOW}--noconfirm ${BLUE}fakeroot${RESET}"
-			pacman -R --noconfirm fakeroot
-			build_fakeroot
+			pacman -R --noconfirm fakeroot 2>/dev/null
+			install_fakeroot
 		fi
 	fi
 	printf "$YELLOW"
