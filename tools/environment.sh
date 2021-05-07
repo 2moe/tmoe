@@ -767,18 +767,18 @@ random_neko() {
 }
 ###########
 neko_ascii_env() {
-    if [ ! $(command -v lolcat) ] && [ ! -e /usr/games/lolcat ]; then
-        case ${LINUX_DISTRO} in
-        debian)
-            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}lolcat${RESET}"
-            eatmydata apt install -y --no-install-recommends lolcat || apt install -y lolcat
-            ;;
-        arch)
-            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}lolcat${RESET}"
-            pacman -Sy --noconfirm lolcat
-            ;;
-        esac
-    fi
+    # if [ ! $(command -v lolcat) ] && [ ! -e /usr/games/lolcat ]; then
+    #     case ${LINUX_DISTRO} in
+    #     debian)
+    #         printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}lolcat${RESET}"
+    #         eatmydata apt install -y --no-install-recommends lolcat || apt install -y lolcat
+    #         ;;
+    #     arch)
+    #         printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}lolcat${RESET}"
+    #         pacman -Sy --noconfirm lolcat
+    #         ;;
+    #     esac
+    # fi
     if [ -e /usr/games/lolcat ]; then
         CATCAT='/usr/games/lolcat'
     elif [ "$(command -v lolcat)" ]; then

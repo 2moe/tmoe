@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4630,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4631,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -241,10 +241,10 @@ check_architecture() {
 ubuntu_ppa_and_locale_gen() {
 	case "${DEBIAN_DISTRO}" in
 	ubuntu)
-		if [ ! $(command -v add-apt-repository) ]; then
-			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}software-properties-common${RESET}"
-			eatmydata apt install -y --no-install-recommends software-properties-common || apt install -y --no-install-recommends software-properties-common
-		fi
+		# if [ ! $(command -v add-apt-repository) ]; then
+		# 	printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}software-properties-common${RESET}"
+		# 	eatmydata apt install -y --no-install-recommends software-properties-common || apt install -y --no-install-recommends software-properties-common
+		# fi
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 		fi
