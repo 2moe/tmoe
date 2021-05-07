@@ -355,6 +355,15 @@ auto_check_face_icon() {
 	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | egrep '\.jpg|\.png' | head -n 1)
 	cp -vf ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
 	ln -svf ${HOME}/.face ${HOME}/.face.icon
+	copy_face_icon_to_home
+}
+copy_face_icon_to_home() {
+	if [[ -n ${USER_NAME} && -e /home/${USER_NAME} ]]; then
+		for i in .face .face.icon; do
+			cp -fv ${HOME}/.face /home/${USER_NAME}/${i}
+			chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/${i}
+		done
+	fi
 }
 ################
 check_tmoe_linux_tool() {
@@ -544,6 +553,7 @@ git_clone_tmoe_linux() {
 	if [[ ! -e "${HOME}/.face" && ${DEFAULT_FACE_ICON} = true ]]; then
 		cp -v ${TMOE_GIT_DIR}/.mirror/icon.png ${HOME}/.face
 		ln -svf ${HOME}/.face ${HOME}/.face.icon
+		copy_face_icon_to_home
 		printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
 	fi
 	mkdir -pv /usr/share/applications
@@ -602,6 +612,7 @@ do_you_want_to_create_a_new_user() {
 	esac
 }
 please_type_the_user_name() {
+	unset USER_NAME
 	USER_NAME=$(whiptail --inputbox "${TIPS_01}" 0 0 --title "USER NAME" 3>&1 1>&2 2>&3)
 	if [[ "$?" != "0" || -z "${USER_NAME}" ]]; then
 		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
