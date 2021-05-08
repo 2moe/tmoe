@@ -11,7 +11,7 @@ ENV HOME=/root \
 RUN mkdir -pv /var/cache/pacman/pkg; \
     pacman-key --init; \
     pacman-key --populate; \
-    pacman -Syu --noconfirm --needed base base-devel; \
+    pacman -Syu --noconfirm base base-devel; \
     pacman -S --noconfirm systemd; \
     pacman -S --noconfirm --needed wget curl git; \
     pacman -S --noconfirm --needed unzip neofetch iproute man-db man-pages 2>/dev/null; \
@@ -35,10 +35,13 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     bash zsh.sh --tmoe_container_auto_configure; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' tool.sh; \
-    bash build_fakeroot --add-archlinuxcn-repo; \
-    bash build_fakeroot --install-fakeroot; \
-    bash build_fakeroot --install-yay; \
-    bash build_fakeroot --archlinux-repo-mirror; \
+    chmod a+rx -v build_fakeroot; \
+    ./build_fakeroot --add-archlinuxcn-repo; \
+    ./build_fakeroot --add-arch_for_edu-repo; \
+    ./build_fakeroot --install-yay; \
+    ./build_fakeroot --install-fakeroot; \
+    ./build_fakeroot --archlinux-repo-mirror; \
+    pacman -Syu --noconfirm; \
     rm -rfv /tmp/* ~/.vnc/*passwd; \
     pacman -R --noconfirm $(pacman -Qdtq); \
     rm -rfv /var/cache/pacman/pkg/* ~/.cache/* 2>/dev/null; \

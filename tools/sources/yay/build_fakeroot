@@ -4,7 +4,11 @@ install_yay_main() {
     case $1 in
     -bf | --build-fakeroot | --install-fakeroot) install_fakeroot ;;
     --add-archlinuxcn-repo) add_archlinuxcn_repo ;;
-    --archlinux-repo-mirror) add_archlinuxcn_repo_mirror ;;
+    --add-arch_for_edu-repo) add_arch_for_edu_repo ;;
+    --archlinux-repo-mirror)
+        add_archlinuxcn_repo_mirror
+        add_arch_for_edu_repo_mirror
+        ;;
     -yay | --install-yay) install_yay ;;
     esac
 }
@@ -41,37 +45,13 @@ install_fakeroot() {
     # rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
     # cd ${HOME}
     # [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
-    cp -fv /etc/pacman.conf.bak /etc/pacman.conf
-    cp -fv /etc/pacman.conf /etc/pacman.conf.bak
-    if ! grep -q 'arch4edu' /etc/pacman.conf; then
-        cat >>/etc/pacman.conf <<-'Endofpacman'
-					[arch4edu]
-					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
-					Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
-					Server = https://mirror.autisten.club/arch4edu/$arch
-					Server = https://arch4edu.keybase.pub/$arch
-					Server = https://mirror.lesviallon.fr/arch4edu/$arch
-					Server = https://mirrors.tencent.com/arch4edu/$arch
-					SigLevel = Never
-				Endofpacman
-    fi
-    for i in arch4edu-keyring fakeroot-tcp; do
-        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-        pacman -Sy --noconfirm ${i}
-    done
-    if [[ -s /etc/pacman.conf.bak ]]; then
-        cp -fv /etc/pacman.conf.bak /etc/pacman.conf
-        cat >>/etc/pacman.conf <<-'Endofpacman'
-					[arch4edu]
-					Server = https://arch4edu.keybase.pub/$arch
-					Server = https://mirror.autisten.club/arch4edu/$arch
-					Server = https://mirror.lesviallon.fr/arch4edu/$arch
-					Server = https://mirrors.tencent.com/arch4edu/$arch
-					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
-					Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
-					SigLevel = Never
-				Endofpacman
-    fi
+    # cp -fv /etc/pacman.conf.bak /etc/pacman.conf
+    # cp -fv /etc/pacman.conf /etc/pacman.conf.bak
+    # for i in arch4edu-keyring fakeroot-tcp; do
+    i=fakeroot-tcp
+    printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+    pacman -Sy --noconfirm ${i}
+    # done
 }
 add_archlinuxcn_repo() {
     cp -fv /etc/pacman.conf /etc/pacman.conf.bak
@@ -108,6 +88,37 @@ add_archlinuxcn_repo_mirror() {
 					SigLevel = Never
 				Endofpacman
     fi
+}
+add_arch_for_edu_repo_mirror() {
+    if ! grep -q 'arch4edu' /etc/pacman.conf; then
+        cat >>/etc/pacman.conf <<-'Endofpacman'
+					[arch4edu]
+					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
+					Server = https://mirror.autisten.club/arch4edu/$arch
+					Server = https://arch4edu.keybase.pub/$arch
+					Server = https://mirror.lesviallon.fr/arch4edu/$arch
+					Server = https://mirrors.tencent.com/arch4edu/$arch
+					SigLevel = Never                    
+				Endofpacman
+    fi
+}
+add_arch_for_edu_repo() {
+    if ! grep -q 'arch4edu' /etc/pacman.conf; then
+        cat >>/etc/pacman.conf <<-'Endofpacman'
+					[arch4edu]
+					Server = https://arch4edu.keybase.pub/$arch
+					Server = https://mirror.autisten.club/arch4edu/$arch
+					Server = https://mirror.lesviallon.fr/arch4edu/$arch
+					Server = https://mirrors.tencent.com/arch4edu/$arch
+					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
+					SigLevel = Never
+				Endofpacman
+    fi
+    i=arch4edu-keyring
+    printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+    pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
 }
 install_yay() {
     for i in yay gawk; do
