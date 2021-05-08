@@ -258,7 +258,7 @@ esac
 TMOE_GIT_URL="https://github.com/2moe/tmoe-linux"
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 [[ -e ${TMOE_GIT_DIR}/.git ]] || mkdir -pv ${TMOE_LINUX_DIR}
-git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+git clone -b master --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 ```
 
 **After cloning the repo, you can type `bash ${TMOE_GIT_DIR}/manager.sh` to start tmoe-linux manager.**

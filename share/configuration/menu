@@ -43,7 +43,7 @@ check_man_db() {
 check_x11vnc_git_manual() {
     if [[ ! -e ${TMOE_LINUX_DIR}/docs/.git ]]; then
         mkdir -pv ${TMOE_LINUX_DIR}
-        git clone --depth=1 -b main https://gitee.com/ak2/manual ${TMOE_LINUX_DIR}/docs
+        git clone -b main --depth=1 https://gitee.com/ak2/manual ${TMOE_LINUX_DIR}/docs
     fi
 }
 #######

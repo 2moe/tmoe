@@ -24,7 +24,7 @@ RUN apt update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=ubuntu_gui-lxde" > container.txt ; \
-    git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git; \
+    git clone -b master --depth=1 https://github.com/2moe/tmoe-linux git || git clone -b master --depth=1 git://github.com/2moe/tmoe-linux git; \
     cp -fv git/tool.sh /tmp; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' tool.sh; \

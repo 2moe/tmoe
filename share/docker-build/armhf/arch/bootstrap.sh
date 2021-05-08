@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 curl -LO https://github.com/tokland/arch-bootstrap/raw/master/arch-bootstrap.sh
 if [[ ! -s arch-bootstrap.sh ]]; then
-    git clone --depth=1 https://github.com/2moe/arch-bootstrap
+    git clone -b master --depth=1 https://github.com/2moe/arch-bootstrap
     cp -av arch-bootstrap/* .
 fi
 CUR=$(pwd)

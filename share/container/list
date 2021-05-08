@@ -12,7 +12,7 @@ choose_which_gnu_linux_distro() {
 	unset NODE02_ENABLED WEEKLY_BUILD_CONTAINER
 	choose_which_gnu_linux_distro_ja() {
 		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "容器をお選びください" 0 50 0 \
-			"1" "🍭 推奨:毎週のGUIビルド(xfce,kde,mate,lxqt)" \
+			"1" "🍭 推奨:毎週のGUIビルド(xfce,kde,mate & lxqt)" \
 			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
 			"3" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
 			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
@@ -28,7 +28,7 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_zh() {
 		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "您想要安装哪个容器?" 0 50 0 \
-			"1" "🍭 推荐:每周构建xfce,kde,mate,lxqt" \
+			"1" "🍭 推荐:每周构建xfce,kde,mate & lxqt" \
 			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
 			"3" "🍥 Debian:致力于自由" \
 			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
@@ -44,7 +44,7 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "Which container do you want to install?" 0 50 0 \
-			"1" "🍭 Recommended:Weekly builds(xfce,kde,mate,lxqt)" \
+			"1" "🍭 Recommended:Weekly builds(xfce,kde,mate & lxqt)" \
 			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
 			"3" "🍥 Debian is a distro composed of free and open-source software" \
 			"4" "🍛 Ubuntu is the modern, open source OS." \
@@ -761,7 +761,7 @@ view_the_schedule() {
 			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce+zsh${RESET}
 
 		${BOLD}${PURPLE}Monthly builds${RESET}：
-		${BOLD}${YELLOW}24号/24th of every month${RESET}：
+		${BOLD}${YELLOW}8号/8th & 24号/24th of every month${RESET}：
 		TIME："UTC 01:01 / CST 09:01"
 			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}

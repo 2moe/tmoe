@@ -711,7 +711,7 @@ git_clone_tmoe_linux_repo() {
 		mkdir -pv ${TMOE_LINUX_DIR}
 	fi
 	printf "%s\n" "${GREEN}git clone ${BLUE}-b master --depth=1 ${YELLOW}https://${TMOE_GIT_URL} ${PURPLE}${TMOE_GIT_DIR}${RESET}"
-	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 }
 #################
 do_you_want_to_git_clone_tmoe_linux_repo() {

@@ -2,7 +2,7 @@
 #####################
 install_yay_main() {
     case $1 in
-    -bf | --build-fakeroot) install_fakeroot ;;
+    -bf | --build-fakeroot | --install-fakeroot) install_fakeroot ;;
     --add-archlinuxcn-repo) add_archlinuxcn_repo ;;
     --archlinux-repo-mirror) add_archlinuxcn_repo_mirror ;;
     -yay | --install-yay) install_yay ;;
@@ -41,6 +41,7 @@ install_fakeroot() {
     # rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
     # cd ${HOME}
     # [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
+    cp -fv /etc/pacman.conf.bak /etc/pacman.conf
     cp -fv /etc/pacman.conf /etc/pacman.conf.bak
     if ! grep -q 'arch4edu' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
@@ -74,15 +75,16 @@ install_fakeroot() {
 }
 add_archlinuxcn_repo() {
     cp -fv /etc/pacman.conf /etc/pacman.conf.bak
-    if ! grep -q 'arch4edu' /etc/pacman.conf; then
+    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
-					[arch4edu]
-					Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
-					Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
-					Server = https://arch4edu.keybase.pub/$arch
-					Server = https://mirror.autisten.club/arch4edu/$arch
-					Server = https://mirror.lesviallon.fr/arch4edu/$arch
-					Server = https://mirrors.tencent.com/arch4edu/$arch
+					[archlinuxcn]
+					Server = https://repo.archlinuxcn.org/$arch
+					Server = https://mirror.xtom.com/archlinuxcn/$arch
+					Server = https://mirrors.ocf.berkeley.edu/archlinuxcn/$arch
+					Server = https://mirror.xtom.nl/archlinuxcn/$arch
+					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+					Server = https://opentuna.cn/archlinuxcn/$arch
 					SigLevel = Never
 				Endofpacman
     fi
@@ -96,13 +98,13 @@ add_archlinuxcn_repo_mirror() {
         cp -fv /etc/pacman.conf.bak /etc/pacman.conf
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
-					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch                    
+					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
 					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 					Server = https://opentuna.cn/archlinuxcn/$arch
 					Server = https://repo.archlinuxcn.org/$arch
 					Server = https://mirror.xtom.com/archlinuxcn/$arch
 					Server = https://mirrors.ocf.berkeley.edu/archlinuxcn/$arch
-					Server = https://mirror.xtom.nl/archlinuxcn/$arch                                        
+					Server = https://mirror.xtom.nl/archlinuxcn/$arch
 					SigLevel = Never
 				Endofpacman
     fi

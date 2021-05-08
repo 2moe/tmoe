@@ -27,7 +27,7 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=arch_gui-lxde" > container.txt ; \
-    git clone --depth=1 https://github.com/2moe/tmoe-linux git || git clone --depth=1 git://github.com/2moe/tmoe-linux git; \
+    git clone -b master --depth=1 https://github.com/2moe/tmoe-linux git || git clone -b master --depth=1 git://github.com/2moe/tmoe-linux git; \
     cp -fv git/tool.sh /tmp; \
     cp -fv git/tools/sources/yay/build_fakeroot /tmp; \
     cd /tmp; \
@@ -39,7 +39,7 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     export AUTO_INSTALL_GUI=true; \
     bash build_fakeroot --add-archlinuxcn-repo; \
     bash install-gui.sh; \
-    bash build_fakeroot --build-fakeroot; \
+    bash build_fakeroot --install-fakeroot; \
     bash build_fakeroot --install-yay; \
     bash build_fakeroot --archlinux-repo-mirror; \
     rm -rfv /tmp/* ~/.vnc/*passwd; \

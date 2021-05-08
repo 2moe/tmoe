@@ -582,7 +582,7 @@ check_tmoe_manager_git() {
 git_clone_tmoe_manager() {
 	[[ -e ${TMOE_LINUX_DIR} ]] || mkdir -pv ${TMOE_LINUX_DIR}
 	printf "%s\n" "${GREEN}git clone ${BLUE}-b master --depth=1 ${YELLOW}https://${TMOE_GIT_URL} ${PURPLE}${TMOE_GIT_DIR}${RESET}"
-	git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 	source ${TMOE_SHARE_DIR}/environment/manager_environment
 	tmoe_manager_main_menu
 }
