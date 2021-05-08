@@ -41,7 +41,7 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     ./build_fakeroot --install-yay; \
     ./build_fakeroot --install-fakeroot; \
     ./build_fakeroot --archlinux-repo-mirror; \
-    pacman -Syu --noconfirm; \
+    cat /etc/pacman.conf; \
     rm -rfv /tmp/* ~/.vnc/*passwd; \
     pacman -R --noconfirm $(pacman -Qdtq); \
     rm -rfv /var/cache/pacman/pkg/* ~/.cache/* 2>/dev/null; \
