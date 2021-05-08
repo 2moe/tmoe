@@ -230,7 +230,6 @@ tmoe_desktop_faq() {
 			A:可以哒！ヾ(≧▽≦*)o 您可以在其它主流的GNU/Linux发行版，包括但不限于容器、虚拟机和实体机上使用这个脚本。
 			注：截止2020年7月份,LinuxDeploy配置的archlinux容器存在某个问题,导致libnewt无法被正确配置，进而导致本脚本无法在上面正常运行。
 			解决方法很简单，删掉某个文件夹再重新配置就可以了。因为本工具开发者已经很久没用过LinuxDeploy了，所以忘记是哪个啦！
-			如果您在使用过程中出现问题，那么建议您前往 https://github.com/2moe/tmoe-linux/issues 提交 issue,开发者很乐意帮您解决问题。
 
 			------------------------
 			Q:${YELLOW}我觉得tmoe-linux tool/manager的依赖有点多${RESET}
