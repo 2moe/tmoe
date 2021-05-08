@@ -17,7 +17,7 @@ choose_which_gnu_linux_distro() {
 			"3" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
 			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
 			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
-			"6" "🍱 Manjaro,centos,alpine,puppy" \
+			"6" "🍱 Manjaro,centos,alpine & puppy" \
 			"7" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
 			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
 			"9" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
@@ -28,12 +28,12 @@ choose_which_gnu_linux_distro() {
 	}
 	choose_which_gnu_linux_distro_zh() {
 		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "您想要安装哪个容器?" 0 50 0 \
-			"1" "🍭 推荐:Weekly builds(每周构建xfce,kde,mate,lxqt)" \
+			"1" "🍭 推荐:每周构建xfce,kde,mate,lxqt" \
 			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
 			"3" "🍥 Debian:致力于自由" \
 			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
 			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
-			"6" "🍱 Manjaro,centos,alpine,puppy" \
+			"6" "🍱 Manjaro,centos,alpine & puppy" \
 			"7" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
 			"8" "🍊 Armbian:香蕉派,香橙派(预装dde/gnome/cinnamon/budgie)" \
 			"9" "👒 Fedora:红帽社区版,新技术试验场" \
@@ -49,7 +49,7 @@ choose_which_gnu_linux_distro() {
 			"3" "🍥 Debian is a distro composed of free and open-source software" \
 			"4" "🍛 Ubuntu is the modern, open source OS." \
 			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
-			"6" "🍱 Manjaro,centos,alpine,puppy" \
+			"6" "🍱 Manjaro,centos,alpine & puppy" \
 			"7" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
 			"8" "🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)" \
 			"9" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \

@@ -19,7 +19,7 @@ check_root_permissions() {
 		*)
 			printf "%s\n" "Android :${BLUE}${ANDROID_VERSION}${RESET}"
 			printf "%s\n" "$(getprop ro.product.model)" 2>/dev/null
-			printf "%s\n" '检测到root权限授予失败，您无法通过tmoe linux manager安装chroot容器'
+			printf "%s\n" "${RED}ERROR${RESET},检测到root权限${PURPLE}授予失败${RESET}，您无法通过tmoe linux manager安装${BLUE}chroot${RESET}容器"
 			press_enter_to_return
 			tmoe_manager_main_menu
 			;;

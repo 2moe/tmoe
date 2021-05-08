@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4633,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4634,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -445,7 +445,7 @@ check_release_version() {
 	case "${LINUX_DISTRO}" in
 	"Android")
 		OSRELEASE="Android"
-		CHROOT_NOTE='(已向Android开放)'
+		# CHROOT_NOTE='(已向Android开放)'
 		;;
 	*)
 		if grep -q 'NAME=' /etc/os-release; then
@@ -692,7 +692,7 @@ tmoe_manager_main_menu() {
 				--backtitle "Type tmoe m to start the manager" \
 				--menu "${TMOE_TIPS_00}\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot container" \
+				"2" "🌸 chroot/systemd container" \
 				"3" "💔 remove tmoe-manager" \
 				"4" "🌏 locale/\$LANG" \
 				"5" "📱 Android-termux extra options" \
@@ -710,7 +710,7 @@ tmoe_manager_main_menu() {
 				--backtitle "Type tmoe m to start the manager" \
 				--menu "${TMOE_TIPS_00}\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
 				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot容器${CHROOT_NOTE}" \
+				"2" "🌸 chroot/systemd容器" \
 				"3" "💔 remove 移除" \
 				"4" "🌏 区域 locale/\$LANG" \
 				"5" "📱 Android-termux额外选项" \
@@ -728,7 +728,7 @@ tmoe_manager_main_menu() {
 				--backtitle "Geben Sie tmoe m ein, um den Manager zu starten." \
 				--menu "${TMOE_TIPS_00}\nBitte benutzen Sie die Pfeiltasten, um zu bedienen." 0 50 0 \
 				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot container" \
+				"2" "🌸 chroot/systemd container" \
 				"3" "💔 tmoe-manager entfernen" \
 				"4" "🌏 Gebietsschema/\$LANG" \
 				"5" "📱 Zusätzliche Optionen für Termux" \
