@@ -284,9 +284,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		 ###########
 	     set -- "${DEBIAN_CHROOT}" "\${@}"
 		 if [[ -n \${CHROOT_BIN} ]];then
-		    if [[ -n \${CHROOT_BIN} = system ]];then
+		    if [[ \${CHROOT_BIN} = system ]];then
 		        set -- "chroot" "\${@}"
-			elif [[ -n \${CHROOT_BIN} = termux ]];then
+			elif [[ \${CHROOT_BIN} = termux ]];then
 		        set -- "\${PREFIX}/bin/chroot" "\${@}"
 			else
 				set -- "\${PREFIX}/bin/chroot" "\${@}"
