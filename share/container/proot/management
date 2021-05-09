@@ -137,6 +137,9 @@ environment_variables_and_automatic_startup_script_management() {
 			"5" "/etc/environment" \
 			"6" "README" \
 			"7" "boot mode of systemd-nspawn" \
+			"8" "switch login shell" \
+			"9" "mount sd" \
+			"10" "mount termux" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -149,6 +152,9 @@ environment_variables_and_automatic_startup_script_management() {
 			"5" "/etc/environment" \
 			"6" "README 自述/说明" \
 			"7" "systemd-nspawn容器boot模式" \
+			"8" "切换登录shell" \
+			"9" "挂载sd" \
+			"10" "挂载termux" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -168,10 +174,81 @@ environment_variables_and_automatic_startup_script_management() {
 	5) edit_container_etc_environment ;;
 	6) readme_of_env_var_and_autostartup_script ;;
 	7) switch_nspawn_boot_mode ;;
+	8) switch_login_shell ;;
+	9)
+		MOUNT_VAR="MOUNT_SD"
+		MOUNT_POINT_VAR="SD_MOUNT_POINT"
+		mount_dir_to_container
+		;;
+	10)
+		MOUNT_VAR="MOUNT_TERMUX"
+		MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
+		mount_dir_to_container
+		;;
 	esac
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
+change_the_mount_point() {
+	CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	TARGET=$(whiptail --inputbox "Please type the path.\nThe current mount point is ${CURRENT_PATH}" 10 50 --title "MOUNT POINT" 3>&1 1>&2 2>&3)
+	# MOUNT_POINT="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${TARGET}" ]; then
+		printf "%s\n" "Sorry,the value is empty."
+	else
+		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_POINT_VAR}=).*@\1\"${TARGET}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	fi
+	egrep --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+mount_dir_to_container() {
+	CURRENT_STATUS=$(grep "^${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	[[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
+	if (whiptail --title "MOUNT SD" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS}" 8 50); then
+		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		case ${TMOE_CHROOT} in
+		true) ;;
+		*)
+			if (whiptail --title "MOUNT POINT" --yes-button "yes" --no-button "no" --yesno "Do you want to change the mount point?" 8 50); then
+				change_the_mount_point
+			fi
+			;;
+		esac
+	else
+		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	fi
+	egrep --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+switch_login_shell() {
+	CURRENT_SHELL=$(grep '^DEFAULT_LOGIN_SHELL_01=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
+		"1" "zsh" \
+		"2" "fish" \
+		"3" "bash" \
+		"4" "ash" \
+		"5" "sh" \
+		"6" "ksh" \
+		"7" "csh" \
+		"8" "pdksh" \
+		"9" "tcsh" \
+		"0" "🌚 Return to previous menu" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${ENV_VAR_AND_SCRIPT}" in
+	0 | "") environment_variables_and_automatic_startup_script_management ;;
+	1) DEFAULT_SHELL=zsh ;;
+	2) DEFAULT_SHELL=fish ;;
+	3) DEFAULT_SHELL=bash ;;
+	4) DEFAULT_SHELL=ash ;;
+	5) DEFAULT_SHELL=sh ;;
+	6) DEFAULT_SHELL=ksh ;;
+	7) DEFAULT_SHELL=csh ;;
+	8) DEFAULT_SHELL=pdksh ;;
+	9) DEFAULT_SHELL=tcsh ;;
+	esac
+	${TMOE_PREFIX} sed -i -E "s@^(DEFAULT_LOGIN_SHELL_01=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	egrep --color=auto '^[^#]*DEFAULT_LOGIN_SHELL_01=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+####################
 switch_nspawn_boot_mode() {
 	case ${SYSTEMD_NSPAWN} in
 	true)

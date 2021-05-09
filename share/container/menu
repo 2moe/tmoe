@@ -203,7 +203,7 @@ systemd_nspawn_env() {
 		case ${LINUX_DISTRO} in
 		Android)
 			${TMOE_INSTALLATION_COMMAND} systemd-container
-			printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
+			printf "%s\n" "${RED}Sorry${RESET}, this feature does not support ${BLUE}Android${RESET} system."
 			printf "%s\n" "Please use the ${BLUE}normal mode${RESET}."
 			;;
 		debian)
@@ -214,7 +214,7 @@ systemd_nspawn_env() {
 		esac
 	fi
 	if [ ! $(command -v dbus-uuidgen) ]; then
-		printf "${RED}%s${RESET}\n" "EORROR！YOU DID NOT INSTALL DBUS."
+		printf "${RED}%s${RESET}\n" "${RED}ERROR${RESET}！YOU DID NOT INSTALL DBUS."
 		printf "${GREEN}%s ${BLUE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "dbus"
 		systemd_nspawn_is_false
 		press_enter_to_return
@@ -222,7 +222,7 @@ systemd_nspawn_env() {
 	fi
 	#double check
 	if [ ! $(command -v systemd-nspawn) ]; then
-		printf "%s\n" "Sorry,this feature does not support your ${PURPLE}${LINUX_DISTRO}${RESET} system."
+		printf "%s\n" "${RED}ERROR${RESET},you ${PURPLE}did not ${GREEN}install ${PURPLE}systemd-nspawn${RESET}."
 		systemd_nspawn_is_false
 		press_enter_to_return
 		chroot_container_menu_multi_langs
