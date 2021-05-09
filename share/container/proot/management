@@ -140,23 +140,29 @@ environment_variables_and_automatic_startup_script_management() {
 			"8" "switch login shell" \
 			"9" "mount sd" \
 			"10" "mount termux" \
+			"11" "mount storage" \
+			"12" "mount tf" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
 	environment_variables_and_automatic_startup_script_management_menu_zh_cn() {
-		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
-			"1" "切换登录用户" \
-			"2" "Global env var(全局环境变量)" \
-			"3" "Entrypoint(入口点)" \
-			"4" "Temporary(临时自启脚本)" \
-			"5" "/etc/environment" \
-			"6" "README 自述/说明" \
-			"7" "systemd-nspawn容器boot模式" \
-			"8" "切换登录shell" \
-			"9" "挂载sd" \
-			"10" "挂载termux" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3)
+		ENV_VAR_AND_SCRIPT=$(
+			whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
+				"1" "切换登录用户" \
+				"2" "Global env var(全局环境变量)" \
+				"3" "Entrypoint(入口点)" \
+				"4" "Temporary(临时自启脚本)" \
+				"5" "/etc/environment" \
+				"6" "README 自述/说明" \
+				"7" "systemd-nspawn容器boot模式" \
+				"8" "切换登录shell" \
+				"9" "挂载sd" \
+				"10" "挂载termux" \
+				"11" "挂载storage" \
+				"12" "挂载tf" \
+				"0" "🌚 Return to previous menu" \
+				3>&1 1>&2 2>&3
+		)
 	}
 	#			"5" "Permanent(永久自启脚本)" \
 	case ${TMOE_MENU_LANG} in
@@ -183,6 +189,21 @@ environment_variables_and_automatic_startup_script_management() {
 	10)
 		MOUNT_VAR="MOUNT_TERMUX"
 		MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
+		mount_dir_to_container
+		;;
+	11)
+		case ${TMOE_CHROOT} in
+		true) printf "%s\n" "You are using a chroot container, the /storage directory will not be mounted by default" ;;
+		*)
+			MOUNT_VAR="MOUNT_STORAGE"
+			MOUNT_POINT_VAR="STORAGE_DIR"
+			mount_dir_to_container
+			;;
+		esac
+		;;
+	12)
+		MOUNT_VAR="MOUNT_TF"
+		MOUNT_POINT_VAR="TF_MOUNT_POINT"
 		mount_dir_to_container
 		;;
 	esac
