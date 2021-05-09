@@ -220,12 +220,18 @@ environment_variables_and_automatic_startup_script_management() {
 switch_container_engine_bin_file() {
 	unset TMOE_TIPS_05
 	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) TMOE_TIPS_04="您可以自行编译proot/chroot/nspawn,\n并指定其二进制文件所在路径。\n若默认的chroot无法运行，则可在此处进行切换。" ;;
-	*) TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located." ;;
+	zh_*UTF-8)
+		TMOE_TIPS_03="若默认的chroot无法运行,则可在此处进行切换"
+		TMOE_TIPS_04="您可以自行编译proot/chroot/nspawn,并指定其二进制文件所在路径"
+		;;
+	*)
+		TMOE_TIPS_03="If you cannot use the default chroot, you can switch here"
+		TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located."
+		;;
 	esac
 	CURRENT_BIN=$(egrep '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
 	[[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652或更新版本的容器。"
-	ENV_VAR_AND_SCRIPT=$(whiptail --title "Only applicable to v1.4652 and newer versions" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
+	ENV_VAR_AND_SCRIPT=$(whiptail --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
 		"1" "system(default)" \
 		"2" "termux/\$PREFIX" \
 		"3" "customize" \
