@@ -274,6 +274,8 @@ mount_dir_to_container() {
 	else
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
+	printf "%s\n" "----------------------"
+	egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	egrep --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_login_shell() {
