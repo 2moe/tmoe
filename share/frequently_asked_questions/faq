@@ -53,24 +53,39 @@ manager_frequently_asked_questions() {
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
 		"1" "how to customize the dir如何自定义容器目录" \
-		"2" "About auto conf(关于自动配置)" \
-		"3" "VNC无法调用音频" \
-		"4" "给Linux Deploy配置VNC音频" \
+		"2" "cannot rm container无法移除容器" \
+		"3" "About auto conf(关于自动配置)" \
+		"4" "VNC无法调用音频" \
+		"5" "给Linux Deploy配置VNC音频" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_FAQ}" in
 	0 | "") tmoe_manager_main_menu ;;
 	1) how_to_customize_the_container_dir ;;
-	2) questions_about_tmoe_automatic_configuration ;;
-	3) vnc_can_not_call_pulse_audio ;;
-	4) linux_deploy_pulse_server ;;
+	2) can_not_remove_the_container ;;
+	3) questions_about_tmoe_automatic_configuration ;;
+	4) vnc_can_not_call_pulse_audio ;;
+	5) linux_deploy_pulse_server ;;
 	esac
 	#############
 	press_enter_to_return
 	manager_frequently_asked_questions
 }
 ###########################
+can_not_remove_the_container() {
+	cat <<-ENDOFFAQ
+		01：
+			If you can not remove the container, then install e2fsprogs.
+				${GREEN}apt update;
+				apt install -y e2fsprogs${RESET}
+			And then, ${GREEN}chattr -i -R CONTAINER_DIR${RESET}
+			使用"chattr -i -R 容器文件路径"来递归解除文件锁定。
+		02：
+			若为chroot容器，且在umount后，容器内部的/media/sd不为空，则请手动将该目录备份到其他路径。
+			tmoe manager将容器内部的 ${BLUE}/media/sd${RESET} 视为宿主sd的挂载点，若umount后该目录不为空，则无法移除chroot容器。
+	ENDOFFAQ
+}
 how_to_customize_the_container_dir() {
 	cat <<-ENDOFFAQ
 		    Q:${YELLOW}How to customize the container dir?${RESET}

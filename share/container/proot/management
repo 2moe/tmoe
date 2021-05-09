@@ -183,11 +183,13 @@ environment_variables_and_automatic_startup_script_management() {
 	8) switch_login_shell ;;
 	9)
 		MOUNT_VAR="MOUNT_SD"
+		MOUNT_SOURCE_VAR="SD_DIR_01"
 		MOUNT_POINT_VAR="SD_MOUNT_POINT"
 		mount_dir_to_container
 		;;
 	10)
 		MOUNT_VAR="MOUNT_TERMUX"
+		MOUNT_SOURCE_VAR="TERMUX_DIR"
 		MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
 		mount_dir_to_container
 		;;
@@ -203,6 +205,7 @@ environment_variables_and_automatic_startup_script_management() {
 		;;
 	12)
 		MOUNT_VAR="MOUNT_TF"
+		MOUNT_SOURCE_VAR="TF_CARD_LINK"
 		MOUNT_POINT_VAR="TF_MOUNT_POINT"
 		mount_dir_to_container
 		;;
@@ -221,6 +224,22 @@ change_the_mount_point() {
 	fi
 	egrep --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
+change_the_mount_source_dir() {
+	CURRENT_PATH=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	TARGET=$(whiptail --inputbox "Please type the path.\nThe current source dir is ${CURRENT_PATH}" 10 50 --title "SOURCE DIR" 3>&1 1>&2 2>&3)
+	MOUNT_DIR="$(printf '%s\n' "${TARGET}" | head -n 1)"
+	if [ -z "${MOUNT_POINT}" ]; then
+		printf "%s\n" "Sorry,the value is empty."
+	else
+		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_SOURCE_VAR}=).*@\1\"${MOUNT_DIR}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	fi
+	egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+do_you_want_to_change_the_mount_source_dir() {
+	if (whiptail --title "SOURCE DIR" --yes-button "yes" --no-button "no" --yesno "Do you change the source dir?" 8 50); then
+		change_the_mount_source_dir
+	fi
+}
 mount_dir_to_container() {
 	CURRENT_STATUS=$(grep "^${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 	[[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
@@ -229,6 +248,9 @@ mount_dir_to_container() {
 		case ${TMOE_CHROOT} in
 		true) ;;
 		*)
+			case ${MOUNT_VAR} in
+			MOUNT_SD | MOUNT_TERMUX) do_you_want_to_change_the_mount_source_dir ;;
+			esac
 			if (whiptail --title "MOUNT POINT" --yes-button "yes" --no-button "no" --yesno "Do you want to change the mount point?" 8 50); then
 				change_the_mount_point
 			fi
