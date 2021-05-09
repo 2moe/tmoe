@@ -198,6 +198,7 @@ environment_variables_and_automatic_startup_script_management() {
 		true) printf "%s\n" "You are using a chroot container, the /storage directory will not be mounted by default" ;;
 		*)
 			MOUNT_VAR="MOUNT_STORAGE"
+			MOUNT_SOURCE_VAR="STORAGE_DIR"
 			MOUNT_POINT_VAR="STORAGE_DIR"
 			mount_dir_to_container
 			;;
@@ -211,7 +212,7 @@ environment_variables_and_automatic_startup_script_management() {
 		;;
 	esac
 	press_enter_to_return
-	${RETURN_TO_WHERE}
+	environment_variables_and_automatic_startup_script_management
 }
 change_the_mount_point() {
 	CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
@@ -231,19 +232,31 @@ change_the_mount_source_dir() {
 	if [ -z "${MOUNT_DIR}" ]; then
 		printf "%s\n" "Sorry,the value is empty."
 	else
+		if [[ ! -e ${MOUNT_DIR} ]]; then
+			printf "%s\n" "${RED}WARNING${RESET}, this path may not exist."
+		fi
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_SOURCE_VAR}=).*@\1\"${MOUNT_DIR}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
 	egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	RETURN_TO_WHERE="change_the_mount_source_dir"
+	do_you_want_to_continue
 }
 do_you_want_to_change_the_mount_source_dir() {
 	if (whiptail --title "SOURCE DIR" --yes-button "yes" --no-button "no" --yesno "Do you change the source dir?" 8 50); then
 		change_the_mount_source_dir
+	else
+		egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
 }
 mount_dir_to_container() {
 	CURRENT_STATUS=$(grep "^${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	CURRENT_MOUNT_SOURCE=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	CURRENT_MOUNT_POINT=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	if [[ -z ${CURRENT_MOUNT_POINT} ]]; then
+		CURRENT_MOUNT_POINT=default
+	fi
 	[[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
-	if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS}" 8 50); then
+	if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS},\nsource dir is ${CURRENT_MOUNT_SOURCE},\nmount point is ${CURRENT_MOUNT_POINT}" 10 50); then
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		case ${TMOE_CHROOT} in
 		true) ;;
@@ -253,6 +266,8 @@ mount_dir_to_container() {
 			esac
 			if (whiptail --title "MOUNT POINT" --yes-button "yes" --no-button "no" --yesno "Do you want to change the mount point?" 8 50); then
 				change_the_mount_point
+			else
+				egrep --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 			fi
 			;;
 		esac
