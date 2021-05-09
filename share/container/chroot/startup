@@ -28,6 +28,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#let TERMUX_MOUNT_POINT = String::from("/media/termux");  
 
 	MOUNT_TF=true
+	TF_CARD_LINK="${HOME}/storage/external-1"
 	#let TF_MOUNT_POINT = String::from("/media/tf");  
 	#If the value is "false", the relevant directory will not be mounted. Default is true.
 	################
@@ -237,7 +238,6 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            tf)
 				TF_MOUNT_POINT="/media/tf"
 				if [[ \${MOUNT_TF} = true ]];then
-	                TF_CARD_LINK="${HOME}/storage/external-1"
 	                if [ -h "\${TF_CARD_LINK}" ]; then
 	                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
 	                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
