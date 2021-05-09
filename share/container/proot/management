@@ -224,7 +224,7 @@ change_the_mount_point() {
 mount_dir_to_container() {
 	CURRENT_STATUS=$(grep "^${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 	[[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
-	if (whiptail --title "MOUNT SD" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS}" 8 50); then
+	if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS}" 8 50); then
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		case ${TMOE_CHROOT} in
 		true) ;;
