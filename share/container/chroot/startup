@@ -186,12 +186,12 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		set -- "TMPDIR=/tmp" "\${@}"
 		set -- "DISPLAY=:0.0" "\${@}"
 		set -- "PULSE_SERVER=tcp:127.0.0.1:4713" "\${@}"
-	    set -- "/usr/bin/env" "-i" "\${@}"
 		if [[ -n \${TMOE_SHELL} ]];then
 			set -- "SHELL=\${TMOE_SHELL}" "\${@}"
 		else
 			set -- "SHELL=/bin/zsh" "\${@}"
 		fi
+	    set -- "/usr/bin/env" "-i" "\${@}"
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 	            case \${i} in
