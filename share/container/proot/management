@@ -192,11 +192,11 @@ environment_variables_and_automatic_startup_script_management() {
 change_the_mount_point() {
 	CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 	TARGET=$(whiptail --inputbox "Please type the path.\nThe current mount point is ${CURRENT_PATH}" 10 50 --title "MOUNT POINT" 3>&1 1>&2 2>&3)
-	# MOUNT_POINT="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${TARGET}" ]; then
+	MOUNT_POINT="$(printf '%s\n' "${TARGET}" | head -n 1)"
+	if [ -z "${MOUNT_POINT}" ]; then
 		printf "%s\n" "Sorry,the value is empty."
 	else
-		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_POINT_VAR}=).*@\1\"${TARGET}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_POINT_VAR}=).*@\1\"${MOUNT_POINT}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
 	egrep --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
