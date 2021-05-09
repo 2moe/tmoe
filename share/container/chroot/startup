@@ -19,16 +19,16 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	SD_DIR_04="${HOME}/sd"
 	SD_DIR_05="${HOME}/Downloads"
 	SD_DIR_06="${HOME}/Download"
-	#SD_MOUNT_POINT="/media/sd" #const string
+	#let SD_MOUNT_POINT = String::from("/media/sd");
 	#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
 	#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 
 	MOUNT_TERMUX=true
 	TERMUX_DIR="/data/data/com.termux/files/home"
-	#TERMUX_MOUNT_POINT="/media/termux" #const string
+	#let TERMUX_MOUNT_POINT = String::from("/media/termux");  
 
 	MOUNT_TF=true
-	#TF_MOUNT_POINT="/media/tf"
+	#let TF_MOUNT_POINT = String::from("/media/tf");  
 	#If the value is "false", the relevant directory will not be mounted. Default is true.
 	################
 	DEFAULT_LOGIN_SHELL_01=zsh
@@ -235,22 +235,24 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then
 	            case \${i} in
 	            tf)
+				TF_MOUNT_POINT="/media/tf"
 				if [[ \${MOUNT_TF} = true ]];then
 	                TF_CARD_LINK="${HOME}/storage/external-1"
 	                if [ -h "\${TF_CARD_LINK}" ]; then
 	                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
 	                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
-	                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                        su -c "mount -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
 	                    else
-	                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                        su -c "mount -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
 	                    fi
 	                fi
 				fi
 	                ;;
 	            #######
 	            termux)
+				TERMUX_MOUNT_POINT="/media/termux"
 				if [[ \${MOUNT_TERMUX} = true ]];then
-	                [[ ! -d "\${TERMUX_DIR}" ]] || su -c "mount -o bind \${TERMUX_DIR} ${DEBIAN_CHROOT}/media/\${i} &>/dev/null"
+	                [[ ! -d "\${TERMUX_DIR}" ]] || su -c "mount -o bind \${TERMUX_DIR} ${DEBIAN_CHROOT}\${TERMUX_MOUNT_POINT} &>/dev/null"
 				fi
 	                ;;
 	            ###########
