@@ -96,7 +96,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		#arch-linux挂载自身
 		if ! detect_mount "${DEBIAN_CHROOT}/"; then
 		   su -c "mount --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
-		   su -c "mount -o remount,exec,suid,dev ${DEBIAN_CHROOT}"
+		   su -c "mount -o remount,exec,suid,relatime,dev ${DEBIAN_CHROOT}"
 		 fi
 		 #########
 		if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]];then
@@ -171,7 +171,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
 		else
 			CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
-			[[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/${CHROOT_USER}"
+			[[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
 			set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
 		fi
 		set -- "HOSTNAME=\${HOST_NAME}" "\${@}"
@@ -192,17 +192,19 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		else
 			set -- "SHELL=/bin/zsh" "\${@}"
 		fi
-	    set -- "/usr/bin/env" "-i" "PULSE_SERVER=tcp:127.0.0.1:4713" "DISPLAY=:0.0" "TMPDIR=/tmp" "TMOE_PROOT=false" "TMOE_CHROOT=true" "GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS='@im=fcitx'" "SDL_IM_MODULE=fcitx" "TERM=xterm-256color" "HOSTNAME=\${HOST_NAME}" "\${@}"
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 	            case \${i} in
-	            dev) mount_01 ;;
-	            proc) su -c "mount -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}" ;;
-	            sys) su -c "mount -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
+	            dev) 
+				#rw,nosuid,relatime,size=12224760k,nr_inodes=3056190,mode=755
+				mount_01 
+				;;
+	            proc) su -c "mount -o rw,nosuid,nodev,noexec,relatime -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}" ;;
+	            sys) su -c "mount -o rw,nosuid,nodev,noexec,relatime -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
 	            dev/pts)
 	                if ! detect_mount "/\${i}"; then
 	                    mkdir_01
-	                    su -c "mount -o rw,nosuid,noexec,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
+	                    su -c "mount -o rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
 	                fi
 	                su -c "mount -t devpts devpts ${DEBIAN_CHROOT}/\${i}"
 	                ;;

@@ -20,7 +20,7 @@ proot_management_menu() {
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 unmount & remove" \
 			"7" "📘 readme" \
-			"8" "🌈 beta:create a new container" \
+			"8" "🌈 create a new container" \
 			"9" "🥤 edit script" \
 			"10" "🍅 space occupation" \
 			"11" " unmount & remove (Compatibility mode)" \
@@ -36,7 +36,7 @@ proot_management_menu() {
 			"5" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"6" "💔 unmount & remove 卸载并移除" \
 			"7" "📘 readme 自述/说明" \
-			"8" "🌈 beta公测:create a new container新建容器" \
+			"8" "🌈 create a new container新建容器" \
 			"9" "🥤 edit script 编辑脚本" \
 			"10" "🍅 space occupation 空间占用大小" \
 			"11" "卸载并移除(兼容模式)" \
@@ -52,7 +52,7 @@ proot_management_menu() {
 			"5" "🍹 backup ${CONTAINER_TYPE} container" \
 			"6" "💔 aushängen und entfernen" \
 			"7" "📘 Liesmich" \
-			"8" "🌈 beta:Erstellen Sie einen neuen Container" \
+			"8" "🌈 Erstellen Sie einen neuen Container" \
 			"9" "🥤 Skript bearbeiten" \
 			"10" "🍅 Raumbesetzung" \
 			"11" "aushängen und entfernen (Compatibility mode)" \
@@ -221,11 +221,11 @@ switch_container_engine_bin_file() {
 	unset TMOE_TIPS_05
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8)
-		TMOE_TIPS_03="若默认的chroot无法运行,则可在此处进行切换"
+		TMOE_TIPS_03="若默认的${CONTAINER_TYPE} bin无法运行,则可在此处进行切换"
 		TMOE_TIPS_04="您可以自行编译proot/chroot/nspawn,并指定其二进制文件所在路径"
 		;;
 	*)
-		TMOE_TIPS_03="If you cannot use the default chroot, you can switch here"
+		TMOE_TIPS_03="If you cannot use the default ${CONTAINER_TYPE} bin, you can switch here"
 		TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located."
 		;;
 	esac
