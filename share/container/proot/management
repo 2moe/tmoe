@@ -228,7 +228,7 @@ change_the_mount_source_dir() {
 	CURRENT_PATH=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 	TARGET=$(whiptail --inputbox "Please type the path.\nThe current source dir is ${CURRENT_PATH}" 10 50 --title "SOURCE DIR" 3>&1 1>&2 2>&3)
 	MOUNT_DIR="$(printf '%s\n' "${TARGET}" | head -n 1)"
-	if [ -z "${MOUNT_POINT}" ]; then
+	if [ -z "${MOUNT_DIR}" ]; then
 		printf "%s\n" "Sorry,the value is empty."
 	else
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_SOURCE_VAR}=).*@\1\"${MOUNT_DIR}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
