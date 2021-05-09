@@ -31,6 +31,10 @@ CHROOT_USER=root
 #您可以指定用户，例如root或ubuntu，默认为root
 #Sie können einen Benutzer angeben
 
+CHROOT_BIN="system"
+#You can specify the path where the binary file of systemd-nspawn is located. If the vaule is system, it will use the default path of the system. You can also enter the full path, such as "\${PREFIX}/bin/systemd-nspawn"
+#您可以自行编译systemd-nspawn,并指定二进制文件所在路径。当此变量值为system时，将使用系统默认systemd-nspawn二进制文件所在路径；当为prefix时，将使用 "${PREFIX}/bin/systemd-nspawn"。您也可以输入完整路径,例如"/usr/local/bin/systemd-nspawn"
+
 #mount dir
 #挂载相关目录
 
@@ -106,7 +110,17 @@ fi
 if [[ \${MOUNT_DOCKER_DIR} = true ]]; then
     [[ ! -e "\${TMOE_DOCKER_DIR}" ]] || set -- "\${@}" "--bind" "\${TMOE_DOCKER_DIR}"
 fi
-set -- "systemd-nspawn" "\${@}"
+if [[ -n \${CHROOT_BIN} ]]; then
+    if [[ \${CHROOT_BIN} = system ]]; then
+        set -- "systemd-nspawn" "\${@}"
+    elif [[ \${CHROOT_BIN} = termux || \${CHROOT_BIN} = prefix ]]; then
+        set -- "\${PREFIX}/bin/systemd-nspawn" "\${@}"
+    else
+        set -- "\${CHROOT_BIN}" "\${@}"
+    fi
+else
+    set -- "systemd-nspawn" "\${@}"
+fi
 unset LD_PRELOAD
 TMOE_NSPAWN_EXEC="exec \${@}"
 su -c "\${TMOE_NSPAWN_EXEC}"

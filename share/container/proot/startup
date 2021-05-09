@@ -7,6 +7,10 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#您可以指定用户，例如root或ubuntu，默认为root
 	#Sie können einen Benutzer angeben
 	################
+	PROOT_BIN="system"
+	#You can specify the path where the binary file of proot is located. If the vaule is system, it will use the default path of the system. You can also enter the full path, such as "\${PREFIX}/bin/proot"
+	#您可以自行编译proot,并指定二进制文件所在路径。当此变量值为system时，将使用系统默认proot二进制文件所在路径；当为termux时，将使用 "${PREFIX}/bin/proot"。您也可以输入完整路径,例如"/usr/local/bin/proot"
+	################
 	KILL_ON_EXIT=true
 	#Kill all processes on command exit. When the executed command leaves orphean or detached processes around, proot waits until all processes possibly terminate. This option forces the immediate termination of all tracee processes when the main command exits.
 	#退出容器时, 自动杀掉所有进程, 默认为true
@@ -265,8 +269,18 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        set -- "--root-id" "\${@}"
 		else
 			set -- "--change-id=\${PROOT_UID}:\${PROOT_GID}" "\${@}"
-		fi 
-	    set -- "proot" "\${@}"
+		fi
+		if [[ -n \${PROOT_BIN} ]];then
+		    if [[ \${PROOT_BIN} = system ]];then
+		        set -- "proot" "\${@}"
+		    elif [[ \${PROOT_BIN} = termux ]];then
+		        set -- "\${PREFIX}/bin/proot" "\${@}"
+		    else
+		        set -- "\${PROOT_BIN}" "\${@}"
+		    fi
+		else
+		    set -- "proot" "\${@}" 
+		fi
 	    exec "\${@}"
 	}
 	main "\${@}"

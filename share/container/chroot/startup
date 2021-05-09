@@ -10,8 +10,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#Sie können einen Benutzer angeben
 	################
 	CHROOT_BIN="system"
-	#You can choose system, termux, or enter the full path
-	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当为termux时，将使用 "${PREFIX}/bin/chroot"；您也可以输入完整路径,例如"/usr/sbin/chroot"
+	#You can choose system or termux. You can also enter the full path, such as "\${PREFIX}/bin/chroot"
+	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当为termux时，将使用 "${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
 
 	UNSHARE_BIN="termux"
 	################
@@ -286,14 +286,14 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		 if [[ -n \${CHROOT_BIN} ]];then
 		    if [[ \${CHROOT_BIN} = system ]];then
 		        set -- "chroot" "\${@}"
-			elif [[ \${CHROOT_BIN} = termux ]];then
+		    elif [[ \${CHROOT_BIN} = termux ]];then
 		        set -- "\${PREFIX}/bin/chroot" "\${@}"
-			else
-				set -- "\${PREFIX}/bin/chroot" "\${@}"
+		    else
+		        set -- "\${CHROOT_BIN}" "\${@}"
 		    fi
 		else
-			set -- "chroot" "\${@}" 
-		 fi
+		    set -- "chroot" "\${@}" 
+		fi
 	     unset LD_PRELOAD
 		 TMOE_CHROOT_EXEC="\${@}"
 		 su -c "\${TMOE_CHROOT_EXEC}"
