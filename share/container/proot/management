@@ -138,10 +138,11 @@ environment_variables_and_automatic_startup_script_management() {
 			"6" "README" \
 			"7" "boot mode of systemd-nspawn" \
 			"8" "switch login shell" \
-			"9" "mount sd" \
-			"10" "mount termux" \
-			"11" "mount storage" \
-			"12" "mount tf" \
+			"9" "proot/chroot/nspawn bin file" \
+			"10" "mount sd" \
+			"11" "mount termux" \
+			"12" "mount storage" \
+			"13" "mount tf" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -156,10 +157,11 @@ environment_variables_and_automatic_startup_script_management() {
 				"6" "README 自述/说明" \
 				"7" "systemd-nspawn容器boot模式" \
 				"8" "切换登录shell" \
-				"9" "挂载sd" \
-				"10" "挂载termux" \
-				"11" "挂载storage" \
-				"12" "挂载tf" \
+				"9" "proot/chroot/nspawn二进制文件" \
+				"10" "挂载sd" \
+				"11" "挂载termux" \
+				"12" "挂载storage" \
+				"13" "挂载tf" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -181,19 +183,20 @@ environment_variables_and_automatic_startup_script_management() {
 	6) readme_of_env_var_and_autostartup_script ;;
 	7) switch_nspawn_boot_mode ;;
 	8) switch_login_shell ;;
-	9)
+	9) switch_container_engine_bin_file ;;
+	10)
 		MOUNT_VAR="MOUNT_SD"
 		MOUNT_SOURCE_VAR="SD_DIR_01"
 		MOUNT_POINT_VAR="SD_MOUNT_POINT"
 		mount_dir_to_container
 		;;
-	10)
+	11)
 		MOUNT_VAR="MOUNT_TERMUX"
 		MOUNT_SOURCE_VAR="TERMUX_DIR"
 		MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
 		mount_dir_to_container
 		;;
-	11)
+	12)
 		case ${TMOE_CHROOT} in
 		true) printf "%s\n" "You are using a chroot container, the /storage directory will not be mounted by default" ;;
 		*)
@@ -204,7 +207,7 @@ environment_variables_and_automatic_startup_script_management() {
 			;;
 		esac
 		;;
-	12)
+	13)
 		MOUNT_VAR="MOUNT_TF"
 		MOUNT_SOURCE_VAR="TF_CARD_LINK"
 		MOUNT_POINT_VAR="TF_MOUNT_POINT"
@@ -213,6 +216,43 @@ environment_variables_and_automatic_startup_script_management() {
 	esac
 	press_enter_to_return
 	environment_variables_and_automatic_startup_script_management
+}
+switch_container_engine_bin_file() {
+	unset TMOE_TIPS_05
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) TMOE_TIPS_04="您可以自行编译proot/chroot/nspawn,\n并指定其二进制文件所在路径。\n若默认的chroot无法运行，则可在此处进行切换。" ;;
+	*) TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located." ;;
+	esac
+	CURRENT_BIN=$(egrep '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+	[[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652或更新版本的容器。"
+	ENV_VAR_AND_SCRIPT=$(whiptail --title "Only applicable to v1.4652 and newer versions" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
+		"1" "system(default)" \
+		"2" "termux/\$PREFIX" \
+		"3" "customize" \
+		"0" "🌚 back" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${ENV_VAR_AND_SCRIPT}" in
+	0 | "") environment_variables_and_automatic_startup_script_management ;;
+	1) CHROOT_BIN=system ;;
+	2) CHROOT_BIN=termux ;;
+	3) please_type_the_container_engine_bin_file_path ;;
+	esac
+	${TMOE_PREFIX} sed -E -e "s@^(CHROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
+		-e "s@^(PROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
+		-i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	egrep --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	press_enter_to_return
+	switch_container_engine_bin_file
+}
+please_type_the_container_engine_bin_file_path() {
+	TARGET=$(whiptail --inputbox "Please type the path.\nFor example, ${PREFIX}/bin/chroot" 10 50 --title "The absolute path of the binary file" 3>&1 1>&2 2>&3)
+	CHROOT_BIN="$(printf '%s\n' "${TARGET}" | head -n 1)"
+	if [ -z "${CHROOT_BIN}" ]; then
+		printf "%s\n" "Sorry,the value is empty."
+		press_enter_to_return
+		switch_container_engine_bin_file
+	fi
 }
 change_the_mount_point() {
 	CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')

@@ -8,8 +8,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Sie können einen Benutzer angeben
 	################
 	PROOT_BIN="system"
-	#You can specify the path where the binary file of proot is located. If the vaule is system, it will use the default path of the system. You can also enter the full path, such as "\${PREFIX}/bin/proot"
-	#您可以自行编译proot,并指定二进制文件所在路径。当此变量值为system时，将使用系统默认proot二进制文件所在路径；当为termux时，将使用 "${PREFIX}/bin/proot"。您也可以输入完整路径,例如"/usr/local/bin/proot"
+	#You can specify the path where the binary file of proot is located. If the vaule is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/proot"
+	#您可以自行编译proot,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认proot二进制文件所在路径；当为termux时，将使用 "${PREFIX}/bin/proot"。您也可以输入完整路径,例如"/usr/local/bin/proot"
 	################
 	KILL_ON_EXIT=true
 	#Kill all processes on command exit. When the executed command leaves orphean or detached processes around, proot waits until all processes possibly terminate. This option forces the immediate termination of all tracee processes when the main command exits.

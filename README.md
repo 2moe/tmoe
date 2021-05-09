@@ -421,7 +421,7 @@ Next, I will introduce the meaning of each parameter.
         "m:mipsel:Microprocessor without Interlocked Pipelined Stages little-endian"
         "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principlesRISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles"
 -------------
-        The 5th parameter can start a specific program of the container, such as vnc.
+        The 5th parameter can start a specific program of the container, such as vnc and x11.
         If it is empty, then zsh will be started.
         在第五个参数中，"vnc"可简化为"v"。
         启动chroot ubuntu-focal_arm64 tiger vncserver的命令:

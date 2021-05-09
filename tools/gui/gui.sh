@@ -296,7 +296,7 @@ modify_vnc_pulse_audio() {
 ##################
 nano_startvnc_manually() {
     printf '%s\n' '您可以手动修改vnc的配置信息'
-    printf '%s\n' 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution, such as 1920x1080 (vertical screen).'
+    printf '%s\n' 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution.For example, 1920x1080 (vertical screen).'
     printf '%s\n' '若您想要修改分辨率，请将默认的1440x720（横屏）改为其它您想要的分辨率，例如720x1440（竖屏）。'
     #printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
     printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
