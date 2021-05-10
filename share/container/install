@@ -654,7 +654,7 @@ create_chroot_startup_script() {
 	if [[ $(command -v getprop) && $(command -v am) ]]; then
 		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
 		case ${ANDROID_VERSION} in
-		5 | 6 | 7) sudo sed -i -E 's@^(OLD_VERSION_ANDROID_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
+		5 | 6 | 7) sudo sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
 		esac
 		printf "%s\n" "ANDROID_VERSION=${ANDROID_VERSION}" >${TMPDIR}/.ANDROID_VERSION.txt
 		sudo mv -vf ${TMPDIR}/.ANDROID_VERSION.txt ${DEBIAN_CHROOT}/tmp/

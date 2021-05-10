@@ -19,7 +19,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	UNSHARE_BIN="termux"
 	#Binary file of "unshare" in util-linux
 
-	OLD_VERSION_ANDROID_COMPATIBILITY_MODE=false
+	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	#If there are compatibility issues, please try to set this value to true, which sets the values of CHROOT_BIN, MOUNT_BIN and UNSHARE_BIN to termux.
 	#Default is false.
 	################
@@ -109,7 +109,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    termux | prefix) TMOE_MOUNT="\${PREFIX}/bin/mount" ;;
 	    *) TMOE_MOUNT="\${MOUNT_BIN}" ;;
 	    esac
-	    [[ \${OLD_VERSION_ANDROID_COMPATIBILITY_MODE} != true ]] || CHROOT_BIN="${PREFIX}/bin/chroot" && UNSHARE_BIN="${PREFIX}/bin/unshare" && MOUNT_BIN="${PREFIX}/bin/mount"
+	    [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} != true ]] || CHROOT_BIN="${PREFIX}/bin/chroot" && UNSHARE_BIN="${PREFIX}/bin/unshare" && MOUNT_BIN="${PREFIX}/bin/mount"
 	}
 	##############
 	start_tmoe_gnu_linux_chroot_container() {
