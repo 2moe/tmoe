@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4664,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4665,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -822,8 +822,8 @@ start_zsh_tool_as_current_user() {
 start_tmoe_zsh_manager() {
 	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
 	ZSH_TOOL_URL="https://cdn.jsdelivr.net/gh/2moe/tmoe-zsh@master/.mirror/zsh"
-	case $(id -u) in
-	0) normally_start_zsh ;;
+	case ${HOME} in
+	/root) normally_start_zsh ;;
 	*)
 		case ${LINUX_DISTRO} in
 		Android) normally_start_zsh ;;

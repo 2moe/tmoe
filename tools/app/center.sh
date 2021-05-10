@@ -110,8 +110,8 @@ start_zsh_tool_as_current_user() {
 start_tmoe_zsh_manager() {
     TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
     ZSH_TOOL_URL="https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh"
-    case $(id -u) in
-    0) normally_start_zsh ;;
+    case ${HOME} in
+    /root) normally_start_zsh ;;
     *)
         case ${LINUX_DISTRO} in
         Android) normally_start_zsh ;;
