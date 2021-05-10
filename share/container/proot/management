@@ -255,7 +255,11 @@ switch_container_engine_bin_file() {
 		TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located."
 		;;
 	esac
-	CURRENT_BIN=$(egrep '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+	if grep -q '^UNSHARE_ENABLED=true' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
+		CURRENT_BIN=$(grep '^UNSHARE_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+	else
+		CURRENT_BIN=$(egrep '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+	fi
 	[[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652或更新版本的容器。"
 	ENV_VAR_AND_SCRIPT=$(whiptail --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
 		"1" "system(default)" \
@@ -272,8 +276,9 @@ switch_container_engine_bin_file() {
 	esac
 	${TMOE_PREFIX} sed -E -e "s@^(CHROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
 		-e "s@^(PROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
+		-e "s@^(UNSHARE_BIN=).*@\1\"${CHROOT_BIN}\"@" \
 		-i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	egrep --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	egrep --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=|^[^#]*^UNSHARE_BIN=|^UNSHARE_ENABLED=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	press_enter_to_return
 	switch_container_engine_bin_file
 }
