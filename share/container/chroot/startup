@@ -159,7 +159,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            fi
 	        done
 	    fi
-	    if [[ \${UNSHARE_ENABLED} != true ]]; then
+	    # if [[ \${UNSHARE_ENABLED} != true ]]; then
 	        if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]]; then
 	            if [[ -z \${TMOE_SHELL} ]]; then
 	                #ALPINE ash shell is a link.
@@ -184,9 +184,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                set -- "/bin/sh" "-l" "\${@}"
 	            fi
 	        fi
-	    else
-	        set -- "\${TMOE_SHELL}" "-l" "\${@}"
-	    fi
+	    # else
+	    #     set -- "\${TMOE_SHELL}" "-l" "\${@}"
+	    # fi
 
 	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
 	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\${@}"
@@ -346,14 +346,15 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 		if [[ \${UNSHARE_ENABLED} = true ]]; then
 			set -- "-R" "\${@}"
 		fi
-		if [[ \${UNSHARE_ENABLED} = true && \${CHROOT_USER} != root ]];then
-			CHROOT_UID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
-			CHROOT_GID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
-			[[ -n \${CHROOT_UID} ]] || CHROOT_UID=0
-			[[ -n \${CHROOT_GID} ]] || CHROOT_GID=0
-			set -- "--setgid" "\${CHROOT_GID}" "\${@}"
-			set -- "--setuid" "\${CHROOT_UID}" "\${@}"
-		fi
+		#For Android, do not set the gid and uid of unshare, otherwise the aid user group of non-root user will not take effect.
+		# if [[ \${UNSHARE_ENABLED} = true && \${CHROOT_USER} != root ]];then
+		#  CHROOT_UID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
+		#  CHROOT_GID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
+		#  [[ -n \${CHROOT_UID} ]] || CHROOT_UID=0
+		#  [[ -n \${CHROOT_GID} ]] || CHROOT_GID=0
+		#  set -- "--setgid" "\${CHROOT_GID}" "\${@}"
+		#  set -- "--setuid" "\${CHROOT_UID}" "\${@}"
+		# fi
 	    if [[ \${UNSHARE_ENABLED} = true ]]; then
 	        if [[ \${SHARE_PROC} = true ]]; then
 	            set -- "--mount-proc" "\${@}"
