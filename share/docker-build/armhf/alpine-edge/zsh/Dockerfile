@@ -7,7 +7,7 @@ ENV HOME=/root \
     TMOE_DOCKER=true
 RUN apk update; \
     apk upgrade; \
-    apk add tar grep curl wget zstd bash tzdata newt git; \
+    apk add tar grep curl wget zstd bash tzdata newt shadow git; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     cd /tmp; \
     curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh'; \

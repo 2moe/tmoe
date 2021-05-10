@@ -7,7 +7,7 @@ ENV HOME=/root \
     TMOE_DOCKER=true
 RUN apk update; \
     apk upgrade; \
-    apk add sudo tar grep curl wget bash tzdata newt; \
+    apk add sudo tar grep curl wget bash tzdata newt shadow; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     rustup self update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \

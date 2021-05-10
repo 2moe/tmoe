@@ -1610,11 +1610,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if [ "$(sed -n 2p /etc/os-release | cut -d '=' -f 2)" = "alpine" ]; then
 	        [[ ${TMOE_GITHUB} = true ]] || sed -i 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' /etc/apk/repositories
 			cat /etc/apk/repositories
-			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt procps sudo${RESET}"
+			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}bash tzdata newt sudo shadow${RESET}"
 			printf "%s\n" "${GREEN}apk ${YELLOW}upgrade${RESET}"
 	        apk update
 			apk upgrade
-	        apk add bash tzdata newt procps sudo
+	        apk add bash tzdata newt sudo shadow
 	    fi
 	    rm -f ~/.profile ~/.zlogin 2>/dev/null
 	    mv -f ~/.profile.bak ~/.profile 2>/dev/null
