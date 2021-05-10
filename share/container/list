@@ -1358,7 +1358,7 @@ ubuntu_distro_x64_model_02() {
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" |
 		sed "/usermod -a/d" |
-		sed "/groupadd /d" |
+		sed "/groupadd aid/d" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ############
@@ -1378,7 +1378,7 @@ linux_distro_common_model_01() {
 		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
 		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
 		sed "/usermod -a/d" |
-		sed "/groupadd /d" |
+		sed "/groupadd aid/d" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ####################

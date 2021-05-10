@@ -57,6 +57,7 @@ manager_frequently_asked_questions() {
 		"3" "About auto conf(关于自动配置)" \
 		"4" "VNC无法调用音频" \
 		"5" "给Linux Deploy配置VNC音频" \
+		"6" "sudo出现nosuid错误" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -67,7 +68,9 @@ manager_frequently_asked_questions() {
 	3) questions_about_tmoe_automatic_configuration ;;
 	4) vnc_can_not_call_pulse_audio ;;
 	5) linux_deploy_pulse_server ;;
+	6) printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,uhelper=udisks2 /dev/xxx /media/xxx/mountpoint" ;;
 	esac
+	#subvolid=5,subvol=/,compress=zstd
 	#############
 	press_enter_to_return
 	manager_frequently_asked_questions
