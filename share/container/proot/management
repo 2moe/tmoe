@@ -138,11 +138,12 @@ environment_variables_and_automatic_startup_script_management() {
 			"6" "README" \
 			"7" "boot mode of systemd-nspawn" \
 			"8" "switch login shell" \
-			"9" "proot/chroot/nspawn bin file" \
-			"10" "mount sd" \
-			"11" "mount termux" \
-			"12" "mount storage" \
-			"13" "mount tf" \
+			"9" "switch chroot/unshare" \
+			"10" "proot/chroot/nspawn bin file" \
+			"11" "mount sd" \
+			"12" "mount termux" \
+			"13" "mount storage" \
+			"14" "mount tf" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -157,11 +158,12 @@ environment_variables_and_automatic_startup_script_management() {
 				"6" "README 自述/说明" \
 				"7" "systemd-nspawn容器boot模式" \
 				"8" "切换登录shell" \
-				"9" "proot/chroot/nspawn二进制文件" \
-				"10" "挂载sd" \
-				"11" "挂载termux" \
-				"12" "挂载storage" \
-				"13" "挂载tf" \
+				"9" "切换chroot/unshare" \
+				"10" "proot/chroot/nspawn二进制文件" \
+				"11" "挂载sd" \
+				"12" "挂载termux" \
+				"13" "挂载storage" \
+				"14" "挂载tf" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -183,20 +185,21 @@ environment_variables_and_automatic_startup_script_management() {
 	6) readme_of_env_var_and_autostartup_script ;;
 	7) switch_nspawn_boot_mode ;;
 	8) switch_login_shell ;;
-	9) switch_container_engine_bin_file ;;
-	10)
+	9) switch_to_chroot_or_unshare ;;
+	10) switch_container_engine_bin_file ;;
+	11)
 		MOUNT_VAR="MOUNT_SD"
 		MOUNT_SOURCE_VAR="SD_DIR_01"
 		MOUNT_POINT_VAR="SD_MOUNT_POINT"
 		mount_dir_to_container
 		;;
-	11)
+	12)
 		MOUNT_VAR="MOUNT_TERMUX"
 		MOUNT_SOURCE_VAR="TERMUX_DIR"
 		MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
 		mount_dir_to_container
 		;;
-	12)
+	13)
 		case ${TMOE_CHROOT} in
 		true) printf "%s\n" "You are using a chroot container, the /storage directory will not be mounted by default" ;;
 		*)
@@ -207,7 +210,7 @@ environment_variables_and_automatic_startup_script_management() {
 			;;
 		esac
 		;;
-	13)
+	14)
 		MOUNT_VAR="MOUNT_TF"
 		MOUNT_SOURCE_VAR="TF_CARD_LINK"
 		MOUNT_POINT_VAR="TF_MOUNT_POINT"
@@ -216,6 +219,29 @@ environment_variables_and_automatic_startup_script_management() {
 	esac
 	press_enter_to_return
 	environment_variables_and_automatic_startup_script_management
+}
+switch_to_chroot_or_unshare() {
+	case ${TMOE_CHROOT} in
+	true) ;;
+	*)
+		printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the chroot container."
+		press_enter_to_return
+		environment_variables_and_automatic_startup_script_management
+		;;
+	esac
+	CURRENT_STATUS=$(egrep "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	case ${CURRENT_STATUS} in
+	true) TMOE_TIPS_03="Currently in unshare mode" ;;
+	false) TMOE_TIPS_03="Currently in normal chroot mode" ;;
+	*) TMOE_TIPS_03="ERROR, cannot switch at this time.You may be using an old version, or non-normal chroot mode" ;;
+	esac
+
+	if (whiptail --title "CHROOT OR UNSHARE" --yes-button "chroot" --no-button "unshare" --yesno "${TMOE_TIPS_03}" 8 50); then
+		${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	else
+		${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	fi
+	egrep --color=auto "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_container_engine_bin_file() {
 	unset TMOE_TIPS_05
