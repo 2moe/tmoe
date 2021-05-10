@@ -604,9 +604,10 @@ create_chroot_startup_script() {
 		${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_CHROOT_ETC}
 		WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
 		printf "%s\n" "${WM_SIZE}" >wm_size.txt
+		chmod -v 666 wm_size.txt
 		${TMOE_CHROOT_PREFIX} mv wm_size.txt ${TMOE_CHROOT_ETC}
 	fi
-	if [ $(command -v getprop) ]; then
+	if [[ $(command -v getprop) && $(command -v am) ]]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 		case $(hostname) in
@@ -650,6 +651,12 @@ create_chroot_startup_script() {
 	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
 	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
 	cat_tmoe_chroot_script
+	if [[ $(command -v getprop) && $(command -v am) ]]; then
+		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
+		case ${ANDROID_VERSION} in
+		5 | 6 | 7) sudo sed -i -E 's@^(OLD_VERSION_ANDROID_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
+		esac
+	fi
 	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
 		cat_tmoe_nspawn_script
 	fi
@@ -732,7 +739,7 @@ create_proot_startup_script() {
 		set_proot_container_env
 	fi
 	cd ${CONFIG_FOLDER}
-	if [ $(command -v getprop) ]; then
+	if [[ $(command -v getprop) && $(command -v am) ]]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 	else

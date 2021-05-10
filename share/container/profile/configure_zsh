@@ -669,7 +669,7 @@ please_retype_the_password() {
 	if [[ "$?" != "0" || -z "${PASSWORD_02}" ]]; then
 		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
 		read
-		please_retype_the_passwd
+		please_retype_the_password
 	elif [[ ${PASSWORD_01} != ${PASSWORD_02} ]]; then
 		printf "%s\n" "${RED}Sorry${RESET}, the two passwords are ${PURPLE}inconsistent${RESET}"
 		printf "%s\n" "Please re-enter.Press enter to return"
