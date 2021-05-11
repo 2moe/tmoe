@@ -121,9 +121,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	##############
 	check_host_and_root() {
 	    case \$(uname -o) in
-	    Android) ;;
+	    Android) PREFIX="$PREFIX" ;;
 	    *)
-	        PREFIX="$PREFIX"
+	        PREFIX="/usr"
 	        case \$(id -u) in
 	        0) ;;
 	        *)
