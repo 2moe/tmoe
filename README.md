@@ -116,7 +116,7 @@ Finally, press Enter and arrow keys to operate.
 
 #### 2.Android-Termux
 
-> 1.Go to google play, then install [Termux](https://play.google.com/store/apps/details?id=com.termux) and [Termux:api](https://play.google.com/store/apps/details?id=com.termux.api)  
+> 1.Go to fdroid, then install [Termux](https://f-droid.org/packages/com.termux/) and [Termux:api](https://f-droid.org/packages/com.termux.api/)  
 > 2.Open termux and enter the following command.
 >
 > 1.安装安卓版[Termux](https://apk.tmoe.me/termux) 和[Termux:api](https://apk.tmoe.me/termux-api)  

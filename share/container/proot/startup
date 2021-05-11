@@ -24,8 +24,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROOT_H=false
 	#Hide files and directories starting with '.proot.'. Default is false.
 
-	PROOT_P=false
-	#Modify bindings to protected ports to use a higher port number. Default is false.
+	PROOT_P=true
+	#Modify bindings to protected ports to use a higher port number. Default is true.
 
 	FAKE_KERNEL=false
 	#Default is false.
@@ -76,6 +76,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	STORAGE_DIR='/storage'
 	#If the value of "MOUNT_STORAGE" is "false", the relevant directory will not be mounted. Default is true.
 
+	MOUNT_GITSTATUS=true
+	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
+	GITSTATUS_MOUNT_POINT="/root/.cache/gitstatus"
+
+	MOUNT_TMP=false
+	TMP_SOURCE_DIR="${TMPDIR}"
+	TMP_MOUNT_POINT="/tmp"
+
 	MOUNT_SYSTEM=true
 	SYSTEM_DIR="/system"
 
@@ -84,10 +92,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	MOUNT_SYS=false
 	SYS_DIR="/sys"
-
-	MOUNT_GITSTATUS=true
-	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
-	GITSTATUS_MOUNT_POINT="/root/.cache/gitstatus"
 
 	MOUNT_DEV=true
 	DEV_DIR="/dev"
@@ -188,17 +192,17 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            fi
 	        fi
 	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]];then
-	            PROOT_H=false  && PROOT_L=false && PROOT_P=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	            PROOT_H=false && PROOT_L=false && PROOT_P=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
 	        fi
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"
 	        [[ \${PROOT_H} != true ]] || set -- "\${@}" "-H"
 	        [[ \${PROOT_P} != true ]] || set -- "\${@}" "-p"
-	        [[ \${FAKE_KERNEL} != true ]] || set -- "\${@}" "--kernel-release=\${KERNEL_RELEASE}"
 	        [[ \${LINK_TO_SYMLINK} != true ]] || set -- "\${@}" "--link2symlink"
-	        [[ \${PROOT_VERBOSE} != true ]] || set -- "\${@}" "--verbose=\${VERBOSE_LEVEL}"
 	    fi
 	    ############
+	    [[ \${FAKE_KERNEL} != true ]] || set -- "\${@}" "--kernel-release=\${KERNEL_RELEASE}"
+	    [[ \${PROOT_VERBOSE} != true ]] || set -- "\${@}" "--verbose=\${VERBOSE_LEVEL}"  
 	    if [[ \${MOUNT_PROC} = true ]]; then
 	        set -- "\${@}" "--mount=\${PROC_DIR}"
 	    fi
@@ -216,6 +220,12 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    if [[ \${MOUNT_SYS} = true ]]; then
 	        if [[ -e "\${SYS_DIR}" ]]; then
 	            set -- "\${@}" "--mount=\${SYS_DIR}"
+	        fi
+	    fi
+
+	    if [[ \${MOUNT_TMP} = true ]]; then
+	        if [[ -e "\${TMP_SOURCE_DIR}" ]]; then
+	            set -- "\${@}" "--mount=\${TMP_SOURCE_DIR}:\${TMP_MOUNT_POINT}"
 	        fi
 	    fi
 

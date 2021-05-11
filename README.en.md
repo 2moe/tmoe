@@ -22,7 +22,7 @@ The following containers are now **supported**:
 
 ## Installation
 
-If you are using Android, then you can go to Google Play to install the latest version of Termux and Termux: api.
+If you are using Android, then you can go to Fdroid to install the latest version of Termux and Termux: api.
 
 The script can automatically configure the Pulseaudio server for Android and Win10. Make everything very simple.
 

@@ -16,12 +16,12 @@ proot_management_menu() {
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
 			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 user & env var & auto-startup script" \
-			"5" "🍹 backup ${CONTAINER_TYPE} container" \
+			"4" "🍧 user, env var & login item" \
+			"5" "🥤 edit script" \
 			"6" "💔 unmount & remove" \
-			"7" "📘 readme" \
-			"8" "🌈 create a new container" \
-			"9" "🥤 edit script" \
+			"7" "🍹 backup ${CONTAINER_TYPE} container" \
+			"8" "📘 readme" \
+			"9" "🌈 create a new container" \
 			"10" "🍅 space occupation" \
 			"11" " unmount & remove (Compatibility mode)" \
 			"0" "🌚 back" \
@@ -33,11 +33,11 @@ proot_management_menu() {
 			"2" "⏹️ 停止容器进程" \
 			"3" "🐯 启动远程桌面" \
 			"4" "🍧 环境变量与登录项管理" \
-			"5" "🍹 backup 备份${CONTAINER_TYPE}容器" \
+			"5" "🥤 edit script 编辑脚本" \
 			"6" "💔 unmount & remove 卸载并移除" \
-			"7" "📘 readme 自述/说明" \
-			"8" "🌈 create a new container新建容器" \
-			"9" "🥤 edit script 编辑脚本" \
+			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
+			"8" "📘 readme 自述/说明" \
+			"9" "🌈 create a new container新建容器" \
 			"10" "🍅 space occupation 空间占用大小" \
 			"11" "卸载并移除(兼容模式)" \
 			"0" "🌚 back 返回" \
@@ -71,10 +71,11 @@ proot_management_menu() {
 	2) kill_container_process ;;
 	3) start_gui_menu ;;
 	4) environment_variables_and_automatic_startup_script_management ;;
-	5) backup_tmoe_gnu_linux_distro ;;
+	5) edit_container_startup_script ;;
 	6) umount_and_remove_gnu_linux_distro ;;
-	7) readme_of_gnu_linux_distro ;;
-	8)
+	7) backup_tmoe_gnu_linux_distro ;;
+	8) readme_of_gnu_linux_distro ;;
+	9)
 		case ${RETURN_TO_MENU} in
 		'list_installed_tmoe_containers')
 			printf "%s\n" "${RED}Sorry${RESET}, it is not possible to create a new container in the current mode, please return to the main menu and select the architecture again."
@@ -85,21 +86,21 @@ proot_management_menu() {
 		*) create_a_new_container ;;
 		esac
 		;;
-	9) edit_container_startup_script ;;
 	10) du_sh_gnu_linux_distro ;;
 	11) umount_and_remove_gnu_linux_distro_compatibility_mode ;;
 	esac
 	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
 	####################
 	case "${SELECTED_GNU_LINUX}" in
-	2 | 6 | 7 | 9 | 10 | 11)
-		#kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro, umount_and_remove_gnu_linux_distro_compatibility_mode
+	2 | 7 | 8 | 5 | 10)
+		#kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro
 		#回到本菜单： 停止进程,备份，命令，空间 ,编辑
 		press_enter_to_return
 		proot_management_menu
 		;;
-	6)
+	6 | 11)
 		#unmount & remove :umount_and_remove_gnu_linux_distro
+		#umount_and_remove_gnu_linux_distro_compatibility_mode
 		${RETURN_TO_MENU}
 		;;
 	esac
