@@ -94,6 +94,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	SYS_DIR="/sys"
 
 	MOUNT_DEV=true
+	MOUNT_DEV_TTY=true
 	DEV_DIR="/dev"
 
 	MOUNT_PROC=true
@@ -211,10 +212,11 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        set -- "\${@}" "--mount=\${DEV_DIR}"
 	        set -- "\${@}" "--mount=\${PROC_FD_PATH}:/dev/fd"
 	        set -- "\${@}" "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm"
-	        set -- "\${@}" "--mount=/dev/urandom:/dev/random"
+	        set -- "\${@}" "--mount=\${DEV_DIR}/urandom:/dev/random"
 	        set -- "\${@}" "--mount=\${PROC_FD_PATH}/0:/dev/stdin"
 	        set -- "\${@}" "--mount=\${PROC_FD_PATH}/1:/dev/stdout"
 	        set -- "\${@}" "--mount=\${PROC_FD_PATH}/2:/dev/stderr"
+			[[ ${MOUNT_DEV_TTY} != true ]] || set -- "\${@}" "--mount=\${DEV_DIR}/null:/dev/tty0"
 	    fi
 
 	    if [[ \${MOUNT_SYS} = true ]]; then
