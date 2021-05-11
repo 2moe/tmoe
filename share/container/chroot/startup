@@ -47,6 +47,17 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	MOUNT_TF=true
 	TF_CARD_LINK="${HOME}/storage/external-1"
 	#let TF_MOUNT_POINT = String::from("/media/tf");
+
+	MOUNT_ITSELF=true
+	MOUNT_DEV=true
+	MOUNT_PROC=true
+	MOUNT_SYS=true
+	MOUNT_DEV_PTS=true
+	MOUNT_DEV_SHM=true
+	MOUNT_GITSTATUS=true
+	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
+
+	FIX_DEV_LINK=true
 	################
 	#shells
 
@@ -64,7 +75,6 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#unshare
 
 	UNSHARE_ENABLED=false
-	#Default is false.
 	#The unshare command creates new namespaces and then executes the specified program. By  default,  a  new  namespace  persists only as long as it has member processes.  A new namespace can be mad e persistent even when it has no member processes by bind mounting /proc/pid/ns/type files to a filesystem path.  A namespace that has been made persistent in this way can subsequently be entered with nsenter even after the program terminates (except PID namespaces where a permanently running init process is required).  Once  a  persistent namespace is no longer needed, it can be unpersisted by using umount to remove the bind mount.
 
 	UNSHARE_IPC=false
@@ -91,7 +101,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
 	################
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
-	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
+	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
 	PROC_FD_PATH="/proc/self/fd"
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 	################
@@ -160,9 +170,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    }
 	    ########
 	    #arch mounts itself
-	    if ! detect_mount "${DEBIAN_CHROOT}/"; then
-	        su -c "\${TMOE_MOUNT} --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
-	        su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev ${DEBIAN_CHROOT}"
+	    if [[ \${MOUNT_ITSELF} = true ]]; then
+	        if ! detect_mount "${DEBIAN_CHROOT}/"; then
+	            su -c "\${TMOE_MOUNT} --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
+	            su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev ${DEBIAN_CHROOT}"
+	        fi
 	    fi
 	    #########
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
@@ -170,46 +182,50 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            case \${i} in
 	            dev)
 	                #rw,nosuid,relatime,size=12224760k,nr_inodes=3056190,mode=755
-	                mount_01
+	                [[ \${MOUNT_DEV} != true ]] || mount_01
 	                ;;
 	            proc)
 	                if [[ \${UNSHARE_ENABLED} != true || \${SHARE_PROC} != true ]]; then
-	                    su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}"
+	                    [[ \${MOUNT_PROC} != true ]] || su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}"
 	                fi
 	                ;;
-	            sys) su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
+	            sys) [[ \${MOUNT_SYS} != true ]] || su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
 	            dev/pts)
-	                if ! detect_mount "/\${i}"; then
-	                    mkdir_01
-	                    su -c "\${TMOE_MOUNT} -o rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
+	                if [[ \${MOUNT_DEV_PTS} = true ]]; then
+	                    if ! detect_mount "/\${i}"; then
+	                        mkdir_01
+	                        su -c "\${TMOE_MOUNT} -o rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
+	                    fi
+	                    su -c "\${TMOE_MOUNT} -t devpts devpts ${DEBIAN_CHROOT}/\${i}"
 	                fi
-	                su -c "\${TMOE_MOUNT} -t devpts devpts ${DEBIAN_CHROOT}/\${i}"
 	                ;;
 	            dev/shm)
-	                if ! detect_mount "/\${i}"; then
-	                    mkdir_01
-	                    su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /\${i}"
+	                if [[ \${MOUNT_DEV_SHM} = true ]]; then
+	                    if ! detect_mount "/\${i}"; then
+	                        mkdir_01
+	                        su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /\${i}"
+	                    fi
+	                    mount_01
 	                fi
-	                mount_01
 	                ;;
-	            etc/gitstatus) su -c "\${TMOE_MOUNT} -o bind ${CONFIG_FOLDER}/gitstatus ${DEBIAN_CHROOT}/\${i}" ;;
+	            etc/gitstatus) [[ \${MOUNT_GITSTATUS} != true ]] || su -c "\${TMOE_MOUNT} -o bind \${GITSTATUS_DIR} ${DEBIAN_CHROOT}/\${i}" ;;
 	            esac
 	        fi
 	    done
-	    unset i
 	    ########
-	    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
-	        if [[ ! -e \${i} && ! -L \${i} ]]; then
-	            case \${i} in
-	            /dev/fd) su -c "ln -s \${PROC_FD_PATH} \${i} &>/dev/null" ;;
-	            /dev/stdin) su -c "ln -s \${PROC_FD}/0 \${i} &>/dev/null" ;;
-	            /dev/stdout) su -c "ln -s \${PROC_FD}/1 \${i} &>/dev/null" ;;
-	            /dev/stderr) su -c "ln -s \${PROC_FD}/2 \${i} &>/dev/null" ;;
-	            /dev/tty0) su -c "ln -s /dev/null \${i} &>/dev/null" ;;
-	            esac
-	        fi
-	    done
-	    unset i
+	    if [[ \${FIX_DEV_LINK} = true ]]; then
+	        for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
+	            if [[ ! -e \${i} && ! -L \${i} ]]; then
+	                case \${i} in
+	                /dev/fd) su -c "ln -s \${PROC_FD_PATH} \${i} &>/dev/null" ;;
+	                /dev/stdin) su -c "ln -s \${PROC_FD}/0 \${i} &>/dev/null" ;;
+	                /dev/stdout) su -c "ln -s \${PROC_FD}/1 \${i} &>/dev/null" ;;
+	                /dev/stderr) su -c "ln -s \${PROC_FD}/2 \${i} &>/dev/null" ;;
+	                /dev/tty0) su -c "ln -s /dev/null \${i} &>/dev/null" ;;
+	                esac
+	            fi
+	        done
+	    fi
 	    ###############
 	    for i in tf termux sd; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then

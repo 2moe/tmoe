@@ -117,7 +117,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	TMOE_QEMU=false
 	ARCH_SCRIPT="${TMOE_SHARE_DIR}/container/proot/check_container_arch"
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
-	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
+	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
 	PROC_FD_PATH="/proc/self/fd"
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 	HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
@@ -288,7 +288,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        fi
 	    fi
 	    ###################
-	    #ENV
+	    #SET ENV
 	    HOST_NAME="localhost"
 	    if [[ -r \${HOST_NAME_FILE} ]]; then
 	        HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
