@@ -694,12 +694,12 @@ check_tmoe_proot_container_proc() {
 	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_02} 2>/dev/null)
 	if [ -z "${TMOE_PROC_FILE}" ]; then
 		create_tmoe_proot_stat_file
-		sed -i "s@#test02@@" ${TMOE_STARTUP_SCRIPT}
+		sed -i "s@##test02#@@" ${TMOE_STARTUP_SCRIPT}
 	fi
 	#######
 	FILE_03='/proc/bus/pci/devices'
 	TMOE_PROC_FILE=$(sed -n p ${FILE_03} 2>/dev/null)
-	[[ -n "${TMOE_PROC_FILE}" ]] || sed -i "s@#test04@@" ${TMOE_STARTUP_SCRIPT}
+	[[ -n "${TMOE_PROC_FILE}" ]] || sed -i "s@##test04#@@" ${TMOE_STARTUP_SCRIPT}
 	######
 	#不要读取kmsg
 	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
@@ -718,7 +718,7 @@ check_tmoe_proot_container_proc() {
 		printf "%s\n" "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
 		printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
 		printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
-		sed -i "s@#test01@@" ${TMOE_STARTUP_SCRIPT}
+		sed -i "s@##test01#@@" ${TMOE_STARTUP_SCRIPT}
 	fi
 }
 ###########
@@ -744,9 +744,17 @@ create_proot_startup_script() {
 	if [[ $(command -v getprop) && $(command -v am) ]]; then
 		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
+		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
+		case ${ANDROID_VERSION} in
+		5 | 6) sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
+		esac
+		printf "%s\n%s\n" '#!/usr/bin/env sh' 'PATH=$PATH:/system/bin exec /system/bin/getprop "$@"' >${TMPDIR}/getprop
+		chmod -v a+rx ${TMPDIR}/getprop
+		mv -vf ${TMPDIR}/getprop ${DEBIAN_CHROOT}/tmp/
 	else
 		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
 	fi
+
 	if [[ -s hostname ]]; then
 		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp
 		${TMOE_CHROOT_PREFIX} mv hostname ${DEBIAN_CHROOT}/etc
@@ -979,6 +987,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			break
 		fi
 		done
+	fi
+	if [ -s /tmp/getprop ];then
+		chmod a+rx /tmp/getprop
+		mkdir -pv /usr/local/bin
+		mv -fv /tmp/getprop /usr/local/bin
 	fi
 	cd ${HOME}
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
