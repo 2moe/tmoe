@@ -79,6 +79,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	MOUNT_SYSTEM=true
 	SYSTEM_DIR="/system"
 
+	MOUNT_APEX=true
+	APEX_DIR="/apex"
+
 	MOUNT_SYS=false
 	SYS_DIR="/sys"
 
@@ -156,6 +159,11 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        if [[ \${MOUNT_SYSTEM} = true ]]; then
 	            if [[ -e "\${SYSTEM_DIR}" ]]; then
 	                set -- "\${@}" "--mount=\${SYSTEM_DIR}"
+	            fi
+	        fi
+	        if [[ \${MOUNT_APEX} = true ]]; then
+	            if [[ -e "\${APEX_DIR}" ]]; then
+	                set -- "\${@}" "--mount=\${APEX_DIR}"
 	            fi
 	        fi
 	        if [[ \${KILL_ON_EXIT} = true ]]; then

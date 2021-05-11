@@ -989,7 +989,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		done
 	fi
 	if [ -s /tmp/getprop ];then
-		chmod a+rx /tmp/getprop
+		chmod -v a+rx /tmp/getprop
 		mkdir -pv /usr/local/bin
 		mv -fv /tmp/getprop /usr/local/bin
 	fi
