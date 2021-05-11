@@ -32,9 +32,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	SD_DIR_01="/data/media/0"
 	SD_DIR_02="/storage/self/primary"
 	SD_DIR_03="/sdcard"
-	SD_DIR_04="\${HOME}/sd"
-	SD_DIR_05="\${HOME}/Downloads"
-	SD_DIR_06="\${HOME}/Download"
+	SD_DIR_04="${HOME}/sd"
+	SD_DIR_05="${HOME}/Downloads"
+	SD_DIR_06="${HOME}/Download"
 	#let SD_MOUNT_POINT = String::from("/media/sd");
 	#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
 	#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
@@ -45,7 +45,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#let TERMUX_MOUNT_POINT = String::from("/media/termux");
 
 	MOUNT_TF=true
-	TF_CARD_LINK="\${HOME}/storage/external-1"
+	TF_CARD_LINK="${HOME}/storage/external-1"
 	#let TF_MOUNT_POINT = String::from("/media/tf");
 	################
 	#shells
@@ -123,7 +123,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    case \$(uname -o) in
 	    Android) ;;
 	    *)
-	        PREFIX=/usr
+	        PREFIX="$PREFIX"
 	        case \$(id -u) in
 	        0) ;;
 	        *)
