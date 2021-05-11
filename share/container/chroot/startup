@@ -218,9 +218,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            if [[ ! -e \${i} && ! -L \${i} ]]; then
 	                case \${i} in
 	                /dev/fd) su -c "ln -s \${PROC_FD_PATH} \${i} &>/dev/null" ;;
-	                /dev/stdin) su -c "ln -s \${PROC_FD}/0 \${i} &>/dev/null" ;;
-	                /dev/stdout) su -c "ln -s \${PROC_FD}/1 \${i} &>/dev/null" ;;
-	                /dev/stderr) su -c "ln -s \${PROC_FD}/2 \${i} &>/dev/null" ;;
+	                /dev/stdin) su -c "ln -s \${PROC_FD_PATH}/0 \${i} &>/dev/null" ;;
+	                /dev/stdout) su -c "ln -s \${PROC_FD_PATH}/1 \${i} &>/dev/null" ;;
+	                /dev/stderr) su -c "ln -s \${PROC_FD_PATH}/2 \${i} &>/dev/null" ;;
 	                /dev/tty0) su -c "ln -s /dev/null \${i} &>/dev/null" ;;
 	                esac
 	            fi
