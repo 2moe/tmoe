@@ -109,7 +109,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    termux | prefix) TMOE_MOUNT="\${PREFIX}/bin/mount" ;;
 	    *) TMOE_MOUNT="\${MOUNT_BIN}" ;;
 	    esac
-	    [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} != true ]] || CHROOT_BIN="${PREFIX}/bin/chroot" && UNSHARE_BIN="${PREFIX}/bin/unshare" && MOUNT_BIN="${PREFIX}/bin/mount"
+	    if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]];then
+	        MOUNT_BIN="${PREFIX}/bin/mount" && CHROOT_BIN="${PREFIX}/bin/chroot" && UNSHARE_BIN="${PREFIX}/bin/unshare"
+		fi
 	}
 	##############
 	start_tmoe_gnu_linux_chroot_container() {

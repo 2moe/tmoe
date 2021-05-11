@@ -179,7 +179,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	                set -- "\${@}" "--mount=\${TERMUX_DIR}:\${TERMUX_MOUNT_POINT}"
 	            fi
 	        fi
-	        [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} != true ]] || PROOT_L=false && PROOT_H=false && PROOT_P=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]];then
+	            PROOT_H=false  && PROOT_L=false && PROOT_P=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	        fi
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"
 	        [[ \${PROOT_H} != true ]] || set -- "\${@}" "-H"
