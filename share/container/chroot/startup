@@ -11,7 +11,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	################
 	CHROOT_BIN="system"
 	#You can choose system, termux, or enter the full path. For example, "\${PREFIX}/bin/chroot"
-	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当为termux时，将使用 "${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
+	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当为termux时，将使用 "\${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
 
 	MOUNT_BIN="system"
 	#Binary file of "mount" in util-linux
@@ -32,9 +32,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	SD_DIR_01="/data/media/0"
 	SD_DIR_02="/storage/self/primary"
 	SD_DIR_03="/sdcard"
-	SD_DIR_04="${HOME}/sd"
-	SD_DIR_05="${HOME}/Downloads"
-	SD_DIR_06="${HOME}/Download"
+	SD_DIR_04="\${HOME}/sd"
+	SD_DIR_05="\${HOME}/Downloads"
+	SD_DIR_06="\${HOME}/Download"
 	#let SD_MOUNT_POINT = String::from("/media/sd");
 	#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
 	#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
@@ -42,11 +42,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	MOUNT_TERMUX=true
 	#If the value is "false", the relevant directory will not be mounted. Default is true.
 	TERMUX_DIR="/data/data/com.termux/files/home"
-	#let TERMUX_MOUNT_POINT = String::from("/media/termux");  
+	#let TERMUX_MOUNT_POINT = String::from("/media/termux");
 
 	MOUNT_TF=true
-	TF_CARD_LINK="${HOME}/storage/external-1"
-	#let TF_MOUNT_POINT = String::from("/media/tf");  
+	TF_CARD_LINK="\${HOME}/storage/external-1"
+	#let TF_MOUNT_POINT = String::from("/media/tf");
 	################
 	#shells
 
@@ -90,6 +90,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#Default is true.
 	#Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
 	################
+	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
+	PROC_FD_PATH="/proc/self/fd"
+	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+	################
 	main() {
 	    case "\$1" in
 	    i* | -i* | -I*)
@@ -109,19 +114,20 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    termux | prefix) TMOE_MOUNT="\${PREFIX}/bin/mount" ;;
 	    *) TMOE_MOUNT="\${MOUNT_BIN}" ;;
 	    esac
-	    if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]];then
-	        MOUNT_BIN="${PREFIX}/bin/mount" && CHROOT_BIN="${PREFIX}/bin/chroot" && UNSHARE_BIN="${PREFIX}/bin/unshare"
-		fi
+	    if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
+	        MOUNT_BIN="\${PREFIX}/bin/mount" && CHROOT_BIN="\${PREFIX}/bin/chroot" && UNSHARE_BIN="\${PREFIX}/bin/unshare"
+	    fi
 	}
 	##############
-	start_tmoe_gnu_linux_chroot_container() {
+	check_host_and_root() {
 	    case \$(uname -o) in
 	    Android) ;;
 	    *)
+	        PREFIX=/usr
 	        case \$(id -u) in
 	        0) ;;
 	        *)
-	            if [ \$(command -v sudo) ]; then
+	            if [[ \$(command -v sudo) ]]; then
 	                sudo su -c "bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
 	            else
 	                su -c "bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
@@ -131,11 +137,12 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        esac
 	        ;;
 	    esac
-	    ########
-	    TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
-	    DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
-	    PROC_FD_PATH="/proc/self/fd"
+	}
+	##############
+	start_tmoe_gnu_linux_chroot_container() {
+	    check_host_and_root
 	    check_mount_bin
+	    unset LD_PRELOAD CONTAINER_BIN_PATH
 	    #########
 	    detect_mount() {
 	        MOUNT_DIR="\$1"
@@ -145,109 +152,19 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            return 1
 	        fi
 	    }
-	    ##########
-		#arch mounts itself
-		if ! detect_mount "${DEBIAN_CHROOT}/"; then
-		   su -c "\${TMOE_MOUNT} --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
-		   su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev ${DEBIAN_CHROOT}"
-		 fi
-		 #########
-	    [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
-	    if [[ -z \${TMOE_SHELL} ]]; then
-	        for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
-	            if [[ -f ${DEBIAN_CHROOT}/bin/\${i} ]]; then
-	                TMOE_SHELL="/bin/\${i}"
-	                break
-	            fi
-	        done
-	    fi
-	    # if [[ \${UNSHARE_ENABLED} != true ]]; then
-	        if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]]; then
-	            if [[ -z \${TMOE_SHELL} ]]; then
-	                #ALPINE ash shell is a link.
-	                for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
-	                    if [[ -L ${DEBIAN_CHROOT}/bin/\${i} ]]; then
-	                        TMOE_SHELL="/bin/\${i}"
-	                        break
-	                    fi
-	                done
-	                if [[ -z \${TMOE_SHELL} ]]; then
-	                    TMOE_SHELL="/bin/su"
-	                fi
-	            fi
-	            set -- "\${TMOE_SHELL}" "-l" "\${@}"
-	            set -- "/usr/bin/sudo" "-Eu" "\${CHROOT_USER}" "\${@}"
-	        else
-	            if [[ -e ${DEBIAN_CHROOT}/bin/zsh ]]; then
-	                set -- "/bin/zsh" "-l" "\${@}"
-	            elif [[ -e ${DEBIAN_CHROOT}/bin/bash ]]; then
-	                set -- "/bin/bash" "-l" "\${@}"
-	            else
-	                set -- "/bin/sh" "-l" "\${@}"
-	            fi
-	        fi
-	    # else
-	    #     set -- "\${TMOE_SHELL}" "-l" "\${@}"
-	    # fi
-
-	    if [ -e "\${TMOE_LOCALE_FILE}" ]; then
-	        set -- "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})" "\${@}"
-	    else
-	        set -- "LANG=en_US.UTF-8" "\${@}"
-	    fi
-	    ############
 	    mount_01() {
 	        su -c "\${TMOE_MOUNT} -o bind /\${i} ${DEBIAN_CHROOT}/\${i}"
 	    }
-	    #########
 	    mkdir_01() {
 	        [[ -e "/\${i}" ]] || su -c "mkdir -pv /\${i}"
 	    }
 	    ########
-	    #PS1='\u:\w$ '
-		HOST_NAME="localhost"
-		HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
-		if [[ -s \${HOST_NAME_FILE} ]];then
-		   HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
-		else
-			[[ ! \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
-		fi
-		CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
-		unset CONTAINER_BIN_PATH
-	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
-	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
-	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
-	            if [[ -n \${i} ]];then
-	               set -- "\${i}" "\${@}"
-	            fi
-	        done
+	    #arch mounts itself
+	    if ! detect_mount "${DEBIAN_CHROOT}/"; then
+	        su -c "\${TMOE_MOUNT} --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
+	        su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev ${DEBIAN_CHROOT}"
 	    fi
-	    if [[ \${CHROOT_USER} = root ]];then
-	        CHROOT_HOME="/root"
-	        set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games" "\${@}"
-	    else
-	        CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
-	        [[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
-	        set -- "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games" "\${@}"
-	    fi
-		set -- "HOSTNAME=\${HOST_NAME}" "\${@}"
-		set -- "TERM=xterm-256color" "\${@}"
-		set -- "SDL_IM_MODULE=fcitx" "\${@}"  
-		set -- "XMODIFIERS=\@im=fcitx" "\${@}"
-		set -- "QT_IM_MODULE=fcitx" "\${@}"
-		set -- "GTK_IM_MODULE=fcitx" "\${@}"
-		set -- "TMOE_CHROOT=true" "\${@}"
-		set -- "TMOE_PROOT=false" "\${@}"
-		set -- "HOME=\${CHROOT_HOME}" "\${@}"
-		set -- "TMPDIR=/tmp" "\${@}"
-		set -- "DISPLAY=:0.0" "\${@}"
-		set -- "PULSE_SERVER=tcp:127.0.0.1:4713" "\${@}"
-	    if [[ -n \${TMOE_SHELL} ]];then
-	        set -- "SHELL=\${TMOE_SHELL}" "\${@}"
-	    else
-	        set -- "SHELL=/bin/zsh" "\${@}"
-	    fi
-	    set -- "/usr/bin/env" "-i" "\${@}"
+	    #########
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
 	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
 	            case \${i} in
@@ -282,19 +199,13 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    unset i
 	    ########
 	    for i in /dev/fd /dev/stdin /dev/stout /dev/sterr /dev/tty0; do
-	        if [ ! -e \${i} ] && [ ! -h \${i} ]; then
+	        if [[ ! -e \${i} && ! -L \${i} ]]; then
 	            case \${i} in
 	            /dev/fd) su -c "ln -s \${PROC_FD_PATH} \${i} &>/dev/null" ;;
 	            /dev/stdin) su -c "ln -s \${PROC_FD}/0 \${i} &>/dev/null" ;;
 	            /dev/stdout) su -c "ln -s \${PROC_FD}/1 \${i} &>/dev/null" ;;
 	            /dev/stderr) su -c "ln -s \${PROC_FD}/2 \${i} &>/dev/null" ;;
-	            /dev/tty0)
-	                #if [ -e "/dev/ttyGS0" ]; then
-	                # su -c "ln -s /dev/ttyGS0 /\${i} &>/dev/null"
-	                #else
-	                su -c "ln -s /dev/null \${i} &>/dev/null"
-	                #fi
-	                ;;
+	            /dev/tty0) su -c "ln -s /dev/null \${i} &>/dev/null" ;;
 	            esac
 	        fi
 	    done
@@ -304,30 +215,30 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then
 	            case \${i} in
 	            tf)
-				TF_MOUNT_POINT="/media/tf"
-				if [[ \${MOUNT_TF} = true ]];then
-	                if [ -h "\${TF_CARD_LINK}" ]; then
-	                    TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
-	                    if [ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]; then
-	                        su -c "\${TMOE_MOUNT} -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
-	                    else
-	                        su -c "\${TMOE_MOUNT} -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
+	                TF_MOUNT_POINT="/media/tf"
+	                if [[ \${MOUNT_TF} = true ]]; then
+	                    if [[ -L "\${TF_CARD_LINK}" ]]; then
+	                        TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
+	                        if [[ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]]; then
+	                            su -c "\${TMOE_MOUNT} -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
+	                        else
+	                            su -c "\${TMOE_MOUNT} -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
+	                        fi
 	                    fi
 	                fi
-				fi
-	            ;;
+	                ;;
 	            #######
 	            termux)
-				TERMUX_MOUNT_POINT="/media/termux"
-				if [[ \${MOUNT_TERMUX} = true ]];then
-	                [[ ! -d "\${TERMUX_DIR}" ]] || su -c "\${TMOE_MOUNT} -o bind \${TERMUX_DIR} ${DEBIAN_CHROOT}\${TERMUX_MOUNT_POINT} &>/dev/null"
-				fi
-	            ;;
+	                TERMUX_MOUNT_POINT="/media/termux"
+	                if [[ \${MOUNT_TERMUX} = true ]]; then
+	                    [[ ! -d "\${TERMUX_DIR}" ]] || su -c "\${TMOE_MOUNT} -o bind \${TERMUX_DIR} ${DEBIAN_CHROOT}\${TERMUX_MOUNT_POINT} &>/dev/null"
+	                fi
+	                ;;
 	            ###########
 	            sd)
-				SD_MOUNT_POINT="/media/sd"
+	                SD_MOUNT_POINT="/media/sd"
 	                if [[ \${MOUNT_SD} = true ]]; then
-	                    if [ "\$(su -c "ls \${SD_DIR_01}" 2>/dev/null)" ]; then
+	                    if [[ "\$(su -c "ls \${SD_DIR_01}" 2>/dev/null)" ]]; then
 	                        su -c "\${TMOE_MOUNT} -o bind \${SD_DIR_01} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
 	                    else
 	                        for i in "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}" "\${SD_DIR_06}"; do
@@ -338,68 +249,133 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                        done
 	                    fi
 	                fi
-	            ;;
+	                ;;
 	            esac
 	        fi
 	    done
 	    unset i
-		###########
-	    set -- "${DEBIAN_CHROOT}" "\${@}"
-		if [[ \${UNSHARE_ENABLED} = true ]]; then
-			set -- "-R" "\${@}"
-		fi
-		#For Android, do not set the gid and uid of unshare, otherwise the aid user group of non-root user will not take effect.
-		# if [[ \${UNSHARE_ENABLED} = true && \${CHROOT_USER} != root ]];then
-		#  CHROOT_UID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
-		#  CHROOT_GID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
-		#  [[ -n \${CHROOT_UID} ]] || CHROOT_UID=0
-		#  [[ -n \${CHROOT_GID} ]] || CHROOT_GID=0
-		#  set -- "--setgid" "\${CHROOT_GID}" "\${@}"
-		#  set -- "--setuid" "\${CHROOT_UID}" "\${@}"
-		# fi
+	    ###########
+	    #For Android, do not set the gid and uid of unshare.
+	    # if [[ \${UNSHARE_ENABLED} = true && \${CHROOT_USER} != root ]];then
+	    #  CHROOT_UID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
+	    #  CHROOT_GID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
+	    #  set -- "\${@}" "--setgid" "\${CHROOT_GID}"
+	    #  set -- "\${@}" "--setuid" "\${CHROOT_UID}"
+	    # fi
 	    if [[ \${UNSHARE_ENABLED} = true ]]; then
 	        if [[ \${SHARE_PROC} = true ]]; then
-	            set -- "--mount-proc" "\${@}"
+	            set -- "\${@}" "--mount-proc"
 	            if [[ -e ${DEBIAN_CHROOT}/proc/stat ]]; then
 	                su -c "umount -lvf ${DEBIAN_CHROOT}/proc"
 	            fi
 	        fi
-	        [[ \${UNSHARE_IPC} != true ]] || set -- "--ipc" "\${@}"
-	        [[ \${UNSHARE_PID} != true ]] || set -- "--pid" "\${@}"
-	        [[ \${UNSHARE_UTS} != true ]] || set -- "--uts" "\${@}"
-	        [[ \${UNSHARE_MOUNT} != true ]] || set -- "--mount" "\${@}"
+	        [[ \${UNSHARE_IPC} != true ]] || set -- "\${@}" "--ipc"
+	        [[ \${UNSHARE_PID} != true ]] || set -- "\${@}" "--pid"
+	        [[ \${UNSHARE_UTS} != true ]] || set -- "\${@}" "--uts"
+	        [[ \${UNSHARE_MOUNT} != true ]] || set -- "\${@}" "--mount"
 	        if [[ \${KILL_CHILD} != false ]]; then
 	            if [[ \${KILL_CHILD} = true ]]; then
-	                set -- "--kill-child" "\${@}"
+	                set -- "\${@}" "--kill-child"
 	            else
-	                set -- "--kill-child=\${KILL_CHILD}" "\${@}"
+	                set -- "\${@}" "--kill-child=\${KILL_CHILD}"
 	            fi
 	        fi
-	        if [[ -n \${UNSHARE_BIN} ]]; then
-	            if [[ \${UNSHARE_BIN} = system ]]; then
-	                set -- "unshare" "\${@}"
-	            elif [[ \${UNSHARE_BIN} = termux ]]; then
-	                set -- "\${PREFIX}/bin/unshare" "\${@}"
-	            else
-	                set -- "\${UNSHARE_BIN}" "\${@}"
-	            fi
-	        else
-	            set -- "unshare" "\${@}"
-	        fi
+	        set -- "\${@}" "-R"
+	    fi
+	    set -- "\${@}" "${DEBIAN_CHROOT}"
+	    ###########
+	    #SET ENV
+	    HOST_NAME="localhost"
+	    HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
+	    if [[ -s \${HOST_NAME_FILE} ]]; then
+	        HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
 	    else
-	        if [[ -n \${CHROOT_BIN} ]]; then
-	            if [[ \${CHROOT_BIN} = system ]]; then
-	                set -- "chroot" "\${@}"
-	            elif [[ \${CHROOT_BIN} = termux ]]; then
-	                set -- "\${PREFIX}/bin/chroot" "\${@}"
-	            else
-	                set -- "\${CHROOT_BIN}" "\${@}"
+	        [[ ! \$(command -v hostname) ]] || HOST_NAME=\$(hostname -f)
+	    fi
+	    set -- "\${@}" "/usr/bin/env" "-i"
+	    set -- "\${@}" "HOSTNAME=\${HOST_NAME}"
+	    set -- "\${@}" "TERM=xterm-256color"
+	    set -- "\${@}" "SDL_IM_MODULE=fcitx"
+	    set -- "\${@}" "XMODIFIERS=\@im=fcitx"
+	    set -- "\${@}" "QT_IM_MODULE=fcitx"
+	    set -- "\${@}" "GTK_IM_MODULE=fcitx"
+	    set -- "\${@}" "TMOE_CHROOT=true"
+	    set -- "\${@}" "TMOE_PROOT=false"
+	    set -- "\${@}" "TMPDIR=/tmp"
+	    set -- "\${@}" "DISPLAY=:0.0"
+	    set -- "\${@}" "PULSE_SERVER=tcp:127.0.0.1:4713"
+	    #CHECK SHELL
+	    [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
+	    if [[ -z \${TMOE_SHELL} ]]; then
+	        for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
+	            if [[ -f ${DEBIAN_CHROOT}/bin/\${i} || -L ${DEBIAN_CHROOT}/bin/\${i} ]]; then
+	                TMOE_SHELL="/bin/\${i}"
+	                break
 	            fi
+	        done
+	    fi
+	    if [[ -n \${TMOE_SHELL} ]]; then
+	        set -- "\${@}" "SHELL=\${TMOE_SHELL}"
+	    else
+	        set -- "\${@}" "SHELL=/bin/zsh"
+	    fi
+	    #LANG
+	    if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
+	        set -- "\${@}" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
+	    else
+	        set -- "\${@}" "LANG=en_US.UTF-8"
+	    fi
+	    ############
+	    if [[ \${CHROOT_USER} = root ]]; then
+	        CHROOT_HOME="/root"
+	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
+	    else
+	        CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+	        [[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
+	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
+	    fi
+	    set -- "\${@}" "HOME=\${CHROOT_HOME}"
+	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
+	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
+	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
+	            if [[ -n \${i} ]]; then
+	                set -- "\${@}" "\${i}"
+	            fi
+	        done
+	    fi
+	    ############
+	    #LOGIN SHELL
+	    if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]]; then
+	        set -- "\${@}" "/usr/bin/sudo" "-Eu" "\${CHROOT_USER}"
+	        set -- "\${@}" "\${TMOE_SHELL}" "-l"
+	    else
+	        if [[ -e ${DEBIAN_CHROOT}/bin/zsh ]]; then
+	            set -- "\${@}" "/bin/zsh" "-l"
+	        elif [[ -e ${DEBIAN_CHROOT}/bin/bash ]]; then
+	            set -- "\${@}" "/bin/bash" "-l"
 	        else
-	            set -- "chroot" "\${@}"
+	            set -- "\${@}" "/bin/sh" "-l"
 	        fi
 	    fi
-	    unset LD_PRELOAD
+	    ############
+	    #CHROOT/UNSHARE BIN
+	    if [[ \${UNSHARE_ENABLED} = true ]]; then
+	        if [[ \${UNSHARE_BIN} = system || -z \${UNSHARE_BIN} ]]; then
+	            set -- "unshare" "\${@}"
+	        elif [[ \${UNSHARE_BIN} = termux ]]; then
+	            set -- "\${PREFIX}/bin/unshare" "\${@}"
+	        else
+	            set -- "\${UNSHARE_BIN}" "\${@}"
+	        fi
+	    else
+	        if [[ \${CHROOT_BIN} = system || -z \${CHROOT_BIN} ]]; then
+	            set -- "chroot" "\${@}"
+	        elif [[ \${CHROOT_BIN} = termux ]]; then
+	            set -- "\${PREFIX}/bin/chroot" "\${@}"
+	        else
+	            set -- "\${CHROOT_BIN}" "\${@}"
+	        fi
+	    fi
 	    TMOE_CHROOT_EXEC="\${@}"
 	    su -c "\${TMOE_CHROOT_EXEC}"
 	}

@@ -849,6 +849,7 @@ readme_of_gnu_linux_distro() {
 		仅支持${GREEN}zsh${RESET},${RED}不支持${RESET}${PURPLE}bash${RESET}
 
 		tmoe-zsh会自动加载tmoe补全插件，其他插件管理器需要手动加载。
+		Tmoe-zsh manager is based on zinit.
 		zinit插件管理器配置补全插件：${GREEN}
 		[[ \$(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 as"completion" && zinit snippet ${TMOE_SHARE_DIR}/completion/_tmoe' ${HOME}/.zshrc
 		${RESET}

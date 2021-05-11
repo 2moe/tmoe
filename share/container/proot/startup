@@ -352,6 +352,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        set -- "\${PROOT_BIN}" "\${@}"
 	    fi
 	    exec "\${@}"
+	    #Some notes are from https://github.com/termux/proot
 	}
 	main "\${@}"
 ENDOFPROOT
