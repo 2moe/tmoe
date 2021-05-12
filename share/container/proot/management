@@ -1005,7 +1005,6 @@ start_gnu_linux_distro_x() {
 	exec_container_program
 }
 install_web_novnc() {
-	#source ${TMOE_SHARE_DIR}/app/novnc
 	NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 	[[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080
 	NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"

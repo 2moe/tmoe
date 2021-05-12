@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-set -e
 cd ..
 SHELL_FILE=$(find ./* | grep sh | tr '\n' ' ' | cut -d '%' -f 1)
 ALL_SHARE_FILE=$(find ./share/* | tr '\n' ' ' | cut -d '%' -f 1)

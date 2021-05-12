@@ -12,6 +12,6 @@ cp -a manager.sh .mirror/manager
 cp -a tool.sh .mirror/tool
 cp -a .gitignore debian.sh install.* tool.sh manager.sh Licenses share .mirror tools .config ~/github/github-linux
 cd ~/github/github-linux/.mirror
-./github.sh
+./sed_github
 #printf '%s\n' 'git commit -am '
 code ~/github/github-linux

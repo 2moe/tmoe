@@ -221,7 +221,7 @@ tmoe_qemu_user_manager() {
 		BETA_SYSTEM=$(
 			whiptail --title "cross-architecture" --menu "Which architecture do you want to simulate?" 0 50 0 \
 				"0" "🌚 Return to previous menu" \
-				"00" "qemu-user-static(Basic dependence)" \
+				"00" "qemu-user-static(Basic dependency)" \
 				"1" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
 				"2" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
 				"3" "arm64:64-bit extension of the ARM architecture" \

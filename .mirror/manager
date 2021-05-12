@@ -1,0 +1,1 @@
+./share/app/manager

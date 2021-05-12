@@ -20,7 +20,7 @@ main() {
 		elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
 			source /tmp/.tmoe-linux-mirror.sh
 		else
-			curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://gitee.com/mo2/linux/raw/master/tools/sources/mirror.sh" || wget -O /tmp/.tmoe-linux-mirror.sh "https://gitee.com/mo2/linux/raw/master/tools/sources/mirror.sh"
+			curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/sources/mirror.sh" || wget -O /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/sources/mirror.sh"
 			chmod a+rx /tmp/.tmoe-linux-mirror.sh
 			source /tmp/.tmoe-linux-mirror.sh
 		fi
@@ -55,7 +55,7 @@ main() {
 		elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		else
-			curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://gitee.com/mo2/linux/raw/master/tools/sources/mirror.sh"
+			curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/sources/mirror.sh"
 			chmod a+rx /tmp/.tmoe-linux-mirror.sh
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		fi
@@ -117,7 +117,7 @@ gnu_linux_env() {
 	TMOE_ICON_DIR="${TMOE_LINUX_DIR}/icons"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
 	TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
-	TMOE_GIT_URL="gitee.com/mo2/linux"
+	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
 	APPS_LNK_DIR='/usr/share/applications'
 	if [ ! -e "${APPS_LNK_DIR}" ]; then
 		mkdir -pv ${APPS_LNK_DIR}
@@ -201,12 +201,12 @@ check_root() {
 			sudo -E bash ${TMOE_GIT_DIR}/tool.sh || su -c "bash ${TMOE_GIT_DIR}/tool.sh"
 		else
 			if [ $(command -v curl) ]; then
-				sudo -E bash -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)" || su -c "$(curl -LfsS https://gitee.com/mo2/linux/raw/master/debian.sh)"
+				sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" || su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 			elif [ $(command -v aria2c) ]; then
-				aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o /tmp/.tmoe-linux-tool.sh https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/tool
+				aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o /tmp/.tmoe-linux-tool.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh
 				su -c "$(bash /tmp/.tmoe-linux-tool.sh)"
 			else
-				su -c "$(wget -qO- https://gitee.com/mo2/linux/raw/master/debian.sh)"
+				su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
 			fi
 		fi
 		exit 0
@@ -259,7 +259,7 @@ tmoe_locale_settings() {
 		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
 		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	else
-		TMOE_LANG="zh_CN.UTF-8"
+		TMOE_LANG="en_US.UTF-8"
 		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
 		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	fi
