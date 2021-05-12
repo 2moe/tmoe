@@ -19,8 +19,8 @@ show_package_info() {
 }
 #############
 set_env() {
-	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/manager"
-	TMOE_URL_02="https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh"
+	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh"
+	TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/.mirror/manager"
 	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
 	TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
 	if [ -z ${TMPDIR} ]; then
