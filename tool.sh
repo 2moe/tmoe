@@ -1,1 +1,1 @@
-src/old-version/tools/app/tool
+share/old-version/tools/app/tool
