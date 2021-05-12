@@ -44,14 +44,16 @@ software_center() {
             "6" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
             "7" "📚 Documents:文档(libreoffice,wps)" \
             "8" "🎁 Download:下载类(aria2,baidu,迅雷)" \
-            "9" "🏤 debian-opt仓库" \
-            "10" "🔯 Packages&system:软件包与系统管理" \
-            "11" "🥙 Start zsh tool:启动zsh管理工具" \
-            "12" "🥗 File shared:文件共享与网盘(Webdav)" \
-            "13" "💔 remove:卸载管理" \
+            "9" "🔯 Packages&system:软件包与系统管理" \
+            "10" "🥙 Start zsh tool:启动zsh管理工具" \
+            "11" "🥗 File shared:文件共享与网盘(Webdav)" \
+            "12" "💔 remove:卸载管理" \
             "0" "🌚 Back to the main menu 返回主菜单" \
             3>&1 1>&2 2>&3
     )
+    # "9" "🏤 debian-opt仓库" \
+    # 9) explore_debian_opt_repo ;;
+
     case "${SOFTWARE}" in
     0 | "") tmoe_linux_tool_menu ;;
     1) install_browser ;;
@@ -62,11 +64,10 @@ software_center() {
     6) tmoe_games_menu ;;
     7) source_tmoe_document_app ;;
     8) tmoe_download_class ;;
-    9) explore_debian_opt_repo ;;
-    10) tmoe_software_package_menu ;;
-    11) start_tmoe_zsh_manager ;;
-    12) personal_netdisk ;;
-    13) tmoe_other_options_menu ;;
+    9) tmoe_software_package_menu ;;
+    10) start_tmoe_zsh_manager ;;
+    11) personal_netdisk ;;
+    12) tmoe_other_options_menu ;;
     esac
     ############################################
     #install_bilibili_electron

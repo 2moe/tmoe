@@ -1,97 +1,108 @@
 #!/usr/bin/env bash
-if [ -z ${TMPDIR} ]; then
-	TMPDIR=/tmp
-	mkdir -pv ${TMPDIR}
-fi
-cd ${TMPDIR}
 #############
-install_dependency() {
-	INSTALL_COMMAND="apt install -y ${DEPENDENCY_01} || apk add ${DEPENDENCY_01} || xbps-install -S -y ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01} || pacman -S ${DEPENDENCY_01} || dnf install ${DEPENDENCY_01} || eopkg install ${DEPENDENCY_01} || opkg install wget libustream-openssl ca-bundle ca-certificates bash || zypper in ${DEPENDENCY_01}"
-	if [ $(command -v sudo) ]; then
-		sudo su -c "apt update 2>/dev/null || apk update 2>/dev/null || opkg update 2>/dev/null"
-		sudo su -c "${INSTALL_COMMAND}"
-	elif [ $(command -v su) ]; then
-		su -c "apt update 2>/dev/null || apk update 2>/dev/null || opkg update 2>/dev/null"
-		su -c "${INSTALL_COMMAND}"
-	else
-		apt update 2>/dev/null || apk update 2>/dev/null || opkg update 2>/dev/null
-		apt install -y ${DEPENDENCY_01} || apk add ${DEPENDENCY_01} || xbps-install -S -y ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01} || pacman -S ${DEPENDENCY_01} || dnf install ${DEPENDENCY_01} || eopkg install ${DEPENDENCY_01} || opkg install wget libustream-openssl ca-bundle ca-certificates bash || zypper in ${DEPENDENCY_01}
-	fi
+# set -x
+show_package_info() {
+	# Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
+	if [ $(uname -o) = Android ]; then EXTRA_DEPS=", termux-api, termux-tools, debianutils, dialog"; fi
+	cat <<-EndOfShow
+		Package: tmoe-linux-manager
+		Version: 1.4678
+		Priority: optional
+		Section: admin
+		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
+		Depends: aria2 (>= 1.30.0), coreutils, curl, findutils, git, grep, gzip, lsof (>= 4.89), whiptail (>= 0.52.19), xz-utils (>= 5.2.2), proot (>= 5.1.0), procps (>= 2:3.3.12), sed, tar (>= 1.29b-1.1), util-linux, zstd (>= 1.1.2)${EXTRA_DEPS}
+		Recommends: bat, debootstrap, less, pv, pulseaudio
+		Suggests: lolcat, zsh
+		Tag: interface::TODO, interface::text-mode, system::cloud, system::virtual, role::program, works-with::text, works-with::archive, works-with::software:package
+		Description: Easily manage containers and system.
+	EndOfShow
 }
-#########
-tuna_mirror() {
-	if [ "${LANG}" = "$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d)" ]; then
-		#ALPINE_SOURCE_LIST=/etc/apk/repositories
-		#cp ${ALPINE_SOURCE_LIST} ${ALPINE_SOURCE_LIST}.bak 2>/dev/null
-		#sed -i "S@dl-cdn.alpinelinux.org@${CHINA_MIRROR}@g" ${ALPINE_SOURCE_LIST} 2>/dev/null
-		CHINA_MIRROR='mirrors.huaweicloud.com'
-		SOURCE_LIST=/etc/apt/sources.list
-		if ! grep -q 'deb mirrors' ${SOURCE_LIST} 2>/dev/null; then
-			cp ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
-			sed -i "s@deb.debian.org@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
-			sed -i "s@archive.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
-			sed -i "s@ports.ubuntu.com@${CHINA_MIRROR}@g" ${SOURCE_LIST} 2>/dev/null
-			sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null
-			sed -n p ${SOURCE_LIST}.bak >>${SOURCE_LIST} 2>/dev/null
-		fi
+#############
+set_env() {
+	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/.mirror/manager"
+	TMOE_URL_02="https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh"
+	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
+	TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
+	if [ -z ${TMPDIR} ]; then
+		TMPDIR=/tmp
+		mkdir -pv ${TMPDIR}
 	fi
-	case ${TMOE_DOCKER} in
-	true)
-		if grep -q 'Gentoo' /etc/os-release 2>/dev/null; then
-			emerge-webrsync
-		elif grep -q 'openSUSE' /etc/os-release 2>/dev/null; then
-			zypper in -y glibc-locale glibc-i18ndata
-		fi
+	TEMP_FILE=".tmoe-linux.sh"
+	unset EXTRA_DEPS MANAGER_FILE
+	RED=$(printf '\033[31m')
+	GREEN=$(printf '\033[32m')
+	YELLOW=$(printf '\033[33m')
+	BLUE=$(printf '\033[34m')
+	PURPLE=$(printf '\033[35m')
+	CYAN=$(printf '\033[36m')
+	RESET=$(printf '\033[m')
+}
+show_info_and_run_the_temp_file() {
+	show_package_info
+	do_you_want_to_continue
+	check_downloader
+	download_temp_file
+	exec_temp_file
+}
+do_you_want_to_continue() {
+	printf "%s\n" "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}"
+	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}, type ${YELLOW}n${RESET} to ${PURPLE}exit.${RESET}"
+	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${PURPLE}退出${RESET}"
+	read opt
+	case $opt in
+	y* | Y* | "") ;;
+	n* | N*)
+		printf "%s\n" "${PURPLE}skipped${RESET}."
+		exit 1
+		;;
+	*)
+		printf "%s\n" "${RED}Invalid ${CYAN}choice${RESET}. skipped."
+		exit 1
 		;;
 	esac
 }
-#########
-tmoe_locale_gen() {
-	#if [ ! -z "${LANG}" ]; then
-	TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
-	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-		if [ ! $(command -v locale-gen) ]; then
-			apt update 2>/dev/null
-			apt install -y locales 2>/dev/null
+check_manager_file() {
+	unset MANAGER_FILE
+	for i in "${TMOE_GIT_DIR}/manager.sh" "${TMOE_GIT_DIR_02}/manager.sh"; do
+		if [ -s "${i}" ]; then
+			MANAGER_FILE="${i}"
+			break
 		fi
-		apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-		dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack 2>/dev/null
-		pacman -Sy glibc 2>/dev/null
-		sed -i "s/^#.*${LANG} UTF-8/${LANG} UTF-8/" /etc/locale.gen 2>/dev/null
-		locale-gen ${LANG}
-	fi
-	if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-		cd /etc
-		printf "\n" >>locale.gen
-		sed -i 's@^@#&@g' locale.gen 2>/dev/null
-		sed -i 's@##@#@g' locale.gen 2>/dev/null
-		sed -i "$ a ${LANG} UTF-8" locale.gen
-		locale-gen ${LANG}
-		cd ${TMPDIR}
-	fi
-	#fi
+	done
+	case ${MANAGER_FILE} in
+	"") show_info_and_run_the_temp_file ;;
+	*) bash "${MANAGER_FILE}" ;;
+	esac
 }
-############
-if [ $(command -v curl) ]; then
-	curl -Lvo .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
-elif [ $(command -v aria2c) ]; then
-	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
-elif [ $(command -v wget) ]; then
-	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
-else
-	#带三个#为docker容器专用
-	###tuna_mirror
-	DEPENDENCY_01='wget'
-	install_dependency
-	wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
-fi
-#用于docker容器自动配置区域与语言环境。
-###tmoe_locale_gen
-if [ $(command -v bash) ]; then
-	bash .tmoe-linux.sh
-else
-	DEPENDENCY_01="bash"
-	install_dependency
-	bash .tmoe-linux.sh
-fi
+check_downloader() {
+	for i in aria2c curl wget; do
+		if [ $(command -v ${i}) ]; then
+			DOWNLOADER=${i}
+			break
+		fi
+	done
+}
+#############
+download_temp_file() {
+	cd ${TMPDIR}
+	case ${DOWNLOADER} in
+	aria2c) aria2c --connect-timeout=7 --console-log-level=info --no-conf --allow-overwrite=true -o ${TEMP_FILE} ${TMOE_URL} || aria2c --connect-timeout=20 --console-log-level=debug --no-conf --allow-overwrite=true -o ${TEMP_FILE} ${TMOE_URL_02} ;;
+	curl) curl --connect-timeout 7 -Lvo ${TEMP_FILE} ${TMOE_URL} || curl --connect-timeout 20 -Lvo ${TEMP_FILE} ${TMOE_URL_02} ;;
+	wget) wget -O ${TEMP_FILE} ${TMOE_URL} ;;
+	"")
+		printf "%s\n" "ERROR, please install curl first"
+		exit 127
+		;;
+	*) exit 1 ;;
+	esac
+}
+exec_temp_file() {
+	if [ $(command -v bash) ] && [ -s .tmoe-linux.sh ]; then
+		bash .tmoe-linux.sh
+	else
+		printf "%s\n" "ERROR, please install bash first"
+		exit 127
+	fi
+}
+set_env
+check_manager_file

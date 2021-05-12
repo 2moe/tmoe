@@ -7,7 +7,7 @@ remove_termux_linux_manager() {
 	[[ -n ${DEPENDENCIES} ]] || DEPENDENCIES='git aria2 pv wget xz-utils whiptail'
 	#newt  less curl
 	cat <<-EOF
-		${RED}rm -rv ${YELLOW}tmoe novnc debian debian-i startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux${RESET}
+		${RED}rm -rv ${YELLOW}tmoe novnc debian debian-i startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux ${TMOE_GIT_DIR}${RESET}
 		${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。
 		${BLUE}${TMOE_CONTAINER_DIR}${RESET}为容器数据路径，您需要在容器管理菜单中进行单独卸载。
 		${RED}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}
@@ -18,7 +18,7 @@ remove_termux_linux_manager() {
 	fi
 	#[[ ! -n ${DEPENDENCIES_02} ]] ||
 	do_you_want_to_continue
-	rm -rv novnc debian debian-i tmoe startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux
+	rm -rv novnc debian debian-i tmoe startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux ${TMOE_GIT_DIR}
 	${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}
 	exit 1
 }
@@ -28,15 +28,15 @@ tmoe_linux_remove_menu() {
 	tmoe_linux_remove_menu_en() {
 		OPTION=$(whiptail --title "Removable items" --menu "Which item do you want to remove?" 0 50 0 \
 			"0" "🌚 Back to the main menu" \
-			"1" "Container (old version before v1.10 beta)" \
-			"2" "Tmoe-linux manager" \
+			"1" "Tmoe-linux manager" \
+			"2" "Container (old version before v1.10 beta)" \
 			3>&1 1>&2 2>&3)
 	}
 	tmoe_linux_remove_menu_zh() {
 		OPTION=$(whiptail --title "Removable items" --menu "您想要移除哪个项目？\nWhich item do you want to remove?" 0 50 0 \
 			"0" "🌚 Back to the main menu 返回主菜单" \
-			"1" "Container (仅限v1.10 beta之前的旧版)容器" \
-			"2" "Tmoe-linux manager" \
+			"1" "Tmoe-linux manager" \
+			"2" "Container (仅限v1.10 beta之前的旧版)容器" \
 			3>&1 1>&2 2>&3)
 	}
 	case ${TMOE_MENU_LANG} in
@@ -46,12 +46,12 @@ tmoe_linux_remove_menu() {
 	##############################
 	case "${OPTION}" in
 	0 | "") tmoe_manager_main_menu ;;
-	1)
+	1) remove_termux_linux_manager ;;
+	2)
 		check_tmoe_container_chroot
 		source ${TMOE_SHARE_DIR}/deprecated/remove
 		remove_old_version_gnu_linux_container
 		;;
-	2) remove_termux_linux_manager ;;
 	esac
 	##########
 	press_enter_to_return

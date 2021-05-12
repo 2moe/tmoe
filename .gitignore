@@ -6,3 +6,4 @@ aria2.session
 .config/aria2_test.conf
 server_test.sh
 /test
+/core
