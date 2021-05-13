@@ -415,8 +415,34 @@ change_shell_to_bin_zsh() {
 		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
 	fi
 }
+show_tmoe_zsh_package_info() {
+	# if [ $(uname -o) = Android ]; then EXTRA_DEPS=", debianutils, dialog, termux-tools"; fi
+	unset EXTRA_DEPS
+	cat <<-EndOfShow
+		Package: tmoe-zsh
+		Version: 1.288
+		Priority: optional
+		Section: shells
+		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
+		Depends: bat (>= 0.12.1), binutils (>= 2.28-5), curl (>= 7.52.1) | wget (>= 1.18-5), diffutils (>= 1:3.5-3), exa(>= 0.8.0), fzf (>= 0.20.0), git, grep, less, pv (>= 1.6.0), sed (>= 4.4-1), sudo (>= 1.8.19p1-2.1), tar (>= 1.29b-1.1), whiptail (>= 0.52.19), xz-utils (>= 5.2.2), zsh (>= 5.3.0)${EXTRA_DEPS}
+		Recommends: command-not-found, eatmydata, gzip, htop
+		Suggests: lolcat, micro, neofetch, zstd
+		Homepage: https://github.com/2cd/zsh
+		Tag: interface::TODO, interface::shell, interface::text-mode, role::program, works-with::text
+		Description: Easily configure zsh themes and plugins. Just type "zsh-i" to enjoy it.
+	EndOfShow
+}
+press_enter_to_continue() {
+	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
+	case ${TMOE_LANG} in
+	zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}" ;;
+	esac
+	read
+}
 configure_tmoe_zsh() {
 	#此处不要source脚本
+	show_tmoe_zsh_package_info
+	press_enter_to_continue
 	TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
 	TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh'
 	if [[ -e "${TMOE_ZSH_TOOL_BIN}" ]]; then

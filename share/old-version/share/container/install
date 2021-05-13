@@ -912,7 +912,7 @@ ${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin
 
 ${TMOE_CHROOT_PREFIX} chmod u+w -v "${DEBIAN_CHROOT}/root"
 if [ ! -s "zsh-i.sh" ]; then
-	curl -Lo zsh-i.sh 'https://gitee.com/mo2/zsh/raw/2/2'
+	curl -Lo zsh-i.sh 'https://raw.githubusercontent.com/2cd/zsh/2/2'
 fi
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
 cp -f ${TMOE_SHARE_DIR}/container/profile/configure_zsh ./zsh.sh
