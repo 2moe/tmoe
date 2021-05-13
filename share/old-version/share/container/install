@@ -74,7 +74,7 @@ RESET=$(printf '\033[m')
 tmoe_manager_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
-	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
+	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	mkdir -pv ${TMOE_CONTAINER_DIR}
 	case ${TMOE_CHROOT} in

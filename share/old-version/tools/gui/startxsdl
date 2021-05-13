@@ -5,7 +5,7 @@ export PULSE_SERVER=tcp:127.0.0.1:4713
 ###############
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
+TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 RED=$(printf '\033[31m')

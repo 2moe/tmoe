@@ -1,85 +1,11 @@
 #!/usr/bin/env bash
 #######################################
-un_xz_debian_recovery_kit() {
-	printf "$BLUE"
-	cat <<-'EndOFneko'
-		       DL.                           
-		       QBBBBBKv:rr77ri:.             
-		       gBBQdY7::::..::i7vv.          
-		       UBd. . .:.........rBBBQBBBB5  
-		       Pu  :..r......i:....BBBQBBB:  
-		       ri.i:.j:...:. i7... uBBZrd:   
-		 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
-		.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
-		 .27. :r.r:L7i::.7r:vri:...rr  .     
-		  v   ::.Yrviri:7v7v: ::...i.   i    
-		      r:ir: r.iiiir..:7r...r   :P.2Y 
-		      v:vi::.      :  ::. .qI7U1U :1 
-		Qr    7.7.         :.i::. :Di:. i .v:
-		v7..  s.r7.   ...   .:7i: rDi...r .. 
-		 vi: .7.iDBBr  .r   .:.7. rPr:..r    
-		 i   :virZBgi  :vrYJ1vYY .ruY:..i    
-		     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
-		    .1r:q.   rB52SKrj.:i i5isi.:i :.r
-		    YvrY7    r.  . ru :: PIrj7.:r..v 
-		   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
-		  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
-		  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
-		  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
-		         .            i   7          
-	EndOFneko
-	printf "$RESET"
-	printf "%s\n" "正在解压${DOWNLOAD_FILE_NAME}，decompressing recovery package, please be patient."
-	#pv "debian_2020-03-11_17-31.tar.xz" | tar -PpJx 2>/dev/null
-	cat <<-EOF
-		少女祈禱中...
-			${BOLD}Tmoe-linux 小提示02${RESET}:
-
-				若您的宿主机为${BOLD}Android${RESET}系统,则在termux原系统下输${GREEN}startvnc${RESET}将${RED}同时启动${RESET}Android版Realvnc${YELLOW}客户端${RESET}和GNU/Linux的VNC${YELLOW}服务端${RESET}。
-				-------------------
-				输${GREEN}debian${RESET}仅启动${BLUE}GNU/Linux容器${RESET}，不会自动启动远程桌面服务。
-				-------------------
-				您可以在解压完成之后输${GREEN}startvnc${RESET}来启动${BLUE}tight或tigervnc服务${RESET}，输${RED}stopvnc${RESET}停止
-				-------------------
-				You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
-				-------------------
-	EOF
-	printf "%s\n" "正在${GREEN}解压${RESET}中..."
-	printf "%s\n" "少女祈禱中..."
-	if [ ! "$(command -v pv)" ] || [ "${TMOE_CHROOT}" = 'true' ]; then
-		${TMOE_PREFIX} tar -PpJxvf ${DOWNLOAD_FILE_NAME}
-	else
-		pv ${DOWNLOAD_FILE_NAME} | tar -PpJx
-	fi
-	cd "{CURRENT_DIR}"
-	printf '%s\n' 'The vnc server is about to start for you.'
-	# The password you entered is hidden.'
-	#printf '%s\n' '即将为您启动vnc服务，您需要输两遍（不可见的）密码。'
-	#printf "%s\n" "When prompted for a view-only password, it is recommended that you enter 'n'"
-	#printf '%s\n' '如果提示view-only,那么建议您输n,选择权在您自己的手上。'
-	copy_tmoe_locale_file_to_container
-	printf '%s\n' '请输入6至8位的VNC密码'
-	switch_termux_rootfs_to_linux
-	check_proot_proc_permissions
-	source ${PREFIX}/bin/startvnc
-}
-############################
-switch_termux_rootfs_to_linux() {
-	if [ "${LINUX_DISTRO}" != 'Android' ]; then
-		cd /data/data/com.termux/files/usr/bin
-		sed -i 's:#!/data/data/com.termux/files/usr/bin/env bash:#!/usr/bin/env bash:g' $(grep -rl 'com.termux' ./)
-		#sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' ${DEBIAN_CHROOT}/remove-debian.sh
-		cp -pf ./* ${PREFIX}/bin/
-	fi
-}
 install_debian_gnu_linux_distro_menu() {
 	RETURN_TO_WHERE='install_debian_gnu_linux_distro_menu'
 	DOWNLOAD_PATH="/sdcard/Download/backup"
-	#DISTRO_CODE=''
 	DISTRO_NAME='debian'
 	DEB_BOOT_STRAP=false
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	#\nStable版更加稳定且bug较少,但stable的软件包较旧,而sid较新。\nBuster is more stable and has fewer bugs,\nbut the packages inside the buster software source are older.\nThe sid package is relatively new.
 	DISTRO_CODE=""
 	install_debian_gnu_linux_distro_menu_zh() {
 		BETA_SYSTEM=$(
@@ -129,8 +55,6 @@ install_debian_gnu_linux_distro_menu() {
 				3>&1 1>&2 2>&3
 		)
 	}
-	#"9" "🤠8-jessie(2015~2018,翠丝,女牛仔)" \	9) DISTRO_CODE='jessie' ;;
-	#"2" "recovery pkg 恢复包" \	2) install_debian_gnu_linux_container_via_rec_pkg ;;
 	##############################
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) install_debian_gnu_linux_distro_menu_zh ;;
@@ -167,8 +91,6 @@ check_debian_distro_code() {
 	*) install_debian_testing_via_tuna ;;
 	esac
 }
-#"9" "🐧7-wheezy(2013~2016,吱吱,带着领结的玩具企鹅)" \
-#"10" "👽6-squeeze(2011~2014,三只眼的外星人)" \
 ############
 check_debian_12() {
 	#DISTRO_CODE='bookworm'
@@ -244,187 +166,11 @@ check_debian_new_version() {
 	fi
 }
 #####################################
-verify_sha256sum() {
-	printf "$BLUE"
-	cat <<-'EndOFneko'
-		                                        
-		                            .:7E        
-		            .iv7vrrrrr7uQBBBBBBB:       
-		           v17::.........:SBBBUg        
-		        vKLi.........:. .  vBQrQ        
-		   sqMBBBr.......... :i. .  SQIX        
-		   BBQBBr.:...:....:. 1:.....v. ..      
-		    UBBB..:..:i.....i YK:: ..:   i:     
-		     7Bg.... iv.....r.ijL7...i. .Lu     
-		  IB: rb...i iui....rir :Si..:::ibr     
-		  J7.  :r.is..vrL:..i7i  7U...Z7i..     
-		  ...   7..I:.: 7v.ri.755P1. .S  ::     
-		    :   r:.i5KEv:.:.  :.  ::..X..::     
-		   7is. :v .sr::.         :: :2. ::     
-		   2:.  .u: r.     ::::   r: ij: .r  :  
-		   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
-		   :u   .iq: :PBEPjvviII5P7::5Du: .v    
-		    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
-		    :v. iiSrr   :..   s i.  vPrvsr. r.  
-		     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
-		      i7LUJv.   . .     .:   YI7bIr :ur 
-		     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
-		    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
-		         :   r. ..      .. .:i  ...     
-	EndOFneko
-	printf "$RESET"
-	cat <<-EOF
-		現在可公開的情報:
-			${BOLD}Tmoe-linux 小提示01${RESET}:
-
-				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
-				-------------------
-				You can type ${GREEN}startx11vnc${RESET} to start ${BLUE}x11vnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
-				------------------
-				在容器内输${GREEN}debian-i${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
-				-------------------
-	EOF
-	printf '%s\n' 'Verifying sha256hash...'
-	printf '%s\n' '正在校验sha256哈希值...'
-	printf "%s\n" "${GREEN}${CORRENTSHA256SUM}${RESET}"
-	LOCAL_FILE_SHA256_SUM="$(sha256sum ${DOWNLOAD_FILE_NAME} | cut -c 1-64)"
-	if [ "${LOCAL_FILE_SHA256_SUM}" != "${CORRENTSHA256SUM}" ]; then
-		printf "%s\n" "当前文件的sha256校验值为${RED}${LOCAL_FILE_SHA256_SUM}${RESET}"
-		printf "%s\n" "远程文件的sha256校验值为${CORRENTSHA256SUM}"
-		printf '%s\n' 'sha256校验值不一致，请重新下载！'
-		printf '%s\n' 'sha256hash value is inconsistent, please download again.'
-		printf "%s\n" "按回车键无视错误并继续安装,按Ctrl+C取消。"
-		do_you_want_to_continue
-	else
-		printf '%s\n' 'Congratulations,检测到sha256哈希值一致'
-		printf '%s\n' 'Detected that sha256hash is the same as the source code, and your download is correct.'
-	fi
-}
-##########################
-git_clone_tmoe_linux_container_file() {
-	if [ ! $(command -v debian-i) ]; then
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager' || curl -Lo ${PREFIX}/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager' || sudo -E aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager'
-		chmod a+rx ${PREFIX}/bin/debian-i
-	fi
-	TMOE_TRUE_TEMP_FOLDER='.TMOE_LINUX_CONTAINER_TEMP_FOLDER'
-	mkdir -pv ${TMOE_TRUE_TEMP_FOLDER}
-	cd ${TMOE_TRUE_TEMP_FOLDER}
-
-	TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_01"
-	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_CONTAINER_REPO_01} ${TMOE_TEMP_FOLDER}
-	cd ${TMOE_TEMP_FOLDER}
-	mv .container_linux_* ..
-	cd ..
-	if [ ! -z ${TMOE_LINUX_CONTAINER_REPO_02} ]; then
-		TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_02"
-		git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_CONTAINER_REPO_02} ${TMOE_TEMP_FOLDER}
-		cd ${TMOE_TEMP_FOLDER}
-		mv .container_linux_* ..
-		cd ..
-	fi
-	if [ ! -z ${TMOE_LINUX_CONTAINER_REPO_03} ]; then
-		TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_CONTAINER_TEMP_FOLDER_03"
-		git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_CONTAINER_REPO_03} ${TMOE_TEMP_FOLDER}
-		cd ${TMOE_TEMP_FOLDER}
-		mv .container_linux_* ..
-		cd ..
-	fi
-	printf "%s\n" "Debian恢复包内的数百张壁纸来自于影之音酱"
-	cat .container_linux_* >${DOWNLOAD_FILE_NAME}
-	mv -f ${DOWNLOAD_FILE_NAME} ../
-	cd ../
-	rm -rf ${TMOE_TRUE_TEMP_FOLDER}
-}
-#################
-check_tmoe_linux_container_rec_pkg_file_and_git() {
-	mkdir -pv ${DOWNLOAD_PATH}
-	cd ${DOWNLOAD_PATH}
-	if [ -f "${DOWNLOAD_FILE_NAME}" ]; then
-		if (whiptail --title "检测到压缩包已下载,请选择您需要执行的操作！" --yes-button '解压uncompress' --no-button '重下DL again' --yesno "Detected that the file has been downloaded.\nDo you want to unzip it, or download it again?\n检测到恢复包已经下载,\n您想要直接解压还是重新下载？" 0 0); then
-			printf "%s\n" "解压后将覆盖容器的所有数据"
-			do_you_want_to_continue
-		else
-			git_clone_tmoe_linux_container_file
-		fi
-	else
-		git_clone_tmoe_linux_container_file
-	fi
-	verify_sha256sum
-	un_xz_debian_recovery_kit
-}
-########################
-debian_sid_arm64_xfce_recovery_package() {
-	printf "%s\n" "即将为您下载至${DOWNLOAD_PATH}"
-	printf '%s\n' '下载大小约1.5G,解压后约占5.8G'
-	#printf "%s\n" "2020-07-11凌晨注：忘记给LibreOffice打补丁了 (ㄒoㄒ)/~~，请在安装完成后使用tmoe-linux tool给libreoffice打补丁"
-	CORRENTSHA256SUM='5c85ec7857539025fc9744d89b10655219dcd2a535da0f20bd405d28512dfe59' #DevSkim: ignore DS173237
-	BRANCH_NAME='arm64'
-	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_sid_rootfs_01'
-	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_sid_rootfs_02'
-	TMOE_LINUX_CONTAINER_REPO_03='https://gitee.com/ak2/debian_sid_rootfs_03'
-	DOWNLOAD_FILE_NAME='debian-sid+xfce4.14_2020-08-29_18-13-rootfs_bak.tar.xz'
-	check_tmoe_linux_container_rec_pkg_file_and_git
-}
-##################
-debian_buster_arm64_xfce_recovery_package() {
-	printf "%s\n" "即将为您下载至${DOWNLOAD_PATH}"
-	printf '%s\n' '下载大小约573MiB,解压后约占2.2G'
-	CORRENTSHA256SUM='a7106647f7b4577c3e9868d790f1bea5464b38362785a592cb5283f44b976512' #DevSkim: ignore DS173237
-	BRANCH_NAME='arm64'
-	TMOE_LINUX_CONTAINER_REPO_01='https://gitee.com/ak2/debian_stable_rootfs_01'
-	TMOE_LINUX_CONTAINER_REPO_02='https://gitee.com/ak2/debian_stable_rootfs_02'
-	TMOE_LINUX_CONTAINER_REPO_03=''
-	DOWNLOAD_FILE_NAME='debian-buster_arm64-xfce4.12+music-app_2020-08-28_18-27-rootfs_bak.tar.xz'
-	check_tmoe_linux_container_rec_pkg_file_and_git
-}
-#################
 install_debian_sid_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@')"
 }
 #################
-install_debian_gnu_linux_container_via_rec_pkg() {
-	#Do you want to install debian container via Tsinghua University open source mirror station,\nor download the recovery package (debian-xfce.tar.xz)?\n您想要通过软件源镜像站来安装，还是在线下载恢复包来安装？\n软件源获取的是最新版镜像，且支持arm64,armhf,x86,x64等架构,\n安装基础系统速度很快，但安装gui速度较慢。\n恢复包非最新版,软件包只更新至2020-07-10,且仅支持arm64架构,但安装gui速度较快。\n若您无使用GUI的需求，建议通过软件源镜像站来安装。" 0 50 0 \
-	BETA_SYSTEM=$(whiptail --title "Download recovery package and install container" --menu "恢复包在解压完成后，将根据系统对权限的限制来判断特殊文件的挂载与否。" 0 50 0 \
-		"1" "arm64 sid xfce,600+P,1.5G,20200829" \
-		"2" "arm64 buster xfce,200+P,573M,20200828" \
-		"0" "🌚 Return to previous menu 返回上级菜单" \
-		3>&1 1>&2 2>&3)
-	##############################
-	#"1" "netinstall(通过软件源在线安装)" \
-	case "${BETA_SYSTEM}" in
-	0 | "") install_debian_gnu_linux_distro_menu ;;
-	1) DISTRO_CODE='sid' ;;
-	2) DISTRO_CODE='buster' ;;
-	esac
-	######################
-	case ${TRUE_ARCH_TYPE} in
-	arm64) ;;
-	*)
-		printf "%s\n" "Sorry，恢复包暂未支持跨架构运行"
-		press_enter_to_return
-		install_debian_gnu_linux_distro_menu
-		;;
-	esac
-	case ${TMOE_CHROOT} in
-	true)
-		printf "%s\n" "检测到您选择的是chroot容器,暂不支持恢复,请在线安装。"
-		press_enter_to_return
-		install_debian_gnu_linux_distro_menu
-		;;
-	esac
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	printf "%s\n" "即将为您安装Debian ${DISTRO_CODE} GNU/Linux container"
-	do_you_want_to_continue
-	case "${DISTRO_CODE}" in
-	buster) debian_buster_arm64_xfce_recovery_package ;;
-	sid) debian_sid_arm64_xfce_recovery_package ;;
-	esac
-	###############
-	exit 0
-}
-###########
 install_debian_buster_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s:/sid:/${DISTRO_CODE}:g" |

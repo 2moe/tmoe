@@ -59,7 +59,7 @@ tmoe_manager_env() {
 	TMOE_LOCALE_FILE=${CONFIG_FOLDER}/locale.txt
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
-	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
+	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
 	AK2_GIT_URL="https://gitee.com/ak2"

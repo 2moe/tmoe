@@ -77,7 +77,7 @@ export USER=${VNC_USER}
 stopvnc -non-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
+TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 TMOE_VNC_PASSWD_FILE="${HOME}/.vnc/passwd"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
