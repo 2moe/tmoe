@@ -81,7 +81,7 @@ press_enter_to_return() {
 ################
 upgrade_tmoe_aria2_tool() {
     cd /usr/local/bin
-    curl -Lv -o aria2-i 'https://gitee.com/mo2/linux/raw/master/share/old-version/tools/downloader/aria2'
+    curl -Lv -o aria2-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/downloader/aria2'
     printf "%s\n" "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
     printf "%s\n" "${YELLOW}更新完成，按回车键返回。${RESET}"
     chmod a+rx aria2-i
@@ -2002,7 +2002,7 @@ tmoe_aria2_onekey() {
     fi
 
     #cp -pvf ${HOME}/gitee/linux-gitee/.config/aria2.conf ./
-    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o aria2.conf 'https://gitee.com/mo2/linux/raw/master/share/old-version/.config/aria2.conf'
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o aria2.conf 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/.config/aria2.conf'
     case ${TMOE_PROOT} in
     true) printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下" ;;
     false) printf "%s\n" "检测到您处于${BLUE}chroot容器${RESET}环境下" ;;
@@ -2086,11 +2086,11 @@ exit 0
     ########################################
     cd ${TMOE_ARIA2_PATH}
     if [ ! -e "dht.dat" ]; then
-        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht.dat https://gitee.com/mo2/linux/raw/master/share/old-version/.config/dht.dat
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/.config/dht.dat
         chmod 666 dht.dat
     fi
     if [ ! -e "dht6.dat" ]; then
-        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht6.dat https://gitee.com/mo2/linux/raw/master/share/old-version/.config/dht6.dat
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o dht6.dat https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/.config/dht6.dat
         chmod 666 dht6.dat
     fi
     create_aria2_hook_script
@@ -2262,7 +2262,7 @@ create_aria_ng_desktop_link() {
         if [ -e "${ARIA_NG_ICON}" ]; then
             cp ${ARIA_NG_ICON} /usr/share/icons
         else
-            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /usr/share/icons -o ariang.png https://gitee.com/mo2/linux/raw/master/share/icons/ariang.png
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /usr/share/icons -o ariang.png https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/icons/ariang.png
         fi
     fi
     catimg "/usr/share/icons/ariang.png" 2>/dev/null

@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4700,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4701,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -636,7 +636,7 @@ termux_color_scheme_menu() {
 	esac
 	case ${COLOR_FILE} in
 	"") ;;
-	*) aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" "https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/colors/${COLOR_FILE}" ;;
+	*) aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" "https://raw.githubusercontent.com/2cd/zsh/master/share/colors/${COLOR_FILE}" ;;
 	esac
 }
 choose_termux_color_scheme() {
@@ -655,7 +655,7 @@ choose_termux_color_scheme() {
 	if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
 		if (whiptail --title "termux.properties" --yes-button "yes" --no-button "no" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
 			cp -vf termux.properties termux.properties.bak
-			aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2moe/tmoe-zsh/master/share/termux.properties'
+			aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2cd/zsh/master/share/termux.properties'
 			sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
 			if [[ ! -s termux.properties ]]; then
 				mv -fv termux.properties.02 termux.properties
@@ -821,7 +821,7 @@ start_zsh_tool_as_current_user() {
 }
 start_tmoe_zsh_manager() {
 	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
-	ZSH_TOOL_URL="https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh"
+	ZSH_TOOL_URL="https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh"
 	case ${HOME} in
 	/root) normally_start_zsh ;;
 	*)

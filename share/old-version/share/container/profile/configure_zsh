@@ -418,7 +418,7 @@ change_shell_to_bin_zsh() {
 configure_tmoe_zsh() {
 	#此处不要source脚本
 	TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
-	TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh'
+	TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh'
 	if [[ -e "${TMOE_ZSH_TOOL_BIN}" ]]; then
 		chmod a+rx -v ${TMOE_ZSH_TOOL_BIN}
 		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure

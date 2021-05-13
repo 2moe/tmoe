@@ -14,7 +14,7 @@ for i in ${ALL_SHARE_FILE}; do
         SHARE_FILE="${SHARE_FILE} ${i}"
     fi
 done
-SHARE_FILE="${SHARE_FILE} ./tools/app/tool ./tools/virtualization/qemu/startqemu"
+SHARE_FILE="${SHARE_FILE} ./tools/app/tool ./tools/virtualization/qemu/startqemu ./tools/app/center ./tools/downloader/* ./tools/environment/global_env"
 printf "%s\n" "$SHARE_FILE"
 INSTALLATION_FILE=./share/container/install
 
@@ -29,7 +29,7 @@ sed -e 's@en_US en_US@en_US zh_CN@g' \
     -e 's@###tmoe-github@@g' \
     -i ${INSTALLATION_FILE}
 
-sed -e 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/master/@g' \
+sed -e 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2cd/zsh/master/@g' \
     -e 's!cdn.jsdelivr.net/gh/2moe/tmoe-zsh@master/.mirror/zsh!raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh!g' \
     -e 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' \
     -e 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe-linux.git@g' \

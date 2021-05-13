@@ -109,7 +109,7 @@ start_zsh_tool_as_current_user() {
 }
 start_tmoe_zsh_manager() {
     TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
-    ZSH_TOOL_URL="https://cdn.jsdelivr.net/gh/2moe/tmoe-zsh@master/.mirror/zsh"
+    ZSH_TOOL_URL="https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh"
     case ${HOME} in
     /root) normally_start_zsh ;;
     *)
