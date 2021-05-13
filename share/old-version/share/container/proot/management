@@ -1180,7 +1180,7 @@ install_weekly_build_container() {
 	zh_*UTF-8) printf "%s\n" "本容器使用以下Dockerfile进行构建。" ;;
 	esac
 	printf "%s\n" "${BOLD}${YELLOW}Dockerfile:${RESET}"
-	DOCKERFILE="${TMOE_SHARE_DIR}/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
+	DOCKERFILE="${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
 	printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
 	if [ $(command -v bat) ]; then
 		bat -ppn "${DOCKERFILE}"

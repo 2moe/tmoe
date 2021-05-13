@@ -4,7 +4,7 @@ main() {
 	check_linux_distro
 	check_architecture
 	gnu_linux_env
-	source ${TMOE_TOOL_DIR}/environment.sh 2>/dev/null
+	source ${TMOE_TOOL_DIR}/environment/global_env 2>/dev/null
 	check_current_user_name_and_group 2>/dev/null
 	case "$1" in
 	i | -i) tmoe_linux_tool_menu ;;
@@ -29,10 +29,10 @@ main() {
 		tmoe_linux_tool_upgrade
 		;;
 	passwd | -passwd)
-		source ${TMOE_TOOL_DIR}/gui/gui.sh --vncpasswd
+		source ${TMOE_TOOL_DIR}/gui/gui --vncpasswd
 		check_win10x_icon
 		;;
-	--choose-vnc-port) source ${TMOE_TOOL_DIR}/gui/gui.sh --choose-vnc-port ;;
+	--choose-vnc-port) source ${TMOE_TOOL_DIR}/gui/gui --choose-vnc-port ;;
 	h | -h | --help)
 		cat <<-'EOF'
 			-ppa     --添加ppa软件源(add ppa source)   
@@ -737,7 +737,7 @@ check_tmoe_git_folder() {
 		true | false) git_clone_tmoe_linux_repo ;;
 		*) do_you_want_to_git_clone_tmoe_linux_repo ;;
 		esac
-		source ${TMOE_TOOL_DIR}/environment.sh
+		source ${TMOE_TOOL_DIR}/environment/global_env
 		check_current_user_name_and_group
 	fi
 }
@@ -874,19 +874,19 @@ download_videos() {
 }
 ####################
 modify_remote_desktop_config() {
-	source ${TMOE_TOOL_DIR}/gui/gui.sh -c
+	source ${TMOE_TOOL_DIR}/gui/gui -c
 }
 ########################
 tmoe_desktop_beautification() {
-	source ${TMOE_TOOL_DIR}/gui/gui.sh -b
+	source ${TMOE_TOOL_DIR}/gui/gui -b
 }
 ########################
 install_gui() {
-	source ${TMOE_TOOL_DIR}/gui/gui.sh --install-gui
+	source ${TMOE_TOOL_DIR}/gui/gui --install-gui
 }
 ######################
 frequently_asked_questions() {
-	source ${TMOE_TOOL_DIR}/other/frequently_asked_questions.sh
+	source ${TMOE_TOOL_DIR}/other/frequently_asked_questions
 }
 ####################
 beta_features() {

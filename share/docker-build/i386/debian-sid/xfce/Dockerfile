@@ -26,7 +26,7 @@ RUN apt update; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
-    printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui.sh --auto-install-gui-xfce" > install-gui.sh; \
+    printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-xfce" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \

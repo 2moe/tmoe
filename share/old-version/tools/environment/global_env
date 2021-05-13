@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ########################
 check_current_user_name_and_group() {
     CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}' | head -n 1)
@@ -591,7 +590,7 @@ check_tmoe_linux_desktop_link() {
 create_tmoe_linux_desktop_icon() {
     if [ ! $(command -v debian-i) ]; then
         cd /usr/local/bin
-        curl -Lv -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        curl -Lv -o debian-i 'https://gitee.com/mo2/linux/raw/master/share/old-version/tools/app/tool'
         chmod a+rx debian-i
     fi
     cp ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop ${APPS_LNK_DIR}/tmoe-linux.desktop
@@ -884,7 +883,7 @@ EndOFneko
 }
 ############
 modify_xsdl_conf() {
-    source ${TMOE_TOOL_DIR}/gui/gui.sh -x
+    source ${TMOE_TOOL_DIR}/gui/gui -x
 }
 ########
 install_virtual_box() {
@@ -1072,7 +1071,7 @@ modify_ubuntu_sources_list_d_code() {
 }
 ###################
 fix_vnc_dbus_launch() {
-    source ${TMOE_TOOL_DIR}/gui/gui.sh --fix-dbus
+    source ${TMOE_TOOL_DIR}/gui/gui --fix-dbus
 }
 #################
 source_vscode_script() {

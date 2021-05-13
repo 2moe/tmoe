@@ -23,7 +23,7 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
-    printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui.sh --auto-install-gui-lxde" > install-gui.sh; \
+    printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-lxde" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
     dnf update -y; \

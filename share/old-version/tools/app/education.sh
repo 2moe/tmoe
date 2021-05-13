@@ -2,7 +2,6 @@
 ############################################
 tmoe_mathematics_menu() {
 	RETURN_TO_WHERE='tmoe_mathematics_menu'
-
 	DEPENDENCY_01=''
 	TMOE_APP=$(whiptail --title "mathematics" --menu \
 		"Which software do you want to install？" 0 50 0 \
