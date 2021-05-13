@@ -36,4 +36,5 @@ sed -e 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2moe/tmoe-zsh/
     -e 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe-linux\"@' \
     -i ${ALL_SHELL_FILE} ${SHARE_FILE}
 
+sed -i 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe-linux/master/@g' ../../debian.sh
 # -e 's!gitee.com/mo2/linux/raw/master/share/old-version/share/app/!raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/!g' \
