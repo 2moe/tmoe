@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4698,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4699,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -482,7 +482,7 @@ choose_tmoe_locale_env() {
 	6) TMOE_LANG="de_DE.UTF-8" ;;
 	7) TMOE_LANG="fr_FR.UTF-8" ;;
 	8)
-		TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/environment/locale"
+		TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/environment/locale"
 		source_locale_setting
 		;;
 	esac
@@ -522,8 +522,8 @@ check_tmoe_menu_locale_file() {
 install_dependencies_02() {
 	unset DEPENDENCIES
 	case ${LINUX_DISTRO} in
-	Android) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/termux/termux" ;;
-	*) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/environment/dependencies" ;;
+	Android) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/termux/termux" ;;
+	*) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/environment/dependencies" ;;
 	esac
 	source_locale_setting
 	git_clone_tmoe_manager
