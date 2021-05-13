@@ -10,7 +10,7 @@ configure_tmoe_container_main() {
 configure_tmoe_container() {
     RETURN_TO_WHERE='configure_tmoe_container'
     RETURN_TO_MENU='configure_tmoe_container'
-    TMOE_OPTION=$(whiptail --title "CONF AND MANUAL" --menu "You can view the manual or modify the container configuration here." 0 50 0 \
+    TMOE_OPTION=$(whiptail --title "CONF AND MANUAL" --menu "You can view the manual or modify the config here." 0 50 0 \
         "1" "DNS 域名解析系统" \
         "2" "Timezone 时区" \
         "3" "hitokoto 一言" \

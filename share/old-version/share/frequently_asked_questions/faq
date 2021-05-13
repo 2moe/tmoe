@@ -53,22 +53,24 @@ manager_frequently_asked_questions() {
 	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
 		"您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
 		"1" "how to customize the dir如何自定义容器目录" \
-		"2" "cannot rm container无法移除容器" \
-		"3" "About auto conf(关于自动配置)" \
-		"4" "VNC无法调用音频" \
-		"5" "给Linux Deploy配置VNC音频" \
-		"6" "sudo出现nosuid错误" \
+		"2" "how to use micro editor如何使用micro" \
+		"3" "cannot rm container无法移除容器" \
+		"4" "About auto conf(关于自动配置)" \
+		"5" "VNC无法调用音频" \
+		"6" "给Linux Deploy配置VNC音频" \
+		"7" "sudo出现nosuid错误" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
 	case "${TMOE_FAQ}" in
 	0 | "") tmoe_manager_main_menu ;;
 	1) how_to_customize_the_container_dir ;;
-	2) can_not_remove_the_container ;;
-	3) questions_about_tmoe_automatic_configuration ;;
-	4) vnc_can_not_call_pulse_audio ;;
-	5) linux_deploy_pulse_server ;;
-	6) printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,uhelper=udisks2 /dev/xxx /media/xxx/mountpoint" ;;
+	2) how_to_use_micro_editor ;;
+	3) can_not_remove_the_container ;;
+	4) questions_about_tmoe_automatic_configuration ;;
+	5) vnc_can_not_call_pulse_audio ;;
+	6) linux_deploy_pulse_server ;;
+	7) printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,uhelper=udisks2 /dev/xxx /media/xxx/mountpoint" ;;
 	esac
 	#subvolid=5,subvol=/,compress=zstd
 	#############
@@ -76,6 +78,50 @@ manager_frequently_asked_questions() {
 	manager_frequently_asked_questions
 }
 ###########################
+how_to_use_micro_editor() {
+	how_to_use_micro_editor_zh() {
+		cat <<-EOF
+			${GREEN}Ctrl + ${YELLOW}S  ${BLUE}保存
+			${GREEN}Ctrl + ${YELLOW}Q  ${BLUE}退出
+			${GREEN}Ctrl + ${YELLOW}C  ${BLUE}复制
+			${GREEN}Ctrl + ${YELLOW}V  ${BLUE}粘贴
+			${GREEN}Ctrl + ${YELLOW}X  ${BLUE}剪切
+			${GREEN}Ctrl + ${YELLOW}/  ${BLUE}注释
+			${GREEN}Ctrl + ${YELLOW}Z  ${BLUE}撤销
+			${GREEN}Ctrl + ${YELLOW}Y  ${BLUE}重做
+			${GREEN}Ctrl + ${YELLOW}L  ${BLUE}跳转到指定行
+			${GREEN}Ctrl + ${YELLOW}F  ${BLUE}搜索
+			${GREEN}Ctrl + ${YELLOW}N  ${BLUE}搜索下一个
+			${GREEN}Ctrl + ${YELLOW}P  ${BLUE}搜索上一个${RESET}
+		EOF
+	}
+	how_to_use_micro_editor_en() {
+		cat <<-EOF
+			${GREEN}Ctrl + ${YELLOW}S  ${BLUE}Save
+			${GREEN}Ctrl + ${YELLOW}Q  ${BLUE}Quit
+			${GREEN}Ctrl + ${YELLOW}C  ${BLUE}Copy
+			${GREEN}Ctrl + ${YELLOW}V  ${BLUE}Paste
+			${GREEN}Ctrl + ${YELLOW}X  ${BLUE}Cut
+			${GREEN}Ctrl + ${YELLOW}/  ${BLUE}Toggle Line Comment
+			${GREEN}Ctrl + ${YELLOW}Z  ${BLUE}Undo
+			${GREEN}Ctrl + ${YELLOW}Y  ${BLUE}Redo
+			${GREEN}Ctrl + ${YELLOW}L  ${BLUE}Go to the designated line
+			${GREEN}Ctrl + ${YELLOW}F  ${BLUE}Find
+			${GREEN}Ctrl + ${YELLOW}N  ${BLUE}FindNext
+			${GREEN}Ctrl + ${YELLOW}P  ${BLUE}FindPrevious${RESET}
+		EOF
+	}
+	case ${TMOE_MENU_LANG} in
+	zh_*UTF-8) how_to_use_micro_editor_zh ;;
+	*) how_to_use_micro_editor_en ;;
+	esac
+	if [ ! $(command -v micro) ]; then
+		printf "%s\n" "Do you want to install ${BLUE}micro${RESET} editor?[Y/n]"
+		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}micro${RESET}"
+		do_you_want_to_continue
+		${TMOE_INSTALLATION_COMMAND} micro
+	fi
+}
 can_not_remove_the_container() {
 	cat <<-ENDOFFAQ
 		01：
