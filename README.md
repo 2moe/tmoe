@@ -261,7 +261,7 @@ TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 git clone -b master --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 ```
 
-**After cloning the repo, you can type `bash ${TMOE_GIT_DIR}/manager.sh` to start tmoe-linux manager.**
+**After cloning the repo, you can type `bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager` to start tmoe-linux manager.**
 
 ### 二：Container 篇
 

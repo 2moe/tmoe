@@ -8,12 +8,12 @@ fi
 get_hitokito_cn 2>/dev/null
 check_tmoe_completion_version
 check_tmoe_completion
-#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh" || curl -Lo ${PREFIX}/bin/debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh" || sudo -E aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh"
+#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager" || curl -Lo ${PREFIX}/bin/debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager" || sudo -E aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager"
 if [ ! -h "${PREFIX}/bin/debian-i" ]; then
 	rm -fv /usr/local/bin/debian-i 2>/dev/null
-	ln -sfv ${TMOE_GIT_DIR}/manager.sh ${PREFIX}/bin/debian-i
+	ln -sfv ${TMOE_GIT_DIR}/share/old-version/share/app/manager ${PREFIX}/bin/debian-i
 else
-	ln -sf ${TMOE_GIT_DIR}/manager.sh ${PREFIX}/bin/debian-i
+	ln -sf ${TMOE_GIT_DIR}/share/old-version/share/app/manager ${PREFIX}/bin/debian-i
 fi
 #if [ "${LINUX_DISTRO}" != "Android" ]; then
 #	sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i

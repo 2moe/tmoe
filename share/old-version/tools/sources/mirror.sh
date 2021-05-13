@@ -200,7 +200,7 @@ china_bussiness_mirror_station() {
 sed_a_source_list() {
     TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
     TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
     TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
     SOURCE_LIST='/etc/apt/sources.list'
     MIRROR_LIST='/etc/pacman.d/mirrorlist'

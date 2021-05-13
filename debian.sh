@@ -19,10 +19,11 @@ show_package_info() {
 }
 #############
 set_env() {
-	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh"
-	TMOE_URL_02="https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh"
+	TMOE_URL="https://gitee.com/mo2/linux/raw/master/share/old-version/share/app/manager"
+	TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/share/old-version/share/app/manager"
 	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
 	TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
+	TMOE_MANAGER="share/old-version/share/app/manager"
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
 		mkdir -pv ${TMPDIR}
@@ -63,7 +64,7 @@ do_you_want_to_continue() {
 }
 check_manager_file() {
 	unset MANAGER_FILE
-	for i in "${TMOE_GIT_DIR}/manager.sh" "${TMOE_GIT_DIR_02}/manager.sh"; do
+	for i in "${TMOE_GIT_DIR}/${TMOE_MANAGER}" "${TMOE_GIT_DIR_02}/${TMOE_MANAGER}"; do
 		if [ -s "${i}" ]; then
 			MANAGER_FILE="${i}"
 			break

@@ -35,7 +35,7 @@ RUN apt update; \
     mkdir -p environment; \
     printf "%s\n%s\n" 'cd ~' "${QEMU_FILE}" > environment/entrypoint; \
     chmod -v a+rx environment/*; \
-    cp -vf ${PWD}/git/tools/virtualization/qemu/startqemu ${QEMU_FILE}; \
+    cp -vf ${PWD}/git/share/old-version/tools/virtualization/qemu/startqemu ${QEMU_FILE}; \
     chmod -v 777 ${QEMU_FILE}; \
     sed -E -e "s@^(QEMU_NAME=).*@\1${QEMU_NAME}@g"; \
     -e "s@^(RTC_BASE=).*@\1${RTC_BASE}@g"; \

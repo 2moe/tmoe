@@ -9,8 +9,8 @@ linux_distro_sources_list() {
 			tmoe_sources_list_manager
 			;;
 		*)
-			if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
-				bash ${TMOE_GIT_DIR}/tool.sh --mirror-list
+			if [ -e "${TMOE_GIT_DIR}/share/old-version/tools/app/tool" ]; then
+				bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool --mirror-list
 			else
 				gnu_linux_mirror_source_manager
 			fi
@@ -442,10 +442,10 @@ apt_dist_upgrade() {
 }
 ######################
 gnu_linux_mirror_source_manager() {
-	TMOE_LOCALE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh"
-	TMOE_LOCALE_TMP_FILE=/tmp/.tmoe-linux-tool.sh
+	TMOE_LOCALE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
+	TMOE_LOCALE_TMP_FILE=/tmp/.tmoe-linux-tool.bash
 	if [ $(command -v aria2c) ]; then
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.sh' "${TMOE_LOCALE_URL}"
+		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' "${TMOE_LOCALE_URL}"
 	elif [ $(command -v curl) ]; then
 		curl -Lo ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
 	elif [ $(command -v wget) ]; then
@@ -459,11 +459,11 @@ gnu_linux_mirror_source_manager() {
 gnu_linux_sources_list() {
 	if [ "${LINUX_DISTRO}" != "alpine" ]; then
 		if [ ! $(command -v curl) ]; then
-			wget -O /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			wget -O /tmp/.tmoe-linux-tool.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
 		else
-			curl -Lo /tmp/.tmoe-linux-tool.sh 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
+			curl -Lo /tmp/.tmoe-linux-tool.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
 		fi
-		bash /tmp/.tmoe-linux-tool.sh -tuna
+		bash /tmp/.tmoe-linux-tool.bash -tuna
 	else
 		cp -af /etc/apk/repositories /etc/apk/repositories.bak
 		#sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories

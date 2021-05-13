@@ -283,19 +283,6 @@ install_tmoe_weekly_build_edition() {
 	press_enter_to_return
 	install_tmoe_weekly_build_edition
 }
-request_weekly_build_version() {
-	TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues/22"
-	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}"
-	if [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
-		cd /mnt/c/Users
-		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}"
-		cd -
-	fi
-	case ${LINUX_DISTRO} in
-	Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}" ;;
-	*) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_WEEKLY_BUILD_ISSUE_URL}" ;;
-	esac
-}
 set_debian_sid_env() {
 	DISTRO_NAME='debian'
 	DISTRO_CODE="sid-${DESKTOP}"

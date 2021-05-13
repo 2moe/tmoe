@@ -169,7 +169,7 @@ tmoe_system_app_menu() {
 	7) install_boot_repair ;;
 	8) start_neofetch ;;
 	9) start_yasat ;;
-	10) source ${TMOE_GIT_DIR}/manager.sh ;;
+	10) source ${TMOE_GIT_DIR}/share/old-version/share/app/manager ;;
 	esac
 	##########################
 	if [ ! -z "${DEPENDENCY_01}" ]; then

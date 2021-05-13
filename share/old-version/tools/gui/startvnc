@@ -139,12 +139,12 @@ tmoe_vnc_preconfigure() {
             0)
                 git reset --hard origin/master
                 git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-                ./tool.sh -passwd
+                ./share/old-version/tools/app/tool -passwd
                 ;;
             *)
                 sudo git reset --hard origin/master
                 sudo git pull --rebase --stat origin master --allow-unrelated-histories || sudo git rebase --skip
-                sudo -E bash ./tool.sh -passwd
+                sudo -E bash ./share/old-version/tools/app/tool -passwd
                 ;;
             esac
         fi

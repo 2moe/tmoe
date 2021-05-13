@@ -23,9 +23,9 @@ RUN apt update; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=debian_nogui-zsh" > container.txt ; \
     git clone -b master --depth=1 https://github.com/2moe/tmoe-linux git || git clone -b master --depth=1 git://github.com/2moe/tmoe-linux git; \
-    cp -fv git/tool.sh /tmp; \
+    cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
-    sed -i 's@*) #main@2333)@g' tool.sh; \
+    sed -i 's@*) #main@2333)@g' docker_tool; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     apt clean
 

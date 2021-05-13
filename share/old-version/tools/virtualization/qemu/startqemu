@@ -87,7 +87,7 @@ TMOE_LOCALE_FILE="/usr/local/etc/tmoe-linux/locale.txt"
 if [ -e "${TMOE_LOCALE_FILE}" ]; then
     TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 else
-    TMOE_LANG="zh_CN.UTF-8"
+    TMOE_LANG="en_US.UTF-8"
 fi
 
 #02-1.CPU

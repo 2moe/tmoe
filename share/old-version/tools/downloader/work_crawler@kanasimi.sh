@@ -259,7 +259,7 @@ upgrade_kanasimi_work_crawler_tool() {
     git reset --hard
     git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
     cd /usr/local/bin
-    curl -Lv -o work-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tools/downloader/work_crawler@kanasimi.sh'
+    curl -Lv -o work-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/downloader/work_crawler@kanasimi.sh'
     chmod a+rx work-i
     printf "%s\n" "Update ${YELLOW}completed${RESET}, Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
     printf "%s\n" "${YELLOW}更新完成，按回車鍵返回。${RESET}"

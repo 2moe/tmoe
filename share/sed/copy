@@ -1,17 +1,23 @@
-cd ~/gitee/linux
+GITEE_lINUX="${HOME}/gitee/linux"
+GITHUB_LINUX="${HOME}/github/github-linux"
+OLD_VERSION_DIR="${GITEE_lINUX}/share/old-version"
+
 COUNT=$(curl -L https://gitee.com/mo2/linux | grep 次提交 | head -n 1 | awk '{print $1}')
 case ${COUNT} in
 "") ;;
 *)
     COMMIT_COUNT=$((${COUNT} + 1))
-    sed -i -E "s@(tmoe linux manager) v1.*?,@\1 v1.${COMMIT_COUNT},@g" manager.sh
-    sed -i -E "s@(tmoe linux tool) v1.*?,@\1 v1.${COMMIT_COUNT},@g" tool.sh
+    sed -i -E "s@(tmoe linux manager) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/share/app/manager
+    sed -i -E "s@(tmoe linux tool) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/tools/app/tool
     ;;
 esac
-cp -a manager.sh .mirror/manager
-cp -a tool.sh .mirror/tool
-cp -a .gitignore debian.sh install.* tool.sh manager.sh Licenses share .mirror tools .config ~/github/github-linux
-cd ~/github/github-linux/.mirror
+##########
+cd ${GITEE_lINUX}
+for i in $(/bin/ls -A ./ | egrep -v "test|README.md|.git$|.gitee"); do
+    cp -va ${i} ${GITHUB_LINUX}
+done
+
+cd ${GITHUB_LINUX}/share/sed/
 ./sed_github
-#printf '%s\n' 'git commit -am '
+###########
 code ~/github/github-linux

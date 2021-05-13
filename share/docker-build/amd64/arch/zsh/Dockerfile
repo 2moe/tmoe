@@ -28,13 +28,13 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=arch_nogui-zsh" > container.txt ; \
     git clone -b master --depth=1 https://github.com/2moe/tmoe-linux git || git clone -b master --depth=1 git://github.com/2moe/tmoe-linux git; \
-    cp -fv git/tool.sh /tmp; \
-    cp -fv git/tools/sources/yay/build_fakeroot /tmp; \
+    cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
+    cp -fv git/share/old-version/tools/sources/yay/build_fakeroot /tmp; \
     cd /tmp; \
     curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh'; \
     bash zsh.sh --tmoe_container_auto_configure; \
     cd /tmp; \
-    sed -i 's@*) #main@2333)@g' tool.sh; \
+    sed -i 's@*) #main@2333)@g' docker_tool; \
     chmod a+rx -v build_fakeroot; \
     ./build_fakeroot --add-archlinuxcn-repo; \
     ./build_fakeroot --add-arch_for_edu-repo; \

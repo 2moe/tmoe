@@ -21,7 +21,7 @@ tmoe_main() {
 	ls)
 		check_manager_dir
 		check_chroot_mode_02
-		bash ${MANAGER_DIR}/share/container/debian/lnk-menu
+		bash ${MANAGER_DIR}/share/old-version/share/container/debian/lnk-menu
 		exit 0
 		;;
 	zsh)
@@ -42,15 +42,15 @@ tmoe_main() {
 		;;
 	m | manager | "")
 		check_manager_dir
-		bash ${MANAGER_DIR}/manager.sh
+		bash ${MANAGER_DIR}/share/old-version/share/app/manager
 		exit 0
 		;;
 	t | tool)
 		check_manager_dir
 		if [[ $(uname -o) = Android ]]; then
-			bash ${MANAGER_DIR}/manager.sh
+			bash ${MANAGER_DIR}/share/old-version/share/app/manager
 		else
-			bash ${MANAGER_DIR}/tool.sh
+			bash ${MANAGER_DIR}/share/old-version/tools/app/tool
 		fi
 		exit 0
 		;;
@@ -259,7 +259,7 @@ source_tmoe_env() {
 		;;
 	esac
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
 	ENV_FILE="${TMOE_SHARE_DIR}/environment/manager_environment"
 	source ${ENV_FILE}

@@ -52,7 +52,7 @@ docker_auto_install_gui_env() {
     check_current_user_name_and_group 2>/dev/null
 EOF
     check_tmoe_linux_desktop_link
-    ln -sfv ${TMOE_GIT_DIR}/share/app/tmoe /usr/local/bin
+    ln -sfv ${TMOE_GIT_DIR}/share/old-version/share/app/tmoe /usr/local/bin
     export AUTO_INSTALL_GUI=true
     if [[ ! $(command -v add-apt-repository) && $(command -v apt-get) ]]; then
         apt install -y software-properties-common

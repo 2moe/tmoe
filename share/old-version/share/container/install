@@ -75,7 +75,7 @@ tmoe_manager_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	mkdir -pv ${TMOE_CONTAINER_DIR}
 	case ${TMOE_CHROOT} in
 	true) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER} ;;
@@ -864,14 +864,14 @@ cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	fi
 ENDOFXSDL
 ################
-#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh'
+#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager'
 #############
 printf '%s\n' 'Giving startup script execution permission'
 printf "%s\n" "正在赋予启动脚本执行权限"
 cd ${PREFIX}/bin
 ln -sf ${TMOE_SHARE_DIR}/app/tmoe ./
 if [ ! $(command -v debian-i) ]; then
-	ln -sf ${TMOE_SHARE_DIR}/manager.sh ./debian-i
+	ln -sf ${TMOE_SHARE_DIR}/app/manager ./debian-i
 fi
 for i in debian startvnc stopvnc debian-i startxsdl startx11vnc tmoe novnc; do
 	chmod -v a+rx ${i}
@@ -904,8 +904,8 @@ if [[ -e "debian-i" ]]; then
 	chmod 666 debian-i
 	rm -f debian-i
 fi
-#curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh'
-cp -f ${TMOE_GIT_DIR}/tool.sh ./debian-i
+#curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+cp -f ${TMOE_GIT_DIR}/share/old-version/tools/app/tool ./debian-i
 chmod a+rx neofetch debian-i
 
 ${TMOE_CHROOT_PREFIX} cp neofetch debian-i ${DEBIAN_CHROOT}/usr/local/bin

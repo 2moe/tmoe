@@ -60,7 +60,7 @@ tmoe_manager_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/tools"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
 	AK2_GIT_URL="https://gitee.com/ak2"
 	TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues"
@@ -237,16 +237,16 @@ check_gnu_linux_distro() {
 	*)
 		export PATH=${PATH}:/usr/sbin:/sbin
 		[[ -e ${CONFIG_FOLDER} ]] || mkdir -pv ${CONFIG_FOLDER}
-		if [ -e "${TMOE_GIT_DIR}/manager.sh" ]; then
+		if [ -e "${TMOE_GIT_DIR}/share/old-version/share/app/manager" ]; then
 			if [ $(command -v fortune) ]; then
 				fortune 2>/dev/null
 			elif [ -e /usr/games/fortune ]; then
 				/usr/games/fortune 2>/dev/null
 			fi
 			if [ $(command -v sudo) ]; then
-				sudo -E bash ${TMOE_GIT_DIR}/manager.sh
+				sudo -E bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager
 			else
-				su -c "bash manager.sh"
+				su -c "bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager"
 			fi
 		else
 			if [ -e "/usr/bin/curl" ]; then
@@ -329,7 +329,7 @@ check_gnu_linux_distro() {
 		TMOE_INSTALLATION_COMMAND='opkg install'
 		TMOE_REMOVAL_COMMAND='opkg remove'
 		cd /tmp
-		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/manager.sh
+		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager
 		chmod a+rx 'router-debian.bash'
 		sed -i 's@/usr/bin@/opt/bin@g;s@-e /bin@-e /opt/bin;@wget --no-check-certificate -qO "router-debian.bash"@#&@;s@bash router-debian.bash@#&@' 'router-debian.bash'
 		bash router-debian.bash
@@ -374,19 +374,19 @@ check_gnu_linux_distro() {
 	check_tmoe_menu_locale_file
 	############
 	curl_tmoe_linux_tool_sh() {
-		if [ -e "${TMOE_GIT_DIR}/tool.sh" ]; then
+		if [ -e "${TMOE_GIT_DIR}/share/old-version/tools/app/tool" ]; then
 			if [ $(command -v sudo) ]; then
-				sudo -E bash ${TMOE_GIT_DIR}/tool.sh
+				sudo -E bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool
 			else
-				su -c "bash ${TMOE_GIT_DIR}/tool.sh"
+				su -c "bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool"
 			fi
 		else
 			if [ ! $(command -v curl) ]; then
-				wget -O /tmp/.tmoe-linux-tool.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh"
+				wget -O /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
 			else
-				curl -Lv -o /tmp/.tmoe-linux-tool.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/tool.sh"
+				curl -Lv -o /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
 			fi
-			source /tmp/.tmoe-linux-tool.sh
+			source /tmp/.tmoe-linux-tool.bash
 		fi
 	}
 	##########
@@ -549,7 +549,7 @@ choose_your_mirror() {
 				if [[ -s "${TMOE_TOOL_DIR}/sources/mirror.sh" ]]; then
 					source "${TMOE_TOOL_DIR}/sources/mirror.sh"
 				else
-					TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/tools/sources/mirror.sh"
+					TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/tools/sources/mirror.sh"
 					source_locale_setting
 				fi
 				;;

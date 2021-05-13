@@ -16,7 +16,7 @@ source_env_file() {
         ;;
     esac
     TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
     TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
     ENV_FILE="${TMOE_SHARE_DIR}/environment/manager_environment"
     source ${ENV_FILE}
