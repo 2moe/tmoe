@@ -102,6 +102,13 @@ android_termux() {
 		fi
 	fi
 
+	if ((${ANDROID_VERSION} >= 7)); then
+		i=micro
+		if [ ! $(command -v ${i}) ]; then
+			DEPENDENCIES="${DEPENDENCIES} ${i}"
+		fi
+	fi
+
 	for i in termux-audio-info aria2c xz termux-setup-storage whiptail pkill which; do
 		if [ ! -e "${PREFIX}/bin/${i}" ]; then
 			case ${i} in
