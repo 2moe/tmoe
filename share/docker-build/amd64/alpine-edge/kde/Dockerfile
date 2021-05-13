@@ -10,7 +10,7 @@ RUN apk update; \
     apk add tar grep curl wget zstd bash tzdata newt shadow git; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     cd /tmp; \
-    curl -LO 'https://github.com/2moe/tmoe-zsh/raw/master/zsh.sh'; \
+    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh'; \
     bash zsh.sh --tmoe_container_auto_configure; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
