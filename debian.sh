@@ -13,6 +13,7 @@ show_package_info() {
 		Depends: aria2 (>= 1.30.0), coreutils, curl, findutils, git, grep, lsof (>= 4.89), whiptail (>= 0.52.19), xz-utils (>= 5.2.2), proot (>= 5.1.0), procps (>= 2:3.3.12), sed, tar (>= 1.29b-1.1), util-linux, zstd (>= 1.1.2)${EXTRA_DEPS}
 		Recommends: bat, debootstrap, gzip, less, lz4, pulseaudio, pv
 		Suggests: lolcat, zsh
+		Homepage: https://github.com/2moe/linux
 		Tag: interface::TODO, interface::text-mode, system::cloud, system::virtual, role::program, works-with::archive, works-with::software:package, works-with::text
 		Description: Easily manage containers and system.
 	EndOfShow

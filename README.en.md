@@ -32,7 +32,7 @@ The script can automatically configure the Pulseaudio server for Android and Win
 
 ```shell
     apt install -y curl
-    bash -c "$(curl -Lv 'https://git.io/linux.sh')"
+    bash -c "$(curl -Lv git.io/linux.sh)"
 ```
 
 ### **via wget**
@@ -40,16 +40,14 @@ The script can automatically configure the Pulseaudio server for Android and Win
 ```shell
     apt update
     apt install -y wget
-    bash -c "$(wget -O- 'https://git.io/linux.sh')"
+    bash -c "$(wget -qO- https://git.io/linux.sh)"
 ```
 
-After installing the container, you can type `debian` to start any system.  
-The developer did not do multi-system configuration, all system startup commands are `debian`  
-Whether in the container or the original system,you can start the toolbox by typing `debian-i`.
+After installing the container, you can type `debian` to start the container.  
+Whether in the container or the original system, you can start the toolbox by typing `debian-i`.  
+If you want to list installed containers, then type `tmoe ls`.  
 
-After installing the GUI, you can start vnc by typing `startvnc`,and you can start XServer by typing `startxsdl`.
+After installing the GUI, you can start vnc by typing `startvnc`, and you can start X by typing `startxsdl`.
 
 If you are using Android,it is recommended that you install a VNC client.  
-[Google Play](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)
-
-If you are using WSL2,it is recommended that you use the X server.
+[Google Play](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)  
