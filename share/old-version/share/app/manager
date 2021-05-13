@@ -546,10 +546,10 @@ choose_your_mirror() {
 		*)
 			case ${SWITCH_MIRROR} in
 			true)
-				if [[ -s "${TMOE_TOOL_DIR}/sources/mirror.sh" ]]; then
-					source "${TMOE_TOOL_DIR}/sources/mirror.sh"
+				if [[ -s "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors" ]]; then
+					source "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors"
 				else
-					TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/tools/sources/mirror.sh"
+					TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/tools/sources/gnu-linux_mirrors"
 					source_locale_setting
 				fi
 				;;

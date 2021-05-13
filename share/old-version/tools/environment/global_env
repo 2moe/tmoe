@@ -899,19 +899,19 @@ install_anbox() {
 }
 ###########
 install_browser() {
-    source ${TMOE_TOOL_DIR}/app/browser.sh
+    source ${TMOE_TOOL_DIR}/app/browser
 }
 ###########
 explore_debian_opt_repo() {
-    source ${TMOE_TOOL_DIR}/sources/debian-opt.sh
+    source ${TMOE_TOOL_DIR}/deprecated/debian-opt
 }
 #################
 install_filebrowser() {
-    source ${TMOE_TOOL_DIR}/webserver/filebrowser.sh
+    source ${TMOE_TOOL_DIR}/webserver/filebrowser
 }
 ##########
 install_nginx_webdav() {
-    source ${TMOE_TOOL_DIR}/webserver/nginx-webdav.sh
+    source ${TMOE_TOOL_DIR}/webserver/nginx-webdav
 }
 ##########
 add_debian_opt_gpg_key() {
@@ -930,19 +930,19 @@ install_container_and_virtual_machine() {
 }
 #############
 tmoe_education_app_menu() {
-    source ${TMOE_TOOL_DIR}/app/education.sh
+    source ${TMOE_TOOL_DIR}/app/education
 }
 ###########
 install_pinyin_input_method() {
-    source ${TMOE_TOOL_DIR}/app/input-method.sh
+    source ${TMOE_TOOL_DIR}/app/input-method
 }
 ###########
 network_manager_tui() {
-    source ${TMOE_TOOL_DIR}/system/network.sh
+    source ${TMOE_TOOL_DIR}/system/network
 }
 ##########
 tmoe_system_app_menu() {
-    source ${TMOE_TOOL_DIR}/system/sys-menu.sh
+    source ${TMOE_TOOL_DIR}/system/sys-menu
 }
 ##########
 where_is_tmoe_file_dir() {
@@ -1075,12 +1075,12 @@ fix_vnc_dbus_launch() {
 }
 #################
 source_vscode_script() {
-    source ${TMOE_TOOL_DIR}/code/vscode.sh
+    source ${TMOE_TOOL_DIR}/code/vscode
 }
 #################
 #吾欲将其分离，立为独项
 tmoe_aria2_manager() {
-    bash ${TMOE_TOOL_DIR}/downloader/aria2.sh
+    bash ${TMOE_TOOL_DIR}/downloader/aria2
 }
 #############
 install_gnome_system_monitor() {

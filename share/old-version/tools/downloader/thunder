@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ###########
 thunder_bin_env() {
     case ${LINUX_DISTRO} in

@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ################################
 filebrowser_main() {
     case "$1" in

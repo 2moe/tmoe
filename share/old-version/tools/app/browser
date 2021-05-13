@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ####################
 tmoe_browser_main() {
     case "${1}" in
@@ -262,7 +261,7 @@ install_firefox_esr_browser() {
     DEPENDENCY_01="firefox-esr"
     #DEPENDENCY_02="firefox-esr-l10n-zh-cn"
     case ${TMOE_MENU_LANG} in
-    en_US.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-cn" ;;
+    zh_CN.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-cn" ;;
     zh_*.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-tw" ;;
     ja_JP.UTF-8) DEPENDENCY_02="firefox-esr-l10n-ja" ;;
     en_*.UTF-8) DEPENDENCY_02="^firefox-esr-l10n-en" ;;
@@ -275,7 +274,7 @@ install_firefox_esr_browser() {
             add-apt-repository -y ppa:mozillateam/ppa
             #DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
             case ${TMOE_MENU_LANG} in
-            en_US.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hans" ;;
+            zh_CN.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hans" ;;
             zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hant" ;;
             ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-ja" ;;
             en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-esr-locale-en" ;;
@@ -329,7 +328,7 @@ install_firefox_browser() {
     DEPENDENCY_01="firefox"
     #DEPENDENCY_02="firefox-l10n-zh-cn"
     case ${TMOE_MENU_LANG} in
-    en_US.UTF-8) DEPENDENCY_02="firefox-l10n-zh-cn" ;;
+    zh_CN.UTF-8) DEPENDENCY_02="firefox-l10n-zh-cn" ;;
     zh_*.UTF-8) DEPENDENCY_02="firefox-l10n-zh-tw" ;;
     ja_JP.UTF-8) DEPENDENCY_02="firefox-l10n-ja" ;;
     en_*.UTF-8) DEPENDENCY_02="^firefox-l10n-en" ;;
@@ -341,7 +340,7 @@ install_firefox_browser() {
         "ubuntu")
             #add-apt-repository -y ppa:mozillateam/firefox-next
             case ${TMOE_MENU_LANG} in
-            en_US.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hans" ;;
+            zh_CN.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hans" ;;
             zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hant" ;;
             ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-ja" ;;
             en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-locale-en" ;;

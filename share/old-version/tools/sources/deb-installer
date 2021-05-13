@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ####################
 deb_batch_installer_tui_or_gui() {
     if (whiptail --title "GUI or TUI" --yes-button "GUI" --no-button "TUI" --yesno "您是想用图形用户界面,还是文本用户界面呢？\nDo you want to use GUI or TUI?\n若您处于桌面环境下,则建议选择GUI,否则请选择TUI♪(^∇^*) " 0 0); then

@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ##########################
 tmoe_docker_init() {
     if [ ! "$(pgrep docker)" ]; then
@@ -13,7 +12,6 @@ tmoe_docker_init() {
     fi
     TMOE_LINUX_DOCKER_SHELL_FILE="${MOUNT_DOCKER_FOLDER}/.tmoe-linux-docker.sh"
     #if [ ! -e "${TMOE_LINUX_DOCKER_SHELL_FILE}" ]; then
-    #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${MOUNT_DOCKER_FOLDER} -o ".tmoe-linux-docker.sh" https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh
     cp ${TMOE_GIT_DIR}/share/old-version/tools/virtualization/docker/configure ${TMOE_LINUX_DOCKER_SHELL_FILE}
     sed -i 's@###tmoe_locale_gen@tmoe_locale_gen@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}
     sed -i 's@###tuna_mirror@tuna_mirror@g' ${TMOE_LINUX_DOCKER_SHELL_FILE}

@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ############################################
 #测试版功能可能无法正常运行\nBeta features may not work properly.
 beta_features() {

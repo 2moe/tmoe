@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ##################################
 tmoe_pinyin_input_method_main() {
     case "$1" in

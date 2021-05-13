@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ########################
 choose_idea_ultimate_edition_or_community_edition() {
     if (whiptail --title "ultimate_edition_or_community_edition" --yes-button 'ultimate' --no-button 'community' --yesno "Do you want to choose ultimate edition or community edition?\nultimate为付费旗舰版本,community为免费社区版" 0 0); then

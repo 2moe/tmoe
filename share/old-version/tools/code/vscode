@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 #####################
 vscode_main() {
     AUTO_INSTALL_VSCODE=false

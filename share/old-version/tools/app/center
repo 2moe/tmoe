@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ####################
 remove_browser() {
     if (whiptail --title "请从两个小可爱中里选择一个 " --yes-button "Firefox" --no-button "chromium" --yesno '火狐娘:“虽然知道总有离别时，但我没想到这一天竟然会这么早。虽然很不舍，但还是很感激您曾选择了我。希望我们下次还会再相遇，呜呜...(;´༎ຶД༎ຶ`)”chromium娘：“哼(￢︿̫̿￢☆)，负心人，走了之后就别回来了！o(TヘTo) 。”  ✨请做出您的选择！' 10 60); then
@@ -110,7 +109,7 @@ start_zsh_tool_as_current_user() {
 }
 start_tmoe_zsh_manager() {
     TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
-    ZSH_TOOL_URL="https://raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh"
+    ZSH_TOOL_URL="https://cdn.jsdelivr.net/gh/2moe/tmoe-zsh@master/.mirror/zsh"
     case ${HOME} in
     /root) normally_start_zsh ;;
     *)
@@ -435,10 +434,10 @@ install_nodejs() {
 check_kanasimi_work_crawler() {
     #if [ ! -h "/usr/local/bin/work-i" ]; then
     #    rm /usr/local/bin/work-i
-    #    ln -sf "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh" /usr/local/bin/work-i
+    #    ln -sf "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi" /usr/local/bin/work-i
     #fi
     #此处为bash而非source
-    bash "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh"
+    bash "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi"
 }
 ####################
 install_clementine() {

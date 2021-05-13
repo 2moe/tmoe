@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ############################################
 tmoe_mathematics_menu() {
 	RETURN_TO_WHERE='tmoe_mathematics_menu'

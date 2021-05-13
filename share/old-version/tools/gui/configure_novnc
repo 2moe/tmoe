@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 #######################
 configure_novnc() {
 	if [[ ! -s "${TMOE_LINUX_DIR}/achievement01" || ! -s /usr/local/bin/novnc ]]; then

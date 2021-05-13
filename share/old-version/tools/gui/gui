@@ -549,7 +549,7 @@ standand_desktop_installation() {
 }
 #######################
 tmoe_desktop_faq() {
-    source ${TMOE_TOOL_DIR}/gui/faq.sh
+    source ${TMOE_TOOL_DIR}/gui/faq
 }
 ######################
 tmoe_docker_and_chroot_container_desktop() {
@@ -1592,7 +1592,7 @@ auto_install_and_configure_fcitx4() {
         ;;
     esac
     #在安裝完桌面後再配置輸入法
-    [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method.sh --auto-install-fcitx4
+    [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method --auto-install-fcitx4
     install_tmoe_electron_app_pack
     install_kali_linux_tools
     if [[ ${AUTO_INSTALL_HARD_INFO} = true ]]; then
@@ -1601,9 +1601,9 @@ auto_install_and_configure_fcitx4() {
         printf "%s\n" "You can type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}hardinfo${RESET} to remove it."
     fi
     if [[ ${AUTO_INSTALL_VSCODE} = true ]]; then
-        source ${TMOE_TOOL_DIR}/code/vscode.sh --auto-install-vscode
+        source ${TMOE_TOOL_DIR}/code/vscode --auto-install-vscode
     fi
-    [[ ${AUTO_INSTALL_CHROMIUM} != true ]] || source ${TMOE_TOOL_DIR}/app/browser.sh --auto-install-chromium
+    [[ ${AUTO_INSTALL_CHROMIUM} != true ]] || source ${TMOE_TOOL_DIR}/app/browser --auto-install-chromium
 }
 #######
 choose_xfce_or_xubuntu() {

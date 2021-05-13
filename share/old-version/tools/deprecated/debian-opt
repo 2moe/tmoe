@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ##################
 add_debian_opt_repo() {
     notes_of_debian_opt_repo

@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ####################
 image_compression_menu() {
     RETURN_TO_WHERE='image_compression_menu'

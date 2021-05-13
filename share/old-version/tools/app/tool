@@ -15,12 +15,12 @@ main() {
 	qemu) start_tmoe_qemu_manager ;;
 	--remove_gui) remove_gui ;;
 	--mirror-list | -m* | m*)
-		if [ -e "${TMOE_TOOL_DIR}/sources/mirror.sh" ]; then
-			source ${TMOE_TOOL_DIR}/sources/mirror.sh
+		if [ -e "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors" ]; then
+			source ${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors
 		elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
 			source /tmp/.tmoe-linux-mirror.sh
 		else
-			curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/mirror.sh" || wget -O /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/mirror.sh"
+			curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/gnu-linux_mirrors" || wget -O /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/gnu-linux_mirrors"
 			chmod a+rx /tmp/.tmoe-linux-mirror.sh
 			source /tmp/.tmoe-linux-mirror.sh
 		fi
@@ -46,21 +46,21 @@ main() {
 		EOF
 		;;
 	file | filebrowser)
-		source ${TMOE_TOOL_DIR}/webserver/filebrowser.sh -r
+		source ${TMOE_TOOL_DIR}/webserver/filebrowser -r
 		;;
 	tuna | -tuna | --tuna)
 		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
-		if [ -e "${TMOE_TOOL_DIR}/sources/mirror.sh" ]; then
-			source ${TMOE_TOOL_DIR}/sources/mirror.sh --autoswitch
+		if [ -e "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors" ]; then
+			source ${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors --autoswitch
 		elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		else
-			curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/mirror.sh"
+			curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/gnu-linux_mirrors"
 			chmod a+rx /tmp/.tmoe-linux-mirror.sh
 			source /tmp/.tmoe-linux-mirror.sh --autoswitch
 		fi
 		;;
-	ppa* | -ppa*) source ${TMOE_TOOL_DIR}/sources/mirror.sh -p ;;
+	ppa* | -ppa*) source ${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors -p ;;
 	-install-deps)
 		check_dependencies
 		;;
@@ -858,7 +858,7 @@ press_enter_to_return() {
 }
 #############
 software_center() {
-	source ${TMOE_TOOL_DIR}/app/center.sh
+	source ${TMOE_TOOL_DIR}/app/center
 }
 ###################
 start_tmoe_qemu_manager() {
@@ -866,11 +866,11 @@ start_tmoe_qemu_manager() {
 }
 ########################
 tmoe_sources_list_manager() {
-	source ${TMOE_TOOL_DIR}/sources/mirror.sh
+	source ${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors
 }
 #######################
 download_videos() {
-	source ${TMOE_TOOL_DIR}/downloader/videos.sh
+	source ${TMOE_TOOL_DIR}/downloader/videos
 }
 ####################
 modify_remote_desktop_config() {
@@ -890,11 +890,11 @@ frequently_asked_questions() {
 }
 ####################
 beta_features() {
-	source ${TMOE_TOOL_DIR}/app/beta_features.sh
+	source ${TMOE_TOOL_DIR}/app/beta_features
 }
 ######################
 tmoe_docker_menu() {
-	source ${TMOE_TOOL_DIR}/virtualization/docker.sh
+	source ${TMOE_TOOL_DIR}/virtualization/docker/docker_menu
 }
 #####################
 tmoe_linux_tool_upgrade() {
@@ -917,10 +917,10 @@ tmoe_linux_tool_upgrade() {
 	fi
 
 	if [ -e "/usr/local/bin/work-i" ]; then
-		cp "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi.sh" /usr/local/bin
+		cp "${TMOE_TOOL_DIR}/downloader/work_crawler@kanasimi" /usr/local/bin
 	fi
 	if [ -e "/usr/local/bin/aria2-i" ]; then
-		cp "${TMOE_TOOL_DIR}/downloader/aria2.sh" /usr/local/bin
+		cp "${TMOE_TOOL_DIR}/downloader/aria2" /usr/local/bin
 	fi
 	# if [[ ! -L $(command -v tmoe) || ! $(command -v tmoe) ]]; then
 	ln -sfv ${TMOE_GIT_DIR}/share/old-version/share/app/tmoe /usr/local/bin
