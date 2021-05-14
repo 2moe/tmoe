@@ -87,9 +87,6 @@ download_vnc_apk() {
 aria2_download_termux_apk() {
 	source ${TMOE_SHARE_DIR}/app/termux
 }
-start_vscode() {
-	source ${TMOE_SHARE_DIR}/app/code-server
-}
 download_video_tutorial() {
 	source ${TMOE_SHARE_DIR}/termux/video_tutorial
 }

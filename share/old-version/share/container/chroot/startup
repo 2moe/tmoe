@@ -342,22 +342,28 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        set -- "\${@}" "LANG=en_US.UTF-8"
 	    fi
 	    ############
-	    if [[ \${CHROOT_USER} = root ]]; then
+	    if [[ \${CHROOT_USER} = root || -z \${CHROOT_USER} ]]; then
 	        CHROOT_HOME="/root"
-	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
 	    else
 	        CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
 	        [[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
-	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
 	    fi
 	    set -- "\${@}" "HOME=\${CHROOT_HOME}"
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
 	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
-	        for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
-	            if [[ -n \${i} ]]; then
-	                set -- "\${@}" "\${i}"
-	            fi
+	        OLD_IFS="\${IFS}"
+	        IFS=\$'\n\n'
+	        CONTAINER_ENV_VAR="\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"
+	        # Do not use double quotes in CONTAINER_ENV_VAR in the for statement
+	        for i in \${CONTAINER_ENV_VAR}; do
+	            [[ -z \${i} ]] || set -- "\${@}" "\${i}"
 	        done
+	        IFS="\${OLD_IFS}"
+	    fi
+	    if [[ \${CHROOT_USER} = root || -z \${CHROOT_USER} ]]; then
+	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
+	    else
+	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
 	    fi
 	    ############
 	    #LOGIN SHELL

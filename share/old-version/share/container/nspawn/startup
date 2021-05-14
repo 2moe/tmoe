@@ -58,6 +58,7 @@ LOAD_ENV_FILE=true
 
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 ###################
+unset CONTAINER_BIN_PATH
 if [[ \${SYSTEMD_BOOT} = true ]]; then
     set -- "\${@}" "--boot"
 fi
@@ -72,6 +73,8 @@ set -- "\${@}" "--machine" "${MACHINE_NAME}"
 set -- "\${@}" "--link-journal" "auto"
 set -- "\${@}" "--resolv-conf" "auto"
 set -- "\${@}" "--timezone" "auto"
+set -- "\${@}" "--register" "yes"
+set -- "\${@}" "--notify-ready" "yes"
 set -- "\${@}" "--setenv" "TMOE_CHROOT=true"
 set -- "\${@}" "--setenv" "TMOE_PROOT=false"
 set -- "\${@}" "--setenv" "TMOE_DOCKER=false"
@@ -84,19 +87,30 @@ set -- "\${@}" "--setenv" "XMODIFIERS=\@im=fcitx"
 set -- "\${@}" "--setenv" "SDL_IM_MODULE=fcitx"
 set -- "\${@}" "--setenv" "CONTAINER_SYSTEMD=true"
 set -- "\${@}" "--setenv" "TERM=xterm-256color"
-set -- "\${@}" "--register" "yes"
-set -- "\${@}" "--notify-ready" "yes"
+
+if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
+    set -- "\${@}" "--setenv" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
+fi
 
 if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
-    for i in "\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"; do
+    CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
+    OLD_IFS="\${IFS}"
+    IFS=\$'\n\n'
+    CONTAINER_ENV_VAR="\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"
+    # Do not use double quotes in CONTAINER_ENV_VAR in the for statement 
+    for i in \${CONTAINER_ENV_VAR}; do
         if [[ -n \${i} ]];then
            set -- "\${@}" "--setenv" "\${i}"
         fi
     done
 fi
-if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
-    set -- "\${@}" "--setenv" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
+
+if [[ \${CHROOT_USER} = root || -z \${CHROOT_USER} ]]; then
+	set -- "\${@}" "--setenv" "PATH=\${CONTAINER_BIN_PATH}/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
+else
+	set -- "\${@}" "--setenv" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
 fi
+
 
 if [[ \${MOUNT_SD} = true ]]; then
     for i in \${SD_DIR_01} \${SD_DIR_02} \${SD_DIR_03} \${SD_DIR_04} \${SD_DIR_05} \${SD_DIR_06}; do

@@ -190,9 +190,9 @@ tmoe_main() {
 	esac
 
 	if ((${#} >= 7)); then
-		printf "%s\n" "ERROR, number of parameters exceeded."
+		printf "%s\n" "ERROR, number of arguments exceeded."
 		printf "%s\n" "Please retype the commands:"
-		printf "%s\n" "tmoe ${1} ${2} ${3} ${4} ${5}"
+		printf "%s\n" "tmoe ${1} ${2} ${3} ${4} ${5} ${6}"
 	fi
 	TMOE_PARAMETERS="$*"
 	start_tmoe_container
