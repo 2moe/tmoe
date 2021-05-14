@@ -330,7 +330,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
 	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
 	        OLD_IFS="\${IFS}"
-	        IFS=\$'\n\n'
+	        IFS=\$'\n'
 	        CONTAINER_ENV_VAR="\$(sed -E 's@export\s+@@;/#/d;/^PATH=/d' \${CONTAINER_ENV_FILE})"
 	        # Do not use double quotes in CONTAINER_ENV_VAR in the for statement
 	        for i in \${CONTAINER_ENV_VAR}; do
