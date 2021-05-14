@@ -11,7 +11,7 @@ show_package_info() {
 		Section: admin
 		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
 		Depends: aria2 (>= 1.30.0), binutils (>= 2.28-5), coreutils (>= 8.26-3), curl (>= 7.52.1-5), findutils (>= 4.6.0), git (>= 1:2.11.0-3), grep, lsof (>= 4.89), micro (>= 2.0.6-2) | nano (>= 2.7.4-1), proot (>= 5.1.0), procps (>= 2:3.3.12), sed, sudo (>= 1.8.19p1-2.1), tar (>= 1.29b-1.1),  util-linux (>= 2.29.2-1), whiptail (>= 0.52.19), xz-utils (>= 5.2.2), zstd (>= 1.1.2)${EXTRA_DEPS}
-		Recommends: bat, debootstrap, eatmydata, gzip, less, lz4, pulseaudio, pv, qemu-user-static
+		Recommends: bat, debootstrap, eatmydata, gzip, less, lz4, pulseaudio, pv, qemu-user-static, systemd-container
 		Suggests: lolcat, zsh
 		Homepage: https://github.com/2moe/linux
 		Tag: interface::TODO, interface::text-mode, system::cloud, system::virtual, role::program, works-with::archive, works-with::software:package, works-with::text

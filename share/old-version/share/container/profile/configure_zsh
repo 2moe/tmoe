@@ -60,6 +60,7 @@ set_tmoe_zsh_env() {
 	TMOE_TMP_DIR="${TMOE_LINUX_DIR}/tmp"
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
+	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 	CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
 	ENV_DIR="${TMOE_LINUX_DIR}/environment"
 	if [[ -e /usr/lib/os-release && ! -e /etc/os-release ]]; then
@@ -148,13 +149,10 @@ set_your_vnc_passwd() {
 	git reset --hard origin/master
 	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	mkdir -pv /usr/local/bin
-	cp -fv tools/gui/startvnc tools/gui/stopvnc tools/gui/startx11vnc tools/gui/startxsdl tools/gui/tigervnc tools/gui/tightvnc /usr/local/bin
+	cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
 	chmod a+rx /usr/local/bin/start*
-	if grep -q 'set.*-depth.*16' $(command -v startvnc); then
-		sed -i 's@"-depth" "16"@"-depth" "24"@g' $(command -v startvnc)
-	fi
-	share/old-version/tools/app/tool -passwd
-	share/old-version/tools/app/tool --choose-vnc-port
+	${TMOE_TOOL_DIR}/app/tool -passwd
+	${TMOE_TOOL_DIR}/app/tool --choose-vnc-port
 	if [[ $(command -v apt-get) ]]; then
 		whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,tightvnc,tigervnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 12 55
 	else
@@ -599,14 +597,14 @@ git_clone_tmoe_linux() {
 		printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
 	fi
 	mkdir -pv /usr/share/applications
-	cp -v ${TMOE_GIT_DIR}/share/old-version/tools/app/lnk/tmoe-linux.desktop /usr/share/applications
+	cp -v ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &
-	if [ -e ${TMOE_GIT_DIR}/share/old-version/share/app/tmoe ]; then
+	if [ -e ${TMOE_SHARE_DIR}/app/tmoe ]; then
 		rm -vf /usr/local/bin/tmoe 2>/dev/null
-		ln -svf ${TMOE_GIT_DIR}/share/old-version/share/app/tmoe /usr/local/bin
+		ln -svf ${TMOE_SHARE_DIR}/app/tmoe /usr/local/bin
 	fi
 	if [ ! $(command -v startvnc) ]; then
-		printf "%s\n" "${TMOE_GIT_DIR}/share/old-version/tools/app/tool --install-gui" >/usr/local/bin/startvnc
+		printf "%s\n" "${TMOE_TOOL_DIR}/app/tool --install-gui" >/usr/local/bin/startvnc
 		chmod a+rx -v /usr/local/bin/startvnc
 		ln -svf /usr/local/bin/startvnc ~/startvnc
 	fi
