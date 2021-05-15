@@ -285,7 +285,19 @@ install_fortunes_mod() {
             zh_TW.UTF-8) cd zh_TW ;;
             esac
         fi
-        [[ ! -e debian-hints ]] || cp -vf ${PWD}/debian-hints ${PREFIX}/share/games/fortunes
+        if [[ -e debian-hints ]]; then
+            cp -vf ${PWD}/debian-hints ${PREFIX}/share/games/fortunes
+            case ${TMOE_LANG} in
+            zh_*.UTF-8)
+                if [[ ${LINUX_DISTRO} = Android ]]; then
+                    #not include ascii-art
+                    for i in art computers debian drugs ethnic fortunes humorists knghtbrd linux literature magic men-women news people pets politics science sports translate-me work cookie definitions education food goedel kids law linuxcookie love medicine miscellaneous paradoxum perl platitudes riddles songs-poems startrek wisdom zippy; do
+                        [[ ! -s ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i}
+                    done
+                fi
+                ;;
+            esac
+        fi
         cd ${CURRENT_DIR} || cd ${HOME}
         rm -rv ${TEMP_FOLDER}
         ;;

@@ -52,9 +52,11 @@ SD_MOUNT_POINT="/media/sd"
 MOUNT_DOCKER_DIR=true
 TMOE_DOCKER_DIR="/media/docker"
 #If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is true.
+###################
+LOAD_ENV_FILE=true
+#Load the environment variable file when starting the container. Default is true.
 
 CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
-LOAD_ENV_FILE=true
 
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 ###################

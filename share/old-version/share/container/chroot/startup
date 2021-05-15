@@ -4,7 +4,7 @@ TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
 cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
 	################
-	CHROOT_USER=root
+	CHROOT_USER="root"
 	#You can specify a user. Default is root
 	#您可以指定用户，例如root或ubuntu，默认为root
 	#Sie können einen Benutzer angeben
@@ -24,10 +24,13 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 
 	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	#If there are compatibility issues, please try to set this value to true, which sets the values of CHROOT_BIN, MOUNT_BIN and UNSHARE_BIN to termux.
+	#旧系统/旧版本兼容模式
 	#Default is false.
 	################
 	LOAD_ENV_FILE=true
 	#Load the environment variable file when starting the container. Default is true.
+
+	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 	################
 	#mounts
 
@@ -108,7 +111,6 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
 	PROC_FD_PATH="/proc/self/fd"
-	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 	################
 	main() {
 	    case "\$1" in

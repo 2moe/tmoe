@@ -58,6 +58,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	################
 	LOAD_ENV_FILE=true
 	#Load the environment variable file when starting the container. Default is true.
+
+	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 	################
 	#mounts
 
@@ -136,7 +138,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
 	PROC_FD_PATH="/proc/self/fd"
-	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 	HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
 	################
 	main() {
