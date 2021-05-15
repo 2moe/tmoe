@@ -55,11 +55,18 @@ TMOE_DOCKER_DIR="/media/docker"
 ###################
 LOAD_ENV_FILE=true
 #Load the environment variable file when starting the container. Default is true.
-
 CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+
+LOAD_NSPAWN_CONF=false
+#Default is false.
+#默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+NSPAWN_CONF_FILE="${CONFIG_FOLDER}/nspawn_global.conf" 
 
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 ###################
+if [[ \${LOAD_NSPAWN_CONF} = true && -r \${NSPAWN_CONF_FILE} ]]; then
+    source \${NSPAWN_CONF_FILE}
+fi
 unset CONTAINER_BIN_PATH
 if [[ \${SYSTEMD_BOOT} = true ]]; then
     set -- "\${@}" "--boot"

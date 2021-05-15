@@ -163,7 +163,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	##############
 	start_tmoe_gnu_linux_chroot_container() {
 	    check_host_and_root
-	    [[ \${LOAD_CHROOT_CONF} != true ]] || source \${CHROOT_CONF_FILE}
+	    if [[ \${LOAD_CHROOT_CONF} = true && -r \${CHROOT_CONF_FILE} ]]; then
+	        source \${CHROOT_CONF_FILE}
+	    fi
 	    check_mount_bin
 	    unset LD_PRELOAD CONTAINER_BIN_PATH
 	    #########

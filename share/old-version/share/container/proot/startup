@@ -205,7 +205,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	}
 	##############
 	start_tmoe_gnu_linux_container() {
-	    [[ \${LOAD_PROOT_CONF} != true ]] || source \${PROOT_CONF_FILE}
+	    if [[ \${LOAD_PROOT_CONF} = true && -r \${PROOT_CONF_FILE} ]]; then
+	        source \${PROOT_CONF_FILE}
+	    fi
 	    unset LD_PRELOAD PROOT_UID PROOT_GID PROOT_HOME CONTAINER_BIN_PATH
 	    ############
 	    case \${PROOT_USER} in
