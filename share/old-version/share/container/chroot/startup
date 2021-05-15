@@ -31,6 +31,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#Load the environment variable file when starting the container. Default is true.
 
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+
+	LOAD_CHROOT_CONF=false
+	#Default is false.
+	#默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+	CHROOT_CONF_FILE="${CONFIG_FOLDER}/chroot_global.conf" 
 	################
 	#mounts
 
@@ -158,6 +163,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	##############
 	start_tmoe_gnu_linux_chroot_container() {
 	    check_host_and_root
+	    [[ \${LOAD_CHROOT_CONF} != true ]] || source \${CHROOT_CONF_FILE}
 	    check_mount_bin
 	    unset LD_PRELOAD CONTAINER_BIN_PATH
 	    #########

@@ -60,6 +60,11 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Load the environment variable file when starting the container. Default is true.
 
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+
+	LOAD_PROOT_CONF=false
+	#Default is false.
+	#默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+	PROOT_CONF_FILE="${CONFIG_FOLDER}/proot_global.conf"
 	################
 	DEFAULT_LOGIN_SHELL_01=zsh
 	#The default login shell is zsh.
@@ -71,7 +76,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	DEFAULT_LOGIN_SHELL_04=ash
 	DEFAULT_LOGIN_SHELL_05=su
 	#The lower the number, the higher the priority.
-
 	################
 	#mounts
 
@@ -112,7 +116,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	NUM_OF_MOUNTS=12
 	#uint8
 	#默认为12, 若您将该值修改为15, 则请手动添加MOUNT_SOURCE_13,MOUNT_SOURCE_14,MOUNT_SOURCE_15,MOUNT_POINT_13,MOUNT_POINT_14 & MOUNT_POINT_15 变量。
-	#If you want to mount hundreds of directories, then you should add variables manually.
+	#If you want to mount hundreds of directories, then you need to add variables manually.
 	#---
 	#MOUNT_SOURCE_1为第一个挂载源，MOUNT_POINT_1 为第一个挂载点，MOUNT_SOURCE_2为第二个挂载源 ...
 	#举个例子，假如您想将/storage/emulated/0/Download目录挂载至容器内部的/media/down, 那么MOUNT_SOURCE_1的值为"/storage/emulated/0/Download", MOUNT_POINT_1的值为"/media/down"
@@ -201,6 +205,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	}
 	##############
 	start_tmoe_gnu_linux_container() {
+	    [[ \${LOAD_PROOT_CONF} != true ]] || source \${PROOT_CONF_FILE}
 	    unset LD_PRELOAD PROOT_UID PROOT_GID PROOT_HOME CONTAINER_BIN_PATH
 	    ############
 	    case \${PROOT_USER} in
