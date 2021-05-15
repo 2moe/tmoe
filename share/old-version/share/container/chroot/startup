@@ -8,6 +8,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#You can specify a user. Default is root
 	#您可以指定用户，例如root或ubuntu，默认为root
 	#Sie können einen Benutzer angeben
+
+	HOME_DIR="default"
+	#If the value is "default", the home directory will be auto-detected. You can enter an absolute path, for example, "/root". 
 	################
 	CHROOT_BIN="system"
 	#You can choose system, termux, or enter the full path. For example, "\${PREFIX}/bin/chroot"
@@ -47,6 +50,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	MOUNT_TF=true
 	TF_CARD_LINK="${HOME}/storage/external-1"
 	#let TF_MOUNT_POINT = String::from("/media/tf");
+	#The value of TF_CARD_LINK is a symbolic link file.
+	#TF_CARD_LINK的值为一个软链接文件
 
 	MOUNT_ITSELF=true
 	MOUNT_DEV=true
@@ -342,12 +347,18 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        set -- "\${@}" "LANG=en_US.UTF-8"
 	    fi
 	    ############
-	    if [[ \${CHROOT_USER} = root || -z \${CHROOT_USER} ]]; then
-	        CHROOT_HOME="/root"
-	    else
-	        CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
-	        [[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
-	    fi
+	    case \${HOME_DIR} in
+	    default | "")
+	        case \${CHROOT_USER} in
+	        root | "") CHROOT_HOME="/root" ;;
+	        *)
+	            CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+	            [[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
+	            ;;
+	        esac
+	        ;;
+	    *) CHROOT_HOME="\${HOME_DIR}" ;;
+	    esac
 	    set -- "\${@}" "HOME=\${CHROOT_HOME}"
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
 	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')

@@ -2,10 +2,17 @@
 cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#!/usr/bin/env bash
 	##################
-	PROOT_USER=root
+	PROOT_USER="root"
 	#You can specify a user. Default is root
 	#您可以指定用户，例如root或ubuntu，默认为root
 	#Sie können einen Benutzer angeben
+
+	HOME_DIR="default"
+	#If the value is "default", the home directory will be auto-detected. You can enter an absolute path, for example, "/root".
+
+	WORK_DIR="default"
+	#Set the initial working directory to path. Some programs expect to be launched from a given directory but do not perform  any  chdir  by  them‐selves.  This option avoids the need for running a shell and then entering the directory manually.
+	#启动容器后进入的目录，默认为用户的主目录。请注意: 若您的默认登录shell为bash/zsh, 则请在“环境变量与登录项管理”处修改entrypoint。 
 	################
 	PROOT_BIN="system"
 	#You can specify the path where the binary file of proot is located. If the vaule is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/proot"
@@ -28,6 +35,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Modify bindings to protected ports to use a higher port number. Default is true.
 
 	FAKE_KERNEL=false
+	#伪造内核版本信息, 默认为false, 若将此变量值修改为true, 则启用该功能
 	#Default is false.
 	KERNEL_RELEASE="5.10.0-6-cloud-${ARCH_TYPE}"
 	#Make current kernel appear as kernel release *string*.
@@ -38,12 +46,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	# export PROOT_NO_SECCOMP=1
 
 	PROOT_VERBOSE=false
+	#proot调试输出, 默认为false
 	#Default is false.
 	VERBOSE_LEVEL=2
-	# Set the level of debug information to *value*. The higher the integer value is, the more detailed debug information is printed to the standard error stream. A negative value makes PRoot quiet except on fatal errors.
+	#Set the level of debug information to *value*. The higher the integer value is, the more detailed debug information is printed to the standard error stream. A negative value makes PRoot quiet except on fatal errors.
 
 	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	#Default is false.
+	#旧系统/旧版本兼容模式
 	#Set the values of PROOT_L, PROOT_H, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
 	################
 	LOAD_ENV_FILE=true
@@ -70,7 +80,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	TF_CARD_LINK="\${HOME}/storage/external-1"
 	TF_MOUNT_POINT="/root/tf"
 	#The value of TF_CARD_LINK is a symbolic link file.
-	#TF_CARD_LINK为软链接
+	#TF_CARD_LINK的值为一个软链接文件
 
 	MOUNT_STORAGE=true
 	STORAGE_DIR='/storage'
@@ -94,8 +104,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	SYS_DIR="/sys"
 
 	MOUNT_DEV=true
-	MOUNT_DEV_TTY=true
 	DEV_DIR="/dev"
+	MOUNT_SHM_TO_TMP=true
+	MOUNT_URANDOM_TO_RANDOM=true
+	MOUNT_DEV_FD=true
+	MOUNT_DEV_STDIN=true
+	MOUNT_DEV_STDOUT=true
+	MOUNT_DEV_STDERR=true
+	MOUNT_DEV_TTY=true
 
 	MOUNT_PROC=true
 	PROC_DIR="/proc"
@@ -144,21 +160,36 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    *)
 	        PROOT_UID=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
 	        PROOT_GID=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
-	        PROOT_HOME=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
-	        ;;
 	    esac
 	    if [[ -z \${PROOT_UID} ]]; then
 	        PROOT_UID=0
 	        PROOT_GID=0
-	        PROOT_HOME=/root
 	    fi
-	    if [[ \${PROOT_USER} = root ]]; then
+	    
+		case \${HOME_DIR} in
+	    default | "")
+	        case \${PROOT_USER} in
+	        root | "") PROOT_HOME="/root" ;;
+	        *)
+	            PROOT_HOME=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+	            [[ -n \${PROOT_HOME} ]] || PROOT_HOME="/home/\${PROOT_USER}"
+	            ;;
+	        esac
+	        ;;
+	    *) PROOT_HOME="\${HOME_DIR}" ;;
+	    esac
+
+	    if [[ \${PROOT_USER} = root || -z \${PROOT_USER} ]]; then
 	        set -- "\${@}" "--root-id"
 	    else
 	        set -- "\${@}" "--change-id=\${PROOT_UID}:\${PROOT_GID}"
 	    fi
 
-	    set -- "\${@}" "--pwd=\${PROOT_HOME}"
+	    if [[ \${WORK_DIR} = default || -z \${WORK_DIR} ]];then
+	        set -- "\${@}" "--pwd=\${PROOT_HOME}"
+	    else
+	        set -- "\${@}" "--pwd=\${WORK_DIR}"
+	    fi
 	    set -- "\${@}" "--rootfs=${DEBIAN_CHROOT}"
 	    if [[ "\$(uname -o)" = 'Android' ]]; then
 	        if [[ \${MOUNT_SYSTEM} = true ]]; then
@@ -207,15 +238,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    if [[ \${MOUNT_PROC} = true ]]; then
 	        set -- "\${@}" "--mount=\${PROC_DIR}"
 	    fi
-
 	    if [[ \${MOUNT_DEV} = true ]]; then
 	        set -- "\${@}" "--mount=\${DEV_DIR}"
-	        set -- "\${@}" "--mount=\${PROC_FD_PATH}:/dev/fd"
-	        set -- "\${@}" "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm"
-	        set -- "\${@}" "--mount=\${DEV_DIR}/urandom:/dev/random"
-	        set -- "\${@}" "--mount=\${PROC_FD_PATH}/0:/dev/stdin"
-	        set -- "\${@}" "--mount=\${PROC_FD_PATH}/1:/dev/stdout"
-	        set -- "\${@}" "--mount=\${PROC_FD_PATH}/2:/dev/stderr"
+	        [[ \${MOUNT_SHM_TO_TMP} != true ]] || set -- "\${@}" "--mount=${DEBIAN_CHROOT}/tmp:/dev/shm"
+	        [[ \${MOUNT_URANDOM_TO_RANDOM} != true ]] || set -- "\${@}" "--mount=\${DEV_DIR}/urandom:/dev/random"
+	        [[ \${MOUNT_DEV_FD} != true ]] || set -- "\${@}" "--mount=\${PROC_FD_PATH}:/dev/fd"
+	        [[ \${MOUNT_DEV_STDIN} != true ]] || set -- "\${@}" "--mount=\${PROC_FD_PATH}/0:/dev/stdin"
+	        [[ \${MOUNT_DEV_STDOUT} != true ]] || set -- "\${@}" "--mount=\${PROC_FD_PATH}/1:/dev/stdout"
+	        [[ \${MOUNT_DEV_STDERR} != true ]] || set -- "\${@}" "--mount=\${PROC_FD_PATH}/2:/dev/stderr"
 	        [[ \${MOUNT_DEV_TTY} != true ]] || set -- "\${@}" "--mount=\${DEV_DIR}/null:/dev/tty0"
 	    fi
 
@@ -299,6 +329,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    fi
 	    set -- "\${@}" "/usr/bin/env" "-i"
 	    set -- "\${@}" "HOSTNAME=\${HOST_NAME}"
+	    set -- "\${@}" "HOME=\${PROOT_HOME}"
 	    set -- "\${@}" "TERM=xterm-256color"
 	    set -- "\${@}" "SDL_IM_MODULE=fcitx"
 	    set -- "\${@}" "XMODIFIERS=\@im=fcitx"
@@ -306,7 +337,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    set -- "\${@}" "GTK_IM_MODULE=fcitx"
 	    set -- "\${@}" "TMOE_CHROOT=false"
 	    set -- "\${@}" "TMOE_PROOT=true"
-	    set -- "\${@}" "HOME=\${PROOT_HOME}"
 	    set -- "\${@}" "TMPDIR=/tmp"
 	    set -- "\${@}" "DISPLAY=:0.0"
 	    set -- "\${@}" "PULSE_SERVER=tcp:127.0.0.1:4713"
