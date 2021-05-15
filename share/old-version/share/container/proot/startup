@@ -76,6 +76,24 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	DEFAULT_LOGIN_SHELL_05=su
 	#The lower the number, the higher the priority.
 	################
+	#qemu
+
+	QEMU_USER_STATIC=true
+	#当该值为true时，使用静态编译的版本。
+	#If the value is false, please install qemu-user manually, for example, apt install qemu-user-i386 qemu-user-x86_64 qemu-user-aarch64 qemu-user-arm
+
+	QEMU_USER_BIN="default"
+	#默认会自动根据宿主架构和容器架构来判断需要调用的qemu版本
+	#You can enter an absolute path, for example, "\${PREFIX}/bin/qemu-user-x86_64"
+
+	SKIP_QEMU_DETECTION=false
+	#After skipping, qemu will be called forcibly.
+	#启用本选项，还需要修改QEMU_USER_BIN的值为指定路径。
+
+	CONTAINER_ARCH="${ARCH_TYPE}"
+	TMOE_QEMU=false
+	ARCH_SCRIPT="${TMOE_SHARE_DIR}/container/proot/check_container_arch"
+	################
 	#mounts
 
 	MOUNT_SD=true
@@ -181,10 +199,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROC_DIR="/proc"
 	FAKE_PROOT_PROC=true
 	#Default is true.
-	################ 
-	CONTAINER_ARCH="${ARCH_TYPE}"
-	TMOE_QEMU=false
-	ARCH_SCRIPT="${TMOE_SHARE_DIR}/container/proot/check_container_arch"
+	################
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
 	PROC_FD_PATH="/proc/self/fd"
@@ -320,9 +335,31 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            set -- "\${@}" "--mount=\${GITSTATUS_DIR}:\${GITSTATUS_MOUNT_POINT}"
 	        fi
 	    fi
+	    #############
+	    if [[ \${SKIP_QEMU_DETECTION} = false ]]; then
+	        source \${ARCH_SCRIPT} 2>/dev/null
+	    else
+	        TMOE_QEMU=true
+	    fi
+	    case \${QEMU_USER_BIN} in
+	    default | "")
+	        if [[ -z \${TMOE_QEMU_ARCH} ]]; then
+	            printf "%s\n" "ERROR, 请修改QEMU_USER_BIN变量的值为指定路径。"
+	            sleep 1
+	        else
+	            case \${QEMU_USER_STATIC} in
+	            true) QEMU_BIN="qemu-\${TMOE_QEMU_ARCH}-static" ;;
+	            false) QEMU_BIN="qemu-\${TMOE_QEMU_ARCH}" ;;
+	            esac
+	        fi
+	        ;;
+	    *) QEMU_BIN=\${QEMU_USER_BIN} ;;
+	    esac
 
-	    source \${ARCH_SCRIPT} 2>/dev/null
-	    [[ \${TMOE_QEMU} = false ]] || set -- "\${@}" "--qemu=qemu-\${TMOE_QEMU_ARCH}-static"
+	    if [[ \${TMOE_QEMU} = true && -n \${QEMU_BIN} ]]; then
+	        set -- "\${@}" "--qemu=\${QEMU_BIN}"
+	    fi
+	    #############
 
 	    if [[ \${MOUNT_SD} = true ]]; then
 	        for i in "\${SD_DIR_01}" "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}" "\${SD_DIR_06}"; do
