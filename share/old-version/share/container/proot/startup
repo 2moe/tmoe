@@ -58,7 +58,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	################
 	LOAD_ENV_FILE=true
 	#Load the environment variable file when starting the container. Default is true.
-
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 
 	LOAD_PROOT_CONF=false
@@ -120,7 +119,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#---
 	#MOUNT_SOURCE_1为第一个挂载源，MOUNT_POINT_1 为第一个挂载点，MOUNT_SOURCE_2为第二个挂载源 ...
 	#举个例子，假如您想将/storage/emulated/0/Download目录挂载至容器内部的/media/down, 那么MOUNT_SOURCE_1的值为"/storage/emulated/0/Download", MOUNT_POINT_1的值为"/media/down"
-	#For example, if you want to mount the /storage/emulated/0/DCIM directory to /media/pic, then the value of MOUNT_SOURCE_2 is "/storage/emulated/0/DCIM", and the value of MOUNT_POINT_2 is "/media/ pic"
+	#For example, if you want to mount the /storage/emulated/0/DCIM directory to /media/pic, then the value of MOUNT_SOURCE_2 is "/storage/emulated/0/DCIM", and the value of MOUNT_POINT_2 is "/media/pic"
 
 	MOUNT_SOURCE_1=""
 	MOUNT_POINT_1=""

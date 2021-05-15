@@ -29,7 +29,6 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	################
 	LOAD_ENV_FILE=true
 	#Load the environment variable file when starting the container. Default is true.
-
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
 
 	LOAD_CHROOT_CONF=false
@@ -67,10 +66,10 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	MOUNT_SYS=true
 	MOUNT_DEV_PTS=true
 	MOUNT_DEV_SHM=true
+	FIX_DEV_LINK=true
+
 	MOUNT_GITSTATUS=true
 	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
-
-	FIX_DEV_LINK=true
 	################
 	#shells
 
