@@ -45,7 +45,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	# export PROOT_NO_SECCOMP=1
 
-	PROOT_VERBOSE=false
+	PROOT_DEBUG=false
 	#proot调试输出, 默认为false
 	#Default is false.
 	VERBOSE_LEVEL=2
@@ -60,6 +60,18 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Load the environment variable file when starting the container. Default is true.
 
 	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+	################
+	DEFAULT_LOGIN_SHELL_01=zsh
+	#The default login shell is zsh.
+	#默认登录shell是zsh
+	#Die Standard-Login-Shell ist zsh.
+
+	DEFAULT_LOGIN_SHELL_02=fish
+	DEFAULT_LOGIN_SHELL_03=bash
+	DEFAULT_LOGIN_SHELL_04=ash
+	DEFAULT_LOGIN_SHELL_05=su
+	#The lower the number, the higher the priority.
+
 	################
 	#mounts
 
@@ -96,6 +108,53 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	TMP_SOURCE_DIR="${TMPDIR}"
 	TMP_MOUNT_POINT="/tmp"
 
+	#---
+	NUM_OF_MOUNTS=12
+	#uint8
+	#默认为12, 若您将该值修改为15, 则请手动添加MOUNT_SOURCE_13,MOUNT_SOURCE_14,MOUNT_SOURCE_15,MOUNT_POINT_13,MOUNT_POINT_14 & MOUNT_POINT_15 变量。
+	#If you want to mount hundreds of directories, then you should add variables manually.
+	#---
+	#MOUNT_SOURCE_1为第一个挂载源，MOUNT_POINT_1 为第一个挂载点，MOUNT_SOURCE_2为第二个挂载源 ...
+	#举个例子，假如您想将/storage/emulated/0/Download目录挂载至容器内部的/media/down, 那么MOUNT_SOURCE_1的值为"/storage/emulated/0/Download", MOUNT_POINT_1的值为"/media/down"
+	#For example, if you want to mount the /storage/emulated/0/DCIM directory to /media/pic, then the value of MOUNT_SOURCE_2 is "/storage/emulated/0/DCIM", and the value of MOUNT_POINT_2 is "/media/ pic"
+
+	MOUNT_SOURCE_1=""
+	MOUNT_POINT_1=""
+	#---
+	MOUNT_SOURCE_2=""
+	MOUNT_POINT_2=""
+	#---
+	MOUNT_SOURCE_3=""
+	MOUNT_POINT_3=""
+	#---
+	MOUNT_SOURCE_4=""
+	MOUNT_POINT_4=""
+	#---
+	MOUNT_SOURCE_5=""
+	MOUNT_POINT_5=""
+	#---
+	MOUNT_SOURCE_6=""
+	MOUNT_POINT_6=""
+	#---
+	MOUNT_SOURCE_7=""
+	MOUNT_POINT_7=""
+	#---
+	MOUNT_SOURCE_8=""
+	MOUNT_POINT_8=""
+	#---
+	MOUNT_SOURCE_9=""
+	MOUNT_POINT_9=""
+	#---
+	MOUNT_SOURCE_10=""
+	MOUNT_POINT_10=""
+	#---
+	MOUNT_SOURCE_11=""
+	MOUNT_POINT_11=""
+	#---
+	MOUNT_SOURCE_12=""
+	MOUNT_POINT_12="" 
+	#---
+
 	MOUNT_SYSTEM=true
 	SYSTEM_DIR="/system"
 
@@ -119,19 +178,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROC_DIR="/proc"
 	FAKE_PROOT_PROC=true
 	#Default is true.
-	################
-	DEFAULT_LOGIN_SHELL_01=zsh
-	#The default login shell is zsh.
-	#默认登录shell是zsh
-	#Die Standard-Login-Shell ist zsh.
-
-	DEFAULT_LOGIN_SHELL_02=fish
-	DEFAULT_LOGIN_SHELL_03=bash
-	DEFAULT_LOGIN_SHELL_04=ash
-	DEFAULT_LOGIN_SHELL_05=su
-	#The lower the number, the higher the priority.
-
-	################
+	################ 
 	CONTAINER_ARCH="${ARCH_TYPE}"
 	TMOE_QEMU=false
 	ARCH_SCRIPT="${TMOE_SHARE_DIR}/container/proot/check_container_arch"
@@ -235,7 +282,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    fi
 	    ############
 	    [[ \${FAKE_KERNEL} != true ]] || set -- "\${@}" "--kernel-release=\${KERNEL_RELEASE}"
-	    [[ \${PROOT_VERBOSE} != true ]] || set -- "\${@}" "--verbose=\${VERBOSE_LEVEL}"  
+	    [[ \${PROOT_DEBUG} != true ]] || set -- "\${@}" "--verbose=\${VERBOSE_LEVEL}"  
 	    if [[ \${MOUNT_PROC} = true ]]; then
 	        set -- "\${@}" "--mount=\${PROC_DIR}"
 	    fi
@@ -279,6 +326,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            fi
 	        done
 	    fi
+
+	    for ((i = 1; i <= \${NUM_OF_MOUNTS}; i++)); do
+	        MOUNT_SOURCE="MOUNT_SOURCE_\${i}"
+	        MOUNT_POINT="MOUNT_POINT_\${i}"
+	        if [[ -n \${!MOUNT_SOURCE} && -x \${!MOUNT_SOURCE} ]]; then
+	            set -- "\${@}" "--mount=\${!MOUNT_SOURCE}:\${!MOUNT_POINT}"
+	        fi
+	    done
 	    #######################
 	    #The files in the /proc directory will be automatically detected during installation. If your host does not have permission to read them, there is no " #" before set.
 	    #不同系统对文件权限的限制可能有所区别，以下文件在安装时会自动检测，仅当宿主机无权读取时，才会去除set前的注释符号。
