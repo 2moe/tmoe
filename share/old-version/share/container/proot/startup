@@ -88,7 +88,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	SKIP_QEMU_DETECTION=false
 	#After skipping, qemu will be called forcibly.
-	#启用本选项，还需要修改QEMU_USER_BIN的值为指定路径。
+	#跳过qemu版本和架构的检测，并强制调用qemu。如需启用本选项，则还需要将QEMU_USER_BIN的值修改为指定路径。
 
 	CONTAINER_ARCH="${ARCH_TYPE}"
 	TMOE_QEMU=false
