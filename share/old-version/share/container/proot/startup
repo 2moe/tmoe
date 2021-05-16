@@ -17,7 +17,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROOT_BIN="default"
 	#You can specify the path where the binary file of proot is located. If the vaule is default, it will use the default path of the system. You can also enter an absolute path, for example, "\${PREFIX}/bin/proot"
 	#您可以自行编译proot,并指定其二进制文件所在路径。当此变量值为default时，将使用系统默认proot二进制文件所在路径；当为termux时，将使用 "\${PREFIX}/bin/proot"。您也可以输入完整路径,例如"/usr/local/bin/proot"
-	#请注意：若您的宿主机为64位(arm64)，且容器为32位(i386/armhf)，则请使用32位版proot。
+	#请注意：若您的宿主机为64位(arm64)，且容器为32位(i386/armhf)，则请使用32位版proot。使用了32位版的proot后，qemu-user也要切换成32位版本。
 	# if (host = 64bit && container = 32bit) { 32bit proot } else if (host = 64bit && container = 64bit) { 64bit proot }
 
 	PROOT_LIBEXEC_LOADER="default"

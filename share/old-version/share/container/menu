@@ -43,7 +43,6 @@ proot_container_menu_multi_langs() {
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "⚔️ cross-architecture" \
-			"4" "switch 32/64bit proot" \
 			"5" "🔯 Restore ${CONTAINER_TYPE} container" \
 			"6" "📕 Configuration & manual" \
 			"0" "🌚 Back to the main menu" \
@@ -54,12 +53,13 @@ proot_container_menu_multi_langs() {
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "⚔️ cross-architecture 跨CPU架构" \
-			"4" "切换32/64位版本proot" \
 			"5" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
 			"6" "📕 配置与手册" \
 			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3)
 	}
+	#		"4" "switch 32/64bit proot" \
+	#			"4" "切换32/64位版本proot" \
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) proot_container_menu_cn ;;
 	*) proot_container_menu_en ;;
