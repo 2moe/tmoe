@@ -43,8 +43,9 @@ proot_container_menu_multi_langs() {
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "⚔️ cross-architecture" \
-			"4" "🔯 Restore ${CONTAINER_TYPE} container" \
-			"5" "📕 Configuration & manual" \
+			"4" "switch 32/64bit proot" \
+			"5" "🔯 Restore ${CONTAINER_TYPE} container" \
+			"6" "📕 Configuration & manual" \
 			"0" "🌚 Back to the main menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -53,8 +54,9 @@ proot_container_menu_multi_langs() {
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "⚔️ cross-architecture 跨CPU架构" \
-			"4" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
-			"5" "📕 配置与手册" \
+			"4" "切换32/64位版本proot" \
+			"5" "🔯 Restore 恢复/还原${CONTAINER_TYPE}容器" \
+			"6" "📕 配置与手册" \
 			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -68,14 +70,82 @@ proot_container_menu_multi_langs() {
 	1) list_tmoe_containers ;;
 	2) list_installed_tmoe_containers ;;
 	3) across_architectures_container ;;
-	4) restore_tmoe_container ;;
-	5) configure_tmoe_container ;;
+	4) switch_32_or_64_bit_proot ;;
+	5) restore_tmoe_container ;;
+	6) configure_tmoe_container ;;
 	esac
 	####################
 	press_enter_to_return
 	proot_container_menu_multi_langs
 }
 ############
+case_android_or_debian_amd64() {
+	case ${LINUX_DISTRO} in
+	debian) ADD_ARCH=i386 ;;
+	Android) ADD_ARCH=i686 ;;
+	esac
+}
+case_android_or_debian_arm64() {
+	case ${LINUX_DISTRO} in
+	debian) ADD_ARCH=armhf ;;
+	Android) ADD_ARCH=arm ;;
+	esac
+}
+file_proot_bin() {
+	if [ ! $(command -v file) ]; then
+		printf "%s\n" "apt install -y file"
+		apt install -y file
+	fi
+	file $(command -v proot)
+	ldd $(command -v proot)
+}
+dpkg_add_32bit_architecture() {
+	printf "%s\n" "${GREEN}dpkg ${BLUE}--add-architecture ${YELLOW}${ADD_ARCH}${RESET}"
+	printf "%s\n" "${GREEN}apt ${BLUE}install -y ${YELLOW}proot:${ADD_ARCH}${RESET}"
+	do_you_want_to_continue
+	dpkg --add-architecture ${ADD_ARCH}
+	apt update
+	apt install -y proot:${ADD_ARCH}
+	file_proot_bin
+}
+dpkg_remove_32bit_architecture() {
+	printf "%s\n" "${GREEN}apt ${RED}autoremove -y --purge ${YELLOW}proot:${PURPLE}${ADD_ARCH}${RESET}"
+	printf "%s\n" "${GREEN}dpkg ${RED}--remove-architecture ${YELLOW}${ADD_ARCH}${RESET}"
+	printf "%s\n" "${GREEN}apt ${BLUE}install -y ${YELLOW}proot${RESET}"
+	do_you_want_to_continue
+	apt autoremove -y --purge proot:${ADD_ARCH}
+	dpkg --remove-architecture ${ADD_ARCH}
+	printf "%s\n" "If you can not rm 32bit arch, try using ${GREEN}aptitude ${RED}remove ${BLUE}~i~ri386 ~i~rarmhf${RESET}"
+	apt update
+	apt install -y proot
+	file_proot_bin
+}
+choose_32_or_64_bit_proot() {
+	if (whiptail --title "32 or 64 bit proot" --yes-button "64" --no-button "32" --yesno "如果您需要运行armhf/i386等32位架构的容器，则请切换为32位，否则请切换回64位proot。\nIf you want to use 32bit container, then switch it to 32bit." 11 50); then
+		dpkg_remove_32bit_architecture
+	else
+		dpkg_add_32bit_architecture
+	fi
+}
+switch_32_or_64_bit_proot() {
+	if [ ! $(command -v apt-get) ]; then
+		printf "%s\n" "It does not support your ${GREEN}${LINUX_DISTRO}${RESET} system."
+		press_enter_to_return
+		proot_container_menu_multi_langs
+	fi
+	case ${TRUE_ARCH_TYPE} in
+	amd64)
+		case_android_or_debian_amd64
+		choose_32_or_64_bit_proot
+		;;
+	arm64)
+		case_android_or_debian_arm64
+		choose_32_or_64_bit_proot
+		;;
+	*64) printf "%s\n" "ERROR, it does not support the architecture." ;;
+	*) printf "%s\n" "Sorry, you are using ${TRUE_ARCH_TYPE} (32bit) system,it only supports ${BLUE}64bit${RESET} system." ;;
+	esac
+}
 systemd_nspawn_is_false() {
 	SYSTEMD_NSPAWN=false
 	printf "%s\n" "SYSTEMD_NSPAWN=false" >${CONFIG_FOLDER}/chroot.conf

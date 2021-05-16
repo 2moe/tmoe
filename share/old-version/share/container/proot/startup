@@ -14,9 +14,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#Set the initial working directory to path. Some programs expect to be launched from a given directory but do not perform  any  chdir  by  them‐selves.  This option avoids the need for running a shell and then entering the directory manually.
 	#启动容器后进入的目录，默认为用户的主目录。请注意: 若您的默认登录shell为bash/zsh, 则请在“环境变量与登录项管理”处修改entrypoint。 
 	################
-	PROOT_BIN="system"
-	#You can specify the path where the binary file of proot is located. If the vaule is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/proot"
-	#您可以自行编译proot,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认proot二进制文件所在路径；当为termux时，将使用 "\${PREFIX}/bin/proot"。您也可以输入完整路径,例如"/usr/local/bin/proot"
+	PROOT_BIN="default"
+	#You can specify the path where the binary file of proot is located. If the vaule is default, it will use the default path of the system. You can also enter an absolute path, for example, "\${PREFIX}/bin/proot"
+	#您可以自行编译proot,并指定其二进制文件所在路径。当此变量值为default时，将使用系统默认proot二进制文件所在路径；当为termux时，将使用 "\${PREFIX}/bin/proot"。您也可以输入完整路径,例如"/usr/local/bin/proot"
+	#请注意：若您的宿主机为64位(arm64)，且容器为32位(i386/armhf)，则请使用32位版proot。
+	# if (host = 64bit && container = 32bit) { 32bit proot } else if (host = 64bit && container = 64bit) { 64bit proot }
+
+	PROOT_LIBEXEC_LOADER="default"
+	LD_LIB_PATH="default"
 	################
 	KILL_ON_EXIT=true
 	#Kill all processes on command exit. When the executed command leaves orphean or detached processes around, proot waits until all processes possibly terminate. This option forces the immediate termination of all tracee processes when the main command exits. Default is true.
@@ -235,7 +240,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        PROOT_GID=0
 	    fi
 	    
-		case \${HOME_DIR} in
+	    case \${HOME_DIR} in
 	    default | "")
 	        case \${PROOT_USER} in
 	        root | "") PROOT_HOME="/root" ;;
@@ -343,15 +348,15 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    fi
 	    case \${QEMU_USER_BIN} in
 	    default | "")
-	        if [[ -z \${TMOE_QEMU_ARCH} ]]; then
-	            printf "%s\n" "ERROR, 请修改QEMU_USER_BIN变量的值为指定路径。"
-	            sleep 1
-	        else
+	        # if [[ -z \${TMOE_QEMU_ARCH} ]]; then
+	        #     printf "%s\n" "ERROR, 请修改QEMU_USER_BIN变量的值为指定路径。"
+	        #     sleep 1
+	        # else
 	            case \${QEMU_USER_STATIC} in
 	            true) QEMU_BIN="qemu-\${TMOE_QEMU_ARCH}-static" ;;
 	            false) QEMU_BIN="qemu-\${TMOE_QEMU_ARCH}" ;;
 	            esac
-	        fi
+	        # fi
 	        ;;
 	    *) QEMU_BIN=\${QEMU_USER_BIN} ;;
 	    esac
@@ -475,16 +480,23 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    fi
 	    #LOGIN SHELL
 	    #It should be -l, not --login
-	    #考虑到alpine兼容性，此处应为-l,而非--login
 	    set -- "\${@}" "\${TMOE_SHELL}" "-l"
 	    ###################
-	    if [[ \${PROOT_BIN} = system || -z \${PROOT_BIN} ]]; then
-	        set -- "proot" "\${@}"
-	    elif [[ \${PROOT_BIN} = termux ]]; then
-	        set -- "\${PREFIX}/bin/proot" "\${@}"
-	    else
-	        set -- "\${PROOT_BIN}" "\${@}"
-	    fi
+	    case "\${PROOT_LIBEXEC_LOADER}" in
+	    default | system | "") unset PROOT_LOADER ;;
+	    *) PROOT_LOADER="\${PROOT_LIBEXEC_LOADER}" ;;
+	    esac
+	    case "\${LD_LIB_PATH}" in
+	    default | system | "") ;;
+	    *) LD_LIBRARY_PATH="\${LD_LIB_PATH}" ;;
+	    esac
+	    case "\${PROOT_BIN}" in
+	    */*) PROOT_PROGRAM="\${PROOT_BIN}" ;;
+	    termux | prefix) PROOT_PROGRAM="\${PREFIX}/bin/proot" ;;
+	    "" | system | default | *) PROOT_PROGRAM=proot ;;
+	    esac
+	    set -- "\${PROOT_PROGRAM}" "\${@}"
+	    [[ -z \${LD_LIBRARY_PATH} ]] || set -- "env" "LD_LIBRARY_PATH=\${LD_LIB_PATH}" "\${@}"
 	    exec "\${@}"
 	    #Some notes are from https://github.com/termux/proot
 	}

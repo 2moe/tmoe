@@ -40,9 +40,9 @@ CHROOT_BIN="system"
 
 MOUNT_SD=true
 SD_DIR_01="/media/sd"
-SD_DIR_02="\${HOME}/sd"
-SD_DIR_03="\${HOME}/Downloads"
-SD_DIR_04="\${HOME}/Download"
+SD_DIR_02="${HOME}/sd"
+SD_DIR_03="${HOME}/Downloads"
+SD_DIR_04="${HOME}/Download"
 SD_DIR_05="/sd"
 SD_DIR_06="/sdcard"
 SD_MOUNT_POINT="/media/sd"
