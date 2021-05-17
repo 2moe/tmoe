@@ -595,8 +595,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        esac
 	        ;;
 	    esac
-	    [[ -z \${PROOT_LOADER} ]] || set -- "PROOT_LOADER=\${PROOT_LIBEXEC_LOADER}" "\${@}"
-	    [[ -z \${LD_LIBRARY_PATH} ]] || set -- "env" "LD_LIBRARY_PATH=\${LD_LIB_PATH}" "\${@}"
+	    [[ -z \${PROOT_LOADER} ]] || set -- "PROOT_LOADER=\${PROOT_LOADER}" "\${@}"
+	    [[ -z \${LD_LIBRARY_PATH} ]] || set -- "env" "LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}" "\${@}"
 	    exec "\${@}"
 	}
 	main "\${@}"
