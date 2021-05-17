@@ -46,12 +46,7 @@ type_your_debian_version() {
         VERSION_CODENAME=${TARGET}
     fi
 }
-install_libfaudio0() {
-    cd /tmp
-    case ${ARCH_TYPE} in
-    amd64 | i386) WINE_ARCH=${ARCH_TYPE} ;;
-    *) WINE_ARCH=i386 ;;
-    esac
+install_libfaudio0_deb() {
     GREP_NAME="libfaudio0_"
     THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep ${GREP_NAME} | grep deb | tail -n 1 | cut -d '"' -f 2)"
     FULL_URL="${THE_LATEST_DEB_REPO}/${THE_LATEST_DEB_VERSION}"
@@ -59,6 +54,30 @@ install_libfaudio0() {
     curl -Lo libfaudio0.deb ${FULL_URL}
     apt install -y ./libfaudio0.deb || dpkg -i ./libfaudio0.deb
     rm -fv ./libfaudio0.deb
+}
+install_libfaudio0() {
+    cd /tmp
+    case ${ARCH_TYPE} in
+    amd64)
+        dpkg --add-architecture i386
+        apt update
+        WINE_ARCH=${ARCH_TYPE}
+        install_libfaudio0_deb
+        WINE_ARCH=i386
+        install_libfaudio0_deb
+        ;;
+    i386)
+        WINE_ARCH=${ARCH_TYPE}
+        install_libfaudio0_deb
+        ;;
+    *)
+        printf "%s\n" "${RED}ERROR${RESET}, you are using ${BLUE}${ARCH_TYPE}${RESET}, 架构${PURPLE}不支持${RESET}"
+        do_you_want_to_continue
+        WINE_ARCH=i386
+        install_libfaudio0_deb
+        ;;
+    esac
+
 }
 check_debian_version_codename() {
     VERSION_CODENAME=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
@@ -97,8 +116,9 @@ install_winehq() {
     printf "%s\n" "${GREEN}apt ${YELLOW}install --install-recommends -y ${BLUE}${WINE_VERSION}${RESET}"
     do_you_want_to_continue
     dpkg --add-architecture i386
-    apt update
-    apt install --install-recommends -y ${WINE_VERSION}
+    DEPENDENCY_01="${WINE_VERSION}"
+    DEPENDENCY_02=""
+    beta_features_quick_install
 }
 install_wine32() {
     if [ ! $(command -v apt-get) ]; then
@@ -197,7 +217,7 @@ remove_wine_bin() {
     esac
     # INSTALL_WINE=false
     # wine_dependencies
-    DEPENDENCY_01='wine winetricks q4wine'
+    DEPENDENCY_01='wine winetricks q4wine libfaudio0'
     DEPENDENCY_02='playonlinux wine32'
     DEPENDENCY_03='winehq-devel winehq-staging winehq-stable'
     printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${DEPENDENCY_03}"
