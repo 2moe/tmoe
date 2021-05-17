@@ -764,6 +764,8 @@ create_proot_startup_script() {
 		armhf | i386 | mipsel)
 			sed -E -e "s@^(QEMU_32_ENABLED=).*@\1true@g" \
 				-e "s@^(PROOT_BIN=).*@\1\"32\"@g" \
+				-e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
+				-e "s@^(MOUNT_APEX=).*@\1false@g" \
 				-i "${TMOE_STARTUP_SCRIPT}"
 			;;
 		esac
