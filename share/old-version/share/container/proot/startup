@@ -185,6 +185,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	# Default is true.
 
 	MOUNT_CAP_LAST_CAP=true
+	CAP_LAST_CAP_SOURCE="/dev/null"
+	CAP_LAST_CAP_MOUNT_POINT="/proc/sys/kernel/cap_last_cap"
 	# /dev/null:/proc/sys/kernel/cap_last_cap
 
 	#---
@@ -419,7 +421,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    fi
 
 	    if [[ \${MOUNT_CAP_LAST_CAP} = true ]]; then
-	            set -- "\${@}" "--mount=/dev/null:/proc/sys/kernel/cap_last_cap"
+	            set -- "\${@}" "--mount=\${CAP_LAST_CAP_SOURCE}:\${CAP_LAST_CAP_MOUNT_POINT}"
 	    fi
 	    #############
 	    unset QEMU_BIN
