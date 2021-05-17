@@ -33,7 +33,7 @@ CHROOT_USER=root
 
 CHROOT_BIN="system"
 #You can specify the path where the binary file of systemd-nspawn is located. If the vaule is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/systemd-nspawn"
-#您可以自行编译systemd-nspawn,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认systemd-nspawn二进制文件所在路径；当为prefix时，将使用 "${PREFIX}/bin/systemd-nspawn"。您也可以输入完整路径,例如"/usr/local/bin/systemd-nspawn"
+#您可以自行编译systemd-nspawn,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认systemd-nspawn二进制文件所在路径；当其为prefix时，将使用 "${PREFIX}/bin/systemd-nspawn"。您也可以输入完整路径,例如"/usr/local/bin/systemd-nspawn"
 ###################
 #mount dir
 #挂载相关目录

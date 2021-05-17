@@ -14,7 +14,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	################
 	CHROOT_BIN="system"
 	#You can choose system, termux, or enter the full path. For example, "\${PREFIX}/bin/chroot"
-	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当为termux时，将使用 "\${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
+	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当其为termux时，将使用 "\${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
 
 	MOUNT_BIN="system"
 	#Binary file of "mount" in util-linux

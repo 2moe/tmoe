@@ -67,6 +67,62 @@ check_gnu_linux_qemu_version() {
 	esac
 }
 ###########
+case_android_or_debian_amd64() {
+	case ${LINUX_DISTRO} in
+	debian) ADD_ARCH=i386 ;;
+	Android) ADD_ARCH=i686 ;;
+	esac
+}
+case_android_or_debian_arm64() {
+	case ${LINUX_DISTRO} in
+	debian) ADD_ARCH=armhf ;;
+	Android) ADD_ARCH=arm ;;
+	esac
+}
+file_proot_bin() {
+	if [ ! $(command -v file) ]; then
+		printf "%s\n" "apt install -y file"
+		apt install -y file
+	fi
+	file $(command -v proot)
+	ldd $(command -v proot)
+}
+dpkg_add_32bit_architecture() {
+	cd ${TMOE_LINUX_DIR}/lib32
+	printf "%s\n" "${GREEN}dpkg ${BLUE}--add-architecture ${YELLOW}${ADD_ARCH}${RESET}"
+	printf "%s\n" "${GREEN}apt ${BLUE}download ${YELLOW}proot:${ADD_ARCH}${RESET}"
+	dpkg --add-architecture ${ADD_ARCH}
+	apt update
+	apt download proot:${ADD_ARCH}
+	for i in ./proot*.deb; do
+		dpkg-deb -X ${i} ./
+		rm -fv ${i}
+	done
+	# PROOT_DEPS=$(LANG=C apt-cache depends proot | grep "Depends:" | awk '{print $NF}' | sed "s@\$@:${ADD_ARCH}@g" | sed ":a;N;s/\n/ /g;ta")
+	# [[ -n ${PROOT_DEPS} ]] || PROOT_DEPS=libtalloc
+	case ${LINUX_DISTRO} in
+	Android) apt download libtalloc:${ADD_ARCH} ;;
+	*) apt download libtalloc2:${ADD_ARCH} ;;
+	esac
+	for i in ./libtalloc*.deb; do
+		dpkg-deb -X ${i} ./
+		rm -fv ${i}
+	done
+	dpkg_remove_32bit_architecture
+	file_proot_bin
+}
+dpkg_remove_32bit_architecture() {
+	# printf "%s\n" "${GREEN}apt ${RED}autoremove -y --purge ${YELLOW}proot:${PURPLE}${ADD_ARCH}${RESET}"
+	printf "%s\n" "${GREEN}dpkg ${RED}--remove-architecture ${YELLOW}${ADD_ARCH}${RESET}"
+	# printf "%s\n" "${GREEN}apt ${BLUE}install -y ${YELLOW}proot${RESET}"
+	# do_you_want_to_continue
+	# apt autoremove -y --purge proot:${ADD_ARCH}
+	dpkg --remove-architecture ${ADD_ARCH}
+	# printf "%s\n" "If you can not rm 32bit arch, try using ${GREEN}aptitude ${RED}remove ${BLUE}~i~ri386 ~i~rarmhf${RESET}"
+	# apt update
+	# apt install -y proot
+	# file_proot_bin
+}
 install_qemu_user_static() {
 	printf "%s\n" "正在检测版本信息..."
 	LOCAL_QEMU_USER_FILE=''
@@ -107,6 +163,7 @@ install_qemu_user_static() {
 	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
 	printf "%s\n" "${YELLOW}${THE_LATEST_DEB_LINK}${RESET}"
 	printf "%s\n" "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
+	mkdir -pv ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32
 	case "${LINUX_DISTRO}" in
 	"debian")
 		apt update
@@ -115,6 +172,7 @@ install_qemu_user_static() {
 		;;
 	*) download_qemu_user ;;
 	esac
+	[[ ! $(command -v apt-get) ]] || debian_proot32
 }
 ##############
 check_qemu_user_version() {
@@ -122,16 +180,20 @@ check_qemu_user_version() {
 	REPO_URL_02='https://ftp.debian.org/debian/pool/main/q/qemu/'
 	unset THE_LATEST_DEB_VERSION
 	THE_LATEST_DEB_VERSION="$(curl --connect-timeout 10 -L ${REPO_URL} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
-	[[ -n ${THE_LATEST_DEB_VERSION} ]] || THE_LATEST_DEB_VERSION="$(curl --connect-timeout 10 -L ${REPO_URL_02} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
+	[[ -n ${THE_LATEST_DEB_VERSION} ]] || THE_LATEST_DEB_VERSION="$(curl --connect-timeout 30 -L ${REPO_URL_02} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
 	THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' "${THE_LATEST_DEB_VERSION}" | cut -d '_' -f 2 | sed 's@%2B@+@')
 }
 ###############
 unxz_deb_file() {
 	if [ ! $(command -v ar) ]; then
 		DEPENDENCY_01='binutils'
-		apt update
-		printf "%s\n" "apt install -y ${DEPENDENCY_01}"
-		apt install -y ${DEPENDENCY_01} || pacman -S ${DEPENDENCY_01} || dnf install ${DEPENDENCY_01} || apk add ${DEPENDENCY_01} || zypper in ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01} || eopkg install ${DEPENDENCY_01}
+		if [ $(command -v apt-get) ]; then
+			apt update
+			printf "%s\n" "apt install -y ${DEPENDENCY_01}"
+		else
+			printf "%s\n" "${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}"
+		fi
+		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
 	fi
 	ar xv ${THE_LATEST_DEB_VERSION}
 	#tar -Jxvf data.tar.xz ./usr/bin -C $PREFIX/..
@@ -144,6 +206,21 @@ copy_qemu_user_bin_files() {
 	rm -rv ${TEMP_FOLDER}
 }
 ######################
+dpkg_x_deb_file_or_unxz_deb_file() {
+	if [ $(command -v dpkg-deb) ]; then
+		dpkg-deb -X "${THE_LATEST_DEB_VERSION}" ./
+	else
+		unxz_deb_file
+		# copy_qemu_user_bin_files
+	fi
+	for i in data.tar.xz ./*.deb ./*.aria2 control.tar.xz debian-binary; do
+		[[ ! -e ${i} ]] || rm -fv "${i}"
+	done
+	for i in qemu-hexagon-static qemu-hppa-static qemu-microblaze-static qemu-mips64-static qemu-mipsn32-static qemu-or1k-static qemu-sparc-static qemu-microblazeel-static qemu-mipsn32el-static qemu-ppc-static qemu-riscv32-static qemu-sh4-static qemu-sparc32plus-static qemu-xtensa-static qemu-alpha-static qemu-cris-static qemu-m68k-static qemu-mips-static qemu-nios2-static qemu-ppc64-static qemu-sh4eb-static qemu-sparc64-static qemu-xtensaeb-static; do
+		[[ ! -e ./usr/bin/${i} ]] || rm -fv "./usr/bin/${i}"
+	done
+	[ ! $(command -v file) ] || file ./usr/bin/qemu-i386-static
+}
 download_qemu_user() {
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
@@ -152,19 +229,45 @@ download_qemu_user() {
 	fi
 	cd ${TMPDIR}
 	TEMP_FOLDER='.QEMU_USER_BIN'
-	mkdir -pv ${TEMP_FOLDER}
-	cd ${TEMP_FOLDER}
+	# mkdir -pv ${TEMP_FOLDER}
+	# cd ${TEMP_FOLDER}
+	cd ${TMOE_LINUX_DIR}/lib
 	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
-	unxz_deb_file
-	copy_qemu_user_bin_files
+	dpkg_x_deb_file_or_unxz_deb_file
+	case ${TRUE_ARCH_TYPE} in
+	arm64) QEMU_32_LINK="$(printf "%s\n" "${THE_LATEST_DEB_LINK}" | sed 's@arm64@armhf@g')" ;;
+	amd64) QEMU_32_LINK="$(printf "%s\n" "${THE_LATEST_DEB_LINK}" | sed 's@amd64@i386@g')" ;;
+	*) ;;
+	esac
+	case ${TRUE_ARCH_TYPE} in
+	arm64 | amd64)
+		cd ../lib32
+		printf "%s\n" "${YELLOW}${QEMU_32_LINK}${RESET}"
+		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${QEMU_32_LINK}"
+		dpkg_x_deb_file_or_unxz_deb_file
+		;;
+	esac
 }
 ##############
+debian_proot32() {
+	case ${TRUE_ARCH_TYPE} in
+	amd64)
+		case_android_or_debian_amd64
+		dpkg_add_32bit_architecture
+		;;
+	arm64)
+		case_android_or_debian_arm64
+		dpkg_add_32bit_architecture
+		;;
+	esac
+}
+############
 remove_qemu_user_static() {
-	ls -lah /usr/bin/qemu-*-static ${QEMU_BIN_PREFIX}/bin/qemu-*-static 2>/dev/null
-	printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${QEMU_BIN_PREFIX}/bin/qemu-*-static ${QEMU_USER_LOCAL_VERSION_FILE}${RESET}"
+	ls -lah /usr/bin/qemu-*-static ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static 2>/dev/null
+	printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static ${QEMU_USER_LOCAL_VERSION_FILE}${RESET}"
 	printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
 	do_you_want_to_continue
-	rm -rv ${QEMU_BIN_PREFIX}/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
+	rm -rv ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
 	${TMOE_REMOVAL_COMMAND} qemu-user-static
 }
 ###############
@@ -303,7 +406,7 @@ tmoe_qemu_user_manager() {
 		create_tmoe_arch_file
 		ARCH_TYPE=${NEW_TMOE_ARCH}
 
-		if [[ ! -e "${PREFIX}/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
+		if [[ ! -e "${TMOE_LINUX_DIR}/lib/usr/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
 			install_qemu_user_static
 		fi
 		case ${ARCH_TYPE} in

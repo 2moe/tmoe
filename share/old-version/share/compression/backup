@@ -147,7 +147,7 @@ backup_gnu_linux_container() {
 	*) QEMU_PREFIX=/usr/bin ;;
 	esac
 
-	for i in ${QEMU_PREFIX}/qemu-aarch64_be-static ${QEMU_PREFIX}/qemu-aarch64-static ${QEMU_PREFIX}/qemu-alpha-static ${QEMU_PREFIX}/qemu-armeb-static ${QEMU_PREFIX}/qemu-arm-static ${QEMU_PREFIX}/qemu-cris-static ${QEMU_PREFIX}/qemu-hppa-static ${QEMU_PREFIX}/qemu-i386-static ${QEMU_PREFIX}/qemu-m68k-static ${QEMU_PREFIX}/qemu-microblazeel-static ${QEMU_PREFIX}/qemu-microblaze-static ${QEMU_PREFIX}/qemu-mips64el-static ${QEMU_PREFIX}/qemu-mips64-static ${QEMU_PREFIX}/qemu-mipsel-static ${QEMU_PREFIX}/qemu-mipsn32el-static ${QEMU_PREFIX}/qemu-mipsn32-static ${QEMU_PREFIX}/qemu-mips-static ${QEMU_PREFIX}/qemu-nios2-static ${QEMU_PREFIX}/qemu-or1k-static ${QEMU_PREFIX}/qemu-ppc64abi32-static ${QEMU_PREFIX}/qemu-ppc64le-static ${QEMU_PREFIX}/qemu-ppc64-static ${QEMU_PREFIX}/qemu-ppc-static ${QEMU_PREFIX}/qemu-riscv32-static ${QEMU_PREFIX}/qemu-riscv64-static ${QEMU_PREFIX}/qemu-s390x-static ${QEMU_PREFIX}/qemu-sh4eb-static ${QEMU_PREFIX}/qemu-sh4-static ${QEMU_PREFIX}/qemu-sparc32plus-static ${QEMU_PREFIX}/qemu-sparc64-static ${QEMU_PREFIX}/qemu-sparc-static ${QEMU_PREFIX}/qemu-tilegx-static ${QEMU_PREFIX}/qemu-x86_64-static ${QEMU_PREFIX}/qemu-xtensaeb-static ${QEMU_PREFIX}/qemu-xtensa-static; do
+	for i in ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32; do
 		[[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
 	done
 

@@ -101,6 +101,7 @@ if [ "$(uname -o)" = "Android" ]; then
 else
 	TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
 	tmoe_manager_env
+	LINUX_DISTRO='linux'
 	if egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		if [ -d "/opt/bin" ]; then
@@ -730,7 +731,7 @@ set_proot_container_env() {
 }
 create_proot_startup_script() {
 	printf "%s\n" "Creating proot startup script"
-	printf "%s\n" "正在创建proot容器启动脚本${TMOE_STARTUP_SCRIPT} "
+	printf "%s\n" "正在创建proot容器启动脚本 ${TMOE_STARTUP_SCRIPT}"
 	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	mkdir -pv ${TMOE_STARTUP_DIR}
@@ -756,6 +757,19 @@ create_proot_startup_script() {
 	else
 		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
 	fi
+
+	case ${TRUE_ARCH_TYPE} in
+	arm64 | amd64)
+		case ${ARCH_TYPE} in
+		armhf | i386 | mipsel)
+			sed -E -e "s@^(QEMU_32_ENABLED=).*@\1true@g" \
+				-e "s@^(PROOT_BIN=).*@\1\"32\"@g" \
+				-i "${TMOE_STARTUP_SCRIPT}"
+			;;
+		esac
+		;;
+	esac
+	[[ -z ${QEMU_ARCH} ]] || sed -i -E "s@^(QEMU_ARCH=).*@\1\"${QEMU_ARCH}\"@" "${TMOE_STARTUP_SCRIPT}"
 
 	if [[ -s hostname ]]; then
 		${TMOE_CHROOT_PREFIX} cp hostname ${DEBIAN_CHROOT}/tmp

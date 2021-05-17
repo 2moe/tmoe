@@ -328,7 +328,7 @@ qemu5.1及其以上版本的系统建议使用"-device"来配置声卡,而不是
 EOF
 #07-2.Sound card devices声卡
 SOUND_CARD_ENABLED=true
-#当为'true'时，启用声卡;为false时，则禁用。
+#当其为'true'时，启用声卡;为false时，则禁用。
 
 SOUND_CARD='intel-hda'
 #默认为intel-hda
@@ -350,7 +350,7 @@ AUDIO_ADDR='127.0.0.1:4713'
 ###########
 #08-2.Network devices
 NET_CARD_01_ENABLED=true
-#当为'true'时，启用网卡;为false时，则禁用。
+#当其为'true'时，启用网卡;为false时，则禁用。
 NET_CARD_01='virtio-net-pci'
 #网卡01默认为virtio-net-pci
 #注意：当guest的kernel为linux cloud 内核时，请保持该网卡为virtio-net-pci
@@ -464,7 +464,7 @@ VNC_STARTUP_PROMPT=true
 
 VNC_PASSWORD=false
 #可选true或false
-#当为true时，您可以在qemu monitor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
+#当其为true时，您可以在qemu monitor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
 ############
 ############
 #11-1.Architecture
