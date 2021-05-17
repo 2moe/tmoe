@@ -160,6 +160,33 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	TMP_SOURCE_DIR="${TMPDIR}"
 	TMP_MOUNT_POINT="/tmp"
 
+	MOUNT_SYSTEM=true
+	SYSTEM_DIR="/system"
+
+	MOUNT_APEX=true
+	APEX_DIR="/apex"
+
+	MOUNT_SYS=false
+	SYS_DIR="/sys"
+
+	MOUNT_DEV=true
+	DEV_DIR="/dev"
+	MOUNT_SHM_TO_TMP=true
+	MOUNT_URANDOM_TO_RANDOM=true
+	MOUNT_DEV_FD=true
+	MOUNT_DEV_STDIN=true
+	MOUNT_DEV_STDOUT=true
+	MOUNT_DEV_STDERR=true
+	MOUNT_DEV_TTY=true
+
+	MOUNT_PROC=true
+	PROC_DIR="/proc"
+	FAKE_PROOT_PROC=true
+	# Default is true.
+
+	MOUNT_CAP_LAST_CAP=true
+	# /dev/null:/proc/sys/kernel/cap_last_cap
+
 	#---
 	NUM_OF_MOUNTS=12
 	# uint8
@@ -206,30 +233,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	MOUNT_SOURCE_12=""
 	MOUNT_POINT_12="" 
 	#---
-
-	MOUNT_SYSTEM=true
-	SYSTEM_DIR="/system"
-
-	MOUNT_APEX=true
-	APEX_DIR="/apex"
-
-	MOUNT_SYS=false
-	SYS_DIR="/sys"
-
-	MOUNT_DEV=true
-	DEV_DIR="/dev"
-	MOUNT_SHM_TO_TMP=true
-	MOUNT_URANDOM_TO_RANDOM=true
-	MOUNT_DEV_FD=true
-	MOUNT_DEV_STDIN=true
-	MOUNT_DEV_STDOUT=true
-	MOUNT_DEV_STDERR=true
-	MOUNT_DEV_TTY=true
-
-	MOUNT_PROC=true
-	PROC_DIR="/proc"
-	FAKE_PROOT_PROC=true
-	# Default is true.
 	################
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
@@ -413,6 +416,10 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        if [[ -e "\${GITSTATUS_DIR}" ]]; then
 	            set -- "\${@}" "--mount=\${GITSTATUS_DIR}:\${GITSTATUS_MOUNT_POINT}"
 	        fi
+	    fi
+
+	    if [[ \${MOUNT_CAP_LAST_CAP} = true ]]; then
+	            set -- "\${@}" "--mount=/dev/null:/proc/sys/kernel/cap_last_cap"
 	    fi
 	    #############
 	    unset QEMU_BIN
@@ -598,7 +605,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        set -- "env" "PROOT_LOADER=\${PROOT_LOADER}" "\${@}"
 	    elif [[ -z \${PROOT_LOADER} && -n \${LD_LIBRARY_PATH} ]]; then
 	        set -- "env" "LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}" "\${@}"
-	    else
+	    elif [[ -n \${PROOT_LOADER} && -n \${LD_LIBRARY_PATH} ]]; then
 	        set -- "PROOT_LOADER=\${PROOT_LOADER}" "\${@}"
 	        set -- "env" "LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}" "\${@}"
 	    fi
