@@ -103,7 +103,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	QEMU_USER_BIN="default"
 	# 默认会自动根据宿主机架构和容器架构来判断需要调用的qemu版本, 您可以指定特定版本的qemu二进制文件。
-	# You can enter an absolute path, for example, "\${PREFIX}/bin/qemu-user-x86_64"
+	# You can enter an absolute path, for example, "\${PREFIX}/bin/qemu-x86_64"
 	################
 	LOAD_ENV_FILE=true
 	# Load the environment variable file when starting the container. Default is true.
