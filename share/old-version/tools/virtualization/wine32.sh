@@ -201,6 +201,10 @@ remove_wine_bin() {
     DEPENDENCY_02='playonlinux wine32'
     DEPENDENCY_03='winehq-devel winehq-staging winehq-stable'
     printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${DEPENDENCY_03}"
+    do_you_want_to_continue
+    for i in /etc/apt/sources.list.d/wine-hq.list /etc/apt/trusted.gpg.d/winehq.gpg; do
+        [[ ! -e ${i} ]] || rm -fv ${i}
+    done
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_02}
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_03}
