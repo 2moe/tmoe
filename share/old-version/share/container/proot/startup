@@ -76,7 +76,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	#qemu
 
 	HOST_DISTRO="${LINUX_DISTRO}"
-	# If your host is Android, there will be some extra options.
 
 	HOST_ARCH="${TRUE_ARCH_TYPE}"
 	# Host architecture
