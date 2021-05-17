@@ -150,6 +150,14 @@ tmoe_vnc_preconfigure() {
         fi
     fi
     fix_vnc_permissions
+    if [[ ! -e ${HOME}/.vnc/passwd ]]; then
+        vncpasswd
+        if [[ ! -s ${HOME}/.vnc/passwd ]]; then
+            x11vncpasswd
+            cp ~/.vnc/x11passwd ~/.vnc/passwd
+        fi
+        chmod 600 -v ~/.vnc/*
+    fi
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         export TMOE_CHROOT=true
         export TMOE_WSL=true
