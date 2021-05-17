@@ -64,6 +64,10 @@ install_libfaudio0() {
         WINE_ARCH=${ARCH_TYPE}
         install_libfaudio0_deb
         WINE_ARCH=i386
+        case ${VERSION_CODENAME} in
+        buster) THE_LATEST_DEB_REPO="https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Debian_10/${WINE_ARCH}" ;;
+        bionic) THE_LATEST_DEB_REPO="https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/xUbuntu_18.04/${WINE_ARCH}" ;;
+        esac
         install_libfaudio0_deb
         ;;
     i386)
