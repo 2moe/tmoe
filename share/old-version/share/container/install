@@ -769,7 +769,7 @@ create_proot_startup_script() {
 		;;
 	esac
 	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -i "${STARTUP_FILE}" ;;
+	arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -i "${TMOE_STARTUP_SCRIPT}" ;;
 	esac
 	############
 	case ${TRUE_ARCH_TYPE} in
@@ -1046,7 +1046,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			HOST_ARCH=$(grep "^HOST_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 			CONTAINER_ARCH=$(grep "^CONTAINER_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 			case ${HOST_ARCH} in
-			arm64 | armhf) [[ ${CONTAINER_ARCH} != i386 ]] || sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -i "${STARTUP_FILE}" ;;
+			arm64 | armhf) [[ ${CONTAINER_ARCH} != i386 ]] || sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -e "s@^(PROOT_H=).*@\1true@" -i "${STARTUP_FILE}" ;;
 			esac
 		fi
 	fi
