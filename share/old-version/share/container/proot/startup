@@ -92,7 +92,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	# 跳过qemu版本和架构的检测，并强制调用qemu。如需启用本选项，则请手动修改 QEMU_ARCH 的值为指定架构。
 
 	QEMU_USER_STATIC=true
-	# 当该值为true时，使用静态编译的版本。
+	# 当该值为true时，使用静态编译的版本。若该值为false，且遇到了lib库问题，则请挂载/system和/apex等目录。
 	# If the value is false, please install qemu-user manually, for example, apt install qemu-user-i386 qemu-user-x86_64 qemu-user-aarch64 qemu-user-arm
 
 	QEMU_32_ENABLED=false

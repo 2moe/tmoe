@@ -777,12 +777,14 @@ create_proot_startup_script() {
 	*)
 		sed -E -e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
 			-e "s@^(MOUNT_APEX=).*@\1false@g" \
-			-e "s@^(PROOT_L=).*@\1false@g" \
 			-i "${TMOE_STARTUP_SCRIPT}"
+		if grep -q '^QEMU_USER_STATIC=.*false' "${TMOE_STARTUP_SCRIPT}"; then
+			sed -E -e "s@^(MOUNT_SYSTEM=).*@\1true@g" \
+				-e "s@^(MOUNT_APEX=).*@\1true@g" \
+				-i "${TMOE_STARTUP_SCRIPT}"
+		fi
 		;;
 	esac
-	#cross-arch时禁用-L
-
 	[[ -z ${QEMU_ARCH} ]] || sed -i -E "s@^(QEMU_ARCH=).*@\1\"${QEMU_ARCH}\"@" "${TMOE_STARTUP_SCRIPT}"
 
 	if [[ -s hostname ]]; then
