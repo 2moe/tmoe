@@ -1040,16 +1040,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			${NEOFETCH_BIN_FILE}
 		fi
 	fi
-	STARTUP_FILE=/usr/local/etc/tmoe-linux/container/tmoe-linux-container
-	if [[ -s ${STARTUP_FILE} ]]; then
-		if grep -q "^HOST_ARCH" ${STARTUP_FILE}; then
-			HOST_ARCH=$(grep "^HOST_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
-			CONTAINER_ARCH=$(grep "^CONTAINER_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
-			case ${HOST_ARCH} in
-			arm64 | armhf) [[ ${CONTAINER_ARCH} != i386 ]] || sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -e "s@^(PROOT_H=).*@\1true@" -i "${STARTUP_FILE}" ;;
-			esac
-		fi
-	fi
 	###############
 	unset TMOE_GITHUB
 	 TMOE_GITHUB=true
@@ -1731,6 +1721,24 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if [ ! $(command -v locale-gen) ]; then
 			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}locales${RESET}"
 	        eatmydata apt install -y locales 2>/dev/null || apt install -y locales 2>/dev/null
+		fi
+	fi
+	STARTUP_FILE=/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	if [[ -s ${STARTUP_FILE} ]]; then
+		if grep -q "^HOST_ARCH" ${STARTUP_FILE}; then
+			HOST_ARCH=$(grep "^HOST_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+			CONTAINER_ARCH=$(grep "^CONTAINER_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+			case ${HOST_ARCH} in
+			arm64 | armhf)
+				if [[ ${CONTAINER_ARCH} = i386 ]]; then
+					sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -e "s@^(PROOT_H=).*@\1true@" -i "${STARTUP_FILE}" 
+					if [[ $(command -v apt) ]];then
+						printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
+						apt-get install --reinstall -y perl-base 2>/dev/null
+					fi
+				fi
+				;;
+			esac
 		fi
 	fi
 
