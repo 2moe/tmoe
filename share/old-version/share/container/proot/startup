@@ -107,7 +107,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	################
 	EXA_ENABLED=false
 	# Only applicable to i386 environment. If you enable it, then QEMU will be automatically disabled. In addition, some mount settings will also be automatically disabled.
-	# 此功能与qemu冲突，如需启用qemu, 请将该值修改为false。
+	# 此功能与qemu冲突，如需启用qemu, 则请将该值修改为false。
 
 	EXA_PATH="${TMOE_LINUX_DIR}/lib32/usr/bin"
 	EXA_PREFIX="${DEBIAN_CHROOT}"

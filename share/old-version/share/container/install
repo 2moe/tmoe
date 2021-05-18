@@ -1739,6 +1739,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					if [[ $(command -v apt) ]];then
 						printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
 						apt-get install --reinstall -y perl-base 2>/dev/null
+						for i in perlbug unzip pigz; do
+							if [[ -L /usr/bin/${i} ]]; then
+								case ${i} in
+								perlbug) DEP="perl" ;;
+								*) DEP=${i} ;;
+								esac
+								printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}${DEP}${RESET}"
+								apt-get install --reinstall -y ${DEP} 2>/dev/null
+							fi
+						done
 						for i in 6 7 8 9 10 11;do
 							if [[ -L "/usr/bin/python3.${i}m" ]];then
 								printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}python3.${i}-minimal${RESET}"
