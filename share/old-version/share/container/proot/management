@@ -1312,9 +1312,9 @@ du_sh_gnu_linux_distro() {
 			${TMOE_PREFIX} du -sh * 2>/dev/null
 			printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
 			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
-				-o -path="./root/sd" \
-				-o -path="./root/tf" \
-				-o -path="./root/termux" \
+				-o -path="./media/sd" \
+				-o -path="./media/tf" \
+				-o -path="./media/termux" \
 				-o -path="./media/sd" \
 				-o -path="./media/termux" \
 				-o -path="./media/tf" \
@@ -1339,9 +1339,9 @@ du_sh_gnu_linux_distro() {
 			${TMOE_PREFIX} du -sh *
 			printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
 			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
-				-o -path="./root/sd" \
-				-o -path="./root/tf" \
-				-o -path="./root/termux" \
+				-o -path="./media/sd" \
+				-o -path="./media/tf" \
+				-o -path="./media/termux" \
 				-o -path="./media/sd" \
 				-o -path="./media/termux" \
 				-o -path="./media/tf" \

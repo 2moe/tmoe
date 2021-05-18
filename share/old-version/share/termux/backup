@@ -111,8 +111,6 @@ backup_termux() {
 	tar.zst) tar -I zstd -Ppvcf ${TERMUX_TAR_FILE_NAME}.tar.zst --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR} ;;
 	tar.xz)
 		tar -PJpvcf ${TERMUX_TAR_FILE_NAME}.tar.xz --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR}
-		#xz -z -T0 -e -9 -v ${TERMUX_TAR_FILE_NAME}.tar
-		#${DEBIAN_CHROOT}/root/sd --exclude=${DEBIAN_CHROOT}/root/termux --exclude=${DEBIAN_CHROOT}/root/tf
 		;;
 	esac
 	printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."

@@ -87,6 +87,18 @@ file_proot_bin() {
 	file $(command -v proot)
 	ldd $(command -v proot)
 }
+git_clone_i386_emu() {
+	mkdir -pv ${TMOE_LINUX_DIR}/lib32/usr/bin
+	cd ${TMOE_LINUX_DIR}/lib32/usr/bin
+	GIT_REPO_01="https://github.com/cu233/"
+	GIT_REPO_02="https://gitee.com/ak2/"
+	case ${TMOE_MENU_LANG} in
+	zh_C*UTF-8) git clone --depth=1 ${GIT_REPO_02}/${EMU_NAME} || git clone --depth=1 ${GIT_REPO_01}/${EMU_NAME} ;;
+	*) git clone --depth=1 ${GIT_REPO_01}/${EMU_NAME} || git clone --depth=1 ${GIT_REPO_02}/${EMU_NAME} ;;
+	esac
+	tar -Jxf ./${EMU_NAME}/${EMU_NAME}.tar.xz
+	rm -rfv ${EMU_NAME}
+}
 dpkg_add_32bit_architecture() {
 	cd ${TMOE_LINUX_DIR}/lib32
 	printf "%s\n" "${GREEN}dpkg ${BLUE}--add-architecture ${YELLOW}${ADD_ARCH}${RESET}"
@@ -409,6 +421,14 @@ tmoe_qemu_user_manager() {
 		if [[ ! -e "${TMOE_LINUX_DIR}/lib/usr/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
 			install_qemu_user_static
 		fi
+		case ${TRUE_ARCH_TYPE} in
+		arm*)
+			if [[ ! -e ${TMOE_LINUX_DIR}/lib32/usr/bin/exa-i386_armeabi ]]; then
+				EMU_NAME="i386-emu"
+				git_clone_i386_emu
+			fi
+			;;
+		esac
 		case ${ARCH_TYPE} in
 		mips* | riscv64) git_clone_debian_ports_distro ;;
 		*) choose_which_gnu_linux_distro ;;

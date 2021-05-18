@@ -593,8 +593,7 @@ create_chroot_startup_script() {
 		ANDROID_EMULATED_DIR='/storage/emulated'
 		if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
 			${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
-			#cd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
-			#ln -s ../../root/sd ./0
+
 			${TMOE_CHROOT_PREFIX} ln -s ../../media/sd ${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0
 		fi
 		;;
@@ -625,17 +624,15 @@ create_chroot_startup_script() {
 	printf "%s\n" "正在创建chroot容器启动脚本"
 	#mkdir -pv /sdcard
 	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/sd
-	${TMOE_CHROOT_PREFIX} ln -sf ../media/sd ${DEBIAN_CHROOT}/root/sd
+	${TMOE_CHROOT_PREFIX} ln -sf ../media/sd ${DEBIAN_CHROOT}/root/
 	[[ -e ${DEBIAN_CHROOT}/sd ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/sd ${DEBIAN_CHROOT}/sd
 	#fi
 	if [ -d "/data/data/com.termux/files/home" ]; then
-		#mkdir -pv ${DEBIAN_CHROOT}/root/termux ||
 		${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/termux
-		${TMOE_CHROOT_PREFIX} ln -sf ../media/termux ${DEBIAN_CHROOT}/root/termux
+		${TMOE_CHROOT_PREFIX} ln -sf ../media/termux ${DEBIAN_CHROOT}/root/
 		if [ -h "${HOME}/storage/external-1" ]; then
-			#mkdir -pv ${DEBIAN_CHROOT}/root/tf ||
 			${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/tf
-			${TMOE_CHROOT_PREFIX} ln -sf ../media/tf ${DEBIAN_CHROOT}/root/tf
+			${TMOE_CHROOT_PREFIX} ln -sf ../media/tf ${DEBIAN_CHROOT}/root/
 			[[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
 		fi
 	fi
@@ -771,6 +768,19 @@ create_proot_startup_script() {
 		esac
 		;;
 	esac
+	case ${TRUE_ARCH_TYPE} in
+	arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -i "${STARTUP_FILE}" ;;
+	esac
+	############
+	case ${TRUE_ARCH_TYPE} in
+	${ARCH_TYPE}) ;;
+	*)
+		sed -E -e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
+			-e "s@^(MOUNT_APEX=).*@\1false@g" \
+			-i "${TMOE_STARTUP_SCRIPT}"
+		;;
+	esac
+
 	[[ -z ${QEMU_ARCH} ]] || sed -i -E "s@^(QEMU_ARCH=).*@\1\"${QEMU_ARCH}\"@" "${TMOE_STARTUP_SCRIPT}"
 
 	if [[ -s hostname ]]; then
@@ -1028,6 +1038,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		if [[ -e /usr/bin/bash || -e /bin/bash ]]; then
 			printf "%s\n" "${GREEN}neofetch${RESET}"
 			${NEOFETCH_BIN_FILE}
+		fi
+	fi
+	STARTUP_FILE=/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	if [[ -s ${STARTUP_FILE} ]]; then
+		if grep -q "^HOST_ARCH" ${STARTUP_FILE}; then
+			HOST_ARCH=$(grep "^HOST_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+			CONTAINER_ARCH=$(grep "^CONTAINER_ARCH=" ${STARTUP_FILE} | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+			case ${HOST_ARCH} in
+			arm64 | armhf) [[ ${CONTAINER_ARCH} != i386 ]] || sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -i "${STARTUP_FILE}" ;;
+			esac
 		fi
 	fi
 	###############
@@ -1529,8 +1549,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	case ${TMOE_PROOT} in
 	true)
 		for i in sd tf; do
-			if [[ -e "/root/${i}" && ! -e "/${i}" ]]; then
-				ln -sv root/${i} /${i}
+			if [[ -e "/media/${i}" && ! -e "/${i}" ]]; then
+				ln -sv media/${i} /
+			fi
+		done
+		for i in sd tf termux; do
+			if [[ -e "/media/${i}" && ! -e "/root/${i}" ]]; then
+				ln -sv ../media/${i} /root/
 			fi
 		done
 		unset i

@@ -37,10 +37,10 @@ remove_old_version_gnu_linux_container() {
 	if [ "$?" = "0" ]; then
 		printf '%s\n' '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
 	fi
-	ls -l ${DEBIAN_CHROOT}/root/termux/* 2>/dev/null
+	ls -l ${DEBIAN_CHROOT}/media/termux/* 2>/dev/null
 	if [ "$?" = "0" ]; then
-		printf '%s\n' 'WARNING！检测到/root/termux无法强制卸载，您当前使用的可能是chroot容器'
-		printf "%s\n" "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/root/sd"
+		printf '%s\n' 'WARNING！检测到/media/termux无法强制卸载，您当前使用的可能是chroot容器'
+		printf "%s\n" "若为误报，则请先停止容器进程，再手动移除${DEBIAN_CHROOT}/media/sd"
 		printf '%s\n' '建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者概不负责！！！'
 		#printf '%s\n' '为防止数据丢失，建议您重启设备后再重试。'
 		#printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
@@ -50,7 +50,7 @@ remove_old_version_gnu_linux_container() {
 	fi
 	printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在termux原系统中执行stopvnc，再进行移除操作。"
 	printf "%s\n" "Detecting container size... 正在检测${ROOTFS_NAME}容器占用空间大小"
-	${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/root/tf --exclude=./${DEBIAN_FOLDER}/root/sd --exclude=./${DEBIAN_FOLDER}/root/termux
+	${TMOE_PREFIX} du -sh ./${DEBIAN_FOLDER} --exclude=./${DEBIAN_FOLDER}/media/tf --exclude=./${DEBIAN_FOLDER}/media/sd --exclude=./${DEBIAN_FOLDER}/media/termux
 	if [ ! -d ${DEBIAN_CHROOT} ]; then
 		printf "%s\n" "${YELLOW}It is detected that you do not currently have GNU/Linux container installed. 检测到您当前未安装容器${RESET}"
 	fi
