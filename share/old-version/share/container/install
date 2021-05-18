@@ -769,7 +769,7 @@ create_proot_startup_script() {
 		;;
 	esac
 	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -e "s@^(PROOT_H=).*@\1true@" -i "${TMOE_STARTUP_SCRIPT}" ;;
+	arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -i "${TMOE_STARTUP_SCRIPT}" ;;
 	esac
 	############
 	case ${TRUE_ARCH_TYPE} in
@@ -1733,7 +1733,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			case ${HOST_ARCH} in
 			arm64 | armhf)
 				if [[ ${CONTAINER_ARCH} = i386 ]]; then
-					sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -e "s@^(PROOT_H=).*@\1true@" -i "${STARTUP_FILE}" 
+					sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -i "${STARTUP_FILE}" 
 					if [[ $(command -v apt) ]];then
 						printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
 						apt-get install --reinstall -y perl-base 2>/dev/null
