@@ -250,7 +250,7 @@ mirror_sources_station_download_speed_test() {
 	printf "%s\n" "在测试过程中，您可以按${YELLOW}Ctrl+C${RESET}取消。"
 	do_you_want_to_continue
 	cd ${TMPDIR}
-	CLANG_FILE="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24/aarch64/ | "grep clang_" | head -n 1 | awk -F 'a href=' '{print $2}' | cut -d '"' -f 2)"
+	CLANG_FILE="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24/aarch64/ | grep "clang_" | head -n 1 | awk -F 'a href=' '{print $2}' | cut -d '"' -f 2)"
 	printf "%s\n" "---------------------------"
 	SOURCE_MIRROR_STATION_NAME='清华镜像站'
 	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
