@@ -1735,7 +1735,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			case ${HOST_ARCH} in
 			arm64 | armhf)
 				if [[ ${CONTAINER_ARCH} = i386 ]]; then
-					sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -i "${STARTUP_FILE}" 
+					# sed -E -e "s@^(EXA_ENABLED=).*@\1true@g" -i "${STARTUP_FILE}" 
 					if [[ $(command -v apt) ]];then
 						printf "%s\n" "${GREEN}apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
 						apt-get install --reinstall -y perl-base 2>/dev/null
