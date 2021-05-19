@@ -109,8 +109,10 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	# You can enter an absolute path, for example, "\${PREFIX}/bin/qemu-x86_64"
 	################
 	EXA_ENABLED=false
+	# Only for testing. Default is false.
 	# Only applicable to i386 environment. If you enable it, then QEMU will be automatically disabled. In addition, some mount settings will also be automatically disabled.
 	# 此功能与qemu冲突，如需启用qemu, 则请将该值修改为false。
+	# 此功能仅供测试，不建议将该值修改为true。
 
 	EXA_PATH="${TMOE_LINUX_DIR}/lib32/usr/bin"
 	EXA_PREFIX="\${ROOTFS_DIR}"

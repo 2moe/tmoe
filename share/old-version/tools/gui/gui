@@ -793,6 +793,7 @@ window_manager_installation() {
             "47" "wmaker(NeXTSTEP-like WM for X)" \
             "48" "wmii(轻量化 tabbed and tiled WM)" \
             "49" "xfwm4(xfce4默认WM)" \
+            "50" "exwm(full-featured tiling X WM for Emacs)" \
             3>&1 1>&2 2>&3
     )
     ##################
@@ -1035,6 +1036,11 @@ window_manager_installation() {
     49)
         DEPENDENCY_01='xfwm4'
         REMOTE_DESKTOP_SESSION_01='xfwm4'
+        ;;
+    50)
+        DEPENDENCY_01='elpa-exwm'
+        DEPENDENCY_02='emacs-gtk'
+        REMOTE_DESKTOP_SESSION_01='emacs-gtk'
         ;;
     esac
     #############
