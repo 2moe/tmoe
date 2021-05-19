@@ -131,7 +131,8 @@ modify_other_vnc_conf() {
     3) switch_tight_or_tiger_vncserver ;;
     4) modify_vnc_pulse_audio ;;
     5)
-        nano ${XSESSION_FILE}
+        check_editor
+        ${EDITOR} ${XSESSION_FILE}
         #stopvnc 2>/dev/null
         ;;
     6) nano_tigervnc_default_config_manually ;;
@@ -140,7 +141,10 @@ modify_other_vnc_conf() {
     9) fix_vnc_dbus_launch ;;
     10) modify_xfce_window_scaling_factor ;;
     11) modify_tightvnc_display_port ;;
-    12) nano ${TMOE_LINUX_DIR}/wsl_pulse_audio ;;
+    12)
+        check_editor
+        ${EDITOR} ${TMOE_LINUX_DIR}/wsl_pulse_audio
+        ;;
     esac
     #########
     press_enter_to_return
@@ -191,7 +195,8 @@ modify_tigervnc_pixel_depth() {
 }
 #######################
 nano_tigervnc_default_config_manually() {
-    nano /etc/tigervnc/vncserver-config-tmoe
+    check_editor
+    ${EDITOR} /etc/tigervnc/vncserver-config-tmoe
 }
 #############
 switch_tight_or_tiger_vncserver() {
@@ -298,10 +303,10 @@ nano_startvnc_manually() {
     printf '%s\n' 'If you want to modify the resolution, please change the 1440x720 (default resolution，landscape) to another resolution.For example, 1920x1080 (vertical screen).'
     printf '%s\n' '若您想要修改分辨率，请将默认的1440x720（横屏）改为其它您想要的分辨率，例如720x1440（竖屏）。'
     #printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
-    printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
     RETURN_TO_WHERE='modify_other_vnc_conf'
     do_you_want_to_continue
-    nano $(command -v startvnc)
+    check_editor
+    ${EDITOR} $(command -v startvnc)
     #printf "%s\n" "您当前分辨率为$(grep '\-geometry' "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1 | tail -n 1)"
     #stopvnc 2>/dev/null
     press_enter_to_return
@@ -4044,7 +4049,10 @@ configure_x11vnc() {
     2) x11vnc_pulse_server ;;
     3) x11vnc_resolution ;;
     4) x11vnc_port ;;
-    5) nano /usr/local/bin/startx11vnc ;;
+    5)
+        check_editor
+        ${EDITOR} /usr/local/bin/startx11vnc
+        ;;
     6) remove_X11vnc ;;
     7) x11vnc_process_readme ;;
     8) x11vncpasswd ;;
@@ -4222,7 +4230,7 @@ x11vnc_port() {
 }
 #################
 x11vnc_resolution() {
-    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(grep 'TMOE_X11_RESOLUTION=' $(command -v startx11vnc) | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为$(grep 'TMOE_X11_RESOLUTION=' $(command -v startx11vnc) | head -n 1 | cut -d '=' -f 2)。分辨率可自定义，但建议您根据屏幕比例来调整。注意：x为英文小写，不是乘号" 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         configure_x11vnc
     elif [ -z "${TARGET}" ]; then
@@ -4254,7 +4262,7 @@ modify_vnc_conf() {
     fi
     check_vnc_resolution
     if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "Which configuration do you want to modify?" 9 50); then
-        TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为${CURRENT_VNC_RESOLUTION}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+        TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为1440x720,当前为${CURRENT_VNC_RESOLUTION}。分辨率可自定义，但建议您根据屏幕比例来调整。注意：x为英文小写，不是乘号" 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
         if [ "$?" != "0" ]; then
             modify_other_vnc_conf
         elif [ -z "${TARGET}" ]; then
@@ -4333,7 +4341,8 @@ disable_tmoe_qemu_remote_display() {
 }
 #################
 modify_startxsdl_manually() {
-    nano ${TMOE_XSDL_SCRIPT_PATH}
+    check_editor
+    ${EDITOR} ${TMOE_XSDL_SCRIPT_PATH}
     printf '%s\n' 'See your current xsdl configuration information below.'
 
     check_tmoe_xsdl_display_ip
@@ -4693,8 +4702,14 @@ configure_xrdp() {
         configure_remote_desktop_environment
         ;;
     3) xrdp_port ;;
-    4) nano /etc/xrdp/xrdp.ini ;;
-    5) nano /etc/xrdp/startwm.sh ;;
+    4)
+        check_editor
+        ${EDITOR} /etc/xrdp/xrdp.ini
+        ;;
+    5)
+        check_editor
+        ${EDITOR} /etc/xrdp/startwm.sh
+        ;;
     6) service xrdp stop 2>/dev/null || systemctl stop xrdp ;;
     7) check_xrdp_status ;;
     8) xrdp_pulse_server ;;

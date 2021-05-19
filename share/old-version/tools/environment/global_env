@@ -6,6 +6,14 @@ check_current_user_name_and_group() {
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
 }
+check_editor() {
+    for i in editor micro nano vim vi; do
+        if [[ $(command -v ${i}) ]]; then
+            EDITOR=${i}
+            break
+        fi
+    done
+}
 #########################
 gnu_linux_env_02() {
     OPT_URL_01='https://bintray.proxy.ustclug.org/debianopt/debianopt'

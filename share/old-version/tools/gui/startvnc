@@ -1,49 +1,53 @@
 #!/usr/bin/env bash
 ########################
 export PULSE_SERVER=127.0.0.1
-#The default pulseaudio server address is 127.0.0.1
-#本机默认音频服务地址为127.0.0.1,默认端口为4713。
-#Die Standard-Audiodienst Adresse dieses Geräts lautet 127.0.0.1
+# The default pulseaudio server address is 127.0.0.1
+# 本机默认音频服务地址为127.0.0.1,默认端口为4713。
+# Die Standard-Audiodienst Adresse dieses Geräts lautet 127.0.0.1
 
 VNC_RESOLUTION=1440x720
-#The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
-#默认分辨率为1440x720,您可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
-#Die Standardauflösung ist 1440x720
+# The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
+# 默认分辨率为1440x720,您可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
+# Die Standardauflösung ist 1440x720
 
 TMOE_VNC_DISPLAY_NUMBER=2
-#If the display number=2,then vnc port=5902.
-#若显示编号为2,则vnc端口为$((5900+2))=5902。
-#Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
+# If the display number=2,then vnc port=5902.
+# 若显示编号为2,则vnc端口为$((5900+2))=5902。
+# Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
 
 VNC_USER=$(whoami)
-#You can specify a VNC user. The current user is $(whoami)
-#您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
-#Sie können einen VNC-Benutzer angeben
+# You can specify a VNC user. The current user is $(whoami)
+# 您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
+# Sie können einen VNC-Benutzer angeben
 
 VNC_LOCALHOST=false
-#Only allow connections from localhost.Default is false.
-#当此变量的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
-#Wenn dieser Parameterwert "true" ist, lassen Sie nur Verbindungen von localhost zu
+# Only allow connections from localhost.Default is false.
+# 当此变量的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
+# Wenn dieser Parameterwert "true" ist, lassen Sie nur Verbindungen von localhost zu
 
 VNC_SERVER=tiger
-#You can choose tiger or tight.
-#服务端可选tiger或tight。
-#Sie können "tiger" oder "tight" wählen.
+# You can choose tiger or tight.
+# 服务端可选tiger或tight。
+# Sie können "tiger" oder "tight" wählen.
 
 ZLIB_LEVEL=0
-#Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
-#压缩级别,可选0至9,默认为0。
-#Die Standardkomprimierungsstufe für zlib ist 0
+# Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
+# 压缩级别,可选0至9,默认为0。
+# Die Standardkomprimierungsstufe für zlib ist 0
 
 PIXEL_DEPTH=24
-#Specify the pixel depth in bits of the desktop to be created. Default is 24.
-#色彩/位/像素深度，可选16、24或32,默认为24，建议选用16或者24。
-#Die Standardpixeltiefe beträgt 24
+# Specify the pixel depth in bits of the desktop to be created. Default is 24.
+# 色彩/位/像素深度，可选16、24或32,默认为24，建议选用16或者24。
+# Die Standardpixeltiefe beträgt 24
 
 ALWAYS_SHARED=true
-#Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
+# Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
 
 DBUS_ENABLED=true
+
+AUTO_STOP_VNC=true
+# Before each start, vnc will be automatically stopped.
+# If the vaule is true, then "startvnc" => "restart vnc"
 ####################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then
@@ -74,7 +78,7 @@ RESET=$(printf '\033[m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
 export USER=${VNC_USER}
-stopvnc -non-stop-dbus 2>/dev/null
+[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -non-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
@@ -110,14 +114,12 @@ fix_vnc_permissions() {
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
     ${CURRENT_USER_NAME}) ;;
     *)
-        #printf "%s\n" "检测到${TMOE_VNC_PASSWD_FILE}文件所属非当前用户（${CURRENT_USER_NAME}），为避免权限问题，正在将${HOME}目录下的.vnc 的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
-        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .vnc"
+        VNC_FILE=".vnc"
         for i in ".ICEauthority" ".Xauthority"; do
-            if [ -e "${i}" ]; then
-                sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} "${i}" || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${i}"
-            fi
+            [[ ! -e "${i}" ]] || VNC_FILE="${VNC_FILE} ${i}"
         done
+        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE} || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
         unset i
         ;;
     esac
@@ -149,8 +151,9 @@ tmoe_vnc_preconfigure() {
             esac
         fi
     fi
-    fix_vnc_permissions
     if [[ ! -e ${HOME}/.vnc/passwd ]]; then
+        printf "%s\n" "发生错误，正在重置密码，请输入6至8位数的密码 :"
+        printf "%s\n%s\n" "Resetting the password ..." "Please enter a new passwd :"
         vncpasswd
         if [[ ! -s ${HOME}/.vnc/passwd ]]; then
             x11vncpasswd
@@ -160,10 +163,11 @@ tmoe_vnc_preconfigure() {
             chmod -v 600 ${i}
         done
     fi
+    fix_vnc_permissions
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         export TMOE_CHROOT=true
         export TMOE_WSL=true
-        . ${TMOE_LINUX_DIR}/wsl_pulse_audio
+        source ${TMOE_LINUX_DIR}/wsl_pulse_audio
     fi
 }
 ###############
@@ -213,14 +217,10 @@ start_tmoe_xvnc() {
     tiger* | Tiger* | *)
         XVNC_BIN='Xtigervnc'
         TMOE_VNC_BIN='tiger'
-        #if [[ ! $(command -v ${XVNC_BIN}) ]]; then
-        #    printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${YELLOW}install ${BLUE}tigervnc-standalone-server tigervnc-common${RESET}"
-        #    sudo apt install tigervnc-standalone-server tigervnc-common || su -c "apt install -y tigervnc-standalone-server"
         [[ $(command -v ${XVNC_BIN}) ]] || XVNC_BIN='Xvnc'
-        # fi
         ;;
     esac
-    . ${TIGERVNC_CONFIG_FILE} 2>/dev/null
+    source ${TIGERVNC_CONFIG_FILE} 2>/dev/null
 
     if [[ ! ${ZLIB_LEVEL} =~ ^[0-9]+$ ]]; then
         ZLIB_LEVEL=0
@@ -272,7 +272,7 @@ start_tmoe_xvnc() {
         startplasma-wayland &
     else
         if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
-            . ${XSESSION_FILE} &>/dev/null &
+            source ${XSESSION_FILE} &>/dev/null &
         else
             # if [[ ${VNC_USER} != root ]]; then
             #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
@@ -289,7 +289,10 @@ start_tmoe_xvnc() {
 }
 ##############
 source_tmoe_dbus_daemon() {
-    [[ ${DBUS_ENABLED} != true ]] || source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+    if [[ ${DBUS_ENABLED} = true ]]; then
+        # [[ ! -e /usr/sbin/service ]] || service dbus start 2>/dev/null
+        source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+    fi
 }
 ###########
 check_vncsession() {
@@ -320,7 +323,8 @@ display_vnc_ip_addr
 #check_vncsession
 check_xvnc
 ##########
-[[ $(command -v vncserver) ]] || startx11vnc
-#最后一行命令已废弃，仅作兼容性测试，直接修改其参数值可能不会生效。
-#20200912注:tigervnc-1.11.0-2及其之后的版本，可能无法使用旧版命令。
-vncserver -geometry 1440x720 -depth 24 -name tmoe-linux :1
+if [[ ! $(command -v Xvnc) && ! $(command -v vncserver) ]]; then
+    startx11vnc
+fi
+# 注: 推荐您使用startvnc, 而不是vncserver哦！startvnc在默认情况下，会比不包含参数的vncserver更流畅哦！
+# It is recommend to use startvnc instead of vncserver.
