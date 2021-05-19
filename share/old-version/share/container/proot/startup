@@ -312,7 +312,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    true) QEMU_PATH="\${QEMU_USER_STATIC_32_PATH}/" ;;
 	    false) QEMU_PATH="\${QEMU_USER_STATIC_PATH}/" ;;
 	    esac
-	    [[ -e \${QEMU_PATH} ]] || unset QEMU_PATH
+	    [[ -e \${QEMU_PATH}/qemu-x86_64-static ]] || unset QEMU_PATH
 	}
 	check_qemu_bin() {
 	    case \${QEMU_USER_BIN} in

@@ -134,7 +134,7 @@ install_tmoe_moonthly_build_edition() {
 			"2" "Rust(Blazingly fast and memory-efficient)" \
 			"3" "Visual Studio Code online server" \
 			"4" "OpenJDK(An open-source Java Platform)" \
-			"5" "🐳 Docker(Run docker via qemu)" \
+			"5" "🐳 Docker(Run docker with qemu)" \
 			"6" "Node.js(A back-end JavaScript runtime environment)" \
 			"7" "Nginx(A high-performance HTTP server)" \
 			"8" "PHP(A general-purpose scripting language)" \
