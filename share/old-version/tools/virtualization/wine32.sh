@@ -155,7 +155,7 @@ install_wine32() {
 }
 #########
 install_winetricks() {
-    DEPENDENCY_01='winetricks'
+    DEPENDENCY_01='winetricks zenity'
     DEPENDENCY_02='winetricks-zh'
     beta_features_quick_install
 }
@@ -243,7 +243,7 @@ install_wine_wechat() {
 	EOF
     do_you_want_to_continue
     cd /tmp
-    if [ ! -e "WeChatSetup.exe" ]; then
+    if [ ! -e "/tmp/WeChatSetup.exe" ]; then
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o WeChatSetup.exe 'https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe'
     fi
     case ${HOME} in

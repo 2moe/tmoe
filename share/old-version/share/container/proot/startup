@@ -34,6 +34,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	LD_LIB_PATH="default"
 	PROOT_32_TERMUX_LD_LIB_PATH="${TMOE_LINUX_DIR}/lib32/data/data/com.termux/files/usr/lib"
+
+	ROOTFS_DIR="${DEBIAN_CHROOT}"
+	PROOT_PROC_DIR="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/proot_proc"
 	################
 	KILL_ON_EXIT=true
 	# Kill all processes on command exit. When the executed command leaves orphean or detached processes around, proot waits until all processes possibly terminate. This option forces the immediate termination of all tracee processes when the main command exits. Default is true.
@@ -110,13 +113,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	# 此功能与qemu冲突，如需启用qemu, 则请将该值修改为false。
 
 	EXA_PATH="${TMOE_LINUX_DIR}/lib32/usr/bin"
-	EXA_PREFIX="${DEBIAN_CHROOT}"
+	EXA_PREFIX="\${ROOTFS_DIR}"
 
 	# FORK_CONTALLER=false
 	# IPC_EMU_SER=false
 	# External IPC emulation is used on Android only. Default is false.
 
-	VFS_HACKS="pels,ansep,tlsasws,tsi,spd"
+	VFS_HACKS="tlsasws,tsi,spd"
+	# pels,ansep,tlsasws,tsi,spd
 	SOCKET_PATH_SUFFIX=""
 	# es, ed
 	VPATHS_LIST="/dev/null"
@@ -124,7 +128,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	################
 	LOAD_ENV_FILE=true
 	# Load the environment variable file when starting the container. Default is true.
-	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+	CONTAINER_ENV_FILE="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/environment/container.env"
 
 	LOAD_PROOT_CONF=false
 	# Default is false.
@@ -257,7 +261,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
 	PROC_FD_PATH="/proc/self/fd"
-	HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
+	HOST_NAME_FILE="\${ROOTFS_DIR}/etc/hostname"
 	################
 	main() {
 	    case "\$1" in
@@ -341,8 +345,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    case \${PROOT_USER} in
 	    "" | root) ;;
 	    *)
-	        PROOT_UID=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
-	        PROOT_GID=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
+	        PROOT_UID=\$(grep "^\${PROOT_USER}:" \${ROOTFS_DIR}/etc/passwd | awk -F ':' '{print \$3}')
+	        PROOT_GID=\$(grep "^\${PROOT_USER}:" \${ROOTFS_DIR}/etc/passwd | awk -F ':' '{print \$4}')
 	        ;;
 	    esac
 	    if [[ -z \${PROOT_UID} ]]; then
@@ -354,7 +358,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        case \${PROOT_USER} in
 	        root | "") PROOT_HOME="/root" ;;
 	        *)
-	            PROOT_HOME=\$(grep "^\${PROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+	            PROOT_HOME=\$(grep "^\${PROOT_USER}:" \${ROOTFS_DIR}/etc/passwd | awk -F ':' '{print \$6}')
 	            [[ -n \${PROOT_HOME} ]] || PROOT_HOME="/home/\${PROOT_USER}"
 	            ;;
 	        esac
@@ -376,7 +380,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    else
 	        set -- "\${@}" "--pwd=/"
 	    fi
-	    [[ \${EXA_ENABLED} = true ]] || set -- "\${@}" "--rootfs=${DEBIAN_CHROOT}"
+	    [[ \${EXA_ENABLED} = true ]] || set -- "\${@}" "--rootfs=\${ROOTFS_DIR}"
 	    if [[ "\${HOST_DISTRO}" = 'Android' ]]; then
 	        if [[ \${MOUNT_SYSTEM} = true ]]; then
 	            if [[ -e "\${SYSTEM_DIR}" ]]; then
@@ -426,7 +430,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    fi
 	    if [[ \${MOUNT_DEV} = true ]]; then
 	        set -- "\${@}" "--mount=\${DEV_DIR}:\${EXA_PREFIX}\${DEV_DIR}"
-	        [[ \${MOUNT_SHM_TO_TMP} != true ]] || set -- "\${@}" "--mount=${DEBIAN_CHROOT}/tmp:\${EXA_PREFIX}/dev/shm"
+	        [[ \${MOUNT_SHM_TO_TMP} != true ]] || set -- "\${@}" "--mount=\${ROOTFS_DIR}/tmp:\${EXA_PREFIX}/dev/shm"
 	        [[ \${MOUNT_URANDOM_TO_RANDOM} != true ]] || set -- "\${@}" "--mount=\${DEV_DIR}/urandom:\${EXA_PREFIX}/dev/random"
 	        [[ \${MOUNT_DEV_FD} != true ]] || set -- "\${@}" "--mount=\${PROC_FD_PATH}:\${EXA_PREFIX}/dev/fd"
 	        [[ \${MOUNT_DEV_STDIN} != true ]] || set -- "\${@}" "--mount=\${PROC_FD_PATH}/0:\${EXA_PREFIX}/dev/stdin"
@@ -476,41 +480,41 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    #The files in the /proc directory will be automatically detected during installation. If your host does not have permission to read them, there is no " #" before set.
 	    #不同系统对文件权限的限制可能有所区别，以下文件在安装时会自动检测，仅当宿主机无权读取时，才会去除set前的注释符号。
 	    if [[ "\${FAKE_PROOT_PROC}" = 'true' ]]; then
-	        ##test01#set -- "\${@}" "--mount=${TMOE_PROC_PREFIX}.stat:\${EXA_PREFIX}/proc/stat"
-	        ##test02#set -- "\${@}" "--mount=${TMOE_PROC_PREFIX}.version:\${EXA_PREFIX}/proc/version"
-	        if [[ -e "${TMOE_PROC_PATH}/uptime" ]]; then
+	        ##test01#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/.tmoe-container.stat:\${EXA_PREFIX}/proc/stat"
+	        ##test02#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/.tmoe-container.version:\${EXA_PREFIX}/proc/version"
+	        if [[ -e "\${PROOT_PROC_DIR}/uptime" ]]; then
 	            printf "%s" ""
-	            ##test04#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/bus:\${EXA_PREFIX}/proc/bus"
-	            ##buddyinfo#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/buddyinfo:\${EXA_PREFIX}/proc/buddyinfo"
-	            ##cgroups#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/cgroups:\${EXA_PREFIX}/proc/cgroups"
-	            ##consoles#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/consoles:\${EXA_PREFIX}/proc/consoles"
-	            ##crypto#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/crypto:\${EXA_PREFIX}/proc/crypto"
-	            ##devices#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/devices:\${EXA_PREFIX}/proc/devices"
-	            ##diskstats#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/diskstats:\${EXA_PREFIX}/proc/diskstats"
-	            ##execdomains#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/execdomains:\${EXA_PREFIX}/proc/execdomains"
-	            ##fb#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/fb:\${EXA_PREFIX}/proc/fb"
-	            ##filesystems#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/filesystems:\${EXA_PREFIX}/proc/filesystems"
-	            ##interrupts#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/interrupts:\${EXA_PREFIX}/proc/interrupts"
-	            ##iomem#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/iomem:\${EXA_PREFIX}/proc/iomem"
-	            ##ioports#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/ioports:\${EXA_PREFIX}/proc/ioports"
-	            ##kallsyms#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/kallsyms:\${EXA_PREFIX}/proc/kallsyms"
-	            ##keys#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/keys:\${EXA_PREFIX}/proc/keys"
-	            ##key-users#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/key-users:\${EXA_PREFIX}/proc/key-users"
-	            ##kmsg#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/kmsg:\${EXA_PREFIX}/proc/kmsg"
-	            ##kpageflags#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/kpageflags:\${EXA_PREFIX}/proc/kpageflags"
-	            ##loadavg#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/loadavg:\${EXA_PREFIX}/proc/loadavg"
-	            ##locks#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/locks:\${EXA_PREFIX}/proc/locks"
-	            ##misc#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/misc:\${EXA_PREFIX}/proc/misc"
-	            ##modules#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/modules:\${EXA_PREFIX}/proc/modules"
-	            ##pagetypeinfo#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/pagetypeinfo:\${EXA_PREFIX}/proc/pagetypeinfo"
-	            ##partitions#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/partitions:\${EXA_PREFIX}/proc/partitions"
-	            ##sched_debug#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/sched_debug:\${EXA_PREFIX}/proc/sched_debug"
-	            ##softirqs#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/softirqs:\${EXA_PREFIX}/proc/softirqs"
-	            ##timer_list#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/timer_list:\${EXA_PREFIX}/proc/timer_list"
-	            ##uptime#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/uptime:\${EXA_PREFIX}/proc/uptime"
-	            ##vmallocinfo#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/vmallocinfo:\${EXA_PREFIX}/proc/vmallocinfo"
-	            ##vmstat#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/vmstat:\${EXA_PREFIX}/proc/vmstat"
-	            ##zoneinfo#set -- "\${@}" "--mount=${TMOE_PROC_PATH}/zoneinfo:\${EXA_PREFIX}/proc/zoneinfo"
+	            ##test04#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/bus:\${EXA_PREFIX}/proc/bus"
+	            ##buddyinfo#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/buddyinfo:\${EXA_PREFIX}/proc/buddyinfo"
+	            ##cgroups#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/cgroups:\${EXA_PREFIX}/proc/cgroups"
+	            ##consoles#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/consoles:\${EXA_PREFIX}/proc/consoles"
+	            ##crypto#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/crypto:\${EXA_PREFIX}/proc/crypto"
+	            ##devices#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/devices:\${EXA_PREFIX}/proc/devices"
+	            ##diskstats#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/diskstats:\${EXA_PREFIX}/proc/diskstats"
+	            ##execdomains#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/execdomains:\${EXA_PREFIX}/proc/execdomains"
+	            ##fb#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/fb:\${EXA_PREFIX}/proc/fb"
+	            ##filesystems#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/filesystems:\${EXA_PREFIX}/proc/filesystems"
+	            ##interrupts#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/interrupts:\${EXA_PREFIX}/proc/interrupts"
+	            ##iomem#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/iomem:\${EXA_PREFIX}/proc/iomem"
+	            ##ioports#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/ioports:\${EXA_PREFIX}/proc/ioports"
+	            ##kallsyms#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/kallsyms:\${EXA_PREFIX}/proc/kallsyms"
+	            ##keys#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/keys:\${EXA_PREFIX}/proc/keys"
+	            ##key-users#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/key-users:\${EXA_PREFIX}/proc/key-users"
+	            ##kmsg#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/kmsg:\${EXA_PREFIX}/proc/kmsg"
+	            ##kpageflags#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/kpageflags:\${EXA_PREFIX}/proc/kpageflags"
+	            ##loadavg#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/loadavg:\${EXA_PREFIX}/proc/loadavg"
+	            ##locks#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/locks:\${EXA_PREFIX}/proc/locks"
+	            ##misc#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/misc:\${EXA_PREFIX}/proc/misc"
+	            ##modules#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/modules:\${EXA_PREFIX}/proc/modules"
+	            ##pagetypeinfo#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/pagetypeinfo:\${EXA_PREFIX}/proc/pagetypeinfo"
+	            ##partitions#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/partitions:\${EXA_PREFIX}/proc/partitions"
+	            ##sched_debug#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/sched_debug:\${EXA_PREFIX}/proc/sched_debug"
+	            ##softirqs#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/softirqs:\${EXA_PREFIX}/proc/softirqs"
+	            ##timer_list#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/timer_list:\${EXA_PREFIX}/proc/timer_list"
+	            ##uptime#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/uptime:\${EXA_PREFIX}/proc/uptime"
+	            ##vmallocinfo#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/vmallocinfo:\${EXA_PREFIX}/proc/vmallocinfo"
+	            ##vmstat#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/vmstat:\${EXA_PREFIX}/proc/vmstat"
+	            ##zoneinfo#set -- "\${@}" "--mount=\${PROOT_PROC_DIR}/zoneinfo:\${EXA_PREFIX}/proc/zoneinfo"
 	        fi
 	    fi
 	    ###################
@@ -548,13 +552,13 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    if [[ \${EXA_ENABLED} = true && -e \${EXA_PREFIX} ]]; then
 	        set -- "\${@}" "\${EXA_PATH}/exa-i386_armeabi"
 	        set -- "\${@}" "--path-prefix" "\${EXA_PREFIX}"
+	        set -- "\${@}" "--vfs-hacks=\${VFS_HACKS}"
 	        set -- "\${@}" "--vfs-kind" "\${VFS_KIND}"
-	        set -- "\${@}" "--tmp-dir" "\${EXA_PREFIX}/tmp"
 	        # [[ \${IPC_EMU_SER} != true ]] || set -- "\${@}" "--ipc-emul-server"
 	        # [[ \${FORK_CONTALLER} != true ]] || set -- "\${@}" "--fork-controller"
 	        [[ -z \${SOCKET_PATH_SUFFIX} ]] || set -- "\${@}" "--socket-path-suffix" "\${SOCKET_PATH_SUFFIX}"
 	        set -- "\${@}" "--vpaths-list" "\${VPATHS_LIST}"
-	        set -- "\${@}" "--vfs-hacks=\${VFS_HACKS}" "--"
+	        set -- "\${@}" "--tmp-dir" "\${EXA_PREFIX}/tmp" "--"
 	    fi
 	    #############
 	    #SET ENV
@@ -587,7 +591,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    [[ ! -r \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 	    if [[ -z \${TMOE_SHELL} ]]; then
 	        for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
-	            if [[ -f ${DEBIAN_CHROOT}/bin/\${i} || -L \${DEBIAN_CHROOT}/bin/\${i} ]]; then
+	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \\${ROOTFS_DIR}/bin/\${i} ]]; then
 	                TMOE_SHELL="/bin/\${i}"
 	                break
 	            fi
@@ -663,6 +667,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 ENDOFPROOT
 
 #TMOE_LINUX_DIR & TRUE_ARCH_TYPE & ARCH_TYPE - \$.
+# CONFIG_FOLDER & ARCH_TYPE  & DEBIAN_CHROOT & TMPDIR - \$
 
 case $(uname -o) in
 Android) ${TMOE_CHROOT_PREFIX} termux-fix-shebang ${TMOE_STARTUP_SCRIPT} ;;

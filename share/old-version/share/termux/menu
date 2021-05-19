@@ -107,13 +107,11 @@ termux_pulse_audio_lan() {
 	fi
 	#10 50
 	if (whiptail --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'yes(*￣▽￣*)o' --no-button 'no(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！\nDo you want to enable LAN audio transmission?" 11 50); then
-		sed -i '/auth-ip-acl/d' default.pa
-		sed -i '/module-native-protocol-tcp/d' default.pa
+		sed -i '/auth-ip-acl/d;/module-native-protocol-tcp/d' default.pa
 		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16;172.16.0.0/12 auth-anonymous=1' default.pa
 	else
-		sed -i '/auth-ip-acl/d' default.pa
-		sed -i '/module-native-protocol-tcp/d' default.pa
-		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' default.pa
+		sed -i '/auth-ip-acl/d;/module-native-protocol-tcp/d' default.pa
+		sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=0' default.pa
 	fi
 	printf "%s\n" "修改完成！(￣▽￣)"
 	printf "%s\n" "如需单独启动音频服务，请输pulseaudio --start"
