@@ -27,8 +27,9 @@ ustc_termux() {
 		press_enter_to_return
 		tmoe_sources_list_manager
 	else
-		SOURCE_MIRROR_STATION='bintray.proxy.ustclug.org'
-		official_termux_mirror_source_format
+		SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux'
+		# official_termux_mirror_source_format
+		standard_termux_mirror_source_format
 	fi
 }
 #######
@@ -51,13 +52,13 @@ official_termux_mirror_source_format() {
 }
 ########
 xeffyr_termux_mirror_source_format() {
-	TERMUX_MAIN_SOURCE="https://main.${SOURCE_MIRROR_STATION} stable main"
-	TERMUX_ROOT_SOURCE="https://root.${SOURCE_MIRROR_STATION} root stable"
-	TERMUX_GAME_SOURCE="https://games.${SOURCE_MIRROR_STATION} games stable"
-	TERMUX_SCIENCE_SOURCE="https://science.${SOURCE_MIRROR_STATION} science stable"
-	TERMUX_UNSTABLE_SOURCE="https://unstable.${SOURCE_MIRROR_STATION} unstable main"
-	TERMUX_X11_SOURCE="https://x11.${SOURCE_MIRROR_STATION} x11 main"
 	#TERMUX_EXTRA_SOURCE="https://its-pointless.${SOURCE_MIRROR_STATION} termux extras"
+	TERMUX_MAIN_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dg9vawh923wejqffxiu9bhqlze5f508msk0h7ylpac27fdgaskx stable main"
+	TERMUX_GAME_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dhngjg68o8x9uimwy5h8iqt91n2266idc7uet9ew3lc472upy27 games stable"
+	TERMUX_ROOT_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dlp5yjlahzcp3kfpnhbifo9ka9iybo3bp5vt781duafkyyvt9al root stable"
+	TERMUX_SCIENCE_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dhvbtvdf46kkhobzgamhiirte6s6k28l2c1iapumphh3cpkw33f science stable"
+	TERMUX_UNSTABLE_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dj05z8mr958kwvrg7a0wqouj5nnoo5uqu1btnsljvpznfaav9nk unstable main"
+	TERMUX_X11_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dgu3homski160l4t4bmp52vb6dbgxb5bda90rewnwg64wnkwxj4 x11 main"
 }
 ########
 china_university_mirror_station() {
@@ -116,10 +117,10 @@ worldwide_mirror_station() {
 	SOURCES_LIST=$(
 		whiptail --title "TERMUX MIRROR SOURCE" --menu \
 			"Which mirror source do you want to switch to?" 0 50 0 \
-			"1" "official官方:termux.org/packages" \
-			"2" "a1batross:termux.mentality.rip" \
-			"3" "Grimler:grimler.se" \
-			"4" "Xeffyr:termux-mirror.ml" \
+			"1" "a1batross:termux.mentality.rip" \
+			"2" "Grimler:grimler.se" \
+			"3" "Xeffyr:termux-mirror.ml" \
+			"4" "Extra source:its-pointless" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -127,14 +128,6 @@ worldwide_mirror_station() {
 	case "${SOURCES_LIST}" in
 	0 | "") tmoe_sources_list_manager ;;
 	1)
-		SOURCE_MIRROR_STATION='dl.bintray.com'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			official_termux_mirror_source_format
-		fi
-		;;
-	2)
 		SOURCE_MIRROR_STATION='termux.mentality.rip'
 		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
@@ -142,7 +135,7 @@ worldwide_mirror_station() {
 			standard_termux_mirror_source_format
 		fi
 		;;
-	3)
+	2)
 		SOURCE_MIRROR_STATION='grimler.se'
 		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
@@ -150,13 +143,30 @@ worldwide_mirror_station() {
 			standard_termux_mirror_source_format
 		fi
 		;;
-	4)
-		SOURCE_MIRROR_STATION='termux-mirror.ml'
+	3)
+		SOURCE_MIRROR_STATION='ipfs.io'
 		if (("${ANDROID_VERSION}" < 7)); then
 			ustc_termux
 		else
 			xeffyr_termux_mirror_source_format
 		fi
+		;;
+	4)
+		POINTLESS_LIST="${PREFIX}/etc/apt/sources.list.d/pointless.list"
+		[[ ! -s ${POINTLESS_LIST} ]] || do_you_want_to_continue
+		cd $TMPDIR
+		curl -Lo .setup-pointless-repo.sh https://its-pointless.github.io/setup-pointless-repo.sh
+		if [ $(command -v bat) ]; then
+			bat -ppn .setup-pointless-repo.sh
+		else
+			cat .setup-pointless-repo.sh
+		fi
+		do_you_want_to_continue
+		bash .setup-pointless-repo.sh
+		rm -fv .setup-pointless-repo.sh
+		[[ ! -s ${POINTLESS_LIST} ]] || cat ${POINTLESS_LIST}
+		press_enter_to_return
+		worldwide_mirror_station
 		;;
 	esac
 	######################################

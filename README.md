@@ -921,11 +921,9 @@ nano $(command -v startvnc)
 
 ### 八.相关项目
 
-[termux/proot-distro](https://github.com/termux/proot-distro)
-[ohmyzsh/ohmyzsh](https://github.com/ohmyzsh/ohmyzsh)
-[romkatv/powerlevel10k](https://github.com/romkatv/powerlevel10k)
-[Aloxaf/fzf-tab](https://github.com/Aloxaf/fzf-tab)
-[coslyk/debianopt-repo](https://github.com/coslyk/debianopt-repo)
+[termux/proot-distro](https://github.com/termux/proot-distro)  
+[2cd/zsh](https://github.com/2cd/zsh)  
+[coslyk/debianopt-repo](https://github.com/coslyk/debianopt-repo)  
 
 ### 九.更新日志 logs
 
