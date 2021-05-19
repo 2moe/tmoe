@@ -591,7 +591,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    [[ ! -r \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 	    if [[ -z \${TMOE_SHELL} ]]; then
 	        for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
-	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \\${ROOTFS_DIR}/bin/\${i} ]]; then
+	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \${ROOTFS_DIR}/bin/\${i} ]]; then
 	                TMOE_SHELL="/bin/\${i}"
 	                break
 	            fi
