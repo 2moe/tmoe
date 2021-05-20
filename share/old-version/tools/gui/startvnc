@@ -135,7 +135,9 @@ tmoe_vnc_preconfigure() {
     check_tmoe_locale
     if [[ ! -s "${TMOE_VNC_PASSWD_FILE}" ]]; then
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
+            printf "%s\n" "${GREEN}updating${RESET} ..."
             cd ${TMOE_GIT_DIR}
+            printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
             case $(id -u) in
             0)
                 git reset --hard origin/master
@@ -162,6 +164,14 @@ tmoe_vnc_preconfigure() {
             chmod -v 600 ${i}
         done
     fi
+
+    for i in ~/.vnc/.proot*wd; do
+        if [[ -e ${i} ]]; then
+            printf "%s\n" "${GREEN}sudo ${RED}rm ${YELLOW}-fv ${BLUE}${i}${RESET}"
+            rm -fv ${i} || sudo rm -fv ${i}
+        fi
+    done
+
     fix_vnc_permissions
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         export TMOE_CHROOT=true
