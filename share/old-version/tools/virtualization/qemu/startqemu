@@ -16,7 +16,8 @@
 
 注:搜索'-2.'快速跳转到各个参数/变量的修改区域。
 用法示例:
-在nano编辑器下，先按下Ctrl+W,再输入"06-2."，即可跳转到存储设备变量修改区域。
+在micro编辑器下，先按下"Ctrl+F",再输入"10-2.",并按回车，跳转到远程桌面配置区域。
+在nano编辑器下，先按下"Ctrl+W",再输入"06-2."，即可跳转到存储设备变量修改区域。
 在vim编辑器下，先输 "/"，再输入"01-2.",最后按回车即可跳转到机器类型修改区域。
 TMOE_QEMU_INDEX
 
@@ -150,7 +151,7 @@ MEMORY_ALLOCATION='auto'
 : <<\EOF
 默认为'auto'，可选值'num'或者为空。
 自动根据宿主机$((可用内存-256M))来分配。举个例子,宿主机内存(不包含swap)为7844M,可用2185M，此时自动分配给QEMU虚拟机的内存为1929M
-The default is auto', which automatically allocates qemu virtual machine memory based on the host's $((${available-memory} - 256M)).
+The default is "auto", which automatically allocates qemu virtual machine memory based on the host's $((${available-memory} - 256M)).
 For example,the host's RAM is 7844M,the available RAM is 1663M.At this time, the memory automatically allocated to qemu is 1929M.
 EOF
 

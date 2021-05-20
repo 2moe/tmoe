@@ -19,7 +19,11 @@ configure_novnc() {
 	case "${TMOE_OPTION}" in
 	0 | "") modify_remote_desktop_config ;;
 	1) modify_novnc_port ;;
-	2) nano /usr/local/bin/novnc ;;
+	2)
+		check_editor
+		[[ -n ${EDITOR} ]] || EDITOR=nano
+		${EDITOR} /usr/local/bin/novnc
+		;;
 	3) remove_novnc ;;
 	esac
 	########################################

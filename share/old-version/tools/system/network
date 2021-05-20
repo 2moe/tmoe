@@ -76,10 +76,16 @@ network_manager_tui() {
 		install_wifi_qr
 		;;
 	8)
-		nano /etc/NetworkManager/system-connections/*
-		nano /etc/NetworkManager/NetworkManager.conf
-		nano /etc/network/interfaces.d/*
-		nano /etc/network/interfaces
+		for i in editor micro nano vim vi; do
+			if [[ $(command -v ${i}) ]]; then
+				EDITOR=${i}
+				break
+			fi
+		done
+		${EDITOR} /etc/NetworkManager/system-connections/*
+		${EDITOR} /etc/NetworkManager/NetworkManager.conf
+		${EDITOR} /etc/network/interfaces.d/*
+		${EDITOR} /etc/network/interfaces
 		;;
 	9)
 		if [ "${LINUX_DISTRO}" = "alpine" ]; then

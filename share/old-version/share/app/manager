@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4756,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4757,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -221,10 +221,13 @@ check_gnu_linux_git_and_whiptail() {
 		*)
 			printf "%s\n" "${RED}Sorry${RESET},tmoe-linux manager does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
 			printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
-			press_enter_to_continue
-			apt update 2>/dev/null
-			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
-			apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
+			uname -a
+			sleep 2
+			exit 1
+			# press_enter_to_continue
+			# apt update 2>/dev/null
+			# ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+			# apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
 			;;
 		esac
 		;;
@@ -467,8 +470,8 @@ choose_tmoe_locale_env() {
 		"2" "${LANG}" \
 		"3" "Chinese simplified 中文(简体)" \
 		"4" "English" \
-		"5" "nihongo/Japanese 日本語" \
-		"6" "Deutsche" \
+		"5" "Deutsche/German" \
+		"6" "nihongo/Japanese 日本語" \
 		"7" "français" \
 		"8" "other" \
 		3>&1 1>&2 2>&3)
@@ -478,8 +481,8 @@ choose_tmoe_locale_env() {
 	2) TMOE_LANG="${LANG}" ;;
 	3) TMOE_LANG="$(printf '%s\n' emhfQ04uVVRGLTgK | base64 -d)" ;;
 	4) TMOE_LANG="en_US.UTF-8" ;;
-	5) TMOE_LANG="ja_JP.UTF-8" ;;
-	6) TMOE_LANG="de_DE.UTF-8" ;;
+	5) TMOE_LANG="de_DE.UTF-8" ;;
+	6) TMOE_LANG="ja_JP.UTF-8" ;;
 	7) TMOE_LANG="fr_FR.UTF-8" ;;
 	8)
 		TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/environment/locale"

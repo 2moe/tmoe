@@ -258,7 +258,7 @@ worldwide_mirror_station() {
         whiptail --title "www.debian.org/mirror/list.html" --menu \
             "Not only debian,but also ubuntu." 0 50 0 \
             "0" "🌚 Return to previous menu 返回上级菜单" \
-            "000" "Generate worldwide source(arch,ubuntu,debian)" \
+            "000" "Generate worldwide sources(arch,ubuntu,debian)" \
             "00" "official官方:(debian,ubuntu,kali)" \
             "1" "Armenia:ftp.am.debian.org" \
             "2" "Australia:ftp.au.debian.org" \
