@@ -48,8 +48,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROOT_L=false
 	# Correct the size returned from lstat for symbolic links. Default is false.
 
-	PROOT_H=false
-	# Hide files and directories starting with '.proot.'. Default is false.
+	PROOT_H=true
+	# Hide files and directories starting with '.proot.'. Default is true.
 
 	PROOT_P=false
 	# Modify bindings to protected ports to use a higher port number. Default is false.
