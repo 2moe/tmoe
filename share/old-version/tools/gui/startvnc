@@ -134,7 +134,6 @@ check_vnc_port() {
 tmoe_vnc_preconfigure() {
     check_tmoe_locale
     if [[ ! -s "${TMOE_VNC_PASSWD_FILE}" ]]; then
-        sudo -E cp -rvf "/root/.vnc" "${HOME}" || su -c "cp -rvf /root/.vnc ${HOME}"
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
             cd ${TMOE_GIT_DIR}
             case $(id -u) in
@@ -145,7 +144,7 @@ tmoe_vnc_preconfigure() {
                 ;;
             *)
                 sudo git reset --hard origin/master
-                sudo git pull --rebase --stat origin master --allow-unrelated-histories || sudo git rebase --skip
+                sudo git pull --rebase --stat origin master --allow-unrelated-histories
                 sudo -E bash ./share/old-version/tools/app/tool -passwd
                 ;;
             esac

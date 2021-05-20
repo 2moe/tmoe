@@ -45,14 +45,14 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROOT_SYSVIPC=true
 	# Handles System V IPC syscalls (shmget, semget, msgget, etc.) syscalls inside proot. IPC is handled inside proot and launching 2 proot instances will lead to 2 different IPC Namespaces. Default is true.
 
-	PROOT_L=true
-	# Correct the size returned from lstat for symbolic links. Default is true.
+	PROOT_L=false
+	# Correct the size returned from lstat for symbolic links. Default is false.
 
 	PROOT_H=false
 	# Hide files and directories starting with '.proot.'. Default is false.
 
-	PROOT_P=true
-	# Modify bindings to protected ports to use a higher port number. Default is true.
+	PROOT_P=false
+	# Modify bindings to protected ports to use a higher port number. Default is false.
 
 	FAKE_KERNEL=false
 	# 伪造内核版本信息, 默认为false, 若将此变量值修改为true, 则启用该功能

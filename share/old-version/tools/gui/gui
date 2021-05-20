@@ -5651,9 +5651,9 @@ check_vnc_passsword_length() {
         else
             x11vnc -storepasswd ${TARGET_VNC_PASSWD} passwd
         fi
-        chmod 600 passwd
+        chmod 600 -v passwd
         cp passwd x11passwd
-        chmod 600 x11passwd
+        chmod 600 -v x11passwd
         if [ $? = 0 ]; then
             printf "%s\n" "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
             printf "%s\n" "You can type ${GREEN}startvnc${RESET} to restart it. "
