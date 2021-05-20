@@ -109,14 +109,13 @@ check_current_user_name_and_group() {
 }
 ###############
 fix_vnc_permissions() {
-    check_current_user_name_and_group
     CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l ${TMOE_VNC_PASSWD_FILE} | awk -F ' ' '{print $3}')
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
     ${CURRENT_USER_NAME}) ;;
     *)
         cd ${HOME}
         VNC_FILE=".vnc"
-        for i in ".ICEauthority" ".Xauthority"; do
+        for i in ".ICEauthority" ".Xauthority" ".config"; do
             [[ ! -e "${i}" ]] || VNC_FILE="${VNC_FILE} ${i}"
         done
         sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE} || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
@@ -133,7 +132,11 @@ check_vnc_port() {
 ############
 tmoe_vnc_preconfigure() {
     check_tmoe_locale
+    check_current_user_name_and_group
+    mkdir -pv ~/.config/tmoe-linux ~/.vnc
     if [[ ! -s "${TMOE_VNC_PASSWD_FILE}" ]]; then
+        sudo -E cp -fv /root/.vnc/*passwd ~/.vnc || su -c "sudo cp -fv /root/.vnc/passwd ~/.vnc"
+        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ~/.vnc/*
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
             printf "%s\n" "${GREEN}updating${RESET} ..."
             cd ${TMOE_GIT_DIR}
@@ -165,13 +168,12 @@ tmoe_vnc_preconfigure() {
         done
     fi
 
-    for i in ~/.vnc/.proot*wd; do
+    for i in ~/.vnc/.proot*; do
         if [[ -e ${i} ]]; then
             printf "%s\n" "${GREEN}sudo ${RED}rm ${YELLOW}-fv ${BLUE}${i}${RESET}"
             rm -fv ${i} || sudo rm -fv ${i}
         fi
     done
-
     fix_vnc_permissions
     if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         export TMOE_CHROOT=true
