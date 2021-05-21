@@ -60,6 +60,7 @@ else
 	TMOE_CHROOT=false
 	TMOE_CHROOT_PREFIX=''
 fi
+CONTAINER_DISTRO="$(printf "%s\n" "${DEBIAN_FOLDER}" | awk -F '_' '{print $1}' | cut -d '-' -f 1)"
 #DEBIAN_FOLDER=debian_arm64
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 [[ ! -s "${TMOE_LOCALE_FILE}" ]] || TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
@@ -755,6 +756,12 @@ create_proot_startup_script() {
 	else
 		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
 	fi
+	case ${CONTAINER_DISTRO} in
+	arch | archlinux | manjaro)
+		sed -E -e "s@^(PROOT_H=).*@\1true@g" \
+			-i "${TMOE_STARTUP_SCRIPT}"
+		;;
+	esac
 
 	case ${TRUE_ARCH_TYPE} in
 	arm64 | amd64)

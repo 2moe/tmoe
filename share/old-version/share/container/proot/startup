@@ -50,7 +50,8 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	PROOT_H=false
 	# Hide files and directories starting with '.proot.'. Default is false.
-
+	# If your container is arch, you can modify the value to true.
+	# If you find that some folders cannot be deleted in the container, please modify the value to false.
 
 	PROOT_P=false
 	# Modify bindings to protected ports to use a higher port number. Default is false.
@@ -83,6 +84,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	HOST_ARCH="${TRUE_ARCH_TYPE}"
 	# Host architecture
+
+	CONTAINER_DISTRO="${CONTAINER_DISTRO}"
+	CONTAINER_NAME="${DEBIAN_FOLDER}"
 
 	CONTAINER_ARCH="${ARCH_TYPE}"
 	# 容器架构
@@ -417,7 +421,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            fi
 	        fi
 	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
-	            PROOT_H=false && PROOT_P=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	             PROOT_P=false && PROOT_H=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
 	        fi
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"
@@ -671,6 +675,7 @@ ENDOFPROOT
 
 #TMOE_LINUX_DIR & TRUE_ARCH_TYPE & ARCH_TYPE - \$.
 # CONFIG_FOLDER & ARCH_TYPE  & DEBIAN_CHROOT & TMPDIR - \$
+# CONTAINER_DISTRO  DEBIAN_FOLDER - \$
 
 case $(uname -o) in
 Android) ${TMOE_CHROOT_PREFIX} termux-fix-shebang ${TMOE_STARTUP_SCRIPT} ;;
