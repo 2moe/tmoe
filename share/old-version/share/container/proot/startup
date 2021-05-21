@@ -74,7 +74,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	# Default is false.
 	# 旧系统/旧版本兼容模式
-	# Set the values of PROOT_L, PROOT_H, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
+	# Set the values of PROOT_L, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
 	################
 	#qemu
 
@@ -416,7 +416,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            fi
 	        fi
 	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
-	            PROOT_H=false && PROOT_L=false && PROOT_P=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	            PROOT_P=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
 	        fi
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"

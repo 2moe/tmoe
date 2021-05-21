@@ -755,6 +755,8 @@ readme_of_gnu_linux_distro() {
 	alpine) SHORT_DISTRO_CODE='ap' ;;
 	focal) SHORT_DISTRO_CODE='20.04' ;;
 	groovy) SHORT_DISTRO_CODE='20.10' ;;
+	hirsute) SHORT_DISTRO_CODE='21.04' ;;
+	impish) SHORT_DISTRO_CODE='21.10' ;;
 	sid) SHORT_DISTRO_CODE='s' ;;
 	bionic) SHORT_DISTRO_CODE='18.04' ;;
 	rolling) SHORT_DISTRO_CODE='r' ;;

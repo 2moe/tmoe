@@ -1164,11 +1164,11 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号" 0 50 0 \
-				"1" "🦍 20.10 時髦大猩猩 Groovy Gorilla" \
-				"2" "🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa" \
-				"3" "18.04(LTS)仿生海狸 Bionic Beaver" \
-				"4" "🐒 21.10(chroot) 頑皮大狐猴 Impish Indri" \
-				"5" "🦛 21.04(chroot) 多毛河馬 Hirsute Hippo" \
+				"1" "🐒 21.10(devel) 頑皮大狐猴 Impish Indri" \
+				"2" "🦛 21.04 多毛河馬 Hirsute Hippo" \
+				"3" "🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa" \
+				"4" "18.04(LTS)仿生海狸 Bionic Beaver" \
+				"5" "🦍 20.10 時髦大猩猩 Groovy Gorilla" \
 				"6" "Compatibility mode 兼容模式(仅安装)" \
 				"7" "Custom code手动输入版本代号" \
 				"8" "使用debootstrap手动构建" \
@@ -1181,11 +1181,11 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_ja() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください" 0 50 0 \
-				"1" "🦍 20.10 Groovy Gorilla" \
-				"2" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
-				"3" "18.04(LTS)Bionic Beaver" \
-				"4" "🐒 21.10(chroot) Impish Indri" \
-				"5" "🦛 21.04(chroot) Hirsute Hippo" \
+				"1" "🐒 21.10(devel) Impish Indri" \
+				"2" "🦛 21.04 Hirsute Hippo" \
+				"3" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
+				"4" "18.04(LTS)Bionic Beaver" \
+				"5" "🦍 20.10 Groovy Gorilla" \
 				"6" "互換モード" \
 				"7" "カスタムコード" \
 				"8" "debootstrapを使用して手動でビルドする" \
@@ -1197,11 +1197,11 @@ install_ubuntu_gnu_linux_distro() {
 	install_ubuntu_gnu_linux_distro_en() {
 		BETA_SYSTEM=$(
 			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2023,then customize the version code" 0 50 0 \
-				"1" "🦍 20.10 Groovy Gorilla" \
-				"2" "🐱 20.04(LTS)Focal Fossa" \
-				"3" "18.04(LTS)Bionic Beaver" \
-				"4" "🐒 21.10(chroot) Impish Indri" \
-				"5" "🦛 21.04(chroot) Hirsute Hippo" \
+				"1" "🐒 21.10(devel) Impish Indri" \
+				"2" "🦛 21.04 Hirsute Hippo" \
+				"3" "🐱 20.04(LTS)Focal Fossa" \
+				"4" "18.04(LTS)Bionic Beaver" \
+				"5" "🦍 20.10 Groovy Gorilla" \
 				"6" "Compatibility mode" \
 				"7" "Custom code" \
 				"8" "Manually build" \
@@ -1219,11 +1219,11 @@ install_ubuntu_gnu_linux_distro() {
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) DISTRO_CODE='groovy' ;;
-	2) DISTRO_CODE='focal' ;;
-	3) DISTRO_CODE='bionic' ;;
-	4) DISTRO_CODE='impish' ;;
-	5) DISTRO_CODE='hirsute' ;;
+	1) DISTRO_CODE='impish' ;;
+	2) DISTRO_CODE='hirsute' ;;
+	3) DISTRO_CODE='focal' ;;
+	4) DISTRO_CODE='bionic' ;;
+	5) DISTRO_CODE='groovy' ;;
 	6)
 		COMPATIBILITY_MODE=true
 		custom_ubuntu_version
@@ -1477,7 +1477,7 @@ fedora_distro_menu() {
 	RETURN_TO_WHERE='fedora_distro_menu'
 	BETA_SYSTEM=$(
 		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
-			"1" "latest(chroot)" \
+			"1" "latest" \
 			"2" "33" \
 			"3" "rawhide(For testing only)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -1948,7 +1948,7 @@ install_armbian_linux_distro() {
 	BETA_SYSTEM=$(
 		whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
 			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
-			"2" "🦛 Hirsute Hippo(21.04,chroot) " \
+			"2" "🦛 Hirsute Hippo(21.04) " \
 			"3" "🐎 Bullseye(debian 11)" \
 			"4" "🐶 Buster(debian 10)" \
 			"5" "Custom code手动输入版本代号" \
