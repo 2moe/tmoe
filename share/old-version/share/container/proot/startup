@@ -45,11 +45,12 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	PROOT_SYSVIPC=true
 	# Handles System V IPC syscalls (shmget, semget, msgget, etc.) syscalls inside proot. IPC is handled inside proot and launching 2 proot instances will lead to 2 different IPC Namespaces. Default is true.
 
-	PROOT_L=false
-	# Correct the size returned from lstat for symbolic links. Default is false.
+	PROOT_L=true
+	# Correct the size returned from lstat for symbolic links. Default is true.
 
-	PROOT_H=true
-	# Hide files and directories starting with '.proot.'. Default is true.
+	PROOT_H=false
+	# Hide files and directories starting with '.proot.'. Default is false.
+
 
 	PROOT_P=false
 	# Modify bindings to protected ports to use a higher port number. Default is false.
@@ -74,7 +75,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	# Default is false.
 	# 旧系统/旧版本兼容模式
-	# Set the values of PROOT_L, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
+	# Set the values of PROOT_L, PROOT_H, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
 	################
 	#qemu
 
@@ -416,7 +417,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            fi
 	        fi
 	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
-	            PROOT_P=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	            PROOT_H=false && PROOT_P=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
 	        fi
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"
