@@ -35,8 +35,22 @@ CHROOT_BIN="system"
 #You can specify the path where the binary file of systemd-nspawn is located. If the vaule is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/systemd-nspawn"
 #您可以自行编译systemd-nspawn,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认systemd-nspawn二进制文件所在路径；当其为prefix时，将使用 "${PREFIX}/bin/systemd-nspawn"。您也可以输入完整路径,例如"/usr/local/bin/systemd-nspawn"
 ###################
-#mount dir
-#挂载相关目录
+#mount dirs & dev
+#挂载相关目录 & 设备
+
+MOUNT_DEV_DRI=true
+# Default is true. 若设备支持，则启用GPU加速
+DEV_DRI="/dev/dri"
+
+MOUNT_NVIDIA_GPU=true
+NVIDIA_GPU="/dev/nvidia0"
+NVIDIA_CTL="/dev/nvidiactl"
+
+MOUNT_X11_UNIX=false
+# Default is false.
+X11_UNIX_RO=true
+# read only.
+X11_UNIX_DIR="/tmp/.x11-unix"
 
 MOUNT_SD=true
 SD_DIR_01="/media/sd"
@@ -52,10 +66,62 @@ SD_MOUNT_POINT="/media/sd"
 MOUNT_DOCKER_DIR=true
 TMOE_DOCKER_DIR="/media/docker"
 #If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is true.
+
+#---
+NUM_OF_MOUNTS=12
+# uint8
+# 默认为12, 若您将该值修改为15, 则请手动添加MOUNT_SOURCE_13,MOUNT_SOURCE_14,MOUNT_SOURCE_15,MOUNT_POINT_13,MOUNT_POINT_14 & MOUNT_POINT_15 变量。
+# If you want to mount hundreds of directories, then you need to add variables manually.
+#---
+# MOUNT_SOURCE_1为第一个挂载源，MOUNT_POINT_1 为第一个挂载点，MOUNT_SOURCE_2为第二个挂载源 ...
+# 举个例子，假如您想将/storage/emulated/0/Download目录挂载至容器内部的/media/down, 那么MOUNT_SOURCE_1的值为"/storage/emulated/0/Download", MOUNT_POINT_1的值为"/media/down"
+# 若BIND_RO的值为true,则为只读挂载。默认为false。注：该变量的值可以留空
+# For example, if you want to mount the /storage/emulated/0/DCIM directory to /media/pic, then the value of MOUNT_SOURCE_2 is "/storage/emulated/0/DCIM", and the value of MOUNT_POINT_2 is "/media/pic"
+# The --bind-ro= option creates read-only bind mounts.
+MOUNT_SOURCE_1=""
+MOUNT_POINT_1=""
+BIND_RO_1=false
+#---
+MOUNT_SOURCE_2=""
+MOUNT_POINT_2=""
+BIND_RO_2=false
+#---
+MOUNT_SOURCE_3=""
+MOUNT_POINT_3=""
+BIND_RO_3=false
+#---
+MOUNT_SOURCE_4=""
+MOUNT_POINT_4=""
+#---
+MOUNT_SOURCE_5=""
+MOUNT_POINT_5=""
+#---
+MOUNT_SOURCE_6=""
+MOUNT_POINT_6=""
+#---
+MOUNT_SOURCE_7=""
+MOUNT_POINT_7=""
+#---
+MOUNT_SOURCE_8=""
+MOUNT_POINT_8=""
+#---
+MOUNT_SOURCE_9=""
+MOUNT_POINT_9=""
+#---
+MOUNT_SOURCE_10=""
+MOUNT_POINT_10=""
+#---
+MOUNT_SOURCE_11=""
+MOUNT_POINT_11=""
+#---
+MOUNT_SOURCE_12=""
+MOUNT_POINT_12=""
+#---
 ###################
+ROOTFS_DIR="${DEBIAN_CHROOT}"
 LOAD_ENV_FILE=true
 #Load the environment variable file when starting the container. Default is true.
-CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+CONTAINER_ENV_FILE="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/environment/container.env"
 
 LOAD_NSPAWN_CONF=false
 #Default is false.
@@ -74,9 +140,9 @@ fi
 if [[ \${CHROOT_USER} != root ]];then
     set -- "\${@}" "--user" "\${CHROOT_USER}"
 fi
-set -- "\${@}" "--directory" "${DEBIAN_CHROOT}"
+set -- "\${@}" "--directory" "\${ROOTFS_DIR}"
 set -- "\${@}" "--uuid" "$(dbus-uuidgen)"
-#arch不要设置将其设置为pick
+#arch不要设置将--private-users设置为pick
 set -- "\${@}" "--private-users=no"
 set -- "\${@}" "--machine" "${MACHINE_NAME}"
 set -- "\${@}" "--link-journal" "auto"
@@ -87,7 +153,8 @@ set -- "\${@}" "--notify-ready" "yes"
 set -- "\${@}" "--setenv" "TMOE_CHROOT=true"
 set -- "\${@}" "--setenv" "TMOE_PROOT=false"
 set -- "\${@}" "--setenv" "TMOE_DOCKER=false"
-#set -- "\${@}" "--setenv" "PULSE_SERVER=unix:/usr/lib/systemd/user/pulseaudio.socket"
+# set -- "\${@}" "--setenv" "PULSE_SERVER=unix:/usr/lib/systemd/user/pulseaudio.socket"
+# set -- "\${@} "--bind-ro" "/usr/lib/systemd/user/pulseaudio.socket"
 set -- "\${@}" "--setenv" "PULSE_SERVER=tcp:127.0.0.1:4713"
 set -- "\${@}" "--setenv" "DISPLAY=:0.0"
 set -- "\${@}" "--setenv" "GTK_IM_MODULE=fcitx"
@@ -121,7 +188,6 @@ else
 	set -- "\${@}" "--setenv" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
 fi
 
-
 if [[ \${MOUNT_SD} = true ]]; then
     for i in \${SD_DIR_01} \${SD_DIR_02} \${SD_DIR_03} \${SD_DIR_04} \${SD_DIR_05} \${SD_DIR_06}; do
         if [[ -d \${i} ]];then
@@ -134,6 +200,38 @@ fi
 if [[ \${MOUNT_DOCKER_DIR} = true ]]; then
     [[ ! -e "\${TMOE_DOCKER_DIR}" ]] || set -- "\${@}" "--bind" "\${TMOE_DOCKER_DIR}"
 fi
+if [[ \${MOUNT_DEV_DRI} = true && -e \${DEV_DRI} ]]; then
+    set -- "\${@}" "--bind" "\${DEV_DRI}"
+fi
+if [[ \${MOUNT_NVIDIA_GPU} = true && -e \${NVIDIA_GPU} ]]; then
+    set -- "\${@}" "--bind" "\${NVIDIA_GPU}"
+    [[ ! -e \${NVIDIA_CTL} ]] || set -- "\${@}" "--bind" "\${NVIDIA_CTL}"
+fi
+if [[ \${MOUNT_X11_UNIX} = true && -e \${X11_UNIX_DIR} ]]; then
+    if [[ \${X11_UNIX_RO} = true ]];then
+        MOUNT_ARG="bind-ro"
+    else
+        MOUNT_ARG="bind"
+    fi
+    set -- "\${@}" "--${MOUNT_ARG}" "\${X11_UNIX_DIR}"
+fi
+for ((i = 1; i <= \${NUM_OF_MOUNTS}; i++)); do
+    MOUNT_SOURCE="MOUNT_SOURCE_\${i}"
+    MOUNT_POINT="MOUNT_POINT_\${i}"
+    if [[ -n "BIND_RO_\${i}" ]]; then
+        BIND_RO="BIND_RO_\${i}"
+        case \${!BIND_RO} in
+        true) BIND_ARG="bind-ro" ;;
+        *) BIND_ARG="bind" ;;
+        esac
+    else
+        BIND_ARG="bind"
+    fi
+    if [[ -n \${!MOUNT_SOURCE} && -x \${!MOUNT_SOURCE} ]]; then
+        set -- "\${@}" "--\${BIND_ARG}" "\${!MOUNT_SOURCE}:\${!MOUNT_POINT}"
+    fi
+done
+#######################
 if [[ -n \${CHROOT_BIN} ]]; then
     if [[ \${CHROOT_BIN} = system ]]; then
         set -- "systemd-nspawn" "\${@}"

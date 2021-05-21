@@ -141,7 +141,7 @@ android_termux() {
 	PULSE_AUDIO_PA="${PREFIX}/etc/pulse/default.pa"
 	PULSE_AUDIO_CONF="${PREFIX}/etc/pulse/daemon.conf"
 
-	if ! grep -q 'anonymous=' ${PULSE_AUDIO_PA}; then
+	if ! egrep -q '^[^#]*load-module module-native-protocol-tcp' ${PULSE_AUDIO_PA}; then
 		sed -i '/auth-ip-acl/d;/module-native-protocol-tcp/d' ${PULSE_AUDIO_PA}
 		sed -i '$a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' ${PULSE_AUDIO_PA}
 		#sed -i '/module-native-protocol-tcp/d' ${PULSE_AUDIO_PA}
@@ -152,9 +152,8 @@ android_termux() {
 	#auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
 	if ! egrep -q "^[^;]*exit-idle-time =" ${PULSE_AUDIO_CONF}; then
 		sed -i '/exit-idle/d;$ a\exit-idle-time = 3600' ${PULSE_AUDIO_CONF}
-		#printf "%s\n" "exit-idle-time = -1" >>${PULSE_AUDIO_CONF}
 	fi
-	#exit-idle-time 可设为180
+	# exit-idle-time 可设为-1
 }
 #########
 android_6_mirror() {

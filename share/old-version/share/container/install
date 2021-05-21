@@ -814,10 +814,6 @@ ${TMOE_CHROOT_PREFIX} chmod -R a+rx ${TMOE_STARTUP_DIR}
 #######################################################
 cat >${PREFIX}/bin/startvnc <<-ENDOFVNC
 	#!/usr/bin/env bash
-	if [[ \$(command -v pulseaudio) && \$(id -u) != 0 ]]; then
-		pulseaudio --kill 2>/dev/null
-		pulseaudio --start
-	fi
 	vnc_warning() {
 		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "vncserver" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."
 		${PREFIX}/bin/tmoe pr vnc
@@ -833,10 +829,6 @@ ENDOFVNC
 #ln -sf ${PREFIX}/bin/startvnc ${PREFIX}/bin/startx11vnc
 cat >${PREFIX}/bin/startx11vnc <<-ENDOFX11VNC
 	#!/usr/bin/env bash
-	if [[ \$(command -v pulseaudio) && \$(id -u) != 0 ]]; then
-		pulseaudio --kill 2>/dev/null
-		pulseaudio --start
-	fi
 	vnc_warning() {
 		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "x11vnc server" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."
 		${PREFIX}/bin/tmoe pr x11
@@ -853,10 +845,6 @@ ENDOFX11VNC
 ###############
 cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
 	#!/usr/bin/env bash
-	if [[ \$(command -v pulseaudio) && \$(id -u) != 0 ]]; then
-		pulseaudio --kill 2>/dev/null
-		pulseaudio --start
-	fi
 	vnc_warning() {
 		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "novnc" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."  
 		${PREFIX}/bin/tmoe pr novnc

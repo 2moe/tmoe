@@ -326,7 +326,8 @@ start_tmoe_container() {
 	*) printf "%s\n" "TMOE_SHELL=${TMOE_SHELL}" >${DEFAULT_SHELL_CONF} ;;
 	esac
 	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
-		pulseaudio --start
+		pulseaudio --start --exit-idle-time=3600
+		pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12'
 	fi
 	case "${DISTRO_NAME}" in
 	"") ;;

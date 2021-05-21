@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4758,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4759,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -692,9 +692,12 @@ check_dependencies() {
 		if [ ! $(command -v micro) ]; then
 			touch ${TMOE_LINUX_DIR}/not_install_micro
 		else
-			update-alternatives --install /usr/bin/editor editor /usr/bin/micro 40
-			update-alternatives --set editor /usr/bin/micro
-			# update-alternatives --auto editor
+			if [ $(command -v update-alternatives) ]; then
+				printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--install /usr/bin/editor editor ${BLUE}/usr/bin/micro ${PURPLE}40${RESET}"
+				update-alternatives --install /usr/bin/editor editor /usr/bin/micro 40
+				update-alternatives --set editor /usr/bin/micro
+				# update-alternatives --auto editor
+			fi
 			printf "%s\n" "You can type ${RED}sudo ${GREEN}update-alternatives ${YELLOW}--config ${BLUE}editor${RESET} to set your default editor."
 		fi
 	fi

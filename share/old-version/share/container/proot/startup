@@ -132,9 +132,9 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	# Load the environment variable file when starting the container. Default is true.
 	CONTAINER_ENV_FILE="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/environment/container.env"
 
-	LOAD_PROOT_CONF=false
-	# Default is false.
-	# 默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+	LOAD_PROOT_CONF=true
+	# Default is true. The priority of the global proot configuration file is higher than the current configuration.
+	# 当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
 	PROOT_CONF_FILE="${CONFIG_FOLDER}/proot_global.conf"
 	################
 	DEFAULT_LOGIN_SHELL_01=zsh

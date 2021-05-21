@@ -839,7 +839,7 @@ readme_of_gnu_linux_distro() {
 		例如：
 		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
 		软链接${DEBIAN_FOLDER}容器内部的/tmp到本地的 "container_link_随机数值"
-		当您在当前路径下执行${GREEN}cd ${YELLOW}container_link_*${RESET}时，将进入容器所在路径的/tmp目录。
+		您在当前路径下执行${GREEN}cd ${YELLOW}container_link_*${RESET}后，将进入容器所在路径的/tmp目录。
 		--------------------
 
 		${BOLD}额外拓展功能${RESET}
@@ -909,7 +909,8 @@ normally_start_gnu_linux_distro() {
 	esac
 
 	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
-		pulseaudio --start
+		pulseaudio --start --exit-idle-time=3600
+		pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' auth-anonymous=1
 	fi
 	# case ${SYSTEMD_NSPAWN} in
 	# true)
