@@ -142,7 +142,7 @@ if [[ \${CHROOT_USER} != root ]];then
 fi
 set -- "\${@}" "--directory" "\${ROOTFS_DIR}"
 set -- "\${@}" "--uuid" "$(dbus-uuidgen)"
-#arch不要设置将--private-users设置为pick
+#if container=arch, then do not set the vaule of --private-users to pick.
 set -- "\${@}" "--private-users=no"
 set -- "\${@}" "--machine" "${MACHINE_NAME}"
 set -- "\${@}" "--link-journal" "auto"
@@ -166,6 +166,8 @@ set -- "\${@}" "--setenv" "TERM=xterm-256color"
 
 if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
     set -- "\${@}" "--setenv" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
+else
+    set -- "\${@}" "--setenv" "LANG=C.UTF-8"
 fi
 
 if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
