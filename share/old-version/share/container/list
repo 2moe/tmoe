@@ -1723,8 +1723,8 @@ install_raspios_linux_distro() {
 ###################
 install_raspios_lite_armhf_rootfs() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
-		sed -E 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
+		sed -E 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
@@ -1736,8 +1736,8 @@ install_raspios_lite_armhf_rootfs() {
 ##################
 install_raspios_full_armhf_rootfs() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
-		sed -E 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
+		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
+		sed -E 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
 		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
 		sed 's@#deb http@deb http@g' |
 		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
@@ -1751,7 +1751,7 @@ install_manjaro_linux_distro() {
 	case ${ARCH_TYPE} in
 	arm64)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
+			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
 			sed 's/debian container/manjaro container/g' |
 			sed 's:debian-sid:manjaro-stable:g' |
 			sed 's:debian/sid:manjaro/stable:g' |

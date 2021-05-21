@@ -910,12 +910,12 @@ debian-i
 - 1-2.亦可手动修改
 
 ```shell
-apt install -y nano
-nano $(command -v startvnc)
+apt install -y micro
+micro $(command -v startvnc)
 ```
 
 > 将 **1440x720**（竖屏）改成你需要的分辨率，例如 **1920x1080**（横屏)
-> 修改完成后，按`Ctrl+S` 保存，`Ctrl+X`退出。
+> 修改完成后，按`Ctrl+S` 保存，`Ctrl+Q`退出。
 
 ---
 
