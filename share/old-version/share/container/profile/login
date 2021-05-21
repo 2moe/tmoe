@@ -8,13 +8,9 @@ if [ "$(ls /etc/profile.d/permanent/ 2>/dev/null)" ]; then
 fi
 if [ "$(ls /tmp/.tmoe_container_temporary/ 2>/dev/null)" ]; then
     for i in /tmp/.tmoe_container_temporary/*; do
-        if [ -e "${i}" ]; then
-            chmod a+rx -R ${i}
+        if [ -f "${i}" ]; then
+            chmod a+rx ${i}
             ${i}
-            unlink ${i} || rm -rfv ${i}
-            if [ "${?}" != 0 ]; then
-                printf "%s\n" "ERROR, please manually type sudo chmod 777 -Rv ${i}; rm -rfv ${i}"
-            fi
         fi
     done
 fi

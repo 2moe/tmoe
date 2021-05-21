@@ -578,6 +578,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    set -- "\${@}" "/usr/bin/env" "-i"
 	    set -- "\${@}" "HOSTNAME=\${HOST_NAME}"
 	    set -- "\${@}" "HOME=\${PROOT_HOME}"
+	    set -- "\${@}" "USER=\${PROOT_USER}"
 	    set -- "\${@}" "TERM=xterm-256color"
 	    set -- "\${@}" "SDL_IM_MODULE=fcitx"
 	    set -- "\${@}" "XMODIFIERS=\@im=fcitx"

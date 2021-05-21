@@ -14,13 +14,13 @@
 
 是这个样子吗？  
 
-```go
+```
 var NAME string = "value"
 ```
 
 还是这个样子？  
 
-```go
+```
 NAME := "vaule"
 ```
 
@@ -52,7 +52,7 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 修改完env文件后，大部分shell都能生效，就算login shell是 **fish** 也可以。  
 
-注：若login shell为bash，则它可能会在全局配置 /etc/profile 中覆盖掉_PATH_ , 为了防止env文件定义的全局PATH变量失效，tmoe在 /etc/profile.d 中创建了一个 000_env.sh的软链接。  
+注：若login shell为bash，则它可能会在全局配置 /etc/profile 中覆盖掉 _PATH_ , 为了防止env文件定义的全局PATH变量失效，tmoe在 /etc/profile.d 中创建了一个 000_env.sh的软链接。  
 
 若 login shell为zsh, 则无需担心，默认情况下 **/etc/zsh/zshenv** 不会重新定义容器初始化的环境变量。  
 注意是默认情况下，若为手动定义，则还是会覆盖掉初始变量的值的。  
@@ -65,23 +65,27 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 ## Temporary scripts
 
-注：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
+注：适用于v1.4766及更新的版本安装的容器。  
+
+注2：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
 
 ### create  
 
 如果需要创建临时自启动脚本，那么建议您使用 `tmoe` 命令。  
 
-这里假设您选择了ubuntu focal,接着选了beta公测(新建容器)，并自定义了文件名称为“下北澤紅茶”，最后成功新建了一个ubuntu容器，  
+这里假设您选择了ubuntu focal, 接着选了create a new container(新建容器)，并自定义了文件名称为“下北澤紅茶”，最后成功新建了一个ubuntu容器。  
 
-这时候启动命令就不再是 `t p u 20.04` 了，而是 `t p u 下北澤紅茶`  
+这时候启动命令就不再是 `tmoe p u 20.04` 了，而是 `tmoe p u 下北澤紅茶`  
 
 `tmoe`命令的第四和第五个参数可以使用命令、脚本、二进制文件或文件夹。  
 
-这里假设您新建了一个ruby脚本  
+这里假设您在当前路径新建了一个ruby脚本  
 
-```ruby
+```shell
+cat >hello.rb <<-'EOF'
 #!/usr/bin/env ruby
 50.times{p "hello"}
+EOF
 ```
 
 文件名称为hello.rb  
@@ -91,50 +95,73 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 是这样子吗？  
 
 ```shell
-t p u 下北澤紅茶 hello.rb
+tmoe p u 下北澤紅茶 hello.rb
 ```
 
-并不是，如果您这样做了，那么tmoe会认为您想要在容器内执行 `hello.rb` 命令。  
+并不是，如果您这样做了，那么tmoe会认为您想要在容器内执行 `hello.rb` 命令，而不是本地的 `hello.rb` 脚本。  
 
 当前目录下的文件请使用 "./"  
 
 ```shell
-t p u 下北澤紅茶 "./hello.rb"
+tmoe p u 下北澤紅茶 "./hello.rb" 
+```
+
+若容器内部不存在ruby,那么您可以这样写。
+
+```shell
+tmoe p u 下北澤紅茶 "./hello.rb" "sudo apt update;\
+sudo apt install -y ruby;\
+./hello.rb
+"
 ```
 
 ### multi files  
 
 关于使用多参数来执行多个脚本或多命令的说明。  
 
-临时脚本可以是一个，也可以是多个。  
-当个数在两个以内时，直接使用参数即可。  
-注：不支持数组形式。  
-当个数大于两个时，那么最后一个参数请使用文件夹。  
-请使用命令或脚本来调用文件夹。
+当个数为一个时，直接使用参数即可。  
+当个数等于两个时，那么倒数第二个参数请使用文件或文件夹，最后一个参数使用脚本或命令。  
 
 tmoe对于本地文件的优先级要高于容器内部文件。  
 若本地存在 **~/hello.rb**，而容器内部存在同名文件，则优先检测本地文件，若本地不存在才会执行容器内部的文件。  
 
-本地的脚本或者二进制文件可以没有可执行权限，但是容器内部的文件必须要有可执行权限，除非您使用了命令去调用另一个脚本。  
+___
 
-假设本地存在一个文件夹，名为“My-Rust-Project”  
+假设您想要在本地编写程序，在容器内编译并执行。
 
 来看一个简单的示例吧！  
 
-```shell
-t p u 下北澤紅茶 "ls -lah My-Rust-Project" "./My-Rust-Project"
-```
-
-注意：以上操作没有多大的意义，ls文件夹的话，在本地执行就可以了。  
-
-我原本的设想是这样子的：  
+这里假设您没有安装cargo, 所以不能通过 `cargo new hello` 来快速新建项目。
 
 ```shell
-t p u 下北澤紅茶 "cd My-Rust-Project; cargo build --release" "./My-Rust-Project"
+mkdir -pv hello/src
+
+cat >hello/Cargo.toml<<-'EOF'
+[package]
+name = "hello"
+version = "0.1.0"
+authors = ["test <test@xxx.com>"]
+edition = "2018"
+
+[dependencies]
+EOF
+
+cat >hello/src/main.rs<<-'EOF'
+fn main() {
+    print!("{}", "Hello\n".repeat(50));
+}
+EOF
 ```
 
-由于temporary文件夹会在执行完成后自动清空，因此不适用于编译型的任务。
-请查看Permanent scripts的说明。
+接着，我们在容器里运行一下看看。
+
+```shell
+tmoe p u 下北澤紅茶 "./hello" "sudo apt update;\
+sudo apt install -y rustc cargo;\
+cd hello;\
+cargo run;\
+"
+```
 
 ## Permanent scripts & ln argument
 
@@ -145,7 +172,7 @@ t p u 下北澤紅茶 "cd My-Rust-Project; cargo build --release" "./My-Rust-Pro
 当ln位于最后一个参数时，后面没有接任何路径，此时将创建容器内部的 **/etc/profile.d/permanent** 的软链接到当前路径的 "container_link_随机数值"
 
 ```shell
-t p u 下北澤紅茶 ln
+tmoe p u 下北澤紅茶 ln
 ```
 
 将本地脚本copy到软链接里去,这时候启动容器时会自动调用 **/etc/profile.d/permanent** 里的脚本或二进制文件。  
@@ -153,7 +180,7 @@ t p u 下北澤紅茶 ln
 如果您需要软链接容器目录下的/tmp到当前目录,那么可以这样做。  
 
 ```shell
-t p u 下北澤紅茶 ln /tmp
+tmoe p u 下北澤紅茶 ln /tmp
 ```
 
 假设随机数值为**114514**，那么当前目录下就会生成一个软链接文件：**container_link_114514**  

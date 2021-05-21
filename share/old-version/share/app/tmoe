@@ -290,8 +290,14 @@ check_container_login_file_01() {
 }
 ########
 chmod_777_temporary_file_01() {
-	cat ${TEMP_FILE}
-	${TMOE_PREFIX} chmod 777 ${TEMP_FILE}
+	if [ $(command -v bat) ]; then
+		sed '/\/tmp\/.tmoe_container_temporary/d' ${TEMP_FILE} | bat -ppn
+	elif [ $(command -v batcat) ]; then
+		sed '/\/tmp\/.tmoe_container_temporary/d' ${TEMP_FILE} | batcat -ppn
+	else
+		sed '/\/tmp\/.tmoe_container_temporary/d' ${TEMP_FILE} | cat
+	fi
+	${TMOE_PREFIX} chmod a+rx ${TEMP_FILE}
 	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 }
 set_temp_file_env() {
@@ -349,11 +355,21 @@ start_tmoe_container() {
 		ln -svf ${DEBIAN_CHROOT}${LINK_SOURCE_DIR} ./container_link_${RANDOM}
 		exit 0
 	fi
-
 	case ${TMOE_CONTAINER_HITOKOTO} in
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
-
+	###############
+	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+		rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+		case ${?} in
+		0) ;;
+		*)
+			${TMOE_PREFIX} chmod 777 -Rv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+			${TMOE_PREFIX} rm -rfv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+			;;
+		esac
+	fi
+	###############
 	if [[ -n ${EXEC_PROGRAM} ]]; then
 		case ${EXEC_PROGRAM} in
 		startx11vnc | startvnc)
@@ -404,7 +420,7 @@ start_tmoe_container() {
 		fi
 		for i in ${TEMPORARY_SCRIPT_FILE_01} ${TEMPORARY_SCRIPT_FILE_02} ${TEMPORARY_SCRIPT_FILE_03}; do
 			if [[ -e ${i} ]]; then
-				${TMOE_PREFIX} cp -rvf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
+				${TMOE_PREFIX} cp -rf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 				${TMOE_PREFIX} chmod a+rx "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
 			else
 				TEMPORARY_SCRIPT_FILE="${i}"

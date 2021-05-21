@@ -416,18 +416,15 @@ switch_nspawn_boot_mode() {
 	esac
 }
 create_a_temp_script() {
-	#It is "-f" ,not "-e".
-	if [ -f ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]; then
-		${TMOE_PREFIX} rm -fv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-	fi
 	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
 	printf "%s\n" '#!/usr/bin/env bash' '#!/usr/bin/env ruby' '#!/usr/bin/env python' '#You can create a temporary automatic startup script' '#that will be automatically executed after the container is started,' '#and will be automatically deleted after the execution is complete.' '#Please remove unnecessary shebang' >${TEMP_FILE}
-	chmod 777 ${TEMP_FILE}
-	if [ $(command -v editor) ]; then
-		editor ${TEMP_FILE}
-	else
-		nano ${TEMP_FILE}
-	fi
+	chmod a+rx ${TEMP_FILE}
+	for i in editor micro vim nano; do
+		if [ $(command -v ${i}) ]; then
+			${i} ${TEMP_FILE}
+			break
+		fi
+	done
 	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
 	printf "%s\n" "Do you want to start the ${BLUE}${DEBIAN_FOLDER}${RESET} container now?${PURPLE}[Y/n]${RESET}"
 	do_you_want_to_continue
@@ -937,6 +934,18 @@ check_container_login_file_02() {
 	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
 	CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
 	CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
+	#######
+	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+		rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+		case ${?} in
+		0) ;;
+		*)
+			${TMOE_PREFIX} chmod 777 -Rv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+			${TMOE_PREFIX} rm -rfv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+			;;
+		esac
+	fi
+	#######
 	if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
 		if ! grep -q 'tmp/.tmoe_container_temporary' "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login"; then
 			${TMOE_PREFIX} rm -fv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh

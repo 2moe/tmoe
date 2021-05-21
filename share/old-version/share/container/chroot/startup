@@ -369,6 +369,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    *) CHROOT_HOME="\${HOME_DIR}" ;;
 	    esac
 	    set -- "\${@}" "HOME=\${CHROOT_HOME}"
+	    set -- "\${@}" "USER=\${CHROOT_USER}"
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
 	        CONTAINER_BIN_PATH=\$(sed -E 's@export\s+@@;/#/d' \${CONTAINER_ENV_FILE} | grep '^PATH=\"' | grep '\${PATH:+:\${PATH}}' | sed 's@\${PATH:+:\${PATH}}\"@:@;s@PATH=\"@@')
 	        OLD_IFS="\${IFS}"
