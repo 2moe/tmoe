@@ -135,8 +135,9 @@ tmoe_vnc_preconfigure() {
     check_current_user_name_and_group
     mkdir -pv ~/.config/tmoe-linux ~/.vnc
     if [[ ! -s "${TMOE_VNC_PASSWD_FILE}" ]]; then
-        sudo -E cp -fv /root/.vnc/*passwd ~/.vnc || su -c "sudo cp -fv /root/.vnc/passwd ~/.vnc"
-        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ~/.vnc/*
+        for i in /root/.vnc/passwd /root/.vnc/x11passwd; do
+            sudo -E cp -fv ${i} ~/.vnc
+        done
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
             printf "%s\n" "${GREEN}updating${RESET} ..."
             cd ${TMOE_GIT_DIR}
@@ -154,6 +155,7 @@ tmoe_vnc_preconfigure() {
                 ;;
             esac
         fi
+        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ~/.vnc/
     fi
     if [[ ! -e ${HOME}/.vnc/passwd ]]; then
         printf "%s\n" "发生错误，正在重置密码，请输入6至8位数的密码 :"
