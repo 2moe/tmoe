@@ -12,27 +12,15 @@
 容器在启动前，会加载环境变量文件，并将其自动生成为容器的启动参数，因此修改环境变量文件理论上对大部分login shell都能生效。  
 选择该选项，本质上是修改容器内部的 **/usr/local/etc/tmoe-linux/environment/container.env**  
 
-如何定义变量并赋值？  
+如何定义容器的变量并赋值？  
 
 是这个样子吗？  
-
-```go
-var NAME string = "value"
-```
-
-还是这个样子？  
-
-```go
-NAME := "vaule"
-```
-
-其实都不是，只需要这样子就可以了。  
 
 ```shell
 NAME="vaule"
 ```
 
-考虑到种种原因，请写成这种形式。  
+虽然那样子也可以，但是考虑到种种原因，请写成这种形式。  
 
 ```shell
 export NAME="vaule"
@@ -46,7 +34,7 @@ export GOPATH=/go
 ```
 
 有一个特殊变量需要注意，那就是 _PATH_  
-如果需要自定义PATH为"/go/bin:/usr/local/go/bin",那么请这样写:  
+如果需要自定义PATH为"/go/bin:/usr/local/go/bin",那么请这样子写:  
 
 ```shell
 export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
@@ -69,7 +57,7 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 注：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
 
-### create  
+### create a script  
 
 如果需要创建临时自启动脚本，那么建议您使用 `tmoe` 命令。  
 
@@ -136,7 +124,7 @@ ___
 ```shell
 mkdir -pv hello/src
 
-cat >hello/Cargo.toml<<-'EOF'
+cat >hello/Cargo.toml<<-'TOML'
 [package]
 name = "hello"
 version = "0.1.0"
@@ -144,23 +132,29 @@ authors = ["test <test@xxx.com>"]
 edition = "2018"
 
 [dependencies]
-EOF
+TOML
 
-cat >hello/src/main.rs<<-'EOF'
+cat >hello/src/main.rs<<-'RUST_MAIN_RS'
 fn main() {
     print!("{}", "Hello\n".repeat(50));
 }
-EOF
+RUST_MAIN_RS
+
+cat >build<<-'CARGO_RUN'
+#!/usr/bin/env bash
+if [[ ! $(command -v cargo) ]];then
+    sudo apt update
+    sudo apt install -y rustc cargo
+fi
+cd hello
+cargo run
+CARGO_RUN
 ```
 
-接着，我们在容器里运行一下看看。
+接着，我们在让容器在启动时调用当前目录下的这些文件，最后看一下运行的结果。
 
 ```shell
-tmoe p u 下北澤紅茶 "./hello" "sudo apt update;\
-sudo apt install -y rustc cargo;\
-cd hello;\
-cargo run;\
-"
+tmoe p u 下北澤紅茶 ./hello ./build
 ```
 
 ## Permanent scripts & ln argument
@@ -177,7 +171,7 @@ tmoe p u 下北澤紅茶 ln
 
 将本地脚本copy到软链接里去,这时候启动容器时会自动调用 **/etc/profile.d/permanent** 里的脚本或二进制文件。  
 
-如果您需要软链接容器目录下的/tmp到当前目录, 那么可以这样做。  
+您如果需要将容器目录下的 **/tmp** 软链接到当前目录, 那么可以这样做。  
 
 ```shell
 tmoe p u 下北澤紅茶 ln /tmp
@@ -214,7 +208,7 @@ tmoe p u 下北澤紅茶 ln entrypoint
 echo "exit 0" >> container_link_entrypoint_*
 ```
 
-如需清空entrypoint，那就  
+如需清空entrypoint，那就输  
 
 ```shell
 echo "" > container_link_entrypoint_*
@@ -246,7 +240,7 @@ echo hello world | toilet | lolcat
 示例2:  
 在容器内编译本地的hello项目，完成后自动退出。  
 
-> 注：使用容器来编译本地项目时，默认会将本地项目复制进容器内部的临时文件夹，因此您无需担心本地文件的所有权被破坏。  
+> 注：使用容器来编译本地项目时，默认会将本地项目复制进容器内部的临时文件夹，因此您无需担心本地项目文件夹的所有权被破坏。  
 > 在v1.4539版本中，默认会立即清空临时文件夹。  
 > 而在v1.4767版本中，每次启动容器且未检测到锁文件(.container.lock)时，才会自动清空。  
 
@@ -267,7 +261,7 @@ tmoe p u 下北澤紅茶 ln /tmp/release
 ```
 
 最后执行一下 `cd container_link_release_*`  
-看看里面有什么好东西呢？  
+看看里面有什么好东西吧！  
 
 ## 碎碎念  
 
