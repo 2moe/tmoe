@@ -808,8 +808,8 @@ readme_of_gnu_linux_distro() {
 		You can create a symbolic link from the internal path of the container to the current dir.
 		For example:
 		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
-		The current directory will generate a "container_link_random-value" symbolic link file.
-		If the value is 114514, then when you type ${GREEN}cd ${YELLOW}container_link_114514${RESET}, you will enter the ${BLUE}/tmp${RESET} of the container dir.
+		The current directory will generate a "container_link_tmp_random-value" symbolic link file.
+		If the value is 114514, then when you type ${GREEN}cd ${YELLOW}container_link_tmp_114514${RESET}, you will enter the ${BLUE}/tmp${RESET} of the container dir.
 
 		--------------------
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
@@ -832,13 +832,25 @@ readme_of_gnu_linux_distro() {
 		最后一个参数也可以执行本地脚本，假设当前目录下存在hello.rb文件，那么你需要执行 ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
 		而不是  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "hello.rb" ${RESET}
 		注：本地脚本或二进制文件的优先级要高于容器内部文件，详见“环境变量与登录项管理”选项的README。
+		${YELLOW}${BOLD}Example(示例):${RESET}
+		cat >hello.rb <<-'RUBY'
+		#!/usr/bin/env ruby
+		50.times{p "hello"}
+		RUBY
+		${GREEN}tmoe ${BLUE}${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ${PURPLE}./hello.rb ${YELLOW}'
+		if [[ ! \$(command -v ruby) ]];then
+		    sudo apt update
+		    sudo apt install -y ruby || sudo apk add ruby || sudo pacman -Sy ruby || sudo dnf install ruby
+		    ./hello.rb
+		fi
+		'${RESET}
 
 		v1.4539新版功能：
 		您现在可以使用ln参数来创建容器内部文件路径的软链接到本地路径。
 		例如：
 		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
 		软链接${DEBIAN_FOLDER}容器内部的/tmp到本地的 "container_link_随机数值"
-		您在当前路径下执行${GREEN}cd ${YELLOW}container_link_*${RESET}后，将进入容器所在路径的/tmp目录。
+		您在当前路径下执行${GREEN}cd ${YELLOW}container_link_tmp_*${RESET}后，将进入容器所在路径的/tmp目录。
 		--------------------
 
 		${BOLD}额外拓展功能${RESET}
@@ -935,7 +947,7 @@ check_container_login_file_02() {
 	CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
 	CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
 	#######
-	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+	rmdir_container_tmp() {
 		rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 		case ${?} in
 		0) ;;
@@ -944,6 +956,17 @@ check_container_login_file_02() {
 			${TMOE_PREFIX} rm -rfv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 			;;
 		esac
+	}
+	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+		if [[ ! -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock ]]; then
+			rmdir_container_tmp
+		else
+			FILE_TIME=$(date -d "$(stat -c '%y' ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock)" +"%Y%m%d")
+			case ${FILE_TIME} in
+			"$(date +%Y%m%d)") printf "%s\n" "${BLUE}/tmp/.tmoe_container_temporary/.container.lock${RESET}" ;;
+			*) rmdir_container_tmp ;;
+			esac
+		fi
 	fi
 	#######
 	if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then

@@ -15,4 +15,4 @@ if [ "$(ls /tmp/.tmoe_container_temporary/ 2>/dev/null)" ]; then
     done
 fi
 unset i
-[ ! -x /usr/local/etc/tmoe-linux/environment/entrypoint ] || . /usr/local/etc/tmoe-linux/environment/entrypoint
+[ ! -r /usr/local/etc/tmoe-linux/environment/entrypoint ] || . /usr/local/etc/tmoe-linux/environment/entrypoint

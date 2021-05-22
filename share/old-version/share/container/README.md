@@ -2,6 +2,8 @@
 
 关于tmoe container 环境变量选项与自启动脚本的说明:  
 注：适用于v1.4539（2021-04-23）及更新的版本安装的proot/chroot容器。  
+注2：部分新用法仅支持v1.4767及更新的版本。  
+注3：除了 **global env** 外，其他功能仅当login shell为zsh/bash时，才会生效。  
 
 ## Global environment variables
 
@@ -14,13 +16,13 @@
 
 是这个样子吗？  
 
-```
+```go
 var NAME string = "value"
 ```
 
 还是这个样子？  
 
-```
+```go
 NAME := "vaule"
 ```
 
@@ -65,9 +67,7 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 ## Temporary scripts
 
-注：适用于v1.4766及更新的版本安装的容器。  
-
-注2：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
+注：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
 
 ### create  
 
@@ -77,15 +77,15 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 这时候启动命令就不再是 `tmoe p u 20.04` 了，而是 `tmoe p u 下北澤紅茶`  
 
-`tmoe`命令的第四和第五个参数可以使用命令、脚本、二进制文件或文件夹。  
+`tmoe`命令最后的两个参数可以使用命令、脚本、二进制文件或文件夹。  
 
-这里假设您在当前路径新建了一个ruby脚本  
+这里假设您在当前路径下新建了一个ruby脚本  
 
 ```shell
-cat >hello.rb <<-'EOF'
+cat >hello.rb <<-'RUBY'
 #!/usr/bin/env ruby
 50.times{p "hello"}
-EOF
+RUBY
 ```
 
 文件名称为hello.rb  
@@ -120,10 +120,10 @@ sudo apt install -y ruby;\
 关于使用多参数来执行多个脚本或多命令的说明。  
 
 当个数为一个时，直接使用参数即可。  
-当个数等于两个时，那么倒数第二个参数请使用文件或文件夹，最后一个参数使用脚本或命令。  
+当个数等于两个时，那么倒数第二个参数请使用文件或文件夹，最后一个参数使用文件或命令。  
 
 tmoe对于本地文件的优先级要高于容器内部文件。  
-若本地存在 **~/hello.rb**，而容器内部存在同名文件，则优先检测本地文件，若本地不存在才会执行容器内部的文件。  
+若本地存在 **~/hello.rb**，而容器内部存在同名文件，则优先检测本地文件，仅当本地不存在相应文件时才会执行容器内部的文件。  
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 来看一个简单的示例吧！  
 
-这里假设您没有安装cargo, 所以不能通过 `cargo new hello` 来快速新建项目。
+这里假设您没有安装cargo, 因此不能通过 `cargo new hello` 来快速新建项目。
 
 ```shell
 mkdir -pv hello/src
@@ -169,7 +169,7 @@ cargo run;\
 
 建议将该功能配合ln参数使用。
 
-当ln位于最后一个参数时，后面没有接任何路径，此时将创建容器内部的 **/etc/profile.d/permanent** 的软链接到当前路径的 "container_link_随机数值"
+当ln位于最后一个参数时，后面没有接任何路径，此时将创建容器内部的 **/etc/profile.d/permanent** 的软链接到当前路径的 "container_link_permanent_随机数值"
 
 ```shell
 tmoe p u 下北澤紅茶 ln
@@ -177,24 +177,97 @@ tmoe p u 下北澤紅茶 ln
 
 将本地脚本copy到软链接里去,这时候启动容器时会自动调用 **/etc/profile.d/permanent** 里的脚本或二进制文件。  
 
-如果您需要软链接容器目录下的/tmp到当前目录,那么可以这样做。  
+如果您需要软链接容器目录下的/tmp到当前目录, 那么可以这样做。  
 
 ```shell
 tmoe p u 下北澤紅茶 ln /tmp
 ```
 
-假设随机数值为**114514**，那么当前目录下就会生成一个软链接文件：**container_link_114514**  
+假设随机数值为**114514**，那么当前目录下就会生成一个软链接文件：**container_link_tmp_114514**  
 该链接指向容器内部的/tmp  
   
-如需删除该文件，您可以输入`unlink container_link_114514`,或者是`rm container_link_114514`,而不要输 `rm container_link_114514/*`  
+如需删除该文件，那么请您输入`unlink container_link_tmp_114514`,或者是`rm container_link_tmp_114514`,而不要输 `rm container_link_tmp_114514/*`  
 
 ## Entrypoint
 
 选择该选项，本质上是修改容器内部的 **/usr/local/etc/tmoe-linux/environment/entrypoint**  
 （入口点）  
 
-本选项与Permanent scripts存在相似且重合的功能。
+本选项与Permanent scripts存在相似且重合的功能。  
 若您使用的是服务型容器，则建议使用Entrypoint。  
+
+您可以输入以下命令快速创建entrypoint文件的软链接。
+
+```shell
+tmoe p u 下北澤紅茶 ln en
+```
+
+或者是  
+
+```shell
+tmoe p u 下北澤紅茶 ln entrypoint
+```
+
+您如果需要在执行完指定操作后就退出容器，那么可以将 `exit` 写进entrypoint。  
+
+```shell
+echo "exit 0" >> container_link_entrypoint_*
+```
+
+如需清空entrypoint，那就  
+
+```shell
+echo "" > container_link_entrypoint_*
+```
+
+## summary
+
+在大致了解完以上功能的用法后，让我们用几个例子来做个总结吧！  
+
+示例1：
+进入容器后执行特定命令，并于完成后自动退出：
+
+```shell
+tmoe p u 下北澤紅茶 ln en
+echo "exit 0" >> container_link_entrypoint_*
+tmoe p u 下北澤紅茶 '
+for i in toilet lolcat; do
+    if [[ ! $(command -v ${i}) ]]; then
+        sudo apt update
+        sudo apt install -y ${i}
+    fi
+done
+echo hello world | toilet | lolcat
+'
+```  
+
+注意：上述代码块包含单引号。  
+
+示例2:  
+在容器内编译本地的hello项目，完成后自动退出。  
+
+> 注：使用容器来编译本地项目时，默认会将本地项目复制进容器内部的临时文件夹，因此您无需担心本地文件的所有权被破坏。  
+> 在v1.4539版本中，默认会立即清空临时文件夹。  
+> 而在v1.4767版本中，每次启动容器且未检测到锁文件(.container.lock)时，才会自动清空。  
+
+为了简化操作，此处假设您的宿主机和容器都安装了 **rust** 和 **cargo** 。  
+
+```shell
+cargo new hello
+tmoe p u 下北澤紅茶 ln en
+echo 'exit 0' >> container_link_entrypoint_*
+cat>>build<<-'EOF'
+#!/usr/bin/env bash
+cd hello
+cargo build --release
+mv -v target/release/ /tmp
+EOF
+tmoe p u 下北澤紅茶 ./hello ./build
+tmoe p u 下北澤紅茶 ln /tmp/release
+```
+
+最后执行一下 `cd container_link_release_*`  
+看看里面有什么好东西呢？  
 
 ## 碎碎念  
 

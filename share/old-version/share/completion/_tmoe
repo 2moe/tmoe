@@ -139,6 +139,7 @@ function _tmoe() {
         "m:mipsel:Microprocessor without Interlocked Pipelined Stages little-endian"
         "m64:mips64el"
         "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principlesRISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles"
+        "ln:create a symbolic link"
     )
     execute_program=(
         "v:vnc(startvnc)"
@@ -152,6 +153,9 @@ function _tmoe() {
         "zsh:z shell(Default)"
         "ash:command interpreter (shell)"
         "ln:create a symbolic link"
+        "/tmp:Create a symbolic link to /tmp"
+        "en:Create a symbolic link to entrypoint"
+        "entrypoint:Create a symbolic link to entrypoint"
     )
 
     _arguments -C \

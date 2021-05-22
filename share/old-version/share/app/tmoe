@@ -169,6 +169,12 @@ tmoe_main() {
 		CREATE_A_SOFT_LINK=true
 		LINK_SOURCE_DIR="/etc/profile.d/permanent"
 		;;
+	en | entrypoint)
+		case ${CREATE_A_SOFT_LINK} in
+		true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
+		*) EXEC_PROGRAM="${5}" ;;
+		esac
+		;;
 	"") ;;
 	~/* | ./* | ../* | /*)
 		case ${CREATE_A_SOFT_LINK} in
@@ -181,12 +187,19 @@ tmoe_main() {
 
 	case "$6" in
 	"") ;;
+	en | entrypoint)
+		case ${CREATE_A_SOFT_LINK} in
+		true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
+		*) EXEC_PROGRAM="${6}" ;;
+		esac
+		;;
 	~/* | ./* | ../* | /*)
 		case ${CREATE_A_SOFT_LINK} in
 		true) LINK_SOURCE_DIR="${6}" ;;
 		*) TEMPORARY_SCRIPT_FILE_03="${6}" ;;
 		esac
 		;;
+	*) EXEC_PROGRAM="${6}" ;;
 	esac
 
 	if ((${#} >= 7)); then
@@ -352,14 +365,14 @@ start_tmoe_container() {
 	fi
 
 	if [[ ${CREATE_A_SOFT_LINK} = true ]]; then
-		ln -svf ${DEBIAN_CHROOT}${LINK_SOURCE_DIR} ./container_link_${RANDOM}
+		ln -svf ${DEBIAN_CHROOT}${LINK_SOURCE_DIR} ./container_link_${LINK_SOURCE_DIR##*/}_${RANDOM}
 		exit 0
 	fi
 	case ${TMOE_CONTAINER_HITOKOTO} in
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
 	###############
-	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+	rmdir_container_tmp() {
 		rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 		case ${?} in
 		0) ;;
@@ -368,6 +381,17 @@ start_tmoe_container() {
 			${TMOE_PREFIX} rm -rfv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 			;;
 		esac
+	}
+	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+		if [[ ! -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock ]]; then
+			rmdir_container_tmp
+		else
+			FILE_TIME=$(date -d "$(stat -c '%y' ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock)" +"%Y%m%d")
+			case ${FILE_TIME} in
+			"$(date +%Y%m%d)") printf "%s\n" "${BLUE}/tmp/.tmoe_container_temporary/.container.lock${RESET}" ;;
+			*) rmdir_container_tmp ;;
+			esac
+		fi
 	fi
 	###############
 	if [[ -n ${EXEC_PROGRAM} ]]; then
