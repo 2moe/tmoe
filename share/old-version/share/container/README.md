@@ -1,11 +1,11 @@
-# Environment variables and automatic startup scripts
+# Environment variables and automatic startup scripts  
 
 关于tmoe container 环境变量选项与自启动脚本的说明:  
 注：适用于v1.4539（2021-04-23）及更新的版本安装的proot/chroot容器。  
 注2：部分新用法仅支持v1.4767及更新的版本。  
 注3：除了 **global env** 外，其他功能仅当login shell为zsh/bash时，才会生效。  
 
-## Global environment variables
+## Global environment variables  
 
 (全局环境变量)  
 
@@ -53,7 +53,7 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 若为单一用户，则建议您优先考虑用户目录下配置文件。  
 
-## Temporary scripts
+## Temporary scripts  
 
 注：临时脚本的文件夹位于容器内部的 **/tmp/.tmoe_container_temporary**  
 
@@ -151,11 +151,13 @@ cargo run
 CARGO_RUN
 ```
 
-接着，我们在让容器在启动时调用当前目录下的这些文件，最后看一下运行的结果。
+接着，我们让容器在启动时调用当前目录下的这些文件，最后看一下运行的结果吧！
 
 ```shell
 tmoe p u 下北澤紅茶 ./hello ./build
 ```
+
+如果程序成功运行的话，那么终端会输出50行 **Hello**
 
 ## Permanent scripts & ln argument
 
