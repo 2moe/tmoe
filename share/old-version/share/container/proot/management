@@ -849,7 +849,7 @@ readme_of_gnu_linux_distro() {
 		您现在可以使用ln参数来创建容器内部文件路径的软链接到本地路径。
 		例如：
 		${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} ln /tmp ${RESET}
-		软链接${DEBIAN_FOLDER}容器内部的/tmp到本地的 "container_link_随机数值"
+		软链接${DEBIAN_FOLDER}容器内部的/tmp到本地的 "container_link_tmp_随机数值"
 		您在当前路径下执行${GREEN}cd ${YELLOW}container_link_tmp_*${RESET}后，将进入容器所在路径的/tmp目录。
 		--------------------
 
