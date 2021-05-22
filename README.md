@@ -7,6 +7,10 @@
 > If you do not understand the following readme, please give me an issue to explain the situation,or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)  
 > 化繁为简，让 GNU/Linux 的乐趣触手可及。
 
+If you want to understand the extended usage of containers, then you can read this [document](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md).  
+I'm really sorry, this is a document written in Chinese.  
+When I have time, I will write in English!  
+
 ## 介绍 Introduction
 
 在 **GNU/Linux**、**Android Termux** 和**Windows10 的 linux 子系统**上配置 **GNU/Linux chroot 或 proot** 容器环境，并 configure remote desktop、pulseaudio 音频服务和 system。
@@ -454,7 +458,7 @@ Assuming you have installed a kali-rolling container named **z** .
 When you type `t p k z`, you find that the **proot kali zsh** is started instead of **proot kali z**.  
 In this case, you should type the full code: `t p kali-z` instead of `t p k-z`  
 
-The fourth and fifth parameters of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the _share/container_ directory for details.  
+The fourth and fifth parameters of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the [_share/container_](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md) directory for details.  
 
 Note: The priority of local files is higher than that of the inside of the container.
 
