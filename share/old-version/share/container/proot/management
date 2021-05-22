@@ -975,7 +975,7 @@ check_container_login_file_02() {
 		fi
 	fi
 	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+		${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 		${TMOE_PREFIX} chmod 777 ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
 		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
@@ -988,7 +988,7 @@ check_container_login_file_02() {
 	elif ! grep -q 'environment/login' ${CONTAINER_ZLOGIN_FILE}; then
 		${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
 	fi
-	mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+	mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 	${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 }
 chmod_777_temporary_file_02() {

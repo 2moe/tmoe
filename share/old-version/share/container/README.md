@@ -180,7 +180,7 @@ tmoe p u 下北澤紅茶 ln /tmp
 假设随机数值为**114514**，那么当前目录下就会生成一个软链接文件：**container_link_tmp_114514**  
 该链接指向容器内部的/tmp  
   
-如需删除该文件，那么请您输入`unlink container_link_tmp_114514`,或者是`rm container_link_tmp_114514`,而不要输 `rm container_link_tmp_114514/*`  
+如需删除该文件，那么请输入`unlink container_link_tmp_114514`,或者是`rm container_link_tmp_114514`,而不要输 `rm container_link_tmp_114514/*`  
 
 ## Entrypoint
 
