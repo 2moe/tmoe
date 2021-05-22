@@ -224,8 +224,9 @@ echo "" > container_link_entrypoint_*
 进入容器后执行特定命令，并于完成后自动退出：
 
 ```shell
+rm -fv container_link_entrypoint_*
 tmoe p u 下北澤紅茶 ln en
-echo "exit 0" >> container_link_entrypoint_*
+echo "exit 0" > container_link_entrypoint_*
 tmoe p u 下北澤紅茶 '
 for i in toilet lolcat; do
     if [[ ! $(command -v ${i}) ]]; then
@@ -250,8 +251,9 @@ echo hello world | toilet | lolcat
 
 ```shell
 cargo new hello
+rm -fv container_link_entrypoint_*
 tmoe p u 下北澤紅茶 ln en
-echo 'exit 0' >> container_link_entrypoint_*
+echo 'exit 0' > container_link_entrypoint_*
 cat>>build<<-'EOF'
 #!/usr/bin/env bash
 cd hello
@@ -260,9 +262,10 @@ mv -v target/release/ /tmp
 EOF
 tmoe p u 下北澤紅茶 ./hello ./build
 tmoe p u 下北澤紅茶 ln /tmp/release
+echo '' > container_link_entrypoint_*
 ```
 
-最后执行一下 `cd container_link_release_*`  
+最后执行一下 `ls -lah container_link_release_*` 或者是 `exa -lTabgh --icons container_link_release_*`  
 看看里面有什么好东西吧！  
 
 ## 碎碎念  
