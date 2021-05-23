@@ -13,17 +13,19 @@ notes_of_debian_opt_repo() {
 #############
 switch_debian_opt_repo_sources() {
     non_debian_function
-    if grep '^deb.*ustc' ${OPT_REPO_LIST}; then
-        OPT_REPO_NAME='USTC'
-    else
-        OPT_REPO_NAME='bintray'
-    fi
-    if (whiptail --title "您想要对这个小可爱做什么呢" --yes-button "USTC" --no-button "bintray" --yesno "检测到您当前的软件源为${OPT_REPO_NAME}\n您想要切换为哪个软件源?♪(^∇^*) " 0 0); then
-        printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
-    else
-        printf "%s\n%s\n" "#deb ${OPT_URL_01} buster main" "deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
-    fi
-    apt update
+    # if grep '^deb.*ustc' ${OPT_REPO_LIST}; then
+    #     OPT_REPO_NAME='USTC'
+    # else
+    #     OPT_REPO_NAME='bintray'
+    # fi
+    # if (whiptail --title "您想要对这个小可爱做什么呢" --yes-button "USTC" --no-button "bintray" --yesno "检测到您当前的软件源为${OPT_REPO_NAME}\n您想要切换为哪个软件源?♪(^∇^*) " 0 0); then
+    #     printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+    # else
+    #     printf "%s\n%s\n" "#deb ${OPT_URL_01} buster main" "deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+    # fi
+    # apt update
+    check_editor
+    ${EDITOR} ${OPT_REPO_LIST}
 }
 #######################
 explore_debian_opt_repo() {
@@ -43,7 +45,7 @@ debian_opt_menu() {
     cd ${APPS_LNK_DIR}
     #16 50 7
     INSTALL_APP=$(whiptail --title "DEBIAN OPT REPO" --menu \
-        "您想要安装哪个软件？\n Which software do you want to install? " 0 0 0 \
+        "Only supports DEBIAN-based distros" 0 0 0 \
         "1" "🎶 music:vocal,flacon" \
         "2" "📝 notes笔记:markdown编辑器" \
         "3" "📺 videos视频:多媒体音视频格式转换" \
@@ -51,8 +53,10 @@ debian_opt_menu() {
         "5" "📖 reader:悦享生活,品味阅读" \
         "6" "🎮 games游戏:Minecraft启动器" \
         "7" "👾 development程序开发:GUI设计" \
-        "8" "switch source repo:切换软件源仓库" \
-        "9" "remove(移除本仓库)" \
+        "8" "💠 tools工具:winetricks-zh" \
+        "9" "🔯 internet互联网:motrix,freechat" \
+        "10" "edit source list:编辑软件源" \
+        "11" "remove(移除本仓库)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -65,8 +69,10 @@ debian_opt_menu() {
     5) debian_opt_reader_app ;;
     6) debian_opt_game_app ;;
     7) debian_opt_development_app ;;
-    8) switch_debian_opt_repo_sources ;;
-    9) remove_debian_opt_repo ;;
+    8) debian_opt_tools_app ;;
+    9) debian_opt_internet_app ;;
+    10) switch_debian_opt_repo_sources ;;
+    11) remove_debian_opt_repo ;;
     esac
     ##########################
     press_enter_to_return
@@ -97,7 +103,7 @@ debian_opt_install_or_remove_01() {
 }
 ################
 check_debian_opt_app_version() {
-    DEBIAN_OPT_REPO_POOL_URL="${OPT_URL_02}/pool/main/"
+    DEBIAN_OPT_REPO_POOL_URL="${OPT_URL_01}/pool/main/"
     APP_NAME_PREFIX="$(printf '%s\n' "${DEPENDENCY_01}" | cut -c 1)"
     DEBIAN_OPT_APP_PATH_URL="${DEBIAN_OPT_REPO_POOL_URL}${APP_NAME_PREFIX}/${DEPENDENCY_01}"
     THE_LATEST_DEB_FILE=$(curl -Lv "${DEBIAN_OPT_APP_PATH_URL}" | grep '\.deb' | grep -v '.asc' | grep "${ARCH_TYPE}" | tail -n 1 | cut -d '"' -f 4 | cut -d ':' -f 2)
@@ -192,10 +198,11 @@ debian_opt_game_app() {
     RETURN_TO_MENU='debian_opt_game_app'
     DEBIAN_INSTALLATION_MENU='00'
     INSTALL_APP=$(whiptail --title "GAMES" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "Which software do you want to install?" 0 0 0 \
         "1" "hmcl:跨平台且广受欢迎的Minecraft(我的世界)启动器" \
         "2" "minetest(免费开源沙盒建造游戏)" \
         "3" "gamehub:管理Steam,GOG,Humble Bundle等平台的游戏" \
+        "4" "sdlpal: SDL-based reimplementation of the rpg 仙劍奇俠傳." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -209,13 +216,13 @@ debian_opt_game_app() {
         amd64 | i386) ;;
         *)
             this_app_may_non_support_running_on_proot
-            printf "%s\n" "hmcl依赖于openjfx,如需安装，则请自行解决依赖问题。"
+            # printf "%s\n" "hmcl依赖于openjfx,如需安装，则请自行解决依赖问题。"
             non_debian_function
-            add_debian_old_source
+            # add_debian_old_source
             #printf "%s\n" "${GREEN}apt install -y${RESET} ${BLUE}hmcl${RESET}"
             #apt install -y hmcl
             beta_features_quick_install
-            del_debian_old_source
+            # del_debian_old_source
             #arch_does_not_support
             press_enter_to_return
             ${RETURN_TO_WHERE}
@@ -231,9 +238,14 @@ debian_opt_game_app() {
         beta_features_quick_install
         ;;
     3)
-        printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
         DEPENDENCY_01='gamehub'
         ORIGINAL_URL='https://tkashkin.tk/projects/gamehub'
+        printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+        ;;
+    4)
+        DEPENDENCY_01='sdlpal'
+        ORIGINAL_URL='https://sdlpal.github.io/sdlpal'
+        printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
         ;;
     esac
     ##########################
@@ -249,14 +261,117 @@ debian_opt_game_app() {
     ${RETURN_TO_WHERE}
 }
 ############
+debian_opt_internet_app() {
+    DEPENDENCY_02=''
+    RETURN_TO_WHERE='debian_opt_internet_app'
+    RETURN_TO_MENU='debian_opt_internet_app'
+    DEBIAN_INSTALLATION_MENU='01'
+    INSTALL_APP=$(whiptail --title "INTERNET" --menu \
+        "Which software do you want to install?" 0 0 0 \
+        "1" "motrix: A full-featured download manager." \
+        "2" "remotely: A simple VNC viewer." \
+        "3" "freechat: A Wechat client for macOS and Linux." \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") debian_opt_menu ;;
+    1)
+        DEPENDENCY_01="motrix"
+        ORIGINAL_URL='https://motrix.app/'
+        ;;
+    2)
+        DEPENDENCY_01="remotely"
+        ORIGINAL_URL='https://gitlab.gnome.org/World/Remotely'
+        ;;
+    3)
+        DEPENDENCY_01="freechat"
+        ORIGINAL_URL='https://github.com/eNkru/freechat'
+        ;;
+    esac
+    ##########################
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+    case ${DEBIAN_INSTALLATION_MENU} in
+    01) debian_opt_install_or_remove_01 ;;
+    esac
+    ########################
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
+}
+debian_opt_tools_app() {
+    DEPENDENCY_02=''
+    RETURN_TO_WHERE='debian_opt_tools_app'
+    RETURN_TO_MENU='debian_opt_tools_app'
+    DEBIAN_INSTALLATION_MENU='01'
+    INSTALL_APP=$(whiptail --title "TOOLS" --menu \
+        "君欲何爲?\nWhich software do you want to install? " 0 0 0 \
+        "1" "appeditor: Edit application entries in the application menu." \
+        "2" "eddy: A debian package installer." \
+        "3" "imageburner: A simple image burner inspired by Etcher's UI." \
+        "4" "woeusb: A simple tool that enable you to create your own usb stick windows installer from an iso image or a real DVD." \
+        "5" "albert: A fast and flexible keyboard launcher." \
+        "6" "alohomora: An easy-to-use password manager." \
+        "7" "qgnomeplatform: QPlatformTheme for a better Qt application inclusion in GNOME." \
+        "8" "winetricks-zh: A windows applications setup wizard for Chinese wine users." \
+        "0" "🌚 Return to previous menu 返回上级菜单" \
+        3>&1 1>&2 2>&3)
+    ##############
+    case "${INSTALL_APP}" in
+    0 | "") debian_opt_menu ;;
+    1)
+        DEPENDENCY_01="appeditor"
+        ORIGINAL_URL='https://github.com/donadigo/appeditor'
+        ;;
+    2)
+        DEPENDENCY_01="eddy"
+        ORIGINAL_URL='https://github.com/donadigo/eddy'
+        ;;
+    3)
+        DEPENDENCY_01="imageburner"
+        ORIGINAL_URL='https://github.com/artemanufrij/imageburner'
+        ;;
+    4)
+        DEPENDENCY_01="woeusb"
+        ORIGINAL_URL='https://github.com/slacka/WoeUSB'
+        ;;
+    5)
+        DEPENDENCY_01="albert"
+        ORIGINAL_URL='https://github.com/albertlauncher/albert'
+        ;;
+    6)
+        DEPENDENCY_01="alohomora"
+        ORIGINAL_URL='https://github.com/z0o0p/alohomora'
+        ;;
+    7)
+        DEPENDENCY_01="qgnomeplatform"
+        ORIGINAL_URL='https://github.com/FedoraQt/QGnomePlatform'
+        ;;
+    8)
+        DEPENDENCY_01="winetricks-zh"
+        ORIGINAL_URL='https://github.com/hillwoodroc/winetricks-zh'
+        ;;
+    esac
+    ##########################
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
+    case ${DEBIAN_INSTALLATION_MENU} in
+    01) debian_opt_install_or_remove_01 ;;
+    esac
+    ########################
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
+}
 debian_opt_development_app() {
     DEPENDENCY_02=''
     RETURN_TO_WHERE='debian_opt_development_app'
     RETURN_TO_MENU='debian_opt_development_app'
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "DEVELOPMENT" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "Which software do you want to install?" 0 0 0 \
         "1" "wxformbuilder:用于wxWidgets GUI设计的RAD工具" \
+        "2" "netron: Visualizer for neural network, deep learning and machine learning models." \
+        "3" "textadept: A fast, minimalist, and remarkably extensible cross-platform text editor." \
+        "4" "vala-language-server: Code Intelligence for Vala & Genie." \
+        "5" "nasc: Do maths like a normal person." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -265,6 +380,22 @@ debian_opt_development_app() {
     1)
         DEPENDENCY_01='wxformbuilder'
         ORIGINAL_URL='https://github.com/wxFormBuilder/wxFormBuilder'
+        ;;
+    2)
+        DEPENDENCY_01="netron"
+        ORIGINAL_URL='https://github.com/lutzroeder/netron'
+        ;;
+    3)
+        DEPENDENCY_01="textadept"
+        ORIGINAL_URL='https://foicica.com/textadept/'
+        ;;
+    4)
+        DEPENDENCY_01="vala-language-server"
+        ORIGINAL_URL='https://github.com/Prince781/vala-language-server'
+        ;;
+    5)
+        DEPENDENCY_01="nasc"
+        ORIGINAL_URL='http://parnold-x.github.io/nasc/'
         ;;
     esac
     ##########################
@@ -281,10 +412,15 @@ debian_opt_video_app() {
     DEPENDENCY_02=''
     RETURN_TO_WHERE='debian_opt_video_app'
     RETURN_TO_MENU='debian_opt_video_app'
-    DEBIAN_INSTALLATION_MENU='00'
+    # DEBIAN_INSTALLATION_MENU='00'
+    DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "VIDEO APP" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "Which software do you want to install?" 0 0 0 \
         "1" "ciano:多媒体音视频格式转换器" \
+        "2" "lossless-cut: Save space by quickly and losslessly trimming video and audio files." \
+        "3" "gifup: Create GIFs from video files." \
+        "4" "moonplayer: Online video client for Linux supporting Youtube, Bilibili etc." \
+        "5" "vidbox: a tiny video toolbox that allows you to split, merge videos and so on." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -293,6 +429,22 @@ debian_opt_video_app() {
     1)
         DEPENDENCY_01='ciano'
         ORIGINAL_URL='https://robertsanseries.github.io/ciano'
+        ;;
+    2)
+        DEPENDENCY_01="lossless-cut"
+        ORIGINAL_URL="https://github.com/mifi/lossless-cut"
+        ;;
+    3)
+        DEPENDENCY_01="gifup"
+        ORIGINAL_URL="https://github.com/bharatkalluri/gifup"
+        ;;
+    4)
+        DEPENDENCY_01="moonplayer"
+        ORIGINAL_URL="https://coslyk.github.io/moonplayer"
+        ;;
+    5)
+        DEPENDENCY_01="vidbox"
+        ORIGINAL_URL="https://coslyk.github.io/vidbox.html"
         ;;
     esac
     ##########################
@@ -313,11 +465,13 @@ debian_opt_reader_app() {
     DEPENDENCY_02=''
     RETURN_TO_WHERE='debian_opt_reader_app'
     RETURN_TO_MENU='debian_opt_reader_app'
-    DEBIAN_INSTALLATION_MENU='00'
+    # DEBIAN_INSTALLATION_MENU='00'
+    DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "READER APP" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "腹有詩書氣自華" 0 0 0 \
         "1" "bookworm:简约的电子书阅读器" \
         "2" "foliate:简单且现代化的电子书阅读器" \
+        "3" "lector: Qt based ebook reader." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -330,6 +484,10 @@ debian_opt_reader_app() {
     2)
         DEPENDENCY_01='foliate'
         ORIGINAL_URL='https://johnfactotum.github.io/foliate/'
+        ;;
+    3)
+        DEPENDENCY_01='lector'
+        ORIGINAL_URL='https://github.com/BasioMeusPuga/Lector'
         ;;
     esac
     ##########################
@@ -349,11 +507,15 @@ debian_opt_picture_app() {
     DEPENDENCY_02=''
     RETURN_TO_WHERE='debian_opt_picture_app'
     RETURN_TO_MENU='debian_opt_picture_app'
-    DEBIAN_INSTALLATION_MENU='00'
+    # DEBIAN_INSTALLATION_MENU='00'
+    DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "PIC APP" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "Which software do you want to install? " 0 0 0 \
         "1" "bingle:下载微软必应每日精选壁纸" \
         "2" "fondo:壁纸app" \
+        "3" "komorebi:動態壁紙" \
+        "4" "draw.io:思維導圖" \
+        "5" "colorpicker: A color picker." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -366,6 +528,18 @@ debian_opt_picture_app() {
     2)
         DEPENDENCY_01='fondo'
         ORIGINAL_URL='https://github.com/calo001/fondo'
+        ;;
+    3)
+        DEPENDENCY_01='komorebi'
+        ORIGINAL_URL='https://github.com/Komorebi-Fork/komorebi'
+        ;;
+    4)
+        DEPENDENCY_01="draw.io"
+        ORIGINAL_URL='https://github.com/jgraph/drawio-desktop'
+        ;;
+    5)
+        DEPENDENCY_01="colorpicker"
+        ORIGINAL_URL='https://github.com/RonnyDo/ColorPicker'
         ;;
     esac
     ##########################
@@ -386,9 +560,10 @@ debian_opt_note_app() {
     DEPENDENCY_02=''
     RETURN_TO_WHERE='debian_opt_note_app'
     RETURN_TO_MENU='debian_opt_note_app'
-    DEBIAN_INSTALLATION_MENU='00'
+    # DEBIAN_INSTALLATION_MENU='00'
+    DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "NOTE APP" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "Which software do you want to install? " 0 0 0 \
         "1" "vnote:一款更了解程序员和Markdown的笔记软件" \
         "2" "go-for-it:简洁的备忘软件，借助定时提醒帮助您专注于工作" \
         "3" "wiznote:为知笔记是一款基于云存储的笔记app" \
@@ -397,6 +572,10 @@ debian_opt_note_app() {
         "6" "qownnotes:开源Markdown笔记和待办事项软件,支持与owncloud云服务集成" \
         "7" "quilter:轻量级markdown编辑器" \
         "8" "textadept:极简、快速和可扩展的跨平台文本编辑器" \
+        "9" "marktext: A simple and elegant markdown editor." \
+        "10" "apostrophe: A clean and intuitive Markdown editor." \
+        "11" "p3x-onenote: A Linux compatible version of OneNote." \
+        "12" "trelby: The free, multiplatform, feature-rich screenwriting program." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
@@ -434,6 +613,22 @@ debian_opt_note_app() {
         DEPENDENCY_01='textadept'
         ORIGINAL_URL='https://foicica.com/textadept/'
         ;;
+    9)
+        DEPENDENCY_01="marktext"
+        ORIGINAL_URL='https://marktext.app/'
+        ;;
+    10)
+        DEPENDENCY_01="apostrophe"
+        ORIGINAL_URL='https://somas.pages.gitlab.gnome.org/apostrophe/'
+        ;;
+    11)
+        DEPENDENCY_01="p3x-onenote"
+        ORIGINAL_URL='https://www.corifeus.com/onenote'
+        ;;
+    12)
+        DEPENDENCY_01="trelby"
+        ORIGINAL_URL='https://www.trelby.org/'
+        ;;
     esac
     ##########################
     printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
@@ -456,29 +651,72 @@ debian_opt_music_app() {
     RETURN_TO_MENU='debian_opt_music_app'
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "MUSIC APP" --menu \
-        "您想要安装哪个软件?\n Which software do you want to install? " 0 0 0 \
+        "以雅以南,以龠不僭" 0 0 0 \
         "1" "netease-cloud-music-gtk(云音乐)" \
         "2" "vocal(强大美观的播客app)" \
         "3" "flacon(支持从专辑中提取音频文件)" \
+        "4" "chord: A Modern Music Player supporting multiple music websites." \
+        "5" "cocomusic: QQ Music client for linux built by electron and vue." \
+        "6" "feeluown: A user-friendly music player, supporting Netease and Xiami." \
+        "7" "givemelyrics: See the lyrics of the song that is playing, from any application." \
+        "8" "listen1: One for all free music in China." \
+        "9" "melody: Music Player and Manager for local Music Files." \
+        "10" "electron-netease-cloud-music: UNOFFICIAL client for music.163.com." \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
+    non_debian_function
     case "${INSTALL_APP}" in
     0 | "") debian_opt_menu ;;
-    1) install_netease_cloud_music_gtk ;;
+    1)
+        DEBIAN_INSTALLATION_MENU='01'
+        install_netease_cloud_music_gtk
+        ;;
     2)
-        non_debian_function
-        install_opt_vocal
+        DEPENDENCY_01='vocal'
+        ORIGINAL_URL="https://github.com/needle-and-thread/vocal"
         ;;
     3)
-        non_debian_function
-        install_opt_flacon
+        DEPENDENCY_01='flacon'
+        ORIGINAL_URL="https://flacon.github.io/"
+        ;;
+    4)
+        DEPENDENCY_01="chord"
+        ORIGINAL_URL="https://github.com/PeterDing/chord"
+        ;;
+    5)
+        DEPENDENCY_01="cocomusic"
+        ORIGINAL_URL="https://github.com/xtuJSer/CoCoMusic"
+        ;;
+    6)
+        DEPENDENCY_01="feeluown"
+        ORIGINAL_URL="https://feeluown.readthedocs.io/en/latest/"
+        ;;
+    7)
+        DEPENDENCY_01="givemelyrics"
+        ORIGINAL_URL="https://github.com/muriloventuroso/givemelyrics"
+        ;;
+    8)
+        DEPENDENCY_01="listen1"
+        ORIGINAL_URL="http://listen1.github.io/listen1/"
+        ;;
+    9)
+        DEPENDENCY_01="melody"
+        ORIGINAL_URL="http://anufrij.org/melody/"
+        ;;
+    10)
+        DEPENDENCY_01="electron-netease-cloud-music"
+        ORIGINAL_URL="https://github.com/gmg137/netease-cloud-music-gtk"
         ;;
     esac
     ##########################
+    printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
     #"7" "feeluown(x64,支持网易云、虾米)" \
     case ${DEBIAN_INSTALLATION_MENU} in
-    00) ;;
+    00)
+        non_debian_function
+        beta_features_quick_install
+        ;;
     01) debian_opt_install_or_remove_01 ;;
     esac
     #此处00菜单不要跳转到beta_features_quick_install
@@ -486,23 +724,11 @@ debian_opt_music_app() {
     press_enter_to_return
     debian_opt_music_app
 }
-################
+###############
 remove_debian_opt_repo() {
     non_debian_function
-    rm -vf ${OPT_REPO_LIST} /etc/apt/trusted.gpg.d/bintray-public.key.asc
+    rm -vf ${OPT_REPO_LIST} /etc/apt/trusted.gpg.d/debian-opt-11.gpg
     apt update
-}
-##########
-install_opt_vocal() {
-    DEBIAN_INSTALLATION_MENU='00'
-    DEPENDENCY_01='vocal'
-    beta_features_quick_install
-}
-###############
-install_opt_flacon() {
-    DEBIAN_INSTALLATION_MENU='00'
-    DEPENDENCY_01='flacon'
-    beta_features_quick_install
 }
 ##################
 install_opt_deb_file() {

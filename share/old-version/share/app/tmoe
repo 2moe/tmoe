@@ -154,7 +154,7 @@ tmoe_main() {
 		;;
 	"") ;;
 	~/* | ./* | ../* | /*) TEMPORARY_SCRIPT_FILE_01="${4}" ;;
-	*) EXEC_PROGRAM="${4}" ;;
+	*) EXEC_PROGRAM_01="${4}" ;;
 	esac
 
 	case "$5" in
@@ -172,7 +172,7 @@ tmoe_main() {
 	en | entrypoint)
 		case ${CREATE_A_SOFT_LINK} in
 		true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
-		*) EXEC_PROGRAM="${5}" ;;
+		*) EXEC_PROGRAM_02="${5}" ;;
 		esac
 		;;
 	"") ;;
@@ -182,7 +182,7 @@ tmoe_main() {
 		*) TEMPORARY_SCRIPT_FILE_02="${5}" ;;
 		esac
 		;;
-	*) EXEC_PROGRAM="${5}" ;;
+	*) EXEC_PROGRAM_02="${5}" ;;
 	esac
 
 	case "$6" in
@@ -190,7 +190,7 @@ tmoe_main() {
 	en | entrypoint)
 		case ${CREATE_A_SOFT_LINK} in
 		true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
-		*) EXEC_PROGRAM="${6}" ;;
+		*) EXEC_PROGRAM_03="${6}" ;;
 		esac
 		;;
 	~/* | ./* | ../* | /*)
@@ -199,7 +199,7 @@ tmoe_main() {
 		*) TEMPORARY_SCRIPT_FILE_03="${6}" ;;
 		esac
 		;;
-	*) EXEC_PROGRAM="${6}" ;;
+	*) EXEC_PROGRAM_03="${6}" ;;
 	esac
 
 	if ((${#} >= 7)); then
@@ -434,6 +434,23 @@ start_tmoe_container() {
 		fi
 	fi
 
+	if [[ -n ${EXEC_PROGRAM_01} || -n ${EXEC_PROGRAM_02} || -n ${EXEC_PROGRAM_03} ]]; then
+		if [[ -e ${DEBIAN_CHROOT} ]]; then
+			check_container_login_file_01
+			set_temp_file_env
+		else
+			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
+			exit 1
+		fi
+		for i in "${EXEC_PROGRAM_01}" "${EXEC_PROGRAM_02}" "${EXEC_PROGRAM_03}"; do
+			if [[ -n ${i} ]]; then
+				printf "%s\n" "${GREEN}command:${RESET}"
+				EXEC_PROGRAM="${i}"
+				create_and_move_temporary_script_01
+			fi
+		done
+	fi
+
 	if [[ -n ${TEMPORARY_SCRIPT_FILE_01} || -n ${TEMPORARY_SCRIPT_FILE_02} || -n ${TEMPORARY_SCRIPT_FILE_03} ]]; then
 		if [[ -e ${DEBIAN_CHROOT} ]]; then
 			check_container_login_file_01
@@ -442,11 +459,12 @@ start_tmoe_container() {
 			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 			exit 1
 		fi
-		for i in ${TEMPORARY_SCRIPT_FILE_01} ${TEMPORARY_SCRIPT_FILE_02} ${TEMPORARY_SCRIPT_FILE_03}; do
+		for i in "${TEMPORARY_SCRIPT_FILE_01}" "${TEMPORARY_SCRIPT_FILE_02}" "${TEMPORARY_SCRIPT_FILE_03}"; do
 			if [[ -e ${i} ]]; then
+				printf "%s\n" "${YELLOW}file: ${BLUE}${i}${RESET}"
 				${TMOE_PREFIX} cp -rf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 				${TMOE_PREFIX} chmod a+rx "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
-			else
+			elif [[ -n ${i} ]]; then
 				TEMPORARY_SCRIPT_FILE="${i}"
 				create_and_move_temporary_script_02
 			fi

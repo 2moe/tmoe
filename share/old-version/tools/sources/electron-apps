@@ -231,7 +231,7 @@ tmoe_electron_development_app() {
     RETURN_TO_MENU='tmoe_electron_development_app'
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "DEVELOPMENT" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "君欲何爲?\nWhich software do you want to install? " 0 0 0 \
         "1" "netron:用于神经网络,深度学习和机器学习模型的可视化工具" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
@@ -293,7 +293,7 @@ tmoe_electron_video_app() {
     RETURN_TO_MENU='tmoe_electron_video_app'
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "VIDEO APP" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "君欲何爲?\nWhich software do you want to install? " 0 0 0 \
         "1" "zy-player:搜索全网影视" \
         "2" "📺 bilibili-web" \
         "3" "🎬 腾讯视频(Linux在线视频软件)" \
@@ -342,7 +342,7 @@ tmoe_electron_note_app() {
     RETURN_TO_MENU='tmoe_electron_note_app'
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "NOTE APP" --menu \
-        "您想要安装哪个软件?\nWhich software do you want to install? " 0 0 0 \
+        "君欲何爲?\nWhich software do you want to install? " 0 0 0 \
         "1" "gridea:静态博客写作app,你可以用它来记录你的生活、心情、知识和创意" \
         "2" "draw.io:思维导图绘制工具" \
         "3" "simplenote:简单、轻量级的开源跨平台云笔记工具" \
@@ -393,7 +393,7 @@ tmoe_electron_music_app() {
     RETURN_TO_MENU='tmoe_electron_music_app'
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "MUSIC APP" --menu \
-        "您想要安装哪个软件?\n Which software do you want to install? " 0 0 0 \
+        "君欲何爲?" 0 0 0 \
         "1" "electron-netease-cloud-music(云音乐)" \
         "2" "lx-music-desktop(洛雪音乐助手)" \
         "3" "listen1(免费音乐聚合)" \

@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4775,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4776,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -307,7 +307,7 @@ check_linux_distro_etc_release() {
 		debian_env
 		case ${OS_RELEASE} in
 		*ubuntu*) DEBIAN_DISTRO='ubuntu' ;;
-		*kali*) DEBIAN_DISTRO='kali' ;; #"$(cut -c 1-4 /etc/issue)" = "Kali"
+		*Kali*) DEBIAN_DISTRO='kali' ;; #"$(cut -c 1-4 /etc/issue)" = "Kali"
 		*deepin* | *uos.com*) DEBIAN_DISTRO='deepin' ;;
 		esac
 		;;

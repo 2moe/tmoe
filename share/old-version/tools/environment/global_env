@@ -16,9 +16,9 @@ check_editor() {
 }
 #########################
 gnu_linux_env_02() {
-    OPT_URL_01='https://bintray.proxy.ustclug.org/debianopt/debianopt'
-    OPT_URL_02='https://dl.bintray.com/debianopt/debianopt'
-    OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt.list'
+    OPT_URL_01='https://dl.cloudsmith.io/public/debianopt/debianopt/deb/debian'
+    # OPT_URL_02='https://dl.bintray.com/debianopt/debianopt'
+    OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt-debianopt.list'
     ELECTRON_MIRROR_STATION='https://mirrors.huaweicloud.com/electron'
     #ELECTRON_MIRROR_STATION_02='https://npm.taobao.org/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
@@ -924,11 +924,11 @@ install_nginx_webdav() {
 ##########
 add_debian_opt_gpg_key() {
     cd /etc/apt/trusted.gpg.d
-    if [[ ! -s "debian-opt.gpg" ]]; then
-        curl -L 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray' | gpg --dearmor >/tmp/debian-opt.gpg
-        install -o root -g root -m 644 /tmp/debian-opt.gpg /etc/apt/trusted.gpg.d/
+    if [[ ! -s "debian-opt-11.gpg" ]]; then
+        curl -L 'https://dl.cloudsmith.io/public/debianopt/debianopt/gpg.D215CE5D26AF10D5.key' | gpg --dearmor >/tmp/debian-opt-11.gpg
+        install -o root -g root -m 644 /tmp/debian-opt-11.gpg /etc/apt/trusted.gpg.d/
     fi
-    printf "%s\n%s\n" "deb ${OPT_URL_01} buster main" "#deb ${OPT_URL_02} buster main" >${OPT_REPO_LIST}
+    printf "%s\n" "deb ${OPT_URL_01} bullseye main" >${OPT_REPO_LIST}
     chmod a+r -v ${OPT_REPO_LIST}
     apt update
 }
