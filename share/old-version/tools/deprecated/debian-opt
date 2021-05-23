@@ -38,6 +38,17 @@ explore_debian_opt_repo() {
     debian_opt_menu
 }
 #################
+rm_proot_meta_gpg_file() {
+    if [[ -e /etc/apt/trusted.gpg.d/ ]]; then
+        for i in /etc/apt/trusted.gpg.d/.proot*; do
+            if [[ -e ${i} ]]; then
+                printf "%s\n" "${GREEN}sudo ${RED}rm ${YELLOW}-fv ${BLUE}${i}${RESET}"
+                rm -fv ${i} || sudo rm -fv ${i}
+                sudo chmod 644 /etc/apt/trusted.gpg.d/debian-opt-11.gpg
+            fi
+        done
+    fi
+}
 debian_opt_menu() {
     RETURN_TO_WHERE='debian_opt_menu'
     RETURN_TO_MENU='debian_opt_menu'
@@ -60,6 +71,7 @@ debian_opt_menu() {
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############
+    rm_proot_meta_gpg_file
     case "${INSTALL_APP}" in
     0 | "") software_center ;;
     1) debian_opt_music_app ;;
