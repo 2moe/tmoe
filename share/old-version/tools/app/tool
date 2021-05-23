@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4774,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4775,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -285,34 +285,34 @@ tmoe_locale_settings() {
 	esac
 }
 #####################
-check_linux_distro() {
-	set_terminal_color
-	if egrep -q 'debian|ubuntu|deepin|uos\.com' "/etc/os-release"; then
-		LINUX_DISTRO='debian'
-		TMOE_INSTALLATION_COMMAND='eatmydata apt install -y'
-		TMOE_REMOVAL_COMMAND='apt purge -y'
-		TMOE_UPDATE_COMMAND='apt update'
-		if grep -q 'ubuntu' /etc/os-release; then
-			DEBIAN_DISTRO='ubuntu'
-		elif [ "$(cut -c 1-4 /etc/issue)" = "Kali" ]; then
-			DEBIAN_DISTRO='kali'
-		elif egrep -q 'deepin|uos\.com' /etc/os-release; then
-			DEBIAN_DISTRO='deepin'
-		fi
-		###################
-	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue' 2>/dev/null; then
-		LINUX_DISTRO='arch'
-		TMOE_UPDATE_COMMAND='pacman -Syy'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
-		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		######################
-	elif egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
-		LINUX_DISTRO='openwrt'
-		TMOE_UPDATE_COMMAND='opkg update'
-		TMOE_INSTALLATION_COMMAND='opkg install'
-		TMOE_REMOVAL_COMMAND='opkg remove'
-		##################
-	elif egrep -qi "Fedora|CentOS|Red Hat|redhat" "/etc/os-release"; then
+debian_env() {
+	LINUX_DISTRO='debian'
+	TMOE_INSTALLATION_COMMAND='eatmydata apt install -y'
+	TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo apt install'
+	TMOE_REMOVAL_COMMAND='apt purge -y'
+	# TMOE_UPDATE_COMMAND='sudo apt update'
+	TMOE_UPDATE_COMMAND='apt update'
+}
+arch_linux_env() {
+	LINUX_DISTRO='arch'
+	TMOE_UPDATE_COMMAND='pacman -Syy'
+	TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+	TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo pacman -Syu --needed'
+	TMOE_REMOVAL_COMMAND='pacman -Rsc'
+}
+check_linux_distro_etc_release() {
+	OS_RELEASE=$(cat /etc/os-release)
+	case ${OS_RELEASE} in
+	*debian* | *ubuntu* | *deepin* | *uos.com*)
+		debian_env
+		case ${OS_RELEASE} in
+		*ubuntu*) DEBIAN_DISTRO='ubuntu' ;;
+		*kali*) DEBIAN_DISTRO='kali' ;; #"$(cut -c 1-4 /etc/issue)" = "Kali"
+		*deepin* | *uos.com*) DEBIAN_DISTRO='deepin' ;;
+		esac
+		;;
+	*Arch* | *Manjaro*) arch_linux_env ;;
+	*Fedora* | *CentOS* | "*Red Hat*" | *redhat*)
 		LINUX_DISTRO='redhat'
 		if [ $(command -v dnf) ]; then
 			TMOE_UPDATE_COMMAND='dnf update'
@@ -323,57 +323,74 @@ check_linux_distro() {
 			TMOE_INSTALLATION_COMMAND='yum install -y --skip-broken'
 			TMOE_REMOVAL_COMMAND='yum remove -y'
 		fi
-		if [ "$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
-			REDHAT_DISTRO='centos'
-		elif grep -q 'Fedora' "/etc/os-release"; then
-			REDHAT_DISTRO='fedora'
-		fi
-		###################
-	elif grep -q "Alpine" '/etc/issue' 2>/dev/null || grep -q "Alpine" "/etc/os-release"; then
+		case ${OS_RELEASE} in
+		*Fedora*) REDHAT_DISTRO='fedora' ;;
+		*ID=*centos*) REDHAT_DISTRO='centos' ;; #"$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos"
+		esac
+		;;
+	*Alpine*)
 		LINUX_DISTRO='alpine'
 		TMOE_UPDATE_COMMAND='apk update'
 		TMOE_INSTALLATION_COMMAND='apk add'
-		TMOE_REMOVAL_COMMAND='apk del'
-		######################
-	elif egrep -q "gentoo|funtoo" "/etc/os-release"; then
+		TMOE_REMOVAL_COMMAND='sudo apk del'
+		;;
+	*gentoo* | *funtoo*)
 		LINUX_DISTRO='gentoo'
 		TMOE_INSTALLATION_COMMAND='emerge -avk'
+		# TMOE_INSTALLATION_COMMAND_NO_SUDO='emerge -avk'
+		# TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo emerge -avk'
 		TMOE_REMOVAL_COMMAND='emerge -C'
-		########################
-	elif grep -qi 'suse' '/etc/os-release'; then
+		;;
+	*Solus*)
+		LINUX_DISTRO='solus'
+		TMOE_INSTALLATION_COMMAND='eopkg install -y'
+		# TMOE_INSTALLATION_COMMAND_NO_SUDO='eopkg install -y'
+		# TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo eopkg install'
+		TMOE_REMOVAL_COMMAND='eopkg remove -y'
+		;;
+	*ID=\"void\"*)
+		LINUX_DISTRO='void'
+		export LANG='en_US.UTF-8'
+		TMOE_INSTALLATION_COMMAND='xbps-install -Sy'
+		TMOE_REMOVAL_COMMAND='xbps-remove -R'
+		;;
+	*openSUSE* | *suse*)
 		LINUX_DISTRO='suse'
 		TMOE_INSTALLATION_COMMAND='zypper in -y'
 		TMOE_REMOVAL_COMMAND='zypper rm'
-		########################
-	elif [ "$(cut -c 1-4 /etc/issue 2>/dev/null)" = "Void" ]; then
-		LINUX_DISTRO='void'
-		export LANG='en_US.UTF-8'
-		TMOE_INSTALLATION_COMMAND='xbps-install -S -y'
-		TMOE_REMOVAL_COMMAND='xbps-remove -R'
-		#########################
-	elif egrep -q "Slackware" '/etc/os-release'; then
+		;;
+	*Slackware*)
 		LINUX_DISTRO='slackware'
 		TMOE_UPDATE_COMMAND='slackpkg update'
 		TMOE_INSTALLATION_COMMAND='slackpkg install'
 		TMOE_REMOVAL_COMMAND='slackpkg remove'
-		#########################
-	elif grep -q 'Solus' '/etc/os-release'; then
-		LINUX_DISTRO='solus'
-		TMOE_INSTALLATION_COMMAND='eopkg install -y'
-		TMOE_REMOVAL_COMMAND='eopkg remove -y'
-		#########################
+		;;
+	*openwrt*)
+		LINUX_DISTRO='openwrt'
+		TMOE_UPDATE_COMMAND='opkg update'
+		TMOE_INSTALLATION_COMMAND='opkg install'
+		TMOE_REMOVAL_COMMAND='opkg remove'
+		;;
+	*) check_linux_distro_pkg_manager ;;
+	esac
+}
+#####################
+check_linux_distro_pkg_manager() {
+	if [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
+		debian_env
+	elif [[ $(command -v pacman) ]]; then
+		arch_linux_env
+	fi
+}
+check_linux_distro() {
+	set_terminal_color
+	if [[ -e /etc/os-release ]]; then
+		check_linux_distro_etc_release
 	elif [ "$(uname -o)" = 'Android' ]; then
 		printf "%s\n" "${RED}不支持${RESET}${BLUE}Android${RESET}系统！"
 		exit 1
-	elif [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
-		LINUX_DISTRO='debian'
-		TMOE_UPDATE_COMMAND='apt update'
-		TMOE_INSTALLATION_COMMAND='apt install -y'
-		TMOE_REMOVAL_COMMAND='apt purge -y'
-	elif [[ $(command -v pacman) ]]; then
-		LINUX_DISTRO='arch'
-		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+	else
+		check_linux_distro_pkg_manager
 	fi
 }
 #############################
@@ -596,7 +613,7 @@ check_dependencies() {
 		EOF
 		case "${LINUX_DISTRO}" in
 		debian)
-			${TMOE_UPDATE_COMMAND} || ${TMOE_UPDATE_COMMAND}
+			${TMOE_UPDATE_COMMAND}
 			dpkg --configure -a
 			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano aptitude sudo less binutils || ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || apt install -y ${DEPENDENCIES}
 			#创建文件夹防止aptitude报错

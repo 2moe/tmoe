@@ -140,7 +140,7 @@ fn main() {
 }
 RUST_MAIN_RS
 
-cat >build<<-'CARGO_RUN'
+cat >cargo_run<<-'CARGO_RUN'
 #!/usr/bin/env bash
 if [[ ! $(command -v cargo) ]];then
     sudo apt update
@@ -154,7 +154,7 @@ CARGO_RUN
 接着，我们让容器在启动时调用当前目录下的这些文件，最后看一下运行的结果吧！
 
 ```shell
-tmoe p u 下北澤紅茶 ./hello ./build
+tmoe p u 下北澤紅茶 ./hello ./cargo_run
 ```
 
 如果程序成功运行的话，那么终端会输出50行 **Hello**
@@ -254,7 +254,7 @@ cargo new hello
 rm -fv container_link_entrypoint_*
 tmoe p u 下北澤紅茶 ln en
 echo 'exit 0' > container_link_entrypoint_*
-cat>>build<<-'EOF'
+cat>build<<-'EOF'
 #!/usr/bin/env bash
 cd hello
 cargo build --release

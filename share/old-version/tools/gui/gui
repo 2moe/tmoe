@@ -5415,9 +5415,16 @@ first_configure_startvnc() {
         ln -svf $(command -v startvnc) ~/startvnc
     fi
     if [ ${HOME} != '/root' ]; then
-        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority, .Xauthority, .config, .cache, .dbus以及.vnc的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
         cd ${HOME}
-        sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ".ICEauthority" ".Xauthority" ".vnc" ".config" ".cache" ".dbus" || su -c "chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} .ICEauthority .Xauthority .vnc .config .cache .dbus"
+        printf "%s\n" "检测到${HOME}目录不为/root，为避免权限问题，正在将${HOME}目录下的.ICEauthority, .Xauthority, .config, .cache, .dbus以及.vnc的权限归属修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
+        printf "%s\n" "若您遇到了权限问题，则请手动执行${GREEN}chown -Rv ${YELLOW}${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${BLUE}${HOME}${RESET}"
+        VNC_CONFIG_FOLDER=".config"
+        for i in ".ICEauthority" ".Xauthority" ".vnc" ".cache" ".dbus" ".local"; do
+            if [[ -e ${i} ]]; then
+                VNC_CONFIG_FOLDER="${VNC_CONFIG_FOLDER} ${i}"
+            fi
+        done
+        sudo -E chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_CONFIG_FOLDER}
     fi
     ######
     cat <<-EOF
