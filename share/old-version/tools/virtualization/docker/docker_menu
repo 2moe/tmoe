@@ -669,6 +669,7 @@ docker_mirror_source() {
             "1" "163镜像" \
             "2" "edit daemon.json" \
             "3" "edit software source软件本体源" \
+            "4" "remove docker-ce.list" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -679,7 +680,13 @@ docker_mirror_source() {
     2) nano /etc/docker/daemon.json ;;
     3)
         non_debian_function
-        nano /etc/apt/sources.list.d/docker.list
+        check_editor
+        ${EDITOR} /etc/apt/sources.list.d/docker-ce.list
+        ;;
+    4)
+        printf "%s\n" "${RED}rm -fv ${BLUE}/etc/apt/sources.list.d/docker-ce.list /etc/apt/sources.list.d/docker.list /usr/share/keyrings/docker-ce-archive-keyring.gpg${RESET}"
+        do_you_want_to_continue
+        rm -fv /etc/apt/sources.list.d/docker-ce.list /etc/apt/sources.list.d/docker.list /usr/share/keyrings/docker-ce-archive-keyring.gpg
         ;;
     esac
     ###############
@@ -1099,11 +1106,6 @@ debian_add_docker_gpg() {
         DOCKER_RELEASE='debian'
     fi
     DOCKER_TUNA_CODE_LIST=$(curl -L "https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/dists/" | grep link | awk -F 'title=' '{print $2}' | cut -d '"' -f 2)
-    #curl -Lv https://download.docker.com/linux/${DOCKER_RELEASE}/gpg | apt-key add -
-    #if [ ! $(command -v lsb_release) ]; then
-    #   apt update
-    #  apt install lsb-release
-    #fi
     DOCKER_LIST=$(printf "%s\n" $DOCKER_TUNA_CODE_LIST | sed "s@\$@ .deb@g" | tr '\n' ' ')
     DOCKER_CODE=$(
         whiptail --title "DISTRO CODE & DOCKER VERSION" --menu \
@@ -1111,17 +1113,20 @@ debian_add_docker_gpg() {
             ${DOCKER_LIST} \
             3>&1 1>&2 2>&3
     )
-    curl -Lv https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/gpg | apt-key add -
+    curl -L "https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE}/gpg" | gpg --dearmor >/tmp/docker-ce.gpg
+    install -o root -g root -m 644 /tmp/docker-ce.gpg /usr/share/keyrings/docker-ce-archive-keyring.gpg
+    ls -lah /usr/share/keyrings/docker-ce-archive-keyring.gpg
     cd /etc/apt/sources.list.d/
-    sed -i 's/^deb/# &/g' docker.list 2>/dev/null
+    sed -i 's@^[^#]*deb @#&@g' docker-ce.list 2>/dev/null
     #case "$(lsb_release -cs)" in
     #sid) DOCKER_CODE="buster" ;;
     #esac
     if (whiptail --title "请选择软件源" --yes-button "bfsu" --no-button "docker.com" --yesno "Please choose docker software source." 0 50); then
-        printf "%s\n" "deb https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+        printf "%s\n" "deb [signed-by=/usr/share/keyrings/docker-ce-archive-keyring.gpg] https://mirrors.bfsu.edu.cn/docker-ce/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker-ce.list
     else
-        printf "%s\n" "deb https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker.list
+        printf "%s\n" "deb [signed-by=/usr/share/keyrings/docker-ce-archive-keyring.gpg] https://download.docker.com/linux/${DOCKER_RELEASE} ${DOCKER_CODE} stable" >>docker-ce.list
     fi
+    cat docker-ce.list
 }
 #################
 check_docker_installation() {

@@ -497,7 +497,9 @@ install_microsoft_edge_debian() {
     cd /tmp
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
     sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-    sudo su -c 'printf "%s\n" "deb https://packages.microsoft.com/repos/edge stable main" >/etc/apt/sources.list.d/microsoft-edge-dev.list'
+    # sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
+    # sudo su -c 'printf "%s\n" "deb [signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" >/etc/apt/sources.list.d/microsoft-edge-dev.list'
+    printf "%s\n" "deb https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge-dev.list
     sudo rm microsoft.gpg
     sudo apt update
     sudo apt install microsoft-edge-dev
@@ -532,14 +534,16 @@ Recommends: libu2f-udev, libvulkan1
 Description: The web browser from Microsoft
  Microsoft Edge is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.
 EOF
-
     printf "%s\n" "If you can not download edge browser,then go to microsoft official website."
     printf "${YELLOW}%s${RESET}\n" "https://www.microsoftedgeinsider.com/download"
     printf "%s\n" "If you are a ${RED}root user${RESET},try to run ${GREEN}microsoft-edge-dev ${PURPLE}--no-sandbox${RESET} to launch it."
     printf "${PURPLE}%s${RESET}\n" "Do you want to install microsoft-edge-dev?"
     do_you_want_to_continue
     case ${LINUX_DISTRO} in
-    debian) install_microsoft_edge_debian ;;
+    debian)
+        printf "%s\n" "If you want to remove the gpg key and source list, then type ${RED}rm -fv ${BLUE}/usr/share/keyrings/microsoft-archive-keyring.gpg /etc/apt/sources.list.d/microsoft-edge-dev.list${RESET}"
+        install_microsoft_edge_debian
+        ;;
     redhat) install_microsoft_edge_redhat ;;
     arch) install_microsoft_edge_arch ;;
     suse) install_microsoft_edge_suse ;;

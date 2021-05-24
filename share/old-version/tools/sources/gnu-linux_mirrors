@@ -977,61 +977,36 @@ fedora_3x_repos() {
 }
 ###############
 modify_to_kali_sources_list() {
-    case "${LINUX_DISTRO}" in
-    "debian")
-        case "${DEBIAN_DISTRO}" in
-        "ubuntu")
-            printf "%s\n" "${YELLOW}非常抱歉，暂不支持Ubuntu，按回车键返回。${RESET}"
-            printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-            read
-            tmoe_linux_tool_menu
-            ;;
-        esac
-        ;;
-    *)
-        printf "%s\n" "${YELLOW}非常抱歉，检测到您使用的不是deb系linux，按回车键返回。${RESET}"
-        printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"
-        read
-        tmoe_linux_tool_menu
-        ;;
-    esac
-
-    if ! grep -q "^deb.*kali" /etc/apt/sources.list; then
-        printf "%s\n" "检测到您当前为debian源，是否修改为kali源？"
-        printf "%s\n" "Detected that your current software sources list is debian, do you need to modify it to kali source?"
-        RETURN_TO_WHERE='tmoe_linux_tool_menu'
+    if [[ -s /etc/apt/sources.list.d/kali-linux.list ]]; then
+        printf "%s\n" "${RED}rm -fv ${BLUE}/etc/apt/sources.list.d/kali-linux.list /usr/share/keyrings/kali-linux-archive-keyring.gpg${RESET}"
         do_you_want_to_continue
-        kali_sources_list
+        rm -fv /etc/apt/sources.list.d/kali-linux.list /usr/share/keyrings/kali-linux-archive-keyring.gpg
     else
-        printf "%s\n" "检测到您当前为kali源，是否修改为debian源？"
-        printf "%s\n" "Detected that your current software sources list is kali, do you need to modify it to debian source?"
-        RETURN_TO_WHERE='tmoe_linux_tool_menu'
-        do_you_want_to_continue
-        debian_sources_list
+        kali_sources_list
     fi
 }
 ################################
 kali_sources_list() {
-    if [ ! -e "/usr/bin/gpg" ]; then
-        apt update
-        apt install gpg -y
-    fi
+    install_gpg
     #添加公钥
-    apt-key adv --keyserver keyserver.ubuntu.com --recv ED444FF07D8D0BF6
-    cd /etc/apt/
-    cp -f sources.list sources.list.bak
-
-    sed -i 's/^deb/#&/g' /etc/apt/sources.list
-    cat >>/etc/apt/sources.list <<-'EOF'
-		deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
-		deb http://mirrors.bfsu.edu.cn/debian/ stable main contrib non-free
-		# deb https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
-		# deb http://mirrors.bfsu.edu.cn/kali/ kali-last-snapshot main contrib non-free
+    # gpg --keyserver keyserver.ubuntu.com --recv-key 44C6513A8E4FB3D30875F758ED444FF07D8D0BF6
+    # sudo gpg --no-default-keyring --keyring /usr/share/keyrings/kali-linux-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 44C6513A8E4FB3D30875F758ED444FF07D8D0BF6
+    curl -L https://archive.kali.org/archive-key.asc | gpg --dearmor >/tmp/kali.gpg
+    install -o root -g root -m 644 /tmp/kali.gpg /usr/share/keyrings/kali-linux-archive-keyring.gpg
+    # cd /etc/apt/
+    # cp -f sources.list sources.list.bak
+    # sed -i 's/^deb/#&/g' /etc/apt/sources.list
+    # deb [signed-by=/usr/share/keyrings/<myrepository>-archive-keyring.gpg] <https://repository.example.com/debian/ stable main>
+    cat >/etc/apt/sources.list.d/kali-linux.list <<-'EOF'
+		deb [signed-by=/usr/share/keyrings/kali-linux-archive-keyring.gpg] http://http.kali.org/kali/ kali-rolling main contrib non-free
+		# deb [signed-by=/usr/share/keyrings/kali-linux-archive-keyring.gpg] http://mirrors.bfsu.edu.cn/kali/ kali-rolling main contrib non-free
+		# deb [signed-by=/usr/share/keyrings/kali-linux-archive-keyring.gpg] https://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
+		# deb [signed-by=/usr/share/keyrings/kali-linux-archive-keyring.gpg] http://mirrors.bfsu.edu.cn/kali/ kali-last-snapshot main contrib non-free
 	EOF
     apt update
     apt list --upgradable
-    apt full-upgrade -y
-    apt install -y kali-menu
+    apt full-upgrade
+    apt install kali-menu
     apt search kali-linux
     printf '%s\n' 'You have successfully replaced your debian source with a kali source.'
     printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}"

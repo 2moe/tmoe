@@ -31,8 +31,9 @@ import_wine_hq_key() {
         apt install -y gpg
     fi
     curl https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor >winehq.gpg
-    sudo install -o root -g root -m 644 winehq.gpg /etc/apt/trusted.gpg.d/
-    printf "%s\n" "deb https://dl.winehq.org/wine-builds/${WINE_DISTRO}/ ${VERSION_CODENAME} main" >/etc/apt/sources.list.d/wine-hq.list
+    sudo install -o root -g root -m 644 winehq.gpg /usr/share/keyrings/winehq-archive-keyring.gpg
+    printf "%s\n" "deb [signed-by=/usr/share/keyrings/winehq-archive-keyring.gpg] https://dl.winehq.org/wine-builds/${WINE_DISTRO}/ ${VERSION_CODENAME} main" >/etc/apt/sources.list.d/wine-hq.list
+    ls -lah /usr/share/keyrings/winehq-archive-keyring.gpg /etc/apt/sources.list.d/wine-hq.list
     sudo rm winehq.gpg
 }
 type_your_debian_version() {
@@ -226,7 +227,7 @@ remove_wine_bin() {
     DEPENDENCY_03='winehq-devel winehq-staging winehq-stable'
     printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${DEPENDENCY_03}"
     do_you_want_to_continue
-    for i in /etc/apt/sources.list.d/wine-hq.list /etc/apt/trusted.gpg.d/winehq.gpg; do
+    for i in /etc/apt/sources.list.d/wine-hq.list /usr/share/keyrings/winehq-archive-keyring.gpg; do
         [[ ! -e ${i} ]] || rm -fv ${i}
     done
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}

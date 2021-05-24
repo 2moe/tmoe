@@ -508,14 +508,14 @@ install_spotify() {
     DEPENDENCY_02='spotify'
     case ${LINUX_DISTRO} in
     debian)
+        curl -LsS https://download.spotify.com/debian/pubkey.gpg | gpg --dearmor >/tmp/spotify.gpg
+        curl -LsS https://download.spotify.com/debian/pubkey_0D811D58.gpg | gpg --dearmor >/tmp/spotify_pub.gpg
+        for i in /tmp/spotify.gpg /tmp/spotify_pub.gpg; do
+            sudo install -o root -g root -m 644 ${i} /etc/apt/trusted.gpg.d/
+        done
+        printf "%s\n" "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
         cat <<-'EOF'
-    若安装失败，则请手动执行以下命令
-    curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
-    curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
-    printf "%s\n" "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-    apt update
-    apt install spotify-client
-    如需卸载，则请输apt purge spotify-client ;rm /etc/apt/sources.list.d/spotify.list
+    如需卸载，则请输apt purge spotify-client ;rm /etc/apt/sources.list.d/spotify.list /etc/apt/trusted.gpg.d/spotify.gpg /etc/apt/trusted.gpg.d/spotify_pub.gpg
 EOF
         DEPENDENCY_02='spotify-client'
         ;;

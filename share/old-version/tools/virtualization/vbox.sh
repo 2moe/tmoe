@@ -6,10 +6,11 @@ debian_add_virtual_box_gpg() {
 	else
 		VBOX_RELEASE='buster'
 	fi
-	curl -Lv https://www.virtualbox.org/download/oracle_vbox_2016.asc | apt-key add -
+	curl -L 'https://www.virtualbox.org/download/oracle_vbox_2016.asc' | gpg --dearmor >/tmp/oracle_vbox_2016.gpg
+	install -o root -g root -m 644 /tmp/oracle_vbox_2016.gpg /usr/share/keyrings/oracle_vbox_2016-archive-keyring.gpg
 	cd /etc/apt/sources.list.d/
-	sed -i 's/^deb/# &/g' virtualbox.list
-	printf "%s\n" "deb http://mirrors.bfsu.edu.cn/virtualbox/apt/ ${VBOX_RELEASE} contrib" >>virtualbox.list
+	sed -i 's/deb /# &/g' virtualbox.list
+	printf "%s\n" "deb [signed-by=/usr/share/keyrings/oracle_vbox_2016-archive-keyring.gpg] http://mirrors.bfsu.edu.cn/virtualbox/apt/ ${VBOX_RELEASE} contrib" >>virtualbox.list
 }
 ###############
 get_debian_vbox_latest_url() {

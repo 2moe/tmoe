@@ -923,12 +923,9 @@ install_nginx_webdav() {
 }
 ##########
 add_debian_opt_gpg_key() {
-    cd /etc/apt/trusted.gpg.d
-    if [[ ! -s "debian-opt-11.gpg" ]]; then
-        curl -L 'https://dl.cloudsmith.io/public/debianopt/debianopt/gpg.D215CE5D26AF10D5.key' | gpg --dearmor >/tmp/debian-opt-11.gpg
-        install -o root -g root -m 644 /tmp/debian-opt-11.gpg /etc/apt/trusted.gpg.d/
-    fi
-    printf "%s\n" "deb ${OPT_URL_01} bullseye main" >${OPT_REPO_LIST}
+    curl -L 'https://dl.cloudsmith.io/public/debianopt/debianopt/gpg.D215CE5D26AF10D5.key' | gpg --dearmor >/tmp/debian-opt-11.gpg
+    install -o root -g root -m 644 /tmp/debian-opt-11.gpg /usr/share/keyrings/debian-opt-11-archive-keyring.gpg
+    printf "%s\n" "deb [signed-by=/usr/share/keyrings/debian-opt-11-archive-keyring.gpg] ${OPT_URL_01} bullseye main" >${OPT_REPO_LIST}
     chmod a+r -v ${OPT_REPO_LIST}
     apt update
 }
@@ -1043,7 +1040,9 @@ get_ubuntu_ppa_gpg_key() {
     TRUE_FINGERPRINT_LINE=$((${FALSE_FINGERPRINT_LINE} + 1))
     PPA_GPG_KEY=$(cat .ubuntu_ppa_tmoe_cache | sed -n ${TRUE_FINGERPRINT_LINE}p | cut -d '<' -f 2 | cut -d '>' -f 2)
     rm -f .ubuntu_ppa_tmoe_cache
-    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com ${PPA_GPG_KEY}
+    # apt-key adv --recv-keys --keyserver keyserver.ubuntu.com ${PPA_GPG_KEY}
+    gpg --no-default-keyring --keyring /usr/share/keyrings/${DEV_TEAM_NAME}_${PPA_SOFTWARE_NAME}-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ${PPA_GPG_KEY}
+    ls -lah /usr/share/keyrings/${DEV_TEAM_NAME}_${PPA_SOFTWARE_NAME}-archive-keyring.gpg
     #press_enter_to_return
     #tmoe_sources_list_manager
 }
@@ -1052,7 +1051,7 @@ check_ubuntu_ppa_list() {
     cd /etc/apt/sources.list.d
     GREP_NAME="${DEV_TEAM_NAME}-ubuntu-${PPA_SOFTWARE_NAME}"
     PPA_LIST_FILE=$(ls ${GREP_NAME}-* | head -n 1)
-    CURRENT_UBUNTU_CODE=$(grep -v '^#' ${PPA_LIST_FILE} | awk '{print $3}' | head -n 1)
+    CURRENT_UBUNTU_CODE=$(egrep -v '^#|deb-src ' ${PPA_LIST_FILE} | awk -F '/ubuntu ' '{print $2}' | awk '{print $1}' | head -n 1)
 }
 #################
 modify_ubuntu_sources_list_d_code() {
@@ -1062,18 +1061,20 @@ modify_ubuntu_sources_list_d_code() {
     else
         TARGET_BLANK_CODE="bionic"
     fi
-
     TARGET_CODE=$(whiptail --inputbox "请输入您当前使用的debian系统对应的ubuntu版本代号,例如focal\n当前ppa软件源的ubuntu代号为${CURRENT_UBUNTU_CODE}\n若取消则不修改,若留空则设定为${TARGET_BLANK_CODE}\nPlease type the ubuntu code name.\nFor example,buster corresponds to bionic." 0 50 --title "Ubuntu code(groovy,focal,etc.)" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         TARGET_CODE="${CURRENT_UBUNTU_CODE}"
     elif [ -z "${TARGET_CODE}" ]; then
         TARGET_CODE=${TARGET_BLANK_CODE}
     fi
-
-    if [ ${TARGET_CODE} = ${CURRENT_UBUNTU_CODE} ]; then
+    if [[ "${DEBIAN_DISTRO}" != 'ubuntu' ]]; then
+        sed -i "s@deb http@deb [signed-by=/usr/share/keyrings/${DEV_TEAM_NAME}_${PPA_SOFTWARE_NAME}-archive-keyring.gpg] http@" ${PPA_LIST_FILE}
+    fi
+    if [[ ${TARGET_CODE} = ${CURRENT_UBUNTU_CODE} ]]; then
         printf "%s\n" "您没有修改ubuntu code，当前使用Ubuntu ${TARGET_CODE}的ppa软件源"
     else
-        sed -i "s@ ${CURRENT_UBUNTU_CODE}@ ${TARGET_CODE}@g" ${PPA_LIST_FILE}
+        printf "%s\n" "${CURRENT_UBUNTU_CODE}"
+        sed -i "s@ubuntu ${CURRENT_UBUNTU_CODE} @ubuntu ${TARGET_CODE} @g" ${PPA_LIST_FILE}
         printf "%s\n" "已将${CURRENT_UBUNTU_CODE}修改为${TARGET_CODE},若更新错误，则请手动修改$(pwd)/${PPA_LIST_FILE}"
     fi
 }

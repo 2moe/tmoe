@@ -395,7 +395,9 @@ install_boot_repair() {
 	fi
 	add-apt-repository ppa:yannubuntu/boot-repair
 	if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
-		apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 60D8DA0B
+		gpg --no-default-keyring --keyring /usr/share/keyrings/yannubuntu_boot-repair-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3C48D16124B50277AF10D27F32B18A1260D8DA0B
+		ls -lah /usr/share/keyrings/${DEV_TEAM_NAME}_${PPA_SOFTWARE_NAME}-archive-keyring.gpg
+		sed -i 's@deb http@deb [signed-by=/usr/share/keyrings/yannubuntu_boot-repair-archive-keyring.gpg] http@' /etc/apt/sources.list.d/yannubuntu-ubuntu-boot-repair-*.list
 	fi
 	apt update
 	apt install -y boot-repair

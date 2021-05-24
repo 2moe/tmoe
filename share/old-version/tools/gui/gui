@@ -2800,40 +2800,6 @@ deepin_desktop_warning() {
         ;;
     esac
 }
-#################
-dde_old_version() {
-    if [ ! $(command -v gpg) ]; then
-        DEPENDENCY_01="gnupg"
-        DEPENDENCY_02=""
-        printf "%s\n" "${GREEN} ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
-        printf "%s\n" "即将为您安装gpg..."
-        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
-    fi
-    DEPENDENCY_01="deepin-desktop"
-
-    case "${DEBIAN_DISTRO}" in
-    "ubuntu") add-apt-repository ppa:leaeasy/dde ;;
-    *)
-        cd /etc/apt/
-        if ! grep -q '^deb.*deepin' sources.list.d/deepin.list 2>/dev/null; then
-            cat >/etc/apt/sources.list.d/deepin.list <<-'EOF'
-				   #如需使用apt upgrade命令，请禁用deepin软件源,否则将有可能导致系统崩溃。
-					deb [by-hash=force] https://mirrors.bfsu.edu.cn/deepin unstable main contrib non-free
-			EOF
-        fi
-        ;;
-    esac
-    wget https://mirrors.bfsu.edu.cn/deepin/project/deepin-keyring.gpg
-    gpg --import deepin-keyring.gpg
-    gpg --export --armor 209088E7 | apt-key add -
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51
-    dpkg --configure -a
-    apt update
-    auto_select_keyboard_layout
-    aptitude install -y dde
-    sed -i 's/^deb/#&/g' /etc/apt/sources.list.d/deepin.list
-    apt update
-}
 ################
 ubuntu_dde_distro_code() {
     aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache 'http://ppa.launchpad.net/ubuntudde-dev/stable/ubuntu/dists/'
