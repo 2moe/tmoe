@@ -74,7 +74,7 @@ manager_frequently_asked_questions() {
 		"4" "About auto conf(关于自动配置)" \
 		"5" "VNC无法调用音频" \
 		"6" "给Linux Deploy配置VNC音频" \
-		"7" "sudo出现nosuid错误" \
+		"7" "当容器目录位于外置硬盘时,sudo出现nosuid错误" \
 		"0" "🌚 Back to the main menu 返回主菜单" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -86,7 +86,19 @@ manager_frequently_asked_questions() {
 	4) questions_about_tmoe_automatic_configuration ;;
 	5) vnc_can_not_call_pulse_audio ;;
 	6) linux_deploy_pulse_server ;;
-	7) printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,uhelper=udisks2 /dev/xxx /media/xxx/mountpoint" ;;
+	7)
+		printf "%s\n" "假设您将容器路径软链接到外置移动硬盘的某个分区里的某个目录"
+		printf "%s\n" "注:该分区的文件系统(File system)可为ext4/btrfs/xfs等, 不能为ntfs/fat32/exfat"
+		printf "%s\n" "首先请确保容器内部/usr/bin/sudo文件权限为4755,且所属为0:0"
+
+		printf "%s\n" "接着在宿主环境下对该硬盘进行重新挂载"
+		printf "%s\n" "${YELLOW}Example:${RESET}"
+		printf "%s\n" "假设该硬盘为/dev/nvmexnxpx"
+		printf "输入  ${GREEN}mount${RESET} | grep ${BLUE}/dev/nvmexnxpx${RESET} 获取挂载参数"
+		printf "%s\n" "若获取到的结果为${YELLOW}/dev/nvmexnxpx on /media/xxx/mountpoint type btrfs (rw,nosuid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2)${RESET}"
+		printf "%s\n" "那么稍微改动一下, 生成新的挂载命令"
+		printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2 /dev/nvmexnxpx /media/xxx/mountpoint"
+		;;
 	esac
 	#subvolid=5,subvol=/,compress=zstd
 	#############
