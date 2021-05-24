@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4781,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4782,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -183,7 +183,9 @@ check_mouse_cursor() {
 #############
 press_enter_to_continue() {
 	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
-	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}"
+	case ${TMOE_LANG} in
+	zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}" ;;
+	esac
 	read
 }
 #############################################
@@ -273,7 +275,8 @@ tmoe_locale_settings() {
 		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
 			cd /etc
 			printf "\n" >>locale.gen
-			sed -i 's@^[^#]@# &@g' locale.gen
+			# sed -i 's@^[^#]@# &@g' locale.gen
+			#不要注释掉已有locale
 			sed -i "$ a ${TMOE_LANG} UTF-8" locale.gen
 			locale-gen ${TMOE_LANG} 2>/dev/null
 		fi

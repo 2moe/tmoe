@@ -204,12 +204,12 @@ do_you_want_to_configure_tmoe_zsh() {
 			#.dockerenv
 			case $(id -u) in
 			0)
-				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you want to configure zsh for the $(whoami)?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
+				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you want to configure zsh for root?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
 					CONFIGURE_ZSH=true
 				fi
 				;;
 			*)
-				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you need to configure zsh for the $(whoami)?" 0 0); then
+				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you need to configure zsh for $(whoami)?" 0 0); then
 					CONFIGURE_ZSH=true
 				fi
 				;;
