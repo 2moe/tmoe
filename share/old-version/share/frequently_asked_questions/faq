@@ -94,7 +94,7 @@ manager_frequently_asked_questions() {
 		printf "%s\n" "接着在宿主环境下对该硬盘进行重新挂载"
 		printf "%s\n" "${YELLOW}Example:${RESET}"
 		printf "%s\n" "假设该硬盘为/dev/nvmexnxpx"
-		printf "输入  ${GREEN}mount${RESET} | grep ${BLUE}/dev/nvmexnxpx${RESET} 获取挂载参数"
+		printf "%s\n" "输入  ${GREEN}mount${RESET} | grep ${BLUE}/dev/nvmexnxpx${RESET} 获取挂载参数"
 		printf "%s\n" "若获取到的结果为${YELLOW}/dev/nvmexnxpx on /media/xxx/mountpoint type btrfs (rw,nosuid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2)${RESET}"
 		printf "%s\n" "那么稍微改动一下, 生成新的挂载命令"
 		printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2 /dev/nvmexnxpx /media/xxx/mountpoint"
