@@ -1770,23 +1770,15 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 
 	mkdir -pv /etc/default
-	sed -i 's/^/#&/g' /etc/default/locale 2>/dev/null
-	sed -i 's/##/#/g' /etc/default/locale 2>/dev/null
-	if [ ! -e "/usr/local/etc/tmoe-linux/locale.txt" ]; then
-	    printf "%s\n" "Tmoe-locale file not detected."
-	fi
 	printf "%s\n" "Configuring ${TMOE_LANG_HALF} environment..."
-	sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" /etc/locale.gen 2>/dev/null
-	cat >>/etc/default/locale <<-EOF
+	cat >/etc/default/locale <<-EOF
 			LANG=${TMOE_LANG}
 			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 			LC_ALL=${TMOE_LANG}
 		EOF
-	if ! egrep -q "^[^#]*${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-	    sed -i 's@^@#&@g;s@##@#@g' /etc/locale.gen 2>/dev/null
-	    printf "\n" >>/etc/locale.gen
+		printf "\n" >>locale.gen
+		sed -i 's@^[^#]@# &@g' locale.gen
 	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
-	fi
 	locale-gen ${TMOE_LANG} 2>/dev/null
 	source /etc/default/locale 2>/dev/null
 	#################

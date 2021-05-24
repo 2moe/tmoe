@@ -25,7 +25,6 @@ sed -e 's@en_US en_US@en_US zh_CN@g' \
     -e 's/240c::6666/2606:4700:4700::1111/' \
     -e 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' \
     -e 's@https://gitee.com/mirrors/neofetch/raw/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch@https://raw.githubusercontent.com/dylanaraps/neofetch/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch@g' \
-    -e '/正在配置中文环境/d' \
     -e 's@###tmoe-github@@g' \
     -e 's@gitee.com/mo2/zsh/raw/@raw.githubusercontent.com/2cd/zsh/@g' \
     -i ${INSTALLATION_FILE}

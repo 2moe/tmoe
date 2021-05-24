@@ -754,7 +754,7 @@ do_you_want_to_set_it_as_the_default_user() {
 		fi
 		;;
 	*)
-		if (whiptail --title "DEFAULT USER" --yes-button "NO" --no-button "YES" --yesno "Do you want to set ${USER_NAME} as the default user?\nTake effect after restarting the container" 0 0); then
+		if (whiptail --title "DEFAULT USER" --yes-button "NO" --no-button "YES" --yesno "Do you want to set ${USER_NAME} as the default user?\nIt will take effect after restarting the container" 0 0); then
 			printf ""
 		else
 			set_it_as_the_default_user
