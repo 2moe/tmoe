@@ -263,14 +263,21 @@ list_installed_tmoe_containers() {
 		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
 			"コンテナを選択する必要があります" 0 0 0 \
 			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
-			"Back" "🌚 返回" \
+			"Back" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
 	}
 	list_installed_tmoe_containers_menu_en() {
 		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
 			"Please choose a container." 0 0 0 \
 			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
-			"Back" "🌚 返回" \
+			"Back" "🌚" \
+			3>&1 1>&2 2>&3)
+	}
+	list_installed_tmoe_containers_menu_de() {
+		TMOE_CONTAINER_LIST=$(whiptail --title "CONTAINER LIST" --menu \
+			"Bitte wählen Sie einen Behälter." 0 0 0 \
+			$(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
+			"Back" "🌚 Zurück" \
 			3>&1 1>&2 2>&3)
 	}
 	list_installed_tmoe_containers_menu_zh() {
@@ -283,6 +290,7 @@ list_installed_tmoe_containers() {
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) list_installed_tmoe_containers_menu_zh ;;
 	ja_JP.UTF-8) list_installed_tmoe_containers_menu_ja ;;
+	de_DE.UTF-8) list_installed_tmoe_containers_menu_de ;;
 	*) list_installed_tmoe_containers_menu_en ;;
 	esac
 	rm -f ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null
