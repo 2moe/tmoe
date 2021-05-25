@@ -1900,7 +1900,10 @@ install_slackware_linux_distro() {
 #########################
 distro_does_not_support() {
 	printf "%s\n" "${PURPLE}Sorry${RESET},your architecture is ${BLUE}${ARCH_TYPE}${RESET}."
-	printf "%s\n" "检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构,请尝试${YELLOW}跨架构${RESET}运行,或换用其他发行版"
+	printf "%s\n" "Please try to use ${BLUE}cross-architecture${RESET}."
+	case ${TMOE_LANG} in
+	zh_*UTF-8) printf "%s\n" "检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构,请尝试${YELLOW}跨架构${RESET}运行,或换用其他发行版" ;;
+	esac
 	press_enter_to_return
 	choose_which_gnu_linux_distro
 }
@@ -2089,11 +2092,16 @@ install_mint_linux_distro() {
 	case ${ARCH_TYPE} in
 	amd64 | i386) which_linux_mint_distro ;;
 	*)
-		printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
-		printf "%s\n" "Linux Mint${RED}不支持${RESET}您的架构"
-		printf "%s\n" "请换用${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}设备后，再来尝试"
-		press_enter_to_return
-		install_beta_containers
+		case ${TMOE_LANG} in
+		zh_*UTF-8)
+			printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
+			printf "%s\n" "Linux Mint${RED}不支持${RESET}您的架构"
+			printf "%s\n" "请尝试${PURPLE}跨架构${RESET}运行${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}"
+			press_enter_to_return
+			install_beta_containers
+			;;
+		*) distro_does_not_support ;;
+		esac
 		;;
 	esac
 }

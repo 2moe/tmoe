@@ -607,7 +607,7 @@ install_docker_ce_or_io() {
         printf "%s\n" "${RED}WARNING！${RESET}检测到您当前处于${GREEN}proot容器${RESET}环境下！"
         printf "%s\n" "若您处于容器环境下,且宿主机为${BOLD}Android${RESET}系统，则请在安装前${BLUE}确保${RESET}您的Linux内核支持docker"
         printf "%s\n" "否则请通过qemu-system来运行GNU/Linux虚拟机，再安装docker。"
-        printf "%s\n" "If your host is android, it is recommended that you use the qemu-system virtual machine to run docker."
+        printf "%s\n" "If your host is android, it is recommended that you use qemu-system virtual machine to run docker."
         do_you_want_to_continue
         ;;
     false) printf "%s\n" "检测到您当前处于chroot容器环境下" ;;
