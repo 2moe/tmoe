@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4788,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4789,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -621,7 +621,7 @@ choose_tmoe_locale_env() {
 			"152" "gez_ER: ግዕዝ_ኤርትራ" \
 			"153" "gez_ET@abegede: Ge\'ez language locale for Ethiopia With Abegede Collation" \
 			"154" "gez_ET: ግዕዝ_ኢትዮጵያ" \
-			"155" "gl_ES: galego_€" \
+			"155" "gl_ES: galego_España" \
 			"156" "gu_IN: ગુજરાતી_ભારત" \
 			"157" "gv_GB: Gaelg_Rywvaneth Unys" \
 			"158" "hak_TW: 客家話_臺灣" \

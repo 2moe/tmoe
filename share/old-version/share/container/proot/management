@@ -49,11 +49,11 @@ proot_management_menu() {
 			"2" "⏹️ Tötungsprozess" \
 			"3" "🐯 start gui(remote desktop)" \
 			"4" "🍧 Benutzer & Umgebung" \
-			"5" "🍹 backup ${CONTAINER_TYPE} container" \
+			"5" "🥤 Skript bearbeiten" \
 			"6" "💔 aushängen und entfernen" \
-			"7" "📘 Liesmich" \
-			"8" "🌈 Erstellen Sie einen neuen Container" \
-			"9" "🥤 Skript bearbeiten" \
+			"7" "🍹 backup ${CONTAINER_TYPE} container" \
+			"8" "📘 Liesmich" \
+			"9" "🌈 Erstellen Sie einen neuen Container" \
 			"10" "🍅 Raumbesetzung" \
 			"11" "aushängen und entfernen (Compatibility mode)" \
 			"0" "🌚 zurück" \
