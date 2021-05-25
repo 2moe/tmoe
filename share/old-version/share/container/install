@@ -757,7 +757,7 @@ create_proot_startup_script() {
 		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
 	fi
 	case ${CONTAINER_DISTRO} in
-	arch | archlinux | manjaro)
+	arch | archlinux | manjaro | solus)
 		sed -E -e "s@^(PROOT_H=).*@\1true@g" \
 			-i "${TMOE_STARTUP_SCRIPT}"
 		;;
@@ -1605,6 +1605,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		printf "%s\n" "You can type ${GREEN}startvnc${RESET} to start ${BLUE}tightvnc server${RESET},type ${RED}stopvnc${RESET} to stop it."
 		printf "%s\n" "当前系统已经了预装窗口管理器和tightvnc服务端,您可以输${GREEN}startvnc${RESET}来启动vnc服务端。"
 	elif grep -q 'Solus' /etc/os-release;then
+		if [[ $(command -v debian-i) ]];then
+			cp $(command -v debian-i) /usr/local/bin/tmoe
+		fi
+		printf "%s\n" "${GREEN}eopkg ${BLUE}update-repo${RESET}"
+		eopkg update-repo
 		eopkg help
 		exit_tmoe_configuration
 	fi
