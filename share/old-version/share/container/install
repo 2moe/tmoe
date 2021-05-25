@@ -1562,7 +1562,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    sed -i -E "s@(DISPLAY)=.*@\1=:${DISPLAY_PORT}@" "$(command -v startvnc)"
 	}
 	set_vnc_passwd() {
-	    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\nPlease type the password, the length is 6 to 8 digits" 0 50 --title "VNC PASSWORD" 3>&1 1>&2 2>&3)
+	    TARGET_VNC_PASSWD=$(whiptail --inputbox "請設定6至8位VNC訪問密碼\nPlease type the password, the length is between 6 and 8" 0 50 --title "VNC PASSWORD" 3>&1 1>&2 2>&3)
 	    if [ "$?" != "0" ]; then
 	        printf "%s\n" "请重新输入密码"
 	        printf "%s\n" "Please type the password again."
@@ -1587,13 +1587,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			chmod a+rx /usr/local/bin/startxsdl
 	    fi
 	}
-	if grep -q 'puppy_linux' /etc/os-release;then
-		choose_vnc_port_5902_or_5903
-		set_vnc_passwd
-		printf "%s\n" "You can type ${GREEN}startvnc${RESET} to start ${BLUE}tightvnc server${RESET},type ${RED}stopvnc${RESET} to stop it."
-		printf "%s\n" "当前系统已经了预装窗口管理器和tightvnc服务端,您可以输${GREEN}startvnc${RESET}来启动vnc服务端。"
-	fi
-	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null;then
+	exit_tmoe_configuration(){
 		cd ~
 		rm -f ~/.zlogin ~/.profile zsh.sh zsh-i.sh 2>/dev/null
 		[[ ! -e ~/.profile.bak ]] || mv -f ~/.profile.bak ~/.profile 2>/dev/null
@@ -1604,6 +1598,19 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			fi
 		done
 		exit 0
+	}
+	if grep -q 'puppy_linux' /etc/os-release;then
+		choose_vnc_port_5902_or_5903
+		set_vnc_passwd
+		printf "%s\n" "You can type ${GREEN}startvnc${RESET} to start ${BLUE}tightvnc server${RESET},type ${RED}stopvnc${RESET} to stop it."
+		printf "%s\n" "当前系统已经了预装窗口管理器和tightvnc服务端,您可以输${GREEN}startvnc${RESET}来启动vnc服务端。"
+	elif grep -q 'Solus' /etc/os-release;then
+		eopkg help
+		exit_tmoe_configuration
+	fi
+
+	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null;then
+		exit_tmoe_configuration
 	fi
 	##############
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -1776,11 +1783,17 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 			LC_ALL=${TMOE_LANG}
 		EOF
-		printf "\n" >>locale.gen
-		sed -i 's@^[^#]@# &@g' locale.gen
-	    sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
+	printf "\n" >>locale.gen
+	sed -i 's@^[^#]@# &@g' locale.gen
+	sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
 	locale-gen ${TMOE_LANG} 2>/dev/null
 	source /etc/default/locale 2>/dev/null
+	###############
+	if [[ -e /etc/apt/sources.list.d/system76-ubuntu-pop-focal.list ]];then
+		apt-cache show pop-desktop
+		printf "%s\n" "If you are using a systemd-nspawn container, then you can type ${GREEN}apt${RESET} ${YELLOW}install ${BLUE}pop-desktop${RESET} to install Pop\!OS desktop." 
+		exit_tmoe_configuration
+	fi
 	#################
 	if egrep -q "Arch|Manjaro" '/etc/os-release' 2>/dev/null || egrep -q "Arch|Manjaro" '/etc/issue'; then
 		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
@@ -1961,7 +1974,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		fi
 		printf "%s\n" "Upgrading all packages ..."
 		printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}-y ${BLUE}dist-upgrade${RESET}"
-		if [[ ${WEEKLY_BUILD_CONTAINER} != true ]];then
+		if [[ ${WEEKLY_BUILD_CONTAINER} != true && ! -e /etc/apt/sources.list.d/system76-ubuntu-pop-focal.list ]];then
 			eatmydata apt upgrade -y 2>/dev/null 
 			dpkg --configure -a
 			eatmydata apt dist-upgrade -y 2>/dev/null || apt dist-upgrade -y 2>/dev/null
