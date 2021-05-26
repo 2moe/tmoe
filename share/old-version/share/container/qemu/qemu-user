@@ -188,11 +188,14 @@ install_qemu_user_static() {
 }
 ##############
 check_qemu_user_version() {
-	REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/q/qemu/'
+	REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/q/qemu/'
 	REPO_URL_02='https://ftp.debian.org/debian/pool/main/q/qemu/'
 	unset THE_LATEST_DEB_VERSION
-	THE_LATEST_DEB_VERSION="$(curl --connect-timeout 10 -L ${REPO_URL} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
-	[[ -n ${THE_LATEST_DEB_VERSION} ]] || THE_LATEST_DEB_VERSION="$(curl --connect-timeout 30 -L ${REPO_URL_02} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
+	THE_LATEST_DEB_VERSION="$(curl --connect-timeout 7 -L ${REPO_URL} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
+	if [[ -z ${THE_LATEST_DEB_VERSION} ]]; then
+		THE_LATEST_DEB_VERSION="$(curl --connect-timeout 30 -L ${REPO_URL_02} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
+		REPO_URL=${REPO_URL_02}
+	fi
 	THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' "${THE_LATEST_DEB_VERSION}" | cut -d '_' -f 2 | sed 's@%2B@+@')
 }
 ###############
