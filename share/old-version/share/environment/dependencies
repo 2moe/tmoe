@@ -62,11 +62,19 @@ gnu_linux_manager_dependencies() {
 		esac
 	fi
 
-	if [ ! $(command -v proot) ]; then
-		case "${LINUX_DISTRO}" in
-		"debian") DEPENDENCIES="${DEPENDENCIES} proot" ;;
-		esac
-	fi
+	case "${LINUX_DISTRO}" in
+	"debian")
+		for i in proot chroot unshare; do
+			if [ ! $(command -v ${i}) ]; then
+				case ${i} in
+				proot) DEPENDENCIES="${DEPENDENCIES} proot" ;;
+				chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
+				unshare) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
+				esac
+			fi
+		done
+		;;
+	esac
 	#####################
 	if [ ! $(command -v xz) ]; then
 		case "${LINUX_DISTRO}" in
