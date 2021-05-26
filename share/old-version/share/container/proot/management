@@ -813,7 +813,7 @@ readme_of_gnu_linux_distro() {
 
 		--------------------
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
-		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}, if you are using tmoe-zsh, just type${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
+		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
 		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
 		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
 

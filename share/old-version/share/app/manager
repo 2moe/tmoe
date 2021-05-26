@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4801,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4802,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -707,10 +707,10 @@ choose_tmoe_locale_env() {
 			"238" "os_RU: ирон_Уӕрӕсе" \
 			"239" "pa_IN: ਪੰਜਾਬੀ_ਭਾਰਤ" \
 			"240" "pap_AW: Papiamento_Aruba" \
-			"241" "pap_CW: Papiamento_nò" \
+			"241" "pap_CW: Papiamento_Curaçao" \
 			"242" "pa_PK: پنجابی_پکستان" \
 			"243" "pl_PL: polski_Polska" \
-			"244" "ps_AF: %A‒%l_پښتو" \
+			"244" "ps_AF: پښتو_افغانستان" \
 			"245" "pt_BR: português_Brasil" \
 			"246" "pt_PT: português_Portugal" \
 			"247" "quz_PE: Qusqu runasimi_" \

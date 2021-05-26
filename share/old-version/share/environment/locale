@@ -258,10 +258,10 @@ tmoe_locale_menu() {
 			"227" "os_RU: ирон_Уӕрӕсе" \
 			"228" "pa_IN: ਪੰਜਾਬੀ_ਭਾਰਤ" \
 			"229" "pap_AW: Papiamento_Aruba" \
-			"230" "pap_CW: Papiamento_nò" \
+			"230" "pap_CW: Papiamento_Curaçao" \
 			"231" "pa_PK: پنجابی_پکستان" \
 			"232" "pl_PL: polski_Polska" \
-			"233" "ps_AF: %A‒%l_پښتو" \
+			"233" "ps_AF: پښتو_افغانستان" \
 			"234" "pt_BR: português_Brasil" \
 			"235" "pt_PT: português_Portugal" \
 			"236" "quz_PE: Qusqu runasimi_" \
