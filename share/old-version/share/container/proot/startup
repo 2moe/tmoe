@@ -95,10 +95,10 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 
 	CONTAINER_ARCH="${ARCH_TYPE}"
 	# 容器架构
-	# Optional valuess: "amd64", "i386", "arm64", "armhf", "armel", "mipsel", "mips64el", "ppc64el", "s390x", "riscv64"
+	# Optional values: "amd64", "i386", "arm64", "armhf", "armel", "mipsel", "mips64el", "ppc64el", "s390x", "riscv64"
 
 	QEMU_ARCH="default"
-	# Optional valuess: "default", "X86-64", "i386", "aarch64", "aarch64_be", "arm", "armeb", "mipsel", "mips64el", "s390x", "riscv64"
+	# Optional values: "default", "X86-64", "i386", "aarch64", "aarch64_be", "arm", "armeb", "mipsel", "mips64el", "s390x", "riscv64"
 
 	SKIP_QEMU_DETECTION=false
 	# After skipping, qemu will be called forcibly.

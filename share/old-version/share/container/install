@@ -1236,7 +1236,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		#默认为ports源，armbian无需使用sed进行替换。
 	    sed -i 's/^deb/##&/g' /etc/apt/sources.list
 	    cat >>/etc/apt/sources.list <<-'EndOfFile'
-				# proposed为预发布软件源，不建议启用
 				# deb http://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
 				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
 				deb http://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
@@ -1869,7 +1868,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		*)
 		if egrep -q '^deb.*(huawei|tuna|bfsu|163)' /etc/apt/sources.list;then
 	      printf "%s\n" "Replacing http software source list with https ..."
-	      printf "%s\n" "正在将${PURPLE}http源${RESET}替换为${GREEN}https${RESET} ..."
+		  case ${TMOE_LANG} in
+	      zh_*UTF-8) printf "%s\n" "正在将${PURPLE}http源${RESET}替换为${GREEN}https${RESET} ..." ;;
+		  esac
 		  case $(dpkg --print-architecture) in
 		armhf)
 	     case $(uname -m) in
@@ -1889,7 +1890,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    LINUX_DISTRO=gentoo
 	    #bash /etc/profile
 	    mkdir -pv '/usr/portage'
-	    #下面生成的文件不要留空格
 	   case ${TMOE_LANG} in
 	   zh_*UTF-8)
 	    grep -q 'en_US' /etc/locale.gen || printf "%s\n%s\n" "en_US.UTF-8 UTF-8" "en_US.UTF-8 UTF-8" >>/etc/locale.gen
@@ -1919,7 +1919,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		rm -fv .profile ~/.zlogin
 		mv -f .profile.bak .profile 2>/dev/null
 		if grep -q 'Funtoo' /etc/os-release;then
-		   #同步过于耗时
 	       emerge --sync
 		   emerge emerge-webrsync
 		fi 
@@ -1936,7 +1935,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		emerge -avk sys-devel/binutils
 	    emerge eix 2>/dev/null
 		[[ $(command -v whiptail) ]] || emerge -av dev-libs/newt
-	    #printf '%s\n' '检测到您当前的系统为Gentoo GNU/Linux,将不会为您继续配置任何优化步骤！'
 	    #rm -f vnc* zsh* .profile
 	}
 	#############################
@@ -1961,9 +1959,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    xbps-install -uy xbps
 	    xbps-install -y wget curl newt
 	    neofetch
-	    #rm -f vnc* zsh* .profile
-	    #mv -f .profile.bak .profile 2>/dev/null
-	    printf '%s\n' '检测到您当前的系统为Void GNU/Linux,若配置出错，则请手动输tmoe t'
 		xbps-reconfigure -f glibc-locales
 	}
 	##########################
