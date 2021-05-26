@@ -5,38 +5,62 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
 	################
 	CHROOT_USER="root"
-	#You can specify a user. Default is root
-	#您可以指定用户，例如root或ubuntu，默认为root
-	#Sie können einen Benutzer angeben
+	# You can specify a user. Default is root
+	# 您可以指定用户，例如root或ubuntu，默认为root
+	# Sie können einen Benutzer angeben
 
 	HOME_DIR="default"
-	#If the value is "default", the home directory will be auto-detected. You can enter an absolute path, for example, "/root". 
+	# If the value is "default", the home directory will be auto-detected. You can enter an absolute path, for example, "/root".
 	################
-	CHROOT_BIN="system"
-	#You can choose system, termux, or enter the full path. For example, "\${PREFIX}/bin/chroot"
-	#当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当其为termux时，将使用 "\${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
+	CHROOT_BIN="default"
+	# Optional values: "default", "system", "termux", "termux-busybox", "busybox", "toybox", "system-toybox", or an absolute path.
+	# You can choose system, termux, or enter the full path. For example, "\${PREFIX}/bin/chroot"
+	# In general, "chroot" comes from the "coreutils" package.
+	# 当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当其为termux时，将使用 "\${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
+	# if (system|default) {bin =  "chroot"}
+	# else if (termux) {bin = "\${PREFIX}/bin/chroot"}
+	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox chroot"}
+	# else if (busybox) {bin = "buysbox chroot"}
+	# else if (toybox) {bin = "toybox chroot"}
+	# else if (system-toybox) {bin = "/system/bin/toybox chroot"}
 
-	MOUNT_BIN="system"
-	#Binary file of "mount" in util-linux
+	MOUNT_BIN="termux-busybox"
+	# Optional values: "default", "system", "termux", "termux-busybox", "busybox", "toybox", "system-toybox", or an absolute path.
+	# if (system|default) {bin =  "mount"}
+	# else if (termux) {bin = "\${PREFIX}/bin/mount"}
+	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox mount"}
+	# else if (busybox) {bin = "/usr/bin/buysbox mount"}
+	# else if (toybox) {bin = "toybox mount"}
+	# else if (system-toybox) {bin = "/system/bin/toybox mount"}
 
 	UNSHARE_BIN="termux"
-	#Binary file of "unshare" in util-linux
+	# Optional values: "default", "system", "termux", "busybox", "termux-busybox", or an absolute path.
+	# In general, "unshare" comes from the "util-linux" package.
+	# if (system|default) {bin =  "unshare"}
+	# else if (termux) {bin = "\${PREFIX}/bin/unshare"}
+	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox unshare"}
+	# else if (busybox) {bin = "/usr/bin/buysbox unshare"}
+
+	ROOTFS_DIR="${DEBIAN_CHROOT}"
+
+	HOST_DISTRO="${LINUX_DISTRO}"
+	# Optional values: "Android", "linux"
 
 	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
-	#If there are compatibility issues, please try to set this value to true, which sets the values of CHROOT_BIN, MOUNT_BIN and UNSHARE_BIN to termux.
-	#旧系统/旧版本兼容模式
-	#Default is false.
+	# Set the values of CHROOT_BIN and UNSHARE_BIN to termux, and set MOUNT_BIN to termux-busybox.
+	# 旧系统/旧版本兼容模式
+	# Default is false.
 	################
 	LOAD_ENV_FILE=true
-	#Load the environment variable file when starting the container. Default is true.
-	CONTAINER_ENV_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment/container.env"
+	# Load the environment variable file when starting the container. Default is true.
+	CONTAINER_ENV_FILE="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/environment/container.env"
 
-	LOAD_CHROOT_CONF=false
-	#Default is false.
-	#默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
-	CHROOT_CONF_FILE="${CONFIG_FOLDER}/chroot_global.conf" 
+	LOAD_CHROOT_CONF=true
+	# Default is true.
+	# 当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+	CHROOT_CONF_FILE="${CONFIG_FOLDER}/chroot_global.conf"
 	################
-	#mounts
+	# mounts
 
 	MOUNT_SD=true
 	SD_DIR_01="/data/media/0"
@@ -45,20 +69,20 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	SD_DIR_04="${HOME}/sd"
 	SD_DIR_05="${HOME}/Downloads"
 	SD_DIR_06="${HOME}/Download"
-	#let SD_MOUNT_POINT = String::from("/media/sd");
-	#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
-	#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
+	# let SD_MOUNT_POINT = String::from("/media/sd");
+	# The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
+	# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 
 	MOUNT_TERMUX=true
-	#If the value is "false", the relevant directory will not be mounted. Default is true.
+	# If the value is "false", the relevant directory will not be mounted. Default is true.
 	TERMUX_DIR="/data/data/com.termux/files/home"
-	#let TERMUX_MOUNT_POINT = String::from("/media/termux");
+	# let TERMUX_MOUNT_POINT = String::from("/media/termux");
 
 	MOUNT_TF=true
 	TF_CARD_LINK="${HOME}/storage/external-1"
-	#let TF_MOUNT_POINT = String::from("/media/tf");
-	#The value of TF_CARD_LINK is a symbolic link file.
-	#TF_CARD_LINK的值为一个软链接文件
+	# let TF_MOUNT_POINT = String::from("/media/tf");
+	# The value of TF_CARD_LINK is a symbolic link file.
+	# TF_CARD_LINK的值为一个软链接文件
 
 	MOUNT_ITSELF=true
 	MOUNT_DEV=true
@@ -71,46 +95,46 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	MOUNT_GITSTATUS=true
 	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
 	################
-	#shells
+	# shells
 
 	DEFAULT_LOGIN_SHELL_01=zsh
-	#The default login shell is zsh.
-	#默认登录shell是zsh
-	#Die Standard-Login-Shell ist zsh.
+	# The default login shell is zsh.
+	# 默认登录shell是zsh
+	# Die Standard-Login-Shell ist zsh.
 
 	DEFAULT_LOGIN_SHELL_02=fish
 	DEFAULT_LOGIN_SHELL_03=bash
 	DEFAULT_LOGIN_SHELL_04=ash
 	DEFAULT_LOGIN_SHELL_05=su
-	#The lower the number, the higher the priority.
+	# The lower the number, the higher the priority.
 	################
-	#unshare
+	# unshare
 
 	UNSHARE_ENABLED=false
-	#The unshare command creates new namespaces and then executes the specified program. By  default,  a  new  namespace  persists only as long as it has member processes.  A new namespace can be mad e persistent even when it has no member processes by bind mounting /proc/pid/ns/type files to a filesystem path.  A namespace that has been made persistent in this way can subsequently be entered with nsenter even after the program terminates (except PID namespaces where a permanently running init process is required).  Once  a  persistent namespace is no longer needed, it can be unpersisted by using umount to remove the bind mount.
+	# The unshare command creates new namespaces and then executes the specified program. By  default,  a  new  namespace  persists only as long as it has member processes.  A new namespace can be mad e persistent even when it has no member processes by bind mounting /proc/pid/ns/type files to a filesystem path.  A namespace that has been made persistent in this way can subsequently be entered with nsenter even after the program terminates (except PID namespaces where a permanently running init process is required).  Once  a  persistent namespace is no longer needed, it can be unpersisted by using umount to remove the bind mount.
 
 	UNSHARE_IPC=false
-	#Unshare the IPC namespace. Default is false.
-	#IPC namespace: The process will have an independent namespace for POSIX message queues as well as System V message queues, semaphore sets and shared memory segments.
+	# Unshare the IPC namespace. Default is false.
+	# IPC namespace: The process will have an independent namespace for POSIX message queues as well as System V message queues, semaphore sets and shared memory segments.
 
 	UNSHARE_PID=false
-	#Unshare the PID namespace. Default is false.
-	#PID namespace: Children will have a distinct set of PID-to-process mappings from their parent.
+	# Unshare the PID namespace. Default is false.
+	# PID namespace: Children will have a distinct set of PID-to-process mappings from their parent.
 
 	UNSHARE_UTS=false
-	#Unshare the UTS namespace. Default is false.
-	#UTS namespace: Setting hostname or domainname will not affect the rest of the system.
+	# Unshare the UTS namespace. Default is false.
+	# UTS namespace: Setting hostname or domainname will not affect the rest of the system.
 
 	UNSHARE_MOUNT=false
-	#Unshare the mount namespace. Default is false.
-	#mount namespace: Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared.
+	# Unshare the mount namespace. Default is false.
+	# mount namespace: Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared.
 
 	KILL_CHILD=true
-	#When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
+	# When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
 
 	SHARE_PROC=true
-	#Default is true.
-	#Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
+	# Default is true.
+	# Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
 	################
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
@@ -131,17 +155,41 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	##############
 	check_mount_bin() {
 	    case \${MOUNT_BIN} in
-	    system | "") TMOE_MOUNT=mount ;;
+	    system | default | "") TMOE_MOUNT=mount ;;
 	    termux | prefix) TMOE_MOUNT="\${PREFIX}/bin/mount" ;;
+	    busybox) TMOE_MOUNT="busybox mount" ;;
+	    toybox) TMOE_MOUNT="toybox mount" ;;
+	    system-toybox) TMOE_MOUNT="/system/bin/toybox mount" ;;
+	    termux-busybox) TMOE_MOUNT="\${PREFIX}/bin/busybox mount" ;;
 	    *) TMOE_MOUNT="\${MOUNT_BIN}" ;;
 	    esac
-	    if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
-	        MOUNT_BIN="\${PREFIX}/bin/mount" && CHROOT_BIN="\${PREFIX}/bin/chroot" && UNSHARE_BIN="\${PREFIX}/bin/unshare"
-	    fi
+	    if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then 
+	        MOUNT_BIN="\${PREFIX}/bin/busybox mount" && CHROOT_BIN="\${PREFIX}/bin/chroot" && UNSHARE_BIN="\${PREFIX}/bin/unshare"
+	    fi 
+	}
+	check_unshare_bin() {
+	    case \${UNSHARE_BIN} in
+	    system | default | "") TMOE_UNSHARE_BIN=unshare ;;
+	    termux | prefix) TMOE_UNSHARE_BIN="\${PREFIX}/bin/unshare" ;;
+	    busybox) TMOE_UNSHARE_BIN="busybox unshare" ;;
+	    termux-busybox) TMOE_UNSHARE_BIN="\${PREFIX}/bin/busybox unshare" ;;
+	    *) TMOE_UNSHARE_BIN="\${UNSHARE_BIN}" ;;
+	    esac
+	}
+	check_chroot_bin() {
+	    case \${CHROOT_BIN} in
+	    system | default | "") TMOE_CHROOT_BIN=chroot ;;
+	    termux | prefix) TMOE_CHROOT_BIN="\${PREFIX}/bin/chroot" ;;
+	    busybox) TMOE_CHROOT_BIN="busybox chroot" ;;
+	    toybox) TMOE_CHROOT_BIN="toybox chroot" ;;
+	    system-toybox) TMOE_CHROOT_BIN="/system/bin/toybox chroot" ;;
+	    termux-busybox) TMOE_CHROOT_BIN="\${PREFIX}/bin/busybox chroot" ;;
+	    *) TMOE_CHROOT_BIN="\${CHROOT_BIN}" ;;
+	    esac
 	}
 	##############
 	check_host_and_root() {
-	    case \$(uname -o) in
+	    case \${HOST_DISTRO} in
 	    Android) PREFIX="$PREFIX" ;;
 	    *)
 	        PREFIX="/usr"
@@ -149,9 +197,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        0) ;;
 	        *)
 	            if [[ \$(command -v sudo) ]]; then
-	                sudo su -c "bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+	                sudo su -c "bash \${ROOTFS_DIR}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
 	            else
-	                su -c "bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+	                su -c "bash \${ROOTFS_DIR}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
 	            fi
 	            exit 1
 	            ;;
@@ -177,40 +225,40 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        fi
 	    }
 	    mount_01() {
-	        su -c "\${TMOE_MOUNT} -o bind /\${i} ${DEBIAN_CHROOT}/\${i}"
+	        su -c "\${TMOE_MOUNT} -o bind /\${i} \${ROOTFS_DIR}/\${i}"
 	    }
 	    mkdir_01() {
 	        [[ -e "/\${i}" ]] || su -c "mkdir -pv /\${i}"
 	    }
 	    ########
-	    #arch mounts itself
+	    # arch mounts itself
 	    if [[ \${MOUNT_ITSELF} = true ]]; then
-	        if ! detect_mount "${DEBIAN_CHROOT}/"; then
-	            su -c "\${TMOE_MOUNT} --rbind ${DEBIAN_CHROOT} ${DEBIAN_CHROOT}/ &>/dev/null"
-	            su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev ${DEBIAN_CHROOT}"
+	        if ! detect_mount "\${ROOTFS_DIR}/"; then
+	            su -c "\${TMOE_MOUNT} --rbind \${ROOTFS_DIR} \${ROOTFS_DIR}/ &>/dev/null"
+	            su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev \${ROOTFS_DIR}"
 	        fi
 	    fi
 	    #########
 	    for i in dev proc sys dev/pts dev/shm etc/gitstatus; do
-	        if ! detect_mount "${DEBIAN_CHROOT}/\${i}"; then
+	        if ! detect_mount "\${ROOTFS_DIR}/\${i}"; then
 	            case \${i} in
 	            dev)
-	                #rw,nosuid,relatime,size=12224760k,nr_inodes=3056190,mode=755
+	                # rw,nosuid,relatime,size=12224760k,nr_inodes=3056190,mode=755
 	                [[ \${MOUNT_DEV} != true ]] || mount_01
 	                ;;
 	            proc)
 	                if [[ \${UNSHARE_ENABLED} != true || \${SHARE_PROC} != true ]]; then
-	                    [[ \${MOUNT_PROC} != true ]] || su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i} \${i} ${DEBIAN_CHROOT}/\${i}"
+	                    [[ \${MOUNT_PROC} != true ]] || su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i} \${i} \${ROOTFS_DIR}/\${i}"
 	                fi
 	                ;;
-	            sys) [[ \${MOUNT_SYS} != true ]] || su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i}fs \${i}fs ${DEBIAN_CHROOT}/\${i}" ;;
+	            sys) [[ \${MOUNT_SYS} != true ]] || su -c "\${TMOE_MOUNT} -o rw,nosuid,nodev,noexec,relatime -t \${i}fs \${i}fs \${ROOTFS_DIR}/\${i}" ;;
 	            dev/pts)
 	                if [[ \${MOUNT_DEV_PTS} = true ]]; then
 	                    if ! detect_mount "/\${i}"; then
 	                        mkdir_01
 	                        su -c "\${TMOE_MOUNT} -o rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 -t devpts devpts /\${i}"
 	                    fi
-	                    su -c "\${TMOE_MOUNT} -t devpts devpts ${DEBIAN_CHROOT}/\${i}"
+	                    su -c "\${TMOE_MOUNT} -t devpts devpts \${ROOTFS_DIR}/\${i}"
 	                fi
 	                ;;
 	            dev/shm)
@@ -222,7 +270,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                    mount_01
 	                fi
 	                ;;
-	            etc/gitstatus) [[ \${MOUNT_GITSTATUS} != true ]] || su -c "\${TMOE_MOUNT} -o bind \${GITSTATUS_DIR} ${DEBIAN_CHROOT}/\${i}" ;;
+	            etc/gitstatus) [[ \${MOUNT_GITSTATUS} != true ]] || su -c "\${TMOE_MOUNT} -o bind \${GITSTATUS_DIR} \${ROOTFS_DIR}/\${i}" ;;
 	            esac
 	        fi
 	    done
@@ -242,7 +290,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    fi
 	    ###############
 	    for i in tf termux sd; do
-	        if ! detect_mount "${DEBIAN_CHROOT}/media/\${i}"; then
+	        if ! detect_mount "\${ROOTFS_DIR}/media/\${i}"; then
 	            case \${i} in
 	            tf)
 	                TF_MOUNT_POINT="/media/tf"
@@ -250,9 +298,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                    if [[ -L "\${TF_CARD_LINK}" ]]; then
 	                        TF_CARD_FOLDER=\$(readlink \${TF_CARD_LINK} | awk -F '/' '{print \$3}')
 	                        if [[ "\$(su -c "ls /mnt/media_rw/\${TF_CARD_FOLDER}")" ]]; then
-	                            su -c "\${TMOE_MOUNT} -o bind /mnt/media_rw/\${TF_CARD_FOLDER} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
+	                            su -c "\${TMOE_MOUNT} -o bind /mnt/media_rw/\${TF_CARD_FOLDER} \${ROOTFS_DIR}\${TF_MOUNT_POINT} &>/dev/null"
 	                        else
-	                            su -c "\${TMOE_MOUNT} -o bind \${TF_CARD_LINK} ${DEBIAN_CHROOT}\${TF_MOUNT_POINT} &>/dev/null"
+	                            su -c "\${TMOE_MOUNT} -o bind \${TF_CARD_LINK} \${ROOTFS_DIR}\${TF_MOUNT_POINT} &>/dev/null"
 	                        fi
 	                    fi
 	                fi
@@ -261,7 +309,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            termux)
 	                TERMUX_MOUNT_POINT="/media/termux"
 	                if [[ \${MOUNT_TERMUX} = true ]]; then
-	                    [[ ! -d "\${TERMUX_DIR}" ]] || su -c "\${TMOE_MOUNT} -o bind \${TERMUX_DIR} ${DEBIAN_CHROOT}\${TERMUX_MOUNT_POINT} &>/dev/null"
+	                    [[ ! -d "\${TERMUX_DIR}" ]] || su -c "\${TMOE_MOUNT} -o bind \${TERMUX_DIR} \${ROOTFS_DIR}\${TERMUX_MOUNT_POINT} &>/dev/null"
 	                fi
 	                ;;
 	            ###########
@@ -269,11 +317,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	                SD_MOUNT_POINT="/media/sd"
 	                if [[ \${MOUNT_SD} = true ]]; then
 	                    if [[ "\$(su -c "ls \${SD_DIR_01}" 2>/dev/null)" ]]; then
-	                        su -c "\${TMOE_MOUNT} -o bind \${SD_DIR_01} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
+	                        su -c "\${TMOE_MOUNT} -o bind \${SD_DIR_01} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
 	                    else
 	                        for i in "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}" "\${SD_DIR_06}"; do
 	                            if [[ -e \${i} ]]; then
-	                                su -c "\${TMOE_MOUNT} -o bind \${i} ${DEBIAN_CHROOT}\${SD_MOUNT_POINT} &>/dev/null"
+	                                su -c "\${TMOE_MOUNT} -o bind \${i} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
 	                                break
 	                            fi
 	                        done
@@ -287,16 +335,16 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    ###########
 	    #For Android, do not set the gid and uid of unshare.
 	    # if [[ \${UNSHARE_ENABLED} = true && \${CHROOT_USER} != root ]];then
-	    #  CHROOT_UID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$3}')
-	    #  CHROOT_GID=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$4}')
+	    #  CHROOT_UID=\$(grep "^\${CHROOT_USER}:" \${ROOTFS_DIR}/etc/passwd | awk -F ':' '{print \$3}')
+	    #  CHROOT_GID=\$(grep "^\${CHROOT_USER}:" \${ROOTFS_DIR}/etc/passwd | awk -F ':' '{print \$4}')
 	    #  set -- "\${@}" "--setgid" "\${CHROOT_GID}"
 	    #  set -- "\${@}" "--setuid" "\${CHROOT_UID}"
 	    # fi
 	    if [[ \${UNSHARE_ENABLED} = true ]]; then
 	        if [[ \${SHARE_PROC} = true ]]; then
 	            set -- "\${@}" "--mount-proc"
-	            if [[ -e ${DEBIAN_CHROOT}/proc/stat ]]; then
-	                su -c "umount -lvf ${DEBIAN_CHROOT}/proc"
+	            if [[ -e \${ROOTFS_DIR}/proc/stat ]]; then
+	                su -c "umount -lvf \${ROOTFS_DIR}/proc || umount \${ROOTFS_DIR}/proc"
 	            fi
 	        fi
 	        [[ \${UNSHARE_IPC} != true ]] || set -- "\${@}" "--ipc"
@@ -312,11 +360,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        fi
 	        set -- "\${@}" "-R"
 	    fi
-	    set -- "\${@}" "${DEBIAN_CHROOT}"
+	    set -- "\${@}" "\${ROOTFS_DIR}"
 	    ###########
 	    #SET ENV
 	    HOST_NAME="localhost"
-	    HOST_NAME_FILE="${DEBIAN_CHROOT}/etc/hostname"
+	    HOST_NAME_FILE="\${ROOTFS_DIR}/etc/hostname"
 	    if [[ -s \${HOST_NAME_FILE} ]]; then
 	        HOST_NAME=\$(sed -n p \${HOST_NAME_FILE})
 	    else
@@ -334,11 +382,11 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    set -- "\${@}" "TMPDIR=/tmp"
 	    set -- "\${@}" "DISPLAY=:0.0"
 	    set -- "\${@}" "PULSE_SERVER=tcp:127.0.0.1:4713"
-	    #CHECK SHELL
+	    # CHECK SHELL
 	    [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 	    if [[ -z \${TMOE_SHELL} ]]; then
 	        for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
-	            if [[ -f ${DEBIAN_CHROOT}/bin/\${i} || -L ${DEBIAN_CHROOT}/bin/\${i} ]]; then
+	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \${ROOTFS_DIR}/bin/\${i} ]]; then
 	                TMOE_SHELL="/bin/\${i}"
 	                break
 	            fi
@@ -349,7 +397,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    else
 	        set -- "\${@}" "SHELL=/bin/zsh"
 	    fi
-	    #LANG
+	    # LANG
 	    if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
 	        set -- "\${@}" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
 	    else
@@ -361,7 +409,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        case \${CHROOT_USER} in
 	        root | "") CHROOT_HOME="/root" ;;
 	        *)
-	            CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{print \$6}')
+	            CHROOT_HOME=\$(grep "^\${CHROOT_USER}:" \${ROOTFS_DIR}/etc/passwd | awk -F ':' '{print \$6}')
 	            [[ -n \${CHROOT_HOME} ]] || CHROOT_HOME="/home/\${CHROOT_USER}"
 	            ;;
 	        esac
@@ -387,14 +435,14 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
 	    fi
 	    ############
-	    #LOGIN SHELL
-	    if [[ -f ${DEBIAN_CHROOT}/usr/bin/sudo ]]; then
+	    # LOGIN SHELL
+	    if [[ -f \${ROOTFS_DIR}/usr/bin/sudo ]]; then
 	        set -- "\${@}" "/usr/bin/sudo" "-Eu" "\${CHROOT_USER}"
 	        set -- "\${@}" "\${TMOE_SHELL}" "-l"
 	    else
-	        if [[ -e ${DEBIAN_CHROOT}/bin/zsh ]]; then
+	        if [[ -e \${ROOTFS_DIR}/bin/zsh ]]; then
 	            set -- "\${@}" "/bin/zsh" "-l"
-	        elif [[ -e ${DEBIAN_CHROOT}/bin/bash ]]; then
+	        elif [[ -e \${ROOTFS_DIR}/bin/bash ]]; then
 	            set -- "\${@}" "/bin/bash" "-l"
 	        else
 	            set -- "\${@}" "/bin/sh" "-l"
@@ -403,27 +451,18 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    ############
 	    #CHROOT/UNSHARE BIN
 	    if [[ \${UNSHARE_ENABLED} = true ]]; then
-	        if [[ \${UNSHARE_BIN} = system || -z \${UNSHARE_BIN} ]]; then
-	            set -- "unshare" "\${@}"
-	        elif [[ \${UNSHARE_BIN} = termux ]]; then
-	            set -- "\${PREFIX}/bin/unshare" "\${@}"
-	        else
-	            set -- "\${UNSHARE_BIN}" "\${@}"
-	        fi
+	        check_unshare_bin
+	        set -- "\${TMOE_UNSHARE_BIN}" "\${@}"
 	    else
-	        if [[ \${CHROOT_BIN} = system || -z \${CHROOT_BIN} ]]; then
-	            set -- "chroot" "\${@}"
-	        elif [[ \${CHROOT_BIN} = termux ]]; then
-	            set -- "\${PREFIX}/bin/chroot" "\${@}"
-	        else
-	            set -- "\${CHROOT_BIN}" "\${@}"
-	        fi
+	        check_chroot_bin
+	        set -- "\${TMOE_CHROOT_BIN}" "\${@}"
 	    fi
 	    TMOE_CHROOT_EXEC="\${@}"
 	    su -c "\${TMOE_CHROOT_EXEC}"
 	}
 	main "\${@}"
 ENDOFTMOECHROOT
+# ${DEBIAN_CHROOT}, ${CONFIG_FOLDER}, ${HOME}, $PREFIX, ${LINUX_DISTRO} - \$.
 case $(uname -o) in
 Android) termux-fix-shebang ${TMP_FILE} ;;
 esac

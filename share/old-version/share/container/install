@@ -27,6 +27,7 @@ if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	x86_64 | amd64) ARCH_TYPE="amd64" ;;
 	esac
 fi
+GNU_TAR_BIN="$(command -v tar)"
 ######################
 TRUE_ARCH_TYPE=${ARCH_TYPE}
 QEMU_ARCH=''
@@ -266,7 +267,7 @@ if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
 	fi
 	cd ${DEBIAN_CHROOT}
 	if [ -e "${CONFIG_FOLDER}/proot_proc/proc.tar.xz" ]; then
-		tar -Jxf ${CONFIG_FOLDER}/proot_proc/proc.tar.xz 2>/dev/null
+		${GNU_TAR_BIN} -Jxf ${CONFIG_FOLDER}/proot_proc/proc.tar.xz 2>/dev/null
 	fi
 else
 	cd ${DEBIAN_CHROOT}
@@ -365,22 +366,22 @@ esac
 ################
 uncompress_other_format_file() {
 	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -px
 	else
 		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -px
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -px
 		else
-			tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 	fi
 
 	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -px
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -px
 		else
-			tar -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
 	fi
@@ -388,22 +389,22 @@ uncompress_other_format_file() {
 ##############
 uncompress_tar_lz4_file() {
 	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} tar -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I lz4 -px
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I lz4 -px
 	else
 		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -I lz4 -px
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -I lz4 -px
 		else
-			tar -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 	fi
 
 	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I lz4 -px
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I lz4 -px
 		else
-			tar -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
 	fi
@@ -422,22 +423,22 @@ uncompress_tar_lz4_file() {
 ###########
 uncompress_tar_gz_file() {
 	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pzx
 	else
 		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pzx
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -pzx
 		else
-			tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 	fi
 
 	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pzx
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pzx
 		else
-			tar -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
 	fi
@@ -445,9 +446,9 @@ uncompress_tar_gz_file() {
 #####################
 check_tar_xz_pv() {
 	if [ $(command -v pv) ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -pJx
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -pJx
 	else
-		tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		${GNU_TAR_BIN} -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	fi
 }
 #############
@@ -457,18 +458,18 @@ uncompress_tar_xz_file() {
 	esac
 	printf "%s\n" "${GREEN}Extracting ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET}, please ${YELLOW}wait${RESET}."
 	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} tar -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pJx
 	else
 		check_tar_xz_pv
 	fi
 
 	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -pJx
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pJx
 		else
-			tar -Jpxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -Jpxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
 	fi
@@ -476,22 +477,22 @@ uncompress_tar_xz_file() {
 #############
 uncompress_tar_zst_file() {
 	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} tar -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I zstd -px
+		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I zstd -px
 	else
 		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | tar -I zstd -px
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -I zstd -px
 		else
-			tar -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 	fi
 
 	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
 		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink tar -I zstd -px
+			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I zstd -px
 		else
-			tar -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+			${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
 		fi
 		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
 	fi
@@ -551,7 +552,7 @@ fi
 if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
 	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/tmp/.openwrtcheckfile
 fi
-#proot --link2symlink tar -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
+#proot --link2symlink ${GNU_TAR_BIN} -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
 cd "${CURRENT_TMOE_DIR}"
 printf "${YELLOW}"
 cat <<-'EndOFneko'
@@ -660,6 +661,9 @@ create_chroot_startup_script() {
 		esac
 		printf "%s\n" "ANDROID_VERSION=${ANDROID_VERSION}" >${TMPDIR}/.ANDROID_VERSION.txt
 		sudo mv -vf ${TMPDIR}/.ANDROID_VERSION.txt ${DEBIAN_CHROOT}/tmp/
+	else
+		sudo sed -E -e "s@^(MOUNT_BIN=).*@\1default@g" \
+			-i "${TMOE_STARTUP_SCRIPT}"
 	fi
 	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
 		cat_tmoe_nspawn_script
