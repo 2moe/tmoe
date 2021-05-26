@@ -512,7 +512,7 @@ standand_desktop_installation() {
             "4" "🍱 VM/nspawn_DE(gnome,cinnamon,budgie)" \
             "5" "🍣 display manager(lightdm,sddm)" \
             "6" "🍤 FAQ" \
-            "0" "🌚 none=￣ω￣=" \
+            "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
     ##########################
@@ -597,7 +597,7 @@ tmoe_container_desktop() {
             "3" "🐦 lxqt" \
             "4" "🕊️ lxde(lightweight)" \
             "5" "🌿 mate(the continuation of GNOME 2)" \
-            "0" "🌚 none =￣ω￣=" \
+            "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
     case ${TMOE_MENU_LANG} in

@@ -119,7 +119,7 @@ worldwide_mirror_station() {
 			"Which mirror source do you want to switch to?" 0 50 0 \
 			"1" "a1batross:termux.mentality.rip" \
 			"2" "Grimler:grimler.se" \
-			"3" "Xeffyr:termux-mirror.ml" \
+			"3" "Xeffyr:ipfs.io" \
 			"4" "Extra source:its-pointless" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
