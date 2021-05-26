@@ -59,7 +59,8 @@ install_container_and_virtual_machine() {
 			"3" "🐳 docker:开源的应用容器引擎" \
 			"4" "🖥️ VirtualBox(甲骨文开源虚拟机x64)" \
 			"5" "🍷 wine:调用win api并即时转换" \
-			"6" "🥡 anbox(Android in a box)" \
+			"6" "genymotion(专为Android开发者打造的模拟器)" \
+			"7" "🥡 anbox(Android in a box)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			"00" "Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3
@@ -73,7 +74,8 @@ install_container_and_virtual_machine() {
 	3) tmoe_docker_menu ;;
 	4) install_virtual_box ;;
 	5) wine_menu ;;
-	6) install_anbox ;;
+	6) install_genymotion ;;
+	7) install_anbox ;;
 	esac
 	###############
 	press_enter_to_return
@@ -81,5 +83,24 @@ install_container_and_virtual_machine() {
 }
 #"4" "OpenMediaVault(基于debian的NAS网络连接存储解决方案)" \
 #4) install_open_media_vault ;;
+install_genymotion() {
+	cat <<-EOF
+		首先，安裝virtual box, 然後前往官網下載genymotion。
+		${YELLOW}https://www.genymotion.com/download/${RESET}
+		示例：用curl下載，並指定文件名稱爲${YELLOW}genymotion.bin${RESET}
+		注意：請把藍色高亮文本替換爲最新版url
+		${GREEN}curl -Lo ${YELLOW}genymotion.bin ${BLUE}"https://dl.genymotion.com/releases/genymotion-3.2.1/genymotion-3.2.1-linux_x64.bin"${RESET}
+	EOF
+	URL=$(curl -L https://www.genymotion.com/download/ | grep linux_x64.bin | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+	cat <<-EOF
+		檢測到最新版url爲${BLUE}${URL}${RESET}
+		您可以將上述指令替換爲
+		${GREEN}curl -Lo ${YELLOW}genymotion.bin ${BLUE}"${URL}"${RESET}
+		接着賦予 genymotion.bin 可執行權限，並運行它。
+		${GREEN}chmod +x genymotion.bin
+		./genymotion.bin${RESET}
+		最後運行 ${GREEN}./genymotion/genymotion${RESET}
+	EOF
+}
 #####################
 qemu_main "$@"
