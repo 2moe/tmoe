@@ -1,5 +1,6 @@
 GITEE_lINUX="${HOME}/gitee/linux"
 GITHUB_LINUX="${HOME}/github/github-linux"
+GITHUB_LINUX_02="${HOME}/github/archive/tmoe/share/old-version/share/app"
 OLD_VERSION_DIR="${GITEE_lINUX}/share/old-version"
 
 COUNT=$(curl -L https://gitee.com/mo2/linux | grep 次提交 | head -n 1 | awk '{print $1}')
@@ -13,6 +14,7 @@ case ${COUNT} in
 esac
 ##########
 cd ${GITEE_lINUX}
+cp -va ./share/old-version/share/app/manager ${GITHUB_LINUX_02}
 for i in $(/bin/ls -A ./ | egrep -v "test|README.md|.git$|.gitee"); do
     cp -va ${i} ${GITHUB_LINUX}
 done

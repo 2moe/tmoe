@@ -19,7 +19,7 @@ remove_termux_linux_manager() {
 	fi
 	#[[ ! -n ${DEPENDENCIES_02} ]] ||
 	do_you_want_to_continue
-	rm -rv novnc debian debian-i tmoe startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux ${TMOE_GIT_DIR} ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32
+	rm -rfv novnc debian debian-i tmoe startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux ${TMOE_GIT_DIR} ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32
 	${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}
 	exit 1
 }

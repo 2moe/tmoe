@@ -628,7 +628,6 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    #It should be -l, not --login
 	    set -- "\${@}" "\${TMOE_SHELL}" "-l"
 	    ###################
-	    unset PROOT_LOADER LD_LIBRARY_PATH
 	    case "\${PROOT_BIN}" in
 	    "" | system | default) PROOT_PROGRAM=proot ;;
 	    termux | prefix) PROOT_PROGRAM="\${PREFIX}/bin/proot" ;;

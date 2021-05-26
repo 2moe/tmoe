@@ -21,6 +21,7 @@ show_package_info() {
 #############
 set_env() {
 	TMOE_MANAGER="share/old-version/share/app/manager"
+	# TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
 	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
 	TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/${TMOE_MANAGER}"
 	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
