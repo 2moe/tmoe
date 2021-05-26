@@ -17,13 +17,13 @@
 是这个样子吗？  
 
 ```shell
-NAME="vaule"
+NAME="value"
 ```
 
 虽然那样子也可以，但是考虑到种种原因，请写成这种形式。  
 
 ```shell
-export NAME="vaule"
+export NAME="value"
 ```
 
 例如：  

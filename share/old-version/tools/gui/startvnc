@@ -47,7 +47,7 @@ DBUS_ENABLED=true
 
 AUTO_STOP_VNC=true
 # Before each start, vnc will be automatically stopped.
-# If the vaule is true, then "startvnc" => "restart vnc"
+# If the value is true, then "startvnc" => "restart vnc"
 ####################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then

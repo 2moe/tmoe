@@ -40,7 +40,7 @@ type_your_debian_version() {
     unset TARGET
     TARGET=$(whiptail --inputbox "请输入debian/ubuntu版本代号，例如bookworm(英文小写)\nPlease type the debian/ubuntu version code." 9 50 --title "DEBIAN/UBUNTU CODE" 3>&1 1>&2 2>&3)
     if [ -z "${TARGET}" ]; then
-        printf "%s\n" "ERROR, the vaule is empty."
+        printf "%s\n" "ERROR, the value is empty."
         press_enter_to_return
         check_debian_version_codename
     else

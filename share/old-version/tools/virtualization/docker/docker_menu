@@ -1143,7 +1143,7 @@ install_docker_portainer() {
         ${RETURN_TO_WHERE}
     elif [ -z "${TARGET_PORT}" ]; then
         printf "%s\n" "端口无效，将自动使用39080端口。"
-        printf "%s\n" "${RED}ERROR,the vaule is invalid.${RESET}"
+        printf "%s\n" "${RED}ERROR,the value is invalid.${RESET}"
         TARGET_PORT=39080
     fi
     printf "%s\n" "${GREEN}docker ${YELLOW}pull ${BLUE}portainer/portainer-ce:latest${RESET}"

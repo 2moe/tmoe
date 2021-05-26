@@ -437,4 +437,5 @@ ${TMOE_CHROOT_PREFIX} cp -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
 ${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_DIR}/chroot
 ${TMOE_CHROOT_PREFIX} mv -f ${TMPDIR}/.chroot.conf ${TMOE_STARTUP_DIR}/chroot.conf
 #${TMOE_CHROOT_PREFIX} chmod a+rx ${TMOE_STARTUP_SCRIPT}
+
 ln -sf ${TMOE_SHARE_DIR}/container/debian/debian ${PREFIX}/bin
