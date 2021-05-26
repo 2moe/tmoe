@@ -20,9 +20,9 @@ install_termux_xfce() {
 		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 		apt install -y ${i}
 	done
+	#無需set PULSE_SERVER var
 	cat >${PREFIX}/bin/startvnc <<-EndOfFile
 		#!/usr/bin/env bash
-		export PULSE_SERVER=127.0.0.1
 		VNC_RESOLUTION=720x1440
 		export DISPLAY=:2
 		printf "%s\n" "Starting vnc server, the current vnc address is localhost:5902"
