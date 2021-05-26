@@ -59,7 +59,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	FAKE_KERNEL=false
 	# 伪造内核版本信息, 默认为false, 若将此变量值修改为true, 则启用该功能
 	# Default is false.
-	KERNEL_RELEASE="5.10.0-6-cloud-${ARCH_TYPE}"
+	KERNEL_RELEASE="5.10.0-7-cloud-${ARCH_TYPE}"
 	# Make current kernel appear as kernel release *string*.
 
 	LINK_TO_SYMLINK=true
@@ -76,7 +76,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	# Default is false.
 	# 旧系统/旧版本兼容模式
-	# Set the values of PROOT_L, PROOT_H, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
+	# Set the values of PROOT_L, PROOT_P and PROOT_SYSVIPC to false, and set FAKE_KERNEL to true.
 	################
 	#qemu
 
@@ -421,7 +421,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	            fi
 	        fi
 	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
-	             PROOT_P=false && PROOT_H=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
+	             PROOT_P=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
 	        fi
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"
@@ -628,6 +628,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    #It should be -l, not --login
 	    set -- "\${@}" "\${TMOE_SHELL}" "-l"
 	    ###################
+		unset TMOE_LD_LIB_PATH
 	    case "\${PROOT_BIN}" in
 	    "" | system | default) PROOT_PROGRAM=proot ;;
 	    termux | prefix) PROOT_PROGRAM="\${PREFIX}/bin/proot" ;;
@@ -636,7 +637,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        Android)
 	            PROOT_PROGRAM="\${PROOT_32_TERMUX_BIN}"
 	            PROOT_LOADER="\${PROOT_32_TERMUX_LOADER}"
-	            LD_LIBRARY_PATH="\${PROOT_32_TERMUX_LD_LIB_PATH}"
+	            LD_LIB_PATH="\${PROOT_32_TERMUX_LD_LIB_PATH}"
 	            ;;
 	        *) PROOT_PROGRAM=proot ;;
 	        esac
@@ -652,21 +653,22 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	        esac
 	        ;;
 	    esac
-	    case "\${LD_LIBRARY_PATH}" in
-	    "")
-	        case "\${LD_LIB_PATH}" in
-	        default | system | "") ;;
-	        *) LD_LIBRARY_PATH="\${LD_LIB_PATH}" ;;
-	        esac
-	        ;;
+	    case "\${LD_LIB_PATH}" in
+	    default | system | "") ;;
+	    *)
+	         case "\${LD_LIBRARY_PATH}" in
+	         "") TMOE_LD_LIB_PATH="\${LD_LIB_PATH}" ;;
+	         *) TMOE_LD_LIB_PATH="\${LD_LIB_PATH}:\${LD_LIBRARY_PATH}" ;;
+	         esac
+	         ;;
 	    esac
-	    if [[ -n \${PROOT_LOADER} && -z \${LD_LIBRARY_PATH} ]]; then
+	    if [[ -n \${PROOT_LOADER} && -z \${TMOE_LD_LIB_PATH} ]]; then
 	        set -- "env" "PROOT_LOADER=\${PROOT_LOADER}" "\${@}"
-	    elif [[ -z \${PROOT_LOADER} && -n \${LD_LIBRARY_PATH} ]]; then
+	    elif [[ -z \${PROOT_LOADER} && -n \${TMOE_LD_LIB_PATH} ]]; then
 	        set -- "env" "LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}" "\${@}"
-	    elif [[ -n \${PROOT_LOADER} && -n \${LD_LIBRARY_PATH} ]]; then
+	    elif [[ -n \${PROOT_LOADER} && -n \${TMOE_LD_LIB_PATH} ]]; then
 	        set -- "PROOT_LOADER=\${PROOT_LOADER}" "\${@}"
-	        set -- "env" "LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}" "\${@}"
+	        set -- "env" "LD_LIBRARY_PATH=\${TMOE_LD_LIB_PATH}" "\${@}"
 	    fi
 	    exec "\${@}"
 	}
