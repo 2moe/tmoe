@@ -815,10 +815,10 @@ readme_of_gnu_linux_distro() {
 		列出当前已安装的容器:${BLUE}tmoe ls${RESET}
 		启动默认${CONTAINER_TYPE}容器:${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ${SHORT_VIRT_TYPE}${RESET}
 		启动${DEBIAN_FOLDER}的完整命令为 ${PURPLE}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${ARCH_TYPE}${RESET}
-		若您未选择跨架构运行，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
+		您若未启用跨架构运行的功能，则可去除${PURPLE}${ARCH_TYPE}${RESET}参数。
 
 		精简命令为  ${BLUE}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
-		若您使用的是tmoe-zsh配置的环境，则可以进一步简化为 ${YELLOW}t ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
+		您若使用了tmoe-zsh配置的环境，则可将其进一步简化为 ${YELLOW}t ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH}${RESET}
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}tigervnc server${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} v${RESET}
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}x11vnc server${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} x11${RESET}
 		同时启动${BLUE}${DEBIAN_FOLDER}${RESET}容器+${YELLOW}XSDL/VcXsrv${RESET}的命令为  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} xs${RESET}
@@ -829,7 +829,7 @@ readme_of_gnu_linux_distro() {
 
 		注:最后一个参数可以执行容器的指定命令。若为长命令，则请使用引号将最后一个参数包围起来。
 		例如：  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "ls -lah /" ${RESET}
-		最后一个参数也可以执行本地脚本，假设当前目录下存在hello.rb文件，那么你需要执行 ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
+		最后一个参数也可以执行本地脚本，如果当前目录下存在hello.rb文件，那么您需要执行 ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "./hello.rb" ${RESET}
 		而不是  ${GREEN}tmoe ${SHORT_VIRT_TYPE} ${SHORT_DISTRO_NAME} ${SHORT_DISTRO_CODE} ${SHORT_ARCH} "hello.rb" ${RESET}
 		注：本地脚本或二进制文件的优先级要高于容器内部文件，详见“环境变量与登录项管理”选项的README。
 		${YELLOW}${BOLD}Example(示例):${RESET}

@@ -1,7 +1,7 @@
 #######################
 configure_novnc() {
 	if [[ ! -s "${TMOE_LINUX_DIR}/achievement01" || ! -s /usr/local/bin/novnc ]]; then
-		printf "%s\n" "${PURPLE}尚未解锁${RESET}，你需要在获得成就“${BLUE}vnc大师${RESET}”后，才能对此选项进行配置。"
+		printf "%s\n" "${PURPLE}尚未解锁${RESET}，您需要在获得成就“${BLUE}vnc大师${RESET}”后，才能对此选项进行配置。"
 		press_enter_to_return
 		modify_remote_desktop_config
 	fi

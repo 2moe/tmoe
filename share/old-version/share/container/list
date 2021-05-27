@@ -1727,10 +1727,18 @@ install_raspios_linux_distro() {
 	DISTRO_CODE='buster'
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	case "${ARCH_TYPE}" in
+	arm64)
+		printf "%s\n" "检测到您选择的是树莓派系统"
+		printf "%s\n" "检测到您使用的是${PURPLE}arm64${RESET}架构，请回到跨架构（cross-arch）菜单，并选择${BLUE}armhf${RESET}"
+		# printf "%s\n" "已将您的架构临时识别为armhf"
+		printf "%s\n" "如需安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs.tar.xz文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${ROOTFS_DIR}${RESET}"
+		press_enter_to_continue
+		;;
+	esac
+	case "${ARCH_TYPE}" in
 	arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
 	*) distro_does_not_support ;;
 	esac
-
 	case "${TRUE_ARCH_TYPE}" in
 	arm64 | armhf)
 		TMOE_QEMU_ARCH=""
@@ -1740,9 +1748,6 @@ install_raspios_linux_distro() {
 	ARCH_TYPE="${NEW_TMOE_ARCH}"
 	create_container_edition_txt
 	go_to_proot_management
-	printf "%s\n" "检测到您选择的是树莓派系统"
-	printf "%s\n" "已将您的架构临时识别为armhf"
-	printf "%s\n" "若您需要安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs.tar.xz文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${ROOTFS_DIR}${RESET}"
 	if (whiptail --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
 		install_raspios_full_armhf_rootfs
 	else

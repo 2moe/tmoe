@@ -29,7 +29,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	# if (system|default) {bin =  "mount"}
 	# else if (termux) {bin = "\${PREFIX}/bin/mount"}
 	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox mount"}
-	# else if (busybox) {bin = "/usr/bin/buysbox mount"}
+	# else if (busybox) {bin = "buysbox mount"}
 	# else if (toybox) {bin = "toybox mount"}
 	# else if (system-toybox) {bin = "/system/bin/toybox mount"}
 
@@ -39,7 +39,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	# if (system|default) {bin =  "unshare"}
 	# else if (termux) {bin = "\${PREFIX}/bin/unshare"}
 	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox unshare"}
-	# else if (busybox) {bin = "/usr/bin/buysbox unshare"}
+	# else if (busybox) {bin = "buysbox unshare"}
 
 	ROOTFS_DIR="${DEBIAN_CHROOT}"
 
@@ -164,7 +164,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    *) TMOE_MOUNT="\${MOUNT_BIN}" ;;
 	    esac
 	    if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then 
-	        MOUNT_BIN="\${PREFIX}/bin/busybox mount" && CHROOT_BIN="\${PREFIX}/bin/chroot" && UNSHARE_BIN="\${PREFIX}/bin/unshare"
+	        TMOE_MOUNT="\${PREFIX}/bin/busybox mount" && CHROOT_BIN="\${PREFIX}/bin/chroot" && UNSHARE_BIN="\${PREFIX}/bin/unshare"
 	    fi 
 	}
 	check_unshare_bin() {

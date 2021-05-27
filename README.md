@@ -695,7 +695,7 @@ worldwide mirror sites.
 Support one-key graphical user interface installation.
 ![de&wm](https://images.gitee.com/uploads/images/2020/0721/202944_b98d0e7b_5617340.png "Capture+_2020-07-21-20-09-40.png")
 
-2.TUI 式界面，便捷配置  
+2.TUI，便捷配置  
 Convenient configuration  
 ![remote desktop configuration](https://images.gitee.com/uploads/images/2020/0722/143751_d5f4d9c4_5617340.png "Capture+_2020-07-22-14-36-25.png")  
 ![分辨率](https://images.gitee.com/uploads/images/2020/0721/203215_9823fc25_5617340.png "Capture+_2020-07-11-10-05-41.png")
