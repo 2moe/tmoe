@@ -613,7 +613,7 @@ remove_steam_app() {
         #remove_fedora_steam_app
         rm -fv /etc/yum.repos.d/steam.repo
         ;;
-    "arch") remove_arch_steam_app ;;
+    "arch") printf "%s\n" "先卸载steam，然后禁用掉/etc/pacman.conf中的[multilib]" ;;
     esac
 }
 ###############
@@ -639,27 +639,7 @@ install_fedora_steam_app() {
 		gpgcheck=0
 	ENDOFFEDORASTEAM
 }
-####################
-check_arch_multi_lib_line() {
-    cd /etc
-    ARCH_MULTI_LIB_LINE=$(cat pacman.conf | grep '\[multilib\]' -n | cut -d ':' -f 1 | tail -n 1)
-    ARCH_MULTI_LIB_INCLUDE_LINE=$((${ARCH_MULTI_LIB_LINE} + 1))
-}
 #################
-install_arch_steam_app() {
-    check_arch_multi_lib_line
-    printf "%s\n" "正在修改/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
-    sed -i "${ARCH_MULTI_LIB_LINE}c\[multilib]" pacman.conf
-    sed -i "${ARCH_MULTI_LIB_INCLUDE_LINE}c\Include = /etc/pacman.d/mirrorlist" pacman.conf
-}
-#################
-remove_arch_steam_app() {
-    check_arch_multi_lib_line
-    printf "%s\n" "正在注释掉/etc/pacman.conf中第${ARCH_MULTI_LIB_LINE}行中的multilib"
-    sed -i "${ARCH_MULTI_LIB_LINE}c\#[multilib]" pacman.conf
-    sed -i "${ARCH_MULTI_LIB_INCLUDE_LINE}c\#Include = /etc/pacman.d/mirrorlist" pacman.conf
-}
-################
 install_steam_app() {
     case "${ARCH_TYPE}" in
     amd64 | i386) ;;
@@ -680,10 +660,9 @@ install_steam_app() {
         ;;
     "arch")
         DEPENDENCY_01='steam-native-runtime'
-        install_arch_steam_app
-        #此处需要选择显卡驱动，故不要使用quick_install_function
+        printf "%s\n" "您需要编辑/etc/pacman.conf, 并启用[multilib]"
+        printf "%s\n" "最后安装steam"
         printf "%s\n" "pacman -Syu --needed ${DEPENDENCY_01} ${DEPENDENCY_02}"
-        pacman -Syu --needed ${DEPENDENCY_01} ${DEPENDENCY_02}
         ;;
     *)
         beta_features_quick_install
