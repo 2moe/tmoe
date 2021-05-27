@@ -37,6 +37,12 @@ check_dbus_daemon() {
         ;;
     esac
 }
+check_dbus_servcie() {
+    if [[ -e /usr/sbin/service ]]; then
+        printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+        sudo service dbus start
+    fi
+}
 ################
-###########
+check_dbus_servcie
 check_dbus_daemon
