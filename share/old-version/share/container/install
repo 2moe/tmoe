@@ -657,8 +657,9 @@ create_chroot_startup_script() {
 		case ${ANDROID_VERSION} in
 		5 | 6 | 7) sudo sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
 		"") ;;
-		*) sudo sed -i -E "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_STARTUP_SCRIPT} ;;
+		*) ;;
 		esac
+		#sudo sed -i -E "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_STARTUP_SCRIPT}
 		printf "%s\n" "ANDROID_VERSION=${ANDROID_VERSION}" >${TMPDIR}/.ANDROID_VERSION.txt
 		sudo mv -vf ${TMPDIR}/.ANDROID_VERSION.txt ${DEBIAN_CHROOT}/tmp/
 	else

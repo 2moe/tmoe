@@ -34,7 +34,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	# else if (system-toybox) {bin = "/system/bin/toybox mount"}
 
 	UNSHARE_BIN="termux"
-	# Optional values: "default", "system", "termux", "busybox", "termux-busybox", or an absolute path.
+	# Optional values: "default", "system", "termux", or an absolute path.
+	# Deprecated values: "busybox", "termux-busybox"
 	# In general, "unshare" comes from the "util-linux" package.
 	# if (system|default) {bin =  "unshare"}
 	# else if (termux) {bin = "\${PREFIX}/bin/unshare"}
