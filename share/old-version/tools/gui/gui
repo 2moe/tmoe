@@ -2674,8 +2674,8 @@ install_gnome3_desktop() {
     do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
     true)
-        REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
-        REMOTE_DESKTOP_SESSION_02='gnome-panel'
+        REMOTE_DESKTOP_SESSION_01='gnome-panel'
+        REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity'
         ;;
     false | *)
         REMOTE_DESKTOP_SESSION_01='gnome-session'
@@ -2691,7 +2691,7 @@ install_gnome3_desktop() {
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session gnome-session-flashback'
+                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session'
             else
                 UBUNTU_DESKTOP=true
                 DEPENDENCY_01="ubuntu-desktop"
@@ -2699,7 +2699,7 @@ install_gnome3_desktop() {
             ;;
         *)
             if (whiptail --title "gnome-core or gnome-extra" --yes-button "gnome-core" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome软件包套件' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session gnome-session-flashback'
+                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-session'
             else
                 DEPENDENCY_01='task-gnome-desktop'
             fi

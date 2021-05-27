@@ -45,6 +45,9 @@ ALWAYS_SHARED=true
 
 DBUS_ENABLED=true
 
+AUTO_START_DBUS=false
+# If the value is true, "sudo service dbus start" will be executed automatically every time.
+
 AUTO_STOP_VNC=true
 # Before each start, vnc will be automatically stopped.
 # If the value is true, then "startvnc" => "restart vnc"
@@ -301,6 +304,17 @@ start_tmoe_xvnc() {
     exit 0
 }
 ##############
+check_dbus_servcie() {
+    if [[ ${AUTO_START_DBUS} = true ]]; then
+        if [[ -e /usr/sbin/service ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+            sudo service dbus start
+        else
+            printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
+            sudo systemctl start dbus
+        fi
+    fi
+}
 source_tmoe_dbus_daemon() {
     if [[ ${DBUS_ENABLED} = true ]]; then
         # [[ ! -e /usr/sbin/service ]] || service dbus start 2>/dev/null
@@ -331,6 +345,7 @@ check_xvnc() {
 }
 ##########
 tmoe_vnc_preconfigure
+check_dbus_servcie
 source_tmoe_dbus_daemon
 display_vnc_ip_addr
 #check_vncsession
