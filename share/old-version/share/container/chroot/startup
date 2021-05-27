@@ -130,7 +130,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	# Unshare the mount namespace. Default is false.
 	# mount namespace: Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared.
 
-	KILL_CHILD=true
+	KILL_CHILD=false
 	# When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
 
 	SHARE_PROC=true
