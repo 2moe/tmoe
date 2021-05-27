@@ -132,6 +132,10 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 
 	KILL_CHILD=false
 	# When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
+	# When the value is true and SIGNAME=SIGKILL, the process in the container cannot be terminated with ctrl+c.
+	# You can see this issue: https://github.com/2moe/tmoe-linux/issues/44
+
+	KILL_CHILD_SIGNAME="SIGKILL"
 
 	SHARE_PROC=true
 	# Default is true.
@@ -353,10 +357,8 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	        [[ \${UNSHARE_UTS} != true ]] || set -- "\${@}" "--uts"
 	        [[ \${UNSHARE_MOUNT} != true ]] || set -- "\${@}" "--mount"
 	        if [[ \${KILL_CHILD} != false ]]; then
-	            if [[ \${KILL_CHILD} = true ]]; then
-	                set -- "\${@}" "--kill-child"
-	            else
-	                set -- "\${@}" "--kill-child=\${KILL_CHILD}"
+	            if [[ \${KILL_CHILD} = true && -n \${KILL_CHILD_SIGNAME} ]]; then
+	                set -- "\${@}" "--kill-child=\${KILL_CHILD_SIGNAME}"
 	            fi
 	        fi
 	        set -- "\${@}" "-R"
