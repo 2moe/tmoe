@@ -28,9 +28,6 @@ RUN apt update; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
-    yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
-    yes | aptitude install -t unstable -y perl perl-base || yes | apt install -t unstable -y perl perl-base; \
-    yes | aptitude install -t unstable -y command-not-found; \
     apt autopurge -y; \
     rm -fv '/var/cache/apt/archives/* \
     /var/cache/apt/* \
@@ -38,5 +35,8 @@ RUN apt update; \
     /var/log/apt/* \
     /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
+# yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
+# apt install -t unstable -y perl perl-base || aptitude install -t unstable -y perl perl-base; \
+# aptitude install -t unstable -y command-not-found; \
 
 CMD [ "/bin/zsh" ]
