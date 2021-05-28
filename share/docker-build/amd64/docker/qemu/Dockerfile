@@ -17,8 +17,8 @@ ENV HOME=/root \
 RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
-    apt install -y sudo locales xz-utils git aptitude; \
-    yes | apt install -t experimental qemu-system-x86 qemu-system-gui -y; \
+    apt install -y sudo locales xz-utils git aptitude aptitude; \
+    yes | apt install -t experimental qemu-system-x86 qemu-system-gui -y || aptitude install -y qemu-system-x86 qemu-system-gui; \
     apt install -y whiptail curl eatmydata apt-utils procps iproute2; \
     apt install -y --no-install-recommends neofetch nano lolcat; \
     mkdir -p /run/systemd; \
@@ -58,7 +58,6 @@ RUN apt update; \
     yes | apt dist-upgrade -t experimental -y || yes | aptitude full-upgrade -t experimental -y; \
     printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
     apt autopurge -y; \
-    rm -fv /etc/apt/sources.list.d/experimental.list; \
     rm -fv '/var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/log/* \

@@ -32,7 +32,6 @@ RUN apt update; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
     apt autopurge -y; \
-    rm -fv /etc/apt/sources.list.d/experimental.list; \
     rm -fv '/var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/log/* \
