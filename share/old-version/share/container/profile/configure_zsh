@@ -163,7 +163,7 @@ set_your_vnc_passwd() {
 do_you_want_to_configure_tmoe_zsh() {
 	cd ${HOME}
 	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
-	for i in "/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/storage/emulated/0/Pictures/Telegram" "/storage/emulated/0/DCIM/Camera" "/sd" "/sd/Pictures" "/storage/emulated/0/DCIM/.thumbnails"; do
+	for i in "/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/storage/emulated/0/DCIM/Camera" "/media/sd/Pictures/Screenshots" "/media/sd/Pictures" "/media/sd" "/storage/emulated/0/DCIM/.thumbnails"; do
 		if [[ -e ${i} ]]; then
 			if [[ -n $(ls -l ${i} | grep '^-' | egrep '\.png|\.jpg') ]]; then
 				FACE_ICON_DIR="${i}"
@@ -374,10 +374,9 @@ auto_check_face_icon() {
 }
 copy_face_icon_to_home() {
 	if [[ -n ${USER_NAME} && -e /home/${USER_NAME} ]]; then
-		for i in .face .face.icon; do
-			cp -fv ${HOME}/.face /home/${USER_NAME}/${i}
-			chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/${i}
-		done
+		cp -fv ${HOME}/.face /home/${USER_NAME}/.face
+		ln -svf .face /home/${USER_NAME}/.face.icon
+		chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.face /home/${USER_NAME}/.face.icon
 	fi
 }
 ################
