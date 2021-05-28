@@ -93,7 +93,7 @@ tmoe_env_02() {
 }
 ############
 get_hitokito_cn() {
-	ORIGIN_HITOKOTO=$(curl -s --connect-timeout 2 "https://v1.hitokoto.cn")
+	ORIGIN_HITOKOTO=$(curl -Ls --connect-timeout 1 --max-time 1 "https://v1.hitokoto.cn")
 	HITOKOTO_ONE=$(printf "%s" ${ORIGIN_HITOKOTO} | sed 's@,@\n@g' | grep 'hitokoto.*:' | awk -F '"' '{print $4}' | sed 's@^@“@' | sed 's@$@”@')
 	HITOKOTO_AUTHOR=$(printf "%s" ${ORIGIN_HITOKOTO} | sed 's@,@\n@g' | grep -v 'commit_from' | grep 'from.*:' | awk -F '"' '{print $4}' | sed '/null,/d' | tr '\n' ' ' | sed 's@$@:@')
 	printf "${YELLOW}%s${RESET} ${BLUE}%s${RESET}\n" "${HITOKOTO_AUTHOR}" "${HITOKOTO_ONE}"
@@ -377,7 +377,7 @@ check_tmoe_completion_version() {
 	if [ ! -e "${TMOE_COMPLETION_VERSION_TXT}" ]; then
 		UPDATE_TMOE_COMPLETION=true
 	else
-		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl --connect-timeout 1 -sL https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/share/old-version/share/completion/version.txt)
+		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl --connect-timeout 1 -sL --max-time 2 https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/share/old-version/share/completion/version.txt)
 		if [[ -n ${THE_LATEST_TMOE_COMPLETION_VERSION} ]]; then
 			if [ -e ${TMOE_COMPLETION_VERSION_TXT} ]; then
 				CURRENT_TMOE_COMPLETION_VERSION="$(head -n 1 ${TMOE_COMPLETION_VERSION_TXT})"
