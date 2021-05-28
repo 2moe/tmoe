@@ -1,4 +1,4 @@
-FROM amd64/debian:sid-slim
+FROM amd64/debian:unstable-slim
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 ADD README.js /root
 ARG DEBIAN_FRONTEND=noninteractive

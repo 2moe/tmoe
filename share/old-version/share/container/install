@@ -1197,8 +1197,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			EndOfFile
 	#请注意：若服务器添加了debian sid之外的自动构建任务，需要在此处修改软件源。
 		if [[ ${WEEKLY_BUILD_CONTAINER} = true ]];then
-	        sed -i "s@unstable@sid@g" /etc/apt/sources.list
-	        if ! egrep -q 'sid|Sid' /etc/issue; then
+	        if grep -q '^deb.*unstable main' /etc/apt/sources.list; then
+				sed -i "s@unstable@sid@g" /etc/apt/sources.list
+	        elif ! egrep -q 'sid|Sid' /etc/issue; then
 	            SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
 	            VERSION_ID=$(grep VERSION_ID /etc/os-release | awk -F '=' '{print $2}' | head -n 1 | cut -d '"' -f 2)
 	            BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)

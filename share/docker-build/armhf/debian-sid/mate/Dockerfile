@@ -13,7 +13,8 @@ RUN apt update; \
     dpkg --configure -a; \
     apt install -y locales-all locales; \
     apt install -y whiptail dialog aria2 zstd curl wget; \
-    apt install -y neofetch lolcat apt-utils systemd procps; \
+    apt install -y --no-install-recommends neofetch lolcat unzip; \
+    apt install -y apt-utils systemd procps aptitude; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
@@ -31,6 +32,8 @@ RUN apt update; \
     bash install-gui.sh; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
+    yes | aptitude install -t unstable -y perl perl-base || yes | apt install -t unstable -y perl perl-base; \
+    yes | aptitude install -t unstable -y command-not-found; \
     apt autopurge -y; \
     rm -fv '/var/cache/apt/archives/* \
     /var/cache/apt/* \
