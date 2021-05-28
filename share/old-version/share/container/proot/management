@@ -67,7 +67,12 @@ proot_management_menu() {
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") ${RETURN_TO_MENU} ;;
-	1) normally_start_gnu_linux_distro ;;
+	1)
+		if [[ -e ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary ]]; then
+			${TMOE_PREFIX} rm -rfv ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary
+		fi
+		normally_start_gnu_linux_distro
+		;;
 	2) kill_container_process ;;
 	3) start_gui_menu ;;
 	4) environment_variables_and_automatic_startup_script_management ;;

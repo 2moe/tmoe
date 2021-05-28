@@ -55,7 +55,6 @@ RUN apt update; \
     mkdir Downloads; \
     ln -svf /opt/qemu-img ${PWD}/Downloads; \
     ln -svf ${QEMU_FILE} ${PWD}/startqemu; \
-    yes | apt dist-upgrade -t experimental -y || yes | aptitude full-upgrade -t experimental -y; \
     printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
     apt autopurge -y; \
     rm -fv '/var/cache/apt/archives/* \
