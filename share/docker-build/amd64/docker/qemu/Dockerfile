@@ -1,4 +1,4 @@
-FROM amd64/debian:sid
+FROM amd64/debian:experimental
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 ADD README.rb /root
 ARG DEBIAN_FRONTEND=noninteractive
@@ -9,22 +9,24 @@ ENV HOME=/root \
     BLK_DEVICE="VIRTIO_DISK_01" \
     RTC_BASE=utc \
     GPU_MODEL=virtio-vga \
-    QEMU_NAME="alpine_x64-tmoe-202011" \
-    QEMU_FILE="/usr/local/etc/tmoe-linux/qemu/list/alpine_x64-tmoe-202011" \
-    TMOE_FILE_ABSOLUTE_PATH="/opt/qemu-img/alpine_x64-tmoe_202011.qcow2"
-
+    QEMU_NAME="arch_x64-tmoe-202105" \
+    QEMU_FILE="/usr/local/etc/tmoe-linux/qemu/list/arch_x64-tmoe-202105" \
+    TMOE_FILE_ABSOLUTE_PATH="/opt/qemu-img/arch_x64-tmoe-202105.qcow2" \
+    QEMU_IMAGE_REPO=arch-qemu-image
+# sed -E -i 's@(configure)@pre\1@g' /var/lib/dpkg/info/libc-bin.postinst; \
 RUN apt update; \
     apt dist-upgrade -y; \
-    sed -E -i 's@(configure)@pre\1@g' /var/lib/dpkg/info/libc-bin.postinst; \
     dpkg --configure -a; \
-    apt install -y sudo locales qemu-system-x86 qemu-system-gui xz-utils git; \
+    apt install -y sudo locales xz-utils git aptitude; \
+    yes | apt install -t experimental qemu-system-x86 qemu-system-gui -y; \
     apt install -y whiptail curl eatmydata apt-utils procps iproute2; \
     apt install -y --no-install-recommends neofetch nano lolcat; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
-    mkdir /opt/qemu-img; \
+    mkdir -pv /opt/qemu-img; \
     cd /opt/qemu-img; \
-    curl -LO https://github.com/2moe/alpine-qemu-image/releases/download/latest/qcow2.tar.xz; \
+    URL="https://github.com/2moe/${QEMU_IMAGE_REPO}/releases/download/latest/qcow2.tar.xz"; \
+    curl -LO "${URL}" || curl -Lo qcow2.tar.xz "${URL}"; \
     tar -Jxvf qcow2.tar.xz; \
     rm -fv qcow2.tar.xz; \
     cd /tmp; \
@@ -53,6 +55,15 @@ RUN apt update; \
     mkdir Downloads; \
     ln -svf /opt/qemu-img ${PWD}/Downloads; \
     ln -svf ${QEMU_FILE} ${PWD}/startqemu; \
+    yes | apt dist-upgrade -t experimental -y || yes | aptitude full-upgrade -t experimental -y; \
+    printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
+    apt autopurge -y; \
+    rm -fv /etc/apt/sources.list.d/experimental.list; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 EXPOSE 5905
 CMD [ "startqemu" ]

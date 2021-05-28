@@ -28,6 +28,11 @@ RUN apt update; \
     printf "%s\n" "MONGO_MAJOR='${MONGO_MAJOR}'" >> version.txt; \
     printf "%s\n" "MONGO_VERSION='${MONGO_VERSION}'" >> version.txt; \
     cat version.txt; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 
 CMD [ "mongod" ]

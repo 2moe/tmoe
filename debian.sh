@@ -39,6 +39,7 @@ set_env() {
 	PURPLE=$(printf '\033[35m')
 	CYAN=$(printf '\033[36m')
 	RESET=$(printf '\033[m')
+	BOLD=$(printf '\033[1m')
 }
 show_info_and_run_the_temp_file() {
 	show_package_info
@@ -59,7 +60,7 @@ do_you_want_to_continue() {
 		exit 1
 		;;
 	*)
-		printf "%s\n" "${RED}Invalid ${CYAN}choice${RESET}. skipped."
+		printf "%s\n" "${RED}Invalid ${CYAN}choice${RESET}, skipped."
 		exit 1
 		;;
 	esac
@@ -92,15 +93,10 @@ download_temp_file() {
 	aria2c) aria2c --connect-timeout=7 --console-log-level=info --no-conf --allow-overwrite=true -o ${TEMP_FILE} ${TMOE_URL} || aria2c --connect-timeout=20 --console-log-level=debug --no-conf --allow-overwrite=true -o ${TEMP_FILE} ${TMOE_URL_02} ;;
 	curl) curl --connect-timeout 7 -Lvo ${TEMP_FILE} ${TMOE_URL} || curl --connect-timeout 20 -Lvo ${TEMP_FILE} ${TMOE_URL_02} ;;
 	wget) wget --connect-timeout=7 -O ${TEMP_FILE} ${TMOE_URL} || wget --connect-timeout=20 -O ${TEMP_FILE} ${TMOE_URL_02} ;;
-	"")
+	*)
 		printf "%s\n" "${RED}${BOLD}ERROR${RESET}, ${CYAN}please install ${GREEN}curl${RESET} first"
 		sleep 2
 		exit 127
-		;;
-	*)
-		printf "%s\n" "${RED}${BOLD}ERROR${RESET}"
-		sleep 2
-		exit 1
 		;;
 	esac
 }

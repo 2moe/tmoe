@@ -1,35 +1,33 @@
 #!/usr/bin/env bash
 ##############
-case $(uname -m) in
-armv7* | armv8l) ARCH_TYPE="armhf" ;;
-armv6* | armv5*) ARCH_TYPE="armel" ;;
-aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
-x86_64 | amd64) ARCH_TYPE="amd64" ;;
-i*86 | x86) ARCH_TYPE="i386" ;;
-s390*)
-	ARCH_TYPE="s390x" #经测试uname -m输出的结果为s390x
-	;;
-ppc*)
-	ARCH_TYPE="ppc64el" #经测试uname -m输出的结果为ppc64le，而不是ppc64el
-	;;
-mips64*) ARCH_TYPE="mips64el" ;;
-mips*)
-	ARCH_TYPE="mipsel" #经测试uname -m输出的结果为mips，而不是mipsel
-	;;
-risc*) ARCH_TYPE="riscv64" ;;
-*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
-esac
 if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
-	case $(dpkg --print-architecture) in
-	aarch64 | arm64*) ARCH_TYPE="arm64" ;;
-	armv7* | armhf) ARCH_TYPE="armhf" ;;
+	DPKG_ARCH=$(dpkg --print-architecture)
+	case ${DPKG_ARCH} in
+	armv7* | armv8l | armhf) ARCH_TYPE="armhf" ;;
+	aarch64 | arm64* | armv8*) ARCH_TYPE="arm64" ;;
 	i*86 | x86) ARCH_TYPE="i386" ;;
 	x86_64 | amd64) ARCH_TYPE="amd64" ;;
+	*) ARCH_TYPE=${DPKG_ARCH} ;;
+	esac
+else
+	UNAME_ARCH=$(uname -m)
+	case ${UNAME_ARCH} in
+	armv7* | armv8l) ARCH_TYPE="armhf" ;;
+	armv6* | armv5*) ARCH_TYPE="armel" ;;
+	aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+	x86_64 | amd64) ARCH_TYPE="amd64" ;;
+	i*86 | x86) ARCH_TYPE="i386" ;;
+	s390*) ARCH_TYPE="s390x" ;;  #经测试uname -m输出的结果为s390x
+	ppc*) ARCH_TYPE="ppc64el" ;; #经测试uname -m输出的结果为ppc64le，而不是ppc64el
+	mips64) ARCH_TYPE="mips64el" ;;
+	mips*) ARCH_TYPE="mipsel" ;; #经测试uname -m输出的结果为mips，而不是mipsel
+	risc*) ARCH_TYPE="riscv64" ;;
+	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
 	esac
 fi
+TRUE_ARCH_TYPE=${ARCH_TYPE}
 GNU_TAR_BIN="$(command -v tar)"
 ######################
-TRUE_ARCH_TYPE=${ARCH_TYPE}
 QEMU_ARCH=''
 CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
@@ -66,12 +64,13 @@ CONTAINER_DISTRO="$(printf "%s\n" "${DEBIAN_FOLDER}" | awk -F '_' '{print $1}' |
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 [[ ! -s "${TMOE_LOCALE_FILE}" ]] || TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 RED=$(printf '\033[31m')
-PURPLE=$(printf '\033[0;35m')
 GREEN=$(printf '\033[32m')
 YELLOW=$(printf '\033[33m')
 BLUE=$(printf '\033[34m')
-BOLD=$(printf '\033[1m')
+PURPLE=$(printf '\033[35m')
+CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
+BOLD=$(printf '\033[1m')
 
 tmoe_manager_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
@@ -1003,9 +1002,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
 	BLUE=$(printf '\033[34m')
-	BOLD=$(printf '\033[1m')
-	PURPLE=$(printf '\033[0;35m')
+	PURPLE=$(printf '\033[35m')
+	CYAN=$(printf '\033[36m')
 	RESET=$(printf '\033[m')
+	BOLD=$(printf '\033[1m')
 	TMOE_TMP_DIR=/usr/local/etc/tmoe-linux/tmp
 	if [ -s /usr/local/etc/tmoe-linux/container.txt ];then
 		#.dockerenv

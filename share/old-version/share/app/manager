@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4811,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4812,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -100,9 +100,10 @@ set_terminal_color() {
 	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
 	BLUE=$(printf '\033[34m')
-	BOLD=$(printf '\033[1m')
-	PURPLE=$(printf '\033[0;35m')
+	PURPLE=$(printf '\033[35m')
+	CYAN=$(printf '\033[36m')
 	RESET=$(printf '\033[m')
+	BOLD=$(printf '\033[1m')
 }
 #######
 check_current_user_name_and_group() {
@@ -234,6 +235,109 @@ check_gnu_linux_git_and_whiptail() {
 	esac
 }
 #######################
+debian_env() {
+	SWITCH_MIRROR=true
+	LINUX_DISTRO='debian'
+	TMOE_INSTALLATION_COMMAND='eatmydata apt install -y'
+	TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo apt install'
+	TMOE_REMOVAL_COMMAND='apt purge -y'
+	# TMOE_UPDATE_COMMAND='sudo apt update'
+	TMOE_UPDATE_COMMAND='apt update'
+}
+arch_linux_env() {
+	LINUX_DISTRO='arch'
+	TMOE_UPDATE_COMMAND='pacman -Syy'
+	TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+	TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo pacman -Syu --needed'
+	TMOE_REMOVAL_COMMAND='pacman -Rsc'
+}
+check_linux_distro_etc_release() {
+	OS_RELEASE=$(cat /etc/os-release)
+	case ${OS_RELEASE} in
+	*debian* | *ubuntu* | *deepin* | *uos.com*)
+		debian_env
+		case ${OS_RELEASE} in
+		*ubuntu*) DEBIAN_DISTRO='ubuntu' ;;
+		*Kali*) DEBIAN_DISTRO='kali' ;; #"$(cut -c 1-4 /etc/issue)" = "Kali"
+		*deepin* | *uos.com*)
+			DEBIAN_DISTRO='deepin'
+			SWITCH_MIRROR=false
+			;;
+		esac
+		;;
+	*Arch* | *Manjaro*) arch_linux_env ;;
+	*Fedora* | *CentOS* | "*Red Hat*" | *redhat*)
+		LINUX_DISTRO='redhat'
+		if [ $(command -v dnf) ]; then
+			TMOE_UPDATE_COMMAND='dnf update'
+			TMOE_INSTALLATION_COMMAND='dnf install -y --skip-broken'
+			TMOE_REMOVAL_COMMAND='dnf remove -y'
+		else
+			TMOE_UPDATE_COMMAND='yum update'
+			TMOE_INSTALLATION_COMMAND='yum install -y --skip-broken'
+			TMOE_REMOVAL_COMMAND='yum remove -y'
+		fi
+		case ${OS_RELEASE} in
+		*Fedora*) REDHAT_DISTRO='fedora' ;;
+		*ID=*centos*) REDHAT_DISTRO='centos' ;; #"$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos"
+		esac
+		;;
+	*Alpine*)
+		SWITCH_MIRROR=true
+		LINUX_DISTRO='alpine'
+		TMOE_UPDATE_COMMAND='apk update'
+		TMOE_INSTALLATION_COMMAND='apk add'
+		TMOE_REMOVAL_COMMAND='sudo apk del'
+		;;
+	*gentoo* | *funtoo*)
+		LINUX_DISTRO='gentoo'
+		TMOE_INSTALLATION_COMMAND='emerge -avk'
+		# TMOE_INSTALLATION_COMMAND_NO_SUDO='emerge -avk'
+		# TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo emerge -avk'
+		TMOE_REMOVAL_COMMAND='emerge -C'
+		;;
+	*Solus*)
+		LINUX_DISTRO='solus'
+		TMOE_INSTALLATION_COMMAND='eopkg install -y'
+		# TMOE_INSTALLATION_COMMAND_NO_SUDO='eopkg install -y'
+		# TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo eopkg install'
+		TMOE_REMOVAL_COMMAND='eopkg remove -y'
+		;;
+	*ID=\"void\"*)
+		LINUX_DISTRO='void'
+		export LANG='en_US.UTF-8'
+		TMOE_INSTALLATION_COMMAND='xbps-install -Sy'
+		TMOE_REMOVAL_COMMAND='xbps-remove -R'
+		;;
+	*openSUSE* | *suse*)
+		LINUX_DISTRO='suse'
+		TMOE_INSTALLATION_COMMAND='zypper in -y'
+		TMOE_REMOVAL_COMMAND='zypper rm'
+		;;
+	*Slackware*)
+		LINUX_DISTRO='slackware'
+		TMOE_UPDATE_COMMAND='slackpkg update'
+		TMOE_INSTALLATION_COMMAND='slackpkg install'
+		TMOE_REMOVAL_COMMAND='slackpkg remove'
+		;;
+	*openwrt*)
+		printf "${RED}%s${RESET}\n" "本工具已不再支持OpenWRT"
+		do_you_want_to_continue
+		LINUX_DISTRO='openwrt'
+		TMOE_UPDATE_COMMAND='opkg update'
+		TMOE_INSTALLATION_COMMAND='opkg install'
+		TMOE_REMOVAL_COMMAND='opkg remove'
+		;;
+	*) check_linux_distro_pkg_manager ;;
+	esac
+}
+check_linux_distro_pkg_manager() {
+	if [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
+		debian_env
+	elif [[ $(command -v pacman) ]]; then
+		arch_linux_env
+	fi
+}
 check_gnu_linux_distro() {
 	case "$(id -u)" in
 	0) ;;
@@ -266,93 +370,12 @@ check_gnu_linux_distro() {
 	esac
 	##############
 	SWITCH_MIRROR=false
-	if egrep -q 'debian|ubuntu|deepin|uos\.com' "/etc/os-release"; then
-		SWITCH_MIRROR=true
-		LINUX_DISTRO='debian'
-		TMOE_UPDATE_COMMAND='apt update'
-		TMOE_INSTALLATION_COMMAND='apt install -y'
-		TMOE_REMOVAL_COMMAND='apt purge -y'
-		if grep -q 'ubuntu' /etc/os-release; then
-			DEBIAN_DISTRO='ubuntu'
-		elif [ "$(cut -c 1-4 /etc/issue)" = "Kali" ]; then
-			DEBIAN_DISTRO='kali'
-		elif egrep -q 'deepin|uos\.com' /etc/os-release; then
-			SWITCH_MIRROR=false
-			DEBIAN_DISTRO='deepin'
-		fi
-
-	elif egrep -q "Arch|Manjaro" '/etc/os-release' || egrep -q "Arch|Manjaro" '/etc/issue'; then
-		LINUX_DISTRO='arch'
-		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
-
-	elif egrep -qi "Fedora|CentOS|Red Hat|redhat" '/etc/os-release'; then
-		LINUX_DISTRO='redhat'
-		if [ $(command -v dnf) ]; then
-			TMOE_REMOVAL_COMMAND='dnf remove -y'
-			TMOE_INSTALLATION_COMMAND='dnf install -y --skip-broken'
-		else
-			TMOE_REMOVAL_COMMAND='yum remove -y'
-			TMOE_INSTALLATION_COMMAND='yum install -y --skip-broken'
-		fi
-		if [ "$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos" ]; then
-			REDHAT_DISTRO='centos'
-		elif grep -q 'Sliverblue' "/etc/os-release"; then
-			printf "%s\n" "Sorry,不支持Fedora SliverBlue"
-		elif grep -q 'Fedora' "/etc/os-release"; then
-			REDHAT_DISTRO='fedora'
-		fi
-
-	elif grep -q "Alpine" '/etc/issue' || grep -q "Alpine" '/etc/os-release'; then
-		SWITCH_MIRROR=true
-		LINUX_DISTRO='alpine'
-		TMOE_UPDATE_COMMAND='apk update'
-		TMOE_INSTALLATION_COMMAND='apk add'
-		TMOE_REMOVAL_COMMAND='apk del'
-
-	elif egrep -q "gentoo|funtoo" '/etc/os-release'; then
-		LINUX_DISTRO='gentoo'
-		TMOE_INSTALLATION_COMMAND='emerge -avk'
-		TMOE_REMOVAL_COMMAND='emerge -C'
-
-	elif grep -qi 'suse' '/etc/os-release'; then
-		LINUX_DISTRO='suse'
-		TMOE_INSTALLATION_COMMAND='zypper in -y'
-		TMOE_REMOVAL_COMMAND='zypper rm'
-
-	elif [ "$(cut -c 1-4 /etc/issue)" = "Void" ]; then
-		LINUX_DISTRO='void'
-		TMOE_INSTALLATION_COMMAND='xbps-install -Sy'
-		TMOE_REMOVAL_COMMAND='xbps-remove -R'
-
-	elif egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
-		printf "${RED}%s${RESET}\n" "本工具已不再支持OpenWRT"
-		do_you_want_to_continue
-		LINUX_DISTRO='openwrt'
-		TMOE_INSTALLATION_COMMAND='opkg install'
-		TMOE_REMOVAL_COMMAND='opkg remove'
-		cd /tmp
-		wget --no-check-certificate -qO "router-debian.bash" https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager
-		chmod a+rx 'router-debian.bash'
-		sed -i 's@/usr/bin@/opt/bin@g;s@-e /bin@-e /opt/bin;@wget --no-check-certificate -qO "router-debian.bash"@#&@;s@bash router-debian.bash@#&@' 'router-debian.bash'
-		bash router-debian.bash
-
-	elif grep -q 'Solus' '/etc/os-release'; then
-		LINUX_DISTRO='solus'
-		TMOE_INSTALLATION_COMMAND='eopkg install -y'
-		TMOE_REMOVAL_COMMAND='eopkg remove -y'
-
-	elif [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
-		LINUX_DISTRO='debian'
-		TMOE_UPDATE_COMMAND='apt update'
-		TMOE_INSTALLATION_COMMAND='apt install -y'
-		TMOE_REMOVAL_COMMAND='apt purge -y'
-	elif [[ $(command -v pacman) ]]; then
-		LINUX_DISTRO='arch'
-		TMOE_REMOVAL_COMMAND='pacman -Rsc'
-		TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+	if [[ -e /etc/os-release ]]; then
+		check_linux_distro_etc_release
+	else
+		check_linux_distro_pkg_manager
 	fi
-	######################################
+	##############
 	check_gnu_linux_git_and_whiptail
 	#############
 	CurrentLANG=${LANG}

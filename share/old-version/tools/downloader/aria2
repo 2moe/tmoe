@@ -36,13 +36,14 @@ check_current_user_name_and_group() {
 }
 ##########
 check_dependencies() {
-    RED=$(printf '\033[31m')
-    PURPLE=$(printf '\033[0;35m')
-    GREEN=$(printf '\033[32m')
-    YELLOW=$(printf '\033[33m')
-    BLUE=$(printf '\033[34m')
-    BOLD=$(printf '\033[1m')
-    RESET=$(printf '\033[m')
+	RED=$(printf '\033[31m')
+	GREEN=$(printf '\033[32m')
+	YELLOW=$(printf '\033[33m')
+	BLUE=$(printf '\033[34m')
+	PURPLE=$(printf '\033[35m')
+	CYAN=$(printf '\033[36m')
+	RESET=$(printf '\033[m')
+	BOLD=$(printf '\033[1m')
     if [ ! $(command -v aria2c) ]; then
         printf '%s\n' '请先安装aria2'
     fi

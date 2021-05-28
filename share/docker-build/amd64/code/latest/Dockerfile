@@ -33,6 +33,11 @@ RUN apt update; \
     cd /root; \
     code-server --version; \
     printf "%s\n" "CODE_VERSION='$(code-server --version)'" > version.txt; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 EXPOSE 8080
 CMD [ "code-server" ]

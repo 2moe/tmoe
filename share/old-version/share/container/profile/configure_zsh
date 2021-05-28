@@ -111,9 +111,10 @@ set_terminal_color() {
 	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
 	BLUE=$(printf '\033[34m')
-	BOLD=$(printf '\033[1m')
-	PURPLE=$(printf '\033[0;35m')
+	PURPLE=$(printf '\033[35m')
+	CYAN=$(printf '\033[36m')
 	RESET=$(printf '\033[m')
+	BOLD=$(printf '\033[1m')
 }
 #######
 check_tmoe_locale_file() {

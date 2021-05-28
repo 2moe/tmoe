@@ -1,4 +1,4 @@
-FROM arm64v8/debian:unstable
+FROM arm64v8/debian:experimental
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
@@ -27,6 +27,14 @@ RUN apt update; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
+    yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
+    apt autopurge -y; \
+    rm -fv /etc/apt/sources.list.d/experimental.list; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 
 CMD [ "/bin/zsh" ]

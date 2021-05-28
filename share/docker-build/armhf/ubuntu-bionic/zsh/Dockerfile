@@ -7,8 +7,7 @@ ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
-#RUN sed -i "s@archive.ubuntu.com@mirrors.bfsu.edu.cn@g" /etc/apt/sources.list; \
-#     apt update; \
+
 RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
@@ -28,6 +27,11 @@ RUN apt update; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 
 CMD [ "/bin/zsh" ]

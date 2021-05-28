@@ -25,5 +25,10 @@ RUN apt update; \
     cd /root; \
     printf "%s\n%s\n" "JAVA_VERSION='$(java --version)'" "JAVAC_VERSION='$(javac --version)'" > version.txt; \
     cat version.txt; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 CMD [ "jshell" ]

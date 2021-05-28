@@ -1,43 +1,25 @@
 #!/usr/bin/env bash
 ############################################
-case $(uname -m) in
-armv7* | armv8l)
-	TRUE_ARCH_TYPE="armhf"
-	;;
-armv6* | armv5*)
-	TRUE_ARCH_TYPE="armel"
-	;;
-aarch64 | armv8* | arm64)
-	TRUE_ARCH_TYPE="arm64"
-	;;
-x86_64 | amd64)
-	TRUE_ARCH_TYPE="amd64"
-	;;
-i*86 | x86)
-	TRUE_ARCH_TYPE="i386"
-	;;
-s390*)
-	TRUE_ARCH_TYPE="s390x"
-	;;
-ppc*)
-	TRUE_ARCH_TYPE="ppc64el"
-	;;
-mips64*)
-	TRUE_ARCH_TYPE="mips64el"
-	;;
-mips*)
-	TRUE_ARCH_TYPE="mipsel"
-	;;
-risc*)
-	TRUE_ARCH_TYPE="riscv64"
-	;;
-esac
 if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	case $(dpkg --print-architecture) in
 	aarch64 | arm64*) TRUE_ARCH_TYPE="arm64" ;;
 	armv7* | armhf) TRUE_ARCH_TYPE="armhf" ;;
 	i*86 | x86) TRUE_ARCH_TYPE="i386" ;;
 	x86_64 | amd64) TRUE_ARCH_TYPE="amd64" ;;
+	*) TRUE_ARCH_TYPE=$(dpkg --print-architecture) ;;
+	esac
+else
+	case $(uname -m) in
+	armv7* | armv8l) TRUE_ARCH_TYPE="armhf" ;;
+	armv6* | armv5*) TRUE_ARCH_TYPE="armel" ;;
+	aarch64 | armv8* | arm64) TRUE_ARCH_TYPE="arm64" ;;
+	x86_64 | amd64) TRUE_ARCH_TYPE="amd64" ;;
+	i*86 | x86) TRUE_ARCH_TYPE="i386" ;;
+	s390*) TRUE_ARCH_TYPE="s390x" ;;
+	ppc*) TRUE_ARCH_TYPE="ppc64el" ;;
+	mips64*) TRUE_ARCH_TYPE="mips64el" ;;
+	mips*) TRUE_ARCH_TYPE="mipsel" ;;
+	risc*) TRUE_ARCH_TYPE="riscv64" ;;
 	esac
 fi
 ######################

@@ -25,6 +25,11 @@ RUN apt update; \
     cd /root; \
     printf "%s\n" "GO_VERSION='$(go version)'" > version.txt; \
     cat version.txt; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 # ENV PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
 #     GOPATH=/go

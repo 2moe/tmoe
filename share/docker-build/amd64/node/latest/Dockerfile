@@ -25,6 +25,11 @@ RUN apt update; \
     printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt; \
     printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt; \
     printf "%s\n" "NPM_VERSION='$(npm --version)'" >> version.txt; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 
 CMD [ "node" ]

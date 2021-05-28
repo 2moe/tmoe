@@ -27,6 +27,11 @@ RUN apt update; \
     printf "%s\n" "GEM_VERSION='$(gem --version)'" >> version.txt; \
     printf "%s\n" "BUNDLE_VERSION='$(bundle --version)'" >> version.txt; \
     cat version.txt; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 # ENV PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
 #     GEM_HOME=/usr/local/bundle; \

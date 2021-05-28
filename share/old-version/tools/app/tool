@@ -92,7 +92,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4811,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4812,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -143,9 +143,10 @@ set_terminal_color() {
 	GREEN=$(printf '\033[32m')
 	YELLOW=$(printf '\033[33m')
 	BLUE=$(printf '\033[34m')
-	BOLD=$(printf '\033[1m')
-	PURPLE=$(printf '\033[0;35m')
+	PURPLE=$(printf '\033[35m')
+	CYAN=$(printf '\033[36m')
 	RESET=$(printf '\033[m')
+	BOLD=$(printf '\033[1m')
 }
 ######################
 check_release_version() {
@@ -217,24 +218,29 @@ check_root() {
 }
 #####################
 check_architecture() {
-	case $(uname -m) in
-	armv7* | armv8l) ARCH_TYPE="armhf" ;;
-	armv6* | armv5*) ARCH_TYPE="armel" ;;
-	aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
-	x86_64 | amd64) ARCH_TYPE="amd64" ;;
-	i*86 | x86) ARCH_TYPE="i386" ;;
-	s390*) ARCH_TYPE="s390x" ;;
-	ppc*) ARCH_TYPE="ppc64el" ;;
-	mips64) ARCH_TYPE="mips64el" ;;
-	mips*) ARCH_TYPE="mipsel" ;;
-	risc*) ARCH_TYPE="riscv64" ;;
-	esac
 	if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
-		case $(dpkg --print-architecture) in
-		aarch64 | arm64*) ARCH_TYPE="arm64" ;;
-		armv7* | armhf) ARCH_TYPE="armhf" ;;
+		DPKG_ARCH=$(dpkg --print-architecture)
+		case ${DPKG_ARCH} in
+		armv7* | armv8l | armhf) ARCH_TYPE="armhf" ;;
+		aarch64 | arm64* | armv8*) ARCH_TYPE="arm64" ;;
 		i*86 | x86) ARCH_TYPE="i386" ;;
 		x86_64 | amd64) ARCH_TYPE="amd64" ;;
+		*) ARCH_TYPE=${DPKG_ARCH} ;;
+		esac
+	else
+		UNAME_ARCH=$(uname -m)
+		case ${UNAME_ARCH} in
+		armv7* | armv8l) ARCH_TYPE="armhf" ;;
+		armv6* | armv5*) ARCH_TYPE="armel" ;;
+		aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+		x86_64 | amd64) ARCH_TYPE="amd64" ;;
+		i*86 | x86) ARCH_TYPE="i386" ;;
+		s390*) ARCH_TYPE="s390x" ;;
+		ppc*) ARCH_TYPE="ppc64el" ;;
+		mips64) ARCH_TYPE="mips64el" ;;
+		mips*) ARCH_TYPE="mipsel" ;;
+		risc*) ARCH_TYPE="riscv64" ;;
+		*) ARCH_TYPE=${UNAME_ARCH} ;;
 		esac
 	fi
 	TRUE_ARCH_TYPE=${ARCH_TYPE}

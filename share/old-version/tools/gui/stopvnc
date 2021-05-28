@@ -51,12 +51,13 @@ tmoe_vnc_env() {
     #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' /usr/local/bin/startvnc | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
     RED=$(printf '\033[31m')
-    PURPLE=$(printf '\033[0;35m')
     GREEN=$(printf '\033[32m')
     YELLOW=$(printf '\033[33m')
     BLUE=$(printf '\033[34m')
-    BOLD=$(printf '\033[1m')
+    PURPLE=$(printf '\033[35m')
+    CYAN=$(printf '\033[36m')
     RESET=$(printf '\033[m')
+    BOLD=$(printf '\033[1m')
 }
 ###########
 rm_vnc_lock() {

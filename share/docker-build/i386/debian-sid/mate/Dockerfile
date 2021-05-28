@@ -1,4 +1,4 @@
-FROM i386/debian:unstable
+FROM i386/debian:experimental
 #VOLUME /usr/bin/qemu-i386-static:/usr/bin/qemu-i386-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
@@ -30,6 +30,14 @@ RUN apt update; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
+    yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
+    apt autopurge -y; \
+    rm -fv /etc/apt/sources.list.d/experimental.list; \
+    rm -fv '/var/cache/apt/archives/* \
+    /var/cache/apt/* \
+    /var/log/* \
+    /var/log/apt/* \
+    /var/lib/apt/lists/*' 2>/dev/null; \
     apt clean
 
 EXPOSE 5902 36080
