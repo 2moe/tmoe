@@ -28,6 +28,8 @@ RUN apt update; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
+    yes | apt dist-upgrade -t kali-experimental -y || yes | aptitude dist-upgrade -t kali-experimental -y; \
+    apt autopurge -y; \
     cp -vf /tmp/.zshrc ~; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv '/var/cache/apt/archives/* \

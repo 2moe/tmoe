@@ -31,6 +31,7 @@ sudo debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,non-free,c
 
 sudo mkdir -pv ${DEBIAN_CHROOT}/run/systemd
 sudo su -c "echo 'docker' >${DEBIAN_CHROOT}/run/systemd/container"
+printf "%s\n" "deb http://http.kali.org/kali kali-experimental main non-free contrib" | sudo tee ${DEBIAN_CHROOT}/etc/apt/sources.list.d/kali-experimental.list
 
 #sed -i "s@hirsute@${DISTRO_CODE}@g" ${SOURCES_LIST}
 #sudo cp -fv ${SOURCES_LIST} ${DEBIAN_CHROOT}/etc/apt/sources.list

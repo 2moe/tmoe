@@ -31,6 +31,8 @@ RUN apt update; \
     printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-xfce" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
+    yes | apt dist-upgrade -t kali-experimental -y || yes | aptitude dist-upgrade -t kali-experimental -y; \
+    apt autopurge -y; \
     cp -vf /tmp/.zshrc ~; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv '/var/cache/apt/archives/* \
