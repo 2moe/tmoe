@@ -68,8 +68,9 @@ proot_management_menu() {
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") ${RETURN_TO_MENU} ;;
 	1)
-		if [[ -e ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary ]]; then
-			${TMOE_PREFIX} rm -rfv ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary
+		TEMP_FOLDER="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
+		if [[ -e ${TEMP_FOLDER} && ! -e ${TEMP_FOLDER}/.container.lock ]]; then
+			${TMOE_PREFIX} rm -rfv ${TEMP_FOLDER}
 		fi
 		normally_start_gnu_linux_distro
 		;;
