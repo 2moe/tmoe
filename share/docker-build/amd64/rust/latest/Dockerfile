@@ -27,14 +27,17 @@ RUN apt update; \
     printf "%s\n" "CARGO_VERSION='$(cargo --version)'" >> version.txt; \
     printf "%s\n" "RUSTC_VERSION='$(rustc --version)'" >> version.txt; \
     cat version.txt; \
-    rm -fv '/var/cache/apt/archives/* \
+    rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
+    /var/mail/* \
     /var/log/* \
     /var/log/apt/* \
-    /var/lib/apt/lists/*' 2>/dev/null; \
+    /var/log/journal/* \
+    /var/lib/apt/lists/* \
+    2>/dev/null; \
     apt clean
 # ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
-#     RUSTUP_HOME=/usr/local/rustup; \
+#     RUSTUP_HOME=/usr/local/rustup \
 #     CARGO_HOME=/usr/local/cargo
 
 CMD [ "/bin/bash" ]

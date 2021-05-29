@@ -57,11 +57,14 @@ RUN apt update; \
     ln -svf ${QEMU_FILE} ${PWD}/startqemu; \
     printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
     apt autopurge -y; \
-    rm -fv '/var/cache/apt/archives/* \
+    rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
+    /var/mail/* \
     /var/log/* \
     /var/log/apt/* \
-    /var/lib/apt/lists/*' 2>/dev/null; \
+    /var/log/journal/* \
+    /var/lib/apt/lists/* \
+    2>/dev/null; \
     apt clean
 EXPOSE 5905
 CMD [ "startqemu" ]

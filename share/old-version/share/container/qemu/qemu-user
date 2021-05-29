@@ -447,7 +447,7 @@ git_clone_debian_ports_distro() {
 	cd ${ROOTFS_DIR}
 	DISTRO_NAME='debian'
 	case ${ARCH_TYPE} in
-	mips*) DISTRO_CODE='buster' ;;
+	mips*) DISTRO_CODE='bullseye' ;;
 	riscv64) DISTRO_CODE='sid' ;;
 	esac
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"

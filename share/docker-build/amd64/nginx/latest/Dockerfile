@@ -27,11 +27,14 @@ RUN apt update; \
     printf "%s\n" "NJS_VERSION='${NJS_VERSION}'" >> version.txt; \
     printf "%s\n" "PKG_RELEASE='${PKG_RELEASE}'" >> version.txt; \
     cat version.txt; \
-    rm -fv '/var/cache/apt/archives/* \
+    rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
+    /var/mail/* \
     /var/log/* \
     /var/log/apt/* \
-    /var/lib/apt/lists/*' 2>/dev/null; \
+    /var/log/journal/* \
+    /var/lib/apt/lists/* \
+    2>/dev/null; \
     apt clean
 
 CMD ["nginx", "-g", "daemon off;"]

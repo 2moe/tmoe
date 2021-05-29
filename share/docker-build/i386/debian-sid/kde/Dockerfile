@@ -32,11 +32,14 @@ RUN apt update; \
     bash install-gui.sh; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     apt autopurge -y; \
-    rm -fv '/var/cache/apt/archives/* \
+    rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
+    /var/mail/* \
     /var/log/* \
     /var/log/apt/* \
-    /var/lib/apt/lists/*' 2>/dev/null; \
+    /var/log/journal/* \
+    /var/lib/apt/lists/* \
+    2>/dev/null; \
     apt clean
 # yes | apt dist-upgrade -t experimental -y || yes | aptitude dist-upgrade -t experimental -y; \
 # apt install -t unstable -y perl perl-base || aptitude install -t unstable -y perl perl-base; \

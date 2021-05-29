@@ -36,11 +36,14 @@ RUN apt update; \
     apt autopurge -y; \
     cp -vf /tmp/.zshrc ~; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
-    rm -fv '/var/cache/apt/archives/* \
+    rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
+    /var/mail/* \
     /var/log/* \
     /var/log/apt/* \
-    /var/lib/apt/lists/*' 2>/dev/null; \
+    /var/log/journal/* \
+    /var/lib/apt/lists/* \
+    2>/dev/null; \
     apt clean
 
 EXPOSE 5902 36080
