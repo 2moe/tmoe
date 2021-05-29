@@ -216,7 +216,7 @@ tmoe_container_timezone() {
 }
 install_fortunes() {
     unset FORTUNES_MOD
-    if [[ ! $(command -v fortune) ]] && [ ! -e /usr/games/fortune ]; then
+    if [[ ! $(command -v fortune) ]]; then
         printf "${GREEN}%s ${PURPLE}%s${RESET}\n" "${TMOE_INSTALLATION_COMMAND}" "fortune"
         ${TMOE_INSTALLATION_COMMAND} fortunes 2>/dev/null
         ${TMOE_INSTALLATION_COMMAND} fortune-mod 2>/dev/null
@@ -234,34 +234,35 @@ install_fortunes() {
         it_*UTF-8) FORTUNES_MOD=it ;;
         pl_*UTF-8) FORTUNES_MOD=pl ;;
         ru_*UTF-8) FORTUNES_MOD=ru ;;
+        *) FORTUNES_MOD="bofh-excuses" ;;
         esac
-        case ${FORTUNES_MOD} in
-        "") ;;
+        # case ${FORTUNES_MOD} in
+        # "") ;;
+        # *)
+        FORTUNES_MOD_02="debian-hints"
+        ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD} 2>/dev/null
+        ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD_02} 2>/dev/null
+        case ${TMOE_LANG} in
+        zh_*UTF-8)
+            THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
+            THE_LATEST_DEB_REPO_HINTS='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortunes-debian-hints/'
+            ;;
         *)
-            FORTUNES_MOD_02="debian-hints"
-            ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD} 2>/dev/null
-            ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD_02} 2>/dev/null
-            case ${TMOE_LANG} in
-            zh_*UTF-8)
-                THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
-                THE_LATEST_DEB_REPO_HINTS='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortunes-debian-hints/'
-                ;;
-            *)
-                THE_LATEST_DEB_REPO="https://ftp.debian.org/debian/pool/main/f/fortunes-${FORTUNES_MOD}/"
-                THE_LATEST_DEB_REPO_HINTS='https://ftp.debian.org/debian/pool/main/f/fortunes-debian-hints/'
-                ;;
-            esac
-            install_fortunes_mod
+            THE_LATEST_DEB_REPO="https://ftp.debian.org/debian/pool/main/f/fortunes-${FORTUNES_MOD}/"
+            THE_LATEST_DEB_REPO_HINTS='https://ftp.debian.org/debian/pool/main/f/fortunes-debian-hints/'
             ;;
         esac
+        install_fortunes_mod
+        #     ;;
+        # esac
     fi
     printf "${YELLOW}%s${RESET}\n" "Enable completed."
 }
 install_fortunes_mod() {
     case ${LINUX_DISTRO} in
     Android)
-        THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | tail -n 1 | cut -d '"' -f 2)"
-        THE_LATEST_DEB_VERSION_HINTS="$(curl -L ${THE_LATEST_DEB_REPO_HINTS} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
+        THE_LATEST_DEB_VERSION="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | tail -n 1 | cut -d '"' -f 2)"
+        THE_LATEST_DEB_VERSION_HINTS="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO_HINTS} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
         THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
         THE_LATEST_ISO_LINK_HINTS="${THE_LATEST_DEB_REPO_HINTS}${THE_LATEST_DEB_VERSION_HINTS}"
         TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP
