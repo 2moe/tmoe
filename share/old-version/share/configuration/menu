@@ -278,14 +278,19 @@ install_fortunes_mod() {
         cd ${TEMP_FOLDER}
         unset FORTUNE_BRANCH
         case ${TMOE_LANG} in
-        zh_C*.UTF-8) ;;
+        zh_C*.UTF-8 | zh_S*.UTF-8) FORTUNE_BRANCH="$(base64 -d <<<emhfQ04K)" ;;
         zh_*.UTF-8) FORTUNE_BRANCH="zh_TW" ;;
         de* | en* | es* | fr* | it* | ja* | pt*) FORTUNE_BRANCH="${TMOE_LANG_QUATER}" ;;
         *) FORTUNE_BRANCH="en" ;;
         esac
-        git clone -b ${FORTUNE_BRANCH} --depth=1 https://hub.fastgit.org/2moe/fortune.git debian-reference || git clone -b ${FORTUNE_BRANCH} --depth=1 https://github.com/2moe/fortune.git debian-reference
-        mv debian-reference/debian-reference/*txt ${PREFIX}/share/games/fortunes
-
+        if [[ -n ${FORTUNE_BRANCH} ]]; then
+            git clone -b ${FORTUNE_BRANCH} --depth=1 https://hub.fastgit.org/2moe/fortune.git debian-reference || git clone -b ${FORTUNE_BRANCH} --depth=1 https://github.com/2moe/fortune.git debian-reference
+            for i in debian-reference debmake-doc; do
+                if [[ -e debian-reference/${i} ]]; then
+                    mv -vf debian-reference/${i}/*txt ${PREFIX}/share/games/fortunes
+                fi
+            done
+        fi
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION_HINTS} "${THE_LATEST_ISO_LINK_HINTS}"
         dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./
