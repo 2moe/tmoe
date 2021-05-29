@@ -292,7 +292,7 @@ install_fortunes_mod() {
         dpkg-deb -X ${THE_LATEST_DEB_VERSION_HINTS} ./
         cd usr/share/games/fortunes
         for i in $(readlink ./*); do
-            cp -vf ${i} ${PREFIX}/share/games/fortunes
+            mv -vf ${i} ${PREFIX}/share/games/fortunes
         done
         if [[ -e ${FORTUNES_MOD} ]]; then
             cd ${FORTUNES_MOD}
@@ -300,18 +300,20 @@ install_fortunes_mod() {
             case ${TMOE_LANG} in
             zh_C*.UTF-8 | zh_S*.UTF-8) cd zh_C* ;;
             zh_TW.UTF-8 | zh_*.UTF-8) cd zh_TW ;;
+            *) cd "${TMOE_LANG_QUATER}" ;;
             esac
         fi
+        for i in $(readlink ./*); do
+            mv -vf ${i} ${PREFIX}/share/games/fortunes
+        done
         if [[ -e debian-hints ]]; then
             cp -vf ${PWD}/debian-hints ${PREFIX}/share/games/fortunes
         fi
-
         if [[ -s ${PREFIX}/share/games/fortunes/debian-reference.zh-tw.txt ]]; then
             for i in chinese song100 tang300; do
                 [[ ! -e ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i} 2>/dev/null
             done
         fi
-
         cd ${CURRENT_DIR} || cd ${HOME}
         rm -rvf ${TEMP_FOLDER}
         ;;
