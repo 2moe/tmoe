@@ -261,6 +261,14 @@ install_fortunes() {
 install_fortunes_mod() {
     case ${LINUX_DISTRO} in
     Android)
+        case ${TMOE_LANG} in
+        en_*.UTF-8) ;;
+        *)
+            for i in art computers debian drugs ethnic fortunes humorists knghtbrd linux literature magic men-women news people pets politics science sports translate-me work cookie definitions education food goedel kids law linuxcookie love medicine miscellaneous paradoxum perl platitudes riddles songs-poems startrek wisdom zippy; do
+                [[ ! -s ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i}
+            done
+            ;;
+        esac
         THE_LATEST_DEB_VERSION="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | tail -n 1 | cut -d '"' -f 2)"
         THE_LATEST_DEB_VERSION_HINTS="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO_HINTS} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
         THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
@@ -283,7 +291,6 @@ install_fortunes_mod() {
         dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./
         dpkg-deb -X ${THE_LATEST_DEB_VERSION_HINTS} ./
         cd usr/share/games/fortunes
-        #for i in $(readlink ./*); do
         for i in $(readlink ./*); do
             cp -vf ${i} ${PREFIX}/share/games/fortunes
         done
@@ -297,14 +304,6 @@ install_fortunes_mod() {
         fi
         if [[ -e debian-hints ]]; then
             cp -vf ${PWD}/debian-hints ${PREFIX}/share/games/fortunes
-            case ${TMOE_LANG} in
-            zh_*.UTF-8)
-                #not include ascii-art
-                for i in art computers debian drugs ethnic fortunes humorists knghtbrd linux literature magic men-women news people pets politics science sports translate-me work cookie definitions education food goedel kids law linuxcookie love medicine miscellaneous paradoxum perl platitudes riddles songs-poems startrek wisdom zippy; do
-                    [[ ! -s ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i}
-                done
-                ;;
-            esac
         fi
 
         if [[ -s ${PREFIX}/share/games/fortunes/debian-reference.zh-tw.txt ]]; then
