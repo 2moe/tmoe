@@ -672,7 +672,7 @@ tmoe_locale_menu() {
 	##############
 	TMOE_MENU_LANG=${TMOE_LANG}
 	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
 
 	mkdir -pv ${HOME}/.config/tmoe-linux
 	cd ${HOME}/.config/tmoe-linux

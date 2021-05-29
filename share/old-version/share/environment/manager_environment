@@ -33,6 +33,8 @@ check_tmoe_menu_locale_file() {
 	[[ -s ${TMOE_LOCALE_FILE} ]] || choose_tmoe_locale_env
 	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	TMOE_MENU_LANG=${TMOE_LANG}
+	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
 }
 ##########
 set_terminal_color() {

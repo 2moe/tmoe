@@ -222,10 +222,7 @@ install_fortunes() {
         ${TMOE_INSTALLATION_COMMAND} fortune-mod 2>/dev/null
         ${TMOE_INSTALLATION_COMMAND} fortune 2>/dev/null
         case ${TMOE_LANG} in
-        zh_*UTF-8)
-            FORTUNES_MOD=zh
-            THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
-            ;;
+        zh_*UTF-8) FORTUNES_MOD=zh ;;
         bg_*UTF-8) FORTUNES_MOD=bg ;;
         br_*UTF-8) FORTUNES_MOD=br ;;
         cs_*UTF-8) FORTUNES_MOD=cs ;;
@@ -245,7 +242,10 @@ install_fortunes() {
             ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD} 2>/dev/null
             ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD_02} 2>/dev/null
             case ${TMOE_LANG} in
-            zh_*UTF-8) THE_LATEST_DEB_REPO_HINTS='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortunes-debian-hints/' ;;
+            zh_*UTF-8)
+                THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
+                THE_LATEST_DEB_REPO_HINTS='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortunes-debian-hints/'
+                ;;
             *)
                 THE_LATEST_DEB_REPO="https://ftp.debian.org/debian/pool/main/f/fortunes-${FORTUNES_MOD}/"
                 THE_LATEST_DEB_REPO_HINTS='https://ftp.debian.org/debian/pool/main/f/fortunes-debian-hints/'
@@ -264,10 +264,19 @@ install_fortunes_mod() {
         THE_LATEST_DEB_VERSION_HINTS="$(curl -L ${THE_LATEST_DEB_REPO_HINTS} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
         THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
         THE_LATEST_ISO_LINK_HINTS="${THE_LATEST_DEB_REPO_HINTS}${THE_LATEST_DEB_VERSION_HINTS}"
-
         TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP
         mkdir -pv ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
+        unset FORTUNE_BRANCH
+        case ${TMOE_LANG} in
+        zh_C*.UTF-8) ;;
+        zh_*.UTF-8) FORTUNE_BRANCH="zh_TW" ;;
+        de* | en* | es* | fr* | it* | ja* | pt*) FORTUNE_BRANCH="${TMOE_LANG_QUATER}" ;;
+        *) FORTUNE_BRANCH="en" ;;
+        esac
+        git clone -b ${FORTUNE_BRANCH} --depth=1 https://hub.fastgit.org/2moe/fortune.git debian-reference || git clone -b ${FORTUNE_BRANCH} --depth=1 https://github.com/2moe/fortune.git debian-reference
+        mv debian-reference/debian-reference/*txt ${PREFIX}/share/games/fortunes
+
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION} "${THE_LATEST_ISO_LINK}"
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ${THE_LATEST_DEB_VERSION_HINTS} "${THE_LATEST_ISO_LINK_HINTS}"
         dpkg-deb -X ${THE_LATEST_DEB_VERSION} ./
@@ -281,23 +290,28 @@ install_fortunes_mod() {
             cd ${FORTUNES_MOD}
         else
             case ${TMOE_LANG} in
-            en_US.UTF-8) cd en_US ;;
-            zh_TW.UTF-8) cd zh_TW ;;
+            zh_C*.UTF-8 | zh_S*.UTF-8) cd zh_C* ;;
+            zh_TW.UTF-8 | zh_*.UTF-8) cd zh_TW ;;
             esac
         fi
         if [[ -e debian-hints ]]; then
             cp -vf ${PWD}/debian-hints ${PREFIX}/share/games/fortunes
             case ${TMOE_LANG} in
             zh_*.UTF-8)
-                if [[ ${LINUX_DISTRO} = Android ]]; then
-                    #not include ascii-art
-                    for i in art computers debian drugs ethnic fortunes humorists knghtbrd linux literature magic men-women news people pets politics science sports translate-me work cookie definitions education food goedel kids law linuxcookie love medicine miscellaneous paradoxum perl platitudes riddles songs-poems startrek wisdom zippy; do
-                        [[ ! -s ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i}
-                    done
-                fi
+                #not include ascii-art
+                for i in art computers debian drugs ethnic fortunes humorists knghtbrd linux literature magic men-women news people pets politics science sports translate-me work cookie definitions education food goedel kids law linuxcookie love medicine miscellaneous paradoxum perl platitudes riddles songs-poems startrek wisdom zippy; do
+                    [[ ! -s ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i}
+                done
                 ;;
             esac
         fi
+
+        if [[ -s ${PREFIX}/share/games/fortunes/debian-reference.zh-tw.txt ]]; then
+            for i in chinese song100 tang300; do
+                [[ ! -e ${PREFIX}/share/games/fortunes/${i} ]] || rm -fv ${PREFIX}/share/games/fortunes/${i} 2>/dev/null
+            done
+        fi
+
         cd ${CURRENT_DIR} || cd ${HOME}
         rm -rv ${TEMP_FOLDER}
         ;;
