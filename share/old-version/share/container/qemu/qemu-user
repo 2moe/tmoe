@@ -218,7 +218,7 @@ unxz_deb_file() {
 copy_qemu_user_bin_files() {
 	cp -rf ./usr/bin ${QEMU_BIN_PREFIX}
 	cd ..
-	rm -rv ${TEMP_FOLDER}
+	rm -rvf ${TEMP_FOLDER}
 }
 ######################
 dpkg_x_deb_file_or_unxz_deb_file() {
@@ -282,7 +282,7 @@ remove_qemu_user_static() {
 	printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static ${QEMU_USER_LOCAL_VERSION_FILE}${RESET}"
 	printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
 	do_you_want_to_continue
-	rm -rv ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
+	rm -rvf ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
 	${TMOE_REMOVAL_COMMAND} qemu-user-static
 }
 ###############

@@ -7,7 +7,7 @@ remove_termux_linux_manager() {
 	[[ -n ${DEPENDENCIES} ]] || DEPENDENCIES='git aria2 pv wget xz-utils whiptail'
 	#newt  less curl
 	cat <<-EOF
-		${RED}rm -rv ${YELLOW}tmoe novnc debian debian-i startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux ${TMOE_GIT_DIR} ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32${RESET}
+		${RED}rm -rvf ${YELLOW}tmoe novnc debian debian-i startvnc stopvnc startxsdl startx11vnc ${HOME}/.config/tmoe-linux ${TMOE_GIT_DIR} ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32${RESET}
 		${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。
 		${BLUE}${TMOE_CONTAINER_DIR}${RESET}为容器数据路径，您需要在容器管理菜单中进行单独卸载。
 		请不要手动${RED}rm -rf ${BLUE}容器路径${RESET}！！！对于运行中的容器来说，此操作将非常危险。

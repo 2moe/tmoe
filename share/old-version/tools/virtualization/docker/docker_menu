@@ -998,7 +998,7 @@ unxz_deb_file() {
     tar -Jxvf ${TMPDIR}/${TEMP_FOLDER}/data.tar.xz ./usr/bin
     #cp -rf ./usr/bin /usr
     #cd ..
-    rm -rv ${TMPDIR}/${TEMP_FOLDER}
+    rm -rvf ${TMPDIR}/${TEMP_FOLDER}
     docker run --rm --privileged multiarch/qemu-user-static:register
 }
 ########################
@@ -1015,7 +1015,7 @@ remove_qemu_user_static() {
     printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}/usr/bin/qemu-*-static${RESET}"
     printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
     do_you_want_to_continue
-    rm -rv /usr/bin/qemu-*-static
+    rm -rvf /usr/bin/qemu-*-static
     ${TMOE_REMOVAL_COMMAND} qemu-user-static
 }
 ##############

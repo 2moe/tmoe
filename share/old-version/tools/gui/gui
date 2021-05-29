@@ -1284,7 +1284,7 @@ build_xfce4_panel_profiles() {
     make -j4
     make install
     cd /tmp
-    rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
+    rm -rvf ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
     cd ${CURRENT_DIR}
 }
 ###################
@@ -3178,7 +3178,7 @@ tmoe_theme_installer() {
         update-icon-caches ${EXTRACT_FILE_FOLDER} &
         cd /tmp
     fi
-    printf "%s\n" "解压完成，如需删除该主题，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
+    printf "%s\n" "解压完成，如需删除该主题，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rvf ${EXTRACT_FILE_FOLDER} ${RESET}"
     printf "%s\n" "是否${RED}删除${RESET}主题压缩包${BLUE}原文件？${RESET}"
     printf "%s\n" "Do you want to delete the original compressed file？${PURPLE}[Y/n]${RESET}"
     do_you_want_to_continue
@@ -5191,7 +5191,7 @@ ubuntu_install_tiger_vnc_server() {
     dpkg -i ./libjpeg62-turbo_ubuntu-focal.deb ./tigervnc-common_ubuntu-focal.deb ./tigervnc-standalone-server_ubuntu-focal.deb
     apt-mark hold tigervnc-common tigervnc-standalone-server
     cd ~
-    rm -rv ${TEMP_FOLDER}
+    rm -rvf ${TEMP_FOLDER}
 }
 ###########
 modify_to_xfwm4_breeze_theme() {

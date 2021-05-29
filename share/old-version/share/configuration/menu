@@ -313,7 +313,7 @@ install_fortunes_mod() {
         fi
 
         cd ${CURRENT_DIR} || cd ${HOME}
-        rm -rv ${TEMP_FOLDER}
+        rm -rvf ${TEMP_FOLDER}
         ;;
     esac
 }

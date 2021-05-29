@@ -287,7 +287,7 @@ install_vscodium() {
         printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} codium"
     elif [ -e "/opt/vscodium-data/codium" ]; then
         printf "%s\n" "检测到您已安装VSCodium,请输codium启动"
-        printf "%s\n" "如需卸载，请手动输rm -rv /opt/vscodium-data /usr/local/bin/codium ${APPS_LNK_DIR}/codium.desktop"
+        printf "%s\n" "如需卸载，请手动输rm -rvf /opt/vscodium-data /usr/local/bin/codium ${APPS_LNK_DIR}/codium.desktop"
     fi
     [[ ! $(command -v codium) ]] || codium --no-sandbox
     printf "%s\n" "请问您是否需要下载最新版安装包？"
@@ -408,7 +408,7 @@ install_vscode_official() {
         fix_fedora_electron_libxssl
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'VSCODE.tar.gz' "${CODE_BIN_URL}"
         tar -zxvf VSCODE.tar.gz -C /usr/share
-        rm -rv /usr/share/code 2>/dev/null
+        rm -rvf /usr/share/code 2>/dev/null
         mv /usr/share/${CODE_BIN_FOLDER} /usr/share/code
         rm -vf VSCode.tar.gz
         #if [ ! -e "/usr/share/code/.electron" ]; then

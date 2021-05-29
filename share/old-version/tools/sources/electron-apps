@@ -87,7 +87,7 @@ remove_electron_app_01() {
     TMOE_ELECTRON_APP_DIR="/opt/${DEPENDENCY_01}"
     printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${TMOE_ELECTRON_APP_DIR} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
     do_you_want_to_continue
-    rm -rv ${TMOE_ELECTRON_APP_DIR} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
+    rm -rvf ${TMOE_ELECTRON_APP_DIR} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
 }
 ################
 install_electron_app_01() {
@@ -109,13 +109,13 @@ install_electron_app_01() {
 git_clone_electron_virtual_machine() {
     cd /tmp
     TEMP_FOLDER=".${DEPENDENCY_01}_TEMP_FOLDER"
-    [[ ! -e ${TEMP_FOLDER} ]] || rm -rv ${TEMP_FOLDER} 2>/dev/null
+    [[ ! -e ${TEMP_FOLDER} ]] || rm -rvf ${TEMP_FOLDER} 2>/dev/null
     git clone --depth=1 ${GIT_REPO_URL} ${TEMP_FOLDER}
     cd ${TEMP_FOLDER}
     cat .vm_* >vm.tar.xz
     tar -PpJxvf vm.tar.xz
     cd ..
-    rm -rv ${TEMP_FOLDER}
+    rm -rvf ${TEMP_FOLDER}
 }
 #############
 install_electron_macintosh_8() {
@@ -184,9 +184,9 @@ upgrade_electron_app_01() {
 ###############
 remove_electron_stable() {
     printf "%s\n" "卸载后将导致依赖electron的应用无法正常运行。"
-    printf "%s\n" "${RED}rm -rv ${BLUE}/opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}${RESET}"
+    printf "%s\n" "${RED}rm -rvf ${BLUE}/opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
-    rm -rv /opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}
+    rm -rvf /opt/electron /usr/bin/electron ${OPT_APP_VERSION_TXT}
 }
 ############
 check_electron_version() {
@@ -217,7 +217,7 @@ electron_manager() {
         printf "%s\n" "部分软件依赖于旧版electron,卸载后将导致这些软件无法正常运行。"
         printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}/opt/electron-v8${RESET}"
         do_you_want_to_continue
-        rm -rv /opt/electron-v8
+        rm -rvf /opt/electron-v8
         ;;
     esac
     ##########################

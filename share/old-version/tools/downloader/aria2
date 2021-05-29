@@ -1717,7 +1717,7 @@ other_tmoe_aria2_conf() {
 }
 ############
 del_ariang() {
-    rm -rv /usr/share/applications/ariang.desktop /usr/local/bin/startariang ${TMOE_ARIA2_PATH}/ariang_dark.html
+    rm -rvf /usr/share/applications/ariang.desktop /usr/local/bin/startariang ${TMOE_ARIA2_PATH}/ariang_dark.html
 }
 ###########
 tmoe_aria2_faq() {

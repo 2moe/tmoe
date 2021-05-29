@@ -582,7 +582,7 @@ git_clone_tmoe_linux() {
 	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
 	printf "%s\n" "github.com/2moe/tmoe-linux"
 	if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
-		rm -rv ${TMOE_GIT_DIR} 2>/dev/null
+		rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
 		git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 	fi
 	######################

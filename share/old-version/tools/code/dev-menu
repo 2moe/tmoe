@@ -224,28 +224,28 @@ delete_ide_pkg() {
 ###########
 remove_ide_01() {
     cd ${APPS_LNK_DIR}
-    printf "%s\n" "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    printf "%s\n" "${RED}rm -rvf ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
-    intellij-idea-community-*) rm -rv /usr/share/licenses/idea /usr/share/icons/hicolor/scalable/apps/idea.svg ;;
-    pycharm-community-*) rm -rv /usr/share/licenses/pycharm /usr/share/icons/hicolor/scalable/apps/pycharm.svg ;;
+    intellij-idea-community-*) rm -rvf /usr/share/licenses/idea /usr/share/icons/hicolor/scalable/apps/idea.svg ;;
+    pycharm-community-*) rm -rvf /usr/share/licenses/pycharm /usr/share/icons/hicolor/scalable/apps/pycharm.svg ;;
     esac
     #删除两次
     case ${GREP_NAME} in
     github-desktop-bin)
-        rm -rv /usr/share/lintian/overrides/github-desktop /usr/share/doc/github-desktop ${APP_OPT_DIR} ${LNK_FILE} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} /usr/share/icons/hicolor/256x256/apps/github-desktop.png /usr/share/icons/hicolor/512x512/apps/github-desktop.png /usr/share/icons/hicolor/1024x1024/apps/github-desktop.png
+        rm -rvf /usr/share/lintian/overrides/github-desktop /usr/share/doc/github-desktop ${APP_OPT_DIR} ${LNK_FILE} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} /usr/share/icons/hicolor/256x256/apps/github-desktop.png /usr/share/icons/hicolor/512x512/apps/github-desktop.png /usr/share/icons/hicolor/1024x1024/apps/github-desktop.png
         ;;
-    atom-editor-bin) rm -rv atom.desktop atom.desktop.orig /usr/bin/apm /usr/bin/atom /usr/share/atom /usr/share/doc/atom /usr/share/licenses/atom-editor-bin /usr/share/lintian/overrides/atom /usr/share/pixmaps/atom.png /usr/share/polkit-1/actions /usr/share/polkit-1/actions/atom-stable.policy ${LOCAL_APP_VERSION_TXT} ;;
-    *) rm -rv ${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} ;;
+    atom-editor-bin) rm -rvf atom.desktop atom.desktop.orig /usr/bin/apm /usr/bin/atom /usr/share/atom /usr/share/doc/atom /usr/share/licenses/atom-editor-bin /usr/share/lintian/overrides/atom /usr/share/pixmaps/atom.png /usr/share/polkit-1/actions /usr/share/polkit-1/actions/atom-stable.policy ${LOCAL_APP_VERSION_TXT} ;;
+    *) rm -rvf ${APP_OPT_DIR} ${LNK_FILE} /usr/share/pixmaps/${ICON_NAME} ${BIN_FILE} ${LOCAL_APP_VERSION_TXT} ;;
     esac
 }
 ############
 remove_ide_02() {
     cd ${APPS_LNK_DIR}
-    printf "%s\n" "${RED}rm -rv ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
+    printf "%s\n" "${RED}rm -rvf ${RESET} ${BLUE}${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT}${RESET}"
     do_you_want_to_continue
     case ${GREP_NAME} in
-    *) rm -rv ${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT} ;;
+    *) rm -rvf ${APP_OPT_DIR} ${LNK_FILE} ${LOCAL_APP_VERSION_TXT} ;;
     esac
 }
 #############

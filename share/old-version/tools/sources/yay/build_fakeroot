@@ -41,7 +41,7 @@ install_fakeroot() {
     # cd ..
     # make install
     # cd /tmp
-    # rm -rv ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
+    # rm -rvf ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
     # cd ${HOME}
     # [[ $(command -v whiptail) ]] || pacman -S --noconfirm libnewt
     # cp -fv /etc/pacman.conf.bak /etc/pacman.conf

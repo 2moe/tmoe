@@ -1553,7 +1553,7 @@ git_clone_fedora_rootfs() {
 	FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
 	FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
 	if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-		rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
+		rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
 		git clone --depth=1 ${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE} ${FEDORA_TEMP_FOLDER}
 		mv -f ${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz ${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}
 		rm -rvf ${FEDORA_TEMP_FOLDER}
@@ -1594,7 +1594,7 @@ install_fedora_gnu_linux_distro() {
 		FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
 		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
 		if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-			rm -rv ${FEDORA_TEMP_FOLDER} 2>/dev/null
+			rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
 			git clone --depth=1 ${AK2_GIT_URL}/fedora-33_armhf ${FEDORA_TEMP_FOLDER}
 			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${ROOTFS_DIR}
 			rm -rvf ${FEDORA_TEMP_FOLDER}

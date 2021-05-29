@@ -51,12 +51,12 @@ install_thunder_bin() {
     cd ../entries
     sed -i 's@Icon=.*@Icon=/usr/share/icons/hicolor/scalable/apps/com.thunder.download.svg@' applications/com.xunlei.download.desktop
     cp -rvf ./applications ./icons /usr/share
-    rm -rv ${TEMP_FOLDER} 2>/dev/null
+    rm -rvf ${TEMP_FOLDER} 2>/dev/null
     printf "%s\n" "${THE_LATEST_DEB_VERSION}" >${LOCAL_APP_VERSION_TXT}
 }
 ################
 remove_thunder_opt_app() {
-    rm -rv /opt/apps/com.xunlei.download
+    rm -rvf /opt/apps/com.xunlei.download
     cd /usr/share
     rm -fv ./applications/com.xunlei.download.desktop ./icons/hicolor/256x256/apps/com.xunlei.download.png ./icons/hicolor/32x32/apps/com.xunlei.download.png ./icons/hicolor/scalable/apps/com.thunder.download.svg ./icons/hicolor/128x128/apps/com.xunlei.download.png ./icons/hicolor/16x16/apps/com.xunlei.download.png ./icons/hicolor/48x48/apps/com.xunlei.download.png ./icons/hicolor/24x24/apps/com.xunlei.download.png
 }

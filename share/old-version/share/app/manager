@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4824,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4825,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -1229,7 +1229,7 @@ check_tmoe_manager_git() {
 	printf "%s\n" "Do you want to ${GREEN}git clone${RESET} this repo to ${BLUE}${TMOE_GIT_DIR}${RESET}?"
 	printf "%s\n" "您需要克隆本項目倉庫方能繼續使用"
 	do_you_want_to_continue
-	rm -rv ${TMOE_GIT_DIR} 2>/dev/null
+	rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
 	RETURN_TO_MENU=install_dependencies_02
 	case ${TMOE_LANG} in
 	zh_*UTF-8)

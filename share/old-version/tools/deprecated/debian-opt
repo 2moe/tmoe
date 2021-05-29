@@ -115,7 +115,7 @@ download_debian_opt_app() {
     DOWNLOAD_PATH='/tmp/.DEB_OPT_TEMP_FOLDER'
     ELECTRON_FILE_URL="${DEBIAN_OPT_APP_URL}"
     if [ -e "${DOWNLOAD_PATH}" ]; then
-        rm -rv ${DOWNLOAD_PATH}
+        rm -rvf ${DOWNLOAD_PATH}
     fi
     aria2c_download_file_no_confirm
     extract_deb_file_01
@@ -133,7 +133,7 @@ remove_opt_app_01() {
         DEBIAN_OPT_APP_DIR="/opt/${DEPENDENCY_01}"
         printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop${RESET}"
         do_you_want_to_continue
-        rm -rv ${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
+        rm -rvf ${DEBIAN_OPT_APP_DIR} ${OPT_APP_VERSION_TXT} ${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop
         ;;
     esac
 }
@@ -736,7 +736,7 @@ install_opt_deb_file() {
     apt-cache show ./${OPT_DEB_NAME}
     apt install -y ./${OPT_DEB_NAME}
     cd /tmp
-    rm -rv "${DOWNLOAD_PATH}/.${OPT_APP_NAME}"
+    rm -rvf "${DOWNLOAD_PATH}/.${OPT_APP_NAME}"
     beta_features_install_completed
 }
 ##########

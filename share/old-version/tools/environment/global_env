@@ -56,7 +56,7 @@ check_tar_ext_format() {
 ################
 check_theme_folder_exists_status() {
     if [ -e "${EXTRACT_FILE_PATH}/${EXTRACT_FILE_FOLDER_HEAD_01}" ]; then
-        printf "%s\n" "检测到您已安装该主题，如需删除，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rv ${EXTRACT_FILE_FOLDER} ${RESET}"
+        printf "%s\n" "检测到您已安装该主题，如需删除，请手动输${YELLOW}cd ${EXTRACT_FILE_PATH} ; ls ;rm -rvf ${EXTRACT_FILE_FOLDER} ${RESET}"
         printf "%s\n" "是否重新解压？"
         printf "%s\n" "Do you want to uncompress again?"
         do_you_want_to_continue
@@ -1203,7 +1203,7 @@ install_electron_v8() {
 ##############
 download_tmoe_electron_app() {
     DOWNLOAD_PATH="/tmp/.${DEPENDENCY_01}_TEMP_FOLDER"
-    [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rv ${DOWNLOAD_PATH}
+    [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rvf ${DOWNLOAD_PATH}
     [[ -e /opt ]] || mkdir -pv /opt
     git clone --depth=1 ${GIT_AK2}/${DEPENDENCY_01}_build ${DOWNLOAD_PATH}
     cd ${DOWNLOAD_PATH}
@@ -1338,7 +1338,7 @@ extract_deb_file_02() {
     *) tar -Ppxvf ${DOWNLOAD_PATH}/data.* ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     esac
     cd /tmp
-    rm -rv ${DOWNLOAD_PATH}
+    rm -rvf ${DOWNLOAD_PATH}
 }
 #############
 install_gpg() {

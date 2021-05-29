@@ -204,7 +204,7 @@ install_wechat_arm64() {
     printf "%s\n" "若安装失败，则请前往uos商店在线安装。"
     printf "%s\n" "注：当前版本v2.0.0-2不支持proot容器。"
     printf "%s\n" "执行${GREEN}wechat${RESET}命令启动com.qq.weixin"
-    printf "%s\n" "如需卸载，请手动执行${RED}rm -rv ${BLUE}/opt/com.qq.weixin ${APPS_LNK_DIR}/com.qq.weixin.desktop /usr/lib/license/libuosdevicea.so /usr/local/bin/wechat${RESET}"
+    printf "%s\n" "如需卸载，请手动执行${RED}rm -rvf ${BLUE}/opt/com.qq.weixin ${APPS_LNK_DIR}/com.qq.weixin.desktop /usr/lib/license/libuosdevicea.so /usr/local/bin/wechat${RESET}"
     cat <<-EOF
 Package: com.qq.weixin
 Version: 2.0.0-2
@@ -762,7 +762,7 @@ install_linux_qq() {
         printf "%s\n" "未检测到本地版本，您可能尚未安装腾讯QQ linux版客户端。"
     elif [ -e "${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version" ]; then
         printf "%s\n" "本地版本可能为${YELLOW}$(head -n 1 ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version)${RESET}"
-        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02};rm -rv /usr/local/bin/crashpad_handler /usr/share/applications/qq.desktop /usr/local/share/tencent-qq /usr/local/bin/qq${RESET}"
+        printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02};rm -rvf /usr/local/bin/crashpad_handler /usr/share/applications/qq.desktop /usr/local/share/tencent-qq /usr/local/bin/qq${RESET}"
     else
         printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
     fi
@@ -1212,7 +1212,7 @@ remove_tmoe_linux_tool() {
     printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}${RESET}"
     printf "%s\n" "${RED}WARNING！${RESET}删除${HOME}/.config/tmoe-linux文件夹将导致chroot容器无法正常移除，建议您在移除完容器后再来删除配置文件目录。"
     do_you_want_to_continue
-    rm -rv ${APPS_LNK_DIR}/tmoe-linux.desktop tmoe startvnc stopvnc novnc debian debian-i startx11vnc ${TMOE_GIT_DIR} startxsdl x11vncpasswd ${HOME}/.config/tmoe-linux
+    rm -rvf ${APPS_LNK_DIR}/tmoe-linux.desktop tmoe startvnc stopvnc novnc debian debian-i startx11vnc ${TMOE_GIT_DIR} startxsdl x11vncpasswd ${HOME}/.config/tmoe-linux
     ${TMOE_REMOVAL_COMMAND} ${DEPENDENCIES}
     exit 1
 }

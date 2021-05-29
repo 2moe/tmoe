@@ -386,9 +386,9 @@ switch_fcitx5_material_color() {
 ############
 delete_fcitx5_material_color_theme() {
     printf "%s\n" "是否需要删除该主题？"
-    printf "%s\n" "${RED}rm -rv ${MATERIAL_COLOR_FOLDER}${RESET}"
+    printf "%s\n" "${RED}rm -rvf ${MATERIAL_COLOR_FOLDER}${RESET}"
     do_you_want_to_continue
-    rm -rv ${MATERIAL_COLOR_FOLDER}
+    rm -rvf ${MATERIAL_COLOR_FOLDER}
     sed -i 's@^Theme=@#&@' ${FCITX5_CLASSUI_CONF_FILE}
 }
 ###############
