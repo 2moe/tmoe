@@ -344,10 +344,6 @@ start_tmoe_container() {
 	"") rm -f ${DEFAULT_SHELL_CONF} 2>/dev/null ;;
 	*) printf "%s\n" "TMOE_SHELL=${TMOE_SHELL}" >${DEFAULT_SHELL_CONF} ;;
 	esac
-	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
-		pulseaudio --start --exit-idle-time=3600
-		pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' 2>/dev/null
-	fi
 	case "${DISTRO_NAME}" in
 	"") ;;
 	*)
@@ -363,7 +359,6 @@ start_tmoe_container() {
 	else
 		sed -n p ${DEBIAN_CHROOT}/etc/issue 2>/dev/null
 	fi
-
 	if [[ ${CREATE_A_SOFT_LINK} = true ]]; then
 		ln -svf ${DEBIAN_CHROOT}${LINK_SOURCE_DIR} ./container_link_${LINK_SOURCE_DIR##*/}_${RANDOM}
 		exit 0
@@ -371,6 +366,10 @@ start_tmoe_container() {
 	case ${TMOE_CONTAINER_HITOKOTO} in
 	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
 	esac
+	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+		pulseaudio --start --exit-idle-time=3600
+		pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' 2>/dev/null
+	fi
 	###############
 	rmdir_container_tmp() {
 		rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
