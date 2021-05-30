@@ -85,7 +85,7 @@ install_virtual_box() {
 	esac
 
 	if [ ! $(command -v gpg) ]; then
-		DEPENDENCY_01=""
+		DEPENDENCY_01="gpg"
 		DEPENDENCY_02="gnupg"
 		beta_features_quick_insta
 		#linux-headers

@@ -1165,7 +1165,7 @@ install_docker_io() {
 ###########
 install_docker_ce() {
     if [ ! $(command -v gpg) ]; then
-        DEPENDENCY_01=""
+        DEPENDENCY_01="gpg"
         DEPENDENCY_02="gnupg"
         beta_features_quick_install
     fi
