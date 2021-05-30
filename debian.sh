@@ -67,7 +67,7 @@ do_you_want_to_continue() {
 	esac
 }
 check_system_version() {
-	if [ -e /system/bin/getprop ] && [ $(uname -m) = "Android" ]; then
+	if [ -e /system/bin/getprop ] && [ $(uname -o) = "Android" ]; then
 		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
 		case ${ANDROID_VERSION} in
 		5 | 6)
