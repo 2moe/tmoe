@@ -88,6 +88,7 @@ check_system_version() {
 				apt update
 				apt upgrade
 				apt dist-upgrade
+				apt install curl
 				;;
 			n) ;;
 			esac
