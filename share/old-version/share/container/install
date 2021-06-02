@@ -1279,12 +1279,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 			fi
 		fi 
 	}
-	#################################
-	if [[ -e /etc/apt/sources.list ]];then
-		if ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
-		    chattr +i /etc/apt/sources.list 2>/dev/null
-		fi
-	fi
 	####################
 	if [[ ! -e /etc/apt/sources.list.d/raspi.list ]]; then
 	case $(uname -m) in
@@ -1971,8 +1965,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    gentoo_gnu_linux_make_conf
 	elif grep -qi 'Void' '/etc/issue'; then
 	    void_linux_repository
-	elif ! egrep -qi 'debian|ubuntu|kali|raspbian|Mint' "/etc/issue"; then
-	    chattr -i /etc/apt/sources.list 2>/dev/null
 	fi
 	####################
 	if [[ $(command -v apt) ]];then
