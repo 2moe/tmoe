@@ -17,7 +17,7 @@ choose_which_gnu_linux_distro() {
 			"3" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
 			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
 			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
-			"6" "🍱 Manjaro,centos,alpine,mint,solus & puppy" \
+			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
 			"7" "🐉 Kali rolling:ペネトレーションテストを主な目的としている" \
 			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
 			"9" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
@@ -33,7 +33,7 @@ choose_which_gnu_linux_distro() {
 			"3" "🍥 Debian:致力于自由" \
 			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
 			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
-			"6" "🍱 Manjaro,centos,alpine,mint,solus & puppy" \
+			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
 			"7" "🐉 Kali rolling:设计用于数字取证和渗透测试" \
 			"8" "🍊 Armbian:香蕉派,香橙派(预装dde/gnome/cinnamon/budgie)" \
 			"9" "👒 Fedora:红帽社区版,新技术试验场" \
@@ -49,7 +49,7 @@ choose_which_gnu_linux_distro() {
 			"3" "🍥 Debian is a distro composed of free and open-source software" \
 			"4" "🍛 Ubuntu is the modern, open source OS." \
 			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
-			"6" "🍱 Manjaro,centos,alpine,mint,solus & puppy" \
+			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
 			"7" "🐉 Kali:designed for digital forensics and penetration testing" \
 			"8" "🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)" \
 			"9" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
@@ -1107,11 +1107,12 @@ install_beta_containers() {
 				"1" "Manjaro(arm64,x64,让arch更方便用户使用)" \
 				"2" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
 				"3" "CentOS(基于红帽的社区企业操作系统)" \
-				"4" "🐶 Puppy(x64,小巧且易用,速度快)" \
-				"5" "Void(基于xbps包管理器的独立发行版)" \
-				"6" "🌿 Mint(x86,x64,简单易用的系统)" \
-				"7" "Solus(x64,一个对新手友好的发行版)" \
-				"8" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
+				"4" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
+				"5" "🐶 Puppy(x64,小巧且易用,速度快)" \
+				"6" "Void(基于xbps包管理器的独立发行版)" \
+				"7" "🌿 Mint(x86,x64,简单易用的系统)" \
+				"8" "Solus(x64,一个对新手友好的发行版)" \
+				"9" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -1122,11 +1123,12 @@ install_beta_containers() {
 				"1" "Manjaro:Archをベースとした、ユーザーフレンドリーなディストリビューションを目指している" \
 				"2" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
 				"3" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
-				"4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
-				"5" "Void:ゼロから設計および実装されたX Binary Package System" \
-				"6" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
-				"7" "Solus(x64,以前はEvolve OSとして知られていた)" \
-				"8" "Pop！_OS(x64，based upon Ubuntu)" \
+				"4" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
+				"5" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+				"6" "Void:ゼロから設計および実装されたX Binary Package System" \
+				"7" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
+				"8" "Solus(x64,以前はEvolve OSとして知られていた)" \
+				"9" "Pop！_OS(x64，based upon Ubuntu)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -1137,11 +1139,12 @@ install_beta_containers() {
 				"1" "Manjaro:Free fast and secure Linux based operating system for everyone" \
 				"2" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
 				"3" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
-				"4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
-				"5" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
-				"6" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
-				"7" "Solus(x64,designed for home computing)" \
-				"8" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
+				"4" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
+				"5" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+				"6" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
+				"7" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
+				"8" "Solus(x64,designed for home computing)" \
+				"9" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -1170,15 +1173,19 @@ install_beta_containers() {
 		CLOUD_ROOTFS=true
 		install_centos_linux_distro
 		;;
-	4) install_puppy_linux_distro ;;
-	5)
+	4)
+		CLOUD_ROOTFS=true
+		install_rocky_linux_distro
+		;;
+	5) install_puppy_linux_distro ;;
+	6)
 		TMOE_LINUX_CONTAINER_DISTRO='void'
 		create_container_edition_txt
 		install_void_linux_distro
 		;;
-	6) install_mint_linux_distro ;;
-	7) install_solus_distro ;;
-	8) install_pop_distro ;;
+	7) install_mint_linux_distro ;;
+	8) install_solus_distro ;;
+	9) install_pop_distro ;;
 	esac
 	######################
 	exit 0
@@ -1629,12 +1636,37 @@ linux_distro_common_model_03() {
 }
 #################
 install_void_linux_distro() {
+	DISTRO_NAME='void'
+	TMOE_LINUX_CONTAINER_DISTRO='void'
+	create_container_edition_txt
+	go_to_proot_management
 	DISTRO_NAME='voidlinux'
 	DISTRO_CODE='default'
 	DISTRO_CODE_02='current'
 	linux_distro_common_model_03
 }
 ##########################
+install_rocky_linux_distro() {
+	DISTRO_NAME='rocky'
+	TRUE_DISTRO_NAME='rockylinux'
+	case "${ARCH_TYPE}" in
+	arm64 | amd64)
+		OLD_STABLE_VERSION='8'
+		DISTRO_CODE=8
+		before_going_to_proot_menu
+		linux_distro_common_model_05
+		;;
+	"armhf" | "i386" | *) distro_does_not_support ;;
+	esac
+}
+linux_distro_common_model_05() {
+	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
+		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
+		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+		sed "s:debian/sid:${TRUE_DISTRO_NAME}/${DISTRO_CODE}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
 install_centos_linux_distro() {
 	DISTRO_NAME='centos'
 	case "${ARCH_TYPE}" in

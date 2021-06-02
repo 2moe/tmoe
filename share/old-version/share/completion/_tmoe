@@ -88,6 +88,7 @@ function _tmoe() {
         "nginx:A high-performance HTTP server"
         "php:A general-purpose scripting language"
         "jdk:An open-source Java Platform"
+        "rocky:Rocky Linux is a community enterprise operating system designed to be 100% bug-for-bug compatible with America's top enterprise Linux distribution now that its downstream partner has shifted direction."
     )
 
     distro_code=(

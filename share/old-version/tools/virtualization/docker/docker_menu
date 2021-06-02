@@ -417,7 +417,7 @@ choose_gnu_linux_docker_images() {
         "1" "🏔️ alpine:非glibc的精简系统" \
         "2" "🍥 Debian:最早的发行版之一" \
         "3" "🍛 Ubuntu:我的存在是因為大家的存在" \
-        "4" "🐉  Kali rolling:设计用于数字取证和渗透测试" \
+        "4" "🐉 Kali rolling:设计用于数字取证和渗透测试" \
         "5" "arch:系统设计以KISS为总体指导原则" \
         "6" "👒 fedora:红帽社区版,新技术试验场" \
         "7" "centos(基于红帽的社区企业操作系统)" \
