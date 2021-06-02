@@ -492,7 +492,12 @@ start_tmoe_container() {
 	# 	esac
 	# 	;;
 	# *)
-	${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ]]; then
+		${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	else
+		printf "%s\n" "${YELLOW}${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}${RESET}"
+		printf "%s\n" "${RED}ERROR${RESET}, please ${GREEN}install${RESET} the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
+	fi
 	# ;;
 	# esac
 }
