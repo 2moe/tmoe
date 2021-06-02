@@ -90,9 +90,9 @@ tmoe_main() {
 	s | sl | slackware) DISTRO_NAME='slackware' ;;
 	u | ub* | ubuntu) DISTRO_NAME='ubuntu' ;;
 	v | void) DISTRO_NAME='void' ;;
-	vnc) EXEC_PROGRAM='startvnc' ;;
-	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+	xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	*) DISTRO_NAME="$2" ;;
 	esac
@@ -119,9 +119,9 @@ tmoe_main() {
 	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
 	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
 	risc*) ARCH_TYPE='riscv64' ;;
-	v | vnc) EXEC_PROGRAM='tigervnc' ;;
-	xs | xsdl | xserver) EXEC_PROGRAM='xserver' ;;
-	x11 | x11vnc) EXEC_PROGRAM='x11vnc' ;;
+	v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+	xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	ash) TMOE_SHELL='/bin/ash' ;;
@@ -141,9 +141,9 @@ tmoe_main() {
 	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
 	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
 	risc*) ARCH_TYPE='riscv64' ;;
-	v | vnc) EXEC_PROGRAM='startvnc' ;;
-	xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+	xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
@@ -158,9 +158,9 @@ tmoe_main() {
 	esac
 
 	case "$5" in
-	v | vnc) EXEC_PROGRAM='startvnc' ;;
-	x | xs | xsdl | xserver) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc) EXEC_PROGRAM='startx11vnc' ;;
+	v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+	x | xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
 	no | novnc) EXEC_PROGRAM='novnc' ;;
 	bash) TMOE_SHELL='/bin/bash' ;;
 	z | zsh) TMOE_SHELL='/bin/zsh' ;;
