@@ -1342,10 +1342,15 @@ umount_and_remove_gnu_linux_distro() {
 du_sh_gnu_linux_distro() {
 	case ${TMOE_CHROOT} in
 	true)
-		printf "%s\n" "Unmounting dirs ..."
-		su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
-		su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
-		su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+		case ${SYSTEMD_NSPAWN} in
+		true) ;;
+		*)
+			printf "%s\n" "Unmounting dirs ..."
+			su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+			su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+			su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+			;;
+		esac
 		;;
 	esac
 	printf "%s\n" "Detecting the space occupied by ${BLUE}${DEBIAN_FOLDER}${RESET} ..."
@@ -1419,7 +1424,12 @@ backup_tmoe_gnu_linux_distro() {
 		restore_gnu_linux_container
 	else
 		case ${TMOE_CHROOT} in
-		true) source ${TMOE_SHARE_DIR}/removal/umount ;;
+		true)
+			case ${SYSTEMD_NSPAWN} in
+			true) ;;
+			*) source ${TMOE_SHARE_DIR}/removal/umount ;;
+			esac
+			;;
 		esac
 		source ${TMOE_SHARE_DIR}/compression/backup
 	fi
