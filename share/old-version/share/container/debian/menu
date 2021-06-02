@@ -11,12 +11,12 @@ install_debian_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
 			whiptail --title "请选择您需要安装的debian version" --menu "bullseye为2021~2023年的stable版,sid永远都为unstable,sid的软件包较新" 0 50 0 \
 				"1" "👦Sid(滚动更新,隔壁的男孩席德,玩具终结者)" \
-				"2" "🐎11-bullseye(2021~2026,胡迪骑的马)" \
-				"3" "🐶10-buster(2019~2024,安弟一家养的小狗)" \
-				"4" "🐙9-stretch(2017~2022,玩具总动员3中的章鱼)" \
-				"5" "使用debootstrap手动构建" \
-				"6" "Custom code手动输入版本代号" \
-				"7" "📕🐛12-bookworm(2023~2028,书虫--熊抱哥的手下)" \
+				"2" "📕🐛12-bookworm(2023~2028,书虫--熊抱哥的手下)" \
+				"3" "🐎11-bullseye(2021~2026,胡迪骑的马)" \
+				"4" "🐶10-buster(2019~2024,安弟一家养的小狗)" \
+				"5" "🐙9-stretch(2017~2022,玩具总动员3中的章鱼)" \
+				"6" "使用debootstrap手动构建" \
+				"7" "Custom code手动输入版本代号" \
 				"8" "🦕 13-trixie(2025~2030,小恐龙)" \
 				"9" "自动检测debian-14(2027~2032)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -27,12 +27,12 @@ install_debian_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
 			whiptail --title "Debian version" --menu "Stable has fewer bugs,but the packages inside the \nsoftware source are older.Sid is relatively new." 0 50 0 \
 				"1" "👦Sid不安定版:これは、開発者向けの版である" \
-				"2" "🐎11-bullseye(2021~2026)" \
-				"3" "🐶10-buster(2019~2024)" \
-				"4" "🐙9-stretch(2017~2022)" \
-				"5" "debootstrapを使用して手動でビルドする" \
-				"6" "カスタムコード" \
-				"7" "📕🐛12-bookworm(2023~2028)" \
+				"2" "📕🐛12-bookworm(2023~2028)" \
+				"3" "🐎11-bullseye(2021~2026)" \
+				"4" "🐶10-buster(2019~2024)" \
+				"5" "🐙9-stretch(2017~2022)" \
+				"6" "debootstrapを使用して手動でビルドする" \
+				"7" "カスタムコード" \
 				"8" "🦕 13-trixie(2025~2030)" \
 				"9" "debian-14(2027~2032)" \
 				"0" "🌚 戻る" \
@@ -43,12 +43,12 @@ install_debian_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
 			whiptail --title "Debian version" --menu "Stable has fewer bugs,but the packages inside the \nsoftware source are older.Sid is relatively new." 0 50 0 \
 				"1" "👦Sid (Unstable,a rolling development version)" \
-				"2" "🐎11-bullseye(2021~2026)" \
-				"3" "🐶10-buster(2019~2024)" \
-				"4" "🐙9-stretch(2017~2022)" \
-				"5" "Manually build" \
-				"6" "Custom code" \
-				"7" "📕🐛12-bookworm(2023~2028)" \
+				"2" "📕🐛12-bookworm(2023~2028)" \
+				"3" "🐎11-bullseye(2021~2026)" \
+				"4" "🐶10-buster(2019~2024)" \
+				"5" "🐙9-stretch(2017~2022)" \
+				"6" "Manually build" \
+				"7" "Custom code" \
 				"8" "🦕 13-trixie(2025~2030)" \
 				"9" "debian-14(2027~2032)" \
 				"0" "🌚 Return to previous menu" \
@@ -64,12 +64,12 @@ install_debian_gnu_linux_distro_menu() {
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='sid' ;;
-	2) DISTRO_CODE='bullseye' ;;
-	3) DISTRO_CODE='buster' ;;
-	4) DISTRO_CODE='stretch' ;;
-	5) debootstrap_debian_distro ;;
-	6) custom_debian_version ;;
-	7) check_debian_12 ;;
+	2) check_debian_12 ;;
+	3) DISTRO_CODE='bullseye' ;;
+	4) DISTRO_CODE='buster' ;;
+	5) DISTRO_CODE='stretch' ;;
+	6) debootstrap_debian_distro ;;
+	7) custom_debian_version ;;
 	8) check_debian_13 ;;
 	9) check_debian_new_version ;;
 	esac
@@ -93,23 +93,30 @@ check_debian_distro_code() {
 }
 ############
 check_debian_12() {
-	#DISTRO_CODE='bookworm'
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'jessie|stretch|buster|bullseye|sid|trixie|size' | tail -n 1)
-	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "检测到debian12尚未发布，建议您等到2023年时再来尝试"
-		printf "%s\n" "如需体验最新版本，请安装debian sid，并添加experimental软件源"
-		press_enter_to_return
-		install_debian_gnu_linux_distro_menu
+	CURRENT_MONTH=$(date -u +%Y%m)
+	if ((${CURRENT_MONTH} >= 202108)); then
+		DISTRO_CODE='bookworm'
+	else
+		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'jessie|stretch|buster|bullseye|sid|trixie|size' | tail -n 1)
+		if [ -z ${DISTRO_CODE} ]; then
+			printf "%s\n" "检测到debian bookworm (unstable)尚未发布，建议您等到2021年7或8月份时再来尝试。"
+			press_enter_to_return
+			install_debian_gnu_linux_distro_menu
+		fi
 	fi
 }
 check_debian_13() {
-	#DISTRO_CODE='bookworm'
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'jessie|stretch|buster|bullseye|bookworm|sid|size' | tail -n 1)
-	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "检测到debian13尚未发布，建议您等到2025年时再来尝试"
-		printf "%s\n" "如需体验最新版本，请安装debian sid，并添加experimental软件源"
-		press_enter_to_return
-		install_debian_gnu_linux_distro_menu
+	CURRENT_MONTH=$(date -u +%Y%m)
+	if ((${CURRENT_MONTH} >= 202308)); then
+		DISTRO_CODE='trixie'
+	else
+		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'jessie|stretch|buster|bullseye|bookworm|sid|size' | tail -n 1)
+		if [ -z ${DISTRO_CODE} ]; then
+			printf "%s\n" "检测到debian trixie尚未发布，建议您等到2025年时再来尝试"
+			printf "%s\n" "如需体验最新版本，请安装debian sid，并添加experimental软件源"
+			press_enter_to_return
+			install_debian_gnu_linux_distro_menu
+		fi
 	fi
 }
 #############

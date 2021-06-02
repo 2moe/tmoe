@@ -18,7 +18,7 @@ choose_which_gnu_linux_distro() {
 			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
 			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
 			"6" "🍱 Manjaro,centos,alpine,mint,solus & puppy" \
-			"7" "🐉 Kali Rolling:ペネトレーションテストを主な目的としている" \
+			"7" "🐉 Kali rolling:ペネトレーションテストを主な目的としている" \
 			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
 			"9" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
 			"10" "🦎 Chroot専属する:opensuse,deepin" \
@@ -34,7 +34,7 @@ choose_which_gnu_linux_distro() {
 			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
 			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
 			"6" "🍱 Manjaro,centos,alpine,mint,solus & puppy" \
-			"7" "🐉 Kali Rolling:设计用于数字取证和渗透测试" \
+			"7" "🐉 Kali rolling:设计用于数字取证和渗透测试" \
 			"8" "🍊 Armbian:香蕉派,香橙派(预装dde/gnome/cinnamon/budgie)" \
 			"9" "👒 Fedora:红帽社区版,新技术试验场" \
 			"10" "🦎 Chroot专属:deepin,opensuse" \
@@ -50,7 +50,7 @@ choose_which_gnu_linux_distro() {
 			"4" "🍛 Ubuntu is the modern, open source OS." \
 			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
 			"6" "🍱 Manjaro,centos,alpine,mint,solus & puppy" \
-			"7" "🐉 Kali is a Debian-derived distro designed for digital forensics and penetration testing" \
+			"7" "🐉 Kali:designed for digital forensics and penetration testing" \
 			"8" "🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)" \
 			"9" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
 			"10" "🦎 Chroot exclusive:opensuse,deepin" \
