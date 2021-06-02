@@ -163,9 +163,9 @@ set_your_vnc_passwd() {
 do_you_want_to_configure_tmoe_zsh() {
 	cd ${HOME}
 	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
-	for i in "/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/storage/emulated/0/DCIM/Camera" "/media/sd/Pictures/Screenshots" "/media/sd/Pictures" "/media/sd" "/storage/emulated/0/DCIM/.thumbnails"; do
+	for i in "/media/sd/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/media/sd/DCIM/Camera" "/media/sd/DCIM/100ANDRO" "/media/sd/Pictures/Screenshots" "/media/sd/Pictures" "/media/sd" "/media/sd/0/DCIM/.thumbnails"; do
 		if [[ -e ${i} ]]; then
-			if [[ -n $(ls -l ${i} | grep '^-' | egrep '\.png|\.jpg') ]]; then
+			if [[ -n $(ls -l ${i} | grep '^-' | egrep -i '\.png|\.jpg') ]]; then
 				FACE_ICON_DIR="${i}"
 				break
 			fi
