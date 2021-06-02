@@ -416,10 +416,11 @@ start_tmoe_container() {
 			fi
 			;;
 		startxsdl)
-			[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-			printf "%s\n" "Please wait 9s."
-			#sleep 9
-			#此处不要sleep
+			if [[ $(command -v am) ]]; then
+				am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+				printf "%s\n" "Please ${CYAN}wait ${RED}6s${RESET}."
+				sleep 6
+			fi
 			;;
 		esac
 		if [[ -e ${DEBIAN_CHROOT} ]]; then
@@ -495,7 +496,7 @@ start_tmoe_container() {
 	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ]]; then
 		${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	else
-		printf "%s\n" "${YELLOW}${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}${RESET}"
+		printf "%s\n" "${CYAN}${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}${RESET}"
 		printf "%s\n" "${RED}ERROR${RESET}, please ${GREEN}install${RESET} the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
 	fi
 	# ;;

@@ -1040,8 +1040,11 @@ start_gnu_linux_distro_x11vnc() {
 	exec_container_program
 }
 start_gnu_linux_distro_x() {
-	[[ ! $(command -v am) ]] || am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-	sleep 3
+	if [[ $(command -v am) ]]; then
+		am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+		printf "%s\n" "Please ${CYAN}wait ${RED}6s${RESET}."
+		sleep 6
+	fi
 	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
 	EXEC_PROGRAM="startxsdl"
 	exec_container_program
