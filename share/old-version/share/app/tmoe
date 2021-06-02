@@ -330,6 +330,7 @@ create_and_move_temporary_script_02() {
 }
 create_and_move_temporary_script_03() {
 	set_temp_file_env
+	TEMP_FILE="start_01_vnc"
 	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TEMP_FILE}
 	chmod_777_temporary_file_01
 }

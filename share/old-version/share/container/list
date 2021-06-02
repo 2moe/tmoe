@@ -1646,26 +1646,34 @@ install_void_linux_distro() {
 	linux_distro_common_model_03
 }
 ##########################
+custom_rocky_version() {
+	TARGET=$(whiptail --inputbox "请输入rocky版本代号，例如8\nPlease type the rocky version code." 9 50 --title "ROCKY CODE" 3>&1 1>&2 2>&3)
+	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+	if [ -z "${DISTRO_CODE}" ]; then
+		printf "%s\n" "检测到您取消了操作"
+		printf "%s\n" "已自动切换为${PURPLE}8${RESET}"
+		DISTRO_CODE='8'
+	fi
+}
 install_rocky_linux_distro() {
 	DISTRO_NAME='rocky'
-	TRUE_DISTRO_NAME='rockylinux'
+	TMOE_LINUX_CONTAINER_DISTRO='rocky'
+	create_container_edition_txt
+	go_to_proot_management
+	DISTRO_NAME='rocky'
 	case "${ARCH_TYPE}" in
 	arm64 | amd64)
 		OLD_STABLE_VERSION='8'
-		DISTRO_CODE=8
-		before_going_to_proot_menu
-		linux_distro_common_model_05
+		DISTRO_NAME='rockylinux'
+		if (whiptail --title "ROCKY VERSION" --yes-button "${OLD_STABLE_VERSION}" --no-button "customize" --yesno "Which version do you want to install?" 9 50); then
+			DISTRO_CODE="${OLD_STABLE_VERSION}"
+		else
+			custom_rocky_version
+		fi
+		linux_distro_common_model_04
 		;;
 	"armhf" | "i386" | *) distro_does_not_support ;;
 	esac
-}
-linux_distro_common_model_05() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${TRUE_DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 install_centos_linux_distro() {
 	DISTRO_NAME='centos'

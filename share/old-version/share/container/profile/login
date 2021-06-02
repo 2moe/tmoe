@@ -6,13 +6,14 @@ if [ "$(ls /etc/profile.d/permanent/ 2>/dev/null)" ]; then
         fi
     done
 fi
-if [ "$(ls /tmp/.tmoe_container_temporary/ 2>/dev/null)" ]; then
+if [ -e /tmp/.tmoe_container_temporary/ ] && [ "$(ls /tmp/.tmoe_container_temporary/ 2>/dev/null)" ]; then
     for i in /tmp/.tmoe_container_temporary/*; do
         if [ -f "${i}" ]; then
             chmod a+rx ${i}
             ${i}
         fi
     done
+    rm -fv /tmp/.tmoe_container_temporary/start_01_vnc &>/dev/null
 fi
 unset i
 [ ! -r /usr/local/etc/tmoe-linux/environment/entrypoint ] || . /usr/local/etc/tmoe-linux/environment/entrypoint
