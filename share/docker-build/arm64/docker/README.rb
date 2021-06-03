@@ -3,7 +3,7 @@
 
 puts "
 	You can use this image to run docker on Android system.
-	The password of the root account is empty. After starting the qemu virtual machine, open the vnc client and type \033[36m localhost:5905\033[m
+	After starting the qemu virtual machine, you can open the vnc client and type \033[36m localhost:5905\033[m
 	The default root passwd is empty.
 	After entering the system,you should type \033[32m passwd \033[0m to change your password.
 	If you want to use ssh connection, please create a new termux session, and then install openssh client. Finally, you can type \033[32m ssh -p 2888 root@localhost \033[m
