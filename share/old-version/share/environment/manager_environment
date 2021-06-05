@@ -3,8 +3,9 @@ check_arch() {
 	if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 		DPKG_ARCH=$(dpkg --print-architecture)
 		case ${DPKG_ARCH} in
-		armv7* | armv8l | armhf) ARCH_TYPE="armhf" ;;
-		aarch64 | arm64* | armv8*) ARCH_TYPE="arm64" ;;
+		armel) ARCH_TYPE="armel" ;;
+		armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
+		aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
 		i*86 | x86) ARCH_TYPE="i386" ;;
 		x86_64 | amd64) ARCH_TYPE="amd64" ;;
 		*) ARCH_TYPE=${DPKG_ARCH} ;;
@@ -13,8 +14,8 @@ check_arch() {
 		UNAME_ARCH=$(uname -m)
 		case ${UNAME_ARCH} in
 		armv7* | armv8l) ARCH_TYPE="armhf" ;;
-		armv6* | armv5*) ARCH_TYPE="armel" ;;
-		aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+		armv[1-6]*) ARCH_TYPE="armel" ;;
+		aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
 		x86_64 | amd64) ARCH_TYPE="amd64" ;;
 		i*86 | x86) ARCH_TYPE="i386" ;;
 		s390*) ARCH_TYPE="s390x" ;;  #经测试uname -m输出的结果为s390x

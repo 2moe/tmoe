@@ -5,24 +5,25 @@ if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	armel) ARCH_TYPE="armel" ;;
 	armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
 	aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
-	i*86 | x86) TRUE_ARCH_TYPE="i386" ;;
-	x86_64 | amd64) TRUE_ARCH_TYPE="amd64" ;;
-	*) TRUE_ARCH_TYPE=$(dpkg --print-architecture) ;;
+	i*86 | x86) ARCH_TYPE="i386" ;;
+	x86_64 | amd64) ARCH_TYPE="amd64" ;;
+	*) ARCH_TYPE=$(dpkg --print-architecture) ;;
 	esac
 else
 	case $(uname -m) in
-	armv7* | armv8l) TRUE_ARCH_TYPE="armhf" ;;
-	armv6* | armv5*) TRUE_ARCH_TYPE="armel" ;;
-	aarch64 | armv8* | arm64) TRUE_ARCH_TYPE="arm64" ;;
-	x86_64 | amd64) TRUE_ARCH_TYPE="amd64" ;;
-	i*86 | x86) TRUE_ARCH_TYPE="i386" ;;
-	s390*) TRUE_ARCH_TYPE="s390x" ;;
-	ppc*) TRUE_ARCH_TYPE="ppc64el" ;;
-	mips64*) TRUE_ARCH_TYPE="mips64el" ;;
-	mips*) TRUE_ARCH_TYPE="mipsel" ;;
-	risc*) TRUE_ARCH_TYPE="riscv64" ;;
+	armv7* | armv8l) ARCH_TYPE="armhf" ;;
+	armv[1-6]*) ARCH_TYPE="armel" ;;
+	aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
+	x86_64 | amd64) ARCH_TYPE="amd64" ;;
+	i*86 | x86) ARCH_TYPE="i386" ;;
+	s390*) ARCH_TYPE="s390x" ;;
+	ppc*) ARCH_TYPE="ppc64el" ;;
+	mips64*) ARCH_TYPE="mips64el" ;;
+	mips*) ARCH_TYPE="mipsel" ;;
+	risc*) ARCH_TYPE="riscv64" ;;
 	esac
 fi
+TRUE_ARCH_TYPE=${ARCH_TYPE}
 ######################
 TMOE_QEMU=true
 case "${CONTAINER_ARCH}" in
