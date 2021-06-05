@@ -3,8 +3,9 @@
 if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	DPKG_ARCH=$(dpkg --print-architecture)
 	case ${DPKG_ARCH} in
-	armv7* | armv8l | armhf) ARCH_TYPE="armhf" ;;
-	aarch64 | arm64* | armv8*) ARCH_TYPE="arm64" ;;
+	armel) ARCH_TYPE="armel" ;;
+	armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
+	aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
 	i*86 | x86) ARCH_TYPE="i386" ;;
 	x86_64 | amd64) ARCH_TYPE="amd64" ;;
 	*) ARCH_TYPE=${DPKG_ARCH} ;;
