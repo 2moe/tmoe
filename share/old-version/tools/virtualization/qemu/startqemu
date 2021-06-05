@@ -551,7 +551,7 @@ run_tmoe_qemu_i440fx_machine() {
     #####################
     case ${VIRTIO_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_01}","node-name"="libvirt-1-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_01}","node-name"="libvirt-1-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-1-format","read-only"=off,"driver"="${VIRTIO_DISK_01_FORMAT}","file"="libvirt-1-storage""
         case ${VIRTIO_DISK_01_BOOTINDEX} in
         "") VIRTIO_DISK_01_ATTACH='' ;;
@@ -563,7 +563,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${VIRTIO_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_02}","node-name"="libvirt-2-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_02}","node-name"="libvirt-2-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-2-format","read-only"=off,"driver"="${VIRTIO_DISK_02_FORMAT}","file"="libvirt-2-storage""
         case ${VIRTIO_DISK_02_BOOTINDEX} in
         "") VIRTIO_DISK_02_ATTACH='' ;;
@@ -574,7 +574,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${CD_ROM_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_01}","node-name"="libvirt-3-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_01}","node-name"="libvirt-3-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-3-format","read-only"=on,"driver"="${CD_ROM_DISK_01_FORMAT}","file"="libvirt-3-storage""
         case ${CD_ROM_DISK_01_BOOTINDEX} in
         "") CD_ROM_DISK_01_ATTACH='' ;;
@@ -585,7 +585,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${CD_ROM_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_02}","node-name"="libvirt-4-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_02}","node-name"="libvirt-4-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-4-format","read-only"=on,"driver"="${CD_ROM_DISK_02_FORMAT}","file"="libvirt-4-storage""
         case ${CD_ROM_DISK_02_BOOTINDEX} in
         "") CD_ROM_DISK_02_ATTACH='' ;;
@@ -596,7 +596,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${SATA_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_01}","node-name"="libvirt-5-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_01}","node-name"="libvirt-5-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-5-format","read-only"=off,"driver"="${SATA_DISK_01_FORMAT}","file"="libvirt-5-storage""
         case ${SATA_DISK_01_BOOTINDEX} in
         "") SATA_DISK_01_ATTACH='' ;;
@@ -607,7 +607,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${SATA_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_02}","node-name"="libvirt-6-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_02}","node-name"="libvirt-6-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-6-format","read-only"=off,"driver"="${SATA_DISK_02_FORMAT}","file"="libvirt-6-storage""
         case ${SATA_DISK_02_BOOTINDEX} in
         "") SATA_DISK_02_ATTACH='' ;;
@@ -618,7 +618,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${USB_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_01}","node-name"="libvirt-7-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_01}","node-name"="libvirt-7-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-7-format","read-only"=off,"driver"="${USB_DISK_01_FORMAT}","file"="libvirt-7-storage""
         case ${USB_DISK_01_BOOTINDEX} in
         "") USB_DISK_01_ATTACH='' ;;
@@ -629,7 +629,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${USB_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_02}","node-name"="libvirt-8-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_02}","node-name"="libvirt-8-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-8-format","read-only"=off,"driver"="${USB_DISK_02_FORMAT}","file"="libvirt-8-storage""
         case ${USB_DISK_02_BOOTINDEX} in
         "") USB_DISK_02_ATTACH='' ;;
@@ -642,7 +642,7 @@ run_tmoe_qemu_i440fx_machine() {
     case ${FLOPPY_DISK_01_ENABLED} in
     true)
         # set -- "${@}" "-device" "isa-fdc"
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-9-format","read-only"=off,"driver"="${FLOPPY_DISK_01_FORMAT}","file"="libvirt-9-storage""
         case ${FLOPPY_DISK_01_BOOTINDEX} in
         "") FLOPPY_DISK_01_ATTACH='' ;;
@@ -653,7 +653,7 @@ run_tmoe_qemu_i440fx_machine() {
     esac
     case ${FLOPPY_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_02}","node-name"="libvirt-10-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_02}","node-name"="libvirt-10-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-10-format","read-only"=off,"driver"="${FLOPPY_DISK_02_FORMAT}","file"="libvirt-10-storage""
         case ${FLOPPY_DISK_02_BOOTINDEX} in
         "") FLOPPY_DISK_02_ATTACH='' ;;
@@ -796,10 +796,10 @@ run_tmoe_qemu_i440fx_machine() {
     case ${GPU_MODEL} in
     virtio* | vhost-user*)
         case ${VIRTIO_3D_ACCEL} in
-        true) VIRGL='on' ;;
-        *) VIRGL='off' ;;
+        true) GPU_ATTACH=",virgl=on" ;;
+        *) GPU_ATTACH="" ;;
         esac
-        set -- "${@}" "-device" "virtio-vga,id=video0,virgl=${VIRGL},max_outputs=1,bus=pci.0,addr=0x2"
+        set -- "${@}" "-device" "virtio-vga,id=video0,max_outputs=1,bus=pci.0,addr=0x2{GPU_ATTACH}"
         ;;
     qxl*) set -- "${@}" "-device" "qxl-vga,id=video0,ram_size=${GPU_RAM_SIZE},vram_size=${GPU_VRAM_SIZE},vram64_size_mb=0,vgamem_mb=${GPU_VGAMEM_MB},max_outputs=1,bus=pci.0,addr=0x2" ;;
     vga | VGA) set -- "${@}" "-device" "VGA,id=video0,vgamem_mb=${GPU_VGAMEM_MB},bus=pci.0,addr=0x2" ;;
@@ -916,9 +916,9 @@ run_tmoe_qemu_command() {
     case ${UEFI_ENABLED} in
     true)
         MACHINE_ATTACH=',pflash0=libvirt-pflash0-format,pflash1=libvirt-pflash1-format'
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${UEFI_CODE_PFLASH}","node-name"="libvirt-pflash0-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${UEFI_CODE_PFLASH}","node-name"="libvirt-pflash0-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-pflash0-format","read-only"=on,"driver"="raw","file"="libvirt-pflash0-storage""
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${UEFI_VARS_PFLASH}","node-name"="libvirt-pflash1-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${UEFI_VARS_PFLASH}","node-name"="libvirt-pflash1-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-pflash1-format","read-only"=off,"driver"="raw","file"="libvirt-pflash1-storage""
         ;;
     *) MACHINE_ATTACH='' ;;
@@ -997,7 +997,7 @@ run_tmoe_qemu_command() {
     ###########
     case ${VIRTIO_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_01}","node-name"="libvirt-1-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_01}","node-name"="libvirt-1-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-1-format","read-only"=off,"driver"="${VIRTIO_DISK_01_FORMAT}","file"="libvirt-1-storage""
         case ${VIRTIO_DISK_01_BOOTINDEX} in
         "") VIRTIO_DISK_01_ATTACH='' ;;
@@ -1009,7 +1009,7 @@ run_tmoe_qemu_command() {
     esac
     case ${VIRTIO_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_02}","node-name"="libvirt-2-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${VIRTIO_DISK_02}","node-name"="libvirt-2-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-2-format","read-only"=off,"driver"="${VIRTIO_DISK_02_FORMAT}","file"="libvirt-2-storage""
         case ${VIRTIO_DISK_02_BOOTINDEX} in
         "") VIRTIO_DISK_02_ATTACH='' ;;
@@ -1020,7 +1020,7 @@ run_tmoe_qemu_command() {
     esac
     case ${CD_ROM_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_01}","node-name"="libvirt-3-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_01}","node-name"="libvirt-3-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-3-format","read-only"=on,"driver"="${CD_ROM_DISK_01_FORMAT}","file"="libvirt-3-storage""
         case ${CD_ROM_DISK_01_BOOTINDEX} in
         "") CD_ROM_DISK_01_ATTACH='' ;;
@@ -1031,7 +1031,7 @@ run_tmoe_qemu_command() {
     esac
     case ${CD_ROM_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_02}","node-name"="libvirt-4-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${CD_ROM_DISK_02}","node-name"="libvirt-4-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-4-format","read-only"=on,"driver"="${CD_ROM_DISK_02_FORMAT}","file"="libvirt-4-storage""
         case ${CD_ROM_DISK_02_BOOTINDEX} in
         "") CD_ROM_DISK_02_ATTACH='' ;;
@@ -1042,7 +1042,7 @@ run_tmoe_qemu_command() {
     esac
     case ${SATA_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_01}","node-name"="libvirt-5-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_01}","node-name"="libvirt-5-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-5-format","read-only"=off,"driver"="${SATA_DISK_01_FORMAT}","file"="libvirt-5-storage""
         case ${SATA_DISK_01_BOOTINDEX} in
         "") SATA_DISK_01_ATTACH='' ;;
@@ -1053,7 +1053,7 @@ run_tmoe_qemu_command() {
     esac
     case ${SATA_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_02}","node-name"="libvirt-6-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${SATA_DISK_02}","node-name"="libvirt-6-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-6-format","read-only"=off,"driver"="${SATA_DISK_02_FORMAT}","file"="libvirt-6-storage""
         case ${SATA_DISK_02_BOOTINDEX} in
         "") SATA_DISK_02_ATTACH='' ;;
@@ -1064,7 +1064,7 @@ run_tmoe_qemu_command() {
     esac
     case ${USB_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_01}","node-name"="libvirt-7-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_01}","node-name"="libvirt-7-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-7-format","read-only"=off,"driver"="${USB_DISK_01_FORMAT}","file"="libvirt-7-storage""
         case ${USB_DISK_01_BOOTINDEX} in
         "") USB_DISK_01_ATTACH='' ;;
@@ -1075,7 +1075,7 @@ run_tmoe_qemu_command() {
     esac
     case ${USB_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_02}","node-name"="libvirt-8-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${USB_DISK_02}","node-name"="libvirt-8-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-8-format","read-only"=off,"driver"="${USB_DISK_02_FORMAT}","file"="libvirt-8-storage""
         case ${USB_DISK_02_BOOTINDEX} in
         "") USB_DISK_02_ATTACH='' ;;
@@ -1091,7 +1091,7 @@ run_tmoe_qemu_command() {
     esac
     case ${FLOPPY_DISK_01_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_01}","node-name"="libvirt-9-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-9-format","read-only"=off,"driver"="${FLOPPY_DISK_01_FORMAT}","file"="libvirt-9-storage""
         case ${FLOPPY_DISK_01_BOOTINDEX} in
         "") FLOPPY_DISK_01_ATTACH='' ;;
@@ -1102,7 +1102,7 @@ run_tmoe_qemu_command() {
     esac
     case ${FLOPPY_DISK_02_ENABLED} in
     true)
-        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_02}","node-name"="libvirt-10-storage","auto-read-only"=on,"discard"="unmap""
+        set -- "${@}" "-blockdev" ""driver"="file","filename"="${FLOPPY_DISK_02}","node-name"="libvirt-10-storage","discard"="unmap""
         set -- "${@}" "-blockdev" ""node-name"="libvirt-10-format","read-only"=off,"driver"="${FLOPPY_DISK_02_FORMAT}","file"="libvirt-10-storage""
         case ${FLOPPY_DISK_02_BOOTINDEX} in
         "") FLOPPY_DISK_02_ATTACH='' ;;
@@ -1257,10 +1257,10 @@ EOF
     case ${GPU_MODEL} in
     virtio* | vhost-user* | "")
         case ${VIRTIO_3D_ACCEL} in
-        true) VIRGL='on' ;;
-        *) VIRGL='off' ;;
+        true) GPU_ATTACH=",virgl=on" ;;
+        *) GPU_ATTACH="" ;;
         esac
-        set -- "${@}" "-device" "virtio-vga,id=video0,virgl=${VIRGL},max_outputs=1,bus=pcie.0,addr=0x1"
+        set -- "${@}" "-device" "virtio-vga,id=video0,max_outputs=1,bus=pcie.0,addr=0x1,${GPU_ATTACH}"
         ;;
     qxl*) set -- "${@}" "-device" "qxl-vga,id=video0,ram_size=${GPU_RAM_SIZE},vram_size=${GPU_VRAM_SIZE},vram64_size_mb=0,vgamem_mb=${GPU_VGAMEM_MB},max_outputs=1,bus=pcie.0,addr=0x1" ;;
     vga | VGA) set -- "${@}" "-device" "VGA,id=video0,vgamem_mb=${GPU_VGAMEM_MB},bus=pcie.0,addr=0x1" ;;
