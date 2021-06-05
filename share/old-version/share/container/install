@@ -1267,6 +1267,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		CHINA_MIRROR='mirrors.huaweicloud.com'
 		SOURCE_LIST=/etc/apt/sources.list
 		SOURCE_LIST_02="${SOURCE_LIST}.d/official-package-repositories.list"
+		SOURCE_LIST_03="${SOURCE_LIST}.d/official-source-repositories.list"
 		cp -fv ${SOURCE_LIST} ${SOURCE_LIST}.bak 2>/dev/null
 		if [[ ${TMOE_GITHUB} != true ]]; then
 			modify_mint_source_list
@@ -1277,7 +1278,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				SOURCE_LIST=${SOURCE_LIST_02}
 				modify_mint_source_list
 			fi
-		fi 
+		fi
+		if [[ -e ${SOURCE_LIST_03} ]]; then
+			mv -vf ${SOURCE_LIST_03} ${SOURCE_LIST_03}.bak
+		fi
 	}
 	####################
 	if [[ ! -e /etc/apt/sources.list.d/raspi.list ]]; then

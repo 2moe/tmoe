@@ -535,7 +535,7 @@ run_tmoe_qemu_i440fx_machine() {
         ;;
     esac
     set -- "${@}" "-m" "${MEMORY_SIZE}"
-    set -- "${@}" "-overcommit" "mem-lock=off"
+    # set -- "${@}" "-overcommit" "mem-lock=off"
     ############################
     set -- "${@}" "-monitor" "stdio"
     set -- "${@}" "-no-user-config"
@@ -981,7 +981,7 @@ run_tmoe_qemu_command() {
         ;;
     esac
     set -- "${@}" "-m" "${MEMORY_SIZE}"
-    set -- "${@}" "-overcommit" "mem-lock=off"
+    # set -- "${@}" "-overcommit" "mem-lock=off"
     ############################
     set -- "${@}" "-monitor" "stdio"
     set -- "${@}" "-no-user-config"
