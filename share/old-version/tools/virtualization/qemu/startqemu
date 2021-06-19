@@ -79,6 +79,12 @@ UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/qemu/${QEMU_NAME}-NVRAM.fd"
 ###########
 [[ -n ${RTC_BASE} ]] || RTC_BASE=utc
 if [[ ${UEFI_ENABLED} = true && ! -s "${UEFI_VARS_PFLASH}" ]]; then
+    for i in OVMF_CODE.fd OVMF_VARS.fd; do
+        if [[ ! -e /usr/share/OVMF/${i} ]]; then
+            mkdir -pv /usr/share/OVMF
+            ln -svf /usr/share/edk2-ovmf/x64/${i} /usr/share/OVMF
+        fi
+    done
     mkdir -pv "${UEFI_VARS_PFLASH%/*}"
     cp -fv "/usr/share/OVMF/OVMF_VARS.fd" "${UEFI_VARS_PFLASH}"
     chmod a+rw "${UEFI_VARS_PFLASH}"
