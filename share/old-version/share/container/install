@@ -1493,9 +1493,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    pacman -Syyu --noconfirm
 	}
 	arch_linux_yay() {
-	    #archlinux-keyring
 		# pacman-key --populate archlinuxcn
-	    for i in archlinux-keyring archlinuxcn-keyring arch4edu-keyring yay; do
+		# archlinux-keyring archlinuxcn-keyring
+	    for i in arch4edu-keyring yay; do
 	        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 	        pacman -Sy --noconfirm ${i}
 	    done
