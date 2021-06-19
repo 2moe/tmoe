@@ -63,7 +63,6 @@ if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ]; then
 		press_enter_to_continue
 	else
 		cat <<-EOF
-			Do you want to download win10_2004_x64 iso and upgrade system?[Y/n]
 			您的宿主机系统版本低于10.0.19041，需要更新系统。
 			请在更新完系统后，以管理员身份打开Powershell,并输入dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 			dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart

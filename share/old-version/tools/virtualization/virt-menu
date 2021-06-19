@@ -55,7 +55,7 @@ install_container_and_virtual_machine() {
 	VIRTUAL_TECH=$(
 		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
 			"1" "💻 qemu:开源、跨平台的虚拟机" \
-			"2" "📀 iso/qcow2:下载镜像(linux,win10)" \
+			"2" "📀 iso/qcow2:下载镜像(linux,win11)" \
 			"3" "🐳 docker:开源的应用容器引擎" \
 			"4" "🖥️ VirtualBox(甲骨文开源虚拟机x64)" \
 			"5" "🍷 wine:调用win api并即时转换" \

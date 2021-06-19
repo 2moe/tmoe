@@ -3201,7 +3201,7 @@ download_icon_themes() {
     RETURN_TO_WHERE='download_icon_themes'
     INSTALL_THEME=$(whiptail --title "图标包" --menu \
         "您想要下载哪个图标包？\n Which icon-theme do you want to download? " 0 50 0 \
-        "1" "win10x:更新颖的UI设计" \
+        "1" "win11:更新颖的UI设计" \
         "2" "UOS:国产统一操作系统图标包" \
         "3" "pixel:raspberrypi树莓派" \
         "4" "paper:简约、灵动、现代化的图标包" \
@@ -3744,25 +3744,26 @@ download_kali_theme() {
 }
 ##################
 download_win10x_theme() {
-    if [ -d "/usr/share/icons/We10X-dark" ]; then
+    if [ -d "/usr/share/icons/We10X-Valley-dark" ]; then
         printf "%s\n" "检测到图标包已下载，是否重新下载？"
         RETURN_TO_WHERE='configure_theme'
         do_you_want_to_continue
     fi
 
-    if [ -d "/tmp/.WINDOWS_10X_ICON_THEME" ]; then
-        rm -rf /tmp/.WINDOWS_10X_ICON_THEME
+    if [ -d "/tmp/.WINDOWS_11_ICON_THEME" ]; then
+        rm -rf /tmp/.WINDOWS_11_ICON_THEME
     fi
 
-    git clone -b win10x --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/.WINDOWS_10X_ICON_THEME
-    cd /tmp/.WINDOWS_10X_ICON_THEME
+    git clone -b win10x --depth=1 https://gitee.com/mo2/xfce-themes.git /tmp/.WINDOWS_11_ICON_THEME
+    cd /tmp/.WINDOWS_11_ICON_THEME
     GITHUB_URL=$(cat url.txt)
     tar -Jxvf We10X.tar.xz -C /usr/share/icons 2>/dev/null
-    update-icon-caches /usr/share/icons/We10X-dark /usr/share/icons/We10X 2>/dev/null &
+    update-icon-caches /usr/share/icons/We10X-Valley-dark /usr/share/icons/We10X-Valley 2>/dev/null &
     printf "%s\n" "${GITHUB_URL}"
-    rm -rf /tmp/McWe10X
-    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-dark /usr/share/icons/We10X"
-    XFCE_ICON_NAME='We10X'
+    cd /tmp
+    rm -rf /tmp/.WINDOWS_11_ICON_THEME
+    printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/icons/We10X-Valley-dark /usr/share/icons/We10X-Valley"
+    XFCE_ICON_NAME='We10X-Valley'
     set_default_xfce_icon_theme
 }
 ###################

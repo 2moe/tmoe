@@ -28,10 +28,7 @@ main() {
 	up* | -u*)
 		tmoe_linux_tool_upgrade
 		;;
-	passwd | -passwd)
-		source ${TMOE_TOOL_DIR}/gui/gui --vncpasswd
-		check_win10x_icon
-		;;
+	passwd | -passwd) source ${TMOE_TOOL_DIR}/gui/gui --vncpasswd ;;
 	--choose-vnc-port) source ${TMOE_TOOL_DIR}/gui/gui --choose-vnc-port ;;
 	h | -h | --help)
 		cat <<-'EOF'
@@ -92,7 +89,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4855,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4856,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
@@ -168,12 +165,6 @@ check_release_version() {
 	esac
 }
 ##############
-check_win10x_icon() {
-	if [ -e "/usr/share/icons/We10X" ]; then
-		dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s We10X
-	fi
-}
-##########
 check_mouse_cursor() {
 	if [ -e "/usr/share/icons/breeze" ]; then
 		dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s breeze_cursors 2>/dev/null

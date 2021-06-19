@@ -18,8 +18,8 @@ download_virtual_machine_iso_file() {
 		"2" "Android x86_64(latest)" \
 		"3" "debian-iso(每周自动构建,包含non-free)" \
 		"4" "ubuntu" \
-		"6" "windows" \
-		"7" "LMDE(Linux Mint Debian Edition)" \
+		"5" "windows 11" \
+		"6" "LMDE(Linux Mint Debian Edition)" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
 		3>&1 1>&2 2>&3)
 	#############
@@ -29,8 +29,8 @@ download_virtual_machine_iso_file() {
 	2) download_android_x86_file ;;
 	3) download_debian_iso_file ;;
 	4) download_ubuntu_iso_file ;;
-	6) download_windows_10_iso ;;
-	7) download_linux_mint_debian_edition_iso ;;
+	5) download_windows_10_iso ;;
+	6) download_linux_mint_debian_edition_iso ;;
 	esac
 	###############
 	press_enter_to_return
@@ -43,15 +43,16 @@ download_tmoe_iso_file_again() {
 	qemu-img info ${ISO_FILE_NAME}
 }
 ##########
-download_win10_2004_x64_iso() {
-	ISO_FILE_NAME='win10-19042_tmoe_x64.iso'
+download_win11_x64_iso() {
+	ISO_FILE_NAME='win11_x64.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
-	TMOE_ISO_URL="https://m.tmoe.me/win10_x64-latest-iso"
+	# TMOE_ISO_URL="https://m.tmoe.me/win10_x64-latest-iso"
+	TMOE_ISO_URL="https://packages.tmoe.me/iso/21996.1.210529-1541.co_release_CLIENT_CONSUMER_x64FRE_en-us.iso"
 	download_windows_tmoe_iso_model
 }
 #############################
-download_win10_19041_arm64_iso() {
-	ISO_FILE_NAME='win10-19042_tmoe_arm64.iso'
+download_win10_arm64_iso() {
+	ISO_FILE_NAME='win10-19042_arm64.iso'
 	TMOE_FILE_ABSOLUTE_PATH=$(pwd)/${ISO_FILE_NAME}
 	TMOE_ISO_URL="https://m.tmoe.me/win10_arm64-latest-iso"
 	cat <<-'EOF'
@@ -77,8 +78,8 @@ download_windows_tmoe_iso_model() {
 #########
 download_windows_10_iso() {
 	RETURN_TO_WHERE='download_windows_10_iso'
-	TMOE_VIRTUALIZATION=$(whiptail --title "ISO FILE" --menu "Which win10 version do you want to download?" 12 55 4 \
-		"1" "win10_20h2_x64(uup多合一版)" \
+	TMOE_VIRTUALIZATION=$(whiptail --title "ISO FILE" --menu "Which win version do you want to download?" 12 55 4 \
+		"1" "win11_21996_x64" \
 		"2" "win10_20h2_arm64(uup)" \
 		"3" "other" \
 		"0" "🌚 Return to previous menu 返回上级菜单" \
@@ -86,8 +87,8 @@ download_windows_10_iso() {
 	#############
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") install_container_and_virtual_machine ;;
-	1) download_win10_2004_x64_iso ;;
-	2) download_win10_19041_arm64_iso ;;
+	1) download_win11_x64_iso ;;
+	2) download_win10_arm64_iso ;;
 	3)
 		cat <<-'EOF'
 			如需下载其他版本，请前往microsoft官网
