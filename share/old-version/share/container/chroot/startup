@@ -437,7 +437,9 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    fi
 	    ############
 	    # LOGIN SHELL
-	    if [[ -f \${ROOTFS_DIR}/usr/bin/sudo ]]; then
+	    if [[ \${CHROOT_USER} = root ]]; then
+	        set -- "\${@}" "\${TMOE_SHELL}" "-l"      
+	    elif [[ -f \${ROOTFS_DIR}/usr/bin/sudo ]]; then
 	        set -- "\${@}" "/usr/bin/sudo" "-Eu" "\${CHROOT_USER}"
 	        set -- "\${@}" "\${TMOE_SHELL}" "-l"
 	    else
