@@ -1703,7 +1703,7 @@ install_xfce4_lite_desktop() {
     else
         different_distro_software_install
     fi
-    XFCE_PANEL_CONFIG="~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
+    XFCE_PANEL_CONFIG="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
     if [[ -e ${XFCE_PANEL_CONFIG} ]]; then
         mv -vf ${XFCE_PANEL_CONFIG} ${XFCE_PANEL_CONFIG}.bak
     fi

@@ -15,6 +15,7 @@ RUN apt update; \
     apt install -y whiptail dialog aria2 zstd curl wget; \
     apt install -y --no-install-recommends neofetch lolcat unzip; \
     apt install -y apt-utils systemd procps; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
@@ -27,7 +28,6 @@ RUN apt update; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \

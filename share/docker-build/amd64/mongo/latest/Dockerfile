@@ -13,6 +13,7 @@ RUN apt update; \
     apt install -y sudo locales locales-all; \
     apt install -y whiptail curl eatmydata apt-utils procps; \
     apt install -y --no-install-recommends neofetch; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
@@ -28,7 +29,6 @@ RUN apt update; \
     printf "%s\n" "MONGO_MAJOR='${MONGO_MAJOR}'" >> version.txt; \
     printf "%s\n" "MONGO_VERSION='${MONGO_VERSION}'" >> version.txt; \
     cat version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv '/var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/log/* \

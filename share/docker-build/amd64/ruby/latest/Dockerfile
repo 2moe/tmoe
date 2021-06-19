@@ -12,6 +12,7 @@ RUN apt update; \
     apt install -y sudo locales; \
     apt install -y whiptail curl eatmydata procps apt-utils; \
     apt install -y --no-install-recommends neofetch; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
@@ -27,7 +28,6 @@ RUN apt update; \
     printf "%s\n" "GEM_VERSION='$(gem --version)'" >> version.txt; \
     printf "%s\n" "BUNDLE_VERSION='$(bundle --version)'" >> version.txt; \
     cat version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

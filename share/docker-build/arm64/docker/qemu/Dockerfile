@@ -23,6 +23,7 @@ RUN apt update; \
     yes | apt install -t experimental qemu-system-x86 qemu-system-gui -y || aptitude install -y qemu-system-x86 qemu-system-gui; \
     apt install -y whiptail curl eatmydata apt-utils procps iproute2; \
     apt install -y --no-install-recommends neofetch nano lolcat; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     mkdir -pv /opt/qemu-img; \
@@ -60,7 +61,6 @@ RUN apt update; \
     printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
     apt autopurge -y; \
     mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

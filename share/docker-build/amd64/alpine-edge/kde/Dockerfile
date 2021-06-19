@@ -8,6 +8,7 @@ ENV HOME=/root \
 RUN apk update; \
     apk upgrade; \
     apk add tar grep curl wget zstd bash tzdata newt shadow git; \
+    printf "%s\n" "root:root" | chpasswd; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     cd /tmp; \
     curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh'; \
@@ -22,7 +23,6 @@ RUN apk update; \
     printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-kde" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null; \
     rm -rfv /tmp/* ~/.vnc/*passwd
 #apk -v cache clean

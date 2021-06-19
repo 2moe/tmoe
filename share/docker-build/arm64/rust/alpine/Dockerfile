@@ -8,6 +8,7 @@ ENV HOME=/root \
 RUN apk update; \
     apk upgrade; \
     apk add sudo tar grep curl wget bash tzdata newt shadow; \
+    printf "%s\n" "root:root" | chpasswd; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     rustup update; \
     rustup self update; \
@@ -22,7 +23,6 @@ RUN apk update; \
     printf "%s\n" "CARGO_VERSION='$(cargo --version)'" >> version.txt; \
     printf "%s\n" "RUSTC_VERSION='$(rustc --version)'" >> version.txt; \
     cat version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null 
 #apk -v cache clean
 

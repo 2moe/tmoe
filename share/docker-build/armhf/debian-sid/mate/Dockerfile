@@ -17,6 +17,7 @@ RUN apt update; \
     apt install -y whiptail dialog aria2 zstd curl wget; \
     apt install -y --no-install-recommends neofetch lolcat unzip; \
     apt install -y apt-utils systemd procps aptitude; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
@@ -35,7 +36,6 @@ RUN apt update; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     apt autopurge -y; \
     mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

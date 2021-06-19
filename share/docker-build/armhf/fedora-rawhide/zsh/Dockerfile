@@ -11,6 +11,7 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo; \
     dnf update -y; \
     dnf install -y --skip-broken glibc-all-langpacks glibc-minimal-langpack iproute lolcat newt systemd dnf-utils passwd findutils man-db procps-ng procps-ng-i18n tar hostname neofetch; \
     dnf install -y --skip-broken newt aria2 zstd curl wget; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
@@ -24,7 +25,6 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
     dnf update -y; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     dnf clean all
 

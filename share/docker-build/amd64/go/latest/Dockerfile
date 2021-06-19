@@ -14,6 +14,7 @@ RUN apt update; \
     apt install -y sudo locales curl; \
     apt install -y whiptail eatmydata procps apt-utils; \
     apt install -y --no-install-recommends neofetch; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
@@ -25,7 +26,6 @@ RUN apt update; \
     cd /root; \
     printf "%s\n" "GO_VERSION='$(go version)'" > version.txt; \
     cat version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

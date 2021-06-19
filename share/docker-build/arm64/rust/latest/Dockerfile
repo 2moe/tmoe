@@ -13,6 +13,7 @@ RUN apt update; \
     apt install -y sudo locales; \
     apt install -y whiptail curl eatmydata procps apt-utils; \
     apt install -y --no-install-recommends neofetch; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     rustup update; \
@@ -28,7 +29,6 @@ RUN apt update; \
     printf "%s\n" "CARGO_VERSION='$(cargo --version)'" >> version.txt; \
     printf "%s\n" "RUSTC_VERSION='$(rustc --version)'" >> version.txt; \
     cat version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

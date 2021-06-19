@@ -14,6 +14,7 @@ RUN apt update; \
     apt install -y sudo locales curl; \
     apt install -y whiptail eatmydata procps apt-utils; \
     apt install -y --no-install-recommends neofetch nano bat; \
+    printf "%s\n" "root:root" | chpasswd; \
     if [ $(command -v batcat) ];then ln -svf $(command -v batcat) /usr/bin/bat;fi; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
@@ -33,7 +34,6 @@ RUN apt update; \
     cd /root; \
     code-server --version; \
     printf "%s\n" "CODE_VERSION='$(code-server --version)'" > version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

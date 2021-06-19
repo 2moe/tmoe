@@ -13,6 +13,7 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     pacman -S --noconfirm systemd; \
     pacman -S --noconfirm --needed wget curl git; \
     pacman -S --noconfirm --needed unzip neofetch man-db man-pages 2>/dev/null; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -pv /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     export LANG=$(printf '%s\n' 'emhfQ04uVVRGLTgK' | base64 -d); \
@@ -40,7 +41,6 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     ./build_fakeroot --install-fakeroot; \
     ./build_fakeroot --archlinux-repo-mirror; \
     cat /etc/pacman.conf; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd; \
     pacman -R --noconfirm $(pacman -Qdtq); \
     rm -rfv /var/cache/pacman/pkg/* ~/.cache/* 2>/dev/null; \

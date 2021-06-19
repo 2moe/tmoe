@@ -9,6 +9,7 @@ ENV HOME=/root \
 RUN apk update; \
     apk upgrade; \
     apk add sudo tar grep curl wget bash tzdata newt shadow; \
+    printf "%s\n" "root:root" | chpasswd; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
@@ -19,7 +20,6 @@ RUN apk update; \
     cd /root; \
     printf "%s\n" "GO_VERSION='$(go version)'" > version.txt; \
     cat version.txt; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null
 #apk -v cache clean
 

@@ -15,6 +15,7 @@ RUN apt update; \
     apt install -y whiptail dialog aria2 zstd curl wget; \
     apt install -y --no-install-recommends neofetch lolcat unzip; \
     apt install -y apt-utils systemd procps; \
+    printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
@@ -30,7 +31,6 @@ RUN apt update; \
     printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-xfce" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
-    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
