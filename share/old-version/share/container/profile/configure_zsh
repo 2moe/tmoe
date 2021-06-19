@@ -700,8 +700,8 @@ change_the_password() {
 	# 	read
 	# 	do_you_want_to_create_a_new_user
 	# else
-	printf "%s\n" "${USER_NAME}:${PASSWORD_02}" | sudo chpasswd
-	printf "%s\n" "root:${PASSWORD_02}" | sudo chpasswd
+	printf "%s\n" "${USER_NAME}:${PASSWORD_01}" | sudo chpasswd
+	printf "%s\n" "root:${PASSWORD_01}" | sudo chpasswd
 	unset PASSWORD_01 PASSWORD_02
 	TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
 	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
