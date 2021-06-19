@@ -277,7 +277,7 @@ start_tmoe_xvnc() {
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "${XVNC_BIN}" "${@}"
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
-        "${@}" &
+        "${@}" 2>~/.vnc/vnc.log &
     else
         #XVNC_COMMAND="${@}"
         #sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
