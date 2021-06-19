@@ -2,6 +2,8 @@ FROM amd64/debian:experimental
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
+ARG EXP_LIST="/etc/apt/sources.list.d/experimental.list"
+
 ENV HOME=/root \
     PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
@@ -32,6 +34,7 @@ RUN apt update; \
     bash install-gui.sh; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     apt autopurge -y; \
+    mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

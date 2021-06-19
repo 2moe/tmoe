@@ -34,6 +34,6 @@ RUN apt update; \
     /var/lib/apt/lists/* \
     2>/dev/null; \
     apt clean
-# ENV PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
+# ENV PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 #     GOPATH=/go
 CMD [ "/bin/bash" ]

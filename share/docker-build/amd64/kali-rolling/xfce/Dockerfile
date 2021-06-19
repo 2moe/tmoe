@@ -4,6 +4,8 @@ ADD kali.tar /
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
+ARG EXP_LIST="/etc/apt/sources.list.d/kali-experimental.list"
+
 ENV HOME=/root \
     PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
@@ -32,8 +34,9 @@ RUN apt update; \
     printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-xfce" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     bash install-gui.sh; \
-    yes | apt dist-upgrade -t kali-experimental -y || yes | aptitude dist-upgrade -t kali-experimental -y; \
+    yes | apt upgrade -t kali-experimental -y || yes | aptitude upgrade -t kali-experimental -y; \
     apt autopurge -y; \
+    mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
     cp -vf /tmp/.zshrc ~; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv /var/cache/apt/archives/* \

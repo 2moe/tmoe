@@ -1,45 +1,44 @@
 #!/usr/bin/env bash
 ###########
 termux_tuna_sources_list() {
-	#if ! grep -q '^deb.*edu.cn.*termux-packages-24'
-	if ! grep -q '^deb.*bfsu.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/termux-packages-24 stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
+	if ! grep -q '^deb.*bfsu.*' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
 		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-			printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/termux/termux-packages-24 stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
+			printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
 		fi
 		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list
 	fi
 
 	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list" ]; then
 		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
-			sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/game-packages-24 games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
+			sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-games games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
 		fi
 		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
 	fi
 
 	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list" ]; then
 		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
-			sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/science-packages-24 science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
+			sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-science science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
 		fi
 		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
 	fi
 	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list" ]; then
 		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list'; then
-			sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/x11-packages x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
+			sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-x11 x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
 		fi
 		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
 	fi
 
 	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list" ]; then
 		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list'; then
-			sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/unstable-packages unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
+			sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-unstable unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
 		fi
 		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
 	fi
 
 	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list" ]; then
 		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list'; then
-			sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/termux-root-packages-24 root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
+			sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-root root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
 		fi
 		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
 	fi
@@ -63,23 +62,21 @@ apt_dist_upgrade() {
 switch_android_termux_mirror_to_bfsu() {
 	if ((${ANDROID_VERSION} >= 7)); then
 		unset TUNA_MIRROR
-		if ! grep -q '^deb.*edu.cn.*termux-packages-24' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-			printf "%s\n" "${YELLOW}检测到您当前使用的sources.list不是清华源,是否需要更换为清华源[Y/b/n]${RESET} "
-			printf "%s\n" "更换后可以加快中国境内的下载速度,${YELLOW}按回车键切换为tuna-tsinghua清华源，输b切换为bfsu北外源，输n拒绝。${RESET}"
+		if ! grep -q '^deb.*edu.cn.*' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+			printf "%s\n" "${YELLOW}检测到您当前使用的sources.list不是北外源,是否需要更换为北外源[Y/b/n]${RESET} "
+			printf "%s\n" "更换后可以加快中国境内的下载速度,${YELLOW}按回车键切换为bfsu北外源, 输t切换为tuna-tsinghua清华源，输n拒绝。${RESET}"
 			printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
 			read opt
 			case $opt in
-			y* | Y* | "")
+			y* | Y* | "") termux_tuna_sources_list ;;
+			t* | T*)
 				TUNA_MIRROR=true
 				termux_tuna_sources_list
 				;;
-			b) termux_tuna_sources_list ;;
 			n* | N*) printf "%s\n" "skipped." ;;
 			*) printf "%s\n" "Invalid choice. skipped." ;;
 			esac
 		fi
-	else
-		android_6_mirror
 	fi
 }
 ################
@@ -156,37 +153,6 @@ android_termux() {
 		sed -i '/exit-idle/d;$ a\exit-idle-time = 3600' ${PULSE_AUDIO_CONF}
 	fi
 	# exit-idle-time 可设为-1
-}
-#########
-android_6_mirror() {
-	printf "%s\n" "Android :${ANDROID_VERSION}"
-	printf "%s\n" "${RED}WARNING！${RESET}检测到您的系统版本低于Android 7,建议您${YELLOW}更新Android系统${RESET}版本和termux版本。"
-	printf "%s\n" "Your current Android system version is lower than 7."
-	if ! grep -q '^deb.*mirrors.*stable' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-		printf "%s\n" "${YELLOW}检测到您当前使用的sources.list不是中科大源,是否需要更换为中科大源[Y/n]${RESET} "
-		printf "%s\n" "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}"
-		printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
-		read opt
-		case $opt in
-		y* | Y* | "")
-			if grep -q 'deb.*termux.*stable' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-				#sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.ustc.edu.cn/termux stable main@' '/data/data/com.termux/files/usr/etc/apt/sources.list'
-				#官方源deb https://termux.net stable main
-				sed -e 's@^@#&@g' \
-					-e 's@##@#@g' \
-					-e '$ a\deb https://mirrors.ustc.edu.cn/termux stable main' \
-					-i '/data/data/com.termux/files/usr/etc/apt/sources.list'
-			else
-				sed -i '$ a\deb https://mirrors.ustc.edu.cn/termux stable main' '/data/data/com.termux/files/usr/etc/apt/sources.list'
-			fi
-			apt_dist_upgrade
-			press_enter_to_return
-			#android_termux
-			;;
-		n* | N*) printf "%s\n" "skipped." ;;
-		*) printf "%s\n" "Invalid choice. skipped." ;;
-		esac
-	fi
 }
 #############
 android_termux

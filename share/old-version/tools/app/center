@@ -892,7 +892,6 @@ install_parole() {
 install_pamac_gtk() {
     DEPENDENCY_01="pamac"
     DEPENDENCY_02=""
-
     beta_features_quick_install
 }
 #####################

@@ -16,49 +16,27 @@ linux_distro_sources_list() {
 			fi
 			;;
 		esac
+		# tmoe_sources_list_manager
 		;;
 	esac
 }
-##########
-ustc_termux() {
-	if (("${ANDROID_VERSION}" < 7)); then
-		SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn'
-		modify_android_termux_old_mirror_sources_list
-		press_enter_to_return
-		tmoe_sources_list_manager
-	else
-		SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux'
-		# official_termux_mirror_source_format
-		standard_termux_mirror_source_format
-	fi
-}
 #######
-standard_termux_mirror_source_format() {
+new_termux_mirror_source_format() {
+	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-main stable main"
+	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root root stable"
+	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-games games stable"
+	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-science science stable"
+	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-unstable unstable main"
+	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-x11 x11 main"
+}
+#########
+old_termux_mirror_source_format() {
 	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-packages-24 stable main"
 	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root-packages-24 root stable"
 	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/game-packages-24 games stable"
 	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/science-packages-24 science stable"
 	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/unstable-packages unstable main"
 	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/x11-packages x11 main"
-}
-#########
-official_termux_mirror_source_format() {
-	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux/termux-packages-24 stable main"
-	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/grimler/termux-root-packages-24 root stable"
-	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/grimler/game-packages-24 games stable"
-	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/grimler/science-packages-24 science stable"
-	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/xeffyr/unstable-packages unstable main"
-	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/xeffyr/x11-packages x11 main"
-}
-########
-xeffyr_termux_mirror_source_format() {
-	#TERMUX_EXTRA_SOURCE="https://its-pointless.${SOURCE_MIRROR_STATION} termux extras"
-	TERMUX_MAIN_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dg9vawh923wejqffxiu9bhqlze5f508msk0h7ylpac27fdgaskx stable main"
-	TERMUX_GAME_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dhngjg68o8x9uimwy5h8iqt91n2266idc7uet9ew3lc472upy27 games stable"
-	TERMUX_ROOT_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dlp5yjlahzcp3kfpnhbifo9ka9iybo3bp5vt781duafkyyvt9al root stable"
-	TERMUX_SCIENCE_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dhvbtvdf46kkhobzgamhiirte6s6k28l2c1iapumphh3cpkw33f science stable"
-	TERMUX_UNSTABLE_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dj05z8mr958kwvrg7a0wqouj5nnoo5uqu1btnsljvpznfaav9nk unstable main"
-	TERMUX_X11_SOURCE="https://ipfs.io/ipns/k51qzi5uqu5dgu3homski160l4t4bmp52vb6dbgxb5bda90rewnwg64wnkwxj4 x11 main"
 }
 ########
 china_university_mirror_station() {
@@ -68,9 +46,9 @@ china_university_mirror_station() {
 	SOURCES_LIST=$(
 		whiptail --title "软件源列表" --menu \
 			"您想要切换为哪个镜像源呢？" 0 50 0 \
-			"1" "清华大学mirrors.tuna.tsinghua.edu.cn" \
-			"2" "北京外国语大学mirrors.bfsu.edu.cn" \
-			"3" "腾讯云mirrors.cloud.tencent.com" \
+			"1" "北京外国语大学mirrors.bfsu.edu.cn" \
+			"2" "腾讯云mirrors.cloud.tencent.com" \
+			"3" "清华大学mirrors.tuna.tsinghua.edu.cn" \
 			"4" "中国科学技术大学mirrors.ustc.edu.cn" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
@@ -78,32 +56,12 @@ china_university_mirror_station() {
 	########################
 	case "${SOURCES_LIST}" in
 	0 | "") tmoe_sources_list_manager ;;
-	1)
-		SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			standard_termux_mirror_source_format
-		fi
-		;;
-	2)
-		SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			standard_termux_mirror_source_format
-		fi
-		;;
-	3)
-		SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			standard_termux_mirror_source_format
-		fi
-		;;
-	4) ustc_termux ;;
+	1) SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux/apt' ;;
+	2) SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux/apt' ;;
+	3) SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux/apt' ;;
+	4) SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux/apt' ;;
 	esac
+	new_termux_mirror_source_format
 	######################################
 	modify_android_termux_mirror_sources_list
 	press_enter_to_return
@@ -117,10 +75,7 @@ worldwide_mirror_station() {
 	SOURCES_LIST=$(
 		whiptail --title "TERMUX MIRROR SOURCE" --menu \
 			"Which mirror source do you want to switch to?" 0 50 0 \
-			"1" "a1batross:termux.mentality.rip" \
-			"2" "Grimler:grimler.se" \
-			"3" "Xeffyr:ipfs.io" \
-			"4" "Extra source:its-pointless" \
+			"1" "Extra source:its-pointless" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -128,33 +83,9 @@ worldwide_mirror_station() {
 	case "${SOURCES_LIST}" in
 	0 | "") tmoe_sources_list_manager ;;
 	1)
-		SOURCE_MIRROR_STATION='termux.mentality.rip'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			standard_termux_mirror_source_format
-		fi
-		;;
-	2)
-		SOURCE_MIRROR_STATION='grimler.se'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			standard_termux_mirror_source_format
-		fi
-		;;
-	3)
-		SOURCE_MIRROR_STATION='ipfs.io'
-		if (("${ANDROID_VERSION}" < 7)); then
-			ustc_termux
-		else
-			xeffyr_termux_mirror_source_format
-		fi
-		;;
-	4)
 		POINTLESS_LIST="${PREFIX}/etc/apt/sources.list.d/pointless.list"
 		[[ ! -s ${POINTLESS_LIST} ]] || do_you_want_to_continue
-		cd $TMPDIR
+		cd ${TMPDIR}
 		curl -Lo .setup-pointless-repo.sh https://its-pointless.github.io/setup-pointless-repo.sh
 		if [ $(command -v bat) ]; then
 			bat -ppn .setup-pointless-repo.sh
@@ -197,48 +128,10 @@ restore_default_sources_list() {
 		printf "%s\n" "备份文件丢失,恢复失败"
 	fi
 }
-######################
-ping_mirror_sources_list_count_3() {
-	printf "%s\n" "${YELLOW}${SOURCE_MIRROR_STATION}${RESET}"
-	printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
-	ping -c 3 ${SOURCE_MIRROR_STATION} | egrep 'avg|time.*ms' --color=auto
-	printf "%s\n" "---------------------------"
-}
-##############
-ping_mirror_sources_list() {
-	printf "%s\n" "时间越短，延迟越低"
-	printf "%s\n" "---------------------------"
-	SOURCE_MIRROR_STATION_NAME='清华镜像站'
-	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn'
-	ping_mirror_sources_list_count_3
-	SOURCE_MIRROR_STATION_NAME='中科大镜像站'
-	SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn'
-	ping_mirror_sources_list_count_3
-	SOURCE_MIRROR_STATION_NAME='北外镜像站'
-	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn'
-	ping_mirror_sources_list_count_3
-	#SOURCE_MIRROR_STATION_NAME='官方official'
-	#SOURCE_MIRROR_STATION='dl.bintray.com'
-	#ping_mirror_sources_list_count_3
-	SOURCE_MIRROR_STATION_NAME='a1batross'
-	SOURCE_MIRROR_STATION='termux.mentality.rip'
-	ping_mirror_sources_list_count_3
-	SOURCE_MIRROR_STATION_NAME='Grimler'
-	SOURCE_MIRROR_STATION='grimler.se'
-	ping_mirror_sources_list_count_3
-	SOURCE_MIRROR_STATION_NAME='Xeffyr'
-	SOURCE_MIRROR_STATION='main.termux-mirror.ml'
-	ping_mirror_sources_list_count_3
-	###此处一定要将SOURCE_MIRROR_STATION赋值为空
-	SOURCE_MIRROR_STATION=""
-	printf "%s\n" "测试${YELLOW}完成${RESET}"
-	printf "%s\n" "延迟${GREEN}时间低${RESET}并不意味着${BLUE}下载速度快。${RESET}"
-	printf "%s\n" "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
-}
 ##############
 download_termux_clang() {
 	printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
-	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/termux-packages-24/pool/main/c/clang/${CLANG_FILE}"
+	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/apt/termux-main/pool/main/c/clang/${CLANG_FILE}"
 	printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
 	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
 	rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
@@ -250,7 +143,7 @@ mirror_sources_station_download_speed_test() {
 	printf "%s\n" "在测试过程中，您可以按${YELLOW}Ctrl+C${RESET}取消。"
 	do_you_want_to_continue
 	cd ${TMPDIR}
-	CLANG_FILE="$(curl -L https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24/pool/main/c/clang/ | awk -F 'a href=' '{print $2}' | grep "clang_.*deb" | head -n 1 | cut -d '"' -f 2)"
+	CLANG_FILE="$(curl -L https://mirrors.bfsu.edu.cn/termux/apt/termux-main/pool/main/c/clang/ | awk -F 'a href=' '{print $2}' | grep "clang_.*deb" | head -n 1 | cut -d '"' -f 2)"
 	printf "%s\n" "---------------------------"
 	SOURCE_MIRROR_STATION_NAME='清华镜像站'
 	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
@@ -261,14 +154,11 @@ mirror_sources_station_download_speed_test() {
 	SOURCE_MIRROR_STATION_NAME='北外镜像站'
 	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
 	download_termux_clang
-	# SOURCE_MIRROR_STATION_NAME='官方official'
-	# SOURCE_MIRROR_STATION='dl.bintray.com/termux'
-	# download_termux_clang
-	SOURCE_MIRROR_STATION_NAME='a1batross'
-	SOURCE_MIRROR_STATION='termux.mentality.rip'
+	SOURCE_MIRROR_STATION_NAME='腾讯云'
+	SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
 	download_termux_clang
-	SOURCE_MIRROR_STATION_NAME='Grimler'
-	SOURCE_MIRROR_STATION='grimler.se'
+	SOURCE_MIRROR_STATION_NAME='official'
+	SOURCE_MIRROR_STATION='packages.termux.org'
 	download_termux_clang
 	###此处一定要将SOURCE_MIRROR_STATION赋值为空
 	SOURCE_MIRROR_STATION=""
@@ -346,13 +236,12 @@ tmoe_sources_list_manager() {
 		whiptail --title "software-sources tmoe-manager" --menu \
 			"Do you want to switch the mirror source?" 0 50 0 \
 			"1" "清华,北外,中科大,腾讯云镜像站" \
-			"2" "worldwide mirror sites:全球镜像站" \
+			"2" "extra:额外源" \
 			"3" "enable/disable repo(启用/禁用仓库)" \
-			"4" "edit list manually(手动编辑)" \
-			"5" "ping(镜像站延迟测试)" \
-			"6" "speed(镜像站下载速度测试)" \
-			"7" "delete invalid rows(去除无效行)" \
-			"8" "restore to default(恢复默认源)" \
+			"4" "speed(镜像站下载速度测试)" \
+			"5" "edit list manually(手动编辑)" \
+			"6" "delete invalid rows(去除无效行)" \
+			"7" "restore to default(恢复默认源)" \
 			"0" "🌚 Back 返回" \
 			3>&1 1>&2 2>&3
 	)
@@ -362,11 +251,10 @@ tmoe_sources_list_manager() {
 	1) china_university_mirror_station ;;
 	2) worldwide_mirror_station ;;
 	3) termux_repo_manager ;;
-	4) edit_sources_list_manually ;;
-	5) ping_mirror_sources_list ;;
-	6) mirror_sources_station_download_speed_test ;;
-	7) delete_sources_list_invalid_rows ;;
-	8) restore_default_sources_list ;;
+	4) mirror_sources_station_download_speed_test ;;
+	5) edit_sources_list_manually ;;
+	6) delete_sources_list_invalid_rows ;;
+	7) restore_default_sources_list ;;
 	esac
 	##########
 	press_enter_to_return
@@ -384,7 +272,7 @@ check_android_version() {
 	ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
 	if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
 		if (("${ANDROID_VERSION}" < 7)); then
-			printf "%s\n" "检测到您当前的安卓系统版本低于7,如需换源,则请选择USTC。" >${ANDROID_6_FILE}
+			printf "%s\n" "检测到您当前的安卓系统版本低于7,请勿使用本工具进行换源。" >${ANDROID_6_FILE}
 			sed -n p ${ANDROID_6_FILE}
 			printf "%s\n" "Your current Android system version is lower than 7."
 			printf "%s\n" "旧版Android可能无法使用本功能。"
@@ -402,15 +290,6 @@ annotate_the_old_list() {
 	fi
 }
 ############
-modify_android_termux_old_mirror_sources_list() {
-	cd ${PREFIX}/etc/apt
-	SOURCES_LIST_FILE_NAME="sources.list"
-	#deb https://mirrors.ustc.edu.cn/termux stable main
-	TERMUX_SOUCRE_URL="https://${SOURCE_MIRROR_STATION}/termux stable main"
-	annotate_the_old_list
-	apt_dist_upgrade
-}
-#############
 modify_android_termux_mirror_sources_list() {
 	cd ${PREFIX}/etc/apt
 	SOURCES_LIST_FILE_NAME="sources.list"

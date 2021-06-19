@@ -9,6 +9,7 @@ RUN apk update; \
     apk upgrade; \
     apk add sudo tar grep curl wget bash tzdata newt shadow; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
+    rustup update; \
     rustup self update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
@@ -24,7 +25,7 @@ RUN apk update; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null 
 #apk -v cache clean
 
-# ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
+# ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 #     RUSTUP_HOME=/usr/local/rustup; \
 #     CARGO_HOME=/usr/local/cargo
 CMD [ "/bin/bash" ]

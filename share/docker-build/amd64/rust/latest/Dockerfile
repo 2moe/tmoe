@@ -15,6 +15,7 @@ RUN apt update; \
     apt install -y --no-install-recommends neofetch; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
+    rustup update; \
     rustup self update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
@@ -36,7 +37,9 @@ RUN apt update; \
     /var/lib/apt/lists/* \
     2>/dev/null; \
     apt clean
-# ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
+# rustup default nightly
+
+# ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 #     RUSTUP_HOME=/usr/local/rustup \
 #     CARGO_HOME=/usr/local/cargo
 

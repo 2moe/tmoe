@@ -5,8 +5,8 @@ install_yay_main() {
     --add-archlinuxcn-repo) add_archlinuxcn_repo ;;
     --add-arch_for_edu-repo) add_arch_for_edu_repo ;;
     --archlinux-repo-mirror)
-        add_archlinuxcn_repo_mirror
         add_arch_for_edu_repo_mirror
+        add_archlinuxcn_repo_mirror
         ;;
     -yay | --install-yay) install_yay ;;
     esac
@@ -53,7 +53,6 @@ install_fakeroot() {
     # done
 }
 add_archlinuxcn_repo() {
-    cp -fv /etc/pacman.conf /etc/pacman.conf.bak
     if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
@@ -73,8 +72,7 @@ add_archlinuxcn_repo() {
     done
 }
 add_archlinuxcn_repo_mirror() {
-    if [[ -s /etc/pacman.conf.bak ]]; then
-        cp -fv /etc/pacman.conf.bak /etc/pacman.conf
+    if ! grep -q 'archlinuxcn' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[archlinuxcn]
 					Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
@@ -89,6 +87,9 @@ add_archlinuxcn_repo_mirror() {
     fi
 }
 add_arch_for_edu_repo_mirror() {
+    if [[ -s /etc/pacman.conf.bak ]]; then
+        cp -fv /etc/pacman.conf.bak /etc/pacman.conf
+    fi
     if ! grep -q 'arch4edu' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[arch4edu]
@@ -103,6 +104,7 @@ add_arch_for_edu_repo_mirror() {
     fi
 }
 add_arch_for_edu_repo() {
+    cp -fv /etc/pacman.conf /etc/pacman.conf.bak
     if ! grep -q 'arch4edu' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[arch4edu]
@@ -120,10 +122,11 @@ add_arch_for_edu_repo() {
     pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
 }
 install_yay() {
-    for i in yay gawk; do
-        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-        pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i} || pacman -Sy --noconfirm ${i}
-    done
+    pacman -Syu --noconfirm arch4edu/yay || pacman -Syu --noconfirm yay
+    # for i in yay gawk; do
+    #     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
+    #     pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i} || pacman -Sy --noconfirm ${i}
+    # done
 }
 ###################
 install_yay_main $@

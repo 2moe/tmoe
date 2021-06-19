@@ -24,8 +24,8 @@ RUN apk update; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null
 #apk -v cache clean
 
-# ENV PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
-#     GEM_HOME=/usr/local/bundle; \
-#     BUNDLE_SILENCE_ROOT_WARNING=1; \
+# ENV PATH=/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+#     GEM_HOME=/usr/local/bundle \
+#     BUNDLE_SILENCE_ROOT_WARNING=1 \
 #     BUNDLE_APP_CONFIG=/usr/local/bundle
 CMD [ "irb" ]

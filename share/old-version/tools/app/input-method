@@ -261,13 +261,14 @@ input_method_beautification() {
     RETURN_TO_WHERE='input_method_beautification'
     DEPENDENCY_01=''
     FCITX5_CLASSUI_CONF_PATH="${HOME}/.config/fcitx5/conf"
+    # ~/.config/fcitx5/profile
     FCITX5_CLASSUI_CONF_FILE="${FCITX5_CLASSUI_CONF_PATH}/classicui.conf"
     INPUT_METHOD=$(
         whiptail --title "Fcitx5" --menu "fcitx主题" 0 55 0 \
             "1" "Material Design(微软拼音风格)@hosxy" \
             "2" "kimpanel(支持kde-wayland)" \
             "3" "gnome-shell-extension-kimpanel(支持gnome-wayland)" \
-            "4" "edit config编辑主题配置" \
+            "4" "profile" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -284,158 +285,24 @@ input_method_beautification() {
 }
 ##############
 edit_fcitx_theme_config_file() {
-    if [ $(command -v editor) ]; then
-        editor ${FCITX5_CLASSUI_CONF_FILE}
-    else
-        nano ${FCITX5_CLASSUI_CONF_FILE}
-    fi
-    chown -v ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${FCITX5_CLASSUI_CONF_FILE}
+    printf "%s\n" "~/.config/fcitx5/profile"
+    cat ~/.config/fcitx5/profile
+
+    # if [ $(command -v editor) ]; then
+    #     editor ${FCITX5_CLASSUI_CONF_FILE}
+    # else
+    #     nano ${FCITX5_CLASSUI_CONF_FILE}
+    # fi
+    # chown -v ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${FCITX5_CLASSUI_CONF_FILE}
 }
 #############
 configure_fcitx5_material_color_theme() {
-    RETURN_TO_WHERE='configure_fcitx5_material_color_theme'
-    MATERIAL_COLOR_FOLDER="${HOME}/.local/share/fcitx5/themes/Material-Color"
-    unset CURRENT_FCITX5_COLOR
-    [[ ! -e ${MATERIAL_COLOR_FOLDER}/panel.png ]] || CURRENT_FCITX5_COLOR="$(ls -l ${MATERIAL_COLOR_FOLDER}/panel.png | awk -F ' ' '{print $NF}' | cut -d '-' -f 2 | cut -d '.' -f 1)"
-    if [ ! -z "${CURRENT_FCITX5_COLOR}" ]; then
-        FCITX_THEME_STATUS="检测到当前fcitx5-material主题配色为${CURRENT_FCITX5_COLOR}"
-    else
-        FCITX_THEME_STATUS="检测到您未指定fcitx5-material主题的配色"
-    fi
-    if [ ! -e "${MATERIAL_COLOR_FOLDER}" ]; then
-        FCITX_THEME_STATUS="检测您尚未下载fcitx5-material主题"
-    fi
-    PANEL_COLOR_PNG=''
-    INPUT_METHOD=$(
-        whiptail --title "Fcitx5 Material Design" --menu "https://github.com/hosxy/Fcitx5-Material-Color\n您可以在下载完成后，自由修改主题配色。\n${FCITX_THEME_STATUS}" 0 55 0 \
-            "1" "download下载/更新" \
-            "2" "delete删除" \
-            "3" "Pink粉" \
-            "4" "Blue蓝" \
-            "5" "Brown棕" \
-            "6" "DeepPurple深紫" \
-            "7" "Indigo靛青" \
-            "8" "Red红" \
-            "9" "Teal水鸭绿" \
-            "10" "origin原始" \
-            "0" "🌚 Return to previous menu 返回上级菜单" \
-            3>&1 1>&2 2>&3
-    )
-    case ${INPUT_METHOD} in
-    0 | "") input_method_beautification ;;
-    1) install_fcitx5_material_color_theme ;;
-    2) delete_fcitx5_material_color_theme ;;
-    3)
-        PANEL_COLOR_PNG='panel-pink.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-pink.png'
-        ;;
-    4)
-        PANEL_COLOR_PNG='panel-blue.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-blue.png'
-        ;;
-    5)
-        PANEL_COLOR_PNG='panel-brown.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-brown.png'
-        ;;
-    6)
-        PANEL_COLOR_PNG='panel-deepPurple.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-deepPurple.png'
-        ;;
-    7)
-        PANEL_COLOR_PNG='panel-indigo.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-indigo.png'
-        ;;
-    8)
-        PANEL_COLOR_PNG='panel-red.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-red.png'
-        ;;
-    9)
-        PANEL_COLOR_PNG='panel-teal.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-teal.png'
-        ;;
-    10)
-        PANEL_COLOR_PNG='panel-origin.png'
-        HIGH_LIGHT_COLOR_PNG='highlight-origin.png'
-        ;;
-    esac
-    ###############
-    if [ ! -z "${PANEL_COLOR_PNG}" ]; then
-        switch_fcitx5_material_color
-    fi
-    press_enter_to_return
-    configure_fcitx5_material_color_theme
-}
-##############
-switch_fcitx5_material_color() {
-    if [ ! -e "${MATERIAL_COLOR_FOLDER}" ]; then
-        install_fcitx5_material_color_theme
-    fi
-    cd ${MATERIAL_COLOR_FOLDER}
-    if [ "$(command -v catimg)" ]; then
-        for i in "{PANEL_COLOR_PNG}" "${HIGH_LIGHT_COLOR_PNG}"; do
-            [[ ! -e "${i}" ]] || catimg "${i}" 2>/dev/null
-        done
-    fi
-    ln -svf ${PANEL_COLOR_PNG} panel.png
-    ln -svf ${HIGH_LIGHT_COLOR_PNG} highlight.png
-    if [ ${HOME} != '/root' ]; then
-        printf "%s\n" "正在将panel.png和highlight.png的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-        chown -v ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} panel.png highlight.png
-    fi
-}
-############
-delete_fcitx5_material_color_theme() {
-    printf "%s\n" "是否需要删除该主题？"
-    printf "%s\n" "${RED}rm -rvf ${MATERIAL_COLOR_FOLDER}${RESET}"
+    printf "%s\n" "https://github.com/hosxy/Fcitx5-Material-Color"
+    printf "%s\n" "fcitx5配置--配置附加组件--经典用户界面--主题--Material-Color"
     do_you_want_to_continue
-    rm -rvf ${MATERIAL_COLOR_FOLDER}
-    sed -i 's@^Theme=@#&@' ${FCITX5_CLASSUI_CONF_FILE}
+    DEPENDENCY_02="fcitx5-material-color"
+    beta_features_quick_install
 }
-###############
-install_fcitx5_material_color_theme() {
-    #DEPENDENCY_02='fcitx5-material-color'
-    #beta_features_quick_install
-    #printf '%s\n' '请前往github阅读使用说明'
-    #printf '%s\n' 'https://github.com/hosxy/Fcitx5-Material-Color'
-    if [ ! -e ${MATERIAL_COLOR_FOLDER} ]; then
-        mkdir -pv ${MATERIAL_COLOR_FOLDER}
-        git clone --depth=1 https://github.com/hosxy/Fcitx5-Material-Color.git ${MATERIAL_COLOR_FOLDER}
-    else
-        cd ${MATERIAL_COLOR_FOLDER}
-        git pull --rebase --stat --allow-unrelated-histories || git rebase --skip
-    fi
-
-    mkdir -pv ${FCITX5_CLASSUI_CONF_PATH}
-    cd ${FCITX5_CLASSUI_CONF_PATH}
-    if ! grep -q 'Theme=Material-Color' 'classicui.conf'; then
-        write_to_fcitx_classui_conf
-    fi
-
-    if [ ${HOME} != '/root' ]; then
-        printf "%s\n" "正在将${MATERIAL_COLOR_FOLDER}和${FCITX5_CLASSUI_CONF_PATH}的文件权限修改为${CURRENT_USER_NAME}用户和${CURRENT_USER_GROUP}用户组"
-        chown -R ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${MATERIAL_COLOR_FOLDER} ${FCITX5_CLASSUI_CONF_PATH}
-    fi
-}
-###########
-write_to_fcitx_classui_conf() {
-    if [ -e classicui.conf ]; then
-        sed -i 's@^Vertical Candidate List=@#&@;s@^PerScreenDPI=@#&@;s@^Theme=@#&@' classicui.conf
-    fi
-    cat >>${FCITX5_CLASSUI_CONF_FILE} <<-'EOF'
-		# 垂直候选列表
-		Vertical Candidate List=False
-
-		# 按屏幕 DPI 使用
-		PerScreenDPI=True
-
-		# 字体
-		Font="Noto Sans CJK SC Medium Medium 13"
-
-		# 主题
-		Theme=Material-Color-Pink
-	EOF
-}
-###########
 install_kimpanel() {
     #NON_DEBIAN=true
     non_debian_function
@@ -492,8 +359,8 @@ move_dict_model_01() {
 ###################
 download_dict_model_01() {
     GREP_NAME_V='rime'
-    THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/aarch64/'
-    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/aarch64/'
+    THEME_URL='https://mirrors.bfsu.edu.cn/archlinuxcn/any/'
+    THEME_URL_02='https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/any/'
     THEME_NAME="${GREP_NAME}"
     FCITX5_DIICT_PATH='/usr/share/fcitx5/pinyin/dictionaries'
     check_fcitx5_dict
@@ -512,8 +379,16 @@ outloudvi_fcitx5_moegirl_dict() {
 felixonmars_fcitx5_wiki_dict() {
     DICT_NAME='zhwiki.dict'
     GREP_NAME='fcitx5-pinyin-zhwiki'
-    download_dict_model_01
-    printf '%s\n' 'https://github.com/felixonmars/fcitx5-pinyin-zhwiki'
+    # download_dict_model_01
+    printf "${YELLOW}%s${RESET}\n" 'https://github.com/felixonmars/fcitx5-pinyin-zhwiki/releases'
+    #~/.local/share/fcitx5/pinyin/dictionaries/
+    cat <<-EOF
+首先前往git仓库release页面下载${CYAN}.dict${RESET}文件。
+然后将其移动到 ${BLUE}'/usr/share/fcitx5/pinyin/dictionaries'${RESET}
+用法示例：
+sudo mkdir -pv ${BLUE}/usr/share/fcitx5/pinyin/dictionaries${RESET}
+sudo curl -Lo ${BLUE}/usr/share/fcitx5/pinyin/dictionaries/${CYAN}zhwiki.dict ${YELLOW}"https://github.com/felixonmars/fcitx5-pinyin-zhwiki/releases/download/0.2.3/zhwiki-20210605.dict"${RESET}
+EOF
 }
 #################
 install_onboard() {

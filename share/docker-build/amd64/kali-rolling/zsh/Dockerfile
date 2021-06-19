@@ -4,6 +4,8 @@ ADD kali.tar /
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
+ARG EXP_LIST="/etc/apt/sources.list.d/kali-experimental.list"
+
 ENV HOME=/root \
     PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
@@ -29,8 +31,9 @@ RUN apt update; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
-    yes | apt dist-upgrade -t kali-experimental -y || yes | aptitude dist-upgrade -t kali-experimental -y; \
+    yes | apt upgrade -t kali-experimental -y || yes | aptitude upgrade -t kali-experimental -y; \
     apt autopurge -y; \
+    mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
     cp -vf /tmp/.zshrc ~; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv /var/cache/apt/archives/* \

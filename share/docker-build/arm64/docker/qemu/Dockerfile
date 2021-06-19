@@ -2,6 +2,8 @@ FROM arm64v8/debian:experimental
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 ADD README.rb /root
 ARG DEBIAN_FRONTEND=noninteractive
+ARG EXP_LIST="/etc/apt/sources.list.d/experimental.list"
+
 ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
@@ -57,6 +59,7 @@ RUN apt update; \
     ln -svf ${QEMU_FILE} ${PWD}/startqemu; \
     printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
     apt autopurge -y; \
+    mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \
@@ -66,5 +69,5 @@ RUN apt update; \
     /var/lib/apt/lists/* \
     2>/dev/null; \
     apt clean
-EXPOSE 5905
+EXPOSE 2888 5905 39081
 CMD [ "startqemu" ]

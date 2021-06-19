@@ -44,7 +44,7 @@ set_env() {
 show_info_and_run_the_temp_file() {
 	show_package_info
 	do_you_want_to_continue
-	check_system_version
+	# check_system_version
 	check_downloader
 	download_temp_file
 	exec_temp_file
@@ -65,36 +65,6 @@ do_you_want_to_continue() {
 		exit 1
 		;;
 	esac
-}
-check_system_version() {
-	if [ -e /system/bin/getprop ] && [ $(uname -o) = "Android" ]; then
-		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
-		case ${ANDROID_VERSION} in
-		5 | 6)
-			printf "%s\n" "${BLUE}ANDROID_VERSION:${PURPLE}${ANDROID_VERSION}${RESET}"
-			printf "%s\n" "${YELLOW}Are you using ${BLUE}Android 5/6${RED}(old version)?${PURPLE}[Y/n]${RESET}"
-			read opt
-			case $opt in
-			y* | Y* | "")
-				printf "%s\n" "Do you want to switch the source to ${BLUE}USTC?${PURPLE}[Y/n]${RESET}"
-				printf "%s\n" "${YELLOW}${PREFIX}/etc/apt/sources.list${RESET}"
-				do_you_want_to_continue
-				if [[ ! -e /data/data/com.termux/files/usr/etc/apt/sources.list ]]; then
-					printf "%s\n" >>/data/data/com.termux/files/usr/etc/apt/sources.list
-				fi
-				sed -e 's@^[^#]@#&@g' \
-					-e '$ a\deb https://mirrors.ustc.edu.cn/termux stable main' \
-					-i '/data/data/com.termux/files/usr/etc/apt/sources.list'
-				apt update
-				apt upgrade
-				apt dist-upgrade
-				apt install curl
-				;;
-			n) ;;
-			esac
-			;;
-		esac
-	fi
 }
 check_manager_file() {
 	unset MANAGER_FILE

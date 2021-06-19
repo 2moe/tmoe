@@ -38,8 +38,8 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     printf "%s\n%s\n%s\n" "source /tmp/docker_tool -install-deps"  "cd /usr/local/etc/tmoe-linux/git/share/old-version/tools/gui/" "source gui --auto-install-gui-lxqt" > install-gui.sh; \
     export AUTO_INSTALL_GUI=true; \
     chmod a+rx -v build_fakeroot; \
-    ./build_fakeroot --add-archlinuxcn-repo; \
     ./build_fakeroot --add-arch_for_edu-repo; \
+    ./build_fakeroot --add-archlinuxcn-repo; \
     bash install-gui.sh; \
     ./build_fakeroot --install-yay; \
     ./build_fakeroot --install-fakeroot; \
