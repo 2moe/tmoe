@@ -1026,6 +1026,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    mkdir -pv /usr/local/bin
 	    mv -fv /tmp/getprop /usr/local/bin
 	fi
+	if [ $(command -v chpasswd) ]; then
+	    printf "%s\n" "root:root" | chpasswd
+	fi
 	cd ${HOME}
 	NEOFETCH_BIN_FILE="/usr/local/bin/neofetch"
 	if [ -x /usr/bin/neofetch ]; then
