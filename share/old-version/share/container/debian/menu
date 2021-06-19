@@ -99,7 +99,7 @@ check_debian_12() {
 	else
 		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'jessie|stretch|buster|bullseye|sid|trixie|size' | tail -n 1)
 		if [ -z ${DISTRO_CODE} ]; then
-			printf "%s\n" "检测到debian bookworm (unstable)尚未发布，建议您等到2021年7或8月份时再来尝试。"
+			printf "%s\n" "检测到debian bookworm (unstable)尚未发布，建议您等到2021年8月份时再来尝试。"
 			press_enter_to_return
 			install_debian_gnu_linux_distro_menu
 		fi

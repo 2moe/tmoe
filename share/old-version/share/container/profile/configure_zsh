@@ -39,6 +39,12 @@ lnk_startvnc() {
 }
 ##########
 auto_remove_proot_xfce4_power_manager() {
+	if [ $(command -v pacman) ]; then
+		XFCE_PANEL_CONFIG="~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
+		if [[ -e ${XFCE_PANEL_CONFIG} ]]; then
+			mv -vf ${XFCE_PANEL_CONFIG} ${XFCE_PANEL_CONFIG}.bak
+		fi
+	fi
 	case ${TMOE_PROOT} in
 	true)
 		#此处不能是commmand -v kali-undercover
