@@ -25,6 +25,7 @@ RUN apt update; \
     cd /root; \
     printf "%s\n" "GO_VERSION='$(go version)'" > version.txt; \
     cat version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

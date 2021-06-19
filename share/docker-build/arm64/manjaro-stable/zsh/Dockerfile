@@ -40,6 +40,7 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     ./build_fakeroot --install-fakeroot; \
     ./build_fakeroot --archlinux-repo-mirror; \
     cat /etc/pacman.conf; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd; \
     pacman -R --noconfirm $(pacman -Qdtq); \
     rm -rfv /var/cache/pacman/pkg/* ~/.cache/* 2>/dev/null; \

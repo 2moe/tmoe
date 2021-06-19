@@ -21,6 +21,7 @@ RUN apk update; \
     printf "%s\n" "NJS_VERSION='${NJS_VERSION}'" >> version.txt; \
     printf "%s\n" "PKG_RELEASE='${PKG_RELEASE}'" >> version.txt; \
     cat version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null 
 #apk -v cache clean
 

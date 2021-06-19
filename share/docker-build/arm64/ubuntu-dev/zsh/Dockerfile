@@ -29,6 +29,7 @@ RUN apt update; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \

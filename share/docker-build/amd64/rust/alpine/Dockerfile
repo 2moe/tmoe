@@ -22,6 +22,7 @@ RUN apk update; \
     printf "%s\n" "CARGO_VERSION='$(cargo --version)'" >> version.txt; \
     printf "%s\n" "RUSTC_VERSION='$(rustc --version)'" >> version.txt; \
     cat version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null 
 #apk -v cache clean
 

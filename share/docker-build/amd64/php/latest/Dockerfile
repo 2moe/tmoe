@@ -33,6 +33,7 @@ RUN apt update; \
     printf "%s\n" "PHP_URL='${PHP_URL}'" >> version.txt; \
     printf "%s\n" "PHP_ASC_URL='${PHP_ASC_URL}'" >> version.txt; \
     cat version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

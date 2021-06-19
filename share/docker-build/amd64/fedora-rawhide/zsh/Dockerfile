@@ -24,6 +24,7 @@ RUN  sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
     dnf update -y; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     dnf clean all
 

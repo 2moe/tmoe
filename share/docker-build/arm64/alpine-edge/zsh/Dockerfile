@@ -19,6 +19,7 @@ RUN apk update; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null; \
     rm -rfv /tmp/* ~/.vnc/*passwd
 #apk -v cache clean

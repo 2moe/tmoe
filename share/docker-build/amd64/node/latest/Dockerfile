@@ -25,6 +25,7 @@ RUN apt update; \
     printf "%s\n" "NODE_VERSION='$(node --version)'" > version.txt; \
     printf "%s\n" "YARN_VERSION='$(yarn --version)'" >> version.txt; \
     printf "%s\n" "NPM_VERSION='$(npm --version)'" >> version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

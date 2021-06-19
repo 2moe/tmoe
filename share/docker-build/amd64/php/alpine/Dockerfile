@@ -26,6 +26,7 @@ RUN apk update; \
     printf "%s\n" "GPG_KEYS='${GPG_KEYS}'" >> version.txt; \
     printf "%s\n" "PHP_URL='${PHP_URL}'" >> version.txt; \
     printf "%s\n" "PHP_ASC_URL='${PHP_ASC_URL}'" >> version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     cat version.txt; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null 
 #apk -v cache clean

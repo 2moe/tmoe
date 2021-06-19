@@ -35,6 +35,7 @@ RUN apt update; \
     apt autopurge -y; \
     mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
     cp -vf /tmp/.zshrc ~; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -rfv /tmp/* ~/.vnc/*passwd ~/.cache/* 2>/dev/null; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \

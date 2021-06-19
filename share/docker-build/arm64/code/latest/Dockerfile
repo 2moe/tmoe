@@ -33,6 +33,7 @@ RUN apt update; \
     cd /root; \
     code-server --version; \
     printf "%s\n" "CODE_VERSION='$(code-server --version)'" > version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

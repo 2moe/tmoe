@@ -60,6 +60,7 @@ RUN apt update; \
     printf "%s\n" "QEMU_VERSION='$(qemu-system-x86_64 --version)'" > version.txt; \
     apt autopurge -y; \
     mv -v ${EXP_LIST} ${EXP_LIST}.bak; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -fv /var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/mail/* \

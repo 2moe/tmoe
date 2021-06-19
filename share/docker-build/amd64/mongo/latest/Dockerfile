@@ -28,6 +28,7 @@ RUN apt update; \
     printf "%s\n" "MONGO_MAJOR='${MONGO_MAJOR}'" >> version.txt; \
     printf "%s\n" "MONGO_VERSION='${MONGO_VERSION}'" >> version.txt; \
     cat version.txt; \
+    printf "%s\n" "root:root" | chpasswd; \
     rm -fv '/var/cache/apt/archives/* \
     /var/cache/apt/* \
     /var/log/* \
