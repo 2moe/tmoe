@@ -46,7 +46,7 @@
         <value type="int" value="22"/>
       </property>
       <property name="mode" type="uint" value="1"/>
-      <property name="leave-opacity" type="uint" value="50"/>
+      <property name="leave-opacity" type="uint" value="60"/>
       <property name="enter-opacity" type="uint" value="80"/>
     </property>
   </property>
