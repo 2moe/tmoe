@@ -244,7 +244,7 @@ auto_configure_tmoe_tools() {
 	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
-	if [ $(command -v novnc) ]; then
+	if [ $(command -v startx11vnc) ]; then
 		#.dockerenv
 		if egrep -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
 			for i in /opt/electron/electron /opt/electron-v8/electron; do

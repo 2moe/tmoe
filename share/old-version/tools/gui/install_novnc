@@ -74,7 +74,8 @@ check_python_novnc() {
 		#python3 -m pip install --upgrade pip
 		case ${AUTO_INSTALL_GUI} in
 		true) sudo -H pip3 install -vvv numpy ;;
-		*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy || su -c "pip3 install -vvv numpy" ;;
+		*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy ;;
+			#|| su -c "pip3 install -vvv numpy"
 		esac
 	fi
 
@@ -108,8 +109,9 @@ check_python_novnc() {
 		if [ ! $(command -v websockify) ]; then
 			case ${AUTO_INSTALL_GUI} in
 			true) sudo -H pip3 install -vvv websockify ;;
-			*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify || su -c "pip3 install -vvv websockify" ;;
+			*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify ;;
 			esac
+			# || su -c "pip3 install -vvv websockify"
 		fi
 		if [ ! $(command -v websockify) ]; then
 			cd ${TMOE_LINUX_DIR}/novnc/utils/

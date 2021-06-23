@@ -5547,6 +5547,24 @@ check_xvnc_command() {
     esac
 }
 ########################
+if_container_is_fedora_arm() {
+    case ${LINUX_DISTRO} in
+    redhat)
+        case ${ARCH_TYPE} in
+        arm*) ;;
+        *) install_novnc ;;
+        esac
+        ;;
+    *) install_novnc ;;
+    esac
+}
+install_novnc() {
+    source ${TMOE_TOOL_DIR}/gui/install_novnc
+    cd /usr/local/bin/
+    [[ ! -e novnc ]] || rm -f novnc 2>/dev/null
+    cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
+    ln -sf novnc startnovnc
+}
 do_you_want_to_configure_novnc() {
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
     printf "%s\n" "配置完成后，您可以输${BOLD}${GREEN}novnc${RESET}来${YELLOW}启动${BLUE}novnc${RESET},在浏览器里输入novnc访问地址进行连接。"
@@ -5556,12 +5574,11 @@ do_you_want_to_configure_novnc() {
     RETURN_TO_WHERE='software_center'
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         do_you_want_to_continue
+        install_novnc
+    else
+        if_container_is_fedora_arm
     fi
-    source ${TMOE_TOOL_DIR}/gui/install_novnc
-    cd /usr/local/bin/
-    [[ ! -e novnc ]] || rm -f novnc 2>/dev/null
-    cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
-    ln -sf novnc startnovnc
+
     if [[ $(command -v apt-get) ]]; then
         printf "%s\n" "当前已经配置的命令分别为${GREEN}startvnc, tightvnc, tigervnc, startxsdl, startx11vnc, novnc${RESET} & ${RED}stopvnc${RESET}"
     else
