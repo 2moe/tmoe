@@ -11,6 +11,7 @@ if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
 	*) ARCH_TYPE=${DPKG_ARCH} ;;
 	esac
 else
+	#ARM7：ARMv4，ARM9：ARMv5，ARM11：ARMv6，ARM-Cortex：ARMv7
 	UNAME_ARCH=$(uname -m)
 	case ${UNAME_ARCH} in
 	armv7* | armv8l) ARCH_TYPE="armhf" ;;
@@ -547,10 +548,6 @@ ${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_TMP_DIR}
 if [[ -s "${CONFIG_FOLDER}/default-dns.conf" ]]; then
 	cp ${CONFIG_FOLDER}/default-dns.conf ${DEBIAN_CHROOT}/tmp/resolv.conf
 	${TMOE_CHROOT_PREFIX} cp ${CONFIG_FOLDER}/default-dns.conf ${TMOE_TMP_DIR}/resolv.conf
-fi
-
-if [ "${LINUX_DISTRO}" = 'openwrt' ]; then
-	${TMOE_CHROOT_PREFIX} touch ${DEBIAN_CHROOT}/tmp/.openwrtcheckfile
 fi
 #proot --link2symlink ${GNU_TAR_BIN} -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
 cd "${CURRENT_TMOE_DIR}"

@@ -66,8 +66,6 @@ function _tmoe() {
         "o:opensuse"
         "suse:opensuse"
         "opensuse"
-        "ow:openwrt"
-        "openwrt:OpenWRT is a Linux OS targeting embedded devices"
         "puppy:Puppy Linux is a lightweight Linux distribution that focuses on ease of use."
         "r:raspios"
         "raspios:Raspberry Pi OS"

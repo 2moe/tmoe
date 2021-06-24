@@ -67,18 +67,6 @@ check_gnu_linux_qemu_version() {
 	esac
 }
 ###########
-case_android_or_debian_amd64() {
-	case ${LINUX_DISTRO} in
-	debian) ADD_ARCH=i386 ;;
-	Android) ADD_ARCH=i686 ;;
-	esac
-}
-case_android_or_debian_arm64() {
-	case ${LINUX_DISTRO} in
-	debian) ADD_ARCH=armhf ;;
-	Android) ADD_ARCH=arm ;;
-	esac
-}
 file_proot_bin() {
 	if [ ! $(command -v file) ]; then
 		printf "%s\n" "apt install -y file"
@@ -184,7 +172,9 @@ install_qemu_user_static() {
 		;;
 	*) download_qemu_user ;;
 	esac
-	[[ ! $(command -v apt-get) ]] || debian_proot32
+	case ${LINUX_DISTRO} in
+	Android) debian_proot32 ;;
+	esac
 }
 ##############
 check_qemu_user_version() {
@@ -267,11 +257,11 @@ download_qemu_user() {
 debian_proot32() {
 	case ${TRUE_ARCH_TYPE} in
 	amd64)
-		case_android_or_debian_amd64
+		ADD_ARCH=i686
 		dpkg_add_32bit_architecture
 		;;
 	arm64)
-		case_android_or_debian_arm64
+		ADD_ARCH=arm
 		dpkg_add_32bit_architecture
 		;;
 	esac

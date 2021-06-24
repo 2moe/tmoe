@@ -883,16 +883,15 @@ install_alpha_containers() {
 	install_alpha_containers_ja() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました" 0 55 0 \
-				"1" "OpenWRT:ゲートウェイなどの組み込みシステム用ファームウェアとして開発されている" \
-				"2" "ラズベリーパイ OS buster" \
-				"3" "Gentoo(arm64,armhf,x86,x64)" \
-				"4" "DevuanはDebian から派生したLinuxディストリビューションである" \
-				"5" "Amazon(arm64,x64)" \
-				"6" "Oracle(arm64,x64)" \
-				"7" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"8" "Intel clear linux(x64)" \
-				"9" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"10" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
+				"1" "ラズベリーパイ OS buster" \
+				"2" "Gentoo(arm64,armhf,x86,x64)" \
+				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
+				"4" "Amazon(arm64,x64)" \
+				"5" "Oracle(arm64,x64)" \
+				"6" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"7" "Intel clear linux(x64)" \
+				"8" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"9" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -900,16 +899,15 @@ install_alpha_containers() {
 	install_alpha_containers_zh() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
-				"1" "OpenWRT(常见于路由器等嵌入式设备)" \
-				"2" "Raspberry Pi OS 樹莓派 buster" \
-				"3" "Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)" \
-				"4" "Devuan(不使用systemd,基于debian)" \
-				"5" "Amazon(arm64,x64,亚马逊云服务器系统)" \
-				"6" "Oracle(arm64,x64,甲骨文云服务器系统)" \
-				"7" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"8" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
-				"9" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"10" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
+				"1" "Raspberry Pi OS 樹莓派 buster" \
+				"2" "Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)" \
+				"3" "Devuan(不使用systemd,基于debian)" \
+				"4" "Amazon(arm64,x64,亚马逊云服务器系统)" \
+				"5" "Oracle(arm64,x64,甲骨文云服务器系统)" \
+				"6" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"7" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
+				"8" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
 				"0" "🌚 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -918,16 +916,15 @@ install_alpha_containers() {
 	install_alpha_containers_en() {
 		ALPHA_SYSTEM=$(
 			whiptail --title "Maintenance has ceased" --menu "The developer of Tmoe-linux no longer maintain the following containers." 0 55 0 \
-				"1" "OpenWRT is a Linux OS targeting embedded devices" \
-				"2" "Raspberry Pi OS buster" \
-				"3" "Gentoo(arm64,armhf,x86,x64)" \
-				"4" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
-				"5" "Amazon(arm64,x64)" \
-				"6" "Oracle(arm64,x64)" \
-				"7" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"8" "Intel clear linux(x64)" \
-				"9" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"10" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
+				"1" "Raspberry Pi OS buster" \
+				"2" "Gentoo(arm64,armhf,x86,x64)" \
+				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
+				"4" "Amazon(arm64,x64)" \
+				"5" "Oracle(arm64,x64)" \
+				"6" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
+				"7" "Intel clear linux(x64)" \
+				"8" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
+				"9" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -944,16 +941,15 @@ install_alpha_containers() {
 	esac
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_openwrt_linux_distro ;;
-	2) install_raspios_linux_distro ;;
-	3) install_gentoo_linux_distro ;;
-	4) install_devuan_linux_distro ;;
-	5) install_amazon_linux_distro ;;
-	6) install_oracle_linux_distro ;;
-	7) install_photon_linux_distro ;;
-	8) install_clear_linux_distro ;;
-	9) install_slackware_linux_distro ;;
-	10) install_steam_linux_distro ;;
+	1) install_raspios_linux_distro ;;
+	2) install_gentoo_linux_distro ;;
+	3) install_devuan_linux_distro ;;
+	4) install_amazon_linux_distro ;;
+	5) install_oracle_linux_distro ;;
+	6) install_photon_linux_distro ;;
+	7) install_clear_linux_distro ;;
+	8) install_slackware_linux_distro ;;
+	9) install_steam_linux_distro ;;
 	999) install_euler_linux_distro ;;
 	esac
 	###########################
@@ -1864,31 +1860,7 @@ install_manjaro_linux_distro() {
 		;;
 	esac
 }
-#		sed 's@tar -pJxvf@tar -pzxvf@g'
 ############################
-install_openwrt_linux_distro() {
-	TMOE_LINUX_CONTAINER_DISTRO='openwrt'
-	DISTRO_NAME='openwrt'
-	create_container_edition_txt
-	go_to_proot_management
-	CONTAINER_REPO='https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/'
-	THE_LATEST_VERSION=$(curl -L ${CONTAINER_REPO} | egrep -v 'faillog|packages' | grep 'href' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | cut -d '/' -f 1)
-	THE_LATEST_ROOTFS_REPO="${CONTAINER_REPO}${THE_LATEST_VERSION}/targets/"
-	case "${ARCH_TYPE}" in
-	"amd64") THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/64/openwrt-${THE_LATEST_VERSION}-x86-64-generic-rootfs.tar.gz" ;;
-	'i386') THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}x86/generic/openwrt-${THE_LATEST_VERSION}-x86-generic-generic-rootfs.tar.gz" ;;
-	"arm64") THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/64/openwrt-${THE_LATEST_VERSION}-armvirt-64-default-rootfs.tar.gz" ;;
-	"armhf") THE_LATEST_ISO_LINK="${THE_LATEST_ROOTFS_REPO}armvirt/32/openwrt-${THE_LATEST_VERSION}-armvirt-32-default-rootfs.tar.gz" ;;
-	esac
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_ISO_LINK}@g" |
-		sed 's/debian container/openwrt container/g' |
-		sed 's:debian-sid:openwrt-latest:g' |
-		sed 's:debian/sid:openwrt/snapshot:g' |
-		sed 's@tar -pJx@tar -pzx@g' |
-		sed 's:Debian GNU/Linux:OpenWRT Linux:g')"
-}
-######################
 install_devuan_linux_distro() {
 	CLOUD_ROOTFS=true
 	DISTRO_NAME='devuan'

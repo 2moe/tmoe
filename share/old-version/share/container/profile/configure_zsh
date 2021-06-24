@@ -508,10 +508,6 @@ fix_sudo() {
 	fi
 	chmod 0440 -v /etc/sudoers 2>/dev/null
 	##################
-	if [ -f "/tmp/.openwrtcheckfile" ]; then
-		rm -fv /tmp/.openwrtcheckfile
-	fi
-	########################
 	if grep -q 'SUSE' /etc/os-release; then
 		printf "%s\n" "zypper in -y yast2 yast2-packager"
 		zypper in -y yast2 yast2-packager
