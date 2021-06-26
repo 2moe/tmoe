@@ -42,7 +42,6 @@ RUN apt update; \
     /var/log/journal/* \
     /var/lib/apt/lists/* \
     2>/dev/null; \
-    rm -fv ${CONTAINER_GARBAGE_FILES_02} 2>/dev/null; \
     apt clean
 EXPOSE 8080
 CMD [ "code-server" ]

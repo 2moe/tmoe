@@ -16,8 +16,8 @@ RUN apt update; \
     printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
-    rustup update; \
     rustup self update; \
+    rustup update; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-debian" > container.txt ; \
@@ -38,8 +38,7 @@ RUN apt update; \
     /var/lib/apt/lists/* \
     2>/dev/null; \
     apt clean
-# rustup default nightly
-
+# rustup default stable
 # ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 #     RUSTUP_HOME=/usr/local/rustup \
 #     CARGO_HOME=/usr/local/cargo
