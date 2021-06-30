@@ -1200,11 +1200,10 @@ install_ubuntu_gnu_linux_distro() {
 				"2" "🦛 21.04 多毛河馬 Hirsute Hippo" \
 				"3" "🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa" \
 				"4" "18.04(LTS)仿生海狸 Bionic Beaver" \
-				"5" "🦍 20.10 時髦大猩猩 Groovy Gorilla" \
-				"6" "Compatibility mode 兼容模式(仅安装)" \
-				"7" "Custom code手动输入版本代号" \
-				"8" "使用debootstrap手动构建" \
-				"9" "Latest(自動檢測22.04)" \
+				"5" "Compatibility mode 兼容模式(仅安装)" \
+				"6" "Custom code手动输入版本代号" \
+				"7" "使用debootstrap手动构建" \
+				"8" "Latest(自動檢測22.04)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -1217,11 +1216,10 @@ install_ubuntu_gnu_linux_distro() {
 				"2" "🦛 21.04 Hirsute Hippo" \
 				"3" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
 				"4" "18.04(LTS)Bionic Beaver" \
-				"5" "🦍 20.10 Groovy Gorilla" \
-				"6" "互換モード" \
-				"7" "カスタムコード" \
-				"8" "debootstrapを使用して手動でビルドする" \
-				"9" "Latest(最新バージョンを自動的に検出)" \
+				"5" "互換モード" \
+				"6" "カスタムコード" \
+				"7" "debootstrapを使用して手動でビルドする" \
+				"8" "Latest(最新バージョンを自動的に検出)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -1233,11 +1231,10 @@ install_ubuntu_gnu_linux_distro() {
 				"2" "🦛 21.04 Hirsute Hippo" \
 				"3" "🐱 20.04(LTS)Focal Fossa" \
 				"4" "18.04(LTS)Bionic Beaver" \
-				"5" "🦍 20.10 Groovy Gorilla" \
-				"6" "Compatibility mode" \
-				"7" "Custom code" \
-				"8" "Manually build" \
-				"9" "Latest" \
+				"5" "Compatibility mode" \
+				"6" "Custom code" \
+				"7" "Manually build" \
+				"8" "Latest" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -1255,14 +1252,13 @@ install_ubuntu_gnu_linux_distro() {
 	2) DISTRO_CODE='hirsute' ;;
 	3) DISTRO_CODE='focal' ;;
 	4) DISTRO_CODE='bionic' ;;
-	5) DISTRO_CODE='groovy' ;;
-	6)
+	5)
 		COMPATIBILITY_MODE=true
 		custom_ubuntu_version
 		;;
-	7) custom_ubuntu_version ;;
-	8) debootstrap_ubuntu_distro ;;
-	9) check_the_latest_ubuntu_version ;;
+	6) custom_ubuntu_version ;;
+	7) debootstrap_ubuntu_distro ;;
+	8) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"

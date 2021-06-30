@@ -7,42 +7,46 @@ android_termux_tmoe_menu() {
 	android_termux_tmoe_menu_zh() {
 		OPTION=$(whiptail --title "Termux" --menu "您可以通过VNC客户端来连接GNU/Linux(proot/chroot)容器的桌面,\n并在此处修改termux音频服务端的配置\nYou can use vncviewer to connect container DE." 0 50 0 \
 			"1" "🍳 mirror sources镜像源(北外,腾讯)" \
-			"2" "🍹 backup 备份termux" \
-			"3" "🔯 restore 还原/恢复termux" \
-			"4" "🎶 configure Termux LAN audio局域网音频传输" \
-			"5" "🍅 query space occupation查询空间占用" \
-			"6" "🍑 vnc/xsdl.apk下载远程桌面客户端" \
-			"7" "🤖 termux_fdroid.apk下载termux" \
-			"8" "📺 termux original GUI:原系统GUI" \
+			"2" "🎶 configure LAN audio局域网音频传输" \
+			"3" "🍅 query space occupation查询空间占用" \
+			"4" "🍑 vnc/xsdl.apk下载远程桌面客户端" \
+			"5" "🤖 termux_fdroid.apk下载termux" \
+			"6" "📺 termux original GUI:原系统GUI" \
 			"0" "🌚 Back to the main menu 返回主菜单" \
 			3>&1 1>&2 2>&3)
 	}
 	android_termux_tmoe_menu_ja() {
 		OPTION=$(whiptail --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
 			"1" "🍳 mirror sources" \
-			"2" "🍹 バックアップ termux" \
-			"3" "🔯 復元 termux" \
-			"4" "🎶 LANオーディオ送信を設定する" \
-			"5" "🍅 クエリスペースの占有" \
-			"6" "🍑 vnc.apkをダウンロード" \
-			"7" "🤖 termux_fdroid.apkをダウンロード" \
-			"8" "📺 termux オリジナルのGUI" \
+			"2" "🎶 LANオーディオ送信を設定する" \
+			"3" "🍅 クエリスペースの占有" \
+			"4" "🍑 vnc.apkをダウンロード" \
+			"5" "🤖 termux_fdroid.apkをダウンロード" \
+			"6" "📺 termux オリジナルのGUI" \
 			"0" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
 	}
 	android_termux_tmoe_menu_en() {
 		OPTION=$(whiptail --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
 			"1" "🍳 mirror sources" \
-			"2" "🍹 backup termux" \
-			"3" "🔯 restore termux" \
-			"4" "🎶 configure Termux LAN audio" \
-			"5" "🍅 query space occupation" \
-			"6" "🍑 vnc/xsdl.apk" \
-			"7" "🤖 termux_fdroid.apk" \
-			"8" "📺 termux original GUI" \
+			"2" "🎶 configure LAN audio" \
+			"3" "🍅 query space occupation" \
+			"4" "🍑 vnc/xsdl.apk" \
+			"5" "🤖 termux_fdroid.apk" \
+			"6" "📺 termux original GUI" \
 			"0" "🌚 Back to the main menu" \
 			3>&1 1>&2 2>&3)
 	}
+	: <<\EOF
+			"2" "🍹 backup 备份termux" \
+			"3" "🔯 restore 还原/恢复termux" \
+			"2" "🍹 バックアップ termux" \
+			"3" "🔯 復元 termux" \
+			"2" "🍹 backup termux" \
+			"3" "🔯 restore termux" \
+	2) backup_termux_menu ;;
+	3) restore_termux_menu ;;			
+EOF
 	########################################
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) android_termux_tmoe_menu_zh ;;
@@ -53,13 +57,11 @@ android_termux_tmoe_menu() {
 	case "${OPTION}" in
 	0 | "") tmoe_manager_main_menu ;;
 	1) tmoe_switch_sources_list ;;
-	2) backup_termux_menu ;;
-	3) restore_termux_menu ;;
-	4) termux_pulse_audio_lan ;;
-	5) space_occupation ;;
-	6) download_vnc_apk ;;
-	7) aria2_download_termux_apk ;;
-	8) termux_original_system_gui ;;
+	2) termux_pulse_audio_lan ;;
+	3) space_occupation ;;
+	4) download_vnc_apk ;;
+	5) aria2_download_termux_apk ;;
+	6) termux_original_system_gui ;;
 	esac
 	####################################
 	#			"8" "Video tutorial(2020-02,旧版教程)" \	8) download_video_tutorial ;;
