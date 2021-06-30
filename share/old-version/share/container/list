@@ -1942,7 +1942,7 @@ choose_ubuntu_deepin_budgie_or_cinnamon() {
 	0 | "") install_armbian_linux_distro ;;
 	1) DISTRO_CODE='xfce' ;;
 	2) DISTRO_CODE='mate' ;;
-	3) DISTRO_CODE='i3-wm' ;;
+	3) DISTRO_CODE='i3' ;;
 	4) DISTRO_CODE='deepin' ;;
 	5) DISTRO_CODE='gnome' ;;
 	6) DISTRO_CODE='budgie' ;;
@@ -1968,7 +1968,7 @@ choose_ubuntu_budgie_or_gnome() {
 	0 | "") install_armbian_linux_distro ;;
 	1) DISTRO_CODE='xfce' ;;
 	2) DISTRO_CODE='mate' ;;
-	3) DISTRO_CODE='i3-wm' ;;
+	3) DISTRO_CODE='i3' ;;
 	4) DISTRO_CODE='gnome' ;;
 	5) DISTRO_CODE='budgie' ;;
 	6) DISTRO_CODE='cli' ;;
