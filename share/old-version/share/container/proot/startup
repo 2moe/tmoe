@@ -593,7 +593,7 @@ cat >${TMOE_STARTUP_SCRIPT} <<-ENDOFPROOT
 	    set -- "\${@}" "TMOE_CHROOT=false"
 	    set -- "\${@}" "TMOE_PROOT=true"
 	    set -- "\${@}" "TMPDIR=/tmp"
-	    set -- "\${@}" "DISPLAY=DISPLAY=127.0.0.1:0"
+	    set -- "\${@}" "DISPLAY=127.0.0.1:0"
 	    set -- "\${@}" "PULSE_SERVER=tcp:127.0.0.1:4713"
 	    if [[ -r "\${TMOE_LOCALE_FILE}" ]]; then
 	        set -- "\${@}" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
