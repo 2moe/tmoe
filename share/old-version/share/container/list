@@ -1928,12 +1928,13 @@ choose_ubuntu_deepin_budgie_or_cinnamon() {
 		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment.\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
 			"1" "🐭 xfce(proot)" \
 			"2" "🌿 mate(proot)" \
-			"3" "dde/deepin(chroot)" \
-			"4" "👣 gnome(systemd container)" \
-			"5" "🦜 budgie(systemd)" \
-			"6" "🌲 cinnamon(systemd)" \
-			"7" "cli(nogui)" \
-			"8" "minimal(nogui)" \
+			"3" "i3wm" \
+			"4" "dde/deepin(chroot)" \
+			"5" "👣 gnome(systemd container)" \
+			"6" "🦜 budgie(systemd)" \
+			"7" "🌲 cinnamon(systemd)" \
+			"8" "cli(nogui)" \
+			"9" "minimal(nogui)" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3
 	)
@@ -1941,12 +1942,13 @@ choose_ubuntu_deepin_budgie_or_cinnamon() {
 	0 | "") install_armbian_linux_distro ;;
 	1) DISTRO_CODE='xfce' ;;
 	2) DISTRO_CODE='mate' ;;
-	3) DISTRO_CODE='deepin' ;;
-	4) DISTRO_CODE='gnome' ;;
-	5) DISTRO_CODE='budgie' ;;
-	6) DISTRO_CODE='cinnamon' ;;
-	7) DISTRO_CODE='cli' ;;
-	8) DISTRO_CODE='minimal' ;;
+	3) DISTRO_CODE='i3-wm' ;;
+	4) DISTRO_CODE='deepin' ;;
+	5) DISTRO_CODE='gnome' ;;
+	6) DISTRO_CODE='budgie' ;;
+	7) DISTRO_CODE='cinnamon' ;;
+	8) DISTRO_CODE='cli' ;;
+	9) DISTRO_CODE='minimal' ;;
 	esac
 }
 choose_ubuntu_budgie_or_gnome() {
@@ -1954,10 +1956,11 @@ choose_ubuntu_budgie_or_gnome() {
 		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
 			"1" "🐭 xfce(proot)" \
 			"2" "🌿 mate(proot)" \
-			"3" "👣 gnome(systemd container)" \
-			"4" "🦜 budgie(systemd)" \
-			"5" "cli(nogui)" \
-			"6" "minimal(nogui)" \
+			"3" "i3wm" \
+			"4" "👣 gnome(systemd container)" \
+			"5" "🦜 budgie(systemd)" \
+			"6" "cli(nogui)" \
+			"7" "minimal(nogui)" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3
 	)
@@ -1965,10 +1968,11 @@ choose_ubuntu_budgie_or_gnome() {
 	0 | "") install_armbian_linux_distro ;;
 	1) DISTRO_CODE='xfce' ;;
 	2) DISTRO_CODE='mate' ;;
-	3) DISTRO_CODE='gnome' ;;
-	4) DISTRO_CODE='budgie' ;;
-	5) DISTRO_CODE='cli' ;;
-	6) DISTRO_CODE='minimal' ;;
+	3) DISTRO_CODE='i3-wm' ;;
+	4) DISTRO_CODE='gnome' ;;
+	5) DISTRO_CODE='budgie' ;;
+	6) DISTRO_CODE='cli' ;;
+	7) DISTRO_CODE='minimal' ;;
 	esac
 }
 choose_debian_xfce_or_gnome() {
@@ -2056,7 +2060,7 @@ install_different_armbian_gnu_linux_distros() {
 		install_armbian_linux_distro
 	fi
 	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
-	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list|\.current' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
 	case "${DISTRO_NAME}" in
 	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
