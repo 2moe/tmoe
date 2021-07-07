@@ -1,7 +1,7 @@
 # 🍭Tmoe-linux
 
 ```shell
-  curl -L git.io/linux.sh | sh
+  . <(curl -L git.io/linux.sh)
 ```
 
 > If you do not understand the following readme, please give me an issue to explain the situation,or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)  
