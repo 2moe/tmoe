@@ -52,7 +52,7 @@ start_tmoe_qemu_manager() {
 	RETURN_TO_WHERE='start_tmoe_qemu_manager'
 	RETURN_TO_MENU='start_tmoe_qemu_manager'
 	TMOE_VIRTUALIZATION=$(
-		whiptail --title "输startqemu启动${QEMU_VM_NAME}" --menu "${QEMU_VM_NAME} virtual machine tmoe manager" 0 50 0 \
+		whiptail --title "输startqemu启动${QEMU_VM_NAME}" --menu "${QEMU_VM_NAME} virtual machine tmoe manager.\n本工具仅支持qemu5.x/6.x" 0 50 0 \
 			"1" "🍹 Start 启动${QEMU_VM_NAME}" \
 			"2" "🥗 Edit config 编辑配置" \
 			"3" "💾 Disk manager磁盘管理器" \
@@ -1454,11 +1454,11 @@ modify_qemu_bin_path() {
 	fi
 }
 choose_qemu_bios_or_uefi_file() {
-	if [ ! -e "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd" ]; then
-		DEPENDENCY_01=''
-		DEPENDENCY_02='qemu-efi-aarch64'
-		#beta_features_quick_install
-	fi
+	# if [ ! -e "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd" ]; then
+	# 	DEPENDENCY_01=''
+	# 	DEPENDENCY_02='qemu-efi-aarch64'
+	# 	#beta_features_quick_install
+	# fi
 	if [ ! -e "/usr/share/ovmf/OVMF.fd" ]; then
 		DEPENDENCY_01=''
 		DEPENDENCY_02='ovmf'
@@ -1474,17 +1474,24 @@ choose_qemu_bios_or_uefi_file() {
 	TMOE_VIRTUALIZATION=$(
 		whiptail --title "uefi" --menu "Please choose a uefi file.\n当前为${CURRENT_VALUE}" 0 0 0 \
 			"1" "ovmf:TianoCore firmware for x64" \
-			"2" "choose a file自选文件" \
+			"2" "/usr/share/edk2-ovmf/x64/OVMF_CODE.fd" \
+			"3" "/usr/share/OVMF/OVMF_CODE_4M.fd" \
+			"4" "/usr/share/OVMF/OVMF_CODE_4M.secboot.fd" \
+			"5" "/usr/share/OVMF/OVMF_CODE.fd" \
+			"6" "choose a file自选文件" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
+	#ovmf:TianoCore firmware for x64
 	#############
 	case ${TMOE_VIRTUALIZATION} in
 	0 | "") modify_tmoe_qemu_extra_options ;;
-	1)
-		TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF_CODE.fd'
-		;;
-	2) tmoe_choose_a_qemu_bios_file ;;
+	1) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/ovmf/OVMF_CODE.fd' ;;
+	2) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/edk2-ovmf/x64/OVMF_CODE.fd' ;;
+	3) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/OVMF/OVMF_CODE_4M.fd' ;;
+	4) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/OVMF/OVMF_CODE_4M.secboot.fd' ;;
+	5) TMOE_QEMU_BIOS_FILE_PATH='/usr/share/OVMF/OVMF_CODE.fd' ;;
+	6) tmoe_choose_a_qemu_bios_file ;;
 	esac
 	###############
 	sed -E -i "s@^(UEFI_CODE_PFLASH=).*@\1"${TMOE_QEMU_BIOS_FILE_PATH}"@g;s@^(UEFI_ENABLED=).*@\1true@g" ${QEMU_FILE}
@@ -1597,7 +1604,7 @@ check_qemu_installation() {
 			DEPENDENCY_02='qemu-system-aarch64'
 			;;
 		"arch")
-			DEPENDENCY_02='qemu-arch-extra edk2-ovmf'
+			DEPENDENCY_02='edk2-ovmf'
 			;;
 		esac
 		beta_features_quick_install
