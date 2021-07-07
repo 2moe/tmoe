@@ -1,7 +1,7 @@
 # 🍭Tmoe-linux
 
 ```shell
-. <(curl -L git.io/linux.sh)
+  curl -L git.io/linux.sh | sh
 ```
 
 > If you do not understand the following readme, please give me an issue to explain the situation,or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)  
@@ -9,7 +9,7 @@
 
 If you want to understand the extended usage of containers, then you can read this [document](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md).  
 I'm really sorry, this is a document written in Chinese.  
-When I have time, I will write in English!  
+When I have time, I will write in English!
 
 ## 介绍 Introduction
 
@@ -320,7 +320,7 @@ Next, I will introduce the meaning of each parameter.
     For example,"tmoe chroot"="tmoe c"
 
     "$1":
-        "ls:list installed containers"    
+        "ls:list installed containers"
         "c:chroot:A chroot is an operation that changes the apparent root directory for the current running process and their children."
         "chroot:与宿主机共享相同的内核,硬件,进程空间和网络子系统"
         "p:proot - mount --bind and binfmt_misc without privilege/setupmount"
@@ -456,9 +456,9 @@ tmoe ns d s x
 
 Assuming you have installed a kali-rolling container named **z** .  
 When you type `t p k z`, you find that the **proot kali zsh** is started instead of **proot kali z**.  
-In this case, you should type the full code: `t p kali-z` instead of `t p k-z`  
+In this case, you should type the full code: `t p kali-z` instead of `t p k-z`
 
-The fourth and fifth parameters of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the [_share/container_](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md) directory for details.  
+The fourth and fifth parameters of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the [_share/container_](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md) directory for details.
 
 Note: The priority of local files is higher than that of the inside of the container.
 
@@ -927,7 +927,7 @@ micro $(command -v startvnc)
 
 [termux/proot-distro](https://github.com/termux/proot-distro)  
 [2cd/zsh](https://github.com/2cd/zsh)  
-[coslyk/debianopt-repo](https://github.com/coslyk/debianopt-repo)  
+[coslyk/debianopt-repo](https://github.com/coslyk/debianopt-repo)
 
 ### 九.更新日志 logs
 
