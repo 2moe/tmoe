@@ -946,9 +946,6 @@ run_tmoe_qemu_command() {
     set -- "${@}" "-device" "virtio-serial-pci,id=virtio-serial0,bus=pci.4,addr=0x0"
     set -- "${@}" "-device" "pcie-pci-bridge,id=pci.10,bus=pci.9,addr=0x0"
     set -- "${@}" "-device" "ahci,id=sata1,bus=pci.10,addr=0x1"
-    #    ;;
-    # ) printf "%s\n%s\n" "本脚本暂时不支持配置该机器类型，请将MACHINE_TYPE变量修改为q35" "Please modify -machine VALUE to q35." ;;
-    #esac
     case ${ENABLE_KVM} in
     true) set -- "${@}" "-global" "kvm-pit.lost_tick_policy=delay" ;;
     esac

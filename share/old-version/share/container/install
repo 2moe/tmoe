@@ -897,6 +897,7 @@ printf '%s\n' 'Giving startup script execution permission'
 printf "%s\n" "正在赋予启动脚本执行权限"
 cd ${PREFIX}/bin
 ln -sf ${TMOE_SHARE_DIR}/app/tmoe ./
+ln -svf tmoe tome
 if [ ! $(command -v debian-i) ]; then
 	ln -sf ${TMOE_SHARE_DIR}/app/manager ./debian-i
 fi

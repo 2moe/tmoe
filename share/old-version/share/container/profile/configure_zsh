@@ -604,6 +604,7 @@ git_clone_tmoe_linux() {
 	if [ -e ${TMOE_SHARE_DIR}/app/tmoe ]; then
 		rm -vf /usr/local/bin/tmoe 2>/dev/null
 		ln -svf ${TMOE_SHARE_DIR}/app/tmoe /usr/local/bin
+		ln -svf tmoe /usr/local/bin/tome
 	fi
 	if [ ! $(command -v startvnc) ]; then
 		printf "%s\n" "${TMOE_TOOL_DIR}/app/tool --install-gui" >/usr/local/bin/startvnc
