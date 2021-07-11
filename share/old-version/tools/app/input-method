@@ -620,10 +620,11 @@ install_debian_sogou_pinyin() {
     case "${ARCH_TYPE}" in
     amd64 | i386)
         printf "%s\n" "本脚本提供的是搜狗官网的版本"
-        printf "%s\n" "Debian sid、Kali rolling和ubuntu 20.04等高版本可能无法正常运行,您可以前往优麒麟软件仓库手动下载安装。"
+        printf "%s\n" "Debian sid、Kali rolling和ubuntu 21.04等高版本可能无法正常运行,您可以前往优麒麟软件仓库手动下载安装。"
         printf '%s\n' 'http://archive.ubuntukylin.com/ukui/pool/main/s/sogouimebs/'
+        LATEST_DEB_URL=$(curl -L 'https://pinyin.sogou.com/linux/' | grep ${ARCH_TYPE} | grep deb | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | head -n 1)
+        printf "${YELLOW}%s${RESET}\n" "${LATEST_DEB_URL}"
         do_you_want_to_continue
-        LATEST_DEB_URL=$(curl -L 'https://pinyin.sogou.com/linux/' | grep ${ARCH_TYPE} | grep deb | awk '{print $3}' | cut -d '"' -f 2)
         LATEST_DEB_VERSION="sogouimebs_${ARCH_TYPE}.deb"
         install_deb_file_common_model_02
         ;;
