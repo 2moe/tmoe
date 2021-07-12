@@ -3,7 +3,7 @@
 # set -x
 show_package_info() {
 	# Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
-	if [ $(uname -o) = Android ]; then EXTRA_DEPS=", debianutils, dialog, termux-api, termux-tools"; fi
+	if [ $(uname -o) = Android ]; then EXTRA_DEPS=", dialog, termux-api, termux-tools"; fi
 	cat <<-EndOfShow
 		Package: tmoe-linux-manager
 		Version: 1.4700

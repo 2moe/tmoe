@@ -115,7 +115,7 @@ android_termux() {
 			termux-setup-storage) DEPENDENCIES="${DEPENDENCIES} termux-tools" ;;
 			whiptail) DEPENDENCIES="${DEPENDENCIES} dialog" ;;
 			pkill) DEPENDENCIES="${DEPENDENCIES} procps" ;;
-			which) DEPENDENCIES="${DEPENDENCIES} debianutils" ;;
+			# which) DEPENDENCIES="${DEPENDENCIES} debianutils" ;;
 			chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
 			unshare) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
 			esac

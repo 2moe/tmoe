@@ -420,7 +420,6 @@ change_shell_to_bin_zsh() {
 	fi
 }
 show_tmoe_zsh_package_info() {
-	# if [ $(uname -o) = Android ]; then EXTRA_DEPS=", debianutils, dialog, termux-tools"; fi
 	unset EXTRA_DEPS
 	cat <<-EndOfShow
 		Package: tmoe-zsh

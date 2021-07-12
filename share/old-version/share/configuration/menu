@@ -241,7 +241,11 @@ install_fortunes() {
         # *)
         FORTUNES_MOD_02="debian-hints"
         ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD} 2>/dev/null
-        ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD_02} 2>/dev/null
+        if [[ -e /usr/share/games/fortunes/debian-hints ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}apt ${RED}purge ${YELLOW}-y ${BLUE}fortunes-${FORTUNES_MOD_02}${RESET}"
+            apt purge -y fortunes-${FORTUNES_MOD_02}
+        fi
+        # ${TMOE_INSTALLATION_COMMAND} fortunes-${FORTUNES_MOD_02} 2>/dev/null
         case ${TMOE_LANG} in
         zh_*UTF-8)
             THE_LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fortune-zh/'
