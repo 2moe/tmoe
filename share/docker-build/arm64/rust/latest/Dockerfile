@@ -1,23 +1,31 @@
-FROM arm64v8/rust:latest
+FROM arm64v8/debian:unstable
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
+ARG RUSTUP_URL="https://static.rust-lang.org/rustup/dist/aarch64-unknown-linux-gnu/rustup-init"
 ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
-    TMOE_DOCKER=true
+    TMOE_DOCKER=true \
+    RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
 
 RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
     apt install -y sudo locales; \
     apt install -y whiptail curl eatmydata procps apt-utils; \
-    apt install -y --no-install-recommends neofetch; \
+    apt install -y --no-install-recommends neofetch gcc; \
+    apt install -y --no-install-recommends libc6-dev; \
     printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
-    rustup self update; \
-    rustup update; \
+    curl -LO ${RUSTUP_URL}; \
+    chmod +x rustup-init; \
+    ./rustup-init -y --no-modify-path --default-toolchain nightly;\
+    rm rustup-init; \
+    chmod -Rv a+w ${RUSTUP_HOME} ${CARGO_HOME}; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
     printf "%s\n%s\n" "CONTAINER_TYPE=podman" "CONTAINER_NAME=rust_nogui-debian" > container.txt ; \
@@ -38,9 +46,7 @@ RUN apt update; \
     /var/lib/apt/lists/* \
     2>/dev/null; \
     apt clean
-# rustup default stable
-# ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-#     RUSTUP_HOME=/usr/local/rustup \
-#     CARGO_HOME=/usr/local/cargo
+# rustup default nightly
+
 
 CMD [ "/bin/bash" ]

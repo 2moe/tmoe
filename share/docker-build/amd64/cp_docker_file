@@ -6,6 +6,7 @@ cd ../arm64
 rm -rfv $(ls . | grep 'mint-')
 ARM64_DOCKERFILE=$(find . | grep Dockerfile)
 sed -E -e 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8/@g' \
+    -e 's@x86_64-unknown@aarch64-unknown@g' \
     -e 's@(ARCH_TYPE)=.*@\1=arm64@g' \
     -i ${ARM64_DOCKERFILE}
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | egrep "arch|kali")
