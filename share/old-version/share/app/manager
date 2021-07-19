@@ -63,7 +63,7 @@ tmoe_manager_env() {
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
 	AK2_GIT_URL="https://gitee.com/ak2"
-	TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues"
+	TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues?q=is%3Aissue+is%3Aclosed"
 	if [[ -e ${TMOE_GIT_DIR}/.git ]]; then
 		source ${TMOE_SHARE_DIR}/environment/manager_environment
 		#check_dependencies_03

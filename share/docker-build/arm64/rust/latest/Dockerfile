@@ -11,7 +11,8 @@ ENV HOME=/root \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH
 
-RUN apt update; \
+RUN set -ex;\
+    apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
     apt install -y sudo locales; \
