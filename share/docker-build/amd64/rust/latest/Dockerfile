@@ -11,7 +11,7 @@ ENV HOME=/root \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH
 
-RUN set -ex;\
+RUN set -ex; \
     apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
@@ -24,7 +24,7 @@ RUN set -ex;\
     printf "%s\n" "docker" > /run/systemd/container; \
     curl -LO ${RUSTUP_URL}; \
     chmod +x rustup-init; \
-    ./rustup-init -y --no-modify-path --default-toolchain nightly;\
+    ./rustup-init -y --no-modify-path --default-toolchain nightly; \
     rm rustup-init; \
     chmod -Rv a+w ${RUSTUP_HOME} ${CARGO_HOME}; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
