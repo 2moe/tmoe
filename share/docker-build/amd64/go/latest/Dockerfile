@@ -1,4 +1,4 @@
-FROM amd64/golang:buster
+FROM amd64/golang:rc-buster
 #VOLUME /usr/bin/qemu-x86_64-static:/usr/bin/qemu-x86_64-static
 ADD README.go /root
 WORKDIR /go

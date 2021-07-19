@@ -48,5 +48,4 @@ RUN apt update; \
     apt clean
 # rustup default nightly
 
-
 CMD [ "/bin/bash" ]
