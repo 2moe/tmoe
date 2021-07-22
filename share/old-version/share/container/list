@@ -131,7 +131,7 @@ install_tmoe_moonthly_build_edition() {
 		INSTALLDESKTOP=$(whiptail --title "CONTAINERS" --menu \
 			"Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
 			"1" "🐹 Go (Makes it easy to build simple&reliable app)" \
-			"2" "Rust(Blazingly fast and memory-efficient)" \
+			"2" "🦀 Rust(Blazingly fast and memory-efficient)" \
 			"3" "Visual Studio Code online server" \
 			"4" "OpenJDK(An open-source Java Platform)" \
 			"5" "🐳 Docker(Run docker with qemu)" \

@@ -11,8 +11,7 @@ ENV HOME=/root \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH
 
-RUN set -ex; \
-    apt update; \
+RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
     apt install -y sudo locales; \
@@ -22,7 +21,7 @@ RUN set -ex; \
     printf "%s\n" "root:root" | chpasswd; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
-    curl -LO ${RUSTUP_URL}; \
+    curl -LO ${RUSTUP_URL} || exit 1 ; \
     chmod +x rustup-init; \
     ./rustup-init -y --no-modify-path --default-toolchain nightly; \
     rm rustup-init; \
