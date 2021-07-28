@@ -6,7 +6,7 @@ show_package_info() {
 	if [ $(uname -o) = Android ]; then EXTRA_DEPS=", dialog, termux-api, termux-tools"; fi
 	cat <<-EndOfShow
 		Package: tmoe-linux-manager
-		Version: 1.4888
+		Version: 1.4991
 		Priority: optional
 		Section: admin
 		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
@@ -22,8 +22,8 @@ show_package_info() {
 set_env() {
 	TMOE_MANAGER="share/old-version/share/app/manager"
 	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
-	# TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
 	TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/${TMOE_MANAGER}"
+	# TMOE_URL_03="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
 	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
 	TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
 	if [ -z ${TMPDIR} ]; then
@@ -55,15 +55,11 @@ do_you_want_to_continue() {
 	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${PURPLE}退出${RESET}"
 	read opt
 	case $opt in
-	y* | Y* | "") ;;
 	n* | N*)
 		printf "%s\n" "${PURPLE}skipped${RESET}."
 		exit 1
 		;;
-	*)
-		printf "%s\n" "${RED}Invalid ${CYAN}choice${RESET}, skipped."
-		exit 1
-		;;
+	*) ;;
 	esac
 }
 check_manager_file() {

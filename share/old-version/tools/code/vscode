@@ -384,6 +384,7 @@ install_vscode_official() {
         printf '%s\n' '检测到您已安装VSCode,请手动输以下命令启动'
         printf '%s\n' 'code --user-data-dir=${HOME}/.vscode'
         printf "%s\n" "如需卸载，请手动输${TMOE_REMOVAL_COMMAND} code"
+        printf "%s\n" "${RED}rm ${YELLOW}-rvf ${BLUE}${APPS_LNK_DIR}/code-no-sandbox.desktop /usr/share/code${RESET}"
     fi
     [[ ! $(command -v code) ]] || code --version --user-data-dir=/tmp/.code
     printf "%s\n" "请问您是否需要下载最新版安装包？"
@@ -427,6 +428,10 @@ install_vscode_official() {
         printf "%s\n" "安装完成,请输code --user-data-dir=${HOME}/.vscode启动"
         ;;
     esac
+    if [[ -e /usr/share/code/code ]]; then
+        cp -vf ${TMOE_TOOL_DIR}/code/lnk/code-no-sandbox.desktop ${APPS_LNK_DIR}
+        chmod a+r ${APPS_LNK_DIR}/code-no-sandbox.desktop
+    fi
 }
 ###############################
 vscode_main "${@}"

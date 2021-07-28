@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4888,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4991,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -1254,9 +1254,9 @@ termux_font_menu() {
 		"1" "Inconsolata-go(粗)" \
 		"2" "Iosevka(细)" \
 		"3" "Iosevka Term Bold Italic(斜)" \
-		"4" "Iosevka Term Mono(粗)" \
+		"4" "Iosevka Term Mono" \
 		"5" "Fira code(细)" \
-		"6" "Fira code Medium(粗)" \
+		"6" "Fira code Medium" \
 		"0" "skip(跳过)" \
 		3>&1 1>&2 2>&3)
 	##############################
