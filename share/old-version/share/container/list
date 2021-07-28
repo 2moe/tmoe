@@ -1951,28 +1951,24 @@ choose_ubuntu_deepin_budgie_or_cinnamon() {
 	9) DISTRO_CODE='minimal' ;;
 	esac
 }
-choose_ubuntu_budgie_or_gnome() {
+choose_ubuntu_budgie_or_cinnamon() {
 	DESKTOP_NAME=$(
 		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
 			"1" "🐭 xfce(proot)" \
-			"2" "🌿 mate(proot)" \
-			"3" "i3wm" \
-			"4" "👣 gnome(systemd container)" \
-			"5" "🦜 budgie(systemd)" \
-			"6" "cli(nogui)" \
-			"7" "minimal(nogui)" \
+			"2" "👣 cinnamon(systemd container)" \
+			"3" "🦜 budgie(systemd)" \
+			"4" "cli(nogui)" \
+			"5" "minimal(nogui)" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3
 	)
 	case "${DESKTOP_NAME}" in
 	0 | "") install_armbian_linux_distro ;;
 	1) DISTRO_CODE='xfce' ;;
-	2) DISTRO_CODE='mate' ;;
-	3) DISTRO_CODE='i3' ;;
-	4) DISTRO_CODE='gnome' ;;
-	5) DISTRO_CODE='budgie' ;;
-	6) DISTRO_CODE='cli' ;;
-	7) DISTRO_CODE='minimal' ;;
+	2) DISTRO_CODE='cinnamon' ;;
+	3) DISTRO_CODE='budgie' ;;
+	4) DISTRO_CODE='cli' ;;
+	5) DISTRO_CODE='minimal' ;;
 	esac
 }
 choose_debian_xfce_or_gnome() {
@@ -2000,32 +1996,34 @@ install_armbian_linux_distro() {
 		whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
 			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
 			"2" "🦛 Hirsute Hippo(21.04) " \
-			"3" "🐎 Bullseye(debian 11)" \
-			"4" "🐶 Buster(debian 10)" \
-			"5" "Custom code手动输入版本代号" \
+			"3" "🐶 Buster(debian 10)" \
+			"4" "Custom code手动输入版本代号" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3
 	)
+	# "3" "🐎 Bullseye(debian 11)" \
+	#
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
 		DISTRO_NAME='focal'
-		choose_ubuntu_deepin_budgie_or_cinnamon
+		# choose_ubuntu_deepin_budgie_or_cinnamon
+		choose_ubuntu_budgie_or_cinnamon
 		;;
 	2)
 		DISTRO_NAME='hirsute'
-		choose_ubuntu_budgie_or_gnome
+		choose_ubuntu_budgie_or_cinnamon
 		;;
+	# 3)
+	# 	DISTRO_NAME='bullseye'
+	# 	choose_debian_xfce_or_gnome
+	# 	;;
 	3)
-		DISTRO_NAME='bullseye'
-		choose_debian_xfce_or_gnome
-		;;
-	4)
 		DISTRO_NAME='buster'
 		choose_debian_xfce_or_gnome
 		;;
-	5)
+	4)
 		custom_armbian_version
 		choose_debian_xfce_or_gnome
 		;;
