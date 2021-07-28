@@ -294,7 +294,7 @@ You can type `startx11vnc` to start **x11** vncserver.
 You can type `stopvnc` to stop **VNC** server
 
 在容器环境下，输`stopvnc`来停止启动 **VNC** server  
-如需了解更多参数，例如`-non-stop-dbus`(不停止 dbus-daemon)，请输`stopvnc --help`  
+如需了解更多参数，例如`-no-stop-dbus`(不停止 dbus-daemon)，请输`stopvnc --help`  
 如果您遇到了无法退出容器的情况，则请将 `stopvnc` 添加至 **~/.zlogout**
 
 ```zsh
@@ -873,13 +873,13 @@ debian-i
 ###### 不停止 x11vnc
 
 ```shell
- stopvnc -non-stop-x11vnc
+ stopvnc -no-stop-x11vnc
 ```
 
 ###### 不停止 dbus-daemon
 
 ```shell
- stopvnc -non-stop-dbus
+ stopvnc -no-stop-dbus
 ```
 
 ---

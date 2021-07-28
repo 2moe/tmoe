@@ -82,7 +82,7 @@ BOLD=$(printf '\033[1m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
 export USER=${VNC_USER}
-[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -non-stop-dbus 2>/dev/null
+[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"

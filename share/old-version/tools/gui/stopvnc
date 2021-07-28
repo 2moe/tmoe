@@ -6,18 +6,18 @@ stop_vnc_main() {
     pkill_vnc
     check_wsl
     case "$1" in
-    -non-stop-dbus)
+    -no-stop-dbus)
         stopx11vnc
         ;;
-    -non-stop-x11vnc) ;;
+    -no-stop-x11vnc) ;;
     -x11)
         stop_dbus_daemon
         stopx11vnc
         ;;
     -h | --h | --help | -help)
         cat <<-'EOF'
-			-non-stop-dbus    --不停止dbus-daemon
-			-non-stop-x11vnc  --不停止x11vnc
+			-no-stop-dbus    --不停止dbus-daemon
+			-no-stop-x11vnc  --不停止x11vnc
             -x11              --停止x11vnc
 			-h               --获取帮助信息
 		EOF
