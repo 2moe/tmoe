@@ -48,8 +48,8 @@ copy_gnu_lib_xcb_so() {
 ###########
 fix_tightvnc_vscode_lnk() {
     if [[ -s "${TMOE_LINUX_DIR}/lib/libxcb.so.1" ]]; then
-        sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
-        sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
+        sed -i "s@Exec=/usr/share/codium/codium@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/codium/codium --no-sandbox@g" ${APPS_LNK_DIR}/codium.desktop 2>/dev/null
+        sed -i "s@Exec=/usr/share/code/code@Exec=env LD_LIBRARY_PATH=${TMOE_LINUX_DIR}/lib /usr/share/code/code --no-sandbox@g" ${APPS_LNK_DIR}/code.desktop 2>/dev/null
     else
         printf "${RED}%s${RESET}\n" "ERROR！无法修复。"
     fi
@@ -429,7 +429,7 @@ install_vscode_official() {
         ;;
     esac
     if [[ -e /usr/share/code/code ]]; then
-        cp -vf ${TMOE_TOOL_DIR}/code/lnk/code-no-sandbox.desktop ${APPS_LNK_DIR}
+        cp -f ${TMOE_TOOL_DIR}/code/lnk/code-no-sandbox.desktop ${APPS_LNK_DIR}
         chmod a+r ${APPS_LNK_DIR}/code-no-sandbox.desktop
     fi
 }
