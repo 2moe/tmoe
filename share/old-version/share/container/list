@@ -120,7 +120,7 @@ set_service_container_env() {
 }
 #####################
 choose_latest_or_alpine() {
-	if (whiptail --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine will be more streamlined" 8 50); then
+	if (whiptail --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine is more streamlined" 8 50); then
 		DESKTOP="latest"
 	else
 		DESKTOP="alpine"
