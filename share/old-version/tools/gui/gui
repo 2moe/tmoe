@@ -3204,27 +3204,31 @@ download_icon_themes() {
     check_update_icon_caches_sh
     cd /tmp
     RETURN_TO_WHERE='download_icon_themes'
-    INSTALL_THEME=$(whiptail --title "图标包" --menu \
-        "您想要下载哪个图标包？\n Which icon-theme do you want to download? " 0 50 0 \
-        "1" "win11:更新颖的UI设计" \
-        "2" "UOS:国产统一操作系统图标包" \
-        "3" "pixel:raspberrypi树莓派" \
-        "4" "paper:简约、灵动、现代化的图标包" \
-        "5" "papirus:优雅的图标包,基于paper" \
-        "6" "numix:modern现代化" \
-        "7" "moka:简约一致的美学" \
-        "0" "🌚 Return to previous menu 返回上级菜单" \
-        3>&1 1>&2 2>&3)
+    INSTALL_THEME=$(
+        whiptail --title "图标包" --menu \
+            "您想要下载哪个图标包？\n Which icon-theme do you want to download? " 0 50 0 \
+            "1" "win11:更新颖的UI设计" \
+            "2" "candy:Sweet gradient icons " \
+            "3" "pixel:raspberrypi树莓派" \
+            "4" "paper:简约、灵动、现代化的图标包" \
+            "5" "papirus:优雅的图标包,基于paper" \
+            "6" "numix:modern现代化" \
+            "7" "moka:简约一致的美学" \
+            "8" "UOS" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
     ########################
     case "${INSTALL_THEME}" in
     0 | "") tmoe_desktop_beautification ;;
     1) download_win10x_theme ;;
-    2) download_uos_icon_theme ;;
+    2) download_candy_icon_theme ;;
     3) download_raspbian_pixel_icon_theme ;;
     4) download_paper_icon_theme ;;
     5) download_papirus_icon_theme ;;
     6) install_numix_theme ;;
     7) install_moka_theme ;;
+    8) download_uos_icon_theme ;;
     esac
     ######################################
     press_enter_to_return
@@ -3745,6 +3749,32 @@ download_kali_theme() {
     fi
     printf "%s\n" "Download completed.如需删除，请手动输rm -rf /usr/share/desktop-base/kali-theme /usr/share/icons/desktop-base /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/Flat-Remix-Blue-Dark"
     XFCE_ICON_NAME='Flat-Remix-Blue-Light'
+    set_default_xfce_icon_theme
+}
+##################
+download_candy_icon_theme() {
+    ICON_DIR="/usr/share/icons/candy-icons"
+    ICON_TMP_DIR="/tmp/.CANDY_ICON_THEME"
+    if [ -d "${ICON_DIR}" ]; then
+        printf "%s\n" "Do you want to download again？"
+        RETURN_TO_WHERE='configure_theme'
+        do_you_want_to_continue
+    fi
+
+    if [ -d "${ICON_TMP_DIR}" ]; then
+        rm -rf ${ICON_TMP_DIR}
+    fi
+    mkdir -pv ${ICON_TMP_DIR}
+    cd ${ICON_TMP_DIR}
+    printf "${YELLOW}%s${RESET}\n" "https://github.com/EliverLara/candy-icons"
+    curl -Lo master.zip https://ghproxy.com/https://github.com/EliverLara/candy-icons/archive/refs/heads/master.zip || curl -Lo master.zip https://download.fastgit.org/EliverLara/candy-icons/archive/refs/heads/master.zip || curl -Lo master.zip https://github.com/EliverLara/candy-icons/archive/refs/heads/master.zip
+    unzip master.zip
+    mv candy-icons-master ${ICON_DIR}
+    update-icon-caches ${ICON_DIR} 2>/dev/null &
+    cd /tmp
+    rm -rf ${ICON_TMP_DIR}
+    printf "%s\n" "If you want to remove it, then type ${RED}rm ${YELLOW}-rf ${BLUE}${ICON_DIR}${RESET}"
+    XFCE_ICON_NAME='Candy-icons'
     set_default_xfce_icon_theme
 }
 ##################
