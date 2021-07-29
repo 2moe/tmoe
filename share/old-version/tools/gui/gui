@@ -3774,7 +3774,8 @@ download_candy_icon_theme() {
     cd /tmp
     rm -rf ${ICON_TMP_DIR}
     printf "%s\n" "If you want to remove it, then type ${RED}rm ${YELLOW}-rf ${BLUE}${ICON_DIR}${RESET}"
-    XFCE_ICON_NAME='Candy-icons'
+    XFCE_ICON_NAME='candy-icons'
+    # GNOME_ICON_NAME='Candy-icons'
     set_default_xfce_icon_theme
 }
 ##################
