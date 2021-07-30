@@ -30,7 +30,7 @@ gnu_linux_env_02() {
         TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
         TMOE_MENU_LANG=${TMOE_LANG}
         TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-	    TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
+        TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
     fi
 }
 ########################
@@ -1284,7 +1284,7 @@ latest_electron_ali() {
     ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
     #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
-    ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^11\." | sort -n | tail -n 1)
+    ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^13\." | sort -n | tail -n 1)
     DOWNLOAD_PATH="/opt/electron"
 }
 download_electron() {
@@ -1295,7 +1295,7 @@ download_electron() {
     i386) ARCH_TYPE_02='ia32' ;;
     *) arch_does_not_support ;;
     esac
-    [[ -n ${ELECTRON_VERSION} ]] || ELECTRON_VERSION="11.2.0"
+    [[ -n ${ELECTRON_VERSION} ]] || ELECTRON_VERSION=13.1.7
     #https://github.com/electron/electron/releases/download/v11.2.0/electron-v11.2.0-linux-arm64.zip
     ELECTRON_ZIP_FILE="electron-v${ELECTRON_VERSION}-linux-${ARCH_TYPE_02}.zip"
     ELECTRON_FILE_URL="${ELECTRON_MIRROR_STATION}/${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
