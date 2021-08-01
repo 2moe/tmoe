@@ -2679,8 +2679,8 @@ install_gnome3_desktop() {
     do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
     true)
-        REMOTE_DESKTOP_SESSION_01='gnome-panel'
-        REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity'
+        REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
+        REMOTE_DESKTOP_SESSION_02='gnome-panel'
         ;;
     false | *)
         REMOTE_DESKTOP_SESSION_01='gnome-session'
@@ -2749,12 +2749,25 @@ install_gnome3_desktop() {
 }
 ##################
 ln_s_gnome_flashback_metacity() {
-    for i in /usr/libexec/gnome-flashback-metacity /usr/lib/gnome-flashback/gnome-flashback-metacity /usr/lib/gnome-session-flashback/gnome-flashback-metacity; do
+    GNOME_SESSION="/usr/local/bin/gnome-flashback-metacity"
+    for i in /usr/lib/gnome-flashback/gnome-flashback-metacity /usr/lib/gnome-session-flashback/gnome-flashback-metacity /usr/libexec/gnome-flashback-metacity; do
         if [[ -e ${i} ]]; then
-            ln -svf ${i} /usr/local/bin/gnome-flashback-metacity
+            ln -svf ${i} ${GNOME_SESSION}
             break
         fi
     done
+
+    if [[ ! -e ${GNOME_SESSION} ]]; then
+        cat >${GNOME_SESSION} <<-'EOF'
+        #!/bin/sh
+
+        if [ -z $XDG_CURRENT_DESKTOP ]; then
+            export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
+        fi
+        exec gnome-session --session=gnome-flashback-metacity --disable-acceleration-check "$@"
+EOF
+        chmod a+rx ${GNOME_SESSION}
+    fi
 }
 cinnamon_warning() {
     case "${TMOE_PROOT}" in

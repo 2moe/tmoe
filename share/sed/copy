@@ -3,7 +3,8 @@ GITHUB_LINUX="${HOME}/github/github-linux"
 GITHUB_LINUX_02="${HOME}/github/archive/tmoe/share/old-version/share/app"
 OLD_VERSION_DIR="${GITEE_lINUX}/share/old-version"
 
-COUNT=$(curl -L https://gitee.com/mo2/linux | awk '/commit/' | grep '\ commits' | head -n 1 | awk '{print $1}')
+# COUNT=$(curl -L https://gitee.com/mo2/linux | awk '/commit/' | grep '\ commits' | head -n 1 | awk '{print $1}')
+COUNT=$(curl -L https://gitee.com/mo2/linux | grep '次提交' | head -n 1 | awk '{print $1}')
 case ${COUNT} in
 "") ;;
 [0-9]*[0-9])
