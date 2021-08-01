@@ -708,9 +708,9 @@ change_the_password() {
 	TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
 	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
 	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
-		sed -i "$ a ${USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+		sed -i "$ a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
 	else
-		sed -i "${TMOE_ROOT_SUDO_LINE}a ${USER_NAME}    ALL=(ALL:ALL) ALL" /etc/sudoers
+		sed -i "${TMOE_ROOT_SUDO_LINE}a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
 	fi
 	case ${TMOE_CHROOT} in
 	true)

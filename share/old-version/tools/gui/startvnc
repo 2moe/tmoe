@@ -45,7 +45,7 @@ ALWAYS_SHARED=true
 
 DBUS_ENABLED=true
 
-AUTO_START_DBUS=false
+AUTO_START_DBUS=true
 # If the value is true, "sudo service dbus start" will be executed automatically every time.
 
 AUTO_STOP_VNC=true
@@ -307,12 +307,17 @@ start_tmoe_xvnc() {
 ##############
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
-        if [[ -e /usr/sbin/service ]]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
-            sudo service dbus start
-        else
-            printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
-            sudo systemctl start dbus
+        # if [[ -e /usr/sbin/service ]]; then
+        #     printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+        #     sudo service dbus start
+        # else
+        #     printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
+        #     sudo systemctl start dbus
+        # fi
+        if [[ -e /etc/init.d/dbus ]]; then
+            printf "%s\n" "${PURPLE}sudo ${BLUE}/etc/init.d/${GREEN}dbus ${YELLOW}start${RESET}"
+            sudo /etc/init.d/dbus start
+            sudo /etc/init.d/dbus status
         fi
     fi
 }
