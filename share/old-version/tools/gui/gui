@@ -2442,8 +2442,8 @@ ENDofTable
 }
 ###############
 choose_kde_plasma_or_standard() {
-    if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is minimal installation\n前者为最简安装,后者为标准安装' 0 0); then
-        DEPENDENCY_01="--no-install-recommends kde-plasma-desktop"
+    if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is more streamlined\n前者为精简安装,后者为标准安装' 0 0); then
+        DEPENDENCY_01="kde-plasma-desktop"
     else
         if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件,后者为KDE全家桶' 0 0); then
             DEPENDENCY_01="kde-standard"
