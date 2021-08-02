@@ -2802,12 +2802,13 @@ get_ubuntu_desktop_language_pack() {
 cat_gnome_flashback_session() {
     if [[ ! -e ${GNOME_SESSION} ]]; then
         cat >${GNOME_SESSION} <<-'EOF'
-            #!/bin/sh
+#!/bin/sh
 
-            if [ -z $XDG_CURRENT_DESKTOP ]; then
-                export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
-            fi
-            exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"
+if [ -z $XDG_CURRENT_DESKTOP ]; then
+    export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
+fi
+
+exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"
 EOF
         chmod a+rx ${GNOME_SESSION}
     fi
@@ -2821,7 +2822,7 @@ ln_s_gnome_flashback_metacity() {
     #         break
     #     fi
     # done
-    if [[ -e /usr/lib/gnome-flashback/gnome-flashback-metacity ]]; then
+    if [[ -e ${GNOME_SESSION_FLASHBACK} ]]; then
         ln -svf ${GNOME_SESSION_FLASHBACK} ${GNOME_SESSION}
     else
         if [[ -e /usr/sbin/service ]]; then
