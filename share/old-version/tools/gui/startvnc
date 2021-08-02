@@ -92,7 +92,6 @@ TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 TIGERVNC_BIN='/usr/bin/tigervncserver'
-KDE_PLASMA_WAYLAND=false
 unset TMOE_WSL
 ########################
 check_tmoe_locale() {
@@ -129,7 +128,6 @@ fix_vnc_permissions() {
 }
 ##############
 check_vnc_port() {
-    #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
     CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 }
@@ -284,22 +282,18 @@ start_tmoe_xvnc() {
         sudo su - ${VNC_USER} -c '"$0" "$@" &' -- "$@" || su - ${VNC_USER} -c '"$0" "$@" &' -- "$@"
     fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
-    if [[ KDE_PLASMA_WAYLAND = true && $(command -v startplasma-wayland) ]]; then
-        konsole &>/dev/null &
-        startplasma-wayland &
+
+    if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
+        source ${XSESSION_FILE} &>/dev/null &
     else
-        if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
-            source ${XSESSION_FILE} &>/dev/null &
-        else
-            # if [[ ${VNC_USER} != root ]]; then
-            #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
-            #su - (X)
-            #preserve environment in container
-            #else
-            #    sudo -E su ${VNC_USER} -c "source ${XSESSION_FILE} &" || su ${VNC_USER} -c "source ${XSESSION_FILE} &"
-            #fi
-            sudo su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
-        fi
+        # if [[ ${VNC_USER} != root ]]; then
+        #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
+        #su - (X)
+        #preserve environment in container
+        #else
+        #    sudo -E su ${VNC_USER} -c "source ${XSESSION_FILE} &" || su ${VNC_USER} -c "source ${XSESSION_FILE} &"
+        #fi
+        sudo su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
     fi
     start_win10_tigervnc
     exit 0
@@ -307,13 +301,8 @@ start_tmoe_xvnc() {
 ##############
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
-        # if [[ -e /usr/sbin/service ]]; then
-        #     printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
-        #     sudo service dbus start
-        # else
         #     printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
         #     sudo systemctl start dbus
-        # fi
 
         if [[ -e /usr/sbin/service ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"

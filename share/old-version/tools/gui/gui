@@ -117,10 +117,9 @@ modify_other_vnc_conf() {
             "6" "Edit tigervnc-config 编辑tigervnc配置" \
             "7" "Zlib level 压缩级别" \
             "8" "Pixel depth 色彩/像素深度" \
-            "9" "Fix vnc crash修复VNC闪退" \
-            "10" "Window scaling factor窗口缩放比例(仅支持xfwm)" \
-            "11" "Display port显示端口" \
-            "12" "WSL pulseaudio(only for windows)" \
+            "9" "Window scaling factor窗口缩放比例(仅支持xfwm)" \
+            "10" "Display port显示端口" \
+            "11" "WSL pulseaudio(only for windows)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -139,10 +138,9 @@ modify_other_vnc_conf() {
     6) nano_tigervnc_default_config_manually ;;
     7) modify_tigervnc_zlib_level ;;
     8) modify_tigervnc_pixel_depth ;;
-    9) fix_vnc_dbus_launch ;;
-    10) modify_xfce_window_scaling_factor ;;
-    11) modify_tightvnc_display_port ;;
-    12)
+    9) modify_xfce_window_scaling_factor ;;
+    10) modify_tightvnc_display_port ;;
+    11)
         check_editor
         ${EDITOR} ${TMOE_LINUX_DIR}/wsl_pulse_audio
         ;;
@@ -442,9 +440,9 @@ preconfigure_gui_dependecies_02() {
     DEPENDENCY_02="tigervnc"
     case "${LINUX_DISTRO}" in
     debian)
-        case "${TMOE_PROOT}" in
-        true) NON_DBUS=true ;;
-        esac
+        # case "${TMOE_PROOT}" in
+        # true) NON_DBUS=true ;;
+        # esac
         #if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
         #    DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
         #else
@@ -458,9 +456,9 @@ preconfigure_gui_dependecies_02() {
         #上面的依赖摆放的位置是有讲究的。
         ;;
     redhat)
-        case "${TMOE_PROOT}" in
-        true) NON_DBUS=true ;;
-        esac
+        # case "${TMOE_PROOT}" in
+        # true) NON_DBUS=true ;;
+        # esac
         DEPENDENCY_02="google-noto-sans-cjk-ttc-fonts google-noto-emoji-color-fonts tigervnc-server"
         ;;
     arch)
@@ -488,7 +486,7 @@ preconfigure_gui_dependecies_02() {
 }
 ########################
 standand_desktop_installation() {
-    NON_DBUS=false
+    # NON_DBUS=false
     REMOVE_UDISK2=false
     RETURN_TO_WHERE='standand_desktop_installation'
     preconfigure_gui_dependecies_02
@@ -1129,6 +1127,8 @@ configure_vnc_xstartup() {
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
         [[ ! -s /etc/environment ]] || . /etc/environment
+        # /run/user/$UID
+        [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
         for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal;do
             if [[ \$(command -v \${i}) ]];then
                 \${i} &
@@ -1176,10 +1176,9 @@ configure_x11vnc_remote_desktop_session() {
     cd /usr/local/bin/
     rm -f startx11vnc
     cp -f ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/x11vncpasswd ./
-
-    if [ "${NON_DBUS}" != "true" ]; then
-        enable_dbus_launch
-    fi
+    # if [ "${NON_DBUS}" != "true" ]; then
+    #     enable_dbus_launch
+    # fi
     chmod a+rx ./*
 
     if [ -e "${HOME}/.vnc/passwd" ]; then
@@ -4887,13 +4886,13 @@ configure_remote_desktop_environment() {
         #configure_remote_deepin_desktop
         ;;
     esac
-    case "${TMOE_PROOT}" in
-    true)
-        case "${LINUX_DISTRO}" in
-        "debian" | "redhat""redhat") NON_DBUS=true ;;
-        esac
-        ;;
-    esac
+    # case "${TMOE_PROOT}" in
+    # true)
+    #     case "${LINUX_DISTRO}" in
+    #     "debian" | "redhat") NON_DBUS=true ;;
+    #     esac
+    #     ;;
+    # esac
 
     if [ $(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
         REMOTE_DESKTOP_SESSION="${REMOTE_DESKTOP_SESSION_01}"
@@ -5179,12 +5178,13 @@ configure_startxsdl() {
     #启动命令结尾无&
     ###############################
     #debian禁用dbus分两次，并非重复
-    if [ "${NON_DBUS}" = "true" ]; then
-        case "${TMOE_PROOT}" in
-        true) #sed -i 's:dbus-launch --exit-with-session::' startxsdl ${XSESSION_FILE} ;;
-            sed -i 's:dbus-launch::' ${XSESSION_FILE} ;;
-        esac
-    fi
+    # if [ "${NON_DBUS}" = "true" ]; then
+    #     case "${TMOE_PROOT}" in
+    #     true)
+    #         sed -i 's:dbus-launch::' ${XSESSION_FILE}
+    #         ;;
+    #     esac
+    # fi
 }
 #################
 configure_startvnc() {
@@ -5837,103 +5837,5 @@ xfce4_x11vnc_hidpi_settings() {
     esac
 }
 ####################
-enable_dbus_launch() {
-    XSTARTUP_LINE=$(cat -n ${XSESSION_FILE} | grep -v 'command' | grep "${REMOTE_DESKTOP_SESSION_01}" | awk -F ' ' '{print $1}' | head -n 1)
-    #sed -i "${XSTARTUP_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
-    sed -i "${XSTARTUP_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" ${XSESSION_FILE}
-    XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
-    sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
-    #XSTARTUP_LINE_02=$((${XSTARTUP_LINE} + 2))
-    #sed -i "${XSTARTUP_LINE_02} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_02}" ${XSESSION_FILE}
-    #################
-    #START_X11VNC_LINE=$(cat -n /usr/local/bin/startx11vnc | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-    #sed -i "${START_X11VNC_LINE} c\ dbus-launch --exit-with-session ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
-    #sed -i "${START_X11VNC_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01} \&" /usr/local/bin/startx11vnc
-    ##################
-    #START_XSDL_LINE=$(cat -n /usr/local/bin/startxsdl | grep -v 'command' | grep ${REMOTE_DESKTOP_SESSION_01} | awk -F ' ' '{print $1}')
-    #sed -i "${START_XSDL_LINE} c\  dbus-launch ${REMOTE_DESKTOP_SESSION_01}" /usr/local/bin/startxsdl
-    #################
-    #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02} \&/" "/usr/local/bin/startx11vnc"
-    #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/  dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" ${XSESSION_FILE}
-    #sed -i "s/.*${REMOTE_DESKTOP_SESSION_02}.*/ dbus-launch ${REMOTE_DESKTOP_SESSION_02}/" "/usr/local/bin/startxsdl"
-    #if [ "${LINUX_DISTRO}" != "debian" ]; then
-    #    sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
-    #fi
-}
-#################
-fix_vnc_dbus_launch() {
-    printf "%s\n" "由于在2020-0410至0411的更新中给所有系统的桌面都加入了dbus-launch，故在部分安卓设备的${BLUE}proot容器${RESET}上出现了兼容性问题。"
-    printf "%s\n" "注1：该操作在linux虚拟机及win10子系统上没有任何问题"
-    printf "%s\n" "注2：2020-0412更新的版本已加入检测功能，理论上不会再出现此问题。"
-    case "${TMOE_PROOT}" in
-    true) ;;
-    *)
-        printf "%s\n" "检测到您当前可能处于非proot环境下，是否继续修复？"
-        printf "%s\n" "如需重新配置vnc启动脚本，请更新debian-i后再覆盖安装gui"
-        ;;
-    esac
-    do_you_want_to_continue
-
-    if grep 'dbus-launch' ${XSESSION_FILE}; then
-        DBUSstatus="$(echo 检测到dbus-launch当前在VNC脚本中处于启用状态)"
-    else
-        DBUSstatus="$(echo 检测到dbus-launch当前在vnc脚本中处于禁用状态)"
-    fi
-
-    if (whiptail --title "您想要对这个小可爱中做什么 " --yes-button "Disable" --no-button "Enable" --yesno "您是想要禁用dbus-launch，还是启用呢？${DBUSstatus} \n请做出您的选择！✨" 10 50); then
-        #sed -i 's@--exit-with-session@@' ${XSESSION_FILE} /usr/local/bin/startxsdl /usr/local/bin/startx11vnc
-        sed -i 's@dbus-launch@@' ${XSESSION_FILE}
-    else
-        #for i in startxfce4 startlxde startlxqt mate-session startplasma gnome-session cinnamon budgie-desktop startdde; do
-        #    if grep ${i} ${XSESSION_FILE}; then
-        #        printf "%s\n" "检测您当前的VNC配置为${i}，正在将dbus-launch加入至启动脚本中..."
-        #    fi
-        #done
-        #unset i
-        if grep 'startxfce4' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为xfce4，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_02='startxfce4'
-            REMOTE_DESKTOP_SESSION_01='xfce4-session'
-        elif grep 'startlxde' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为lxde，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_02='startlxde'
-            REMOTE_DESKTOP_SESSION_01='lxsession'
-        elif grep 'startlxqt' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为lxqt，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='startlxqt'
-            REMOTE_DESKTOP_SESSION_02='lxqt-session'
-        elif grep 'mate-session' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为mate，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='mate-session'
-            REMOTE_DESKTOP_SESSION_02='mate-panel'
-        elif grep 'startplasma' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为KDE Plasma5，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='startplasma-x11'
-            REMOTE_DESKTOP_SESSION_02='startkde'
-        elif grep 'gnome-session' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为GNOME3，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='gnome-session'
-            REMOTE_DESKTOP_SESSION_02='gnome-panel'
-        elif grep 'cinnamon' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为cinnamon，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='cinnamon-session'
-            REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
-        elif grep 'startdde' ${XSESSION_FILE}; then
-            printf "%s\n" "检测您当前的VNC配置为deepin desktop，正在将dbus-launch加入至启动脚本中..."
-            REMOTE_DESKTOP_SESSION_01='startdde'
-            REMOTE_DESKTOP_SESSION_02='dde-launcher'
-        else
-            printf "%s\n" "未检测到vnc相关配置或您安装的桌面环境不被支持，请更新tmoe linux tool后再覆盖安装gui"
-        fi
-        enable_dbus_launch
-    fi
-
-    printf "%s\n" "${YELLOW}修改完成，按回车键返回${RESET}"
-    printf "%s\n" "若无法修复，则请前往${TMOE_GIT_URL}提交issue，并附上报错截图和详细说明。"
-    printf "%s\n" "还建议您附上sed -n p /usr/local/bin/startxsdl 和 sed -n p ${XSESSION_FILE} 的启动脚本截图"
-    press_enter_to_return
-    ${RETURN_TO_WHERE}
-}
-###################
 gui_main "$@"
 ###############################
