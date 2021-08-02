@@ -31,6 +31,7 @@ TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 XSESSION_FILE='/etc/X11/xinit/Xsession'
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
+[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
 unset TMOE_WSL
 #################
 start_windows_10_pulse_audio_server() {
