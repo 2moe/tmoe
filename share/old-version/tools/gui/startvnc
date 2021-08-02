@@ -314,7 +314,12 @@ check_dbus_servcie() {
         #     printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
         #     sudo systemctl start dbus
         # fi
-        if [[ -e /etc/init.d/dbus ]]; then
+
+        if [[ -e /usr/sbin/service ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+            sudo service dbus start
+            sudo service dbus status
+        elif [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${BLUE}/etc/init.d/${GREEN}dbus ${YELLOW}start${RESET}"
             sudo /etc/init.d/dbus start
             sudo /etc/init.d/dbus status

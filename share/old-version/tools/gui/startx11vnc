@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 #################
 export PULSE_SERVER=127.0.0.1
+
 TMOE_X11_RESOLUTION=1440x720
+
 TCP_PORT_FOR_RFB_PROTOCOL=5902
+
 VNC_LOCALHOST=false
+
+AUTO_START_DBUS=true
 #################
 RED=$(printf '\033[31m')
 GREEN=$(printf '\033[32m')
@@ -81,6 +86,17 @@ tmoe_x11vnc_preconfigure() {
 }
 #################
 source_tmoe_dbus_daemon() {
+    if [[ ${AUTO_START_DBUS} = true ]]; then
+        if [[ -e /usr/sbin/service ]]; then
+            printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+            sudo service dbus start
+            sudo service dbus status
+        elif [[ -e /etc/init.d/dbus ]]; then
+            printf "%s\n" "${PURPLE}sudo ${BLUE}/etc/init.d/${GREEN}dbus ${YELLOW}start${RESET}"
+            sudo /etc/init.d/dbus start
+            sudo /etc/init.d/dbus status
+        fi
+    fi
     . ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
 }
 ###########
