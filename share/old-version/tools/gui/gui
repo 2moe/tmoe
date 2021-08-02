@@ -587,7 +587,6 @@ tmoe_container_desktop() {
             "3" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
             "4" "🕊️ lxde(轻量化桌面,资源占用低)" \
             "5" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
-            "6" "phosh(based on GNOME/GTK)" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -599,10 +598,10 @@ tmoe_container_desktop() {
             "3" "🐦 lxqt" \
             "4" "🕊️ lxde(lightweight)" \
             "5" "🌿 mate(the continuation of GNOME 2)" \
-            "6" "phosh(Pure Wayland shell for mobile devices)" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
+    # "6" "phosh(Pure Wayland shell for mobile devices)"
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) tmoe_container_desktop_zh ;;
     *) tmoe_container_desktop_en ;;
@@ -627,11 +626,6 @@ tmoe_container_desktop() {
         install_lxde_desktop
         ;;
     5) install_mate_desktop ;;
-    6)
-        printf "%s\n" "Sorry, 此功能正在测试中..."
-        press_enter_to_return
-        tmoe_container_desktop
-        ;;
     esac
     ##########################
     press_enter_to_return
