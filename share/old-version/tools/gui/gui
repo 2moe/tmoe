@@ -495,7 +495,7 @@ standand_desktop_installation() {
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
             "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为容器，则您只需选择第一或者第二项。\nIf you are using a container,then choose proot_DE or WM.\n若当前环境为虚拟机，则您可以任意挑选项目。" 0 0 0 \
-            "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxde)" \
+            "1" "🍰 proot_DE(proot容器可运行:xfce,phosh,mate,lxqt)" \
             "2" "🍙 window manager窗口管理器(ice,fvwm)" \
             "3" "🍔 chroot/docker_DE(kde,dde)" \
             "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome,cinnamon)" \
@@ -587,6 +587,7 @@ tmoe_container_desktop() {
             "3" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
             "4" "🕊️ lxde(轻量化桌面,资源占用低)" \
             "5" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
+            "6" "phosh(based on GNOME/GTK)" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -598,6 +599,7 @@ tmoe_container_desktop() {
             "3" "🐦 lxqt" \
             "4" "🕊️ lxde(lightweight)" \
             "5" "🌿 mate(the continuation of GNOME 2)" \
+            "6" "phosh(Pure Wayland shell for mobile devices)" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -625,6 +627,11 @@ tmoe_container_desktop() {
         install_lxde_desktop
         ;;
     5) install_mate_desktop ;;
+    6)
+        printf "%s\n" "Sorry, 此功能正在测试中..."
+        press_enter_to_return
+        tmoe_container_desktop
+        ;;
     esac
     ##########################
     press_enter_to_return
@@ -2729,7 +2736,7 @@ install_gnome3_desktop() {
         ;;
     "arch")
         if (whiptail --title "gnome or gnome-extra" --yes-button "gnome" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome全家桶' 0 0); then
-            DEPENDENCY_01='gnome'
+            DEPENDENCY_01='gnome gnome-flashback'
         else
             DEPENDENCY_01='gnome-extra gnome'
         fi
@@ -2792,25 +2799,34 @@ get_ubuntu_desktop_language_pack() {
     esac
 }
 ################
-ln_s_gnome_flashback_metacity() {
-    GNOME_SESSION="/usr/local/bin/gnome-flashback-metacity"
-    for i in /usr/lib/gnome-flashback/gnome-flashback-metacity /usr/lib/gnome-session-flashback/gnome-flashback-metacity /usr/libexec/gnome-flashback-metacity; do
-        if [[ -e ${i} ]]; then
-            ln -svf ${i} ${GNOME_SESSION}
-            break
-        fi
-    done
-
+cat_gnome_flashback_session() {
     if [[ ! -e ${GNOME_SESSION} ]]; then
         cat >${GNOME_SESSION} <<-'EOF'
-        #!/bin/sh
+            #!/bin/sh
 
-        if [ -z $XDG_CURRENT_DESKTOP ]; then
-            export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
-        fi
-        exec gnome-session --session=gnome-flashback-metacity --disable-acceleration-check "$@"
+            if [ -z $XDG_CURRENT_DESKTOP ]; then
+                export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
+            fi
+            exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"
 EOF
         chmod a+rx ${GNOME_SESSION}
+    fi
+}
+ln_s_gnome_flashback_metacity() {
+    GNOME_SESSION="/usr/local/bin/gnome-flashback-metacity"
+    GNOME_SESSION_FLASHBACK="/usr/lib/gnome-flashback/gnome-flashback-metacity"
+    # for i in /usr/lib/gnome-flashback/gnome-flashback-metacity /usr/lib/gnome-session-flashback/gnome-flashback-metacity /usr/libexec/gnome-flashback-metacity; do
+    #     if [[ -e ${i} ]]; then
+    #         ln -svf ${i} ${GNOME_SESSION}
+    #         break
+    #     fi
+    # done
+    if [[ -e /usr/lib/gnome-flashback/gnome-flashback-metacity ]]; then
+        ln -svf ${GNOME_SESSION_FLASHBACK} ${GNOME_SESSION}
+    else
+        if [[ -e /usr/sbin/service ]]; then
+            cat_gnome_flashback_session
+        fi
     fi
 }
 cinnamon_warning() {
