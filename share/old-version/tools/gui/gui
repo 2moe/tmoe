@@ -1082,9 +1082,9 @@ tmoe_virtual_machine_desktop() {
     RETURN_TO_WHERE='tmoe_virtual_machine_desktop'
     BETA_DESKTOP=$(whiptail --title "DE" --menu \
         "您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
-        "1" "👣 gnome3(GNU网络对象模型环境)" \
-        "2" "🌲 cinnamon(肉桂基于gnome3,对用户友好)" \
-        "3" "🦜 budgie(虎皮鹦鹉基于gnome3,优雅且现代化)" \
+        "1" "👣 gnome(GNU网络对象模型环境)" \
+        "2" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
+        "3" "🦜 budgie(虎皮鹦鹉基于gnome,优雅且现代化)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -2672,6 +2672,14 @@ gnome3_warning() {
     do_you_want_to_continue
 }
 ###############
+gnome_session_1() {
+    REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
+    REMOTE_DESKTOP_SESSION_02='gnome-panel'
+}
+gnome_session_2() {
+    REMOTE_DESKTOP_SESSION_01='gnome-session'
+    REMOTE_DESKTOP_SESSION_02='gnome-panel'
+}
 install_gnome3_desktop() {
     if [ $(command -v neofetch) ]; then
         neofetch --logo --ascii_distro GNOME
@@ -2679,15 +2687,14 @@ install_gnome3_desktop() {
     gnome3_warning
     do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
-    true)
-        REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
-        REMOTE_DESKTOP_SESSION_02='gnome-panel'
-        ;;
-    false | *)
-        REMOTE_DESKTOP_SESSION_01='gnome-session'
-        REMOTE_DESKTOP_SESSION_02='gnome-panel'
-        ;;
+    true) gnome_session_1 ;;
+    false | *) gnome_session_2 ;;
     esac
+
+    case ${TMOE_CHROOT} in
+    true) gnome_session_1 ;;
+    esac
+
     DEPENDENCY_01="gnome"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     case "${LINUX_DISTRO}" in
