@@ -493,7 +493,7 @@ standand_desktop_installation() {
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
             "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为容器，则您只需选择第一或者第二项。\nIf you are using a container,then choose proot_DE or WM.\n若当前环境为虚拟机，则您可以任意挑选项目。" 0 0 0 \
-            "1" "🍰 proot_DE(proot容器可运行:xfce,phosh,mate,lxqt)" \
+            "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxqt)" \
             "2" "🍙 window manager窗口管理器(ice,fvwm)" \
             "3" "🍔 chroot/docker_DE(kde,dde)" \
             "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome,cinnamon)" \
@@ -505,7 +505,7 @@ standand_desktop_installation() {
     standand_desktop_installation_en() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
             "If you are using a container,then choose proot_DE or WM.\nIf you are using a virtual machine,you can choose any one" 0 0 0 \
-            "1" "🍰 proot_DE(xfce,mate,lxde)" \
+            "1" "🍰 proot_DE(xfce,mate,lxqt)" \
             "2" "🍔 chroot/docker_DE(kde,dde)" \
             "3" "🍙 window manager(ice,fvwm)" \
             "4" "🍱 VM/nspawn_DE(gnome,cinnamon,budgie)" \
@@ -1126,23 +1126,23 @@ configure_vnc_xstartup() {
 		#!/usr/bin/env bash
 		unset SESSION_MANAGER
 		unset DBUS_SESSION_BUS_ADDRESS
-        [[ ! -s /etc/environment ]] || . /etc/environment
-        # /run/user/$UID
-        [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
-        for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal;do
-            if [[ \$(command -v \${i}) ]];then
-                \${i} &
-                break
-            fi
-        done
+		[[ ! -s /etc/environment ]] || . /etc/environment
+		# /run/user/$UID
+		[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
+		for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal;do
+			if [[ \$(command -v \${i}) ]];then
+				\${i} &
+				break
+			fi
+		done
 		unset i
 		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
 			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
 		elif [ \$(command -v ${REMOTE_DESKTOP_SESSION_02}) ]; then
 			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
-        else
-            printf "\033[0;35m%s\033[m%s\n"  "ERROR！" "Xsession start failed."
-            printf "\033[34m%s\033[0;35m%s\033[m%s\n"  "Xsession" "启动失败！" "您可以向开发者反馈。"
+		else
+			printf "\033[0;35m%s\033[m%s\n"  "ERROR！" "Xsession start failed."
+			printf "\033[34m%s\033[0;35m%s\033[m%s\n"  "Xsession" "启动失败！" "您可以向开发者反馈。"
 		fi
 	EndOfFile
     #--exit-with-session
@@ -4697,7 +4697,8 @@ xwayland_onekey() {
     cat >startw <<-'EndOFwayland'
 		#!/usr/bin/env bash
 		chmod a+rx -R /etc/xwayland
-		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
+		XDG_RUNTIME_DIR=/tmp/xwayland-runtime-${UID}
+		Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
 		export DISPLAY=:0
 		xfce4-session
@@ -4936,7 +4937,8 @@ configure_xwayland_remote_desktop_session() {
     cat >startw <<-EndOFwayland
 		#!/usr/bin/env bash
 		chmod a+rx -R /etc/xwayland
-		XDG_RUNTIME_DIR=/etc/xwayland Xwayland &
+		XDG_RUNTIME_DIR=/tmp/xwayland-runtime-${UID}
+        Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
 		export DISPLAY=:0
 		${REMOTE_DESKTOP_SESSION}
