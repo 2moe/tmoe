@@ -1123,27 +1123,31 @@ configure_vnc_xstartup() {
     mkdir -pv /etc/X11/xinit /etc/tigervnc
     rm -f ${XSESSION_FILE} 2>/dev/null
     cat >${XSESSION_FILE} <<-EndOfFile
-		#!/usr/bin/env bash
-		unset SESSION_MANAGER
-		unset DBUS_SESSION_BUS_ADDRESS
-		[[ ! -s /etc/environment ]] || . /etc/environment
-		# /run/user/$UID
-		[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
-		for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal;do
-			if [[ \$(command -v \${i}) ]];then
-				\${i} &
-				break
-			fi
-		done
-		unset i
-		if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-			dbus-launch ${REMOTE_DESKTOP_SESSION_01}
-		elif [ \$(command -v ${REMOTE_DESKTOP_SESSION_02}) ]; then
-			dbus-launch ${REMOTE_DESKTOP_SESSION_02}
-		else
-			printf "\033[0;35m%s\033[m%s\n"  "ERROR！" "Xsession start failed."
-			printf "\033[34m%s\033[0;35m%s\033[m%s\n"  "Xsession" "启动失败！" "您可以向开发者反馈。"
-		fi
+#!/usr/bin/env bash
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+
+[[ ! -s /etc/environment ]] || source /etc/environment
+
+# /run/user/\$UID
+[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
+
+for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal; do
+    if [[ \$(command -v \${i}) ]]; then
+        \${i} &
+        break
+    fi
+done
+unset i
+
+if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
+    dbus-launch ${REMOTE_DESKTOP_SESSION_01}
+elif [ \$(command -v ${REMOTE_DESKTOP_SESSION_02}) ]; then
+    dbus-launch ${REMOTE_DESKTOP_SESSION_02}
+else
+    printf "\033[0;35m%s\033[m%s\n" "ERROR！" "Xsession start failed."
+    printf "\033[34m%s\033[0;35m%s\033[m%s\n" "Xsession" "启动失败！" "您可以向开发者反馈。"
+fi
 	EndOfFile
     #--exit-with-session
     chmod 777 ${XSESSION_FILE}
@@ -4937,7 +4941,7 @@ configure_xwayland_remote_desktop_session() {
     cat >startw <<-EndOFwayland
 		#!/usr/bin/env bash
 		chmod a+rx -R /etc/xwayland
-		XDG_RUNTIME_DIR=/tmp/xwayland-runtime-${UID}
+		XDG_RUNTIME_DIR=/tmp/xwayland-runtime-\${UID}
         Xwayland &
 		export PULSE_SERVER=127.0.0.1:0
 		export DISPLAY=:0
