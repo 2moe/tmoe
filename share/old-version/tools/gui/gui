@@ -2773,10 +2773,10 @@ get_ubuntu_desktop_language_pack() {
 
                 cat ${TMP_FILE}.2 >>${TMOE_LINUX_DIR}/ubuntu-desktop-language-pack.txt
 
-                ${TMP_FILE}.2 | sed 's@^@apt install -y &@g' >${TMP_FILE}.3
-                bash ${TMP_FILE}.3
+                sed -i 's@^@apt install -y &@g' ${TMP_FILE}.2
+                bash ${TMP_FILE}.2
 
-                rm -vf ${TMP_FILE} ${TMP_FILE}.2 ${TMP_FILE}.3
+                rm -vf ${TMP_FILE} ${TMP_FILE}.2
             # fi
             fi
             ;;
