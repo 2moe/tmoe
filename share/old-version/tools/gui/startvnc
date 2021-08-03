@@ -322,7 +322,7 @@ check_dbus_servcie() {
         cat <<-EOF
 ${GREEN}●${BLUE} dbus.service${RESET} - ${YELLOW}D-Bus System Message Bus${RESET}
      Loaded: loaded (/lib/systemd/system/dbus.service; static)
-     Active: active (running)
+     Active: ${GREEN}active (running)${RESET}
 TriggeredBy: ${GREEN}● ${BLUE}dbus.socket${RESET}
        Docs: man:dbus-daemon(1)
    Main PID: ${PID} (dbus-daemon)
