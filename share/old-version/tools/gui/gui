@@ -2695,20 +2695,36 @@ install_gnome_flashback_desktop() {
     if [ $(command -v neofetch) ]; then
         neofetch --logo --ascii_distro GNOME
     fi
+
+    for i in /usr/bin/lolcat /usr/games/lolcat; do
+        if [ -e ${i} ]; then
+            CCAT=${i}
+            LOLCAT=true
+            break
+        fi
+    done
+
+    case ${LOLCAT} in
+    true)
+        neofetch --logo --ascii_distro GNOME | ${CCAT}
+        [[ ${TMOE_PROOT} != true ]] || printf "%s\n" "proot也可以运行gnome哦" | ${CCAT}
+        ;;
+    esac
+
     gnome_session_3
     DEPENDENCY_01="gnome"
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-session-flashback、gnome-flashback和tightvncserver等软件包。'
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-session-flashback、gnome-flashback、alacarte和tightvncserver等软件包。'
     case "${LINUX_DISTRO}" in
     "debian")
         case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-applets gnome-session' ;;
-        *) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-applets gnome-session' ;;
+        ubuntu) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-applets alacarte gnome-session' ;;
+        *) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-applets alacarte gnome-session' ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
     "redhat") DEPENDENCY_01='@GNOME' ;;
-    "arch") DEPENDENCY_01='gnome gnome-applets gnome-flashback' ;;
+    "arch") DEPENDENCY_01='gnome alacarte gnome-applets gnome-flashback' ;;
     "gentoo")
         GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
         eselect profile set ${GNOMEnoSystemd}

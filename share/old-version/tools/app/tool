@@ -72,13 +72,6 @@ main() {
 	esac
 }
 ################
-check_ps_command() {
-	ps &>/dev/null
-	if [ "$?" != '0' ]; then
-		TMOE_PROOT=true
-	fi
-}
-################
 check_tmoe_command() {
 	if [ $(command -v zsh) ]; then
 		if egrep -q '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
@@ -89,16 +82,15 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4921,type ${TMOE_TIPS_01} to start this tool."
+	TMOE_TIPS_00="Welcome to tmoe linux tool v1.4922,type ${TMOE_TIPS_01} to start this tool."
 	#勿改00变量
 }
 #########
 gnu_linux_env() {
-	if [ -z "${TMOE_PROOT}" ]; then
-		check_ps_command
-	fi
-	if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
-		export TMOE_CHROOT=true
+	if [[ -z ${TMOE_CHROOT} && -e /etc/motd ]]; then
+		if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
+			export TMOE_CHROOT=true
+		fi
 	fi
 	if [ -z ${TMPDIR} ]; then
 		TMPDIR=/tmp
