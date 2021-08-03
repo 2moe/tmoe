@@ -27,6 +27,10 @@ check_user_id_and_rm_dbus_pid() {
 }
 ###########
 check_dbus_daemon() {
+    case ${TMOE_PROOT} in
+    true) [[ -e "/etc/init.d/dbus" ]] || check_user_id_and_rm_dbus_pid ;;
+    esac
+
     case ${TMOE_CHROOT} in
     true) check_user_id_and_rm_dbus_pid ;;
     false) ;;
