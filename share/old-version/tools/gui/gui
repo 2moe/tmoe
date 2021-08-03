@@ -2753,12 +2753,7 @@ install_gnome3_desktop() {
     do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
     true) gnome_session_1 ;;
-    false) ;;
     *) gnome_session_2 ;;
-    esac
-
-    case ${TMOE_CHROOT} in
-    true | false) gnome_session_2 ;;
     esac
 
     DEPENDENCY_01="gnome"
