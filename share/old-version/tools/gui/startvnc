@@ -83,7 +83,7 @@ CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
 BOLD=$(printf '\033[1m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
-printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET},and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
+printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
 export USER=${VNC_USER}
 [[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
@@ -308,7 +308,7 @@ check_dbus_servcie() {
         if [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
             sudo service dbus start
-            sudo service dbus status
+            sudo service dbus status | head -n 3
         else
             printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
             case ${TMOE_CHROOT} in
@@ -316,6 +316,18 @@ check_dbus_servcie() {
             *) sudo systemctl start dbus ;;
             esac
         fi
+    fi
+    if [[ -e /run/dbus/pid ]]; then
+        PID=$(head -n 1 /run/dbus/pid)
+        cat <<-EOF
+${GREEN}●${BLUE} dbus.service${RESET} - ${YELLOW}D-Bus System Message Bus${RESET}
+     Loaded: loaded (/lib/systemd/system/dbus.service; static)
+     Active: active (running)
+TriggeredBy: ${GREEN}● ${BLUE}dbus.socket${RESET}
+       Docs: man:dbus-daemon(1)
+   Main PID: ${PID} (dbus-daemon)
+     CGroup: /system.slice/dbus.service
+EOF
     fi
 }
 source_tmoe_dbus_daemon() {

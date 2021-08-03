@@ -19,7 +19,7 @@ CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
 BOLD=$(printf '\033[1m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "x11vnc server" "..."
-printf "%s\n" "The current ${BLUE}x11vnc port${RESET} is ${YELLOW}${TCP_PORT_FOR_RFB_PROTOCOL}${RESET},and x11vnc address is ${GREEN}localhost${YELLOW}:${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}"
+printf "%s\n" "The current ${BLUE}x11vnc port${RESET} is ${YELLOW}${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}, and x11vnc address is ${GREEN}localhost${YELLOW}:${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}"
 stopvnc -no-stop-dbus 2>/dev/null
 TMOE_X11_PASSWD_FILE=${HOME}/.vnc/x11passwd
 export DISPLAY=:233
@@ -91,7 +91,7 @@ source_tmoe_dbus_daemon() {
         if [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
             sudo service dbus start
-            sudo service dbus status
+            sudo service dbus status | head -n 3
         else
             printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
             case ${TMOE_CHROOT} in

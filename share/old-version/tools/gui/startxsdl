@@ -78,7 +78,7 @@ source_tmoe_dbus_daemon() {
 		if [[ -e /etc/init.d/dbus ]]; then
 			printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
 			sudo service dbus start
-			sudo service dbus status
+			sudo service dbus status | head -n 3
 		else
 			printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
 			case ${TMOE_CHROOT} in
