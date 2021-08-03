@@ -95,7 +95,6 @@ TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 TIGERVNC_BIN='/usr/bin/tigervncserver'
-[[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
 unset TMOE_WSL
 ########################
 check_tmoe_locale() {
@@ -279,10 +278,12 @@ start_tmoe_xvnc() {
     set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
     set -- "${XVNC_BIN}" "${@}"
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
+        [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
         "${@}" 2>~/.vnc/vnc.log &
     else
         #XVNC_COMMAND="${@}"
         #sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
+        [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${VNC_USER}
         sudo su - ${VNC_USER} -c '"$0" "$@" &' -- "$@" || su - ${VNC_USER} -c '"$0" "$@" &' -- "$@"
     fi
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
