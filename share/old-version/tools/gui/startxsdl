@@ -2,6 +2,8 @@
 ###################
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4713
+
+AUTO_START_DBUS=true
 ###############
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
@@ -16,7 +18,7 @@ PURPLE=$(printf '\033[35m')
 CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
 BOLD=$(printf '\033[1m')
-[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
+[[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "x11" "..."
 printf "%s\n" "The pulseaudio server is ${BLUE}${PULSE_SERVER}${RESET}"
 printf "%s\n" "The display is ${BLUE}${DISPLAY}${RESET}"
@@ -72,7 +74,18 @@ check_wsl() {
 }
 ###############
 source_tmoe_dbus_daemon() {
-	. ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+	if [[ ${AUTO_START_DBUS} = true ]]; then
+		if [[ -e /usr/sbin/service ]]; then
+			printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+			sudo service dbus start
+			sudo service dbus status
+		elif [[ -e /etc/init.d/dbus ]]; then
+			printf "%s\n" "${PURPLE}sudo ${BLUE}/etc/init.d/${GREEN}dbus ${YELLOW}start${RESET}"
+			sudo /etc/init.d/dbus start
+			sudo /etc/init.d/dbus status
+		fi
+		. ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+	fi
 }
 ############
 check_tmoe_locale

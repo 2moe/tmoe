@@ -92,7 +92,7 @@ TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 TIGERVNC_BIN='/usr/bin/tigervncserver'
-[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
+[[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
 unset TMOE_WSL
 ########################
 check_tmoe_locale() {
