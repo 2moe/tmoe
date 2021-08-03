@@ -2716,15 +2716,16 @@ install_gnome_flashback_desktop() {
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-session-flashback、gnome-flashback、alacarte和tightvncserver等软件包。'
     case "${LINUX_DISTRO}" in
     "debian")
+        #gnome-applets alacarte
         case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-applets alacarte gnome-session' ;;
-        *) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-applets alacarte gnome-session' ;;
+        ubuntu) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
+        *) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-session' ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
     "redhat") DEPENDENCY_01='@GNOME' ;;
-    "arch") DEPENDENCY_01='gnome alacarte gnome-applets gnome-flashback' ;;
+    "arch") DEPENDENCY_01='gnome gnome-flashback' ;;
     "gentoo")
         GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
         eselect profile set ${GNOMEnoSystemd}
@@ -2752,11 +2753,12 @@ install_gnome3_desktop() {
     do_you_want_to_install_fcitx4
     case ${TMOE_PROOT} in
     true) gnome_session_1 ;;
-    false | *) gnome_session_2 ;;
+    false) ;;
+    *) gnome_session_2 ;;
     esac
 
     case ${TMOE_CHROOT} in
-    true) gnome_session_1 ;;
+    true | false) gnome_session_2 ;;
     esac
 
     DEPENDENCY_01="gnome"
