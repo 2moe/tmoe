@@ -31,7 +31,7 @@ VNC_SERVER=tiger
 # Sie können "tiger" oder "tight" wählen.
 
 ZLIB_LEVEL=0
-# Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding).Acceptable values are between 0  and  9.
+# Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding). Acceptable values are between 0  and  9.
 # 压缩级别,可选0至9,默认为0。
 # Die Standardkomprimierungsstufe für zlib ist 0
 
@@ -41,7 +41,7 @@ PIXEL_DEPTH=24
 # Die Standardpixeltiefe beträgt 24
 
 ALWAYS_SHARED=true
-# Always treat incoming connections as shared, regardless of the client-specified setting.Default is true.
+# Always treat incoming connections as shared, regardless of the client-specified setting. Default is true.
 
 DBUS_ENABLED=true
 
@@ -51,6 +51,9 @@ AUTO_START_DBUS=true
 AUTO_STOP_VNC=true
 # Before each start, vnc will be automatically stopped.
 # If the value is true, then "startvnc" => "restart vnc"
+
+# TMOE_CHROOT=false
+# If you are using arch and cannot start dbus-daemon, then change the value to true.
 ####################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then
@@ -304,15 +307,10 @@ check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
         #     printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
         #     sudo systemctl start dbus
-
-        if [[ -e /usr/sbin/service ]]; then
+        if [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
             sudo service dbus start
             sudo service dbus status
-        elif [[ -e /etc/init.d/dbus ]]; then
-            printf "%s\n" "${PURPLE}sudo ${BLUE}/etc/init.d/${GREEN}dbus ${YELLOW}start${RESET}"
-            sudo /etc/init.d/dbus start
-            sudo /etc/init.d/dbus status
         fi
     fi
 }

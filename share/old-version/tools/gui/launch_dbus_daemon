@@ -31,8 +31,10 @@ check_dbus_daemon() {
     true) check_user_id_and_rm_dbus_pid ;;
     false) ;;
     *)
-        if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
-            check_user_id_and_rm_dbus_pid
+        if [[ -e /etc/motd ]]; then
+            if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
+                check_user_id_and_rm_dbus_pid
+            fi
         fi
         ;;
     esac

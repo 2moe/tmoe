@@ -88,14 +88,10 @@ tmoe_x11vnc_preconfigure() {
 #################
 source_tmoe_dbus_daemon() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
-        if [[ -e /usr/sbin/service ]]; then
+        if [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
             sudo service dbus start
             sudo service dbus status
-        elif [[ -e /etc/init.d/dbus ]]; then
-            printf "%s\n" "${PURPLE}sudo ${BLUE}/etc/init.d/${GREEN}dbus ${YELLOW}start${RESET}"
-            sudo /etc/init.d/dbus start
-            sudo /etc/init.d/dbus status
         fi
         . ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
     fi
