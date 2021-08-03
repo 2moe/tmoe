@@ -305,18 +305,21 @@ start_tmoe_xvnc() {
 ##############
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
-        #     printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}dbus ${YELLOW}start${RESET}"
-        #     sudo systemctl start dbus
         if [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
             sudo service dbus start
             sudo service dbus status
+        else
+            printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
+            case ${TMOE_CHROOT} in
+            true | false) ;;
+            *) sudo systemctl start dbus ;;
+            esac
         fi
     fi
 }
 source_tmoe_dbus_daemon() {
     if [[ ${DBUS_ENABLED} = true ]]; then
-        # [[ ! -e /usr/sbin/service ]] || service dbus start 2>/dev/null
         source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
     fi
 }

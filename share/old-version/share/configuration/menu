@@ -282,13 +282,21 @@ install_fortunes_mod() {
         cd ${TEMP_FOLDER}
         unset FORTUNE_BRANCH
         case ${TMOE_LANG} in
-        zh_C*.UTF-8 | zh_S*.UTF-8) FORTUNE_BRANCH="$(base64 -d <<<emhfQ04K)" ;;
+        zh_C*.UTF-8 | zh_S*.UTF-8)
+            # FORTUNE_BRANCH="$(base64 -d <<<emhfQ04K)"
+            unset FORTUNE_BRANCH
+            ;;
         zh_*.UTF-8) FORTUNE_BRANCH="zh_TW" ;;
         de* | en* | es* | fr* | it* | ja* | pt*) FORTUNE_BRANCH="${TMOE_LANG_QUATER}" ;;
         *) FORTUNE_BRANCH="en" ;;
         esac
         if [[ -n ${FORTUNE_BRANCH} ]]; then
-            git clone -b ${FORTUNE_BRANCH} --depth=1 https://hub.fastgit.org/2moe/fortune.git debian-reference || git clone -b ${FORTUNE_BRANCH} --depth=1 https://github.com/2moe/fortune.git debian-reference
+            URL_1="https://github.com.cnpmjs.org/2moe/fortune.git"
+            URL_2="https://hub.fastgit.org/2moe/fortune.git"
+            URL_3="https://github.com/2moe/fortune.git"
+            DIR_NAME="debian-reference"
+            printf "%s\n" "${GREEN}git ${CYAN}clone ${YELLOW}-b ${BLUE}${FORTUNE_BRANCH} ${YELLOW}--depth=1 ${BLUE}${URL_3} ${PURPLE}${DIR_NAME}${RESET}"
+            git clone -b ${FORTUNE_BRANCH} --depth=1 ${URL_1} ${DIR_NAME} || git clone -b ${FORTUNE_BRANCH} --depth=1 ${URL_2} ${DIR_NAME} || git clone -b ${FORTUNE_BRANCH} --depth=1 ${URL_3} ${DIR_NAME}
             for i in debian-reference debmake-doc; do
                 if [[ -e debian-reference/${i} ]]; then
                     mv -vf debian-reference/${i}/*txt ${PREFIX}/share/games/fortunes

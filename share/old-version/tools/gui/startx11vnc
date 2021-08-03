@@ -92,6 +92,12 @@ source_tmoe_dbus_daemon() {
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
             sudo service dbus start
             sudo service dbus status
+        else
+            printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
+            case ${TMOE_CHROOT} in
+            true | false) ;;
+            *) sudo systemctl start dbus ;;
+            esac
         fi
         . ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
     fi
