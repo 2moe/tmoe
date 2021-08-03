@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+################
 dbus_daemon_fork() {
     if [ $(command -v sudo) ]; then
         sudo dbus-daemon --system --fork 2>/dev/null
@@ -44,4 +45,20 @@ check_dbus_daemon() {
     esac
 }
 ################
+show_dbus_status() {
+    if [[ -e /run/dbus/pid ]]; then
+        PID=$(head -n 1 /run/dbus/pid)
+        cat <<-EOF
+${GREEN}●${BLUE} dbus.service${RESET} - ${YELLOW}D-Bus System Message Bus${RESET}
+     Loaded: loaded (/lib/systemd/system/dbus.service; static)
+     Active: ${GREEN}active (running)${RESET}
+TriggeredBy: ${GREEN}● ${BLUE}dbus.socket${RESET}
+       Docs: man:dbus-daemon(1)
+   Main PID: ${PID} (dbus-daemon)
+     CGroup: /system.slice/dbus.service
+EOF
+    fi
+}
+################
 check_dbus_daemon
+show_dbus_status
