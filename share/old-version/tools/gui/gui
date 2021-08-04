@@ -2718,8 +2718,8 @@ install_gnome_flashback_desktop() {
     "debian")
         #gnome-applets alacarte
         case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
-        *) DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-session' ;;
+        ubuntu) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
+        *) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-session' ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -2790,7 +2790,7 @@ install_gnome3_desktop() {
         ;;
     "arch")
         if (whiptail --title "gnome or gnome-extra" --yes-button "gnome" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome全家桶' 0 0); then
-            DEPENDENCY_01='gnome gnome-tweaks'
+            DEPENDENCY_01='gnome-tweaks gnome'
             if (whiptail --title "gnome-flashback or gnome" --yes-button "flashback" --no-button "gnome" --yesno 'The former is more streamlined.\n前者为gnome-flashback，后者为普通gnome' 0 0); then
                 DEPENDENCY_01='gnome-flashback'
             fi

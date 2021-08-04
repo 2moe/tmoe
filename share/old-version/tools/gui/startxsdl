@@ -67,9 +67,15 @@ start_windows_xserver() {
 }
 ###############
 check_wsl() {
-	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-		export TMOE_CHROOT=true
-		start_windows_xserver
+	if [[ -r /proc/version ]]; then
+		UNAME="$(head -n 1 /proc/version)"
+		case "${UNAME}" in
+		*Microsoft* | *microsoft*)
+			# export TMOE_WSL=true
+			export TMOE_CHROOT=true
+			start_windows_xserver
+			;;
+		esac
 	fi
 }
 ###############

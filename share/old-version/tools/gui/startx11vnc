@@ -118,16 +118,25 @@ start_tmoe_xvfb() {
     "${@}" &
 }
 ####################
-if [ "$(uname -r | cut -d '-' -f 3 | head -n 1)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2 | head -n 1)" = "microsoft" ]; then
-    export TMOE_CHROOT=true
-    export TMOE_WSL=true
-    start_windows_10_pulse_audio_server
-fi
+check_wsl() {
+    if [[ -r /proc/version ]]; then
+        UNAME="$(head -n 1 /proc/version)"
+        case "${UNAME}" in
+        *Microsoft* | *microsoft*)
+            export TMOE_CHROOT=true
+            export TMOE_WSL=true
+            start_windows_10_pulse_audio_server
+            ;;
+        esac
+    fi
+}
+# if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]
 ###############
 start_x_session() {
     . ${XSESSION_FILE} &
 }
 #############
+check_wsl
 tmoe_x11vnc_preconfigure
 source_tmoe_dbus_daemon
 start_tmoe_xvfb

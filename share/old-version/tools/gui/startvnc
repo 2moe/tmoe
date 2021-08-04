@@ -54,7 +54,7 @@ AUTO_STOP_VNC=true
 
 # TMOE_CHROOT=false
 # If you are using arch and cannot start dbus-daemon, then change the value to true.
-####################
+###################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then
         CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
@@ -73,7 +73,7 @@ X509_KEY=${HOME}/.vnc/x509-key.pem
 #Path to the key of the X509 certificate in PEM format
 X509_CERTIFICATE=${HOME}/.vnc/x509-cert.pem
 #Path to the X509 certificate in PEM format
-####################
+###################
 RED=$(printf '\033[31m')
 GREEN=$(printf '\033[32m')
 YELLOW=$(printf '\033[33m')
@@ -86,6 +86,7 @@ printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
 export USER=${VNC_USER}
 [[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
+###################
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
@@ -96,7 +97,7 @@ TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
 TIGERVNC_BIN='/usr/bin/tigervncserver'
 unset TMOE_WSL
-########################
+###################
 check_tmoe_locale() {
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
         TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
@@ -105,7 +106,7 @@ check_tmoe_locale() {
     fi
     export LANG="${TMOE_LANG}"
 }
-###########
+###################
 check_current_user_name_and_group() {
     CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}' | head -n 1)
     CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $4}' | cut -d ',' -f 1 | head -n 1)
@@ -113,7 +114,7 @@ check_current_user_name_and_group() {
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
 }
-###############
+###################
 fix_vnc_permissions() {
     CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l ${TMOE_VNC_PASSWD_FILE} | awk -F ' ' '{print $3}')
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
@@ -129,15 +130,20 @@ fix_vnc_permissions() {
         ;;
     esac
 }
-##############
-check_vnc_port() {
-    CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
-    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+###################
+check_wsl() {
+    if [[ -r /proc/version ]]; then
+        UNAME="$(head -n 1 /proc/version)"
+        case "${UNAME}" in
+        *Microsoft* | *microsoft*)
+            export TMOE_CHROOT=true
+            export TMOE_WSL=true
+            source ${TMOE_LINUX_DIR}/wsl_pulse_audio
+            ;;
+        esac
+    fi
 }
-############
-tmoe_vnc_preconfigure() {
-    check_tmoe_locale
-    check_current_user_name_and_group
+set_passwd() {
     mkdir -pv ~/.config/tmoe-linux ~/.vnc
     if [[ ! -s "${TMOE_VNC_PASSWD_FILE}" ]]; then
         for i in /root/.vnc/passwd /root/.vnc/x11passwd; do
@@ -162,6 +168,8 @@ tmoe_vnc_preconfigure() {
         fi
         sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ~/.vnc/
     fi
+}
+reset_passwd() {
     if [[ ! -e ${HOME}/.vnc/passwd ]]; then
         printf "%s\n" "发生错误，正在重置密码，请输入6至8位数的密码 :"
         printf "%s\n%s\n" "Resetting the password ..." "Please enter a new passwd :"
@@ -174,25 +182,36 @@ tmoe_vnc_preconfigure() {
             chmod -v 600 ${i}
         done
     fi
-
+}
+remove_proot_meta_files() {
     for i in ~/.vnc/.proot*; do
         if [[ -e ${i} ]]; then
             printf "%s\n" "${GREEN}sudo ${RED}rm ${YELLOW}-fv ${BLUE}${i}${RESET}"
             rm -fv ${i} || sudo rm -fv ${i}
         fi
     done
-    fix_vnc_permissions
-    if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-        export TMOE_CHROOT=true
-        export TMOE_WSL=true
-        source ${TMOE_LINUX_DIR}/wsl_pulse_audio
-    fi
 }
-###############
-display_vnc_ip_addr() {
-    check_vnc_port
+tmoe_vnc_preconfigure() {
+    check_tmoe_locale
+    check_current_user_name_and_group
+    set_passwd
+    reset_passwd
+    remove_proot_meta_files
+    fix_vnc_permissions
+    check_wsl
+}
+###################
+check_vnc_port() {
+    CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
+    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+}
+check_vnc_ip() {
     TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
     TMOE_IPV6_ADDR=$(ip -6 -c a | grep '/' | grep -v 'fe80::.*/64' | awk '{print $2}' | cut -d '/' -f 1 | sed "s@^@[@g;s@\$@]:${CURRENT_VNC_PORT}@g")
+}
+display_vnc_ip_addr() {
+    check_vnc_port
+    check_vnc_ip
     case ${TMOE_LANG} in
     zh_*UTF-8)
         cat <<-EOF
@@ -211,7 +230,7 @@ EOF
     esac
 
 }
-############
+###################
 start_win10_tigervnc() {
     case ${TMOE_WSL} in
     true)
@@ -221,7 +240,7 @@ start_win10_tigervnc() {
         ;;
     esac
 }
-##########
+###################
 start_tmoe_xvnc() {
     case ${VNC_SERVER} in
     tight* | Tight*)
@@ -289,7 +308,7 @@ start_tmoe_xvnc() {
     export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
 
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
-        source ${XSESSION_FILE} &>/dev/null &
+        source ${XSESSION_FILE} &>~/.vnc/x.log &
     else
         # if [[ ${VNC_USER} != root ]]; then
         #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
@@ -303,7 +322,7 @@ start_tmoe_xvnc() {
     start_win10_tigervnc
     exit 0
 }
-##############
+###################
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
         if [[ -e /etc/init.d/dbus ]]; then
@@ -324,7 +343,7 @@ source_tmoe_dbus_daemon() {
         source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
     fi
 }
-###########
+###################
 check_vncsession() {
     if [ $(command -v vncsession) ]; then
         case $(id -u) in
@@ -339,14 +358,14 @@ check_vncsession() {
         check_xvnc
     fi
 }
-#########
+###################
 check_xvnc() {
     if [ $(command -v Xvnc) ]; then
         start_tmoe_xvnc
         exit 0
     fi
 }
-##########
+###################
 tmoe_vnc_preconfigure
 check_dbus_servcie
 source_tmoe_dbus_daemon
