@@ -2808,6 +2808,16 @@ install_gnome3_desktop() {
 get_ubuntu_desktop_language_pack() {
     case "${LINUX_DISTRO}" in
     "debian")
+        case ${TMOE_PROOT} in
+        true)
+            POST_INST="/var/lib/dpkg/info/blueman.postinst"
+            if [[ -e ${POST_INST} ]]; then
+                sed -i '1a\return 0' ${POST_INST}
+            fi
+            dpkg --configure -a
+            ;;
+        esac
+
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if [ ! "$(command -v check-language-support)" ]; then
@@ -2900,15 +2910,19 @@ install_cinnamon_desktop() {
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、cinnamon和tightvncserver等软件包。'
     case "${LINUX_DISTRO}" in
     "debian")
-        dpkg --configure -a
+        if (whiptail --title "Lite or standard" --yes-button "lite" --no-button "standard" --yesno 'The former is more streamlined' 0 0); then
+            DEPENDENCY_01="--no-install-recommends cinnamon-l10n cinnamon-desktop-environment cinnamon"
+        else
+            DEPENDENCY_01="cinnamon-l10n cinnamon-desktop-environment cinnamon"
+        fi
         if grep -q 'Linux Mint' '/etc/issue'; then
             DEPENDENCY_01="mint-meta-cinnamon mint-meta-core mint-artwork"
         fi
+        dpkg --configure -a
         auto_select_keyboard_layout
-        DEPENDENCY_01="--no-install-recommends cinnamon cinnamon-desktop-environment"
         ;;
     "redhat") DEPENDENCY_01='@Cinnamon Desktop' ;;
-    "arch") DEPENDENCY_01="sddm cinnamon xorg" ;;
+    "arch") DEPENDENCY_01="cinnamon-translations cinnamon" ;;
     "gentoo") DEPENDENCY_01="gnome-extra/cinnamon gnome-extra/cinnamon-desktop gnome-extra/cinnamon-translations" ;;
     "suse") DEPENDENCY_01="cinnamon cinnamon-control-center" ;;
     "solus") printf "ERROR!本工具未适配solus。\n" ;;
@@ -5297,7 +5311,6 @@ debian_install_vnc_server() {
             sed -i -E 's@(configure)@pre\1@' /var/lib/dpkg/info/tightvncserver.postinst
             dpkg --configure -a
         fi
-
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}xfonts-100dpi xfonts-75dpi xfonts-scalable${RESET}"
         if [ ! -s "/usr/share/fonts/X11/100dpi/timR24.pcf.gz" ]; then
             i=xfonts-100dpi
