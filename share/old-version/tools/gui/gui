@@ -492,11 +492,11 @@ standand_desktop_installation() {
     preconfigure_gui_dependecies_02
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为容器，则您只需选择第一或者第二项。\nIf you are using a container,then choose proot_DE or WM.\n若当前环境为虚拟机，则您可以任意挑选项目。" 0 0 0 \
+            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为容器，则您只需选择第一或者第三项。\nIf you are using a container,then choose proot_DE or WM.\n若当前环境为虚拟机，则您可以任意挑选项目。" 0 0 0 \
             "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxqt)" \
-            "2" "🍙 window manager窗口管理器(ice,fvwm)" \
-            "3" "🍔 chroot/docker_DE(kde,dde,gnome-flashback)" \
-            "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome,cinnamon)" \
+            "2" "🍔 chroot/docker_DE(kde,dde,gnome-flashback)" \
+            "3" "🍙 window manager窗口管理器(ice,fvwm)" \
+            "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome)" \
             "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
             "6" "🍤 FAQ:vnc和gui的常见问题" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
@@ -508,45 +508,30 @@ standand_desktop_installation() {
             "1" "🍰 proot_DE(xfce,mate,lxqt)" \
             "2" "🍔 chroot/docker_DE(kde,dde,gnome-flashback)" \
             "3" "🍙 window manager(ice,fvwm)" \
-            "4" "🍱 VM/nspawn_DE(gnome,cinnamon,budgie)" \
+            "4" "🍱 VM/nspawn_DE(gnome)" \
             "5" "🍣 display manager(lightdm,sddm)" \
             "6" "🍤 FAQ" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
     ##########################
-    standand_desktop_installation_menu_zh() {
-        case "${INSTALLDESKTOP}" in
-        0 | "") tmoe_linux_tool_menu ;;
-        1) tmoe_container_desktop ;;
-        2) window_manager_installation ;;
-        3) tmoe_docker_and_chroot_container_desktop ;;
-        4) tmoe_virtual_machine_desktop ;;
-        5) tmoe_display_manager_install ;;
-        6) tmoe_desktop_faq ;;
-        esac
-    }
-    standand_desktop_installation_menu_02() {
+    standand_desktop_installation_menu() {
         case "${INSTALLDESKTOP}" in
         0 | "") tmoe_linux_tool_menu ;;
         1) tmoe_container_desktop ;;
         2) tmoe_docker_and_chroot_container_desktop ;;
         3) window_manager_installation ;;
         4) tmoe_virtual_machine_desktop ;;
-        5) tmoe_display_manager_install ;;
+        5) install_tmoe_display_manager ;;
         6) tmoe_desktop_faq ;;
         esac
     }
+
     case ${TMOE_MENU_LANG} in
-    zh_*UTF-8)
-        standand_desktop_installation_zh
-        standand_desktop_installation_menu_zh
-        ;;
-    *)
-        standand_desktop_installation_en
-        standand_desktop_installation_menu_02
-        ;;
+    zh_*UTF-8) standand_desktop_installation_zh ;;
+    *) standand_desktop_installation_en ;;
     esac
+    standand_desktop_installation_menu
     ##########################
     press_enter_to_return
     standand_desktop_installation
@@ -634,9 +619,9 @@ tmoe_container_desktop() {
     standand_desktop_installation
 }
 ####################
-tmoe_display_manager_install() {
+install_tmoe_display_manager() {
     DEPENDENCY_01=''
-    RETURN_TO_WHERE='tmoe_display_manager_install'
+    RETURN_TO_WHERE='install_tmoe_display_manager'
     INSTALLDESKTOP=$(whiptail --title "单项选择题" --menu \
         "显示管理器(简称DM)是一个在启动最后显示的图形界面,负责管理登录会话。\n Which display manager do you want to install? " 17 50 6 \
         "1" "lightdm:支持跨桌面,可以使用各种前端写的工具" \
@@ -2900,7 +2885,7 @@ cinnamon_warning() {
 }
 ###############
 install_cinnamon_desktop() {
-    cinnamon_warning
+    # cinnamon_warning
     case ${TMOE_PROOT} in
     true)
         REMOTE_DESKTOP_SESSION_01='cinnamon-session'
