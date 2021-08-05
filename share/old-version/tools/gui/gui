@@ -561,8 +561,9 @@ tmoe_docker_and_chroot_container_desktop() {
         "您可以在docker或chroot容器中运行这些桌面\nYou can run these DEs on docker or chroot container." 0 0 0 \
         "1" "🦖 kde plasma5(风格华丽的桌面环境)" \
         "2" "👣 gnome-flashback-metacity" \
-        "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
-        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
+        "3" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
+        "4" "dde(深度deepin桌面,崭新视界,创无止境)" \
+        "5" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -570,8 +571,9 @@ tmoe_docker_and_chroot_container_desktop() {
     0 | "") standand_desktop_installation ;;
     1) install_kde_plasma5_desktop ;;
     2) install_gnome_flashback_desktop ;;
-    3) install_deepin_desktop ;;
-    4) install_ukui_desktop ;;
+    3) install_cinnamon_desktop ;;
+    4) install_deepin_desktop ;;
+    5) install_ukui_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -1084,16 +1086,14 @@ tmoe_virtual_machine_desktop() {
     BETA_DESKTOP=$(whiptail --title "DE" --menu \
         "您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
         "1" "👣 gnome(GNU网络对象模型环境)" \
-        "2" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
-        "3" "🦜 budgie(虎皮鹦鹉基于gnome,优雅且现代化)" \
+        "2" "🦜 budgie(虎皮鹦鹉基于gnome,优雅且现代化)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##############################
     case "${BETA_DESKTOP}" in
     0 | "") standand_desktop_installation ;;
     1) install_gnome3_desktop ;;
-    2) install_cinnamon_desktop ;;
-    3) install_budgie_desktop ;;
+    2) install_budgie_desktop ;;
     esac
     ##################
     press_enter_to_return
@@ -2639,7 +2639,7 @@ install_budgie_desktop() {
     case ${TMOE_PROOT} in
     true)
         REMOTE_DESKTOP_SESSION_01='budgie-panel'
-        REMOTE_DESKTOP_SESSION_02='budgie-wm'
+        REMOTE_DESKTOP_SESSION_02='budgie-desktop'
         ;;
     false | *)
         REMOTE_DESKTOP_SESSION_01='budgie-desktop'
@@ -2840,7 +2840,7 @@ get_ubuntu_desktop_language_pack() {
 
                 cat ${TMP_FILE}
 
-                sed 's@ @\n@g' ${TMP_FILE} | egrep 'language|l10n|i18n' >${TMP_FILE}.2
+                sed 's@ @\n@g' ${TMP_FILE} | egrep 'language|l10n|i18n|locale' >${TMP_FILE}.2
 
                 cat ${TMP_FILE}.2 >>${TMOE_LINUX_DIR}/ubuntu-desktop-language-pack.txt
 
