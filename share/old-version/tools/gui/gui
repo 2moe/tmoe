@@ -2709,7 +2709,7 @@ install_gnome_flashback_desktop() {
         dpkg --configure -a
         auto_select_keyboard_layout
         ;;
-    "redhat") DEPENDENCY_01='@GNOME' ;;
+    "redhat") DEPENDENCY_01='@GNOME gnome-flashback' ;;
     "arch") DEPENDENCY_01='gnome gnome-tweaks gnome-flashback' ;;
     "gentoo")
         GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
@@ -2771,7 +2771,7 @@ install_gnome3_desktop() {
     "redhat")
         #yum groupinstall "GNOME Desktop Environment"
         #dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
-        DEPENDENCY_01='@GNOME'
+        DEPENDENCY_01='@GNOME gnome-flashback'
         ;;
     "arch")
         if (whiptail --title "gnome or gnome-extra" --yes-button "gnome" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome全家桶' 0 0); then

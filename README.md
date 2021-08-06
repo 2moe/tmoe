@@ -604,21 +604,17 @@ Type `tmoe`, then don't press enter, press Tab**⇄** to complete.
 
 #### 3.Debian Container
 
-① Running debian GNU/Linux arm64 container applications on Android system.
+① debian arm64 container.
 ![debian arm64](https://images.gitee.com/uploads/images/2020/0721/190834_db02f784_5617340.png "截图_2020-07-15_13-48-40.png")  
 ![debian version](https://images.gitee.com/uploads/images/2020/0725/022931_5b2aa814_7793225.png "Capture+_2020-07-24-12-36-02.png")  
-② 跨架构支持，在 Qualcomm 高通 arm64 cpu 的手机上借助 qemu-user 来模拟运行 x86(i686)架构的 Debian GNU/Linux，并通过 pulseaudio 来传输音频。  
-Support cross-architecture running containers, use qemu-user-static on Qualcomm arm64 phone to simulate Debian GNU/Linux x86 architecture, and transmit audio through termux pulseaudio server.
+② cross-architecture
+Run x86 container on arm64 host.
 ![debian i386](https://images.gitee.com/uploads/images/2020/0721/192119_96d0b95d_5617340.png "Screenshot_20200721-173852.png")  
 ![arch](https://images.gitee.com/uploads/images/2020/0725/023007_2cb90736_7793225.png "Capture+_2020-07-24-12-40-59.png")
 
 #### 4.Ubuntu Container
 
-① 在 Android 设备上运行的 Ubuntu 容器，你可以通过 VNC 来连接自己；  
-通过 adb 远程来调试自己(Android)；  
-还能通过 scrcpy+adb 调试来实现自己投屏给自己，将手机中 VNC 的画面投屏给手机中的 VNC。  
-For Ubuntu container running on Android device, you can connect to the desktop through a VNC client. And remotely debug this device (Android) through adb.  
-You can also use scrcpy+adb to cast screen.  
+① scrcpy+adb  
 ![ubuntu arm64 scrcpy](https://images.gitee.com/uploads/images/2020/0721/192606_c10e724e_5617340.png "截图_2020-07-18_23-08-59.png")  
 ② Desktop beautification
 
@@ -743,9 +739,7 @@ Configure vnc for plasma5.
 注：在 RDP 下此问题未复现  
 注 2：qemu 虚拟机运行的 Debian+KDE+x11vnc 也没有问题。  
 ![Snipaste_2020-04-12_07-28-58.png](https://i.loli.net/2020/04/18/5g1Nn9DQpPqEhuz.png)  
-4-3.GNOME3 的 VNC 配置脚本也没有问题。  
-Configure vnc for gnome3.  
-虽然在 Proot 容器上跑可能会出问题，但是换 qemu-system 虚拟机后就没问题了。
+4-3.Configure vnc for gnome3.  
 ![Screenshot_20200608-003126.png](https://images.gitee.com/uploads/images/2020/0718/103733_9b989b37_5617340.png)
 
 ### 五.Software configuration 软件配置篇
