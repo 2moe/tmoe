@@ -35,6 +35,11 @@ When I have time, I will write in English!
 
 ![main menu English.ver](https://images.gitee.com/uploads/images/2020/1012/135918_eaccc0da_5617340.png "截图_2020-10-12_13-59-00.png")
 
+#### Enjoy gnome40 on arm64 device
+
+![Screenshot_20210806-221622](https://user-images.githubusercontent.com/25324935/128526303-9c644d80-8588-415e-b23b-fe905280352d.png)
+![Screenshot_20210806-222714](https://user-images.githubusercontent.com/25324935/128526315-02475932-7327-4a8b-8446-2d22e82a77b4.png)
+
 ### 一. Installation
 
 **You can run tmoe-linux manager not only on Android termux, but also on GNU/Linux.**
