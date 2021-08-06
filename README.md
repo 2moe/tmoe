@@ -604,10 +604,10 @@ Type `tmoe`, then don't press enter, press Tab**⇄** to complete.
 
 #### 3.Debian Container
 
-① debian arm64 container.
+① arm64  
 ![debian arm64](https://images.gitee.com/uploads/images/2020/0721/190834_db02f784_5617340.png "截图_2020-07-15_13-48-40.png")  
 ![debian version](https://images.gitee.com/uploads/images/2020/0725/022931_5b2aa814_7793225.png "Capture+_2020-07-24-12-36-02.png")  
-② cross-architecture
+② cross-architecture  
 Run x86 container on arm64 host.
 ![debian i386](https://images.gitee.com/uploads/images/2020/0721/192119_96d0b95d_5617340.png "Screenshot_20200721-173852.png")  
 ![arch](https://images.gitee.com/uploads/images/2020/0725/023007_2cb90736_7793225.png "Capture+_2020-07-24-12-40-59.png")
