@@ -395,7 +395,7 @@ tmoe_electron_music_app() {
     INSTALL_APP=$(whiptail --title "MUSIC APP" --menu \
         "君欲何爲?" 0 0 0 \
         "1" "electron-netease-cloud-music(云音乐)" \
-        "2" "lx-music-desktop(洛雪音乐助手)" \
+        "2" "YesPlayMusic(高颜值的第三方网易云播放器)" \
         "3" "listen1(免费音乐聚合)" \
         "4" "cocomusic(第三方QQ音乐)" \
         "5" "iease-music(界面华丽的云音乐客户端)" \
@@ -406,13 +406,14 @@ tmoe_electron_music_app() {
     case "${INSTALL_APP}" in
     0 | "") electron_apps_main_menu ;;
     1) install_electron_netease_cloud_music ;;
-    2) install_lx_music_desktop ;;
+    2) install_yes_play_music ;;
     3) install_listen1 ;;
     4) install_coco_music ;;
     5) install_iease_music ;;
     6) install_electron_petal ;;
     esac
     ##########################
+    # 2) install_lx_music_desktop ;;
     #      "7" "chord(支持虾米、云音乐、qq音乐多平台)" \
     #    7) install_electron_chord ;;
     #"7" "feeluown(x64,支持网易云、虾米)" \
@@ -458,6 +459,11 @@ install_electron_netease_cloud_music() {
 install_listen1() {
     DEPENDENCY_01='listen1'
     printf "%s\n" "github url：${YELLOW}https://github.com/listen1/listen1_desktop${RESET}"
+}
+################
+install_yes_play_music() {
+    DEPENDENCY_01='yesplaymusic'
+    printf "%s\n" "github url：${YELLOW}https://github.com/qier222/YesPlayMusic${RESET}"
 }
 ################
 install_lx_music_desktop() {
