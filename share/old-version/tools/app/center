@@ -1029,7 +1029,7 @@ install_netease_163_cloud_music() {
     printf "%s\n" "正在从优麒麟软件仓库获取最新的网易云音乐版本号..."
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://music.163.com/st/download${RESET}"
-    LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
+    LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/partner/'
     THE_LATEST_DEB_VERSION=$(curl -L ${LATEST_DEB_REPO} | grep "${DEPENDENCY_01}" | cut -d '=' -f 5 | cut -d '"' -f 2 | head -n 1)
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
@@ -1069,7 +1069,6 @@ install_netease_163_cloud_music() {
         esac
         case "${ARCH_TYPE}" in
         "amd64")
-            LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/'
             download_ubuntu_kylin_deb_file_model_02
             #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o netease-cloud-music.deb "http://d1.music.126.net/dmusic/netease-cloud-music_1.2.1_amd64_ubuntu_20190428.deb"
             ;;
