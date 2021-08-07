@@ -9,7 +9,7 @@
 
 If you want to understand the extended usage of containers, then you can read this [document](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md).  
 I'm really sorry, this is a document written in Chinese.  
-When I have time, I (maybe) will rewrite in English.
+When I have time, I (maybe) rewrite in English.
 
 额外[文档](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md)
 
