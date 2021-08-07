@@ -9,7 +9,9 @@
 
 If you want to understand the extended usage of containers, then you can read this [document](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md).  
 I'm really sorry, this is a document written in Chinese.  
-When I have time, I will write in English!
+When I have time, I (maybe) will rewrite in English.
+
+额外[文档](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md)
 
 ## 介绍 Introduction
 
@@ -721,11 +723,11 @@ This tool is adapted to different systems and different virtualization environme
 - [x] **xfce4**
 - [x] **lxde**
 - [x] **mate**
-- [ ] **lxqt**
-- [ ] **kde plasma 5**
-- [ ] **cinnamon**
-- [ ] **gnome 3**
-- [ ] **deepin desktop**
+- [x] **lxqt**
+- [x] **kde plasma 5**
+- [x] **cinnamon**
+- [x] **gnome 3**
+- [x] **deepin desktop**
 
 > 注 1：Only some systems support desktop environment installation.  
 > 仅部分系统支持  
@@ -751,7 +753,7 @@ Configure vnc for plasma5.
 
 1.提供了某些官方软件源中不包含的软件包，例如 vscode。
 ![vscode_desktop_version](https://s1.ax1x.com/2020/04/23/JUWnW6.jpg)  
-You can install vscode in the container of your phone.
+You can install vscode in the container.
 你可以在手机的容器里安装 vscode。  
 2.对于部分工具提供了配置管理功能，例如 arm64 的 vscode-server。  
 3.对于特定虚拟化环境下运行报错的应用执行打补丁操作。  
@@ -768,9 +770,7 @@ In addition, the **mipsel** architecture is also supported! The developer has te
 
 2020-03-24 已经支持 **mipsel** 架构了！(已经在路由器上测试过了 🍥)
 
-可能支持 **RISC-V** (靠理论知识写出来的，未实际测试。由于现在暂时无法构建 risc-v 的基础容器镜像，故只能靠 qemu 在 risc-v 的设备上模拟其它架构的系统。）
-
-这可能是你见过的为数不多的，全架构 ~~、全平台~~ 项目。 ~~（win10 仅支持 wsl，不是全平台)~~
+可能支持 **RISC-V** (未测试）
 
 Containers other than debian may only support mainstream architectures, not s390x and ppc64el.
 其它系统容器可能只支持主流的 amd64、arm64 等架构，不支持 s390x 和 ppc64el 等冷门架构。
