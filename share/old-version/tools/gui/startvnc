@@ -325,15 +325,20 @@ start_tmoe_xvnc() {
 ###################
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
+        case $(id -u) in
+        0) unset SUDO ;;
+        *) SUDO="sudo" ;;
+        esac
+
         if [[ -e /etc/init.d/dbus ]]; then
             printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
-            sudo service dbus start
-            sudo service dbus status | head -n 3
+            ${SUDO} service dbus start
+            ${SUDO} service dbus status | head -n 3
         else
             printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
             case ${TMOE_CHROOT} in
             true | false) ;;
-            *) sudo systemctl start dbus ;;
+            *) ${SUDO} systemctl start dbus ;;
             esac
         fi
     fi
