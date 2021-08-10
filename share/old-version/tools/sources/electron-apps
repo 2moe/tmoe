@@ -19,11 +19,12 @@ electron_apps_main_menu() {
         "2" "📺 videos视频:全网影视搜索,无损切割视频" \
         "3" "📝 notes笔记:记录灵感,撰写文档,整理材料,回顾日记" \
         "4" "🍎 virtual machine虚拟机:win95,macos8" \
-        "5" "sns社交:electron-qq" \
-        "6" "👾 development程序开发:神经网络,深度学习" \
-        "7" "⚛️ electron manager" \
+        "5" "👾 development程序开发:神经网络,深度学习" \
+        "6" "⚛️ electron manager" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
+    # "5" "sns社交:electron-qq" \
+    # 5) tmoe_electron_sns_app ;;
     ##############
     case "${INSTALL_APP}" in
     0 | "") software_center ;;
@@ -31,9 +32,8 @@ electron_apps_main_menu() {
     2) tmoe_electron_video_app ;;
     3) tmoe_electron_note_app ;;
     4) tmoe_electron_virtual_machine_app ;;
-    5) tmoe_electron_sns_app ;;
-    6) tmoe_electron_development_app ;;
-    7) electron_manager ;;
+    5) tmoe_electron_development_app ;;
+    6) electron_manager ;;
     esac
     ##########################
     press_enter_to_return
