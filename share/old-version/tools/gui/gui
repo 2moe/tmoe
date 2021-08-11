@@ -5660,7 +5660,7 @@ first_configure_startvnc() {
     fi
     printf "%s\n" "${GREEN}tightvnc+tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"
-    printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands.${GREEN}startvnc, startxsdl, startx11vnc${RESET} & ${PURPLE}stopvnc${RESET}"
+    printf "%s\n" "If you don't want to read these instructions, then you only need to remember 4 commands: ${GREEN}startvnc, startxsdl, startx11vnc${RESET} & ${PURPLE}stopvnc${RESET}"
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         press_enter_to_continue
     fi
