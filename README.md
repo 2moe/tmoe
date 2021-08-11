@@ -4,7 +4,7 @@
   . <(curl -L git.io/linux.sh)
 ```
 
-> If you do not understand the following readme, please submit an [issue](https://github.com/2moe/tmoe-linux/issues/new), or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)  
+> If you do not understand the following readme, please report an [issue](https://github.com/2moe/tmoe-linux/issues/new), or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)  
 > 化繁为简，让 GNU/Linux 的乐趣触手可及。
 
 If you want to understand the extended usage of containers, then read this [document](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md).  
@@ -14,7 +14,7 @@ I'm really sorry, this is a document written in Chinese.
 
 ~~注：新版很有可能用 rust 重写。  
 咕咕咕，等到 2022 年应该就能完成了吧？  
-旧版的功能有点太多了，重写将会很花时间。开发者已经不想动了，甚至想要一直咕下去｡ﾟ・ (>﹏<) ・ﾟ｡~~
+旧版的功能有点多，重写将会很花时间。开发者已经不想动了，甚至想要一直咕下去｡ﾟ・ (>﹏<) ・ﾟ｡~~
 
 ## 介绍 Introduction
 
@@ -97,9 +97,10 @@ bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
 最后按方向键和回车键进行操作。  
 Finally, press Enter and arrow keys to operate.
 
-> 注：WSL 请选择安装工具  
 > When it prompts **Tool** or **Manager**, please choose **Tool**  
-> 后期注：建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。
+> 注：当提示 tool or manager 时，请选择 tool。  
+> 建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。  
+> 虽然 WSL 支持自定义导入 rootfs, 但是 tmoe 没有适配这个功能。~~(咕，后期可能会支持)~~
 
 #### 2.Android-Termux
 
