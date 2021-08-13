@@ -64,24 +64,24 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	# mounts
 
 	MOUNT_SD=true
-	SD_DIR_01="/data/media/0"
-	SD_DIR_02="/storage/self/primary"
-	SD_DIR_03="/sdcard"
-	SD_DIR_04="${HOME}/sd"
-	SD_DIR_05="${HOME}/Downloads"
-	SD_DIR_06="${HOME}/Download"
-	# let SD_MOUNT_POINT = String::from("/media/sd");
+	SD_DIR_0="/data/media/0"
+	SD_DIR_1="/storage/self/primary"
+	SD_DIR_2="/sdcard"
+	SD_DIR_3="${HOME}/sd"
+	SD_DIR_4="${HOME}/Downloads"
+	SD_DIR_5="${HOME}/Download"
+	# let sd_mount_point = String::from("/media/sd");
 	# The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
 	# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 
 	MOUNT_TERMUX=true
 	# If the value is "false", the relevant directory will not be mounted. Default is true.
 	TERMUX_DIR="/data/data/com.termux/files/home"
-	# let TERMUX_MOUNT_POINT = String::from("/media/termux");
+	# let termux_mount_point = String::from("/media/termux");
 
 	MOUNT_TF=true
 	TF_CARD_LINK="${HOME}/storage/external-1"
-	# let TF_MOUNT_POINT = String::from("/media/tf");
+	# let tf_mount_point = String::from("/media/tf");
 	# The value of TF_CARD_LINK is a symbolic link file.
 	# TF_CARD_LINK的值为一个软链接文件
 
@@ -97,16 +97,17 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
 	################
 	# shells
+	# let mut shells: Vec<&str> = vec!["zsh", "fish", "bash", "ash", "su"];
 
-	DEFAULT_LOGIN_SHELL_01=zsh
+	DEFAULT_LOGIN_SHELL_0="zsh"
 	# The default login shell is zsh.
 	# 默认登录shell是zsh
 	# Die Standard-Login-Shell ist zsh.
 
-	DEFAULT_LOGIN_SHELL_02=fish
-	DEFAULT_LOGIN_SHELL_03=bash
-	DEFAULT_LOGIN_SHELL_04=ash
-	DEFAULT_LOGIN_SHELL_05=su
+	DEFAULT_LOGIN_SHELL_1="fish"
+	DEFAULT_LOGIN_SHELL_2="bash"
+	DEFAULT_LOGIN_SHELL_3="ash"
+	DEFAULT_LOGIN_SHELL_4="su"
 	# The lower the number, the higher the priority.
 	################
 	# unshare
@@ -321,10 +322,10 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	            sd)
 	                SD_MOUNT_POINT="/media/sd"
 	                if [[ \${MOUNT_SD} = true ]]; then
-	                    if [[ "\$(su -c "ls \${SD_DIR_01}" 2>/dev/null)" ]]; then
-	                        su -c "\${TMOE_MOUNT} -o bind \${SD_DIR_01} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
+	                    if [[ "\$(su -c "ls \${SD_DIR_0}" 2>/dev/null)" ]]; then
+	                        su -c "\${TMOE_MOUNT} -o bind \${SD_DIR_0} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
 	                    else
-	                        for i in "\${SD_DIR_02}" "\${SD_DIR_03}" "\${SD_DIR_04}" "\${SD_DIR_05}" "\${SD_DIR_06}"; do
+	                        for i in "\${SD_DIR_1}" "\${SD_DIR_2}" "\${SD_DIR_3}" "\${SD_DIR_4}" "\${SD_DIR_5}"; do
 	                            if [[ -e \${i} ]]; then
 	                                su -c "\${TMOE_MOUNT} -o bind \${i} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
 	                                break
@@ -386,7 +387,7 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	    # CHECK SHELL
 	    [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
 	    if [[ -z \${TMOE_SHELL} ]]; then
-	        for i in \${DEFAULT_LOGIN_SHELL_01} \${DEFAULT_LOGIN_SHELL_02} \${DEFAULT_LOGIN_SHELL_03} \${DEFAULT_LOGIN_SHELL_04} \${DEFAULT_LOGIN_SHELL_05}; do
+	        for i in \${DEFAULT_LOGIN_SHELL_0} \${DEFAULT_LOGIN_SHELL_1} \${DEFAULT_LOGIN_SHELL_2} \${DEFAULT_LOGIN_SHELL_3} \${DEFAULT_LOGIN_SHELL_4}; do
 	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \${ROOTFS_DIR}/bin/\${i} ]]; then
 	                TMOE_SHELL="/bin/\${i}"
 	                break

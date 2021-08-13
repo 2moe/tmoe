@@ -196,7 +196,13 @@ environment_variables_and_automatic_startup_script_management() {
 	10) switch_container_engine_bin_file ;;
 	11)
 		MOUNT_VAR="MOUNT_SD"
-		MOUNT_SOURCE_VAR="SD_DIR_01"
+		MOUNT_SOURCE_VAR="SD_DIR_0"
+		MOUNT_SOURCE_ORG="SD_DIR_01"
+
+		if ! grep -q "${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
+			MOUNT_SOURCE_VAR=${MOUNT_SOURCE_ORG}
+		fi
+
 		MOUNT_POINT_VAR="SD_MOUNT_POINT"
 		mount_dir_to_container
 		;;
@@ -363,7 +369,14 @@ mount_dir_to_container() {
 	egrep --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_login_shell() {
-	CURRENT_SHELL=$(grep '^DEFAULT_LOGIN_SHELL_01=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	LOGIN_SHELL_VAR="DEFAULT_LOGIN_SHELL_0"
+	LOGIN_SHELL_ORG="DEFAULT_LOGIN_SHELL_01"
+
+	if ! grep -q "${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
+		LOGIN_SHELL_VAR=${LOGIN_SHELL_ORG}
+	fi
+
+	CURRENT_SHELL=$(grep "^${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 	ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
 		"1" "zsh" \
 		"2" "fish" \
@@ -389,8 +402,8 @@ switch_login_shell() {
 	8) DEFAULT_SHELL=pdksh ;;
 	9) DEFAULT_SHELL=tcsh ;;
 	esac
-	${TMOE_PREFIX} sed -i -E "s@^(DEFAULT_LOGIN_SHELL_01=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	egrep --color=auto '^[^#]*DEFAULT_LOGIN_SHELL_01=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	${TMOE_PREFIX} sed -i -E "s@^(${LOGIN_SHELL_VAR}=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	egrep --color=auto "^[^#]*${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 ####################
 switch_nspawn_boot_mode() {
