@@ -1054,7 +1054,7 @@ micro $(command -v startvnc)
 
 ##### 2020-04-20 更新日志
 
-- 1.支持安装其它版本的 VSCode,包括 VS Codium,VS Code OSS,以及官方版的 VScode。
+- 1.支持安装其它版本的 VSCode,包括 VS Codium,VS Code OSS,以及官方版的 VSCode。
 - 自动识别除 i\*86 外的主流架构，自动获取最新链接，对 deb 系和红帽系进行分别适配，其它发行版以 tar 压缩包形式进行安装，解压至/usr/local/bin 目录。
 - 2.在服务器上实现了自动构建(获取最新版+重新打包配置) VSCode Server (web 版)。  
   每隔一两周，当检测到新版时，远程服务器就会自动更新，完成后将自动同步至国内的 gitee 仓库。因此远程始终都是新版，但是本地的话，得要根据您下载的时间而定，不会自动更新。

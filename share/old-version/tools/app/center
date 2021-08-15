@@ -36,7 +36,7 @@ software_center() {
         whiptail --title "Software center-01" --menu \
             "君欲何爲？" 0 50 0 \
             "1" "🦊 Browser:浏览器(edge,firefox,chromium)" \
-            "2" "📘 Dev:开发(VScode,Pycharm,Android-Studio,idea)" \
+            "2" "📘 Dev:开发(VSCode,Pycharm,Android-Studio,idea)" \
             "3" "⚛️ electron-apps(云音乐,哔哩哔哩,cocomusic)" \
             "4" "🎵 Multimedia:图像与影音(gimp,mpv)" \
             "5" "🐧 SNS:社交类(qq,wechat,skype)" \

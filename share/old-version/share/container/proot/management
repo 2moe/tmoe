@@ -31,7 +31,7 @@ proot_management_menu() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "⏹️ 停止容器进程" \
-			"3" "🐯 启动远程桌面" \
+			"3" "🐯 启动x11/tigervnc" \
 			"4" "🍧 环境变量与登录项管理" \
 			"5" "🥤 edit script 编辑脚本" \
 			"6" "💔 unmount & remove 卸载并移除" \
