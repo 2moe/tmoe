@@ -31,7 +31,7 @@ proot_management_menu() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
 			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
 			"2" "⏹️ 停止容器进程" \
-			"3" "🐯 启动x11/tigervnc" \
+			"3" "🐯 启动gui: x11/tiger vnc" \
 			"4" "🍧 环境变量与登录项管理" \
 			"5" "🥤 edit script 编辑脚本" \
 			"6" "💔 unmount & remove 卸载并移除" \
@@ -520,33 +520,33 @@ readme_of_env_var_and_autostartup_script() {
 start_gui_menu() {
 	start_gui_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
-			"1" "🐯 startvnc(tiger/tight)" \
-			"2" "⚒️ startxsdl" \
-			"3" "🍬 novnc(HTML5 VNC client)" \
-			"4" "⚔️ startx11vnc" \
-			"5" "tightvnc (only for debian,ubuntu,kali)" \
+			"1" "⚔️ startx11vnc" \
+			"2" "🐯 startvnc(tiger/tight)" \
+			"3" "⚒️ startxsdl" \
+			"4" "🍬 novnc(HTML5 VNC client)" \
+			"5" "tightvnc (only for debian,ubuntu &kali)" \
 			"6" "tigervnc" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
 	start_gui_menu_cn() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
-			"1" "🐯 startvnc:启动tiger/tightvnc" \
-			"2" "⚒️ startxsdl:启动xsdl/VcXsrv" \
-			"3" "🍬 novnc:在浏览器里连接vnc" \
-			"4" "⚔️ startx11vnc:启动x11vnc" \
-			"5" "tightvnc (only for debian,ubuntu,kali)" \
+			"1" "⚔️ startx11vnc:启动x11vnc" \
+			"2" "🐯 startvnc:启动tiger/tightvnc" \
+			"3" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+			"4" "🍬 novnc:在浏览器里连接vnc" \
+			"5" "tightvnc (only for debian,ubuntu &kali)" \
 			"6" "tigervnc" \
 			"0" "🌚 back 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
 	start_gui_menu_de() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
-			"1" "🐯 startvnc(tiger/tight)" \
-			"2" "⚒️ startxsdl" \
-			"3" "🍬 novnc(HTML5 VNC client)" \
-			"4" "⚔️ startx11vnc" \
-			"5" "tightvnc (only for debian,ubuntu,kali)" \
+			"1" "⚔️ startx11vnc" \
+			"2" "🐯 startvnc (tiger/tight)" \
+			"3" "⚒️ startxsdl" \
+			"4" "🍬 novnc (HTML5 VNC client)" \
+			"5" "tightvnc (only for debian,ubuntu &kali)" \
 			"6" "tigervnc" \
 			"0" "🌚 zurück" \
 			3>&1 1>&2 2>&3)
@@ -559,10 +559,10 @@ start_gui_menu() {
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") ${RETURN_TO_WHERE} ;;
-	1) start_gnu_linux_distro_tigervnc ;;
-	2) start_gnu_linux_distro_x ;;
-	3) install_web_novnc ;;
-	4) start_gnu_linux_distro_x11vnc ;;
+	1) start_gnu_linux_distro_x11vnc ;;
+	2) start_gnu_linux_distro_tigervnc ;;
+	3) start_gnu_linux_distro_x ;;
+	4) install_web_novnc ;;
 	5)
 		EXEC_PROGRAM='tightvnc'
 		startvnc_and_exec_program
