@@ -1735,9 +1735,9 @@ opensuse_warning() {
 		*)
 			cat <<-EOF
 				${RED}WARNING！${RESET}检测到您使用的是Android系统。
-				本镜像支持GNU/Linux的proot/chroot容器,但不支持termux-proot。
-				经测试在termux的proot环境下存在无法检索到软件包的情况，但GNU/Linux的proot却不存在此问题。
-				若您执意要安装OpenSUSE tumbleweed,则请按回车键。
+				由于LXC的rootfs镜像文件的问题，在termux的proot环境下存在无法检索到软件包的情况。
+				但是 opensuse 的docker rootfs （可能）不存在此问题。  
+				若您想要安装OpenSUSE tumbleweed proot容器, 则请手动将 opensuse 的 lxc rootfs 文件替换为 docker rootfs。  
 			EOF
 			do_you_want_to_continue
 			;;

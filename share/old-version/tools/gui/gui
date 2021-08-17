@@ -2418,6 +2418,7 @@ kde_warning() {
   ║---║------------║--------║--------║---------║
   ║   ║            ║        ║        ║         ║
   ║ 6 ║Alpine      ║  ✓     ║   ?    ║   ?     ║
+
 ENDofTable
 
     case "${TMOE_PROOT}" in
@@ -2464,7 +2465,7 @@ choose_kde_or_kubuntu() {
 }
 choose_arch_kde_lite_or_full() {
     if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde全家桶' 0 0); then
-        DEPENDENCY_01="plasma-desktop xorg konsole discover"
+        DEPENDENCY_01="plasma-desktop xorg konsole pcmanfm-qt discover"
     else
         DEPENDENCY_01="plasma-meta kde-applications-meta plasma-wayland-session sddm sddm-kcm"
     fi
@@ -2531,7 +2532,7 @@ install_kde_plasma5_desktop() {
         ;;
     "arch")
         # sddm sddm-kcm
-        DEPENDENCY_01="plasma-desktop xorg konsole discover"
+        DEPENDENCY_01="plasma-desktop xorg konsole pcmanfm-qt discover"
         ;;
     "void") DEPENDENCY_01="kde" ;;
     "gentoo")
