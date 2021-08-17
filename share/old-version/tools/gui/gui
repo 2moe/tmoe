@@ -493,8 +493,8 @@ standand_desktop_installation() {
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
             "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为容器，则您只需选择第一或者第三项。\nIf you are using a container,then choose proot_DE or WM.\n若当前环境为虚拟机，则您可以任意挑选项目。" 0 0 0 \
-            "1" "🍰 proot_DE(proot容器可运行:xfce,mate,lxqt)" \
-            "2" "🍔 chroot/docker_DE(kde,dde,gnome-flashback)" \
+            "1" "🍰 proot_DE(proot容器可运行:xfce,kde,mate,lxqt)" \
+            "2" "🍔 chroot/docker_DE(dde,ukui,gnome-flashback)" \
             "3" "🍙 window manager窗口管理器(ice,fvwm)" \
             "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome)" \
             "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
@@ -505,8 +505,8 @@ standand_desktop_installation() {
     standand_desktop_installation_en() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
             "If you are using a container,then choose proot_DE or WM.\nIf you are using a virtual machine,you can choose any one" 0 0 0 \
-            "1" "🍰 proot_DE(xfce,mate,lxqt)" \
-            "2" "🍔 chroot/docker_DE(kde,dde,gnome-flashback)" \
+            "1" "🍰 proot_DE(xfce,kde,mate,lxqt)" \
+            "2" "🍔 chroot/docker_DE(dde,gnome-flashback)" \
             "3" "🍙 window manager(ice,fvwm)" \
             "4" "🍱 VM/nspawn_DE(gnome)" \
             "5" "🍣 display manager(lightdm,sddm)" \
@@ -544,21 +544,19 @@ tmoe_desktop_faq() {
 tmoe_docker_and_chroot_container_desktop() {
     INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
         "您可以在docker或chroot容器中运行这些桌面\nYou can run these DEs on docker or chroot container." 0 0 0 \
-        "1" "🦖 kde plasma5(风格华丽的桌面环境)" \
-        "2" "👣 gnome-flashback-metacity" \
-        "3" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
-        "4" "dde(深度deepin桌面,崭新视界,创无止境)" \
-        "5" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
+        "1" "👣 gnome-flashback-metacity" \
+        "2" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
+        "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
+        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") standand_desktop_installation ;;
-    1) install_kde_plasma5_desktop ;;
-    2) install_gnome_flashback_desktop ;;
-    3) install_cinnamon_desktop ;;
-    4) install_deepin_desktop ;;
-    5) install_ukui_desktop ;;
+    1) install_gnome_flashback_desktop ;;
+    2) install_cinnamon_desktop ;;
+    3) install_deepin_desktop ;;
+    4) install_ukui_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -570,21 +568,23 @@ tmoe_container_desktop() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
             "1" "🐭 xfce(兼容性高,简单优雅)" \
-            "2" "xfce-lite(精简化安装,未美化)" \
-            "3" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
-            "4" "🕊️ lxde(轻量化桌面,资源占用低)" \
-            "5" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
+            "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+            "3" "xfce-lite(精简化安装,未美化)" \
+            "4" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
+            "5" "🕊️ lxde(轻量化桌面,资源占用低)" \
+            "6" "🌿 mate(GNOME2的延续,让用户体验更舒适的环境)" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
     tmoe_container_desktop_en() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "Which desktop environment do you want to install? " 0 0 0 \
-            "1" "🐭 xfce(elegant, high compatibility)" \
-            "2" "xfce-lite(not-beautified)" \
-            "3" "🐦 lxqt" \
-            "4" "🕊️ lxde(lightweight)" \
-            "5" "🌿 mate(the continuation of GNOME 2)" \
+            "1" "🐭 xfce (elegant, high compatibility)" \
+            "2" "🦖 kde plasma5 (gorgeous style)" \
+            "3" "xfce-lite (not-beautified)" \
+            "4" "🐦 lxqt" \
+            "5" "🕊️ lxde (lightweight)" \
+            "6" "🌿 mate (the continuation of GNOME 2)" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -600,19 +600,20 @@ tmoe_container_desktop() {
         REMOVE_UDISK2=true
         install_xfce4_desktop
         ;;
-    2)
+    2) install_kde_plasma5_desktop ;;
+    3)
         REMOVE_UDISK2=true
         install_xfce4_lite_desktop
         ;;
-    3)
+    4)
         REMOVE_UDISK2=true
         install_lxqt_desktop
         ;;
-    4)
+    5)
         REMOVE_UDISK2=true
         install_lxde_desktop
         ;;
-    5) install_mate_desktop ;;
+    6) install_mate_desktop ;;
     esac
     ##########################
     press_enter_to_return
@@ -2394,7 +2395,7 @@ kde_warning() {
     download_and_cat_icon_img
     cat <<-'ENDofTable'
     KDE plasma 5桌面支持表格
-    以下数据不适用于proot容器
+    以下数据不适用于proot
   ╔═══╦════════════╦════════╦════════╦═════════╦
   ║   ║vnc/xserver ║        ║        ║         ║
   ║   ║----------- ║ x11vnc ║tigervnc║ xrdp    ║
@@ -2423,9 +2424,12 @@ ENDofTable
     true)
         printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！"
         if ! grep -qi 'Bionic' /etc/os-release; then
-            printf "%s\n" "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
-            printf "%s\n" "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
-            printf "%s\n" "您也可以换用chroot容器,再安装本桌面。"
+            # printf "%s\n" "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
+            # printf "%s\n" "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
+            printf "%s\n" "如需在termux-proot容器中安装，则请先确保termux 的 ${GREEN}proot${RESET} 为 ${PURPLE}最新${RESET} 版本。您可以回到termux原系统，然后执行${GREEN}pkg ${YELLOW}up -y${RESET}"
+            printf "%s\n" "If the current environment is termux-proot, please ensure that ${GREEN}proot${RESET} is up to date."
+            printf "%s\n" "In a proot environment, it may take you several minutes to start kde."
+            # printf "%s\n" "您也可以换用chroot容器,再安装本桌面。"
         fi
         ;;
     false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，尽情享受Plasma桌面带来的乐趣吧！" ;;
@@ -2563,16 +2567,15 @@ install_kde_plasma5_desktop() {
 }
 ##################
 tips_of_tiger_vnc_server() {
-    printf "%s\n" "在您使用虚拟机安装本桌面的过程中，当提示tight/tiger vnc时,请选择tiger。若未弹出提示内容，则您可以前往本工具的vnc配置选项手动切换服务端，或使用x11vnc"
+    printf "%s\n" "在您使用虚拟机或容器安装本桌面的过程中，当提示tight/tiger vnc时,请选择tiger。若未弹出提示内容，则您可以前往本工具的vnc配置选项手动切换服务端，或使用x11vnc"
     printf "%s\n" "Since tightvnc may not be able to connect to this desktop normally, please choose tiger or x11vnc server."
 }
 ##################
 tmoe_desktop_warning() {
     case "${TMOE_PROOT}" in
     true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}本桌面可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
-    false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
-    no) printf "%s\n" "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
+    #  false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
     tips_of_tiger_vnc_server
     do_you_want_to_continue
 }
