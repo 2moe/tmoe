@@ -16,7 +16,7 @@ NOVNC_STARTUP_SCRIPT="${NOVNC_UTILS_DIR}/launch.sh"
 NOVNC_PORT="36080"
 if [[ $(command -v Xvnc) || $(command -v vncsession) ]]; then
 	STARTVNC_COMMAND='startvnc'
-	CURRENT_PORT=$(grep '^TMOE_VNC_DISPLAY_NUMBER=' $(command -v ${STARTVNC_COMMAND}) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+	CURRENT_PORT=$(grep '^VNC_DISPLAY=' $(command -v ${STARTVNC_COMMAND}) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 	CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 else
 	STARTVNC_COMMAND='startx11vnc'

@@ -572,7 +572,7 @@ choose_xfce_distro() {
 	esac
 }
 choose_kde_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "If you are using proot,try using ubuntu-bionic.\nIf you are using chroot,you can choose anyone." 0 50 0 \
+	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
 		"1" "🍛 Ubuntu bionic(arm64,armhf)" \
 		"2" "🌉 Arch(arm64,amd64):simplicity,modernity,pragmatism" \
 		"3" "🍥 Debian sid(arm64,amd64)" \

@@ -40,7 +40,7 @@ frequently_asked_questions() {
         printf "%s\n" "仅当TMOE_CHROOT变量的值为true时，即您使用的是tmoe-manager安装的chroot/docker容器，dbus-daemon才会自动启动。"
         printf "%s\n" "若您使用的非tmoe-linux容器，则需要手动启动。"
         printf "%s\n" "启动命令为sudo dbus-daemon --system --fork"
-        printf "%s\n" "您可以输入rm /run/dbus/pid来删除pid文件。"
+        printf "%s\n" "您可以输入rm /var/run/dbus/pid来删除pid文件。"
         ;;
     5)
         printf "%s\n" "${YELLOW}按回车键卸载gvfs和udisks2${RESET}"

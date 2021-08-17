@@ -24,7 +24,7 @@ else
 	mips64) ARCH_TYPE="mips64el" ;;
 	mips*) ARCH_TYPE="mipsel" ;; #经测试uname -m输出的结果为mips，而不是mipsel
 	risc*) ARCH_TYPE="riscv64" ;;
-	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "$(uname -m)" "unknown architecture" ;;
+	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "${UNAME_ARCH}" "unknown architecture" ;;
 	esac
 fi
 TRUE_ARCH_TYPE=${ARCH_TYPE}
@@ -989,7 +989,7 @@ esac
 ##################
 #case ${TMOE_CHROOT} in
 #true)
-#rm -f /run/dbus/pid 2>/dev/null
+#rm -f /var/run/dbus/pid 2>/dev/null
 #dbus-daemon --system --fork 2>/dev/null;;
 #esac
 ############

@@ -224,7 +224,7 @@ switch_tight_or_tiger_vncserver() {
 }
 #################
 check_tightvnc_port() {
-    CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' $(command -v startvnc) | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
+    CURRENT_PORT=$(grep 'VNC_DISPLAY=' $(command -v startvnc) | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
     CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
 }
 #########################
@@ -238,7 +238,7 @@ modify_tightvnc_display_port() {
         printf "%s\n" "Please enter a valid value"
     else
         sed -i "s@tmoe-linux.*:.*@tmoe-linux :${TARGET}@" "$(command -v startvnc)"
-        sed -i "s@TMOE_VNC_DISPLAY_NUMBER=.*@TMOE_VNC_DISPLAY_NUMBER=${TARGET}@" "$(command -v startvnc)"
+        sed -i "s@VNC_DISPLAY=.*@VNC_DISPLAY=${TARGET}@" "$(command -v startvnc)"
         printf '%s\n' 'Your current VNC port has been modified.'
         check_tightvnc_port
         printf "%s\n" "Current display number is ${BLUE}${CURRENT_PORT}${RESET}"
@@ -1088,7 +1088,8 @@ tmoe_virtual_machine_desktop() {
 configure_vnc_xstartup() {
     auto_install_and_configure_fcitx4
     #[[ -d "/var/run/dbus" ]] || mkdir -pv /var/run/dbus
-    mkdir -pv /run/dbus /var/run/dbus /var/lib/dbus/
+    mkdir -pv /run/dbus /var/lib/dbus/
+    ln -svf /run /var/
     #if [ ! -s "/etc/machine-id" ]; then
     if [[ $(command -v dbus-uuidgen) ]]; then
         printf "%s\n" "$(dbus-uuidgen)" >"/etc/machine-id" 2>/dev/null
@@ -5796,7 +5797,7 @@ choose_vnc_port_5902_or_5903() {
         fi
     fi
     sed -i -E "s@(tmoe-linux) :.*@\1 :${DISPLAY_PORT}@" "$(command -v startvnc)"
-    sed -i -E "s@(TMOE_VNC_DISPLAY_NUMBER)=.*@\1=${DISPLAY_PORT}@" "$(command -v startvnc)"
+    sed -i -E "s@(VNC_DISPLAY)=.*@\1=${DISPLAY_PORT}@" "$(command -v startvnc)"
 }
 check_vnc_passsword_length() {
     PASSWORD_LENGTH=$(printf '%s' ${TARGET_VNC_PASSWD} | wc -L)

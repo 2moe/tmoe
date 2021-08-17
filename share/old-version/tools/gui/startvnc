@@ -10,7 +10,8 @@ VNC_RESOLUTION=1440x720
 # 默认分辨率为1440x720,您可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
 # Die Standardauflösung ist 1440x720
 
-TMOE_VNC_DISPLAY_NUMBER=2
+VNC_DISPLAY=2
+RFB_PORT=$((5900 + ${VNC_DISPLAY}))
 # If the display number=2,then vnc port=5902.
 # 若显示编号为2,则vnc端口为$((5900+2))=5902。
 # Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
@@ -83,7 +84,7 @@ CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
 BOLD=$(printf '\033[1m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
-printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:$((${TMOE_VNC_DISPLAY_NUMBER} + 5900))${RESET}"
+printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}${RFB_PORT}${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:${RFB_PORT}${RESET}"
 export USER=${VNC_USER}
 [[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
 ###################
@@ -201,28 +202,24 @@ tmoe_vnc_preconfigure() {
     check_wsl
 }
 ###################
-check_vnc_port() {
-    CURRENT_PORT=${TMOE_VNC_DISPLAY_NUMBER}
-    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
-}
 check_vnc_ip() {
-    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${CURRENT_VNC_PORT}@")
-    TMOE_IPV6_ADDR=$(ip -6 -c a | grep '/' | grep -v 'fe80::.*/64' | awk '{print $2}' | cut -d '/' -f 1 | sed "s@^@[@g;s@\$@]:${CURRENT_VNC_PORT}@g")
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@\$@:${RFB_PORT}@")
+    TMOE_IPV6_ADDR=$(ip -6 -c a | grep '/' | grep -v 'fe80::.*/64' | awk '{print $2}' | cut -d '/' -f 1 | sed "s@^@[@g;s@\$@]:${RFB_PORT}@g")
 }
 display_vnc_ip_addr() {
-    check_vnc_port
+    # check_vnc_port
     check_vnc_ip
     case ${TMOE_LANG} in
     zh_*UTF-8)
         cat <<-EOF
-正在启动vnc服务,${YELLOW}本机${RESET}vnc地址 ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
+正在启动vnc服务,${YELLOW}本机${RESET}vnc地址 ${BLUE}localhost${GREEN}:${RFB_PORT}${RESET}
 ${YELLOW}IPv6${RESET}地址 ${TMOE_IPV6_ADDR}
 The LAN VNC address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
 EOF
         ;;
     *)
         cat <<-EOF
-The ${YELLOW}local${RESET} vnc address is ${BLUE}localhost${GREEN}:${CURRENT_VNC_PORT}${RESET}
+The ${YELLOW}local${RESET} vnc address is ${BLUE}localhost${GREEN}:${RFB_PORT}${RESET}
 The ${YELLOW}IPv6${YELLOW} address is ${TMOE_IPV6_ADDR}
 The ${YELLOW}LAN${RESET} vnc address is ${TMOE_IP_ADDR}
 EOF
@@ -235,7 +232,7 @@ start_win10_tigervnc() {
     case ${TMOE_WSL} in
     true)
         cd ${HOME} || cd /tmp
-        nohup ${TIGERVNC_VIEWER_WIN10} -PasswordFile ${TMOE_VNC_PASSWD_FILE} localhost:${CURRENT_VNC_PORT} &>/dev/null &
+        nohup ${TIGERVNC_VIEWER_WIN10} -PasswordFile ${TMOE_VNC_PASSWD_FILE} localhost:${RFB_PORT} &>/dev/null &
         cd - &>/dev/null
         ;;
     esac
@@ -272,12 +269,17 @@ start_tmoe_xvnc() {
     #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || $(command -v vncsession) ]]
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
-        set -- "${@}" "-rfbwait" "30000"
-        set -- "${@}" "-pn"
     fi
+    set -- "${@}" "-rfbwait" "30000"
+    set -- "${@}" "-pn"
+    if [[ -e /etc/X11/fontpath.d ]]; then
+        set -- "${@}" "-fp" "catalogue:/etc/X11/fontpath.d"
+    fi
+    set -- "${@}" "-rfbport" "${RFB_PORT}"
     if [[ ${VNC_LOCALHOST} = true ]]; then
         set -- "${@}" "-localhost"
     fi
+
     if [[ ${X509_VNC_ENABLED} = true && -e ${X509_KEY} && -e ${X509_CERTIFICATE} ]]; then
         set -- "${@}" "-SecurityTypes" "X509Vnc,X509Plain,X509None,VncAuth,TLSVnc"
         set -- "${@}" "-X509Key" "${X509_KEY}"
@@ -294,7 +296,7 @@ start_tmoe_xvnc() {
     #set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${TMOE_VNC_PASSWD_FILE}"
     set -- "${@}" "-desktop" "${desktop}"
-    set -- "${@}" ":${TMOE_VNC_DISPLAY_NUMBER}"
+    set -- "${@}" ":${VNC_DISPLAY}"
     set -- "${XVNC_BIN}" "${@}"
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
         [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
@@ -305,17 +307,17 @@ start_tmoe_xvnc() {
         # [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${VNC_USER}
         sudo su - ${VNC_USER} -c '"$0" "$@" &' -- "$@" || su - ${VNC_USER} -c '"$0" "$@" &' -- "$@"
     fi
-    export DISPLAY=:${TMOE_VNC_DISPLAY_NUMBER}
+    export DISPLAY=:${VNC_DISPLAY}
 
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
-        source ${XSESSION_FILE} &>~/.vnc/x.log &
+        bash ${XSESSION_FILE} &>~/.vnc/x.log &
     else
         # if [[ ${VNC_USER} != root ]]; then
-        #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');source ${XSESSION_FILE} &"
+        #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');bash ${XSESSION_FILE} &"
         #su - (X)
         #preserve environment in container
         #else
-        #    sudo -E su ${VNC_USER} -c "source ${XSESSION_FILE} &" || su ${VNC_USER} -c "source ${XSESSION_FILE} &"
+        #    sudo -E su ${VNC_USER} -c "bash ${XSESSION_FILE} &" || su ${VNC_USER} -c "bash ${XSESSION_FILE} &"
         #fi
         sudo su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
     fi
@@ -353,7 +355,7 @@ check_vncsession() {
     if [ $(command -v vncsession) ]; then
         case $(id -u) in
         0)
-            vncsession $(whoami) :${TMOE_VNC_DISPLAY_NUMBER}
+            vncsession $(whoami) :${VNC_DISPLAY}
             start_win10_tigervnc
             exit 0
             ;;

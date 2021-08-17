@@ -49,7 +49,7 @@ stopx11vnc() {
 tmoe_vnc_env() {
     export USER="$(whoami)"
     #CURRENT_PORT=$(sed -n p /usr/local/bin/startvnc | grep '\-geometry' | awk -F ' ' '$0=$NF' | cut -d ':' -f 2 | tail -n 1)
-    CURRENT_PORT=$(grep 'TMOE_VNC_DISPLAY_NUMBER=' /usr/local/bin/startvnc | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
+    CURRENT_PORT=$(grep 'VNC_DISPLAY=' /usr/local/bin/startvnc | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
     RED=$(printf '\033[31m')
     GREEN=$(printf '\033[32m')
     YELLOW=$(printf '\033[33m')
@@ -68,17 +68,17 @@ rm_vnc_lock() {
 #############
 rm_dbus_pid_file() {
     if [ $(command -v sudo) ]; then
-        sudo rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
+        sudo rm -vf /run/dbus/pid /var/run/dbus/pid /var/run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
     else
-        su -c "rm -vf /run/dbus/pid /var/run/dbus/pid /run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
+        su -c "rm -vf /run/dbus/pid /var/run/dbus/pid /var/run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
     fi
 }
 ############
 stop_dbus_daemon() {
     case ${TMOE_CHROOT} in
     true)
-        if [ -e "/run/dbus/pid" ]; then
-            DBUS_PID=$(sed -n p /run/dbus/pid)
+        if [ -e "/var/run/dbus/pid" ]; then
+            DBUS_PID=$(sed -n p /var/run/dbus/pid)
             printf "%s\n" "kill -9 ${DBUS_PID}"
             sudo kill -9 ${DBUS_PID} || kill -9 ${DBUS_PID}
             #此处不要用su -c "kill xxx"

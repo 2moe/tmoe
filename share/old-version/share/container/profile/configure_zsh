@@ -395,7 +395,10 @@ check_tmoe_linux_tool() {
 		fi
 	fi
 	chmod 777 /usr/local/bin/debian-i
-	mkdir -pv /run/dbus
+	if [[ ! -e /var/run/dbus ]]; then
+		mkdir -pv /run/dbus
+		ln -svf /run /var/
+	fi
 }
 ##############
 copy_git_status() {

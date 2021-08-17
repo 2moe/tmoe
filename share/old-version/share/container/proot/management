@@ -537,7 +537,7 @@ start_gui_menu() {
 			"4" "🍬 novnc:在浏览器里连接vnc" \
 			"5" "tightvnc (only for debian,ubuntu &kali)" \
 			"6" "tigervnc" \
-			"0" "🌚 back 返回上级菜单" \
+			"0" "🌚 back 返回" \
 			3>&1 1>&2 2>&3)
 	}
 	start_gui_menu_de() {
@@ -651,7 +651,7 @@ kill_chroot_container_process_gnu_linux() {
 	#	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
 	#fi
 
-	#for i in /run/dbus/pid /tmp/.X1-lock /tmp/.X11-unix/X1; do
+	#for i in /var/run/dbus/pid /tmp/.X1-lock /tmp/.X11-unix/X1; do
 	#	if [ -e "${DEBIAN_CHROOT}${i}" ]; then
 	#		sudo rm -vf ${DEBIAN_CHROOT}${i}
 	#	fi

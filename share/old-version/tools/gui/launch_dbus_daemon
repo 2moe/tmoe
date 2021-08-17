@@ -11,15 +11,15 @@ dbus_daemon_fork() {
 check_user_id_and_rm_dbus_pid() {
     case $(id -u) in
     0)
-        rm -vf /run/dbus/pid 2>/dev/null
+        rm -vf /var/run/dbus/pid 2>/dev/null
         dbus_daemon_fork
         ;;
     *)
-        if [ -e "/run/dbus/pid" ]; then
+        if [ -e "/var/run/dbus/pid" ]; then
             if [ $(command -v sudo) ]; then
-                sudo rm -vf /run/dbus/pid 2>/dev/null
+                sudo rm -vf /var/run/dbus/pid 2>/dev/null
             else
-                su -c "rm -vf /run/dbus/pid 2>/dev/null"
+                su -c "rm -vf /var/run/dbus/pid 2>/dev/null"
             fi
         fi
         dbus_daemon_fork
@@ -46,8 +46,8 @@ check_dbus_daemon() {
 }
 ################
 show_dbus_status() {
-    if [[ -e /run/dbus/pid ]]; then
-        PID=$(head -n 1 /run/dbus/pid)
+    if [[ -e /var/run/dbus/pid ]]; then
+        PID=$(head -n 1 /var/run/dbus/pid)
         cat <<-EOF
 ${GREEN}●${BLUE} dbus.service${RESET} - ${YELLOW}D-Bus System Message Bus${RESET}
      Loaded: loaded (/lib/systemd/system/dbus.service; static)

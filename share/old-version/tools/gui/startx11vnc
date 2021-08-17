@@ -2,9 +2,11 @@
 #################
 export PULSE_SERVER=127.0.0.1
 
-TMOE_X11_RESOLUTION=1440x720
+export DISPLAY=:233
 
 TCP_PORT_FOR_RFB_PROTOCOL=5902
+
+TMOE_X11_RESOLUTION=1440x720
 
 VNC_LOCALHOST=false
 
@@ -22,7 +24,6 @@ printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "x11vnc server" "..."
 printf "%s\n" "The current ${BLUE}x11vnc port${RESET} is ${YELLOW}${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}, and x11vnc address is ${GREEN}localhost${YELLOW}:${TCP_PORT_FOR_RFB_PROTOCOL}${RESET}"
 stopvnc -no-stop-dbus 2>/dev/null
 TMOE_X11_PASSWD_FILE=${HOME}/.vnc/x11passwd
-export DISPLAY=:233
 X11VNC_CURSOR_ARROW=2
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
@@ -133,7 +134,7 @@ check_wsl() {
 # if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]
 ###############
 start_x_session() {
-    . ${XSESSION_FILE} &
+    bash ${XSESSION_FILE} &
 }
 #############
 check_wsl
