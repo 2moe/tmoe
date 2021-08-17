@@ -319,7 +319,7 @@ start_tmoe_xvnc() {
         #else
         #    sudo -E su ${VNC_USER} -c "bash ${XSESSION_FILE} &" || su ${VNC_USER} -c "bash ${XSESSION_FILE} &"
         #fi
-        sudo su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG};export PULSE_SERVER=${PULSE_SERVER};export TMOE_CHROOT=${TMOE_CHROOT};export TMOE_PROOT=${TMOE_PROOT};export DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
+        sudo su - ${VNC_USER} -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
     fi
     start_win10_tigervnc
     exit 0

@@ -286,7 +286,7 @@ modify_vnc_pulse_audio() {
         #sed -i '/PULSE_SERVER/d' ~/.vnc/xstartup
         #sed -i "2 a\export PULSE_SERVER=${TARGET}" ~/.vnc/xstartup
         if grep '^export.*PULSE_SERVER' "$(command -v startvnc)"; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" $(command -v startvnc)
+            sed -i "s@^export PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" $(command -v startvnc)
         else
             sed -i "4 a\export PULSE_SERVER=${TARGET}" $(command -v startvnc)
         fi
@@ -4345,7 +4345,7 @@ x11vnc_pulse_server() {
         printf "%s\n" "Please enter a valid value"
     else
         if grep -q '^export.*PULSE_SERVER' startx11vnc; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" startx11vnc
+            sed -i "s@export PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" startx11vnc
         else
             sed -i "3 a\export PULSE_SERVER=${TARGET}" startx11vnc
         fi
@@ -4677,7 +4677,7 @@ xwayland_pulse_server() {
         printf "%s\n" "Please enter a valid value"
     else
         if grep '^export.*PULSE_SERVER' startw; then
-            sed -i "s@export.*PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" startw
+            sed -i "s@export PULSE_SERVER=.*@export PULSE_SERVER=${TARGET}@" startw
         else
             sed -i "3 a\export PULSE_SERVER=${TARGET}" startw
         fi
@@ -5047,7 +5047,7 @@ xrdp_pulse_server() {
         if ! grep -q '^export.*PULSE_SERVER' startwm.sh; then
             sed -i "1 a\export PULSE_SERVER=${TARGET}" startwm.sh
         fi
-        sed -i -E "s@(export.*PULSE_SERVER=).*@\1${TARGET}@" startwm.sh
+        sed -i -E "s@(export PULSE_SERVER=).*@\1${TARGET}@" startwm.sh
         printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
         printf '%s\n' '您当前的音频地址已修改为'
         printf "%s\n" "$(grep 'PULSE_SERVER' startwm.sh | grep -v '^#' | cut -d '=' -f 2 | head -n 1)"
