@@ -30,7 +30,7 @@ RUN mkdir -pv /var/cache/pacman/pkg; \
     cp -fv git/share/old-version/tools/app/tool /tmp/docker_tool ; \
     cp -fv git/share/old-version/tools/sources/yay/build_fakeroot /tmp; \
     cd /tmp; \
-    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh'; \
+    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh' || exit 1; \
     bash zsh.sh --tmoe_container_auto_configure; \
     cd /tmp; \
     sed -i 's@*) #main@2333)@g' docker_tool; \

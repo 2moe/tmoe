@@ -22,7 +22,7 @@ RUN apt update; \
     mkdir -p /run/systemd; \
     printf "%s\n" "docker" > /run/systemd/container; \
     cd /tmp; \
-    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh'; \
+    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh' || exit 1; \
     bash zsh.sh --tmoe_container_auto_configure; \
     cp ~/.zshrc /tmp; \
     mkdir -pv /usr/local/etc/tmoe-linux; \

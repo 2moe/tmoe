@@ -32,7 +32,7 @@ VNC_SERVER=tiger
 # Sie können "tiger" oder "tight" wählen.
 
 ZLIB_LEVEL=0
-# Zlib  compression  level  for  ZRLE encoding (it does not affect Tight encoding). Acceptable values are between 0  and  9.
+# Zlib compression level for ZRLE encoding (it does not affect Tight encoding). Acceptable values are between 0  and  9.
 # 压缩级别,可选0至9,默认为0。
 # Die Standardkomprimierungsstufe für zlib ist 0
 

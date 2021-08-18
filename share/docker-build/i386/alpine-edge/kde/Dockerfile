@@ -11,7 +11,7 @@ RUN apk update; \
     printf "%s\n" "root:root" | chpasswd; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \
     cd /tmp; \
-    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh'; \
+    curl -LO 'https://github.com/2cd/zsh/raw/master/zsh.sh' || exit 1; \
     bash zsh.sh --tmoe_container_auto_configure; \
     mkdir -pv /usr/local/etc/tmoe-linux; \
     cd /usr/local/etc/tmoe-linux; \
