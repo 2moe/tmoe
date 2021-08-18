@@ -2441,7 +2441,7 @@ ENDofTable
 ###############
 choose_kde_plasma_or_standard() {
     if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is more streamlined\n前者为精简安装,后者为标准安装' 0 0); then
-        DEPENDENCY_01="kde-plasma-desktop"
+        DEPENDENCY_01="kde-plasma-desktop pcmanfm-qt-l10n"
     else
         if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件,后者为KDE全家桶' 0 0); then
             DEPENDENCY_01="kde-standard"
@@ -2498,6 +2498,7 @@ install_kde_plasma5_desktop() {
         kde_warning
         do_you_want_to_install_fcitx4
     fi
+
     KDE_PLASMA_WAYLAND=false
     REMOTE_DESKTOP_SESSION_01='startplasma-x11'
     REMOTE_DESKTOP_SESSION_02='startkde'
@@ -2507,7 +2508,7 @@ install_kde_plasma5_desktop() {
     "debian")
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
-        DEPENDENCY_01="kde-plasma-desktop"
+        DEPENDENCY_01="kde-plasma-desktop pcmanfm-qt-l10n"
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_kde_or_kubuntu
         fi
@@ -2525,7 +2526,7 @@ install_kde_plasma5_desktop() {
         ;;
     "redhat")
         #yum groupinstall kde-desktop
-        DEPENDENCY_01='@KDE'
+        DEPENDENCY_01='@KDE pcmanfm-qt-l10n'
         case ${REDHAT_DISTRO} in
         fedora) ;;
         esac
@@ -2543,10 +2544,10 @@ install_kde_plasma5_desktop() {
         #emerge -auvDN --with-bdeps=y @world
         DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
         ;;
-    "suse") DEPENDENCY_01="-t pattern kde kde_plasma" ;;
+    "suse") DEPENDENCY_01="-t pattern kde kde_plasma pcmanfm-qt-lang" ;;
     "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine")
-        DEPENDENCY_01="plasma-desktop breeze breeze-icons konsole discover"
+        DEPENDENCY_01="plasma-desktop breeze breeze-icons konsole pcmanfm-lang pcmanfm discover"
         REMOTE_DESKTOP_SESSION='startplasma-x11'
         ;;
     esac
