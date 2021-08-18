@@ -5735,7 +5735,7 @@ install_novnc() {
     cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
     ln -sf novnc startnovnc
 }
-create_which_command() {
+create_the_which_script() {
     # novnc uses the "which command", but the "which command" in debianutils has been deprecated, so the "which script" has been created here.
     # Package: debianutils
     # Version: 5.0.1-1
@@ -5746,8 +5746,20 @@ create_which_command() {
         chmod a+rx ${WHICH_FILE}
     fi
 }
+check_the_which_command() {
+    # Not all distributions have problem with the "which command".
+    # Therefore a condition has been added that only deb-based distributions, or distributions without **/usr/bin/which**, will be supported.
+    case ${LINUX_DISTRO} in
+    debian) create_the_which_script ;;
+    *)
+        if [ ! -e /usr/bin/which ]; then
+            create_the_which_script
+        fi
+        ;;
+    esac
+}
 do_you_want_to_configure_novnc() {
-    create_which_command
+    check_the_which_command
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
     printf "%s\n" "配置完成后，您可以输${BOLD}${GREEN}novnc${RESET}来${YELLOW}启动${BLUE}novnc${RESET},在浏览器里输入novnc访问地址进行连接。"
     printf '%s\n' '------------------------'
