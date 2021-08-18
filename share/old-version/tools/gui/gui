@@ -498,7 +498,6 @@ standand_desktop_installation() {
             "3" "🍙 window manager窗口管理器(ice,fvwm)" \
             "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome)" \
             "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
-            "6" "🍤 FAQ:vnc和gui的常见问题" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -510,10 +509,11 @@ standand_desktop_installation() {
             "3" "🍙 window manager(ice,fvwm)" \
             "4" "🍱 VM/nspawn_DE(gnome)" \
             "5" "🍣 display manager(lightdm,sddm)" \
-            "6" "🍤 FAQ" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
+    # "6" "🍤 FAQ:vnc和gui的常见问题" \
+    # 6) tmoe_desktop_faq ;;
     ##########################
     standand_desktop_installation_menu() {
         case "${INSTALLDESKTOP}" in
@@ -523,10 +523,8 @@ standand_desktop_installation() {
         3) window_manager_installation ;;
         4) tmoe_virtual_machine_desktop ;;
         5) install_tmoe_display_manager ;;
-        6) tmoe_desktop_faq ;;
         esac
     }
-
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) standand_desktop_installation_zh ;;
     *) standand_desktop_installation_en ;;
@@ -5737,7 +5735,19 @@ install_novnc() {
     cp -f ${TMOE_TOOL_DIR}/gui/novnc ./
     ln -sf novnc startnovnc
 }
+create_which_command() {
+    # novnc uses the "which command", but the "which command" in debianutils has been deprecated, so the "which script" has been created here.
+    # Package: debianutils
+    # Version: 5.0.1-1
+    # /usr/bin/which: this version of 'which' is deprecated and should not be used.
+    WHICH_FILE="/usr/local/bin/which"
+    if [[ ! -x ${WHICH_FILE} ]]; then
+        printf "%s\n" 'command -v $@' | tee ${WHICH_FILE}
+        chmod a+rx ${WHICH_FILE}
+    fi
+}
 do_you_want_to_configure_novnc() {
+    create_which_command
     printf "%s\n" "You can type ${GREEN}novnc${RESET} to ${YELLOW}start${RESET} ${BLUE}novnc+websockify${RESET}"
     printf "%s\n" "配置完成后，您可以输${BOLD}${GREEN}novnc${RESET}来${YELLOW}启动${BLUE}novnc${RESET},在浏览器里输入novnc访问地址进行连接。"
     printf '%s\n' '------------------------'
