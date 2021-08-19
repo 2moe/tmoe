@@ -2423,6 +2423,12 @@ ENDofTable
     true)
         printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！"
         if ! grep -qi 'Bionic' /etc/os-release; then
+            printf "%s\n" "If you can not use ${GREEN}dolphin${RESET}, then you can try another file manager such as thunar or pcmanfm-qt."
+            printf "%s\n" "The command to install is similar to"
+            case ${DEBIAN_DISTRO} in
+            debian) printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} --no-install-recommends ${BLUE}pcmanfm-qt pcmanfm-qt-l10n${RESET}" ;;
+            *) printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}pcmanfm-qt${RESET}" ;;
+            esac
             # printf "%s\n" "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
             # printf "%s\n" "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
             printf "%s\n" "如需在termux-proot容器中安装，则请先确保termux 的 ${GREEN}proot${RESET} 为 ${PURPLE}最新${RESET} 版本。您可以回到termux原系统，然后执行${GREEN}pkg ${YELLOW}up -y${RESET}"
@@ -2439,7 +2445,7 @@ ENDofTable
 ###############
 choose_kde_plasma_or_standard() {
     if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "standard" --yesno 'The former is more streamlined\n前者为精简安装,后者为标准安装' 0 0); then
-        DEPENDENCY_01="kde-plasma-desktop pcmanfm-qt-l10n"
+        DEPENDENCY_01="kde-plasma-desktop"
     else
         if (whiptail --title "kde-standard or kde-full" --yes-button "standard" --no-button "full" --yesno 'The former is standard installation,and the latter\n includes some extra software of kde.\n前者包含KDE标准套件,后者为KDE全家桶' 0 0); then
             DEPENDENCY_01="kde-standard"
@@ -2463,7 +2469,7 @@ choose_kde_or_kubuntu() {
 }
 choose_arch_kde_lite_or_full() {
     if (whiptail --title "kde-plasma or kde-standard" --yes-button "plasma" --no-button "plasma+apps" --yesno 'The former is more streamlined, and the latter\n includes some extra software of kde.\n前者为plasma基础桌面，后者包含kde全家桶' 0 0); then
-        DEPENDENCY_01="plasma-desktop xorg konsole pcmanfm-qt discover"
+        DEPENDENCY_01="plasma-desktop dolphin konsole"
     else
         DEPENDENCY_01="plasma-meta kde-applications-meta plasma-wayland-session sddm sddm-kcm"
     fi
@@ -2506,7 +2512,7 @@ install_kde_plasma5_desktop() {
     "debian")
         #printf "默认为最小安装，如需安装kde完整套件，则请手动输${GREEN}apt install${RESET} ${PURPLE}kde-full${RESET}"
         #printf "在配置vnc服务的过程中，当提示tiger/tight时，请选择前者。"
-        DEPENDENCY_01="kde-plasma-desktop pcmanfm-qt-l10n"
+        DEPENDENCY_01="kde-plasma-desktop"
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             choose_kde_or_kubuntu
         fi
@@ -2524,14 +2530,17 @@ install_kde_plasma5_desktop() {
         ;;
     "redhat")
         #yum groupinstall kde-desktop
-        DEPENDENCY_01='@KDE pcmanfm-qt-l10n'
+        DEPENDENCY_01='@KDE'
         case ${REDHAT_DISTRO} in
         fedora) ;;
         esac
         ;;
     "arch")
         # sddm sddm-kcm
-        DEPENDENCY_01="plasma-desktop xorg konsole pcmanfm-qt discover"
+        DEPENDENCY_01="plasma-desktop dolphin konsole discover"
+        if [[ ${AUTO_INSTALL_GUI} != true ]]; then
+            choose_arch_kde_lite_or_full
+        fi
         ;;
     "void") DEPENDENCY_01="kde" ;;
     "gentoo")
@@ -2542,10 +2551,14 @@ install_kde_plasma5_desktop() {
         #emerge -auvDN --with-bdeps=y @world
         DEPENDENCY_01="plasma-desktop plasma-nm plasma-pa sddm konsole"
         ;;
-    "suse") DEPENDENCY_01="-t pattern kde kde_plasma pcmanfm-qt-lang" ;;
+    "suse")
+        DEPENDENCY_01="-t pattern kde kde_plasma"
+        # + pcmanfm-qt-lang
+        ;;
     "solus") printf "ERROR!本工具未适配solus。\n" ;;
     "alpine")
-        DEPENDENCY_01="plasma-desktop breeze breeze-icons konsole pcmanfm-lang pcmanfm discover"
+        DEPENDENCY_01="plasma-desktop breeze breeze-icons konsole discover"
+        # + pcmanfm-lang pcmanfm
         REMOTE_DESKTOP_SESSION='startplasma-x11'
         ;;
     esac
@@ -5742,6 +5755,7 @@ create_the_which_script() {
     # /usr/bin/which: this version of 'which' is deprecated and should not be used.
     WHICH_FILE="/usr/local/bin/which"
     if [[ ! -x ${WHICH_FILE} ]]; then
+        printf "%s\n" "The ${GREEN}which${RESET} command will be replaced by ${GREEN}command -v${RESET}."
         printf "%s\n" 'command -v $@' | tee ${WHICH_FILE}
         chmod a+rx ${WHICH_FILE}
     fi
