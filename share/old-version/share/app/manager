@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4959,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4960,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -417,25 +417,25 @@ check_gnu_linux_distro() {
 	}
 	##########
 	choose_manager_or_tool_zh() {
-		if (whiptail --title "您想要对这个小可爱做什么" --yes-button "Tool" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+		if (whiptail --title "您想要对这个小可爱做什么" --yes-button "Tools" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tools\nor the system manager? ♪(^∇^*) " 0 50); then
 			curl_tmoe_linux_tool_sh
 			exit 0
 		fi
 	}
 	choose_manager_or_tool_ja() {
-		if (whiptail --title "どちらを選びますか" --yes-button "Tool" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
+		if (whiptail --title "どちらを選びますか" --yes-button "Tools" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
 			curl_tmoe_linux_tool_sh
 			exit 0
 		fi
 	}
 	choose_manager_or_tool_en() {
-		if (whiptail --title "Which one do you want to choose?" --yes-button "Tool" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+		if (whiptail --title "Which one do you want to choose?" --yes-button "Tools" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
 			curl_tmoe_linux_tool_sh
 			exit 0
 		fi
 	}
 	choose_manager_or_tool_de() {
-		if (whiptail --title "Welches möchten Sie wählen?" --yes-button "Tool" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstool \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
+		if (whiptail --title "Welches möchten Sie wählen?" --yes-button "Tools" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstools \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
 			curl_tmoe_linux_tool_sh
 			exit 0
 		fi

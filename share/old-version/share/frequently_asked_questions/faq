@@ -40,7 +40,7 @@ create_start_linux_deploy_sh() {
 }
 ##############
 linux_deploy_pulse_server() {
-	printf "%s\n" "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具(Tmoe-linux tool)覆盖安装桌面环境"
+	printf "%s\n" "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具箱(Tmoe-linux tools)覆盖安装桌面环境"
 	printf "%s\n" "您在安装Linux deploy的chroot容器前，可以将安装类型修改为目录，安装路径修改为/data/data/ru.meefik.linuxdeploy/linux"
 	printf "%s\n" "脚本用法：ssh连接后，输入apt install -y curl;bash -c \"(curl -L ${TMOE_GIT_URL}/raw/2/2)\""
 	#printf "%s\n" "覆盖安装之后，您需要通过本工具进行VNC和音频服务的配置"

@@ -77,7 +77,7 @@ tmoe_linux_container_eula() {
 		#less -meQ
 		sed -n p ${TMOE_GIT_DIR}/Licenses/tmoe-linux/LICENSE || $(whereis cat 2>/dev/null | awk '{print $2}') ${TMOE_GIT_DIR}/Licenses/tmoe-linux/LICENSE
 		cat <<-EOF
-			You must agree to the EULA to use this tool.
+			You must agree to the EULA to continue.
 			Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly.
 			按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 
 		EOF

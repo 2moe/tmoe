@@ -36,7 +36,7 @@ I'm really sorry, this is a document written in Chinese.
 
 #### Support multiple languages
 
-![tmoe-linux tool](https://images.gitee.com/uploads/images/2020/1012/135657_70831546_5617340.png "截图_2020-10-12_13-42-37.png")
+![tmoe-linux tools](https://images.gitee.com/uploads/images/2020/1012/135657_70831546_5617340.png "截图_2020-10-12_13-42-37.png")
 
 ![main menu English.ver](https://images.gitee.com/uploads/images/2020/1012/135918_eaccc0da_5617340.png "截图_2020-10-12_13-59-00.png")
 
@@ -97,8 +97,8 @@ bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
 最后按方向键和回车键进行操作。  
 Finally, press Enter and arrow keys to operate.
 
-> When it prompts **Tool** or **Manager**, please choose **Tool**  
-> 注：当提示 tool or manager 时，请选择 tool。  
+> When it prompts **Tools** or **Manager**, please choose **Tools**  
+> 注：当提示 tools or manager 时，请选择 tool。  
 > 建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。  
 > 虽然 WSL 支持自定义导入 rootfs, 但是 tmoe 没有适配这个功能。~~(咕，后期可能会支持)~~
 
@@ -681,7 +681,7 @@ Convenient configuration
 ![分辨率](https://images.gitee.com/uploads/images/2020/0721/203215_9823fc25_5617340.png "Capture+_2020-07-11-10-05-41.png")
 
 3.对于不同系统，不同虚拟化环境进行适配  
-This tool is adapted to different systems and different virtualization environments.
+Adapt to different systems and virtualization environments.
 
 3-1.以 tightvnc/tigervnc 服务为例：  
 对于 deb 系的虚拟机和实体机，启动 de/wm 的脚本中包含了 dbus-launch --exit-with-session,不加的话可能会出现无法连接至设置服务的错误，而 deb 系的 proot 容器加上这个会很容易闪退，所以对 proot 容器和虚拟机分别进行适配。  
@@ -700,17 +700,17 @@ This tool is adapted to different systems and different virtualization environme
 - [x] **xfce4**
 - [x] **lxde**
 - [x] **mate**
-- [x] **lxqt**
-- [x] **kde plasma 5**
-- [x] **cinnamon**
-- [x] **gnome 3**
-- [x] **deepin desktop**
+- [ ] **lxqt**
+- [ ] **kde plasma 5**
+- [ ] **cinnamon**
+- [ ] **gnome 3**
+- [ ] **deepin desktop**
 
 > 注 1：Only some systems support desktop environment installation.  
 > 仅部分系统支持  
 > 注 2：Prioritize XFCE  
 > 优先适配 xfce  
-> 注 3： 未打勾的选项在容器/远程桌面环境下存在一些问题  
+> 注 3： 未打勾的选项在容器/远程桌面环境下可能存在一些问题  
 > **Some desktops may not display properly through the remote desktop**
 
 4-1.Arch + Deepin desktop ~~在 VNC 下会黑屏~~  

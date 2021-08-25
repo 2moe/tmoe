@@ -58,7 +58,7 @@ tmoe_main() {
 		cat <<-EOF
 			ls         --list installed containers
 			m          --tmoe manager
-			t          --tmoe tool
+			t          --tmoe tools
 			p          --proot
 			c          --chroot
 			aria2      --aria2 manager

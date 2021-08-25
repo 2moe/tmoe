@@ -1131,7 +1131,7 @@ tmoe_other_options_menu() {
     RETURN_TO_WHERE='tmoe_other_options_menu'
 
     TMOE_APP=$(whiptail --title "其它选项" --menu \
-        "Welcome to tmoe-linux tool.这里是其它选项的菜单." 0 50 0 \
+        "Welcome to tmoe-linux tools.这里是其它选项的菜单." 0 50 0 \
         "1" "Remove GUI 卸载图形界面" \
         "2" "Remove browser 卸载浏览器" \
         "3" "Remove tmoe-linux tool" \

@@ -117,34 +117,87 @@ tmoe 对于本地文件的优先级要高于容器内部文件。
 
 来看一个简单的示例吧！
 
-这里假设您没有安装 cargo, 因此不能通过 `cargo new hello` 来快速新建项目。
-
 ```shell
-mkdir -pv hello/src
+mkdir -pv example_1/src
 
-cat >hello/Cargo.toml<<-'TOML'
+cat >example_1/Cargo.toml<<-'TOML'
+cargo-features = ["edition2021"]
+# If the rustc version is lower than 1.56, then it may not work properly.
+
 [package]
-name = "hello"
+name = "example_1"
 version = "0.1.0"
 authors = ["test <test@xxx.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 TOML
 
-cat >hello/src/main.rs<<-'RUST_MAIN_RS'
+cat >example_1/src/main.rs<<-'RUST_MAIN_RS'
+use example_1::{打印_结构体, 结构体};
+
 fn main() {
-    print!("{}", "Hello\n".repeat(50));
+    let 变量 = 结构体::新建(3, 4);
+
+    // print struct
+    打印_结构体(变量);
 }
 RUST_MAIN_RS
 
+cat >example_1/src/lib.rs<<-'RUST_LIB_RS'
+type 叁拾贰整 = i32;
+
+/**
+If you don't understand Chinese, then read the doc.
+
+{
+
+    叁拾贰整: "Thirty two bit signed integer",
+    变量: var,
+    结构体: Struct,
+    甲: A,
+    乙: B,
+    和: sum,
+    积: product,
+}
+*/
+#[derive(Debug)]
+pub struct 结构体 {
+    甲: 叁拾贰整,
+    乙: 叁拾贰整,
+}
+
+impl 结构体 {
+    // new
+    pub fn 新建(甲: 叁拾贰整, 乙: 叁拾贰整) -> Self {
+        Self { 甲, 乙 }
+    }
+    // add
+    // std::ops::Add::add(&self.甲, &self.乙)
+    fn 加(&self) -> 叁拾贰整 {
+        &self.甲 + &self.乙
+    }
+    // multiply
+    fn 乘(&self) -> 叁拾贰整 {
+        &self.甲 * &self.乙
+    }
+}
+
+// print struct
+pub fn 打印_结构体(变量: 结构体) {
+    println!(
+        "{:#?},\n和为{和},\n积为{积}。",
+        变量,
+        和 = 变量.加(),
+        积 = 变量.乘()
+    );
+}
+RUST_LIB_RS
+
 cat >cargo_run<<-'CARGO_RUN'
 #!/usr/bin/env bash
-if [[ ! $(command -v cargo) ]];then
-    sudo apt update
-    sudo apt install -y rustc cargo
-fi
-cd hello
+#------------------
+cd example_1
 cargo r
 CARGO_RUN
 ```
@@ -152,10 +205,19 @@ CARGO_RUN
 接着，我们让容器在启动时调用当前目录下的这些文件，最后看一下运行的结果吧！
 
 ```shell
-tmoe p u 下北澤紅茶 ./hello ./cargo_run
+tmoe p u 下北澤紅茶 ./example_1 ./cargo_run
 ```
 
-如果程序成功运行的话，那么终端会输出 50 行 **Hello**
+如果程序成功运行的话，那么终端会输出以下内容
+
+```plaintext
+结构体 {
+    甲: 3,
+    乙: 4,
+},
+和为7,
+积为12。
+```
 
 ## Permanent scripts & ln argument
 

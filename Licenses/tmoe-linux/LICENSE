@@ -1,15 +1,16 @@
 			    	End-user license agreement 
    Tmoe-linux（以下简称“本工具”）尊重并保护所有使用服务的用户的个人隐私权。
-本工具遵循GNU General Public License v2.0 （开源许可协议）,旨在追求开放和自由。
+本工具遵循GNU General Public License v2.0 or later（开源许可协议）,旨在追求开放和自由。
 由于恢复包未存储于git仓库，而存储于第三方网盘，故您必须承担并知悉其中的风险。
 强烈建议您选择更为安全的安装方式，即从软件源镜像站下载容器镜像，再自行选择安装内容。
 本工具的开发者郑重承诺：恢复包内的系统不会使用和披露您的个人信息，也不存在任何侵害您个人隐私的行为。
 本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
-This tool will update this agreement from time to time. When you agree to this tool service use agreement, you are deemed to have agreed to the entire contents of this agreement. This agreement is an integral part of the tool service agreement.
+Developer will update this Agreement from time to time.
+When you agree to this Agreement, you are deemed to have agreed to this Agreement in its entirety.
 
 1.禁止条例
 (a)禁止将本工具安装的GNU/Linux用于违法行为，例如：网络渗透、社会工程、域名未备案私自设立商用web服务等。
-Do not use GNU/Linux installed by this tool for illegal behavior!
+Don't use this tool for illegal acts!
 
 2. 适用范围
 (a)在您使用本工具时，通过第三方网盘下载的恢复包系统；
