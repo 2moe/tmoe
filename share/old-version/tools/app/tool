@@ -788,7 +788,7 @@ tmoe_linux_tool_menu() {
 	#窗口大小20 50 7
 	tmoe_linux_tool_menu_zh() {
 		TMOE_OPTION=$(
-			whiptail --title "Tmoe-Tool running on ${OSRELEASE}" \
+			whiptail --title "Tmoe-Tools running on ${OSRELEASE}" \
 				--menu "${TMOE_TIPS_00}\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
@@ -807,7 +807,7 @@ tmoe_linux_tool_menu() {
 	}
 	tmoe_linux_tool_menu_ja() {
 		TMOE_OPTION=$(
-			whiptail --title "Tmoe-Tool running on ${OSRELEASE}" \
+			whiptail --title "Tmoe-Tools running on ${OSRELEASE}" \
 				--menu "${TMOE_TIPS_00}\nEnterキーと矢印キーを使用して操作できます" 0 50 0 \
 				"1" "🍭 GUI:グラフィカル・ユーザ・インターフェース(DE,WM,LM)" \
 				"2" "🥝 アプリストア(ブラウザ、ゲーム、メディアアプリ)" \
@@ -826,7 +826,7 @@ tmoe_linux_tool_menu() {
 	}
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
-			whiptail --title "Tmoe-Tool running on ${OSRELEASE}" \
+			whiptail --title "Tmoe-Tools running on ${OSRELEASE}" \
 				--menu "${TMOE_TIPS_00}\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 Graphical User Interface(DE,WM,LM)" \
 				"2" "🥝 App center(browsers,games,media apps)" \
@@ -844,7 +844,7 @@ tmoe_linux_tool_menu() {
 		)
 		tmoe_linux_tool_menu_de() {
 			TMOE_OPTION=$(
-				whiptail --title "Tmoe-Tool running on ${OSRELEASE}" \
+				whiptail --title "Tmoe-Tools running on ${OSRELEASE}" \
 					--menu "${TMOE_TIPS_00}\nPlease use the enter and arrow keys to operate." 0 50 0 \
 					"1" "🍭 Grafische Benutzeroberfläche(DE,WM,LM)" \
 					"2" "🥝 App Center(Browser,Spiele,Medien-Apps)" \
