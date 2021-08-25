@@ -155,8 +155,8 @@ If you don't understand Chinese, then read the doc.
     叁拾贰整: "Thirty two bit signed integer",
     变量: var,
     结构体: Struct,
-    甲: A,
-    乙: B,
+    甲: a,
+    乙: b,
     和: sum,
     积: product,
 }
