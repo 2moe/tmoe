@@ -33,7 +33,7 @@ main() {
 	h | -h | --help)
 		cat <<-'EOF'
 			-ppa     --添加ppa软件源(add ppa source)   
-			-u       --更新(update tmoe-linux tool)
+			-u       --更新(update tmoe-linux tools)
 			-m       --切换镜像源
 			-tuna    --切换为bfsu源
 			file     --运行文件浏览器(run filebrowser)
@@ -792,16 +792,16 @@ tmoe_linux_tool_menu() {
 				--menu "${TMOE_TIPS_00}\nPlease use the enter and arrow keys to operate." 0 50 0 \
 				"1" "🍭 GUI:图形界面(桌面,WM,登录管理器)" \
 				"2" "🥝 Software center:软件(浏览器,游戏,影音)" \
-				"3" "🌺 Secret Garden秘密花园(教育,系统,实验功能)" \
+				"3" "🌺 Secret Garden:秘密花园(教育,系统,实验功能)" \
 				"4" "🌈 Desktop beautification:桌面美化(主题)" \
 				"5" "🌌 vnc/x/rdp:远程桌面" \
 				"6" "📺 Download video:解析视频链接(bili,Y2B)" \
 				"7" "🍥 Software sources:软件镜像源管理" \
 				"8" "🐳 Docker:开源的应用容器引擎" \
-				"9" "💻 Qemu:x64虚拟机管理" \
-				"10" "🍧 *°▽°*Update tmoe-linux tool(更新本工具)" \
+				"9" "💻 Qemu:x64:虚拟机管理" \
+				"10" "🍧 *°▽°* Update:更新" \
 				"11" "🍩 FAQ:常见问题" \
-				"0" "🌚 Exit 退出" \
+				"0" "🌚 Exit:退出" \
 				3>&1 1>&2 2>&3
 		)
 	}
@@ -818,7 +818,7 @@ tmoe_linux_tool_menu() {
 				"7" "🍥 ソフトウェアミラーソース" \
 				"8" "🐳 Docker:コンテナ仮想化を用いたOSレベルの仮想化" \
 				"9" "💻 Qemu:x64 仮想マシン" \
-				"10" "🍧 *°▽°*更新" \
+				"10" "🍧 *°▽°* 更新" \
 				"11" "🍩 よくある質問" \
 				"0" "🌚 終了する" \
 				3>&1 1>&2 2>&3
@@ -837,7 +837,7 @@ tmoe_linux_tool_menu() {
 				"7" "🍥 Software sources:Worldwide mirror sites" \
 				"8" "🐳 Docker：use OS-level virtualization to deliver software" \
 				"9" "💻 Qemu:x64 virtual machine" \
-				"10" "🍧 *°▽°*Update tmoe-linux tool" \
+				"10" "🍧 *°▽°* Update" \
 				"11" "🍩 Frequently Asked Questions" \
 				"0" "🌚 Exit" \
 				3>&1 1>&2 2>&3
