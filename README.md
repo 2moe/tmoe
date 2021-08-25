@@ -98,7 +98,7 @@ bash -c "$(curl -L https://gitee.com/mo2/linux/raw/2/2)"
 Finally, press Enter and arrow keys to operate.
 
 > When it prompts **Tools** or **Manager**, please choose **Tools**  
-> 注：当提示 tools or manager 时，请选择 tool。  
+> 注：当提示 tools or manager 时，请选择 tools。  
 > 建议 WSL 用户直接安装 gui ，不要在里面先套娃安装 chroot 容器，再装 gui，因为这将导致 windows 程序调用失败。  
 > 虽然 WSL 支持自定义导入 rootfs, 但是 tmoe 没有适配这个功能。~~(咕，后期可能会支持)~~
 
