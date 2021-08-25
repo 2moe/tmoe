@@ -172,11 +172,13 @@ impl 结构体 {
     pub fn 新建(甲: 叁拾贰整, 乙: 叁拾贰整) -> Self {
         Self { 甲, 乙 }
     }
+
     // add
     // std::ops::Add::add(&self.甲, &self.乙)
     fn 加(&self) -> 叁拾贰整 {
         &self.甲 + &self.乙
     }
+
     // multiply
     fn 乘(&self) -> 叁拾贰整 {
         &self.甲 * &self.乙
@@ -184,12 +186,12 @@ impl 结构体 {
 }
 
 // print struct
-pub fn 打印_结构体(变量: 结构体) {
+pub fn 打印_结构体(参数: 结构体) {
     println!(
         "{:#?},\n和为{和},\n积为{积}。",
-        变量,
-        和 = 变量.加(),
-        积 = 变量.乘()
+        参数,
+        和 = 参数.加(),
+        积 = 参数.乘()
     );
 }
 RUST_LIB_RS

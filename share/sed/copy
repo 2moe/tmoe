@@ -10,7 +10,7 @@ case ${COUNT} in
 [0-9]*[0-9])
     COMMIT_COUNT=$((${COUNT} + 1))
     sed -i -E "s@(tmoe linux manager) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/share/app/manager
-    sed -i -E "s@(tmoe linux tool) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/tools/app/tool
+    sed -i -E "s@(tmoe linux tools) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/tools/app/tool
     ;;
 esac
 ##########
