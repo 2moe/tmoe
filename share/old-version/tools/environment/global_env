@@ -571,9 +571,11 @@ beta_features_quick_install() {
         fi
     fi
     ###############
-    printf "%s\n" "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}"
+    case ${TMOE_LANG} in
+    zh_*.UTF-8) printf "%s\n" "即将${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}" ;;
+    *) printf "%s\n" "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you." ;;
+    esac
     printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}${DEPENDENCY_01}${RESET} ${YELLOW}${DEPENDENCY_02}${RESET}"
-    printf "%s\n" "Tmoe-linux tool will ${YELLOW}install${RESET} relevant ${BLUE}dependencies${RESET} for you."
     ############
     if [ "${EXISTS_COMMAND}" = "true" ]; then
         EXISTS_COMMAND=false

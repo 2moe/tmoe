@@ -34,7 +34,7 @@ export GOPATH=/go
 ```
 
 有一个特殊变量需要注意，那就是 _PATH_  
-如果需要自定义 PATH 为"/go/bin:/usr/local/go/bin",那么请这样子写:
+如果需要自定义 PATH 为"/go/bin:/usr/local/go/bin", 那么请这样子写:
 
 ```shell
 export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
@@ -65,7 +65,7 @@ export PATH="/go/bin:/usr/local/go/bin${PATH:+:${PATH}}"
 
 这时候启动命令就不再是 `tmoe p u 20.04` 了，而是 `tmoe p u 下北澤紅茶`
 
-`tmoe`命令最后的两个参数可以使用命令、脚本、二进制文件或文件夹。
+`tmoe` 命令最后的两个参数可以使用命令、脚本、二进制文件或文件夹。
 
 这里假设您在当前路径下新建了一个 ruby 脚本
 
@@ -78,7 +78,7 @@ RUBY
 
 文件名称为 hello.rb
 
-那么我要怎么样才能让 **ubuntu-下北澤紅茶** 容器启动后自动执行 `hello.rb`呢？
+那么我要怎么样才能让 **ubuntu-下北澤紅茶** 容器启动后自动执行 `hello.rb` 呢？
 
 是这样子吗？
 
@@ -94,7 +94,7 @@ tmoe p u 下北澤紅茶 hello.rb
 tmoe p u 下北澤紅茶 "./hello.rb"
 ```
 
-若容器内部不存在 ruby,那么您可以这样写。
+若容器内部不存在 ruby, 那么您可以这样写。
 
 ```shell
 tmoe p u 下北澤紅茶 "./hello.rb" "sudo apt update;
@@ -233,7 +233,7 @@ tmoe p u 下北澤紅茶 ./example_1 ./cargo_run
 tmoe p u 下北澤紅茶 ln
 ```
 
-将本地脚本 copy 到软链接里去,这时候启动容器时会自动调用 **/etc/profile.d/permanent** 里的脚本或二进制文件。
+将本地脚本 copy 到软链接里去, 这时候启动容器时会自动调用 **/etc/profile.d/permanent** 里的脚本或二进制文件。
 
 您如果需要将容器目录下的 **/tmp** 软链接到当前目录, 那么可以这样做。
 
@@ -244,7 +244,7 @@ tmoe p u 下北澤紅茶 ln /tmp
 假设随机数值为**114514**，那么当前目录下就会生成一个软链接文件：**container_link_tmp_114514**  
 该链接指向容器内部的/tmp
 
-如需删除该文件，那么请输入`unlink container_link_tmp_114514`,或者是`rm container_link_tmp_114514`,而不要输 `rm container_link_tmp_114514/*`
+如需删除该文件，那么请输入 `unlink container_link_tmp_114514` , 或者是 `rm container_link_tmp_114514` , 而不要输 `rm container_link_tmp_114514/*`
 
 ## Entrypoint
 
@@ -282,7 +282,7 @@ echo "" > container_link_entrypoint_*
 
 在大致了解完以上功能的用法后，让我们用几个例子来做个总结吧！
 
-示例 1：
+示例 1：  
 进入容器后执行特定命令，并于完成后自动退出：
 
 ```shell
@@ -327,7 +327,8 @@ tmoe p u 下北澤紅茶 ln /tmp/release
 echo '' > container_link_entrypoint_*
 ```
 
-最后执行一下 `ls -lah container_link_release_*` 或者是 `exa -lTabgh --icons container_link_release_*`  
+最后执行一下 `ls -lah container_link_release_*` 或者是 `exa -lTabgh --icons container_link_release_*`
+
 看看里面有什么好东西吧！
 
 ## 其它说明
@@ -335,12 +336,13 @@ echo '' > container_link_entrypoint_*
 那么问题来了，自启动容器相关进程有什么用？  
 这里引用我在内测期间写的几句话。
 
-> If it is a temporary script, it will only be executed once and will not take effect next time.If it is a permanent script, it will be executed every time you enter the container.  
+> If it is a temporary script, it will only be executed once and will not take effect next time. If it is a permanent script, it will be executed every time you enter the container.  
 > For example, if you need a container to automatically execute ruby -run -e httpd /sd/Download -p 8080, after you create the script, the container will automatically start the ruby webrick http server.
 
-您如果拉了一个 ruby 容器，只想要让它开 webrick http 服务器, 那么只需要编辑 entrypoint 文件，然后输入 `ruby -run -e httpd /media/sd/Download -p 48080`， 最后保存并重进容器。
+您如果拉了一个 ruby 容器，只想要让它开 webrick http 服务器, 那么只需要编辑 entrypoint 文件，然后输入 `ruby -run -e httpd /media/sd/Download -p 48080` ， 最后保存并重进容器。  
 注 1：**/media/sd/Download** 为容器内部的目录，可自定义更改。  
-注 2：48080 为端口，浏览器输入 **localhost:48080** 即可访问服务。 若启动失败，则执行 `gem install webrick`  
+注 2：48080 为端口，浏览器输入 **localhost:48080** 即可访问服务。 若启动失败，则执行 `gem install webrick`
+
 之后每次启动这个容器，无需执行任何额外操作，都会自动自动执行这条命令。  
 这个容器有一个最主要的作用，那就是提供服务。  
 也就是说，一个服务就是一个容器，一个配置好的环境也是一个容器。
