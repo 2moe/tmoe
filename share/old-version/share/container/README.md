@@ -115,94 +115,270 @@ tmoe 对于本地文件的优先级要高于容器内部文件。
 
 假设您想要在本地编写程序，在容器内编译并执行。
 
-来看一个简单的示例吧！
+来看一个示例吧！
 
-```shell
-mkdir -pv example_1/src
+````shell
+mkdir -pv "example_1/src/模块_两个数" "example_1/benches"
 
 cat >example_1/Cargo.toml<<-'TOML'
-cargo-features = ["edition2021"]
+# cargo-features = ["edition2021"]
+
 # If the rustc version is lower than 1.56, then it may not work properly.
+# If you want to run it on rustc old version {
+# v1.53 .. v1.55 => change editon = "2021" to editon = "2018",
+# v if v < v1.53 => replace all non-ascii characters with ascii characters (variable, function name, structure name, etc.)
+# }
 
 [package]
 name = "example_1"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["test <test@xxx.com>"]
 edition = "2021"
 
 [dependencies]
+bencher = "0.1.5"
+
+[[bench]]
+name = "bench"
+harness = false
 TOML
 
 cat >example_1/src/main.rs<<-'RUST_MAIN_RS'
-use example_1::{打印_结构体, 结构体};
+use example_1::{处理参数::取_参, 模块_两个数::数};
+use std::time;
+
+type 持续时间 = time::Duration;
+type 即刻 = time::Instant;
 
 fn main() {
-    let 变量 = 结构体::新建(3, 4);
+    let 开始计时a = 即刻::now();
+    let 向量 = 取_参();
+    let 持续时间a: 持续时间 = 开始计时a.elapsed();
 
-    // print struct
-    打印_结构体(变量);
+    println!("从命令行读取参数并进行错误处理, 耗时: {:?}", 持续时间a);
+
+    let 两个数字 = 数::新(向量[0], 向量[1]);
+
+    let 开始计时b = 即刻::now();
+
+    let 值 = 两个数字.最大公倍数();
+    println!("最大公倍数 = {}", 值);
+
+    let 持续时间b: 持续时间 = 开始计时b.elapsed();
+    println!("计算最大公倍数, 耗时: {:?}", 持续时间b);
+    println!(
+        "平均每次计算最大公倍数的时间为纳秒级别, 而非微秒级别, 您可以使用 `cargo bench` 进行基准(跑分)测试"
+    );
 }
 RUST_MAIN_RS
 
+cat >example_1/benches/bench.rs<<-'CARGO_BENCH'
+use bencher::Bencher;
+use example_1::模块_两个数::数;
+
+#[macro_use]
+extern crate bencher;
+
+// benchmark_1
+fn 基准_1(bencher: &mut Bencher) {
+    let 两个数 = 数::新(407226421212, 14067601332);
+    bencher.iter(|| 两个数.最大公倍数());
+}
+
+fn 基准_2(bencher: &mut Bencher) {
+    let 两个数 = 数::新(25600000000, 6400000000);
+    bencher.iter(|| 两个数.最大公倍数());
+}
+
+fn 基准_3(bencher: &mut Bencher) {
+    let 两个数 = 数::新(407200, 1406760);
+    bencher.iter(|| 两个数.最大公倍数());
+}
+
+fn 基准_4(bencher: &mut Bencher) {
+    let 两个数 = 数::新(18326750243, 23484328165);
+    bencher.iter(|| 两个数.最大公倍数());
+}
+
+benchmark_group!(基准_组1, 基准_1, 基准_2, 基准_3, 基准_4);
+// benchmark_main!(基准_组1);
+
+benchmark_group!(基准_组2, 基准_1, 基准_2, 基准_3);
+benchmark_main!(基准_组1, 基准_组2);
+CARGO_BENCH
+
+cat >example_1/src/处理参数.rs<<-'GET_ARGS_RS'
+use std::{env, process::exit, str::FromStr};
+
+// get_args
+pub fn 取_参() -> Vec<u64> {
+    // vector
+    let mut 向量 = Vec::with_capacity(2);
+    env::args().skip(1).for_each(|arg| {
+        向量.push(u64::from_str(&arg).unwrap_or_else(|err| {
+            // 0 ..= 18446744073709551615
+            eprintln!(r#"无法将参数解析为Vec<u64>，请检查您输入的参数是否为数字，并且数字的范围是否在64位有符号整数类型的区间内。Failed to parse args, maybe both numbers you entered are not in the u64 range ("[0 ..= {}]")"#, u64::MAX);
+            eprintln!("Error parsing uint: {}",err);
+            exit(1)
+        })
+    )});
+
+    println!("向量: {:?}", 向量);
+
+    检测实参长度(&向量);
+    向量
+}
+
+// check_args_len
+fn 检测实参长度<泛型>(切片: &[泛型]) {
+    match 切片.len() {
+        len @ 0..=1 => {
+            eprintln!(
+                "Not enough arguments.\n\
+                要求: 2, 当前: {}.",
+                len,
+            );
+            exit(1)
+        }
+        2 => (),
+        _ => eprintln!("仅接收前两个参数！\nOnly the first two arguments are accepted."),
+    }
+}
+GET_ARGS_RS
+
+
+
 cat >example_1/src/lib.rs<<-'RUST_LIB_RS'
-type 叁拾贰整 = i32;
+//！ 求两个数的最大公倍数
 
-/**
-If you don't understand Chinese, then read the doc.
+// mod_two_nums
+#[path = "模块_两个数.rs"]
+pub mod 模块_两个数;
 
-{
-
-    叁拾贰整: "Thirty two bit signed integer",
-    变量: var,
-    结构体: Struct,
-    甲: a,
-    乙: b,
-    和: sum,
-    积: product,
-}
-*/
-#[derive(Debug)]
-pub struct 结构体 {
-    甲: 叁拾贰整,
-    乙: 叁拾贰整,
-}
-
-impl 结构体 {
-    // new
-    pub fn 新建(甲: 叁拾贰整, 乙: 叁拾贰整) -> Self {
-        Self { 甲, 乙 }
-    }
-
-    // add
-    // std::ops::Add::add(&self.甲, &self.乙)
-    fn 加(&self) -> 叁拾贰整 {
-        &self.甲 + &self.乙
-    }
-
-    // multiply
-    fn 乘(&self) -> 叁拾贰整 {
-        &self.甲 * &self.乙
-    }
-}
-
-// print struct
-pub fn 打印_结构体(参数: 结构体) {
-    println!(
-        "{:#?},\n和为{和},\n积为{积}。",
-        参数,
-        和 = 参数.加(),
-        积 = 参数.乘()
-    );
-}
+// handle_args
+#[path = "处理参数.rs"]
+pub mod 处理参数;
 RUST_LIB_RS
+
+cat >example_1/src/模块_两个数.rs<<-'RUST_MOD_RS'
+// Nums
+#[derive(Debug)]
+pub struct 数 {
+    pub(crate) 甲: u64,
+    pub(crate) 乙: u64,
+}
+
+// normal impl
+#[path = "模块_两个数/普通实现.rs"]
+pub mod 普通实现;
+
+//// mod special_trait_for_impl
+//// mod 使用特殊trait的实现;
+
+// test
+#[path = "模块_两个数/测试.rs"]
+#[cfg(test)]
+mod 测试;
+RUST_MOD_RS
+
+cat >example_1/src/模块_两个数/测试.rs<<-'RUST_TEST_RS'
+// use super::*;
+
+use crate::模块_两个数::*;
+
+#[test]
+fn 测试最大公倍数() {
+    let 两个数 = 数::新(40722, 1406760);
+    assert_eq!(3702, 两个数.最大公倍数())
+}
+RUST_TEST_RS
+
+cat >example_1/src/模块_两个数/普通实现.rs<<-'RUST_IMPL_RS'
+use crate::模块_两个数::*;
+
+use std::{cmp::min, mem::swap};
+
+impl 数 {
+    pub fn 新(m: u64, n: u64) -> Self {
+        Self { 甲: m, 乙: n }
+    }
+
+    pub fn 最大公倍数(&self) -> u64 {
+        let a = self.甲;
+        let b = self.乙;
+
+        match (a, b) {
+            (_, 0) => a,
+            (0, _) => b,
+            _ => self.求最大公倍数的算法(),
+        }
+    }
+
+    /**
+    计算两个数的最大公倍数
+
+    gcd: Greatest Common Divisor
+
+    可半者半之，不可半者，副置分母、子之数，以少减多，更相减损，求其等也。以等数约之。
+    —— 《九章算术》更相减损术
+
+    # Example
+    ```
+    use example_1::模块_两个数::数;
+    fn main() {
+        let 两个数 = 数::新(1024, 96);
+        assert_eq!(32, 两个数.最大公倍数())
+    }
+    ```
+    */
+    pub fn 求最大公倍数的算法(&self) -> u64 {
+        let mut y = self.甲;
+        let mut x = self.乙;
+
+        let y_0b_0 = y.trailing_zeros();
+        let x_0b_0 = x.trailing_zeros();
+
+        // 二进制移位运算
+        y >>= y_0b_0;
+        x >>= x_0b_0;
+
+        let min_0b_0 = min(x_0b_0, y_0b_0);
+
+        // assert!(x % 2 != 0);
+        // x为奇数
+        loop {
+            if x > y {
+                swap(&mut x, &mut y)
+            };
+
+            y -= x;
+            if y == 0 {
+                break x << min_0b_0;
+            }
+            y >>= y.trailing_zeros();
+        }
+    }
+}
+RUST_IMPL_RS
+
 
 cat >cargo_run<<-'CARGO_RUN'
 #!/usr/bin/env bash
 #------------------
 cd example_1
-cargo r
+
+# test
+cargo t
+
+# run
+# 运行，并接收两个有符号整数类型作为参数
+cargo r 40722 1406760
+
+# benchmark
+cargo bench
+
 CARGO_RUN
-```
+````
 
 接着，我们让容器在启动时调用当前目录下的这些文件，最后看一下运行的结果吧！
 
@@ -213,12 +389,37 @@ tmoe p u 下北澤紅茶 ./example_1 ./cargo_run
 如果程序成功运行的话，那么终端会输出以下内容
 
 ```plaintext
-结构体 {
-    甲: 3,
-    乙: 4,
-},
-和为7,
-积为12。
+running 1 test
+test 模块_两个数::测试::测试最大公倍数 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests (target/debug/deps/example_1-c0eccc29aa1bec6b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests example_1
+
+running 1 test
+test src/模块_两个数/普通实现.rs - 模块_两个数::普通实现::数::求最大公倍数的算法 (line 29) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+向量: [40722, 1406760]
+从命令行读取参数并进行错误处理, 耗时: 19.911µs
+最大公倍数 = 3702
+计算最大公倍数, 耗时: 5.066µs
+
+running 7 tests
+test 基准_1 ... bench:          63 ns/iter (+/- 4)
+test 基准_1 ... bench:          63 ns/iter (+/- 2)
+test 基准_2 ... bench:           3 ns/iter (+/- 1)
+test 基准_2 ... bench:           3 ns/iter (+/- 1)
+test 基准_3 ... bench:          19 ns/iter (+/- 1)
+test 基准_3 ... bench:          20 ns/iter (+/- 2)
+test 基准_4 ... bench:          52 ns/iter (+/- 1)
 ```
 
 ## Permanent scripts & ln argument

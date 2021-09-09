@@ -295,10 +295,10 @@ You can type `startxsdl` to start **X** client & server.
 For different distros and different architectures, the startup commands of the container are different.  
 The complete command is similar to `tmoe chroot kali rolling arm64 x11`  
 完整的启动命令类似于 `tmoe proot debian sid i386 vnc`  
-Next, I will introduce the meaning of each parameter.
+Next, I will introduce the meaning of each argument.
 
 ```bash
-    The 1st parameter is the container-type.
+    The 1st argument is the container-type.
     You can type "tmoe p" instead of "tmoe proot"
     在第一个参数中，chroot可以简化为c;proot可简化为p
     For example,"tmoe chroot"="tmoe c"
@@ -312,7 +312,7 @@ Next, I will introduce the meaning of each parameter.
         "ns:systemd-nspawn:It supports executing systemctl commands in the container."
         "nspawn:systemd容器,支持执行systemctl"
 -------------
-    The 2nd parameter is the distribution name.
+    The 2nd argument is the distribution name.
     在第二个参数中，"arch"可以简化为"a";"debian"可简化为"d";"fedora"可简化为"f";"ubuntu"可简化为"u"
     例如:"tmoe p debian"="tmoe p d"
 
@@ -354,7 +354,7 @@ Next, I will introduce the meaning of each parameter.
         "v:void"
         "void:Void is a general purpose operating system, based on the monolithic Linux kernel"
 -------------
-   The 3rd parameter is the distro version code.
+   The 3rd argument is the distro version code.
    在第三个参数中，"sid"可以简化为"s";"无版本代号"既可以简化为"n"，也可以忽略，直接使用第四个参数。
    Note: The following list does not include all codes. If there is no version code, you can skip it.
     如果版本代号不为空，且参数列表中没有出现其具体代号名称，那么请手动输入完整代号。
@@ -387,7 +387,7 @@ Next, I will introduce the meaning of each parameter.
         "8s:CentOS 8-Stream"
         "tumbleweed:OpenSUSE tumbleweed"
 -------------
-    The 4th parameter is the architecture.
+    The 4th argument is the architecture.
     在第四个参数中，"arm64"可以简化为"a";"amd64"可以简化为"x";"i386"可以简化为"i";"armhf"可以简化为"h"。
     If you are not using qemu-user for cross-architecture,then you can skip it.
     例如:"tmoe p arch arm64"="tmoe p a a"
@@ -409,7 +409,7 @@ Next, I will introduce the meaning of each parameter.
         "m:mipsel:Microprocessor without Interlocked Pipelined Stages little-endian"
         "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principlesRISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles"
 -------------
-        The 5th parameter can start a specific program of the container, such as vnc and x11.
+        The 5th argument can start a specific program of the container, such as vnc and x11.
         If it is empty, then zsh will be started.
         在第五个参数中，"vnc"可简化为"v"。
         启动chroot ubuntu-focal_arm64 tiger vncserver的命令:
@@ -442,7 +442,7 @@ Assuming you have installed a kali-rolling container named **z** .
 When you type `t p k z`, you find that the **proot kali zsh** is started instead of **proot kali z**.  
 In this case, you should type the full code: `t p kali-z` instead of `t p k-z`
 
-The 4th and 5th parameters of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the [_share/container_](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md) directory for details.
+The 4th and 5th arguments of `tmoe` allow the container to directly execute local scripts/binary files, see the README under the [_share/container_](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md) directory for details.
 
 Note: Local files have a higher priority than files inside containers.
 
