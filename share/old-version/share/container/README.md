@@ -125,8 +125,8 @@ cat >example_1/Cargo.toml<<-'TOML'
 
 # If the rustc version is lower than 1.56, then it may not work properly.
 # If you want to run it on rustc old version {
-# v1.53 .. v1.55 => change editon = "2021" to editon = "2018",
-# v if v < v1.53 => replace all non-ascii characters with ascii characters (variable, function name, structure name, etc.)
+# 1.53 ..= 1.55 => change editon = "2021" to editon = "2018",
+# v if v < 1.53 => replace all non-ascii characters with ascii characters (variable, function name, structure name, etc.)
 # }
 
 [package]
