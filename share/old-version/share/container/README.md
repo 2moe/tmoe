@@ -217,7 +217,7 @@ pub fn 取_参() -> Vec<u64> {
     env::args().skip(1).for_each(|arg| {
         向量.push(u64::from_str(&arg).unwrap_or_else(|err| {
             // 0 ..= 18446744073709551615
-            eprintln!(r#"无法将参数解析为Vec<u64>，请检查您输入的参数是否为数字，并且数字的范围是否在64位有符号整数类型的区间内。Failed to parse args, maybe both numbers you entered are not in the u64 range ("[0 ..= {}]")"#, u64::MAX);
+            eprintln!(r#"无法将参数解析为Vec<u64>，请检查您输入的参数是否为数字，并且数字的范围是否在64位无符号整数类型的区间内。Failed to parse args, maybe both numbers you entered are not in the u64 range ("[0 ..= {}]")"#, u64::MAX);
             eprintln!("Error parsing uint: {}",err);
             exit(1)
         })
@@ -371,7 +371,7 @@ cd example_1
 cargo t
 
 # run
-# 运行，并接收两个有符号整数类型作为参数
+# 运行，并接收两个64位无符号整数类型作为参数
 cargo r 40722 1406760
 
 # benchmark
