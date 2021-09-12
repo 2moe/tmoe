@@ -79,10 +79,10 @@ uncompress_tar_file() {
 	ar.zst) uncompress_tar_zst_file ;;
 	*) uncompress_other_format_file ;;
 	esac
-	case ${TMOE_CHROOT} in
-	true) ;;
-	*) [[ ! -e "${PREFIX}/bin/tmoe" ]] || check_proot_proc_permissions ;;
-	esac
+	# case ${TMOE_CHROOT} in
+	# true) ;;
+	# *) [[ ! -e "${PREFIX}/bin/tmoe" ]] || check_proot_proc_permissions ;;
+	# esac
 	check_tmoe_container_chroot
 }
 #######################

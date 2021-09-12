@@ -272,9 +272,6 @@ pub struct 数 {
 #[path = "模块_两个数/普通实现.rs"]
 pub mod 普通实现;
 
-//// mod special_trait_for_impl
-//// mod 使用特殊trait的实现;
-
 // test
 #[path = "模块_两个数/测试.rs"]
 #[cfg(test)]
