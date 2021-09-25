@@ -76,7 +76,7 @@ body:
         | distro    | ubuntu-devel   |
         | arch      | arm64          |
         | type      | chroot/unshare |
-        | desktop   | gnome          |
+        | desktop   | gnome-41       |
 
         ---
 
@@ -84,9 +84,10 @@ body:
         | -------- | -------------- |
         | distro   | android-12     |
         | arch     | arm64          |
-        | type     | chroot/unshare |
         | terminal | ?              |
         | tmoe     | latest         |
+
+        ---
 
     validations:
       required: false
