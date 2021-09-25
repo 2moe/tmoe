@@ -64,15 +64,15 @@ body:
     id: config
     attributes:
       label: Configuration
-      render: markdown
       description: "Please type the container info and host version."
       value: |
-        ╭───┬─────────────┬───────────────────╮
-        │ 0 │ container   │ ubuntu-dev_arm64  │
-        │ 1 │ host.version│ android_12        │
-        │ 2 │ host.arch   │ arm64             │
-        │ 3 │ tmoe.version│ latest            │
-        ╰───┴─────────────┴───────────────────╯
+        | key          | value      |
+        | ------------ | ---------- |
+        | container    | ubuntu     |
+        | host.version | android_12 |
+        | host.arch    | arm64      |
+        | tmoe.version | latest     |
+
     validations:
       required: false
   - type: textarea
