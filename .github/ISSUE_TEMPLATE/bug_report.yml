@@ -1,6 +1,8 @@
 name: Bug Report
-description: Create a report to help us improve
+description: "(⋟﹏⋞) I have encountered some problems"
+title: "[Bug]: "
 labels: ["bug"]
+assignees: ["2moe"]
 
 body:
   - type: dropdown

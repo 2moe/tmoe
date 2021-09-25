@@ -1,6 +1,7 @@
 name: Feature Request
-description: "When you want a new feature for something that doesn't already exist"
+description: "o(*≧▽≦)ツ Add some new features to make this project even better!"
 title: "[Request]: "
+labels: ["enhancement"]
 
 body:
   - type: textarea
