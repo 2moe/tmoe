@@ -47,7 +47,7 @@ body:
       label: Screenshots
       description: Please add any relevant screenshots here, if any
       placeholder: |
-      ![Screenshot_1](https://user-images.githubusercontent.com/25324935/128526303-9c644d80-8588-415e-b23b-fe905280352d.png)
+        ![Screenshot_1](https://user-images.githubusercontent.com/25324935/128526303-9c644d80-8588-415e-b23b-fe905280352d.png)
     validations:
       required: false
 
