@@ -4,7 +4,7 @@
   . <(curl -L git.io/linux.sh)
 ```
 
-> If you do not understand the following readme, please report an [issue](https://github.com/2moe/tmoe-linux/issues/new), or open [README.en.md](https://github.com/2moe/tmoe-linux/blob/master/README.en.md)  
+> If you do not understand the following readme, please report an [issue](https://github.com/2moe/tmoe-linux/issues/new), you can use čeština, Deutsch, español, français, ру́сский, português & 中文, etc.  
 > 化繁为简，让 GNU/Linux 的乐趣触手可及。
 
 If you want to understand the extended usage of containers, then read this [document](https://github.com/2moe/tmoe-linux/blob/master/share/old-version/share/container/README.md).  
