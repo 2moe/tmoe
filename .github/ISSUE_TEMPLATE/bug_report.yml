@@ -69,15 +69,24 @@ body:
     id: config
     attributes:
       label: Configuration
-      description: "Please type the container info and host version."
+      description: "Please type the container and host info."
       value: |
-        | key            | value            |
-        | -------------- | ---------------- |
-        | container      | ubuntu-dev_arm64 |
-        | container.type | chroot/unshare   |
-        | host.version   | android-12       |
-        | host.arch      | arm64            |
-        | tmoe.version   | latest           |
+        | container | value          |
+        | --------- | -------------- |
+        | distro    | ubuntu-devel   |
+        | arch      | arm64          |
+        | type      | chroot/unshare |
+        | desktop   | gnome          |
+
+        ---
+
+        | host     | value          |
+        | -------- | -------------- |
+        | distro   | android-12     |
+        | arch     | arm64          |
+        | type     | chroot/unshare |
+        | terminal | ?              |
+        | tmoe     | latest         |
 
     validations:
       required: false
