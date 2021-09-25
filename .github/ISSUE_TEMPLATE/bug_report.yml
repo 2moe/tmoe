@@ -1,0 +1,87 @@
+name: Bug Report
+description: Create a report to help us improve
+
+body:
+  - type: dropdown
+    id: tmoe
+    attributes:
+      label: Are you using tmoe?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Steps to reproduce the behavior
+      value: |
+        1.
+        2.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: I expect it to work fine...
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Please add any relevant screenshots here, if any
+    validations:
+      required: false
+
+  - type: textarea
+    id: errorlogs
+    attributes:
+      label: Error Logs
+      description: Please add any relevant errlogs here, if any
+      render: bash
+      placeholder: |
+        thread 'main' panicked at 'explicit panic', src/main.rs:2:5
+        note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      render: markdown
+      description: "Please type the container info and host version."
+      value: |
+        ╭───┬─────────────┬───────────────────╮
+        │ 0 │ container   │ ubuntu-dev_arm64  │
+        │ 1 │ host.version│ android_12        │
+        │ 2 │ host.arch   │ arm64             │
+        │ 3 │ tmoe.version│ latest            │
+        ╰───┴─────────────┴───────────────────╯
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+      placeholder: |
+        Thanks for taking the time to fill out this bug! 
+        If you need to discuss anything else, please go to github discussions.
+    validations:
+      required: false
