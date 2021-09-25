@@ -53,7 +53,7 @@ body:
     attributes:
       label: Error Logs
       description: Please add any relevant errlogs here, if any
-      render: bash
+      # render: log
       placeholder: |
         thread 'main' panicked at 'explicit panic', src/main.rs:2:5
         note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
@@ -66,12 +66,12 @@ body:
       label: Configuration
       description: "Please type the container info and host version."
       value: |
-        | key          | value      |
-        | ------------ | ---------- |
-        | container    | ubuntu     |
-        | host.version | android_12 |
-        | host.arch    | arm64      |
-        | tmoe.version | latest     |
+        | key          | value            |
+        | ------------ | ---------------- |
+        | container    | ubuntu-dev_arm64 |
+        | host.version | android-12       |
+        | host.arch    | arm64            |
+        | tmoe.version | latest           |
 
     validations:
       required: false
