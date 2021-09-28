@@ -1,6 +1,6 @@
 name: Feature Request
 description: "o(*≧▽≦)ツ Add some new features to make this project even better!"
-title: "[Request]: "
+# title: "[Request]: "
 labels: ["enhancement"]
 
 body:

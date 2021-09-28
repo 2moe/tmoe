@@ -1,6 +1,6 @@
 name: Bug Report
 description: "(⋟﹏⋞) I have encountered some problems"
-title: "[Bug]: "
+# title: "[Bug]: "
 labels: ["bug"]
 assignees: ["2moe"]
 
