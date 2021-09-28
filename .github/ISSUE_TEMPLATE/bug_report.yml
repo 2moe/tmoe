@@ -20,6 +20,10 @@ body:
     attributes:
       label: Describe the bug
       description: A clear and concise description of what the bug is.
+      placeholder: |
+        I used tmoe-tools to install gnome41, but it doesn't work.
+        Please help me!
+
     validations:
       required: true
 

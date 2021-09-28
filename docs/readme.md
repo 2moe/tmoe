@@ -1,0 +1,12 @@
+| language                                      |
+| --------------------------------------------- |
+| [English](./share/docs/English/readme.md)     |
+| [中文](./share/docs/中文/readme.md)           |
+| [Deutsch](./share/docs/Deutsch/readme.md)     |
+| [español](./share/docs/español/readme.md)     |
+| [français](./share/docs/français/readme.md)   |
+| [ру́сский](./share/docs/ру́сский/readme.md)     |
+| [português](./share/docs/português/readme.md) |
+| [čeština](./share/docs/čeština/readme.md)     |
+| [日本語](./share/docs/日本語/readme.md)       |
+| [한국어](./share/docs/한국어/readme.md)       |
