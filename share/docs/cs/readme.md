@@ -2,6 +2,6 @@
 
 Do you want to read čínština docs?
 
-| Ok                         | Cancel                        |
-| -------------------------- | ----------------------------- |
-| [dobře](../中文/readme.md) | [zrušení](../../../Readme.md) |
+| Ok                       | Cancel                        |
+| ------------------------ | ----------------------------- |
+| [dobře](../zh/readme.md) | [zrušení](../../../Readme.md) |

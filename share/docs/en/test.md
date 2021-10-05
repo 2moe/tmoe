@@ -1,4 +1,4 @@
-English | [Chinese](../中文/readme.md)
+English | [Chinese](../zh/readme.md)
 
 [readme](./readme.md)
 

@@ -4,17 +4,17 @@
 
 ## 1.1. main
 
-| Chapter                                                    | Introduction                                                    | Documents |
-| ---------------------------------------------------------- | --------------------------------------------------------------- | --------- |
-| [Prologue.part A](../../../Readme.md)                      | \*                                                              | lite.md   |
-| Prologue.part B: Facing History, Venturing into the Future | Compare the different editions and extend the previous section. | readme.md |
-| [Chapter 1](./1.md)                                        | \*                                                              | 1.md      |
-| [Chapter 2](./2.md)                                        | \*                                                              | 2.md      |
-| [Chapter 3](./3.md)                                        | \*                                                              | 3.md      |
+| Chapter                                                    | Introduction                                                    | Doc                |
+| ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------ |
+| [Prologue.part A](../../../Readme.md)                      | \*                                                              | ../../../Readme.md |
+| Prologue.part B: Facing History, Venturing into the Future | Compare the different editions and extend the previous section. | readme.md          |
+| [1](./1.md)                                                | \*                                                              | 1.md               |
+| [2](./2.md)                                                | \*                                                              | 2.md               |
+| [3](./3.md)                                                | \*                                                              | 3.md               |
 
 ## 1.2. current
 
-English | [Chinese](../中文/readme.md)
+English | [Chinese](../zh/readme.md)
 
 - [1. Contents](#1-contents)
   - [1.1. main](#11-main)
@@ -166,7 +166,7 @@ You will have to wait a long time as the developers are still developing.
 
 # 4. Turn the page
 
-| chapter                       | introduction                                           | documentation |
-| ----------------------------- | ------------------------------------------------------ | ------------- |
-| [previous chapter](./lite.md) | Some short notes to get you started quickly            | lite.md       |
-| [next chapter](./1.md)        | In conjunction with section 2 of this chapter, further | 1.md          |
+| chapter                        | introduction                                           | doc                |
+| ------------------------------ | ------------------------------------------------------ | ------------------ |
+| [previous](../../../Readme.md) | Some short notes to get you started quickly            | ../../../Readme.md |
+| [next](./1.md)                 | In conjunction with section 2 of this chapter, further | 1.md               |
