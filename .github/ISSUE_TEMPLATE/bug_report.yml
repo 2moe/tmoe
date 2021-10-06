@@ -15,6 +15,36 @@ body:
     validations:
       required: false
 
+  - type: dropdown
+    id: root
+    attributes:
+      label: Are you rooted?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: desktop
+    attributes:
+      label: What is your desktop environment?
+      options:
+        - "🐭 xfce"
+        - "🦖 kde plasma"
+        - "👣 gnome"
+        - "🌿 mate"
+        - "🐦 lxqt"
+        - "🕊️ lxde"
+        - "🌲 cinnamon"
+        - "🦜 budgie"
+        - "deepin"
+        - "ukui"
+        - "wm"
+        - "other"
+    validations:
+      required: false
+
   - type: textarea
     id: description
     attributes:
@@ -32,18 +62,18 @@ body:
     attributes:
       label: How to reproduce
       description: Steps to reproduce the behavior
-      value: |
+      placeholder: |
         1.
         2.
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: expected
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
-      placeholder: I expect it to work fine...
+      placeholder: I expected it to work fine...
     validations:
       required: false
 
@@ -69,6 +99,22 @@ body:
     validations:
       required: false
 
+  - type: dropdown
+    id: container-type
+    attributes:
+      label: What is your container type?
+      options:
+        - "chroot"
+        - "unshare"
+        - "proot"
+        - "systemd-nspawn"
+        - "docker"
+        - "podman"
+        - "lxc"
+        - "other"
+    validations:
+      required: false
+
   - type: textarea
     id: config
     attributes:
@@ -79,14 +125,12 @@ body:
         | --------- | -------------- |
         | distro    | ubuntu-devel   |
         | arch      | arm64          |
-        | type      | chroot/unshare |
-        | desktop   | gnome-41       |
 
         ---
 
         | host     | value          |
         | -------- | -------------- |
-        | distro   | android-12     |
+        | os       | android-12     |
         | arch     | arm64          |
         | terminal | ?              |
         | tmoe     | latest         |
@@ -94,7 +138,7 @@ body:
         ---
 
     validations:
-      required: false
+      required: true
   - type: textarea
     id: context
     attributes:
