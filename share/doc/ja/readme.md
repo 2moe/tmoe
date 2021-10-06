@@ -1,6 +1,6 @@
 和訳はありません。
 
-Do you want to read 中国語の docs?
+Do you want to read 中国語の doc?
 
 | Ok                      | Cancel                         |
 | ----------------------- | ------------------------------ |

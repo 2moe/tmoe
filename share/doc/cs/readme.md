@@ -1,6 +1,6 @@
 Český překlad není k dispozici.
 
-Do you want to read čínština docs?
+Do you want to read čínština doc?
 
 | Ok                       | Cancel                        |
 | ------------------------ | ----------------------------- |

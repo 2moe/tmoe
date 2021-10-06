@@ -1,6 +1,6 @@
 한국어 번역을 사용할 수 없습니다
 
-Do you want to read 중국어 docs?
+Do you want to read 중국어 doc?
 
 | Ok                        | Cancel                     |
 | ------------------------- | -------------------------- |

@@ -1,6 +1,6 @@
 Pas de traduction en français.
 
-Do you want to read Chinois docs?
+Do you want to read Chinois doc?
 
 | Ok                          | Cancel                        |
 | --------------------------- | ----------------------------- |

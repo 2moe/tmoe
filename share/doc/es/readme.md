@@ -1,6 +1,6 @@
 No hay traducción al español.
 
-Do you want to read Chino docs?
+Do you want to read Chino doc?
 
 | Ok                      | Cancel                         |
 | ----------------------- | ------------------------------ |

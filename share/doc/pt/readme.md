@@ -1,6 +1,6 @@
 Não há tradução portuguesa disponível
 
-Do you want to read Documentos chineses?
+Do you want to read Chinese doc?
 
 | Ok                          | Cancel                         |
 | --------------------------- | ------------------------------ |
