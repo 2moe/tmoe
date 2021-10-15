@@ -22,8 +22,7 @@ português => pt
 čeština => cs
 日本語 => ja
 한국어 => ko
- -->
-<!--
+
 git mv English en
 git mv 中文 zh
 git mv Deutsch  de
