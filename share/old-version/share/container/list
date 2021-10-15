@@ -1194,48 +1194,59 @@ install_ubuntu_gnu_linux_distro() {
 	RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
 	COMPATIBILITY_MODE=false
 	install_ubuntu_gnu_linux_distro_zh() {
-		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号" 0 50 0 \
-				"1" "🐒 21.10(devel) 頑皮大狐猴 Impish Indri" \
-				"2" "🦛 21.04 多毛河馬 Hirsute Hippo" \
-				"3" "🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa" \
-				"4" "18.04(LTS)仿生海狸 Bionic Beaver" \
-				"5" "Compatibility mode 兼容模式(仅安装)" \
-				"6" "Custom code手动输入版本代号" \
-				"7" "使用debootstrap手动构建" \
-				"8" "Latest(自動檢測22.04)" \
-				"0" "🌚 Return to previous menu 返回上级菜单" \
-				3>&1 1>&2 2>&3
-		)
+		MENU="2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
+		OPT_1="22.04(LTS) 果酱水母 Jammy Jellyfish"
+		OPT_2="🐒 21.10 頑皮大狐猴 Impish Indri"
+		OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
+		OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
+		OPT_5="18.04(LTS)仿生海狸 Bionic Beaver"
+		OPT_6="Compatibility mode 兼容模式(仅安装)"
+		OPT_7="Custom code手动输入版本代号"
+		OPT_8="使用debootstrap手动构建"
+		OPT_9="Latest(自動檢測22.10)"
+		OPT_0="🌚 Return to previous menu 返回上级菜单"
+
 	}
 	#	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
 	install_ubuntu_gnu_linux_distro_ja() {
-		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください" 0 50 0 \
-				"1" "🐒 21.10(devel) Impish Indri" \
-				"2" "🦛 21.04 Hirsute Hippo" \
-				"3" "🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ" \
-				"4" "18.04(LTS)Bionic Beaver" \
-				"5" "互換モード" \
-				"6" "カスタムコード" \
-				"7" "debootstrapを使用して手動でビルドする" \
-				"8" "Latest(最新バージョンを自動的に検出)" \
-				"0" "🌚 戻る" \
-				3>&1 1>&2 2>&3
-		)
+		MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
+		OPT_1="22.04(LTS) Jammy Jellyfish"
+		OPT_2="🐒 21.10(devel) Impish Indri"
+		OPT_3="🦛 21.04 Hirsute Hippo"
+		OPT_4="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
+		OPT_5="18.04(LTS)Bionic Beaver"
+		OPT_6="互換モード"
+		OPT_7="カスタムコード"
+		OPT_8="debootstrapを使用して手動でビルドする"
+		OPT_9="Latest(最新バージョンを自動的に検出)"
+		OPT_0="🌚 戻る"
 	}
 	install_ubuntu_gnu_linux_distro_en() {
+		MENU="The long-term support version between 2020 and 2025 is focal(20.04).\nLet x = current year, if x>=2023,then customize the version code"
+		OPT_1="22.04(LTS) Jammy Jellyfish"
+		OPT_2="🐒 21.10(devel) Impish Indri"
+		OPT_3="🦛 21.04 Hirsute Hippo"
+		OPT_4="🐱 20.04(LTS)Focal Fossa"
+		OPT_5="18.04(LTS)Bionic Beaver"
+		OPT_6="Compatibility mode"
+		OPT_7="Custom code"
+		OPT_8="Manually build"
+		OPT_9="Latest"
+		OPT_0="🌚 Return to previous menu"
+	}
+	install_ubuntu_gnu_linux_distro() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "The long-term support version from 2020 to 2025 is focal(20.04).\nLet x = current year, if x>=2023,then customize the version code" 0 50 0 \
-				"1" "🐒 21.10(devel) Impish Indri" \
-				"2" "🦛 21.04 Hirsute Hippo" \
-				"3" "🐱 20.04(LTS)Focal Fossa" \
-				"4" "18.04(LTS)Bionic Beaver" \
-				"5" "Compatibility mode" \
-				"6" "Custom code" \
-				"7" "Manually build" \
-				"8" "Latest" \
-				"0" "🌚 Return to previous menu" \
+			whiptail --title "Which version do you want to install?" --menu "${MENU}" 0 50 0 \
+				"1" "${OPT_1}" \
+				"2" "${OPT_2}" \
+				"3" "${OPT_3}" \
+				"4" "${OPT_4}" \
+				"5" "${OPT_5}" \
+				"6" "${OPT_6}" \
+				"7" "${OPT_7}" \
+				"8" "${OPT_8}" \
+				"9" "${OPT_9}" \
+				"0" "${OPT_0}" \
 				3>&1 1>&2 2>&3
 		)
 	}
@@ -1245,20 +1256,22 @@ install_ubuntu_gnu_linux_distro() {
 	ja_JP.UTF-8) install_ubuntu_gnu_linux_distro_ja ;;
 	*) install_ubuntu_gnu_linux_distro_en ;;
 	esac
+	install_ubuntu_gnu_linux_distro
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) DISTRO_CODE='impish' ;;
-	2) DISTRO_CODE='hirsute' ;;
-	3) DISTRO_CODE='focal' ;;
-	4) DISTRO_CODE='bionic' ;;
-	5)
+	1) DISTRO_CODE='jammy' ;;
+	2) DISTRO_CODE='impish' ;;
+	3) DISTRO_CODE='hirsute' ;;
+	4) DISTRO_CODE='focal' ;;
+	5) DISTRO_CODE='bionic' ;;
+	6)
 		COMPATIBILITY_MODE=true
 		custom_ubuntu_version
 		;;
-	6) custom_ubuntu_version ;;
-	7) debootstrap_ubuntu_distro ;;
-	8) check_the_latest_ubuntu_version ;;
+	7) custom_ubuntu_version ;;
+	8) debootstrap_ubuntu_distro ;;
+	9) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -1271,6 +1284,7 @@ install_ubuntu_gnu_linux_distro() {
 check_ubuntu_distro_code() {
 	case ${DISTRO_CODE} in
 	bionic | xenial | eoan) ;;
+	jammy) check_the_ubuntu_devel ;;
 	*)
 		case "${ARCH_TYPE}" in
 		"i386")
@@ -1437,14 +1451,27 @@ install_different_ubuntu_gnu_linux_distros() {
 	#UBUNTU ppc64el/s390x/arm架构需使用ports源
 }
 ############
-check_the_latest_ubuntu_version() {
-	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
+do_you_want_to_install_ubuntu_older_version() {
 	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "未检测到最新版本，将自动获取ubuntu 21.10 impish"
+		printf "%s\n" "${YELLOW}Sorry${RESET}, ubuntu ${PURPLE}${VERSION}${RESET} ${RED}has not${RESET} ${BLUE}been released${RESET} yet."
+		printf "%s\n" "Do you want to install ubuntu ${GREEN}21.10(impish)?${RESET}"
 		DISTRO_CODE='impish'
 		do_you_want_to_continue
 	fi
+}
+check_the_ubuntu_devel() {
+	if (($(date +%Y%m) <= 202111)); then
+		LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
+		VERSION="jammy (22.04 LTS)"
+		do_you_want_to_install_ubuntu_older_version
+	fi
+}
+check_the_latest_ubuntu_version() {
+	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
+	VERSION="next version"
+	do_you_want_to_install_ubuntu_older_version
 }
 ##########
 install_kali_rolling_gnu_linux_distro() {
