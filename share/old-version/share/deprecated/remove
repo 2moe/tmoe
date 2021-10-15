@@ -56,7 +56,7 @@ remove_old_version_gnu_linux_container() {
 	fi
 	printf "%s\n" "Do you want to remove it?${PURPLE}[Y/n]${RESET}"
 	printf "%s\n" "${YELLOW}按回车键确认移除 Press enter to remove.${RESET} "
-	read opt
+	read -r opt
 	case $opt in
 	y* | Y* | "")
 		chmod 777 -R ${DEBIAN_FOLDER} || sudo chmod 777 -R ${DEBIAN_FOLDER}
@@ -84,7 +84,7 @@ remove_old_version_gnu_linux_container() {
 	printf "%s\n" "${YELLOW}请问您是否需要删除容器镜像文件？[Y/n]${RESET} "
 	printf "%s\n" "${RED}rm -fv ~/${ROOTFS_NAME}*-rootfs.tar.*${RESET}"
 	printf "%s\n" "Do you need to delete the image file (${ROOTFS_NAME}*-rootfs.tar.*)?${PURPLE}[Y/n]${RESET}"
-	read opt
+	read -r opt
 	case $opt in
 	y* | Y* | "")
 		#rm -fv ${DEBIAN_CHROOT}*-rootfs.tar.*

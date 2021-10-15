@@ -1,8 +1,8 @@
 # Environment variables and automatic startup scripts
 
 关于 tmoe container 环境变量选项与自启动脚本的说明:  
-注：适用于 v1.4539（2021-04-23）及更新的版本安装的 proot/chroot 容器。  
-注 2：部分新用法仅支持 v1.4767 及更新的版本。  
+注：适用于 v1.4539.0（2021-04-23）及更新的版本安装的 proot/chroot 容器。  
+注 2：部分新用法仅支持 v1.4767.0 及更新的版本。  
 注 3：除了 **global env** 外，其他功能仅当 login shell 为 zsh/bash 时，才会生效。
 
 ## Global environment variables
@@ -502,8 +502,8 @@ echo hello world | toilet | lolcat
 在容器内编译本地的 hello 项目，完成后自动退出。
 
 > 注：使用容器来编译本地项目时，默认会将本地项目复制进容器内部的临时文件夹，因此您无需担心本地项目文件夹的所有权被破坏。  
-> 在 v1.4539 版本中，默认会立即清空临时文件夹。  
-> 而在 v1.4767 版本中，每次启动容器且未检测到锁文件(.container.lock)时，才会自动清空。
+> 在 v1.4539.0 版本中，默认会立即清空临时文件夹。  
+> 而在 v1.4767.0 版本中，每次启动容器且未检测到锁文件(.container.lock)时，才会自动清空。
 
 为了简化操作，此处假设您的宿主机和容器都安装了 **rust** 和 **cargo** 。
 

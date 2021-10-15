@@ -28,7 +28,7 @@ install_gnu_linux_container() {
 			printf "%s\n" "${YELLOW}检测到您已安装${ROOTFS_NAME}容器,是否重新安装？[Y/n]${RESET} "
 			printf "%s\n" "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
 			printf "%s\n" "Detected that you have ${ROOTFS_NAME} container installed, do you want to reinstall it?${PURPLE}[Y/n]${RESET}"
-			read opt
+			read -r opt
 			case $opt in
 			y* | Y* | "")
 				remove_old_version_gnu_linux_container

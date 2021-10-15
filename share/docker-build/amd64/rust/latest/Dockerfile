@@ -14,6 +14,7 @@ ENV HOME=/root \
 RUN apt update; \
     apt dist-upgrade -y; \
     dpkg --configure -a; \
+    apt install -y pkg-config libssl-dev; \
     apt install -y sudo locales; \
     apt install -y whiptail curl eatmydata procps apt-utils; \
     apt install -y --no-install-recommends neofetch gcc; \

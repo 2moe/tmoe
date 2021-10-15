@@ -346,7 +346,7 @@ do_you_want_to_continue() {
 	case ${TMOE_LANG} in
 	zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}" ;;
 	esac
-	read opt
+	read -r opt
 	case $opt in
 	y* | Y* | "") ;;
 	n* | N*)

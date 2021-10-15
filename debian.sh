@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-#############
-# set -x
+#-----------------
 show_package_info() {
 	# Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
-	if [ $(uname -o) = Android ]; then EXTRA_DEPS=", dialog, termux-api, termux-tools"; fi
+	if [ "$(uname -o)" = Android ]; then EXTRA_DEPS=", dialog, termux-api, termux-tools"; fi
 	cat <<-EndOfShow
 		Package: tmoe-linux-manager
-		Version: 1.4892
+		Version: 1.4983.0
 		Priority: optional
 		Section: admin
 		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
@@ -18,49 +17,84 @@ show_package_info() {
 		Description: Easily manage containers and system. Just type "tmoe" to enjoy it.
 	EndOfShow
 }
-#############
-set_env() {
+#-----------------
+set_colour() {
+	RED="$(printf '\033[31m')"
+	GREEN="$(printf '\033[32m')"
+	YELLOW="$(printf '\033[33m')"
+	BLUE="$(printf '\033[34m')"
+	PURPLE="$(printf '\033[35m')"
+	CYAN="$(printf '\033[36m')"
+	RESET="$(printf '\033[m')"
+	BOLD="$(printf '\033[1m')"
+}
+set_path_and_url() {
 	TMOE_MANAGER="share/old-version/share/app/manager"
 	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
 	TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/${TMOE_MANAGER}"
-	# TMOE_URL_03="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
 	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
 	TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
-	if [ -z ${TMPDIR} ]; then
-		TMPDIR=/tmp
-		mkdir -pv ${TMPDIR}
-	fi
 	TEMP_FILE=".tmoe-linux.sh"
+}
+set_tmp_dir() {
+	if [ -z "${TMPDIR}" ]; then
+		for i in /tmp "${HOME}"; do
+			if [ -e "${i}" ]; then
+				TMPDIR="${i}/.cache"
+				mkdir -p "${TMPDIR}"
+				break
+			fi
+		done
+	fi
+}
+set_env() {
+	set_colour
+	set_path_and_url
+	set_tmp_dir
 	unset EXTRA_DEPS MANAGER_FILE
-	RED=$(printf '\033[31m')
-	GREEN=$(printf '\033[32m')
-	YELLOW=$(printf '\033[33m')
-	BLUE=$(printf '\033[34m')
-	PURPLE=$(printf '\033[35m')
-	CYAN=$(printf '\033[36m')
-	RESET=$(printf '\033[m')
-	BOLD=$(printf '\033[1m')
 }
-show_info_and_run_the_temp_file() {
-	show_package_info
-	do_you_want_to_continue
-	# check_system_version
-	check_downloader
-	download_temp_file
-	exec_temp_file
-}
+#-----------------
 do_you_want_to_continue() {
 	printf "%s\n" "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}"
 	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}, type ${YELLOW}n${RESET} to ${PURPLE}exit.${RESET}"
 	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${PURPLE}退出${RESET}"
-	read opt
-	case $opt in
+	read -r opt
+	case "${opt}" in
 	n* | N*)
 		printf "%s\n" "${PURPLE}skipped${RESET}."
 		exit 1
 		;;
 	*) ;;
 	esac
+}
+#-----------
+check_curl() {
+	if [ -z "$(command -v curl)" ]; then
+		printf "%s\n" "${RED}${BOLD}ERROR${RESET}, ${CYAN}please install ${GREEN}curl${RESET} first"
+		sleep 2
+		exit 127
+	fi
+}
+download_temp_file() {
+	check_curl
+	cd "${TMPDIR}" || return 1
+	curl --connect-timeout 7 -Lvo "${TEMP_FILE}" "${TMOE_URL}" || curl --connect-timeout 20 -Lvo "${TEMP_FILE}" "${TMOE_URL_02}"
+}
+exec_temp_file() {
+	if [ -n "$(command -v bash)" ] && [ -s .tmoe-linux.sh ]; then
+		bash .tmoe-linux.sh
+	else
+		printf "%s\n" "${RED}${BOLD}ERROR${RESET}, ${CYAN}please install ${GREEN}bash${RESET} first"
+		sleep 2
+		exit 127
+	fi
+}
+#-----------
+show_info_and_run_the_temp_file() {
+	show_package_info
+	do_you_want_to_continue
+	download_temp_file
+	exec_temp_file
 }
 check_manager_file() {
 	unset MANAGER_FILE
@@ -70,41 +104,15 @@ check_manager_file() {
 			break
 		fi
 	done
-	case ${MANAGER_FILE} in
+	case "${MANAGER_FILE}" in
 	"") show_info_and_run_the_temp_file ;;
 	*) bash "${MANAGER_FILE}" ;;
 	esac
 }
-check_downloader() {
-	for i in aria2c curl wget; do
-		if [ $(command -v ${i}) ]; then
-			DOWNLOADER=${i}
-			break
-		fi
-	done
+#----------------
+main() {
+	set_env
+	check_manager_file
 }
-#############
-download_temp_file() {
-	cd ${TMPDIR}
-	case ${DOWNLOADER} in
-	aria2c) aria2c --connect-timeout=7 --console-log-level=info --no-conf --allow-overwrite=true -o ${TEMP_FILE} ${TMOE_URL} || aria2c --connect-timeout=20 --console-log-level=debug --no-conf --allow-overwrite=true -o ${TEMP_FILE} ${TMOE_URL_02} ;;
-	curl) curl --connect-timeout 7 -Lvo ${TEMP_FILE} ${TMOE_URL} || curl --connect-timeout 20 -Lvo ${TEMP_FILE} ${TMOE_URL_02} ;;
-	wget) wget --connect-timeout=7 -O ${TEMP_FILE} ${TMOE_URL} || wget --connect-timeout=20 -O ${TEMP_FILE} ${TMOE_URL_02} ;;
-	*)
-		printf "%s\n" "${RED}${BOLD}ERROR${RESET}, ${CYAN}please install ${GREEN}curl${RESET} first"
-		sleep 2
-		exit 127
-		;;
-	esac
-}
-exec_temp_file() {
-	if [ $(command -v bash) ] && [ -s .tmoe-linux.sh ]; then
-		bash .tmoe-linux.sh
-	else
-		printf "%s\n" "${RED}${BOLD}ERROR${RESET}, ${CYAN}please install ${GREEN}bash${RESET} first"
-		sleep 2
-		exit 127
-	fi
-}
-set_env
-check_manager_file
+#----------------
+main "${@}"

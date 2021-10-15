@@ -2200,7 +2200,7 @@ arch_linux_mate_warning() {
     printf "%s\n" "Type q to install lxqt,type l to install lxde,type x to install xfce."
     printf "%s\n" "按${GREEN}回车键${RESET}${RED}继续${RESET}安装mate，输${YELLOW}n${RESET}${BLUE}返回${RESET}"
     printf "%s\n" "输${YELLOW}q${RESET}安装lxqt,输${YELLOW}l${RESET}安装lxde,输${YELLOW}x${RESET}安装xfce"
-    read opt
+    read -r opt
     case $opt in
     y* | Y* | "") ;;
 

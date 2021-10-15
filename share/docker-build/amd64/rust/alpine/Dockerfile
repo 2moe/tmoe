@@ -7,6 +7,7 @@ ENV HOME=/root \
     TMOE_DOCKER=true
 RUN apk update; \
     apk upgrade; \
+    apk add openssl-dev musl-dev; \
     apk add sudo tar grep curl wget bash tzdata newt shadow; \
     printf "%s\n" "root:root" | chpasswd; \
     ln -svf /usr/share/zoneinfo/UTC /etc/localtime; \

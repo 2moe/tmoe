@@ -66,7 +66,7 @@ switch_android_termux_mirror_to_bfsu() {
 			printf "%s\n" "${YELLOW}检测到您当前使用的sources.list不是北外源,是否需要更换为北外源[Y/b/n]${RESET} "
 			printf "%s\n" "更换后可以加快中国境内的下载速度,${YELLOW}按回车键切换为bfsu北外源, 输t切换为tuna-tsinghua清华源，输n拒绝。${RESET}"
 			printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
-			read opt
+			read -r opt
 			case $opt in
 			y* | Y* | "") termux_tuna_sources_list ;;
 			t* | T*)

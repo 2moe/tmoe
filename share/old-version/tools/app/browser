@@ -229,7 +229,7 @@ if_you_can_not_start_chromium() {
 }
 ##########
 read_chromium_sandbox_opt() {
-    read opt
+    read -r opt
     case $opt in
     y* | Y* | "")
         case ${LINUX_DISTRO} in
