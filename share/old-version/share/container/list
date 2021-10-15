@@ -1194,9 +1194,9 @@ install_ubuntu_gnu_linux_distro() {
 	RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
 	COMPATIBILITY_MODE=false
 	install_ubuntu_gnu_linux_distro_zh() {
-		MENU="2020至2025年的长期支持版为focal 20.04(2020年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
-		OPT_1="22.04(LTS) 果酱水母 Jammy Jellyfish"
-		OPT_2="🐒 21.10 頑皮大狐猴 Impish Indri"
+		MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
+		OPT_2="22.04(LTS, dev) 果酱水母 Jammy Jellyfish"
+		OPT_1="🐒 21.10(stable) 頑皮大狐猴 Impish Indri"
 		OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
 		OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
 		OPT_5="18.04(LTS)仿生海狸 Bionic Beaver"
@@ -1210,8 +1210,8 @@ install_ubuntu_gnu_linux_distro() {
 	#	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
 	install_ubuntu_gnu_linux_distro_ja() {
 		MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
-		OPT_1="22.04(LTS) Jammy Jellyfish"
-		OPT_2="🐒 21.10(devel) Impish Indri"
+		OPT_2="22.04(LTS, dev) Jammy Jellyfish"
+		OPT_1="🐒 21.10(stable) Impish Indri"
 		OPT_3="🦛 21.04 Hirsute Hippo"
 		OPT_4="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
 		OPT_5="18.04(LTS)Bionic Beaver"
@@ -1222,9 +1222,9 @@ install_ubuntu_gnu_linux_distro() {
 		OPT_0="🌚 戻る"
 	}
 	install_ubuntu_gnu_linux_distro_en() {
-		MENU="The long-term support version between 2020 and 2025 is focal(20.04).\nLet x = current year, if x>=2023,then customize the version code"
-		OPT_1="22.04(LTS) Jammy Jellyfish"
-		OPT_2="🐒 21.10(devel) Impish Indri"
+		MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2023,then customize the version code"
+		OPT_2="22.04(LTS, dev) Jammy Jellyfish"
+		OPT_1="🐒 21.10(stable) Impish Indri"
 		OPT_3="🦛 21.04 Hirsute Hippo"
 		OPT_4="🐱 20.04(LTS)Focal Fossa"
 		OPT_5="18.04(LTS)Bionic Beaver"
@@ -1260,8 +1260,8 @@ install_ubuntu_gnu_linux_distro() {
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) DISTRO_CODE='jammy' ;;
-	2) DISTRO_CODE='impish' ;;
+	1) DISTRO_CODE='impish' ;;
+	2) DISTRO_CODE='jammy' ;;
 	3) DISTRO_CODE='hirsute' ;;
 	4) DISTRO_CODE='focal' ;;
 	5) DISTRO_CODE='bionic' ;;
@@ -1453,7 +1453,7 @@ install_different_ubuntu_gnu_linux_distros() {
 ############
 do_you_want_to_install_ubuntu_older_version() {
 	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "${YELLOW}Sorry${RESET}, ubuntu ${PURPLE}${VERSION}${RESET} ${RED}has not${RESET} ${BLUE}been released${RESET} yet."
+		printf "%s\n" "${YELLOW}Sorry${RESET}, tmoe cannot install ubuntu ${PURPLE}${VERSION}${RESET} now"
 		printf "%s\n" "Do you want to install ubuntu ${GREEN}21.10(impish)?${RESET}"
 		DISTRO_CODE='impish'
 		do_you_want_to_continue
@@ -1464,7 +1464,18 @@ check_the_ubuntu_devel() {
 		LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
 		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
 		VERSION="jammy (22.04 LTS)"
-		do_you_want_to_install_ubuntu_older_version
+		printf "%s\n" "Ubuntu ${BLUE}22.04${RESET} is a ${PURPLE}development release${RESET} now."
+		printf "%s\n" "If you want to install ${PURPLE}ubuntu-devel${RESET}, then go to ${BLUE}Weekly Builds${RESET}."
+		printf "%s\n" "${BLUE}Weekly Builds ${PURPLE}-> ${YELLOW}zsh ${PURPLE}-> ${GREEN}ubuntu-devel${RESET}"
+		case ${ARCH_TYPE} in
+		amd64 | arm64)
+			if [ -z ${DISTRO_CODE} ]; then
+				press_enter_to_return
+				install_tmoe_weekly_build_edition
+			fi
+			;;
+		*) do_you_want_to_install_ubuntu_older_version ;;
+		esac
 	fi
 }
 check_the_latest_ubuntu_version() {
