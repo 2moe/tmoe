@@ -384,4 +384,4 @@ if [[ ! $(command -v Xvnc) && ! $(command -v vncserver) ]]; then
     startx11vnc
 fi
 # 注: 推荐您使用startvnc, 而不是vncserver哦！startvnc在默认情况下，会比不包含参数的vncserver更流畅哦！
-# It is recommend to use startvnc instead of vncserver.
+# It is recommended to use startvnc instead of vncserver.

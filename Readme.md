@@ -10,7 +10,7 @@ English | [简体中文](./share/doc/zh/lite.md)
 
 This is a _lite doc_.
 
-It's recommend that you read the [full documentation](./share/doc/readme.md).
+It's recommended that you read the [full documentation](./share/doc/readme.md).
 
 ### 1.2. full
 
