@@ -18,20 +18,22 @@ Note: These documents are temporarily unavailable.
 
 The new version with improved multilingual support will be released in 2022.
 
-| language                              | note                                                                                                           | contributors   |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------- |
-| [English](./share/doc/en/readme.md)   | Making the future better together.                                                                             | \*             |
-| [中文](./share/doc/zh/readme.md)      | 好耶！是完整的文档 <(=o ゜ ▽ ゜)o☆ <!-- 你好，謝謝，小籠包，再見 -->                                           | 2moe           |
-| [Deutsch](./share/doc/de/readme.md)   | Eine Hand wäscht die andere. <!-- nicht verfügbar -->                                                          | \*             |
-| [español](./share/doc/es/readme.md)   | Quien siembra vientos, recoge tempestades. <!-- no disponible-->                                               | \*             |
-| [français](./share/doc/fr/readme.md)  | Si bien dire vaut, moult bien faire passe tout. <!-- non disponible -->                                        | \*             |
-| [ру́сский](./share/doc/ru/readme.md)   | Наша величайшая слава не в отсутствии падений, но в том, чтобы каждый раз вновь подниматься<!-- недоступен --> | \*             |
-| [português](./share/doc/pt/readme.md) | Estando madura a pera e antes que ela apodreça, vem quem bem a mereça. <!-- não disponível   -->               | \*             |
-| [čeština](./share/doc/cs/readme.md)   | Kdo chce kam, pomozme mu tam.<!-- není dostupný -->                                                            | \*             |
-| [日本語](./share/doc/ja/readme.md)    | 君日本語本当上手(<(= ￣ y▽ ￣)╭ 笑)                                                                            | Σ<(=っ °Д °)っ |
-| [한국어](./share/doc/ko/readme.md)    | 성공한 사람보다는 가치 있는 사람이 되라.                                                                       | \*             |
+| language                                     | note                                                                                                           | contributors   |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------- |
+| [English](./share/doc/en/readme.md)          | Making the future better together.                                                                             | \*             |
+| [中文](./share/doc/zh/readme.md)             | 好耶！是完整的文档 <(=o ゜ ▽ ゜)o☆ <!-- 你好，謝謝，小籠包，再見 -->                                           | 2moe           |
+| [Deutsch](./share/doc/de/readme.md)          | Eine Hand wäscht die andere. <!-- nicht verfügbar -->                                                          | \*             |
+| [español](./share/doc/es/readme.md)          | Quien siembra vientos, recoge tempestades. <!-- no disponible-->                                               | \*             |
+| [français](./share/doc/fr/readme.md)         | Si bien dire vaut, moult bien faire passe tout. <!-- non disponible -->                                        | \*             |
+| [ру́сский](./share/doc/ru/readme.md)          | Наша величайшая слава не в отсутствии падений, но в том, чтобы каждый раз вновь подниматься<!-- недоступен --> | \*             |
+| [português](./share/doc/pt/readme.md)        | Estando madura a pera e antes que ela apodreça, vem quem bem a mereça. <!-- não disponível   -->               | \*             |
+| [čeština](./share/doc/cs/readme.md)          | Kdo chce kam, pomozme mu tam.<!-- není dostupný -->                                                            | \*             |
+| [日本語](./share/doc/ja/readme.md)           | 君日本語本当上手(<(= ￣ y▽ ￣)╭ 笑)                                                                            | Σ<(=っ °Д °)っ |
+| [한국어](./share/doc/ko/readme.md)           | 성공한 사람보다는 가치 있는 사람이 되라.                                                                       | \*             |
+| [正體中文-臺灣](./share/doc/zh-TW/readme.md) | 裡面有“好康”的東西？是什麼呀？是新書哦？                                                                       | \*             |
+| [繁體中文-香港](./share/doc/zh-HK/readme.md) | 裏面嘅嘢唔系粵語。For example, "Why do you like her"唔會被 translated as “你點解鍾意佢”,而是“你為什麼喜歡她”   | \*             |
 
-<!-- | [繁體/正體中文](./share/doc/zh_TW/readme.md)  | ~~這裡面有很多“好康”的東西~~        | \*             | -->
+<!--  -->
 
 ## 2. Quick start
 

@@ -1,15 +1,17 @@
-| language                    |
-| --------------------------- |
-| [English](./en/readme.md)   |
-| [中文](./zh/readme.md)      |
-| [Deutsch](./de/readme.md)   |
-| [español](./es/readme.md)   |
-| [français](./fr/readme.md)  |
-| [ру́сский](./ru/readme.md)   |
-| [português](./pt/readme.md) |
-| [čeština](./cs/readme.md)   |
-| [日本語](./ja/readme.md)    |
-| [한국어](./ko/readme.md)    |
+| language                           |
+| ---------------------------------- |
+| [English](./en/readme.md)          |
+| [中文](./zh/readme.md)             |
+| [Deutsch](./de/readme.md)          |
+| [español](./es/readme.md)          |
+| [français](./fr/readme.md)         |
+| [ру́сский](./ru/readme.md)          |
+| [português](./pt/readme.md)        |
+| [čeština](./cs/readme.md)          |
+| [日本語](./ja/readme.md)           |
+| [한국어](./ko/readme.md)           |
+| [正體中文-臺灣](./zh-TW/readme.md) |
+| [繁體中文-香港](./zh-HK/readme.md) |
 
 <!--
 English => en
@@ -33,4 +35,4 @@ git mv português pt
 git mv čeština cs
 git mv 日本語 ja
 git mv 한국어 ko
- -->
+-->
