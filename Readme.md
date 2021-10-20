@@ -31,7 +31,7 @@ The new version with improved multilingual support will be released in 2022.
 | [日本語](./share/doc/ja/readme.md)           | 君日本語本当上手(<(= ￣ y▽ ￣)╭ 笑)                                                                            | Σ<(=っ °Д °)っ |
 | [한국어](./share/doc/ko/readme.md)           | 성공한 사람보다는 가치 있는 사람이 되라.                                                                       | \*             |
 | [正體中文-臺灣](./share/doc/zh-TW/readme.md) | 裡面有“好康”的東西？是什麼呀？是新書哦？                                                                       | \*             |
-| [繁體中文-香港](./share/doc/zh-HK/readme.md) | 裏面嘅嘢唔系粵語。For example, "Why do you like her"唔會被 translated as “你點解鍾意佢”,而是“你為什麼喜歡她”   | \*             |
+| [繁體中文-香港](./share/doc/zh-HK/readme.md) | 裏面嘅嘢唔系粵語。For example, “我喜歡它”唔會被 converted to “我鍾意佢”。                                      | \*             |
 
 <!--  -->
 
