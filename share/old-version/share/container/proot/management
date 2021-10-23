@@ -11,13 +11,14 @@ proot_management_menu() {
 	TMOE_CONTAINER_HITOKOTO=true
 	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
 	check_chroot_conf
+	# 🥤
 	proot_management_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
 			"1" "🌱 start ${DEBIAN_FOLDER}" \
 			"2" "⏹️ kill process" \
 			"3" "🐯 start gui(remote desktop)" \
 			"4" "🍧 user, env var & login item" \
-			"5" "🥤 edit script" \
+			"5" "edit script" \
 			"6" "💔 unmount & remove" \
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "📘 readme" \
@@ -33,7 +34,7 @@ proot_management_menu() {
 			"2" "⏹️ 停止容器进程" \
 			"3" "🐯 启动gui: x11/tiger vnc" \
 			"4" "🍧 环境变量与登录项管理" \
-			"5" "🥤 edit script 编辑脚本" \
+			"5" "edit script 编辑脚本" \
 			"6" "💔 unmount & remove 卸载并移除" \
 			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
 			"8" "📘 readme 自述/说明" \
@@ -49,7 +50,7 @@ proot_management_menu() {
 			"2" "⏹️ Tötungsprozess" \
 			"3" "🐯 start gui(remote desktop)" \
 			"4" "🍧 Benutzer & Umgebung" \
-			"5" "🥤 Skript bearbeiten" \
+			"5" "Skript bearbeiten" \
 			"6" "💔 aushängen und entfernen" \
 			"7" "🍹 backup ${CONTAINER_TYPE} container" \
 			"8" "📘 Liesmich" \

@@ -75,7 +75,7 @@ check_and_view_the_eula() {
 tmoe_linux_container_eula() {
 	if [ ! -d "${DEBIAN_CHROOT}" ]; then
 		#less -meQ
-		sed -n p ${TMOE_GIT_DIR}/Licenses/tmoe-linux/LICENSE || $(whereis cat 2>/dev/null | awk '{print $2}') ${TMOE_GIT_DIR}/Licenses/tmoe-linux/LICENSE
+		sed -n p ${TMOE_GIT_DIR}/License || $(whereis cat 2>/dev/null | awk '{print $2}') ${TMOE_GIT_DIR}/License
 		cat <<-EOF
 			You must agree to the EULA to continue.
 			Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly.
