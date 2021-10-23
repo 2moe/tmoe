@@ -12,7 +12,7 @@
 | [序章后篇](./readme.md) | 历史与发展                     | readme.md |
 | [第一章](./1.md)        | 容器的安装与配置               | 1.md      |
 | [第二章](./2.md)        | 错误处理                       | 2.md      |
-| [第三章](./3.md)        | \*                             | 3.md      |
+| [第三章](./3.md)        | 介绍 vscode & haskell 等容器   | 3.md      |
 
 ### 1.2. 本章
 
@@ -34,8 +34,8 @@
 | 方法  | 工具  | 条件                                                                                                                                 | 命令                                       |
 | ----- | ----- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
 | ~~1~~ | cargo | ~~you are using `rustc` **nightly**~~ (暂时不可用, `tmm`(稳定版) 将于 2022 年发布，开发者会努力赶在 2022 之前将代码上传到 beta 分支) | ~~`cargo install tmm`~~                    |
-| 2     | curl  | 您已经安装了 `curl`                                                                                                                  | `. <(curl -L git.io/linux.sh)`             |
-| 3     | curl  | 您无法访问 github                                                                                                                    | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
+| 2     | curl  | 您已经安装了 `curl`, 并且可以访问 github                                                                                             | `. <(curl -L git.io/linux.sh)`             |
+| 3     | curl  | 您无法访问 gitHub                                                                                                                    | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
 | 4     | curl  | 您记不住上面的链接，或以上方法都出错了                                                                                               | `curl -Lo l l.tmoe.me; bash l`             |
 
 <!--  | 1     | cargo                                                                                                                                 | you have `cargo` installed                  | `cargo install tmoe` | -->
@@ -44,6 +44,8 @@
 
 有问题一定要问哦！不能憋坏了。  
 您可以提 [issue](https://github.com/2moe/tmoe-linux/issues/new/choose)，也可以在 **discussions** 里进行交流和讨论。
+
+您如果无法访问 GitHub 的话，那就前往 [gitee](https://gitee.com/mo2/linux/issues) 反馈吧！
 
 ### 2.3. 我可以干什么?
 

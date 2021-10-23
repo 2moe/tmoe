@@ -6,13 +6,13 @@
 
 ### 1.1. 主要
 
-| 章節                    | 簡介                           | 文件      |
+| 章節                    | 簡介                           | 檔案      |
 | ----------------------- | ------------------------------ | --------- |
 | 序章前篇                | 用簡短的說明帶您領略其中的魅力 | lite.md   |
 | [序章後篇](./readme.md) | 歷史與發展                     | readme.md |
 | [第一章](./1.md)        | 容器的安裝與配置               | 1.md      |
 | [第二章](./2.md)        | 錯誤處理                       | 2.md      |
-| [第三章](./3.md)        | \*                             | 3.md      |
+| [第三章](./3.md)        | 介紹 vscode & haskell 等容器   | 3.md      |
 
 ### 1.2. 本章
 
@@ -33,10 +33,10 @@
 
 | 方法  | 工具  | 條件                                                                                                                                 | 命令                                       |
 | ----- | ----- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| ~~1~~ | cargo | ~~you are using `rustc` **nightly**~~ (暫時不可用, `tmm`(穩定版) 將於 2022 年發佈，開發者會努力趕在 2022 之前將代碼上傳到 beta 分支) | ~~`cargo install tmm`~~                    |
-| 2     | curl  | 您已經安裝了 `curl`                                                                                                                  | `. <(curl -L git.io/linux.sh)`             |
-| 3     | curl  | 您無法訪問 github                                                                                                                    | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
-| 4     | curl  | 您記不住上面的鏈接，或以上方法都出錯了                                                                                               | `curl -Lo l l.tmoe.me; bash l`             |
+| ~~1~~ | cargo | ~~you are using `rustc` **nightly**~~ (暫時不可用, `tmm`(穩定版) 將於 2022 年釋出，開發者會努力趕在 2022 之前將程式碼上傳到 beta 分支) | ~~`cargo install tmm`~~                    |
+| 2     | curl  | 您已經安裝了 `curl`, 並且可以訪問 github                                                                                             | `. <(curl -L git.io/linux.sh)`             |
+| 3     | curl  | 您無法訪問 gitHub                                                                                                                    | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
+| 4     | curl  | 您記不住上面的連結，或以上方法都出錯了                                                                                               | `curl -Lo l l.tmoe.me; bash l`             |
 
 <!--  | 1     | cargo                                                                                                                                 | you have `cargo` installed                  | `cargo install tmoe` | -->
 
@@ -45,15 +45,17 @@
 有問題一定要問哦！不能憋壞了。  
 您可以提 [issue](https://github.com/2moe/tmoe-linux/issues/new/choose)，也可以在 **discussions** 裡進行交流和討論。
 
+您如果無法訪問 GitHub 的話，那就前往 [gitee](https://gitee.com/mo2/linux/issues) 反饋吧！
+
 ### 2.3. 我可以幹什麼?
 
-您可以在 arm64 設備上運行 gnome 或其它桌面。
+您可以在 arm64 裝置上執行 gnome 或其它桌面。
 
 ![gnome40_p1](https://images.gitee.com/uploads/images/2021/0806/224412_07b5cd5b_5617340.png "Screenshot_20210806-221622.png")  
 ![gnome40_p2](https://images.gitee.com/uploads/images/2021/0806/224423_fa8285a5_5617340.png "Screenshot_20210806-222714.png")
 
 ## 3. 翻頁
 
-| 章節                  | 簡介                                               | 文件      |
+| 章節                  | 簡介                                               | 檔案      |
 | --------------------- | -------------------------------------------------- | --------- |
 | [下一章](./readme.md) | 簡單瞭解不同版本之間的區別，並進一步細化安裝的過程 | readme.md |

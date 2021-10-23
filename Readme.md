@@ -42,7 +42,7 @@ The new version with improved multilingual support will be released in 2022.
 | method | tool  | condition                                                                                                | command                                    |
 | ------ | ----- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(stable) will be released in 2022.) | ~~`cargo install tmm`~~                    |
-| 2      | curl  | you have `curl` installed                                                                                | `. <(curl -L git.io/linux.sh)`             |
+| 2      | curl  | you have `curl` installed, and can access github                                                         | `. <(curl -L git.io/linux.sh)`             |
 | 3      | curl  | you cannot access github                                                                                 | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
 | 4      | curl  | none of the above methods can be installed                                                               | `curl -Lo l l.tmoe.me; bash l`             |
 
@@ -57,7 +57,7 @@ You can use čeština, Deutsch, español, français, português, ру́сски�
 
 You can enjoy gnome or other desktops on arm64 device.
 
-![gnome40_p2](https://images.gitee.com/uploads/images/2021/0806/224423_fa8285a5_5617340.png "Screenshot_20210806-222714.png")
+![Screenshot_20210806-222714](https://user-images.githubusercontent.com/25324935/128526315-02475932-7327-4a8b-8446-2d22e82a77b4.png)
 
 ## 5. Index
 
