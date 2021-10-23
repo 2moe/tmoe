@@ -33,7 +33,7 @@ install_deb() {
 get_url() {
     get-arch-url
     URL=$(cat url.txt)
-    curl -Lo arch.tar.xz $URL
+    curl -Lo arch.tar.xz "${URL}"
 }
 
 extract_xz() {

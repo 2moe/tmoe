@@ -137,7 +137,7 @@ unset CONTAINER_BIN_PATH
 if [[ \${SYSTEMD_BOOT} = true ]]; then
     set -- "\${@}" "--boot"
 fi
-if [[ \${CHROOT_USER} != root ]];then
+if [[ \${CHROOT_USER} != root && \${SYSTEMD_BOOT} != true ]];then
     set -- "\${@}" "--user" "\${CHROOT_USER}"
 fi
 set -- "\${@}" "--directory" "\${ROOTFS_DIR}"
