@@ -54,7 +54,7 @@ ubuntu_ppa_chromium() {
         TEMP_FOLDER="/tmp/.CHROMIUM_DEB_VAAPI_TEMP_FOLDER"
         mkdir -pv ${TEMP_FOLDER}
         cd ${TEMP_FOLDER}
-        CHROMIUM_DEB_RAW_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | egrep -v 'chromium-chromedriver|codecs-ffmpeg_|dbgsym_' | egrep -v "~18\.04\.1_|~16\.04\.1_|\.debian\.tar" | egrep "${ARCH_TYPE}|all\.deb" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+        CHROMIUM_DEB_RAW_LIST=$(curl -L ${PPA_REPO_URL} | grep '\.deb' | grep -Ev 'chromium-chromedriver|codecs-ffmpeg_|dbgsym_' | grep -Ev "~18\.04\.1_|~16\.04\.1_|\.debian\.tar" | egrep "${ARCH_TYPE}|all\.deb" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
         get_chromium_version
         if [[ -z ${CHROMIUM_BROWSER_VERSION} ]]; then
             VERSION_ID=.
@@ -98,7 +98,7 @@ ubuntu_ppa_chromium() {
 }
 ###############
 check_ubuntu_version_and_install_chromium() {
-    if egrep -q 'Focal|Bionic|Eoan Ermine|=tricia|=tina' /etc/os-release; then
+    if grep -Eq 'Focal|Bionic|Eoan Ermine|=tricia|=tina' /etc/os-release; then
         ubuntu_bionic_chromium
     else
         ubuntu_ppa_chromium

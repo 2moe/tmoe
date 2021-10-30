@@ -287,7 +287,7 @@ install_ide_01() {
     *) check_archlinux_cn_html_date ;;
     esac
     ############
-    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@4%3A@@' | sed 's@.pkg.tar.zst@@')
+    THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | grep -Ev '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@4%3A@@' | sed 's@.pkg.tar.zst@@')
     check_ide_version
     case ${GREP_NAME} in
     intellij-idea-*)
@@ -359,7 +359,7 @@ install_ide_02() {
     printf "%s\n" "正在检测版本更新信息..."
     #check_archlinux_cn_html_date
     ############
-    #THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | egrep -v '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
+    #THE_LATEST_APP_VERSION_CODE=$(cat index.html | grep '\.pkg\.tar\.zst' | grep -Ev '\.xz\.sig|\.zst\.sig' | grep -v '\-jre\-' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed "s@${GREP_NAME}-@@g" | sed 's@.pkg.tar.zst@@')
     case ${GREP_NAME} in
     android-studio)
         if_you_want_to_install_manually

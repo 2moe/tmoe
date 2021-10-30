@@ -118,7 +118,7 @@ switch_chroot_default_mode() {
 }
 check_chroot_mode() {
 	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
-		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
 			systemd_nspawn_is_true_or_false
 		else
 			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')

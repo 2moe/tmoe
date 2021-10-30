@@ -23,4 +23,4 @@ done
 cd "${GITHUB_LINUX}"/share/sed/ || return 1
 ./sed_github
 ###########
-code ~/github/github-linux
+# code ~/github/github-linux

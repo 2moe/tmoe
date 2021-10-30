@@ -298,11 +298,11 @@ list_network_devices() {
 ############
 enable_netword_card() {
 	cd /tmp/
-	nmcli d | egrep -v '^lo|^DEVICE' | awk '{print $1}' >.tmoe-linux_cache.01
-	nmcli d | egrep -v '^lo|^DEVICE' | awk '{print $2,$3}' | sed 's/ /-/g' >.tmoe-linux_cache.02
+	nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $1}' >.tmoe-linux_cache.01
+	nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}' | sed 's/ /-/g' >.tmoe-linux_cache.02
 	TMOE_NETWORK_CARD_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
-	#TMOE_NETWORK_CARD_LIST=$(nmcli d | egrep -v '^lo|^DEVICE' | awk '{print $2,$3}')
+	#TMOE_NETWORK_CARD_LIST=$(nmcli d | grep -Ev '^lo|^DEVICE' | awk '{print $2,$3}')
 	TMOE_NETWORK_CARD_ITEM=$(whiptail --title "NETWORK DEVICES" --menu \
 		"您想要启用哪个网络设备？\nWhich network device do you want to enable?" 0 0 0 \
 		${TMOE_NETWORK_CARD_LIST} \

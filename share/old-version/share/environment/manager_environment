@@ -402,7 +402,7 @@ check_tmoe_completion() {
 	TMOE_COMPLETION_FILE="${TMOE_SHARE_DIR}/completion/_tmoe"
 	if [ -e "${HOME}/.zshrc" ]; then
 		if grep -q 'zinit ice' ${HOME}/.zshrc; then
-			if ! egrep -q '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc; then
+			if ! grep -Eq '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc; then
 				printf "%s\n" "zinit ice lucid wait="1" as"completion" && zinit snippet ${TMOE_COMPLETION_FILE}" >>${HOME}/.zshrc
 				update_tmoe_completion
 			fi

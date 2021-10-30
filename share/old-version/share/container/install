@@ -105,7 +105,7 @@ else
 	TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
 	tmoe_manager_env
 	LINUX_DISTRO='linux'
-	if egrep -q "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
+	if grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
 		LINUX_DISTRO='openwrt'
 		if [ -d "/opt/bin" ]; then
 			PREFIX="/opt"
@@ -737,7 +737,7 @@ create_proot_startup_script() {
 	mkdir -pv ${TMOE_STARTUP_DIR}
 	source ${TMOE_SHARE_DIR}/container/proot/startup
 	if [ -e "${DEBIAN_CHROOT}/etc/environment" ]; then
-		if ! egrep -q '^[^#]*export.*MOZ_FAKE_NO_SANDBOX=' ${DEBIAN_CHROOT}/etc/environment; then
+		if ! grep -Eq '^[^#]*export.*MOZ_FAKE_NO_SANDBOX=' ${DEBIAN_CHROOT}/etc/environment; then
 			set_proot_container_env
 		fi
 	else
@@ -872,7 +872,7 @@ cat >${PREFIX}/bin/stopvnc <<-'ENDOFSTOPVNC'
 	#!/data/data/com.termux/files/usr/bin/env bash
 	[[ ! $(command -v termux-wake-unlock) ]] || termux-wake-unlock 2>/dev/null
 	pulseaudio --kill 2>/dev/null
-	sh -c "$(ps -e | egrep -v "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
+	sh -c "$(ps -e | grep -Ev "sshd|pkill|systemd" | awk '{print $4}' | sed '/(/d' | sed 's/^/pkill &/g')"
 ENDOFSTOPVNC
 #################
 #不要单引号
@@ -1201,7 +1201,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if [[ ${WEEKLY_BUILD_CONTAINER} = true ]]; then
 	        if grep -q 'unstable main' /etc/apt/sources.list; then
 	            sed -i "s@unstable@sid@g" /etc/apt/sources.list
-	        elif ! egrep -q 'sid|Sid' /etc/issue; then
+	        elif ! grep -Eq 'sid|Sid' /etc/issue; then
 	            sed -i "s@unstable@sid@g" /etc/apt/sources.list
 	            SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
 	            VERSION_ID=$(grep VERSION_ID /etc/os-release | awk -F '=' '{print $2}' | head -n 1 | cut -d '"' -f 2)
@@ -1342,7 +1342,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    ubuntu_sources_list
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
-	elif egrep -q 'deepin|uos\.com' "/etc/os-release"; then
+	elif grep -Eq 'deepin|uos\.com' "/etc/os-release"; then
 	    if grep -q '20' /etc/issue; then
 	        DEBIAN_VERSION='buster'
 	    elif grep -q '15\.5 SP2' /etc/issue; then
@@ -1634,7 +1634,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    exit_tmoe_configuration
 	fi
 
-	if egrep -q 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null; then
+	if grep -Eq 'puppy_linux|clear-linux-os|EulerOS|amazon_linux|Oracle Linux|VMware Photon OS|SteamOS GNU' /etc/os-release 2>/dev/null; then
 	    exit_tmoe_configuration
 	fi
 	##############
@@ -1820,7 +1820,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    exit_tmoe_configuration
 	fi
 	#################
-	if egrep -q "Arch|Manjaro" '/etc/os-release' 2>/dev/null || egrep -q "Arch|Manjaro" '/etc/issue'; then
+	if grep -Eq "Arch|Manjaro" '/etc/os-release' 2>/dev/null || grep -Eq "Arch|Manjaro" '/etc/issue'; then
 	    if [[ ${WEEKLY_BUILD_CONTAINER} != true ]]; then
 	        printf "%s\n" "${GREEN}pacman ${PURPLE}-R ${YELLOW}--noconfirm ${BLUE}fakeroot${RESET}"
 	        pacman -R --noconfirm fakeroot 2>/dev/null
@@ -1874,7 +1874,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}ca-certificates${RESET}"
 	        eatmydata apt install -y ca-certificates 2>/dev/null || apt install -y ca-certificates 2>/dev/null
 	    fi
-	    if egrep -q 'squeeze|wheezy|stretch|jessie|CODENAME=xenial' "/etc/os-release"; then
+	    if grep -Eq 'squeeze|wheezy|stretch|jessie|CODENAME=xenial' "/etc/os-release"; then
 	        eatmydata apt install -y apt-transport-https 2>/dev/null || apt install -y apt-transport-https 2>/dev/null
 	    fi
 	fi
@@ -1883,7 +1883,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    case $(uname -m) in
 	    riscv*) ;;
 	    *)
-	        if egrep -q '^deb.*(huawei|tuna|bfsu|163)' /etc/apt/sources.list; then
+	        if grep -Eq '^deb.*(huawei|tuna|bfsu|163)' /etc/apt/sources.list; then
 	            printf "%s\n" "Replacing http software source list with https ..."
 	            case ${TMOE_LANG} in
 	            zh_*UTF-8) printf "%s\n" "正在将${PURPLE}http源${RESET}替换为${GREEN}https${RESET} ..." ;;
@@ -1941,7 +1941,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	    emerge-webrsync
 	    emerge --config sys-libs/timezone-data 2>/dev/null
-	    GENTOO_NON_SYSTEMD_PROFILE="$(eselect profile list | egrep -v 'desktop|hardened|developer|systemd|selinux|multilib' | grep stable | tail -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
+	    GENTOO_NON_SYSTEMD_PROFILE="$(eselect profile list | grep -Ev 'desktop|hardened|developer|systemd|selinux|multilib' | grep stable | tail -n 1 | cut -d '[' -f 2 | cut -d ']' -f 1)"
 	    [[ -n ${GENTOO_NON_SYSTEMD_PROFILE} ]] || GENTOO_NON_SYSTEMD_PROFILE=1
 	    eselect profile set "${GENTOO_NON_SYSTEMD_PROFILE}"
 	    eselect profile list
@@ -1962,7 +1962,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    LINUX_DISTRO='void'
 	    LOCALE_FILE="/etc/default/libc-locales"
 	    sed -i "s/^#.*${TMOE_LANG} UTF-8/${TMOE_LANG} UTF-8/" ${LOCALE_FILE} 2>/dev/null
-	    if ! egrep -q "^[^#]*${TMOE_LANG_HALF}" "${LOCALE_FILE}" 2>/dev/null; then
+	    if ! grep -Eq "^[^#]*${TMOE_LANG_HALF}" "${LOCALE_FILE}" 2>/dev/null; then
 	        #sed -i 's@^@#&@g;s@##@#@g' ${LOCALE_FILE} 2>/dev/null
 	        printf "\n" >>${LOCALE_FILE}
 	        sed -i "$ a${TMOE_LANG} UTF-8" ${LOCALE_FILE}
@@ -1982,7 +1982,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    xbps-reconfigure -f glibc-locales
 	}
 	##########################
-	if egrep -q 'Funtoo|Gentoo' '/etc/os-release'; then
+	if grep -Eq 'Funtoo|Gentoo' '/etc/os-release'; then
 	    gentoo_gnu_linux_make_conf
 	elif grep -qi 'Void' '/etc/issue'; then
 	    void_linux_repository
@@ -2166,7 +2166,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #glibc-all-langpacks
 	    #dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
 	    [[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
-	elif egrep -q 'CentOS|Rocky Linux|rhel' /etc/os-release; then
+	elif grep -Eq 'CentOS|Rocky Linux|rhel' /etc/os-release; then
 	    [[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 	    #curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
 	    #curl -Lo /etc/yum.repos.d/CentOS-Base.repo https://mirrors.huaweicloud.com/repository/conf/CentOS-8-anon.repo
@@ -2222,7 +2222,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    bash zsh.sh
 	}
 	################
-	if ! egrep -q 'debian|ubuntu' '/etc/os-release'; then
+	if ! grep -Eq 'debian|ubuntu' '/etc/os-release'; then
 	    note_of_non_debian
 	else
 	    bash zsh.sh

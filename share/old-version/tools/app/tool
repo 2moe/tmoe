@@ -74,7 +74,7 @@ main() {
 ################
 check_tmoe_command() {
 	if [ $(command -v zsh) ]; then
-		if egrep -q '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
+		if grep -Eq '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
 			TMOE_TIPS_01="t t"
 		else
 			TMOE_TIPS_01="tmoe t"
@@ -82,7 +82,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4985.2,type ${TMOE_TIPS_01} to start."
+	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4985.3,type ${TMOE_TIPS_01} to start."
 	#勿改00变量
 }
 #########

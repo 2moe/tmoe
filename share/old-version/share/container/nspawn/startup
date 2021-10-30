@@ -2,7 +2,7 @@
 ###################
 MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g') #此处并非重复操作
 unset TMOE_SD_DIR
-if egrep -q '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
+if grep -Eq '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
     ${TMOE_CHROOT_PREFIX} sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
 fi
 # case $(${TMOE_CHROOT_PREFIX} cat ${DEBIAN_CHROOT}/etc/hostname) in

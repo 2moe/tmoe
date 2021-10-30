@@ -771,7 +771,7 @@ install_debian_buster_or_sid_netease_cloud_music() {
     else
         case "${DEBIAN_DISTRO}" in
         ubuntu)
-            if ! egrep -q 'Bionic Beaver|Eoan Ermine|Xenial' "/etc/os-release"; then
+            if ! grep -Eq 'Bionic Beaver|Eoan Ermine|Xenial' "/etc/os-release"; then
                 OPT_BRANCH_NAME='ubuntu_arm64'
             else
                 OPT_BRANCH_NAME='arm64'

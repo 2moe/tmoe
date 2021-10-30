@@ -273,8 +273,8 @@ install_fortunes_mod() {
             done
             ;;
         esac
-        THE_LATEST_DEB_VERSION="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | tail -n 1 | cut -d '"' -f 2)"
-        THE_LATEST_DEB_VERSION_HINTS="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO_HINTS} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
+        THE_LATEST_DEB_VERSION="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO} | grep -Ev '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | tail -n 1 | cut -d '"' -f 2)"
+        THE_LATEST_DEB_VERSION_HINTS="$(curl -L --max-time 20 ${THE_LATEST_DEB_REPO_HINTS} | grep -Ev '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep deb | cut -d '"' -f 2 | sort -n -k 2 -t . | tail -n 1)"
         THE_LATEST_ISO_LINK="${THE_LATEST_DEB_REPO}${THE_LATEST_DEB_VERSION}"
         THE_LATEST_ISO_LINK_HINTS="${THE_LATEST_DEB_REPO_HINTS}${THE_LATEST_DEB_VERSION_HINTS}"
         TEMP_FOLDER=${TMPDIR}/.FORTUNES_TMP

@@ -443,7 +443,7 @@ preconfigure_gui_dependecies_02() {
         # case "${TMOE_PROOT}" in
         # true) NON_DBUS=true ;;
         # esac
-        #if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+        #if grep -Eq 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
         #    DEPENDENCY_02="dbus-x11 fonts-noto-cjk tightvncserver"
         #else
         DEPENDENCY_02="dbus-x11 fonts-noto-cjk"
@@ -1051,7 +1051,7 @@ install_fvwm() {
     "debian")
         DEPENDENCY_01='fvwm fvwm-icons'
         #REMOTE_DESKTOP_SESSION_01='fvwm'
-        if egrep -q 'buster|bullseye|bookworm' /etc/os-release; then
+        if grep -Eq 'buster|bullseye|bookworm' /etc/os-release; then
             DEPENDENCY_01='fvwm fvwm-icons fvwm-crystal'
         else
             REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/f/fvwm-crystal/'
@@ -1118,6 +1118,7 @@ unset DBUS_SESSION_BUS_ADDRESS
 
 # /run/user/\$UID
 [[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
+[[ -e \${XDG_RUNTIME_DIR} ]] || mkdir -pv \${XDG_RUNTIME_DIR}
 
 for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal; do
     if [[ \$(command -v \${i}) ]]; then
@@ -1337,7 +1338,7 @@ debian_xfce4_extras() {
     esac
     if [ $(command -v qt5ct) ]; then
         [[ -e /etc/environment ]] || touch /etc/environment
-        if ! egrep -q '^[^#]*QT_QPA_PLATFORMTHEME=' /etc/environment; then
+        if ! grep -Eq '^[^#]*QT_QPA_PLATFORMTHEME=' /etc/environment; then
             printf "%s\n" "export QT_QPA_PLATFORMTHEME=qt5ct" >>/etc/environment
             printf "%s\n" "/etc/environment :export QT_QPA_PLATFORMTHEME=qt5ct"
             printf "${GREEN}%s${RESET}\n" "/etc/environment:"
@@ -1558,7 +1559,7 @@ do_you_want_to_install_chromium() {
         ubuntu)
             case ${TMOE_MENU_LANG} in
             zh_*UTF-8)
-                if egrep -q 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
+                if grep -Eq 'Focal|Bionic|Eoan Ermine' /etc/os-release; then
                     do_you_want_to_install_chromium_00
                 fi
                 ;;
@@ -5414,7 +5415,7 @@ which_vnc_server_do_you_prefer() {
 case_debian_distro_and_install_vnc() {
     case ${DEBIAN_DISTRO} in
     ubuntu)
-        if egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+        if grep -Eq 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
             case ${VNC_SERVER_BIN} in
             tigervnc)
                 case $(apt list --installed 2>&1 | grep 'tigervnc-standalone-server' | awk '{print $2}') in
@@ -5442,7 +5443,7 @@ remove_udisk_and_gvfs() {
     true)
         if [ ${REMOVE_UDISK2} = 'true' ]; then
             if [ "${LINUX_DISTRO}" = 'debian' ]; then
-                if egrep -q 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie|Deepin 20|Uos 20' "/etc/os-release"; then
+                if grep -Eq 'Focal Fossa|focal|bionic|Bionic Beaver|Eoan Ermine|buster|stretch|jessie|Deepin 20|Uos 20' "/etc/os-release"; then
                     printf "%s\n" "检测到您处于${BLUE}proot容器${RESET}环境下，即将为您${RED}卸载${RESET}${YELLOW}udisk2${RESET}和${GREEN}gvfs${RESET}"
                     #umount .gvfs
                     apt purge -y --allow-change-held-packages ^udisks2 ^gvfs
@@ -5468,7 +5469,7 @@ first_configure_startvnc() {
     #sed -i 's@--exit-with-session@@' ${XSESSION_FILE}
     #/usr/local/bin/startxsdl
     #else
-    #|stretch|jessie    #if ! egrep -q 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
+    #|stretch|jessie    #if ! grep -Eq 'Focal Fossa|focal|Eoan Ermine' "/etc/os-release"; then
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         case ${LINUX_DISTRO} in
         debian) which_vnc_server_do_you_prefer ;;

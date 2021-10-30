@@ -206,7 +206,7 @@ sed_a_source_list() {
     MIRROR_LIST='/etc/pacman.d/mirrorlist'
     SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
     BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
-    if egrep -q 'debian|ubuntu' /etc/os-release; then
+    if grep -Eq 'debian|ubuntu' /etc/os-release; then
         SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
         BACKPORTCODE=$(grep VERSION_CODENAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
         if ! grep -q '#Official' ${SOURCE_LIST}; then
@@ -818,7 +818,7 @@ modify_debian_mirror_sources_list() {
             SOURCELISTCODE='sid'
         fi
 
-    elif ! egrep -q 'buster|stretch|jessie' "/etc/os-release"; then
+    elif ! grep -Eq 'buster|stretch|jessie' "/etc/os-release"; then
         NEW_DEBIAN_SOURCES_LIST=true
         if grep -q 'VERSION_CODENAME' "/etc/os-release"; then
             SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)

@@ -214,7 +214,7 @@ tmoe_main() {
 check_chroot_mode_02() {
 	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
 	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
-		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
 			export SYSTEMD_NSPAWN=false
 		else
 			export SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
@@ -227,14 +227,14 @@ check_chroot_mode_01() {
 	CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
 	SYSTEMD_NSPAWN=false
 	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
-		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
 			SYSTEMD_NSPAWN=false
 		else
 			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
 		fi
 	fi
 	if [[ -e ${CHROOT_CONF} ]]; then
-		if ! egrep -q '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
+		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
 			SYSTEMD_NSPAWN=false
 		else
 			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')

@@ -49,7 +49,7 @@ type_your_debian_version() {
 }
 install_libfaudio0_deb() {
     GREP_NAME="libfaudio0_"
-    THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | egrep -v '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep ${GREP_NAME} | grep deb | tail -n 1 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION="$(curl -L ${THE_LATEST_DEB_REPO} | grep -Ev '\.dsc|\.tar\.xz' | grep 'deb' | awk -F '<a href=' '{print $2}' | grep ${GREP_NAME} | grep deb | tail -n 1 | cut -d '"' -f 2)"
     FULL_URL="${THE_LATEST_DEB_REPO}/${THE_LATEST_DEB_VERSION}"
     printf "%s\n" "${YELLOW}${FULL_URL}${RESET}"
     curl -Lo libfaudio0.deb ${FULL_URL}

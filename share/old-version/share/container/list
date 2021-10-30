@@ -1461,7 +1461,7 @@ do_you_want_to_install_ubuntu_older_version() {
 # check_the_ubuntu_devel() {
 # 	if (($(date +%Y%m) <= 202111)); then
 # 		LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-# 		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
+# 		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
 # 		VERSION="jammy (22.04 LTS)"
 # 		printf "%s\n" "Ubuntu ${BLUE}22.04${RESET} is a ${PURPLE}development release${RESET} now."
 # 		printf "%s\n" "If you want to install ${PURPLE}ubuntu-devel${RESET}, then go to ${BLUE}Weekly Builds${RESET}."
@@ -1479,7 +1479,7 @@ do_you_want_to_install_ubuntu_older_version() {
 # }
 check_the_latest_ubuntu_version() {
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
+	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
 	VERSION="next version"
 	do_you_want_to_install_ubuntu_older_version
 }
@@ -1739,7 +1739,7 @@ install_gentoo_linux_distro() {
 		DISTRO_CODE='current'
 		#sed '45 a\ARCH_TYPE="armhf"' |
 		TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.tuna.tsinghua.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
-		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | egrep -v 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
+		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
 		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" |
 			sed 's/debian container/Gentoo container/g' |
@@ -1759,7 +1759,7 @@ install_gentoo_linux_distro() {
 install_alpine_linux_distro() {
 	DISTRO_NAME='alpine'
 	#DISTRO_CODE='3.11'
-	DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/alpine/ | egrep -v 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
+	DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/alpine/ | grep -Ev 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
 	OLD_STABLE_VERSION='edge'
 	which_version_do_you_want_to_install
 }
@@ -2095,7 +2095,7 @@ install_different_armbian_gnu_linux_distros() {
 		install_armbian_linux_distro
 	fi
 	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
-	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | egrep -v '\.tar\.lz4\.asc|\.torrent|\.lz4\.list|\.current' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | grep -Ev '\.tar\.lz4\.asc|\.torrent|\.lz4\.list|\.current' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
 	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
 	case "${DISTRO_NAME}" in
 	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
@@ -2164,7 +2164,7 @@ check_mint_version_code() {
 	DISTRO_NAME='mint'
 	OLD_STABLE_VERSION='tricia'
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | egrep -v 'size|sarah|serena|sonya|sylvia|tara|tessa|tina|tricia|ulyana' | tail -n 1)
+	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|sarah|serena|sonya|sylvia|tara|tessa|tina|tricia|ulyana' | tail -n 1)
 }
 ###########
 which_linux_mint_distro() {

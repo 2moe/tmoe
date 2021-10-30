@@ -300,6 +300,7 @@ start_tmoe_xvnc() {
     set -- "${XVNC_BIN}" "${@}"
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
         [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
+        [[ -e ${XDG_RUNTIME_DIR} ]] || mkdir -pv ${XDG_RUNTIME_DIR}
         "${@}" 2>~/.vnc/vnc.log &
     else
         #XVNC_COMMAND="${@}"

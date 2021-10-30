@@ -1053,7 +1053,7 @@ tmoe_qemu_x64_cpu_manager() {
 }
 ############
 modify_qemu_machine_accel() {
-	if egrep -q 'vmx|smx' /proc/cpuinfo; then
+	if grep -Eq 'vmx|smx' /proc/cpuinfo; then
 		if [ "$(lsmod | grep kvm)" ]; then
 			KVM_STATUS='检测到您的CPU可能支持硬件虚拟化,并且已经启用了KVM内核模块。'
 		else

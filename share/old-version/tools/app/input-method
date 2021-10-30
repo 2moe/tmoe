@@ -144,7 +144,7 @@ fcitx4_input_method_menu() {
 configure_tmoe_input_method() {
     #[[ -s /etc/environment ]] || printf "\n" >>/etc/environment
     [[ -d ${XDG_AUTOSTART_DIR} ]] || mkdir -pv ${XDG_AUTOSTART_DIR}
-    if ! egrep -q "^[^#]*export SDL_IM_MODULE=" /etc/environment; then
+    if ! grep -Eq "^[^#]*export SDL_IM_MODULE=" /etc/environment; then
         cat >>/etc/environment <<-'EOF'
 			export GTK_IM_MODULE=fcitx
 			export QT_IM_MODULE=fcitx
