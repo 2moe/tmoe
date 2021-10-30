@@ -5,7 +5,7 @@ show_package_info() {
 	if [ "$(uname -o)" = Android ]; then EXTRA_DEPS=", dialog, termux-api, termux-tools"; fi
 	cat <<-EndOfShow
 		Package: tmoe-linux-manager
-		Version: 1.4985.3
+		Version: 1.4985.4
 		Priority: optional
 		Section: admin
 		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
@@ -57,7 +57,7 @@ set_env() {
 do_you_want_to_continue() {
 	printf "%s\n" "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}"
 	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}, type ${YELLOW}n${RESET} to ${PURPLE}exit.${RESET}"
-	printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${PURPLE}退出${RESET}"
+	printf "%s\n" "按${GREEN}回车键${BLUE}继续${RESET}，输${YELLOW}n${PURPLE}退出${RESET}"
 	read -r opt
 	case "${opt}" in
 	n* | N*)

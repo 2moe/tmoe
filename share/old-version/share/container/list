@@ -22,7 +22,7 @@ choose_which_gnu_linux_distro() {
 			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
 			"9" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
 			"10" "🦎 Chroot専属する:opensuse,deepin" \
-			"11" "🍓 体験版,サポートされなくなりました:SteamOS,RaspiOS,Gentoo" \
+			"11" "🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo" \
 			"0" "🌚 戻る" \
 			3>&1 1>&2 2>&3)
 	}
@@ -35,10 +35,10 @@ choose_which_gnu_linux_distro() {
 			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
 			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
 			"7" "🐉 Kali rolling:设计用于数字取证和渗透测试" \
-			"8" "🍊 Armbian:香蕉派,香橙派(预装dde/gnome/cinnamon/budgie)" \
+			"8" "🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)" \
 			"9" "👒 Fedora:红帽社区版,新技术试验场" \
 			"10" "🦎 Chroot专属:deepin,opensuse" \
-			"11" "🍓 Experimental(体验版,不再维护):SteamOS,RaspiOS" \
+			"11" "🍓 Experimental(体验版,不再维护):树莓派" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -54,7 +54,7 @@ choose_which_gnu_linux_distro() {
 			"8" "🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)" \
 			"9" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
 			"10" "🦎 Chroot exclusive:opensuse,deepin" \
-			"11" "🍓 Experimental,no longer maintained:SteamOS,RaspiOS,Gentoo" \
+			"11" "🍓 Experimental,no longer maintained:RaspiOS,Gentoo" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -880,65 +880,76 @@ install_deepin_linux_distro() {
 install_alpha_containers() {
 	CLOUD_ROOTFS=false
 	RETURN_TO_WHERE='install_alpha_containers'
+	TITLE="Maintenance has ceased"
 	install_alpha_containers_ja() {
-		ALPHA_SYSTEM=$(
-			whiptail --title "Maintenance has ceased" --menu "天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました" 0 55 0 \
-				"1" "ラズベリーパイ OS buster" \
-				"2" "Gentoo(arm64,armhf,x86,x64)" \
-				"3" "DevuanはDebian から派生したLinuxディストリビューションである" \
-				"4" "Amazon(arm64,x64)" \
-				"5" "Oracle(arm64,x64)" \
-				"6" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"7" "Intel clear linux(x64)" \
-				"8" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"9" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
-				"0" "🌚 戻る" \
-				3>&1 1>&2 2>&3
-		)
+		MENU="天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました"
+		OPT_1="ラズベリーパイ OS buster"
+		OPT_2="Gentoo(arm64,armhf,x86,x64)"
+		OPT_3="DevuanはDebian から派生したLinuxディストリビューションである"
+		OPT_4="Amazon(arm64,x64)"
+		OPT_5="Oracle(arm64,x64)"
+		OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
+		OPT_7="Intel clear linux(x64)"
+		OPT_8="Slackware(armhf,x64)"
+		OPT_9="archcraft"
+		OPT_0="🌚 戻る"
 	}
 	install_alpha_containers_zh() {
-		ALPHA_SYSTEM=$(
-			whiptail --title "Maintenance has ceased" --menu "虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护" 0 55 0 \
-				"1" "Raspberry Pi OS 樹莓派 buster" \
-				"2" "Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)" \
-				"3" "Devuan(不使用systemd,基于debian)" \
-				"4" "Amazon(arm64,x64,亚马逊云服务器系统)" \
-				"5" "Oracle(arm64,x64,甲骨文云服务器系统)" \
-				"6" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"7" "Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)" \
-				"8" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
-				"0" "🌚 返回上级菜单" \
-				3>&1 1>&2 2>&3
-		)
+		MENU="虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护"
+		OPT_1="Raspberry Pi OS 樹莓派 buster"
+		OPT_2="Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)"
+		OPT_3="Devuan(不使用systemd,基于debian)"
+		OPT_4="Amazon(arm64,x64,亚马逊云服务器系统)"
+		OPT_5="Oracle(arm64,x64,甲骨文云服务器系统)"
+		OPT_6="VMware photon OS(arm64,x64,为云原生应用优化)"
+		OPT_7="Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)"
+		OPT_8="Slackware(armhf,x64)"
+		OPT_9="archcraft"
+		OPT_0="🌚 返回上级菜单"
+		#	"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
 		#"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
 	}
 	install_alpha_containers_en() {
+		MENU="The developer of Tmoe-linux no longer maintain the following containers."
+		OPT_1="Raspberry Pi OS buster"
+		OPT_2="Gentoo(arm64,armhf,x86,x64)"
+		OPT_3="Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
+		OPT_4="Amazon(arm64,x64)"
+		OPT_5="Oracle(arm64,x64)"
+		OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
+		OPT_7="Intel clear linux(x64)"
+		OPT_8="Slackware(armhf,x64)"
+		OPT_9="archcraft"
+		OPT_0="🌚 Return to previous menu"
+	}
+
+	install_alpha_containers_menu() {
 		ALPHA_SYSTEM=$(
-			whiptail --title "Maintenance has ceased" --menu "The developer of Tmoe-linux no longer maintain the following containers." 0 55 0 \
-				"1" "Raspberry Pi OS buster" \
-				"2" "Gentoo(arm64,armhf,x86,x64)" \
-				"3" "Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd" \
-				"4" "Amazon(arm64,x64)" \
-				"5" "Oracle(arm64,x64)" \
-				"6" "VMware photon OS(arm64,x64,optimized for cloud-native apps)" \
-				"7" "Intel clear linux(x64)" \
-				"8" "Slackware(armhf,x64,created by Patrick Volkerding in 1993" \
-				"9" "SteamOS(x64,Valve steam os,based on Debian GNU/Linux)" \
-				"0" "🌚 Return to previous menu" \
+			whiptail --title "${TITLE}" --menu "${MENU}" 0 55 0 \
+				"1" "${OPT_1}" \
+				"2" "${OPT_2}" \
+				"3" "${OPT_3}" \
+				"4" "${OPT_4}" \
+				"5" "${OPT_5}" \
+				"6" "${OPT_6}" \
+				"7" "${OPT_7}" \
+				"8" "${OPT_8}" \
+				"0" "${OPT_0}" \
 				3>&1 1>&2 2>&3
 		)
+		# TODO: add archcraft
+		# "9" "${OPT_9}" \
 	}
 	#"999" "Huawei euler OS(arm64,x64)"
 	#SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
 	#"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
-	#				"12" "Solus(x64)" \
 	##############################
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) install_alpha_containers_zh ;;
 	ja_JP.UTF-8) install_alpha_containers_ja ;;
 	*) install_alpha_containers_en ;;
 	esac
+	install_alpha_containers_menu
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) install_raspios_linux_distro ;;
@@ -949,7 +960,7 @@ install_alpha_containers() {
 	6) install_photon_linux_distro ;;
 	7) install_clear_linux_distro ;;
 	8) install_slackware_linux_distro ;;
-	9) install_steam_linux_distro ;;
+	99) install_archcraft_distro ;;
 	999) install_euler_linux_distro ;;
 	esac
 	###########################
@@ -969,11 +980,11 @@ install_clear_linux_distro() {
 	*) distro_does_not_support ;;
 	esac
 }
-install_steam_linux_distro() {
-	DISTRO_NAME='steamos'
-	DISTRO_CODE='brewmaster'
-	git_clone_amd64_distro_from_gitee
-}
+# install_steam_linux_distro() {
+# 	DISTRO_NAME='steamos'
+# 	DISTRO_CODE='brewmaster'
+# 	git_clone_amd64_distro_from_gitee
+# }
 git_clone_amd64_distro_from_gitee() {
 	DISTRO_CODE_02="${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -1193,6 +1204,7 @@ install_ubuntu_gnu_linux_distro() {
 	DEB_BOOT_STRAP=false
 	RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
 	COMPATIBILITY_MODE=false
+	TITLE="Which version do you want to install?"
 	install_ubuntu_gnu_linux_distro_zh() {
 		MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
 		OPT_1="22.04(LTS, dev) 果酱水母 Jammy Jellyfish"
@@ -1234,9 +1246,11 @@ install_ubuntu_gnu_linux_distro() {
 		OPT_9="Latest"
 		OPT_0="🌚 Return to previous menu"
 	}
-	install_ubuntu_gnu_linux_distro() {
+	install_ubuntu_gnu_linux_distro_menu() {
 		BETA_SYSTEM=$(
-			whiptail --title "Which version do you want to install?" --menu "${MENU}" 0 50 0 \
+			whiptail \
+				--title "${TITLE}" \
+				--menu "${MENU}" 0 50 0 \
 				"1" "${OPT_1}" \
 				"2" "${OPT_2}" \
 				"3" "${OPT_3}" \
@@ -1256,7 +1270,7 @@ install_ubuntu_gnu_linux_distro() {
 	ja_JP.UTF-8) install_ubuntu_gnu_linux_distro_ja ;;
 	*) install_ubuntu_gnu_linux_distro_en ;;
 	esac
-	install_ubuntu_gnu_linux_distro
+	install_ubuntu_gnu_linux_distro_menu
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
@@ -1960,34 +1974,6 @@ distro_does_not_support() {
 	choose_which_gnu_linux_distro
 }
 ##############
-choose_ubuntu_deepin_budgie_or_cinnamon() {
-	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment.\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
-			"1" "🐭 xfce(proot)" \
-			"2" "🌿 mate(proot)" \
-			"3" "i3wm" \
-			"4" "dde/deepin(chroot)" \
-			"5" "👣 gnome(systemd container)" \
-			"6" "🦜 budgie(systemd)" \
-			"7" "🌲 cinnamon(systemd)" \
-			"8" "cli(nogui)" \
-			"9" "minimal(nogui)" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3
-	)
-	case "${DESKTOP_NAME}" in
-	0 | "") install_armbian_linux_distro ;;
-	1) DISTRO_CODE='xfce' ;;
-	2) DISTRO_CODE='mate' ;;
-	3) DISTRO_CODE='i3' ;;
-	4) DISTRO_CODE='deepin' ;;
-	5) DISTRO_CODE='gnome' ;;
-	6) DISTRO_CODE='budgie' ;;
-	7) DISTRO_CODE='cinnamon' ;;
-	8) DISTRO_CODE='cli' ;;
-	9) DISTRO_CODE='minimal' ;;
-	esac
-}
 choose_ubuntu_budgie_or_cinnamon() {
 	DESKTOP_NAME=$(
 		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
@@ -2008,11 +1994,11 @@ choose_ubuntu_budgie_or_cinnamon() {
 	5) DISTRO_CODE='minimal' ;;
 	esac
 }
-choose_debian_xfce_or_gnome() {
+choose_debian_xfce_or_cinnamon() {
 	DESKTOP_NAME=$(
 		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
 			"1" "🐭 xfce" \
-			"2" "👣 gnome(systemd container)" \
+			"2" "👣 cinnamon" \
 			"3" "cli(nogui)" \
 			"4" "minimal(nogui)" \
 			"0" "🌚 Return to previous menu" \
@@ -2021,9 +2007,9 @@ choose_debian_xfce_or_gnome() {
 	case "${DESKTOP_NAME}" in
 	0 | "") install_armbian_linux_distro ;;
 	1) DISTRO_CODE='xfce' ;;
-	2) DISTRO_CODE='gnome' ;;
+	2) DISTRO_CODE='cinnamon' ;;
 	3) DISTRO_CODE='cli' ;;
-	4) DISTRO_CODE='minimal' ;;
+	4 | *) DISTRO_CODE='minimal' ;;
 	esac
 }
 install_armbian_linux_distro() {
@@ -2033,36 +2019,35 @@ install_armbian_linux_distro() {
 		whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
 			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
 			"2" "🦛 Hirsute Hippo(21.04) " \
-			"3" "🐶 Buster(debian 10)" \
-			"4" "Custom code手动输入版本代号" \
+			"3" "🐎 Bullseye(debian 11)" \
+			"4" "🐶 Buster(debian 10)" \
+			"5" "Custom code手动输入版本代号" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3
 	)
-	# "3" "🐎 Bullseye(debian 11)" \
 	#
 	##############################
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
 		DISTRO_NAME='focal'
-		# choose_ubuntu_deepin_budgie_or_cinnamon
 		choose_ubuntu_budgie_or_cinnamon
 		;;
 	2)
 		DISTRO_NAME='hirsute'
 		choose_ubuntu_budgie_or_cinnamon
 		;;
-	# 3)
-	# 	DISTRO_NAME='bullseye'
-	# 	choose_debian_xfce_or_gnome
-	# 	;;
 	3)
-		DISTRO_NAME='buster'
-		choose_debian_xfce_or_gnome
+		DISTRO_NAME='bullseye'
+		choose_debian_xfce_or_cinnamon
 		;;
 	4)
+		DISTRO_NAME='buster'
+		choose_debian_xfce_or_cinnamon
+		;;
+	5 | *)
 		custom_armbian_version
-		choose_debian_xfce_or_gnome
+		choose_debian_xfce_or_cinnamon
 		;;
 	esac
 	######################
