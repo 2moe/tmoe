@@ -1502,8 +1502,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		# pacman-key --populate archlinuxcn
 		# archlinux-keyring archlinuxcn-keyring
 	    for i in arch4edu-keyring yay; do
-	        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-	        pacman -Sy --noconfirm ${i}
+	        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}${i}${RESET}"
+	        pacman -Sy --noconfirm --needed ${i}
 	    done
 	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 	}

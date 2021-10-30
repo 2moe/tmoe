@@ -38,7 +38,7 @@ choose_which_gnu_linux_distro() {
 			"8" "🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)" \
 			"9" "👒 Fedora:红帽社区版,新技术试验场" \
 			"10" "🦎 Chroot专属:deepin,opensuse" \
-			"11" "🍓 Experimental(体验版,不再维护):树莓派" \
+			"11" "🍓 Experimental(体验版):archcraft,树莓派" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3)
 	}
@@ -886,12 +886,12 @@ install_alpha_containers() {
 		OPT_1="ラズベリーパイ OS buster"
 		OPT_2="Gentoo(arm64,armhf,x86,x64)"
 		OPT_3="DevuanはDebian から派生したLinuxディストリビューションである"
-		OPT_4="Amazon(arm64,x64)"
-		OPT_5="Oracle(arm64,x64)"
+		OPT_4="Amazon(arm64, x64)"
+		OPT_5="Oracle(arm64, x64)"
 		OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
 		OPT_7="Intel clear linux(x64)"
-		OPT_8="Slackware(armhf,x64)"
-		OPT_9="archcraft"
+		OPT_8="Slackware(armhf, x64)"
+		OPT_9="archcraft(x64)"
 		OPT_0="🌚 戻る"
 	}
 	install_alpha_containers_zh() {
@@ -902,9 +902,9 @@ install_alpha_containers() {
 		OPT_4="Amazon(arm64,x64,亚马逊云服务器系统)"
 		OPT_5="Oracle(arm64,x64,甲骨文云服务器系统)"
 		OPT_6="VMware photon OS(arm64,x64,为云原生应用优化)"
-		OPT_7="Intel clear linux(x64,专注于服务器的性能优化,应用于云环境)"
-		OPT_8="Slackware(armhf,x64)"
-		OPT_9="archcraft"
+		OPT_7="Intel clear linux(x64,专注于服务器的性能优化)"
+		OPT_8="Slackware(armhf, x64)"
+		OPT_9="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
 		OPT_0="🌚 返回上级菜单"
 		#	"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
 		#"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
@@ -914,12 +914,12 @@ install_alpha_containers() {
 		OPT_1="Raspberry Pi OS buster"
 		OPT_2="Gentoo(arm64,armhf,x86,x64)"
 		OPT_3="Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
-		OPT_4="Amazon(arm64,x64)"
-		OPT_5="Oracle(arm64,x64)"
+		OPT_4="Amazon(arm64, x64)"
+		OPT_5="Oracle(arm64, x64)"
 		OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
 		OPT_7="Intel clear linux(x64)"
-		OPT_8="Slackware(armhf,x64)"
-		OPT_9="archcraft"
+		OPT_8="Slackware(armhf, x64)"
+		OPT_9="archcraft(x64, it uses lightweight bspwm & openbox)"
 		OPT_0="🌚 Return to previous menu"
 	}
 
@@ -934,11 +934,10 @@ install_alpha_containers() {
 				"6" "${OPT_6}" \
 				"7" "${OPT_7}" \
 				"8" "${OPT_8}" \
+				"9" "${OPT_9}" \
 				"0" "${OPT_0}" \
 				3>&1 1>&2 2>&3
 		)
-		# TODO: add archcraft
-		# "9" "${OPT_9}" \
 	}
 	#"999" "Huawei euler OS(arm64,x64)"
 	#SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
@@ -960,13 +959,45 @@ install_alpha_containers() {
 	6) install_photon_linux_distro ;;
 	7) install_clear_linux_distro ;;
 	8) install_slackware_linux_distro ;;
-	99) install_archcraft_distro ;;
-	999) install_euler_linux_distro ;;
+	9) install_archcraft_distro ;;
 	esac
+	#999) install_euler_linux_distro ;;
 	###########################
 	exit 0
 }
 #########################
+install_archcraft_distro() {
+	cat <<-'EOF'
+		COMPLETED=true
+		DISTRO_NAME="archcraft_amd64"
+		ROOTFS_FILE="archcraft_amd64+bspwm-2021_10-31-rootfs.tar.zst"
+		BUILD_DATE=20211031
+		VERSION="latest02"
+		SERVER="node03-azure"
+		DEV_HOST_CPU="Intel(R) Core(TM) i5-7260U CPU @ 2.20GHz"
+		SHA_256="bb1314471db489ab84dfcafebeb06d1281d649b8ffdbc0d57bd25ea4d9df3bfe"
+		ZST_SIZE="1.2G"
+		TAR_SIZE="4.7G"
+	EOF
+	do_you_want_to_continue
+
+	DISTRO_NAME='archcraft'
+	DISTRO_NAME_02="archcraft"
+	DESKTOP="openbox"
+	unset DISTRO_CODE
+	TMOE_LINUX_CONTAINER_DISTRO='archcraft'
+	ROOTFS_FILE="archcraft_amd64+bspwm-2021_10-31-rootfs.tar.zst"
+	case "${ARCH_TYPE}" in
+	'amd64')
+		create_container_edition_txt
+		create_container_edition_txt_02
+		go_to_proot_management
+		download_rootfs_from_node_03
+		;;
+	*) distro_does_not_support ;;
+	esac
+	# unset WEEKLY_BUILD_CONTAINER
+}
 install_clear_linux_distro() {
 	DISTRO_NAME='clear'
 	unset DISTRO_CODE
@@ -1045,6 +1076,7 @@ install_amazon_linux_distro() {
 	case "${ARCH_TYPE}" in
 	'amd64' | 'arm64')
 		create_container_edition_txt
+		create_container_edition_txt_02
 		go_to_proot_management
 		git_clone_linux_distro_rootfs_01
 		;;
@@ -1103,6 +1135,28 @@ git_clone_linux_distro_rootfs_01() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed "s/debian container/${DISTRO_NAME} container/g" |
 		sed "s:debian-sid:${DISTRO_NAME_03}:g" |
+		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+}
+download_rootfs_from_node_03() {
+	ROOTFS_VERSION="latest02"
+	NODE_URL="${NODE03_URL}"
+	NODE_NAME="node03-azure"
+	DISTRO_CODE="${DESKTOP}"
+	DISTRO_NAME_02="${DISTRO_NAME}"
+	# NODE02_ENABLED=false
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+
+	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+		sed "1a\WEEKLY_BUILD_CONTAINER=true" |
+		sed "1a\DESKTOP=${DESKTOP}" |
+		sed "1a\NODE_URL=${NODE_URL}" |
+		sed "1a\NODE02_USER=${NODE02_USER}" |
+		sed "1a\NODE02_PW=${NODE02_PW}" |
+		sed "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" |
+		sed "1a\NODE_NAME=${NODE_NAME}" |
+		sed "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" |
+		sed "s/debian container/${DISTRO_NAME} container/g" |
+		sed "s@BFSU Open Source Mirror Station@${NODE_NAME}@" |
 		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 #######################

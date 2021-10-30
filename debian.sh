@@ -5,7 +5,7 @@ show_package_info() {
 	if [ "$(uname -o)" = Android ]; then EXTRA_DEPS=", dialog, termux-api, termux-tools"; fi
 	cat <<-EndOfShow
 		Package: tmoe-linux-manager
-		Version: 1.4985.4
+		Version: 1.4986.0
 		Priority: optional
 		Section: admin
 		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>

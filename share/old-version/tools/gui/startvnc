@@ -11,7 +11,7 @@ VNC_RESOLUTION=1440x720
 # Die Standardauflösung ist 1440x720
 
 VNC_DISPLAY=2
-RFB_PORT=$((5900 + ${VNC_DISPLAY}))
+RFB_PORT=$((5900 + "${VNC_DISPLAY}"))
 # If the display number=2,then vnc port=5902.
 # 若显示编号为2,则vnc端口为$((5900+2))=5902。
 # Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
