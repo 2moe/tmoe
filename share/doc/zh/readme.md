@@ -327,7 +327,7 @@ export TMM_TMP TMM_MIRROR TMM_LANG
 TMOE_HOME="${HOME}/.local/share/tmoe"
 ```
 
-对于 Mac OS 用户,您可以将该值修改为 **"~/Library/Application Support/tmoe"**
+对于 Mac OS 用户,您可以将该值修改为 **"${HOME}/Library/Application Support/tmoe"**
 
 ### 3.4. 编译安装
 

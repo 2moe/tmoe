@@ -2072,7 +2072,7 @@ install_armbian_linux_distro() {
 	BETA_SYSTEM=$(
 		whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
 			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
-			"2" "🦛 Hirsute Hippo(21.04) " \
+			"2" "Impish Indri(ubuntu 21.10)" \
 			"3" "🐎 Bullseye(debian 11)" \
 			"4" "🐶 Buster(debian 10)" \
 			"5" "Custom code手动输入版本代号" \
@@ -2088,7 +2088,7 @@ install_armbian_linux_distro() {
 		choose_ubuntu_budgie_or_cinnamon
 		;;
 	2)
-		DISTRO_NAME='hirsute'
+		DISTRO_NAME='impish'
 		choose_ubuntu_budgie_or_cinnamon
 		;;
 	3)
