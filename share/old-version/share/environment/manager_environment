@@ -77,11 +77,11 @@ tmoe_global_env() {
 	elif [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
 		WINDOWS_DISTRO='WSL'
 	fi
-	NODE01_URL="https://m.tmoe.me/node01"
-	NODE02_URL="https://node02.tmoe.me"
+	NODE01_URL="https://m.tmoe.me/node1"
+	NODE02_URL="https://node2.tmoe.me"
 	NODE03_URL="https://cdn02.tmoe.me/node03"
-	NODE02_USER='dsvRWWiqamPntR7HhPWBUKZjbukXDNR3szwnjgVBQcnk5kkNx74zgXYoJ9RlV5jFe8RvLYcdvxrfcdpLOS8R27jP1SomtLI3qcEkHZz'
-	NODE02_PW='mTZiPIKPa1Ip3zpQ9khC2GtWXH4T8zm8JRlvaGlmNp4DRwTXr7E1rtVx74SIXVDfzzBoLppGcnVGxfrPuQcUrNMpn5tKp6iydmONWLtsTnp7OOAGtp2j8USwAgnWOFxqfS0DHxtfMMCgrX9sjfP8BRXWExm39BBlCKkqNEOPHI5Dm9CgoEWxqBnhgtOgmdSnb4JO9tWCMNjvgPPGPemSQwLTascOTzANI5SyVGxOpcjEewCmoVrzrz08NiPkT9OkdTKRxygkStg1dQaJbk0Go1bAdAeybwDsCD0RwLHe7m54'
+	NODE02_USER='KLzPwqIXq8SdD4Oa1ldzICUzAW0jV1Wn07ATUwjw4p1KO6FnKZy19oBk4haw49ZD5T4sBvk'
+	NODE02_PW='1THyUsz9OjZKrn5gr7oOpWxWAZ2MDtUrUiIjfPJdgCnQu0xkgrWgq7GkV1G4ZrDZVLe9gJf'
 }
 ##############
 tmoe_env_02() {
