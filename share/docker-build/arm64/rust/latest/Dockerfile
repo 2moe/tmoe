@@ -1,5 +1,5 @@
 FROM arm64v8/debian:unstable
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 ARG TMOE_DIR="/usr/local/etc/tmoe-linux"
 
 WORKDIR /root

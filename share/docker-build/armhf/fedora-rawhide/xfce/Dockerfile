@@ -1,5 +1,5 @@
 FROM arm32v7/fedora:rawhide
-VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
+#VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
 WORKDIR /root
 
 ARG DNF_RC=/etc/dnf/dnf.conf

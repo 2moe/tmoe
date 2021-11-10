@@ -2,42 +2,62 @@
 for i in arm64 armhf i386; do
     cp -av $(ls . | grep -Ev 'cp_docker|sources.list') ../${i}
 done
+
 cd ../arm64
 rm -rfv $(ls . | grep 'mint-')
 ARM64_DOCKERFILE=$(find . | grep Dockerfile)
-sed -E -e 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1aarch64\2:\1aarch64\2@g;s@(FROM) amd64/@\1 arm64v8/@g' \
-    -e 's@x86_64-unknown@aarch64-unknown@g' \
+sed -E \
+    -e 's@#(VOLUME) (/usr/bin/qemu-)x86_64(-static).*@#\1 \2aarch64\3:\2aarch64\3@g' \
+    -e 's@(FROM) amd64/@\1 arm64v8/@g' \
+    -e 's@x86_64-(unknown)@aarch64-\1@g' \
     -e 's@(ARCH_TYPE)=.*@\1=arm64@g' \
     -i ${ARM64_DOCKERFILE}
+
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | egrep "arch|kali")
 BOOTSTRAP_SCRIPT=$(find . | grep bootstrap\.sh)
 SOURCE_LIST=$(find . | grep sources\.list)
 #sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm64/v8 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
-sed -E -e 's@--platform=linux/amd64@--platform=linux/arm64/v8@g' \
+sed -E \
+    -e 's@--(platform)=(linux)/amd64@--\1=\2/arm64/v8@g' \
     -i ${ARCH_DOCKERFILE}
 
 MANJARO_DOCKERFILE=$(find . | grep Dockerfile | grep manjaro)
-sed -i -E 's@^(FROM) manjarolinux/base.*@\1 abyo/manjaro_aarch64:latest@g' ${MANJARO_DOCKERFILE}
-sed -E -e 's@-a x86_64@-a aarch64@' \
+sed -E \
+    's@^(FROM) manjarolinux/base.*@\1 abyo/manjaro_aarch64:latest@g' \
+    -i ${MANJARO_DOCKERFILE}
+
+sed -E \
+    -e 's@-a x86_64@-a aarch64@' \
     -e 's@=amd64@=arm64@' \
     -e 's@^(UBUNTU_URL=).*ubuntu.*@\1"http://ports.ubuntu.com/ubuntu-ports/"@' \
     -e 's@^(UBUNTU_URL_02=).*ubuntu.*@\1"https://mirrors.bfsu.edu.cn/ubuntu-ports/"@' \
     -i ${BOOTSTRAP_SCRIPT}
 
-sed -i -E 's@http.*ubuntu/ @http://ports.ubuntu.com/ubuntu-ports/ @g' ${SOURCE_LIST}
+sed -E \
+    's@http.*ubuntu/ @http://ports.ubuntu.com/ubuntu-ports/ @g' \
+    -i ${SOURCE_LIST}
 
 cd ../armhf
 rm -rfv $(ls . | grep -Ev 'debian-sid|ubuntu-bionic|alpine-edge|fedora-rawhide|arch|kali')
 ARMHF_DOCKERFILE=$(find . | grep Dockerfile)
 BOOTSTRAP_SCRIPT=$(find . | grep bootstrap\.sh)
-sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@VOLUME \1arm\2:\1arm\2@g;s@(FROM) amd64/@\1 arm32v7/@g' ${ARMHF_DOCKERFILE}
+sed -E \
+    -e 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@#VOLUME \1arm\2:\1arm\2@g' \
+    -e 's@(FROM) amd64/@\1 arm32v7/@g' \
+    -i ${ARMHF_DOCKERFILE}
+
 ARCH_DOCKERFILE=$(find . | grep Dockerfile | egrep "arch|kali")
 sed -i -E 's@-a x86_64@-a armv7h@;s@=amd64@=armhf@g' ${BOOTSTRAP_SCRIPT}
 
 #sed -i -E 's@^(FROM) archlinux:base-devel@\1 --platform=linux/arm/v7 lopsided/archlinux:devel@g' ${ARCH_DOCKERFILE}
-sed -i -E 's@--platform=linux/amd64@--platform=linux/arm/v7@g' ${ARCH_DOCKERFILE}
+sed -E \
+    -e 's@--(platform)=(linux)/amd64@--\1=\2/arm/v7@g' \
+    -i ${ARCH_DOCKERFILE}
 cd ../i386
 rm -rfv $(ls . | grep -Ev 'debian-sid|alpine-edge')
 I386_DOCKERFILE=$(find . | grep Dockerfile)
 #i386保留#
-sed -i -E 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@#VOLUME \1i386\2:\1i386\2@g;s@(FROM) amd64/@\1 i386/@g' ${I386_DOCKERFILE}
+sed -E \
+    -e 's@#VOLUME (/usr/bin/qemu-)x86_64(-static).*@#VOLUME \1i386\2:\1i386\2@g' \
+    -e 's@(FROM) amd64/@\1 i386/@g' \
+    -i ${I386_DOCKERFILE}

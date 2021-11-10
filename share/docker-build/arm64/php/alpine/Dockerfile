@@ -1,5 +1,5 @@
 FROM arm64v8/php:alpine
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ENV HOME=/root \
     TMOE_PROOT=false \

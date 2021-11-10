@@ -1,5 +1,5 @@
 FROM arm64v8/ruby:alpine
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 ENV HOME=/root \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \

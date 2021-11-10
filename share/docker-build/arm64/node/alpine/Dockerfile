@@ -1,5 +1,5 @@
 FROM arm64v8/node:alpine
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 ADD README.js /root
 ENV HOME=/root \
     TMOE_PROOT=false \

@@ -1,5 +1,5 @@
 FROM arm64v8/ruby:latest
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \
     TMOE_PROOT=false \

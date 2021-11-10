@@ -1,5 +1,5 @@
 FROM arm64v8/golang:alpine
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 ADD README.go /root
 WORKDIR /go
 ENV HOME=/root \

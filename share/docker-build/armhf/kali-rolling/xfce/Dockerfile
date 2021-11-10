@@ -1,6 +1,6 @@
 FROM scratch
 ADD kali.tar /
-VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
+#VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ARG EXP_LIST="/etc/apt/sources.list.d/kali-experimental.list"

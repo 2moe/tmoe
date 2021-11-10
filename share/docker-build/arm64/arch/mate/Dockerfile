@@ -1,6 +1,6 @@
 FROM scratch
 ADD arch.tar /
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 
 # If you want to have sound, manually bind pulse or other audio server sockets and set environment variables.
 # PULSE_SERVER="unix:/tmp/pulse/native"

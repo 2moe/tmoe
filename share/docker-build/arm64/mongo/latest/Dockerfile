@@ -1,5 +1,5 @@
 FROM arm64v8/mongo:focal
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \

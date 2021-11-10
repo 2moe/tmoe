@@ -1,5 +1,5 @@
 FROM arm32v7/ubuntu:bionic
-VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
+#VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
 WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root \

@@ -1,5 +1,5 @@
 FROM arm64v8/nginx:alpine
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ADD README.txt /root
 ENV HOME=/root \

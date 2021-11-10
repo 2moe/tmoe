@@ -1,5 +1,5 @@
 FROM abyo/manjaro_aarch64:latest
-VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+#VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
 WORKDIR /root
 ENV HOME=/root \
     TMOE_PROOT=false \
