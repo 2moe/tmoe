@@ -1,7 +1,10 @@
 FROM arm64v8/alpine:edge
 VOLUME /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static
+
+# If you want to have sound, manually bind pulse or other audio server sockets and set environment variables.
+# PULSE_SERVER="unix:/tmp/pulse/native"
+
 ENV HOME=/root \
-    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true

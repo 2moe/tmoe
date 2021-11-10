@@ -4,11 +4,14 @@ WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ARG EXP_LIST="/etc/apt/sources.list.d/experimental.list"
 
+# If you want to have sound, manually bind pulse or other audio server sockets and set environment variables.
+# PULSE_SERVER="unix:/tmp/pulse/native"
+
 ENV HOME=/root \
-    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
+
 #  sed -E -i 's@(configure)@pre\1@g' /var/lib/dpkg/info/libc-bin.postinst; \
 RUN apt update; \
     apt dist-upgrade -y; \

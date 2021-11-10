@@ -1,13 +1,16 @@
-#FROM --platform=linux/arm/v7 lopsided/archlinux:devel
 FROM scratch
 ADD arch.tar /
 VOLUME /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static
+
+# If you want to have sound, manually bind pulse or other audio server sockets and set environment variables.
+# PULSE_SERVER="unix:/tmp/pulse/native"
+
 WORKDIR /root
 ENV HOME=/root \
-    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true
+
 RUN mkdir -pv /var/cache/pacman/pkg; \
     pacman-key --init; \
     pacman-key --populate; \

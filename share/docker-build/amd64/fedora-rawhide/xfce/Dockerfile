@@ -4,8 +4,10 @@ WORKDIR /root
 
 ARG DNF_RC=/etc/dnf/dnf.conf
 
+# If you want to have sound, manually bind pulse or other audio server sockets and set environment variables.
+# PULSE_SERVER="unix:/tmp/pulse/native"
+
 ENV HOME=/root \
-    PULSE_SERVER=172.17.0.1 \
     TMOE_PROOT=false \
     TMOE_CHROOT=true \
     TMOE_DOCKER=true

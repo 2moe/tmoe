@@ -18,15 +18,17 @@ RUN apk update; \
     printf "%s\n%s\n" 'cd ~' "php -a" > environment/entrypoint; \
     chmod -R a+rx environment/; \
     cd /root; \
-    printf "%s\n" "PHP_VERSION='$(php --version)'" > version.txt; \
-    printf "%s\n" "PHPIZE_DEPS='${PHPIZE_DEPS}'" >> version.txt; \
-    printf "%s\n" "PHP_EXTRA_CONFIGURE_ARGS='--enable-embed'" >> version.txt; \
-    printf "%s\n" "PHP_CFLAGS='${PHP_CFLAGS}'" >> version.txt; \
-    printf "%s\n" "PHP_CPPFLAGS='${PHP_CPPFLAGS}'" >> version.txt; \
-    printf "%s\n" "PHP_LDFLAGS='${PHP_LDFLAGS}'" >> version.txt; \
-    printf "%s\n" "GPG_KEYS='${GPG_KEYS}'" >> version.txt; \
-    printf "%s\n" "PHP_URL='${PHP_URL}'" >> version.txt; \
-    printf "%s\n" "PHP_ASC_URL='${PHP_ASC_URL}'" >> version.txt; \
+    printf "%s\n" \
+    "PHP_VERSION='$(php --version)'" \
+    "PHPIZE_DEPS='${PHPIZE_DEPS}'" \
+    "PHP_EXTRA_CONFIGURE_ARGS='--enable-embed'"  \
+    "PHP_CFLAGS='${PHP_CFLAGS}'" \
+    "PHP_CPPFLAGS='${PHP_CPPFLAGS}'" \
+    "PHP_LDFLAGS='${PHP_LDFLAGS}'"  \
+    "GPG_KEYS='${GPG_KEYS}'" \
+    "PHP_URL='${PHP_URL}'"  \
+    "PHP_ASC_URL='${PHP_ASC_URL}'" \
+    > version.txt; \
     cat version.txt; \
     rm -rf /var/cache/apk/* ~/.cache/* 2>/dev/null 
 #apk -v cache clean
