@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# set -x
 ############################################
 choose_which_gnu_linux_distro() {
 	source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
@@ -823,25 +824,32 @@ install_deepin_camel_arm64() {
 ##########
 git_clone_deepin_distro() {
 	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
-	cd ${ROOTFS_DIR}
+	cd "${ROOTFS_DIR}"
 	case "${ARCH_TYPE}" in
 	amd64 | i386 | arm64)
 		go_to_proot_management
 		DEEPIN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
 		if [ ! -e "${DEEPIN_ROOTFS_FILE_NAME}" ]; then
 			TEMP_DIR=".DEEPIN_${ARCH_TYPE}-TEMP_FOLDER"
-			[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
-			git clone --depth=1 ${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git ${TEMP_DIR}
-			cd ${TEMP_DIR}
-			cat .container_linux_* >${DEEPIN_ROOTFS_FILE_NAME}
-			mv -fv ${DEEPIN_ROOTFS_FILE_NAME} ../
+			[[ ! -e ${TEMP_DIR} ]] || rm -rfv "${TEMP_DIR}"
+
+			git clone \
+				--depth=1 \
+				"${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git" \
+				"${TEMP_DIR}"
+
+			cd "${TEMP_DIR}"
+			cat .container_linux_* >"${DEEPIN_ROOTFS_FILE_NAME}"
+			mv -fv "${DEEPIN_ROOTFS_FILE_NAME}" ../
 			cd ..
-			rm -rvf ${TEMP_DIR}
+			rm -rvf "${TEMP_DIR}"
 		fi
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian container/${DISTRO_NAME} container/g" |
-			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		bash -c "$(sed -n p \
+			${TMOE_SHARE_DIR}/container/install |
+			sed -E \
+				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+				-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+				-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 		;;
 	*) distro_does_not_support ;;
 	esac
@@ -1120,22 +1128,29 @@ git_clone_linux_distro_rootfs_01() {
 		;;
 	esac
 	ROOTFS_FILE_NAME="${GIT_REPO_NAME}-rootfs.tar.xz"
-	echo $ROOTFS_FILE_NAME
+	echo "$ROOTFS_FILE_NAME"
 	if [ ! -e "${ROOTFS_FILE_NAME}" ]; then
 		TEMP_DIR=".${TMOE_LINUX_CONTAINER_DISTRO}-TEMP_FOLDER"
-		[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
+		[[ ! -e ${TEMP_DIR} ]] || rm -rfv "${TEMP_DIR}"
 		pwd
-		git clone --depth=1 ${AK2_GIT_URL}/${GIT_REPO_NAME}.git ${TEMP_DIR}
+
+		git clone \
+			--depth=1 \
+			"${AK2_GIT_URL}/${GIT_REPO_NAME}.git" \
+			"${TEMP_DIR}"
+
 		cd ${TEMP_DIR}
-		cat .container_linux_* >${ROOTFS_FILE_NAME}
-		mv -fv ${ROOTFS_FILE_NAME} ../
+		cat .container_linux_* >"${ROOTFS_FILE_NAME}"
+		mv -fv "${ROOTFS_FILE_NAME}" ../
 		cd ..
-		rm -rvf ${TEMP_DIR}
+		rm -rvf "${TEMP_DIR}"
 	fi
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME_03}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		"${TMOE_SHARE_DIR}"/container/install |
+		sed -E \
+			-e "s@debian (container)@${DISTRO_NAME} \1@g" \
+			-e "s:debian-sid:${DISTRO_NAME_03}:g" \
+			-e "s@Debian (GNU/Linux)@${DISTRO_NAME} \1@g")"
 }
 download_rootfs_from_node_03() {
 	ROOTFS_VERSION="latest02"
@@ -1146,18 +1161,20 @@ download_rootfs_from_node_03() {
 	# NODE02_ENABLED=false
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "1a\WEEKLY_BUILD_CONTAINER=true" |
-		sed "1a\DESKTOP=${DESKTOP}" |
-		sed "1a\NODE_URL=${NODE_URL}" |
-		sed "1a\NODE02_USER=${NODE02_USER}" |
-		sed "1a\NODE02_PW=${NODE02_PW}" |
-		sed "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" |
-		sed "1a\NODE_NAME=${NODE_NAME}" |
-		sed "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s@BFSU Open Source Mirror Station@${NODE_NAME}@" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		"${TMOE_SHARE_DIR}"/container/install |
+		sed -E \
+			-e "1a\WEEKLY_BUILD_CONTAINER=true" \
+			-e "1a\DESKTOP=${DESKTOP}" \
+			-e "1a\NODE_URL=${NODE_URL}" \
+			-e "1a\NODE02_USER=${NODE02_USER}" \
+			-e "1a\NODE02_PW=${NODE02_PW}" \
+			-e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
+			-e "1a\NODE_NAME=${NODE_NAME}" \
+			-e "s@(TMOE_ROOTFS_TAR_XZ)=.*debian-sid_.*@\1=${ROOTFS_FILE}@" \
+			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+			-e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
+			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 #######################
 install_beta_containers() {
@@ -1412,92 +1429,119 @@ debootstrap_ubuntu_distro() {
 			*) UBUNTU_MIRROR_URL="http://ports.ubuntu.com/ubuntu-ports" ;;
 			esac
 		fi
-		${TMOE_PREFIX} mkdir -pv ${DEBIAN_CHROOT}
+		${TMOE_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"
 		#--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail,apt-transport-https
-		${TMOE_PREFIX} debootstrap --no-check-gpg --arch ${ARCH_TYPE} --components=main,restricted,universe,multiverse --variant=minbase --include=init,locales,ca-certificates,openssl ${DISTRO_CODE} ${DEBIAN_CHROOT} ${UBUNTU_MIRROR_URL}
+		${TMOE_PREFIX} debootstrap \
+			--no-check-gpg \
+			--arch "${ARCH_TYPE}" \
+			--components=main,restricted,universe,multiverse \
+			--variant=minbase \
+			--include=init,locales,ca-certificates,openssl \
+			${DISTRO_CODE} \
+			"${DEBIAN_CHROOT}" \
+			${UBUNTU_MIRROR_URL}
+
 		if [[ ${DEBIAN_CHROOT} != / && -n ${DEBIAN_CHROOT} ]]; then
-			${TMOE_PREFIX} rm -fv ${DEBIAN_CHROOT}/dev/*
+			${TMOE_PREFIX} rm \
+				-fv \
+				"${DEBIAN_CHROOT}"/dev/*
 		fi
-		printf "%s\n" "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" >${CONFIG_FOLDER}/debootstrap_dir.txt
+		printf "%s\n" \
+			"DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" \
+			>"${CONFIG_FOLDER}"/debootstrap_dir.txt
 	fi
 	#debootstrap --no-check-gpg --arch arm64 --include=gawk,libblkid1,libbz2-1.0,libc6,libcom-err2,libcrypt1,libdebconfclient0,libext2fs2,libgcc-s1,libgmp10,liblzma5,libnss-nis,libnss-nisplus,libpam-modules-bin,libpam0g,libpcre3,libselinux1,libss2,libtinfo6,libuuid1,tar,zlib1g --variant=minbase sid ./sid ${UBUNTU_MIRROR_URL}
 	#
 }
 #############
 ubuntu_distro_x64_model() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/focal/${DISTRO_CODE}/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/focal/${DISTRO_CODE}/g" \
+			-e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
+			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+			-e "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" \
+			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ############
 ubuntu_distro_arm_model() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/focal/${DISTRO_CODE}/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/focal/${DISTRO_CODE}/g" \
+			-e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
+			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ########
 ubuntu_distro_x64_model_02() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/focal/${DISTRO_CODE}/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" |
-		sed "/usermod -a/d" |
-		sed "/groupadd aid/d" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/focal/${DISTRO_CODE}/g" \
+			-e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
+			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+			-e "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" \
+			-e "/usermod -a/d" \
+			-e "/groupadd aid/d" \
+			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ############
 ubuntu_distro_arm_model_02() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/focal/${DISTRO_CODE}/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/focal/${DISTRO_CODE}/g" \
+			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ########
 linux_distro_common_model_01() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "/usermod -a/d" |
-		sed "/groupadd aid/d" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+			-e "/usermod -a/d" \
+			-e "/groupadd aid/d" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ####################
 #02为kali-rolling
 linux_distro_common_model_02() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 #########################
 #03为arch linux
 #############
 #04为fedora和centos
 linux_distro_common_model_04() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ####################
 install_different_ubuntu_gnu_linux_distros() {
@@ -1526,25 +1570,6 @@ do_you_want_to_install_ubuntu_older_version() {
 		do_you_want_to_continue
 	fi
 }
-# check_the_ubuntu_devel() {
-# 	if (($(date +%Y%m) <= 202111)); then
-# 		LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-# 		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish' | tail -n 1)
-# 		VERSION="jammy (22.04 LTS)"
-# 		printf "%s\n" "Ubuntu ${BLUE}22.04${RESET} is a ${PURPLE}development release${RESET} now."
-# 		printf "%s\n" "If you want to install ${PURPLE}ubuntu-devel${RESET}, then go to ${BLUE}Weekly Builds${RESET}."
-# 		printf "%s\n" "${BLUE}Weekly Builds ${PURPLE}-> ${YELLOW}zsh ${PURPLE}-> ${GREEN}ubuntu-devel${RESET}"
-# 		case ${ARCH_TYPE} in
-# 		amd64 | arm64)
-# 			if [ -z ${DISTRO_CODE} ]; then
-# 				press_enter_to_return
-# 				install_tmoe_weekly_build_edition
-# 			fi
-# 			;;
-# 		*) do_you_want_to_install_ubuntu_older_version ;;
-# 		esac
-# 	fi
-# }
 check_the_latest_ubuntu_version() {
 	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
 	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
@@ -1659,26 +1684,41 @@ git_clone_fedora_rootfs() {
 	FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
 	FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
 	if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-		rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
-		git clone --depth=1 ${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE} ${FEDORA_TEMP_FOLDER}
-		mv -f ${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz ${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}
+		rm -rvf \
+			"${FEDORA_TEMP_FOLDER}" \
+			2>/dev/null
+
+		git clone \
+			--depth=1 \
+			"${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE}" \
+			"${FEDORA_TEMP_FOLDER}"
+
+		mv -f \
+			"${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz" \
+			"${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}"
+
 		rm -rvf ${FEDORA_TEMP_FOLDER}
 	fi
+
 	case ${DISTRO_CODE} in
 	33)
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian container/${DISTRO_NAME} container/g" |
-			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		bash -c "$(sed -n p \
+			${TMOE_SHARE_DIR}/container/install |
+			sed -E \
+				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+				-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+				-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+				-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 		;;
 	*)
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian container/${DISTRO_NAME} container/g" |
-			sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-			sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" |
-			sed "s@\(FEDORA_VERSION=\).*@\129@g" |
-			sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		bash -c "$(sed -n p \
+			${TMOE_SHARE_DIR}/container/install |
+			sed -E \
+				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+				-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+				-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+				-e "s@(FEDORA_VERSION)=.*@\1=29@g" \
+				-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 		#当版本低于30，或为rawhide时不会自动换源
 		;;
 	esac
@@ -1695,14 +1735,22 @@ install_fedora_gnu_linux_distro() {
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		create_container_edition_txt
 		go_to_proot_management
-		[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
-		cd ${ROOTFS_DIR}
+		[[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
+		cd "${ROOTFS_DIR}"
 		FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
 		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
 		if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
 			rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
-			git clone --depth=1 ${AK2_GIT_URL}/fedora-33_armhf ${FEDORA_TEMP_FOLDER}
-			mv -f ${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE} ${ROOTFS_DIR}
+
+			git clone \
+				--depth=1 \
+				"${AK2_GIT_URL}/fedora-33_armhf" \
+				"${FEDORA_TEMP_FOLDER}"
+
+			mv -f \
+				"${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE}" \
+				"${ROOTFS_DIR}"
+
 			rm -rvf ${FEDORA_TEMP_FOLDER}
 		fi
 		: <<\EOF
@@ -1725,11 +1773,13 @@ EOF
 }
 #######################
 linux_distro_common_model_03() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
 }
 #################
 install_void_linux_distro() {
@@ -1808,12 +1858,14 @@ install_gentoo_linux_distro() {
 		#sed '45 a\ARCH_TYPE="armhf"' |
 		TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.tuna.tsinghua.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
 		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" |
-			sed 's/debian container/Gentoo container/g' |
-			sed 's:debian-sid:gentoo-current:g' |
-			sed 's:debian/sid:gentoo/current:g' |
-			sed 's:Debian GNU/Linux:Gentoo GNU/Linux:g')"
+		bash -c "$(sed -n p \
+			${TMOE_SHARE_DIR}/container/install |
+			sed -E \
+				-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" \
+				-e 's/debian (container)/Gentoo \1/g' \
+				-e 's:debian-sid:gentoo-current:g' \
+				-e 's:debian/sid:gentoo/current:g' \
+				-e 's:Debian (GNU/Linux):Gentoo \1:g')"
 		;;
 	*)
 		create_container_edition_txt
@@ -1895,42 +1947,48 @@ install_raspios_linux_distro() {
 }
 ###################
 install_raspios_lite_armhf_rootfs() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
-		sed -E 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' |
-		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
-		sed 's@#deb http@deb http@g' |
-		sed 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' |
-		sed 's/.*sid main/#&/' |
-		sed 's/debian container/raspios container/g' |
-		sed 's:debian-sid:raspios-buster:g' |
-		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
+			-e 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
+			-e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
+			-e 's@#deb http@deb http@g' \
+			-e 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' \
+			-e 's/.*sid main/#&/' \
+			-e 's/debian (container)/raspios \1/g' \
+			-e 's:debian-sid:raspios-buster:g' \
+			-e 's:Debian (GNU/Linux):Raspios \1:g')"
 }
 ##################
 install_raspios_full_armhf_rootfs() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
-		sed -E 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' |
-		sed 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' |
-		sed 's@#deb http@deb http@g' |
-		sed 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' |
-		sed 's/.*sid main/#&/' |
-		sed 's/debian container/raspios container/g' |
-		sed 's:debian-sid:raspios-buster:g' |
-		sed 's:Debian GNU/Linux:Raspios GNU/Linux:g')"
+	bash -c "$(sed -n p \
+		"${TMOE_SHARE_DIR}"/container/install |
+		sed -E \
+			-e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
+			-e's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
+			-e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
+			-e 's@#deb http@deb http@g' \
+			-e 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' \
+			-e 's/.*sid main/#&/' \
+			-e 's/debian (container)/raspios \1/g' \
+			-e 's:debian-sid:raspios-buster:g' \
+			-e 's:Debian (GNU/Linux):Raspios \1:g')"
 }
 ##################
 install_manjaro_linux_distro() {
 	case ${ARCH_TYPE} in
 	arm64)
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' |
-			sed 's/debian container/manjaro container/g' |
-			sed 's:debian-sid:manjaro-stable:g' |
-			sed 's:debian/sid:manjaro/stable:g' |
-			sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
-			sed -E 's@^(MANJARO_LINUX=).*@\1true@g' |
-			sed 's:Debian GNU/Linux:Manjaro GNU/Linux:g')"
+		bash -c "$(sed -n p \
+			${TMOE_SHARE_DIR}/container/install |
+			sed -E \
+				-e 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' \
+				-e 's/debian (container)/manjaro \1/g' \
+				-e 's:debian-sid:manjaro-stable:g' \
+				-e 's:debian/sid:manjaro/stable:g' \
+				-e 's:rootfs.tar.xz:rootfs.tar.gz:g' \
+				-e -E 's@^(MANJARO_LINUX=).*@\1true@g' \
+				-e 's:Debian (GNU/Linux):Manjaro \1:g')"
 		;;
 	amd64)
 		mkdir -pv ${ROOTFS_DIR}
@@ -1947,11 +2005,13 @@ install_manjaro_linux_distro() {
 			cd ..
 			rm -rvf ${TEMP_DIR}
 		fi
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s/debian container/${DISTRO_NAME} container/g" |
-			sed "s:debian-sid:${DISTRO_NAME}-stable:g" |
-			sed -E 's@^(MANJARO_LINUX=).*@\1true@g' |
-			sed "s:Debian GNU/Linux:Manjaro GNU/Linux:g")"
+		bash -c "$(sed -n p \
+			"${TMOE_SHARE_DIR}"/container/install |
+			sed -E \
+				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
+				-e "s:debian-sid:${DISTRO_NAME}-stable:g" \
+				-e 's@^(MANJARO_LINUX=).*@\1true@g' \
+				-e "s:Debian (GNU/Linux):Manjaro \1:g")"
 		;;
 	*)
 		printf "%s\n" "SORRY,Tmoe-linux的开发者未对您的架构进行适配"
@@ -1975,28 +2035,30 @@ install_slackware_linux_distro() {
 	DISTRO_NAME='slackware'
 	TMOE_LINUX_CONTAINER_DISTRO='slackware'
 	create_container_edition_txt
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
 	cd ${ROOTFS_DIR}
 	case "${ARCH_TYPE}" in
 	amd64)
 		go_to_proot_management
 		if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
-			git clone -b x64 --depth=1 ${AK2_GIT_URL}/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
+			git clone -b x64 --depth=1 "${AK2_GIT_URL}"/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
 			#aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
 			cd .SLACKWARE_AMD64_TEMP_FOLDER
 			mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
 			cd ..
 			rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
 		fi
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed 's/debian container/slackware container/g' |
-			sed 's:debian-sid:slackware-current:g' |
-			sed 's:debian/sid:slackware/current:g' |
-			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
+		bash -c "$(sed -n p \
+			"${TMOE_SHARE_DIR}"/container/install |
+			sed -E \
+				-e 's/debian container/slackware container/g' \
+				-e 's:debian-sid:slackware-current:g' \
+				-e 's:debian/sid:slackware/current:g' \
+				-e 's:Debian (GNU/Linux):Slackware \1:g')"
 		;;
 	arm64 | armhf)
 		NEW_TMOE_ARCH='armhf'
-		TMOE_QEMU_ARCH=""
+		unset TMOE_QEMU_ARCH
 		create_tmoe_arch_file
 		ARCH_TYPE='armhf'
 		go_to_proot_management
@@ -2007,12 +2069,14 @@ install_slackware_linux_distro() {
 		#aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
 		#fi
 		THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
-		bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-			sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" |
-			sed 's/debian container/slackware container/g' |
-			sed 's:debian-sid:slackware-current:g' |
-			sed 's:debian/sid:slackware/current:g' |
-			sed 's:Debian GNU/Linux:Slackware GNU/Linux:g')"
+		bash -c "$(sed -n p \
+			"${TMOE_SHARE_DIR}"/container/install |
+			sed -E \
+				-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" \
+				-e 's/debian (container)/slackware \1/g' \
+				-e 's:debian-sid:slackware-current:g' \
+				-e 's:debian/sid:slackware/current:g' \
+				-e 's:Debian (GNU/Linux):Slackware \1:g')"
 		;;
 	*) distro_does_not_support ;;
 	esac

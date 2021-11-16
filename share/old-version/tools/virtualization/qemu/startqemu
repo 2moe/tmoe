@@ -51,28 +51,29 @@ EOF
 #01-2.MACHINE参数值/变量值修改区域
 #You can modify the variable value here.ここで変数値を変更できます
 ## 请在指定区域内修改参数，请不要修改“MACHINE”右边，“=”左边的变量名称，请修改“=”右边的变量值。
-MACHINE_ACCEL='kvm:tcg'
+
 #默认值'kvm:tcg',您可以修改为'tcg:kvm:xen'，如需禁用kvm,则可修改为tcg
+MACHINE_ACCEL='kvm:tcg'
 
-ENABLE_KVM=true
 #可选true/false
+ENABLE_KVM=true
 
-MACHINE_TYPE='q35'
 #tmoe-qemu默认机器类型为q35,qemu官方默认为pc
 #可选值'q35','pc'
+MACHINE_TYPE='q35'
 
-QEMU_NAME='tmoe-qemu'
 #自定义qemu名称
+QEMU_NAME='tmoe-qemu'
 
-RTC_BASE=localtime
 #默认localtime,若guest为linux,则可修改为utc
+RTC_BASE=localtime
 
 #01-3.UEFI开关
 UEFI_ENABLED=false
 
 #UEFI固件位置
-UEFI_CODE_PFLASH="/usr/share/OVMF/OVMF_CODE.fd"
 #TianoCore UEFI默认位置"/usr/share/OVMF/OVMF_CODE.fd"
+UEFI_CODE_PFLASH="/usr/share/OVMF/OVMF_CODE.fd"
 
 UEFI_VARS_PFLASH="${HOME}/.config/tmoe-linux/qemu/${QEMU_NAME}-NVRAM.fd"
 ###########
@@ -114,10 +115,10 @@ CPUID FLAGS示例01(Openstack):'erms=on,smep=on,fsgsbase=on,pdpe1gb=on,rdrand=on
 CPUID FLAGS示例02:'ss=on,vmx=on,pdcm=on,hypervisor=on,tsc-adjust=on,clflushopt=on,umip=on,md-clear=on,stibp=on,arch-capabilities=on,ssbd=on,xsaves=on,pdpe1gb=on,ibpb=on,amd-stibp=on,amd-ssbd=on,skip-l1dfl-vmentry=on,pschange-mc-no=on,hle=off,rtm=off'
 EOF
 #02-2.CPU变量值修改区域
-CPU_MODEL='max'
-CPU_ID_FLAGS='hle=off,rtm=off'
 #CPU_MODEL为CPU型号，例如'Icelake-Client'和'Skylake-Client-IBRS'。默认为'max',即启用加速器支持的所有可用功能。
 #CPU_ID_FLAGS为cpu的属性和功能，可以留空。默认为'hle=off,rtm=off'
+CPU_MODEL='max'
+CPU_ID_FLAGS='hle=off,rtm=off'
 ###########
 #03-1.CPU核心数
 : <<\EOF
@@ -126,11 +127,12 @@ USAGE:
 Simulate an SMP system with n CPUs. On the PC target, up to 255 CPUs are supported. On Sparc32 target, Linux limits the number of usable CPUs to 4. For the PC target, the number of cores per die, the number of threads per cores, the number of dies per packages and the total number of sockets can be specified. Missing values will be computed. If any on the three values is given, the total number of CPUs n can be omitted. maxcpus specifies the maximum number of hotpluggable CPUs.
 EOF
 #03-2:CPU核心数的修改区域
+
+#默认为CPUS_NUM='2'，SOCKETS_NUM='2'，CORES_NUM='1'，THREADS_NUM='1'，即2个虚拟CPU, 2个CPU插槽, 单核, 单线程。
 CPUS_NUM='2'
 SOCKETS_NUM='2'
 CORES_NUM='1'
 THREADS_NUM='1'
-#默认为CPUS_NUM='2'，SOCKETS_NUM='2'，CORES_NUM='1'，THREADS_NUM='1'，即2个虚拟CPU ,2个CPU插槽 ,单核 ,单线程。
 ###########
 ###########
 #04-1.RAM运行内存
@@ -149,21 +151,24 @@ If slots and maxmem are not specified, memory hotplug won’t be enabled and the
 EOF
 #04-2.RAM变量值修改区域
 
-MEMORY_SIZE='1024'
 #您需要把MEMORY_ALLOCATION的变量值从auto修改为num才能启用本选项。
 #MEMORY_SIZE的变量值为纯数字，例如1024
+MEMORY_SIZE='1024'
 
-MEMORY_ALLOCATION='auto'
+# 设置最大内存
+MAX_MEMORY=4096
+
 : <<\EOF
 默认为'auto'，可选值'num'或者为空。
 自动根据宿主机$((可用内存-256M))来分配。举个例子,宿主机内存(不包含swap)为7844M,可用2185M，此时自动分配给QEMU虚拟机的内存为1929M
-The default is "auto", which automatically allocates qemu virtual machine memory based on the host's $((${available-memory} - 256M)).
+The default is "auto", which automatically allocates qemu virtual machine memory based on the host's $((available-memory - 256M)).
 For example,the host's RAM is 7844M,the available RAM is 1663M.At this time, the memory automatically allocated to qemu is 1929M.
 EOF
+MEMORY_ALLOCATION='auto'
 
-MEMORY_REDUCED='256'
 #默认为256,本选项并非实际内存大小，而是自动分配时需要减少的内存大小，详见MEMORY_ALLOCATION的说明。
 #仅当MEMORY_ALLOCATION的变量值为true时,此选项才会生效。
+MEMORY_REDUCED='256'
 ###############
 ###############
 #05-1. boot drives/order 开机引导设备/顺序
@@ -185,28 +190,30 @@ Note: The legacy format ‘-boot drives’ is still supported but its use is dis
 默认附加参数menu=on，在启动qemu后的几秒内，在虚拟机界面按下ESC键，可以手动选择引导设备。
 EOF
 #05-2. boot drives/order变量值修改区域
-BOOT_ORDER='cd'
+
 #默认为cd,即优先从第一块硬盘启动，若失败，则从光盘启动。
 #如需调整具体磁盘的启动顺序，请修改Storage devices区域的"BOOTINDEX"配置选项。
+BOOT_ORDER='cd'
 
-BOOT_MENU='on'
 #可选on或off
+BOOT_MENU='on'
 
 #05-3.Kernel 内核引导选项
-CUSTOM_KERNEL=false
-#默认为'false'，禁用手动指定内核
 
-KERNEL_FILE=""
+#默认为'false'，禁用手动指定内核
+CUSTOM_KERNEL=false
+
 #内核文件路径，可留空
 #示例："/vmlinuz.old"
+KERNEL_FILE=""
 
-INITRD_FILE=""
 #initrd文件路径，可留空
 #示例："/initrd.img.old"
+INITRD_FILE=""
 
-KERNEL_APPEND=""
 #内核参数，可留空
 #示例："root=/dev/vda"
+KERNEL_APPEND=""
 ################
 ################
 #06-1. Storage devices
@@ -224,13 +231,15 @@ EOF
 
 #06-2. Storage devices 存储设备配置区域
 VIRTIO_DISK_01_BOOTINDEX=''
-VIRTIO_DISK_01_ENABLED=false
-#当ENABLE=true时，表示启用这块磁盘;为'false'时，禁用。
-VIRTIO_DISK_01_FORMAT=qcow2
-#默认格式为qcow2
 
-VIRTIO_DISK_01="${HOME}/sd/Download/virtio-disk01.qcow2"
+#当ENABLE=true时，表示启用这块磁盘;为'false'时，禁用。
+VIRTIO_DISK_01_ENABLED=false
+
+#默认格式为qcow2
+VIRTIO_DISK_01_FORMAT=qcow2
+
 #"_01="或”_02="后接磁盘文件路径，例如"${HOME}/sd/Download/virtio-disk02.qcow2"
+VIRTIO_DISK_01="${HOME}/sd/Download/virtio-disk01.qcow2"
 #___________________________
 VIRTIO_DISK_02_ENABLED=false
 VIRTIO_DISK_02_BOOTINDEX=''
@@ -334,21 +343,23 @@ qemu5.1及其以上版本的系统建议使用"-device"来配置声卡,而不是
 目前本脚本仅支持配置ich9-intel-hda，intel-hda,AC97和ES1370。
 EOF
 #07-2.Sound card devices声卡
-SOUND_CARD_ENABLED=true
-#当其为'true'时，启用声卡;为false时，则禁用。
 
-SOUND_CARD='intel-hda'
+#当其为'true'时，启用声卡;为false时，则禁用。
+SOUND_CARD_ENABLED=true
+
 #默认为intel-hda
+SOUND_CARD='intel-hda'
 
 SOUND_CARD_02_ENABLED=true
 SOUND_CARD_02='AC97'
 
 #07-3.Pulseaudio server address音频服务地址
-WAYLAND_REMOTE_PULSE=false
-#默认值为'false',当使用的是wayland或本地x11时，默认不转发音频。
 
+#默认值为'false',当使用的是wayland或本地x11时，默认不转发音频。
+WAYLAND_REMOTE_PULSE=false
+
+#默认值'127.0.0.1:4713', 除了 tcp 外，还可以自定义为 socket 文件路径。
 AUDIO_ADDR='127.0.0.1:4713'
-#默认值'127.0.0.1:4713'
 #############
 #############
 #08-1.Network devices
@@ -356,27 +367,30 @@ AUDIO_ADDR='127.0.0.1:4713'
 #请直接搜索“关于user network的说明”。
 ###########
 #08-2.Network devices
-NET_CARD_01_ENABLED=true
+
 #当其为'true'时，启用网卡;为false时，则禁用。
-NET_CARD_01='virtio-net-pci'
+NET_CARD_01_ENABLED=true
+
 #网卡01默认为virtio-net-pci
 #注意：当guest的kernel为linux cloud 内核时，请保持该网卡为virtio-net-pci
-NET_CARD_01_MAC=''
+NET_CARD_01='virtio-net-pci'
+
 #网卡01的mac地址,例如'52:54:00:f3:15:21',此参数值可留空。
+NET_CARD_01_MAC=''
 
 NET_CARD_02_ENABLED=true
-NET_CARD_02='e1000'
 #网卡02默认为e1000
 #若guest已安装了virtio驱动，则可禁用网卡02。
 #name "e1000", bus PCI, alias "e1000-82540em", desc "Intel Gigabit Ethernet"
 #name "e1000e", bus PCI, desc "Intel 82574L GbE Controller"
 #name "rtl8139", bus PCI
+NET_CARD_02='e1000'
 
-NET_CARD_02_MAC=''
 #网卡02的mac地址
+NET_CARD_02_MAC=''
 
-#网卡03默认为rtl8139
 NET_CARD_03_ENABLED=true
+#网卡03默认为rtl8139
 NET_CARD_03='rtl8139'
 
 #08-3.tcp端口转发规则
@@ -415,17 +429,19 @@ QXL paravirtual graphic card. It is VGA compatible (including VESA 2.0 VBE suppo
 EOF
 ############
 #09-2.GPU
-GPU_MODEL='qxl-vga'
+
 #默认为qxl-vga。可选值virtio-vga,VGA,bochs-display,cirrus-vga,ati-vga,vmware-svga
-VIRTIO_3D_ACCEL=false
+GPU_MODEL='qxl-vga'
+
 #默认为'false',virtio显卡3d加速。
+VIRTIO_3D_ACCEL=false
 
 #配置qxl显卡的显存
+#GPU_RAM_SIZE默认为67108864，GPU_VRAM_SIZE默认为67108864,GPU_VGAMEM_MB默认为16
 GPU_RAM_SIZE='67108864'
 GPU_VRAM_SIZE='67108864'
 GPU_VGAMEM_MB='16'
-#GPU_RAM_SIZE默认为67108864，GPU_VRAM_SIZE默认为67108864,GPU_VGAMEM_MB默认为16
-#############
+############
 ############
 #10-1.REMOTE DESKTOP
 : <<\EOF
@@ -453,25 +469,26 @@ You can also use keywords “now” or “never” for the expiration time to al
 若您的host为win10(WSL),则可以转发x11。等等，为什么你会在WSL里套娃使用qemu-system？若您的host为win10,则推荐您换用HyperV之类的虚拟机。
 EOF
 #10-2.REMOTE DESKTOP 远程桌面
-CONNECTION_TYPE='vnc'
+
 #可选值vnc,x11,spice,remote-x11
 #若您使用的是wayland,则请将其修改为空或x11。
+CONNECTION_TYPE='vnc'
 
-REMOTE_X11_ADDR='127.0.0.1:0'
 #仅当连接类型为remote-x11时，远程转发才会生效。
+REMOTE_X11_ADDR='127.0.0.1:0'
 
-VNC_PORT='5905'
 #默认为5905
+VNC_PORT='5905'
 
-VNC_LOCALHOST=false
 #默认为true,仅本机可连接。
+VNC_LOCALHOST=false
 
-VNC_STARTUP_PROMPT=true
 #显示VNC启动提示，默认为'true'。若连接类型为vnc或spice,则建议开启本选项。
+VNC_STARTUP_PROMPT=true
 
+# 可选true或false
+# 当其为true时，您可以在qemu monitor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
 VNC_PASSWORD=false
-#可选true或false
-#当其为true时，您可以在qemu monitor下输入"set_password vnc 233333"，将vnc密码设置为233333;在monitor下输入"set_password spice 233333"，将spice密码设置为233333
 ############
 ############
 #11-1.Architecture
@@ -481,20 +498,20 @@ This script only supports x86_64 and i386.
 EOF
 #11-2.QEMU-SYSTEM二进制文件目录与架构
 ###########
+# 默认为"/usr/bin",若您手动编译的qemu-system-x86_64位于"/usr/local/bin/"，则将其修改为"/usr/local/bin"
 QEMU_BIN_PATH="/usr/bin"
-#默认为"/usr/bin",若您手动编译的qemu-system-x86_64位于"/usr/local/bin/"，则将其修改为"/usr/local/bin"
 [[ -d ${QEMU_BIN_PATH} ]] || QEMU_BIN_PATH="${PREFIX}/bin"
 
+# 默认为x86_64，如需模拟32位system,则请将其修改为i386，否则请保持默认值。
 QEMU_BIN_ARCH='x86_64'
-#默认为x86_64，如需模拟32位system,则请将其修改为i386，否则请保持默认值。
 ###########
 run_tmoe_qemu_i440fx_machine() {
     case ${UEFI_ENABLED} in
     *) MACHINE_ATTACH='' ;;
     esac
-    #本工具不支持给i440fx(1996)配置uefi，请将机器类型修改为q35。
+    # 本工具不支持给i440fx(1996)配置uefi，请将机器类型修改为q35。
     set -- "${@}" "-machine" "pc,accel=${MACHINE_ACCEL},usb=off,vmport=off,dump-guest-core=off${MACHINE_ATTACH}"
-    #MACHINE_ATTACH=',memory-backend=pc.ram' #set -- "${@}" "-object" "memory-backend-ram,id=pc.ram,size=1073741824"
+    # MACHINE_ATTACH=',memory-backend=pc.ram' #set -- "${@}" "-object" "memory-backend-ram,id=pc.ram,size=1073741824"
     set -- "${@}" "-global" "PIIX4_PM.disable_s3=1"
     set -- "${@}" "-global" "PIIX4_PM.disable_s4=1"
     set -- "${@}" "-device" "ich9-usb-ehci1,id=usb,bus=pci.0,addr=0x5.0x7"
@@ -520,13 +537,15 @@ run_tmoe_qemu_i440fx_machine() {
         printf "%s\n" "当前宿主机(HOST) ${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
         if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
             if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
-                MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
+                MEMORY_SIZE=$((FREE_MEMORY - MEMORY_REDUCED))
             else
-                MEMORY_SIZE=$((${FREE_MEMORY} - 256))
+                MEMORY_SIZE=$((FREE_MEMORY - 256))
             fi
         fi
-        if ((${MEMORY_SIZE} <= 256)); then
+        if ((MEMORY_SIZE <= 256)); then
             MEMORY_SIZE=256
+        elif ((MEMORY_SIZE >= MAX_MEMORY)); then
+            MEMORY_SIZE="$MAX_MEMORY"
         elif [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
             MEMORY_SIZE=1024
         fi
@@ -864,7 +883,7 @@ EOF
             esac
             ;;
         esac
-        TRUE_VNC_PORT=$((${VNC_PORT} - 5900))
+        TRUE_VNC_PORT=$((VNC_PORT - 5900))
         case ${VNC_PASSWORD} in
         true) VNC_ATTACH=',password=on' ;;
         *) VNC_ATTACH="" ;;
@@ -963,13 +982,15 @@ run_tmoe_qemu_command() {
         printf "%s\n" "当前宿主机(HOST) ${GREEN}available RAM${RESET}为${PURPLE}${FREE_MEMORY}M${RESET}，${YELLOW}total RAM${RESET}为${BLUE}${TOTAL_MEMORY}M${RESET}"
         if [[ ${FREE_MEMORY} =~ ^[0-9]+$ ]]; then
             if [[ ${MEMORY_REDUCED} =~ ^[0-9]+$ ]]; then
-                MEMORY_SIZE=$((${FREE_MEMORY} - ${MEMORY_REDUCED}))
+                MEMORY_SIZE=$((FREE_MEMORY - MEMORY_REDUCED))
             else
-                MEMORY_SIZE=$((${FREE_MEMORY} - 256))
+                MEMORY_SIZE=$((FREE_MEMORY - 256))
             fi
         fi
-        if ((${MEMORY_SIZE} <= 256)); then
+        if ((MEMORY_SIZE <= 256)); then
             MEMORY_SIZE=256
+        elif ((MEMORY_SIZE >= MAX_MEMORY)); then
+            MEMORY_SIZE="$MAX_MEMORY"
         elif [[ ! ${MEMORY_SIZE} =~ ^[0-9]+$ ]]; then
             MEMORY_SIZE=1024
         fi
@@ -1323,7 +1344,7 @@ EOF
             esac
             ;;
         esac
-        TRUE_VNC_PORT=$((${VNC_PORT} - 5900))
+        TRUE_VNC_PORT=$((VNC_PORT - 5900))
         case ${VNC_PASSWORD} in
         true) VNC_ATTACH=',password=on' ;;
         *) VNC_ATTACH="" ;;

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #####################
 CUR=$(pwd)
-cp ${CUR}/../README.* ${CUR}
+cp "${CUR}"/../README.* "${CUR}"
 
 URL="https://github.com/docker-library/official-images/raw/master/library/golang"
 # https://github.com/docker-library/docs/raw/master/golang/README.md

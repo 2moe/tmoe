@@ -25,7 +25,7 @@ switch_debian_opt_repo_sources() {
     # fi
     # apt update
     check_editor
-    ${EDITOR} ${OPT_REPO_LIST}
+    ${EDITOR} "${OPT_REPO_LIST}"
 }
 #######################
 explore_debian_opt_repo() {
@@ -742,7 +742,12 @@ install_opt_deb_file() {
 ##########
 git_clone_opt_deb_01() {
     cd ${DOWNLOAD_PATH}
-    git clone --depth=1 -b "${OPT_BRANCH_NAME}" "${OPT_APP_GIT_REPO}" ".${OPT_APP_NAME}"
+    
+    git clone \
+        --depth=1 \
+        -b "${OPT_BRANCH_NAME}" \
+        "${OPT_APP_GIT_REPO}" \
+        ".${OPT_APP_NAME}"
 }
 ###########
 install_debian_netease_cloud_music() {

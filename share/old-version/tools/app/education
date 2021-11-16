@@ -168,7 +168,13 @@ git_clone_tmoe_study_file() {
 	cd ${TMOE_TRUE_TEMP_FOLDER}
 
 	TMOE_TEMP_FOLDER=".${DOWNLOAD_FILE_NAME}_TEMP_FOLDER_01"
-	git clone --depth=1 -b ${BRANCH_NAME} ${TMOE_LINUX_STUDY_REPO_01} ${TMOE_TEMP_FOLDER}
+
+	git clone \
+		--depth=1 \
+		-b ${BRANCH_NAME} \
+		${TMOE_LINUX_STUDY_REPO_01} \
+		${TMOE_TEMP_FOLDER}
+
 	cd ${TMOE_TEMP_FOLDER}
 	mv .study_* ..
 	cd ..

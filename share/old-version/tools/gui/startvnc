@@ -11,7 +11,7 @@ VNC_RESOLUTION=1440x720
 # Die Standardauflösung ist 1440x720
 
 VNC_DISPLAY=2
-RFB_PORT=$((5900 + "${VNC_DISPLAY}"))
+RFB_PORT=$((5900 + VNC_DISPLAY))
 # If the display number=2,then vnc port=5902.
 # 若显示编号为2,则vnc端口为$((5900+2))=5902。
 # Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
@@ -80,9 +80,9 @@ GREEN=$(printf '\033[32m')
 YELLOW=$(printf '\033[33m')
 BLUE=$(printf '\033[34m')
 PURPLE=$(printf '\033[35m')
-CYAN=$(printf '\033[36m')
+# CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
-BOLD=$(printf '\033[1m')
+# BOLD=$(printf '\033[1m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}${RFB_PORT}${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:${RFB_PORT}${RESET}"
 export USER=${VNC_USER}
@@ -96,7 +96,7 @@ XSESSION_FILE='/etc/X11/xinit/Xsession'
 TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
 TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
 TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
-TIGERVNC_BIN='/usr/bin/tigervncserver'
+# TIGERVNC_BIN='/usr/bin/tigervncserver'
 unset TMOE_WSL
 ###################
 check_tmoe_locale() {
@@ -117,16 +117,16 @@ check_current_user_name_and_group() {
 }
 ###################
 fix_vnc_permissions() {
-    CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l ${TMOE_VNC_PASSWD_FILE} | awk -F ' ' '{print $3}')
+    CURRENT_USER_VNC_FILE_PERMISSION=$(ls -l "${TMOE_VNC_PASSWD_FILE}" | awk -F ' ' '{print $3}')
     case ${CURRENT_USER_VNC_FILE_PERMISSION} in
-    ${CURRENT_USER_NAME}) ;;
+    "${CURRENT_USER_NAME}") ;;
     *)
-        cd ${HOME}
+        cd "${HOME}" || exit
         VNC_FILE=".vnc"
         for i in ".ICEauthority" ".Xauthority" ".config"; do
             [[ ! -e "${i}" ]] || VNC_FILE="${VNC_FILE} ${i}"
         done
-        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE} || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
+        sudo -E chown -Rv "${CURRENT_USER_NAME}":"${CURRENT_USER_GROUP}" "${VNC_FILE}" || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
         unset i
         ;;
     esac
@@ -152,7 +152,7 @@ set_passwd() {
         done
         if [ ! -e "${TMOE_VNC_PASSWD_FILE}" ]; then
             printf "%s\n" "${GREEN}updating${RESET} ..."
-            cd ${TMOE_GIT_DIR}
+            cd ${TMOE_GIT_DIR} || exit 1
             printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
             case $(id -u) in
             0)
@@ -167,20 +167,22 @@ set_passwd() {
                 ;;
             esac
         fi
-        sudo -E chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ~/.vnc/
+        sudo -E chown -Rv "${CURRENT_USER_NAME}":"${CURRENT_USER_GROUP}" ~/.vnc/
     fi
 }
 reset_passwd() {
     if [[ ! -e ${HOME}/.vnc/passwd ]]; then
-        printf "%s\n" "发生错误，正在重置密码，请输入6至8位数的密码 :"
-        printf "%s\n%s\n" "Resetting the password ..." "Please enter a new passwd :"
+        printf "%s\n" \
+            "发生错误，正在重置密码，请输入6至8位数的密码 :" \
+            "Resetting the password ..." \
+            "Please enter a new passwd :"
         vncpasswd
         if [[ ! -s ${HOME}/.vnc/passwd ]]; then
             x11vncpasswd
             cp ~/.vnc/x11passwd ~/.vnc/passwd
         fi
         for i in ~/.vnc/*passwd; do
-            chmod -v 600 ${i}
+            chmod -v 600 "${i}"
         done
     fi
 }
@@ -188,7 +190,7 @@ remove_proot_meta_files() {
     for i in ~/.vnc/.proot*; do
         if [[ -e ${i} ]]; then
             printf "%s\n" "${GREEN}sudo ${RED}rm ${YELLOW}-fv ${BLUE}${i}${RESET}"
-            rm -fv ${i} || sudo rm -fv ${i}
+            rm -fv "${i}" || sudo rm -fv "${i}"
         fi
     done
 }
@@ -231,9 +233,9 @@ EOF
 start_win10_tigervnc() {
     case ${TMOE_WSL} in
     true)
-        cd ${HOME} || cd /tmp
-        nohup ${TIGERVNC_VIEWER_WIN10} -PasswordFile ${TMOE_VNC_PASSWD_FILE} localhost:${RFB_PORT} &>/dev/null &
-        cd - &>/dev/null
+        cd "${HOME}" || cd /tmp || exit 1
+        nohup ${TIGERVNC_VIEWER_WIN10} -PasswordFile "${TMOE_VNC_PASSWD_FILE}" localhost:${RFB_PORT} &>/dev/null &
+        cd - &>/dev/null || exit 1
         ;;
     esac
 }
@@ -258,12 +260,12 @@ start_tmoe_xvnc() {
 
     if [[ ! ${ZLIB_LEVEL} =~ ^[0-9]+$ ]]; then
         ZLIB_LEVEL=0
-    elif ((${ZLIB_LEVEL} >= 10)); then
+    elif ((ZLIB_LEVEL >= 10)); then
         ZLIB_LEVEL=9
     fi
     if [[ ! ${PIXEL_DEPTH} =~ ^[0-9]+$ ]]; then
         ZLIB_LEVEL=24
-    elif ((${PIXEL_DEPTH} > 32)); then
+    elif ((PIXEL_DEPTH > 32)); then
         PIXEL_DEPTH=32
     fi
     #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || $(command -v vncsession) ]]
@@ -306,7 +308,7 @@ start_tmoe_xvnc() {
         #XVNC_COMMAND="${@}"
         #sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
         # [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${VNC_USER}
-        sudo su - ${VNC_USER} -c '"$0" "$@" &' -- "$@" || su - ${VNC_USER} -c '"$0" "$@" &' -- "$@"
+        sudo su - "${VNC_USER}" -c '"$0" "$@" &' -- "$@" || su - "${VNC_USER}" -c '"$0" "$@" &' -- "$@"
     fi
     export DISPLAY=:${VNC_DISPLAY}
 
@@ -320,7 +322,7 @@ start_tmoe_xvnc() {
         #else
         #    sudo -E su ${VNC_USER} -c "bash ${XSESSION_FILE} &" || su ${VNC_USER} -c "bash ${XSESSION_FILE} &"
         #fi
-        sudo su - ${VNC_USER} -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - ${VNC_USER} -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
+        sudo su - "${VNC_USER}" -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - "${VNC_USER}" -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
     fi
     start_win10_tigervnc
     exit 0
@@ -353,10 +355,10 @@ source_tmoe_dbus_daemon() {
 }
 ###################
 check_vncsession() {
-    if [ $(command -v vncsession) ]; then
+    if [ "$(command -v vncsession)" ]; then
         case $(id -u) in
         0)
-            vncsession $(whoami) :${VNC_DISPLAY}
+            vncsession "$(whoami)" :${VNC_DISPLAY}
             start_win10_tigervnc
             exit 0
             ;;
@@ -368,7 +370,7 @@ check_vncsession() {
 }
 ###################
 check_xvnc() {
-    if [ $(command -v Xvnc) ]; then
+    if [ "$(command -v Xvnc)" ]; then
         start_tmoe_xvnc
         exit 0
     fi

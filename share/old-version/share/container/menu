@@ -12,7 +12,7 @@ list_tmoe_containers() {
 	rm ~/.config/tmoe-linux/across_architecture_container.txt 2>/dev/null
 	case ${ARCH_TYPE} in
 	mips* | riscv64)
-		source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
+		source "${TMOE_SHARE_DIR}"/container/qemu/qemu-user
 		git_clone_debian_ports_distro
 		;;
 	*) choose_which_gnu_linux_distro ;;
@@ -35,7 +35,7 @@ across_architectures_container() {
 		esac
 		;;
 	esac
-	source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
+	source "${TMOE_SHARE_DIR}"/container/qemu/qemu-user
 	tmoe_qemu_user_manager
 }
 #############
@@ -118,10 +118,10 @@ switch_chroot_default_mode() {
 }
 check_chroot_mode() {
 	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
-		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf; then
+		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf; then
 			systemd_nspawn_is_true_or_false
 		else
-			SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CONFIG_FOLDER}/chroot.conf | awk -F '=' '{print $2}')
+			SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
 		fi
 	else
 		systemd_nspawn_is_true_or_false
@@ -189,7 +189,7 @@ chroot_container_menu_multi_langs() {
 }
 ############
 proot_container_menu() {
-	source ${TMOE_SHARE_DIR}/container/list
+	source "${TMOE_SHARE_DIR}"/container/list
 	check_proot_or_chroot
 	SYSTEMD_NSPAWN=false
 	RETURN_TO_WHERE='proot_container_menu'
@@ -248,12 +248,12 @@ systemd_nspawn_env() {
 }
 ###############
 restore_tmoe_container() {
-	source ${TMOE_SHARE_DIR}/compression/restore
+	source "${TMOE_SHARE_DIR}"/compression/restore
 	restore_gnu_linux_container
 }
 configure_tmoe_container() {
-	source ${TMOE_SHARE_DIR}/configuration/menu
+	source "${TMOE_SHARE_DIR}"/configuration/menu
 	configure_tmoe_container
 }
 ####################
-proot_container_main_menu
+proot_container_main_menu "$@"

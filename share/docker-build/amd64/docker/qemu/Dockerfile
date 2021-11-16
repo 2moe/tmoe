@@ -51,7 +51,7 @@ RUN apt update; \
     -e "s@^(SOUND_CARD_ENABLED=).*@\1false@g" \
     -e "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" \
     -i ${QEMU_FILE}; \
-    egrep --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=|^RTC_BASE=|^GPU_MODEL=" ${QEMU_FILE}; \
+    grep -E --color=auto "^QEMU_NAME=|^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=|^RTC_BASE=|^GPU_MODEL=" ${QEMU_FILE}; \
     ln -svf ${QEMU_FILE} /usr/local/bin/startqemu; \
     ln -svf ${QEMU_FILE} /usr/local/bin/startvnc; \
     cd /root; \

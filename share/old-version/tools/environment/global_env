@@ -36,19 +36,19 @@ gnu_linux_env_02() {
 ########################
 uncompress_theme_file() {
     case "${TMOE_THEME_ITEM:0-6:6}" in
-    tar.xz) tar -Jxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
-    tar.gz) tar -zxvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
-    ar.zst) tar -I zstd -xvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
-    *) tar -xvf ${TMOE_THEME_ITEM} -C ${EXTRACT_FILE_PATH} 2>/dev/null ;;
+    tar.xz) tar -Jxvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
+    tar.gz) tar -zxvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
+    ar.zst) tar -I zstd -xvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
+    *) tar -xvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
     esac
 }
 ############
 check_tar_ext_format() {
     case "${TMOE_THEME_ITEM:0-6:6}" in
-    tar.xz) EXTRACT_FILE_FOLDER=$(tar -Jtf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
-    tar.gz) EXTRACT_FILE_FOLDER=$(tar -ztf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
-    ar.zst) EXTRACT_FILE_FOLDER=$(tar -I zstd -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
-    *) EXTRACT_FILE_FOLDER=$(tar -tf ${TMOE_THEME_ITEM} | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    tar.xz) EXTRACT_FILE_FOLDER=$(tar -Jtf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    tar.gz) EXTRACT_FILE_FOLDER=$(tar -ztf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    ar.zst) EXTRACT_FILE_FOLDER=$(tar -I zstd -tf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    *) EXTRACT_FILE_FOLDER=$(tar -tf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
     esac
     EXTRACT_FILE_FOLDER_HEAD_01=$(printf '%s\n' "${EXTRACT_FILE_FOLDER}" | awk '{print $1}')
     check_theme_folder_exists_status
@@ -65,7 +65,7 @@ check_theme_folder_exists_status() {
 }
 ###################
 check_theme_folder() {
-    if [ -e "${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}" ] || [ -e ${HOME}/图片/${CUSTOM_WALLPAPER_NAME} ]; then
+    if [ -e "${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}" ] || [ -e "${HOME}"/图片/"${CUSTOM_WALLPAPER_NAME}" ]; then
         printf "%s\n" "检测到您${RED}已经下载过${RESET}该壁纸包了"
         printf "%s\n" "壁纸包位于${BLUE}${HOME}/Pictures/${CUSTOM_WALLPAPER_NAME}${RESET}(图片)目录"
         printf "%s\n" "Do you want to ${RED}download again?${RESET}"
@@ -659,65 +659,70 @@ different_distro_software_install() {
         ################
     "alpine")
         apk update
-        apk add ${DEPENDENCY_01} || apk add ${DEPENDENCY_01}
-        apk add ${DEPENDENCY_02} || apk add ${DEPENDENCY_02}
+        apk add ${DEPENDENCY_01} || apk add "${DEPENDENCY_01}"
+        apk add ${DEPENDENCY_02} || apk add "${DEPENDENCY_02}"
         ;;
         ################
     "arch")
         if [ ! -z "${DEPENDENCY_01}" ]; then
             case ${AUTO_INSTALL_GUI} in
             true) #自动构建时pacman可能执行失败
-                pacman -Syu --noconfirm --needed ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S --noconfirm ${DEPENDENCY_01} ;;
-            *) pacman -Syu --noconfirm --needed ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}" ;;
+                pacman -Syu --noconfirm --needed "${DEPENDENCY_01}" || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || yay -S --noconfirm ${DEPENDENCY_01} ;;
+            *) pacman -Syu --noconfirm --needed "${DEPENDENCY_01}" || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}" ;;
             esac
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
             case ${AUTO_INSTALL_GUI} in
-            true) pacman -Syu --noconfirm --needed ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || yay -S --noconfirm ${DEPENDENCY_02} ;;
-            *) pacman -S --noconfirm --needed ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行" ;;
+            true) pacman -Syu --noconfirm --needed "${DEPENDENCY_02}" || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || yay -S --noconfirm ${DEPENDENCY_02} ;;
+            *) pacman -S --noconfirm --needed "${DEPENDENCY_02}" || su ${CURRENT_USER_NAME} -c "yay -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}yay -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行" ;;
             esac
         fi
         ;;
         ################
     "redhat")
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
+            dnf install -y --skip-broken "${DEPENDENCY_01}" || yum install -y --skip-broken ${DEPENDENCY_01}
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            dnf install -y --skip-broken ${DEPENDENCY_02} || yum install -y --skip-broken ${DEPENDENCY_02}
+            dnf install -y --skip-broken "${DEPENDENCY_02}" || yum install -y --skip-broken ${DEPENDENCY_02}
         fi
         ;;
         ################
     "openwrt")
         #opkg update
-        opkg install ${DEPENDENCY_01}
-        opkg install ${DEPENDENCY_02}
+        opkg install "${DEPENDENCY_01}"
+        opkg install "${DEPENDENCY_02}"
         ;;
         ################
     "gentoo")
-        emerge -vk ${DEPENDENCY_01}
-        emerge -vk ${DEPENDENCY_02}
+        emerge -vk "${DEPENDENCY_01}"
+        emerge -vk "${DEPENDENCY_02}"
         ;;
         ################
     "suse")
-        zypper in -y ${DEPENDENCY_01} || zypper in -y ${DEPENDENCY_01}
-        zypper in -y ${DEPENDENCY_02} || zypper in -y ${DEPENDENCY_02}
+        zypper in -y "${DEPENDENCY_01}" || zypper in -y "${DEPENDENCY_01}"
+        zypper in -y "${DEPENDENCY_02}" || zypper in -y "${DEPENDENCY_02}"
         ;;
         ################
     "void")
-        xbps-install -S -y ${DEPENDENCY_01} || xbps-install -Sy ${DEPENDENCY_01}
-        xbps-install -S -y ${DEPENDENCY_02} || xbps-install -Sy ${DEPENDENCY_02}
+        xbps-install -S -y "${DEPENDENCY_01}" || xbps-install -Sy "${DEPENDENCY_01}"
+        xbps-install -S -y "${DEPENDENCY_02}" || xbps-install -Sy "${DEPENDENCY_02}"
         ;;
         ################
     "slackware")
         slackpkg update
-        slackpkg install ${DEPENDENCY_01}
-        slackpkg install ${DEPENDENCY_02}
+        slackpkg install "${DEPENDENCY_01}"
+        slackpkg install "${DEPENDENCY_02}"
         ;;
         #########################
     *)
         apt update
-        apt install -y ${DEPENDENCY_01} || port install ${DEPENDENCY_01} || guix package -i ${DEPENDENCY_01} || pkg install ${DEPENDENCY_01} || pkg_add ${DEPENDENCY_01} || pkgutil -i ${DEPENDENCY_01}
+        apt install -y "${DEPENDENCY_01}" ||
+            port install "${DEPENDENCY_01}" ||
+            guix package -i "${DEPENDENCY_01}" ||
+            pkg install "${DEPENDENCY_01}" ||
+            pkg_add "${DEPENDENCY_01}" ||
+            pkgutil -i "${DEPENDENCY_01}"
         ;;
     esac
 }
@@ -772,7 +777,7 @@ install_gnome_software() {
 }
 ########################
 random_neko() {
-    case "$(($RANDOM % 3 + 1))" in
+    case "$((RANDOM % 3 + 1))" in
     1) neko_01_blue ;;
     2) neko_02_blue ;;
     3 | *) neko_03_blue ;;
@@ -973,9 +978,9 @@ where_is_tmoe_file_dir() {
 uncompress_tar_gz_file() {
     printf '%s\n' '正在解压中...'
     if [ $(command -v pv) ]; then
-        pv ${DOWNLOAD_FILE_NAME} | tar -pzx
+        pv "${DOWNLOAD_FILE_NAME}" | tar -pzx
     else
-        tar -zpxvf ${DOWNLOAD_FILE_NAME}
+        tar -zpxvf "${DOWNLOAD_FILE_NAME}"
     fi
 }
 ###################
@@ -990,12 +995,12 @@ download_deb_comman_model_02() {
 }
 #########################
 grep_deb_comman_model_02() {
-    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION="$(curl -L "${REPO_URL}" | grep '\.deb' | grep "${GREP_NAME_01}" | grep "${GREP_NAME_02}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_deb_comman_model_02
 }
 ###################
 grep_deb_comman_model_01() {
-    THE_LATEST_DEB_VERSION="$(curl -L ${REPO_URL} | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+    THE_LATEST_DEB_VERSION="$(curl -L "${REPO_URL}" | grep '\.deb' | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
     download_deb_comman_model_02
 }
 ###################
@@ -1022,7 +1027,7 @@ add_ubuntu_ppa_source() {
     elif [ "$(printf '%s\n' "${TARGET}" | grep 'add-apt-repository ')" ]; then
         TARGET="$(printf '%s\n' "${TARGET}" | sed 's@add-apt-repository @@')"
     fi
-    add-apt-repository ${TARGET}
+    add-apt-repository "${TARGET}"
     if [ "$?" != "0" ]; then
         tmoe_sources_list_manager
     fi
@@ -1043,7 +1048,7 @@ get_ubuntu_ppa_gpg_key() {
     cd /tmp
     aria2c --console-log-level=info --no-conf --allow-overwrite=true -o .ubuntu_ppa_tmoe_cache ${DESCRIPTION_PAGE}
     FALSE_FINGERPRINT_LINE=$(cat .ubuntu_ppa_tmoe_cache | grep -n 'Fingerprint:' | awk '{print $1}' | cut -d ':' -f 1)
-    TRUE_FINGERPRINT_LINE=$((${FALSE_FINGERPRINT_LINE} + 1))
+    TRUE_FINGERPRINT_LINE=$((FALSE_FINGERPRINT_LINE + 1))
     PPA_GPG_KEY=$(cat .ubuntu_ppa_tmoe_cache | sed -n ${TRUE_FINGERPRINT_LINE}p | cut -d '<' -f 2 | cut -d '>' -f 2)
     rm -f .ubuntu_ppa_tmoe_cache
     # apt-key adv --recv-keys --keyserver keyserver.ubuntu.com ${PPA_GPG_KEY}
@@ -1086,16 +1091,16 @@ modify_ubuntu_sources_list_d_code() {
 }
 ###################
 fix_vnc_dbus_launch() {
-    source ${TMOE_TOOL_DIR}/gui/gui --fix-dbus
+    source "${TMOE_TOOL_DIR}"/gui/gui --fix-dbus
 }
 #################
 source_vscode_script() {
-    source ${TMOE_TOOL_DIR}/code/vscode
+    source "${TMOE_TOOL_DIR}"/code/vscode
 }
 #################
 #吾欲将其分离，立为独项
 tmoe_aria2_manager() {
-    bash ${TMOE_TOOL_DIR}/downloader/aria2
+    bash "${TMOE_TOOL_DIR}"/downloader/aria2
 }
 #############
 install_gnome_system_monitor() {
@@ -1153,7 +1158,7 @@ download_the_latest_electron() {
         ln -svf /opt/electron/electron /usr/bin/
     fi
     chmod_4755_chrome_sandbox
-    electron -v --no-sandbox | head -n 1 >${TMOE_LINUX_DIR}/electron_version.txt
+    electron -v --no-sandbox | head -n 1 >"${TMOE_LINUX_DIR}"/electron_version.txt
 }
 ##########
 fix_fedora_electron_libxssl() {
@@ -1207,7 +1212,12 @@ download_tmoe_electron_app() {
     DOWNLOAD_PATH="/tmp/.${DEPENDENCY_01}_TEMP_FOLDER"
     [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rvf ${DOWNLOAD_PATH}
     [[ -e /opt ]] || mkdir -pv /opt
-    git clone --depth=1 ${GIT_AK2}/${DEPENDENCY_01}_build ${DOWNLOAD_PATH}
+
+    git clone \
+        --depth=1 \
+        ${GIT_AK2}/${DEPENDENCY_01}_build \
+        ${DOWNLOAD_PATH}
+
     cd ${DOWNLOAD_PATH}
     tar -Jxvf app.tar.xz -C /opt
     if [ -n "${OPT_APP_VERSION_TXT}" ]; then

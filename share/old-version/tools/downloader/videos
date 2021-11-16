@@ -46,14 +46,14 @@ golang_annie() {
         AnnieVideoURL="$(printf '%s\n' "${AnnieVideoURL}" | sed 's@^BV@https://www.bilibili.com/video/&@')"
     fi
     #当未添加http时，将自动修复。
-    if [ "$(printf '%s\n' "${AnnieVideoURL}" | egrep 'www|com')" ] && [ ! "$(printf '%s\n' "${AnnieVideoURL}" | grep 'http')" ]; then
+    if [ "$(printf '%s\n' "${AnnieVideoURL}" | grep -E 'www|com')" ] && [ ! "$(printf '%s\n' "${AnnieVideoURL}" | grep 'http')" ]; then
         ls
         AnnieVideoURL=$(printf '%s\n' "${AnnieVideoURL}" | sed 's@www@http://&@')
     fi
     printf "%s\n" "${AnnieVideoURL}"
     printf "%s\n" "正在解析中..."
     printf "%s\n" "Parsing ..."
-    #if [ ! $(printf '%s\n' "${AnnieVideoURL}" | egrep '^BV|^av|^http') ]; then
+    #if [ ! $(printf '%s\n' "${AnnieVideoURL}" | grep -E '^BV|^av|^http') ]; then
     #	AnnieVideoURL=$(printf '%s\n' "${AnnieVideoURL}" | sed 's@^@http://&@')
     #fi
 

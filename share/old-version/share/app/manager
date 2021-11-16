@@ -40,7 +40,7 @@ manager_main() {
 	esac
 }
 check_tmoe_command() {
-	if [ $(command -v zsh) ]; then
+	if [ "$(command -v zsh)" ]; then
 		if grep -Eq '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
 			TMOE_TIPS_01="t"
 		else
@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4986.2,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4986.3,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -73,7 +73,7 @@ tmoe_manager_env() {
 #############
 tmoe_manager_android_env() {
 	if [ ! -h "${HOME}/storage/shared" ]; then
-		if [ $(command -v termux-setup-storage) ]; then
+		if [ -n "$(command -v termux-setup-storage)" ]; then
 			termux-setup-storage
 		else
 			TERMUX_STORAGE=false
@@ -188,7 +188,7 @@ check_gnu_linux_git_and_whiptail() {
 	fi
 	tmoe_install_depenencies() {
 		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+		${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}"
 		return 0
 	}
 	case ${DEPENDENCIES} in
@@ -209,14 +209,14 @@ check_gnu_linux_git_and_whiptail() {
 			;;
 		void)
 			export LANG='en_US.UTF-8'
-			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+			${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}"
 			;;
-		arch | gentoo | suse | solus) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+		arch | gentoo | suse | solus) ${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}" ;;
 		redhat)
 			if [ $(command -v dnf) ]; then
-				${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+				${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}"
 			else
-				yum install -y --skip-broken ${DEPENDENCIES}
+				yum install -y --skip-broken "${DEPENDENCIES}"
 			fi
 			;;
 		*)
@@ -379,7 +379,7 @@ check_gnu_linux_distro() {
 	check_gnu_linux_git_and_whiptail
 	#############
 	CurrentLANG=${LANG}
-	if [ ! $(printf '%s\n' "${LANG}" | egrep 'UTF-8|UTF8') ]; then
+	if [ ! $(printf '%s\n' "${LANG}" | grep -E 'UTF-8|UTF8') ]; then
 		export LANG=C.UTF-8
 	fi
 	########################
@@ -1245,7 +1245,7 @@ check_tmoe_manager_git() {
 git_clone_tmoe_manager() {
 	[[ -e ${TMOE_LINUX_DIR} ]] || mkdir -pv ${TMOE_LINUX_DIR}
 	printf "%s\n" "${GREEN}git clone ${BLUE}-b master --depth=1 ${YELLOW}https://${TMOE_GIT_URL} ${PURPLE}${TMOE_GIT_DIR}${RESET}"
-	git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR} || git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+	git clone -b master --depth=1 https://${TMOE_GIT_URL} "${TMOE_GIT_DIR}" || git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
 	source ${TMOE_SHARE_DIR}/environment/manager_environment
 	tmoe_manager_main_menu
 }
@@ -1316,7 +1316,7 @@ choose_termux_color_scheme() {
 		termux_font_menu
 	fi
 
-	printf "%s\n" "set-default-termux-color-scheme-and-font" >${CONFIG_FOLDER}/v1.1beta
+	printf "%s\n" "set-default-termux-color-scheme-and-font" >"${CONFIG_FOLDER}/v1.1beta"
 	if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
 		if (whiptail --title "termux.properties" --yes-button "yes" --no-button "no" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
 			cp -vf termux.properties termux.properties.bak

@@ -92,9 +92,9 @@ select_file_manually() {
 	for restore_file in ${START_DIR}/${BACKUP_FILE_NAME}; do
 		restore_file_name[count]=$(printf '%s\n' "${restore_file}" | awk -F'/' '{print $NF}')
 		echo -e "($count) ${restore_file_name[count]}"
-		count=$(($count + 1))
+		count=$((count + 1))
 	done
-	count=$(($count - 1))
+	count=$((count - 1))
 
 	while true; do
 		read -p '请输入选项数字,并按回车键。Please type the option number and press Enter:' number
@@ -103,11 +103,11 @@ select_file_manually() {
 		elif ! [[ $number =~ ^[0-9]+$ ]]; then
 			printf "%s\n" "Please enter the right number!"
 			printf '%s\n' '请输入正确的数字编号！'
-		elif (($number >= 0 && $number <= $count)); then
-			eval RESTORE=${restore_file_name[number]}
+		elif ((number >= 0 && number <= count)); then
+			eval RESTORE="${restore_file_name[number]}"
 			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
 			RETURN_TO_WHERE='restore_gnu_linux_container'
-			ls -lh ${RESTORE}
+			ls -lh "${RESTORE}"
 			do_you_want_to_continue
 			uncompress_tar_file
 			break

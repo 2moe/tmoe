@@ -459,14 +459,14 @@ disable_fcitx_xdg_autostart() {
     unset AUTO_STARTUP_LNK AUTO_STARTUP_LNK_02
     unset i
     if [ -d "${XDG_AUTOSTART_DIR}" ]; then
-        for i in $(ls ${XDG_AUTOSTART_DIR} | egrep 'ibus-setup|fcitx'); do
+        for i in $(ls ${XDG_AUTOSTART_DIR} | grep -E 'ibus-setup|fcitx'); do
             printf "${RED}%s${BLUE}%s\n" "rm -vf" "${XDG_AUTOSTART_DIR}/${i}"
             rm -vf "${XDG_AUTOSTART_DIR}/${i}"
         done
     fi
     XDG_AUTOSTART_DIR_02=${HOME}/.config/autostart
     if [ -d "${XDG_AUTOSTART_DIR_02}" ]; then
-        for i in $(ls ${XDG_AUTOSTART_DIR_02} | egrep 'ibus-setup|fcitx'); do
+        for i in $(ls ${XDG_AUTOSTART_DIR_02} | grep -E 'ibus-setup|fcitx'); do
             printf "${RED}%s${BLUE}%s\n" "rm -vf" "${XDG_AUTOSTART_DIR_02}/${i}"
             rm -vf "${XDG_AUTOSTART_DIR_02}/${i}"
         done

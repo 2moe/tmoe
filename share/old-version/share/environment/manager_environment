@@ -32,7 +32,7 @@ check_arch() {
 check_tmoe_menu_locale_file() {
 	#此处重复出现2次
 	[[ -s ${TMOE_LOCALE_FILE} ]] || choose_tmoe_locale_env
-	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+	TMOE_LANG=$(head -n 1 "${TMOE_LOCALE_FILE}")
 	TMOE_MENU_LANG=${TMOE_LANG}
 	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
 	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
@@ -57,7 +57,7 @@ tmoe_global_env() {
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	check_tmoe_menu_locale_file
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
-		mkdir -pv ${CONFIG_FOLDER}
+		mkdir -pv "${CONFIG_FOLDER}"
 	fi
 	ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
 	if [ -e "${ACROSS_ARCH_FILE}" ]; then
@@ -110,8 +110,8 @@ check_debian_chroot_dir() {
 }
 ############
 create_container_edition_txt() {
-	printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" >${LINUX_CONTAINER_DISTRO_FILE}
-	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE} 2>/dev/null
+	printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" >"${LINUX_CONTAINER_DISTRO_FILE}"
+	chmod 666 "${LINUX_CONTAINER_DISTRO_FILE}" 2>/dev/null
 	DEBIAN_FOLDER="${TMOE_LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 	DEBIAN_FOLDER_CAPITAL=$(printf "%s\n" "${DEBIAN_FOLDER}" | tr '[a-z]' '[A-Z]')
 	check_debian_chroot_dir
@@ -120,15 +120,15 @@ create_container_edition_txt() {
 }
 create_container_edition_txt_02() {
 	LINUX_CONTAINER_DISTRO_FILE_02="${CONFIG_FOLDER}/linux_container_distro_02.txt"
-	printf '%s\n' "${DISTRO_NAME_02}" >${LINUX_CONTAINER_DISTRO_FILE_02}
-	chmod 666 ${LINUX_CONTAINER_DISTRO_FILE_02} 2>/dev/null
+	printf '%s\n' "${DISTRO_NAME_02}" >"${LINUX_CONTAINER_DISTRO_FILE_02}"
+	chmod 666 "${LINUX_CONTAINER_DISTRO_FILE_02}" 2>/dev/null
 }
 #######
 copy_tmoe_locale_file_to_container() {
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-		mkdir -pv ${TMOE_LOCALE_NEW_PATH}
-		cp -f ${TMOE_LOCALE_FILE} ${TMOE_LOCALE_NEW_PATH}
+		mkdir -pv "${TMOE_LOCALE_NEW_PATH}"
+		cp -f "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_NEW_PATH}"
 	fi
 }
 ############
@@ -202,7 +202,7 @@ check_proot_or_chroot() {
 check_proot_proc_permissions() {
 	tmoe_env_02
 	CONTAINER_STARTUP_FILE=${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	TMOE_LINUX_ETC_DIR=$(grep 'set.*mount.*proot_proc/' ${CONTAINER_STARTUP_FILE} | head -n 1 | awk '{print $3}' | cut -d '=' -f 2 | cut -d '"' -f 1 | cut -d ':' -f 1 | sed 's@/proot_proc.*@@g')
+	TMOE_LINUX_ETC_DIR=$(grep 'set.*mount.*proot_proc/' "${CONTAINER_STARTUP_FILE}" | head -n 1 | awk '{print $3}' | cut -d '=' -f 2 | cut -d '"' -f 1 | cut -d ':' -f 1 | sed 's@/proot_proc.*@@g')
 	TMOE_PROC_PATH="${TMOE_LINUX_ETC_DIR}/proot_proc"
 	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
 	#######
@@ -212,9 +212,9 @@ check_proot_proc_permissions() {
 		"")
 			printf "%s\n" "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
 			printf "%s\n" "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
-			sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/${i}@set -- \"--mount=${TMOE_PROC_PATH}/${i}@" ${CONTAINER_STARTUP_FILE}
+			sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/${i}@set -- \"--mount=${TMOE_PROC_PATH}/${i}@" "${CONTAINER_STARTUP_FILE}"
 			;;
-		*) sed -i "s@set.*tmoe-linux/proot_proc/${i}@#&@g" ${CONTAINER_STARTUP_FILE} ;;
+		*) sed -i "s@set.*tmoe-linux/proot_proc/${i}@#&@g" "${CONTAINER_STARTUP_FILE}" ;;
 		esac
 	done
 	unset i
@@ -222,7 +222,7 @@ check_proot_proc_permissions() {
 	FILE_03='/proc/bus/pci/devices'
 	TMOE_PROC_FILE=$(sed -n p ${FILE_03} 2>/dev/null)
 	if [ ! -z "${TMOE_PROC_FILE}" ]; then
-		sed -i "s@set.*tmoe-linux/proot_proc/bus@#&@g" ${CONTAINER_STARTUP_FILE}
+		sed -i "s@set.*tmoe-linux/proot_proc/bus@#&@g" "${CONTAINER_STARTUP_FILE}"
 	else
 		sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PATH}/bus@set -- \"--mount=${TMOE_PROC_PATH}/bus@" ${CONTAINER_STARTUP_FILE}
 	fi
@@ -232,7 +232,7 @@ check_proot_proc_permissions() {
 	if [ -z "${TMOE_PROC_FILE}" ]; then
 		sed -i "s@#.*set -- \"--mount=${TMOE_PROC_PREFIX}.${FILE_02}@set -- \"--mount=${TMOE_PROC_PREFIX}.${FILE_02}@" ${CONTAINER_STARTUP_FILE}
 	else
-		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_02}@#&@g" ${CONTAINER_STARTUP_FILE}
+		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_02}@#&@g" "${CONTAINER_STARTUP_FILE}"
 	fi
 	#####
 	FILE_01=version
@@ -242,7 +242,7 @@ check_proot_proc_permissions() {
 		printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
 		printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
 	else
-		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_01}@#&@g" ${CONTAINER_STARTUP_FILE}
+		sed -i "s@set.*tmoe-linux/proot_proc/${FILE_01}@#&@g" "${CONTAINER_STARTUP_FILE}"
 	fi
 }
 ################
@@ -382,9 +382,9 @@ check_tmoe_completion_version() {
 	else
 		THE_LATEST_TMOE_COMPLETION_VERSION=$(curl --connect-timeout 1 -sL --max-time 2 https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/share/old-version/share/completion/version.txt)
 		if [[ -n ${THE_LATEST_TMOE_COMPLETION_VERSION} ]]; then
-			if [ -e ${TMOE_COMPLETION_VERSION_TXT} ]; then
+			if [ -e "${TMOE_COMPLETION_VERSION_TXT}" ]; then
 				CURRENT_TMOE_COMPLETION_VERSION="$(head -n 1 ${TMOE_COMPLETION_VERSION_TXT})"
-				if ((${CURRENT_TMOE_COMPLETION_VERSION} < ${THE_LATEST_TMOE_COMPLETION_VERSION})); then
+				if ((CURRENT_TMOE_COMPLETION_VERSION < THE_LATEST_TMOE_COMPLETION_VERSION)); then
 					UPDATE_TMOE_COMPLETION=true
 				fi
 			fi

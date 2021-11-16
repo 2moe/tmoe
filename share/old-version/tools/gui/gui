@@ -225,7 +225,7 @@ switch_tight_or_tiger_vncserver() {
 #################
 check_tightvnc_port() {
     CURRENT_PORT=$(grep 'VNC_DISPLAY=' $(command -v startvnc) | head -n 1 | awk 'BEGIN{FS="="} {print $2}' | cut -d '"' -f 2)
-    CURRENT_VNC_PORT=$((${CURRENT_PORT} + 5900))
+    CURRENT_VNC_PORT=$((CURRENT_PORT + 5900))
 }
 #########################
 modify_tightvnc_display_port() {
@@ -264,7 +264,7 @@ modify_xfce_window_scaling_factor() {
         grep 'WindowScalingFactor' ${XFCE_CONFIG_FILE} | grep 'value='
     else
         dbus-launch xfconf-query -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET} || dbus-launch xfconf-query -t int -c xsettings -np /Gdk/WindowScalingFactor -s ${TARGET}
-        if ((${TARGET} > 1)); then
+        if ((TARGET > 1)); then
             if grep -q 'Focal Fossa' "/etc/os-release"; then
                 dbus-launch xfconf-query -c xfwm4 -t string -np /general/theme -s Kali-Light-xHiDPI 2>/dev/null
             else
@@ -1477,12 +1477,20 @@ git_clone_kali_themes_common() {
     check_update_icon_caches_sh
     if [ ! -e "/usr/share/desktop-base/kali-theme" ]; then
         TEMP_FOLDER="/tmp/.KALI_THEME_COMMON_TEMP_FOLDER"
-        git clone --depth=1 https://gitee.com/ak2/kali-theme.git ${TEMP_FOLDER}
+
+        git clone \
+            --depth=1 \
+            https://gitee.com/ak2/kali-theme.git \
+            ${TEMP_FOLDER}
+
         tar -pJxvf ${TEMP_FOLDER}/kali-theme.tar.xz -C /
         rm -rvf ${TEMP_FOLDER}
         dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
         ICON_NAME='Flat-Remix-Blue-Dark /usr/share/icons/Flat-Remix-Blue-Light /usr/share/icons/desktop-base'
-        update-icon-caches /usr/share/icons/${ICON_NAME} 2>/dev/null &
+
+        update-icon-caches \
+            /usr/share/icons/"${ICON_NAME}" \
+            2>/dev/null &
     fi
 }
 ##########
@@ -1790,7 +1798,7 @@ install_xfce4_desktop() {
     dbus-launch xfconf-query -c xsettings -t string -np /Gtk/CursorThemeName -s "Breeze-Adapta-Cursor" 2>/dev/null
 
     #XFCE_WORK_SPACE_01=$(cat xfce4-desktop.xml | grep -n workspace1 | awk '{print $1}' | cut -d ':' -f 1)
-    #if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | egrep 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
+    #if [ "$(cat xfce4-desktop.xml | sed -n 1,${XFCE_WORK_SPACE_01}p | grep -E 'xfce-stripes|xfce-blue|xfce-teal|0.svg')" ]; then
     #	modify_the_default_xfce_wallpaper
     #fi
     if [ ! -e "${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
@@ -1997,7 +2005,7 @@ linuxmint_sarah_wallpaper_var() {
 }
 ###########
 random_wallpaper_pack_01() {
-    case "$(($RANDOM % 24 + 1))" in
+    case "$((RANDOM % 24 + 1))" in
     [6-9]) linuxmint_tina_wallpaper_var ;;
     [10-12]) linuxmint_tricia_wallpaper_var ;;
     13 | 14) linuxmint_tessa_wallpaper_var ;;
@@ -2012,7 +2020,7 @@ random_wallpaper_pack_01() {
 }
 ############
 random_wallpaper_pack_02() {
-    case "$(($RANDOM % 26 + 1))" in
+    case "$((RANDOM % 26 + 1))" in
     [6-9]) linuxmint_tara_wallpaper_var ;;
     [10-12]) linuxmint_tricia_wallpaper_var ;;
     13 | 14) linuxmint_sylvia_wallpaper_var ;;
@@ -2027,7 +2035,7 @@ random_wallpaper_pack_02() {
 }
 ############
 random_wallpaper_pack_03() {
-    case "$(($RANDOM % 24 + 1))" in
+    case "$((RANDOM % 24 + 1))" in
     [6-9]) linuxmint_ulyana_wallpaper_var ;;
     [10-12]) linuxmint_tina_wallpaper_var ;;
     13 | 14) linuxmint_tessa_wallpaper_var ;;
@@ -2042,7 +2050,7 @@ random_wallpaper_pack_03() {
 }
 ############
 random_wallpaper_pack_04() {
-    case "$(($RANDOM % 24 + 1))" in
+    case "$((RANDOM % 24 + 1))" in
     [4-6]) linuxmint_tina_wallpaper_var ;;
     [7-9]) linuxmint_tricia_wallpaper_var ;;
     [10-12]) linuxmint_tessa_wallpaper_var ;;
@@ -2057,7 +2065,7 @@ random_wallpaper_pack_04() {
 }
 ############
 random_wallpaper_pack_05() {
-    RANDOM_WALLPAPER_PACK="$(($RANDOM % 31 + 1))"
+    RANDOM_WALLPAPER_PACK="$((RANDOM % 31 + 1))"
     case ${RANDOM_WALLPAPER_PACK} in
     [6-9]) linuxmint_sonya_wallpaper_var ;;
     [10-12]) linuxmint_sarah_wallpaper_var ;;
@@ -2853,7 +2861,7 @@ get_ubuntu_desktop_language_pack() {
 
                 cat ${TMP_FILE}
 
-                sed 's@ @\n@g' ${TMP_FILE} | egrep 'language|l10n|i18n|locale' >${TMP_FILE}.2
+                sed 's@ @\n@g' ${TMP_FILE} | grep -E 'language|l10n|i18n|locale' >${TMP_FILE}.2
 
                 cat ${TMP_FILE}.2 >>${TMOE_LINUX_DIR}/ubuntu-desktop-language-pack.txt
 
@@ -3280,7 +3288,7 @@ check_theme_url() {
     fi
 
     #当未添加http时，将自动修复。
-    if [ "$(printf '%s\n' "${THEME_TMOE_URL}" | egrep 'www')" ] && [ ! "$(printf '%s\n' "${THEME_TMOE_URL}" | grep 'http')" ]; then
+    if [ "$(printf '%s\n' "${THEME_TMOE_URL}" | grep -E 'www')" ] && [ ! "$(printf '%s\n' "${THEME_TMOE_URL}" | grep 'http')" ]; then
         THEME_TMOE_URL=$(printf '%s\n' "${THEME_TMOE_URL}" | sed 's@www@https://&@')
     fi
 }
@@ -3302,9 +3310,9 @@ xfce_theme_parsing() {
     printf "%s\n" "Downloading index.html..."
     aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .theme_index_cache_tmoe.html ${THEME_TMOE_URL}
 
-    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | egrep 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
+    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | grep -E 'tar.xz|tar.gz' | grep '"title"' | sed 's@"@ @g' | awk '{print $3}' | sort -um >.tmoe-linux_cache.01
     THEME_LINE=$(cat .tmoe-linux_cache.01 | wc -l)
-    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | egrep '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
+    cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | grep -E '"downloaded_count"' | sed 's@"@ @g' | awk '{print $3}' | head -n ${THEME_LINE} | sed 's/ /-/g' | sed 's/$/次/g' >.tmoe-linux_cache.02
     TMOE_THEME_FILE_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
     rm -f .tmoe-linux_cache.0*
 
@@ -3316,7 +3324,7 @@ xfce_theme_parsing() {
     case ${TMOE_THEME_ITEM} in
     0 | "") configure_theme ;;
     esac
-    DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | egrep 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
+    DOWNLOAD_FILE_URL=$(cat .theme_index_cache_tmoe.html | sed 's@,@\n@g' | sed 's@%2F@/@g' | sed 's@%3A@:@g' | sed 's@%2B@+@g' | sed 's@%3D@=@g' | sed 's@%23@#@g' | sed 's@%26@\&@g' | grep -E 'tar.xz|tar.gz' | grep '"url"' | grep ${TMOE_THEME_ITEM} | sed 's@"@ @g' | awk '{print $3}' | sort -um | head -n 1)
     DOWNLOAD_PATH=/tmp
     aria2c_download_normal_file_s3
     tmoe_theme_installer
@@ -5515,7 +5523,7 @@ first_configure_startvnc() {
     if [ -e "${TMOE_LINUX_DIR}/wm_size.txt" ]; then
         RESOLUTION=$(awk -F 'x' '{print $2,$1}' ${TMOE_LINUX_DIR}/wm_size.txt | sed 's@ @x@')
         HORIZONTAL_PIXELS=$(awk -F 'x' '{print $2}' ${TMOE_LINUX_DIR}/wm_size.txt | head -n 1)
-        if ((${HORIZONTAL_PIXELS} >= 2340)); then
+        if ((HORIZONTAL_PIXELS >= 2340)); then
             TMOE_HIGH_DPI=true
         else
             TMOE_HIGH_DPI=false
@@ -5843,13 +5851,13 @@ choose_vnc_port_5902_or_5903() {
 }
 check_vnc_passsword_length() {
     PASSWORD_LENGTH=$(printf '%s' ${TARGET_VNC_PASSWD} | wc -L)
-    if ((${PASSWORD_LENGTH} > 8)); then
+    if ((PASSWORD_LENGTH > 8)); then
         printf "%s\n" "${PASSWORD_LENGTH}"
         printf "%s\n" "密码超过${RED}8个字符${RESET}，请${BLUE}重新输入${RESET}"
         printf "%s\n" "${RED}WARNING！${RESET}The maximum password length is ${RED}8 digits.${RESET}"
         press_enter_to_return
         set_vnc_passwd
-    elif ((${PASSWORD_LENGTH} < 6)); then
+    elif ((PASSWORD_LENGTH < 6)); then
         printf "%s\n" "${PASSWORD_LENGTH}"
         printf "%s\n" "密码少于${RED}6个字符${RESET}，请${BLUE}重新输入${RESET}"
         printf "%s\n" "${RED}WARNING！${RESET}The minimum password length is ${RED}6 digits.${RESET}"

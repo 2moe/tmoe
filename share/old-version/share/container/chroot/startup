@@ -1,67 +1,83 @@
 #!/usr/bin/env bash
 # ${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_STARTUP_DIR}
 TMP_FILE="${TMPDIR}/.TMOE_CHROOT_STARTUP"
-cat >${TMP_FILE} <<-ENDOFTMOECHROOT
+cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	#!/usr/bin/env bash
 	################
-	CHROOT_USER="root"
 	# You can specify a user. Default is root
 	# 您可以指定用户，例如root或ubuntu，默认为root
 	# Sie können einen Benutzer angeben
+	CHROOT_USER="root"
 
-	HOME_DIR="default"
 	# If the value is "default", the home directory will be auto-detected. You can enter an absolute path, for example, "/root".
+	HOME_DIR="default"
 	################
-	CHROOT_BIN="default"
 	# Optional values: "default", "system", "termux", "termux-busybox", "busybox", "toybox", "system-toybox", or an absolute path.
 	# You can choose system, termux, or enter the full path. For example, "\${PREFIX}/bin/chroot"
 	# In general, "chroot" comes from the "coreutils" package.
 	# 当此变量值为system时，将使用系统默认chroot二进制文件所在路径；当其为termux时，将使用 "\${PREFIX}/bin/chroot"。您也可以输入完整路径,例如"/usr/sbin/chroot"
-	# if (system|default) {bin =  "chroot"}
-	# else if (termux) {bin = "\${PREFIX}/bin/chroot"}
-	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox chroot"}
-	# else if (busybox) {bin = "buysbox chroot"}
-	# else if (toybox) {bin = "toybox chroot"}
-	# else if (system-toybox) {bin = "/system/bin/toybox chroot"}
+	:<<-'EOF'
+	let chroot_bin: &str = match CHROOT_BIN {
+		"system"|"default" => "chroot",
+		"termux" => "\${PREFIX}/bin/chroot",
+		"termux-busybox" => "\${PREFIX}/bin/busybox chroot",
+		"busybox" => "buysbox chroot",
+		"toybox" => "toybox chroot",
+		"system-toybox" => "/system/bin/toybox chroot",
+		path @ _ => path, 
+	};
+	EOF
+	CHROOT_BIN="default"
 
-	MOUNT_BIN="termux-busybox"
 	# Optional values: "default", "system", "termux", "termux-busybox", "busybox", "toybox", "system-toybox", or an absolute path.
-	# if (system|default) {bin =  "mount"}
-	# else if (termux) {bin = "\${PREFIX}/bin/mount"}
-	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox mount"}
-	# else if (busybox) {bin = "buysbox mount"}
-	# else if (toybox) {bin = "toybox mount"}
-	# else if (system-toybox) {bin = "/system/bin/toybox mount"}
+	:<<-'EOF'
+	let mount_bin: &str = match MOUNT_BIN {
+		"system"|"default" => "mount",
+		"termux" => "\${PREFIX}/bin/mount",
+		"termux-busybox" => "\${PREFIX}/bin/busybox mount",
+		"busybox" => "buysbox mount",
+		"toybox" => "toybox mount",
+		"system-toybox" => "/system/bin/toybox mount",
+		path @ _ => path, 
+	};
+	EOF
+	MOUNT_BIN="default"
 
-	UNSHARE_BIN="termux"
-	# Optional values: "default", "system", "termux", or an absolute path.
 	# Deprecated values: "busybox", "termux-busybox"
 	# In general, "unshare" comes from the "util-linux" package.
-	# if (system|default) {bin =  "unshare"}
-	# else if (termux) {bin = "\${PREFIX}/bin/unshare"}
-	# else if (termux-busybox) {bin = "\${PREFIX}/bin/busybox unshare"}
-	# else if (busybox) {bin = "buysbox unshare"}
+	:<<-'EOF'
+	let unshare_bin: &str = match UNSHARE_BIN {
+		"system"|"default" => "unshare",
+		"termux" => "\${PREFIX}/bin/unshare",
+		path @ _ => path, 
+	};
+	EOF
+	UNSHARE_BIN="termux"
 
 	ROOTFS_DIR="${DEBIAN_CHROOT}"
 
-	HOST_DISTRO="${LINUX_DISTRO}"
 	# Optional values: "Android", "linux"
+	HOST_DISTRO="${LINUX_DISTRO}"
 
-	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	# Set the values of CHROOT_BIN and UNSHARE_BIN to termux, and set MOUNT_BIN to termux-busybox.
 	# 旧系统/旧版本兼容模式
 	# Default is false.
+	OLD_ANDROID_VERSION_COMPATIBILITY_MODE=false
 	################
-	LOAD_ENV_FILE=true
 	# Load the environment variable file when starting the container. Default is true.
+	LOAD_ENV_FILE=true
 	CONTAINER_ENV_FILE="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/environment/container.env"
 
-	LOAD_CHROOT_CONF=true
 	# Default is true.
 	# 当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+	LOAD_CHROOT_CONF=true
 	CHROOT_CONF_FILE="${CONFIG_FOLDER}/chroot_global.conf"
 	################
 	# mounts
+
+	# let sd_mount_point = String::from("/media/sd");
+	# The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
+	# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 
 	MOUNT_SD=true
 	SD_DIR_0="/data/media/0"
@@ -70,20 +86,20 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	SD_DIR_3="${HOME}/sd"
 	SD_DIR_4="${HOME}/Downloads"
 	SD_DIR_5="${HOME}/Download"
-	# let sd_mount_point = String::from("/media/sd");
-	# The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
-	# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 
-	MOUNT_TERMUX=true
 	# If the value is "false", the relevant directory will not be mounted. Default is true.
-	TERMUX_DIR="/data/data/com.termux/files/home"
+	MOUNT_TERMUX=true
+
 	# let termux_mount_point = String::from("/media/termux");
+	TERMUX_DIR="/data/data/com.termux/files/home"
 
 	MOUNT_TF=true
-	TF_CARD_LINK="${HOME}/storage/external-1"
+
 	# let tf_mount_point = String::from("/media/tf");
 	# The value of TF_CARD_LINK is a symbolic link file.
 	# TF_CARD_LINK的值为一个软链接文件
+	TF_CARD_LINK="${HOME}/storage/external-1"
+
 
 	MOUNT_ITSELF=true
 	MOUNT_DEV=true
@@ -99,48 +115,47 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 	# shells
 	# let mut shells: Vec<&str> = vec!["zsh", "fish", "bash", "ash", "su"];
 
-	DEFAULT_LOGIN_SHELL_0="zsh"
 	# The default login shell is zsh.
 	# 默认登录shell是zsh
 	# Die Standard-Login-Shell ist zsh.
+	DEFAULT_LOGIN_SHELL_0="zsh"
 
+	# The lower the number, the higher the priority.
 	DEFAULT_LOGIN_SHELL_1="fish"
 	DEFAULT_LOGIN_SHELL_2="bash"
 	DEFAULT_LOGIN_SHELL_3="ash"
 	DEFAULT_LOGIN_SHELL_4="su"
-	# The lower the number, the higher the priority.
 	################
 	# unshare
 
-	UNSHARE_ENABLED=false
 	# The unshare command creates new namespaces and then executes the specified program. By  default,  a  new  namespace  persists only as long as it has member processes.  A new namespace can be mad e persistent even when it has no member processes by bind mounting /proc/pid/ns/type files to a filesystem path.  A namespace that has been made persistent in this way can subsequently be entered with nsenter even after the program terminates (except PID namespaces where a permanently running init process is required).  Once  a  persistent namespace is no longer needed, it can be unpersisted by using umount to remove the bind mount.
+	UNSHARE_ENABLED=false
 
-	UNSHARE_IPC=false
 	# Unshare the IPC namespace. Default is false.
 	# IPC namespace: The process will have an independent namespace for POSIX message queues as well as System V message queues, semaphore sets and shared memory segments.
+	UNSHARE_IPC=false
 
-	UNSHARE_PID=false
 	# Unshare the PID namespace. Default is false.
 	# PID namespace: Children will have a distinct set of PID-to-process mappings from their parent.
+	UNSHARE_PID=false
 
-	UNSHARE_UTS=false
 	# Unshare the UTS namespace. Default is false.
 	# UTS namespace: Setting hostname or domainname will not affect the rest of the system.
+	UNSHARE_UTS=false
 
-	UNSHARE_MOUNT=false
 	# Unshare the mount namespace. Default is false.
 	# mount namespace: Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared.
+	UNSHARE_MOUNT=false
 
-	KILL_CHILD=false
 	# When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
 	# When the value is true and SIGNAME=SIGKILL, the process in the container cannot be terminated with ctrl+c.
-	# You can view this issue: https://github.com/2moe/tmoe-linux/issues/44
-
+	# see this issue: https://github.com/2moe/tmoe-linux/issues/44
+	KILL_CHILD=false
 	KILL_CHILD_SIGNAME="SIGKILL"
 
-	SHARE_PROC=true
 	# Default is true.
 	# Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
+	SHARE_PROC=true
 	################
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
@@ -468,17 +483,17 @@ cat >${TMP_FILE} <<-ENDOFTMOECHROOT
 ENDOFTMOECHROOT
 # ${DEBIAN_CHROOT}, ${CONFIG_FOLDER}, ${HOME}, $PREFIX, ${LINUX_DISTRO} - \$.
 case $(uname -o) in
-Android) termux-fix-shebang ${TMP_FILE} ;;
+Android) termux-fix-shebang "${TMP_FILE}" ;;
 esac
 if [[ ${SYSTEMD_NSPAWN} = true ]]; then
-	printf "%s\n" "SYSTEMD_NSPAWN=true" >${TMPDIR}/.chroot.conf
+	printf "%s\n" "SYSTEMD_NSPAWN=true" >"${TMPDIR}"/.chroot.conf
 else
-	printf "%s\n" "SYSTEMD_NSPAWN=false" >${TMPDIR}/.chroot.conf
+	printf "%s\n" "SYSTEMD_NSPAWN=false" >"${TMPDIR}"/.chroot.conf
 fi
-chmod a+rx ${TMP_FILE} ${TMPDIR}/.chroot.conf
-${TMOE_CHROOT_PREFIX} cp -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
-${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_DIR}/chroot
-${TMOE_CHROOT_PREFIX} mv -f ${TMPDIR}/.chroot.conf ${TMOE_STARTUP_DIR}/chroot.conf
+chmod a+rx "${TMP_FILE}" "${TMPDIR}"/.chroot.conf
+${TMOE_CHROOT_PREFIX} cp -f "${TMP_FILE}" "${TMOE_STARTUP_SCRIPT}"
+${TMOE_CHROOT_PREFIX} mv -f "${TMP_FILE}" "${TMOE_STARTUP_DIR}"/chroot
+${TMOE_CHROOT_PREFIX} mv -f "${TMPDIR}"/.chroot.conf "${TMOE_STARTUP_DIR}"/chroot.conf
 #${TMOE_CHROOT_PREFIX} chmod a+rx ${TMOE_STARTUP_SCRIPT}
 
-ln -sf ${TMOE_SHARE_DIR}/container/debian/debian ${PREFIX}/bin
+ln -sf "${TMOE_SHARE_DIR}"/container/debian/debian "${PREFIX}"/bin

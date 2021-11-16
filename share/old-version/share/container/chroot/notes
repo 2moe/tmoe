@@ -13,7 +13,7 @@ check_root_permissions() {
 				apt install -y tsu
 			fi
 			if [[ ! -e ${PREFIX}/bin/sudo && -e ${PREFIX}/bin/tsudo ]]; then
-				ln -svf ${PREFIX}/bin/tsudo ${PREFIX}/bin/sudo
+				ln -svf "${PREFIX}"/bin/tsudo "${PREFIX}"/bin/sudo
 			fi
 			;;
 		*)
@@ -29,14 +29,14 @@ check_root_permissions() {
 }
 #################
 notes_of_chroot() {
-	printf "%s\n %s\n" "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device." "移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！" >${CONFIG_FOLDER}/chroot-prompt
-	sed -n p ${CONFIG_FOLDER}/chroot-prompt
+	printf "%s\n %s\n" "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device." "移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！" >"${CONFIG_FOLDER}"/chroot-prompt
+	sed -n p "${CONFIG_FOLDER}"/chroot-prompt
 	case ${LINUX_DISTRO} in
 	Android)
 		printf "%s\n" "If you can not use this function,try using magisk manager."
 		printf "%s\n" "您使用的是${YELLOW}Android${RESET}系统，ROOT环境${PURPLE}要求${RESET}：${BLUE}magisk(面具)${RESET}"
 		sleep 1
-		if ((${ANDROID_VERSION} <= 7)); then
+		if ((ANDROID_VERSION <= 7)); then
 			printf "%s\n" "您的系统版本低于${BLUE}Android8${RESET},${PURPLE}可能无法${RESET}使用${YELLOW}tmoe-linux的chroot容器${RESET}配置功能。"
 			printf "%s\n" "Your android system version is lower than 8."
 			sleep 3

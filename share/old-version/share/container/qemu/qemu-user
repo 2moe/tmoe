@@ -68,27 +68,41 @@ check_gnu_linux_qemu_version() {
 }
 ###########
 file_proot_bin() {
-	if [ ! $(command -v file) ]; then
+	if [ ! "$(command -v file)" ]; then
 		printf "%s\n" "apt install -y file"
 		apt install -y file
 	fi
-	file $(command -v proot)
-	ldd $(command -v proot)
+	file "$(command -v proot)"
+	ldd "$(command -v proot)"
 }
 git_clone_i386_emu() {
-	mkdir -pv ${TMOE_LINUX_DIR}/lib32/usr/bin
-	cd ${TMOE_LINUX_DIR}/lib32/usr/bin
+	mkdir -pv "${TMOE_LINUX_DIR}"/lib32/usr/bin
+	cd "${TMOE_LINUX_DIR}"/lib32/usr/bin
 	GIT_REPO_01="https://github.com/cu233/"
 	GIT_REPO_02="https://gitee.com/ak2/"
 	case ${TMOE_MENU_LANG} in
-	zh_C*UTF-8) git clone --depth=1 ${GIT_REPO_02}/${EMU_NAME} || git clone --depth=1 ${GIT_REPO_01}/${EMU_NAME} ;;
-	*) git clone --depth=1 ${GIT_REPO_01}/${EMU_NAME} || git clone --depth=1 ${GIT_REPO_02}/${EMU_NAME} ;;
+	zh_C*UTF-8)
+		git clone \
+			--depth=1 \
+			${GIT_REPO_02}/"${EMU_NAME}" ||
+			git clone \
+				--depth=1 \
+				${GIT_REPO_01}/"${EMU_NAME}"
+		;;
+	*)
+		git clone \
+			--depth=1 \
+			${GIT_REPO_01}/"${EMU_NAME}" ||
+			git clone \
+				--depth=1 \
+				${GIT_REPO_02}/"${EMU_NAME}"
+		;;
 	esac
-	tar -Jxf ./${EMU_NAME}/${EMU_NAME}.tar.xz
-	rm -rfv ${EMU_NAME}
+	tar -Jxf "./${EMU_NAME}/${EMU_NAME}.tar.xz"
+	rm -rfv "${EMU_NAME}"
 }
 dpkg_add_32bit_architecture() {
-	cd ${TMOE_LINUX_DIR}/lib32
+	cd "${TMOE_LINUX_DIR}"/lib32
 	printf "%s\n" "${GREEN}dpkg ${BLUE}--add-architecture ${YELLOW}${ADD_ARCH}${RESET}"
 	printf "%s\n" "${GREEN}apt ${BLUE}download ${YELLOW}proot:${ADD_ARCH}${RESET}"
 	dpkg --add-architecture ${ADD_ARCH}
@@ -433,7 +447,7 @@ tmoe_qemu_user_manager() {
 #####################
 git_clone_debian_ports_distro() {
 	check_rootfs_dir
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
+	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
 	cd ${ROOTFS_DIR}
 	DISTRO_NAME='debian'
 	case ${ARCH_TYPE} in

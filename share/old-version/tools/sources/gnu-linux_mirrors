@@ -510,8 +510,8 @@ switch_sources_http_and_https() {
 ###################
 check_fedora_version() {
     FEDORA_VERSION="$(grep 'VERSION_ID' /etc/os-release | cut -d '=' -f 2)"
-    if ((${FEDORA_VERSION} >= 30)); then
-        if ((${FEDORA_VERSION} >= 32)); then
+    if ((FEDORA_VERSION >= 30)); then
+        if ((FEDORA_VERSION >= 32)); then
             fedora_32_repos
         else
             fedora_31_repos
@@ -698,7 +698,7 @@ mirror_sources_station_download_speed_test() {
 ping_mirror_sources_list_count_3() {
     printf "%s\n" "${YELLOW}${SOURCE_MIRROR_STATION}${RESET}"
     printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
-    ping -c 3 ${SOURCE_MIRROR_STATION} | egrep 'avg|time.*ms' --color=auto
+    ping -c 3 "${SOURCE_MIRROR_STATION}" | grep -E 'avg|time.*ms' --color=auto
     printf "%s\n" "---------------------------"
 }
 ##############

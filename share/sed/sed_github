@@ -1,4 +1,4 @@
-cd ../old-version
+cd ../old-version || exit 1
 SHELL_FILE=$(find ./* | grep sh | tr '\n' ' ' | cut -d '%' -f 1)
 ALL_SHARE_FILE=$(find ./share/* | tr '\n' ' ' | cut -d '%' -f 1)
 unset ALL_SHELL_FILE

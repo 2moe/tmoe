@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 ###################
-MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g') #此处并非重复操作
+MACHINE_NAME=$(printf "%s\n" "${DEBIAN_FOLDER}" | sed 's@_@-@g') #此处并非重复操作
 unset TMOE_SD_DIR
-if grep -Eq '^root:(\*|\!):' ${DEBIAN_CHROOT}/etc/shadow; then
-    ${TMOE_CHROOT_PREFIX} sed -i -E 's@(^root):.:@\1::@g' ${DEBIAN_CHROOT}/etc/shadow
+if grep -Eq '^root:(\*|\!):' "${DEBIAN_CHROOT}"/etc/shadow; then
+    ${TMOE_CHROOT_PREFIX} sed -i -E 's@(^root):.:@\1::@g' "${DEBIAN_CHROOT}"/etc/shadow
 fi
 # case $(${TMOE_CHROOT_PREFIX} cat ${DEBIAN_CHROOT}/etc/hostname) in
 # localhost | LXC_NAME | "")
@@ -11,48 +11,53 @@ fi
 #     # ${TMOE_CHROOT_PREFIX} printf "%s\n" "127.0.0.1       ${MACHINE_NAME}" >>${DEBIAN_CHROOT}/etc/hosts
 #     ;;
 # esac
-printf "%s\n" "${MACHINE_NAME}" >${TMPDIR}/.tmp_hostname
-${TMOE_CHROOT_PREFIX} cp ${TMPDIR}/.tmp_hostname ${DEBIAN_CHROOT}/tmp
-${TMOE_CHROOT_PREFIX} mv ${TMPDIR}/.tmp_hostname ${DEBIAN_CHROOT}/etc
+printf "%s\n" "${MACHINE_NAME}" >"${TMPDIR}"/.tmp_hostname
+${TMOE_CHROOT_PREFIX} cp "${TMPDIR}"/.tmp_hostname "${DEBIAN_CHROOT}"/tmp
+${TMOE_CHROOT_PREFIX} mv "${TMPDIR}"/.tmp_hostname "${DEBIAN_CHROOT}"/etc
 
 if [[ -e "${DEBIAN_CHROOT}/etc/machine-id" ]]; then
-    ${TMOE_CHROOT_PREFIX} rm -f ${DEBIAN_CHROOT}/etc/machine-id
+    ${TMOE_CHROOT_PREFIX} rm -f "${DEBIAN_CHROOT}"/etc/machine-id
 fi
 TMP_FILE="${TMPDIR}/.TMOE_NSPAWN_STARTUP"
-cat >${TMP_FILE} <<-ENDOFTMOECHROOT
+cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 #!/usr/bin/env bash
-###################
+#------------------
+# If the value is true, then you can run systemctl command in the container. Default is false
+# 若为true,则允许在容器内执行systemctl。注：建议以非root用户进行登录。
 SYSTEMD_BOOT=false
-#If the value is true, then you can run systemctl command in the container. Default is false
-#若为true,则允许在容器内执行systemctl。注：建议以非root用户进行登录。
-###################
+#------------------
+# You can specify a user. Default is root
+# 您可以指定用户，例如root或ubuntu，默认为root
+# Sie können einen Benutzer angeben
 CHROOT_USER=root
-#You can specify a user. Default is root
-#您可以指定用户，例如root或ubuntu，默认为root
-#Sie können einen Benutzer angeben
 
+# You can specify the path where the binary file of systemd-nspawn is located. If the value is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/systemd-nspawn"
+# 您可以自行编译systemd-nspawn,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认systemd-nspawn二进制文件所在路径；当其为prefix时，将使用 "${PREFIX}/bin/systemd-nspawn"。您也可以输入完整路径,例如"/usr/local/bin/systemd-nspawn"
 CHROOT_BIN="system"
-#You can specify the path where the binary file of systemd-nspawn is located. If the value is system, it will use the default path of the system. You can also enter the full path. For example, "\${PREFIX}/bin/systemd-nspawn"
-#您可以自行编译systemd-nspawn,并指定其二进制文件所在路径。当此变量值为system时，将使用系统默认systemd-nspawn二进制文件所在路径；当其为prefix时，将使用 "${PREFIX}/bin/systemd-nspawn"。您也可以输入完整路径,例如"/usr/local/bin/systemd-nspawn"
 ###################
-#mount dirs & dev
-#挂载相关目录 & 设备
+# mount dirs & dev
+# 挂载相关目录 & 设备
 
-MOUNT_DEV_DRI=true
 # Default is true. 若设备支持，则启用GPU加速
+MOUNT_DEV_DRI=true
+
 DEV_DRI="/dev/dri"
 
 MOUNT_NVIDIA_GPU=true
 NVIDIA_GPU="/dev/nvidia0"
 NVIDIA_CTL="/dev/nvidiactl"
 
-MOUNT_X11_UNIX=false
 # Default is false.
-X11_UNIX_RO=true
+MOUNT_X11_UNIX=false
+
 # read only.
+X11_UNIX_RO=true
 X11_UNIX_DIR="/tmp/.x11-unix"
 
+# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 MOUNT_SD=true
+
+# The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
 SD_DIR_0="/media/sd"
 SD_DIR_1="${HOME}/sd"
 SD_DIR_2="${HOME}/Downloads"
@@ -60,18 +65,16 @@ SD_DIR_3="${HOME}/Download"
 SD_DIR_4="/sd"
 SD_DIR_5="/sdcard"
 SD_MOUNT_POINT="/media/sd"
-#The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
-#挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
 
+# If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is true.
 MOUNT_DOCKER_DIR=true
 TMOE_DOCKER_DIR="/media/docker"
-#If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is true.
 
 #---
-NUM_OF_MOUNTS=12
 # uint8
 # 默认为12, 若您将该值修改为15, 则请手动添加MOUNT_SOURCE_13,MOUNT_SOURCE_14,MOUNT_SOURCE_15,MOUNT_POINT_13,MOUNT_POINT_14 & MOUNT_POINT_15 变量。
 # If you want to mount hundreds of directories, then you need to add variables manually.
+NUM_OF_MOUNTS=12
 #---
 # MOUNT_SOURCE_1为第一个挂载源，MOUNT_POINT_1 为第一个挂载点，MOUNT_SOURCE_2为第二个挂载源 ...
 # 举个例子，假如您想将/storage/emulated/0/Download目录挂载至容器内部的/media/down, 那么MOUNT_SOURCE_1的值为"/storage/emulated/0/Download", MOUNT_POINT_1的值为"/media/down"
@@ -120,12 +123,14 @@ MOUNT_POINT_12=""
 ###################
 ROOTFS_DIR="${DEBIAN_CHROOT}"
 LOAD_ENV_FILE=true
-#Load the environment variable file when starting the container. Default is true.
+
+# Load the environment variable file when starting the container. Default is true.
 CONTAINER_ENV_FILE="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/environment/container.env"
 
+# Default is false.
+# 默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
 LOAD_NSPAWN_CONF=false
-#Default is false.
-#默认为false。当该值为true时，当前配置信息将会被配置文件里的内容所覆盖。
+
 NSPAWN_CONF_FILE="${CONFIG_FOLDER}/nspawn_global.conf" 
 
 TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
@@ -142,7 +147,7 @@ if [[ \${CHROOT_USER} != root && \${SYSTEMD_BOOT} != true ]];then
 fi
 set -- "\${@}" "--directory" "\${ROOTFS_DIR}"
 set -- "\${@}" "--uuid" "$(dbus-uuidgen)"
-#if container=arch, then do not set the value of --private-users to pick.
+# if container=arch, then do not set the value of --private-users to pick.
 set -- "\${@}" "--private-users=no"
 set -- "\${@}" "--machine" "${MACHINE_NAME}"
 set -- "\${@}" "--link-journal" "auto"
@@ -179,7 +184,7 @@ if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
     # Do not use double quotes in CONTAINER_ENV_VAR in the for statement 
     for i in \${CONTAINER_ENV_VAR}; do
         if [[ -n \${i} ]];then
-           set -- "\${@}" "--setenv" "\${i}"
+            set -- "\${@}" "--setenv" "\${i}"
         fi
     done
     IFS="\${OLD_IFS}"    
@@ -253,7 +258,7 @@ su -c "\${TMOE_NSPAWN_EXEC}"
 ENDOFTMOECHROOT
 
 case $(uname -o) in
-Android) termux-fix-shebang ${TMP_FILE} ;;
+Android) termux-fix-shebang "${TMP_FILE}" ;;
 esac
-${TMOE_CHROOT_PREFIX} cp -f ${TMP_FILE} ${TMOE_STARTUP_SCRIPT}
-${TMOE_CHROOT_PREFIX} mv -f ${TMP_FILE} ${TMOE_STARTUP_DIR}/nspawn
+${TMOE_CHROOT_PREFIX} cp -f "${TMP_FILE}" "${TMOE_STARTUP_SCRIPT}"
+${TMOE_CHROOT_PREFIX} mv -f "${TMP_FILE}" "${TMOE_STARTUP_DIR}"/nspawn

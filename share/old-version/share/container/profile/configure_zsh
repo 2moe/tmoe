@@ -709,7 +709,7 @@ change_the_password() {
 	printf "%s\n" "root:${PASSWORD_01}" | chpasswd
 	unset PASSWORD_01 PASSWORD_02
 	TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
-	#TMOE_USER_SUDO_LINE=$((${TMOE_ROOT_SUDO_LINE} + 1))
+	#TMOE_USER_SUDO_LINE=$((TMOE_ROOT_SUDO_LINE + 1))
 	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
 		sed -i "$ a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
 	else
@@ -772,7 +772,7 @@ set_it_as_the_default_user() {
 	sed -E -e "s@^(PROOT_USER)=.*@\1=${USER_NAME}@" \
 		-e "s@^(CHROOT_USER)=.*@\1=${USER_NAME}@" \
 		-i /usr/local/etc/tmoe-linux/container/tmoe-linux-container
-	egrep --color=auto "^PROOT_USER=|^CHROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+	grep -E --color=auto "^PROOT_USER=|^CHROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
 }
 ###########################
 tmoe_container_zsh_main "$@"

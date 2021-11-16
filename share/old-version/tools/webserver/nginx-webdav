@@ -120,20 +120,20 @@ nginx_onekey() {
 	mkdir -pv /media
 	touch "/media/欢迎使用tmoe-linux-webdav_你可以将文件复制至根目录下的media文件夹"
 	if [ -e "${HOME}/sd" ]; then
-		ln -sf ${HOME}/sd /media/
+		ln -sf "${HOME}"/sd /media/
 	fi
 
 	if [ -e "${HOME}/tf" ]; then
-		ln -sf ${HOME}/tf /media/
+		ln -sf "${HOME}"/tf /media/
 	fi
 
 	if [ -e "${HOME}/termux" ]; then
-		ln -sf ${HOME}/termux /media/
+		ln -sf "${HOME}"/termux /media/
 	fi
 
 	if [ "${CHROOT_STATUS}" = "1" ]; then
 		printf "%s\n" "检测到您处于容器环境下"
-		cd /etc/nginx/sites-available
+		cd /etc/nginx/sites-available || exit 1
 		if [ ! -f "default.tar.gz" ]; then
 			tar -zcvf default.tar.gz default
 		fi
@@ -144,7 +144,7 @@ nginx_onekey() {
 		printf "%s\n" "已将您的nginx的http端口从80修改为2086，https端口从443修改为8443"
 	fi
 
-	cd /etc/nginx/conf.d/
+	cd /etc/nginx/conf.d/ || exit 1
 	cat >webdav.conf <<-'EndOFnginx'
 		server {
 		    listen       28080;
@@ -198,8 +198,8 @@ nginx_onekey() {
 }
 ############
 nginx_restart() {
-	cd /etc/nginx/conf.d/
-	NGINX_WEBDAV_PORT=$(cat webdav.conf | grep listen | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
+	cd /etc/nginx/conf.d/ || exit 1
+	NGINX_WEBDAV_PORT=$(grep listen webdav.conf | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
 	service nginx restart 2>/dev/null || systemctl restart nginx
 	if [ "$?" != "0" ]; then
 		/etc/init.d/nginx reload
@@ -234,12 +234,12 @@ nginx_add_admin() {
 		press_enter_to_return
 		nginx_add_admin
 	fi
-	htpasswd -mbc /etc/nginx/conf.d/.htpasswd.webdav ${TARGET_USERNAME} ${TARGET_USERPASSWD}
+	htpasswd -mbc /etc/nginx/conf.d/.htpasswd.webdav "${TARGET_USERNAME}" "${TARGET_USERPASSWD}"
 	nginx_restart
 }
 #################
 nginx_webdav_port() {
-	NGINX_WEBDAV_PORT=$(cat webdav.conf | grep listen | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
+	NGINX_WEBDAV_PORT=$(grep listen webdav.conf | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')
 	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的端口为${NGINX_WEBDAV_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
@@ -255,7 +255,7 @@ nginx_webdav_port() {
 #################
 nginx_port() {
 	cd /etc/nginx/sites-available
-	NGINX_PORT=$(cat default | egrep 'listen|default' | head -n 1 | cut -d ';' -f 1 | cut -d 'd' -f 1 | awk -F ' ' '$0=$NF')
+	NGINX_PORT=$(grep -E 'listen|default' default | head -n 1 | cut -d ';' -f 1 | cut -d 'd' -f 1 | awk -F ' ' '$0=$NF')
 	TARGET_PORT=$(whiptail --inputbox "请输入新的端口号(纯数字)，范围在1-65525之间,检测到您当前的Nginx端口为${NGINX_PORT}\n Please enter the port number." 12 50 --title "PORT" 3>&1 1>&2 2>&3)
 	exitstatus=$?
 	if [ $exitstatus != 0 ]; then
@@ -267,13 +267,13 @@ nginx_port() {
 	tar -zxvf default.tar.gz default
 	sed -i "s@80 default_server@${TARGET_PORT} default_server@g" default
 	ls -l $(pwd)/default
-	cat default | egrep 'listen|default' | grep -v '#'
+	grep -E 'listen|default' default | grep -v '#'
 	/etc/init.d/nginx reload
 }
 ############
 nginx_logs() {
 	tail -n 10 /var/log/nginx/webdav.error.log
-	if [ $(command -v less) ]; then
+	if [ "$(command -v less)" ]; then
 		less -meQ /var/log/nginx/webdav.access.log
 	else
 		tail -n 10 /var/log/nginx/webdav.access.log
@@ -293,7 +293,7 @@ nginx_webdav_root_dir() {
 	fi
 	sed -i "s@${NGINX_WEBDAV_ROOT_DIR}\;@${TARGET_PATH}\;@" webdav.conf
 	ls -l $(pwd)/webdav.conf
-	printf "%s\n" "您当前的webdav根目录已修改为$(cat webdav.conf | grep root | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')"
+	printf "%s\n" "您当前的webdav根目录已修改为$(grep root webdav.conf | head -n 1 | cut -d ';' -f 1 | awk -F ' ' '$0=$NF')"
 	/etc/init.d/nginx reload
 }
 #################

@@ -64,7 +64,7 @@ install_debian_gnu_linux_distro_menu() {
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='sid' ;;
-	2) check_debian_12 ;;
+	2) DISTRO_CODE='bookworm' ;;
 	3) DISTRO_CODE='bullseye' ;;
 	4) DISTRO_CODE='buster' ;;
 	5) DISTRO_CODE='stretch' ;;
@@ -91,27 +91,14 @@ check_debian_distro_code() {
 	*) install_debian_testing_via_tuna ;;
 	esac
 }
-############
-check_debian_12() {
-	CURRENT_MONTH=$(date -u +%Y%m)
-	if ((${CURRENT_MONTH} >= 202201)); then
-		DISTRO_CODE='bookworm'
-	else
-		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'jessie|stretch|buster|bullseye|sid|trixie|size' | tail -n 1)
-		if [ -z ${DISTRO_CODE} ]; then
-			printf "%s\n" "If you want to experience ${BLUE}debian 12${RESET}, then install ${GREEN}debian sid.${RESET} "
-			press_enter_to_return
-			install_debian_gnu_linux_distro_menu
-		fi
-	fi
-}
+#------------------------
 check_debian_13() {
 	CURRENT_MONTH=$(date -u +%Y%m)
-	if ((${CURRENT_MONTH} >= 202509)); then
+	if ((CURRENT_MONTH >= 202509)); then
 		DISTRO_CODE='trixie'
 	else
 		DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'jessie|stretch|buster|bullseye|bookworm|sid|size' | tail -n 1)
-		if [ -z ${DISTRO_CODE} ]; then
+		if [ -z "${DISTRO_CODE}" ]; then
 			printf "%s\n" "检测到debian trixie尚未发布，建议您等到2025年时再来尝试"
 			printf "%s\n" "如需体验最新版本，请安装debian sid，并添加experimental软件源"
 			press_enter_to_return

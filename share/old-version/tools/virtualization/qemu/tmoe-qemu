@@ -427,7 +427,7 @@ create_blank_virtual_disk_image() {
 	#printf "%s\n" "Do you need to set it as the default disk?"
 	#do_you_want_to_continue
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
+	grep -E --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 ################
 choose_qemu_qcow2_or_img_file() {
@@ -449,7 +449,7 @@ choose_qemu_qcow2_or_img_file() {
 		sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
 		QEMU_DISK_FOEMAT=$(qemu-img info "${TMOE_FILE_ABSOLUTE_PATH}" 2>&1 | grep format | head -n 1 | awk '{print $NF}')
 		[[ -z ${QEMU_DISK_FOEMAT} ]] || sed -E -i "s@^(${BLK_DEVICE}_FORMAT=).*@\1${QEMU_DISK_FOEMAT}@g" ${QEMU_FILE}
-		egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
+		grep -E --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}_FORMAT=|^${BLK_DEVICE}=" ${QEMU_FILE}
 	fi
 }
 ##########
@@ -625,7 +625,7 @@ delete_current_qemu_vm_disk_file() {
 set_it_as_the_default_qemu_iso() {
 	ls -lh ${TMOE_FILE_ABSOLUTE_PATH}
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${TMOE_FILE_ABSOLUTE_PATH}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
+	grep -E --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 download_virtio_driver() {
 	DOWNLOAD_PATH="${HOME}/sd/Download/qemu"
@@ -750,7 +750,7 @@ modify_qemu_shared_folder() {
 	6) modify_qemu_9p_dir_01 ;;
 	esac
 	sed -E -i "s@^(${BLK_DEVICE}=).*@\1"${CURRENT_9P_DIR}"@g;s@^(${BLK_DEVICE}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
+	grep -E --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 }
 ################
 modify_qemu_9p_dir_01() {
@@ -809,7 +809,7 @@ modify_qemu_disk_bootindex() {
 }
 disable_qemu_disk() {
 	sed -E -i "s@^(${BLK_DEVICE}_ENABLED=).*@\1false@g" ${QEMU_FILE}
-	egrep --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
+	grep -E --color=auto "^${BLK_DEVICE}_ENABLED=|^${BLK_DEVICE}=" ${QEMU_FILE}
 	printf "%s\n" "已${PURPLE}禁用${RESET}${BLUE}${BLK_DEVICE}${RESET}"
 }
 #################
@@ -921,7 +921,7 @@ modify_tmoe_qemu_vnc_pulse_audio_address() {
 		#modify_tmoe_qemu_vnc_pulse_audio_address
 	else
 		sed -E -i "s@^(AUDIO_ADDR=).*@\1${AUDIO_ADDR}@g" ${QEMU_FILE}
-		egrep --color=auto "^AUDIO_ADDR=" ${QEMU_FILE}
+		grep -E --color=auto "^AUDIO_ADDR=" ${QEMU_FILE}
 		printf '%s\n' 'Your current PULSEAUDIO SERVER address has been modified.'
 		printf "%s\n" "您当前的音频地址已修改为$(grep '^AUDIO_ADDR=' ${QEMU_FILE} | head -n 1 | cut -d '=' -f 2)"
 	fi
@@ -963,12 +963,12 @@ modify_qemu_sound_card() {
 	case ${TMOE_VIRTUALIZATION} in
 	6)
 		sed -E -i "s@^(SOUND_CARD_02=).*@\1${SOUND_CARD_02}@g;s@^(SOUND_CARD_02_ENABLED=).*@\1${SOUND_CARD_02_ENABLED}@g" ${QEMU_FILE}
-		egrep --color=auto "^SOUND_CARD_02=|^SOUND_CARD_02_ENABLED=" ${QEMU_FILE}
+		grep -E --color=auto "^SOUND_CARD_02=|^SOUND_CARD_02_ENABLED=" ${QEMU_FILE}
 		printf "%s\n" "您已将sound_card_02修改为${BLUE}${SOUND_CARD_02}${RESET}"
 		;;
 	*)
 		sed -E -i "s@^(SOUND_CARD=).*@\1${SOUND_CARD}@g;s@^(SOUND_CARD_ENABLED=).*@\1${SOUND_CARD_ENABLED}@g" ${QEMU_FILE}
-		egrep --color=auto "^SOUND_CARD=|^SOUND_CARD_ENABLED=" ${QEMU_FILE}
+		grep -E --color=auto "^SOUND_CARD=|^SOUND_CARD_ENABLED=" ${QEMU_FILE}
 		printf "%s\n" "您已将sound_card修改为${BLUE}${SOUND_CARD}${RESET}"
 		;;
 	esac
@@ -1218,7 +1218,7 @@ modify_number_of_qemu_cpus() {
 	esac
 	###############
 	sed -E -i "s@^(CPUS_NUM=).*@\1${CPUS_NUM}@g;s@^(SOCKETS_NUM=).*@\1${SOCKETS_NUM}@g;s@^(CORES_NUM=).*@\1${CORES_NUM}@g;s@^(THREADS_NUM=).*@\1${THREADS_NUM}@g" ${QEMU_FILE}
-	egrep --color=auto "^CPUS_NUM=|^SOCKETS_NUM=|^CORES_NUM=|^THREADS_NUM=" ${QEMU_FILE}
+	grep -E --color=auto "^CPUS_NUM=|^SOCKETS_NUM=|^CORES_NUM=|^THREADS_NUM=" ${QEMU_FILE}
 }
 ###############
 ###############
@@ -1346,7 +1346,7 @@ modify_qemu_tmoe_network_card() {
 		printf "%s\n" "您已将network card修改为${TMOE_QEMU_NETWORK_CARD}"
 		;;
 	esac
-	egrep --color=auto "^${NET_DEVICE}_ENABLED=|^${NET_DEVICE}=" ${QEMU_FILE}
+	grep -E --color=auto "^${NET_DEVICE}_ENABLED=|^${NET_DEVICE}=" ${QEMU_FILE}
 }
 ###########
 modify_qemu_exposed_ports() {
@@ -1365,7 +1365,7 @@ modify_qemu_exposed_ports() {
 #################
 disable_qemu_tcp_port_fwd() {
 	sed -E -i "s@^(${PORT_FWD_VAR}_ENABLED=).*@\1false@g" ${QEMU_FILE}
-	egrep --color=auto "^${PORT_FWD_VAR}_ENABLED=" ${QEMU_FILE}
+	grep -E --color=auto "^${PORT_FWD_VAR}_ENABLED=" ${QEMU_FILE}
 	printf "%s\n" "您${PURPLE}已禁用${BLUE}${PORT_FWD_VAR}${RESET}"
 }
 #################
@@ -1379,7 +1379,7 @@ modify_qemu_host_and_guest_port() {
 		printf "%s\n" "Please enter a valid value"
 	else
 		sed -E -i "s@^(${PORT_FWD_VAR}=).*@\1"${TCP_PORT_FWD_RULES}"@g;s@^(${PORT_FWD_VAR}_ENABLED=).*@\1true@g" ${QEMU_FILE}
-		egrep --color=auto "^${PORT_FWD_VAR}_ENABLED=|^${PORT_FWD_VAR}=" ${QEMU_FILE}
+		grep -E --color=auto "^${PORT_FWD_VAR}_ENABLED=|^${PORT_FWD_VAR}=" ${QEMU_FILE}
 		printf "%s\n" "您已将${PORT_FWD_VAR}转发规则修改为${TCP_PORT_FWD_RULES}"
 	fi
 }
@@ -1449,7 +1449,7 @@ modify_qemu_bin_path() {
 		printf "${RED}%s${RESET}%s\n" "ERROR！" "目标路径下的qemu-system-x86_64无执行权限。"
 	else
 		sed -E -i "s@^(QEMU_BIN_PATH=).*@\1${QEMU_BIN_PATH}@g" ${QEMU_FILE}
-		egrep --color=auto "^QEMU_BIN_PATH=" ${QEMU_FILE}
+		grep -E --color=auto "^QEMU_BIN_PATH=" ${QEMU_FILE}
 		printf "%s\n" "您已将QEMU_BIN_PATH修改为${QEMU_BIN_PATH}"
 	fi
 }
@@ -1495,7 +1495,7 @@ choose_qemu_bios_or_uefi_file() {
 	esac
 	###############
 	sed -E -i "s@^(UEFI_CODE_PFLASH=).*@\1"${TMOE_QEMU_BIOS_FILE_PATH}"@g;s@^(UEFI_ENABLED=).*@\1true@g" ${QEMU_FILE}
-	egrep --color=auto "^UEFI_CODE_PFLASH=|^UEFI_ENABLED=" ${QEMU_FILE}
+	grep -E --color=auto "^UEFI_CODE_PFLASH=|^UEFI_ENABLED=" ${QEMU_FILE}
 	printf "%s\n" "您已将UEFI文件修改为${TMOE_QEMU_BIOS_FILE_PATH}"
 }
 ##########
@@ -1868,7 +1868,7 @@ modify_qemu_amd64_tmoe_cpu_type() {
 	esac
 	###############
 	sed -E -i "s@^(CPU_MODEL=).*@\1${TMOE_AMD64_QEMU_CPU_TYPE}@g" ${QEMU_FILE}
-	egrep --color=auto "^CPU_MODEL=" ${QEMU_FILE}
+	grep -E --color=auto "^CPU_MODEL=" ${QEMU_FILE}
 	printf "%s\n" "您已将cpu修改为${TMOE_AMD64_QEMU_CPU_TYPE}"
 	printf "%s\n" "修改完成，将在下次启动qemu虚拟机时生效"
 	press_enter_to_return

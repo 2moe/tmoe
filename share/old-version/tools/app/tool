@@ -73,7 +73,7 @@ main() {
 }
 ################
 check_tmoe_command() {
-	if [ $(command -v zsh) ]; then
+	if [ "$(command -v zsh)" ]; then
 		if grep -Eq '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
 			TMOE_TIPS_01="t t"
 		else
@@ -82,7 +82,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4986.2,type ${TMOE_TIPS_01} to start."
+	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4986.3,type ${TMOE_TIPS_01} to start."
 	#勿改00变量
 }
 #########
@@ -92,7 +92,7 @@ gnu_linux_env() {
 			export TMOE_CHROOT=true
 		fi
 	fi
-	if [ -z ${TMPDIR} ]; then
+	if [ -z "${TMPDIR}" ]; then
 		TMPDIR=/tmp
 		mkdir -pv ${TMPDIR}
 	fi
@@ -177,7 +177,7 @@ check_root() {
 	case $(id -u) in
 	0) ;;
 	*)
-		if [ $(command -v fortune) ]; then
+		if [ "$(command -v fortune)" ]; then
 			fortune 2>/dev/null
 		elif [ -e /usr/games/fortune ]; then
 			/usr/games/fortune 2>/dev/null
@@ -441,7 +441,7 @@ check_dependencies() {
 		esac
 	fi
 	#####################
-	if [ ! $(command -v catimg) ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
+	if [ ! "$(command -v catimg)" ] && [ ! -e "${TMOE_LINUX_DIR}/not_install_catimg" ]; then
 		case "${LINUX_DISTRO}" in
 		debian)
 			if grep -q 'VERSION_ID=' "/etc/os-release"; then
@@ -449,7 +449,7 @@ check_dependencies() {
 			else
 				DEBIANVERSION="10"
 			fi
-			if ((${DEBIANVERSION} <= 9)); then
+			if ((DEBIANVERSION <= 9)); then
 				printf "%s\n" "检测到您的系统版本低于debian10，跳过安装catimg"
 			else
 				DEPENDENCIES="${DEPENDENCIES} catimg"
@@ -741,7 +741,7 @@ check_dependencies() {
 	fi
 	##############
 	CurrentLANG=${LANG}
-	if [ ! $(printf '%s\n' "${LANG}" | egrep 'UTF-8|UTF8') ]; then
+	if [ ! $(printf '%s\n' "${LANG}" | grep -E 'UTF-8|UTF8') ]; then
 		export LANG=C.UTF-8
 	fi
 }

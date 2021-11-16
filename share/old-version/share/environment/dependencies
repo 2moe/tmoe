@@ -2,8 +2,9 @@
 ####################
 check_zstd() {
 	if [ ! $(command -v zstd) ]; then
-		printf "正在${YELLOW}安装${GREEN}zstd${RESET}及其${BLUE}依赖...${RESET}\n"
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
+		printf "%s\n" \
+			"正在${YELLOW}安装${GREEN}zstd${RESET}及其${BLUE}依赖...${RESET}" \
+			"${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
 		${TMOE_INSTALLATION_COMMAND} zstd
 		printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}zstd${RESET}"
 	fi

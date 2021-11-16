@@ -122,7 +122,7 @@ check_chroot_conf() {
 			if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
 				SYSTEMD_NSPAWN=false
 			else
-				SYSTEMD_NSPAWN=$(egrep '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')
+				SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')
 			fi
 		fi
 		;;
@@ -255,7 +255,7 @@ switch_to_chroot_or_unshare() {
 	else
 		${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
-	egrep --color=auto "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_container_engine_bin_file() {
 	unset TMOE_TIPS_05
@@ -272,7 +272,7 @@ switch_container_engine_bin_file() {
 	if grep -q '^UNSHARE_ENABLED=true' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
 		CURRENT_BIN=$(grep '^UNSHARE_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
 	else
-		CURRENT_BIN=$(egrep '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+		CURRENT_BIN=$(grep -E '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
 	fi
 	[[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652.0或更新版本的容器。"
 	ENV_VAR_AND_SCRIPT=$(whiptail --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
@@ -314,7 +314,7 @@ change_the_mount_point() {
 	else
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_POINT_VAR}=).*@\1\"${MOUNT_POINT}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
-	egrep --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 change_the_mount_source_dir() {
 	CURRENT_PATH=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
@@ -328,7 +328,7 @@ change_the_mount_source_dir() {
 		fi
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_SOURCE_VAR}=).*@\1\"${MOUNT_DIR}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
-	egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	RETURN_TO_WHERE="change_the_mount_source_dir"
 	do_you_want_to_continue
 }
@@ -336,7 +336,7 @@ do_you_want_to_change_the_mount_source_dir() {
 	if (whiptail --title "SOURCE DIR" --yes-button "yes" --no-button "no" --yesno "Do you change the source dir?" 8 50); then
 		change_the_mount_source_dir
 	else
-		egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
 }
 mount_dir_to_container() {
@@ -358,7 +358,7 @@ mount_dir_to_container() {
 			if (whiptail --title "MOUNT POINT" --yes-button "yes" --no-button "no" --yesno "Do you want to change the mount point?" 8 50); then
 				change_the_mount_point
 			else
-				egrep --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+				grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 			fi
 			;;
 		esac
@@ -366,8 +366,8 @@ mount_dir_to_container() {
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	fi
 	printf "%s\n" "----------------------"
-	egrep --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	egrep --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_login_shell() {
 	LOGIN_SHELL_VAR="DEFAULT_LOGIN_SHELL_0"
@@ -404,13 +404,13 @@ switch_login_shell() {
 	9) DEFAULT_SHELL=tcsh ;;
 	esac
 	${TMOE_PREFIX} sed -i -E "s@^(${LOGIN_SHELL_VAR}=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	egrep --color=auto "^[^#]*${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^[^#]*${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 ####################
 switch_nspawn_boot_mode() {
 	case ${SYSTEMD_NSPAWN} in
 	true)
-		SYSTEMD_BOOT=$(egrep '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+		SYSTEMD_BOOT=$(grep -E '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 		case ${SYSTEMD_BOOT} in
 		true)
 			case ${TMOE_MENU_LANG} in
@@ -479,13 +479,13 @@ set_tmoe_user_as_the_default_user() {
 }
 ##############################
 switch_container_login_user() {
-	cd ${TMPDIR}
+	cd "${TMPDIR}" || exit 1
 	grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
 	grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
 	TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
 	rm -f .tmoe-linux_cache.0*
 	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
-		"The login user of the current container is $(egrep '^PROOT_USER=|^CHROOT_USER=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')\nPlease choose a user." 0 0 0 \
+		"The login user of the current container is $(grep -E '^PROOT_USER=|^CHROOT_USER=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')\nPlease choose a user." 0 0 0 \
 		${TMOE_USER_LIST} \
 		"0" "🌚 Back/zurück/返回" \
 		3>&1 1>&2 2>&3)
@@ -504,7 +504,7 @@ switch_container_login_user() {
 		fi
 		;;
 	esac
-	egrep --color=auto "^PROOT_USER=|^CHROOT_USER=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto "^PROOT_USER=|^CHROOT_USER=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	press_enter_to_return
 	${RETURN_TO_WHERE}
 }
@@ -882,7 +882,7 @@ readme_of_gnu_linux_distro() {
 		tmoe-zsh会自动加载tmoe补全插件，其他插件管理器需要手动加载。
 		Tmoe-zsh manager is based on zinit.
 		zinit插件管理器配置补全插件：${GREEN}
-		[[ \$(egrep '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 as"completion" && zinit snippet ${TMOE_SHARE_DIR}/completion/_tmoe' ${HOME}/.zshrc
+		[[ \$(grep -E '^[^#]*zinit.*completion/_tmoe' ${HOME}/.zshrc) ]] || sed -i '$ a\zinit ice lucid wait=1 as"completion" && zinit snippet ${TMOE_SHARE_DIR}/completion/_tmoe' ${HOME}/.zshrc
 		${RESET}
 		至于其他插件管理器，例如oh-my-zsh，因开发者并未进行测试，故请自行加载插件。
 		${BOLD}${YELLOW}TIPS OF TMOE COMPLETION PLUGIN${RESET}${RESET}
@@ -1017,20 +1017,34 @@ chmod_777_temporary_file_02() {
 	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 }
 create_and_move_temporary_script_05() {
-	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /tmp/.tmoe_container_temporary" "${EXEC_PROGRAM}" >${TEMP_FILE}
+	printf "%s\n" \
+		'#!/usr/bin/env bash' \
+		"cd /tmp/.tmoe_container_temporary" \
+		"${EXEC_PROGRAM}" \
+		>${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_06() {
-	printf "%s\n%s\n%s\n" '#!/usr/bin/env bash' "cd /tmp/.tmoe_container_temporary" "${TEMPORARY_SCRIPT_FILE}" >${TEMP_FILE}
+	printf "%s\n" \
+		'#!/usr/bin/env bash' \
+		"cd /tmp/.tmoe_container_temporary" \
+		"${TEMPORARY_SCRIPT_FILE}" \
+		>${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_07() {
 	TEMP_FILE="start_01_vnc"
-	printf "%s\n%s\n" '#!/usr/bin/env bash' "${EXEC_PROGRAM}" >${TEMP_FILE}
+	printf "%s\n" \
+		'#!/usr/bin/env bash' \
+		"${EXEC_PROGRAM}" \
+		>${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_08() {
-	printf "%s\n%s\n" '#!/usr/bin/env bash' "${TEMPORARY_SCRIPT_FILE}" >${TEMP_FILE}
+	printf "%s\n" \
+		'#!/usr/bin/env bash' \
+		"${TEMPORARY_SCRIPT_FILE}" \
+		>${TEMP_FILE}
 	chmod_777_temporary_file_02
 }
 ########
@@ -1211,9 +1225,9 @@ cat_docker_readme_file() {
 	if [ "$(ls ${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.* 2>/dev/null)" ]; then
 		for i in ${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.*; do
 			printf "%s\n" "${YELLOW}------------------------${RESET}"
-			if [ $(command -v bat) ]; then
+			if [ "$(command -v bat)" ]; then
 				bat -ppn ${i}
-			elif [ $(command -v batcat) ]; then
+			elif [ "$(command -v batcat)" ]; then
 				batcat -ppn ${i}
 			else
 				cat ${i}
@@ -1274,7 +1288,7 @@ install_weekly_build_container() {
 		case ${NODE_NAME} in
 		node03-azure)
 			CURRENT_DATE=$(date -u +%Y%m%d)
-			if ((${CURRENT_DATE} >= 20210507)); then
+			if ((CURRENT_DATE >= 20210507)); then
 				aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT}
 			fi
 			;;
@@ -1298,11 +1312,11 @@ install_weekly_build_container() {
 			fi
 			LATEST_02_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}')"
 			LATEST_02_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}') +%s)"
-			if ((${LATEST_02_DATE} < ${LATEST_01_DATE})); then
+			if ((LATEST_02_DATE < LATEST_01_DATE)); then
 				ROOTFS_VERSION='latest01'
-			elif ((${LATEST_02_DATE} > ${LATEST_01_DATE})); then
+			elif ((LATEST_02_DATE > LATEST_01_DATE)); then
 				ROOTFS_VERSION='latest02'
-			elif ((${LATEST_02_TIME} < ${LATEST_01_TIME})); then
+			elif ((LATEST_02_TIME < LATEST_01_TIME)); then
 				ROOTFS_VERSION='latest01'
 			else
 				ROOTFS_VERSION='latest02'
@@ -1454,4 +1468,4 @@ backup_tmoe_gnu_linux_distro() {
 	fi
 }
 #####################
-proot_management_menu $@
+proot_management_menu "$@"
