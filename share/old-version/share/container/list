@@ -1987,7 +1987,7 @@ install_manjaro_linux_distro() {
 				-e 's:debian-sid:manjaro-stable:g' \
 				-e 's:debian/sid:manjaro/stable:g' \
 				-e 's:rootfs.tar.xz:rootfs.tar.gz:g' \
-				-e -E 's@^(MANJARO_LINUX=).*@\1true@g' \
+				-e 's@^(MANJARO_LINUX=).*@\1true@g' \
 				-e 's:Debian (GNU/Linux):Manjaro \1:g')"
 		;;
 	amd64)

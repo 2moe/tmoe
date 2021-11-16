@@ -16,7 +16,7 @@ It's recommended that you read the [full documentation](./share/doc/readme.md).
 
 Note: These documents are temporarily unavailable.
 
-The new version with improved multilingual support will be released in 2022.
+The new version with improved multilingual support will be released before 2023.
 
 | language                                     | note                                                                                                           | contributors   |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------- |
@@ -39,12 +39,12 @@ The new version with improved multilingual support will be released in 2022.
 
 ### 2.1. methods
 
-| method | tool  | condition                                                                                                | command                                    |
-| ------ | ----- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(stable) will be released in 2022.) | ~~`cargo install tmm`~~                    |
-| 2      | curl  | you have `curl` installed, and can access github                                                         | `. <(curl -L git.io/linux.sh)`             |
-| 3      | curl  | you cannot access github                                                                                 | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
-| 4      | curl  | none of the above methods can be installed                                                               | `curl -Lo l l.tmoe.me; sh l`               |
+| method | tool  | condition                                                                                                    | command                                    |
+| ------ | ----- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(stable) will be released before 2023.) | ~~`cargo install tmm`~~                    |
+| 2      | curl  | you have `curl` installed, and can access github                                                             | `. <(curl -L git.io/linux.sh)`             |
+| 3      | curl  | you cannot access github                                                                                     | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
+| 4      | curl  | none of the above methods can be installed                                                                   | `curl -Lo l l.tmoe.me; sh l`               |
 
 <!-- | 1      | cargo | you have `cargo` installed        | `cargo install tmoe`            | -->
 
