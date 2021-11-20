@@ -11,52 +11,66 @@ choose_which_gnu_linux_distro() {
 	check_rootfs_dir
 	[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
 	unset NODE02_ENABLED WEEKLY_BUILD_CONTAINER
+	TITLE="CONTAINERS"
 	choose_which_gnu_linux_distro_ja() {
-		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "容器をお選びください" 0 50 0 \
-			"1" "🍭 推奨:毎週のGUIビルド(xfce,kde,mate & lxqt)" \
-			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
-			"3" "🍥 Debian は オペレーティングシステムのフリーなディストリビューションです" \
-			"4" "🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである" \
-			"5" "🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている" \
-			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
-			"7" "🐉 Kali rolling:ペネトレーションテストを主な目的としている" \
-			"8" "🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです" \
-			"9" "👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro" \
-			"10" "🦎 Chroot専属する:opensuse,deepin" \
-			"11" "🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo" \
-			"0" "🌚 戻る" \
-			3>&1 1>&2 2>&3)
+		MENU="容器をお選びください"
+		OPT_0="🌚 戻る"
+		OPT_11="🍭 毎週のGUIビルド(xfce,kde,mate & lxqt)"
+		OPT_10="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_1="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
+		OPT_2="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
+		OPT_3="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
+		OPT_4="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_5="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
+		OPT_6="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
+		OPT_7="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
+		OPT_8="🦎 Chroot専属する:opensuse,deepin"
+		OPT_9="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_zh() {
-		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "您想要安装哪个容器?" 0 50 0 \
-			"1" "🍭 推荐:每周构建xfce,kde,mate & lxqt" \
-			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
-			"3" "🍥 Debian:致力于自由" \
-			"4" "🍛 Ubuntu:我的存在是因為大家的存在" \
-			"5" "🌉 Arch:系统设计以KISS为总体指导原则" \
-			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
-			"7" "🐉 Kali rolling:设计用于数字取证和渗透测试" \
-			"8" "🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)" \
-			"9" "👒 Fedora:红帽社区版,新技术试验场" \
-			"10" "🦎 Chroot专属:deepin,opensuse" \
-			"11" "🍓 Experimental(体验版):archcraft,树莓派" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3)
+		MENU="您想要安装哪个容器?"
+		OPT_11="🍭 每周构建xfce,kde,mate & lxqt"
+		OPT_10="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_1="🍥 Debian:致力于自由"
+		OPT_2="🍛 Ubuntu:我的存在是因為大家的存在"
+		OPT_3="🌉 Arch:系统设计以KISS为总体指导原则"
+		OPT_4="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_5="🐉 Kali rolling:设计用于数字取证和渗透测试"
+		OPT_6="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
+		OPT_7="👒 Fedora:红帽社区版,新技术试验场"
+		OPT_8="🦎 Chroot专属:deepin,opensuse"
+		OPT_9="🍓 Experimental(体验版):archcraft,树莓派"
+		OPT_0="🌚 Return to previous menu 返回上级菜单"
 	}
 	choose_which_gnu_linux_distro_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "CONTAINERS" --menu "Which container do you want to install?" 0 50 0 \
-			"1" "🍭 Recommended:Weekly builds(xfce,kde,mate & lxqt)" \
-			"2" "🐳 Rust,go,nodejs,jdk,mongodb & docker" \
-			"3" "🍥 Debian is a distro composed of free and open-source software" \
-			"4" "🍛 Ubuntu is the modern, open source OS." \
-			"5" "🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility" \
-			"6" "🍱 Manjaro,centos,alpine,mint,rocky & puppy" \
-			"7" "🐉 Kali:designed for digital forensics and penetration testing" \
-			"8" "🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)" \
-			"9" "👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat" \
-			"10" "🦎 Chroot exclusive:opensuse,deepin" \
-			"11" "🍓 Experimental,no longer maintained:RaspiOS,Gentoo" \
-			"0" "🌚 Return to previous menu" \
+		MENU="Which container do you want to install?"
+		OPT_11="🍭 Weekly builds(xfce,kde,mate & lxqt)"
+		OPT_10="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_1="🍥 Debian is a distro composed of free and open-source software"
+		OPT_2="🍛 Ubuntu is the modern, open source OS."
+		OPT_3="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
+		OPT_4="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_5="🐉 Kali:designed for digital forensics and penetration testing"
+		OPT_6="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
+		OPT_7="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
+		OPT_8="🦎 Chroot exclusive:opensuse,deepin"
+		OPT_9="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
+		OPT_0="🌚 Return to previous menu"
+	}
+	choose_which_gnu_linux_distro_menu() {
+		SELECTED_GNU_LINUX=$(whiptail --title "${TITLE}" --menu "${MENU}" 0 50 0 \
+			"1" "$OPT_1" \
+			"2" "$OPT_2" \
+			"3" "$OPT_3" \
+			"4" "$OPT_4" \
+			"5" "$OPT_5" \
+			"6" "$OPT_6" \
+			"7" "$OPT_7" \
+			"8" "$OPT_8" \
+			"9" "$OPT_9" \
+			"10" "$OPT_10" \
+			"11" "$OPT_11" \
+			"0" "$OPT_0" \
 			3>&1 1>&2 2>&3)
 	}
 	##############################
@@ -65,31 +79,32 @@ choose_which_gnu_linux_distro() {
 	ja_JP.UTF-8) choose_which_gnu_linux_distro_ja ;;
 	*) choose_which_gnu_linux_distro_en ;;
 	esac
+	choose_which_gnu_linux_distro_menu
 
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") proot_container_menu ;;
-	1) install_tmoe_weekly_build_edition ;;
-	2) install_tmoe_moonthly_build_edition ;;
-	3) install_debian_gnu_linux_distro ;;
-	4) install_ubuntu_gnu_linux_distro ;;
-	5)
+	11) install_tmoe_weekly_build_edition ;;
+	10) install_tmoe_moonthly_build_edition ;;
+	1) install_debian_gnu_linux_distro ;;
+	2) install_ubuntu_gnu_linux_distro ;;
+	3)
 		DISTRO_NAME='arch'
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		create_container_edition_txt
 		go_to_proot_management
 		;;
-	6) install_beta_containers ;;
-	7)
+	4) install_beta_containers ;;
+	5)
 		DISTRO_NAME='kali'
 		DISTRO_CODE='rolling'
 		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
 		create_container_edition_txt
 		go_to_proot_management
 		;;
-	8) install_armbian_linux_distro ;;
-	9) install_fedora_gnu_linux_distro ;;
-	10) install_chroot_exclusive_containers ;;
-	11) install_alpha_containers ;;
+	6) install_armbian_linux_distro ;;
+	7) install_fedora_gnu_linux_distro ;;
+	8) install_chroot_exclusive_containers ;;
+	9) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
@@ -220,9 +235,11 @@ install_tmoe_weekly_build_edition() {
 	amd64 | i386 | arm64 | armhf) WEEKLY_BUILD_CONTAINER=true ;;
 	*) distro_does_not_support ;;
 	esac
+	# TMOE/Azure Server will automatically build and release the latest DE container every week/month
 	choose_de_en() {
+		MENU="Sorry, this feature will not be updated for a long time to come."
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"TMOE/Azure Server will automatically build and release the latest DE container every week/month" 0 0 0 \
+			"${MENU}" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🌿 mate(the continuation of GNOME 2)" \
 			"3" "🦖 kde plasma5(beautiful and modern)" \
@@ -234,8 +251,10 @@ install_tmoe_weekly_build_edition() {
 			3>&1 1>&2 2>&3)
 	}
 	choose_de_zh() {
+		#tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新
+		MENU="抱歉，由于某些原因, 此功能将在接下来很长一段时间停更"
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新" 0 0 0 \
+			"${MENU}" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🌿 mate(the continuation of GNOME 2)" \
 			"3" "🦖 kde plasma5(风格华丽的桌面环境)" \
