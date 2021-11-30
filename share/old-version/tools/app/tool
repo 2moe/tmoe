@@ -842,7 +842,8 @@ tmoe_linux_tool_menu() {
 				"0" "🌚 Exit" \
 				3>&1 1>&2 2>&3
 		)
-		tmoe_linux_tool_menu_de() {
+	}
+	tmoe_linux_tool_menu_de() {
 			TMOE_OPTION=$(
 				whiptail --title "Tmoe-Tools running on ${OSRELEASE}" \
 					--menu "${TMOE_TIPS_00}\nPlease use the enter and arrow keys to operate." 0 50 0 \
@@ -860,7 +861,6 @@ tmoe_linux_tool_menu() {
 					"0" "🌚 Ausfahrt" \
 					3>&1 1>&2 2>&3
 			)
-		}
 	}
 	########
 	case ${TMOE_MENU_LANG} in
