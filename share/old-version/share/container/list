@@ -15,47 +15,47 @@ choose_which_gnu_linux_distro() {
 	choose_which_gnu_linux_distro_ja() {
 		MENU="容器をお選びください"
 		OPT_0="🌚 戻る"
-		OPT_11="🍭 毎週のGUIビルド(xfce,kde,mate & lxqt)"
-		OPT_10="🐳 Rust,go,nodejs,jdk,mongodb & docker"
-		OPT_1="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
-		OPT_2="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
-		OPT_3="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
-		OPT_4="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
-		OPT_5="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
-		OPT_6="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
-		OPT_7="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
-		OPT_8="🦎 Chroot専属する:opensuse,deepin"
-		OPT_9="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
+		OPT_1="🍭 毎週のGUIビルド(xfce,kde,mate & lxqt)"
+		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
+		OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
+		OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
+		OPT_6="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
+		OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
+		OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
+		OPT_10="🦎 Chroot専属する:opensuse,deepin"
+		OPT_1="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_zh() {
 		MENU="您想要安装哪个容器?"
-		OPT_11="🍭 每周构建xfce,kde,mate & lxqt"
-		OPT_10="🐳 Rust,go,nodejs,jdk,mongodb & docker"
-		OPT_1="🍥 Debian:致力于自由"
-		OPT_2="🍛 Ubuntu:我的存在是因為大家的存在"
-		OPT_3="🌉 Arch:系统设计以KISS为总体指导原则"
-		OPT_4="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
-		OPT_5="🐉 Kali rolling:设计用于数字取证和渗透测试"
-		OPT_6="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
-		OPT_7="👒 Fedora:红帽社区版,新技术试验场"
-		OPT_8="🦎 Chroot专属:deepin,opensuse"
-		OPT_9="🍓 Experimental(体验版):archcraft,树莓派"
 		OPT_0="🌚 Return to previous menu 返回上级菜单"
+		OPT_1="🍭 每周构建xfce,kde,mate & lxqt"
+		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_3="🍥 Debian:致力于自由"
+		OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
+		OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
+		OPT_6="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
+		OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
+		OPT_9="👒 Fedora:红帽社区版,新技术试验场"
+		OPT_10="🦎 Chroot专属:deepin,opensuse"
+		OPT_11="🍓 Experimental(体验版):archcraft,树莓派"
 	}
 	choose_which_gnu_linux_distro_en() {
 		MENU="Which container do you want to install?"
-		OPT_11="🍭 Weekly builds(xfce,kde,mate & lxqt)"
-		OPT_10="🐳 Rust,go,nodejs,jdk,mongodb & docker"
-		OPT_1="🍥 Debian is a distro composed of free and open-source software"
-		OPT_2="🍛 Ubuntu is the modern, open source OS."
-		OPT_3="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
-		OPT_4="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
-		OPT_5="🐉 Kali:designed for digital forensics and penetration testing"
-		OPT_6="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
-		OPT_7="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-		OPT_8="🦎 Chroot exclusive:opensuse,deepin"
-		OPT_9="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
 		OPT_0="🌚 Return to previous menu"
+		OPT_1="🍭 Weekly builds(xfce,kde,mate & lxqt)"
+		OPT_1="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_2="🍥 Debian is a distro composed of free and open-source software"
+		OPT_3="🍛 Ubuntu is the modern, open source OS."
+		OPT_4="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
+		OPT_5="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_6="🐉 Kali:designed for digital forensics and penetration testing"
+		OPT_7="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
+		OPT_8="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
+		OPT_9="🦎 Chroot exclusive:opensuse,deepin"
+		OPT_10="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_menu() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${TITLE}" --menu "${MENU}" 0 50 0 \
@@ -83,28 +83,28 @@ choose_which_gnu_linux_distro() {
 
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") proot_container_menu ;;
-	11) install_tmoe_weekly_build_edition ;;
-	10) install_tmoe_moonthly_build_edition ;;
-	1) install_debian_gnu_linux_distro ;;
-	2) install_ubuntu_gnu_linux_distro ;;
-	3)
+	1) install_tmoe_weekly_build_edition ;;
+	2) install_tmoe_moonthly_build_edition ;;
+	3) install_debian_gnu_linux_distro ;;
+	4) install_ubuntu_gnu_linux_distro ;;
+	5)
 		DISTRO_NAME='arch'
 		TMOE_LINUX_CONTAINER_DISTRO='arch'
 		create_container_edition_txt
 		go_to_proot_management
 		;;
-	4) install_beta_containers ;;
-	5)
+	6) install_beta_containers ;;
+	7)
 		DISTRO_NAME='kali'
 		DISTRO_CODE='rolling'
 		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
 		create_container_edition_txt
 		go_to_proot_management
 		;;
-	6) install_armbian_linux_distro ;;
-	7) install_fedora_gnu_linux_distro ;;
-	8) install_chroot_exclusive_containers ;;
-	9) install_alpha_containers ;;
+	8) install_armbian_linux_distro ;;
+	9) install_fedora_gnu_linux_distro ;;
+	10) install_chroot_exclusive_containers ;;
+	11) install_alpha_containers ;;
 	esac
 	####################
 	exit 0
@@ -146,8 +146,8 @@ install_tmoe_moonthly_build_edition() {
 	choose_service_en() {
 		INSTALLDESKTOP=$(whiptail --title "CONTAINERS" --menu \
 			"Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
-			"1" "🐹 Go (Makes it easy to build simple&reliable app)" \
-			"2" "🦀 Rust(Blazingly fast and memory-efficient)" \
+			"1" "🦀 Rust(Blazingly fast and memory-efficient)" \
+			"2" "🐹 Go (Makes it easy to build simple&reliable app)" \
 			"3" "Visual Studio Code online server" \
 			"4" "OpenJDK(An open-source Java Platform)" \
 			"5" "🐳 Docker(Run docker with qemu)" \
@@ -166,11 +166,11 @@ install_tmoe_moonthly_build_edition() {
 	case "${INSTALLDESKTOP}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
-		DISTRO_NAME="go"
+		DISTRO_NAME="rust"
 		choose_latest_or_alpine
 		;;
 	2)
-		DISTRO_NAME="rust"
+		DISTRO_NAME="go"
 		choose_latest_or_alpine
 		;;
 	3)
@@ -237,7 +237,8 @@ install_tmoe_weekly_build_edition() {
 	esac
 	# TMOE/Azure Server will automatically build and release the latest DE container every week/month
 	choose_de_en() {
-		MENU="Sorry, this feature will not be updated for a long time to come."
+		# MENU="Sorry, this feature will not be updated for a long time to come."
+		MENU="TMOE/Azure Server will automatically build and release the latest DE container every week/month"
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
 			"${MENU}" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
@@ -251,8 +252,8 @@ install_tmoe_weekly_build_edition() {
 			3>&1 1>&2 2>&3)
 	}
 	choose_de_zh() {
-		#tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新
-		MENU="抱歉，由于某些原因, 此功能将在接下来很长一段时间停更"
+		# MENU="抱歉，由于某些原因, 此功能将在接下来很长一段时间停更"
+		MENU="tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新"
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
 			"${MENU}" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
@@ -732,47 +733,49 @@ choose_zsh_distro() {
 #alpine xfce+mate -> mate
 view_the_schedule() {
 	cat <<-EOF
+		${YELLOW}Some containers only support ${PURPLE}edition 2022${RESET}
+
 		${BOLD}${PURPLE}Semiweekly builds${RESET}：
 		
 		${BOLD}${YELLOW}Monday & Friday${RESET}：
-			${GREEN}rust-nightly ${YELLOW}(amd64, arm64, armhf, riscv64, ppc64el, s390x, mips64el) ${PURPLE}*  ${BLUE}gnu${RESET}
-			${GREEN}rust-nightly ${YELLOW}(amd64, arm64)  ${PURPLE}*  ${BLUE}musl${RESET}
+			${GREEN}rust ${CYAN}nightly ${YELLOW}(amd64, arm64, armhf, riscv64, ppc64el, s390x, mips64el) ${PURPLE}* ${BLUE}gnu${RESET}
+			${GREEN}rust ${CYAN}nightly ${YELLOW}(amd64, arm64)  ${PURPLE}* ${BLUE}musl${RESET}
 
 		${CYAN}--------------------------${RESET}
 		${BOLD}${PURPLE}Weekly builds${RESET}：
 
 		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
-			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}ubuntu-devel ${YELLOW}armhf  ${PURPLE}*  ${BLUE}(kde, zsh)${RESET}
+			${GREEN}ubuntu ${CYAN}devel ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}ubuntu ${CYAN}devel ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}ubuntu ${CYAN}devel ${YELLOW}armhf ${PURPLE}* ${BLUE}(kde, zsh)${RESET}
 
-			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}fedora-rawhide ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}fedora-rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
+			${GREEN}fedora ${CYAN}rawhide ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}fedora ${CYAN}rawhide ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}fedora ${CYAN}rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
-			${GREEN}arch ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}arch ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}arch ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}arch ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
 			${GREEN}arch ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 
-			${GREEN}debian-sid ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}debian-sid ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}debian-sid ${YELLOW}armhf ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
-			${GREEN}debian-sid ${YELLOW}i386 ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}armhf ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}i386 ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
 
 		${BOLD}${YELLOW}Thursday/周四/木曜日${RESET}：
-			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
-			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}i386 ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
 
-			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
-			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
-			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}kali ${CYAN}rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}kali ${CYAN}rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}kali ${CYAN}rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 		
 		${BOLD}${YELLOW}Friday/周五/金曜日${RESET}：
-			${GREEN}manjaro-stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}   
-			${GREEN}manjaro-stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}manjaro ${CYAN}stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}   
+			${GREEN}manjaro ${CYAN}stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 		
 		${CYAN}--------------------------${RESET}
 		${BOLD}${PURPLE}Semimonthly builds${RESET}：
