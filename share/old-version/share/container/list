@@ -25,7 +25,7 @@ choose_which_gnu_linux_distro() {
 		OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
 		OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
 		OPT_10="🦎 Chroot専属する:opensuse,deepin"
-		OPT_1="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
+		OPT_11="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_zh() {
 		MENU="您想要安装哪个容器?"
@@ -46,16 +46,16 @@ choose_which_gnu_linux_distro() {
 		MENU="Which container do you want to install?"
 		OPT_0="🌚 Return to previous menu"
 		OPT_1="🍭 Weekly builds(xfce,kde,mate & lxqt)"
-		OPT_1="🐳 Rust,go,nodejs,jdk,mongodb & docker"
-		OPT_2="🍥 Debian is a distro composed of free and open-source software"
-		OPT_3="🍛 Ubuntu is the modern, open source OS."
-		OPT_4="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
-		OPT_5="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
-		OPT_6="🐉 Kali:designed for digital forensics and penetration testing"
-		OPT_7="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
-		OPT_8="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-		OPT_9="🦎 Chroot exclusive:opensuse,deepin"
-		OPT_10="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
+		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
+		OPT_3="🍥 Debian is a distro composed of free and open-source software"
+		OPT_4="🍛 Ubuntu is the modern, open source OS."
+		OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
+		OPT_6="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
+		OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
+		OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
+		OPT_10="🦎 Chroot exclusive:opensuse,deepin"
+		OPT_11="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_menu() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${TITLE}" --menu "${MENU}" 0 50 0 \

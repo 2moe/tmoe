@@ -37,7 +37,7 @@ get_chromium_version() {
     printf "%s\n" \
     "arch: ${ARCH_TYPE}" \
     "version: ${VERSION_ID}"
-
+    
     CHROMIUM_BROWSER_VERSION="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep ${ARCH_TYPE} | grep ${VERSION_ID} | tail -n 1 | cut -d '_' -f 2 | cut -d '-' -f 1)"
 }
 ubuntu_ppa_chromium() {
