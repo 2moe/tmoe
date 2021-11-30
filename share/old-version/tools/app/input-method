@@ -160,7 +160,7 @@ configure_tmoe_input_method() {
             -e "s%(export SDL_IM_MODULE=).*%\1${TMOE_INPUT_METHOD_FRAMEWORK}%g" \
             -i /etc/environment
     fi
-    egrep --color=auto 'GTK_IM_MODULE=|QT_IM_MODULE=|XMODIFIERS=|SDL_IM_MODULE=' /etc/environment
+    grep -E --color=auto 'GTK_IM_MODULE=|QT_IM_MODULE=|XMODIFIERS=|SDL_IM_MODULE=' /etc/environment
 
     case ${TMOE_INPUT_METHOD_FRAMEWORK} in
     fcitx5)

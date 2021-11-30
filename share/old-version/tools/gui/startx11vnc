@@ -113,7 +113,8 @@ start_tmoe_xvfb() {
     set -- "${@}" "+render"
     set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-br"
-    set -- "${@}" "-wm"
+    # WhenMapped default backing-store
+    # set -- "${@}" "-wm"
     set -- "${@}" "-retro"
     set -- "${@}" "-noreset"
     set -- "Xvfb" "${@}"

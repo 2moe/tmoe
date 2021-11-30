@@ -151,10 +151,12 @@ do_you_want_to_delete_the_zsh_script_file() {
 	fi
 }
 set_your_vnc_passwd() {
+	# auto-update: false
+
 	cd ${TMOE_GIT_DIR}
-	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
-	git reset --hard origin/master
-	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+	# printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
+	# git reset --hard origin/master
+	# git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 	mkdir -pv /usr/local/bin
 	cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
 	chmod a+rx /usr/local/bin/start*
@@ -171,7 +173,7 @@ do_you_want_to_configure_tmoe_zsh() {
 	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
 	for i in "/media/sd/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/media/sd/DCIM/Camera" "/media/sd/DCIM/100ANDRO" "/media/sd/Pictures/Screenshots" "/media/sd/Pictures" "/media/sd" "/media/sd/0/DCIM/.thumbnails"; do
 		if [[ -e ${i} ]]; then
-			if [[ -n $(ls -l ${i} | grep '^-' | egrep -i '\.png|\.jpg') ]]; then
+			if [[ -n $(ls -l ${i} | grep '^-' | grep -E -i '\.png|\.jpg') ]]; then
 				FACE_ICON_DIR="${i}"
 				break
 			fi
@@ -246,7 +248,7 @@ auto_configure_tmoe_tools() {
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
 	if [ $(command -v startx11vnc) ]; then
 		#.dockerenv
-		if egrep -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
+		if grep -E -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
 			for i in /opt/electron/electron /opt/electron-v8/electron; do
 				[[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe-linux tool重新安装electron"
 				sleep 2
@@ -373,7 +375,7 @@ auto_configure_tmoe_tool_02() {
 	fi
 }
 auto_check_face_icon() {
-	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | egrep -i '\.jpg|\.png' | head -n 1)
+	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | grep -E -i '\.jpg|\.png' | head -n 1)
 	cp -vf ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
 	ln -svf ${HOME}/.face ${HOME}/.face.icon
 	copy_face_icon_to_home
@@ -418,7 +420,7 @@ curl_tmoe_zsh() {
 	bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
 }
 change_shell_to_bin_zsh() {
-	if egrep -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
+	if grep -E -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
 		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
 	fi
 }

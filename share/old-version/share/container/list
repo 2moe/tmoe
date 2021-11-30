@@ -732,51 +732,85 @@ choose_zsh_distro() {
 #alpine xfce+mate -> mate
 view_the_schedule() {
 	cat <<-EOF
-		${BOLD}${PURPLE}Weekly builds${RESET}：
-		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
-		TIME："UTC 00:01 / CST 08:01"
-			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(lxqt, zsh)${RESET}
-			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(lxqt, zsh)${RESET}
+		${BOLD}${PURPLE}Semiweekly builds${RESET}：
+		
+		${BOLD}${YELLOW}Monday & Friday${RESET}：
+			${GREEN}rust-nightly ${YELLOW}(amd64, arm64, armhf, riscv64, ppc64el, s390x, mips64el) ${PURPLE}*  ${BLUE}gnu${RESET}
+			${GREEN}rust-nightly ${YELLOW}(amd64, arm64)  ${PURPLE}*  ${BLUE}musl${RESET}
 
-		TIME："UTC 06:01 / CST 14:01"
-			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, lxqt, mate, zsh)${RESET}
-			${GREEN}fedora-rawhide ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, lxqt, mate, zsh)${RESET}
+		${CYAN}--------------------------${RESET}
+		${BOLD}${PURPLE}Weekly builds${RESET}：
+
+		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
+			${GREEN}ubuntu-devel ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}ubuntu-devel ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}ubuntu-devel ${YELLOW}armhf  ${PURPLE}*  ${BLUE}(kde, zsh)${RESET}
+
+			${GREEN}fedora-rawhide ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
+			${GREEN}fedora-rawhide ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
 			${GREEN}fedora-rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
-		TIME："UTC 00:01 / CST 08:01"
-			${GREEN}arch-latest ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}arch-latest ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}arch-latest ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}arch ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}arch ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
+			${GREEN}arch ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 
-		TIME："UTC 06:01 / CST 14:01"
 			${GREEN}debian-sid ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
 			${GREEN}debian-sid ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
 			${GREEN}debian-sid ${YELLOW}armhf ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
 			${GREEN}debian-sid ${YELLOW}i386 ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
 
 		${BOLD}${YELLOW}Thursday/周四/木曜日${RESET}：
-		TIME："UTC 00:01 / CST 08:01"
 			${GREEN}alpine-edge ${YELLOW}arm64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
 			${GREEN}alpine-edge ${YELLOW}amd64  ${PURPLE}*  ${BLUE}(kde, xfce, mate, zsh)${RESET}
 			${GREEN}alpine-edge ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
 			${GREEN}alpine-edge ${YELLOW}i386 ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
 
-		TIME："UTC 06:01 / CST 14:01"
 			${GREEN}kali-rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 			${GREEN}kali-rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 			${GREEN}kali-rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+		
+		${BOLD}${YELLOW}Friday/周五/金曜日${RESET}：
+			${GREEN}manjaro-stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}   
+			${GREEN}manjaro-stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+		
+		${CYAN}--------------------------${RESET}
+		${BOLD}${PURPLE}Semimonthly builds${RESET}：
+
+		${BOLD}${YELLOW}Every 2 weeks${RESET}：
+			${GREEN}code ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}   
+			
+			${GREEN}go ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}go ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+			
+			${GREEN}jdk ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			
+			${GREEN}mongo ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+
+			${GREEN}nginx ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}nginx ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+
+			${GREEN}node ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}node ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+
+			${GREEN}php ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}php ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+
+			${GREEN}ruby ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}ruby ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+	EOF
+
+<<-OLD
+		TIME："UTC 00:01 / CST 08:01"
+		TIME："UTC 06:01 / CST 14:01"
 
 		${BOLD}${PURPLE}Monthly builds${RESET}：
 		${BOLD}${YELLOW}8号/8th & 24号/24th of every month${RESET}：
-		TIME："UTC 01:01 / CST 09:01"
 			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}linux mint-tricia ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
-			${GREEN}manjaro-stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}xfce${RESET}   
-			${GREEN}manjaro-stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}xfce${RESET}
+OLD
 
-	EOF
 }
 #删除ubuntu dev * kde+xfce+mate
 #mint 20

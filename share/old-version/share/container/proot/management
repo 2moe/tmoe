@@ -243,7 +243,7 @@ switch_to_chroot_or_unshare() {
 		environment_variables_and_automatic_startup_script_management
 		;;
 	esac
-	CURRENT_STATUS=$(egrep "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	CURRENT_STATUS=$(grep -E "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 	case ${CURRENT_STATUS} in
 	true) TMOE_TIPS_03="Currently in unshare mode" ;;
 	false) TMOE_TIPS_03="Currently in normal chroot mode" ;;
@@ -292,7 +292,7 @@ switch_container_engine_bin_file() {
 		-e "s@^(PROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
 		-e "s@^(UNSHARE_BIN=).*@\1\"${CHROOT_BIN}\"@" \
 		-i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	egrep --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=|^[^#]*^UNSHARE_BIN=|^UNSHARE_ENABLED=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	grep -E --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=|^[^#]*^UNSHARE_BIN=|^UNSHARE_ENABLED=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	press_enter_to_return
 	switch_container_engine_bin_file
 }
@@ -430,7 +430,7 @@ switch_nspawn_boot_mode() {
 		else
 			${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		fi
-		egrep --color=auto '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+		grep -E --color=auto '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		;;
 	*) printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the systemd-nspawn container." ;;
 	esac
@@ -1120,9 +1120,9 @@ install_new_tmoe_gnu_linux_distro() {
 bat_build_latest_txt() {
 	if [[ -e ${BUILD_LATEST_TXT} ]]; then
 		if [[ $(command -v bat) ]]; then
-			bat -ppn -l sh ${BUILD_LATEST_TXT}
+			bat -ppn -l md ${BUILD_LATEST_TXT}
 		elif [[ $(command -v batcat) ]]; then
-			batcat -ppn -l sh ${BUILD_LATEST_TXT}
+			batcat -ppn -l md ${BUILD_LATEST_TXT}
 		else
 			cat ${BUILD_LATEST_TXT}
 		fi

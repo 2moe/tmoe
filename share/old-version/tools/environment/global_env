@@ -233,7 +233,7 @@ download_raspbian_pixel_icon_theme() {
 ################
 #non-zst
 grep_arch_linux_pkg() {
-    ARCH_WALLPAPER_VERSION=$(cat index.html | grep -Ev '\.xz\.sig|\.zst\.sig|.pkg.tar.zst' | egrep "${GREP_NAME}" | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+    ARCH_WALLPAPER_VERSION=$(cat index.html | grep -Ev '\.xz\.sig|\.zst\.sig|.pkg.tar.zst' | grep -E "${GREP_NAME}" | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
     ARCH_WALLPAPER_URL="${THEME_URL}${ARCH_WALLPAPER_VERSION}"
     ARCH_WALLPAPER_URL_02="${THEME_URL_02}${ARCH_WALLPAPER_VERSION}"
     printf "%s\n" "${ARCH_WALLPAPER_URL}"

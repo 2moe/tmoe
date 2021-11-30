@@ -1,3 +1,5 @@
+#!/usr/bin/env dash
+#------------------
 GITEE_lINUX="${HOME}/gitee/linux"
 GITHUB_LINUX="${HOME}/github/github-linux"
 GITHUB_LINUX_02="${HOME}/github/archive/tmoe/share/old-version/share/app"
@@ -14,13 +16,13 @@ OLD_VERSION_DIR="${GITEE_lINUX}/share/old-version"
 #     ;;
 # esac
 ##########
-cd "${GITEE_lINUX}" || return 1
+cd "${GITEE_lINUX}" || exit 1
 cp -va ./share/old-version/share/app/manager "${GITHUB_LINUX_02}"
 for i in $(/bin/ls -A ./ | grep -Ev "test|README.md|.git$|.gitee"); do
     cp -va "${i}" "${GITHUB_LINUX}"
 done
 
-cd "${GITHUB_LINUX}"/share/sed/ || return 1
+cd "${GITHUB_LINUX}"/share/sed/ || exit 1
 ./sed_github
 ###########
 # code ~/github/github-linux
