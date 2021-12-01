@@ -82,7 +82,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4986.8,type ${TMOE_TIPS_01} to start."
+	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4986.9,type ${TMOE_TIPS_01} to start."
 	#勿改00变量
 }
 #########
@@ -665,16 +665,16 @@ check_dependencies() {
 		"fedora") ;;
 		*)
 			if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
-				yum install -y epel-release
+				yes | yum install -y epel-release
 				if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
 					if (whiptail --title "Please choose RHEL version" --yes-button "7" --no-button "8" --yesno "You should import the epel source." 0 50); then
 						RHEL_VERSION='7'
 					else
 						RHEL_VERSION='8'
 					fi
-					yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL_VERSION}.noarch.rpm
+					yes | yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL_VERSION}.noarch.rpm
 				fi
-				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为北外源${PURPLE}[Y/n]${RESET}"
+				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为 opentuna源${PURPLE}[Y/n]${RESET}"
 				printf "更换后可以加快国内的下载速度,${YELLOW}按回车键确认，输n拒绝。${RESET}\n"
 				printf "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .[Y/n]\n"
 				read -r opt
@@ -682,11 +682,10 @@ check_dependencies() {
 				y* | Y* | "")
 					cp -pvf /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
 					cp -pvf /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
-					sed -e 's!^metalink=!#metalink=!g' \
-						-e 's!^#baseurl=!baseurl=!g' \
-						-e 's!//download\.fedoraproject\.org/pub!//mirrors.bfsu.edu.cn!g' \
-						-e 's!http://mirrors\.bfsu!https://mirrors.bfsu!g' \
-						-i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
+			    	sed -E \
+						-e 's@^(metalink=)@#\1@g' \
+		            	-e 's@^#(baseurl)=.*/pub/(epel)@\1=https://opentuna.cn/\2@g' \
+	    	        	-i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 					;;
 				n* | N*) echo "skipped." ;;
 				*) echo "Invalid choice. skipped." ;;
@@ -856,7 +855,7 @@ tmoe_linux_tool_menu() {
 					"7" "🍥 Softwarequellen: Weltweite Spiegelseiten" \
 					"8" "🐳 Docker: Verwenden Sie Virtualisierung auf Betriebssystemebene" \
 					"9" "💻 Qemu: x64 virtuelle Maschine" \
-					"10" "🍧 *°▽°*Aktualisieren Sie das Tome-Linux-Tool" \
+					"10" "🍧 *°▽°* Aktualisieren" \
 					"11" "🍩 Häufig gestellte Fragen" \
 					"0" "🌚 Ausfahrt" \
 					3>&1 1>&2 2>&3

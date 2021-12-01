@@ -551,13 +551,13 @@ add_fedora_rpmfusion_yum_repo() {
 }
 ################
 add_fedora_epel_yum_repo() {
-    dnf install -y epel-release || yum install -y epel-release
+    # dnf install -y epel-release ||
+    yes | yum install -y epel-release
     cp -pvf /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
     cp -pvf /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
-    sed -e 's!^metalink=!#metalink=!g' \
-        -e 's!^#baseurl=!baseurl=!g' \
-        -e 's!//download\.fedoraproject\.org/pub!//mirrors.tuna.tsinghua.edu.cn!g' \
-        -e 's!http://mirrors\.tuna!https://mirrors.tuna!g' \
+	sed -E \
+		-e 's@^(metalink=)@#\1@g' \
+        -e 's@^#(baseurl)=.*/pub/(epel)@\1=https://opentuna.cn/\2@g' \
         -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 }
 ###############
