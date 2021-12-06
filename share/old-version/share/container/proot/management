@@ -1286,6 +1286,7 @@ install_weekly_build_container() {
 		zh_*) network_node_menu_03_zh_tw ;;
 		*) network_node_menu_03_en ;;
 		esac
+		network_node_menu_03
 		;;
 	esac
 	# case ${TMOE_LANG} in
