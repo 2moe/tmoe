@@ -1221,6 +1221,37 @@ network_node_menu_02_en() {
 		;;
 	esac
 }
+
+network_node_menu_03_zh_cn() {
+	MENU="Please choose a network node\n请选择网络节点"
+}
+
+network_node_menu_03_zh_tw() {
+	MENU="Please choose a network node\n請選擇網路結點"
+}
+
+network_node_menu_03_en() {
+	MENU="Please choose a network node"
+}
+
+network_node_menu_03() {
+	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "${MENU}" 0 50 0 \
+		"1" "Tmoe" \
+		"2" "Azure" \
+		3>&1 1>&2 2>&3)
+	##############################
+	case "${NETWORK_NODE}" in
+	0 | "") ${RETURN_TO_WHERE} ;;
+	1)
+		NODE_NAME='node02-tmoe'
+		NODE_URL="${NODE02_URL}"
+		;;
+	2)
+		NODE_NAME='node03-azure'
+		NODE_URL="${NODE03_URL}"
+		;;
+	esac
+}
 # cat_docker_readme_file() {
 # 	if [ "$(ls ${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.* 2>/dev/null)" ]; then
 # 		for i in ${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.*; do
@@ -1237,7 +1268,7 @@ network_node_menu_02_en() {
 # 	fi
 # }
 install_weekly_build_container() {
-	case ${NODE02_ENABLED} in
+	case ${NODE01_ENABLED} in
 	true)
 		case ${TMOE_MENU_LANG} in
 		zh_*UTF-8) network_node_menu_01_cn ;;
@@ -1245,9 +1276,15 @@ install_weekly_build_container() {
 		esac
 		;;
 	*)
+		# case ${TMOE_MENU_LANG} in
+		# zh_*UTF-8) network_node_menu_02_cn ;;
+		# *) network_node_menu_02_en ;;
+		# esac
+		# ;;
 		case ${TMOE_MENU_LANG} in
-		zh_*UTF-8) network_node_menu_02_cn ;;
-		*) network_node_menu_02_en ;;
+		zh_C* | zh_SG*) network_node_menu_03_zh_cn ;;
+		zh_*) network_node_menu_03_zh_tw ;;
+		*) network_node_menu_03_en ;;
 		esac
 		;;
 	esac
@@ -1344,17 +1381,17 @@ install_weekly_build_container() {
 	fi
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
 		sed \
-		-e "1a\WEEKLY_BUILD_CONTAINER=true" \
-		-e "1a\DESKTOP=${DESKTOP}" \
-		-e "1a\NODE_URL=${NODE_URL}" \
-		-e "1a\NODE02_USER=${NODE02_USER}" \
-		-e "1a\NODE02_PW=${NODE02_PW}" \
-		-e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
-		-e "1a\NODE_NAME=${NODE_NAME}" \
-		-e "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" \
-		-e "s/debian container/${DISTRO_NAME} container/g" \
-		-e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
-		-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+			-e "1a\WEEKLY_BUILD_CONTAINER=true" \
+			-e "1a\DESKTOP=${DESKTOP}" \
+			-e "1a\NODE_URL=${NODE_URL}" \
+			-e "1a\NODE02_USER=${NODE02_USER}" \
+			-e "1a\NODE02_PW=${NODE02_PW}" \
+			-e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
+			-e "1a\NODE_NAME=${NODE_NAME}" \
+			-e "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 	#--http-user=${NODE02_USER} --http-passwd=${NODE02_PW}
 	#		sed -E "s@(LINUX_CONTAINER_DISTRO_FILE)=.*@\1=\${CONFIG_FOLDER}/linux_container_distro_02.txt@" |
 }

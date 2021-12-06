@@ -10,7 +10,7 @@ choose_which_gnu_linux_distro() {
 	TMOE_LINUX_CONTAINER_DISTRO=''
 	check_rootfs_dir
 	[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
-	unset NODE02_ENABLED WEEKLY_BUILD_CONTAINER
+	unset NODE01_ENABLED WEEKLY_BUILD_CONTAINER
 	TITLE="CONTAINERS"
 	choose_which_gnu_linux_distro_ja() {
 		MENU="容器をお選びください"
@@ -113,7 +113,7 @@ choose_which_gnu_linux_distro() {
 set_service_container_env_01() {
 	DISTRO_CODE="${DESKTOP}"
 	DISTRO_NAME_02="${DISTRO_NAME}"
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
 	create_container_edition_txt
 	create_container_edition_txt_02
@@ -122,7 +122,7 @@ set_service_container_env_01() {
 set_service_container_env_02() {
 	DISTRO_CODE="${DESKTOP}"
 	DISTRO_NAME_02="${DISTRO_NAME}"
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
 	create_container_edition_txt_02
@@ -314,7 +314,7 @@ set_debian_sid_env() {
 	DISTRO_NAME='debian'
 	DISTRO_CODE="sid-${DESKTOP}"
 	DISTRO_NAME_02=debian-sid
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -325,7 +325,7 @@ set_kali_rolling_env() {
 	DISTRO_NAME='kali'
 	DISTRO_CODE="rolling-${DESKTOP}"
 	DISTRO_NAME_02=kali-rolling
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -336,7 +336,7 @@ set_ubuntu_dev_env() {
 	DISTRO_NAME='ubuntu'
 	DISTRO_CODE="dev-${DESKTOP}"
 	DISTRO_NAME_02=ubuntu-dev
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -347,7 +347,7 @@ set_mint_tricia_env() {
 	DISTRO_NAME='mint'
 	DISTRO_CODE="tricia-${DESKTOP}"
 	DISTRO_NAME_02=mint-tricia
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -358,7 +358,7 @@ set_mint_ulyssa_env() {
 	DISTRO_NAME='mint'
 	DISTRO_CODE="ulyssa-${DESKTOP}"
 	DISTRO_NAME_02=mint-ulyssa
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -369,7 +369,7 @@ set_alpine_edge_env() {
 	DISTRO_NAME='alpine'
 	DISTRO_CODE="edge-${DESKTOP}"
 	DISTRO_NAME_02=alpine-edge
-	NODE02_ENABLED=false
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -380,7 +380,7 @@ set_fedora_rawhide_env() {
 	DISTRO_NAME='fedora'
 	DISTRO_CODE="rawhide-${DESKTOP}"
 	DISTRO_NAME_02=fedora-rawhide
-	NODE02_ENABLED=false
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -391,7 +391,7 @@ set_ubuntu_bionic_env() {
 	DISTRO_NAME='ubuntu'
 	DISTRO_CODE="bionic-${DESKTOP}"
 	DISTRO_NAME_02=ubuntu-bionic
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -402,7 +402,7 @@ set_arch_latest_env() {
 	DISTRO_NAME='arch'
 	DISTRO_CODE="${DESKTOP}"
 	DISTRO_NAME_02=arch
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
@@ -414,7 +414,7 @@ set_manjaro_stable_env() {
 	DISTRO_NAME='manjaro'
 	DISTRO_CODE="stable-${DESKTOP}"
 	DISTRO_NAME_02=manjaro-stable
-	NODE02_ENABLED=true
+	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 	create_container_edition_txt
@@ -1233,7 +1233,7 @@ download_rootfs_from_node_03() {
 	NODE_NAME="node03-azure"
 	DISTRO_CODE="${DESKTOP}"
 	DISTRO_NAME_02="${DISTRO_NAME}"
-	# NODE02_ENABLED=false
+	# NODE01_ENABLED=false
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 
 	bash -c "$(sed -n p \
