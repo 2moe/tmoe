@@ -16,7 +16,7 @@ else
 	case ${UNAME_ARCH} in
 	armv7* | armv8l) ARCH_TYPE="armhf" ;;
 	armv[1-6]*) ARCH_TYPE="armel" ;;
-	aarch64 | armv8* | arm64) ARCH_TYPE="arm64" ;;
+	aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
 	x86_64 | amd64) ARCH_TYPE="amd64" ;;
 	i*86 | x86) ARCH_TYPE="i386" ;;
 	s390*) ARCH_TYPE="s390x" ;;    #经测试uname -m输出的结果为s390x
@@ -2223,10 +2223,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
 	    case ${TMOE_LANG} in
 	    zh_*UTF-8)
-	        sed -E \
-				-e 's@^(metalink=)@#\1@g' \
-	            -e 's@^#(baseurl)=.*/pub/(epel)@\1=https://opentuna.cn/\2@g' \
-	            -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
+
 	        ;;
 	    esac
 	    for i in hostname sudo; do

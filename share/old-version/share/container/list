@@ -207,13 +207,19 @@ install_tmoe_moonthly_build_edition() {
 		;;
 	esac
 
-	case ${ARCH_TYPE} in
-	arm64) WEEKLY_BUILD_CONTAINER=true ;;
+	case "${INSTALLDESKTOP}" in
+	1) ;;
 	*)
-		printf "%s\n" "Soory,this feature only supports arm64."
-		distro_does_not_support
+		case ${ARCH_TYPE} in
+		arm64 | armhf | amd64) WEEKLY_BUILD_CONTAINER=true ;;
+		*)
+			printf "%s\n" "Sorry,this feature only supports arm64, amd64 & armhf"
+			distro_does_not_support
+			;;
+		esac
 		;;
 	esac
+
 	set_service_container_env
 	press_enter_to_return
 	install_tmoe_moonthly_build_edition
@@ -419,14 +425,22 @@ desktop_does_not_support() {
 	printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置${DESKTOP}的自动构建任务。"
 }
 choose_mate_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🌉 Arch-latest(arm64,amd64)" \
-		"2" "🍥 Debian-sid(arm64,amd64)" \
-		"3" "👒 Fedora-rawhide(arm64,amd64,armhf)" \
-		"4" "🏔️ Alpine-edge(arm64,armhf,i386,amd64)" \
-		"5" "🌿 Mint-tricia(amd64)" \
-		"0" "🌚 Return to previous menu" \
+	MENU="Which distribution do you want to install?"
+	OPT_0="🌚 Return to previous menu"
+	OPT_1="🌉 Arch-latest(arm64, amd64)"
+	OPT_2="🍥 Debian-sid(arm64, amd64)"
+	OPT_3="👒 Fedora-rawhide(arm64, amd64, armhf)"
+	OPT_4="🏔️ Alpine-edge(arm64, armhf, i386, amd64)"
+	OPT_5="ubuntu-dev(arm64, amd64)"
+	SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
+		"1" "$OPT_1" \
+		"2" "$OPT_2" \
+		"3" "$OPT_3" \
+		"4" "$OPT_4" \
+		"5" "$OPT_5" \
+		"0" "$OPT_0" \
 		3>&1 1>&2 2>&3)
+	# "5" "🌿 Mint-tricia(amd64)" \
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1)
@@ -457,18 +471,18 @@ choose_mate_distro() {
 		esac
 		;;
 	4) set_alpine_edge_env ;;
+	# 5)
+	# 	case ${ARCH_TYPE} in
+	# 	amd64) set_mint_tricia_env ;;
+	# 	*)
+	# 		desktop_does_not_support
+	# 		distro_does_not_support
+	# 		;;
+	# 	esac
+	# 	;;
 	5)
 		case ${ARCH_TYPE} in
-		amd64) set_mint_tricia_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	999)
-		case ${ARCH_TYPE} in
-		amd64) set_ubuntu_dev_env ;;
+		amd64 | arm64) set_ubuntu_dev_env ;;
 		*)
 			desktop_does_not_support
 			distro_does_not_support
@@ -525,12 +539,13 @@ choose_lxqt_distro() {
 }
 choose_xfce_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🐉 Kali-rolling(arm64,armhf,amd64)" \
-		"2" "🌉 Arch-latest(arm64,armhf,amd64)" \
-		"3" "🍥 Debian-sid(arm64,amd64)" \
-		"4" "👒 Fedora-rawhide(arm64,amd64)" \
-		"5" "Manjaro-stable(arm64,amd64)" \
-		"6" "🏔️ Alpine-edge(arm64,amd64)" \
+		"1" "🐉 Kali-rolling(arm64, armhf, amd64)" \
+		"2" "🌉 Arch-latest(arm64, armhf, amd64)" \
+		"3" "🍥 Debian-sid(arm64, amd64)" \
+		"4" "👒 Fedora-rawhide(arm64, amd64)" \
+		"5" "Manjaro-stable(arm64, amd64)" \
+		"6" "🏔️ Alpine-edge(arm64, amd64)" \
+		"7" "ubuntu-dev(arm64, amd64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -563,15 +578,6 @@ choose_xfce_distro() {
 			;;
 		esac
 		;;
-	999)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
 	5)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_manjaro_stable_env ;;
@@ -590,22 +596,34 @@ choose_xfce_distro() {
 			;;
 		esac
 		;;
+	7)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_ubuntu_dev_env ;;
+		*)
+			desktop_does_not_support
+			distro_does_not_support
+			;;
+		esac
+		;;
 	esac
 }
 choose_kde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
-		"1" "🍛 Ubuntu bionic(arm64,armhf)" \
-		"2" "🌉 Arch(arm64,amd64):simplicity,modernity,pragmatism" \
-		"3" "🍥 Debian sid(arm64,amd64)" \
-		"4" "👒 Fedora rawhide(arm64,amd64)" \
-		"5" "🏔️ Alpine(arm64,amd64):small,simple,secure." \
+		"1" "🍛 Ubuntu(arm64, amd64, armhf)" \
+		"2" "🌉 Arch(arm64, amd64):simplicity,modernity,pragmatism" \
+		"3" "🍥 Debian sid(arm64, amd64)" \
+		"4" "👒 Fedora rawhide(arm64, amd64)" \
+		"5" "🏔️ Alpine(arm64, amd64):small,simple,secure." \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") install_tmoe_weekly_build_edition ;;
 	1)
 		case ${ARCH_TYPE} in
-		arm64 | armhf) set_ubuntu_bionic_env ;;
+		arm64 | armhf | amd64)
+			# set_ubuntu_bionic_env
+			set_ubuntu_dev_env
+			;;
 		*)
 			desktop_does_not_support
 			distro_does_not_support
@@ -615,15 +633,6 @@ choose_kde_distro() {
 	2)
 		case ${ARCH_TYPE} in
 		amd64 | arm64) set_arch_latest_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	999)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
 		*)
 			desktop_does_not_support
 			distro_does_not_support
@@ -667,6 +676,7 @@ choose_zsh_distro() {
 		"4" "👒 Fedora rawhide(arm64,armhf,amd64)" \
 		"5" "🏔️ Alpine edge(arm64,armhf,amd64,i386)" \
 		"6" "🐉 Kali-rolling(arm64,armhf,amd64)" \
+		"7" "Manjaro(arm64, amd64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -725,6 +735,15 @@ choose_zsh_distro() {
 			;;
 		esac
 		;;
+	7)
+		case ${ARCH_TYPE} in
+		amd64 | arm64) set_manjaro_stable_env ;;
+		*)
+			desktop_does_not_support
+			distro_does_not_support
+			;;
+		esac
+		;;
 	esac
 }
 ##############################
@@ -736,7 +755,7 @@ view_the_schedule() {
 		${YELLOW}Some containers only support ${PURPLE}edition 2022${RESET}
 
 		${BOLD}${PURPLE}Semiweekly builds${RESET}：
-		
+
 		${BOLD}${YELLOW}Monday & Friday${RESET}：
 			${GREEN}rust ${CYAN}nightly ${YELLOW}(amd64, arm64, armhf, riscv64, ppc64el, s390x, mips64el) ${PURPLE}* ${BLUE}gnu${RESET}
 			${GREEN}rust ${CYAN}nightly ${YELLOW}(amd64, arm64)  ${PURPLE}* ${BLUE}musl${RESET}
@@ -772,22 +791,22 @@ view_the_schedule() {
 			${GREEN}kali ${CYAN}rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 			${GREEN}kali ${CYAN}rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
 			${GREEN}kali ${CYAN}rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
-		
+
 		${BOLD}${YELLOW}Friday/周五/金曜日${RESET}：
 			${GREEN}manjaro ${CYAN}stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}   
 			${GREEN}manjaro ${CYAN}stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
-		
+
 		${CYAN}--------------------------${RESET}
 		${BOLD}${PURPLE}Semimonthly builds${RESET}：
 
 		${BOLD}${YELLOW}Every 2 weeks${RESET}：
 			${GREEN}code ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}   
-			
+
 			${GREEN}go ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
 			${GREEN}go ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
-			
+
 			${GREEN}jdk ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
-			
+
 			${GREEN}mongo ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
 
 			${GREEN}nginx ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
@@ -803,7 +822,7 @@ view_the_schedule() {
 			${GREEN}ruby ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
 	EOF
 
-<<-OLD
+	<<-OLD
 		TIME："UTC 00:01 / CST 08:01"
 		TIME："UTC 06:01 / CST 14:01"
 
@@ -812,7 +831,7 @@ view_the_schedule() {
 			${GREEN}ubuntu-bionic ${YELLOW}arm64 ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}ubuntu-bionic ${YELLOW}armhf ${PURPLE}* ${BLUE}kde${RESET}
 			${GREEN}linux mint-tricia ${YELLOW}amd64 ${PURPLE}* ${BLUE}mate${RESET}
-OLD
+	OLD
 
 }
 #删除ubuntu dev * kde+xfce+mate
@@ -1947,10 +1966,8 @@ opensuse_warning() {
 		true) ;;
 		*)
 			cat <<-EOF
-				${RED}WARNING！${RESET}检测到您使用的是Android系统。
-				由于LXC的rootfs镜像文件的问题，在termux的proot环境下存在无法检索到软件包的情况。
-				但是 opensuse 的docker rootfs （可能）不存在此问题。  
-				若您想要安装OpenSUSE tumbleweed proot容器, 则请手动将 opensuse 的 lxc rootfs 文件替换为 docker rootfs。  
+				# ${RED}WARNING！${RESET} You are using ${BLUE}Android${RESET}, and your container is ${YELLOW}proot${RESET}.
+				In this environment, opensuse may have some bugs.
 			EOF
 			do_you_want_to_continue
 			;;
