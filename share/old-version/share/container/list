@@ -208,7 +208,12 @@ install_tmoe_moonthly_build_edition() {
 	esac
 
 	case "${INSTALLDESKTOP}" in
-	1) ;;
+	1)
+		case ${ARCH_TYPE} in
+		arm64 | armhf | amd64 | riscv64 | ppc64el | s390x | mips64el) WEEKLY_BUILD_CONTAINER=true ;;
+		*) distro_does_not_support ;;
+		esac
+		;;
 	*)
 		case ${ARCH_TYPE} in
 		arm64 | armhf | amd64) WEEKLY_BUILD_CONTAINER=true ;;
