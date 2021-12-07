@@ -825,6 +825,11 @@ view_the_schedule() {
 
 			${GREEN}ruby ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
 			${GREEN}ruby ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+
+		${BOLD}${YELLOW}Todo${RESET}：
+			${GREEN}PostgreSQL ${YELLOW}(arm64, amd64)
+			${GREEN}Redis ${YELLOW}(arm64, amd64)
+			${GREEN}haskell ${YELLOW}(amd64)
 	EOF
 
 	<<-OLD

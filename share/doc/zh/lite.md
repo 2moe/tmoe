@@ -35,7 +35,7 @@
 | ----- | ----- | -------------------------------------------------------------------------------------- | ------------------------------------------ |
 | ~~1~~ | cargo | ~~you are using `rustc` **nightly**~~ (暂时不可用, `tmm`(稳定版) 将于 2023 年之前发布) | ~~`cargo install tmm`~~                    |
 | 2     | curl  | 您已经安装了 `curl`, 并且可以访问 github                                               | `. <(curl -L git.io/linux.sh)`             |
-| 3     | curl  | 您无法访问 gitHub                                                                      | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
+| 3     | curl  | 您无法访问 github                                                                      | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
 | 4     | curl  | 您记不住上面的链接，或以上方法都出错了                                                 | `curl -Lo l l.tmoe.me; sh l`               |
 
 <!--  | 1     | cargo                                                                                                                                 | you have `cargo` installed                  | `cargo install tmoe` | -->
