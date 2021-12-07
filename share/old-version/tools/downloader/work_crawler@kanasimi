@@ -192,11 +192,11 @@ kanasimi_work_crawler_electron_gui() {
 install_tmoe_work_crawler_electron() {
     printf "%s\n" "正在检测版本信息..."
     if [ -e "/opt/work_crawler" ]; then
-        LOCAL_VSCODE_VERSION=$(head -n 1 /opt/work_crawler/work_crawler-version.txt)
+        LOCAL_VSCODE_VERSION=$(head -n 1 /opt/work_crawler/version.txt)
     else
         LOCAL_VSCODE_VERSION='您尚未安装work_crawler gui模块'
     fi
-    LATEST_VSCODE_VERSION=$(curl -sL https://gitee.com/ak2/work-i/raw/build/work_crawler-version.txt | head -n 1)
+    LATEST_VSCODE_VERSION=$(curl -sL "${PKG_URL}"/apps/work_crawler/version.txt | head -n 1)
 
     cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
@@ -209,43 +209,8 @@ install_tmoe_work_crawler_electron() {
 
 	ENDofTable
     do_you_want_to_continue
-    cd /opt
-    rm -rvf work_crawler
-    git clone -b build --depth=1 https://gitee.com/ak2/work-i.git work_crawler
-    cd work_crawler
-    tar -Jxvf work_crawler.tar.xz
-    rm -rf work_crawler.tar.xz .git
-    ICON_FILE='/usr/share/icons/work_crawler.png'
-    if [ ! -e "${ICON_FILE}" ]; then
-        ICON_URL='https://gitee.com/kanasimi/work_crawler/raw/master/gui_electron/icon/rasen2.png'
-        curl -Lv -o "${ICON_FILE}" ${ICON_URL}
-    fi
-    cd /usr/share/applications
-    cat >work_crawler.desktop <<-'EOF'
-[Desktop Entry]
-Type=Application
-Name=Work crawler
-Comment=Tools to download novels and comics
-Icon=/usr/share/icons/work_crawler.png
-Exec=/usr/local/bin/work-crawler %U
-Categories=Network;
-EOF
-    chmod +r work_crawler.desktop
-    cd /usr/local/bin
-    if [ "${HOME}" = '/root' ]; then
-        cat >work-crawler <<-'EOF'
-#!/usr/bin/env bash
-export ELECTRON_IS_DEV=0
-exec electron /opt/work_crawler/app.asar --no-sandbox "$@"
-EOF
-    else
-        cat >work-crawler <<-'EOF'
-#!/usr/bin/env bash
-export ELECTRON_IS_DEV=0
-exec electron /opt/work_crawler/app.asar "$@"
-EOF
-    fi
-    chmod a+rx work-crawler
+    DEPENDENCY_01='work_crawler'
+    download_tmoe_electron_app
 }
 ############
 remove_kanasimi_work_crawler_tool() {
