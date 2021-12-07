@@ -26,14 +26,14 @@ main() {
 }
 #############
 check_dependencies() {
-	RED=$(printf '\033[31m')
-	GREEN=$(printf '\033[32m')
-	YELLOW=$(printf '\033[33m')
-	BLUE=$(printf '\033[34m')
-	PURPLE=$(printf '\033[35m')
-	CYAN=$(printf '\033[36m')
-	RESET=$(printf '\033[m')
-	BOLD=$(printf '\033[1m')
+    RED=$(printf '\033[31m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    PURPLE=$(printf '\033[35m')
+    CYAN=$(printf '\033[36m')
+    RESET=$(printf '\033[m')
+    BOLD=$(printf '\033[1m')
     if [ ! $(command -v node) ]; then
         printf '%s\n' '請先安裝nodejs'
     fi
@@ -84,7 +84,7 @@ press_enter_to_return() {
 work_crawler_eula() {
     RETURN_TO_WHERE='exit 1'
     cat <<-'EndOfFile'
-	                  End-user license agreement 
+	                  End-user license agreement
 	本工具会不时更新本协议，您在同意本工具服务使用协议之时，即视为您已经同意本协议全部内容。本协议属于本工具服务使用协议不可分割的一部分。
 	This tool will update this agreement from time to time. When you agree to this tool service use agreement, you are deemed to have agreed to the entire contents of this agreement. This agreement is an integral part of the tool service agreement.
 
@@ -96,13 +96,13 @@ work_crawler_eula() {
 
 	2. 适用范围
 	(a)在您使用本工具时，下载的所有资源；
-	
+
     3.不适用范围
     您了解并同意，以下内容不适用本许可协议：
 	(a) 您在使用本工具下载相关作品前，未购入该作品的正版授权;
     (b) 您使用了技术手段强行破解了本工具对下载的限制;
 	(c) 违反法律规定或违反本工具规则行为及本工具已对您采取的措施。
-    
+
     4.权益相关
     (a) 您必须同意本协议，否则您将无法使用本工具;
     (b) 为了维护漫画网站的合法权益，您即便同意本协议，也仍然无法通过本工具下载中国内地的漫画作品;
@@ -164,7 +164,7 @@ tips_of_unlock_work_crawler() {
 ② ： 特定遠端桌面
 ③ ： 沙箱
    TUI 解鎖條件
-① ： 以2開頭的純數字   
+① ： 以2開頭的純數字
 EOF
 }
 ############
@@ -200,18 +200,44 @@ install_tmoe_work_crawler_electron() {
 
     cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
-		║   ║          ║                   ║                    
+		║   ║          ║                   ║
 		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
-		║   ║          ║  Latest version   ║  Local version     
+		║   ║          ║  Latest version   ║  Local version
 		║---║----------║-------------------║--------------------
-		║ 1 ║ work     ║                   ║${LOCAL_VSCODE_VERSION} 
-		║   ║crawler   ║${LATEST_VSCODE_VERSION} 
+		║ 1 ║ work     ║                   ║${LOCAL_VSCODE_VERSION}
+		║   ║crawler   ║${LATEST_VSCODE_VERSION}
 
 	ENDofTable
     do_you_want_to_continue
     DEPENDENCY_01='work_crawler'
-    download_tmoe_electron_app
+    # download_tmoe_electron_app
+    download_work_crawler_electron
 }
+
+download_work_crawler_electron() {
+    DOWNLOAD_PATH="/tmp/.${DEPENDENCY_01}_TEMP_FOLDER"
+    APPS_LNK_DIR="/usr/share/applications"
+    [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rvf ${DOWNLOAD_PATH}
+    [[ -e /opt ]] || mkdir -pv /opt
+    aria2c --console-log-level=info --no-conf -x 3 -k 1M --split 3 -d ${DOWNLOAD_PATH} -o app.tar.xz "${PKG_URL}/apps/${DEPENDENCY_01}/app.tar.xz" || echo "Download app.tar.xz failed"
+
+    cd ${DOWNLOAD_PATH}
+    tar -Jxvf app.tar.xz -C /opt
+    if [ -e "/opt/${DEPENDENCY_01}" ]; then
+        printf "%s\n" "${GREEN}find ${YELLOW}/opt/${DEPENDENCY_01} ${BLUE}-type d -print${RESET} | ${GREEN}xargs ${BLUE}chmod -v a+rx${RESET}"
+        chmod -Rv 755 /opt/${DEPENDENCY_01}/usr/bin/ 2>/dev/null
+        find /opt/${DEPENDENCY_01} -type d -print | xargs chmod -v a+rx
+        find /opt/${DEPENDENCY_01} -type f -print | xargs chmod a+r
+        cd /opt/${DEPENDENCY_01}
+        pwd
+        cp -vf .${APPS_LNK_DIR}/${DEPENDENCY_01}.desktop ${APPS_LNK_DIR}
+    else
+        cd /tmp
+    fi
+    rm -rfv ${DOWNLOAD_PATH}
+
+}
+
 ############
 remove_kanasimi_work_crawler_tool() {
     rm -rvf ${HOME}/github/work_crawler /usr/share/applications/work_crawler.desktop /usr/local/bin/work-crawler /usr/local/bin/work-i /opt/work_crawler ${HOME}/.config/tmoe-linux/work_crawler_eula
