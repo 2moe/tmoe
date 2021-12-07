@@ -19,11 +19,14 @@ gnu_linux_env_02() {
     OPT_URL_01='https://dl.cloudsmith.io/public/debianopt/debianopt/deb/debian'
     # OPT_URL_02='https://dl.bintray.com/debianopt/debianopt'
     OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt-debianopt.list'
-    ELECTRON_MIRROR_STATION='https://mirrors.huaweicloud.com/electron'
+    # ELECTRON_MIRROR_STATION='https://repo.huaweicloud.com/electron/'
     #ELECTRON_MIRROR_STATION_02='https://npm.taobao.org/mirrors/electron'
+
+    ELECTRON_MIRROR_STATION='https://npmmirror.com/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
     XSESSION_FILE='/etc/X11/xinit/Xsession'
     GIT_AK2='https://gitee.com/ak2'
+    PKG_URL="https://packages.tmoe.me"
     TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
     XDG_AUTOSTART_DIR='/etc/xdg/autostart'
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
@@ -1149,7 +1152,6 @@ download_the_latest_electron() {
     download_electron
     #twice
     if [ ! -e "/opt/electron/electron" ]; then
-        ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
         latest_electron_ali
         download_electron
     fi
@@ -1202,7 +1204,7 @@ install_electron_v8() {
     fi
     #检测twice
     if [ ! -e "${DOWNLOAD_PATH}/electron" ]; then
-        ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
+        ELECTRON_MIRROR_STATION='https://npmmirror.com/mirrors/electron'
         download_electron
     fi
     chmod 4755 ${DOWNLOAD_PATH}/chrome-sandbox
@@ -1213,10 +1215,13 @@ download_tmoe_electron_app() {
     [[ ! -e "${DOWNLOAD_PATH}" ]] || rm -rvf ${DOWNLOAD_PATH}
     [[ -e /opt ]] || mkdir -pv /opt
 
-    git clone \
-        --depth=1 \
-        ${GIT_AK2}/${DEPENDENCY_01}_build \
-        ${DOWNLOAD_PATH}
+    # git clone \
+    #     --depth=1 \
+    #     ${GIT_AK2}/${DEPENDENCY_01}_build \
+    #     ${DOWNLOAD_PATH}
+
+    # aria2c --console-log-level=info --no-conf -x 1 --split 1 -d ${DOWNLOAD_PATH} -o version.txt "${PKG_URL}/apps/${DEPENDENCY_01}/version.txt" || echo "Download version.txt failed"
+    aria2c --console-log-level=info --no-conf -x 3 -k 1M --split 3 -d ${DOWNLOAD_PATH} -o app.tar.xz "${PKG_URL}/apps/${DEPENDENCY_01}/app.tar.xz" || echo "Download app.tar.xz failed"
 
     cd ${DOWNLOAD_PATH}
     tar -Jxvf app.tar.xz -C /opt
@@ -1286,17 +1291,18 @@ latest_electron() {
     unset ELECTRON_VERSION
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
     #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
-    ELECTRON_VERSION="$(curl -L "${ELECTRON_MIRROR_STATION}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | grep -v '^0' | grep '^[0-9]' | sort -n | cut -d '/' -f 1 | grep '^13\.' | tail -n 1)"
-    #ELECTRON_VERSION=13.1.7
+    # ELECTRON_VERSION="$(curl -L "${ELECTRON_MIRROR_STATION}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | grep -v '^0' | grep '^[0-9]' | sort -n | cut -d '/' -f 1 | grep '^16\.' | tail -n 1)"
+    ELECTRON_VERSION=16.0.2
     DOWNLOAD_PATH="/opt/electron"
-    [[ -n ${ELECTRON_VERSION} ]] || latest_electron_ali
+    # [[ -n ${ELECTRON_VERSION} ]] || latest_electron_ali
 }
 ########
 latest_electron_ali() {
-    ELECTRON_MIRROR_STATION='https://npm.taobao.org/mirrors/electron'
+    ELECTRON_MIRROR_STATION='https://npmmirror.com/mirrors/electron'
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
     #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
-    ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^13\." | sort -n | tail -n 1)
+    # ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^16\." | sort -n | tail -n 1)
+    ELECTRON_VERSION=16.0.2
     DOWNLOAD_PATH="/opt/electron"
 }
 download_electron() {
