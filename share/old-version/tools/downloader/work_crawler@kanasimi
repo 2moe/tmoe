@@ -196,7 +196,8 @@ install_tmoe_work_crawler_electron() {
     else
         LOCAL_VSCODE_VERSION='您尚未安装work_crawler gui模块'
     fi
-    LATEST_VSCODE_VERSION=$(curl -sL "${PKG_URL}"/apps/work_crawler/version.txt | head -n 1)
+    PKG_URL="https://packages.tmoe.me"
+    LATEST_VSCODE_VERSION=$(curl -L "${PKG_URL}"/apps/work_crawler/version.txt | head -n 1)
 
     cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
