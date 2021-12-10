@@ -148,7 +148,7 @@ install_tmoe_moonthly_build_edition() {
 			"Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
 			"1" "🦀 Rust(Blazingly fast and memory-efficient)" \
 			"2" "🐹 Go (Makes it easy to build simple&reliable app)" \
-			"3" "Visual Studio Code online server" \
+			"3" "Visual Studio Code web server" \
 			"4" "OpenJDK(An open-source Java Platform)" \
 			"5" "🐳 Docker(Run docker with qemu)" \
 			"6" "Node.js(A back-end JavaScript runtime environment)" \
@@ -826,10 +826,14 @@ view_the_schedule() {
 			${GREEN}ruby ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
 			${GREEN}ruby ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
 
+		${CYAN}--------------------------${RESET}
 		${BOLD}${YELLOW}Todo${RESET}：
 			${GREEN}PostgreSQL ${YELLOW}(arm64, amd64)
 			${GREEN}Redis ${YELLOW}(arm64, amd64)
-			${GREEN}haskell ${YELLOW}(amd64)
+			${GREEN}Haskell ${YELLOW}(amd64)
+			${GREEN}Swift ${YELLOW}(amd64)
+
+		${CYAN}--------------------------${RESET}
 	EOF
 
 	<<-OLD

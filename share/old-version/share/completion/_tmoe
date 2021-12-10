@@ -79,7 +79,7 @@ function _tmoe() {
         "docker"
         "rust:Rust is a multi-paradigm programming language designed for performance and safety, especially safe concurrency. Rust is syntactically similar to C++, but can guarantee memory safety by using a borrow checker to validate references."
         "ruby:Ruby is an interpreted, high-level, general-purpose programming language. It was designed and developed in the mid-1990s by Yukihiro "Matz" Matsumoto in Japan."
-        "code:Visual Studio Code online server"
+        "code:Visual Studio Code web server"
         "go:Go is a statically typed, compiled programming language designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson. Go is syntactically similar to C, but with memory safety, garbage collection, structural typing, and CSP-style concurrency. "
         "node:A back-end JavaScript runtime environment"
         "mongo:Classified as a NoSQL database program"

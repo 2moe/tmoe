@@ -72,7 +72,7 @@ Note: quite a few features have since been cut.
 
 | edition | lifecycle                   |
 | ------- | --------------------------- |
-| 2021    | mid 2020-10 to ~~2022-01~~? |
+| 2021    | mid 2020-10 to ~~2022-12~~? |
 
 compare 2020 & 2021
 
