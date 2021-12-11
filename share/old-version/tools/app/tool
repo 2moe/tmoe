@@ -33,7 +33,7 @@ main() {
 	h | -h | --help)
 		cat <<-'EOF'
 			-ppa     --添加ppa软件源(add ppa source)   
-			-u       --更新(update tmoe-linux tools)
+			-u       --更新(update tmoe tools)
 			-m       --切换镜像源
 			-tuna    --切换为bfsu源
 			file     --运行文件浏览器(run filebrowser)
@@ -82,7 +82,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4987.2,type ${TMOE_TIPS_01} to start."
+	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4988.0, type ${TMOE_TIPS_01} to start it."
 	#勿改00变量
 }
 #########
@@ -233,44 +233,56 @@ check_architecture() {
 ubuntu_ppa_and_locale_gen() {
 	case "${DEBIAN_DISTRO}" in
 	ubuntu)
-		# if [ ! $(command -v add-apt-repository) ]; then
-		# 	printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}software-properties-common${RESET}"
-		# 	eatmydata apt install -y --no-install-recommends software-properties-common || apt install -y --no-install-recommends software-properties-common
-		# fi
-		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-		fi
+		printf "%s\n" \
+			"${GREEN}apt ${YELLOW}install ${CYAN}-y ${BLUE}^language-pack-${TMOE_LANG_QUATER}${RESET}"
+		apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
 		;;
 	esac
 }
 #############
+locale_def_utf8() {
+	# glibc-common, libc-bin
+	if [[ -z $(command -v localedef) ]]; then
+		return 1
+	fi
+
+	local lang=${TMOE_LANG_HALF}
+
+	# locale -a
+	if (! localedef --list-archive | grep -qi "$lang.*utf.*8"); then
+		printf "%s\n" \
+			"${GREEN}Generating ${BLUE}locales ${YELLOW}(this might take a while)${PURPLE}..." \
+			"${BLUE}${lang}.UTF-8${RESET}"
+
+		# -c(--force), -v(--verbose), -f(--charmap), -i(--inputfile)
+		localedef \
+			-c \
+			-i "${lang}" \
+			-f UTF-8 \
+			"${lang}".UTF-8
+	fi
+}
 tmoe_locale_settings() {
 	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
 	if [ -e "${TMOE_LOCALE_FILE}" ]; then
 		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	else
 		TMOE_LANG="en_US.UTF-8"
-		TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-		TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 	fi
+	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1 | cut -d '_' -f 1)
 
 	case "${LINUX_DISTRO}" in
 	debian)
 		if [ ! -e "/usr/sbin/locale-gen" ]; then
+			printf "%s\n" \
+				"${GREEN}apt ${YELLOW}install ${CYAN}-y ${BLUE}locales${RESET}"
 			apt install -y locales
 		fi
-		ubuntu_ppa_and_locale_gen
-		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen" 2>/dev/null; then
-			cd /etc
-			printf "\n" >>locale.gen
-			# sed -i 's@^[^#]@# &@g' locale.gen
-			#不要注释掉已有locale
-			sed -i "$ a ${TMOE_LANG} UTF-8" locale.gen
-			locale-gen ${TMOE_LANG} 2>/dev/null
-		fi
+		# ubuntu_ppa_and_locale_gen
+		locale_def_utf8
 		;;
+	*) locale_def_utf8 ;;
 	esac
 }
 #####################
@@ -629,7 +641,7 @@ check_dependencies() {
 			fi
 			;;
 		*)
-			printf "%s\n" "${RED}Sorry${RESET},tmoe-linux tool does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
+			printf "%s\n" "${RED}Sorry${RESET}, tmoe does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
 			printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
 			uname -a
 			# sleep 2

@@ -1444,7 +1444,7 @@ xfce_warning() {
     download_and_cat_icon_img
     cat <<-'ENDofTable'
     xfce4桌面支持表格 
-    以下数据仅代表tmoe-linux tool所安装的xfce，您可自行编译源代码，并修复bug。
+    以下数据仅代表tmoe tools所安装的xfce，您可自行编译源代码，并修复bug。
   ╔═══╦════════════╦════════╦════════╦═════════╦
   ║   ║vnc/xserver ║        ║        ║         ║
   ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
@@ -3017,7 +3017,7 @@ dde_warning() {
     deepin 15.5 arm64 chroot容器(宿主Android)
     archlinux amd64 qemu虚拟机(宿主Debian)+chroot容器(宿主WSL)
     3.本表格有效期截至2020年10月中旬,仅供参考，后期会发生变更。
-    4.以下数据仅代表tmoe-linux tool所安装的dde，您可自行编译源代码，并修复bug。
+    4.以下数据仅代表tmoe tools所安装的dde，您可自行编译源代码，并修复bug。
   ╔═══╦════════════╦════════╦════════╦═════════╦
   ║   ║vnc/xserver ║        ║        ║         ║
   ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
@@ -5879,7 +5879,7 @@ check_vnc_passsword_length() {
             printf "%s\n" "密码设定完成，您可以输${GREEN}startvnc${RESET}来重启服务"
             printf "%s\n" "You can type ${GREEN}startvnc${RESET} to restart it. "
             printf "%s\n" "若您想要修改其它vnc选项，那么您可以输${BLUE}debian-i${RESET}"
-            printf "%s\n" "You can also type ${BLUE}debian-i${RESET} to start tmoe-linux tool."
+            printf "%s\n" "You can also type ${BLUE}debian-i${RESET} to start tmoe tools."
         else
             printf "%s\n" "密码设定失败，内部发生错误。"
         fi
@@ -5910,7 +5910,7 @@ tmoe_gui_dpi_02() {
 ##########
 tmoe_gui_dpi_03() {
     printf "%s\n" "若分辨率不合，则请在脚本执行完成后，手动输${GREEN}debian-i${RESET}，然后在${BLUE}vnc${RESET}选项里进行修改。"
-    printf "%s\n" "You can type debian-i to start tmoe-linux tool,and modify the vnc screen resolution."
+    printf "%s\n" "You can type debian-i to start tmoe tools,and modify the vnc screen resolution."
 }
 ##########
 tmoe_gui_default_dpi() {

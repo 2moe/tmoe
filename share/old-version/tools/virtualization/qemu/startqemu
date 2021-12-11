@@ -303,7 +303,7 @@ VIRTIO_9P_PCI_01=""
 
 : <<\EOF
 VIRTIO_9P_PCI_01的参数值为宿主机的目录，默认为${HOME}/sd。若您的qemu-system host(宿主)运行在tmoe-linux安装的proot容器里，则建议修改为"/storage/self/primary" ;若为chroot,则建议修改为"/media/sd" ;若为docker或nspawn容器,则建议修改为"/media/docker"。
-本功能暂仅适配Linux发行版。若您的guest为windows,则可以换用网络共享方式。在host中打开tmoe-linux tools，找到"File shared:文件共享与网盘"，接着配置并启动"Filebrowser",最后在guest的浏览器中输入Filebrowser的服务地址。
+本功能暂仅适配Linux发行版。若您的guest为windows,则可以换用网络共享方式。在host中打开tmoe tools，找到"File shared:文件共享与网盘"，接着配置并启动"Filebrowser",最后在guest的浏览器中输入Filebrowser的服务地址。
 
 您需要在guest中挂载9p file system，才能以此方式共享host的目录。
 精简命令:

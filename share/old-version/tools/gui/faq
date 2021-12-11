@@ -231,7 +231,7 @@ tmoe_desktop_faq() {
 			解决方法很简单，删掉某个文件夹再重新配置就可以了。因为本工具开发者已经很久没用过LinuxDeploy了，所以忘记是哪个啦！
 
 			------------------------
-			Q:${YELLOW}我觉得tmoe-linux tool/manager的依赖有点多${RESET}
+			Q:${YELLOW}我觉得tmoe tools/manager的依赖有点多${RESET}
 
 			A: 对于必要依赖，在安装时会显示安装信息，并将依赖关系记录至tmoe-linux目录${BLUE}/usr/local/etc/tmoe-linux/${RESET}下的${GREEN}MANAGER_DEPENDENCIES.txt 和 TOOL_DEPENDENCIES.txt${RESET} 。对于Android系统，tmoe-linux目录为 ${BLUE}~/.local/share/tmoe-linux${RESET}。
 			对于非必要依赖，请留意安装过程中出现的提示。

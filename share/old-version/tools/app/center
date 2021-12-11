@@ -764,7 +764,7 @@ install_linux_qq() {
         printf "%s\n" "本地版本可能为${YELLOW}$(head -n 1 ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version)${RESET}"
         printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02};rm -rvf /usr/local/bin/crashpad_handler /usr/share/applications/qq.desktop /usr/local/share/tencent-qq /usr/local/bin/qq${RESET}"
     else
-        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe tools安装的。"
     fi
     do_you_want_to_continue
     #if [ -e "${APPS_LNK_DIR}/qq.desktop" ]; then
@@ -980,7 +980,7 @@ install_baidu_netdisk() {
         printf "%s\n" "本地版本可能为${YELLOW}$(head -n 1 ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version)${RESET}"
         printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
-        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe tools安装的。"
     fi
     case "${ARCH_TYPE}" in
     "amd64") ;;
@@ -1130,11 +1130,11 @@ personal_netdisk() {
 tmoe_other_options_menu() {
     RETURN_TO_WHERE='tmoe_other_options_menu'
 
-    TMOE_APP=$(whiptail --title "其它选项" --menu \
-        "Welcome to tmoe-linux tools.这里是其它选项的菜单." 0 50 0 \
-        "1" "Remove GUI 卸载图形界面" \
-        "2" "Remove browser 卸载浏览器" \
-        "3" "Remove tmoe-linux tool" \
+    TMOE_APP=$(whiptail --title "Removable items" --menu \
+        "Which item do you want to remove?" 0 50 0 \
+        "1" "rm GUI 卸载图形界面" \
+        "2" "rm browser 卸载浏览器" \
+        "3" "rm tmoe tools" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################

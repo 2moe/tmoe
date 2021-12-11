@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4987.2,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4988.0,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -487,19 +487,22 @@ check_release_version() {
 ##################
 choose_tmoe_locale_env() {
 	SET_TMOE_LOCALE=true
+	if [[ -z ${LANG} ]]; then
+		LANG="C.UTF-8"
+	fi
 	CONTAINER_LOCALE=$(
 		whiptail --title "LOCALE SETTING" \
 			--menu "Please choose your \$LANG\n言語を選択してください" 0 0 0 \
-			"1" "Chinese traditional 中文(繁體/正體)" \
-			"2" "${LANG}" \
-			"3" "Chinese simplified 中文(简体)" \
+			"1" "${LANG}" \
+			"2" "繁體中文" \
+			"3" "简体中文" \
 			"4" "English_United-States" \
-			"5" "Deutsch_Deutschland" \
-			"6" "日本語_日本" \
+			"5" "español_España" \
+			"6" "Deutsch_Deutschland" \
 			"7" "français_France" \
 			"8" "ру́сский язы́к_Россия" \
-			"9" "español_España" \
-			"10" "čeština_Česká republika" \
+			"9" "čeština_Česká republika" \
+			"10" "日本語_日本" \
 			"11" "हिन्दी_भारत" \
 			"12" "português_Portugal" \
 			"13" "aa_DJ: Qafar_Yabuuti" \
@@ -586,7 +589,7 @@ choose_tmoe_locale_env() {
 			"94" "en_BW: English_Botswana" \
 			"95" "en_CA: English_Canada" \
 			"96" "en_DK: English_Denmark" \
-			"97" "en_GB: English_United-Kingdom" \
+			"97" "en_GB: English_Great Britain" \
 			"98" "en_HK: English_Hong Kong SAR China" \
 			"99" "en_IE: English_Ireland" \
 			"100" "en_IL: English_Israel" \
@@ -596,8 +599,8 @@ choose_tmoe_locale_env() {
 			"104" "en_PH: English_Philippines" \
 			"105" "en_SC: English_Seychelles" \
 			"106" "en_SG: English_Singapore" \
-			"107" "en_US: English_United-States" \
-			"108" "en_ZA: English_South-Africa" \
+			"107" "en_US: English_United States" \
+			"108" "en_ZA: English_South Africa" \
 			"109" "en_ZM: English_Zambia" \
 			"110" "en_ZW: English_Zimbabwe" \
 			"111" "eo: esperanto" \
@@ -820,16 +823,16 @@ choose_tmoe_locale_env() {
 	)
 	##########################
 	case "${CONTAINER_LOCALE}" in
-	1) TMOE_LANG="zh_TW.UTF-8" ;;
-	2) TMOE_LANG="${LANG}" ;;
+	1) TMOE_LANG="${LANG}" ;;
+	2) TMOE_LANG="zh_TW.UTF-8" ;;
 	3) TMOE_LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
 	4) TMOE_LANG="en_US.UTF-8" ;;
-	5) TMOE_LANG="de_DE.UTF-8" ;;
-	6) TMOE_LANG="ja_JP.UTF-8" ;;
+	5) TMOE_LANG="es_ES.UTF-8" ;;
+	6) TMOE_LANG="de_DE.UTF-8" ;;
 	7) TMOE_LANG="fr_FR.UTF-8" ;;
 	8) TMOE_LANG="ru_RU.UTF-8" ;;
-	9) TMOE_LANG="es_ES.UTF-8" ;;
-	10) TMOE_LANG="cs_CZ.UTF-8" ;;
+	9) TMOE_LANG="cs_CZ.UTF-8" ;;
+	10) TMOE_LANG="ja_JP.UTF-8" ;;
 	11) TMOE_LANG="hi_IN" ;;
 	12) TMOE_LANG="pt_PT.UTF-8" ;;
 	13) TMOE_LANG="aa_DJ.UTF-8" ;;

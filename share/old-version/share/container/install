@@ -332,7 +332,7 @@ tmoe_tips_2_zh() {
 				-------------------
 		${BOLD}小提示06${RESET}:
 				在${BOLD}${DEBIAN_FOLDER}${RESET}容器内输${GREEN}tmoe t${RESET}启动软件安装及远程桌面配置${BLUE}管理工具${RESET}。
-				You can type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
+				You can type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe tools.${RESET}
 				-------------------
 		${BOLD}小提示07${RESET}:
 				在宿主机的终端里输${GREEN}debian${RESET}单独启动${BLUE}${BOLD}${DEBIAN_FOLDER}${RESET}容器${RESET}，此时将不会自动启动远程桌面服务。
@@ -357,7 +357,7 @@ tmoe_tips_2_en() {
 				-------------------
 				Type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 				-------------------
-				Type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}
+				Type ${GREEN}tmoe t${RESET} to start ${BLUE}tmoe tools.${RESET}
 				-------------------
 				The ${GREEN}debian${RESET} command actually calls ${GREEN}tmoe${RESET}
 				If you want to start ${BLUE}${CONTAINER_TYPE}${RESET} ${PURPLE}${DEBIAN_FOLDER}${RESET}, the ${PURPLE}FULL COMMAND${BOLD} is ${GREEN}tmoe ${CONTAINER_TYPE} ${LONG_DISTRO_NAME} ${LONG_DISTRO_CODE} ${LONG_DISTRO_ARCH}${RESET}
@@ -1814,6 +1814,29 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	fi
 
+	locale_def_utf8() {
+	# glibc-common, libc-bin
+	if [[ -z $(command -v localedef) ]]; then
+		return 0
+	fi
+
+	local lang=${TMOE_LANG_HALF}
+
+	# locale -a
+	if (! localedef --list-archive | grep -qi "$lang.*utf.*8"); then
+		printf "%s\n" \
+			"${GREEN}Generating ${BLUE}locales ${YELLOW}(this might take a while)${PURPLE}..." \
+			"${BLUE}${lang}.UTF-8${RESET}"
+
+		# -c(--force), -v(--verbose), -f(--charmap), -i(--inputfile)
+		localedef \
+			-c \
+			-i "${lang}" \
+			-f UTF-8 \
+			"${lang}".UTF-8
+	fi
+	}
+
 	if grep -q 'ubuntu' /etc/os-release; then
 	    if [ ! -e /usr/lib/locale/en_US ]; then
 	        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}locales-all${RESET}"
@@ -1830,10 +1853,14 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 				LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 				LC_ALL=${TMOE_LANG}
 			EOF
-	printf "\n" >>/etc/locale.gen
-	sed -i 's@^[^#]@# &@g' /etc/locale.gen
-	sed -i "$ a${TMOE_LANG} UTF-8" /etc/locale.gen
-	locale-gen ${TMOE_LANG} 2>/dev/null
+
+	if [[ -n "$(command -v dpkg-query)" ]];then
+		if (! dpkg-query -s locales-all >/dev/null 2>&1);then
+			locale_def_utf8 2>/dev/null
+		fi
+	else
+		locale_def_utf8 2>/dev/null
+	fi
 	source /etc/default/locale 2>/dev/null
 	###############
 	if [[ -e /etc/apt/sources.list.d/system76-ubuntu-pop-focal.list ]]; then
@@ -2258,7 +2285,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    zh_*UTF-8) printf "%s\n" "您可以输${GREEN}debian-i${RESET}或${YELLOW}tmoe t${RESET}来打开软件安装工具" ;;
 	    *) ;;
 	    esac
-	    printf "%s\n" "You can type ${GREEN}debian-i${RESET} or ${YELLOW}tmoe t${RESET} to start ${BLUE}tmoe-linux tool.${RESET}"
+	    printf "%s\n" "You can type ${GREEN}debian-i${RESET} or ${YELLOW}tmoe t${RESET} to start ${BLUE}tmoe tools.${RESET}"
 	    bash zsh.sh
 	}
 	################

@@ -156,7 +156,7 @@ install_wps_office() {
         printf "%s\n" "本地版本可能为${YELLOW}$(head -n 1 ${TMOE_LINUX_DIR}/${DEPENDENCY_01}-version)${RESET}"
         printf "%s\n" "如需${RED}卸载${RESET}，请手动输${BLUE} ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02} ${RESET}"
     else
-        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe-linux tool安装的。"
+        printf "%s\n" "未检测到本地版本，您可能不是通过tmoe tools安装的。"
     fi
     do_you_want_to_continue
     cd /tmp

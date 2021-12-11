@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Tmoe-linux tool
+Name=Tmoe Tools
 Comment=Easily configure remote desktop server and qemu vm.
 Exec=/usr/local/etc/tmoe-linux/git/share/old-version/tools/app/tool
 Terminal=true
