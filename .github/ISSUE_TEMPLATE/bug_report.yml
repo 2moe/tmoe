@@ -28,11 +28,12 @@ body:
   - type: dropdown
     id: desktop
     attributes:
-      label: What is your desktop environment?
+      label: Desktop environment
       options:
         - "🐭 xfce"
         - "🦖 kde plasma"
         - "👣 gnome"
+        - "none"
         - "🌿 mate"
         - "🐦 lxqt"
         - "🕊️ lxde"
@@ -64,6 +65,7 @@ body:
       description: Steps to reproduce the behavior
       placeholder: |
         1.
+
         2.
     validations:
       required: false
@@ -102,7 +104,7 @@ body:
   - type: dropdown
     id: container-type
     attributes:
-      label: What is the container type?
+      label: Container type
       options:
         - "chroot"
         - "unshare"
@@ -123,14 +125,14 @@ body:
       value: |
         | container | value          |
         | --------- | -------------- |
-        | distro    | ubuntu-devel   |
+        | os        | ubuntu devel   |
         | arch      | arm64          |
 
         ---
 
         | host     | value          |
         | -------- | -------------- |
-        | os       | android-12     |
+        | os       | android 12     |
         | arch     | arm64          |
         | terminal | ?              |
         | tmoe     | latest         |
