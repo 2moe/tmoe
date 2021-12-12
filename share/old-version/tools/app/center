@@ -1009,10 +1009,12 @@ install_baidu_netdisk() {
         #download_ubuntu_kylin_deb_file_model_02
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./baidunetdisk.deb
-        apt install -y ./baidunetdisk.deb
+        dpkg -i ./baidunetdisk.deb
+        yes | apt install -f -y
+        apt install libappindicator3-0.1-cli
         ;;
     "arch")
-        DEPENDENCY_01="baidunetdisk-bin"
+        DEPENDENCY_01="baidunetdisk-electron"
         beta_features_quick_install
         ;;
     "redhat")
