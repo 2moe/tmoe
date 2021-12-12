@@ -329,20 +329,20 @@ tmoe_download_class() {
     TMOE_APP=$(
         whiptail --title "documents" --menu \
             "Which software do you want to install?" 0 50 0 \
-            "1" "🍨 aria2(linux平台超强文件下载器)" \
-            "2" "🖼 work_crawler:漫畫、小説下載工具@kanasimi" \
-            "3" "迅雷(基于多资源超线程技术的下载软件)" \
-            "4" "📉 百度网盘(x64,提供文件的网络备份,同步和分享服务)" \
+            "1" "百度网盘(arm64,x64,提供文件的网络备份,同步和分享服务)" \
+            "2" "迅雷(基于多资源超线程技术的下载软件)" \
+            "3" "🖼 work_crawler:漫畫、小説下載工具@kanasimi" \
+            "4" "🍨 aria2(linux平台超强文件下载器)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
     ##########################
     case "${TMOE_APP}" in
     0 | "") software_center ;;
-    1) tmoe_aria2_manager ;;
-    2) start_kanasimi_work_crawler ;;
-    3) source_thunder ;;
-    4) install_baidu_netdisk ;;
+    1) install_baidu_netdisk ;;
+    2) source_thunder ;;
+    3) start_kanasimi_work_crawler ;;
+    4) tmoe_aria2_manager ;;
     esac
     ##########################
     press_enter_to_return
@@ -964,12 +964,22 @@ install_baidu_netdisk() {
     printf "%s\n" "若安装失败，则请前往官网手动下载安装"
     printf "%s\n" "url：${YELLOW}https://pan.baidu.com/download${RESET}"
     printf "%s\n" "正在检测版本更新..."
-    THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-bin/?O=10&PP=10' | grep '\.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    THE_LATEST_DEB_URL=$(curl -L 'https://aur.tuna.tsinghua.edu.cn/packages/baidunetdisk-electron/' | grep '\.deb' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
     THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}' | sed 's@.deb@@')
     case ${LINUX_DISTRO} in
     redhat)
         THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@${DEPENDENCY_01}_@${DEPENDENCY_01}-@" | sed 's@_amd64.deb@.x86_64.rpm@')
         ;;
+    esac
+    case "${ARCH_TYPE}" in
+    "amd64");;
+    *)
+    THE_LATEST_DEB_URL=$(printf '%s\n' \
+        "${THE_LATEST_DEB_URL}" | sed \
+        -e "s@amd64.deb@${ARCH_TYPE}.deb@" \
+        -e "s@x86_64@aarch64@" 
+        )
+    ;;
     esac
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
@@ -983,7 +993,7 @@ install_baidu_netdisk() {
         printf "%s\n" "未检测到本地版本，您可能不是通过tmoe tools安装的。"
     fi
     case "${ARCH_TYPE}" in
-    "amd64") ;;
+    "amd64"|"arm64") ;;
     *) arch_does_not_support ;;
     esac
 
