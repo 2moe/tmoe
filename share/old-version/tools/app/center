@@ -1010,8 +1010,7 @@ install_baidu_netdisk() {
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o baidunetdisk.deb "${THE_LATEST_DEB_URL}"
         apt-cache show ./baidunetdisk.deb
         dpkg -i ./baidunetdisk.deb
-        yes | apt install -f -y
-        apt install libappindicator3-0.1-cli
+        aptitude install
         ;;
     "arch")
         DEPENDENCY_01="baidunetdisk-electron"
