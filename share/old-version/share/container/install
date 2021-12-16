@@ -596,6 +596,13 @@ cat_tmoe_nspawn_script() {
 	read
 }
 ##############
+get_android_host_name(){
+ANDROID_HOST_NAME=$(getprop ro.product.model | sed \
+		-e 's@ @-@g' \
+		-e 's@ @@g' \
+		-e 's/[^0-9a-zA-Z.-]\+//g' \
+		-e 's/^ \+\| \+$//g')
+}
 create_chroot_startup_script() {
 	case ${LINUX_DISTRO} in
 	Android)
@@ -617,7 +624,7 @@ create_chroot_startup_script() {
 		${TMOE_CHROOT_PREFIX} mv wm_size.txt "${TMOE_CHROOT_ETC}"
 	fi
 	if [[ $(command -v getprop) && $(command -v am) ]]; then
-		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
+		get_android_host_name
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 		case $(hostname) in
 		localhost | "") ${TMOE_CHROOT_PREFIX} hostname "${ANDROID_HOST_NAME}" 2>/dev/null ;;
@@ -757,7 +764,7 @@ create_proot_startup_script() {
 	fi
 	cd ${CONFIG_FOLDER}
 	if [[ $(command -v getprop) && $(command -v am) ]]; then
-		ANDROID_HOST_NAME=$(getprop ro.product.model | sed 's@ @-@g;s@ @@g')
+		get_android_host_name
 		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
 		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
 		case ${ANDROID_VERSION} in
