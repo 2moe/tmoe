@@ -762,76 +762,76 @@ view_the_schedule() {
 		${BOLD}${PURPLE}Semiweekly builds${RESET}：
 
 		${BOLD}${YELLOW}Monday & Friday${RESET}：
-			${GREEN}rust ${CYAN}nightly ${YELLOW}(amd64, arm64, armhf, riscv64, ppc64el, s390x, mips64el) ${PURPLE}* ${BLUE}gnu${RESET}
-			${GREEN}rust ${CYAN}nightly ${YELLOW}(amd64, arm64)  ${PURPLE}* ${BLUE}musl${RESET}
+			${GREEN}rust ${CYAN}nightly ${YELLOW}[amd64, arm64, armhf, riscv64, ppc64el, s390x, mips64el] ${PURPLE}* ${BLUE}gnu${RESET}
+			${GREEN}rust ${CYAN}nightly ${YELLOW}[amd64, arm64]  ${PURPLE}* ${BLUE}musl${RESET}
 
 		${CYAN}--------------------------${RESET}
 		${BOLD}${PURPLE}Weekly builds${RESET}：
 
 		${BOLD}${YELLOW}Tuesday/周二/火曜日${RESET}：
-			${GREEN}ubuntu ${CYAN}devel ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}ubuntu ${CYAN}devel ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}ubuntu ${CYAN}devel ${YELLOW}armhf ${PURPLE}* ${BLUE}(kde, zsh)${RESET}
+			${GREEN}ubuntu ${CYAN}devel ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
+			${GREEN}ubuntu ${CYAN}devel ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
+			${GREEN}ubuntu ${CYAN}devel ${YELLOW}armhf ${PURPLE}* ${BLUE}[kde, zsh]${RESET}
 
-			${GREEN}fedora ${CYAN}rawhide ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}fedora ${CYAN}rawhide ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, lxqt, zsh)${RESET}
-			${GREEN}fedora ${CYAN}rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
+			${GREEN}fedora ${CYAN}rawhide ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
+			${GREEN}fedora ${CYAN}rawhide ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
+			${GREEN}fedora ${CYAN}rawhide ${YELLOW}armhf ${PURPLE}* ${BLUE}[mate, zsh]${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
-			${GREEN}arch ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}arch ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}arch ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}arch ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
+			${GREEN}arch ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
+			${GREEN}arch ${YELLOW}armhf ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
 
-			${GREEN}debian ${CYAN}sid ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}debian ${CYAN}sid ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}debian ${CYAN}sid ${YELLOW}armhf ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
-			${GREEN}debian ${CYAN}sid ${YELLOW}i386 ${PURPLE}* ${BLUE}(lxde, zsh)${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}armhf ${PURPLE}* ${BLUE}[lxde, zsh]${RESET}
+			${GREEN}debian ${CYAN}sid ${YELLOW}i386 ${PURPLE}* ${BLUE}[lxde, zsh]${RESET}
 
 		${BOLD}${YELLOW}Thursday/周四/木曜日${RESET}：
-			${GREEN}alpine ${CYAN}edge ${YELLOW}arm64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}alpine ${CYAN}edge ${YELLOW}amd64 ${PURPLE}* ${BLUE}(kde, xfce, mate, zsh)${RESET}
-			${GREEN}alpine ${CYAN}edge ${YELLOW}armhf ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
-			${GREEN}alpine ${CYAN}edge ${YELLOW}i386 ${PURPLE}* ${BLUE}(mate, zsh)${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}armhf ${PURPLE}* ${BLUE}[mate, zsh]${RESET}
+			${GREEN}alpine ${CYAN}edge ${YELLOW}i386 ${PURPLE}* ${BLUE}[mate, zsh]${RESET}
 
-			${GREEN}kali ${CYAN}rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
-			${GREEN}kali ${CYAN}rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
-			${GREEN}kali ${CYAN}rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}kali ${CYAN}rolling ${YELLOW}arm64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
+			${GREEN}kali ${CYAN}rolling ${YELLOW}armhf ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
+			${GREEN}kali ${CYAN}rolling ${YELLOW}amd64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
 
 		${BOLD}${YELLOW}Friday/周五/金曜日${RESET}：
-			${GREEN}manjaro ${CYAN}stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}   
-			${GREEN}manjaro ${CYAN}stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}(xfce, zsh)${RESET}
+			${GREEN}manjaro ${CYAN}stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}   
+			${GREEN}manjaro ${CYAN}stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
 
 		${CYAN}--------------------------${RESET}
 		${BOLD}${PURPLE}Semimonthly builds${RESET}：
 
 		${BOLD}${YELLOW}Every 2 weeks${RESET}：
-			${GREEN}code ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}   
+			${GREEN}code ${YELLOW}[arm64, armhf, amd64] ${PURPLE}* ${BLUE}latest${RESET}   
 
-			${GREEN}go ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
-			${GREEN}go ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+			${GREEN}go ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}go ${YELLOW}[arm64, armhf, amd64] ${PURPLE}* ${BLUE}alpine${RESET}
 
-			${GREEN}jdk ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}jdk ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
 
-			${GREEN}mongo ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}mongo ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
 
-			${GREEN}nginx ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
-			${GREEN}nginx ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+			${GREEN}nginx ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}nginx ${YELLOW}[arm64, amd64, armhf] ${PURPLE}* ${BLUE}alpine${RESET}
 
-			${GREEN}node ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
-			${GREEN}node ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+			${GREEN}node ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}node ${YELLOW}[arm64, armhf, amd64] ${PURPLE}* ${BLUE}alpine${RESET}
 
-			${GREEN}php ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
-			${GREEN}php ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+			${GREEN}php ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}php ${YELLOW}[arm64, armhf, amd64] ${PURPLE}* ${BLUE}alpine${RESET}
 
-			${GREEN}ruby ${YELLOW}(arm64, amd64) ${PURPLE}* ${BLUE}latest${RESET}
-			${GREEN}ruby ${YELLOW}(arm64, amd64, armhf) ${PURPLE}* ${BLUE}alpine${RESET}
+			${GREEN}ruby ${YELLOW}[arm64, amd64] ${PURPLE}* ${BLUE}latest${RESET}
+			${GREEN}ruby ${YELLOW}[arm64, armhf, amd64] ${PURPLE}* ${BLUE}alpine${RESET}
 
 		${CYAN}--------------------------${RESET}
 		${BOLD}${YELLOW}Todo${RESET}：
-			${GREEN}PostgreSQL ${YELLOW}(arm64, amd64)
-			${GREEN}Redis ${YELLOW}(arm64, amd64)
-			${GREEN}Haskell ${YELLOW}(amd64)
-			${GREEN}Swift ${YELLOW}(amd64)
+			${GREEN}PostgreSQL ${YELLOW}[arm64, amd64]
+			${GREEN}Redis ${YELLOW}[arm64, amd64]
+			${GREEN}Haskell ${YELLOW}amd64
+			${GREEN}Swift ${YELLOW}amd64
 
 		${CYAN}--------------------------${RESET}
 	EOF

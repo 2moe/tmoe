@@ -69,7 +69,7 @@ EOF
 ##############
 check_vscode_server_arch() {
     case ${ARCH_TYPE} in
-    arm64 | amd64) install_vscode_server ;;
+    arm64 | amd64 | armhf) install_vscode_server ;;
     *)
         printf "%s\n" "非常抱歉，Tmoe-linux的开发者未对您的架构进行适配。"
         printf "%s\n" "请选择其它版本"
@@ -192,6 +192,11 @@ After the upgrade is complete, you can type ${GREEN}code-server${RESET} to start
     cd /tmp
     rm -rvf .VSCODE_SERVER_TEMP_FOLDER
     case "${ARCH_TYPE}" in
+    "armhf") TMP_ARCH=armv7l ;;
+    *) TMP_ARCH=${ARCH_TYPE} ;;
+    esac
+
+    case "${ARCH_TYPE}" in
     "arm64")
         git clone -b aarch64 --depth=1 https://gitee.com/mo2/vscode-server.git .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
@@ -199,10 +204,10 @@ After the upgrade is complete, you can type ${GREEN}code-server${RESET} to start
         cd ..
         rm -rf /tmp/.VSCODE_SERVER_TEMP_FOLDER
         ;;
-    "amd64")
+    "amd64" | "armhf")
         mkdir -pv .VSCODE_SERVER_TEMP_FOLDER
         cd .VSCODE_SERVER_TEMP_FOLDER
-        LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep 'amd64' | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
+        LATEST_VSCODE_SERVER_LINK=$(curl -Lv https://api.github.com/repos/cdr/code-server/releases | grep "${TMP_ARCH}" | grep browser_download_url | grep linux | head -n 1 | awk -F ' ' '$0=$NF' | cut -d '"' -f 2)
         aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o .VSCODE_SERVER.tar.gz ${LATEST_VSCODE_SERVER_LINK}
         tar -zxvf .VSCODE_SERVER.tar.gz
         VSCODE_FOLDER_NAME=$(ls -l ./ | grep '^d' | awk -F ' ' '$0=$NF')

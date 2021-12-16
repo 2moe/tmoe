@@ -1,60 +1,59 @@
 #!/usr/bin/env bash
 ########################
-export PULSE_SERVER=127.0.0.1
 # The default pulseaudio server address is 127.0.0.1
 # 本机默认音频服务地址为127.0.0.1,默认端口为4713。
 # Die Standard-Audiodienst Adresse dieses Geräts lautet 127.0.0.1
+export PULSE_SERVER=127.0.0.1
 
-VNC_RESOLUTION=1440x720
 # The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
 # 默认分辨率为1440x720,您可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
 # Die Standardauflösung ist 1440x720
+VNC_RESOLUTION=1440x720
 
-VNC_DISPLAY=2
-RFB_PORT=$((5900 + VNC_DISPLAY))
 # If the display number=2,then vnc port=5902.
 # 若显示编号为2,则vnc端口为$((5900+2))=5902。
 # Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
+VNC_DISPLAY=2
+RFB_PORT=$((5900 + VNC_DISPLAY))
 
-VNC_USER=$(whoami)
 # You can specify a VNC user. The current user is $(whoami)
 # 您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
 # Sie können einen VNC-Benutzer angeben
+VNC_USER=$(whoami)
 
-VNC_LOCALHOST=false
 # Only allow connections from localhost.Default is false.
 # 当此变量的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
 # Wenn dieser Parameterwert "true" ist, lassen Sie nur Verbindungen von localhost zu
+VNC_LOCALHOST=false
 
-VNC_SERVER=tiger
 # You can choose tiger or tight.
 # 服务端可选tiger或tight。
 # Sie können "tiger" oder "tight" wählen.
+VNC_SERVER=tiger
 
-ZLIB_LEVEL=0
 # Zlib compression level for ZRLE encoding (it does not affect Tight encoding). Acceptable values are between 0  and  9.
 # 压缩级别,可选0至9,默认为0。
 # Die Standardkomprimierungsstufe für zlib ist 0
+ZLIB_LEVEL=0
 
-PIXEL_DEPTH=24
 # Specify the pixel depth in bits of the desktop to be created. Default is 24.
 # 色彩/位/像素深度，可选16、24或32,默认为24，建议选用16或者24。
 # Die Standardpixeltiefe beträgt 24
+PIXEL_DEPTH=24
 
-ALWAYS_SHARED=true
 # Always treat incoming connections as shared, regardless of the client-specified setting. Default is true.
+ALWAYS_SHARED=true
 
 DBUS_ENABLED=true
-
-AUTO_START_DBUS=true
 # If the value is true, "sudo service dbus start" will be executed automatically every time.
+AUTO_START_DBUS=true
 
-AUTO_STOP_VNC=true
 # Before each start, vnc will be automatically stopped.
 # If the value is true, then "startvnc" => "restart vnc"
+AUTO_STOP_VNC=true
 
-# TMOE_CHROOT=false
 # If you are using arch and cannot start dbus-daemon, then change the value to true.
+# TMOE_CHROOT=false
 ###################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then
@@ -126,7 +125,7 @@ fix_vnc_permissions() {
         for i in ".ICEauthority" ".Xauthority" ".config"; do
             [[ ! -e "${i}" ]] || VNC_FILE="${VNC_FILE} ${i}"
         done
-        sudo -E chown -Rv "${CURRENT_USER_NAME}":"${CURRENT_USER_GROUP}" "${VNC_FILE}" || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
+        sudo -E chown -Rv "${CURRENT_USER_NAME}":"${CURRENT_USER_GROUP}" ${VNC_FILE} || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
         unset i
         ;;
     esac
