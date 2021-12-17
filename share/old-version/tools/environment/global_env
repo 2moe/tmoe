@@ -19,8 +19,6 @@ gnu_linux_env_02() {
     OPT_URL_01='https://dl.cloudsmith.io/public/debianopt/debianopt/deb/debian'
     # OPT_URL_02='https://dl.bintray.com/debianopt/debianopt'
     OPT_REPO_LIST='/etc/apt/sources.list.d/debianopt-debianopt.list'
-    # ELECTRON_MIRROR_STATION='https://repo.huaweicloud.com/electron/'
-    #ELECTRON_MIRROR_STATION_02='https://npm.taobao.org/mirrors/electron'
 
     ELECTRON_MIRROR_STATION='https://npmmirror.com/mirrors/electron'
     TIGER_VNC_DEFAULT_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
@@ -458,11 +456,6 @@ download_ubuntu_kylin_deb_file_model_02() {
 ################
 download_debian_cn_repo_deb_file_model_01() {
     LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-    install_deb_file_common_model_01
-}
-######################
-download_tuna_repo_deb_file_model_03() {
-    LATEST_DEB_VERSION=$(curl -L "${LATEST_DEB_REPO}" | grep '\.deb' | grep "${ARCH_TYPE}" | grep "${GREP_NAME}" | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)
     install_deb_file_common_model_01
 }
 ################
@@ -1121,21 +1114,16 @@ install_typora() {
     cd /tmp
     GREP_NAME='typora'
     case "${ARCH_TYPE}" in
-    "amd64")
-        LATEST_DEB_REPO='http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/'
-        download_debian_cn_repo_deb_file_model_01
-        #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'http://mirrors.ustc.edu.cn/debiancn/debiancn/pool/main/t/typora/typora_0.9.67-1_amd64.deb'
-        ;;
-    "i386")
-        LATEST_DEB_REPO='https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/'
-        download_tuna_repo_deb_file_model_03
-        #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'typora.deb' 'https://mirrors.bfsu.edu.cn/deepin/pool/non-free/t/typora/typora_0.9.22-1_i386.deb'
+    "amd64" | "arm64")
+        LATEST_DEB_REPO='https://packages.tmoe.me/deb/pool/non-free/t/typora/'
+        LATEST_DEB_VERSION="typora_0.11.18_${ARCH_TYPE}.deb"
+        install_deb_file_common_model_01
+        sed -E \
+            -e "s@(typora) (%U)@\1 --no-sandbox \2@" \
+            -i ${APPS_LNK_DIR}/typora.desktop
         ;;
     *) arch_does_not_support ;;
     esac
-    apt-cache show ./typora.deb
-    apt install -y ./typora.deb
-    #rm -vf ./typora.deb
     beta_features_install_completed
 }
 ################

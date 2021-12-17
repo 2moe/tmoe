@@ -15,7 +15,7 @@ electron_apps_main_menu() {
     #16 50 7
     INSTALL_APP=$(whiptail --title "ELECTRON APPS" --menu \
         "electron:Build cross-platform desktop apps with JavaScript,HTML,and CSS" 0 0 0 \
-        "1" "🎶 music:以雅以南,以龠不僭" \
+        "1" "🎵 music:以雅以南,以龠不僭" \
         "2" "📺 videos视频:全网影视搜索,无损切割视频" \
         "3" "📝 notes笔记:记录灵感,撰写文档,整理材料,回顾日记" \
         "4" "🍎 virtual machine虚拟机:win95,macos8" \
@@ -422,8 +422,8 @@ tmoe_electron_music_app() {
     RETURN_TO_WHERE='tmoe_electron_music_app'
     RETURN_TO_MENU='tmoe_electron_music_app'
     DEBIAN_INSTALLATION_MENU='01'
-    INSTALL_APP=$(whiptail --title "MUSIC APP" --menu \
-        "音樂🎵" 0 0 0 \
+    INSTALL_APP=$(whiptail --title "3倍ice☆cream~♪" --menu \
+        "Music" 0 0 0 \
         "1" "electron-netease-cloud-music(云音乐)" \
         "2" "YesPlayMusic(高颜值的第三方网易云播放器)" \
         "3" "listen1(免费音乐聚合)" \

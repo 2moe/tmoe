@@ -38,7 +38,7 @@ software_center() {
             "1" "🦊 Browser:浏览器(edge,firefox,chromium)" \
             "2" "📘 Dev:开发(VSCode,Pycharm,Android-Studio,idea)" \
             "3" "⚛️ electron-apps(云音乐,哔哩哔哩,cocomusic)" \
-            "4" "🎵 Multimedia:图像与影音(gimp,mpv)" \
+            "4" "🎶 Multimedia:图像与影音(gimp,mpv)" \
             "5" "🐧 SNS:社交类(qq,wechat,skype)" \
             "6" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
             "7" "📚 Documents:文档(libreoffice,wps)" \
