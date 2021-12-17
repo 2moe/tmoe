@@ -1125,14 +1125,14 @@ install_typora() {
         install_deb_file_common_model_01
 
         sed -E \
-            -e "s@(Comment)=.*@\1=A minimal markdown reading & writing app.@" \
+            -e "s@(Comment)=a.*@\1=A minimal markdown reading \& writing app.@" \
             -i ${APPS_LNK_DIR}/typora.desktop
 
         cp ${APPS_LNK_DIR}/typora.desktop ${APPS_LNK_DIR}/typora-no-sandbox.desktop
 
         sed -E \
             -e "s@(Name=Typora)@\1 No Sandbox@" \
-            -e "s@(typora) (%U)@\1 --no-sandbox \2@" \
+            -e "s@(Exec=typora) (%U)@\1 --no-sandbox \2@" \
             -i ${APPS_LNK_DIR}/typora-no-sandbox.desktop
         ;;
     *) arch_does_not_support ;;
