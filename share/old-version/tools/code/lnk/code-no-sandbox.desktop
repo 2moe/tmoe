@@ -1,13 +1,13 @@
 [Desktop Entry]
 Name=Code No Sandbox
-Comment=Code Editing. Redefined.
+Comment=Code Editing. No sandbox. Redefined.
 GenericName=Text Editor
 Exec=/usr/share/code/code --no-sandbox --unity-launch %F
 Icon=com.visualstudio.code
 Type=Application
 StartupNotify=false
 StartupWMClass=Code
-Categories=Utility;TextEditor;Development;IDE;
+Categories=TextEditor;Development;IDE;
 MimeType=text/plain;inode/directory;application/x-code-workspace;
 Actions=new-empty-window;
 Keywords=vscode;

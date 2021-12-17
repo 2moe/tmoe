@@ -1110,6 +1110,9 @@ install_typora() {
     DEPENDENCY_02=""
     #NON_DEBIAN=true
     non_debian_function
+    printf "%s\n" \
+        "If you want to remove it, then type ${GREEN}apt ${RED}purge ${YELLOW}-y ${BLUE}typora" \
+        "${PURPLE}rm ${YELLOW}-fv ${BLUE}${APPS_LNK_DIR}/typora-no-sandbox.desktop${RESET}"
     if (dpkg-query -s typora >/dev/null 2>&1); then
         beta_features_quick_install
     fi
@@ -1120,9 +1123,17 @@ install_typora() {
         LATEST_DEB_REPO='https://packages.tmoe.me/deb/pool/non-free/t/typora/'
         LATEST_DEB_VERSION="typora_0.11.18_${ARCH_TYPE}.deb"
         install_deb_file_common_model_01
+
         sed -E \
-            -e "s@(typora) (%U)@\1 --no-sandbox \2@" \
+            -e "s@(Comment)=.*@\1=A minimal markdown reading & writing app.@" \
             -i ${APPS_LNK_DIR}/typora.desktop
+
+        cp ${APPS_LNK_DIR}/typora.desktop ${APPS_LNK_DIR}/typora-no-sandbox.desktop
+
+        sed -E \
+            -e "s@(Name=Typora)@\1 No Sandbox@" \
+            -e "s@(typora) (%U)@\1 --no-sandbox \2@" \
+            -i ${APPS_LNK_DIR}/typora-no-sandbox.desktop
         ;;
     *) arch_does_not_support ;;
     esac
