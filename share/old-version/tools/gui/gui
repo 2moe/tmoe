@@ -1198,28 +1198,28 @@ install_tmoe_electron_app_pack() {
 ##########################
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
-        if [[ ! $(command -v zenmap) ]]; then
-            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}zenmap${RESET}"
-            eatmydata apt install -y zenmap || apt install -y zenmap
-        fi
+        # if [[ ! $(command -v zenmap) ]]; then
+        #     printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}zenmap${RESET}"
+        #     eatmydata apt install -y zenmap || apt install -y zenmap
+        # fi
         if [[ ! $(command -v xhydra) ]]; then
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}hydra-gtk${RESET}"
             eatmydata apt install -y hydra-gtk || apt install -y hydra-gtk || apt install -y xhydra
         fi
         printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-menu${RESET}"
-        eatmydata apt install -y kali-menu || aptitude install -y kali-menu || apt install -y kali-menu
+        eatmydata apt install -y kali-menu || apt-get install -y kali-menu
         case ${ARCH_TYPE} in
         arm64 | armhf | armel)
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-arm${RESET}"
-            eatmydata apt install -y kali-linux-arm || aptitude install -y kali-linux-arm || apt install -y kali-linux-arm
+            eatmydata apt install -y kali-linux-arm || apt-get install -y kali-linux-arm
             ;;
         *)
             if [[ ${AUTO_INSTALL_GUI} != true ]]; then
                 printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-headless${RESET}"
-                eatmydata apt install -y kali-linux-headless || aptitude install -y kali-linux-headless || apt install -y kali-linux-headless
+                eatmydata apt install -y kali-linux-headless || apt-get install -y kali-linux-headless
             else
                 printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-arm${RESET}"
-                eatmydata apt install -y kali-linux-arm || aptitude install -y kali-linux-arm
+                eatmydata apt install -y kali-linux-arm || apt-get install -y kali-linux-arm
             fi
             ;;
         esac
@@ -1599,7 +1599,7 @@ auto_install_and_configure_fcitx4() {
         true)
             printf "%s\n" "apt install -y \$(check-language-support)"
             [[ -e ${TMOE_LINUX_DIR}/check-ubuntu-language-support.txt ]] || printf "%s\n" $(check-language-support) >${TMOE_LINUX_DIR}/check-ubuntu-language-support.txt
-            apt install -y $(check-language-support) || aptitude install -y $(check-language-support)
+            apt install -y $(check-language-support)
             ;;
         esac
         ;;
@@ -5317,7 +5317,7 @@ debian_remove_vnc_server() {
     apt remove -y ${VNC_SERVER_BIN_NOW}
 }
 eatmydata_apt_install_i() {
-    eatmydata apt install -y ${i} || aptitude install -y ${i} || apt install -y ${i}
+    eatmydata apt install -y ${i} || apt-get install -y ${i}
 }
 debian_install_vnc_server() {
     case ${LINUX_DISTRO} in

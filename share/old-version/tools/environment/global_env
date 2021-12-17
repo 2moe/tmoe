@@ -646,10 +646,10 @@ different_distro_software_install() {
     "debian")
         apt update
         if [ ! -z "${DEPENDENCY_01}" ]; then
-            eatmydata apt install -y ${DEPENDENCY_01} || eatmydata apt-get install -f -y ${DEPENDENCY_01} || aptitude install -y ${DEPENDENCY_01}
+            eatmydata apt install -y ${DEPENDENCY_01} || eatmydata apt-get install -f -y ${DEPENDENCY_01} || aptitude install -y
         fi
         if [ ! -z "${DEPENDENCY_02}" ]; then
-            eatmydata apt install -y ${DEPENDENCY_02} || eatmydata apt-get install -f -y ${DEPENDENCY_02} || aptitude install -y ${DEPENDENCY_02}
+            eatmydata apt install -y ${DEPENDENCY_02} || eatmydata apt-get install -f -y ${DEPENDENCY_02} || aptitude install -y
         fi
         ;;
         ################
@@ -1110,7 +1110,9 @@ install_typora() {
     DEPENDENCY_02=""
     #NON_DEBIAN=true
     non_debian_function
-    beta_features_quick_install
+    if (dpkg-query -s typora >/dev/null 2>&1); then
+        beta_features_quick_install
+    fi
     cd /tmp
     GREP_NAME='typora'
     case "${ARCH_TYPE}" in
