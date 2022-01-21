@@ -20,7 +20,7 @@ choose_which_gnu_linux_distro() {
 		OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
 		OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
 		OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
-		OPT_6="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
 		OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
 		OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
 		OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
@@ -35,7 +35,7 @@ choose_which_gnu_linux_distro() {
 		OPT_3="🍥 Debian:致力于自由"
 		OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
 		OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
-		OPT_6="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
 		OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
 		OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
 		OPT_9="👒 Fedora:红帽社区版,新技术试验场"
@@ -50,7 +50,7 @@ choose_which_gnu_linux_distro() {
 		OPT_3="🍥 Debian is a distro composed of free and open-source software"
 		OPT_4="🍛 Ubuntu is the modern, open source OS."
 		OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
-		OPT_6="🍱 Manjaro,centos,alpine,mint,rocky & puppy"
+		OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
 		OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
 		OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
 		OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
@@ -1192,7 +1192,7 @@ install_oracle_linux_distro() {
 		;;
 	amd64)
 		CLOUD_ROOTFS=true
-		DISTRO_CODE=$(curl -L https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
+		DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		create_container_edition_txt
 		go_to_proot_management
@@ -1271,15 +1271,14 @@ install_beta_containers() {
 	install_beta_containers_zh() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
-				"1" "Manjaro(arm64,x64,让arch更方便用户使用)" \
-				"2" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
-				"3" "CentOS(基于红帽的社区企业操作系统)" \
-				"4" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
-				"5" "🐶 Puppy(x64,小巧且易用,速度快)" \
-				"6" "Void(基于xbps包管理器的独立发行版)" \
-				"7" "🌿 Mint(x86,x64,简单易用的系统)" \
-				"8" "Solus(x64,一个对新手友好的发行版)" \
-				"9" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
+				"1" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
+				"2" "CentOS(基于红帽的社区企业操作系统)" \
+				"3" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
+				"4" "🐶 Puppy(x64,小巧且易用,速度快)" \
+				"5" "Void(基于xbps包管理器的独立发行版)" \
+				"6" "🌿 Mint(x86,x64,简单易用的系统)" \
+				"7" "Solus(x64,一个对新手友好的发行版)" \
+				"8" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
 				"0" "🌚 Return to previous menu 返回上级菜单" \
 				3>&1 1>&2 2>&3
 		)
@@ -1287,15 +1286,14 @@ install_beta_containers() {
 	install_beta_containers_ja() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
-				"1" "Manjaro:Archをベースとした、ユーザーフレンドリーなディストリビューションを目指している" \
-				"2" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
-				"3" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
-				"4" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
-				"5" "🐶 Puppy(x64,extremely low minimum system requirements)" \
-				"6" "Void:ゼロから設計および実装されたX Binary Package System" \
-				"7" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
-				"8" "Solus(x64,以前はEvolve OSとして知られていた)" \
-				"9" "Pop！_OS(x64，based upon Ubuntu)" \
+				"1" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
+				"2" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
+				"3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
+				"4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+				"5" "Void:ゼロから設計および実装されたX Binary Package System" \
+				"6" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
+				"7" "Solus(x64,以前はEvolve OSとして知られていた)" \
+				"8" "Pop！_OS(x64，based upon Ubuntu)" \
 				"0" "🌚 戻る" \
 				3>&1 1>&2 2>&3
 		)
@@ -1303,15 +1301,14 @@ install_beta_containers() {
 	install_beta_containers_en() {
 		BETA_SYSTEM=$(
 			whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
-				"1" "Manjaro:Free fast and secure Linux based operating system for everyone" \
-				"2" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
-				"3" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
-				"4" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
-				"5" "🐶 Puppy(x64,extremely low minimum system requirements)" \
-				"6" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
-				"7" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
-				"8" "Solus(x64,designed for home computing)" \
-				"9" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
+				"1" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
+				"2" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
+				"3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
+				"4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+				"5" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
+				"6" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
+				"7" "Solus(x64,designed for home computing)" \
+				"8" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -1326,33 +1323,26 @@ install_beta_containers() {
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
-		DISTRO_NAME='manjaro'
-		TMOE_LINUX_CONTAINER_DISTRO='manjaro'
-		create_container_edition_txt
-		go_to_proot_management
-		install_manjaro_linux_distro
-		;;
-	2)
 		TMOE_LINUX_CONTAINER_DISTRO='alpine'
 		install_alpine_linux_distro
 		;;
-	3)
+	2)
 		CLOUD_ROOTFS=true
 		install_centos_linux_distro
 		;;
-	4)
+	3)
 		CLOUD_ROOTFS=true
 		install_rocky_linux_distro
 		;;
-	5) install_puppy_linux_distro ;;
-	6)
+	4) install_puppy_linux_distro ;;
+	5)
 		TMOE_LINUX_CONTAINER_DISTRO='void'
 		create_container_edition_txt
 		install_void_linux_distro
 		;;
-	7) install_mint_linux_distro ;;
-	8) install_solus_distro ;;
-	9) install_pop_distro ;;
+	6) install_mint_linux_distro ;;
+	7) install_solus_distro ;;
+	8) install_pop_distro ;;
 	esac
 	######################
 	exit 0
@@ -1369,13 +1359,13 @@ install_ubuntu_gnu_linux_distro() {
 		MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
 		OPT_1="22.04(LTS, dev) 果酱水母 Jammy Jellyfish"
 		OPT_2="🐒 21.10(stable) 頑皮大狐猴 Impish Indri"
-		OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
-		OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
-		OPT_5="18.04(LTS)仿生海狸 Bionic Beaver"
-		OPT_6="Compatibility mode 兼容模式(仅安装)"
-		OPT_7="Custom code手动输入版本代号"
-		OPT_8="使用debootstrap手动构建"
-		OPT_9="Latest(自動檢測22.10)"
+		# OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
+		OPT_3="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
+		OPT_4="18.04(LTS)仿生海狸 Bionic Beaver"
+		OPT_5="Compatibility mode 兼容模式(仅安装)"
+		OPT_6="Custom code手动输入版本代号"
+		OPT_7="使用debootstrap手动构建"
+		OPT_8="Latest(自動檢測22.10)"
 		OPT_0="🌚 Return to previous menu 返回上级菜单"
 
 	}
@@ -1384,26 +1374,26 @@ install_ubuntu_gnu_linux_distro() {
 		MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
 		OPT_1="22.04(LTS, dev) Jammy Jellyfish"
 		OPT_2="🐒 21.10(stable) Impish Indri"
-		OPT_3="🦛 21.04 Hirsute Hippo"
-		OPT_4="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
-		OPT_5="18.04(LTS)Bionic Beaver"
-		OPT_6="互換モード"
-		OPT_7="カスタムコード"
-		OPT_8="debootstrapを使用して手動でビルドする"
-		OPT_9="Latest(最新バージョンを自動的に検出)"
+		# OPT_3="🦛 21.04 Hirsute Hippo"
+		OPT_3="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
+		OPT_4="18.04(LTS)Bionic Beaver"
+		OPT_5="互換モード"
+		OPT_6="カスタムコード"
+		OPT_7="debootstrapを使用して手動でビルドする"
+		OPT_8="Latest(最新バージョンを自動的に検出)"
 		OPT_0="🌚 戻る"
 	}
 	install_ubuntu_gnu_linux_distro_en() {
 		MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2023,then customize the version code"
 		OPT_1="22.04(LTS, dev) Jammy Jellyfish"
 		OPT_2="🐒 21.10(stable) Impish Indri"
-		OPT_3="🦛 21.04 Hirsute Hippo"
-		OPT_4="🐱 20.04(LTS)Focal Fossa"
-		OPT_5="18.04(LTS)Bionic Beaver"
-		OPT_6="Compatibility mode"
-		OPT_7="Custom code"
-		OPT_8="Manually build"
-		OPT_9="Latest"
+		# OPT_3="🦛 21.04 Hirsute Hippo"
+		OPT_3="🐱 20.04(LTS)Focal Fossa"
+		OPT_4="18.04(LTS)Bionic Beaver"
+		OPT_5="Compatibility mode"
+		OPT_6="Custom code"
+		OPT_7="Manually build"
+		OPT_8="Latest"
 		OPT_0="🌚 Return to previous menu"
 	}
 	install_ubuntu_gnu_linux_distro_menu() {
@@ -1419,10 +1409,10 @@ install_ubuntu_gnu_linux_distro() {
 				"6" "${OPT_6}" \
 				"7" "${OPT_7}" \
 				"8" "${OPT_8}" \
-				"9" "${OPT_9}" \
 				"0" "${OPT_0}" \
 				3>&1 1>&2 2>&3
 		)
+		# "9" "${OPT_9}" \
 	}
 	#🦦
 	case ${TMOE_MENU_LANG} in
@@ -1436,16 +1426,16 @@ install_ubuntu_gnu_linux_distro() {
 	0 | "") choose_which_gnu_linux_distro ;;
 	1) DISTRO_CODE='jammy' ;;
 	2) DISTRO_CODE='impish' ;;
-	3) DISTRO_CODE='hirsute' ;;
-	4) DISTRO_CODE='focal' ;;
-	5) DISTRO_CODE='bionic' ;;
-	6)
+	# 3) DISTRO_CODE='hirsute' ;;
+	3) DISTRO_CODE='focal' ;;
+	4) DISTRO_CODE='bionic' ;;
+	5)
 		COMPATIBILITY_MODE=true
 		custom_ubuntu_version
 		;;
-	7) custom_ubuntu_version ;;
-	8) debootstrap_ubuntu_distro ;;
-	9) check_the_latest_ubuntu_version ;;
+	6) custom_ubuntu_version ;;
+	7) debootstrap_ubuntu_distro ;;
+	8) check_the_latest_ubuntu_version ;;
 	esac
 	######################
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -1602,9 +1592,9 @@ linux_distro_common_model_01() {
 			-e "s/debian container/${DISTRO_NAME} container/g" \
 			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
 			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "/usermod -a/d" \
-			-e "/groupadd aid/d" \
 			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+	# -e "/usermod -a/d" \
+	# -e "/groupadd aid/d" \
 }
 ####################
 #02为kali-rolling
@@ -1632,6 +1622,7 @@ linux_distro_common_model_04() {
 			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
 			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
+
 ####################
 install_different_ubuntu_gnu_linux_distros() {
 	case ${COMPATIBILITY_MODE} in
@@ -1923,7 +1914,7 @@ install_centos_linux_distro() {
 		linux_distro_common_model_04
 		;;
 	*)
-		OLD_STABLE_VERSION='8'
+		OLD_STABLE_VERSION='8-Stream'
 		check_the_latest_distro_version
 		#DISTRO_CODE='8'
 		#linux_distro_common_model_01
@@ -1934,35 +1925,45 @@ install_centos_linux_distro() {
 install_gentoo_linux_distro() {
 	DISTRO_NAME='gentoo'
 	TMOE_LINUX_CONTAINER_DISTRO='gentoo'
-	case "${ARCH_TYPE}" in
-	'arm64')
-		#printf "%s\n" "检测到您当前使用的是arm64架构，将临时识别为armhf"
-		#NEW_TMOE_ARCH='armhf'
-		#TMOE_QEMU_ARCH=""
-		#ARCH_TYPE='armhf'
-		#create_tmoe_arch_file
-		create_container_edition_txt
-		go_to_proot_management
-		DISTRO_CODE='current'
-		#sed '45 a\ARCH_TYPE="armhf"' |
-		TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.tuna.tsinghua.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
-		TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
-		bash -c "$(sed -n p \
-			${TMOE_SHARE_DIR}/container/install |
-			sed -E \
-				-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" \
-				-e 's/debian (container)/Gentoo \1/g' \
-				-e 's:debian-sid:gentoo-current:g' \
-				-e 's:debian/sid:gentoo/current:g' \
-				-e 's:Debian (GNU/Linux):Gentoo \1:g')"
-		;;
-	*)
-		create_container_edition_txt
-		go_to_proot_management
-		DISTRO_CODE='current'
-		linux_distro_common_model_01
-		;;
-	esac
+
+	if (whiptail --title "init" --yes-button "openrc" --no-button "systemd" --yesno "gentoo" 7 40); then
+		DISTRO_CODE='openrc'
+	else
+		DISTRO_CODE='systemd'
+	fi
+
+	# case "${ARCH_TYPE}" in
+	# 'arm64')
+	# 	create_container_edition_txt
+	# 	go_to_proot_management
+	# 	DISTRO_CODE='current'
+	# 	#sed '45 a\ARCH_TYPE="armhf"' |
+	# 	TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
+	# 	TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
+	# 	bash -c "$(sed -n p \
+	# 		${TMOE_SHARE_DIR}/container/install |
+	# 		sed -E \
+	# 			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" \
+	# 			-e 's/debian (container)/Gentoo \1/g' \
+	# 			-e 's:debian-sid:gentoo-current:g' \
+	# 			-e 's:debian/sid:gentoo/current:g' \
+	# 			-e 's:Debian (GNU/Linux):Gentoo \1:g')"
+	# 	;;
+	# *)
+	# 		;;
+	# esac
+	create_container_edition_txt
+	go_to_proot_management
+	DISTRO_CODE_02='current'
+
+	bash -c "$(sed -n p \
+		${TMOE_SHARE_DIR}/container/install |
+		sed -E \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e "s@ARCH_TYPE\}/default@ARCH_TYPE\}/${DISTRO_CODE}@" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########################
 install_alpine_linux_distro() {
@@ -2062,52 +2063,6 @@ install_raspios_full_armhf_rootfs() {
 			-e 's:debian-sid:raspios-buster:g' \
 			-e 's:Debian (GNU/Linux):Raspios \1:g')"
 }
-##################
-install_manjaro_linux_distro() {
-	case ${ARCH_TYPE} in
-	arm64)
-		bash -c "$(sed -n p \
-			${TMOE_SHARE_DIR}/container/install |
-			sed -E \
-				-e 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/osdn/storage/g/m/ma/manjaro-arm/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz@g' \
-				-e 's/debian (container)/manjaro \1/g' \
-				-e 's:debian-sid:manjaro-stable:g' \
-				-e 's:debian/sid:manjaro/stable:g' \
-				-e 's:rootfs.tar.xz:rootfs.tar.gz:g' \
-				-e 's@^(MANJARO_LINUX=).*@\1true@g' \
-				-e 's:Debian (GNU/Linux):Manjaro \1:g')"
-		;;
-	amd64)
-		mkdir -pv ${ROOTFS_DIR}
-		cd ${ROOTFS_DIR}
-		MANJARO_ROOTFS_FILE_NAME="${DISTRO_NAME}-stable_${ARCH_TYPE}-rootfs.tar.xz"
-		if [ ! -e "${MANJARO_ROOTFS_FILE_NAME}" ]; then
-			TEMP_DIR=".MANJARO_AMD64-TEMP_FOLDER"
-			[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
-			pwd
-			git clone --depth=1 ${AK2_GIT_URL}/${DISTRO_NAME}-stable_${ARCH_TYPE}.git ${TEMP_DIR}
-			cd ${TEMP_DIR}
-			cat .container_linux_* >${MANJARO_ROOTFS_FILE_NAME}
-			mv -fv ${MANJARO_ROOTFS_FILE_NAME} ../
-			cd ..
-			rm -rvf ${TEMP_DIR}
-		fi
-		bash -c "$(sed -n p \
-			"${TMOE_SHARE_DIR}"/container/install |
-			sed -E \
-				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-				-e "s:debian-sid:${DISTRO_NAME}-stable:g" \
-				-e 's@^(MANJARO_LINUX=).*@\1true@g' \
-				-e "s:Debian (GNU/Linux):Manjaro \1:g")"
-		;;
-	*)
-		printf "%s\n" "SORRY,Tmoe-linux的开发者未对您的架构进行适配"
-		distro_does_not_support
-		#press_enter_to_return
-		#install_beta_containers
-		;;
-	esac
-}
 ############################
 install_devuan_linux_distro() {
 	CLOUD_ROOTFS=true
@@ -2151,7 +2106,7 @@ install_slackware_linux_distro() {
 		go_to_proot_management
 		#if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
 		printf "%s\n" "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
-		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.tuna.tsinghua.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
+		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
 		LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
 		#aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
 		#fi

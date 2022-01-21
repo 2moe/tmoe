@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4988.3,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4988.4,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -495,7 +495,7 @@ choose_tmoe_locale_env() {
 			--menu "Please choose your \$LANG\n言語を選択してください" 0 0 0 \
 			"1" "${LANG}" \
 			"2" "繁體中文" \
-			"3" "简体中文" \
+			"3" "简体中文_中国内地" \
 			"4" "English_United-States" \
 			"5" "español_España" \
 			"6" "Deutsch_Deutschland" \
