@@ -2169,7 +2169,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	    #TMOE_LANG_HALF=$(printf '%s\n' "${LANG}" | cut -d '.' -f 1 |cut -d '_' -f 1)
 	    #glibc-all-langpacks
-	    #dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_HALF}*"
+	    #dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_QUATER}*"
 	    [[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
 	elif grep -Eq 'CentOS|Rocky Linux|rhel' /etc/os-release; then
 	    [[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
@@ -2180,8 +2180,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${PURPLE}--skip-broken ${BLUE}epel-release${RESET}"
 	    yes | dnf install -y --skip-broken epel-release
 
-	    printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils glibc-langpack-${TMOE_LANG_HALF}*${RESET}"
-	    dnf install -y --skip-broken dnf-utils "glibc-langpack-${TMOE_LANG_HALF}*" || yum install -y --skip-broken dnf-utils glibc-all-langpacks
+	    printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils glibc-langpack-${TMOE_LANG_QUATER}*${RESET}"
+	    dnf install -y dnf-utils "glibc-langpack-${TMOE_LANG_QUATER}*" || yum install -y --skip-broken dnf-utils glibc-all-langpacks
 		export LANG=${TMOE_LANG}
 
 	    for i in hostname sudo; do
