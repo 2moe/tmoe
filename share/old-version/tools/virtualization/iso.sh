@@ -258,7 +258,7 @@ download_android_x86_file() {
 	aria2c_download_file
 }
 download_debian_iso_file() {
-	DEBIAN_FREE='unkown'
+	DEBIAN_FREE='unknown'
 	DEBIAN_ARCH=$(
 		whiptail --title "architecture" --menu "请选择您需要下载的架构版本\nwhich architecture version do you want to download?\nnon-free版包含了非自由固件(例如闭源无线网卡驱动等)" 0 50 0 \
 			"1" "x64(non-free,unofficial)" \
@@ -307,7 +307,7 @@ download_debian_iso_file() {
 	11) GREP_ARCH='s390x' ;;
 	esac
 	###############
-	if [ ${DEBIAN_FREE} = 'unkown' ]; then
+	if [ ${DEBIAN_FREE} = 'unknown' ]; then
 		download_debian_weekly_builds_iso
 	fi
 	press_enter_to_return

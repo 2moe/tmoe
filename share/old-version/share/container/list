@@ -1906,7 +1906,7 @@ install_centos_linux_distro() {
 	DISTRO_NAME='centos'
 	case "${ARCH_TYPE}" in
 	"armhf" | "i386")
-		printf "%s\n" "检测到CentOS 8不支持您当前的架构，将为您降级至CentOS 7"
+		printf "%s\n" "检测到CentOS 9不支持您当前的架构，将为您降级至CentOS 7"
 		DISTRO_CODE='7'
 		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 		create_container_edition_txt

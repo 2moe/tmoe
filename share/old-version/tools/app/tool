@@ -680,11 +680,15 @@ check_dependencies() {
 			if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
 				yes | yum install -y epel-release
 				if [ ! -e "/etc/yum.repos.d/epel.repo" ]; then
-					if (whiptail --title "Please choose RHEL version" --yes-button "7" --no-button "8" --yesno "You should import the epel source." 0 50); then
-						RHEL_VERSION='7'
-					else
-						RHEL_VERSION='8'
-					fi
+					RHEL_VERSION=$(whiptail --inputbox "请输入RHEL版本号，例如8或9\nPlease type the RHEL version" 0 50 --title "RHEL:7/8/9" 3>&1 1>&2 2>&3)
+					case "$RHEL_VERSION" in
+					[0-6] | "")
+						printf "%s\n" "${RED}ERROR${RESET}, unknown version"
+						read -r
+						exit
+						;;
+					*) ;;
+					esac
 					yes | yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL_VERSION}.noarch.rpm
 				fi
 				printf "${YELLOW}%s\n${RESET}" "请问您是否需要将EPEL源更换为 opentuna源${PURPLE}[Y/n]${RESET}"
