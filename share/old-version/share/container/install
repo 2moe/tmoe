@@ -596,8 +596,8 @@ cat_tmoe_nspawn_script() {
 	read
 }
 ##############
-get_android_host_name(){
-ANDROID_HOST_NAME=$(getprop ro.product.model | sed \
+get_android_host_name() {
+	ANDROID_HOST_NAME=$(getprop ro.product.model | sed \
 		-e 's@ @-@g' \
 		-e 's@ @@g' \
 		-e 's/[^0-9a-zA-Z.-]\+//g' \
@@ -2105,66 +2105,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    mv -f .profile.bak .profile
 	fi
 	####################
-	#############################################
-	fedora_31_repos() {
-	    curl -o /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
-	    curl -o /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
-	}
-	###########
 	#fedora mirrors.bfsu.edu.cn/fedora/releases/
-	fedora_32_repos() {
-	    cat >/etc/yum.repos.d/fedora.repo <<-'EndOfYumRepo'
-					[fedora]
-					name=Fedora $releasever - $basearch
-					failovermethod=priority
-					baseurl=https://mirrors.bfsu.edu.cn/fedora/releases/$releasever/Everything/$basearch/os/
-					metadata_expire=28d
-					gpgcheck=1
-					gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-					skip_if_unavailable=False
-				EndOfYumRepo
-
-	    cat >/etc/yum.repos.d/fedora-updates.repo <<-'EndOfYumRepo'
-					[updates]
-					name=Fedora $releasever - $basearch - Updates
-					failovermethod=priority
-					baseurl=https://mirrors.bfsu.edu.cn/fedora/updates/$releasever/Everything/$basearch/
-					enabled=1
-					gpgcheck=1
-					metadata_expire=6h
-					gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-					skip_if_unavailable=False
-				EndOfYumRepo
-	}
 	#########################
-	fedora_3x_repos() {
-	    cat >/etc/yum.repos.d/fedora-modular.repo <<-'EndOfYumRepo'
-					[fedora-modular]
-					name=Fedora Modular $releasever - $basearch
-					failovermethod=priority
-					baseurl=https://mirrors.bfsu.edu.cn/fedora/releases/$releasever/Modular/$basearch/os/
-					enabled=1
-					metadata_expire=7d
-					gpgcheck=1
-					gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-					skip_if_unavailable=False
-				EndOfYumRepo
-
-	    cat >/etc/yum.repos.d/fedora-updates-modular.repo <<-'EndOfYumRepo'
-					[updates-modular]
-					name=Fedora Modular $releasever - $basearch - Updates
-					failovermethod=priority
-					baseurl=https://mirrors.bfsu.edu.cn/fedora/updates/$releasever/Modular/$basearch/
-					enabled=1
-					gpgcheck=1
-					metadata_expire=6h
-					gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
-					skip_if_unavailable=False
-				EndOfYumRepo
-	    #dnf install -y glibc-langpack-zh
-	    #localedef -c -f UTF-8 -i en_US zh_CN.utf8
-	    #dnf clean packages
-	}
 	fedora_rpmfusion_repo() {
 	    printf "%s\n" "You are using fedora system. Adding rpmfusion repo ..."
 	    printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --nogpgcheck ${BLUE}https://mirrors.bfsu.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.bfsu.edu.cn/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm${RESET}"
@@ -2192,22 +2134,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if grep -q '=rawhide' /etc/os-release; then
 	        sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo
 	    fi
-	    # if [[ ${TMOE_GITHUB} != true ]]; then
-	    #  case ${TMOE_LANG} in
-	    #  zh_*UTF-8)
-	    #  if ! grep -q '=rawhide' /etc/os-release;then
-	    #   if ((${FEDORA_VERSION} >= 30)); then
-	    #    if ((${FEDORA_VERSION} >= 32)); then
-	    #     fedora_32_repos
-	    #    else
-	    #     fedora_31_repos
-	    #    fi
-	    #    fedora_3x_repos
-	    #   fi
-	    #  fi
-	    #   ;;
-	    #  esac
-	    # fi
+
 	    if [[ ! -e /tmp/resolv.conf ]]; then
 	        cp -f /etc/resolv.conf /tmp
 	    fi
@@ -2252,14 +2179,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    [[ $(command -v dnf) ]] || ln -svf $(command -v yum) /usr/bin/dnf
 	    printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${PURPLE}--skip-broken ${BLUE}epel-release${RESET}"
 	    yes | dnf install -y --skip-broken epel-release
-	    #dnf update
-	    cp -a /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
-	    cp -a /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
-	    case ${TMOE_LANG} in
-	    zh_*UTF-8)
 
-	        ;;
-	    esac
+	    printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}dnf-utils glibc-langpack-${TMOE_LANG_HALF}*${RESET}"
+	    dnf install -y --skip-broken dnf-utils "glibc-langpack-${TMOE_LANG_HALF}*" || yum install -y --skip-broken dnf-utils glibc-all-langpacks
+		export LANG=${TMOE_LANG}
+
 	    for i in hostname sudo; do
 	        if [[ ! $(command -v ${i}) ]]; then
 	            printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${PURPLE}--skip-broken ${BLUE}${i}${RESET}"
