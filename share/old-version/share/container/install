@@ -592,8 +592,6 @@ cat_tmoe_chroot_script() {
 }
 cat_tmoe_nspawn_script() {
 	source "${TMOE_SHARE_DIR}"/container/nspawn/startup
-	echo "暂停"
-	read
 }
 ##############
 get_android_host_name() {
