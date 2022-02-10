@@ -1006,7 +1006,7 @@ tmoe_debian_add_ubuntu_ppa_source() {
         apt update
         apt install -y software-properties-common
     fi
-    TARGET=$(whiptail --inputbox "请输入ppa软件源,以ppa开头,格式为ppa:xxx/xxx\nPlease type the ppa source name,the format is ppa:xx/xx" 0 50 --title "ppa:xxx/xxx" 3>&1 1>&2 2>&3)
+    TARGET=$(whiptail --inputbox "请输入ppa软件源,以ppa开头,格式为ppa:xxx/yyy\nPlease type the ppa source name,the format is ppa:xx/xx" 0 50 --title "ppa:xxx/yyy" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         tmoe_sources_list_manager
     elif [ -z "${TARGET}" ]; then
@@ -1025,6 +1025,8 @@ add_ubuntu_ppa_source() {
     fi
     add-apt-repository "${TARGET}"
     if [ "$?" != "0" ]; then
+        printf "%s\n" "${RED}ERROR${RESET}"
+        press_enter_to_return
         tmoe_sources_list_manager
     fi
     DEV_TEAM_NAME=$(printf '%s\n' "${TARGET}" | cut -d '/' -f 1 | cut -d ':' -f 2)
@@ -1293,7 +1295,7 @@ latest_electron() {
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
     #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
     # ELECTRON_VERSION="$(curl -L "${ELECTRON_MIRROR_STATION}" | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2 | grep -v '^0' | grep '^[0-9]' | sort -n | cut -d '/' -f 1 | grep '^16\.' | tail -n 1)"
-    ELECTRON_VERSION=13.6.3
+    ELECTRON_VERSION=13.6.9
     DOWNLOAD_PATH="/opt/electron"
     # [[ -n ${ELECTRON_VERSION} ]] || latest_electron_ali
 }
@@ -1303,7 +1305,7 @@ latest_electron_ali() {
     #ELECTRON_VERSION_PREFIX=$(curl -Lv "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | sort -n | tail -n 4 | sort -n -k 4 -t . | tail -n 1 | awk -F '.' '{print $1}')
     #ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^${ELECTRON_VERSION_PREFIX}\." | sort -n | tail -n 50 | sort -n -k 4 -t . | tail -n 1)
     # ELECTRON_VERSION=$(curl -L "${ELECTRON_MIRROR_STATION}" | grep 'mirrors/electron' | awk -F '/' '{print $4}' | grep -v '^0' | grep '^[0-9]' | grep "^16\." | sort -n | tail -n 1)
-    ELECTRON_VERSION=13.6.3
+    ELECTRON_VERSION=13.6.9
     DOWNLOAD_PATH="/opt/electron"
 }
 download_electron() {
@@ -1314,10 +1316,10 @@ download_electron() {
     i386) ARCH_TYPE_02='ia32' ;;
     *) arch_does_not_support ;;
     esac
-    [[ -n ${ELECTRON_VERSION} ]] || ELECTRON_VERSION=13.1.7
+    [[ -n ${ELECTRON_VERSION} ]] || ELECTRON_VERSION=13.6.9
     #https://github.com/electron/electron/releases/download/v11.2.0/electron-v11.2.0-linux-arm64.zip
     ELECTRON_ZIP_FILE="electron-v${ELECTRON_VERSION}-linux-${ARCH_TYPE_02}.zip"
-    ELECTRON_FILE_URL="${ELECTRON_MIRROR_STATION}/${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
+    ELECTRON_FILE_URL="${ELECTRON_MIRROR_STATION}/v${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
     ELECTRON_GIT_RELEASE_URL="https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/${ELECTRON_ZIP_FILE}"
     #aria2c_download_file_no_confirm
     printf "${YELLOW}%s\n%s${RESET}\n" "${ELECTRON_FILE_URL}" "${ELECTRON_GIT_RELEASE_URL}"
