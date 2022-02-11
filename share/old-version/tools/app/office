@@ -103,7 +103,7 @@ install_yozo_office() {
     #arm64) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@amd64.deb@arm64.deb@") ;;
     #https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/yozo-office_8.0.1331.101ZH.S1_amd64.deb
     #https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/yozo-office-8.0.1331.101ZH.S1-1.x86_64.rpm
-    REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/yozo-office/'
+    REPO_URL='https://aur.archlinux.org/packages/yozo-office/'
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     case ${LINUX_DISTRO} in
     debian) ;;

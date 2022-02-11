@@ -1532,7 +1532,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}${i}${RESET}"
 	        pacman -Sy --noconfirm --needed ${i}
 	    done
-	    yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
+	    # yay --aururl "https://aur.archlinux.org" --save
 	}
 	#################
 	#################

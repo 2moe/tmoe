@@ -555,8 +555,8 @@ add_fedora_epel_yum_repo() {
     yes | yum install -y epel-release
     cp -pvf /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
     cp -pvf /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
-	sed -E \
-		-e 's@^(metalink=)@#\1@g' \
+    sed -E \
+        -e 's@^(metalink=)@#\1@g' \
         -e 's@^#(baseurl)=.*/pub/(epel)@\1=https://opentuna.cn/\2@g' \
         -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
 }
@@ -576,7 +576,7 @@ add_arch_linux_cn_mirror_list() {
 
     if [ ! $(command -v yay) ]; then
         pacman -S --noconfirm yay
-        yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
+        # yay --aururl "https://aur.archlinux.org" --save
     fi
     if [ ! $(command -v fakeroot) ]; then
         pacman -S --noconfirm fakeroot

@@ -11,7 +11,7 @@ thunder_bin_env() {
 }
 ##########
 install_thunder_bin() {
-    REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/xunlei-bin/'
+    REPO_URL='https://aur.archlinux.org/packages/xunlei-bin/'
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     #https://cdn-package-store6.deepin.com/appstore/pool/appstore/c/com.xunlei.download/com.xunlei.download_1.0.0.1_amd64.deb
     case ${ARCH_TYPE} in

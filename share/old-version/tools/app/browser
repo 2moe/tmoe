@@ -472,7 +472,7 @@ install_vivaldi_browser() {
 }
 #############
 install_360_browser() {
-    # REPO_URL='https://aur.tuna.tsinghua.edu.cn/packages/browser360/'
+    # REPO_URL='https://aur.archlinux.org/packages/browser360/'
     # THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
     #https://down.360safe.com/gc/browser360-cn-stable_12.2.1070.0-1_amd64.deb
     #http://down.360safe.com/gc/browser360-cn-stable-10.2.1005.3-1.aarch64.rpm
