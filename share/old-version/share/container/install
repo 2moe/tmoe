@@ -148,7 +148,6 @@ printf "${RESET}"
 ###########################
 TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TUNA_LXC_IMAGE_MIRROR_REPO_02="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
-TUNA_LXC_IMAGE_MIRROR_REPO_03="https://mirrors.cloud.tencent.com/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
 TMOE_PROOT_PROC_GIT="https://gitee.com/ak2/proot_proc"
@@ -233,8 +232,8 @@ download_rootfs_file() {
 		true)
 			ROOTFS_URL="${NODE_URL}/${ROOTFS_VERSION}/${ARCH_TYPE}/${LINUX_CONTAINER_DISTRO_02}/${DESKTOP}/${LINUX_CONTAINER_DISTRO_02}_${ARCH_TYPE}-rootfs.tar.zst"
 			case ${NODE_NAME} in
-			"node02-tmoe") aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=error --no-conf --allow-overwrite=true -x3 -s3 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
-			*) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=error --no-conf --allow-overwrite=true -x4 -s4 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+			"node02-tmoe") aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=debug --max-tries=0 --no-conf --allow-overwrite=true -x3 -s3 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+			*) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=debug --max-tries=0 --no-conf --allow-overwrite=true -x4 -s4 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
 			esac
 			#若下载失败，则重复尝试。
 			;;
@@ -244,7 +243,7 @@ download_rootfs_file() {
 			TTIME=$(curl --connect-timeout 10 -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 			[[ -n ${TTIME} ]] || TTIME=$(curl -Lv "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
 			#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
-			aria2c --console-log-level=warn --connect-timeout=10 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=debug --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=debug --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_03}/${TTIME}rootfs.tar.xz"
+			aria2c --console-log-level=warn --connect-timeout=10 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=debug --max-tries=0 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/${TTIME}rootfs.tar.xz"
 			;;
 		esac
 	fi

@@ -93,6 +93,8 @@ install_virtual_box() {
 	DEPENDENCY_02="virtualbox-qt"
 	DEPENDENCY_01="virtualbox"
 	#apt remove docker docker-engine docker.io
+	printf "%s\n" "If you find some problems, then run ${RED}sudo ${GREEN}chown -Rv ${YELLOW}$CURRENT_USER_NAME:$CURRENT_USER_GROUP ${PURPLE}~/.config/VirtualBox${RESET}${RESET}, see this ${BLUE}issue: ${YELLOW}https://gitee.com/mo2/linux/issues/I4TTND${RESET}"
+	press_enter_to_continue
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		debian_download_latest_vbox_deb
 	#$(#lsb_release -cs)

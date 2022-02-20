@@ -114,14 +114,14 @@ fcitx4_input_method_menu() {
             "3" "🍁 FAQ:常见问题与疑难诊断" \
             "4" "libpinyin(提供智能整句输入算法核心)" \
             "5" "sunpinyin(基于统计学语言模型)" \
-            "6" "sogou(搜狗拼音,x64)" \
-            "7" "iflyime(讯飞语音+拼音+五笔,x64)" \
-            "8" "baidu(百度输入法,x64)" \
-            "9" "fcitx4-云拼音模块" \
-            "10" "KDE-fcitx4-配置模块" \
+            "6" "fcitx4-云拼音模块" \
+            "7" "KDE-fcitx4-配置模块" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
+    #     "6" "sogou(搜狗拼音,x64)" \
+    # "7" "iflyime(讯飞语音+拼音+五笔,x64)" \
+    # "8" "baidu(百度输入法,x64)" \
     case ${INPUT_METHOD} in
     0 | "") install_pinyin_input_method ;;
     1) install_google_pinyin ;;
@@ -129,11 +129,11 @@ fcitx4_input_method_menu() {
     3) tmoe_fcitx_faq ;;
     4) install_lib_pinyin ;;
     5) install_sun_pinyin ;;
-    6) install_sogou_pinyin ;;
-    7) install_iflyime_pinyin ;;
-    8) install_baidu_pinyin ;;
-    9) install_fcitx_module_cloud_pinyin ;;
-    10) kde_config_module_for_fcitx ;;
+    # 6) install_sogou_pinyin ;;
+    # 7) install_iflyime_pinyin ;;
+    # 8) install_baidu_pinyin ;;
+    6) install_fcitx_module_cloud_pinyin ;;
+    7) kde_config_module_for_fcitx ;;
     esac
     ###############
     configure_tmoe_input_method

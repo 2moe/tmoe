@@ -82,7 +82,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe t"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4988.5, type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux tools v1.4988.6, type ${TMOE_TIPS_01} to start it."
 	#勿改00变量
 }
 #########
@@ -814,12 +814,12 @@ tmoe_linux_tool_menu() {
 				"6" "📺 Download video:解析视频链接(bili,Y2B)" \
 				"7" "🍥 Software sources:软件镜像源管理" \
 				"8" "🐳 Docker:开源的应用容器引擎" \
-				"9" "💻 Qemu:x64:虚拟机管理" \
-				"10" "🍧 *°▽°* Update:更新" \
-				"11" "🍩 FAQ:常见问题" \
+				"9" "🍧 *°▽°* Update:更新" \
+				"10" "🍩 FAQ:常见问题" \
 				"0" "🌚 Exit:退出" \
 				3>&1 1>&2 2>&3
 		)
+		# "9" "💻 Qemu:x64 虚拟机管理" \
 	}
 	tmoe_linux_tool_menu_ja() {
 		TMOE_OPTION=$(
@@ -833,12 +833,12 @@ tmoe_linux_tool_menu() {
 				"6" "📺 ニコニコ動画ダウンローダー" \
 				"7" "🍥 ソフトウェアミラーソース" \
 				"8" "🐳 Docker:コンテナ仮想化を用いたOSレベルの仮想化" \
-				"9" "💻 Qemu:x64 仮想マシン" \
-				"10" "🍧 *°▽°* 更新" \
-				"11" "🍩 よくある質問" \
+				"9" "🍧 *°▽°* 更新" \
+				"10" "🍩 よくある質問" \
 				"0" "🌚 終了する" \
 				3>&1 1>&2 2>&3
 		)
+		# "9" "💻 Qemu:x64 仮想マシン" \
 	}
 	tmoe_linux_tool_menu_en() {
 		TMOE_OPTION=$(
@@ -852,12 +852,12 @@ tmoe_linux_tool_menu() {
 				"6" "📺 Download video:Y2B" \
 				"7" "🍥 Software sources:Worldwide mirror sites" \
 				"8" "🐳 Docker：use OS-level virtualization to deliver software" \
-				"9" "💻 Qemu:x64 virtual machine" \
-				"10" "🍧 *°▽°* Update" \
-				"11" "🍩 Frequently Asked Questions" \
+				"9" "🍧 *°▽°* Update" \
+				"10" "🍩 Frequently Asked Questions" \
 				"0" "🌚 Exit" \
 				3>&1 1>&2 2>&3
 		)
+		# "9" "💻 Qemu:x64 virtual machine" \
 	}
 	tmoe_linux_tool_menu_de() {
 		TMOE_OPTION=$(
@@ -871,12 +871,12 @@ tmoe_linux_tool_menu() {
 				"6" "📺 Video herunterladen: Y2B" \
 				"7" "🍥 Softwarequellen: Weltweite Spiegelseiten" \
 				"8" "🐳 Docker: Verwenden Sie Virtualisierung auf Betriebssystemebene" \
-				"9" "💻 Qemu: x64 virtuelle Maschine" \
-				"10" "🍧 *°▽°* Aktualisieren" \
-				"11" "🍩 Häufig gestellte Fragen" \
+				"9" "🍧 *°▽°* Aktualisieren" \
+				"10" "🍩 Häufig gestellte Fragen" \
 				"0" "🌚 Ausfahrt" \
 				3>&1 1>&2 2>&3
 		)
+		# "9" "💻 Qemu: x64 virtuelle Maschine" \
 	}
 	########
 	case ${TMOE_MENU_LANG} in
@@ -896,9 +896,9 @@ tmoe_linux_tool_menu() {
 	6) download_videos ;;
 	7) tmoe_sources_list_manager ;;
 	8) tmoe_docker_menu ;;
-	9) start_tmoe_qemu_manager ;;
-	10) tmoe_linux_tool_upgrade ;;
-	11) frequently_asked_questions ;;
+	# 9) start_tmoe_qemu_manager ;;
+	9) tmoe_linux_tool_upgrade ;;
+	10) frequently_asked_questions ;;
 	esac
 	#########################
 	press_enter_to_return
