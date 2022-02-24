@@ -150,15 +150,32 @@ do_you_want_to_delete_the_zsh_script_file() {
 		fi
 	fi
 }
+git_pull_rebase_tmoe() {
+	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
+	git reset --hard origin/master
+	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+}
 set_your_vnc_passwd() {
 	# auto-update: false
 
 	cd ${TMOE_GIT_DIR}
 
 	if (whiptail --title "Update" --yes-button "YES" --no-button "NO" --yesno "Do you want to update tmoe?" 0 0); then
-		printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
-		git reset --hard origin/master
-		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+		case ${LANG} in
+		zh_*)
+			if (whiptail --title "$LANG" --yes-button "YES" --no-button "NO" --yesno "Do you live in China?\nIf so, then tmoe will change the github repo to gitee." 0 0); then
+				cd ..
+				printf "%s\n" "${RED}rm ${BLUE}-rfv ${YELLOW}git/${RESET}"
+				chmod 777 -R git
+				rm -rfv git/
+				URL="$(base64 -d <<<'aHR0cHM6Ly9naXRlZS5jb20vbW8yL2xpbnV4Cg==')"
+				git clone --depth=1 -b master "$URL" git
+			else
+				git_pull_rebase_tmoe
+			fi
+			;;
+		*) git_pull_rebase_tmoe ;;
+		esac
 	fi
 
 	mkdir -pv /usr/local/bin
