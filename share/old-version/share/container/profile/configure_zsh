@@ -154,9 +154,13 @@ set_your_vnc_passwd() {
 	# auto-update: false
 
 	cd ${TMOE_GIT_DIR}
-	# printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
-	# git reset --hard origin/master
-	# git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+
+	if (whiptail --title "Update" --yes-button "YES" --no-button "NO" --yesno "Do you want to update tmoe?" 0 0); then
+		printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
+		git reset --hard origin/master
+		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+	fi
+
 	mkdir -pv /usr/local/bin
 	cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
 	chmod a+rx /usr/local/bin/start*

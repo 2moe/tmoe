@@ -271,8 +271,9 @@ start_tmoe_xvnc() {
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
     fi
-    # In tigervnc v1.12.0, `-rfbwait` has been deprecated.
+    # In tigervnc v1.12.0, `-rfbwait` & `-wm` has been deprecated.
     # set -- "${@}" "-rfbwait" "30000"
+    # set -- "${@}" "-wm"
     set -- "${@}" "-pn"
     if [[ -e /etc/X11/fontpath.d ]]; then
         set -- "${@}" "-fp" "catalogue:/etc/X11/fontpath.d"
@@ -291,7 +292,6 @@ start_tmoe_xvnc() {
         set -- "${@}" "-alwaysshared"
     fi
     set -- "${@}" "-a" "5"
-    set -- "${@}" "-wm"
     set -- "${@}" "-geometry" "${VNC_RESOLUTION}"
     set -- "${@}" "-once"
     set -- "${@}" "-depth" "${PIXEL_DEPTH}"
