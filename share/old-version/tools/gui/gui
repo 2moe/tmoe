@@ -2588,14 +2588,12 @@ tmoe_desktop_warning() {
     do_you_want_to_continue
 }
 ###############
-ukui_or_kylin_desktop(){
-     case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "ukui or ubuntukylin-desktop" --yes-button "ukui" --no-button "kylin" --yesno 'The former is more streamlined, and the latter\n includes some extra software of  ubuntu-kylin.\n前者为普通ukui,后者为ubuntukylin-desktop' 0 0); then
-                printf "%s" ""
-            else
-                DEPENDENCY_01="ubuntukylin-desktop"
-            fi
+ukui_or_kylin_desktop() {
+    if (whiptail --title "ukui or ubuntukylin-desktop" --yes-button "ukui" --no-button "kylin" --yesno 'The former is more streamlined, and the latter\n includes some extra software of  ubuntu-kylin.\n前者为普通ukui,后者为ubuntukylin-desktop' 0 0); then
+        DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
+    else
+        DEPENDENCY_01="ubuntukylin-desktop"
+    fi
 }
 install_ukui_desktop() {
     case ${AUTO_INSTALL_GUI} in
@@ -2618,13 +2616,8 @@ install_ukui_desktop() {
     case "${LINUX_DISTRO}" in
     "debian")
         case ${AUTO_INSTALL_GUI} in
-        true)  DEPENDENCY_01="ubuntukylin-desktop";;
-        *)  
-            DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
-            ukui_or_kylin_desktop 
-            ;;
-        esac
-        ;;
+        true) DEPENDENCY_01="ubuntukylin-desktop" ;;
+        *) ukui_or_kylin_desktop ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
