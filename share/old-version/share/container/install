@@ -1572,6 +1572,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		"You should run ${GREEN}paru -Sy ${BLUE}paru-bin${RESET} to upgrade it."
 		;;
 		esac
+		cd ~
 	}
 	#################
 	#################
@@ -1613,7 +1614,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    else
 	        if [[ ! $(command -v paru) ]]; then
 	            get_arch_paru
-				cd ~
 	        fi
 	        if [[ ${TMOE_CHROOT} = true ]]; then
 	            i=gawk
