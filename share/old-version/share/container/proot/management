@@ -521,8 +521,8 @@ readme_of_env_var_and_autostartup_script() {
 start_gui_menu() {
 	start_gui_menu_en() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
-			"1" "⚔️ startx11vnc" \
-			"2" "🐯 startvnc(tiger/tight)" \
+			"1" "🐯 startvnc(tiger/tight)" \
+			"2" "⚔️ startx11vnc" \
 			"3" "⚒️ startxsdl" \
 			"4" "🍬 novnc(HTML5 VNC client)" \
 			"5" "tightvnc (only for debian,ubuntu &kali)" \
@@ -532,8 +532,8 @@ start_gui_menu() {
 	}
 	start_gui_menu_cn() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
-			"1" "⚔️ startx11vnc:启动x11vnc" \
-			"2" "🐯 startvnc:启动tiger/tightvnc" \
+			"1" "🐯 startvnc:启动tiger/tightvnc" \
+			"2" "⚔️ startx11vnc:启动x11vnc" \
 			"3" "⚒️ startxsdl:启动xsdl/VcXsrv" \
 			"4" "🍬 novnc:在浏览器里连接vnc" \
 			"5" "tightvnc (only for debian,ubuntu &kali)" \
@@ -543,8 +543,8 @@ start_gui_menu() {
 	}
 	start_gui_menu_de() {
 		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
-			"1" "⚔️ startx11vnc" \
-			"2" "🐯 startvnc (tiger/tight)" \
+			"1" "🐯 startvnc (tiger/tight)" \
+			"2" "⚔️ startx11vnc" \
 			"3" "⚒️ startxsdl" \
 			"4" "🍬 novnc (HTML5 VNC client)" \
 			"5" "tightvnc (only for debian,ubuntu &kali)" \
@@ -560,8 +560,8 @@ start_gui_menu() {
 	##############################
 	case "${SELECTED_GNU_LINUX}" in
 	0 | "") ${RETURN_TO_WHERE} ;;
-	1) start_gnu_linux_distro_x11vnc ;;
-	2) start_gnu_linux_distro_tigervnc ;;
+	1) start_gnu_linux_distro_tigervnc ;;
+	2) start_gnu_linux_distro_x11vnc ;;
 	3) start_gnu_linux_distro_x ;;
 	4) install_web_novnc ;;
 	5)
