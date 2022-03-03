@@ -300,11 +300,13 @@ install_deepin_software_menu() {
 }
 #######################
 install_bauh_store() {
-    if [ ! $(command -v pip3) ]; then
-        DEPENDENCY_01="python3-pip"
-        DEPENDENCY_02="python-pip"
-        beta_features_quick_install
-    fi
+    unset ${DEPENDENCY_02}
+    case "$LINUX_DISTRO" in
+    alpine) DEPENDENCY_01="py3-pip" ;;
+    debian) DEPENDENCY_01=" python3-pip" ;;
+    *) DEPENDENCY_01="python-pip" ;;
+    esac
+    beta_features_quick_install
     sudo -H pip3 install bauh || su -c "pip3 install bauh"
 }
 #############

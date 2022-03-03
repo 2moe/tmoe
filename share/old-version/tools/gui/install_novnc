@@ -39,7 +39,8 @@ check_python_novnc() {
 
 	if [ ! $(command -v pip3) ]; then
 		unset DEPENDENCY_01 DEPENDENCY_02
-		case "${LINUX_DISTRO}" in
+		case "$LINUX_DISTRO" in
+		alpine) DEPENDENCY_02="${DEPENDENCY_02} py3-pip" ;;
 		debian) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
 		*) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
 		esac
