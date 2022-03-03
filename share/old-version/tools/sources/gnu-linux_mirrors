@@ -574,9 +574,8 @@ add_arch_linux_cn_mirror_list() {
         printf "%s\n" "检测到您已添加archlinux_cn源"
     fi
 
-    if [ ! $(command -v yay) ]; then
-        pacman -S --noconfirm yay
-        # yay --aururl "https://aur.archlinux.org" --save
+    if [ ! $(command -v paru) ]; then
+        pacman -S --noconfirm paru
     fi
     if [ ! $(command -v fakeroot) ]; then
         pacman -S --noconfirm fakeroot
@@ -735,7 +734,7 @@ modify_kali_mirror_sources_list() {
     sed -i 's/^deb/# &/g' /etc/apt/sources.list
     cat >>/etc/apt/sources.list <<-EndOfSourcesList
 		deb http://${SOURCE_MIRROR_STATION}/kali/ kali-rolling main contrib non-free
-		deb http://${SOURCE_MIRROR_STATION}/debian/ stable main contrib non-free
+		# deb http://${SOURCE_MIRROR_STATION}/debian/ stable main contrib non-free
 		# deb http://${SOURCE_MIRROR_STATION}/kali/ kali-last-snapshot main contrib non-free
 	EndOfSourcesList
     case ${SOURCE_MIRROR_STATION} in

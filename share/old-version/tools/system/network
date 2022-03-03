@@ -198,7 +198,6 @@ network_devices_status() {
 	nmcli device
 }
 #############
-
 check_debian_nonfree_source() {
 	if [ "${LINUX_DISTRO}" = 'debian' ]; then
 		if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then

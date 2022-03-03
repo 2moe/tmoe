@@ -232,7 +232,7 @@ EOF
     debian) ;;
     arch)
         printf "%s\n" "Sorry,自动安装wechat的功能仅支持deb系发行版。"
-        printf "%s\n" "您可以用普通用户身份来手动执行${GREEN}yay -S ${BLUE}wechat-uos${RESET}"
+        printf "%s\n" "您可以用普通用户身份来手动执行${GREEN}paru -S ${BLUE}wechat-uos${RESET}"
         non_debian_function
         ;;
     *) non_debian_function ;;
@@ -519,7 +519,7 @@ install_spotify() {
 EOF
         DEPENDENCY_02='spotify-client'
         ;;
-    arch) printf "%s\n" "若安装失败，则请手动执行${GREEN}yay -S ${DEPENDENCY_02}${RESET}" ;;
+    arch) printf "%s\n" "若安装失败，则请手动执行${GREEN}paru -S ${DEPENDENCY_02}${RESET}" ;;
     esac
     do_you_want_to_continue
     case ${LINUX_DISTRO} in

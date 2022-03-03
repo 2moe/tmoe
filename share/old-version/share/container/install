@@ -1257,7 +1257,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					#deb http://http.kali.org/kali kali-experimental main non-free contrib
 					#deb http://mirrors.bfsu.edu.cn/kali/ kali-rolling main non-free contrib
 					deb http://mirrors.ustc.edu.cn/kali/ kali-rolling main non-free contrib
-					deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
+					#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 				EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
 	}
@@ -1475,7 +1475,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	}
 	#################
 	install_fakeroot() {
-	    for i in whiptail whereis diff ip yay curl; do
+	    for i in whiptail whereis diff ip curl; do
 	        if [ ! $(command -v ${i}) ]; then
 	            case ${i} in
 	            whiptail) DEP=libnewt ;;
@@ -1524,14 +1524,45 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    printf "%s\n" "${GREEN}pacman ${YELLOW}-Syyu ${PURPLE}--noconfirm${RESET}"
 	    pacman -Syyu --noconfirm
 	}
-	arch_linux_yay() {
+	create_paru_script(){
+		cat>paru<<-'EOF'
+	#!/usr/bin/env bash
+	if [ -e /usr/bin/paru ];then
+		/usr/bin/paru $@
+	else
+		/opt/bin/paru $@
+	fi
+	EOF
+	install -Dm755 paru /usr/local/bin
+	}
+	arch_linux_paru() {
 		# pacman-key --populate archlinuxcn
 		# archlinux-keyring archlinuxcn-keyring
-	    for i in arch4edu-keyring yay; do
+	    for i in arch4edu-keyring paru; do
 	        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}${i}${RESET}"
 	        pacman -Sy --noconfirm --needed ${i}
 	    done
-	    # yay --aururl "https://aur.archlinux.org" --save
+		if [[ ! $(command -v paru) ]]; then
+		case $(uname -m) in
+		armv7* | armv8l) 
+		printf "%s\n" \
+			"You should install ${GREEN}paru ${BLUE}manually${RESET}" \
+			"${GREEN}git ${YELOW}clone --depth=1 ${BLUE}https://aur.archlinux.org/paru.git${RESET}" \
+			"cd paru" \
+			"makepkg -Si"
+		;;
+	    aarch64 | armv8* | armv9*)
+		cd /tmp
+		curl -Lo paru.tar.zst l.tmoe.me/paru-arm64
+		tar -xvf paru.tar.zst
+		mkdir -p /opt/bin
+		install -Dm755 paru /opt/bin
+		create_paru_script
+		printf "%s\n" \
+		"You should run ${GREEN}paru -Sy ${BLUE}paru-bin${RESET} to upgrade it."
+		;;
+		esac
+		fi
 	}
 	#################
 	#################
@@ -1567,13 +1598,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    if [[ ${WEEKLY_BUILD_CONTAINER} != true ]]; then
 	        add_arch_for_edu_repo
 	        add_archlinuxcn_repo
-	        arch_linux_yay
+	        arch_linux_paru
 	        cat /etc/pacman.conf
 	    else
-	        if [[ ! $(command -v yay) ]]; then
-	            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}yay${RESET}"
-	            pacman -Sy --noconfirm yay || pacman -Syu --noconfirm --needed yay
-	        fi
+	        # if [[ ! $(command -v paru) ]]; then
+	        #     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}paru${RESET}"
+	        #     pacman -Sy --noconfirm paru || pacman -Syu --noconfirm --needed paru
+	        # fi
 	        if [[ ${TMOE_CHROOT} = true ]]; then
 	            i=gawk
 	            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"

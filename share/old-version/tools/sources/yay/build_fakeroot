@@ -1,5 +1,5 @@
 #####################
-install_yay_main() {
+install_paru_main() {
     case $1 in
     -bf | --build-fakeroot | --install-fakeroot) install_fakeroot ;;
     --add-archlinuxcn-repo) add_archlinuxcn_repo ;;
@@ -8,7 +8,7 @@ install_yay_main() {
         add_arch_for_edu_repo_mirror
         add_archlinuxcn_repo_mirror
         ;;
-    -yay | --install-yay) install_yay ;;
+    -paru | --install-paru) install_paru ;;
     esac
 }
 install_fakeroot() {
@@ -121,12 +121,45 @@ add_arch_for_edu_repo() {
     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
     pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
 }
-install_yay() {
-    pacman -Syu --noconfirm arch4edu/yay || pacman -Syu --noconfirm yay
-    # for i in yay gawk; do
+install_paru() {
+    # pacman -Syu --noconfirm arch4edu/paru ||
+    pacman -Syu --noconfirm paru
+    # for i in paru gawk; do
     #     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
     #     pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i} || pacman -Sy --noconfirm ${i}
     # done
 }
+create_paru_script() {
+    cat >paru <<-'EOF'
+#!/usr/bin/env bash
+if [ -e /usr/bin/paru ];then
+	/usr/bin/paru $@
+else
+	/opt/bin/paru $@
+fi
+EOF
+    install -Dm755 paru /usr/local/bin
+}
+arch_linux_paru() {
+    # pacman-key --populate archlinuxcn
+    # archlinux-keyring archlinuxcn-keyring
+    for i in arch4edu-keyring paru; do
+        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}${i}${RESET}"
+        pacman -Sy --noconfirm --needed ${i}
+    done
+    if [[ ! $(command -v paru) ]]; then
+        case $(uname -m) in
+        armv7* | armv8l) ;;
+        aarch64 | armv8* | armv9*)
+            cd /tmp || exit 1
+            curl -Lo paru.tar.zst l.tmoe.me/paru-arm64
+            tar -xvf paru.tar.zst
+            mkdir -p /opt/bin
+            install -Dm755 paru /opt/bin
+            create_paru_script
+            ;;
+        esac
+    fi
+}
 ###################
-install_yay_main $@
+install_paru_main $@

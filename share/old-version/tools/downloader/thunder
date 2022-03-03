@@ -26,7 +26,7 @@ install_thunder_bin() {
     fi
     printf "%s\n" "若无法以root身份运行electron应用，则请切换为普通用户，或手动禁用sandbox。"
     case ${LINUX_DISTRO} in
-    arch) printf "%s\n" "若安装失败，则请手动输yay -S ${DEPENDENCY_01}" ;;
+    arch) printf "%s\n" "若安装失败，则请手动输paru -S ${DEPENDENCY_01}" ;;
     esac
     check_deb_version
     this_app_may_non_support_running_on_proot

@@ -301,7 +301,6 @@ upgrade_video_download_tool() {
         #AnnieVersion=$(annie -v | cut -d ':' -f 2 | cut -d ',' -f 1 | awk -F ' ' '$0=$NF')
         AnnieVersion=$(cat ~/.config/tmoe-linux/annie_version.txt | head -n 1)
         check_latest_video_download_tool_version
-
     else
         AnnieVersion='您尚未安装annie'
         printf "%s\n" "检测到您${RED}尚未安装${RESET}annie，跳过${GREEN}版本检测！${RESET}"

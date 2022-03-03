@@ -23,6 +23,18 @@ gui_main() {
         docker_auto_install_gui_env
         install_kde_plasma5_desktop
         ;;
+    --auto-install-gui-cutefish)
+        docker_auto_install_gui_env
+        install_cutefish_desktop
+        ;;
+    --auto-install-gui-dde)
+        docker_auto_install_gui_env
+        install_deepin_desktop
+        ;;
+    --auto-install-gui-ukui)
+        docker_auto_install_gui_env
+        install_ukui_desktop
+        ;;
     --install-gui | install-gui)
         install_gui
         ;;
@@ -67,8 +79,8 @@ EOF
         ;;
     kali)
         apt install -y debian-archive-keyring
-        printf "\n%s\n" "deb http://deb.debian.org/debian/ stable main contrib non-free" >>/etc/apt/sources.list
-        apt update
+        # printf "\n%s\n" "deb http://deb.debian.org/debian/ stable main contrib non-free" >>/etc/apt/sources.list
+        # apt update
         ;;
     esac
     #check_zstd
@@ -566,7 +578,7 @@ tmoe_container_desktop() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "您想要安装哪个桌面环境?\n仅GTK+环境(如xfce和gnome3等)支持在本工具内便捷下载主题。\nWhich desktop environment do you want to install? " 0 0 0 \
             "1" "🐭 xfce(兼容性高,简单优雅)" \
-            "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+            "2" "🦖 kde plasma(风格华丽的桌面环境)" \
             "3" "xfce-lite(精简化安装,未美化)" \
             "4" "🐦 lxqt(lxde原团队基于QT开发的桌面)" \
             "5" "🕊️ lxde(轻量化桌面,资源占用低)" \
@@ -578,7 +590,7 @@ tmoe_container_desktop() {
         INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
             "Which desktop environment do you want to install? " 0 0 0 \
             "1" "🐭 xfce (elegant, high compatibility)" \
-            "2" "🦖 kde plasma5 (gorgeous style)" \
+            "2" "🦖 kde plasma(gorgeous style)" \
             "3" "xfce-lite (not-beautified)" \
             "4" "🐦 lxqt" \
             "5" "🕊️ lxde (lightweight)" \
@@ -2414,8 +2426,8 @@ ENDofTable
             esac
             # printf "%s\n" "${YELLOW}KDE plasma 5可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。"
             # printf "%s\n" "如需在proot容器中安装，请换用${YELLOW}旧版本${RESET}系统，例如${BLUE}Ubuntu 18.04${RESET}。"
-            printf "%s\n" "如需在termux-proot容器中安装，则请先确保termux 的 ${GREEN}proot${RESET} 为 ${PURPLE}最新${RESET} 版本。您可以回到termux原系统，然后执行${GREEN}pkg ${YELLOW}up -y${RESET}"
-            printf "%s\n" "If the current environment is termux-proot, please ensure that ${GREEN}proot${RESET} is up to date."
+            # printf "%s\n" "如需在termux-proot容器中安装，则请先确保termux 的 ${GREEN}proot${RESET} 为 ${PURPLE}最新${RESET} 版本。您可以回到termux原系统，然后执行${GREEN}pkg ${YELLOW}up -y${RESET}"
+            # printf "%s\n" "If the current environment is termux-proot, please ensure that ${GREEN}proot${RESET} is up to date."
             printf "%s\n" "In a proot environment, it may take you several minutes to start kde."
             # printf "%s\n" "您也可以换用chroot容器,再安装本桌面。"
         fi
@@ -2962,16 +2974,18 @@ deepin_desktop_debian() {
     if [ ! $(command -v add-apt-repository) ]; then
         apt update
         apt install -y software-properties-common
+        apt install -y gnupg
     fi
-    add-apt-repository ppa:ubuntudde-dev/stable
+    yes | add-apt-repository ppa:ubuntudde-dev/stable
     #84C8BB5C8E93FFC280EAC512C27BE3D0F0FE09DA
     DEV_TEAM_NAME='ubuntudde-dev'
     PPA_SOFTWARE_NAME='stable'
-    if [ "${DEBIAN_DISTRO}" != 'ubuntu' ]; then
-        get_ubuntu_ppa_gpg_key
-    else
-        SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
-    fi
+
+    case "${DEBIAN_DISTRO}" in
+    ubuntu) SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1) ;;
+    *) get_ubuntu_ppa_gpg_key ;;
+    esac
+
     ubuntu_dde_distro_code
     check_ubuntu_ppa_list
     sed -i "s@ ${CURRENT_UBUNTU_CODE}@ ${TARGET_CODE}@g" ${PPA_LIST_FILE}
@@ -3040,9 +3054,29 @@ EOF
     do_you_want_to_continue
 }
 ################
+install_cutefish_desktop() {
+    REMOTE_DESKTOP_SESSION_01='cutefish-session'
+    REMOTE_DESKTOP_SESSION_02='cutefish-launcher'
+    DEPENDENCY_01="cutefish"
+    beta_features_quick_install
+    apt_purge_libfprint
+    configure_vnc_xstartup
+}
+
+ubuntu_dde_or_dde_extras() {
+    if (whiptail --title "UbuntuDDE or UbuntuDDE-extras" --yes-button "dde" --no-button "dde-extras" --yesno 'The former is more streamlined, and the latter includes some extra software.\n前者为普通dde,后者除了dde本体外，还包含了dde商店等额外软件包' 0 0); then
+        DEPENDENCY_01="ubuntudde-dde deepin-terminal"
+    else
+        DEPENDENCY_01="ubuntudde-dde-extras"
+    fi
+}
 install_deepin_desktop() {
     #deepin_desktop_warning
-    dde_warning
+    case ${AUTO_INSTALL_GUI} in
+    true) ;;
+    *) dde_warning ;;
+    esac
+
     REMOTE_DESKTOP_SESSION_01='startdde'
     #REMOTE_DESKTOP_SESSION_02='/usr/sbin/deepin-session'
     REMOTE_DESKTOP_SESSION_02='dde-launcher'
@@ -3053,11 +3087,10 @@ install_deepin_desktop() {
         deepin) DEPENDENCY_01="dde" ;;
         *)
             deepin_desktop_debian
-            if (whiptail --title "UbuntuDDE or UbuntuDDE-extras" --yes-button "dde" --no-button "dde-extras" --yesno 'The former is more streamlined, and the latter includes some extra software.\n前者为普通dde,后者除了dde本体外，还包含了dde商店等额外软件包' 0 0); then
-                DEPENDENCY_01="ubuntudde-dde deepin-terminal"
-            else
-                DEPENDENCY_01="ubuntudde-dde-extras"
-            fi
+            case ${AUTO_INSTALL_GUI} in
+            true) DEPENDENCY_01="ubuntudde-dde-extras" ;;
+            *) ubuntu_dde_or_dde_extras ;;
+            esac
             ;;
         esac
         dpkg --configure -a
@@ -3079,8 +3112,8 @@ install_deepin_desktop() {
         *)
             #DEPENDENCY_01="deepin xorg"
             #printf "%s\n" "如需安装额外组件，请手动输${GREEN}pacman -Syu${RESET} ${BLUE}deepin-extra lightdm lightdm-deepin-greeter${RESET}"
-            printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是arch系发行版，${ARCH_TYPE}的仓库可能缺失了deepin-desktop-base，建议您换用x64架构的设备。"
-            printf "%s\n" "若您需要在arm64容器中安装dde,则您可以换用ubutnu_arm64 chroot容器。"
+            printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是arch系发行版，archlinux-${ARCH_TYPE} 的仓库可能缺失了deepin-desktop-base，建议您换用x64架构的设备。"
+            printf "%s\n" "若您需要在arm64容器中安装dde,则您可以换用ubutnu_arm64容器。"
             do_you_want_to_continue
             ;;
         esac
@@ -5711,7 +5744,7 @@ check_xvnc_command() {
         fi
         if [[ -n ${DEPENDENCY_03} ]]; then
             printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm --needed ${BLUE}${DEPENDENCY_03}${RESET}"
-            pacman -Syu --noconfirm --needed ${DEPENDENCY_03} || yay -Syu --noconfirm ${DEPENDENCY_03}
+            pacman -Syu --noconfirm --needed ${DEPENDENCY_03} || paru -Syu --noconfirm ${DEPENDENCY_03}
         fi
         ;;
     esac
