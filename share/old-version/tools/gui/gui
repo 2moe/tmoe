@@ -545,7 +545,7 @@ tmoe_docker_and_chroot_container_desktop() {
         "1" "👣 gnome-flashback-metacity" \
         "2" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
         "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
-        "4" "ukui(优麒麟ukui桌面,简繁取易,温润灵性)" \
+        "4" "ukui(ubuntu-kylin优麒麟ukui桌面,简繁取易,温润灵性)" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -1257,31 +1257,6 @@ apt_purge_libfprint() {
     esac
 }
 ###################
-build_xfce4_panel_profiles() {
-    CURRENT_DIR=$(pwd)
-    #intltool-merge命令依赖于intltool
-    for i in make automake python-gobject intltool pamac; do
-        if [[ ! $(command -v ${i}) ]]; then
-            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-            pacman -Sy --noconfirm ${i}
-        fi
-    done
-    FAKEROOT_SRC_REPO='https://mirrors.bfsu.edu.cn/ubuntu/pool/universe/x/xfce4-panel-profiles/'
-    FAKEROOT_SRC_VERSION=$(curl -L ${FAKEROOT_SRC_REPO} | grep \.orig\.tar | tail -n 1 | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
-    FAKEROOT_SRC_URL="${FAKEROOT_SRC_REPO}${FAKEROOT_SRC_VERSION}"
-    FAKEROOT_SRC_FILE=$(printf "%s\n" ${FAKEROOT_SRC_VERSION} | sed 's@profiles_@profiles-@g')
-    cd /tmp
-    curl -Lv -o ${FAKEROOT_SRC_FILE} ${FAKEROOT_SRC_URL}
-    tar -xvf ${FAKEROOT_SRC_FILE}
-    cd ${FAKEROOT_SRC_FILE%.*.*.*}
-    ./configure --prefix=/usr --python=python
-    make -j4
-    make install
-    cd /tmp
-    rm -rvf ${FAKEROOT_SRC_FILE%.*.*.*} ${FAKEROOT_SRC_FILE}
-    cd ${CURRENT_DIR}
-}
-###################
 debian_xfce4_extras() {
     apt_purge_libfprint
     remove_udisk_and_gvfs
@@ -1333,7 +1308,6 @@ debian_xfce4_extras() {
             printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
             pacman -Sy --noconfirm qt5ct 2>/dev/null
         fi
-        [[ $(command -v xfce4-panel-profiles) ]] || build_xfce4_panel_profiles
         ;;
     esac
     if [ $(command -v qt5ct) ]; then
@@ -3079,7 +3053,11 @@ install_deepin_desktop() {
         deepin) DEPENDENCY_01="dde" ;;
         *)
             deepin_desktop_debian
-            DEPENDENCY_01="ubuntudde-dde deepin-terminal"
+            if (whiptail --title "UbuntuDDE or UbuntuDDE-extras" --yes-button "dde" --no-button "dde-extras" --yesno 'The former is more streamlined, and the latter includes some extra software.\n前者为普通dde,后者除了dde本体外，还包含了dde商店等额外软件包' 0 0); then
+                DEPENDENCY_01="ubuntudde-dde deepin-terminal"
+            else
+                DEPENDENCY_01="ubuntudde-dde-extras"
+            fi
             ;;
         esac
         dpkg --configure -a
@@ -3102,7 +3080,7 @@ install_deepin_desktop() {
             #DEPENDENCY_01="deepin xorg"
             #printf "%s\n" "如需安装额外组件，请手动输${GREEN}pacman -Syu${RESET} ${BLUE}deepin-extra lightdm lightdm-deepin-greeter${RESET}"
             printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是arch系发行版，${ARCH_TYPE}的仓库可能缺失了deepin-desktop-base，建议您换用x64架构的设备。"
-            printf "%s\n" "若您需要在arm64容器中安装dde,则您可以换用fedora_arm64 chroot容器。"
+            printf "%s\n" "若您需要在arm64容器中安装dde,则您可以换用ubutnu_arm64 chroot容器。"
             do_you_want_to_continue
             ;;
         esac

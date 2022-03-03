@@ -311,80 +311,31 @@ upgrade_video_download_tool() {
     printf '%s\n' 'Press Enter to update'
     RETURN_TO_WHERE='download_videos'
     do_you_want_to_continue
-    DEPENDENCY_01=""
-    DEPENDENCY_02=""
+    unset DEPENDENCY_01 DEPENDENCY_02
 
-    if [ ! $(command -v python3) ]; then
-        DEPENDENCY_01="${DEPENDENCY_01} python3"
-    fi
+    for i in python3 ffmpeg; do
+        if [ -z "$(command -v ${i})" ]; then
+            printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${i}${RESET}"
+            ${TMOE_INSTALLATION_COMMAND} "$i"
+        fi
+    done
 
-    if [ ! $(command -v ffmpeg) ]; then
-        case "${ARCH_TYPE}" in
-        "amd64" | "arm64")
-            cd /tmp
-            rm -rf .FFMPEGTEMPFOLDER
-            git clone -b linux_$(uname -m) --depth=1 https://gitee.com/mo2/ffmpeg.git ./.FFMPEGTEMPFOLDER
-            cd /usr/bin
-            tar -Jxvf /tmp/.FFMPEGTEMPFOLDER/ffmpeg.tar.xz ffmpeg
-            chmod a+rx ffmpeg
-            rm -rf /tmp/.FFMPEGTEMPFOLDER
-            ;;
-        *) DEPENDENCY_01="${DEPENDENCY_01} ffmpeg" ;;
+    if [ -z "$(command -v pip3)" ]; then
+        case "$LINUX_DISTRO" in
+        alpine) DEPENDENCY_02="${DEPENDENCY_02} py3-pip" ;;
+        debian) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
+        *) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
         esac
-    fi
-    #检测两次
-    if [ ! $(command -v ffmpeg) ]; then
-        case "${ARCH_TYPE}" in
-        "amd64" | "arm64") DEPENDENCY_01="${DEPENDENCY_01} ffmpeg" ;;
-        esac
-    fi
-
-    if [ ! $(command -v pip3) ]; then
-        if [ "${LINUX_DISTRO}" = 'debian' ]; then
-            apt update 2>/dev/null
-            apt install -y python3 python3-distutils 2>/dev/null
-        else
-            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01} ${DEPENDENCY_02}
-        fi
-        cd /tmp
-        [[ ! -s get-pip.py ]] || rm -fv get-pip.py
-        curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.00
-        curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.01
-        cat .get-pip.tar.gz.* >.get-pip.tar.gz
-        tar -zxvf .get-pip.tar.gz
-        if [[ ! -s get-pip.py ]]; then
-            aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -o get-pip.py "https://bootstrap.pypa.io/get-pip.py" || curl -LO https://bootstrap.pypa.io/get-pip.py
-        fi
-        python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple || python3 get-pip.py
-        rm -f .get-pip.tar.gz* get-pip.py
-    fi
-    #检测两次
-    if [ ! $(command -v pip3) ]; then
-        if [ "${LINUX_DISTRO}" = 'debian' ]; then
-            DEPENDENCY_02="${DEPENDENCY_02} python3-pip"
-        else
-            DEPENDENCY_02="${DEPENDENCY_02} python-pip"
-        fi
-    fi
-
-    if [ ! -z "${DEPENDENCY_01}" ] && [ ! -z "${DEPENDENCY_02}" ]; then
         beta_features_quick_install
+        if [ -z "$(command -v pip3)" ]; then
+            printf "%s\n" "${RED}Sorry,${RESET}please install pip3 manually." \
+                "curl -LO https://bootstrap.pypa.io/get-pip.py" \
+                "python3 get-pip.py || python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
+            press_enter_to_continue
+        fi
     fi
 
-    cd /tmp
-    if [ ! $(command -v pip3) ]; then
-        curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.00
-        curl -LO https://gitee.com/mo2/get-pip/raw/master/.get-pip.tar.gz.01
-        cat .get-pip.tar.gz.* >.get-pip.tar.gz
-        tar -zxvf .get-pip.tar.gz
-        if [ -f "get-pip.py" ]; then
-            rm -f .get-pip.tar.gz*
-        else
-            curl -LO https://bootstrap.pypa.io/get-pip.py
-        fi
-        python3 get-pip.py -i https://mirrors.bfsu.edu.cn/pypi/web/simple
-        rm -f get-pip.py
-    fi
+    cd /tmp || exit 1
 
     rm -rf ./.ANNIETEMPFOLDER
     git clone -b linux_${ARCH_TYPE} --depth=1 https://gitee.com/mo2/annie ./.ANNIETEMPFOLDER

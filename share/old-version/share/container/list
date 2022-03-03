@@ -1357,7 +1357,7 @@ install_ubuntu_gnu_linux_distro() {
 	TITLE="Which version do you want to install?"
 	install_ubuntu_gnu_linux_distro_zh() {
 		MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
-		OPT_1="22.04(LTS, dev) 果酱水母 Jammy Jellyfish"
+		OPT_1="22.04(LTS) 果酱水母 Jammy Jellyfish"
 		OPT_2="🐒 21.10(stable) 頑皮大狐猴 Impish Indri"
 		# OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
 		OPT_3="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
@@ -1372,7 +1372,7 @@ install_ubuntu_gnu_linux_distro() {
 	#	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
 	install_ubuntu_gnu_linux_distro_ja() {
 		MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
-		OPT_1="22.04(LTS, dev) Jammy Jellyfish"
+		OPT_1="22.04(LTS) Jammy Jellyfish"
 		OPT_2="🐒 21.10(stable) Impish Indri"
 		# OPT_3="🦛 21.04 Hirsute Hippo"
 		OPT_3="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
@@ -1385,7 +1385,7 @@ install_ubuntu_gnu_linux_distro() {
 	}
 	install_ubuntu_gnu_linux_distro_en() {
 		MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2023,then customize the version code"
-		OPT_1="22.04(LTS, dev) Jammy Jellyfish"
+		OPT_1="22.04(LTS) Jammy Jellyfish"
 		OPT_2="🐒 21.10(stable) Impish Indri"
 		# OPT_3="🦛 21.04 Hirsute Hippo"
 		OPT_3="🐱 20.04(LTS)Focal Fossa"

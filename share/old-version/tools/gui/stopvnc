@@ -43,7 +43,7 @@ check_wsl() {
 ###########
 stopx11vnc() {
     pkill Xvfb
-    rm -fv /tmp/.X233-lock /tmp/.X11-unix/X233 2>/dev/null
+    remove_xsession_lock 233
 }
 ##########
 tmoe_vnc_env() {
@@ -60,10 +60,18 @@ tmoe_vnc_env() {
     BOLD=$(printf '\033[1m')
 }
 ###########
+remove_xsession_lock() {
+    local port=$1
+    for i in /tmp/.X${port}-lock /tmp/.X11-unix/X${port}; do
+        rm -vf "$i" 2>/dev/null
+        if [[ -e "${i}" ]]; then
+            sudo rm -fv "$i"
+        fi
+    done
+}
 rm_vnc_lock() {
-    [[ $(command -v vncsession) ]] || vncserver -kill :${CURRENT_PORT} 2>/dev/null
-    rm -vf /tmp/.X${CURRENT_PORT}-lock 2>/dev/null
-    rm -vf /tmp/.X11-unix/X${CURRENT_PORT} 2>/dev/null
+    [[ $(command -v vncsession) ]] || vncserver -kill :"${CURRENT_PORT}" 2>/dev/null
+    remove_xsession_lock "${CURRENT_PORT}"
 }
 #############
 rm_dbus_pid_file() {
