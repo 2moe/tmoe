@@ -2588,8 +2588,21 @@ tmoe_desktop_warning() {
     do_you_want_to_continue
 }
 ###############
+ukui_or_kylin_desktop(){
+     case ${DEBIAN_DISTRO} in
+        ubuntu)
+            if (whiptail --title "ukui or ubuntukylin-desktop" --yes-button "ukui" --no-button "kylin" --yesno 'The former is more streamlined, and the latter\n includes some extra software of  ubuntu-kylin.\n前者为普通ukui,后者为ubuntukylin-desktop' 0 0); then
+                printf "%s" ""
+            else
+                DEPENDENCY_01="ubuntukylin-desktop"
+            fi
+}
 install_ukui_desktop() {
-    tmoe_desktop_warning
+    case ${AUTO_INSTALL_GUI} in
+    true) ;;
+    *) tmoe_desktop_warning ;;
+    esac
+
     case ${TMOE_PROOT} in
     true)
         REMOTE_DESKTOP_SESSION_01='ukui-panel'
@@ -2600,20 +2613,18 @@ install_ukui_desktop() {
         REMOTE_DESKTOP_SESSION_02='ukui-panel'
         ;;
     esac
-
     DEPENDENCY_01="ukui-session-manager"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、ukui-session-manager、ukui-menu、ukui-control-center、ukui-screensaver、ukui-themes、peony和tightvncserver等软件包。'
     case "${LINUX_DISTRO}" in
     "debian")
-        DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
-        case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "ukui or ubuntukylin-desktop" --yes-button "ukui" --no-button "kylin" --yesno 'The former is more streamlined, and the latter\n includes some extra software of  ubuntu-kylin.\n前者为普通ukui,后者为ubuntukylin-desktop' 0 0); then
-                printf "%s" ""
-            else
-                DEPENDENCY_01="ubuntukylin-desktop"
-            fi
+        case ${AUTO_INSTALL_GUI} in
+        true)  DEPENDENCY_01="ubuntukylin-desktop";;
+        *)  
+            DEPENDENCY_01='ukui-session-manager ukui-menu ukui-control-center ukui-screensaver ukui-themes peony'
+            ukui_or_kylin_desktop 
             ;;
+        esac
+        ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
