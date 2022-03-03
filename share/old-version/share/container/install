@@ -1525,15 +1525,24 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    pacman -Syyu --noconfirm
 	}
 	create_paru_script(){
-		cat>paru<<-'EOF'
+		cat>paru<<-'EOFparu'
 	#!/usr/bin/env bash
 	if [ -e /usr/bin/paru ];then
 		/usr/bin/paru $@
 	else
 		/opt/bin/paru $@
 	fi
-	EOF
+	EOFparu
+	cat>yay<<-'EOFyay'
+	#!/usr/bin/env bash
+	if [ -e /usr/bin/yay ];then
+		/usr/bin/yay $@
+	else
+		paru $@
+	fi
+	EOFyay 
 	install -Dm755 paru /usr/local/bin
+	install -Dm755 yay /usr/local/bin
 	}
 	arch_linux_paru() {
 		# pacman-key --populate archlinuxcn
@@ -1595,6 +1604,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 
 	if [[ -e "/etc/pacman.conf" && $(command -v grep) ]]; then
+		sed -i.bak -E "s@^#(Color)@\1@" /etc/pacman.conf
 	    if [[ ${WEEKLY_BUILD_CONTAINER} != true ]]; then
 	        add_arch_for_edu_repo
 	        add_archlinuxcn_repo
