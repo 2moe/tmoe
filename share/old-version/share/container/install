@@ -1613,6 +1613,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    else
 	        if [[ ! $(command -v paru) ]]; then
 	            get_arch_paru
+				cd ~
 	        fi
 	        if [[ ${TMOE_CHROOT} = true ]]; then
 	            i=gawk
@@ -1621,6 +1622,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        fi
 	    fi
 	fi
+
 	#######################
 	case ${TMOE_PROOT} in
 	true)
