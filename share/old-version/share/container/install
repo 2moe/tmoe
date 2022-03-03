@@ -1552,7 +1552,12 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        pacman -Sy --noconfirm --needed ${i}
 	    done
 		if [[ ! $(command -v paru) ]]; then
+			get_arch_paru
+		fi
+	}
+	get_arch_paru() {
 		case $(uname -m) in
+		x86_64) pacman -Sy --noconfirm --needed paru ;;
 		armv7* | armv8l) 
 		printf "%s\n" \
 			"You should install ${GREEN}paru ${BLUE}manually${RESET}" \
@@ -1571,7 +1576,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		"You should run ${GREEN}paru -Sy ${BLUE}paru-bin${RESET} to upgrade it."
 		;;
 		esac
-		fi
 	}
 	#################
 	#################
@@ -1611,10 +1615,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        arch_linux_paru
 	        cat /etc/pacman.conf
 	    else
-	        # if [[ ! $(command -v paru) ]]; then
-	        #     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}paru${RESET}"
-	        #     pacman -Sy --noconfirm paru || pacman -Syu --noconfirm --needed paru
-	        # fi
+	        if [[ ! $(command -v paru) ]]; then
+	            get_arch_paru
+	        fi
 	        if [[ ${TMOE_CHROOT} = true ]]; then
 	            i=gawk
 	            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
