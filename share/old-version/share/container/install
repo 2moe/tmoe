@@ -1283,10 +1283,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		VERSION_CODENAME=$(grep 'VERSION_CODENAME' /etc/os-release | awk -F'=' '{print $2}')
 	    [[ -z ${VERSION_CODENAME} ]] || sed -i "s@focal@${VERSION_CODENAME}@g" /etc/apt/sources.list
 
-		# if [[ ${WEEKLY_BUILD_CONTAINER} = true ]]; then
-		#  sed -i "s@impish@jammy@g" /etc/apt/sources.list
-		#     sed -i -E "s@(Ubuntu) 21.10@\1 22.04@" /etc/os-release
-		# fi
 	}
 	#########################
 	modify_mint_source_list() {

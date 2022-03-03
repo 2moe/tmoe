@@ -30,7 +30,7 @@ choose_which_gnu_linux_distro() {
 	choose_which_gnu_linux_distro_zh() {
 		MENU="您想要安装哪个容器?"
 		OPT_0="🌚 Return to previous menu 返回上级菜单"
-		OPT_1="🍭 每周构建cutefish,dde,ukui,kde,mate & lxqt"
+		OPT_1="🍭 每周构建cutefish,kde,xfce,mate & lxqt"
 		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
 		OPT_3="🍥 Debian:致力于自由"
 		OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
@@ -255,13 +255,11 @@ install_tmoe_weekly_build_edition() {
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🦖 kde plasma5(beautiful and modern)" \
 			"3" "🐟 cutefish" \
-			"4" "dde(deepin desktop)" \
-			"5" "ukui" \
-			"6" "🌿 mate(the continuation of GNOME 2)" \
-			"7" "🐦 lxqt" \
-			"8" "🕊️ lxde(lightweight)" \
-			"9" "zsh(nogui)" \
-			"10" "Weekly schedule" \
+			"4" "🌿 mate(the continuation of GNOME 2)" \
+			"5" "🐦 lxqt" \
+			"6" "🕊️ lxde(lightweight)" \
+			"7" "zsh(nogui)" \
+			"8" "Weekly schedule" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -273,16 +271,16 @@ install_tmoe_weekly_build_edition() {
 			"1" "🐭 xfce(elegant, high compatibility)" \
 			"2" "🦖 kde plasma5(风格华丽的桌面环境)" \
 			"3" "🐟 cutefish 可爱鱼(arm64, x64, armhf)" \
-			"4" "dde 深度桌面环境(arm64, x64)" \
-			"5" "ukui 优麒麟ui(arm64, x64, armhf)" \
-			"6" "🌿 mate(the continuation of GNOME 2)" \
-			"7" "🐦 lxqt(arm64, x64)" \
-			"8" "🕊️ lxde(轻量级, armhf, i386)" \
-			"9" "zsh(nogui)" \
-			"10" "schedule 自动构建计划日程表" \
+			"4" "🌿 mate(the continuation of GNOME 2)" \
+			"5" "🐦 lxqt(arm64, x64)" \
+			"6" "🕊️ lxde(轻量级, armhf, i386)" \
+			"7" "zsh(nogui)" \
+			"8" "schedule 自动构建计划日程表" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
+	# "4" "dde 深度桌面环境(arm64, x64)" \
+	# "5" "ukui 优麒麟ui(arm64, x64, armhf)" \
 	#"7" "Request specific version" \"7" "request 请求更新/增加版本" \
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8) choose_de_zh ;;
@@ -302,32 +300,32 @@ install_tmoe_weekly_build_edition() {
 		DESKTOP="cutefish"
 		choose_cutefish_distro
 		;;
+	# 4)
+	# 	DESKTOP="dde"
+	# 	choose_dde_distro
+	# 	;;
+	# 5)
+	# 	DESKTOP="ukui"
+	# 	choose_ukui_distro
+	# 	;;
 	4)
-		DESKTOP="dde"
-		choose_dde_distro
-		;;
-	5)
-		DESKTOP="ukui"
-		choose_ukui_distro
-		;;
-	6)
 		DESKTOP="mate"
 		choose_mate_distro
 		;;
-	7)
+	5)
 		DESKTOP="lxqt"
 		choose_lxqt_distro
 		;;
-	8)
+	6)
 		DESKTOP="lxde"
 		choose_lxde_distro
 		;;
-	9)
+	7)
 		#printf "%s\n" "This feature may be available on 2020-02-17."
 		DESKTOP="zsh"
 		choose_zsh_distro
 		;;
-	10) view_the_schedule ;;
+	8) view_the_schedule ;;
 	999) request_weekly_build_version ;;
 	esac
 	press_enter_to_return
@@ -919,6 +917,7 @@ install_chroot_exclusive_containers() {
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
 			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"2" "deepin深度(arm64,x86,x64)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
@@ -929,9 +928,8 @@ install_chroot_exclusive_containers() {
 		CLOUD_ROOTFS=true
 		install_opensuse_linux_distro
 		;;
+	2) install_deepin_linux_distro ;;
 	esac
-	# 1) install_deepin_linux_distro ;;
-	# "1" "deepin深度(arm64,x86,x64)" \
 	###########################
 	exit 0
 }
