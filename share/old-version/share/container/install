@@ -1536,11 +1536,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	cat>yay<<-'EOFyay'
 	#!/usr/bin/env bash
 	if [ -e /usr/bin/yay ];then
-		/usr/bin/yay $@
+	/usr/bin/yay $@
 	else
-		paru $@
+	paru $@
 	fi
-	EOFyay 
+	EOFyay
 	install -Dm755 paru /usr/local/bin
 	install -Dm755 yay /usr/local/bin
 	}
