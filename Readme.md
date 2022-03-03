@@ -12,6 +12,12 @@ This is a _lite doc_.
 
 It's recommended that you read the [full documentation](./share/doc/readme.md).
 
+> 1.4989.x is probably the last release of edition 2021.
+>
+> After that, only minor features and fixes will be added to this edition.
+>
+> Since 2moe intends to rewrite the project, but there are too many things involved, there should be no major updates in the near future.
+
 ### 1.2. full
 
 Note: These documents are temporarily unavailable.
@@ -39,12 +45,12 @@ The new version with improved multilingual support will be released before 2023.
 
 ### 2.1. methods
 
-| method | tool  | condition                                                                                                    | command                                    |
-| ------ | ----- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(stable) will be released before 2023.) | ~~`cargo install tmm`~~                    |
-| 2      | curl  | you have `curl` installed, and can access github                                                             | `. <(curl -L git.io/linux.sh)`             |
-| 3      | curl  | you cannot access github                                                                                     | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
-| 4      | curl  | none of the above methods can be installed                                                                   | `curl -Lo l l.tmoe.me; sh l`               |
+| method | tool  | condition                                                                                                         | command                                    |
+| ------ | ----- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(edition2022) will be released before 2023.) | ~~`cargo install tmm`~~                    |
+| 2      | curl  | you have `curl` installed, and can access github                                                                  | `. <(curl -L git.io/linux.sh)`             |
+| 3      | curl  | you cannot access github                                                                                          | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
+| 4      | curl  | none of the above methods can be installed                                                                        | `curl -Lo l l.tmoe.me; sh l`               |
 
 <!-- | 1      | cargo | you have `cargo` installed        | `cargo install tmoe`            | -->
 

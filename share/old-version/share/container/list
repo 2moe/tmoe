@@ -15,7 +15,7 @@ choose_which_gnu_linux_distro() {
 	choose_which_gnu_linux_distro_ja() {
 		MENU="容器をお選びください"
 		OPT_0="🌚 戻る"
-		OPT_1="🍭 毎週のGUIビルド(xfce,kde,mate & lxqt)"
+		OPT_1="🍭 毎週のGUIビルド(cutefish,kde,mate,xfce & lxqt)"
 		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
 		OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
 		OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
@@ -24,13 +24,13 @@ choose_which_gnu_linux_distro() {
 		OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
 		OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
 		OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
-		OPT_10="🦎 Chroot専属する:opensuse,deepin"
+		OPT_10="🦎 Chroot専属する:opensuse"
 		OPT_11="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_zh() {
 		MENU="您想要安装哪个容器?"
 		OPT_0="🌚 Return to previous menu 返回上级菜单"
-		OPT_1="🍭 每周构建xfce,kde,mate & lxqt"
+		OPT_1="🍭 每周构建cutefish,dde,ukui,kde,mate & lxqt"
 		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
 		OPT_3="🍥 Debian:致力于自由"
 		OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
@@ -39,13 +39,13 @@ choose_which_gnu_linux_distro() {
 		OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
 		OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
 		OPT_9="👒 Fedora:红帽社区版,新技术试验场"
-		OPT_10="🦎 Chroot专属:deepin,opensuse"
+		OPT_10="🦎 Chroot专属:opensuse"
 		OPT_11="🍓 Experimental(体验版):archcraft,树莓派"
 	}
 	choose_which_gnu_linux_distro_en() {
 		MENU="Which container do you want to install?"
 		OPT_0="🌚 Return to previous menu"
-		OPT_1="🍭 Weekly builds(xfce,kde,mate & lxqt)"
+		OPT_1="🍭 Weekly builds(cutefish,xfce,kde,mate & lxqt)"
 		OPT_2="🐳 Rust,go,nodejs,jdk,mongodb & docker"
 		OPT_3="🍥 Debian is a distro composed of free and open-source software"
 		OPT_4="🍛 Ubuntu is the modern, open source OS."
@@ -54,7 +54,7 @@ choose_which_gnu_linux_distro() {
 		OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
 		OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
 		OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-		OPT_10="🦎 Chroot exclusive:opensuse,deepin"
+		OPT_10="🦎 Chroot exclusive:opensuse"
 		OPT_11="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
 	}
 	choose_which_gnu_linux_distro_menu() {
@@ -253,12 +253,15 @@ install_tmoe_weekly_build_edition() {
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
 			"${MENU}" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
-			"2" "🌿 mate(the continuation of GNOME 2)" \
-			"3" "🦖 kde plasma5(beautiful and modern)" \
-			"4" "🐦 lxqt" \
-			"5" "🕊️ lxde(lightweight)" \
-			"6" "zsh(nogui)" \
-			"7" "Weekly schedule" \
+			"2" "🦖 kde plasma5(beautiful and modern)" \
+			"3" "🐟 cutefish" \
+			"4" "dde(deepin desktop)" \
+			"5" "ukui" \
+			"6" "🌿 mate(the continuation of GNOME 2)" \
+			"7" "🐦 lxqt" \
+			"8" "🕊️ lxde(lightweight)" \
+			"9" "zsh(nogui)" \
+			"10" "Weekly schedule" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -268,12 +271,15 @@ install_tmoe_weekly_build_edition() {
 		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
 			"${MENU}" 0 0 0 \
 			"1" "🐭 xfce(elegant, high compatibility)" \
-			"2" "🌿 mate(the continuation of GNOME 2)" \
-			"3" "🦖 kde plasma5(风格华丽的桌面环境)" \
-			"4" "🐦 lxqt" \
-			"5" "🕊️ lxde(轻量级)" \
-			"6" "zsh(nogui)" \
-			"7" "schedule 自动构建计划日程表" \
+			"2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+			"3" "🐟 cutefish 可爱鱼(arm64, x64, armhf)" \
+			"4" "dde 深度桌面环境(arm64, x64)" \
+			"5" "ukui 优麒麟ui(arm64, x64, armhf)" \
+			"6" "🌿 mate(the continuation of GNOME 2)" \
+			"7" "🐦 lxqt(arm64, x64)" \
+			"8" "🕊️ lxde(轻量级, armhf, i386)" \
+			"9" "zsh(nogui)" \
+			"10" "schedule 自动构建计划日程表" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -289,27 +295,39 @@ install_tmoe_weekly_build_edition() {
 		choose_xfce_distro
 		;;
 	2)
-		DESKTOP="mate"
-		choose_mate_distro
-		;;
-	3)
 		DESKTOP="kde"
 		choose_kde_distro
 		;;
+	3)
+		DESKTOP="cutefish"
+		choose_cutefish_distro
+		;;
 	4)
+		DESKTOP="dde"
+		choose_dde_distro
+		;;
+	5)
+		DESKTOP="ukui"
+		choose_ukui_distro
+		;;
+	6)
+		DESKTOP="mate"
+		choose_mate_distro
+		;;
+	7)
 		DESKTOP="lxqt"
 		choose_lxqt_distro
 		;;
-	5)
+	8)
 		DESKTOP="lxde"
 		choose_lxde_distro
 		;;
-	6)
+	9)
 		#printf "%s\n" "This feature may be available on 2020-02-17."
 		DESKTOP="zsh"
 		choose_zsh_distro
 		;;
-	7) view_the_schedule ;;
+	10) view_the_schedule ;;
 	999) request_weekly_build_version ;;
 	esac
 	press_enter_to_return
@@ -341,6 +359,17 @@ set_ubuntu_dev_env() {
 	DISTRO_NAME='ubuntu'
 	DISTRO_CODE="dev-${DESKTOP}"
 	DISTRO_NAME_02=ubuntu-dev
+	NODE01_ENABLED=false
+	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+	create_container_edition_txt
+	create_container_edition_txt_02
+	go_to_proot_management
+}
+set_ubuntu_dde_env() {
+	DISTRO_NAME='ubuntu'
+	DISTRO_CODE="${DESKTOP}"
+	DISTRO_NAME_02=ubuntu
 	NODE01_ENABLED=false
 	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
@@ -415,6 +444,7 @@ set_arch_latest_env() {
 	create_container_edition_txt_02
 	go_to_proot_management
 }
+
 set_manjaro_stable_env() {
 	DISTRO_NAME='manjaro'
 	DISTRO_CODE="stable-${DESKTOP}"
@@ -432,11 +462,11 @@ desktop_does_not_support() {
 choose_mate_distro() {
 	MENU="Which distribution do you want to install?"
 	OPT_0="🌚 Return to previous menu"
-	OPT_1="🌉 Arch-latest(arm64, amd64)"
-	OPT_2="🍥 Debian-sid(arm64, amd64)"
-	OPT_3="👒 Fedora-rawhide(arm64, amd64, armhf)"
-	OPT_4="🏔️ Alpine-edge(arm64, armhf, i386, amd64)"
-	OPT_5="ubuntu-dev(arm64, amd64)"
+	OPT_1="🌉 Arch-latest(arm64, x64)"
+	OPT_2="🍥 Debian-sid(arm64, x64)"
+	OPT_3="👒 Fedora-rawhide(arm64, x64, armhf)"
+	OPT_4="🏔️ Alpine-edge(arm64, armhf, i386, x64)"
+	OPT_5="ubuntu-dev(arm64, x64)"
 	SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
 		"1" "$OPT_1" \
 		"2" "$OPT_2" \
@@ -516,8 +546,8 @@ choose_lxde_distro() {
 }
 choose_lxqt_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🍛 Ubuntu-dev(arm64,amd64)" \
-		"2" "👒 Fedora-rawhide(arm64,amd64)" \
+		"1" "🍛 Ubuntu-dev(arm64,x64)" \
+		"2" "👒 Fedora-rawhide(arm64,x64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -544,13 +574,13 @@ choose_lxqt_distro() {
 }
 choose_xfce_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🐉 Kali-rolling(arm64, armhf, amd64)" \
-		"2" "🌉 Arch-latest(arm64, armhf, amd64)" \
-		"3" "🍥 Debian-sid(arm64, amd64)" \
-		"4" "👒 Fedora-rawhide(arm64, amd64)" \
-		"5" "Manjaro-stable(arm64, amd64)" \
-		"6" "🏔️ Alpine-edge(arm64, amd64)" \
-		"7" "ubuntu-dev(arm64, amd64)" \
+		"1" "🐉 Kali-rolling(arm64, armhf, x64)" \
+		"2" "🌉 Arch-latest(arm64, armhf, x64)" \
+		"3" "🍥 Debian-sid(arm64, x64)" \
+		"4" "👒 Fedora-rawhide(arm64, x64)" \
+		"5" "Manjaro-stable(arm64, x64)" \
+		"6" "🏔️ Alpine-edge(arm64, x64)" \
+		"7" "ubuntu-dev(arm64, x64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -612,13 +642,41 @@ choose_xfce_distro() {
 		;;
 	esac
 }
+choose_cutefish_distro() {
+	case ${ARCH_TYPE} in
+	amd64 | arm64 | armhf) set_arch_latest_env ;;
+	*)
+		desktop_does_not_support
+		distro_does_not_support
+		;;
+	esac
+}
+choose_dde_distro() {
+	case ${ARCH_TYPE} in
+	amd64 | arm64) set_ubuntu_dde_env ;;
+	*)
+		desktop_does_not_support
+		distro_does_not_support
+		;;
+	esac
+}
+
+choose_ukui_distro() {
+	case ${ARCH_TYPE} in
+	amd64 | arm64 | armhf) set_ubuntu_dev_env ;;
+	*)
+		desktop_does_not_support
+		distro_does_not_support
+		;;
+	esac
+}
 choose_kde_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
-		"1" "🍛 Ubuntu(arm64, amd64, armhf)" \
-		"2" "🌉 Arch(arm64, amd64):simplicity,modernity,pragmatism" \
-		"3" "🍥 Debian sid(arm64, amd64)" \
-		"4" "👒 Fedora rawhide(arm64, amd64)" \
-		"5" "🏔️ Alpine(arm64, amd64):small,simple,secure." \
+		"1" "🍛 Ubuntu(arm64, x64, armhf)" \
+		"2" "🌉 Arch(arm64, x64)" \
+		"3" "🍥 Debian sid(arm64, x64)" \
+		"4" "👒 Fedora rawhide(arm64, x64)" \
+		"5" "🏔️ Alpine(arm64, x64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -675,13 +733,13 @@ choose_kde_distro() {
 }
 choose_zsh_distro() {
 	SELECTED_GNU_LINUX=$(whiptail --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
-		"1" "🌉 Arch(arm64,armhf,amd64)" \
-		"2" "🦛 Ubuntu devel(arm64,amd64)" \
-		"3" "🍥 Debian sid(arm64,armhf,amd64,i386)" \
-		"4" "👒 Fedora rawhide(arm64,armhf,amd64)" \
-		"5" "🏔️ Alpine edge(arm64,armhf,amd64,i386)" \
-		"6" "🐉 Kali-rolling(arm64,armhf,amd64)" \
-		"7" "Manjaro(arm64, amd64)" \
+		"1" "🌉 Arch(arm64,armhf,x64)" \
+		"2" "🦛 Ubuntu devel(arm64,x64)" \
+		"3" "🍥 Debian sid(arm64,armhf,x64,i386)" \
+		"4" "👒 Fedora rawhide(arm64,armhf,x64)" \
+		"5" "🏔️ Alpine edge(arm64,armhf,x64,i386)" \
+		"6" "🐉 Kali-rolling(arm64,armhf,x64)" \
+		"7" "Manjaro(arm64,x64)" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	case "${SELECTED_GNU_LINUX}" in
@@ -860,20 +918,20 @@ install_chroot_exclusive_containers() {
 	#\nThe developer only maintains the chroot container in the following list.
 	ALPHA_SYSTEM=$(
 		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
-			"1" "deepin深度(arm64,x86,x64)" \
-			"2" "opensuse tumbleweed(小蜥蜴风滚草)" \
+			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
 			"0" "🌚 Return to previous menu 返回上级菜单" \
 			3>&1 1>&2 2>&3
 	)
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_deepin_linux_distro ;;
-	2)
+	1)
 		CLOUD_ROOTFS=true
 		install_opensuse_linux_distro
 		;;
 	esac
+	# 1) install_deepin_linux_distro ;;
+	# "1" "deepin深度(arm64,x86,x64)" \
 	###########################
 	exit 0
 }
@@ -948,12 +1006,12 @@ install_deepin_linux_distro() {
 	RETURN_TO_WHERE='install_deepin_linux_distro'
 	ALPHA_SYSTEM=$(
 		whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
-			"1" "deepin20 apricot(amd64,i386) 大小40M" \
+			"1" "deepin20 apricot(x64,i386) 大小40M" \
 			"2" "deepin15.5 camel(arm64) 大小78M" \
 			"0" "🌚 Back 返回" \
 			3>&1 1>&2 2>&3
 	)
-	#"999" "uos20 eagle(arm64,amd64,i386) 大小38M" \
+	#"999" "uos20 eagle(arm64,x64,i386) 大小38M" \
 	##############################
 	case "${ALPHA_SYSTEM}" in
 	0 | "") install_chroot_exclusive_containers ;;
