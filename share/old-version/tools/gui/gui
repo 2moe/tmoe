@@ -5755,7 +5755,7 @@ check_xvnc_command() {
     esac
 }
 ########################
-if_container_is_fedora_arm() {
+if_container_is_arm() {
     case ${LINUX_DISTRO} in
     redhat)
         case ${ARCH_TYPE} in
@@ -5763,7 +5763,12 @@ if_container_is_fedora_arm() {
         *) install_novnc ;;
         esac
         ;;
-    *) install_novnc ;;
+    *)
+        case ${ARCH_TYPE} in
+        armhf | armel) ;;
+        *) install_novnc ;;
+        esac
+        ;;
     esac
 }
 install_novnc() {
@@ -5809,7 +5814,7 @@ do_you_want_to_configure_novnc() {
         do_you_want_to_continue
         install_novnc
     else
-        if_container_is_fedora_arm
+        if_container_is_arm
     fi
 
     if [[ $(command -v apt-get) ]]; then
