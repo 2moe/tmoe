@@ -2193,9 +2193,9 @@ distro_does_not_support() {
 choose_ubuntu_budgie_or_cinnamon() {
 	DESKTOP_NAME=$(
 		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
-			"1" "🐭 xfce(proot)" \
-			"2" "👣 cinnamon(systemd container)" \
-			"3" "🦜 budgie(systemd)" \
+			"1" "🐭 xfce" \
+			"2" "👣 cinnamon" \
+			"3" "🦜 budgie" \
 			"4" "cli(nogui)" \
 			"5" "minimal(nogui)" \
 			"0" "🌚 Return to previous menu" \
@@ -2210,9 +2210,9 @@ choose_ubuntu_budgie_or_cinnamon() {
 	5) DISTRO_CODE='minimal' ;;
 	esac
 }
-choose_debian_xfce_or_cinnamon() {
+choose_ubuntu_xfce_or_cinnamon() {
 	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
+		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
 			"1" "🐭 xfce" \
 			"2" "👣 cinnamon" \
 			"3" "cli(nogui)" \
@@ -2225,7 +2225,23 @@ choose_debian_xfce_or_cinnamon() {
 	1) DISTRO_CODE='xfce' ;;
 	2) DISTRO_CODE='cinnamon' ;;
 	3) DISTRO_CODE='cli' ;;
-	4 | *) DISTRO_CODE='minimal' ;;
+	4) DISTRO_CODE='minimal' ;;
+	esac
+}
+choose_debian_xfce_or_cinnamon() {
+	DESKTOP_NAME=$(
+		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
+			"1" "🐭 xfce" \
+			"2" "cli(nogui)" \
+			"3" "minimal(nogui)" \
+			"0" "🌚 Return to previous menu" \
+			3>&1 1>&2 2>&3
+	)
+	case "${DESKTOP_NAME}" in
+	0 | "") install_armbian_linux_distro ;;
+	1) DISTRO_CODE='xfce' ;;
+	2) DISTRO_CODE='cli' ;;
+	3 | *) DISTRO_CODE='minimal' ;;
 	esac
 }
 install_armbian_linux_distro() {
@@ -2233,8 +2249,8 @@ install_armbian_linux_distro() {
 	DISTRO_NAME='armbian'
 	BETA_SYSTEM=$(
 		whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
-			"1" "🐱 Focal Fossa(ubuntu 20.04)" \
-			"2" "Impish Indri(ubuntu 21.10)" \
+			"1" "Jammy(ubuntu 22.04)" \
+			"2" "🐱 Focal(ubuntu 20.04)" \
 			"3" "🐎 Bullseye(debian 11)" \
 			"4" "🐶 Buster(debian 10)" \
 			"5" "Custom code手动输入版本代号" \
@@ -2246,11 +2262,12 @@ install_armbian_linux_distro() {
 	case "${BETA_SYSTEM}" in
 	0 | "") choose_which_gnu_linux_distro ;;
 	1)
-		DISTRO_NAME='focal'
-		choose_ubuntu_budgie_or_cinnamon
+		# impish
+		DISTRO_NAME='jammy'
+		choose_ubuntu_xfce_or_cinnamon
 		;;
 	2)
-		DISTRO_NAME='impish'
+		DISTRO_NAME='focal'
 		choose_ubuntu_budgie_or_cinnamon
 		;;
 	3)
@@ -2306,30 +2323,32 @@ install_different_armbian_gnu_linux_distros() {
 ########
 install_armbian_buster_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
-		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed 's@#deb http@deb http@g' |
-		sed 's/.*sid main/#&/' |
-		sed "s@stable/updates@${DISTRO_NAME}/updates@g" |
-		sed "s@buster-backports@${DISTRO_NAME}-backports@g" |
-		sed "s@debian/ stable@debian/ ${DISTRO_NAME}@g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		sed \
+			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" \
+			-e 's@rootfs.tar.xz@rootfs.tar.lz4@g' \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e 's@#deb http@deb http@g' \
+			-e 's/.*sid main/#&/' \
+			-e "s@stable/updates@${DISTRO_NAME}/updates@g" \
+			-e "s@buster-backports@${DISTRO_NAME}-backports@g" \
+			-e "s@debian/ stable@debian/ ${DISTRO_NAME}@g" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########
 install_armbian_testing_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" |
-		sed 's@rootfs.tar.xz@rootfs.tar.lz4@g' |
-		sed "s/debian container/${DISTRO_NAME} container/g" |
-		sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		sed 's@#deb http@deb http@g' |
-		sed 's/.*sid main/#&/' |
-		sed "s@stable/updates@${DISTRO_NAME}-security@g" |
-		sed "s@buster-backports@${DISTRO_NAME}-backports@g" |
-		sed "s@debian/ stable@debian/ ${DISTRO_NAME}@g" |
-		sed "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+		sed \
+			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" \
+			-e 's@rootfs.tar.xz@rootfs.tar.lz4@g' \
+			-e "s/debian container/${DISTRO_NAME} container/g" \
+			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+			-e 's@#deb http@deb http@g' \
+			-e 's/.*sid main/#&/' \
+			-e "s@stable/updates@${DISTRO_NAME}-security@g" \
+			-e "s@buster-backports@${DISTRO_NAME}-backports@g" \
+			-e "s@debian/ stable@debian/ ${DISTRO_NAME}@g" \
+			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########
 custom_armbian_version() {

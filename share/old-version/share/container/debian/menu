@@ -167,26 +167,28 @@ install_debian_sid_via_tuna() {
 #################
 install_debian_buster_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s:/sid:/${DISTRO_CODE}:g" |
-		sed "s:-sid:-${DISTRO_CODE}:g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
-		sed "s@stable/updates@${DISTRO_CODE}/updates@g" |
-		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
-		sed 's@#deb http@deb http@g' |
-		sed 's/.*sid main/#&/')"
+		sed \
+			-e "s@/sid@/${DISTRO_CODE}@g" \
+			-e "s@-sid@-${DISTRO_CODE}@g" \
+			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+			-e "s@debian/ stable@debian/ ${DISTRO_CODE}@g" \
+			-e "s@stable/updates@${DISTRO_CODE}/updates@g" \
+			-e "s@buster-backports@${DISTRO_CODE}-backports@g" \
+			-e 's@#deb http@deb http@g' \
+			-e 's/.*sid main/#&/')"
 }
 ############
 install_debian_testing_via_tuna() {
 	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s:/sid:/${DISTRO_CODE}:g" |
-		sed "s:-sid:-${DISTRO_CODE}:g" |
-		sed 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' |
-		sed "s@debian/ stable@debian/ ${DISTRO_CODE}@g" |
-		sed "s@stable/updates@${DISTRO_CODE}-security@g" |
-		sed "s@buster-backports@${DISTRO_CODE}-backports@g" |
-		sed 's@#deb http@deb http@g' |
-		sed 's/.*sid main/#&/')"
+		sed \
+			-e "s@/sid@/${DISTRO_CODE}@g" \
+			-e "s@-sid@-${DISTRO_CODE}@g" \
+			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+			-e "s@debian/ stable@debian/ ${DISTRO_CODE}@g" \
+			-e "s@stable/updates@${DISTRO_CODE}-security@g" \
+			-e "s@buster-backports@${DISTRO_CODE}-backports@g" \
+			-e 's@#deb http@deb http@g' \
+			-e 's/.*sid main/#&/')"
 }
 #################
 install_debian_gnu_linux_distro_menu $@
