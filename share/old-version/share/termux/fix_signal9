@@ -21,6 +21,7 @@ install_android_tools() {
     esac
     printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
     do_you_want_to_continue
+    ${TMOE_UPDATE_COMMAND} 2>/dev/null
     ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
 }
 type_adb_address() {

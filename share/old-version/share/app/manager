@@ -80,6 +80,7 @@ tmoe_manager_android_env() {
 		fi
 	fi
 	[[ -z ${TMPDIR} ]] || export TMPDIR=${PREFIX}/tmp
+	TMOE_UPDATE_COMMAND='apt update'
 	TMOE_INSTALLATION_COMMAND='apt install -y'
 	TMOE_REMOVAL_COMMAND='apt purge -y'
 	SWITCH_MIRROR=true
