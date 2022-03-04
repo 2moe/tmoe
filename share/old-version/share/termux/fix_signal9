@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#######################################
+have_you_encountered_signal9() {
+    if (whiptail --title "Android 12(signal9)" --yes-button "Yes" --no-button "No" --yesno "Have you encountered this problem:\n [Process completed (signal 9) - press Enter]?" 0 50); then
+        check_adb_command
+        type_adb_address
+    else
+        tmoe_manager_main_menu
+    fi
+}
+check_adb_command() {
+    if [[ -z "$(command -v adb)" ]]; then
+        install_android_tools
+    fi
+}
+install_android_tools() {
+    unset DEPENDENCY_02
+    case "$LINUX_DISTRO" in
+    debian) DEPENDENCY_01="adb" ;;
+    termux | *) DEPENDENCY_01="android-tools" ;;
+    esac
+    printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
+    do_you_want_to_continue
+    ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
+}
+type_adb_address() {
+    case ${TMOE_LANG} in
+    zh_*UTF-8) local _Description="請打开android 设备的 adb 网络调试功能，\n并在下方输入 adb 地址。\n若留空则使用 127.0.0.1:5555" ;;
+    *) local _Description="Please enable the adb network debugging\n on your android device\n and type the adb address here.\nIf left blank use 127.0.0.1:5555" ;;
+    esac
+
+    ADB_ADDRESS=$(whiptail --inputbox "$_Description" 0 50 --title "ADB address" 3>&1 1>&2 2>&3)
+    if [ "$?" != "0" ]; then
+        printf "%s\n" "${YELLOW}Unknown ${RED}ERROR${RESET}"
+        press_enter_to_return
+        have_you_encountered_signal9
+    elif [ -z "${ADB_ADDRESS}" ]; then
+        ADB_ADDRESS="127.0.0.1:5555"
+    fi
+    connect_to_adb_device
+}
+do_you_want_to_set_max_phantom_processes_to_a_big_num() {
+    printf "%s\n" \
+        "Do you want to set ${YELLOW}the maximum number of phantom processes to ${BLUE}2147483647${RESET}?" \
+        "${GREEN}device_config ${YELLOW}put activity_manager max_phantom_processes ${BLUE}2147483647${RESET}"
+    RETURN_TO_WHERE="do_you_want_to_disable_monitor_phantom_procs"
+    do_you_want_to_continue
+}
+get_max_phantom_processes_0() {
+    adb shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
+}
+get_max_phantom_processes_1() {
+    adb -s "$ADB_ADDRESS" shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
+}
+do_you_want_to_disable_monitor_phantom_procs() {
+    printf "%s\n" \
+        "Do you want to ${RED}disable ${YELLOW}monitor_phantom_procs${RESET}?" \
+        "${GREEN}settings ${YELLOW}put global settings_enable_monitor_phantom_procs ${BLUE}false${RESET}"
+    RETURN_TO_WHERE="if_you_are_unable_to_resolve_android_12_signal9"
+    do_you_want_to_continue
+}
+disable_monitor_phantom_procs_0() {
+    adb shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
+}
+disable_monitor_phantom_procs_1() {
+    adb -s "$ADB_ADDRESS" shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
+}
+connect_to_adb_device() {
+    adb devices -l
+    adb connect "$ADB_ADDRESS"
+    ADB_LIST="$(adb devices | wc -l)"
+    case ${ADB_LIST} in
+    0 | 1 | 2)
+        printf "%s\n" "${YELLOW}Unknown ${RED}ERROR${RESET}, you cannot connect to the adb device"
+        printf "%s\n" "Please exit tmoe manager, and run ${GREEN}adb ${YELLOW}devices ${BLUE}-l${RESET} to check your adb device"
+        press_enter_to_return
+        have_you_encountered_signal9
+        ;;
+    3)
+        get_max_phantom_processes_0
+        do_you_want_to_set_max_phantom_processes_to_a_big_num
+        adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+        get_max_phantom_processes_0
+        do_you_want_to_disable_monitor_phantom_procs
+        disable_monitor_phantom_procs_0
+        ;;
+    4)
+        get_max_phantom_processes_1
+        do_you_want_to_set_max_phantom_processes_to_a_big_num
+        adb -s "$ADB_ADDRESS" shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+        get_max_phantom_processes_1
+        do_you_want_to_disable_monitor_phantom_procs
+        disable_monitor_phantom_procs_1
+        ;;
+    esac
+    if_you_are_unable_to_resolve_android_12_signal9
+}
+if_you_are_unable_to_resolve_android_12_signal9() {
+    printf "%s\n" "If you are unable to resolve this problem, please try again, and report an issue."
+    press_enter_to_return
+    tmoe_manager_main_menu
+}
+################################
+have_you_encountered_signal9

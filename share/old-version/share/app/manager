@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.1,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.2,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -1336,6 +1336,7 @@ choose_termux_color_scheme() {
 tmoe_manager_main_menu() {
 	RETURN_TO_WHERE='tmoe_manager_main_menu'
 	RETURN_TO_MENU="${RETURN_TO_WHERE}"
+	OPT_10="Fix android 12 crash(signal9)"
 	tmoe_manager_main_menu_ja() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
@@ -1350,6 +1351,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*更新" \
 				"8" "🍩 よくある質問" \
 				"9" "🐞 問題を報告します" \
+				"10" "${OPT_10}" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1368,6 +1370,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 Report a problem" \
+				"10" "${OPT_10}" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1386,6 +1389,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常见问题" \
 				"9" "🐞 Report a problem(反馈问题/bug)" \
+				"10" "修复android 12(signal9 闪退)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1404,6 +1408,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常見問題" \
 				"9" "🐞 Report a problem(反饋問題/bug)" \
+				"10" "修復android 12(signal9 閃退)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1422,6 +1427,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*aktualisieren" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 ein Problem melden" \
+				"10" "${OPT_10}" \
 				"0" "🌚 Ausfahrt" \
 				3>&1 1>&2 2>&3
 		)
@@ -1440,6 +1446,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*Обновить" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 Сообщить о проблеме" \
+				"10" "${OPT_10}" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1468,6 +1475,7 @@ tmoe_manager_main_menu() {
 	7) update_tmoe_linux_manager ;;
 	8) frequently_asked_questions ;;
 	9) report_tmoe_linux_problem ;;
+	10) fix_android_12_signal_9 ;;
 	esac
 }
 #"10" "🍒 赋予proot容器真实root权限" \
@@ -1481,6 +1489,9 @@ check_termux_color_scheme_file() {
 	[[ -e ${CONFIG_FOLDER}/default-dns.conf ]] || tmoe_container_dns
 	[[ -e ${CONFIG_FOLDER}/hitokoto.conf ]] || do_you_want_to_enable_hitokoto
 	[[ -e ${CONFIG_FOLDER}/gitstatus/timezone.txt ]] || what_is_your_timezone
+}
+fix_android_12_signal_9() {
+	source ${TMOE_SHARE_DIR}/termux/fix_signal9
 }
 ###################
 install_proot_container() {
