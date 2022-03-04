@@ -1336,7 +1336,6 @@ choose_termux_color_scheme() {
 tmoe_manager_main_menu() {
 	RETURN_TO_WHERE='tmoe_manager_main_menu'
 	RETURN_TO_MENU="${RETURN_TO_WHERE}"
-	OPT_10="Fix android 12 crash(signal9)"
 	tmoe_manager_main_menu_ja() {
 		TMOE_MANAGER_MAIN_OPTION=$(
 			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
@@ -1351,7 +1350,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*更新" \
 				"8" "🍩 よくある質問" \
 				"9" "🐞 問題を報告します" \
-				"10" "${OPT_10}" \
+				"10" "android 12のクラッシュを修正(signal9)" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1370,7 +1369,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 Report a problem" \
-				"10" "${OPT_10}" \
+				"10" "Fix android 12 crashes(signal9)" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1389,7 +1388,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常见问题" \
 				"9" "🐞 Report a problem(反馈问题/bug)" \
-				"10" "修复android 12(signal9 闪退)" \
+				"10" "修复 android 12(signal9 闪退)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1408,7 +1407,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常見問題" \
 				"9" "🐞 Report a problem(反饋問題/bug)" \
-				"10" "修復android 12(signal9 閃退)" \
+				"10" "修復 android 12(signal9 閃退)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1427,7 +1426,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*aktualisieren" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 ein Problem melden" \
-				"10" "${OPT_10}" \
+				"10" "Android 12-Abstürze beheben (signal9)" \
 				"0" "🌚 Ausfahrt" \
 				3>&1 1>&2 2>&3
 		)
@@ -1446,7 +1445,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*Обновить" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 Сообщить о проблеме" \
-				"10" "${OPT_10}" \
+				"10" "Исправление сбоев android 12 (signal9)" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
