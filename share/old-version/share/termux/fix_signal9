@@ -84,7 +84,7 @@ connect_to_adb_device() {
         do_you_want_to_disable_monitor_phantom_procs
         disable_monitor_phantom_procs_0
         ;;
-    4)
+    *)
         get_max_phantom_processes_1
         do_you_want_to_set_max_phantom_processes_to_a_big_num
         adb -s "$ADB_ADDRESS" shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
