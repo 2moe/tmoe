@@ -446,7 +446,7 @@ tmoe_fcitx_faq() {
         printf "%s\n" "${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}"
         do_you_want_to_continue
         ${TMOE_REMOVAL_COMMAND} ${DEPENDENCY_01}
-        [[ $(command -v apt-get) ]] || apt autopurge || apt autoremove
+        [[ $(command -v apt-get) ]] || apt autoremove --purge || apt autoremove
         ;;
     6) disable_fcitx_xdg_autostart ;;
     esac

@@ -2283,7 +2283,7 @@ install_mate_desktop() {
     case "${LINUX_DISTRO}" in
     "debian")
         DEPENDENCY_01='mate-desktop-environment mate-terminal'
-        #apt autopurge -y ^libfprint
+        #apt autoremove --purge -y ^libfprint
         #apt autoclean
         if grep -q 'Linux Mint' '/etc/issue'; then
             DEPENDENCY_01="mint-meta-mate mint-meta-core mint-artwork"

@@ -9,7 +9,7 @@ remove_browser() {
         ${TMOE_REMOVAL_COMMAND} firefox-esr firefox-esr-l10n-zh-cn
         ${TMOE_REMOVAL_COMMAND} firefox firefox-l10n-zh-cn
         ${TMOE_REMOVAL_COMMAND} firefox-locale-zh-hans
-        apt autopurge 2>/dev/null
+        apt autoremove --purge 2>/dev/null
         emerge -C firefox-bin firefox 2>/dev/null
     else
         printf '%s\n' '小声嘀咕：“妾身不在的时候，你一定要好好照顾好自己。” '
@@ -20,7 +20,7 @@ remove_browser() {
         ${TMOE_REMOVAL_COMMAND} chromium chromium-l10n
         apt-mark unhold chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
         ${TMOE_REMOVAL_COMMAND} chromium-browser chromium-browser-l10n
-        apt autopurge
+        apt autoremove --purge
         dnf remove -y chromium 2>/dev/null
         pacman -Rsc chromium 2>/dev/null
         emerge -C chromium 2>/dev/null
@@ -1188,7 +1188,7 @@ remove_gui() {
         apt purge -y ^gnome
         apt purge -y ^cinnamon
         apt purge -y dde
-        apt autopurge || apt autoremove
+        apt autoremove --purge || apt autoremove
         ;;
     "arch")
         pacman -Rsc xfce4 xfce4-goodies
