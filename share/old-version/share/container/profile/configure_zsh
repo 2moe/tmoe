@@ -48,15 +48,27 @@ auto_remove_proot_xfce4_power_manager() {
 	case ${TMOE_PROOT} in
 	true)
 		#此处不能是commmand -v kali-undercover
+		local BIN="xfce4-power-manager"
+		local BIN_2="xfce4-screensaver"
 		if [[ ! -e /usr/bin/kali-undercover && $(command -v apt-get) ]]; then
-			printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
-			apt autoremove --purge -y ^xfce4-power-manager
+			printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^${BIN} ${BIN_2}${RESET}"
+			apt autoremove --purge -y ^"${BIN}"
+			apt purge -y "${BIN_2}"
 		elif [[ $(command -v pacman) ]]; then
-			pacman -Rsc --noconfirm xfce4-power-manager
+			for i in "${BIN}" "${BIN_2}"; do
+				pacman -Rsc --noconfirm "$i"
+			done
 		elif [[ $(command -v dnf) ]]; then
-			dnf remove -y xfce4-power-manager
+			for i in "${BIN}" "${BIN_2}"; do
+				dnf remove -y "$i"
+			done
 		elif [[ $(command -v apk) ]]; then
-			apk del xfce4-power-manager
+			for i in "${BIN}" "${BIN_2}"; do
+				apk del "$i"
+			done
+		fi
+		if [[ -e /usr/bin/$BIN ]]; then
+			rm -fv /usr/bin/"${BIN}"*
 		fi
 		;;
 	esac

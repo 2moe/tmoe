@@ -1698,24 +1698,43 @@ install_xfce4_lite_desktop() {
     ####################
     case ${TMOE_PROOT} in
     true)
+        local BIN="xfce4-power-manager"
+        local BIN_2="xfce4-screensaver"
+
         case "${LINUX_DISTRO}" in
         "debian")
             #此处不能是commmand -v kali-undercover
             if [[ ! -e /usr/bin/kali-undercover ]]; then
-                printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^xfce4-power-manager${RESET}"
-                apt autoremove --purge -y ^xfce4-power-manager
+                printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^${BIN} ${BIN_2}${RESET}"
+                apt autoremove --purge -y ^"${BIN}"
+                apt purge -y "${BIN_2}"
             fi
             ;;
-        arch) pacman -Rsc --noconfirm xfce4-power-manager ;;
-        redhat) dnf remove -y xfce4-power-manager ;;
-        alpine) apk del xfce4-power-manager ;;
-        suse) zypper rm -y xfce4-power-manager ;;
-        void) xbps-remove -R -y xfce4-power-manager ;;
+        arch)
+            for i in "${BIN}" "${BIN_2}"; do
+                pacman -Rsc --noconfirm "$i"
+            done
+            ;;
+        redhat)
+            for i in "${BIN}" "${BIN_2}"; do
+                dnf remove -y "$i"
+            done
+            ;;
+        alpine)
+            for i in "${BIN}" "${BIN_2}"; do
+                apk del "$i"
+            done
+            ;;
+        suse) zypper rm -y "${BIN}" "${BIN_2}" ;;
+        void) xbps-remove -R -y "${BIN}" "${BIN_2}" ;;
         *)
             printf "%s\n" "${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}xfce4-power-manager${RESET}"
             ${TMOE_REMOVAL_COMMAND} xfce4-power-manager
             ;;
         esac
+        if [[ -e /usr/bin/$BIN ]]; then
+            rm -fv /usr/bin/"${BIN}"*
+        fi
         ;;
     esac
     configure_vnc_xstartup
