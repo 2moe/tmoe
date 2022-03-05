@@ -230,13 +230,13 @@ do_you_want_to_configure_tmoe_zsh() {
 			esac
 		fi
 		do_you_want_to_delete_the_zsh_script_file
-		if [ -n "${FACE_ICON_DIR}" ]; then
-			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
-				CONFIGURE_FACE_ICON=true
-			else
-				CONFIGURE_FACE_ICON=false
-			fi
-		fi
+		# if [ -n "${FACE_ICON_DIR}" ]; then
+		# 	if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
+		# 		CONFIGURE_FACE_ICON=true
+		# 	else
+		# 		CONFIGURE_FACE_ICON=false
+		# 	fi
+		# fi
 		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno '是否需要启动tmoe tools?\nDo you need to start tmoe tools?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
 		fi
@@ -258,25 +258,25 @@ do_you_want_to_configure_tmoe_zsh() {
 			esac
 		fi
 		do_you_want_to_delete_the_zsh_script_file
-		if [ -n "${FACE_ICON_DIR}" ]; then
-			if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
-				CONFIGURE_FACE_ICON=true
-			fi
-		fi
+		# if [ -n "${FACE_ICON_DIR}" ]; then
+		# 	if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
+		# 		CONFIGURE_FACE_ICON=true
+		# 	fi
+		# fi
 		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno 'Do you want to start tmoe tools?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
 		fi
 		;;
 	esac
-	if [[ -z ${CONFIGURE_FACE_ICON} && ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-		if (whiptail --title "\${HOME}/.face.icon" --yes-button "YES" --no-button "NO" --yesno 'Do you want to use the default face.icon?' 0 0); then
-			DEFAULT_FACE_ICON=true
-		fi
-	fi
+	# if [[ -z ${CONFIGURE_FACE_ICON} && ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+	# 	if (whiptail --title "\${HOME}/.face.icon" --yes-button "YES" --no-button "NO" --yesno 'Do you want to use the default face.icon?' 0 0); then
+	# 		DEFAULT_FACE_ICON=true
+	# 	fi
+	# fi
 }
 ##################
 auto_configure_tmoe_tools() {
-	[[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
+	# [[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
 	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
 	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
 	if [ $(command -v startx11vnc) ]; then
@@ -407,19 +407,19 @@ auto_configure_tmoe_tool_02() {
 		done
 	fi
 }
-auto_check_face_icon() {
-	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | grep -E -i '\.jpg|\.png' | head -n 1)
-	cp -vf ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
-	ln -svf ${HOME}/.face ${HOME}/.face.icon
-	copy_face_icon_to_home
-}
-copy_face_icon_to_home() {
-	if [[ -n ${USER_NAME} && -e /home/${USER_NAME} ]]; then
-		cp -fv ${HOME}/.face /home/${USER_NAME}/.face
-		ln -svf .face /home/${USER_NAME}/.face.icon
-		chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.face /home/${USER_NAME}/.face.icon
-	fi
-}
+# auto_check_face_icon() {
+# 	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | grep -E -i '\.jpg|\.png' | head -n 1)
+# 	cp -vf ${FACE_ICON_DIR}/${FACE_ICON_FILE_NAME} ${HOME}/.face
+# 	ln -svf ${HOME}/.face ${HOME}/.face.icon
+# 	copy_face_icon_to_home
+# }
+# copy_face_icon_to_home() {
+# 	if [[ -n ${USER_NAME} && -e /home/${USER_NAME} ]]; then
+# 		cp -fv ${HOME}/.face /home/${USER_NAME}/.face
+# 		ln -svf .face /home/${USER_NAME}/.face.icon
+# 		chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.face /home/${USER_NAME}/.face.icon
+# 	fi
+# }
 ################
 check_tmoe_linux_tool() {
 	if [ ! $(command -v debian-i) ]; then
@@ -629,12 +629,12 @@ git_clone_tmoe_linux() {
 	if [ -e "/etc/os-release" ]; then
 		sed_a_source_list
 	fi
-	if [[ ! -e "${HOME}/.face" && ${DEFAULT_FACE_ICON} = true ]]; then
-		cp -v ${TMOE_GIT_DIR}/share/icons/icon.png ${HOME}/.face
-		ln -svf ${HOME}/.face ${HOME}/.face.icon
-		copy_face_icon_to_home
-		printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
-	fi
+	# if [[ ! -e "${HOME}/.face" && ${DEFAULT_FACE_ICON} = true ]]; then
+	# 	cp -v ${TMOE_GIT_DIR}/share/icons/icon.png ${HOME}/.face
+	# 	ln -svf ${HOME}/.face ${HOME}/.face.icon
+	# 	copy_face_icon_to_home
+	# 	printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
+	# fi
 	mkdir -pv /usr/share/applications
 	cp -v ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop /usr/share/applications
 	#exec zsh &

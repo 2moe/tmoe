@@ -5575,7 +5575,7 @@ first_configure_startvnc() {
     ##########
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
         if [ ! -z "${RESOLUTION}" ]; then
-            if (whiptail --title "Is your resolution ${RESOLUTION}?" --yes-button 'YES' --no-button 'NO' --yesno "检测到您的宿主机为Android系统,且分辨率为${RESOLUTION}" 0 50); then
+            if (whiptail --title "Is your resolution ${RESOLUTION}?" --yes-button 'YES' --no-button 'NO' --yesno "Your host is detected as Android and the resolution is ${RESOLUTION}" 0 50); then
                 printf "%s\n" "Your resolution is ${RESOLUTION}"
             else
                 RESOLUTION='1440x720'
@@ -5587,10 +5587,15 @@ first_configure_startvnc() {
         TMOE_HIGH_DPI='default'
     fi
     ###########
+    case ${TMOE_MENU_LANG} in
+    zh*UTF-8) local _Description="您当前是否使用720P/1080P分辨率的屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若720P<=x<=1080p,则选择Yes;若2K<=x<=4K,则选择No" ;;
+    *) local _Description="If your screen resolution is between 720P & 1080P, then choose yes. If it is between 2K & 4K, then choose no" ;;
+    esac
+
     case "${REMOTE_DESKTOP_SESSION_01}" in
     xfce4-session)
         if [ -z "${RESOLUTION}" ]; then
-            if (whiptail --title "Are you using a 720P/1080P monitor" --yes-button 'YES' --no-button 'NO' --yesno "您当前是否使用720P/1080P分辨率的屏幕/显示器?(っ °Д °)\n设屏幕分辨率为x,若720P<=x<=1080p,则选择YES;若2K<=x<=4K,则选择NO\nIf you are using a high-dpi monitor, then choose NO" 0 50); then
+            if (whiptail --title "720P/1080P Screen/Monitor" --yes-button 'Yes' --no-button 'No' --yesno "$_Description" 0 50); then
                 RESOLUTION='1440x720'
                 TMOE_HIGH_DPI='default'
             else
